@@ -1,4 +1,6 @@
-Thu Feb 24 14:12:08 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Thu Feb 24 14:43:06 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htnet/HtFile.cc (Request): Fix silly typo.
 
 	* htlib/DB2_db.cc: Remove include of malloc.h, as it causes problems
 	on some systems (e.g. Mac OS X), and all we need should be in stdlib.h.

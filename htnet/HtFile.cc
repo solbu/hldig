@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFile.cc,v 1.1.2.2 2000/02/24 19:19:14 grdetil Exp $ 
+// $Id: HtFile.cc,v 1.1.2.3 2000/02/24 20:47:40 grdetil Exp $ 
 //
 
 #include "lib.h"
@@ -147,8 +147,8 @@ HtFile::DocStatus HtFile::Request()
    while (in >> tmp)
      {
        if (_response._contents.length()+tmp.length() > _max_document_size)
-         tmp.chop(tmp.length(_response._contents.length()+tmp.length()
-                             - _max_document_size));
+         tmp.chop(_response._contents.length()+tmp.length()
+                    - _max_document_size);
        _response._contents.append(tmp);
        if (_response._contents.length() >= _max_document_size)
          break;
