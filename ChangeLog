@@ -1,5 +1,7 @@
-Fri Nov 26 15:59:02 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Fri Nov 26 16:18:56 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	* htlib/Configuration.cc(Read): fixed to allow final line without
+	terminating newline character, rather than ignoring it.
 	* htlib/String.cc(write): added Alexis Mikhailov's fix to bump up
 	pointer after writing a block.
 	* htsearch/Display.cc(setVariables): added Alexis Mikhailov's fix

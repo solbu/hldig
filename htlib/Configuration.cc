@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: Configuration.cc,v 1.9.2.2 1999/03/22 21:22:49 grdetil Exp $";
+static char	RCSid[] = "$Id: Configuration.cc,v 1.9.2.3 1999/11/26 22:32:30 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -284,10 +284,11 @@ int Configuration::Read(char *filename)
     String	name;
     char	*value;
     int         len;
-    while (!in.bad())
+    while (!in.bad() && !in.eof())
     {
+	buffer[0] = '\0';
         in.getline(buffer, sizeof(buffer));
-        if (in.eof())
+        if (in.eof() && !*buffer)
             break;
         line << buffer;
         line.chop("\r\n");
