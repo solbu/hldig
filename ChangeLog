@@ -1,3 +1,7 @@
+Mon Jul 12 22:31:48 1999  Hanno Mueller <kontakt@hanno.de>
+	
+	* contrib/scriptname/results.shtml: Remove unintentional $(VERSION).
+
 Mon Jul 12 22:20:40 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.cc (do_tag): Cleanups suggested by Gilles, combining
