@@ -1,3 +1,7 @@
+Wed Jan 12 12:36:46 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordList.h (class WordSearchDescription): add cursor member
+
 Tue Jan 11 19:33:44 2000  Marcel Bosc  <bosc@ceic.com>
 
 	* htlib/HtVectorGeneric,htword: Fixed some warnings found 
