@@ -4,9 +4,9 @@
 // Implementation of Prefix
 //
 // $Log: Prefix.cc,v $
-// Revision 1.3  1998/09/30 17:31:51  ghutchis
+// Revision 1.4  1998/10/12 02:04:00  ghutchis
 //
-// Changes for 3.1.0b2
+// Updated Makefiles and configure variables.
 //
 // Revision 1.2  1998/08/03 16:50:38  ghutchis
 //
@@ -23,7 +23,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Prefix.cc,v 1.3 1998/09/30 17:31:51 ghutchis Exp $";
+static char RCSid[] = "$Id: Prefix.cc,v 1.4 1998/10/12 02:04:00 ghutchis Exp $";
 #endif
 
 #include "Prefix.h"

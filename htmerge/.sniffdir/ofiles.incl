@@ -1,2 +1,0 @@
-OFILES = docs.o htmerge.o words.o 
-

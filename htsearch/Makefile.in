@@ -10,17 +10,17 @@ LOCAL_DEFINES=	-DCONFIG_DIR=\"$(CONFIG_DIR)\"
 
 all:	$(TARGET)
 
-$(TARGET):	$(OBJS)
+$(TARGET):	$(OBJS) $(FOBJS) @top_srcdir@/htcommon/libcommon.a @top_srcdir@/htlib/libht.a
 	$(CXX) -o $(TARGET) $(LDFLAGS) $(OBJS) $(FOBJS) $(LIBS)
 
 install:	all
 	$(INSTALL) $(TARGET) $(CGIBIN_DIR)/$(TARGET)
 
 clean:
-	$(RM) $(OBJS) $(TARGET) *~ *.bak *% core *.orig a.out
+	rm -f $(OBJS) $(TARGET) *~ *.bak *% core *.orig a.out
 
 distclean:	clean
-	$(RM) Makefile *.proj
+	rm -f Makefile *.proj
 
 depend:
 	$(MAKEDEPEND) @CPPFLAGS@ $(CXXFLAGS) -- $(OBJS)

@@ -9,7 +9,8 @@ LOCAL_DEFINES=	-DBIN_DIR=\"$(BIN_DIR)\" \
 		-DCONFIG_DIR=\"$(CONFIG_DIR)\" \
 		-DDATABASE_DIR=\"$(DATABASE_DIR)\" \
 		-DIMAGE_URL_PREFIX=\"$(IMAGE_URL_PREFIX)\" \
-		-DPDF_PARSER=\"$(PDF_PARSER)\"
+		-DPDF_PARSER=\"$(PDF_PARSER)\" \
+		-DSORT_PROG=\"@SORT@\"
 
 all:		$(TARGET)
 
@@ -21,10 +22,10 @@ install:	$(TARGET)
 	@echo "Nothing to install"
 
 clean:
-	$(RM) $(OBJS) $(TARGET) *~ *.bak *% a.out core *.orig
+	rm -f $(OBJS) $(TARGET) *~ *.bak *% a.out core *.orig
 
 distclean:	clean
-	$(RM) Makefile *.proj
+	rm -f Makefile *.proj
 
 depend:
 	$(MAKEDEPEND) $(CXXFLAGS) @CPPFLAGS@ -- $(OBJS)

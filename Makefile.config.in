@@ -20,8 +20,7 @@ VPATH=                  @srcdir@
 CXX=		@CXX@
 CC=		@CC@
 RANLIB=		@RANLIB@
-MAKEDEPEND=	@top_srcdir@/makedp
-RM=		rm -f
+MAKEDEPEND=	@HTDIG_TOP@/makedp
 FIND=		@FIND@
 AR=		@AR@
 SED=		@SED@
@@ -31,24 +30,24 @@ PDF_PARSER=	@PDF_PARSER@
 SENDMAIL=	@SENDMAIL@
 
 DEFINES=	-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\"
-CCC=		$(CXX)
 LIBDIRS=	-L../htlib -L../htcommon -L../@DB_DIR@ -L../@RX_DIR@/rx -L/usr/lib
 INCS=		-I../htlib -I../htcommon -I../@DB_DIR@ -I../@RX_DIR@/rx -I../include
-LIBS=		-lcommon -lht -ldb -lrx @LIBS@
+LIBS=		-lcommon -lht @LIBS@
 
 DIST=		@PACKAGE@-@VERSION@
 DISTDIR=	$(top_srcdir)/../$(DIST)
 
-#CPPFLAGS=	$(CC_OPTIONS) -static @CXXFLAGS@ @DEFS@ $(INCS)
-#CXXFLAGS=	@CXXFLAGS@ -static $(LOCAL_DEFINES) $(DEFINES) $(INCS)
-CPPFLAGS=	$(CC_OPTIONS) @CXXFLAGS@ @DEFS@ $(INCS)
-CXXFLAGS=	@CXXFLAGS@ $(LOCAL_DEFINES) $(DEFINES) $(INCS)
-LDFLAGS=	$(LIBDIRS)
+CFLAGS=		@CFLAGS@
+CPPFLAGS=	@CPPFLAGS@
+CXXFLAGS=	@CXXFLAGS@
+ALL_CFLAGS=	$(LOCAL_DEFINES) $(DEFINES) $(INCS) $(CFLAGS)
+ALL_CXXFLAGS=	$(LOCAL_DEFINES) $(DEFINES) $(INCS) $(CXXFLAGS)
+LDFLAGS=	@LDFLAGS@ $(LIBDIRS)
 
 .SUFFIXES: .cc
 .cc.o:
-	$(CXX) -c $(CXXFLAGS) $<
+	$(CXX) -c $(ALL_CXXFLAGS) $<
 
 .c.o:
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $<
+	$(CC) -c $(CPPFLAGS) $(ALL_CFLAGS) $<
 

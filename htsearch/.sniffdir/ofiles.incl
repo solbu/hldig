@@ -1,4 +1,0 @@
-OFILES = Display.o DocMatch.o ResultList.o \
-		ResultMatch.o Template.o TemplateList.o \
-		WeightWord.o htsearch.o parser.o 
-

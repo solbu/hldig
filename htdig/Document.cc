@@ -4,9 +4,9 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
-// Revision 1.16  1998/09/30 17:31:50  ghutchis
+// Revision 1.17  1998/10/12 02:04:00  ghutchis
 //
-// Changes for 3.1.0b2
+// Updated Makefiles and configure variables.
 //
 // Revision 1.15  1998/09/08 03:29:09  ghutchis
 //
@@ -66,7 +66,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.16 1998/09/30 17:31:50 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.17 1998/10/12 02:04:00 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -357,7 +357,7 @@ Document::RetrieveHTTP(time_t date)
 	command << url->path() << " HTTP/1.0\r\n";
     }
     command << "User-Agent: " << config["user_agent"] << "/" 
-	    << HTDIG_VERSION << " (" <<	config["maintainer"] << ")\r\n";
+	    << VERSION << " (" <<	config["maintainer"] << ")\r\n";
 
     //
     // If a referer was provided, we'll send that as well.

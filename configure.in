@@ -1,6 +1,25 @@
-dnl Process this file with autoconf to produce a configure script.
+# Configuration for ht://Dig 3.x
+# Copyright (c) 1995-1998 Andrew Scherpbier
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+
 AC_INIT(htcommon/DocumentDB.cc)
 AM_INIT_AUTOMAKE(htdig, 3.1.0b2)
+AC_PREREQ(2.12)
+
 AC_CONFIG_HEADER(include/htconfig.h)
 AC_PREFIX_DEFAULT(/opt/www/htdig)
 HTDIG_TOP=`pwd`
@@ -95,15 +114,10 @@ if test ! -d $DB_DIR; then
 fi
 
 DB_DIR=`echo db-*/build.unix`
+AC_SUBST(DB_DIR)
 if test ! -d $DB_DIR; then
   AC_MSG_ERROR([Please extract the Berkeley DB library])
 fi
-AC_SUBST(DB_DIR)
-
-dnl AC_CONFIG_SUBDIRS($DB_DIST)
-(cd db-*/build.unix; ../dist/configure)
-echo "Berkeley DBM Configuration complete"
-echo ""
 
 AC_PATH_PROG(TSORT, tsort)
 if test -z "$TSORT"; then
@@ -113,13 +127,10 @@ fi
 RX_DIR=`echo rx*`
 AC_SUBST(RX_DIR)
 
-echo "Configuring GNU rx"
-echo "Please ignore the warnings that may be displayed during this part"
+AC_CONFIG_SUBDIRS($DB_DIR/../dist)
 AC_CONFIG_SUBDIRS($RX_DIR)
-echo "GNU rx Configuration complete"
-echo ""
 
-AC_OUTPUT(makedp htlib/Makefile htmerge/Makefile htcommon/Makefile htdig/Makefile Makefile.config Makefile CONFIG htsearch/Makefile htnotify/Makefile htfuzzy/Makefile, chmod +x makedp, echo timestamp > stamp-h)
+AC_OUTPUT(CONFIG Makefile Makefile.config htcommon/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile makedp, chmod +x makedp, echo timestamp > stamp-h)
 
 echo ""
 echo ""

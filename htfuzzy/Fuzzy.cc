@@ -4,6 +4,10 @@
 // Implementation of Fuzzy
 //
 // $Log: Fuzzy.cc,v $
+// Revision 1.4  1998/10/12 02:04:00  ghutchis
+//
+// Updated Makefiles and configure variables.
+//
 // Revision 1.3  1998/09/18 02:38:08  ghutchis
 //
 // Bug fixes for 3.1.0b2
@@ -16,7 +20,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.3 1998/09/18 02:38:08 ghutchis Exp $";
+static char RCSid[] = "$Id: Fuzzy.cc,v 1.4 1998/10/12 02:04:00 ghutchis Exp $";
 #endif
 
 #include "Fuzzy.h"
@@ -185,19 +189,19 @@ Fuzzy::getFuzzyByName(char *name)
 
 //*****************************************************************************
 int
-Fuzzy::createDB(Configuration &config)
+Fuzzy::createDB(Configuration &)
 {
     return OK;
 }
 
 void
-Fuzzy::generateKey(char *word, String &key)
+Fuzzy::generateKey(char *, String &)
 {
 }
 
 
 void
-Fuzzy::addWord(char *word)
+Fuzzy::addWord(char *)
 {
 }
 

@@ -4,16 +4,16 @@
 // Implementation of Images
 //
 // $Log: Images.cc,v $
-// Revision 1.2  1998/10/09 04:34:06  ghutchis
+// Revision 1.3  1998/10/12 02:04:00  ghutchis
 //
-// Fixed typos
+// Updated Makefiles and configure variables.
 //
 // Revision 1.1.1.1  1997/02/03 17:11:05  turtle
 // Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Images.cc,v 1.2 1998/10/09 04:34:06 ghutchis Exp $";
+static char RCSid[] = "$Id: Images.cc,v 1.3 1998/10/12 02:04:00 ghutchis Exp $";
 #endif
 
 #include "Images.h"
@@ -91,8 +91,8 @@ Images::Sizeof(char *url)
 
 		String		command = "HEAD ";
 		command << Url.path() << " HTTP/1.0\r\n";
-		command << "User-Agent: config["user_agent"]/";
-		command << HTDIG_VERSION << " (" << config["maintainer"] << ")\r\n";
+		command << "User-Agent: " << config["user_agent"] << "/";
+		command << VERSION << " (" << config["maintainer"] << ")\r\n";
 		command << "\r\n";
 
 		c.write(command);

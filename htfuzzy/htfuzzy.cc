@@ -13,9 +13,9 @@
 // in the main word database.
 //
 // $Log: htfuzzy.cc,v $
-// Revision 1.5  1998/10/02 17:07:31  ghutchis
+// Revision 1.6  1998/10/12 02:04:00  ghutchis
 //
-// More configure changes
+// Updated Makefiles and configure variables.
 //
 // Revision 1.4  1998/09/18 02:38:08  ghutchis
 //
@@ -32,7 +32,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htfuzzy.cc,v 1.5 1998/10/02 17:07:31 ghutchis Exp $";
+static char RCSid[] = "$Id: htfuzzy.cc,v 1.6 1998/10/12 02:04:00 ghutchis Exp $";
 #endif
 
 #include "htfuzzy.h"

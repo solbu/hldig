@@ -22,10 +22,10 @@ install:	$(TARGET)
 	@echo "Nothing to install"
 
 clean:
-	$(RM) $(OBJS) $(TARGET) *~ *.bak *% core a.out *.orig
+	rm -f $(OBJS) $(TARGET) *~ *.bak *% core a.out *.orig
 
 distclean:	clean
-	$(RM) Makefile *.proj
+	rm -f Makefile *.proj
 
 depend:
 	$(MAKEDEPEND) @CPPFLAGS@ $(CXXFLAGS) -- $(OBJS)

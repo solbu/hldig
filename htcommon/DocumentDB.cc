@@ -4,6 +4,10 @@
 // Implementation of DocumentDB
 //
 // $Log: DocumentDB.cc,v $
+// Revision 1.4  1998/10/12 02:03:59  ghutchis
+//
+// Updated Makefiles and configure variables.
+//
 // Revision 1.3  1998/08/11 08:58:23  ghutchis
 // Second patch for META description tags. New field in DocDB for the
 // desc., space in word DB w/ proper factor.
@@ -124,7 +128,6 @@ int DocumentDB::Add(DocumentRef &doc)
     url = doc.DocURL();
     url.lowercase();
     doc.Serialize(s);
-
     dbf->Put(url, s);
     return OK;
 }
@@ -193,10 +196,10 @@ int DocumentDB::CreateSearchDB(char *filename)
     char		*key;
     String		data;
     FILE		*fl;
-    String		command = "/bin/sort -n -o ";
+    String		command = SORT_PROG;
     String		tmpdir = getenv("TMPDIR");
 
-    command << filename;
+    command << "-n -o" << filename;
     if (tmpdir.length())
     {
 	command << " -T " << tmpdir;

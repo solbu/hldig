@@ -4,12 +4,16 @@
 // Implementation of Endings
 //
 // $Log: Endings.cc,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Revision 1.2  1998/10/12 02:04:00  ghutchis
+//
+// Updated Makefiles and configure variables.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Endings.cc,v 1.1 1997/02/03 17:11:12 turtle Exp $";
+static char RCSid[] = "$Id: Endings.cc,v 1.2 1998/10/12 02:04:00 ghutchis Exp $";
 #endif
 
 #include "Endings.h"
@@ -102,7 +106,7 @@ Endings::getWords(char *w, List &words)
 // void Endings::generateKey(char *word, String &key)
 //   Not needed.
 void
-Endings::generateKey(char *word, String &key)
+Endings::generateKey(char *, String &)
 {
 }
 
@@ -111,7 +115,7 @@ Endings::generateKey(char *word, String &key)
 // void Endings::addWord(char *word)
 //   Not needed.
 void
-Endings::addWord(char *word)
+Endings::addWord(char *)
 {
 }
 

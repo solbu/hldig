@@ -1,3 +1,20 @@
+# Main Makefile for ht://Dig 3.1.0b2
+# Copyright (c) 1995-1998 Andrew Scherpbier
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+   
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+   
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 include @top_srcdir@/Makefile.config
 
 DIRS=		@DB_DIR@ @RX_DIR@ \
@@ -16,35 +33,34 @@ IMAGES=		button1.gif button2.gif button3.gif button4.gif button5.gif \
 		buttonr.gif button10.gif htdig.gif star.gif star_blank.gif
 
 all:
-	@for i in $(DIRS); \
-	do \
-		(cd $$i; $(MAKE) $(MFLAGS) all); \
-	done;
+	@for i in $(DIRS); do \
+		(cd $$i; $(MAKE) $(MFLAGS) all) \
+		|| case "$(MFLAGS)" in *k*) fail=yes;; *) exit 1;; esac; \
+	done && test -z "$$fail"
 
 clean:
-	@for i in $(DIRS); \
-	do \
-		(cd $$i; $(MAKE) $(MFLAGS) clean); \
-	done;
+	rm -f *~
+	@for i in $(DIRS); do \
+		(cd $$i; $(MAKE) $(MFLAGS) clean) \
+		|| case "$(MFLAGS)" in *k*) fail=yes;; *) exit 1;; esac; \
+	done && test -z "$$fail"
 
 distclean:
-	@for i in $(DIRS); \
-	do \
-		(cd $$i; $(MAKE) $(MFLAGS) distclean); \
-	done;
-	$(RM) -rf config.cache config.status config.log config.h \
+	rm -rf config.cache config.status config.log config.h \
 		Makefile Makefile.config makedp *.gz test *~ \
 		include/htconfig.h
-	$(RM) -f @RX_DIR@/config.cache @RX_DIR@/config.status
+	rm -f @RX_DIR@/config.cache @RX_DIR@/config.status
+	@for i in $(DIRS); do \
+		(cd $$i; $(MAKE) $(MFLAGS) distclean) \
+		|| case "$(MFLAGS)" in *k*) fail=yes;; *) exit 1;; esac; \
+	done && test -z "$$fail"
 
 install:	all
 	@echo "Installing ht://Dig"
 	@echo ""
 	@echo "Creating directories (if needed)..."
-	-@for i in $(CREATEDIRS); \
-	do \
-		echo "  $$i"; \
-		$(INSTALL) -d $$i; \
+	-@for i in $(CREATEDIRS); do \
+		$(top_srcdir)/mkinstalldirs $$i; \
 	done;
 	@echo ""
 	@echo "Installing individual programs..."
@@ -80,6 +96,14 @@ install:	all
 	@echo "search database.  A sample script to do this has been"
 	@echo "installed as " $(BIN_DIR)/rundig
 
+#install-strip:
+#	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' \
+#		install
+#installdirs: mkinstalldirs
+#        $(srcdir)/mkinstalldirs $(bindir) $(datadir) \
+#                                $(libdir) $(infodir) \
+#                                $(mandir)
+
 depend:
 	@for i in $(DIRS); \
 	do \
@@ -87,17 +111,36 @@ depend:
 	done;
 
 dist:
-	$(RM) -r $(DISTDIR)
+	rm -r $(DISTDIR)
 	mkdir $(DISTDIR)
 	$(TAR) cf - . | (cd $(DISTDIR); $(TAR) xf -)
 	(cd $(DISTDIR); $(MAKE) distclean)
 	-for i in $(DIRS); \
 	do \
-		(cd $(DISTDIR)/$$i; $(RM) -fr RCS CVS docu .#\*); \
+		(cd $(DISTDIR)/$$i; rm -fr RCS CVS docu .#\*); \
 	done;
-	(cd $(DISTDIR); $(RM) -rf $(NO_DIST))
+	(cd $(DISTDIR); rm -rf $(NO_DIST))
 	(cd $(DISTDIR)/..; $(TAR) czf $(DIST).tar.gz $(DIST))
 
 tar:
 	tar czf ht.tar.gz --exclude ht.tar.gz .
 
+# automatic re-running of configure if the configure.in file has changed
+${srcdir}/configure: configure.in aclocal.m4
+	cd ${srcdir} && autoconf
+
+# autoheader might not change config.h.in, so touch a stamp file
+${srcdir}/include/htconfig.h.in: stamp-h.in
+${srcdir}/stamp-h.in: configure.in aclocal.m4
+	cd ${srcdir} && autoheader
+	echo timestamp > ${srcdir}/stamp-h.in
+
+include/htconfig.h: stamp-h
+stamp-h: config.h.in config.status
+	./config.status
+Makefile: Makefile.in config.status
+	./config.status
+Makefile.config: Makefile.config.in config.status
+	./config.status
+config.status: configure
+	./config.status --recheck

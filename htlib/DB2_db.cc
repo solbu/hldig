@@ -4,6 +4,10 @@
 // Implementation of DB2_db
 //
 // $Log: DB2_db.cc,v $
+// Revision 1.3  1998/10/12 02:04:00  ghutchis
+//
+// Updated Makefiles and configure variables.
+//
 // Revision 1.2  1998/06/22 04:33:21  turtle
 // New Berkeley database stuff
 //
@@ -18,7 +22,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: DB2_db.cc,v 1.2 1998/06/22 04:33:21 turtle Exp $";
+static char RCSid[] = "$Id: DB2_db.cc,v 1.3 1998/10/12 02:04:00 ghutchis Exp $";
 #endif
 
 #include "DB2_db.h"
@@ -373,7 +377,7 @@ DB_ENV *
 DB2_db::db_init(char *home)
 {
     DB_ENV *dbenv;
-    char *progname = "Somewhere_deep_inside...";
+    char *progname = "DB2 problem...";
 
     //
     // Rely on calloc to initialize the structure.

@@ -1,3 +1,0 @@
-OFILES = DocumentDB.o DocumentRef.o WordList.o \
-		defaults.o 
-
