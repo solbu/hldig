@@ -5711,6 +5711,74 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="maximum_page_buttons">
+		maximum_page_buttons</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			${maximum_pages}
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b3 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	This value limits the number of page links that will be
+	included in the page list at the bottom of the search
+	results page. By default, it takes on the value of the
+	<a href="attrs.html#maximum_pages">maximum_pages</a>
+	attribute, but you can set it to something lower to allow
+	more pages than buttons. In this case, pages above this
+	number will have no corresponding button.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  maximum_page_buttons:
+				</td>
+				<td nowrap>
+				     20
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="maximum_pages">
 		maximum_pages</a></strong>
 	  </dt>
@@ -5754,6 +5822,10 @@ http://www.htdig.org/
 	included in the page list at the bottom of the search
 	results page. As of version 3.1.4, this will limit the
 	total number of matching documents that are shown.
+	You can make the number of page buttons smaller than the
+	number of allowed pages by setting the
+	<a href="attrs.html#maximum_page_buttons">maximum_page_buttons</a>
+	attribute.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -11664,6 +11736,6 @@ http://www.htdig.org/
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: Wed Aug  2 11:43:43 CDT 2000
+		Last modified: Fri Aug 11 10:48:50 CDT 2000
   </body>
 </html>

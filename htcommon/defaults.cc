@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.53 2000/08/02 06:45:59 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.54 2000/08/11 05:51:07 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1323,12 +1323,26 @@ http://www.htdig.org/", "
 	this value determines the maximum number of stars that
 	can be displayed.
 " },
+{ "maximum_page_buttons", "${maximum_pages}", 
+	"integer", "htsearch", "", "3.2.0b3", "Presentation:How", "maximum_page_buttons: 20", "
+	This value limits the number of page links that will be
+	included in the page list at the bottom of the search
+	results page. By default, it takes on the value of the
+	<a href=\"attrs.html#maximum_pages\">maximum_pages</a>
+	attribute, but you can set it to something lower to allow
+	more pages than buttons. In this case, pages above this
+	number will have no corresponding button.
+" },
 { "maximum_pages", "10", 
 	"integer", "htsearch", "", "all", "Presentation:How", "maximum_pages: 20", "
 	This value limits the number of page links that will be
 	included in the page list at the bottom of the search
 	results page. As of version 3.1.4, this will limit the
 	total number of matching documents that are shown.
+	You can make the number of page buttons smaller than the
+	number of allowed pages by setting the
+	<a href=\"attrs.html#maximum_page_buttons\">maximum_page_buttons</a>
+	attribute.
 " },
 { "maximum_word_length", "32", 
 	"number", "htdig htsearch", "URL", "3.1.3", "Indexing:What", "maximum_word_length: 15", "

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.22 2000/08/02 06:46:02 grdetil Exp $
+// $Id: Display.cc,v 1.100.2.23 2000/08/11 05:51:10 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -682,6 +682,8 @@ Display::setVariables(int pageNumber, List *matches)
 	QuotedStringList	pnt(config["page_number_text"], " \t\r\n");
 	QuotedStringList	npnt(config["no_page_number_text"], " \t\r\n");
 	QuotedStringList	sep(config["page_number_separator"], " \t\r\n");
+	if (nPages > config.Value("maximum_page_buttons", 10))
+	    nPages = config.Value("maximum_page_buttons", 10);
 	for (i = 1; i <= nPages; i++)
 	{
 	    if (i == pageNumber)

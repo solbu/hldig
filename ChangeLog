@@ -1,3 +1,10 @@
+Fri Aug 11 10:48:54 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (setVariables), htcommon/defaults.cc: Added
+	maximum_page_buttons attribute, to limit buttons to less than
+	maximum_pages.
+	* htdoc/attrs.html, cf_by{name,prog}.html: reran cf_generate.pl
+
 Wed Aug  9 23:04:39 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* httools/htmerge.cc (mergeDB): Add fix to prevent duplicate
