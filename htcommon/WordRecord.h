@@ -1,7 +1,7 @@
 //
 // WordRecord.h
 //
-// $Id: WordRecord.h,v 1.6 1999/07/19 01:49:09 ghutchis Exp $
+// $Id: WordRecord.h,v 1.7 1999/08/28 21:11:32 ghutchis Exp $
 //
 
 #ifndef _WordRecord_h_
@@ -27,8 +27,8 @@ class WordRecord : public Object
     WordRecord() {}
     ~WordRecord() {}
 
-    long int	id;
-    long int	flags;
+    int		id;
+    int		flags;
     int		anchor;
     int		location;
 
