@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.29 2001/06/07 18:53:04 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.30 2001/06/07 19:08:19 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -509,9 +509,6 @@ Display::setVariables(int pageNumber, List *matches)
 	  && ilabel > 0 && ilabel <= ntuple && namelist.Count() % ntuple == 0
 	  && nameopt.Count() > 0)
 	{
-	    if (strcmp(builds[b+1], "restrict") == 0
-		|| strcmp(builds[b+1], "exclude") == 0)
-		    sepc = '|';
 	    if (nameopt.Count() == 1)
 		;		// default is single select
 	    else if (mystrcasecmp(nameopt[1], "multiple") == 0)
