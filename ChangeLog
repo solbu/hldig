@@ -1,4 +1,25 @@
-Wed Nov  4 13:49:43 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+Fri Nov  6 17:07:00 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* contrib/wordfreq/wordfreq.pl: Updated with patch from Isoif
+	Fettich <ifettich@netsoft.ro> to use Berkeley DB.
+
+	* contrib/whatsnew/whatsnew.pl: Fixed mistake from Oct 26 change.
+
+	* contrib/htparsedoc/parse_word_doc.pl: Added file contributed by
+	Jesse.
+
+	* contrib/README: Updated to include short descriptions of the scripts.
+
+	* contrib/multidig/*: New scripts to make working with multiple DB
+	a little easier.
+	
+	* configure, configure.in: Added changes to support snapshots.
+
+	* .version: Resurrected to automate snapshot versions.
+	
+Wed Nov  4 15:02:43 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htnotify/htnotify.cc: Fixed buglet with -F flag to sendmail.
 
 	* htdig/Plaintext.cc: Added patch from Vadim Chekan to change char
 	to unsigned char to fix reading Cyrillic plaintext files.
