@@ -21,6 +21,9 @@ KNOWN BUGS:
    we fix this?)
 * META descriptions are somehow added to the database as FLAG_TITLE,
    not FLAG_DESCRIPTION. (PR#859)
+* If external converters have NULs in output, ExternalParser.cc will
+   mangle the data. Could be a problem when "chaining" parsers, e.g. if
+   an intermediate output is application/pdf.
 
 PENDING FEATURES:
 * Forward-Porting of NNTP code.
@@ -32,6 +35,10 @@ PENDING FEATURES:
 * Return all results
 * Duplicate document detection while indexing
 * Method "exact" for phrase-searching on the entire query
+* Handle noindex_start & noindex_end as string lists
+* Handle local_urls through file:// handler, for mime.types support
+* Handle directory redirects in RetrieveLocal
+* Handle directory listings in file:// handler
 
 TESTING:
 * httools programs: 
@@ -56,3 +63,4 @@ OTHER ISSUES:
    (Does this work with Loic's new database code?)
 * Error messages should be more informative if no URLs are indexed by htdig
    PR#672. In short, programs should do a little more checking.
+* We should do a security audit.
