@@ -1,0 +1,83 @@
+#!/bin/sh
+
+#
+# multidig 1.0
+#
+# by Geoffrey R. Hutchison <ghutchis@wso.williams.edu>
+# based on my rundig script and
+# based on a script by Maren S. Leizaola <maren@leizaola.com>
+# and the original rundig script by Andrew Sherpbier <andrew@contigo.com>
+#
+# Part of the "multidig script system"
+# a pile of scripts and a modified conf file
+# that makes dealing with multiple databases easier
+#
+# Syntax:
+# multidig [-v]
+#
+
+# This is useful for debugging info
+if [ "$1" = "-v" ]; then
+    verbose=-v
+fi
+
+# You need to set the following:
+# BASEDIR = base directory for ht://Dig installation
+# DB_BASE = base directory for ht://Dig DB (i.e. each DB in directory off of this)
+# REPORT = temporary file used to generate a report for the dig
+# DB_LIST = file with list of databases
+# TMPDIR = a directory with lots of temporary space for the merging
+BASEDIR=/opt/htdig
+DB_BASE=$BASEDIR/db
+REPORT=/tmp/htdig
+DB_LIST=$BASEDIR/conf/db.list
+TMPDIR=/var/tmp
+export TMPDIR
+
+# Start indexing.
+rm $REPORT
+for db in `cat $DB_LIST`; do
+    # What's the conf file for this database?
+    CONF=$BASEDIR/conf/$db.conf
+    echo Indexing $db at: `date`
+    nice -20 $BASEDIR/bin/htdig -a $verbose -s -c $CONF >>$REPORT
+    echo Merging $db at: `date`
+    nice -20 $BASEDIR/bin/htmerge -a $verbose -s -c $CONF >>$REPORT
+
+    echo Moving files $db at: `date`
+    # If you don't have the space for backups, this step can be omitted
+    nice cp $DB_BASE/$db/db.docdb      $DB_BASE/$db/db.docdb.bak
+    nice cp $DB_BASE/$db/db.docs.index $DB_BASE/$db/db.docs.index.bak
+    nice cp $DB_BASE/$db/db.wordlist   $DB_BASE/$db/db.wordlist.bak
+    nice cp $DB_BASE/$db/db.words.db   $DB_BASE/$db/db.words.db.bak
+
+    # Copy them to temporary files so we don't delete the old .work files
+    # The .work files allow update digs to occur
+    nice cp $DB_BASE/$db/db.docdb.work         $DB_BASE/$db/db.docdb.temp
+    nice cp $DB_BASE/$db/db.docs.index.work    $DB_BASE/$db/db.docs.index.temp
+    nice cp $DB_BASE/$db/db.wordlist.work      $DB_BASE/$db/db.wordlist.temp
+    nice cp $DB_BASE/$db/db.words.db.work      $DB_BASE/$db/db.words.db.temp
+
+    # Now move the new set into place
+    mv $DB_BASE/$db/db.docdb.temp         $DB_BASE/$db/db.docdb
+    mv $DB_BASE/$db/db.docs.index.temp    $DB_BASE/$db/db.docs.index
+    mv $DB_BASE/$db/db.wordlist.temp      $DB_BASE/$db/db.wordlist
+    mv $DB_BASE/$db/db.words.db.temp      $DB_BASE/$db/db.words.db
+
+    # Make them world readable!
+    chmod 755 $DB_BASE/$db/db.docdb     
+    chmod 755 $DB_BASE/$db/db.docs.index
+    chmod 755 $DB_BASE/$db/db.wordlist 
+    chmod 755 $DB_BASE/$db/db.words.db
+    echo Done with $db at: `date`
+done
+echo
+fgrep "htdig:" $REPORT
+echo
+fgrep "htmerge:" $REPORT
+echo
+echo Total lines in $REPORT: `wc -l $REPORT`
+
+# You probably don't need to do this since the script will remove it next
+# time it's run. But we'll do it anyway
+rm $REPORT

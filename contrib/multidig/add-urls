@@ -1,0 +1,37 @@
+#!/bin/sh
+
+#
+# add-urls 1.0
+#
+# by Geoffrey R. Hutchison <ghutchis@wso.williams.edu>
+# for the ht://Dig search system
+# and the multidig script system
+#
+# syntax:
+# add-urls <db>
+#
+# Reads new URLs in from the standard input (either redirect or paste)
+#
+
+# You need to set the following:
+# BASEDIR = base directory for ht://Dig installation
+# DB_LIST = file with list of databases
+BASEDIR=/opt/htdig
+DB_LIST=$BASEDIR/conf/db.list
+
+# Catch people who don't supply an argument
+if [ "$1" = "" ]; then
+    echo Syntax: add-urls \<db\>
+    exit
+fi
+
+# Do we actually have a database named as specified?
+TEST=`grep $1 $DB_LIST`
+if [ "$TEST" = "" ]; then
+	# This may become annoying. If so, comment it out!
+	echo The database $1 does not exist. Sorry.
+	echo The existing databases are:
+	cat $DB_LIST
+else
+	cat /dev/stdin >>$BASEDIR/conf/$1.urls
+fi

@@ -1,0 +1,42 @@
+#!/bin/sh
+
+#
+# new-db 1.0
+#
+# by Geoffrey R. Hutchison <ghutchis@wso.williams.edu>
+# for the ht://Dig search system
+# and the multidig script system
+#
+# syntax:
+# new-db <db>
+#
+# Creates a new database directory and conf file with given name 
+# Updates the global db.list file
+#
+
+# You need to set the following:
+# BASEDIR = base directory for ht://Dig installation
+# DB_BASE = base directory for ht://Dig DB (i.e. each DB in directory off of this)
+# DB_LIST = file with list of databases
+BASEDIR=/opt/htdig
+DB_BASE=$BASEDIR/db
+DB_LIST=$BASEDIR/conf/db.list
+
+# Catch people who don't supply an argument
+if [ "$1" = "" ]; then
+    echo Syntax: new-db \<db\>
+    exit
+fi
+
+
+# Add the new database to the db.list file
+cat ${1:?You need to specify a database} >>$DB_LIST
+
+# Now make the appropriate database directory
+mkdir $DB_BASE/$1
+
+# And make a copy of the default (htdig.conf) conf file for the DB
+# Use sed to replace @DATABASE@ with the name of the database
+sed -e s%@DATABASE@%$1% $BASEDIR/conf/htdig.conf >$BASEDIR/conf/$1.conf
+# And make a blank file for the ${start_urls} directive
+touch $BASEDIR/conf/$1.urls
