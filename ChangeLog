@@ -1,14 +1,21 @@
-Mon Aug 02 11:28:00 1999 CEST Gabriele Bartolini <g.bartol@comune.prato.it>
+Wed Aug  4 01:58:52 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* COPYING, htdoc/COPYING, configure.in, Makefile.am, Makefile.in:
+	Update information to use canonical version of the GPL from the
+	FSF. In particular, this version has the correct mailing address
+	of the FSF.
+
+Mon Aug 02 11:28:00 1999 Gabriele Bartolini <g.bartol@comune.prato.it>
 
 	* htlib/htString.h, htlib/String.cc : added the possibility to
 	insert an unsigned int into a string.
 	* htdig.cc : with verbose mode shows start and end time.
 
-Thu Jul 22 18:10:00 1999 CEST Gabriele Bartolini <g.bartol@comune.prato.it>
+Thu Jul 22 18:10:00 1999 Gabriele Bartolini <g.bartol@comune.prato.it>
 
 	* htdig/Transport.cc, htdig/HtHTTP.cc : modified the destructors.
 
-Thu Jul 22 13:10:00 1999 CEST Gabriele Bartolini <g.bartol@comune.prato.it>
+Thu Jul 22 13:10:00 1999 Gabriele Bartolini <g.bartol@comune.prato.it>
 
 	* htdig/Transport.cc, htdig/Transport.h, htdig/HtHTTP.cc, htdig/HtHTTP.h :
 	Re-analyzed inheritance methods and attributes of the 2 classes. This is
