@@ -1,0 +1,56 @@
+.TH htdig 1 "January 2004"
+.\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
+.\" other parms are allowed: see man(7), man(1)
+.SH NAME
+htpurge \-  remove unused odocuments from the database (general maintenance script)
+.SH SYNOPSIS
+.B htpurge
+.I "[-][-a][-c configfile][-u][-v]"
+.SH "DESCRIPTION"
+Htpurge functions to remove specified URLs from the databases as well as bad URLs, 
+unretrieved URLs, obsolete documents, etc. It is recommended that htpurge be run 
+after htdig to clean out any documents of this sort. 
+.TP
+.SH OPTIONS
+.TP
+.B \-
+Take \fIURL\fR list from standard input (rather than specified with \fI-u\fR). Format of input file is one URL per line.
+.B \-a
+Use alternate work files. Tells htpurge to append
+.I .work
+to database files, causing a second copy of the database to be
+built. This allows the original files to be used by htsearch
+during the run. 
+.TP
+.B \-c \fIconfigfile\fR
+Use the specified
+.I configfile
+instead of the default. 
+.TP
+.B \-u \fIURL\fR
+Add this \fIURL\fR to the list of documents to remove. Must be specified multiple times if
+more than one \fIURL\fR are to be removed. Should nor be used together with \fI-\fR.
+.TP
+.B \-v
+Verbose mode. This increases the verbosity of the program.
+Using more than 2 is probably only useful for debugging
+purposes. The default verbose mode (using only one \fI\-v\fR) gives
+a nice progress report while digging. 
+.SH "FILES"
+.TP
+.B /etc/htdig/htdig.conf
+The default configuration file.
+.SH "SEE ALSO"
+Please refer to the HTML pages (in the htdig-doc package)
+.B /usr/share/doc/htdig-doc/html/index.html
+and the manual pages
+.I htdigconfig(8)
+,
+.I htdig(1)
+and
+.I htmerge(1)
+for a detailed description of ht://Dig and its commands.
+
+.SH AUTHOR
+This manual page was written by Robert Ribnitz, 
+based on the HTML documentation of ht://Dig.

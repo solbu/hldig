@@ -1,6 +1,9 @@
 
 include $(top_srcdir)/Makefile.config
 
+man_MANS = htdig-pdfparser.1 htdig.1 htdump.1 htfuzzy.1 htload.1 htmerge.1 \
+		htnotify.1 htpurge.1 htsearch.1 htstat.1 rundig.1 htdigconfig.8
+
 IMAGES=		button1.gif button2.gif button3.gif button4.gif button5.gif \
 		button6.gif button7.gif button8.gif button9.gif buttonl.gif \
 		buttonr.gif button10.gif htdig.gif star.gif star_blank.gif \

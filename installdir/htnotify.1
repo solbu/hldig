@@ -1,0 +1,45 @@
+.TH htnotify 1 "21 July 1997"
+.\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
+.\" other parms are allowed: see man(7), man(1)
+.SH NAME
+htnotify \- sends email notifications about out-dated web pages discovered by htmerge
+.SH SYNOPSIS
+.B htnotify
+.I "[options]"
+.SH "DESCRIPTION"
+.I Htnotify
+scans the document database created by
+.I htmerge
+and sends an email message for every page that is out of date. Please
+have a look at the ht://Dig notification manual for instructions on how to
+set up this service. 
+.SH OPTIONS
+.TP
+.B \-b \fIdatabase\fR
+Specifies an alternative database than what is specified in
+the configuration file. 
+.TP
+.B \-c \fIconfigfile\fR
+Use the specified
+.I configfile
+instead of the default. 
+.B \-v
+Verbose mode. This increases the verbosity of the program.
+Used once will display a log of what email messages were
+sent. Used more than once will display information about
+each document that has email notification set.
+.SH "FILES"
+.TP
+.B /etc/htdig/htdig.conf
+The default configuration file.
+.SH "SEE ALSO"
+Please refer to the HTML pages (in the htdig-doc package)
+.B /usr/share/doc/htdig-doc/html/index.html
+and the manual pages
+.I htdig(1)
+and 
+.I htmerge(1)
+for a detailed description of ht://Dig and its commands.
+.SH AUTHOR
+This manual page was written by Christian Schwarz, modified by
+Stijn de Bekker, based on the HTML documentation of ht://Dig.

@@ -1,0 +1,68 @@
+.TH htmerge 1 "21 July 1997"
+.\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
+.\" other parms are allowed: see man(7), man(1)
+.SH NAME
+htmerge \- create document index and word database for the ht://Dig
+search engine
+.SH SYNOPSIS
+.B htmerge
+.I "[options]"
+.SH "DESCRIPTION"
+.I Htmerge
+is used to create a document index and word database
+from the files that were created by \fIhtdig\fR. These databases are
+then used by
+.I htsearch
+to perform the actual searched. 
+.SH OPTIONS
+.TP
+.B \-a
+Use alternate work files. Tells htdig to append
+.I .work
+to database files, causing a second copy of the database to be
+built. This allows the original files to be used by htsearch
+during the indexing run. 
+.TP
+.B \-c \fIconfigfile\fR
+Use the specified
+.I configfile
+instead of the default. 
+.TP
+.B \-d
+Prevent the document index from being created. 
+.TP
+.B \-s
+Print statistics about the document and word databases
+after htmerge has finished. 
+.TP
+.B \-v
+Run in verbose mode. This will provide some hints as to the
+progress of the merge. This can be useful when running
+htmerge interactively since some parts (especially the word
+database creation) can take a very long time. 
+.TP
+.B \-w
+Prevent the word database from being created. 
+.SH ENVIRONMENT
+.TP
+.B TMPDIR
+In addition to the command line options, the environment
+variable
+.I TMPDIR
+will be used to designate the directory where
+intermediate files are stored during the sorting process. 
+.SH "FILES"
+.TP
+.B /etc/htdig/htdig.conf
+The default configuration file.
+.SH "SEE ALSO"
+Please refer to the HTML pages (in the htdig-doc package)
+.B /usr/share/doc/htdig-doc/html/index.html
+and the manual pages
+.I htdig(1)
+and 
+.I htsearch(1)
+for a detailed description of ht://Dig and its commands.
+.SH AUTHOR
+This manual page was written by Christian Schwarz, modified
+by Stijn de Bekker, based on the HTML documentation of ht://Dig.

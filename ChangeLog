@@ -1,3 +1,12 @@
+Wed Feb 25 11:02:37 CET 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * installdir/*.[1,8]: added man pages (htdig-pdfparser.1, htdig.1,
+      htdump.1, htfuzzy.1, htload.1, htmerge.1, htnotify.1, htpurge.1,
+      htsearch.1, htstat.1, rundig.1, htdigconfig.8) provided by
+      Robert Ribnitz <ribnitz@linuxbourg.ch> of the Debian Project
+    * installdir/Makefile.am: prepared the automake script for correctly
+      handling the man pages
+
 Sat 21 Feb 2004 Lachlan Andrew <lha at users.sourceforge.net>
 
     * htsearch/htsearch.cc:

@@ -1,0 +1,118 @@
+.TH htdig 1 "21 July 1997"
+.\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
+.\" other parms are allowed: see man(7), man(1)
+.SH NAME
+htdig \- retrieve HTML documents for ht://Dig search engine
+.SH SYNOPSIS
+.B htdig
+.I "[options]"
+.SH "DESCRIPTION"
+Htdig retrieves HTML documents using the HTTP protocol and
+gathers information from these documents which can later be
+used to search these documents. This program can be referred to
+as the search robot. 
+.SH OPTIONS
+.TP
+.B \-
+Get the list of URLs to start indexing from standard input. This will override the default parameter \fIstart_url\fR specified in the config file  and the file supplied to the \fI-m\fR option.
+.TP
+.B \-a
+Use alternate work files. Tells htdig to append
+.I .work
+to database files, causing a second copy of the database to be
+built. This allows the original files to be used by htsearch
+during the indexing run. 
+.TP
+.B \-c \fIconfigfile\fR
+Use the specified
+.I configfile
+instead of the default. 
+.TP
+.B \-h \fImaxhops\fR
+Restrict the dig to documents that are at most
+.I maxhops
+links away from the starting document. This only works if option \fI\-i\fR
+is also given. 
+.TP
+.B \-i
+Initial. Do not use any old databases. Old databases will be erased before runing the program.
+.TP
+.B \-m \fIfilename\fR
+Minimal run. Only index the URLs given in the file \fIfilename\fR, ignoring all others. URLs in the file should be formatted one URL per line. 
+.B \-s
+Print statistics about the dig after completion. 
+.TP
+.B \-t
+Create an ASCII version of the document database. This
+database is easy to parse with other programs so that
+information can be extracted from it for purposes other
+than searching. One could gather some interesting statistics
+from this database. 
+.TS
+cB cB 
+c l .
+Fieldname	Value
+u	URL
+t	Title
+a	State 
+	(0 normal, 1 not found, 2 not indexed, 3 obsolete)
+m	Time of last modification reported by the server
+s	Document Size in bytes
+H	Excerpt of the document
+h	Meta Description
+l	Time of last rerievial
+L	Count of links in the document or  of \fIoutgoing links\fR
+b	Number of links to the document, also called 
+	\fIincoming\fR links or \fIbacklinks\fR
+c	Hop count of this document
+g	Signature of this document 
+	(used to detect duplicates)
+e	E-Mail address to use for a notification from \fIhtnotify\fR
+n	Date on which such notification is sent
+S	Subject of the notfication message 
+d	The text of Incoming links pointing to this document 
+	(e.g. <a href="docURL">description</a>)
+A	Anchors in the document (i.e. <A NAME=...)
+.TE
+.TP
+.B \-u \fIusername:password\fR
+Tells htdig to send the supplied username and password with
+each HTTP request. The credentials will be encoded using the
+\fI\'Basic\'\fR authentication method. There \fBHAS\fR to be a colon (:)
+between the username and password. 
+.TP
+.B \-v
+Verbose mode. This increases the verbosity of the program. Using more than 2 is probably only useful for debugging purposes. The default verbose mode (using only one -v) gives a nice progress report while digging. Please consult the section below on the exact format of the progress report.
+.TP
+.SH "FORMAT OF THE PROGRESS REPORT GIVEN IN VERBOSE MODE"
+A line is shown for each URL, with 3 numbers before the URL and some symbols after the URL. The first number is the number of documents parsed so far, the second is the DocID for this document, and the third is the hop count of the document (number of hops from one of the start_url documents). Signification of the sybols printed after the url:
+.IP 
+\fI"*"\fR is printed for a link already visited
+.IP 
+\fI"+"\fR is printed for a new link just queued
+.IP
+\fI"-"\fR is output for a link rejected for any of a number of reasons. To find out what those reasons are, you need to run htdig with at least 3 \fI-v\fR options, i.e. \fI-vvv\fR. 
+.TP
+If there are no "*", "+" or "-" symbols after the URL, it doesn't mean the document was not parsed or was empty, but only that no links to other documents were found within it. With more verbose output, these symbols will get interspersed in several lines of debugging output. 
+.TP
+.SH "FILES"
+.TP
+.B /etc/htdig/htdig.conf
+The default configuration file.
+.SH "SEE ALSO"
+Please refer to the HTML pages (in the htdig-doc package)
+.B /usr/share/doc/htdig-doc/html/index.html
+and the manual pages
+.I htdigconfig(8)
+,
+.I htmerge(1)
+,
+.I htnotify(1)
+,
+.I htsearch(1)
+and
+.I rundig(1)
+for a detailed description of ht://Dig and its commands.
+.SH AUTHOR
+This manual page was written by Christian Schwarz, modified by Stijn de Bekker. It is updated and maintained by Robert Ribnitz 
+and based on the HTML documentation of ht://Dig.
