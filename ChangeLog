@@ -1,3 +1,10 @@
+Sun Dec 12 17:14:00 EET 1999  Vadim Chekan  <vadim@etc.lviv.ua>
+
+	* htcommon/conf_lexer.lxx, htcommon/conf_lexer.cxx:
+	national symbols are allowed in right part of expressions.
+	Changed default behavior of flex from print unknown chars
+	on stdout to exit with error message.
+
 Sat Dec 11 17:34:03 EET 1999  Vadim Chekan  <vadim@etc.lviv.ua>
 
 	* htdig/Retriever.cc,htdig/htdig.cc: "exclude_urls","bad_querystr"
