@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.8 2000/02/02 19:01:03 grdetil Exp $
+// $Id: Server.cc,v 1.17.2.9 2000/02/09 15:30:20 grdetil Exp $
 //
 
 #include "htdig.h"
@@ -213,9 +213,14 @@ void Server::robotstxt(Document &doc)
 		// This is for us!  This will override any previous patterns
 		// that may have been set.
 		//
-		seen_myname = 1;
-		pay_attention = 1;
-		pattern = 0;
+		if (!seen_myname)	// only take first section with our name
+		{
+		    seen_myname = 1;
+		    pay_attention = 1;
+		    pattern = 0;	// ignore previous User-agent: *
+		}
+		else
+		    pay_attention = 0;
 	    }
 	    else
 	    {

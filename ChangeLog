@@ -1,4 +1,7 @@
-Wed Feb  9 09:05:10 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Feb  9 09:21:00 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Server.cc (robotstxt): apply more rigorous parsing of
+	multiple user-agent fields, and use only the first one.
 
 	* htlib/HtRegex.cc (set): apply the fix from Valdas Andrulis, to
 	properly compile case_sensitive expressions.
