@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Display.cc,v 1.120 2004/01/12 12:48:25 lha Exp $
+// $Id: Display.cc,v 1.121 2004/03/15 10:48:58 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -42,6 +42,7 @@ using namespace std;
 #endif /* HAVE_STD */
 
 #include <stdio.h>
+#include <stdlib.h> // for abs
 #include <ctype.h>
 
 #ifndef _MSC_VER /* _WIN32 */
@@ -1535,8 +1536,13 @@ Display::buildMatchList()
 	base_score = score;
 	if (date_factor != 0.0)
 	{
-	    date_score =  date_factor * 
-	      ((thisRef->DocTime() * 1000.0 / (double)now) - 900);
+
+// Macro for calculating the date factor (31536000 is the number of
+// seconds in a 365 days year). The formula gives less weight
+// as the distance between the date document and the current time
+// increases (the absolute value is for documents with future date)
+#define DATE_FACTOR(df, n, dd) ((df) * 100 / (1+(double)(abs((n) - (dd)) / 31536000)))
+	    date_score =  DATE_FACTOR(date_factor, now, thisRef->DocTime());
 	    score += date_score;
         }
   
