@@ -4,6 +4,9 @@
 // Implementation of htsearch
 //
 // $Log: htsearch.cc,v $
+// Revision 1.4  1997/04/21 15:44:39  turtle
+// Added code to check the search words against the minimum_word_length attribute
+//
 // Revision 1.3  1997/02/24 17:52:55  turtle
 // Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
 // ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
@@ -19,7 +22,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.3 1997/02/24 17:52:55 turtle Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.4 1997/04/21 15:44:39 turtle Exp $";
 #endif
 
 #include "htsearch.h"
@@ -48,6 +51,7 @@ void doFuzzy(WeightWord *, List &, List &);
 void addRequiredWords(List &, StringList &);
 
 int			debug = 0;
+int			minimum_word_length = 3;
 
 
 //*****************************************************************************
@@ -135,6 +139,8 @@ main(int ac, char **av)
     if (input.exists("keywords"))
 	requiredWords.Create(input["keywords"], " \t\r\n");
 
+    minimum_word_length = config.Value("minimum_word_length", minimum_word_length);
+    
     Parser	*parser = new Parser();
 	
     //
@@ -365,7 +371,8 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
 		else
 		{
 		    WeightWord	*ww = new WeightWord(word, 1.0);
-		    if (!badWords.IsValid(word))
+		    if (!badWords.IsValid(word) ||
+			word.length() < minimum_word_length)
 		    {
 			ww->isIgnore = 1;
 			tempWords.Add(ww);
