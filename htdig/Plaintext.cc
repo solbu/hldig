@@ -4,6 +4,10 @@
 // Implementation of Plaintext
 //
 // $Log: Plaintext.cc,v $
+// Revision 1.3  1997/03/27 00:06:05  turtle
+// Applied patch supplied by Peter Enderborg <pme@ufh.se> to fix a problem with
+// a pointer running off the end of a string.
+//
 // Revision 1.2  1997/03/24 04:33:17  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -12,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Plaintext.cc,v 1.2 1997/03/24 04:33:17 turtle Exp $";
+static char RCSid[] = "$Id: Plaintext.cc,v 1.3 1997/03/27 00:06:05 turtle Exp $";
 #endif
 
 #include "Plaintext.h"
@@ -64,7 +68,7 @@ Plaintext::parse(Retriever &retriever, URL &)
 	    // Start of a word.  Try to find the whole thing
 	    //
 	    in_space = 0;
-	    while (isalnum(*position) || strchr(valid_punctuation, *position))
+	    while (*position && (isalnum(*position) || strchr(valid_punctuation, *position)))
 	    {
 		word << *position;
 		position++;
@@ -93,7 +97,7 @@ Plaintext::parse(Retriever &retriever, URL &)
 	    //
 	    // Characters that are not part of a word
 	    //
-	    if (isspace(*position))
+	    if (!*position && isspace(*position))
 	    {
 		//
 		// Reduce all multiple whitespace to a single space
@@ -120,6 +124,8 @@ Plaintext::parse(Retriever &retriever, URL &)
 		    case '&':
 			head << "&amp;";
 			break;
+		    case '\0':
+			break;
 		    default:
 			head << *position;
 			break;
@@ -127,7 +133,8 @@ Plaintext::parse(Retriever &retriever, URL &)
 		in_space = 0;
 	    }
 	}
-	position++;
+	if (!*position)
+	    position++;
     }
     retriever.got_head(head);
 }
