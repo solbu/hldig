@@ -680,8 +680,9 @@ public:
     // Bytes in the mpool cache.
     void set_mp_size(size_t);
 
-    // Comrpession info.
+    // Compression info.
     void set_mp_cmpr_info(DB_CMPR_INFO *);
+    DB_CMPR_INFO* get_mp_cmpr_info() const;
 
 
     ////////////////////////////////////////////////////////////////
