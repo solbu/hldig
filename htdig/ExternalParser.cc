@@ -13,13 +13,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.3 2000/01/14 00:57:15 ghutchis Exp $
+// $Id: ExternalParser.cc,v 1.19.2.4 2000/02/16 05:48:24 ghutchis Exp $
 //
 
 #include "ExternalParser.h"
 #include "HTML.h"
 #include "Plaintext.h"
-#include "PDF.h"
 #include "htdig.h"
 #include "htString.h"
 #include "QuotedStringList.h"
@@ -199,8 +198,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	{
 	    if (newcontent.length() == 0 &&
 		!canParse(convertToType) &&
-		mystrncasecmp((char*)convertToType, "text/", 5) != 0 &&
-		mystrncasecmp((char*)convertToType, "application/pdf", 15) != 0)
+		mystrncasecmp((char*)convertToType, "text/", 5) != 0)
 	    {
 		if (mystrcasecmp((char*)convertToType, "user-defined") == 0)
 		    cerr << "External parser error: no Content-Type given\n";
@@ -407,7 +405,6 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     {
 	static HTML			*html = 0;
 	static Plaintext		*plaintext = 0;
-	static PDF			*pdf = 0;
 	Parsable			*parsable = 0;
 
 	contentType = convertToType;
@@ -427,12 +424,6 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	    if (!plaintext)
 		plaintext = new Plaintext();
 	    parsable = plaintext;
-	}
-	else if (mystrncasecmp((char*)contentType, "application/pdf", 15) == 0)
-	{
-	    if (!pdf)
-		pdf = new PDF();
-	    parsable = pdf;
 	}
 	else
 	{

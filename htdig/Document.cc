@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.15 2000/02/10 21:10:35 loic Exp $
+// $Id: Document.cc,v 1.55.2.16 2000/02/16 05:48:24 ghutchis Exp $
 //
 
 #include <signal.h>
@@ -29,7 +29,6 @@
 #include "htdig.h"
 #include "HTML.h"
 #include "Plaintext.h"
-#include "PDF.h"
 #include "ExternalParser.h"
 #include "lib.h"
 
@@ -496,7 +495,6 @@ Parsable *
 Document::getParsable()
 {
     static HTML			*html = 0;
-    static PDF			*pdf = 0;
     static Plaintext		*plaintext = 0;
     static ExternalParser	*externalParser = 0;
     
@@ -516,12 +514,6 @@ Document::getParsable()
 	if (!html)
 	    html = new HTML();
 	parsable = html;
-    }
-    else if (mystrncasecmp((char*)contentType, "application/pdf", 15) == 0)
-    {
-        if (!pdf)
-	    pdf = new PDF();
-	parsable = pdf;
     }
     else if (mystrncasecmp((char*)contentType, "text/plain", 10) == 0)
     {
