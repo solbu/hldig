@@ -3,18 +3,12 @@
 //
 // Implementation of Metaphone
 //
-// $Log: Metaphone.cc,v $
-// Revision 1.2  1998/01/05 05:16:39  turtle
-// formatting changes
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
 //
 //
 
 #include "Metaphone.h"
 #include <ctype.h>
-#include <Dictionary.h>
+#include "Dictionary.h"
 
 
 //*****************************************************************************
@@ -319,7 +313,7 @@ Metaphone::addWord(char *word)
     String	*s = (String *) dict->Find(key);
     if (s)
     {
-        if (mystrcasestr(s->get(), word) != 0)
+      //        if (mystrcasestr(s->get(), word) != 0)
             (*s) << ' ' << word;
     }
     else

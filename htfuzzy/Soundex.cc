@@ -3,17 +3,14 @@
 //
 // Implementation of Soundex
 //
-// $Log: Soundex.cc,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Soundex.cc,v 1.1 1997/02/03 17:11:12 turtle Exp $";
+static char RCSid[] = "$Id: Soundex.cc,v 1.2 1999/02/04 07:24:32 ghutchis Exp $";
 #endif
 
 #include "Soundex.h"
-#include <Dictionary.h>
+#include "Dictionary.h"
 
 
 //*****************************************************************************
@@ -39,6 +36,9 @@ Soundex::~Soundex()
 void
 Soundex::generateKey(char *word, String &key)
 {
+    int code = 0;
+    int lastcode = 0;
+
     key = 0;
     if (word)
     {
@@ -46,11 +46,11 @@ Soundex::generateKey(char *word, String &key)
     }
     else
     {
-	key = "0";
+	key = '0';
 	return;
     }
 
-    while (key.length() < 6)
+    while (key.length() < 4)
     {
 	switch (*word)
 	{
@@ -58,7 +58,7 @@ Soundex::generateKey(char *word, String &key)
 	    case 'p':
 	    case 'f':
 	    case 'v':
-		key << '1';
+		code = 1;
 		break;
 
 	    case 'c':
@@ -69,25 +69,25 @@ Soundex::generateKey(char *word, String &key)
 	    case 'q':
 	    case 'x':
 	    case 'z':
-		key << '2';
+		code = 2;
 		break;
 
 	    case 'd':
 	    case 't':
-		key << '3';
+		code = 3;
 		break;
 
 	    case 'l':
-		key << '4';
+		code = 4;
 		break;
 
 	    case 'm':
 	    case 'n':
-		key << '5';
+		code = 5;
 		break;
 
 	    case 'r':
-		key << '6';
+		code = 6;
 		break;
 
 	    case 'a':
@@ -98,8 +98,14 @@ Soundex::generateKey(char *word, String &key)
 	    case 'y':
 	    case 'w':
 	    case 'h':
+	        code = 0;
 		break;
 	}
+	if (code && code != lastcode)
+	  {
+	    key << code;
+	    lastcode = code;
+	  }
 	if (*word)
 	    word++;
 	else
@@ -125,8 +131,8 @@ Soundex::addWord(char *word)
     String	*s = (String *) dict->Find(key);
     if (s)
     {
-	if (mystrcasestr(s->get(), word) != 0)
-	    (*s) << ' ' << word;
+      //	if (mystrcasestr(s->get(), word) != 0)
+      (*s) << ' ' << word;
     }
     else
     {
