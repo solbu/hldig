@@ -4,6 +4,10 @@
 // Implementation of Plaintext
 //
 // $Log: Plaintext.cc,v $
+// Revision 1.6  1998/12/04 04:13:08  ghutchis
+//
+// Removed compiler warnings.
+//
 // Revision 1.5  1998/11/04 18:53:29  ghutchis
 //
 // Added patch from Vadim Chekan to change char to unsigned char to fix reading
@@ -24,7 +28,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Plaintext.cc,v 1.5 1998/11/04 18:53:29 ghutchis Exp $";
+static char RCSid[] = "$Id: Plaintext.cc,v 1.6 1998/12/04 04:13:08 ghutchis Exp $";
 #endif
 
 #include "Plaintext.h"
@@ -58,7 +62,7 @@ Plaintext::parse(Retriever &retriever, URL &)
     if (contents == 0 || contents->length() == 0)
 	return;
 
-    unsigned char	*position = contents->get();
+    unsigned char       *position = (unsigned char *) contents->get();
     unsigned char	*start = position;
     int		offset = 0;
     int		in_space = 0;
