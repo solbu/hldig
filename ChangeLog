@@ -1,3 +1,49 @@
+Wed Jan 13 20:11:26 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html: Fix typo with META example.
+
+Wed Jan 13 18:45:17 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Removed use_document_compression
+	(redundant) and fixed problem with missing comma. Setting
+	compression_factor to 0 is the equivalent of turning off
+	use_document_compression.
+
+	* htmerge/db.cc: Fixed problem with db.NextDocID() being set
+	incorrectly, reported by Roman Dimov <roman@mark-itt.ru>.
+
+	* htcommon/DocumentDB.h: Added IncNextDocID to allow big changes
+	in db.NextDocID(), such as those above.
+	
+Tue Jan 12 09:16:49 1999 didier Gautheron <dgautheron@magic.fr>
+
+	* htcommon/WordList.cc, htmerge/words.cc: Changed field order 
+	in db.wordlist. With the old order, words from HTML body and words
+	from links to that url weren't merged sometimes.
+
+	* htdig/Document.cc, htmerge/words.cc: Small speed improvements.
+
+	* htdig/HTML.cc: Fixed small memory leak with bogus HTML and small
+	speedups.
+
+	* htdig/Retriever.cc(got_href) : if ref exists we have to call
+	AddDescription even if max_hop_count is reached. It's important
+	for wwwoffle (urls in the cache are restricted by max_hop_count)
+
+	* htcommon/DocumentDB.cc, htcommon/DocumentDB.h, htdig/Retriever.cc,
+	htlib/Dictionary.cc, htlib/Dictionary.h, htlib/Object.cc,
+	htlib/Object.h, htlib/String.cc, htlib/htString.h,
+	htcommon/WordList.cc: Speedups after gprof data.
+	
+Tue Jan 12 07:23:35 1999 didier Gautheron <dgautheron@magic.fr>
+
+	* htlib/Configuration.cc: Fixed time format to standard to avoid 
+	sending If-Modified-Since http headers in native format (which
+	would be incorrect behavior). Use C locale.
+
+	* htlib/Dictionary.h, htlib/Dictionary.cc: Add new method
+	GetNextElement to directly return next object when iterating.
+
 Tue Jan 12 12:56:26 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc(serialize,
