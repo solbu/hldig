@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.21 1999/09/09 13:55:37 loic Exp $
+// $Id: DocumentDB.cc,v 1.22 1999/09/09 15:25:17 loic Exp $
 //
 
 #include "DocumentDB.h"
@@ -332,13 +332,7 @@ int DocumentDB::Delete(int docID)
 // int DocumentDB::CreateSearchDB(char *filename)
 //   Create an extract from our database which can be used by the
 //   search engine.  The extract will consist of lines with fields
-//   separated by tabs.  The fields are:
-//        docID
-//        docURL
-//        docTime
-//        docHead
-//        docMetaDsc
-//        descriptions (separated by tabs)
+//   separated by tabs. 
 //
 //   The extract will be sorted by docID.
 //
@@ -351,7 +345,10 @@ int DocumentDB::CreateSearchDB(char *filename)
     FILE		*fl;
     String		docKey(sizeof(int));
 
-    fl = fopen(filename, "w");
+    if((fl = fopen(filename, "w")) == 0) {
+      perror(form("DocumentDB::CreateSearchDB: opening %s for writing", filename));
+      return NOTOK;
+    }
 
     dbf->Start_Get();
     while ((strkey = dbf->Get_Next()))
@@ -413,7 +410,9 @@ int DocumentDB::CreateSearchDB(char *filename)
 	}
     }
 
-    return 0;
+    fclose(fl);
+
+    return OK;
 }
 
 
