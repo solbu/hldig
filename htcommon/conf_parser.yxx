@@ -1,4 +1,19 @@
 %{
+//
+// conf_parser.yxx
+//
+//             This syntax analyzer is used to parse ht://Dig config
+//             files.
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: conf_parser.yxx,v 1.1.2.4 2000/02/16 14:32:42 vadim Exp $
+//
+
 /* Bison version > 1.25 needed */
 /* TODO: 
 1. Better error handling

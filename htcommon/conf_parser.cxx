@@ -15,6 +15,21 @@
 #define	T_NUMBER	265
 
 
+//
+// conf_parser.yxx
+//
+//             This syntax analyzer is used to parse ht://Dig config
+//             files.
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: conf_parser.cxx,v 1.1.2.5 2000/02/16 14:32:41 vadim Exp $
+//
+
 /* Bison version > 1.25 needed */
 /* TODO: 
 1. Better error handling
@@ -104,8 +119,8 @@ static const short yyrhs[] = {    -1,
 
 #if YYDEBUG != 0
 static const short yyrline[] = { 0,
-    37,    38,    41,    53,    61,    71,    77,    83,    91,    94,
-   115,   133,   147,   160
+    52,    53,    56,    68,    76,    86,    92,    98,   106,   109,
+   130,   148,   162,   175
 };
 #endif
 
