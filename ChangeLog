@@ -1,3 +1,8 @@
+Wed Jan  9 16:22:32 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Added support for max_keywords
+	attribute.
+
 Wed Jan  9 16:10:44 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc (HTML, do_tag), htdig/ExternalParser.cc (parse):

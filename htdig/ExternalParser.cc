@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.9.2.6 2002/01/09 22:12:29 grdetil Exp $
+// $Id: ExternalParser.cc,v 1.9.2.7 2002/01/09 22:23:25 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -286,6 +286,11 @@ ExternalParser::parse(Retriever &retriever, URL &base)
       return;
     }
 
+    int		keywordsCount = 0;
+    int		max_keywords = config.Value("max_keywords", -1);
+    if (max_keywords < 0)
+	max_keywords = (int) ((unsigned int) ~1 >> 1);
+
     while ((!get_file || get_hdr) && readLine(input, line))
     {
 	if (get_hdr)
@@ -478,7 +483,8 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		      char	*w = strtok(content, " ,\t\r");
 		      while (w)
 		      {
-			if (strlen(w) >= minimum_word_length)
+			if (strlen(w) >= minimum_word_length
+				&& ++keywordsCount <= max_keywords)
 			  retriever.got_word(w, 1, 10);
 			w = strtok(0, " ,\t\r");
 		      }
