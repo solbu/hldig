@@ -13,8 +13,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.28.2.7 2000/05/05 21:55:11 loic Exp $
+// $Id: DocumentDB.cc,v 1.28.2.8 2000/05/06 20:46:37 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "DocumentDB.h"
 #include "Database.h"

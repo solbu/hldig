@@ -12,8 +12,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: db.cc,v 1.22.2.1 2000/02/14 06:05:23 ghutchis Exp $
+// $Id: db.cc,v 1.22.2.2 2000/05/06 20:46:40 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htmerge.h"
 #include "good_strtok.h"

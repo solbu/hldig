@@ -1,26 +1,24 @@
 //
 // ResultList.cc
 //
-// Implementation of ResultList
+// ResultList: A Dictionary indexed on the document id that holds
+//             documents found for a search.
 //
-// $Log: ResultList.cc,v $
-// Revision 1.3  1998/08/03 16:50:46  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Fixed compiler warnings under -Wall
+// $Id: ResultList.cc,v 1.6.2.1 2000/05/06 20:46:41 loic Exp $
 //
-// Revision 1.2  1997/03/24 04:33:24  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: ResultList.cc,v 1.3 1998/08/03 16:50:46 ghutchis Exp $";
-#endif
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "ResultList.h"
-#include <htString.h>
+#include "htString.h"
 
 
 //*****************************************************************************
@@ -96,10 +94,10 @@ ResultList::exists(int id)
 
 //*****************************************************************************
 //
-List *
+HtVector *
 ResultList::elements()
 {
-    List	*list = new List;
+    HtVector	*list = new HtVector(Count() + 1);
     char	*id;
 
     Start_Get();

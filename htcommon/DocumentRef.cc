@@ -11,8 +11,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.cc,v 1.47.2.4 2000/04/09 15:19:56 ghutchis Exp $
+// $Id: DocumentRef.cc,v 1.47.2.5 2000/05/06 20:46:37 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "DocumentRef.h"
 #include "good_strtok.h"

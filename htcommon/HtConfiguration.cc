@@ -11,8 +11,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtConfiguration.cc,v 1.1.2.8 2000/02/16 14:32:41 vadim Exp $
+// $Id: HtConfiguration.cc,v 1.1.2.9 2000/05/06 20:46:37 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include <stdio.h>
 #include"HtConfiguration.h"

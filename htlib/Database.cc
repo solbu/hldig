@@ -1,22 +1,21 @@
 //
 // Database.cc
 //
-// Implementation of Database
+// Database: Class which defines the interface to a generic, 
+//           simple database.
 //
-// $Log: Database.cc,v $
-// Revision 1.3  1998/06/21 23:20:06  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.2  1998/05/26 03:58:07  turtle
-// Got rid of compiler warnings.
+// $Id: Database.cc,v 1.9.2.1 2000/05/06 20:46:39 loic Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: Database.cc,v 1.3 1998/06/21 23:20:06 turtle Exp $";
-#endif
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Database.h"
 #include "DB2_db.h"
@@ -38,74 +37,16 @@ Database::~Database()
 
 
 //*****************************************************************************
-// int Database::Put(char *key, String &data)
-//
-int
-Database::Put(char *key, String &data)
-{
-    String		k(key);
-
-    return Put(k, data);
-}
-
-
-//*****************************************************************************
-// int Database::Put(char *key, char *data, int size)
-//
-int
-Database::Put(char *key, char *data, int size)
-{
-    String		k(key);
-    String		d;
-
-    d.append(data, size);
-    return Put(k, d);
-}
-
-
-//*****************************************************************************
-// int Database::Get(char *key, String &data)
-//
-int
-Database::Get(char *key, String &data)
-{
-    String		k(key);
-
-    return Get(k, data);
-}
-
-
-//*****************************************************************************
-// int Database::Exists(char *key)
-//
-int
-Database::Exists(char *key)
-{
-    String		k(key);
-
-    return Exists(k);
-}
-
-
-//*****************************************************************************
-// int Database::Delete(char *key)
-//
-int
-Database::Delete(char *key)
-{
-    String		k(key);
-
-    return Delete(k);
-}
-
-
-//*****************************************************************************
 // Database *Database::getDatabaseInstance()
 //
 Database *
-Database::getDatabaseInstance()
+Database::getDatabaseInstance(DBTYPE type = DB_BTREE)
 {
-    return DB2_db::getDatabaseInstance();
+  Database* db = DB2_db::getDatabaseInstance(type);
+
+  db->db_type = type;
+
+  return db;
 }
 
 

@@ -19,19 +19,19 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.h,v 1.3.2.11 2000/05/05 21:55:17 loic Exp $
+// $Id: WordDB.h,v 1.3.2.12 2000/05/06 20:46:42 loic Exp $
 //
 
 #ifndef _WordDB_h_
 #define _WordDB_h_
 
+#include <stdio.h>
+#include <errno.h>
+
 #include "db.h"
 #include "WordReference.h"
 #include "WordDBInfo.h"
 #include "htString.h"
-
-#include <stdio.h>
-#include <errno.h>
 
 #define WORD_DBT_DCL(v) \
     DBT v; \

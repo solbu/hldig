@@ -11,8 +11,14 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Prefix.cc,v 1.13.2.3 2000/03/25 22:26:53 ghutchis Exp $
+// $Id: Prefix.cc,v 1.13.2.4 2000/05/06 20:46:38 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <fcntl.h>
 
 #include "Prefix.h"
 #include "htString.h"

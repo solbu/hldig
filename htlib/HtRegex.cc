@@ -9,8 +9,12 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.cc,v 1.9.2.2 2000/02/09 15:10:08 grdetil Exp $
+// $Id: HtRegex.cc,v 1.9.2.3 2000/05/06 20:46:40 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "HtRegex.h"
 #include <locale.h>

@@ -11,9 +11,14 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: conf_lexer.lxx,v 1.1.2.7 2000/02/16 14:32:42 vadim Exp $
+// $Id: conf_lexer.lxx,v 1.1.2.8 2000/05/06 20:46:37 loic Exp $
 //
 */
+%{
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+%}
 
 %option yylineno noyywrap nounput
 %x t_right
@@ -22,10 +27,6 @@
 %x br_string
 
 %{
-#ifdef HAVE_CONFIG_H
-#include "htconfig.h"
-#endif
-
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif

@@ -10,15 +10,20 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DB2_db.cc,v 1.17.2.4 2000/05/06 18:20:45 loic Exp $
+// $Id: DB2_db.cc,v 1.17.2.5 2000/05/06 20:46:39 loic Exp $
 //
 
-#include "DB2_db.h"
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
+#include <fcntl.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <fstream.h>
 #include <unistd.h>
+
+#include "DB2_db.h"
 
 // Default cache size in kilobytes.
 // Maybe this should be an config option, just for easy testing and

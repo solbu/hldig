@@ -1,25 +1,25 @@
 //
 // WeightWord.cc
 //
-// Implementation of WeightWord
+// WeightWord: Contains the information necessary for a particular search word
+//             including the resulting weight (scaling factor) and 
+//             whether the word should be hidden (ignored).
 //
-// $Log: WeightWord.cc,v $
-// Revision 1.2  1998/11/01 00:00:40  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Replaced system calls with htlib/my* functions.
+// $Id: WeightWord.cc,v 1.5.2.1 2000/05/06 20:46:41 loic Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-// Revision 1.1  1996/01/03 19:02:00  turtle
-// Before rewrite
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: WeightWord.cc,v 1.2 1998/11/01 00:00:40 ghutchis Exp $";
-#endif
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "WeightWord.h"
+
 #include <fstream.h>
 
 
@@ -105,5 +105,6 @@ void WeightWord::set(char *word)
 		
     }
     this->word = word;
+    this->word.lowercase();
 }
 

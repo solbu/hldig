@@ -14,8 +14,14 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Fuzzy.cc,v 1.16.2.2 2000/02/29 20:39:18 grdetil Exp $
+// $Id: Fuzzy.cc,v 1.16.2.3 2000/05/06 20:46:38 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <fcntl.h>
 
 #include "Fuzzy.h"
 #include "htfuzzy.h"

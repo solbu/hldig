@@ -11,8 +11,12 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.3.2.8 2000/03/31 04:31:33 ghutchis Exp $
+// $Id: URL.cc,v 1.3.2.9 2000/05/06 20:46:37 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "URL.h"
 #include "Dictionary.h"

@@ -10,8 +10,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.cc,v 1.2.2.8 2000/05/06 00:36:12 loic Exp $
+// $Id: HtWordList.cc,v 1.2.2.9 2000/05/06 20:46:37 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "HtWordList.h"
 #include "HtWordReference.h"

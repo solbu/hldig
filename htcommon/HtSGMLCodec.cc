@@ -10,8 +10,12 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtSGMLCodec.cc,v 1.1.2.2 2000/03/28 04:06:33 ghutchis Exp $
+// $Id: HtSGMLCodec.cc,v 1.1.2.3 2000/05/06 20:46:37 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "HtSGMLCodec.h"
 

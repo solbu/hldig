@@ -10,8 +10,14 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htpurge.cc,v 1.1.2.6 2000/05/06 18:20:45 loic Exp $
+// $Id: htpurge.cc,v 1.1.2.7 2000/05/06 20:46:42 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <fcntl.h>
 
 #include "WordContext.h"
 #include "HtWordReference.h"

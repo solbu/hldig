@@ -9,8 +9,12 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: cgi.cc,v 1.2.2.3 2000/02/23 19:45:47 grdetil Exp $
+// $Id: cgi.cc,v 1.2.2.4 2000/05/06 20:46:37 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "cgi.h"
 #include "htString.h"

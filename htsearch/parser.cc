@@ -10,8 +10,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.cc,v 1.22.2.3 2000/02/27 04:36:03 ghutchis Exp $
+// $Id: parser.cc,v 1.22.2.4 2000/05/06 20:46:41 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "parser.h"
 #include "HtPack.h"

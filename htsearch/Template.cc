@@ -1,18 +1,26 @@
 //
 // Template.cc
 //
-// Implementation of Template
+// Template: A template to set the display of the search results.
+//           MatchTemplate is used for every match, Start and End templates
+//           are used between the header and the first match and the 
+//           last match and the footer respectively.
+//           
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Template.cc,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// $Id: Template.cc,v 1.5.2.1 2000/05/06 20:46:41 loic Exp $
 //
-//
-#if RELEASE
-static char RCSid[] = "$Id: Template.cc,v 1.1 1997/02/03 17:11:05 turtle Exp $";
-#endif
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Template.h"
+
 #include <stdio.h>
 
 
@@ -34,17 +42,17 @@ Template::~Template()
 // respectively.
 //
 void
-Template::createFromFile(char *filename)
+Template::createFromFile(const char *filename)
 {
     String	realFile;
 
     realFile = filename;
     realFile << ".start";
-    readFile(startTemplate, realFile);
+    readFile(startTemplate, (char*)realFile);
 
     realFile = filename;
     realFile << ".end";
-    readFile(endTemplate, realFile);
+    readFile(endTemplate, (char*)realFile);
 
     readFile(matchTemplate, filename);
 }
@@ -54,7 +62,7 @@ Template::createFromFile(char *filename)
 // doesn't exist.
 //
 void
-Template::readFile(String &s, char *filename)
+Template::readFile(String &s, const char *filename) const
 {
     FILE	*fl = fopen(filename, "r");
     char	buffer[1000];

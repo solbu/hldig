@@ -14,9 +14,13 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.5.2.7 2000/03/02 17:58:48 angus Exp $
+// $Id: Transport.cc,v 1.5.2.8 2000/05/06 20:46:40 loic Exp $
 //
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Transport.h"
 

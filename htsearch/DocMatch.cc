@@ -11,8 +11,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocMatch.cc,v 1.3.2.1 2000/02/27 04:34:56 ghutchis Exp $
+// $Id: DocMatch.cc,v 1.3.2.2 2000/05/06 20:46:41 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "DocMatch.h"
 

@@ -11,8 +11,14 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Soundex.cc,v 1.6.2.1 1999/12/07 19:54:11 bosc Exp $
+// $Id: Soundex.cc,v 1.6.2.2 2000/05/06 20:46:38 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <fcntl.h>
 
 #include "Soundex.h"
 #include "Dictionary.h"

@@ -11,7 +11,11 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtURLSeedScore.cc,v 1.1.2.2 2000/03/28 02:25:35 ghutchis Exp $
+// $Id: HtURLSeedScore.cc,v 1.1.2.3 2000/05/06 20:46:41 loic Exp $
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "StringList.h"
 #include "HtRegex.h"

@@ -11,8 +11,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htnotify.cc,v 1.1.2.1 2000/03/19 03:58:41 ghutchis Exp $
+// $Id: htnotify.cc,v 1.1.2.2 2000/05/06 20:46:42 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "HtConfiguration.h"
 #include "DocumentDB.h"

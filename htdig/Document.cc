@@ -16,8 +16,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.20 2000/03/25 03:38:15 ghutchis Exp $
+// $Id: Document.cc,v 1.55.2.21 2000/05/06 20:46:38 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include <signal.h>
 #include <sys/types.h>

@@ -10,8 +10,14 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Endings.cc,v 1.8.2.2 2000/01/14 00:57:15 ghutchis Exp $
+// $Id: Endings.cc,v 1.8.2.3 2000/05/06 20:46:38 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <fcntl.h>
 
 #include "Endings.h"
 #include "htfuzzy.h"

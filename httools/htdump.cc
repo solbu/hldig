@@ -11,8 +11,11 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdump.cc,v 1.1.2.3 2000/04/09 15:22:30 ghutchis Exp $
+// $Id: htdump.cc,v 1.1.2.4 2000/05/06 20:46:42 loic Exp $
 //
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "WordContext.h"
 #include "HtURLCodec.h"

@@ -11,8 +11,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: conf_parser.yxx,v 1.1.2.7 2000/04/11 03:14:34 ghutchis Exp $
+// $Id: conf_parser.yxx,v 1.1.2.8 2000/05/06 20:46:37 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 /* Bison version > 1.25 needed */
 /* TODO: 

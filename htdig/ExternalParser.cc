@@ -13,8 +13,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.4 2000/02/16 05:48:24 ghutchis Exp $
+// $Id: ExternalParser.cc,v 1.19.2.5 2000/05/06 20:46:38 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "ExternalParser.h"
 #include "HTML.h"

@@ -9,8 +9,12 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordType.cc,v 1.7.2.2 2000/02/22 23:15:49 grdetil Exp $
+// $Id: HtWordType.cc,v 1.7.2.3 2000/05/06 20:46:40 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "HtWordType.h"
 #include "WordType.h"

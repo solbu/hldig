@@ -11,8 +11,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.54.2.8 2000/04/11 03:13:57 ghutchis Exp $
+// $Id: htsearch.cc,v 1.54.2.9 2000/05/06 20:46:41 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htsearch.h"
 #include "WeightWord.h"
@@ -291,10 +295,10 @@ for (int cInd=0; errorMsg == NULL && cInd < collectionList.Count(); cInd++)
 	reportError(form("Unable to read word database file '%s'\nDid you run htmerge?",
 			 word_db.get()));
     }
-    // ResultList	*results = htsearch(word_db, searchWords, parser);
+    // ResultList	*results = htsearch((char*)word_db, searchWords, parser);
 
     String      doc_index = config["doc_index"];
-    if (access(doc_index, R_OK) < 0)
+    if (access((char*)doc_index, R_OK) < 0)
     {
         reportError(form("Unable to read document index file '%s'\nDid you run h
 tmerge?",
@@ -316,7 +320,7 @@ tmerge?",
     }
 
     // Multiple database support
-    Collection *collection = new Collection(configFile,
+    Collection *collection = new Collection((char*)configFile,
         word_db.get(), doc_index.get(), doc_db.get(), doc_excerpt.get());
 
     // Perform search within the collection. Each collection stores its

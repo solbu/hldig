@@ -10,8 +10,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.11 2000/04/25 18:51:16 ghutchis Exp $
+// $Id: htdig.cc,v 1.26.2.12 2000/05/06 20:46:38 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Document.h"
 #include "Retriever.h"

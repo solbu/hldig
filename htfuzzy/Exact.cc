@@ -9,8 +9,14 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Exact.cc,v 1.7.2.1 1999/12/07 19:54:11 bosc Exp $
+// $Id: Exact.cc,v 1.7.2.2 2000/05/06 20:46:38 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <fcntl.h>
 
 #include "Exact.h"
 #include "htString.h"

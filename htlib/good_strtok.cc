@@ -1,12 +1,23 @@
 //
-// $Log: good_strtok.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// good_strtok.cc
 //
+// good_strtok: The good_strtok() function is very similar to the 
+//              standard strtok() library function, except that good_strtok() 
+//		will only skip over 1 separator if it finds one.  This is
+//              needed when parsing strings with empty fields.
 //
-#if RELEASE
-static char	RCSid[] = "$Id: good_strtok.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
-#endif
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: good_strtok.cc,v 1.4.2.1 2000/05/06 20:46:40 loic Exp $
+//
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "lib.h"
 
@@ -14,21 +25,9 @@ static char	RCSid[] = "$Id: good_strtok.cc,v 1.1 1997/02/03 17:11:04 turtle Exp 
 // Perform the same function as the standard strtok() function except that
 // multiple separators are NOT collapsed into one.
 //
-char *good_strtok(char *str, char *term)
+char *good_strtok(char *str, char term)
 {
     static char		*string;
-    static char		valids[256];
-
-    if (!term)
-    {
-	//
-	// This is for the case where there is only one argument.
-	// In this case we will assume that we have to use the
-	// same string as in the previous call to this function
-	//
-	term = str;
-	str = 0;
-    }
 
     if (str)
     {
@@ -38,15 +37,8 @@ char *good_strtok(char *str, char *term)
     if (string == NULL || *string == '\0')
 	return NULL;
 
-    memset(valids, 1, sizeof(valids));
-    while (*term)
-    {
-	valids[(unsigned char) *term++] = 0;
-    }
-    valids[0] = 0;
-
     char *p = string;
-    while (valids[(unsigned char) *string])
+    while (*string && *string!=term)
 	string++;
     if (*string)
 	*string++ = '\0';

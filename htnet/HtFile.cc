@@ -12,8 +12,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFile.cc,v 1.1.2.3 2000/02/24 20:47:40 grdetil Exp $ 
+// $Id: HtFile.cc,v 1.1.2.4 2000/05/06 20:46:40 loic Exp $ 
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "lib.h"
 #include "Transport.h"

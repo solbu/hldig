@@ -9,8 +9,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.12 2000/04/25 18:54:38 ghutchis Exp $
+// $Id: Server.cc,v 1.17.2.13 2000/05/06 20:46:38 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htdig.h"
 #include "Server.h"

@@ -9,8 +9,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Plaintext.cc,v 1.17.2.1 2000/03/28 01:47:34 ghutchis Exp $
+// $Id: Plaintext.cc,v 1.17.2.2 2000/05/06 20:46:38 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Plaintext.h"
 #include "htdig.h"

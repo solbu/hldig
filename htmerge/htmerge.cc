@@ -11,8 +11,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htmerge.cc,v 1.17.2.4 2000/01/13 20:06:30 loic Exp $
+// $Id: htmerge.cc,v 1.17.2.5 2000/05/06 20:46:40 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htmerge.h"
 

@@ -1,3 +1,8 @@
+Sun May 07 00:54:30 2000  Loic Dachary  <loic@senga.org>
+
+	* */*.cc: fix warnings and large file support inclusion
+	  files on Solaris.
+
 Sat May 06 21:55:58 2000  Loic Dachary  <loic@senga.org>
 
 	* test: import regression tests from mifluz

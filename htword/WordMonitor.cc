@@ -7,14 +7,14 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordMonitor.cc,v 1.1.2.8 2000/05/05 21:55:18 loic Exp $
+// $Id: WordMonitor.cc,v 1.1.2.9 2000/05/06 20:46:42 loic Exp $
 //
-#include <stdlib.h>
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
-#endif
+#endif /* HAVE_CONFIG_H */
 
+#include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
 

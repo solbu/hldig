@@ -11,8 +11,12 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String_fmt.cc,v 1.5.2.1 2000/01/03 12:10:39 bosc Exp $
+// $Id: String_fmt.cc,v 1.5.2.2 2000/05/06 20:46:40 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htString.h"
 
