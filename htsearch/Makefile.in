@@ -20,7 +20,8 @@ $(TARGET):	$(OBJS) $(FOBJS) $(HTLIBS)
 	$(CXX) -o $(TARGET) $(LDFLAGS) $(OBJS) $(FOBJS) $(LIBS)
 
 install:	all
-	$(INSTALL) $(TARGET) $(CGIBIN_DIR)/$(TARGET)
+	transform=@program_transform_name@
+	$(INSTALL_PROGRAM) $(TARGET) $(CGIBIN_DIR)/`echo $(TARGET) | sed '$(transform)'`
 
 clean:
 	rm -f $(OBJS) $(TARGET) *~ *.bak *% core *.orig a.out

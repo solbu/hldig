@@ -17,7 +17,8 @@ $(TARGET):	$(OBJS) $(HTLIBS)
 	$(CXX) -o $(TARGET) $(LDFLAGS) $(OBJS) $(LIBS)
 
 install:	$(TARGET)
-	$(INSTALL) $(TARGET) $(BIN_DIR)
+	transform=@program_transform_name@
+	$(INSTALL_PROGRAM) $(TARGET) $(BIN_DIR)/`echo $(TARGET) | sed '$(transform)'`
 
 clean:
 	rm -f $(OBJS) $(TARGET) *~ *% *.bak core a.out *.orig

@@ -40,6 +40,9 @@ AC_ARG_WITH(search-dir, [  --with-search-dir=DIR   where the sample search form 
 	SEARCH_DIR="$withval", SEARCH_DIR="/opt/www/htdocs/htdig")
 AC_SUBST(SEARCH_DIR)
 
+dnl While we're at it, let's work out the program transformations
+AC_ARG_PROGRAM
+
 echo configuring ht://Dig version $VERSION
 
 dnl Checks for programs.
