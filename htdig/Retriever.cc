@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.36 2000/09/08 04:51:10 ghutchis Exp $
+// $Id: Retriever.cc,v 1.72.2.37 2000/09/08 04:59:48 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -111,6 +111,7 @@ Retriever::Retriever(RetrieverLog flags) :
     check_unique_md5 = config.Boolean("check_unique_md5", 0); 
     check_unique_date = config.Boolean("check_unique_date", 0); 
 
+    d_md5 = 0;
     if (check_unique_md5)
       {
 	d_md5 = Database::getDatabaseInstance(DB_HASH);
