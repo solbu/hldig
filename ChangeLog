@@ -1,3 +1,8 @@
+Wed Mar 24 12:20:02 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/main.cc (main): Call HtWordType::Initialize.  (Missed this
+	one yesterday.  Oops!)
+
 Tue Mar 23 17:11:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* backport Hans-Peter Nilsson's suite of changes for HtWordType
@@ -23,8 +28,6 @@ Tue Mar 23 17:11:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/StringMatch.cc (FindFirstWord): Ditto.
 	(CompareWord): Ditto.
-
-	* htdig/htdig.cc (main): Call HtWordType::Initialize.
 
 	* htdig/Retriever.h (class Retriever): Lose member
 	valid_punctuation.
