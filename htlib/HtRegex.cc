@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.cc,v 1.4 1999/05/16 21:20:11 ghutchis Exp $
+// $Id: HtRegex.cc,v 1.5 1999/05/20 01:35:43 ghutchis Exp $
 //
 //
 #include "HtRegex.h"
@@ -57,16 +57,10 @@ HtRegex::setEscaped(StringList &list)
 	else 	// Backquote any regex special characters
 	  {
 	    for (int pos = 0; pos < str->length(); pos++)
-	      {  // These look a bit weird because of compiler escaping
-		//  (is that escaping escaping to do escaping ? :-)
-		if ( str->Nth(pos) == '.' )
-		  transformedLimits << '\\' << '.';
-		else if ( str->Nth(pos) == '?' )
-		  transformedLimits << '\\' << '?';
-		else if ( str->Nth(pos) == '+' )
-		  transformedLimits << '\\' << '+';
-		else
-		  transformedLimits << str->Nth(pos);
+	      { 
+		if (strchr("^.[$()|*+?{\\", str->Nth(pos)))
+		  transformedLimits << '\\';
+		transformedLimits << str->Nth(pos);
 	      }
 	  }
 	transformedLimits += "|";
