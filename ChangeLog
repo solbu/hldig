@@ -1,3 +1,13 @@
+Fri Jan 18 16:47:50 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html: Rewrote description of prefix_match_character
+	to make it more clear, with crosslinks to related attributes, and
+	described new wildcard matching feature. Added more explanations
+	for relative days & months in startday et al. to make it clearer.
+	Added more notes about to-strings in the url_part_aliases description
+	and explained the example even more, as well as adding crosslinks
+	to the new *_rewrite_rules.
+
 Fri Jan 18 15:56:11 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/htsearch.cc (setupWords), htsearch/parser.cc (perform_push):

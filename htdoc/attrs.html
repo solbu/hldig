@@ -1700,7 +1700,9 @@
 			within the configuration file, and can be overridden
 			with the "endday" input parameter in the search form.
 			If a negative number is given, it is taken as relative
-			to the current date.
+			to the current date. Relative days can span several
+			months or even years if desired (e.g. -90 to specify
+			90 days from today).
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -2056,7 +2058,8 @@
 			within the configuration file, and can be overridden
 			with the "endmonth" input parameter in the search form.
 			If a negative number is given, it is taken as relative
-			to the current month.
+			to the current month. Relative months can span several
+			years if desired.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -5834,9 +5837,24 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-			A null prefix character means that prefix matching should be
-			applied to every search word. Otherwise a match is
-			returned only if the word does not end in the characters specified.
+			A null prefix character means that prefix matching
+			should be applied to every search word. Otherwise,
+			prefix matching is done on any search word ending
+			with the characters specified in this string,
+			with the string being stripped off before looking
+			for matches. The "prefix" algorithm must be enabled
+			in <a href="#search_algorithm">search_algorithm</a>
+			for this to work. You may also want to set the
+			<a href="#max_prefix_matches">max_prefix_matches</a> and
+			<a href="#minimum_prefix_length">minimum_prefix_length</a>
+			attributes to get it working as you want.<br>
+			As a special case, in version 3.1.6 and later,
+			if this string is non-null and is entered alone
+			as a search word, it is taken as a wildcard that
+			matches all documents in the database. If this
+			string is null, the wildcard for this special
+			case will be <strong>*</strong>. This wildcard
+			doesn't require the prefix algorithm to be enabled.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7247,7 +7265,10 @@
 			within the configuration file, and can be overridden
 			with the "startday" input parameter in the search form.
 			If a negative number is given, it is taken as relative
-			to the current date.
+			to the current date. Relative days can span several
+			months or even years if desired. A startday of
+			-90 will select matching documents modified within
+			the last 90 days.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7386,7 +7407,8 @@
 			within the configuration file, and can be overridden
 			with the "startmonth" input parameter in the search form.
 			If a negative number is given, it is taken as relative
-			to the current month.
+			to the current month. Relative months can span several
+			years if desired.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -8391,7 +8413,13 @@
 			URL.  Translations will be performed with priority
 			for the leftmost longest match.	 Each
 			<em>to</em>-string must be unique and not be a
-			part of any other <em>to</em>-string.<br>
+			part of any other <em>to</em>-string. It also helps
+			to keep the <em>to</em>-strings short to save space
+			in the database. Other than that, the choice of
+			<em>to</em>-strings is pretty arbitrary, as they
+			just provide a temporary, internal encoding in the
+			databases, and none of the characters in these
+			strings have any special meaning.<br>
 			Note that when this attribute is changed, the
 			database should be rebuilt, unless the effect of
 			"moving" the affected URLs in the database is
@@ -8403,6 +8431,15 @@
 			for the configuration file to be used by htdig,
 			htmerge, and htnotify, and the second one is for the
 			configuration file to be used by htsearch.
+			In this example, htdig will encode the URL
+			"http://search.example.com/~htdig/contrib/stuff.html"
+			as "*sitecontrib/stuff*2" in the databases, and
+			htsearch will decode it as
+			"http://www.htdig.org/contrib/stuff.htm".<br>
+			As of version 3.1.6, you can also do more complex
+			rewriting of URLs using
+			<a href="#url_rewrite_rules">url_rewrite_rules</a> and
+			<a href="#search_rewrite_rules">search_rewrite_rules</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -8414,7 +8451,7 @@
 				  url_part_aliases:
 				</td>
 				<td nowrap>
-				   http://search.example.com/~htdig *site \<br>
+				   http://search.example.com/~htdig/ *site \<br>
 				   http://www.htdig.org/this/ *1 \<br>
 				   .html *2
 				</td>
@@ -8928,7 +8965,7 @@
 	</dl>
 	<hr size="4" noshade>
 <!-- hhmts start -->
-Last modified: $Date: 2002/01/16 23:21:48 $
+Last modified: $Date: 2002/01/18 22:51:07 $
 <!-- hhmts end -->
   </body>
 </html>
