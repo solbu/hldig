@@ -1,0 +1,16 @@
+#
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
+#
+# $Id: t_htmerge,v 1.2.2.1 1999/12/10 18:54:52 bosc Exp $
+#
+
+. ./test_functions
+
+$htdig "$@" -t -i -c $testdir/conf/htdig.conf
+$htdig "$@" -t -i -c $testdir/conf/htdig.conf2
+
+$htmerge "$@" -c $testdir/conf/htdig.conf -m $testdir/conf/htdig.conf2

@@ -1,0 +1,33 @@
+#
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
+#
+# $Id: t_htdig,v 1.4.2.1 1999/12/10 18:54:52 bosc Exp $
+#
+
+. ./test_functions
+
+echo $htdig "$@" -t -i -c $testdir/conf/htdig.conf
+$htdig "$@" -t -i -c $testdir/conf/htdig.conf
+$htmerge -c $testdir/conf/htdig.conf
+
+expected='http://localhost:7400/set1/
+http://localhost:7400/set1/script.html
+http://localhost:7400/set1/site1.html
+http://localhost:7400/set1/site2.html
+http://localhost:7400/set1/site3.html
+http://localhost:7400/set1/site4.html
+http://localhost:7400/set1/title.html'
+
+got=`./document -c $testdir/conf/htdig.conf -u | sort`
+
+if [ "$expected" != "$got" ]
+then
+	echo "running htdig: expected 
+$expected but got
+$got"
+	exit 1
+fi
