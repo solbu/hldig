@@ -1,3 +1,8 @@
+Tue Apr 13 11:27:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.h(class Display): move enum SortType up to public
+	section, to avoid problem compiling on IBM AIX C++ compiler.
+
 Mon Apr 12 17:36:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/FAQ.html: added sections on indexing docs in other languages,
