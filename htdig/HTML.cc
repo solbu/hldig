@@ -4,6 +4,9 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.23  1998/12/12 01:48:52  ghutchis
+// Fix coredump when META refresh tags don't have content portions (e.g. no URL).
+//
 // Revision 1.22  1998/12/05 01:50:48  ghutchis
 // Fix mistake in last update--file was included twice.
 //
@@ -17,8 +20,8 @@
 // Fix for refresh tags w/o URLs.
 //
 // Revision 1.17  1998/11/15 04:07:14  turtle
-// *  fixed bug which assumed that all http-equiv=refresh attributes also have
-//    url=something.  The url=something is optional
+// fixed bug which assumed that all http-equiv=refresh attributes also have
+// url=something.  The url=something is optional
 //
 // Revision 1.16  1998/11/15 02:47:46  ghutchis
 // Fixed bugs with META robots, URL parsing, and added support for META refresh
@@ -70,7 +73,7 @@
 // Initial CVS
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.22 1998/12/05 01:50:48 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.23 1998/12/12 01:48:52 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -674,12 +677,14 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		w = '\0';
 	    }
 	
-	    // <META HTTP-EQUIV=REFRESH case
 	    if (conf["http-equiv"])
 	      {
-		if (mystrcasecmp(conf["http-equiv"], "refresh") == 0)
+
+		// <META HTTP-EQUIV=REFRESH case
+		if (mystrcasecmp(conf["http-equiv"], "refresh") == 0
+		    && conf["content"])
 		  {
-		    char *content=conf["content"];
+		    char *content = conf["content"];
 		    char *q = mystrcasestr(content, "url=");
 		    if (q && *q)
 		      {
