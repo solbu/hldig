@@ -1,3 +1,15 @@
+Sun May 16 17:07:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtRegex.cc (setEscaped): Ensure escaping does not loop
+	beyond the end of a string.
+
+	* htdig/Retriever.cc (IsValidURL): Fix badquerystr parsing to use
+	HtRegex as expected. (Oops!)
+
+	* htdig/HTML.cc (parse): Use HtSGMLCodec during parsing, rather
+	than encoding the whole document at the beginning. More consistent
+	with previous use of SGMLEntities.
+
 Sat May 15 12:57:40 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/URL.cc (normalizePath): Remove extra (useless) variable
