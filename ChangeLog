@@ -1,13 +1,36 @@
-Thu Jan 21 02:42:14 1999  Hans-Peter Nilsson  <hp@axis.se>
+Thu Jan 21 05:30:40 1999  Hans-Peter Nilsson  <hp@axis.se>
 
-	* htdoc/cf_byprog.html, htdoc/cf_byname, htdoc/attrs.html:
-	Document url_part_aliases and common_url_parts.
+	* htlib/HtWordCodec.h, htlib/HtWordCodec.cc, htlib/HtWordCodec.h,
+	htlib/HtCodec.cc, htlib/HtCodec.h: New files.
+
+	* htlib/Makefile.in (OBJS): Add the corresponding *.o files
+
+	* htcommon/DocumentDB.cc (Open, Read, Add, operator[], Exists,
+	Delete, CreateSearchDB, URLs): Use HtURLCodec; ::encode() and
+	::decode() the URL used as a key.
+
+	* htcommon/DocumentRef.cc (Serialize): Encode the URL using
+	HtURLCodec.
+	(Deserialize): Decode it.
+
+	* htmerge/htmerge.h: #include <HtURLCodec.h>
+	* htmerge/htmerge.cc (main): Check HtURLCodec for errors.
+	* htnotify/htnotify.cc (main): Ditto.
+	* htsearch/htsearch.cc (main): Ditto.
+	* htdig/main.cc (main): Ditto.
+
+	* htcommon/defaults.cc (defaults): Add common_url_parts and
+	url_part_aliases.
+
+	* htdoc/cf_byprog.html, htdoc/cf_byname.html,
+	htdoc/attrs.html: Document url_part_aliases and
+	common_url_parts.
 
 	* htlib/StringMatch.h (StringMatch::Pattern): Add default
-	parameter sep = '|'.
+	parameter sep = '|'. 
 
 	* htlib/StringMatch.cc (Pattern): Similar.
-	
+
 Wed Jan 20 20:20:35 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.cc(logSearch): Use REMOTE_ADDR when REMOTE_HOST
