@@ -20,12 +20,15 @@ KNOWN BUGS:
    other tasks (e.g. networking)
 
 PENDING FEATURES:
-* htload program.
 * Forward-Porting of NNTP code.
 * Additional support for Win32.
 * Make URL and Server blocks match documentation--i.e. change config
    lookups in htdig to work as suggested.
-* Merge in mifluz-0.14
+* Field-restricted searching
+* Date-restricted searching
+* Return all results
+* Update db and htdb code to synch with mifluz-0.14 (will fix last item above)
+* Duplicate document detection while indexing
 
 TESTING:
 * ExternalTransport with non 'http' URLs.
@@ -37,16 +40,19 @@ TESTING:
 DOCUMENTATION:
 * Update cf_* pages to mention new config parser (i.e. URL-dependent config)
 * Add thorough documentation on htsearch restrict/exclude behavior
-  (including | and regex).
+   (including | and regex).
 * require.html is not updated to list new features and disk space
-  requirements of 3.2.x (e.g. phrase searching, regex matching,
-  external parsers and transport methods, database compression.)
+   requirements of 3.2.x (e.g. phrase searching, regex matching,
+   external parsers and transport methods, database compression.)
 * TODO.html has not been updated for current TODO list and completions.
+* Need man-style pages for the httool programs as well as updates to
+   the existing htdig.html page.
 
 OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
 * Can we reproduce the DB2 errors that sometimes cropped up in 3.1.x?
    (e.g. PR#473, PR#476)
+   (Now partially resolved--we can now stop on an error message using gdb.)
 * Error messages should be more informative if no URLs are indexed by htdig
    PR#672. In short, programs should do a little more checking.
 
