@@ -205,29 +205,29 @@ public:
   // Accessors
   //
 
-	inline TypeA	GetLocation() const { return pool_TypeA[WORD_KEY_LOCATION]; }
+	inline const TypeA&	GetLocation() const { return pool_TypeA[WORD_KEY_LOCATION]; }
 	inline TypeA&	GetLocation() { return pool_TypeA[WORD_KEY_LOCATION]; }
 	inline void	SetLocation(TypeA arg) { pool_TypeA[WORD_KEY_LOCATION] = arg; set |= WORD_KEY_LOCATION_DEFINED; } 
 	inline void	UnsetLocation() { pool_TypeA[WORD_KEY_LOCATION] = 0; set &= ~WORD_KEY_LOCATION_DEFINED; } 
-	inline TypeA	GetFlags() const { return pool_TypeA[WORD_KEY_FLAGS]; }
+	inline const TypeA&	GetFlags() const { return pool_TypeA[WORD_KEY_FLAGS]; }
 	inline TypeA&	GetFlags() { return pool_TypeA[WORD_KEY_FLAGS]; }
 	inline void	SetFlags(TypeA arg) { pool_TypeA[WORD_KEY_FLAGS] = arg; set |= WORD_KEY_FLAGS_DEFINED; } 
 	inline void	UnsetFlags() { pool_TypeA[WORD_KEY_FLAGS] = 0; set &= ~WORD_KEY_FLAGS_DEFINED; } 
-	inline TypeA	GetDocID() const { return pool_TypeA[WORD_KEY_DOCID]; }
+	inline const TypeA&	GetDocID() const { return pool_TypeA[WORD_KEY_DOCID]; }
 	inline TypeA&	GetDocID() { return pool_TypeA[WORD_KEY_DOCID]; }
 	inline void	SetDocID(TypeA arg) { pool_TypeA[WORD_KEY_DOCID] = arg; set |= WORD_KEY_DOCID_DEFINED; } 
 	inline void	UnsetDocID() { pool_TypeA[WORD_KEY_DOCID] = 0; set &= ~WORD_KEY_DOCID_DEFINED; } 
-	inline String	GetWord() const { return pool_String[WORD_KEY_WORD]; }
+	inline const String&	GetWord() const { return pool_String[WORD_KEY_WORD]; }
 	inline String&	GetWord() { return pool_String[WORD_KEY_WORD]; }
 	inline void	SetWord(String arg) { pool_String[WORD_KEY_WORD] = arg; set |= WORD_KEY_WORD_DEFINED; } 
 	inline void	UnsetWord() { pool_String[WORD_KEY_WORD] = 0; set &= ~WORD_KEY_WORD_DEFINED; } 
 
 #define WORD_HAVE_TypeA 1
-	inline TypeA	GetTypeA(int position) const { return pool_TypeA[word_key_info.fields[position].index]; }
+	inline const TypeA&	GetTypeA(int position) const { return pool_TypeA[word_key_info.fields[position].index]; }
 	inline TypeA&	GetTypeA(int position) { return pool_TypeA[word_key_info.fields[position].index]; }
 	inline void	SetTypeA(const TypeA& arg, int position) { pool_TypeA[word_key_info.fields[position].index] = arg; Set(position); }
 #define WORD_HAVE_String 1
-	inline String	GetString(int position) const { return pool_String[word_key_info.fields[position].index]; }
+	inline const String&	GetString(int position) const { return pool_String[word_key_info.fields[position].index]; }
 	inline String&	GetString(int position) { return pool_String[word_key_info.fields[position].index]; }
 	inline void	SetString(const String& arg, int position) { pool_String[word_key_info.fields[position].index] = arg; Set(position); }
 

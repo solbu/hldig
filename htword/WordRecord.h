@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordRecord.h,v 1.4 1999/10/05 16:03:31 loic Exp $
+// $Id: WordRecord.h,v 1.5 1999/10/07 08:25:33 loic Exp $
 //
 
 #ifndef _WordRecord_h_
@@ -79,7 +79,7 @@ class WordRecord
 	cerr << "WordRecord::Unpack: decoding mismatch\n";
 	return NOTOK;
       }
-      memcpy((char*)&info.data, (const char*)decompressed, sizeof(info.data));
+      memcpy((char*)&info.data, (char*)decompressed, sizeof(info.data));
       break;
 
     case WORD_RECORD_STATS:
@@ -88,7 +88,7 @@ class WordRecord
 	cerr << "WordRecord::Unpack: decoding mismatch\n";
 	return NOTOK;
       }
-      memcpy((char*)&info.stats, (const char*)decompressed, sizeof(info.stats));
+      memcpy((char*)&info.stats, (char*)decompressed, sizeof(info.stats));
       break;
 
     default:

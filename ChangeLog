@@ -1,3 +1,10 @@
+Thu Oct 07 10:17:22 1999  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordRecord.h: change (const char*) cast to (char*)
+
+	* htword/WordKey.h.tmp: fix constness of accessors, const accessor
+	  returns const ref. Prevents unecessary copies.
+
 Wed Oct  6 23:31:50 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htnet/Connection.h, htnet/Connection.cc: Merge in io

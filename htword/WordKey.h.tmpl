@@ -304,7 +304,7 @@ EOF
 	    #
 	    # Set, Get, Unset accessors for the field
 	    #
-	    $accessors .= "\tinline $type\tGet$field() const { return pool_$type" . "[$define]; }\n";
+	    $accessors .= "\tinline const $type&\tGet$field() const { return pool_$type" . "[$define]; }\n";
 	    $accessors .= "\tinline $type&\tGet$field() { return pool_$type" . "[$define]; }\n";
 	    $accessors .= "\tinline void\tSet$field($type arg) { pool_$type\[$define] = arg; set |= $undef; } \n";
 	    $accessors .= "\tinline void\tUnset$field() { pool_$type\[$define] = 0; set &= ~$undef; } \n";
@@ -357,7 +357,7 @@ EOF
 	    #
 	    # Generic accessor for each type
 	    #
-	    $accessors .= "\tinline $type	Get${type}(int position) const { return pool_$type\[word_key_info.fields[position].index]; }\n";
+	    $accessors .= "\tinline const $type&	Get${type}(int position) const { return pool_$type\[word_key_info.fields[position].index]; }\n";
 	    $accessors .= "\tinline $type&	Get${type}(int position) { return pool_$type\[word_key_info.fields[position].index]; }\n";
 	    $accessors .= "\tinline void	Set${type}(const $type& arg, int position) { pool_$type\[word_key_info.fields[position].index] = arg; Set(position); }\n";
 	}
