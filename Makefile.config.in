@@ -29,7 +29,7 @@ INCS=		-I$(top_srcdir)/htlib -I$(top_srcdir)/htcommon \
 		-I../db/dist -I../include
 HTLIBS=		../htcommon/libcommon.a \
 		../htlib/libht.a \
-		../db/dist/libdb.a \
+		../db/dist/libdb.a
 LIBS=		$(HTLIBS) @LIBS@
 
 DIST=		@PACKAGE@-@VERSION@
