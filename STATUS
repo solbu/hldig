@@ -4,7 +4,6 @@ CHECKLIST FOR 3.2.0b5:
 * Apply memory leak patches (Neal)
 * Check bugs listed in bug-tracker...
 * Polish release docs (Geoff)
-* Update copyright information for LGPL (Geoff)
 * Must be able to
 	(a) make check  and
 	(b) index  www.htdig.org  using  "robotstxt_name: master-htdig"
