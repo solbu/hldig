@@ -4,6 +4,9 @@
 // Implementation of ExternalParser
 //
 // $Log: ExternalParser.cc,v $
+// Revision 1.5  1999/01/14 03:28:07  ghutchis
+// Added support for 'm': meta element.
+//
 // Revision 1.4  1998/12/06 18:46:59  ghutchis
 // Ensure temporary files are placed in TMPDIR if it's set.
 //
@@ -19,7 +22,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: ExternalParser.cc,v 1.4 1998/12/06 18:46:59 ghutchis Exp $";
+static char RCSid[] = "$Id: ExternalParser.cc,v 1.5 1999/01/14 03:28:07 ghutchis Exp $";
 #endif
 
 #include "ExternalParser.h"
@@ -30,6 +33,7 @@ static char RCSid[] = "$Id: ExternalParser.cc,v 1.4 1998/12/06 18:46:59 ghutchis
 #include <Dictionary.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <good_strtok.h>
 
 static Dictionary	*parsers = 0;
 extern String		configFile;
@@ -153,6 +157,9 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	return;
     }
 
+    unsigned int minimum_word_length
+      = config.Value("minimum_word_length", 3);
+
     String	line;
     char	*token1, *token2, *token3;
     URL		url;
@@ -209,6 +216,116 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		token1 = strtok(0, "\t");
 		if (token1 != NULL)
 		  retriever.got_image(token1);
+		else
+		  cerr<< "External parser error in line:"<<line<<"\n";
+		break;
+	    case 'm':	// meta
+		// Using good_strtok means we can accept empty
+		// fields.
+		char *httpEquiv = good_strtok(token1+2, "\t");
+		char *name = good_strtok(0, "\t");
+		char *content = good_strtok(0, "\t");
+
+		if (httpEquiv != NULL && name != NULL && content != NULL)
+		{
+		  // It would be preferable if we could share
+		  // this part with HTML.cc, but it has other
+		  // chores too, and I do not se a point where to
+		  // split it up to get a common shared function
+		  // (or class).  Which should not stop anybody from
+		  // finding a better solution.
+		  // For now, there is duplicated code.
+		  StringMatch	keywordsMatch;
+		  String	keywordNames = config["keywords_meta_tag_names"];
+
+		  keywordNames.replace(' ', '|');
+		  keywordNames.remove(",\t\r\n");
+		  keywordsMatch.IgnoreCase();
+		  keywordsMatch.Pattern(keywordNames);
+    
+		  // <URL:http://www.w3.org/MarkUp/html-spec/html-spec_5.html#SEC5.2.5> 
+		  // says that the "name" attribute defaults to
+		  // the http-equiv attribute if empty.
+		  if (*name == '\0')
+		    name = httpEquiv;
+
+		  if (*httpEquiv != '\0')
+		  {
+		    // <META HTTP-EQUIV=REFRESH case
+		    if (mystrcasecmp(httpEquiv, "refresh") == 0
+			&& *content != '\0')
+		    {
+		      char *q = mystrcasestr(content, "url=");
+		      if (q && *q)
+		      {
+			q += 4; // skiping "URL="
+			char *qq = q;
+			while (*qq && (*qq != ';') && (*qq != '"') &&
+			       !isspace(*qq))qq++;
+			*qq = 0;
+			URL href(q, base);
+			// I don't know why anyone would do this, but hey...
+			retriever.got_href(href, "");
+		      }
+		    }
+		  }
+
+		  //
+		  // Now check for <meta name=...  content=...> tags that
+		  // fly with any reasonable DTD out there
+		  //
+		  if (*name != '\0' && *content != '\0')
+		  {
+		    if (keywordsMatch.CompareWord(name))
+		    {
+		      char	*w = strtok(content, " ,\t\r");
+		      while (w)
+		      {
+			if (strlen(w) >= minimum_word_length)
+			  retriever.got_word(w, 1, 10);
+			w = strtok(0, " ,\t\r");
+		      }
+		    }
+		    else if (mystrcasecmp(name, "htdig-email") == 0)
+		    {
+		      retriever.got_meta_email(content);
+		    }
+		    else if (mystrcasecmp(name, "htdig-notification-date") == 0)
+		    {
+		      retriever.got_meta_notification(content);
+		    }
+		    else if (mystrcasecmp(name, "htdig-email-subject") == 0)
+		    {
+		      retriever.got_meta_subject(content);
+		    }
+		    else if (mystrcasecmp(name, "description") == 0 
+			     && strlen(content) != 0)
+		    {
+		      //
+		      // We need to do two things. First grab the description
+		      //
+		      String meta_dsc = content;
+
+		      if (meta_dsc.length() > max_meta_description_length)
+			meta_dsc = meta_dsc.sub(0, max_meta_description_length).get();
+		      if (debug > 1)
+			cout << "META Description: " << content << endl;
+		      retriever.got_meta_dsc(meta_dsc);
+
+		      //
+		      // Now add the words to the word list
+		      // (slot 11 is the new slot for this)
+		      //
+		      char	  *w = strtok(content, " \t\r");
+		      while (w)
+		      {
+			if (strlen(w) >= minimum_word_length)
+			  retriever.got_word(w, 1, 11);
+			w = strtok(0, " \t\r");
+		      }
+		    }
+		  }
+		}
 		else
 		  cerr<< "External parser error in line:"<<line<<"\n";
 		break;
