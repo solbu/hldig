@@ -1,3 +1,13 @@
+Mon Mar  1 22:53:37 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/regex.c, htlib/striptime.c: Import new versions from
+	glibc.
+
+	* htlib/Makefile.in, htlib/mktime.c, htlib/timegm.c, htlib/lib.h:
+	Changes to use glibc timegm() function instead of buggy mytimegm().
+	
+	* htdig/Document.cc(getdate): Use it.
+
 Tue Mar  2 02:35:50 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
 	* attrs.html: Rephrase and clarify entry for url_part_aliases.
