@@ -92,7 +92,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: conf_parser.cxx,v 1.4 2003/07/21 08:16:10 angusgb Exp $
+// $Id: conf_parser.cxx,v 1.5 2003/11/22 04:15:40 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1489,7 +1489,7 @@ int
 yyerror (char *s)  /* Called by yyparse on error */
 {
 extern int yylineno;	// I don't know what about included files
-   printf ("%s\nIn line %d\n",s,yylineno);
+   fprintf (stderr, "%s\nIn line %d\n",s,yylineno);
    // exit(1);
    return -1;
 }

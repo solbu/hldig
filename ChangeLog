@@ -1,3 +1,11 @@
+Sat Nov 22 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htcommon/conf_lexer.{lxx,cxx}, htcommon/conf_parser.{yxx,cxx}:
+      Partially address bug #823455.
+      Don't complain if config file doesn't end in EOL.
+      Should the grammar be fixed not to need EOL?
+      Report errors to  stderr,  not  stdout,  as they confuse the web server.
+
 Sun Nov 9 14:44:02 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * Tagged release htdig-3-2-0b5
