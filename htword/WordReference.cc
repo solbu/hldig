@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.cc,v 1.4.2.1 1999/12/09 11:31:27 bosc Exp $
+// $Id: WordReference.cc,v 1.4.2.2 1999/12/14 13:36:06 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -25,6 +25,30 @@ int WordReference::Merge(const WordReference& other)
 
   return ret;
 }
+
+//
+// Set a key from an ascii representation
+//
+int
+WordReference::Set(const String& buffer)
+{
+  StringList fields(buffer, "\t ");
+  return Set(fields);
+}
+
+//
+// Set a key from list of fields
+//
+int
+WordReference::Set(StringList& fields)
+{
+  Clear();
+  if(key.Set(fields) != OK ||
+     record.Set(fields) != OK)
+    return NOTOK;
+  else
+    return OK;
+}      
 
 void WordReference::Print() const
 {

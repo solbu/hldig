@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.8 1999/12/10 17:20:26 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.9 1999/12/14 13:36:06 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -42,6 +42,7 @@
 #include <errno.h>
 
 #define cdebug cerr
+
 //*****************************************************************************
 //
 WordList::~WordList()
@@ -102,7 +103,6 @@ int WordList::Open(const String& filename, int mode)
   return ret;
 }
 
-
 //*****************************************************************************
 //
 int WordList::Close()
@@ -114,7 +114,6 @@ int WordList::Close()
   }
   return OK;
 }
-
 
 //*****************************************************************************
 //
@@ -445,9 +444,6 @@ public:
   int count;
 };
 
-
-
-
 //*****************************************************************************
 //
 //
@@ -604,31 +600,80 @@ operator << (ostream &o,  WordList &list)
 }
 
 istream &
-operator >> (istream &is,  WordList &list)
+operator >> (istream &in,  WordList &list)
 {
   WordReference word;
-  while(!is.eof())
-  {
-      if(!is.good())
-      {
-	  cerr << "WordList input from stream failed (A)" << endl;
-	  break;
+  int line_number = 0;
+#define WORD_BUFFER_SIZE	1024
+  char buffer[WORD_BUFFER_SIZE];
+  String line;
+
+  while(!in.eof())
+    {
+      line_number++;
+
+      in.get(buffer, WORD_BUFFER_SIZE);
+      line.append(buffer);
+      //
+      // Get the terminator. I love iostream :-(
+      //
+      if(!in.eof()) {
+	char c;
+	in.get(c);
+	if(c == '\n') 
+	  line.append(c);
+	in.putback(c);
       }
-      is >> word;
-      if(is.eof()){break;}
-      if(!is.good())
-      {
-	  cerr << "WordList input from stream failed (B)" << endl;
-	  break;
+      //
+      // Join big lines
+      //
+      if(line.last() != '\n' && line.last() != '\r' && !in.eof())
+	continue;
+      //
+      // Eat the terminator
+      //
+      if(!in.eof()) in.get();
+      //
+      // Strip line terminators from line
+      //
+      line.chop("\r\n");
+      //
+      // If line ends with a \ continue
+      //
+      if(line.last() == '\\') {
+	line.chop(1);
+	if(!in.eof())
+	  continue;
       }
-      if(list.verbose>1){cdebug << "WordList operator >> inserting word:" << word << endl;}
-      list.Insert(word);
-  }
-  return is;
+      
+      if(!line.empty()) {
+	if(!in.good())
+	  {
+	    cerr << "WordList::operator >>: line " << line_number << " : " << line << endl
+		 << " input from stream failed (A)" << endl;
+	    break;
+	  }
+
+	if(word.Set(line) != OK)
+	  cerr << "WordList::operator >>: line " << line_number << " : " << line << endl
+	       << " failed (ignored)" << endl;
+	else
+	  list.Insert(word);
+      
+	if(in.eof()){break;}
+	if(!in.good())
+	  {
+	    cerr << "WordList::operator >>: line " << line_number << " : " << line << endl
+		 << " input from stream failed (B)" << endl;
+	    break;
+	  }
+	if(list.verbose>1){cdebug << "WordList operator >> inserting word:" << word << endl;}
+      }
+
+      line.trunc();
+    }
+  return in;
 }
-
-
-
 
 // **************************************************
 // *************** WordSearchDescription  ***********
@@ -648,6 +693,7 @@ WordSearchDescription::Clear()
     noskip=0;
     shutup=0;
 }
+
 int 
 WordSearchDescription::setup()
 {
@@ -655,6 +701,7 @@ WordSearchDescription::setup()
     setup_ok=1;
     return OK;
 }
+
 WordSearchDescription::WordSearchDescription(const WordReference& wordRef, int naction, wordlist_walk_callback_t ncallback, Object *ncallback_data)
 {
     Clear();
@@ -670,6 +717,7 @@ WordSearchDescription::WordSearchDescription(const WordKey &nsearchKey)
     searchKey=nsearchKey;
     action=HTDIG_WORDLIST_COLLECTOR;
 }
+
 WordSearchDescription::WordSearchDescription(const WordKey &nsearchKey,wordlist_walk_callback_t ncallback,Object * ncallback_data)
 {
     Clear();

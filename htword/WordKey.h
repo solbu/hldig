@@ -36,6 +36,7 @@
 #ifndef SWIG
 #include "db.h"
 #include "htString.h"
+#include "StringList.h"
 #endif /* SWIG */
 
 #define	WORD_KEY_LOCATION	0
@@ -355,24 +356,27 @@ public:
   void	SetDefinedInSortOrder(int   position)    {        SetDefined(word_key_info.sort[position].encoding_position); }
   void	UndefinedInSortOrder(int position)       {         Undefined(word_key_info.sort[position].encoding_position); }
 
+  //
+  // Set the whole key from ascii string description
+  //
+  int Set(const String& buffer);
+  int Set(StringList& fields);
 
-    int Set(const char *s);
+  // Get/Set numerical fields
 
-// get/set numerical fields
-
-    inline unsigned int GetInSortOrder(int position) const
+  inline unsigned int GetInSortOrder(int position) const
     {
-	switch(word_key_info.sort[position].type) 
+      switch(word_key_info.sort[position].type) 
 	{
 #define STATEMENT(type)  case WORD_ISA_##type:return pool_##type[word_key_info.sort[position].index]; break
 #include"WordCaseIsAStatements.h"
 	}
-	return(0);
+      return(0);
     }
-    inline void         SetInSortOrder(int position,unsigned int val)
+  inline void         SetInSortOrder(int position,unsigned int val)
     {
-	SetDefinedInSortOrder(position);
-	switch(word_key_info.sort[position].type) 
+      SetDefinedInSortOrder(position);
+      switch(word_key_info.sort[position].type) 
 	{
 #define STATEMENT(type)  case WORD_ISA_##type:pool_##type[word_key_info.sort[position].index]=val;break
 #include"WordCaseIsAStatements.h"
@@ -410,7 +414,6 @@ public:
 
 #ifndef SWIG
     friend ostream &operator << (ostream &o, const WordKey &key);
-    friend istream &operator >> (istream &is,  WordKey &key);
 #endif /* SWIG */
     void Print() const;
 

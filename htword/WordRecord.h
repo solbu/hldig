@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordRecord.h,v 1.6.2.2 1999/12/09 11:31:27 bosc Exp $
+// $Id: WordRecord.h,v 1.6.2.3 1999/12/14 13:36:06 loic Exp $
 //
 
 #ifndef _WordRecord_h_
@@ -18,6 +18,7 @@
 
 #ifndef SWIG
 #include "HtPack.h"
+#include "StringList.h"
 #endif /* SWIG */
 
 //
@@ -134,9 +135,14 @@ class WordRecord
 #endif /* SWIG */
   }
 
+  //
+  // Set the whole record from ascii string description
+  //
+  int Set(const String& buffer);
+  int Set(StringList& fields);
+
 #ifndef SWIG
-  friend inline ostream	&operator << (ostream &o, const WordRecord &record);
-  friend inline istream &operator >> (istream &is, WordRecord &record);
+  friend ostream	&operator << (ostream &o, const WordRecord &record);
 #endif /* SWIG */
   void Print() const;
   
@@ -144,55 +150,5 @@ class WordRecord
 
   WordRecordInfo		info;
 };
-
-#ifndef SWIG
-inline ostream &operator << (ostream &o, const WordRecord &record)
-{
-  switch(record.type) {
-
-  case WORD_RECORD_DATA:
-    o << record.info.data;
-    break;
-
-  case WORD_RECORD_STATS:
-    o << record.info.stats.noccurence << "\t";
-    o << record.info.stats.ndoc;
-    break;
-
-  case WORD_RECORD_NONE:
-    break;
-
-  default:
-    cerr << "WordRecord::ostream <<: unknown type " << record.type << "\n";
-    break;
-  }
-
-  return o;
-}
-
-inline istream &operator >> (istream &is, WordRecord &record)
-{
-    switch(record.type) 
-    {
-	
-    case WORD_RECORD_DATA:
-	is >> record.info.data;
-    break;
-
-  case WORD_RECORD_STATS:
-    cerr << "WordRecord::istream >>: STATS read unsupported!?? "  << "\n";
-    break;
-
-  case WORD_RECORD_NONE:
-    break;
-
-  default:
-    cerr << "WordRecord::ostream <<: unknown type " << record.type << "\n";
-    break;
-  }
-
-  return is;
-}
-#endif /* SWIG */
 
 #endif
