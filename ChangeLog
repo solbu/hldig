@@ -1,3 +1,8 @@
+Thu Jun  8 08:47:03 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/doc2html/doc2html.pl: Apply David Adams' fix for missing
+	  quote.
+
 Wed Jun 07 10:53:53 2000  Loic Dachary  <loic@senga.org>
 
 	* db/db.c (CDB___db_dbenv_setup): open mode is 0666 instead

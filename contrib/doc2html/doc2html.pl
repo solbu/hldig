@@ -136,7 +136,7 @@ sub start {
   if ((defined $RTF2HTML) and (length $RTF2HTML)) {
     $cmd = $RTF2HTML;
     # Rtf2html uses filename as title, change this:
-    $cmdl = "$cmd '$Input' | $ED 's#^<TITLE>$Input</TITLE>#<TITLE>[$Name]</TITLE>#";
+    $cmdl = "$cmd '$Input' | $ED 's#^<TITLE>$Input</TITLE>#<TITLE>[$Name]</TITLE>#'";
     $magic = '^{\134rtf';
     &store_html_method('RTF',$cmd,$cmdl,$magic);
   }
