@@ -12,14 +12,21 @@ static const char sccsid[] = "@(#)env_open.c	11.8 (Sleepycat) 11/10/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
+
 #include <sys/types.h>
 
 #include <ctype.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifdef _MSC_VER //_WIN32
+#include <process.h>
+#else
 #include <unistd.h>
 #endif
+
+#endif //!NO_SYSTEM_INCLUDES
 
 #include "db_int.h"
 #include "db_page.h"

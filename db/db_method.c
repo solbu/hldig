@@ -208,7 +208,7 @@ CDB___dbh_am_chk(dbp, flags)
  *	Error message, including the standard error string.
  */
 static void
-#ifdef __STDC__
+#if defined(__STDC__) || defined(_MSC_VER)  //WIN32
 CDB___dbh_err(DB *dbp, int error, const char *fmt, ...)
 #else
 CDB___dbh_err(dbp, error, fmt, va_alist)
@@ -220,7 +220,7 @@ CDB___dbh_err(dbp, error, fmt, va_alist)
 {
 	va_list ap;
 
-#ifdef __STDC__
+#if defined(__STDC__) || defined(_MSC_VER)  //WIN32
 	va_start(ap, fmt);
 #else
 	va_start(ap);
@@ -235,7 +235,7 @@ CDB___dbh_err(dbp, error, fmt, va_alist)
  *	Error message.
  */
 static void
-#ifdef __STDC__
+#if defined(__STDC__) || defined(_MSC_VER)  //WIN32
 CDB___dbh_errx(DB *dbp, const char *fmt, ...)
 #else
 CDB___dbh_errx(dbp, fmt, va_alist)
@@ -246,7 +246,7 @@ CDB___dbh_errx(dbp, fmt, va_alist)
 {
 	va_list ap;
 
-#ifdef __STDC__
+#if defined(__STDC__) || defined(_MSC_VER)  //WIN32
 	va_start(ap, fmt);
 #else
 	va_start(ap);

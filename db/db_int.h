@@ -15,11 +15,13 @@
  *******************************************************/
 #include "db.h"
 
+#ifndef _MSC_VER //WIN32
 #ifndef NO_SYSTEM_INCLUDES
 #ifdef __STDC__
 #include <stdarg.h>
 #else
 #include <varargs.h>
+#endif
 #endif
 #endif
 
@@ -265,5 +267,39 @@ struct __mutex_t;	typedef struct __mutex_t MUTEX;
 #include "os.h"
 #include "os_ext.h"
 #include "common_ext.h"
+
+
+/*******************************************************
+ * Stuff not defined in native WIN32 Env.
+ *******************************************************/
+#ifdef _MSC_VER //_WIN32
+
+#include <windows.h>
+
+#define S_IRGRP 0               /* R for group */
+#define S_IWGRP 0               /* W for group */
+#define S_IROTH 0               /* R for other */
+#define S_IWOTH 0               /* W for other */
+#endif
+
+#ifdef _MSC_VER
+#ifndef	S_IRUSR
+#if defined(_WIN32) || defined(WIN16)
+#define	S_IRUSR	S_IREAD		/* R for owner */
+#define	S_IWUSR	S_IWRITE	/* W for owner */
+#define	S_IRGRP	0		/* R for group */
+#define	S_IWGRP	0		/* W for group */
+#define	S_IROTH	0		/* R for other */
+#define	S_IWOTH	0		/* W for other */
+#else
+#define	S_IRUSR	0000400		/* R for owner */
+#define	S_IWUSR	0000200		/* W for owner */
+#define	S_IRGRP	0000040		/* R for group */
+#define	S_IWGRP	0000020		/* W for group */
+#define	S_IROTH	0000004		/* R for other */
+#define	S_IWOTH	0000002		/* W for other */
+#endif /* _WIN32 || WIN16 */
+#endif
+#endif
 
 #endif /* !_DB_INTERNAL_H_ */
