@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.3.2.4 2000/02/29 11:41:01 loic Exp $
+// $Id: Connection.cc,v 1.3.2.5 2000/03/01 06:39:13 ghutchis Exp $
 //
 
 #include "Connection.h"
@@ -644,7 +644,7 @@ int Connection::Read_Partial(char *buffer, int maxlength)
       errno = 0;
 
       if (timeout_value > 0) {
-          fd_set fds;
+          FD_SET_T fds;
           FD_ZERO(&fds);
           FD_SET(sock, &fds);
 

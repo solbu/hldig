@@ -1,3 +1,13 @@
+Wed Mar  1 00:30:19 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in, configure: Add test for FD_SET_T, the second (also
+	third and fourth) argument in calls to select(). Should solve PR#739.
+
+	* acconfig.h, include/htconfig.h.in: Add declaration for FD_SET_T.
+
+	* htnet/Connection.cc (ReadPartial): Change declaration of fds to
+	use FD_SET_T define set by the configure script.
+
 Tue Feb 29 23:11:49 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
         * htlib/DB2_db.cc (Error): Simply fprint the error message on

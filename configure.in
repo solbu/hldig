@@ -181,6 +181,27 @@ else
   AC_DEFINE_UNQUOTED(GETPEERNAME_LENGTH_T, $getpeername_length_t)
 fi
 
+AC_MSG_CHECKING(how to call select?)
+for fd_set_t in 'fd_set' 'int'
+  do
+    AC_TRY_COMPILE([#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+ extern "C" int select(int, $fd_set_t *, $fd_set_t *, $fd_set_t *, struct timeval *);
+ $fd_set_t fd; ],
+    [ select(0, &fd, 0, 0, 0); ],
+    [ac_found=yes ; break 2],[ac_found=no])
+done
+
+if test "$ac_found" = no
+then
+  AC_MSG_WARN([can't determine argument type using int])
+  AC_DEFINE_UNQUOTED(FD_SET_T, int)
+else
+  AC_MSG_RESULT($fd_set_t)
+  AC_DEFINE_UNQUOTED(FD_SET_T, $fd_set_t)
+fi
+
 dnl Check if the c++ compiler knows bool
 AC_LANG_CPLUSPLUS
 AC_MSG_CHECKING(for bool data type?)

@@ -18,6 +18,9 @@
 /* Define this to the type of the third argument of getpeername() */
 #undef GETPEERNAME_LENGTH_T
 
+/* Define this to the type of the second argument of select() */
+#undef FD_SET_T
+
 /* Define if you have the bool type */
 #undef HAVE_BOOL
 
