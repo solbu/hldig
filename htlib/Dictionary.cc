@@ -7,12 +7,12 @@
 //             string index.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2001 The ht://Dig Group
+// Copyright (c) 1995-2002 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Dictionary.cc,v 1.13 2002/02/01 22:49:33 ghutchis Exp $
+// $Id: Dictionary.cc,v 1.14 2002/02/12 06:17:45 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -163,24 +163,25 @@ Dictionary::hashCode(const char *key) const
     long  conv_key = strtol(key,  &test, 10);
     if (key && *key && !*test) // Conversion succeeded
       return conv_key;
-    unsigned int	h = 0;
-    int			length = strlen(key);
 
-    if (length < 16)
-    {
-	for (int i = length; i > 0; i--)
-	{
-	    h = (h * 37) + *key++;
-	}
-    }
-    else
-    {
-	int	skip = length / 8;
-	for (int i = length; i > 0; i -= skip, key += skip)
-	{
-	    h = (h * 39) + *key;
-	}
-    }
+    char *base = (char*)malloc(strlen(key) + 2);
+    char *tmp_key = base;
+    strcpy(tmp_key, key);
+
+    unsigned int h = 0;
+    int length = strlen(tmp_key);
+
+    if (length >= 16)
+      {
+	tmp_key += strlen(tmp_key) - 15;
+	length = strlen(tmp_key);
+      }
+    for (int i = length; i > 0; i--)
+      {
+	h = (h*37) + *tmp_key++;
+      }
+
+    free(base);
     return h;
 }
 
