@@ -1,12 +1,19 @@
+Thu Sep  7 22:56:19 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/URL.cc (DefaultPort): Add file default port of 0.
+
+	* htnet/HtFile.cc (Request): Handle directory listings by using
+	scandir and generating minimal HTML file with appropriate noindex listing.
+
 Wed Sep 06 10:00:50 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
 
-	* Restored corrected versions of URL.*
-	* Removed the error in the NNTP class declaration
+	* htlib/URL.h, htlib/URL.cc: Restored corrected versions of URL.*
+	* htnet/HtNNTP.h: Removed the error in the NNTP class declaration
 
 Mon Sep 04 13:43:40 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
 
-	* Restored previous version of HtHTTP. I removed an initialization
-	  in the constructor (_modification_time). Sorry.
+	* htnet/HtHTTP.cc: Restored previous version of HtHTTP. I removed
+	an initialization in the constructor (_modification_time). Sorry.
 
 Sun Sep  3 16:51:24 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 

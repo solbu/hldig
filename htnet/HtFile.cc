@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFile.cc,v 1.1.2.5 2000/08/30 08:10:22 angus Exp $ 
+// $Id: HtFile.cc,v 1.1.2.6 2000/09/08 04:26:24 ghutchis Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -34,6 +34,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fstream.h>
+#include <dirent.h> // for scandir
 
 
 ///////
@@ -112,16 +113,63 @@ HtFile::DocStatus HtFile::Request()
    _response.Reset();
    
    struct stat stat_buf;
-   // Check that it exists, and is a regular file.
+   // Check that it exists, and is a regular file or directory
    // Should we allow FIFO's?
-   if (stat(_url.path(), &stat_buf) != 0 || !S_ISREG(stat_buf.st_mode))
-     return Document_not_found;
+   if ( stat(_url.path(), &stat_buf) != 0 || 
+	!(S_ISREG(stat_buf.st_mode) || S_ISDIR(stat_buf.st_mode)) )
+     return Transport::Document_not_found;
+
+   // Now handle directories with a pseudo-HTML document (and appropriate noindex)
+   if ( S_ISDIR(stat_buf.st_mode) )
+     {
+       _response._content_type = "text/html";
+       _response._contents = "<html><head><meta name=\"robots\" content=\"noindex\">\n";
+
+       struct dirent **namelist;
+       int n;
+       String filename;
+
+       n = scandir(_url.path(), &namelist, 0, alphasort);
+       if (n > 0)
+	 {
+	   for (int i = 0; i < n; i++)
+	     {
+	       filename = _url.path();
+	       filename << namelist[i]->d_name;
+
+	       cout << " file name " << filename << endl;
+
+	       if ( namelist[i]->d_name[0] != '.' 
+		    && stat(filename.get(), &stat_buf) == 0 )
+		 {
+		   if (S_ISDIR(stat_buf.st_mode))
+		     _response._contents << "<link href=\"file://" << _url.path()
+					 << "/" << namelist[i]->d_name << "/\">\n";
+		   else
+		     _response._contents << "<link href=\"file://" << _url.path()
+					 << "/" << namelist[i]->d_name << "\">\n";  
+		 }
+	     }
+	   delete [] namelist;
+	 }
+       _response._contents << "</head><body></body></html>\n";
+
+       if (debug > 3)
+	 cout << " Directory listing: " << endl << _response._contents << endl;
+
+       _response._content_length = stat_buf.st_size;
+       _response._document_length = _response._contents.length();
+       _response._modification_time = new HtDateTime(stat_buf.st_mtime);
+       _response._status_code = 0;
+       return Transport::Document_ok;
+     }
+
    if (_modification_time && *_modification_time >= HtDateTime(stat_buf.st_mtime))
-     return Document_not_changed;
+     return Transport::Document_not_changed;
 
    char *ext = strrchr(_url.path(), '.');
    if (ext == NULL)
-     return Document_not_local;
+     return Transport::Document_not_local;
 
    if (mime_map)
      {
@@ -164,14 +212,14 @@ HtFile::DocStatus HtFile::Request()
 
    if (debug > 2)
      cout << "Read a total of " << _response._document_length << " bytes\n";
-   return Document_ok;
+   return Transport::Document_ok;
 }
 
 HtFile::DocStatus HtFile::GetDocumentStatus()
 { 
    // Let's give a look at the return status code
    if (_response._status_code == -1)
-      return Document_not_found;
-   return Document_ok;
+      return Transport::Document_not_found;
+   return Transport::Document_ok;
 }
 
