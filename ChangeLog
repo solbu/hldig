@@ -1,3 +1,8 @@
+Wed Aug  4 22:40:49 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* contrib/htparsedoc/htparsedoc: Add in contributed bug fixes from
+	Andrew Bishop to work on SunOS 4.x machines.
+
 Wed Aug  4 01:58:52 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* COPYING, htdoc/COPYING, configure.in, Makefile.am, Makefile.in:
