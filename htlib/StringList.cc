@@ -4,6 +4,10 @@
 // Implementation of StringList
 //
 // $Log: StringList.cc,v $
+// Revision 1.3  1998/10/02 15:35:04  ghutchis
+//
+// Fixed bug with multiple delimeters
+//
 // Revision 1.2  1997/03/24 04:33:22  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -12,7 +16,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: StringList.cc,v 1.2 1997/03/24 04:33:22 turtle Exp $";
+static char	RCSid[] = "$Id: StringList.cc,v 1.3 1998/10/02 15:35:04 ghutchis Exp $";
 #endif
 
 #include <stdlib.h>
@@ -102,8 +106,11 @@ int StringList::Create(char *str, char *sep)
     {
 	if (strchr(sep, *str))
 	{
+	  if (word.length())
+	  {
 	    List::Add(new String(word));
 	    word = 0;
+	  }
 	}
 	else
 	    word << *str;
@@ -130,8 +137,11 @@ int StringList::Create(char *str, char sep)
     {
 	if (*str == sep)
 	{
+	  if (word.length())
+	  {
 	    List::Add(new String(word));
 	    word = 0;
+	  }
 	}
 	else
 	    word << *str;

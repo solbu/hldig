@@ -1,3 +1,21 @@
+Fri Oct  2 11:32:59 1998  Geoff Hutchison  <ghutchis@ethel.williams.edu>
+
+	* htlib/StringList.cc: Added patch by Alexander Bergolth for bug
+	with multiple delimeter characters
+
+Fri Oct  2 15:22:06 1998  Geoff Hutchison  <ghutchis@ethel>
+
+        * installdir/rundig, configure.in, CONFIG, CONFIG.in, aclocal.m4,
+	configure: Improvements in configure.in, notably using --prefix=
+	and --exec-prefix=
+
+Wed Sep 30 17:31:51 1998  Geoff Hutchison  <ghutchis@ethel>
+
+        * htdig/Retriever.cc, htdig/Server.cc, htfuzzy/Prefix.cc,
+	htlib/timegm.c, htsearch/htsearch.cc, CONFIG, ChangeLog,
+	htcommon/defaults.cc, htdig/Document.cc, htdig/HTML.cc:
+	Changes for 3.1.0b2
+
 Tue Sep 29 19:26:11 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.cc: Added patch from Tim Frost <tim@nz.eds.com> for
