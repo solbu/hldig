@@ -1,3 +1,10 @@
+Mon Apr  3 13:48:59 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: Fix error in description of new attribute
+	plural_suffix.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerate using cf_generate.pl.
+
 Fri Mar 31 21:48:02 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure.in, configure: Add test using AC_TRY_RUN to compile

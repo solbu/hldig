@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.48 2000/03/31 04:29:59 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.49 2000/04/03 17:49:09 grdetil Exp $
 //
 
 #include "HtConfiguration.h"
@@ -1557,8 +1557,8 @@ http://www.htdig.org/", "
 " },
 { "plural_suffix", "s",
 	"string", "htsearch", "", "3.2.0b2", "Presentation: Text", "plural_suffix: en", "
-	Specifies the value of the PLURAL_MATCHES environtment
-	attribute used in the header, footer and template files.
+	Specifies the value of the PLURAL_MATCHES template
+	variable used in the header, footer and template files.
 	This can be used for localization for non-English languages
 	where 's' is not the appropriate suffix.
 " },
