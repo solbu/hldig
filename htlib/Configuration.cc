@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: Configuration.cc,v 1.10 1999/02/24 20:22:51 ghutchis Exp $";
+static char	RCSid[] = "$Id: Configuration.cc,v 1.11 1999/03/23 18:29:11 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -61,6 +61,11 @@ void Configuration::Add(char *str)
             str++;
         name = 0;
         if (!isalpha(*str))
+            break;
+        // Some isalnum() implementations don't allow all the letters that
+        // isalpha() does, e.g. accented ones.  They're not POSIX.2 compliant
+        // but we won't punish them with an infinite loop...
+        if (!isalnum(*str))
             break;
         while (isalnum(*str) || *str == '-' || *str == '_')
             name << *str++;
