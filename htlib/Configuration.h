@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.h,v 1.6.2.3 1999/12/09 10:34:21 bosc Exp $
+// $Id: Configuration.h,v 1.6.2.4 1999/12/09 11:07:02 bosc Exp $
 //
 
 #ifndef	_Configuration_h_
@@ -43,21 +43,23 @@ public:
     // Construction/Destruction
     //
     Configuration();
-
+#ifdef SWIG
     Configuration(const Configuration& config) :
 	dcGlobalVars(config.dcGlobalVars),
 	separators(config.separators)
       {
         allow_multiple = config.allow_multiple;
       }
-
+#endif /* SWIG */
     ~Configuration() {}
 
     //
     // Adding and deleting items to and from the Configuration
     //
     void		Add(const String& str);
+#ifndef SWIG
     void		Add(const String& name, const String& value);
+#endif /* SWIG */
     int			Remove(const String& name);
 
     //
@@ -75,7 +77,9 @@ public:
     // operator
     //
     const String	Find(const String& name) const;
+#ifndef SWIG
     const String	operator[](const String& name) const;
+#endif /* SWIG */
     int		Value(const String& name, int default_value = 0) const;
     double	Double(const String& name, double default_value = 0) const;
     int		Boolean(const String& name, int default_value = 0) const;
@@ -84,7 +88,7 @@ public:
     //
     // Read defaults from an array
     //
-    void		Defaults(const ConfigDefaults *);
+    void		Defaults(const ConfigDefaults *array);
 
 protected:
     Dictionary		dcGlobalVars;
