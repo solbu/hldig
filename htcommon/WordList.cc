@@ -16,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.27 1999/09/10 11:45:29 loic Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.28 1999/09/10 13:24:15 loic Exp $";
 #endif
 
 #include "WordList.h"
@@ -72,9 +72,7 @@ WordList::WordList()
 WordList::~WordList()
 {
     delete words;
-
-    if (isopen)
-      Close();
+    Close();
 }
 
 
@@ -282,12 +280,14 @@ int WordList::Read(char *filename)
 //
 int WordList::Close()
 {
+  if(isopen) {
     dbf->Close();
     delete dbf;
     dbf = 0;
     isopen = 0;
     isread = 0;
-    return OK;
+  }
+  return OK;
 }
 
 

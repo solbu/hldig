@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.14 1999/09/08 17:11:16 loic Exp $
+// $Id: Retriever.h,v 1.15 1999/09/10 13:24:15 loic Exp $
 //
 
 #ifndef _Retriever_h_
@@ -27,6 +27,7 @@
 class URL;
 class Document;
 class URLRef;
+class WordList;
 
 enum  RetrieverLog {
     Retriever_noLog,
@@ -95,6 +96,7 @@ private:
     int			n_links;
     Images		images;
     String		credentials;
+    WordList		words;
 	
     RetrieverLog log;
     //

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.62 1999/09/08 17:11:16 loic Exp $
+// $Id: Retriever.cc,v 1.63 1999/09/10 13:24:15 loic Exp $
 //
 
 #include "Retriever.h"
@@ -37,7 +37,7 @@ extern char *strptime(const char *__s, const char *__fmt, struct tm *__tp);
 }
 #endif /* HAVE_STRPTIME_DECL */
 
-static WordList	words;
+
 static int noSignal;
 
 
@@ -331,6 +331,7 @@ Retriever::Start()
            fclose(urls_parsed);
         }
     }
+    words.Close();
 }
 
 
