@@ -1,7 +1,12 @@
+Fri Dec 21 18:52:32 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc: Added parsedcdate function, used by got_time,
+	to parse DC date meta tags without requiring strptime or timegm.
+
 Thu Dec 20 12:25:47 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Document.cc: Added parsedate function, used by getdate, to
-	parse date headers without requiring strptime or mktime, which have
+	parse date headers without requiring strptime or timegm, which have
 	caused problems on some systems.
 
 Thu Dec 20 11:51:26 CET 2001 Gabriele Bartolini <angusgb@users.sourceforge.net>

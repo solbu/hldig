@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.26 2001/10/23 19:09:50 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.27 2001/12/22 00:55:05 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -1109,6 +1109,102 @@ Retriever::got_title(char *title)
     current_title = title;
 }
 
+
+#define EPOCH	1970
+
+//
+// time_t parsedcdate(char *date)
+//   - converts ISO 8601 (YYYY-MM-DD) date string into a time value
+//
+time_t
+parsedcdate(char *date)
+{
+    char	*s;
+    int		day, month, year, hour, minute, second;
+
+    s = date;
+    while (isspace(*s))
+	s++;
+
+    // get year...
+    if (!isdigit(*s))
+	return 0;
+    year = 0;
+    while (isdigit(*s))
+	year = year * 10 + (*s++ - '0');
+    if (year < 69)
+	year += 2000;
+    else if (year < 1900)
+	year += 1900;
+    else if (year >= 19100)	// seen some programs do it, why not check?
+	year -= (19100-2000);
+    while (isspace(*s))
+	s++;
+
+    // get month...
+    if (!isdigit(*s))
+	return 0;
+    month = 0;
+    while (isdigit(*s))
+	month = month * 10 + (*s++ - '0');
+    if (month < 1 || month > 12)
+	return 0;
+    while (*s == '-' || isspace(*s))
+	s++;
+
+    // get day...
+    if (!isdigit(*s))
+	return 0;
+    day = 0;
+    while (isdigit(*s))
+	day = day * 10 + (*s++ - '0');
+    if (day < 1 || day > 31)
+	return 0;
+    while (*s == '-' || isspace(*s))
+	s++;
+
+    // optionally get hour...
+    hour = 0;
+    while (isdigit(*s))
+	hour = hour * 10 + (*s++ - '0');
+    if (hour > 23)
+	return 0;
+    while (*s == ':' || isspace(*s))
+	s++;
+
+    // optionally get minute...
+    minute = 0;
+    while (isdigit(*s))
+	minute = minute * 10 + (*s++ - '0');
+    if (minute > 59)
+	return 0;
+    while (*s == ':' || isspace(*s))
+	s++;
+
+    // optionally get second...
+    second = 0;
+    while (isdigit(*s))
+	second = second * 10 + (*s++ - '0');
+    if (second > 59)
+	return 0;
+    while (*s == ':' || isspace(*s))
+	s++;
+
+    //
+    // Calculate date as seconds since 01 Jan 1970 00:00:00 GMT
+    // This is based somewhat on the date calculation code in NetBSD's
+    // cd9660_node.c code, for which I was unable to find a reference.
+    // It works, though!
+    //
+    return (time_t) (((((367L*year - 7L*(year+(month+9)/12)/4
+				   - 3L*(((year)+((month)+9)/12-1)/100+1)/4
+				   + 275L*(month)/9 + day) -
+			(367L*EPOCH - 7L*(EPOCH+(1+9)/12)/4
+				   - 3L*((EPOCH+(1+9)/12-1)/100+1)/4
+				   + 275L*1/9 + 1))
+		       * 24 + hour) * 60 + minute) * 60 + second);
+}
+
 //*****************************************************************************
 // void Retriever::got_time(char *time)
 //
@@ -1116,15 +1212,6 @@ void
 Retriever::got_time(char *time)
 {
     time_t   new_time;
-    struct tm   tm;
-
-    tm.tm_hour = 0;
-    tm.tm_min = 0;
-    tm.tm_sec = 0;
-    tm.tm_mon = 0;
-    tm.tm_mday = 1;
-    tm.tm_year = 0;
-
     if (debug > 1)
       cout << "\ntime: " << time << endl;
     //
@@ -1132,15 +1219,9 @@ Retriever::got_time(char *time)
     // In the future, we'll need to deal with the scheme portion
     //  in case someone picks a different format.
     //
-    if (mystrptime(time, "%Y-%m-%d", &tm))
-      {
-#if HAVE_TIMEGM
-        new_time = timegm(&tm);
-#else
-        new_time = mytimegm(&tm);
-#endif
+    new_time = parsedcdate(time);
+    if (new_time)
 	current_time = new_time;
-      }
     // If we can't convert it, current_time stays the same and we get
     // the default--the date returned by the server...
 }
