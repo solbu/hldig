@@ -1,9 +1,12 @@
 //
-// $Id: lib.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: lib.h,v 1.2 1998/01/05 05:22:38 turtle Exp $
 //
 // $Log: lib.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1998/01/05 05:22:38  turtle
+// Added own replacement of timegm()
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #ifndef _lib_h
@@ -54,5 +57,10 @@ char *mystrcasestr(char *s, char *pattern);
 // version of it.
 //
 char *mystrptime(char *buf, char *fmt, struct tm *tm);
+
+//
+// timegm() is quite rare, so provide our own.
+//
+time_t mytimegm(struct tm *tm);
 
 #endif
