@@ -104,7 +104,7 @@ class WordKey
   //
   // Empty key
   //
-  WordKey() 
+  inline WordKey() 
   {
       Initialize();
   }
@@ -112,7 +112,7 @@ class WordKey
   //
   // Initialize from an ascii description of a key
   //
-  WordKey(const String& word) 
+  inline WordKey(const String& word) 
   {
       Initialize();
       Set(word); 
@@ -120,13 +120,13 @@ class WordKey
   //
   // Copy constructor (needed because of the array pointer)
   //
-  WordKey(const WordKey &other) 
+  inline WordKey(const WordKey &other) 
   {
       Initialize();
       CopyFrom(other);
   }
 #endif /* SWIG */
-  ~WordKey()
+  inline ~WordKey()
   {
       delete [] numerical_fields;
   }
@@ -135,7 +135,7 @@ class WordKey
   //
   // Constructor helper, allocate members and set to empty key
   //
-  void Initialize()
+  inline void Initialize()
     {
       if(!Info())
 	{
@@ -150,7 +150,7 @@ class WordKey
   //
   // Copy operator (needed because of the array pointer)
   //
-  void operator =(const WordKey &other)
+  inline void operator =(const WordKey &other)
   {
       Clear();
       CopyFrom(other);
@@ -159,7 +159,7 @@ class WordKey
   //
   // Copy other into object
   //
-  void CopyFrom(const WordKey &other)
+  inline void CopyFrom(const WordKey &other)
     {
       if(other.IsDefined(0)) { SetWord(other.GetWord()); }
       for(int i=1;i<nfields;i++)
@@ -174,7 +174,7 @@ class WordKey
   //
   // Reset to empty key. 
   //
-  void	Clear() 
+  inline void	Clear() 
   { 
       setbits = 0;
       kword.trunc();
@@ -248,15 +248,15 @@ class WordKey
   //
   // Returns true if field at position is defined, false otherwise.
   //
-  int	IsDefined(int position) const { return setbits & (1 << position); }
+  inline int	IsDefined(int position) const { return setbits & (1 << position); }
   //
   // Value in field position becomes defined
   //
-  void	SetDefined(int position)      { setbits |= (1 << position); }
+  inline void	SetDefined(int position)      { setbits |= (1 << position); }
   //
   // Value in field position becomes undefined
   //
-  void	Undefined(int position)       { setbits &= ~(1 << position); }
+  inline void	Undefined(int position)       { setbits &= ~(1 << position); }
 
 #ifndef SWIG
   //
@@ -338,11 +338,11 @@ class WordKey
   //
   // Return true if all the fields are defined, false otherwise
   //
-  int		Filled() const { return setbits == (unsigned int) (((1 << nfields) - 1) | WORD_KEY_WORDSUFFIX_DEFINED); }
+  inline int		Filled() const { return setbits == (unsigned int) (((1 << nfields) - 1) | WORD_KEY_WORDSUFFIX_DEFINED); }
   //
   // Return true if no fields are defined, false otherwise
   //
-  int		Empty() const  { return setbits == 0; }
+  inline int		Empty() const  { return setbits == 0; }
   //
   // Return true if the object and other are equal. Only fields defined in both keys
   // are compared.
@@ -353,7 +353,7 @@ class WordKey
   // a field is defined in object and not defined in equal, the key are not considered
   // equal.
   //
-  int 		ExactEqual(const WordKey& other) const {return(Equal(other) && other.setbits == setbits);}
+  inline int 		ExactEqual(const WordKey& other) const {return(Equal(other) && other.setbits == setbits);}
 #ifndef SWIG
   //
   // Return true if the object and other are equal. The packed string are compared. 
@@ -365,7 +365,7 @@ class WordKey
   // Return true if adding increment in field at position makes it overflow
   // or underflow, false if it fits.
   //
-  int		Outbound(int position, int increment) {
+  inline int		Outbound(int position, int increment) {
     if(increment < 0) return Underflow(position, increment);
     else if(increment > 0) return Overflow(position, increment);
     else return WORD_INBOUND;
@@ -374,14 +374,14 @@ class WordKey
   // Return true if adding positive increment to field at position
   // makes it overflow, false if it fits.
   //
-  int		Overflow(int position, int increment) {
+  inline int		Overflow(int position, int increment) {
     return MaxValue(position) - Get(position) < (WordKeyNum)increment ? WORD_OVERFLOW : WORD_INBOUND;
   }
   //
   // Return true if substracting positive increment to field at position
   // makes it underflow, false if it fits.
   //
-  int		Underflow(int position, int increment) {
+  inline int		Underflow(int position, int increment) {
     return Get(position) < (WordKeyNum)(-increment) ? WORD_UNDERFLOW : WORD_INBOUND;
   }
 #endif /* SWIG */
@@ -441,8 +441,8 @@ private:
   //
   // Convert a single number from and to disk storage representation
   //
-  static int UnpackNumber(const unsigned char* from, const int from_size, WordKeyNum &res, const int lowbits, const int bits);
-  static int PackNumber(WordKeyNum from, char* to, int to_size, int lowbits, int lastbits);
+  static inline int UnpackNumber(const unsigned char* from, const int from_size, WordKeyNum &res, const int lowbits, const int bits);
+  static inline int PackNumber(WordKeyNum from, char* to, int to_size, int lowbits, int lastbits);
 
   //
   // Data members

@@ -1,3 +1,8 @@
+Mon Feb 28 15:32:46 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordKey.h (class WordKey): explicitly add inline keyword
+	  for all inline functions. 
+
 Mon Feb 28 13:10:34 2000  Loic Dachary  <loic@ceic.com>
 
 	* htword/WordKey.h (class WordKey): nfields data member caches
