@@ -4,6 +4,8 @@ Wed Feb  3 09:57:14 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/RELEASE.html: Finish up 3.1.0 release notes.
 
+	* htdoc/TODO.html: Update with status and new directions.
+
 Wed Feb  3 14:22:11 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
 	* htsearch/Display.cc(setVariables): Removed some of yesterdays
