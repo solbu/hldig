@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.h,v 1.10.2.5 2000/01/14 01:23:43 ghutchis Exp $
+// $Id: Document.h,v 1.10.2.6 2000/01/25 07:45:30 angus Exp $
 //
 //
 #ifndef _Document_h_
@@ -74,6 +74,8 @@ public:
     //
     void			setUsernamePassword(const char *credentials)
                                           { authorization = credentials;}
+
+    HtHTTP *GetHTTPHandler() const { return HTTPConnect; }
 	
 private:
     enum

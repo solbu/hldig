@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.6 1999/12/11 16:19:47 vadim Exp $
+// $Id: Server.cc,v 1.17.2.7 2000/01/25 07:45:30 angus Exp $
 //
 
 #include "htdig.h"
@@ -21,6 +21,7 @@
 #include "Document.h"
 #include "URLRef.h"
 #include "Transport.h"
+#include "HtHTTP.h"    // for checking persistent connections
 
 #include <ctype.h>
 
@@ -38,7 +39,9 @@ Server::Server(URL u, String *local_robots_file)
     _port = u.port();
     _bad_server = 0;
     _documents = 0;
-    _persistent_connections = 1;  // Allowed by default
+
+    // We take it from the configuration
+    _persistent_connections = config.Boolean("persistent_connections");
 
     _max_documents = config.Value("server",_host,"server_max_docs", -1);
     _connection_space = config.Value("server",_host,"server_wait_time", 0);
@@ -78,7 +81,23 @@ Server::Server(URL u, String *local_robots_file)
 	      }
 	  }
 	else if (!local_urls_only)
+        {
 	  status = doc.Retrieve(timeZero);
+
+          // Let's check if persistent connections are both
+          // allowed by the configuration and possible after
+          // having requested the robots.txt file.
+
+          HtHTTP * http;
+          if (IsPersistentConnectionAllowed() &&
+                  ( http = doc.GetHTTPHandler()))
+          {
+              if (! http->isPersistentConnectionPossible())
+                  _persistent_connections=0;  // not possible. Let's disable
+                                              // them on this server.
+          }
+
+        }
 	else
 	  status = Transport::Document_not_found;
 

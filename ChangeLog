@@ -1,3 +1,23 @@
+Tue Jan 25 8:37:15 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* htdig/Document.h: Added the "HtHTTP *GetHTTPHandler()" method, in
+	  order to be able to control an HTTP object outside the Document class.
+	  This is useful for the Server class, after the request for robots.txt.
+	  We can control the response of a server and check if it supports
+	  persistent connections.
+
+	* htdig/Server.cc: inside the constructor, persistent_connections var is
+	  initialized to the configuration parameter value, instead of <true>.
+	  Besides, after the request of the robots.txt, it controls and set
+	  the attribute for persistent connections, depending on whether the
+	  server supports them or not.
+   
+	* htdig/Retriever.cc: modified the Start() method. Now the loop manage
+	  HTTP persistent connections "on a server" basis. Indeed, it's a
+	  Server object that decides if persisent connections are allowed on
+	  that server or not (depending on configuration or capabilities of
+	  the remote http server).
+
 Mon Jan 24 12:57:45 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(setVariables): Added double quotes around

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.15 2000/01/20 03:55:47 ghutchis Exp $
+// $Id: Retriever.cc,v 1.72.2.16 2000/01/25 07:45:30 angus Exp $
 //
 
 #include "Retriever.h"
@@ -26,6 +26,7 @@
 #include "StringList.h"
 #include "WordType.h"
 #include "Transport.h"
+#include "HtHTTP.h"    // For HTTP statistics
 
 #include <pwd.h>
 #include <signal.h>
@@ -297,43 +298,83 @@ Retriever::Start()
 
     while (more && noSignal)
     {
-	more = 0;
+        more = 0;
 		
 	//
-	// Go through all the current servers in sequence.  We take only one
-	// URL from each server during this loop.  This ensures that the load
-	// on the servers is distributed evenly.
+	// Go through all the current servers in sequence.
+        // If they support persistent connections, we keep on popping
+        // from the server queue until we reach a maximum number of
+        // consecutive requests (so we will probably have to issue a new
+        // attribute, like "server_repeat_connections"). Or the loop may
+        // continue for the infinite, if we set the max to -1 (and maybe
+        // the attribute too).
+        // If the server doesn't support persistent connection, we take
+        // only an URL from it, then we skip to the next server.
 	//
+
+        // Let's position at the beginning
 	servers.Start_Get();
+
+        int count;
+
+        // Maximum number of repeated requests with the same
+        // socket connection.
+        int max_repeat_requests;
+
 	while ( (server = (Server *)servers.Get_NextElement()) && noSignal)
 	{
 	    if (debug > 1)
-		cout << "pick: " << server->host() << ", # servers = " <<
+	        cout << "pick: " << server->host() << ", # servers = " <<
 		    servers.Count() << endl;
 	    
-	    ref = server->pop();
-	    if (!ref)
-		continue;		      // Nothing on this server
-	    // There may be no more documents, or the server
-	    // has passed the server_max_docs limit
+            // and if the Server doesn't support persistent connections
+            // turn it down to 1.
 
-	    //
-	    // We have a URL to index, now.  We need to register the
-	    // fact that we are not done yet by setting the 'more'
-	    // variable.
-	    //
-	    more = 1;
+            // We already know if a server supports HTTP pers. connections,
+            // because we asked it for the robots.txt file (constructor of
+            // the class).
 
-	    //
-	    // Deal with the actual URL.
-	    // We'll check with the server to see if we need to sleep()
-	    // before parsing it.
-	    //
-	    server->delay();   // This will pause if needed and reset the time
-	    parse_url(*ref);
-            delete ref;
-	}
+            if (server->IsPersistentConnectionAllowed())
+                // Once the new attribute is set
+                // max_repeat_requests=config["server_repeat_connections"];
+                max_repeat_requests = -1; // Set to -1 (infinite loop)
+            else
+                max_repeat_requests = 1;
+
+            count = 0;
+
+	    while ( ( (max_repeat_requests ==-1) ||
+                          (count < max_repeat_requests) ) &&
+                    (ref = server->pop()) && noSignal)
+            {
+                count ++;
+
+	        //
+	        // We have a URL to index, now.  We need to register the
+	        // fact that we are not done yet by setting the 'more'
+	        // variable. So, we have to restart scanning the queue.
+	        //
+
+	        more = 1;
+
+	        //
+	        // Deal with the actual URL.
+	        // We'll check with the server to see if we need to sleep()
+	        // before parsing it.
+	        //
+
+	        parse_url(*ref);
+                delete ref;
+
+                // No HTTP connections available, so we change server and pause
+	        if (max_repeat_requests == 1)
+                    server->delay();   // This will pause if needed
+                                       // and reset the time
+
+            }
+        }
     }
+
     // if we exited on signal 
     if (Retriever_noLog != log && !noSignal) 
     {
@@ -1562,5 +1603,28 @@ Retriever::ReportStatistics(const String& name)
 	cout << "\n" << name << ": Errors to take note of:\n";
 	cout << notFound;
     }
+
+    cout << endl;
+
+    // Report HTTP connections stats
+    cout << "HTTP statistics" << endl;
+    cout << "===============" << endl;
+
+    if (config.Boolean("persistent_connections"))
+    {
+        cout << " Persistent connections    : Yes" << endl;
+
+        if (config.Boolean("head_before_get"))
+            cout << " HEAD call before GET      : Yes" << endl;
+        else
+            cout << " HEAD call before GET      : No" << endl;
+    }
+    else
+    {
+        cout << "Persistent connections    : No" << endl;
+    }
+
+    HtHTTP::ShowStatistics(cout) << endl;
+
 }
 
