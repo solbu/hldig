@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34.2.15 2001/07/25 22:49:34 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34.2.16 2001/09/14 14:21:06 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -398,7 +398,10 @@ Document::RetrieveHTTP(time_t date)
     //
     if (config.Boolean("allow_virtual_hosts", 1))
     {
-	command << "Host: " << url->host() << "\r\n";
+	command << "Host: " << url->host();
+	if (url->port() != 0 && url->port() != 80)
+	    command << ":" << url->port();
+	command << "\r\n";
     }
     
     //

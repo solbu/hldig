@@ -1,3 +1,8 @@
+Fri Sep 14 09:18:38 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc (RetrieveHTTP): Add port to Host: header when
+	port is not default, as per RFC2616(14.23). Fixes bug #459969.
+
 Sat Sep  8 22:04:47 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* acconfig.h, include/htconfig.h.in: Add undef for
