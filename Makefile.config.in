@@ -1,7 +1,7 @@
 ##
 ## Makefile.config
 ##
-## This file is part of HTDig
+## This file is part of ht://Dig
 ##
 include @HTDIG_TOP@/CONFIG
 

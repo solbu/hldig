@@ -3,6 +3,7 @@ Copyright (C) 1995-1998 Andrew Scherpbier <andrew@contigo.com>
 
 ht://Dig is a world-wide-web search system for an intranet or small internet.
 
+ht://Dig is distributed under the GNU Public License (GPL).
 See the COPYING file for license information.
 See the htdoc/install.html file for compilation and installation instructions.
 
@@ -18,9 +19,9 @@ This distribution includes:
 
     * htlib     - A small general purpose C++ class library
 
-    * htcommon  - HTDig specific classes
+    * htcommon  - ht://Dig specific classes
 
-    * htdoc     - HTDig documentation in HTML
+    * htdoc     - ht://Dig documentation in HTML
 
 ht://Dig has been tested extensively under Linux 2.0 using g++
 If you use g++, make absolutely sure you have libstdc++ installed
