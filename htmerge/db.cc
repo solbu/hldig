@@ -6,9 +6,6 @@
 // convertDocs are performed to ensure database integrity.
 //
 // $Log: db.cc,v $
-// Revision 1.8  1999/01/25 05:10:17  ghutchis
-// Fix comiler errors.
-//
 // Revision 1.7  1999/01/25 05:09:08  ghutchis
 // Fix comiler errors.
 //
@@ -273,7 +270,7 @@ mergeDB()
 	      {
 		switch (*name)
 		  {
-#ifndef NO_WORD_COUNT
+#ifndef #NO_WORD_COUNT
 		  case 'c':
 		    wr.count = atoi(value);
 		    break;
