@@ -1,3 +1,9 @@
+Wed Feb 23 12:01:01 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc (GetLocal, GetLocalUser): Add URL-decoding
+	enhancements to local_urls, local_default_urls & local_default_doc,
+	to allow hex encoding of special characters.
+
 Wed Feb 23 19:14:29 2000  Loic Dachary  <loic@ceic.com>
 
  	* htcommon/conf_parser.cxx: regenerated from conf_parser.yxx
