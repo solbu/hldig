@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.8  1998/08/03 09:57:20  ghutchis
+//
+// Fixed spelling mistake for "ellipses"
+//
 // Revision 1.7  1998/07/22 10:04:31  ghutchis
 //
 // Added patches from Sylvain Wallez <s.wallez.alcatel@e-mail.com> to
@@ -34,7 +38,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.7 1998/07/22 10:04:31 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.8 1998/08/03 09:57:20 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -790,7 +794,7 @@ Display::excerpt(DocumentRef *ref, char *url)
 	    start = temp;
 	else
 	{
-	    *text << config["start_elipses"];
+	    *text << config["start_ellipses"];
 	    while (*start && isalpha(*start))
 		start++;
 	}
@@ -810,7 +814,7 @@ Display::excerpt(DocumentRef *ref, char *url)
 		end++;
 	    *end = '\0';
 	    *text << hilight(start, url);
-	    *text << config["end_elipses"];
+	    *text << config["end_ellipses"];
 	}
     }
     return text;

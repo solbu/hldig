@@ -1,3 +1,7 @@
+Mon Aug  3 05:56:23 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc: Spelling correction for "ellipses"
+
 Thu Jul 23 12:14:34 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/PDF.cc, htdig/PDF.h, htdig/Document.cc: Added files (and
@@ -448,3 +452,7 @@ Mon Feb  3 17:37:59 1997  turtle  <turtle@kiwi>
 	* .version, README: updated stuff to 3.0.8
 
 	* Many files: Initial CVS
+
+Local Variables:
+add-log-time-format: current-time-string
+End:
