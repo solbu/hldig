@@ -1,3 +1,7 @@
+Mon Jan 17 12:15:45 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.2.0.spec: added sample RPM spec file for 3.2
+
 Sat Jan 15 11:53:35 2000  Loic Dachary  <loic@ceic.com>
 
 	* htdb/htstat.cc,htdb/htdump.cc: remove useless -S option since
