@@ -1,7 +1,8 @@
-Thu Feb 24 09:52:10 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Thu Feb 24 10:03:59 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html (external_parsers): Add references to FAQ 4.8 & 4.9.
 	(local_default_doc): Give an expanded example.
+	(logging): Explain log entry format.
 
 Wed Feb 23 13:58:24 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
