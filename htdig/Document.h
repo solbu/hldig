@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.h,v 1.13 2002/08/06 15:13:56 angusgb Exp $
+// $Id: Document.h,v 1.14 2002/08/29 21:14:55 svc Exp $
 //
 //
 #ifndef _Document_h_
@@ -30,6 +30,7 @@
 #include "Transport.h"
 #include "HtHTTP.h"
 #include "HtFile.h"
+#include "HtFTP.h"
 #include "HtNNTP.h"
 #include "ExternalTransport.h"
 #include "Server.h"
@@ -117,6 +118,7 @@ private:
     HtHTTP			*HTTPConnect;
     HtHTTP			*HTTPSConnect;
     HtFile			*FileConnect;
+    HtFTP                       *FTPConnect;
     HtNNTP			*NNTPConnect;
     ExternalTransport		*externalConnect;
     
