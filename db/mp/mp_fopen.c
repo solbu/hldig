@@ -217,10 +217,12 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 				goto err;
 			finfop->fileid = idbuf;
 		}
+#ifdef HAVE_LIBZ
 		if (LF_ISSET(DB_COMPRESS)) {
 		  if((ret = __memp_cmpr_open(path, dbenv, &dbmfp->weakcmpr)) != 0)
 		    goto err;
 		}
+#endif /* HAVE_LIBZ */
 	}
 
 	/*

@@ -1,3 +1,7 @@
+Tue Aug 10 17:44:49 1999  Loic Dachary  <loic@yoda.ceic.com>
+
+	* db/mp/mp_fopen.c: fixed cmpr_open called even if libz not here
+
 Tue Aug 10 17:40:53 1999  Loic Dachary  <loic@yoda.ceic.com>
 
 	* htlib/langinfo.h: header missing on FreeBSD-3.2, needed
