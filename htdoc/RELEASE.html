@@ -10,7 +10,7 @@
 	  Release notes
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2000 <a href="THANKS.html">The ht://Dig Group</a><br>
 	   Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -22,7 +22,7 @@
 	</p>
 
 	<p>
-	<strong>Release notes for htdig-3.2.0b2</strong>X Apr 2000<br>
+	<strong>Release notes for htdig-3.2.0b2</strong>11 Apr 2000<br>
 	This version is still marked beta because it has still only
 	received limited testing. However, it adds more functionality
 	and should fix all known bugs in the previous 3.2.0b1 release,
@@ -45,6 +45,11 @@
 	    over time.</li>
 	    <li>Fixed a bug in the SGML entity handling where numeric entities 
 	    would be ignored. (e.g. &amp;#162; -> &#162;)</li>
+	    <li>Fixed a bug in the new configuration parser that
+	    wouldn't accept lists including numbers</li>
+	    <li>Fixed a potential infinite loop in the phrase
+	    searching parser that came up when fuzzy algorithms were
+	    used.</li>
 	    <li>The HTML parser now ignores anything between &lt;script&gt; tags, 
 	    much like it does for &lt;style&gt; tags.</li>
 	    <li>Fixed some performance problems in the new word database code.</li>
@@ -249,7 +254,7 @@
 	<li>Added support for reading the list of URLs to index with
 	    <a href="htdig.html">htdig</a> by supplying the
 	    command-line option -.</li>
-	<li>Added a flag -m to <a href="htdig.html">htdig</a> to index <emph>only</emph> the
+	<li>Added a flag -m to <a href="htdig.html">htdig</a> to index <em>only</em> the
 	    files given in the filename.</li>
 	<li>There are many more changes especially to the internal
 	    code structure, so a huge thank you goes out to everyone
@@ -1324,11 +1329,6 @@
 	</ul>
 
 	<hr size="4" noshade>
-	<address>
-	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
-	</address>
-
-Last modified: $Date: 2000/04/09 15:40:55 $
-
+		Last modified: $Date: 2000/04/11 03:15:19 $
   </body>
 </html>
