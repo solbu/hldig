@@ -1,3 +1,20 @@
+Sun Jun 30 11:26:00 1999  Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htdig/Transport.h: Inserted the methods declarations regarding
+	the connection management. The code has been moved out from the
+	HtHTTP.h code. Also moved here the static variable 'debug'.
+
+	* htdig/Transport.cc: Definition of the connection management code.
+	The code has been moved out from the HtHTTP.cc code.
+
+	* htdig/HtHTTP.h: Eliminated the connection management code and the
+	static variable 'debug'. Inserted the 'modification_time_is_now' as
+	a static variable, in order to respect the encapsulation principle.
+
+	* htdig/HtHTTP.cc: Eliminated the connection management code and the
+	static variable 'debug' initialization. Inserted the
+	'modification_time_is_now' initialization.
+
 Sun Jun 27 16:29:49 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.h: Cleanup.
