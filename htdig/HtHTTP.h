@@ -28,7 +28,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: 
+// $Id: HtHTTP.h,v 1.11 1999/09/27 08:47:26 angus Exp $ 
 //
 
 #ifndef _HTHTTP_H

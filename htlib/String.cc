@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.26 1999/09/24 14:30:11 loic Exp $
+// $Id: String.cc,v 1.27 1999/09/27 08:47:27 angus Exp $
 //
 
 
@@ -64,7 +64,9 @@ String::String(const char *s, int len)
 
 String::String(const String &s)
 {
-    Allocated = Length = Data = 0;
+    Allocated = Length = 0;
+    Data = 0;
+    
     if (s.length() != 0)
       copy(s.Data, s.length(), s.length());
 }
@@ -75,7 +77,9 @@ String::String(const String &s)
 //
 String::String(const String &s, int allocation_hint)
 {
-    Allocated = Length = Data = 0;
+    Allocated = Length = 0;
+    Data = 0;
+
     if (s.length() != 0)
       {
 	if (allocation_hint < s.length())
