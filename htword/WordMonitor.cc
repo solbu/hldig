@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordMonitor.cc,v 1.1.2.4 2000/01/06 11:31:19 bosc Exp $
+// $Id: WordMonitor.cc,v 1.1.2.5 2000/01/11 18:37:34 bosc Exp $
 //
 #include<stdlib.h>
 
@@ -252,11 +252,22 @@ WordMonitor::ProcessCommand(const String& command)
 	}
     }
     else
+    if(cfields[0]==(String)"monitor_period")
+    {
+	if(n!=2){error="bad number of args";}
+	periodic.change_period(atof(cfields[1]));
+    }
+    else
     if(cfields[0]==(String)"display")
     {
 	if(n==1){nomonitor=1-nomonitor;}
 	else
 	{
+	    if(cfields[1]==(String)"noinsert")
+	    {
+		output.SetOutputFields("put/s put_time cmpr_ucmpr_time cmpr/s ucmpr/s cmpr_ratio cmpr_overflow nonleave/leave mxtreelevel totput");
+	    }
+	    else
 	    if(cfields[1]==(String)"cmpr")
 	    {
 		output.SetOutputFields("cmpr/s ucmpr/s cmpr_ucmpr_time  cmpr_ratio cmpr_overflow nonleave/leave mxtreelevel");
@@ -284,20 +295,40 @@ WordMonitor::ProcessCommand(const String& command)
 }
 
 WordMonitorInput::WordMonitorInput(const Configuration &config, CommandProcessor *ncommandProcessor):
-    periodic(.1)
+    periodic(2)
 {
     commandProcessor=ncommandProcessor;
-    fin=fopen("monin","w+");;
+    const char *monin="monin";
+    ifname="monin";
+    cout << "WordMonitorInput:: reading commands from file: \"" << monin << "\"" << endl;
+    fin=fopen(ifname,"w");
+    if(!fin){cerr << "WordMonitorInput:: error opening input file:\"" << ifname << "\"" << endl;}
+    inputpos=0;
+    if(fin)fclose(fin);
 }
 
 void 
 WordMonitorInput::ParseInput()
 {
-    char line[1000];
+    FILE *fin=fopen(ifname,"r");
+    if(!fin)
+    {
+	cerr << "WordMonitorInput:: error opening input file:\"" << ifname << "\"" << endl;
+	return;
+    }
+    fseek(fin,inputpos,SEEK_SET);
+   char line[1000];
+//     cout << "parsing input" << endl;
     while(fgets(line,1000,fin))
     {
+	cout << "line:" << line <<  endl;
 	line[strlen(line)-1]=0;
 	commandProcessor->ProcessCommand((String)line);
     }	
+
+    inputpos=ftell(fin);
+    fclose(fin);
+    fin=NULL;
 }    
+
 

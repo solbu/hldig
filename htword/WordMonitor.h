@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordMonitor.h,v 1.1.2.2 2000/01/06 11:31:19 bosc Exp $
+// $Id: WordMonitor.h,v 1.1.2.3 2000/01/11 18:37:35 bosc Exp $
 //
 #ifndef _WordMonitor_h_
 #define _WordMonitor_h_
@@ -51,6 +51,8 @@ class WordMonitorInput
     CommandProcessor *commandProcessor;
     HtTime::Periodic periodic;    
     FILE *fin;
+    const char *ifname;
+    int inputpos;
     void ParseInput();
  public:
     inline void operator () ()
