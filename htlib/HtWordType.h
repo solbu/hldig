@@ -1,7 +1,7 @@
 //
 // HtWordType:  Wrap some attributes to make is...()-type methods.
 //
-// $Id: HtWordType.h,v 1.1.2.1 1999/03/23 23:23:01 grdetil Exp $
+// $Id: HtWordType.h,v 1.1.2.2 1999/03/29 19:01:44 grdetil Exp $
 //
 
 #ifndef __HtWordType_h
@@ -53,14 +53,14 @@ private:
 inline int
 HtIsWordChar(int c)
 {
-  return isalnum(c) || strchr(HtWordType::statics.other_chars_in_word, c);
+  return isalnum(c) || (c && strchr(HtWordType::statics.other_chars_in_word, c));
 }
 
 // Similar, but no punctuation characters.
 inline int
 HtIsStrictWordChar(int c)
 {
-  return isalnum(c) || strchr(HtWordType::statics.extra_word_characters, c);
+  return isalnum(c) || (c && strchr(HtWordType::statics.extra_word_characters, c));
 }
 
 // Let caller get rid of getting and holding a configuration parameter.
