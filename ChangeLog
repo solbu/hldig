@@ -1,5 +1,11 @@
 Sun 25 Apr 2004 Lachlan Andrew <lha at users.sourceforge.net>
 
+    * db/{aclocal.m4,configure,os_abs.c.win32}, STATUS, htdoc/THANKS.html:
+    Correctly dected paths beginning  C:  as absolute paths in cygwin/Win32.
+    Fixes bug #814268.
+
+Sun 25 Apr 2004 Lachlan Andrew <lha at users.sourceforge.net>
+
     * htdig/Retriever.cc:
     Gilles's patch to avoid regex compile for every URL encountered.
 

@@ -7598,6 +7598,11 @@ cygwin* | mingw* | pw32*)
   need_version=no
   need_lib_prefix=no
 
+  if [ -f os_abs.c.win32 ] ; then
+      mv os_abs.c os_abs.c.unix
+      mv os_abs.c.win32 os_abs.c
+  fi
+
   case $GCC,$host_os in
   yes,cygwin* | yes,mingw* | yes,pw32*)
     library_names_spec='$libname.dll.a'

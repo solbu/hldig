@@ -12,8 +12,8 @@ we can be sure they're fixed. Geoff is currently trying to add PR#s for
 what's currently here.)
 
 SHOWSTOPPERS:
-* --without-zlib  is broken
-* Database compression problems with  CygWin.   PR#814268
+* Digging speed is unacceptable.
+  Should we restructure the database, or try to write to it more efficiently?
 
 KNOWN BUGS:
 (none serious.
