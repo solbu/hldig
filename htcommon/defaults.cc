@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.12 1999/11/28 02:44:20 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.13 1999/12/02 02:43:49 ghutchis Exp $
 //
 
 #include "Configuration.h"
@@ -866,6 +866,12 @@ http://www.htdig.org/", "
 	try the URL through HTTP instead. Note the example--the
 	equal sign and the final slashes in both the URL and the
 	directory path are critical.
+" },
+{ "local_urls_only", "false", 
+	"boolean", "htdig", "local_urls_only: true", "
+	Set this to tell ht://Dig to only access files through the 
+        local filesystem using the local_urls attribute. If it cannot 
+        find the file, it will give up rather than trying HTTP or other protocol.
 " },
 { "local_user_urls", "", 
 	"string list", "htdig", "local_user_urls: http://www.my.org/=/home/,/www/", "
