@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Object.h,v 1.6.2.2 2000/05/10 18:23:45 loic Exp $
+// $Id: Object.h,v 1.6.2.3 2000/06/21 01:28:57 ghutchis Exp $
 //
 
 #ifndef	_Object_h_
@@ -34,7 +34,7 @@ public:
 	// To ensure a consistent comparison interface and to allow comparison
 	// of all kinds of different objects, we will define a comparison functions.
 	//
-	virtual int	compare(const Object &)	{ return 0;}
+	virtual int	compare(const Object &)	const { return 0;}
 
 	//
 	// To allow a deep copy of data structures we will define a standard interface...

@@ -10,8 +10,6 @@ SHOWSTOPPERS:
    wordlist_compress set but work fine without wordlist_compress.
    (the date is definitely stored correctly, even with compression on
     so this must be some sort of weird htsearch bug)
-* Order of htdig retrieval is not a level-order traversal by hopcount
-  -> Something is amiss in the heap or in the comparisons.
 
 KNOWN BUGS:
 * URL.cc tries to parse malformed URLs (which causes further problems)
@@ -40,7 +38,6 @@ TESTING:
   (htload a test file, check a few characteristics, htdump and compare)
 * Turn on URL parser test as part of test suite.
 * htsearch phrase support tests
-* hopcount testing: are the pages actually indexed in the right order?
 
 DOCUMENTATION:
 * Update cf_* pages to mention new config parser (i.e. URL-dependent config)

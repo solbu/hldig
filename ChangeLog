@@ -1,3 +1,14 @@
+Tue Jun 20 22:29:57 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* httools/htmerge.cc (mergeDB): Merge in patch contributed by
+	Lorenzo Campedelli <lorenzo.campedelli@libero.it> to greatly
+	reduce memory usage.
+
+Sun Jun 18 13:15:43 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/Object.h (class Object): Fix problems with retrieval order
+	by insuring the compare() method is declared const.
+
 Tue Jun 13 22:57:10 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc (GetLocal): Fix bug that would cause a
