@@ -46,14 +46,6 @@ dnl Check for AIX problems
 AC_AIX
 
 dnl Checks for libraries.
-dnl Replace `main' with a function in -lcommon:
-AC_CHECK_LIB(common, main)
-dnl Replace `main' with a function in -ldb:
-AC_CHECK_LIB(db, main)
-dnl Replace `main' with a function in -lht:
-AC_CHECK_LIB(ht, main)
-dnl Replace `main' with a function in -lrx:
-AC_CHECK_LIB(rx, main)
 AC_CHECK_LIB(socket, socket, [LIBS="$LIBS -lsocket"])
 AC_CHECK_LIB(nsl, t_accept, [LIBS="$LIBS -lnsl"])
 

@@ -32,7 +32,7 @@ SENDMAIL=	@SENDMAIL@
 DEFINES=	-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\"
 LIBDIRS=	-L../htlib -L../htcommon -L../@DB_DIR@ -L../@RX_DIR@/rx -L/usr/lib
 INCS=		-I../htlib -I../htcommon -I../@DB_DIR@ -I../@RX_DIR@/rx -I../include
-LIBS=		-lcommon -lht @LIBS@
+LIBS=		-lcommon -lht -ldb -lrx @LIBS@
 
 DIST=		@PACKAGE@-@VERSION@
 DISTDIR=	$(top_srcdir)/../$(DIST)
