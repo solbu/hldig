@@ -1,3 +1,9 @@
+Sat Jul 10 00:22:34 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htfuzzy/Regex.cc (getWords): Anchor the match to the beginning
+	of string, add regex-interpeted characters to extra_word_chars
+	temporarily, and strip remaining punctuation before making a match.
+
 Fri Jul  9 22:35:57 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.cc: Back out change of June 24.

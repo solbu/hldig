@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Regex.cc,v 1.1 1999/05/05 00:38:53 ghutchis Exp $
+// $Id: Regex.cc,v 1.2 1999/07/10 03:43:16 ghutchis Exp $
 //
 //
 #include "Regex.h"
@@ -51,8 +51,27 @@ void
 Regex::getWords(char *w, List &words)
 {
     HtRegex	regexMatch;
+    String	stripped;
 
-    regexMatch.set(w);
+    // Anchor the string to be matched
+    stripped << '^' << w;
+
+    // First we have to strip the necessary punctuation
+    // So add regex reserved characters to extra_word_chars
+    // (which we will restore later)
+
+    String  configValue, savedConfig;
+    configValue = config["extra_word_chars"];
+    savedConfig = configValue;
+    configValue << "^.[]$()|*+?{},-\\";
+    config.Add("extra_word_chars", configValue);
+
+    // Now we can strip anything remaining
+    // and restore the saved extra_word_chars
+    HtStripPunctuation(stripped);
+    config.Add("extra_word_chars", savedConfig);
+
+    regexMatch.set(stripped);
 
     Database	*dbf = Database::getDatabaseInstance(DB_BTREE);
     dbf->OpenRead(config["word_db"]);
