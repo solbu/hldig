@@ -4,81 +4,12 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
-// Revision 1.19  1998/11/27 18:33:36  ghutchis
-//
-// Changed Retriever::got_word to check for small words, valid_punctuation to
-// remove bugs in HTML.cc.
-//
-// Revision 1.18  1998/11/15 22:06:27  ghutchis
-//
-// Fix for refresh tags w/o URLs.
-//
-// Revision 1.17  1998/11/15 04:07:14  turtle
-// *  fixed bug which assumed that all http-equiv=refresh attributes also have
-//    url=something.  The url=something is optional
-//
-// Revision 1.16  1998/11/15 02:47:46  ghutchis
-//
-// Fixed bugs with META robots, URL parsing, and added support for META refresh
-// tags.
-//
-// Revision 1.15  1998/10/21 17:35:17  ghutchis
-//
-// Cleaned up HTML parsing based on patch by Reni Seindal.
-//
-// Revision 1.14  1998/09/30 17:31:50  ghutchis
-//
-// Changes for 3.1.0b2
-//
-// Revision 1.13  1998/09/23 14:58:21  ghutchis
-//
-// Many, many bug fixes
-//
-// Revision 1.12  1998/09/18 18:45:55  ghutchis
-//
-// YABF (Yet another bug fix)
-//
-// Revision 1.11  1998/09/18 02:38:08  ghutchis
-//
-// Bug fixes for 3.1.0b2
-//
-// Revision 1.10  1998/09/10 04:16:25  ghutchis
-//
-// More bug fixes.
-//
-// Revision 1.9  1998/09/08 03:29:09  ghutchis
-//
-// Clean up for 3.1.0b1.
-//
-// Revision 1.8  1998/09/07 04:37:16  ghutchis
-//
-// Added DocState for documents marked as "noindex".
-//
-// Revision 1.7  1998/08/11 08:58:27  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.6  1998/08/04 15:39:26  ghutchis
-//
-// Added support for META robots tags.
-//
-// Revision 1.4  1998/07/09 09:32:03  ghutchis
-// *** empty log message ***
-//
-// Revision 1.3  1998/06/22 04:38:27  turtle
-// Applied patch that prevented SGML entities that translate to
-// valid_punctuation characters from becoming part of words
-//
-// Revision 1.2  1998/06/15 18:15:50  turtle
-// Added suggestion by Chris Liddiard to add ',' to the list of separator
-// characters for meta keyword parsing
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
+// Revision 1.20  1998/12/02 02:49:37  ghutchis
+// Regenerated log messages.
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.19 1998/11/27 18:33:36 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.20 1998/12/02 02:49:37 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
