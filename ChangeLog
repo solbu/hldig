@@ -1,3 +1,7 @@
+Mon Jun 14 10:08:01 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * Tagged release htdig-3-2-0b6
+
 Sun 13 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
 
     * db/os_abs.c, (db/os_abs.c.win32 removed):
@@ -36,10 +40,6 @@ Fri Jun 11 10:53:49 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
     * contrib/htdig-3.2.0.spec: Updated for 3.2.0b6.
 
     * installdir/Makefile.{am,in}: Don't stick $(DESTDIR) in HtFileType.
-
-Thu Jun 10 16:49:52 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
-
-   * Tagged release htdig-3-2-0b6
 
 Thu Jun 10 16:39:36 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
