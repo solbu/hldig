@@ -599,22 +599,26 @@ int HtHTTP::ParseHeader()
    	    {
 	       // Modification date sent by the server
 		  
-		  strtok(line, " \t"); // Let's position after the field name
-		  char *datestring = strtok (0, "\n\t");
+                  strtok(line, " \t");
+		  char    *token = strtok(0, "\n\t");
+		  while (*token == ' ' || *token == '\t')
+		    token++; // Strip off any whitespace...
 		  
 		  // Set the response modification time
-   	       _response._modification_time = NewDate(datestring);
+		  _response._modification_time = NewDate(token);
 
    	    }
 	    else if( ! mystrncasecmp(line, "date:", 5))
    	    {
 	       // Access date time sent by the server
 		  
-		  strtok(line, " \t"); // Let's position after the field name
-		  char *datestring = strtok (0, "\n\t");
+	          strtok(line, " \t"); // Let's position after the field name
+		  char    *token = strtok(0, "\n\t");
+		  while (*token == ' ' || *token == '\t')
+		    token++; // Strip off any whitespace...
 		  
 		  // Set the response access time
-   	       _response._access_time = NewDate(datestring);
+		  _response._access_time = NewDate(token);
 
    	    }
 	    else if( ! mystrncasecmp(line, "content-type:", 13))
@@ -622,15 +626,23 @@ int HtHTTP::ParseHeader()
 	       // Content - type
 		  
 		  strtok(line, " \t"); // Let's position after the field name
-		  _response._content_type = strtok (0, "\n\t");
+		  char    *token = strtok(0, "\n\t");
+		  while (*token == ' ' || *token == '\t')
+		    token++; // Strip off any whitespace...
+
+		  _response._content_type = token;
 
    	    }
 	    else if( ! mystrncasecmp(line, "content-length:", 15))
    	    {
 	       // Content - length
 		  
-		  strtok(line, " \t"); // Let's position after the field name
-		  _response._content_length = atoi(strtok (0, "\n\t"));
+	          strtok(line, " \t"); // Let's position after the field name
+		  char    *token = strtok(0, "\n\t");
+		  while (*token == ' ' || *token == '\t')
+		    token++; // Strip off any whitespace...
+
+		  _response._content_length = atoi(token);
 
    	    }
 	    else if( ! mystrncasecmp(line, "location:", 9))
@@ -638,7 +650,11 @@ int HtHTTP::ParseHeader()
 	       // Found a location directive - redirect in act
 		  
 		  strtok(line, " \t"); // Let's position after the field name
-		  _response._location = strtok (0, "\n\t");
+		  char    *token = strtok(0, "\n\t");
+		  while (*token == ' ' || *token == '\t')
+		    token++; // Strip off any whitespace...
+
+		  _response._location = token;
 
    	    }
 	    else
