@@ -9,7 +9,7 @@
 //           use the access methods here.
 //	     Configuration parameter used:
 //           wordlist_extend
-//           
+//           wordlist_verbose
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.2 1999/10/18 09:54:47 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.3 1999/10/25 13:11:21 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -44,6 +44,7 @@
 //
 WordList::~WordList()
 {
+    CleanupTrace();
     Close();
 }
 
@@ -57,6 +58,9 @@ WordList::WordList(const Configuration& config_arg) :
     isopen = 0;
     isread = 0;
     extended = config.Boolean("wordlist_extend");
+    verbose =  config.Value("wordlist_verbose",0);
+    traceOn=0;
+    traceRes=NULL;
 }
 
 //*****************************************************************************
@@ -125,7 +129,9 @@ List *WordList::operator [] (const WordReference& wordRef)
 //
 List *WordList::Prefix (const WordReference& prefix)
 {
-  return Collect(prefix, HTDIG_WORDLIST_COLLECT_PREFIX);
+    WordReference prefix2(prefix);
+    prefix2.Key().UndefinedWordSuffix();
+    return Collect(prefix2, HTDIG_WORDLIST_COLLECT);
 }
 
 //*****************************************************************************
@@ -175,8 +181,8 @@ List *WordList::Collect (const WordReference& wordRef, int action)
 //
 List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_callback_t callback, Object &callback_data)
 {
+//      verbose=2;
     List        		*list = 0;
-    int				prefixLength = wordRef.Key().GetWord().length();
     WordKey			prefixKey;
     WordCursor			cursor;
     const WordReference&	last = WordStat::Last();
@@ -186,6 +192,20 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
     String key;
     String data;
 
+    if(verbose){cout << "Walk begin:action:" << action << ":SearchKey:"<< wordRef.Key()
+		     << ": SuffixDeffined:" << wordRef.Key().IsDefinedWordSuffix() << "\n";}
+    int nfields=word_key_info.nfields;
+
+    // find first field that must be checked
+    int first_skip_field=-2;
+    for(int i=0;i<nfields;i++)
+    {
+	if(first_skip_field==-2 && !wordRef.Key().IsDefinedInSortOrder(i)){first_skip_field=-1;}
+	if(first_skip_field==-1 &&  wordRef.Key().IsDefinedInSortOrder(i)){first_skip_field=i;break;}
+    }
+    if(first_skip_field<0){first_skip_field=nfields;}
+
+    if(verbose){cout << "check skip speedup first field first_skip_field:" << first_skip_field << endl;}
 
     if(action & HTDIG_WORDLIST_COLLECTOR) {
       list = new List;
@@ -198,17 +218,13 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
       //
       // Move past the stat data
       //
+	if(verbose>1){cout << "WORDLIST -> starting from begining" <<endl;}
       last.KeyPack(key);
-    } else {
-      const WordKey& wordKey = wordRef.Key();
-      //
-      // If searching for words beginning with a prefix, ignore the
-      // rest of the key even if set, otherwise it will fail to place
-      // the cursor in position.
-      //
-      if(action & HTDIG_WORDLIST_PREFIX)
-	prefixKey.SetWord(wordKey.GetWord());
-      else {
+
+    } else 
+    {
+	const WordKey& wordKey = wordRef.Key();
+
 	prefixKey = wordKey;
 	//
 	// If the key is not a prefix, the start key is
@@ -216,62 +232,129 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
 	// key does not contain any prefix, start from the beginning
 	// of the file.
 	//
-	if(!prefixKey.PrefixOnly())
-	  prefixKey.Clear();
-      }
-
-      //
-      // No heuristics possible, we have to start from the beginning. *sigh*
-      //
-      if(prefixKey.Empty()) {
-	//
-	// Move past the stat data
-	//
-	last.KeyPack(key);
-      } else {
-	prefixKey.Pack(key);
-      }
+    	if(!prefixKey.PrefixOnly()) 
+	{
+	    prefixKey.Clear();
+	    //
+	    // Move past the stat data
+	    //
+	    last.KeyPack(key);
+	}
+	else {prefixKey.Pack(key);}
     }
     if(cursor.Get(key, data, DB_SET_RANGE) != 0)
 	return list;
 
-    do {
-      WordReference found(key, data);
-      //
-      // Don't bother to compare keys if we want to walk all the entries
-      //
-      if(!(action & HTDIG_WORDLIST)) {
-	//
-	// Stop loop if we reach a record whose key does not
-	// match prefix key requirement, provided we have a valid
-	// prefix key.
-	//
-	if(!prefixKey.Empty() &&
-	   !prefixKey.Equal(found.Key(), action & HTDIG_WORDLIST_PREFIX ? prefixLength : 0))
-	  break;
-	//
-	// Skip entries that do not exactly match the specified key.
-	//
-	if(!wordRef.Key().Equal(found.Key(), action & HTDIG_WORDLIST_PREFIX ? prefixLength : 0))
-	  continue;
-      }
 
-      if(action & HTDIG_WORDLIST_COLLECTOR) {
-	list->Add(new WordReference(found));
-      } else if(action & HTDIG_WORDLIST_WALKER) {
-	int ret = callback(this, cursor, &found, callback_data);
+    // **** Walk main loop
+    int cursor_get_flags= DB_NEXT;
+
+    do 
+    {
+	WordReference found(key, data);
+	cursor_get_flags= DB_NEXT;
+
+	if(traceOn)
+	{
+	    if(verbose>1)cout << "adding to trace:" << found << endl;
+	    traceRes->Add(new WordReference(found));
+	}
+
+	if(verbose>1){cout << "*:  found:" <<  found << endl;}
 	//
-	// The callback function tells us that something went wrong, might
-	// as well stop walking.
+	// Don't bother to compare keys if we want to walk all the entries
 	//
-	if(ret == NOTOK) break;
-      } else {
-	// Useless to continue since we're not doing anything
-	break;
-      }
-    } while(cursor.Get(key, data, DB_NEXT) == 0);
+	if(!(action & HTDIG_WORDLIST)) 
+	{
+	    //
+	    // Stop loop if we reach a record whose key does not
+	    // match prefix key requirement, provided we have a valid
+	    // prefix key.
+	    //
+	    if(!prefixKey.Empty() &&
+	       !prefixKey.Equal(found.Key()))
+		break;
+
+	    //
+	    // Skip entries that do not exactly match the specified key.
+	    //
+	    if(!wordRef.Key().Equal(found.Key()))
+	    {
+		SkipUselessSequentialWalking(wordRef.Key(),first_skip_field,found.Key(),key,cursor_get_flags);
+		continue;
+	    }
+	}
+
+	if(action & HTDIG_WORDLIST_COLLECTOR) 
+	{
+	    if(verbose>1){cout << "collecting:" <<  found << endl;}
+	    list->Add(new WordReference(found));
+	} else 
+	if(action & HTDIG_WORDLIST_WALKER) 
+	{
+	    int ret = callback(this, cursor, &found, callback_data);
+	    //
+	    // The callback function tells us that something went wrong, might
+	    // as well stop walking.
+	    //
+	    if(ret == NOTOK) break;
+	} else 
+	{
+	    // Useless to continue since we're not doing anything
+	    break;
+	}
+    } while(cursor.Get(key, data, cursor_get_flags) == 0);
 
     return list;
+}
+
+// SKIP SPEEDUP
+// sequential searching can waste time by searching all keys, for example in:
+// searching for Key: "argh" (unspecified) 10     ... in database:
+// 1: "argh" 2 4
+// 2: "argh" 2 11
+// 3: "argh" 2 15
+// 4: "argh" 2 20
+// 5: "argh" 2 30
+// 6: "argh" 5 1
+// 7: "argh" 5 8
+// 8: "argh" 8 6
+// when sequential search reaches line 2 it will continue 
+// searching lines 3 .. 5 when it could have skiped directly to line 6
+
+int
+WordList::SkipUselessSequentialWalking(const WordKey &wordRefKey,int first_skip_field,WordKey &foundKey,String &key,int &cursor_get_flags)
+{
+    int nfields=word_key_info.nfields;
+    if(verbose>1){cout << "skipchk:" <<  foundKey << endl;}
+    int i;
+    // check if "found" key has a field that is bigger than 
+    // the corresponding "wordRef" key field
+    for(i=first_skip_field;i<nfields;i++)// (field 0 is not set (...it's the word))
+    {
+	if(wordRefKey.IsDefinedInSortOrder(i))
+	{
+	    if( (word_key_info.sort[i].direction == WORD_SORT_ASCENDING
+		 && foundKey.GetInSortOrder(i) > wordRefKey.GetInSortOrder(i))   ||
+		(word_key_info.sort[i].direction == WORD_SORT_DESCENDING
+		 && foundKey.GetInSortOrder(i) < wordRefKey.GetInSortOrder(i))      )
+
+	    { //  field 'i' is bigger in "found" than in "wordRef", we can skip
+		if(verbose>1){cout << "found field:" << i 
+				   << "is past wordref ... maybe we should skip" << endl;}
+				// now find a key that's immediately bigger than "found"
+		if(foundKey.SetToFollowingInSortOrder(i) == OK)
+		{
+		    // ok!, we can setup for skip (instead of next) now
+		    foundKey.Pack(key);
+		    if(verbose>1){cout << "SKIPING TO: " <<  foundKey << endl;}
+		    cursor_get_flags=DB_SET_RANGE;
+		    break;
+		}
+	    }
+	}
+    }
+    return OK;
 }
 
 //*****************************************************************************
@@ -285,6 +368,9 @@ public:
 
   int count;
 };
+
+
+
 
 //*****************************************************************************
 //
@@ -413,3 +499,54 @@ int WordList::Unref(const WordReference& wordRef)
     ret = db.Del(stat) == 0 ? OK : NOTOK;
   return ret;
 }
+
+
+// streaming operators for ascii dumping and reading a list
+class StreamOutData : public Object
+{
+public:
+    ostream &o;
+    StreamOutData(ostream &no):o(no){;}
+};
+int
+wordlist_walk_callback_stream_out(WordList *words, WordCursor& cursor, const WordReference *word, Object &data)
+{
+    ((StreamOutData&)data).o << *word <<endl;
+    return OK;
+}
+
+ostream &
+operator << (ostream &o,  WordList &list)
+{
+
+    WordReference empty;
+    StreamOutData data(o);
+    list.Walk(empty,HTDIG_WORDLIST_WALK, wordlist_walk_callback_stream_out, (Object &)data);  
+    return o;
+}
+
+istream &
+operator >> (istream &is,  WordList &list)
+{
+  WordReference word;
+  while(!is.eof())
+  {
+      if(!is.good())
+      {
+	  cerr << "WordList input from stream failed" << endl;
+	  break;
+      }
+      is >> word;
+      if(is.eof()){break;}
+      if(!is.good())
+      {
+	  cerr << "WordList input from stream failed" << endl;
+	  break;
+      }
+      if(list.verbose>1){cout << "WordList operator >> inserting word:" << word << endl;}
+      list.Insert(word);
+  }
+  return is;
+}
+
+

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.1 1999/10/21 17:39:07 loic Exp $
+// $Id: WordList.h,v 1.5.2.2 1999/10/25 13:11:21 bosc Exp $
 //
 
 #ifndef _WordList_h_
@@ -36,20 +36,18 @@ class WordCursor;
 
 //
 // Possible values of the action argument of WordList::Walk
+// check walk function in WordList.cc for info on these:
 //
 #define HTDIG_WORDLIST			0x0001
-#define HTDIG_WORDLIST_PREFIX		0x0002
-#define HTDIG_WORDLIST_WORD		0x0004
-#define HTDIG_WORDLIST_COLLECTOR	0x0008
-#define HTDIG_WORDLIST_WALKER		0x0010
+#define HTDIG_WORDLIST_WORD		0x0002
+#define HTDIG_WORDLIST_COLLECTOR	0x0004
+#define HTDIG_WORDLIST_WALKER		0x0008
 // 
 // Shorthands
 //
 #define HTDIG_WORDLIST_COLLECT		(HTDIG_WORDLIST|HTDIG_WORDLIST_COLLECTOR)
-#define HTDIG_WORDLIST_COLLECT_PREFIX	(HTDIG_WORDLIST_PREFIX|HTDIG_WORDLIST_COLLECTOR)
 #define HTDIG_WORDLIST_COLLECT_WORD	(HTDIG_WORDLIST_WORD|HTDIG_WORDLIST_COLLECTOR)
 #define HTDIG_WORDLIST_WALK		(HTDIG_WORDLIST|HTDIG_WORDLIST_WALKER)
-#define HTDIG_WORDLIST_WALK_PREFIX	(HTDIG_WORDLIST_PREFIX|HTDIG_WORDLIST_WALKER)
 #define HTDIG_WORDLIST_WALK_WORD	(HTDIG_WORDLIST_WORD|HTDIG_WORDLIST_WALKER)
 
 //
@@ -132,6 +130,13 @@ public:
     // Backend of Collect, Dump, Delete...
     //
     List 		*Walk (const WordReference& word, int action, wordlist_walk_callback_t callback, Object &callback_data);
+    int SkipUselessSequentialWalking(const WordKey &wordRefKey,int i0,WordKey &foundKey,String &key,int &cursor_get_flags);
+
+    // trace what's going on in Walk (intended for debuging only)
+    void BeginTrace(){traceOn=1;traceRes=new List;}
+    List *EndTrace(){traceOn=0;return(traceRes);}
+    void CleanupTrace(){if(traceRes){delete traceRes;traceRes=NULL;}traceOn=0;}
+    List *GetTraceResult(){return(traceRes);}
 
     //
     // Update/get global word statistics statistics
@@ -165,7 +170,16 @@ protected:
     // parameter.
     //
     int				extended;
-    
+
+    // WordList specific debuging flag
+    int                         verbose;
+    int traceOn;
+    List *traceRes;
+
+    friend ostream &operator << (ostream &o, WordList &list); 
+    friend istream &operator >> (istream &o, WordList &list); 
+
+
 private:
 
     WordDB	            	db;

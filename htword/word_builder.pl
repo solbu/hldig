@@ -75,9 +75,10 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: word_builder.pl,v 1.2.2.1 1999/10/15 16:07:41 loic Exp $
+# $Id: word_builder.pl,v 1.2.2.2 1999/10/25 13:11:21 bosc Exp $
 #
 use strict;
+use constant MAX_NFIELDS => 20;
 
 use Carp;
 use Cwd;
@@ -140,6 +141,10 @@ sub handle {
 #         of times this type occurs.
 #
 # typemap = a hash that maps each C type to a symbolic name
+#
+# nfields = total number of fields 
+#
+# max_nfields = maximum allowed for nfields
 #
 # For each field you find in Definition->field hash:
 #
@@ -337,10 +342,26 @@ The .... show a String.
     }
     $config->{'Definition'}->{'minimum_length'} = int(($bits_offset + 7) / 8) if(!$config->{'Definition'}->{'minimum_length'});
 
+    $config->{'Definition'}->{'max_nfields'} = MAX_NFIELDS;
+
+    $config->{'Definition'}->{'nfields'} = $position;
+
     #
     # Sanity checks
     #
     {
+	if($config->{'Definition'}->{'nfields'} >
+	   $config->{'Definition'}->{'max_nfields'} ) 
+	{
+	    print STDERR "nfields ($config->{'Definition'}->{'nfields'}) is greater than max_nfields ($config->{'Definition'}->{'max_nfields'})\n";
+	    exit(1);
+	}
+
+	if($config->{'SortOrder'} !~ /^Word\s+asc/i)
+	{
+	    print STDERR "SortOrder of Word field must be *ascending*\n";
+	    exit(1);
+	}
 	if($config->{'Definition'}->{'types'}->{'String'} != 1) {
 	    print STDERR "There must exactly one field of type String\n";
 	    exit(1);
@@ -559,7 +580,7 @@ sub template_parse {
     # Extract tag list
     #
     my(%assoc);
-    while($content =~ /(?<![A-Z])(_[0-9A-Z-]+_)(?![A-Z])/g) {
+    while($content =~ /(?<![A-Z])(_[0-9A-Z_-]+_)(?![A-Z])/g) {
 	my($tag) = $1;
 	next if($tag =~ /^_SUBTEMPLATE/);
 	$assoc{$tag} = undef;
@@ -637,7 +658,7 @@ sub template_fill {
 
     while (my ($key,$value) = each %$assoc) {
 	$value = '' unless defined $value;
-	$text =~ s/$key/$value/g;
+	$text =~ s/(?<=\b)$key(?=\b)/$value/g;
     }
 
     if ($template->{params}->{post_fill}) {

@@ -6,12 +6,12 @@
 //          (see htString.h). 
 //          The exact content of the key structure is defined by the file used
 //          by word_builder.pl to build the actual WordKey.h from WordKey.h.tmpl (word.desc).
-//          The class implements the in-memory form of the key, with accessors (Set, Get, Unset)
+//          The class implements the in-memory form of the key, with accessors (Set, Get, Undefined)
 //          and specialized accessors (SetWord, SetFlags...) according to the actual
 //          definition of the key.
 //          Each field has a bit in the 'set' member that says if it is set or not. This
 //          bit allows to say that a particular field is 'undefined' regardless of the actual
-//          value stored in the byte. The members IsSet, Set, Unset are used to manipulate
+//          value stored in the byte. The members IsDefined, SetDefined, Undefined are used to manipulate
 //          the 'defined' status of a field.
 //          The Pack and Unpack functions are used to convert to and from the disk storage of
 //          the key.
@@ -37,8 +37,15 @@
 _FIELDNAMES_
 
 _SERIALS_
+// WORDSUFFIX:
+// field in set flag that says if a word is just a prefix (incomplete word)
+// WORD_KEY_WORDSUFFIX_DEFINED -> means that word IS complete (not a prefix)
+#define  WORD_KEY_WORDSUFFIX_DEFINED (1 << 30)
+#define WORD_KEY_WORDFULLY_DEFINED ( WORD_KEY_WORDSUFFIX_DEFINED | WORD_KEY_WORD_DEFINED )
 
-//
+
+#define WORD_KEY_MAX_NFIELDS _MAX_NFIELDS_
+
 // C comparison function interface for Berkeley DB (bt_compare)
 //
 int word_db_cmp(const DBT *a, const DBT *b);
@@ -63,6 +70,9 @@ struct WordKeyInfo {
   //
   // Array describing the fields, in encoding order. 
   //
+#define WORD_SORT_ASCENDING	1
+#define WORD_SORT_DESCENDING	2
+
   struct {
     char* name;				// Symbolic name of the field
     int type;				// WORD_ISA_<type> of the field
@@ -72,15 +82,25 @@ struct WordKeyInfo {
     int bytes_offset;			// Packed info (see word_builder.pl)
     int bits;				// Packed info (see word_builder.pl)
     int index;				// Index of the object in the pool_<type> array
+    int direction;			// Sorting direction
+    int encoding_position;              
+    int sort_position;
   } fields[_NFIELDS_];
   //
   // Array describing the fields, in sort order.
   //
   struct {
-    int field_number;			// Index of matching record in fields
-#define WORD_SORT_ASCENDING	1
-#define WORD_SORT_DESCENDING	2
+    char* name;				// Symbolic name of the field
+    int type;				// WORD_ISA_<type> of the field
+    int lowbits;			// Packed info (see word_builder.pl)
+    int lastbits;			// Packed info (see word_builder.pl)
+    int bytesize;			// Packed info (see word_builder.pl)
+    int bytes_offset;			// Packed info (see word_builder.pl)
+    int bits;				// Packed info (see word_builder.pl)
+    int index;				// Index of the object in the pool_<type> array
     int direction;			// Sorting direction
+    int encoding_position;              
+    int sort_position;
   } sort[_NFIELDS_];
   //
   // Total number of fields
@@ -124,15 +144,49 @@ public:
   // Accessors
   //
 
+
+    inline const String&  GetWord() const { return pool_String[WORD_KEY_WORD]; }
+    inline String&	  GetWord() { return pool_String[WORD_KEY_WORD]; }
+    inline void	          SetWord(String arg) { pool_String[WORD_KEY_WORD] = arg; set |= WORD_KEY_WORDFULLY_DEFINED; } 
+    inline void	          UndefinedWord() { pool_String[WORD_KEY_WORD].trunc(); set &=  ~WORD_KEY_WORDFULLY_DEFINED; } 
+    inline void		  UndefinedWordSuffix() {set &= ~WORD_KEY_WORDSUFFIX_DEFINED;}
+    inline void		  SetDefinedWordSuffix() {set |= WORD_KEY_WORDSUFFIX_DEFINED;}
+    inline int            IsDefinedWordSuffix() const {return( set & WORD_KEY_WORDFULLY_DEFINED);}
 _ACCESSORS_
 
   //
   // Field value existenz information
   //
-  int	IsSet(int position) const { return set & (1 << position); }
-  void	Set(int position) { set |= (1 << position); }
-  void	Unset(int position) { set &= ~(1 << position); }
+  int	IsDefined(int position) const { return set & (1 << position); }
+  void	SetDefined(int position) { set |= (1 << position); }
+  void	Undefined(int position) { set &= ~(1 << position); }
 
+  int	IsDefinedInSortOrder(int position) const { return( IsDefined(word_key_info.sort[position].encoding_position) ); }
+  void	SetDefinedInSortOrder(int   position)    {        SetDefined(word_key_info.sort[position].encoding_position); }
+  void	UndefinedInSortOrder(int position)       {         Undefined(word_key_info.sort[position].encoding_position); }
+
+
+// get/set numerical fields
+
+    inline unsigned int GetInSortOrder(int position) const
+    {
+	switch(word_key_info.sort[position].type) 
+	{
+#define STATEMENT(type)  case WORD_ISA_##type:return pool_##type[word_key_info.sort[position].index]; break
+#include"WordCaseIsAStatements.h"
+	}
+	return(0);
+    }
+    inline void         SetInSortOrder(int position,unsigned int val)
+    {
+	SetDefinedInSortOrder(position);
+	switch(word_key_info.sort[position].type) 
+	{
+#define STATEMENT(type)  case WORD_ISA_##type:pool_##type[word_key_info.sort[position].index]=val;break
+#include"WordCaseIsAStatements.h"
+	}
+    }
+    
   //
   // Storage format conversion
   //
@@ -150,13 +204,16 @@ _ACCESSORS_
   //
   int		Filled() const { return set == (unsigned int)(1 << word_key_info.nfields) - 1; }
   int		Empty() const { return set == 0; }
-  int 		Equal(const WordKey& other, int prefix_length) const;
+  int 		Equal(const WordKey& other) const;
   int 		PackEqual(const WordKey& other) const;
   int		Prefix() const;
   static int 	Compare(const String& a, const String& b);
   static int 	Compare(const char *a, int a_length, const char *b, int b_length);
 
-  friend ostream &operator << (ostream &o, const WordKey &key);
+  int SetToFollowingInSortOrder(int position=-1);
+
+    friend ostream &operator << (ostream &o, const WordKey &key);
+    friend istream &operator >> (istream &is,  WordKey &key);
 
 private:
 
@@ -246,31 +303,25 @@ sub {
     my($clear) = '';
     my($accessors) = '';
     my($meta) = '';
-    my($nfields) = 0;
     my($sortinfo) = '';
     my($serials) = '';
     my($typedefs) = '';
     my($typeindex) = '';
+    my(%field2direction);
+    my(%field2meta);
 
     #
     # Loop over the fields, in sorting order
     #
     {
 	my($desc);
+	my($position) = 0;
 	foreach $desc (split(',', $config->{'SortOrder'})) {
 	    my($field, $direction) = split(' ', $desc);
 	    my($spec) = $config->{'Definition'}->{$field};
 
-	    $direction = $direction =~ /^asc/i ? 'WORD_SORT_ASCENDING' : 'WORD_SORT_DESCENDING';
-	    #
-	    # Meta information about the sort, refer to the meta information for fields
-	    #
-	    $sortinfo .= <<EOF;
-	{
-		$spec->{'position'},
-		$direction
-	},
-EOF
+	    $field2direction{$field} = [ $direction  =~ /^asc/i ? 'WORD_SORT_ASCENDING' : 'WORD_SORT_DESCENDING' , $position ];
+	    $position++;
 	}
     }
     
@@ -280,6 +331,7 @@ EOF
     #
     {
 	my($field);
+	my($position) = 0;
 	foreach $field (split(',', $config->{'EncodingOrder'})) {
 	    my($spec) = $config->{'Definition'}->{$field};
 	    my($type) = $spec->{'type'};
@@ -302,17 +354,18 @@ EOF
 	    $clear .= "\tpool_$type" . "[$define] = 0;\n";
 
 	    #
-	    # Set, Get, Unset accessors for the field
+	    # Set, Get, Undefined accessors for the field
 	    #
-	    $accessors .= "\tinline const $type&\tGet$field() const { return pool_$type" . "[$define]; }\n";
-	    $accessors .= "\tinline $type&\tGet$field() { return pool_$type" . "[$define]; }\n";
-	    $accessors .= "\tinline void\tSet$field($type arg) { pool_$type\[$define] = arg; set |= $undef; } \n";
-	    $accessors .= "\tinline void\tUnset$field() { pool_$type\[$define] = 0; set &= ~$undef; } \n";
-
+	    if($field ne "Word") {
+		$accessors .= "\tinline $type   Get$field() const { return pool_$type" . "[$define]; }\n";
+		$accessors .= "\tinline $type&  Get$field() { return pool_$type" . "[$define]; }\n";
+		$accessors .= "\tinline void\tSet$field($type arg) { pool_$type\[$define] = arg; set |= $undef; } \n";
+		$accessors .= "\tinline void\tUndefined$field() { pool_$type\[$define] = 0; set &= ~$undef; } \n";
+	    }
 	    #
 	    # Meta information for the structure
 	    #
-	    $meta .= <<EOF;
+	    $field2meta{$field} = <<EOF;
 	{
 		"$field",
 		WORD_ISA_$type,
@@ -321,11 +374,15 @@ EOF
 		$spec->{'bytesize'},
 		$spec->{'bytes_offset'},
 		$spec->{'bits'},
-		$define
+		$define,
+		$field2direction{$field}->[0],
+		$position,					  
+		$field2direction{$field}->[1]
 	},
 EOF
-	    $nfields++;
+            $meta .= $field2meta{$field};
 	    $types{$type}++;
+	    $position++;
 	}
     }
     $accessors .= "\n";
@@ -357,9 +414,24 @@ EOF
 	    #
 	    # Generic accessor for each type
 	    #
-	    $accessors .= "\tinline const $type&	Get${type}(int position) const { return pool_$type\[word_key_info.fields[position].index]; }\n";
-	    $accessors .= "\tinline $type&	Get${type}(int position) { return pool_$type\[word_key_info.fields[position].index]; }\n";
-	    $accessors .= "\tinline void	Set${type}(const $type& arg, int position) { pool_$type\[word_key_info.fields[position].index] = arg; Set(position); }\n";
+
+	    if($type ne "String") {
+		$accessors .= "\tinline $type	Get${type}(int position) const { return pool_$type\[word_key_info.fields[position].index]; }\n";
+		$accessors .= "\tinline $type&	Get${type}(int position) { return pool_$type\[word_key_info.fields[position].index]; }\n";
+		$accessors .= "\tinline void	Set${type}(const $type& arg, int position) { pool_$type\[word_key_info.fields[position].index] = arg; SetDefined(position); }\n";
+	    }
+	}
+    }
+
+    #
+    # Loop over the fields, in sorting order
+    #
+    {
+	my($desc);
+	foreach $desc (split(',', $config->{'SortOrder'})) {
+	    my($field, $direction) = split(' ', $desc);
+	
+	    $sortinfo .= $field2meta{$field};
 	}
     }
 
@@ -370,7 +442,8 @@ EOF
     template_set($assoc, '_FIELDNAMES_', $fieldnames);
     template_set($assoc, '_CLEAR_', $clear);
     template_set($assoc, '_ACCESSORS_', $accessors);
-    template_set($assoc, '_NFIELDS_', $nfields);
+    template_set($assoc, '_MAX_NFIELDS_',  $config->{'Definition'}->{'max_nfields'});
+    template_set($assoc, '_NFIELDS_',  $config->{'Definition'}->{'nfields'});
     template_set($assoc, '_SORTINFO_', $sortinfo);
     template_set($assoc, '_SERIALS_', $serials);
     template_set($assoc, '_MINIMUMLENGTH_', $config->{'Definition'}->{'minimum_length'});
