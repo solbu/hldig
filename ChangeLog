@@ -1,3 +1,8 @@
+Fri Nov 17 14:52:37 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/acroconv.pl: Added external converter script to convert
+	PDFs with acroread.
+
 Mon Nov  6 12:13:13 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc (GetLocal, GetLocalUser): move String definition
