@@ -4,66 +4,58 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.24  1998/12/08 02:54:24  ghutchis
+// Use server_wait_time to call sleep() before requests. Should help prevent
+// server abuse. :-)
+//
 // Revision 1.23  1998/12/06 18:44:00  ghutchis
 // Don't add the text of descriptions to the word db here, it's better to do it
 // in the DocumentRef itself.
 //
 // Revision 1.22  1998/12/05 00:52:55  ghutchis
-//
 // Added a parameter to Initial function to prevent URLs from being checked
 // twice during an update dig.
 //
 // Revision 1.21  1998/12/02 02:45:10  ghutchis
-//
 // Update hopcount correctly by taking the shortest paths to documents.
 //
 // Revision 1.20  1998/11/27 18:33:37  ghutchis
-//
 // Changed Retriever::got_word to check for small words, valid_punctuation to
 // remove bugs in HTML.cc.
 //
 // Revision 1.18  1998/11/22 19:14:16  ghutchis
-//
 // Use "description_factor" to weight link descriptions with the documents at
 // the end of the link.
 //
 // Revision 1.17  1998/11/16 16:10:17  ghutchis
-//
 // Fix back link count.
 //
 // Revision 1.16  1998/11/15 22:29:27  ghutchis
-//
 // Implement docBackLinks backlink count.
 //
 // Revision 1.15  1998/11/01 00:00:40  ghutchis
-//
 // Replaced system calls with htlib/my* functions.
 //
 // Revision 1.14  1998/10/26 20:43:31  ghutchis
-//
 // Fixed bug introduced by Oct 18 change. Authorization will not be cleared.
 //
 // Revision 1.13  1998/10/21 16:34:19  bergolth
-// Added translation of server names. Additional limiting after normalization of the URL.
+// Added translation of server names. Additional limiting after normalization
+// of the URL.
 //
 // Revision 1.12  1998/10/18 20:37:41  ghutchis
-//
 // Fixed database corruption bug and other misc. cleanups.
 //
 // Revision 1.11  1998/10/09 04:34:06  ghutchis
-//
 // Fixed typos
 //
 // Revision 1.10  1998/10/02 17:17:20  ghutchis
-//
 // Added check for docs marked noindex--words aren't indexed anymore
 //
 // Revision 1.8  1998/09/08 03:29:09  ghutchis
-//
 // Clean up for 3.1.0b1.
 //
 // Revision 1.7  1998/09/07 04:37:16  ghutchis
-//
 // Added DocState for documents marked as "noindex".
 //
 // Revision 1.6  1998/08/11 08:58:31  ghutchis
@@ -75,11 +67,9 @@
 // directory. Fixed spelling mistake in "elipses" attributes.
 //
 // Revision 1.4  1998/08/03 16:50:34  ghutchis
-//
 // Fixed compiler warnings under -Wall
 //
 // Revision 1.3  1998/07/09 09:38:59  ghutchis
-//
 // Added support for local file digging using patches by Pasi. Patches
 // include support for local user (~username) digging.
 //
@@ -240,6 +230,10 @@ Retriever::Start()
     Server	*server;
     char	*server_sig;
     URLRef	*ref;
+    int         sleep_time = config.Value("server_wait_time", 0);
+    int         ever_sleep;
+    
+    ever_sleep = (sleep != 0); // Do we ever need to sleep?
 
     while (more)
     {
@@ -267,6 +261,15 @@ Retriever::Start()
 	    // variable.
 	    //
 	    more = 1;
+
+	    //
+	    // To prevent servers from overloading, we'll put in an option
+	    // to sleep for some time before getting the document.
+	    // It's not efficient, but it should help.
+	    //
+	    if (ever_sleep)
+	      sleep(sleep_time);
+	      
 
 	    //
 	    // Deal with the actual URL.
