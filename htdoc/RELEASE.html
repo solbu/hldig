@@ -21,6 +21,51 @@
 	  more details on the code changes.
 	</p>
 	<p>
+	<strong>Release notes for htdig-3.1.3</strong> XX Sep 1999<br>
+	This version fixes a number of bugs in the 3.1.2 release and
+	is the latest stable release of ht://Dig. It is the only version
+	recommended for production servers and users of all previous
+	versions are suggested to upgrade.
+	</p>
+	<ul>
+	<li>Fixed a long-standing bug where search queries containing
+	    punctuation would not be highlighted in excerpts.</li>
+	<li>Fixed a bug where SGML entities inside HTML tags were not
+	    expanded.</li>
+	<li>Fixed the <a
+	    href="attrs.html#server_aliases">server_aliases</a>
+	    attribute to default to port 80 if ommitted.
+	<li>Fixed a bug in URL parsing, where documents ending in the
+	    value used for remove_default_doc were ignored. For
+	    example, a URL ending in /left_index.html would become /.
+	<li>Fixed META robot parsing to correctly parse multiple
+	    directives.</li>
+	<li>Fixed a coredump when generating the metaphone fuzzy
+	    database.</li>
+	<li>Fixed the behavior of <a
+	    href="attrs.html#modification_time_is_now"> to work as
+	    documented.</li>
+	<li>Fixed the behavior of htdig to block out the
+	    username/password set on the command-line in process
+	    listing.</li>
+	<li>Fixed a bug with external parsers to prevent shell escapes
+	    in filenames.</li>
+	<li>Handles the ispell endings lists better so that suffixes
+	    more closely match grammatical rules.</li>
+	<li>Changed the maximum word length to a run-time option, set
+	    with the new attribute <a
+	    href="attrs.html#maximum_word_length">maximum_word_length</a>.
+	<li>Added support for &lt;EMBED&gt;, &lt;OBJECT&gt;, and
+	    &lt;LINK&gt; HTML tags.
+	<li>
+	<li>A variety of other bugs were fixed, see the 
+	    <a href="ChangeLog">ChangeLog</a> for details.</li>
+	<li>When indexing, htdig should now attempt to index compound
+	    words as separate words in addition to a compound word. For
+	    example, "pdf_parser" would also be indexed as "pdf" and "parser."
+	<li>Once again, thanks to everyone who reported bugs and bug
+	    fixes.</li>
+	</ul>
 	<strong>Release notes for htdig-3.1.2</strong> 21 Apr 1999<br>
 	This version fixes a number of bugs in the 3.1.1 release and
 	is the latest stable release of ht://Dig. It is highly
@@ -979,7 +1024,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Tue Apr 20 14:31:44 EDT 1999
+Last modified: Sun Sep 12 15:15:25 CDT 1999
 <!-- hhmts end -->
   </body>
 </html>

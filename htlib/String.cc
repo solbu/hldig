@@ -1,10 +1,10 @@
 //
 // Implementation of String class
 //
-// $Id: String.cc,v 1.16.2.1 1999/03/23 20:58:52 grdetil Exp $
+// $Id: String.cc,v 1.16.2.2 1999/09/12 20:26:03 ghutchis Exp $
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.16.2.1 1999/03/23 20:58:52 grdetil Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.16.2.2 1999/09/12 20:26:03 ghutchis Exp $";
 #endif
 
 
@@ -289,6 +289,18 @@ int String::indexOf(char ch)
 {
     int		i;
     for (i = 0; i < Length; i++)
+    {
+	if (Data[i] == ch)
+	    return i;
+    }
+    return -1;
+}
+
+int String::indexOf(char ch, int pos)
+{
+    if (pos >= Length)
+      return -1;
+    for (int i = pos; i < Length; i++)
     {
 	if (Data[i] == ch)
 	    return i;
