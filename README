@@ -21,6 +21,8 @@ This distribution includes:
 
     * htlib     - A small general purpose C++ class library
 
+    * htnet     - Net stuff classes
+
     * htcommon  - ht://Dig specific classes
 
     * htdoc     - ht://Dig documentation in HTML
