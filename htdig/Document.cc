@@ -4,6 +4,10 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.8  1997/12/16 15:57:22  turtle
+// Added little patch by Tobias Oetiker <oetiker@ee.ethz.ch> that should
+// fix problems with timeouts.
+//
 // Revision 1.7  1997/07/07 22:15:45  turtle
 // Removed old getdate() code that replaced '-' with ' '.
 //
@@ -28,7 +32,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.7 1997/07/07 22:15:45 turtle Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.8 1997/12/16 15:57:22 turtle Exp $";
 #endif
 
 #include <signal.h>
@@ -242,6 +246,7 @@ timeout()
 {
     if (debug > 1)
 	printf(" Timeout\n");
+    current_connection->ndelay();
     current_connection->stop_io();
 
     struct sigaction    sa;
