@@ -22,8 +22,13 @@
 	install the 3.2 release in a separate directory tree and treat
 	everything as if you were installing it for the first
 	time. This is not just because this is a beta release. There
-	are two main reasons for this:
+	are several main reasons for this:
 	<ul>
+	<li>The htmerge program now <strong>only</strong> merges. You
+	do not need to run it after running htdig as before. The
+	&quot;cleanup&quot; duties have been moved to the <a
+	href="htpurge.html">htpurge</a> program that also deletes
+	URLs. The sample rundig script is modified accordingly.</li>
 	<li>The default directory structure of this release is
 	different from previous releases, more in line with other UNIX
 	programs.</li>
@@ -31,7 +36,12 @@
 	cannot read databases from previous versions since the new
 	formats have significantly more information and this cannot be
 	reconstructed from old databases. This goes for fuzzy
-	databases as well.</li>
+	databases as well. Future versions can use the new <a
+	href="htdump.html">htdump</a> and <a
+	href="htload.html">htload</a> programs to dump and load
+	databases to/from text files. These will also allow databases
+	to be transfered between platforms.
+	</li>
 	</ul>
 	Text files, such as config files, result templates, etc. are
 	the same between releases, so you will probably wish to copy
@@ -51,17 +61,14 @@
 	<li>Date-based searching--restricting to a range of dates.</li>
 	<li>Implementation of a more accurate scoring system.</li>
 	<li>Parallel indexing and searching.</li>
-	<li>"Collections" of multiple databases.</li>
 	<li>Support for nntp: and ftp: access</li>
 	<li>Detection of loops and/or duplicate documents</li>
-	<li>An accent-based fuzzy algorithm: match r&eacute;sum&eacute;
-	with resume.</li>
 	</ul>
 	Please send comments, patches, etc. to the &lt;<a
 	href="mailto:htdig3-dev@htdig.org">htdig3-dev@htdig.org</a>&gt;
 	mailing list.
 
 	<hr size="4" noshade>
-		Last modified: $Date: 2000/04/11 20:37:54 $
+		Last modified: $Date: 2000/08/29 13:53:29 $
   </body>
 </html>
