@@ -341,6 +341,9 @@
 	with documents. Some HTTP servers do not have a correct
 	list of MIME-types and so can advertise certain
 	documents as text while they are some binary format.
+	If the list is empty, then all extensions are acceptable,
+	provided they pass other criteria for acceptance or rejection.
+	See also <a href="#valid_extensions">valid_extensions</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -740,8 +743,7 @@ http://www.htdig.org/
 	compression library was available when compiled,
 	this attribute controls
 	the amount of compression used in the <a
-	href="#doc_db">doc_db</a> file. Defaults to zero to
-	provide backward compatility with old databases.
+	href="#doc_excerpt">doc_excerpt</a> file.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -1258,9 +1260,9 @@ http://www.htdig.org/
 		  <dd>
 	This file will contain a Berkeley database of documents
 	indexed by document number. It contains all the information
-	gathered for each document, so this file can become
-	rather large if <a href="#max_head_length"><em>
-	max_head_length</em></a> is set to a large value.
+	gathered for each document, except the document excerpts
+	which are stored in the <a href="#doc_excerpt"><em>
+	doc_excerpt</em></a> file.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -1292,13 +1294,15 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			
+			string
 		  </dd>
 		  <dt>
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			
+			<a href="htdig.html">htdig</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1310,14 +1314,28 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-
+	This file will contain a Berkeley database of document excerpts
+	indexed by document number. It contains all the text
+	gathered for each document, so this file can become
+	rather large if <a href="#max_head_length"><em>
+	max_head_length</em></a> is set to a large value.
+	The size can be reduced by setting the
+	<a href="#compression_level"><em>compression_level</em></a>,
+	if supported on your system.
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
 			<table border="0">
-			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
+			  <tr>
+				<td valign="top">
+				  doc_excerpt:
+				</td>
+				<td nowrap>
+				     ${database_base}excerpts.db
+				</td>
+			  </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -2359,13 +2377,13 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			
+			number
 		  </dd>
 		  <dt>
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -2377,14 +2395,29 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-
+			This is a factor which will be used to multiply the
+			weight of words between &lt;h1&gt; and &lt;/h1&gt;
+			tags, as well as headings of levels &lt;h2&gt; through
+			&lt;h6&gt;. It is used to assign the level of importance
+			to headings. Setting a factor to 0 will cause words
+			in these headings to be ignored. The number may be a
+			floating point number. See also the
+			<a href="#title_factor">title_factor</a> and
+			<a href="#text_factor">text_factor</a> attributes.
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
 			<table border="0">
-			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
+			  <tr>
+				<td valign="top">
+				  heading_factor:
+				</td>
+				<td nowrap>
+				     20
+				</td>
+			  </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -3585,13 +3618,13 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			
+			number
 		  </dd>
 		  <dt>
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3603,14 +3636,26 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-
+	While gathering descriptions of URLs,
+	<a href="htdig.html">htdig</a> will only record up to this
+	number of descriptions, in the order in which it encounters
+	them. This is used to prevent the database entry for a document
+	from growing out of control if the document has a huge number
+	of links to it.
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
 			<table border="0">
-			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
+			  <tr>
+				<td valign="top">
+				  max_descriptions:
+				</td>
+				<td nowrap>
+				     15
+				</td>
+			  </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -4325,13 +4370,13 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			
+			number
 		  </dd>
 		  <dt>
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4343,14 +4388,23 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-
+	This sets the minimum length of words used by the
+	"speling" fuzzy matching algorithm. Words shorter than this
+	will not be used in this fuzzy matching.
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
 			<table border="0">
-			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
+			  <tr>
+				<td valign="top">
+				  minimum_speling_length:
+				</td>
+				<td nowrap>
+				     3
+				</td>
+			  </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -4461,7 +4515,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 				  modification_time_is_now:
 				</td>
 				<td nowrap>
-				     true
+				     no
 				</td>
 			  </tr>
 			</table>
@@ -4915,8 +4969,9 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 		  </dt>
 		  <dd>
 	This string marks the end of a section of an HTML file that should be
-	completely ignored when indexing. It works together with noindex_start
-	described below. As in the defaults, this can be SGML comment 
+	completely ignored when indexing. It works together with
+	<a href="#noindex_start">noindex_start</a>.
+	As in the defaults, this can be SGML comment 
 	declarations that can be inserted anywhere in the documents to exclude 
 	different sections from being indexed. However, existing tags can also be 
 	used; this is especially useful to exclude some sections from being indexed 
@@ -4973,8 +5028,9 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 		  </dt>
 		  <dd>
 	This string marks the start of a section of an HTML file that should be
-	completely ignored when indexing. It works together with noindex_end
-	described above. As in the defaults, this can be SGML comment
+	completely ignored when indexing. It works together with
+	<a href="#noindex_end">noindex_end</a>.
+	As in the defaults, this can be SGML comment
 	declarations that can be inserted anywhere in the documents to exclude
 	different sections from being indexed. However, existing tags can also be
 	used; this is especially useful to exclude some sections from being indexed
@@ -5199,7 +5255,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			PDF_PARSER -toPostScript -pairs
+			PDF_PARSER -toPostScript
 		  </dd>
 		  <dt>
 			<em>description:</em>
@@ -5430,13 +5486,13 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			
+			number
 		  </dd>
 		  <dt>
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5448,14 +5504,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-
+	The "regex" fuzzy algorithm could potentially match a
+	very large number of words. This value limits the
+	number of words each regular expression can match. Note
+	that this does not limit the number of documents that
+	are matched in any way.
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
 			<table border="0">
-			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
+			  <tr>
+				<td valign="top">
+				  regex_max_words:
+				</td>
+				<td nowrap>
+				     10
+				</td>
+			  </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -7223,7 +7290,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	document. Setting a factor to 0 will cause normal words
 	to be ignored. The number may be a floating point
 	number. See also the <a href="#heading_factor">
-	heading_factor_[1-6]</a>, <a href="#title_factor">
+	heading_factor</a>, <a href="#title_factor">
 	title_factor</a>, and <a href="#keywords_factor">
 	keywords_factor</a> attributes.
 		  </dd>
@@ -7334,7 +7401,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	factor to 0 will cause words in the title to be
 	ignored. The number may be a floating point number. See
 	also the <a href="#heading_factor">
-	heading_factor_[1-6]</a> attribute.
+	heading_factor</a> attribute.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7842,13 +7909,13 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			
+			boolean
 		  </dd>
 		  <dt>
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7860,14 +7927,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-
+	If set to true, htdig will use META date tags in documents,
+	overriding the modification date returned by the server.
+	Any documents that do not have META date tags will retain
+	the last modified date returned by the server or found on
+	the local file system.
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
 			<table border="0">
-			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
+			  <tr>
+				<td valign="top">
+				  use_doc_date:
+				</td>
+				<td nowrap>
+				     true
+				</td>
+			  </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -8041,13 +8119,13 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			
+			string list
 		  </dd>
 		  <dt>
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -8059,14 +8137,31 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-
+	This is a list of extensions on URLs which are
+	the only ones considered acceptable. This list is used to
+	supplement the MIME-types that the HTTP server provides
+	with documents. Some HTTP servers do not have a correct
+	list of MIME-types and so can advertise certain
+	documents as text while they are some binary format.
+	If the list is empty, then all extensions are acceptable,
+	provided they pass other criteria for acceptance or rejection.
+	If the list is not empty, only documents with one of the
+	extensions in the list are parsed.
+	See also <a href="#bad_extensions">bad_extensions</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
 			<table border="0">
-			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
+			  <tr>
+				<td valign="top">
+				  valid_extensions:
+				</td>
+				<td nowrap>
+				     .html .htm .shtml
+				</td>
+			  </tr>
 			</table>
 		  </dd>
 		</dl>

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.64.2.6 1999/10/27 18:58:31 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.64.2.7 1999/10/27 21:37:57 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -78,6 +78,9 @@ ConfigDefaults	defaults[] =
 	with documents. Some HTTP servers do not have a correct
 	list of MIME-types and so can advertise certain
 	documents as text while they are some binary format.
+	If the list is empty, then all extensions are acceptable,
+	provided they pass other criteria for acceptance or rejection.
+	See also <a href=\"#valid_extensions\">valid_extensions</a>.
 " },
 { "bad_querystr", "", 
 	"string list", "htdig", "bad_querystr: forum=private section=topsecret&amp;passwd=required", "
@@ -143,8 +146,7 @@ http://www.htdig.org/", "
 	compression library was available when compiled,
 	this attribute controls
 	the amount of compression used in the <a
-	href=\"#doc_db\">doc_db</a> file. Defaults to zero to
-	provide backward compatility with old databases.
+	href=\"#doc_excerpt\">doc_excerpt</a> file.
 " },
 
 { "config_dir", CONFIG_DIR, 
@@ -234,13 +236,20 @@ http://www.htdig.org/", "
 	"string", "htdig htmerge htsearch", "doc_db: ${database_base}documents.db", "
 	This file will contain a Berkeley database of documents
 	indexed by document number. It contains all the information
+	gathered for each document, except the document excerpts
+	which are stored in the <a href=\"#doc_excerpt\"><em>
+	doc_excerpt</em></a> file.
+" },
+{ "doc_excerpt", "${database_base}.excerpts", 
+	"string", "htdig htmerge htsearch", "doc_excerpt: ${database_base}excerpts.db", "
+	This file will contain a Berkeley database of document excerpts
+	indexed by document number. It contains all the text
 	gathered for each document, so this file can become
 	rather large if <a href=\"#max_head_length\"><em>
 	max_head_length</em></a> is set to a large value.
-" },
-{ "doc_excerpt", "${database_base}.excerpts", 
-	"", "", "", "
-
+	The size can be reduced by setting the
+	<a href=\"#compression_level\"><em>compression_level</em></a>,
+	if supported on your system.
 " },
 { "doc_index", "${database_base}.docs.index", 
 	"string", "htmerge htdig", "doc_index: documents.index.db", "
@@ -667,8 +676,16 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 " },
 
 { "heading_factor", "5", 
-	"", "", "", "
-
+	"number", "htsearch", "heading_factor: 20", "
+			This is a factor which will be used to multiply the
+			weight of words between &lt;h1&gt; and &lt;/h1&gt;
+			tags, as well as headings of levels &lt;h2&gt; through
+			&lt;h6&gt;. It is used to assign the level of importance
+			to headings. Setting a factor to 0 will cause words
+			in these headings to be ignored. The number may be a
+			floating point number. See also the
+			<a href=\"#title_factor\">title_factor</a> and
+			<a href=\"#text_factor\">text_factor</a> attributes.
 " },
 
 { "htnotify_sender", "webmaster@www", 
@@ -891,8 +908,13 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	description will go on until the end of the document.)
 " },
 { "max_descriptions", "5", 
-	"", "", "", "
-
+	"number", "htdig", "max_descriptions: 15", "
+	While gathering descriptions of URLs,
+	<a href=\"htdig.html\">htdig</a> will only record up to this
+	number of descriptions, in the order in which it encounters
+	them. This is used to prevent the database entry for a document
+	from growing out of control if the document has a huge number
+	of links to it.
 " },
 { "max_doc_size", "100000", 
 	"number", "htdig", "max_doc_size: 5000000", "
@@ -995,8 +1017,10 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	will not be used in prefix matching.
 " },
 { "minimum_speling_length", "5", 
-	"", "", "", "
-
+	"number", "htsearch", "minimum_speling_length: 3", "
+	This sets the minimum length of words used by the
+	\"speling\" fuzzy matching algorithm. Words shorter than this
+	will not be used in this fuzzy matching.
 " },
 { "minimum_word_length", "3", 
 	"number", "htdig htsearch", "minimum_word_length: 2", "
@@ -1009,7 +1033,7 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	list.
 " },
 { "modification_time_is_now", "true", 
-	"boolean", "htdig", "modification_time_is_now: true", "
+	"boolean", "htdig", "modification_time_is_now: no", "
 	This sets ht://Dig's response to a server that does not
 	return a modification date. By default, it stores
 	nothing. By setting modification_time_is_now, it will store
@@ -1089,8 +1113,9 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 { "noindex_end", "<!--/htdig_noindex-->", 
 	"string", "htdig", "noindex_end: &lt;/SCRIPT&gt;", "
 	This string marks the end of a section of an HTML file that should be
-	completely ignored when indexing. It works together with noindex_start
-	described below. As in the defaults, this can be SGML comment 
+	completely ignored when indexing. It works together with
+	<a href=\"#noindex_start\">noindex_start</a>.
+	As in the defaults, this can be SGML comment 
 	declarations that can be inserted anywhere in the documents to exclude 
 	different sections from being indexed. However, existing tags can also be 
 	used; this is especially useful to exclude some sections from being indexed 
@@ -1101,8 +1126,9 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 { "noindex_start", "<!--htdig_noindex-->", 
 	"string", "htdig", "noindex_start: &lt;SCRIPT", "
 	This string marks the start of a section of an HTML file that should be
-	completely ignored when indexing. It works together with noindex_end
-	described above. As in the defaults, this can be SGML comment
+	completely ignored when indexing. It works together with
+	<a href=\"#noindex_end\">noindex_end</a>.
+	As in the defaults, this can be SGML comment
 	declarations that can be inserted anywhere in the documents to exclude
 	different sections from being indexed. However, existing tags can also be
 	used; this is especially useful to exclude some sections from being indexed
@@ -1154,7 +1180,7 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	or embed images. The strings need to be quoted if they contain
 	spaces.
 " },
-{ "pdf_parser", PDF_PARSER " -toPostScript -pairs", 
+{ "pdf_parser", PDF_PARSER " -toPostScript", 
 	"string", "htdig", "pdf_parser: /usr/local/Acrobat3/bin/acroread -toPostScript -pairs", "
 	Set this to the path of the program used to parse PDF
 	files, including all command-line options. The
@@ -1216,8 +1242,12 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	previous page of matches.
 " },
 { "regex_max_words", "25", 
-	"", "", "", "
-
+	"number", "htsearch", "regex_max_words: 10", "
+	The \"regex\" fuzzy algorithm could potentially match a
+	very large number of words. This value limits the
+	number of words each regular expression can match. Note
+	that this does not limit the number of documents that
+	are matched in any way.
 " },
 { "remove_bad_urls", "true", 
 	"boolean", "htmerge", "remove_bad_urls: true", "
@@ -1755,7 +1785,7 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	document. Setting a factor to 0 will cause normal words
 	to be ignored. The number may be a floating point
 	number. See also the <a href=\"#heading_factor\">
-	heading_factor_[1-6]</a>, <a href=\"#title_factor\">
+	heading_factor</a>, <a href=\"#title_factor\">
 	title_factor</a>, and <a href=\"#keywords_factor\">
 	keywords_factor</a> attributes.
 " },
@@ -1774,7 +1804,7 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	factor to 0 will cause words in the title to be
 	ignored. The number may be a floating point number. See
 	also the <a href=\"#heading_factor\">
-	heading_factor_[1-6]</a> attribute.
+	heading_factor</a> attribute.
 " },
 { "translate_amp", "false", 
 	"boolean", "htdig", "translate_amp: true", "
@@ -1878,8 +1908,12 @@ url_part_aliases:
 	wanted, as described above.
 " },
 { "use_doc_date", "false", 
-	"", "", "", "
-
+	"boolean", "htdig", "use_doc_date: true", "
+	If set to true, htdig will use META date tags in documents,
+	overriding the modification date returned by the server.
+	Any documents that do not have META date tags will retain
+	the last modified date returned by the server or found on
+	the local file system.
 " },
 { "use_meta_description", "false", 
 	"boolean", "htsearch", "use_meta_description: true", "
@@ -1900,8 +1934,18 @@ url_part_aliases:
 	the digger requests a file from a server.
 " },
 { "valid_extensions", "", 
-	"", "", "", "
-
+	"string list", "htdig", "valid_extensions: .html .htm .shtml", "
+	This is a list of extensions on URLs which are
+	the only ones considered acceptable. This list is used to
+	supplement the MIME-types that the HTTP server provides
+	with documents. Some HTTP servers do not have a correct
+	list of MIME-types and so can advertise certain
+	documents as text while they are some binary format.
+	If the list is empty, then all extensions are acceptable,
+	provided they pass other criteria for acceptance or rejection.
+	If the list is not empty, only documents with one of the
+	extensions in the list are parsed.
+	See also <a href=\"#bad_extensions\">bad_extensions</a>.
 " },
 { "valid_punctuation", ".-_/!#$%^&'", 
 	"string", "htdig htsearch", "valid_punctuation: -'", "

@@ -1,3 +1,14 @@
+Wed Oct 27 15:53:36 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: added descriptions & examples for
+	doc_excerpt, heading_factor, max_descriptions, minimum_speling_length,
+	regex_max_words, use_doc_date, valid_extensions. Added references
+	to these elsewhere in document as appropriate. Removed -pairs option
+	from pdf_parser default (again). Minor changes to noindex_start & end,
+	and changed example for modification_time_is_now. Corrected references
+	to heading_factor_[1-6].
+	* htdoc/attrs.html, cf_by{name,prog}.html: reran cf_generate.pl
+
 Wed Oct 27 13:32:50 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/cf_generate.pl: changed formatting of output to more closely
