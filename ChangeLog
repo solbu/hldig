@@ -1,3 +1,8 @@
+Fri Sep  8 15:15:00 CEST 2000  Quim Sanmarti <qss@gtd.es>
+
+	* htsearch/Display.cc: Fixed tiny date_format bug;
+	added url-decoding template variable expansion.
+
 Thu Sep  7 23:45:25 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc (Retriever): Only open up md5 database if
