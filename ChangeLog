@@ -1,3 +1,10 @@
+Wed Feb 26 22:10:40 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htnet/HtHTTP.cc: fixed colon (':') problem with HTTP header parsing,
+	  as Frank Passek, Gilles and others suggested, as space is not
+	  mandatory between the field declaration and the field value returned
+	  by the server
+
 Sun Feb 23 10:20:58 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* htcommon/defaults.[cc,xml]: added the 'cookies_input_file'

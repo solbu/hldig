@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.20 2002/09/19 07:07:34 angusgb Exp $ 
+// $Id: HtHTTP.cc,v 1.21 2003/02/26 21:13:20 angusgb Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -657,11 +657,11 @@ int HtHTTP::ParseHeader()
          // Status - Line check
          char	*token = line.get();
 
-         while (*token && !isspace(*token))
-            token++;
+         while (*token && !isspace(*token) && *token != ':')
+            ++token;
 
-         while (*token && isspace(*token))
-            token++;
+         while (*token && (isspace(*token) || *token == ':'))
+            ++token;
 	
          if(!strncmp((char*)line, "HTTP/", 5))
          {
