@@ -4,10 +4,38 @@
 #include "WordBitCompress.h"
 #include "WordRecord.h"
 
+
+// never change NBITS_COMPRESS_VERSION ! (otherwise version tracking will fail)
+#define NBITS_COMPRESS_VERSION 10
+
+// IMPORTANT: change these EVERY time you change something that affects the compression
+#define COMPRESS_VERSION 3
+char *version_label[]={"INVALID_VERSION_0","INVALID_VERSION_1","INVALID_VERSION_2","14 Dec 1999",NULL};
+
+char *
+get_version_label(int v)
+{
+    if(COMPRESS_VERSION <0 || COMPRESS_VERSION>((sizeof(version_label)/sizeof(*version_label))-1))
+    {
+	errr("get_version_label: version_label[COMPRESS_VERSION] is not valid, please update version_label");
+    }
+    if( v >= (int)((sizeof(version_label)/sizeof(*version_label))-1) )
+    {
+	return("INVALID_VERSION");
+    }
+    return(version_label[v]);
+}
+#define NBITS_CMPRTYPE 2
+#define CMPRTYPE_NORMALCOMRPESS 0
+#define CMPRTYPE_BADCOMPRESS 1
+
 //byte a;
 #define allign(v,a) ( (v)%(a) ? (v+((a)-(v)%(a))) : v)
 #define NBITS_KEYLEN 16
 #define NBITS_DATALEN 16
+
+
+
 // ***********************************************
 // *************** WordDBRecord  *****************
 // ***********************************************
@@ -225,8 +253,8 @@ class WordDBPage
 	btik->pgno =bti.pgno;
 	btik->nrecs=bti.nrecs;
 	if(!empty){memcpy((void *)btik->data,(void *)(char *)pkey,keylen);}
-	else
-	{btik->data[0]=0;}// just to avoid uninit memory read
+//  	else
+//  	{btik->data[0]=0;}// just to avoid uninit memory read
     }
     int entry_struct_size()
     {
@@ -625,14 +653,25 @@ WordDBPage::Uncompress(Compressor *pin,int  ndebug)
     if(debug>1){verbose=1;}
     if(verbose){printf("uuuuuuuuu WordDBPage::Uncompress: BEGIN\n");}
     
-    int cmprtype=pin->get(2,"CMPRTYPE");   
+    int read_version = pin->get(NBITS_COMPRESS_VERSION,"COMPRESS_VERSION");
+    if(read_version != COMPRESS_VERSION)
+    {
+	fprintf(stderr,"WordDBPage::Uncompress: ***        Compression version mismatch      ***\n");
+	fprintf(stderr,"found version      : %3d     but using version : %3d\n",read_version,COMPRESS_VERSION);
+	fprintf(stderr,"found version label: %s\n",get_version_label(read_version));
+	fprintf(stderr,"using version label: %s\n",get_version_label(COMPRESS_VERSION));
+	fprintf(stderr,"Are you sure you're not reading an old DB with a newer version of the indexer??\n");
+	errr("WordDBPage::Uncompress: ***        Compression version mismatch      ***");
+	exit(1);
+    }
+    int cmprtype=pin->get(NBITS_CMPRTYPE,"CMPRTYPE");   
     // two possible cases
     switch(cmprtype)
     {
-    case 0:// this was a normaly compressed page
+    case CMPRTYPE_NORMALCOMRPESS:// this was a normaly compressed page
 	Uncompress_main(pin);
 	break;
-    case 1:// this page did not compress correctly
+    case CMPRTYPE_BADCOMPRESS:// this page did not compress correctly
 //  	delete [] pg;
 	pin->get_zone((byte *)pg,pgsz*8,"INITIALBUFFER");
 //  	show();
@@ -772,7 +811,7 @@ WordDBPage::Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_siz
 	}
 	else
 	{
-	    if(type!=3){errr("WordDBPage::Compress_extract_vals_wordiffs: unsupported type!=3");}
+	    if(type!=3){errr("WordDBPage::Uncompress_rebuild: unsupported type!=3");}
 	    // ****** btree internal page specific
 	    bti.pgno =rnums[CNBTIPGNO ][rnum_pos[CNBTIPGNO ]++];
 	    bti.nrecs=rnums[CNBTINRECS][rnum_pos[CNBTINRECS]++];
@@ -837,7 +876,7 @@ WordDBPage::Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_siz
 	}
 	else
 	{
-	    if(type!=3){errr("WordDBPage::Compress_extract_vals_wordiffs: unsupported type!=3");}
+	    if(type!=3){errr("WordDBPage::Uncompress_rebuild: unsupported type!=3");}
 	    if(ii>i0)insert_btikey(akey,bti);
 	}
 	pkey=akey;
@@ -881,7 +920,8 @@ WordDBPage::Compress(int ndebug)
     Compressor *res=(Compressor *)new Compressor(pgsz);
     CHECK_MEM(res);
     if(debug>0){res->set_use_tags();}
-    res->put(0,2,"CMPRTYPE");
+    res->put(COMPRESS_VERSION,NBITS_COMPRESS_VERSION,"COMPRESS_VERSION");
+    res->put(CMPRTYPE_NORMALCOMRPESS,NBITS_CMPRTYPE,"CMPRTYPE");
     if(verbose){printf("WordDBPage::Compress: trying normal compress\n");}
     int cmpr_ok=Compress_main(*((Compressor *)res));
 
@@ -893,7 +933,8 @@ WordDBPage::Compress(int ndebug)
 	res=new Compressor;
 	CHECK_MEM(res);
 	if(debug>0){res->set_use_tags();}
-	res->put(1,2,"CMPRTYPE");
+	res->put(COMPRESS_VERSION,NBITS_COMPRESS_VERSION,"COMPRESS_VERSION");
+	res->put(CMPRTYPE_BADCOMPRESS,NBITS_CMPRTYPE,"CMPRTYPE");
 	res->put_zone((byte *)pg,pgsz*8,"INITIALBUFFER");
     }
 

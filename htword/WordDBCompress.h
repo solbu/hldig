@@ -13,6 +13,7 @@ extern "C"
 #include "db_page.h"
 #include "common_ext.h"
 }
+
 class WordDBCompress
 {
  public:
