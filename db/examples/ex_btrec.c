@@ -4,7 +4,7 @@
  * Copyright (c) 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)ex_btrec.c	10.11 (Sleepycat) 9/12/98
+ *	@(#)ex_btrec.c	10.12 (Sleepycat) 11/22/98
  */
 
 #include "config.h"
@@ -46,14 +46,19 @@ main(argc, argv)
 	FILE *fp;
 	db_recno_t recno;
 	u_int32_t len;
+	int compress = 0;
+	int flags;
 	int ch, cnt;
 	char *home, *p, *t, buf[1024], rbuf[1024];
 
 	home = NULL;
-	while ((ch = getopt(argc, argv, "h:")) != EOF)
+	while ((ch = getopt(argc, argv, "h:z")) != EOF)
 		switch (ch) {
 		case 'h':
 			home = optarg;
+			break;
+		case 'z':
+			compress = 1;
 			break;
 		case '?':
 		default:
@@ -77,7 +82,12 @@ main(argc, argv)
 
 	/* Initialize the database. */
 	memset(&dbinfo, 0, sizeof(dbinfo));
-	dbinfo.db_pagesize = 1024;		/* Page size: 1K. */
+	flags = DB_CREATE;
+	if(compress) {
+	  flags |= DB_COMPRESS;
+	} else {
+	  dbinfo.db_pagesize = 1024;		/* Page size: 1K. */
+	}
 	dbinfo.flags |= DB_RECNUM;		/* Record numbers! */
 
 	/* Create the database. */
@@ -136,7 +146,7 @@ main(argc, argv)
 	free(statp);
 
 	/* Acquire a cursor for the database. */
-	if ((errno = dbp->cursor(dbp, NULL, &dbcp)) != 0) {
+	if ((errno = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
 		fprintf(stderr, "%s: cursor: %s\n", progname, strerror(errno));
 		exit (1);
 	}

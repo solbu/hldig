@@ -1,8 +1,13 @@
-dnl @(#)configure.in	10.72 (Sleepycat) 9/26/98
+dnl @(#)configure.in	10.74 (Sleepycat) 12/2/98
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(../db/db.c)
 AC_CONFIG_HEADER(config.h:config.hin)
+
+dnl We cannot build in the top-level directory.
+AC_MSG_CHECKING(if building in the top-level directory)
+[ test -d db_archive ] && AC_MSG_ERROR([
+Berkeley DB cannot be built in the top-level distribution directory.])
 
 dnl Configure setup.
 AC_PROG_INSTALL()
@@ -215,8 +220,9 @@ if test "$mmap_ok" = no -a "$shmget_ok" = no; then
 	AC_MSG_ERROR([Neither mmap/munmap(2) or shmget(2) library functions.])
 fi
 
-dnl We require select(2).
-AC_CHECK_FUNCS(select, , AC_MSG_ERROR([No select(2) library function.]))
+dnl We require qsort(3) and select(2).
+AC_CHECK_FUNCS(qsort, , AC_MSG_ERROR([No qsort library function.]))
+AC_CHECK_FUNCS(select, , AC_MSG_ERROR([No select library function.]))
 
 dnl Check for the sigfillset macro/function.  If it exists, we assume we can
 dnl use it and sigprocmask to we block signals when creating temporary files.
@@ -398,9 +404,9 @@ fi
 dnl Some architectures require DB to be compiled with special flags and/or
 dnl libraries for threaded applications
 case "$host_os" in
-freebsd*) CPPFLAGS="-D_THREAD_SAFE $CPPFLAGS"
-	  LIBS="-lc_r";;
-irix*)    CPPFLAGS="-D_SGI_MP_SOURCE $CPPFLAGS";;
+freebsd*) CPPFLAGS="-D_THREAD_SAFE -pthread $CPPFLAGS";;
+irix*)	  CPPFLAGS="-D_SGI_MP_SOURCE $CPPFLAGS";;
+linux*)	  CPPFLAGS="-D_REENTRANT $CPPFLAGS";;
 osf*)	  CPPFLAGS="-D_REENTRANT $CPPFLAGS";;
 solaris*) CPPFLAGS="-D_REENTRANT $CPPFLAGS"
 	  LIBS="-lthread $LIBS";;
@@ -649,6 +655,24 @@ if test "$db_cv_test" = yes; then
 		AC_MSG_ERROR([No tr utility found.])
 	fi
 fi
+
+#
+# Location of Zlib installation
+#
+ZLIB_HOME=/usr/local
+if test ! -f "${ZLIB_HOME}/include/zlib.h"
+then
+	ZLIB_HOME=/usr
+fi
+AC_CACHE_CHECK([ZLIB_HOME], db_cv_zlib_home,
+AC_ARG_WITH(zlib,
+    [  --with-zlib=<path> root directory path of zlib installation],
+    [ZLIB_HOME=$with_zlib])
+db_cv_zlib_home=${ZLIB_HOME}
+)
+AC_CHECK_LIB(z, inflateEnd)
+LDFLAGS="$LDFLAGS -L${ZLIB_HOME}/lib"
+CPPFLAGS="$CPPFLAGS -I${ZLIB_HOME}/include"
 
 AC_OUTPUT(Makefile include.tcl:../test/include.tcl \
     db.h:../include/db.h db_int.h:../include/db_int.h \

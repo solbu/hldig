@@ -44,7 +44,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db.c	10.73 (Sleepycat) 10/29/98";
+static const char sccsid[] = "@(#)db.c	10.75 (Sleepycat) 12/3/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -113,12 +113,18 @@ db_open(fname, type, flags, mode, dbenv, dbinfo, dbpp)
 
 	/* Validate arguments. */
 #ifdef HAVE_SPINLOCKS
-#define	OKFLAGS	(DB_CREATE | DB_NOMMAP | DB_RDONLY | DB_THREAD | DB_TRUNCATE)
+#define	OKFLAGS	(DB_COMPRESS | DB_CREATE | DB_NOMMAP | DB_RDONLY | DB_THREAD | DB_TRUNCATE)
 #else
-#define	OKFLAGS	(DB_CREATE | DB_NOMMAP | DB_RDONLY | DB_TRUNCATE)
+#define	OKFLAGS	(DB_COMPRESS | DB_CREATE | DB_NOMMAP | DB_RDONLY | DB_TRUNCATE)
 #endif
 	if ((ret = __db_fchk(dbenv, "db_open", flags, OKFLAGS)) != 0)
 		return (ret);
+
+	/*
+	 * Transparent I/O compression does not work on mmap'd files.
+	 */
+	if(LF_ISSET(DB_COMPRESS))
+	  LF_SET(DB_NOMMAP);
 
 	if (dbenv != NULL) {
 		/*
@@ -164,6 +170,8 @@ db_open(fname, type, flags, mode, dbenv, dbinfo, dbpp)
 		F_SET(dbp, DB_AM_RDONLY);
 	if (LF_ISSET(DB_THREAD))
 		F_SET(dbp, DB_AM_THREAD);
+	if (LF_ISSET(DB_COMPRESS))
+		F_SET(dbp, DB_AM_CMPR);
 
 	/* Convert the dbinfo structure flags. */
 	if (dbinfo != NULL) {
@@ -194,7 +202,10 @@ db_open(fname, type, flags, mode, dbenv, dbinfo, dbpp)
 	 */
 	if (dbenv != NULL) {
 		if (dbenv->lk_info != NULL)
-			F_SET(dbp, DB_AM_LOCKING);
+			if (F_ISSET(dbenv, DB_ENV_CDB))
+				F_SET(dbp, DB_AM_CDB);
+			else
+				F_SET(dbp, DB_AM_LOCKING);
 		if (fname != NULL && dbenv->lg_info != NULL)
 			F_SET(dbp, DB_AM_LOGGING);
 	}
@@ -205,6 +216,15 @@ db_open(fname, type, flags, mode, dbenv, dbinfo, dbpp)
 		dbp->db_malloc = NULL;
 		dbp->dup_compare = NULL;
 	} else {
+		/*
+		 * We don't want anything that's not a power-of-2, as we rely
+		 * on that for alignment of various types on the pages.
+		 */
+		if ((dbp->pgsize = dbinfo->db_pagesize) != 0 &&
+		    (u_int32_t)1 << __db_log2(dbp->pgsize) != dbp->pgsize) {
+			__db_err(dbenv, "page sizes must be a power-of-2");
+			goto einval;
+		}
 		dbp->pgsize = dbinfo->db_pagesize;
 		dbp->db_malloc = dbinfo->db_malloc;
 		if (F_ISSET(dbinfo, DB_DUPSORT)) {
@@ -298,6 +318,14 @@ open_retry:	if (LF_ISSET(DB_CREATE)) {
 				iopsize = 512;
 			if (iopsize > 16 * 1024)
 				iopsize = 16 * 1024;
+
+			/*
+			 * Sheer paranoia, but we don't want anything that's
+			 * not a power-of-2, as we rely on that for alignment
+			 * of various types on the pages.
+			 */
+			DB_ROUNDOFF(iopsize, 512);
+
 			dbp->pgsize = iopsize;
 			F_SET(dbp, DB_AM_PGDEF);
 		}
@@ -466,7 +494,11 @@ empty:	/*
 		F_SET(dbp, DB_AM_PGDEF);
 		dbp->pgsize = 8 * 1024;
 	}
-	if (dbp->pgsize < DB_MIN_PGSIZE ||
+	/*
+	 * If compression is on, the minimum page size must be multiplied
+	 * by the compression factor.
+	 */
+	if (dbp->pgsize < (F_ISSET(dbp, DB_AM_CMPR) ? DB_CMPR_MULTIPLY(DB_MIN_PGSIZE) : DB_MIN_PGSIZE) ||
 	    dbp->pgsize > DB_MAX_PGSIZE ||
 	    dbp->pgsize & (sizeof(db_indx_t) - 1)) {
 		__db_err(dbenv, "illegal page size");
@@ -593,9 +625,13 @@ empty:	/*
 	finfo.pgcookie = &pgcookie;
 	finfo.fileid = dbp->fileid;
 	finfo.lsn_offset = 0;
-	finfo.clear_len = DB_PAGE_CLEAR_LEN;
+	/*
+	 * Better compression is achieved if the page does not contain random data.
+	 */
+	finfo.clear_len = F_ISSET(dbp, DB_AM_CMPR) ? 0 : DB_PAGE_CLEAR_LEN;
 	if ((ret = memp_fopen(dbp->mp, fname,
-	    F_ISSET(dbp, DB_AM_RDONLY) ? DB_RDONLY : 0,
+	    ((F_ISSET(dbp, DB_AM_RDONLY) ? DB_RDONLY : 0) |
+	     (F_ISSET(dbp, DB_AM_CMPR) ? DB_COMPRESS : 0)),
 	    0, dbp->pgsize, &finfo, &dbp->mpf)) != 0)
 		goto err;
 

@@ -76,6 +76,16 @@ AC_ARG_WITH(search-form, [  --with-search-form=FILE   the name for the sample se
  SEARCH_FORM="$withval", SEARCH_FORM="search.html")
 AC_SUBST(SEARCH_FORM)
 
+dnl If the user wants tests
+AC_MSG_CHECKING(if --enable-test option specified)
+AC_ARG_ENABLE(test,
+	[  --enable-test     Build a version with run-time tests.],
+	[htdig_cv_test="$enable_test"], [htdig_cv_test="no"])
+AC_MSG_RESULT($htdig_cv_test)
+if test "$htdig_cv_test" = yes; then
+	TESTDIR=test
+fi
+
 dnl While we're at it, let's work out the program transformations
 AC_ARG_PROGRAM
 
@@ -191,7 +201,10 @@ if test ! -d "./db"; then
 fi
 AC_CONFIG_SUBDIRS(db/dist)
 
-AC_OUTPUT(Makefile db/Makefile htcommon/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile)
+HTDIGDIRS="db htlib htcommon htfuzzy htdig htsearch htmerge htnotify installdir include htdoc $TESTDIR ."
+AC_SUBST(HTDIGDIRS)
+
+AC_OUTPUT(Makefile db/Makefile htcommon/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile)
 
 echo ""
 echo ""

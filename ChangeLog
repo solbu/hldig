@@ -1,3 +1,17 @@
+Thu Aug 05 11:38:58 1999  Loic Dachary  <loic@ceic.com>
+
+	* test/Makefile.am: all .html go in distribution, compile dbbench
+	  that tests Berkeley DB performances.
+
+	* configure.in/Makefile.am: conditional inclusion of the test
+	  directory in the list of subdirs (--enable-test). The list
+	  of subdirs is now @HTDIGDIRS@ in configure.in & Makefile.am
+
+	* db/*: Transparent I/O compression implementation. Defines the DB_COMPRESS flag.
+	  For instance DB_CREATE | DB_COMPRESS.
+
+	* db/db_dump/load: add -C option to specify cache size to db_dump/db_load
+
 Wed Aug  4 22:57:27 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* db/*: Import of Sleepycat's Berkeley DB 2.7.5.

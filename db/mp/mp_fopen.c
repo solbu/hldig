@@ -7,7 +7,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)mp_fopen.c	10.56 (Sleepycat) 10/3/98";
+static const char sccsid[] = "@(#)mp_fopen.c	10.60 (Sleepycat) 1/1/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -47,8 +47,14 @@ memp_fopen(dbmp, path, flags, mode, pagesize, finfop, retp)
 
 	/* Validate arguments. */
 	if ((ret = __db_fchk(dbmp->dbenv,
-	    "memp_fopen", flags, DB_CREATE | DB_NOMMAP | DB_RDONLY)) != 0)
+	    "memp_fopen", flags, DB_COMPRESS | DB_CREATE | DB_NOMMAP | DB_RDONLY)) != 0)
 		return (ret);
+
+	/*
+	 * Transparent I/O compression does not work on mmap'd files.
+	 */
+	if(LF_ISSET(DB_COMPRESS))
+	  LF_SET(DB_NOMMAP);
 
 	/* Require a non-zero pagesize. */
 	if (pagesize == 0) {
@@ -84,7 +90,7 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 	DB_MPOOLFILE *dbmfp;
 	DB_MPOOL_FINFO finfo;
 	db_pgno_t last_pgno;
-	size_t size;
+	size_t maxmap;
 	u_int32_t mbytes, bytes;
 	int ret;
 	u_int8_t idbuf[DB_FILE_ID_LEN];
@@ -126,6 +132,11 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 	dbmfp->ref = 1;
 	if (LF_ISSET(DB_RDONLY))
 		F_SET(dbmfp, MP_READONLY);
+	if (LF_ISSET(DB_COMPRESS)) {
+	    if((ret = __memp_cmpr_open(path, dbenv, &dbmfp->weakcmpr)) != 0)
+	      goto err;
+	    F_SET(dbmfp, MP_CMPR);
+	}
 
 	if (path == NULL) {
 		if (LF_ISSET(DB_RDONLY)) {
@@ -134,9 +145,9 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 			ret = EINVAL;
 			goto err;
 		}
-		size = 0;
 		last_pgno = 0;
 	} else {
+	       size_t disk_pagesize = F_ISSET(dbmfp, MP_CMPR) ? DB_CMPR_DIVIDE(pagesize) : pagesize;
 		/* Get the real name for this file and open it. */
 		if ((ret = __db_appname(dbenv,
 		    DB_APP_DATA, NULL, path, 0, NULL, &rpath)) != 0)
@@ -150,23 +161,38 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 
 		/*
 		 * Don't permit files that aren't a multiple of the pagesize,
-		 * being careful not to overflow 32 bits.
+		 * and find the number of the last page in the file, all the
+		 * time being careful not to overflow 32 bits.
+		 *
+		 * !!!
+		 * We can't use off_t's here, or in any code in the mainline
+		 * library for that matter.  (We have to use them in the os
+		 * stubs, of course, as there are system calls that take them
+		 * as arguments.)  The reason is that some customers build in
+		 * environments where an off_t is 32-bits, but still run where
+		 * offsets are 64-bits, and they pay us a lot of money.
 		 */
 		if ((ret = __os_ioinfo(rpath,
 		    dbmfp->fd, &mbytes, &bytes, NULL)) != 0) {
 			__db_err(dbenv, "%s: %s", rpath, strerror(ret));
 			goto err;
 		}
-		if ((mbytes * (MEGABYTE % pagesize) +
-		    bytes % pagesize) % pagesize != 0) {
+
+		/* Page sizes have to be a power-of-two, ignore mbytes. */
+		if (bytes % disk_pagesize != 0) {
 			__db_err(dbenv,
 			    "%s: file size not a multiple of the pagesize",
 			    rpath);
 			ret = EINVAL;
 			goto err;
 		}
-		size = mbytes * MEGABYTE + bytes;
-		last_pgno = size == 0 ? 0 : (size - 1) / pagesize;
+
+		last_pgno = mbytes * (MEGABYTE / disk_pagesize);
+		last_pgno += bytes / disk_pagesize;
+
+		/* Correction: page numbers are zero-based, not 1-based. */
+		if (last_pgno != 0)
+			--last_pgno;
 
 		/*
 		 * Get the file id if we weren't given one.  Generated file id's
@@ -238,13 +264,15 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 			F_CLR(mfp, MP_CAN_MMAP);
 		if (LF_ISSET(DB_NOMMAP))
 			F_CLR(mfp, MP_CAN_MMAP);
-		if (size > (dbenv == NULL || dbenv->mp_mmapsize == 0 ?
-		    DB_MAXMMAPSIZE : dbenv->mp_mmapsize))
+		maxmap = dbenv == NULL || dbenv->mp_mmapsize == 0 ?
+		    DB_MAXMMAPSIZE : dbenv->mp_mmapsize;
+		if (mbytes > maxmap / MEGABYTE ||
+		    (mbytes == maxmap / MEGABYTE && bytes >= maxmap % MEGABYTE))
 			F_CLR(mfp, MP_CAN_MMAP);
 	}
 	dbmfp->addr = NULL;
 	if (F_ISSET(mfp, MP_CAN_MMAP)) {
-		dbmfp->len = size;
+		dbmfp->len = (size_t)mbytes * MEGABYTE + bytes;
 		if (__db_mapfile(rpath,
 		    dbmfp->fd, dbmfp->len, 1, &dbmfp->addr) != 0) {
 			dbmfp->addr = NULL;
@@ -340,7 +368,6 @@ __memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, retp)
 	mfp->stat.st_pagesize = pagesize;
 	mfp->orig_last_pgno = mfp->last_pgno = last_pgno;
 
-	F_SET(mfp, MP_CAN_MMAP);
 	if (ISTEMPORARY)
 		F_SET(mfp, MP_TEMP);
 	else {
@@ -355,6 +382,8 @@ __memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, retp)
 		    DB_FILE_ID_LEN, &mfp->fileid_off, &p)) != 0)
 			goto err;
 		memcpy(p, finfop->fileid, DB_FILE_ID_LEN);
+
+		F_SET(mfp, MP_CAN_MMAP);
 	}
 
 	/* Copy the page cookie into shared memory. */
@@ -437,13 +466,13 @@ memp_fclose(dbmfp)
 	}
 	UNLOCKHANDLE(dbmp, dbmp->mutexp);
 
-	/* Close the underlying MPOOLFILE. */
-	(void)__memp_mf_close(dbmp, dbmfp);
-
 	/* Complain if pinned blocks never returned. */
 	if (dbmfp->pinref != 0)
 		__db_err(dbmp->dbenv, "%s: close: %lu blocks left pinned",
 		    __memp_fn(dbmfp), (u_long)dbmfp->pinref);
+
+	/* Close the underlying MPOOLFILE. */
+	(void)__memp_mf_close(dbmp, dbmfp);
 
 	/* Discard any mmap information. */
 	if (dbmfp->addr != NULL &&
@@ -459,6 +488,13 @@ memp_fclose(dbmfp)
 			t_ret = ret;
 	}
 
+	if(F_ISSET(dbmfp, MP_CMPR)) {
+	  if((ret = __memp_cmpr_close(&dbmfp->weakcmpr)) != 0)
+		__db_err(dbmp->dbenv,
+			 "%s: %s", __memp_fn(dbmfp), strerror(ret));
+	  F_CLR(dbmfp, MP_CMPR);
+	}
+	
 	/* Free memory. */
 	if (dbmfp->mutexp != NULL) {
 		LOCKREGION(dbmp);

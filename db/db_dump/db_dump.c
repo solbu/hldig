@@ -11,7 +11,7 @@
 static const char copyright[] =
 "@(#) Copyright (c) 1996, 1997, 1998\n\
 	Sleepycat Software Inc.  All rights reserved.\n";
-static const char sccsid[] = "@(#)db_dump.c	10.23 (Sleepycat) 10/30/98";
+static const char sccsid[] = "@(#)db_dump.c	10.24 (Sleepycat) 11/22/98";
 #endif
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -47,16 +47,20 @@ main(argc, argv)
 {
 	extern char *optarg;
 	extern int optind;
+	DB_INFO dbinfo;
 	DB *dbp;
 	DBC *dbcp;
 	DBT key, data;
 	DB_ENV *dbenv;
 	int ch, checkprint, dflag;
+	int compress = 0;
 	char *home;
 
 	home = NULL;
 	checkprint = dflag = 0;
-	while ((ch = getopt(argc, argv, "df:h:Np")) != EOF)
+	memset(&dbinfo, 0, sizeof(dbinfo));
+
+	while ((ch = getopt(argc, argv, "df:h:NpC:z")) != EOF)
 		switch (ch) {
 		case 'd':
 			dflag = 1;
@@ -73,6 +77,12 @@ main(argc, argv)
 			break;
 		case 'p':
 			checkprint = 1;
+			break;
+		case 'C':
+			dbinfo.db_cachesize = atoi(optarg);
+			break;
+		case 'z':
+			compress = DB_COMPRESS;
 			break;
 		case '?':
 		default:
@@ -92,7 +102,7 @@ main(argc, argv)
 
 	/* Open the DB file. */
 	if ((errno =
-	    db_open(argv[0], DB_UNKNOWN, DB_RDONLY, 0, dbenv, NULL, &dbp)) != 0)
+	    db_open(argv[0], DB_UNKNOWN, (DB_RDONLY | compress), 0, dbenv, &dbinfo, &dbp)) != 0)
 		err(1, "%s", argv[0]);
 
 	/* DB dump. */
@@ -104,7 +114,7 @@ main(argc, argv)
 	}
 
 	/* Get a cursor and step through the database. */
-	if ((errno = dbp->cursor(dbp, NULL, &dbcp)) != 0) {
+	if ((errno = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
 		(void)dbp->close(dbp, 0);
 		err(1, "cursor");
 	}
@@ -202,7 +212,7 @@ pheader(dbp, pflag)
 		break;
 	case DB_HASH:
 		printf("type=hash\n");
-		if ((ret = dbp->cursor(dbp, NULL, &dbc)) != 0)
+		if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
 			break;
 		hcp = (HASH_CURSOR *)dbc->internal;
 		GET_META(dbp, hcp, ret);
@@ -253,6 +263,6 @@ void
 usage()
 {
 	(void)fprintf(stderr,
-	    "usage: db_dump [-dNp] [-f file] [-h home] db_file\n");
+	    "usage: db_dump [-dNpz] [-C cachesize] [-f file] [-h home] db_file\n");
 	exit(1);
 }

@@ -4,7 +4,7 @@
  * Copyright (c) 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)ex_access.c	10.14 (Sleepycat) 4/10/98
+ *	@(#)ex_access.c	10.15 (Sleepycat) 11/22/98
  */
 
 #include "config.h"
@@ -42,14 +42,19 @@ main(argc, argv)
 	DB_ENV *dbenv;
 	DB_INFO dbinfo;
 	u_int32_t len;
+	int compress = 0;
+	int flags;
 	int ch;
 	char *home, *p, *t, buf[1024], rbuf[1024];
 
 	home = NULL;
-	while ((ch = getopt(argc, argv, "h:")) != EOF)
+	while ((ch = getopt(argc, argv, "h:z")) != EOF)
 		switch (ch) {
 		case 'h':
 			home = optarg;
+			break;
+		case 'z':
+			compress = 1;
 			break;
 		case '?':
 		default:
@@ -66,11 +71,16 @@ main(argc, argv)
 
 	/* Initialize the database. */
 	memset(&dbinfo, 0, sizeof(dbinfo));
-	dbinfo.db_pagesize = 1024;		/* Page size: 1K. */
+	flags = DB_CREATE;
+	if(compress) {
+	  flags |= DB_COMPRESS;
+	} else {
+	  dbinfo.db_pagesize = 1024;		/* Page size: 1K. */
+	}
 
 	/* Create the database. */
 	if ((errno = db_open(DATABASE,
-	    DB_BTREE, DB_CREATE, 0664, dbenv, &dbinfo, &dbp)) != 0) {
+	    DB_BTREE, flags, 0664, dbenv, &dbinfo, &dbp)) != 0) {
 		fprintf(stderr,
 		    "%s: %s: %s\n", progname, DATABASE, strerror(errno));
 		exit (1);
@@ -113,7 +123,7 @@ main(argc, argv)
 	printf("\n");
 
 	/* Acquire a cursor for the database. */
-	if ((errno = dbp->cursor(dbp, NULL, &dbcp)) != 0) {
+	if ((errno = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
 		fprintf(stderr, "%s: cursor: %s\n", progname, strerror(errno));
 		exit (1);
 	}

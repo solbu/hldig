@@ -3,8 +3,7 @@
 
 include $(top_srcdir)/Makefile.config
 
-SUBDIRS=        db htlib htcommon htfuzzy htdig \
-		htsearch htmerge htnotify installdir include htdoc .
+SUBDIRS=        @HTDIGDIRS@
 
 EXTRA_DIST = .version Makefile.config ChangeLog.0
 

@@ -67,11 +67,12 @@ main(argc, argv)
 	DB_ENV *dbenv;
 	test_t ttype;
 	int ch;
+	int compress = 0;
 	char *db, *home;
 
 	ttype = T_NOTSET;
 	db = home = NULL;
-	while ((ch = getopt(argc, argv, "C:cd:h:lM:mNt")) != EOF)
+	while ((ch = getopt(argc, argv, "C:cd:h:lM:mNtz")) != EOF)
 		switch (ch) {
 		case 'C':
 			ttype = T_LOCK;
@@ -102,6 +103,9 @@ main(argc, argv)
 		case 'N':
 			(void)db_value_set(0, DB_MUTEXLOCKS);
 			break;
+		case 'z':
+			compress = DB_COMPRESS;
+			break;
 		case 't':
 			ttype = T_TXN;
 			break;
@@ -125,7 +129,7 @@ main(argc, argv)
 	switch (ttype) {
 	case T_DB:
 		if ((errno = db_open(db, DB_UNKNOWN,
-		    DB_RDONLY, 0, dbenv, NULL, &dbp)) != 0) {
+		    (DB_RDONLY | compress), 0, dbenv, NULL, &dbp)) != 0) {
 			warn("%s", db);
 			return (1);
 		}
@@ -614,6 +618,6 @@ void
 usage()
 {
 	fprintf(stderr,
-    "usage: db_stat [-clmNt] [-C Acflmo] [-d file] [-h home] [-M Ahlm]\n");
+    "usage: db_stat [-clmNtz] [-C Acflmo] [-d file] [-h home] [-M Ahlm]\n");
 	exit (1);
 }

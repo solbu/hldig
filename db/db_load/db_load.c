@@ -59,9 +59,11 @@ main(argc, argv)
 	DBTYPE argtype, dbtype;
 	DB_ENV *dbenv;
 	DB_INFO dbinfo;
+	size_t cachesize = 0;
 	db_recno_t recno;
 	u_int32_t db_nooverwrite;
 	int ch, checkprint, existed, no_header, ret;
+	int compress = 0;
 	char **clist, **clp, *home;
 
 	/* Allocate enough room for configuration arguments. */
@@ -73,7 +75,7 @@ main(argc, argv)
 	db_nooverwrite = 0;
 	checkprint = existed = no_header = ret = 0;
 	argtype = dbtype = DB_UNKNOWN;
-	while ((ch = getopt(argc, argv, "c:f:h:nTt:")) != EOF)
+	while ((ch = getopt(argc, argv, "c:f:h:nTt:C:z")) != EOF)
 		switch (ch) {
 		case 'c':
 			*clp++ = optarg;
@@ -90,6 +92,12 @@ main(argc, argv)
 			break;
 		case 'T':
 			no_header = checkprint = 1;
+			break;
+		case 'C':
+			cachesize = atoi(optarg);
+			break;
+		case 'z':
+			compress = DB_COMPRESS;
 			break;
 		case 't':
 			if (strcmp(optarg, "btree") == 0) {
@@ -121,6 +129,7 @@ main(argc, argv)
 	 * text, set the checkprint flag appropriately.
 	 */
 	memset(&dbinfo, 0, sizeof(DB_INFO));
+	dbinfo.db_cachesize = cachesize;
 	if (no_header)
 		dbtype = argtype;
 	else {
@@ -162,7 +171,7 @@ main(argc, argv)
 	dbenv = home == NULL ? NULL : db_init(home);
 
 	/* Open the DB file. */
-	if ((errno = db_open(argv[0], dbtype, DB_CREATE,
+	if ((errno = db_open(argv[0], dbtype, (DB_CREATE | compress),
 	    __db_omode("rwrwrw"), dbenv, &dbinfo, &dbp)) != 0) {
 		warn("%s", argv[0]);
 		goto err;
@@ -564,7 +573,7 @@ void
 usage()
 {
 	(void)fprintf(stderr, "%s\n\t%s\n",
-	    "usage: db_load [-nT]",
-    "[-c name=value] [-f file] [-h home] [-t btree | hash | recno] db_file");
+	    "usage: db_load [-nTz]",
+    "[-c name=value] [-f file] [-h home] [-C cachesize] [-t btree | hash | recno] db_file");
 	exit(1);
 }

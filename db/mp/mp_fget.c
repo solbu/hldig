@@ -7,7 +7,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)mp_fget.c	10.52 (Sleepycat) 10/1/98";
+static const char sccsid[] = "@(#)mp_fget.c	10.53 (Sleepycat) 11/16/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -21,6 +21,7 @@ static const char sccsid[] = "@(#)mp_fget.c	10.52 (Sleepycat) 10/1/98";
 #include "shqueue.h"
 #include "db_shash.h"
 #include "mp.h"
+#include "db_page.h"
 #include "common_ext.h"
 
 /*
@@ -285,7 +286,7 @@ alloc:	/* Allocate new buffer header and data space. */
 		else {
 			memset(bhp->buf, 0, mfp->clear_len);
 #ifdef DIAGNOSTIC
-			memset(bhp->buf + mfp->clear_len, 0xff,
+			memset(bhp->buf + mfp->clear_len, 0xdb,
 			    mfp->stat.st_pagesize - mfp->clear_len);
 #endif
 		}

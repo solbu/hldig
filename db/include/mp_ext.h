@@ -7,6 +7,15 @@ int __memp_pgread __P((DB_MPOOLFILE *, BH *, int));
 int __memp_pgwrite __P((DB_MPOOLFILE *, BH *, int *, int *));
 int __memp_pg __P((DB_MPOOLFILE *, BH *, int));
 void __memp_bhfree __P((DB_MPOOL *, MPOOLFILE *, BH *, int));
+int __memp_cmpr __P((DB_MPOOLFILE *, BH *, DB_IO *, int, ssize_t *));
+int __memp_cmpr_read __P((DB_MPOOLFILE *, BH *, DB_IO *, ssize_t *));
+int __memp_cmpr_write __P((DB_MPOOLFILE *, BH *, DB_IO *, ssize_t *));
+int __memp_cmpr_inflate __P((u_int8_t *, int, u_int8_t *, int));
+int __memp_cmpr_deflate __P((u_int8_t *, int, u_int8_t **, int*));
+int __memp_cmpr_open __P((const char *, DB_ENV *, DB **));
+int __memp_cmpr_close __P((DB **));
+int __memp_cmpr_alloc __P((DB_MPOOLFILE *, db_pgno_t *, BH *, int *));
+int __memp_cmpr_free __P((DB_MPOOLFILE *, db_pgno_t));
 int __memp_fopen __P((DB_MPOOL *, MPOOLFILE *, const char *,
    u_int32_t, int, size_t, int, DB_MPOOL_FINFO *, DB_MPOOLFILE **));
 void __memp_panic __P((DB_ENV *));

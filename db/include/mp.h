@@ -4,23 +4,24 @@
  * Copyright (c) 1996, 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)mp.h	10.36 (Sleepycat) 10/3/98
+ *	@(#)mp.h	10.37 (Sleepycat) 1/1/99
  */
 
 struct __bh;		typedef struct __bh BH;
 struct __db_mpreg;	typedef struct __db_mpreg DB_MPREG;
 struct __mpool;		typedef struct __mpool MPOOL;
 struct __mpoolfile;	typedef struct __mpoolfile MPOOLFILE;
+struct __cmpr;		typedef struct __cmpr CMPR;
 
 					/* Default mpool name. */
 #define	DB_DEFAULT_MPOOL_FILE	"__db_mpool.share"
 
 /*
- * We default to 128K (16 8K pages) if the user doesn't specify, and
+ * We default to 256K (32 8K pages) if the user doesn't specify, and
  * require a minimum of 20K.
  */
 #ifndef	DB_CACHESIZE_DEF
-#define	DB_CACHESIZE_DEF	(128 * 1024)
+#define	DB_CACHESIZE_DEF	(256 * 1024)
 #endif
 #define	DB_CACHESIZE_MIN	( 20 * 1024)
 
@@ -187,10 +188,13 @@ struct __db_mpoolfile {
 	void	  *addr;		/* Address of mmap'd region. */
 	size_t	   len;			/* Length of mmap'd region. */
 
+#define DB_CMPR_SUFFIX	"_weakcmpr"
+	DB 	  *weakcmpr;		/* Free weakcmpr pages pool. */
 /* These fields need to be protected for multi-threaded support. */
 #define	MP_READONLY	0x01		/* File is readonly. */
 #define	MP_UPGRADE	0x02		/* File descriptor is readwrite. */
 #define	MP_UPGRADE_FAIL	0x04		/* Upgrade wasn't possible. */
+#define	MP_CMPR		0x08		/* Transparent I/O compression. */
 	u_int32_t  flags;
 };
 
@@ -264,6 +268,54 @@ struct __mpoolfile {
 };
 
 /*
+ * DB_CMPR --
+ *      Page compression information
+ *
+ * !!!
+ * There is no need to keep the length of the data wrote
+ * in the page since it's already encoded in the compressed
+ * data.
+ */
+
+/*
+ * Convert size to expected compressed size
+ */
+#define DB_CMPR_DIVIDE(size) ((size) >> 1)
+#define DB_CMPR_MULTIPLY(size) ((size) << 1)
+
+/*
+ * Maximum chain length
+ */
+#define DB_CMPR_MAX	3
+
+struct __cmpr {
+#define DB_CMPR_FIRST	 	0x01 /* Head of chain. */
+#define DB_CMPR_INTERNAL	0x02 /* Weak compression data. */
+#define DB_CMPR_CHAIN	 	0x04 /* More data in next page. */
+#define DB_CMPR_FREE		0x08 /* Not in use. */
+
+  u_int16_t flags; 
+
+  /* 
+   * Filled if DB_CMPR_CHAIN set
+   */
+  db_pgno_t next;
+};
+
+/*
+ * Reserved information at the beginning of each compressed page
+ */
+#define DB_CMPR_OVERHEAD	sizeof(struct __cmpr)
+/*
+ * Size of IO page, without the reserved information
+ */
+#define DB_CMPR_PAGESIZE(io)	(io->pagesize - DB_CMPR_OVERHEAD)
+/*
+ * Pointer to data within raw compressed buffer
+ */
+#define DB_CMPR_DATA(io) (io->buf + DB_CMPR_OVERHEAD)
+
+/*
  * BH --
  *	Buffer header.
  */
@@ -278,7 +330,10 @@ struct __bh {
 #define	BH_LOCKED	0x008		/* Page is locked (I/O in progress). */
 #define	BH_TRASH	0x010		/* Page is garbage. */
 #define	BH_WRITE	0x020		/* Page scheduled for writing. */
+#define	BH_CMPR		0x040		/* Chain contains valid data. */
 	u_int16_t  flags;
+
+        db_pgno_t chain[DB_CMPR_MAX-1];	/* Compression chain. */
 
 	SH_TAILQ_ENTRY	q;		/* LRU queue. */
 	SH_TAILQ_ENTRY	hq;		/* MPOOL hash bucket queue. */
@@ -297,3 +352,4 @@ struct __bh {
 };
 
 #include "mp_ext.h"
+
