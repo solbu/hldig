@@ -1,3 +1,11 @@
+Tue Dec 07 16:21:13 1999  Loic Dachary  <loic@ceic.com>
+
+	* configure.in: added AM_PROG_LEX and AC_PROG_YACC 
+
+	* htlib/Makefile.am: simply set conf_lexer.lxx and conf_parser.yxx, 
+	  automake knows how to handle these. The renaming is needed to avoid
+	  conflicts in automake generated rules.
+
 Mon Dec  6 16:23:39 CST 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/cf_generate.pl: added a bit of error checking for when it

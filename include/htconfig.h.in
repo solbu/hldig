@@ -37,6 +37,9 @@
 /* Define if your <sys/time.h> declares struct tm.  */
 #undef TM_IN_SYS_TIME
 
+/* Define if lex declares yytext as a char * by default, not a char[].  */
+#undef YYTEXT_POINTER
+
 /* Define this to the type of the third argument of getpeername() */
 #undef GETPEERNAME_LENGTH_T
 

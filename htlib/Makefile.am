@@ -11,7 +11,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc \
 	HtVector.cc HtHeap.cc regex.c \
 	HtPack.cc HtDateTime.cc HtRegex.cc \
-	conf.l.cc conf.tab.cc
+	conf_lexer.lxx conf_parser.yxx
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
@@ -41,9 +41,3 @@ include_HEADERS = \
 	lib.h \
 	langinfo.h \
 	regex.h
-
-conf.l.cc:	$(srcdir)/conf.l $(srcdir)/conf.tab.cc.h
-	flex -o$(srcdir)/conf.l.cc $(srcdir)/conf.l
-conf.tab.cc:	$(srcdir)/conf.y
-	bison -d -o $(srcdir)/conf.tab.cc $(srcdir)/conf.y
-conf.tab.cc.h: conf.tab.cc

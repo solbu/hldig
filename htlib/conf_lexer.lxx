@@ -1,6 +1,6 @@
 /* Configuration reader for ht://Dig  */
 
-%option yylineno noyywrap
+%option yylineno noyywrap nounput
 %x t_right
 %x incl
 %x bracket
@@ -8,7 +8,6 @@
 
 %{
 //#include <string.h>
-#include <iostream.h>
 #include "Configuration.h"
 //#include "Dictionary.h"
 #include "conf.tab.cc.h"
