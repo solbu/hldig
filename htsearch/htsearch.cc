@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.10 2001/05/31 07:19:21 angusgb Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.11 2001/06/07 19:16:00 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -161,6 +161,27 @@ main(int ac, char **av)
     requiredWords.Create(config["keywords"], " \t\r\n\001");
     if (input.exists("sort"))
 	config.Add("sort", input["sort"]);
+
+    // Changes added 3-31-99, by Mike Grommet
+    // Check form entries for starting date, and ending date
+    // Each date consists of a month, day, and year
+
+    if (input.exists("startmonth"))
+	config.Add("startmonth", input["startmonth"]);
+    if (input.exists("startday"))
+	config.Add("startday", input["startday"]);
+    if (input.exists("startyear"))
+	config.Add("startyear", input["startyear"]);
+
+    if (input.exists("endmonth"))
+	config.Add("endmonth", input["endmonth"]);
+    if (input.exists("endday"))
+	config.Add("endday", input["endday"]);
+    if (input.exists("endyear"))
+	config.Add("endyear", input["endyear"]);
+
+    // END OF CHANGES BY MIKE GROMMET    
+
 
     minimum_word_length = config.Value("minimum_word_length", minimum_word_length);
 

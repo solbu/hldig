@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.30 2001/06/07 19:08:19 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.31 2001/06/07 19:16:00 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -423,6 +423,12 @@ Display::setVariables(int pageNumber, List *matches)
     } else {
       vars.Add("CGI", new String(getenv("SCRIPT_NAME")));
     }
+    vars.Add("STARTYEAR", new String(config["startyear"]));
+    vars.Add("STARTMONTH", new String(config["startmonth"]));
+    vars.Add("STARTDAY", new String(config["startday"]));
+    vars.Add("ENDYEAR", new String(config["endyear"]));
+    vars.Add("ENDMONTH", new String(config["endmonth"]));
+    vars.Add("ENDDAY", new String(config["endday"]));
 	
     String	*str;
     char	*format = input->get("format");
@@ -697,6 +703,18 @@ Display::createURL(String &url, int pageNumber)
 	url << "keywords=" << encodeInput("keywords") << ';';
     if (input->exists("words"))
 	url << "words=" << encodeInput("words") << ';';
+    if (input->exists("startyear"))
+	url << "startyear=" << encodeInput("startyear") << ';';
+    if (input->exists("startmonth"))
+	url << "startmonth=" << encodeInput("startmonth") << ';';
+    if (input->exists("startday"))
+	url << "startday=" << encodeInput("startday") << ';';
+    if (input->exists("endyear"))
+	url << "endyear=" << encodeInput("endyear") << ';';
+    if (input->exists("endmonth"))
+	url << "endmonth=" << encodeInput("endmonth") << ';';
+    if (input->exists("endday"))
+	url << "endday=" << encodeInput("endday") << ';';
     StringList form_vars(config["allow_in_form"], " \t\r\n");
     for (i= 0; i < form_vars.Count(); i++)
     {
@@ -1074,6 +1092,179 @@ Display::buildMatchList()
     double      date_factor = config.Double("date_factor");
     SortType	typ = sortType();
 	
+
+    // Additions made here by Mike Grommet 4-1-99 ...
+
+    tm startdate;     // structure to hold the startdate specified by the user
+    tm enddate;       // structure to hold the enddate specified by the user
+
+    time_t eternity = ~(1<<(sizeof(time_t)*8-1));  // will be the largest value holdable by a time_t
+    tm *endoftime;     // the time_t eternity will be converted into a tm, held by this variable
+
+    time_t timet_startdate;
+    time_t timet_enddate;
+    int monthdays[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+
+    // boolean to test to see if we need to build date information or not
+    int dategiven = ((config.Value("startmonth")) ||
+		     (config.Value("startday"))   ||
+		     (config.Value("startyear"))  ||
+		     (config.Value("endmonth"))   ||
+		     (config.Value("endday"))     ||
+		     (config.Value("endyear")));
+
+    // find the end of time
+    endoftime = gmtime(&eternity);
+
+    if(dategiven)    // user specified some sort of date information
+      {
+	time_t now = time((time_t *)0); 	// fill in all fields for mktime
+	tm *lt = localtime(&now); 		//  - Gilles's fix
+	startdate = *lt; 
+	enddate = *lt; 
+
+	// set up the startdate structure
+	// see man mktime for details on the tm structure
+	startdate.tm_sec = 0;
+	startdate.tm_min = 0;
+	startdate.tm_hour = 0;
+	startdate.tm_yday = 0;
+	startdate.tm_wday = 0;
+
+	// The concept here is that if a user did not specify a part of a date,
+	// then we will make assumtions...
+	// For instance, suppose the user specified Feb, 1999 as the start
+	// range, we take steps to make sure that the search range date starts
+	// at Feb 1, 1999,
+	// along these same lines:  (these are in MM-DD-YYYY format)
+	// Startdates:      Date          Becomes
+	//                  01-01         01-01-1970
+	//                  01-1970       01-01-1970
+	//                  04-1970       04-01-1970
+	//                  1970          01-01-1970
+	// These things seem to work fine for start dates, as all months have
+	// the same first day however the ending date can't work this way.
+
+	if(config.Value("startmonth"))	// form input specified a start month
+	  {
+	    startdate.tm_mon = config.Value("startmonth") - 1;
+	    // tm months are zero based.  They are passed in as 1 based
+	  }
+	else startdate.tm_mon = 0;	// otherwise, no start month, default to 0
+
+	if(config.Value("startday"))	// form input specified a start day
+	  {
+	    startdate.tm_mday = config.Value("startday");
+	    // tm days are 1 based, they are passed in as 1 based
+	  }
+	else startdate.tm_mday = 1;	// otherwise, no start day, default to 1
+
+	// year is handled a little differently... the tm_year structure
+	// wants the tm_year in a format of year - 1900.
+	// since we are going to convert these dates to a time_t,
+	// a time_t value of zero, the earliest possible date
+	// occurs Jan 1, 1970.  If we allow dates < 1970, then we
+	// could get negative time_t values right???
+	// (barring minor timezone offsets west of GMT, where Epoch is 12-31-69)
+
+	if(config.Value("startyear"))	// form input specified a start year
+	  {
+	    startdate.tm_year = config.Value("startyear") - 1900;
+	    if (startdate.tm_year < 69-1900)	// correct for 2-digit years 00-68
+		startdate.tm_year += 2000;	//  - Gilles's fix
+	    if (startdate.tm_year < 0)	// correct for 2-digit years 69-99
+		startdate.tm_year += 1900;
+	  }
+	else startdate.tm_year = 1970-1900;
+	     // otherwise, no start day, specify start at 1970
+
+	// set up the enddate structure
+	enddate.tm_sec = 59;		// allow up to last second of end day
+	enddate.tm_min = 59;		//  - Gilles's fix
+	enddate.tm_hour = 23;
+	enddate.tm_yday = 0;
+	enddate.tm_wday = 0;
+
+	if(config.Value("endmonth"))	// form input specified an end month
+	  {
+	    enddate.tm_mon = config.Value("endmonth") - 1;
+	    // tm months are zero based.  They are passed in as 1 based
+	  }
+	else enddate.tm_mon = 11;	// otherwise, no end month, default to 11
+
+	if(config.Value("endyear"))	// form input specified a end year
+	  {
+	    enddate.tm_year = config.Value("endyear") - 1900;
+	    if (enddate.tm_year < 69-1900)	// correct for 2-digit years 00-68
+		enddate.tm_year += 2000;	//  - Gilles's fix
+	    if (enddate.tm_year < 0)	// correct for 2-digit years 69-99
+		enddate.tm_year += 1900;
+	  }
+	else enddate.tm_year = endoftime->tm_year;
+	     // otherwise, no end year, specify end at the end of time allowable
+
+	// Months have different number of days, and this makes things more
+	// complicated than the startdate range.
+	// Following the example above, here is what we want to happen:
+	// Enddates:        Date          Becomes
+	//                  04-31         04-31-endoftime->tm_year
+	//                  05-1999       05-31-1999, may has 31 days... we want to search until the end of may so...
+	//                  1999          12-31-1999, search until the end of the year
+
+	if(config.Value("endday"))	// form input specified an end day
+	  {
+	    enddate.tm_mday = config.Value("endday");
+	    // tm days are 1 based, they are passed in as 1 based
+	  }
+	else
+	  {
+	    // otherwise, no end day, default to the end of the month
+	    enddate.tm_mday = monthdays[enddate.tm_mon];
+	    if (enddate.tm_mon == 1)	// February, so check for leap year
+		if (((enddate.tm_year+1900) % 4 == 0 &&
+			    (enddate.tm_year+1900) % 100 != 0) ||
+		    (enddate.tm_year+1900) % 400 == 0)
+			enddate.tm_mday += 1;	// Feb. 29  - Gilles's fix
+	  }
+
+	// Convert the tm values into time_t values.
+	// Web servers specify modification times in GMT, but htsearch
+	// displays these modification times in the server's local time zone.
+	// For consistency, we would prefer to select based on this same
+	// local time zone.  - Gilles's fix
+
+	timet_startdate = mktime(&startdate);
+	timet_enddate = mktime(&enddate);
+
+	// I'm not quite sure what behavior I want to happen if
+	// someone reverses the start and end dates, and one of them is invalid.
+	// for now, if there is a completely invalid date on the start or end
+	// date, I will force the start date to time_t 0, and the end date to
+	// the maximum that can be handled by a time_t.
+
+	if(timet_startdate < 0)
+	    timet_startdate = 0;
+	if(timet_enddate < 0)
+	    timet_enddate = eternity;
+
+	// what if the user did something really goofy like choose an end date
+	// that's before the start date
+
+	if(timet_enddate < timet_startdate)  // if so, then swap them so they are in order
+	  {
+	    time_t timet_temp = timet_enddate;
+	    timet_enddate = timet_startdate;
+	    timet_startdate = timet_temp;
+	  }
+      }
+    else   // no date was specifed, so plug in some defaults
+      {
+	timet_startdate = 0;
+	timet_enddate = eternity;
+      }
+
+    // ... MG
+
     results->Start_Get();
     while ((id = results->Get_Next()))
     {
@@ -1120,9 +1311,21 @@ Display::buildMatchList()
 	// We want older docs to have smaller values and the
 	// ultimate values to be a reasonable size (max about 100)
 
-	if (date_factor != 0.0 || backlink_factor != 0.0 || typ != SortByScore)
+	// New check added on whether or not we need to check date ranges - MG
+	if (date_factor != 0.0 || backlink_factor != 0.0 || typ != SortByScore
+	    || timet_startdate > 0 || enddate.tm_year < endoftime->tm_year)
 	  {
 	    DocumentRef *thisRef = docDB[thisMatch->getURL()];
+
+	    // code added by Mike Grommet for date search ranges
+	    // check for valid date range.  toss it out if it isn't relevant.
+	    if(thisRef->DocTime() < timet_startdate || thisRef->DocTime() > timet_enddate)
+	      {
+		delete thisMatch;
+		delete thisRef;
+		continue;
+	      }
+
 	    if (thisRef)   // We better hope it's not null!
 	      {
 		score += date_factor * 

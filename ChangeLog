@@ -1,3 +1,10 @@
+Thu Jun  7 14:13:56 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc (main), htsearch/Display.cc (setVariables,
+	createURL, buildMatchList), htdoc/THANKS.html, htdoc/hts_form.html,
+	htdoc/hts_templates.html: Add Mike Grommet's date range search
+	feature.
+
 Thu Jun  7 13:57:06 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc (GetLocal, GetLocalUser): Fix to allow compiling
