@@ -7,7 +7,7 @@ pkglib_LTLIBRARIES = libfuzzy.la
 
 libfuzzy_la_SOURCES = Endings.cc EndingsDB.cc Exact.cc \
 		Fuzzy.cc Metaphone.cc Soundex.cc Accents.cc \
-		SuffixEntry.cc Synonym.cc htfuzzy.cc \
+		SuffixEntry.cc Synonym.cc \
 		Substring.cc Prefix.cc Regexp.cc Speling.cc
 
 libfuzzy_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)

@@ -1,3 +1,33 @@
+Sat Oct 26 21:59:01 2002  Geoffrey Hutchison  <ghutchis@localhost>
+
+	Merge in fixes from Lachlan Andrew
+
+	* test/Makefile.am, test/Makefile.in, test/t_url, test/url.cc,
+	test/url.children, test/url.parents, test/url.output: Add URL
+	tests to the automatic test suite (rather than requiring them to
+	be run manually).
+
+	* */Makefile.in: Regenerate using automake-1.4p6.
+	
+	* htcommon/URL.cc, htcommon/URL.h: Add new configuration attribute
+	allow_double_slash to only remove // marks when requested (since
+	some server-side code uses them), handle initial protocols
+	without double slashes, and only remove the default doc string
+	from appropriate protocol URLs (e.g. not file), treat ".//" as a
+	relative path, and collapse /../ *after* // and /./ handling.
+
+	* htcommon/defaults.cc: Add documentation for allow_double_slash,
+	as well as various documentation cleanups.
+	
+	* htdig/ExternalTransport.cc: Fix minor bug--recognize service
+	specified as https:// rather than https.
+	
+	* htdoc/hts_form.html, htdoc/hts_templates.html: Documentation fixes.
+
+	* htsearch/htsearch.cc: Create valid boolean query if "exact" not
+	specified in search_algorithms by adding the exact word with low
+	weight. Solves PR#405294.
+
 Fri Oct  4 17:05:06 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/defaults.xml: Added first-draft XML version of defaults
