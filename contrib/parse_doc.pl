@@ -27,6 +27,11 @@
 #               (in PDFs) & remove multiple punct. chars. between words (all)
 # 1999/03/10
 # Changed:      fix handling of minimum word length  <grdetil@scrc.umanitoba.ca>
+# 1999/08/12
+# Changed:      adapted for xpdf 0.90 release        <grdetil@scrc.umanitoba.ca>
+# Added:        uses pdfinfo to handle PDF titles    <grdetil@scrc.umanitoba.ca>
+# Changed:      keep hyphens by default, as htdig    <grdetil@scrc.umanitoba.ca>
+#               does, but change dashes to hyphens
 #########################################
 #
 # set this to your MS Word to text converter
@@ -49,11 +54,13 @@ $CATRTF = "/bin/true";
 #
 $CATPS = "/usr/bin/ps2ascii";
 #
-# set this to your PDF to text converter
-# get it from the xpdf 0.80 package at http://www.foolabs.com/xpdf/
+# set this to your PDF to text converter, and pdfinfo tool
+# get it from the xpdf 0.90 package at http://www.foolabs.com/xpdf/
 #
 $CATPDF = "/usr/bin/pdftotext";
+$PDFINFO = "/usr/bin/pdfinfo";
 #$CATPDF = "/usr/local/bin/pdftotext";
+#$PDFINFO = "/usr/local/bin/pdfinfo";
 
 # need some var's
 $minimum_word_length = 3;
@@ -64,6 +71,7 @@ $x = 0;
 @fields = ();
 $calc = 0;
 $dehyphenate = 0;
+$title = "";
 #
 # okay. my programming style isn't that nice, but it works...
 
@@ -97,11 +105,25 @@ if ($magic =~ /%!|^\033%-12345/) {      # it's PostScript (or HP print job)
         }
 } elsif ($magic =~ /%PDF-/) {           # it's PDF (Acrobat)
         $parser = $CATPDF;
-        $parsecmd = "$parser $ARGV[0] - |";
-# kludge to handle multi-column PDFs...  (needs patched pdftotext)
-#       $parsecmd = "$parser -rawdump $ARGV[0] - |";
+        $parsecmd = "$parser -raw $ARGV[0] - |";
+# to handle single-column, strangely laid out PDFs, use coalescing feature...
+#       $parsecmd = "$parser $ARGV[0] - |";
         $type = "PDF";
         $dehyphenate = 1;               # PDFs often have hyphenated lines
+        if (open(INFO, "$PDFINFO $ARGV[0] 2>/dev/null |")) {
+                while (<INFO>) {
+                        if (/^Title:/) {
+                                $title = $_;
+                                $title =~ s/^Title:\s+(.*[^\s])\s*$/$1/;
+                                $title =~ s/\s+/ /g;
+                                $title =~ s/&/\&amp\;/g;
+                                $title =~ s/</\&lt\;/g;
+                                $title =~ s/>/\&gt\;/g;
+                                break;
+                        }
+                }
+                close INFO;
+        }
 } elsif ($magic =~ /WPC/) {             # it's WordPerfect
         $parser = $CATWP;
         $parsecmd = "$parser $ARGV[0] |";
@@ -135,7 +157,8 @@ while (<CAT>) {
         s/\s+[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]+|[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]+\s+|^[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]+|[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]+$/ /g;    # replace reading-chars with space (only at end or begin of word, but allow multiple characters)
 #       s/\s[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]|[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]\s|^[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]|[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]$/ /g;    # replace reading-chars with space (only at end or begin of word)
 #       s/[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]/ /g;      # rigorously replace all by <carl@dpiwe.tas.gov.au>
-        s/[\-\255]/ /g;                                 # replace hyphens with space
+#       s/[\-\255]/ /g;                                 # replace hyphens with space
+        s/[\255]/-/g;                                   # replace dashes with hyphens
         @fields = split;                                # split up line
         next if (@fields == 0);                         # skip if no fields (does it speed up?)
         for ($x=0; $x<@fields; $x++) {                  # check each field if string length >= 3
@@ -150,15 +173,19 @@ close CAT;
 exit unless @allwords > 0;              # nothing to output
 
 #############################################
-# print out the title
-@temp = split(/\//, $ARGV[2]);          # get the filename, get rid of basename
-print "t\t$type Document $temp[-1]\n";  # print it
+# print out the title, if it's set, and not just a file name
+if ($title !~ /^$/ && $title !~ /^[A-G]:[^\s]+\.[Pp][Dd][Ff]$/) {
+        print "t\t$title\n";
+} else {                                        # otherwise generate a title
+        @temp = split(/\//, $ARGV[2]);          # get the filename, get rid of basename
+        print "t\t$type Document $temp[-1]\n";  # print it
+}
 
 
 #############################################
 # print out the head
-$head =~ s/^\s+//g;
-$head =~ s/\s+$//g;
+$head =~ s/^\s+//;                      # remove leading and trailing space
+$head =~ s/\s+$//;
 $head =~ s/\s+/ /g;
 $head =~ s/&/\&amp\;/g;
 $head =~ s/</\&lt\;/g;
