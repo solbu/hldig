@@ -1,3 +1,13 @@
+Sat Oct 17 14:15:57 1998  Geoff Hutchison  <ghutchis@ethel>
+
+	* htsearch/Display.cc, htsearch/Display.h,
+	htdoc/hts_templates.html: Added variable CURRENT as the number of
+	the current match, adapted from a patch by Reni Seindal
+	<seindal@webadm.kb.dk>
+
+	* htcommon/defaults.cc: Changed htdig.sdsu.edu to www.htdig.org in
+	start_urls
+
 Wed Oct 14 03:43:22 1998  turtle  <turtle@kiwi>
 
 	* installdir/htdig.conf: fixed broken link pointed out by
