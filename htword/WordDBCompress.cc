@@ -10,12 +10,14 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.cc,v 1.1.2.7 1999/12/15 17:26:35 loic Exp $
+// $Id: WordDBCompress.cc,v 1.1.2.8 1999/12/17 15:23:08 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
+
+#include <ctype.h>
 
 //
 // Access to Berkeley DB internal
