@@ -1,3 +1,14 @@
+Tue Nov 17 23:13:04 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* contrib/wordfreq/wordfreq.pl: Added changes by Isoif.
+
+	* htsearch/Display.cc: Added HTTP_REFERER to htsearch logging
+
+	* htdig/Document.cc: Fixed memory leak as a result of thinko.
+
+	* htcommon/DocumentRef.cc: Removed limit on number of link
+	descriptions.
+
 Mon Nov 16 22:30:07 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/defaults.cc: Declare new config options backlink_factor
