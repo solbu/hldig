@@ -185,15 +185,15 @@ __memp_pgread(dbmfp, bhp, can_create)
 		db_io.pgno = bhp->pgno;
 		db_io.buf = bhp->buf;
 
-#ifdef HAVE_ZLIB
+#ifdef HAVE_LIBZ
 		if(F_ISSET(dbmfp, MP_CMPR)) {
 		  ret = __memp_cmpr(dbmfp, bhp, &db_io, DB_IO_READ, &nr);
 		} else {
-#endif /* HAVE_ZLIB */
+#endif /* HAVE_LIBZ */
 		  ret = __os_io(&db_io, DB_IO_READ, &nr);
-#ifdef HAVE_ZLIB
+#ifdef HAVE_LIBZ
 		}
-#endif /* HAVE_ZLIB */
+#endif /* HAVE_LIBZ */
 	}
 
 	created = 0;
@@ -363,15 +363,15 @@ __memp_pgwrite(dbmfp, bhp, restartp, wrotep)
 	db_io.pagesize = db_io.bytes = mfp->stat.st_pagesize;
 	db_io.pgno = bhp->pgno;
 	db_io.buf = bhp->buf;
-#ifdef HAVE_ZLIB
+#ifdef HAVE_LIBZ
 	if(F_ISSET(dbmfp, MP_CMPR)) {
 	  ret = __memp_cmpr(dbmfp, bhp, &db_io, DB_IO_WRITE, &nw);
 	} else {
-#endif /* HAVE_ZLIB */
+#endif /* HAVE_LIBZ */
 	  ret = __os_io(&db_io, DB_IO_WRITE, &nw);
-#ifdef HAVE_ZLIB
+#ifdef HAVE_LIBZ
 	}
-#endif /* HAVE_ZLIB */
+#endif /* HAVE_LIBZ */
 	if (ret != 0) {
 		__db_panic(dbenv, ret);
 		fail = "write";

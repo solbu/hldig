@@ -1,3 +1,7 @@
+Tue Aug 10 20:13:52 1999  Loic Dachary  <loic@yoda.ceic.com>
+
+	* db/mp/mp_bh.c: fixed HAVE_ZLIB -> HAVE_LIBZ
+
 Tue Aug 10 17:58:01 1999  Loic Dachary  <loic@yoda.ceic.com>
 
 	* configure,configure.in,db/dist/configure.in,db/dist/configure:
