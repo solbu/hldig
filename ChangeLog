@@ -1,3 +1,15 @@
+Thu Jan 24 22:43:28 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Add ignore_dead_servers attribute to
+	control whether indexing will continue to try to contact a dead
+	server.
+
+	* htdig/Retriever.cc: Only mark a server as dead if the
+	ignore_dead_servers attribute is set.
+
+	* htdoc/cf_byname.html, htdoc/cf_byprog.html, htdoc/attrs.html:
+	Documentation updates.
+
 Thu Jan 24 15:32:59 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure, configure.in: Add --with-rx option to switch to

@@ -3207,6 +3207,53 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="ignore_dead_servers">
+		ignore_dead_servers</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			true
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			Determines whether htdig will continue to
+			index URLs from a server after an attempted
+			connection to the server fails as &quot;no
+			host found&quot; or &quot;no server
+			running.&quot;
+			If set to false, htdig will try <em>every</em>
+			URL from that server.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			ignore_dead_servers: false
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="image_list">image_list</a></strong>
 	  </dt>
 	  <dd>
@@ -8966,7 +9013,7 @@
 	</dl>
 	<hr size="4" noshade>
 <!-- hhmts start -->
-Last modified: $Date: 2002/01/22 04:35:10 $
+Last modified: $Date: 2002/01/25 04:44:32 $
 <!-- hhmts end -->
   </body>
 </html>

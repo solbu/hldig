@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.27 2001/12/22 00:55:05 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.28 2002/01/25 04:44:33 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -334,6 +334,7 @@ Retriever::parse_url(URLRef &urlRef)
     static int	index = 0;
     Server		*server;
     static int		local_urls_only = config.Boolean("local_urls_only");
+    static int		mark_dead_servers = config.Boolean("ignore_dead_servers");
 
 //	cout << "**** urlRef URL = '" << urlRef.URL() << "', referer = '" <<
 //		urlRef.Referer() << "'\n";
@@ -504,7 +505,7 @@ Retriever::parse_url(URLRef &urlRef)
 			   urlRef.Referer(),
 			   Document::Document_no_host);
 	    words.MarkGone();
-	    if (server)
+	    if (server && mark_dead_servers)
 		server->IsDead(1);
 	    break;
 
@@ -516,7 +517,7 @@ Retriever::parse_url(URLRef &urlRef)
 			   urlRef.Referer(),
 			   Document::Document_no_server);
 	    words.MarkGone();
-	    if (server)
+	    if (server && mark_dead_servers)
 		server->IsDead(1);
 	    break;
 
