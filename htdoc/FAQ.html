@@ -1631,9 +1631,11 @@ require group foo
 	  <ul>
 	  <li>Add "backup" links using plain HTML &lt;a href=...&gt; tags to
 	  all the pages that could be accessed through JavaScript,
-	  <li>Add &lt;link&gt; tags to point to all these pages (requires
+	  <li>Add &lt;link&gt; tags to point to all these pages (see
+	  <a href="http://www.w3.org/TR/html4/struct/links.html#h-12.3.3">Links
+	  and search engines</a> in W3C's HTML 4.0 Specification - requires
 	  htdig 3.1.3 or greater, but then <em>everyone</em> should be running
-	  3.1.5 anyway),
+	  3.1.5 or greater anyway),
 	  <li>Compose a list of all the unreachable documents, or write
 	  a program to do so, and feed that list as part of htdig's
 	  <a href="attrs.html#start_url">start_url</a> attribute.
@@ -1687,7 +1689,7 @@ require group foo
 	  similarly changed to recognize both separator characters.
 	  For the definitive reference on this issue, please refer to
 	  section B.2.2 of W3C's HTML 4.0 Specification,
-	  <a href="http://www.w3.org/TR/REC-html40/appendix/notes.html#h-B.2.2">
+	  <a href="http://www.w3.org/TR/html4/appendix/notes.html#h-B.2.2">
 	  Ampersands in URI attribute values</a>. We're all a little
 	  tired of arguing about it. If you don't like the standard, you
 	  can change the Display::createURL() code yourself to ignore it.
@@ -1894,6 +1896,6 @@ find /path/to/your/document/root -type f -name \*.html -print | \
 	  <br>
 
 	  <hr noshade size=4>
-	  	Last modified: $Date: 2002/01/28 03:56:10 $
+	  	Last modified: $Date: 2002/01/29 16:01:11 $
   </body>
 </html>
