@@ -28,7 +28,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.5 1999/10/04 15:46:23 angus Exp $ 
+// $Id: HtHTTP.h,v 1.6 1999/10/04 16:48:07 angus Exp $ 
 //
 
 #ifndef _HTHTTP_H
@@ -152,11 +152,6 @@ public:
    URL GetRefererURL () { return _referer;}
 
 
-   // Get the date time information about the request
-   const HtDateTime *GetStartTime() const { return &_start_time; }
-   const HtDateTime *GetEndTime() const { return &_end_time; }
-
-
    // Info for multiple requests (static)
    // Get the User agent string
    static void SetRequestUserAgent (char *s) { _user_agent=s; }
@@ -235,10 +230,24 @@ public:
 // Set the modification_time_is_now static attribute
    static void SetModificationTimeIsNow (int d) { modification_time_is_now=d;}   
 
-// Set the controller for the parsing check. That is to say
-// that External function that checks if a document is parsable or not.
-// CanBeParsed static attribute should point to a function
-// that returns an int value, given a char * containing the content-type.
+///////
+   //    Set the _head_before_get option 
+   //    make a request to be made up of a HEAD call and then,
+   //    if necessary, a GET call
+///////
+   
+   static void EnableHeadBeforeGet() { _head_before_get = true; }
+   static void DisableHeadBeforeGet() { _head_before_get = false; }
+
+   static bool HeadBeforeGet() { return _head_before_get; }
+
+
+///////
+   //    Set the controller for the parsing check. That is to say
+   //    that External function that checks if a document is parsable or not.
+   //    CanBeParsed static attribute should point to a function
+   //    that returns an int value, given a char * containing the content-type.
+///////
 
    static void SetParsingController (int (*f)(char*)) { CanBeParsed = f; }
 
@@ -260,9 +269,6 @@ protected:
    ///////
       //    Http single Request information (Member attributes)
    ///////
-
-   HtDateTime  _start_time;         // Start time of the request
-   HtDateTime  _end_time;           // end time of the request
 
    int      	_bytes_read;        // Bytes read
 
@@ -378,17 +384,6 @@ protected:
 
    DateFormat RecognizeDateFormat (const char *);
 
-
-   ///////
-      //    Set the _head_before_get option 
-      //    make a request to be made up of a HEAD call and then,
-      //    if necessary, a GET call
-   ///////
-   
-   static void EnableHeadBeforeGet() { _head_before_get = true; }
-   static void DisableHeadBeforeGet() { _head_before_get = false; }
-
-   static bool HeadBeforeGet() { return _head_before_get; }
 
    ///////
       //    Check if a document is parsable looking the content-type info

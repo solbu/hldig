@@ -1,4 +1,4 @@
-// $Id: testnet.cc,v 1.3 1999/09/29 10:10:09 loic Exp $
+// $Id: testnet.cc,v 1.4 1999/10/04 16:48:07 angus Exp $
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
 #endif /* HAVE_CONFIG_H */
@@ -55,7 +55,7 @@ int main(int ac, char **av)
    //	Retrieving options from command line with getopt
 ///////
 
-   while((c = getopt(ac, av, "vU:t:n")) != -1)
+   while((c = getopt(ac, av, "vU:t:ng")) != -1)
    {
       switch (c)
       {
@@ -70,6 +70,9 @@ int main(int ac, char **av)
             break;
          case 'n':
             persistent = 0;
+            break;
+         case 'g':
+            HtHTTP::DisableHeadBeforeGet();
             break;
          case '?':
             usage();
@@ -94,11 +97,22 @@ int main(int ac, char **av)
    
    for (i=0; i < timesvar; i++)
    {
+      Retrieve();
       if (debug>0)
          cout << i << ". " << endl;
-      Retrieve();
    }
    
+   if(debug>0)
+   {
+      cout << "HTTP Requests             : " << HtHTTP::GetTotRequests() << endl;
+      cout << "HTTP KBytes requested     : " << (double)HtHTTP::GetTotBytes()/1024 << endl;
+      cout << "HTTP Average request time : " << HtHTTP::GetAverageRequestTime()
+         << " secs" << endl;
+         
+      cout << "HTTP Average speed        : " << HtHTTP::GetAverageSpeed()/1024
+         << " KBytes/secs" << endl;
+   }
+         
 
    // Memory freeing
    
@@ -106,9 +120,6 @@ int main(int ac, char **av)
    
    if (url) delete url;
 
-   if(debug>0)
-      cout << "Finished. Average: " << HtHTTP::GetAverageRequestTime() << endl;
-      
    return 0;
 
 }
@@ -116,7 +127,7 @@ int main(int ac, char **av)
 
 void usage()
 {
-	cout << "usage: testnet [-v] [-U URL]" << endl;
+	cout << "usage: testnet [-v] [-n] [-g] [-U URL] [-t times]" << endl;
 	cout << "Ht://Dig " << VERSION << endl << endl;
 
 	cout << "Options:" << endl;
@@ -130,6 +141,8 @@ void usage()
 	cout << "\t\tTimes to retrieve it" << endl << endl;
 
 	cout << "\t-n\tNormal connection (disable persistent)" << endl << endl;
+
+	cout << "\t-g\tOnly GET requests instead of HEAD+GET" << endl << endl;
 
 	exit(1);
 }

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.4 1999/10/04 15:46:23 angus Exp $
+// $Id: Transport.h,v 1.5 1999/10/04 16:48:07 angus Exp $
 //
 //
 
@@ -150,6 +150,11 @@ class Transport : public Object
    virtual DocStatus Request() = 0; // different in derived classes
 
 
+
+   // Get the date time information about the request
+   const HtDateTime *GetStartTime() const { return &_start_time; }
+   const HtDateTime *GetEndTime() const { return &_end_time; }
+
    // Set and get the connection time out value
    void SetTimeOut ( int t ) { _timeout=t; }
    int GetTimeOut () { return _timeout; }
@@ -248,6 +253,8 @@ protected:
 
    String	_credentials;	       // Credentials for this connection
 
+   HtDateTime  _start_time;         // Start time of the request
+   HtDateTime  _end_time;           // end time of the request
 
 
    ///////
