@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.h,v 1.6.2.5 1999/12/09 15:14:40 loic Exp $
+// $Id: Configuration.h,v 1.6.2.6 1999/12/09 18:20:13 loic Exp $
 //
 
 #ifndef	_Configuration_h_
@@ -56,10 +56,10 @@ public:
     //
     // Adding and deleting items to and from the Configuration
     //
-    void		Add(const String& str);
 #ifndef SWIG
-    void		Add(const String& name, const String& value);
+    void		Add(const String& str);
 #endif /* SWIG */
+    void		Add(const String& name, const String& value);
     int			Remove(const String& name);
 
     //
