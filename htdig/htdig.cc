@@ -79,6 +79,8 @@ main(int ac, char **av)
 		break;
 	    case 'u':
 		credentials = optarg;
+		for (int pos = 0; pos < strlen(optarg); pos++)
+		  optarg[pos] = '*';
 		break;
 	    case 'a':
 		alt_work_area++;

@@ -1,4 +1,7 @@
-Wed Sep  1 15:01:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:03:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/htdig.cc(main): Applied Geoff's patch to hide the
+	username/password in the command line arguments.
 
 	* htdig/Document.cc(readHeader): Fixed a few problems with header
 	parsing, including PR#535 & PR#557.
