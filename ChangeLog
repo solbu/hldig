@@ -1,4 +1,6 @@
-Mon Mar 22 18:39:27 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Mar 22 18:48:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Synonym.cc: Fix minor memory leak.
 
 	* htlib/Dictionary.h, htlib/Dictionary.cc(hashCode): Check if key
 	can be converted to an integer using strtol. If so, use the

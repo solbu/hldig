@@ -3,27 +3,16 @@
 //
 // Implementation of Synonym
 //
-// $Log: Synonym.cc,v $
-// Revision 1.3  1999/01/07 03:13:49  ghutchis
-// Fix minor memory leaks.
-//
-// Revision 1.2  1998/09/18 02:38:08  ghutchis
-//
-// Bug fixes for 3.1.0b2
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: Synonym.cc,v 1.3 1999/01/07 03:13:49 ghutchis Exp $";
+static char RCSid[] = "$Id: Synonym.cc,v 1.3.2.1 1999/03/23 00:56:08 grdetil Exp $";
 #endif
 
 #include "Synonym.h"
 #include "htfuzzy.h"
-#include <List.h>
-#include <StringList.h>
-#include <Configuration.h>
+#include "List.h"
+#include "StringList.h"
+#include "Configuration.h"
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>
@@ -39,6 +28,11 @@ Synonym::Synonym()
 //*****************************************************************************
 Synonym::~Synonym()
 {
+  if (db)
+    {
+      db->Close();
+      delete db;
+    }
 }
 
 
