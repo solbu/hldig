@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3.2.3 1999/12/09 11:31:26 bosc Exp $
+// $Id: WordKey.cc,v 1.3.2.4 1999/12/10 16:57:10 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -123,19 +123,19 @@ int WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
     //
     if(info.sort[j].direction == WORD_SORT_DESCENDING) 
     {
-      const char* tmp = a;
+      const unsigned char* tmp = (unsigned char *)a;
       int tmp_length = a_length;
-      a = b; a_length = b_length; b = tmp; b_length = tmp_length;
+      a = b; a_length = b_length; b = (char *)tmp; b_length = tmp_length;
     }
     switch(info.sort[j].type) {
     case WORD_ISA_String:
       {
-	const char* p1 = a + info.sort[j].bytes_offset;
+	const unsigned char* p1 = (unsigned char *)a + info.sort[j].bytes_offset;
 	int p1_length = a_length - info.sort[j].bytes_offset;
-	const char* p2 = b + info.sort[j].bytes_offset;
+	const unsigned char* p2 = (unsigned char *)b + info.sort[j].bytes_offset;
 	int p2_length = b_length - info.sort[j].bytes_offset;
 	int len = p1_length > p2_length ? p2_length : p1_length;
-	for (p1 = a + info.sort[j].bytes_offset, p2 = b + info.sort[j].bytes_offset; len--; ++p1, ++p2)
+	for (p1 = (unsigned char *)a + info.sort[j].bytes_offset, p2 = (unsigned char *)b + info.sort[j].bytes_offset; len--; ++p1, ++p2)
 	  if (*p1 != *p2)
 	    return ((int)*p1 - (int)*p2);
 	if(p1_length != p2_length)
@@ -174,9 +174,9 @@ int WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
       break;
     }
     if(info.sort[j].direction == WORD_SORT_DESCENDING) {
-      const char* tmp = a;
+      const unsigned char* tmp = (unsigned char *)a;
       int tmp_length = a_length;
-      a = b; a_length = b_length; b = tmp; b_length = tmp_length;
+      a = b; a_length = b_length; b = (char *)tmp; b_length = tmp_length;
     }
   }
 

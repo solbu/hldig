@@ -1,3 +1,8 @@
+Fri Dec 10 17:40:22 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* htword/WordKey.cc (Compare): Fixed bug: compare used to compare chars and not
+	unsigned chars, this failed when non-ascii caracters were used
+
 Fri Dec 10 11:54:36 1999  Marcel Bosc  <bosc@ceic.com>
 
 	* htcommon/defaults.cc : doc for wordlist_cache_size 
