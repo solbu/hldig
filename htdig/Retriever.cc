@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.14 2000/01/14 17:32:59 grdetil Exp $
+// $Id: Retriever.cc,v 1.72.2.15 2000/01/20 03:55:47 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -29,7 +29,6 @@
 
 #include <pwd.h>
 #include <signal.h>
-#include <assert.h>
 #include <stdio.h>
 
 #ifndef HAVE_STRPTIME_DECL
@@ -83,17 +82,16 @@ Retriever::Retriever(RetrieverLog flags) :
     if (Retriever_noLog != log ) 
     {
     String	filelog = config["url_log"];
-    char buffer[1000];	// FIXME
+    char buffer[1024];
     int  l;
 
 	urls_parsed = fopen((char*)filelog,   "r" );
-	if (0 != urls_parsed)
+	if (urls_parsed != 0)
         {
   	    // read all url discovered but not fetched before 
 	    while (fgets(buffer, sizeof(buffer), urls_parsed))
       	    {
 	       l = strlen(buffer);
-	       assert(l && buffer[l -1] == '\n');
 	       buffer[l -1] = 0;
 	       Initial(buffer,2);
             }
@@ -382,7 +380,8 @@ Retriever::parse_url(URLRef &urlRef)
     url.parse(urlRef.GetURL().get());
 	
     currenthopcount = urlRef.GetHopCount();
-    ref = GetRef(url.get());
+
+    ref = docs[url.get()]; // It might be nice to have just an Exists() here
     if (ref)
     {
 	//
@@ -399,7 +398,7 @@ Retriever::parse_url(URLRef &urlRef)
 	ref->DocBackLinks(ref->DocBackLinks() + 1); // we had a new link
 	ref->DocAccessed(time(0));
 	ref->DocState(Reference_normal);
-        currenthopcount=ref->DocHopCount();
+        currenthopcount = ref->DocHopCount();
     }
     else
     {
@@ -435,7 +434,6 @@ Retriever::parse_url(URLRef &urlRef)
     
     // Reset the document to clean out any old data
     doc->Reset();
-
     doc->Url(url.get());
     doc->Referer(urlRef.GetReferer().get());
 
@@ -492,9 +490,12 @@ Retriever::parse_url(URLRef &urlRef)
 		// we need to assign a new document ID to it and mark
 		// the old one as obsolete.
 		//
-		words.MarkGone();
+		words.Skip();
 	        int backlinks = ref->DocBackLinks();
+		ref->DocState(Reference_obsolete);
+		docs.Add(*ref);
 		delete ref;
+
 		current_id = docs.NextDocID();
 		word_context.DocID(current_id);
 		ref = new DocumentRef;
@@ -513,7 +514,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    if (ref->DocState() == Reference_noindex) {
 	      if(debug > 1)
 		cout << " ( " << ref->DocURL() << " ignored)";
-	      words.MarkGone();
+	      words.Skip();
 	    } else
 	      words.Flush();
 	    if (debug)
@@ -523,7 +524,7 @@ Retriever::parse_url(URLRef &urlRef)
 	case Transport::Document_not_changed:
 	    if (debug)
 		cout << " not changed" << endl;
-	    words.MarkGone();
+	    words.Skip();
 	    break;
 
 	case Transport::Document_not_found:
@@ -533,7 +534,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    recordNotFound(url.get(),
 			   urlRef.GetReferer().get(),
 			   Transport::Document_not_found);
-	    words.MarkGone();
+	    words.Skip();
 	    break;
 
 	case Transport::Document_no_host:
@@ -543,7 +544,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    recordNotFound(url.get(),
 			   urlRef.GetReferer().get(),
 			   Transport::Document_no_host);
-	    words.MarkGone();
+	    words.Skip();
 
 	    // Mark the server as being down
 	    if (server)
@@ -557,52 +558,60 @@ Retriever::parse_url(URLRef &urlRef)
 	    recordNotFound(url.get(),
 			   urlRef.GetReferer().get(),
 			   Transport::Document_no_port);
-	    words.MarkGone();
+	    words.Skip();
 
 	    // Mark the server as being down
 	    if (server)
 	      server->IsDead(1);
 	    break;
 
-	case Transport::Document_not_parsable:
+        case Transport::Document_not_parsable:
+	    ref->DocState(Reference_noindex);
   	    if (debug)
  		cout << " not Parsable" << endl;
-  	    words.MarkGone();
+  	    words.Skip();
   	    break;
 
 	case Transport::Document_redirect:
 	    if (debug)
 		cout << " redirect" << endl;
-	    words.MarkGone();
+	    ref->DocState(Reference_obsolete);
+	    words.Skip();
 	    got_redirect(doc->Redirected(), ref);
 	    break;
 	    
        case Transport::Document_not_authorized:
+	    ref->DocState(Reference_not_found);
 	    if (debug)
 	      cout << " not authorized" << endl;
 	    break;
 
       case Transport::Document_not_local:
+	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " not local" << endl;
 	   break;
 
       case Transport::Document_no_header:
+	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " no header" << endl;
 	   break;
 
       case Transport::Document_connection_down:
+	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " connection down" << endl;
 	   break;
 
       case Transport::Document_no_connection:
+	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " no connection" << endl;
 	   break;
 
       case Transport::Document_not_recognized_service:
+	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " service not recognized" << endl;
 
@@ -612,6 +621,7 @@ Retriever::parse_url(URLRef &urlRef)
 	   break;
 
       case Transport::Document_other_error:
+	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " other error" << endl;
 	   break;
@@ -715,10 +725,10 @@ Retriever::IsValidURL(char *u)
 	  p = strtok(0, " \t");
 	}
 
-    //
-    // Valid extensions are performed similarly 
-    //
-	// A list of bad extensions, separated by spaces or tabs
+	//
+	// Valid extensions are performed similarly 
+	//
+	// A list of valid extensions, separated by spaces or tabs
 
 	t = config.Find(&aUrl,"valid_extensions");
 	p = strtok(t, " \t");
@@ -1030,21 +1040,6 @@ Retriever::IsLocalURL(char *url)
 }
 
  
-//*****************************************************************************
-// DocumentRef *Retriever::GetRef(char *u)
-//   Extract the date field from the given url.  This will require a
-//   lookup in the current document database.
-//
-DocumentRef*
-Retriever::GetRef(char *u)
-{
-    static String	url;
-    url = u;
-
-    return docs[url];
-}
-
-
 //*****************************************************************************
 // void Retriever::got_word(char *word, int location, int heading)
 //   The location is normalized to be in the range 0 - 1000.
