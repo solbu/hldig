@@ -4,6 +4,9 @@
 // Implementation of the Dictionary class
 //
 // $Log: Dictionary.cc,v $
+// Revision 1.5  1999/01/14 00:26:01  ghutchis
+// Add new method GetNextElement to directly return next object when iterating.
+//
 // Revision 1.4  1999/01/10 01:59:56  ghutchis
 // Remember special case of an empty dictionary.
 //
@@ -362,4 +365,32 @@ Dictionary::Get_Next()
 
     currentDictionaryEntry = currentDictionaryEntry->next;
     return currentDictionaryEntry->key;
+}
+
+//*********************************************************************
+//
+Object *
+Dictionary::Get_NextElement()
+{
+    while (currentDictionaryEntry == NULL ||
+	   currentDictionaryEntry->next == NULL)
+    {
+	currentTableIndex++;
+
+	if (currentTableIndex >= tableLength)
+	{
+	    currentTableIndex--;
+	    return NULL;
+	}
+
+	currentDictionaryEntry = table[currentTableIndex];
+
+	if (currentDictionaryEntry != NULL)
+	{
+	    return currentDictionaryEntry->value;
+	}
+    }
+
+    currentDictionaryEntry = currentDictionaryEntry->next;
+    return currentDictionaryEntry->value;
 }

@@ -5,11 +5,14 @@
 // is indexed with a string.  The objects can be returned by mentioning their
 // string index.
 //
-// $Id: Dictionary.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: Dictionary.h,v 1.2 1999/01/14 00:26:01 ghutchis Exp $
 //
 // $Log: Dictionary.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1999/01/14 00:26:01  ghutchis
+// Add new method GetNextElement to directly return next object when iterating.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #ifndef	_Dictionary_h_
@@ -52,6 +55,7 @@ public:
     //
     char		*Get_Next();
     void		Start_Get();
+    Object              *Get_NextElement();
     void		Release();
     void		Destroy();
     int			Count()		{return count;}
