@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.h,v 1.1.2.5 2000/01/03 10:04:47 bosc Exp $
+// $Id: WordDBCompress.h,v 1.1.2.6 2000/01/20 11:31:56 bosc Exp $
 //
 
 #ifndef _WordDBCompress_h_
@@ -18,6 +18,74 @@
 
 class WordMonitor;
 
+
+// ***********************************************
+// *************** WordDBCompress*****************
+// ***********************************************
+// Starting point for compression. 
+// 
+//
+// Comrpession HOW IT WORKS:
+//
+// ** General outline: 
+//
+// BerkeleyDB pages are stored in a  memory pool. When the memory pool is
+// full,  least used pages  are swaped  to disk.  Page compression  is an
+// interface  between  disk  and  memory.  The  WordDBCompress_compress_c
+// functions are C callbacks that  are called by the the page compression
+// code  in  BerkeleyDB. The  C  callbacks  the  call the  WordDBCompress
+// comress/uncompress  methods. The  WordDBCompress creates  a WordDBPage
+// which does the actual compress/uncompress job.
+// 
+// The  WordDBPage compression/uncompression methods  store/retreive data
+// from a bitstream.  BitStream is  a simple bitstream, and Compressor is
+// a bitstream with added compression capabilities.
+// 
+
+// Compression algorithm.
+// 
+// Most DB pages are full of really redundant data. Mifluz choice of using 
+// one db entry per word makes the DB pages have an even more redundant.
+// But this choice also makes the pages have a very simple structure.
+// 
+// Here is a real world example of what a page can look like:
+// (key structure: word + 4 numerical fields)
+// 
+// "trois"     1 4482    1  10b    
+// "trois"     1 4482    1  142    
+// "trois"     1 4484    1   40    
+// "trois"     1 449f    1  11e    
+// "trois"     1 4545    1   11    
+// "trois"     1 45d3    1  545    
+// "trois"     1 45e0    1  7e5    
+// "trois"     1 45e2    1  830    
+// "trois"     1 45e8    1  545    
+// "trois"     1 45fe    1   ec    
+// "trois"     1 4616    1  395    
+// "trois"     1 461a    1  1eb    
+// "trois"     1 4631    1   49    
+// "trois"     1 4634    1   48    
+// .... etc ....
+// 
+// In practice most pages only contain a single word! 
+// 
+// So to compress we chose to only code differences between succesive entries.
+// 
+// Diffrences in words are coded by 2 numbers and some letters: 
+// - the position within the word of the first letter that changes
+// - the size of the new suffix
+// - the letters in the new suffix
+// 
+// Only differences in succesive numerical entries are stored.
+// 
+// A flag is stored for each entry indicating which fields have changed.
+// 
+// All this gives us a few numerical arrays which are themselves compressed 
+// and sent to the bitstream.
+//
+//
+
+   
 class WordDBCompress
 {
  public:
