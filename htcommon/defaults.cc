@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.98 2003/10/26 01:46:07 angusgb Exp $
+// $Id: defaults.cc,v 1.99 2003/10/26 10:12:30 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -245,9 +245,9 @@ ConfigDefaults	defaults[] =
 	parameter or <a href=\"#match_method\">match_method</a> attribute \
 	is set to <code>boolean</code>. \
 	See also the \
-	<a href=\"boolean_syntax_errors\">boolean_syntax_errors</a> attribute. \
+	<a href=\"#boolean_syntax_errors\">boolean_syntax_errors</a> attribute. \
 " },
-{ "boolean_syntax_errors", ">Expected \
+{ "boolean_syntax_errors", "Expected \
 	'a search word, a quoted phrase or a boolean expression between ()' \
 		'at the end' 'instead of' 'end of expression' quotes",  \
 	"quoted string list", "htsearch", "", "3.1.6", "Presentation:How",
@@ -1230,7 +1230,7 @@ http://www.htdig.org/", " \
 	Granted, this is not the perfect way of doing this, \
 	but it is simple enough and it covers most cases.<br> \
 	To limit URLs in htsearch, use \
-	<a href=\"restrict\">restrict</a>. \
+	<a href=\"#restrict\">restrict</a>. \
 " }, \
 { "local_default_doc", "index.html",  \
 	"string list", "htdig", "Server", "3.0.8b2", "Indexing:Where", "local_default_doc: default.html default.htm index.html index.htm", " \
@@ -1637,7 +1637,11 @@ http://www.htdig.org/", " \
 { "noindex_end", "<!--/htdig_noindex--> </SCRIPT>",  \
 	"quoted string list", "htdig", "", "3.1.0", "Indexing:What", "noindex_end: &lt;/SCRIPT&gt;", " \
 	This string marks the end of a section of an HTML file that should be \
-	completely ignored when indexing. See also \
+	completely ignored when indexing.  Note that text between noindex_start\
+	and noindex_end isn't even counted as white space; the text \
+	\"<code>foo<!--htdig_noindex-->something<!--/htdig_noindex-->bar</code>\" \
+	matches the word \"foobar\", not the phrase \"foo bar\".  White space \
+	following noindex_end <em>is</em> counted as white space. See also \
 	<a href=\"#noindex_start\">noindex_start</a>. \
 " }, \
 { "noindex_start", "<!--htdig_noindex--> <SCRIPT",  \
@@ -1822,7 +1826,7 @@ http://www.htdig.org/", " \
 	<a href=\"#exclude\">exclude</a> list - if a URL matches patterns \
 	in both lists it is still excluded from the search results. \
 	<br>To restrict URLs in htdig, use \
-	<a href=\"limit_urls_to\">limit_urls_to</a>. \
+	<a href=\"#limit_urls_to\">limit_urls_to</a>. \
 " }, \
 { "robotstxt_name", "htdig",  \
 	"string", "htdig", "Server", "3.0.7", "Indexing:Out", "robotstxt_name: myhtdig", " \
@@ -1952,7 +1956,7 @@ http://www.htdig.org/", " \
 			  the database, this can really slow down searches \
 			  considerably.  The config file used for searching \
 			  must include the regex meta-characters (^$\\[-]|.*) \
-			  included in <a href=\"extra_word_characters\">extra_word_characters</a>, \
+			  included in <a href=\"#extra_word_characters\">extra_word_characters</a>, \
 			  while the config file used for digging should not.\
 			<dd> \
 			<dt> \
@@ -2363,7 +2367,7 @@ http://www.htdig.org/", " \
 	<a href=\"#startmonth\">startmonth</a>, \
 	<a href=\"#endday\">endday</a>, \
 	<a href=\"#endmonth\">endmonth</a>, \
-	<a href=\"endyear\">endyear</a>. \
+	<a href=\"#endyear\">endyear</a>. \
 	These are most usefully specified as a \
 	<a href=\"hts_form.html#startyear\">GCI argument</a>.<br> \
 	For each component, if a negative number is given, \

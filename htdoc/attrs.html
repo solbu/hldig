@@ -1246,7 +1246,7 @@
 	parameter or <a href="#match_method">match_method</a> attribute
 	is set to <code>boolean</code>.
 	See also the
-	<a href="boolean_syntax_errors">boolean_syntax_errors</a> attribute.
+	<a href="#boolean_syntax_errors">boolean_syntax_errors</a> attribute.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -1290,7 +1290,7 @@
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			&gt;Expected
+			Expected
 	&#39;a search word, a quoted phrase or a boolean expression between ()&#39;
 		&#39;at the end&#39; &#39;instead of&#39; &#39;end of expression&#39; quotes
 		  </dd>
@@ -5941,7 +5941,7 @@ http://www.htdig.org/
 	Granted, this is not the perfect way of doing this,
 	but it is simple enough and it covers most cases.<br>
 	To limit URLs in htsearch, use
-	<a href="restrict">restrict</a>.
+	<a href="#restrict">restrict</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -8767,7 +8767,11 @@ http://www.htdig.org/
 		  </dt>
 		  <dd>
 	This string marks the end of a section of an HTML file that should be
-	completely ignored when indexing. See also
+	completely ignored when indexing.  Note that text between noindex_start
+	and noindex_end isn't even counted as white space; the text
+	"<code>foo<!--htdig_noindex-->something<!--/htdig_noindex-->bar</code>"
+	matches the word "foobar", not the phrase "foo bar".  White space
+	following noindex_end <em>is</em> counted as white space. See also
 	<a href="#noindex_start">noindex_start</a>.
 		  </dd>
 		  <dt>
@@ -9815,7 +9819,7 @@ http://www.htdig.org/
 	<a href="#exclude">exclude</a> list - if a URL matches patterns
 	in both lists it is still excluded from the search results.
 	<br>To restrict URLs in htdig, use
-	<a href="limit_urls_to">limit_urls_to</a>.
+	<a href="#limit_urls_to">limit_urls_to</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -10119,7 +10123,7 @@ http://www.htdig.org/
 			  the database, this can really slow down searches
 			  considerably.  The config file used for searching
 			  must include the regex meta-characters (^$\[-]|.*)
-			  included in <a href="extra_word_characters">extra_word_characters</a>,
+			  included in <a href="#extra_word_characters">extra_word_characters</a>,
 			  while the config file used for digging should not.
 			<dd>
 			<dt>
@@ -11749,7 +11753,7 @@ http://www.htdig.org/
 	<a href="#startmonth">startmonth</a>,
 	<a href="#endday">endday</a>,
 	<a href="#endmonth">endmonth</a>,
-	<a href="endyear">endyear</a>.
+	<a href="#endyear">endyear</a>.
 	These are most usefully specified as a
 	<a href="hts_form.html#startyear">GCI argument</a>.<br>
 	For each component, if a negative number is given,
@@ -14447,6 +14451,6 @@ form during indexing and translated for results.
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: Sun Oct 26 12:44:20 EST 2003
+		Last modified: Sun Oct 26 19:55:00 EST 2003
   </body>
 </html>

@@ -1,5 +1,12 @@
 Sun Oct 26 12:42:27 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
+    * htcommon/defaults.cc: Fixed documentation to close bug #829767
+      Clarified that noindex_start/end do not get replaced by whitespace.
+      Also removed spurious '>' from start of boolean_syntax_errors, and
+      added missing '#' to many local <a href> tags.
+
+Sun Oct 26 12:42:27 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
     * htcommon/defaults.cc: Fixed description of 'head_before_get' after
       Lachlan fixes.
     * htdoc/attrs.html: rerun cf_generate.pl
