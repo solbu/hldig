@@ -25,6 +25,8 @@
 # 1999/03/05
 # Changed:      rejoin hyphenated words across lines <grdetil@scrc.umanitoba.ca>
 #               (in PDFs) & remove multiple punct. chars. between words (all)
+# 1999/03/10
+# Changed:      fix handling of minimum word length  <grdetil@scrc.umanitoba.ca>
 #########################################
 #
 # set this to your MS Word to text converter
@@ -54,6 +56,7 @@ $CATPDF = "/usr/bin/pdftotext";
 #$CATPDF = "/usr/local/bin/pdftotext";
 
 # need some var's
+$minimum_word_length = 3;
 $head = "";
 @allwords = ();
 @temp = ();
@@ -135,8 +138,8 @@ while (<CAT>) {
         s/[\-\255]/ /g;                                 # replace hyphens with space
         @fields = split;                                # split up line
         next if (@fields == 0);                         # skip if no fields (does it speed up?)
-        for ($x=0; $x<@fields; $x++) {                  # check each field if string length > 3
-                if (length($fields[$x]) > 3) {
+        for ($x=0; $x<@fields; $x++) {                  # check each field if string length >= 3
+                if (length($fields[$x]) >= $minimum_word_length) {
                         push @allwords, $fields[$x];    # add to list
                 }
         }
