@@ -1,9 +1,15 @@
 //
 // Retriever.cc
 //
-// Implementation of Retriever
+//: 
 //
-// $Id: Retriever.cc,v 1.60 1999/09/05 06:46:50 ghutchis Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: Retriever.cc,v 1.61 1999/09/08 04:58:19 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -436,7 +442,7 @@ Retriever::parse_url(URLRef &urlRef)
 		{
 		  if (debug)
 		    cout << " retrieved but not changed" << endl;
-		  words.MarkScanned();
+		  words.MarkGone();
 		  break;
 		}
 		//
@@ -446,7 +452,7 @@ Retriever::parse_url(URLRef &urlRef)
 		// we need to assign a new document ID to it and mark
 		// the old one as obsolete.
 		//
-		words.MarkModified();
+		words.MarkGone();
 	        int backlinks = ref->DocBackLinks();
 		delete ref;
 		current_id = docs.NextDocID();
@@ -465,7 +471,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    // Hey! If this document is marked noindex, don't even bother
 	    // adding new words. Mark this as gone and get rid of it!
 	    if (ref->DocState() == Reference_noindex)
-	      words.MarkModified();
+	      words.MarkGone();
 	    else
 	      words.Flush();
 	    if (debug)
@@ -475,7 +481,7 @@ Retriever::parse_url(URLRef &urlRef)
 	case Document::Document_not_changed:
 	    if (debug)
 		cout << " not changed" << endl;
-	    words.MarkScanned();
+	    words.MarkGone();
 	    break;
 
 	case Document::Document_not_found:
@@ -907,59 +913,56 @@ Retriever::got_word(char *word, int location, int heading)
     if (trackWords)
     {
       String w = word;
-      HtStripPunctuation(w);
       if (w.length() >= minimumWordLength)
 	words.Word(w, location, current_anchor_number, factor[heading]);
-      if (strcmp(word, w.get()) != 0)	// have punctuation that was stripped
-      {
-	// Check for compound words...
-	String parts = word;
-	int added;
-	int nparts = 1;
-	do
+
+      // Check for compound words...
+      String parts = word;
+      int added;
+      int nparts = 1;
+      do
 	{
-	    added = 0;
-	    char *start = parts.get();
-	    char *punctp, *nextp, *p;
-	    char  punct;
-	    int   n;
-	    while (*start)
+	  added = 0;
+	  char *start = parts.get();
+	  char *punctp, *nextp, *p;
+	  char  punct;
+	  int   n;
+	  while (*start)
 	    {
-		p = start;
-		for (n = 0; n < nparts; n++)
+	      p = start;
+	      for (n = 0; n < nparts; n++)
 		{
-		    while (HtIsStrictWordChar((unsigned char)*p))
-			p++;
-		    punctp = p;
-		    if (!*punctp && n+1 < nparts)
-			break;
-		    while (*p && !HtIsStrictWordChar((unsigned char)*p))
-			p++;
-		    if (n == 0)
-			nextp = p;
-		}
-		if (n < nparts)
+		  while (HtIsStrictWordChar((unsigned char)*p))
+		    p++;
+		  punctp = p;
+		  if (!*punctp && n+1 < nparts)
 		    break;
+		  while (*p && !HtIsStrictWordChar((unsigned char)*p))
+		    p++;
+		  if (n == 0)
+		    nextp = p;
+		}	
+		if (n < nparts)
+		  break;	
 		punct = *punctp;
 		*punctp = '\0';
 		if (*start && (*p || start > parts.get()))
-		{
+		  {
 		    w = start;
 		    HtStripPunctuation(w);
 		    if (w.length() >= minimumWordLength)
-		    {
+		      {
 			words.Word(w, location, current_anchor_number, factor[heading]);
 			if (debug > 3)
-			    cout << "word part: " << start << '@' << location << endl;
-		    }
+			  cout << "word part: " << start << '@' << location << endl;
+		      }
 		    added++;
-		}
+		  }
 		start = nextp;
 		*punctp = punct;
 	    }
-	    nparts++;
+	  nparts++;
 	} while (added > 2);
-      }
     }
 }
 

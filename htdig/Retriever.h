@@ -1,7 +1,15 @@
 //
 // Retriever.h
 //
-// $Id: Retriever.h,v 1.12 1999/07/19 01:58:47 ghutchis Exp $
+//: 
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: Retriever.h,v 1.13 1999/09/08 04:58:19 ghutchis Exp $
 //
 
 #ifndef _Retriever_h_
