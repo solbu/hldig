@@ -1,4 +1,8 @@
-Wed Nov 10 15:10:27 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Nov 10 15:16:57 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc: Fix PR#688, where htdig goes into an infinite
+	loop if an entry in local_urls (or local_user_urls) is missing a '='
+	(or a ',').
 
 	* htcommon/defaults.cc: removed vestigial references to MAX_MATCHES
 	template variables in search_results_{header,footer}.

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.3 1999/11/10 14:47:56 toivo Exp $
+// $Id: Retriever.cc,v 1.72.2.4 1999/11/10 21:30:55 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -808,7 +808,10 @@ Retriever::IsLocal(char *url)
 	{
    	    char *path = strchr(p, '=');
    	    if (!path)
+	    {
+		p = strtok(0, " \t");
    		continue;
+	    }
    	    *path++ = '\0';
             prefixes->Add(p);
             paths->Add(path);
@@ -869,11 +872,17 @@ Retriever::IsLocalUser(char *url)
 	{
 	    char *path = strchr(p, '=');
 	    if (!path)
+	    {
+		p = strtok(0, " \t");
 	        continue;
+	    }
 	    *path++ = '\0';
 	    char *dir = strchr(path, ',');
 	    if (!dir)
+	    {
+		p = strtok(0, " \t");
 	        continue;
+	    }
 	    *dir++ = '\0';
 	    prefixes->Add(p);
 	    paths->Add(path);
