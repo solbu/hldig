@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.19 2000/02/02 19:57:47 grdetil Exp $
+// $Id: Retriever.cc,v 1.72.2.20 2000/02/02 21:53:07 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -969,7 +969,7 @@ Retriever::GetLocal(char *url)
     {
 	defaultdocs = new StringList();
 	String t = config.Find(&aUrl,"local_default_doc");
-	p = strtok(t, " \t");
+	char *p = strtok(t, " \t");
 	while (p)	
 	{
 	    defaultdocs->Add(p);

@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.12 2000/02/02 19:01:03 grdetil Exp $
+// $Id: Document.cc,v 1.55.2.13 2000/02/02 21:53:07 grdetil Exp $
 //
 
 #include <signal.h>
@@ -441,7 +441,7 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
 
     // Process only HTML files (this could be changed if we read
     // the server's mime.types file).
-    char *ext = strrchr(filename, '.');
+    char *ext = strrchr(*filename, '.');
     if (ext == NULL)
       return Transport::Document_not_local;
     if ((mystrcasecmp(ext, ".html") == 0) || (mystrcasecmp(ext, ".htm") == 0))
