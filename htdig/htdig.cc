@@ -4,7 +4,7 @@
 // Indexes the web sites specified in the config file
 // generating several databases to be used by htmerge
 //
-// $Id: htdig.cc,v 1.3.2.7 2001/06/07 20:23:59 grdetil Exp $
+// $Id: htdig.cc,v 1.3.2.8 2001/07/25 22:49:34 ghutchis Exp $
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2001 The ht://Dig Group
@@ -60,7 +60,7 @@ main(int ac, char **av)
     int			load_text_database = 0;
     char		*arg0, *s;
     char		*max_hops = 0;
-    RetrieverLog	flag  = Retriever_noLog;
+    RetrieverLog	flag = Retriever_logUrl;
 
     // Find argument 0 basename, to see who we're called as
     arg0 = av[0];
@@ -81,7 +81,7 @@ main(int ac, char **av)
     //
     // Parse command line arguments
     //
-    while ((c = getopt(ac, av, "lsm:c:vith:u:a")) != -1)
+    while ((c = getopt(ac, av, "sm:c:vith:u:a")) != -1)
     {
         int pos;
 	switch (c)
@@ -121,9 +121,6 @@ main(int ac, char **av)
 	        minimalFile = optarg;
 		max_hops = "0";
 	        break;
-	    case 'l':
-		flag = Retriever_logUrl;
-		break;
 	    case '?':
 		usage();
 	}
@@ -378,7 +375,7 @@ main(int ac, char **av)
 void usage()
 {
     cout << "usage: htdig [-v][-i][-c configfile][-t][-h hopcount][-s] \\\n";
-    cout << "           [-u username:password][-a][-l][-m minimalfile][file]\n";
+    cout << "           [-u username:password][-a][-m minimalfile][file]\n";
     cout << "This program is part of ht://Dig " << VERSION << "\n\n";
     cout << "Options:\n";
 
@@ -417,11 +414,6 @@ void usage()
     cout << "\t\tthe original files to be used by htsearch during the\n";
     cout << "\t\tindexing run.\n\n";
 	
-    cout << "\t-l\tStop and restart.\n";
-    cout << "\t\tReads in the progress of any previous interrupted digs\n";
-    cout << "\t\tfrom the log file and write the progress out if\n";
-    cout << "\t\tinterrupted by a signal.\n\n";
-
     cout << "\t-m minimalfile  (or just a file name at end of arguments)\n";
     cout << "\t\tTells htdig to read URLs from the supplied file and index\n";
     cout << "\t\tthem in place of (or in addition to) the existing URLs in\n";

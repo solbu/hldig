@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.21 2001/07/24 19:05:05 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.22 2001/07/25 22:49:34 ghutchis Exp $";
 #endif
 
 #include "Configuration.h"
@@ -105,7 +105,7 @@ ConfigDefaults	defaults[] =
     {"method_names",			"and All or Any boolean Boolean"},
     {"minimum_word_length",		"3"},
     {"minimum_prefix_length",		"1"},
-    {"modification_time_is_now",        "false"},
+    {"modification_time_is_now",        "true"},
     {"next_page_text",			"[next]"},
     {"no_excerpt_text",			"<em>(None of the search words were found in the top of this document.)</em>"},
     {"no_excerpt_show_top",             "false"},
@@ -155,9 +155,9 @@ ConfigDefaults	defaults[] =
     {"text_factor",			"1"},
     {"timeout",				"30"},
     {"title_factor",			"100"},
-    {"translate_amp",                   "false"},
-    {"translate_lt_gt",                 "false"},
-    {"translate_quot",                  "false"},
+    {"translate_amp",                   "true"},
+    {"translate_lt_gt",                 "true"},
+    {"translate_quot",                  "true"},
     {"url_list",			"${database_base}.urls"},
     {"url_part_aliases",                ""},
     {"url_log",				"${database_base}.log"},

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34.2.14 2000/02/15 22:42:20 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34.2.15 2001/07/25 22:49:34 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -701,6 +701,10 @@ Document::getParsable()
 	    pdf = new PDF();
 	parsable = pdf;
     }
+    else if (mystrncasecmp((char *)contentType, "text/css", 8) == 0)
+      {
+	return NULL; // Don't parse CSS files
+      }
     else
     {
 	if (!plaintext)
