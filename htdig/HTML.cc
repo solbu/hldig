@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.12 1999/11/26 23:22:26 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.13 1999/12/03 17:15:28 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -27,6 +27,8 @@ static StringMatch	attrs;
 static StringMatch	srcMatch;
 static StringMatch	hrefMatch;
 static StringMatch	keywordsMatch;
+static int		offset;
+static int		totlength;
 
 
 //*****************************************************************************
@@ -139,7 +141,6 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     // We have some variables which will contain the various items we
     // are looking for
     //
-    int			offset = 0;
     int			in_space;
     int			in_punct;
     unsigned char	*q, *start;
@@ -149,6 +150,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     static char         *skip_start = config["noindex_start"];
     static char         *skip_end = config["noindex_end"];
 
+    offset = 0;
     title = 0;
     head = 0;
     meta_dsc = 0;
@@ -268,6 +270,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
         }
       }
       *ptext++ = '\0';
+      totlength = ptext - text;
 
       position = text;
       start = position;
@@ -388,7 +391,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    if (word.length() >= minimumWordLength && doindex)
 	    {
 	      retriever.got_word(word,
-				 int(offset * 1000 / contents->length()),
+				 int(offset * 1000 / totlength),
 				 in_heading);
 	    }
 	}
@@ -662,6 +665,33 @@ HTML::do_tag(Retriever &retriever, String &tag)
 
 	case 18:	// "img"
 	{
+	    // Handle alt parameter
+	    Configuration	conf;
+	    conf.NameValueSeparators("=");
+	    conf.Add(position+length);
+	    if (conf["alt"])
+	    {
+		char	*alttxt = transSGML(conf["alt"]);
+		if (doindex && in_title)
+		    title << alttxt << " ";
+		if (in_ref && description.length() < max_description_length)
+		    description << alttxt << " ";
+		if (doindex && !in_title && head.length() < max_head_length)
+		    head << alttxt << " ";
+		char	*w = HtWordToken(alttxt);
+		while (w && doindex)
+		{
+		    if (strlen(w) >= minimumWordLength)
+		      retriever.got_word(w,
+				 int((offset+(w-alttxt)) * 1000
+					/ totlength),
+				 in_heading);
+		    w = HtWordToken(0);
+		}
+		w = '\0';
+	    }
+
+	    // Handle src parameter
 	    which = -1;
 	    int pos = attrs.FindFirstWord(position, which, length);
 	    if (pos < 0 || which != 0)
@@ -759,12 +789,12 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		char	*keywords = conf["htdig-keywords"];
 		if (!keywords)
 		    keywords = conf["keywords"];
-		char	*w = strtok(transSGML(keywords), " ,\t\r\n");
-		while (w)
+		char	*w = HtWordToken(transSGML(keywords));
+		while (w && doindex)
 		{
 		    if (strlen(w) >= minimumWordLength)
 		      retriever.got_word(w, 1, 10);
-		    w = strtok(0, " ,\t\r\n");
+		    w = HtWordToken(0);
 		}
 		w = '\0';
 	    }
@@ -826,24 +856,28 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		   // (slot 11 is the new slot for this)
 		   //
 
-		   char        *w = strtok(transSGML(conf["content"]), " \t\r\n");
-                   while (w)
+		   char        *words = HtWordToken(transSGML(conf["content"]));
+		   char        *w = words;
+                   while (w && doindex)
 		     {
 			if (strlen(w) >= minimumWordLength)
-			  retriever.got_word(w, 1, 11);
-			w = strtok(0, " \t\r\n");
+			  retriever.got_word(w,
+				 int((offset+(w-words)) * 1000
+					/ totlength),
+				 11);
+			w = HtWordToken(0);
 		     }
 		 w = '\0';
 		}
 
 		if (keywordsMatch.CompareWord(cache))
 		{
-		    char	*w = strtok(transSGML(conf["content"]), " ,\t\r\n");
-		    while (w)
+		    char	*w = HtWordToken(transSGML(conf["content"]));
+		    while (w && doindex)
 		    {
 			if (strlen(w) >= minimumWordLength)
 			  retriever.got_word(w, 1, 10);
-			w = strtok(0, " ,\t\r\n");
+			w = HtWordToken(0);
 		    }
 		    w = '\0';
 		}
@@ -1104,7 +1138,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 
 
 //*****************************************************************************
-// char * HTML::transSGML(char *text)
+// char * HTML::transSGML(char *str)
 //
 char *
 HTML::transSGML(char *str)

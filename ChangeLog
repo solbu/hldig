@@ -1,3 +1,14 @@
+Fri Dec  3 10:52:57 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc(parse, do_tag): Add handling of <img alt=...> text,
+	fix parsing of words in meta tags, disable indexing of meta tags
+	when "noindex" state in effect, fix calculations of word positions
+	to more accurately reflect relative positions.
+	* htlib/HtWordType.h, htlib/HtWordType.cc: Add HtWordToken() function,
+	to replace strtok() in HTML parser.
+	* htdoc/RELEASE.html: Update with latest fixes.
+	* htdoc/ChangeLog: Update to latest version.
+
 Fri Dec  3 09:02:55 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/Configuration(Add): handle strings in single quotes, as in
@@ -7,7 +18,6 @@ Thu Dec  2 16:14:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html: Add Tom Metro's suggested revisions for pdf_parser
 	and external_parsers.
-	* htdoc/ChangeLog: Update to latest version.
 
 Thu Dec  2 15:15:03 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 

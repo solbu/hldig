@@ -1,7 +1,7 @@
 //
 // HtWordType:  Wrap some attributes to make is...()-type methods.
 //
-// $Id: HtWordType.h,v 1.1.2.3 1999/09/01 20:56:32 grdetil Exp $
+// $Id: HtWordType.h,v 1.1.2.4 1999/12/03 17:15:29 grdetil Exp $
 //
 
 #ifndef __HtWordType_h
@@ -25,6 +25,7 @@ public:
   friend int HtIsWordChar(int c);
   friend int HtIsStrictWordChar(int c);
   friend void HtStripPunctuation(String &s);
+  friend char *HtWordToken(char *s);
 
   // To be called once all attributes and configuration files
   // have been read.
@@ -46,6 +47,7 @@ private:
   // These methods are not supposed to be implemented (or accessed).
   HtWordType();
   HtWordType(const HtWordType &);
+  char *get_wordtoken(char *str);
   void operator=(const HtWordType &);
 };
 
@@ -75,6 +77,13 @@ inline void
 HtStripPunctuation(String &s)
 {
   s.remove(HtWordType::statics.valid_punctuation);
+}
+
+// Like strtok(), but using our rules for word separation.
+inline char *
+HtWordToken(char *s)
+{
+  return HtWordType::get_wordtoken(s);
 }
 
 #endif /* __HtWordType_h */

@@ -3,7 +3,7 @@
 // functions and other common functions without having to manage
 // the attributes or the exact attribute combination semantics.
 //
-// $Id: HtWordType.cc,v 1.1.2.2 1999/09/01 20:56:32 grdetil Exp $
+// $Id: HtWordType.cc,v 1.1.2.3 1999/12/03 17:15:29 grdetil Exp $
 //
 
 #include "HtWordType.h"
@@ -36,4 +36,30 @@ HtWordType::Initialize(Configuration &config)
     if (strchr(valid_punct, i))
 	HtWordType::statics.chrtypes[i] |= HtWt_ValidPunct;
   }
+}
+
+
+//  much like strtok(), and destructive of the source string like strtok(),
+//  but does word separation by our rules.
+char *
+HtWordType::get_wordtoken(char *str)
+{
+    unsigned char		*text = (unsigned char *)str;
+    char			*ret = 0;
+    static unsigned char	*prev = 0;
+
+    if (!text)
+	text = prev;
+    while (text && *text && !HtIsStrictWordChar(*text))
+	text++;
+    if (text && *text)
+    {
+	ret = (char *)text;
+	while (*text && HtIsWordChar(*text))
+	    text++;
+	if (*text)
+	    *text++ = '\0';
+    }
+    prev = text;
+    return ret;
 }

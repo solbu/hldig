@@ -22,7 +22,7 @@
 	</p>
 
 	<p>
-	<strong>Release notes for htdig-3.1.4</strong> 2 Dec 1999<br>
+	<strong>Release notes for htdig-3.1.4</strong> 3 Dec 1999<br>
 	This version cleans up some remaining bugs in the 3.1.3
 	release. As the latest stable release of ht://Dig, it is
 	recommended for all production servers.
@@ -31,13 +31,20 @@
 	<li>Fixed a nasty bug in URL parameter parsing, which was gobbling
 	    up bare ampersands (&amp;) and CGI parameter names.</li>
 	<li>Fixed a bug where htdig would go into an infinite loop if an
-	    entry in <a href="attrs.html#local_urls">local_urls</a> or
-	    <a href="attrs.html#local_user_urls">local_user_urls</a> was
+	    entry in <a href="attrs.html#local_urls">local_urls</a>,
+	    <a href="attrs.html#local_user_urls">local_user_urls</a> or
+	    <a href="attrs.html#server_aliases">server_aliases</a> was
 	    missing the "=".</li>
 	<li>Fixed a bug in htsearch, where it failed when reading long
 	    queries via the POST method.</li>
 	<li>Fixed a bug in htdig, where it failed to close the connection
 	    after certain errors.</li>
+	<li>Fixed bugs in HTML parser's handling of META tags. It no longer
+	    continues indexing meta tags when indexing is turned off for the
+	    document, and it no longer gets confused by punctuation in META
+	    descriptions and keywords.</li>
+	<li>HTML parser now indexes text in alt parameter of img tags, and
+	    calculates word locations more accurately than before.</li>
 	<li>Digging via the local filesystem can now be done even without
 	    an HTTP server running, and a few more file types can be indexed
 	    locally, without having to rely on the server.</li>
@@ -1084,7 +1091,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Thu Dec  2 14:36:17 EST 1999
+Last modified: Fri Dec  3 11:52:53 EST 1999
 <!-- hhmts end -->
   </body>
 </html>
