@@ -1,3 +1,8 @@
+Tue Jan 11 19:33:44 2000  Marcel Bosc  <bosc@ceic.com>
+
+	* htlib/HtVectorGeneric,htword: Fixed some warnings found 
+	when compiling under FreeBSD
+
 Tue Jan 11 18:22:58 2000  Marcel Bosc  <bosc@ceic.com>
 
 	* htlib/HtVectorGeneric.h: inlined functions Add and Allocate which
