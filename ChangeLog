@@ -1,3 +1,21 @@
+Sun Nov 29 20:06:58 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/htsearch.cc: Improved support for multiple restrict and
+	exclude patterns, based on code from Gilles Detillieux
+	and William Rhee <willrhee@umich.edu>.
+
+	* htdig/Document.cc, htdig/PDF.cc: Fixed problems under FreeBSD
+	where <sys/types.h> needed to be before <sys/stat.h>, noted by
+	Gilles.
+
+	* htdig/Server.cc: Fixed bug with robots.txt files containing
+	tabs, based on patch from Christian Schneider <cschneid@relog.ch>.
+
+	* htdig/Document.cc: Fixed core dumps caused by mystrptime
+	returning NULL. Instead, we'll use the current timestamp. Noted by
+	Michael Hauber <mhauber@datacore.ch> and
+	<MARK_ALLEYNE@Non-HP-UnitedKingdom-om8.om.hp.com>.
+
 Fri Nov 27 19:09:33 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* db/*: Import of Sleepycat's Berkely DB 2.5.9
