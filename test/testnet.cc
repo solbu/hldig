@@ -1,4 +1,4 @@
-// $Id: testnet.cc,v 1.8.2.2 1999/10/14 11:17:00 angus Exp $
+// $Id: testnet.cc,v 1.8.2.3 1999/10/15 10:56:54 angus Exp $
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
 #endif /* HAVE_CONFIG_H */
@@ -19,17 +19,20 @@
 
 #include <unistd.h>
 
+#define DEFAULT_MAX_DOCUMENT_SIZE 40000
+
 int debug = 0;
 int timesvar = 1;
 int persistent = 1;
 int timeout = 10;
 int head_before_get = 1;
+int max_doc = DEFAULT_MAX_DOCUMENT_SIZE;
+
 
 URL *url;
 Transport *transportConnect = NULL;
 HtHTTP    *HTTPConnect = NULL;
 
-#define DEFAULT_MAX_DOCUMENT_SIZE 40000
 
 static void usage();
 void reportError(char *msg);
@@ -63,7 +66,7 @@ int main(int ac, char **av)
    //	Retrieving options from command line with getopt
 ///////
 
-   while((c = getopt(ac, av, "vU:T:t:ng")) != -1)
+   while((c = getopt(ac, av, "vU:T:t:ngm:")) != -1)
    {
       switch (c)
       {
@@ -78,6 +81,9 @@ int main(int ac, char **av)
             break;
          case 't':
             timeout=atoi(optarg);
+            break;
+         case 'm':
+            max_doc=atoi(optarg);
             break;
          case 'n':
             persistent = 0;
@@ -262,6 +268,9 @@ void usage()
 	cout << "\t-t timeout" << endl;
 	cout << "\t\tTimeout value" << endl << endl;
 
+	cout << "\t-m maxdocsize" << endl;
+	cout << "\t\tMax Document size to be retrieved" << endl << endl;
+
 	cout << "\t-n\tNormal connection (disable persistent)" << endl << endl;
 
 	cout << "\t-g\tOnly GET requests instead of HEAD+GET" << endl << endl;
@@ -334,7 +343,7 @@ Transport::DocStatus Retrieve()
         
 	transportConnect = HTTPConnect;
 
-        transportConnect->SetRequestMaxDocumentSize(DEFAULT_MAX_DOCUMENT_SIZE);
+        transportConnect->SetRequestMaxDocumentSize(max_doc);
         transportConnect->SetTimeOut(timeout);
 
     }
