@@ -95,7 +95,7 @@ dnl Checks for library functions.
 AC_CHECK_FUNCS(strdup strerror strstr)
 AC_CHECK_FUNCS(localtime_r)
 dnl Check for timegm
-AC_CHECK_FUNC(timegm)
+AC_CHECK_FUNCS(timegm)
 
 dnl These tests need to be run through the c++ compiler
 AC_LANG_CPLUSPLUS
