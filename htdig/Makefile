@@ -1,5 +1,5 @@
 # Generated automatically from Makefile.in by configure.
-include /home/turtle/src/www/htdig/Makefile.config
+include /home/turtle/src/htdig/Makefile.config
 include .sniffdir/ofiles.incl
 
 OBJS=		$(OFILES)
@@ -23,4 +23,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND)  $(CXXFLAGS) -- $(OBJS)
 
-main.o:	/home/turtle/src/www/htdig/CONFIG
+main.o:	/home/turtle/src/htdig/CONFIG
