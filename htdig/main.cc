@@ -5,6 +5,9 @@
 // generating several databases to be used by htmerge
 //
 // $Log: main.cc,v $
+// Revision 1.14  1999/01/26 01:29:41  hp
+// Typo
+//
 // Revision 1.13  1999/01/25 01:53:44  hp
 // Provide a clean upgrade from old databses without "url_part_aliases" and
 // "common_url_parts" through the new option "uncoded_db_compatible".
@@ -227,7 +230,7 @@ main(int ac, char **av)
     // (extra DB probes).
     docs.
       SetCompatibility(config.
-                       Boolean("uncoded_db_compatbile", TRUE));
+                       Boolean("uncoded_db_compatible", TRUE));
 
     //
     // Open the document database
