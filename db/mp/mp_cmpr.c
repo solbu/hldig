@@ -58,6 +58,10 @@ static const char sccsid[] = "@(#)mp_cmpr.c	1.0 (Senga) 01/08/99";
 #include "db_page.h"
 #include "common_ext.h"
 
+#if 0
+#define DEBUG_CMPR	1
+#endif
+
 /*
  * Helpers declarations.
  */
@@ -911,9 +915,9 @@ __memp_cmpr_free_chain(dbmfp, bhp)
 	DB_MPOOLFILE *dbmfp;
 	BH *bhp;
 {
-    if(F_ISSET(bhp, BH_CMPR) && bhp->chain) {
+    if(F_ISSET(bhp, BH_CMPR) && bhp->chain)
 	__db_shalloc_free(dbmfp->dbmp->addr, bhp->chain);
-	bhp->chain = NULL;
-    }
+    bhp->chain = NULL;
+    F_CLR(bhp, BH_CMPR);
 }
 #endif /* HAVE_LIBZ */
