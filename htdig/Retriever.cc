@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.23 2000/03/02 17:58:47 angus Exp $
+// $Id: Retriever.cc,v 1.72.2.24 2000/03/03 10:42:04 angus Exp $
 //
 
 #include "Retriever.h"
@@ -1725,7 +1725,7 @@ Retriever::ReportStatistics(const String& name)
     }
     else
     {
-        cout << "Persistent connections    : No" << endl;
+        cout << " Persistent connections    : No" << endl;
     }
 
     HtHTTP::ShowStatistics(cout) << endl;

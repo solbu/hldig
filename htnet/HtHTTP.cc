@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.13 2000/02/24 18:43:52 grdetil Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.14 2000/03/03 10:42:05 angus Exp $ 
 //
 
 #include "lib.h"
@@ -186,6 +186,12 @@ Transport::DocStatus HtHTTP::HTTPRequest()
 
    // Assign the timeout
    AssignConnectionTimeOut();
+
+   // Assign number of retries
+   AssignConnectionRetries();
+
+   // Assign connection wait time
+   AssignConnectionWaitTime();
 
    // Start the timer
    _start_time.SettoNow();

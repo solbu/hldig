@@ -1,3 +1,8 @@
+Fri Mar  3 11:32:34 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* Fixed bugs regarding yesterday's changes. Even Leonardo da Vinci
+	  used to commit errors, so  ...
+
 Fri Mar  3 11:25:42 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* testnet.cc: added the -r and -w options in order to set how many

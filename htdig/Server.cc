@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.10 2000/03/02 17:58:47 angus Exp $
+// $Id: Server.cc,v 1.17.2.11 2000/03/03 10:42:05 angus Exp $
 //
 
 #include "htdig.h"
@@ -17,7 +17,6 @@
 #include "good_strtok.h"
 #include "htString.h"
 #include "URL.h"
-#include "htdig.h"
 #include "Document.h"
 #include "URLRef.h"
 #include "Transport.h"
@@ -41,21 +40,37 @@ Server::Server(URL u, StringList *local_robots_files)
     _documents = 0;
 
     // We take it from the configuration
-    _persistent_connections = config.Boolean("server", _host,"persistent_connections", 1);
-    _head_before_get = config.Boolean("server", _host,"head_before_get", 0);
+    _persistent_connections = config.Boolean("server", _host,"persistent_connections");
+    _head_before_get = config.Boolean("server", _host,"head_before_get");
 
-    _max_documents = config.Value("server",_host,"server_max_docs", -1);
-    _connection_space = config.Value("server",_host,"server_wait_time", 0);
+    _max_documents = config.Value("server",_host,"server_max_docs");
+    _connection_space = config.Value("server",_host,"server_wait_time");
 
     // Timeout setting
     _timeout = config.Value("server",_host,"timeout");
 
     // Number of consecutive attempts to establish a TCP connection
-    _tcp_max_retries = config.Value("server",_host,"tcp_max_retries", 0);
+    _tcp_max_retries = config.Value("server",_host,"tcp_max_retries");
 
     // Seconds to wait after a timeout occurs
-    _tcp_wait_time = config.Value("server",_host,"tcp_wait_time", 0);
+    _tcp_wait_time = config.Value("server",_host,"tcp_wait_time");
 
+
+    if (debug)
+    {
+      cout << " - Persistent connections: " <<
+         (_persistent_connections?"enabled":"disabled") << endl;
+
+      cout << " - HEAD before GET: " <<
+         (_head_before_get?"enabled":"disabled") << endl;
+
+      cout << " - Timeout: " << _timeout << endl;
+      cout << " - Connection space: " << _connection_space << endl;
+      cout << " - Max Documents: " << _max_documents << endl;
+      cout << " - TCP retries: " << _tcp_max_retries << endl;
+      cout << " - TCP wait time: " << _tcp_wait_time << endl;
+
+    }
 
     _last_connection.SettoNow();  // For getting robots.txt
 
@@ -283,8 +298,14 @@ void Server::push(char *path, int hopcount, char *referer, int local)
 
     // We use -1 as no limit
     if (_max_documents != -1 &&
-	_documents >= _max_documents)     // Hey! we only want to get max_docs
-      return;
+	_documents >= _max_documents)
+    {
+       if (debug>2)     // Hey! we only want to get max_docs
+          cout << "Limit of " << _max_documents << " reached for " << _host << endl;
+        
+       return;
+    }
+
     URLRef	*ref = new URLRef();
     ref->SetURL(path);
     ref->SetHopCount(hopcount);
