@@ -10,7 +10,7 @@
 	  ht://Dig mailing list
 	</h1>
 	<p>
-	  ht://Dig &copy; 1995-1999 Andrew Scherpbier<br>
+	  ht://Dig Copyright &copy; 1995-1999 The ht://Dig Group<br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -37,33 +37,35 @@
 	  </blockquote>
 	<p>
 	  To sign up for one of the lists, you can fill out the form
-	  below:
+	  below. You will receive a message to confirm your request. There are digests 
+	  available for the htdig and htdig3-dev mailing lists as well. These are 
+	  generated once a day, or every 30 messages, whichever is more frequent.
 	</p>
-	<form method="get" action="http://www.htdig.org/cgi-bin/cgiemail/mail.txt">
+	<form method="post" action="http://www.htdig.org/cgi-bin/cgisubscribe">
 	<blockquote>
 	<table>
 	  <tr>
-		<td>Your name:</td><td><input name="name" size=40></td>
+		<td>Your e-mail:</td><td><input name="user_email" size=40></td>
 	  </tr>
 	  <tr>
-		<td>Your e-mail:</td><td><input name="required-mail" size=40></td>
-	  </tr>
-	  <tr>
-		<td>List:</td><td><select name="required-list">
+		<td>List:</td><td><select name="listtarget">
 		<option value="htdig">htdig
+		<option value="htdig-digest">htdig digest
 		<option value="htdig3-announce">htdig3-announce
 		<option value="htdig3-dev">htdig3-dev
+		<option value="htdig3-dev-digest">htdig3-dev digest
 		<option value="htdig3-updates">htdig3-updates
 		</select></td>
 	  </tr>
 	  <tr>
-		<td>Action:</td><td><select name="required-subject">
+		<td>Action:</td><td><select name="list_request">
 		<option value="subscribe">Subscribe
 		<option value="unsubscribe">Unsubscribe
 		</select></td>
 	  </tr>
 	  <tr>
-		<td>&nbsp;</td><td><input type="hidden" name="success" value="/mailing.html">
+		<td>&nbsp;</td><td><input type="hidden" name="ackurl" 
+		value="http://www.htdig.org/mailsub.html">
 		<input type="submit" name="submit" value="Submit Request">
 		<input type="submit" name="reset" value="Clear"></td>
 	  </tr>
