@@ -1,3 +1,21 @@
+Tue Dec  1 21:36:37 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* Makefile.in: Fixed bug with "make depend," noted by Morgan Davis
+	<mdavis@cts.com>.
+
+	* htdig/main.cc, htfuzzy/htfuzzy.cc, htmerge/htmerge.cc,
+	htnotify/htnotify.cc, htsearch/htsearch.cc: Add include <getopt.h>
+	to help compiling under Win32 with CygWinB20.
+
+	* htdig/Retriever.cc: Update hopcount correctly by taking the
+	shortest paths to documents.
+
+	* htlib/DB2_db.cc: Added fix from Alexander Bergolth for Berkeley
+	DB under AIX.
+
+	* htlib/StringMatch.cc: Added fix from Christian Schneider
+	<cschneid@relog.ch>, discovered from behavior with limit_urls_to.
+
 Sun Nov 29 21:26:56 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc: Fix last update so it compiles (oops!).
