@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.32 2000/02/13 03:43:57 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.33 2000/02/14 06:01:46 ghutchis Exp $
 //
 
 #include "HtConfiguration.h"
@@ -2158,23 +2158,6 @@ http://www.htdig.org/", "
 	ignored. The number may be a floating point number. See
 	also the <a href=\"#heading_factor\">
 	heading_factor</a> attribute.
-" },
-{ "uncoded_db_compatible", "true", 
-	"boolean", "htdig htnotify htmerge htsearch", "3.1.0", "URLs", "uncoded_db_compatible: false<p>", "
-	At the cost of time for extra database accesses and
-	not getting the full effect of the options
-	<a href=\"#common_url_parts\">common_url_parts</a> and
-	<a href=\"#url_part_aliases\">url_part_aliases</a>,
-	read databases where some or all URLs are not
-	encoded <b>at all</b> through these options.<br>
-	Note that the database still needs to be rebuilt
-	if either or both of common_url_parts and
-	url_part_aliases were non-empty when it was built or
-	modified, or if they were set to anything else than
-	the current values.<br>
-	If a <em>to</em>-string in url_part_aliases can
-	occur in normal URLs, this option should be set to
-	<b>false</b> to eliminate surprises.<br>
 " },
 { "url_list", "${database_base}.urls", 
 	"string", "htdig", "all", "Extra Output", "url_list: /tmp/urls", "
