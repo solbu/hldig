@@ -1,0 +1,16 @@
+This is a small example to demonstrate the script_name attribute.
+
+
+Assuming that these files are located within your server's "search"
+directory, just add the following line to your htdig configuration
+file:
+
+script_name:	/search/results.shtml
+
+You may also have to override the standard template files, using the
+search_results_header, search_results_footer, syntax_error_file and
+nothing_found_file attributes.
+
+
+(c) 1999, Hanno Mueller, http://www.hanno.de
+
