@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.3.2.12 2000/09/01 21:32:31 angus Exp $
+// $Id: URL.cc,v 1.3.2.13 2000/09/06 09:02:07 angus Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -23,6 +23,7 @@
 #include "HtConfiguration.h"
 #include "StringMatch.h"
 #include "StringList.h"
+#include "HtURLRewriter.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -35,7 +36,6 @@
 #include <ctype.h>
 
 extern HtConfiguration	config;
-
 #define NNTP_DEFAULT_PORT 119
 
 //*****************************************************************************
@@ -69,10 +69,10 @@ URL::URL(URL &nurl)
 
 
 //*****************************************************************************
-// URL::URL(const char *nurl)
+// URL::URL(const String &nurl)
 // Construct a URL from a String (obviously parses the string passed in)
 // 
-URL::URL(const char *nurl)
+URL::URL(const String &nurl)
 {
     _port = 0;
     _normal = 0;
@@ -82,11 +82,11 @@ URL::URL(const char *nurl)
 
 
 //*****************************************************************************
-// URL::URL(char *ref, URL &parent)
+// URL::URL(const String &url, const URL &parent)
 //   Parse a reference given a parent url.  This is needed to resolve relative
 //   references which do NOT have a full url.
 //
-URL::URL(const char *url, URL &parent)
+URL::URL(const String &url, const URL &parent)
 {
     String	temp(url);
     temp.remove(" \r\n\t");
@@ -243,10 +243,20 @@ URL::URL(const char *url, URL &parent)
 
 
 //*****************************************************************************
-// void URL::parse(const char *u)
+// void URL::rewrite()
+//
+void URL::rewrite()
+{
+	if (HtURLRewriter::instance()->replace(_url) > 0)
+		parse(_url.get());
+}
+
+
+//*****************************************************************************
+// void URL::parse(const String &u)
 //   Given a URL string, extract the service, host, port, and path from it.
 //
-void URL::parse(const char *u)
+void URL::parse(const String &u)
 {
     String	temp(u);
     temp.remove(" \t\r\n");
@@ -326,8 +336,7 @@ void URL::parse(const char *u)
 	    if (p)
 	      _port = atoi(p);
 	    if (!p || _port <= 0)
-	      _port = DefaultPort();
-
+               _port = DefaultPort();
 	    //
 	    // The rest of the input string is the path.
 	    //
@@ -338,7 +347,7 @@ void URL::parse(const char *u)
 	{
 	    _host = strtok(p, "/");
 	    _host.chop(" \t");
-	    _port = DefaultPort();
+            _port = DefaultPort();
 
 	    //
 	    // The rest of the input string is the path.
@@ -490,9 +499,9 @@ void URL::dump()
 
 
 //*****************************************************************************
-// void URL::path(char *newpath)
+// void URL::path(const String &newpath)
 //
-void URL::path(char *newpath)
+void URL::path(const String &newpath)
 {
     _path = newpath;
     if (!config.Boolean("case_sensitive",1))
@@ -602,13 +611,13 @@ void URL::normalize()
 
 
 //*****************************************************************************
-// char *URL::signature()
+// const String &URL::signature()
 //   Return a string which uniquely identifies the server the current
 //   URL is refering to.
 //   This is the first portion of a url: service://user@host:port/
 //   (in short this is the URL pointing to the root of this server)
 //
-char *URL::signature()
+const String &URL::signature()
 {
     if (_signature.length())
 	return _signature;
@@ -698,12 +707,16 @@ void URL::constructURL()
 	_url << _host;
       }
 
-    if (_port != DefaultPort())  // Different to the default port
+   if (_port != DefaultPort())  // Different to the default port
       _url << ':' << _port;
 
     _url << _path;
 }
 
+
+///////
+   //    Get the default port for the recognised service
+///////
 
 int URL::DefaultPort()
 {
@@ -718,5 +731,4 @@ int URL::DefaultPort()
    else if (strcmp((char*)_service, "news") == 0)
       return NNTP_DEFAULT_PORT;
    else return 80;
-
 }

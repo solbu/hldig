@@ -13,7 +13,7 @@
 // or the General GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtNNTP.h,v 1.1.2.1 2000/09/01 17:19:30 angus Exp $
+// $Id: HtNNTP.h,v 1.1.2.2 2000/09/06 09:02:08 angus Exp $
 //
 
 #ifndef _HTNNTP_H
@@ -97,6 +97,10 @@ public:
       else return NULL;
    }
 
+   // Get the document status 
+   virtual DocStatus GetDocumentStatus()
+      { return GetDocumentStatus (_response); }
+   
    // It's a static method
    static DocStatus GetDocumentStatus(HtNNTP_Response &);
 
