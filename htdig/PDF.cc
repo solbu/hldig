@@ -14,7 +14,7 @@
 //
 #if RELEASE
 // Put the compilation date in the object file.
-static char RCSid[] = "$Id: PDF.cc,v 1.5 1998/12/06 18:46:59 ghutchis Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.6 1999/01/17 20:35:46 ghutchis Exp $";
 #endif
 
 #include <sys/types.h>
@@ -102,6 +102,23 @@ PDF::parse(Retriever &retriever, URL &url)
     initParser();
     _retriever = &retriever;
 
+    String acroread;
+    char* configValue = config["pdf_parser"];
+    if (configValue && strlen(configValue))
+	acroread = configValue;
+    else
+	// Assume it's in the path
+        acroread = "acroread";
+
+    // Check for existance of acroread program! (if not, return)
+    struct stat stat_buf;
+    // Check that it exists, and is a regular file. 
+    if ((stat(acroread, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode))
+      {
+	printf("PDF::parse: cannot find acroread\n");
+	return;
+      }
+
     // Write the pdf contents in a temp file to give it to acroread
 
     // First build the base name. If pdf has no title, acroread will use this.
@@ -128,22 +145,6 @@ PDF::parse(Retriever &retriever, URL &url)
     fwrite(_data, 1, _dataLength, file);
     fclose(file);
 
-    String acroread;
-    char* configValue = config["pdf_parser"];
-    if (configValue && strlen(configValue))
-	acroread = configValue;
-    else
-	// Assume it's in the path
-        acroread = "acroread";
-
-    // Check for existance of acroread program! (if not, return)
-    struct stat stat_buf;
-    // Check that it exists, and is a regular file. 
-    if ((stat(acroread, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode))
-      {
-	printf("PDF::parse: cannot find acroread\n");
-	return;
-      }
 
     // Use acroread as a filter to convert to PostScript.
     acroread << " -toPostScript " << pdfName << " " << tmpdir << " 2>&1";
