@@ -1,55 +1,59 @@
 //
 // Synonym.cc
 //
-// Implementation of Synonym
+// Synonym: A fuzzy matching algorithm to create a database of related words
+//          (or misspellings) that should be searched together.
 //
-// $Log: Synonym.cc,v $
-// Revision 1.2  1998/09/18 02:38:08  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Bug fixes for 3.1.0b2
+// $Id: Synonym.cc,v 1.8.2.1 1999/12/05 06:06:52 ghutchis Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: Synonym.cc,v 1.2 1998/09/18 02:38:08 ghutchis Exp $";
-#endif
 
 #include "Synonym.h"
 #include "htfuzzy.h"
-#include <List.h>
-#include <StringList.h>
-#include <Configuration.h>
+#include "List.h"
+#include "StringList.h"
+#include "Configuration.h"
+
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>
 
 
 //*****************************************************************************
-Synonym::Synonym()
+Synonym::Synonym(const Configuration& config_arg) :
+  Fuzzy(config_arg)
 {
     name = "synonyms";
+    db = 0;
 }
 
 
 //*****************************************************************************
 Synonym::~Synonym()
 {
+    if (db)
+    {
+        db->Close();
+        delete db;
+        db = 0;
+    }
 }
 
 
 //*****************************************************************************
 int
-Synonym::createDB(Configuration &config)
+Synonym::createDB(const Configuration &config)
 {
-    char	*sourceFile;
-    char	*dbFile;
     char	input[1000];
     FILE	*fl;
 	
-    sourceFile = config["synonym_dictionary"];
-    dbFile = config["synonym_db"];
+    const String sourceFile = config["synonym_dictionary"];
+    const String dbFile = config["synonym_db"];
 
     fl = fopen(sourceFile, "r");
     if (fl == NULL)
@@ -60,7 +64,7 @@ Synonym::createDB(Configuration &config)
 	return NOTOK;
     }
 
-    Database	*db = Database::getDatabaseInstance();
+    Database	*db = Database::getDatabaseInstance(DB_BTREE);
 
     if (db->OpenReadWrite(dbFile, 0664) == NOTOK)
     {
@@ -86,7 +90,7 @@ Synonym::createDB(Configuration &config)
 	    word = sl[i];
 	    word.lowercase();
 	    data.lowercase();
-	    db->Put(word, data, data.length() - 1);
+	    db->Put(word, String(data.get(), data.length() - 1));
 	    if (debug && (count % 10) == 0)
 	    {
                 cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
@@ -97,6 +101,7 @@ Synonym::createDB(Configuration &config)
     }
     fclose(fl);
     db->Close();
+    delete db;
     if (debug)
     {
         cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
@@ -108,11 +113,17 @@ Synonym::createDB(Configuration &config)
 
 //*****************************************************************************
 int
-Synonym::openIndex(Configuration &)
+Synonym::openIndex()
 {
-    char	*dbFile = config["synonym_db"];
+    const String	dbFile = config["synonym_db"];
 	
-    db = Database::getDatabaseInstance();
+    if (db)
+    {
+        db->Close();
+        delete db;
+        db = 0;
+    }
+    db = Database::getDatabaseInstance(DB_BTREE);
     if (db->OpenRead(dbFile) == NOTOK)
     {
 	delete db;
@@ -128,8 +139,10 @@ void
 Synonym::getWords(char *originalWord, List &words)
 {
     String	data;
+    String	stripped = originalWord;
+    HtStripPunctuation(stripped);
 
-    if (db && db->Get(originalWord, data) == OK)
+    if (db && db->Get(stripped, data) == OK)
     {
 	char	*token = strtok(data.get(), " ");
 	while (token)
