@@ -10,12 +10,11 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Database.cc,v 1.7 1999/09/24 10:29:03 loic Exp $
+// $Id: Database.cc,v 1.8 1999/09/24 11:06:11 loic Exp $
 //
 
 #include "Database.h"
 #include "DB2_db.h"
-#include "DB2_hash.h"
 
 //*****************************************************************************
 // Database::Database()
