@@ -27,5 +27,9 @@ int
 CDB___os_abspath(path)
 	const char *path;
 {
+#if defined (_WIN32) || defined (__MSDOS__) || defined (__DJGPP__) || defined (__CYGWIN__)
+	return (path[0] == '/' || path[0] == '\\' || path [1] == ':');
+#else
 	return (path[0] == '/');
+#endif
 }

@@ -1,3 +1,9 @@
+Sun 13 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
+
+    * db/os_abs.c, (db/os_abs.c.win32 removed):
+      Re-fix Cygwin bug (#814268, fixed 25 Apr) so that it won't be
+      clobbered by autotools.
+
 Sat 12 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
 
     * htdoc/RELEASE.html: Separated bug fixes from new features
