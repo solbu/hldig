@@ -1,3 +1,7 @@
+Wed Apr 14 20:22:31 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
+
+	* htlib/regex.h: fixed compile problem with AIX xlc compiler
+
 Tue Apr 13 13:01:04 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(generateStars): Set status to -1 if
