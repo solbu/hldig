@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.12 2000/02/19 05:02:45 ghutchis Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.13 2000/02/24 18:43:52 grdetil Exp $ 
 //
 
 #include "lib.h"
@@ -388,7 +388,8 @@ Transport::DocStatus HtHTTP::HTTPRequest()
 
       // Check if the stream returned by the server has not been completely read
       
-      if (_response._document_length != _response._content_length)
+      if (_response._document_length != _response._content_length &&
+          _response._document_length == _max_document_size)
       {
          // Max document size reached
    
@@ -398,17 +399,24 @@ Transport::DocStatus HtHTTP::HTTPRequest()
          
          if (isPersistentConnectionUp())
          {
+           // Only have to close persistent connection when we didn't read
+           // all the input. For now, we always read all chunked input...
+           if (strcmp ((char*)_response._transfer_encoding, "chunked") != 0)
+           {
             if (debug > 4)   
                cout << "- connection closed. ";
          
             CloseConnection();
+           }
          }
          
          if (debug > 4)   
             cout << endl;
       }
    
-
+      // Make sure our content-length makes sense, if none given...
+      if (_response._content_length < _response._document_length)
+         _response._content_length = _response._document_length;
 
    }
    else if ( debug > 4 )
@@ -933,12 +941,15 @@ int HtHTTP::ReadChunkedBody()
 	if (_connection.Read(buffer, rsize) == -1)
 	  return -1;
 
+	length+=rsize;
+
 	// Append the chunk-data to the contents of the response
+        // ... but not more than _max_document_size...
+        if (rsize > _max_document_size-_response._contents.length())
+            rsize = _max_document_size-_response._contents.length();
 	buffer[rsize] = 0;
 	_response._contents.append(buffer, rsize);
                   
-	length+=rsize;
-
       } while (chunk);
 
      //     if (_connection.Read(buffer, chunk_size) == -1)
@@ -964,7 +975,7 @@ int HtHTTP::ReadChunkedBody()
    _response._content_length = length;
 
     // Set document length
-    _response._document_length = length;
+    _response._document_length = _response._contents.length();
 
    return length;
 

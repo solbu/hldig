@@ -1,3 +1,11 @@
+Thu Feb 24 12:34:30 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htnet/HtHTTP.cc (HTTPRequest): Extra tests in case Content-type
+	not given for non-chunked input, and not to close persistent
+	connection when chunked input exceeds _max_document_size.
+	(ReadChunkedBody): Don't append more than _max_document_size bytes
+	to _contents string.
+
 Thu Feb 24 11:40:24 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc (do_tag): Fix handling of img alt text to be consistent
