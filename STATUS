@@ -1,23 +1,22 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b1: Tentative Release: 2 Feb 2000, Hard Feature Freeze
+   3.2.0b1: Tentative Release: 4 Feb 2000, Code Freeze
+	Pre-release snapshot 2 Feb 2000
 
 
 SHOWSTOPPERS:
-* (none at the moment)
+* (None known at the moment)
 
 KNOWN BUGS:
 * htdig/Image.cc doesn't use Transport classes.
 * URL.cc tries to parse malformed URLs (which causes further problems)
    (It should probably just set everything to empty) This relates to 
    PR#348.
-* Server.cc does not use authentication when retrieving robots.txt: PR#490.
-* Parsing of <meta> description tags and <img> alt text does not decode SGML 
-   entities properly: PR#614.
 * Not all htsearch input parameters are handled properly: PR#648.
 * If exact isn't specified in the search_algorithms, $(WORDS) is not set 
-   correctly: PR#650.
+   correctly: PR#650. (The documentation for 3.2.0b1 is updated, but should
+   we fix this?)
 * htfuzzy endings: use of unlink fails if TMPDIR is not on the same 
    volume.
 
@@ -30,10 +29,11 @@ TESTING:
 * htfuzzy tests
 * New config parser
 * Reports of problems with long timeouts (e.g PR#350)
+* htmerge -m
 
 DOCUMENTATION:
-* Update cf_* pages to mention regex, new config parser (i.e. URL-dependent config)
-* Update to mention phrase searching, regex fuzzy
+* Update cf_* pages to mention new config parser (i.e. URL-dependent config)
+* Update to mention phrase searching.
 
 OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
@@ -45,9 +45,7 @@ OTHER ISSUES:
   (it didn't in 3.1.x): PR#670.
 * Error messages should be more informative if no URLs are indexed by htdig 
   or htmerge. PR#672.
-* Reported problem where -h is ignored if modification_time_is_now set to 
-  false. (Should mod_time_is_now just be true and removed as an attribute?)
-* Are there timing/race conditions with the htnet Connection code?
-* Retriever::Start() now manages persistent connections: but no priority
-  queue for picking a server (depending on the delay, hopcount, and use
-  of persistent connections) has been issued.
+* Should the various translate_* attributes be retired?
+* Should we generate documentation for attributes that have been removed?
+  (e.g. word_list, modification_time_is_now, etc.)
+
