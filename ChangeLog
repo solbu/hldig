@@ -1,3 +1,7 @@
+Tue Mar 23 13:54:35 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc: More lenient comment parsing, allows extra dashes.
+
 Tue Mar 23 12:22:53 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/Configuration.cc(Add): Fix function to avoid infinite loop
