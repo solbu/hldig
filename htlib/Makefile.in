@@ -130,7 +130,7 @@ libht_la_LIBADD = @LTLIBOBJS@
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-pkginclude_HEADERS =  	clib.h 	Configuration.h 	DB2_db.h 	Database.h 	Dictionary.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtRegexReplace.cc 	HtRegexReplaceList.cc 	HtVector.h 	HtWordCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	good_strtok.h 	htString.h 	lib.h 	langinfo.h 	regex.h  	HtVectorGeneric.h   	HtVectorGenericCode.h 	HtVector_int.h 	HtVector_String.h 	HtMaxMin.h 	HtTime.h 	HtWordType.h 	HtRandom.h 	md5.h
+pkginclude_HEADERS =  	clib.h 	Configuration.h 	DB2_db.h 	Database.h 	Dictionary.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtRegexReplace.h 	HtRegexReplaceList.h 	HtVector.h 	HtWordCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	good_strtok.h 	htString.h 	lib.h 	langinfo.h 	regex.h  	HtVectorGeneric.h   	HtVectorGenericCode.h 	HtVector_int.h 	HtVector_String.h 	HtMaxMin.h 	HtTime.h 	HtWordType.h 	HtRandom.h 	md5.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h

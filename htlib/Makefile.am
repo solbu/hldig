@@ -31,8 +31,8 @@ pkginclude_HEADERS = \
 	HtHeap.h \
 	HtPack.h \
 	HtRegex.h \
-	HtRegexReplace.cc \
-	HtRegexReplaceList.cc \
+	HtRegexReplace.h \
+	HtRegexReplaceList.h \
 	HtVector.h \
 	HtWordCodec.h \
 	IntObject.h \
