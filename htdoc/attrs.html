@@ -3868,6 +3868,53 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="maximum_page_buttons">
+		maximum_page_buttons</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			${maximum_pages}
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This value limits the number of page links that will be
+			included in the page list at the bottom of the search
+			results page. By default, it takes on the value of the
+			<a href="#maximum_pages">maximum_pages</a> attribute,
+			but you can set it to something lower to allow
+			more pages than buttons. In this case, pages above this
+			number will have no corresponding button.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			maximum_page_buttons: 20
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="maximum_pages">
 		maximum_pages</a></strong>
 	  </dt>
@@ -4554,7 +4601,7 @@
 			file, when search results fit on more than page. The PAGELIST
 			is the list of links at the bottom of the search results page.
 			There should be as many strings in the list as there are
-			pages allowed by the <a href="#maximum_pages">maximum_pages</a>
+			pages allowed by the <a href="#maximum_page_buttons">maximum_page_buttons</a>
 			attribute. If there are not enough, or the list is empty,
 			the page numbers alone will be used as the text for the links.
 			An entry from this list is used for the current page, as the
@@ -4910,7 +4957,7 @@
 			file, when search results fit on more than page. The PAGELIST
 			is the list of links at the bottom of the search results page.
 			There should be as many strings in the list as there are
-			pages allowed by the <a href="#maximum_pages">maximum_pages</a>
+			pages allowed by the <a href="#maximum_page_buttons">maximum_page_buttons</a>
 			attribute. If there are not enough, or the list is empty,
 			the page numbers alone will be used as the text for the links.
 			Entries from this list are used for the links to other pages,
@@ -7786,7 +7833,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: $Date: 2001/06/15 22:36:56 $
+Last modified: $Date: 2001/07/24 19:05:06 $
 <!-- hhmts end -->
   </body>
 </html>

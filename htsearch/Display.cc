@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.38 2001/07/24 18:44:06 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.39 2001/07/24 19:05:06 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -404,7 +404,7 @@ Display::setVariables(int pageNumber, List *matches)
     else if (mystrcasecmp(config["match_method"], "or") == 0)
 	vars.Add("MATCH_MESSAGE", new String("some"));
     vars.Add("MATCHES", new String(form("%d", nMatches)));
-    vars.Add("PLURAL_MATCHES", new String(nMatches == 1 ? (char *)"" : config["plural_suffix"]));
+    vars.Add("PLURAL_MATCHES", new String((nMatches == 1) ? (char *)"" : config["plural_suffix"]));
     vars.Add("PAGE", new String(form("%d", pageNumber)));
     vars.Add("PAGES", new String(form("%d", nPages)));
     vars.Add("FIRSTDISPLAYED",
@@ -635,6 +635,8 @@ Display::setVariables(int pageNumber, List *matches)
 	QuotedStringList	pnt(config["page_number_text"], " \t\r\n");
 	QuotedStringList	npnt(config["no_page_number_text"], " \t\r\n");
 	QuotedStringList	sep(config["page_number_separator"], " \t\r\n");
+	if (nPages > config.Value("maximum_page_buttons", 10))
+	    nPages = config.Value("maximum_page_buttons", 10);
 	for (i = 1; i <= nPages; i++)
 	{
 	    if (i == pageNumber)

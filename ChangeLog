@@ -1,3 +1,10 @@
+Tue Jul 24 14:03:12 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (setVariables), htcommon/defaults.cc: Added
+	maximum_page_buttons attribute, to limit buttons to less than
+	maximum_pages.  Fixes PR#731 & PR#781.
+	* htdoc/attrs.html, cf_by{name,prog}.html: Documented it.
+
 Tue Jul 24 13:42:56 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/hts_templates.html, htsearch/Display.cc (displayMatch):

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.20 2001/06/15 21:53:59 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.21 2001/07/24 19:05:05 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -97,6 +97,7 @@ ConfigDefaults	defaults[] =
     {"max_meta_description_length",     "512"},
     {"max_prefix_matches",		"1000"},
     {"max_stars",			"4"},
+    {"maximum_page_buttons",		"${maximum_pages}"},
     {"maximum_pages",			"10"},
     {"maximum_word_length",		"12"},
     {"metaphone_db",			"${database_base}.metaphone.db"},
