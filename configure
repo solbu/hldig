@@ -2305,15 +2305,14 @@ if test ! -d $DB_DIR; then
 fi
 
 
-subdirs="db-*/dist"
-
+(cd db-*/build.unix; ../dist/configure)
 echo "Berkeley DBM Configuration complete"
 echo ""
 
 # Extract the first word of "tsort", so it can be a program name with args.
 set dummy tsort; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:2317: checking for $ac_word" >&5
+echo "configure:2316: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_TSORT'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2350,7 +2349,7 @@ RX_DIR=`echo rx*`
 
 echo "Configuring GNU rx"
 echo "Please ignore the warnings that may be displayed during this part"
-subdirs="db-*/dist $RX_DIR"
+subdirs="$RX_DIR"
 
 echo "GNU rx Configuration complete"
 echo ""
@@ -2513,9 +2512,9 @@ s%@SENDMAIL@%$SENDMAIL%g
 s%@CPP@%$CPP%g
 s%@CXXCPP@%$CXXCPP%g
 s%@DB_DIR@%$DB_DIR%g
-s%@subdirs@%$subdirs%g
 s%@TSORT@%$TSORT%g
 s%@RX_DIR@%$RX_DIR%g
+s%@subdirs@%$subdirs%g
 
 CEOF
 EOF
@@ -2760,7 +2759,7 @@ if test "$no_recursion" != yes; then
     esac
   done
 
-  for ac_config_dir in db-*/dist $RX_DIR; do
+  for ac_config_dir in $RX_DIR; do
 
     # Do not complain, so a configure script can configure whichever
     # parts of a large source tree are present.
