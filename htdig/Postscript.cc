@@ -3,23 +3,17 @@
 //
 // Implementation of Postscript
 //
-// $Log: Postscript.cc,v $
-// Revision 1.2  1997/03/24 04:33:17  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
-//
+
 #if RELEASE
-static char RCSid[] = "$Id: Postscript.cc,v 1.2 1997/03/24 04:33:17 turtle Exp $";
+static char RCSid[] = "$Id: Postscript.cc,v 1.2.2.1 1999/03/23 23:22:54 grdetil Exp $";
 #endif
 
 #include "Postscript.h"
 #include "htdig.h"
-#include <htString.h>
-#include <StringList.h>
+#include "htString.h"
+#include "StringList.h"
 #include <ctype.h>
+#include "HtWordType.h"
 
 
 //*****************************************************************************
@@ -30,7 +24,6 @@ Postscript::Postscript()
     offset = 0;
     generatorType = 0;
     in_space = 0;
-    valid_punctuation = config["valid_punctuation"];
     last_t = "";
     last_y = "";
 }
@@ -276,7 +269,7 @@ Postscript::flush_word(Retriever &retriever)
     if (word.length() > 2)
     {
 	word.lowercase();
-	word.remove(valid_punctuation);
+	HtStripPunctuation(word);
 	if (word.length() > 2)
 	{
 	    retriever.got_word(word,
@@ -299,15 +292,13 @@ Postscript::parse_string(Retriever &retriever, String &str)
 
     while (*position)
     {
-	if (isalnum(*position))
+	if (HtIsStrictWordChar(*position))
 	{
 	    //
 	    // Start or continuation of word
 	    //
 	    in_space = 0;
-	    while (*position && (
-				 isalnum(*position) ||
-				 strchr(valid_punctuation, *position)))
+	    while (*position && HtIsWordChar(*position))
 	    {
 		word << *position;
 		position++;
@@ -326,7 +317,7 @@ Postscript::parse_string(Retriever &retriever, String &str)
 		if (word.length() > 2)
 		{
 		    word.lowercase();
-		    word.remove(valid_punctuation);
+		    HtStripPunctuation(word);
 		    if (word.length() > 2)
 		    {
 			retriever.got_word(word,

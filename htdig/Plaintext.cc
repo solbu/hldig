@@ -5,13 +5,14 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Plaintext.cc,v 1.7.2.2 1999/03/22 23:20:34 grdetil Exp $";
+static char RCSid[] = "$Id: Plaintext.cc,v 1.7.2.3 1999/03/23 23:22:54 grdetil Exp $";
 #endif
 
 #include "Plaintext.h"
 #include "htdig.h"
 #include "htString.h"
 #include <ctype.h>
+#include "HtWordType.h"
 
 
 //*****************************************************************************
@@ -52,13 +53,13 @@ Plaintext::parse(Retriever &retriever, URL &)
 	offset = position - start;
 	word = 0;
 
-	if (isalnum(*position))
+	if (HtIsStrictWordChar(*position))
 	{
 	    //
 	    // Start of a word.  Try to find the whole thing
 	    //
 	    in_space = 0;
-	    while (*position && (isalnum(*position) || strchr(valid_punctuation, *position)))
+	    while (*position && HtIsWordChar(*position))
 	    {
 		word << *position;
 		position++;
@@ -72,7 +73,7 @@ Plaintext::parse(Retriever &retriever, URL &)
 	    if (word.length() >= minimumWordLength)
 	    {
 		word.lowercase();
-		word.remove(valid_punctuation);
+		HtStripPunctuation(word);
 		if (word.length() >= minimumWordLength)
 		{
 		    retriever.got_word(word,

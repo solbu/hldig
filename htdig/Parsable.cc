@@ -3,17 +3,9 @@
 //
 // Implementation of Parsable
 //
-// $Log: Parsable.cc,v $
-// Revision 1.2  1998/08/11 08:58:29  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
-//
+
 #if RELEASE
-static char RCSid[] = "$Id: Parsable.cc,v 1.2 1998/08/11 08:58:29 ghutchis Exp $";
+static char RCSid[] = "$Id: Parsable.cc,v 1.2.2.1 1999/03/23 23:22:54 grdetil Exp $";
 #endif
 
 #include "Parsable.h"
@@ -29,7 +21,6 @@ Parsable::Parsable()
     max_head_length = config.Value("max_head_length", 0);
     max_description_length = config.Value("max_description_length", 50);
     max_meta_description_length = config.Value("max_meta_description_length", 0);
-    valid_punctuation = config["valid_punctuation"];
 }
 
 

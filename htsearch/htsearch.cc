@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.1 1999/03/22 22:18:18 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.2 1999/03/23 23:23:04 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -25,6 +25,7 @@ static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.1 1999/03/22 22:18:18 grdetil E
 #include <ctype.h>
 #include <signal.h>
 #include "HtURLCodec.h"
+#include "HtWordType.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -126,8 +127,10 @@ main(int ac, char **av)
     // got from the HTML form.
     //
     config.Defaults(&defaults[0]);
+    // To allow . in filename while still being 'secure',
+    // e.g. htdig-f.q.d.n.conf
     if (!override_config && input.exists("config") 
-	&& (strstr(input["config"], "./") == NULL)) // To allow . in filename while still being 'secure', e.g. htdig-f.q.d.n.conf
+	&& (strstr(input["config"], "./") == NULL))
     {
 	char	*configDir = getenv("CONFIG_DIR");
 	if (configDir)
@@ -178,6 +181,9 @@ main(int ac, char **av)
 	config.Add(form_vars[i], input[form_vars[i]]);
     }
  
+    // Ctype-like functions for what constitutes a word.
+    HtWordType::Initialize(config);
+
     //
     // Check url_part_aliases and common_url_parts for
     // errors.
@@ -271,6 +277,7 @@ main(int ac, char **av)
 	display.display(pageNumber);
 
     delete results;
+    delete parser;
     return 0;
 }
 
@@ -342,14 +349,6 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 {
     List	tempWords;
     int		i;
-    char	*valid_punctuation = 0;
-	
-    //
-    // This is going to be used a lot.  We'll cache it.
-    //
-    valid_punctuation = config["valid_punctuation"];
-    if (!valid_punctuation)
-	valid_punctuation = "";
 
     //
     // Parse the words we need to search for.  It should be a list of words
@@ -386,11 +385,11 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		tempWords.Add(new WeightWord(s, -1.0));
 		break;
 	    }
-	    else if (isalnum(t) || strchr(valid_punctuation, t) || t == ':' ||
+	    else if (HtIsWordChar(t) || t == ':' ||
 			 (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255))
 	    {
 		word = 0;
-		while (t && (isalnum(t) || strchr(valid_punctuation, t) ||
+		while (t && (HtIsWordChar(t) ||
 			     t == ':' || (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255)))
 		{
 		    word << (char) t;
@@ -414,7 +413,7 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		{
 		    // Add word to excerpt matching list
 		    originalPattern << word << "|";
-	  	    word.remove(valid_punctuation);
+	  	    HtStripPunctuation(word);
 		    WeightWord	*ww = new WeightWord(word, 1.0);
 		    if (!badWords.IsValid(word) ||
 			word.length() < minimum_word_length)

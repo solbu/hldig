@@ -1,13 +1,9 @@
 //
 // Postscript.h
 //
-// $Id: Postscript.h,v 1.1 1997/02/03 17:11:06 turtle Exp $
+// $Id: Postscript.h,v 1.1.1.1.2.1 1999/03/23 23:22:54 grdetil Exp $
 //
-// $Log: Postscript.h,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
-//
-//
+
 #ifndef _Postscript_h_
 #define _Postscript_h_
 
@@ -43,7 +39,6 @@ private:
     int			generatorType;
     String		last_t;
     String		last_y;
-    char		*valid_punctuation;
 };
 
 #endif

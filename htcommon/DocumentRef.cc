@@ -15,6 +15,7 @@
 #include "WordList.h"
 #include "Configuration.h"
 #include "HtURLCodec.h"
+#include "HtWordType.h"
 
 #if defined(HAVE_LIBZ) && defined(HAVE_ZLIB_H)
 #include <zlib.h>
@@ -564,9 +565,8 @@ void DocumentRef::AddDescription(char *d)
 
     words->DocumentID(docID);
     
-    // Parse words, taking care of valid_punctuation.
+    // Parse words.
     char         *p                   = desc;
-    static char  *valid_punctuation   = config["valid_punctuation"];
     static int    minimum_word_length = config.Value("minimum_word_length", 3);
     static double description_factor  = config.Double("description_factor");
     static int    max_descriptions    = config.Value("max_descriptions", 5);
@@ -574,25 +574,21 @@ void DocumentRef::AddDescription(char *d)
     // Not restricted to this size, just used as a hint.
     String word(MAX_WORD_LENGTH);
 
-    if (!valid_punctuation)
-	valid_punctuation = "";
-
     while (*p)
     {
       // Reset contents before adding chars each round.
       word = 0;
 
-      while (*p && (isalnum(*p) || strchr(valid_punctuation, *p)))
+      while (*p && HtIsWordChar(*p))
         word << *p++;
 
-      word.remove(valid_punctuation);
+      HtStripPunctuation(word);
 
       if (word.length() >= minimum_word_length)
         // The wordlist takes care of lowercasing; just add it.
         words->Word(word, 0, 0, description_factor);
 
-      // No need to count in valid_punctuation for the beginning-char.
-      while (*p && !isalnum(*p))
+      while (*p && !HtIsStrictWordChar(*p))
         p++;
     }
 

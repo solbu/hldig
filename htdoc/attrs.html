@@ -1784,6 +1784,55 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="extra_word_characters">
+		extra_word_characters</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a> and
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			These characters are considered part of a word.
+			In contrast to the characters in the
+			<a href="#valid_punctuation">valid_punctuation</a>
+			attribute, they are treated just like letter
+			characters.<br>
+			Note that the <a href="#locale">locale</a> attribute
+			is normally used to configure which characters
+			constitute letter characters.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			extra_word_characters: _
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="heading_factor">heading_factor_1 -
 		heading_factor_6</a></strong>
 	  </dt>
@@ -6161,7 +6210,10 @@
 			<tt>Andrew's</tt> the digger will see this as <tt>
 			Andrews</tt>.<br>
 			 The same transformation is performed on the keywords
-			the search engine gets.
+			the search engine gets.<br>
+			See also the <a
+			href="#extra_word_characters">extra_word_characters</a>
+			attribute.
 		  </dd>
 		  <dt>
 			<em>example:</em>

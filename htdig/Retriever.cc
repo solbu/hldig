@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.2 1999/03/23 01:18:44 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.3 1999/03/23 23:22:54 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -18,6 +18,7 @@
 #include <signal.h>
 #include <assert.h>
 #include <stdio.h>
+#include "HtWordType.h"
 
 static WordList	words;
 static int noSignal;
@@ -58,7 +59,6 @@ Retriever::Retriever(RetrieverLog flags)
     words.BadWordFile(config["bad_word_list"]);
 
     doc = new Document();
-    valid_punctuation = config["valid_punctuation"];
     minimumWordLength = config.Value("minimum_word_length", 3);
 
     log = flags;
@@ -873,7 +873,7 @@ Retriever::got_word(char *word, int location, int heading)
     if (trackWords)
     {
       String w = word;
-      w.remove(valid_punctuation);
+      HtStripPunctuation(w);
       if (w.length() >= minimumWordLength)
 	words.Word(w, location, current_anchor_number, factor[heading]);
     }

@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.16 1999/01/28 05:20:21 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.16.2.1 1999/03/23 23:22:53 grdetil Exp $";
 #endif
 
 #include "WordList.h"
@@ -16,6 +16,7 @@ static char RCSid[] = "$Id: WordList.cc,v 1.16 1999/01/28 05:20:21 ghutchis Exp 
 #include "htString.h"
 #include <stdio.h>
 #include <ctype.h>
+#include "HtWordType.h"
 
 extern Configuration	config;
 
@@ -106,7 +107,7 @@ int WordList::valid_word(char *word)
 
     while (word && *word)
     {
-      if (isalpha((unsigned char)*word))
+      if (HtIsStrictWordChar((unsigned char)*word))
 	{
 	    alpha = 1;
 	    break;
@@ -218,7 +219,6 @@ void WordList::BadWordFile(char *filename)
     char	buffer[1000];
     char	*word;
     String      new_word;
-    char        *valid_punctuation = config["valid_punctuation"];
     int	        minimum_word_length = config.Value("minimum_word_length", 3);
 
     while (fl && fgets(buffer, sizeof(buffer), fl))
@@ -230,7 +230,7 @@ void WordList::BadWordFile(char *filename)
 	      word[MAX_WORD_LENGTH] = '\0';
 	    new_word = word;  // We need to clean it up before we add it
 	    new_word.lowercase();  // Just in case someone enters an odd one
-	    new_word.remove(valid_punctuation);
+	    HtStripPunctuation(new_word);
 	    if (new_word.length() >= minimum_word_length)
 	      badwords.Add(new_word, 0);
 	  }

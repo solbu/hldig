@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.6 1999/03/22 20:37:23 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.7 1999/03/23 23:22:53 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -17,6 +17,7 @@ static char RCSid[] = "$Id: HTML.cc,v 1.30.2.6 1999/03/22 20:37:23 grdetil Exp $
 #include "StringMatch.h"
 #include "StringList.h"
 #include "URL.h"
+#include "HtWordType.h"
 
 static StringMatch	tags;
 static StringMatch	nobreaktags;
@@ -312,7 +313,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    }
 	    position = q+1;
 	  }
-	else if (*position > 0 && (isalnum(*position)))
+	else if (*position > 0 && HtIsStrictWordChar(*position))
 	{
 	    //
 	    // Start of a word.  Try to find the whole thing
@@ -320,9 +321,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    word = 0;
 	    in_space = 0;
 	    in_punct = 0;
-	    while (*position &&
-		   (isalnum(*position) ||
-                   strchr(valid_punctuation, *position)))
+	    while (*position && HtIsWordChar(*position))
 	    {
 		word << (char)*position;
 		position++;
