@@ -1,8 +1,8 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b4: In progress 
-	(mifluz merge essentially finished, contact Geoff for patch to test)
+   3.2.0b5: Next release, tentatively 1 Dec 2002.
+   3.2.0b4: "In progress" -- snapshots called "3.2.0b4" until prerelease.
    3.2.0b3: Released:  22 Feb 2001.
    3.2.0b2: Released:  11 Apr 2000.
    3.2.0b1: Released:   4 Feb 2000.
@@ -13,8 +13,7 @@ what's currently here.)
 
 SHOWSTOPPERS:
 * Mifluz database errors are a severe problem (PR#428295)
-* The new mifluz merged code is slow.
- (no PR, Geoff hasn't added mifluz-merge to CVS yet.)
+-- Does Neal's new zlib patch solve this for now?
 
 KNOWN BUGS:
 * Odd behavior with $(MODIFIED) and scores not working with
@@ -24,10 +23,6 @@ KNOWN BUGS:
 * Not all htsearch input parameters are handled properly: PR#405278. Use a
    consistant mapping of input -> config -> template for all inputs where
    it makes sense to do so (everything but "config" and "words"?).
-* If exact isn't specified in the search_algorithms, $(WORDS) is not set 
-   correctly: PR#405294. (The documentation for 3.2.0b1 was updated, but can
-   we fix this?)
- (More importantly, do we ever want exact to /not/ be specified?)
 * META descriptions are somehow added to the database as FLAG_TITLE,
    not FLAG_DESCRIPTION. (PR#618738)
 
@@ -80,7 +75,4 @@ DOCUMENTATION:
 
 OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
-   (Does Loic's new database code make this work?)
 * The code needs a security audit, esp. htsearch. PR#405765.
-* URL.cc tries to parse malformed URLs (which can cause further problems)
-   (It should probably just set everything to empty).
