@@ -1,3 +1,9 @@
+Sun Dec 13 23:06:35 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc: Fix potential coredump when calculating
+	date_factor and backlink_factor on docs that aren't in the
+	database.
+
 Sat Dec 12 23:17:56 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/cf_byname.html, htdoc/cf_byprog.html, htdoc/attrs.html:
@@ -11,6 +17,9 @@ Sat Dec 12 23:17:56 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc(got_href): Added check to prevent
 	currenthopcount from becoming -1.
+
+	* htcommon/WordList.cc: Change undefined minimumWordLength to
+	config("minimum_word_length").
 	
 Sat Dec 12 12:01:55 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
