@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: QuotedStringList.cc,v 1.3.2.1 2000/01/14 00:57:15 ghutchis Exp $
+// $Id: QuotedStringList.cc,v 1.3.2.2 2000/02/02 19:35:32 grdetil Exp $
 //
 
 #include "QuotedStringList.h"
@@ -34,20 +34,22 @@ int
 QuotedStringList::Create(const char *str, const char *sep, int single)
 {
     char	quote = 0;
-    int	quoted = 0;
+    int		quoted = 0;
     String	word;
 
     while (str && *str)
     {
 	if (*str == '\\')
 	{
+	    if (!str[1])
+		break;
 	    word << *++str;
 	}
 	else if (*str == quote)
 	{
 	    quote = 0;
 	}
-	else if (*str == '"' || *str == '\'')
+	else if (!quote && (*str == '"' || *str == '\''))
 	{
 	    quote = *str;
 	    quoted++;
