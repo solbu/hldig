@@ -24,7 +24,7 @@ INSTALL_SCRIPT=         @INSTALL_SCRIPT@
 INSTALL_DATA=		@INSTALL_DATA@
 
 top_builddir= .
-include Makefile.config
+@make_include_left@Makefile.config@make_include_right@
 
 DIRS=		db/dist rx \
 		htlib htcommon htfuzzy htdig \

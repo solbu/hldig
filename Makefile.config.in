@@ -3,7 +3,7 @@
 ##
 ## This file is part of ht://Dig
 ##
-include $(top_builddir)/CONFIG
+@make_include_left@$(top_builddir)/CONFIG@make_include_right@
 
 #
 # You should not have to modify anything below this point.

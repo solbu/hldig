@@ -5,7 +5,7 @@ INSTALL=		@INSTALL@
 INSTALL_PROGRAM=	@INSTALL_PROGRAM@
 
 top_builddir= ..
-include $(top_builddir)/Makefile.config
+@make_include_left@$(top_builddir)/Makefile.config@make_include_right@
 
 OBJS=		db.o docs.o htmerge.o words.o 
 

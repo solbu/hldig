@@ -1,3 +1,11 @@
+Wed Feb 17 23:44:59 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in, configure, aclocal.m4: Add autoconf macro to
+	detect syntax of makefile includes.
+	
+	* Makefile.in, Makefile.config.in, */Makefile.in: Change include
+	syntax to use it.
+
 Wed Feb 17 12:36:42 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
 	* htcommon/defaults.cc (defaults): locale: change to "C".

@@ -2459,51 +2459,65 @@ ac_compile='${CC-cc} -c $CFLAGS $CPPFLAGS conftest.$ac_ext 1>&5'
 ac_link='${CC-cc} -o conftest${ac_exeext} $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS 1>&5'
 cross_compiling=$ac_cv_prog_cc_cross
 
-# Extract the first word of "tsort", so it can be a program name with args.
-set dummy tsort; ac_word=$2
-echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:2466: checking for $ac_word" >&5
-if eval "test \"`echo '$''{'ac_cv_path_TSORT'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  case "$TSORT" in
-  /*)
-  ac_cv_path_TSORT="$TSORT" # Let the user override the test with a path.
-  ;;
-  ?:/*)			 
-  ac_cv_path_TSORT="$TSORT" # Let the user override the test with a dos path.
-  ;;
-  *)
-  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS=":"
-  ac_dummy="$PATH"
-  for ac_dir in $ac_dummy; do 
-    test -z "$ac_dir" && ac_dir=.
-    if test -f $ac_dir/$ac_word; then
-      ac_cv_path_TSORT="$ac_dir/$ac_word"
-      break
-    fi
-  done
-  IFS="$ac_save_ifs"
-  ;;
-esac
-fi
-TSORT="$ac_cv_path_TSORT"
-if test -n "$TSORT"; then
-  echo "$ac_t""$TSORT" 1>&6
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-if test -z "$TSORT"; then
-  { echo "configure: error: GNU rx configuration needs tsort in path!" 1>&2; exit 1; }
-fi
-
 if test ! -d "./db"; then
   mkdir db
 fi
 subdirs="db/dist"
 
 subdirs="db/dist rx"
+
+
+
+echo $ac_n "checking for style of include in makefiles""... $ac_c" 1>&6
+echo "configure:2473: checking for style of include in makefiles" >&5
+
+make_include_left=""
+make_include_right=""
+make_include_quote="unknown"
+
+cf_inc=head$$
+cf_dir=subd$$
+echo 'RESULT=OK' >$cf_inc
+mkdir $cf_dir
+
+for cf_include in "include" ".include" "!include"
+do
+        for cf_quote in '' '"'
+        do
+                cat >$cf_dir/makefile <<CF_EOF
+SHELL=/bin/sh
+${cf_include} ${cf_quote}../$cf_inc${cf_quote}
+all :
+	@echo 'cf_make_include=\$(RESULT)'
+CF_EOF
+        cf_make_include=""
+        eval `cd $cf_dir && ${MAKE-make} 2>&5 | grep cf_make_include=OK`
+        if test -n "$cf_make_include"; then
+                make_include_left="$cf_include"
+                make_include_quote="$cf_quote"
+                break
+        else
+                echo Tried 1>&5
+                cat $cf_dir/makefile 1>&5
+        fi
+        done
+        test -n "$cf_make_include" && break
+done
+
+rm -rf $cf_inc $cf_dir
+
+if test -z "$make_include_left" ; then
+        { echo "configure: error: Your $ac_make program does not support includes" 1>&2; exit 1; }
+fi
+if test ".$make_include_quote" != .unknown ; then
+        make_include_left="$make_include_left $make_include_quote"
+        make_include_right="$make_include_quote"
+fi
+
+echo "$ac_t""${make_include_left}file${make_include_right}" 1>&6
+
+
+
 
 
 trap '' 1 2 15
@@ -2667,8 +2681,9 @@ s%@PDF_PARSER@%$PDF_PARSER%g
 s%@SENDMAIL@%$SENDMAIL%g
 s%@CPP@%$CPP%g
 s%@CXXCPP@%$CXXCPP%g
-s%@TSORT@%$TSORT%g
 s%@subdirs@%$subdirs%g
+s%@make_include_left@%$make_include_left%g
+s%@make_include_right@%$make_include_right%g
 
 CEOF
 EOF

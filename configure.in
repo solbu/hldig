@@ -134,18 +134,15 @@ done
   AC_DEFINE_UNQUOTED(GETPEERNAME_LENGTH_T, $getpeername_length_t)
   fi
 
-dnl Any final tests probably want the C compiler
+dnl Any remaining tests probably want the C compiler
 AC_LANG_C
-AC_PATH_PROG(TSORT, tsort)
-if test -z "$TSORT"; then
-  AC_MSG_ERROR([GNU rx configuration needs tsort in path!])
-fi
-
 if test ! -d "./db"; then
   mkdir db
 fi
 AC_CONFIG_SUBDIRS(db/dist)
 AC_CONFIG_SUBDIRS(rx)
+
+CF_MAKE_INCLUDE
 
 AC_OUTPUT(CONFIG Makefile Makefile.config htcommon/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile makedp, chmod +x makedp, echo timestamp > stamp-h)
 
