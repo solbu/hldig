@@ -1653,12 +1653,12 @@ if test "${enable_tests+set}" = set; then
   enableval="$enable_tests"
   htdig_cv_tests="$enable_tests"
 else
-  htdig_cv_tests=true
+  htdig_cv_tests="yes"
 fi
 
 
 
-if $htdig_cv_tests; then
+if test x$htdig_cv_tests = xyes; then
   TESTS_TRUE=
   TESTS_FALSE='#'
 else
@@ -4434,7 +4434,7 @@ if test ! -d "./db"; then
   mkdir db
 fi
 
-if $htdig_cv_tests
+if test x$htdig_cv_tests = xyes
 then
 	echo $ac_n "checking user name""... $ac_c" 1>&6
 echo "configure:4441: checking user name" >&5
