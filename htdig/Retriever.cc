@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.21 2001/06/07 19:06:16 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.22 2001/06/07 19:44:51 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -1212,11 +1212,8 @@ Retriever::got_href(URL &url, char *description)
 		return;
 	    }
 
-	    if (ref->DocHopCount() != -1 &&
-		ref->DocHopCount() < currenthopcount + 1)
-	       // If we had taken the path through this ref
-	       // We'd be here faster than currenthopcount
-	       currenthopcount = ref->DocHopCount();  // So update it!
+	    if (ref->DocHopCount() > currenthopcount + 1)
+		ref->DocHopCount(currenthopcount + 1);
 
 	    docs.Add(*ref);
 
