@@ -4,7 +4,7 @@
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
 #if RELEASE
-static char RCSid[] = "$Id: PDF.cc,v 1.14 1999/08/13 20:47:12 grdetil Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.15 1999/08/18 16:32:02 grdetil Exp $";
 #endif
 
 #include <sys/types.h>
@@ -109,7 +109,7 @@ PDF::parse(Retriever &retriever, URL &url)
     if (notfound)	// we only need to complain once
 	return;
     String arg0 = acroread;
-    char *endarg = strchr(acroread.get(), ' ');
+    char *endarg = strchr(arg0.get(), ' ');
     if (endarg)
 	*endarg = '\0';
     // If first arg is a path, check that it exists, and is a regular file. 

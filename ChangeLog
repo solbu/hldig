@@ -1,3 +1,8 @@
+Wed Aug 18 11:27:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/PDF.cc(parse): Fixed wrong variable name in new code.
+	Double-Oops!  (It was Friday the 13th, after all...)
+
 Tue Aug 17 16:26:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/HtHeap.cc(Remove): apply Geoff's patch to fix Remove.
