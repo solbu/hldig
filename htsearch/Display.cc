@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.21 1999/12/07 04:33:10 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.22 1999/12/07 16:52:35 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -534,8 +534,10 @@ Display::setVariables(int pageNumber, List *matches)
 		createURL(tmp, i);
 		*str << tmp << "\">" << p << "</a>";
 	    }
-	    if (i != nPages)
-		*str << ((sep.Count() > 0) ? sep[(i-1)%sep.Count()] : " ");
+	    if (i != nPages && sep.Count() > 0)
+		*str << sep[(i-1)%sep.Count()];
+	    else if (i != nPages && sep.Count() <= 0)
+	      *str << " ";
 	}
 	vars.Add("PAGELIST", str);
     }
