@@ -1,3 +1,8 @@
+Sun Aug 24 12:44:29 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+   * updated with 'autoreconf -if': autoconf 2.57, automake 1.7.6 and
+     libtool 1.5.0a (autotools that come with Debian SID)
+
 Sun Aug 24 12:39:34 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
    * configure.in: moved AC_PROG_LEX to AM_PROG_LEX
