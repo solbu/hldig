@@ -1,0 +1,46 @@
+Neal Richter
+10/6/2002
+
+How to use this:
+
+--------------------------
+Building htdig:
+
+unzip the tarball
+
+cd inside of the tarball root directory
+
+./configure' with any parameters needed
+
+---------------------------
+Building libhtdig:
+
+cd libhtdig
+
+make
+
+--------------------------
+Building libhtdigphp:
+
+cd libhtdigphp
+
+./configure
+make
+./relink
+
+Note: The relink script uses the PHP wrapper objects as well as all the object
+in libhtdig to create a one-piece sharded library
+
+---------------------------
+
+note that the libhtdig_xxxx.cc take the place of the various utilities 'main'
+functions.  Please look through them and compare to see if changes need to be
+synced in.
+
+---------------------------
+
+This should make you a libhtdig.so.XXXX  Copy the latest libhtdig_api.h to a
+place that you might need it.
+
+link against libhtdig.so.XXXXX
+
