@@ -1,3 +1,7 @@
+Thu Jan 13 19:22:25 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htnet/Makefile.am, htnet/Makefile.in: Add HtFile to the build process.
+
 Thu Jan 13 18:58:03 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htnet/HtFile.h, htnet/HtFile.cc: New Transport classes
