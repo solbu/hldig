@@ -68,6 +68,9 @@
 /* Define if you need a prototype for gethostname() */
 #define	NEED_PROTO_GETHOSTNAME	0
 
+/* Define this to the type of the third argument of getpeername() */
+#define GETPEERNAME_LENGTH_T size_t
+
 /* Define if you have the gdbm library (-lgdbm).  */
 #define HAVE_LIBGDBM	0
 

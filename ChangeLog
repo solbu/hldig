@@ -1,3 +1,14 @@
+Fri Dec  4 21:21:00 1998  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
+
+	* configure.in: Check if the third argument of getpeername is a
+	size_t* or an unsigned int*.
+
+	* include/htconfig.h.in: Define GETPEERNAME_LENGTH_T.
+
+	* htlib/Connection.cc: Use GETPEERNAME_LENGTH_T as the type of the
+	third getpeername argument. Included strings.h which is needed for
+	FD_ZERO on AIX.
+
 Thu Dec  3 23:03:15 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure.in: Check for getopt.h for those platforms that don't

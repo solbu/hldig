@@ -101,6 +101,18 @@ extern "C" int gethostname(char *, int);],
   [AC_MSG_RESULT(no)],
   [AC_MSG_RESULT(yes);AC_DEFINE(NEED_PROTO_GETHOSTNAME)])
 
+AC_LANG_CPLUSPLUS
+AC_MSG_CHECKING(whether the third argument of getpeername can be a size_t?)
+AC_TRY_COMPILE([#include <sys/types.h>
+#include <sys/socket.h>],
+[ int socket;
+  struct sockaddr server;
+  size_t length;
+  getpeername(socket, &server, &length);],
+  [AC_MSG_RESULT(yes);AC_DEFINE(GETPEERNAME_LENGTH_T, size_t)],
+  [AC_MSG_RESULT(no);AC_DEFINE(GETPEERNAME_LENGTH_T, unsigned int)])
+AC_LANG_C
+
 DB_DIR="db/dist"
 AC_SUBST(DB_DIR)
 

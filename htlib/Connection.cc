@@ -7,6 +7,9 @@
 // Implementation of the Connection class
 //
 // $Log: Connection.cc,v $
+// Revision 1.10  1998/12/04 20:33:35  bergolth
+// Added configure check for the getpeername argument types.
+//
 // Revision 1.9  1998/10/18 21:22:16  ghutchis
 //
 // Revised connection timeout methods.
@@ -60,6 +63,8 @@
 #include <netdb.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <strings.h>
+#include <htconfig.h>
 
 extern "C" {
     int rresvport(int *);
@@ -89,7 +94,7 @@ Connection::Connection(int socket)
 {
     sock = socket;
     connected = 0;
-    unsigned int length = sizeof(server);
+    GETPEERNAME_LENGTH_T length = sizeof(server);
     if (getpeername(socket, (struct sockaddr *)&server, &length) < 0)
     {
 	perror("getpeername");
@@ -312,7 +317,7 @@ int Connection::bind()
 //
 int Connection::get_port()
 {
-    unsigned int length = sizeof(server);
+    GETPEERNAME_LENGTH_T length = sizeof(server);
     
     if (getsockname(sock, (struct sockaddr *)&server, &length) == NOTOK)
     {
@@ -340,7 +345,7 @@ Connection *Connection::accept(int priv)
 
     while (1)
     {
-	newsock = ::accept(sock, (struct sockaddr *)0, (unsigned int *)0);
+	newsock = ::accept(sock, (struct sockaddr *)0, (GETPEERNAME_LENGTH_T *)0);
 	if (newsock == NOTOK && errno == EINTR)
 	    continue;
 	break;
@@ -351,7 +356,7 @@ Connection *Connection::accept(int priv)
     Connection	*newconnect = new Connection;
     newconnect->sock = newsock;
 
-    unsigned int length = sizeof(newconnect->server);
+    GETPEERNAME_LENGTH_T length = sizeof(newconnect->server);
     getpeername(newsock, (struct sockaddr *)&newconnect->server, &length);
 
     if (priv && newconnect->server.sin_port >= IPPORT_RESERVED)
@@ -470,7 +475,7 @@ char *Connection::get_peername()
     if (!peer)
     {
 	struct sockaddr_in	p;
-	unsigned int			length = sizeof(p);
+	GETPEERNAME_LENGTH_T	length = sizeof(p);
 	struct hostent		*hp;
 	
 	if (getpeername(sock, (struct sockaddr *) &p, &length) < 0)
@@ -495,7 +500,7 @@ char *Connection::get_peername()
 char *Connection::get_peerip()
 {
     struct sockaddr_in	peer;
-    unsigned int		length = sizeof(peer);
+    GETPEERNAME_LENGTH_T	length = sizeof(peer);
     
     if (getpeername(sock, (struct sockaddr *) &peer, &length) < 0)
     {
