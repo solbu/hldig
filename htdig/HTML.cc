@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.41 1999/05/16 21:20:57 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.42 1999/06/12 17:58:17 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -63,7 +63,7 @@ HTML::HTML()
     // the attrs Match object is used to match names of tag parameters.
     //
     tags.IgnoreCase();
-    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base");
+    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object");
 
     attrs.IgnoreCase();
     attrs.Pattern("src|href|name");
@@ -442,6 +442,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
     char	*position = tag.get() + 1;		// Skip the '<'
     char	*q, *t;
     int		which, length;
+    int		imgflag = 0;
 
     while (isspace(*position))
 	position++;
@@ -657,56 +658,6 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    doindex = 1;
 	    dofollow = 1;
 	    break;
-
-	case 18:	// "img"
-	{
-	    which = -1;
-	    int pos = attrs.FindFirstWord(position, which, length);
-	    if (pos < 0 || which != 0)
-		break;
-	    position += pos + length;
-	    while (*position && *position != '=')
-		position++;
-	    if (!*position)
-		break;
-	    position++;
-	    while (isspace(*position))
-		position++;
-           //
-           // Allow either single quotes or double quotes
-           // around the URL itself
-           //
-           if (*position == '"'||*position == '\'')
-	    {
-		position++;
-		q = strchr(position, position[-1]);
-		if (!q)
-		    break;
-               //
-               // We seem to have matched the opening quote char
-               // Mark the end of the quotes as our endpoint, so
-               // that we can continue parsing after the current
-               // text
-               //
-               *q = '\0';
-               //
-               // If a '#' is present in a quoted URL,
-               //  treat that as the end of the URL, but we skip
-               //  past the quote to parse the rest of the anchor.
-               //
-               if ((t = strchr(position, '#')) != NULL)
-                   *t = '\0';
-	    }
-	    else
-	    {
-		q = position;
-		while (*q && *q != '>' && !isspace(*q))
-		    q++;
-	    *q = '\0';
-	    }
-	    retriever.got_image(position);
-	    break;
-	}
 
 	case 19:	// "li"
 	    if (doindex && !in_title && head.length() < max_head_length)
@@ -1097,6 +1048,67 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    break;
 	}
 	
+      case 18: // img
+	imgflag = 1;
+
+      case 24: // embed
+      case 25: // object
+      {
+	    which = -1;
+	    int pos = srcMatch.FindFirstWord(position, which, length);
+	    if (pos < 0 || which != 0)
+		break;
+	    position += pos + length;
+	    while (*position && *position != '=')
+		position++;
+	    if (!*position)
+		break;
+	    position++;
+	    while (isspace(*position))
+		position++;
+           //
+           // Allow either single quotes or double quotes
+           // around the URL itself
+           //
+           if (*position == '"'||*position == '\'')
+	    {
+		position++;
+		q = strchr(position, position[-1]);
+		if (!q)
+		    break;
+               //
+               // We seem to have matched the opening quote char
+               // Mark the end of the quotes as our endpoint, so
+               // that we can continue parsing after the current
+               // text
+               //
+               *q = '\0';
+               //
+               // If a '#' is present in a quoted URL,
+               //  treat that as the end of the URL, but we skip
+               //  past the quote to parse the rest of the anchor.
+               //
+               if ((t = strchr(position, '#')) != NULL)
+                   *t = '\0';
+	    }
+	    else
+	    {
+		q = position;
+		while (*q && *q != '>' && !isspace(*q))
+		    q++;
+	    *q = '\0';
+	    }
+	   if (imgflag) // img
+                retriever.got_image(position);
+            else if (dofollow) // embed and object
+	      {
+                URL *href = new URL(position, *base);
+                retriever.got_href(*href, "");
+                delete href;
+	      }
+	    break;
+	}
+
 	default:
 	    return;						// Nothing...
     }
