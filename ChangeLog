@@ -1,3 +1,14 @@
+Mon Sep 27 17:43:23 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* Created testnet.cc under test dir for trying the htnet library
+          It's a simple program that retrieves an URL.
+
+        * htnet/HtHTTP.cc, .h: added a 'int (*) (char *)' function pointer.
+          This attribute is static and it is used under the isParsable method
+          in order to determine if a document is parsable. It must be set
+          outside this class by using the SetParsingController static method.
+          The classic use is to set it to 'ExternalParser::canParse' .
+
 Mon Sep 27 10:52:51 1999  Loic Dachary  <loic@ceic.com>
 
 	* htmerge/db.cc (mergeDB): delete words instead of words->Destroy()

@@ -13,13 +13,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.1 1999/09/27 14:00:05 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.2 1999/09/27 16:18:58 angus Exp $ 
 //
 
 #include "lib.h"
 #include "Transport.h"
 #include "HtHTTP.h"
-//#include "ExternalParser.h"
 
 #include <signal.h>
 #include <sys/types.h>
@@ -43,7 +42,9 @@ typedef SIG_PF SIGNAL_HANDLER;
    	 int HtHTTP::_tot_requests = 0;
    	 int HtHTTP::_tot_bytes = 0;
 
+   // Handler of the CanParse function
 
+         int (* HtHTTP::CanBeParsed) (char *) = NULL;
 
 ///////
    //    HtHTTP_Response class
@@ -324,14 +325,22 @@ Transport::DocStatus HtHTTP::Request()
       }
 
       if ( debug > 5 )
-         cout << "Contents" << endl << _response.GetContents();
+         cout << "Contents:" << endl << _response.GetContents();
 
    }
+   else if ( debug > 3 )
+         cout << "Response document not parsable" << endl;
+
 
    // Close the connection (if there's no persistent connection)
 
    if( ! isPersistentConnectionUp() )
+   {
+      if ( debug > 3 )
+         cout << "Connection closed (No persistent connection)" << endl;
+         
       CloseConnection();
+   }
    else
 	 if ( debug > 3 )
 	    cout << "Connection stays up ... (Persistent connection)" << endl;
@@ -673,11 +682,17 @@ bool HtHTTP::isParsable(const char *content_type)
    // Here I can decide what kind of document I can parse
    // text/html -> HTML, text/* -> plaintext
    // and the rest are determined by the external_parser settings
+
+   if( ! mystrncasecmp ("text/", content_type, 5)
+       || ! mystrncasecmp ("application/pdf", content_type, 15) )
+       return true;
+       
+   // External function that checks if a document is parsable or not.
+   // CanBeParsed should point to a function that returns an int value,
+   // given a char * containing the content-type.
    
-   if( ! mystrncasecmp ("text/", content_type, 5) 
-       || ! mystrncasecmp ("application/pdf", content_type, 15))
-       // || ExternalParser::canParse((char *)content_type) )
-   	 return true;
+   if (CanBeParsed && (*CanBeParsed)( (char *) content_type) )
+      return true;
 
    return false;
    	 

@@ -28,7 +28,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.1 1999/09/27 14:00:05 angus Exp $ 
+// $Id: HtHTTP.h,v 1.2 1999/09/27 16:18:58 angus Exp $ 
 //
 
 #ifndef _HTHTTP_H
@@ -214,6 +214,13 @@ public:
 // Set the modification_time_is_now static attribute
    static void SetModificationTimeIsNow (int d) { modification_time_is_now=d;}   
 
+// Set the controller for the parsing check. That is to say
+// that External function that checks if a document is parsable or not.
+// CanBeParsed static attribute should point to a function
+// that returns an int value, given a char * containing the content-type.
+
+   static void SetParsingController (int (*f)(char*)) { CanBeParsed = f; }
+
 	
 protected:
 
@@ -370,6 +377,11 @@ protected:
    static int GetTotSeconds () { return _tot_seconds; }   
    static int GetTotRequests () { return _tot_requests; }   
    static int GetTotBytes () { return _tot_bytes; }   
+
+   // This is a pointer to function that check if a ContentType
+   // is parsable or less.
+   
+   static int (*CanBeParsed) (char *);
    
 };
 
