@@ -1,3 +1,12 @@
+Tue Oct 14 11:54:07 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * htnet/HtHTTP.cc: add an empty Accept-Encoding header - this inform the
+    server that htdig is only able to manage documents that are not encoded
+    (if no Accept-Encoding is sent, the server assumes that the client is
+    capable of handling every content encoding - i.e. zipped documents with
+    Apache's mod_gzip module). Partial fix of bug #594790 (which now becomes a
+    feature request)
+
 Mon Oct 13 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htfuzzy/Regex.cc:  Search for regular expression.  (Used to ignore it!)

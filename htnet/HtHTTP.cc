@@ -13,7 +13,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtHTTP.cc,v 1.24 2003/07/21 08:16:11 angusgb Exp $ 
+// $Id: HtHTTP.cc,v 1.25 2003/10/14 01:57:49 angusgb Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -601,6 +601,12 @@ void HtHTTP::SetRequestCommand(String &cmd)
    // Proxy Authentication
    if (_useproxy && _proxy_credentials.length())
      cmd << "Proxy-Authorization: Basic " << _proxy_credentials << "\r\n";
+
+   // Accept-Encoding: waiting to handle the gzip and compress formats, we
+   // just send an empty header which, according to the HTTP 1/1 standard,
+   // should let the server know that we only accept the 'identity' case
+   // (no encoding of the document)
+   cmd << "Accept-Encoding: \r\n";
 
    // A date has been passed to check if the server one is newer than
    // the one we already own.
