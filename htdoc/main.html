@@ -3,7 +3,7 @@
   <head>
 	<title>
 	  ht://Dig: Overview
-	</title> 
+	</title>
         <link rel="stylesheet" href="htdig.css">
   </head>
   <body bgcolor="#eef7ff">
@@ -20,54 +20,33 @@
 	<h2>
 	  Recent News
 	</h2>
-	<ul>
-	  <li><strong>25 Feb 2000:</strong> A new stable release of
-	      ht://Dig, htdig-3.1.5, is released. This release is
-	      recommended for all production systems. It solves most
-	      of the outstanding bugs in the 3.1.x releases, including
-	      a serious security hole in htsearch. See the <a
-	      href="RELEASE.html">release notes</a> or <a
-	      href="where.html">download it</a>.
-	  </li>
-	  <li><strong> 4 Feb 2000:</strong> A new beta release of the 3.2 
-	  codebase has been released, htdig-3.2.0b1. This release is intended 
-	  for testing purposes and to get feedback as to performance, features, 
-	  and of course bugs. It is not intended for production systems. For more
-	  information, see the <a
-	      href="http://dev.htdig.org/htdig-3.2/RELEASE.html">release notes</a> or <a
-	      href="http://www.htdig.org/files/htdig-3.2.0b1.tar.gz">download it</a>.
-	  </li>
-	  <li><strong>30 Nov 1999:</strong> Several requests for
-	additional functionality have been made through Cosource.com,
-	including a project in development to <a
-	href="http://www.cosource.com/cgi-bin/cos.pl/wish/info/136">add
-	ht://Dig support to KDevelop</a>, an active project looking
-	for a developer to <a
-	href="http://www.cosource.com/cgi-bin/cos.pl/wish/info/162">add
-	support for a SQL backend</a>, and another active project to
-	develop a <a
-	href="http://www.cosource.com/cgi-bin/cos.pl/wish/info/200">web-based
-	admin interface</a>.
-	  </li>
-	</ul>
+	<p>
+	<B>Release of 3.1.6</B>
+					<BR>&nbsp;&nbsp;&nbsp;&nbsp;<I>ghutchis - 2002-02-01</I> &nbsp; - &nbsp; <A HREF="http://sourceforge.net/projects/htdig/">ht://Dig</A><BR>The ht://Dig group is quite happy to announce, at long last, the release of version 3.1.6. This new production version fixes a number of important bugs and adds a few heavily-requested features. As the latest stable release, it is recommended for all production servers. For more details, check the <a href="RELEASE.html">Release Notes</a> or download 3.1.6 from <a href="http://www.htdig.org/where.html">htdig.org</a> or <a href="http://www.htdig.org/mirrors.html">mirrors</a>.
+<div align="center">(0 Comments) [Read More/Comment]</div><HR width="100%" size="1" noshade>
+	<A HREF="http://sourceforge.net/forum/forum.php?forum_id=134785"><B>FTP Site ftp.htdig.org Offline</B></A>
+					<BR>&nbsp;&nbsp;&nbsp;&nbsp;<I>ghutchis - 2001-11-30 07:42</I> &nbsp; - &nbsp; <A HREF="http://sourceforge.net/projects/htdig/">ht://Dig</A><BR>SourceForge has stopped hosting project ftp services. So the main FTP repository, ftp.htdig.org is no longer.<BR><BR>Files available from FTP have also always been available from <a href="http://www.htdig.org/files/" target="_blank" target="_new">http://www.htdig.org/files/</a><div align="center">(0 Comments) <A HREF="http://sourceforge.net/forum/forum.php?forum_id=134785">[Read More/Comment]</a></div><HR width="100%" size="1" noshade>
+					<A HREF="http://sourceforge.net/forum/forum.php?forum_id=117866"><B>Security Vulnerabilities in 3.1.5 and 3.2.0b3</B></A>
+					<BR>&nbsp;&nbsp;&nbsp;&nbsp;<I>ghutchis - 2001-10-15 12:51</I> &nbsp; - &nbsp; <A HREF="http://sourceforge.net/projects/htdig/">ht://Dig</A><BR>The current released versions are vulnerable to a security hole in the htsearch CGI program. Pre-release snapshots of 3.2.0b4 and 3.1.6 are available from the development snapshots directory that fix the problem: <a href="http://www.htdig.org/files/snapshots/" target="_blank" target="_new">http://www.htdig.org/files/snapshots/</a><div align="center">(0 Comments) <A HREF="http://sourceforge.net/forum/forum.php?forum_id=117866">[Read More/Comment]</a></div><HR width="100%" size="1" noshade>
+	</p>
 	<hr size="4" noshade>
 	<h2>
 	  Introduction
 	</h2>
-	<p>
+	<p class="main">
 	  The ht://Dig system is a complete world wide web indexing and
-	  searching system for a small domain or intranet. This system
+	  searching system for a domain or intranet. This system
 	  is <strong>not</strong> meant to replace the need for
 	  powerful internet-wide search systems like Lycos, Infoseek,
-	  Webcrawler and AltaVista. Instead it is meant to cover the
+	  Google and AltaVista. Instead it is meant to cover the
 	  search needs for a single company, campus, or even a
 	  particular sub section of a web site.<br>
 	   As opposed to some WAIS-based or web-server based search
-	  engines, ht://Dig can span several web servers at a site. The
+	  engines, ht://Dig can easily span several web servers. The
 	  type of these different web servers doesn't matter as long as
-	  they understand the HTTP 1.0 protocol.
+	  they understand common protocols like HTTP.
 	</p>
-	<p>
+	<p class="main">
 	  ht://Dig was developed at <a href="http://www.sdsu.edu/">San
 	  Diego State University</a> as a way to search the various web
 	  servers on the campus network. Here are some examples of the
@@ -91,16 +70,24 @@
 		online documentation</a>
 	  </li>
 	</ul>
-	<form action="http://www.htdig.org/cgi-bin/htsearch" method="post">
+	<form action="http://cgi.htdig.org/cgi-bin/htsearch" method="post">
 	  <p>
 		You can search this documentation as well:<br>
 		<input type="hidden" name="config" value="htdig">
 		<input type="hidden" name="method" value="and">
-		<input type="text" name="words" size="40">
+		<input type="text" name="words" size="40"><br>
+	        Restrict to: <select name="restrict">
+	        <option value="">Everything
+	        <option value="www.htdig.org">www.htdig.org only
+	        <option value="www.htdig.org/dev/">Developer pages only
+	        <option value="/mail/|/htdig-dev/">Mailing list archives
+	        <option value="/mail/">htdig@htdig.org archive
+	        <option value="/htdig-dev/">htdig3-dev@htdig.org archive
+	        </select>
 		<input type="submit" value="Search">
 	  </p>
 	</form>
-	<p>
+	<p class="main">
 	  Many different types of searches can be set up using only a
 	  single search database. For example, the online documentation
 	  search above uses the same database as the campus main
@@ -109,8 +96,9 @@
 	  online documentation.
 	</p>
 <hr size="4" noshade>
-
-Last modified: $Date: 2002/01/27 05:33:20 $
-
+	Last modified: $Date: 2002/01/28 05:14:24 $
+<br>
+    <a href="http://sourceforge.net/">
+      <img src="http://sourceforge.net/sflogo.php?group_id=4593&amp;type=1" width="88" height="31" border="0" alt="SourceForge Logo"></a>
   </body>
 </html>
