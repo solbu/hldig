@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DB2_db.cc,v 1.22 2003/07/21 08:16:10 angusgb Exp $
+// $Id: DB2_db.cc,v 1.23 2003/08/29 15:39:15 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -82,7 +82,6 @@ DB2_db::Open(const char *filename, int flags, int mode)
     // Useful values are from 1 (at most half dirty) to about 3000 (never
     // flush cache unnecessarily).
     HtConfiguration *config = HtConfiguration::config();
-    CDB_set_mp_diry_level(config->Value("wordlist_cache_dirty_level"));
 
     //
     // Open the database.
@@ -379,7 +378,6 @@ DB2_db::db_init(char *home)
     // Useful values are from 1 (at most half dirty) to about 3000 (never
     // flush cache unnecessarily).
     HtConfiguration *config = HtConfiguration::config();
-    CDB_set_mp_diry_level(config->Value("wordlist_cache_dirty_level"));
 
     if((error = dbenv->open(dbenv, (const char*)home, NULL, DB_CREATE | DB_PRIVATE | DB_INIT_LOCK | DB_INIT_MPOOL, 0666)) != 0) {
       dbenv->err(dbenv, error, "open %s", (home ? home : ""));

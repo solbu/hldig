@@ -1,3 +1,11 @@
+Fri Aug 29 09:35:46 MDT 2003 Neal Richter <nealr@rightnow.com>
+
+    * removed references to CDB___mp_dirty_level ,CDB_set_mp_diry_level() 
+        &  CDB_get_mp_diry_level()
+
+    * The config verb 'wordlist_cache_dirty_level' was left for possible use in
+      the future.
+
 Thu Aug 28 15:11:21 MDT 2003 Neal Richter <nealr@rightnow.com>
 
     * Changed db/LICENSE file to new LGPL compatible license from Sleepycat

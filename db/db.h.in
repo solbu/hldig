@@ -1022,14 +1022,10 @@ struct __db_mpool_fstat {
 	u_int32_t st_page_out;		/* Pages written out. */
 };
 
-//extern int CDB___mp_dirty_level;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
-
-void CDB_set_mp_diry_level(int);
-int  CDB_get_mp_diry_level(void);
 
 #if defined(__cplusplus)
 }
