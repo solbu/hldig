@@ -1,3 +1,26 @@
+Sun Feb 06 19:11:05 2000  Loic Dachary  <loic@ceic.com>
+
+	* configure.in: Fix inconsistencies between default values 
+	  shown by ./configure and actual defaults.
+
+	* htdoc/install.html: change example version 3.1 to 3.2
+	  Commented out warning about libguile.
+	  Replace CONFIG variables by configure.in options.
+	  Specify default value for each of them.
+	  Replace (and move) make depend by automake (distributed
+	  Makefiles do not include dependency generation)
+	  Added section for running tests.
+	  Added section on shared libraries.
+
+	* configure.in: use AM_CONDITIONAL for --enable-tests
+
+	* Makefile.am: use automake conditionals for subdir so
+	  that make dist knows what to distribution --enable-tests
+	  specified or not.
+
+	* db/Makefile.in: allow make dist to work outside the source
+	  tree.
+
 Sat Feb 05 18:31:04 2000  Loic Dachary  <loic@ceic.com>
 
 	* test/word.cc (SkipTestEntries): The fix of 

@@ -1,3 +1,10 @@
+PACKAGE=@PACKAGE@
+VERSION=@VERSION@
+srcdir = @srcdir@
+top_builddir = ..
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+subdir = db
+
 all clean install:
 	cd dist ; if [ -f Makefile ] ; then $(MAKE) $@ ; fi
 
@@ -7,5 +14,6 @@ distclean:
 
 dvi dist installcheck check:
 
-distdir: distclean
-	find * \( ! -name '*~' -a ! -name '.#*' -a ! -name '#*#' -a ! -name core \) -print | egrep -v 'CVS|RCS' | cpio -pdm $(distdir)
+distdir: clean
+	if [ ! -d $(distdir) ] ; then mkdir -p $(distdir) ; fi
+	( cd $(srcdir) ; find * \( ! -name '*~' -a ! -name '.#*' -a ! -name '#*#' -a ! -name core \) -print | cpio -o ) | ( cd $(distdir) ; cpio -imd )
