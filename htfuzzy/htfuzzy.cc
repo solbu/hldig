@@ -18,11 +18,12 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htfuzzy.cc,v 1.15.2.1 1999/12/05 06:07:33 ghutchis Exp $
+// $Id: htfuzzy.cc,v 1.15.2.2 2000/02/29 20:39:19 grdetil Exp $
 //
 
 #include "htfuzzy.h"
 #include "Fuzzy.h"
+#include "Accents.h"
 #include "Soundex.h"
 #include "Endings.h"
 #include "Metaphone.h"
@@ -88,6 +89,10 @@ main(int ac, char **av)
 	else if (mystrcasecmp(av[i], "metaphone") == 0)
 	{
 	    wordAlgorithms.Add(new Metaphone(config));
+	}
+	else if (mystrcasecmp(av[i], "accents") == 0)
+	{
+	    wordAlgorithms.Add(new Accents(config));
 	}
 	else if (mystrcasecmp(av[i], "endings") == 0)
 	{
@@ -218,6 +223,7 @@ usage()
     cout << "Supported algorithms:\n";
     cout << "\tsoundex\n";
     cout << "\tmetaphone\n";
+    cout << "\taccents\n";
     cout << "\tendings\n";
     cout << "\tsynonyms\n";
     cout << "\n";

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Fuzzy.cc,v 1.16.2.1 1999/12/07 19:54:11 bosc Exp $
+// $Id: Fuzzy.cc,v 1.16.2.2 2000/02/29 20:39:18 grdetil Exp $
 //
 
 #include "Fuzzy.h"
@@ -31,6 +31,7 @@
 #include "Prefix.h"
 #include "Regex.h"
 #include "Speling.h"
+#include "Accents.h"
 
 //*****************************************************************************
 // Fuzzy::Fuzzy(const HtConfiguration& config)
@@ -184,6 +185,8 @@ Fuzzy::getFuzzyByName(char *name, const HtConfiguration& config)
 	return new Soundex(config);
     else if (mystrcasecmp(name, "metaphone") == 0)
 	return new Metaphone(config);
+    else if (mystrcasecmp(name, "accents") == 0)
+	return new Accents(config);
     else if (mystrcasecmp(name, "endings") == 0)
 	return new Endings(config);
     else if (mystrcasecmp(name, "synonyms") == 0)

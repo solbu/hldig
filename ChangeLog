@@ -1,3 +1,10 @@
+Tue Feb 29 14:29:37 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Accents.h, htfuzzy/Accents.cc: Added these, as contributed
+	by Robert Marchand, to implement accents fuzzy match.  Adapted to 3.2.
+	* htfuzzy/Fuzzy.cc, htfuzzy/htfuzzy.cc, htfuzzy/Makefile.am,
+	htfuzzy/Makefile.in: Added in accents algorithm, as for soundex.
+
 Tue Feb 29 11:31:53 2000  Loic Dachary  <loic@ceic.com>
 
 	* test/testnet.cc (Listen): Add -b port to listen to a specific
