@@ -1,35 +1,22 @@
 //
 // Plaintext.cc
 //
-// Implementation of Plaintext
+// Plaintext: Parses plaintext files. Not much to do, really.
 //
-// $Log: Plaintext.cc,v $
-// Revision 1.5  1998/11/04 18:53:29  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Added patch from Vadim Chekan to change char to unsigned char to fix reading
-// Cyrillic plaintext files.
+// $Id: Plaintext.cc,v 1.17.2.1 2000/03/28 01:47:34 ghutchis Exp $
 //
-// Revision 1.4  1997/04/20 15:23:40  turtle
-// Fixed bug
-//
-// Revision 1.3  1997/03/27 00:06:05  turtle
-// Applied patch supplied by Peter Enderborg <pme@ufh.se> to fix a problem with
-// a pointer running off the end of a string.
-//
-// Revision 1.2  1997/03/24 04:33:17  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: Plaintext.cc,v 1.5 1998/11/04 18:53:29 ghutchis Exp $";
-#endif
 
 #include "Plaintext.h"
 #include "htdig.h"
-#include <htString.h>
+#include "htString.h"
+#include "WordType.h"
+
 #include <ctype.h>
 
 
@@ -58,25 +45,24 @@ Plaintext::parse(Retriever &retriever, URL &)
     if (contents == 0 || contents->length() == 0)
 	return;
 
-    unsigned char	*position = contents->get();
-    unsigned char	*start = position;
-    int		offset = 0;
+    unsigned char       *position = (unsigned char *) contents->get();
+    static int	minimumWordLength = config.Value("minimum_word_length", 3);
+    int		wordIndex = 1;
     int		in_space = 0;
     String	word;
     String	head;
 
     while (*position)
     {
-	offset = position - start;
 	word = 0;
 
-	if (isalnum(*position))
+	if (HtIsStrictWordChar(*position))
 	{
 	    //
 	    // Start of a word.  Try to find the whole thing
 	    //
 	    in_space = 0;
-	    while (*position && (isalnum(*position) || strchr(valid_punctuation, *position)))
+	    while (*position && HtIsWordChar(*position))
 	    {
 		word << *position;
 		position++;
@@ -87,16 +73,9 @@ Plaintext::parse(Retriever &retriever, URL &)
 		head << word;
 	    }
 
-	    if (word.length() > 2)
+	    if (word.length() >= minimumWordLength)
 	    {
-		word.lowercase();
-		word.remove(valid_punctuation);
-		if (word.length() > 2)
-		{
-		    retriever.got_word(word,
-				       int(offset * 1000 / contents->length()),
-				       0);
-		}
+		retriever.got_word((char*)word, wordIndex++, 0);
 	    }
 	}
 		
@@ -105,7 +84,7 @@ Plaintext::parse(Retriever &retriever, URL &)
 	    //
 	    // Characters that are not part of a word
 	    //
-	    if (!*position && isspace(*position))
+	    if (*position && isspace(*position))
 	    {
 		//
 		// Reduce all multiple whitespace to a single space
@@ -118,33 +97,14 @@ Plaintext::parse(Retriever &retriever, URL &)
 	    }
 	    else
 	    {
-		//
-		// Non whitespace
-		//
-		switch (*position)
-		{
-		    case '<':
-			head << "&lt;";
-			break;
-		    case '>':
-			head << "&gt;";
-			break;
-		    case '&':
-			head << "&amp;";
-			break;
-		    case '\0':
-			break;
-		    default:
-			head << *position;
-			break;
-		}
+	        head << *position;
 		in_space = 0;
 	    }
 	}
 	if (*position)
 	    position++;
     }
-    retriever.got_head(head);
+    retriever.got_head((char*)head);
 }
 
 
