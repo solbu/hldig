@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.3 1999/10/18 10:04:16 bosc Exp $
+// $Id: Document.cc,v 1.55.2.4 1999/11/08 15:16:40 toivo Exp $
 //
 
 #include <signal.h>
@@ -336,7 +336,8 @@ Document::Retrieve(HtDateTime date)
          contentLength = response->GetContentLength();
          ptrdatetime = response->GetModificationTime();
          document_length = response->GetDocumentLength();
-         
+
+         redirected_to =  ((HtHTTP_Response *)response)->GetLocation();                 
          if (ptrdatetime)
          {
             // We got the modification date/time
