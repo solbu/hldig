@@ -13,7 +13,10 @@ CHECKLIST FOR 3.2.0b5:
     - SunOS 5.8 = Solaris 2.8, gcc 3.1 (lha, 25 May)
   Partly tested:
     - SunOS 5.8 = Solaris 2.8, Sun cc with g++ 3.1 (lha. Compiles, fails check)
-    - RedHat 7.3 (lha.  Makes check minus apache.  Digs small htdig.org. 25 May)
+    - SunOS 5.8 = Solaris 2.8, gcc 2.95.2
+    		   (lha. Makes check minus apache, Digs small htdig.org. 27 May)
+    - SunOS 5.8 = Solaris 2.8, Sun cc with g++ 2.95.2 (lha. Cmpile, fails check)
+    - RedHat 7.3   (lha. Makes check minus apache. Digs small htdig.org. 25 May)
     - Alpha Debian (lha. Makes check minus apache. Digs small htdig.org. 25 May)
   To be tested:
     - HP-UX 10.20, gcc 2.8.1 (Jesse)

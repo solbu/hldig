@@ -632,7 +632,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.4 2003/05/24 14:30:21 lha Exp $
+dnl @version $Id: aclocal.m4,v 1.5 2003/05/27 14:45:53 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -642,21 +642,22 @@ AC_DEFUN(CHECK_ZLIB,
 #
 [AC_MSG_CHECKING(if zlib is wanted)
 AC_ARG_WITH(zlib,
-[  --with-zlib=DIR root directory path of zlib installation [defaults to
-		    /usr/local or /usr if not found in /usr/local]
+[  --with-zlib=DIR root directory path of zlib installation
   --without-zlib to disable zlib usage completely],
-[if test "$withval" != no ; then
-  AC_MSG_RESULT(yes)
-  ZLIB_HOME="$withval"
-else
+[if test "$withval" = no ; then
   AC_MSG_RESULT(no)
+else
+  AC_MSG_RESULT(yes)
+  if test "$withval" = yes ; then
+    ZLIB_HOME="default path"
+  else
+    LDFLAGS="$LDFLAGS -L$withval/lib"
+    CPPFLAGS="$CPPFLAGS -I$withval/include"
+    ZLIB_HOME="$withval"
+  fi
 fi], [
 AC_MSG_RESULT(yes)
-ZLIB_HOME=/usr/local
-if test ! -f "${ZLIB_HOME}/include/zlib.h"
-then
-	ZLIB_HOME=/usr
-fi
+ZLIB_HOME="default path"
 ])
 
 #
@@ -664,36 +665,26 @@ fi
 #
 if test -n "${ZLIB_HOME}"
 then
-	ZLIB_OLD_LDFLAGS=$LDFLAGS
-	ZLIB_OLD_CPPFLAGS=$LDFLAGS
-	LDFLAGS="$LDFLAGS -L${ZLIB_HOME}/lib"
-	CPPFLAGS="$CPPFLAGS -I${ZLIB_HOME}/include"
-        AC_LANG_SAVE
-        AC_LANG_C
-	AC_CHECK_LIB(z, inflateEnd, [zlib_cv_libz=yes], [zlib_cv_libz=no])
-        AC_CHECK_HEADER(zlib.h, [zlib_cv_zlib_h=yes], [zlib_cvs_zlib_h=no])
-        AC_LANG_RESTORE
-	if test "$zlib_cv_libz" = "yes" -a "$zlib_cv_zlib_h" = "yes"
-	then
-		#
-		# If both library and header were found, use them
-		#
-		AC_CHECK_LIB(z, inflateEnd)
-		AC_MSG_CHECKING(zlib in ${ZLIB_HOME})
-		AC_MSG_RESULT(ok)
-	else
-		#
-		# If either header or library was not found, revert and bomb
-		#
-		AC_MSG_CHECKING(zlib in ${ZLIB_HOME})
-		LDFLAGS="$ZLIB_OLD_LDFLAGS"
-		CPPFLAGS="$ZLIB_OLD_CPPFLAGS"
-		AC_MSG_RESULT(failed)
-		AC_MSG_ERROR(either specify a valid zlib installation with --with-zlib=DIR or disable zlib usage with --without-zlib)
-	fi
+    AC_LANG_SAVE
+    AC_LANG_C
+    AC_MSG_CHECKING(for zlib in $ZLIB_HOME)
+    AC_CHECK_HEADER(zlib.h, [zlib_cv_zlib_h=yes], [zlib_cv_zlib_h=no])
+    dnl Only check for library if header is found.  This check sets HAVE_LIBZ
+    if test "$zlib_cv_zlib_h" = yes; then
+	AC_CHECK_LIB(z, inflateEnd)
+    fi
+    if test "${ac_cv_lib_z_inflateEnd:+yes}" != yes
+    then
+	#
+	# If either header or library was not found, bomb
+	#
+	AC_MSG_ERROR(Either specify a valid zlib installation with --with-zlib=DIR or disable zlib   usage with --without-zlib.)
+    fi
+    AC_LANG_RESTORE
 fi
 
 ])
+
 dnl @synopsis AC_COMPILE_WARNINGS
 dnl
 dnl Set the maximum warning verbosity according to compiler used.
@@ -701,7 +692,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.4 2003/05/24 14:30:21 lha Exp $
+dnl @version $Id: aclocal.m4,v 1.5 2003/05/27 14:45:53 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 

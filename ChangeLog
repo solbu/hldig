@@ -1,5 +1,14 @@
 Tue May 27 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
+	* db/configure, db/ac{local,include}.m4:
+	  Stop test for zlib from adding -I/default/path (*this* time...)
+
+	* htword/DBPage.h: Fix bug introduce in previous patch
+
+	* test/Makefile.{in,am}: Replace non-portable  make -C X  by  cd X; make
+
+Tue May 27 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
 	* {,db/}configure, {,db/}ac{local,include}.m4:
 	  Stop test for zlib from adding -I/default/path (broke SunOS cc)
 	  Fix -Wall test if CCC is g++ but CC is not gcc

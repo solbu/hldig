@@ -226,6 +226,7 @@ extern "C" int gethostname(char *, int);],
 
 dnl We're still using the C++ compiler for this test
 AC_MSG_CHECKING(how to call getpeername?)
+dnl  sock_t=void  will never pass -- Can't declare "void s".  Can we kill it?
 for sock_t in 'struct sockaddr' 'void'; do
   for getpeername_length_t in 'size_t' 'int' 'unsigned int' 'long unsigned int' 'socklen_t'
   do

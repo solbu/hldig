@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.h,v 1.5 2003/05/27 12:51:27 lha Exp $
+// $Id: WordDBPage.h,v 1.6 2003/05/27 14:45:54 lha Exp $
 //
 //
 // Access to Berkeley DB internal
@@ -264,7 +264,7 @@ class WordDBPage
 	if(empty)
 	{
 	    if(verbose){printf("WordDBPage::insert_btikey: empty : BINTERNAL:%d datapos:%d keylen:%d size:%d alligned to:%d\n",(int)sizeof(BINTERNAL),
-			       (int)((byte *)&(bti.data))-((byte *)&bti),
+			       (int)(((byte *)&(bti.data))-((byte *)&bti)),
 			       keylen,size,WORD_ALIGN_TO(size,4));}
 	}
 
