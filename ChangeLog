@@ -1,3 +1,14 @@
+Fri Jun 25 17:58:44 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Transport.h: Fix virtual methods for Transport_Response to
+	have defaults.
+
+	* htdig/HtHTTP.h: Fix class declaration of HtHTTP class to prevent
+	syntax error. Pointed out by Gabriele.
+
+	* htdig/Transport.cc: Add (empty) ctor and dtor functions for
+	Transport_Response.
+
 Thu Jun 24 22:28:44 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc (main): Add support for form inputs

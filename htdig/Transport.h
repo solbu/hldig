@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.1 1999/06/23 02:51:23 ghutchis Exp $
+// $Id: Transport.h,v 1.2 1999/06/25 21:17:35 ghutchis Exp $
 //
 //
 
@@ -38,13 +38,13 @@ class Transport_Response : public Object
   virtual ~Transport_Response();
 
   // Get the Content type
-  virtual String GetContentType();
+  virtual String GetContentType() = 0;
 
   // Get the Content length
   virtual int GetContentLength() const = 0;
 
   // Get the contents
-  virtual String GetContents();
+  virtual String GetContents() = 0;
 
   // Get the modification time object pointer
   virtual HtDateTime *GetModificationTime() const = 0;

@@ -12,11 +12,17 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.1 1999/06/23 02:51:23 ghutchis Exp $
+// $Id: Transport.cc,v 1.2 1999/06/25 21:17:35 ghutchis Exp $
 //
 //
 
 #include "Transport.h"
+
+Transport_Response::Transport_Response()
+{ }
+
+Transport_Response::~Transport_Response()
+{ }
 
 Transport::Transport()
 {
