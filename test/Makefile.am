@@ -15,7 +15,7 @@ include $(top_srcdir)/Makefile.config
 # ( cd ../htsearch ; rm -f htsearch ; make CXXLD='purify g++' htsearch )
 # ( cd ../htdig ; rm -f htdig ; make CXXLD='purify g++' htdig )
 #
-TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist # t_htnet
+TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist t_htnet
 TESTS_ENVIRONMENT = $(top_srcdir)/test/test_prepare
 AM_MAKEFLAGS = MAKE="$(MAKE)"
 

@@ -1,0 +1,18 @@
+#
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
+#
+# $Id: t_htnet,v 1.1 1999/10/06 07:32:46 angus Exp $
+#
+
+. test_functions
+
+verbose = $1
+
+./testnet -U http://localhost:7400/set3/nph-hang.cgi $verbose
+
+[ $? != 5 ] && exit 1
+
