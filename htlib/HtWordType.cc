@@ -3,7 +3,7 @@
 // functions and other common functions without having to manage
 // the attributes or the exact attribute combination semantics.
 //
-// $Id: HtWordType.cc,v 1.1.2.3 1999/12/03 17:15:29 grdetil Exp $
+// $Id: HtWordType.cc,v 1.1.2.4 1999/12/03 17:44:16 grdetil Exp $
 //
 
 #include "HtWordType.h"
@@ -42,7 +42,7 @@ HtWordType::Initialize(Configuration &config)
 //  much like strtok(), and destructive of the source string like strtok(),
 //  but does word separation by our rules.
 char *
-HtWordType::get_wordtoken(char *str)
+HtWordToken(char *str)
 {
     unsigned char		*text = (unsigned char *)str;
     char			*ret = 0;

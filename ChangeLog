@@ -1,3 +1,7 @@
+Fri Dec  3 11:21:51 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/HtWordType.h, htlib/HtWordType.cc: fix compilation errors.
+
 Fri Dec  3 10:52:57 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc(parse, do_tag): Add handling of <img alt=...> text,
