@@ -1,3 +1,27 @@
+Tue Feb 15 23:16:14 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htnet/HtHTTP.cc (isParsable): Remove application/pdf as a
+	default type--it is now handled through the ExternalParser
+	interface if at all.
+
+	* htcommon/defaults.cc: Remove pdf_parser attribute.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerate using cf_generate.pl.
+
+	* htdig/Document.cc (getParsable): Remove PDF once and for all
+	(hopefully).
+
+	* htdig/ExternalParser.cc (parse): Ditto.
+
+	* configure.in: Remove check for PDF_PARSER.
+
+	* configure: Regenerate using autoconf
+
+	* htdig/Makefile.am: Remove PDF.cc and PDF.h.
+
+	* Makefile.in, */Makefile.in: Regenerate using automake --foreign
+
 Tue Feb 15 12:02:39 EET 2000  Vadim Chekan  <vadim@etc.lviv.ua>
 
 	* htcommon/HtConfiguration.cc,HtConfiguration.h: fixed bug discovered
@@ -211,7 +235,6 @@ Fri Feb 04 17:28:32 2000  Loic Dachary  <loic@ceic.com>
 	* htword/WordKey.cc,WordReference.cc,WordRecord.cc (Print): use
 	  cerr instead of cout for immediate printing under debugger.
 
->>>>>>> 1.469.2.167
 Thu Feb  3 16:06:45 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Document.cc (RetrieveLocal): fix bug that prevented local
