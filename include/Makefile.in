@@ -152,6 +152,7 @@ build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
 exec_prefix = @exec_prefix@
+extra_ldflags = @extra_ldflags@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -193,7 +194,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htlib/libht.la
 
 
-EXTRA_DIST = htconfig.h.in stamp-h.in
+EXTRA_DIST = config.h.in stamp-h.in
 
 pkginclude_HEADERS = htconfig.h
 subdir = include

@@ -152,6 +152,7 @@ build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
 exec_prefix = @exec_prefix@
+extra_ldflags = @extra_ldflags@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -200,7 +201,7 @@ libhtnet_la_SOURCES = Connection.cc Transport.cc HtHTTP.cc HtFile.cc \
 	HtCookieInFileJar.cc HtHTTPBasic.cc HtHTTPSecure.cc SSLConnection.cc
 
 
-libhtnet_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
+libhtnet_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION) ${extra_ldflags}
 
 pkginclude_HEADERS = \
 	Connection.h \

@@ -152,6 +152,7 @@ build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
 exec_prefix = @exec_prefix@
+extra_ldflags = @extra_ldflags@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -206,7 +207,7 @@ noinst_HEADERS = Document.h ExternalParser.h HTML.h \
 	ExternalTransport.h
 
 htdig_DEPENDENCIES = $(HTLIBS)
-htdig_LDFLAGS = $(PROFILING)
+htdig_LDFLAGS = $(PROFILING) ${extra_ldflags}
 htdig_LDADD = $(HTLIBS)
 subdir = htdig
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4

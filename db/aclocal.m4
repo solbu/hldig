@@ -641,7 +641,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.9 2003/08/26 02:33:01 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.10 2003/08/28 03:07:57 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 AC_DEFUN(CHECK_ZLIB,
@@ -699,7 +699,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.9 2003/08/26 02:33:01 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.10 2003/08/28 03:07:57 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 

@@ -153,6 +153,7 @@ build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
 exec_prefix = @exec_prefix@
+extra_ldflags = @extra_ldflags@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -213,7 +214,7 @@ noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h \
 	VolatileCache.h
 
 htsearch_DEPENDENCIES = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
-htsearch_LDFLAGS = $(PROFILING)
+htsearch_LDFLAGS = $(PROFILING) ${extra_ldflags}
 htsearch_LDADD = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
 
 qtest_SOURCES = DocMatch.cc ResultList.cc AndQuery.cc \
@@ -224,7 +225,7 @@ qtest_SOURCES = DocMatch.cc ResultList.cc AndQuery.cc \
 	WordSearcher.cc qtest.cc
 
 qtest_DEPENDENCIES = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
-qtest_LDFLAGS = $(PROFILING)
+qtest_LDFLAGS = $(PROFILING) ${extra_ldflags}
 qtest_LDADD = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
 subdir = htsearch
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4

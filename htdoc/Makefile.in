@@ -152,6 +152,7 @@ build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
 exec_prefix = @exec_prefix@
+extra_ldflags = @extra_ldflags@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -392,13 +393,13 @@ uninstall-am: uninstall-info-am
 
 
 attrs.html: attrs_head.html attrs_tail.html ../htcommon/defaults.cc cf_generate.pl
-	@PERL@ cf_generate.pl
+	@PERL@ ${srcdir}/cf_generate.pl ${top_srcdir}
 
 cf_byname.html: cf_byname_head.html cf_byname_tail.html ../htcommon/defaults.cc cf_generate.pl
-	@PERL@ cf_generate.pl
+	@PERL@ ${srcdir}/cf_generate.pl ${top_srcdir}
 
 cf_byprog.html: cf_byprog_head.html cf_byprog_tail.html ../htcommon/defaults.cc cf_generate.pl
-	@PERL@ cf_generate.pl
+	@PERL@ ${srcdir}/cf_generate.pl ${top_srcdir}
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

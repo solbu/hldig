@@ -152,6 +152,7 @@ build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
 exec_prefix = @exec_prefix@
+extra_ldflags = @extra_ldflags@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -214,7 +215,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 libht_la_LIBADD = @LTLIBOBJS@
 
 # this includes regex.c
-libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
+libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION) ${extra_ldflags}
 
 pkginclude_HEADERS = \
 	clib.h \
@@ -300,8 +301,8 @@ DIST_SOURCES = $(libht_la_SOURCES)
 HEADERS = $(pkginclude_HEADERS)
 
 DIST_COMMON = $(pkginclude_HEADERS) $(top_srcdir)/Makefile.config \
-	Makefile.am Makefile.in error.c error.h lstat.c malloc.c \
-	memcmp.c realloc.c regex.c snprintf.c stat.c vsnprintf.c
+	Makefile.am Makefile.in malloc.c memcmp.c realloc.c regex.c \
+	snprintf.c vsnprintf.c
 SOURCES = $(libht_la_SOURCES)
 
 all: all-am

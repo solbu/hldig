@@ -99,10 +99,6 @@
 /* Define to 1 if you have the `localtime_r' function. */
 #undef HAVE_LOCALTIME_R
 
-/* Define to 1 if `lstat' has the bug that it succeeds when given the
-   zero-length file name argument. */
-#undef HAVE_LSTAT_EMPTY_STRING_BUG
-
 /* Define to 1 if your system has a GNU libc compatible `malloc' function, and
    to 0 otherwise. */
 #undef HAVE_MALLOC
@@ -176,10 +172,6 @@
 
 /* Define to 1 if you have the <ssl.h> header file. */
 #undef HAVE_SSL_H
-
-/* Define to 1 if `stat' has the bug that it succeeds when given the
-   zero-length file name argument. */
-#undef HAVE_STAT_EMPTY_STRING_BUG
 
 /* define if the compiler supports ISO C++ standard library */
 #undef HAVE_STD
@@ -308,10 +300,6 @@
 
 /* Define to the syslog level for htsearch logging */
 #undef LOG_LEVEL
-
-/* Define to 1 if `lstat' dereferences a symlink specified with a trailing
-   slash. */
-#undef LSTAT_FOLLOWS_SLASHED_SYMLINK
 
 /* Define if you need a prototype for gethostname() */
 #undef NEED_PROTO_GETHOSTNAME

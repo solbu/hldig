@@ -158,6 +158,7 @@ build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
 exec_prefix = @exec_prefix@
+extra_ldflags = @extra_ldflags@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -203,7 +204,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 
 SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include htdoc $(TESTDIR)
 
-EXTRA_DIST = .version acconfig.h Makefile.config ChangeLog.0 contrib
+EXTRA_DIST = .version Makefile.config ChangeLog.0 contrib
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

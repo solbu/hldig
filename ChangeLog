@@ -1,15 +1,24 @@
+Thu Aug 28 12:41:22 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * global: updated with 'autoreconf -if' (autoconf 2.57, libtool 1.5.0a and
+      automake 1.7.6)
+    * 'make check' successful on: AMD64 Linux 2.4, Alpha Linux 2.2,
+      RedHat Linux 7.3 (2.4), SPARC Ultra60 Linux 2.4,
+      Sparc R220 Sun Solaris (5.8).
+    * README.developer: added further info
+
 Thu Aug 28 12:00:10 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * db/[config.guess,config.sub,install-sh,ltmain.sh,missing]: added in the
-    database directory (this way 'make dist' goes on); I have not been able to
-    tell the db/configure script to get the 'top_srcdir' ones (which should be
-    the default behaviour). Maybe in the future we'll look for this.
+      database directory (this way 'make dist' goes on); I have not been able to
+      tell the db/configure script to get the 'top_srcdir' ones (which should be
+      the default behaviour). Maybe in the future we'll look for this.
 
 Thu Aug 28 11:53:48 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * db/configure.in: changed AC_PROG_INSTALL() to AC_PROG_INSTALL and removed
-    AC_CONFIG_AUX_DIR; this implies that autotools copies will be made for the
-    db directory as well.
+      AC_CONFIG_AUX_DIR; this implies that autotools copies will be made for the
+      db directory as well.
 
 Thu Aug 28 11:36:42 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
@@ -23,9 +32,9 @@ Thu Aug 28 11:30:39 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 Thu Aug 28 11:25:07 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * configure.in: removed portability checks for error, stat and lstat that
-     caused a compile errors on Solaris. Added the '-mimpure-text'
-     extra ld flag for GCC on solaris systems (a linkage error occurs
-     when libstdc++ is not shared)
+      caused a compile errors on Solaris. Added the '-mimpure-text'
+      extra ld flag for GCC on solaris systems (a linkage error occurs
+      when libstdc++ is not shared)
 
 Thu Aug 28 11:22:57 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
@@ -34,29 +43,29 @@ Thu Aug 28 11:22:57 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 Thu Aug 28 11:16:19 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htlib/error.[h,c]: removed for now, until replacement functions will be
-    correctly performed.
+      correctly performed.
 
 Thu Aug 28 11:11:32 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htdoc/cf_generate.pl: fixed an error when opening tail and head files
     * Makefile.am: enabled rebuild from a different directory (it is used
-    my 'make dist')
+      my 'make dist')
 
 Thu Aug 28 10:46:35 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htlib/malloc.c: modified according to autoconf specifications as far
-    as replacement functions are regarded
+      as replacement functions are regarded
     * htlib/[lstat, stat].c: removed for now
 
 Thu Aug 28 10:40:58 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htdoc/cf_generate.pl: accept an optional parameter (top source directory)
     * htcommon/defaults.cc: fixed some broken lines which prevented
-     cf_generate.pl from correctly working
+      cf_generate.pl from correctly working
     * htdoc/Makefile.am: modified the automake file for passing the top
-     source directory to cf_generate.pl
+      source directory to cf_generate.pl
     * htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
-     Regenerated using cf_generate.pl.
+      Regenerated using cf_generate.pl.
 
 Tue Aug 26 12:25:40 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
@@ -83,7 +92,7 @@ Sun Aug 24 12:39:34 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 Mon Jul 21 20:54:47 CEST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
    * htlib/(malloc|error|lstat|stat|realloc).c: added for cross-compiling
-   reasons (as suggested by automake)
+     reasons (as suggested by automake)
    * htlib/error.h: ditto
    * db/acconfig.h: removed as suggested by autotools' new versions
    * configure.in: removed AC_PROG_RANLIB (overriden by AC_PROG_LIBTOOL)

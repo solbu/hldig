@@ -465,7 +465,7 @@ ac_includes_default="\
 #endif"
 
 ac_subdirs_all="$ac_subdirs_all db"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS HTDIG_MAJOR_VERSION HTDIG_MINOR_VERSION HTDIG_MICRO_VERSION INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE am__leading_dot MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT CONFIG_DIR DEFAULT_CONFIG_FILE COMMON_DIR DATABASE_DIR CGIBIN_DIR SEARCH_DIR SEARCH_FORM IMAGE_DIR IMAGE_URL_PREFIX TESTS_TRUE TESTS_FALSE CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CC CFLAGS ac_ct_CC CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP EGREP LEX LEXLIB LEX_OUTPUT_ROOT YACC LN_S build build_cpu build_vendor build_os host host_cpu host_vendor host_os ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL SED PERL FIND GUNZIP RRDTOOL TAR MV SENDMAIL TIME TIMEV HAVE_SSL ALLOCA LIBOBJS USER APACHE APACHE_MODULES subdirs LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS HTDIG_MAJOR_VERSION HTDIG_MINOR_VERSION HTDIG_MICRO_VERSION INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE am__leading_dot MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT CONFIG_DIR DEFAULT_CONFIG_FILE COMMON_DIR DATABASE_DIR CGIBIN_DIR SEARCH_DIR SEARCH_FORM IMAGE_DIR IMAGE_URL_PREFIX TESTS_TRUE TESTS_FALSE CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CC CFLAGS ac_ct_CC CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP EGREP LEX LEXLIB LEX_OUTPUT_ROOT YACC LN_S build build_cpu build_vendor build_os host host_cpu host_vendor host_os ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL SED PERL FIND GUNZIP RRDTOOL TAR MV SENDMAIL TIME TIMEV HAVE_SSL ALLOCA LIBOBJS extra_ldflags USER APACHE APACHE_MODULES subdirs LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -24149,263 +24149,9 @@ _ACEOF
 
 fi
 
-echo "$as_me:$LINENO: checking for error_at_line" >&5
-echo $ECHO_N "checking for error_at_line... $ECHO_C" >&6
-if test "${ac_cv_lib_error_at_line+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-int
-main ()
-{
-error_at_line (0, 0, "", 0, "");
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_error_at_line=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_lib_error_at_line=no
-fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_error_at_line" >&5
-echo "${ECHO_T}$ac_cv_lib_error_at_line" >&6
-if test $ac_cv_lib_error_at_line = no; then
-  LIBOBJS="$LIBOBJS error.$ac_objext"
-fi
-
-echo "$as_me:$LINENO: checking whether lstat dereferences a symlink specified with a trailing slash" >&5
-echo $ECHO_N "checking whether lstat dereferences a symlink specified with a trailing slash... $ECHO_C" >&6
-if test "${ac_cv_func_lstat_dereferences_slashed_symlink+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  rm -f conftest.sym conftest.file
-echo >conftest.file
-if test "$as_ln_s" = "ln -s" && ln -s conftest.file conftest.sym; then
-  if test "$cross_compiling" = yes; then
-  ac_cv_func_lstat_dereferences_slashed_symlink=no
-else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-struct stat sbuf;
-     /* Linux will dereference the symlink and fail.
-        That is better in the sense that it means we will not
-        have to compile and use the lstat wrapper.  */
-     exit (lstat ("conftest.sym/", &sbuf) ? 0 : 1);
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_func_lstat_dereferences_slashed_symlink=yes
-else
-  echo "$as_me: program exited with status $ac_status" >&5
-echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-( exit $ac_status )
-ac_cv_func_lstat_dereferences_slashed_symlink=no
-fi
-rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
-fi
-else
-  # If the `ln -s' command failed, then we probably don't even
-  # have an lstat function.
-  ac_cv_func_lstat_dereferences_slashed_symlink=no
-fi
-rm -f conftest.sym conftest.file
-
-fi
-echo "$as_me:$LINENO: result: $ac_cv_func_lstat_dereferences_slashed_symlink" >&5
-echo "${ECHO_T}$ac_cv_func_lstat_dereferences_slashed_symlink" >&6
-
-test $ac_cv_func_lstat_dereferences_slashed_symlink = yes &&
-
-cat >>confdefs.h <<_ACEOF
-#define LSTAT_FOLLOWS_SLASHED_SYMLINK 1
-_ACEOF
-
-
-if test $ac_cv_func_lstat_dereferences_slashed_symlink = no; then
-  LIBOBJS="$LIBOBJS lstat.$ac_objext"
-fi
-
-echo "$as_me:$LINENO: checking whether lstat accepts an empty string" >&5
-echo $ECHO_N "checking whether lstat accepts an empty string... $ECHO_C" >&6
-if test "${ac_cv_func_lstat_empty_string_bug+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  if test "$cross_compiling" = yes; then
-  ac_cv_func_lstat_empty_string_bug=yes
-else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-struct stat sbuf;
-  exit (lstat ("", &sbuf) ? 1 : 0);
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_func_lstat_empty_string_bug=yes
-else
-  echo "$as_me: program exited with status $ac_status" >&5
-echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-( exit $ac_status )
-ac_cv_func_lstat_empty_string_bug=no
-fi
-rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
-fi
-fi
-echo "$as_me:$LINENO: result: $ac_cv_func_lstat_empty_string_bug" >&5
-echo "${ECHO_T}$ac_cv_func_lstat_empty_string_bug" >&6
-if test $ac_cv_func_lstat_empty_string_bug = yes; then
-  LIBOBJS="$LIBOBJS lstat.$ac_objext"
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE_LSTAT_EMPTY_STRING_BUG 1
-_ACEOF
-
-fi
-
-echo "$as_me:$LINENO: checking whether lstat dereferences a symlink specified with a trailing slash" >&5
-echo $ECHO_N "checking whether lstat dereferences a symlink specified with a trailing slash... $ECHO_C" >&6
-if test "${ac_cv_func_lstat_dereferences_slashed_symlink+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  rm -f conftest.sym conftest.file
-echo >conftest.file
-if test "$as_ln_s" = "ln -s" && ln -s conftest.file conftest.sym; then
-  if test "$cross_compiling" = yes; then
-  ac_cv_func_lstat_dereferences_slashed_symlink=no
-else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-struct stat sbuf;
-     /* Linux will dereference the symlink and fail.
-        That is better in the sense that it means we will not
-        have to compile and use the lstat wrapper.  */
-     exit (lstat ("conftest.sym/", &sbuf) ? 0 : 1);
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_func_lstat_dereferences_slashed_symlink=yes
-else
-  echo "$as_me: program exited with status $ac_status" >&5
-echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-( exit $ac_status )
-ac_cv_func_lstat_dereferences_slashed_symlink=no
-fi
-rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
-fi
-else
-  # If the `ln -s' command failed, then we probably don't even
-  # have an lstat function.
-  ac_cv_func_lstat_dereferences_slashed_symlink=no
-fi
-rm -f conftest.sym conftest.file
-
-fi
-echo "$as_me:$LINENO: result: $ac_cv_func_lstat_dereferences_slashed_symlink" >&5
-echo "${ECHO_T}$ac_cv_func_lstat_dereferences_slashed_symlink" >&6
-
-test $ac_cv_func_lstat_dereferences_slashed_symlink = yes &&
-
-cat >>confdefs.h <<_ACEOF
-#define LSTAT_FOLLOWS_SLASHED_SYMLINK 1
-_ACEOF
-
-
-if test $ac_cv_func_lstat_dereferences_slashed_symlink = no; then
-  LIBOBJS="$LIBOBJS lstat.$ac_objext"
-fi
-
+#AC_FUNC_ERROR_AT_LINE
+#AC_FUNC_LSTAT
+#AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 
 for ac_header in stdlib.h
 do
@@ -25656,65 +25402,7 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-echo "$as_me:$LINENO: checking whether stat accepts an empty string" >&5
-echo $ECHO_N "checking whether stat accepts an empty string... $ECHO_C" >&6
-if test "${ac_cv_func_stat_empty_string_bug+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  if test "$cross_compiling" = yes; then
-  ac_cv_func_stat_empty_string_bug=yes
-else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-struct stat sbuf;
-  exit (stat ("", &sbuf) ? 1 : 0);
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_func_stat_empty_string_bug=yes
-else
-  echo "$as_me: program exited with status $ac_status" >&5
-echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-( exit $ac_status )
-ac_cv_func_stat_empty_string_bug=no
-fi
-rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
-fi
-fi
-echo "$as_me:$LINENO: result: $ac_cv_func_stat_empty_string_bug" >&5
-echo "${ECHO_T}$ac_cv_func_stat_empty_string_bug" >&6
-if test $ac_cv_func_stat_empty_string_bug = yes; then
-  LIBOBJS="$LIBOBJS stat.$ac_objext"
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE_STAT_EMPTY_STRING_BUG 1
-_ACEOF
-
-fi
-
+#AC_FUNC_STAT
 
 for ac_func in strftime
 do
@@ -26921,6 +26609,15 @@ _ACEOF
 	esac
 fi
 
+# Add the -mimpure-text option on Solaris with GCC and libstc++ that is not shared
+if test "$GXX" = "yes"
+then
+  case "$host" in
+    *-sun-solaris* ) extra_ldflags="-mimpure-text";;
+  esac
+fi
+
+
 # Define to the syslog level for htsearch logging
 
 cat >>confdefs.h <<\_ACEOF
@@ -27889,6 +27586,7 @@ s,@TIMEV@,$TIMEV,;t t
 s,@HAVE_SSL@,$HAVE_SSL,;t t
 s,@ALLOCA@,$ALLOCA,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
+s,@extra_ldflags@,$extra_ldflags,;t t
 s,@USER@,$USER,;t t
 s,@APACHE@,$APACHE,;t t
 s,@APACHE_MODULES@,$APACHE_MODULES,;t t
