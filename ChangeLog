@@ -1,3 +1,31 @@
+Fri Dec  4 19:21:17 1998  Didier Gautheron <dgautheron@magic.fr>
+
+	* htdig/HTML.cc: Fix parser bug with &lt; becoming a tag.
+
+	* htlib/Dictionary.cc: Added check for empty dictionaries.
+
+	* htlib/URL.cc: Allow server_alias to work under virtual hosts.
+
+	* htmerge/htmerge.cc: Remove previous db.words.db file before
+	doing a word merging. Fixes bug with deleted documents keeping
+	entries.
+
+	* htdig/main.cc, htdig/Retriever.h, htdig/Retriever.cc: Added
+	parameter to Initial function to prevent URLs from being checked
+	twice during an update dig.
+
+	* htcommon/WordList.cc, htmerge/words.cc: Don't store c:1 and a:0
+	entries in db.wordlist to save space.
+
+Fri Dec  4 19:08:28 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in, Makefile.in, Makefile.config.in: Remove DB_DIR and
+	RX_DIR.
+
+	* configure: Regenerated for configure.in changes.
+
+	* htsearch/htsearch.cc: Added usage message for the command line.
+
 Fri Dec  4 21:21:00 1998  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
 	* configure.in: Check if the third argument of getpeername is a
