@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: parser.cc,v 1.31 2003/11/01 11:11:45 lha Exp $
+// $Id: parser.cc,v 1.32 2003/11/07 13:10:10 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -891,7 +891,7 @@ Parser::parse(List *tokenList, ResultList &resultMatches)
 	{
 	    dm->collection = collection; // back reference
 	    if (dm->orMatches > 1)
-		dm->score *= multimatch_factor;
+		dm->score *= 1+multimatch_factor;
 	    resultMatches.add(dm);
 	}
     }

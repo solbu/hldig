@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.99 2003/10/26 10:12:30 lha Exp $
+// $Id: defaults.cc,v 1.100 2003/11/07 13:10:10 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -174,7 +174,7 @@ ConfigDefaults	defaults[] =
 	be sure to protect it so it is readable only by you, and do not \
 	use that same configuration file for htsearch. \
 " }, \
-{ "backlink_factor", "1000",  \
+{ "backlink_factor", "0.1",  \
 	"number", "htsearch", "", "3.1.0", "Searching:Ranking", "backlink_factor: 501.1", " \
 	This is a weight of \"how important\" a page is, based on \
 	the number of URLs pointing to it. It's actually \

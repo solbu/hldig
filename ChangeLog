@@ -1,3 +1,9 @@
+Sat Nov 8 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htcommon/default.cc, htsearch/parser.cc:  Fix bug #825877
+      Reduce  backlink_factor  to comparable with other factors, and
+      interpret  multimatch_factor  as the *bonus* given for multiple matches.
+
 Sat Nov 1 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htsearch/parser.cc: Fix bug #806419. Ignore bad words at start of phrase.
