@@ -1,3 +1,9 @@
+Tue Oct 12 10:12:10 1999  Loic Dachary  <loic@ceic.com>
+
+	* install headers and libraries so that htdig libraries may be used by external programs
+
+	* htword/WordList.cc,WordType.cc: add comments about config parameters used.
+
 Fri Oct  8 09:35:30 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtDateTime.cc (SetFTime): Change buffer argument to const

@@ -1,11 +1,11 @@
-all clean:
+all clean install:
 	cd dist ; if [ -f Makefile ] ; then $(MAKE) $@ ; fi
 
 distclean:
 	rm -f Makefile
 	cd dist ; if [ -f Makefile ] ; then $(MAKE) $@ ; fi
 
-dvi dist install installcheck check:
+dvi dist installcheck check:
 
 distdir: distclean
 	find * \( ! -name '*~' -a ! -name '.#*' -a ! -name '#*#' -a ! -name core \) -print | egrep -v 'CVS|RCS' | cpio -pdm $(distdir)

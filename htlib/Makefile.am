@@ -14,7 +14,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS = \
+include_HEADERS = \
 	Configuration.h \
 	DB2_db.h \
 	Database.h \

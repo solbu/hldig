@@ -7,6 +7,9 @@
 //           NOTE: Some code previously attempted to directly read from 
 //           the word db. This will no longer work, so it's preferred to 
 //           use the access methods here.
+//	     Configuration parameter used:
+//           wordlist_extend
+//           
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -14,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6 1999/10/05 16:48:03 loic Exp $
+// $Id: WordList.cc,v 1.7 1999/10/12 08:07:28 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H

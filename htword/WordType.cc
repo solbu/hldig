@@ -2,8 +2,11 @@
 // WordType.cc
 //
 // WordType:  Wrap some attributes to make is...() type
-//              functions and other common functions without having to manage
-//              the attributes or the exact attribute combination semantics.
+//            functions and other common functions without having to manage
+//            the attributes or the exact attribute combination semantics.
+//	      Configuration parameter used:
+//            valid_punctuation,extra_word_characters,minimum_word_length,
+//            maximum_word_length,allow_numbers,bad_word_list
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -11,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.cc,v 1.3 1999/10/08 12:59:58 loic Exp $
+// $Id: WordType.cc,v 1.4 1999/10/12 08:07:28 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
