@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.51 1999/02/02 20:13:58 bergolth Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.52 1999/02/03 13:39:18 bergolth Exp $";
 #endif
 
 #include "htsearch.h"
@@ -506,11 +506,11 @@ Display::setVariables(int pageNumber, List *matches)
     String* key;
     for (i= 0; i < form_vars.Count(); i++)
     {
-      if (input->exists(form_vars[i]))
+      if (config[form_vars[i]])
       {
 	key= new String(form_vars[i]);
 	key->uppercase();
-	vars.Add(key->get(), new String(input->get(form_vars[i])));
+	vars.Add(key->get(), new String(config[form_vars[i]]));
       }
     }
 }
