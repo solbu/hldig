@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.7 1999/12/04 13:59:50 vadim Exp $
+// $Id: Document.cc,v 1.55.2.8 1999/12/04 14:11:12 vadim Exp $
 //
 
 #include <signal.h>
@@ -81,13 +81,6 @@ Document::Document(char *u, int max_size)
    HtHTTP::SetModificationTimeIsNow(config.Boolean("modification_time_is_now"));
    HtHTTP::SetParsingController(ExternalParser::canParse);
 
-    const String proxyURL = config["http_proxy"];
-    if (proxyURL[0])
-    {
-	proxy = new URL(proxyURL);
-	proxy->normalize();
-    }
-
     contents.allocate(max_doc_size + 100);
     contentType = "";
     contentLength = -1;
@@ -140,6 +133,10 @@ Document::Reset()
       delete referer;
 
     referer = 0;
+    if (proxy) {
+      delete proxy;
+      proxy=0;
+    }
 
     contents = 0;
     document_length = 0;
@@ -160,6 +157,13 @@ Document::Url(char *u)
     if (url)
       delete url;
     url = new URL(u);
+
+    const String proxyURL = config.Find(url,"http_proxy");
+    if (proxyURL[0])
+    {
+	proxy = new URL(proxyURL);
+	proxy->normalize();
+    }
 }
 
 
