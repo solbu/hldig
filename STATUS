@@ -8,6 +8,10 @@ RELEASES:
 SHOWSTOPPERS:
 * Odd behavior with $(MODIFIED) and scores not working with
    wordlist_compress set but work fine without wordlist_compress.
+   (the date is definitely stored correctly, even with compression on
+    so this must be some sort of weird htsearch bug)
+* Order of htdig retrieval is not a level-order traversal by hopcount
+  -> Something is amiss in the heap or in the comparisons.
 
 KNOWN BUGS:
 * URL.cc tries to parse malformed URLs (which causes further problems)
@@ -17,7 +21,10 @@ KNOWN BUGS:
 * If exact isn't specified in the search_algorithms, $(WORDS) is not set 
    correctly: PR#650. (The documentation for 3.2.0b1 is updated, but can
    we fix this?)
-* db.words_weakcmpr database is created w/o world-read
+* META descriptions are somehow added to the database as FLAG_TITLE,
+   not FLAG_DESCRIPTION. (PR#859)
+* htload doesn't load word database
+* htload may not work if databases don't exist
 
 PENDING FEATURES:
 * Forward-Porting of NNTP code.

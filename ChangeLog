@@ -1,3 +1,12 @@
+Sun Jun 11 14:39:28 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc (generateStars): Fix problem when maxScore
+	== minScore as reported by Rajendra. Fixed problem PR#858.
+	(displayMatch): Ditto.
+
+	* htsearch/htsearch.cc: Fix memory corruption problem in reporting
+	syntax errors pointed out by Rajendra. Fixes PR#860.
+
 Thu Jun  8 09:31:15 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htfuzzy/Accents.h, htfuzzy/Accents.cc: Apply Robert Marchand's
