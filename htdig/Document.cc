@@ -4,6 +4,9 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.6  1997/07/07 21:22:14  turtle
+// Added better date parsing.  Now also supports the old RFC 850 format
+//
 // Revision 1.5  1997/07/03 17:44:37  turtle
 // Added support for virtual hosts
 //
@@ -22,7 +25,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.5 1997/07/03 17:44:37 turtle Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.6 1997/07/07 21:22:14 turtle Exp $";
 #endif
 
 #include <signal.h>
@@ -202,7 +205,17 @@ Document::getdate(char *datestring)
     tm->tm_zone = "GMT";
     tm->tm_gmtoff = 0;
 #endif
-    mystrptime(d.get(), "%a, %d %b %Y %T", tm);
+    
+    //
+    // Two possible time designations:
+    //      Tuesday, 01-Jul-97 16:48:02 GMT
+    // or
+    //      Thu, 01 May 1997 00:40:42 GMT
+    //
+    if (d.indexOf(',') > 3)
+	mystrptime(d.get(), "%a, %d-%b-%y %T", tm);
+    else
+	mystrptime(d.get(), "%a, %d %b %Y %T", tm);
 
     if (tm->tm_year < 0)
 	tm->tm_year += 1900;
