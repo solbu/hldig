@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: dbbench.cc,v 1.7.2.2 1999/12/16 11:10:58 loic Exp $
+// $Id: dbbench.cc,v 1.7.2.3 1999/12/16 11:38:49 loic Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
@@ -45,9 +45,9 @@ char *alloca ();
 # endif
 #endif
 
-#ifdef HAVE_ZLIB
+#ifdef HAVE_LIBZ
 #include <zlib.h>
-#endif /* HAVE_ZLIB */
+#endif /* HAVE_LIBZ */
 #include <htString.h>
 #include <db.h>
 
@@ -71,9 +71,9 @@ typedef struct {
 } params_t;
 
 static void dobench(params_t* params);
-#ifdef HAVE_ZLIB
+#ifdef HAVE_LIBZ
 static void docompress(params_t* params);
-#endif /* HAVE_ZLIB */
+#endif /* HAVE_LIBZ */
 static int verbose;
 
 void usage();
@@ -172,12 +172,12 @@ int main(int ac, char **av)
     }
 
   if(params.compress_test) {
-#ifdef HAVE_ZLIB
+#ifdef HAVE_LIBZ
     docompress(&params);
-#else /* HAVE_ZLIB */
+#else /* HAVE_LIBZ */
     fprintf(stderr, "compiled without zlib, compression test not available\n");
     exit(1);
-#endif /* HAVE_ZLIB */
+#endif /* HAVE_LIBZ */
   } else {
     dobench(&params);
   }
