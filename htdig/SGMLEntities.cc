@@ -4,6 +4,9 @@
 // Implementation of SGMLEntities
 //
 // $Log: SGMLEntities.cc,v $
+// Revision 1.6  1999/01/07 03:22:03  ghutchis
+// Fix minor memory leaks.
+//
 // Revision 1.5  1998/08/03 16:50:35  ghutchis
 //
 // Fixed compiler warnings under -Wall
@@ -23,7 +26,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: SGMLEntities.cc,v 1.5 1998/08/03 16:50:35 ghutchis Exp $";
+static char RCSid[] = "$Id: SGMLEntities.cc,v 1.6 1999/01/07 03:22:03 ghutchis Exp $";
 #endif
 
 #include "SGMLEntities.h"
@@ -155,6 +158,7 @@ SGMLEntities::SGMLEntities()
 SGMLEntities::~SGMLEntities()
 {
     trans->Release();
+    delete trans;
 }
 
 
