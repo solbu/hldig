@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.11 1999/12/15 17:26:35 loic Exp $
+// $Id: WordList.cc,v 1.6.2.12 1999/12/15 18:00:30 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -454,7 +454,8 @@ static int delete_word(WordList *words, WordCursor &cursor, const WordReference 
 int WordList::WalkDelete(const WordReference& wordRef)
 {
   DeleteWordData data;
-  Walk(WordSearchDescription(wordRef.Key(),delete_word, &data));
+  WordSearchDescription description(wordRef.Key(),delete_word, &data);
+  Walk(description);
   return data.count;
 }
 
@@ -582,7 +583,8 @@ operator << (ostream &o,  WordList &list)
 
     WordKey empty;
     StreamOutData data(o);
-    list.Walk(WordSearchDescription(empty,wordlist_walk_callback_stream_out, (Object *)&data));
+    WordSearchDescription description(empty,wordlist_walk_callback_stream_out, (Object *)&data);
+    list.Walk(description);
     return o;
 }
 
