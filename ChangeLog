@@ -1,4 +1,8 @@
-Fri Mar 19 16:56:49 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Fri Mar 19 17:00:18 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc: Fix check of Content-type header in readHeader(),
+	correcting bug introduced Jan 10 (for PR#91), and check against
+	allowed external parsers.
 
 	* htdig/HTML.cc: More lenient comment parsing, allows extra dashes.
 
