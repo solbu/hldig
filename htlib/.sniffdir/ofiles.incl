@@ -2,7 +2,7 @@ OFILES = Configuration.o Connection.o Database.o \
 		Dictionary.o DB2_db.o \
 		IntObject.o List.o Object.o \
 		ParsedString.o Queue.o QuotedStringList.o \
-		SDSU.o Stack.o String.o \
+		Stack.o String.o \
 		StringList.o StringMatch.o String_fmt.o \
 		URL.o URLTrans.o cgi.o \
 		good_strtok.o io.o strcasecmp.o \
