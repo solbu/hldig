@@ -4,6 +4,10 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.25  1999/01/10 01:59:29  ghutchis
+// Don't capitalize headers--this creates problems with non-ASCII values, since
+// String::uppercase doesn't know how to capitalize them.
+//
 // Revision 1.24  1999/01/08 04:57:02  ghutchis
 // Corrected problems with parsing comments, as contributed by Marjolein Katsma
 // <webmaster@javawoman.com> and Gilles.
@@ -77,7 +81,7 @@
 // Initial CVS
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.24 1999/01/08 04:57:02 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.25 1999/01/10 01:59:29 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -329,11 +333,12 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    {
 		//
 		// Capitalize H1 and H2 blocks
-		//
-		if (in_heading > 1 && in_heading < 4)
-		{
-		    word.uppercase();
-		}
+		// (This is currently disabled until we can captialize
+	        // non-ASCII characters -GRH
+	        // if (in_heading > 1 && in_heading < 4)
+	        // {
+	        //   word.uppercase();
+	        // }
 
 		//
 		// Append the word to the head (excerpt)
