@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.78 2003/02/11 10:14:16 lha Exp $
+// $Id: defaults.cc,v 1.79 2003/02/23 09:24:30 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -395,6 +395,17 @@ http://www.htdig.org/", " \
 	<p> \
 	See also <a href=\"#mime_types\">mime_types</a>.\
 	</p> \
+" }, \
+{ "cookies_input_file", "",  \
+	"string", "htdig", "", "3.2.0b4", "Indexing:Connection", "cookies_input_file: ${common_dir}/cookies.txt", " \
+	Specifies the location of the file used for importing cookies \
+	for the crawl. These cookies will be preloaded into htdig's \
+	in-memory cookie jar, but aren't written back to the file. \
+	Cookies are specified according to Netscape's format \
+	(tab-separated fields). If this attribute is left blank, \
+	no cookie file will be read. \
+	For more information, see the sample cookies.txt file in the \
+	ht://Dig source distribution. \
 " }, \
 { "create_image_list", "false",  \
 	"boolean", "htdig", "", "all", "Extra Output", "create_image_list: yes", " \

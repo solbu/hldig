@@ -556,6 +556,27 @@ http://www.htdig.org/</example>
      </description>
    </attribute>
 
+   <attribute name="cookies_input_file" 
+              type="string" 
+              programs="htdig" 
+              version="3.2.0b4" 
+              category="Indexing:Connection" >
+     <default></default>
+     <example>${common_dir}/cookies.txt</example>
+     <description> 
+	Specifies the location of the file used for importing cookies
+	for the crawl. These cookies will be preloaded into htdig's
+	in-memory cookie jar, but aren't written back to the file.
+	Cookies are specified according to Netscape's format
+	(tab-separated fields). If this attribute is left blank,
+	no cookie file will be read.
+	<p> 
+	For more information, see the sample cookies.txt file in the
+	ht://Dig source distribution.
+	</p> 
+     </description>
+   </attribute>
+
    <attribute name="create_image_list" 
               type="boolean" 
               programs="htdig" 

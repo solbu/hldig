@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.28 2002/02/01 22:49:29 ghutchis Exp $
+// $Id: htdig.cc,v 1.29 2003/02/23 09:24:30 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -32,6 +32,7 @@
 ////////////////////////////
 #include "HtCookieJar.h"
 #include "HtCookieMemJar.h"
+#include "HtCookieInFileJar.h"
 #include "HtHTTP.h"
 ////////////////////////////
 
@@ -216,6 +217,33 @@ int main(int ac, char **av)
 	}
     }
     
+    // Imports the cookies file
+    const String CookiesInputFile = config->Find("cookies_input_file");
+    if (CookiesInputFile.length())
+    {
+	if (debug>0)
+	cout << "Importing Cookies input file "
+	    << CookiesInputFile << endl;
+	int result;
+	HtCookieInFileJar* cookie_file = new HtCookieInFileJar(CookiesInputFile, result);
+	if (cookie_file)
+	{
+	    if (!result)
+	    {
+		if (debug>0)
+		    cookie_file->ShowSummary();
+		delete _cookie_jar;	// Deletes previous cookie jar
+		_cookie_jar = (HtCookieJar*) cookie_file; // set the imported one
+		HtHTTP::SetCookieJar(_cookie_jar); // and set the new HTTP jar
+	    }
+	    else if (debug > 0)
+		cout << "Warning: Import failed! (" << CookiesInputFile << ")" << endl;
+	}
+	else
+	    reportError(form("Unable to load cookies file '%s' in memory",
+		CookiesInputFile.get()));
+    }
+
     //
     // If needed, we will create a list of every URL we come across.
     //

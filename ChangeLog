@@ -1,3 +1,11 @@
+Sun Feb 23 10:20:58 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htcommon/defaults.[cc,xml]: added the 'cookies_input_file'
+	  configuration attribute for pre-loading cookies in memory
+	* htdig/htdig.cc: added the feature above; the code automatically
+	  loads the cookies from the input file into the 'jar' that will be
+	  used during the crawl.
+
 Sun Feb 23 10:16:08 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* htnet/HtHTTP.h: removed the NULL pointer check before assigning a
