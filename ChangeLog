@@ -1,4 +1,7 @@
-Wed Sep  1 15:31:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:32:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.cc(ServerAlias): Fix server_alias entries so port defaults
+	to 80 if omitted.
 
 	* htlib/URL.cc(removeIndex): Fix the infamous problem with files
 	like left_index.html not getting indexed.  PR#543 & PR#585.

@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.18.2.2 1999/09/01 20:34:45 grdetil Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.18.2.3 1999/09/01 20:36:30 grdetil Exp $";
 #endif
 
 #include "URL.h"
@@ -542,6 +542,11 @@ char *URL::signature()
 }
 
 
+//*****************************************************************************
+// void URL::ServerAlias()
+// Takes care of the server aliases, which attempt to simplify virtual
+// host problems
+//
 void URL::ServerAlias()
 {
   static Dictionary *serveraliases= 0;
@@ -549,6 +554,7 @@ void URL::ServerAlias()
   if (! serveraliases)
     {
       String l= config["server_aliases"];
+      String from, *to;
       serveraliases = new Dictionary();
       char *p = strtok(l, " \t");
       char *salias= NULL;
@@ -558,7 +564,13 @@ void URL::ServerAlias()
 	  if (! salias)
 	    continue;
 	  *salias++= '\0';
-	  serveraliases->Add(p, new String(salias));
+	  from = p;
+	  if (from.indexOf(':') == -1)
+	    from.append(":80");
+	  to= new String(salias);
+	  if (to->indexOf(':') == -1)
+	    to->append(":80");
+	  serveraliases->Add(from.get(), to);
 	  // cout << "Alias: " << p << "->" << salias << "\n";
 	  // printf ("Alias: %s->%s\n", p, salias);
 	  p = strtok(0, " \t");
