@@ -12,7 +12,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 
-# $Id: HtFileType,v 1.4 2004/03/03 11:45:49 lha Exp $
+# $Id: HtFileType,v 1.5 2004/06/11 15:55:16 grdetil Exp $
 
 if file -v > /dev/null; then
     have_modern_file=true
@@ -43,7 +43,7 @@ while [ $# -gt 0 ]; do
     head -100 "$input" 2> /dev/null | tr '\012\015' ' ' |
                        sed -e's/^ *//' -e's/ *<! /<!--/' > $tmpfile
     output=`file -m $magic_file $tmpfile 2>/dev/null | sed -e 's/.*:[ 	]*//' -e's/[,;].*//'`
-    /bin/rm $tmpfile
+    /bin/rm -f $tmpfile
   fi
 
   case $output in

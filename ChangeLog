@@ -1,12 +1,10 @@
-Fri Jun 11 10:50:28 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
+Fri Jun 11 10:53:49 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
+
+    * installdir/HtFileType: Added -f to rm command.
 
     * htsearch/parser.cc (perform_or): Added missing & in if clause.
 
-Fri Jun 11 10:45:53 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
-
     * contrib/htdig-3.2.0.spec: Updated for 3.2.0b6.
-
-Fri Jun 11 10:30:59 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 
     * installdir/Makefile.{am,in}: Don't stick $(DESTDIR) in HtFileType.
 
