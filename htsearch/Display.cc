@@ -4,12 +4,15 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.2  1997/06/16 15:31:04  turtle
+// Added PERCENT and VERSION variables for the output templates
+//
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.1 1997/02/03 17:11:05 turtle Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.2 1997/06/16 15:31:04 turtle Exp $";
 #endif
 
 #include "htsearch.h"
@@ -107,6 +110,8 @@ Display::display(int pageNumber)
 	{
 	    match->setRef(docDB[match->getURL()]);
 	    DocumentRef	*ref = match->getRef();
+	    if (!ref)
+		continue;	// The document isn't present for some reason
 	    ref->DocAnchor(match->getAnchor());
 	    ref->DocScore(match->getScore());
 	    displayMatch(match);
@@ -164,6 +169,12 @@ Display::displayMatch(ResultMatch *match)
     vars.Add("SIZEK", new String(form("%d",
 					  (ref->DocSize() + 1023) / 1024)));
 
+    if (maxScore != 0)
+	vars.Add("PERCENT", new String(form("%d", (int)(ref->DocScore() * 100 /
+							(double)maxScore))));
+    else
+	vars.Add("PERCENT", new String("100"));
+    
     {
 	str = new String();
 	char		buffer[100];
@@ -214,6 +225,7 @@ Display::setVariables(int pageNumber, List *matches)
     vars.Add("MATCHES_PER_PAGE", new String(config["matches_per_page"]));
     vars.Add("MAX_STARS", new String(config["max_stars"]));
     vars.Add("CONFIG", new String(config["config"]));
+    vars.Add("VERSION", new String(config["version"]));
     vars.Add("RESTRICT", new String(config["restrict"]));
     vars.Add("EXCLUDE", new String(config["exclude"]));
     if (mystrcasecmp(config["match_method"], "and") == 0)
