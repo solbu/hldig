@@ -4,8 +4,12 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.24  1999/01/08 04:57:02  ghutchis
+// Corrected problems with parsing comments, as contributed by Marjolein Katsma
+// <webmaster@javawoman.com> and Gilles.
+//
 // Revision 1.23  1998/12/12 01:48:52  ghutchis
-// Fix coredump when META refresh tags don't have content portions (e.g. no URL).
+// Fix coredump when META refresh tags don't have content (e.g. no URL).
 //
 // Revision 1.22  1998/12/05 01:50:48  ghutchis
 // Fix mistake in last update--file was included twice.
@@ -73,7 +77,7 @@
 // Initial CVS
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.23 1998/12/12 01:48:52 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.24 1999/01/08 04:57:02 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -181,18 +185,58 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	
     while (*position)
     {
-	if (strncmp((char *)position, "<!--", 4) == 0)
+
+      if (strncmp((char *)position, "<!", 2) == 0)
 	{
-	    //
-	    // Stupid comment.  This can contain other '<' and '>'
-	    // stuff which we have to ignore
-	    //
-	    q = (unsigned char*)strstr((char *)position, "-->");
-	    if (!q)
-		return;			// Rest of document is a comment...
-	    position = q + 3;
-	    continue;
+	  //
+	  // Possible comment declaration (but could be DTD declaration!)
+	  // A comment can contain other '<' and '>':
+	  // we have to ignore a complete comment declarations
+	  // but of course also DTD declarations.
+	  //
+	  position += 2;	// Get past declaration start
+	  while (*position)
+	    {
+	      // Let's see if the declaration ends here
+	      if (*position == '>')
+		{
+		  position++;
+		  break;	// End of comment declaration
+		}
+	      // Not the end of the declaration yet:
+	      // we'll try to find an actual comment
+	      if (strncmp((char *)position, "--", 2) == 0)
+		{
+		  // Found start of comment - now find the end
+		  position += 2;
+		  q = (unsigned char*)strstr((char *)position, "--");
+		  if (!q)
+		    return;	// Rest of document seems to be a comment...
+		  position = q + 2;
+		}
+	      else
+		{
+		  // Not a comment declaration after all
+		  // but possibly DTD: get to the end
+		  q = (unsigned char*)strstr((char *)position, ">");
+		  if (q)
+		    {
+		      position = q + 1;
+		      break;
+		      // End of (whatever) declaration
+		    }
+		  else
+		    return;         // Rest of document is DTD?
+		  
+		}
+	      
+	      // Skip whitespace after an individual comment
+	      while (isspace(*position))
+		position++;
+	    }
+	  continue;
 	}
+
 	if (*position == '<')
 	{
 	    //
