@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.48 2001/12/18 22:14:04 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.49 2002/01/16 23:00:17 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -1151,6 +1151,11 @@ Display::buildMatchList()
 
     if(dategiven)    // user specified some sort of date information
       {
+	int reldate = ((config.Value("startmonth") < 0) ||
+		     (config.Value("startday") < 0)   ||
+		     (config.Value("startyear") < 0));
+	int t;
+
 	// set up the startdate structure
 	// see man mktime for details on the tm structure
 	startdate.tm_sec = 0;
@@ -1173,19 +1178,40 @@ Display::buildMatchList()
 	// These things seem to work fine for start dates, as all months have
 	// the same first day however the ending date can't work this way.
 
-	if(config.Value("startmonth"))	// form input specified a start month
-	  {
-	    startdate.tm_mon = config.Value("startmonth") - 1;
-	    // tm months are zero based.  They are passed in as 1 based
-	  }
-	else startdate.tm_mon = 0;	// otherwise, no start month, default to 0
-
 	if(config.Value("startday"))	// form input specified a start day
 	  {
-	    startdate.tm_mday = config.Value("startday");
+	    t = config.Value("startday");
+	    if (t < 0)
+	      {
+		time_t then = now + (t * (24*60*60));
+		lt = localtime(&then);
+		startdate.tm_mday = lt->tm_mday;
+		startdate.tm_mon = lt->tm_mon;
+		startdate.tm_year = lt->tm_year;
+	      }
+	    else
+		startdate.tm_mday = t;
 	    // tm days are 1 based, they are passed in as 1 based
 	  }
-	else startdate.tm_mday = 1;	// otherwise, no start day, default to 1
+	else if (!reldate)
+	    startdate.tm_mday = 1;	// otherwise, no start day, default to 1
+
+	if(config.Value("startmonth"))	// form input specified a start month
+	  {
+	    t = config.Value("startmonth");
+	    if (t < 0)
+		startdate.tm_mon += t;
+	    else
+		startdate.tm_mon = t - 1;
+	    // tm months are zero based.  They are passed in as 1 based
+	    while (startdate.tm_mon < 0)
+	      {
+		startdate.tm_mon += 12;
+		startdate.tm_year--;
+	      }
+	  }
+	else if (!reldate)
+	    startdate.tm_mon = 0;	// otherwise, no start month, default to 0
 
 	// year is handled a little differently... the tm_year structure
 	// wants the tm_year in a format of year - 1900.
@@ -1197,14 +1223,25 @@ Display::buildMatchList()
 
 	if(config.Value("startyear"))	// form input specified a start year
 	  {
-	    startdate.tm_year = config.Value("startyear") - 1900;
-	    if (startdate.tm_year < 69-1900)	// correct for 2-digit years 00-68
-		startdate.tm_year += 2000;	//  - Gilles's fix
-	    if (startdate.tm_year < 0)	// correct for 2-digit years 69-99
-		startdate.tm_year += 1900;
+	    t = config.Value("startyear");
+	    if (t < 0)
+		startdate.tm_year += t;
+	    else
+	      {
+		startdate.tm_year = config.Value("startyear") - 1900;
+		if (startdate.tm_year < 69-1900) // correct for 2-digit years 00-68
+		    startdate.tm_year += 2000;	 //  - Gilles's fix
+		if (startdate.tm_year < 0)	 // correct for 2-digit years 69-99
+		    startdate.tm_year += 1900;
+	      }
 	  }
-	else startdate.tm_year = 1970-1900;
+	else if (!reldate)
+	    startdate.tm_year = 1970-1900;
 	     // otherwise, no start day, specify start at 1970
+
+	reldate = ((config.Value("endmonth") < 0) ||
+		     (config.Value("endday") < 0)   ||
+		     (config.Value("endyear") < 0));
 
 	// set up the enddate structure
 	enddate.tm_sec = 59;		// allow up to last second of end day
@@ -1213,22 +1250,50 @@ Display::buildMatchList()
 	enddate.tm_yday = 0;
 	enddate.tm_wday = 0;
 
+	if(config.Value("endday") < 0)	// form input specified relative end day
+	  {
+	    // relative end day must be done before month or year
+	    t = config.Value("endday");
+	    time_t then = now + (t * (24*60*60));
+	    lt = localtime(&then);
+	    enddate.tm_mday = lt->tm_mday;
+	    enddate.tm_mon = lt->tm_mon;
+	    enddate.tm_year = lt->tm_year;
+	  }
+
 	if(config.Value("endmonth"))	// form input specified an end month
 	  {
-	    enddate.tm_mon = config.Value("endmonth") - 1;
+	    t = config.Value("endmonth");
+	    if (t < 0)
+		enddate.tm_mon += t;
+	    else
+		enddate.tm_mon = t - 1;
 	    // tm months are zero based.  They are passed in as 1 based
+	    while (enddate.tm_mon < 0)
+	      {
+		enddate.tm_mon += 12;
+		enddate.tm_year--;
+	      }
 	  }
-	else enddate.tm_mon = 11;	// otherwise, no end month, default to 11
+	else if (!reldate)
+	    enddate.tm_mon = 11;	// otherwise, no end month, default to 11
 
 	if(config.Value("endyear"))	// form input specified a end year
 	  {
-	    enddate.tm_year = config.Value("endyear") - 1900;
-	    if (enddate.tm_year < 69-1900)	// correct for 2-digit years 00-68
-		enddate.tm_year += 2000;	//  - Gilles's fix
-	    if (enddate.tm_year < 0)	// correct for 2-digit years 69-99
-		enddate.tm_year += 1900;
+	    t = config.Value("endyear");
+	    if (t < 0)
+		enddate.tm_year += t;
+	    else
+	      {
+		enddate.tm_year = config.Value("endyear") - 1900;
+		if (enddate.tm_year < 69-1900)	// correct for 2-digit years 00-68
+		    enddate.tm_year += 2000;	//  - Gilles's fix
+		if (enddate.tm_year < 0)	// correct for 2-digit years 69-99
+		    enddate.tm_year += 1900;
+	      }
 	  }
-	else enddate.tm_year = endoftime->tm_year;
+	else if (!reldate)
+	    enddate.tm_year = endoftime->tm_year;
 	     // otherwise, no end year, specify end at the end of time allowable
 
 	// Months have different number of days, and this makes things more
@@ -1239,12 +1304,12 @@ Display::buildMatchList()
 	//                  05-1999       05-31-1999, may has 31 days... we want to search until the end of may so...
 	//                  1999          12-31-1999, search until the end of the year
 
-	if(config.Value("endday"))	// form input specified an end day
+	if(config.Value("endday") > 0)	// form input specified an end day
 	  {
 	    enddate.tm_mday = config.Value("endday");
 	    // tm days are 1 based, they are passed in as 1 based
 	  }
-	else
+	else if (!reldate)
 	  {
 	    // otherwise, no end day, default to the end of the month
 	    enddate.tm_mday = monthdays[enddate.tm_mon];

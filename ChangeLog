@@ -1,3 +1,8 @@
+Wed Jan 16 16:58:05 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (buildMatchList): Fixed startday et al. to
+	allow relative days, month & years if values are negative.
+
 Fri Jan 11 20:57:51 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html: Updated descriptions for translate_* attributes
