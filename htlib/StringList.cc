@@ -4,6 +4,9 @@
 // Implementation of StringList
 //
 // $Log: StringList.cc,v $
+// Revision 1.5.2.1  1999/11/24 04:21:14  grdetil
+// htlib/StringList.cc(Join): Applied Loic's patch to fix memory leak.
+//
 // Revision 1.5  1999/01/06 16:21:20  bergolth
 // fixed bug in StringList::Join
 //
@@ -22,7 +25,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: StringList.cc,v 1.5 1999/01/06 16:21:20 bergolth Exp $";
+static char	RCSid[] = "$Id: StringList.cc,v 1.5.2.1 1999/11/24 04:21:14 grdetil Exp $";
 #endif
 
 #include <stdlib.h>
@@ -295,14 +298,14 @@ void StringList::Sort(int)
 
 String StringList::Join(char sep)
 {
-  String *str = new String();
+  String str("");
   int i;
 
   for (i=0; i < number; i++)
   {
-      if (str->length())
-	str->append(sep);
-      str->append(*((String *) Nth(i)));
+      if (str.length())
+	str.append(sep);
+      str.append(*((String *) Nth(i)));
   }
-  return *str;
+  return str;
 }
