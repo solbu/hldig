@@ -1,9 +1,9 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b3: Release date (late September?) Unfrozen Tree.
+   3.2.0b3: Released: (late September?) Unfrozen Tree.
    3.2.0b2: Released:  11 Apr 2000.
-   3.2.0b1: Released: 4 Feb 2000.
+   3.2.0b1: Released:   4 Feb 2000.
 
 SHOWSTOPPERS:
 * Odd behavior with $(MODIFIED) and scores not working with
@@ -24,20 +24,23 @@ KNOWN BUGS:
 * If external converters have NULs in output, ExternalParser.cc will
    mangle the data. Could be a problem when "chaining" parsers, e.g. if
    an intermediate output is application/pdf.
+* file:// assumes text MIME type for too many files (e.g. image/png ?)
+* ExternalParser.cc is too picky about MIME types--extra semicolon throws it off.
 
 PENDING PATCHES (available but need work):
 * Additional support for Win32.
+* htnotify improvements.
+* Date-restricted searching (maybe 1/2 done).
+* Merge in mifluz-0.19 changes.
 
-PENDING FEATURES:
+NEEDED FEATURES:
 * Make URL and Server blocks match documentation--i.e. change config
    lookups in htdig to work as suggested. Many already work this way.
 * Field-restricted searching
-* Date-restricted searching
 * Return all results
 * Handle noindex_start & noindex_end as string lists
 * Handle local_urls through file:// handler, for mime.types support
 * Handle directory redirects in RetrieveLocal
-* Handle directory listings in file:// handler
 
 TESTING:
 * httools programs: 
