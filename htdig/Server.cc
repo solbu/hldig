@@ -1,39 +1,28 @@
 //
 // Server.cc
 //
-// Implementation of Server
+// Server: A class to keep track of server specific information.
 //
-// $Log: Server.cc,v $
-// Revision 1.4  1998/09/30 17:31:51  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Changes for 3.1.0b2
+// $Id: Server.cc,v 1.17.2.1 1999/10/13 11:55:21 angus Exp $
 //
-// Revision 1.3  1998/07/09 09:39:01  ghutchis
-//
-//
-// Added support for local file digging using patches by Pasi. Patches
-// include support for local user (~username) digging.
-//
-// Revision 1.2  1997/03/24 04:33:17  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.4 1998/09/30 17:31:51 ghutchis Exp $";
-#endif
 
 #include "htdig.h"
 #include "Server.h"
-#include <good_strtok.h>
-#include <htString.h>
-#include <URL.h>
-#include <ctype.h>
+#include "good_strtok.h"
+#include "htString.h"
+#include "URL.h"
 #include "htdig.h"
 #include "Document.h"
 #include "URLRef.h"
+#include "Transport.h"
+
+#include <ctype.h>
 
 
 //*****************************************************************************
@@ -44,40 +33,53 @@ Server::Server(char *host, int port)
     if (debug > 0)
 	cout << endl << "New server: " << host << ", " << port << endl;
 
+   if(debug>1)
+      cout << "Trying to retrieve robots.txt file on it" << endl;
+
     _host = host;
     _port = port;
     _bad_server = 0;
     _documents = 0;
     if (!config.Boolean("case_sensitive"))
       _disallow.IgnoreCase();
+    _max_documents = config.Value("server_max_docs", -1);
+    _connection_space = config.Value("server_wait_time", 0);
+    _last_connection.SettoNow();  // For getting robots.txt
 
     //
     // Attempt to get a robots.txt file from the specified server
     //
-    String	url = "http://";
-    url << host << ':' << port << "/robots.txt";
-    Document	doc(url, 10000);
-    switch (doc.RetrieveHTTP(0))
+    String	url;
+
+    url.trunc();
+        
+    url << "http://" << host << ':' << port << "/robots.txt";
+
+    time_t	timeZero = 0; // Right now we want to get this regardless
+
+    Document	doc(url, 0);
+    cout.flush();
+    
+    switch (doc.Retrieve(timeZero))
     {
-	case Document::Document_ok:
+	case Transport::Document_ok:
 	    //
 	    // Found a robots.txt file.  Go parse it.
 	    //
 	    robotstxt(doc);
 	    break;
 			
-	case Document::Document_not_found:
-	case Document::Document_not_html:
-	case Document::Document_redirect:
-	case Document::Document_not_authorized:
+	case Transport::Document_not_found:
+	case Transport::Document_not_parsable:
+	case Transport::Document_redirect:
+	case Transport::Document_not_authorized:
 	    //
 	    // These cases are for when there is no robots.txt file.
 	    // We will just go on happily without restrictions
 	    //
 	    break;
 			
-	case Document::Document_no_server:
-	case Document::Document_no_host:
+	case Transport::Document_no_host:
 	default:
 	    //
 	    // In all other cases the server could not be reached.
@@ -87,6 +89,7 @@ Server::Server(char *host, int port)
 	    _bad_server = 1;
 	    break;
     }
+
 }
 
 
@@ -132,11 +135,11 @@ void Server::robotstxt(Document &doc)
 	    *(strchr(line, '#')) = '\0';
 	}
 	
-	name = good_strtok(line, ":");
+	name = good_strtok(line, ':');
 	if (!name)
 	    continue;
 	while (name && isspace(*name))  name++;
-	rest = good_strtok("\r");
+	rest = good_strtok(NULL, '\r');
 	if (!rest)
 	    rest = "";
 
@@ -146,7 +149,7 @@ void Server::robotstxt(Document &doc)
 	length = strlen(rest);
 	if (length > 0)
 	{
-	    while (length > 0 && rest[length - 1] == ' ')
+	    while (length > 0 && isspace(rest[length - 1]))
 		length--;
 	    rest[length] = '\0';
 	}
@@ -163,7 +166,7 @@ void Server::robotstxt(Document &doc)
 		//
 		pay_attention = 1;
 	    }
-	    else if (mystrncasecmp(rest, myname, myname.length()) == 0)
+	    else if (mystrncasecmp(rest, (char*)myname, myname.length()) == 0)
 	    {
 		//
 		// This is for us!  This will override any previous patterns
@@ -235,14 +238,19 @@ void Server::push(char *path, int hopcount, char *referer)
 	return;
     }
 
+    // We use -1 as no limit
+    if (_max_documents != -1 &&
+	_documents >= _max_documents)     // Hey! we only want to get max_docs
+      return;
     URLRef	*ref = new URLRef();
-    ref->URL(path);
-    ref->HopCount(hopcount);
-    ref->Referer(referer);
-    _paths.push(ref);
+    ref->SetURL(path);
+    ref->SetHopCount(hopcount);
+    ref->SetReferer(referer);
+    _paths.Add(ref);
+
     _documents++;
 
-//	cout << "***** pushing '" << path << "' with '" << referer << "'\n";
+//     cout << "***** pushing '" << path << "' with '" << referer << "'\n";
 }
 
 
@@ -251,7 +259,8 @@ void Server::push(char *path, int hopcount, char *referer)
 //
 URLRef *Server::pop()
 {
-    URLRef	*ref = (URLRef *) _paths.pop();
+    URLRef	*ref = (URLRef *) _paths.Remove();
+
     if (!ref)
 	return 0;
 
@@ -260,11 +269,24 @@ URLRef *Server::pop()
 
 
 //*****************************************************************************
-// int Server::delay(time_t)
+// void Server::delay()
 //
-int Server::delay(time_t)
+// Keeps track of how long it's been since we've seen this server
+// and call sleep if necessary
+//
+void Server::delay()
 {
-    return 0;
+  HtDateTime now;
+  int how_long = _connection_space;
+
+  how_long += HtDateTime::GetDiff(_last_connection, now);  
+
+  _last_connection = now;  // Reset the clock for the next delay!
+
+  if (how_long > 0)
+    sleep(how_long);
+
+  return;
 }
 
 

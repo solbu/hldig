@@ -1,137 +1,108 @@
 //
 // Retriever.cc
 //
-// Implementation of Retriever
+// Retriever: Crawl from a list of URLs and calls appropriate parsers. The
+//            parser notifies the Retriever object that it got something
+//            (got_* functions) and the Retriever object feed the databases
+//            and statistics accordingly.
 //
-// $Log: Retriever.cc,v $
-// Revision 1.20  1998/11/27 18:33:37  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Changed Retriever::got_word to check for small words, valid_punctuation to
-// remove bugs in HTML.cc.
-//
-// Revision 1.18  1998/11/22 19:14:16  ghutchis
-//
-// Use "description_factor" to weight link descriptions with the documents at
-// the end of the link.
-//
-// Revision 1.17  1998/11/16 16:10:17  ghutchis
-//
-// Fix back link count.
-//
-// Revision 1.16  1998/11/15 22:29:27  ghutchis
-//
-// Implement docBackLinks backlink count.
-//
-// Revision 1.15  1998/11/01 00:00:40  ghutchis
-//
-// Replaced system calls with htlib/my* functions.
-//
-// Revision 1.14  1998/10/26 20:43:31  ghutchis
-//
-// Fixed bug introduced by Oct 18 change. Authorization will not be cleared.
-//
-// Revision 1.13  1998/10/21 16:34:19  bergolth
-// Added translation of server names. Additional limiting after normalization of the URL.
-//
-// Revision 1.12  1998/10/18 20:37:41  ghutchis
-//
-// Fixed database corruption bug and other misc. cleanups.
-//
-// Revision 1.11  1998/10/09 04:34:06  ghutchis
-//
-// Fixed typos
-//
-// Revision 1.10  1998/10/02 17:17:20  ghutchis
-//
-// Added check for docs marked noindex--words aren't indexed anymore
-//
-// Revision 1.8  1998/09/08 03:29:09  ghutchis
-//
-// Clean up for 3.1.0b1.
-//
-// Revision 1.7  1998/09/07 04:37:16  ghutchis
-//
-// Added DocState for documents marked as "noindex".
-//
-// Revision 1.6  1998/08/11 08:58:31  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.5  1998/08/06 14:18:32  ghutchis
-// Added config option "local_default_doc" for default filename in a local
-// directory. Fixed spelling mistake in "elipses" attributes.
-//
-// Revision 1.4  1998/08/03 16:50:34  ghutchis
-//
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.3  1998/07/09 09:38:59  ghutchis
-//
-// Added support for local file digging using patches by Pasi. Patches
-// include support for local user (~username) digging.
-//
-// Revision 1.2  1998/01/05 05:14:16  turtle
-// fixed memory leak
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
-// Revision 1.1  1995/12/11 22:46:24  turtle
-// This uses the backwards model of only parsing HTML
-//
-// Revision 1.0  1995/08/18 16:27:37  turtle
-// Before change to use Server class
-//
+// $Id: Retriever.cc,v 1.72.2.1 1999/10/13 11:55:21 angus Exp $
 //
 
 #include "Retriever.h"
 #include "htdig.h"
-#include "WordList.h"
+#include "HtWordList.h"
+#include "WordRecord.h"
 #include "URLRef.h"
 #include "Server.h"
 #include "Parsable.h"
 #include "Document.h"
-#include <StringList.h>
+#include "StringList.h"
+#include "WordType.h"
+#include "Transport.h"
+#include "Transport.h"
 #include <pwd.h>
+#include <signal.h>
+#include <assert.h>
+#include <stdio.h>
+#include <sys/stat.h>
 
-static WordList	words;
+#ifndef HAVE_STRPTIME_DECL
+extern "C" {
+extern char *strptime(const char *__s, const char *__fmt, struct tm *__tp);
+}
+#endif /* HAVE_STRPTIME_DECL */
+
+
+static int noSignal;
 
 
 //*****************************************************************************
 // Retriever::Retriever()
 //
-Retriever::Retriever()
+Retriever::Retriever(RetrieverLog flags) :
+  words(config)
 {
+    FILE	*urls_parsed;
+
     currenthopcount = 0;
     max_hop_count = config.Value("max_hop_count", 999999);
 		
     //
-    // Initialize the weight factors for words in the different
-    // HTML headers
+    // Initialize the flags for the various HTML factors
     //
-    factor[0] = config.Double("text_factor"); // Normal words
-    factor[1] = config.Double("title_factor");
-    factor[2] = config.Double("heading_factor_1");
-    factor[3] = config.Double("heading_factor_2");
-    factor[4] = config.Double("heading_factor_3");
-    factor[5] = config.Double("heading_factor_4");
-    factor[6] = config.Double("heading_factor_5");
-    factor[7] = config.Double("heading_factor_6");
-    factor[8] = 0;
-    factor[9] = config.Double("description_factor");
-    factor[10] = config.Double("keywords_factor");
-    factor[11] = config.Double("meta_description_factor");
-	
-    //
-    // Open the file to which we will append words.
-    //
-    String	filename = config["word_list"];
-    words.WordTempFile(filename);
-    words.BadWordFile(config["bad_word_list"]);
 
+    // text_factor
+    factor[0] = FLAG_TEXT;
+    // title_factor
+    factor[1] = FLAG_TITLE;
+    // heading factor (now generic)
+    factor[2] = FLAG_HEADING;
+    factor[3] = FLAG_HEADING;
+    factor[4] = FLAG_HEADING;
+    factor[5] = FLAG_HEADING;
+    factor[6] = FLAG_HEADING;
+    factor[7] = FLAG_HEADING;
+    // img alt text
+    factor[8] = FLAG_KEYWORDS;
+    // keywords factor
+    factor[9] = FLAG_KEYWORDS;
+    // META description factor
+    factor[10] = FLAG_DESCRIPTION;
+	
     doc = new Document();
-    valid_punctuation = config["valid_punctuation"];
     minimumWordLength = config.Value("minimum_word_length", 3);
+
+    log = flags;
+    // if in restart mode
+    if (Retriever_noLog != log ) 
+    {
+    String	filelog = config["url_log"];
+    char buffer[1000];	// FIXME
+    int  l;
+
+	urls_parsed = fopen((char*)filelog,   "r" );
+	if (0 != urls_parsed)
+        {
+  	    // read all url discovered but not fetched before 
+	    while (fgets(buffer, sizeof(buffer), urls_parsed))
+      	    {
+	       l = strlen(buffer);
+	       assert(l && buffer[l -1] == '\n');
+	       buffer[l -1] = 0;
+	       Initial(buffer,2);
+            }
+            fclose(urls_parsed);
+	}
+        unlink((char*)filelog);
+    }
+    
 }
 
 
@@ -148,58 +119,125 @@ Retriever::~Retriever()
 // void Retriever::setUsernamePassword(char *credentials)
 //
 void
-Retriever::setUsernamePassword(char *credentials)
+Retriever::setUsernamePassword(const char *credentials)
 {
     doc->setUsernamePassword(credentials);
 }
 
 
 //*****************************************************************************
-// void Retriever::Initial(char *list)
+// void Retriever::Initial(char *list, int from)
 //   Add a single URL to the list of URLs to visit.
 //   Since URLs are stored on a per server basis, we first need to find the
 //   the correct server to add the URL's path to.
 //
+//   from == 0 urls in db.docs and no db.log
+//   from == 1 urls in start_url add url only if not already in the list 
+//   from == 2 add url from db.log 
+//   from == 3 urls in db.docs and there was a db.log 
+//
 void
-Retriever::Initial(char *list)
+Retriever::Initial(const String& list, int from)
 {
     //
     // Split the list of urls up into individual urls.
     //
     StringList	tokens(list, " \t");
     String	sig;
+    String      url;
     Server	*server;
 
     for (int i = 0; i < tokens.Count(); i++)
     {
 	URL	u(tokens[i]);
-	sig = u.signature();
-	server = (Server *) servers[sig];
+	server = (Server *) servers[u.signature()];
+	url = u.get();
+	if (debug > 2)
+           cout << "\t" << from << ":" << (int) log << ":" << url;
 	if (!server)
 	{
 	    server = new Server(u.host(), u.port());
-	    servers.Add(sig, server);
+	    servers.Add(u.signature(), server);
 	}
-	server->push(u.get(), 0, 0);
-	sig = u.get();
-	sig.lowercase();
-	visited.Add(sig, 0);
+	else if (from && visited.Exists(url)) 
+	{
+	    if (debug > 2)
+                cout << " skipped" << endl;
+	    continue;
+	}
+        if (Retriever_noLog == log || from != 3) 
+        {
+	    if (debug > 2)
+                cout << " pushed";
+     	server->push(u.get(), 0, 0);
+        }
+	if (debug > 2)
+           cout << endl;
+	visited.Add(url, 0);
     }
 }
 
 
 //*****************************************************************************
-// void Retriever::Initial(List &list)
+// void Retriever::Initial(List &list, int from)
 //
 void
-Retriever::Initial(List &list)
+Retriever::Initial(List &list,int from)
 {
     list.Start_Get();
     String	*str;
+    // from == 0 is an optimisation for pushing url in update mode
+    //  assuming that 
+    // 1) there's many more urls in docdb 
+    // 2) they're pushed first
+    // 3)  there's no duplicate url in docdb
+    // then they don't need to be check against already pushed urls
+    // But 2) can be false with -l option
+    //
+    // FIXME it's nasty, what have to be test is :
+    // we have urls to push from db.docs but do we already have them in
+    // db.log? For this it's using a side effect with 'visited' and that
+    // urls in db.docs are only pushed via this method, and that db.log are pushed
+    // first, db.docs second, start_urls third!
+    //  
+    if (!from && visited.Count())  
+    {
+       from = 3;
+    }
     while ((str = (String *) list.Get_Next()))
     {
-	Initial(str->get());
+	Initial(str->get(),from);
     }
+}
+
+//*****************************************************************************
+//
+static void sigexit(int)
+{
+ noSignal=0;
+}
+
+//*****************************************************************************
+// static void sig_handlers
+//	initialise signal handlers
+//
+static void
+sig_handlers(void)
+{
+struct sigaction action;
+
+ /* SIGINT, SIGQUIT, SIGTERM */
+ action.sa_handler = sigexit;
+ sigemptyset(&action.sa_mask);
+ action.sa_flags = 0;
+ if (sigaction(SIGINT, &action, NULL) != 0)
+	reportError("Cannot install SIGINT handler\n");
+ if(sigaction(SIGQUIT, &action, NULL) != 0)
+	reportError("Cannot install SIGQUIT handler\n");
+ if(sigaction(SIGTERM, &action, NULL) != 0)
+	reportError("Cannot install SIGTERM handler\n");
+ if(sigaction(SIGHUP, &action, NULL) != 0)
+	reportError("Cannot install SIGHUP handler\n");
 }
 
 
@@ -220,10 +258,18 @@ Retriever::Start()
     //
     int		more = 1;
     Server	*server;
-    char	*server_sig;
     URLRef	*ref;
+    
+    //  
+    // Always sig . The delay bother me but a bad db is worst
+    // 
+    if ( Retriever_noLog != log ) 
+    {
+	sig_handlers();
+    }
+    noSignal = 1;
 
-    while (more)
+    while (more && noSignal)
     {
 	more = 0;
 		
@@ -233,16 +279,18 @@ Retriever::Start()
 	// on the servers is distributed evenly.
 	//
 	servers.Start_Get();
-	while ((server_sig = servers.Get_Next()))
+	while ( (server = (Server *)servers.Get_NextElement()) && noSignal)
 	{
 	    if (debug > 1)
-		cout << "pick: " << server_sig << ", # servers = " <<
+		cout << "pick: " << server->host() << ", # servers = " <<
 		    servers.Count() << endl;
-	    server = (Server *) servers[server_sig];
+	    
 	    ref = server->pop();
 	    if (!ref)
-		continue;				// Nothing on this server
-			
+		continue;		      // Nothing on this server
+	    // There may be no more documents, or the server
+	    // has passed the server_max_docs limit
+
 	    //
 	    // We have a URL to index, now.  We need to register the
 	    // fact that we are not done yet by setting the 'more'
@@ -252,31 +300,58 @@ Retriever::Start()
 
 	    //
 	    // Deal with the actual URL.
+	    // We'll check with the server to see if we need to sleep()
+	    // before parsing it.
 	    //
+	    server->delay();   // This will pause if needed and reset the time
 	    parse_url(*ref);
             delete ref;
 	}
     }
+    // if we exited on signal 
+    if (Retriever_noLog != log && !noSignal) 
+    {
+        FILE	*urls_parsed;
+	String	filelog = config["url_log"];
+        // save url seen but not fetched
+	urls_parsed = fopen((char*)filelog,   "w" );
+	if (0 == urls_parsed)
+	{
+	    reportError(form("Unable to create URL log file '%s'",
+			     filelog.get()));
+	}
+        else {
+  	   servers.Start_Get();
+	   while ((server = (Server *)servers.Get_NextElement()))
+	   {
+   	      while (NULL != (ref = server->pop())) 
+              {
+      	          fprintf(urls_parsed, "%s\n", ref->GetURL().get());
+ 		  delete ref;
+              }
+           }
+           fclose(urls_parsed);
+        }
+    }
+    words.Close();
 }
 
 
 //*****************************************************************************
-// void Retriever::parse_url(URL &url)
+// void Retriever::parse_url(URLRef &urlRef)
 //
 void
 Retriever::parse_url(URLRef &urlRef)
 {
     URL			url;
-    DocumentRef	*ref;
+    DocumentRef        *ref;
     int			old_document;
     time_t		date;
     static int	index = 0;
 
-//	cout << "**** urlRef URL = '" << urlRef.URL() << "', referer = '" <<
-//		urlRef.Referer() << "'\n";
-    url.parse(urlRef.URL());
+    url.parse(urlRef.GetURL().get());
 	
-    currenthopcount = urlRef.HopCount();
+    currenthopcount = urlRef.GetHopCount();
     ref = GetRef(url.get());
     if (ref)
     {
@@ -314,7 +389,7 @@ Retriever::parse_url(URLRef &urlRef)
 	old_document = 0;
     }
 
-    words.DocumentID(ref->DocID());
+    word_context.DocID(ref->DocID());
 
     if (debug > 0)
     {
@@ -332,12 +407,12 @@ Retriever::parse_url(URLRef &urlRef)
     doc->Reset();
 
     doc->Url(url.get());
-    doc->Referer(urlRef.Referer());
+    doc->Referer(urlRef.GetReferer().get());
 
     base = doc->Url();
 
-    // Retrive document, first trying local file access if possible.
-    Document::DocStatus status;
+    // Retrieve document, first trying local file access if possible.
+    Transport::DocStatus status;
     String *local_filename = IsLocalUser(url.get());
     if (!local_filename)
         local_filename = IsLocal(url.get());
@@ -346,16 +421,16 @@ Retriever::parse_url(URLRef &urlRef)
         if (debug > 1)
 	    cout << "Trying local file " << *local_filename << endl;
         status = doc->RetrieveLocal(date, *local_filename);
-        if (status == Document::Document_not_local)
+        if (status == Transport::Document_not_local)
         {
             if (debug > 1)
    	        cout << "Local retrieval failed, trying HTTP" << endl;
-            status = doc->RetrieveHTTP(date);
+            status = doc->Retrieve(date);
         }
         delete local_filename;
     }
     else
-        status = doc->RetrieveHTTP(date);
+        status = doc->Retrieve(date);
 
     current_ref = ref;
 	
@@ -365,10 +440,16 @@ Retriever::parse_url(URLRef &urlRef)
     //
     switch (status)
     {
-	case Document::Document_ok:
+	case Transport::Document_ok:
 	    trackWords = 1;
 	    if (old_document)
 	    {
+	      if (doc->ModTime() == ref->DocTime())
+		{
+		  if (debug)
+		    cout << " retrieved but not changed" << endl;
+		  break;
+		}
 		//
 		// Since we already had a record of this document and
 		// we were able to retrieve it, it must have changed
@@ -376,11 +457,11 @@ Retriever::parse_url(URLRef &urlRef)
 		// we need to assign a new document ID to it and mark
 		// the old one as obsolete.
 		//
-		words.MarkModified();
+		words.MarkGone();
 	        int backlinks = ref->DocBackLinks();
 		delete ref;
 		current_id = docs.NextDocID();
-		words.DocumentID(current_id);
+		word_context.DocID(current_id);
 		ref = new DocumentRef;
 		ref->DocID(current_id);
 		ref->DocURL(url.get());
@@ -394,71 +475,98 @@ Retriever::parse_url(URLRef &urlRef)
 	    RetrievedDocument(*doc, url.get(), ref);
 	    // Hey! If this document is marked noindex, don't even bother
 	    // adding new words. Mark this as gone and get rid of it!
-	    if (ref->DocState() == Reference_noindex)
-	      words.MarkModified();
-	    else
+	    if (ref->DocState() == Reference_noindex) {
+	      if(debug > 1)
+		cout << " ( " << ref->DocURL() << " ignored)";
+	      words.MarkGone();
+	    } else
 	      words.Flush();
 	    if (debug)
 		cout << " size = " << doc->Length() << endl;
 	    break;
 
-	case Document::Document_not_changed:
+	case Transport::Document_not_changed:
 	    if (debug)
 		cout << " not changed" << endl;
-	    words.MarkScanned();
+	    words.MarkGone();
 	    break;
 
-	case Document::Document_not_found:
+	case Transport::Document_not_found:
 	    ref->DocState(Reference_not_found);
 	    if (debug)
 		cout << " not found" << endl;
 	    recordNotFound(url.get(),
-			   urlRef.Referer(),
-			   Document::Document_not_found);
+			   urlRef.GetReferer().get(),
+			   Transport::Document_not_found);
 	    words.MarkGone();
 	    break;
 
-	case Document::Document_no_host:
+	case Transport::Document_no_host:
 	    ref->DocState(Reference_not_found);
 	    if (debug)
 		cout << " host not found" << endl;
 	    recordNotFound(url.get(),
-			   urlRef.Referer(),
-			   Document::Document_no_host);
+			   urlRef.GetReferer().get(),
+			   Transport::Document_no_host);
 	    words.MarkGone();
 	    break;
 
-	case Document::Document_no_server:
+        case Transport::Document_no_port:
 	    ref->DocState(Reference_not_found);
 	    if (debug)
-		cout << " no server running" << endl;
+		cout << " host not found (port)" << endl;
 	    recordNotFound(url.get(),
-			   urlRef.Referer(),
-			   Document::Document_no_server);
+			   urlRef.GetReferer().get(),
+			   Transport::Document_no_port);
 	    words.MarkGone();
 	    break;
 
-	case Document::Document_not_html:
-	    if (debug)
-		cout << " not HTML" << endl;
-	    words.MarkGone();
-	    break;
+	case Transport::Document_not_parsable:
+  	    if (debug)
+ 		cout << " not Parsable" << endl;
+  	    words.MarkGone();
+  	    break;
 
-	case Document::Document_redirect:
+	case Transport::Document_redirect:
 	    if (debug)
 		cout << " redirect" << endl;
 	    words.MarkGone();
 	    got_redirect(doc->Redirected(), ref);
 	    break;
 	    
-       case Document::Document_not_authorized:
+       case Transport::Document_not_authorized:
 	    if (debug)
 	      cout << " not authorized" << endl;
 	    break;
 
-      case Document::Document_not_local:
+      case Transport::Document_not_local:
 	   if (debug)
 	     cout << " not local" << endl;
+	   break;
+
+      case Transport::Document_no_header:
+	   if (debug)
+	     cout << " no header" << endl;
+	   break;
+
+      case Transport::Document_connection_down:
+	   if (debug)
+	     cout << " connection down" << endl;
+	   break;
+
+      case Transport::Document_no_connection:
+	   if (debug)
+	     cout << " no connection" << endl;
+	   break;
+
+      case Transport::Document_not_recognized_service:
+	   if (debug)
+	     cout << " service not recognized" << endl;
+	   break;
+
+      case Transport::Document_other_error:
+	   if (debug)
+	     cout << " other error" << endl;
 	   break;
     }
     docs.Add(*ref);
@@ -477,8 +585,9 @@ Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
 {
     n_links = 0;
     current_ref = ref;
-    current_anchor_number = 0;
     current_title = 0;
+    word_context.Anchor(0);
+    current_time = 0;
     current_head = 0;
     current_meta_dsc = 0;
 
@@ -499,10 +608,13 @@ Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
     //
     // Update the document reference
     //
-    ref->DocHead(current_head);
-    ref->DocMetaDsc(current_meta_dsc);
-    ref->DocTime(doc.ModTime());
-    ref->DocTitle(current_title);
+    ref->DocHead((char*)current_head);
+    ref->DocMetaDsc((char*)current_meta_dsc);
+    if (current_time == 0)
+      ref->DocTime(doc.ModTime());
+    else
+      ref->DocTime(current_time);
+    ref->DocTitle((char*)current_title);
     ref->DocSize(doc.Length());
     ref->DocAccessed(time(0));
     ref->DocLinks(n_links);
@@ -520,9 +632,12 @@ Retriever::Need2Get(char *u)
 {
     static String	url;
     url = u;
-    url.lowercase();
 
-    return !visited.Exists(url);
+    if ( visited.Exists(url) )
+    	return FALSE;
+    	
+    return TRUE;
+
 }
 
 
@@ -536,6 +651,7 @@ int
 Retriever::IsValidURL(char *u)
 {
     static Dictionary	*invalids = 0;
+    static Dictionary	*valids = 0;
 
     //
     // Invalid extensions will be kept in a dictionary for quick
@@ -546,45 +662,98 @@ Retriever::IsValidURL(char *u)
     {
 	// A list of bad extensions, separated by spaces or tabs
 	String	t = config["bad_extensions"];
+	String lowerp;
 	char	*p = strtok(t, " \t");
 	invalids = new Dictionary;
 	while (p)
 	{
-	    invalids->Add(p, 0);
-	    p = strtok(0, " \t");
+	  // Extensions are case insensitive
+	  lowerp = p;
+	  lowerp.lowercase();
+	  invalids->Add(lowerp, 0);
+	  p = strtok(0, " \t");
+	}
+    }
+
+    //
+    // Valid extensions are performed similarly 
+    //
+    if (!valids)
+    {
+	// A list of bad extensions, separated by spaces or tabs
+	String	t = config["valid_extensions"];
+	String lowerp;
+	char	*p = strtok(t, " \t");
+	valids = new Dictionary;
+	while (p)
+	{
+	  // Extensions are case insensitive
+	  lowerp = p;
+	  lowerp.lowercase();
+	  valids->Add(lowerp, 0);
+	  p = strtok(0, " \t");
 	}
     }
 
     static String	url;
     url = u;
-    url.lowercase();
-
-    //
-    // Currently, we only deal with HTTP URLs.  Gopher and ftp will
-    // come later...  ***FIX***
-    //
-    if (strstr(u, "..") || strncmp(u, "http://", 7) != 0)
-	return FALSE;
 
     //
     // If the URL contains any of the patterns in the exclude list,
     // mark it as invalid
     //
-    if (excludes.FindFirst(url) >= 0)
-	return FALSE;
+    if (excludes.match(url, 0, 0) != 0)
+      {
+                if (debug >= 2)
+		  cout << endl << "   Rejected: item in exclude list ";
+                return(FALSE);
+      }
 
     //
-    // See if the path extension is in the list of invalid ones
+    // If the URL has a query string and it is in the bad query list
+    // mark it as invalid
     //
-    char	*ext = strrchr(url, '.');
-    if (ext && invalids->Exists(ext))
+    char *ext = strrchr((char*)url, '?');
+    if (ext && badquerystr.match(url, 0, 0) != 0)
+      {
+                if (debug >= 2)
+		  cout << endl << "   Rejected: item in bad query list ";
+                return(FALSE);
+      }
+
+    //
+    // See if the file extension is in the list of invalid ones
+    //
+    ext = strrchr((char*)url, '.');
+    String	lowerext;
+    if(ext) {
+      lowerext.set(ext);
+      lowerext.lowercase();
+      if (invalids->Exists(lowerext))
+	{
+	  if (debug > 2)
+	    cout << endl <<"   Rejected: Extension is invalid!";
+	  return FALSE;
+	}
+    }
+    //
+    // Or NOT in the list of valid ones
+    //
+    if (ext && valids->Count() > 0 && !valids->Exists(lowerext))
+      {
+	if (debug > 2)
+	  cout << endl <<"   Rejected: Extension is not valid!";
 	return FALSE;
+      }
 
     //
     // If any of the limits are met, we allow the URL
     //
-    if (limits.FindFirst(url) >= 0)
-	return TRUE;
+    if (limits.match(url, 1, 0) != 0) return(TRUE);
+
+    if (debug > 2)
+      cout << endl <<"   Rejected: URL not in the limits!";
+
     return FALSE;
 }
 
@@ -634,12 +803,12 @@ Retriever::IsLocal(char *url)
     while ((prefix = (String*) prefixes->Get_Next()))
     {
 	path = (String*) paths->Get_Next();
-        if (mystrncasecmp(*prefix, url, prefix->length()) == 0)
+        if (mystrncasecmp((char*)*prefix, (char*)url, prefix->length()) == 0)
 	{
 	    int l = strlen(url)-prefix->length()+path->length()+4;
 	    String *local = new String(*path, l);
 	    *local += &url[prefix->length()];
-	    if (local->last() == '/' && config["local_default_doc"] != "")
+	    if (local->last() == '/' && !config["local_default_doc"].empty())
 	      *local += config["local_default_doc"];
 	    return local;
 	}	
@@ -696,7 +865,7 @@ Retriever::IsLocalUser(char *url)
 
     // Split the URL to components
     String tmp = url;
-    char *name = strchr(tmp, '~');
+    char *name = strchr((char*)tmp, '~');
     *name++ = '\0';
     char *rest = strchr(name, '/');
     if (!rest || (rest-name <= 1) || (rest-name > 32))
@@ -712,7 +881,7 @@ Retriever::IsLocalUser(char *url)
     {
         path = (String*) paths->Get_Next();
 	dir = (String*) dirs->Get_Next();
-        if (mystrcasecmp(*prefix, tmp) != 0)
+        if (mystrcasecmp((char*)*prefix, (char*)tmp) != 0)
   	    continue;
 
 	String *local = new String;
@@ -741,7 +910,7 @@ Retriever::IsLocalUser(char *url)
 	}
 	*local += *dir;
 	*local += rest;
-	if (local->last() == '/' && config["local_default_doc"] != "")
+	if (local->last() == '/' && !config["local_default_doc"].empty())
 	  *local += config["local_default_doc"];
 	return local;
     }
@@ -759,7 +928,6 @@ Retriever::GetRef(char *u)
 {
     static String	url;
     url = u;
-    url.lowercase();
 
     return docs[url];
 }
@@ -770,51 +938,129 @@ Retriever::GetRef(char *u)
 //   The location is normalized to be in the range 0 - 1000.
 //
 void
-Retriever::got_word(char *word, int location, int heading)
+Retriever::got_word(const char *word, int location, int heading)
 {
     if (debug > 3)
 	cout << "word: " << word << '@' << location << endl;
+    if (heading > 11 || heading < 0) // Current limits for headings
+      heading = 0;  // Assume it's just normal text
     if (trackWords)
     {
       String w = word;
-      w.lowercase();
-      w.remove(valid_punctuation);
-      if (w.length() >= minimumWordLength)
-	words.Word(w, location, current_anchor_number, factor[heading]);
+      HtWordReference wordRef;
+
+      wordRef.Location(location);
+      wordRef.Flags(factor[heading]);
+
+      if (w.length() >= minimumWordLength) {
+	wordRef.Word(w);
+	words.Replace(WordReference::Merge(wordRef, word_context));
+      }
+
+      // Check for compound words...
+      String parts = word;
+      int added;
+      int nparts = 1;
+      do
+	{
+	  added = 0;
+	  char *start = parts.get();
+	  char *punctp = 0, *nextp = 0, *p;
+	  char  punct;
+	  int   n;
+	  while (*start)
+	    {
+	      p = start;
+	      for (n = 0; n < nparts; n++)
+		{
+		  while (HtIsStrictWordChar((unsigned char)*p))
+		    p++;
+		  punctp = p;
+		  if (!*punctp && n+1 < nparts)
+		    break;
+		  while (*p && !HtIsStrictWordChar((unsigned char)*p))
+		    p++;
+		  if (n == 0)
+		    nextp = p;
+		}	
+		if (n < nparts)
+		  break;	
+		punct = *punctp;
+		*punctp = '\0';
+		if (*start && (*p || start > parts.get()))
+		  {
+		    w = start;
+		    HtStripPunctuation(w);
+		    if (w.length() >= minimumWordLength)
+		      {
+			wordRef.Word(w);
+			words.Replace(WordReference::Merge(wordRef, word_context));
+			if (debug > 3)
+			  cout << "word part: " << start << '@' << location << endl;
+		      }
+		    added++;
+		  }
+		start = nextp;
+		*punctp = punct;
+	    }
+	  nparts++;
+	} while (added > 2);
     }
 }
 
 
 //*****************************************************************************
-// void Retriever::got_title(char *title)
+// void Retriever::got_title(const char *title)
 //
 void
-Retriever::got_title(char *title)
+Retriever::got_title(const char *title)
 {
     if (debug > 1)
 	cout << "\ntitle: " << title << endl;
     current_title = title;
 }
 
-
 //*****************************************************************************
-// void Retriever::got_anchor(char *anchor)
+// void Retriever::got_time(const char *time)
 //
 void
-Retriever::got_anchor(char *anchor)
+Retriever::got_time(const char *time)
+{
+    HtDateTime   new_time(current_time);
+
+    if (debug > 1)
+      cout << "\ntime: " << time << endl;
+
+    //
+    // As defined by the Dublin Core, this should be YYYY-MM-DD
+    // In the future, we'll need to deal with the scheme portion
+    //  in case someone picks a different format.
+    //
+    new_time.SetFTime(time, "%Y-%m-%d");
+    current_time = new_time.GetTime_t();
+
+    // If we can't convert it, current_time stays the same and we get
+    // the default--the date returned by the server...
+}
+
+//*****************************************************************************
+// void Retriever::got_anchor(const char *anchor)
+//
+void
+Retriever::got_anchor(const char *anchor)
 {
     if (debug > 2)
 	cout << "anchor: " << anchor << endl;
     current_ref->AddAnchor(anchor);
-    current_anchor_number++;
+    word_context.Anchor(word_context.Anchor() + 1);
 }
 
 
 //*****************************************************************************
-// void Retriever::got_image(char *src)
+// void Retriever::got_image(const char *src)
 //
 void
-Retriever::got_image(char *src)
+Retriever::got_image(const char *src)
 {
     URL	url(src, *base);
     char	*image = url.get();
@@ -829,13 +1075,12 @@ Retriever::got_image(char *src)
 
 
 //*****************************************************************************
-// void Retriever::got_href(char *href, char *description)
 //
 void
-Retriever::got_href(URL &url, char *description)
+Retriever::got_href(URL &url, const char *description, int hops)
 {
-    DocumentRef		*ref;
-    Server		*server;
+    DocumentRef		*ref = 0;
+    Server		*server = 0;
 
     if (debug > 2)
 	cout << "href: " << url.get() << " (" << description << ')' << endl;
@@ -844,12 +1089,6 @@ Retriever::got_href(URL &url, char *description)
 
     if (urls_seen)
 	fprintf(urls_seen, "%s\n", url.get());
-
-    //
-    // If the dig is restricting by hop count, perform the check here.
-    //
-    if (currenthopcount + 1 > max_hop_count)
-	return;
 
     //
     // Check if this URL falls within the valid range of URLs.
@@ -867,12 +1106,31 @@ Retriever::got_href(URL &url, char *description)
 	}
 
 	url.normalize();
-	if (limitsn.FindFirst(url.get()) >= 0)
+
+	// If it is a backlink from the current document,
+	// just update that field.  Writing to the database
+	// is meaningless, as it will be overwritten.
+	// Adding it as a new document may even be harmful, as
+	// that will be a duplicate.  This can happen if the
+	// current document is never referenced before, as in a
+	// start_url.
+
+	if (strcmp(url.get(), current_ref->DocURL()) == 0)
+	{
+	    current_ref->DocBackLinks(current_ref->DocBackLinks() + 1);
+	    current_ref->AddDescription(description, words);
+	}
+        else if (limitsn.match(url.get(), 1, 0) != 0)
 	{
 	    //
 	    // First add it to the document database
 	    //
 	    ref = docs[url.get()];
+	    // if ref exists we have to call AddDescription even
+            // if max_hop_count is reached
+    	    if (!ref && currenthopcount + hops > max_hop_count)
+		return;
+
 	    if (!ref)
 	    {
 		//
@@ -881,41 +1139,26 @@ Retriever::got_href(URL &url, char *description)
 		//
 		ref = new DocumentRef;
 		ref->DocID(docs.NextDocID());
-		ref->DocHopCount(currenthopcount + 1);
+		ref->DocHopCount(currenthopcount + hops);
 	    }
 	    ref->DocBackLinks(ref->DocBackLinks() + 1); // This one!
 	    ref->DocURL(url.get());
-	    ref->AddDescription(description);
+	    ref->AddDescription(description, words);
 
-	    // Add the description text to the word database with proper factor
-	    // Make sure we save the old DocID of the word DB and init for the
-	    // description. Also save the current_anchor_number
-	    char    *w = strtok(description, " ,\t\r\n");
-	    int    old_id = current_id;
-	    int    old_anchor = current_anchor_number;
-	    words.DocumentID(ref->DocID());
-	    current_anchor_number = 0;
-	    while (w)
-	      {
-		if (strlen(w) >= config.Value("minimum_word_length", 3))
-		  {
-		    String word = w;
-		    word.lowercase();
-		    word.remove(valid_punctuation);
-		    if (word.length() >= minimumWordLength)
-		      this->got_word(word, 0, 9); //description factor
-		  }
-		w = strtok(0, " ,\t\r\n");
-	      }
-	    w = '\0';
-	    // And let's flush the words!
-	    //	    words.Flush();
-	    // Now clean up by resetting words.DocID and current_anchor_num
-	    words.DocumentID(old_id);
-	    current_anchor_number = old_anchor;
+	    //
+    	    // If the dig is restricting by hop count, perform the check here 
+	    // too
+    	    if (currenthopcount + hops > max_hop_count)
+	    {
+		delete ref;
+		return;
+	    }
 
-	    if (ref->DocHopCount() < currenthopcount + 1)
-		ref->DocHopCount(currenthopcount + 1);
+	    if (ref->DocHopCount() != 0 &&
+		ref->DocHopCount() < currenthopcount + hops)
+	       // If we had taken the path through this ref
+	       // We'd be here faster than currenthopcount
+	       currenthopcount = ref->DocHopCount();  // So update it!
 
 	    docs.Add(*ref);
 
@@ -926,20 +1169,22 @@ Retriever::got_href(URL &url, char *description)
 	    {
 		if (debug > 1)
 		    cout << "\n   pushing " << url.get() << endl;
-		char	*sig = url.signature();
-		server = (Server *) servers[sig];
+		server = (Server *) servers[url.signature()];
 		if (!server)
 		{
 		    //
 		    // Hadn't seen this server, yet.  Register it
 		    //
 		    server = new Server(url.host(), url.port());
-		    servers.Add(sig, server);
+		    servers.Add(url.signature(), server);
 		}
-		server->push(url.get(), ref->DocHopCount(), base->get());
+		//
+		// Let's just be sure we're not pushing an empty URL
+		//
+		if (strlen(url.get()))
+		  server->push(url.get(), ref->DocHopCount(), base->get());
 
 		String	temp = url.get();
-		temp.lowercase();
 		visited.Add(temp, 0);
 		if (debug)
 		    cout << '+';
@@ -975,10 +1220,10 @@ Retriever::got_href(URL &url, char *description)
 
 
 //*****************************************************************************
-// void Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
+// void Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 //
 void
-Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
+Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 {
     URL	url(new_url);
 
@@ -1006,7 +1251,7 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 	}
 
 	url.normalize();
-	if (limitsn.FindFirst(url.get()) >= 0)
+        if (limitsn.match(url.get(), 1, 0) != 0)
 	{
 	    //
 	    // First add it to the document database
@@ -1034,7 +1279,7 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 		String	*str;
 		while ((str = (String *) d->Get_Next()))
 		{
-		    ref->AddDescription(str->get());
+		    ref->AddDescription(str->get(), words);
 		}
 	    }
 	    if (ref->DocHopCount() > old_ref->DocHopCount())
@@ -1052,20 +1297,18 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 	    {
 		if (debug > 1)
 		    cout << "   pushing " << url.get() << endl;
-		char	*sig = url.signature();
-		Server	*server = (Server *) servers[sig];
+		Server	*server = (Server *) servers[url.signature()];
 		if (!server)
 		{
 		    //
 		    // Hadn't seen this server, yet.  Register it
 		    //
 		    server = new Server(url.host(), url.port());
-		    servers.Add(sig, server);
+		    servers.Add(url.signature(), server);
 		}
 		server->push(url.get(), ref->DocHopCount(), base->get());
 
 		String	temp = url.get();
-		temp.lowercase();
 		visited.Add(temp, 0);
 	    }
 
@@ -1076,10 +1319,10 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 
 
 //*****************************************************************************
-// void Retriever::got_head(char *head)
+// void Retriever::got_head(const char *head)
 //
 void
-Retriever::got_head(char *head)
+Retriever::got_head(const char *head)
 {
     if (debug > 4)
 	cout << "head: " << head << endl;
@@ -1087,10 +1330,10 @@ Retriever::got_head(char *head)
 }
 
 //*****************************************************************************
-// void Retriever::got_meta_dsc(char *md)
+// void Retriever::got_meta_dsc(const char *md)
 //
 void
-Retriever::got_meta_dsc(char *md)
+Retriever::got_meta_dsc(const char *md)
 {
     if (debug > 4)
 	cout << "meta description: " << md << endl;
@@ -1099,10 +1342,10 @@ Retriever::got_meta_dsc(char *md)
 
 
 //*****************************************************************************
-// void Retriever::got_meta_email(char *e)
+// void Retriever::got_meta_email(const char *e)
 //
 void
-Retriever::got_meta_email(char *e)
+Retriever::got_meta_email(const char *e)
 {
     if (debug > 1)
 	cout << "\nmeta email: " << e << endl;
@@ -1111,10 +1354,10 @@ Retriever::got_meta_email(char *e)
 
 
 //*****************************************************************************
-// void Retriever::got_meta_notification(char *e)
+// void Retriever::got_meta_notification(const char *e)
 //
 void
-Retriever::got_meta_notification(char *e)
+Retriever::got_meta_notification(const char *e)
 {
     if (debug > 1)
 	cout << "\nmeta notification date: " << e << endl;
@@ -1123,10 +1366,10 @@ Retriever::got_meta_notification(char *e)
 
 
 //*****************************************************************************
-// void Retriever::got_meta_subject(char *e)
+// void Retriever::got_meta_subject(const char *e)
 //
 void
-Retriever::got_meta_subject(char *e)
+Retriever::got_meta_subject(const char *e)
 {
     if (debug > 1)
 	cout << "\nmeta subect: " << e << endl;
@@ -1141,7 +1384,7 @@ void
 Retriever::got_noindex()
 {
     if (debug > 1)
-      cout << "\nMETA ROBOT: Noindex " << endl;
+      cout << "\nMETA ROBOT: Noindex " << current_ref->DocURL() << endl;
     current_ref->DocState(Reference_noindex);
 }
 
@@ -1155,17 +1398,21 @@ Retriever::recordNotFound(char *url, char *referer, int reason)
     
     switch (reason)
     {
-	case Document::Document_not_found:
+	case Transport::Document_not_found:
 	    message = "Not found";
 	    break;
 	
-	case Document::Document_no_host:
-	    message = "Unknown host";
+        case Transport::Document_no_host:
+	    message = "Unknown host or unable to contact server";
+	    break;
+
+        case Transport::Document_no_port:
+	    message = "Unknown host or unable to contact server (port)";
+	    break;
+
+        default:
 	    break;
 	
-	case Document::Document_no_server:
-	    message = "Unable to contact server";
-	    break;
     }
 
     notFound << message << ": " << url << " Ref: " << referer << '\n';
@@ -1175,7 +1422,7 @@ Retriever::recordNotFound(char *url, char *referer, int reason)
 // void Retriever::ReportStatistics(char *name)
 //
 void
-Retriever::ReportStatistics(char *name)
+Retriever::ReportStatistics(const String& name)
 {
     cout << name << ": Run complete\n";
     cout << name << ": " << servers.Count() << " server";
@@ -1184,7 +1431,6 @@ Retriever::ReportStatistics(char *name)
     cout << " seen:\n";
 
     Server		*server;
-    char		*server_sig;
     String		buffer;
     StringList	results;
     String		newname = name;
@@ -1192,10 +1438,9 @@ Retriever::ReportStatistics(char *name)
     newname << ":    ";
 	
     servers.Start_Get();
-    while ((server_sig = servers.Get_Next()))
+    while ((server = (Server *) servers.Get_NextElement()))
     {
 	buffer = 0;
-	server = (Server *) servers[server_sig];
 	server->reportStatistics(buffer, newname);
 	results.Add(buffer);
     }
