@@ -1,3 +1,24 @@
+Tue Jan 28 12:23:16 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htnet/Makefile.am: added HtCookieInFileJar.[h,cc] files
+	* installdir/cookies.txt: example file for pre-loading HTTP cookies
+	* installdir/Makefile.am: added cookies.txt
+
+Tue Jan 28 12:16:28 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htnet/HtCookieMemJar.[h,cc]: performed deep copy of the jar in the copy constructor
+
+Tue Jan 28 12:13:44 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htnet/HtCookie.[h,cc]: added the constructor of a cookie object from a line
+	of a cookie input file (Netscape's way): if an expiration value of '0' is set
+	through the cookies input file, the cookie is managed as a session cookie.
+	Improved copy constructor, solving a bug related to the expires field. 
+
+Tue Jan 28 12:11:27 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htnet/HtCookieInFileJar.[h,cc]: class for importing cookies from a text file
+
 Tue Jan 28 12:08:20 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* htlib/HtDateTime.h: added the constructor HtDateTime(const int)
