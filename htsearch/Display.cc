@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.75 1999/04/27 23:12:27 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.76 1999/04/30 23:41:16 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -718,7 +718,6 @@ Display::generateStars(DocumentRef *ref, int right)
 	}
     }
 
-    *result << "\n";
     return result;
 }
 
