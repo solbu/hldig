@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.46 2000/03/21 00:35:16 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.47 2000/03/28 01:51:44 ghutchis Exp $
 //
 
 #include "HtConfiguration.h"
@@ -1885,6 +1885,19 @@ http://www.htdig.org/", "
 			<a href=\"#search_results_wrapper\">search_results_wrapper</a>
 			attribute.
 " },
+{ "search_results_order", "",
+        "string_list", "htsearch", "", "3.2.0b2", "Searching:Ranking", "search_results_order: 
+         /docs/|faq.html * /maillist/ /testresults/", "
+	This specifies a list of patterns for URLs in
+ 	search results.  Results will be displayed in the
+ 	specified order, with the search algorithm result
+ 	as the second order.  Remaining areas, that do not
+ 	match any of the specified patterns, can be placed
+ 	by using * as the pattern.  If no * is specified,
+ 	one will be implicitly placed at the end of the
+ 	list.<br>
+ 	See also <a href=\"#url_seed_score\">url_seed_score</a>.
+" },
 { "search_results_wrapper", "", 
 	"string", "htsearch", "", "3.1.0", "Presentation:Files", "search_results_wrapper: ${common_dir}/wrapper.html", "
 	This specifies a filename to be output at the start and
@@ -2242,6 +2255,36 @@ url_part_aliases:
 	database should be rebuilt, unless the effect of
 	\"moving\" the affected URLs in the database is
 	wanted, as described above.
+" },
+{ "url_seed_score", "",
+    "string list", "htsearch", "", "3.2.0b2", "Searching::Ranking", "url_seed_score: 
+	      /mailinglist/ *.5-1e6 <br>
+	      /docs/|/news/ *1.5 <br>
+	      /testresults/ &quot;*.7 -200&quot; <br>
+	      /faq-area/ *2+10000", "
+ 	This is a list of pairs, <em>pattern</em>
+ 	<em>formula</em>, used to weigh the score of
+ 	hits, depending on the URL of the document.<br>
+ 	The <em>pattern</em> part is a substring to match
+ 	against the URL.  Pipe ('|') characters can be
+ 	used in the pattern to concatenate substrings for
+ 	web-areas that have the same formula.<br>
+ 	The formula describes a <em>factor</em> and a
+ 	<em>constant</em>, by which the hit score is
+ 	weighed.  The <em>factor</em> part is multiplied
+ 	to the original score, then the <em>constant</em>
+ 	part is added.<br>
+ 	The format of the formula is the factor part:
+ 	&quot;*<em>N</em>&quot; optionally followed by comma and
+ 	spaces, followed by the constant part :
+ 	&quot;+<em>M</em>&quot;, where the plus sign may be emitted
+ 	for negative numbers.  Either part is optional,
+ 	but must come in this order.<br>
+ 	The numbers <em>N</em> and <em>M</em> are floating
+ 	point constants.<br>
+ 	More straightforward is to think of the format as
+ 	&quot;newscore = oldscore*<em>N</em>+<em>M</em>&quot;,
+ 	but with the &quot;newscore = oldscore&quot; part left out.
 " },
 { "use_doc_date", "false", 
 	"boolean", "htdig", "", "3.2.0b1", "Indexing:How", "use_doc_date: true", "
