@@ -117,7 +117,7 @@ void DocumentRef::DocHead(char *h) {
   docHead=h;
   docHeadState=docHead.length()==0?Empty:Uncompressed;
 }
-
+#endif
 #else
  
 inline char *DocumentRef::DocHead() {
@@ -127,7 +127,6 @@ inline char *DocumentRef::DocHead() {
 inline void DocumentRef::DocHead(char *h) {
   docHead=h;
 }
-#endif
 #endif
 
 //*****************************************************************************

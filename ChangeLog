@@ -1,5 +1,7 @@
 Sat Feb  6 23:24:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
+	* htcommon/DocumentRef.cc: Fixed compile problem when zlib is disabled.
+
 	* htdoc/cf_byname, htdoc/cf_byprog.html, htdoc/attrs.html: Added
 	entries for url_log, compression_level, noindex_start, noindex_end,
 	allow_in_form, bad_querystr, no_title_text.
