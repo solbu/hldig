@@ -1,3 +1,12 @@
+Sun Feb 21 16:13:59 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtHeap.h, htlib/HtHeap.cc: Add new class.
+
+	* htlib/Makefile.in: Compile it.
+
+	* htlib/HtVector.h, htlib/HtVector.cc: Add Assign() to assign to
+	elements of vectors.
+
 Sun Feb 21 14:45:26 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc: Add patch from Jerome Alet <alet@unice.fr>
