@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.41 1999/05/16 21:43:03 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.42 1999/05/20 01:34:21 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -19,9 +19,7 @@ static char RCSid[] = "$Id: Document.cc,v 1.41 1999/05/16 21:43:03 ghutchis Exp 
 #include "htdig.h"
 #include "HTML.h"
 #include "Plaintext.h"
-#include "Postscript.h"
 #include "ExternalParser.h"
-#include "PDF.h"
 #include "lib.h"
 
 #if 1
@@ -87,7 +85,6 @@ Document::~Document()
 // void Document::Reset()
 //   Restore the Document object to an initial state.
 //   We will not reset the authorization information since it can be reused.
-//   We will also not reset the proxy since we will reuse this on every connect
 //
 void
 Document::Reset()
@@ -510,23 +507,27 @@ Document::readHeader(Connection &c)
 	    else if (modtime == 0 
 		     && mystrncasecmp(line, "last-modified:", 14) == 0)
 	    {
-	        while (*line == ' ' || *line == '\t')
-		  line++; // Skip through any whitespace
-		modtime = getdate(strtok(0, "\n\t"));
+	        strtok(line, " \t");
+                char	*token = strtok(0, "\n\t");
+		while (*token == ' ' || *token == '\t')
+                  token++; // Strip off any whitespace...
+		modtime = getdate(token);
 	    }
 	    else if (contentLength == -1 
 		     && mystrncasecmp(line, "content-length:", 15) == 0)
 	    {
-	        while (*line == ' ' || *line == '\t')
-		  line++; // Skip through any whitespace
-		contentLength = atoi(strtok(0, "\n\t"));
+                strtok(line, " \t");
+                char    *token = strtok(0, "\n\t");
+                while (*token == ' ' || *token == '\t')
+                  token++; // Strip off any whitespace...
+		contentLength = atoi(token);
 	    }
 	    else if (mystrncasecmp(line, "content-type:", 13) == 0)
 	    {
-	        while (*line == ' ' || *line == '\t')
-		  line++; // Skip through any whitespace
-		char	*token = strtok(0, "\n\t");
-				
+                strtok(line, " \t");
+                char    *token = strtok(0, "\n\t");
+                while (*token == ' ' || *token == '\t')
+                  token++; // Strip off any whitespace...
 		if ((returnStatus == Header_not_found ||
 			returnStatus == Header_ok) &&
 		    !ExternalParser::canParse(token) &&
@@ -536,9 +537,11 @@ Document::readHeader(Connection &c)
 	    }
 	    else if (mystrncasecmp(line, "location:", 9) == 0)
 	    {
-	        while (*line == ' ' || *line == '\t')
-		  line++; // Skip through any whitespace
-		redirected_to = strtok(0, "\r\n \t");
+		strtok(line, " \t");
+		char	*token = strtok(0, "\r\n \t");
+		while (*token == ' ' || *token == '\t')
+		  token++; // Strip off any whitespace...
+		redirected_to = token;
 	    }
 	}
     }
