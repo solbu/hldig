@@ -1,0 +1,3 @@
+#!/bin/sh
+
+egrep "$1" `find $2 -name "*.cc" -or -name "*.h"`
