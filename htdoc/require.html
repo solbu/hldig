@@ -43,14 +43,17 @@
       <li>
         IRIX 5.3 (SGI C++ compiler. Don't know the version)
       </li>
+      <li>
+	Debian Linux 2.0 (using egcs 1.1b)
+      </li>
     </ul>
-    Other people have compiled it under Linux as well. 
+    There are reports of ht://Dig working on a number of other platforms.
     <h3>
-      libg++
+      libstdc++
     </h3>
     If you plan on using g++ to compile ht://Dig, you have to make
-    sure that libg++ has been installed. Unfortunately, libg++ is a
-    separate package from gcc/g++. You can get libg++ from the <a
+    sure that libstdc++ has been installed. Unfortunately, libstdc++ is a
+    separate package from gcc/g++. You can get libstdc++ from the <a
     href="ftp://prep.ai.mit.edu/pub/gnu/">GNU software archive</a>.
     
     <h3>
@@ -122,13 +125,23 @@
       big and it gives us a big enough chunk to almost always show
       an excerpt of the matches.
     </p>
+    <p>
+      You may find that if you store most of each document, the
+      databases are almost the same size, or even larger than the
+      documents themselves! Remember that if you're storing a
+      significant portion of each document (say 50,000 bytes as
+      above), you have that requirement, plus the size of the word
+      database and all the additional information about each document
+      (size, URL, date, etc.) required for searching.
+    </p>
     <hr noshade size="4">
     <address>
       <a href="author.html">Andrew Scherpbier
       &lt;andrew@contigo.com&gt;</a>
     </address>
-    <!-- hhmts start -->Last modified: Sat Dec 14 18:37:40 PST 
-    <!-- hhmts end -->  
+    <!-- hhmts start -->
+Last modified: Tue Nov 17 23:56:48 EST 1998
+<!-- hhmts end -->  
   </body>
 </html>
 
