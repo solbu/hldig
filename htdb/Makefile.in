@@ -108,8 +108,6 @@ USER = @USER@
 VERSION = @VERSION@
 YACC = @YACC@
 
-CFLAGS = -g
-
 AUTOMAKE_OPTIONS = foreign
 
 INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES)
@@ -118,92 +116,83 @@ INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/in
 HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libdb.a
 
 
-lib_LTLIBRARIES = libht.la
+bin_PROGRAMS = htload htdump htstat
 
-libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc regex.c 	HtPack.cc HtDateTime.cc HtRegex.cc 	HtVectorGeneric.cc 
+htload_SOURCES = htload.cc getlong.cc
+htload_DEPENDENCIES = $(HTLIBS)
+htload_LDADD = $(HTLIBS)
 
+htdump_SOURCES = htdump.cc
+htdump_DEPENDENCIES = $(HTLIBS)
+htdump_LDADD = $(HTLIBS)
 
-libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
-
-include_HEADERS =  	Configuration.h 	DB2_db.h 	Database.h 	Dictionary.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtVector.h 	HtWordCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	good_strtok.h 	htString.h 	lib.h 	langinfo.h 	regex.h  	HtVectorGeneric.h   	HtVectorGenericCode.h 	HtVector_int.h
-
+htstat_SOURCES = htstat.cc
+htstat_DEPENDENCIES = $(HTLIBS)
+htstat_LDADD = $(HTLIBS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
 CONFIG_CLEAN_FILES = 
-LTLIBRARIES =  $(lib_LTLIBRARIES)
+PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
-libht_la_LIBADD = 
-libht_la_OBJECTS =  Configuration.lo Database.lo Dictionary.lo DB2_db.lo \
-IntObject.lo List.lo Object.lo ParsedString.lo Queue.lo \
-QuotedStringList.lo Stack.lo String.lo StringList.lo StringMatch.lo \
-String_fmt.lo good_strtok.lo strcasecmp.lo mktime.lo strptime.lo \
-timegm.lo HtCodec.lo HtWordCodec.lo HtVector.lo HtHeap.lo regex.lo \
-HtPack.lo HtDateTime.lo HtRegex.lo HtVectorGeneric.lo
+htload_OBJECTS =  htload.o getlong.o
+htload_LDFLAGS = 
+htdump_OBJECTS =  htdump.o
+htdump_LDFLAGS = 
+htstat_OBJECTS =  htstat.o
+htstat_LDFLAGS = 
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
-COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-HEADERS =  $(include_HEADERS)
-
 DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/Configuration.P .deps/DB2_db.P .deps/Database.P \
-.deps/Dictionary.P .deps/HtCodec.P .deps/HtDateTime.P .deps/HtHeap.P \
-.deps/HtPack.P .deps/HtRegex.P .deps/HtVector.P .deps/HtVectorGeneric.P \
-.deps/HtWordCodec.P .deps/IntObject.P .deps/List.P .deps/Object.P \
-.deps/ParsedString.P .deps/Queue.P .deps/QuotedStringList.P \
-.deps/Stack.P .deps/String.P .deps/StringList.P .deps/StringMatch.P \
-.deps/String_fmt.P .deps/good_strtok.P .deps/mktime.P .deps/regex.P \
-.deps/strcasecmp.P .deps/strptime.P .deps/timegm.P
-SOURCES = $(libht_la_SOURCES)
-OBJECTS = $(libht_la_OBJECTS)
+DEP_FILES =  .deps/getlong.P .deps/htdump.P .deps/htload.P \
+.deps/htstat.P
+SOURCES = $(htload_SOURCES) $(htdump_SOURCES) $(htstat_SOURCES)
+OBJECTS = $(htload_OBJECTS) $(htdump_OBJECTS) $(htstat_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .cc .lo .o .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.config
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign htlib/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign htdb/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLTLIBRARIES:
+mostlyclean-binPROGRAMS:
 
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
-distclean-libLTLIBRARIES:
+distclean-binPROGRAMS:
 
-maintainer-clean-libLTLIBRARIES:
+maintainer-clean-binPROGRAMS:
 
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	  else :; fi; \
 	done
 
-uninstall-libLTLIBRARIES:
+uninstall-binPROGRAMS:
 	@$(NORMAL_UNINSTALL)
-	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	done
 
 .s.o:
@@ -238,27 +227,21 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libht.la: $(libht_la_OBJECTS) $(libht_la_DEPENDENCIES)
-	$(CXXLINK) -rpath $(libdir) $(libht_la_LDFLAGS) $(libht_la_OBJECTS) $(libht_la_LIBADD) $(LIBS)
+htload: $(htload_OBJECTS) $(htload_DEPENDENCIES)
+	@rm -f htload
+	$(CXXLINK) $(htload_LDFLAGS) $(htload_OBJECTS) $(htload_LDADD) $(LIBS)
+
+htdump: $(htdump_OBJECTS) $(htdump_DEPENDENCIES)
+	@rm -f htdump
+	$(CXXLINK) $(htdump_LDFLAGS) $(htdump_OBJECTS) $(htdump_LDADD) $(LIBS)
+
+htstat: $(htstat_OBJECTS) $(htstat_DEPENDENCIES)
+	@rm -f htstat
+	$(CXXLINK) $(htstat_LDFLAGS) $(htstat_OBJECTS) $(htstat_LDADD) $(LIBS)
 .cc.o:
 	$(CXXCOMPILE) -c $<
 .cc.lo:
 	$(LTCXXCOMPILE) -c $<
-
-install-includeHEADERS: $(include_HEADERS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	@list='$(include_HEADERS)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p; \
-	done
-
-uninstall-includeHEADERS:
-	@$(NORMAL_UNINSTALL)
-	list='$(include_HEADERS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(includedir)/$$p; \
-	done
 
 tags: TAGS
 
@@ -291,14 +274,14 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = htlib
+subdir = htdb
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign htlib/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign htdb/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -368,23 +351,23 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-libLTLIBRARIES
+install-exec-am: install-binPROGRAMS
 install-exec: install-exec-am
 
-install-data-am: install-includeHEADERS
+install-data-am:
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLTLIBRARIES uninstall-includeHEADERS
+uninstall-am: uninstall-binPROGRAMS
 uninstall: uninstall-am
-all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-am: Makefile $(PROGRAMS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(includedir)
+	$(mkinstalldirs)  $(DESTDIR)$(bindir)
 
 
 mostlyclean-generic:
@@ -396,25 +379,25 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool clean-tags \
+clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
 		clean-depend clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-libLTLIBRARIES distclean-compile \
-		distclean-libtool distclean-tags distclean-depend \
-		distclean-generic clean-am
+distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
+		distclean-tags distclean-depend distclean-generic \
+		clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+maintainer-clean-am:  maintainer-clean-binPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-depend \
 		maintainer-clean-generic distclean-am
@@ -423,16 +406,15 @@ maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
-clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
-uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool uninstall-includeHEADERS \
-install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
-clean-depend maintainer-clean-depend info-am info dvi-am dvi check \
-check-am installcheck-am installcheck install-exec-am install-exec \
+.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
+maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir \
+mostlyclean-depend distclean-depend clean-depend \
+maintainer-clean-depend info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
 install-data-am install-data install-am install uninstall-am uninstall \
 all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \

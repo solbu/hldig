@@ -1,0 +1,11 @@
+Makefile
+*.lo
+*.la
+.purify
+.pure
+.deps
+.libs
+htdump
+htload
+htstat
+

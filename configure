@@ -4107,7 +4107,7 @@ ac_configure_args="$ac_configure_args --enable-cxx"
 subdirs="db/dist"
 
 
-HTDIGDIRS="db htlib htword htcommon htnet htfuzzy htdig htsearch htmerge htnotify installdir include htdoc $TESTDIR ."
+HTDIGDIRS="db htlib htword htcommon htnet htfuzzy htdb htdig htsearch htmerge htnotify installdir include htdoc $TESTDIR ."
 
 
 trap '' 1 2 15
@@ -4211,7 +4211,7 @@ done
 ac_given_srcdir=$srcdir
 ac_given_INSTALL="$INSTALL"
 
-trap 'rm -fr `echo "Makefile db/Makefile htcommon/Makefile htword/Makefile htnet/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile test/test_functions include/htconfig.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "Makefile db/Makefile htcommon/Makefile htword/Makefile htnet/Makefile htlib/Makefile htdb/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile test/test_functions include/htconfig.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -4349,7 +4349,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"Makefile db/Makefile htcommon/Makefile htword/Makefile htnet/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile test/test_functions"}
+CONFIG_FILES=\${CONFIG_FILES-"Makefile db/Makefile htcommon/Makefile htword/Makefile htnet/Makefile htlib/Makefile htdb/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile test/test_functions"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
