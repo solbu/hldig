@@ -36,6 +36,11 @@
 #include <stdlib.h>
 #endif
 
+#ifndef __gmtime_r
+#define extern struct tm *__gmtime_r __P ((__const time_t *__timer, \
+               struct tm *__tp));
+#endif
+
 time_t mytimegm(tmp)
 struct tm *tmp;
 {
