@@ -8,8 +8,9 @@ SHOWSTOPPERS:
 * htfuzzy will not generate a synonym fuzzy: 
    <http://www.htdig.org/htdig3-dev/1999/11/0097.html>
 * Retriever/Server classes still need a cleanup.
-   (Geoff is working on this currently.)
+   (Geoff: Server is finished, Retriever still needs work.)
 * Changes in 3-1-x tree must be merged into current tree.
+* HtHTTP does not properly use proxies.
 
 KNOWN BUGS:
 * htdig/Image.cc doesn't use Transport classes.
