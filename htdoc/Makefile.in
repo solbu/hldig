@@ -121,7 +121,7 @@ INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/in
 HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/libhtdb.la 		$(top_builddir)/htlib/libht.la
 
 
-EXTRA_DIST = COPYING  	ChangeLog 	FAQ.html 	RELEASE.html 	THANKS.html 	TODO.html 	author.html 	bdot.gif 	bugs.html 	attrs.html attrs_head.html attrs_tail.html 	cf_byname.html cf_byname_head.html cf_byname_tail.html 	cf_byprog.html cf_byprog_head.html cf_byprog_tail.html 	cf_general.html 	cf_types.html 	cf_variables.html 	config.html 	confindex.html 	confmenu.html 	contents.html 	dot.gif 	howitworks.html 	htdig.gif 	htdig.html 	htdig_big.gif 	htfuzzy.html 	htmerge.html 	htnotify.html 	hts_form.html 	hts_general.html 	hts_menu.html 	hts_method.html 	hts_templates.html 	htsearch.html 	index.html 	install.html 	ma_menu.html 	mailarchive.html 	mailing.html 	main.html 	meta.html 	notification.html 	require.html 	triangle.gif 	up.gif 	uses.html 	where.html 	cf_generate.pl
+EXTRA_DIST = COPYING  	ChangeLog 	FAQ.html 	RELEASE.html 	THANKS.html 	TODO.html 	author.html 	bdot.gif 	bugs.html 	attrs.html attrs_head.html attrs_tail.html 	cf_byname.html cf_byname_head.html cf_byname_tail.html 	cf_byprog.html cf_byprog_head.html cf_byprog_tail.html 	cf_general.html 	cf_types.html 	cf_variables.html 	config.html 	confindex.html 	confmenu.html 	contents.html 	dot.gif 	htdig.gif 	htdig.html 	htdig_big.gif 	htfuzzy.html 	htmerge.html 	htnotify.html 	hts_form.html 	hts_general.html 	hts_menu.html 	hts_method.html 	hts_templates.html 	htsearch.html 	index.html 	install.html 	ma_menu.html 	mailarchive.html 	mailing.html 	main.html 	meta.html 	notification.html 	require.html 	triangle.gif 	up.gif 	uses.html 	where.html 	cf_generate.pl
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -158,7 +158,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \

@@ -1,3 +1,8 @@
+Fri Dec  1 11:58:21 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* Makefile.in, [hit]*/Makefile.in: Regenerate using automake --foreign
+	after fixing bug with cp -pr in automake.
+
 Thu Nov 30 14:41:58 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/Makefile.am: Removed howitworks.html from EXTRA_DIST.
