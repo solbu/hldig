@@ -3,7 +3,7 @@
 #
 # rundig
 #
-# $Id: rundig,v 1.7.4.1 2000/05/31 10:54:43 ghutchis Exp $
+# $Id: rundig,v 1.7.4.2 2001/01/12 15:00:39 grdetil Exp $
 #
 # This is a sample script to create a search database for ht://Dig.
 #
@@ -41,7 +41,9 @@ case "$alt" in
     for f in *.work
     do
         mv -f $f `basename $f .work`
-    done ) ;;
+    done
+    test -f db.words.db.work_weakcmpr &&
+	mv -f db.words.db.work_weakcmpr db.words.db_weakcmpr) ;;
 esac
 $BINDIR/htnotify $opts
 # If you want to use the soundex and (or) metaphone fuzzy matchings,
