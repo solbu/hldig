@@ -3,7 +3,8 @@
 //
 // Indexing the "doc_db" database by id-number in "doc_index".
 //
-// $Id: docs.cc,v 1.13 1999/01/26 19:46:00 hp Exp $
+// $Id: docs.cc,v 1.14 1999/01/31 04:25:31 ghutchis Exp $
+//
 //
 
 #include "htmerge.h"
@@ -48,7 +49,11 @@ convertDocs(char *doc_db, char *doc_index)
     while ((url = (String *) urls->Get_Next()))
     {
 	DocumentRef	*ref = db[url->get()];
+
 	// moet eigenlijk wat tussen, maar heb ik niet gedaan....
+	// (Translation Dutch -> English)
+	// something should be inserted here but I didn't do that
+
 	if (!ref)
 	    continue;
 	id = 0;
