@@ -29,12 +29,18 @@ WordRecordInfo::WordRecordInfo(const Configuration& config)
 {
   default_type = WORD_RECORD_INVALID;
   const String &recorddesc = config["wordlist_wordrecord_description"];
-  if(!recorddesc.nocase_compare("data")) {
-    default_type = WORD_RECORD_DATA;
-  } else if(!recorddesc.nocase_compare("none") || recorddesc.empty()) {
-    default_type = WORD_RECORD_NONE;	
-  } else {
-    cerr << "WordRecordInfo::WordRecordInfo: invalid wordlist_wordrecord_description:" << recorddesc << endl;
+  if(!recorddesc.nocase_compare("data")) 
+  {
+      default_type = WORD_RECORD_DATA;
+  } 
+  else 
+  if(!recorddesc.nocase_compare("none") || recorddesc.empty()) 
+  {
+      default_type = WORD_RECORD_NONE;	
+  } 
+  else 
+  {
+      cerr << "WordRecordInfo::WordRecordInfo: invalid wordlist_wordrecord_description:" << recorddesc << endl;
   }
 }
 

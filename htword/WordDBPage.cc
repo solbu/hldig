@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.cc,v 1.1.2.7 2000/01/13 14:47:10 loic Exp $
+// $Id: WordDBPage.cc,v 1.1.2.8 2000/01/14 15:51:20 bosc Exp $
 //
 
 #include"WordDBPage.h"
@@ -595,8 +595,8 @@ WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int ,HtVector
 	    nums[iflag]=0;
 
 	    int foundfchange=0;
-	    String &aword=akey.GetWord();
-	    String &pword=pkey.GetWord();
+	    const String &aword=akey.GetWord();
+	    const String &pword=pkey.GetWord();
 	    if(!(aword==pword)){foundfchange=1;}
 
 	    // check numerical fields for changes
@@ -718,7 +718,7 @@ WordDBPage::Compress_show_extracted(int *nums,int *nums_pos,int nnums0,HtVector_
 		if(nbits<8){show_bits(val,nbits);printf(" ");}
 		else
 		{
-		    printf("%12u ",val);
+		    printf("|%12u",val);
 		}
 	    }
 	    else
@@ -726,7 +726,7 @@ WordDBPage::Compress_show_extracted(int *nums,int *nums_pos,int nnums0,HtVector_
 		if(nbits<8){printf("    ");}
 		else
 		{
-		    printf("             ");
+		    printf("|            ");
 		}
 	    }
 	}

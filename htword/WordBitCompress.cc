@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.cc,v 1.1.2.12 2000/01/14 11:56:47 bosc Exp $
+// $Id: WordBitCompress.cc,v 1.1.2.13 2000/01/14 15:51:20 bosc Exp $
 //
 
 
@@ -247,18 +247,18 @@ VlengthCoder::code_begin()
 {
     int i;
     bs.add_tag("VlengthCoder:Header");
-    bs.put_uint(nbits,5,"nbits");
+    bs.put_uint(nbits,NBITS_NBITS_VAL,"nbits");
     bs.put_uint(nlev,5,"nlev");
     for(i=0;i<nintervals;i++)
     {
-	bs.put_uint(intervals[i],5,label_str("interval",i));
+	bs.put_uint(intervals[i],NBITS_NBITS_VAL,label_str("interval",i));
     }
 }
 void 
 VlengthCoder::get_begin()
 {
     int i;
-    nbits=bs.get_uint(5,"nbits");
+    nbits=bs.get_uint(NBITS_NBITS_VAL,"nbits");
     if(verbose>1)printf("get_begin nbits:%d\n",nbits);
     nlev=bs.get_uint(5,"nlev");
     if(verbose>1)printf("get_begin nlev:%d\n",nlev);
@@ -273,7 +273,7 @@ VlengthCoder::get_begin()
 
     for(i=0;i<nintervals;i++)
     {
-	intervals[i]=bs.get_uint(5,label_str("interval",i));
+	intervals[i]=bs.get_uint(NBITS_NBITS_VAL,label_str("interval",i));
 	intervalsizes[i]=intervalsize0(i);
 	if(verbose>1)printf("get_begin intervals:%2d:%2d\n",i,intervals[i]);
     }
@@ -299,6 +299,8 @@ VlengthCoder::VlengthCoder(BitStream &nbs,int nverbose/*=0*/):bs(nbs)
     intervals=NULL;
 }
 
+int debug_test_nlev=-1;
+
 VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose/*=0*/):bs(nbs)
 {
     verbose=nverbose;
@@ -306,9 +308,16 @@ VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose/
     qsort_uint(sorted,n);
 
     nbits=num_bits(HtMaxMin::max_v(vals,n));
-    nlev=5;
+
+    // **** heuristics to determine best nlev
+    // force table size to be less than 1/10 of the maximum coded size
+    nlev=num_bits((n*nbits)/(10*NBITS_NBITS_VAL));
+    // sanity
     if(nlev>=nbits){nlev=nbits-1;}
+    // nlev at least 1
     if(nlev<1){nlev=1;}
+
+    if(debug_test_nlev>=0){nlev=debug_test_nlev;}
     nintervals=pow2(nlev);
     int i;
 
@@ -319,10 +328,9 @@ VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose/
     lboundaries=new unsigned int [nintervals+1];
     CHECK_MEM(lboundaries);
 
-    // find split boundaires
     if(verbose>1)printf("nbits:%d nlev:%d nintervals:%d \n",nbits,nlev,nintervals);
 
-    if(0)
+    if(verbose>10)
     {
 	printf("vals;\n");
 	for(i=0;i<n;i++)
@@ -337,6 +345,7 @@ VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose/
 	printf("\n");
     }
 
+    // find split boundaires
     unsigned int lboundary=0;
     unsigned int boundary;
     for(i=0;i<nintervals-1;i++)
@@ -698,6 +707,23 @@ Compressor::put_vals(unsigned int *vals,int n,const char *tag)
 
     int nbits=num_bits(HtMaxMin::max_v(vals,n));
     if(verbose)printf("*********************put_vals:n:%3d nbits:%3d\n",n,nbits);
+
+    int i;
+    if(verbose)
+    {
+	printf("TTT:n:%3d nbits:%3d\n",n,nbits);
+	for(i=1;i<7;i++)
+	{
+	    debug_test_nlev=i;
+	    printf("trying nlev:%3d\n",debug_test_nlev);
+	    freeze();
+	    put_decr(vals,n);
+	    int fndsz=unfreeze();
+	    printf("TTT:nlev:%2d try size:%4d\n",i,fndsz);
+	}
+	debug_test_nlev=-1;
+    }
+
     if(n>15 && nbits>3)
     {
 	freeze();
