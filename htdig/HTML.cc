@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62.2.14 2000/09/27 05:21:31 ghutchis Exp $
+// $Id: HTML.cc,v 1.62.2.15 2000/10/06 16:08:57 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -799,7 +799,6 @@ HTML::do_tag(Retriever &retriever, String &tag)
 
 	case 21:	// frame
         case 24:	// embed
-        case 25:	// object
 	{
 	  if (!attrs["src"].empty())
 	    {
@@ -812,6 +811,26 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    delete href;
 		  href = new URL(transSGML(attrs["src"]), *base);
 		  // Frames have the same hopcount as the parent.
+		  retriever.got_href(*href, transSGML(attrs["title"]), 0);
+		  in_ref = 0;
+		}
+	    }
+	  break;
+	}
+	  
+        case 25:	// object
+	{
+	  if (!attrs["data"].empty())
+	    {
+	      //
+	      // data seen
+	      //
+	      if (dofollow)
+		{
+		  if (href)
+		    delete href;
+		  href = new URL(transSGML(attrs["data"]), *base);
+		  // Assume objects have the same hopcount as the parent.
 		  retriever.got_href(*href, transSGML(attrs["title"]), 0);
 		  in_ref = 0;
 		}

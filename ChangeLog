@@ -1,4 +1,7 @@
-Fri Oct  6 10:53:14 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Fri Oct  6 11:03:14 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (do_tag): Parse <object> tags properly, looking
+	for data= attribute rather than src=.
 
 	* htcommon/defaults.cc (server_aliases): Additional clarification
 	to server_aliases description of port numbers.
