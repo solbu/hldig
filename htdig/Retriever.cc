@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.41 1999/04/25 01:40:32 ghutchis Exp $
+// $Id: Retriever.cc,v 1.42 1999/04/30 23:48:06 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -14,11 +14,11 @@
 #include "Parsable.h"
 #include "Document.h"
 #include "StringList.h"
+#include "HtWordType.h"
 #include <pwd.h>
 #include <signal.h>
 #include <assert.h>
 #include <stdio.h>
-#include "HtWordType.h"
 
 static WordList	words;
 static int noSignal;
@@ -640,6 +640,14 @@ Retriever::IsValidURL(char *u)
     // If the URL contains any of the patterns in the exclude list,
     // mark it as invalid
     //
+#ifdef  REGEX
+    if (excludes.match(url, 0, 0) != 0)
+      {
+                if (debug >= 2)
+		  cout << endl << "   Rejected: intem in exclude list ";
+                return(FALSE);
+      }
+#else
     if (excludes.hasPattern()) // Make sure there's an exclude list!
       {
 	int retValue;     // Returned value of findFirst
@@ -657,7 +665,7 @@ Retriever::IsValidURL(char *u)
 	    return FALSE;
 	  }
       }
-
+#endif
     //
     // See if the path extension is in the list of invalid ones
     //
@@ -681,8 +689,12 @@ Retriever::IsValidURL(char *u)
     //
     // If any of the limits are met, we allow the URL
     //
+#ifdef  REGEX
+    if (limits.match(url, 1, 0) != 0) return(TRUE);
+#elseif
     if (limits.FindFirst(url) >= 0)
 	return TRUE;
+#endif
 
     if (debug > 2)
       cout << endl <<"   Rejected: URL not in the limits!";
@@ -1015,7 +1027,11 @@ Retriever::got_href(URL &url, char *description)
 	    current_ref->DocBackLinks(current_ref->DocBackLinks() + 1);
 	    current_ref->AddDescription(description);
 	}
+#ifdef  REGEX
+        else if (limitsn.match(url.get(), 1, 0) != 0)
+#else
 	else if (limitsn.FindFirst(url.get()) >= 0)
+#endif
 	{
 	    //
 	    // First add it to the document database
@@ -1146,7 +1162,11 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 	}
 
 	url.normalize();
+#ifdef  REGEX
+        if (limitsn.match(url.get(), 1, 0) != 0)
+#else
 	if (limitsn.FindFirst(url.get()) >= 0)
+#endif
 	{
 	    //
 	    // First add it to the document database

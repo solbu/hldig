@@ -1,3 +1,22 @@
+<<<<<<< ChangeLog
+Fri Apr 30 19:30:42 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtRegex.h, htlib/HtRegex.cc: New class, contributed by
+	Peter D. Gray <pdg@draci.its.uow.edu.au> as a small wrapper for
+	system regex calls.
+
+	* htlib/Makefile.in: Build it.
+	
+	* htdig/htdig.h: Use it if REGEX is defined.
+
+	* htdig/htdig.cc: Ditto.
+
+	* htdig/Retriever.cc: Ditto.
+
+	* htsearch/Display.cc(generateStars): Remove extra newline after
+	STARSRIGHT and STARSLEFT variables, noted by Torsten Neuer
+	<tneuer@inwise.de>.
+	
 Fri Apr 30 18:52:56 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
 	* htlib/URL.cc(ServerAlias): port for server_alias entries now

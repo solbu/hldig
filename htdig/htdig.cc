@@ -1,5 +1,5 @@
 //
-// main.cc
+// htdig.cc
 // 
 // Indexes the web sites specified in the config file
 // generating several databases to be used by htmerge
@@ -26,9 +26,15 @@
 int			debug = 0;
 int			report_statistics = 0;
 DocumentDB		docs;
+#ifdef  REGEX
+HtRegex			limits;
+HtRegex			limitsn;
+HtRegex			excludes;
+#else
 StringMatch		limits;
 StringMatch		limitsn;
 StringMatch		excludes;
+#endif
 StringMatch             badquerystr;
 FILE			*urls_seen = NULL;
 FILE			*images_seen = NULL;

@@ -14,7 +14,7 @@ OBJS=	Configuration.o Connection.o Database.o Dictionary.o \
 	URL.o URLTrans.o cgi.o good_strtok.o io.o strcasecmp.o \
 	mktime.o strptime.o timegm.o HtCodec.o HtWordCodec.o \
 	HtURLCodec.o HtVector.o HtHeap.o regex.o HtSGMLCodec.o \
-	HtWordType.o HtPack.o HtDateTime.o
+	HtWordType.o HtPack.o HtDateTime.o HtRegex.o
 
 TARGET=		libht.a
 
