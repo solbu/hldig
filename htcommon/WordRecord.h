@@ -1,29 +1,42 @@
 //
 // WordRecord.h
 //
-// $Id: WordRecord.h,v 1.5 1999/03/28 01:49:09 hp Exp $
+// $Id: WordRecord.h,v 1.6 1999/07/19 01:49:09 ghutchis Exp $
 //
 
 #ifndef _WordRecord_h_
 #define _WordRecord_h_
 
-struct WordRecord
-{
-#ifndef NO_WORD_COUNT
-	int		count;
-#endif
-	int		id;
-	int		weight;
-	int		anchor;
-	int		location;
+//
+// Flags
+// 
+#define FLAG_TEXT 0
+#define FLAG_CAPITAL 1
+#define FLAG_TITLE 2
+#define FLAG_HEADING 4
+#define FLAG_KEYWORDS 8
+#define FLAG_DESCRIPTION 16
+#define FLAG_AUTHOR 32
+#define FLAG_LINK_TEXT 64
+#define FLAG_URL 128
+// The remainder are undefined
 
-	void	Clear()
-		{
-		  id = weight = anchor = location = 0;
-#ifndef NO_WORD_COUNT
-		  count = 1;
-#endif
-		}
+class WordRecord : public Object
+{
+ public:
+    WordRecord() {}
+    ~WordRecord() {}
+
+    long int	id;
+    long int	flags;
+    int		anchor;
+    int		location;
+
+    void	Clear()
+      {
+	id = flags = anchor = location = 0;
+      }
+ private:
 };
 
 /* And this is how we will compress this structure, for disk
@@ -33,15 +46,9 @@ struct WordRecord
    here, together with the actual struct declaration.)
 
    Since none of the values are non-zero, we want to use
-   unsigned chars and unsigned short ints when possible.
-    The "count" member is much more often 1 than 0, so we code
-   it accordingly.  */
+   unsigned chars and unsigned short ints when possible. */
 
-#ifdef NO_WORD_COUNT
 #define WORD_RECORD_COMPRESSED_FORMAT "u4"
-#else
-#define WORD_RECORD_COMPRESSED_FORMAT "cu4"
-#endif
 
 #endif
 
