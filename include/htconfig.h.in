@@ -1,11 +1,19 @@
-/* include/htconfig.h.in  Generated automatically from configure.in */
-/* 	by autoheader.  */
+/* include/htconfig.h.in.  Generated automatically from configure.in by autoheader.  */
+/* Defined in case the compiler doesn't have TRUE and FALSE constants */
+#ifndef TRUE
+#define TRUE 1
+#endif
 
-#ifndef _config_h_
-#define	_config_h_
+#ifndef FALSE
+#define FALSE 0
+#endif
 
-#define	VERSION	1
-#define	MAX_WORD_LENGTH	12
+/* Define to the syslog level for htsearch logging. */
+#define LOG_LEVEL LOG_INFO
+
+/* Define to the syslog facility for htsearch logging. */
+#define LOG_FACILITY LOG_LOCAL5
+
 
 /* Define if on AIX 3.
    System headers sometimes define this.
@@ -17,14 +25,44 @@
 /* Define to empty if the keyword does not work.  */
 #undef const
 
+/* Define if you have the strftime function.  */
+#undef HAVE_STRFTIME
+
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
 /* Define if you can safely include both <sys/time.h> and <time.h>.  */
-#define TIME_WITH_SYS_TIME	0
+#undef TIME_WITH_SYS_TIME
 
 /* Define if your <sys/time.h> declares struct tm.  */
-#define TM_IN_SYS_TIME	0
+#undef TM_IN_SYS_TIME
+
+/* Define this to the type of the third argument of getpeername() */
+#undef GETPEERNAME_LENGTH_T
+
+/* Define if you have the bool type */
+#undef HAVE_BOOL
+
+#ifndef HAVE_BOOL
+typedef char bool;
+#endif
+
+/* Define if you C++ compiler doesn't know true and false */
+#undef HAVE_TRUE
+#undef HAVE_FALSE
+
+#ifndef HAVE_TRUE
+#define true  TRUE
+#endif
+#ifndef HAVE_FALSE
+#define false FALSE
+#endif
+
+/* Define if you need a prototype for gethostname() */
+#undef NEED_PROTO_GETHOSTNAME
+
+/* Define if the function strptime is declared in <time.h> */
+#undef HAVE_STRPTIME_DECL
 
 /* Define if you have the localtime_r function.  */
 #undef HAVE_LOCALTIME_R
@@ -35,11 +73,20 @@
 /* Define if you have the strerror function.  */
 #undef HAVE_STRERROR
 
+/* Define if you have the strptime function.  */
+#undef HAVE_STRPTIME
+
 /* Define if you have the strstr function.  */
 #undef HAVE_STRSTR
 
+/* Define if you have the timegm function.  */
+#undef HAVE_TIMEGM
+
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
+
+/* Define if you have the <getopt.h> header file.  */
+#undef HAVE_GETOPT_H
 
 /* Define if you have the <limits.h> header file.  */
 #undef HAVE_LIMITS_H
@@ -47,11 +94,17 @@
 /* Define if you have the <malloc.h> header file.  */
 #undef HAVE_MALLOC_H
 
+/* Define if you have the <strings.h> header file.  */
+#undef HAVE_STRINGS_H
+
 /* Define if you have the <sys/file.h> header file.  */
 #undef HAVE_SYS_FILE_H
 
 /* Define if you have the <sys/ioctl.h> header file.  */
 #undef HAVE_SYS_IOCTL_H
+
+/* Define if you have the <sys/select.h> header file.  */
+#undef HAVE_SYS_SELECT_H
 
 /* Define if you have the <sys/time.h> header file.  */
 #undef HAVE_SYS_TIME_H
@@ -59,31 +112,21 @@
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
 
-/* Define if you have the timegm function.  */
-#define HAVE_TIMEGM	0
+/* Define if you have the <zlib.h> header file.  */
+#undef HAVE_ZLIB_H
 
-/* Define if you need a prototype for gethostname() */
-#define	NEED_PROTO_GETHOSTNAME	0
+/* Define if you have the nsl library (-lnsl).  */
+#undef HAVE_LIBNSL
 
-/* Define if you have the gdbm library (-lgdbm).  */
-#define HAVE_LIBGDBM	0
+/* Define if you have the socket library (-lsocket).  */
+#undef HAVE_LIBSOCKET
 
-/* Define if you have the common library (-lcommon).  */
-#undef HAVE_LIBCOMMON
+/* Define if you have the z library (-lz).  */
+#undef HAVE_LIBZ
 
-/* Define if you have the db library (-ldb).  */
-#undef HAVE_LIBDB
+/* Name of package */
+#undef PACKAGE
 
-/* Define if you have the ht library (-lht).  */
-#undef HAVE_LIBHT
+/* Version number of package */
+#undef VERSION
 
-/* Define if you have the rx library (-lrx).  */
-#undef HAVE_LIBRX
-
-/* Define to the syslog level for htsearch logging. */
-#define LOG_LEVEL LOG_INFO
-
-/* Define to the syslog facility for htsearch logging. */
-#define LOG_FACILITY LOG_LOCAL5
-
-#endif

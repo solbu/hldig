@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.1 1999/10/29 20:41:40 grdetil Exp $
+// $Id: Display.cc,v 1.100.2.2 1999/11/02 12:58:37 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -549,7 +549,7 @@ Display::setVariables(int pageNumber, List *matches)
 		*str << tmp << "\">" << p << "</a>";
 	    }
 	    if (i != nPages)
-		*str << (sep.Count() > 0) ? sep[(i-1)%sep.Count()] : " ";
+		*str << ((sep.Count() > 0) ? sep[(i-1)%sep.Count()] : " ");
 	}
 	vars.Add("PAGELIST", str);
     }
@@ -1137,8 +1137,8 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 String
 Display::hilight(const String& str_arg, const String& urlanchor, int fanchor)
 {
-    static char		*start_highlight = config["start_highlight"];
-    static char		*end_highlight = config["end_highlight"];
+    const String start_highlight = config["start_highlight"];
+    const String end_highlight = config["end_highlight"];
     const char		*str = str_arg;
     String		result;
     int			pos;

@@ -1,3 +1,36 @@
+Tue Nov 02 13:44:57 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* htsearch/Display.cc (setVariables): parentheses missing around ternary
+	operator : confusion in priority with <<. 
+
+Tue Nov 02 13:33:50 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* htsearch/Display.cc (hilight): changed static char * (!!) to const string,
+	static char evaluated before configuration is loaded so config had no 
+	effect + unnecesary conversion
+
+Tue Nov 02 11:45:49 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* htword/WordKey.cc :  Cleaned up obsolete code now using *InSortOrder fcts
+	and WordKeyInfo.sort[]
+	* htword/WordKey : Added FirstSkipField :
+	find first field that must be checked for skip
+	* htword/WordKey (PrefixOnly): now returns OK/NOTOK, fixed bug which 
+	made Walk loop over the whole db if the searchkey just had 
+	a the "word" field defined
+	* htword/WordKey.cc (Unpack): had forgten to: SetDefinedWordSuffix 
+	* htword/WordKey.cc (operator >>): added check for very very long words
+	(even if this should never happen)
+	* htword/WordKey.cc (operators << >>): added <UNDEF> word suffix handling
+	* htword/WordKey.h : Filled() did not check for WordSuffix
+	* htword/WordKey.h : added WordKey::ExactEqual
+	* htword/WordKey.h (IsDefinedWordSuffix): fixed bad flag check
+	* htword/WordList : Removed all obsolete HTDIG_WORDLIST flags: only
+	two remain : COLLECTOR and WALKER the rest is now specified by the searchKey
+	removed action arg to WordList::Collect()
+	* htcommon/HtWordList.cc,htmerge/words.cc : changed flags in  calls to WordList::Walk 
+	* htword/WordList.cc : skip now deals with the SuffixUndefined case
+	
 Fri Oct 29 17:13:21 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/cf_generate.pl: now updates last modified date in attrs.html

@@ -1,246 +1,88 @@
 //
 // words.cc
 //
-// Implementation of htmerge
+// words: Remove words from documents that have been purged by the docs code.
 //
-// $Log: words.cc,v $
-// Revision 1.2  1998/11/15 22:24:19  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Change \r to \n as noted by Andrew Bishoip.
+// $Id: words.cc,v 1.22.2.1 1999/11/02 12:58:37 bosc Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.2 1998/11/15 22:24:19 ghutchis Exp $";
-#endif
 
 #include "htmerge.h"
+#include "HtPack.h"
 
+#include <errno.h>
+
+//
+// Callback data dedicated to Dump and dump_word communication
+//
+class DeleteWordData : public Object
+{
+public:
+  DeleteWordData(const Dictionary& discard_arg) : discard(discard_arg) { deleted = remains = 0; }
+
+  const Dictionary& discard;
+  int deleted;
+  int remains;
+};
 
 //*****************************************************************************
-// void mergeWords(char *wordtmp, char *wordfile)
 //
-void
-mergeWords(char *wordtmp, char *wordfile)
+//
+static int delete_word(WordList *words, WordCursor& cursor, const WordReference *word_arg, Object &data)
 {
-    FILE	*wordlist = fopen(form("%s.new", wordtmp), "w");
-    Database	*dbf = Database::getDatabaseInstance();
-    String	out;
-    String	currentWord;
-    char	buffer[1000];
-    char	*word, *sid;
-    char	*name, *value, *pair;
-    int		word_count = 0;
-    WordRecord	wr;
+  const HtWordReference *word = (const HtWordReference *)word_arg;
+  DeleteWordData& d = (DeleteWordData&)data;
+  static String docIDStr;
 
-    //
-    // Check for file access errors
-    //
-    if (!wordlist)
-    {
-	reportError(form("Unable to create temporary word file '%s.new'",
-			 wordtmp));
+  docIDStr = 0;
+  docIDStr << word->DocID();
+
+  if(d.discard.Exists(docIDStr)) {
+    if(words->Delete(cursor) != 1) {
+      cerr << "htmerge: deletion of " << *word << " failed " << strerror(errno) << "\n";
+      return NOTOK;
     }
-    if (access(wordtmp, R_OK) < 0)
-    {
-	reportError(form("Unable to open word list file '%s'", wordtmp));
-    }
-    if (dbf->OpenReadWrite(wordfile, 0664) == NOTOK)
-    {
-	reportError(form("Unable to create/open the word database '%s'",
-			 wordfile));
-    }
-	
-    //
-    // Sort the list of words.  This uses the unix sort program since it
-    // is very good at it.  :-)
-    //
     if (verbose)
-	cout << "htmerge: Sorting..." << endl;
+      {
+	cout << "htmerge: Discarding " << *word << "\n";
+	cout.flush();
+      }
+    d.deleted++;
+  } else {
+    d.remains++;
+  }
 
-    String	command = SORT_PROG;
-    String	tmpdir = getenv("TMPDIR");
-    if (tmpdir.length())
+  return OK;
+}
+
+//*****************************************************************************
+// void mergeWords()
+//
+void mergeWords()
+{
+  HtWordList		words(config);
+  DeleteWordData	data(discard_list); 
+
+  words.Open(config["word_db"], O_RDWR);
+
+  (void)words.Walk(WordReference(), HTDIG_WORDLIST_WALKER, delete_word, data);
+  
+  words.Close();
+
+  if (verbose)
+    cout << "\n";
+  if (stats)
     {
-	command << " -T " << tmpdir;
-    }
-    command << ' ' << wordtmp;
-    FILE	*sorted = popen(command, "r");
-    if (!sorted)
-    {
-	reportError("Unable to sort");
-	exit(1);
-    }
-	
-    //
-    // Read sorted lines
-    //
-    while (fgets(buffer, sizeof(buffer), sorted))
-    {
-	if (*buffer == '+')
-	{
-	    //
-	    // This tells us that the document hasn't changed and we
-	    // are to reuse the old words
-	    //
-	}
-	else if (*buffer == '-')
-	{
-	    if (config.Boolean("remove_bad_urls"))
-	    {
-		discard_list.Add(strtok(buffer + 1, "\n"), 0);
-		if (verbose)
-		    cout << "htmerge: Removing doc #" << buffer + 1 << endl;
-	    }
-	}
-	else if (*buffer == '!')
-	{
-	    discard_list.Add(strtok(buffer + 1, "\n"), 0);
-	    if (verbose)
-		cout << "htmerge: doc #" << buffer + 1 <<
-		    " has been superceeded." << endl;
-	}
-	else
-	{
-	    //
-	    // Split the line up into the word, count, location, and
-	    // document id.
-	    //
-	    word = good_strtok(buffer, "\t");
-	    pair = good_strtok("\t");
-	    wr.Clear();
-	    sid = "-";
-	    while (pair && *pair)
-	    {
-		name = strtok(pair, ":");
-		value = strtok(0, "\n");
-		if (name && *name && value && *value)
-		{
-		    switch (*name)
-		    {
-			case 'c':
-			    wr.count = atoi(value);
-			    break;
-			case 'l':
-			    wr.location = atoi(value);
-			    break;
-			case 'i':
-			    sid = value;
-			    wr.id = atoi(value);
-			    break;
-			case 'w':
-			    wr.weight = atoi(value);
-			    break;
-			case 'a':
-			    wr.anchor = atoi(value);
-			    break;
-		    }
-		}
-		pair = good_strtok("\t");
-	    }
-
-	    //
-	    // If the word is from a document we need to discard, we
-	    // don't want to add it to the database
-	    //
-	    if (discard_list.Exists(sid))
-	    {
-		if (verbose > 1)
-		{
-		    cout << "htmerge: Discarding " << word << " in doc #"
-			 << sid << "     \n";
-		    cout.flush();
-		}
-		continue;
-	    }
-
-	    //
-	    // Record the word in the new wordlist file
-	    //
-	    fprintf(wordlist, "%s\tc:%d\tl:%d\ti:%d\tw:%d\ta:%d\n",
-		    word,
-		    wr.count,
-		    wr.location,
-		    wr.id,
-		    wr.weight,
-		    wr.anchor);
-	    
-	    //
-	    // Since we will be storing binary equivalents of the
-	    // data, we need to get them into the form that we are
-	    // going to use (shorts and ints)
-	    //
-
-	    if (currentWord.length() == 0)
-	    {
-		//
-		// First word.  Special case.
-		//
-		out = 0;
-		out.append((char *) &wr, sizeof(wr));
-		currentWord = word;
-	    }
-	    else if (strcmp(word, currentWord) == 0)
-	    {
-		//
-		// Add to current record
-		//
-		out.append((char *) &wr, sizeof(wr));
-	    }
-	    else
-	    {
-		//
-		// New word.  Terminate the previous one
-		//
-		dbf->Put(currentWord, out.get(), out.length());
-
-		currentWord = word;
-
-		out = 0;
-		out.append((char *) &wr, sizeof(wr));
-		word_count++;
-		if (verbose && word_count == 1)
-		{
-		    cout << "htmerge: Merging..." << endl;
-		}
-		if (verbose && word_count % 100 == 0)
-		{
-		    cout << "htmerge: " << word_count << ':' << word
-			 << "              \n";
-		    cout.flush();
-		}
-	    }
-	}
+      cout << "htmerge: Total word count: " 
+	   << data.remains << endl;
+      cout << "htmerge: Total deleted words: " << data.deleted << endl;
     }
 
-    //
-    // Check for successful completion of sort
-    //
-    int		sortRC = pclose(sorted);
-    if (sortRC)
-    {
-	reportError("Word sort failed");
-	exit(1);
-    }
-    
-    dbf->Put(currentWord, out.get(), out.length());
-    dbf->Close();
-
-    if (verbose)
-	cout << "\n";
-    if (stats)
-	cout << "htmerge: Total word count: " << word_count << endl;
-
-    //
-    // Deal with the new wordlist file.  We need to replace the old file with
-    // the new one.
-    //
-    fclose(wordlist);
-    unlink(wordtmp);
-    link(form("%s.new", wordtmp), wordtmp);
-    unlink(form("%s.new", wordtmp));
 }
 
 
