@@ -28,7 +28,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.7 1999/10/06 09:46:15 angus Exp $ 
+// $Id: HtHTTP.h,v 1.8 1999/10/08 14:50:00 ghutchis Exp $ 
 //
 
 #ifndef _HTHTTP_H
@@ -154,7 +154,7 @@ public:
 
    // Info for multiple requests (static)
    // Get the User agent string
-   static void SetRequestUserAgent (char *s) { _user_agent=s; }
+   static void SetRequestUserAgent (String s) { _user_agent=s; }
    static char *GetRequestUserAgent() { return _user_agent; }
 
 
