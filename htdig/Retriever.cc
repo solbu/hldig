@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.19 2000/02/15 22:49:49 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.20 2000/02/15 23:10:36 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -785,20 +785,31 @@ Retriever::GetLocal(char *url)
    		continue;
 	    }
    	    *path++ = '\0';
-            prefixes->Add(p);
-            paths->Add(path);
+	    String *pre = new String(p);
+	    decodeURL(*pre);
+	    prefixes->Add(pre);
+	    String *pat = new String(path);
+	    decodeURL(*pat);
+	    paths->Add(pat);
 	    p = strtok(0, " \t");
 	}
 	t = config["local_default_doc"];
 	p = strtok(t, " \t");
 	while (p)	
 	{
-	    defaultdocs->Add(p);
+	    String *def = new String(p);
+	    decodeURL(*def);
+	    defaultdocs->Add(def);
 	    p = strtok(0, " \t");
 	}
 	if (defaultdocs->Count() == 0)
 	    delete defaultdocs;
     }
+
+    // Begin by hex-decoding URL...
+    String hexurl = url;
+    decodeURL(hexurl);
+    url = hexurl.get();
 
     // Check first for local user...
     if (strchr(url, '~'))
@@ -886,9 +897,15 @@ Retriever::GetLocalUser(char *url, StringList *defaultdocs)
 	        continue;
 	    }
 	    *dir++ = '\0';
-	    prefixes->Add(p);
-	    paths->Add(path);
-	    dirs->Add(dir);
+	    String *pre = new String(p);
+	    decodeURL(*pre);
+	    prefixes->Add(pre);
+	    String *pat = new String(path);
+	    decodeURL(*pat);
+	    paths->Add(pat);
+	    String *ptd = new String(dir);
+	    decodeURL(*ptd);
+	    dirs->Add(ptd);
 	    p = strtok(0, " \t");
 	}
     }

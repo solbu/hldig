@@ -2857,7 +2857,8 @@
 			than a single name, and htdig will use the first
 			name that works. Since this requires a loop,
 			setting the most common name first will improve
-			performance.
+			performance. Special characters can be embedded in
+			these names using %xx hex encoding.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -2919,6 +2920,10 @@
 			As of 3.1.5, you can provide multiple mappings
 			of a given URL to different directories, and
 			htdig will use the first mapping that works.
+			Special characters can be embedded in
+			these names using %xx hex encoding.
+			For example, you can use %3D to embed an "=" sign
+			in an URL pattern.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -3033,6 +3038,10 @@
 			As of 3.1.5, you can provide multiple mappings
 			of a given URL to different directories, and
 			htdig will use the first mapping that works.
+			Special characters can be embedded in
+			these names using %xx hex encoding.
+			For example, you can use %3D to embed an "=" sign
+			in an URL pattern.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7406,7 +7415,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: $Date: 2000/02/15 22:42:20 $
+Last modified: $Date: 2000/02/15 23:10:37 $
 <!-- hhmts end -->
   </body>
 </html>
