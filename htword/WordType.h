@@ -11,7 +11,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.h,v 1.1.2.6 2000/05/05 21:55:19 loic Exp $
+// $Id: WordType.h,v 1.1.2.7 2000/08/18 05:23:23 ghutchis Exp $
 //
 
 #ifndef _WordType_h
@@ -54,6 +54,11 @@ public:
   WordType(const Configuration& config);
 
   //
+  // Destructor
+  //
+  virtual	~WordType();
+
+  //
   // Unique instance handlers 
   //
   static void Initialize(const Configuration& config);
@@ -66,16 +71,21 @@ public:
   //
   // Predicates
   // 
-  int IsChar(int c) const;
-  int IsStrictChar(int c) const;
-  int IsDigit(int c) const;
-  int IsControl(int c) const;
+  virtual int IsChar(int c) const;
+  virtual int IsStrictChar(int c) const;
+  virtual int IsDigit(int c) const;
+  virtual int IsControl(int c) const;
 
   //
   // Transformations
   //
-  int StripPunctuation(String &s) const;
-  int Normalize(String &s) const;
+  virtual int StripPunctuation(String &s) const;
+  virtual int Normalize(String &s) const;
+
+  //
+  // Splitting
+  //
+  virtual String WordToken(const String s, int &pointer) const;
 
   //
   // Error handling
