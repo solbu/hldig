@@ -1,4 +1,7 @@
-Tue Feb 15 17:04:28 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Feb 15 17:21:08 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Server.cc (robotstxt): apply more rigorous parsing of
+	multiple user-agent fields, and use only the first one.
 
 	* htdig/Retriever.cc(GetLocal, GetLocalUser): Add URL-decoding
 	enhancements to local_urls, local_default_urls & local_default_doc,

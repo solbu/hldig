@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.8.2.4 2000/02/15 22:42:20 grdetil Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.8.2.5 2000/02/15 23:25:20 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -179,9 +179,14 @@ void Server::robotstxt(Document &doc)
 		// This is for us!  This will override any previous patterns
 		// that may have been set.
 		//
-		seen_myname = 1;
-		pay_attention = 1;
-		pattern = 0;
+		if (!seen_myname)	// only take first section with our name
+		{
+		    seen_myname = 1;  
+		    pay_attention = 1;
+		    pattern = 0;	// ignore previous User-agent: *
+		}   
+		else
+		    pay_attention = 0;
 	    }
 	    else
 	    {
