@@ -4,6 +4,9 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.34  1999/01/18 00:52:26  ghutchis
+// Fix compiler warnings.
+//
 // Revision 1.33  1999/01/17 20:32:21  ghutchis
 // Added support for url_log, save and restart digs.
 //
@@ -241,16 +244,15 @@ Retriever::Initial(char *list, int from)
     for (int i = 0; i < tokens.Count(); i++)
     {
 	URL	u(tokens[i]);
-	sig = u.signature();
-	server = (Server *) servers[sig];
+	server = (Server *) servers[u.signature()];
 	url = u.get();
 	url.lowercase();
 	if (debug > 2)
-           cout << "\t" << from << ":" << log << ":" << url;
+           cout << "\t" << from << ":" << (int) log << ":" << url;
 	if (!server)
 	{
 	    server = new Server(u.host(), u.port());
-	    servers.Add(sig, server);
+	    servers.Add(u.signature(), server);
 	}
 	else if (from && visited.Exists(url)) 
 	{
@@ -305,7 +307,7 @@ Retriever::Initial(List &list,int from)
 
 //*****************************************************************************
 //
-static void sigexit(int signum)
+static void sigexit(int)
 {
  noSignal=0;
 }
@@ -356,7 +358,7 @@ Retriever::Start()
     //  
     // Always sig . The delay bother me but a bad db is worst
     // 
-    if (1 || Retriever_noLog != log ) 
+    if ( Retriever_noLog != log ) 
     {
 	sig_handlers();
     }
@@ -415,9 +417,8 @@ Retriever::Start()
 	}
         else {
   	   servers.Start_Get();
-	   while ((server_sig = servers.Get_Next()))
+	   while ((server = (Server *)servers.Get_NextElement()))
 	   {
-	      server = (Server *) servers[server_sig];
    	      while (NULL != (ref = server->pop())) 
               {
       	          fprintf(urls_parsed, "%s\n", ref->URL());
@@ -1112,15 +1113,14 @@ Retriever::got_href(URL &url, char *description)
 	    {
 		if (debug > 1)
 		    cout << "\n   pushing " << url.get() << endl;
-		char	*sig = url.signature();
-		server = (Server *) servers[sig];
+		server = (Server *) servers[url.signature()];
 		if (!server)
 		{
 		    //
 		    // Hadn't seen this server, yet.  Register it
 		    //
 		    server = new Server(url.host(), url.port());
-		    servers.Add(sig, server);
+		    servers.Add(url.signature(), server);
 		}
 		//
 		// Let's just be sure we're not pushing an empty URL
@@ -1242,15 +1242,14 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 	    {
 		if (debug > 1)
 		    cout << "   pushing " << url.get() << endl;
-		char	*sig = url.signature();
-		Server	*server = (Server *) servers[sig];
+		Server	*server = (Server *) servers[url.signature()];
 		if (!server)
 		{
 		    //
 		    // Hadn't seen this server, yet.  Register it
 		    //
 		    server = new Server(url.host(), url.port());
-		    servers.Add(sig, server);
+		    servers.Add(url.signature(), server);
 		}
 		server->push(url.get(), ref->DocHopCount(), base->get());
 
