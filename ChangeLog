@@ -3,6 +3,14 @@ Mon Jan 11 22:48:17 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htmerge/db.cc: Fixed thinko with setting the docIDs of new words
 	in the destination wordlist.
 
+	* htdoc/FAQ.html, htdoc/THANKS.html, htdoc/contents.html: Minor
+	cleanups.
+
+	* htdoc/RELEASE.html: Added release info from 3.1.0b4.
+
+	* htdoc/uses.html: Alphabetized, added a form for requests, and
+	added in lots of new sites.
+	
 Mon Jan 11 02:42:51 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htsearch/htsearch.cc (setupWords): Do not skip words if
