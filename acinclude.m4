@@ -25,7 +25,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: acinclude.m4,v 1.15 2003/06/24 21:12:05 nealr Exp $
+dnl @version $Id: acinclude.m4,v 1.16 2003/07/21 07:58:21 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -85,7 +85,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: acinclude.m4,v 1.15 2003/06/24 21:12:05 nealr Exp $
+dnl @version $Id: acinclude.m4,v 1.16 2003/07/21 07:58:21 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -136,7 +136,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: acinclude.m4,v 1.15 2003/06/24 21:12:05 nealr Exp $
+dnl @version $Id: acinclude.m4,v 1.16 2003/07/21 07:58:21 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -222,7 +222,7 @@ dnl LoadModule env_module         @APACHE_MODULES@/mod_env.so
 dnl LoadModule config_log_module  @APACHE_MODULES@/mod_log_config.so
 dnl ...
 dnl
-dnl @version $Id: acinclude.m4,v 1.15 2003/06/24 21:12:05 nealr Exp $
+dnl @version $Id: acinclude.m4,v 1.16 2003/07/21 07:58:21 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -371,16 +371,14 @@ dnl @version 1.0
 dnl
 
 AC_DEFUN(AC_FUNC_STRPTIME, [
-AC_CHECK_FUNCS(strptime)
-AC_MSG_CHECKING(for strptime declaration in time.h)
-AC_EGREP_HEADER(strptime, time.h, [
- AC_DEFINE(HAVE_STRPTIME_DECL)
- AC_MSG_RESULT(yes)
-], [
- AC_MSG_RESULT(no)
+    AC_CHECK_FUNCS(strptime)
+    AC_MSG_CHECKING(for strptime declaration in time.h)
+    AC_EGREP_HEADER(strptime, time.h, [
+        AC_DEFINE([HAVE_STRPTIME_DECL],,[Define if the function strptime is declared in <time.h>])
+    AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no)
+    ])
 ])
 
-])
 
 dnl @synopsis Checks if OpenSSL library is available.
 dnl
@@ -406,7 +404,7 @@ dnl      .if ${HAVE_SSL} == "yes"
 dnl      SRCS+= @srcdir@/my_file_that_needs_ssl.c
 dnl      .endif
 dnl
-dnl @version $Id: acinclude.m4,v 1.15 2003/06/24 21:12:05 nealr Exp $
+dnl @version $Id: acinclude.m4,v 1.16 2003/07/21 07:58:21 angusgb Exp $
 dnl @author Mark Ethan Trostler <trostler@juniper.net>
 dnl
 AC_DEFUN([CHECK_SSL],
@@ -443,3 +441,46 @@ AC_ARG_WITH(ssl,
     AC_MSG_RESULT(no)
 ])
 ])
+
+dnl If the compiler supports ISO C++ standard library (i.e., can include the
+dnl files iostream, map, iomanip and cmath), define HAVE_STD.
+AC_DEFUN([AC_CXX_HAVE_STD],
+[AC_CACHE_CHECK(whether the compiler supports ISO C++ standard library,
+ac_cv_cxx_have_std,
+[AC_REQUIRE([AC_CXX_NAMESPACES])
+ AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([#include <iostream>
+#include <map>
+#include <iomanip>
+#include <cmath>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif],[return 0;],
+ ac_cv_cxx_have_std=yes, ac_cv_cxx_have_std=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_have_std" = yes; then
+  AC_DEFINE(HAVE_STD,,[define if the compiler supports ISO C++ standard
+library])
+fi
+])
+
+dnl If the compiler can prevent names clashes using namespaces, define
+dnl HAVE_NAMESPACES.
+AC_DEFUN([AC_CXX_NAMESPACES],
+[AC_CACHE_CHECK(whether the compiler implements namespaces,
+ac_cv_cxx_namespaces,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([namespace Outer { namespace Inner { int i = 0; }}],
+                [using namespace Outer::Inner; return i;],
+ ac_cv_cxx_namespaces=yes, ac_cv_cxx_namespaces=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_namespaces" = yes; then
+  AC_DEFINE(HAVE_NAMESPACES,,[define if the compiler
+implements namespaces])
+fi
+])
+
