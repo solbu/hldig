@@ -1,3 +1,8 @@
+Wed Nov 24 15:10:05 1999 Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* installdir/htdig.conf: Add bad_extensions to make it more obvious to 
+	users how to exclude certain document types.
+
 Tue Nov 23 19:29:37 CST 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htnotify/htnotify.cc(send_notification): apply Jason Haar's fix
