@@ -4,6 +4,9 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.30  1999/01/07 04:05:25  ghutchis
+// Skip changing to lowercase in got_word, we do it in WordList::Word.
+//
 // Revision 1.29  1999/01/05 19:12:59  bergolth
 // fixed bug in bad_querystring detection
 //
@@ -841,7 +844,6 @@ Retriever::got_word(char *word, int location, int heading)
     if (trackWords)
     {
       String w = word;
-      w.lowercase();
       w.remove(valid_punctuation);
       if (w.length() >= minimumWordLength)
 	words.Word(w, location, current_anchor_number, factor[heading]);
