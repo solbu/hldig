@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.76 1999/04/30 23:41:16 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.77 1999/05/20 01:35:05 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -827,7 +827,7 @@ Display::expandVariables(char *str)
 	}
 	str++;
     }
-    if (state == 5)
+    if (state == 2 || state == 5)
     {
 	//
 	// The end of string was reached, but we are still trying to
