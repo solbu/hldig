@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: AndParseTree.cc,v 1.1.2.2 2000/08/01 16:52:46 ghutchis Exp $
+// $Id: AndParseTree.cc,v 1.1.2.3 2000/08/24 04:36:32 ghutchis Exp $
 //
 
 #include "AndParseTree.h"
@@ -56,42 +56,37 @@ int AndParseTree::Parse(String query)
   children = new List;
 
   phraseStart = query.indexOf('"');
-  if (phraseStart != -1)
+  while ( phraseStart != -1 )
     {
-      while ( phraseStart != -1 )
+      if (phraseStart > 0)
 	{
-	  if (phraseStart > 0)
-	    {
-	      child = new AndParseTree;
-	      child->Parse(query.sub(0, phraseStart - 1));
-	      children->Add(child);
-	    }
+	  child = new AndParseTree;
+	  child->Parse(query.sub(0, phraseStart - 1));
+	  children->Add(child);
+	}
 
-	  // Now get the phrase query and potentially anything after it
-	  phraseEnd = query.indexOf('"', phraseStart + 1);
-	  if (phraseEnd < query.length() && phraseEnd != -1)
-	    {
-	      child = new ExactParseTree;
-	      child->Parse(query.sub(phraseStart + 1));
-	      children->Add(child);
-	    }
-	  else
-	    {
-	      child = new ExactParseTree;
-	      child->Parse(query.sub(phraseStart + 1));
-	      children->Add(child);
-	    }
-	}
-    }
-  else
-    {
-      word = HtWordToken(query);
-      while ( word != NULL )
+      // Now get the phrase query and potentially anything after it
+      phraseEnd = query.indexOf('"', phraseStart + 1);
+      if (phraseEnd <= query.length() && phraseEnd != -1)
 	{
-	  // By convention, leaves should be plain ParseTrees
-	  children->Add(new ParseTree(word));
-	  word = HtWordToken(NULL);
+	  child = new ExactParseTree;
+	  child->Parse(query.sub(phraseStart + 1, (phraseEnd - phraseStart - 1)));
+	  children->Add(child);
+	  query = query.sub(phraseEnd + 1);
 	}
+      else
+	  return NOTOK;
+
+      // need to gobble up whitespace here in case we have multiple phrases together
+      phraseStart = query.indexOf('"');
+    }
+
+  word = HtWordToken(query);
+  while ( word != NULL )
+    {
+      // By convention, leaves should be plain ParseTrees
+      children->Add(new ParseTree(word));
+      word = HtWordToken(NULL);
     }
 
   return OK;
