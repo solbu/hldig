@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URLRef.h,v 1.3 1999/07/03 20:56:39 ghutchis Exp $
+// $Id: URLRef.h,v 1.4 1999/08/27 15:52:48 ghutchis Exp $
 //
 //
 #ifndef _URLRef_h_
@@ -35,6 +35,8 @@ public:
 	void		SetURL(URL u)			{url = u;}
 	void		SetHopCount(int h)		{hopcount = h;}
 	void		SetReferer(URL ref)		{referer = ref;}
+
+	int		compare(Object *to);
 	
 private:
 	URL		url;

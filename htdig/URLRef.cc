@@ -11,7 +11,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URLRef.cc,v 1.2 1999/07/03 20:56:39 ghutchis Exp $";
+static char RCSid[] = "$Id: URLRef.cc,v 1.3 1999/08/27 15:52:48 ghutchis Exp $";
 #endif
 
 #include "URLRef.h"
@@ -22,7 +22,7 @@ static char RCSid[] = "$Id: URLRef.cc,v 1.2 1999/07/03 20:56:39 ghutchis Exp $";
 //
 URLRef::URLRef()
 {
-	hopcount = 0;
+  hopcount = 0;
 }
 
 
@@ -32,5 +32,17 @@ URLRef::URLRef()
 URLRef::~URLRef()
 {
 }
+
+
+//*****************************************************************************
+// int URLRef::compare(Object *to)
+//
+int URLRef::compare(Object *to)
+{
+  URLRef	*u = (URLRef *) to;
+
+  return hopcount - u->hopcount;
+}
+
 
 
