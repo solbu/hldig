@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34.2.4 1999/04/09 21:34:29 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34.2.5 1999/09/01 20:04:00 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -218,6 +218,8 @@ Document::getdate(char *datestring)
 	// correct for mystrptime, if %Y format saw only a 2 digit year
 	if (tm.tm_year < 0)
 	  tm.tm_year += 1900;
+	tm.tm_yday = 0;	// clear these to prevent problems in strftime()
+	tm.tm_wday = 0;
 	
 	if (debug > 2)
 	  {

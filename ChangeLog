@@ -1,4 +1,8 @@
-Wed Sep  1 14:56:38 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 14:59:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc(getdate): This should help with PR#81 & PR#472,
+	where strftime() would crash on some systems.  Idea submitted
+	by benoit.sibaud@cnet.francetelecom.fr.
 
 	* COPYING, htdoc/COPYING, Makefile.in: Updated the FSF address
 	in COPYING & Makefile.in.  PR#595.
