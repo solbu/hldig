@@ -1,3 +1,23 @@
+Tue May  4 20:20:40 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htfuzzy/Regex.h, htfuzzy/Regex.cc: Add new regex fuzzy
+	algorithm, based on Substring and Prefix.
+	
+	* htfuzzy/Fuzzy.cc (getFuzzyByName): Add it.
+
+	* htfuzzy/Makefile.in: Compile it.
+
+	* htcommon/defaults.cc: Add new attribute regex_max_words, same
+	concept as substring_max_words.
+	
+	* htfuzzy/Exact.cc, htfuzzy/Substring.cc, htfuzzy/Prefix.cc:
+	Define names attribute for debugging purposes.
+
+	* installdir/htdig.conf: Fix the comments for search_algorithm to
+	refer to all the current possibilities.
+
+	* htlib/HtRegex.cc (match): Slight cleanup of how to return.
+	
 Tue May  4 15:28:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc (reportError): Add e-mail of maintainer to
@@ -20,10 +40,10 @@ Mon May  3 23:20:22 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	include/htconfig.h.in as contributed by Gabriele.
 
 	* htlib/HtDateTime.cc: Replace call to mktime internal function to
-	Httimegm in timegm.c.
+	Httimegm in timegm.c, contributed by Leo.
 
 	* htlib/timegm.c: Declare my_mktime_gmtime_r to prevent compiler
-	errors with incompatible gmtime structures.
+	errors with incompatible gmtime structures, contributed by Leo.
 	
 	* configure.in: Rearrange date/time checks for clarity.
 
