@@ -13,6 +13,10 @@
 // in the main word database.
 //
 // $Log: htfuzzy.cc,v $
+// Revision 1.7  1998/12/02 02:44:43  ghutchis
+//
+// Add include <getopt.h> to help compiling under Win32 with CygWinB20.
+//
 // Revision 1.6  1998/10/12 02:04:00  ghutchis
 //
 // Updated Makefiles and configure variables.
@@ -32,7 +36,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htfuzzy.cc,v 1.6 1998/10/12 02:04:00 ghutchis Exp $";
+static char RCSid[] = "$Id: htfuzzy.cc,v 1.7 1998/12/02 02:44:43 ghutchis Exp $";
 #endif
 
 #include "htfuzzy.h"
@@ -45,6 +49,7 @@ static char RCSid[] = "$Id: htfuzzy.cc,v 1.6 1998/10/12 02:04:00 ghutchis Exp $"
 #include <List.h>
 #include <Dictionary.h>
 #include <defaults.h>
+#include <getopt.h>
 
 int		debug = 0;
 

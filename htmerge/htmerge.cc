@@ -1,9 +1,16 @@
 //
 // htmerge.cc
 //
-// Implementation of htmerge
+// Merge the databases into a form usable by htsearch
+// Updates databases to remove old documents and 
+// ensures the databases are consistent.
+//
 //
 // $Log: htmerge.cc,v $
+// Revision 1.6  1998/12/02 02:44:44  ghutchis
+//
+// Add include <getopt.h> to help compiling under Win32 with CygWinB20.
+//
 // Revision 1.5  1998/10/02 17:07:32  ghutchis
 //
 // More configure changes
@@ -24,7 +31,7 @@
 //
 
 #include "htmerge.h"
-
+#include <getopt.h>
 
 //
 // This hash is used to keep track of all the document IDs which have to be

@@ -1,12 +1,14 @@
 //
 // htsearch.cc
 //
-// Implementation of htsearch
+// Command-line and CGI interface to search the databases
+// Expects the databases are generated using htdig, htmerge, and htfuzzy
+// Outputs HTML-ized results of the search based on the templates specified
 //
 // $Log: htsearch.cc,v $
-// Revision 1.13  1998/11/30 02:28:50  ghutchis
+// Revision 1.14  1998/12/02 02:44:44  ghutchis
 //
-// Fix mistake in last update so the code compiles.
+// Add include <getopt.h> to help compiling under Win32 with CygWinB20.
 //
 // Revision 1.12  1998/11/30 01:50:38  ghutchis
 //
@@ -57,7 +59,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.13 1998/11/30 02:28:50 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.14 1998/12/02 02:44:44 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -73,6 +75,7 @@ static char RCSid[] = "$Id: htsearch.cc,v 1.13 1998/11/30 02:28:50 ghutchis Exp 
 #include <time.h>
 #include <ctype.h>
 #include <signal.h>
+#include <getopt.h>
 
 
 typedef void (*SIGNAL_HANDLER) (...);

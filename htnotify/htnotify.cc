@@ -1,9 +1,15 @@
 //
 // htnotify.cc
 //
-// Implementation of htnotify
+// Check through databases and look for notify META information
+// Send e-mail to addresses mentioned in documents if the doc
+// has "expired"
 //
 // $Log: htnotify.cc,v $
+// Revision 1.10  1998/12/02 02:44:44  ghutchis
+//
+// Add include <getopt.h> to help compiling under Win32 with CygWinB20.
+//
 // Revision 1.9  1998/11/06 23:41:38  ghutchis
 //
 // Fixed buglet with -F flag to sendmail.
@@ -41,7 +47,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.9 1998/11/06 23:41:38 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.10 1998/12/02 02:44:44 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -54,7 +60,7 @@ static char RCSid[] = "$Id: htnotify.cc,v 1.9 1998/11/06 23:41:38 ghutchis Exp $
 #include <fstream.h>
 #include <time.h>
 #include <stdio.h>
-
+#include <getopt.h>
 
 void htnotify(DocumentRef &);
 void usage();
