@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.31 2000/08/21 02:33:43 ghutchis Exp $
+// $Id: Retriever.cc,v 1.72.2.32 2000/08/30 04:40:53 toivo Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -31,6 +31,7 @@
 #include "WordType.h"
 #include "Transport.h"
 #include "HtHTTP.h"    // For HTTP statistics
+#include "md5.h"
 
 #include <pwd.h>
 #include <signal.h>
@@ -107,6 +108,15 @@ Retriever::Retriever(RetrieverLog flags) :
         unlink((char*)filelog);
     }
     
+     check_unique_md5 = config.Boolean("check_unique_md5", 0); 
+    check_unique_date = config.Boolean("check_unique_date", 0); 
+
+    d_md5 = Database::getDatabaseInstance(DB_HASH);
+
+    if (d_md5->OpenReadWrite(config["md5_db"], 0666) != OK) {
+      cerr << "DocumentDB::Open: " << config["md5_db"] << " " << strerror(errno) << "\n";
+    }
+
 }
 
 
@@ -115,6 +125,7 @@ Retriever::Retriever(RetrieverLog flags) :
 //
 Retriever::~Retriever()
 {
+    d_md5->Close();
     delete doc;
 }
 
@@ -559,10 +570,40 @@ Retriever::parse_url(URLRef &urlRef)
     // Determine what to do by looking at the status code returned by
     // the Document retrieval process.
     //
+
+    String shash;
+    String sx;
+    char bhash[16];
+    time_t ddate = doc->ModTime();
+
     switch (status)
     {
+
 	case Transport::Document_ok:
 	    trackWords = 1;
+
+	    if (check_unique_md5) {
+	      if (doc->Length() > 0) {
+		if (check_unique_date)
+		  md5(bhash, doc->Contents(),doc->Length(),&ddate,debug);
+		else
+		  md5(bhash, doc->Contents(),doc->Length(),0,debug);
+
+		shash.append(bhash,MD5_LENGTH);
+		d_md5->Get(shash,sx);
+
+		 if (!sx.empty()) {
+		  if (debug) {
+		    cout << "DUP\n";
+		  }
+		  break;            // Duplicate - don't index
+		} else {
+		   d_md5->Put(shash,"x");
+		}
+		 
+	      }
+	    }
+
 	    if (old_document)
 	    {
 	      if (doc->ModTime() == ref->DocTime())
@@ -599,7 +640,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    RetrievedDocument(*doc, url.get(), ref);
 	    // Hey! If this document is marked noindex, don't even bother
 	    // adding new words. Mark this as gone and get rid of it!
-	    if (ref->DocState() == Reference_noindex) {
+	    if (ref->DocState() == Reference_noindex || dup) {
 	      if(debug > 1)
 		cout << " ( " << ref->DocURL() << " ignored)";
 	      words.Skip();

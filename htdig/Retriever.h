@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.18.2.5 2000/03/28 01:49:12 ghutchis Exp $
+// $Id: Retriever.h,v 1.18.2.6 2000/08/30 04:40:53 toivo Exp $
 //
 
 #ifndef _Retriever_h_
@@ -24,6 +24,7 @@
 #include "HtWordReference.h"
 #include "List.h"
 #include "StringList.h"
+#include "DocumentDB.h"
 
 class URL;
 class Document;
@@ -106,6 +107,10 @@ private:
     HtWordReference	word_context;
     HtWordList		words;
 	
+    int			check_unique_md5;
+    int			check_unique_date;
+
+
     RetrieverLog log;
     //
     // These are weights for the words.  The index is the heading level.
@@ -129,6 +134,8 @@ private:
     // we reuse.
     //
     Document		*doc;
+
+    Database 		*d_md5;
 
     String		notFound;
 

@@ -1,3 +1,17 @@
+Tue Aug 30 12:00:00 2000  Toivo Pedaste <toivo@ucs.uwa.edu.au>
+
+	* htlibs/md5.cc, htlibs/md5.h: Generate md5 hash of
+	a page and also optionally the modify date.
+
+	* htlibs/mhash_md5.h, htlibs/mhash_md5.c, htlibs/libdefs.h:
+	Md5 hash code from libmhash
+
+	* htdig/Retriever.cc: Allow storing m5 hashes of pages
+	in order to reject aliases.
+
+	* htcommon/defaults.cc: Options "check_unique_md5" and
+	"check_unique_date"
+	
 Tue Aug 29 08:51:39 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/upgrade.html: Add description of the difference between

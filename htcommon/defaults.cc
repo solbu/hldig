@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.56 2000/08/21 02:31:15 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.57 2000/08/30 04:40:52 toivo Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -192,6 +192,18 @@ ConfigDefaults	defaults[] =
 	This specifies whether ht://Dig should consider URLs
 	case-sensitive or not. If your server is case-insensitive,
 	you should probably set this to false.
+" },
+{ "check_unique_md5", "false", 
+	"boolean", "htdig", "Global", "3.2.0b3", "", "check_unique_md5: false", "
+        Uses the MD5 hash of pages to reject aliases, prevents multiple entries
+        in the index caused by such things as symbolic links
+        Note: May not do the right thing for incremental update
+" },
+{ "check_unique_date", "false", 
+	"boolean", "htdig", "Global", "3.2.0b3", "", "check_unique_date: false", "
+        Include the modification date of the page in the MD5 hash, to reduce the
+        problem with identical but physically separate pages in different parts of the tree pointing to
+        different pages. 
 " },
 { "collection_names", "",
         "string list", "htsearch", "", "3.2.0b2", "", "collection_names: htdig_docs htdig_bugs", "
@@ -1350,6 +1362,10 @@ http://www.htdig.org/", "
 	indexed. Words longer than this value will be silently
 	truncated when put into the index, or searched in the
 	index.
+" },
+{ "md5_db", "${database_base}.md5hash.db", 
+	"string", "htdig", "", "3.2.0b3", "File Layout", "md5_db: ${database_base}.md5.db", "
+        The database for holding md5 hashes of paages
 " },
 { "meta_description_factor", "50", 
 	"number", "htsearch", "", "3.1.0b1", "Searching:Ranking", "meta_description_factor: 20", "

@@ -84,6 +84,11 @@ AC_ARG_PROGRAM
 
 echo configuring ht://Dig version $VERSION
 
+AC_CHECK_SIZEOF(unsigned long long int, 8)
+AC_CHECK_SIZEOF(unsigned long int, 4)
+AC_CHECK_SIZEOF(unsigned int, 4)
+AC_CHECK_SIZEOF(unsigned short int, 2)
+AC_CHECK_SIZEOF(unsigned char, 1)                                                                       
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX

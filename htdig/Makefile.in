@@ -123,7 +123,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 bin_PROGRAMS = htdig
 
-htdig_SOURCES = Document.cc HTML.cc 	Parsable.cc Plaintext.cc 	Retriever.cc Server.cc ExternalTransport.cc 	URLRef.cc htdig.cc ExternalParser.cc 
+htdig_SOURCES = Document.cc HTML.cc 	Parsable.cc Plaintext.cc 	Retriever.cc Server.cc ExternalTransport.cc 	URLRef.cc htdig.cc ExternalParser.cc
 
 
 noinst_HEADERS = Document.h ExternalParser.h HTML.h 	Parsable.h Plaintext.h Retriever.h Server.h  URLRef.h htdig.h 	ExternalTransport.h
@@ -279,7 +279,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \

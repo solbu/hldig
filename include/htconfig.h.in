@@ -173,7 +173,24 @@ typedef char bool;
 /* Version number of package */
 #undef VERSION
 
-
+/* The number of bytes in a unsigned char.  */
+#undef SIZEOF_UNSIGNED_CHAR
+ 
+/* The number of bytes in a unsigned int.  */
+#undef SIZEOF_UNSIGNED_INT
+ 
+/* The number of bytes in a unsigned long int.  */
+#undef SIZEOF_UNSIGNED_LONG_INT
+ 
+/* The number of bytes in a unsigned long long int.  */
+#undef SIZEOF_UNSIGNED_LONG_LONG_INT
+ 
+/* The number of bytes in a unsigned short int.  */
+#undef SIZEOF_UNSIGNED_SHORT_INT
+ 
+/* Define if you have the bcopy function.  */
+#undef HAVE_BCOPY
+                                                                                                        
 /*
  * Big-file configuration.
  */
