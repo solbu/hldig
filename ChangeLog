@@ -1,3 +1,20 @@
+Sun Aug 29 00:42:07 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/htsearch.cc (convertToBoolean): Remove debugging
+	strings.
+
+	* htsearch/parser.h: Add new method score(List) to merge scoring
+	for both standard and phrase searching.
+
+	* htsearch/parser.cc(phrase): Keep the current list of successful
+	matched words around to pass to score and perform_phrase.
+	(perform_phrase): Naively (and slowly, but correctly) loop through
+	past words to make sure they match DocID as well as successive locations.
+	Move scoring to score().
+	(perform_push): Move scoring to score().
+	(score): Loop through a list of WordReferences and create a list
+	of scored DocMatches.
+
 Sun Aug 29 00:33:17 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc(createLogicalWords): Hack to produce correct output
