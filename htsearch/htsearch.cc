@@ -4,6 +4,11 @@
 // Implementation of htsearch
 //
 // $Log: htsearch.cc,v $
+// Revision 1.12  1998/11/30 01:50:38  ghutchis
+//
+// Improved support for multiple restrict and exclude patterns, based on code
+// from Gilles Detillieux and William Rhee <willrhee@umich.edu>.
+//
 // Revision 1.11  1998/11/22 19:15:35  ghutchis
 //
 // Don't remove boolean operators from boolean search strings!
@@ -48,7 +53,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.11 1998/11/22 19:15:35 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.12 1998/11/30 01:50:38 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -133,12 +138,18 @@ main(int ac, char **av)
     // Compile the URL limit pattern.
     //
     if (input.exists("restrict"))
-    {
-	limit_to.Pattern(input["restrict"]);
+      {
+	char *sep = input["restrict"];
+	while ((sep = strchr(sep, '\001')) != NULL)
+	  *sep++ = '|';
+	limit_to.Pattern(*sep);
     }
     if (input.exists("exclude"))
     {
-	exclude_these.Pattern(input["exclude"]);
+       char *sep = input["exclude"];
+       while ((sep = strchr(sep, '\001')) != NULL)
+	 *sep++ = '|';
+       exclude_these.Pattern(*sep);
     }
 
     //
