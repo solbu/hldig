@@ -5,7 +5,8 @@ lib_LTLIBRARIES = libcommon.la
 
 libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc \
 	HtWordReference.cc HtWordList.cc defaults.cc \
-	HtURLCodec.cc URL.cc URLTrans.cc
+	HtURLCodec.cc URL.cc URLTrans.cc \
+	HtZlibCodec.cc cgi.cc
 
 libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
@@ -15,6 +16,8 @@ noinst_HEADERS = DocumentDB.h \
 	HtWordList.h \
 	HtURLCodec.h \
 	URL.h \
+	cgi.h \
+	HtZlibCodec.h \
 	defaults.h
 
 LOCAL_DEFINES=	-DBIN_DIR=\"$(bindir)\" \

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtZlibCodec.h,v 1.3 1999/09/08 14:42:29 loic Exp $
+// $Id: HtZlibCodec.h,v 1.1 1999/10/06 09:54:25 loic Exp $
 //
 //
 #ifndef __HtZlibCodec_h
