@@ -1,3 +1,8 @@
+Wed Jan 29 22:53:25 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* acinclude.m4: included the function for checking against SSL, as
+	found in the ac-archive.
+
 Tue Jan 28 12:23:16 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* htnet/Makefile.am: added HtCookieInFileJar.[h,cc] files
