@@ -7,8 +7,8 @@
 
 WordType       *WordContext::word_type_default=NULL;
 WordKeyInfo    *WordContext::key_info         =NULL;
-WordRecordInfo *WordContext::record_info    =NULL;
-
+WordRecordInfo *WordContext::record_info      =NULL;
+int             WordContext::intialized_ok    =0;
 void 
 WordContext::Initialize(const Configuration &config)
 {
@@ -18,5 +18,7 @@ WordContext::Initialize(const Configuration &config)
     WordKeyInfo::Initialize(config);
     // Initialize WordRecordInfo
     WordRecordInfo::Initialize(config);
+
+    WordContext::intialized_ok    =1;
 }
 
