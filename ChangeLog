@@ -1,3 +1,14 @@
+Sun May 18 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* db/mp.h, db/mp_{alloc,bh,cmpr,region}.c,
+	* htword/WordDB.cc, htdig/htdig.cc:
+	  Avoid infinite loop if memp_alloc  has only dirty,
+	  "weakly compressed" (i.e. overflow) pages.
+	* htcommon/defaults.cc:  Document the above, plus misc updates.
+
+	* htword/WordDBPage.h:
+	  Cast sizeof() to (int) in printf()s to avoid compiler warnings.
+
 Sun APR 20 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* htdig/htdig.cc:  delete  db.words.db_weakcmpr  if  -i  specified.

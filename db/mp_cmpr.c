@@ -3,7 +3,31 @@
  *
  * Copyright (c) 1999, 2000
  *	Loic Dachary.  All rights reserved.
+ *
+ * Overview of the code (by Lachlan Andrew, lha@users.sourceforge.net):
+ *
+ * This code compresses pages on-the-fly, either using a built-in algorithm,
+ * or using the  zlib  library.  The compressed page is stored in pages of
+ * size  CMPR_MULTIPLY(db_io->pagesize)  -- a fixed multiple of the true
+ * page size,  db_io->pagesize.  If the compressed page requires multiple
+ * pages, extra pages are allocated at the end of the file, and "chained"
+ * on to the original page.  The chain is specified as an array in the first
+ * page (not a linked list).  If a subsequent write of the page requires
+ * a shorter chain, the spare pages are recorded as "free" and listed in
+ * the weak-compression database (with suffix given by DB_CMPR_SUFFIX).
+ *
+ * When writing a compressed page, extra memory may need to be allocated if
+ * chaining occurs.  This can cause recursive calls to  CDB___memp_alloc(),
+ * since the latter may write dirty cache pages to satisfy the request.
+ * There is currently an explicit check for recursive calls, both in
+ * CDB___memp_alloc()  and  CDB___memp_cmpr_write(), but a more elegant
+ * solution would be nice.
+ *
+ * There also seems to be an issue with the memory allocation for the chain
+ * array.  The small allocations seem to cause fragmentation in the memory
+ * pool (seen as very many small clean blocks, which don't go away).
  * 
+ *
  * TODO:
  *   Keith Bostic says:
  *   The only change I'd probably think about is if
@@ -44,8 +68,8 @@ static const char sccsid[] = "@(#)mp_cmpr.c	1.1 (Senga) 01/08/99";
 
 #ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
-
 #include <errno.h>
+#include <string.h>
 #endif
 
 #include "db_int.h"
@@ -268,6 +292,7 @@ CDB___memp_cmpr_read(dbmfp, bhp, db_io, niop)
       }
       /*
        * Keep the chain in buffer header.
+       * Freed when  bhp  freed in  CDB___memp_bhfree().
        */
       CDB___memp_cmpr_alloc_chain(dbmfp->dbmp, bhp, BH_CMPR_POOL);
 
@@ -405,6 +430,11 @@ CDB___memp_cmpr_write(dbmfp, bhp, db_io, niop)
      * overflow! the compressed buffer is too big -> get extra page
      */
     if(length > copy_length) {
+      if (dbmfp->dbmp->recursion_level >= 2 ) {
+	  fprintf(stderr,"CDB___memp_cmpr_write: Wanted %d > %d bytes\n", length, copy_length);
+	  ret = EBUSY;
+	  goto err;
+      }
       chain_length++;
       if(chain_length >= CMPR_MAX) {
 	  CDB___db_err(dbmfp->dbmp->dbenv, "CDB___memp_cmpr_write: chain_length overflow");

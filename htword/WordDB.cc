@@ -7,14 +7,17 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.cc,v 1.4 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: WordDB.cc,v 1.5 2003/05/17 23:19:36 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
+#include "defaults.h"
 #include "WordDB.h"
+
+#include "../db/db.h"
 
 const char* dberror(int errval) {
 #define DB_MAX_ERROR	(-DB_TXN_CKP + 1)
@@ -56,6 +59,12 @@ int WordDB::Open(const String& filename, DBTYPE type, int flags, int mode) {
     //
     db->set_errfile(db, stderr);
     db->set_errpfx(db, progname);
+
+    // specify how dirty database cache is allowed to become
+    // Useful values are from 1 (at most half dirty) to about 3000 (never
+    // flush cache unnecessarily).
+    HtConfiguration *config = HtConfiguration::config();
+    CDB___mp_dirty_level = config->Value("wordlist_cache_dirty_level");
   }
 
   int error = db->open(db, filename, NULL, type, (u_int32_t)flags, mode);

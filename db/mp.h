@@ -45,6 +45,10 @@ struct __db_mpool {
 
 	int	    nc_reg;		/* N underlying cache regions. */
 	REGINFO	   *c_reginfo;		/* Underlying cache regions. */
+
+	/* I'm not sure if these need to be thread-protected... */
+	int         recursion_level;	/* limit recur'n from weak compr'n */
+
 };
 
 /*
@@ -167,6 +171,13 @@ struct __mpool {
 
 #define	MP_LSN_RETRY	0x01		/* Retry all BH_WRITE buffers. */
 	u_int32_t  flags;
+
+	/* HACK!! */
+	/* a pointers allocated for this structure is (erroneously?) used */
+	/* in CDB___memp_alloc() to refer to a MCACHE structure.  Make sure */
+	/* the allocation is big enough. */
+	int	    dummy [100];
+
 };
 
 /*

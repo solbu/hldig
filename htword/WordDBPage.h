@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.h,v 1.3 2002/02/01 22:49:36 ghutchis Exp $
+// $Id: WordDBPage.h,v 1.4 2003/05/17 23:19:36 lha Exp $
 //
 //
 // Access to Berkeley DB internal
@@ -263,7 +263,7 @@ class WordDBPage
 	int size=keylen+((byte *)&(bti.data))-((byte *)&bti);// pos of data field in BINTERNAL
 	if(empty)
 	{
-	    if(verbose){printf("WordDBPage::insert_btikey: empty : BINTERNAL:%d datapos:%d keylen:%d size:%d alligned to:%d\n",sizeof(BINTERNAL),
+	    if(verbose){printf("WordDBPage::insert_btikey: empty : BINTERNAL:%d datapos:%d keylen:%d size:%d alligned to:%d\n",(int)sizeof(BINTERNAL),
 			       ((byte *)&(bti.data))-((byte *)&bti),keylen,size,WORD_ALLIGN_TO(size,4));}
 	}
 
@@ -320,7 +320,7 @@ class WordDBPage
 	{
 	    int len=btikey(i)->len;
 	    out.put_uint(len,NBITS_KEYLEN,label_str("seperatekey_len",i));
-	    if(verbose){printf("WordDBPage::compress_key:compress(typ3):%d ::: sizeof(BINTERNAL):%d\n",len,sizeof(BINTERNAL));}
+	    if(verbose){printf("WordDBPage::compress_key:compress(typ3):%d ::: sizeof(BINTERNAL):%d\n",len,(int)sizeof(BINTERNAL));}
 	    out.put_uint(btikey(i)->len  ,sizeof(btikey(i)->len  )*8,label_str("seperatekey_bti_len"  ,i));
 	    out.put_uint(btikey(i)->type ,sizeof(btikey(i)->type )*8,label_str("seperatekey_bti_type" ,i));
 	    out.put_uint(btikey(i)->pgno ,sizeof(btikey(i)->pgno )*8,label_str("seperatekey_bti_pgno" ,i));

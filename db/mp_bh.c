@@ -632,13 +632,15 @@ CDB___memp_bhfree(dbmp, bhp, free_mem)
 	/* Delete the buffer header from the LRU queue. */
 	SH_TAILQ_REMOVE(&mc->bhq, bhp, q, __bh);
 
+	DB_ASSERT(mc->stat.st_page_clean != 0);
+	--mc->stat.st_page_clean;
+
 	/*
 	 * If we're not reusing it immediately, free the buffer header
 	 * and data for real.
 	 */
 	       CDB___memp_cmpr_free_chain(dbmp, bhp);
 	if (free_mem) {
-	       --mc->stat.st_page_clean;
 	       CDB___db_shalloc_free(dbmp->c_reginfo[n_cache].addr, bhp);
 	}
 }

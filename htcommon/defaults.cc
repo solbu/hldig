@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.80 2003/04/19 15:23:48 lha Exp $
+// $Id: defaults.cc,v 1.81 2003/05/17 23:19:36 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -358,10 +358,9 @@ http://www.htdig.org/", " \
 	If non-zero and the \
 	<a href=\"http://www.cdrom.com/pub/infozip/zlib/\">zlib</a> \
 	compression library was available when compiled, \
-	this attribute controls \
-	the amount of compression used in the \
+	this attribute controls the amount of compression used in the \
 	<a href=\"#doc_excerpt\">doc_excerpt</a> file. \
-	<br/>This must be non-zero when \
+	<br/>This must be in the range 0-9, and must be non-zero when \
 	<a href=\"#wordlist_compress_zlib\">wordlist_compress_zlib</a> \
 	is used. \
 " }, \
@@ -476,7 +475,7 @@ http://www.htdig.org/", " \
 	and <a href=\"#meta_description_factor\">meta_description_factor</a>. \
 " }, \
 { "description_meta_tag_names", "description",  \
-	"number", "htsearch", "", "3.1.6", "Searching:Ranking", "description_meta_tag_names: \"description htdig-description\"", " \
+	"string list", "htsearch", "", "3.1.6", "Searching:Ranking", "description_meta_tag_names: \"description htdig-description\"", " \
 	The words in this list are used to search for descriptions in HTML \
 	<em>META</em> tags. This list can contain any number of strings \
 	that each will be seen as the name for whatever description \
@@ -1413,7 +1412,7 @@ http://www.htdig.org/", " \
 	"integer", "htdig", "", "all", "Indexing:What", "max_description_length: 40", " \
 	While gathering descriptions of URLs, \
 	<a href=\"htdig.html\">htdig</a> will only record those \
-	descriptions which are shorter than this length. This \
+	descriptions which are shorter than this length (in bytes). This \
 	is used mostly to deal with broken HTML. (If a \
 	hyperlink is not terminated with a &lt;/a&gt; the \
 	description will go on until the end of the document.) \
@@ -1430,7 +1429,7 @@ http://www.htdig.org/", " \
 { "max_doc_size", "100000",  \
 	"integer", "htdig", "URL", "3.0", "Indexing:What", "max_doc_size: 5000000", " \
 	This is the upper limit to the amount of data retrieved \
-	for documents. This is mainly used to prevent \
+	for documents (in bytes). This is mainly used to prevent \
 	unreasonable memory consumption since each document \
 	will be read into memory by <a href=\"htdig.html\"> \
 	htdig</a>. \
@@ -1445,7 +1444,7 @@ http://www.htdig.org/", " \
 	"integer", "htdig", "", "all", "Indexing:How", "max_head_length: 50000", " \
 	For each document retrieved, the top of the document is \
 	stored. This attribute determines the size of this \
-	block. The text that will be stored is only the text; \
+	block (in bytes). The text that will be stored is only the text; \
 	no markup is stored.<br> \
 	We found that storing 50,000 bytes will store about \
 	95% of all the documents completely. This really \
@@ -1474,7 +1473,7 @@ http://www.htdig.org/", " \
 	"integer", "htdig", "", "3.1.0b1", "Indexing:How", "max_meta_description_length: 1000", " \
 	While gathering descriptions from meta description tags, \
 	<a href=\"htdig.html\">htdig</a> will only store up to  \
-	this much of the text for each document. \
+	this much of the text (in bytes) for each document. \
 " }, \
 { "max_prefix_matches", "1000",  \
 	"integer", "htsearch", "", "3.1.0b1", "Searching:Method", "max_prefix_matches: 100", " \
@@ -1485,12 +1484,12 @@ http://www.htdig.org/", " \
 	are matched in any way. \
 " }, \
 { "max_retries", "3",  \
-	"number", "htdig", "", "3.2.0b1", "Indexing:Connection", "max_retries: 6", " \
+	"integer", "htdig", "", "3.2.0b1", "Indexing:Connection", "max_retries: 6", " \
 	 This option set the maximum number of retries when retrieving a document \
 	 fails (mainly for reasons of connection). \
 " }, \
 { "max_stars", "4",  \
-	"number", "htsearch", "", "all", "Presentation:How", "max_stars: 6", " \
+	"integer", "htsearch", "", "all", "Presentation:How", "max_stars: 6", " \
 	When stars are used to display the score of a match, \
 	this value determines the maximum number of stars that \
 	can be displayed. \
@@ -2725,22 +2724,30 @@ form during indexing and translated for results. \
 	words. The file is easy to parse with tools like \
 	perl or tcl. \
 " }, \
+{ "wordlist_cache_dirty_level", "1000",  \
+	"integer", "htdig", "", "3.2.0b4", "Indexing:How", "wordlist_cache_dirty_level: 2", " \
+	Maximum ratio of dirty pages to clean pages in the cache.  If fewer \
+	are clean, then all pages are written out (but kept in the cache). \
+	Useful values are between 1 (slow, minimal chance of allocation ) \
+	and about 3000 (fastest, but may cause problems with small page \
+	sizes if <a href\"#wordlist_compress\">compression</a> is used).\
+" }, \
 { "wordlist_cache_size", "10000000",  \
 	"integer", "all", "", "3.2.0b1", "Indexing:How", "wordlist_cache_size: 40000000", " \
-	Size of memory cache used by Berkeley DB (DB used by the indexer) \
+	Size (in bytes) of memory cache used by Berkeley DB (DB used by the indexer) \
 	IMPORTANT: It  makes a <strong>huge</strong> difference. The rule  \
 	is that the cache size should be at least 2% of the expected index size. The \
 	Berkeley DB file has 1% of internal pages that <em>must</em> be cached for good \
 	performances. Giving an additional 1% leaves room for caching leaf pages. \
 " }, \
 { "wordlist_compress", "true",  \
-	"boolean", "all", "", "3.2.0b1", "Indexing:How", "wordlist_compress: true", " \
+	"boolean", "all", "", "3.2.0b1", "Indexing:How", "wordlist_compress: false", " \
 	Enables or disables the default compression system for the indexer. \
-	This currently compresses the index by a factor of 8. If the \
+	This currently attempts to compress the index by a factor of 3. If the \
 	Zlib library is not found on the system, the default is false. \
 " }, \
 { "wordlist_compress_zlib", "true",  \
-	"boolean", "all", "", "3.2.0b4", "Indexing:How", "wordlist_compress_zlib: true", " \
+	"boolean", "all", "", "3.2.0b4", "Indexing:How", "wordlist_compress_zlib: false", " \
 	Enables or disables the zlib compression system for the indexer. \
 	Both <a href=\"#wordlist_compress\">wordlist_compress</a> and \
 	<a href=\"#compression_level\">compression_level</a> must be true \
@@ -2761,7 +2768,7 @@ form during indexing and translated for results. \
 " }, 
 { "wordlist_page_size", "0",  \
 	"integer", "all", "", "3.2.0b1", "Indexing:How", "wordlist_page_size: 8192", " \
-	Size of pages used by Berkeley DB (DB used by the indexer). \
+	Size (in bytes) of pages used by Berkeley DB (DB used by the indexer). \
 	Must be a power of two. \
 " }, \
 { "wordlist_verbose", "",  \

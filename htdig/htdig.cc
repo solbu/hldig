@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.30 2003/04/19 15:23:49 lha Exp $
+// $Id: htdig.cc,v 1.31 2003/05/17 23:19:36 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -309,6 +309,9 @@ int main(int ac, char **av)
     {
        unlink(word_filename);
        unlink(word_filename + "_weakcmpr");
+
+       // using  -i,  also ignore seen-but-not-processed URLs from last pass
+       unlink(config->Find("url_log"));
     }
 
     // Initialize htword

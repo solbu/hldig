@@ -60,6 +60,9 @@ CDB___memp_open(dbenv)
 	TAILQ_INIT(&dbmp->dbmfq);
 	dbmp->dbenv = dbenv;
 
+	/* Clear locking for avoiding mp_alloc recursion */
+	dbmp->recursion_level = 0;
+
 	/*
 	 * Join/create the mpool region.  If this is a local region we don't
 	 * need much space because the most we'll store there is the pair of
