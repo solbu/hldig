@@ -1,3 +1,8 @@
+Thu Aug 19 11:49:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/parse_doc.pl: make spaces optional in LANGUAGE = POSTSCRIPT
+	PJL test.
+
 Wed Aug 18 11:27:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/PDF.cc(parse): Fixed wrong variable name in new code.

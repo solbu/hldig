@@ -101,7 +101,7 @@ if ($magic =~ /%!|^\033%-12345/) {      # it's PostScript (or HP print job)
                 open(FILE, "< $ARGV[0]") || die "Oops. Can't open file $ARGV[0]: $!\n";
                 read FILE,$magic,256;
                 close FILE;
-                exit unless $magic =~ /^\033%-12345X\@PJL.*\n*.*\n*.*ENTER LANGUAGE = POSTSCRIPT.*\n*.*\n*.*\n%!/
+                exit unless $magic =~ /^\033%-12345X\@PJL.*\n*.*\n*.*ENTER\s*LANGUAGE\s*=\s*POSTSCRIPT.*\n*.*\n*.*\n%!/
         }
 } elsif ($magic =~ /%PDF-/) {           # it's PDF (Acrobat)
         $parser = $CATPDF;
