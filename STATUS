@@ -48,6 +48,6 @@ OTHER ISSUES:
 * Reported problem where -h is ignored if modification_time_is_now set to 
   false. (Should mod_time_is_now just be true and removed as an attribute?)
 * Are there timing/race conditions with the htnet Connection code?
-* Retriever::Start() picks the next server regardless of persistent connections:
-  the next server should be picked from a priority queue depending on
-  the delay, hopcount, and use of persistent connections.
+* Retriever::Start() now manages persistent connections: but no priority
+  queue for picking a server (depending on the delay, hopcount, and use
+  of persistent connections) has been issued.
