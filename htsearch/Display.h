@@ -1,11 +1,15 @@
 //
 // Display.h
 //
-// Display: Implementation of Display
-//          Takes results of search and fills in the HTML templates
+// Display: Takes results of search and fills in the HTML templates
 //
-// $Id: Display.h,v 1.18 1999/09/09 10:16:07 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: Display.h,v 1.19 1999/09/10 17:22:25 ghutchis Exp $
 //
 
 #ifndef _Display_h_

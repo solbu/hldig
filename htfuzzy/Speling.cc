@@ -1,8 +1,7 @@
 //
 // Speling.h
 //
-// Interface to the Speling [sic] fuzzy algorithm.
-// Performs elementary (one-off) spelling correction for ht://Dig
+// Speling: (sic) Performs elementary (one-off) spelling correction for ht://Dig
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -10,14 +9,15 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Speling.cc,v 1.3 1999/09/10 01:37:39 ghutchis Exp $
+// $Id: Speling.cc,v 1.4 1999/09/10 17:22:25 ghutchis Exp $
 //
-//
+
 #include "Speling.h"
 #include "htString.h"
 #include "List.h"
 #include "StringMatch.h"
 #include "Configuration.h"
+
 #include <fstream.h>
 #include <stdio.h>
 

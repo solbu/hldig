@@ -1,8 +1,8 @@
 //
 // Regex.h
 //
-// Interface to the Regex fuzzy algorithm.
-// Matches input regex against the word database. (Based on Substring.h)
+// Regex: A fuzzy to match input regex against the word database.
+//        Based on the substring fuzzy
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -10,8 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Regex.h,v 1.1 1999/05/05 00:38:53 ghutchis Exp $
-//
+// $Id: Regex.h,v 1.2 1999/09/10 17:22:25 ghutchis Exp $
 //
 
 #ifndef _Regex_h_

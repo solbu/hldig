@@ -6,7 +6,13 @@
 //              score of the document for this search. Similar to the
 //              DocMatch class but designed for result display purposes.
 //
-// $Id: ResultMatch.h,v 1.5 1999/09/09 10:16:07 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: ResultMatch.h,v 1.6 1999/09/10 17:22:25 ghutchis Exp $
 //
 
 #ifndef _ResultMatch_h_
@@ -29,13 +35,13 @@ public:
 	//
 	// Data access members
 	//
-	void			setAnchor(int a)			{anchor = a;}
-	void			setID(int i)			{id = i;}
+	void			setAnchor(int a)	{anchor = a;}
+	void			setID(int i)		{id = i;}
 	void			setScore(float s)	{score = s;}
 	
-	int				getAnchor()					{return anchor;}
-	int				getScore()	{ return (int) score; }
-	int			getID()						{return id;}
+	int				getAnchor()	{return anchor;}
+	int				getScore()	{return (int) score;}
+	int			getID()			{return id;}
 
 	static int		setSortType(char *);
 

@@ -1,12 +1,17 @@
 //
 // ResultList.cc
 //
-// ResultList: Implementation of ResultList
+// ResultList: A Dictionary indexed on the document id that holds
+//             documents found for a search.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char RCSid[] = "$Id: ResultList.cc,v 1.5 1999/09/09 10:16:07 loic Exp $";
-#endif
+// $Id: ResultList.cc,v 1.6 1999/09/10 17:22:25 ghutchis Exp $
+//
 
 #include "ResultList.h"
 #include "htString.h"

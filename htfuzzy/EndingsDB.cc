@@ -1,13 +1,16 @@
 //
 // EndingsDB.cc
 //
-// Implementation of Endings class DB related methods
+// EndingsDB: Implementation of the private endings database
+//           
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: EndingsDB.cc,v 1.7 1999/09/10 17:22:24 ghutchis Exp $
 //
-//
-#if RELEASE
-static char RCSid[] = "$Id: EndingsDB.cc,v 1.6 1999/03/08 02:04:13 ghutchis Exp $";
-#endif
 
 #include "Endings.h"
 #include "htfuzzy.h"
@@ -15,6 +18,7 @@ static char RCSid[] = "$Id: EndingsDB.cc,v 1.6 1999/03/08 02:04:13 ghutchis Exp 
 #include "Dictionary.h"
 #include "List.h"
 #include "Configuration.h"
+
 #include <regex.h>
 #include <stdio.h>
 #include <fstream.h>

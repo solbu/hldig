@@ -1,9 +1,9 @@
 //
 // Substring.cc
 //
-//: The substring fuzzy algorithm. Currently a rather slow, naive approach
-//  that checks the substring against every word in the word db.
-//  It does not generate a separate database.
+// Substring: The substring fuzzy algorithm. Currently a rather slow, naive approach
+//            that checks the substring against every word in the word db.
+//            It does not generate a separate database.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -11,10 +11,8 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: Substring.cc,v 1.8 1999/09/10 17:22:25 ghutchis Exp $
 //
-#if RELEASE
-static char RCSid[] = "$Id: Substring.cc,v 1.7 1999/09/10 01:37:39 ghutchis Exp $";
-#endif
 
 #include "Substring.h"
 #include "htString.h"

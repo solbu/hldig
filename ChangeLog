@@ -2,6 +2,8 @@ Fri Sep 10 11:33:50 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
  	* htnotify/htnotify.cc: Add copyright information.
 
+	* htsearch/* htfuzzy/*: Ditto.
+
 Fri Sep 10 15:24:44 1999  Loic Dachary  <loic@ceic.com>
 
 	* htdig/Retriever.cc: change static WordList words to

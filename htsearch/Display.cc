@@ -1,13 +1,17 @@
 //
 // Display.cc
 //
-// Display: Implementation of Display
-//          Takes results of search and fills in the HTML templates
+// Display: Takes results of search and fills in the HTML templates
 //
+//           
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.92 1999/09/09 10:16:07 loic Exp $";
-#endif
+// $Id: Display.cc,v 1.93 1999/09/10 17:22:25 ghutchis Exp $
+//
 
 #include "htsearch.h"
 #include "Display.h"
@@ -19,6 +23,7 @@ static char RCSid[] = "$Id: Display.cc,v 1.92 1999/09/09 10:16:07 loic Exp $";
 #include "HtSGMLCodec.h"
 #include "HtURLCodec.h"
 #include "HtWordType.h"
+
 #include <fstream.h>
 #include <stdio.h>
 #include <ctype.h>

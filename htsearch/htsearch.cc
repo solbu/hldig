@@ -1,16 +1,18 @@
 //
 // htsearch.cc
 //
-// htsearch: Command-line and CGI interface to search the databases
-//           Expects the databases are generated using htdig, htmerge, 
-//           and htfuzzy. Outputs HTML-ized results of the search based 
-//           on the templates specified
+// htsearch: The main search CGI. Parses the CGI input, reads the config files
+//           and calls the necessary code to put together the result lists
+//           and the final display.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: htsearch.cc,v 1.47 1999/09/10 17:22:25 ghutchis Exp $
 //
-#if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.46 1999/09/09 10:16:07 loic Exp $";
-#endif
 
 #include "htsearch.h"
 #include "WeightWord.h"
@@ -25,6 +27,7 @@ static char RCSid[] = "$Id: htsearch.cc,v 1.46 1999/09/09 10:16:07 loic Exp $";
 #include "HtURLCodec.h"
 #include "HtWordType.h"
 #include "HtRegex.h"
+
 #include <time.h>
 #include <ctype.h>
 #include <signal.h>

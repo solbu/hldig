@@ -1,14 +1,23 @@
 //
 // Metaphone.cc
 //
-// Implementation of Metaphone
+// Metaphone: A fuzzy matching algorithm used to match words that
+//            sound alike in the English language. Probably not so 
+//            good for foreign languages.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: Metaphone.cc,v 1.7 1999/09/10 17:22:24 ghutchis Exp $
 //
 
 #include "Metaphone.h"
-#include <ctype.h>
 #include "Dictionary.h"
+
+#include <ctype.h>
 
 
 //*****************************************************************************

@@ -1,30 +1,25 @@
 //
 // TemplateList.h
 //
-// TemplateList: Holds the templates available to format a list of
-//               results. These can be compiled in or read from
-//               files.
+// TemplateList: As it sounds--a list of search result templates. Reads the 
+//               configuration and any template files from disk, then retrieves
+//               the relevant template for display.
 //
-// $Id: TemplateList.h,v 1.3 1999/09/09 10:16:07 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: TemplateList.h,v $
-// Revision 1.3  1999/09/09 10:16:07  loic
-// update comments
+// $Id: TemplateList.h,v 1.4 1999/09/10 17:22:25 ghutchis Exp $
 //
-// Revision 1.2  1999/01/17 20:29:37  ghutchis
-// Ensure template_map config has three members for each template we add,
-// contributed by <tlm@mbox.comune.prato.it>.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-//
+
 #ifndef _TemplateList_h_
 #define _TemplateList_h_
 
 #include "Template.h"
-#include <Object.h>
-#include <List.h>
+#include "Object.h"
+#include "List.h"
 
 class TemplateList : public Object
 {

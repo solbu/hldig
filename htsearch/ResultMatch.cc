@@ -1,9 +1,18 @@
 //
 // ResultMatch.cc
 //
-// ResultMatch: Implementation of ResultMatch
+// ResultMatch: Contains information related to a given
+//              document that was matched by a search. For instance, the
+//              score of the document for this search. Similar to the
+//              DocMatch class but designed for result display purposes.
 //
-// $Id: ResultMatch.cc,v 1.4 1999/09/09 10:16:07 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: ResultMatch.cc,v 1.5 1999/09/10 17:22:25 ghutchis Exp $
 //
 
 #include "ResultMatch.h"

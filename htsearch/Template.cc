@@ -1,21 +1,22 @@
 //
 // Template.cc
 //
-// Template: Implementation of Template
+// Template: A template to set the display of the search results.
+//           MatchTemplate is used for every match, Start and End templates
+//           are used between the header and the first match and the 
+//           last match and the footer respectively.
+//           
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Template.cc,v $
-// Revision 1.2  1999/09/09 10:16:07  loic
-// update comments
+// $Id: Template.cc,v 1.3 1999/09/10 17:22:25 ghutchis Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: Template.cc,v 1.2 1999/09/09 10:16:07 loic Exp $";
-#endif
 
 #include "Template.h"
+
 #include <stdio.h>
 
 

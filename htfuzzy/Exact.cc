@@ -1,12 +1,16 @@
 //
 // Exact.cc
 //
-// Implementation of Exact
+// Exact: The exact-match "fuzzy" matching. Simply returns the word (minus punctuation)
+//           
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: Exact.cc,v 1.6 1999/09/10 17:22:24 ghutchis Exp $
 //
-#if RELEASE
-static char RCSid[] = "$Id: Exact.cc,v 1.5 1999/07/10 02:10:57 ghutchis Exp $";
-#endif
 
 #include "Exact.h"
 #include "htString.h"

@@ -1,9 +1,9 @@
 //
 // Prefix.cc
 //
-//: The prefix fuzzy algorithm. Performs a O(log n) search on for words
-//  matching the *prefix* specified--thus significantly faster than a full
-//  substring search.
+// Prefix: The prefix fuzzy algorithm. Performs a O(log n) search on for words
+//         matching the *prefix* specified--thus significantly faster than a full
+//         substring search.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Prefix.cc,v 1.10 1999/09/10 01:37:39 ghutchis Exp $
+// $Id: Prefix.cc,v 1.11 1999/09/10 17:22:24 ghutchis Exp $
 //
 
 #include "Prefix.h"

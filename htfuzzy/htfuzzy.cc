@@ -1,9 +1,9 @@
 //
 // htfuzzy.cc
 //
-//: Create one or more ``fuzzy'' indexes into the main word database.
-//  These indexes can be used by htsearch to perform a search that uses
-//  other algorithms than exact word match.
+// htfuzzy: Create one or more ``fuzzy'' indexes into the main word database.
+//          These indexes can be used by htsearch to perform a search that uses
+//          other algorithms than exact word match.
 //
 //  This program is meant to be run after htmerge has created the word
 //  database.
@@ -18,9 +18,8 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char RCSid[] = "$Id: htfuzzy.cc,v 1.11 1999/09/10 01:37:39 ghutchis Exp $";
-#endif
+// $Id: htfuzzy.cc,v 1.12 1999/09/10 17:22:25 ghutchis Exp $
+//
 
 #include "htfuzzy.h"
 #include "Fuzzy.h"

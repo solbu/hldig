@@ -1,8 +1,8 @@
 //
 // Fuzzy.cc
 //
-// This is the base class for all the different types of fuzzy searches.
-// We only define the interface.
+// Fuzzy: This is the base class for all the different types of fuzzy searches.
+//        We only define the interface.
 //
 // There are two main uses of classes derived from this class:
 //    1) Creation of a fuzzy index
@@ -14,9 +14,8 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.13 1999/09/10 01:37:39 ghutchis Exp $";
-#endif
+// $Id: Fuzzy.cc,v 1.14 1999/09/10 17:22:24 ghutchis Exp $
+//
 
 #include "Fuzzy.h"
 #include "htfuzzy.h"

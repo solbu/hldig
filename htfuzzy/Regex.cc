@@ -1,8 +1,8 @@
 //
 // Regex.cc
 //
-// Implementation of the Regex fuzzy algorithm.
-// Matches input regex against the word database. (Based on Substring.cc)
+// Regex: A fuzzy to match input regex against the word database.
+//        Based on the substring fuzzy
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -10,9 +10,9 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Regex.cc,v 1.3 1999/09/10 01:37:39 ghutchis Exp $
+// $Id: Regex.cc,v 1.4 1999/09/10 17:22:25 ghutchis Exp $
 //
-//
+
 #include "Regex.h"
 #include "htString.h"
 #include "List.h"

@@ -1,21 +1,24 @@
 //
 // SuffixEntry.h
 //
-// $Id: SuffixEntry.h,v 1.2 1997/03/24 04:33:18 turtle Exp $
+// SuffixEntry: Decode the suffix rules used in the ispell dictionary files
+//              for the endings fuzzy DB.
+//           
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: SuffixEntry.h,v $
-// Revision 1.2  1997/03/24 04:33:18  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
+// $Id: SuffixEntry.h,v 1.3 1999/09/10 17:22:25 ghutchis Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
-//
+
+
 #ifndef _SuffixEntry_h_
 #define _SuffixEntry_h_
 
 #include "Object.h"
-#include <htString.h>
+#include "htString.h"
 
 
 class SuffixEntry : public Object
@@ -24,8 +27,8 @@ public:
 	//
 	// Construction/Destruction
 	//
-					SuffixEntry(char *);
-					~SuffixEntry();
+				SuffixEntry(char *);
+				~SuffixEntry();
 
 	String			expression;
 	String			rule;

@@ -1,11 +1,18 @@
 //
 // parser.h
 //
-// parser: Parse the string containing a search request and find the
-//         document that matches.
+// parser: Parses a boolean expression tree, retrieving and scoring 
+//         the resulting document list
 //
-// $Id: parser.h,v 1.9 1999/09/09 10:16:07 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: parser.h,v 1.10 1999/09/10 17:22:25 ghutchis Exp $
+//
+
 #ifndef _parser_h_
 #define _parser_h_
 

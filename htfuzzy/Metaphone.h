@@ -1,13 +1,19 @@
 //
 // Metaphone.h
 //
-// $Id: Metaphone.h,v 1.1 1997/02/03 17:11:12 turtle Exp $
+// Metaphone: A fuzzy matching algorithm used to match words that
+//            sound alike in the English language. Probably not so 
+//            good for foreign languages.
 //
-// $Log: Metaphone.h,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: Metaphone.h,v 1.2 1999/09/10 17:22:24 ghutchis Exp $
 //
+
 #ifndef _Metaphone_h_
 #define _Metaphone_h_
 
@@ -19,8 +25,8 @@ public:
 	//
 	// Construction/Destruction
 	//
-					Metaphone();
-	virtual			~Metaphone();
+			Metaphone();
+	virtual		~Metaphone();
 
 	virtual void	generateKey(char *word, String &key);
 

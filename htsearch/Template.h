@@ -1,27 +1,25 @@
 //
 // Template.h
 //
-// Template: Gives access to template files used to format the output
-//           of htsearch.
+// Template: A template to set the display of the search results.
+//           MatchTemplate is used for every match, Start and End templates
+//           are used between the header and the first match and the 
+//           last match and the footer respectively.
+//           
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Template.h,v 1.3 1999/09/09 10:16:07 loic Exp $
+// $Id: Template.h,v 1.4 1999/09/10 17:22:25 ghutchis Exp $
 //
-// $Log: Template.h,v $
-// Revision 1.3  1999/09/09 10:16:07  loic
-// update comments
-//
-// Revision 1.2  1997/03/24 04:33:24  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-//
+
 #ifndef _Template_h_
 #define _Template_h_
 
-#include <Object.h>
-#include <htString.h>
+#include "Object.h"
+#include "htString.h"
 
 //
 // This class holds information about output templates.

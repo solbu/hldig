@@ -1,12 +1,17 @@
 //
 // parser.cc
 //
-// parser: Implementation of parser
+// parser: Parses a boolean expression tree, retrieving and scoring 
+//         the resulting document list
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.16 1999/09/09 10:16:07 loic Exp $";
-#endif
+// $Id: parser.cc,v 1.17 1999/09/10 17:22:25 ghutchis Exp $
+//
 
 #include "parser.h"
 #include "HtPack.h"

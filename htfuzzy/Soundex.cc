@@ -1,16 +1,22 @@
 //
 // Soundex.cc
 //
-// Implementation of Soundex
+// Soundex: A fuzzy matching algorithm on the principal of the 
+//          Soundex method for last names used by the U.S. INS
+//          and described by Knuth and others.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: Soundex.cc,v 1.5 1999/09/10 17:22:25 ghutchis Exp $
 //
-#if RELEASE
-static char RCSid[] = "$Id: Soundex.cc,v 1.4 1999/02/06 01:19:12 ghutchis Exp $";
-#endif
 
 #include "Soundex.h"
 #include "Dictionary.h"
+
 #include <ctype.h>
 
 //*****************************************************************************

@@ -1,18 +1,24 @@
 //
 // Synonym.cc
 //
-// Implementation of Synonym
+// Synonym: A fuzzy matching algorithm to create a database of related words
+//          (or misspellings) that should be searched together.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char RCSid[] = "$Id: Synonym.cc,v 1.6 1999/07/10 02:10:57 ghutchis Exp $";
-#endif
+// $Id: Synonym.cc,v 1.7 1999/09/10 17:22:25 ghutchis Exp $
+//
 
 #include "Synonym.h"
 #include "htfuzzy.h"
 #include "List.h"
 #include "StringList.h"
 #include "Configuration.h"
+
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>

@@ -1,12 +1,17 @@
 //
 // htsearch.h
 //
-// htsearch: Command-line and CGI interface to search the databases
-//           Expects the databases are generated using htdig, htmerge, 
-//           and htfuzzy. Outputs HTML-ized results of the search based 
-//           on the templates specified
+// htsearch: The main search CGI. Parses the CGI input, reads the config files
+//           and calls the necessary code to put together the result lists
+//           and the final display.
 //
-// $Id: htsearch.h,v 1.5 1999/09/09 10:16:07 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: htsearch.h,v 1.6 1999/09/10 17:22:25 ghutchis Exp $
 //
 
 #ifndef _htsearch_h_
@@ -16,10 +21,6 @@
 #include "StringList.h"
 #include "Dictionary.h"
 #include "DocumentRef.h"
-#include <stdio.h>
-#include <fstream.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include "Database.h"
 #include "good_strtok.h"
 #include "DocumentDB.h"
@@ -30,6 +31,11 @@
 #include "WordReference.h"
 #include "StringMatch.h"
 #include "defaults.h"
+
+#include <stdio.h>
+#include <fstream.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 extern int		n_matches;
 extern int		do_and;

@@ -1,8 +1,8 @@
 //
 // Fuzzy.h
 //
-// This is the base class for all the different types of fuzzy searches.
-// We only define the interface.
+// Fuzzy: This is the base class for all the different types of fuzzy searches.
+//        We only define the interface.
 //
 // There are two main uses of classes derived from this class:
 //    1) Creation of a fuzzy index
@@ -19,9 +19,9 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Fuzzy.h,v 1.4 1999/09/10 01:37:39 ghutchis Exp $
+// $Id: Fuzzy.h,v 1.5 1999/09/10 17:22:24 ghutchis Exp $
 //
-//
+
 #ifndef _Fuzzy_h_
 #define _Fuzzy_h_
 
