@@ -5,12 +5,12 @@
 //           HtConfiguration class
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2000 The ht://Dig Group
+// Copyright (c) 1995-2002 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.69 2002/09/17 22:43:30 grdetil Exp $
+// $Id: defaults.cc,v 1.70 2002/10/27 15:18:07 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -48,6 +48,15 @@ ConfigDefaults	defaults[] =
 	anchor in the document. This only has effect if the \
 	<strong>EXCERPT</strong> variable is used in the output \
 	template and the excerpt is actually going to be displayed. \
+" }, \
+{ "allow_double_slash", "false",  \
+	"boolean", "htdig", "", "3.2.0b4", "Indexing:Out", "allow_double_slash: true", " \
+	If set to true, strings of multiple slashes ('/') in URL paths \
+	will be left intact, rather than being collapsed. This is necessary \
+	for some search engine URLs which use slashes to separate fields rather \
+	than to separate directory components.  However, it can lead to multiple database \
+	entries refering to the same file, and it causes '/foo//../' to \
+	be equivalent to '/foo/', rather than to '/'. \
 " }, \
 { "allow_in_form", "",  \
 	"string list", "htsearch", "", "3.1.0", "Searching:UI", "allow_in_form: search_algorithm search_results_header", " \
@@ -222,23 +231,23 @@ ConfigDefaults	defaults[] =
 " }, \
 { "check_unique_md5", "false",  \
 	"boolean", "htdig", "Global", "3.2.0b3", "", "check_unique_md5: false", " \
-        Uses the MD5 hash of pages to reject aliases, prevents multiple entries \
-        in the index caused by such things as symbolic links \
-        Note: May not do the right thing for incremental update \
+	Uses the MD5 hash of pages to reject aliases, prevents multiple entries \
+	in the index caused by such things as symbolic links \
+	Note: May not do the right thing for incremental update \
 " }, \
 { "check_unique_date", "false",  \
 	"boolean", "htdig", "Global", "3.2.0b3", "", "check_unique_date: false", " \
-        Include the modification date of the page in the MD5 hash, to reduce the \
-        problem with identical but physically separate pages in different parts of the tree pointing to \
-        different pages.  \
+	Include the modification date of the page in the MD5 hash, to reduce the \
+	problem with identical but physically separate pages in different parts of the tree pointing to \
+	different pages.  \
 " }, \
 { "collection_names", "", \
-        "string list", "htsearch", "", "3.2.0b2", "", "collection_names: htdig_docs htdig_bugs", " \
+	"string list", "htsearch", "", "3.2.0b2", "", "collection_names: htdig_docs htdig_bugs", " \
 	This is a list of config file names that are used for searching multiple databases. \
 	Simply put, htsearch will loop through the databases specified by each of these config \
 	files and present the result of the search on all of the databases. \
 	The corresponding config files are looked up in the <a href=\"#config_dir\">config_dir</a> directory. \
-        Each listed config file <strong>must</strong> exist, as well as the corresponding databases. \
+	Each listed config file <strong>must</strong> exist, as well as the corresponding databases. \
 " }, \
 { "common_dir", COMMON_DIR,  \
 	"string", "all", "", "all", "File Layout", "common_dir: /tmp", " \
@@ -519,12 +528,12 @@ http://www.htdig.org/", " \
 			or with another external parser or converter.<br> \
 			 Only one external parser or converter can be \
 			specified for any given content-type. However, \
-                        an external converter for one content-type can be \
-                        chained to the internal parser for the same type, \
-                        by appending <strong>-internal</strong> to the \
-                        second type string (e.g. text/html->text/html-internal) \
-                        to perform external preprocessing on documents of \
-                        this type before internal parsing. \
+			an external converter for one content-type can be \
+			chained to the internal parser for the same type, \
+			by appending <strong>-internal</strong> to the \
+			second type string (e.g. text/html->text/html-internal) \
+			to perform external preprocessing on documents of \
+			this type before internal parsing. \
 			There are two internal parsers, for text/html and \
 			text/plain.<p> \
 			 The parser program takes four command-line \
@@ -826,8 +835,8 @@ http://www.htdig.org/", " \
 " }, \
 { "external_protocols", "", \
 	"quoted string list", "htdig", "", "3.2.0b1", "External:Protocols", "external_protocols: https /usr/local/bin/handler.pl \\<br> \
-        ftp /usr/local/bin/ftp-handler.pl", " \
-        This attribute is a bit like <a href=\"#external_parsers\">external_parsers</a> \
+	ftp /usr/local/bin/ftp-handler.pl", " \
+	This attribute is a bit like <a href=\"#external_parsers\">external_parsers</a> \
 	since it specifies a list of protocols/handlers that are used to download documents \
 	that cannot be retrieved using the internal methods. This enables htdig to index \
 	documents with URL schemes it does not understand, or to use more advanced authentication \
@@ -836,6 +845,18 @@ http://www.htdig.org/", " \
 	  The external protocols are specified as pairs of strings, the first being the URL scheme that \
 	the script can handle while the second is the path to the script itself. If the second is \
 	quoted, then additional command-line arguments may be given.<br> \
+	If the external protocol does not contain a colon (:), it is assumed \
+	to have the standard format \
+	\"protocol://[usr[:password]@]address[:port]/path\". \
+	If it ends with a colon, then it is assumed to have the simpler format \
+	\"protocol:path\". If it ends with \"://\" then the standard form is \
+	again assumed. <br> \
+	If the external protocol does not contain a colon (:), it is assumed \
+	to have the standard format \
+	\"protocol://[usr[:password]@]address[:port]/path\". \
+	If it ends with a colon, then it is assumed to have the simpler format \
+	\"protocol:path\". If it ends with \"://\" then the standard form is \
+	again assumed. <br> \
 	  The program takes three command-line parameters, not counting any parameters already given  \
 	in the command string:<br> \
 	<em>protocol URL configuration-file</em><br> \
@@ -1021,15 +1042,15 @@ http://www.htdig.org/", " \
 " }, \
 { "head_before_get", "false",  \
 	"boolean", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "head_before_get: true", " \
-        This option works only if we take advantage of persistent connections (see \
-        persistent_connections attribute). If set to true an HTTP/1.1 <em>HEAD</em> \
-        call is made in order to retrieve header information about a document. \
-        If the status code and the content-type returned let the document be parsable, \
-        then a following 'GET' call is made. \
+	This option works only if we take advantage of persistent connections (see \
+	persistent_connections attribute). If set to true an HTTP/1.1 <em>HEAD</em> \
+	call is made in order to retrieve header information about a document. \
+	If the status code and the content-type returned let the document be parsable, \
+	then a following 'GET' call is made. \
 " }, \
 { "disable_cookies", "true",  \
 	"boolean", "htdig", "Server", "3.2.0b4", "Indexing:Connection", "disable_cookies: true", " \
-        This option, if set to true, will disable HTTP cookies. \
+	This option, if set to true, will disable HTTP cookies. \
 " }, \
 { "heading_factor", "5",  \
 	"number", "htsearch", "", "3.2.0b1", "Searching:Ranking", "heading_factor: 20", " \
@@ -1045,14 +1066,14 @@ http://www.htdig.org/", " \
 " }, \
 { "htnotify_prefix_file", "", \
     "string", "htnotify", "", "3.2.0b3", "Extra Output", "htnotify_prefix_file: ${common_dir}/notify_prefix.txt", " \
-        Specifies the file containing text to be inserted in each mail  \
-        message sent by htnotify before the list of expired webpages. If omitted,  \
-        nothing is inserted. \
+	Specifies the file containing text to be inserted in each mail  \
+	message sent by htnotify before the list of expired webpages. If omitted,  \
+	nothing is inserted. \
 " }, \
 { "htnotify_replyto", "", \
     "string", "htnotify", "", "3.2.0b3", "Extra Output", "htnotify_replyto: design-group@foo.com", " \
-        This specifies the email address that htnotify email messages \
-        include in the Reply-to: field. \
+	This specifies the email address that htnotify email messages \
+	include in the Reply-to: field. \
 " }, \
 { "htnotify_sender", "webmaster@www",  \
 	"string", "htnotify", "", "all", "Extra Output", "htnotify_sender: bigboss@yourcompany.com", " \
@@ -1063,14 +1084,14 @@ http://www.htdig.org/", " \
 " }, \
 { "htnotify_suffix_file", "", \
     "string", "htnotify", "", "3.2.0b3", "Extra Output", "htnotify_suffix_file: ${common_dir}/notify_suffix.txt", " \
-        Specifies the file containing text to be inserted in each mail message  \
-        sent by htnotify after the list of expired webpages. If omitted, htnotify  \
-        will insert a standard message. \
+	Specifies the file containing text to be inserted in each mail message  \
+	sent by htnotify after the list of expired webpages. If omitted, htnotify  \
+	will insert a standard message. \
 " }, \
 { "htnotify_webmaster",	 "ht://Dig Notification Service", \
     "string", "htnotify", "", "3.2.0b3", "Extra Output", "htnotify_webmaster: Notification Service", " \
-        This provides a name for the From field, in addition to the email address \
-        for the email messages sent out by htnotify. \
+	This provides a name for the From field, in addition to the email address \
+	for the email messages sent out by htnotify. \
 " }, \
 { "http_proxy", "",  \
 	"string", "htdig", "URL", "3.0", "Indexing:Connection", "http_proxy: http://proxy.bigbucks.com:3128", " \
@@ -1084,11 +1105,11 @@ http://www.htdig.org/", " \
 { "http_proxy_authorization", "",  \
 	"string", "htdig", "URL", "3.2.0b4", "Indexing:Connection", "http_proxy_authorization: myusername:mypassword", " \
 	This tells htdig to send the supplied \
-        <em>username</em><strong>:</strong><em>password</em> with each HTTP request, \
+	<em>username</em><strong>:</strong><em>password</em> with each HTTP request, \
 	when using a proxy with authorization requested. \
-        The credentials will be encoded using the \"Basic\" authentication \
-        scheme. There <em>must</em> be a colon (:) between the username and \
-        password.<br>
+	The credentials will be encoded using the \"Basic\" authentication \
+	scheme. There <em>must</em> be a colon (:) between the username and \
+	password.<br>
 " }, \
 { "http_proxy_exclude", "", \
 	"pattern list", "htdig", "", "3.1.0b3", "Indexing:Connection", "http_proxy_exclude: http://intranet.foo.com/", " \
@@ -1120,7 +1141,7 @@ http://www.htdig.org/", " \
 	</p> \
 " }, \
 { "include", "", \
-        "string", "all", "", "3.1.0", "", "include: ${config_dir}/htdig.conf", " \
+	"string", "all", "", "3.1.0", "", "include: ${config_dir}/htdig.conf", " \
 			This is not quite a configuration attribute, but \
 			rather a directive. It can be used within one \
 			configuration file to include the definitions of \
@@ -1186,7 +1207,7 @@ http://www.htdig.org/", " \
 	least one of the patterns has to match the URL.<br> \
 	Matching, by default, is a case-insensitive string match on the URL \
 	to be used, unless the <a href=\"#case_sensitive\">case_sensitive</a>  \
-        attribute is set. The match will be performed <em>after</em> \
+	attribute is set. The match will be performed <em>after</em> \
 	the relative references have been converted to a valid \
 	URL. This means that the URL will <em>always</em> start \
 	with <code>http://</code>.<br> \
@@ -1204,7 +1225,7 @@ http://www.htdig.org/", " \
 	by the DirectoryIndex setting in Apache's srm.conf, for example. \
 	As of version 3.1.5, this can be a string list rather than a single name, \
 	and htdig will use the first name that works. Since this requires a \
-        loop, setting the most common name first will improve performance. \
+	loop, setting the most common name first will improve performance. \
 	Special characters can be embedded in these names using %xx hex encoding. \
 " }, \
 { "local_urls", "",  \
@@ -1378,7 +1399,7 @@ http://www.htdig.org/", " \
 	Instead of limiting the indexing process by URL \
 	pattern, it can also be limited by the number of hops \
 	or clicks a document is removed from the starting URL. \
-        <br> \
+	<br> \
 	The starting page or pages will have hop count 0. \
 " }, \
 { "max_keywords", "-1",  \
@@ -1395,7 +1416,7 @@ http://www.htdig.org/", " \
 	"number", "htdig", "", "3.1.0b1", "Indexing:How", "max_meta_description_length: 1000", " \
 	While gathering descriptions from meta description tags, \
 	<a href=\"htdig.html\">htdig</a> will only store up to  \
-        this much of the text for each document. \
+	this much of the text for each document. \
 " }, \
 { "max_prefix_matches", "1000",  \
 	"integer", "htsearch", "", "3.1.0b1", "Searching:Method", "max_prefix_matches: 100", " \
@@ -1407,8 +1428,8 @@ http://www.htdig.org/", " \
 " }, \
 { "max_retries", "3",  \
 	"number", "htdig", "", "3.2.0b1", "Indexing:Connection", "max_retries: 6", " \
-         This option set the maximum number of retries when retrieving a document \
-         fails (mainly for reasons of connection). \
+	 This option set the maximum number of retries when retrieving a document \
+	 fails (mainly for reasons of connection). \
 " }, \
 { "max_stars", "4",  \
 	"number", "htsearch", "", "all", "Presentation:How", "max_stars: 6", " \
@@ -1446,7 +1467,7 @@ http://www.htdig.org/", " \
 " }, \
 { "md5_db", "${database_base}.md5hash.db",  \
 	"string", "htdig", "", "3.2.0b3", "File Layout", "md5_db: ${database_base}.md5.db", " \
-        This file holds a database of md5 and date hashes of pages to \
+	This file holds a database of md5 and date hashes of pages to \
 	catch and eliminate duplicates of pages. See also the \
 	<a href=\"#check_unique_md5\">check_unique_md5</a> and \
 	<a href=\"#check_unique_date\">check_unique_date</a> attributes. \
@@ -1478,10 +1499,10 @@ http://www.htdig.org/", " \
 	for more information on how this attribute is used. \
 " }, \
 { "mime_types", "${config_dir}/mime.types", \
-        "string", "htdig", "", "3.2.0b1", "Indexing:Where", "mime_types: /etc/mime.types", " \
-        This file is used by htdig for local file access and resolving file:// URLs \
-        to ensure the files are parsable. If you are running a webserver with its own \
-        MIME file, you should set this attribute to point to that file. \
+	"string", "htdig", "", "3.2.0b1", "Indexing:Where", "mime_types: /etc/mime.types", " \
+	This file is used by htdig for local file access and resolving file:// URLs \
+	to ensure the files are parsable. If you are running a webserver with its own \
+	MIME file, you should set this attribute to point to that file. \
 "}, \
 { "minimum_prefix_length", "1",  \
 	"number", "htsearch", "", "3.1.0b1", "Searching:Method", "minimum_prefix_length: 2", " \
@@ -1671,9 +1692,9 @@ http://www.htdig.org/", " \
 { "persistent_connections", "true",  \
 	"boolean", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "persistent_connections: false", " \
 	If set to true, when servers make it possible, htdig can take advantage \
-        of persistent connections, as defined by HTTP/1.1 (<em>RFC2616</em>). This permits \
-        to reduce the number of open/close operations of connections, when retrieving \
-        a document with HTTP. \
+	of persistent connections, as defined by HTTP/1.1 (<em>RFC2616</em>). This permits \
+	to reduce the number of open/close operations of connections, when retrieving \
+	a document with HTTP. \
 " }, \
 { "plural_suffix", "s", \
 	"string", "htsearch", "", "3.2.0b2", "Presentation: Text", "plural_suffix: en", " \
@@ -1732,9 +1753,9 @@ http://www.htdig.org/", " \
 	If TRUE, htpurge will remove any URLs which were discovered \
 	and included as stubs in the database but not yet retrieved. If FALSE, it \
 	will not do this. When htdig is run in initial mode with no restrictions  \
-        on hopcount or maximum documents, these should probably be removed and set \
-        to true. However, if you are hoping to index a small set of documents and  \
-        eventually get to the rest, you should probably leave this as false. \
+	on hopcount or maximum documents, these should probably be removed and set \
+	to true. However, if you are hoping to index a small set of documents and  \
+	eventually get to the rest, you should probably leave this as false. \
 " }, \
 { "restrict", "",  \
 	"pattern list", "htsearch", "", "3.2.0b4", "Searching:Method", "restrict: http://www.acme.com/widgets/", " \
@@ -1789,7 +1810,7 @@ http://www.htdig.org/", " \
 			<strong>Note:</strong>If the exact  \
 			method is not listed, the search may not work since the  \
 			original terms will not be used.<br> \
-                        Current algorithms supported are: \
+			Current algorithms supported are: \
 			<dl> \
 			  <dt> \
 				exact \
@@ -1873,7 +1894,7 @@ http://www.htdig.org/", " \
 			</dt> \
 			<dd> \
 			  Matches all words that match the patterns given as regular  \
-                          expressions. Since this requires checking every word in \
+			  expressions. Since this requires checking every word in \
 			  the database, this can really slow down searches \
 			  considerably. \
 			<dd> \
@@ -2032,17 +2053,17 @@ http://www.htdig.org/", " \
 			attribute. \
 " }, \
 { "search_results_order", "", \
-        "string_list", "htsearch", "", "3.2.0b2", "Searching:Ranking", "search_results_order:  \
-         /docs/|faq.html * /maillist/ /testresults/", " \
+	"string_list", "htsearch", "", "3.2.0b2", "Searching:Ranking", "search_results_order:  \
+	 /docs/|faq.html * /maillist/ /testresults/", " \
 	This specifies a list of patterns for URLs in \
- 	search results.  Results will be displayed in the \
- 	specified order, with the search algorithm result \
- 	as the second order.  Remaining areas, that do not \
- 	match any of the specified patterns, can be placed \
- 	by using * as the pattern.  If no * is specified, \
- 	one will be implicitly placed at the end of the \
- 	list.<br> \
- 	See also <a href=\"#url_seed_score\">url_seed_score</a>. \
+	search results.  Results will be displayed in the \
+	specified order, with the search algorithm result \
+	as the second order.  Remaining areas, that do not \
+	match any of the specified patterns, can be placed \
+	by using * as the pattern.  If no * is specified, \
+	one will be implicitly placed at the end of the \
+	list.<br> \
+	See also <a href=\"#url_seed_score\">url_seed_score</a>. \
 " }, \
 { "search_results_wrapper", "",  \
 	"string", "htsearch", "", "3.1.0", "Presentation:Files", "search_results_wrapper: ${common_dir}/wrapper.html", " \
@@ -2092,7 +2113,7 @@ http://www.htdig.org/", " \
 	partially index a server as the URLs of additional \
 	documents are entered into the database, marked as never \
 	retrieved.<br> \
-        A value of -1 specifies no limit. \
+	A value of -1 specifies no limit. \
 " }, \
 { "server_wait_time", "0",  \
 	"integer", "htdig", "Server", "3.1.0b3", "Indexing:Connection", "server_wait_time: 20", " \
@@ -2264,14 +2285,14 @@ http://www.htdig.org/", " \
 " }, \
 { "tcp_max_retries", "1",  \
 	"number", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "tcp_max_retries: 6", " \
-         This option set the maximum number of attempts when a connection \
-         <A href=\"#timeout\">timeout</A>s. \
-         After all these retries, the connection attempt results <timed out>. \
+	 This option set the maximum number of attempts when a connection \
+	 <A href=\"#timeout\">timeout</A>s. \
+	 After all these retries, the connection attempt results <timed out>. \
 " }, \
 { "tcp_wait_time", "5",  \
 	"number", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "tcp_max_retries: 10", " \
-         This attribute sets the wait time after a connection fails and the \
-         <A href=\"#timeout\">timeout</A> is raised. \
+	 This attribute sets the wait time after a connection fails and the \
+	 <A href=\"#timeout\">timeout</A> is raised. \
 " }, \
 { "template_map", "Long builtin-long builtin-long Short builtin-short builtin-short",  \
 	"quoted string list", "htsearch", "", "3.0", "Presentation:Files,Searching:UI", "template_map: \
@@ -2434,29 +2455,29 @@ form during indexing and translated for results. \
 	      /docs/|/news/ *1.5 <br> \
 	      /testresults/ &quot;*.7 -200&quot; <br> \
 	      /faq-area/ *2+10000", " \
- 	This is a list of pairs, <em>pattern</em> \
- 	<em>formula</em>, used to weigh the score of \
- 	hits, depending on the URL of the document.<br> \
- 	The <em>pattern</em> part is a substring to match \
- 	against the URL.  Pipe ('|') characters can be \
- 	used in the pattern to concatenate substrings for \
- 	web-areas that have the same formula.<br> \
- 	The formula describes a <em>factor</em> and a \
- 	<em>constant</em>, by which the hit score is \
- 	weighed.  The <em>factor</em> part is multiplied \
- 	to the original score, then the <em>constant</em> \
- 	part is added.<br> \
- 	The format of the formula is the factor part: \
- 	&quot;*<em>N</em>&quot; optionally followed by comma and \
- 	spaces, followed by the constant part : \
- 	&quot;+<em>M</em>&quot;, where the plus sign may be emitted \
- 	for negative numbers.  Either part is optional, \
- 	but must come in this order.<br> \
- 	The numbers <em>N</em> and <em>M</em> are floating \
- 	point constants.<br> \
- 	More straightforward is to think of the format as \
- 	&quot;newscore = oldscore*<em>N</em>+<em>M</em>&quot;, \
- 	but with the &quot;newscore = oldscore&quot; part left out. \
+	This is a list of pairs, <em>pattern</em> \
+	<em>formula</em>, used to weigh the score of \
+	hits, depending on the URL of the document.<br> \
+	The <em>pattern</em> part is a substring to match \
+	against the URL.  Pipe ('|') characters can be \
+	used in the pattern to concatenate substrings for \
+	web-areas that have the same formula.<br> \
+	The formula describes a <em>factor</em> and a \
+	<em>constant</em>, by which the hit score is \
+	weighed.  The <em>factor</em> part is multiplied \
+	to the original score, then the <em>constant</em> \
+	part is added.<br> \
+	The format of the formula is the factor part: \
+	&quot;*<em>N</em>&quot; optionally followed by comma and \
+	spaces, followed by the constant part : \
+	&quot;+<em>M</em>&quot;, where the plus sign may be emitted \
+	for negative numbers.  Either part is optional, \
+	but must come in this order.<br> \
+	The numbers <em>N</em> and <em>M</em> are floating \
+	point constants.<br> \
+	More straightforward is to think of the format as \
+	&quot;newscore = oldscore*<em>N</em>+<em>M</em>&quot;, \
+	but with the &quot;newscore = oldscore&quot; part left out. \
 " }, \
 { "use_doc_date", "false",  \
 	"boolean", "htdig", "", "3.2.0b1", "Indexing:How", "use_doc_date: true", " \
@@ -2537,7 +2558,7 @@ form during indexing and translated for results. \
 	"boolean", "all", "", "3.2.0b1", "Indexing:How", "wordlist_compress: true", " \
 	Enables or disables the default compression system for the indexer. \
 	This currently compresses the index by a factor of 8. If the \
-        Zlib library is not found on the system, the default is false. \
+	Zlib library is not found on the system, the default is false. \
 " }, \
 { "wordlist_page_size", "0",  \
 	"number", "all", "", "3.2.0b1", "Indexing:How", "wordlist_page_size: 8192", " \
@@ -2562,7 +2583,7 @@ form during indexing and translated for results. \
 { "wordlist_monitor", "false", \
 	"boolean", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor: true", " \
 	This enables monitoring of what's happening in the indexer. \
-        It can help to detect performance/configuration problems. \
+	It can help to detect performance/configuration problems. \
 " }, \
 { "wordlist_monitor_period","0", \
 	"string", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor_period: .1", " \
@@ -2570,7 +2591,7 @@ form during indexing and translated for results. \
 " }, \
 { "wordlist_monitor_output","", \
 	"string", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor_output: myfile", " \
-        Print monitoring output on file instead of the default stderr. \
+	Print monitoring output on file instead of the default stderr. \
 " }, 
 {0, 0, 0, 0, 0, 0, 0, 0, 0}
 };
