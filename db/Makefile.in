@@ -136,9 +136,9 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 EXTRA_DIST = db.h.in 	68K.gcc alpha.gcc sparc.gcc x86.gcc 	hash.src log.src qam.src txn.src prefix-symbols.sh 	LICENSE
 
 
-noinst_LTLIBRARIES = libdb.la
+noinst_LTLIBRARIES = libhtdb.la
 
-libdb_la_SOURCES =  	bt_compare.c 	bt_conv.c 	bt_curadj.c 	bt_cursor.c 	bt_delete.c 	bt_method.c 	bt_open.c 	bt_put.c 	bt_rec.c 	bt_reclaim.c 	bt_recno.c 	bt_rsearch.c 	bt_search.c 	bt_split.c 	bt_stat.c 	bt_upgrade.c 	bt_verify.c 	btree_auto.c 	crdel_auto.c 	crdel_rec.c 	db.c 	db_am.c 	db_auto.c 	db_byteorder.c 	db_cam.c 	db_conv.c 	db_dispatch.c 	db_dup.c 	db_err.c 	db_getlong.c 	db_iface.c 	db_join.c 	db_log2.c 	db_meta.c 	db_method.c 	db_overflow.c 	db_pr.c 	db_rec.c 	db_reclaim.c 	db_ret.c 	db_salloc.c 	db_shash.c 	db_upg.c 	db_upg_opd.c 	db_vrfy.c 	db_vrfyutil.c 	env_method.c 	env_open.c 	env_recover.c 	env_region.c 	hash.c 	hash_auto.c 	hash_conv.c 	hash_dup.c 	hash_func.c 	hash_meta.c 	hash_method.c 	hash_page.c 	hash_rec.c 	hash_reclaim.c 	hash_stat.c 	hash_upgrade.c 	hash_verify.c 	lock.c 	lock_conflict.c 	lock_deadlock.c 	lock_region.c 	lock_util.c 	log.c 	log_archive.c 	log_auto.c 	log_compare.c 	log_findckp.c 	log_get.c 	log_method.c 	log_put.c 	log_rec.c 	log_register.c 	mp_alloc.c 	mp_bh.c 	mp_cmpr.c 	mp_fget.c 	mp_fopen.c 	mp_fput.c 	mp_fset.c 	mp_method.c 	mp_region.c 	mp_register.c 	mp_stat.c 	mp_sync.c 	mp_trickle.c 	mut_fcntl.c 	mut_pthread.c 	mut_tas.c 	mutex.c 	os_abs.c 	os_alloc.c 	os_dir.c 	os_errno.c 	os_fid.c 	os_finit.c 	os_fsync.c 	os_handle.c 	os_map.c 	os_method.c 	os_oflags.c 	os_open.c 	os_region.c 	os_rename.c 	os_root.c 	os_rpath.c 	os_rw.c 	os_seek.c 	os_sleep.c 	os_spin.c 	os_stat.c 	os_tmpdir.c 	os_unlink.c 	qam.c 	qam_auto.c 	qam_conv.c 	qam_method.c 	qam_open.c 	qam_rec.c 	qam_stat.c 	qam_upgrade.c 	qam_verify.c 	txn.c 	txn_auto.c 	txn_rec.c 	txn_region.c 	xa.c 	xa_db.c 	xa_map.c
+libhtdb_la_SOURCES =  	bt_compare.c 	bt_conv.c 	bt_curadj.c 	bt_cursor.c 	bt_delete.c 	bt_method.c 	bt_open.c 	bt_put.c 	bt_rec.c 	bt_reclaim.c 	bt_recno.c 	bt_rsearch.c 	bt_search.c 	bt_split.c 	bt_stat.c 	bt_upgrade.c 	bt_verify.c 	btree_auto.c 	crdel_auto.c 	crdel_rec.c 	db.c 	db_am.c 	db_auto.c 	db_byteorder.c 	db_cam.c 	db_conv.c 	db_dispatch.c 	db_dup.c 	db_err.c 	db_getlong.c 	db_iface.c 	db_join.c 	db_log2.c 	db_meta.c 	db_method.c 	db_overflow.c 	db_pr.c 	db_rec.c 	db_reclaim.c 	db_ret.c 	db_salloc.c 	db_shash.c 	db_upg.c 	db_upg_opd.c 	db_vrfy.c 	db_vrfyutil.c 	env_method.c 	env_open.c 	env_recover.c 	env_region.c 	hash.c 	hash_auto.c 	hash_conv.c 	hash_dup.c 	hash_func.c 	hash_meta.c 	hash_method.c 	hash_page.c 	hash_rec.c 	hash_reclaim.c 	hash_stat.c 	hash_upgrade.c 	hash_verify.c 	lock.c 	lock_conflict.c 	lock_deadlock.c 	lock_region.c 	lock_util.c 	log.c 	log_archive.c 	log_auto.c 	log_compare.c 	log_findckp.c 	log_get.c 	log_method.c 	log_put.c 	log_rec.c 	log_register.c 	mp_alloc.c 	mp_bh.c 	mp_cmpr.c 	mp_fget.c 	mp_fopen.c 	mp_fput.c 	mp_fset.c 	mp_method.c 	mp_region.c 	mp_register.c 	mp_stat.c 	mp_sync.c 	mp_trickle.c 	mut_fcntl.c 	mut_pthread.c 	mut_tas.c 	mutex.c 	os_abs.c 	os_alloc.c 	os_dir.c 	os_errno.c 	os_fid.c 	os_finit.c 	os_fsync.c 	os_handle.c 	os_map.c 	os_method.c 	os_oflags.c 	os_open.c 	os_region.c 	os_rename.c 	os_root.c 	os_rpath.c 	os_rw.c 	os_seek.c 	os_sleep.c 	os_spin.c 	os_stat.c 	os_tmpdir.c 	os_unlink.c 	qam.c 	qam_auto.c 	qam_conv.c 	qam_method.c 	qam_open.c 	qam_rec.c 	qam_stat.c 	qam_upgrade.c 	qam_verify.c 	txn.c 	txn_auto.c 	txn_rec.c 	txn_region.c 	xa.c 	xa_db.c 	xa_map.c
 
 
 pkginclude_HEADERS =  	btree.h 	btree_auto.h 	btree_ext.h 	common_ext.h 	crdel_auto.h 	db.h 	db_am.h 	db_auto.h 	db_dispatch.h 	db_ext.h 	db_int.h 	db_join.h 	db_page.h 	db_shash.h 	db_swap.h 	db_upgrade.h 	db_verify.h 	debug.h 	env_ext.h 	hash.h 	hash_auto.h 	hash_ext.h 	lock.h 	lock_ext.h 	log.h 	log_auto.h 	log_ext.h 	mp.h 	mp_ext.h 	mutex.h 	mutex_ext.h 	os.h 	os_ext.h 	os_jump.h 	qam.h 	qam_auto.h 	qam_ext.h 	queue.h 	region.h 	shqueue.h 	txn.h 	txn_auto.h 	txn_ext.h 	xa.h 	xa_ext.h
@@ -152,9 +152,9 @@ LTLIBRARIES =  $(noinst_LTLIBRARIES)
 DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
-libdb_la_LDFLAGS = 
-libdb_la_LIBADD = 
-libdb_la_OBJECTS =  bt_compare.lo bt_conv.lo bt_curadj.lo bt_cursor.lo \
+libhtdb_la_LDFLAGS = 
+libhtdb_la_LIBADD = 
+libhtdb_la_OBJECTS =  bt_compare.lo bt_conv.lo bt_curadj.lo bt_cursor.lo \
 bt_delete.lo bt_method.lo bt_open.lo bt_put.lo bt_rec.lo bt_reclaim.lo \
 bt_recno.lo bt_rsearch.lo bt_search.lo bt_split.lo bt_stat.lo \
 bt_upgrade.lo bt_verify.lo btree_auto.lo crdel_auto.lo crdel_rec.lo \
@@ -228,8 +228,8 @@ DEP_FILES =  .deps/bt_compare.P .deps/bt_conv.P .deps/bt_curadj.P \
 .deps/qam_stat.P .deps/qam_upgrade.P .deps/qam_verify.P .deps/txn.P \
 .deps/txn_auto.P .deps/txn_rec.P .deps/txn_region.P .deps/xa.P \
 .deps/xa_db.P .deps/xa_map.P
-SOURCES = $(libdb_la_SOURCES)
-OBJECTS = $(libdb_la_OBJECTS)
+SOURCES = $(libhtdb_la_SOURCES)
+OBJECTS = $(libhtdb_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -285,8 +285,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libdb.la: $(libdb_la_OBJECTS) $(libdb_la_DEPENDENCIES)
-	$(LINK)  $(libdb_la_LDFLAGS) $(libdb_la_OBJECTS) $(libdb_la_LIBADD) $(LIBS)
+libhtdb.la: $(libhtdb_la_OBJECTS) $(libhtdb_la_DEPENDENCIES)
+	$(LINK)  $(libhtdb_la_LDFLAGS) $(libhtdb_la_OBJECTS) $(libhtdb_la_LIBADD) $(LIBS)
 
 install-pkgincludeHEADERS: $(pkginclude_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -471,13 +471,13 @@ diff:
 	diff -c db.h.in ../../../db-3.1.14/include/db.src
 
 polution:
-	nm .libs/libdb.al | perl -n -e 'print if(!/^$$/ && !/ [Urtdb] / && !/CDB_/)'
+	nm .libs/libhtdb.al | perl -n -e 'print if(!/^$$/ && !/ [Urtdb] / && !/CDB_/)'
 
 polutionquiet:
-	nm .libs/libdb.al | perl -n -e 'print if(!/\.lo:/ && !/^$$/ && !/ [Urtdb] / && !/CDB_/)'
+	nm .libs/libhtdb.al | perl -n -e 'print if(!/\.lo:/ && !/^$$/ && !/ [Urtdb] / && !/CDB_/)'
 
 substitutions:
-	nm .libs/libdb.al | perl -n -e 'chop; if(!/CDB_/ && s/\w+ [TDRC] //) { print "s/\\b$$_\\b/CDB_$$_/g;\n"; } '
+	nm .libs/libhtdb.al | perl -n -e 'chop; if(!/CDB_/ && s/\w+ [TDRC] //) { print "s/\\b$$_\\b/CDB_$$_/g;\n"; } '
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

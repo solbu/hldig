@@ -7,9 +7,9 @@ EXTRA_DIST = db.h.in \
 	hash.src log.src qam.src txn.src prefix-symbols.sh \
 	LICENSE
 
-noinst_LTLIBRARIES = libdb.la
+noinst_LTLIBRARIES = libhtdb.la
 
-libdb_la_SOURCES = \
+libhtdb_la_SOURCES = \
 	bt_compare.c \
 	bt_conv.c \
 	bt_curadj.c \
@@ -201,11 +201,11 @@ diff:
 	diff -c db.h.in ../../../db-3.1.14/include/db.src
 
 polution:
-	nm .libs/libdb.al | perl -n -e 'print if(!/^$$/ && !/ [Urtdb] / && !/CDB_/)'
+	nm .libs/libhtdb.al | perl -n -e 'print if(!/^$$/ && !/ [Urtdb] / && !/CDB_/)'
 
 polutionquiet:
-	nm .libs/libdb.al | perl -n -e 'print if(!/\.lo:/ && !/^$$/ && !/ [Urtdb] / && !/CDB_/)'
+	nm .libs/libhtdb.al | perl -n -e 'print if(!/\.lo:/ && !/^$$/ && !/ [Urtdb] / && !/CDB_/)'
 
 substitutions:
-	nm .libs/libdb.al | perl -n -e 'chop; if(!/CDB_/ && s/\w+ [TDRC] //) { print "s/\\b$$_\\b/CDB_$$_/g;\n"; } '
+	nm .libs/libhtdb.al | perl -n -e 'chop; if(!/CDB_/ && s/\w+ [TDRC] //) { print "s/\\b$$_\\b/CDB_$$_/g;\n"; } '
 
