@@ -1,3 +1,7 @@
+Wed Feb 23 19:14:29 2000  Loic Dachary  <loic@ceic.com>
+
+ 	* htcommon/conf_parser.cxx: regenerated from conf_parser.yxx
+
 Wed Feb 23 19:04:16 2000  Loic Dachary  <loic@ceic.com>
 
 	* test/test_functions.in: inconditionaly remove existing test/var

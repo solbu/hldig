@@ -1,6 +1,7 @@
 
 /*  A Bison parser, made from ../../htdig3/htcommon/conf_parser.yxx
-    by GNU Bison version 1.28  */
+ by  GNU Bison version 1.27
+  */
 
 #define YYBISON 1  /* Identify Bison output.  */
 
@@ -27,7 +28,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: conf_parser.cxx,v 1.1.2.5 2000/02/16 14:32:41 vadim Exp $
+// $Id: conf_parser.cxx,v 1.1.2.6 2000/02/23 16:55:59 loic Exp $
 //
 
 /* Bison version > 1.25 needed */
@@ -183,7 +184,7 @@ static const short yycheck[] = {     0,
 };
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
 
-/* This file comes from bison-1.28.  */
+/* This file comes from bison-1.27.  */
 
 /* Skeleton output parser for bison,
    Copyright (C) 1984, 1989, 1990 Free Software Foundation, Inc.
@@ -730,7 +731,7 @@ case 2:
 case 3:
 {   
   // name: value
-               ((HtConfiguration *)aConf)->Add(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
+               ((HtConfiguration *)aConf)->AddParsed(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
 	       #ifdef DEBUG
 	       if (sn_debug>=2) {
 		 cout<<"Added to conf: "<<yyvsp[0].ConfLine->name<<":"<<yyvsp[0].ConfLine->value<<endl;
@@ -818,7 +819,7 @@ case 11:
   //
   // First entry. We need to create conf to store it.
   HtConfiguration *expressionList=new HtConfiguration();
-  expressionList->Add(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
+  expressionList->AddParsed(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
   yyval.ConfLines=expressionList;
   #ifdef DEBUG
   if (sn_debug>=2) {
@@ -832,7 +833,7 @@ case 11:
     break;}
 case 12:
 {
-				yyvsp[-1].ConfLines->Add(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
+				yyvsp[-1].ConfLines->AddParsed(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
 				#ifdef DEBUG
 				if (sn_debug>=2) {
 				  cout<<yyvsp[0].ConfLine->name<<":"<<yyvsp[0].ConfLine->value<<" added to "<<yyvsp[-1].ConfLines<<endl;
