@@ -1,3 +1,19 @@
+Tue Feb 16 23:48:09 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in, configure: Default to 'int' when we cannot
+	establish type used by getpeername.
+
+	* htdoc/RELEASE.html: Additional notes on everything fixed in 3.1.1.
+
+Tue Feb 16 23:45:26 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* contrib/parse_doc.pl: Add replacement for less-capable (and
+	buggy) parse_word_doc.pl script. Handles Word, PS, RTF, and
+	WordPerfect files, with appropriate file->text converters.
+
+	* htsearch/parser.cc, htsearch/parser.h: Add more error messages
+	when the boolean expression is invalid.
+
 Mon Feb 15 21:02:24 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Document.cc(RetrieveLocal): Fix to ensure we report
