@@ -1,0 +1,49 @@
+
+include $(top_srcdir)/Makefile.config
+
+EXTRA_DIST = COPYING  \
+	ChangeLog \
+	FAQ.html \
+	RELEASE.html \
+	THANKS.html \
+	TODO.html \
+	attrs.html \
+	author.html \
+	bdot.gif \
+	bugs.html \
+	cf_byname.html \
+	cf_byprog.html \
+	cf_general.html \
+	cf_types.html \
+	cf_variables.html \
+	config.html \
+	confindex.html \
+	confmenu.html \
+	contents.html \
+	dot.gif \
+	howitworks.html \
+	htdig.gif \
+	htdig.html \
+	htdig_big.gif \
+	htfuzzy.html \
+	htmerge.html \
+	htnotify.html \
+	hts_form.html \
+	hts_general.html \
+	hts_menu.html \
+	hts_method.html \
+	hts_templates.html \
+	htsearch.html \
+	index.html \
+	install.html \
+	ma_menu.html \
+	mailarchive.html \
+	mailing.html \
+	main.html \
+	meta.html \
+	notification.html \
+	require.html \
+	triangle.gif \
+	up.gif \
+	uses.html \
+	where.html
