@@ -7,7 +7,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	DB2_db.cc IntObject.cc List.cc Object.cc \
 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc \
 	String.cc StringList.cc StringMatch.cc String_fmt.cc \
-	good_strtok.cc io.cc strcasecmp.cc \
+	good_strtok.cc strcasecmp.cc \
 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc \
 	HtVector.cc HtHeap.cc regex.c \
 	HtPack.cc HtDateTime.cc HtRegex.cc 
@@ -37,7 +37,6 @@ noinst_HEADERS = \
 	StringMatch.h \
 	good_strtok.h \
 	htString.h \
-	io.h \
 	lib.h \
 	langinfo.h \
 	regex.h

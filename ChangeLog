@@ -1,3 +1,13 @@
+Wed Oct  6 23:31:50 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htnet/Connection.h, htnet/Connection.cc: Merge in io
+	class. Connection class was the only subclass of io.
+
+	* Makefile.in, htlib/Makefile.am, htlib/Makefile.in: Update for
+	removed io class.
+
+	* htdig/ExternalParser.cc: Add more verbose flags for errors.
+
 Wed Oct 06 14:56:34 1999  Loic Dachary  <loic@ceic.com>
 
 	* htnet/Connection.cc (assign_server): use free, not delete 

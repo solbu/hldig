@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.2 1999/10/06 13:15:34 loic Exp $
+// $Id: Connection.cc,v 1.3 1999/10/07 04:42:22 ghutchis Exp $
 //
 
 #include "Connection.h"
@@ -46,6 +46,9 @@ extern "C" {
     int rresvport(int *);
 }
 
+#undef MIN
+#define	MIN(a,b)		((a)<(b)?(a):(b))
+
 List	all_connections;
 
 Connection::Connection()
@@ -56,6 +59,8 @@ Connection::Connection()
     server_name = 0;
     all_connections.Add(this);
     timeout_value = 0;
+
+    pos = pos_max = 0;
 }
 
 
@@ -79,6 +84,8 @@ Connection::Connection(int socket)
     server_name = 0;
     all_connections.Add(this);
     timeout_value = 0;
+
+    pos = pos_max = 0;
 }
 
 
@@ -358,6 +365,211 @@ Connection * Connection::accept_privileged()
     return accept(1);
 }
 
+//*****************************************************************************
+// int Connection::read_char()
+//
+int Connection::read_char()
+{
+    if (pos >= pos_max)
+    {
+	pos_max = read_partial(buffer, sizeof(buffer));
+	pos = 0;
+	if (pos_max <= 0)
+	{
+	    return -1;
+	}
+    }
+    return buffer[pos++] & 0xff;
+}
+
+
+//*****************************************************************************
+// String *Connection::read_line(String &s, char *terminator)
+//
+String *Connection::read_line(String &s, char *terminator)
+{
+    int		termseq = 0;
+    s = 0;
+
+    for (;;)
+    {
+	int	ch = read_char();
+	if (ch < 0)
+	{
+	    //
+	    // End of file reached.  If we still have stuff in the input buffer
+	    // we need to return it first.  When we get called again we will
+	    // return NULL to let the caller know about the EOF condition.
+	    //
+	    if (s.length())
+		break;
+	    else
+		return (String *) 0;
+	}
+	else if (terminator[termseq] && ch == terminator[termseq])
+	{
+	    //
+	    // Got one of the terminator characters.  We will not put
+	    // it in the string but keep track of the fact that we
+	    // have seen it.
+	    //
+	    termseq++;
+	    if (!terminator[termseq])
+		break;
+	}
+	else
+	{
+	    s << (char) ch;
+	}
+    }
+
+    return &s;
+}
+
+
+//*****************************************************************************
+// String *Connection::read_line(char *terminator)
+//
+String *Connection::read_line(char *terminator)
+{
+    String	*s;
+
+    s = new String;
+    return read_line(*s, terminator);
+}
+
+
+//*****************************************************************************
+// char *Connection::read_line(char *buffer, int maxlength, char *terminator)
+//
+char *Connection::read_line(char *buffer, int maxlength, char *terminator)
+{
+    char	*start = buffer;
+    int		termseq = 0;
+
+    while (maxlength > 0)
+    {
+	int		ch = read_char();
+	if (ch < 0)
+	{
+	    //
+	    // End of file reached.  If we still have stuff in the input buffer
+	    // we need to return it first.  When we get called again, we will
+	    // return NULL to let the caller know about the EOF condition.
+	    //
+	    if (buffer > start)
+		break;
+	    else
+		return (char *) 0;
+	}
+	else if (terminator[termseq] && ch == terminator[termseq])
+	{
+	    //
+	    // Got one of the terminator characters.  We will not put
+	    // it in the string but keep track of the fact that we
+	    // have seen it.
+	    //
+	    termseq++;
+	    if (!terminator[termseq])
+		break;
+	}
+	else
+	{
+	    *buffer++ = ch;
+	    maxlength--;
+	}
+    }
+    *buffer = '\0';
+
+    return start;
+}
+
+
+//*****************************************************************************
+// int Connection::write_line(char *str, char *eol)
+//
+int Connection::write_line(char *str, char *eol)
+{
+    int		n, nn;
+
+    if ((n = write(str)) < 0)
+	return -1;
+
+    if ((nn = write(eol)) < 0)
+	return -1;
+
+    return n + nn;
+}
+
+
+//*****************************************************************************
+// int Connection::write(char *buffer, int length)
+//
+int Connection::write(char *buffer, int length)
+{
+    int		nleft, nwritten;
+
+    if (length == -1)
+	length = strlen(buffer);
+
+    nleft = length;
+    while (nleft > 0)
+    {
+	nwritten = write_partial(buffer, nleft);
+	if (nwritten < 0 && errno == EINTR)
+	    continue;
+	if (nwritten <= 0)
+	    return nwritten;
+	nleft -= nwritten;
+	buffer += nwritten;
+    }
+    return length - nleft;
+}
+
+
+//*****************************************************************************
+// int Connection::read(char *buffer, int length)
+//
+int Connection::read(char *buffer, int length)
+{
+    int		nleft, nread;
+
+    nleft = length;
+
+    //
+    // If there is data in our internal input buffer, use that first.
+    //
+    if (pos < pos_max)
+    {
+	int n = MIN(length, pos_max - pos);
+
+	memcpy(buffer, &this->buffer[pos], n);
+	pos += n;
+	buffer += n;
+	nleft -= n;
+    }
+
+    while (nleft > 0)
+    {
+	nread = read_partial(buffer, nleft);
+	if (nread < 0 && errno == EINTR)
+	    continue;
+	if (nread < 0)
+	    return -1;
+	else if (nread == 0)
+	    break;
+
+	nleft -= nread;
+	buffer += nread;
+    }
+    return length - nleft;
+}
+
+
+void Connection::flush()
+{
+   pos = pos_max = 0;
+}
 
 //*************************************************************************
 // int Connection::read_partial(char *buffer, int maxlength)

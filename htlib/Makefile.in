@@ -112,12 +112,12 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 lib_LTLIBRARIES = libht.la
 
-libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc io.cc strcasecmp.cc 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc regex.c 	HtPack.cc HtDateTime.cc HtRegex.cc 
+libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc regex.c 	HtPack.cc HtDateTime.cc HtRegex.cc 
 
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS =  	Configuration.h 	DB2_db.h 	Database.h 	Dictionary.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtVector.h 	HtWordCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	good_strtok.h 	htString.h 	io.h 	lib.h 	langinfo.h 	regex.h
+noinst_HEADERS =  	Configuration.h 	DB2_db.h 	Database.h 	Dictionary.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtVector.h 	HtWordCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	good_strtok.h 	htString.h 	lib.h 	langinfo.h 	regex.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -132,7 +132,7 @@ libht_la_LIBADD =
 libht_la_OBJECTS =  Configuration.lo Database.lo Dictionary.lo DB2_db.lo \
 IntObject.lo List.lo Object.lo ParsedString.lo Queue.lo \
 QuotedStringList.lo Stack.lo String.lo StringList.lo StringMatch.lo \
-String_fmt.lo good_strtok.lo io.lo strcasecmp.lo mktime.lo strptime.lo \
+String_fmt.lo good_strtok.lo strcasecmp.lo mktime.lo strptime.lo \
 timegm.lo HtCodec.lo HtWordCodec.lo HtVector.lo HtHeap.lo regex.lo \
 HtPack.lo HtDateTime.lo HtRegex.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -158,8 +158,8 @@ DEP_FILES =  .deps/Configuration.P .deps/DB2_db.P .deps/Database.P \
 .deps/IntObject.P .deps/List.P .deps/Object.P .deps/ParsedString.P \
 .deps/Queue.P .deps/QuotedStringList.P .deps/Stack.P .deps/String.P \
 .deps/StringList.P .deps/StringMatch.P .deps/String_fmt.P \
-.deps/good_strtok.P .deps/io.P .deps/mktime.P .deps/regex.P \
-.deps/strcasecmp.P .deps/strptime.P .deps/timegm.P
+.deps/good_strtok.P .deps/mktime.P .deps/regex.P .deps/strcasecmp.P \
+.deps/strptime.P .deps/timegm.P
 SOURCES = $(libht_la_SOURCES)
 OBJECTS = $(libht_la_OBJECTS)
 
