@@ -1,3 +1,8 @@
+Tue Jul 24 13:42:56 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/hts_templates.html, htsearch/Display.cc (displayMatch):
+	Add METADESCRIPTION variable.
+
 Tue Jul 24 13:20:24 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/DocumentDB.{h,cc}: Added FindCoded() method to lookup

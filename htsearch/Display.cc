@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.37 2001/07/24 18:33:48 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.38 2001/07/24 18:44:06 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -274,6 +274,7 @@ Display::displayMatch(ResultMatch *match, int current)
 	vars.Remove("ANCHOR");
       }
     
+    vars.Add("METADESCRIPTION", new String(ref->DocMetaDsc()));
     vars.Add("SCORE", new String(form("%d", match->getScore())));
     vars.Add("CURRENT", new String(form("%d", current)));
     char	*title = ref->DocTitle();
