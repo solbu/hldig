@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Fuzzy.cc,v 1.15 1999/09/24 10:29:01 loic Exp $
+// $Id: Fuzzy.cc,v 1.16 1999/10/08 12:59:56 loic Exp $
 //
 
 #include "Fuzzy.h"
@@ -114,7 +114,7 @@ Fuzzy::openIndex()
 {
     String	var = name;
     var << "_db";
-    String	filename = config[var];
+    const String	filename = config[var];
 
     index = Database::getDatabaseInstance(DB_HASH);
     if (index->OpenRead(filename) == NOTOK)
@@ -136,7 +136,7 @@ Fuzzy::writeDB()
 {
     String	var = name;
     var << "_db";
-    String	filename = config[var];
+    const String	filename = config[var];
 
     index = Database::getDatabaseInstance(DB_HASH);
     if (index->OpenReadWrite(filename, 0664) == NOTOK)

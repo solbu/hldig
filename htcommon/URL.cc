@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.2 1999/10/06 13:15:34 loic Exp $
+// $Id: URL.cc,v 1.3 1999/10/08 12:59:55 loic Exp $
 //
 
 #include "URL.h"
@@ -196,7 +196,7 @@ URL::URL(const char *url, URL &parent)
 		// of the path before we add the reference to it.
 		//
 		String	temp = _path;
-		p = strrchr(temp, '/');
+		p = strrchr((char*)temp, '/');
 		if (p)
 		{
 		    p[1] = '\0';
@@ -304,17 +304,17 @@ void URL::parse(const char *u)
 	{
 	    _host = strtok(p, "/");
 	    _host.chop(" \t");
-	    if (strcmp(_service, "http") == 0)
+	    if (strcmp((char*)_service, "http") == 0)
 	      _port = 80;
-	    if (strcmp(_service, "https") == 0)
+	    if (strcmp((char*)_service, "https") == 0)
 	      _port = 442;
-	    if (strcmp(_service, "ftp") == 0)
+	    if (strcmp((char*)_service, "ftp") == 0)
 	      _port = 21;
-	    if (strcmp(_service, "gopher") == 0)
+	    if (strcmp((char*)_service, "gopher") == 0)
 	      _port = 70;
-	    if (strcmp(_service, "news") == 0)
+	    if (strcmp((char*)_service, "news") == 0)
 	      _port = 532;
-	    if (strcmp(_service, "file") == 0)
+	    if (strcmp((char*)_service, "file") == 0)
 	      _port = 0;
 	}
 
@@ -452,7 +452,7 @@ void URL::removeIndex(String &path)
 {
     static StringMatch *defaultdoc = 0;
 
-    if (path.length() == 0 || strchr(path, '?'))
+    if (path.length() == 0 || strchr((char*)path, '?'))
 	return;
 
     int filename = path.lastIndexOf('/') + 1;
@@ -467,7 +467,7 @@ void URL::removeIndex(String &path)
       defaultdoc->Pattern(l.Join('|'));
     }
     if (defaultdoc->hasPattern() &&
-            defaultdoc->CompareWord(path.sub(filename)))
+            defaultdoc->CompareWord((char*)path.sub(filename)))
 	path.chop(path.length() - filename);
 }
 
@@ -483,7 +483,7 @@ void URL::normalize()
     if (_service.length() == 0 || _normal)
 	return;
 
-    if (strcmp(_service, "http") != 0)
+    if (strcmp((char*)_service, "http") != 0)
 	return;
 
     removeIndex(_path);
@@ -607,7 +607,7 @@ void URL::ServerAlias()
       delim= al->indexOf(':');
       // fprintf(stderr, "\nOld URL: %s->%s\n", (char *) _signature, (char *) *al);
       _host= al->sub(0,delim).get();
-      sscanf(al->sub(delim+1), "%d", &newport);
+      sscanf((char*)al->sub(delim+1), "%d", &newport);
       _port= newport;
       // fprintf(stderr, "New URL: %s:%d\n", (char *) _host, _port);
     }
@@ -624,22 +624,22 @@ void URL::constructURL()
     _url << ":";
     if (_user.length())
       _url << _user << '@';
-    if (_host.length() && !(strcmp(_service, "news") == 0 ||
-			   strcmp(_service, "mailto") == 0))
+    if (_host.length() && !(strcmp((char*)_service, "news") == 0 ||
+			   strcmp((char*)_service, "mailto") == 0))
 	_url << "//" << _host;
 
-    if (strcmp(_service, "file") == 0)
+    if (strcmp((char*)_service, "file") == 0)
       _url << "//"; // no host needed, localhost known.
 
-    if (_port != 80 && strcmp(_service, "http") == 0)
+    if (_port != 80 && strcmp((char*)_service, "http") == 0)
       _url << ':' << _port;
-    if (_port != 21 && strcmp(_service, "ftp") == 0)
+    if (_port != 21 && strcmp((char*)_service, "ftp") == 0)
       _url << ':' << _port;
-    if (_port != 443 && strcmp(_service, "https") == 0)
+    if (_port != 443 && strcmp((char*)_service, "https") == 0)
       _url << ':' << _port;
-    if (_port != 70 && strcmp(_service, "gopher") == 0)
+    if (_port != 70 && strcmp((char*)_service, "gopher") == 0)
       _url << ':' << _port;
-    if (_port != 532 && strcmp(_service, "news") == 0)
+    if (_port != 532 && strcmp((char*)_service, "news") == 0)
       _url << ':' << _port;
 
     _url << _path;

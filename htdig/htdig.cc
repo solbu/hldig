@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.25 1999/10/08 12:05:20 loic Exp $
+// $Id: htdig.cc,v 1.26 1999/10/08 12:59:56 loic Exp $
 //
 
 #include "Document.h"
@@ -299,16 +299,16 @@ int main(int ac, char **av)
 
     if (create_text_database)
     {
-	const String filename = config["doc_list"];
+	const String doc_list = config["doc_list"];
 	if (initial)
-	    unlink(filename);
-	docs.CreateSearchDB(filename);
-	filename = config["word_dump"];
+	    unlink(doc_list);
+	docs.CreateSearchDB(doc_list);
+	const String word_dump = config["word_dump"];
 	if (initial)
-	    unlink(filename);
+	    unlink(word_dump);
 	HtWordList words(config);
 	if(words.Open(config["word_db"], O_RDONLY) == OK) {
-	  words.Dump(filename);
+	  words.Dump(word_dump);
 	}
     }
 

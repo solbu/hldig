@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.98 1999/10/08 12:05:20 loic Exp $
+// $Id: Display.cc,v 1.99 1999/10/08 12:59:58 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -36,7 +36,7 @@
 
 //*****************************************************************************
 //
-Display::Display(char *docFile, char *indexFile, char *excerptFile)
+Display::Display(const String& docFile, const String& indexFile, const String& excerptFile)
 {
     // Check "uncompressed"/"uncoded" urls at the price of time
     // (extra DB probes).
@@ -333,7 +333,7 @@ Display::displayMatch(DocumentRef *ref, int current)
 	if (t)
 	{
 	    struct tm	*tm = localtime(&t);
-	    const String datefmt = config["date_format"];
+	    String datefmt = config["date_format"];
 	    const String locale  = config["locale"];
 	    if (!datefmt.empty())
 	      {
@@ -346,7 +346,7 @@ Display::displayMatch(DocumentRef *ref, int current)
 	      {
 		setlocale(LC_TIME,locale);
 	      }
-	    strftime(buffer, sizeof(buffer), datefmt, tm);
+	    strftime(buffer, sizeof(buffer), (char*)datefmt, tm);
 	    *str << buffer;
 	}
 	vars.Add("MODIFIED", str);

@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.27 1999/09/28 14:35:37 loic Exp $
+// $Id: DocumentDB.cc,v 1.28 1999/10/08 12:59:55 loic Exp $
 //
 
 #include "DocumentDB.h"
@@ -251,7 +251,7 @@ int DocumentDB::ReadExcerpt(DocumentRef &ref)
     if (h_dbf->Get(key, data) == NOTOK)
       return NOTOK;
 
-    ref.DocHead(HtZlibCodec::instance()->decode(data));
+    ref.DocHead((char*)HtZlibCodec::instance()->decode(data));
 
     return OK;
 }
@@ -377,7 +377,7 @@ int DocumentDB::CreateSearchDB(const String& filename)
 	    if (h_dbf)
 	      {
 		h_dbf->Get(docKey,data);
-		ref->DocHead(data);
+		ref->DocHead((char*)data);
 	      }
 	    fprintf(fl, "%d", ref->DocID());
 	    fprintf(fl, "\tu:%s", ref->DocURL());

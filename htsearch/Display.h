@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.h,v 1.21 1999/09/29 10:10:08 loic Exp $
+// $Id: Display.h,v 1.22 1999/10/08 12:59:58 loic Exp $
 //
 
 #ifndef _Display_h_
@@ -33,7 +33,7 @@ public:
     //
     // Construction/Destruction
     //
-    Display(char *docFile, char *indexFile, char *excerptFile);
+    Display(const String& docFile, const String& indexFile, const String& excerptFile);
     ~Display();
 
     void		setStartTemplate(const String& templateName);

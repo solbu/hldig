@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Substring.cc,v 1.10 1999/10/01 12:53:53 loic Exp $
+// $Id: Substring.cc,v 1.11 1999/10/08 12:59:56 loic Exp $
 //
 
 #include "Substring.h"
@@ -70,7 +70,7 @@ Substring::getWords(char *w, List &words)
     wordList->Start_Get();
     while (wordCount < maximumWords && (key = (String *) wordList->Get_Next()))
     {
-	if (match.FindFirst(*key) >= 0)
+	if (match.FindFirst((char*)*key) >= 0)
 	{
 	    words.Add(new String(*key));
 	    wordCount++;

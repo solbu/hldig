@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Endings.cc,v 1.7 1999/09/24 10:29:01 loic Exp $
+// $Id: Endings.cc,v 1.8 1999/10/08 12:59:56 loic Exp $
 //
 
 #include "Endings.h"
@@ -146,12 +146,12 @@ Endings::openIndex()
 {
     String	filename = config["endings_word2root_db"];
     word2root = Database::getDatabaseInstance(DB_BTREE);
-    if (word2root->OpenRead(filename) == NOTOK)
+    if (word2root->OpenRead((char*)filename) == NOTOK)
 	return NOTOK;
 
     filename = config["endings_root2word_db"];
     root2word = Database::getDatabaseInstance(DB_BTREE);
-    if (root2word->OpenRead(filename) == NOTOK)
+    if (root2word->OpenRead((char*)filename) == NOTOK)
 	return NOTOK;
 
     return OK;

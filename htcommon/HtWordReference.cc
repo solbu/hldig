@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordReference.cc,v 1.1 1999/10/01 15:19:28 loic Exp $
+// $Id: HtWordReference.cc,v 1.2 1999/10/08 12:59:55 loic Exp $
 //
 
 #include "HtWordReference.h"
@@ -28,7 +28,7 @@ int HtWordReference::DumpHeader(FILE *fl)
 int HtWordReference::Dump(FILE *fl) const
 {
   fprintf(fl, "%s\t%d\t%d\t%d\t%d\n",
-	  (const char*)Word(),
+	  (char*)Word(),
 	  DocID(),
 	  Flags(),
 	  Location(),

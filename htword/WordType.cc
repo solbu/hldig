@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.cc,v 1.2 1999/10/05 16:48:03 loic Exp $
+// $Id: WordType.cc,v 1.3 1999/10/08 12:59:58 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -141,7 +141,7 @@ WordType::Normalize(String& word) const
   // Reject if contains control characters
   //
   int alpha = 0;
-  for(const char *p = word; *p; p++) {
+  for(const char *p = (char*)word; *p; p++) {
     if(IsStrictChar((unsigned char)*p) || (allow_numbers && isdigit(*p))) {
       alpha = 1;
     } else if(iscntrl(*p)) {

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htmerge.cc,v 1.16 1999/09/08 17:19:39 loic Exp $
+// $Id: htmerge.cc,v 1.17 1999/10/08 12:59:56 loic Exp $
 //
 
 #include "htmerge.h"
@@ -84,7 +84,7 @@ int main(int ac, char **av)
 
     config.Defaults(&defaults[0]);
 
-    if (access(configfile, R_OK) < 0)
+    if (access((char*)configfile, R_OK) < 0)
     {
 	reportError(form("Unable to find configuration file '%s'",
 			 configfile.get()));
@@ -104,7 +104,7 @@ int main(int ac, char **av)
     if (merge_configfile.length())
     {
     	merge_config.Defaults(&defaults[0]);
-	if (access(merge_configfile, R_OK) < 0)
+	if (access((char*)merge_configfile, R_OK) < 0)
     	{
 	reportError(form("Unable to find configuration file '%s'",
 			 merge_configfile.get()));

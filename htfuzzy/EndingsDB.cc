@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: EndingsDB.cc,v 1.8 1999/09/24 10:29:01 loic Exp $
+// $Id: EndingsDB.cc,v 1.9 1999/10/08 12:59:56 loic Exp $
 //
 
 #include "Endings.h"
@@ -317,11 +317,11 @@ Endings::expandWord(String &words, List &wordList,
 	    root = word;
 	    regex_t	reg;
 	    rule = entry->rule;
-	    if (strchr(rule, '\''))
+	    if (strchr((char*)rule, '\''))
 		continue;
 	    if (debug > 2)
 		cout << "Applying regex '" << entry->expression << "' to " << word << endl;
-	    regcomp(&reg, entry->expression, REG_ICASE | REG_NOSUB | REG_EXTENDED);
+	    regcomp(&reg, (char*)entry->expression, REG_ICASE | REG_NOSUB | REG_EXTENDED);
 	    if (regexec(&reg, word, 0, NULL, 0) == 0)
 	    {
 		//
@@ -332,7 +332,7 @@ Endings::expandWord(String &words, List &wordList,
 		    //
 		    // We need to remove something...
 		    //
-		    p = strchr(rule, ',');
+		    p = strchr((char*)rule, ',');
 		    if (p)
 		    {
 			*p++ = '\0';

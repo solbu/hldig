@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: cgi.cc,v 1.1 1999/10/06 09:54:25 loic Exp $
+// $Id: cgi.cc,v 1.2 1999/10/08 12:59:55 loic Exp $
 //
 
 #include "cgi.h"
@@ -68,7 +68,7 @@ cgi::init(char *s)
 	{
 		results = s;
 	}
-	else if (strcmp(method, "GET") == 0)
+	else if (strcmp((char*)method, "GET") == 0)
 	{
 		results = getenv("QUERY_STRING");
 	}

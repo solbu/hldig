@@ -1,4 +1,4 @@
-// $Id: testnet.cc,v 1.7 1999/10/08 09:49:20 angus Exp $
+// $Id: testnet.cc,v 1.8 1999/10/08 12:59:58 loic Exp $
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
 #endif /* HAVE_CONFIG_H */
@@ -98,7 +98,7 @@ int main(int ac, char **av)
    
    // Create the new URL
    
-   url = new URL (URL_To_Retrieve);
+   url = new URL ((char*)URL_To_Retrieve);
    
    if (!url) reportError(strerror(errno));
 

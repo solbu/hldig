@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.53 1999/10/08 12:05:21 loic Exp $
+// $Id: htsearch.cc,v 1.54 1999/10/08 12:59:58 loic Exp $
 //
 
 #include "htsearch.h"
@@ -40,7 +40,7 @@
 
 typedef void (*SIGNAL_HANDLER) (...);
 
-ResultList *htsearch(char *, List &, Parser *);
+ResultList *htsearch(const String&, List &, Parser *);
 
 void setupWords(char *, List &, int, Parser *, String &);
 void createLogicalWords(List &, String &, String &);
@@ -653,7 +653,7 @@ convertToBoolean(List &words)
 //   List of HtWordReference objects.
 //
 ResultList *
-htsearch(char *wordfile, List &searchWords, Parser *parser)
+htsearch(const String& wordfile, List &searchWords, Parser *parser)
 {
     //
     // Pick the database type we are going to use

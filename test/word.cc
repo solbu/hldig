@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.13 1999/10/05 16:03:32 loic Exp $
+// $Id: word.cc,v 1.14 1999/10/08 12:59:58 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -186,13 +186,13 @@ static void dolist(params_t*)
       WordReference* found;
       while((found = (WordReference*)result->Get_Next())) {
 	if(wordRef.Key().GetWord() != found->Key().GetWord()) {
-	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (const char*)wordRef.Key().GetWord(), (const char*)found->Key().GetWord());
+	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (char*)wordRef.Key().GetWord(), (char*)found->Key().GetWord());
 	  exit(1);
 	}
 	count++;
       }
       if(count != 1) {
-	fprintf(stderr, "dolist: simple: searching %s, got %d matches instead of 1\n", (const char*)wordRef.Key().GetWord(), count);
+	fprintf(stderr, "dolist: simple: searching %s, got %d matches instead of 1\n", (char*)wordRef.Key().GetWord(), count);
 	exit(1);
       }
       if(verbose) fprintf(stderr, "done\n");
@@ -256,14 +256,14 @@ static void dolist(params_t*)
     WordReference* found;
     while((found = (WordReference*)result->Get_Next())) {
 	if(wordRef.Key().GetWord() != found->Key().GetWord()) {
-	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (const char*)wordRef.Key().GetWord(), (const char*)found->Key().GetWord());
+	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (char*)wordRef.Key().GetWord(), (char*)found->Key().GetWord());
 	  exit(1);
 	}
 	if(verbose) cerr << *found << "\n";
 	count++;
     }
     if(count != 2) {
-      fprintf(stderr, "dolist: searching occurences of '%s', got %d matches instead of 2\n", (const char*)wordRef.Key().GetWord(), count);
+      fprintf(stderr, "dolist: searching occurences of '%s', got %d matches instead of 2\n", (char*)wordRef.Key().GetWord(), count);
       exit(1);
     }
 
@@ -408,7 +408,7 @@ STATEMENT(TypeC)
       fprintf(stderr, "%s\t=\t", info.fields[i].name);
       switch(info.fields[i].type) {
       case WORD_ISA_String:
-	fprintf(stderr, "%s", (const char*)other_word.GetWord());
+	fprintf(stderr, "%s", (char*)other_word.GetWord());
 	break;
 #define STATEMENT(type) \
       case WORD_ISA_##type: \

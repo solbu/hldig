@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.70 1999/10/08 12:05:20 loic Exp $
+// $Id: Retriever.cc,v 1.71 1999/10/08 12:59:56 loic Exp $
 //
 
 #include "Retriever.h"
@@ -697,7 +697,7 @@ Retriever::IsValidURL(char *u)
     //
     // See if the file extension is in the list of invalid ones
     //
-    ext = strrchr(url, '.');
+    ext = strrchr((char*)url, '.');
     String	lowerext;
     if(ext) {
       lowerext.set(ext);
@@ -776,7 +776,7 @@ Retriever::IsLocal(char *url)
     while ((prefix = (String*) prefixes->Get_Next()))
     {
 	path = (String*) paths->Get_Next();
-        if (mystrncasecmp(*prefix, (char*)url, prefix->length()) == 0)
+        if (mystrncasecmp((char*)*prefix, (char*)url, prefix->length()) == 0)
 	{
 	    int l = strlen(url)-prefix->length()+path->length()+4;
 	    String *local = new String(*path, l);
@@ -854,7 +854,7 @@ Retriever::IsLocalUser(char *url)
     {
         path = (String*) paths->Get_Next();
 	dir = (String*) dirs->Get_Next();
-        if (mystrcasecmp(*prefix, (char*)tmp) != 0)
+        if (mystrcasecmp((char*)*prefix, (char*)tmp) != 0)
   	    continue;
 
 	String *local = new String;

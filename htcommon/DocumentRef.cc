@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.cc,v 1.46 1999/10/01 15:19:28 loic Exp $
+// $Id: DocumentRef.cc,v 1.47 1999/10/08 12:59:55 loic Exp $
 //
 
 #include "DocumentRef.h"
@@ -473,7 +473,7 @@ void DocumentRef::AddDescription(const char *d, HtWordList &words)
 
       if (word.length() >= minimum_word_length) {
         // The wordlist takes care of lowercasing; just add it.
-	wordRef.Location((p - (const char*)desc) - word.length());
+	wordRef.Location((p - (char*)desc) - word.length());
 	wordRef.Word(word);
         words.Replace(wordRef);
       }
@@ -493,7 +493,7 @@ void DocumentRef::AddDescription(const char *d, HtWordList &words)
     String	*description;
     while ((description = (String *) descriptions.Get_Next()))
     {
-        if (mystrcasecmp(description->get(), desc) == 0)
+        if (mystrcasecmp(description->get(), (char*)desc) == 0)
             return;
     }
     descriptions.Add(new String(desc));

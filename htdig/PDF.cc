@@ -23,7 +23,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: PDF.cc,v 1.22 1999/10/08 12:05:20 loic Exp $
+// $Id: PDF.cc,v 1.23 1999/10/08 12:59:56 loic Exp $
 //
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
@@ -150,14 +150,9 @@ PDF::parse(Retriever &retriever, URL &url)
     _tempFileBase << getpid();
 
 
-    const String tmpdir = getenv("TMPDIR");
-    if (tmpdir.length() == 0)
-      tmpdir = "/tmp";
-    const String pdfName = tmpdir;
-    pdfName << "/" << _tempFileBase;
-    String psName = pdfName;
-    pdfName << ".pdf";
-    psName << ".ps";
+    const String tmpdir(getenv("TMPDIR") ? getenv("TMPDIR") : "/tmp");
+    const String pdfName(tmpdir + String("/") + _tempFileBase + String(".pdf"));
+    const String psName(tmpdir + String("/") + _tempFileBase + String(".ps"));
 
     FILE *file = fopen(pdfName, "w");
     if (!file)
@@ -174,7 +169,7 @@ PDF::parse(Retriever &retriever, URL &url)
     // Now generalized to allow xpdf as a parser, or other compatible parsers
     // (It was claimed it works with most recent xpdf, but it doesn't!)
     //    acroread << " -toPostScript " << pdfName << " " << tmpdir << " 2>&1";
-    const String dest = psName;
+    String dest = psName;
     if (strstr(acroread.get(), "acroread"))
     {
 	// special-case tests only for acroread (what else you gonna use?)
@@ -185,7 +180,7 @@ PDF::parse(Retriever &retriever, URL &url)
     }
     acroread << " " << pdfName << " " << dest << " 2>&1";
 
-    if (system(acroread))
+    if (system((char*)acroread))
     {
 	printf("PDF::parse: error running pdf_parser on %s\n", url.get());
 	unlink(pdfName);

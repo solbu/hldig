@@ -18,7 +18,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htfuzzy.cc,v 1.14 1999/10/01 12:53:53 loic Exp $
+// $Id: htfuzzy.cc,v 1.15 1999/10/08 12:59:56 loic Exp $
 //
 
 #include "htfuzzy.h"
@@ -113,7 +113,7 @@ main(int ac, char **av)
     // Find and parse the configuration file.
     //
     config.Defaults(&defaults[0]);
-    if (access(configFile, R_OK) < 0)
+    if (access((char*)configFile, R_OK) < 0)
     {
 	reportError(form("Unable to find configuration file '%s'",
 			 configFile.get()));

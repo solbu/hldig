@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.14 1999/10/08 11:51:21 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.15 1999/10/08 12:59:57 loic Exp $ 
 //
 
 #include "lib.h"
@@ -346,7 +346,7 @@ Transport::DocStatus HtHTTP::HTTPRequest()
    }
 
    // For now a chunked response MUST BE retrieved   
-   if (strcmp (_response._transfer_encoding, "chunked") == 0)
+   if (strcmp ((char*)_response._transfer_encoding, "chunked") == 0)
    {
       // Change the controller of the body reading
       SetBodyReadingController(&HtHTTP::ReadChunkedBody);
@@ -533,7 +533,7 @@ int HtHTTP::ParseHeader()
          while (*token && isspace(*token))
             token++;
 	    
-         if(!strncmp(line, "HTTP/", 5))
+         if(!strncmp((char*)line, "HTTP/", 5))
          {
             // Here is the status-line
 
@@ -547,7 +547,7 @@ int HtHTTP::ParseHeader()
             _response._reason_phrase = strtok(0, "\n");
 
          }
-         else if( ! mystrncasecmp(line, "server:", 7))
+         else if( ! mystrncasecmp((char*)line, "server:", 7))
          {
             // Server info
 		  
@@ -558,7 +558,7 @@ int HtHTTP::ParseHeader()
                _response._server = token;
 
          }
-         else if( ! mystrncasecmp(line, "last-modified:", 14))
+         else if( ! mystrncasecmp((char*)line, "last-modified:", 14))
          {
             // Modification date sent by the server
 		  
@@ -569,7 +569,7 @@ int HtHTTP::ParseHeader()
                _response._modification_time = NewDate(token);
 
          }
-         else if( ! mystrncasecmp(line, "date:", 5))
+         else if( ! mystrncasecmp((char*)line, "date:", 5))
          {
             // Access date time sent by the server
 		  
@@ -580,7 +580,7 @@ int HtHTTP::ParseHeader()
                _response._access_time = NewDate(token);
 
          }
-         else if( ! mystrncasecmp(line, "content-type:", 13))
+         else if( ! mystrncasecmp((char*)line, "content-type:", 13))
          {
             // Content - type
 		  
@@ -590,7 +590,7 @@ int HtHTTP::ParseHeader()
                _response._content_type = token;
 
          }
-         else if( ! mystrncasecmp(line, "content-length:", 15))
+         else if( ! mystrncasecmp((char*)line, "content-length:", 15))
          {
             // Content - length
 		  
@@ -600,7 +600,7 @@ int HtHTTP::ParseHeader()
                _response._content_length = atoi(token);
 
          }
-         else if( ! mystrncasecmp(line, "transfer-encoding:", 18))
+         else if( ! mystrncasecmp((char*)line, "transfer-encoding:", 18))
          {
             // Transfer-encoding
 		  
@@ -610,7 +610,7 @@ int HtHTTP::ParseHeader()
                _response._transfer_encoding = token;
 
          }
-         else if( ! mystrncasecmp(line, "location:", 9))
+         else if( ! mystrncasecmp((char*)line, "location:", 9))
          {
             // Found a location directive - redirect in act
 		  
@@ -802,7 +802,7 @@ HtHTTP::DocStatus HtHTTP::GetDocumentStatus(HtHTTP_Response &r)
 
    	    // Is it parsable?
 	    
-   	    if (! isParsable (r.GetContentType()) )
+   	    if (! isParsable ((char*)r.GetContentType()) )
    	 	    returnStatus=Document_not_parsable;
    }
    else if(statuscode > 200 && statuscode < 300)
