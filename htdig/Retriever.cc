@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.11 1999/12/21 05:56:12 toivo Exp $
+// $Id: Retriever.cc,v 1.72.2.12 1999/12/21 08:03:15 toivo Exp $
 //
 
 #include "Retriever.h"
@@ -741,7 +741,7 @@ Retriever::IsValidURL(char *u)
     tmpList.Create(config.Find(&aUrl,"exclude_urls")," \t");
     HtRegex excludes;
     excludes.setEscaped(tmpList);
-    tmpList.Release();
+    tmpList.SRelease();
     if (excludes.match(url, 0, 0) != 0)
       {
                 if (debug >= 2)
@@ -756,7 +756,7 @@ Retriever::IsValidURL(char *u)
     tmpList.Create(config.Find(&aUrl,"bad_querystr")," \t");
     HtRegex badquerystr;
     badquerystr.setEscaped(tmpList);
-    tmpList.Release();
+    tmpList.SRelease();
     char *ext = strrchr((char*)url, '?');
     if (ext && badquerystr.match(url, 0, 0) != 0)
       {
@@ -824,7 +824,7 @@ Retriever::IsValidURL(char *u)
        return(FALSE);
     }  
 
-    tmpList.Release();
+    tmpList.SRelease();
     
   return TRUE;
 }

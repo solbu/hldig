@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.cc,v 1.9.2.1 1999/12/21 05:56:12 toivo Exp $
+// $Id: StringList.cc,v 1.9.2.2 1999/12/21 08:03:16 toivo Exp $
 //
 
 #include "StringList.h"
@@ -35,9 +35,9 @@ StringList::~StringList()
 }
 
 //*****************************************************************************
-// StringList::~StringList()
+// void StringList::~SRelease()
 //
-void StringList::Release()
+void StringList::SRelease()
 {
     ListCursor  cursor;
     int i;
