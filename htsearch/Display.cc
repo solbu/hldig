@@ -4,9 +4,14 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.36  1999/01/21 01:59:37  ghutchis
+// Use REMOTE_ADDR when REMOTE_HOST is unavailable (otherwise we silently dump
+// core).
+//
 // Revision 1.35  1999/01/20 19:18:54  ghutchis
 // Revised setting ANCHOR variable: it will be empty if there is no excerpt
-// which matches the search formula. Fixes problems with META descriptions. Based on a patch contributed by Marjolein.
+// which matches the search formula. Fixes problems with META descriptions.
+// Based on a patch contributed by Marjolein.
 //
 // Revision 1.34  1999/01/20 05:40:55  ghutchis
 // Fix typo causing compile problems.
@@ -126,7 +131,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.35 1999/01/20 19:18:54 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.36 1999/01/21 01:59:37 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -362,10 +367,10 @@ Display::displayMatch(ResultMatch *match, int current)
     // we need it anyway to see if an anchor is relevant
     //
     int first = -1;
-    String urlanchor = url;
-    String *txtexcerpt;
+    String urlanchor = new String(url);
+    String *txtexcerpt = new String;
     urlanchor << anchor;
-    *txtexcerpt << excerpt(ref, urlanchor, fanchor, first);
+    *txtexcerpt = excerpt(ref, urlanchor, fanchor, first);
     vars.Add("EXCERPT", txtexcerpt);
     //
     // anchor only relevant if an excerpt was found, i.e.,
@@ -873,7 +878,7 @@ Display::expandVariables(char *str)
 		}
 		break;
 	    case 3:
-		if (*str == '(')
+		if (*str == '(' || *str == '{')
 		    state = 4;
 		else if (isalpha(*str) || *str == '_')
 		{
@@ -884,7 +889,7 @@ Display::expandVariables(char *str)
 		    state = 0;
 		break;
 	    case 4:
-		if (*str == ')')
+		if (*str == ')' || *str == '{')
 		    state = 2;
 		else if (isalpha(*str) || *str == '_')
 		    var << *str;
@@ -909,7 +914,7 @@ Display::expandVariables(char *str)
 		//
 		outputVariable(var);
 		var = "";
-		if (*str == '(')
+		if (*str == '(' || *str == '{')
 		    state = 4;
 		else if (isalpha(*str) || *str == '_')
 		{
@@ -1263,18 +1268,21 @@ Display::sortType()
 void
 Display::logSearch(int page, List *matches)
 {
-    // Currently unused char	*env_host;
     // Currently unused    time_t	t;
     int		nMatches = 0;
     int         level = LOG_LEVEL;
     int         facility = LOG_FACILITY;
+    char        *host = getenv("REMOTE_HOST");
+
+    if (host == NULL)
+      host = getenv("REMOTE_ADDR");
 
     if (matches)
 	nMatches = matches->Count();
 
     openlog("htsearch", LOG_PID, facility);
     syslog(level, "%s [%s] (%s) [%s] [%s] (%d/%s) - %d -- %s\n",
-	   getenv("REMOTE_HOST"),
+	   host,
 	   input->exists("config") ? input->get("config") : "default",
 	   config["match_method"], input->get("words"), logicalWords.get(),
 	   nMatches, config["matches_per_page"],
