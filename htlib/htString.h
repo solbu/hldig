@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.18.2.3 2000/01/03 12:10:39 bosc Exp $
+// $Id: htString.h,v 1.18.2.4 2000/02/10 21:19:58 loic Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -92,7 +92,7 @@ public:
     inline char		&operator [] (int n);
     inline char		operator [] (int n) const;
     inline char		Nth (int n) { return (*this)[n]; }
-    inline char		last() { return Length > 0 ? Data[Length - 1] : '\0'; }
+    inline char		last() const { return Length > 0 ? Data[Length - 1] : '\0'; }
 
     //
     // Removing
