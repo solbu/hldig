@@ -1,7 +1,11 @@
-Fri Dec  1 13:17:00 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Fri Dec  1 13:22:47 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/strptime.cc (mystrptime): make ptr const and use cast on
+	return value to avoid warnings.
 
 	* htlib/Makefile.am: Fix pkginclude_HEADERS to list HtRegexReplace*.h
 	rather than .cc.
+
 	* htlib/Makefile.in: Regenerate using automake --foreign
 
 Fri Dec  1 11:58:21 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>

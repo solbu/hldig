@@ -80,8 +80,8 @@ static struct mydtconv	En_US = {
 char	*
 mystrptime(const char *buf, const char *fmt, struct tm *tm)
 {
-    char	c,
-	*ptr;
+    char	c;
+    const char	*ptr;
     int	i,
 	len;
 
@@ -366,6 +366,6 @@ mystrptime(const char *buf, const char *fmt, struct tm *tm)
 	}
     }
 
-    return buf;
+    return (char *) buf;
 }
 
