@@ -159,8 +159,10 @@ AC_MSG_CHECKING(how to call getpeername?)
 for sock_t in 'struct sockaddr' 'void'; do
 for getpeername_length_t in 'size_t' 'int' 'unsigned int' 'long unsigned int' 'socklen_t'; do
 AC_TRY_COMPILE([#include <sys/types.h>
-#include <sys/socket.h>],
-[extern getpeername(int, $sock_t *, $getpeername_length_t *)],
+#include <sys/socket.h>
+ extern "C" int getpeername(int, $sock_t *, $getpeername_length_t *);
+ $sock_t s;  $getpeername_length_t l; ]
+[ getpeername(0, &s, &l); ],
 [ac_found=yes ; break 2],ac_found=no)
 done
 done
