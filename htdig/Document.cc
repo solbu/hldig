@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Document.cc,v 1.66 2003/07/21 08:16:10 angusgb Exp $
+// $Id: Document.cc,v 1.67 2003/10/21 01:16:56 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -73,6 +73,7 @@ Document::Document(char *u, int max_size)
     FTPConnect = 0;
     NNTPConnect = 0;
     externalConnect = 0;
+    is_initial = true;
 	HtConfiguration* config= HtConfiguration::config();
 
     // We probably need to move assignment of max_doc_size, according
@@ -312,14 +313,14 @@ Document::Retrieve(Server *server, HtDateTime date)
          {
             // Persistent connections allowed
             HTTPSConnect->AllowPersistentConnection();
+         }
+         else HTTPSConnect->DisablePersistentConnection();
 
             // Head before Get option control
-            if (server->HeadBeforeGet())
+            if (server->HeadBeforeGet() || ! is_initial)
                HTTPSConnect->EnableHeadBeforeGet();
             else
                HTTPSConnect->DisableHeadBeforeGet();
-         }
-         else HTTPSConnect->DisablePersistentConnection();
 
 	  // http->SetRequestMethod(HtHTTP::Method_GET);
          if (debug > 2)
@@ -376,14 +377,14 @@ Document::Retrieve(Server *server, HtDateTime date)
          {
             // Persistent connections allowed
             HTTPConnect->AllowPersistentConnection();
+         }
+         else HTTPConnect->DisablePersistentConnection();
 
             // Head before Get option control
-            if (server->HeadBeforeGet())
+            if (server->HeadBeforeGet() || ! is_initial)
                HTTPConnect->EnableHeadBeforeGet();
             else
                HTTPConnect->DisableHeadBeforeGet();
-         }
-         else HTTPConnect->DisablePersistentConnection();
 
 	  // http->SetRequestMethod(HtHTTP::Method_GET);
          if (debug > 2)

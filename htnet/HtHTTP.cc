@@ -13,7 +13,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtHTTP.cc,v 1.25 2003/10/14 01:57:49 angusgb Exp $ 
+// $Id: HtHTTP.cc,v 1.26 2003/10/21 01:16:58 angusgb Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -151,7 +151,6 @@ Transport::DocStatus HtHTTP::Request()
 ///////
 
    if (HeadBeforeGet() &&                 // Option value to true
-      isPersistentConnectionAllowed() &&  // Persistent Connections allowed
       _Method == Method_GET)              // Initial request method is GET
    {
 

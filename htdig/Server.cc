@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Server.cc,v 1.24 2003/10/15 16:17:16 grdetil Exp $
+// $Id: Server.cc,v 1.25 2003/10/21 01:16:57 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -80,7 +80,7 @@ Server::Server(URL u, StringList *local_robots_files)
     _tcp_wait_time = config->Value("server",_host.get(),"tcp_wait_time");
 
 
-    if (debug)
+    if (debug > 1)
     {
       cout << " - Persistent connections: " <<
          (_persistent_connections?"enabled":"disabled") << endl;

@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Document.h,v 1.16 2003/06/24 20:05:22 nealr Exp $
+// $Id: Document.h,v 1.17 2003/10/21 01:16:57 angusgb Exp $
 //
 //
 #ifndef _Document_h_
@@ -58,6 +58,10 @@ public:
     char			*Contents()	  {return contents;}
     void			Contents(char *s) {contents = s; document_length = contents.length();}
     char			*ContentType()	  {return contentType.get();}
+    bool            isInitial() { return is_initial; }
+    void            toInitial() { is_initial = true; }
+    bool            isIncremental() { return !is_initial; }
+    void            toIncremental() { is_initial = false; }
     
     //
     // In case the retrieval process went through a redirect process,
@@ -123,6 +127,7 @@ private:
     HtNNTP			*NNTPConnect;
     ExternalTransport		*externalConnect;
     
+    bool        is_initial;
 
  ///////
     //    Tell us if we should retry to retrieve an URL depending on

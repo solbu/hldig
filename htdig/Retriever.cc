@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.85 2003/10/12 07:23:20 lha Exp $
+// $Id: Retriever.cc,v 1.86 2003/10/21 01:16:57 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -54,8 +54,8 @@ static int noSignal;
 //*****************************************************************************
 // Retriever::Retriever()
 //
-Retriever::Retriever(RetrieverLog flags):
-words(*(HtConfiguration::config()))
+Retriever::Retriever(RetrieverLog flags, RetrieverType t):
+words(*(HtConfiguration::config())), type(t)
 {
 	HtConfiguration *config = HtConfiguration::config();
 	FILE *urls_parsed;
@@ -89,6 +89,10 @@ words(*(HtConfiguration::config()))
 	factor[11] = FLAG_AUTHOR;
 
 	doc = new Document();
+
+    if (type == Retriever_Incremental) // The document must be aware that we are
+        doc->toIncremental(); // performing an incremental indexing
+
 	minimumWordLength = config->Value("minimum_word_length", 3);
 
 	log = flags;
@@ -241,6 +245,17 @@ void Retriever::Initial(List & list, int from)
 	{
 		from = 3;
 	}
+
+    // In case the list of URLs to be loaded is empty and the
+    // type was set to be incremental, we change it to 'initial'
+    if (!from && list.Count() == 0 && type == Retriever_Incremental)
+    {
+        type = Retriever_Initial;
+        doc->toInitial(); // reset the document type to initial
+        if (debug > 0)
+            cout << "Retriever type forced to 'initial'" << endl;
+    }
+
 	while ((str = (String *) list.Get_Next()))
 	{
 		Initial(str->get(), from);
@@ -367,6 +382,17 @@ void Retriever::Start()
 	URLRef *ref;
 
 	HtConfiguration *config = HtConfiguration::config();
+
+    // Display debug information regarding the 'head_before_get' override
+    if (debug > 1 && type == Retriever_Incremental)
+    {
+        cout << endl
+            << "Notice:" << endl
+            << "-------" << endl
+            << " htdig is currently performing an incremental dig. " << endl
+            << " For performance issues, the value of the 'head_before_get' " << endl
+            << " is overridden and automatically set to 'true'" << endl << endl;
+    }
 
 	//  
 	// Always sig . The delay bother me but a bad db is worst

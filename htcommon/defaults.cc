@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.94 2003/10/17 11:55:09 lha Exp $
+// $Id: defaults.cc,v 1.95 2003/10/21 01:16:56 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1010,13 +1010,18 @@ http://www.htdig.org/", " \
 	See also the comments about special characters at \
 	<a href=\"#valid_punctuation\">valid_punctuation</a>. \
 " }, \
-{ "head_before_get", "false",  \
-	"boolean", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "head_before_get: true", " \
-	This option works only if we take advantage of persistent connections (see \
-	persistent_connections attribute). If set to true an HTTP/1.1 <em>HEAD</em> \
+{ "head_before_get", "true",  \
+	"boolean", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "head_before_get: false", " \
+    If set to true an HTTP/1.1 <em>HEAD</em> \
 	call is made in order to retrieve header information about a document. \
 	If the status code and the content-type returned let the document be parsable, \
 	then a following 'GET' call is made. \
+    This feature is automatically enabled during the digging phase of an incremental indexing; \
+    for performance issues, you are strongly recommended to use this attribute carefully \
+    in conjunction with the <a href=\"#persistent_connections\">persistent_connections</a> \
+    attribute. \
+    In general, it is recommended to leave this attribute to 'true' (especially when used \
+    with persistent connections performances can really improve). \
 " }, \
 { "heading_factor", "5",  \
 	"number", "htsearch", "", "3.2.0b1", "Searching:Ranking", "heading_factor: 20", " \

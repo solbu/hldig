@@ -1,3 +1,24 @@
+Tue Oct 21 11:04:56 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * htdig/Retriever.h: added the 'RetrieverType' enum and an object variable
+      for storing the type of dig we are performing (default initial);
+    * htdig/Retriever.cc: changed constructor in order to handle the type,
+      added some debugging explanation regarding the override of the
+      'head_before_get' attribute, added checks regarding an empty
+      database of URLs to be updated (set the type to initial).
+    * htdig/Document.h: added the attribute 'is_initial' which stores the
+      information regarding the type of indexing (initial or incremental)
+      we are currently performing. Added access methods (get-and-set-like)
+    * htdig/Document.cc: modified the logic of the HeadBeforeGet settings during
+      the retrieval phase, in order to always override user's settings in
+      an incremental dig and automatically set the 'HEAD' call in this case.
+    * htcommon/defaults.cc: modified the default value of 'head_before_get' and a bit
+      of its explanation.
+    * htnet/HtHTTP.cc: detached the HEAD before GET mechanism to the persistent
+      connections one
+    * htdig/Server.cc: added one level of debugging to the display of the
+      server settings in the server constructor
+
 Fri Oct 17 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htword/WordType.cc, htcommon/defaults.cc:  Patched to fix bug #823083
