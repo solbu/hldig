@@ -128,7 +128,7 @@ INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/in
 HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libdb.a
 
 
-EXTRA_DIST = word.desc word_builder.pl WordKey.h.tmpl
+EXTRA_DIST = word.desc 
 
 lib_LTLIBRARIES = libhtword.la
 
@@ -440,10 +440,10 @@ distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
 
-WordKey.h: $(top_srcdir)/htword/WordKey.h.tmpl $(top_srcdir)/htword/word.desc $(top_srcdir)/htword/word_builder.pl
-	rm -f $(top_srcdir)/htword/WordKey.h
-	@PERL@ $(top_srcdir)/htword/word_builder.pl @KEYDESC@
-	chmod -w $(top_srcdir)/htword/WordKey.h
+# WordKey.h: $(top_srcdir)/htword/WordKey.h.tmpl $(top_srcdir)/htword/word.desc $(top_srcdir)/htword/word_builder.pl
+# 	rm -f $(top_srcdir)/htword/WordKey.h
+# 	@PERL@ $(top_srcdir)/htword/word_builder.pl @KEYDESC@
+# 	chmod -w $(top_srcdir)/htword/WordKey.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
