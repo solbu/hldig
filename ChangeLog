@@ -1,3 +1,14 @@
+Tue May 11 11:15:08 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtDateTime.h, htlib/HtDateTime.cc: Updates from Gabriele,
+	fixing SetToNow() and adding GetDiff to return the difference in
+	time_t between two objects.
+
+	* htdig/Retriever.cc (Need2Get): Add patch from Warren Jones
+	<wjones@tc.fluke.com> to keep track of inodes on local files to
+	eliminate duplicates. Hopefully this will serve for a first-try at
+	a signature method for HTTP as well.
+
 Tue May  4 20:20:40 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htfuzzy/Regex.h, htfuzzy/Regex.cc: Add new regex fuzzy

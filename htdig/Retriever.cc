@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.44 1999/05/04 19:45:08 ghutchis Exp $
+// $Id: Retriever.cc,v 1.45 1999/05/11 15:37:13 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -19,6 +19,7 @@
 #include <signal.h>
 #include <assert.h>
 #include <stdio.h>
+#include <sys/stat.h>
 
 static WordList	words;
 static int noSignal;
@@ -589,7 +590,36 @@ Retriever::Need2Get(char *u)
     static String	url;
     url = u;
 
-    return !visited.Exists(url);
+    if ( visited.Exists(url) )
+    	return FALSE;
+    	
+    String *local_filename = IsLocal(u);    // For local URL's, check
+    if ( local_filename )		    // list for device and inode
+    {					    // to make sure we haven't
+	struct stat buf;		    // already indexed a link
+					    // to this file.
+	if ( stat(local_filename->get(),&buf) == 0 )
+	{
+	    char key[2*sizeof(ino_t)+2*sizeof(dev_t)+2];      // Make hash key
+	    sprintf( key, "%x+%x", buf.st_dev, buf.st_ino );  // from device
+	    if ( visited.Exists(key) )			      // and inode.
+	    {
+		if ( debug ) {
+		    String *dup = (String*)visited.Find(key);
+		    cout << endl
+			 << "Duplicate: " << local_filename->get()
+			 << " -> "        << dup->get() << endl;
+		}
+		delete local_filename;
+		return FALSE;
+	    }
+	    visited.Add(key,local_filename);
+	    return TRUE;
+	}
+	delete local_filename;
+    }
+    return TRUE;
+
 }
 
 
