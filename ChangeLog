@@ -1,3 +1,8 @@
+Wed Feb 23 13:22:29 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.cc (ServerAlias): Fix server_aliases processing to prevent
+	infinite loop (as for local_urls in PR#688).
+
 Wed Feb 23 12:49:52 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/HtDateTime.h, htlib/HtDateTime.cc: change Httimegm() method
@@ -4019,7 +4024,7 @@ Fri Apr 30 19:30:42 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	
 Fri Apr 30 18:52:56 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
-	* htlib/URL.cc(ServerAlias): port for server_alias entries now
+	* htlib/URL.cc(ServerAlias): port for server_aliases entries now
 	defaults to 80 if omitted.
 
 Wed Apr 28 19:57:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>

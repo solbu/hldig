@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.3.2.6 2000/02/23 16:49:10 loic Exp $
+// $Id: URL.cc,v 1.3.2.7 2000/02/23 19:28:37 grdetil Exp $
 //
 
 #include "URL.h"
@@ -655,7 +655,10 @@ void URL::ServerAlias()
 	{
 	  salias = strchr(p, '=');
 	  if (! salias)
-	    continue;
+	    {
+	      p = strtok(0, " \t");
+	      continue;
+	    }
 	  *salias++= '\0';
 	  from = p;
 	  if (from.indexOf(':') == -1)
