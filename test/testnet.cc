@@ -1,4 +1,4 @@
-// $Id: testnet.cc,v 1.6 1999/10/07 14:40:06 angus Exp $
+// $Id: testnet.cc,v 1.7 1999/10/08 09:49:20 angus Exp $
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
 #endif /* HAVE_CONFIG_H */
@@ -93,6 +93,9 @@ int main(int ac, char **av)
 
    if (URL_To_Retrieve.length() == 0) usage();
 
+   if (!persistent)
+      head_before_get=0;   // No HEAD before GET if no persistent connections
+   
    // Create the new URL
    
    url = new URL (URL_To_Retrieve);
@@ -101,8 +104,12 @@ int main(int ac, char **av)
 
 
    if (debug>0)
-      cout << "Testing the net for " << url->get()
-         << " - Service requested: " << url->service() << endl << endl;
+   {
+      cout << "Testing the net for " << url->get() << endl;
+      cout << "Host: " << url->host() << " - Port: " << url->port()
+         << " - Service: " << url->service() << endl;
+      cout << endl;
+   }
 
    Transport::SetDebugLevel(debug);
    HtHTTP::SetParsingController(Parser);
@@ -151,6 +158,9 @@ int main(int ac, char **av)
          case Transport::Document_not_authorized:
             if(debug>0) cout << "Not authorized";
             break;
+         case Transport::Document_no_connection:
+            if(debug>0) cout << "No Connection";
+            break;
          case Transport::Document_connection_down:
             if(debug>0) cout << "Connection down";
             _timed_out++;
@@ -160,6 +170,9 @@ int main(int ac, char **av)
             break;
          case Transport::Document_no_host:
             if(debug>0) cout << "No host";
+            break;
+         case Transport::Document_no_port:
+            if(debug>0) cout << "No port";
             break;
          case Transport::Document_not_local:
             if(debug>0) cout << "Not local";
@@ -199,13 +212,19 @@ int main(int ac, char **av)
 
       
       cout << " Timeout value        : " << timeout << endl;
-      cout << " Requests             : " << HtHTTP::GetTotRequests() << endl;
+      
+      if (head_before_get)
+         cout << " Requests             : " << timesvar
+            << " (effective " << HtHTTP::GetTotRequests() << ")" << endl;
+      else
+         cout << " Requests             : " << HtHTTP::GetTotRequests() << endl;
+         
       cout << " Timed out            : " << _timed_out << endl;
       cout << " Unknown errors       : " << _errors << endl;
       cout << " Elapsed time         : approximately "
          << HtDateTime::GetDiff(EndTime, StartTime) << " secs" << endl;
       cout << " Connection time      : approximately "
-         << HtHTTP::GetTotRequests() << " secs" << endl;
+         << HtHTTP::GetTotSeconds() << " secs" << endl;
       cout << " KBytes requested     : " << (double)HtHTTP::GetTotBytes()/1024 << endl;
       cout << " Average request time : approximately "
       << HtHTTP::GetAverageRequestTime() << " secs" << endl;

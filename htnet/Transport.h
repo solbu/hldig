@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.5 1999/10/04 16:48:07 angus Exp $
+// $Id: Transport.h,v 1.6 1999/10/08 09:49:20 angus Exp $
 //
 //
 
@@ -118,9 +118,11 @@ class Transport : public Object
       Document_not_parsable,
       Document_redirect,
       Document_not_authorized,
+      Document_no_connection,
       Document_connection_down,
       Document_no_header,
       Document_no_host,
+      Document_no_port,
       Document_not_local,
       Document_not_recognized_service,    // Transport service not recognized
       Document_other_error                // General error (memory)

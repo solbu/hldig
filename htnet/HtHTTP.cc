@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.12 1999/10/07 14:55:42 loic Exp $ 
+// $Id: HtHTTP.cc,v 1.13 1999/10/08 09:49:20 angus Exp $ 
 //
 
 #include "lib.h"
@@ -190,42 +190,52 @@ Transport::DocStatus HtHTTP::HTTPRequest()
    if(result != Connection_ok && result != Connection_already_up)
    {
 
-   	 if(debug>0)
-
-   	    switch (result)
-   	    {
-   	       // Open failed
+      switch (result)
+      {
+         // Open failed
 		  
-	       case Connection_open_failed:
-		  	cout << "Unable to open the connection with host: "
-			   << _url.host() << " (port " << _url.port() << ")" << endl;
-			break;
+         case Connection_open_failed:
+            if (debug>1)
+               cout << "Unable to open the connection with host: "
+                  << _url.host() << " (port " << _url.port() << ")" << endl;
+            return FinishRequest(Document_no_connection);
+            break;
 
-   	       // Server not reached
-	       case Connection_no_server:
-		  	cout << "Unable to find the host: "
-			   << _url.host() << " (port " << _url.port() << ")" << endl;
-			break;
+         // Server not reached
+         case Connection_no_server:
+            if (debug>1)
+               cout << "Unable to find the host: "
+                  << _url.host() << " (port " << _url.port() << ")" << endl;
+            return FinishRequest(Document_no_host);
+            break;
 	    
-   	       // Port not reached
-	       case Connection_no_port:
-		  	cout << "Unable to connect with the port " << _url.port()
-   	       	   << " of the host: " << _url.host() << endl;
-			break;
+         // Port not reached
+         case Connection_no_port:
+            if (debug>1)
+               cout << "Unable to connect with the port " << _url.port()
+                  << " of the host: " << _url.host() << endl;
+            return FinishRequest(Document_no_port);
+            break;
 	    
-   	       // Connection failed
-	       case Connection_failed:
-		  	cout << "Unable to establish the connection with host: "
-			   << _url.host() << " (port " << _url.port() << ")" << endl;
-			break;
-	       default:
-		  	cout << "connection failed with unexpected result: result = "
-			     << (int)result << ", "
-			   << _url.host() << " (port " << _url.port() << ")" << endl;
-			break;
-	    }
+         // Connection failed
+         case Connection_failed:
+            if (debug>1)
+               cout << "Unable to establish the connection with host: "
+                  << _url.host() << " (port " << _url.port() << ")" << endl;
+            return FinishRequest(Document_no_connection);
+            break;
+
+         // Other reason            
+         default:
+            if (debug>1)
+               cout << "connection failed with unexpected result: result = "
+                  << (int)result << ", "
+                  << _url.host() << " (port " << _url.port() << ")" << endl;
+            return FinishRequest(Document_other_error);
+            break;
+         }
 	 
-   	 return FinishRequest(Document_not_found);
+   	 return FinishRequest(Document_other_error);
 
    }
 
@@ -917,24 +927,23 @@ int HtHTTP::ReadChunkedBody()
    while (chunk_size > 0)
    {
       // Read Chunk data
-      int bytes_read;
-      if((bytes_read = _connection.read(buffer, chunk_size)) == -1)
+      if (_connection.read(buffer, chunk_size) == -1)
          return -1;
 
       // Read CRLF - to be ignored
       _connection.read_line(ChunkHeader);
 
       // Append the chunk-data to the contents of the response
-      _response._contents.append(buffer,bytes_read);
+      _response._contents << buffer;
                   
-      length+=bytes_read;
+      length+=chunk_size;
 
       // Read chunk-size and CRLF
       _connection.read_line(ChunkHeader);
       sscanf ((char *)ChunkHeader, "%x", &chunk_size);
 
-      if(debug>4)
-	cout << "Chunk-size: " << chunk_size << endl;
+      if (debug>4)
+         cout << "Chunk-size: " << chunk_size << endl;
    }
    
    ChunkHeader = 0;

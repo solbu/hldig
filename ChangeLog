@@ -1,3 +1,10 @@
+Fri Oct 08 11:30:53 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* HtHTTP.cc: better management of connection failures return values.
+	* Transport.h: added Document_no_connection and
+	  Document_connection_no_port enum values.
+	* testnet.cc: management of above changes.
+
 Fri Oct 08 11:27:31 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* configure.in: modified getpeername() test.
