@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.h,v 1.14 2002/08/29 21:14:55 svc Exp $
+// $Id: Document.h,v 1.15 2003/06/23 21:16:50 nealr Exp $
 //
 //
 #ifndef _Document_h_
@@ -57,7 +57,8 @@ public:
     int				StoredLength()	  {return contents.length();}
     char			*Contents()	  {return contents;}
     void			Contents(char *s) {contents = s; document_length = contents.length();}
-
+    char			*ContentType()	  {return contentType.get();}
+    
     //
     // In case the retrieval process went through a redirect process,
     // the new url can be gotten using the following call

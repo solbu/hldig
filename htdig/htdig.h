@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.h,v 1.11 2002/02/01 22:49:29 ghutchis Exp $
+// $Id: htdig.h,v 1.12 2003/06/23 21:16:50 nealr Exp $
 //
 
 #ifndef _htdig_h_
@@ -23,7 +23,11 @@
 #include "htconfig.h"
 #include "HtRegexList.h"
 #include <stdlib.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
+
 #include <fstream.h>
 #include <stdio.h>
 

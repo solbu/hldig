@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.32 2003/05/22 14:43:57 lha Exp $
+// $Id: htdig.cc,v 1.33 2003/06/23 21:16:50 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -39,6 +39,8 @@
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
+#elif HAVE_GETOPT_LOCAL
+#include <getopt_local.h>
 #endif
 
 #include <iostream.h>

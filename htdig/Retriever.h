@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.22 2003/02/11 09:49:37 lha Exp $
+// $Id: Retriever.h,v 1.23 2003/06/23 21:16:50 nealr Exp $
 //
 
 #ifndef _Retriever_h_
@@ -25,6 +25,18 @@
 #include "List.h"
 #include "StringList.h"
 #include "DocumentDB.h"
+
+#define  HTDIG_ERROR_TESTURL_EXCLUDE           -109
+#define  HTDIG_ERROR_TESTURL_BADQUERY          -110
+#define  HTDIG_ERROR_TESTURL_EXTENSION         -111
+#define  HTDIG_ERROR_TESTURL_EXTENSION2        -112
+#define  HTDIG_ERROR_TESTURL_LIMITS            -113
+#define  HTDIG_ERROR_TESTURL_LIMITSNORM        -114
+#define  HTDIG_ERROR_TESTURL_SRCH_RESTRICT     -115
+#define  HTDIG_ERROR_TESTURL_SRCH_EXCLUDE      -116
+#define  HTDIG_ERROR_TESTURL_REWRITE_EMPTY     -117
+#define  HTDIG_ERROR_TESTURL_ROBOT_FORBID      -118
+
 
 class URL;
 class Document;

@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.24 2003/02/11 09:49:33 lha Exp $
+// $Id: ExternalParser.cc,v 1.25 2003/06/23 21:16:50 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -32,13 +32,22 @@
 
 #include <ctype.h>
 #include <stdio.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
+
 #include <stdlib.h>
 #ifdef HAVE_WAIT_H
 #include <wait.h>
 #elif HAVE_SYS_WAIT_H
 #include <sys/wait.h>
 #endif
+
+#ifdef _MSC_VER //_WIN32
+#include <process.h>
+#endif
+
 
 #include "defaults.h"
 
@@ -163,6 +172,8 @@ ExternalParser::canParse(char *contentType)
 void
 ExternalParser::parse(Retriever &retriever, URL &base)
 {
+// NEAL - ENABLE/REWRITE THIS ASAP FOR WIN32
+#ifndef _MSC_VER //_WIN32
 	HtConfiguration* config= HtConfiguration::config();
     if (contents == 0 || contents->length() == 0 ||
 	currentParser.length() == 0)
@@ -597,6 +608,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	parsable->setContents(newcontent.get(), newcontent.length());
 	parsable->parse(retriever, base);
     }
+#endif //ifndef _MSC_VER //_WIN32
 }
 
 

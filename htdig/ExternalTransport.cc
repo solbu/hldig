@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalTransport.cc,v 1.5 2002/10/27 15:19:26 ghutchis Exp $
+// $Id: ExternalTransport.cc,v 1.6 2003/06/23 21:16:50 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -26,7 +26,11 @@
 
 #include <ctype.h>
 #include <stdio.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
+
 #include <stdlib.h>
 #ifdef HAVE_WAIT_H
 #include <wait.h>
@@ -125,6 +129,8 @@ void ExternalTransport::SetConnection (URL *u)
 //
 Transport::DocStatus ExternalTransport::Request()
 {
+// NEAL - ENABLE/REWRITE THIS ASAP FOR WIN32
+#ifndef _MSC_VER //_WIN32
     //
     // Start the external handler, passing the protocol, URL and config file
     // as command arguments
@@ -297,6 +303,8 @@ Transport::DocStatus ExternalTransport::Request()
     int rpid, status;
     while ((rpid = wait(&status)) != fork_result && rpid != -1)
 	;
+
+#endif
 
     return GetDocumentStatus(_Response);
 }
