@@ -4,6 +4,9 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.4  1997/06/14 18:52:42  turtle
+// Made redirect detection code more general
+//
 // Revision 1.3  1997/04/20 15:25:17  turtle
 // Added include for ctype.h
 //
@@ -16,7 +19,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.3 1997/04/20 15:25:17 turtle Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.4 1997/06/14 18:52:42 turtle Exp $";
 #endif
 
 #include <signal.h>
@@ -433,13 +436,18 @@ Document::readHeader(Connection &c)
 		{
 		    returnStatus = Header_ok;
 		}
-		else if (status && strcmp(status, "302") == 0)
-		{
-		    returnStatus = Header_redirect;
-		}
 		else if (status && strcmp(status, "304") == 0)
 		{
 		    returnStatus = Header_not_changed;
+		}
+		else if (status && strncmp(status, "30", 2) == 0)
+		{
+		    //
+		    // All 3xx codes other than 304 will be considered
+		    // HTTP redirects that need to look at the
+		    // Location header field.
+		    //
+		    returnStatus = Header_redirect;
 		}
 		else if (status && strcmp(status, "401") == 0)
 		{
