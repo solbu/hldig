@@ -1,7 +1,8 @@
-#!/usr/bin/perl
+#!/opt/local/bin/perl
+#!/usr/bin/perl -w
 use strict;
 #
-# Version 3.0.1	19-September-2002
+# Version 3.1         17-January-2005
 #
 # External converter for htdig 3.1.4 or later (Perl5 or later)
 # Usage: (in htdig.conf)
@@ -15,7 +16,8 @@ use strict;
 #			application/wordperfect6.0->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
 #			application/msexcel->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
 #			application/vnd.ms-excel->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
-#			application/vnd.ms-powerpoint->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl
+#			application/powerpoint->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
+#			application/vnd.ms-powerpoint->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
 #			application/x-shockwave-flash->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
 #			application/x-shockwave-flash2-preview->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl
 #
@@ -37,25 +39,26 @@ use strict;
 # Install Sys::AlarmCall if you can
 eval "use Sys::AlarmCall";
 
-########  Full paths of conversion utilities  ##########
+########  Full paths to conversion utilities  ##########
 ########          YOU MUST SET THESE          ##########
-########   (leave null those you don't have)  ##########
+########  (set to undef those you don't have) ##########
 
 # Wp2html converts Word & Wordperfect to HTML
-# (get it from: http://www.res.bbsrc.ac.uk/wp2html/):
+# (get it from: http://www.res.bbsrc.ac.uk/wp2html/)
 my $WP2HTML = '';
 
 #Catwpd for WordPerfect to text conversion
 # (you don't need this if you have wp2html)
-# (get it from htdig site)
+# (get catwpd.c from http://htdig.org.contrib/)
 my $CATWPD = '';
 
 # rtf2html converts Rich Text Font documents to HTML
-# (get it from http://www.ice.ru/~vitus/catdoc/):
+# (get it from http://www.45.free.net/~vitus/ice/catdoc/
+#  it is bundled in with catdoc)
 my $RTF2HTML = '';
 
 # Catdoc converts Word (MicroSoft) to plain text
-# (get it from: http://www.ice.ru/~vitus/catdoc/):
+# (get it from: http://www.45.free.net/~vitus/ice/catdoc/)
 
 #version of catdoc for Word6, Word7 & Word97 files:
 my $CATDOC = '';
@@ -67,17 +70,17 @@ my $CATDOC2 = $CATDOC;
 my $CATDOCM = $CATDOC;
 
 # PostScript to text converter
-# (get it from the ghostscript 3.33 (or later) package):
-my $CATPS = '';
+# (get it from the ghostscript 3.33 (or later) package)
+my $CATPS = "/usr/bin/ps2ascii";
 
 # add to search path the directory which contains gs:
 #$ENV{PATH} .= ":/usr/freeware/bin";
 
 # PDF to HTML conversion script:
-my $PDF2HTML = ''; # full pathname of pdf2html/pl script
+my $PDF2HTML = '';
 
 # Excel (MicroSoft) to HTML converter
-# (get it from www.xlhtml.org)
+# (get it from http://chicago.sourceforge.net/xlhtml/)
 my $XLS2HTML = '';
 
 # Excel (MicroSoft) to .CSV converter
@@ -86,20 +89,17 @@ my $XLS2HTML = '';
 my $CATXLS = '';
 
 # Powerpoint (MicroSoft) to HTML converter
-# (get it from www.xlhtml.org)
+# (get it from http://chicago.sourceforge.net/xlhtml/
+#  it is bundled in with xlhtml)
 my $PPT2HTML = '';
 
 # Shockwave Flash 
 # (extracts links from file)
-my $SWF2HTML = ''; # full pathname of swf2html.pl script
+my $SWF2HTML = '';
 
-# OpenOffice.org files
-#my $OpenOffice2XML = '/usr/bin/unzip';
-my $OpenOffice2XML = '';
-# (remove multi-byte unicode from XML in OOo documents)
-#my $strip_unicode = '| /usr/bin/iconv -c -s -f UTF-8 -t ISO-8859-1';
-my $strip_unicode = '';
-
+# Flash MX 
+# (extracts links from file)
+my $FMX2HTML = '';
 
 ########################################################################
 
@@ -111,8 +111,13 @@ my (%HTML_Method, %TEXT_Method, %BAD_type);
 
 
 &init;			# initialise
+
 my $size = -s $Input;
-&quit("Input file size of $size at or above $IP_Limit limit" ) if $size >= $IP_Limit;
+if ($size >= $IP_Limit) {
+  &dummy_out($MIME_type);
+  &quit("Input file size of $size at or above $IP_Limit limit");
+}
+
 &store_methods;		# 
 &read_magic;		# Magic reveals type
 &error_setup;		# re-route standard error o/p from utilities
@@ -257,7 +262,7 @@ sub store_methods {
 
   # Microsoft Powerpoint Presentation
   if ($PPT2HTML) {
-    $mime_type = "application/vnd.ms-powerpoint";
+    $mime_type = "application/vnd.ms-powerpoint|application/powerpoint";
     $cmd = $PPT2HTML;
     # xlHtml uses filename as title, change this:
     $cmdl = "$cmd $Input | $ED \"s#<TITLE>$Input</TITLE>#<TITLE>[$name]</TITLE>#\"";
@@ -280,17 +285,17 @@ sub store_methods {
     $mime_type = "application/x-shockwave-flash";
     $cmd = $SWF2HTML;
     $cmdl = "$cmd $Input";
-    $magic = '^FWS[\001-\010]'; # versions 1 to 5, perhaps some later versions
+    $magic = '^FWS[\001-\005]'; # versions 1 to 5, perhaps some later versions
     &store_html_method('Shockwave-Flash (swf2html)',$cmd,$cmdl,$mime_type,$magic);
   }
 
-  # OpenOffice Documents
-  if ($OpenOffice2XML) {
-    $mime_type = "application/vnd.sun.xml.writer|application/vnd.sun.xml.impress|application/vnd.sun.xml.calc|application/vnd.sun.xml.draw|application/vnd.sun.xml.math";
-    $cmd = $OpenOffice2XML;
-    $cmdl = "$cmd -p -qq $Input content.xml | /bin/sed -r 's/<[^>]*>/ /gi' $strip_unicode";
-    $magic = 'PK';
-    &store_html_method('OpenOffice XML (oo2xml)',$cmd,$cmdl,$mime_type,$magic);
+  # Flash MX file using Perl script
+  if ($FMX2HTML) {
+    $mime_type = "application/x-shockwave-flash";
+    $cmd = $FMX2HTML;
+    $cmdl = "$cmd $Input $mime_type $name";
+    $magic = '^[CF]WS[\006-\010]'; # Flash file version 6 and later
+    &store_html_method('Flash MX (fmx2html)',$cmd,$cmdl,$mime_type,$magic);
   }
 
   ####Document -> Text converters####
@@ -351,7 +356,6 @@ sub store_methods {
     &store_text_method('WordPerfect (catwpd)',$cmd,$cmdl,$mime_type,$magic);
   }
 
-
   ####Documents that cannot be converted####
 
   # wrapped encapsulated Postscript
@@ -360,17 +364,17 @@ sub store_methods {
   $description = 'wrapped Encapsulated Postscript';
   &store_cannot_do($type,$magic,$description);
 
-  # Shockwave Flash version 6
-  $type = "SWF6";
-  $description = 'Shockwave-Flash Version 6';
-  $magic = '^CWS\006';
-  &store_cannot_do($type,$magic,$description);
+  ## Shockwave Flash version 6
+  #$type = "SWF6";
+  #$description = 'Shockwave-Flash Version 6';
+  #$magic = '^CWS\006';
+  #&store_cannot_do($type,$magic,$description);
 
-#### Binary (data or whatever)
-###$type = "BIN";
-###$magic = '[\000-\007\016-\037\177]'; # rather crude test!
-###$description = 'apparently binary';
-###&store_cannot_do($type,$magic,$description);
+  ## Binary (data or whatever)
+  #$type = "BIN";
+  #$magic = '[\000-\007\016-\037\177]'; # rather crude test!
+  #$description = 'apparently binary';
+  #&store_cannot_do($type,$magic,$description);
 
   return;
 }
@@ -549,6 +553,16 @@ sub try_plain  {
 
 #------------------------------------------------------------------------------
 
+sub dummy_out {
+
+  my $text = shift;
+  &head;
+  print "<BODY>\n<H6>", $text, "</H6>\n</BODY>\n</HTML>\n";
+  return;
+}
+
+#------------------------------------------------------------------------------
+
 sub HTML {
 
   my $text = shift;
@@ -559,6 +573,20 @@ sub HTML {
   $text =~ s/&/&amp;/g;
   $text =~ s/</&lt;/g;
   $text =~ s/>/&gt;/g;
+
+  return &link_text($text);
+}
+
+#------------------------------------------------------------------------------  
+
+sub link_text ($) { # look for URLs in text and make them into links
+
+  my $text = ' ' . $_[0] . ' ';
+  $text =~ s#([\s({[<|])(https{0,1}://\S{4,}?)(\.*[\s)}\]>;:,])#$1<a href="$2">$2</a>$3#gs;
+  $text =~ s#([\s({[<|])(ftp://\S{4,}?)(\.*[\s)};:,\]>|])#$1<a href="$2">$2</a>$3#gs;
+  $text =~ s#([\s({[<|])(www\.\S{3,}?)(\.*[\s)};:,\]>|])#$1<a href="http://$2">$2</a>$3#gs;
+##  $text =~ s#([\s({[<|])(\S+@\S{2,}?)(\.*[\s)};:,\]>|])#$1<a href="mailto:$2">$2</a>$3 #gs;
+  $text =~ s/^ //; $text =~ s/ $//;
 
   return $text;
 }

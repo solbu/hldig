@@ -1,7 +1,10 @@
+#!/opt/local/perl/bin/perl
 #!/usr/bin/perl -w
 use strict;
 #
-# Version 1.0.1	12-Feb-2002
+# Version 1.1	25-May-2001
+#	Change 30 January 2004 (added -raw option)
+#	Change 17 January 2005 (added link_text routine)
 # Written by David Adams <d.j.adams@soton.ac.uk>
 #
 # Uses pdftotext & pdfinfo utilities from the xpdf package
@@ -14,9 +17,6 @@ use strict;
 ####--- Configuration ---####
 # Full paths of pdtotext and pdfinfo
 # (get them from the xpdf package at http://www.foolabs.com/xpdf/):
-
-#### YOU MUST SET THESE  ####
-
 my $PDFTOTEXT = "/... .../pdftotext";
 my $PDFINFO = "/... .../pdfinfo";
 #
@@ -104,7 +104,7 @@ sub pdf_head {
 sub pdf_body {
 
   my $bline = '';
-  open(CAT, "$PDFTOTEXT -raw '$Input' - |") || 
+  open(CAT, "$PDFTOTEXT '$Input' -raw - |") || 
 	  die "$PDFTOTEXT doesn't want to be opened using pipe\n";
   print "<BODY>\n";
   while (<CAT>) {
@@ -144,9 +144,23 @@ sub HTML {
   $text =~ s/>/&gt;/g;
   chomp $text;
 
+  return &link_text($text);
+}
+  
+#------------------------------------------------------------------------------
+  
+sub link_text ($) { # look for URLs in text and make them into links
+
+  my $text = ' ' . $_[0] . ' ';
+  $text =~ s#([\s({[<|])(https{0,1}://\S{4,}?)(\.*[\s)}\]>;:,])#$1<a href="$2">$2</a>$3#gs;
+  $text =~ s#([\s({[<|])(ftp://\S{4,}?)(\.*[\s)};:,\]>|])#$1<a href="$2">$2</a>$3#gs;
+  $text =~ s#([\s({[<|])(www\.\S{3,}?)(\.*[\s)};:,\]>|])#$1<a href="http://$2">$2</a>$3#gs;
+#  $text =~ s#([\s({[<|])(\S+@\S{2,}?)(\.*[\s)};:,\]>|])#$1<a href="mailto:$2">$2</a>$3 #gs;
+  $text =~ s/^ //; $text =~ s/ $//;
+  
   return $text;
 }
-
+  
 #------------------------------------------------------------------------------
 
 sub clean_pdf {

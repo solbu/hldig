@@ -1,7 +1,10 @@
+#!/opt/local/bin/perl
 #!/usr/bin/perl -w
 use strict;
 #
 # Version 1.1	17-May-2002
+#		19-Sep-2002
+#		 6-Nov-2002
 # Written by David Adams <d.j.adams@soton.ac.uk>
 #
 # Uses swfparse utlity to extract URL's from  Shockwave flash files
@@ -13,11 +16,7 @@ use strict;
 ####--- Configuration ---####
 # Full path of swfparse
 # (get it from http:/www.htdig.org/files/contrib/contrib/parsers/)
-
-##### YOU MUST SET THIS  ####
-
-my $SWFPARSE = "/.. .../swfdump";
-
+my $SWFPARSE = "/... .../swfdump";
 ####--- End of configuration ---###
 
 if (! -x $SWFPARSE) { die "Unable to execute swfparse" }

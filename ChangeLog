@@ -1,3 +1,8 @@
+Mon Feb  7 17:33:04 2005  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
+
+    * contrib/doc2html/*: Updated to latest version, contributed by David
+      Adams.
+
 Sun 11 Jul 2004   Lachlan Andrew  <lha at users.sourceforge.net>
 
     * htdig/{HTML.cc,Retriever.cc}, htsearch/{DocMatch.cc,parser.cc},

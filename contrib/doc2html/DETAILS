@@ -1,7 +1,7 @@
 INTRODUCTION
 ============
 
-This DETAILS file accompanies doc2html version 3.0.1.
+This DETAILS file accompanies doc2html version 3.1.
 
 Read this file for instructions on the installation and use of the 
 doc2html scripts.
@@ -14,19 +14,23 @@ The set of files is:
 	doc2html.sty	- style file for use with wp2html
 	pdf2html.pl	- Perl script for converting PDF files to HTML
 	swf2html.pl	- Perl script for extracting links from Shockwave flash files.
+	fmx2html.pl	- Perl script for extracting links from Shockwave & Flash MX files.
 	README		- brief description
 
 doc2html.pl is a Perl5 script for use as an external converter with
 htdig 3.1.4 or later.  It takes as input the name of a file containing a
-document in a number of possible formats and its MIME type.  It uses
+document in a number of possible formats and its MIME type.  It selects
 the appropriate conversion utility to convert it to HTML on standard
 output. 
 
 doc2html.pl was designed to be easily adapted to use whatever conversion
 utilities are available, and although it has been written around the
-"wp2html" utility, it does not require wp2html to function. 
+"wp2html" utility, it does not require wp2html to function.  The
+utilities described below are by no means the only ones suitable for the
+purpose and it should be possible for you to modify doc2html.pl to use
+the utility of your choice with very little effort.
 
-NOTE: version 3.0.1 has only been tested on Unix. 
+NOTE: version 3.1 has only been tested on Unix. 
 
 pdf2html.pl is a Perl script which uses a pair of utilities (pdfinfo and
 pdf2text) to extract information and text from an Adobe PDF file and
@@ -37,6 +41,11 @@ swf2html.pl is a Perl script which calls a utility (swfparse) and
 outputs HTML containing links to the URL's found in a Shockwave flash
 file.  It can be called directly from htdig, but you are recommended to
 call it via doc2html.pl. 
+
+fmx2html.pl is a Perl script which calls a Java utility (jGenerator) and
+outputs HTML containing links to the URL's found in a Shockwave MX or
+Flash file.  It can be called directly from htdig, but you are
+recommended to call it via doc2html.pl. 
 
 
 ABOUT DOC2HTML.PL
@@ -54,9 +63,8 @@ Jesse op den Brouw <MSQL_User@st.hhs.nl>.
 doc2html.pl makes up to three attempts to read a file.  It first tries
 utilities which convert directly into HTML.  If one is not found, or no
 output is produced, it then tries utilities which output plain text.  If
-none is found, and the file is not of a type known to be unconvertable,
-then doc2html.pl attempts to read the file itself, stripping out any
-control characters. 
+none is found and the file appears to be text, then doc2html.pl attempts
+to read the file itself, stripping out any control characters. 
 
 doc2html.pl is written to be flexible and easy to adapt to whatever
 conversion utilites are available.  New conversion utilities may be
@@ -94,20 +102,25 @@ You may need to change the first line of each script to the location of
 Perl on your system.
 
 Edit doc2html.pl to include the full pathname of each utility you have
-installed.  For example:
+installed.  For example, replace:
 
-my $WP2HTML = '/opt/local/wp2html-3.2/bin/wp2html';
+  my $WP2HTML = '';
+by
+  my $WP2HTML = '/opt/local/wp2html-3.2/bin/wp2html';
   
-If you don't have a particular utility then leave its location as a null
-string. 
+If you don't have a particular utility then change its location to a null
+string:
+
+  my $WPHTML = undef;
 
 Then place doc2html.pl and the other scripts where htdig can access them.  
 
 If you are going to convert PDF files then you will need to edit pdf2html.pl
 and include its full path name in doc2html.pl.
 
-If you are going to extract links from Shockwave flash files then you will
-need to edit swf2html.pl and include its full path name in doc2html.pl.
+If you are going to extract links from Shockwave flash files then you
+will need to edit swf2html.pl and/or swf2html.pl and include full path
+names in doc2html.pl.
 
 Edit the htdig.conf configuration file to use the script, as in this example:
 
@@ -116,10 +129,12 @@ external_parsers:	application/rtf->text/html /usr/local/scripts/doc2html.pl \
 			application/pdf->text/html /usr/local/scripts/doc2html.pl \
 			application/postscript->text/html /usr/local/scripts/doc2html.pl \
 			application/msword->text/html /usr/local/scripts/doc2html.pl \
-			application/Wordperfect5.1->text/html /usr/local/scripts/doc2html.pl \
+			application/wordperfect5.1->text/html /usr/local/scripts/doc2html.pl \
+			application/wordperfect6.0->text/html /usr/local/scripts/doc2html.pl \
 			application/msexcel->text/html /usr/local/scripts/doc2html.pl \
 			application/vnd.ms-excel->text/html /usr/local/scripts/doc2html.pl \
 			application/vnd.ms-powerpoint->text/html /usr/local/scripts/doc2html.pl \
+			application/powerpoint->text/html /usr/local/scripts/doc2html.pl \
 			application/x-shockwave-flash->text/html /usr/local/scripts/doc2html.pl \
 			application/x-shockwave-flash2-preview->text/html /usr/local/scripts/doc2html.pl
 
@@ -135,12 +150,13 @@ Obtain wp2html from http://www.res.bbsrc.ac.uk/wp2html/
 Note that wp2html is not free; its author charges a small fee for
 "registration".  Various pre-compiled versions and the source code are
 available, together with extensive documentation.  Upgrades are
-available at no further charge. 
+available at no further charge, though non has appeared since October
+2001. 
 
-wp2html converts WordPerfect documents (5.1 and later) to HTML. 
-Versions 3.2 and later will also convert Word7 and Word97 documents to
-HTML.  A feature of wp2html which doc2html.pl exploits is that the -q
-option will result in either good HTML or no output at all. 
+wp2html converts WordPerfect documents (5.1 and later) to HTML.  It also
+also convert Word7 and Word97 documents to HTML.  A feature of wp2html
+which doc2html.pl exploits is that the -q option will result in either
+good HTML or no output at all. 
 
 wp2html is very flexible in the output it creates.  The two files,
 doc2html.cfg and doc2html.sty, should be placed in the wp2html library
@@ -150,7 +166,10 @@ Edit the line in doc2html.pl:
 
 my $WP2HTML = '';
 
-to set $WP2HTML to the full pathname of wp2html.
+to set $WP2HTML to the full pathname of wp2html.  If you are not going
+to use wp2html then change it to:
+
+my $WP2HTML = undef;
 
 wp2html will look for the title in a document, and if it is found then
 output it in <TITLE>....</TITLE> markup.  If a title is not found
@@ -163,68 +182,81 @@ then doc2html.pl can use the "catdoc" or "catwpd" utilities instead.
 UTILITY CATDOC
 ==============
 
-Obtain catdoc from http://www.ice.ru/~vitus/catdoc/, it is available
+Obtain catdoc from http://www.45.free.net/~vitus/ice/catdoc/, it is available
 under the terms of the Gnu Public License. 
 
 Edit the line in doc2html.pl:
 
 my $CATDOC = '';
 
-to set the variables to the full pathname of catdoc.  You might want
+to set the variable to the full pathname of catdoc.  You might want
 to use a different version of catdoc for Word2 documents or for MAC Word
 files. 
 
-catdoc converts MS Word6, Word7, etc., documents to plain text.  The
-latest beta version is also able to convert Word2 documents.  catdoc
-also produces a certaint amount of "garbage" as well as the text of the
-document.  The -b option improves the likelihood that catdoc will
+catdoc converts MS Word2, Word6, Word7, etc., documents to plain text. 
+Catdoc also produces a certaint amount of "garbage" as well as the text
+of the document.  The -b option improves the likelihood that catdoc will
 extract all the text from the document, but at the expense of increasing
 the garbage as well.  doc2html.pl removes some non-printing characters
 to minimise the garbage.  If a later version of catdoc than 0.91.4 is
 obtained then the use of the -b option should be reviewed. 
 
+If you don't use catdoc then change the line to
+
+my $CATDOC = undef;
+
 
 UTILITY CATWPD
 ==============
 
-Obtain catwpd from the contribs section of the Ht://Dig web site where
-you obtained doc2html.  It extracts words from some versions of WordPerfect
-files.  You won't need it if you buy the superior wp2html.
+Obtain catwpd from the contribs section of the Ht://Dig web site.  It
+extracts words from some versions of WordPerfect files.  You won't need
+it if you buy the superior wp2html. 
 
 If you do use it, then edit the line in doc2html.pl:
 
 my $CATWPD = '';
 
-to set the variables to the full pathname of catwpd.
+to set the variables to the full pathname of catwpd, otherwise change it
+to
+
+my $CATWPD = undef;
 
 
 UTILITY PPTHTML
 ===============
 
-obtain ppthtml from http://www.xlhtml.org, where it is bundled in with
-xlhtml.
+Obtain ppthtml from http://chicago.sourceforge.net/xlhtml/, where it is
+bundled in with xlhtml. 
 
 In doc2html.pl, edit the line:
 
 my $PPT2HTML = '';
 
-to set $PPT2HTML to the full pathname of ppthtml.
+to set $PPT2HTML to the full pathname of ppthtml.  If you don't use
+ppthtml then set it instead to:
 
-ppthtml converts Microsoft Powerpoint files into HTML.  It uses the input
-filename as the title.  doc2html.pl replaces this with the original
-filename from the URL in square brackets. 
+my $PPT2HTML = undef;
+
+ppthtml converts Microsoft Powerpoint files into HTML.  It uses the
+input filename as the title.  doc2html.pl replaces this with the
+original filename from the URL in square brackets. 
 
 
 UTILITY XLHTML
 ==============
 
-Obtain xlhtml from http://www.xlhtml.org
+Obtain xlhtml from http://chicago.sourceforge.net/xlhtml/
 
 In doc2html.pl, edit the line:
 
 my $XLS2HTML = '';
 
 to set $XLS2HTML to the full pathname of xlhtml.
+
+If you are not using xlhtml then set it to
+
+my $XLS2HTML = undef;
 
 xlhtml converts Microsoft Excel spreadsheets into HTML.  It uses the input
 filename as the title.  doc2html.pl replaces this with the original
@@ -239,13 +271,18 @@ An alternative to xlHtml is xls2csv, see below.
 UTILITY RTF2HTML
 ================
 
-Obtain rtf2html from http://www.ice.ru/~vitus/catdoc/
+Obtain rtf2html from http://chicago.sourceforge.net/xlhtml/ where it is
+bundled in with xlhtml.
 
 In doc2html.pl, edit the line:
 
 my $RTF2HTML = '';
 
-to set $RTF2HTML to the full pathname of rtf2html.
+to set $RTF2HTML to the full pathname of rtf2html, or to
+
+my $RTF2HTML = undef;
+
+if it is not going to be used.
 
 rtf2html converts Rich Text Font documents into HTML.  It uses the input
 filename as the title, doc2html.pl replaces this with the original
@@ -255,26 +292,31 @@ filename from the URL within square brackets.
 UTILITY PS2ASCII
 ================
 
-Ps2ascii is a PostScript to text converter.
+Ps2ascii is a PostScript to text converter and is included in most Unix
+systems. 
 
 In doc2html.pl, edit the line:
 
-my $CATPS = '';
+my $CATPS = "/usr/bin/ps2ascii";
 
-to the correct full pathname of ps2ascii.
+to the correct full pathname of ps2ascii, or to
+
+my $CATPS = undef;
 
 ps2ascii comes with ghostscript 3.33 (or later) package, which is
 pre-installed on many Unix systems.  Commonly, it is a Bourne-shell
-script which invokes "gs", the Ghostscript binary.  doc2html.pl has
-provision for adding the location of gs to the search path. 
+script which invokes "gs", the Ghostscript binary.
+
+You may need to add the location of Ghostscript binary, gs, to the
+search path in doc2html.pl. 
 
 
 UTILITY PDFTOTEXT
 =================
 
-pdftotext converts Adobe PDF files to text.  pdfinfo is a tool which
-displays information about the document, and is used to obtain its
-title, etc.  Get them from the xpdf package at
+pdftotext converts Adobe PDF files to plain text.  pdfinfo is a tool
+which displays information about the document, and is used to obtain its
+title, etc.  They are part of the xpdf package available from
 http://www.foolabs.com/xpdf/
 
 In script pdf2html.pl, change the lines:
@@ -301,17 +343,47 @@ Edit the line:
 
 my $CATXLS = '';
 
-to the full pathname of xls2csv.
+to the full pathname of xls2csv or to 
+
+my $CATXLS = undef;
 
 Xls2csv translates Excel spread sheets into comma-separated data. 
+
+
+UTILITY jGenerator
+==================
+
+jGenerator is a Java package for Flash and MX files, available free from
+http://www.flashgap.com/.  It can be used to analyse all current types
+of Shockwave flash files. 
+
+Perl script fmx2html.pl calls jGenerator and writes HTML output containing
+links to the URLs found in the Shockwave file.  It does NOT extract text
+from the file, but could be modified to do this.
+
+It will be necessary to edit fmx2html.pl to suit your installation, and
+you must also have the Java executable installed:
+
+Edit the line
+
+my $IVGEN_HOME =  '/... .../jgenerator-2.2';
+
+to the full pathname of the jGenerator directory, and edit the line
+
+my $JAVA = "/... .../java";
+
+to the full pathname of the Java executable.
+
+Edit doc2html.pl to include the full pathname of the fmx2html.pl script.
 
 
 UTILITY SWFPARSE
 ================
 
-swfparse (aka swfdump) extracts information from Shockwave flash files,
-and can be obtained from the contribs section of the Ht://Dig web site,
-where you obtained doc2html.
+Swfparse (aka swfdump) extracts information from Shockwave flash files,
+but only the older types 1 to 5.  It can be obtained from the contribs
+section of the Ht://Dig web site.  It succeeds with some Flash files
+where jGenerator fails, so doc2html.pl allows the use of both. 
 
 Perl script swf2html.pl calls swfparse and writes HTML output containing
 links to the URLs found in the Shockwave file.  It does NOT extract text
@@ -365,35 +437,39 @@ may be altered to suit.
 LIMITING INPUT AND OUTPUT
 =========================
 
+It is not possible to extract any text from .PDF files, for example, if
+they have been truncated.  Truncation happens whenever the actual size
+of a document is larger than the "max_doc_size" parameter in the htdig
+configuration file. 
+
 The environmental variable DOC2HTML_IP_LIMIT may be set in the rundig
 script to limit the size of the file which doc2html.pl will attempt to
-convert. The default value is 20000000.  Doc2html.pl will return no
-output to htdig if the file size is equal to or greater than this size.
+convert.  The default value is 20000000.  The present version of
+doc2html.pl will return minimal HTML output to htdig if the file size is
+equal to or greater than this size, rather than call any conversion
+utility.  This prevents htdig from downloading large documents in vain
+every time it is run in update mode.
 
 You are recommended to set DOC2HTML_IP_LIMIT to the same as the
-"max_doc_size" parameter in the htdig configuration file. Then no
-attempt wil be made to extract text from files which have been truncated
-by htdig.  It is not possible to extract any text from .PDF files, for
-example, if they have been truncated.
+"max_doc_size" parameter in the htdig configuration file. 
 
 The environmental variable DOC2HTML_OP_LIMIT may be set in the rundig
 script to limit the output sent back to htdig by a single call to
-doc2html.pl. The default value is 10000000.   Doc2html.pl will stop
-returning output to htdig once the DOC2HTML_OP_LIMIT has been reached.
-This is precaution against the unlikely event of a conversion utility
-returning disproportionately large amounts of data.
+doc2html.pl.  The default value is 10000000.  Doc2html.pl will stop
+returning output to htdig once the DOC2HTML_OP_LIMIT has been reached. 
+This is a precaution against a conversion utility returning
+disproportionately large amounts of data, or possibly looping. 
 
 
 CONTACT
 =======
 
-Any queries regarding doc2html are best sent to the mailing list
+Any queries regarding doc2html should be sent to the mailing list
 htdig-general@lists.sourceforge.net
 
-The author can be emailed at D.J.Adams@soton.ac.uk
 
 David Adams
 Information Systems Services
 University of Southampton
 
-27-November-2002
+4-February-2005
