@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.49 1999/02/01 19:47:14 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.50 1999/02/02 18:24:41 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -294,7 +294,7 @@ Display::displayMatch(ResultMatch *match, int current)
     if (maxScore != 0)
       {
 	int percent = (int)(ref->DocScore() * 100 / (double)maxScore);
-	if (percent == 0)
+	if (percent <= 0)
 	  percent = 1;
 	vars.Add("PERCENT", new String(form("%d", percent)));
       }
@@ -911,6 +911,8 @@ Display::buildMatchList()
 		  links = 1; // It's a hack, but it helps...
 		score += backlink_factor
 		  * (thisRef->DocBackLinks() / (double)links);
+		if (score <= 0.0)
+		  score = 0.0;
 		if (typ != SortByScore)
 		  {
 		    DocumentRef *sortRef = new DocumentRef();
