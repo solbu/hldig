@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Display.cc,v 1.115 2003/07/21 08:16:11 angusgb Exp $
+// $Id: Display.cc,v 1.116 2003/10/24 20:24:51 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1225,7 +1225,7 @@ Display::buildMatchList()
     enddate = *lt; 
 
     time_t eternity = ~(1<<(sizeof(time_t)*8-1));  // will be the largest value holdable by a time_t
-    tm *endoftime;     // the time_t eternity will be converted into a tm, held by this variable
+    tm endoftime;     // the time_t eternity will be converted into a tm, held by this variable
 
     time_t timet_startdate;
     time_t timet_enddate;
@@ -1240,7 +1240,8 @@ Display::buildMatchList()
 		     (config->Value("endyear")));
 
     // find the end of time
-    endoftime = gmtime(&eternity);
+    lt = gmtime(&eternity);
+    endoftime = *lt;
 
     if(dategiven)    // user specified some sort of date information
       {
@@ -1386,14 +1387,14 @@ Display::buildMatchList()
 	      }
 	  }
 	else if (!reldate)
-	    enddate.tm_year = endoftime->tm_year;
+	    enddate.tm_year = endoftime.tm_year;
 	     // otherwise, no end year, specify end at the end of time allowable
 
 	// Months have different number of days, and this makes things more
 	// complicated than the startdate range.
 	// Following the example above, here is what we want to happen:
 	// Enddates:        Date          Becomes
-	//                  04-31         04-31-endoftime->tm_year
+	//                  04-31         04-31-endoftime.tm_year
 	//                  05-1999       05-31-1999, may has 31 days... we want to search until the end of may so...
 	//                  1999          12-31-1999, search until the end of the year
 
@@ -1501,7 +1502,7 @@ Display::buildMatchList()
 	
 	// Code added by Mike Grommet for date search ranges
 	// check for valid date range.  toss it out if it isn't relevant.
-	if ((timet_startdate > 0 || enddate.tm_year < endoftime->tm_year) &&
+	if ((timet_startdate > 0 || timet_enddate < eternity) &&
 	    (thisRef->DocTime() < timet_startdate || thisRef->DocTime() > timet_enddate))
 	{
 	    delete thisRef;

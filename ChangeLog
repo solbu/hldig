@@ -1,3 +1,8 @@
+Fri Oct 24 15:15:53 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+    * htsearch/Display.cc: Fix bug #578570. The enddate handling now works
+      correctly for a large, negative startday value.
+
 Fri Oct 24 12:47:51 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
     * htdig/HTML.cc (ctor): Fix obvious typo in metadatetags.Pattern setting.
