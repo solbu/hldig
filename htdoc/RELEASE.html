@@ -22,6 +22,54 @@
 	</p>
 
 	<p>
+	<strong>Release notes for htdig-3.2.0b6</strong> 02 Jun 2004<br>
+	The next beta release of ht://Dig, 3.2.0b6, is now available.
+	It fixes several bugs from 3.2.0b5, and runs somewhat faster,
+	although still much slower than 3.1.6. (No significant speed
+	improvements are expected in the near future, although we are
+	working on it.)  Calling this release a "beta" simply means
+	that exhausive testing, especially on non-Linux platforms, is
+	not yet complete. However, we consider it stable enough for
+	most production use.
+	</p>
+
+	<p>
+	As with 3.2.0b5, if you are upgrading
+	from a previous version, you should read the <a
+	href="upgrade.html">upgrade guide</a> first.
+	</p>
+	<ul>
+	    <li>fixed bug regarding compilation of regular expressions for
+		every URL (improve performances)</li>
+	    <li>fixed bugs in phrase searching</li>
+	    <li>add <a
+         	href="attrs.html#store_phrases">store_phrases</a> attribute:
+		if it is false, htdig only stores the first occurrence
+		of each word in a document.</li>
+	    <li>fixed bug with empty disallow entries in robots.txt</li>
+	    <li>bin/rundig -a handles multiple database directories</li>
+	    <li>fixed ellipsis bug in searching</li>
+	    <li>fixed behaviour of '-m' runtime option</li>
+	    <li>fixed bug in which validity of first URL from each
+		server was not checked</li>
+	    <li>fixed bug with empty configuration attributes,
+		which were ignored</li>
+	    <li>fixed bug in handling 'http_proxy', 'http_proxy_authorization',
+		'authorization attributes'</li>
+	    <li>remove stale md5_db if '-i' specified</li>
+	    <li>fixed bug regarding case sensitivity of 'server_alias'</li>
+	    <li>fixed bugs with zlib</li>
+	    <li>fixed bug with &euro; HTML entity</li>
+	    <li>fixed other minor bugs</li>
+	    <li>added an improved version of RTF2HTML into the
+		contrib section</li>
+	    <li>improved date factor formula</li>
+	    <li>improved tests</li>
+	    <li>improved documentation</li>
+	    <li>added man pages</li>
+	</ul>
+
+	<p>
 	<strong>Release notes for htdig-3.2.0b5</strong> 10 Nov 2003<br>
 	This version was slated to be 3.2.0rc1, but some final testing
 	is still required.  It primarily fixes many bugs in 3.2.0b3, with
@@ -1477,6 +1525,6 @@
 	</ul>
 
 	<hr size="4" noshade>
-		Last modified: $Date: 2004/05/28 13:15:17 $
+		Last modified: $Date: 2004/06/03 08:19:50 $
   </body>
 </html>
