@@ -1,3 +1,7 @@
+Mon Nov 27 12:03:34 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/md5.cc: Added missing include of time.h
+
 Fri Nov 24 00:56:01 2000  Toivo Pedaste <toivo@ucs.uwa.edu.au>
 
 	* htsearch/Display.cc: Some extra debugging for scoring

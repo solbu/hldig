@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 extern "C" {
 #include "mhash_md5.h"
 }
