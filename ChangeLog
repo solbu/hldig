@@ -1,3 +1,9 @@
+Thu Mar 25 11:45:59 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(displayMatch), htcommon/defaults.cc,
+	htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Add date_format attribute suggested by Marc Pohl.
+
 Thu Mar 25 09:49:33 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(displayMatch): Avoid segfault when DocAnchors
