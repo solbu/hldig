@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.33 1999/01/27 00:27:21 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34 1999/02/04 00:14:26 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -191,9 +191,9 @@ Document::Url(char *u)
 time_t
 Document::getdate(char *datestring)
 {
-    String	d = datestring;
     struct tm   tm;
     time_t      ret;    
+    char        *s;    
 
     //
     // Two possible time designations:
@@ -203,23 +203,29 @@ Document::getdate(char *datestring)
     //
     // We strip off the weekday before sending to strptime
     // because some servers send invalid weekdays!
+    // (Some don't even send a weekday, but we'll be flexible...)
  
-    int weekday_index = d.indexOf(',');
-    if (weekday_index > 3)
-        mystrptime(d.sub(weekday_index + 2), "%d-%b-%y %T", &tm);
+    s = strchr(datestring, ',');
+    if (s)
+        s++;
     else
-	mystrptime(d.sub(weekday_index + 2), "%d %b %Y %T", &tm);
-
-    if (&tm != NULL) // We hope it isn't NULL!
+        s = datestring;
+    while (isspace(*s))
+        s++;
+    if (strchr(s, '-') && mystrptime(s, "%d-%b-%y %T", &tm) ||
+            mystrptime(s, "%d %b %Y %T", &tm))
       {
+	// correct for mystrptime, if %Y format saw only a 2 digit year
 	if (tm.tm_year < 0)
 	  tm.tm_year += 1900;
 	
 	if (debug > 2)
 	  {
-	    cout << "Translated " << d << " to ";
+	    cout << "Translated " << datestring << " to ";
 	    char	buffer[100];
-	    strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", &tm);
+	    // Leave out %a for weekday, because we don't set it anymore...
+	    //strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", &tm);
+	    strftime(buffer, sizeof(buffer), "%d %b %Y %T", &tm);
 	    cout << buffer << " (" << tm.tm_year << ")" << endl;
 	  }
 #if HAVE_TIMEGM
@@ -230,6 +236,11 @@ Document::getdate(char *datestring)
       }
     else
       {
+	if (debug > 2)
+	  {
+	    cout << "Cannot translate " << datestring <<
+                    ", using current time" << endl;
+	  }
 	ret = time(0); // This isn't the best, but it works. *fix*
       }
     if (debug > 2)
