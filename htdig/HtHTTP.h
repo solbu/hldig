@@ -74,11 +74,8 @@
 
 #include "URL.h"
 #include "htString.h"
-#include "HtDateTime.h"
-#include "Connection.h"
 #include "Transport.h"
 
-#define DEFAULT_CONNECTION_TIMEOUT 15
 #define DEFAULT_MAX_DOCUMENT_SIZE	 100000
 
 
@@ -218,13 +215,6 @@ public:
    static DocStatus GetDocumentStatus(HtHTTP_Response &);
 
 
-///////
-   //    Querying the status of the connection
-///////
-
-
-   // Are we still connected?
-   bool isConnected();
 
 ///////
    //    Persistent connection choices interface
@@ -262,9 +252,9 @@ public:
    static void ResetStatistics ()
    	 { _tot_seconds=0; _tot_requests=0; _tot_bytes=0;}   
 
+// Set the modification_time_is_now static attribute
+   static void SetModificationTimeIsNow (int d) { modification_time_is_now=d;}   
 
-// Set the debug level   
-   static void SetDebugLevel (int d) { debug=d;}   
 	
 protected:
 
@@ -273,11 +263,10 @@ protected:
 ///////
 
    ///////
-   	 //    Http Connection information
+      //    Modification Time is Now config attribute
    ///////
 
-   Connection  _connection;	   // Connection object
-
+   static int modification_time_is_now;
 
    ///////
       //    Http single Request information (Member attributes)
@@ -304,11 +293,13 @@ protected:
    HtHTTP_Response	 _response; 	 // Object where response
    	       	   	       	   	 // information will be stored into
 
+
    ///////
       //    Allow or not a persistent connection (user choice)
    ///////
 
    bool _persistent_connection_allowed;
+
 
    ///////
       //    Is a persistent connection possible (with this http server)?
@@ -316,13 +307,6 @@ protected:
 
    bool _persistent_connection_possible;
 
-
-   ///////
-      //    Debug level
-   ///////
-
-   static int debug;
-   
 
 ///////
    //    Enum
@@ -341,7 +325,6 @@ protected:
    };
 
 
-
 ///////
    //    Protected Services or method (Hidden by outside)
 ///////
@@ -353,7 +336,6 @@ protected:
 
    ConnectionStatus EstablishConnection ();
    
-
 
    ///////
       //    Set the string of the command containing the request
@@ -404,34 +386,6 @@ protected:
    int ReadBody();
 
 
-   ///////
-      //    Services about HTTP connection
-   ///////
-
-   // Open the connection
-   
-   inline int OpenConnection();
-
-   // Assign the host and the port for the connection
-   
-   inline int AssignConnectionServer();
-   inline int AssignConnectionPort();   
-
-   // Connect to the specified host and port
-   inline int Connect();
-   
-   // Write a message
-   inline int ConnectionWrite(char *);
-
-   // Assign the timeout to the connection (returns the old value)
-
-   inline int AssignConnectionTimeOut();
-   
-   // Close the connection
-   
-   inline int CloseConnection();
-
-
    // Finish the request and return a DocStatus value;
 
    DocStatus FinishRequest (DocStatus);
@@ -442,16 +396,15 @@ protected:
 ///////
    
    // Statistics about requests
-   static int	   _tot_seconds;  	 // Requests last (in seconds)
-   static int	   _tot_requests; 	 // Number of requests
-   static int	   _tot_bytes;    	 // Number of bytes read
+   static int  _tot_seconds;  	 // Requests last (in seconds)
+   static int  _tot_requests; 	 // Number of requests
+   static int  _tot_bytes;    	 // Number of bytes read
 
    // Retrieve statistics
    
    static int GetTotSeconds () { return _tot_seconds; }   
    static int GetTotRequests () { return _tot_requests; }   
    static int GetTotBytes () { return _tot_bytes; }   
-   
    
 };
 

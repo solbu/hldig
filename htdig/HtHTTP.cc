@@ -11,13 +11,11 @@
 
 #include "lib.h"
 #include "HtHTTP.h"
-#include "htdig.h"
 #include <signal.h>
 #include <sys/types.h>
 #include <ctype.h>
 #include <iostream.h>
 
-#include <unistd.h>  // for sleep
 
 #if 1
 typedef void (*SIGNAL_HANDLER) (...);
@@ -25,12 +23,10 @@ typedef void (*SIGNAL_HANDLER) (...);
 typedef SIG_PF SIGNAL_HANDLER;
 #endif
 
-
-   // Debug level
-   	 int HtHTTP::debug = 0;
-
+   // Modification Time is now attribute
+         int HtHTTP::modification_time_is_now = 0;
    // User Agent
-   	 String HtHTTP::_user_agent=0;
+   	 String HtHTTP::_user_agent = 0;
 
    // Stats information
    	 int HtHTTP::_tot_seconds = 0;
@@ -265,6 +261,7 @@ HtHTTP::DocStatus HtHTTP::Request(HtHTTP::HttpRequestMethod _Method)
 	    return Document_connection_down;
    }   
 
+
    if (_response._status_code == -1)
    {
    	 // Unable to retrieve the status line
@@ -273,7 +270,6 @@ HtHTTP::DocStatus HtHTTP::Request(HtHTTP::HttpRequestMethod _Method)
 	    cout << "Unable to retrieve or parse the status line" << endl;
 	 
    	 return Document_no_header;
-	 
    }   
       
 
@@ -361,13 +357,13 @@ HtHTTP::ConnectionStatus HtHTTP::EstablishConnection()
    {
 
       // Assign the remote host
-      if (!_connection.assign_server(_url.host()))
+      if ( _connection.assign_server(_url.host()) == NOTOK)
       	 return Connection_no_server;   	 
 	 else if (debug > 4)
 	       cout << "\tAssigned the remote host " << _url.host() << endl;
    
       // Assign the port of the remote host
-      if (!_connection.assign_port(_url.port()))
+      if ( _connection.assign_port(_url.port()) == NOTOK)
       	 return Connection_no_port;   	 
 	 else if (debug > 4)
 	       cout << "\tAssigned the port " << _url.port() << endl;
@@ -408,6 +404,9 @@ void HtHTTP::SetHttpConnection (URL u)
      CloseConnection();
    }
 
+   // Copy the url information to the object
+   _url = u;
+
 }
 
 
@@ -446,79 +445,7 @@ void HtHTTP::SetRequestCommand(String &cmd)
 }
 
 
-// Open the connection
-// Returns
-// 	 -      0 if failed
-// 	 -     -1 if already open
-// 	 -      1 if ok
 
-int HtHTTP::OpenConnection()
-{
-   if(_connection.isopen()) return -1; // Already open
-
-   // No open connection
-   // Let's open a new one
-   
-   if(_connection.open() == NOTOK) return 0; // failed
-
-   return 1;
-}
-
-
-// Connect
-// Returns
-// 	 -      0 if failed
-// 	 -     -1 if already connected
-// 	 -      1 if ok
-
-int HtHTTP::Connect()
-{
-   if (isConnected()) return -1; // Already connected
-   if (_connection.connect(1) == NOTOK) return 0;  // Connection failed
-   
-   return 1;	// Connected
-}
-
-
-// Write a message
-
-int HtHTTP::ConnectionWrite(char *cmd)
-{
-   _connection.write(cmd);
-   
-   return 1;
-}
-
-
-// Assign the timeout to the connection
-
-int HtHTTP::AssignConnectionTimeOut()
-{
-   return _connection.timeout(_timeout);
-}
-
-
-
-// Close the connection
-// Returns
-// 	 -      0 if not open
-// 	 -      1 if closed ok
-
-
-int HtHTTP::CloseConnection()
-{
-   if(_connection.isopen())
-   	 _connection.close(); 	// Close the connection
-   else return 0;
-   
-   return 1;
-}
-
-// Is the connection up
-bool HtHTTP::isConnected()
-{
-   return _connection.isconnected();
-}
 
 //*****************************************************************************
 // int HtHTTP::ParseHeader()
@@ -643,10 +570,11 @@ int HtHTTP::ParseHeader()
          }
       }
     }
-    static int	modification_time_is_now =
-			config.Boolean("modification_time_is_now");
+
     if (_response._modification_time == NULL && modification_time_is_now)
+    {
 	_response._modification_time = new HtDateTime;
+    }
     
     return 1;
    

@@ -12,24 +12,112 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.2 1999/06/25 21:17:35 ghutchis Exp $
+// $Id: Transport.cc,v 1.3 1999/06/30 09:26:06 angus Exp $
 //
 //
 
 #include "Transport.h"
 
-Transport_Response::Transport_Response()
-{ }
+///////
+   //    Static variables initialization
+///////
 
-Transport_Response::~Transport_Response()
-{ }
+   // Debug level
+   	 int Transport::debug = 0;
+
+
+///////
+   //    Transport_Response class definition
+///////
+
+ ///////
+    //    Empty constructor
+ ///////
+
+Transport_Response::Transport_Response() { }
+
+
+ ///////
+    //    Empty destructor
+ ///////
+
+Transport_Response::~Transport_Response() { }
+
+
+///////
+   //    Transport class definition
+///////
+
+ ///////
+    //    Constructor
+ ///////
 
 Transport::Transport()
 {
   _timeout = DEFAULT_CONNECTION_TIMEOUT;
 }
 
-Transport::~Transport()
-{ }
+
+ ///////
+    //    Empty destructor
+ ///////
+
+Transport::~Transport() { }
+
+
+ ///////
+    //    Connection Management
+ ///////
+
+   // Open the connection
+   // Returns
+   // 	 -      0 if failed
+   // 	 -     -1 if already open
+   // 	 -      1 if ok
+
+int Transport::OpenConnection()
+{
+   if(_connection.isopen()) return -1; // Already open
+
+   // No open connection
+   // Let's open a new one
+   
+   if(_connection.open() == NOTOK) return 0; // failed
+
+   return 1;
+}
+
+
+   // Connect
+   // Returns
+   // 	 -      0 if failed
+   // 	 -     -1 if already connected
+   // 	 -      1 if ok
+
+int Transport::Connect()
+{
+   if (isConnected()) return -1; // Already connected
+   if (_connection.connect(1) == NOTOK) return 0;  // Connection failed
+   
+   return 1;	// Connected
+}
+
+
+
+   // Close the connection
+   // Returns
+   // 	 -      0 if not open
+   // 	 -      1 if closed ok
+
+
+int Transport::CloseConnection()
+{
+   if(_connection.isopen())
+   	 _connection.close(); 	// Close the connection
+   else return 0;
+   
+   return 1;
+}
+
 
 // End of Transport.cc (it's a virtual class anyway!)
