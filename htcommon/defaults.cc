@@ -4,6 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.42  1999/01/26 20:16:39  hp
+// Fix typo with default 'case_sensitive'
+//
 // Revision 1.41  1999/01/25 01:53:43  hp
 // Provide a clean upgrade from old databses without "url_part_aliases" and
 // "common_url_parts" through the new option "uncoded_db_compatible".
@@ -142,7 +145,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.41 1999/01/25 01:53:43 hp Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.42 1999/01/26 20:16:39 hp Exp $";
 #endif
 
 #include <Configuration.h>
@@ -171,7 +174,7 @@ ConfigDefaults	defaults[] =
     {"bad_extensions",			".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram .tgz .bin .rpm .mpg .mov .avi"},
     {"bad_querystr",                    ""},
     {"bad_word_list",			"${common_dir}/bad_words"},
-    {"case_sensitive"                   "true"},
+    {"case_sensitive",                  "true"},
     {"common_url_parts",                "http:// http://www. ftp:// ftp://ftp. /pub/ .html .htm .gif .jpg .jpeg /index.html /index.htm .com/ .com mailto:"},
     {"create_image_list",		"false"},
     {"create_url_list",			"false"},

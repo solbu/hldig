@@ -1,10 +1,12 @@
-Tue Jan 26 20:42:06 1999  Hans-Peter Nilsson  <hp@axis.se>
+Tue Jan 26 21:19:02 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htmerge/docs.cc (convertDocs): Use HtURLCodec to encode URLs
 	going into the doc_index database.
 
 	* htsearch/Display.cc (buildMatchList): Use HtURLCodec to decode
 	URLs from docIndex.
+
+	* htcommon/defaults.cc (defaults): Fix typo with "case_sensitive".
 
 Tue Jan 26 18:08:19 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
