@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.85 2003/06/12 18:33:18 grdetil Exp $
+// $Id: defaults.cc,v 1.86 2003/06/12 19:14:29 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -364,7 +364,7 @@ http://www.htdig.org/", " \
 	<a href=\"#wordlist_compress_zlib\">wordlist_compress_zlib</a> \
 	is used. \
 " }, \
-{ "config", DEFAULT_CONFIG_FILE,  \
+{ "config", "",  \
 	"string", "all", "", "??", "File Layout", "", " \
 	Name of configuration file to load. \
 	For security reasons, restrictions are placed on the values which \

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.110 2003/06/09 08:41:39 lha Exp $
+// $Id: Display.cc,v 1.111 2003/06/12 19:14:34 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -434,12 +434,17 @@ Display::setVariables(int pageNumber, List *matches)
 	nPages = 1;			// We always have at least one page...
     vars.Add("MATCHES_PER_PAGE", new String(config->Find("matches_per_page")));
     vars.Add("MAX_STARS", new String(config->Find("max_stars")));
+#ifdef CONFIG_HACK
     // Remove components of config file name which are added back by htsearch
     // Should check that they are there, but this will do for now...
+    // (Actually, no, it won't...  --  fixed in htcommon/defaults.cc)
     i = strlen(CONFIG_DIR);
     tmp = config->Find("config");
     tmp = tmp.sub(i, tmp.length() - i - strlen (".conf"));
     vars.Add("CONFIG",    new String(tmp));
+#else
+    vars.Add("CONFIG", new String(config->Find("config")));
+#endif
     vars.Add("VERSION", new String(config->Find("version")));
     vars.Add("RESTRICT", new String(config->Find("restrict")));
     vars.Add("EXCLUDE", new String(config->Find("exclude")));
