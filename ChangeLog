@@ -1,3 +1,26 @@
+Sat Sep  9 21:28:29 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Document.cc (getParsable): Fix a bug with earlier
+	change--if no parser is found and the MIME type is not text/* then
+	return a NULL parser.
+
+	* htdig/Retriever.cc (RetrievedDocument): If a NULL parser is
+	returned, mark the document as noindex and move on.
+
+	* configure.in, configure (enable-tests): Fix bug that would run 
+	the 'yes' program inside the configure script if --enable-tests 
+	was set.
+
+Sat Sep  9 17:50:11 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Add "all" program listing for common
+	attributes--seems more logical esp. now with many httool programs.
+
+	* htdoc/cf_generate.pl (cf_byprog): Do not output a link when
+	'prog' is 'all.'
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
 Sat Sep  9 11:44:47 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* aclocal.m4 (AM_CHECK_YACC): New macro to check for bison/yacc
@@ -86,7 +109,7 @@ Fri Sep 01 19:05:02 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
 Thu Sep 01 12:00:00 2000  Toivo Pedaste <toivo@ucs.uwa.edu.au>
 
 	* htdig/Retriever.cc: Allow for modify time being set to
-	current time if not available
+	current time if not available.
 
 Thu Aug 31 13:21:12 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
@@ -580,7 +603,7 @@ Sun May 07 00:54:30 2000  Loic Dachary  <loic@senga.org>
 
 Sat May 06 21:55:58 2000  Loic Dachary  <loic@senga.org>
 
-	* test: import regression tests from mifluz
+	* test/: import regression tests from mifluz
 	
 	* htlib/DB2_db.cc (db_init): fix flags used when creating the
 	  environment to include a memory pool.
@@ -600,7 +623,8 @@ Sat May 06 02:01:40 2000  Loic Dachary  <loic@senga.org>
 
 	* htdb/*: upgrade to Berkeley DB 3.0.55. Very different.
 
-	* htlib/getcwd.c,memcmp.c,memcpy.c,memmove.c,raise.c,snprintf.c,strerror.c,vsnprintf.c,clib.h: Add compatibility support
+	* htlib/getcwd.c,memcmp.c,memcpy.c,memmove.c,raise.c,snprintf.c,
+	strerror.c,vsnprintf.c,clib.h: Add compatibility support
 
 	* htcommon/DocumentDB.cc (LoadDB): remove unused variable
 
