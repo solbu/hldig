@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.112 2004/06/12 13:39:12 lha Exp $
+// $Id: defaults.cc,v 1.113 2004/06/19 01:18:55 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1497,17 +1497,17 @@ http://www.htdig.org/", " \
 	this value determines the maximum number of stars that \
 	can be displayed. \
 " }, \
-{ "maximum_page_buttons", "${maximum_pages}",  \
-	"integer", "htsearch", "", "3.2.0b3", "Presentation:How", "maximum_page_buttons: 20", " \
+{ "maximum_page_buttons", "10",  \
+	"integer", "htsearch", "", "3.2.0b3", "Presentation:How", "maximum_page_buttons: ${maximum_pages}", " \
 	This value limits the number of page links that will be \
 	included in the page list at the bottom of the search \
-	results page. By default, it takes on the value of the \
-	<a href=\"#maximum_pages\">maximum_pages</a> \
-	attribute, but you can set it to something lower to allow \
-	more pages than buttons. In this case, pages above this \
-	number will have no corresponding button. \
+	results page. If there are more pages than buttons, the actual \
+	page links will be a sliding window centred around the current \
+	page. If icons are provided by \
+	<a href=\"page_number_text\">page_number_text</a>, then the maximum \
+	number of icons may limit the number of buttons actually displayed. \
 " }, \
-{ "maximum_pages", "10",  \
+{ "maximum_pages", "10000",  \
 	"integer", "htsearch", "", "all", "Presentation:How", "maximum_pages: 20", " \
 	This value limits the number of page links that will be \
 	included in the page list at the bottom of the search \
@@ -1629,7 +1629,7 @@ http://www.htdig.org/", " \
 	<a href=\"#search_results_footer\">search_results_footer</a> \
 	file, when all search results fit on a single page. \
 " }, \
-{ "no_page_number_text", "",  \
+{ "no_page_number_text", "\"<strong>%d</strong>\"",  \
 	"quoted string list", "htsearch", "", "3.0", "Presentation:Text", "no_page_number_text: \
 				  &lt;strong&gt;1&lt;/strong&gt; &lt;strong&gt;2&lt;/strong&gt; \\<br> \
 				  &lt;strong&gt;3&lt;/strong&gt; &lt;strong&gt;4&lt;/strong&gt; \\<br> \
@@ -1637,22 +1637,7 @@ http://www.htdig.org/", " \
 				  &lt;strong&gt;7&lt;/strong&gt; &lt;strong&gt;8&lt;/strong&gt; \\<br> \
 				  &lt;strong&gt;9&lt;/strong&gt; &lt;strong&gt;10&lt;/strong&gt; \
 ", " \
-	The text strings in this list will be used when putting \
-	together the PAGELIST variable, for use in templates or \
-	the <a href=\"#search_results_footer\">search_results_footer</a> \
-	file, when search results fit on more than page. The PAGELIST \
-	is the list of links at the bottom of the search results page. \
-	There should be as many strings in the list as there are \
-	pages allowed by the <a href=\"#maximum_page_buttons\">maximum_page_buttons</a> \
-	attribute. If there are not enough, or the list is empty, \
-	the page numbers alone will be used as the text for the links. \
-	An entry from this list is used for the current page, as the \
-	current page is shown in the page list without a hypertext link, \
-	while entries from the <a href=\"#page_number_text\"> \
-	page_number_text</a> list are used for the links to other pages. \
-	The text strings can contain HTML tags to highlight page numbers \
-	or embed images. The strings need to be quoted if they contain \
-	spaces. \
+	See <a href=\"#page_number_text\">page_number_text</a>. \
 " }, \
 { "no_prev_page_text", "${prev_page_text}",  \
 	"string", "htsearch", "", "3.0", "Presentation:Text", "no_prev_page_text:", " \
@@ -1737,7 +1722,7 @@ http://www.htdig.org/", " \
 	used. The text strings can contain HTML tags. The strings need \
 	to be quoted if they contain spaces, or to specify an empty string. \
 " }, \
-{ "page_number_text", "",  \
+{ "page_number_text", "\"<em>%d</em>\" 1000",  \
 	"quoted string list", "htsearch", "", "3.0", "Presentation:Text", "page_number_text: \
 				  &lt;em&gt;1&lt;/em&gt; &lt;em&gt;2&lt;/em&gt; \\<br> \
 				  &lt;em&gt;3&lt;/em&gt; &lt;em&gt;4&lt;/em&gt; \\<br> \
@@ -1749,11 +1734,23 @@ http://www.htdig.org/", " \
 	together the PAGELIST variable, for use in templates or \
 	the <a href=\"#search_results_footer\">search_results_footer</a> \
 	file, when search results fit on more than page. The PAGELIST \
-	is the list of links at the bottom of the search results page. \
-	There should be as many strings in the list as there are \
-	pages allowed by the <a href=\"#maximum_page_buttons\">maximum_page_buttons</a> \
-	attribute. If there are not enough, or the list is empty, \
-	the page numbers alone will be used as the text for the links. \
+	is the list of links at the bottom of the search results page. <br> \
+	As of 3.2.0rc1, the usual form is a list of one, two or three strings. \
+	<ul>\
+	<li> The first string contains a template with \"%d\" as a place-holder\
+	for the page number.  (One to four such place-holders can be used.) \
+	This template will typically be an &lt;img&gt; tag, with a different \
+	image for each page.</li>\
+	<li> The second string (an integer) specifies the number of such \
+	images available to be used. </li> \
+	<li> The third parameter specifies an alternative template to be used \
+	for page numbers larger than the second parameter.  If this is not \
+	specified, plain text is used. </li> \
+	</ul> \
+	Alternatively, and for previous versions of ht://Dig, there can be a \
+	list of explicit strings to be used \
+	as text for the links.  If there are not enough, or the list is empty, \
+	the page numbers alone will be used as the text for the links. <br> \
 	Entries from this list are used for the links to other pages, \
 	while an entry from the <a href=\"#no_page_number_text\"> \
 	no_page_number_text</a> list is used for the current page, as the \

@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Display.h,v 1.27 2004/05/28 13:15:24 lha Exp $
+// $Id: Display.h,v 1.28 2004/06/19 01:18:55 lha Exp $
 //
 
 #ifndef _Display_h_
@@ -177,6 +177,7 @@ protected:
     String		*generateStars(DocumentRef *, int);
     void		displayParsedFile(const String&);
     void		setVariables(int, List *);
+    void		setPages(int, int);
     void		createURL(String &, int);
     void		logSearch(int, List *);
 };

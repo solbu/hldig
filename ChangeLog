@@ -1,5 +1,12 @@
 Sat 19 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
 
+    * htsearch/Display.{cc,h}, htcommon/defaults.cc, htdoc/attrs.html.in,
+      installdir/htdig.conf:
+      Provide scrolling list of page numbers.
+      Implements RFE #601177, #600959, #405679
+
+Sat 19 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
+
     * htsearch/htsearch.cc (setupWords), htsearch/parser.cc (phrase):
       Don't treat boolean_keywords in phrases as special.
       With patch of 11 June, no endless loop, but searches fail.

@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Display.cc,v 1.122 2004/05/28 13:15:24 lha Exp $
+// $Id: Display.cc,v 1.123 2004/06/19 01:18:55 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -428,61 +428,204 @@ Display::displayMatch(ResultMatch *match, DocumentRef *ref, int current)
 }
 
 //*****************************************************************************
+// If a paged output is required, set variables for
+// prev-page, page list, next-page
+void
+Display::setPages(int pageNumber, int nPages)
+{
+	HtConfiguration* config= HtConfiguration::config();
+    String	tmp, *str;
+    int		i;
+
+    if (nPages > 1)
+    {
+	//
+	// Set prev-page and next-page
+	//
+	if (pageNumber > 1)
+	{
+	    str = new String("<a href=\"");
+	    tmp = 0;
+	    createURL(tmp, pageNumber - 1);
+	    *str << tmp << "\">" << config->Find("prev_page_text") << "</a>";
+	}
+	else
+	{
+	    str = new String(config->Find("no_prev_page_text"));
+	}
+	vars.Add("PREVPAGE", str);
+		
+	if (pageNumber < nPages)
+	{
+	    str = new String("<a href=\"");
+	    tmp = 0;
+	    createURL(tmp, pageNumber + 1);
+	    *str << tmp << "\">" << config->Find("next_page_text") << "</a>";
+	}
+	else
+	{
+	    str = new String(config->Find("no_next_page_text"));
+	}
+	vars.Add("NEXTPAGE", str);
+
+	//
+	// If  (no_)page_number_text  is a list of one or two strongs,
+	// and the first contains "%d", then assume the first is a
+	// template for  N  images, where  N  is either unlimited or the
+	// value of the second string.  The page number will be substitued for
+	// the first four "%d"s in the template.  Subsequent "%d"s will contain
+	// junk.
+	// If either is a template, both must be, for the same number of images.
+	//
+	QuotedStringList pnt (config->Find(   "page_number_text"),  " \t\r\n");
+	QuotedStringList npnt(config->Find("no_page_number_text"),  " \t\r\n");
+	QuotedStringList sep (config->Find("page_number_separator")," \t\r\n");
+	bool icon_template = false;
+
+	// default string if not enough icons.  "%d" for compatibility...
+	char *textNumbers [2] = { "%d", "%d" };
+
+	int numIcons = pnt.Count();
+	// if new format ( template [ count [ template-beyond-icons ] ] )
+	if (npnt.Count() <= 3 && strstr (npnt[0],"%d") &&
+	     pnt.Count() <= 3 && strstr ( pnt[0],"%d"))
+	{
+	    icon_template = true;
+	    numIcons = nPages;
+	    	// how many icons available?
+	    if (npnt.Count() >= 2) numIcons = atoi (npnt[1]);
+	    if ( pnt.Count() >= 2) numIcons = atoi ( pnt[1]);
+	    	// when icons exhausted, what text do we use?
+	    if (npnt.Count() == 3) textNumbers [0] = npnt[2];
+	    if ( pnt.Count() == 3) textNumbers [1] =  pnt[2];
+	} else if (npnt.Count() < numIcons)
+	    numIcons = npnt.Count();
+
+	//
+	// Determine scrolling window of page links
+	//
+	int maxButtons = config->Value("maximum_page_buttons", 10);
+	int first = 1, last = nPages;
+	bool useImages = true;
+
+	// if current page half way through initial display, scroll it to middle
+	if (pageNumber >  maxButtons/2)
+	{
+	    last =  nPages < pageNumber + maxButtons/2
+		  ? nPages : pageNumber + maxButtons/2;
+	} else if (nPages > maxButtons)
+	    last = maxButtons;
+
+	// If not enough page number icons, use text for all of them
+	if (last > numIcons)
+	    if (pageNumber <= numIcons)
+		last = numIcons;
+	    else
+		useImages = false;
+
+	// Now  last  is fixed, set  first = max (1, last + 1 - maxButtons);
+	first = last > maxButtons ? last - maxButtons + 1 : 1;
+
+	//
+	// Now create the links
+	//
+	char	*p;
+	str = new String;
+
+	for (i = first; i <= last; i++)
+	{
+	    // Generate icon/text for link  i
+	    if (useImages)
+	    {
+		QuotedStringList &icons = (i == pageNumber) ? npnt : pnt;
+		if (icon_template)
+		{
+		    // template may have up to four "%d"s, so repeat pg number
+		    // WARNING: if config writer uses more than four %d's,
+		    // this may expose the stack.  We must trust the config
+		    // writer.
+		    p = form (icons[0], i, i, i, i);
+		} else
+		    p = icons[i - 1];
+	    }
+	    else	// Same WARNING as above
+		p = form(textNumbers[ i != pageNumber ], i, i, i, i);
+
+	    // Put hyperlink from all icons except current page
+	    if (i == pageNumber)
+		*str << p;
+	    else
+	    {
+		tmp = 0;
+		createURL(tmp, i);
+		*str << "<a href=\"" << tmp << "\">" << p << "</a>";
+	    }
+	    if (i != last)
+		if (sep.Count() > 0)
+		    *str << sep[(i-1)%sep.Count()];
+		else
+		    *str << " ";
+	}
+	vars.Add("PAGELIST", str);
+    }
+}
+
+
+//*****************************************************************************
 void
 Display::setVariables(int pageNumber, List *matches)
 {
 	HtConfiguration* config= HtConfiguration::config();
     String	tmp;
     int		i;
-    int		nMatches = 0;
-
-    if (matches)
-	nMatches = matches->Count();
-	
+    int		nMatches = matches ? matches->Count() : 0;
     int		matchesPerPage = config->Value("matches_per_page");
     if (matchesPerPage <= 0)
 	matchesPerPage = 10;
     int		nPages = (nMatches + matchesPerPage - 1) / matchesPerPage;
 
-    if (nPages > config->Value("maximum_pages", 10))
-	nPages = config->Value("maximum_pages", 10);
+    int maxPages = config->Value("maximum_pages", 10);
+    if (nPages > maxPages)
+	nPages = maxPages;
     if (nPages < 1)
 	nPages = 1;			// We always have at least one page...
+
+    setPages (pageNumber, nPages);
+
     vars.Add("MATCHES_PER_PAGE", new String(config->Find("matches_per_page")));
-    vars.Add("MAX_STARS", new String(config->Find("max_stars")));
-    vars.Add("CONFIG", new String(config->Find("config")));
-    vars.Add("VERSION", new String(config->Find("version")));
-    vars.Add("RESTRICT", new String(config->Find("restrict")));
-    vars.Add("EXCLUDE", new String(config->Find("exclude")));
-    vars.Add("KEYWORDS", new String(config->Find("keywords")));
-    vars.Add("MATCHES", new String(form("%d", nMatches)));
-    vars.Add("PLURAL_MATCHES", new String((nMatches == 1) ? (char *)"" :  (const char *) config->Find("plural_suffix")));
-    vars.Add("PAGE", new String(form("%d", pageNumber)));
-    vars.Add("PAGES", new String(form("%d", nPages)));
-    vars.Add("FIRSTDISPLAYED",
-		 new String(form("%d", (pageNumber - 1) *
-				 matchesPerPage + 1)));
-    if (nPages > 1)
-	vars.Add("PAGEHEADER", new String(config->Find("page_list_header")));
-    else
-	vars.Add("PAGEHEADER", new String(config->Find("no_page_list_header")));
-	
+    vars.Add("MAX_STARS",        new String(config->Find("max_stars")));
+    vars.Add("CONFIG",           new String(config->Find("config")));
+    vars.Add("VERSION",          new String(config->Find("version")));
+    vars.Add("RESTRICT",         new String(config->Find("restrict")));
+    vars.Add("EXCLUDE",          new String(config->Find("exclude")));
+    vars.Add("KEYWORDS",         new String(config->Find("keywords")));
+    vars.Add("MATCHES",          new String(form("%d", nMatches)));
+    vars.Add("PLURAL_MATCHES",   new String((nMatches == 1)
+			    ? (const char *)""
+			    : (const char *)config->Find("plural_suffix")));
+    vars.Add("PAGE",             new String(form("%d", pageNumber)));
+    vars.Add("PAGES",            new String(form("%d", nPages)));
+
+    vars.Add("PAGEHEADER",       new String(config->Find(
+		(nPages > 1) ? "page_list_header" : "no_page_list_header")));
+
     i = pageNumber * matchesPerPage;
     if (i > nMatches)
 	i = nMatches;
-    vars.Add("LASTDISPLAYED", new String(form("%d", i)));
+    vars.Add("FIRSTDISPLAYED",   new String(form("%d", (pageNumber - 1) *
+						     matchesPerPage + 1)));
+    vars.Add("LASTDISPLAYED",    new String(form("%d", i)));
 
-    if (config->Find("script_name").length() != 0) {
-      vars.Add("CGI", new String(config->Find("script_name")));
-    } else {
-      vars.Add("CGI", new String(getenv("SCRIPT_NAME")));
-    }
-    vars.Add("STARTYEAR", new String(config->Find("startyear")));
+    tmp = config->Find("script_name"); 
+    vars.Add("CGI", new String((tmp.length() != 0) ? tmp.get()
+						   : getenv("SCRIPT_NAME")));
+
+    vars.Add("STARTYEAR",  new String(config->Find("startyear")));
     vars.Add("STARTMONTH", new String(config->Find("startmonth")));
-    vars.Add("STARTDAY", new String(config->Find("startday")));
-    vars.Add("ENDYEAR", new String(config->Find("endyear")));
-    vars.Add("ENDMONTH", new String(config->Find("endmonth")));
-    vars.Add("ENDDAY", new String(config->Find("endday")));
+    vars.Add("STARTDAY",   new String(config->Find("startday")));
+    vars.Add("ENDYEAR",    new String(config->Find("endyear")));
+    vars.Add("ENDMONTH",   new String(config->Find("endmonth")));
+    vars.Add("ENDDAY",     new String(config->Find("endday")));
 	
     String	*str;
     char	*format = input->get("format");
@@ -689,70 +832,6 @@ Display::setVariables(int pageNumber, List *matches)
 	}
     }
 	
-    //
-    // If a paged output is required, set the appropriate variables
-    //
-    if (nPages > 1)
-    {
-	if (pageNumber > 1)
-	{
-	    str = new String("<a href=\"");
-	    tmp = 0;
-	    createURL(tmp, pageNumber - 1);
-	    *str << tmp << "\">" << config->Find("prev_page_text") << "</a>";
-	}
-	else
-	{
-	    str = new String(config->Find("no_prev_page_text"));
-	}
-	vars.Add("PREVPAGE", str);
-		
-	if (pageNumber < nPages)
-	{
-	    str = new String("<a href=\"");
-	    tmp = 0;
-	    createURL(tmp, pageNumber + 1);
-	    *str << tmp << "\">" << config->Find("next_page_text") << "</a>";
-	}
-	else
-	{
-	    str = new String(config->Find("no_next_page_text"));
-	}
-	vars.Add("NEXTPAGE", str);
-
-	str = new String();
-	char	*p;
-	QuotedStringList	pnt(config->Find("page_number_text"), " \t\r\n");
-	QuotedStringList	npnt(config->Find("no_page_number_text"), " \t\r\n");
-	QuotedStringList	sep(config->Find("page_number_separator"), " \t\r\n");
-	if (nPages > config->Value("maximum_page_buttons", 10))
-	    nPages = config->Value("maximum_page_buttons", 10);
-	for (i = 1; i <= nPages; i++)
-	{
-	    if (i == pageNumber)
-	    {
-		p = npnt[i - 1];
-		if (!p)
-		    p = form("%d", i);
-		*str << p;
-	    }
-	    else
-	    {
-		p = pnt[i - 1];
-		if (!p)
-		    p = form("%d", i);
-		*str << "<a href=\"";
-		tmp = 0;
-		createURL(tmp, i);
-		*str << tmp << "\">" << p << "</a>";
-	    }
-	    if (i != nPages && sep.Count() > 0)
-		*str << sep[(i-1)%sep.Count()];
-	    else if (i != nPages && sep.Count() <= 0)
-	      *str << " ";
-	}
-	vars.Add("PAGELIST", str);
-    }
     StringList form_vars(config->Find("allow_in_form"), " \t\r\n");
     String* key;
     for (i= 0; i < form_vars.Count(); i++)
