@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Accents.cc,v 1.1.2.1 2000/02/29 20:39:18 grdetil Exp $
+// $Id: Accents.cc,v 1.1.2.2 2000/02/29 21:18:39 grdetil Exp $
 //
 
 #include "Configuration.h"
@@ -85,16 +85,16 @@ Accents::~Accents()
 }
 
 //*****************************************************************************
-// int Accents::writeDB(Configuration &config)
+// int Accents::writeDB()
 //
 int
-Accents::writeDB(Configuration &config)
+Accents::writeDB()
 {
     String      var = name;
     var << "_db";
     String      filename = config[var];
 
-    index = Database::getDatabaseInstance();
+    index = Database::getDatabaseInstance(DB_HASH);
     if (index->OpenReadWrite(filename, 0664) == NOTOK)
         return NOTOK;
 

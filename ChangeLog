@@ -1,3 +1,7 @@
+Tue Feb 29 15:09:41 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Accents.h, htfuzzy/Accents.cc: Adapted writeDB() for 3.2.
+
 Tue Feb 29 14:29:37 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htfuzzy/Accents.h, htfuzzy/Accents.cc: Added these, as contributed
