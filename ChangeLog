@@ -1,3 +1,11 @@
+Fri Jun 15 17:33:46 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Added entry for
+	accents_db attribute for htfuzzy and htsearch. Mentioned accents
+	algorithm in description of search_algorithm. Noted effect of
+	locale setting on floating point numbers in search_algorithm
+	and locale descriptions.
+
 Fri Jun 15 16:47:09 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htfuzzy/Accents.{h,cc}, htfuzzy/Fuzzy.c (getFuzzyByName),
