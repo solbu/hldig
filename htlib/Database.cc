@@ -4,6 +4,9 @@
 // Implementation of Database
 //
 // $Log: Database.cc,v $
+// Revision 1.3  1998/06/21 23:20:06  turtle
+// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
+//
 // Revision 1.2  1998/05/26 03:58:07  turtle
 // Got rid of compiler warnings.
 //
@@ -12,11 +15,11 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Database.cc,v 1.2 1998/05/26 03:58:07 turtle Exp $";
+static char RCSid[] = "$Id: Database.cc,v 1.3 1998/06/21 23:20:06 turtle Exp $";
 #endif
 
 #include "Database.h"
-#include "GDBM_db.h"
+#include "DB2_db.h"
 
 //*****************************************************************************
 // Database::Database()
@@ -102,7 +105,7 @@ Database::Delete(char *key)
 Database *
 Database::getDatabaseInstance()
 {
-    return GDBM_db::getDatabaseInstance();
+    return DB2_db::getDatabaseInstance();
 }
 
 

@@ -4,6 +4,9 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.4  1998/06/21 23:20:10  turtle
+// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
+//
 // Revision 1.3  1998/04/03 17:10:44  turtle
 // Patch to make excludes work
 //
@@ -15,7 +18,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.3 1998/04/03 17:10:44 turtle Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.4 1998/06/21 23:20:10 turtle Exp $";
 #endif
 
 #include "htsearch.h"
@@ -62,6 +65,7 @@ Display::Display(char *indexFile, char *docFile)
 //*****************************************************************************
 Display::~Display()
 {
+    delete docIndex;
 }
 
 //*****************************************************************************
@@ -128,6 +132,8 @@ Display::display(int pageNumber)
 	expandVariables(currentTemplate->getEndTemplate());
     }
     displayFooter();
+
+    delete matches;
 }
 
 //*****************************************************************************
@@ -826,7 +832,7 @@ Display::sort(List *matches)
     {
 	matches->Add(array[i]);
     }
-    delete array;
+    delete [] array;
 }
 
 //*****************************************************************************

@@ -4,6 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.4  1998/06/21 23:20:01  turtle
+// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
+//
 // Revision 1.3  1997/07/03 17:44:38  turtle
 // Added support for virtual hosts
 //
@@ -15,7 +18,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.3 1997/07/03 17:44:38 turtle Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.4 1998/06/21 23:20:01 turtle Exp $";
 #endif
 
 #include <Configuration.h>
@@ -74,11 +77,13 @@ ConfigDefaults	defaults[] =
     {"max_doc_size",			"100000"},
     {"max_head_length",			"512"},
     {"max_hop_count",			"999999"},
+    {"max_prefix_matches",		"1000"},
     {"max_stars",			"4"},
     {"maximum_pages",			"10"},
     {"metaphone_db",			"${database_base}.metaphone.gdbm"},
     {"method_names",			"and All or Any boolean Boolean"},
     {"minimum_word_length",		"3"},
+    {"minimum_prefix_length",		"1"},
     {"next_page_text",			"[next]"},
     {"no_excerpt_text",			"<em>(None of the search words were found in the top of this document.)</em>"},
     {"no_next_page_text",		"[next]"},
@@ -86,6 +91,7 @@ ConfigDefaults	defaults[] =
     {"no_prev_page_text",		"[prev]"},
     {"nothing_found_file",		"${common_dir}/nomatch.html"},
     {"page_list_header",		"<hr noshade size=2>Pages:<br>"},
+    {"prefix_match_character",		"*"},
     {"prev_page_text",			"[prev]"},
     {"remove_bad_urls",			"true"},
     {"robotstxt_name",			"htdig"},
@@ -109,7 +115,7 @@ ConfigDefaults	defaults[] =
     {"title_factor",			"100"},
     {"url_list",			"${database_base}.urls"},
     {"use_star_image",			"true"},
-    {"valid_punctuation",		".-_/!#$%^&*'"},
+    {"valid_punctuation",		".-_/!#$%^&'"},
     {"version",				HTDIG_VERSION},
     {"word_db",				"${database_base}.words.gdbm"},
     {"word_list",			"${database_base}.wordlist"},

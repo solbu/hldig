@@ -4,12 +4,15 @@
 // Implementation of Fuzzy
 //
 // $Log: Fuzzy.cc,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Revision 1.2  1998/06/21 23:20:02  turtle
+// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
+//
+// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.1 1997/02/03 17:11:12 turtle Exp $";
+static char RCSid[] = "$Id: Fuzzy.cc,v 1.2 1998/06/21 23:20:02 turtle Exp $";
 #endif
 
 #include "Fuzzy.h"
@@ -23,6 +26,7 @@ static char RCSid[] = "$Id: Fuzzy.cc,v 1.1 1997/02/03 17:11:12 turtle Exp $";
 #include "Soundex.h"
 #include "Synonym.h"
 #include "Substring.h"
+#include "Prefix.h"
 
 
 //*****************************************************************************
@@ -169,6 +173,8 @@ Fuzzy::getFuzzyByName(char *name)
 	return new Synonym();
     else if (mystrcasecmp(name, "substring") == 0)
 	return new Substring();
+    else if (mystrcasecmp(name, "prefix") == 0)
+	return new Prefix();
     else
 	return 0;
 }

@@ -73,6 +73,9 @@ AC_SUBST(HTDIG_TOP)
 GDBM_DIR=`echo gdbm*`
 AC_SUBST(GDBM_DIR)
 
+DB_DIR=`echo db-*/build.unix`
+AC_SUBST(DB_DIR)
+
 RX_DIR=`echo rx*`
 AC_SUBST(RX_DIR)
 
@@ -97,6 +100,12 @@ echo ""
 echo "Configuring GNU GDBM"
 (cd gdbm*; ./configure)
 echo "GDBM Configuration complete"
+echo ""
+
+echo ""
+echo "Configuring Berkeley DBM"
+(cd db-*/build.unix; ../dist/configure)
+echo "Berkeley DBM Configuration complete"
 echo ""
 
 AC_PATH_PROG(TSORT, tsort)

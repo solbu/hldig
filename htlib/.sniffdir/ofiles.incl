@@ -1,5 +1,5 @@
 OFILES = Configuration.o Connection.o Database.o \
-		Dictionary.o GDBM_db.o \
+		Dictionary.o DB2_db.o \
 		IntObject.o List.o Object.o \
 		ParsedString.o Queue.o QuotedStringList.o \
 		SDSU.o Stack.o String.o \

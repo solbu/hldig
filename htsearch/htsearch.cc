@@ -4,6 +4,9 @@
 // Implementation of htsearch
 //
 // $Log: htsearch.cc,v $
+// Revision 1.6  1998/06/21 23:20:12  turtle
+// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
+//
 // Revision 1.5  1997/04/27 14:43:30  turtle
 // changes
 //
@@ -25,7 +28,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.5 1997/04/27 14:43:30 turtle Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.6 1998/06/21 23:20:12 turtle Exp $";
 #endif
 
 #include "htsearch.h"
@@ -75,6 +78,7 @@ main(int ac, char **av)
 
     if (ac > 1 && strcmp(av[1], "-d") == 0)
 	debug = 1;
+    // Hier staat in de patch een toewijzing naar een niet bestaande config file...
     
     //
     // The total search can NEVER take more than 5 minutes.
@@ -199,6 +203,7 @@ main(int ac, char **av)
     }
 
     Display	display(index, doc_db);
+    display.setOriginalWords(originalWords);
     display.setResults(results);
     display.setSearchWords(&searchWords);
     display.setLimit(&limit_to);
@@ -206,7 +211,6 @@ main(int ac, char **av)
     display.setAllWordsPattern(&searchWordsPattern);
     display.setCGI(&input);
     display.setLogicalWords(logicalWords);
-    display.setOriginalWords(originalWords);
     if (parser->hadError())
 	display.displaySyntaxError(parser->getErrorMessage());
     else
@@ -336,6 +340,8 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
     unsigned char	*pos = (unsigned char*) allWords;
     unsigned char	t;
     String		word;
+    // Why use a char type if String is the new char type!!!
+    char		*prefix_suffix = config["prefix_match_character"];
     while (*pos)
     {
 	while (1)
@@ -354,11 +360,11 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
 		break;
 	    }
 	    else if (isalnum(t) || strchr(valid_punctuation, t) || t == ':' ||
-		     (t >= 161 && t <= 255))
+			 (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255))
 	    {
 		word = 0;
 		while (t && (isalnum(t) || strchr(valid_punctuation, t) ||
-			     t == ':' || (t >= 161 && t <= 255)))
+			     t == ':' || (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255)))
 		{
 		    word << (char) t;
 		    t = *pos++;
@@ -488,6 +494,10 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
 	dumpWords(searchWords, "searchWords");
     }
     tempWords.Release();
+    // Does the next thing work??
+//    algorithms.Start_Get();
+//    while ((fuzzy = (Fuzzy *) algorithms.Get_Next()))
+//	delete fuzzy;
 }
 
 

@@ -4,6 +4,9 @@
 // Implementation of newclass
 //
 // $Log: docs.cc,v $
+// Revision 1.4  1998/06/21 23:20:09  turtle
+// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
+//
 // Revision 1.3  1998/01/05 05:43:23  turtle
 // format changes
 //
@@ -52,6 +55,7 @@ convertDocs(char *doc_db, char *doc_index)
     while (url = (String *) urls->Get_Next())
     {
 	DocumentRef	*ref = db[url->get()];
+	// moet eigenlijk wat tussen, maar heb ik niet gedaan....
 	if (!ref)
 	    continue;
 	id = 0;

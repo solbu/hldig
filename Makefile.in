@@ -1,6 +1,6 @@
 include @HTDIG_TOP@/Makefile.config
 
-DIRS=		@GDBM_DIR@ @RX_DIR@ \
+DIRS=		@GDBM_DIR@ @DB_DIR@ @RX_DIR@ \
 		htlib htcommon htfuzzy htdig \
 		htsearch htmerge htnotify
 INSTALLDIRS=	htfuzzy htdig \

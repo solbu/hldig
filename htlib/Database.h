@@ -3,9 +3,12 @@
 //
 // This is a class which defines the interface to a generic, simple database.
 //
-// $Id: Database.h,v 1.2 1997/03/24 04:33:19 turtle Exp $
+// $Id: Database.h,v 1.3 1998/06/21 23:20:07 turtle Exp $
 //
 // $Log: Database.h,v $
+// Revision 1.3  1998/06/21 23:20:07  turtle
+// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
+//
 // Revision 1.2  1997/03/24 04:33:19  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -57,6 +60,8 @@ public:
 
     virtual void	Start_Get() = 0;
     virtual char	*Get_Next() = 0;
+    virtual void	Start_Seq(char *str) = 0;
+    virtual char	*Get_Next_Seq() = 0;
 };
 
 #endif

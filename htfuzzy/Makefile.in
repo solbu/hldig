@@ -3,7 +3,7 @@ include .sniffdir/ofiles.incl
 
 OBJS=		$(OFILES)
 LIBOBJS=	Endings.o Exact.o Fuzzy.o Metaphone.o \
-		Soundex.o Synonym.o EndingsDB.o SuffixEntry.o Substring.o
+		Soundex.o Synonym.o EndingsDB.o SuffixEntry.o Substring.o Prefix.o
 
 TARGET=		htfuzzy
 LIBTARGET=	libfuzzy.a
