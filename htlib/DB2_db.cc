@@ -4,7 +4,7 @@
 // Implementation of DB2_db
 //
 #if RELEASE
-static char RCSid[] = "$Id: DB2_db.cc,v 1.9 1999/03/08 00:55:14 hp Exp $";
+static char RCSid[] = "$Id: DB2_db.cc,v 1.10 1999/07/15 02:04:40 ghutchis Exp $";
 #endif
 
 #include "DB2_db.h"
@@ -53,7 +53,8 @@ DB2_db::OpenReadWrite(char *filename, int mode)
     dbenv = db_init((char *)NULL);
     memset(&dbinfo, 0, sizeof(dbinfo));
 //    dbinfo.db_cachesize = CACHE_SIZE_IN_KB * 1024;	// Cachesize: 64K.
-    dbinfo.db_pagesize = 1024;      			// Page size: 1K.
+//    dbinfo.db_pagesize = 1024;      			// Page size: 1K.
+    dbinfo.flags = DB_DUP;
 
     //
     // Create the database.
@@ -96,7 +97,8 @@ DB2_db::OpenRead(char *filename)
     dbenv = db_init((char *)NULL);
     memset(&dbinfo, 0, sizeof(dbinfo));
 //    dbinfo.db_cachesize = CACHE_SIZE_IN_KB * 1024;	// Cachesize: 64K.
-    dbinfo.db_pagesize = 1024;				// Page size: 1K.
+//    dbinfo.db_pagesize = 1024;			// Page size: 1K.
+    dbinfo.flags = DB_DUP;
 
     //
     // Open the database.
