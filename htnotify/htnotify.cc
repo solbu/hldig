@@ -5,15 +5,21 @@
 //           Send e-mail to addresses mentioned in documents if the doc
 //           has "expired"
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.22 1999/09/08 17:20:32 loic Exp $";
-#endif
+// $Id: htnotify.cc,v 1.23 1999/09/10 16:34:31 ghutchis Exp $
+//
 
 #include "Configuration.h"
 #include "DocumentDB.h"
 #include "DocumentRef.h"
 #include "defaults.h"
+#include "HtURLCodec.h"
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
@@ -21,7 +27,6 @@ static char RCSid[] = "$Id: htnotify.cc,v 1.22 1999/09/08 17:20:32 loic Exp $";
 #include <time.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "HtURLCodec.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H

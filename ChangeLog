@@ -1,3 +1,7 @@
+Fri Sep 10 11:33:50 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+ 	* htnotify/htnotify.cc: Add copyright information.
+
 Fri Sep 10 15:24:44 1999  Loic Dachary  <loic@ceic.com>
 
 	* htdig/Retriever.cc: change static WordList words to
@@ -24,6 +28,13 @@ Fri Sep 10 13:45:53 1999  Loic Dachary  <loic@ceic.com>
 
 	* htdoc/attrs.html,cf_byprog.html,cf_byname.html: added doc
 	  for word_dump
+
+Thu Sep  9 20:30:18 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htfuzzy/Fuzzy.h, htfuzzy/Fuzzy.cc, htfuzzy/Prefix.cc,
+	htfuzzy/Regex.cc, htfuzzy/Speling.cc, htfuzzy/Substring.cc,
+	htfuzzy/htfuzzy.cc, htfuzzy.h: Change to use WordList code instead
+	of direct access to the database.
 
 Thu Sep  9 14:55:59 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
