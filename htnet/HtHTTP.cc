@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.2 1999/10/14 14:28:44 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.3 1999/10/15 10:46:55 angus Exp $ 
 //
 
 #include "lib.h"
@@ -382,6 +382,30 @@ Transport::DocStatus HtHTTP::HTTPRequest()
       if ( debug > 6 )
          cout << "Contents:" << endl << _response.GetContents();
 
+      // Check if the stream returned by the server has not been completely read
+      
+      if (_response._document_length != _response._content_length)
+      {
+         // Max document size reached
+   
+         if (debug > 4)   
+            cout << "Max document size (" << GetRequestMaxDocumentSize()
+               << ") reached ";
+         
+         if (isPersistentConnectionUp())
+         {
+            if (debug > 4)   
+               cout << "- connection closed. ";
+         
+            CloseConnection();
+         }
+         
+         if (debug > 4)   
+            cout << endl;
+      }
+   
+
+
    }
    else if ( debug > 4 )
          cout << "Body not retrieved" << endl;
@@ -398,8 +422,26 @@ Transport::DocStatus HtHTTP::HTTPRequest()
       CloseConnection();
    }
    else
-	 if ( debug > 4 )
-	    cout << "Connection stays up ... (Persistent connection)" << endl;
+   {
+      // Persistent connection is active
+      
+      // If the document is not parsable and we asked for it with a 'GET'
+      // method, the stream's not been completely read.
+
+      if (DocumentStatus == Document_not_parsable && _Method == Method_GET)
+      {
+         // We have to close the connection.
+         if ( debug > 4 )
+            cout << "Connection must be closed (stream not completely read)"
+               << endl;
+
+         CloseConnection();
+
+      }
+      else
+         if ( debug > 4 )
+            cout << "Connection stays up ... (Persistent connection)" << endl;
+   }
 
 
    // Check the doc_status and return a value
@@ -508,7 +550,7 @@ void HtHTTP::SetRequestCommand(String &cmd)
 //
 int HtHTTP::ParseHeader()
 {
-    String	line;
+    String	line = 0;
     int		inHeader = 1;
 
     if (_response._modification_time)
@@ -518,7 +560,9 @@ int HtHTTP::ParseHeader()
     }
     while (inHeader)
     {
-   
+
+      line.trunc();
+         
       if(! _connection.read_line(line, "\n"))
          return -1;  // Connection down
 	 
@@ -915,22 +959,6 @@ int HtHTTP::ReadBody()
     // Set document length
     _response._document_length = _response._contents.length();
 
-   if (_response._document_length != _response._content_length)
-   {
-      if ( debug > 4 )
-         cout << "Max document size (" << GetRequestMaxDocumentSize()
-            << ") reached";
-      if (isPersistentConnectionUp())
-      {
-         if ( debug > 4 )
-            cout << " - connection flushed";
-            
-         FlushConnection();
-      }
-      
-      if ( debug > 4 )
-            cout << endl;
-   }
    return bytesRead;
    
 }
@@ -943,7 +971,7 @@ int HtHTTP::ReadChunkedBody()
     
    int            length = 0;  // initialize the length
    unsigned int   chunk_size;
-   String         ChunkHeader;
+   String         ChunkHeader = 0;
    char           buffer[8192];
    
    _response._contents.trunc();	// Initialize the string

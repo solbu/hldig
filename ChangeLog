@@ -1,10 +1,19 @@
+Fri Oct 15 12:35:51 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* HtHTTP.cc: managing of uncompleted stream reading with persistent
+	  connections (it occurs when max_doc_size is lower than the real
+	  content length of the document, or when a document is not parsable
+	  and we asked for it with a GET call).
+
+	* Transport: _host variable is treated as a String, as Loic suggested.
+
 Thu Oct 14 11:29:35 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/mktime.c, htlib/regex.c, htlib/regex.h, htlib/strptime.c:
 	Updated with latest glibc versions. Merging from glibc sources may
 	have introduced bugs, so this is the last merge before htdig-3.2.0b1.
 
-Thu Oct 13 13:09:32 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Thu Oct 14 13:09:32 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* htnet/Transport: added statistics for open and close of connections
 	  and changes of servers.

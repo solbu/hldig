@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.6.2.1 1999/10/14 11:17:00 angus Exp $
+// $Id: Transport.h,v 1.6.2.2 1999/10/15 10:46:56 angus Exp $
 //
 //
 
@@ -137,7 +137,7 @@ class Transport : public Object
 ///////
 
    // Set Connection parameters
-   virtual void SetConnection (char *host, int port);
+   virtual void SetConnection (const String &host, int port);
 
    // from a URL pointer
    virtual void SetConnection (URL *u)
@@ -163,7 +163,7 @@ class Transport : public Object
    int GetTimeOut () { return _timeout; }
 
    // Get the Connection Host
-   char *GetHost() { return _host; }
+   const String &GetHost() { return _host; }
 
    // Get the Connection Host
    int GetPort() { return _port; }

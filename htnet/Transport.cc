@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.5.2.2 1999/10/14 14:28:45 angus Exp $
+// $Id: Transport.cc,v 1.5.2.3 1999/10/15 10:46:56 angus Exp $
 //
 //
 
@@ -185,7 +185,8 @@ ostream &Transport::ShowStatistics (ostream &out)
 
 int Transport::OpenConnection()
 {
-   if(_connection.isopen()) return -1; // Already open
+   if(_connection.isopen() && _connection.isconnected())
+      return -1; // Already open and connection is up
 
    // No open connection
    // Let's open a new one
@@ -269,7 +270,7 @@ int Transport::CloseConnection()
 }
 
 
-void Transport::SetConnection (char *host, int port)
+void Transport::SetConnection (const String &host, int port)
 {
 
    if (_port != -1)
@@ -280,7 +281,7 @@ void Transport::SetConnection (char *host, int port)
       bool ischanged = false;
 
       // Checking the connection server   
-      if( strcmp ( (char *) _host, host ))   	 // server is gonna change
+      if(_host != host)   	 // server is gonna change
         ischanged=true;
 
       // Checking the connection port
