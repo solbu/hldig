@@ -28,7 +28,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.4 1999/09/29 11:17:04 angus Exp $ 
+// $Id: HtHTTP.h,v 1.5 1999/10/04 15:46:23 angus Exp $ 
 //
 
 #ifndef _HTHTTP_H
@@ -119,8 +119,11 @@ public:
    //    Sends an HTTP request message
 ///////
 
-   // Sends a Method request message
+   // manages a Transport request (method inherited from Transport class)
    virtual DocStatus Request ();
+   
+   // Sends a request message for HTTP
+   virtual DocStatus HTTPRequest ();
    
 
 ///////
@@ -201,7 +204,7 @@ public:
 
    // Is Up (is both allowed and permitted by the server too)
    bool isPersistentConnectionUp()
-   	    { return isPersistentConnectionAllowed() &&
+   	    { return isConnected() && isPersistentConnectionAllowed() &&
    	       	   isPersistentConnectionPossible(); }
    
    // Allow Persistent Connection
@@ -297,6 +300,12 @@ protected:
 
    bool _persistent_connection_possible;
 
+   ///////
+      //    Option that, if set to true, make a request to be made up
+      //    of a HEAD call and then, if necessary, a GET call
+   ///////
+   
+   static bool _head_before_get;
 
 ///////
    //    Manager of the body reading
@@ -369,6 +378,17 @@ protected:
 
    DateFormat RecognizeDateFormat (const char *);
 
+
+   ///////
+      //    Set the _head_before_get option 
+      //    make a request to be made up of a HEAD call and then,
+      //    if necessary, a GET call
+   ///////
+   
+   static void EnableHeadBeforeGet() { _head_before_get = true; }
+   static void DisableHeadBeforeGet() { _head_before_get = false; }
+
+   static bool HeadBeforeGet() { return _head_before_get; }
 
    ///////
       //    Check if a document is parsable looking the content-type info

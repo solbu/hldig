@@ -1,3 +1,12 @@
+Mon Oct 04 17:33:24 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* htnet/Transport.h .cc: added the FlushConnection() method
+
+	* htnet/HtHTTP.h .cc: now the Request() method can make a HEAD
+	  request precede a GET request. This is made by default, and
+	  can be changed by using the methods Enable/DisableHeadBeforeGet().
+	  A configuration option can be raised to manage it.
+
 Mon Oct 04 12:43:41 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* htlib/io.h .cc: added a flush() method.

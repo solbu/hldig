@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.3 1999/09/29 11:17:04 angus Exp $
+// $Id: Transport.cc,v 1.4 1999/10/04 15:46:23 angus Exp $
 //
 //
 
@@ -216,6 +216,14 @@ int Transport::Connect()
    if ( _connection.connect(1) == NOTOK) return 0;  // Connection failed
    
    return 1;	// Connected
+}
+
+
+   // Flush the connection
+   
+void Transport::FlushConnection()
+{
+   _connection.flush();
 }
 
 

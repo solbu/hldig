@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.3 1999/09/29 11:17:04 angus Exp $
+// $Id: Transport.h,v 1.4 1999/10/04 15:46:23 angus Exp $
 //
 //
 
@@ -225,6 +225,8 @@ protected:
    inline int AssignConnectionTimeOut()
       { return _connection.timeout(_timeout); }
 
+   // Flush the connection
+   void FlushConnection();
       
    // Close the connection
    

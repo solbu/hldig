@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.5 1999/10/04 10:57:54 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.6 1999/10/04 15:46:23 angus Exp $ 
 //
 
 #include "lib.h"
@@ -42,6 +42,9 @@ typedef SIG_PF SIGNAL_HANDLER;
    	 int HtHTTP::_tot_seconds = 0;
    	 int HtHTTP::_tot_requests = 0;
    	 int HtHTTP::_tot_bytes = 0;
+
+   // flag that manage the option of 'HEAD' before 'GET'
+         bool HtHTTP::_head_before_get = true;
 
    // Handler of the CanParse function
 
@@ -127,12 +130,43 @@ HtHTTP::~HtHTTP()
 }
 
 
-
 ///////
-   //    Sends a GET method request
+   //    Manages the requesting process
 ///////
 
 Transport::DocStatus HtHTTP::Request()
+{
+
+   DocStatus result = Document_ok;
+
+///////
+   //    We make a double request (HEAD and, maybe, GET)
+   //    Depending on the 
+///////
+   
+   if (HeadBeforeGet() &&                 // Option value to true
+      isPersistentConnectionAllowed() &&  // Persistent Connections allowed
+      _Method == Method_GET)              // Initial request method is GET
+   {
+      _Method = Method_HEAD;
+         
+      result = HTTPRequest();
+      
+      _Method = Method_GET;
+   }
+   
+   if (result == Document_ok)
+      result = HTTPRequest();
+      
+   return result;
+}
+
+
+///////
+   //    Sends an HTTP 1/1 request
+///////
+
+Transport::DocStatus HtHTTP::HTTPRequest()
 {
 
    static Transport::DocStatus DocumentStatus;
@@ -143,9 +177,12 @@ Transport::DocStatus HtHTTP::Request()
    // Reset the response
    _response.Reset();
 
+   // Flush the connection
+   FlushConnection();
+
    _bytes_read=0;
 
-   if( debug > 3)
+   if( debug > 4)
    	 cout << "Try to get through to host "
 	      << _url.host() << " (port " << _url.port() << ") via HTTP" << endl;
 
@@ -155,7 +192,6 @@ Transport::DocStatus HtHTTP::Request()
    _start_time.SettoNow();
    
    result = EstablishConnection();
-
    
    if(result != Connection_ok && result != Connection_already_up)
    {
@@ -200,7 +236,7 @@ Transport::DocStatus HtHTTP::Request()
    }
 
    // Visual comments about the result of the connection
-   if (debug > 4)
+   if (debug > 5)
    	 switch(result)
       {
 	    case Connection_already_up:
@@ -231,7 +267,7 @@ Transport::DocStatus HtHTTP::Request()
    
    SetRequestCommand(command);
 
-   if (debug > 5)
+   if (debug > 6)
       cout << "Request\n" << command;
 
    // Writes the command
@@ -244,7 +280,7 @@ Transport::DocStatus HtHTTP::Request()
    if (ParseHeader() == -1) // Connection down
    {
 	    // The connection probably fell down !?!
-   	 	 if ( debug > 3 )
+   	 	 if ( debug > 4 )
 	       cout << "Connection fell down ... let's close it" << endl;
 	    
 	    CloseConnection();	// Let's close the connection which is down now
@@ -258,14 +294,14 @@ Transport::DocStatus HtHTTP::Request()
    {
    	 // Unable to retrieve the status line
 
-   	 if ( debug > 3 )
+   	 if ( debug > 4 )
 	    cout << "Unable to retrieve or parse the status line" << endl;
 	 
    	 return Document_no_header;
    }   
       
 
-   if (debug > 2)
+   if (debug > 3)
    {
 
       cout << "Retrieving document " << _url.path() << " on host: "
@@ -292,7 +328,7 @@ Transport::DocStatus HtHTTP::Request()
    // Check if persistent connection are possible
    CheckPersistentConnection(_response.GetVersion());
 
-   if (debug > 3)
+   if (debug > 4)
    	 cout << "Persistent connection: "
 	    << (_persistent_connection_possible ? "would be accepted" : "not accepted")
 	    << endl;
@@ -300,7 +336,7 @@ Transport::DocStatus HtHTTP::Request()
    DocumentStatus = GetDocumentStatus(_response);
 
    // We read the body only if the document has been found
-   if (DocumentStatus != Transport::Document_ok)
+   if (DocumentStatus != Document_ok)
    {
       ShouldTheBodyBeRead=false;
    }
@@ -308,7 +344,6 @@ Transport::DocStatus HtHTTP::Request()
    // For now a chunked response MUST BE retrieved   
    if (strcmp (_response._transfer_encoding, "chunked") == 0)
    {
-      ShouldTheBodyBeRead=true;
       // Change the controller of the body reading
       SetBodyReadingController(&ReadChunkedBody);
    }
@@ -319,14 +354,14 @@ Transport::DocStatus HtHTTP::Request()
 
    if (ShouldTheBodyBeRead)
    {
-      if ( debug > 3 )
+      if ( debug > 4 )
          cout << "Reading the body of the response" << endl;
 
       // We use a int (HtHTTP::*)() function pointer
       if ( (this->*_readbody)() == -1 )
       {
          // The connection probably fell down !?!
-         if ( debug > 3 )
+         if ( debug > 4 )
             cout << "Connection fell down ... let's close it" << endl;
 	    
          CloseConnection();	// Let's close the connection which is down now
@@ -335,25 +370,25 @@ Transport::DocStatus HtHTTP::Request()
          return Document_connection_down;
       }
 
-      if ( debug > 5 )
+      if ( debug > 6 )
          cout << "Contents:" << endl << _response.GetContents();
 
    }
-   else if ( debug > 3 )
-         cout << "Not a parsable response" << endl;
+   else if ( debug > 4 )
+         cout << "Body not retrieved" << endl;
 
 
    // Close the connection (if there's no persistent connection)
 
    if( ! isPersistentConnectionUp() )
    {
-      if ( debug > 3 )
+      if ( debug > 4 )
          cout << "Connection closed (No persistent connection)" << endl;
          
       CloseConnection();
    }
    else
-	 if ( debug > 3 )
+	 if ( debug > 4 )
 	    cout << "Connection stays up ... (Persistent connection)" << endl;
 
 
@@ -899,8 +934,6 @@ int HtHTTP::ReadChunkedBody()
    // Ignoring next part of the body - the TRAILER
    // (it contains further headers - not implemented)
 
-   _connection.flush();
-   
    // I think we must add some code because it doesn't recognize the end
    // of stream or something similar. It waits for the timeout and the connection
    // falls down ...
