@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.cc,v 1.22.2.5 2000/08/09 18:07:48 ghutchis Exp $
+// $Id: parser.cc,v 1.22.2.6 2000/08/13 23:06:22 toivo Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -369,7 +369,7 @@ Parser::score(List *wordList, double weight)
     if (!wordList || wordList->Count() == 0)
       {
 	// We can't score an empty list, so this should be ignored...
->       // (setting isIgnore as well would cause errors with AND)
+        // (setting isIgnore as well would cause errors with AND)
 	return;
       }
 

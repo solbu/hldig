@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.23 2000/08/11 05:51:10 grdetil Exp $
+// $Id: Display.cc,v 1.100.2.24 2000/08/13 23:05:26 toivo Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -554,7 +554,7 @@ Display::setVariables(int pageNumber, List *matches)
 	int	ilabel = atoi(builds[b+5]);
 	int	nsel = 0;
 	int	mult = 0, asinput = 0;
-	char	*cp;
+	const char *cp;
 	char	sepc = '\001';
 	String	currval;
 	String	pre, post;
@@ -576,7 +576,7 @@ Display::setVariables(int pageNumber, List *matches)
 	    else if (mystrcasecmp(nameopt[1], "checkbox") == 0)
 	    {
 		mult = 1;
-		asinput = 1;
+		asinput = 1; 
 	    }
 	    if (nameopt.Count() > 2)
 		pre = nameopt[2];
