@@ -1,3 +1,12 @@
+Mon Jul 21 20:54:47 CEST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+   * htlib/(malloc|error|lstat|stat|realloc).c: added for cross-compiling
+   reasons (as suggested by automake)
+   * htlib/error.h: ditto
+   * db/acconfig.h: removed as suggested by autotools' new versions
+   * configure.in: removed AC_PROG_RANLIB (overriden by AC_PROG_LIBTOOL)
+   * updated as of rerun 'autoreconf -if'
+
 Mon Jul 21 10:08:24 CEST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* Patch provided by Marco Nenciarini <mnencia@linux.it> has been

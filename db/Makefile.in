@@ -333,7 +333,7 @@ pkginclude_HEADERS = \
 
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-mkinstalldirs = $(SHELL) $(top_srcdir)/..//mkinstalldirs
+mkinstalldirs = $(SHELL) $(top_srcdir)/../mkinstalldirs
 CONFIG_HEADER = db_config.h
 CONFIG_CLEAN_FILES = db.h
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
@@ -381,11 +381,11 @@ LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 DIST_SOURCES = $(libhtdb_la_SOURCES)
 HEADERS = $(pkginclude_HEADERS)
 
-DIST_COMMON = README $(pkginclude_HEADERS) ..//COPYING ..//ChangeLog \
-	..//README ..//acinclude.m4 ..//config.guess ..//config.sub \
-	..//configure ..//configure.in ..//install-sh ..//ltmain.sh \
-	..//missing ..//mkinstalldirs Makefile.am Makefile.in \
-	acconfig.h acinclude.m4 aclocal.m4 configure configure.in \
+DIST_COMMON = README $(pkginclude_HEADERS) ..//install-sh ../COPYING \
+	../ChangeLog ../README ../acinclude.m4 ../config.guess \
+	../config.sub ../configure ../configure.in ../install-sh \
+	../ltmain.sh ../missing ../mkinstalldirs Makefile.am \
+	Makefile.in acinclude.m4 aclocal.m4 configure configure.in \
 	db.h.in db_config.h.in mkinstalldirs
 SOURCES = $(libhtdb_la_SOURCES)
 
@@ -421,7 +421,7 @@ stamp-h1: $(srcdir)/db_config.h.in $(top_builddir)/config.status
 	@rm -f stamp-h1
 	cd $(top_builddir) && $(SHELL) ./config.status db_config.h
 
-$(srcdir)/db_config.h.in:  $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/acconfig.h
+$(srcdir)/db_config.h.in:  $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOHEADER)
 	touch $(srcdir)/db_config.h.in
 

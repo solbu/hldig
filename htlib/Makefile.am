@@ -7,15 +7,15 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc \
 	String.cc StringList.cc StringMatch.cc String_fmt.cc \
 	good_strtok.cc strcasecmp.cc \
-	mktime.c strptime.cc timegm.c \
-	getcwd.c memcmp.c memcpy.c memmove.c raise.c strerror.c \
+	strptime.cc timegm.c \
+	getcwd.c memcpy.c memmove.c raise.c strerror.c \
 	HtCodec.cc HtWordCodec.cc \
 	HtVector.cc HtHeap.cc \
 	HtPack.cc HtDateTime.cc HtRegex.cc HtRegexList.cc \
 	HtRegexReplace.cc HtRegexReplaceList.cc \
 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc \
 	myqsort.c \
-	md5.cc mhash_md5.c
+	md5.cc mhash_md5.c 
 
 libht_la_LIBADD=@LTLIBOBJS@
 # this includes regex.c
