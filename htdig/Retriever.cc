@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.59 1999/08/28 21:10:48 ghutchis Exp $
+// $Id: Retriever.cc,v 1.60 1999/09/05 06:46:50 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -1090,7 +1090,7 @@ Retriever::got_href(URL &url, char *description, int hops)
 	if (strcmp(url.get(), current_ref->DocURL()) == 0)
 	{
 	    current_ref->DocBackLinks(current_ref->DocBackLinks() + 1);
-	    current_ref->AddDescription(description);
+	    current_ref->AddDescription(description, words);
 	}
         else if (limitsn.match(url.get(), 1, 0) != 0)
 	{
@@ -1115,7 +1115,7 @@ Retriever::got_href(URL &url, char *description, int hops)
 	    }
 	    ref->DocBackLinks(ref->DocBackLinks() + 1); // This one!
 	    ref->DocURL(url.get());
-	    ref->AddDescription(description);
+	    ref->AddDescription(description, words);
 
 	    //
     	    // If the dig is restricting by hop count, perform the check here 
@@ -1251,7 +1251,7 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 		String	*str;
 		while ((str = (String *) d->Get_Next()))
 		{
-		    ref->AddDescription(str->get());
+		    ref->AddDescription(str->get(), words);
 		}
 	    }
 	    if (ref->DocHopCount() > old_ref->DocHopCount())

@@ -9,7 +9,6 @@
 
 #include "DocumentRef.h"
 #include "good_strtok.h"
-#include "WordList.h"
 #include "WordRecord.h"
 #include "Configuration.h"
 #include "HtURLCodec.h"
@@ -417,9 +416,9 @@ void DocumentRef::Deserialize(String &stream)
 
 
 //*****************************************************************************
-// void DocumentRef::AddDescription(char *d)
+// void DocumentRef::AddDescription(char *d, WordList &words)
 //
-void DocumentRef::AddDescription(char *d)
+void DocumentRef::AddDescription(char *d, WordList &words)
 {
     if (!d || !*d)
         return;
@@ -438,15 +437,7 @@ void DocumentRef::AddDescription(char *d)
     // This also ensures we keep the proper weight on descriptions 
     // that occur many times
 
-    static WordList *words = 0;
-    
-    if (!words) // Hey... We only want to do this once, right?
-    {
-	words = new WordList();
-	words->BadWordFile(config["bad_word_list"]);
-    }
-
-    words->DocumentID(docID);
+    words.DocumentID(docID);
     
     // Parse words.
     char         *p                   = desc;
@@ -467,14 +458,14 @@ void DocumentRef::AddDescription(char *d)
 
       if (word.length() >= minimum_word_length)
         // The wordlist takes care of lowercasing; just add it.
-        words->Word(word, 0, 0, FLAG_LINK_TEXT);
+        words.Word(word, 0, 0, FLAG_LINK_TEXT);
 
       while (*p && !HtIsStrictWordChar(*p))
         p++;
     }
 
     // And let's flush the words!
-    words->Flush();
+    words.Flush();
     
     // Now are we at the max_description limit?
     if (descriptions.Count() >= max_descriptions)

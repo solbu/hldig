@@ -1,7 +1,7 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.18 1999/06/18 14:20:41 grdetil Exp $
+// $Id: DocumentRef.h,v 1.19 1999/09/05 06:46:33 ghutchis Exp $
 //
 //
 #ifndef _DocumentRef_h_
@@ -9,6 +9,7 @@
 
 #include "htString.h"
 #include "List.h"
+#include "WordList.h"
 #include <time.h>
 
 enum ReferenceState
@@ -70,7 +71,7 @@ class DocumentRef : public Object
     void		DocLinks(int l)			{docLinks = l;}
     void                DocBackLinks(int l)             {docBackLinks = l;}
     void		Descriptions(List &l)		{descriptions = l;}
-    void		AddDescription(char *d);
+    void		AddDescription(char *d, WordList &words);
     void		DocState(ReferenceState s)	{docState = s;}
     void		DocSize(int s)			{docSize = s;}
     void		DocImageSize(int s)		{docImageSize = s;}
@@ -128,7 +129,7 @@ class DocumentRef : public Object
     int			docHopCount;
     // This is a signature of the document. (e.g. md5sum, checksum...)
     // This is currently unused.
-    long int                 docSig;
+    long int		docSig;
 	
     //
     // The following values are for the email notification of expiration
@@ -149,6 +150,7 @@ class DocumentRef : public Object
     int			docScore;
     // This is the nearest anchor for the search word.
     int			docAnchor;
+
 };
 
 #endif
