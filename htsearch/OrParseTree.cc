@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: OrParseTree.cc,v 1.1.2.3 2000/08/24 04:36:32 ghutchis Exp $
+// $Id: OrParseTree.cc,v 1.1.2.4 2000/08/29 13:57:21 ghutchis Exp $
 //
 
 #include "OrParseTree.h"
@@ -53,45 +53,43 @@ OrParseTree::~OrParseTree()
 // 
 int OrParseTree::Parse(String query)
 {
-  char		*word;
-  int		phraseStart, phraseEnd;
+  String	phrase, token;
+  int		inPhrase = 0;
+  int		currentToken = 0;
   ParseTree	*child;
 
   initialQuery = query;
   children = new List;
 
-  phraseStart = query.indexOf('"');
-  while ( phraseStart != -1 )
+  token = WordToken(query, currentToken);
+  while ( token.length() != 0 )
     {
-      if (phraseStart > 0)
+      
+      if (mystrcasecmp(token.get(), "\"") == 0)
 	{
-	  child = new OrParseTree;
-	  child->Parse(query.sub(0, phraseStart - 1));
-	  children->Add(child);
+	  inPhrase = !inPhrase;
+	  if (!inPhrase) // We just finished one...
+	    {
+	      child = new ExactParseTree;
+	      child->Parse(phrase);
+	      children->Add(child);
+	      phrase = "";
+	    }
 	}
-
-      // Now get the phrase query and potentially anything after it
-      phraseEnd = query.indexOf('"', phraseStart + 1);
-      if (phraseEnd <= query.length() && phraseEnd != -1)
+      else if (inPhrase)
 	{
-	  child = new ExactParseTree;
-	  child->Parse(query.sub(phraseStart + 1, (phraseEnd - phraseStart - 1)));
-	  children->Add(child);
-	  query = query.sub(phraseEnd + 1);
+	  phrase << " " << token;
+	}
+      else if (!inPhrase)
+	{
+	  children->Add(new ParseTree(token));
 	}
       else
-	  return NOTOK;
+	{
+	  // Ignore (e.g. parentheses)
+	}
 
-      // need to gobble up whitespace here in case we have multiple phrases together
-      phraseStart = query.indexOf('"');
-    }
-
-  word = HtWordToken(query);
-  while ( word != NULL )
-    {
-      // By convention, leaves should be plain ParseTrees
-      children->Add(new ParseTree(word));
-      word = HtWordToken(NULL);
+      token = WordToken(query, currentToken);
     }
 
   return OK;
@@ -138,7 +136,7 @@ String	OrParseTree::GetLogicalWords()
   String	logicalWords;
   ParseTree	*child;
 
-  if (!children)
+  if (!children || children->Count() == 0)
     return initialQuery;
 
   children->Start_Get();
