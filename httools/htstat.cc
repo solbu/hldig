@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htstat.cc,v 1.1.2.2 2000/03/21 00:35:25 ghutchis Exp $
+// $Id: htstat.cc,v 1.1.2.3 2000/04/09 15:22:59 ghutchis Exp $
 //
 
 #include "WordContext.h"
@@ -38,11 +38,12 @@ void reportError(char *msg);
 int main(int ac, char **av)
 {
     int			alt_work_area = 0;
+    int			url_list = 0;
     String		configfile = DEFAULT_CONFIG_FILE;
     int			c;
     extern char		*optarg;
 
-    while ((c = getopt(ac, av, "vc:a")) != -1)
+    while ((c = getopt(ac, av, "vc:au")) != -1)
     {
 	switch (c)
 	{
@@ -54,6 +55,9 @@ int main(int ac, char **av)
 		break;
 	    case 'a':
 		alt_work_area++;
+		break;
+	    case 'u':
+	        url_list++;
 		break;
 	    case '?':
 		usage();
@@ -119,7 +123,23 @@ int main(int ac, char **av)
     if (docs.Read(config["doc_db"], config["doc_index"], 
 		  config["doc_excerpt"]) == OK)
       {
-	cout << "htstat: Total documents: " << docs.DocIDs()->Count() << endl;
+	List *urls = docs.URLs();
+	cout << "htstat: Total documents: " << urls->Count() << endl;
+	if (url_list)
+	  {
+	    // Spit out the list of URLs too
+	    String	*url;
+
+	    cout << "htstat: URLs in database: " << endl;
+	    urls->Start_Get();
+	    while ((url = (String *) urls->Get_Next()))
+	      {
+		cout << "\t" << url->get() << endl;
+	      }
+	  }
+
+	delete urls;
+	docs.Close();
       }
 
     // Initialize htword
@@ -130,8 +150,10 @@ int main(int ac, char **av)
       {
 	cout << "htstat: Total words: " << words.WordRefs()->Count() << endl;
 	cout << "htstat: Total unique words: " << words.Words()->Count() << endl;
+	words.Close();
       }
 
+    return 0;
 }
 
 
@@ -141,7 +163,7 @@ int main(int ac, char **av)
 //
 void usage()
 {
-    cout << "usage: htstat [-v][-a][-c configfile]\n";
+    cout << "usage: htstat [-v][-a][-c configfile][-u]\n";
     cout << "This program is part of ht://Dig " << VERSION << "\n\n";
     cout << "Options:\n";
     cout << "\t-v\tVerbose mode.  This increases the verbosity of the\n";
@@ -154,6 +176,7 @@ void usage()
     cout << "\t-c configfile\n";
     cout << "\t\tUse the specified configuration file instead on the\n";
     cout << "\t\tdefault.\n\n";
+    cout << "\t-u\tGive a list of URLs in the document database.\n\n";
     exit(0);
 }
 
