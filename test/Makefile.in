@@ -134,12 +134,12 @@ AM_MAKEFLAGS = MAKE="$(MAKE)"
 
 #PROFILING = -p
 
-EXTRA_DIST = test_prepare htdocs conf $(TESTS) 	word.try1 word.try2 word.try3 word.try4 word.try5
+EXTRA_DIST = test_prepare htdocs conf $(TESTS) 	word.try1 word.try2 word.try3 word.try4 word.try5         url.parents url.children
 
 
 LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include $(PROFILING)
 
-noinst_PROGRAMS = dbbench word testnet document
+noinst_PROGRAMS = dbbench word testnet document url
 
 dbbench_SOURCES = dbbench.cc
 dbbench_DEPENDENCIES = $(HTLIBS)
@@ -161,6 +161,11 @@ document_DEPENDENCIES = $(HTLIBS)
 document_LDFLAGS = $(PROFILING)
 document_LDADD = $(HTLIBS)
 
+url_SOURCES = url.cc
+url_DEPENDENCIES = $(HTLIBS)
+url_LDFLAGS = $(PROFILING)
+url_LDADD = $(HTLIBS)
+
 BASE = test
 CACHESIZE = -C `expr 64 \* 1024 \* 1024`
 PAGESIZE = -S 8192
@@ -181,6 +186,7 @@ dbbench_OBJECTS =  dbbench.o
 word_OBJECTS =  word.o
 testnet_OBJECTS =  testnet.o
 document_OBJECTS =  document.o
+url_OBJECTS =  url.o
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -192,9 +198,9 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
 DEP_FILES =  .deps/dbbench.P .deps/document.P .deps/testnet.P \
-.deps/word.P
-SOURCES = $(dbbench_SOURCES) $(word_SOURCES) $(testnet_SOURCES) $(document_SOURCES)
-OBJECTS = $(dbbench_OBJECTS) $(word_OBJECTS) $(testnet_OBJECTS) $(document_OBJECTS)
+.deps/url.P .deps/word.P
+SOURCES = $(dbbench_SOURCES) $(word_SOURCES) $(testnet_SOURCES) $(document_SOURCES) $(url_SOURCES)
+OBJECTS = $(dbbench_OBJECTS) $(word_OBJECTS) $(testnet_OBJECTS) $(document_OBJECTS) $(url_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -265,6 +271,10 @@ testnet: $(testnet_OBJECTS) $(testnet_DEPENDENCIES)
 document: $(document_OBJECTS) $(document_DEPENDENCIES)
 	@rm -f document
 	$(CXXLINK) $(document_LDFLAGS) $(document_OBJECTS) $(document_LDADD) $(LIBS)
+
+url: $(url_OBJECTS) $(url_DEPENDENCIES)
+	@rm -f url
+	$(CXXLINK) $(url_LDFLAGS) $(url_OBJECTS) $(url_LDADD) $(LIBS)
 .cc.o:
 	$(CXXCOMPILE) -c $<
 .cc.lo:
