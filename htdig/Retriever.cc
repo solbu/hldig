@@ -4,6 +4,9 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.27  1998/12/13 05:38:14  ghutchis
+// Added check to prevent currenthopcount from becoming -1.
+//
 // Revision 1.26  1998/12/12 01:44:33  ghutchis
 // Added additional debugging info on the reason for excluding a URL, based on
 // a patch by Benoit Majeau <Benoit.Majeau@nrc.ca>.
@@ -933,7 +936,8 @@ Retriever::got_href(URL &url, char *description)
 	    ref->DocURL(url.get());
 	    ref->AddDescription(description);
 
-	    if (ref->DocHopCount() < currenthopcount + 1)
+	    if (ref->DocHopCount() != -1 &&
+		ref->DocHopCount() < currenthopcount + 1)
 	       // If we had taken the path through this ref
 	       // We'd be here faster than currenthopcount
 	       currenthopcount = ref->DocHopCount();  // So update it!
