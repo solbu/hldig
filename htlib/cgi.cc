@@ -4,6 +4,10 @@
 // Implementation of cgi
 //
 // $Log: cgi.cc,v $
+// Revision 1.4  1998/11/15 02:44:23  ghutchis
+//
+// Declared loop int variable. (to simplify frost.com merge)
+//
 // Revision 1.3  1998/05/26 03:58:11  turtle
 // Got rid of compiler warnings.
 //
@@ -15,7 +19,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: cgi.cc,v 1.3 1998/05/26 03:58:11 turtle Exp $";
+static char RCSid[] = "$Id: cgi.cc,v 1.4 1998/11/15 02:44:23 ghutchis Exp $";
 #endif
 
 #include "cgi.h"
@@ -36,6 +40,7 @@ cgi::cgi()
 {
 	pairs = new Dictionary;
 
+	int i;
 	String	method(getenv("REQUEST_METHOD"));
 
 	if (method.length() == 0)
@@ -74,7 +79,7 @@ cgi::cgi()
 	//
 	// Each name/value pair now needs to be added to the dictionary
 	//
-	for (int i = 0; i < list.Count(); i++)
+	for (i = 0; i < list.Count(); i++)
 	{
 		char	*name = good_strtok(list[i], "=");
 		String	value(good_strtok("\n"));
