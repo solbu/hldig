@@ -14,7 +14,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.19 1999/07/19 01:50:25 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.20 1999/08/09 22:11:47 grdetil Exp $";
 #endif
 
 #include "WordList.h"
@@ -79,6 +79,9 @@ void WordList::Word (String word, unsigned int location,
     if (!valid_word(word))
 	return;
 
+    static int	maximum_word_length = config.Value("maximum_word_length", 12);
+    if (word.length() > maximum_word_length)
+	word.chop(word.length() - maximum_word_length);
     //
     // New word.  Create a new reference for it
     //
@@ -231,7 +234,8 @@ void WordList::BadWordFile(char *filename)
     char	buffer[1000];
     char	*word;
     String      new_word;
-    int	        minimum_word_length = config.Value("minimum_word_length", 3);
+    static int	minimum_word_length = config.Value("minimum_word_length", 3);
+    static int	maximum_word_length = config.Value("maximum_word_length", 12);
 
     // Read in the badwords file (it's just a text file)
     while (fl && fgets(buffer, sizeof(buffer), fl))
@@ -241,6 +245,8 @@ void WordList::BadWordFile(char *filename)
 	  {
 	    // We need to clean it up before we add it
 	    // Just in case someone enters an odd one
+	    if (strlen(word) > maximum_word_length)
+		word[maximum_word_length] = '\0';
 	    new_word = word;
 	    new_word.lowercase();
 	    HtStripPunctuation(new_word);

@@ -453,8 +453,7 @@ void DocumentRef::AddDescription(char *d)
     static int    minimum_word_length = config.Value("minimum_word_length", 3);
     static int    max_descriptions    = config.Value("max_descriptions", 5);
 
-    // Not restricted to this size, just used as a hint.
-    String word(MAX_WORD_LENGTH);
+    String word;
 
     while (*p)
     {

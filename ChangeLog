@@ -1,3 +1,13 @@
+Mon Aug  9 17:03:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* include/htconfig.h.in, htcommon/WordList.cc(Word,Flush&BadWordFile),
+	htcommon/DocumentRef.cc(AddDescription), htcommon/defaults.cc,
+	htsearch/parser.cc(perform_push), htdoc/attrs.html,
+	htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Convert the MAX_WORD_LENGTH compile-time option into the run-time
+	configuration attribute maximum_word_length.  This required reinserting
+	word truncation code that had been taken out of WordList.cc.
+
 Mon Aug  9 16:34:14 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HtHTTP.cc (isParsable): allow application/pdf as parsable,
