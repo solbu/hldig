@@ -4,6 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.39  1999/01/20 05:25:17  ghutchis
+// Use translate_quote, _lt_gt, and _amp to optionally translate these entities.
+//
 // Revision 1.38  1999/01/18 23:13:02  ghutchis
 // Added no_title_text option to allow configuration of the text when no title
 // is available. Default is the filename.
@@ -132,7 +135,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.38 1999/01/18 23:13:02 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.39 1999/01/20 05:25:17 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -257,6 +260,9 @@ ConfigDefaults	defaults[] =
     {"text_factor",			"1"},
     {"timeout",				"30"},
     {"title_factor",			"100"},
+    {"translate_amp",                   "false"},
+    {"translate_lt_gt",                 "false"},
+    {"translate_quot",                  "false"},
     {"url_list",			"${database_base}.urls"},
     {"url_log",				"${database_base}.log"},
     {"use_star_image",			"true"},

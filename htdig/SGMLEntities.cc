@@ -4,6 +4,9 @@
 // Implementation of SGMLEntities
 //
 // $Log: SGMLEntities.cc,v $
+// Revision 1.7  1999/01/20 05:25:17  ghutchis
+// Use translate_quote, _lt_gt, and _amp to optionally translate these entities.
+//
 // Revision 1.6  1999/01/07 03:22:03  ghutchis
 // Fix minor memory leaks.
 //
@@ -26,7 +29,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: SGMLEntities.cc,v 1.6 1999/01/07 03:22:03 ghutchis Exp $";
+static char RCSid[] = "$Id: SGMLEntities.cc,v 1.7 1999/01/20 05:25:17 ghutchis Exp $";
 #endif
 
 #include "SGMLEntities.h"
@@ -212,11 +215,55 @@ SGMLEntities::translateAndUpdate(unsigned char *&entityStart)
     while ((isalnum(*entityStart) || *entityStart == '.' ||
 	    *entityStart == '-' || *entityStart == '#') &&
 	   entity.length() < 10)
-    {
+      {
 	entity << *entityStart++;
-    }
+      }
+
+    if ( !config.Boolean("translate_quot") )
+      {
+	//
+	// Do NOT translate entities for '"' (quote).
+	//
+	if (strcmp(entity.get(), "quot") == 0 ||
+	    strcmp(entity.get(), "#34") == 0 )
+	  {
+	    entityStart = orig + 1;
+	    return '&';
+	  }
+      }
+
+    if ( !config.Boolean("translate_amp") )
+      {
+	//
+	// Do NOT translate entities for '&' since they can
+	// occur in code samples that might end up in an excerpt.
+	//
+	if (strcmp(entity.get(), "amp") == 0 ||
+	    strcmp(entity.get(), "#38") == 0 )
+	  {
+	    entityStart = orig + 1;
+	    return '&';
+	  }
+      }
+
+    if ( !config.Boolean("translate_lt_gt") )
+      {
+	//
+	// Do NOT translate entities for '<' and '>' since they can
+	// occur in code samples that might end up in an excerpt.
+	//
+	if (strcmp(entity.get(), "lt") == 0 ||
+	    strcmp(entity.get(), "#60") == 0 ||
+	    strcmp(entity.get(), "gt") == 0 ||
+	    strcmp(entity.get(), "#62") == 0 )
+	  {
+	    entityStart = orig + 1;
+	    return '&';
+	  }
+      }
+
     if (entity.length() >= 10)
-    {
+      {
 	//
 	// This must be a bogus entity.  It can't be more than 10 characters
 	// long.  Well, just assume it was an error and return just the '&'.
