@@ -1,10 +1,18 @@
-Tue Feb 15 14:21:48 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Feb 15 14:37:17 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (display, displaySyntaxError),
+	htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htcommon/defaults.cc: Add new attribute "nph" to send out
+	non-parsed headers for servers that do not supply HTTP headers on
+	CGI output (e.g. IIS).	If nph is set, send out HTTP OK header,
+	as suggested by Matthew Daniel <mdaniel@scdi.com> (PR#727)
 
 	* htdig/Document.cc (getdate): avoid strftime() altogether on
 	filled-in tm structure, to avoid recurring segfault problems. (PR#734)
 
 	* htlib/strptime.cc (mystrptime): Use Warren Jones's fix to deal
 	with a web server that returns dates with a two digit year field.
+	(Fixes PR#770)
 
 	* htdig/HTML.cc (HTML, parse, do_tag), htcommon/defaults.cc,
 	htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.22 1999/12/07 16:52:35 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.23 2000/02/15 20:50:18 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -120,12 +120,14 @@ Display::display(int pageNumber)
 	// No matches.
 	//
         delete matches;
+	if (config.Boolean("nph")) cout << "HTTP/1.0 200 OK\r\n";
 	cout << "Content-type: text/html\r\n\r\n";
 	displayNomatch();
 	return;
     }
     // maxScore = match->getScore();	// now done in buildMatchList()
     	
+    if (config.Boolean("nph")) cout << "HTTP/1.0 200 OK\r\n";
     cout << "Content-type: text/html\r\n\r\n";
     String	wrap_file = config["search_results_wrapper"];
     String	*wrapper = 0;
@@ -625,6 +627,7 @@ Display::displayNomatch()
 void
 Display::displaySyntaxError(char *message)
 {
+    if (config.Boolean("nph")) cout << "HTTP/1.0 200 OK\r\n";
     cout << "Content-type: text/html\r\n\r\n";
 
     setVariables(0, 0);
