@@ -8,12 +8,12 @@
 //                 in http://www.htdig.org/attrs.html#external_parser
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2000 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.20 2000/12/12 19:43:23 grdetil Exp $
+// $Id: ExternalParser.cc,v 1.19.2.21 2001/01/07 04:29:50 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -34,7 +34,11 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#ifdef HAVE_WAIT_H
 #include <wait.h>
+#elif HAVE_SYS_WAIT_H
+#include <sys/wait.h>
+#endif
 
 static Dictionary	*parsers = 0;
 static Dictionary	*toTypes = 0;

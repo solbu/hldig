@@ -1,3 +1,23 @@
+Sat Jan  6 21:50:58 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in: Add checks for <sys/wait.h> and <wait.h> for
+	ExternalParser.
+
+	* include/htconfig.h.in: Regenerate using autoheader.
+
+	* configure: Regenerate using configure.
+	
+	* htnet/Connection.cc: Add definition for FD_SET_T to fix problems
+	compiling on BSDI mentioned by Joe.
+
+	* htdig/ExternalParser.cc: Use <sys/wait.h> or <wait.h> as
+	appropriate. Should fix problems with compiliation mentioned by
+	Jesse on HP/UX.
+
+	* README, htdoc/RELEASE.html: Adjust dates for the new year.
+
+	* htdoc/upgrade.html: A few "remaining features" have been implemented.
+	
 Sun Dec 06 19:46:15 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
 
 	* htnet/HtHTTP.cc: Fixed bug for Read_Line function call in
