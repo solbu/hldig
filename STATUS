@@ -1,7 +1,7 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b3: Release date unscheduled: Unfrozen Tree.
+   3.2.0b3: Release date (late September?) Unfrozen Tree.
    3.2.0b2: Released:  11 Apr 2000.
    3.2.0b1: Released: 4 Feb 2000.
 
@@ -26,7 +26,6 @@ KNOWN BUGS:
    an intermediate output is application/pdf.
 
 PENDING PATCHES (available but need work):
-* Forward-Porting of NNTP code.
 * Additional support for Win32.
 
 PENDING FEATURES:
@@ -35,8 +34,6 @@ PENDING FEATURES:
 * Field-restricted searching
 * Date-restricted searching
 * Return all results
-* Duplicate document detection while indexing
-* Method "exact" for phrase-searching on the entire query
 * Handle noindex_start & noindex_end as string lists
 * Handle local_urls through file:// handler, for mime.types support
 * Handle directory redirects in RetrieveLocal
@@ -47,6 +44,7 @@ TESTING:
   (htload a test file, check a few characteristics, htdump and compare)
 * Turn on URL parser test as part of test suite.
 * htsearch phrase support tests
+* Duplicate document detection while indexing
 
 DOCUMENTATION:
 * Update cf_* pages to mention new config parser (i.e. URL-dependent config)
@@ -57,10 +55,8 @@ DOCUMENTATION:
    requirements of 3.2.x (e.g. phrase searching, regex matching,
    external parsers and transport methods, database compression.)
 * TODO.html has not been updated for current TODO list and completions.
-* Update documentation to be *very* explicit about the new
-   htmerge/htpurge distrinction.
 
 OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
    (Does this work with Loic's new database code?)
-* We should do a security audit.
+* The code needs a security audit, esp. htsearch
