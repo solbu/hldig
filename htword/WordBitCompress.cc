@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.cc,v 1.1.2.14 2000/01/14 17:38:08 bosc Exp $
+// $Id: WordBitCompress.cc,v 1.1.2.15 2000/01/31 15:32:04 bosc Exp $
 //
 
 
@@ -518,10 +518,12 @@ BitStream::get_uint(int n,const char *tag/*=NULL*/)
 
     // 1)
     int bpos0= bitpos & 0x07;
-//       printf("bpos0:%3d bitpos:%5d  n:%4d %s\n",bpos0,bitpos,n,tag);
-//       printf("input:\n");
-//       for(int j=0;j<1+(n+7)/8;j++){printf("%x",buff[(bitpos>>3)+j]);}
-//       printf("\n");
+
+//      printf("bpos0:%3d bitpos:%5d  n:%4d %s\n",bpos0,bitpos,n,tag);
+//      printf("input:\n");
+//      for(int j=0;j<(bpos0+n+7)/8;j++){printf("%x",buff[bitpos/8+j]);}
+//      printf("\n");
+
     if(bpos0 + n <8)
     {
 	// simplest case it all fits
@@ -536,7 +538,7 @@ BitStream::get_uint(int n,const char *tag/*=NULL*/)
 	const int ncentral=((bpos0 + n)>>3)-1;
 	// put first
 	res=(buff[bytepos]>>bpos0) & 0xff;
-//      	printf("normal case:res0:%x\n",res);
+//        	printf("normal case:res0:%x\n",res);
 
 	const int nbitsinfirstbyte=8-bpos0;
 
@@ -545,25 +547,27 @@ BitStream::get_uint(int n,const char *tag/*=NULL*/)
 	if(ncentral)
 	{
 	    unsigned int v=0;
-	    for(int i=0;i<ncentral;i++)
+	    for(int i=ncentral-1;i>=0;i--)
 	    {
-		((byte *)&v)[i]=buff[bytepos++];
-//  		printf("       resC%d:v:%x\n",i,v);
+		v|=buff[bytepos+i]&0xff;
+		if(i)v<<=8;
+//    		printf("       resC%d:v:%x\n",i,v);
 	    }
+	    bytepos+=ncentral;
 	    res|=v<<nbitsinfirstbyte;
-//  	    printf("       :resC:%x\n",res);
+//    	    printf("       :resC:%x\n",res);
 	}
 	// put last
 	const int nbitsremaining=n-(  (ncentral<<3)+nbitsinfirstbyte );
 	if(nbitsremaining)
 	{
 	    res|=((unsigned int)(buff[bytepos] &  (pow2(nbitsremaining)-1) )) << (nbitsinfirstbyte +((bytepos-(bitpos>>3)-1)<<3));
-//  	    printf("       :resR:%x  buff[%d]:%x  %d\n",res,bytepos,buff[bytepos],
-//  		   (nbitsinfirstbyte +((bytepos-(bitpos>>3)-1)<<3)));
+//    	    printf("       :resR:%x  buff[%d]:%x  %d\n",res,bytepos,buff[bytepos],
+//    		   (nbitsinfirstbyte +((bytepos-(bitpos>>3)-1)<<3)));
 	}
 
 	bitpos+=n;
-//    	printf("nbitsinfirstbyte:%d ncentral:%d  nbitsremaining:%d\n",nbitsinfirstbyte,ncentral,nbitsremaining);
+//      	printf("nbitsinfirstbyte:%d ncentral:%d  nbitsremaining:%d\n",nbitsinfirstbyte,ncentral,nbitsremaining);
 	return res;
     }
 }
