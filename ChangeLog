@@ -1,3 +1,8 @@
+Sun Oct  5 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htsearch/htsearch.cc: Highlight phrases containing stop words
+    * test/t_htsearch, test/conf/htdig.conf.in:  Tests for the above
+
 Sat Sep 27 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
     * test/{test_functions.in,t_htdig,t_htdig_local,t_htnet}:

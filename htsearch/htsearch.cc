@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htsearch.cc,v 1.66 2003/06/24 19:58:07 nealr Exp $
+// $Id: htsearch.cc,v 1.67 2003/10/05 10:27:59 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -475,22 +475,28 @@ createLogicalWords(List &searchWords, String &logicalWords, String &wm)
 	}
 	else
 	    wasHidden = 1;
+	// generate patterns to search for and highlight in excerpt
 	if (ww->weight > 0			// Ignore boolean syntax stuff
-	    && !ww->isIgnore)			// Ignore short or bad words
-	{
-	    if (pattern.length() && !inPhrase)
-		pattern << '|';
-	    else if (pattern.length() && inPhrase)
-	      pattern << ' ';
-	    pattern << ww->word;
+	    && (!ww->isIgnore || inPhrase))	// Ignore bad/short words
+	{					// but highlight them in phrases
+	    char spacer = inPhrase ? ' ' : '|';
+	    if (wm.length())
+		wm << spacer;
+	    wm << ww->word;
+	    if (!ww->isIgnore)		// ignore bad/short words for searching
+	    {
+		if (pattern.length())
+		    pattern << spacer;
+		pattern << ww->word;
+	    }
 	}
     }
-    wm = pattern;
 
     if (debug)
     {
 	cerr << "LogicalWords: " << logicalWords << endl;
 	cerr << "Pattern: " << pattern << endl;
+	cerr << "Highlight Pattern: " << wm << endl;
     }
 }
 

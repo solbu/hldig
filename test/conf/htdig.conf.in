@@ -77,7 +77,7 @@ maintainer:		_USER_
 # excerpt_show_top attribute to false so that the top excerpt_length characters
 # of the document are always shown.
 #
-max_head_length:	10000
+max_head_length:	100000
 
 #
 # To limit network connections, ht://Dig will only pull up to a certain limit
