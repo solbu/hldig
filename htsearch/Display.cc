@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.90 1999/08/11 01:16:08 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.91 1999/08/16 18:58:12 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -833,7 +833,7 @@ Display::expandVariables(char *str)
 		else if (*str == '&')
 		{
 		    var << *str;	// code for SGML-encoded variable
-		    if (mystrncasecmp("&amp;", str, 5))
+		    if (mystrncasecmp("&amp;", str, 5) == 0)
 			str += 4;
 		}
 		else if (*str == '(' || *str == '{')

@@ -1,3 +1,7 @@
+Mon Aug 16 13:55:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(expandVariables): fix up test for &amp;
+
 Mon Aug 16 12:08:57 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* Makefine.am, Makefile.in, installdir/Makefile.am,
