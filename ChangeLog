@@ -1,3 +1,7 @@
+Wed Nov 10 14:46:08 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/meta.html: add description of "keywords" meta tag property.
+
 1999-11-10  Toivo Pedaste  <toivo@ucs.uwa.edu.au>
 
 	* htdig/Retriever.cc : Ignore SIGPIPEs with persistant connections
