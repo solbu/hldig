@@ -1,3 +1,8 @@
+Mon Oct  5 11:30:16 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* contrib/ewswrap/ewswrap.cgi, contrib/ewswrap/htwrap.cgi: New
+	scripts, contributed by John Grohol PsyD <johngr@cmhcsys.com>.
+
 Fri Oct  2 13:11:24 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc: Added check for docs removed with
