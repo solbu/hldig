@@ -106,8 +106,8 @@ static const short yyrhs[] = {    -1,
 
 #if YYDEBUG != 0
 static const short yyrline[] = { 0,
-    37,    38,    41,    52,    60,    70,    76,    82,    90,    93,
-   113,   130,   143,   155
+    37,    38,    41,    53,    61,    71,    77,    83,    91,    94,
+   115,   133,   147,   160
 };
 #endif
 
@@ -725,12 +725,13 @@ case 3:
 		 cout<<"Added to conf: "<<yyvsp[0].ConfLine->name<<":"<<yyvsp[0].ConfLine->value<<endl;
 	       }
 	       #endif
-	       delete yyvsp[0].ConfLine->name; delete yyvsp[0].ConfLine->value;
+	       delete [] yyvsp[0].ConfLine->name; 
+	       delete [] yyvsp[0].ConfLine->value;
 	       delete yyvsp[0].ConfLine;
                ;
     break;}
 case 4:
-#line 52 "conf_parser.yxx"
+#line 53 "conf_parser.yxx"
 {
           // <server www.gc.lviv.ua>
           //    server_max_docs: 456
@@ -739,7 +740,7 @@ case 4:
 	;
     break;}
 case 5:
-#line 60 "conf_parser.yxx"
+#line 61 "conf_parser.yxx"
 { 
   // locale: uk_UA.KOI8-U
                                         //
@@ -751,7 +752,7 @@ case 5:
 					;
     break;}
 case 6:
-#line 70 "conf_parser.yxx"
+#line 71 "conf_parser.yxx"
 { 
 	  // max_head_lenght: 300000
 	  //
@@ -760,7 +761,7 @@ case 6:
 					;
     break;}
 case 7:
-#line 76 "conf_parser.yxx"
+#line 77 "conf_parser.yxx"
 {
 	  // bad_extensions: .XLS .xls .pdf .PDF .doc .DOC 
 	  //
@@ -769,7 +770,7 @@ case 7:
 	;
     break;}
 case 8:
-#line 82 "conf_parser.yxx"
+#line 83 "conf_parser.yxx"
 {
 	  // excude_urls:
 	  //
@@ -780,11 +781,11 @@ case 8:
 					;
     break;}
 case 9:
-#line 90 "conf_parser.yxx"
+#line 91 "conf_parser.yxx"
 { /* Ignore empty lines */  ;
     break;}
 case 10:
-#line 93 "conf_parser.yxx"
+#line 94 "conf_parser.yxx"
 {
 		      // check if "<param> ... </param>" are equal
 		      if (strcmp(yyvsp[-10].str,yyvsp[-2].str)!=0) {
@@ -800,12 +801,13 @@ case 10:
 			cout<<"Added to conf: "<<yyvsp[-10].str<<":"<<yyvsp[-8].str<<":"<<yyvsp[-5].ConfLines<<endl;
 		      }
 		      #endif
-		      delete yyvsp[-10].str; delete yyvsp[-8].str;
-		      delete yyvsp[-2].str;
+		      delete yyvsp[-10].str; 
+		      delete yyvsp[-8].str;
+		      delete [] yyvsp[-2].str;
 		    ;
     break;}
 case 11:
-#line 113 "conf_parser.yxx"
+#line 115 "conf_parser.yxx"
 {
   //aaa: nnn
   //bbb: ccc
@@ -820,12 +822,13 @@ case 11:
     cout<<"Create list of properties: "<<expressionList<<endl;
   }
   #endif
-  delete yyvsp[0].ConfLine->name; delete yyvsp[0].ConfLine->value;
+  delete yyvsp[0].ConfLine->name; 
+  delete yyvsp[0].ConfLine->value;
   delete yyvsp[0].ConfLine;
 ;
     break;}
 case 12:
-#line 130 "conf_parser.yxx"
+#line 133 "conf_parser.yxx"
 {
 				yyvsp[-1].ConfLines->Add(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
 				#ifdef DEBUG
@@ -833,13 +836,14 @@ case 12:
 				  cout<<yyvsp[0].ConfLine->name<<":"<<yyvsp[0].ConfLine->value<<" added to "<<yyvsp[-1].ConfLines<<endl;
 				}
 				#endif
-				delete yyvsp[0].ConfLine->name; delete yyvsp[0].ConfLine->value;
+				delete yyvsp[0].ConfLine->name; 
+				delete yyvsp[0].ConfLine->value;
 				delete yyvsp[0].ConfLine;
 				//$$=$1; //I think $$==$1
 			;
     break;}
 case 13:
-#line 143 "conf_parser.yxx"
+#line 147 "conf_parser.yxx"
 { 
 	// Paste 2 strings. Reallocate memory for 2 str.
 	if ((yyval.str=new char[yyvsp[-1].str,strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
@@ -849,11 +853,12 @@ case 13:
 	strcpy(yyval.str,yyvsp[-1].str);
 	strcat(yyval.str," ");		// Delimiter in list
 	strcat(yyval.str,yyvsp[0].str);
-	delete yyvsp[-1].str; delete yyvsp[0].str;
+	delete [] yyvsp[-1].str; 
+	delete yyvsp[0].str;
 	;
     break;}
 case 14:
-#line 155 "conf_parser.yxx"
+#line 160 "conf_parser.yxx"
 { 
                 char *ptr;
 		int len=strlen(yyval.str);
@@ -863,10 +868,10 @@ case 14:
 		  exit(1);
 		}
 		strcpy(yyval.str,old);
-		delete old;
+		delete [] old;
 		strcat(yyval.str," ");
 		strcat(yyval.str,yyvsp[0].str);
-		delete yyvsp[0].str;
+		delete [] yyvsp[0].str;
 	;
     break;}
 }
@@ -1091,7 +1096,7 @@ yyerrhandle:
     }
   return 1;
 }
-#line 170 "conf_parser.yxx"
+#line 175 "conf_parser.yxx"
 
 int
 yyerror (char *s)  /* Called by yyparse on error */

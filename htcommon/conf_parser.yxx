@@ -46,7 +46,8 @@ block:        simple_expression		{
 		 cout<<"Added to conf: "<<$1->name<<":"<<$1->value<<endl;
 	       }
 	       #endif
-	       delete $1->name; delete $1->value;
+	       delete [] $1->name; 
+	       delete [] $1->value;
 	       delete $1;
                }
         | complex_expression {
@@ -105,8 +106,9 @@ complex_expression:	T_LEFT_BR T_KEYWORD T_DELIMITER T_STRING T_RIGHT_BR T_NEWLIN
 			cout<<"Added to conf: "<<$2<<":"<<$4<<":"<<$7<<endl;
 		      }
 		      #endif
-		      delete $2; delete $4;
-		      delete $10;
+		      delete $2; 
+		      delete $4;
+		      delete [] $10;
 		    } 
                  ;
 
@@ -124,7 +126,8 @@ simple_expression_list:   simple_expression	{
     cout<<"Create list of properties: "<<expressionList<<endl;
   }
   #endif
-  delete $1->name; delete $1->value;
+  delete $1->name; 
+  delete $1->value;
   delete $1;
 }
                         | simple_expression_list simple_expression {
@@ -134,7 +137,8 @@ simple_expression_list:   simple_expression	{
 				  cout<<$2->name<<":"<<$2->value<<" added to "<<$1<<endl;
 				}
 				#endif
-				delete $2->name; delete $2->value;
+				delete $2->name; 
+				delete $2->value;
 				delete $2;
 				//$$=$1; //I think $$==$1
 			}
@@ -149,7 +153,8 @@ list:	  T_STRING T_STRING			{
 	strcpy($$,$1);
 	strcat($$," ");		// Delimiter in list
 	strcat($$,$2);
-	delete $1; delete $2;
+	delete [] $1; 
+	delete [] $2;
 	}
 
 	| list T_STRING			{ 
@@ -161,10 +166,10 @@ list:	  T_STRING T_STRING			{
 		  exit(1);
 		}
 		strcpy($$,old);
-		delete old;
+		delete [] old;
 		strcat($$," ");
 		strcat($$,$2);
-		delete $2;
+		delete [] $2;
 	}
 ;
 %%
