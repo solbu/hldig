@@ -1,4 +1,6 @@
-Mon Aug  9 15:59:39 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Aug  9 16:16:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc (readHeader): clean up header parsing.
 
 	* htdig/Document.cc (getdate): make tm static, so it's initialized
 	to zeros.  Should fix PR#81 & PR#472, where strftime() would crash

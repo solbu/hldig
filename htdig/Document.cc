@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.48 1999/08/09 21:02:31 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.49 1999/08/09 21:20:06 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -480,14 +480,18 @@ Document::readHeader(Connection &c)
 	    inHeader = 0;
 	else
 	{
+	    char	*token = line.get();
+	    while (*token && !isspace(*token))
+		token++;
+	    while (*token && isspace(*token))
+		token++;
 	    if (strncmp(line, "HTTP/", 5) == 0)
 	    {
 		//
 		// Found the status line.  This will determine if we
 		// continue or not
 		//
-		strtok(line, " ");
-		char	*status = strtok(0, " ");
+		char	*status = strtok(token, " ");
 		if (status && strcmp(status, "200") == 0)
 		{
 		    returnStatus = Header_ok;
@@ -510,30 +514,25 @@ Document::readHeader(Connection &c)
 		    returnStatus = Header_not_authorized;
 		}
 	    }
-	    else if (modtime == 0 
+	    else if (modtime == 0 && *token
 		     && mystrncasecmp(line, "last-modified:", 14) == 0)
 	    {
-	        strtok(line, " \t");
-                char	*token = strtok(0, "\n\t");
-		while (*token == ' ' || *token == '\t')
-                  token++; // Strip off any whitespace...
-		modtime = getdate(token);
+                token = strtok(token, "\n\t");
+		if (token && *token)
+		  modtime = getdate(token);
 	    }
-	    else if (contentLength == -1 
+	    else if (contentLength == -1 && *token
 		     && mystrncasecmp(line, "content-length:", 15) == 0)
 	    {
-                strtok(line, " \t");
-                char    *token = strtok(0, "\n\t");
-                while (*token == ' ' || *token == '\t')
-                  token++; // Strip off any whitespace...
-		contentLength = atoi(token);
+                token = strtok(token, "\n\t");
+		if (token && *token)
+		  contentLength = atoi(token);
 	    }
-	    else if (mystrncasecmp(line, "content-type:", 13) == 0)
+	    else if (*token && mystrncasecmp(line, "content-type:", 13) == 0)
 	    {
-                strtok(line, " \t");
-                char    *token = strtok(0, "\n\t");
-                while (*token == ' ' || *token == '\t')
-                  token++; // Strip off any whitespace...
+                token = strtok(token, "\n\t");
+		if (!token || !*token)
+		    return Header_not_text;
 		if ((returnStatus == Header_not_found ||
 			returnStatus == Header_ok) &&
 		    !ExternalParser::canParse(token) &&
@@ -542,13 +541,11 @@ Document::readHeader(Connection &c)
 		    return Header_not_text;
 		contentType = token;
 	    }
-	    else if (mystrncasecmp(line, "location:", 9) == 0)
+	    else if (*token && mystrncasecmp(line, "location:", 9) == 0)
 	    {
-		strtok(line, " \t");
-		char	*token = strtok(0, "\r\n \t");
-		while (*token == ' ' || *token == '\t')
-		  token++; // Strip off any whitespace...
-		redirected_to = token;
+                token = strtok(token, "\n\t");
+		if (token && *token)
+		  redirected_to = token;
 	    }
 	}
     }
