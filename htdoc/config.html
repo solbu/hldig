@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html>
   <head>
     <title>
@@ -14,7 +14,7 @@
        Please see the file <a href="COPYING">COPYING</a> for
       license information.
     </p>
-    <hr noshade size="4">
+    <hr size="4" noshade>
     <p>
       ht://Dig requires a configuration file and several HTML files
       to operate correctly. Fortunately, when ht://Dig is
@@ -52,8 +52,8 @@
       <a name="#htdig.conf">${CONFIG_DIR}/htdig.conf</a>
     </h2>
     This is the main runtime configuration file for all programs
-    that make up ht://Dig. The file is fully described in the <a
-    href="confindex.html" target="_top">Configuration file
+    that make up ht://Dig. The file is fully described in the
+    <a href="confindex.html" target="_top">Configuration file
     manual</a>. 
     <p>
       When ht://Dig is installed, several attributes will be
@@ -61,7 +61,8 @@
       here is a sample copy of what it can look like:
     </p>
 <pre>
-<font size="-1">#
+<font size="-1">
+#
 # Example config file for ht://Dig.
 # Last modified 2-Sep-1996 by Andrew Scherpbier
 #
@@ -199,7 +200,8 @@ no_page_number_text:    "&lt;img src=/htdig/button1.gif border=2 align=middle wi
       An example file can be as follows:
     </p>
 <pre>
-<font size="-1">&lt;html&gt;
+<font size="-1">
+&lt;html&gt;
 &lt;head&gt;
 &lt;title&gt;ht://Dig WWW Search&lt;/title&gt;
 &lt;/head&gt;
@@ -261,8 +263,8 @@ Search:
       engine will look for special variables inside the file. These
       variables will be replaced with the appropriate values for
       the particular search it is used for. For more details of the
-      use of these variables, consult the <a href=
-      "hts_templates.html">htsearch templates</a> documentation.
+      use of these variables, consult the
+      <a href="hts_templates.html">htsearch templates</a> documentation.
     </p>
     <p>
       Below is the default header.html file that gets installed.
@@ -270,8 +272,8 @@ Search:
       search.
     </p>
 <pre>
-<font size=
-"-1">&lt;html&gt;&lt;head&gt;&lt;title&gt;Search results for '$(WORDS)'&lt;/title&gt;&lt;/head&gt;
+<font size="-1">
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Search results for '$(WORDS)'&lt;/title&gt;&lt;/head&gt;
 &lt;body bgcolor="#eef7ff"&gt;
 &lt;h2&gt;&lt;img src="/htdig/htdig.gif"&gt;
 Search results for '$(LOGICAL_WORDS)'&lt;/h2&gt;
@@ -312,7 +314,8 @@ More &lt;img src="/htdig/star.gif" alt="*"&gt;'s indicate a better match.
       Note that it contains the page navigation stuff.
     </p>
 <pre>
-<font size="-1">&lt;hr noshade&gt;
+<font size="-1">
+&lt;hr noshade&gt;
 Pages:&lt;br&gt;
 $(PREVPAGE) $(PAGELIST) $(NEXTPAGE)
 &lt;hr noshade size=4&gt;
@@ -330,8 +333,8 @@ $(PREVPAGE) $(PAGELIST) $(NEXTPAGE)
     and footer.html files. The default nomatch.html is little more
     than header.html and footer.html appended: 
 <pre>
-<font size=
-"-1">&lt;html&gt;&lt;head&gt;&lt;title&gt;No match for '$(LOGICAL_WORDS)'&lt;/title&gt;&lt;/head&gt;
+<font size="-1">
+&lt;html&gt;&lt;head&gt;&lt;title&gt;No match for '$(LOGICAL_WORDS)'&lt;/title&gt;&lt;/head&gt;
 &lt;body bgcolor="#eef7ff"&gt;
 &lt;h1&gt;&lt;img src="/htdig/htdig.gif"&gt;
 Search results&lt;/h1&gt;
@@ -377,8 +380,8 @@ Refine search:
     If a boolean expression search causes a syntax error, this file
     will be displayed. 
 <pre>
-<font size=
-"-1">&lt;html&gt;&lt;head&gt;&lt;title&gt;Error in Boolean search for '$(WORDS)'&lt;/title&gt;&lt;/head&gt;
+<font size="-1">
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Error in Boolean search for '$(WORDS)'&lt;/title&gt;&lt;/head&gt;
 &lt;body bgcolor="#eef7ff"&gt;
 &lt;h1&gt;&lt;img src="/htdig/htdig.gif"&gt;
 Error in Boolean search for '$(LOGICAL_WORDS)'&lt;/h1&gt;
@@ -411,14 +414,12 @@ Refine search:
 &lt;/body&gt;&lt;/html&gt;
 </font>
 </pre>
-    <hr noshade size="4">
+    <hr size="4" noshade>
     <address>
-      <a href="author.html">Andrew Scherpbier
-      &lt;andrew@contigo.com&gt;</a>
+      <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
     </address>
     <!-- hhmts start -->
 Last modified: Mon Feb  8 20:39:41 EST 1999
-<!-- hhmts end -->  
+<!-- hhmts end -->
   </body>
 </html>
-

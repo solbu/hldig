@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.19 1999/02/06 01:17:47 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.20 1999/02/14 02:31:21 ghutchis Exp $";
 #endif
 
 #include "Configuration.h"
@@ -319,6 +319,11 @@ int parse_date(char *date, int &year, int &month, int &day)
 	// Default to American standard when not specified in conf,
 	// so expect mm dd [yy]yy.
 	sscanf(scandate.get(), "%d%d%d", &mm, &dd, &yy);
+	if (mm > 31 && dd <= 12 && yy <= 31)
+	{
+	    // probably got yyyy-mm-dd instead of mm/dd/yy
+	    t = mm; mm = dd; dd = yy; yy = t;
+	}
     }
 
     // OK, we took our best guess at the order the y, m & d should be.

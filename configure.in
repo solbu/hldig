@@ -118,11 +118,13 @@ extern "C" int gethostname(char *, int);],
 
 AC_LANG_C
 AC_MSG_CHECKING(how to call getpeername?)
+for sock_t in 'struct sockaddr' 'void'; do
 for getpeername_length_t in 'size_t' 'int' 'unsigned int'; do
 AC_TRY_COMPILE([#include <sys/types.h>
 #include <sys/socket.h>],
-[extern getpeername(int, struct sockaddr *, $getpeername_length_t *)],
-[ac_found=yes ; break 1],ac_found=no)
+[extern getpeername(int, $sock_t *, $getpeername_length_t *)],
+[ac_found=yes ; break 2],ac_found=no)
+done
 done
   if test "$ac_found" = no; then
     AC_MSG_ERROR([can't determine argument type])

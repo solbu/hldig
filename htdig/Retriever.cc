@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36 1999/01/31 19:45:35 hp Exp $
+// $Id: Retriever.cc,v 1.37 1999/02/14 02:31:19 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -868,6 +868,8 @@ Retriever::got_word(char *word, int location, int heading)
 {
     if (debug > 3)
 	cout << "word: " << word << '@' << location << endl;
+    if (heading > 11 || heading < 0) // Current limits for headings
+      heading = 0;  // Assume it's just normal text
     if (trackWords)
     {
       String w = word;

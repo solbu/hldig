@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html>
   <head>
     <title>
@@ -14,7 +14,7 @@
        Please see the file <a href="COPYING">COPYING</a> for
       license information.
     </p>
-    <hr noshade size="4">
+    <hr size="4" noshade>
     <p>
       This document will attempt to show the steps needed to build
       and install the ht://Dig system.<br>
@@ -54,7 +54,7 @@
     </blockquote>
     In either case, a new directory will be created under which the
     distribution will be extracted. The directory it creates will
-    be <tt>htdig-</tt> followed by the version number. 
+    be <tt>htdig-</tt> followed by the version number.
     <hr noshade>
     <h2>
       <a name="configure">Configure</a>
@@ -62,7 +62,7 @@
     <p>
       Once the distribution has been extracted, change to the newly
       created directory.<br>
-       In this directory you will need execute the <tt>configure</tt> program: 
+       In this directory you will need execute the <tt>configure</tt> program:
     <blockquote>
       % <b>./configure</b>
     </blockquote>
@@ -190,8 +190,8 @@
     <p>
       If the compilation failed with the error that it cannot find
       libht.a, the most likely problem is that your system does not
-      have libstdc++ installed. Please check the <a href=
-      "require.html">system requirements</a> for details on this.
+      have libstdc++ installed. Please check the
+      <a href="require.html">system requirements</a> for details on this.
     </p>
     <hr noshade>
     <h2>
@@ -208,7 +208,7 @@
     create the directories that you specified in the CONFIG file.
     It will then copy the following programs to the <tt>
     BIN_DIR</tt> directory you specified in the CONFIG file: 
-    <menu>
+    <ul>
       <li>
         htdig
       </li>
@@ -221,7 +221,7 @@
       <li>
         htnotify
       </li>
-    </menu>
+    </ul>
     It will also copy the htsearch program to your CGIBIN_DIR
     directory. 
     <p>
@@ -369,14 +369,14 @@
       </li>
     </menu>
     Note that these files will <em>never</em> replace any existing
-    files that may already be installed. 
+    files that may already be installed.
     <p>
       It is also important to note that these files are mostly
       examples. As they stand, they will work, but you probably
       want to modify them to reflect your needs.
     </p>
     <p>
-      After the installation, your will be ready to test out
+      After the installation, you will be ready to test out
       everything. You can use the <tt>rundig</tt> script to make a
       test database of the online documentation at
       http://www.htdig.org/
@@ -388,14 +388,12 @@
       Configuration</a> manual has the details on how what
       attributes are needed.
     </p>
-    <hr noshade size="4">
+    <hr size="4" noshade>
     <address>
-      <a href="author.html">Andrew Scherpbier
-      &lt;andrew@contigo.com&gt;</a>
+      <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
     </address>
     <!-- hhmts start -->
 Last modified: Mon Feb  8 20:37:02 EST 1999
-<!-- hhmts end -->  
+<!-- hhmts end -->
   </body>
 </html>
-

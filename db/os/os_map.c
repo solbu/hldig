@@ -382,8 +382,9 @@ __os_map(path, fd, len, is_region, is_anonymous, is_rdonly, addr)
 	 * files, it doesn't make sense.
 	 */
 #ifdef MAP_HASSEMAPHORE
-	if (!is_rdonly)
+	/* PJM COMMENT 2/10/99	if (!is_rdonly)
 		flags |= MAP_HASSEMAPHORE;
+	*/
 #endif
 
 	prot = PROT_READ | (is_rdonly ? 0 : PROT_WRITE);
