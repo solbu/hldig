@@ -1,3 +1,8 @@
+Mon Mar  8 01:36:38 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* htlib/DB2_db.cc: Remove errno.
+	* htlib/DB2_hash.cc: Ditto.
+
 Sun Mar  7 09:39:37 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/timegm.c: Fix problems compiling on libc5 systems noted by

@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: DB2_hash.cc,v 1.1 1999/03/03 04:23:15 ghutchis Exp $";
+static char RCSid[] = "$Id: DB2_hash.cc,v 1.2 1999/03/08 00:48:58 hp Exp $";
 #endif
 
 #include "DB2_hash.h"
@@ -14,9 +14,6 @@ static char RCSid[] = "$Id: DB2_hash.cc,v 1.1 1999/03/03 04:23:15 ghutchis Exp $
 #include <fstream.h>
 #include <malloc.h>
 #include <unistd.h>
-
-// Where do I need this for? I don't know.
-int errno;
 
 // Default cache size in kilobytes.
 // Maybe this should be an config option, just for easy testing and

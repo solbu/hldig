@@ -4,6 +4,10 @@
 // Implementation of DB2_db
 //
 // $Log: DB2_db.cc,v $
+// Revision 1.8  1999/03/08 00:48:26  hp
+// Removed errno; it should never be defined by a user program.
+// (If it fails, the wrong library or header file is used.)
+//
 // Revision 1.7  1999/01/23 01:25:02  hp
 // Fixed _some_ missing const qualifiers on common methods (requiring temps)
 //
@@ -37,7 +41,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: DB2_db.cc,v 1.7 1999/01/23 01:25:02 hp Exp $";
+static char RCSid[] = "$Id: DB2_db.cc,v 1.8 1999/03/08 00:48:26 hp Exp $";
 #endif
 
 #include "DB2_db.h"
@@ -46,9 +50,6 @@ static char RCSid[] = "$Id: DB2_db.cc,v 1.7 1999/01/23 01:25:02 hp Exp $";
 #include <fstream.h>
 #include <malloc.h>
 #include <unistd.h>
-
-// Where do I need this for? I don't know.
-int errno;
 
 // Default cache size in kilobytes.
 // Maybe this should be an config option, just for easy testing and
