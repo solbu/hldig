@@ -1,3 +1,9 @@
+Fri Jan 11 17:06:09 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/xmlsearch/*: Added files contributed by Nathan Hand and
+	me to implement XML output from htsearch, including DTD, templates
+	and config file.
+
 Fri Jan 11 16:41:29 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/examples/xmlsearch/*: Added files contributed by Nathan Hand

@@ -1,0 +1,15 @@
+These files were developed by Nathan Hand and Gilles Detillieux.  They
+implement Nathan's DTD for XML output from htsearch, using htsearch
+template files.
+
+Files are:
+
+HTDIG.DTD	- The data type definition for XML output from htsearch
+README		- You're reading me now
+nomatch.xml	- 4 XML template files, to go in your "common" directory
+result.xml
+syntax.xml
+wrapper.xml
+xml.conf	- htsearch configuration file, to go in your CONFIG_DIR
+xmlsearch.cgi	- wrapper for htsearch 3.1.5
+
