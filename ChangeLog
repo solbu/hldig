@@ -1,3 +1,13 @@
+Fri Jan 22 23:12:12 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* include/htconfig.h.in: Cleaned up preprocessor definitions.
+
+	* configure.in, configure: Fix NEED_PROTO_GETHOSTNAME check and
+	make check for GETPEERNAME_LENGTH_T more flexible.
+
+	* htlib/Connection.cc: Change __sun__ to NEED_PROTO_GETHOSTNAME
+	since we prefer feature tests.
+
 Sat Jan 23 02:38:08 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htsearch/Display.cc (logSearch): Fix simple typo in last change.
