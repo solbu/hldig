@@ -4,6 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.27  1999/01/07 03:12:07  ghutchis
+// Add .bin, .tgz, .rpm, .mov, .mpg, .avi to bad_extensions.
+//
 // Revision 1.26  1999/01/05 19:30:16  ghutchis
 // Added new option max_descriptions for limit on the number of descriptions to
 // store (default 5, matches behavior pre 3.1.0b3).
@@ -89,7 +92,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.26 1999/01/05 19:30:16 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.27 1999/01/07 03:12:07 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -115,7 +118,7 @@ ConfigDefaults	defaults[] =
     {"allow_numbers",			"false"},
     {"allow_virtual_hosts",		"true"},
     {"backlink_factor",                 "1000"},
-    {"bad_extensions",			".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram"},
+    {"bad_extensions",			".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram .tgz .bin .rpm .mpg .mov .avi"},
     {"bad_querystr",                    ""},
     {"bad_word_list",			"${common_dir}/bad_words"},
     {"case_sensitive"                   "true"},
