@@ -26,16 +26,10 @@
 int			debug = 0;
 int			report_statistics = 0;
 DocumentDB		docs;
-#ifdef  REGEX
 HtRegex			limits;
 HtRegex			limitsn;
 HtRegex			excludes;
-#else
-StringMatch		limits;
-StringMatch		limitsn;
-StringMatch		excludes;
-#endif
-StringMatch             badquerystr;
+HtRegex			badquerystr;
 FILE			*urls_seen = NULL;
 FILE			*images_seen = NULL;
 String			configFile = DEFAULT_CONFIG_FILE;
@@ -191,38 +185,22 @@ main(int ac, char **av)
     // Set up the limits list
     //
     StringList l(config["limit_urls_to"], " \t");
-#ifdef  REGEX
-    limits.set(l.Join('|'));
-#else
-    limits.IgnoreCase();
-    limits.Pattern(l.Join('|'));
-#endif
+    limits.setEscaped(l);
     l.Release();
 
     l.Create(config["limit_normalized"], " \t");
-#ifdef  REGEX
-    limitsn.set(l.Join('|'));
-#else
-    limitsn.IgnoreCase();
-    limitsn.Pattern(l.Join('|'));
-#endif
+    limitsn.setEscaped(l);
     l.Release();
 
     //
     // Patterns to exclude from urls...
     //
     l.Create(config["exclude_urls"], " \t");
-#ifdef  REGEX
-    excludes.set(l.Join('|'));
-#else
-    excludes.IgnoreCase();
-    excludes.Pattern(l.Join('|'));
-#endif
+    excludes.setEscaped(l);
     l.Release();
 
     l.Create(config["bad_querystr"], " \t");
-    badquerystr.IgnoreCase();
-    badquerystr.Pattern(l.Join('|'));
+    excludes.setEscaped(l);
     l.Release();
 
     // Check "uncompressed"/"uncoded" urls at the price of time

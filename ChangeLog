@@ -1,3 +1,24 @@
+Sat May 15 12:57:40 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/URL.cc (normalizePath): Remove extra (useless) variable
+	declarations.
+
+	* htlib/htString.h, htlib/String.cc: Add new method Nth to solve
+	problems with (String *)->[].
+
+	* htlib/HtRegex.h, htlib/HtRegex.cc: Added new method
+	setEscaped(StringList) to produce a pattern connected with '|' of
+	possibly escaped strings. Strings are not escaped if enclosed in
+	[] and the brackets are removed from unescaped regex.
+
+	* htdig/htdig.h: Use HtRegex instead of StringMatch for limiting
+	by default.
+
+	* htdig/Retriever.cc: As above.
+
+	* htdig/htdig.cc(main): As above. Use setEscaped to set limits
+	correctly (i.e. in a backwards-compatible way).
+
 Sat May 15 11:24:26 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htfuzzy/Speling.h, htfuzzy/Speling.cc: New files for simple
