@@ -7,6 +7,7 @@
 //
 
 #include "htmerge.h"
+#include "good_strtok.h"
 
 //*****************************************************************************
 // void mergeDB()
@@ -179,11 +180,6 @@ mergeDB()
 	      {
 		switch (*name)
 		  {
-#ifndef NO_WORD_COUNT
-		  case 'c':
-		    wr.count = atoi(value);
-		    break;
-#endif
 		  case 'l':
 		    wr.location = atoi(value);
 		    break;
@@ -192,7 +188,7 @@ mergeDB()
 		    wr.id = atoi(value);
 		    break;
 		  case 'w':
-		    wr.weight = atoi(value);
+		    wr.flags = atoi(value);
 		    break;
 		  case 'a':
 		    wr.anchor = atoi(value);
@@ -216,16 +212,10 @@ mergeDB()
 
 	// Record the word in the new file
 	fprintf(wordlist, "%s", word.get());
-#ifndef NO_WORD_COUNT
-	if (wr.count != 1)
-	  {
-	    fprintf(wordlist, "\tc:%d", wr.count);
-	  }
-#endif
 	fprintf(wordlist, "\tl:%d\ti:%d\tw:%d",
 		wr.location,
 		wr.id,
-		wr.weight);
+		wr.flags);
 	if (wr.anchor != 0)
 	  {
 	    fprintf(wordlist, "\ta:%d", wr.anchor);
@@ -276,11 +266,6 @@ if (*buffer == '+') {
 	      {
 		switch (*name)
 		  {
-#ifndef NO_WORD_COUNT
-		  case 'c':
-		    wr.count = atoi(value);
-		    break;
-#endif
 		  case 'l':
 		    wr.location = atoi(value);
 		    break;
@@ -289,7 +274,7 @@ if (*buffer == '+') {
 		    wr.id = atoi(value);
 		    break;
 		  case 'w':
-		    wr.weight = atoi(value);
+		    wr.flags = atoi(value);
 		    break;
 		  case 'a':
 		    wr.anchor = atoi(value);
@@ -313,16 +298,10 @@ if (*buffer == '+') {
 
 	// Record the word in the new file
 	fprintf(wordlist, "%s", word.get());
-#ifndef NO_WORD_COUNT
-	if (wr.count != 1)
-	  {
-	    fprintf(wordlist, "\tc:%d", wr.count);
-	  }
-#endif
 	fprintf(wordlist, "\tl:%d\ti:%d\tw:%d",
 		wr.location,
 		wr.id + docIDOffset,
-		wr.weight);
+		wr.flags);
 	if (wr.anchor != 0)
 	  {
 	    fprintf(wordlist, "\ta:%d", wr.anchor);
