@@ -6,6 +6,7 @@ RELEASES:
    3.2.0b1: Released:   4 Feb 2000.
 
 SHOWSTOPPERS:
+* Code currently will not build since mifluz merge did not work cleanly.
 * Odd behavior with $(MODIFIED) and scores not working with
    wordlist_compress set but work fine without wordlist_compress.
    (the date is definitely stored correctly, even with compression on
@@ -23,8 +24,6 @@ KNOWN BUGS:
    an intermediate output is application/pdf.
 
 PENDING PATCHES (available but need work):
-* htsearch rewrite from Quim.
-* Merge in mifluz changes.
 * Additional support for Win32.
 * Date-restricted searching (maybe 1/2 done).
 * Memory improvements to htmerge. (Backed out b/c htword API changed.)
@@ -62,6 +61,7 @@ DOCUMENTATION:
    requirements of 3.2.x (e.g. phrase searching, regex matching,
    external parsers and transport methods, database compression.)
 * TODO.html has not been updated for current TODO list and completions.
+* all.html file needs significant work.
 
 OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
