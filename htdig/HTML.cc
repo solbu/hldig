@@ -11,7 +11,7 @@
 // <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.22 2001/11/02 18:08:03 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.23 2001/11/02 18:29:55 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -34,6 +34,7 @@ static StringMatch	tags;
 static StringMatch	nobreaktags;
 static StringMatch	spacebeforetags;
 static StringMatch	spaceaftertags;
+static StringMatch	metadatetags;
 static StringMatch	keywordsMatch;
 static int		keywordsCount;
 static int		max_keywords;
@@ -88,6 +89,10 @@ HTML::HTML()
     spacebeforetags.Pattern("title|h1|h2|h3|h4|h5|h6|address|blockquote|noindex|img|li|th|td|dt|dd|p|br|hr|center|spacer");
     spaceaftertags.IgnoreCase();
     spaceaftertags.Pattern("/title|/h1|/h2|/h3|/h4|/h5|/h6|/address|/blockquote");
+
+    // These are the name values of meta tags that carry date information.
+    metadatetags.IgnoreCase();
+    metadatetags.Pattern("date|dc.date|dc.date.created|dc.data.modified");
 
     //String	keywordNames = config["keywords_meta_tag_names"];
     //keywordNames.replace(' ', '|');
@@ -791,7 +796,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		{
 		    retriever.got_meta_email(transSGML(attrs["content"]));
 		}
-		else if (mystrcasecmp(cache, "date") == 0 && 
+		else if (metadatetags.CompareWord(cache) &&
 				config.Boolean("use_doc_date",0))
 		{
 		    retriever.got_time(transSGML(attrs["content"]));
