@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.h,v 1.11.2.2 2000/03/20 19:14:49 ghutchis Exp $
+// $Id: DocumentDB.h,v 1.11.2.3 2000/04/09 15:20:20 ghutchis Exp $
 //
 
 #ifndef _DocumentDB_h_
@@ -76,11 +76,11 @@ public:
     List		*DocIDs();
 
     // Dump the database out to an ASCII text file
-    int			DumpDB(const String& filename);
+    int			DumpDB(const String& filename, int verbose = 0);
 
     // Read in the database from an ASCII text file
     // (created by DumpDB)
-    int			LoadDB(const String& filename);
+    int			LoadDB(const String& filename, int verbose = 0);
 
 private:
     Database		*dbf;
