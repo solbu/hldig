@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.h,v 1.7.2.1 1999/12/07 19:54:12 bosc Exp $
+// $Id: htsearch.h,v 1.7.2.2 2000/02/27 04:35:25 ghutchis Exp $
 //
 
 #ifndef _htsearch_h_
@@ -49,7 +49,7 @@ extern Database		*dbf;
 extern String		logicalWords;
 extern String		originalWords;
 extern int              debug;
-
+extern StringList       collectionList;
 
 #endif
 

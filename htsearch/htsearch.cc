@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.54.2.4 2000/01/13 14:47:09 loic Exp $
+// $Id: htsearch.cc,v 1.54.2.5 2000/02/27 04:35:25 ghutchis Exp $
 //
 
 #include "htsearch.h"
@@ -27,6 +27,7 @@
 #include "HtURLCodec.h"
 #include "WordContext.h"
 #include "HtRegex.h"
+#include "Collection.h"
 
 #include <time.h>
 #include <ctype.h>
@@ -40,7 +41,8 @@
 
 typedef void (*SIGNAL_HANDLER) (...);
 
-ResultList *htsearch(const String&, List &, Parser *);
+// ResultList *htsearch(const String&, List &, Parser *);
+void htsearch(Collection *, List &, Parser *); 
 
 void setupWords(char *, List &, int, Parser *, String &);
 void createLogicalWords(List &, String &, String &);
@@ -53,6 +55,7 @@ void usage();
 int			debug = 0;
 int			minimum_word_length = 3;
 
+StringList              collectionList; // List of databases to search on
 
 //*****************************************************************************
 // int main()
@@ -63,7 +66,8 @@ main(int ac, char **av)
     int			c;
     extern char		*optarg;
     int		        override_config=0;
-    List		searchWords;
+    // List		searchWords;
+    List		*searchWords = NULL;
     String		configFile = DEFAULT_CONFIG_FILE;
     int			pageNumber = 1;
     HtRegex		limit_to;
@@ -71,9 +75,11 @@ main(int ac, char **av)
     String		logicalWords;
     String              origPattern;
     String              logicalPattern;
-    StringMatch		searchWordsPattern;
+    // StringMatch		searchWordsPattern;
+    StringMatch         *searchWordsPattern = NULL;
     StringList		requiredWords;
     int                 i;
+    Dictionary          selected_collections; // Multiple database support
 
      //
      // Parse command line arguments
@@ -125,6 +131,38 @@ main(int ac, char **av)
 	l.Release();
     }
 
+    // Multiple databases may be specified for search.
+    // Identify all databases specified with the "config=" parameter.
+    if (input.exists("config"))
+    {
+        collectionList.Create(input["config"], " \t\001|");
+    }
+    if (collectionList.Count() == 0)
+        collectionList.Add(""); // use default config
+    char *errorMsg = NULL;
+    String	 originalWords = input["words"];
+    originalWords.chop(" \t\r\n");
+
+// Iterate over all specified collections (databases)
+for (int cInd=0; errorMsg == NULL && cInd < collectionList.Count(); cInd++)
+{
+    // Each collection is handled in an iteration. Reset the following so
+    // that we start with a clean slate.
+    //
+    logicalWords = 0;
+    origPattern = 0;
+    logicalPattern = 0;
+    requiredWords.Release();
+    // searchWords.Release();
+    searchWords = new List;
+    // if (searchWordsPattern)
+    //     delete searchWordsPattern;
+    searchWordsPattern = new StringMatch;
+
+    char *config_name = collectionList[cInd];
+    if (config_name && config_name[0] == '\0')
+        config_name = NULL; // use default config
+                                  
     //
     // Setup the configuration database.  First we read the compiled defaults.
     // Then we override those with defaults read in from the configuration
@@ -134,8 +172,8 @@ main(int ac, char **av)
     config.Defaults(&defaults[0]);
     // To allow . in filename while still being 'secure',
     // e.g. htdig-f.q.d.n.conf
-    if (!override_config && input.exists("config") 
-	&& (strstr(input["config"], "./") == NULL))
+    if (!override_config && config_name 
+	&& (strstr(config_name, "./") == NULL))
     {
 	char	*configDir = getenv("CONFIG_DIR");
 	if (configDir)
@@ -146,10 +184,10 @@ main(int ac, char **av)
 	{
 	    configFile = CONFIG_DIR;
 	}
-	if (strlen(input["config"]) == 0)
+	if (strlen(config_name) == 0)
 	  configFile = DEFAULT_CONFIG_FILE;
 	else
-	  configFile << '/' << input["config"] << ".conf";
+	  configFile << '/' << config_name << ".conf";
     }
     if (access((char*)configFile, R_OK) < 0)
     {
@@ -211,9 +249,7 @@ main(int ac, char **av)
     // Parse the words to search for from the argument list.
     // This will produce a list of WeightWord objects.
     //
-    String	 originalWords = input["words"];
-    originalWords.chop(" \t\r\n");
-    setupWords(originalWords, searchWords,
+    setupWords(originalWords, *searchWords,
 	       strcmp(config["match_method"], "boolean") == 0,
 	       parser, origPattern);
 
@@ -221,15 +257,15 @@ main(int ac, char **av)
     // Convert the list of WeightWord objects to a pattern string
     // that we can compile.
     //
-    createLogicalWords(searchWords, logicalWords, logicalPattern);
+    createLogicalWords(*searchWords, logicalWords, logicalPattern);
 
     // 
     // Assemble the full pattern for excerpt matching and highlighting
     //
     origPattern += logicalPattern;
-    searchWordsPattern.IgnoreCase();
-    searchWordsPattern.IgnorePunct();
-    searchWordsPattern.Pattern(logicalPattern);	// this should now be enough
+    searchWordsPattern->IgnoreCase();
+    searchWordsPattern->IgnorePunct();
+    searchWordsPattern->Pattern(logicalPattern); // this should now be enough
     //searchWordsPattern.Pattern(origPattern);
     //if (debug > 2)
     //  cout << "Excerpt pattern: " << origPattern << "\n";
@@ -241,7 +277,7 @@ main(int ac, char **av)
     //
     if (requiredWords.Count() > 0)
     {
-	addRequiredWords(searchWords, requiredWords);
+	addRequiredWords(*searchWords, requiredWords);
     }
     
     //
@@ -255,7 +291,15 @@ main(int ac, char **av)
 	reportError(form("Unable to read word database file '%s'\nDid you run htmerge?",
 			 word_db.get()));
     }
-    ResultList	*results = htsearch(word_db, searchWords, parser);
+    // ResultList	*results = htsearch(word_db, searchWords, parser);
+
+    String      doc_index = config["doc_index"];
+    if (access(doc_index, R_OK) < 0)
+    {
+        reportError(form("Unable to read document index file '%s'\nDid you run h
+tmerge?",
+                         doc_index.get()));
+    }     
 
     const String	doc_db = config["doc_db"];
     if (access(doc_db, R_OK) < 0)
@@ -271,7 +315,25 @@ main(int ac, char **av)
 			 doc_excerpt.get()));
     }
 
-    Display	display(doc_db, 0, doc_excerpt);
+    // Multiple database support
+    Collection *collection = new Collection(configFile,
+        word_db.get(), doc_index.get(), doc_db.get(), doc_excerpt.get());
+
+    // Perform search within the collection. Each collection stores its
+    // own result list.
+    htsearch(collection, *searchWords, parser);
+    collection->setSearchWords(searchWords);
+    collection->setSearchWordsPattern(searchWordsPattern); 
+    selected_collections.Add(configFile, collection);
+
+    if (parser->hadError())
+        errorMsg = parser->getErrorMessage();      
+
+    delete parser;
+}
+
+    // Display	display(doc_db, 0, doc_excerpt);
+    Display     display(&selected_collections);
     if (display.hasTemplateError())
       {
 	reportError(form("Unable to read template file '%s'\nDoes it exist?",
@@ -279,20 +341,20 @@ main(int ac, char **av)
 	return 0;
       }
     display.setOriginalWords(originalWords);
-    display.setResults(results);
-    display.setSearchWords(&searchWords);
+    // display.setResults(results);
+    // display.setSearchWords(&searchWords);
     display.setLimit(&limit_to);
     display.setExclude(&exclude_these);
-    display.setAllWordsPattern(&searchWordsPattern);
+    // display.setAllWordsPattern(searchWordsPattern);
     display.setCGI(&input);
     display.setLogicalWords(logicalWords);
-    if (parser->hadError())
-	display.displaySyntaxError(parser->getErrorMessage());
+    if (errorMsg)
+	display.displaySyntaxError(errorMsg);
     else
 	display.display(pageNumber);
 
-    delete results;
-    delete parser;
+    // delete results;
+    // delete parser;
     return 0;
 }
 
@@ -653,8 +715,8 @@ convertToBoolean(List &words)
 //   This returns a dictionary indexed by document ID and containing a
 //   List of HtWordReference objects.
 //
-ResultList *
-htsearch(const String& wordfile, List &searchWords, Parser *parser)
+void
+htsearch(Collection *collection, List &searchWords, Parser *parser)
 {
     //
     // Pick the database type we are going to use
@@ -662,11 +724,13 @@ htsearch(const String& wordfile, List &searchWords, Parser *parser)
     ResultList	*matches = new ResultList;
     if (searchWords.Count() > 0)
     {
-	parser->setDatabase(wordfile);
+	// parser->setDatabase(wordfile);
+        parser->setCollection(collection);
 	parser->parse(&searchWords, *matches);
     }
 	
-    return matches;
+    collection->setResultList(matches);
+    // return matches;
 }
 
 
