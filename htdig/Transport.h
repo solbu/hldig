@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.6 1999/07/22 10:35:43 angus Exp $
+// $Id: Transport.h,v 1.7 1999/08/10 01:19:49 ghutchis Exp $
 //
 //
 
@@ -161,7 +161,7 @@ class Transport : public Object
 
    // Get and set the max document size to be retrieved
    void SetRequestMaxDocumentSize (int s) { _max_document_size=s; }
-   GetRequestMaxDocumentSize() const { return _max_document_size; }
+   int GetRequestMaxDocumentSize() const { return _max_document_size; }
 
    virtual Transport_Response *GetResponse() = 0;
    

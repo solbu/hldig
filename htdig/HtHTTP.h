@@ -120,7 +120,7 @@ public:
     //    Set the Request Method
  ///////
 
-   SetRequestMethod (Request_Method rm) { _Method = rm; }
+   void SetRequestMethod (Request_Method rm) { _Method = rm; }
    Request_Method GetRequestMethod() { return _Method; }
    
 
