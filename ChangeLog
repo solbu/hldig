@@ -1,3 +1,13 @@
+Thu Jun  7 15:27:33 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc: Backported from 3.2.0b3, fixing these
+	problems: no longer confused by "; charset=..." in Content-Type,
+	avoids security problems with popen() and shell parsing untrusted URL
+	(PR#542, PR#951), avoids predictable temporary file name if mkstemp()
+	exists, binary output from external converter no longer mangled,
+	less ambiguous error messages, opens temp. file in binary mode on
+	non-Unix systems.
+
 Thu Jun  7 15:10:14 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/DocumentDB.{h,cc}: Replace CreateSearchDB() with DumpDB(),
