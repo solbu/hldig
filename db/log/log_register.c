@@ -117,7 +117,7 @@ found:	/* Log the registry. */
 		if ((ret = __log_register_log(dblp, NULL, &r_unused,
 		    0, LOG_OPEN, &r_name, &fid_dbt, fnp->id, type)) != 0)
 			goto err;
-		if ((ret = __log_add_logid(dblp, dbp, fnp->id)) != 0)
+		if ((ret = __log_add_logid(dblp, dbp, name, fnp->id)) != 0)
 			goto err;
 	}
 

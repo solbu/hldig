@@ -77,6 +77,7 @@ __bam_split(dbc, arg)
 	DBC *dbc;
 	void *arg;
 {
+	BTREE *t;
 	CURSOR *cp;
 	DB *dbp;
 	enum { UP, DOWN } dir;
@@ -112,6 +113,7 @@ __bam_split(dbc, arg)
 	 * split.  This would be an easy change for this code, but I have no
 	 * numbers that indicate it's worthwhile.
 	 */
+	t = dbp->internal;
 	for (dir = UP, level = LEAFLEVEL;; dir == UP ? ++level : --level) {
 		/*
 		 * Acquire a page and its parent, locked.
@@ -122,7 +124,17 @@ __bam_split(dbc, arg)
 		        (db_recno_t *)arg, S_WRPAIR, level, &exact))) != 0)
 			return (ret);
 
-		/* Split the page. */
+		/*
+		 * Split the page if it still needs it (it's possible another
+		 * thread of control has already split the page).  If we are
+		 * guaranteed that two items will fit on the page, the split
+		 * is no longer necessary.
+		 */
+		if (t->bt_ovflsize * 2 <=
+		    (db_indx_t)P_FREESPACE(cp->csp[0].page)) {
+			__bam_stkrel(dbc, 1);
+			return (0);
+		}
 		ret = cp->csp[0].page->pgno == PGNO_ROOT ?
 		    __bam_root(dbc, &cp->csp[0]) :
 		    __bam_page(dbc, &cp->csp[-1], &cp->csp[0]);

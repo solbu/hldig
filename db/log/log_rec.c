@@ -73,6 +73,7 @@ __log_register_recover(logp, dbtp, lsnp, redo, info)
 	int redo;
 	void *info;
 {
+	DB_ENTRY *dbe;
 	__log_register_args *argp;
 	int ret;
 
@@ -104,10 +105,16 @@ __log_register_recover(logp, dbtp, lsnp, redo, info)
 				    argp->name.data, strerror(ENOENT));
 			ret = 0;
 		}
-	} else if (argp->opcode != LOG_CHECKPOINT) {
+	} else if (argp->opcode != LOG_CHECKPOINT &&
+	    argp->opcode != LOG_CLOSE) {
 		/*
-		 * If we are redoing a close or undoing an open, then we need
-		 * to close the file.
+		 * If we are undoing an open, then we need to close the file.
+		 * Note that we do *not* close the file if we are redoing a
+		 * close, because we do not log the reference counts on log
+		 * files and we may have had the file open multiple times,
+		 * and therefore, this close should just dec a reference
+		 * count.  However, since we only do one open during a
+		 * checkpoint, this will inadvertently close the file.
 		 *
   		 * If the file is deleted, then we can just ignore this close.
  		 * Otherwise, we should usually have a valid dbp we should
@@ -116,14 +123,19 @@ __log_register_recover(logp, dbtp, lsnp, redo, info)
 		 * may, in fact, not have the file open, and that's OK.
 		 */
 		LOCK_LOGTHREAD(logp);
-		if (logp->dbentry[argp->id].dbp != NULL &&
-		    --logp->dbentry[argp->id].refcount == 0) {
-			ret = logp->dbentry[argp->id].dbp->close(
-			    logp->dbentry[argp->id].dbp, 0);
-			logp->dbentry[argp->id].dbp = NULL;
+		if (argp->id < logp->dbentry_cnt) {
+			dbe = &logp->dbentry[argp->id];
+			if (dbe->dbp != NULL && --dbe->refcount == 0) {
+				ret = dbe->dbp->close(dbe->dbp, 0);
+				if (dbe->name != NULL) {
+					__os_freestr(dbe->name);
+					dbe->name = NULL;
+				}
+				(void)__log_rem_logid(logp, argp->id);
+			}
 		}
 		UNLOCK_LOGTHREAD(logp);
- 	} else if (redo == TXN_UNDO &&
+ 	} else if (argp->opcode == LOG_CHECKPOINT && redo == TXN_UNDO &&
  	    (argp->id >= logp->dbentry_cnt ||
  	    (!logp->dbentry[argp->id].deleted &&
  	    logp->dbentry[argp->id].dbp == NULL))) {
@@ -160,17 +172,42 @@ __log_open_file(lp, argp)
 	DB_LOG *lp;
 	__log_register_args *argp;
 {
+	DB_ENTRY *dbe;
+  
+	if (argp->name.size == 0)
+		return(0);
+  
+	/*
+	 * Because of reference counting, we cannot automatically close files
+	 * during recovery, so when we're opening, we have to check that the
+	 * name we are opening is what we expect.  If it's not, then we close
+	 * the old file and open the new one.
+	 */
 	LOCK_LOGTHREAD(lp);
-	if (argp->id < lp->dbentry_cnt &&
-	    (lp->dbentry[argp->id].deleted == 1 ||
-	    lp->dbentry[argp->id].dbp != NULL)) {
-		if (argp->opcode != LOG_CHECKPOINT)
-			lp->dbentry[argp->id].refcount++;
+	if (argp->id < lp->dbentry_cnt)
+		dbe = &lp->dbentry[argp->id];
+	else
+		dbe = NULL;
 
+	if (dbe != NULL && (dbe->deleted == 1 || dbe->dbp != NULL) &&
+	    dbe->name != NULL && argp->name.data != NULL &&
+	    strncmp(argp->name.data, dbe->name, argp->name.size) == 0) {
+
+		dbe->refcount++;
 		UNLOCK_LOGTHREAD(lp);
 		return (0);
 	}
-	UNLOCK_LOGTHREAD(lp);
+  	UNLOCK_LOGTHREAD(lp);
+
+	if (dbe != NULL && dbe->dbp != NULL) {
+                (void)dbe->dbp->close(dbe->dbp, 0);
+		if (dbe->name != NULL)
+			__os_freestr(dbe->name);
+                dbe->name = NULL;
+		(void)__log_rem_logid(lp, argp->id);
+        }
+
+
 	return (__log_do_open(lp,
 	    argp->uid.data, argp->name.data, argp->ftype, argp->id));
 }
@@ -206,7 +243,7 @@ __log_do_open(lp, uid, name, ftype, ndx)
 	}
 
 	if (ret == 0 || ret == ENOENT)
-		(void)__log_add_logid(lp, dbp, ndx);
+		(void)__log_add_logid(lp, dbp, name, ndx);
 
 	return (ret);
 }
@@ -215,12 +252,13 @@ __log_do_open(lp, uid, name, ftype, ndx)
  * __log_add_logid --
  *	Adds a DB entry to the log's DB entry table.
  *
- * PUBLIC: int __log_add_logid __P((DB_LOG *, DB *, u_int32_t));
+ * PUBLIC: int __log_add_logid __P((DB_LOG *, DB *, const char *, u_int32_t));
  */
 int
-__log_add_logid(logp, dbp, ndx)
+__log_add_logid(logp, dbp, name, ndx)
 	DB_LOG *logp;
 	DB *dbp;
+	const char *name;
 	u_int32_t ndx;
 {
 	u_int32_t i;
@@ -244,9 +282,18 @@ __log_add_logid(logp, dbp, ndx)
 		for (i = logp->dbentry_cnt; i < ndx + DB_GROW_SIZE; i++) {
 			logp->dbentry[i].dbp = NULL;
 			logp->dbentry[i].deleted = 0;
+			logp->dbentry[i].name = NULL;
 		}
 
 		logp->dbentry_cnt = i;
+	}
+
+	/* Make space for the name and copy it in. */
+	if (name != NULL) {
+		if ((ret = __os_malloc(strlen(name) + 1, 
+		    NULL, &logp->dbentry[ndx].name)) != 0)
+			goto err;
+		strcpy(logp->dbentry[ndx].name, name);
 	}
 
 	if (logp->dbentry[ndx].deleted == 0 && logp->dbentry[ndx].dbp == NULL) {
@@ -255,6 +302,7 @@ __log_add_logid(logp, dbp, ndx)
 		logp->dbentry[ndx].deleted = dbp == NULL;
 	} else
 		logp->dbentry[ndx].refcount++;
+
 
 err:	UNLOCK_LOGTHREAD(logp);
 	return (ret);

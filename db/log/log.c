@@ -432,6 +432,7 @@ int
 log_close(dblp)
 	DB_LOG *dblp;
 {
+	u_int32_t i;
 	int ret, t_ret;
 
 	LOG_PANIC_CHECK(dblp);
@@ -457,9 +458,14 @@ log_close(dblp)
 	if (dblp->c_fd != -1 &&
 	    (t_ret = __os_close(dblp->c_fd)) != 0 && ret == 0)
 		ret = t_ret;
-	if (dblp->dbentry != NULL)
+	if (dblp->dbentry != NULL) {
+		for (i = 0; i < dblp->dbentry_cnt; i++)
+			if (dblp->dbentry[i].name != NULL)
+				__os_freestr(dblp->dbentry[i].name);
 		__os_free(dblp->dbentry,
 		    (dblp->dbentry_cnt * sizeof(DB_ENTRY)));
+	}
+
 	if (dblp->dir != NULL)
 		__os_freestr(dblp->dir);
 
