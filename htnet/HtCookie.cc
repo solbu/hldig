@@ -31,7 +31,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtCookie.cc,v 1.12 2003/07/21 08:16:11 angusgb Exp $
+// $Id: HtCookie.cc,v 1.13 2003/09/27 06:22:07 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -241,7 +241,10 @@ HtCookie::HtCookie(const String &CookieFileLine)
 	        break;
 	     case COOKIES_FILE_EXPIRES:
 		if ((expires_value = atoi(token) > 0)) // Sets the expires value only if > 0
-		   expires = new HtDateTime(atoi(token));
+		{
+		   time_t tmp = atoi(token);	// avoid ambiguous arg list
+		   expires = new HtDateTime(tmp);
+		}
 	        break;
 	     case COOKIES_FILE_NAME:
 	        SetName(token);

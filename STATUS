@@ -1,7 +1,6 @@
 STATUS of ht://Dig branch 3-2-x
 
 CHECKLIST FOR 3.2.0b5:
-* Apply memory leak patches (Neal)
 * Check bugs listed in bug-tracker...
 * Polish release docs (Geoff)
 * Must be able to
@@ -9,13 +8,15 @@ CHECKLIST FOR 3.2.0b5:
 	(b) index  www.htdig.org  using  "robotstxt_name: master-htdig"
   on all systems listed as "supported".
   Systems tested so far:
+    - RH AdvancedServer 2.1 ItaniumII, gcc 2.96.x (David Bannon, 21 Sep)
+
+  Very out-of-date tests:
     - Mandrake 8.2, gcc 3.2 (lha, 21 May)
     - FreeBSD 4.6, gcc 2.95.3 (lha, 23 May)
     - Debian, Linux kernel 2.2.19, gcc 2.95.4 (lha, 23 May)
     - SunOS 5.8 = Solaris 2.8, gcc 3.1 (lha, 25 May)
     - SunOS 5.8 = Solaris 2.8, Sun cc with g++ 3.1 (lha, 29 May)
     - OS X (Jim, 30 May)
-    - RH AdvancedServer 2.1 ItaniumII, gcc 2.96.x (David Bannon, 21 Sep)
   Partly tested:
     - RedHat 8 (Jim, 1 June.  make check requires tweaking for apache)
     - SunOS 5.8 = Solaris 2.8, gcc 2.95.2

@@ -1,3 +1,8 @@
+Sat Sep 27 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htlib/HtDateTime.h, htnet/HtCookie.cc:
+      Avoid ambiguous function call on systems (HP-UX) where  time_t=int
+	
 Fri Aug 29 09:35:46 MDT 2003 Neal Richter <nealr@rightnow.com>
 
     * removed references to CDB___mp_dirty_level ,CDB_set_mp_diry_level() 

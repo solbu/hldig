@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtDateTime.h,v 1.17 2003/07/21 08:16:10 angusgb Exp $
+// $Id: HtDateTime.h,v 1.18 2003/09/27 06:22:07 lha Exp $
 
 ///////
    //   Class for Date and Time
@@ -153,7 +153,8 @@ public:
    HtDateTime() {SettoNow(); ToLocalTime();}
 
    // From an integer (seconds from epoc)
-   HtDateTime(const int i) {SetDateTime((time_t)i); ToLocalTime();}
+//   Causes ambiguity in systems with  time_t  an integer...
+//   HtDateTime(const int i) {SetDateTime((time_t)i); ToLocalTime();}
 
    // From a time_t value and pointer
    HtDateTime(time_t &t) {SetDateTime(t); ToLocalTime();}
