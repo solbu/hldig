@@ -1,3 +1,7 @@
+Fri Mar 17 10:30:39 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/String.cc (uppercase): Fix misplaced cast for islower().
+
 Mon Mar  6 17:31:37 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/htsearch.cc (setupWords): Don't allow comma as string

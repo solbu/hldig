@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.30.2.7 2000/02/23 18:56:19 grdetil Exp $
+// $Id: String.cc,v 1.30.2.8 2000/03/17 15:30:18 grdetil Exp $
 //
 
 #include "htString.h"
@@ -435,7 +435,7 @@ int String::uppercase()
   int converted = 0;
   for (int i = 0; i < Length; i++)
     {
-      if ((unsigned char)islower(Data[i])) {
+      if (islower((unsigned char)Data[i])) {
 	Data[i] = toupper((unsigned char)Data[i]);
 	converted++;
       }
