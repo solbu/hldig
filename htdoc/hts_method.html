@@ -10,7 +10,7 @@
 	  htsearch
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
+	  ht://Dig Copyright &copy; 1995-2003 <a href="THANKS.html">The ht://Dig Group</a><br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -24,7 +24,8 @@
 	  in global terms what goes on when htsearch searches.
 	</p>
 	<p>
-	  htsearch gets a list of words from the HTML form that invoked
+	  htsearch gets a list of (case insensitive) words from the HTML
+	  form that invoked
 	  it. If htsearch was invoked with boolean expression parsing
 	  enabled, it will do a quick syntax check on the input words.
 	  If there are syntax errors, it will display the syntax error
@@ -36,11 +37,28 @@
 	  If the boolean parser was not enabled, the list of words is
 	  converted into a boolean expression by putting either "and"s
 	  or "or"s between the words. (This depends on the search
-	  type.)
+	  type.)  Phrases within double quotes (") specify that the words
+	  must occur sequentially within the document.
 	</p>
 	<p>
-	  In both cases, each of the words in the list is now expanded
-	  using the search algorithms that were specified in the
+	  If a word is immediately preceeded by a field specifer
+	  (title:, heading:, author:, keyword:, descr:, link:, url:)
+	  then it will only match documents in which the word occurred
+	  within field.  For example, descr:foo only matches documents
+	  containing &lt;meta value="description" value="... foo ..."&gt;.
+	  The link: field refers to the text in the hyperlinks to a document,
+	  rather than text within the document itself.  Similarly url:
+	  (will eventually) refer to the actual URL of the document, not any
+	  of its contents.
+	  The prefixes exact: and hidden: are also accepted.
+	  The former (will) cause the
+	  <a href="attrs.html#search_algorithm">fuzzy search algorithm</a>
+	  not to be applied to this word, while the latter causes the word
+	  not to be displayed in the query string of the results page.
+	</p>
+	<p>
+	  Each of the words in the list (but not within a phrase) is now
+	  expanded using the search algorithms that were specified in the
 	  <a href="attrs.html#search_algorithm">search_algorithm</a>
 	  attribute. For example, the endings algorithm will convert a
 	  word like "person" into "person or persons". In this fashion,
@@ -78,7 +96,7 @@
 	</p>
 	<hr size="4" noshade>
 
-	Last modified: $Date: 2002/02/01 22:49:32 $
+	Last modified: $Date: 2003/02/11 09:49:38 $
 
   </body>
 </html>

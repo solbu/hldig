@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordReference.h,v 1.3 2002/02/01 22:49:28 ghutchis Exp $
+// $Id: HtWordReference.h,v 1.4 2003/02/11 09:49:29 lha Exp $
 //
 #ifndef _HtWordReference_h_
 #define _HtWordReference_h_
@@ -20,6 +20,7 @@
 
 //
 // Flags
+// (If extra flags added, also update  htsearch.cc:colonPrefix
 // 
 #define FLAG_TEXT 0
 #define FLAG_CAPITAL 1
@@ -30,6 +31,16 @@
 #define FLAG_AUTHOR 32
 #define FLAG_LINK_TEXT 64
 #define FLAG_URL 128
+
+// For field-restricted search, at least one of these flags must be set
+// in document.  (255 = OR of the above...)
+#define FLAGS_MATCH_ONE (255 | FLAG_PLAIN)
+
+// The following are not stored in the database, but are used by WeightWord
+#define FLAG_PLAIN 4096
+#define FLAG_EXACT 8192
+#define FLAG_HIDDEN 16384
+#define FLAG_IGNORE 32768
 // The remainder are undefined
 
 class HtWordReference : public WordReference

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.h,v 1.26 2002/02/01 22:49:28 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.27 2003/02/11 09:49:29 lha Exp $
 //
 
 #ifndef _DocumentRef_h_
@@ -54,6 +54,7 @@ class DocumentRef : public Object
     char		*DocURL()			{return docURL;}
     time_t		DocTime()			{return docTime;}
     char		*DocTitle()			{return docTitle;}
+    char		*DocAuthor()			{return docAuthor;}
     char		*DocHead()			{return docHead;}
     int			DocHeadIsSet()			{return docHeadIsSet;}
     char                *DocMetaDsc()                   {return docMetaDsc;}
@@ -76,6 +77,7 @@ class DocumentRef : public Object
     void		DocURL(const char *u)		{docURL = u;}
     void		DocTime(time_t t)		{docTime = t;}
     void		DocTitle(const char *t)		{docTitle = t;}
+    void		DocAuthor(const char *a)	{docAuthor = a;}
     void		DocHead(const char *h)		{docHeadIsSet = 1; docHead = h;}
     void                DocMetaDsc(const char *md)      {docMetaDsc = md;}
     void		DocAccessed(time_t t)		{docAccessed = t;}
@@ -121,6 +123,8 @@ class DocumentRef : public Object
     String              docMetaDsc;
     // This is the title of the document.
     String		docTitle;
+    // This is the author of the document, as specified in meta information
+    String		docAuthor;
     // This is a list of Strings, the text of links pointing to this document.
     // (e.g. <a href="docURL">description</a>
     List		descriptions;

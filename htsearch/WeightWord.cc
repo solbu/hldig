@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WeightWord.cc,v 1.6 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: WeightWord.cc,v 1.7 2003/02/11 09:49:38 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -33,6 +33,8 @@ WeightWord::WeightWord()
     isExact = 0;
     isHidden = 0;
     isIgnore = 0;
+
+    flags = FLAGS_MATCH_ONE;
 }
 
 
@@ -45,6 +47,7 @@ WeightWord::WeightWord(WeightWord *ww)
     records = ww->records;
     isExact = ww->isExact;
     isHidden = ww->isHidden;
+    flags = ww->flags;
     word = ww->word;
     isIgnore = 0;
 }
@@ -59,6 +62,31 @@ WeightWord::WeightWord(char *word, double weight)
     isExact = 0;
     isHidden = 0;
     isIgnore = 0;
+
+    // allow a match with any field
+    flags = FLAGS_MATCH_ONE;
+
+    set(word);
+    this->weight = weight;
+}
+
+//***************************************************************************
+// WeightWord::WeightWord(char *word, double weight, unsigned int f)
+//
+WeightWord::WeightWord(char *word, double weight, unsigned int f)
+{
+    records = 0;
+
+    flags = f;
+    // if no fields specified, allow a match with any field
+    if (!(flags & FLAGS_MATCH_ONE))
+	flags ^= FLAGS_MATCH_ONE;
+
+    // ideally, these flags should all just be stored in a uint...
+    isExact = ((flags & FLAG_EXACT) != 0);
+    isHidden = ((flags & FLAG_HIDDEN) != 0);
+    isIgnore = ((flags & FLAG_IGNORE) != 0);
+
     set(word);
     this->weight = weight;
 }
@@ -77,6 +105,7 @@ WeightWord::~WeightWord()
 //
 void WeightWord::set(char *word)
 {
+#if 0
     isExact = 0;
     isHidden = 0;
     while (strchr(word, ':'))
@@ -104,6 +133,7 @@ void WeightWord::set(char *word)
 	}
 		
     }
+#endif
     this->word = word;
     this->word.lowercase();
 }

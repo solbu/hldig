@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.h,v 1.11 2003/01/20 22:40:14 lha Exp $
+// $Id: HTML.h,v 1.12 2003/02/11 09:49:36 lha Exp $
 //
 #ifndef _HTML_h_
 #define _HTML_h_
@@ -52,7 +52,7 @@ private:
     int			in_heading;
     int			noindex;
     int                 nofollow;
-    unsigned int	minimumWordLength;
+//    unsigned int	minimumWordLength;
     URL			*base;
     QuotedStringList	skip_start;
     QuotedStringList	skip_end;

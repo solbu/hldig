@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.23 2002/12/30 12:42:58 lha Exp $
+// $Id: ExternalParser.cc,v 1.24 2003/02/11 09:49:33 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -201,7 +201,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     write(fd, contents->get(), contents->length());
     close(fd);
 
-    unsigned int minimum_word_length = config->Value("minimum_word_length", 3);
+//  unsigned int minimum_word_length = config->Value("minimum_word_length", 3);
     String	line;
     char	*token1, *token2, *token3;
     int		loc = 0, hd = 0;
@@ -452,18 +452,27 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		  {
 		    if (keywordsMatch->CompareWord(name))
 		    {
-		      char	*w = strtok(content, " ,\t\r");
-		      while (w)
-		      {
-			if (strlen(w) >= minimum_word_length)
-			  retriever.got_word(w, 1, 9);
-			w = strtok(0, " ,\t\r");
-		      }
+			int wordindex = 1;
+			addKeywordString (retriever, content, wordindex);
+//			// can this be merged with Parser::addKeywordString ?
+//		      char	*w = strtok(content, " ,\t\r");
+//		      while (w)
+//		      {
+//			if (strlen(w) >= minimum_word_length)
+//			  retriever.got_word(w, 1, 9);
+//			w = strtok(0, " ,\t\r");
+//		      }
 		    }
 		    if (metadatetags->CompareWord(name) &&
 					config->Boolean("use_doc_date", 0))
 		    {
 		      retriever.got_time(content);
+		    }
+		    else if (mystrcasecmp(name, "author") == 0)
+		    {
+			int wordindex = 1;
+			retriever.got_author(content);
+			addString (retriever, content, wordindex, 11);
 		    }
 		    else if (mystrcasecmp(name, "htdig-email") == 0)
 		    {
@@ -495,13 +504,16 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		      // Now add the words to the word list
 		      // (slot 10 is the new slot for this)
 		      //
-		      char	  *w = strtok(content, " \t\r");
-		      while (w)
-		      {
-			if (strlen(w) >= minimum_word_length)
-			  retriever.got_word(w, 1, 10);
-			w = strtok(0, " \t\r");
-		      }
+		      int wordindex = 1;
+		      addString (retriever, content, wordindex, 10);
+//		      // can this be merged with Parser::addString ?
+//		      char	  *w = strtok(content, " \t\r");
+//		      while (w)
+//		      {
+//			if (strlen(w) >= minimum_word_length)
+//			  retriever.got_word(w, 1, 10);
+//			w = strtok(0, " \t\r");
+//		      }
 		    }
 		  }
 		}

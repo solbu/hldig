@@ -1,7 +1,7 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b5: Next release, tentatively 1 Feb 2003.
+   3.2.0b5: Next release, First quarter 2003???
    3.2.0b4: "In progress" -- snapshots called "3.2.0b4" until prerelease.
    3.2.0b3: Released:  22 Feb 2001.
    3.2.0b2: Released:  11 Apr 2000.
@@ -22,6 +22,7 @@ KNOWN BUGS:
     so this must be some sort of weird htsearch bug) PR#618737.
 * META descriptions are somehow added to the database as FLAG_TITLE,
    not FLAG_DESCRIPTION. (PR#618738)
+   Can anyone reproduce this?  I can't! -- Lachlan
 
 PENDING PATCHES (available but need work):
 * Additional support for Win32.
@@ -29,7 +30,6 @@ PENDING PATCHES (available but need work):
 * Mifluz merge.
 
 NEEDED FEATURES:
-* Field-restricted searching. (e.g. PR#460833)
 * Quim's new htsearch/qtest query parser framework.
 * File/Database locking. PR#405764.
 
@@ -45,8 +45,6 @@ TESTING:
 
 DOCUMENTATION:
 * List of supported platforms/compilers is ancient. (PR#405279)
-* Add thorough documentation on htsearch restrict/exclude behavior
-   (including '|' and regex).
 * Document all of htsearch's mappings of input parameters to config attributes
    to template variables. (Relates to PR#405278.)
   Should we make sure these config attributes are all documented in
@@ -60,6 +58,7 @@ DOCUMENTATION:
    PRs# 405280 #405281.
 * TODO.html has not been updated for current TODO list and
    completions.
+   I've tried.  Someone "official" please check and remove this -- Lachlan
 * Htfuzzy could use more documentation on what each fuzzy algorithm
    does. PR#405714.
 * Document the list of all installed files and default

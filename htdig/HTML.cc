@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.68 2003/02/09 11:53:48 lha Exp $
+// $Id: HTML.cc,v 1.69 2003/02/11 09:49:34 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -45,8 +45,8 @@ static StringMatch	spaceaftertags;
 static StringMatch	metadatetags;
 static StringMatch	descriptionMatch;
 static StringMatch	keywordsMatch;
-static int		keywordsCount;
-static int		max_keywords;
+//static int		keywordsCount;
+//static int		max_keywords;
 
 
 //*****************************************************************************
@@ -113,9 +113,10 @@ HTML::HTML() :
     StringList keywordNames(config->Find("keywords_meta_tag_names"), " \t");
     keywordsMatch.IgnoreCase();
     keywordsMatch.Pattern(keywordNames.Join('|'));
-    max_keywords = config->Value("max_keywords", -1);
-    if (max_keywords < 0)
-	max_keywords = (int) ((unsigned int) ~1 >> 1);
+//    (now in Parser)
+//    max_keywords = config->Value("max_keywords", -1);
+//    if (max_keywords < 0)
+//	max_keywords = (int) ((unsigned int) ~1 >> 1);
 
     // skip_start/end mark sections of text to be ignored by ht://Dig
     // Make sure there are equal numbers of each, and warn of deprecated
@@ -180,7 +181,7 @@ HTML::HTML() :
     base = 0;
     noindex = 0;
     nofollow = 0;
-    minimumWordLength = config->Value("minimum_word_length", 3);
+//    minimumWordLength = config->Value("minimum_word_length", 3);
 }
 
 
@@ -495,7 +496,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		  head << word;
 	    }
 
-	    if (word.length() >= (int)minimumWordLength && !noindex)
+	    if (word.length() >= (int)minimum_word_length && !noindex)
 	    {
 	      retriever.got_word((char*)word, wordindex++, in_heading);
 	    }
@@ -755,15 +756,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		if (!noindex)
 		  {
 		    String tmp = transSGML(keywords);
-		    char	*w = HtWordToken(tmp);
-		    while (w)
-		      {
-			if (strlen(w) >= minimumWordLength
-				&& ++keywordsCount <= max_keywords)
-			  retriever.got_word(w, wordindex++, 9);
-			w = HtWordToken(0);
-		      }
-		    w = '\0';
+		    addKeywordString (retriever, tmp, wordindex);
 		  }
 	    }
 	
@@ -827,33 +820,24 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		   // Now add the words to the word list
 		   // Slot 10 is the current slot for this
 		   //
-
 		   if (!noindex)
 		     {
 		       String tmp = transSGML(attrs["content"]);
-		       char        *w = HtWordToken(tmp);
-		       while (w)
-			 {
-			   if (strlen(w) >= minimumWordLength)
-			     retriever.got_word(w, wordindex++,10);
-			   w = HtWordToken(0);
-			 }
-		       w = '\0';
+		       addString (retriever, tmp, wordindex, 10);
 		     }
 		}
 
 		if (keywordsMatch.CompareWord(cache) && !noindex)
 		{
 		    String tmp = transSGML(attrs["content"]);
-		    char	*w = HtWordToken(tmp);
-		    while (w)
-		    {
-			if (strlen(w) >= minimumWordLength
-				&& ++keywordsCount <= max_keywords)
-			  retriever.got_word(w, wordindex++, 9);
-			w = HtWordToken(0);
-		    }
-		    w = '\0';
+		    addKeywordString (retriever, tmp, wordindex);
+		}
+		else if (mystrcasecmp(cache, "author") == 0)
+		{
+		    String author = transSGML(attrs["content"]);
+		    retriever.got_author(author);
+		    if (!noindex)
+			addString (retriever, author, wordindex, 11);
 		}
 		else if (mystrcasecmp(cache, "htdig-email") == 0)
 		{
@@ -988,14 +972,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    description << tmp << " ";
 		if (!noindex && !in_title && head.length() < max_head_length)
 		    head << tmp << " ";
-		char *w = HtWordToken(tmp);
-		while (w && !noindex)
-		  {
-		    if (strlen(w) >= minimumWordLength)
-		      retriever.got_word(w, wordindex++, 8); // slot for img_alt
-		    w = HtWordToken(0);
-		  }
-		w = '\0';
+		if (!noindex)
+		    addString (retriever, tmp, wordindex, 8);	// slot for  img_alt
 	      }
 	    if (!attrs["src"].empty())
 	      {

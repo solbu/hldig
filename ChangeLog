@@ -1,3 +1,19 @@
+Tue Feb 11 2003  Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* htcommon/{DocumentRef.h, HtWordReference.h},
+	  htsearch/WeightWord.{cc,h},
+	  htsearch/parser.{cc,h}, htsearch/htsearch.cc:
+	  Added field-restricted searching, by  title:word  or  author:word
+
+	* htdig/ExternalParser.cc, htdig/HTML.{cc,h}, htdig/Parsable.{cc,h},
+	  htdig/Retriever.{cc,h}:
+	  Parse  author  from <meta ...> tags.  Also moved some common
+	  functionality from  HTML/ExternalParser  into  Parsable.
+
+	* test/t_htsearch, htcommon/defaults.cc,
+	  htdoc/{TODO.html,hts_general.html,hts_method.html}:
+	  Test and document the above
+
 Sun Feb 9 2003  Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* htdig/HTML.cc: fix bug in detection of deprecated noindex_start/end

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.76 2003/02/09 11:53:48 lha Exp $
+// $Id: defaults.cc,v 1.77 2003/02/11 09:49:29 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -151,8 +151,9 @@ ConfigDefaults	defaults[] =
 	search form</a> documentation for details on this. \
 " }, \
 { "author_factor", "1",  \
-	"number", "htsearch", "", "??", "Searching:Ranking", "author_factor: 1", " \
-	TO BE COMPLETED<br> \
+	"number", "htsearch", "", "3.2.0b4", "Searching:Ranking", "author_factor: 1", " \
+	Weighting applied to words in a &lt;meta name=\"author\" ... &gt; \
+	tag.<br> \
 	See also <a href=\"#heading_factor\">heading_factor</a>. \
 " }, \
 { "authorization", "",  \
@@ -640,343 +641,209 @@ http://www.htdig.org/", " \
 	application/pdf /usr/local/bin/parse_doc.pl \\<br> \
 	application/msword-&gt;text/plain \"/usr/local/bin/mswordtotxt -w\" \\<br> \
 	application/x-gunzip-&gt;user-defined /usr/local/bin/ungzipper", " \
-			This attribute is used to specify a list of \
-			content-type/parsers that are to be used to parse \
-			documents that cannot by parsed by any of the internal \
-			parsers. The list of external parsers is examined \
-			before the builtin parsers are checked, so this can be \
-			used to override the internal behavior without \
-			recompiling htdig.<br> \
-			 The external parsers are specified as pairs of \
-			strings. The first string of each pair is the \
-			content-type that the parser can handle while the \
-			second string of each pair is the path to the external \
-			parsing program. If quoted, it may contain parameters, \
-			separated by spaces.<br> \
-			 External parsing can also be done with external \
-			converters, which convert one content-type to \
-			another. To do this, instead of just specifying \
-			a single content-type as the first string \
-			of a pair, you specify two types, in the form \
-			<em>type1</em><strong>-&gt;</strong><em>type2</em>, \
-			as a single string with no spaces. The second \
-			string will define an external converter \
-			rather than an external parser, to convert \
-			the first type to the second. If the second \
-			type is <strong>user-defined</strong>, then \
-			it's up to the converter script to put out a \
-			\"Content-Type:&nbsp;<em>type</em>\" header followed \
-			by a blank line, to indicate to htdig what type it \
-			should expect for the output, much like what a CGI \
-			script would do. The resulting content-type must \
-			be one that htdig can parse, either internally, \
-			or with another external parser or converter.<br> \
-			 Only one external parser or converter can be \
-			specified for any given content-type. However, \
-			an external converter for one content-type can be \
-			chained to the internal parser for the same type, \
-			by appending <strong>-internal</strong> to the \
-			second type string (e.g. text/html->text/html-internal) \
-			to perform external preprocessing on documents of \
-			this type before internal parsing. \
-			There are two internal parsers, for text/html and \
-			text/plain.<p> \
-			 The parser program takes four command-line \
-			parameters, not counting any parameters already \
-			given in the command string:<br> \
-			<em>infile content-type URL configuration-file</em><br> \
-			<table border=\"1\"> \
-			  <tr> \
-				<th> \
-				  Parameter \
-				</th> \
-				<th> \
-				  Description \
-				</th> \
-				<th> \
-				  Example \
-				</th> \
-			  </tr> \
-			  <tr> \
-				<td valign=\"top\"> \
-				  infile \
-				</td> \
-				<td> \
-				  A temporary file with the contents to be parsed. \
-				</td> \
-				<td> \
-				  /var/tmp/htdext.14242 \
-				</td> \
-			  </tr> \
-			  <tr> \
-				<td valign=\"top\"> \
-				  content-type \
-				</td> \
-				<td> \
-				  The MIME-type of the contents. \
-				</td> \
-				<td> \
-				  text/html \
-				</td> \
-			  </tr> \
-			  <tr> \
-				<td valign=\"top\"> \
-				  URL \
-				</td> \
-				<td> \
-				  The URL of the contents. \
-				</td> \
-				<td> \
-				  http://www.htdig.org/attrs.html \
-				</td> \
-			  </tr> \
-			  <tr> \
-				<td valign=\"top\"> \
-				  configuration-file \
-				</td> \
-				<td> \
-				  The configuration-file in effect. \
-				</td> \
-				<td> \
-				  /etc/htdig/htdig.conf \
-				</td> \
-			  </tr> \
-			</table><p> \
-			The external parser is to write information for \
-			htdig on its standard output. Unless it is an \
-			external converter, which will output a document \
-			of a different content-type, then its output must \
-			follow the format described here.<br> \
-			 The output consists of records, each record terminated \
-			with a newline. Each record is a series of (unless \
-			expressively allowed to be empty) non-empty tab-separated \
-			fields. The first field is a single character \
-			that specifies the record type. The rest of the fields \
-			are determined by the record type. \
-			<table border=\"1\"> \
-			  <tr> \
-				<th> \
-				  Record type \
-				</th> \
-				<th> \
-				  Fields \
-				</th> \
-				<th> \
-				  Description \
-				</th> \
-			  </tr> \
-			  <tr> \
-				<th rowspan=\"3\" valign=\"top\"> \
-				  w \
-				</th> \
-				<td valign=\"top\"> \
-				  word \
-				</td> \
-				<td> \
-				  A word that was found in the document. \
-				</td> \
-			  </tr> \
-			  <tr> \
-				<td valign=\"top\"> \
-				  location \
-				</td> \
-				<td> \
-				  A number indicating the normalized location of \
-				  the word within the document. The number has to \
-				  fall in the range 0-1000 where 0 means the top of \
-				  the document. \
-				</td> \
-			  </tr> \
-			  <tr> \
-				<td valign=\"top\"> \
-				  heading level \
-				</td> \
-				<td> \
-				  A heading level that is used to compute the \
-				  weight of the word depending on its context in \
-				  the document itself. The level is in the range of \
-				  0-10 and are defined as follows: \
-				  <dl compact> \
-					<dt> \
-					  0 \
-					</dt> \
-					<dd> \
-					  Normal text \
-					</dd> \
-					<dt> \
-					  1 \
-					</dt> \
-					<dd> \
-					  Title text \
-					</dd> \
-					<dt> \
-					  2 \
-					</dt> \
-					<dd> \
-					  Heading 1 text \
-					</dd> \
-					<dt> \
-					  3 \
-					</dt> \
-					<dd> \
-					  Heading 2 text \
-					</dd> \
-					<dt> \
-					  4 \
-					</dt> \
-					<dd> \
-					  Heading 3 text \
-					</dd> \
-					<dt> \
-					  5 \
-					</dt> \
-					<dd> \
-					  Heading 4 text \
-					</dd> \
-					<dt> \
-					  6 \
-					</dt> \
-					<dd> \
-					  Heading 5 text \
-					</dd> \
-					<dt> \
-					  7 \
-					</dt> \
-					<dd> \
-					  Heading 6 text \
-					</dd> \
-					<dt> \
-					  8 \
-					</dt> \
-					<dd> \
-					  <em>unused</em> \
-					</dd> \
-					<dt> \
-					  9 \
-					</dt> \
-					<dd> \
-					  <em>unused</em> \
-					</dd> \
-					<dt> \
-					  10 \
-					</dt> \
-					<dd> \
-					  Keywords \
-					</dd> \
-				  </dl> \
-				</td> \
-			  </tr> \
-			  <tr> \
-				<th rowspan=\"2\" valign=\"top\"> \
-				  u \
-				</th> \
-				<td valign=\"top\"> \
-				  document URL \
-				</td> \
-				<td> \
-				  A hyperlink to another document that is \
-				  referenced by the current document.  It must be \
-				  complete and non-relative, using the URL parameter to \
-				  resolve any relative references found in the document. \
-				</td> \
-			  </tr> \
-			  <tr> \
-				<td valign=\"top\"> \
-				  hyperlink description \
-				</td> \
-				<td> \
-				  For HTML documents, this would be the text \
-				  between the &lt;a href...&gt; and &lt;/a&gt; \
-				  tags. \
-				</td> \
-			  </tr> \
-			  <tr> \
-				<th valign=\"top\"> \
-				  t \
-				</th> \
-				<td valign=\"top\"> \
-				  title \
-				</td> \
-				<td> \
-				  The title of the document \
-				</td> \
-			  </tr> \
-			  <tr> \
-				<th valign=\"top\"> \
-				  h \
-				</th> \
-				<td valign=\"top\"> \
-				  head \
-				</td> \
-				<td> \
-				  The top of the document itself. This is used to \
-				  build the excerpt. This should only contain \
-				  normal ASCII text \
-				</td> \
-			  </tr> \
-			  <tr> \
-				<th valign=\"top\"> \
-				  a \
-				</th> \
-				<td valign=\"top\"> \
-				  anchor \
-				</td> \
-				<td> \
-				  The label that identifies an anchor that can be \
-				  used as a target in an URL. This really only \
-				  makes sense for HTML documents. \
-				</td> \
-			  </tr> \
-			  <tr> \
-				<th valign=\"top\"> \
-				  i \
-				</th> \
-				<td valign=\"top\"> \
-				  image URL \
-				</td> \
-				<td> \
-				  An URL that points at an image that is part of \
-				  the document. \
-				</td> \
-			  </tr> \
-			  <tr> \
-				<th rowspan=\"3\" valign=\"top\"> \
-				  m \
-				</th> \
-				<td valign=\"top\"> \
-				  http-equiv \
-				</td> \
-				<td> \
-				  The HTTP-EQUIV attribute of a \
-				  <a href=\"meta.html\"><em>META</em> tag</a>. \
-				  May be empty. \
-				</td> \
-			  </tr> \
-			  <tr> \
-				<td valign=\"top\"> \
-				  name \
-				</td> \
-				<td> \
-				  The NAME attribute of this \
-				  <a href=\"meta.html\"><em>META</em> tag</a>. \
-				  May be empty. \
-				</td> \
-			  </tr> \
-			  <tr> \
-				<td valign=\"top\"> \
-				  contents \
-				</td> \
-				<td> \
-				  The CONTENTS attribute of this \
-				  <a href=\"meta.html\"><em>META</em> tag</a>. \
-				  May be empty. \
-				</td> \
-			  </tr> \
-			</table> \
-	<p><em>See also FAQ questions <a \
-	href=\"FAQ.html#q4.8\">4.8</a> and <a \
-	href=\"FAQ.html#q4.9\">4.9</a> for more \
-	examples.</em></p> \
+	This attribute is used to specify a list of \
+	content-type/parsers that are to be used to parse \
+	documents that cannot by parsed by any of the internal \
+	parsers. The list of external parsers is examined \
+	before the builtin parsers are checked, so this can be \
+	used to override the internal behavior without \
+	recompiling htdig.<br> \
+	 The external parsers are specified as pairs of \
+	strings. The first string of each pair is the \
+	content-type that the parser can handle while the \
+	second string of each pair is the path to the external \
+	parsing program. If quoted, it may contain parameters, \
+	separated by spaces.<br> \
+	 External parsing can also be done with external \
+	converters, which convert one content-type to \
+	another. To do this, instead of just specifying \
+	a single content-type as the first string \
+	of a pair, you specify two types, in the form \
+	<em>type1</em><strong>-&gt;</strong><em>type2</em>, \
+	as a single string with no spaces. The second \
+	string will define an external converter \
+	rather than an external parser, to convert \
+	the first type to the second. If the second \
+	type is <strong>user-defined</strong>, then \
+	it's up to the converter script to put out a \
+	\"Content-Type:&nbsp;<em>type</em>\" header followed \
+	by a blank line, to indicate to htdig what type it \
+	should expect for the output, much like what a CGI \
+	script would do. The resulting content-type must \
+	be one that htdig can parse, either internally, \
+	or with another external parser or converter.<br> \
+	 Only one external parser or converter can be \
+	specified for any given content-type. However, \
+	an external converter for one content-type can be \
+	chained to the internal parser for the same type, \
+	by appending <strong>-internal</strong> to the \
+	second type string (e.g. text/html->text/html-internal) \
+	to perform external preprocessing on documents of \
+	this type before internal parsing. \
+	There are two internal parsers, for text/html and \
+	text/plain.<p> \
+	 The parser program takes four command-line \
+	parameters, not counting any parameters already \
+	given in the command string:<br> \
+	<em>infile content-type URL configuration-file</em><br> \
+	<table border=\"1\"> \
+	  <tr> \
+		<th> Parameter </th> \
+		<th> Description </th> \
+		<th> Example </th> \
+	  </tr> \
+	  <tr> \
+		<td valign=\"top\"> infile </td> \
+		<td> A temporary file with the contents to be parsed.  </td> \
+		<td> /var/tmp/htdext.14242 </td> \
+	  </tr> \
+	  <tr> \
+		<td valign=\"top\"> content-type </td> \
+		<td> The MIME-type of the contents.  </td> \
+		<td> text/html </td> \
+	  </tr> \
+	  <tr> \
+		<td valign=\"top\"> URL </td> \
+		<td> The URL of the contents.  </td> \
+		<td> http://www.htdig.org/attrs.html </td> \
+	  </tr> \
+	  <tr> \
+		<td valign=\"top\"> configuration-file </td> \
+		<td> The configuration-file in effect.  </td> \
+		<td> /etc/htdig/htdig.conf </td> \
+	  </tr> \
+	</table><p> \
+	The external parser is to write information for \
+	htdig on its standard output. Unless it is an \
+	external converter, which will output a document \
+	of a different content-type, then its output must \
+	follow the format described here.<br> \
+	 The output consists of records, each record terminated \
+	with a newline. Each record is a series of (unless \
+	expressively allowed to be empty) non-empty tab-separated \
+	fields. The first field is a single character \
+	that specifies the record type. The rest of the fields \
+	are determined by the record type. \
+	<table border=\"1\"> \
+	  <tr> \
+		<th> Record type </th> \
+		<th> Fields </th> \
+		<th> Description </th> \
+	  </tr> \
+	  <tr> \
+		<th rowspan=\"3\" valign=\"top\"> w </th> \
+		<td valign=\"top\"> word </td> \
+		<td> A word that was found in the document.  </td> \
+	  </tr> \
+	  <tr> \
+		<td valign=\"top\"> location </td> \
+		<td> \
+		  A number indicating the normalized location of \
+		  the word within the document. The number has to \
+		  fall in the range 0-1000 where 0 means the top of \
+		  the document. \
+		</td> \
+	  </tr> \
+	  <tr> \
+		<td valign=\"top\"> heading level </td> \
+		<td> \
+		  A heading level that is used to compute the \
+		  weight of the word depending on its context in \
+		  the document itself. The level is in the range of \
+		  0-11 and are defined as follows: \
+		  <dl compact> \
+			<dt> 0 </dt> <dd> Normal text </dd> \
+			<dt> 1 </dt> <dd> Title text </dd> \
+			<dt> 2 </dt> <dd> Heading 1 text </dd> \
+			<dt> 3 </dt> <dd> Heading 2 text </dd> \
+			<dt> 4 </dt> <dd> Heading 3 text </dd> \
+			<dt> 5 </dt> <dd> Heading 4 text </dd> \
+			<dt> 6 </dt> <dd> Heading 5 text </dd> \
+			<dt> 7 </dt> <dd> Heading 6 text </dd> \
+			<dt> 8 </dt> <dd> text alternative to images </dd> \
+			<dt> 9 </dt> <dd> Keywords </dd> \
+			<dt> 10 </dt> <dd> Meta-description </dd> \
+			<dt> 11 </dt> <dd> Author </dd> \
+		  </dl> \
+		</td> \
+	  </tr> \
+	  <tr> \
+		<th rowspan=\"2\" valign=\"top\"> u </th> \
+		<td valign=\"top\"> document URL </td> \
+		<td> \
+		  A hyperlink to another document that is \
+		  referenced by the current document.  It must be \
+		  complete and non-relative, using the URL parameter to \
+		  resolve any relative references found in the document. \
+		</td> \
+	  </tr> \
+	  <tr> \
+		<td valign=\"top\"> hyperlink description </td> \
+		<td> \
+		  For HTML documents, this would be the text \
+		  between the &lt;a href...&gt; and &lt;/a&gt; \
+		  tags. \
+		</td> \
+	  </tr> \
+	  <tr> \
+		<th valign=\"top\"> t </th> \
+		<td valign=\"top\"> title </td> \
+		<td> The title of the document </td> \
+	  </tr> \
+	  <tr> \
+		<th valign=\"top\"> h </th> \
+		<td valign=\"top\"> head </td> \
+		<td> \
+		  The top of the document itself. This is used to \
+		  build the excerpt. This should only contain \
+		  normal ASCII text \
+		</td> \
+	  </tr> \
+	  <tr> \
+		<th valign=\"top\"> a </th> \
+		<td valign=\"top\"> anchor </td> \
+		<td> \
+		  The label that identifies an anchor that can be \
+		  used as a target in an URL. This really only \
+		  makes sense for HTML documents. \
+		</td> \
+	  </tr> \
+	  <tr> \
+		<th valign=\"top\"> i </th> \
+		<td valign=\"top\"> image URL </td> \
+		<td> \
+		  An URL that points at an image that is part of \
+		  the document. \
+		</td> \
+	  </tr> \
+	  <tr> \
+		<th rowspan=\"3\" valign=\"top\"> m </th> \
+		<td valign=\"top\"> http-equiv </td> \
+		<td> \
+		  The HTTP-EQUIV attribute of a \
+		  <a href=\"meta.html\"><em>META</em> tag</a>. \
+		  May be empty. \
+		</td> \
+	  </tr> \
+	  <tr> \
+		<td valign=\"top\"> name </td> \
+		<td> \
+		  The NAME attribute of this \
+		  <a href=\"meta.html\"><em>META</em> tag</a>. \
+		  May be empty. \
+		</td> \
+	  </tr> \
+	  <tr> \
+		<td valign=\"top\"> contents </td> \
+		<td> \
+		  The CONTENTS attribute of this \
+		  <a href=\"meta.html\"><em>META</em> tag</a>. \
+		  May be empty. \
+		</td> \
+	  </tr> \
+	</table> \
+	<p><em>See also FAQ questions <a href=\"FAQ.html#q4.8\">4.8</a> and \
+	<a href=\"FAQ.html#q4.9\">4.9</a> for more examples.</em></p> \
 " }, \
 { "external_protocols", "", \
 	"quoted string list", "htdig", "", "3.2.0b1", "External:Protocols", "external_protocols: https /usr/local/bin/handler.pl \\<br> \

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.78 2002/12/30 12:42:58 lha Exp $
+// $Id: Retriever.cc,v 1.79 2003/02/11 09:49:37 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -77,6 +77,7 @@ Retriever::Retriever(RetrieverLog flags) :
     factor[9] = FLAG_KEYWORDS;
     // META description factor
     factor[10] = FLAG_DESCRIPTION;
+    factor[11] = FLAG_AUTHOR;
 	
     doc = new Document();
     minimumWordLength = config->Value("minimum_word_length", 3);
@@ -1279,9 +1280,9 @@ Retriever::got_word(const char *word, int location, int heading)
 {
     if (debug > 3)
 	cout << "word: " << word << '@' << location << endl;
-    if (heading >= 11 || heading < 0) // Current limits for headings
+    if (heading >= (int)(sizeof(factor)/sizeof(factor[0])) || heading < 0)
       heading = 0;  // Assume it's just normal text
-    if (trackWords && strlen(word) >= minimumWordLength)
+    if (trackWords && strlen(word) >= (unsigned int)minimumWordLength)
     {
       String w = word;
       HtWordReference wordRef;
@@ -1353,6 +1354,19 @@ Retriever::got_title(const char *title)
 	cout << "\ntitle: " << title << endl;
     current_title = title;
 }
+
+
+//*****************************************************************************
+// void Retriever::got_author(const char *e)
+//
+void
+Retriever::got_author(const char *author)
+{
+    if (debug > 1)
+	cout << "\nauthor: " << author << endl;
+    current_ref->DocAuthor(author);
+}
+
 
 //*****************************************************************************
 // void Retriever::got_time(const char *time)

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.61 2003/01/29 23:18:05 angusgb Exp $
+// $Id: htsearch.cc,v 1.62 2003/02/11 09:49:38 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -62,6 +62,25 @@ int			minimum_word_length = 3;
 StringList		boolean_keywords;
 
 StringList              collectionList; // List of databases to search on
+
+// reconised word prefixes (for field-restricted search and per-word fuzzy
+// algorithms) in *descending* alphabetical order.
+// Don't use a dictionary structure, as setup time outweights saving.
+struct {char *name; unsigned int flag; } colonPrefix [] =
+{
+    { "url",     FLAG_URL },
+    { "title",   FLAG_TITLE },
+    { "text",    FLAG_PLAIN },		// FLAG_TEXT is 0, i.e. *no* flag...
+    { "link",    FLAG_LINK_TEXT },
+    { "keyword", FLAG_KEYWORDS },
+    { "hidden",  FLAG_HIDDEN },
+    { "heading", FLAG_HEADING },
+    { "exact",   FLAG_EXACT },
+    { "descr",   FLAG_DESCRIPTION },
+//    { "cap",     FLAG_CAPITAL },
+    { "author",  FLAG_AUTHOR },
+    { "",  0 },
+};
 
 //*****************************************************************************
 // int main()
@@ -512,6 +531,7 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
     unsigned char	t;
     String		word;
     const String	prefix_suffix = config->Find("prefix_match_character");
+
     while (*pos)
     {
 	while (1)
@@ -534,16 +554,42 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		tempWords.Add(new WeightWord(s, -1.0));
 		break;
 	    }
-	    else if (HtIsWordChar(t) || t == ':' ||
-			 (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255))
+	    else if (HtIsWordChar(t) ||
+		    	(strchr(prefix_suffix, t) != NULL) ||
+			(t >= 161 && t <= 255))
 	    {
-		word = 0;
-		while (t && (HtIsWordChar(t) ||
-			     t == ':' || (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255)))
+		unsigned int fieldFlag = 0;
+		word =  0;
+		do	// while recognised prefix, followed by ':'
 		{
-		    word << (char) t;
-		    t = *pos++;
-		}
+		    while (t && (HtIsWordChar(t) ||
+				 (strchr(prefix_suffix, t) != NULL) ||
+				 (t >= 161 && t <= 255)))
+		    {
+			word << (char) t;
+			t = *pos++;
+		    }
+		    if (t == ':')	// e.g. "author:word" to search
+		    {			// only in author 
+			word.lowercase();
+			t = *pos++;
+			if (t && (HtIsWordChar (t) ||
+				     (strchr(prefix_suffix, t) != NULL) ||
+				     (t >= 161 && t <= 255)))
+			{
+			    int i, cmp;
+			    const char *w = word.get();
+			    // linear search of known prefixes, with "" flag.
+			    for (i = 0; (cmp = mystrcasecmp (w, colonPrefix[i].name)) < 0; i++)
+				;
+			    if (cmp == 0)	// if prefix found...
+			    {
+				fieldFlag |= colonPrefix [i].flag;
+				word = 0;
+			    }
+			}
+		    }
+		} while (!word.length());
 
 		pos--;
 		if (boolean && (mystrcasecmp(word.get(), "+") == 0
@@ -565,7 +611,7 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		{
 		    // Add word to excerpt matching list
 		    originalPattern << word << "|";
-		    WeightWord	*ww = new WeightWord(word, 1.0);
+		    WeightWord	*ww = new WeightWord(word, 1.0, fieldFlag);
 		    if(HtWordNormalize(word) & WORD_NORMALIZE_NOTOK)
 			ww->isIgnore = 1;
 		    tempWords.Add(ww);
@@ -646,6 +692,8 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
     {
 	WeightWord	*ww = (WeightWord *) tempWords[i];
 	if (ww->weight > 0 && !ww->isIgnore && !in_phrase)
+//		I think that should be:
+//	if (ww->weight > 0 && !ww->isIgnore && !in_phrase && !ww->isExact)
 	{
 	    //
 	    // Apply all the algorithms to the word.
@@ -699,9 +747,11 @@ doFuzzy(WeightWord *ww, List &searchWords, List &algorithms)
 	{
 	    if (debug > 1)
 	      cout << " " << word->get();
+	    // (should be a "copy with changed weight" constructor...)
 	    newWw = new WeightWord(word->get(), fuzzy->getWeight());
 	    newWw->isExact = ww->isExact;
 	    newWw->isHidden = ww->isHidden;
+	    newWw->flags = ww->flags;
 	    weightWords.Add(newWw);
 	}
 	if (debug > 1)

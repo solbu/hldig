@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.h,v 1.15 2002/12/30 12:42:59 lha Exp $
+// $Id: parser.h,v 1.16 2003/02/11 09:49:38 lha Exp $
 //
 
 #ifndef _parser_h_
@@ -56,7 +56,7 @@ protected:
     void		perform_or();
     void		perform_phrase(List * &);
 
-    void		score(List *, double weight);
+    void		score(List *, double weight, unsigned int flags);
 
     List		*tokens;
     List		*result;

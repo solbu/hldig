@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.cc,v 1.25 2002/12/30 12:42:59 lha Exp $
+// $Id: parser.cc,v 1.26 2003/02/11 09:49:38 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -238,7 +238,7 @@ Parser::phrase(int output)
 	      {
                 if(!wordList) wordList = new List;
 		if(debug) cerr << "scoring phrase" << endl;
-		score(wordList, weight);
+		score(wordList, weight, FLAGS_MATCH_ONE); // look in all fields
 	      }
 	      break;
 	    }
@@ -381,7 +381,7 @@ Parser::perform_push()
 	p[maximum_word_length] = '\0';
 
     List* result = words[p];
-    score(result, current->weight);
+    score(result, current->weight, current->flags);
     delete result;
 }
 
@@ -510,8 +510,11 @@ Parser::perform_phrase(List * &oldWords)
 }
 
 //*****************************************************************************
+// Allocate scores based on words in  wordList.
+// Fields within which the word must appear are specified in  flags
+// (see HtWordReference.h).
 void
-Parser::score(List *wordList, double weight)
+Parser::score(List *wordList, double weight, unsigned int flags)
 {
 	HtConfiguration* config= HtConfiguration::config();
     DocMatch	*dm;
@@ -550,6 +553,16 @@ Parser::score(List *wordList, double weight)
 	//
 	// *******  Compute the score for the document
 	//
+
+	// If word not in one of the required fields, skip the entry.
+	// Plain text sets no flag in dbase, so treat it separately.
+	if (!(wr->Flags() & flags) && (wr->Flags() || !(flags & FLAG_PLAIN)))
+	{
+	    if (debug > 2)
+		cerr << "Flags " << wr->Flags() << " lack " << flags << endl;
+	    continue;
+	}
+
 	wscore = 0.0;
 	if (wr->Flags() == FLAG_TEXT)		wscore += text_factor;
 	if (wr->Flags() & FLAG_CAPITAL)		wscore += caps_factor;

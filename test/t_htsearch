@@ -5,7 +5,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_htsearch,v 1.9 2003/01/20 22:40:18 lha Exp $
+# $Id: t_htsearch,v 1.10 2003/02/11 09:49:38 lha Exp $
 #
 
 . $srcdir/t_htdig
@@ -105,6 +105,34 @@ try "Syntax error: excess close brackets" \
 try "Syntax error: missing end quote" \
     "method=boolean&words=also+or+%22distribution" \
     'Expected quotes at the end'
+
+try "Unrestricted search for 'group'" \
+    "method=and&words=group" \
+    '4 matches' 'script.html' 'bad_local.htm' 'site3.html' 'site4.html'
+
+try "Field-restricted search for 'author:group'" \
+    "method=and&words=author:group" \
+    '1 match' 'script.html'
+
+try "Field-restricted search for 'text:group'" \
+    "method=and&words=text:group" \
+    '3 matches' 'bad_local.htm' 'site3.html' 'site4.html'
+
+try "Checking prefix parsing using 'text: group'" \
+    "method=and&words=text:%20group" \
+    '1 match' 'script.html'
+
+try "Checking prefix parsing using 'text::group'" \
+    "method=and&words=text::group" \
+    '1 match' 'script.html'
+
+try "Checking prefix parsing using 'unknown:group'" \
+    "method=any&words=unknown:group" \
+    '5 matches' 'script.html' 'bad_local.htm' 'site3.html' 'site4.html' 'set1/"'
+
+try "Field-restricted search for 'descr:cost'" \
+    "method=and&words=descr:cost" \
+    '1 match' 'script.html'
 
 config=$testdir/conf/htdig.conf3
 

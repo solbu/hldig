@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WeightWord.h,v 1.5 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: WeightWord.h,v 1.6 2003/02/11 09:49:38 lha Exp $
 //
 
 #ifndef _WeightWord_h_
@@ -19,6 +19,7 @@
 
 #include "htString.h"
 #include "WordRecord.h"
+#include "HtWordReference.h"	// for FLAG_...
 
 class WeightWord : public Object
 {
@@ -28,6 +29,7 @@ public:
     //
     WeightWord();
     WeightWord(char *word, double weight);
+    WeightWord(char *word, double weight, unsigned int flags);
     WeightWord(WeightWord *);
     
     virtual		~WeightWord();
@@ -37,9 +39,10 @@ public:
     String		word;
     double		weight;
     WordRecord		*records;
-    int			isExact;
-    int			isHidden;
-    int			isIgnore;
+    unsigned int	flags;
+    short int		isExact;
+    short int		isHidden;
+    short int		isIgnore;
 };
 
 #endif

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.21 2002/02/12 06:12:05 ghutchis Exp $
+// $Id: Retriever.h,v 1.22 2003/02/11 09:49:37 lha Exp $
 //
 
 #ifndef _Retriever_h_
@@ -64,6 +64,7 @@ public:
     void		got_word(const char *word, int location, int heading);
     void		got_href(URL &url, const char *description, int hops = 1);
     void		got_title(const char *title);
+    void		got_author(const char *author);
     void		got_time(const char *time);
     void		got_head(const char *head);
     void		got_meta_dsc(const char *md);
@@ -115,7 +116,7 @@ private:
     //
     // These are weights for the words.  The index is the heading level.
     //
-    long int		factor[11];
+    long int		factor[12];
     int			currenthopcount;
 
     //
