@@ -1,3 +1,9 @@
+Fri Jan 10 2003  Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* htlib/String.cc (operator>> (istream&,String&) ):
+	Check status of stream, no return value of  get().
+	Fixes bug (for some C++ libs) where reading stops at a blank line.
+
 Fri Jan  1 2003  Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* htnet/HtFile.cc(Ext2Mime,Request), htdig/Document.cc(RetrieveLocal):

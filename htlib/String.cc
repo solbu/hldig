@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.33 2002/12/23 15:54:11 lha Exp $
+// $Id: String.cc,v 1.34 2003/01/10 10:57:49 lha Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -692,31 +692,18 @@ istream &operator >> (istream &in, String &line)
     line.Length = 0;
     line.allocate_fix_space(2048);
 
-    while (in.get(line.Data + line.Length, line.Allocated - line.Length))
+    for (;;)
     {
+	in.clear();
+	in.getline(line.Data + line.Length, line.Allocated - line.Length);
 	line.Length += strlen(line.Data + line.Length);
-	int c = in.get();
-	if (c == '\n' || c == EOF)
-	{
-	    //
-	    // A full line has been read.  Return it.
-	    //
+	if (!in.fail() || in.eof())
 	    break;
-	}
-	if (line.Allocated > line.Length + 2)
-	{
-	    //
-	    // Not all available space filled.
-	    //
-	    line.Data[line.Length++] = char(c);
-	    continue;
-	}
 	//
 	// Only a partial line was read. Increase available space in 
 	// string and read some more.
 	//
 	line.reallocate_space(line.Allocated << 1);
-	line.Data[line.Length++] = char(c);
     }
 
     return in;
