@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.48 1999/05/05 00:38:54 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.49 1999/05/15 15:38:20 ghutchis Exp $";
 #endif
 
 #include "Configuration.h"
@@ -92,8 +92,9 @@ ConfigDefaults	defaults[] =
     {"metaphone_db",			"${database_base}.metaphone.db"},
     {"meta_description_factor",		"50"},
     {"method_names",			"and All or Any boolean Boolean"},
-    {"minimum_word_length",		"3"},
     {"minimum_prefix_length",		"1"},
+    {"minimum_speling_length",		"5"},
+    {"minimum_word_length",		"3"},
     {"modification_time_is_now",        "false"},
     {"next_page_text",			"[next]"},
     {"no_excerpt_text",			"<em>(None of the search words were found in the top of this document.)</em>"},
