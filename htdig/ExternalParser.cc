@@ -8,12 +8,12 @@
 //                 in http://www.htdig.org/attrs.html#external_parser
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.7 2000/08/01 16:51:25 ghutchis Exp $
+// $Id: ExternalParser.cc,v 1.19.2.8 2000/09/09 18:19:38 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -42,9 +42,18 @@ extern String		configFile;
 //
 ExternalParser::ExternalParser(char *contentType)
 {
+  String mime;
+  int sep;
+
     if (canParse(contentType))
     {
-	currentParser = ((String *)parsers->Find(contentType))->get();
+        String mime = contentType;
+	mime.lowercase();
+	sep = mime.indexOf(';');
+	if (sep != -1)
+	  mime = mime.sub(0, sep).get();
+	
+	currentParser = ((String *)parsers->Find(mime))->get();
     }
     ExternalParser::contentType = contentType;
 }
@@ -99,6 +108,8 @@ ExternalParser::readLine(FILE *in, String &line)
 int
 ExternalParser::canParse(char *contentType)
 {
+  int			sep;
+
     if (!parsers)
     {
 	parsers = new Dictionary();
@@ -107,7 +118,6 @@ ExternalParser::canParse(char *contentType)
 	QuotedStringList	qsl(config["external_parsers"], " \t");
 	String			from, to;
 	int			i;
-	int			sep;
 
 	for (i = 0; qsl[i]; i += 2)
 	{
@@ -119,11 +129,22 @@ ExternalParser::canParse(char *contentType)
 		to = from.sub(sep+2).get();
 		from = from.sub(0, sep).get();
 	    }
+	    from.lowercase();
+	    sep = from.indexOf(';');
+	    if (sep != -1)
+	      from = from.sub(0, sep).get();
+
 	    parsers->Add(from, new String(qsl[i + 1]));
 	    toTypes->Add(from, new String(to));
 	}
     }
-    return parsers->Exists(contentType);
+
+    String mime = contentType;
+    mime.lowercase();
+    sep = mime.indexOf(';');
+    if (sep != -1)
+      mime = mime.sub(0, sep).get();
+    return parsers->Exists(mime);
 }
 
 //*****************************************************************************
@@ -428,14 +449,14 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		plaintext = new Plaintext();
 	    parsable = plaintext;
 	}
-	else
+	else 
 	{
 	    if (!plaintext)
 		plaintext = new Plaintext();
 	    parsable = plaintext;
 	    if (debug)
 		cout << "External parser error: \"" << contentType <<
-			"\" not a recognized type.  Assuming text\n";
+			"\" not a recognized type.  Assuming text/plain\n";
 	}
 	parsable->setContents(newcontent.get(), newcontent.length());
 	parsable->parse(retriever, base);
