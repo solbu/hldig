@@ -1,39 +1,25 @@
 //
 // htfuzzy.cc
 //
-// Create one or more ``fuzzy'' indexes into the main word database.
-// These indexes can be used by htsearch to perform a search that uses
-// other algorithms than exact word match.
+// htfuzzy: Create one or more ``fuzzy'' indexes into the main word database.
+//          These indexes can be used by htsearch to perform a search that uses
+//          other algorithms than exact word match.
 //
-// This program is meant to be run after htmerge has created the word
-// database.
+//  This program is meant to be run after htmerge has created the word
+//  database.
 //
-// For each fuzzy algorithm, there will be a separate database.  Each
-// database is simply a mapping from the fuzzy key to a list of words
-// in the main word database.
+//  For each fuzzy algorithm, there will be a separate database.  Each
+//  database is simply a mapping from the fuzzy key to a list of words
+//  in the main word database.
 //
-// $Log: htfuzzy.cc,v $
-// Revision 1.6  1998/10/12 02:04:00  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Updated Makefiles and configure variables.
+// $Id: htfuzzy.cc,v 1.15.2.1 1999/12/05 06:07:33 ghutchis Exp $
 //
-// Revision 1.4  1998/09/18 02:38:08  ghutchis
-//
-// Bug fixes for 3.1.0b2
-//
-// Revision 1.3  1997/06/23 02:26:15  turtle
-// Added version info the usage output
-//
-// Revision 1.2  1997/03/24 04:33:19  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: htfuzzy.cc,v 1.6 1998/10/12 02:04:00 ghutchis Exp $";
-#endif
 
 #include "htfuzzy.h"
 #include "Fuzzy.h"
@@ -41,10 +27,16 @@ static char RCSid[] = "$Id: htfuzzy.cc,v 1.6 1998/10/12 02:04:00 ghutchis Exp $"
 #include "Endings.h"
 #include "Metaphone.h"
 #include "Synonym.h"
-#include <htString.h>
-#include <List.h>
-#include <Dictionary.h>
-#include <defaults.h>
+#include "htString.h"
+#include "List.h"
+#include "Dictionary.h"
+#include "defaults.h"
+#include "HtWordList.h"
+
+// If we have this, we probably want it.
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
+#endif
 
 int		debug = 0;
 
@@ -91,19 +83,19 @@ main(int ac, char **av)
     {
 	if (mystrcasecmp(av[i], "soundex") == 0)
 	{
-	    wordAlgorithms.Add(new Soundex);
+	    wordAlgorithms.Add(new Soundex(config));
 	}
 	else if (mystrcasecmp(av[i], "metaphone") == 0)
 	{
-	    wordAlgorithms.Add(new Metaphone);
+	    wordAlgorithms.Add(new Metaphone(config));
 	}
 	else if (mystrcasecmp(av[i], "endings") == 0)
 	{
-	    noWordAlgorithms.Add(new Endings);
+	    noWordAlgorithms.Add(new Endings(config));
 	}
 	else if (mystrcasecmp(av[i], "synonyms") == 0)
 	{
-	    noWordAlgorithms.Add(new Synonym);
+	    noWordAlgorithms.Add(new Synonym(config));
 	}
 	else
 	{
@@ -121,7 +113,7 @@ main(int ac, char **av)
     // Find and parse the configuration file.
     //
     config.Defaults(&defaults[0]);
-    if (access(configFile, R_OK) < 0)
+    if (access((char*)configFile, R_OK) < 0)
     {
 	reportError(form("Unable to find configuration file '%s'",
 			 configFile.get()));
@@ -134,60 +126,59 @@ main(int ac, char **av)
         //
         // Open the word database so that we can grab the words from it.
         //
-        String  wordFile = config["word_db"];
-        if (access(wordFile, R_OK) < 0)
-        {
-            reportError(form("Unable to read word database file '%s'\nDid you run htmerge?",
-                             wordFile.get()));
-        }
-	Database *worddb = Database::getDatabaseInstance();
-	if (worddb->OpenRead(wordFile) == OK)
-	{
+        HtWordList	worddb(config);
+	if (worddb.Open(config["word_db"], O_RDONLY))
+	  {
 	    //
 	    // Go through all the words in the database
 	    //
-	    char		*key;
+	    List		*words = worddb.Words();
+	    String		*key;
 	    Fuzzy		*fuzzy = 0;
 	    String		word, fuzzyKey;
 	    int			count = 0;
-
-	    worddb->Start_Get();
-	    while ((key = worddb->Get_Next()))
-	    {
-		word = key;
+	    
+	    words->Start_Get();
+	    while ((key = (String *) words->Get_Next()))
+	      {
+		word = *key;
 		wordAlgorithms.Start_Get();
 		while ((fuzzy = (Fuzzy *) wordAlgorithms.Get_Next()))
-		{
+		  {
 		    fuzzy->addWord(word);
-		}
+		  }
 		count++;
 		if ((count % 100) == 0 && debug)
-		{
+		  {
 		    cout << "htfuzzy: words: " << count << '\n';
 		    cout.flush();
-		}
-	    }
+		  }
+	      }	
 	    if (debug)
-	    {
+	      {
 		cout << "htfuzzy: total words: " << count << "\n";
 		cout << "htfuzzy: Writing index files...\n";
-	    }
-
+	      }
+	    
 	    //
 	    // All the information is now in memory.
 	    // Write all of it out to the individual databases
 	    //
 	    wordAlgorithms.Start_Get();
 	    while ((fuzzy = (Fuzzy *) wordAlgorithms.Get_Next()))
-	    {
-		fuzzy->writeDB(config);
-	    }
-	    worddb->Close();
-	}
+	      {
+		fuzzy->writeDB();
+	      }
+	    worddb.Close();
+	    words->Destroy();
+	    delete words;
+	    if (fuzzy)
+	      delete fuzzy;
+	  }
 	else
-	{
+	  {
 	    reportError("Unable to open word database");
-	}
+	  }
     }
     if (noWordAlgorithms.Count() > 0)
     {
@@ -199,7 +190,11 @@ main(int ac, char **av)
 		cout << "htfuzzy: Selected algorithm: " << fuzzy->getName()
 		     << endl;
 	    }
-	    fuzzy->createDB(config);
+	    if (fuzzy->createDB(config) == NOTOK)
+	      {
+		cout << "htfuzzy: Could not create database for algorithm: "
+		     << fuzzy->getName() << endl;
+	      }
 	}
     }
 	
