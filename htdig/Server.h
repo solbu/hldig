@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.h,v 1.9.2.10 2000/10/20 03:40:56 ghutchis Exp $
+// $Id: Server.h,v 1.9.2.11 2000/10/31 04:42:27 ghutchis Exp $
 //
 
 #ifndef _Server_h_
@@ -61,7 +61,7 @@ public:
 	// if it's down, it simply will not be added
 	//
 	void push(const String &path, int hopcount, const String &referer,
-         int local = 0);
+         int local = 0, int newDoc = 1);
 
 	//
 	// Return the next URL from the queue for this server.

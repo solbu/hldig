@@ -1,3 +1,14 @@
+Mon Oct 30 21:50:02 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Server.h, htdig/Server.cc (push): Add newDoc paramter that
+	will allow redirects (old docs) to be followed and not count
+	against the maxDoc restrictions.
+
+	* htdig/Retriever.cc (got_redirect): Use new parameter so we don't
+	count against a server's max documents since it's a redirect.
+
+	* htlib/nl_types.h: Add for systems missing this header file.
+
 Sun Oct 29 21:36:51 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/defaults.cc: Updated per-server and per-URL fields to

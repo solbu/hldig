@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.40 2000/10/10 03:15:36 ghutchis Exp $
+// $Id: Retriever.cc,v 1.72.2.41 2000/10/31 04:42:26 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1629,7 +1629,7 @@ Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 		    delete localRobotsFile;
 		}
 		server->push(url.get(), ref->DocHopCount(), base->get(),
-			     IsLocalURL(url.get()));
+			     IsLocalURL(url.get()), 0);
 
 		String	temp = url.get();
 		visited.Add(temp, 0);

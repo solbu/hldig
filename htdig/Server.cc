@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.17 2000/10/20 03:40:56 ghutchis Exp $
+// $Id: Server.cc,v 1.17.2.18 2000/10/31 04:42:26 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -294,9 +294,10 @@ void Server::robotstxt(Document &doc)
 
 
 //*****************************************************************************
-// void Server::push(String &path, int hopcount, char *referer, int local)
+// void Server::push(String &path, int hopcount, char *referer, int local, int newDoc)
 //
-void Server::push(const String &path, int hopcount, const String &referer, int local)
+void Server::push(const String &path, int hopcount, const String &referer,
+		  int local, int newDoc)
 {
     if (_bad_server && !local)
 	return;
@@ -309,8 +310,9 @@ void Server::push(const String &path, int hopcount, const String &referer, int l
 	return;
       }
 
-    // We use -1 as no limit
-    if (_max_documents != -1 &&
+    // We use -1 as no limit, but we also don't want
+    // to forbid redirects from old places
+    if (_max_documents != -1 && newDoc &&
 	_documents >= _max_documents)
     {
        if (debug>2)     // Hey! we only want to get max_docs
@@ -325,7 +327,8 @@ void Server::push(const String &path, int hopcount, const String &referer, int l
     ref->SetReferer(referer);
     _paths.Add(ref);
 
-    _documents++;
+    if (newDoc)
+      _documents++;
 
 //     cout << "***** pushing '" << path << "' with '" << referer << "'\n";
 }
