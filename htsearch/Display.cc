@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.47 2001/11/01 16:23:32 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.48 2001/12/18 22:14:04 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -241,6 +241,7 @@ Display::displayMatch(ResultMatch *match, int current)
     ref->DocURL(url.get());	// for star_patterns & template_patterns match
     vars.Add("URL", new String(url.get()));
     
+    vars.Remove("ANCHOR");	// get rid of any previous setting
     int     iA = ref->DocAnchor();
     
     String  *anchor = 0;
