@@ -1,3 +1,35 @@
+Sat Feb 26 22:05:03 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Collection.h, htsearch/Collection.cc: New files
+	contributed by Rajendra Inamdar <inamdar@beasys.com>.
+
+	* htsearch/Makefile.am, htsearch/Makefile.in: Compile them.
+
+	* htcommon/defaults.cc: Add new collection_names attribute as
+	described by Rajendra.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerate using cf_generate.pl.
+
+	* htsearch/Display.h, htsearch/Display.cc: Loop through
+	collections as we are assembling results.
+	(buildMatchList): Use 1.0 as minimum score and take log(score) as
+	the final score. This requires an increase in magnitude in weight
+	to correspond to a factor of increase in score.
+
+	* htsearch/DocMatch.h, htsearch/DocMatch.cc: Keep track of the
+	collection we're in.
+
+	* htsearch/ResultMatch.h: Ditto.
+
+	* htsearch/htsearch.h, htsearch/htsearch.cc: Wrap results in
+	collections.
+
+	* htsearch/parser.h, htsearch/parser.cc: Set the collection for
+	the results--we use this to get to the appropriate word DB.
+	(score): Divide word weights by word frequency to calibrate for
+	expected Zipf's law. Rare words should count more.
+	
 Fri Feb 25 11:19:47 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc (maximum_pages): Describe new bahaviour (as of
@@ -154,10 +186,14 @@ Mon Feb 21 17:09:13 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	into Add() and AddParsed(), so that only config attributes get parsed.
 	Use AddParsed() only in Read() and Defaults().
 
-Sat Feb 19 04:56:47 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+Fri Feb 18 22:50:54 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htnet/Connection.h, htnet/Connection.cc: Renamed methods with
 	capitals to remove the need to use ::-escaped library calls.
+
+	* htnet/Transport.h, htnet/Transport.cc, htnet/HtHTTP.cc,
+	htdig/Images.cc: Fix code using Connection to use the newly
+	capitalized methods.
 
 Fri Feb 18 14:40:50 2000  Loic Dachary  <loic@ceic.com>
 
