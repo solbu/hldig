@@ -7,12 +7,15 @@ RELEASES:
 
 SHOWSTOPPERS:
 * Code currently will not build since mifluz merge did not work cleanly.
+  (this is about 50-60% cleared and the rest should be cleared by 9/21)
 * Odd behavior with $(MODIFIED) and scores not working with
    wordlist_compress set but work fine without wordlist_compress.
    (the date is definitely stored correctly, even with compression on
     so this must be some sort of weird htsearch bug)
 
 KNOWN BUGS:
+* scandir does not work on SYSV systems--need to use system library replacement.
+   (probably could just use this in place of scandir if it works OK on non-SYSV OS)
 * Not all htsearch input parameters are handled properly: PR#648.
 * If exact isn't specified in the search_algorithms, $(WORDS) is not set 
    correctly: PR#650. (The documentation for 3.2.0b1 is updated, but can
