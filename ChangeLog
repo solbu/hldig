@@ -1,4 +1,16 @@
-Mon Oct 13 13:35:42 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Thu Oct 13 13:09:32 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* htnet/Transport: added statistics for open and close of connections
+	  and changes of servers.
+	  Fixed a bug in the SetConnection method, regarding the host comparison.
+	  Added a method for showing the statistics on a given channel.
+
+	* htnet/HtHTTP: More debug info available.
+	  Added a method for showing the statistics on a given channel.
+
+	* test/testnet.cc: now receives changes above.
+
+Wed Oct 13 13:35:42 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* htdig/Document.h: added an HtHTTP pointer to the class.
 

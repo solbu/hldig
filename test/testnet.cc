@@ -1,4 +1,4 @@
-// $Id: testnet.cc,v 1.8.2.1 1999/10/13 11:55:21 angus Exp $
+// $Id: testnet.cc,v 1.8.2.2 1999/10/14 11:17:00 angus Exp $
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
 #endif /* HAVE_CONFIG_H */
@@ -192,6 +192,15 @@ int main(int ac, char **av)
    }
 
    HtDateTime EndTime;
+
+   // Memory freeing
+
+   if (HTTPConnect)
+     delete HTTPConnect;
+   
+   if (url) delete url;
+
+   // Show statistics
    
    if(debug>0)
    {
@@ -201,46 +210,31 @@ int main(int ac, char **av)
 
       if (persistent)
       {
-         cout << " Persistent connections: On" << endl;
+         cout << " Persistent connections    : On" << endl;
          if (head_before_get)
-            cout << " HTTP/1.1 HEAD method call before GET: On" << endl;
+            cout << " HTTP/1.1 HEAD before GET  : On" << endl;
          else
-            cout << " HTTP/1.1 HEAD method call before GET: Off" << endl;
+            cout << " HTTP/1.1 HEAD before GET  : Off" << endl;
       }
       else
-         cout << " Persistent connections: Off" << endl;
+         cout << " Persistent connections : Off" << endl;
 
       
-      cout << " Timeout value        : " << timeout << endl;
+      cout << " Timeout value             : " << timeout << endl;
       
-      if (head_before_get)
-         cout << " Requests             : " << timesvar
-            << " (effective " << HtHTTP::GetTotRequests() << ")" << endl;
-      else
-         cout << " Requests             : " << HtHTTP::GetTotRequests() << endl;
-         
-      cout << " Timed out            : " << _timed_out << endl;
-      cout << " Unknown errors       : " << _errors << endl;
-      cout << " Elapsed time         : approximately "
+      cout << " Document requests         : " << timesvar << endl;
+
+      HtHTTP::ShowStatistics(cout);
+
+      cout << " Timed out                 : " << _timed_out << endl;
+      cout << " Unknown errors            : " << _errors << endl;
+      cout << " Elapsed time              : approximately "
          << HtDateTime::GetDiff(EndTime, StartTime) << " secs" << endl;
-      cout << " Connection time      : approximately "
-         << HtHTTP::GetTotSeconds() << " secs" << endl;
-      cout << " KBytes requested     : " << (double)HtHTTP::GetTotBytes()/1024 << endl;
-      cout << " Average request time : approximately "
-      << HtHTTP::GetAverageRequestTime() << " secs" << endl;
-         
-      cout << " Average speed        : " << HtHTTP::GetAverageSpeed()/1024
-         << " KBytes/secs" << endl;
+
    }
-         
 
-   // Memory freeing
-
-   if (HTTPConnect)
-     delete HTTPConnect;
+   // Return values
    
-   if (url) delete url;
-
    if (_errors) return -1;
    
    if (_timed_out) return 1;
