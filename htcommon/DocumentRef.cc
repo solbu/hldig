@@ -388,14 +388,14 @@ void DocumentRef::Deserialize(String &stream)
 
 #define NUM_ASSIGN(to, from) \
  do {                                                                 \
-   if (sizeof(to) == sizeof(long int))                                \
-     MEMCPY_ASSIGN(to, from, long int);                               \
-   else if (sizeof(to) == sizeof(int))                                \
-     MEMCPY_ASSIGN(to, from, int);                                    \
-   else if (sizeof(to) == sizeof(short int))                          \
-     MEMCPY_ASSIGN(to, from, short int);                              \
-   else if (sizeof(to) == sizeof(char))                               \
-     MEMCPY_ASSIGN(to, from, char);                                   \
+   if (sizeof(to) == sizeof(unsigned long int))                       \
+     MEMCPY_ASSIGN(to, from, unsigned long int);                      \
+   else if (sizeof(to) == sizeof(unsigned int))                       \
+     MEMCPY_ASSIGN(to, from, unsigned int);                           \
+   else if (sizeof(to) == sizeof(unsigned short int))                 \
+     MEMCPY_ASSIGN(to, from, unsigned short int);                     \
+   else if (sizeof(to) == sizeof(unsigned char))                      \
+     MEMCPY_ASSIGN(to, from, unsigned char);                          \
    /* else fatal error here? */                                       \
  } while (0)
 
@@ -407,7 +407,9 @@ void DocumentRef::Deserialize(String &stream)
  }                                                                    \
  else if (type & SHORTSIZE_MARKER_BIT)                                \
  {                                                                    \
-   NUM_ASSIGN(var, *(unsigned short int *) in);                       \
+   unsigned short int _tmp0;                                          \
+   memcpy((char *) &_tmp0, (char *) (in), sizeof(unsigned short));    \
+   NUM_ASSIGN(var, _tmp0);                                            \
    in += sizeof(unsigned short int);                                  \
  }                                                                    \
  else                                                                 \

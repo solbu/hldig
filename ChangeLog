@@ -1,3 +1,9 @@
+Thu Feb 11 00:29:42 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htcommon/DocumentRef.cc (NUM_ASSIGN): Expand from unsigned types.
+	(getnum): Use temporary for "unsigned short", and memcpy data into
+	it instead of assignment.
+
 Tue Feb  9 19:21:55 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/FAQ.html, htdoc/where.html: Update for 3.1.0 release.
