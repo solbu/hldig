@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.21 2000/05/06 20:46:38 loic Exp $
+// $Id: Document.cc,v 1.55.2.22 2000/08/13 18:22:27 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -83,7 +83,6 @@ Document::Document(char *u, int max_size)
    // Initialize some static variables of Transport
    // and the User Agent for every HtHTTP objects
 
-   HtHTTP::SetRequestUserAgent(config["user_agent"]);
    HtHTTP::SetParsingController(ExternalParser::canParse);
 
     contents.allocate(max_doc_size + 100);
@@ -263,7 +262,10 @@ Document::Retrieve(Server *server, HtDateTime date)
          // Here we must set only thing for a HTTP request
 	  
          HTTPConnect->SetRequestURL(*url);
-	  
+
+	 // Set the user agent which can vary per server
+	 HTTPConnect->SetRequestUserAgent(server->UserAgent());
+
          // Set the referer
          if (referer)
             HTTPConnect->SetRefererURL(*referer);

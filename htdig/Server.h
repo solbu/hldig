@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.h,v 1.9.2.7 2000/03/02 17:58:47 angus Exp $
+// $Id: Server.h,v 1.9.2.8 2000/08/13 18:22:27 ghutchis Exp $
 //
 
 #ifndef _Server_h_
@@ -91,6 +91,7 @@ public:
         unsigned int            TcpWaitTime() { return _tcp_wait_time; }
         unsigned int            TcpMaxRetries() { return _tcp_max_retries; }
         unsigned int            MaxDocuments() { return _max_documents; }
+	String			UserAgent() { return _user_agent; }
         
 	//
 	// Return the URLs to be excluded from this server
@@ -122,7 +123,7 @@ private:
         unsigned int            _tcp_max_retries;   // Max number of retries when
                                                 // connection is not possible
                                                 // and timeout occurs
-
+	String			_user_agent;    // User agent to use for this server
 
         
 };

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.13 2000/05/06 20:46:38 loic Exp $
+// $Id: Server.cc,v 1.17.2.14 2000/08/13 18:22:27 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -49,6 +49,7 @@ Server::Server(URL u, StringList *local_robots_files)
 
     _max_documents = config.Value("server",_host,"server_max_docs");
     _connection_space = config.Value("server",_host,"server_wait_time");
+    _user_agent = config.Find("server", _host, "user_agent");
 
     // Timeout setting
     _timeout = config.Value("server",_host,"timeout");
@@ -183,7 +184,7 @@ void Server::robotstxt(Document &doc)
     int		length;
     int		pay_attention = 0;
     String	pattern;
-    String	myname = config["robotstxt_name"];
+    String	myname = config.Find("server", _host, "robotstxt_name");
     int		seen_myname = 0;
     char	*name, *rest;
     
