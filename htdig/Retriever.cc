@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.18 2000/02/15 22:42:20 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.19 2000/02/15 22:49:49 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -702,9 +702,14 @@ Retriever::IsValidURL(char *u)
     //
     char	*ext = strrchr(url, '.');
     String	lowerext;
+    if (ext && strchr(ext, '/'))	// Ignore a dot if it's not in the
+      ext = NULL;			// final component of the path.
     if (ext)
       {
 	lowerext = ext;
+	int parm = lowerext.indexOf('?');	// chop off URL parameter
+	if (parm >= 0)
+	    lowerext.chop(lowerext.length() - parm);
 	lowerext.lowercase();
 	if (invalids->Exists(lowerext))
 	  {

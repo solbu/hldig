@@ -1,4 +1,10 @@
-Tue Feb 15 16:37:28 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Feb 15 16:41:18 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc (IsValidURL): Fix problem with
+	valid_extensions when an "extension" would include part of a
+	directory path or server name, as contributed by Warren Jones.
+	Also fix problem with valid_extensions matching failure when URL
+	parameters follow extension, as reported by fxbois@cybercable.fr.
 
 	* htdig/Document.cc (RetrieveLocal), htdig/Document.h,
 	htdig/Retriever.cc(Initial, parse_url, GetLocal, GetLocalUser,
