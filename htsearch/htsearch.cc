@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.4 1999/04/07 23:48:38 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.5 1999/09/01 20:24:06 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -174,7 +174,7 @@ main(int ac, char **av)
     if (input.exists("exclude"))
 	config.Add("exclude", input["exclude"]);
     if (input.exists("keywords"))
-	requiredWords.Create(input["keywords"], " \t\r\n");
+	requiredWords.Create(input["keywords"], " \t\r\n\001");
     if (input.exists("sort"))
 	config.Add("sort", input["sort"]);
 

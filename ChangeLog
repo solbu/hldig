@@ -1,4 +1,7 @@
-Wed Sep  1 15:18:27 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:20:35 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc(main): Allow multiple keywords input
+	parameters in search forms.
 
 	* htdig/Document.cc(Reset, readHeader): Fix the bug in the handling
 	of modification_time_is_now.
