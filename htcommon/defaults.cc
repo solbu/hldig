@@ -1,13 +1,17 @@
 //
 // defaults.cc
 //
-// default values for the ht programs
+// defaults: default values for the ht programs through the
+//           Configuration class
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: defaults.cc,v 1.64.2.12 1999/11/28 02:44:20 ghutchis Exp $
 //
-#if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.64.2.11 1999/11/10 21:24:21 grdetil Exp $";
-#endif
 
 #include "Configuration.h"
 
@@ -355,6 +359,7 @@ http://www.htdig.org/", "
 	common things such as an infinite virtual web-tree
 	which start with cgi-bin.
 " },
+{ "external_protocols", "", "quoted string list", "htdig", "external_protocols: https /usr/local/bin/handler.pl", ""},
 { "external_parsers", "", 
 	"quoted string list", "htdig", "external_parsers: text/html /usr/local/bin/htmlparser \\<br>
 	application/pdf /usr/local/bin/parse_doc.pl \\<br>
