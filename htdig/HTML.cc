@@ -1,19 +1,23 @@
 //
 // HTML.cc
 //
-// Implementation of HTML
-// Class to parse HTML documents and return useful information to the Retriever
+// HTML: Class to parse HTML documents and return useful information
+//       to the Retriever
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1995-2001 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.17 2001/06/07 22:11:29 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.18 2001/08/27 21:43:10 grdetil Exp $";
 #endif
 
 #include "htdig.h"
 #include "HTML.h"
 #include "SGMLEntities.h"
 #include "Configuration.h"
-#include <ctype.h>
 #include "StringMatch.h"
 #include "StringList.h"
 #include "URL.h"
@@ -154,6 +158,8 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     unsigned char       *ptext = text;
     static char         *skip_start = config["noindex_start"];
     static char         *skip_end = config["noindex_end"];
+    int			skip_start_len = strlen(skip_start);
+    int			skip_end_len = strlen(skip_end);
 
     keywordsCount = 0;
     offset = 0;
@@ -176,13 +182,13 @@ HTML::parse(Retriever &retriever, URL &baseURL)
       // This can contain any HTML. 
       //
       if (*skip_start &&
-	  mystrncasecmp((char *)position, skip_start, strlen(skip_start)) == 0)
+	  mystrncasecmp((char *)position, skip_start, skip_start_len) == 0)
 	{
 	  q = (unsigned char*)mystrcasestr((char *)position, skip_end);
 	  if (!q)
 	    *position = '\0';       // Rest of document will be skipped...
 	  else
-	    position = q + strlen(skip_end);
+	    position = q + skip_end_len;
 	  continue;
 	}
 
@@ -229,7 +235,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    {
 	      // Not a comment declaration after all
 	      // but possibly DTD: get to the end
-	      q = (unsigned char*)strstr((char *)position, ">");
+	      q = (unsigned char*)strchr((char *)position, '>');
 	      if (q)
 		{
 		  position = q + 1;
@@ -266,7 +272,11 @@ HTML::parse(Retriever &retriever, URL &baseURL)
            *ptext = SGMLEntities::translateAndUpdate(position);
            if (*ptext == '<') 
            {
-              *ptext = ' ';
+              // got a decoded &lt;, make a fake tag for it
+              // to avoid confusing it with real tag start
+              *ptext++ = '<';
+              *ptext++ = '~';
+              *ptext = '>';
            }
            ptext++;
         }
@@ -286,7 +296,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	offset = position - start;
 	// String = 0 is expensive
 	// word = 0;
-	if (*position == '<')
+	if (*position == '<' && (position[1] != '~' || position[2] != '>'))
 	  {
 	    //
 	    // Start of a tag.  Since tags cannot be nested, we can simply
@@ -333,6 +343,9 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    while (*position && HtIsWordChar(*position))
 	    {
 		word << (char)*position;
+		// handle case where '<' is in extra_word_characters...
+		if (strncmp((char *)position, "<~>", 3) == 0)
+		    position += 2;      // skip over fake tag for decoded '<'
 		position++;
 		if (*position == '<')
 		{
@@ -432,13 +445,16 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		}
 		in_space = 0;
 		in_punct = 1;
+		// handle normal case where decoded '<' is punctuation...
+		if (strncmp((char *)position, "<~>", 3) == 0)
+		    position += 2;      // skip over fake tag for decoded '<'
 	    }
 	    position++;
 	}
     }
     retriever.got_head(head);
 
-    delete text;
+    delete [] text;
 }
 
 

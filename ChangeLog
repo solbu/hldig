@@ -1,3 +1,9 @@
+Mon Aug 27 16:38:43 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (parse): Fixed delete [] text (was missing []), added
+	simple optimizations for comment & noindex_start skipping, handle
+	decoded &lt; entity correctly.
+
 Mon Aug 27 15:31:01 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	[ Backport 3.2.0b4 config files. ]
