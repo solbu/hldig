@@ -4,6 +4,9 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.37  1999/01/21 02:06:31  ghutchis
+// Fixed typo in last patch.
+//
 // Revision 1.36  1999/01/21 01:59:37  ghutchis
 // Use REMOTE_ADDR when REMOTE_HOST is unavailable (otherwise we silently dump
 // core).
@@ -131,7 +134,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.36 1999/01/21 01:59:37 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.37 1999/01/21 02:06:31 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -889,7 +892,7 @@ Display::expandVariables(char *str)
 		    state = 0;
 		break;
 	    case 4:
-		if (*str == ')' || *str == '{')
+		if (*str == ')' || *str == '}')
 		    state = 2;
 		else if (isalpha(*str) || *str == '_')
 		    var << *str;
