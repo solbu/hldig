@@ -3,18 +3,8 @@
 //
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
-// Revision history
-// ----------------
-// Revision 1.0.1 1998/04/28 wallez
-// Do not use acroread as a filter via popen(), because it leaves files
-// in /tmp. Use regular files and system() instead.
-//
-// Revision 1.0  1998/04/16
-// Initial revision
-//
 #if RELEASE
-// Put the compilation date in the object file.
-static char RCSid[] = "$Id: PDF.cc,v 1.7 1999/01/17 21:12:05 ghutchis Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.8 1999/01/27 00:27:52 ghutchis Exp $";
 #endif
 
 #include <sys/types.h>
@@ -111,13 +101,13 @@ PDF::parse(Retriever &retriever, URL &url)
         acroread = "acroread";
 
     // Check for existance of acroread program! (if not, return)
-    struct stat stat_buf;
+    //struct stat stat_buf;
     // Check that it exists, and is a regular file. 
-    if ((stat(acroread, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode))
-      {
-	printf("PDF::parse: cannot find acroread\n");
-	return;
-      }
+    //if ((stat(acroread, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode))
+    //  {
+    //	printf("PDF::parse: cannot find acroread\n");
+    //	return;
+    //  }
 
     // Write the pdf contents in a temp file to give it to acroread
 
@@ -151,7 +141,12 @@ PDF::parse(Retriever &retriever, URL &url)
     //    acroread << " -toPostScript " << pdfName << " " << tmpdir << " 2>&1";
     acroread << " " << pdfName << " " << psName << " 2>&1";
 
-    system(acroread);
+    if (system(acroread))
+    {
+	printf("PDF::parse: error running pdf_parser on %s\n", url.get());
+	unlink(pdfName);
+	return;
+    }
     FILE* psFile = fopen(psName, "r");
     if (!psFile)
     {
