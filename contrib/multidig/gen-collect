@@ -1,0 +1,99 @@
+#!@BASH@
+
+#
+# gen-collect 1.1
+#
+# Copyright (c) 1998-1999 The ht://Dig Group
+# Distributed under the terms of the GNU General Public License (GPL)
+#   version 2 or later.
+# for the ht://Dig search system http://www.htdig.org/
+# and the multidig script system http://www.htdig.org/contrib/scripts/
+#
+# Part of the "multidig script system"
+# a system of shell scripts and some modified conf files
+# that makes dealing with multiple databases easier for ht://Dig
+#
+# Syntax:
+# gen-collect [-v]
+#
+# Merges multiple databases into ``collected'' db
+# (This is done by multidig too, but this script lets you *just*
+#  generate the collections.)
+#
+
+# This is useful for debugging info
+if [ "$1" = "-v" ]; then
+    verbose=-v
+fi
+
+# You may need to set the following:
+MULTIDIG_CONF=@CONFIG_DIR@/multidig.conf
+source $MULTIDIG_CONF
+
+# We may be called inside multidig, so we don't want to mess with the report.
+for collect in `cat $COLLECT_LIST`; do
+    # What's the conf file for this database?
+    CONF=$CONFIG_DIR/$collect.conf
+    echo Generating $collect at: `date`
+
+    # We want to replace the old .work files with the first database
+    # This ensures that we *only* get documents from the merged db
+    # and not old ones left around in our previous collected db
+    firstdb=`head -n 1 $DB_BASE/$collect/$collect.collect`
+    cp $DB_BASE/$firstdb/db.docdb      $DB_BASE/$collect/db.docdb.work
+    cp $DB_BASE/$firstdb/db.docs.index $DB_BASE/$collect/db.docs.index.work
+    cp $DB_BASE/$firstdb/db.wordlist.work $DB_BASE/$collect/db.wordlist.work
+    cp $DB_BASE/$firstdb/db.words.db   $DB_BASE/$collect/db.words.db.work
+    # Now we need to work out the number of remaining db in the collection
+    LENGTH=`wc -l $DB_BASE/$collect/$collect.collect | awk '{print $1;}'`
+    let NUM=LENGTH-1
+
+    for db in `tail -n $NUM $DB_BASE/$collect/$collect.collect`; do
+	if [ "$1" = "-v" ]; then
+	    echo Merging db $db of collect $collect
+	fi
+	MERGE_CONF=$CONFIG_DIR/$db.conf
+	# There's a slight bug in the merge function.
+	# It's looking for db.wordlist, not .work. So lets copy it temporarily
+	cp $DB_BASE/$db/db.wordlist.work $DB_BASE/$db/db.wordlist
+	# Do the merging, using -d and -w to prevent normal merging
+	# (it would be a waste of time, we'd repeat it multiple times)
+	$BINDIR/htmerge $verbose -s -d -w -m $MERGE_CONF -a -c $CONF >>$REPORT
+	# And now remove the copy
+	rm $DB_BASE/$db/db.wordlist
+    done
+
+    # Now after merging in all of those databases
+    # we need to do the usual htmerge run
+    $BINDIR/htmerge -a $verbose -s -c $CONF >>$REPORT
+
+    if [ "$1" = "-v" ]; then
+	echo Moving files $collect at: `date`
+    fi
+    # If you don't have the space for backups, this step can be omitted
+    if [ $BACKUPS = "true" ]; then
+	cp $DB_BASE/$collect/db.docdb      $DB_BASE/$collect/db.docdb.bak
+	cp $DB_BASE/$collect/db.docs.index $DB_BASE/$collect/db.docs.index.bak
+	# cp $DB_BASE/$collect/db.wordlist $DB_BASE/$collect/db.wordlist.bak
+	cp $DB_BASE/$collect/db.words.db   $DB_BASE/$collect/db.words.db.bak
+    fi
+
+    # Move them because we don't want .work files around
+    # (Remember, we're generating using merging,
+    # so we want to make sure we don't have old stuff to gum up the works...
+    mv $DB_BASE/$collect/db.docdb.work         $DB_BASE/$collect/db.docdb
+    mv $DB_BASE/$collect/db.docs.index.work    $DB_BASE/$collect/db.docs.index
+    # mv $DB_BASE/$collect/db.wordlist.work    $DB_BASE/$collect/db.wordlist
+    mv $DB_BASE/$collect/db.words.db.work      $DB_BASE/$collect/db.words.db
+
+    # Make them world readable!
+    chmod 644 $DB_BASE/$collect/db.docdb
+    chmod 644 $DB_BASE/$collect/db.docs.index
+    # chmod 644 $DB_BASE/$collect/db.wordlist
+    chmod 644 $DB_BASE/$collect/db.words.db
+    if [ "$1" = "-v" ]; then
+	echo Done with $collect at: `date`
+    fi
+done
+
+# That's it!

@@ -1,11 +1,13 @@
-#!/bin/sh
+#!@BASH@
 
 #
-# add-urls 1.0
+# add-urls 1.1
 #
-# by Geoffrey R. Hutchison <ghutchis@wso.williams.edu>
-# for the ht://Dig search system
-# and the multidig script system
+# Copyright (c) 1998-1999 The ht://Dig Group
+# Distributed under the terms of the GNU General Public License (GPL)
+#   version 2 or later.
+# for the ht://Dig search system http://www.htdig.org/
+# and the multidig script system http://www.htdig.org/contrib/scripts/
 #
 # syntax:
 # add-urls <db>
@@ -13,11 +15,9 @@
 # Reads new URLs in from the standard input (either redirect or paste)
 #
 
-# You need to set the following:
-# BASEDIR = base directory for ht://Dig installation
-# DB_LIST = file with list of databases
-BASEDIR=/opt/htdig
-DB_LIST=$BASEDIR/conf/db.list
+# You may need to set the following:
+MULTIDIG_CONF=@CONFIG_DIR@/multidig.conf
+source $MULTIDIG_CONF
 
 # Catch people who don't supply an argument
 if [ "$1" = "" ]; then
@@ -33,5 +33,5 @@ if [ "$TEST" = "" ]; then
 	echo The existing databases are:
 	cat $DB_LIST
 else
-	cat /dev/stdin >>$BASEDIR/conf/$1.urls
+	cat /dev/stdin >>$DB_BASE/$1/$1.urls
 fi

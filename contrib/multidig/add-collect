@@ -1,0 +1,49 @@
+#!@BASH@
+
+#
+# add-collect 1.1
+#
+# Copyright (c) 1998-1999 The ht://Dig Group
+# Distributed under the terms of the GNU General Public License (GPL)
+#   version 2 or later.
+# for the ht://Dig search system http://www.htdig.org/
+# and the multidig script system http://www.htdig.org/contrib/scripts/
+#
+# syntax:
+# add-collect <collection>
+#
+# Reads new DB in from the standard input (either redirect or paste)
+# Ensures the DB actually exist before adding them to the collection
+#
+
+# You may need to set the following:
+MULTIDIG_CONF=@CONFIG_DIR@/multidig.conf
+source $MULTIDIG_CONF
+
+# Catch people who don't supply an argument
+if [ "$1" = "" ]; then
+    echo Syntax: add-colect \<collection\>
+    exit
+fi
+
+# Do we actually have a collection named as specified?
+TEST=`grep $1 $COLLECT_LIST`
+if [ "$TEST" = "" ]; then
+	# This may become annoying. If so, comment it out!
+	echo The collection $1 does not exist. Sorry.
+	echo The existing collections are:
+	cat $COLLECT_LIST
+else
+	# OK, now we have to make sure these are legal db
+	for db in `cat /dev/stdin`; do
+	    DBTEST=`grep $db $DB_LIST`
+	    if [ "$DBTEST" != "" ]; then
+		echo $db >>$DB_BASE/$1/$1.collect
+	    else
+	        # This may become annoying. If so, comment it out!
+		echo The database $db does not exist. Sorry.
+		echo The existing databases are:
+		cat $DB_LIST
+	    fi
+        done
+fi

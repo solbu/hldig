@@ -1,3 +1,17 @@
+Thu Jun  7 11:58:28 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/multidig/*: Backport from 3.2.0b3, including fixes below.
+
+        * contrib/multidig/Makefile, gen-collect, db.conf, multidig.conf:
+        Add missing trailing newlines as pointed out by Doug Moran
+        <dmoran@dougmoran.com>.
+
+        * contrib/multidig/Makefile (install): Make sure scripts have a+x
+        permissions. Pointed out by Doug Moran.
+
+        * contrib/multidig/new-collect: Fix typo to ensure MULTIDIG_CONF
+        is set correctly.
+
 Thu Jun  7 11:37:52 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/README: Add in descriptions for web site contrib directory,

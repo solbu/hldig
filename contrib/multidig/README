@@ -1,0 +1,133 @@
+README for multidig 1.1
+ by Geoff Hutchison <ghutchis@wso.williams.edu>
+
+ Copyright (c) 1998-1999 The ht://Dig Group  <http://www.htdig.org/>
+   Distributed under the terms of the GNU General Public License (GPL)
+   version 2 or later.
+--------------------------------
+
+This document is part of the "multidig script system" a system of
+shell scripts and some modified conf files that makes dealing with
+multiple databases easier for ht://Dig. It assumes that you know what
+ht://Dig is. If you don't know, see the website at
+<http://www.htdig.org/>
+
+This README is a bit rough around the edges. I don't know what people
+really want or need to know about the scripts. I expect a lot of
+questions. Hey, maybe I'm wrong. I'm always open to suggestions,
+criticisms, corrections, etc. E-mail me at <ghutchis@wso.williams.edu>
+
+--------------------------------
+
+INTRODUCTION:
+
+* Why write multidig?
+
+  There are many reasons I started the multidig system. The biggest
+were the complaints that ht://Dig didn't have much of an
+administration interface. If you're looking for one, multidig isn't
+it. Yet. The next biggest is that people wanted me to make dealing
+with multiple databases easier. If you're looking for this, you're in
+the right place.
+
+* Why should I bother with multidig?
+
+  If you already have a multiple-database setup and it's working
+smoothly, you probably don't want to bother. It was written the way
+*I* would organize a multiple-database setup. Not suprisingly, it
+might be more pain to convert to multidig than it's worth.
+  If you're planning a multiple-database setup or you have one and
+it's not working well, this will help. It hides most of the pain and
+suffering behind some shell scripts and generally automates life. :-)
+
+--------------------------------
+
+SETTING UP:
+
+* How do I install it?
+
+  It's pretty easy to install. It requires bash, or at least a
+Bourne-shell that supports the "source" builtin. Obviously, it also
+requires ht://Dig. :-)
+  Change any paths in the Makefile. D a "make install" to install the
+scripts in the right place and the config files in the right
+place. The Makefile edits the scripts for you so the paths are consistent.
+
+* Now that it's in, how does it work?
+
+  The multidig script will replace the rundig script that comes with
+ht://Dig. Use it through a cron job or some other means of automating
+updates. It will run through all the db that multidig knows about, run
+htdig, htmerge, move the databases around, etc. As written it tries to
+index with the least disk space in the least time. Thus it keeps only
+the minimum files and does "update" digs.
+  After indexing all the db, it merges all the collections, trying to
+do the same thing, fastest speed, smallest disk and RAM
+requirements. It spits out a short status to STDOUT and a more
+complete report to the file referened with the $REPORT option in
+multidig.conf. Adding a "-v" to the command-line makes everything more
+verbose.
+
+* Can I convert my previous multiple-db setup?
+
+  Yes. I'm assuming you have a config file for each database you've
+set up. In that case, put the databases into a directory with the same
+name as the .conf file and tack the name onto the db.list file in your
+config directory. This is multidig's list of all databases, so adding
+a line here will ensure it's indexed using multidig.
+
+* How do I add new URLs to databases or add new databases?
+
+  1) New URLs: Run 'add-urls <db>' and either paste in URLs or
+     redirect a file or program.
+  2) New DB: Run 'new-db <db>' to set up everything for that database.
+
+--------------------------------
+
+COLLECTIONS:
+
+* What's a collection?
+
+  Version 3.1.0 of ht://Dig added support for merging multiple
+databases together. Technically, you merge one database into
+another. Multidig makes this a bit easier. You set up a "collection"
+of other databases and the multidig script will merge them all
+together.
+
+* Fantastic! How do I define a collection?
+
+./new-collect <name>
+./add-collect <name>
+<insert dbs here>
+
+ The add-collect script will go through the list of dbs and make sure
+the multidig system actually knows about them. If not, it complains.
+
+* Can I just generate the collections from my databases?
+
+  Yup, run gen-collect. This is what the main multidig script runs.
+
+--------------------------------
+
+DIRECTORY LAYOUT:
+
+Here are the locations of files used by multidig:
+
+	$BASEDIR/bin
+		add-collect	script for adding db to a collection
+		add-urls	script for adding URLs to a db
+		gen-collect	script for generating all collections
+				from their db (called by multidig)
+		multidig	script for generating all db and collections
+		new-collect	script for making a new collection
+		new-db		script for making a new db
+	$BASEDIR/conf
+		db.conf		template database config
+				used by new-collect and new-db
+		foo.conf	database config for db foo
+		multidig.conf	config for multidig paths and options
+		db.list		list of all db, one per line
+		collect.list	list of all collections, one per line
+	$BASEDIR/db
+		foo/foo.urls	URLs used by foo db
+		foo/db.*	actual foo databases
