@@ -1,7 +1,10 @@
-Tue Oct 27 00:02:29 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+Tue Oct 27 13:31:25 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
-	* htlib/mktime.c: Imported new version from glibc-2.0.99
+	* htlib/mktime.c: Imported new version from glibc-2.0.99.
 
+	* htcommon/DocumentDB.cc: Fixed bug noted by Vadim Chekan with
+	CreateSearchDB.
+	
 Mon Oct 26 15:27:28 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* Makefile.config.in, configure.in, configure: Fixed problem with

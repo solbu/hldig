@@ -4,6 +4,10 @@
 // Implementation of DocumentDB
 //
 // $Log: DocumentDB.cc,v $
+// Revision 1.6  1998/10/27 18:35:17  ghutchis
+//
+// Fixed bug noted by Vadim Chekan with CreateSearchDB.
+//
 // Revision 1.5  1998/10/18 20:37:41  ghutchis
 //
 // Fixed database corruption bug and other misc. cleanups.
@@ -203,7 +207,7 @@ int DocumentDB::CreateSearchDB(char *filename)
     String		command = SORT_PROG;
     String		tmpdir = getenv("TMPDIR");
 
-    command << "-n -o" << filename;
+    command << " -n -o" << filename;
     if (tmpdir.length())
     {
 	command << " -T " << tmpdir;
