@@ -4,6 +4,9 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.10  1998/01/05 05:42:57  turtle
+// Changed tm from pointer to real structure
+//
 // Revision 1.9  1998/01/05 00:59:40  turtle
 // *  Alarm was not cancelled if readHeader returned anything but OK
 // *  Use our own timegm() replacement if necessary
@@ -36,7 +39,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.9 1998/01/05 00:59:40 turtle Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.10 1998/01/05 05:42:57 turtle Exp $";
 #endif
 
 #include <signal.h>
@@ -213,19 +216,19 @@ Document::getdate(char *datestring)
     //      Thu, 01 May 1997 00:40:42 GMT
     //
     if (d.indexOf(',') > 3)
-	mystrptime(d.get(), "%a, %d-%b-%y %T", tm);
+	mystrptime(d.get(), "%a, %d-%b-%y %T", &tm);
     else
-	mystrptime(d.get(), "%a, %d %b %Y %T", tm);
+	mystrptime(d.get(), "%a, %d %b %Y %T", &tm);
 
-    if (tm->tm_year < 0)
-	tm->tm_year += 1900;
+    if (tm.tm_year < 0)
+	tm.tm_year += 1900;
 
     if (debug > 2)
     {
 	cout << "Translated " << d << " to ";
 	char	buffer[100];
-	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", tm);
-	cout << buffer << " (" << tm->tm_year << ")" << endl;
+	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", &tm);
+	cout << buffer << " (" << tm.tm_year << ")" << endl;
     }
     time_t      ret;
 #if HAVE_TIMEGM
