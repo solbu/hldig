@@ -1,4 +1,6 @@
-Fri Mar 19 16:50:58 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Fri Mar 19 16:52:51 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc: Check for presence of more than one <title> tag.
 
 	* htlib/mytimegm.cc: Fix Y2K problems.
 

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.1 1999/03/19 22:52:19 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.2 1999/03/19 22:59:45 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -388,11 +388,20 @@ HTML::do_tag(Retriever &retriever, String &tag)
     switch (which)
     {
 	case 0:		// "title"
+	    if (title.length())
+	    {
+		if (debug)
+		    cout << "More than one <title> tag in document!"
+			 << " (possible search engine spamming)" << endl;
+		break;
+	    }
 	    in_title = 1;
 	    in_heading = 1;
 	    break;
 			
 	case 1:		// "/title"
+	    if (!in_title)
+		break;
 	    in_title = 0;
 	    in_heading = 0;
 	    retriever.got_title(title);
