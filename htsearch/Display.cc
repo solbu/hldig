@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.25 2000/08/17 22:01:21 grdetil Exp $
+// $Id: Display.cc,v 1.100.2.26 2000/09/08 09:30:20 qss Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -344,7 +344,7 @@ Display::displayMatch(ResultMatch *match, DocumentRef *ref, int current)
 	    struct tm	*tm = localtime(&t);
 	    String datefmt = config["date_format"];
 	    const String locale  = config["locale"];
-	    if (!datefmt.empty())
+	    if (datefmt.empty())
 	      {
 		if (config.Boolean("iso_8601"))
 		    datefmt = "%Y-%m-%d %H:%M:%S %Z";
@@ -1028,8 +1028,8 @@ Display::expandVariables(const String& str_arg)
 		state = StStart;
 		break;
 	    case StVarStart:
-		if (*str == '%')
-		    var << *str;	// code for URL-encoded variable
+		if (*str == '%' || *str == '=')
+		    var << *str;	// code for URL-encoded/decoded variable
 		else if (*str == '&')
 		{
 		    var << *str;	// code for SGML-encoded variable
@@ -1098,7 +1098,7 @@ Display::outputVariable(const String& var)
     // see if we can find a good replacement for it, either in our
     // vars dictionary or in the environment variables.
     name = var;
-    while (*name == '&' || *name == '%')
+    while (*name == '&' || *name == '%' || *name == '=')
 	name++;
     temp = (String *) vars[name];
     if (temp)
@@ -1113,8 +1113,10 @@ Display::outputVariable(const String& var)
     {
 	if (*name == '%')
 	    encodeURL(value);
-	else
+	else if(*name == '&')
 	    value = HtSGMLCodec::instance()->decode(value);
+	else // (*name == '=')
+	    decodeURL(value);
     }
     cout << value;
 }
