@@ -1,7 +1,8 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b4: In progress
+   3.2.0b4: In progress 
+	(mifluz merge essentially finished, contact Geoff for patch to test)
    3.2.0b3: Released:  22 Feb 2001.
    3.2.0b2: Released:  11 Apr 2000.
    3.2.0b1: Released:   4 Feb 2000.
@@ -30,9 +31,6 @@ NEEDED FEATURES:
 * Field-restricted searching.
 * Return all URLs.
 * Handle noindex_start & noindex_end as string lists.
-* Handle local_urls through file:// handler, for mime.types support.
-* Handle directory redirects in RetrieveLocal.
-* Merge with mifluz
 
 TESTING:
 * httools programs: 
