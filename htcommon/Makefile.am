@@ -33,7 +33,7 @@ noinst_HEADERS = DocumentDB.h \
 	HtZlibCodec.h \
 	defaults.h \
 	HtConfiguration.h \
-	conf.tab.cc.h
+	conf_parser.h
 
 LOCAL_DEFINES=	-DBIN_DIR=\"$(bindir)\" \
 		-DCOMMON_DIR=\"$(COMMON_DIR)\" \

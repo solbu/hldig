@@ -1,3 +1,8 @@
+Wed Feb 16 12:15:08 2000  Vadim Chekan  <vadim@etc.lviv.ua>
+
+	* htcommon/Makefile.am replaced conf.tab.cc.h by conf_parser.h in
+	noinst_HEADERS
+
 Tue Feb 15 23:16:14 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htnet/HtHTTP.cc (isParsable): Remove application/pdf as a
