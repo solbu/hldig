@@ -4,6 +4,9 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.27  1998/12/12 01:46:48  ghutchis
+// Check http_proxy_exclude to see if it's empty. If so, use the proxy always.
+//
 // Revision 1.26  1998/12/04 04:14:50  ghutchis
 //
 // Use new option "http_proxy_exclude" to decide whether to use the proxy.
@@ -105,7 +108,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.26 1998/12/04 04:14:50 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.27 1998/12/12 01:46:48 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -367,8 +370,9 @@ Document::UseProxy()
 	excludeproxy->Pattern(pattern);
     }
 
-    if (proxy && excludeproxy->FindFirst(url->get()) < 0)
-	return 1;
+    if ((proxy) && (excludeproxy->FindFirst(url->get()) < 0 ||
+		    !excludeproxy->hasPattern()))
+      return 1;    // if the exclude pattern is empty, use the proxy
     return 0;
 }
 
