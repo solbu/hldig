@@ -1,11 +1,17 @@
 //
 // HTML.h
 //
-// $Id: HTML.h,v 1.1 1997/02/03 17:11:06 turtle Exp $
+// $Id: HTML.h,v 1.2 1998/07/09 09:32:04 ghutchis Exp $
 //
 // $Log: HTML.h,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.2  1998/07/09 09:32:04  ghutchis
+//
+//
+// Added support for META name=description tags. Uses new config-file
+// option "use_meta_description" which is off by default.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 //
 #ifndef _HTML_h_
@@ -45,6 +51,7 @@ private:
     int			in_ref;
     int			in_heading;
     int			doindex;
+    int                 dohead;
     int			minimumWordLength;
     URL			*base;
     

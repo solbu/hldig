@@ -4,6 +4,12 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.6  1998/07/09 09:32:02  ghutchis
+//
+//
+// Added support for META name=description tags. Uses new config-file
+// option "use_meta_description" which is off by default.
+//
 // Revision 1.5  1998/06/22 04:35:43  turtle
 // Got rid of my email address as the default maintainer
 //
@@ -21,7 +27,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.5 1998/06/22 04:35:43 turtle Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.6 1998/07/09 09:32:02 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -118,6 +124,7 @@ ConfigDefaults	defaults[] =
     {"title_factor",			"100"},
     {"url_list",			"${database_base}.urls"},
     {"use_star_image",			"true"},
+    {"use_meta_description",            "false"},
     {"valid_punctuation",		".-_/!#$%^&'"},
     {"version",				HTDIG_VERSION},
     {"word_db",				"${database_base}.words.db"},
