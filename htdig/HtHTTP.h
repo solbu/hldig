@@ -196,7 +196,7 @@ public:
 ///////
 
    // Sends a Method request message (by passing an HttpRequestMethod enum value)
-   virtual DocStatus Request (HttpRequestMethod = Method_GET);
+   DocStatus Request (HttpRequestMethod = Method_GET);
    
 
 ///////
@@ -300,7 +300,7 @@ public:
    static float GetAverageSpeed ()
    	 { return _tot_bytes?( ((double) _tot_bytes) / _tot_seconds) : 0; }   
 
-   static ResetStatistics ()
+   static void ResetStatistics ()
    	 { _tot_seconds=0; _tot_requests=0; _tot_bytes=0;}   
 
 
@@ -420,7 +420,7 @@ protected:
       //    Establish the connection
    ///////
 
-   virtual ConnectionStatus EstablishConnection ();
+   ConnectionStatus EstablishConnection ();
    
 
 
