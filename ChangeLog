@@ -1,3 +1,8 @@
+Wed Oct 06 12:07:32 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* HtHTTP.cc: patch from Michal Hirohama regarding
+	  the SetBodyReadingController() method
+
 Wed Oct 06 11:49:15 1999  Loic Dachary  <loic@ceic.com>
 
 	* Move htlib/HtZlibCodec.* htlib/cgi.* to htcommon to prevent

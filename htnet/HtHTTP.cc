@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.7 1999/10/06 09:46:15 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.8 1999/10/06 10:12:38 angus Exp $ 
 //
 
 #include "lib.h"
@@ -172,7 +172,7 @@ Transport::DocStatus HtHTTP::HTTPRequest()
    static Transport::DocStatus DocumentStatus;
    bool ShouldTheBodyBeRead = true;
 
-   SetBodyReadingController(&ReadBody);
+   SetBodyReadingController(&HtHTTP::ReadBody);
 
    // Reset the response
    _response.Reset();
@@ -345,7 +345,7 @@ Transport::DocStatus HtHTTP::HTTPRequest()
    if (strcmp (_response._transfer_encoding, "chunked") == 0)
    {
       // Change the controller of the body reading
-      SetBodyReadingController(&ReadChunkedBody);
+      SetBodyReadingController(&HtHTTP::ReadChunkedBody);
    }
 
    // If "ShouldTheBodyBeRead" is set to true and	    
