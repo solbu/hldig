@@ -1,3 +1,9 @@
+Thu Nov  1 14:43:13 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc (main): Fixed to only show file names in
+	error messages when REQUEST_METHOD not set and -v option given,
+	for security.
+
 Thu Nov  1 10:19:27 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc, htsearch/Display.h: Added a localized

@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.16 2001/09/28 19:33:44 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.17 2001/11/01 20:45:07 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -113,6 +113,8 @@ main(int ac, char **av)
     //
     char	none[] = "";
     cgi		input(optind < ac ? av[optind] : none);
+    int		filenameok = (debug && getenv("REQUEST_METHOD") == 0);
+    String	filenamemsg;
 
     //
     // Setup the configuration database.  First we read the compiled defaults.
@@ -142,8 +144,9 @@ main(int ac, char **av)
     }
     if (access(configFile, R_OK) < 0)
     {
-	reportError(form("Unable to read configuration file '%s'",
-			 configFile.get()));
+	if (filenameok) filenamemsg << " '" << configFile.get() << "'";
+	reportError(form("Unable to read configuration file%s",
+			 filenamemsg.get()));
     }
     config.Read(configFile);
 
@@ -306,29 +309,33 @@ main(int ac, char **av)
     String	word_db = config["word_db"];
     if (access(word_db, R_OK) < 0)
     {
-	reportError(form("Unable to read word database file '%s'\nDid you run htmerge?",
-			 word_db.get()));
+	if (filenameok) filenamemsg << " '" << word_db.get() << "'";
+	reportError(form("Unable to read word database file%s\nDid you run htmerge?",
+			 filenamemsg.get()));
     }
     ResultList	*results = htsearch(word_db, searchWords, parser);
 
     String	index = config["doc_index"];
     if (access(index, R_OK) < 0)
     {
-	reportError(form("Unable to read document index file '%s'\nDid you run htmerge?",
-			 index.get()));
+	if (filenameok) filenamemsg << " '" << index.get() << "'";
+	reportError(form("Unable to read document index file%s\nDid you run htmerge?",
+			 filenamemsg.get()));
     }
     String	doc_db = config["doc_db"];
     if (access(doc_db, R_OK) < 0)
     {
-	reportError(form("Unable to read document database file '%s'\nDid you run htmerge?",
-			 doc_db.get()));
+	if (filenameok) filenamemsg << " '" << doc_db.get() << "'";
+	reportError(form("Unable to read document database file%s\nDid you run htmerge?",
+			 filenamemsg.get()));
     }
 
     Display	display(index, doc_db);
     if (display.hasTemplateError())
       {
-	reportError(form("Unable to read template file '%s'\nDoes it exist?",
-                         config["template_name"]));
+	if (filenameok) filenamemsg << " '" << config["template_name"] << "'";
+	reportError(form("Unable to read template file%s\nDoes it exist?",
+			 filenamemsg.get()));
 	return 0;
       }
     display.setOriginalWords(originalWords);
