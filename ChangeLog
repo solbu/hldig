@@ -1,3 +1,8 @@
+Wed Jun 16 14:40:56 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc(main): pass StringList args to setEscaped()
+	instead of unprocessed input[] char *'s.
+
 Wed Jun 16 14:19:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(buildMatchList): cast score to (int) in maxScore

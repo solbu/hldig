@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.35 1999/06/16 13:48:13 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.36 1999/06/16 18:57:21 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -108,18 +108,16 @@ main(int ac, char **av)
     // Compile the URL limit pattern.
     //
     if (input.exists("restrict"))
-      {
-	char *sep = input["restrict"];
-	while ((sep = strchr(sep, '\001')) != NULL)
-	  *sep++ = '|';
-	limit_to.setEscaped(input["restrict"]);
+    {
+	StringList l(input["restrict"], " \t\001|");
+	limit_to.setEscaped(l);
+	l.Release();
     }
     if (input.exists("exclude"))
     {
-       char *sep = input["exclude"];
-       while ((sep = strchr(sep, '\001')) != NULL)
-       	 *sep++ = '|';
-       exclude_these.setEscaped(input["exclude"]);
+	StringList l(input["exclude"], " \t\001|");
+	exclude_these.setEscaped(l);
+	l.Release();
     }
 
     //
