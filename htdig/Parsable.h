@@ -1,9 +1,13 @@
 //
 // Parsable.h
 //
-// $Id: Parsable.h,v 1.2 1997/03/24 04:33:16 turtle Exp $
+// $Id: Parsable.h,v 1.3 1998/08/11 08:58:30 ghutchis Exp $
 //
 // $Log: Parsable.h,v $
+// Revision 1.3  1998/08/11 08:58:30  ghutchis
+// Second patch for META description tags. New field in DocDB for the
+// desc., space in word DB w/ proper factor.
+//
 // Revision 1.2  1997/03/24 04:33:16  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -45,6 +49,7 @@ protected:
     char		*valid_punctuation;
     int			max_head_length;
     int			max_description_length;
+    int			max_meta_description_length;
 };
 
 #endif

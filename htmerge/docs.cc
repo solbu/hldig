@@ -4,6 +4,10 @@
 // Implementation of newclass
 //
 // $Log: docs.cc,v $
+// Revision 1.6  1998/08/11 08:58:33  ghutchis
+// Second patch for META description tags. New field in DocDB for the
+// desc., space in word DB w/ proper factor.
+//
 // Revision 1.5  1998/08/03 16:50:42  ghutchis
 //
 // Fixed compiler warnings under -Wall
@@ -33,6 +37,7 @@ convertDocs(char *doc_db, char *doc_index)
 {
     Database	*index = Database::getDatabaseInstance();
     int		document_count = 0;
+    unsigned long docdb_size = 0;
     int		remove_unused = config.Boolean("remove_bad_urls");
     DocumentDB	db;
     List	*urls;
@@ -64,18 +69,27 @@ convertDocs(char *doc_db, char *doc_index)
 	    continue;
 	id = 0;
 	id << ref->DocID();
-	if (remove_unused && discard_list.Exists(id))
+	if (strlen(ref->DocHead()) == 0)
 	{
+	    //
+	    // This document doesn't have an excerpt
+	    // (probably because of a noindex directive) Remove it
+	    // 
+	  db.Delete(url->get());
+	}
+	if (remove_unused && discard_list.Exists(id))
+	  {
 	    //
 	    // This document is not valid anymore.  Remove it
 	    //
 	    db.Delete(url->get());
-	}
+	  }
 	else
-	{
+	  {
 	    index->Put(id, ref->DocURL(), strlen(ref->DocURL()));
 
 	    document_count++;
+	    docdb_size += ref->DocSize();
 	    if (verbose && document_count % 10 == 0)
 	    {
 		cout << "htmerge: " << document_count << '\r';
@@ -87,7 +101,11 @@ convertDocs(char *doc_db, char *doc_index)
     if (verbose)
 	cout << "\n";
     if (stats)
+      {
 	cout << "htmerge: Total documents: " << document_count << endl;
+	cout << "htmerge: Total doc db size (in K): ";
+	cout << docdb_size / 1024 << endl;
+      }
 
     index->Close();
     delete urls;

@@ -4,6 +4,10 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.4  1998/08/11 08:58:24  ghutchis
+// Second patch for META description tags. New field in DocDB for the
+// desc., space in word DB w/ proper factor.
+//
 // Revision 1.3  1998/01/05 00:49:16  turtle
 // format changes
 //
@@ -56,6 +60,7 @@ void DocumentRef::Clear()
     docSize = 0;
     docImageSize = 0;
     docHead = 0;
+    docMetaDsc = 0;
     docAccessed = 0;
     docLinks = 0;
     descriptions.Destroy();
@@ -82,7 +87,8 @@ enum
     DOC_EMAIL,				// 13
     DOC_NOTIFICATION,		        // 14
     DOC_SUBJECT,			// 15
-    DOC_STRING                          // 16
+    DOC_STRING,                         // 16
+    DOC_METADSC,                        // 17
 };
 
 
@@ -139,6 +145,7 @@ void DocumentRef::Serialize(String &s)
 
     addstring(DOC_URL, s, docURL);
     addstring(DOC_HEAD, s, docHead);
+    addstring(DOC_METADSC, s, docMetaDsc);
     addstring(DOC_TITLE, s, docTitle);
 
     addlist(DOC_DESCRIPTIONS, s, descriptions);
@@ -219,6 +226,9 @@ void DocumentRef::Deserialize(String &stream)
         case DOC_HEAD:
             getstring(s, docHead);
             break;
+	case DOC_METADSC:
+	    getstring(s, docMetaDsc);
+	    break;
         case DOC_TITLE:
             getstring(s, docTitle);
             break;

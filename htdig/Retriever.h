@@ -1,9 +1,13 @@
 //
 // Retriever.h
 //
-// $Id: Retriever.h,v 1.2 1998/07/09 09:39:00 ghutchis Exp $
+// $Id: Retriever.h,v 1.3 1998/08/11 08:58:32 ghutchis Exp $
 //
 // $Log: Retriever.h,v $
+// Revision 1.3  1998/08/11 08:58:32  ghutchis
+// Second patch for META description tags. New field in DocDB for the
+// desc., space in word DB w/ proper factor.
+//
 // Revision 1.2  1998/07/09 09:39:00  ghutchis
 //
 //
@@ -61,6 +65,7 @@ public:
     void		got_href(URL &url, char *description);
     void		got_title(char *title);
     void		got_head(char *head);
+    void		got_meta_dsc(char *md);
     void		got_anchor(char *anchor);
     void		got_image(char *src);
     void		got_meta_email(char *);
@@ -82,6 +87,7 @@ private:
     URL			*base;
     String		current_title;
     String		current_head;
+    String		current_meta_dsc;
     int			current_id;
     DocumentRef		*current_ref;
     int			current_anchor_number;
@@ -93,7 +99,7 @@ private:
     //
     // These are weights for the words.  The index is the heading level.
     //
-    double		factor[11];
+    double		factor[12];
     int			currenthopcount;
 
     //

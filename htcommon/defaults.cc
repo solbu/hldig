@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.10  1998/08/11 08:58:26  ghutchis
+// Second patch for META description tags. New field in DocDB for the
+// desc., space in word DB w/ proper factor.
+//
 // Revision 1.9  1998/08/06 14:18:30  ghutchis
 // Added config option "local_dir_doc" for default filename in a local
 // directory. Fixed spelling mistake in "elipses" attributes.
@@ -42,7 +46,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.9 1998/08/06 14:18:30 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.10 1998/08/11 08:58:26 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -104,10 +108,12 @@ ConfigDefaults	defaults[] =
     {"max_doc_size",			"100000"},
     {"max_head_length",			"512"},
     {"max_hop_count",			"999999"},
+    {"max_meta_description_length",     "512"},
     {"max_prefix_matches",		"1000"},
     {"max_stars",			"4"},
     {"maximum_pages",			"10"},
     {"metaphone_db",			"${database_base}.metaphone.db"},
+    {"meta_description_factor",		"10"},
     {"method_names",			"and All or Any boolean Boolean"},
     {"minimum_word_length",		"3"},
     {"minimum_prefix_length",		"1"},

@@ -4,6 +4,10 @@
 // Implementation of DocumentDB
 //
 // $Log: DocumentDB.cc,v $
+// Revision 1.3  1998/08/11 08:58:23  ghutchis
+// Second patch for META description tags. New field in DocDB for the
+// desc., space in word DB w/ proper factor.
+//
 // Revision 1.2  1998/01/05 00:44:29  turtle
 // Fixed major memory leak
 //
@@ -177,6 +181,7 @@ int DocumentDB::Delete(char *u)
 //        docURL
 //        docTime
 //        docHead
+//        docMetaDsc
 //        descriptions (separated by tabs)
 //
 //   The extract will be sorted by docID.
@@ -212,6 +217,7 @@ int DocumentDB::CreateSearchDB(char *filename)
 	    fprintf(fl, "\tm:%d", (int) ref.DocTime());
 	    fprintf(fl, "\ts:%d", ref.DocSize());
 	    fprintf(fl, "\th:%s", ref.DocHead());
+	    fprintf(fl, "\th:%s", ref.DocMetaDsc());
 	    fprintf(fl, "\tl:%d", (int) ref.DocAccessed());
 	    fprintf(fl, "\tL:%d", ref.DocLinks());
 	    fprintf(fl, "\tI:%d", ref.DocImageSize());

@@ -1,9 +1,13 @@
 //
 // HTML.h
 //
-// $Id: HTML.h,v 1.3 1998/08/04 15:39:28 ghutchis Exp $
+// $Id: HTML.h,v 1.4 1998/08/11 08:58:28 ghutchis Exp $
 //
 // $Log: HTML.h,v $
+// Revision 1.4  1998/08/11 08:58:28  ghutchis
+// Second patch for META description tags. New field in DocDB for the
+// desc., space in word DB w/ proper factor.
+//
 // Revision 1.3  1998/08/04 15:39:28  ghutchis
 //
 // Added support for META robots tags.
@@ -50,13 +54,13 @@ private:
     String		title;
     String		description;
     String		head;
+    String		meta_dsc;
     String		tag;
     int			in_title;
     int			in_ref;
     int			in_heading;
     int			doindex;
     int                 dofollow;
-    int                 dohead;
     int			minimumWordLength;
     URL			*base;
     

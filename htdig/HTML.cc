@@ -4,6 +4,10 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.7  1998/08/11 08:58:27  ghutchis
+// Second patch for META description tags. New field in DocDB for the
+// desc., space in word DB w/ proper factor.
+//
 // Revision 1.6  1998/08/04 15:39:26  ghutchis
 //
 // Added support for META robots tags.
@@ -24,7 +28,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.6 1998/08/04 15:39:26 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.7 1998/08/11 08:58:27 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -75,6 +79,7 @@ HTML::HTML()
     title = 0;
     description = 0;
     head = 0;
+    meta_dsc = 0;
     tag = 0;
     in_title = 0;
     in_ref = 0;
@@ -82,7 +87,6 @@ HTML::HTML()
     base = 0;
     doindex = 1;
     dofollow = 1;
-    dohead = 1;
     minimumWordLength = config.Value("minimum_word_length", 3);
 }
 
@@ -120,7 +124,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     start = position;
     title = 0;
     head = 0;
-    dohead = 1;
+    meta_dsc = 0;
     doindex = 1;
     dofollow = 1;
     in_heading = 0;
@@ -267,7 +271,6 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		//
 		// Append the word to the head (excerpt)
 		//
-		if (dohead)
 		  head << word;
 	    }
 
@@ -297,7 +300,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		    //
 		    if (!in_space)
 		    {
-			if (head.length() < max_head_length && dohead)
+			if (head.length() < max_head_length)
 			{
 			    head << ' ';
 			}
@@ -317,7 +320,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		    //
 		    // Not whitespace
 		    //
-		    if (head.length() < max_head_length && dohead)
+		    if (head.length() < max_head_length)
 		    {
 			head << *position;
 		    }
@@ -542,7 +545,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	}
 
 	case 19:	// "li"
-	    if (doindex && head.length() < max_head_length && dohead)
+	    if (doindex && head.length() < max_head_length)
 		head << "* ";
 	    break;
 
@@ -650,16 +653,29 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		      }
 		  }
 		else if (mystrcasecmp(cache, "description") == 0 
-			 && config.Boolean("use_meta_description")
 			 && strlen(conf["content"]) != 0)
 		  {
-		    head = conf["content"];
-		    if (head.length() > max_head_length)
-		      head = head.sub(0, max_head_length);
+		    //
+		    // We need to do two things. First grab the description
+		    //
+		    meta_dsc = conf["content"];
+		    if (meta_dsc.length() > max_meta_description_length)
+		      meta_dsc = meta_dsc.sub(0, max_meta_description_length);
 		    if (debug > 0)
 		      cout << "META Description: " << conf["content"] << endl;
-		    retriever.got_head(head);
-		    dohead = 0;
+		    retriever.got_meta_dsc(meta_dsc);
+
+		    //
+		    // Now add the words to the word list
+		    // (slot 11 is the new slot for this)
+		    //
+		    char        *w = strtok(conf["content"], " \t\r\n");
+                    while (w)
+		      {
+			if (strlen(w) >= minimumWordLength)
+			  retriever.got_word(w, 1, 11);
+			w = strtok(0, " \t\r\n");
+		      }
 		  }
 	    }
 	    else if (conf["name"] &&

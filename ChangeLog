@@ -1,4 +1,4 @@
-Thu Aug  6 10:15:22 1998  Geoff Hutchison  <ghutchis@ethel>
+Thu Aug  6 10:15:22 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc: Added "local_dir_doc" config option,
 	the default filename in a directory.

@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.6  1998/08/11 08:58:31  ghutchis
+// Second patch for META description tags. New field in DocDB for the
+// desc., space in word DB w/ proper factor.
+//
 // Revision 1.5  1998/08/06 14:18:32  ghutchis
 // Added config option "local_dir_doc" for default filename in a local
 // directory. Fixed spelling mistake in "elipses" attributes.
@@ -67,6 +71,7 @@ Retriever::Retriever()
     factor[7] = config.Double("heading_factor_6");
     factor[8] = factor[9] = 0;
     factor[10] = config.Double("keywords_factor");
+    factor[11] = config.Double("meta_desription_factor");
 	
     //
     // Open the file to which we will append words.
@@ -441,6 +446,7 @@ Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
     // Update the document reference
     //
     ref->DocHead(current_head);
+    ref->DocMetaDsc(current_meta_dsc);
     ref->DocTime(doc.ModTime());
     ref->DocTitle(current_title);
     ref->DocSize(doc.Length());
@@ -986,6 +992,17 @@ Retriever::got_head(char *head)
     if (debug > 4)
 	cout << "head: " << head << endl;
     current_head = head;
+}
+
+//*****************************************************************************
+// void Retriever::got_meta_dsc(char *md)
+//
+void
+Retriever::got_meta_dsc(char *md)
+{
+    if (debug > 4)
+	cout << "meta description: " << md << endl;
+    current_meta_dsc = md;
 }
 
 

@@ -1,9 +1,13 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.4 1998/01/05 00:50:30 turtle Exp $
+// $Id: DocumentRef.h,v 1.5 1998/08/11 08:58:25 ghutchis Exp $
 //
 // $Log: DocumentRef.h,v $
+// Revision 1.5  1998/08/11 08:58:25  ghutchis
+// Second patch for META description tags. New field in DocDB for the
+// desc., space in word DB w/ proper factor.
+//
 // Revision 1.4  1998/01/05 00:50:30  turtle
 // format changes
 //
@@ -58,6 +62,7 @@ class DocumentRef : public Object
     time_t		DocTime()			{return docTime;}
     char		*DocTitle()			{return docTitle;}
     char		*DocHead()			{return docHead;}
+    char                *DocMetaDsc() {return docMetaDsc;}
     time_t		DocAccessed()			{return docAccessed;}
     int			DocLinks()			{return docLinks;}
     List		*Descriptions()			{return &descriptions;}
@@ -77,6 +82,7 @@ class DocumentRef : public Object
     void		DocTime(time_t t)		{docTime = t;}
     void		DocTitle(char *t)		{docTitle = t;}
     void		DocHead(char *h)		{docHead = h;}
+    void                DocMetaDsc(char *md) {docMetaDsc = md;}
     void		DocAccessed(time_t t)		{docAccessed = t;}
     void		DocLinks(int l)		{docLinks = l;}
     void		Descriptions(List &l)		{descriptions = l;}
@@ -104,6 +110,7 @@ class DocumentRef : public Object
     time_t		docTime;
     time_t		docAccessed;
     String		docHead;
+    String              docMetaDsc;
     String		docTitle;
     List		descriptions;
     ReferenceState	docState;

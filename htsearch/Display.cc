@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.9  1998/08/11 08:58:34  ghutchis
+// Second patch for META description tags. New field in DocDB for the
+// desc., space in word DB w/ proper factor.
+//
 // Revision 1.8  1998/08/03 09:57:20  ghutchis
 //
 // Fixed spelling mistake for "ellipses"
@@ -38,7 +42,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.8 1998/08/03 09:57:20 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.9 1998/08/11 08:58:34 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -756,6 +760,9 @@ String *
 Display::excerpt(DocumentRef *ref, char *url)
 {
     char	*head = ref->DocHead();
+    if (config.Boolean("use_meta_description",0) 
+	&& strlen(ref->DocMetaDsc()) != 0)
+      head = ref->DocMetaDsc();
     int		which, length;
     int		first = allWordsPattern->FindFirstWord(head, which, length);
     char	*temp = head;
