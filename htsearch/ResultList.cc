@@ -3,24 +3,13 @@
 //
 // Implementation of ResultList
 //
-// $Log: ResultList.cc,v $
-// Revision 1.3  1998/08/03 16:50:46  ghutchis
-//
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.2  1997/03/24 04:33:24  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: ResultList.cc,v 1.3 1998/08/03 16:50:46 ghutchis Exp $";
+static char RCSid[] = "$Id: ResultList.cc,v 1.4 1999/02/22 14:01:05 ghutchis Exp $";
 #endif
 
 #include "ResultList.h"
-#include <htString.h>
+#include "htString.h"
 
 
 //*****************************************************************************
@@ -96,10 +85,10 @@ ResultList::exists(int id)
 
 //*****************************************************************************
 //
-List *
+HtVector *
 ResultList::elements()
 {
-    List	*list = new List;
+    HtVector	*list = new HtVector(Count() + 1);
     char	*id;
 
     Start_Get();

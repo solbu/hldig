@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.8 1999/02/21 19:53:44 ghutchis Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.9 1999/02/22 14:01:05 ghutchis Exp $";
 #endif
 
 #include "parser.h"
@@ -253,7 +253,7 @@ Parser::perform_and(int isand)
     ResultList		*result = new ResultList;
     int			i;
     DocMatch		*dm, *dm2, *dm3;
-    List		*elements;
+    HtVector		*elements;
 
     //
     // If either of the arguments is not present, we will use the other as
@@ -328,7 +328,7 @@ Parser::perform_or()
     ResultList		*result = (ResultList *) stack.peek();
     int			i;
     DocMatch		*dm, *dm2;
-    List		*elements;
+    HtVector		*elements;
 
     //
     // If either of the arguments is not present, we will use the other as
@@ -411,7 +411,7 @@ Parser::parse(List *tokenList, ResultList &resultMatches)
 	error << "Expected to have something to parse!";
 	return;
       }
-    List		*elements = result->elements();
+    HtVector		*elements = result->elements();
     DocMatch	*dm;
 
     for (int i = 0; i < elements->Count(); i++)

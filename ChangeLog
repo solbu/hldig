@@ -1,3 +1,17 @@
+Mon Feb 22 08:52:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/Dictionary.h, htlib/Dictionary.cc(hashCode): Check if key
+	can be converted to an integer using strtol. If so, use the
+	integer as the hash code.
+
+	* htlib/HtVector.h, htlib/HtVector.cc: Implement Release() method
+	and make sure delete calls are done properly.
+
+	* htsearch/ResultList.h, htsearch/ResultList.cc(elements): Use HtVector
+	instead of List.
+
+	* htsearch/parser.cc: Ditto.
+	
 Sun Feb 21 16:13:59 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtHeap.h, htlib/HtHeap.cc: Add new class.

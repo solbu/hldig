@@ -1,18 +1,15 @@
 //
 // ResultList.h
 //
-// $Id: ResultList.h,v 1.1 1997/02/03 17:11:05 turtle Exp $
-//
-// $Log: ResultList.h,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// $Id: ResultList.h,v 1.2 1999/02/22 14:01:05 ghutchis Exp $
 //
 //
 #ifndef _ResultList_h_
 #define _ResultList_h_
 
-#include <Dictionary.h>
+#include "Dictionary.h"
 #include "DocMatch.h"
+#include "HtVector.h"
 
 class ResultList : public Dictionary
 {
@@ -26,7 +23,7 @@ public:
     DocMatch		*find(char *id);
     int			exists(int id);
 
-    List		*elements();
+    HtVector		*elements();
 
     int			isIgnore;
 };
