@@ -1,7 +1,7 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b2: Release date ?, Unfrozen
+   3.2.0b2: Release date (31 Mar 2000), Unfrozen
    3.2.0b1: Released: 4 Feb 2000.
 
 SHOWSTOPPERS:
@@ -20,10 +20,18 @@ KNOWN BUGS:
 * SGML encoding/decoding does not work with numeric forms, e.g. &#34; -> quote.
 * Modified database can cause problems with systems using the Berkeley db for 
    other tasks (e.g. networking)
+* Prefix matching current does not work--it attempts to search for the
+   same word 
+* Transport code and Connection code can cause segfaults when using
+   ExternalProtocol scripts.
 
 PENDING FEATURES:
-* Hans-Peter's sort-by-url patch for htsearch
-* Creating a few simple httools: htpurge, htmerge, htnotify, htdump, htload, htstat
+* htload program.
+* Hans-Peter's url-seed-score patch.
+* Forward-Porting of NNTP code.
+* Additional support for Win32.
+* Make URL and Server blocks match documentation--i.e. change config
+   lookups in htdig to work as suggested.
 
 TESTING:
 * ExternalTransport with non 'http' URLs.
@@ -45,6 +53,6 @@ OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
 * Can we reproduce the DB2 errors that sometimes cropped up in 3.1.x?
    (e.g. PR#473, PR#476)
-* Error messages should be more informative if no URLs are indexed by htdig 
-  or htmerge. PR#672.
+* Error messages should be more informative if no URLs are indexed by htdig
+   PR#672. In short, programs should do a little more checking.
 
