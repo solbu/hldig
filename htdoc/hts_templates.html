@@ -235,8 +235,11 @@
 	  </dt>
 	  <dd>
 		A string of the <a href="hts_form.html#words">search words</a>
-		with either "and" or "or" between the words, depending on the
+		with "and", "or" or "not" between the words, depending on the
 		<a href="hts_form.html#match_method">type of search</a>.
+		(These values are overridden by the
+		<a href="attrs.html#boolean_keywords">boolean_keywords</a>
+		attribute.)
 	  </dd>
 	  <dt>
 		<strong>MATCH_MESSAGE</strong>
@@ -354,8 +357,11 @@
 		<strong>PLURAL_MATCHES</strong>
 	  </dt>
 	  <dd>
-		If the <strong>MATCHES</strong> variable is other than 1, this will
-		be a single 's'.
+		If the <strong>MATCHES</strong> variable is other than 1, this
+		will be a single 's'.
+		(This value is overridden by the
+		<a href="attrs.html#plural_suffix">plural_suffix</a>
+		attribute.)
 	  </dd>
 	  <dt>
 		<strong>PREVPAGE</strong>
@@ -488,7 +494,7 @@
 	</dl>
 	<hr size="4" noshade>
 
-	Last modified: $Date: 2002/10/27 15:20:55 $
+	Last modified: $Date: 2003/06/09 06:00:30 $
 
   </body>
 </html>

@@ -972,7 +972,7 @@ Configuration:
 
 _ACEOF
 
-  cat <<_ACEOF
+  sed s@'$ac_default_prefix'@"$ac_default_prefix"@ <<_ACEOF
 Installation directories:
   --prefix=PREFIX         install architecture-independent files in PREFIX
                           [$ac_default_prefix]
@@ -1016,45 +1016,56 @@ fi
 
 if test -n "$ac_init_help"; then
 
-  cat <<\_ACEOF
+  sed s@'$ac_default_prefix'@"$ac_default_prefix"@ <<\_ACEOF
 
 Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-  --enable-shared=PKGS  build shared libraries default=yes
-  --enable-static=PKGS  build static libraries default=yes
+  --enable-shared=PKGS    build shared libraries default=yes
+  --enable-static=PKGS    build static libraries default=yes
   --enable-fast-install=PKGS  optimize for fast installation default=yes
   --disable-dependency-tracking Speeds up one-time builds
   --enable-dependency-tracking  Do not reject slow dependency extractors
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --enable-maintainer-mode enable make rules and dependencies not useful
                           (and sometimes confusing) to the casual installer
-  --enable-tests      Do build a version with run-time tests.
-  --enable-bigfile       Enable Linux, AIX, HP/UX, Solaris big files.
+  --enable-tests          Do build a version with run-time tests.
+  --enable-bigfile        Enable Linux, AIX, HP/UX, Solaris big files.
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-gnu-ld           assume the C compiler uses GNU ld default=no
   --with-pic              try to use only PIC/non-PIC objects default=use both
-  --with-config-dir=DIR  where your config directory is default=$ac_default_prefix/conf
-  --with-common-dir=DIR  where your common directory is default=$ac_default_prefix/share/htdig
-  --with-database-dir=DIR  where your database directory is default=$ac_default_prefix/var/htdig
-  --with-default-config-file=FILE Where the various programs will look for a configuration file  default=$ac_default_prefix/conf/htdig.conf
-  --with-cgi-bin-dir=DIR  where your cgi-bin directory is  default=$ac_default_prefix/cgi-bin
-  --with-image-dir=DIR    where the ht://Dig images are installed default=$ac_default_prefix/htdocs/htdig
-  --with-search-dir=DIR   where the sample search form should be installed default=$ac_default_prefix/htdocs/htdig
-  --with-image-url-prefix=LOCATION   the URL path to the installed images default=/htdig
-  --with-search-form=FILE   the name for the sample search form default=search.html
-  --with-rx  with system rx instead of regex default=no
-  --with-ssl enable ssl will check /usr/local/ssl
+  --with-config-dir=DIR   where your config directory is
+                          default=$ac_default_prefix/conf
+  --with-default-config-file=FILE Where the various programs will look for a
+                          configuration file
+                          default=CONFIG_DIR/htdig.conf
+  --with-common-dir=DIR   where your .html templates are stored
+                          default=$ac_default_prefix/share/htdig
+  --with-database-dir=DIR where your database directory is
+                          default=$ac_default_prefix/var/htdig
+  --with-cgi-bin-dir=DIR  where your web server cgi-bin directory is
+                          default=$ac_default_prefix/cgi-bin
+  --with-search-dir=DIR   web-accessible path to install sample search form in
+                          default=$ac_default_prefix/htdocs/htdig
+  --with-search-form=FILE the name for the sample search form
+                          default=search.html
+  --with-image-dir=DIR    web-accessible path to install ht://Dig images in
+                          default=$ac_default_prefix/htdocs/htdig
+  --with-image-url-prefix=LOCATION   the URL path to the installed images
+                          default=/htdig
+  --with-rx               with system rx instead of regex default=no
+  --with-ssl              enable ssl will check /usr/local/ssl
                             /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr
 
-  --with-zlib=DIR root directory path of zlib installation
-  --without-zlib to disable zlib usage completely
-  --with-apache=PATH absolute path name of apache server (default is to search httpd in
+  --with-zlib=DIR         root directory path of zlib installation
+  --without-zlib          to disable zlib usage completely
+  --with-apache=PATH      absolute path name of apache server
+			  (default is to search httpd in
     /usr/local/apache/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin),
-    --without-apache to disable apache detection
+  --without-apache        to disable apache detection
 
 Some influential environment variables:
   CC          C compiler command

@@ -2,6 +2,7 @@
 <html>
   <head>
 	<title>ht://Dig Frequently Asked Questions</title>
+        <link rel="stylesheet" href="css/htdig.css">
   </head>
   <body bgcolor="#eef7ff">
 	<h1>Frequently Asked Questions</h1>
@@ -11,9 +12,9 @@
 	  license information.
 	</p>
 	  <hr noshade size=4>
-	  <p>This FAQ is compiled by the ht://Dig developers and the
+	  <p class="main">This FAQ is compiled by the ht://Dig developers and the
 	  most recent version is available at &lt;<a
-	  href="http://htdig.sourceforge.net/FAQ.html">http://htdig.sourceforge.net/FAQ.html</a>&gt;.
+	  href="http://www.htdig.org/FAQ.html">http://www.htdig.org/FAQ.html</a>&gt;.
 	  Questions (and answers!) are greatly appreciated.
 	  Please send questions and/or answers to the ht://Dig user
 	  mailing list at: &lt;<a href="mailto:htdig-general@lists.sourceforge.net">htdig-general@lists.sourceforge.net</a>&gt;.
@@ -47,6 +48,10 @@
 	  go for help?</a><br>
 	  1.16. <a href="#q1.16">Why do the developers get annoyed when
 	  I e-mail questions directly to them rather than the mailing list?</a><br>
+	  1.17. <a href="#q1.17">Why do replies to messages on the
+	  mailing list only go to the sender and not to the list?</a><br>
+	  1.18. <a href="#q1.18">Can I use ht://Dig to index and search
+	  an SQL database?</a><br>
 
 	  <hr noshade size=2>
 
@@ -58,6 +63,8 @@
 	  2.5. <a href="#q2.5">Are patches around to upgrade between
 	  versions?</a><br>
 	  2.6. <a href="#q2.6">Is there a Windows 95/98/2000/NT
+	  version of ht://Dig?</a><br>
+	  2.7. <a href="#q2.7">Where can I find the documentation for my
 	  version of ht://Dig?</a><br>
 
 	  <hr noshade size=2>
@@ -76,6 +83,8 @@
 	  programs I get complaints about not finding libstdc++.</a><br>
 	  3.7. <a href="#q3.7">I'm compiling on IRIX and I'm having
 	  database problems when I run the program.</a><br>
+	  3.8. <a href="#q3.8">I'm compiling with gcc 3.2 and getting
+	  all sorts of warnings/errors about ostream and such.</a><br>
 
 	  <hr noshade size=2>
 
@@ -117,6 +126,16 @@
 	  certain subdirectories or documents?</a><br>
 	  4.21. <a href="#q4.21">How can I allow people to search
 	  while the index is updating?</a><br>
+	  4.22. <a href="#q4.22">How can I get htdig to ignore the
+	  robots.txt file or meta robots tags?</a><br>
+	  4.23. <a href="#q4.23">How can I get htdig not to index
+	  some directories, but still follow links?</a><br>
+	  4.24. <a href="#q4.24">How can I get rid of duplicates in
+	  search results?</a><br>
+	  4.25. <a href="#q4.25">How can I change the scores in
+	  search results, and what are the defaults?</a><br>
+	  4.26. <a href="#q4.26">How can I get htdig not to index
+	  JavaScript code or CSS?</a><br>
 
 	  <hr noshade size=2>
 
@@ -173,6 +192,26 @@
 	  in the htdig -v output mean?</a><br>
 	  5.27. <a href="#q5.27">Why is htdig rejecting some of the
 	  links in my documents?</a><br>
+	  5.28. <a href="#q5.28">When I run htdig or htmerge, I get a
+	  "DB2 problem...: missing or empty key value specified" message.</a><br>
+	  5.29. <a href="#q5.29">When I run htdig on my site,
+	  it seems to go on and on without ending.</a><br>
+	  5.30. <a href="#q5.30">Why does htsearch no longer recognize
+	  the -c option when run from the web server?</a><br>
+	  5.31. <a href="#q5.31">I've set a config attribute exactly
+	  as documented but it seems to have no effect.</a><br>
+	  5.32. <a href="#q5.32">When I run htsearch, it gives a page
+	  with an "Unable to read configuration file" message.</a><br>
+	  5.33. <a href="#q5.33">How can I find out which version
+	  of ht://Dig I have installed?</a><br>
+	  5.34. <a href="#q5.34">When running htdig, I get "Error (0):
+	  PDF file is damaged - attempting to reconstruct xref table..."</a><br>
+	  5.35. <a href="#q5.35">When running htdig on Mandrake Linux,
+	  I get "host not found" and "no server running" errors.</a><br>
+	  5.36. <a href="#q5.36">When I run htsearch, it gives me the
+	  list of matching documents, but no header or footer.</a><br>
+	  5.37. <a href="#q5.37">When I index files with doc2html.pl,
+	  it fails with the "UNABLE to convert" error.</a><br>
 
 	  <hr noshade size=4>
 	  <h2>Answers</h2>
@@ -222,7 +261,9 @@
 	  feature of your mail program, to make sure the mailing list
 	  address is included in the reply, rather than replying only
 	  to the author of the message.
-	  See also question <a href="#q1.16">1.16</a>.</p>
+	  See also question <a href="#q1.16">1.16</a> and the
+	  <a href="http://www.htdig.org/mailarchive.html">mailing list</a>
+	  page.</p>
 
 	  <strong>1.5. <a name="q1.5">I sent a question to the mailing list but I
 	  never got a response!</a></strong><br>
@@ -269,14 +310,15 @@
 	  database</a>, which ensures it won't
 	  become lost amongst all of the other mail on the list.
 	  Please try to include as much information as possible, including
-	  the version of ht://Dig, the OS, and anything else that might be
-	  helpful. Often, running the programs with one "-v" or more
+	  the version of ht://Dig (see question <a href="#q5.33">5.33</a>),
+	  the OS, and anything else that might be helpful.
+	  Often, running the programs with one "-v" or more
 	  (e.g. "-vvv") gives useful debugging information.
 	  If you are unsure whether the problem is a bug or a configuration
 	  problem, you should discuss the problem on
 	  &lt;<a href="mailto:htdig-general@lists.sourceforge.net">htdig-general</a>&gt;
 	  (after carefully reading the FAQ and searching the
-	  <a href="mailarchive.html">mail archive</a>
+	  <a href="http://www.htdig.org/mailarchive.html">mail archive</a>
 	  and <a href="#q2.5">patch archive</a>,
 	  of course)
 	  to sort out what it is. The mailing list has a wider audience, so
@@ -285,8 +327,10 @@
 	  </p>
 
 	  <p>Whether reporting problems to the bug database or mailing
-	  list, we cannot stress enough the importance of always
-	  indicating which version of ht://Dig you are running. There
+	  list, we cannot stress enough the importance of
+	  <strong>always</strong> indicating <strong>which version of
+	  ht://Dig you are running</strong>.
+	  See question <a href="#q5.33">5.33</a>. There
 	  are still a lot of users, ISPs and software distributors using
 	  older versions, and there have been a lot of bug fixes and
 	  new features added in recent versions.  Knowing which version
@@ -299,8 +343,9 @@
 	  <strong>1.9. <a name="q1.9">Does ht://Dig support phrase or near
 	  matching?</a></strong><br>
 	  <p>Phrase searching has been added for the 3.2 release,
-	  which is currently in the beta phase (3.2.0b3 as of this
-	  writing). Near or proximity matching will probably be added
+	  which is currently in the beta phase (3.2.0b4
+	  <a href="http://www.htdig.org/files/snapshots/">development snapshots</a>
+	  as of this writing). Near or proximity matching will probably be added
 	  in a future beta.
 	  </p>
 
@@ -393,6 +438,12 @@
 	  You can find the answer yourself to almost all "how can I..."
 	  questions by exploring what the various configuration attributes
 	  and search form input parameters can do.
+	  Also have a look at our collection of
+	  <a href="http://www.htdig.org/contrib/guides.html">Contributed Guides</a>
+	  for help on things like
+	  <a href="http://www.htdig.org/files/contrib/guides/htmlhelp.html">HTML
+	  forms</a> and CGI, tutorials on installing, configuring, using, and
+	  internationalizing ht://Dig, as well as using PHP with htsearch.
 	  </p>
 	  <p>
 	  Finally, if you've exhausted all the online documentation, there's the 
@@ -410,7 +461,8 @@
 	  and its benefits. Most annoyingly, it puts the onus on an
 	  individual to answer, even if that individual is not the best or
 	  most qualified person to answer. This is not a one-man show. It
-	  also circumvents the archiving mechanism of the mailing list,
+	  also circumvents the <a href="http://www.htdig.org/mailarchive.html">archiving
+	  mechanism</a> of the mailing list,
 	  so not only do subscribers not see these private messages
 	  and replies, but future users who may run into the exact same
 	  problems won't see them. Remember that the developers are all
@@ -420,35 +472,95 @@
 	  that community. See also questions <a href="#q1.4">1.4</a>
 	  and <a href="#q1.5">1.5</a>.</p>
 
+	  <p>Note also that when you reply to a message on the list, you
+	  should make sure the reply gets on the list as well, provided your
+	  reply is still on-topic.  See question <a href="#q1.17">1.17</a>
+	  below.</p>
+
+	  <strong>1.17. <a name="q1.17">Why do replies to messages on the
+	  mailing list only go to the sender and not to the list?</a></strong><br>
+	  <p>The simple answer is that, unlike some mailing lists, the
+	  lists on SourceForge don't force replies back on the list. This
+	  is actually a good thing, because you can reply to the sender
+	  directly if you want to, or you can use your mail program's
+	  "reply to all" capability (sometimes called "group reply")
+	  to reply to the mailing list as well. It does mean you have to
+	  think before you post a reply, but some would argue that this
+	  is a good thing too. There are some compelling reasons to try to
+	  keep on-topic discussions on the list, though (see questions
+	  <a href="#q1.16">1.16</a> and <a href="#q1.4">1.4</a> above).</p>
+
+	  <p>The technical answer is
+	  <a href="http://sourceforge.net/docman/display_doc.php?docid=6693&group_id=1">
+	  SourceForge's policy on Reply-To: munging</a>, where you'll
+	  find all the gory details about the pros and cons of the two
+	  common ways of setting up a mailing list, and why SourceForge
+	  turns off Reply-To munging. It so happens that the ht://Dig
+	  maintainers agree with SourceForge's policy on this, even if
+	  we did have a say in the matter. So, counterarguments to this
+	  policy are rather moot, and it would be better not to waste
+	  any more mailing list bandwidth debating them. (We've heard
+	  all the arguments anyway.)</p>
+
+	  <strong>1.18. <a name="q1.18">Can I use ht://Dig to index and search
+	  an SQL database?</a></strong><br>
+	  <p>You can if your database has a web-based front end that can
+	  be "spidered" by ht://Dig. The requirement is that every search
+	  result must resolve to a unique URL which can be accessed via
+	  HTTP. The htdig program uses these URLs, which you feed it via
+	  the <a href="attrs.html#start_url">start_url</a> attribute, to
+	  fetch and index each page of information. The search results
+	  will then give a list of URLs for all pages that match the
+	  search terms. If you don't have such a front end to your
+	  database, or the search results must be given as something
+	  other than URLs, then ht://Dig is probably not the best way of
+	  dealing with this problem: you may be better off using an SQL
+	  query engine that works directly on your own database, rather
+	  than building a separate ht://Dig database for searching.</p>
+
+	  <p>Ted Stresen-Reuter had the following tips: "In my case,
+	  because I like htdig's ability to rank results (and that
+	  ranking can be modified), I created an index page that simply
+	  walks through each record and indexes each record (with
+	  <em>next</em> and <em>previous</em> links so the spider can
+	  read all the records). And then I do one other thing: I make
+	  the <code>&lt;title&gt;</code> tag start with the unique ID
+	  of each record. Then, when I'm parsing the search results, I
+	  do a lookup on the database using the title tag as the key."</p>
+
 	  <hr noshade size=2>
 
 	  <h3>2. Getting ht://Dig</h3>
 	  <strong>2.1. <a name="q2.1">What's the latest version of ht://Dig?</a></strong><br>
 	  <p>The latest version is 3.1.6 as of this writing. A beta
-	  version of the 3.2 code, 3.2.0b3 is also available, for
-	  those who wish to test it.
+	  version of the 3.2 code, the latest 3.2.0b4
+	  <a href="http://www.htdig.org/files/snapshots/">development snapshot</a>
+	  is also available, for those who wish to test it.
 	  You can find out about the latest version by reading the
 	  <a href="RELEASE.html">release
 	  notes</a>.</p>
-          <p><strong>Note</strong> that if you're running any version
+
+	  <p><strong>Note</strong> that if you're running any version
 	  older than 3.1.5 (including 3.2.0b1) on a public web site,
 	  you should upgrade immediately, as older versions have a
-	  rather serious security hole which is explained in detail in this
-	  <a href="http://htdig.sourceforge.net/htdig-dev/2000/02/0272.html">advisory</a>
-	  which was sent to the BugTraq mailing list.
+	  rather serious security hole which is explained in detail in
+	  this <a
+	  href="http://www.htdig.org/htdig-dev/2000/02/0272.html">advisory</a>
+	  which was sent to the Bugtraq mailing list.
 	  Another slightly less serious, but still troubling security hole
 	  exists in 3.1.5 and older (including 3.2.0b3 and older), so you
 	  should upgrade if you're running one of these. You can view details
 	  on this vulnerability from the
 	  <a href="http://www.securityfocus.com/bid/3410">bugtraq mailing list.</a>
-	  </p>
+	  If you're unsure of which version you're running, see question
+	  <a href="#q5.33">5.33</a>.</p>
 
 	  <strong>2.2. <a name="q2.2">Are there binary distributions of
 	  ht://Dig?</a></strong><br>
 	  <p>We're trying to get consistent binary distributions for
 	  popular platforms. Contributed binary releases will go in <a
-	  href="ftp://ftp.htdig.org/pub/htdig/binaries/">
-	  ftp://ftp.htdig.org/pub/htdig/binaries/</a>
+	  href="http://www.htdig.org/files/contrib/binaries/">
+	  the contributed binaries section</a>
 	  and contributions should be mentioned to the <a
 	  href="mailto:htdig-general@lists.sourceforge.net">htdig-general</a>
 	  mailing list.
@@ -464,8 +576,8 @@
 
 	  <strong>2.4. <a name="q2.4">Is ht://Dig available by ftp?</a></strong><br>
 	  <p>Yes. You can find the current versions and several older
-	  versions at &lt;<a
-	  href="ftp://ftp.htdig.org/pub/htdig/">ftp.htdig.org</a>&gt;
+	  versions at various &lt;<a
+	  href="mirrors.html">mirror sites</a>&gt;
 	  as well as the other locations mentioned in the <a
 	  href="where.html">download page</a>.</p>
 
@@ -486,8 +598,19 @@
 	  version of ht://Dig?</a></strong><br>
 	  <p>The ht://Dig package can be built on the Win32 platform when
 	  using the Cygwin package. For details, see the contributed guide,
-	  <a href="contrib/guides/Installing_on_Win32.html">
+	  <a href="http://www.htdig.org/files/contrib/guides/Installing_on_Win32.html">
 	  <em>Idiot's Guide to Installing ht://Dig on Win32</em></a>.
+	  </p>
+
+	  <strong>2.7. <a name="q2.7">Where can I find the documentation for my
+	  version of ht://Dig?</a></strong><br>
+	  <p>The documentation for the most recent stable release is always
+	  posted at <a href="http://www.htdig.org/">www.htdig.org</a>.
+	  The documentation for the latest beta release can be found at
+	  <a href="http://www.htdig.org/dev/htdig-3.2/">http://www.htdig.org/dev/htdig-3.2/</a>.
+	  In all releases, the documentation is included in the
+	  <strong>htdoc</strong> subdirectory of the source distribution, so
+	  you always have access to the documentation for your current version.
 	  </p>
 
 	  <hr noshade size=2>
@@ -499,9 +622,10 @@
 	  is installed incorrectly. To get libstdc++ or any other GNU too,
 	  check
 	  <a
-	  href="ftp://ftp.gnu.org/pub/gnu/">ftp://ftp.gnu.org/pub/gnu/</a>.
+	  href="ftp://ftp.gnu.org/gnu/">ftp://ftp.gnu.org/gnu/</a>.
 	  Note that the most recent versions of gcc come with
-	  libstdc++ included.</p>
+	  libstdc++ included and are available from <a
+	  href="http://gcc.gnu.org/">http://gcc.gnu.org/</a></p>
 
 	  <strong>3.2. <a name="q3.2">I get an error about -lg</a></strong><br>
 	  <p>This is due to a bug in the Makefile.config.in of version
@@ -548,12 +672,27 @@
 	  to the directory where libstdc++.so.2.8.1.1 lives. This tells the linker 
 	  to search that directory at runtime.
 	  </p>
+
 	  <p>Note that LD_RUN_PATH is not to be confused with LD_LIBRARY_PATH.
 	  The latter is parsed at run-time, while LD_RUN_PATH essentially
 	  compiles in a library path into the executable, so that it doesn't
 	  need a LD_LIBRARY_PATH setting to find its libraries. This allows
 	  you to avoid all the complexities of setting an environment
-	  variable for a CGI program run from the server.</p>
+	  variable for a CGI program run from the server. If all else fails,
+	  you can always run your programs from wrapper shell scripts that
+	  set the LD_LIBRARY_PATH environment variable appropriately.</p>
+
+	  <p>Note also that while this answer is specific to Solaris, it may
+	  work for other OSes too, so you may want to give it a try. However,
+	  not all versions of the <code>ld</code> program on all OSes support
+	  the LD_RUN_PATH environment variable, even if these systems support
+	  shared libraries. Try "<code>man&nbsp;ld</code>" on your system to
+	  find out the best way of setting the runtime search path for shared
+	  libraries. If <code>ld</code> doesn't support LD_RUN_PATH, but does
+	  support the <code>-R</code> option, you can add one or more of these
+	  options to LIBDIRS in Makefile.config before running make on a 3.1.x
+	  release. (For a 3.2 beta release, you can add these options to the
+	  LDFLAGS environment variable before you run ./configure.)</p>
 	  
 	  <strong>3.7. <a name="q3.7">I'm compiling on IRIX and I'm having 
 	  database problems when I run the program.</a></strong><br>
@@ -562,6 +701,16 @@
 	  they seem to only happen when older compilers are
 	  used. Several people have reported that the problems go away
 	  when using the latest version of <a href="http://gcc.gnu.org/">gcc</a>.
+	  </p>
+	  
+	  <strong>3.8. <a name="q3.8">I'm compiling with gcc 3.2 and getting
+	  all sorts of warnings/errors about ostream and such.</a></strong><br>
+	  <p>
+	  You should use the following command to configure the ht://Dig
+	  package so it can be built with gcc 3.2:
+<pre>
+CXXFLAGS=-Wno-deprecated CPPFLAGS=-Wno-deprecated ./configure
+</pre>
 	  </p>
 
 	  <hr noshade size=2>
@@ -574,6 +723,9 @@
 	  the command-line, try "-vvv"  in addition to any other
 	  flags. This will add debugging output, including the responses
 	  from the server.</p>
+	  <p>See also questions <a href="#q5.25">5.25</a>,
+	  <a href="#q5.27">5.27</a>, <a href="#q5.16">5.16</a> and
+	  <a href="#q5.18">5.18</a>.</p>
 
 	  <strong>4.2. <a name="q4.2">How can I change the output format of htsearch?</a></strong><br>
 <p>Answer contributed by: Malki Cymbalista &lt;Malki.Cymbalista@weizmann.ac.il&gt;</p>
@@ -603,7 +755,18 @@ tailored to give the output in the desired format.</p>
 <p>Assuming your configuration file is called cc.conf, the html file that
 links to the search has to set the config parameter equal to cc. The
 following line would do it:<br>
-<code>&lt;input type=hidden name=config value="cc"&gt;</code></p>
+<code>&lt;input type="hidden" name="config" value="cc"&gt;</code></p>
+
+	  <p><strong>Note:</strong> Don't just add the line above to your
+	  <a href="hts_form.html">search form</a>
+	  without checking if there isn't already a similar
+	  line giving the config attribute a different value. The sample
+	  search.html form that comes with the package includes a line
+	  like this already, giving "config" the default value of "htdig".
+	  If it's there, modify it instead of adding another definition.
+	  The config input parameter doesn't need to be hidden either, and
+	  you may want to define it as a pull-down list to select different
+	  databases (see question <a href="#q4.4">4.4</a>).</p>
 
 	  <strong>4.3. <a name="q4.3">How do I index pages that start with '~'?</a></strong><br>
 	  <p>
@@ -617,8 +780,12 @@ following line would do it:<br>
 	  database and use restrict or exclude fields on searches. To use
 	  multiple databases, you will need a config file for each
 	  database. Then each file will set the
+	  <a href="attrs.html#database_dir">database_dir</a> or
 	  <a href="attrs.html#database_base">database_base</a> attribute to
-	  change the name of the databases.</p>
+	  change the name of the databases. The config file is selected
+	  by the <strong>config</strong> input field in the search form.
+	  <br>See also questions <a href="#q4.2">4.2</a> and
+	  <a href="#q4.20">4.20</a>.</p>
 
 	  <strong>4.5. <a name="q4.5">OK, I can use multiple databases. Can I
 	  merge them into one?</a></strong><br>
@@ -630,15 +797,34 @@ following line would do it:<br>
 	  <p>There are several ways to cut down on disk space. One is
 	  not to use the "-a" option, which creates work copies of the
 	  databases. Naturally this essentially doubles the disk
-	  usage. If you don't need to index and search at the same time, you can 
-	  ignore this flag. Changing configuration variables can also help cut down
-	  on disk usage. Decreasing max_head_length and
-	  max_meta_description_length will cut down on the size of the
-	  excerpts stored (in fact, if you don't have
-	  use_meta_description set, you can set
-	  max_meta_description_length to 0!). Other techniques include
-	  removing the db.wordlist file and adding more words to the
-	  bad_words file.</p>
+	  usage. If you don't need to index and search at the same time, you can
+	  ignore this flag.</p>
+
+	  <p>If you don't have
+	  <a href="attrs.html#wordlist_compress_zlib">compression</a>
+	  turned on, then turning that on will also save considerable space.</p>
+
+	  <p>Changing configuration variables can also help cut
+	  down on disk usage. Decreasing
+	  <a href="attrs.html#max_head_length">max_head_length</a> and
+	  <a href="attrs.html#max_meta_description_length">max_meta_description_length</a>
+	  will cut down on the size of the excerpts stored (in fact, if you
+	  don't have
+	  <a href="attrs.html#use_meta_description">use_meta_description</a>
+	  set, you can set
+	  max_meta_description_length to 0!).</p>
+	  
+	  <p>Other techniques include removing the db.wordlist file and adding
+	  more words to the <a href="attrs.html#bad_words">bad_words</a>
+	  file.</p>
+
+	  <p>The University of Leipzig has published
+	  <a href="http://wortschatz.uni-leipzig.de/html/wliste.html">
+	  word lists</a> containing the 100, 1000 and 10000 most often used
+	  words in English, German, French and Dutch. No copyrights or
+	  restrictions seem to be applied to the downloadable files. These
+	  can be very handy when putting together a bad_words file. Thanks
+	  to Peter Asemann for this tip.</p>
 
 	  <strong>4.7. <a name="q4.7">Can I use SSI or other CGIs in my
 	  htsearch results?</a></strong><br>
@@ -665,7 +851,7 @@ following line would do it:<br>
 	  <p>For CGI and PHP, you need a &quot;wrapper&quot; script to
 	  do that. For perl script examples, see the files in
 	  <code>contrib/ewswrap</code>. The PHP guide (see <a
-	  href="contrib/guides.html">contributed
+	  href="http://www.htdig.org/contrib/guides.html">contributed
 	  guides</a>) not only describes a wrapper script for PHP, but
 	  also offers a step by step tutorial to the basics of
 	  ht://dig and is well worth reading.
@@ -767,7 +953,8 @@ following line would do it:<br>
 	  href="http://www.htdig.org/files/contrib/parsers/">web site</a>.</p>
 
 	  <p>See also question <a href="#q5.2">5.2</a> below and
-	  question <a href="#q1.13">1.13</a> above.</p>
+	  question <a href="#q1.13">1.13</a> above.
+	  See question <a href="#q5.37">5.37</a> for troubleshooting tips.</p>
 
 	  <strong>4.10. <a name="q4.10">How do I index documents in other
 	  languages?</a></strong><br>
@@ -785,37 +972,97 @@ following line would do it:<br>
 	  <a href="http://fmg-www.cs.ucla.edu/geoff/ispell-dictionaries.html">
 	  International Ispell Dictionaries page</a>, and we're slowly
 	  building a collection of word lists on our <a
-	  href="ftp://ftp.htdig.org/pub/htdig/contrib/wordlists/">FTP site</a>.</p>
+	  href="http://www.htdig.org/files/contrib/wordlists/">web site</a>.</p>
 	  <p>For example, if you install German dictionaries in common/german,
 	  you could use these lines in your configuration file:</p>
 <pre>
-locale:               de_DE
-lang_dir:             ${common_dir}/german
-bad_word_list:        ${lang_dir}/bad_words
-endings_affix_file:   ${lang_dir}/german.aff
-endings_dictionary:   ${lang_dir}/german.0
-endings_root2word_db: ${lang_dir}/root2word.db
-endings_word2root_db: ${lang_dir}/word2root.db
+<a href="attrs.html#locale">locale</a>:               de_DE
+lang_dir:             ${<a href="attrs.html#common_dir">common_dir</a>}/german
+<a href="attrs.html#bad_word_list">bad_word_list</a>:        ${lang_dir}/bad_words
+<a href="attrs.html#endings_affix_file">endings_affix_file</a>:   ${lang_dir}/german.aff
+<a href="attrs.html#endings_dictionary">endings_dictionary</a>:   ${lang_dir}/german.0
+<a href="attrs.html#endings_root2word_db">endings_root2word_db</a>: ${lang_dir}/root2word.db
+<a href="attrs.html#endings_word2root_db">endings_word2root_db</a>: ${lang_dir}/word2root.db
 </pre>
 	  <p>
 	  You can build the endings database with <code>htfuzzy endings</code>.
 	  (This command may actually take days to complete, for
 	  releases older than 3.1.2. Current releases use faster regular
 	  expression matching, which will speed this up by a few orders
-	  of magnitude.) You will also need to redefine the synonyms
+	  of magnitude.) Note that the "*.0" files are not part of
+	  the ispell dictionary distributions, but are easily made by
+	  concatenating the partial dictionaries and sorting to remove
+	  duplicates (e.g.: "<code>cat * | sort | uniq &gt; lang.0</code>"
+	  in most cases). You will also need to redefine the synonyms
 	  file if you wish to use the synonyms search algorithm. This
 	  file is not included with most of the dictionaries, nor is the
-	  bad_words file. Current versions of ht://Dig only support 8-bit
+	  <a href="attrs.html#bad_words">bad_words</a> file.</p>
+
+	  <p>If you put all the language-specific
+	  dictionaries and configuration files in separate directories,
+	  and set all the attribute definitions accordingly in each
+	  search config file to access the appropriate files, you can
+	  have a multilingual setup where the user selects the language
+	  by selecting the "config" input parameter value. In addition
+	  to the attributes given in the example above, you may also
+	  want custom settings for these language-specific attributes:
+	  <a href="attrs.html#date_format">date_format</a>,
+	  <a href="attrs.html#iso_8601">iso_8601</a>,
+	  <a href="attrs.html#method_names">method_names</a>,
+	  <a href="attrs.html#no_excerpt_text">no_excerpt_text</a>,
+	  <a href="attrs.html#no_next_page_text">no_next_page_text</a>,
+	  <a href="attrs.html#no_prev_page_text">no_prev_page_text</a>,
+	  <a href="attrs.html#nothing_found_file">nothing_found_file</a>,
+	  <a href="attrs.html#page_list_header">page_list_header</a>,
+	  <a href="attrs.html#prev_page_text">prev_page_text</a>,
+	  <a href="attrs.html#search_results_wrapper">search_results_wrapper</a>
+	  (or <a href="attrs.html#search_results_header">search_results_header</a>
+	  and <a href="attrs.html#search_results_footer">search_results_footer</a>),
+	  <a href="attrs.html#sort_names">sort_names</a>,
+	  <a href="attrs.html#synonym_db">synonym_db</a>,
+	  <a href="attrs.html#synonym_dictionary">synonym_dictionary</a>,
+	  <a href="attrs.html#syntax_error_file">syntax_error_file</a>,
+	  <a href="attrs.html#template_map">template_map</a>, and of course
+	  <a href="attrs.html#database_dir">database_dir</a> or
+	  <a href="attrs.html#database_base">database_base</a> if you
+	  maintain multiple databases for sites of different languages.
+	  You could also change the definition of
+	  <a href="attrs.html#common_dir">common_dir</a>, rather than
+	  making up a lang_dir attribute as above, as many language-specific
+	  files are defined relative to the common_dir setting.</p>
+
+	  <p>If you're running version 3.1.6 of ht://Dig, you may also
+	  be interested in the <strong>accents</strong> fuzzy match
+	  algorithm in the
+	  <a href="attrs.html#search_algorithm">search_algorithm</a>
+	  attribute, which lets you treat accented and unaccented letters
+	  as equivalent in words. Note that if you use the accents algorithm,
+	  you need to rebuild the accents database each time you update your
+	  word database, using <code>"htfuzzy accents"</code>. This command
+	  isn't in the default rundig script, so you may want to add it there.
+	  The accents fuzzy match algorithm is also in the 3.2 beta releases.
+	  There are also the
+	  <a href="attrs.html#boolean_keywords">boolean_keywords</a> and
+	  <a href="attrs.html#boolean_syntax_errors">boolean_syntax_errors</a>
+	  attributes in 3.1.6 for changing other language-specific messages
+	  in htsearch.</p>
+
+	  <p>Current versions of ht://Dig only support 8-bit
 	  characters, so languages such as Chinese and Japanese, which
 	  require 16-bit characters, are not currently supported.</p>
+
 	  <p>Didier Lebrun has written a guide for configuring htdig to
 	  support French, entitled
 	  <a href="http://www.quartier-rural.org/dl/elucu/htdig-vf/lisezmoi.html">
 	  Comment installer et configurer HtDig pour la langue fran&ccedil;aise</a>.
 	  His "kit de francisation" is also available on
 	  <a
-	  href="ftp://ftp.htdig.org/pub/htdig/contrib/wordlists/">our
-	  FTP site</a>.</p>
+	  href="http://www.htdig.org/files/contrib/wordlists/">our
+	  web site</a>.</p>
+
+	  <p>See also question <a href="#q4.2">4.2</a> for tips on customizing
+	  htsearch, and question <a href="#q4.6">4.6</a> for tips where to find
+	  bad_words files.</a></p>
 
 	  <strong>4.11. <a name="q4.11">How do I get rotating banner ads in
 	  search results?</a></strong><br>
@@ -896,12 +1143,24 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  found somewhere in the document, in addition to the words the
 	  user specifies in the search form.</p>
 
-	  <p>To restrict a search to meta keywords only, you must set all
-	  factors other than keywords_factor to 0, and for 3.1.x, you
-	  must then reindex your documents.  In 3.2, you'll be able to
-	  change factors at search time without needing to reindex, as
-	  well as offering the ability to restrict the search in the
-	  query itself.</p>
+ 	  <p>As of 3.2.0b4, the most direct way to search for a particular
+ 	  meta keyword is to specify the word as "keyword:&lt;word&gt;".
+ 	  Similarly, "title:", "heading:", and "author:" restrict searches
+ 	  to the respective fields.  To search for words in the body of the
+ 	  text, use "text:".</p>
+ 
+ 	  <p>To restrict all search terms to meta keywords only, you can set all
+ 	  <a href="attrs.html#heading_factor">factors</a> other than
+ 	  keywords_factor to 0, and for 3.1.x, you
+ 	  must then reindex your documents.  In the 3.2 betas, you can
+	  change factors at search time without needing to reindex.
+	  Note that changing the scoring
+	  factors in this way will only alter the scoring of search results,
+	  and shift the low or zero scores to the end of the results when
+	  sorting by score (as is done by default). The results with scores
+	  of zero aren't actually removed from the search results, although
+	  this will be done in future 3.2 releases.</p>
+	  <!-- I think it is already done.  Can anyone confirm that? -->
 
 	  <strong>4.15. <a name="q4.15">Can I use meta tags to prevent htdig from
 	  indexing certain files?</a></strong><br>
@@ -923,7 +1182,13 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  <a href="attrs.html#noindex_end">noindex_end</a> attributes to
 	  define one set of tags which will mark sections to be stripped out
 	  of documents, so they don't get indexed, or you can mark sections
-	  with the non-DTD &lt;noindex&gt; and &lt;/noindex&gt; tags.</p>
+	  with the non-DTD &lt;noindex&gt; and &lt;/noindex&gt; tags.
+	  The noindex_start and noindex_end attributes can also be used to
+	  suppress in-line JavaScript code that wasn't properly enclosed in
+	  HTML comment tags (see question <a href="#q4.26">4.26</a>).
+	  In 3.1.6, you can also put a section between &lt;noindex follow&gt;
+	  and &lt;/noindex&gt; tags to turn off indexing of text but still
+	  allow htdig to follow links.</p>
 
 	  <strong>4.16. <a name="q4.16">How do I get htsearch to use the star image
 	  in a different directory than the default /htdig?</a></strong><br>
@@ -946,6 +1211,43 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  configuration files for htdig and htsearch, to define a
 	  different setting of this attribute for each one.</p>
 
+	  <p>A large number of users insist on ignoring that last point
+	  and try to make do with just one definition, either for htdig
+	  or htsearch, or sometimes for both. This seems to stem from
+	  a fundamental misunderstanding of how this attribute works,
+	  so perhaps a clarification is needed. The url_part_aliases
+	  attribute uses a two stage process. In the first stage, htdig
+	  encodes the URLs as they go into the database, by using the
+	  pairs in url_part_aliases going from left to right. In the
+	  second stage, htsearch decodes the encoded URLs taken from the
+	  database, by using the pairs in url_part_aliases going from
+	  right to left. If you have the same value for url_part_aliases
+	  in htdig and htsearch, you end up with the same URLs in the
+	  end. If you modify the first string (the from string) in
+	  the pairs listed in url_part_aliases for htsearch, then when
+	  htsearch decodes the URLs it ends up rewriting part of them.</p>
+
+	  <p>While you might think that if you don't use url_part_aliases
+	  in htdig, then you can use it in htsearch to alter unencoded
+	  URLs, the reality is that if you don't encode parts of URLs
+	  using url_part_aliases, they still get encoded automatically
+	  by the <a href="attrs.html#common_url_parts">common_url_parts</a>
+	  attribute. This helps to reduce the size of your databases. So,
+	  trying to use url_part_aliases only in htsearch doesn't work
+	  because there are no unencoded URLs in the database, so the
+	  right hand strings in the pairs you define won't match anything.</p>
+
+	  <p>You also can't put two different definitions of the
+	  url_part_aliases attribute in a single configuration file, as
+	  some users have attempted. When you define an attribute twice,
+	  the second definition merely overrides the first. Pay close
+	  attention to the description and examples for
+	  <a href="attrs.html#url_part_aliases">url_part_aliases</a>.
+	  You must put one definition of this attribute in your
+	  configuration file for htdig, htmerge (or htpurge) and htnotify,
+	  and a different definition of it in your configuration file
+	  for htsearch.</p>
+
 	  <strong>4.18. <a name="q4.18">What are all the options in
 	  htdig.conf, and are there others?</a></strong><br>
 	  <p>In ht://Dig's terminology, the settings in its configuration
@@ -963,9 +1265,17 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  See also question <a href="#q1.15">1.15</a>.</p>
 
 	  <strong>4.19. <a name="q4.19">How do I get more than 10 pages of
-	  search results from htsearch?</a></strong><br>
-	  This is controlled by the <a href="attrs.html#maximum_pages">
-	  maximum_pages</a> attribute in your search configuration file.
+	  10 search results from htsearch?</a></strong><br>
+	  <p>There are two attributes that control the number of matches per
+	  page and the total number of pages. The number of matches per page
+	  can be set in your configuration file, using the
+	  <a href="attrs.html#matches_per_page">matches_per_page</a> attribute,
+	  or in your <a href="hts_form.html">search form</a>, using the
+	  <strong>matchesperpage</strong> input parameter.</p>
+
+	  <p>The number of pages is controlled by the
+	  <a href="attrs.html#maximum_pages">maximum_pages</a> attribute in
+	  your search configuration file.
 	  The current default for maximum_pages is 10 because the ht://Dig
 	  package comes with 10 images, with numbers 1 through 10, for
 	  use as page list buttons. If we increased the limit, we'd have
@@ -984,7 +1294,8 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  actual number of pages. This was changed because there was no
 	  means of limiting the total number of pages, but this ended up
 	  frustrating users who wanted the ability to have more pages than
-	  buttons. In 3.2.0b3 we will introduce a maximum_page_buttons
+	  buttons. In 3.2.0b3 and 3.1.6 we introduced a
+	  <a href="attrs.html#maximum_page_buttons">maximum_page_buttons</a>
 	  attribute for this purpose.</p>
 
 	  <strong>4.20. <a name="q4.20">How do I restrict a search to only
@@ -1000,7 +1311,12 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  propagate the choices to select lists in the follow-up search
 	  forms using the
 	  <a href="attrs.html#build_select_lists">build_select_lists</a>
-	  configuration attribute.</p>
+	  configuration attribute.
+	  The University at Albany has a good description of how to use
+	  the <strong>restrict</strong> or <strong>exclude</strong> input
+	  paramters: <a href="http://www.albany.edu/web_builders/search/">
+	  Constructing a local search using ht://Dig Search forms</a>.
+	  <br>See also question <a href="#q4.4">4.4</a>.</p>
 
 	  <p>If you wish to keep secure and non-secure areas on
 	  your site separate, and avoid having unauthorized users
@@ -1080,8 +1396,197 @@ require group foo
 	  to it. However, rundig builds the database from scratch each
 	  time you run it. If you want to update an alternate copy of
 	  the database, see the
-	  <a href="ftp://ftp.htdig.org/pub/htdig/contrib/scripts/rundig.sh">contributed
+	  <a href="http://www.htdig.org/files/contrib/scripts/rundig.sh">contributed
 	  rundig.sh script</a>.</p>
+
+	  <strong>4.22. <a name="q4.22">How can I get htdig to ignore the
+	  robots.txt file or meta robots tags?</a></strong><br>
+	  <p>You can't, and you shouldn't. The
+	  <a href="http://www.robotstxt.org/wc/norobots.html">
+	  Standard for Robot Exclusion</a> exists for a very good reason,
+	  and any well behaved indexing engine or spider should conform to it.
+	  If you have a problem with a robots.txt file, you really should
+	  take it up with the site's webmaster. If they don't have a problem
+	  with you indexing their site, they shouldn't mind setting up a
+	  User-agent entry in their robots.txt file with a name you both
+	  agree on. The user agent setting that htdig uses for matching
+	  entries in robots.txt can be changed via the
+	  <a href="attrs.html#robotstxt_name">robotstxt_name</a> attribute in
+	  your config file.</p>
+
+	  <p>If you have a problem with a robots meta tag in a document
+	  (see question <a href="#q4.15">4.15</a>) you should take it up
+	  with the author or maintainer of that page. These tags are an
+	  all or nothing deal, as they can't be set up to allow some engines
+	  and disallow others. If htdig encounters them, it has to give the
+	  page's creator the benefit of the doubt and honour them. If
+	  exceptions to the rule are wanted, this should be done with a
+	  robots.txt file rather than a meta tag.</p>
+
+	  <strong>4.23. <a name="q4.23">How can I get htdig not to index
+	  some directories, but still follow links?</a></strong><br>
+	  <p>You can simply add the directory name to your robots.txt file
+	  or to the <a href="attrs.html#exclude_urls">exclude_urls</a>
+	  attribute in your configuration, but that will exclude all files
+	  under that directory. If you want the files in that directory to
+	  be indexed, you have a couple options. You can add an index.html
+	  file to the directory, that will include a robots meta tag
+	  (see question <a href="#q4.15">4.15</a>) to prevent indexing,
+	  and will contain links to all your files in this directory.
+	  The drawback of this is that you must maintain the index.html
+	  file yourself, as it won't be automatically updated as new
+	  files are added to the directory.</p>
+
+	  <p>The other technique you can use, if you want the directory
+	  index to be made by the web server, is to get the server to
+	  insert the robots meta tag into the index page it generates.
+	  In Apache, this is done using the
+	  <a href="http://httpd.apache.org/docs/mod/mod_autoindex.html#headername">HeaderName</a>
+	  and <a href="http://httpd.apache.org/docs/mod/mod_autoindex.html#indexoptions">IndexOptions</a>
+	  directives in the directory's <strong>.htaccess</strong> file.
+	  For example:</p>
+<pre>   HeaderName .htrobots 
+   IndexOptions FancyIndexing SuppressHTMLPreamble
+</pre>
+	  <p>and in the .htrobots file:</p>
+<pre>&lt;HTML&gt;&lt;head&gt;
+&lt;META NAME="robots" CONTENT="noindex, follow"&gt;
+&lt;title&gt;Index of /this/dir&lt;/title&gt;
+&lt;/head&gt;
+</pre>
+
+	  <p>If you don't mind getting just one copy of each directory,
+	  but want to suppress the multiple copies generated by Apache's
+	  FancyIndexing option, you can either turn off FancyIndexing or
+	  you can add "?D=A ?D=D ?M=A ?M=D ?N=A ?N=D ?S=A ?S=D" to
+          the <a href="attrs.html#bad_querystr">bad_querystr</a> attribute
+	  (without the quotes) to suppress the alternately sorted views of
+	  the directory.</p>
+
+	  <strong>4.24. <a name="q4.24">How can I get rid of duplicates in
+	  search results?</a></strong><br>
+	  <p>This depends on the cause of the duplicate documents. htdig
+	  does keep track of the URLs it visits, so it never puts the
+	  same URL more than once in the database. So, if you have
+	  duplicate documents in your search results, it's because the
+	  same document appears under different URLs. Sometimes the
+	  URLs vary only slightly, and in subtle ways, so you may have
+	  to look hard to find out what the variation is. Here are some
+	  common reasons, each requiring a different solution.</p>
+
+	  <ul>
+	  <li>You're indexing a case insensitive web
+	  server (e.g. an NT based server), but the
+          <a href="attrs.html#case_sensitive">case_sensitive</a> attribute is
+	  still set to true. In this case, if htdig encounters two URLs
+	  pointing to the same document, but the case of the letters in
+	  one is different than the other (even if it's only 1 letter),
+	  it will not treat them as the same URL.<br><br>
+	  <li>You have symbolic links (or hard links) to some of
+	  these documents, so they can be reached by several URLs.
+	  The solution here is to build an exclude list of URLs that
+	  are actually symbolic links, and putting these in
+	  <a href="attrs.html#exclude_urls">exclude_urls</a>
+	  (or in your robots.txt file). You can automate this using a
+	  technique similar to the find command in question
+	  <a href="#q5.25">5.25</a> which builds the start_url list, but
+	  adding a -type l to find symbolic links.<br><br>
+	  <li>You have copies of the same documents in different
+	  locations. This is similar to the symbolic link problem above,
+	  but harder to fix automatically.<br><br>
+	  <li>The duplicate URLs result from CGI, SSI or other dynamic pages
+	  that give the same content even though there may be variations in
+	  the query string or other parts of the URL. The approach to
+	  fix this is similar to the fix above, but may be less easy
+	  to automate, depending on what the variations are. You can
+	  add patterns to exclude_urls or bad_querystr to get rid of
+	  unwanted variations. These are especially important to bring
+	  under control, because in some cases, if left unchecked, they
+	  can result in an <em>infinite virtual hierarchy</em> which htdig
+	  will never be able to finish indexing. For example, in a CGI-based
+	  calendar, htdig could go on following next month or next
+	  year links to infinity, but this can be stopped by adding a
+	  stop year to <a href="attrs.html#bad_querystr">bad_querystr</a>.
+	  <br><br>Another common example happens when htdig hits a link
+	  to an SSI page and the URL has an extra trailing slash. This
+	  can happen with either .shtml pages or .html pages that use
+	  the XBitHack. The trailing slash causes the URL to be misinterpreted
+	  as a directory URL, and any relative URLs in the document are added
+	  to the URL, creating longer and longer URLs that still lead to the
+	  same SSI document. There are two things you can do:<ol>
+		<li>hunt down the pages with the incorrect links, i.e.
+		search for ".shtml/" or ".html/" in URLs in your documents,
+		and fix these links; or
+		<li>add .shtml/ and .html/ to your
+		<a href="attrs.html#exclude_urls">exclude_urls</a>
+		setting to get htdig to ignore these defective links.
+	  </ol>The second option is easier, but you run the risk that htdig
+	  will miss some SSI pages if the only links to them have the trailing
+	  slash, so you may want to try hunting down the links anyway.
+	  <br><br>See also question <a href="#q5.29">5.29</a>.<br><br>
+	  <li>The duplicates result from session IDs in PHP or other dynamic
+	  pages that give the same content even though the ID changes during
+	  the indexing process. This can lead not only to duplicates, but
+	  also to URLs that become unusable because of expired session IDs.
+	  Session IDs are the bane of search engines, and you should avoid
+	  using them if at all possible. If getting rid of them altogether
+	  isn't an option, then you can at least remove them while indexing,
+	  using the <a href="attrs.html#url_rewrite_rules">url_rewrite_rules</a>
+	  attribute. This will only work if htdig can access the documents
+	  without a session ID, as htdig rewrites the URL before fetching the
+	  document, and htsearch presents the rewritten URL (without session
+	  ID) in search results.
+          </ul>
+
+	  <strong>4.25. <a name="q4.25">How can I change the scores in
+	  search results, and what are the defaults?</a></strong><br>
+	  <p>The scores are calculated mostly by htdig at indexing time,
+	  with some tweaking done by htsearch at search time. There are
+	  a number of <a href="attrs.html">configuration attributes</a>,
+	  all called <em>&lt;something&gt;</em><strong>_factor</strong>,
+	  which can control the scoring calculations. In addition, the
+	  location of words within the document has an effect on score,
+	  as word scores are also multiplied by a varying location
+	  factor somewhere in between 1000 for words near the start
+	  and 1 for words near the end of the document. As of yet,
+	  there is no way to change this factor. For any of the scoring
+	  factors you can configure, and which are used by htdig, you
+	  will have to reindex your documents so the new factors take
+	  effect. The default values for these scoring factors, as well as
+	  information about whether they're used by htdig or htsearch,
+	  are all listed in the <a href="attrs.html">configuration
+	  attributes documentation</a>. Malcolm Austen has written some
+	  <a href="http://wwwsearch.ox.ac.uk/scores.html">notes on page
+	  scores</a> for 3.1.x which you may find helpful.</p>
+
+	  <p>Note that the above applies to the 3.1.x releases, while
+	  in the 3.2 beta releases, all scores are calculated at search
+	  time with no weight being put on the location of words within
+	  the document.</p>
+
+	  <strong>4.26. <a name="q4.26">How can I get htdig not to index
+	  JavaScript code or CSS?</a></strong><br>
+	  <p>The HTML parser in htdig recognizes and parses only HTML,
+	  which is all there should be within an HTML file. If your HTML
+	  files contain in-line JavaScript code or Cascading Style Sheets
+	  (CSS), these in-line codes, which are clearly not HTML, should
+	  be enclosed within an HTML comment tag so they are hidden
+	  from view from the HTML parser, or for that matter from any
+	  web client that is not JavaScript-aware or CSS-aware. See
+	  <a href="http://www.mcli.dist.maricopa.edu/show/interact/js_b.html">
+	  Behind the Scenes with JavaScript</a> for a description of the
+	  technique, which applies equally well to in-line style sheets.
+	  If fixing up all non-HTML compliant JavaScript or CSS code in
+	  your HTML files is not an option, then see question
+	  <a href="#q4.15">4.15</a> for an alternate technique.</p>
+
+	  <p>The HTML parser in htdig 3.1.6 tries skipping over bare
+	  in-line JavaScript code in HTML, unlike previous versions,
+	  but a small bug in the parser causes it to be thrown off by a
+	  "&lt;" sign in the JavaScript, and it may then miss the closing
+	  &lt;/script&gt; tag. This can be fixed by applying this
+	  <a href="ftp://ftp.ccsf.org/htdig-patches/3.1.6/JavaScript.0">
+	  patch</a>.</p>
 
 	  <hr noshade size=2>
 
@@ -1117,7 +1622,7 @@ require group foo
 	  the -pairs option from your pdf_parser definition, if it's
 	  there.  However, acroread version 4 is still very unstable (on
 	  Linux, anyway) so it is not recommended as a PDF parser. An
-	  alternative is to use an external parser with the xpdf 0.90
+	  alternative is to use an external converter with the xpdf 0.90
 	  package installed on your system, as described in question <a
 	  href="#q4.9">4.9</a> above.</p>
 
@@ -1152,12 +1657,20 @@ require group foo
 	  <p>Often this is because the databases are corrupt. Try removing
 	  them and rebuilding. If this doesn't work, some have found that
 	  the solution for question <a href="#q3.2">3.2</a> works for this
-	  as well. This should be fixed in version 3.1.0b2.</p>
+	  as well. This should be fixed in versions from 3.1.x</p>
 
 	  <strong>5.7. <a name="q5.7">When I run htsearch, I get lots of Internal
 	  Server Errors (#500).</a></strong><br>
 	  <p>If you are running under Solaris, see <a href="#q3.6">3.6</a>.
-	  <br>See also question <a href="#q5.13">5.13</a>.</p>
+	  The solution for Solaris may also work for other OSes that use shared
+	  libraries in non-standard locations, so refer to question 3.6 if
+	  you suspect a shared library problem. In any case, check your web
+	  server error logs to see the cause of the internal server errors.
+	  If it's not a problem with shared libraries, there's a good chance
+	  that the error logs will still contain useful error messages that
+	  will help you figure out what the problem is.
+	  <br>See also questions <a href="#q5.13">5.13</a> and
+	  <a href="#q5.23">5.23</a>.</p>
 
 	  <strong>5.8. <a name="q5.8">I'm having problems with indexing words
 	  with accented characters.</a></strong><br>
@@ -1172,6 +1685,46 @@ require group foo
 	  <code>/usr/share/locale</code> or the <tt>$LANGUAGE</tt>
 	  environment variable. See also question <a href="#q4.10">4.10</a>.
 	  </p>
+
+	  <p>Setting the locale correctly seems to be a frequent source of
+	  frustration for ht://Dig users, so here are a few pointers which
+	  some have found useful. First of all, if you don't have any luck
+	  with the settings of the <a href="attrs.html#locale">locale</a>
+	  attribute that you try, make sure you use a locale that is
+	  defined on your system. As mentioned above, these are usually
+	  installed in <code>/usr/share/locale</code>, so look there
+	  for a directory named for the locale you want to use. If
+	  you don't find it, but find something close, try that locale
+	  name. Note that the locale may not have to be specific to the
+	  language you're indexing, as long as it uses the same character
+	  set. E.g. most western European languages use the ISO-8859-1
+	  Latin 1 character set, so on most systems the locales for
+	  all these languages define the same character types table
+	  and can be used interchangeably. Some systems, however,
+	  define only the accented letters used for a given language,
+	  so "your mileage may vary." The important thing is that the
+	  directory for your locale definition <strong>must</strong>
+	  have a file named <code>LC_CTYPE</code> in it. For example,
+	  on many Linux distributions, a language-specific locale like
+	  <code>fr</code> won't contain this file, but country-specific
+	  locales like <code>fr_FR</code> or <code>fr_CA</code> will. If
+	  you don't find any appropriate locales installed on your system,
+	  try obtaining and installing the locale definition files from
+	  your OS distribution. Also, once you've set your locale, you need
+	  to reindex all your documents in order for the locale to take
+	  effect in the word database. This means rerunning the "rundig"
+	  script, or running "htdig -i" and htmerge (or htpurge in the 3.2
+	  betas).</p>
+
+	  <p>Note also that some UNIX systems and libc5-based Linux
+	  systems just don't have a working implementation of locales,
+	  so you may not be able to get locales working at all on certain
+	  systems. The
+	  <a href="http://www.htdig.org/files/contrib/other/testlocale.c">testlocale.c</a>
+	  program on our web site can let you see the LC_CTYPE tables
+	  for any locale, to aid in finding one that works. Carefully
+	  follow the directions in the program's comments to know how to
+	  use it and what to look for in its output.</p>
 
 	  <strong>5.9. <a name="q5.9">When I run htmerge, it stops with a
 	  "Word sort failed" message.</a></strong><br>
@@ -1205,6 +1758,17 @@ require group foo
 	  the databases will be structured differently, so it should
 	  perform searches more quickly.</p>
 
+	  <p>In version 3.1.6, the date range selection code also slows
+	  down htsearch for the same reason. Unfortunately, a small bug
+	  crept into the code so that even if you don't set any of the
+	  date range input parameters (startyear, endyear, etc.), and
+	  you set backlink_factor and date_factor to 0, htsearch still
+	  looks at the date in the db.docdb record for each hit. You can
+	  avoid this either by setting startyear to 1969 and endyear to
+	  2038 in your config file, or by applying this
+	  <a href="ftp://ftp.ccsf.org/htdig-patches/3.1.6/timet_enddate.1">
+	  patch</a>.</p>
+
 	  <strong>5.11. <a name="q5.11">When I run htsearch, it gives me a count of
 	  matches, but doesn't list the matching documents.</a></strong><br>
 	  <p>This most commonly happens when you run htsearch while the
@@ -1221,6 +1785,19 @@ require group foo
 	  ht://Dig were susceptible to database corruption of this
 	  sort. Versions 3.1.2 and later are much more stable.</p>
 
+	  <p>Another possible cause of this problem is unreadable result
+	  template files. If you define external template files via the
+	  <a href="attrs.html#template_map">template_map</a> attribute,
+	  rather than using the builtin-short or builtin-long templates,
+	  and the file names are incorrect or the files do not have
+	  read permission for the user ID under which htsearch runs,
+	  then htsearch won't be able to display the results. Also,
+	  all directories leading up to these template files must be
+	  searchable (i.e. executable) by htsearch, or it won't be able
+	  to open the files. This is the opposite problem of that described
+	  in question <a href="#q5.36">5.36</a>. If htsearch displays
+	  nothing at all, you may have both problems.</p>
+
 	  <strong>5.12. <a name="q5.12">I can't seem to index documents with names
 	  like left_index.html with htdig.</a></strong><br>
 	  <p>There is a bug in the implementation of the <a
@@ -1235,14 +1812,17 @@ require group foo
 	  when running htsearch.</a></strong><br>
 	  <p>This happens when htsearch dies before putting out a
 	  "Content-Type" header. If you are running Apache under Solaris,
+	  or another system that may be using shared libraries in non-standard
+	  locations,
 	  first try the solution described in question <a href="#q3.6">3.6</a>.
 	  If that doesn't work, or you're running on another system, try
 	  running "htsearch -vvv" directly from the command line to see where
 	  and why it's failing. It should prompt you for the search words,
 	  as well as the format.
 	  <br>If it works from the command line, but not from the web
-	  server, it's almost certainly a web server configuration
-	  problem.  One increasingly common problem is Apache
+	  server, it's almost certainly a web server configuration problem.
+	  Check your web server's error log for any information related to
+	  htsearch's failure. One increasingly common problem is Apache
 	  configurations which expect all CGI scripts to be Perl,
 	  rather than binary executables or other scripts, so they use
 	  "perl-handler" rather than "cgi-handler".
@@ -1256,15 +1836,10 @@ require group foo
 	  If you're running htsearch or htfuzzy on a BSDI system, a common
 	  cause of core dumps is due to a conflict between the GNU regex
 	  code bundled in htdig 3.1.2 and later, and the BSD C or C++ library.
-	  The solution is to use the BSD library's own regex code instead,
-	  as summarized by Joe Jah:</p>
+	  The solution is to use the BSD library's own rx code instead,
+	  using version 3.1.6 or newer as summarized by Joe Jah:</p>
 		<ul>
-		<li> make clean
-		<li> Remove references to regex.o from htlib/Makefile.
-		<li> Remove htlib/regex.h.
-		<li> Remove references to htlib/regex.h in htfuzzy/Makefile,
-			which will be there if you have previously done a
-			"make depend".
+		<li> ./configure --with-rx
 		<li> make
 		</ul>
 	  <p>This solution may work on some other platforms as well (we haven't
@@ -1340,7 +1915,7 @@ require group foo
 	  <p>Another possibility, if you're running 3.2.0b1 or 3.2.0b2, is
 	  that you need to make the db.words.db_weakcmpr file writeable by
 	  the user ID under which the web server runs. This is a bug, and
-	  will be fixed in the next beta.</p>
+	  is fixed in the 3.2.0b4 beta snapshots.</p>
 
 
 	  <strong>5.18. <a name="q5.18">Why doesn't htdig follow links to other
@@ -1354,9 +1929,11 @@ require group foo
 	  <ul>
 	  <li>Add "backup" links using plain HTML &lt;a href=...&gt; tags to
 	  all the pages that could be accessed through JavaScript,
-	  <li>Add &lt;link&gt; tags to point to all these pages (requires
+	  <li>Add &lt;link&gt; tags to point to all these pages (see
+	  <a href="http://www.w3.org/TR/html4/struct/links.html#h-12.3.3">Links
+	  and search engines</a> in W3C's HTML 4.0 Specification - requires
 	  htdig 3.1.3 or greater, but then <em>everyone</em> should be running
-	  3.1.5 anyway),
+	  3.1.6 or greater anyway),
 	  <li>Compose a list of all the unreachable documents, or write
 	  a program to do so, and feed that list as part of htdig's
 	  <a href="attrs.html#start_url">start_url</a> attribute.
@@ -1390,7 +1967,9 @@ require group foo
 	  Since the 3.2 code indexes all locations of words to support
 	  phrase searching and other advanced methods, this additional
 	  data slows down the indexer. To compensate, the code has a
-	  cache configured by the wordlist_cache_size attribute.
+	  cache configured by the
+	  <a href="attrs.html#wordlist_cache_size">wordlist_cache_size</a>
+	  attribute.
 	  As of this writing, the word database code will slow down
 	  considerably when the cache fills up. Setting the cache as
 	  large as possible provides considerable performance
@@ -1408,7 +1987,22 @@ require group foo
 	  still uses the "&amp;". This change may cause some PHP or CGI
 	  wrapper scripts to stop working, but these scripts should be
 	  similarly changed to recognize both separator characters.
+	  For the definitive reference on this issue, please refer to
+	  section B.2.2 of W3C's HTML 4.0 Specification,
+	  <a href="http://www.w3.org/TR/html4/appendix/notes.html#h-B.2.2">
+	  Ampersands in URI attribute values</a>. We're all a little
+	  tired of arguing about it. If you don't like the standard, you
+	  can change the Display::createURL() code yourself to ignore it.
 	   <br>See also question <a href="#q4.13">4.13</a>.</p>
+
+	  <p>If you want to try working within the new standard, you may
+	  find it helpful to know that recent versions of CGI.pm will
+	  allow either the ampersand or semicolon as a parameter separator,
+	  which should fix any Perl scripts that use this library.
+	  In PHP, you can simply set the following in your php.ini file
+	  to allow either separator:</p>
+<pre>arg_separator.input = ";&amp;"
+</pre>
 
 	  <strong>5.22. <a name="q5.22">Why does htsearch show the
 	  "&amp;" character as "&amp;amp;" in search results?</a></strong><br>
@@ -1424,7 +2018,7 @@ require group foo
 
 	  <p>In the 3.2 betas there was a bug in the HTML parser that
 	  caused it to fail when attempting to translate the "&amp;amp;"
-	  entity. This will be fixed in 3.2.0b3. The translate_* attributes
+	  entity. This has been fixed in 3.2.0b3. The translate_* attributes
 	  are gone as of 3.2.0b2.</p>
 
 	  <strong>5.23. <a name="q5.23">I get Internal Server or Unrecognized
@@ -1436,7 +2030,8 @@ require group foo
 	  directory for non-Perl CGI scripts, and define it as such in
 	  your httpd.conf file. You should define it the same way as your
 	  existing cgi-bin directory, but use "cgi-handler" instead of
-	  "perl-handler".
+	  "perl-handler". In any case, you should check your web server's
+	  error log for any information related to htsearch's failure.
 	  <br>See also questions <a href="#q5.7">5.7</a>,
 	  <a href="#q5.14">5.14</a> and <a href="#q5.13">5.13</a>.</p>
 
@@ -1501,7 +2096,9 @@ find /path/to/your/document/root -type f -name \*.html -print | \
 	  robot exclusion) or by a robots meta tag (see question
 	  <a href="#q4.15">4.15</a>). If htdig seems to be missing the
 	  last part of a large directory or document, see question
-	  <a href="#q5.1">5.1</a>.</p>
+	  <a href="#q5.1">5.1</a>. For reasons why htdig may be rejecting
+	  some links to parts of your site, see question
+	  <a href="#q5.27">5.27</a>.</p>
 
 	  <strong>5.26. <a name="q5.26">What do all the numbers and symbols
 	  in the htdig -v output mean?</a></strong><br>
@@ -1563,7 +2160,7 @@ find /path/to/your/document/root -type f -name \*.html -print | \
 	   <dt>forbidden by server robots.txt!</dt>
 	   <dd>A substring of the URL matches one of the items disallowed
 		in the servers robots.txt file. See
-		<a href="http://info.webcrawler.com/mak/projects/robots/norobots.html">
+		<a href="http://www.robotstxt.org/wc/norobots.html">
 		A Standard for Robot Exclusion</a>. This message exists
 		only in the 3.2.0 betas. In 3.1.5 and earlier, this condition
 		is only caught later, resulting in the message
@@ -1578,10 +2175,290 @@ find /path/to/your/document/root -type f -name \*.html -print | \
 	  </dl>
 	  <p>See also question <a href="#q5.25">5.25</a>.</p>
 
+	  <strong>5.28. <a name="q5.28">When I run htdig or htmerge, I get a
+	  "DB2 problem...: missing or empty key value specified" message.</a></strong><br>
+	  <p>The most common cause of this error is that htdig or
+	  htmerge rejected any documents that had been put in the
+	  database, leaving an empty database. You need to find out the
+	  reasons for the rejection of these documents. See questions
+	  <a href="#q4.1">4.1</a>, <a href="#q5.25">5.25</a> and
+	  <a href="#q5.27">5.27</a>.</p>
+
+	  <strong>5.29. <a name="q5.29">When I run htdig on my site,
+	  it seems to go on and on without ending.</a></strong><br>
+	  <p>There are some things that can cause htdig to run on without
+	  ending, especially when indexing dynamic content (ASP, PHP,
+	  SSI or CGI pages). This usually involves htdig getting caught
+	  in an <em>infinite virtual hierarchy</em>. A sure sign of
+	  this is if the current size of your database is much larger
+	  than the total size of the site you are indexing, or if in the
+	  verbose output of htdig (see question <a href="#q4.1">4.1</a>)
+	  you see the same URLs come up again and again with only subtle
+	  variations. In any case, you must figure out the reason htdig
+	  keeps revisiting the same documents using different URLs, as
+	  explained in question <a href="#q4.24">4.24</a>, and set your
+	  <a href="attrs.html#exclude_urls">exclude_urls</a> and
+	  <a href="attrs.html#bad_querystr">bad_querystr</a> attributes
+	  appropriately to stop htdig from going down those paths.
+	  </p>
+
+	  <strong>5.30. <a name="q5.30">Why does htsearch no longer recognize
+	  the -c option when run from the web server?</a></strong><br>
+	  <p>This was a security hole in 3.1.5 and older, and 3.2.0b3 and
+	  older releases of ht://Dig. (See question <a href="#q2.1">2.1</a>.)
+	  There's a compile-time macro you can set in htsearch.cc to disable
+	  this security fix, but that's a bad idea because it reopens the hole.
+	  This should only be done as a last recourse, when all other avenues
+	  fail. The -c option was only intended for testing htsearch from the
+	  command line, and not for use when calling htsearch on the web server.
+	  Unfortunately, far too many users have needlessly latched onto this
+	  option for CGI scripts. The preferred ways of specifying the config
+	  file are as follows, in order of preference:</p>
+	  <ol>
+	  <li>use the "config" input parameter in your
+	  <a href="hts_form.html">search form</a>
+	  (see question <a href="#q4.2">4.2</a>).
+	  <li>if you need to get at files outside the default CONFIG_DIR, use a
+	  wrapper script that redefines the CONFIG_DIR environment variable,
+	  then use the config input parameter as above
+	  (see question <a href="#q4.20">4.20</a>).
+	  <li>use a wrapper script to force htsearch to use a specific config
+	  file using the -c option. This is especially for cases where you
+	  want to prevent the user from selecting other config files in your
+	  CONFIG_DIR using the config input parameter. This should
+	  be done by using the GET method to call the wrapper script, and in
+	  this script you must unset the REQUEST_METHOD enviroment variable
+	  and pass "$QUERY_STRING" as a single argument to htsearch.
+	  (This safely gets around htsearch's test which disables -c.)
+	  <li>configure and compile different htsearch binaries with different
+	  compile-time definitions of CONFIG_DIR, so you can avoid wrapper
+	  scripts altogether.
+	  <li>define ALLOW_INSECURE_CGI_CONFIG in htsearch.cc and recompile
+	  htsearch if all other approaches above fail for you.
+	  </ol>
+
+	  <strong>5.31. <a name="q5.31">I've set a config attribute exactly
+	  as documented but it seems to have no effect.</a></strong><br>
+	  <p>There are a few fairly common reasons why this might happen:</p>
+	  <ol>
+	  <li>You may have a typo. Spelling matters, so make sure the attribute
+	  name is spelled exactly as it is in the
+	  <a href="attrs.html">documentation</a>. Misspelled attribute
+	  definitions are silently ignored. This is because you're allowed
+	  to make up your own attribute definitions for use by other attribute
+	  definitions, as <strong>${myownattribute}</strong>. Also remember
+	  to put the colon ("<strong>:</strong>") separator between the
+	  attribute name and value in your definition.
+	  <li>The attribute isn't supported in your version of the software.
+	  The <a href="attrs.html">documented configuration attributes</a>
+	  on the www.htdig.org web site are for the most recent
+	  <strong>stable</strong> release. See questions
+	  <a href="#q2.1">2.1</a> and <a href="#q2.7">2.7</a> for details.
+	  If you're running an older version, or even a more recent beta
+	  release, you may not have the same set of attributes to work with.
+	  Consult the appropriate documentation, or upgrade to the current
+	  release.
+	  <li>You're not modifying the right configuration file. The default
+	  configuration file is specified when you first configure ht://Dig
+	  before compiling, but other configuration files can be specified
+	  at run time, using the -c command-line option for most programs,
+	  or the <strong>config</strong> input parameter for htsearch
+	  (see question <a href="#q4.2">4.2</a>).
+	  <li>You've got more than one definition of the attribute. Only the
+	  last occurrence of an attribute in the configuration file is the
+	  definition that's used for that attribute, overriding earlier
+	  definitions. This also applies for nested configuration files that
+	  are loaded in via the <a href="attrs.html#include">include</a>
+	  directive, so check for other definitions in all included files.
+	  Similarly for htsearch, look out for multiple definitions of input
+	  parameters in your search forms, as mentioned in question
+	  <a href="#q4.2">4.2</a> - these don't override each other but they
+	  get combined with a Ctrl-A as separator, which may not be what you
+	  want either.
+	  <li>Your attribute definition is being "swallowed up" by an
+	  incomplete multi-line definition above it. Remember that when a line
+	  of an attribute definition ends with a single backslash
+	  ("<strong>\</strong>") before the end of the line (without any
+	  space after the backslash), then the following line is appended to
+	  it as a continuation of the same attribute definition. For an
+	  attribute definition that spans several lines, all lines but the
+	  last must end with a backslash. If you want a backslash to go into
+	  the attribute definition literally, it must be doubled-up, as
+	  <strong>\\</strong>.
+	  <li>On a similar note, make sure your attribute definitions are all
+	  terminated by a newline character. Beware of text editors that do
+	  word wrapping. It may look like two separate lines on the screen,
+	  when it fact you've got two attribute definitions on the same long
+	  line, so the second is swallowed up as part of the first.
+	  <li>Your attribute definition is being overridden by an htsearch
+	  <a href="hts_form.html">CGI input parameter</a>. For example,
+	  <a href="attrs.html#template_name">template_name</a> is ignored
+	  if the <strong>format</strong> input parameter is defined. The
+	  <a href="attrs.html#allow_in_form">allow_in_form</a> attribute
+	  can define any number of new CGI input parameters that override
+	  the attributes of the same name in your config file.
+	  <li>Your attribute definition is being ignored or overridden
+	  by a related attribute.  Watch out for unexpected interactions
+	  between different attributes.  For instance, characters in
+	  <a href="attrs.html#valid_punctuation">valid_punctuation</a>
+	  are stripped out of words, so those characters may
+	  not have the effect you want if you've added them to
+	  <a href="attrs.html#extra_word_characters">extra_word_characters</a>
+	  or
+	  <a href="attrs.html#prefix_match_character">prefix_match_character</a>.
+	  Also,
+	  <a href="attrs.html#search_results_wrapper">search_results_wrapper</a>
+	  will override
+	  <a href="attrs.html#search_results_header">search_results_header</a>
+	  and
+	  <a href="attrs.html#search_results_footer">search_results_footer</a>,
+	  but only if you've set up the wrapper file correctly.
+	  <li>Watch out for possible "latent effects" of some attributes. For
+	  example, when you change attributes used by htdig, they won't have
+	  an immediate effect on entries already in the database, so you would
+	  have to reindex your site before they take effect. Similarly,
+	  attributes that affect how htfuzzy builds some of its databases
+	  don't take effect until those databases are rebuilt. Another, more
+	  subtle latent effect occurs with releases 3.1.6 and 3.2 betas:
+	  when you interrupt htdig (i.e. with Control-C or a kill command),
+	  it stores the list of currently queued URLs in db.log, in your
+	  database directory, so that the next time you invoke htdig it can
+	  resume the interrupted dig. A side-effect of this file is that if
+	  you change some attributes like limit_urls_to or exclude_urls before
+	  restarting, the URLs in the file are still taken as-is, having been
+	  checked against the old settings of limit_urls_to or exclude_urls
+	  before being queued. This might explain one reason htdig seems to
+	  ignore your new settings of these.
+	  </ol>
+
+	  <strong>5.32. <a name="q5.32">When I run htsearch, it gives a page
+	  with an "Unable to read configuration file" message.</a></strong><br>
+	  <p>The most common causes of this error are:</p>
+	  <ul>
+	  <li>Your configuration file name is misspelled in the "config"
+	  input parameter of your search form, or you have two definitions
+	  of this parameter (see question <a href="#q4.2">4.2</a>).
+	  <li>You didn't install your configuration file in the directory
+	  defined by the CONFIG_DIR compile-time Makefile variable
+	  (see also question <a href="#q4.20">4.20</a>). This is where
+	  htsearch will look for the configuration file specified by the
+	  "config" input parameter.
+	  <li>The configuration file is not readable by the user ID under
+	  which your web server, and thus htsearch, runs. Similarly,
+	  if the directories from CONFIG_DIR up to the root directory
+	  are not executable by this same user ID, htsearch won't be
+	  able to access the configuration files.
+	  </ul>
+
+	  <strong>5.33. <a name="q5.33">How can I find out which version
+	  of ht://Dig I have installed?</a></strong><br>
+	  <p>You should always check which version of ht://Dig you're
+	  running, before you report any problems, or even if you
+	  suspect a problem. You can find out the version number of an
+	  installed ht://Dig package by running the command:</p>
+	  <blockquote>
+		<code>htdig -\? | head</code>
+	  </blockquote>
+	  <p>(or use "more" if you don't have a "head" command). The
+	  full version number appears on the third line of output,
+	  after "This program is part of ht://Dig", and it should also
+	  include the snapshot date if you're running a pre-release
+	  snapshot. Always include this full version number with any
+	  bug report or problem report on a mailing list. You can save
+	  yourself and others a lot of grief by being certain of which
+	  version you're running, especially if you've installed more than
+	  one. If you're running ht://Dig from an RPM package, you should
+	  also report the package version and release number, which you
+	  can determine with the command "<code>rpm -q htdig</code>",
+	  and mention where you obtained the package. This will alert
+	  us to the ideosyncracies and/or patches in a particular RPM
+	  package. Also, if you've applied any patches yourself (see
+	  question <a href="#q2.5">2.5</a>) please mention which ones.
+	  See also question <a href="#q1.8">1.8</a>, on reporting bugs
+	  or configuration problems.</p>
+
+	  <strong>5.34. <a name="q5.34">When running htdig, I get "Error (0):
+	  PDF file is damaged - attempting to reconstruct xref table..."</a></strong><br>
+	  <p>This message comes from the pdftotext utility, when a PDF file
+	  has been truncated. Find the largest PDF file on the site you're
+	  indexing, and set max_doc_size to at least that size (see question
+	  <a href="#q5.2">5.2</a>). If you need to track down which PDF is
+	  causing the error, try running "htdig -i -v &gt; log.txt 2&gt;&amp;1" so you
+	  can see which URL is being indexed when the error occurs. The output
+	  redirects in that command combine stdout (where htdig's output goes)
+	  and stderr (where pdftotext's error messages go) into one output
+	  stream. If you're using acroread to index PDF files, the error
+	  message for a truncated PDF file is simply "Could not repair file."
+	  It's also possible to get errors like this from PDF files that are
+	  smaller than max_doc_size, if they're already truncated or corrupted
+	  on the server.</p>
+
+	  <strong>5.35. <a name="q5.35">When running htdig on Mandrake Linux,
+	  I get "host not found" and "no server running" errors.</a></strong><br>
+	  <p>The default htdig.conf configuration in Mandrake's RPM package
+	  of htdig very stupidly enables the
+	  <a href="attrs.html#local_urls_only">local_urls_only</a> attribute
+	  by default, which means you can only index a limited set of files
+	  on the local server. Anything else, where htdig would normally fall
+	  back to using HTTP, will fail. To make matters worse, they put a very
+	  misleading comment above that attribute setting, which throws users
+	  off track. This attribute is useful in certain circumstances where
+	  you never want htdig to fall back to HTTP, but enabling it by default
+	  was a very bad judgement call on Mandrake's part.</p>
+
+	  <strong>5.36. <a name="q5.36">When I run htsearch, it gives me the
+	  list of matching documents, but no header or footer.</a></strong><br>
+	  <p>The header and footer typically contain the followup search
+	  form, an indication of the total number of matches, and buttons
+	  to other pages of matches if the results don't fit on one
+	  page. If these don't show up, it could be that in attempting
+	  to customize these (see question <a href="#q4.2">4.2</a>),
+	  you removed them or rendered them unusable. Even if you didn't
+	  customize them, make sure you installed the
+	  <a href="attrs.html#search_results_header">search_results_header</a>
+	  and
+	  <a href="attrs.html#search_results_footer">search_results_footer</a>
+	  files (or the
+	  <a href="attrs.html#search_results_wrapper">search_results_wrapper</a>
+	  file) in the correct location (where you told ht://Dig they'd be
+	  when you configured prior to compiling). Also make sure they
+	  have read permission for the user ID under which htsearch runs,
+	  and all directories leading up to these template files are
+	  searchable (i.e. executable) by htsearch, or it won't be able
+	  to open the files.</p>
+
+	  <p>This is the opposite problem of that described in question
+	  <a href="#q5.11">5.11</a>. If htsearch displays nothing at
+	  all, you may have both problems or you may have no matches or
+	  a boolean query syntax error and the
+	  <a href="attrs.html#nothing_found_file">nothing_found_file</a>
+	  or <a href="attrs.html#syntax_error_file">syntax_error_file</a>
+	  is missing or unreadable.</p>
+
+	  <strong>5.37. <a name="q5.37">When I index files with doc2html.pl,
+	  it fails with the "UNABLE to convert" error.</a></strong><br>
+	  <p>This is an indication that doc2html.pl wasn't configured
+	  properly. Carefully follow all the directions for installation
+	  in the DETAILS file that comes with the script. In addition to
+	  installing doc2html.pl, you must:</p>
+	  <ul>
+	  <li>Install xpdf and check that pdftotext and pdfinfo work from
+	   the command line,
+	  <li>Configure pdf2html.pl to use pdftotext and pdfinfo and check
+	   that it works from the command line,
+	  <li>Configure doc2html.pl to use pdf2html.pl and check that it
+	   works from the command line:
+<pre>doc2html.pl /full/path/to/sample/filename.pdf "application/pdf" url</pre>
+	  </ul>
+	  <p>You should repeat a similar set of steps to configure and test
+	  doc2html.pl for other document types, such as Word, RTF, Excel and
+	  other document types. See also questions <a href="#q4.8">4.8</a>
+	  and <a href="#q4.9">4.9</a>.</p>
+
 	  <br>
 
 	  <hr noshade size=4>
-	  	Last modified: $Date: 2002/12/30 12:42:58 $
+	  	Last modified: $Date: 2003/06/09 06:00:29 $
 <br> 
     <a href="http://sourceforge.net/"> 
           <img src="http://sourceforge.net/sflogo.php?group_id=4593&amp;type=1" width="88" height="31" border="0" alt="SourceForge Logo"></a>

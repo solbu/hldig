@@ -1,3 +1,12 @@
+Mon Jun 9 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+	
+	* test/test_functions.in: avoid trying killing apache multiple times
+
+	* configure,configure.in: Reformat --help  output
+	* htdoc/FAQ.html: Brought up-to-date with main docs
+	* htdoc/hts_templates.html: added hyperlinks.
+	* installdir/search.html: Display version
+
 Sun Jun 8 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* configure:  Hack to set --disable-bigfile for Solaris (with Sun cc)
