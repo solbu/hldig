@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.23  1998/12/06 18:44:00  ghutchis
+// Don't add the text of descriptions to the word db here, it's better to do it
+// in the DocumentRef itself.
+//
 // Revision 1.22  1998/12/05 00:52:55  ghutchis
 //
 // Added a parameter to Initial function to prevent URLs from being checked
@@ -127,7 +131,7 @@ Retriever::Retriever()
     factor[6] = config.Double("heading_factor_5");
     factor[7] = config.Double("heading_factor_6");
     factor[8] = 0;
-    factor[9] = config.Double("description_factor");
+    factor[9] = 0;
     factor[10] = config.Double("keywords_factor");
     factor[11] = config.Double("meta_description_factor");
 	
@@ -164,7 +168,7 @@ Retriever::setUsernamePassword(char *credentials)
 
 
 //*****************************************************************************
-// void Retriever::Initial(char *list)
+// void Retriever::Initial(char *list, int check)
 //   Add a single URL to the list of URLs to visit.
 //   Since URLs are stored on a per server basis, we first need to find the
 //   the correct server to add the URL's path to.
@@ -203,16 +207,16 @@ Retriever::Initial(char *list, int check)
 
 
 //*****************************************************************************
-// void Retriever::Initial(List &list)
+// void Retriever::Initial(List &list, int check)
 //
 void
-Retriever::Initial(List &list,int check)
+Retriever::Initial(List &list, int check)
 {
     list.Start_Get();
     String	*str;
     while ((str = (String *) list.Get_Next()))
     {
-	Initial(str->get(),check);
+	Initial(str->get(), check);
     }
 }
 
@@ -255,7 +259,7 @@ Retriever::Start()
 	    server = (Server *) servers[server_sig];
 	    ref = server->pop();
 	    if (!ref)
-		continue;				// Nothing on this server
+		continue;		      // Nothing on this server
 			
 	    //
 	    // We have a URL to index, now.  We need to register the
@@ -901,33 +905,6 @@ Retriever::got_href(URL &url, char *description)
 	    ref->DocURL(url.get());
 	    ref->AddDescription(description);
 
-	    // Add the description text to the word database with proper factor
-	    // Make sure we save the old DocID of the word DB and init for the
-	    // description. Also save the current_anchor_number
-	    char    *w = strtok(description, " ,\t\r\n");
-	    int    old_id = current_id;
-	    int    old_anchor = current_anchor_number;
-	    words.DocumentID(ref->DocID());
-	    current_anchor_number = 0;
-	    while (w)
-	      {
-		if (strlen(w) >= config.Value("minimum_word_length", 3))
-		  {
-		    String word = w;
-		    word.lowercase();
-		    word.remove(valid_punctuation);
-		    if (word.length() >= minimumWordLength)
-		      this->got_word(word, 0, 9); //description factor
-		  }
-		w = strtok(0, " ,\t\r\n");
-	      }
-	    w = '\0';
-	    // And let's flush the words!
-	    //	    words.Flush();
-	    // Now clean up by resetting words.DocID and current_anchor_num
-	    words.DocumentID(old_id);
-	    current_anchor_number = old_anchor;
-
 	    if (ref->DocHopCount() < currenthopcount + 1)
 	       // If we had taken the path through this ref
 	       // We'd be here faster than currenthopcount
@@ -952,7 +929,11 @@ Retriever::got_href(URL &url, char *description)
 		    server = new Server(url.host(), url.port());
 		    servers.Add(sig, server);
 		}
-		server->push(url.get(), ref->DocHopCount(), base->get());
+		//
+		// Let's just be sure we're not pushing an empty URL
+		//
+		if (strlen(url.get()))
+		  server->push(url.get(), ref->DocHopCount(), base->get());
 
 		String	temp = url.get();
 		temp.lowercase();
