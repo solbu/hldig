@@ -16,7 +16,11 @@ static const char sccsid[] = "@(#)mp_stat.c	11.4 (Sleepycat) 9/18/99";
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
+
 #endif
 
 #include "db_int.h"
