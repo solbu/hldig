@@ -1,3 +1,9 @@
+Wed Dec  1 17:23:24 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc(parse_url), htdig/Server.h: add IsDead() methods
+	to query and set server status, use them in Retriever to avoid repeated
+	HTTP request to a dead server. (Needed for persistent local stuff.)
+
 Wed Dec  1 16:56:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc(GetLocal): Fix error in GetLocalUser() return

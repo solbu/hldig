@@ -3,7 +3,7 @@
 //
 // A class to keep track of server specific information.
 //
-// $Id: Server.h,v 1.3.2.1 1999/11/30 02:52:36 grdetil Exp $
+// $Id: Server.h,v 1.3.2.2 1999/12/01 23:40:04 grdetil Exp $
 //
 //
 #ifndef _Server_h_
@@ -39,6 +39,12 @@ public:
 	//
 	int			port()	{return _port;}
 	char			*host()	{return _host;}
+
+	//
+	// Provide some way of getting at the status of this server
+	//
+	int			IsDead()		{return _bad_server;}
+	void			IsDead(int flag)	{_bad_server = flag;}
 	
 	//
 	// Add a path to the queue for this server.  This will check to

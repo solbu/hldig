@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.14 1999/12/01 23:15:48 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.15 1999/12/01 23:40:04 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -395,6 +395,7 @@ Retriever::parse_url(URLRef &urlRef)
 
     // Retrive document, first trying local file access if possible.
     Document::DocStatus status;
+    Server *server = (Server *) servers[u.signature()];
     String *local_filename = GetLocal(url.get());
     if (local_filename)
     {  
@@ -405,12 +406,18 @@ Retriever::parse_url(URLRef &urlRef)
         {
             if (debug > 1)
    	        cout << "Local retrieval failed, trying HTTP" << endl;
-            status = doc->RetrieveHTTP(date);
+            if (server && !server->IsDead()
+			&& !config.Boolean("local_urls_only"))
+		status = doc->RetrieveHTTP(date);
+	    else
+		status = Document::Document_no_server;
         }
         delete local_filename;
     }
-    else
+    else if (server && !server->IsDead())
         status = doc->RetrieveHTTP(date);
+    else
+	status = Document::Document_no_server;
 
     current_ref = ref;
 	
@@ -488,6 +495,8 @@ Retriever::parse_url(URLRef &urlRef)
 			   urlRef.Referer(),
 			   Document::Document_no_host);
 	    words.MarkGone();
+	    if (server)
+		server->IsDead(1);
 	    break;
 
 	case Document::Document_no_server:
@@ -498,6 +507,8 @@ Retriever::parse_url(URLRef &urlRef)
 			   urlRef.Referer(),
 			   Document::Document_no_server);
 	    words.MarkGone();
+	    if (server)
+		server->IsDead(1);
 	    break;
 
 	case Document::Document_not_html:
