@@ -1,3 +1,8 @@
+Mon Mar 22 19:03:23 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html: Rephrase and clarify entry for url_part_aliases.
+	(From Hans-Peter Nilsson, Mar 2)
+
 Mon Mar 22 18:48:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htfuzzy/Synonym.cc: Fix minor memory leak.
