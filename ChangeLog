@@ -1,3 +1,20 @@
+Thu Jan 13 18:58:03 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htnet/HtFile.h, htnet/HtFile.cc: New Transport classes
+	contributed by Alexis Mikhailov to allow file:// access.
+
+	* htdig/Document.h, htdig/Document.cc: Add logic to call HtFile
+	objects for URLs.
+
+	* htcommon/URL.cc: Don't remove a trailing index.html (removeIndex)
+	if the URL is a file://URL.
+
+Thu Jan 13 18:49:41 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* contrib/conv_doc.pl, contrib/parse_doc.pl: Replace "break" by
+	"last" for correct Perl syntax and additional cleanups and
+	simplifications as contributed by Warren Jones.
+
 Thu Jan 13 18:42:29 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htword/WordType.h, htword/WordType.cc: Implementation of new
