@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.10 1999/09/01 20:40:01 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.11 1999/11/24 02:06:47 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -1114,7 +1114,15 @@ HTML::transSGML(char *str)
     while (*text)
     {
 	if (*text == '&')
-	    convert << SGMLEntities::translateAndUpdate(text);
+	{
+	    if (strncmp((char *)text, "&amp;", 5) == 0) 
+	    {
+		// We MUST convert these in URLs, regardless of translate_amp.
+		convert << '&';
+		text += 5;
+	    } else
+		convert << SGMLEntities::translateAndUpdate(text);
+	}
 	else
 	    convert << *text++;
     }

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: SGMLEntities.cc,v 1.10 1999/01/28 05:20:19 ghutchis Exp $";
+static char RCSid[] = "$Id: SGMLEntities.cc,v 1.10.2.1 1999/11/24 02:06:47 grdetil Exp $";
 #endif
 
 #include "SGMLEntities.h"
@@ -280,5 +280,11 @@ SGMLEntities::translateAndUpdate(unsigned char *&entityStart)
     
     if (*entityStart == ';')
 	entityStart++;		// A final ';' is used up.
-    return translate(entity);
+    unsigned char e = translate(entity);
+    if (e == ' ' && strncmp((char *)orig, "&#32", 4) != 0)
+    {
+	entityStart = orig + 1;	// Catch unrecognized entities...
+	return '&';
+    }
+    return e;
 }
