@@ -1,3 +1,7 @@
+Wed Jun 16 16:04:07 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* Makefile.config.in: fix typo in name IMAGE_URL_PREFIX.
+
 Wed Jun 16 16:01:07 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc(IsValidURL): change handling of valids to only

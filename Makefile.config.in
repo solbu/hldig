@@ -36,7 +36,7 @@ CGIBIN_DIR=		@CGIBIN_DIR@
 IMAGE_DIR=		@IMAGE_DIR@
 
 # This is the URL to prefix the images placed in IMAGE_DIR.
-IMAGE_URL_PREFI=	@IMAGE_URL_PREFIX@
+IMAGE_URL_PREFIX=	@IMAGE_URL_PREFIX@
 
 # Set this to the absolute path where you want the sample search form to
 # be installed.
