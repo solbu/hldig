@@ -1,3 +1,9 @@
+Fri Oct 15 12:48:49 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* htdig/Server: added a flag for persistent connections.
+	  It's set to true if the Server allows persistent connections.
+	  It should be used when retrieving a document.
+
 Fri Oct 15 12:45:42 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* defaults.cc: added the configuration attributes 'persistent_connections',

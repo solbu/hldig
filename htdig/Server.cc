@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.1 1999/10/13 11:55:21 angus Exp $
+// $Id: Server.cc,v 1.17.2.2 1999/10/15 10:53:58 angus Exp $
 //
 
 #include "htdig.h"
@@ -40,6 +40,9 @@ Server::Server(char *host, int port)
     _port = port;
     _bad_server = 0;
     _documents = 0;
+    
+   _persistent_connections = 1;  // Allowed by default
+
     if (!config.Boolean("case_sensitive"))
       _disallow.IgnoreCase();
     _max_documents = config.Value("server_max_docs", -1);

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.h,v 1.9.2.1 1999/10/13 11:55:21 angus Exp $
+// $Id: Server.h,v 1.9.2.2 1999/10/15 10:53:58 angus Exp $
 //
 
 #ifndef _Server_h_
@@ -69,6 +69,12 @@ public:
 	// Produce statistics for this server.
 	//
 	void			reportStatistics(String &out, char *name);
+
+        // Methods for managing persistent connections
+        void AllowPersistentConnection() { _persistent_connections = 1; }
+        void AvoidPersistentConnection() { _persistent_connections = 0; }
+        int IsPersistentConnectionAllowed () { return _persistent_connections; }
+
 	
 private:
 	String			_host;
@@ -80,6 +86,9 @@ private:
 	StringMatch		_disallow;	// This pattern will be used to test paths
 	int		        _documents;	// Number of documents visited
 	int                     _max_documents;  // Maximum number of documents from this server
+        int                     _persistent_connections; // Are pcs allowed
+
+        
 };
 
 #endif
