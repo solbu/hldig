@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.28.2.5 2000/03/28 01:45:51 ghutchis Exp $
+// $Id: DocumentDB.cc,v 1.28.2.6 2000/04/09 15:20:38 ghutchis Exp $
 //
 
 #include "DocumentDB.h"
@@ -29,7 +29,6 @@
 #include <iostream.h>
 #include <fstream.h>
 #include <errno.h>
-
 
 //*****************************************************************************
 // DocumentDB::DocumentDB()
@@ -344,14 +343,14 @@ int DocumentDB::Delete(int docID)
 }
 
 //*****************************************************************************
-// int DocumentDB::DumpDB(char *filename)
+// int DocumentDB::DumpDB(char *filename, int verbose)
 //   Create an extract from our database which can be used by an
 //   external application. The extract will consist of lines with fields
 //   separated by tabs. 
 //
-//   The extract will be sorted by docID.
+//   The extract will likely not be sorted by anything in particular
 //
-int DocumentDB::DumpDB(const String& filename)
+int DocumentDB::DumpDB(const String& filename, int verbose)
 {
     DocumentRef	        *ref;
     List		*descriptions, *anchors;
@@ -361,7 +360,8 @@ int DocumentDB::DumpDB(const String& filename)
     String		docKey(sizeof(int));
 
     if((fl = fopen(filename, "w")) == 0) {
-      perror(form("DocumentDB::DumpDB: opening %s for writing", (const char*)filename));
+      perror(form("DocumentDB::DumpDB: opening %s for writing",
+		  (const char*)filename));
       return NOTOK;
     }
 
@@ -391,10 +391,16 @@ int DocumentDB::DumpDB(const String& filename)
 	    fprintf(fl, "\ta:%d", ref->DocState());
 	    fprintf(fl, "\tm:%d", (int) ref->DocTime());
 	    fprintf(fl, "\ts:%d", ref->DocSize());
-	    fprintf(fl, "\th:%s", ref->DocHead());
+	    fprintf(fl, "\tH:%s", ref->DocHead());
 	    fprintf(fl, "\th:%s", ref->DocMetaDsc());
 	    fprintf(fl, "\tl:%d", (int) ref->DocAccessed());
 	    fprintf(fl, "\tL:%d", ref->DocLinks());
+	    fprintf(fl, "\tb:%d", ref->DocBackLinks());
+	    fprintf(fl, "\tc:%d", ref->DocHopCount());
+	    fprintf(fl, "\tg:%d", ref->DocSig());
+	    fprintf(fl, "\te:%s", ref->DocEmail());
+	    fprintf(fl, "\tn:%s", ref->DocNotification());
+	    fprintf(fl, "\tS:%s", ref->DocSubject());
 	    fprintf(fl, "\td:");
 	    descriptions = ref->Descriptions();
 	    String	*description;
@@ -429,6 +435,128 @@ int DocumentDB::DumpDB(const String& filename)
     return OK;
 }
 
+//*****************************************************************************
+// int DocumentDB::LoadDB(const String &filename, int verbose)
+//   Load an extract to our database from an ASCII file
+//   The extract will consist of lines with fields separated by tabs. 
+//   The lines need not be sorted in any fashion.
+//
+int DocumentDB::LoadDB(const String& filename, int verbose)
+{
+    FILE	*input;
+    String	docKey(sizeof(int));
+    DocumentRef ref;
+    StringList	descriptions, anchors;
+    char	*token, field;
+    String	data;
+    char	*line;
+
+    if((input = fopen(filename, "r")) == 0) {
+      perror(form("DocumentDB::LoadDB: opening %s for reading", 
+		  (const char*)filename));
+      return NOTOK;
+    }
+
+    while (data.readLine(input))
+    {
+	token = strtok(data, "\t");
+	if (token == NULL)
+	  continue;
+
+	ref.DocID(atoi(token));
+	
+	if (verbose)
+	  cout << "\t loading document ID: " << ref.DocID() << endl;
+
+	while ( (token = strtok(0, "\t")) )
+	  {
+	    field = *token;
+	    token += 2;
+
+	    if (verbose > 2)
+		cout << "\t field: " << field;
+
+	    switch(field)
+	      {
+	        case 'u': // URL
+		  ref.DocURL(token);
+		  break;
+	        case 't': // Title
+		  ref.DocTitle(token);
+		  break;
+	        case 'a': // State
+		  ref.DocState(atoi(token));
+		  break;
+	        case 'm': // Modified
+		  ref.DocTime(atoi(token));
+		  break;
+	        case 's': // Size
+		  ref.DocSize(atoi(token));
+		  break;
+	        case 'H': // Head
+		  ref.DocHead(token);
+		  break;
+	        case 'h': // Meta Description
+		  ref.DocMetaDsc(token);
+		  break;
+	        case 'l': // Accessed
+		  ref.DocAccessed(atoi(token));
+		  break;
+	        case 'L': // Links
+		  ref.DocLinks(atoi(token));
+		  break;
+	        case 'b': // BackLinks
+		  ref.DocBackLinks(atoi(token));
+		  break;
+	        case 'c': // HopCount
+		  ref.DocHopCount(atoi(token));
+		  break;
+	        case 'g': // Signature
+		  ref.DocSig(atoi(token));
+		  break;
+	        case 'e': // E-mail
+		  ref.DocEmail(token);
+		  break;
+	        case 'n': // Notification
+		  ref.DocNotification(token);
+		  break;
+	        case 'S': // Subject
+		  ref.DocSubject(token);
+		  break;
+	        case 'd': // Descriptions
+		  descriptions.Create(token, '\001');
+		  ref.Descriptions(descriptions);
+		  break;
+	        case 'A': // Anchors
+		  anchors.Create(token, '\001');
+		  ref.DocAnchors(anchors);
+		  break;
+	        default:
+		  break;
+	      }
+
+	  }
+	
+
+	// We must be careful if the document already exists
+	// So we'll delete the old document and add the new one
+	if (Exists(ref.DocID()))
+	  {
+	    Delete(ref.DocID());
+	  }
+	Add(ref);
+
+	// If we add a record with an ID past nextDocID, update it
+	if (ref.DocID() > nextDocID)
+	  nextDocID = ref.DocID() + 1;
+
+	descriptions.Destroy();
+	anchors.Destroy();
+    }
+
+    fclose(input);
+    return OK;
+}
 
 //*****************************************************************************
 // List *DocumentDB::URLs()
@@ -474,5 +602,38 @@ List *DocumentDB::DocIDs()
     return list;
 }
 
+//*****************************************************************************
+// private
+// int readLine(FILE *in, String &line)
+//
+int readLine(FILE *in, String &line)
+{
+    char	buffer[2048];
+    int		length;
+    
+    line = 0;
+    while (fgets(buffer, sizeof(buffer), in))
+    {
+	length = strlen(buffer);
+	if (buffer[length - 1] == '\n')
+	{
+	    //
+	    // A full line has been read.  Return it.
+	    //
+	    line << buffer;
+	    line.chop('\n');
+	    return 1;
+	}
+	else
+	{
+	    //
+	    // Only a partial line was read.  Append it to the line
+	    // and read some more.
+	    //
+	    line << buffer;
+	}
+    }
+    return line.length() > 0;
+}
 
 // End of DocumentDB.cc
