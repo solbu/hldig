@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.33 2000/08/30 08:10:22 angus Exp $
+// $Id: Retriever.cc,v 1.72.2.34 2000/09/01 06:25:38 toivo Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -574,7 +574,7 @@ Retriever::parse_url(URLRef &urlRef)
     String shash;
     String sx;
     char bhash[16];
-    time_t ddate = doc->ModTime();
+    time_t ddate;
 
     switch (status)
     {
@@ -584,9 +584,14 @@ Retriever::parse_url(URLRef &urlRef)
 
 	    if (check_unique_md5) {
 	      if (doc->Length() > 0) {
-		if (check_unique_date)
-		  md5(bhash, doc->Contents(),doc->Length(),&ddate,debug);
-		else
+		if (check_unique_date) {
+		  ddate = doc->ModTime();
+		  if (ddate < time(NULL) - 10) { // Unknown date was set to current time
+		     md5(bhash, doc->Contents(),doc->Length(),&ddate,debug);
+		   } else {
+		     md5(bhash, doc->Contents(),doc->Length(),0,debug);
+		   }
+		} else
 		  md5(bhash, doc->Contents(),doc->Length(),0,debug);
 
 		shash.append(bhash,MD5_LENGTH);
