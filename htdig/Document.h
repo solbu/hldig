@@ -9,9 +9,13 @@
 // link is followed, but this process is done only once (to prevent loops.)
 // If the redirect didn't work, Document_not_found is returned.
 //
-// $Id: Document.h,v 1.4 1998/07/09 09:38:58 ghutchis Exp $
+// $Id: Document.h,v 1.5 1998/12/04 04:14:50 ghutchis Exp $
 //
 // $Log: Document.h,v $
+// Revision 1.5  1998/12/04 04:14:50  ghutchis
+//
+// Use new option "http_proxy_exclude" to decide whether to use the proxy.
+//
 // Revision 1.4  1998/07/09 09:38:58  ghutchis
 //
 //
@@ -132,6 +136,7 @@ private:
 
     int				readHeader(Connection &);
     time_t			getdate(char *datestring);
+    int				UseProxy();
 };
 
 #endif

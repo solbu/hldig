@@ -4,6 +4,10 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.26  1998/12/04 04:14:50  ghutchis
+//
+// Use new option "http_proxy_exclude" to decide whether to use the proxy.
+//
 // Revision 1.25  1998/11/30 02:28:50  ghutchis
 //
 // Fix mistake in last update so the code compiles.
@@ -101,7 +105,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.25 1998/11/30 02:28:50 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.26 1998/12/04 04:14:50 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -333,6 +337,43 @@ Document::getdate(char *datestring)
 
 
 //*****************************************************************************
+// int Document::UseProxy()
+//   Returns 1 if the given url is to be retrieved from the proxy server,
+//   or 0 if it's not.
+//
+int
+Document::UseProxy()
+{
+    static StringMatch *excludeproxy = 0;
+
+    //
+    // Initialize excludeproxy list if this is the first time.
+    //
+    if (!excludeproxy)
+    {
+    	excludeproxy = new StringMatch();
+
+	String t = config["http_proxy_exclude"];
+	String pattern;
+	char *p = strtok(t, " \t");
+	while (p)	
+	{
+	    if (pattern.length())
+		pattern << '|';
+	    pattern << p;
+	    p = strtok(0, " \t");
+	}
+	excludeproxy->IgnoreCase();
+	excludeproxy->Pattern(pattern);
+    }
+
+    if (proxy && excludeproxy->FindFirst(url->get()) < 0)
+	return 1;
+    return 0;
+}
+
+
+//*****************************************************************************
 // DocStatus Document::RetrieveHTTP(time_t date)
 //   Attempt to retrieve the document pointed to by our internal URL
 //
@@ -343,7 +384,8 @@ Document::RetrieveHTTP(time_t date)
     if (c.open() == NOTOK)
 	return Document_not_found;
 
-    if (proxy)
+    int		useproxy = UseProxy();
+    if (useproxy)
     {
 	if (c.assign_port(proxy->port()) == NOTOK)
 	    return Document_not_found;
@@ -363,6 +405,10 @@ Document::RetrieveHTTP(time_t date)
 	if (debug > 1)
 	{
 	    cout << "Unable to build connection with " << url->host() << ':' << url->port() << endl;
+	    if (useproxy)
+	    {
+		cout << "(Via proxy " << proxy->host() << ':' << proxy->port() << ')' << endl;
+	    }
 	}
 	return Document_no_server;
     }
@@ -372,7 +418,7 @@ Document::RetrieveHTTP(time_t date)
     //
     String        command = "GET ";
 
-    if (proxy)
+    if (useproxy)
     {
 	command << url->get() << " HTTP/1.0\r\n";
     }
