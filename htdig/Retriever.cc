@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.25 2001/09/27 22:02:10 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.26 2001/10/23 19:09:50 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -572,7 +572,13 @@ Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
     // This will generate the Parsable object as a specific parser
     //
     Parsable	*parsable = doc.getParsable();
-    parsable->parse(*this, *base);
+    if (parsable)
+      parsable->parse(*this, *base);
+    else
+      { // If we didn't get a parser, then we should get rid of this!
+	ref->DocState(Reference_noindex);
+	return;
+      }
 
     //
     // We don't need to dispose of the parsable object since it will
