@@ -1,4 +1,9 @@
-Sun Oct 26 12:42:27 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Sun Oct 26 2003  Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htdoc/hts_templates.html: Clarify that PREV/NEXTPAGE template variables
+      are empty if there is only one page, ignoring no_{prev,next}_page_text.
+
+Sun Oct 26 2003  Lachlan Andrew <lha@users.sourceforge.net>
 
     * htcommon/defaults.cc: Fixed documentation to close bug #829767
       Clarified that noindex_start/end do not get replaced by whitespace.

@@ -305,6 +305,8 @@
 		<a href="attrs.html#next_page_text">next_page_text</a> or
 		<a href="attrs.html#no_next_page_text">no_next_page_text</a>
 		attributes depending on whether there is a next page or not.
+		If there is only one page of output, this is empty, regardless
+		of the setting of no_next_page_text.
 	  </dd>
 	  <dt>
 		<strong>NSTARS</strong>
@@ -338,7 +340,9 @@
 		This expands to a list of hyperlinks using the
 		<a href="attrs.html#page_number_text">page_number_text</a> and
 		<a href="attrs.html#no_page_number_text">no_page_number_text</a>
-		attributes.
+		attributes.  For the current page, it displays
+		no_page_number_text without a hyperlink.  Other pages have a
+		hyperlink, and use page_number_text.
 	  </dd>
 	  <dt>
 		<strong>PAGES</strong>
@@ -374,6 +378,8 @@
 		<a href="attrs.html#prev_page_text">prev_page_text</a> or
 		<a href="attrs.html#no_prev_page_text">no_prev_page_text</a>
 		attributes depending on whether there is a previous page or not.
+		If there is only one page of output, this is empty, regardless
+		of the setting of no_prev_page_text.
 	  </dd>
 	  <dt>
 		<strong>RESTRICT</strong>
@@ -497,7 +503,7 @@
 	</dl>
 	<hr size="4" noshade>
 
-	Last modified: $Date: 2003/06/24 21:07:01 $
+	Last modified: $Date: 2003/10/26 11:01:32 $
 
   </body>
 </html>
