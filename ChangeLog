@@ -1,3 +1,15 @@
+Sat Nov 14 20:30:18 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HTML.cc(parse, do_tag): Ensure links respect META robot
+	settings. Patch contributed by Michael Spann
+	<mikes@mail.sv.dialogic.com>.
+
+	* htdig/HTML.cc(do_tag): Eliminate bug that ignores "?" in URLs
+
+	* htdig/HTML.cc(do_tag): Add support for META refresh tags as
+	"redirects", submitted by Aidas Kasparas
+	<kaspar@dobilas.infosistema.lt>.
+	
 Sun Nov  8 20:33:22 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Document.cc: Changed reset to keep proxy settings--fixes

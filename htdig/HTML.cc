@@ -4,6 +4,11 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.16  1998/11/15 02:47:46  ghutchis
+//
+// Fixed bugs with META robots, URL parsing, and added support for META refresh
+// tags.
+//
 // Revision 1.15  1998/10/21 17:35:17  ghutchis
 //
 // Cleaned up HTML parsing based on patch by Reni Seindal.
@@ -60,7 +65,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.15 1998/10/21 17:35:17 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.16 1998/11/15 02:47:46 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -256,7 +261,8 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		if (description.length() > max_description_length)
 		{
 		    description << " ...";
-		    retriever.got_href(*href, description);
+		    if (dofollow)
+		      retriever.got_href(*href, description);
 		    in_ref = 0;
 		    description = 0;
 		}
@@ -422,15 +428,11 @@ HTML::do_tag(Retriever &retriever, String &tag)
                            //
                            *q = '\0';
                            //
-                           // If a '?' or '#' is present in a quoted URL,
+                           // If a '#' is present in a quoted URL,
                            //  treat that as the end of the URL, but we skip
                            //  past the quote to parse the rest of the anchor.
                            //
-                           // Is there a better way of looking for these?
-                           //
                            if ((t = strchr(position, '#')) != NULL)
-                               *t = '\0';
-                           if ((t = strchr(position, '?')) != NULL)
                                *t = '\0';
 			}
 			else
@@ -438,8 +440,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			    q = position;
 			    while (*q &&
 				   *q != '>' &&
-				   !isspace(*q) &&
-				   *q != '?' &&
+				   !isspace(*q) && // *q != '?'  ???? -grh
 				   *q != '#')
 				q++;
 			    *q = '\0';
@@ -482,15 +483,11 @@ HTML::do_tag(Retriever &retriever, String &tag)
                            //
                            *q = '\0';
                            //
-                           // If a '?' or '#' is present in a quoted URL,
+                           // If a '#' is present in a quoted URL,
                            //  treat that as the end of the URL, but we skip
                            //  past the quote to parse the rest of the anchor.
                            //
-                           // Is there a better way of looking for these?
-                           //
                            if ((t = strchr(position, '#')) != NULL)
-                               *t = '\0';
-                           if ((t = strchr(position, '?')) != NULL)
                                *t = '\0';
 			}
 			else
@@ -512,10 +509,11 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	}
 
 	case 3:		// "/a"
-	    if (dofollow && in_ref)
+	    if (in_ref)
 	    {
+	      if (dofollow)
 		retriever.got_href(*href, description);
-		in_ref = 0;
+	      in_ref = 0;
 	    }
 	    break;
 
@@ -594,15 +592,11 @@ HTML::do_tag(Retriever &retriever, String &tag)
                //
                *q = '\0';
                //
-               // If a '?' or '#' is present in a quoted URL,
+               // If a '#' is present in a quoted URL,
                //  treat that as the end of the URL, but we skip
                //  past the quote to parse the rest of the anchor.
                //
-               // Is there a better way of looking for these?
-               //
                if ((t = strchr(position, '#')) != NULL)
-                   *t = '\0';
-               if ((t = strchr(position, '?')) != NULL)
                    *t = '\0';
 	    }
 	    else
@@ -673,6 +667,27 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    w = strtok(0, " ,\t\r\n");
 		}
 		w = '\0';
+	    }
+	
+	    // <META HTTP-EQUIV=REFRESH case
+	    if (conf["http-equiv"]){// && conf["content"]){
+		if (mystrcasecmp(conf["http-equiv"], "refresh") == 0){
+		    char *content=conf["content"];
+		    char *q = mystrcasestr(content, "url=");
+		    if (*q){
+			q+=4; // skiping "URL="
+			char *qq = q;
+			while (*qq && (*qq!=';') && (*qq!='"') &&
+				!isspace(*qq))qq++;
+			*qq=0;
+			URL *href = new URL(q, *base);
+			// I don't know why anyone would do this, but hey...
+			if (dofollow)
+			  retriever.got_href(*href, "");
+			delete href;
+
+		    }
+		}
 	    }
 
 	    //
@@ -810,15 +825,11 @@ HTML::do_tag(Retriever &retriever, String &tag)
                        //
                        *q = '\0';
                        //
-                       // If a '?' or '#' is present in a quoted URL,
+                       // If a '#' is present in a quoted URL,
                        //  treat that as the end of the URL, but we skip
                        //  past the quote to parse the rest of the anchor.
                        //
-                       // Is there a better way of looking for these?
-                       //
                        if ((t = strchr(position, '#')) != NULL)
-                           *t = '\0';
-                       if ((t = strchr(position, '?')) != NULL)
                            *t = '\0';
 		    }
 		    else
@@ -826,8 +837,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			q = position;
 			while (*q &&
 			       *q != '>' &&
-			       !isspace(*q) &&
-			       *q != '?' &&
+			       !isspace(*q) && //  *q != '?'   ??? -grh
 			       *q != '#')
 			    q++;
 			*q = '\0';
@@ -884,15 +894,10 @@ HTML::do_tag(Retriever &retriever, String &tag)
                        //
                        *q = '\0';
                        //
-                       // If a '?' or '#' is present in a quoted URL,
+                       // If a '#' is present in a quoted URL,
                        //  treat that as the end of the URL, but we skip
                        //  past the quote to parse the rest of the anchor.
-                       //
-                       // Is there a better way of looking for these?
-                       //
                        if ((t = strchr(position, '#')) != NULL)
-                           *t = '\0';
-                       if ((t = strchr(position, '?')) != NULL)
                            *t = '\0';
 		    }
 		    else
@@ -900,8 +905,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			q = position;
 			while (*q &&
 			       *q != '>' &&
-			       !isspace(*q) &&
-			       *q != '?' &&
+			       !isspace(*q) && //  *q != '?'   ???? --grh
 			       *q != '#')
 			    q++;
 			*q = '\0';
@@ -957,7 +961,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
                        //
                        *q = '\0';
                        //
-                       // If a '?' or '#' is present in a quoted URL,
+                       // If a '#' is present in a quoted URL,
                        //  treat that as the end of the URL, but we skip
                        //  past the quote to parse the rest of the anchor.
                        //
@@ -965,16 +969,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
                        //
                        if ((t = strchr(position, '#')) != NULL)
                            *t = '\0';
-                       if ((t = strchr(position, '?')) != NULL)
-                           *t = '\0';
 		    }
 		    else
 		    {
 			q = position;
 			while (*q &&
 			       *q != '>' &&
-			       !isspace(*q) &&
-			       *q != '?' &&
+			       !isspace(*q) && // *q != '?'   ??? -grh
 			       *q != '#')
 			    q++;
 		    *q = '\0';
