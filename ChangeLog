@@ -1,3 +1,8 @@
+Wed Nov 21 12:48:59 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htmerge/docs.cc (convertDocs): Changed confusing message about
+	total doc db size in stats.
+
 Wed Nov 21 11:37:52 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/TemplateList.cc (createFromString), htdoc/attrs.html:

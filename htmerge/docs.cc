@@ -3,7 +3,7 @@
 //
 // Indexing the "doc_db" database by id-number in "doc_index".
 //
-// $Id: docs.cc,v 1.14.2.2 1999/03/22 23:39:30 grdetil Exp $
+// $Id: docs.cc,v 1.14.2.3 2001/11/21 18:50:50 grdetil Exp $
 //
 //
 
@@ -106,7 +106,7 @@ convertDocs(char *doc_db, char *doc_index)
     if (stats)
       {
 	cout << "htmerge: Total documents: " << document_count << endl;
-	cout << "htmerge: Total doc db size (in K): ";
+	cout << "htmerge: Total size of documents (in K): ";
 	cout << docdb_size / 1024 << endl;
       }
 
