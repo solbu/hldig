@@ -1,3 +1,8 @@
+Tue Feb 22 12:34:05 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.cc (URL, normalizePath): Fix PR#779, to handle relative
+	URLs correctly when there's a trailing ".." or leading "//".
+
 Thu Feb 17 15:58:53 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/RELEASE.html, htdoc/main.html: Add notes for 3.1.5 release.

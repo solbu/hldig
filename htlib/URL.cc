@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.18.2.6 1999/12/02 17:20:26 grdetil Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.18.2.7 2000/02/22 18:40:33 grdetil Exp $";
 #endif
 
 #include "URL.h"
@@ -130,8 +130,9 @@ URL::URL(char *ref, URL &parent)
     while (isalpha(*p))
 	p++;
     int	hasService = (*p == ':');
-    if (hasService && ((strncmp(ref, "http://", 7) == 0) ||
+    if ((hasService && ((strncmp(ref, "http://", 7) == 0) ||
 		       (strncmp(ref, "http:", 5) != 0)))
+	|| strncmp(ref, "//", 2) == 0)
     {
 	//
 	// No need to look at the parent url since this is a complete url...
@@ -345,6 +346,19 @@ void URL::normalizePath()
         if (pathend < 0)
             pathend = _path.length();
     }
+    if ((i = _path.indexOf("/..")) >= 0 && i == pathend-3)
+    {
+        String	newPath;
+        if ((limit = _path.lastIndexOf('/', i - 1)) >= 0)
+            newPath << _path.sub(0, limit+1).get();	// keep trailing slash
+        if (newPath.length() == 0)
+            newPath << '/';
+        newPath << _path.sub(i + 3).get();
+        _path = newPath;
+        pathend = _path.indexOf('?');
+        if (pathend < 0)
+            pathend = _path.length();
+    }
 
     //
     // Also get rid of redundent "/./".  This could cause infinite
@@ -359,6 +373,14 @@ void URL::normalizePath()
         pathend = _path.indexOf('?');
         if (pathend < 0)
             pathend = _path.length();
+    }
+    if ((i = _path.indexOf("/.")) >= 0 && i == pathend-2)
+    {
+        String	newPath;
+        newPath << _path.sub(0, i+1).get();		// keep trailing slash
+        newPath << _path.sub(i + 2).get();
+        _path = newPath;
+        pathend--;
     }
 
     //
