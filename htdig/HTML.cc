@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62.2.12 2000/05/24 01:08:37 ghutchis Exp $
+// $Id: HTML.cc,v 1.62.2.13 2000/08/11 11:04:11 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -259,8 +259,8 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		scratch = 0;
 		scratch.append((char*)position, q+1 - position);
 		textified = HtSGMLCodec::instance()->encode(scratch);
-		if (textified[0] != '&')	// it was decoded, copy it
-		  {
+		if (textified[0] != '&' || textified.length() == 1)
+		  {	// it was decoded, copy it
 		    position = (unsigned char *)textified.get();
 		    while (*position)
 		      {

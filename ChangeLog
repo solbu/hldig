@@ -1,3 +1,7 @@
+Fri Aug 11 16:03:18 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (parse): fix problem with &amp; not being translated.
+
 Fri Aug 11 10:48:54 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (setVariables), htcommon/defaults.cc: Added
