@@ -35,7 +35,7 @@ extern "C" {
 #include "clib_ext.h"
 }
 
-#include "WordDB.h"
+#include "WordDBCompress.h"
 #include "WordContext.h"
 
 typedef enum { T_NOTSET, T_DB, T_LOCK, T_LOG, T_MPOOL, T_TXN } test_t;
@@ -571,7 +571,7 @@ db_init(char *home, test_t ttype, int compress, int wordlist)
 	if ((errno = db_appinit(home, NULL, dbenv, flags)) == 0) {
 		dbenv->db_errfile = stderr;
 		dbenv->db_errpfx = progname;
-		if(compress && wordlist) dbenv->mp_cmpr_info = WordDB::CmprInfo();
+		if(compress && wordlist) dbenv->mp_cmpr_info = (new WordDBCompress)->CmprInfo();
 		return (dbenv);
 	}
 
@@ -583,7 +583,7 @@ db_init(char *home, test_t ttype, int compress, int wordlist)
 	memset(dbenv, 0, sizeof(*dbenv));
 	dbenv->db_errfile = stderr;
 	dbenv->db_errpfx = progname;
-	if(compress && wordlist) dbenv->mp_cmpr_info = WordDB::CmprInfo();
+	if(compress && wordlist) dbenv->mp_cmpr_info = (new WordDBCompress)->CmprInfo();
 
 	/* Try again, and it's fatal if we fail. */
 	if ((errno = db_appinit(home, NULL, dbenv, flags)) != 0)

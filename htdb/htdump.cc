@@ -33,7 +33,7 @@ extern "C" {
 #include "clib_ext.h"
 }
 
-#include "WordDB.h"
+#include "WordDBCompress.h"
 #include "WordContext.h"
 
 void	configure __P((char *));
@@ -182,7 +182,7 @@ db_init(char *home, int compress, int wordlist)
 	    NULL, dbenv, DB_USE_ENVIRON | DB_INIT_MPOOL)) == 0) {
 		dbenv->db_errfile = stderr;
 		dbenv->db_errpfx = progname;
-		if(compress && wordlist) dbenv->mp_cmpr_info = WordDB::CmprInfo();
+		if(compress && wordlist) dbenv->mp_cmpr_info = (new WordDBCompress)->CmprInfo();
 		return (dbenv);
 	}
 
@@ -190,7 +190,7 @@ db_init(char *home, int compress, int wordlist)
 	memset(dbenv, 0, sizeof(*dbenv));
 	dbenv->db_errfile = stderr;
 	dbenv->db_errpfx = progname;
-	if(compress && wordlist) dbenv->mp_cmpr_info = WordDB::CmprInfo();
+	if(compress && wordlist) dbenv->mp_cmpr_info = (new WordDBCompress)->CmprInfo();
 
 	/* Try again, and it's fatal if we fail. */
 	if ((errno = db_appinit(home, NULL, dbenv, DB_USE_ENVIRON)) != 0)
