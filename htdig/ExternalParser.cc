@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.13 2000/12/12 05:32:10 grdetil Exp $
+// $Id: ExternalParser.cc,v 1.19.2.14 2000/12/12 05:42:13 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -171,15 +171,23 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 #ifndef HAVE_MKSTEMP
     path << "/htdext." << getpid(); // This is unfortunately predictable
 
+#ifdef O_BINARY
+    fd = open((char*)path, O_WRONLY|O_CREAT|O_EXCL|O_BINARY);
+#else
     fd = open((char*)path, O_WRONLY|O_CREAT|O_EXCL);
-    if (!fd)
-      return;
+#endif
 #else
     path << "/htdex.XXXXXX";
     fd = mkstemp((char*)path);
-    if (!fd)
-      return;
+    // can we force binary mode somehow under Cygwin, if it has mkstemp?
 #endif
+    if (fd < 0)
+    {
+      if (debug)
+	cout << "External parser error: Can't create temp file "
+	     << (char *)path << endl;
+      return;
+    }
     
     write(fd, contents->get(), contents->length());
     close(fd);

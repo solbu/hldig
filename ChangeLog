@@ -1,3 +1,9 @@
+Mon Dec 11 23:30:55 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Fix up handling of creation
+	of temporary file, check for proper return code, give error if
+	appropriate.
+
 Mon Dec 11 23:19:28 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/ExternalParser.cc (parse): Lowercase content-types and
