@@ -1,3 +1,8 @@
+Mon Mar  6 17:31:37 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc (setupWords): Don't allow comma as string
+	list separator, as it can be a decimal point in some locales.
+
 Mon Mar 06 00:58:00 2000  Loic Dachary  <loic@ceic.com>
 
 	* db/mp/mp_bh.c (__memp_bhfree): always free the chain, if

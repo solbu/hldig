@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.54.2.5 2000/02/27 04:35:25 ghutchis Exp $
+// $Id: htsearch.cc,v 1.54.2.6 2000/03/06 23:37:53 grdetil Exp $
 //
 
 #include "htsearch.h"
@@ -552,7 +552,7 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
     // configuration attribute.
     // For algorithms other than exact, we need to also do word lookups.
     //
-    StringList	algs(config["search_algorithm"], " \t,");
+    StringList	algs(config["search_algorithm"], " \t");
     List		algorithms;
     String		name, weight;
     double		fweight;
