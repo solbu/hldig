@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.12  1998/10/18 20:37:41  ghutchis
+//
+// Fixed database corruption bug and other misc. cleanups.
+//
 // Revision 1.11  1998/10/09 04:34:06  ghutchis
 //
 // Fixed typos
@@ -290,7 +294,9 @@ Retriever::parse_url(URLRef &urlRef)
 	    ':' << url.get() << ": ";
 	cout.flush();
     }
-	
+
+    delete doc;
+    doc = new Document;
     doc->Url(url.get());
     doc->Referer(urlRef.Referer());
 
@@ -317,21 +323,24 @@ Retriever::parse_url(URLRef &urlRef)
     else
         status = doc->RetrieveHTTP(date);
 
-    if (status == Document::Document_not_found)
-    {
-	//
-	// Maybe the URL we gave was incomplete.  See if adding a '/'
-	// will help.
-	//
-	String tempurl = doc->Url()->get();
-	if (tempurl.last() != '/')
-	{
-	    tempurl << '/';
-	    doc->Url(tempurl);
-	    base = doc->Url();
-	    status = doc->RetrieveHTTP(date);
-	}
-    }
+    // This shouldn't be neccessary since the server should
+    // return a redirect if we need to add a '/'
+    //
+    //    if (status == Document::Document_not_found)
+    //    {
+    //
+    // Maybe the URL we gave was incomplete.  See if adding a '/'
+    // will help.
+    //
+    //	String tempurl = doc->Url()->get();
+    //	if (tempurl.last() != '/')
+    //	{
+    //	    tempurl << '/';
+    //	    doc->Url(tempurl);
+    //	    base = doc->Url();
+    //	    status = doc->RetrieveHTTP(date);
+    //	}
+    //    }
     current_ref = ref;
 	
     //
@@ -452,6 +461,8 @@ Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
     current_ref = ref;
     current_anchor_number = 0;
     current_title = 0;
+    current_head = 0;
+    current_meta_dsc = 0;
 
     //
     // Create a parser object and let it have a go at the document.

@@ -4,6 +4,10 @@
 // Implementation of DocumentDB
 //
 // $Log: DocumentDB.cc,v $
+// Revision 1.5  1998/10/18 20:37:41  ghutchis
+//
+// Fixed database corruption bug and other misc. cleanups.
+//
 // Revision 1.4  1998/10/12 02:03:59  ghutchis
 //
 // Updated Makefiles and configure variables.
@@ -191,7 +195,7 @@ int DocumentDB::Delete(char *u)
 //
 int DocumentDB::CreateSearchDB(char *filename)
 {
-    DocumentRef	ref;
+    DocumentRef	        *ref;
     List		*descriptions, *anchors;
     char		*key;
     String		data;
@@ -212,20 +216,21 @@ int DocumentDB::CreateSearchDB(char *filename)
 	dbf->Get(key, data);
 	if (strncmp(key, "http:", 5) == 0)
 	{
-	    ref.Deserialize(data);
-	    fprintf(fl, "%d", ref.DocID());
-	    fprintf(fl, "\tu:%s", ref.DocURL());
-	    fprintf(fl, "\tt:%s", ref.DocTitle());
-	    fprintf(fl, "\ta:%d", ref.DocState());
-	    fprintf(fl, "\tm:%d", (int) ref.DocTime());
-	    fprintf(fl, "\ts:%d", ref.DocSize());
-	    fprintf(fl, "\th:%s", ref.DocHead());
-	    fprintf(fl, "\th:%s", ref.DocMetaDsc());
-	    fprintf(fl, "\tl:%d", (int) ref.DocAccessed());
-	    fprintf(fl, "\tL:%d", ref.DocLinks());
-	    fprintf(fl, "\tI:%d", ref.DocImageSize());
+	    ref = new DocumentRef;
+	    ref->Deserialize(data);
+	    fprintf(fl, "%d", ref->DocID());
+	    fprintf(fl, "\tu:%s", ref->DocURL());
+	    fprintf(fl, "\tt:%s", ref->DocTitle());
+	    fprintf(fl, "\ta:%d", ref->DocState());
+	    fprintf(fl, "\tm:%d", (int) ref->DocTime());
+	    fprintf(fl, "\ts:%d", ref->DocSize());
+	    fprintf(fl, "\th:%s", ref->DocHead());
+	    fprintf(fl, "\th:%s", ref->DocMetaDsc());
+	    fprintf(fl, "\tl:%d", (int) ref->DocAccessed());
+	    fprintf(fl, "\tL:%d", ref->DocLinks());
+	    fprintf(fl, "\tI:%d", ref->DocImageSize());
 	    fprintf(fl, "\td:");
-	    descriptions = ref.Descriptions();
+	    descriptions = ref->Descriptions();
 	    String	*description;
 	    descriptions->Start_Get();
 	    int		first = 1;
@@ -237,7 +242,7 @@ int DocumentDB::CreateSearchDB(char *filename)
 		fprintf(fl, "%s", description->get());
 	    }
 	    fprintf(fl, "\tA:");
-	    anchors = ref.DocAnchors();
+	    anchors = ref->DocAnchors();
 	    String	*anchor;
 	    anchors->Start_Get();
 	    first = 1;
@@ -249,6 +254,7 @@ int DocumentDB::CreateSearchDB(char *filename)
 		fprintf(fl, "%s", anchor->get());
 	    }
 	    fprintf(fl, "\n");
+    	    delete ref;
 	}
     }
 

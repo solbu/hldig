@@ -1,3 +1,19 @@
+Sun Oct 18 16:33:58 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/DocumentDB.cc: Changed deserialize function to
+	explicitly delete DocumentRef.
+
+	* htcommon/DocumentRef.cc: Added trap for DOC_STRING value.
+
+	* htdig/Retriever.cc: Delete and reallocate Document variable
+	before retrieving. (Fixes database corruption bug) Removed code to
+	add a "/" to every URL with a 404--servers should send a redirect
+	in this case.
+
+Sat Oct 17 20:15:44 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/timegm.c: Declare __gmtime_r if not defined
+
 Sat Oct 17 10:15:57 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure.in: Fixed problem with configuring DB_DIR introduced

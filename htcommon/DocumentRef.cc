@@ -4,6 +4,10 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.5  1998/10/18 20:37:41  ghutchis
+//
+// Fixed database corruption bug and other misc. cleanups.
+//
 // Revision 1.4  1998/08/11 08:58:24  ghutchis
 // Second patch for META description tags. New field in DocDB for the
 // desc., space in word DB w/ proper factor.
@@ -247,6 +251,9 @@ void DocumentRef::Deserialize(String &stream)
         case DOC_SUBJECT:
             getstring(s, docSubject);
             break;
+	case DOC_STRING:
+	  // This is just a debugging string. Ignore it.
+	    break;
         default:
             cerr << "BAD TAG IN SERIALIZED DATA: " << x << endl;
             return;
