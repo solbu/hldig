@@ -4,20 +4,21 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.9  1998/12/08 02:52:50  ghutchis
+// Fix typo that added description text that contained punctuation or was too
+// short.
+//
 // Revision 1.8  1998/12/06 18:44:43  ghutchis
 // Add the text of descriptions to the word database with weight
 // description_factor.
 //
 // Revision 1.7  1998/11/18 05:16:28  ghutchis
-//
 // Remove limit on link descriptions.
 //
 // Revision 1.6  1998/11/15 22:29:27  ghutchis
-//
 // Implement docBackLinks backlink count.
 //
 // Revision 1.5  1998/10/18 20:37:41  ghutchis
-//
 // Fixed database corruption bug and other misc. cleanups.
 //
 // Revision 1.4  1998/08/11 08:58:24  ghutchis
@@ -45,9 +46,9 @@
 #include <ctype.h>
 #include <fstream.h>
 #include "WordList.h"
-#include "Configuration.h"
+#include <Configuration.h>
 
-extern Configuration    config;
+extern Configuration config;
 
 //*****************************************************************************
 // DocumentRef::DocumentRef()
@@ -331,7 +332,7 @@ void DocumentRef::AddDescription(char *d)
 	    word.lowercase();
 	    word.remove(valid_punctuation);
 	    if (word.length() >= minimumWordLength)
-	      words.Word(w, 0, 0, desc_factor);
+	      words.Word(word, 0, 0, desc_factor);
 	  }
 	w = strtok(0, " ,\t\r\n");
       }
