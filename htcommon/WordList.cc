@@ -4,6 +4,11 @@
 // Implementation of WordList
 //
 // $Log: WordList.cc,v $
+// Revision 1.5  1998/11/27 18:30:20  ghutchis
+//
+// Fixed bug with bad_words and MAX_WORD_LENGTH, noted by Jeff Breidenbach
+// <jeff@alum.mit.edu>.
+//
 // Revision 1.4  1998/09/04 00:56:22  ghutchis
 //
 // Various bug fixes.
@@ -20,7 +25,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.4 1998/09/04 00:56:22 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.5 1998/11/27 18:30:20 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -215,7 +220,11 @@ void WordList::BadWordFile(char *filename)
     {
 	word = strtok(buffer, "\r\n \t");
 	if (word && *word)
+	  {
+	    if (strlen(word) > MAX_WORD_LENGTH)
+	      word[MAX_WORD_LENGTH] = '\0';
 	    badwords.Add(word, 0);
+	  }
     }
     if (fl)
 	fclose(fl);
