@@ -1,3 +1,7 @@
+Thu Jan  7 11:09:08 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* installdir/*.png: Add PNG versions of the default GIF graphics.
+
 Wed Jan  6 22:03:54 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htfuzzy/Synonym.cc, htfuzzy/htfuzzy.cc, htmerge/docs.cc,
