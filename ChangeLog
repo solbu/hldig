@@ -1,5 +1,8 @@
 Sun Oct 11 22:16:27 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
+	* htlib/DB2_db.cc: Added fix suggested by Domotor Akos
+	<dome@impulzus.sch.bme.hu> with (char *)NULL cast.
+
 	* htlib/Attic/mytimegm.cc: Removed old mytimegm function.
 
 	* installdir/syntax.html: Improved boolean method error

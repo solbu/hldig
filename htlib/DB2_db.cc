@@ -4,6 +4,11 @@
 // Implementation of DB2_db
 //
 // $Log: DB2_db.cc,v $
+// Revision 1.4  1998/10/12 02:50:15  ghutchis
+//
+// Added fix suggested by Domotor Akos <dome@impulzus.sch.bme.hu> with (char
+// *)NULL cast.
+//
 // Revision 1.3  1998/10/12 02:04:00  ghutchis
 //
 // Updated Makefiles and configure variables.
@@ -22,7 +27,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: DB2_db.cc,v 1.3 1998/10/12 02:04:00 ghutchis Exp $";
+static char RCSid[] = "$Id: DB2_db.cc,v 1.4 1998/10/12 02:50:15 ghutchis Exp $";
 #endif
 
 #include "DB2_db.h"
@@ -70,7 +75,7 @@ DB2_db::OpenReadWrite(char *filename, int mode)
     //
     // Initialize the database environment.
     //
-    dbenv = db_init(NULL);
+    dbenv = db_init((char *)NULL);
     memset(&dbinfo, 0, sizeof(dbinfo));
 //    dbinfo.db_cachesize = CACHE_SIZE_IN_KB * 1024;	// Cachesize: 64K.
     dbinfo.db_pagesize = 1024;      			// Page size: 1K.
@@ -110,7 +115,7 @@ DB2_db::OpenRead(char *filename)
     //
     // Initialize the database environment.
     //
-    dbenv = db_init(NULL);
+    dbenv = db_init((char *)NULL);
     memset(&dbinfo, 0, sizeof(dbinfo));
 //    dbinfo.db_cachesize = CACHE_SIZE_IN_KB * 1024;	// Cachesize: 64K.
     dbinfo.db_pagesize = 1024;				// Page size: 1K.
