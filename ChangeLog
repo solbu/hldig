@@ -1,3 +1,11 @@
+Tue Mar 30 20:08:18 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/htdig.cc: If exclude_urls attribute is set to empty, set
+	it to something that will never match a URL to ensure nothing is
+	excluded.
+
+	* Makefile.config.in: Fix typo leading to HTLIBS referring to itself.
+
 Mon Mar 29 16:47:48 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(excerpt): Added patch from Gabriele to
