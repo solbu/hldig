@@ -3,7 +3,7 @@
 //
 // Do sanity checking in "doc_db", remove insane documents.
 //
-// $Id: docs.cc,v 1.16 1999/03/12 00:46:58 hp Exp $
+// $Id: docs.cc,v 1.17 1999/06/01 01:55:30 ghutchis Exp $
 //
 //
 
@@ -11,10 +11,10 @@
 
 
 //*****************************************************************************
-// void convertDocs(char *doc_db, char *doc_index)
+// void convertDocs(char *doc_db, char *doc_index, char *doc_excerpt)
 //
 void
-convertDocs(char *doc_db, char *doc_index)
+convertDocs(char *doc_db, char *doc_index, char *doc_excerpt)
 {
     int		document_count = 0;
     unsigned long docdb_size = 0;
@@ -25,6 +25,10 @@ convertDocs(char *doc_db, char *doc_index)
     if (access(doc_index, R_OK) < 0)
     {
 	reportError(form("Unable to open document index '%s'", doc_index));
+    }
+    if (access(doc_excerpt, R_OK) < 0)
+    {
+	reportError(form("Unable to open document excerpts '%s'", doc_excerpt));
     }
     if (access(doc_db, R_OK) < 0)
     {
@@ -39,7 +43,7 @@ convertDocs(char *doc_db, char *doc_index)
     // Start the conversion by going through all the URLs that are in
     // the document database
     //
-    db.Open(doc_db, doc_index);
+    db.Open(doc_db, doc_index, doc_excerpt);
     urls = db.URLs();
 	
     urls->Start_Get();
@@ -57,17 +61,17 @@ convertDocs(char *doc_db, char *doc_index)
 	    continue;
 	id = 0;
 	id << ref->DocID();
-	if (strlen(ref->DocHead()) == 0)
-	  {
-	    // For some reason, this document doesn't have an excerpt
-	    // (probably because of a noindex directive, or disallowed
-	    // by robots.txt or server_max_docs). Remove it
-	    db.Delete(ref->DocID());
-            if (verbose)
-              cout << "Deleted, no excerpt: " << id.get() << "/"
-                   << url->get() << endl;
-	  }
-	else if ((ref->DocState()) == Reference_noindex)
+	//	if (strlen(ref->DocHead()) == 0)
+	//	  {
+	//	    // For some reason, this document doesn't have an excerpt
+	//	    // (probably because of a noindex directive, or disallowed
+	//	    // by robots.txt or server_max_docs). Remove it
+	//	    db.Delete(ref->DocID());
+	//            if (verbose)
+	//              cout << "Deleted, no excerpt: " << id.get() << "/"
+	//                   << url->get() << endl;
+	//	  }
+	if ((ref->DocState()) == Reference_noindex)
 	  {
 	    // This document has been marked with a noindex tag. Remove it
 	    db.Delete(ref->DocID());
