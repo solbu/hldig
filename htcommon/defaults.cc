@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.67 2002/08/06 15:13:56 angusgb Exp $
+// $Id: defaults.cc,v 1.68 2002/08/07 16:40:52 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1082,7 +1082,7 @@ http://www.htdig.org/", " \
 	of the indexing process. \
 " }, \
 { "http_proxy_authorization", "",  \
-	"string", "htdig", "URL", "3.0", "Indexing:Connection", "http_proxy_authorization: myusername:mypassword", " \
+	"string", "htdig", "URL", "3.2.0b4", "Indexing:Connection", "http_proxy_authorization: myusername:mypassword", " \
 	This tells htdig to send the supplied \
         <em>username</em><strong>:</strong><em>password</em> with each HTTP request, \
 	when using a proxy with authorization requested. \
