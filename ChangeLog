@@ -1,5 +1,9 @@
 Sun Dec 14 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
+    * htdig/htdig.cc, test/t_factors: Warn if config file has obsolete fields.
+
+Sun Dec 14 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
     * htsearch/Display.cc:  Apply Gilles's patch for ellipses bug #844828.
 
 Sun Dec 14 2003 Lachlan Andrew <lha@users.sourceforge.net>

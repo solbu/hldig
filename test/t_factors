@@ -5,7 +5,7 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_factors,v 1.1 2003/12/14 01:53:13 lha Exp $
+# $Id: t_factors,v 1.2 2003/12/14 03:42:05 lha Exp $
 #
 
 try() {
@@ -52,7 +52,11 @@ set_attr text_factor			0
 set_attr title_factor			0
 set_attr url_text_factor		0
 
-$htdig "$@" -t -i -c $config	|| fail "Couldn't dig"
+set_attr heading_factor_1		1
+($htdig "$@" -t -i -c $config	|
+    grep "option heading_factor_1 is no longer supported" > /dev/null ) ||
+    fail "Couldn't dig"
+
 $htpurge -c $config		|| fail "Couldn't purge"
 
 ################################################################################

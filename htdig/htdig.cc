@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htdig.cc,v 1.38 2003/10/28 01:02:28 angusgb Exp $
+// $Id: htdig.cc,v 1.39 2003/12/14 03:42:05 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -153,6 +153,25 @@ int main(int ac, char **av)
 			 configFile.get()));
     }
     config->Read(configFile);
+
+    // Warn user if any obsolete options are found in config file
+    // For efficiency, check all fields here.  If different config
+    // files are used for searching, obsolete options may remain
+    char *deprecatedOptions [] = {
+	"heading_factor_1", "heading_factor_2", "heading_factor_3",
+	"heading_factor_4", "heading_factor_5", "heading_factor_6",
+	"modification_time_is_now", "pdf_parser", "translate_amp",
+	"translate_lt_gt", "translate_quot", "uncoded_db_compatible",
+	""	// empty terminator
+    };
+    char **option;
+    for (option = deprecatedOptions; **option; option++)
+    {
+	if (!config->Find(*option).empty())
+	    cout << "Warning: Configuration option " << *option <<
+		" is no longer supported\n";
+    }
+
 
     if (config->Find("locale").empty() && debug > 0)
       cout << "Warning: unknown locale!\n";
