@@ -1,3 +1,13 @@
+Sun Nov 19 00:56:01 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htnet/HtFile.cc (Request): Use opendir/readdir instead of
+	scandir for generating directory listings on-the-fly.
+
+	* htdoc/RELEASE.html: Write up release notes for 3.2.0b3.
+
+	* htdoc/THANKS.html: Update list of contributors for 3.2.0b3 as
+	current.
+
 Fri Nov 17 14:52:37 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/acroconv.pl: Added external converter script to convert

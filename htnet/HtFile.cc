@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFile.cc,v 1.1.2.8 2000/10/20 03:40:57 ghutchis Exp $ 
+// $Id: HtFile.cc,v 1.1.2.9 2000/11/19 07:07:29 ghutchis Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -125,31 +125,31 @@ HtFile::DocStatus HtFile::Request()
        _response._content_type = "text/html";
        _response._contents = "<html><head><meta name=\"robots\" content=\"noindex\">\n";
 
-       struct dirent **namelist;
-       int n;
+       struct dirent *namelist;
+       DIR *dirList;
        String filename;
 
-       n = scandir(_url.path(), &namelist, 0, alphasort);
-       if (n > 0)
+       if (( dirList = opendir(_url.path()) ))
 	 {
-	   for (int i = 0; i < n; i++)
-	     {
-	       filename = _url.path();
-	       filename << namelist[i]->d_name;
-
-	       if ( namelist[i]->d_name[0] != '.' 
-		    && stat(filename.get(), &stat_buf) == 0 )
-		 {
-		   if (S_ISDIR(stat_buf.st_mode))
-		     _response._contents << "<link href=\"file://" << _url.path()
-					 << "/" << namelist[i]->d_name << "/\">\n";
-		   else
-		     _response._contents << "<link href=\"file://" << _url.path()
-					 << "/" << namelist[i]->d_name << "\">\n";  
-		 }
-	     }
-	   delete [] namelist;
+	   while (( namelist = readdir(dirList) ))
+	   {
+	     filename = _url.path();
+	     filename << namelist->d_name;
+	     
+	     if ( namelist->d_name[0] != '.' 
+		  && stat(filename.get(), &stat_buf) == 0 )
+	       {
+		 if (S_ISDIR(stat_buf.st_mode))
+		   _response._contents << "<link href=\"file://" << _url.path()
+				       << "/" << namelist->d_name << "/\">\n";
+		 else
+		   _response._contents << "<link href=\"file://" << _url.path()
+				       << "/" << namelist->d_name << "\">\n";  
+	       }
+	   }
+	 closedir(dirList);
 	 }
+
        _response._contents << "</head><body></body></html>\n";
 
        if (debug > 4)

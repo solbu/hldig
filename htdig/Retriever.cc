@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.42 2000/11/06 18:21:39 grdetil Exp $
+// $Id: Retriever.cc,v 1.72.2.43 2000/11/19 07:07:28 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1083,7 +1083,7 @@ Retriever::GetLocal(const String &strurl)
 	    *local += &url[prefix->length()];
 	    if (local->last() == '/' && defaultdocs) {
 	      defaultdocs->Start_Get();
-	      while (defaultdoc = (String *)defaultdocs->Get_Next()) {
+	      while ((defaultdoc = (String *)defaultdocs->Get_Next())) {
 		String *localdefault = new String(*local, local->length()+defaultdoc->length()+1);
 		localdefault->append(*defaultdoc);
 		local_names->Add(localdefault);
@@ -1216,7 +1216,7 @@ Retriever::GetLocalUser(const String &url, StringList *defaultdocs)
 	*local += rest;
 	if (local->last() == '/' && defaultdocs) {
 	  defaultdocs->Start_Get();
-	  while (defaultdoc = (String *)defaultdocs->Get_Next()) {
+	  while ((defaultdoc = (String *)defaultdocs->Get_Next())) {
 	    String *localdefault = new String(*local, local->length()+defaultdoc->length()+1);
 	    localdefault->append(*defaultdoc);
 	    local_names->Add(localdefault);

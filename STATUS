@@ -7,8 +7,6 @@ RELEASES:
 
 SHOWSTOPPERS:
 * all.html file needs significant work.
-* New directory listing code prevents compilation on Solaris platforms
-	(code available to replace scandir() call)
 * List of supported platforms/compilers is ancient.
 * Update cf_* pages to mention new config parser (i.e. URL-dependent config)
 * Add thorough documentation on htsearch restrict/exclude behavior
