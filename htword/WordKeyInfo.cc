@@ -8,58 +8,38 @@
 // <http://www.gnu.org/copyleft/gpl.html>
 //
 //
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
+#include <stdlib.h>
+#include <iostream.h>
+#include <fstream.h>
+
+#include "HtRandom.h"
 #include "WordKeyInfo.h"
 #include "WordKey.h"
-#include <stdlib.h>
-#include<iostream.h>
-#include<fstream.h>
 
+//
+// WordKeyField implementation
+//
 
-void 
-WordKeyField::nprint(char c,int n)
-{
-    for(int i=0;i<n;i++)
-    {
-	if(!(i%4)){printf("%c",'a'+i/4);}
-	else{printf("%c",c);}
-    }
-}
-
-void 
-WordKeyInfo::SetKeyDescriptionFromString(const String &desc)
-{
-    if(WordContext::key_info){delete WordContext::key_info;}
-    WordContext::key_info=new WordKeyInfo();
-    WordContext::key_info->SetDescriptionFromString(desc);
-}
-void 
-WordKeyInfo::SetKeyDescriptionFromFile(const String &filename)
-{
-    if(WordContext::key_info){delete WordContext::key_info;}
-    WordContext::key_info=new WordKeyInfo();
-    WordContext::key_info->SetDescriptionFromFile(filename);
-}
-
-void 
-WordKeyField::show()
-{
-    nprint(' ',bits_offset);
-    printf("\"%s\" %3d %3d type:%2d lowbits:%2d lastbits:%2d\n",(char *)name,encoding_position,sort_position,type, lowbits, lastbits);
-    nprint(' ',bits_offset);
-    printf("|---bytesize:%2d bytes_offset:%2d bits:%2d direction:%2d\n", bytesize, bytes_offset, bits, direction);
-    nprint(' ',bits_offset);
-    printf("|---encoding_position:%2d sort_position:%2d bits_offset:%2d\n", encoding_position, sort_position, bits_offset);
-
-}
-
-WordKeyField::WordKeyField(WordKeyField *previous,char *nname,int nbits,int nencoding_position, int nsort_position )
+//
+// Precompute information that will be needed to pack/unpack the key to/from disk.
+// 
+// The <previous> field is used to compute the position of the field in packed string.
+// <nname> is the symbolic name of the field
+// <nbits> is the number of bits actualy used in a number
+// <nenconding_position> is the position of the field when stored on disk
+// <nsort_position> is the position of the field for sorting
+//
+WordKeyField::WordKeyField(WordKeyField *previous, char *nname, int nbits, int nencoding_position, int nsort_position)
 {
     encoding_position=nencoding_position;
     sort_position=nsort_position;
     name = strdup(nname);
 
-    type=(sort_position ? WORD_ISA_NUMBER : WORD_ISA_String);
+    type=(sort_position ? WORD_ISA_NUMBER : WORD_ISA_STRING);
     bits = nbits;
     bits_offset = (previous ?  previous->bits_offset + previous->bits  :  0 );
 
@@ -80,8 +60,63 @@ WordKeyField::WordKeyField(WordKeyField *previous,char *nname,int nbits,int nenc
     lowbits  =  bits_offset%8;
     direction=WORD_SORT_ASCENDING;
 }
+
+//
+// Tabulate
+//
 void 
-WordKeyInfo::Initialize( String &line)
+WordKeyField::Nprint(char c, int n)
+{
+    for(int i=0;i<n;i++)
+    {
+	if(!(i%4)) { printf("%c", 'a' + i / 4); }
+	else { printf("%c", c); }
+    }
+}
+
+//
+// Print object on standard output
+//
+void 
+WordKeyField::Show()
+{
+    Nprint(' ',bits_offset);
+    printf("\"%s\" %3d %3d type:%2d lowbits:%2d lastbits:%2d\n",(char *)name,encoding_position,sort_position,type, lowbits, lastbits);
+    Nprint(' ',bits_offset);
+    printf("|---bytesize:%2d bytes_offset:%2d bits:%2d direction:%2d\n", bytesize, bytes_offset, bits, direction);
+    Nprint(' ',bits_offset);
+    printf("|---encoding_position:%2d sort_position:%2d bits_offset:%2d\n", encoding_position, sort_position, bits_offset);
+
+}
+
+//
+// WordKeyInfo implementation
+//
+
+//
+// Static interface to SetDescriptionFromString fct
+//
+void 
+WordKeyInfo::SetKeyDescriptionFromString(const String &desc)
+{
+    if(WordContext::key_info) { delete WordContext::key_info; }
+    WordContext::key_info=new WordKeyInfo();
+    WordContext::key_info->SetDescriptionFromString(desc);
+}
+
+//
+// Static interface to SetDescriptionFromFile fct
+//
+void 
+WordKeyInfo::SetKeyDescriptionFromFile(const String &filename)
+{
+    if(WordContext::key_info){delete WordContext::key_info;}
+    WordContext::key_info=new WordKeyInfo();
+    WordContext::key_info->SetDescriptionFromFile(filename);
+}
+
+void 
+WordKeyInfo::Initialize(String &line)
 {
     StringList fields(line, "\t ");
 
@@ -141,7 +176,7 @@ WordKeyInfo::AddFieldInEncodingOrder(String &name,int bits, int sort_position)
     WordKeyField tmp( previous, name, bits, encoding_position, sort_position );
     sort[sort_position]       = tmp;
     encode[encoding_position] = tmp;
-//    printf ("srt:");sort[sort_position].show();
+//    printf ("srt:");sort[sort_position].Show();
     previous = sort + sort_position;
 
     encoding_position++;
@@ -170,12 +205,12 @@ WordKeyInfo::AddFieldInEncodingOrder(String &name,int bits, int sort_position)
 	    for(i=0;i<nfields;i++)
 	    {
 		cerr << "field in encoding order:" << i << endl;
-		encode[i].show();
+		encode[i].Show();
 	    }
 	    for(i=0;i<nfields;i++)
 	    {
 		cerr << "field in sort order:" << i << endl;
-		sort[i].show();
+		sort[i].Show();
 	    }
 	}
     }
@@ -310,7 +345,7 @@ WordKeyInfo::SetDescriptionFromFile(const String &filename)
 }
 
 void 
-WordKeyInfo::show()
+WordKeyInfo::Show()
 {
     printf("-----------------------------------------\n");
     printf("nfields:%3d minimum_length:%3d\n",nfields,minimum_length);
@@ -320,10 +355,10 @@ WordKeyInfo::show()
 	for(j=0;j<nfields;j++){if(sort[j].encoding_position==i)break;}
 	if(j==nfields)
 	{
-	    cerr << "WordKeyInfo::show field not found !!!!!!!!!!!!!! " <<endl;
+	    cerr << "WordKeyInfo::Show field not found !!!!!!!!!!!!!! " <<endl;
 	    j=0;
 	}
-	sort[j].show();
+	sort[j].Show();
     }
     char str[WORDKEYFIELD_BITS_MAX*WORD_KEY_MAX_NFIELDS];
     for(i=0;i<WORDKEYFIELD_BITS_MAX*WORD_KEY_MAX_NFIELDS;i++)
@@ -365,5 +400,51 @@ WordKeyInfo::Initialize(const Configuration &config)
     {
 	cerr << "WordList::Initialize: didn't find key description file in config" << endl;
     }
+
+}
+
+void
+WordKeyInfo::SetKeyDescriptionRandom(int maxbitsize/*=100*/,int maxnnfields/*=10*/)
+{
+    int bitsize=HtRandom::rnd(1,maxbitsize/8);
+    bitsize*=8;// byte aligned (for word)
+    int nfields0=HtRandom::rnd(2,bitsize > maxnnfields ? maxnnfields : bitsize);
+    int i;
+    char sdesc[10000];
+    char sfield[10000];
+    sdesc[0]=0;
+
+    // build sortorder
+    sprintf(sfield,"nfields: %d",nfields0);
+    strcat(sdesc,sfield);
+
+    int *sortv=HtRandom::randomize_v(NULL,nfields0-1);
+
+    int bits;
+    int totbits=0;
+    // build fields
+    for(i=0;i<nfields0-1;i++)
+    {
+	int maxf=(bitsize-totbits)-nfields0+i+2;
+	if(maxf>32){maxf=32;}
+	bits=HtRandom::rnd(1,maxf);
+	if(i==nfields0-2)
+	{
+	    bits=maxf;
+	    if((totbits+bits)%8)
+	    {// argh really bad case :-(
+		WordKeyInfo::SetKeyDescriptionRandom(maxbitsize,maxnnfields);
+		return;
+	    }
+	}
+	totbits+=bits;
+	sprintf(sfield,"/Field%d %d %d",i,bits,sortv[i]+1);
+	strcat(sdesc,sfield);
+    }
+    sprintf(sfield,"/Word 0 0");
+    strcat(sdesc,sfield);
+
+//      if(verbose)cout << "SetRandomKeyDesc:" << sdesc << endl;
+    WordKeyInfo::SetKeyDescriptionFromString(sdesc);
 
 }

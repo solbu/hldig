@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.h,v 1.3.2.5 2000/01/03 11:48:36 bosc Exp $
+// $Id: WordReference.h,v 1.3.2.6 2000/01/06 14:42:31 loic Exp $
 //
 #ifndef _WordReference_h_
 #define _WordReference_h_
@@ -22,6 +22,9 @@
 #include "WordKey.h"
 #endif /* SWIG */
 
+//
+// Describe the WordKey/WordRecord pair
+//
 class WordReference : public Object
 {
  public:
@@ -39,7 +42,6 @@ class WordReference : public Object
     key.SetWord(word);
   }
 #endif /* SWIG */
-
   ~WordReference()	{}
 
   //
@@ -89,7 +91,7 @@ class WordReference : public Object
   }
 
   //
-  // Mutations
+  // Transformations
   //
   int			Merge(const WordReference& other);
 #ifndef SWIG
@@ -99,8 +101,11 @@ class WordReference : public Object
     return tmp;
   }
 #endif /* SWIG */
-
+  //
+  // Reset to empty key and record
+  //
   void			Clear() { key.Clear(); record.Clear(); }
+
 #ifndef SWIG
   int			compare(Object *to) { String word(((WordReference *) to)->key.GetWord()); return key.GetWord().nocase_compare(word); }
 #endif /* SWIG */

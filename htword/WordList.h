@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.11 2000/01/06 13:58:29 bosc Exp $
+// $Id: WordList.h,v 1.5.2.12 2000/01/06 14:42:31 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -46,98 +46,101 @@ class WordMonitor;
 
 #ifndef SWIG
 //
-// Type of the callback argument of WordList::Walk
+// Type of the callback argument in WordSearchDescription
 //
 typedef int (*wordlist_walk_callback_t)(WordList *words, WordCursor& cursor, const WordReference *word, Object &data);
 
+//
+// Benchmarking helper
+//
 class WordBenchmarking
 {
 public:
-    int nDB_NEXT;
-    int nDB_SET_RANGE;
-    int nSkip;
-    void show(){cout << "benchmarking: nDB_SET_RANGE:" << nDB_SET_RANGE << " nDB_NEXT:" << nDB_NEXT <<  " nSkip:" << nSkip << endl;}
     WordBenchmarking()
     {
 	nDB_NEXT=0;
 	nDB_SET_RANGE=0;
 	nSkip=0;
     }
+
+    void Show(){cout << "benchmarking: nDB_SET_RANGE:" << nDB_SET_RANGE << " nDB_NEXT:" << nDB_NEXT <<  " nSkip:" << nSkip << endl;}
+
+    int nDB_NEXT;
+    int nDB_SET_RANGE;
+    int nSkip;
 };
 
-
-
-// **************************************************
-// *************** WordSearchDescription  ***********
-// **************************************************
-// this is the class that Wordlist::Walk uses for :
+//
+// Wordlist::Walk uses WordSearchDescription for :
 // state information : cursor
 // search term description
 // debug/trace/benchmarking
 // search result format description
 //
-// it is still under developpement
-class WordList;
-
 class WordSearchDescription
 {
     friend WordList;
-// search key
-// prefix key
-// actions
-// tracing
-// benchmarking    
-// cursor state
-// skip info: i0
-// max num results
-// min num results
-// results!!
-
-// constructors : (called when using:  WordList::Walk(WordSearchDescription searchDescription))
-// ex list.Walk("toto<UNDEF> 1000 <UNDEF>")
-//    list.Walk(wordRef,callback,callback_data); (current Walk implementation)
-//    list.Walk(wordKey)
-//    list.Walk()
-
-
- protected:
-    // internal information
-    int first_skip_field;
-    int setup_ok;
-
+ public:
+    WordSearchDescription(const WordReference& wordRef, int naction, wordlist_walk_callback_t ncallback, Object *ncallback_data);
+    WordSearchDescription(const WordKey &nsearchKey);
+    WordSearchDescription(const WordKey &nsearchKey, wordlist_walk_callback_t ncallback, Object * ncallback_data);
 
     void Clear();
-    int  setup();
- public:
+    int  Setup();
+
     //  search description
     WordKey searchKey;
 
-    // what do do when something is found
-    wordlist_walk_callback_t callback;
-    Object *callback_data;
+    //
+    // What do do when a WordReference is found
+    // Can either be
+    // HTDIG_WORDLIST_COLLECTOR  WordReference found stored in collectRes
+    // HTDIG_WORDLIST_WALKER     callback is called for each WordReference found
+    //
     int action;
+    //
+    // Callback function called for each WordReference found
+    //
+    wordlist_walk_callback_t callback;
+    //
+    // Argument given to callback, contains arbitrary caller defined data
+    //
+    Object *callback_data;
+    //
+    // List of WordReference found in the search
+    //
     List *collectRes;
 
-    // user set flags
-    int noskip;// debuging : don't use skip
-    int shutup;// debuging : don't verbose, even if WordList  verbose set
-
-    // tracing/benchmarking (debuging)
-    List *traceRes; // trace what's going on in Walk (intended for debuging only)
+    //
+    // Debugging section. Do not use unless you know exactly what you do.
+    //
+    //
+    // Do not not skip entries
+    //
+    int noskip;
+    //
+    // Don't be verbose, even if WordList verbose set
+    //
+    int shutup;
+    //
+    // Collect everything found while searching (not necessarily matching)
+    //
+    List *traceRes;
+    //
+    // Statistics collection for benchmarking
+    //
     WordBenchmarking *benchmarking;
 
-public:
-    WordSearchDescription(const WordReference& wordRef, int naction, wordlist_walk_callback_t ncallback, Object *ncallback_data);
-    WordSearchDescription(const WordKey &nsearchKey);
-    WordSearchDescription(const WordKey &nsearchKey,wordlist_walk_callback_t ncallback,Object * ncallback_data);
+ private:
+    // internal information
+    int first_skip_field;
+    int setup_ok;
 };
 #endif /* SWIG */
 
-
-// **************************************************
-// *************** WordList   ***********************
-// **************************************************
-
+// 
+// Inverted index interface
+//
 class WordList
 {
 public:
@@ -147,10 +150,6 @@ public:
     WordList(const Configuration& config_arg);
     virtual ~WordList();
     
-
-    // WordList specific debuging flag
-    int                         verbose;
-
     //
     // Insert
     //
@@ -211,12 +210,9 @@ public:
     List		*Prefix (const String& prefix) { return this->Prefix(WordReference(prefix)); }
 #endif /* SWIG */
 
-
-
     //
     // Iterate over the complete database.
     //
-
 #ifndef SWIG
     // This returns a list of all the Words, as String *
     List                *Words();
@@ -233,8 +229,6 @@ public:
     int   Walk(      WordSearchDescription &SearchDescription);
     List *Search(const WordSearchDescription &SearchDescription);
     int SkipUselessSequentialWalking(const WordSearchDescription &search,WordKey &foundKey,String &key,int &cursor_get_flags);
-
-
 #endif /* SWIG */
 
     //
@@ -255,7 +249,7 @@ public:
     
 
 #ifndef SWIG
-protected:
+ protected:
     //
     // Retrieve WordReferences from the database. 
     // Backend of WordRefs, operator[], Prefix...
@@ -279,16 +273,22 @@ protected:
     friend ostream &operator << (ostream &o, WordList &list); 
     friend istream &operator >> (istream &o, WordList &list); 
 
-private:
+ private:
 
     WordDB	            	db;
-#endif /* SWIG */
 
-
-// DEBUGING / BENCHMARKING
+    int                         verbose;
  protected:
-    DB_CMPR_INFO* cmprInfo; // compressor keeps it's own benchmarking info
+    //
+    // Debugging section. Do not use unless you know exactly what you do.
+    //
+    //
+    // compressor keeps it's own benchmarking info
+    //
+    DB_CMPR_INFO* cmprInfo;
     inline void WalkBenchmark_Get(WordSearchDescription &search, int cursor_get_flags);
+    inline WordDBCompress *GetCompressor()
+	{return(cmprInfo ?  (WordDBCompress *)cmprInfo->user_data : (WordDBCompress *)NULL);}
  public:
     int    bm_put_count;
     double bm_put_time;
@@ -296,11 +296,8 @@ private:
     double bm_walk_time;
     int    bm_walk_count_DB_SET_RANGE;
     int    bm_walk_count_DB_NEXT;
-
-    inline WordDBCompress *GetCompressor()
-	{return(cmprInfo ?  (WordDBCompress *)cmprInfo->user_data : (WordDBCompress *)NULL);}
-
     WordMonitor *monitor;
+#endif /* SWIG */
 };
 
 #endif

@@ -167,13 +167,13 @@ int HtConfiguration::Boolean(char *blockName,char *name,char *value,
 int retValue=default_value;
 String tmpStr=Find(blockName,name,value);
  if (tmpStr[0]!=0) {
-        if (mystrcasecmp(tmpStr, "true") == 0 ||
-            mystrcasecmp(tmpStr, "yes") == 0 ||
-            mystrcasecmp(tmpStr, "1") == 0)
+        if (mystrcasecmp((char*)tmpStr, "true") == 0 ||
+            mystrcasecmp((char*)tmpStr, "yes") == 0 ||
+            mystrcasecmp((char*)tmpStr, "1") == 0)
             retValue = 1;
-        else if (mystrcasecmp(tmpStr, "false") == 0 ||
-                 mystrcasecmp(tmpStr, "no") == 0 ||
-                 mystrcasecmp(tmpStr, "0") == 0)
+        else if (mystrcasecmp((char*)tmpStr, "false") == 0 ||
+                 mystrcasecmp((char*)tmpStr, "no") == 0 ||
+                 mystrcasecmp((char*)tmpStr, "0") == 0)
             retValue = 0;
 
  }
@@ -209,13 +209,13 @@ int HtConfiguration::Boolean(URL *aUrl,char *value,
 int retValue=default_value;
 String tmpStr=Find(aUrl,value);
  if (tmpStr[0]!=0) {
-        if (mystrcasecmp(tmpStr, "true") == 0 ||
-            mystrcasecmp(tmpStr, "yes") == 0 ||
-            mystrcasecmp(tmpStr, "1") == 0)
+        if (mystrcasecmp((char*)tmpStr, "true") == 0 ||
+            mystrcasecmp((char*)tmpStr, "yes") == 0 ||
+            mystrcasecmp((char*)tmpStr, "1") == 0)
             retValue = 1;
-        else if (mystrcasecmp(tmpStr, "false") == 0 ||
-                 mystrcasecmp(tmpStr, "no") == 0 ||
-                 mystrcasecmp(tmpStr, "0") == 0)
+        else if (mystrcasecmp((char*)tmpStr, "false") == 0 ||
+                 mystrcasecmp((char*)tmpStr, "no") == 0 ||
+                 mystrcasecmp((char*)tmpStr, "0") == 0)
             retValue = 0;
 
  }

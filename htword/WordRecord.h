@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordRecord.h,v 1.6.2.5 2000/01/03 10:04:48 bosc Exp $
+// $Id: WordRecord.h,v 1.6.2.6 2000/01/06 14:42:31 loic Exp $
 //
 
 #ifndef _WordRecord_h_
@@ -30,7 +30,6 @@
 #define WORD_RECORD_STATS	2
 #define WORD_RECORD_NONE	3
 
-
 /* And this is how we will compress this structure, for disk
    storage.  See HtPack.h  (If there's a portable method by
    which this format string does not have to be specified at
@@ -45,33 +44,67 @@
 #define WORD_RECORD_STATS_FORMAT "u2"
 #endif /* SWIG */
 
+//
+// Meta information about WordRecord
+//
+// wordlist_wordrecord_description: DATA 
+//   use WordRecordStorage::data for each word occurent
+// wordlist_wordrecord_description: NONE 
+//  or
+// wordlist_wordrecord_description not specified
+//   the data associated with each word occurence is empty
+//
+class WordRecordInfo
+{
+ public:
+    static WordRecordInfo *Get() { return WordContext::record_info; }
+    static void Initialize(const Configuration& config);
+
+    int default_type;
+};
+
+//
+// Statistical information on a word
+//
 class WordRecordStat {
  public:
   unsigned int		noccurence;
   unsigned int		ndoc;
 };
 
+//
+// The data members of WordRecord. Should really be a union but
+// is quite difficult to handle properly for scripting language
+// interfaces.
+//
 class WordRecordStorage {
  public:
+  //
+  // Arbitrary data
+  //
   unsigned int		data;
+  //
+  // Statistical data used by WordStat
+  //
   WordRecordStat	stats;
 };
 
-class WordRecordInfo
-{
- public:
-    int default_type;
-    static WordRecordInfo *Get(){return WordContext::record_info;}
-    static void Initialize(const Configuration& config);
-};
+//
+// Describe the data associated with a key (WordKey)
+//
+// If type is:
+//    WORD_RECORD_DATA	info.data is valid
+//    WORD_RECORD_STATS	info.stats is valid
+//    WORD_RECORD_NONE	nothing valid
+//
 class WordRecord
 {
  public:
-  inline int DefaultType(){return WordRecordInfo::Get()->default_type;}
-  WordRecord() { memset((char*)&info, '\0', sizeof(info)); type =  DefaultType(); 
-                 //    cout << "record default  type:" << (int)type << endl;
-               }
+  WordRecord() { Clear(); }
+
   void	Clear() { memset((char*)&info, '\0', sizeof(info)); type = DefaultType(); }
+
+  inline int DefaultType() { return WordRecordInfo::Get()->default_type; }
 
   int Pack(String& packed) const {
 #ifndef SWIG
@@ -153,7 +186,6 @@ class WordRecord
   void Print() const;
   
   unsigned char			type;
-
   WordRecordStorage		info;
 };
 

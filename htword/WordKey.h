@@ -56,25 +56,16 @@
 int word_db_cmp(const DBT *a, const DBT *b);
 #endif /* SWIG */
 
-
-//
-// Type number associated to each possible type for a key element
-// (type field of struct WordKeyInfo).
-//
-#define WORD_ISA_NUMBER		1
-#define WORD_ISA_String		2
-
 #ifndef SWIG
 #include"WordKeyInfo.h"
 #endif /* SWIG */
-
 
 //
 // A word occurence description.
 //
 // !!!!!!!DEBUGTMP
-#define FATAL_ABORT fflush(stdout);fprintf(stderr,"FATAL ERROR at file:%s line:%d !!!\n",__FILE__,__LINE__);fflush(stderr);(*(int *)NULL)=1
-#define errr(s) {fprintf(stderr,"FATAL ERROR:%s\n",s);FATAL_ABORT;}
+#define WORD_FATAL_ABORT fflush(stdout);fprintf(stderr,"FATAL ERROR at file:%s line:%d !!!\n",__FILE__,__LINE__);fflush(stderr);(*(int *)NULL)=1
+#define word_errr(s) {fprintf(stderr,"FATAL ERROR:%s\n",s);WORD_FATAL_ABORT;}
 class WordKey
 {
  public:
@@ -117,7 +108,7 @@ class WordKey
       if(!info())
 	{
 	  cerr << "WordKey::WordKey used before word_key_info set" << endl;
-	  errr("WordKey::initialize");
+	  word_errr("WordKey::initialize");
 	}
       
       numerical_fields = new WordKeyNum[nfields()-1]; 
@@ -192,13 +183,13 @@ class WordKey
   //
   inline WordKeyNum GetInSortOrder(int position) const 
   {
-//        if(position<1 || position>=nfields()){errr("GetInSortOrder: out of bounds");}
+    // if(position<1 || position>=nfields()){word_errr("GetInSortOrder: out of bounds");}
       return(numerical_fields[position-1]);
   }
 
   inline void SetInSortOrder(int position,WordKeyNum val)
   {
-//        if(position<1 || position>=nfields()){errr("SetInSortOrder: out of bounds");}
+    // if(position<1 || position>=nfields()){word_errr("SetInSortOrder: out of bounds");}
       SetDefinedInSortOrder(position);
       numerical_fields[position-1] = val;
   }
@@ -333,10 +324,22 @@ class WordKey
   static inline int Compare(const char *a, int a_length, const char *b, int b_length);
 #endif /* SWIG */
 
+  //
+  // Print, debug, benchmark
+  //
 #ifndef SWIG
-    friend ostream &operator << (ostream &o, const WordKey &key);
+  friend ostream &operator << (ostream &o, const WordKey &key);
 #endif /* SWIG */
-    void Print() const;
+  void Print() const;
+
+  //
+  // Ascii display of packed key
+  //
+  static void ShowPacked(const String& key, int type=0);
+  //
+  // Initialize key with random values
+  //
+  void SetRandom();
 
 private:
 
@@ -349,16 +352,18 @@ private:
   //
   // Data members
   //
+  //
+  // Bit field for defined/undefined status of each key field
+  //
   unsigned int setbits;
-  WordKeyNum *numerical_fields;
-  String	kword;
-
-
- public:
-// ***** DEBUGINIG / BENCHMARKING ****
-    static void show_packed(const String& key,int type=0);
-    void SetRandom();
-
+  //
+  // Holds the numerical values of the key fields
+  //
+  WordKeyNum   *numerical_fields;
+  //
+  // Holds the word key field
+  //
+  String       kword;
 };
 
 #ifndef SWIG

@@ -19,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.h,v 1.3.2.6 2000/01/03 10:04:47 bosc Exp $
+// $Id: WordDB.h,v 1.3.2.7 2000/01/06 14:42:30 loic Exp $
 //
 
 #ifndef _WordDB_h_
@@ -163,9 +163,9 @@ class WordDB {
     if(0 && verbose)//DEBUGTMP
     {
 	cout << "WordDB::Put: keylength:" << setw(3) << key.length() << " datalength:" << data.length() << " ::key: ";
-	WordKey::show_packed(key);
+	WordKey::ShowPacked(key);
 	cout << " data:";
-	WordKey::show_packed(data);
+	WordKey::ShowPacked(data);
 	cout << endl;
     }
     if((errno = db->put(0, &rkey, &rdata, flags)) != 0) 

@@ -3,6 +3,15 @@ Thu Jan 06 14:41:15 2000  Marcel Bosc    <bosc@ceic.com>
 	* htword,all: Changed interface to overloaded Walk function that was
 	ambigous on some compilers...
 
+Thu Jan 06 14:00:01 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordList.h (class WordSearchDescription): rename setup to Setup
+
+	* htword/WordList.h (class WordBenchmarking): rename show to Show
+
+	* htword/WordRecord.{h,cc}, htword/WordReference.h, htword/WordList.h: 
+	  add comments, reorganize member functions for clarity. 
+
 Thu Jan 06 12:01:47 2000  Marcel Bosc  <bosc@ceic.com>
 
 	* htword/compression: Split WordDBCompress.* to WordDBCompress +
@@ -19,6 +28,25 @@ Thu Jan 06 12:01:47 2000  Marcel Bosc  <bosc@ceic.com>
 
 	* htword/WordMonitor: addded  monitor input
 	
+Wed Jan 05 14:32:31 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordKeyInfo.h (class WordKeyInfo ): if(encode) was if(sort)
+
+	* htword/WordKeyInfo.h: rename show to Show an nprint to Nprint
+
+	* htword/WordKeyInfo.h: move WORD_ISA from WordKey.h to WordKeyInfo.h, 
+	  rename WORD_ISA_String to WORD_ISA_STRING.
+
+	* htword/WordKey.h: rename FATAL_ABORT to WORD_FATAL_ABORT and errr to word_errr
+
+	* htword/WordKey.h: move private functions at bottom of class above data members
+	  rename show_packed to ShowPacked
+
+	* htword/WordKey.cc: move WordKeyInfo::SetKeyDescriptionRandom from WordKey.cc
+	  to WordKeyInfo.cc
+
+	* htword/WordKeyInfo.cc: add include htconfig.h
+
 Wed Jan 05 13:26:16 2000  Loic Dachary  <loic@ceic.com>
 
 	* htdig/ExternalParser.cc (parse): use nocase_compare instead of mystrcasecmp to

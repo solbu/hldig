@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3.2.12 2000/01/05 11:40:31 loic Exp $
+// $Id: WordKey.cc,v 1.3.2.13 2000/01/06 14:42:30 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -23,14 +23,12 @@
 
 #include <stdlib.h>
 #include <iostream.h>
+#include <ctype.h>
+#include <fstream.h>
+
+#include "HtRandom.h"
 
 #include "WordKey.h"
-#include <ctype.h>
-#include<fstream.h>
-#include"HtRandom.h"
-
-
-
 
 //
 // Returns OK if fields set in 'object' and 'other' are all equal.
@@ -61,7 +59,7 @@ int WordKey::Equal(const WordKey& other) const
     if(!IsDefinedInSortOrder(j) || !other.IsDefinedInSortOrder(j)) continue;
 
     switch(info0.sort[j].type) {
-    case WORD_ISA_String:
+    case WORD_ISA_STRING:
       if(!IsDefinedWordSuffix()) {
 //  	  cout << "COMPARING UNCOMPLETE WORDS IN WORDKEY" << endl;
 	if(kword != other.kword.sub(0, kword.length()))
@@ -232,8 +230,6 @@ WordKey::SetToFollowingInSortOrder(int position)
 
     return(OK);
 }
-
-
 
 //
 // Return true if the key may be used as a prefix for search.
@@ -418,7 +414,7 @@ int WordKey::Merge(const WordKey& other)
     {
       switch(info0.sort[j].type) 
       {
-      case WORD_ISA_String: 
+      case WORD_ISA_STRING: 
 	  SetWord(other.GetWord());
 	  break;
       default:
@@ -451,7 +447,7 @@ WordKey::Get(String& buffer) const
       {
 	  switch(info0.sort[j].type) 
 	  {
-	  case WORD_ISA_String:  buffer << GetWord();          break;
+	  case WORD_ISA_STRING:  buffer << GetWord();          break;
 	  case WORD_ISA_NUMBER:  buffer << GetInSortOrder(j);  break;
   	  default:
   	      cerr << "WordKey::operator <<: invalid type " << info0.sort[j].type << " for field (in sort order) " << j << "\n";
@@ -580,9 +576,8 @@ void WordKey::Print() const
 // ********************************
 // ************** DEBUGING ********
 // ********************************
-class BitStream;
 void
-WordKey::show_packed(const String& key,int type/*=0*/)
+WordKey::ShowPacked(const String& key,int type/*=0*/)
 {
     int i;
     char c;
@@ -609,7 +604,6 @@ WordKey::show_packed(const String& key,int type/*=0*/)
     }
 }
 
-
 void
 WordKey::SetRandom()
 {
@@ -635,50 +629,3 @@ WordKey::SetRandom()
     SetWord(Word);
 }
 
-
-
-void
-WordKeyInfo::SetKeyDescriptionRandom(int maxbitsize/*=100*/,int maxnnfields/*=10*/)
-{
-    int bitsize=HtRandom::rnd(1,maxbitsize/8);
-    bitsize*=8;// byte aligned (for word)
-    int nfields0=HtRandom::rnd(2,bitsize > maxnnfields ? maxnnfields : bitsize);
-    int i;
-    char sdesc[10000];
-    char sfield[10000];
-    sdesc[0]=0;
-
-    // build sortorder
-    sprintf(sfield,"nfields: %d",nfields0);
-    strcat(sdesc,sfield);
-
-    int *sortv=HtRandom::randomize_v(NULL,nfields0-1);
-
-    int bits;
-    int totbits=0;
-    // build fields
-    for(i=0;i<nfields0-1;i++)
-    {
-	int maxf=(bitsize-totbits)-nfields0+i+2;
-	if(maxf>32){maxf=32;}
-	bits=HtRandom::rnd(1,maxf);
-	if(i==nfields0-2)
-	{
-	    bits=maxf;
-	    if((totbits+bits)%8)
-	    {// argh really bad case :-(
-		WordKeyInfo::SetKeyDescriptionRandom(maxbitsize,maxnnfields);
-		return;
-	    }
-	}
-	totbits+=bits;
-	sprintf(sfield,"/Field%d %d %d",i,bits,sortv[i]+1);
-	strcat(sdesc,sfield);
-    }
-    sprintf(sfield,"/Word 0 0");
-    strcat(sdesc,sfield);
-
-//      if(verbose)cout << "SetRandomKeyDesc:" << sdesc << endl;
-    WordKeyInfo::SetKeyDescriptionFromString(sdesc);
-
-}

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.10 2000/01/06 13:58:29 bosc Exp $
+// $Id: word.cc,v 1.14.2.11 2000/01/06 14:42:31 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -191,7 +191,7 @@ static void dolist(params_t*)
 	
     // setup a new wordlist
     WordList words(config);
-    if(verbose)WordKeyInfo::Get()->show();	
+    if(verbose)WordKeyInfo::Get()->Show();	
     words.Open(config["word_db"], O_RDWR);
 
 
@@ -441,7 +441,7 @@ dokey(params_t* params)
 	    WordKeyInfo::SetKeyDescriptionRandom();
 	}
 
-  	if(verbose)WordKeyInfo::Get()->show();	
+  	if(verbose)WordKeyInfo::Get()->Show();	
 	for(ikey=0;ikey<20;ikey++)
 	{
 	    WordKey word;
@@ -468,9 +468,9 @@ dokey(params_t* params)
 	    if(failed)
 	    {
 		printf("DOKEY failed, original and packed/unpacked not equal\n");
-		WordKeyInfo::Get()->show();	
+		WordKeyInfo::Get()->Show();	
 		cout << "WORD :" << word << endl;
-		WordKey::show_packed(packed,1);
+		WordKey::ShowPacked(packed,1);
 		cout << "OTHER_WORD:" << other_word << endl;
 		exit(1);
 	    }
