@@ -279,6 +279,55 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="anchor_target">
+		anchor_target</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			When the first matched word in the excerpt is linked
+			to the closest anchor in the document, this string
+			can be set to specify a target in the link so the
+			resulting page is displayed in the desired frame.
+			This value will only be used if the
+			<a href="#add_anchors_to_excerpt">add_anchors_to_excerpt</a>
+			attribute is set to true, the <strong>EXCERPT</strong>
+			variable is used in the output template and the
+			excerpt is actually displayed with a link.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			anchor_target: body
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="any_keywords">
 		any_keywords</a></strong>
 	  </dt>
@@ -8655,7 +8704,7 @@
 	</dl>
 	<hr size="4" noshade>
 <!-- hhmts start -->
-Last modified: $Date: 2001/10/15 03:07:07 $
+Last modified: $Date: 2001/10/19 22:27:27 $
 <!-- hhmts end -->
   </body>
 </html>

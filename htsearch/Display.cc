@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.44 2001/09/28 20:39:48 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.45 2001/10/19 22:27:28 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -1592,6 +1592,7 @@ Display::hilight(char *str, String urlanchor, int fanchor)
 {
     static char		*start_highlight = config["start_highlight"];
     static char		*end_highlight = config["end_highlight"];
+    static char		*end_highlight = config["anchor_target"];
     static String	result;
     int			pos;
     int			which, length;
@@ -1606,7 +1607,12 @@ Display::hilight(char *str, String urlanchor, int fanchor)
 	ww = (WeightWord *) (*searchWords)[which];
 	result << start_highlight;
 	if (first && fanchor)
-	    result << "<a href=\"" << urlanchor << "\">";
+	{
+	    result << "<a ";
+	    if (*anchor_target)
+		result << "target=\"" << anchor_target << "\" ";
+	    result << "href=\"" << urlanchor << "\">";
+	}
 	result.append(str + pos, length);
 	if (first && fanchor)
 	    result << "</a>";

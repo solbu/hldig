@@ -1,3 +1,10 @@
+Fri Oct 19 17:24:19 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(hilight): Added Stefan Nehlsen's idea for
+	anchor_target attribute.
+	* htcommon/defaults.cc: Added default for it.
+	* htdoc/attrs.html, cf_by{name,prog}.html: Documented it.
+
 Sun Oct 14 22:05:30 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html (external_parsers): Documented external converter
