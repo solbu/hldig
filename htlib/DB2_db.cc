@@ -4,6 +4,9 @@
 // Implementation of DB2_db
 //
 // $Log: DB2_db.cc,v $
+// Revision 1.6  1999/01/07 04:05:59  ghutchis
+// Changed allocation of database cursors to match new API in version 2.6.4.
+//
 // Revision 1.5  1998/12/02 02:45:33  ghutchis
 //
 // Added fix from Alexander Bergolth for Berkeley DB under AIX.
@@ -31,7 +34,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: DB2_db.cc,v 1.5 1998/12/02 02:45:33 ghutchis Exp $";
+static char RCSid[] = "$Id: DB2_db.cc,v 1.6 1999/01/07 04:05:59 ghutchis Exp $";
 #endif
 
 #include "DB2_db.h"
@@ -97,7 +100,7 @@ DB2_db::OpenReadWrite(char *filename, int mode)
         //
 	// Acquire a cursor for the database.
 	//
-        if ((seqrc = dbp->cursor(dbp, NULL, &dbcp)) != 0)
+        if ((seqrc = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0)
 	{
             seqerr = seqrc;
 	    isOpen = 0;
@@ -137,7 +140,7 @@ DB2_db::OpenRead(char *filename)
         //
 	// Acquire a cursor for the database.
 	//
-        if ((seqrc = dbp->cursor(dbp, NULL, &dbcp)) != 0)
+        if ((seqrc = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0)
 	{
             seqerr = seqrc;
 	    isOpen = 0;
