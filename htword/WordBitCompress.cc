@@ -413,6 +413,10 @@ Compressor::put_fixedbitl(byte *vals,int n,char *tag)
     int cpos=bitpos;
     int i,j;
     add_tag(tag);
+
+    put(n,NBITS_NVALS,"size");
+    if(n==0){return 0;}
+
     byte maxv=vals[0];
     for(i=1;i<n;i++)
     {
@@ -421,8 +425,6 @@ Compressor::put_fixedbitl(byte *vals,int n,char *tag)
     }
     int nbits=num_bits(maxv);
     if(n>=pow2(NBITS_NVALS)){cerr << "Compressor::put_fixedbitl(byte *) : overflow: nvals>2^16" <<endl;fatal;}
-    put(n,NBITS_NVALS,"size");
-    if(n==0){return 0;}
     put(nbits,NBITS_NBITS_CHARVAL,"nbits");
     add_tag("data");
     for(i=0;i<n;i++)
