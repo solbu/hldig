@@ -1277,8 +1277,9 @@
             The external parser is to write information for
             htdig on its standard output.<br>
              The output consists of records, each record terminated
-            with a newline. Each record is a series of non-empty tab
-            separated fields. The first field is a single character
+            with a newline. Each record is a series of (unless
+            expressively allowed to be empty) non-empty tab-separated
+            fields. The first field is a single character
             that specifies the record type. The rest of the fields
             are determined by the record type. 
             <table border="1">
@@ -1465,6 +1466,37 @@
                 <td>
                   An URL that points at an image that is part of
                   the document.
+                </td>
+              </tr>
+              <tr>
+                <th rowspan="3" valign="top">
+                  m
+                </th>
+                <td valign="top">
+                  http-equiv
+                </td>
+                <td>
+                  The HTTP-EQUIV attribute of a <a
+                  href="meta.html"><i>META</i> tag</a>.
+                  May be empty.
+                </td>
+              </tr>
+              <tr>
+                <td valign="top">
+                  name
+                </td>
+                <td>
+                  The NAME attribute of this <i>META</i>
+                  tag</a>.  May be empty.
+                </td>
+              </tr>
+              <tr>
+                <td valign="top">
+                  contents
+                </td>
+                <td>
+                  The CONTENTS attribute of this <i>META</i> tag</a>.
+                  May be empty.
                 </td>
               </tr>
             </table>

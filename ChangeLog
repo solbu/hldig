@@ -1,3 +1,9 @@
+Thu Jan 14 03:16:15 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htdig/ExternalParser.cc (parse): Added support for 'm': meta element.
+
+	* htdoc/attrs.html: Document it.
+
 Wed Jan 13 21:31:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* Makefile.in(install): Add wrapper.html to the common directory
