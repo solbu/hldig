@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.5 1999/07/22 10:35:44 angus Exp $
+// $Id: Transport.cc,v 1.6 1999/07/22 15:22:36 angus Exp $
 //
 //
 
@@ -96,10 +96,17 @@ Transport::Transport()
 
 
  ///////
-    //    Empty destructor
+    //    Destructor
  ///////
 
-Transport::~Transport() { CloseConnection(); }
+Transport::~Transport()
+{
+
+   // Close the connection that was still up
+   if (CloseConnection() && debug > 3)
+	    cout << "Closing previous connection with the remote host" << endl;
+
+}
 
 
  ///////

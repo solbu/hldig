@@ -125,11 +125,7 @@ HtHTTP::HtHTTP()
 
 HtHTTP::~HtHTTP()
 {
-   // Close the connection that was still up
-
-   if (CloseConnection() && debug > 3)
-	    cout << "Closing previous connection with the remote host" << endl;
-
+   // It's empty
 }
 
 

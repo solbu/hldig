@@ -1,3 +1,7 @@
+Thu Jul 22 18:10:00 1999 CEST Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htdig/Transport.cc, htdig/HtHTTP.cc : modified the destructors.
+
 Thu Jul 22 13:10:00 1999 CEST Gabriele Bartolini <g.bartol@comune.prato.it>
 
 	* htdig/Transport.cc, htdig/Transport.h, htdig/HtHTTP.cc, htdig/HtHTTP.h :
