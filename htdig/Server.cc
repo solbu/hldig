@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Server.cc,v 1.23 2003/10/12 07:23:20 lha Exp $
+// $Id: Server.cc,v 1.24 2003/10/15 16:17:16 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -316,9 +316,13 @@ void Server::robotstxt(Document &doc)
 	    if (*rest)
 	    {
 		if (pattern.length())
-		    pattern << '|' << rest;
-		else
-		    pattern = rest;
+		    pattern << '|';
+		while (*rest)
+		{
+		    if (strchr("^.[$()|*+?{\\", *rest))
+			pattern << '\\';
+		    pattern << *rest++;
+		}
 	    }
 	}
 	//
@@ -332,7 +336,9 @@ void Server::robotstxt(Document &doc)
     if (debug > 1)
 	cout << "Pattern: " << pattern << endl;
 		
-    _disallow.set(pattern, config->Boolean("case_sensitive"));
+    String	fullpatt = "^[^:]*://[^/]*(";
+    fullpatt << pattern << ')';
+    _disallow.set(fullpatt, config->Boolean("case_sensitive"));
 }
 
 

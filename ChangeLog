@@ -1,3 +1,9 @@
+Wed Oct 15 11:12:52 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+    * htdig/Server.cc (robotstxt): Patched to fix bug #765726.
+      Don't block paths with subpaths excluded by robots.txt, and make
+      sure any regex meta characters are properly escaped.
+
 Tue Oct 14 11:54:07 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htnet/HtHTTP.cc: add an empty Accept-Encoding header - this inform the
