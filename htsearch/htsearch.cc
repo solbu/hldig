@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.38 1999/07/10 02:17:45 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.39 1999/08/10 01:16:57 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -102,7 +102,9 @@ main(int ac, char **av)
     //
     // Parse the CGI parameters.
     //
-    cgi		input(optind < ac ? av[optind] : "");
+    char	*input_str;
+    strcpy(input_str, (optind < ac ? av[optind] : ""));
+    cgi		input(input_str);
 
     //
     // Compile the URL limit pattern.
