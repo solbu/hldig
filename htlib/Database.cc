@@ -4,6 +4,9 @@
 // Implementation of Database
 //
 // $Log: Database.cc,v $
+// Revision 1.4  1999/01/23 01:25:02  hp
+// Fixed _some_ missing const qualifiers on common methods (requiring temps)
+//
 // Revision 1.3  1998/06/21 23:20:06  turtle
 // patches by Esa and Jesse to add BerkeleyDB and Prefix searching
 //
@@ -15,7 +18,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Database.cc,v 1.3 1998/06/21 23:20:06 turtle Exp $";
+static char RCSid[] = "$Id: Database.cc,v 1.4 1999/01/23 01:25:02 hp Exp $";
 #endif
 
 #include "Database.h"
@@ -38,10 +41,10 @@ Database::~Database()
 
 
 //*****************************************************************************
-// int Database::Put(char *key, String &data)
+// int Database::Put(char *key, const String &data)
 //
 int
-Database::Put(char *key, String &data)
+Database::Put(char *key, const String &data)
 {
     String		k(key);
 

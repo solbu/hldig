@@ -4,12 +4,15 @@
 // Implementation of GDBM_db
 //
 // $Log: GDBM_db.cc,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.2  1999/01/23 01:25:02  hp
+// Fixed _some_ missing const qualifiers on common methods (requiring temps)
+//
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: GDBM_db.cc,v 1.1 1997/02/03 17:11:05 turtle Exp $";
+static char RCSid[] = "$Id: GDBM_db.cc,v 1.2 1999/01/23 01:25:02 hp Exp $";
 #endif
 
 #include "GDBM_db.h"
@@ -124,10 +127,10 @@ GDBM_db::Get_Next()
 
 
 //*****************************************************************************
-// int GDBM_db::Put(String &key, String &data)
+// int GDBM_db::Put(const String &key, const String &data)
 //
 int
-GDBM_db::Put(String &key, String &data)
+GDBM_db::Put(const String &key, const String &data)
 {
     datum	k, d;
 
@@ -145,10 +148,10 @@ GDBM_db::Put(String &key, String &data)
 
 
 //*****************************************************************************
-// int GDBM_db::Get(String &key, String &data)
+// int GDBM_db::Get(const String &key, String &data)
 //
 int
-GDBM_db::Get(String &key, String &data)
+GDBM_db::Get(const String &key, String &data)
 {
     datum	k, d;
 
@@ -170,10 +173,10 @@ GDBM_db::Get(String &key, String &data)
 
 
 //*****************************************************************************
-// int GDBM_db::Exists(String &key)
+// int GDBM_db::Exists(const String &key)
 //
 int
-GDBM_db::Exists(String &key)
+GDBM_db::Exists(const String &key)
 {
     datum	k;
 
@@ -188,10 +191,10 @@ GDBM_db::Exists(String &key)
 
 
 //*****************************************************************************
-// int GDBM_db::Delete(String &key)
+// int GDBM_db::Delete(const String &key)
 //
 int
-GDBM_db::Delete(String &key)
+GDBM_db::Delete(const String &key)
 {
     datum	k;
 

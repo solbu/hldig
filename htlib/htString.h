@@ -1,7 +1,10 @@
 //
-// $Id: htString.h,v 1.3 1999/01/14 01:09:13 ghutchis Exp $
+// $Id: htString.h,v 1.4 1999/01/23 01:25:03 hp Exp $
 //
 // $Log: htString.h,v $
+// Revision 1.4  1999/01/23 01:25:03  hp
+// Fixed _some_ missing const qualifiers on common methods (requiring temps)
+//
 // Revision 1.3  1999/01/14 01:09:13  ghutchis
 // Small speed improvements based on gprof.
 //
@@ -63,7 +66,7 @@ public:
     //
     // Assignment
     //
-    void		operator = (String &s);
+    void		operator = (const String &s);
     void		operator = (char *s);
     void		operator += (String &s);
     void		operator += (char *s);

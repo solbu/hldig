@@ -4,6 +4,9 @@
 // Implementation of DocumentDB
 //
 // $Log: DocumentDB.cc,v $
+// Revision 1.9  1999/01/23 01:25:00  hp
+// Fixed _some_ missing const qualifiers on common methods (requiring temps)
+//
 // Revision 1.8  1999/01/21 13:40:13  ghutchis
 // Use HtURLCodec; ::encode() and ::decode() the URL used as a key.
 //
@@ -145,9 +148,7 @@ int DocumentDB::Add(DocumentRef &doc)
     temp = 0;
     doc.Serialize(temp);
 
-    // We need a named temporary since String can't copy from "const String &".
-    String coded_url = HtURLCodec::instance()->encode(url);
-    dbf->Put(coded_url, temp);
+    dbf->Put(HtURLCodec::instance()->encode(url), temp);
     return OK;
 }
 
@@ -161,9 +162,7 @@ DocumentRef *DocumentDB::operator [] (char *u)
     String			url = u;
     url.lowercase();
 
-    // We need a named temporary since String can't copy from "const String &".
-    String coded_url = HtURLCodec::instance()->encode(url);
-    if (dbf->Get(coded_url, data) == NOTOK)
+    if (dbf->Get(HtURLCodec::instance()->encode(url), data) == NOTOK)
 	return 0;
 
     DocumentRef		*ref = new DocumentRef;
@@ -180,10 +179,7 @@ int DocumentDB::Exists(char *u)
     String			url = u;
     url.lowercase();
 
-    // We need a named temporary since String can't copy from "const String &".
-    String coded_url = HtURLCodec::instance()->encode(url);
-
-    return dbf->Exists(coded_url);
+    return dbf->Exists(HtURLCodec::instance()->encode(url));
 }
 
 
@@ -195,10 +191,7 @@ int DocumentDB::Delete(char *u)
     String			url = u;
     url.lowercase();
 
-    // We need a named temporary since String can't copy from "const String &".
-    String coded_url = HtURLCodec::instance()->encode(url);
-
-    return dbf->Delete(coded_url);
+    return dbf->Delete(HtURLCodec::instance()->encode(url));
 }
 
 

@@ -6,6 +6,9 @@
 // AWS	10/13/93	Fixed the constructors and operator = routines so that a NULL can be passed
 //
 // $Log: String.cc,v $
+// Revision 1.14  1999/01/23 01:25:03  hp
+// Fixed _some_ missing const qualifiers on common methods (requiring temps)
+//
 // Revision 1.13  1999/01/14 01:09:13  ghutchis
 // Small speed improvements based on gprof.
 //
@@ -54,7 +57,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.13 1999/01/14 01:09:13 ghutchis Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.14 1999/01/23 01:25:03 hp Exp $";
 #endif
 
 
@@ -136,7 +139,7 @@ String::~String()
 	delete [] Data;
 }
 
-void String::operator = (String &s)
+void String::operator = (const String &s)
 {
     Length = s.length();
     allocate_space(Length);

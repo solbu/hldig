@@ -3,9 +3,12 @@
 //
 // This is a class which defines the interface to a generic, simple database.
 //
-// $Id: Database.h,v 1.3 1998/06/21 23:20:07 turtle Exp $
+// $Id: Database.h,v 1.4 1999/01/23 01:25:02 hp Exp $
 //
 // $Log: Database.h,v $
+// Revision 1.4  1999/01/23 01:25:02  hp
+// Fixed _some_ missing const qualifiers on common methods (requiring temps)
+//
 // Revision 1.3  1998/06/21 23:20:07  turtle
 // patches by Esa and Jesse to add BerkeleyDB and Prefix searching
 //
@@ -48,14 +51,14 @@ public:
     virtual int		OpenReadWrite(char *filename, int mode = 0644) = 0;
     virtual int		OpenRead(char *filename) = 0;
     virtual int		Close() = 0;
-    int			Put(char *key, String &data);
+    int			Put(char *key, const String &data);
     int			Put(char *key, char *data, int size);
-    virtual int		Put(String &key, String &data) = 0;
+    virtual int		Put(const String &key, const String &data) = 0;
     int			Get(char *key, String &data);
-    virtual int		Get(String &key, String &data) = 0;
-    virtual int		Exists(String &key) = 0;
+    virtual int		Get(const String &key, String &data) = 0;
+    virtual int		Exists(const String &key) = 0;
     int			Exists(char *key);
-    virtual int		Delete(String &key) = 0;
+    virtual int		Delete(const String &key) = 0;
     int			Delete(char *key);
 
     virtual void	Start_Get() = 0;

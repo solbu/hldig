@@ -4,6 +4,9 @@
 // Implementation of DB2_db
 //
 // $Log: DB2_db.cc,v $
+// Revision 1.7  1999/01/23 01:25:02  hp
+// Fixed _some_ missing const qualifiers on common methods (requiring temps)
+//
 // Revision 1.6  1999/01/07 04:05:59  ghutchis
 // Changed allocation of database cursors to match new API in version 2.6.4.
 //
@@ -34,7 +37,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: DB2_db.cc,v 1.6 1999/01/07 04:05:59 ghutchis Exp $";
+static char RCSid[] = "$Id: DB2_db.cc,v 1.7 1999/01/23 01:25:02 hp Exp $";
 #endif
 
 #include "DB2_db.h"
@@ -287,10 +290,10 @@ DB2_db::Get_Next_Seq()
 
 
 //*****************************************************************************
-// int DB2_db::Put(String &key, String &data)
+// int DB2_db::Put(const String &key, const String &data)
 //
 int
-DB2_db::Put(String &key, String &data)
+DB2_db::Put(const String &key, const String &data)
 {
     DBT	k, d;
 
@@ -315,10 +318,10 @@ DB2_db::Put(String &key, String &data)
 
 
 //*****************************************************************************
-// int DB2_db::Get(String &key, String &data)
+// int DB2_db::Get(const String &key, String &data)
 //
 int
-DB2_db::Get(String &key, String &data)
+DB2_db::Get(const String &key, String &data)
 {
     DBT	k, d;
 
@@ -339,10 +342,10 @@ DB2_db::Get(String &key, String &data)
 
 
 //*****************************************************************************
-// int DB2_db::Exists(String &key)
+// int DB2_db::Exists(const String &key)
 //
 int
-DB2_db::Exists(String &key)
+DB2_db::Exists(const String &key)
 {
     String data;
 
@@ -354,10 +357,10 @@ DB2_db::Exists(String &key)
 
 
 //*****************************************************************************
-// int DB2_db::Delete(String &key)
+// int DB2_db::Delete(const String &key)
 //
 int
-DB2_db::Delete(String &key)
+DB2_db::Delete(const String &key)
 {
     DBT	k;
 

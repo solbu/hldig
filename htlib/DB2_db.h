@@ -1,9 +1,12 @@
 //
 // DB2_db.h
 //
-// $Id: DB2_db.h,v 1.1 1998/06/21 23:20:06 turtle Exp $
+// $Id: DB2_db.h,v 1.2 1999/01/23 01:25:02 hp Exp $
 //
 // $Log: DB2_db.h,v $
+// Revision 1.2  1999/01/23 01:25:02  hp
+// Fixed _some_ missing const qualifiers on common methods (requiring temps)
+//
 // Revision 1.1  1998/06/21 23:20:06  turtle
 // patches by Esa and Jesse to add BerkeleyDB and Prefix searching
 //
@@ -33,7 +36,7 @@ public:
     virtual int		OpenReadWrite(char *filename, int mode);
     virtual int		OpenRead(char *filename);
     virtual int		Close();
-    virtual int		Delete(String &);
+    virtual int		Delete(const String &);
 	
     virtual void	Start_Get();
     virtual char	*Get_Next();
@@ -54,9 +57,9 @@ private:
 
     DB_ENV		*db_init(char *);
 
-    virtual int		Get(String &, String &);
-    virtual int		Put(String &, String &);
-    virtual int		Exists(String &);
+    virtual int		Get(const String &, String &);
+    virtual int		Put(const String &, const String &);
+    virtual int		Exists(const String &);
 };
 
 #endif

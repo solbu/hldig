@@ -4,6 +4,9 @@
 // Implementation of BTree
 //
 // $Log: BTree.cc,v $
+// Revision 1.3  1999/01/23 01:25:02  hp
+// Fixed _some_ missing const qualifiers on common methods (requiring temps)
+//
 // Revision 1.2  1998/06/22 04:33:18  turtle
 // New Berkeley database stuff
 //
@@ -12,7 +15,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: BTree.cc,v 1.2 1998/06/22 04:33:18 turtle Exp $";
+static char RCSid[] = "$Id: BTree.cc,v 1.3 1999/01/23 01:25:02 hp Exp $";
 #endif
 
 #include "BTree.h"
@@ -110,9 +113,9 @@ int BTree::Close()
 
 
 //*******************************************************************************
-// int BTree::Put(DB_Data &key, DB_Data &data)
+// int BTree::Put(const DB_Data &key, const DB_Data &data)
 //
-int BTree::Put(DB_Data &key, DB_Data &data)
+int BTree::Put(const DB_Data &key, const DB_Data &data)
 {
     if (!funcs)
     {
@@ -123,9 +126,9 @@ int BTree::Put(DB_Data &key, DB_Data &data)
 
 
 //*******************************************************************************
-// int BTree::Get(DB_Data &key, DB_Data &data)
+// int BTree::Get(const DB_Data &key, DB_Data &data)
 //
-int BTree::Get(DB_Data &key, DB_Data &data)
+int BTree::Get(const DB_Data &key, DB_Data &data)
 {
     if (!funcs)
     {
@@ -136,9 +139,9 @@ int BTree::Get(DB_Data &key, DB_Data &data)
 
 
 //*******************************************************************************
-// int BTree::Exists(DB_Data &key)
+// int BTree::Exists(const DB_Data &key)
 //
-int BTree::Exists(DB_Data &key)
+int BTree::Exists(const DB_Data &key)
 {
     if (!funcs)
     {

@@ -4,6 +4,9 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.21  1999/01/23 01:25:00  hp
+// Fixed _some_ missing const qualifiers on common methods (requiring temps)
+//
 // Revision 1.20  1999/01/21 13:40:40  ghutchis
 // Use HtURLCodec; ::encode() and ::decode() the URL used as a key.
 //
@@ -522,10 +525,7 @@ void DocumentRef::Deserialize(String &stream)
 	      String tmps;
 	      getstring(x, s, tmps);
 
-              // String cannot copy from "const String &", so we
-              // have to construct a new one.
-              String tmpurl = HtURLCodec::instance()->decode(tmps);
-	      docURL = tmpurl;
+	      docURL = HtURLCodec::instance()->decode(tmps);
 	    }
 	    break;
         case DOC_HEAD:

@@ -1,3 +1,24 @@
+Sat Jan 23 01:18:05 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htlib/String.cc (operator =): Add const modifier: const String &.
+	* htlib/htString.h (String::operator=(const String &)): Ditto.
+
+	* htlib/DB2_db.h (class DB2_db): Make Put(), Get(), Exists() and
+	Delete() use const modifiers on appropriate parameters.
+	* htlib/DB2_db.cc: Ditto.
+	* htlib/GDBM_db.h (class GDBM_db): Ditto.
+	* htlib/GDBM_db.cc: Ditto.
+	* htlib/Database.h (class Database): Ditto.
+	* htlib/Database.cc (Put): Similar.
+
+	* htlib/BTree.h (class BTree): Make Put(), Get() and Exists() use
+	const modifiers on appropriate parameters.
+	* htlib/BTree.cc: Ditto.
+
+	* htcommon/DocumentDB.cc (Add, operator[], Exists, Delete): Remove
+	needless temporary String.
+	* htcommon/DocumentRef.cc (Deserialize): Ditto.
+
 Thu Jan 21 05:30:40 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htlib/HtURLCodec.h, htlib/HtURLCodec.cc, htlib/HtWordCodec.cc,
