@@ -1,3 +1,14 @@
+Wed Jan 27 20:00:40 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc, htdig/SGMLEntities.cc, htdig/ExternalParser.cc,
+	htcommon/WordList.cc, htcommon/DocumentRef.cc: Speedup by
+	converting many config lookups into static variables.
+
+	* htdoc/attrs.html, htdoc/hts_templates.cc, htdoc/cf_byname.html,
+	htdoc/cf_byprog.html: Various minor fixes.
+
+	* htsearch/Display.cc: Fix problems with star_patterns attribute.
+
 Wed Jan 27 13:02:39 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/SGMLEntities.cc: Use StringMatch class for matching
