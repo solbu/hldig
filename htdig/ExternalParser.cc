@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.17 2000/12/12 19:04:33 grdetil Exp $
+// $Id: ExternalParser.cc,v 1.19.2.18 2000/12/12 19:29:47 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -264,7 +264,11 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     // Parent Process
     delete [] parsargs;
     close(stdout_pipe[1]); // Close STDOUT for writing
+#ifdef O_BINARY
+    FILE *input = fdopen(stdout_pipe[0], "rb");
+#else
     FILE *input = fdopen(stdout_pipe[0], "r");
+#endif
     if (input == NULL)
     {
       if (debug)
@@ -273,7 +277,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
       return;
     }
 
-    while (readLine(input, line))
+    while ((!get_file || get_hdr) && readLine(input, line))
     {
 	if (get_hdr)
 	{
@@ -290,23 +294,9 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	    }
 	    continue;
 	}
-	if (get_file)
-	{
-	    if (newcontent.length() == 0 &&
-		!canParse(convertToType) &&
-		mystrncasecmp((char*)convertToType, "text/", 5) != 0)
-	    {
-		if (mystrcasecmp((char*)convertToType, "user-defined") == 0)
-		    cerr << "External parser error: no Content-Type given\n";
-		else
-		    cerr << "External parser error: can't parse Content-Type \""
-			 << convertToType << "\"\n";
-		cerr << " URL: " << base.get() << "\n";
-		break;
-	    }
-	    newcontent << line << '\n';
-	    continue;
-	}
+#ifdef O_BINARY
+	line.chop('\r');
+#endif
 	token1 = strtok(line, "\t");
 	if (token1 == NULL)
 	    token1 = "";
@@ -493,6 +483,26 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		break;
 	}
     } // while(readLine)
+    if (get_file)
+    {
+	if (!canParse(convertToType) &&
+	    mystrncasecmp((char*)convertToType, "text/", 5) != 0)
+	{
+	    if (mystrcasecmp((char*)convertToType, "user-defined") == 0)
+		cerr << "External parser error: no Content-Type given\n";
+	    else
+		cerr << "External parser error: can't parse Content-Type \""
+		     << convertToType << "\"\n";
+	    cerr << " URL: " << base.get() << "\n";
+	}
+	else
+	{
+	    char	buffer[2048];
+	    int		length;
+	    while ((length = fread(buffer, 1, sizeof(buffer), input)) > 0)
+		newcontent.append(buffer, length);
+	}
+    }
     fclose(input);
     // close(stdout_pipe[0]); // This is closed for us by the fclose()
     int rpid, status;

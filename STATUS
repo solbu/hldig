@@ -25,9 +25,6 @@ KNOWN BUGS:
    we fix this?)
 * META descriptions are somehow added to the database as FLAG_TITLE,
    not FLAG_DESCRIPTION. (PR#859)
-* If external converters have NULs in output, ExternalParser.cc will
-   mangle the data. Could be a problem when "chaining" parsers, e.g. if
-   an intermediate output is application/pdf.
 
 PENDING PATCHES (available but need work):
 * Additional support for Win32.
@@ -50,6 +47,9 @@ TESTING:
 * htsearch phrase support tests
 * Tests for new config file parser
 * Duplicate document detection while indexing
+* Major revisions to ExternalParser.cc, including fork/exec instead of popen,
+  argument handling for parser/converter, allowing binary output from an
+  external converter.
 
 DOCUMENTATION:
 * Need a list of "related projects" inc. mifluz, ht://Check, ConfigDig, etc.
