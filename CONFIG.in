@@ -62,14 +62,14 @@ DEFAULT_CONFIG_FILE=   $(CONFIG_DIR)/htdig.conf
 # The directory where your HTTP server looks for CGI programs.  This is where
 # htsearch will get installed.
 #
-CGIBIN_DIR=             /opt/www/cgi-bin
+CGIBIN_DIR=             @CGIBIN_DIR@
 
 #
 # IMAGE_DIR
 # Define this to be a place that can be accessed by your web server.  This is
 # where a couple of images will be placed.
 #
-IMAGE_DIR=              /opt/www/htdocs/htdig
+IMAGE_DIR=              @IMAGE_DIR@
 
 #
 # IMAGE_URL_PREFIX
@@ -82,7 +82,7 @@ IMAGE_URL_PREFIX=        /htdig
 # Set this to the absolute path where you want the sample search form to
 # be installed.
 #
-SEARCH_DIR=		/opt/www/htdocs/htdig
+SEARCH_DIR=		@SEARCH_DIR@
 
 #
 # SEARCH_FORM

@@ -26,6 +26,20 @@ AC_PREFIX_DEFAULT(/opt/www/htdig)
 HTDIG_TOP=`pwd`
 AC_SUBST(HTDIG_TOP)
 
+dnl Get any --with or --disable flags now
+dnl This looks a little messy, but it's word-wrapping problems :-(
+AC_ARG_ENABLE(zlib,[  --disable-zlib          do not compile with zlib support],
+	WITH_ZLIB=$enableval, WITH_ZLIB="yes")
+AC_ARG_WITH(cgi-bin-dir, [  --with-cgi-bin-dir=DIR  where your cgi-bin directory is],
+	CGIBIN_DIR="$withval", CGIBIN_DIR="/opt/www/cgi-bin")
+AC_SUBST(CGIBIN_DIR)
+AC_ARG_WITH(image-dir, [  --with-image-dir=DIR    where the ht://Dig images are installed],
+	IMAGE_DIR="$withval", IMAGE_DIR="/opt/www/htdocs/htdig")
+AC_SUBST(IMAGE_DIR)
+AC_ARG_WITH(search-dir, [  --with-search-dir=DIR   where the sample search form should be installed],
+	SEARCH_DIR="$withval", SEARCH_DIR="/opt/www/htdocs/htdig")
+AC_SUBST(SEARCH_DIR)
+
 echo configuring ht://Dig version $VERSION
 
 dnl Checks for programs.
@@ -49,7 +63,9 @@ AC_AIX
 dnl Checks for libraries.
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, t_accept)
+if test $WITH_ZLIB = yes; then
 AC_CHECK_LIB(z, deflate)
+fi
 
 AC_SUBST(CXXFLAGS)dnl
 AC_SUBST(LDFLAGS)dnl
