@@ -3,70 +3,9 @@
 //
 // Implementation of URL
 //
-// $Log: URL.cc,v $
-// Revision 1.17  1999/01/15 04:37:17  ghutchis
-// Fix looping in query string caused by slashes. Noted by Adam Coyne
-// <adam@criticalmass.com>.
-//
-// Revision 1.16  1999/01/08 19:39:19  bergolth
-// bugfixes in htdig/Plaintext.cc and htlib/URL.cc
-//
-// Revision 1.15  1998/12/27 14:22:58  bergolth
-// Fixed memory leaks and local_default_doc bug.
-//
-// Revision 1.14  1998/12/19 14:39:41  bergolth
-// Added StringList::Join and fixed URL::removeIndex.
-//
-// Revision 1.13  1998/12/05 00:51:36  ghutchis
-// Allow server_alias to work under virtual hosts.
-//
-// Revision 1.12  1998/11/27 18:36:47  ghutchis
-//
-// Considers URLs with "%7E" to be equivalent to "~"
-//
-// Revision 1.11  1998/10/31 23:58:22  ghutchis
-//
-// Fixed compiler warning.
-//
-// Revision 1.10  1998/10/26 20:44:00  ghutchis
-//
-// Cleaned up -Wall warnings.
-//
-// Revision 1.9  1998/10/21 16:34:19  bergolth
-// Added translation of server names. Additional limiting after normalization of the URL.
-//
-// Revision 1.8  1998/09/07 04:27:39  ghutchis
-//
-// Bug fixes.
-//
-// Revision 1.7  1998/05/26 03:58:10  turtle
-// Got rid of compiler warnings.
-//
-// Revision 1.6  1997/12/11 00:28:58  turtle
-// Added double slash removal code.  These were causing loops.
-//
-// Revision 1.5  1997/07/07 21:23:43  turtle
-// Sequences of "/./" are now replaced with "/" to reduce the chance of
-// infinite loops
-//
-// Revision 1.4  1997/07/03 17:44:38  turtle
-// Added support for virtual hosts
-//
-// Revision 1.3  1997/04/27 14:43:30  turtle
-// changes
-//
-// Revision 1.2  1997/02/07 18:04:13  turtle
-// Fixed problem with anchors without a URL
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-// Revision 1.0  1995/08/22 17:07:43  turtle
-// Support for HTTP only
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.17 1999/01/15 04:37:17 ghutchis Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.18 1999/01/27 00:26:05 ghutchis Exp $";
 #endif
 
 #include "URL.h"
@@ -384,7 +323,10 @@ void URL::normalizePath()
     // We will rewrite the path to be the minimal.
     //
     int	i, limit;
-    while ((i = _path.indexOf("/../")) >= 0)
+    int	pathend = _path.indexOf('?');	// Don't mess up query strings.
+    if (pathend < 0)
+        pathend = _path.length();
+    while ((i = _path.indexOf("/../")) >= 0 && i < pathend)
     {
         if ((limit = _path.lastIndexOf('/', i - 1)) >= 0)
         {
@@ -397,39 +339,51 @@ void URL::normalizePath()
         {
             _path = _path.sub(i + 3).get();
         }
+        pathend = _path.indexOf('?');
+        if (pathend < 0)
+            pathend = _path.length();
     }
 
     //
     // Also get rid of redundent "/./".  This could cause infinite
     // loops.
     //
-    while ((i = _path.indexOf("/./")) >= 0)
+    while ((i = _path.indexOf("/./")) >= 0 && i < pathend)
     {
         String	newPath;
         newPath << _path.sub(0, i).get();
         newPath << _path.sub(i + 2).get();
         _path = newPath;
+        pathend = _path.indexOf('?');
+        if (pathend < 0)
+            pathend = _path.length();
     }
 
     //
     // Furthermore, get rid of "//".  This could also cause loops
     //
-    while ((i = _path.indexOf("//")) >= 0)
+    while ((i = _path.indexOf("//")) >= 0 && i < pathend)
     {
         String  newPath;
         newPath << _path.sub(0, i).get();
         newPath << _path.sub(i + 1).get();
         _path = newPath;
+        pathend = _path.indexOf('?');
+        if (pathend < 0)
+            pathend = _path.length();
     }
 
     // Finally change all "%7E" to "~" for sanity
-    while ((i = _path.indexOf("%7E")) >= 0)
+    while ((i = _path.indexOf("%7E")) >= 0 && i < pathend)
       {
         String  newPath;
         newPath << _path.sub(0, i).get();
 	newPath << "~";
         newPath << _path.sub(i + 3).get();
         _path = newPath;
+        pathend = _path.indexOf('?');
+        if (pathend < 0)
+            pathend = _path.length();
       }
 }
 
@@ -462,7 +416,7 @@ void URL::path(char *newpath)
 
 //*****************************************************************************
 // void URL::removeIndex(String &path)
-//   Attempt to remove the local_default_doc from the end of a URL path.
+//   Attempt to remove the remove_default_doc from the end of a URL path.
 //   This needs to be done to normalize the paths and make .../ the
 //   same as .../index.html
 //
@@ -479,11 +433,14 @@ void URL::removeIndex(String &path)
 
     if (! defaultdoc)
     {
-      StringList  l(config["local_default_doc"], " \t");
+      StringList  l(config["remove_default_doc"], " \t");
       defaultdoc = new StringMatch();
-      defaultdoc->Pattern(l.Join('l'));
+      defaultdoc->IgnoreCase();
+      defaultdoc->Pattern(l.Join('|'));
+      l.Release();
     }
-    if (defaultdoc->FindFirstWord(path.sub(filename)) >= 0)
+    if (defaultdoc->hasPattern() &&
+            defaultdoc->FindFirstWord(path.sub(filename)) >= 0)
 	path.chop(path.length() - filename);
 }
 
