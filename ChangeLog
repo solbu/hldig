@@ -1,3 +1,23 @@
+Thu Aug 17 23:59:26 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/conf_lexer.lxx: Patched to fix a bug reported by Abel
+	Deuring -- config filename stack was decremented too many times.
+
+	* htcommon/conf_lexer.cxx: Updated using flex 2.5.4.
+	
+Thu Aug 17 23:40:08 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htword/WordType.h (WordToken): Add non-destructive version of
+	HtWordToken using a passed int as a pointer into the
+	string. Add virtual destructor so class can be sub-classed.
+
+	* htword/WordType.cc (WordToken): Implement it.
+
+	* httools/htmerge.cc (mergeDB): Back out change of Aug. 9th --
+	WordSearchDescription has disappeared from htword
+	interfaces. Should be restored when Loic comes back and can
+	suggest an alternative.
+
 Thu Aug 17 16:59:05 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (createURL): Get rid of extra "config="
