@@ -1,3 +1,19 @@
+Wed Feb 23 15:11:51 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	[ Improve htsearch's HTML 4.0 compliance ]
+	* htsearch/TemplateList.cc (createFromString): Use file name rather
+	than internal name to select builtin-* templates, use $&(TITLE) and
+	$&(URL) in templates and quote HTML tag parameters.
+	* installdir/long.html, installdir/short.html: Use $&(TITLE) and
+	$&(URL) in templates and quote HTML tag parameters.
+	* htsearch/Display.cc (setVariables): quote all HTML tag parameters
+	in generated select lists.
+	* installdir/footer.html, installdir/header.html,
+	installdir/nomatch.html, installdir/search.html,
+	installdir/syntax.html, installdir/wrapper.html:
+	Use $&(var) where appropriate, and quote HTML tag parameters.
+	* installdir/htdig.conf: quote all HTML tag parameters.
+
 Wed Feb 23 13:40:27 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/URL.h (encodeURL): Change list of valid characters to

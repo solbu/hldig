@@ -1,24 +1,23 @@
 //
 // TemplateList.cc
 //
-// Implementation of TemplateList
 //
-// $Log: TemplateList.cc,v $
-// Revision 1.3  1998/09/10 04:16:26  ghutchis
+// TemplateList: As it sounds--a list of search result templates. Reads the 
+//               configuration and any template files from disk, then retrieves
+//               the relevant template for display.
 //
-// More bug fixes.
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// $Id: TemplateList.cc,v 1.8.2.1 2000/02/23 21:19:56 grdetil Exp $
 //
-//
-#if RELEASE
-static char RCSid[] = "$Id: TemplateList.cc,v 1.3 1998/09/10 04:16:26 ghutchis Exp $";
-#endif
 
 #include "TemplateList.h"
-#include <URL.h>
-#include <StringList.h>
+#include "URL.h"
+#include "StringList.h"
 
 //*****************************************************************************
 TemplateList::TemplateList()
@@ -37,12 +36,12 @@ TemplateList::~TemplateList()
 // name.  If no template can be found, NULL is returned.
 //
 Template *
-TemplateList::get(char *internalName)
+TemplateList::get(const String& internalName)
 {
     for (int i = 0; i < internalNames.Count(); i++)
     {
-	String	*s = (String *) internalNames[i];
-	if (mystrcasecmp(s->get(), internalName) == 0)
+	const String	*s = (const String *) internalNames[i];
+	if (mystrcasecmp(*s, internalName) == 0)
 	    return (Template *) templates[i];
     }
     return 0;
@@ -57,12 +56,14 @@ TemplateList::get(char *internalName)
 // created.  All other templates are read in from the specified
 // filename.
 //
-void
-TemplateList::createFromString(char *str)
+int
+TemplateList::createFromString(const String& str)
 {
     StringList	sl(str, "\t \r\n");
     String		display, internal, file;
     Template	*t;
+
+    if ( sl.Count() % 3) return 0; // Make sure we have a multiple of three
 
     for (int i = 0; i < sl.Count(); i += 3)
     {
@@ -75,25 +76,27 @@ TemplateList::createFromString(char *str)
 
 	t = new Template();
 		
-	if (mystrcasecmp(internal, "builtin-long") == 0)
+	if (mystrcasecmp((char*)file, "builtin-long") == 0)
 	{
 	    String	s;
-	    s << "<dl><dt><strong><a href=\"$(URL)\">$(TITLE)</a></strong>";
+	    s << "<dl><dt><strong><a href=\"$&(URL)\">$&(TITLE)</a></strong>";
 	    s << "$(STARSLEFT)\n";
 	    s << "</dt><dd>$(EXCERPT)<br>\n";
-	    s << "<i><a href=\"$(URL)\">$(URL)</a></i>\n";
-	    s << " <font size=-1>$(MODIFIED), $(SIZE) bytes</font>\n";
+	    s << "<i><a href=\"$&(URL)\">$&(URL)</a></i>\n";
+	    s << " <font size=\"-1\">$(MODIFIED), $(SIZE) bytes</font>\n";
 	    s << "</dd></dl>\n";
-	    t->setMatchTemplate(s);
+	    t->setMatchTemplate((char*)s);
 	}
-	else if (mystrcasecmp(internal, "builtin-short") == 0)
+	else if (mystrcasecmp((char*)file, "builtin-short") == 0)
 	{
-	    t->setMatchTemplate("$(STARSRIGHT) <strong><a href=\"$(URL)\">$(TITLE)</a></strong><br>\n");
+	    t->setMatchTemplate("$(STARSRIGHT) <strong><a href=\"$&(URL)\">$&(TITLE)</a></strong><br>\n");
 	}
 	else
 	{
-	    t->createFromFile(file);
+	    t->createFromFile((char*)file);
 	}
 	templates.Add(t);
     }
+    
+    return 1;
 }
