@@ -346,7 +346,7 @@ __memp_cmpr_write(dbmfp, bhp, db_io, niop)
     cmpr.next = 0;
   } while(buffp - buffcmpr < buffcmpr_length);
 
-#ifdef DEBUG
+#ifdef DEBUG_CMPR
   fprintf(stderr,"__memp_cmpr_write:: chain_length ... (num overflow pages):%2d\n",chain_length);
 #endif
   /*
@@ -720,7 +720,7 @@ __memp_cmpr_alloc(dbmfp, pgnop, bhp, first_nonreused_chain_posp)
 {
   int ret = 0;
 
-#ifdef DEBUG
+#ifdef DEBUG_CMPR
   fprintf(stderr,"__memp_cmpr_alloc:: bhp:%8x bhp->chain:%8x  first_nonreused_chain_posp:%2d\n",bhp,bhp->chain,*first_nonreused_chain_posp);
 #endif
   if(F_ISSET(bhp, BH_CMPR) && bhp->chain == NULL) {
@@ -741,7 +741,7 @@ __memp_cmpr_alloc(dbmfp, pgnop, bhp, first_nonreused_chain_posp)
   if((*first_nonreused_chain_posp) >= 0 && F_ISSET(bhp, BH_CMPR) && bhp->chain[*first_nonreused_chain_posp]) {
     *pgnop = bhp->chain[*first_nonreused_chain_posp];
     (*first_nonreused_chain_posp)++;
-#ifdef DEBUG
+#ifdef DEBUG_CMPR
     fprintf(stderr,"__memp_cmpr_alloc:: reusing page in chain \n");
 #endif
   } else {
@@ -754,7 +754,7 @@ __memp_cmpr_alloc(dbmfp, pgnop, bhp, first_nonreused_chain_posp)
 
     /* all pages in bhp->chain are now reused */
     (*first_nonreused_chain_posp) = -1;
-#ifdef DEBUG
+#ifdef DEBUG_CMPR
     fprintf(stderr,"__memp_cmpr_alloc:: no more resuable pages in chain\n");
 #endif
     
@@ -781,7 +781,7 @@ __memp_cmpr_alloc(dbmfp, pgnop, bhp, first_nonreused_chain_posp)
       /*
        * If the free list is empty, create a new page.
        */
-#ifdef DEBUG
+#ifdef DEBUG_CMPR
       fprintf(stderr,"__memp_cmpr_alloc:: no more free pages in weakcmpr! allocating\n");
 #endif
       if(ret == DB_NOTFOUND) {
@@ -797,7 +797,7 @@ __memp_cmpr_alloc(dbmfp, pgnop, bhp, first_nonreused_chain_posp)
 	ret = __db_panic(dbmfp->dbmp->dbenv, ret);
       }
     } else {
-#ifdef DEBUG
+#ifdef DEBUG_CMPR
       fprintf(stderr,"__memp_cmpr_alloc:: found free page  in weakcmpr! \n");
 #endif
       if(key.size != sizeof(db_pgno_t)) {
@@ -838,7 +838,7 @@ __memp_cmpr_free(dbmfp, pgno)
   DBT data;
   CMPR cmpr;
 
-#ifdef DEBUG
+#ifdef DEBUG_CMPR
   fprintf(stderr,"__memp_cmpr_free::  freeing page (inserting into weakcmpr):%3d \n",pgno);
 #endif
   if(db == 0) {
@@ -890,7 +890,7 @@ __memp_cmpr_alloc_chain(dbmfp, bhp)
 	    ret = __db_panic(dbmfp->dbmp->dbenv, EINVAL);
 	    goto err;
 	}
-#ifdef DEBUG
+#ifdef DEBUG_CMPR
 	fprintf(stderr,"__memp_cmpr_alloc_chain:: allocated chain:%8x\n",bhp->chain);
 #endif
 

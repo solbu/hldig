@@ -100,9 +100,6 @@ alloc:	if ((ret = __db_shalloc(dbmp->addr, len, MUTEX_ALIGNMENT, &p)) == 0) {
 
 		SH_TAILQ_REMOVE(&mp->bhfq, bhp, q, __bh);
 	        if(bhp->chain) {
-#ifdef DEBUG
-		   fprintf(stderr,"__memp_alloc:: freeing chain:%8x\n",bhp->chain);
-#endif
 		    __db_shalloc_free(dbmp->addr, bhp->chain);
 		}
 		__db_shalloc_free(dbmp->addr, bhp);

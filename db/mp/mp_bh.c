@@ -554,9 +554,6 @@ __memp_bhfree(dbmp, mfp, bhp, free_mem)
 	 */
 	if (free_mem) {
 	       if(bhp->chain) {
-#ifdef DEBUG
-		   fprintf(stderr,"__memp_bhfree:: freeing chain:%6x\n",bhp->chain);
-#endif
 		    __db_shalloc_free(dbmp->addr, bhp->chain);
 	       }
 		__db_shalloc_free(dbmp->addr, bhp);
