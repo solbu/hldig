@@ -9,7 +9,7 @@ top_builddir= ..
 
 OBJS = Document.o HTML.o Images.o HtHTTP.o Transport.o \
 	Parsable.o Plaintext.o Postscript.o \
-	Retriever.o SGMLEntities.o Server.o \
+	Retriever.o Server.o \
 	URLRef.o htdig.o ExternalParser.o PDF.o
 
 TARGET=		htdig

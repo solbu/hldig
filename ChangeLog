@@ -1,3 +1,7 @@
+Sat Jul  3 00:47:51 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Makefile.in: Remove old SGMLEntities code.
+
 Sat Jul  3 00:26:55 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/DocumentRef.cc (Clear): Change default value of
