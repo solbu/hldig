@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.cc,v 1.9.2.4 2000/04/20 01:54:01 ghutchis Exp $
+// $Id: StringList.cc,v 1.9.2.5 2000/05/08 13:33:48 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -28,31 +28,6 @@
 //
 StringList::StringList()
 {
-}
-
-
-//*****************************************************************************
-// StringList::~StringList()
-//
-StringList::~StringList()
-{
-}
-
-//*****************************************************************************
-// void StringList::~SRelease()
-//
-void StringList::SRelease()
-{
-    ListCursor  cursor;
-    int i;
-    int n = Count();
-
-    Start_Get(cursor);
-    Object	*obj;
-    for(i = 0; i < n && (obj = Get_Next(cursor)); i++) {
-	List::Remove(obj);
-	delete (String*)obj;
-    }
 }
 
 //*****************************************************************************

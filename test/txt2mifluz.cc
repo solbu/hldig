@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: txt2mifluz.cc,v 1.1.2.1 2000/05/06 18:20:46 loic Exp $
+// $Id: txt2mifluz.cc,v 1.1.2.2 2000/05/08 13:33:51 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -162,6 +162,7 @@ int main(int ac, char **av)
   words.Close();
 
   delete config;
+  free(params.dbfile);
 }
 
 // *****************************************************************************

@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.19 2000/05/06 21:55:47 loic Exp $
+// $Id: word.cc,v 1.14.2.20 2000/05/08 13:33:51 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -237,6 +237,10 @@ static void dolist(params_t*)
       if(verbose > 1) fprintf(stderr, "%s\n", (char*)wordRef.Get());
       // find matches in wordlist
       List *result = words[wordRef];
+      if(!result) {
+	fprintf(stderr, "dolist: words[wordRef] returned null pointer\n");
+	exit(1);
+      }
       result->Start_Get();
       int count = 0;
       WordReference* found;
@@ -990,6 +994,7 @@ public:
 	delete wresw;
 	delete wres;
 	delete all;
+	delete search;
 	return OK;
     }
 };

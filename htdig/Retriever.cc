@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.26 2000/04/06 04:19:26 ghutchis Exp $
+// $Id: Retriever.cc,v 1.72.2.27 2000/05/08 13:33:48 loic Exp $
 //
 
 #include "Retriever.h"
@@ -834,7 +834,6 @@ Retriever::IsValidURL(char *u)
     tmpList.Create(config.Find(&aUrl,"exclude_urls")," \t");
     HtRegex excludes;
     excludes.setEscaped(tmpList);
-    tmpList.SRelease();
     if (excludes.match(url, 0, 0) != 0)
       {
                 if (debug >= 2)
@@ -849,7 +848,6 @@ Retriever::IsValidURL(char *u)
     tmpList.Create(config.Find(&aUrl,"bad_querystr")," \t");
     HtRegex badquerystr;
     badquerystr.setEscaped(tmpList);
-    tmpList.SRelease();
     char *ext = strrchr((char*)url, '?');
     if (ext && badquerystr.match(url, 0, 0) != 0)
       {
@@ -923,8 +921,6 @@ Retriever::IsValidURL(char *u)
        return(FALSE);
     }  
 
-    tmpList.SRelease();
-    
   return TRUE;
 }
 
@@ -984,8 +980,10 @@ Retriever::GetLocal(char *url)
 	    defaultdocs->Add(def);
 	    p = strtok(0, " \t");
 	}
-	if (defaultdocs->Count() == 0)
+	if (defaultdocs->Count() == 0) {
 	    delete defaultdocs;
+	    defaultdocs = 0;
+	}
     }
 
     // Begin by hex-decoding URL...
@@ -997,9 +995,12 @@ Retriever::GetLocal(char *url)
     if (strchr(url, '~'))
     {
 	StringList *local = GetLocalUser(url, defaultdocs);
-	if (local)
+	if(defaultdocs) delete defaultdocs;
+	if (local) {
 	    return local;
+	}
     }
+    if(defaultdocs) delete defaultdocs;
 
     // This shouldn't happen, but check anyway...
     if (strstr(url, ".."))

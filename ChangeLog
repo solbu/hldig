@@ -1,3 +1,28 @@
+Mon May 08 17:16:00 2000  Loic Dachary  <loic@senga.org>
+
+	* htdig/Retriever.cc (GetLocal): fix leaked defaultdocs
+
+Mon May 08 04:27:47 2000  Loic Dachary  <loic@senga.org>
+
+	* htlib/StringList.cc (Create): remove SRelease. Deleting
+	  the strings is taken care of by the destructor thru 
+	  Destroy. If destruction of the Strings is not desirable
+	  Release should be used. SRelease was added apparently after
+	  a virtual constructor doing nothing was added to hide the
+	  default call to Destroy therefore leaking memory. 
+
+Mon May 08 01:28:25 2000  Loic Dachary  <loic@senga.org>
+
+	* test/txt2mifluz.cc,word.cc,search.cc: fix minor memory leaks.
+
+Sun May 07 19:24:12 2000  Loic Dachary  <loic@senga.org>
+
+	* Makefile.config (HTLIBS): add libht at end because htdb
+	  now depends on htlib.
+
+	* configure.in,htlib/Makefile.am: use LTLIBOBJS as suggested
+	  by the libtool documentation.
+
 Sun May 07 17:09:22 2000  Loic Dachary  <loic@senga.org>
 
 	* test/Makefile.am (clean-local): clean conf to prevent

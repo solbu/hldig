@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.h,v 1.7.2.3 2000/01/03 11:49:09 bosc Exp $
+// $Id: StringList.h,v 1.7.2.4 2000/05/08 13:33:48 loic Exp $
 //
 
 #ifndef _StringList_h_
@@ -27,10 +27,7 @@ public:
     // Construction/Destruction
     //
     StringList();
-    ~StringList();
 
-    void SRelease();
-    
     //
     // Creation of a String from a string or String
     //

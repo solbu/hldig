@@ -42,7 +42,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: search.cc,v 1.1.2.1 2000/05/06 18:20:46 loic Exp $
+// $Id: search.cc,v 1.1.2.2 2000/05/08 13:33:51 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1344,7 +1344,8 @@ public:
   virtual int ContextRestore(const String& buffer) {
     if(!buffer.empty()) {
       StringList list(buffer, ";");
-      return ContextRestoreList(list);
+      int ret = ContextRestoreList(list);
+      return ret;
     } else {
       return OK;
     }
@@ -2938,7 +2939,8 @@ public:
 WordTree *WordParser::Parse(const String& expr)
 {
   StringList terms(expr, " \n");
-  return ParseList(terms);
+  WordTree* ret = ParseList(terms);
+  return ret;
 }
 
 WordTree *WordParser::ParseList(StringList& terms)
