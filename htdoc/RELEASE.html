@@ -20,6 +20,17 @@
       is also a <a href="ChangeLog">ChangeLog</a> file which has
       more details on the code changes.
     </p>
+    <strong>Release notes for htdig-3.1.0b4</strong> 22 Dec 1998<br>
+    This version fixes a security hole in htnotify. The hole has been
+    present in previous versions but was inadevertently made worse in
+    the 3.1.0 beta releases. Malicious users could contstruct pages
+    that executed commands running under the shell of the user running
+    htnotify. <strong>It is highly recommended that users of previous
+    versions switch to this release.</strong>
+    <ul>
+    <li>Fixed a memory leak in htnotify and htsearch.</li>
+	<li>Updated the contributed parse_word_doc.pl script.</li>
+    </ul>
     <strong>Release notes for htdig-3.1.0b3</strong> 15 Dec 1998<br>
     This version adds only a few features and a significant number of
     bug fixes. This version has been pretty thoroughly tested. Though
@@ -744,7 +755,7 @@
           &lt;andrew@contigo.com&gt;</a>
         </address>
         <!-- hhmts start -->
-Last modified: Tue Dec 15 12:01:14 EST 1998
+Last modified: Tue Dec 22 21:07:11 EST 1998
 <!-- hhmts end -->
       </li>
     </ul>
