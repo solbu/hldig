@@ -1,3 +1,18 @@
+Sat Sep  5 23:11:48 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/String.cc: Added patch by Zvi Har'El
+	<rl@math.technion.ac.il> to indexOf function to prevent "false
+	positive" matches.
+
+	* installdir/nomatch.html, installdir/syntax.html: Fixed reference
+	to ht://Dig 3.0.
+
+	* htdig/Document.cc: Use robotstxt_name as user-agent as a more
+	consistent approach.
+
+	* htsearch/parser.cc: Convert "%01" to "|" to support <SELECT
+	... MULTIPLE> tags.
+
 Thu Sep  3 20:53:51 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Makefile.in: Remove reference to -lgdbm

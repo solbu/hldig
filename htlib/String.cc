@@ -6,6 +6,10 @@
 // AWS	10/13/93	Fixed the constructors and operator = routines so that a NULL can be passed
 //
 // $Log: String.cc,v $
+// Revision 1.8  1998/09/06 03:22:38  ghutchis
+//
+// Bug fixes
+//
 // Revision 1.7  1998/08/03 16:50:41  ghutchis
 //
 // Fixed compiler warnings under -Wall
@@ -33,7 +37,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.7 1998/08/03 16:50:41 ghutchis Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.8 1998/09/06 03:22:38 ghutchis Exp $";
 #endif
 
 
@@ -276,7 +280,8 @@ int String::indexOf(char *str)
     //
     Data[Length] = '\0';
     
-    for (i = 0; i < Length; i++)
+    /* OLD CODE: for (i = 0; i < Length; i++) */
+    for (i = 0; i <= Length-len; i++)
     {
 	if (strncmp(&Data[i], str, len) == 0)
 	    return i;

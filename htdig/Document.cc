@@ -4,6 +4,10 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.14  1998/09/06 03:22:37  ghutchis
+//
+// Bug fixes
+//
 // Revision 1.13  1998/08/03 16:50:31  ghutchis
 //
 // Fixed compiler warnings under -Wall
@@ -54,7 +58,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.13 1998/08/03 16:50:31 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.14 1998/09/06 03:22:37 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -341,8 +345,8 @@ Document::RetrieveHTTP(time_t date)
     {
 	command << url->path() << " HTTP/1.0\r\n";
     }
-    command << "User-Agent: htdig/" << HTDIG_VERSION <<
-	" (" <<	config["maintainer"] << ")\r\n";
+    command << "User-Agent: " << config["robotstxt_name"] << "/" 
+	    << HTDIG_VERSION << " (" <<	config["maintainer"] << ")\r\n";
 
     //
     // If a referer was provided, we'll send that as well.

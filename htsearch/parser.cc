@@ -4,6 +4,10 @@
 // Implementation of parser
 //
 // $Log: parser.cc,v $
+// Revision 1.3  1998/09/06 03:22:38  ghutchis
+//
+// Bug fixes
+//
 // Revision 1.2  1997/04/27 14:43:31  turtle
 // changes
 //
@@ -12,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.2 1997/04/27 14:43:31 turtle Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.3 1998/09/06 03:22:38 ghutchis Exp $";
 #endif
 
 #include "parser.h"
@@ -69,6 +73,8 @@ Parser::lexan()
 	return '(';
     else if (mystrcasecmp(current->word, ")") == 0)
 	return ')';
+    else if (mystrcasecmp(current->word, "%01") == 0)
+        return '|';
     else
 	return WORD;
 }
