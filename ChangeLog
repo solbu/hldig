@@ -1,3 +1,8 @@
+Thu Jan 28 12:53:40 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Docuument new remove_default_doc attribute.
+
 Wed Jan 27 20:00:40 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc, htdig/SGMLEntities.cc, htdig/ExternalParser.cc,

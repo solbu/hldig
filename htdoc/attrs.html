@@ -3706,6 +3706,57 @@
     <hr>
     <dl>
       <dt>
+        <strong><a name="remove_default_doc">remove_default_doc</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            string list
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            index.html
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+          Set this to the default documents in a directory used by the
+          servers you are indexing. These document names will be stripped
+          off of URLs when they are normalized, if one of these names appears
+          after the final slash, to translate URLs like
+          http://foo.com/index.html into http://foo.com/<br>
+          Note that you can disable stripping of these names during
+          normalization by setting the list to an empty string.
+          The list should only contain names that all servers you index
+          recognize as default documents for directory URLs, as defined
+          by the DirectoryIndex setting in Apache's srm.conf, for example.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            remove_default_doc: default.html default.htm index.html index.htm
+            <br><em>or</em><br>
+            remove_default_doc:
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
         <strong><a name="robotstxt_name">
         robotstxt_name</a></strong>
       </dt>
