@@ -443,6 +443,11 @@ int HtHTTP::ParseHeader()
    	       cout << "Header line: " << line << endl;
 	    
 	    // Status - Line check
+	    char	*token = line.get();
+	    while (*token && !isspace(*token))
+		 token++;
+	    while (*token && isspace(*token))
+		 token++;
 	    
 	    if(!strncmp(line, "HTTP/", 5))
          {
@@ -462,13 +467,9 @@ int HtHTTP::ParseHeader()
    	    {
 	       // Modification date sent by the server
 		  
-                  strtok(line, " \t");
-		  char    *token = strtok(0, "\n\t");
-		  while (*token == ' ' || *token == '\t')
-		    token++; // Strip off any whitespace...
-		  
 		  // Set the response modification time
-		  if (token)
+		  token = strtok(token, "\n\t");
+		  if (token && *token)
 		    _response._modification_time = NewDate(token);
 
    	    }
@@ -476,13 +477,9 @@ int HtHTTP::ParseHeader()
    	    {
 	       // Access date time sent by the server
 		  
-	          strtok(line, " \t"); // Let's position after the field name
-		  char    *token = strtok(0, "\n\t");
-		  while (*token == ' ' || *token == '\t')
-		    token++; // Strip off any whitespace...
-		  
 		  // Set the response access time
-		  if (token)
+		  token = strtok(token, "\n\t");
+		  if (token && *token)
 		    _response._access_time = NewDate(token);
 
    	    }
@@ -490,12 +487,8 @@ int HtHTTP::ParseHeader()
    	    {
 	       // Content - type
 		  
-		  strtok(line, " \t"); // Let's position after the field name
-		  char    *token = strtok(0, "\n\t");
-		  while (*token == ' ' || *token == '\t')
-		    token++; // Strip off any whitespace...
-
-		  if (token)
+		  token = strtok(token, "\n\t");
+		  if (token && *token)
 		    _response._content_type = token;
 
    	    }
@@ -503,12 +496,8 @@ int HtHTTP::ParseHeader()
    	    {
 	       // Content - length
 		  
-	          strtok(line, " \t"); // Let's position after the field name
-		  char    *token = strtok(0, "\n\t");
-		  while (*token == ' ' || *token == '\t')
-		    token++; // Strip off any whitespace...
-
-		  if (token)
+		  token = strtok(token, "\n\t");
+		  if (token && *token)
 		    _response._content_length = atoi(token);
 
    	    }
@@ -516,12 +505,8 @@ int HtHTTP::ParseHeader()
    	    {
 	       // Found a location directive - redirect in act
 		  
-		  strtok(line, " \t"); // Let's position after the field name
-		  char    *token = strtok(0, "\n\t");
-		  while (*token == ' ' || *token == '\t')
-		    token++; // Strip off any whitespace...
-
-		  if (token)
+		  token = strtok(token, "\n\t");
+		  if (token && *token)
 		    _response._location = token;
 
    	    }
@@ -665,6 +650,7 @@ bool HtHTTP::isParsable(const char *content_type)
    // and the rest are determined by the external_parser settings
    
    if( ! mystrncasecmp ("text/", content_type, 5) 
+       || ! mystrncasecmp ("application/pdf", content_type, 15)
        || ExternalParser::canParse((char *)content_type) )
    	 return true;
 
