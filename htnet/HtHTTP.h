@@ -28,7 +28,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.8.2.1 1999/10/14 11:17:00 angus Exp $ 
+// $Id: HtHTTP.h,v 1.8.2.2 1999/11/28 02:46:08 ghutchis Exp $ 
 //
 
 #ifndef _HTHTTP_H
@@ -72,9 +72,6 @@ class HtHTTP_Response : public Transport_Response
 	 // Get the Transfer-encoding
    	 char *GetTransferEncoding() { return _transfer_encoding; }
 
-	 // Get the location (redirect)
-   	 char *GetLocation() { return _location; }
-
 	 // Get server info
    	 char *GetServer() { return _server; }
 
@@ -88,7 +85,6 @@ class HtHTTP_Response : public Transport_Response
    // Other header information
    
 	 String    _transfer_encoding;    // Transfer-encoding
-	 String    _location;	          // Location (in case of redirect)
    	 String	   _server;	          // Server string returned
 
 };
@@ -366,29 +362,6 @@ protected:
    ///////
 
    int ParseHeader();
-
-
-   enum DateFormat
-   {
-   	 DateFormat_RFC1123,
-	 DateFormat_RFC850,
-	 DateFormat_AscTime,
-	 DateFormat_NotRecognized
-   };
-
-
-   ///////
-      //    Create a new HtDateTime object
-   ///////
-
-   HtDateTime *NewDate(const char *);
-
-   ///////
-      //    Recognize Date Format
-   ///////
-
-   DateFormat RecognizeDateFormat (const char *);
-
 
    ///////
       //    Check if a document is parsable looking the content-type info

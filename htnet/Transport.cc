@@ -14,12 +14,14 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.5.2.3 1999/10/15 10:46:56 angus Exp $
+// $Id: Transport.cc,v 1.5.2.4 1999/11/28 02:46:08 ghutchis Exp $
 //
 //
 
 #include "Transport.h"
+
 #include <iomanip.h>
+#include <ctype.h>
 
 #define DEFAULT_CONNECTION_TIMEOUT 15
 
@@ -307,6 +309,79 @@ void Transport::SetConnection (const String &host, int port)
    _host = host;
    _port = port;
 
+}
+
+
+// Create a new date time object containing the date specified in a string
+HtDateTime *Transport::NewDate(const char *datestring)
+{
+
+   while(isspace(*datestring)) datestring++; // skip initial spaces
+
+   DateFormat df = RecognizeDateFormat (datestring);
+
+   if(df == DateFormat_NotRecognized)
+   {
+   	 // Not recognized
+	 if(debug > 0)
+   	 	 cout << "Date Format not recognized: " << datestring << endl;
+	 
+	 return NULL;
+   }
+
+   HtDateTime *dt = new HtDateTime;
+   
+   dt->ToGMTime(); // Set to GM time
+   
+   switch(df)
+   {
+	       // Asc Time format
+   	 case DateFormat_AscTime:
+   	       	dt->SetAscTime((char *)datestring);
+   	 	       break;
+	       // RFC 1123
+   	 case DateFormat_RFC1123:
+   	       	dt->SetRFC1123((char *)datestring);
+   	 	       break;
+		  // RFC 850
+   	 case DateFormat_RFC850:
+   	       	dt->SetRFC850((char *)datestring);
+   	 	       break;
+         default:
+	        cout << "Date Format not handled: " << (int)df << endl;
+	        break;
+   }
+
+   return dt;
+   
+}
+
+
+// Recognize the possible date format sent by the server
+Transport::DateFormat Transport::RecognizeDateFormat (const char *datestring)
+{
+   register char *s;
+   
+   if((s=strchr(datestring, ',')))
+   {
+   	 // A comma is present.
+	 // Two chances: RFC1123 or RFC850
+
+   	 if(strchr(s, '-'))
+	    return DateFormat_RFC850;  // RFC 850 recognized   
+	 else
+	    return DateFormat_RFC1123; // RFC 1123 recognized
+   }
+   else
+   {
+      // No comma present
+	 
+	 // Let's try C Asctime:    Sun Nov  6 08:49:37 1994
+	 if(strlen(datestring) == 24) return DateFormat_AscTime;
+   }
+   
+   return DateFormat_NotRecognized;
+   
 }
 
 // End of Transport.cc (it's a virtual class anyway!)

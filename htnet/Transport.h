@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.6.2.2 1999/10/15 10:46:56 angus Exp $
+// $Id: Transport.h,v 1.6.2.3 1999/11/28 02:46:08 ghutchis Exp $
 //
 //
 
@@ -69,7 +69,8 @@ class Transport_Response : public Object
    // Get the Status Code reason phrase
    char *GetReasonPhrase() { return _reason_phrase; }
 
-
+   // Get the location (redirect)
+   char *GetLocation() { return _location; }
 
    
    protected:
@@ -87,6 +88,8 @@ class Transport_Response : public Object
 
 	 int   	   _status_code;  	  // return Status code
 	 String	   _reason_phrase;	  // status code reason phrase
+
+	 String    _location;	          // Location (in case of redirect) 
    
 };
 
@@ -251,6 +254,22 @@ protected:
 
    // Show stats
    static ostream &ShowStatistics (ostream &out);
+
+   // Methods for manipulating date strings -- useful for subclasses
+
+   enum DateFormat
+   {
+   	 DateFormat_RFC1123,
+	 DateFormat_RFC850,
+	 DateFormat_AscTime,
+	 DateFormat_NotRecognized
+   };
+
+   //    Create a new HtDateTime object
+   HtDateTime *NewDate(const char *);
+
+   //    Recognize Date Format
+   DateFormat RecognizeDateFormat (const char *);
 
  protected:
 
