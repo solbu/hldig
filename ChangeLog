@@ -1,3 +1,12 @@
+Fri Oct 17 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htsearch/parser.cc: Applied Neal's patch to fix bug #823403
+      Documents only added to search list if they were successfully dug.
+      Lines 237-238 of htsearch/Display.cc
+        if (!ref || ref->DocState() != Reference_normal)
+	    continue;
+      should now be redundant.  (Left in to be defensive.)
+
 Tue Oct 21 11:04:56 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htdig/Retriever.h: added the 'RetrieverType' enum and an object variable

@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: parser.cc,v 1.29 2003/07/08 21:31:37 grdetil Exp $
+// $Id: parser.cc,v 1.30 2003/10/22 13:26:59 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -861,6 +861,8 @@ Parser::parse(List *tokenList, ResultList &resultMatches)
 {
 	HtConfiguration* config= HtConfiguration::config();
     tokens = tokenList;
+    DocumentRef *ref = NULL;
+
     fullexpr(1);
 
     ResultList	*result = (ResultList *) stack.pop();
@@ -884,10 +886,14 @@ Parser::parse(List *tokenList, ResultList &resultMatches)
     for (int i = 0; i < elements->Count(); i++)
     {
 	dm = (DocMatch *) (*elements)[i];
-        dm->collection = collection; // back reference
-	if (dm->orMatches > 1)
-	    dm->score *= multimatch_factor;
-	resultMatches.add(dm);
+	ref = collection->getDocumentRef(dm->GetId());
+        if(ref->DocState() == Reference_normal)
+	{
+	    dm->collection = collection; // back reference
+	    if (dm->orMatches > 1)
+		dm->score *= multimatch_factor;
+	    resultMatches.add(dm);
+	}
     }
     elements->Release();
     result->Release();
