@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.5 1999/02/01 04:24:06 ghutchis Exp $";
+static char RCSid[] = "$Id: Fuzzy.cc,v 1.6 1999/02/05 03:20:23 ghutchis Exp $";
 #endif
 
 #include "Fuzzy.h"
@@ -62,6 +62,8 @@ Fuzzy::getWords(char *word, List &words)
     String	fuzzyKey;
     String	data;
     generateKey(word, fuzzyKey);
+    if (debug > 2)
+      cout << "\n\tkey: " << fuzzyKey << endl;
 
     words.Destroy();
 	
