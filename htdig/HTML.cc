@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.67 2003/01/20 22:40:13 lha Exp $
+// $Id: HTML.cc,v 1.68 2003/02/09 11:53:48 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -137,9 +137,9 @@ HTML::HTML() :
 	char *first_rght= strchr (noindex_start.get(), '>');
 	char *secnd_rght= first_right? strchr (first_rght+1, '>') : (char*)0;
 
-	if (((first_right && !secnd_right && first_right > first_left) ||
+	if (((first_right && !secnd_right && first_right < first_left) ||
 	     (first_left  && !secnd_left  && !first_right) ||
-	     (first_rght && !secnd_rght && first_rght > first_lft) ||
+	     (first_rght && !secnd_rght && first_rght < first_lft) ||
 	     (first_lft  && !secnd_lft  && !first_rght)) &&
 	    noindex_end[0] != '\"' && noindex_start[0] != '\"')
 	{

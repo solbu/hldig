@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.108 2003/01/24 23:22:17 lha Exp $
+// $Id: Display.cc,v 1.109 2003/02/09 11:53:48 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -40,8 +40,16 @@
 #include <math.h>
 #include <float.h>
 
-#if !defined(DBL_MAX) && defined(MAXFLOAT)
-# define DBL_MAX MAXFLOAT
+#if !defined(DBL_MAX)
+# if defined (MAXDOUBLE)
+#  define DBL_MAX MAXDOUBLE
+# elif defined(HUGE_VAL)
+#  define DBL_MAX HUGE_VAL
+# elif defined(MAXFLOAT)
+#  define DBL_MAX MAXFLOAT
+# else
+#  define DBL_MAX 1e37
+# endif
 #endif
 
 //*****************************************************************************

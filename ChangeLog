@@ -1,3 +1,9 @@
+Sun Feb 9 2003  Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* htdig/HTML.cc: fix bug in detection of deprecated noindex_start/end
+	* htsearch/Display.cc: try harder to find value for DBL_MAX   #680836
+	* htcommon/defaults.cc: fixed typos.
+
 Sat Feb 1 13:57:17 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* htnet/HtCookie.[h,cc]: allowed printDebug to be passed an ostream object

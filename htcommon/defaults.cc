@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.75 2003/01/20 22:40:08 lha Exp $
+// $Id: defaults.cc,v 1.76 2003/02/09 11:53:48 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1340,7 +1340,7 @@ http://www.htdig.org/", " \
 	This is a factor which will be used to multiply the \
 	weight of words in the list of keywords of a document. \
 	The number may be a floating point number. See also the \
-	<a href=\"#heading_factor\">heading_factor</a>attribute. \
+	<a href=\"#heading_factor\">heading_factor</a> attribute. \
 " }, \
 { "keywords_meta_tag_names", "keywords htdig-keywords",  \
 	"string list", "htdig", "", "3.0.6", "Indexing:What", "keywords_meta_tag_names: keywords description", " \
@@ -2848,7 +2848,7 @@ form during indexing and translated for results. \
 	Size of memory cache used by Berkeley DB (DB used by the indexer) \
 	IMPORTANT: It  makes a <strong>huge</strong> difference. The rule  \
 	is that the cache size should be at least 2% of the expected index size. The \
-	Berkeley DB file has 1% of internal pages that *must* be cached for good \
+	Berkeley DB file has 1% of internal pages that <em>must</em> be cached for good \
 	performances. Giving an additional 1% leaves room for caching leaf pages. \
 " }, \
 { "wordlist_compress", "true",  \
@@ -2860,7 +2860,7 @@ form during indexing and translated for results. \
 { "wordlist_compress_zlib", "true",  \
 	"boolean", "all", "", "3.2.0b4", "Indexing:How", "wordlist_compress_zlib: true", " \
 	Enables or disables the zlib compression system for the indexer. \
-	wordlist_compress must be true to use this option!`\
+	wordlist_compress must be true to use this option!\
 " }, \
 { "wordlist_monitor", "false", \
 	"boolean", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor: true", " \
