@@ -1,3 +1,9 @@
+Fri Nov  2 12:05:49 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (do_tag), htcommon/defaults.cc: Added ignore_alt_text
+	attribute to avoid indexing alt text in img tags.
+	* htdoc/attrs.html, cf_by{name,prog}.html: Documented it.
+
 Thu Nov  1 14:43:13 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/htsearch.cc (main): Fixed to only show file names in

@@ -11,7 +11,7 @@
 // <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.21 2001/08/31 20:28:03 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.22 2001/11/02 18:08:03 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -459,6 +459,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 void
 HTML::do_tag(Retriever &retriever, String &tag)
 {
+    static int	ignore_alt_text = config.Boolean("ignore_alt_text", 0);
     char	*position = tag.get();
     int		which, length;
 
@@ -618,7 +619,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 
 	case 18:	// "img"
 	  {
-	    if (attrs["alt"])
+	    if (!ignore_alt_text && attrs["alt"])
 	      {
 		char	*alttxt = transSGML(attrs["alt"]);
 		if (!noindex && in_title)
