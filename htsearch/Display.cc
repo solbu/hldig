@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.18  1998/11/15 02:44:52  ghutchis
+//
+// Reformatting.
+//
 // Revision 1.17  1998/11/01 00:17:08  ghutchis
 //
 // Added template var DESCRIPTION as first item in DESCRIPTIONS, as requested
@@ -76,7 +80,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.17 1998/11/01 00:17:08 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.18 1998/11/15 02:44:52 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -88,7 +92,7 @@ static char RCSid[] = "$Id: Display.cc,v 1.17 1998/11/01 00:17:08 ghutchis Exp $
 #include <fstream.h>
 #include <stdio.h>
 #include <ctype.h>
-#include<syslog.h>
+#include <syslog.h>
 
 
 //*****************************************************************************
