@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.88 1999/08/10 22:10:40 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.89 1999/08/10 22:31:02 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -805,43 +805,29 @@ Display::readFile(char *filename)
 void
 Display::expandVariables(char *str)
 {
-    int		state = 0;
+    enum
+    {
+	StStart, StLiteral, StVarStart, StVarClose, StVarPlain, StGotVar
+    } state = StStart;
     String	var = "";
 
     while (str && *str)
     {
 	switch (state)
 	{
-	    case 0:
+	    case StStart:
 		if (*str == '\\')
-		    state = 1;
+		    state = StLiteral;
 		else if (*str == '$')
-		    state = 3;
+		    state = StVarStart;
 		else
 		    cout << *str;
 		break;
-	    case 1:
+	    case StLiteral:
 		cout << *str;
-		state = 0;
+		state = StStart;
 		break;
-	    case 2:
-		//
-		// We have a complete variable in var. Look it up and
-		// see if we can find a good replacement for it.
-		//
-		outputVariable(var);
-		var = "";
-		if (*str == '$')
-		    state = 3;
-		else if (*str == '\\')
-		    state = 1;
-		else
-		{
-		    state = 0;
-		    cout << *str;
-		}
-		break;
-	    case 3:
+	    case StVarStart:
 		if (*str == '%')
 		    var << *str;	// code for URL-encoded variable
 		else if (*str == '&')
@@ -851,67 +837,45 @@ Display::expandVariables(char *str)
 			str += 4;
 		}
 		else if (*str == '(' || *str == '{')
-		    state = 4;
+		    state = StVarClose;
 		else if (isalpha(*str) || *str == '_')
 		{
 		    var << *str;
-		    state = 5;
+		    state = StVarPlain;
 		}
 		else
-		    state = 0;
+		    state = StStart;
 		break;
-	    case 4:
+	    case StVarClose:
 		if (*str == ')' || *str == '}')
-		    state = 2;
+		    state = StGotVar;
 		else if (isalpha(*str) || *str == '_')
 		    var << *str;
 		else
-		    state = 0;
+		    state = StStart;
 		break;
-	    case 5:
+	    case StVarPlain:
 		if (isalpha(*str) || *str == '_')
 		    var << *str;
-		else if (*str == '$')
-		    state = 6;
 		else
 		{
-		    state = 2;
+		    state = StGotVar;
 		    continue;
 		}
 		break;
-	    case 6:
+	    case StGotVar:
 		//
 		// We have a complete variable in var. Look it up and
 		// see if we can find a good replacement for it.
 		//
 		outputVariable(var);
 		var = "";
-		if (*str == '%')
-		{
-		    var << *str;	// code for URL-encoded variable
-		    state = 3;
-		}
-		else if (*str == '&')
-		{
-		    var << *str;	// code for SGML-encoded variable
-		    if (mystrncasecmp("&amp;", str, 5))
-			str += 4;
-		    state = 3;
-		}
-		else if (*str == '(' || *str == '{')
-		    state = 4;
-		else if (isalpha(*str) || *str == '_')
-		{
-		    var << *str;
-		    state = 5;
-		}
-		else
-		    state = 0;
-		break;
+		state = StStart;
+		continue;
 	}
 	str++;
     }
-    if (state == 2 || state == 5)
+    if (state == StGotVar || state == StVarPlain)
     {
 	//
 	// The end of string was reached, but we are still trying to
