@@ -4,6 +4,9 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.26  1999/01/14 00:27:12  ghutchis
+// Fixed small memory leak with bogus HTML and small speedups.
+//
 // Revision 1.25  1999/01/10 01:59:29  ghutchis
 // Don't capitalize headers--this creates problems with non-ASCII values, since
 // String::uppercase doesn't know how to capitalize them.
@@ -81,7 +84,7 @@
 // Initial CVS
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.25 1999/01/10 01:59:29 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.26 1999/01/14 00:27:12 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -173,8 +176,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     int			in_space = 0;
     unsigned char	*q, *start;
     unsigned char	*position = (unsigned char *) contents->get();
-    unsigned char     *text = 
-      (unsigned char *) new char[strlen((char *)position)+1];
+    unsigned char     *text = (unsigned char *) new char[contents->length()+1];
     unsigned char     *ptext = text;
 
     title = 0;
@@ -215,7 +217,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		  position += 2;
 		  q = (unsigned char*)strstr((char *)position, "--");
 		  if (!q)
-		    return;	// Rest of document seems to be a comment...
+		    break;	// Rest of document seems to be a comment...
 		  position = q + 2;
 		}
 	      else
@@ -281,8 +283,8 @@ HTML::parse(Retriever &retriever, URL &baseURL)
       while (*position)
       {
 	offset = position - start;
-
-	word = 0;
+	// String = 0 is expensive
+	// word = 0;
 	if (*position == '<')
 	  {
 	    //
@@ -291,7 +293,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    //
 	    q = (unsigned char*)strchr((char *)position, '>');
 	    if (!q)
-	      return; // Syntax error in the doc.  Tag never ends.
+	      break; // Syntax error in the doc.  Tag never ends.
 	    tag = 0;
 	    tag.append((char*)position, q - position + 1);
 	    do_tag(retriever, tag);
@@ -302,6 +304,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    //
 	    // Start of a word.  Try to find the whole thing
 	    //
+	    word = 0;
 	    in_space = 0;
 	    while (*position &&
 		   (isalnum(*position) ||
