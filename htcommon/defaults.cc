@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.37 2000/02/24 15:32:37 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.38 2000/02/24 16:49:10 grdetil Exp $
 //
 
 #include "HtConfiguration.h"
@@ -1973,10 +1973,10 @@ http://www.htdig.org/", "
 	<a href=\"htsearch.html\" target=\"_top\">htsearch</a>.
 " },
 { "star_blank", "${image_url_prefix}/star_blank.gif", 
-	"string", "htsearch", "all", "Presentation:Text", "star_blank: http://www.somewhere.org/icons/elephant.gif", "
+	"string", "htsearch", "all", "Presentation:Text", "star_blank: http://www.somewhere.org/icons/noelephant.gif", "
 	This specifies the URL to use to display a blank of the
 	same size as the star defined in the
-	<a href=\"#image_star\">image_star</a> attribute or in the
+	<a href=\"#star_image\">star_image</a> attribute or in the
 	<a href=\"#star_patterns\">star_patterns</a> attribute.
 " },
 { "star_image", "${image_url_prefix}/star.gif", 
