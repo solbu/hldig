@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.58 2000/08/31 18:29:39 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.59 2000/09/09 18:18:14 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1021,6 +1021,28 @@ http://www.htdig.org/", "
 	messages get sent out from. The address is forged using
 	/usr/lib/sendmail. Check htnotify/htnotify.cc for
 	detail on how this is done.
+" },
+{ "htnotify_replyto", "",
+    "string", "htnotify", "", "3.2.0b3", "Extra Output", "htnotify_replyto: design-group@foo.com", "
+        This specifies the email address that htnotify email messages
+        include in the Reply-to: field.
+" },
+{ "htnotify_webmaster",	 "ht://Dig Notification Service",
+    "string", "htnotify", "", "3.2.0b3", "Extra Output", "htnotify_webmaster: \"Notification Service\"", "
+        This provides a name for the From field, in addition to the email address
+        for the email messages sent out by htnotify.
+" },
+{ "htnotify_prefix_file", "",
+    "string", "htnotify", "", "3.2.0b3", "Extra Output", "htnotify_prefix_file: ${common_dir}/notify_prefix.txt", "
+        Specifies the file containing text to be inserted in each mail 
+        message sent by htnotify before the list of expired webpages. If omitted, 
+        nothing is inserted.
+" },
+{ "htnotify_suffix_file", "",
+    "string", "htnotify", "", "3.2.0b3", "Extra Output", "htnotify_suffix_file: ${common_dir}/notify_suffix.txt", "
+        Specifies the file containing text to be inserted in each mail message 
+        sent by htnotify after the list of expired webpages. If omitted, htnotify 
+        will insert a standard message.
 " },
 { "http_proxy", "", 
 	"string", "htdig", "URL", "3.0", "Indexing:Connection", "http_proxy: http://proxy.bigbucks.com:3128", "
