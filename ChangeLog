@@ -1,3 +1,9 @@
+Tue Feb  2 21:02:25 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
+
+	* htsearch/Display.cc(setVariables,createURL): As pointed out by
+	Gilles, append allow_in_form variables to the query strings only
+	if they are given as input parameters.
+
 Tue Feb  2 10:29:09 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure, configure.in: Rewrite getpeername_length_t detection
