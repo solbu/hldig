@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.45 1999/06/21 18:51:31 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.46 1999/07/16 00:46:57 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -19,6 +19,7 @@ static char RCSid[] = "$Id: Document.cc,v 1.45 1999/06/21 18:51:31 grdetil Exp $
 #include "htdig.h"
 #include "HTML.h"
 #include "Plaintext.h"
+#include "PDF.h"
 #include "ExternalParser.h"
 #include "lib.h"
 
@@ -534,7 +535,8 @@ Document::readHeader(Connection &c)
 		if ((returnStatus == Header_not_found ||
 			returnStatus == Header_ok) &&
 		    !ExternalParser::canParse(token) &&
-		    mystrncasecmp("text/", token, 5) != 0)
+		     mystrncasecmp("text/", token, 5) != 0 &&
+		     mystrncasecmp("application/pdf", token, 15) != 0)
 		    return Header_not_text;
 		contentType = token;
 	    }
@@ -633,6 +635,7 @@ Parsable *
 Document::getParsable()
 {
     static HTML			*html = 0;
+    static PDF			*pdf = 0;
     static Plaintext		*plaintext = 0;
     static ExternalParser	*externalParser = 0;
     
@@ -652,6 +655,12 @@ Document::getParsable()
 	if (!html)
 	    html = new HTML();
 	parsable = html;
+    }
+    else if (mystrncasecmp(contentType, "application/pdf", 15) == 0)
+    {
+        if (!pdf)
+	    pdf = new PDF();
+	parsable = pdf;
     }
     else if (mystrncasecmp(contentType, "text/plain", 10) == 0)
     {
