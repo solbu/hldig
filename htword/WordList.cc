@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.19 2000/01/03 10:04:48 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.20 2000/01/03 10:14:35 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -116,6 +116,12 @@ int WordList::Open(const String& filename, int mode)
   //
   // Info initialization
   //
+  if(!WordContext::CheckInitialized())
+  {
+      cerr << "WordList::Open: htword library not initialized!" << endl;
+      cerr << "are you sure you called WordContext::Initialize ??" << endl;
+  }
+
   int usecompress=0;
 
   db.dbinfo.set_bt_compare(word_db_cmp);
