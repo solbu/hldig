@@ -1,3 +1,11 @@
+Wed Sep 22 11:12:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/ChangeLog, htdoc/isp.html, htdoc/FAQ.html,
+	htdoc/RELEASE.html, htdoc/THANKS.html, htdoc/attrs.html,
+	htdoc/bugs.html, htdoc/contents.html, htdoc/main.html,
+	htdoc/require.html, htdoc/uses.html, htdoc/where.html: Update for
+	3.1.3 release and synch with latest versions from the website.
+
 Wed Sep 15 17:54:31 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
 	A few changes to satisfy the AIX xlC compiler:

@@ -190,11 +190,12 @@
 
 	  1.9. <a name="q1.9">Does ht://Dig support phrase or near
 	  matching?</a><br>
-	  <p>Not at the moment. This will, of course, eventually be
-	  added. But with volunteers currently doing the development and
-	  no "best" way to implement this in the current code, it may take
-	  some time before this happens. Feel free to send suggestions to
-	  &lt;<a href="mailto:bugs@htdig.org">bugs@htdig.org</a>&gt;.</p>
+	  <p>Phrase searching has been added for the 3.2 release,
+	  which is currently in the development phase. Anyone who
+	  wishes to live on the bleeding edge (literally) to test out
+	  the phrase searching should e-mail the developer list at:
+	  <a
+	  href="mailto:htdig3-dev@htdig.org">&lt;htdig3-dev@htdig.org&gt;</a>.</p>
 
 	  1.10. <a name="q1.10">What are the practical and/or theoretical
 	  limits of ht://Dig?</a><br>
@@ -223,7 +224,7 @@
 
 	  <h3>2. Getting ht://Dig</h3>
 	  2.1. <a name="q2.1">What's the latest version of ht://Dig?</a><br>
-	  <p>The latest version is 3.1.2 as of this writing. Development
+	  <p>The latest version is 3.1.3 as of this writing. Development
 	  is beginning on htdig4 as well as a few interim releases of
 	  htdig3.</p>
 
@@ -691,7 +692,8 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  db.words.db to URLs used to look up records in db.docdb), is
 	  messed up.  You'll likely need to rebuild your database from
 	  scratch. Older versions of ht://Dig were susceptible to database
-	  corruption of this sort. Version 3.1.2 is much more stable.</p>
+	  corruption of this sort. Versions 3.1.2 and later are much
+	  more stable.</p>
 
 	  5.12. <a name="q5.12">I can't seem to index documents with names
 	  like left_index.html with htdig.</a><br>
@@ -701,18 +703,17 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  it to match more than it should. The default value for this
 	  attribute is "index.html", so any URL in which the filename ends
 	  with this string (rather than matches it entirely) will have
-	  the filename stripped off. The patch for this is available <a
-	  href="http://www.htdig.org/files/contrib/other/removeindex.patch">here</a>.</p>
+	  the filename stripped off. This is fixed in version 3.1.3.</p>
 
 	  <p>
 
 	  <hr noshade size=4>
 	<address>
-	  <a href="THANKS.html">$Author: grdetil $</a>
+	  <a href="THANKS.html">$Author: ghutchis $</a>
 	</address>
 <!-- Created: Sun Jun 22 23:16:38 PDT 1997 -->
 <!-- hhmts start -->
-Last modified: Fri Aug 13 13:26:31 EDT 1999
+Last modified: Wed Sep 22 09:25:59 CDT 1999
 <!-- hhmts end -->
   </body>
 </html>
