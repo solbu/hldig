@@ -1,3 +1,28 @@
+Sat Feb 13 20:29:26 1999  Marjolein Katsma <webmaster@javawoman.com>
+
+	* htdoc/*.html: Cleaned up HTML, fixed typos, added appropriate
+	HTML 4.0 syntax, added DTDs to files, other minor fixed.
+
+Fri Feb 12 19:58:28 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* .version: Bump for version 3.1.1.
+
+	* configure.in, configure: Fix problems determining getpeername
+	syntax under IRIX.
+
+	* db/os/os_map.c: Fixed problems on AlphaLinux pointed out by Paul
+	J. Meyer.
+
+Fri Feb 12 12:00:25 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc: Fix crashes noted by Frank Richter.
+
+	* contrib/htparsedoc/parse_word_doc.pl: Use updated version (with
+	fixed line breaks).
+
+	* htnotify/htnotify.cc: Add patch mentioned in Feb 8 documentation
+	change.
+
 Thu Feb 11 00:29:42 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htcommon/DocumentRef.cc (NUM_ASSIGN): Expand from unsigned types.

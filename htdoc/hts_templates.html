@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html>
   <head>
     <title>
@@ -14,7 +14,7 @@
        Please see the file <a href="COPYING">COPYING</a> for
       license information.
     </p>
-    <hr noshade size="4">
+    <hr size="4" noshade>
     <h2>
       Output Templates
     </h2>
@@ -97,6 +97,14 @@
     </p>
     <dl>
       <dt>
+        <b>ANCHOR</b>
+      </dt>
+      <dd>
+        Expands to the named anchor found just before the first match; it
+        includes "#" at the start so it can be directly appended to the URL
+        variable. If no anchor was found, ANCHOR is empty.
+      </dd>
+      <dt>
         <b>CGI</b>
       </dt>
       <dd>
@@ -121,7 +129,7 @@
       <dd>
         A list of URL text descriptions for the matched document. The
         entries in the list are separated by &lt;br&gt;. These are the 
-	text used between the &lt;a href...&gt; and &lt;/a&gt;tags.
+        text used between the &lt;a href...&gt; and &lt;/a&gt;tags.
       </dd>
       <dt>
         <b>DOCID</b>
@@ -353,14 +361,12 @@
         A string of the search words with spaces in between.
       </dd>
     </dl>
-    <hr noshade size="4">
+    <hr size="4" noshade>
     <address>
-      <a href="author.html">Andrew Scherpbier
-      &lt;andrew@contigo.com&gt;</a>
+      <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
     </address>
     <!-- hhmts start -->
 Last modified: Mon Feb  8 20:41:09 EST 1999
-<!-- hhmts end -->  
+<!-- hhmts end -->
   </body>
 </html>
-

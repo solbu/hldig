@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html>
   <head>
     <title>
@@ -14,7 +14,7 @@
        Please see the file <a href="COPYING">COPYING</a> for
       license information.
     </p>
-    <hr noshade size="4">
+    <hr size="4" noshade>
     <p>
       These are notes that go with each release of ht://Dig. There
       is also a <a href="ChangeLog">ChangeLog</a> file which has
@@ -27,7 +27,7 @@
     release of ht://Dig and is recommended for all production servers
     for current bug-fixes and oft-requested
     features.
-    <blockquote><strong>NOTE:</strong> You <emph>must</emph> rebuild
+    <blockquote><strong>NOTE:</strong> You <em>must</em> rebuild
     your databases from scratch after updating to this
     version. Several database-related bugs were fixed and will remain
     unless you rebuild from scratch. We're sorry for any
@@ -59,9 +59,9 @@
       words. <b>Note</b> that to completely fix this bug, you must
       rebuild your soundex and metaphone databases.</li>
       <li>Fixed up many compilation warnings and errors.</li>
-      <li>Fixed a performance slowdown in htsearch when <a
-      href="attrs.html#backlink_factor">backlink_factor</a> and <a
-      href="attrs.html#date_factor">date_factor</a> are zero and can
+      <li>Fixed a performance slowdown in htsearch when
+      <a href="attrs.html#backlink_factor">backlink_factor</a> and
+      <a href="attrs.html#date_factor">date_factor</a> are zero and can
       be ignored.</li>
       <li>Improved performance when a server ignores the
       If-Modified-Since request during update digs.</li>
@@ -71,14 +71,14 @@
       <li>Allow "include" keyword in <a href="cf_general.html">config
       file</a> to include other config files.</li>
       <li>Uses latest (2.6.4) version of the Berkeley database.</li>
-      <li>Two databases may be merged together using <a
-      href="htmerge.html">htmerge</a>.</li>
+      <li>Two databases may be merged together using
+      <a href="htmerge.html">htmerge</a>.</li>
       <li>The <a href="htdig.html">htdig</a> program can be safely
       stopped and restarted in the middle of a dig. The dig will write
-      the progress to the file specified by the new <a
-      href="attrs.html#url_log">url_log</a> option.</li>
-      <li>Added support for anchors in excerpts with the <a
-      href="attrs.html#add_anchors_to_excerpt">add_anchors_to_excerpt</a>
+      the progress to the file specified by the new
+      <a href="attrs.html#url_log">url_log</a> option.</li>
+      <li>Added support for anchors in excerpts with the
+      <a href="attrs.html#add_anchors_to_excerpt">add_anchors_to_excerpt</a>
       option and the ANCHOR template variable.</li>
       <li>Added support for sorting results in increasing or
       decreasing order of document date, size, title and score using
@@ -92,33 +92,33 @@
       href="attrs.html#compression_level">compression_level</a> to
       compress the document database if the zlib library is
       present.</li>
-      <li>Added the options <a
-      href="attrs.html#noindex_start">noindex_start</a> and <a
-      href="attrs.html#noindex_stop">noindex_stop</a> to delimit
+      <li>Added the options
+      <a href="attrs.html#noindex_start">noindex_start</a> and
+      <a href="attrs.html#noindex_stop">noindex_stop</a> to delimit
       sections of HTML documents to be ignored.</li>
-      <li>Added the option <a
-      href="attrs.html#allow_in_form">allow_in_form</a> to allow
+      <li>Added the option
+      <a href="attrs.html#allow_in_form">allow_in_form</a> to allow
       specific config options to be set in the search form.</li>
-      <li>Added the option <a
-      href="attrs.html#bad_querystr">bad_querystr</a> to ingore URLs
+      <li>Added the option
+      <a href="attrs.html#bad_querystr">bad_querystr</a> to ingore URLs
       containing specified CGI queries.</li>
-      <li>Added the option <a
-      href="attrs.html#search_results_wrapper">search_results_wrapper</a>
+      <li>Added the option
+      <a href="attrs.html#search_results_wrapper">search_results_wrapper</a>
       to replace separate header and footer files. For mor
       information, see the <a href="hts_general.html">general
       htsearch</a> documentation.</li>
-      <li>Added option <a
-      href="attrs.html#no_title_text">no_title_text</a> to allow
+      <li>Added option
+      <a href="attrs.html#no_title_text">no_title_text</a> to allow
       configuration of the text used when no title is found.</li>
-      <li>Added option <a
-      href="attrs.html#url_part_aliases">url_part_aliases</a> to allow
+      <li>Added option
+      <a href="attrs.html#url_part_aliases">url_part_aliases</a> to allow
       rewriting portions of URLs.</li>
-      <li>Added option <a
-      href="attrs.html#common_url_parts">common_url_parts</a> to
+      <li>Added option
+      <a href="attrs.html#common_url_parts">common_url_parts</a> to
       compression common portions of URLs. Requires rebuilding
       databases when changed.</li>
-      <li>Added option <a
-      href="attrs.html#remove_default_doc">remove_default_doc</a> to
+      <li>Added option
+      <a href="attrs.html#remove_default_doc">remove_default_doc</a> to
       control whether ht://Dig strips off the default document in a
       folder. Set to empty will prevent problems with servers that
       treat / and /index.html as different URLs.</li>
@@ -134,8 +134,8 @@
     htnotify. <strong>It is highly recommended that users of previous
     versions switch to this release.</strong>
     <ul>
-    <li>Fixed a memory leak in htnotify and htsearch.</li>
-	<li>Updated the contributed parse_word_doc.pl script.</li>
+      <li>Fixed a memory leak in htnotify and htsearch.</li>
+      <li>Updated the contributed parse_word_doc.pl script.</li>
     </ul>
     <strong>Release notes for htdig-3.1.0b3</strong> 15 Dec 1998<br>
     This version adds only a few features and a significant number of
@@ -145,63 +145,64 @@
     it's recommended to update your databases to eliminate the
     possibility of subtle changes in the database format.
     <ul>
-        <li>Fixed a bug which would ignore the proxy settings,
-	introduced in version 3.1.0b2.</li>
-	<li>Fixed a bug where words would remain from deleted
-	documents.</li>
-	<li>Fixed a bug where SGML &lt; was considered part of a tag
-	in the HTML parser, introduced in verison 3.1.0b2.</li>
-	<li>Fixed a bug where empty boolean searches would dump
-	core.</li>
-	<li>Fixed a bug where boolean "and," "or," and "not" would be
-	removed from a search string, causing a sytnax error.</li>
-	<li>Fixed a bug which wouldn't keep track of the hopcounts
-	correctly.</li>
-	<li>Added support for META refresh tags, contributed by Aidas
-	Kasparas</li>
-	<li>Added support for using CGI <a
-	href="http://hoohoo.ncsa.uiuc.edu/cgi/">environment
-	variables</a> in the search templates, contributed by Gilles
-	Detillieux.</li>
-	<li>Improved memory requirements <b>slightly</b> through
-	fixing a memory leak in htdig and a general system-wide
-	adjustment.</li>
-	<li>Improved support for multiple exclude and restrict items
-	through htsearch, contributed by William Rhee and Gilles.</li>
-	<li>Improved support to compile under CygWinB20, contributed
-	by Klaus Mueller.</li>
-	<li>Upgraded to the latest version (2.5.9) of the Berkeley DB</a>
-	<li>Added a new option <a
-	href="attrs.html#server_wait_time">server_wait_time</a> to
-	give a delay between connections to a server. Currently this
-	can also affect local filesystem digging if set.</li>
-	<li>Added a new option <a
-	href="attrs.html#server_max_docs">server_max_docs</a> to limit
-	the number of documents pulled down from a server in one dig.</li>
-	<li>Added a new option <a
-	href="attrs.html#http_proxy_exclude">http_proxy_exclude</a>
-	to ignore the proxy setting on certain URLs.</li>
-	<li>Added a new option <a
-	href="attrs.html#no_excerpt_show_top">no_excerpt_show_top</a>to
-	show the top of a document when there is no excerpt.</li>
-	<li>Added new options <a
-	href="attrs.html#date_factor">date_factor</a>, <a
-	href="attrs.html#backlink_factor">backlink_factor</a>, and <a
-	href="attrs.html#description_factor">description_factor</a> to
-	improve search rankings. Respectively, they can give higher
-	rankings to more recent documents, documents with a high
-	number of links pointing to them, and documents with relevant
-	URL descriptions pointing to them. See the documentation for
-	more information.</li>
-	<li>Added a set of contributed scripts called multidig to help
-	work with multiple sets of URLs and databases.</li>
-	<li>Fixed many compilation problems under AIX, thanks to
-	Alexander Bergolth!</li>
-	<li>
-	Many other bugs were fixed, so a big thanks to everyone
-	who submitted a bug report, patch or gave other feedback! See the <a
-	href="ChangeLog">ChangeLog</a> for more details.
-	</li>
+      <li>Fixed a bug which would ignore the proxy settings,
+      introduced in version 3.1.0b2.</li>
+      <li>Fixed a bug where words would remain from deleted
+      documents.</li>
+      <li>Fixed a bug where SGML &lt; was considered part of a tag
+      in the HTML parser, introduced in verison 3.1.0b2.</li>
+      <li>Fixed a bug where empty boolean searches would dump
+      core.</li>
+      <li>Fixed a bug where boolean "and," "or," and "not" would be
+      removed from a search string, causing a sytnax error.</li>
+      <li>Fixed a bug which wouldn't keep track of the hopcounts
+      correctly.</li>
+      <li>Added support for META refresh tags, contributed by Aidas
+      Kasparas</li>
+      <li>Added support for using CGI
+      <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">environment
+      variables</a> in the search templates, contributed by Gilles
+      Detillieux.</li>
+      <li>Improved memory requirements <b>slightly</b> through
+      fixing a memory leak in htdig and a general system-wide
+      adjustment.</li>
+      <li>Improved support for multiple exclude and restrict items
+      through htsearch, contributed by William Rhee and Gilles.</li>
+      <li>Improved support to compile under CygWinB20, contributed
+      by Klaus Mueller.</li>
+      <li>Upgraded to the latest version (2.5.9) of the
+      <a href="http://www.sleepycat.com/">Berkeley DB</a>
+      <li>Added a new option
+      <a href="attrs.html#server_wait_time">server_wait_time</a> to
+      give a delay between connections to a server. Currently this
+      can also affect local filesystem digging if set.</li>
+      <li>Added a new option
+      <a href="attrs.html#server_max_docs">server_max_docs</a> to limit
+      the number of documents pulled down from a server in one dig.</li>
+      <li>Added a new option
+      <a href="attrs.html#http_proxy_exclude">http_proxy_exclude</a>
+      to ignore the proxy setting on certain URLs.</li>
+      <li>Added a new option
+      <a href="attrs.html#no_excerpt_show_top">no_excerpt_show_top</a>to
+      show the top of a document when there is no excerpt.</li>
+      <li>Added new options
+      <a href="attrs.html#date_factor">date_factor</a>,
+      <a href="attrs.html#backlink_factor">backlink_factor</a>, and
+      <a href="attrs.html#description_factor">description_factor</a> to
+      improve search rankings. Respectively, they can give higher
+      rankings to more recent documents, documents with a high
+      number of links pointing to them, and documents with relevant
+      URL descriptions pointing to them. See the documentation for
+      more information.</li>
+      <li>Added a set of contributed scripts called multidig to help
+      work with multiple sets of URLs and databases.</li>
+      <li>Fixed many compilation problems under AIX, thanks to
+      Alexander Bergolth!</li>
+      <li>
+      Many other bugs were fixed, so a big thanks to everyone
+      who submitted a bug report, patch or gave other feedback! See the
+      <a href="ChangeLog">ChangeLog</a> for more details.
+      </li>
     </ul>
     <strong>Release notes for htdig-3.1.0b2</strong> 1 Nov 1998<br>
     This version adds a few minor features as well as many
@@ -223,15 +224,15 @@
       systems contributed by Paul J. Meyer!
       </li>
       <li>
-      Added support for syslog-based htsearch logging. See the <a
-      href="attrs.html#logging">config documentation</a> for more
+      Added support for syslog-based htsearch logging. See the
+      <a href="attrs.html#logging">config documentation</a> for more
       details. Thanks to Leo Bergolth for this!
       </li>
       <li>
       Added fixes to work with DNS aliases (as opposed to virtual
-      hosts) through the <a
-      href="attrs.html#server_aliases">server_aliases</a> and <a
-      href="attrs.html#limit_normalized">limit_normalized</a> options
+      hosts) through the
+      <a href="attrs.html#server_aliases">server_aliases</a> and
+      <a href="attrs.html#limit_normalized">limit_normalized</a> options
       as contributed by Leo Bergolth.
       </li>
       <li>
@@ -239,12 +240,12 @@
       code contributed by Ren&eacute; Seindal.
       </li>
       <li>
-      Now supports case insensitive servers through the <a
-      href="attrs.html#case_sensitive">case_sensitive</a> option.
+      Now supports case insensitive servers through the
+      <a href="attrs.html#case_sensitive">case_sensitive</a> option.
       </li>
       <li>
-      Now supports ISO 8601 date format, using the <a
-      href="attrs.html#iso_8601">iso_8601</a> option.
+      Now supports ISO 8601 date format, using the
+      <a href="attrs.html#iso_8601">iso_8601</a> option.
       </li>
       <li>
       Added a wrapper to emulate Exite for Web Servers (EWS)
@@ -261,8 +262,8 @@
       current match, from a patch by Ren&eacute; Seindal.
       <li>
       Many other minor bugs were fixed, so a big thanks to everyone
-      who submitted a bug report or a patch! See the <a
-      href="ChangeLog">ChangeLog</a> for more details.
+      who submitted a bug report or a patch! See the
+      <a href="ChangeLog">ChangeLog</a> for more details.
       </li>
     </ul>
     <br>
@@ -584,8 +585,8 @@
           </li>
           <li>
             Many runtime configuration options have been removed
-            and many new ones have been added. Check the <a href=
-            "attrs.html">configuration file</a> documentation for
+            and many new ones have been added. Check the
+            <a href="attrs.html">configuration file</a> documentation for
             details. There are also some enhancements to the format
             of the configuration file. 
             <ul>
@@ -766,8 +767,9 @@
           </li>
           <li>
             Some form tag names have changed. The list of
-            recognized form tags are in the <a href="htsearch.html"
-            target="_top">htsearch</a> documentation.
+            recognized form tags are in the
+            <a href="htsearch.html" target="_top">htsearch</a>
+            documentation.
           </li>
           <li>
             Multiple start urls can be specified as a value to the
@@ -780,8 +782,8 @@
             logged in the server's log files.
           </li>
           <li>
-            In addition to the "htdig-keywords" META tag name, <a
-            href="htdig.html">htdig</a> now also supports just
+            In addition to the "htdig-keywords" META tag name,
+            <a href="htdig.html">htdig</a> now also supports just
             "keywords". This is to make it more compatible with the
             Alta Vista search engine.
           </li>
@@ -855,16 +857,14 @@
             for the search results.
           </li>
         </ul>
-        <hr noshade size="4">
-        <address>
-          <a href="author.html">Andrew Scherpbier
-          &lt;andrew@contigo.com&gt;</a>
-        </address>
-        <!-- hhmts start -->
-Last modified: Mon Feb  8 23:47:28 EST 1999
-<!-- hhmts end -->
       </li>
     </ul>
+    <hr size="4" noshade>
+    <address>
+      <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
+    </address>
+    <!-- hhmts start -->
+Last modified: Mon Feb  8 23:47:28 EST 1999
+<!-- hhmts end -->
   </body>
 </html>
-

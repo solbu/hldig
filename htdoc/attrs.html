@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html>
   <head>
     <title>
@@ -14,7 +14,7 @@
        Please see the file <a href="COPYING">COPYING</a> for
       license information.
     </p>
-    <hr size="4" noshade="noshade">
+    <hr size="4" noshade>
     <h2>
       Alphabetical list of attributes
     </h2>
@@ -86,24 +86,24 @@
             <em>default:</em>
           </dt>
           <dd>
-	  <emph>&lt;empty&gt;</emph>
+            <em>&lt;empty&gt;</em>
           </dd>
           <dt>
             <em>description:</em>
           </dt>
           <dd>
-	  Allows the specified config file attributes to be specified
-	  in search forms as separate fields. This could be used to
-	  allow form writers to design their own headers and footers
-	  and specify them in the search form. Another example would
-	  be to offer a menu of search_algorithms in the form.
-	  <blockquote>
-	  &lt;SELECT NAME="search_algorithm"&gt;
-	  &lt;OPTION VALUE="exact:1 prefix:0.6 synonyms:0.5 endings:0.1"
-	  SELECTED&gt; fuzzy
-	  &lt;OPTION VALUE="exact:1"&gt;exact 
-	  &lt;/SELECT&gt;
-	  </blockquote>
+            Allows the specified config file attributes to be specified
+            in search forms as separate fields. This could be used to
+            allow form writers to design their own headers and footers
+            and specify them in the search form. Another example would
+            be to offer a menu of search_algorithms in the form.
+            <blockquote>
+            lt;SELECT NAME="search_algorithm"&gt;
+            &lt;OPTION VALUE="exact:1 prefix:0.6 synonyms:0.5 endings:0.1"
+            SELECTED&gt; fuzzy
+            &lt;OPTION VALUE="exact:1"&gt;exact 
+            &lt;/SELECT&gt;
+            </blockquote>
           </dd>
           <dt>
             <em>example:</em>
@@ -146,8 +146,8 @@
             If set to true, numbers are considered words. This
             means that searches can be done on number as well as
             regular words. All the same rules apply to numbers as
-            to words. See the description of <a href=
-            "#valid_punctuation">valid_punctuation</a> for the
+            to words. See the description of
+            <a href="#valid_punctuation">valid_punctuation</a> for the
             rules used to determine what a word is.
           </dd>
           <dt>
@@ -217,7 +217,7 @@
             <em>type:</em>
           </dt>
           <dd>
-	      number
+            number
           </dd>
           <dt>
             <em>used by:</em>
@@ -229,26 +229,26 @@
             <em>default:</em>
           </dt>
           <dd>
-	      1000
+            1000
           </dd>
           <dt>
             <em>description:</em>
           </dt>
           <dd>
-	      This is a weight of "how important" a page is, based on
-	      the number of URLs pointing to it. It's actually
-	      multiplied by the ratio of the incoming URLs (backlinks)
-	      and outgoing URLs, to balance out pages with lots of
-	      links to pages that link back to them. This factor can
-	      be changed without changing the database in any way.
-	      However, setting this value to something other than 0
-	      incurs a slowdown on search results.
+            This is a weight of "how important" a page is, based on
+            the number of URLs pointing to it. It's actually
+            multiplied by the ratio of the incoming URLs (backlinks)
+            and outgoing URLs, to balance out pages with lots of
+            links to pages that link back to them. This factor can
+            be changed without changing the database in any way.
+            However, setting this value to something other than 0
+            incurs a slowdown on search results.
           </dd>
           <dt>
             <em>example:</em>
           </dt>
           <dd>
-	      backlink_factor: 501.1
+            backlink_factor: 501.1
           </dd>
         </dl>
       </dd>
@@ -324,22 +324,22 @@
             <em>default:</em>
           </dt>
           <dd>
-	  <emph>&lt;empty&gt;</emph>
+            <em>&lt;empty&gt;</em>
           </dd>
           <dt>
             <em>description:</em>
           </dt>
           <dd>
-	  This is a list of CGI query strings to be excluded from
-	  indexing. This can be used in conjunction with CGI-generated
-	  portions of a website to control which pages are
-	  indexed.
+            This is a list of CGI query strings to be excluded from
+            indexing. This can be used in conjunction with CGI-generated
+            portions of a website to control which pages are
+            indexed.
           </dd>
           <dt>
             <em>example:</em>
           </dt>
           <dd>
-            bad_querystr: forum=private section=topsecret&passwd=required
+            bad_querystr: forum=private section=topsecret&amp;passwd=required
           </dd>
         </dl>
       </dd>
@@ -361,8 +361,8 @@
             <em>used by:</em>
           </dt>
           <dd>
-            <a href="htdig.html">htdig</a> and <a href=
-            "htsearch.html" target="_top">htsearch</a>
+            <a href="htdig.html">htdig</a> and
+            <a href="htsearch.html" target="_top">htsearch</a>
           </dd>
           <dt>
             <em>default:</em>
@@ -379,8 +379,8 @@
             include the most common words or other words that you
             don't want to be able to search on (things like <i>
             sex</i> or <i>smut</i> are examples of these.)<br>
-             The file should contain one word per line. A sample
-            bad words file is located in the <tt>examples</tt>
+            The file should contain one word per line. A sample
+            bad words file is located in the <tt>contrib/examples</tt>
             directory.
           </dd>
           <dt>
@@ -415,15 +415,15 @@
             <em>default:</em>
           </dt>
           <dd>
-	  true
+            true
           </dd>
           <dt>
             <em>description:</em>
           </dt>
           <dd>
-	  This specifies whether ht://Dig should consider URLs
-	  case-sensitive or not. If your server is case-insensitive,
-	  you should probably set this to false.
+            This specifies whether ht://Dig should consider URLs
+            case-sensitive or not. If your server is case-insensitive,
+            you should probably set this to false.
           </dd>
           <dt>
             <em>example:</em>
@@ -451,10 +451,11 @@
             <em>used by:</em>
           </dt>
           <dd>
-            <a href="htdig.html">htdig</a>, <a href=
-            "htnotify.html">htnotify</a>, <a href="htfuzzy.html">
-            htfuzzy</a>, <a href="htmerge.html">htmerge</a> and <a
-            href="htsearch.html" target="_top">htsearch</a>
+            <a href="htdig.html">htdig</a>,
+            <a href="htnotify.html">htnotify</a>,
+            <a href="htfuzzy.html">htfuzzy</a>,
+            <a href="htmerge.html">htmerge</a> and
+            <a href="htsearch.html" target="_top">htsearch</a>
           </dd>
           <dt>
             <em>default:</em>
@@ -497,10 +498,10 @@
             <em>used by:</em>
           </dt>
           <dd>
-            <a href="htdig.html">htdig</a>, <a href=
-            "htnotify.html">htnotify</a>,
-            <a href="htmerge.html">htmerge</a> and <a
-            href="htsearch.html" target="_top">htsearch</a>
+            <a href="htdig.html">htdig</a>,
+            <a href="htnotify.html">htnotify</a>,
+            <a href="htmerge.html">htmerge</a> and
+            <a href="htsearch.html" target="_top">htsearch</a>
           </dd>
           <dt>
             <em>default:</em>
@@ -686,8 +687,8 @@
             <em>used by:</em>
           </dt>
           <dd>
-            <a href="htdig.html">htdig</a>, <a href=
-            "htnotify.html">htnotify</a>, <a href="htfuzzy.html">
+            <a href="htdig.html">htdig</a>,
+            <a href="htnotify.html">htnotify</a>, <a href="htfuzzy.html">
             htfuzzy</a>, <a href="htmerge.html">htmerge</a> and <a
             href="htsearch.html" target="_top">htsearch</a>
           </dd>
@@ -733,10 +734,11 @@
             <em>used by:</em>
           </dt>
           <dd>
-            <a href="htdig.html">htdig</a>, <a href=
-            "htnotify.html">htnotify</a>, <a href="htfuzzy.html">
-            htfuzzy</a>, <a href="htmerge.html">htmerge</a> and <a
-            href="htsearch.html" target="_top">htsearch</a>
+            <a href="htdig.html">htdig</a>,
+            <a href="htnotify.html">htnotify</a>,
+            <a href="htfuzzy.html">htfuzzy</a>,
+            <a href="htmerge.html">htmerge</a> and
+            <a href="htsearch.html" target="_top">htsearch</a>
           </dd>
           <dt>
             <em>default:</em>
@@ -777,39 +779,39 @@
             <em>type:</em>
           </dt>
           <dd>
-	      number
+            number
           </dd>
           <dt>
             <em>used by:</em>
           </dt>
           <dd>
-	      <a href="htsearch.html" target="_top">htsearch</a>
+            <a href="htsearch.html" target="_top">htsearch</a>
           </dd>
           <dt>
             <em>default:</em>
           </dt>
           <dd>
-	      0
+            0
           </dd>
           <dt>
             <em>description:</em>
           </dt>
           <dd>
-	      This factor, like <a
-	      href="#backlink_factor">backlink_factor</a> can be
-	      changed without modifing the database. It gives higher
-	      rankings to newer documents and lower rankings to older
-	      documents. Before setting this factor, it's advised to
-	      make sure your servers are returning accurate dates
-	      (check the dates returned in the long format).
-	      Additionally, setting this to a nonzero value incurs a
-	      performance hit on searching.
+            This factor, like <a
+            href="#backlink_factor">backlink_factor</a> can be
+            changed without modifing the database. It gives higher
+            rankings to newer documents and lower rankings to older
+            documents. Before setting this factor, it's advised to
+            make sure your servers are returning accurate dates
+            (check the dates returned in the long format).
+            Additionally, setting this to a nonzero value incurs a
+            performance hit on searching.
           </dd>
           <dt>
             <em>example:</em>
           </dt>
           <dd>
-	      date_factor: 0.35
+            date_factor: 0.35
           </dd>
         </dl>
       </dd>
@@ -837,25 +839,25 @@
             <em>default:</em>
           </dt>
           <dd>
-	      150
+            150
           </dd>
           <dt>
             <em>description:</em>
           </dt>
           <dd>
-	      Plain old "descriptions" are the text of a link pointing
-	      to a document. This factor gives weight to the words of
-	      these descriptions of the document. Not surprisingly,
-	      these can be pretty accurate summaries of a document's
-	      content. See also <a href="#title_factor">title_factor</a> or <a
-	      href="#text_factor">text_factor</a>. Changing this
-	      factor will require updating your database.
+            Plain old "descriptions" are the text of a link pointing
+            to a document. This factor gives weight to the words of
+            these descriptions of the document. Not surprisingly,
+            these can be pretty accurate summaries of a document's
+            content. See also <a href="#title_factor">title_factor</a> or <a
+            href="#text_factor">text_factor</a>. Changing this
+            factor will require updating your database.
           </dd>
           <dt>
             <em>example:</em>
           </dt>
           <dd>
-	      description_factor: 350
+            description_factor: 350
           </dd>
         </dl>
       </dd>
@@ -923,8 +925,8 @@
             <em>used by:</em>
           </dt>
           <dd>
-            <a href="htmerge.html">htmerge</a> and <a href=
-            "htsearch.html" target="_top">htsearch</a>,
+            <a href="htmerge.html">htmerge</a> and
+            <a href="htsearch.html" target="_top">htsearch</a>,
           </dd>
           <dt>
             <em>default:</em>
@@ -1070,8 +1072,8 @@
           <dd>
             Specifies the location of the file which contains the
             affix rules used to create the endings search algorithm
-            databases. Consult the documentation on <a href=
-            "htfuzzy.html">htfuzzy</a> for more information on the
+            databases. Consult the documentation on
+            <a href="htfuzzy.html">htfuzzy</a> for more information on the
             format of this file.
           </dd>
           <dt>
@@ -1115,8 +1117,8 @@
           <dd>
             Specifies the location of the file which contains the
             dictionary used to create the endings search algorithm
-            databases. Consult the documentation on <a href=
-            "htfuzzy.html">htfuzzy</a> for more information on the
+            databases. Consult the documentation on
+            <a href="htfuzzy.html">htfuzzy</a> for more information on the
             format of this file.
           </dd>
           <dt>
@@ -1146,8 +1148,8 @@
             <em>used by:</em>
           </dt>
           <dd>
-            <a href="htfuzzy.html">htfuzzy</a> and <a href=
-            "htsearch.html" target="_top">htsearch</a>
+            <a href="htfuzzy.html">htfuzzy</a> and
+            <a href="htsearch.html" target="_top">htsearch</a>
           </dd>
           <dt>
             <em>default:</em>
@@ -1163,10 +1165,10 @@
             used in the 'endings' fuzzy search algorithm. The
             database maps word roots to all legal words with that
             root. For more information about this and other fuzzy
-            search algorithms, consult the <a href="htfuzzy.html">
-            htfuzzy</a> documentation.<br>
-             Note that the default value uses the <a href=
-            "#common_dir">common_dir</a> attribute instead of the
+            search algorithms, consult the
+            <a href="htfuzzy.html">htfuzzy</a> documentation.<br>
+            Note that the default value uses the
+            <a href="#common_dir">common_dir</a> attribute instead of the
             <a href="#database_dir">database_dir</a> attribute.
             This is because this database can be shared with
             different search databases.
@@ -1198,8 +1200,8 @@
             <em>used by:</em>
           </dt>
           <dd>
-            <a href="htfuzzy.html">htfuzzy</a> and <a href=
-            "htsearch.html" target="_top">htsearch</a>
+            <a href="htfuzzy.html">htfuzzy</a> and
+            <a href="htsearch.html" target="_top">htsearch</a>
           </dd>
           <dt>
             <em>default:</em>
@@ -1217,8 +1219,8 @@
             about this and other fuzzy search algorithms, consult
             the <a href="htfuzzy.html">htfuzzy</a>
             documentation.<br>
-             Note that the default value uses the <a href=
-            "#common_dir">common_dir</a> attribute instead of the
+            Note that the default value uses the
+            <a href="#common_dir">common_dir</a> attribute instead of the
             <a href="#database_dir">database_dir</a> attribute.
             This is because this database can be shared with
             different search databases.
@@ -1267,8 +1269,8 @@
             be bolded in the middle of the excerpt so that there is
             some surrounding context.<br>
              The <em><a href="#start_ellipses">
-            start_ellipses</a></em> and <em><a href=
-            "#end_ellipses">end_ellipses</a></em> are used to
+            start_ellipses</a></em> and
+            <em><a href="#end_ellipses">end_ellipses</a></em> are used to
             indicate that the document contains text before and
             after the displayed excerpt respectively.
           </dd>
@@ -1674,8 +1676,8 @@
                   http-equiv
                 </td>
                 <td>
-                  The HTTP-EQUIV attribute of a <a
-                  href="meta.html"><i>META</i> tag</a>.
+                  The HTTP-EQUIV attribute of a
+                  <a href="meta.html"><i>META</i> tag</a>.
                   May be empty.
                 </td>
               </tr>
@@ -1684,8 +1686,9 @@
                   name
                 </td>
                 <td>
-                  The NAME attribute of this <i>META</i>
-                  tag</a>.  May be empty.
+                  The NAME attribute of this
+                  <a href="meta.html"><i>META</i> tag</a>.
+                  May be empty.
                 </td>
               </tr>
               <tr>
@@ -1693,7 +1696,8 @@
                   contents
                 </td>
                 <td>
-                  The CONTENTS attribute of this <i>META</i> tag</a>.
+                  The CONTENTS attribute of this
+                  <a href="meta.html"><i>META</i> tag</a>.
                   May be empty.
                 </td>
               </tr>
@@ -1749,9 +1753,9 @@
             tags. It is used to assign the level of importance to
             certain headers. Setting a factor to 0 will cause words
             in this heading to be ignored. The number may be a
-            floating point number. See also the <a href=
-            "#title_factor">title_factor</a> and <a href=
-            "#text_factor">text_factor</a> attributes.
+            floating point number. See also the
+            <a href="#title_factor">title_factor</a> and
+            <a href="#text_factor">text_factor</a> attributes.
           </dd>
           <dt>
             <em>example:</em>
@@ -1885,9 +1889,9 @@
             <em>description:</em>
           </dt>
           <dd>
-	      When this is set, URLs matching this will not use the
-	      proxy. This is useful when you have a mixture of sites
-	      near to the digging server and far away.
+            When this is set, URLs matching this will not use the
+            proxy. This is useful when you have a mixture of sites
+            near to the digging server and far away.
           </dd>
           <dt>
             <em>example:</em>
@@ -1928,8 +1932,8 @@
           </dt>
           <dd>
             This is the file that a list of image URLs gets written
-            to by <a href="htdig.html">htdig</a> when the <a href=
-            "#create_image_list">create_image_list</a> is set to
+            to by <a href="htdig.html">htdig</a> when the
+            <a href="#create_image_list">create_image_list</a> is set to
             true. As image URLs are seen, they are just appended to
             this file, so after htdig finishes it is probably a
             good idea to run <tt>sort -u</tt> on the file to
@@ -1974,14 +1978,14 @@
             <em>description:</em>
           </dt>
           <dd>
-	  This sets whether dates should be output in ISO 8601
-	  format. For example, this was written on: 1998-10-31 11:28:13 EST.
+            This sets whether dates should be output in ISO 8601
+            format. For example, this was written on: 1998-10-31 11:28:13 EST.
           </dd>
           <dt>
             <em>example:</em>
           </dt>
           <dd>
-	  iso_8601: true
+            iso_8601: true
           </dd>
         </dl>
       </dd>
@@ -2019,8 +2023,8 @@
             This is a factor which will be used to multiply the
             weight of words in the list of keywords of a document.
             The number may be a floating point number. See also the
-            <a href="#title_factor">title_factor</a> and <a href=
-            "#text_factor">text_factor</a>attributes.
+            <a href="#title_factor">title_factor</a> and
+            <a href="#text_factor">text_factor</a>attributes.
           </dd>
           <dt>
             <em>example:</em>
@@ -2209,9 +2213,9 @@
             <em>description:</em>
           </dt>
           <dd>
-	  Set this to the default document in a directory used by the
-	  server. This is used for local filesystem access to
-	  translate URLs like http://foo.com/ into /home/foo.com/
+            Set this to the default document in a directory used by the
+            server. This is used for local filesystem access to
+            translate URLs like http://foo.com/ into /home/foo.com/
           </dd>
           <dt>
             <em>example:</em>
@@ -2251,19 +2255,19 @@
             <em>description:</em>
           </dt>
           <dd>
-	  Set this to tell ht://Dig to access certain URLs through
-	  local filesystems. At first ht://Dig will try to access
-	  pages with URLs matching the patterns through the
-	  filesystems specified. If it cannot find the file, it will
-	  try the URL through HTTP instead. Note the example--the
-	  equal sign and the final slashes in both the URL and the
-	  directory path are critical.
+            Set this to tell ht://Dig to access certain URLs through
+            local filesystems. At first ht://Dig will try to access
+            pages with URLs matching the patterns through the
+            filesystems specified. If it cannot find the file, it will
+            try the URL through HTTP instead. Note the example--the
+            equal sign and the final slashes in both the URL and the
+            directory path are critical.
           </dd>
           <dt>
             <em>example:</em>
           </dt>
           <dd>
-	  local_urls: http://www.foo.com/=/usr/www/htdocs/
+            local_urls: http://www.foo.com/=/usr/www/htdocs/
           </dd>
         </dl>
       </dd>
@@ -2297,13 +2301,13 @@
             <em>description:</em>
           </dt>
           <dd>
-	  Set this to access user directory URLs through the local
-	  filesystem. If you leave the "path" portion out, it will
-	  look up the user's home directory in /etc/password (or NIS
-	  or whatever). As with local_urls, if the files are not
-	  found, ht://Dig will try with HTTP. Again, note the
-	  example's format. To map http://www.my.org/~joe/foo/bar.html
-	  to /home/joe/www/foo/bar.html, try the example below.
+            Set this to access user directory URLs through the local
+            filesystem. If you leave the "path" portion out, it will
+            look up the user's home directory in /etc/password (or NIS
+            or whatever). As with local_urls, if the files are not
+            found, ht://Dig will try with HTTP. Again, note the
+            example's format. To map http://www.my.org/~joe/foo/bar.html
+            to /home/joe/www/foo/bar.html, try the example below.
           </dd>
           <dt>
             <em>example:</em>
@@ -2381,20 +2385,20 @@
             <em>default:</em>
           </dt>
           <dd>
-	  false
+            false
           </dd>
           <dt>
             <em>description:</em>
           </dt>
           <dd>
-	  This sets whether htsearch should use the syslog() to log
-	  search requests. If set, this will log requests with a
-	  default level of LOG_INFO and a facility of LOG_LOCAL5. For
-	  details on redirecting the log into a separate file or other
-	  actions, see the <strong>syslog.conf(5)</strong> man
-	  page. To set the level and facility used in logging, change
-	  LOG_LEVEL and LOG_FACILITY in the include/htconfig.h file
-	  before compiling.
+            This sets whether htsearch should use the syslog() to log
+            search requests. If set, this will log requests with a
+            default level of LOG_INFO and a facility of LOG_LOCAL5. For
+            details on redirecting the log into a separate file or other
+            actions, see the <strong>syslog.conf(5)</strong> man
+            page. To set the level and facility used in logging, change
+            LOG_LEVEL and LOG_FACILITY in the include/htconfig.h file
+            before compiling.
           </dd>
           <dt>
             <em>example:</em>
@@ -2575,8 +2579,8 @@
             <em>description:</em>
           </dt>
           <dd>
-            While gathering descriptions of URLs, <a href=
-            "htdig.html">htdig</a> will only record those
+            While gathering descriptions of URLs,
+            <a href="htdig.html">htdig</a> will only record those
             descriptions which are shorter than this length. This
             is used mostly to deal with broken HTML. (If a
             hyperlink is not terminated with a &lt;/a&gt; the
@@ -2759,7 +2763,7 @@
           </dt>
           <dd>
             While gathering descriptions from meta description tags,
-            <a href= "htdig.html">htdig</a> will truncate
+            <a href="htdig.html">htdig</a> will truncate
             descriptions which are longer than this length.
           </dd>
           <dt>
@@ -2935,8 +2939,8 @@
             This is a factor which will be used to multiply the
             weight of words in any META description tags in a document.
             The number may be a floating point number. See also the
-            <a href="#title_factor">title_factor</a> and <a href=
-            "#text_factor">text_factor</a> attributes.
+            <a href="#title_factor">title_factor</a> and
+            <a href="#text_factor">text_factor</a> attributes.
           </dd>
           <dt>
             <em>example:</em>
@@ -2964,8 +2968,8 @@
             <em>used by:</em>
           </dt>
           <dd>
-            <a href="htfuzzy.html">htfuzzy</a> and <a href=
-            "htsearch.html" target="_top">htsearch</a>
+            <a href="htfuzzy.html">htfuzzy</a> and
+            <a href="htsearch.html" target="_top">htsearch</a>
           </dd>
           <dt>
             <em>default:</em>
@@ -2978,9 +2982,9 @@
           </dt>
           <dd>
             The database file used for the fuzzy "metaphone" search
-            algorithm. This database is created by <a href=
-            "htfuzzy.html">htfuzzy</a> and used by <a href=
-            "htsearch.html" target="_top">htsearch</a>.
+            algorithm. This database is created by
+            <a href="htfuzzy.html">htfuzzy</a> and used by
+            <a href="htsearch.html" target="_top">htsearch</a>.
           </dd>
           <dt>
             <em>example:</em>
@@ -3097,8 +3101,8 @@
             <em>used by:</em>
           </dt>
           <dd>
-            <a href="htdig.html">htdig</a> and <a href=
-            "htsearch.html" target="_top">htsearch</a>
+            <a href="htdig.html">htdig</a> and
+            <a href="htsearch.html" target="_top">htsearch</a>
           </dd>
           <dt>
             <em>default:</em>
@@ -3157,13 +3161,13 @@
             <em>description:</em>
           </dt>
           <dd>
-	  This sets ht://Dig's response to a server that does not
-	  return a modification date. By default, it stores
-	  nothing. By setting modification_time_is_now, it will store
-	  the current time if the server does not return a
-	  date. Though this will return incorrect dates in search
-	  results, it will cut down on reindexing from such servers
-	  when doing updates.
+            This sets ht://Dig's response to a server that does not
+            return a modification date. By default, it stores
+            nothing. By setting modification_time_is_now, it will store
+            the current time if the server does not return a
+            date. Though this will return incorrect dates in search
+            results, it will cut down on reindexing from such servers
+            when doing updates.
           </dd>
           <dt>
             <em>example:</em>
@@ -3240,16 +3244,16 @@
             <em>default:</em>
           </dt>
           <dd>
-	      false
+             false
           </dd>
           <dt>
             <em>description:</em>
           </dt>
           <dd>
-	      If no excerpt is available, this option will act the
-	      same as <a
-	      href="#excerpt_show_top">excerpt_show_top</a>, that is,
-	      it will show the top of the document.
+            If no excerpt is available, this option will act the
+            same as <a
+            href="#excerpt_show_top">excerpt_show_top</a>, that is,
+            it will show the top of the document.
           </dd>
           <dt>
             <em>example:</em>
@@ -3308,8 +3312,8 @@
     <hr>
     <dl>
       <dt>
-        <strong><a name="noindex_start"><a name="noindex_stop">
-        noindex_start, noindex_stop</a></a></strong>
+        <strong><a name="noindex_start">noindex_start</a>,
+        <a name="noindex_stop">noindex_stop</a></strong>
       </dt>
       <dd>
         <dl>
@@ -3329,21 +3333,29 @@
             <em>default:</em>
           </dt>
           <dd>
-            &lt;!--htdig-noindex--&gt; &lt;!--/htdig-noindex-->
+            &lt;!--htdig-noindex--&gt; &lt;!--/htdig-noindex--&gt;
           </dd>
           <dt>
             <em>description:</em>
           </dt>
           <dd>
-	  The text (presumably tags) encompassing a section of an HTML
-	  file that should be completely ignored when indexing.
+            The text encompassing a section of an HTML file that should be completely
+            ignored when indexing. As in the defaults, this can be SGML comment
+            declarations that can be inserted anywhere in the documents to exclude
+            different sections from being indexed. However, existing tags can also be
+            used; this is especially useful to exclude some sections from being indexed
+            where the files to be indexed can not be edited. The example shows how
+            SCRIPT sections in 'uneditable' documents can be skipped; note how
+            noindex_start does not contain an ending &gt;: this allows for all SCRIPT
+            tags to be matched regardless of attributes defined (different types or
+            languages).
           </dd>
           <dt>
             <em>example:</em>
           </dt>
           <dd>
-	  noindex_start: &lt;!--private--&gt;
-	  noindex_stop: &lt;!--/private--&gt;
+            noindex_start: &lt;SCRIPT<br>
+            noindex_stop: &lt;/SCRIPT&gt;
           </dd>
         </dl>
       </dd>
@@ -3421,9 +3433,9 @@
           </dt>
           <dd>
             This text will be used as the value of the PAGEHEADER
-            variable, for use in templates or the <a href=
-            "#search_results_footer">search_results_footer</a> file,
-            when all search results fit on a single page.
+            variable, for use in templates or the
+            <a href="#search_results_footer">search_results_footer</a>
+            file, when all search results fit on a single page.
           </dd>
           <dt>
             <em>example:</em>
@@ -3617,22 +3629,22 @@
             <em>default:</em>
           </dt>
           <dd>
-	  filename
+            filename
           </dd>
           <dt>
             <em>description:</em>
           </dt>
           <dd>
-	  This specifies the text to use in search results when no
-	  title is found in the document itself. If it is set to
-	  filename, htsearch will use the name of the file itself,
-	  enclosed in brackets (e.g. [index.html]).
+            This specifies the text to use in search results when no
+            title is found in the document itself. If it is set to
+            filename, htsearch will use the name of the file itself,
+            enclosed in brackets (e.g. [index.html]).
           </dd>
           <dt>
             <em>example:</em>
           </dt>
           <dd>
-	  no_title_text: "No Title Found"
+            no_title_text: "No Title Found"
           </dd>
         </dl>
       </dd>
@@ -3668,9 +3680,9 @@
           </dt>
           <dd>
             This text will be used as the value of the PAGEHEADER
-            variable, for use in templates or the <a href=
-            "#search_results_footer">search_results_footer</a> file,
-            when all search results fit on more than one page.
+            variable, for use in templates or the
+            <a href="#search_results_footer">search_results_footer</a>
+            file, when all search results fit on more than one page.
           </dd>
           <dt>
             <em>example:</em>
@@ -3780,14 +3792,14 @@
             <em>description:</em>
           </dt>
           <dd>
-	  Set this to the path of the program used to parse PDF
-	  files. The program will be called with the parameters:<br>
-	  <tt>-toPostScript</tt> <em>infile tempdir</em>,<br>
-	  where <em>infile</em> is a file to parse and <em>tempdir</em>
-	  is a directory for storing temporary files. The program is
-	  supposed to convert to a variant of PostScript, which is then
-	  parsed internally.  Currently only the acroread
-	  program has been tested as a PDF parser.
+            Set this to the path of the program used to parse PDF
+            files. The program will be called with the parameters:<br>
+            <tt>-toPostScript</tt> <em>infile tempdir</em>,<br>
+            where <em>infile</em> is a file to parse and <em>tempdir</em>
+            is a directory for storing temporary files. The program is
+            supposed to convert to a variant of PostScript, which is then
+            parsed internally.  Currently only the acroread
+            program has been tested as a PDF parser.
           </dd>
           <dt>
             <em>example:</em>
@@ -3828,9 +3840,9 @@
             <em>description:</em>
           </dt>
           <dd>
-	  A null prefix character means that prefix matching should be
-	  applied to every search word. Otherwise a match is
-	  returned only if the word does not end in the characters specified.
+            A null prefix character means that prefix matching should be
+            applied to every search word. Otherwise a match is
+            returned only if the word does not end in the characters specified.
           </dd>
           <dt>
             <em>example:</em>
@@ -4014,7 +4026,7 @@
             <em>description:</em>
           </dt>
           <dd>
-	  Sets the name that htdig will look for when parsing
+            Sets the name that htdig will look for when parsing
             robots.txt files. This can be used to make htdig appear
             as a different spider than ht://Dig. Useful to
             distinguish between a private and a global index.
@@ -4078,8 +4090,8 @@
               <dd>
                 Uses a slightly modified soundex algorithm to match
                 words. This requires that the soundex database be
-                present. It is generated with the <a href=
-                "htfuzzy.html">htfuzzy</a> program.
+                present. It is generated with the
+                <a href="htfuzzy.html">htfuzzy</a> program.
               </dd>
               <dt>
                 metaphone
@@ -4109,27 +4121,27 @@
                 algorithm uses a database generated with the <a
                 href="htfuzzy.html">htfuzzy</a> program.
               </dd>
-	      <dt>
-	        substring
-	      </dt>
-	      <dd>
-		Matches all words containing the queries as
-		substrings. Since this requires checking every word in
-		the database, this can really slow down searches
-		considerably.
-	      <dd>
-	      <dt>
-	        prefix
-	      </dt>
-	      <dd>
-	        Matches all words beginning with the query
-	        strings. Uses the option <a
-	        href="#prefix_match_character">prefix_match_character</a>
-	        to decide whether a query requires prefix
-	        matching. For example "abc*" would perform prefix
-	        matching on "abc" since * is the default
-	        prefix_match_character.
-	      </dd>
+            <dt>
+            substring
+            </dt>
+            <dd>
+              Matches all words containing the queries as
+              substrings. Since this requires checking every word in
+              the database, this can really slow down searches
+              considerably.
+            <dd>
+            <dt>
+              prefix
+            </dt>
+            <dd>
+              Matches all words beginning with the query
+              strings. Uses the option <a
+              href="#prefix_match_character">prefix_match_character</a>
+              to decide whether a query requires prefix
+              matching. For example "abc*" would perform prefix
+              matching on "abc" since * is the default
+              prefix_match_character.
+            </dd>
             </dl>
           </dd>
           <dt>
@@ -4236,16 +4248,16 @@
                 PAGEHEADER
               </dt>
               <dd>
-                This expands to either the value of the <a href=
-                "#page_list_header">page_list_header</a> or <a href=
-                "#no_page_list_header">no_page_list_header</a>
+                This expands to either the value of the
+                <a href="#page_list_header">page_list_header</a> or
+                <a href="#no_page_list_header">no_page_list_header</a>
                 attribute depending on how many pages there are.
               </dd>
             </dl>
             Note that this file will <strong>NOT</strong> be output
-            if no matches were found. In this case the <a href=
-            "#nothing_found_file">nothing_found_file</a> attribute
-            is used instead.
+            if no matches were found. In this case the
+            <a href="#nothing_found_file">nothing_found_file</a>
+            attribute is used instead.
           </dd>
           <dt>
             <em>example:</em>
@@ -4349,9 +4361,9 @@
               </dd>
             </dl>
             Note that this file will <strong>NOT</strong> be output
-            if no matches were found. In this case the <a href=
-            "#nothing_found_file">nothing_found_file</a> attribute
-            is used instead.
+            if no matches were found. In this case the
+            <a href="#nothing_found_file">nothing_found_file</a>
+            attribute is used instead.
           </dd>
           <dt>
             <em>example:</em>
@@ -4394,8 +4406,8 @@
           </dt>
           <dd>
             This specifies a filename to be output at the start and
-            end of search results. This file replaces the <a href=
-            "#search_results_header">search_results_header</a> and
+            end of search results. This file replaces the
+            <a href="#search_results_header">search_results_header</a> and
             <a href="#search_results_footer">search_results_footer</a>
             files, with the contents of both in one file, and uses the
             pseudo-variable <strong>$(HTSEARCH_RESULTS)</strong> as a
@@ -4404,14 +4416,14 @@
             or the pseudo-variable above is not found, htsearch reverts
             to the separate header and footer files instead.
             While outputting the wrapper,
-            some variables will be expanded, just as for the <a href=
-            "#search_results_header">search_results_header</a> and
+            some variables will be expanded, just as for the
+            <a href="#search_results_header">search_results_header</a> and
             <a href="#search_results_footer">search_results_footer</a>
             files.<br>
             Note that this file will <strong>NOT</strong> be output
-            if no matches were found. In this case the <a href=
-            "#nothing_found_file">nothing_found_file</a> attribute
-            is used instead.
+            if no matches were found. In this case the
+            <a href="#nothing_found_file">nothing_found_file</a>
+            attribute is used instead.
           </dd>
           <dt>
             <em>example:</em>
@@ -4452,10 +4464,10 @@
             <em>description:</em>
           </dt>
           <dd>
-	  This directive tells the indexer that servers have several
-	  DNS aliases, which all point to the same machine and are NOT
-	  virtual hosts. This allows you to ensure pages are indexed
-	  only once on a given machine, despite the alias used in a URL.
+            This directive tells the indexer that servers have several
+            DNS aliases, which all point to the same machine and are NOT
+            virtual hosts. This allows you to ensure pages are indexed
+            only once on a given machine, despite the alias used in a URL.
           </dd>
           <dt>
             <em>example:</em>
@@ -4487,7 +4499,7 @@
             <em>type:</em>
           </dt>
           <dd>
-	      integer
+            integer
           </dd>
           <dt>
             <em>used by:</em>
@@ -4499,27 +4511,27 @@
             <em>default:</em>
           </dt>
           <dd>
-	      -1 <em>(no limit)</em>
+            -1 <em>(no limit)</em>
           </dd>
           <dt>
             <em>description:</em>
           </dt>
           <dd>
-	      This directive tells htdig to limit the dig to retrieve a maximum
-	      number of documents from each server. This can cause
-	      unusual behavior on update digs since the old URLs are
-	      stored alphabetically. Therefore, update digs will add
-	      additional URLs in pseudo-alphabetical order, up to the
-	      limit of the directive. However, it is most useful to
-	      partially index a server as the URLs of additional
-	      documents are entered into the database, marked as never
-	      retrieved.
+            This directive tells htdig to limit the dig to retrieve a maximum
+            number of documents from each server. This can cause
+            unusual behavior on update digs since the old URLs are
+            stored alphabetically. Therefore, update digs will add
+            additional URLs in pseudo-alphabetical order, up to the
+            limit of the directive. However, it is most useful to
+            partially index a server as the URLs of additional
+            documents are entered into the database, marked as never
+            retrieved.
           </dd>
           <dt>
             <em>example:</em>
           </dt>
           <dd>
-	      server_max_docs: 50
+            server_max_docs: 50
           </dd>
         </dl>
       </dd>
@@ -4547,26 +4559,26 @@
             <em>default:</em>
           </dt>
           <dd>
-	      0
+            0
           </dd>
           <dt>
             <em>description:</em>
           </dt>
           <dd>
-	      This directive tells htdig to ensure a server has had a
-	      delay (in seconds) from the beginning of the last
-	      connection. This can be used to prevent "server abuse"
-	      by digging without delay. It's recommended to set this
-	      to 10-30 (seconds) when indexing servers that you don't
-	      monitor yourself. Additionally, this directive can slow
-	      down local indexing if set, which may or may not be what
-	      you intended.
+            This directive tells htdig to ensure a server has had a
+            delay (in seconds) from the beginning of the last
+            connection. This can be used to prevent "server abuse"
+            by digging without delay. It's recommended to set this
+            to 10-30 (seconds) when indexing servers that you don't
+            monitor yourself. Additionally, this directive can slow
+            down local indexing if set, which may or may not be what
+            you intended.
           </dd>
           <dt>
             <em>example:</em>
           </dt>
           <dd>
-	      server_wait_time: 20
+            server_wait_time: 20
           </dd>
         </dl>
       </dd>
@@ -4715,8 +4727,8 @@
             <em>used by:</em>
           </dt>
           <dd>
-            <a href="htfuzzy.html">htfuzzy</a> and <a href=
-            "htsearch.html" target="_top">htsearch</a>
+            <a href="htfuzzy.html">htfuzzy</a> and
+            <a href="htsearch.html" target="_top">htsearch</a>
           </dd>
           <dt>
             <em>default:</em>
@@ -4729,9 +4741,9 @@
           </dt>
           <dd>
             The database file used for the fuzzy "soundex" search
-            algorithm. This database is created by <a href=
-            "htfuzzy.html">htfuzzy</a> and used by <a href=
-            "htsearch.html" target="_top">htsearch</a>.
+            algorithm. This database is created by
+            <a href="htfuzzy.html">htfuzzy</a> and used by
+            <a href="htsearch.html" target="_top">htsearch</a>.
           </dd>
           <dt>
             <em>example:</em>
@@ -4772,9 +4784,9 @@
           </dt>
           <dd>
             This specifies the URL to use to display a blank of the
-            same size as the star defined in the <a href=
-            "#image_star">image_star</a> attribute or in the <a
-            href="#image_patterns">image_patterns</a> attribute.
+            same size as the star defined in the
+            <a href="#image_star">image_star</a> attribute or in the
+            <a href="#image_patterns">image_patterns</a> attribute.
           </dd>
           <dt>
             <em>example:</em>
@@ -4820,8 +4832,8 @@
              The display of stars can be turned on or off with the
             <em><a href="#use_star_image">use_star_image</a></em>
             attribute and the maximum number of stars that can be
-            displayed is determined by the <em><a href=
-            "#max_stars">max_stars</a></em> attribute.<br>
+            displayed is determined by the
+            <em><a href="#max_stars">max_stars</a></em> attribute.<br>
              Even though the image can be changed, the ALT value
             for the image will always be a '*'.
           </dd>
@@ -5265,8 +5277,8 @@
           </dt>
           <dd>
             Specifies the default template if none is given by the
-            search form. This needs to map to the <a href=
-            "#template_map">template_map</a>.
+            search form. This needs to map to the
+            <a href="#template_map">template_map</a>.
           </dd>
           <dt>
             <em>example:</em>
@@ -5416,6 +5428,139 @@
     <hr>
     <dl>
       <dt>
+        <strong><a name="translate_amp">translate_amp</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            boolean
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            false
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            If set to false, the entity &amp;amp; (or &amp;#38;) will not be
+            translated into its ASCII equivalent &amp;. If translation were taking
+            place, an excerpt containing a &amp; might be misinterpreted by the browser
+            and look unrecognizable to the user. For this reason, not translating this
+            entity is the default behavior.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            translate_amp: true
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
+        <strong><a name="translate_lt_gt">translate_lt_gt</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            boolean
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            false
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            If set to false, the entities &amp;lt; (or &amp;#60;) and &amp;gt;
+            (or &amp;#62;) will not be translated into their ASCII equivalents &lt; and
+            &gt;. If translation were taking place, an excerpt containing &lt; and
+            &gt; might be misinterpreted by the browser and look unrecognizable to the
+            user. For this reason, not translating these entities is the default
+            behavior.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            translate_lt_gt: true
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
+        <strong><a name="translate_quot">translate_quot</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            boolean
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            false
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            If set to false, the entity &amp;quot; (or &amp;#34;) will not be
+            translated into its ASCII equivalent &quot;. If translation were taking
+            place, an excerpt containing a &quot; might be misinterpreted by the browser
+            and look unrecognizable to the user. For this reason, not translating this
+            entity is the default behavior.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            translate_quot: true
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
         <strong><a name="uncoded_db_compatible">
         uncoded_db_compatible</a></strong>
       </dt>
@@ -5499,8 +5644,8 @@
             <em>description:</em>
           </dt>
           <dd>
-            This file is only created if <em><a href=
-            "#create_url_list">create_url_list</a></em> is set to
+            This file is only created if
+            <em><a href="#create_url_list">create_url_list</a></em> is set to
             true. It will contain a list of all URLs that were
             seen.
           </dd>
@@ -5542,12 +5687,12 @@
             <em>description:</em>
           </dt>
           <dd>
-	  If <a href="htdig.html">htdig</a> is run with the -l option
-	  and interrupted, it will write out its progress to this
-	  file. Note that if it has a large number of URLs to write,
-	  it may take some time to exit. This can especially happen
-	  when running update digs and the run is interrupted soon
-	  after beginning.
+            If <a href="htdig.html">htdig</a> is run with the -l option
+            and interrupted, it will write out its progress to this
+            file. Note that if it has a large number of URLs to write,
+            it may take some time to exit. This can especially happen
+            when running update digs and the run is interrupted soon
+            after beginning.
           </dd>
           <dt>
             <em>example:</em>
@@ -5747,8 +5892,8 @@
             <em>description:</em>
           </dt>
           <dd>
-	  This allows customization of the user_agent: field sent when
-	  the digger requests a file from a server.
+            This allows customization of the user_agent: field sent when
+            the digger requests a file from a server.
           </dd>
           <dt>
             <em>example:</em>
@@ -5777,8 +5922,8 @@
             <em>used by:</em>
           </dt>
           <dd>
-            <a href="htdig.html">htdig</a> and <a href=
-            "htsearch.html" target="_top">htsearch</a>
+            <a href="htdig.html">htdig</a> and
+            <a href="htsearch.html" target="_top">htsearch</a>
           </dd>
           <dt>
             <em>default:</em>
@@ -5868,8 +6013,8 @@
             <em>used by:</em>
           </dt>
           <dd>
-            <a href="htdig.html">htdig</a> and <a href=
-            "htmerge.html">htmerge</a>
+            <a href="htdig.html">htdig</a> and
+            <a href="htmerge.html">htmerge</a>
           </dd>
           <dt>
             <em>default:</em>
@@ -5899,13 +6044,12 @@
         </dl>
       </dd>
     </dl>
-    <hr noshade size="4">
-    <p>
-      <!-- hhmts start -->
+    <hr size="4" noshade>
+    <address>
+      <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
+    </address>
+    <!-- hhmts start -->
 Last modified: Mon Feb  8 20:37:26 EST 1999
-<!-- hhmts end --><br>
-       <a href="author.html">andrew@contigo.com</a>
-    </p>
+<!-- hhmts end -->
   </body>
 </html>
-
