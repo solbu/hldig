@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.97 2003/10/23 10:27:18 lha Exp $
+// $Id: defaults.cc,v 1.98 2003/10/26 01:46:07 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1012,24 +1012,25 @@ http://www.htdig.org/", " \
 " }, \
 { "head_before_get", "true",  \
 	"boolean", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "head_before_get: false", " \
-    If set to true an HTTP/1.1 <em>HEAD</em> \
-	call is made in order to retrieve header information about a document. \
-	If the status code and the content-type returned let the document be parsable, \
-	then a following 'GET' call is made. \
-    In general, it is recommended to leave this attribute set to 'true' (especially when used \
-    with persistent connections performances can really improve), especially during an \
-    incremental dig (in this case 'htdig' can request the server if the document has been \
-    modified since last dig with a more proper and correct HEAD call). \
-    However there are a couple of cases when it is better to switch it off: \
+    If set to true, an HTTP/1.1 <em>HEAD</em> \
+    call is made in order to retrieve header information about a document. \
+    If the status code and the content-type returned show that the \
+    document is parsable, then a subsequent 'GET' call is made.  In \
+    general, it is recommended that this attribute be set to 'true', \
+    as it can really improve performance (especially when used with \
+    persistent connections).  This is particularly so during an \
+    incremental dig, since in this case 'htdig' can ask the server if the \
+    document has been modified since last dig. However there are a few \
+    cases when it is better to switch it off: \
     <ul> \
-    <li>the majority of documents is parsable (HTML and in general for those types of documents \
-    that have a proper external parser) and must be retrieved anyway (initial dig);</li> \
-    <li>the server does not support the HEAD method or it is disabled;</li> \
-    <li>in some cases persistent connections \
-    (<a href=\"#persistent_connections\">persistent_connections</a>) may not work properly \
-    and either the 'head_before_get' attribute or the 'persistent_connections' one may be \
-    turned off. \
-    </li> \
+        <li>the majority of documents are parsable (HTML or a type for which \
+        an external parser has been provided) and must be retrieved anyway \
+        (initial dig);</li> \
+        <li>the server does not support the HEAD method or it is \
+        disabled;</li> \
+        <li>in some cases <a href=\"#persistent_connections\">persistent_connections</a> may \
+        not work properly and either the 'head_before_get' attribute or the \
+        'persistent_connections' attribute must be turned off.</li> \
     </ul> \
 " }, \
 { "heading_factor", "5",  \

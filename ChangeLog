@@ -1,3 +1,9 @@
+Sun Oct 26 12:42:27 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * htcommon/defaults.cc: Fixed description of 'head_before_get' after
+      Lachlan fixes.
+    * htdoc/attrs.html: rerun cf_generate.pl
+
 Sat Oct 25 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htsearch/Display.cc: Fix #829761.

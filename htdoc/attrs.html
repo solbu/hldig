@@ -425,11 +425,16 @@
 		  </dt>
 		  <dd>
 	If set to true, numbers are considered words. This
-	means that searches can be done on number as well as
+	means that searches can be done on strings of digits as well as
 	regular words. All the same rules apply to numbers as
-	to words. See the description of
-	<a href="#valid_punctuation">valid_punctuation</a> for the
-	rules used to determine what a word is.
+	to words.  This does not cause numbers containing a decimal point or
+	commas to be treated as a single entity.
+	When allow_numbers is false, words are stil
+	allowed to contain digits, but they must also contain at
+	least one alphabetic character or
+	<a href="#extra_word_characters">extra word</a> character.
+	To disallow digits in words, add the digits to
+	<a href="#valid_punctuation">valid_punctuation</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -4483,10 +4488,19 @@ http://www.htdig.org/
 	In contrast to the characters in the
 	<a href="#valid_punctuation">valid_punctuation</a>
 	attribute, they are treated just like letter
-	characters.<br>
+	characters.  See also the <a href="#allow_numbers">allow_numbers</a>
+	attribute.<br>
 	Note that the <a href="#locale">locale</a> attribute
 	is normally used to configure which characters
-	constitute letter characters.
+	constitute letter characters.<br>
+	Note also that it is an error to have characters in both
+	extra_word_characters and
+	<a href="#valid_punctuation">valid_punctuation</a>.
+	To add one of the characters in the default valid_punctuation to
+	extra_word_characters, an explicit valid_punctuation entry must be
+	added to the configuration file.<br>
+	See also the comments about special characters at
+	<a href="#valid_punctuation">valid_punctuation</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -4530,7 +4544,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			false
+			true
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -4548,11 +4562,26 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	This option works only if we take advantage of persistent connections (see
-	persistent_connections attribute). If set to true an HTTP/1.1 <em>HEAD</em>
-	call is made in order to retrieve header information about a document.
-	If the status code and the content-type returned let the document be parsable,
-	then a following 'GET' call is made.
+    If set to true, an HTTP/1.1 <em>HEAD</em>
+    call is made in order to retrieve header information about a document.
+    If the status code and the content-type returned show that the
+    document is parsable, then a subsequent 'GET' call is made.  In
+    general, it is recommended that this attribute be set to 'true',
+    as it can really improve performance (especially when used with
+    persistent connections).  This is particularly so during an
+    incremental dig, since in this case 'htdig' can ask the server if the
+    document has been modified since last dig. However there are a few
+    cases when it is better to switch it off:
+    <ul>
+        <li>the majority of documents are parsable (HTML or a type for which
+        an external parser has been provided) and must be retrieved anyway
+        (initial dig);</li>
+        <li>the server does not support the HEAD method or it is
+        disabled;</li>
+        <li>in some cases <a href="#persistent_connections">persistent_connections</a> may
+        not work properly and either the 'head_before_get' attribute or the
+        'persistent_connections' attribute must be turned off.</li>
+    </ul>
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -4564,7 +4593,7 @@ http://www.htdig.org/
 				  head_before_get:
 				</td>
 				<td nowrap>
-				     true
+				     false
 				</td>
 			  </tr>
 			</table>
@@ -7231,7 +7260,8 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	The Prefix fuzzy algorithm could potentially match a
+	The Prefix <a href="#search_algorithm">fuzzy algorithm</a>
+	could potentially match a
 	very large number of words. This value limits the
 	number of words each prefix can match. Note
 	that this does not limit the number of documents that
@@ -9496,7 +9526,8 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	The "regex" fuzzy algorithm could potentially match a
+	The "regex" <a href="#search_algorithm">fuzzy algorithm</a>
+	could potentially match a
 	very large number of words. This value limits the
 	number of words each regular expression can match. Note
 	that this does not limit the number of documents that
@@ -10013,7 +10044,7 @@ http://www.htdig.org/
 				soundex
 			  </dt>
 			  <dd>
-				Uses a slightly modified soundex algorithm to match
+				Uses a slightly modified <a href="http://www.sog.org.uk/cig/vol6/605tdrake.pdf">soundex</a> algorithm to match
 				words. This requires that the soundex database be
 				present. It is generated with the
 				<a href="htfuzzy.html">htfuzzy</a> program.
@@ -10086,7 +10117,10 @@ http://www.htdig.org/
 			  Matches all words that match the patterns given as regular
 			  expressions. Since this requires checking every word in
 			  the database, this can really slow down searches
-			  considerably.
+			  considerably.  The config file used for searching
+			  must include the regex meta-characters (^$\[-]|.*)
+			  included in <a href="extra_word_characters">extra_word_characters</a>,
+			  while the config file used for digging should not.
 			<dd>
 			<dt>
 			speling
@@ -11688,7 +11722,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			1970
+			<em>No default</em>
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -11709,7 +11743,8 @@ http://www.htdig.org/
 	This specifies the year of the cutoff start date for
 	search results. If the start or end date are specified,
 	only results with a last modified date within this
-	range are shown.
+	range are shown. If a start or end date is specified, but startyear
+	is not, then it defaults to 1970.
 	See also <a href="#startday">startday</a>,
 	<a href="#startmonth">startmonth</a>,
 	<a href="#endday">endday</a>,
@@ -11784,7 +11819,8 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	The Substring fuzzy algorithm could potentially match a
+	The Substring <a href="#search_algorithm">fuzzy algorithm</a>
+	could potentially match a
 	very large number of words. This value limits the
 	number of words each substring pattern can match. Note
 	that this does not limit the number of documents that
@@ -13473,7 +13509,7 @@ form during indexing and translated for results.
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			.-_/!#$%^&amp;&#39;
+			.-_/!#\$%^&amp;&#39;
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -13499,9 +13535,15 @@ form during indexing and translated for results.
 	<code>halfhearted</code>.<br>
 	These characters are also removed before keywords are passed to the
 	search engine, so a search for "half-hearted" works as expected.<br>
+	Note that the dollar sign ($) and backslash (\) must be escaped by a
+	backslash in both valid_punctuation and extra_word_characters.
+	Moreover, the backslash should not be the last character on the line.
+	There is currently no way to include a back-quote (`) in
+	extra_word_characters or valid_punctuation.<br>
 	See also the
 	<a href="#extra_word_characters">extra_word_characters</a>
-	attribute.
+	and <a href="#allow_numbers">allow_numbers</a>
+	attributes.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -14405,6 +14447,6 @@ form during indexing and translated for results.
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: gio ago 28 10:40:24 EST 2003
+		Last modified: Sun Oct 26 12:44:20 EST 2003
   </body>
 </html>
