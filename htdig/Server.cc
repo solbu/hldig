@@ -11,7 +11,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.12 1999/09/03 21:29:36 ghutchis Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.13 1999/09/05 06:47:08 ghutchis Exp $";
 #endif
 
 #include <ctype.h>
@@ -49,6 +49,8 @@ Server::Server(char *host, int port)
     String	url = "http://";
     url << host << ':' << port << "/robots.txt";
     Document	doc(url, 0);
+    if (debug)
+      cout << "     (" << url << ")\n";
     switch (doc.RetrieveHTTP(0))
     {
 	case Document::Document_ok:
@@ -236,7 +238,7 @@ void Server::push(char *path, int hopcount, char *referer)
     ref->SetHopCount(hopcount);
     ref->SetReferer(referer);
     _paths.Add(ref);
-    
+
     _documents++;
 
 //     cout << "***** pushing '" << path << "' with '" << referer << "'\n";
@@ -249,7 +251,7 @@ void Server::push(char *path, int hopcount, char *referer)
 URLRef *Server::pop()
 {
     URLRef	*ref = (URLRef *) _paths.Remove();
-    
+
     if (!ref)
 	return 0;
 
