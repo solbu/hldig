@@ -4,6 +4,9 @@
 // Implementation of cgi
 //
 // $Log: cgi.cc,v $
+// Revision 1.3  1998/05/26 03:58:11  turtle
+// Got rid of compiler warnings.
+//
 // Revision 1.2  1997/03/24 04:33:23  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -12,7 +15,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: cgi.cc,v 1.2 1997/03/24 04:33:23 turtle Exp $";
+static char RCSid[] = "$Id: cgi.cc,v 1.3 1998/05/26 03:58:11 turtle Exp $";
 #endif
 
 #include "cgi.h"
@@ -33,7 +36,7 @@ cgi::cgi()
 {
 	pairs = new Dictionary;
 
-	String	method = getenv("REQUEST_METHOD");
+	String	method(getenv("REQUEST_METHOD"));
 
 	if (method.length() == 0)
 	{
@@ -74,7 +77,7 @@ cgi::cgi()
 	for (int i = 0; i < list.Count(); i++)
 	{
 		char	*name = good_strtok(list[i], "=");
-		String	value = good_strtok("\n");
+		String	value(good_strtok("\n"));
 		value.replace('+', ' ');
 		decodeURL(value);
 		String	*str = (String *) pairs->Find(name);

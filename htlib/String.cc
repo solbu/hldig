@@ -6,6 +6,9 @@
 // AWS	10/13/93	Fixed the constructors and operator = routines so that a NULL can be passed
 //
 // $Log: String.cc,v $
+// Revision 1.4  1998/05/26 03:58:09  turtle
+// Got rid of compiler warnings.
+//
 // Revision 1.3  1997/03/24 04:33:21  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -18,7 +21,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.3 1997/03/24 04:33:21 turtle Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.4 1998/05/26 03:58:09 turtle Exp $";
 #endif
 
 
@@ -76,7 +79,7 @@ String::String(String *s)
 // This can be used for performance reasons if it is known the
 // String will need to grow.
 //
-String::String(String &s, int allocation_hint)
+String::String(const String &s, int allocation_hint)
 {
     Data = 0;
 

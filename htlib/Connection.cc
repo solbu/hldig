@@ -7,6 +7,9 @@
 // Implementation of the Connection class
 //
 // $Log: Connection.cc,v $
+// Revision 1.6  1998/05/26 03:58:06  turtle
+// Got rid of compiler warnings.
+//
 // Revision 1.5  1998/01/05 05:18:18  turtle
 // Fix by Pontus Borg for AIX.  Changed 'size_t' to 'unsigned long' for
 // the length parameter for getpeername()
@@ -72,11 +75,7 @@ Connection::Connection(int socket)
 {
     sock = socket;
     connected = 0;
-#ifdef _AIX
     size_t length = sizeof(server);
-#else
-    int length = sizeof(server);
-#endif
     if (getpeername(socket, (struct sockaddr *)&server, &length) < 0)
     {
 	perror("getpeername");
@@ -288,11 +287,7 @@ int Connection::bind()
 //
 int Connection::get_port()
 {
-#ifdef	_AIX
     size_t length = sizeof(server);
-#else
-    int	length = sizeof(server);
-#endif
     
     if (getsockname(sock, (struct sockaddr *)&server, &length) == NOTOK)
     {
@@ -320,11 +315,7 @@ Connection *Connection::accept(int priv)
 
     while (1)
     {
-#ifdef	_AIX
 	newsock = ::accept(sock, (struct sockaddr *)0, (size_t *)0);
-#else
-	newsock = ::accept(sock, (struct sockaddr *)0, (int *)0);
-#endif
 	if (newsock == NOTOK && errno == EINTR)
 	    continue;
 	break;
@@ -335,11 +326,7 @@ Connection *Connection::accept(int priv)
     Connection	*newconnect = new Connection;
     newconnect->sock = newsock;
 
-#ifdef _AIX
     size_t length = sizeof(newconnect->server);
-#else
-    int length = sizeof(newconnect->server);
-#endif
     getpeername(newsock, (struct sockaddr *)&newconnect->server, &length);
 
     if (priv && newconnect->server.sin_port >= IPPORT_RESERVED)
@@ -438,11 +425,7 @@ char *Connection::get_peername()
     if (!peer)
     {
 	struct sockaddr_in	p;
-#ifdef	_AIX
 	size_t			length = sizeof(p);
-#else
-	int			length = sizeof(p);
-#endif
 	struct hostent		*hp;
 	
 	if (getpeername(sock, (struct sockaddr *) &p, &length) < 0)
@@ -467,11 +450,7 @@ char *Connection::get_peername()
 char *Connection::get_peerip()
 {
     struct sockaddr_in	peer;
-#ifdef	_AIX
-    int			length = sizeof(peer);
-#else
-    int			length = sizeof(peer);
-#endif
+    size_t		length = sizeof(peer);
     
     if (getpeername(sock, (struct sockaddr *) &peer, &length) < 0)
     {

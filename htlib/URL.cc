@@ -4,6 +4,9 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.7  1998/05/26 03:58:10  turtle
+// Got rid of compiler warnings.
+//
 // Revision 1.6  1997/12/11 00:28:58  turtle
 // Added double slash removal code.  These were causing loops.
 //
@@ -28,7 +31,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.6 1997/12/11 00:28:58 turtle Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.7 1998/05/26 03:58:10 turtle Exp $";
 #endif
 
 #include "URL.h"
@@ -94,7 +97,7 @@ URL::URL(char *nurl)
 //
 URL::URL(char *ref, URL &parent)
 {
-    String	temp = ref;
+    String	temp(ref);
     temp.remove(" \r\n\t");
     ref = temp;
 
@@ -244,7 +247,7 @@ URL::URL(char *ref, URL &parent)
 //
 void URL::parse(char *u)
 {
-    String	temp = u;
+    String	temp(u);
     temp.remove(" \t\r\n");
     char	*nurl = temp;
 

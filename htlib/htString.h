@@ -1,7 +1,10 @@
 //
-// $Id: htString.h,v 1.1 1997/03/24 04:33:23 turtle Exp $
+// $Id: htString.h,v 1.2 1998/05/26 03:58:12 turtle Exp $
 //
 // $Log: htString.h,v $
+// Revision 1.2  1998/05/26 03:58:12  turtle
+// Got rid of compiler warnings.
+//
 // Revision 1.1  1997/03/24 04:33:23  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -30,7 +33,7 @@ public:
     // This can be used for performance reasons if it is known the
     // String will need to grow.
     //
-    String(String &s, int allocation_hint = 0);
+    String(const String &s, int allocation_hint = 0);
 	
     ~String();
 
