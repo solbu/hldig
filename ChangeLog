@@ -1,3 +1,24 @@
+Mon May  3 23:20:22 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc (IsValidURL): Fix typo with #else statement
+	for REGEX.
+
+	* htlib/HtDateTime.h: Update to remove definitions of true and
+	false, established by May 2 change in
+	include/htconfig.h.in as contributed by Gabriele.
+
+	* htlib/HtDateTime.cc: Replace call to mktime internal function to
+	Httimegm in timegm.c.
+
+	* htlib/timegm.c: Declare my_mktime_gmtime_r to prevent compiler
+	errors with incompatible gmtime structures.
+	
+	* configure.in: Rearrange date/time checks for clarity.
+
+	* configure: Regenerate using autoconf.
+
+	* include/htconfig.in: Add HAVE_STRFTIME flag.
+
 Sun May  2 18:49:04 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
 	* configure.in, include/htconfig.h.in: Added a configure test for
