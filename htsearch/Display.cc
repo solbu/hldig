@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Display.cc,v 1.117 2003/10/24 20:33:23 grdetil Exp $
+// $Id: Display.cc,v 1.118 2003/10/25 04:03:26 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -340,6 +340,7 @@ Display::displayMatch(ResultMatch *match, DocumentRef *ref, int current)
 	      {
 		title++; // Skip slash
 		str = new String(form("[%s]", title));
+		decodeURL(*str);	// convert %20 to space, etc
 	      }
 	    else
 	      // URL without '/' ??

@@ -1,5 +1,10 @@
 Sat Oct 25 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
+    * htsearch/Display.cc: Fix #829761.
+      If last component of the URL is used as a title, URL-decode it.
+
+Sat Oct 25 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
     * htdig/Server.cc: Fix #829754.  Avoid calculations with negative time
 
 Fri Oct 24 17:17:15 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
