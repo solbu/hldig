@@ -1,7 +1,7 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.14 1999/02/06 01:20:07 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.15 1999/03/08 02:40:36 ghutchis Exp $
 //
 //
 #ifndef _DocumentRef_h_
@@ -18,15 +18,13 @@ enum ReferenceState
     Reference_noindex
 };
 
-#ifdef HAVE_LIBZ
-#ifdef HAVE_ZLIB_H
+#if defined(HAVE_LIBZ) && defined(HAVE_ZLIB_H)
 enum HeadState
 {
     Empty,
     Compressed,
     Uncompressed
 };
-#endif
 #endif
 
 class DocumentRef : public Object
@@ -157,8 +155,7 @@ class DocumentRef : public Object
     int			docScore;
     // This is the nearest anchor for the search word.
     int			docAnchor;
-#ifdef HAVE_LIBZ
-#ifdef HAVE_ZLIB_H
+#if defined(HAVE_LIBZ) && defined(HAVE_ZLIB_H)
     //
     // Compression functions
     //
@@ -166,7 +163,6 @@ class DocumentRef : public Object
     int Compress(String& s);
     int Decompress(String &s);
     HeadState docHeadState;
-#endif
 #endif
 };
 

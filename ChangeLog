@@ -3,6 +3,9 @@ Sun Mar  7 20:50:37 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htfuzzy/EndingsDB.cc(createDB): Use link and unlink to move,
 	rather than a non-portable system call.
 
+	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc: Fix #ifdef
+	problems with zlib.
+	
 Mon Mar  8 01:36:38 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
 	* htlib/DB2_db.cc: Remove errno.
