@@ -1,5 +1,12 @@
 Sat 17 Jan 2004 Lachlan Andrew <lha@users.sourceforge.net>
 
+    * test/t_{parsing,htdig_local,factors,templates},
+    * test/htdocs/set1/title.html
+
+      Expanded test suite.
+
+Sat 17 Jan 2004 Lachlan Andrew <lha@users.sourceforge.net>
+
     * htcommon/DocumentRef.cc:
       Fix old-style use of HtConfiguration, so defaults are read correctly.
       Causes  max_descriptions  to be treated correctly.

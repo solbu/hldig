@@ -5,26 +5,34 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_factors,v 1.3 2004/01/12 10:32:59 lha Exp $
+# $Id: t_factors,v 1.4 2004/01/17 05:31:56 lha Exp $
 #
 
-try() {
+# try_order comment query pattern1 patern2 ...
+#	comment	- description of test, displayed if error occurs
+#	query	- search string passed to  htsearch
+#	pattern	- strings expected to occur *in order* in the output
+try_order() {
     comment="$1"
     shift
     query="$1"
     shift
     $htsearch -c $config "$query" > $tmp 2> /dev/null
+    array=""
     for pattern
     do
-	if grep "$pattern" $tmp > /dev/null 
-	then :
-	else
-	    $htsearch -vv -c $config "$query" > /dev/null
-	    echo "Output doesn't match \"$pattern\""
-	    fail "$htsearch -c $config '$query' >> $tmp --
-		  $comment"
-	fi
+	array="$array; array[i++] = "\"$pattern\"
     done
+    miss=`$awk "BEGIN {$array; line = 0; } \
+	    "'$0'" ~ array[line] { line++ } \
+	    END { print array[line] } " < $tmp `
+    if [ "$miss" != "" ]
+    then
+	$htsearch -vv -c $config "$query" > /dev/null
+	echo "String \"$miss\" was not found where expected"
+	fail "$htsearch -c $config '$query' >> $tmp --
+	      $comment"
+    fi
 }
 
 
@@ -39,6 +47,39 @@ tmp=/tmp/t_htsearch$$
 # set up config file with chosen non-default values
 cp $testdir/conf/htdig.conf $config
 
+$htdig "$@" -t -i -c $config	|| fail "Couldn't dig"
+$htpurge -c $config		|| fail "Couldn't purge"
+
+try_order "Search for 'also'" \
+    "words=also" \
+    '4 matches' 'site2.html' 'site4.html' 'bad_local.htm' 'script.html'
+
+set_attr url_seed_score		"site4 *1000+1000"
+try_order "Seed score 1000 for site4.html" \
+    "words=also" \
+    '4 matches' 'site4.html' 'site2.html' 'bad_local.htm' 'script.html'
+
+set_attr url_seed_score		"site4 *1000+1000 script *1000+1000"
+try_order "Seed score 1000 for site4.html and script.html" \
+    "words=also" \
+    '4 matches' 'site4.html' 'script.html' 'site2.html' 'bad_local.htm'
+
+set_attr url_seed_score		"site4|script *1000+1000"
+try_order "Seed score 1000 for site4|script" \
+    "words=also" \
+    '4 matches' 'site4.html' 'script.html' 'site2.html' 'bad_local.htm'
+
+set_attr search_results_order		"bad_local"
+try_order "Search_results_order bad_local" \
+    "words=also" \
+    '4 matches' 'bad_local.htm' 'site4.html' 'script.html' 'site2.html'
+
+set_attr search_results_order		"script * e2|e4"
+try_order "Search_results_order * script e2|e4" \
+    "words=also" \
+    '4 matches' 'script.html' 'bad_local.htm' 'site4.html' 'site2.html'
+
+set_attr url_seed_score		""
 set_attr author_factor			0
 set_attr backlink_factor		0
 set_attr caps_factor			0
@@ -52,29 +93,15 @@ set_attr text_factor			0
 set_attr title_factor			0
 set_attr url_text_factor		0
 
-set_attr heading_factor_1		1
-($htdig "$@" -t -i -c $config	|
-    grep "option heading_factor_1 is no longer supported" > /dev/null ) ||
-    fail "Couldn't dig"
-
-$htpurge -c $config		|| fail "Couldn't purge"
-
-################################################################################
-## Add tests here
-################################################################################
-
-cp $testdir/conf/htdig.conf $config
-
-try "Search for also" \
-    "words=also" \
-    'Movies</a></strong><img src="/htdig/star.gif" alt="\*"><img src="/htdig/star.gif" alt="\*"><img src="/htdig/star.gif" alt="\*"><img src="/htdig/star.gif" alt="\*">'
-    'Node</a></strong><img src="/htdig/star.gif" alt="*"><img src="/htdig/star_blank'
-
-set_attr url_seed_score		"script|bad_local *1000+1000"
-
-try "Biassed earch for also" \
+try_order "Search with factors 0" \
     "words=also" \
     'No matches'
+
+set_attr description_factor		1
+
+try_order "Search for 'crossRef' with description_factor 1" \
+    "words=crossRef" \
+    '1 matches' 'site%201.html'
 
 test_functions_action=--stop-apache
 . ./test_functions

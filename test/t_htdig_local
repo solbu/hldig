@@ -5,26 +5,56 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_htdig_local,v 1.7 2003/09/27 06:53:29 lha Exp $
+# $Id: t_htdig_local,v 1.8 2004/01/17 05:31:56 lha Exp $
 #
+
+# Tests the following config attributes:
+#	bad_local_extensions
+#	content_classifier
+#	database_dir
+#	exclude_urls
+#	local_extensions
+#	mime_types
+#	start_url
 
 test_functions_action=--start-apache
 . ./test_functions
 
+# set up config file with chosen non-default values
+config=$testdir/conf/htdig.conf.tmp
+cp $testdir/conf/htdig.conf2 $config
+
 #test for local-file-system access to <http://...> URLs
 
+/bin/rm -f var/htdig2/*
 expected='bad_local.htm'
-got=`$htdig "$@" -t -i -vv -c $testdir/conf/htdig.conf2 | grep "Bad local extension:" | sed -e"s-.*/--"`
+got=`$htdig "$@" -t -i -vv -c $config | grep "Bad local extension:" | sed -e"s-.*/--"`
 if [ "$expected" != "$got" ]
 then
-	fail "running htdig: expected 
+	fail "first htdig: expected 
 $expected
 but got
 $got"
 
 fi
 
-$htpurge -c $testdir/conf/htdig.conf2
+expected='db.docdb
+db.docs
+db.docs.index
+db.excerpts
+db.worddump
+db.words.db
+db.words.db_weakcmpr'
+got=`/bin/ls var/htdig2`
+if [ "$expected" != "$got" ]
+then
+	fail "created files: expected 
+$expected
+but got
+$got"
+fi
+
+$htpurge -c $config
 
 # should  http://localhost:7400/set1/sub%2520dir  be purged?
 expected='http://localhost:7400/set1/
@@ -38,11 +68,11 @@ http://localhost:7400/set1/sub%2520dir/
 http://localhost:7400/set1/sub%2520dir/empty%20file.html
 http://localhost:7400/set1/title.html'
 
-got=`./document -c $testdir/conf/htdig.conf2 -u | sort`
+got=`./document -c $config -u | sort`
 
 if [ "$expected" != "$got" ]
 then
-	fail "running htdig: expected 
+	fail "first document: expected 
 $expected
 but got
 $got"
@@ -53,18 +83,19 @@ fi
 #test for  <file:///...> URLs
 
 expected=''	# no "bad local" extensions for file:///
-sed "s#^start_url.*#start_url: file://$PWD/htdocs/set1/#" < $testdir/conf/htdig.conf2 > tmp.conf
-got=`$htdig "$@" -t -i -vv -c tmp.conf | grep "Bad local extension:" | sed -e"s-.*/--"`
+#sed "s#^start_url.*#start_url: file://$PWD/htdocs/set1/#" < $config > tmp.conf
+set_attr start_url file://$PWD/htdocs/set1/
+got=`$htdig "$@" -t -i -vv -c $config | grep "Bad local extension:" | sed -e"s-.*/--"`
 if [ "$expected" != "$got" ]
 then
-	fail "running htdig: expected 
+	fail "second htdig: expected 
 $expected
 but got
 $got"
 
 fi
 
-$htpurge -c $testdir/conf/htdig.conf2
+$htpurge -c $config || fail "couldn't purge second time"
 
 expected='file:///set1/bad_local.htm
 file:///set1/index.html
@@ -76,16 +107,62 @@ file:///set1/site4.html
 file:///set1/sub%2520dir/empty%20file.html
 file:///set1/title.html'
 
-got=`./document -c tmp.conf -u | sed "s#${PWD}/htdocs##" | sort`
+got=`./document -c $config -u | sed "s#${PWD}/htdocs##" | sort`
 
 if [ "$expected" != "$got" ]
 then
-	fail "running htdig: expected 
+	fail "second document: expected 
 $expected
 but got
 $got"
 
 fi
+
+
+#test mime types handling
+
+expected=''	# no "bad local" extensions for file:///
+set_attr mime_types $PWD/mime-without-htm
+set_attr content_classifier $PWD/say-text
+echo 'text/html	html' > mime-without-htm
+echo '#!/bin/sh
+      echo text/plain' > say-text
+chmod 700 say-text
+got=`$htdig "$@" -t -i -vv -c $config | grep "MIME type:" | sed -e"s-.*/--"`
+if [ "$expected" != "$got" ]
+then
+	fail "third htdig: expected 
+$expected
+but got
+$got"
+
+fi
+
+$htpurge -c $config || fail "couldn't purge second time"
+
+expected='file:///set1/bad_local.htm
+file:///set1/index.html
+file:///set1/nph-location.foo
+file:///set1/script.html
+file:///set1/site%201.html
+file:///set1/site2.html
+file:///set1/site3.html
+file:///set1/site4.html
+file:///set1/sub%2520dir/empty%20file.html
+file:///set1/title.html'
+
+got=`./document -c $config -u | sed "s#${PWD}/htdocs##" | sort`
+
+if [ "$expected" != "$got" ]
+then
+	fail "third document: expected 
+$expected
+but got
+$got"
+
+fi
+
+/bin/rm mime-without-htm say-text
 
 test_functions_action=--stop-apache
 . ./test_functions

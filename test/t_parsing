@@ -5,25 +5,21 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_parsing,v 1.1 2004/01/12 10:32:59 lha Exp $
+# $Id: t_parsing,v 1.2 2004/01/17 05:31:56 lha Exp $
 #
 
 
 # Tests (or should eventually test) the following config attributes:
 #	description_meta_tag_names
-#	date_format
 #	ignore_alt_text
 #	max_doc_size
 #	max_keywords
 #	max_meta_description_length
 #	max_description_length
 #	max_descriptions
-#	max_excerpts
 #	max_head_length
 #	noindex_end
 #	noindex_start
-#	mime_types
-#	content_classifier
 #	external_parsers
 #	external_protocols
 #	use_meta_description
@@ -60,21 +56,17 @@ try() {
 
 # Tests (or should eventually test) the following config attributes:
 #	description_meta_tag_names
-#	date_format			(Should be in t_htsearch/t_templates)
 #	ignore_alt_text
 #	max_doc_size
 #	max_keywords
 #	max_meta_description_length
-#	max_description_length		(May put in t_factors)
-#	max_descriptions		(May put in t_factors)
-#	max_excerpts			(Should be in t_htsearch/t_templates)
+#	max_description_length		(May put in t_templates)
+#	max_descriptions		(May put in t_templates)
 #	max_head_length
 #	noindex_end
 #	noindex_start
-#	mime_types			(TODO)
-#	content_classifier		(TODO)
 #	external_parsers		(TODO)
-#	external_protocols		(TODO)
+#	external_protocols
 #	use_meta_description
 
 $htdig "$@" -t -i -c $config	|| fail "Couldn't do first dig"
@@ -174,9 +166,25 @@ try "Search for 'technical', noindex_start=software distribution, noindex_end=co
     "words=technical" \
     'No matches'
 
+PROTOCOL=my-protocol
+echo '#!/bin/sh
+      echo "s	200"
+      echo "t	text/html"
+      echo
+      echo "<html>$2</html>"' > $PROTOCOL
+chmod 755 $PROTOCOL
+set_attr external_protocols "echo: $PWD/$PROTOCOL"
+set_attr start_url "echo:foo.html"
+$htdig "$@" -t -i -c $config -vvv | less
+$htdig "$@" -t -i -c $config	|| fail "Couldn't do fourth dig"
+try "trying external protocol  echo" \
+    "words=foo" \
+    "1 matches" "echo:foo.html"
+
+
 test_functions_action=--stop-apache
 . ./test_functions
 
-rm -f $tmp
+rm -f $tmp $PROTOCOL
 
 exit 0

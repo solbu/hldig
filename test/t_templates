@@ -5,8 +5,53 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_templates,v 1.1 2003/12/14 01:53:13 lha Exp $
+# $Id: t_templates,v 1.2 2004/01/17 05:31:56 lha Exp $
 #
+
+# Tests the following config attributes:
+#	add_anchors_to_excerpt
+#	allow_in_form
+#	anchor_target
+#	any_keywords
+#	build_select_lists
+#	date_format
+#	end_ellipses
+#	end_highlight
+#	excerpt_show_top
+#	image_url_prefix
+#	iso_8601
+#	matches_per_page
+#	matches_per_page_list
+#	max_excerpts
+#	max_stars
+#	maximum_page_buttons
+#	maximum_pages
+#	method_names
+#	next_page_text
+#	no_excerpt_show_top
+#	no_excerpt_text
+#	no_page_list_header
+#	no_page_number_text
+#	no_next_page_text
+#	no_prev_page_text
+#	no_title_text
+#	nothing_found_file
+#	page_list_header
+#	page_number_separator
+#	page_number_text
+#	prev_page_text
+#	plural_suffix
+#	search_results_contenttype
+#	search_results_wrapper
+#	sort_names
+#	star_blank	
+#	star_image	
+#	star_patterns
+#	start_ellipses
+#	start_highlight
+#	syntax_error_file
+#	use_star_image
+
 
 try() {
     comment="$1"
@@ -45,6 +90,7 @@ $htpurge -vv -c $config > tmp1		|| fail "Couldn't purge"
 
 # How can I check that unretrieved urls have been removed, but bad ones haven't?
 
+
 set_attr search_results_wrapper "$testdir/conf/main-template"
 set_attr any_keywords "true"
 set_attr image_url_prefix "image-prefix"
@@ -64,10 +110,14 @@ try ".  Single page of results" \
     'selected>Score' 'VERSION *=3.2' 'WORDS *=also' \
     'image-prefix/star.gif'
 
+
 set_attr plural_suffix "es"
 set_attr allow_in_form "script_name"
 set_attr page_list_header "head"
 set_attr add_anchors_to_excerpt "true"
+# make sure "script" is the page returned...
+set_attr search_results_order	"bad_local script *"
+# set_attr iso_8601 FALSE	# no point -- format set by locale
 
 # (Ensure keyword 'moderate' for script.html occurs after 'also', as anchors
 # are broken if keyword preceeds anchor, but search term follows it.)
@@ -84,7 +134,7 @@ try "2nd page, 1 match per page, no excludes" \
     'PREVPAGE *=.*;page=1' 'RESTRICT *=http' 'SELECTED_FORMAT *=builtin-long' \
     'SELECTED_METHOD *=or' 'SELECTED_SORT *=revtime' \
     'selected>Reverse Time' 'VERSION *=3.2' 'WORDS *=also' \
-    '<strong><code>\.\.\. </code></strong>' '<strong><a href="[^"]*">also</a></strong>'
+    '<strong><code>\.\.\. </code></strong>' '<strong><a href="[^"]*">also</a></strong>' \
 
 set_attr method_names "or Or and And boolean Logical"
 set_attr    page_list_header 'multiple'
@@ -95,6 +145,7 @@ set_attr no_next_page_text "none"
 set_attr no_prev_page_text "none"
 set_attr next_page_text "following"
 set_attr prev_page_text "preceeding"
+set_attr iso_8601 true
 
 try "2nd page, 1 match per page, no excludes, no keywords" \
     "words=also;script_name=qtest;format=builtin-long;matchesperpage=1;method=or;page=2;restrict=http;sort=revtime;startyear=1999;startmonth=8;startday=1;endyear=2005;endmonth=9;endday=30" \
@@ -109,15 +160,17 @@ try "2nd page, 1 match per page, no excludes, no keywords" \
     'PREVPAGE *=.*;page=1.*preceeding' 'RESTRICT *=http' 'SELECTED_FORMAT *=builtin-long' \
     'SELECTED_METHOD *=or' 'SELECTED_SORT *=revtime' \
     'selected>Reverse Time' 'VERSION *=3.2' 'WORDS *=also' \
-    '<strong><code>\.\.\. </code></strong>' '<strong><a target="body" href="[^"]*">also</a></strong>'
+    '<strong><code>\.\.\. </code></strong>' '<strong><a target="body" href="[^"]*">also</a></strong>' \
+    '20[0-9][0-9]-[0-9]*-[0-9]* [0-9]*:[0-9]*:[0-9]* [a-zA-Z]*' # iso date
 
 # ('\\\\' because original line in htdig.conf has a continuation '\' )
 set_attr page_number_text "first second third fourth \\\\"
 set_attr no_page_number_text "FIRST SECOND THIRD FOURTH \\\\"
 set_attr page_number_separator "PAGE_SEP"
 set_attr maximum_pages 2
+set_attr date_format "%Y-date-%m-date-%d-"	# overrides iso_8601
 
-try "2nd page, 1 match per page, no excludes, no keywords" \
+try "2nd page, 1 match per page, changed page numbers" \
     "words=also;script_name=qtest;format=builtin-long;matchesperpage=1;method=or;page=2;restrict=http;sort=revtime;startyear=1999;startmonth=8;startday=1;endyear=2005;endmonth=9;endday=30" \
     'MATCHES *=4' \
     'CGI *=qtest' 'CONFIG *=-' 'EXCLUDE *=-' 'FIRSTDISPLAYED *=2' \
@@ -130,7 +183,8 @@ try "2nd page, 1 match per page, no excludes, no keywords" \
     'PREVPAGE *=.*;page=1' 'RESTRICT *=http' 'SELECTED_FORMAT *=builtin-long' \
     'SELECTED_METHOD *=or' 'SELECTED_SORT *=revtime' \
     'selected>Reverse Time' 'VERSION *=3.2' 'WORDS *=also' \
-    '<strong><code>\.\.\. </code></strong>' '<strong><a target="body" href="[^"]*">also</a></strong>'
+    '<strong><code>\.\.\. </code></strong>' '<strong><a target="body" href="[^"]*">also</a></strong>' \
+    '20[0-9][0-9]-date-[0-9]*-date-[0-9]*-'
 
 #'MATCHES *=4' 'bad_local.htm' 'script.html' 'site2.html' 'site4.html'
 
@@ -171,11 +225,12 @@ try "test highlighting" \
     'SELECTED_METHOD *=or' 'SELECTED_SORT *=revscore' \
     'selected>Reverse Score' 'VERSION *=3.2' 'WORDS *=also' \
     'START_ELLIPSES' 'END_ELLIPSES' '<strong>also</strong>' \
-    '^[^S]*"STAR".*"NIL".*"NIL".*"NIL"' \
+    '^[^S]*"STAR".*"NIL".*"NIL".*"NIL"'
 
 set_attr max_stars 5
 set_attr start_highlight "START"
 set_attr end_highlight   "STOP"
+set_attr max_excerpts 2
 try "test max_stars" \
     "words=also;script_name=qtest;format=builtin-long;method=or;restrict=http;sort=revscore" \
     'MATCHES *=4' \
@@ -188,7 +243,7 @@ try "test max_stars" \
     'PREVPAGE *=-' 'RESTRICT *=http' 'SELECTED_FORMAT *=builtin-long' \
     'SELECTED_METHOD *=or' 'SELECTED_SORT *=revscore' \
     'selected>Reverse Score' 'VERSION *=3.2' 'WORDS *=also' \
-    'START_ELLIPSES' 'END_ELLIPSES' 'STARTalsoSTOP' \
+    'START_ELLIPSES.*START_ELLIPSES.*END_ELLIPSES' 'STARTalsoSTOP' \
     '^[^N]*"STAR".*"NIL".*"NIL".*"NIL".*"NIL"'
 
 try "Search for 'empty'" \
