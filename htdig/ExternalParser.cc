@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.6 2000/05/08 20:40:42 loic Exp $
+// $Id: ExternalParser.cc,v 1.19.2.7 2000/08/01 16:51:25 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -159,7 +159,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     // Now start the external parser.
     //
     String	command = currentParser;
-    command << ' ' << path << ' ' << contentType << " \"" << base.get() <<
+    command << ' ' << path << " \"" << contentType << "\" \"" << base.get() <<
 	"\" " << configFile;
 
     FILE	*input = popen((char*)command, "r");
