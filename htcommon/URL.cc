@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.1 1999/10/06 09:35:21 loic Exp $
+// $Id: URL.cc,v 1.2 1999/10/06 13:15:34 loic Exp $
 //
 
 #include "URL.h"
@@ -38,8 +38,9 @@ extern Configuration	config;
 //
 URL::URL()
 {
-    _normal = 0;
-    _hopcount = 0;
+  _port = 0;
+  _normal = 0;
+  _hopcount = 0;
 }
 
 
@@ -67,6 +68,7 @@ URL::URL(URL &nurl)
 // 
 URL::URL(const char *nurl)
 {
+    _port = 0;
     _normal = 0;
     _hopcount = 0;
     parse(nurl);

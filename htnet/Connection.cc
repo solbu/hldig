@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.1 1999/09/27 14:00:05 angus Exp $
+// $Id: Connection.cc,v 1.2 1999/10/06 13:15:34 loic Exp $
 //
 
 #include "Connection.h"
@@ -225,7 +225,7 @@ int Connection::assign_server(const String& name)
 	memcpy((char *)&server.sin_addr, (char *)&addr, sizeof(addr));
     }
 
-    delete server_name;
+    if(server_name) free(server_name);
     server_name = strdup(name);
 
     return OK;

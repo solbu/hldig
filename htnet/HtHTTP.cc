@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.8 1999/10/06 10:12:38 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.9 1999/10/06 13:15:35 loic Exp $ 
 //
 
 #include "lib.h"
@@ -908,10 +908,10 @@ int HtHTTP::ReadChunkedBody()
     
    int            length = 0;  // initialize the length
    unsigned int   chunk_size;
-   String         ChunkHeader = 0;
+   String         ChunkHeader;
    char           buffer[8192];
    
-   _response._contents = 0;	// Initialize the string
+   _response._contents.trunc();	// Initialize the string
 
    // Read chunk-size and CRLF
    _connection.read_line(ChunkHeader);
