@@ -1,3 +1,8 @@
+Tue Oct 26 16:01:22 1999  Loic Dachary  <loic@ceic.com>
+
+	* htword/Makefile.am: rm Wordkey.h instead of chmod to copy with 
+	  non existent WordKey.h
+
 Tue Oct 26 10:54:52 1999  Loic Dachary  <loic@ceic.com>
 
 	* htcommon/default.cc: fixed all inconsistencies reported by Gilles.
