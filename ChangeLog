@@ -1,3 +1,7 @@
+Wed Sep  1 15:45:15 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/parse_doc.pl: Updated to latest version.
+
 Wed Sep  1 15:39:41 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	Applied "bugfixes" patch collection, which I had posted to
