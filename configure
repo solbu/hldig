@@ -2416,7 +2416,7 @@ cross_compiling=$ac_cv_prog_cc_cross
 echo $ac_n "checking how to call getpeername?""... $ac_c" 1>&6
 echo "configure:2418: checking how to call getpeername?" >&5
 for sock_t in 'struct sockaddr' 'void'; do
-for getpeername_length_t in 'size_t' 'int' 'unsigned int'; do
+for getpeername_length_t in 'size_t' 'int' 'unsigned int' 'socklen_t'; do
 cat > conftest.$ac_ext <<EOF
 #line 2422 "configure"
 #include "confdefs.h"
@@ -2439,13 +2439,18 @@ rm -f conftest*
 done
 done
   if test "$ac_found" = no; then
-    { echo "configure: error: can't determine argument type" 1>&2; exit 1; }
-  fi
+    echo "configure: warning: can't determine argument type using int" 1>&2
+    cat >> confdefs.h <<EOF
+#define GETPEERNAME_LENGTH_T int
+EOF
+
+  else
   echo "$ac_t""$getpeername_length_t" 1>&6
   cat >> confdefs.h <<EOF
 #define GETPEERNAME_LENGTH_T $getpeername_length_t
 EOF
 
+  fi
 
 ac_ext=c
 # CFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
@@ -2457,7 +2462,7 @@ cross_compiling=$ac_cv_prog_cc_cross
 # Extract the first word of "tsort", so it can be a program name with args.
 set dummy tsort; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:2461: checking for $ac_word" >&5
+echo "configure:2466: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_TSORT'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else

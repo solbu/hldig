@@ -3,32 +3,9 @@
 //
 // Implementation of parser
 //
-// $Log: parser.cc,v $
-// Revision 1.6  1998/12/06 18:45:10  ghutchis
-// Check for empty boolean searches and report an error. Fixes bug reported by
-// Chuck O'Donnell <cao@bus.net>.
-//
-// Revision 1.5  1998/11/27 18:37:33  ghutchis
-//
-// Removed bogus code with "%01" -> "|"
-//
-// Revision 1.4  1998/10/12 02:09:28  ghutchis
-//
-// Added htsearch logging patch from Alexander Bergolth.
-//
-// Revision 1.3  1998/09/06 03:22:38  ghutchis
-//
-// Bug fixes
-//
-// Revision 1.2  1997/04/27 14:43:31  turtle
-// changes
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.6 1998/12/06 18:45:10 ghutchis Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.7 1999/02/17 21:01:10 ghutchis Exp $";
 #endif
 
 #include "parser.h"
@@ -60,8 +37,28 @@ Parser::checkSyntax(List *tokenList)
     tokens->Start_Get();
     lookahead = lexan();
     valid = 1;
-    expr(0);
+    fullexpr(0);
     return valid;
+}
+
+//*****************************************************************************
+void
+Parser::fullexpr(int output)
+{
+    expr(output);
+    if (lookahead != DONE)
+    {
+	valid = 0;
+	error = 0;
+	error << "Expected end of expression instead of '";
+	error << current->word.get() << '\'';
+	switch (lookahead)
+	{
+	case '&':	error << " or 'AND'";	break;
+	case '|':	error << " or 'OR'";	break;
+	case '!':	error << " or 'NOT'";	break;
+	}
+    }
 }
 
 //*****************************************************************************
@@ -114,7 +111,7 @@ Parser::expr(int output)
     {
 	valid = 0;
 	error = 0;
-	error << "expected 'AND' or 'OR' instead of '" << current->word.get();
+	error << "Expected 'AND' or 'OR' instead of '" << current->word.get();
 	error << '\'';
     }
 }
@@ -155,6 +152,8 @@ Parser::factor(int output)
 	else
 	{
 	    valid = 0;
+	    error = 0;
+	    error << "Expected ')'";
 	}
     }
     else if (lookahead == WORD)
@@ -168,6 +167,27 @@ Parser::factor(int output)
     else
     {
 	valid = 0;
+	error = 0;
+	error << "Expected a search word";
+    }
+
+    if (!valid)
+    {
+	if (lookahead == DONE || !current)
+	{
+	    error << " at the end";
+	}
+	else
+	{
+	    error << " instead of '" << current->word.get();
+	    error << '\'';
+	    switch (lookahead)
+	    {
+	    case '&':	error << " or 'AND'";	break;
+	    case '|':	error << " or 'OR'";	break;
+	    case '!':	error << " or 'NOT'";	break;
+	    }
+	}
     }
 }
 
@@ -391,7 +411,7 @@ Parser::parse(List *tokenList, ResultList &resultMatches)
     tokens = tokenList;
     tokens->Start_Get();
     lookahead = lexan();
-    expr(1);
+    fullexpr(1);
 
     ResultList	*result = (ResultList *) stack.pop();
     if (!result)  // Ouch!

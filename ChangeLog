@@ -2,6 +2,40 @@ Wed Feb 17 12:36:42 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
 	* htcommon/defaults.cc (defaults): locale: change to "C".
 
+Tue Feb 16 23:48:09 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in, configure: Default to 'int' when we cannot
+	establish type used by getpeername.
+
+	* htdoc/RELEASE.html: Additional notes on everything fixed in 3.1.1.
+
+Tue Feb 16 23:45:26 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* contrib/parse_doc.pl: Add replacement for less-capable (and
+	buggy) parse_word_doc.pl script. Handles Word, PS, RTF, and
+	WordPerfect files, with appropriate file->text converters.
+
+	* htsearch/parser.cc, htsearch/parser.h: Add more error messages
+	when the boolean expression is invalid.
+
+Mon Feb 15 21:02:24 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Document.cc(RetrieveLocal): Fix to ensure we report
+	reading only max_doc_size bytes, even when the document is larger.
+
+	* configure.in, configure: Add 'socklen_t' to getpeername check to
+	prevent problems configuring on Solaris 7.
+
+	* htdoc/RELEASE.html: Minor changes for 3.1.1 release.
+	
+Sun Feb 14 16:29:48 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Document.cc(retrieveHTTP, retrieveLocal): Fix document
+	size when the document is larger than max_doc_size. Size should be
+	that sent by the server or as given by stat().
+
+	* htdoc/*.html: More cleanups from Marjolein.
+
 Sat Feb 13 20:53:34 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc(got_word): Ensure heading is in a normal range.

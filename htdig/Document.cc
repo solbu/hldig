@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34 1999/02/04 00:14:26 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.35 1999/02/17 21:01:07 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -445,6 +445,9 @@ Document::RetrieveHTTP(time_t date)
 
     if (debug > 2)
 	cout << "Read a total of " << document_length << " bytes\n";
+
+    if (document_length < contentLength)
+      document_length = contentLength;
     return Document_ok;
 }
 
@@ -596,10 +599,13 @@ Document::RetrieveLocal(time_t date, char *filename)
     }
     fclose(f);
     document_length = contents.length();
-    contentLength = document_length;
+    contentLength = stat_buf.st_size;
 
     if (debug > 2)
 	cout << "Read a total of " << document_length << " bytes\n";
+
+    if (document_length < contentLength)
+      document_length = contentLength;
     return Document_ok;
 }
 

@@ -1,84 +1,86 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html>
   <head>
-    <title>
-      ht://Dig: htsearch
-    </title>
+	<title>
+	  ht://Dig: htsearch
+	</title>
   </head>
   <body bgcolor="#eef7ff">
-    <h1>
-      htsearch
-    </h1>
-    <p>
-      ht://Dig Copyright &copy; 1995-1999 The ht://Dig Group<br>
-       Please see the file <a href="COPYING">COPYING</a> for
-      license information.
-    </p>
-    <hr size="4" noshade>
-    <h2>
-      Search Method Used
-    </h2>
-    The way htsearch performs it search and applies its ranking
-    rules are fairly complicated. This is an attempt at explaining
-    in global terms what goes on when htsearch searches. 
-    <p>
-      htsearch gets a list of words from the HTML form that invoked
-      it. If htsearch was invoked with boolean expression parsing
-      enabled, it will do a quick syntax check on the input words.
-      If there are syntax errors, it will display the syntax error
-      file that is specified with the
-      <a href="attrs.html#syntax_error_file">syntax_error_file</a>
-      attribute.
-    </p>
-    <p>
-      If the boolean parser was not enabled, the list of words is
-      converted into a boolean expression by putting either "and"s
-      or "or"s between the words. (This depends on the search
-      type.)
-    </p>
-    <p>
-      In both cases, each of the words in the list is now expanded
-      using the search algorithms that were specified in the
-      <a href="attrs.html#search_algorithm">search_algorithm</a>
-      attribute. For example, the endings algorithm will convert a
-      word like "person" into "person or persons". In this fashion,
-      all the specified algorithms are used on each of the words
-      and the result is a new boolean expression.
-    </p>
-    <p>
-      The next step is to perform database lookups on the words in
-      the expression. The result of these lookups are then passed
-      to the boolean expression parser.
-    </p>
-    <p>
-      The boolean expression parser is a simple recursive descent
-      parser with an operand stack. It knows how to deal with
-      "not", "and", "or" and parenthesis. The result of the parser
-      will be one set of matches.<br>
-      Note that the operator "not" is used as the word 'without' and
-      is binary: You can not write "cat and not dog" or just "not
-      dog" but you can write "cat not dog".
-    </p>
-    <p>
-      At this point, the matches are ranked. The rank of a match is
-      determined by the weight of the words that caused the match
-      and the weight of the algorithm that generated the word. Word
-      weights are generally determined by the importance of the
-      word in a document. For example, words in the title of a
-      document have a much higher weight than words at the bottom
-      of the document.
-    </p>
-    <p>
-      Finally, when the document ranks have been determined and the
-      documents sorted, the resulting matches are displayed. If
-      paged output is required, only a subset of all the matches
-      will be displayed.
-    </p>
-    <hr size="4" noshade>
-    <address>
-      <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
-    </address>
-    <!-- hhmts start -->
+	<h1>
+	  htsearch
+	</h1>
+	<p>
+	  ht://Dig Copyright &copy; 1995-1999 The ht://Dig Group<br>
+	  Please see the file <a href="COPYING">COPYING</a> for
+	  license information.
+	</p>
+	<hr size="4" noshade>
+	<h2>
+	  Search Method Used
+	</h2>
+	<p>
+	  The way htsearch performs it search and applies its ranking
+	  rules are fairly complicated. This is an attempt at explaining
+	  in global terms what goes on when htsearch searches.
+	</p>
+	<p>
+	  htsearch gets a list of words from the HTML form that invoked
+	  it. If htsearch was invoked with boolean expression parsing
+	  enabled, it will do a quick syntax check on the input words.
+	  If there are syntax errors, it will display the syntax error
+	  file that is specified with the
+	  <a href="attrs.html#syntax_error_file">syntax_error_file</a>
+	  attribute.
+	</p>
+	<p>
+	  If the boolean parser was not enabled, the list of words is
+	  converted into a boolean expression by putting either "and"s
+	  or "or"s between the words. (This depends on the search
+	  type.)
+	</p>
+	<p>
+	  In both cases, each of the words in the list is now expanded
+	  using the search algorithms that were specified in the
+	  <a href="attrs.html#search_algorithm">search_algorithm</a>
+	  attribute. For example, the endings algorithm will convert a
+	  word like "person" into "person or persons". In this fashion,
+	  all the specified algorithms are used on each of the words
+	  and the result is a new boolean expression.
+	</p>
+	<p>
+	  The next step is to perform database lookups on the words in
+	  the expression. The result of these lookups are then passed
+	  to the boolean expression parser.
+	</p>
+	<p>
+	  The boolean expression parser is a simple recursive descent
+	  parser with an operand stack. It knows how to deal with
+	  "not", "and", "or" and parenthesis. The result of the parser
+	  will be one set of matches.<br>
+	  Note that the operator "not" is used as the word 'without' and
+	  is binary: You can not write "cat and not dog" or just "not
+	  dog" but you can write "cat not dog".
+	</p>
+	<p>
+	  At this point, the matches are ranked. The rank of a match is
+	  determined by the weight of the words that caused the match
+	  and the weight of the algorithm that generated the word. Word
+	  weights are generally determined by the importance of the
+	  word in a document. For example, words in the title of a
+	  document have a much higher weight than words at the bottom
+	  of the document.
+	</p>
+	<p>
+	  Finally, when the document ranks have been determined and the
+	  documents sorted, the resulting matches are displayed. If
+	  paged output is required, only a subset of all the matches
+	  will be displayed.
+	</p>
+	<hr size="4" noshade>
+	<address>
+	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
+	</address>
+<!-- hhmts start -->
 Last modified: Mon Feb  8 20:41:20 EST 1999
 <!-- hhmts end -->
   </body>
