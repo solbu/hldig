@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.16 1999/10/08 12:05:20 loic Exp $
+// $Id: Server.cc,v 1.17 1999/10/08 14:52:33 ghutchis Exp $
 //
 
 #include "htdig.h"
@@ -20,6 +20,7 @@
 #include "htdig.h"
 #include "Document.h"
 #include "URLRef.h"
+#include "Transport.h"
 
 #include <ctype.h>
 
@@ -47,30 +48,30 @@ Server::Server(char *host, int port)
     //
     String	url = "http://";
     url << host << ':' << port << "/robots.txt";
+
+    time_t	timeZero = 0; // Right now we want to get this regardless
+
     Document	doc(url, 0);
-    if (debug)
-      cout << "     (" << url << ")\n";
-    switch (doc.RetrieveHTTP(0))
+    switch (doc.Retrieve(timeZero))
     {
-	case Document::Document_ok:
+	case Transport::Document_ok:
 	    //
 	    // Found a robots.txt file.  Go parse it.
 	    //
 	    robotstxt(doc);
 	    break;
 			
-	case Document::Document_not_found:
-	case Document::Document_not_html:
-	case Document::Document_redirect:
-	case Document::Document_not_authorized:
+	case Transport::Document_not_found:
+	case Transport::Document_not_parsable:
+	case Transport::Document_redirect:
+	case Transport::Document_not_authorized:
 	    //
 	    // These cases are for when there is no robots.txt file.
 	    // We will just go on happily without restrictions
 	    //
 	    break;
 			
-	case Document::Document_no_server:
-	case Document::Document_no_host:
+	case Transport::Document_no_host:
 	default:
 	    //
 	    // In all other cases the server could not be reached.
@@ -80,6 +81,7 @@ Server::Server(char *host, int port)
 	    _bad_server = 1;
 	    break;
     }
+
 }
 
 
