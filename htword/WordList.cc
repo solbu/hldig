@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.25 2000/01/11 18:38:23 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.26 2000/01/12 10:36:52 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -231,45 +231,6 @@ List *WordList::Collect (const WordReference& wordRef)
 
 //*****************************************************************************
 //
-// Walk and collect data from the word database.
-//
-// If action bit HTDIG_WORDLIST is set all the words are retrieved.
-// If action bit HTDIG_WORDLIST_WORD is set all the occurences of
-//    the <wordRef> argument are retrieved.
-// If action bit HTDIG_WORDLIST_PREFIX is set all the occurences of
-//    the words starting with <wordRef.Word()> are retrieved.
-//
-// If action bit HTDIG_WORDLIST_COLLECTOR is set WordReferences are
-//    stored in a list and the list is returned.
-// If action bit HTDIG_WORDLIST_WALKER is set the <callback> function
-//    is called for each WordReference found. No list is built and the
-//    function returns a null pointer.
-//
-//
-// The <wordRef> argument may be a fully qualified key, containing precise values for each
-// field of the key. It may also contain only some fields of the key. In both cases
-// all the word occurences matching the fields set in the key are retrieved. It may
-// be fast if <wordRef.Key()> is a prefix (see WordKey::Prefix for a definition). It may
-// be *slow* if <wordRef.Key()> is not a prefix because it forces a complete walk of the
-// index. 
-//
-// The idea of a prefix key is not to be confused with the idea of a prefix word. A prefix
-// key is a partially specified key, a prefix word is the start of a word. A prefix key may
-// contain a prefix word if HTDIG_WORDLIST_PREFIX is set and a fully qualified key may 
-// contain a prefix word if HTDIG_WORDLIST_PREFIX is set. These are two unrelated things, 
-// although similar in concept.
-//
-//  List *
-//  WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_callback_t callback, Object &callback_data)
-//  {
-//      WordSearchDescription searchD(wordRef,action,callback,callback_data);
-//      if(verbose){cdebug << "WordList::Walk(original fct) beg:" << searchD.searchKey;}
-//      Walk(searchD);
-//      if(verbose && searchD.collectRes){cdebug << "WordList::Walk(original fct) Walk collect result: count:" << searchD.collectRes->Count() << endl;}
-//      if(verbose){cdebug << "WordList::Walk(original fct) end:" << searchD.searchKey;}
-//      return searchD.collectRes;
-//  }
-
 inline void 
 WordList::WalkBenchmark_Get(WordSearchDescription &search, int cursor_get_flags)
 {
@@ -297,6 +258,21 @@ WordList::Search(const WordSearchDescription &csearch)
 
 //*****************************************************************************
 //
+// Walk and collect data from the word database.
+//
+// If action bit HTDIG_WORDLIST_COLLECTOR is set WordReferences are
+//    stored in a list and the list is returned.
+// If action bit HTDIG_WORDLIST_WALKER is set the <callback> function
+//    is called for each WordReference found. No list is built and the
+//    function returns a null pointer.
+//
+// The <searchKey> argument may be a fully qualified key, containing precise values for each
+// field of the key. It may also contain only some fields of the key. In both cases
+// all the word occurences matching the fields set in the key are retrieved. It may
+// be fast if key is a prefix (see WordKey::Prefix for a definition). It may
+// be *slow* if key is not a prefix because it forces a complete walk of the
+// index. 
+//
 int 
 WordList::Walk(WordSearchDescription &search)
 {
@@ -304,9 +280,9 @@ WordList::Walk(WordSearchDescription &search)
     search.Setup();
     int lverbose = (search.shutup ? 0 : verbose);
     WordKey			prefixKey;
-    WordCursor			cursor;
     const WordReference&	last = WordStat::Last();
-    const WordKey &searchKey=search.searchKey;
+    WordCursor&			cursor = search.cursor;
+    const WordKey&              searchKey = search.searchKey;
 
     String key;
     String data;
@@ -447,7 +423,7 @@ WordList::Walk(WordSearchDescription &search)
 	    }
 	}
 	
-	// finsihed ... go to next entry (or skip further on)
+	// finished ... go to next entry (or skip further on)
 	WalkBenchmark_Get( search, cursor_get_flags );
 	if(cursor.Get(key, data, cursor_get_flags) != 0)
 	{

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.15 2000/01/11 18:38:24 bosc Exp $
+// $Id: WordList.h,v 1.5.2.16 2000/01/12 10:36:52 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -88,9 +88,13 @@ class WordSearchDescription
     void Clear();
     int  Setup();
 
-    //  search description
+    //
+    // Input parameters
+    //
+    //
+    // The key to be searched
+    //
     WordKey searchKey;
-
     //
     // What do do when a WordReference is found
     // Can either be
@@ -106,10 +110,23 @@ class WordSearchDescription
     // Argument given to callback, contains arbitrary caller defined data
     //
     Object *callback_data;
+
+    //
+    // Output parameters
+    //
     //
     // List of WordReference found in the search
     //
     List *collectRes;
+
+    //
+    // Internal state
+    //
+    //
+    // A pointer to the current location of the search withing the index
+    // Allows to resume search if necessary.
+    //
+    WordCursor cursor;
 
     //
     // Debugging section. Do not use unless you know exactly what you do.
