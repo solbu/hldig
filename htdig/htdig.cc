@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.13 2000/08/21 02:34:26 ghutchis Exp $
+// $Id: htdig.cc,v 1.26.2.14 2000/09/27 05:17:29 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -129,9 +129,6 @@ int main(int ac, char **av)
 			 configFile.get()));
     }
     config.Read(configFile);
-
-    // Initialize htword
-    WordContext::Initialize(config);
 
     if (config["locale"].empty() && debug > 0)
       cout << "Warning: unknown locale!\n";

@@ -11,7 +11,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htmerge.cc,v 1.1.2.4 2000/08/18 05:22:58 ghutchis Exp $
+// $Id: htmerge.cc,v 1.1.2.5 2000/09/27 05:13:28 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -162,7 +162,7 @@ int main(int ac, char **av)
 	}
     }
 
-    WordContext::Initialize(config);
+    // WordContext::Initialize(config);
 
     if (merge_configfile.length())
     {

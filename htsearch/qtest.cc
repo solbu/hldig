@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: qtest.cc,v 1.1.2.1 2000/09/12 14:58:55 qss Exp $
+// $Id: qtest.cc,v 1.1.2.2 2000/09/27 05:17:29 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -129,7 +129,7 @@ main(int ac, char **av)
     config.Read(configFile);
 
     // Initialize htword library (key description + wordtype...)
-    WordContext::Initialize(config);    
+    // WordContext::Initialize(config);    
 
 	OrFuzzyExpander exp;
 	Exact exact(config);

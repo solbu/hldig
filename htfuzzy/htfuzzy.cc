@@ -18,7 +18,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htfuzzy.cc,v 1.15.2.4 2000/05/10 18:23:43 loic Exp $
+// $Id: htfuzzy.cc,v 1.15.2.5 2000/09/27 05:17:29 ghutchis Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -130,7 +130,7 @@ main(int ac, char **av)
     config.Read(configFile);
 
     // Initialize htword library (key description + wordtype...)
-    WordContext::Initialize(config);
+    // WordContext::Initialize(config);
 
     Fuzzy	*fuzzy;
     if (wordAlgorithms.Count() > 0)
