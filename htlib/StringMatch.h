@@ -29,8 +29,11 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringMatch.h,v 1.5 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: StringMatch.h,v 1.6 1999/09/11 05:21:07 ghutchis Exp $
 //
+
+#ifndef _StringMatch_h_
+#define _StringMatch_h_
 
 #include "Object.h"
 

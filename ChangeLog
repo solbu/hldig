@@ -1,3 +1,7 @@
+Sat Sep 11 00:11:28 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/StringMatch.h: Add back mistakenly deleted #ifndef/#define.
+
 Fri Sep 10 23:07:43 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htmerge/*, htcommon/*, htdig/*, htlib/*: Add copyright information.
