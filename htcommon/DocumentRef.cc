@@ -338,7 +338,8 @@ void DocumentRef::Serialize(String &s)
     // this multiple times.
     String tmps = HtURLCodec::instance()->encode(docURL);
     addstring(DOC_URL, s, tmps);
-    addstring(DOC_HEAD, s, docHead);
+    // This is done in the DocumentDB code through the excerpt database
+    //    addstring(DOC_HEAD, s, docHead);
     addstring(DOC_METADSC, s, docMetaDsc);
     addstring(DOC_TITLE, s, docTitle);
 
