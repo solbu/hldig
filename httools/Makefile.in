@@ -1,7 +1,6 @@
-# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
-# Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000
-# Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -10,6 +9,14 @@
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
+
+
+#
+# To compile with profiling do the following:
+#
+# make CFLAGS=-g CXXFLAGS=-g PROFILING=-p all
+#
+
 
 SHELL = @SHELL@
 
@@ -32,6 +39,8 @@ mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
 
+DESTDIR =
+
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -44,10 +53,9 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -56,8 +64,6 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-
-@SET_MAKE@
 host_alias = @host_alias@
 host_triplet = @host@
 APACHE = @APACHE@
@@ -107,32 +113,12 @@ USER = @USER@
 VERSION = @VERSION@
 YACC = @YACC@
 
-
-#
-# To compile with profiling do the following:
-#
-# make CFLAGS=-g CXXFLAGS=-g PROFILING=-p all
-#
-
-
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
-		-I$(top_srcdir)/include -I$(top_srcdir)/htlib \
-		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
-		-I$(top_srcdir)/htword \
-		-I$(top_srcdir)/db -I$(top_builddir)/db \
-		$(LOCAL_DEFINES) $(PROFILING)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db -I$(top_builddir)/db 		$(LOCAL_DEFINES) $(PROFILING)
 
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la \
-		$(top_builddir)/htcommon/libcommon.la \
-		$(top_builddir)/htword/libhtword.la \
-		$(top_builddir)/htlib/libht.la \
-		$(top_builddir)/htcommon/libcommon.la \
-		$(top_builddir)/htword/libhtword.la \
-		$(top_builddir)/db/libhtdb.la \
-		$(top_builddir)/htlib/libht.la
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/libhtdb.la 		$(top_builddir)/htlib/libht.la
 
 
 LOCAL_DEFINES = -DSENDMAIL=\"$(SENDMAIL)\"
@@ -168,7 +154,6 @@ htmerge_SOURCES = htmerge.cc
 htmerge_DEPENDENCIES = $(HTLIBS)
 htmerge_LDFLAGS = $(PROFILING)
 htmerge_LDADD = $(HTLIBS)
-subdir = httools
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
 CONFIG_CLEAN_FILES = 
@@ -178,44 +163,34 @@ PROGRAMS =  $(bin_PROGRAMS)
 DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
-am_htdump_OBJECTS =  htdump.o
-htdump_OBJECTS =  $(am_htdump_OBJECTS)
-am_htload_OBJECTS =  htload.o
-htload_OBJECTS =  $(am_htload_OBJECTS)
-am_htmerge_OBJECTS =  htmerge.o
-htmerge_OBJECTS =  $(am_htmerge_OBJECTS)
-am_htnotify_OBJECTS =  htnotify.o
-htnotify_OBJECTS =  $(am_htnotify_OBJECTS)
-am_htpurge_OBJECTS =  htpurge.o
-htpurge_OBJECTS =  $(am_htpurge_OBJECTS)
-am_htstat_OBJECTS =  htstat.o
-htstat_OBJECTS =  $(am_htstat_OBJECTS)
+htpurge_OBJECTS =  htpurge.o
+htnotify_OBJECTS =  htnotify.o
+htdump_OBJECTS =  htdump.o
+htstat_OBJECTS =  htstat.o
+htload_OBJECTS =  htload.o
+htmerge_OBJECTS =  htmerge.o
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
-CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES =  $(htdump_SOURCES) $(htload_SOURCES) $(htmerge_SOURCES) \
-$(htnotify_SOURCES) $(htpurge_SOURCES) $(htstat_SOURCES)
-depcomp = $(SHELL) $(top_srcdir)/depcomp
-DEP_FILES =  @AMDEP@ $(DEPDIR)/htdump.Po $(DEPDIR)/htload.Po \
-$(DEPDIR)/htmerge.Po $(DEPDIR)/htnotify.Po $(DEPDIR)/htpurge.Po \
-$(DEPDIR)/htstat.Po
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
 DIST_COMMON =  Makefile.am Makefile.in
 
 
-DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-SOURCES = $(htdump_SOURCES) $(htload_SOURCES) $(htmerge_SOURCES) $(htnotify_SOURCES) $(htpurge_SOURCES) $(htstat_SOURCES)
-OBJECTS = $(am_htdump_OBJECTS) $(am_htload_OBJECTS) $(am_htmerge_OBJECTS) $(am_htnotify_OBJECTS) $(am_htpurge_OBJECTS) $(am_htstat_OBJECTS)
+DEP_FILES =  .deps/htdump.P .deps/htload.P .deps/htmerge.P \
+.deps/htnotify.P .deps/htpurge.P .deps/htstat.P
+SOURCES = $(htpurge_SOURCES) $(htnotify_SOURCES) $(htdump_SOURCES) $(htstat_SOURCES) $(htload_SOURCES) $(htmerge_SOURCES)
+OBJECTS = $(htpurge_OBJECTS) $(htnotify_OBJECTS) $(htdump_OBJECTS) $(htstat_OBJECTS) $(htload_OBJECTS) $(htmerge_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .c .cc .lo .o
+.SUFFIXES: .S .c .cc .lo .o .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.config
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign httools/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -234,19 +209,22 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    f="`echo $$p|sed -e 's/$(EXEEXT)$$//' -e '$(transform)' -e 's/$$/$(EXEEXT)/'`"; \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/$$f"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/$$f; \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	  else :; fi; \
 	done
 
 uninstall-binPROGRAMS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  f="`echo $$p|sed -e 's/$(EXEEXT)$$//' -e '$(transform)' -e 's/$$/$(EXEEXT)/'`"; \
-	  echo " rm -f $(DESTDIR)$(bindir)/$$f"; \
-	  rm -f $(DESTDIR)$(bindir)/$$f; \
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	done
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
@@ -258,6 +236,12 @@ distclean-compile:
 
 maintainer-clean-compile:
 
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
 mostlyclean-libtool:
 	-rm -f *.lo
 
@@ -268,9 +252,21 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
+htpurge: $(htpurge_OBJECTS) $(htpurge_DEPENDENCIES)
+	@rm -f htpurge
+	$(CXXLINK) $(htpurge_LDFLAGS) $(htpurge_OBJECTS) $(htpurge_LDADD) $(LIBS)
+
+htnotify: $(htnotify_OBJECTS) $(htnotify_DEPENDENCIES)
+	@rm -f htnotify
+	$(CXXLINK) $(htnotify_LDFLAGS) $(htnotify_OBJECTS) $(htnotify_LDADD) $(LIBS)
+
 htdump: $(htdump_OBJECTS) $(htdump_DEPENDENCIES)
 	@rm -f htdump
 	$(CXXLINK) $(htdump_LDFLAGS) $(htdump_OBJECTS) $(htdump_LDADD) $(LIBS)
+
+htstat: $(htstat_OBJECTS) $(htstat_DEPENDENCIES)
+	@rm -f htstat
+	$(CXXLINK) $(htstat_LDFLAGS) $(htstat_OBJECTS) $(htstat_LDADD) $(LIBS)
 
 htload: $(htload_OBJECTS) $(htload_DEPENDENCIES)
 	@rm -f htload
@@ -279,42 +275,30 @@ htload: $(htload_OBJECTS) $(htload_DEPENDENCIES)
 htmerge: $(htmerge_OBJECTS) $(htmerge_DEPENDENCIES)
 	@rm -f htmerge
 	$(CXXLINK) $(htmerge_LDFLAGS) $(htmerge_OBJECTS) $(htmerge_LDADD) $(LIBS)
-
-htnotify: $(htnotify_OBJECTS) $(htnotify_DEPENDENCIES)
-	@rm -f htnotify
-	$(CXXLINK) $(htnotify_LDFLAGS) $(htnotify_OBJECTS) $(htnotify_LDADD) $(LIBS)
-
-htpurge: $(htpurge_OBJECTS) $(htpurge_DEPENDENCIES)
-	@rm -f htpurge
-	$(CXXLINK) $(htpurge_LDFLAGS) $(htpurge_OBJECTS) $(htpurge_LDADD) $(LIBS)
-
-htstat: $(htstat_OBJECTS) $(htstat_DEPENDENCIES)
-	@rm -f htstat
-	$(CXXLINK) $(htstat_LDFLAGS) $(htstat_OBJECTS) $(htstat_LDADD) $(LIBS)
+.cc.o:
+	$(CXXCOMPILE) -c $<
+.cc.lo:
+	$(LTCXXCOMPILE) -c $<
 
 tags: TAGS
 
-ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
-	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
-	unique=`for i in $$list; do \
-	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	  done | \
-	  $(AWK) '    { files[$$0] = 1; } \
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	mkid -fID $$unique $(LISP)
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
-		$(TAGS_FILES) $(LISP)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
-	unique=`for i in $$list; do \
-	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	  done | \
-	  $(AWK) '    { files[$$0] = 1; } \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -325,51 +309,77 @@ distclean-tags:
 
 maintainer-clean-tags:
 
-@AMDEP@include $(DEPDIR)/htdump.Po
-@AMDEP@include $(DEPDIR)/htload.Po
-@AMDEP@include $(DEPDIR)/htmerge.Po
-@AMDEP@include $(DEPDIR)/htnotify.Po
-@AMDEP@include $(DEPDIR)/htpurge.Po
-@AMDEP@include $(DEPDIR)/htstat.Po
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = httools
+
+distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign httools/Makefile
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+
+DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
+
+-include $(DEP_FILES)
 
 mostlyclean-depend:
 
 clean-depend:
 
 distclean-depend:
-	-rm -rf $(DEPDIR)
+	-rm -rf .deps
 
 maintainer-clean-depend:
 
-@AMDEP@CXXDEPMODE = @CXXDEPMODE@
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
 
-.cc.o:
-@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXXCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
 
-.cc.lo:
-@AMDEP@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
-@AMDEP@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
-@AMDEP@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(LTCXXCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+%.o: %.cc
+	@echo '$(CXXCOMPILE) -c $<'; \
+	$(CXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
 
-
-distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
-
-distdir: $(DISTFILES)
-	@for file in $(DISTFILES); do \
-	  d=$(srcdir); \
-	  if test -d $$d/$$file; then \
-	    cp -pR $$d/$$file $(distdir) \
-	    || exit 1; \
-	  else \
-	    test -f $(distdir)/$$file \
-	    || cp -p $$d/$$file $(distdir)/$$file \
-	    || exit 1; \
-	  fi; \
-	done
+%.lo: %.cc
+	@echo '$(LTCXXCOMPILE) -c $<'; \
+	$(LTCXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
 info-am:
 info: info-am
 dvi-am:
@@ -392,7 +402,7 @@ uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS)
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir)
 
@@ -406,7 +416,6 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-	-rm -f Makefile.in
 mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic
@@ -439,13 +448,14 @@ maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags mostlyclean-depend \
-distclean-depend clean-depend maintainer-clean-depend distdir info-am \
-info dvi-am dvi check check-am installcheck-am installcheck \
-install-exec-am install-exec install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all install-strip \
-installdirs mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+distclean-tags clean-tags maintainer-clean-tags distdir \
+mostlyclean-depend distclean-depend clean-depend \
+maintainer-clean-depend info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

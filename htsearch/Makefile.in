@@ -1,7 +1,6 @@
-# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
-# Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000
-# Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -10,6 +9,14 @@
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
+
+
+#
+# To compile with profiling do the following:
+#
+# make CFLAGS=-g CXXFLAGS=-g PROFILING=-p all
+#
+
 
 SHELL = @SHELL@
 
@@ -30,6 +37,8 @@ mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
 
+DESTDIR =
+
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -42,10 +51,9 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -54,8 +62,6 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-
-@SET_MAKE@
 host_alias = @host_alias@
 host_triplet = @host@
 APACHE = @APACHE@
@@ -105,32 +111,12 @@ USER = @USER@
 VERSION = @VERSION@
 YACC = @YACC@
 
-
-#
-# To compile with profiling do the following:
-#
-# make CFLAGS=-g CXXFLAGS=-g PROFILING=-p all
-#
-
-
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
-		-I$(top_srcdir)/include -I$(top_srcdir)/htlib \
-		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
-		-I$(top_srcdir)/htword \
-		-I$(top_srcdir)/db -I$(top_builddir)/db \
-		$(LOCAL_DEFINES) $(PROFILING)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db -I$(top_builddir)/db 		$(LOCAL_DEFINES) $(PROFILING)
 
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la \
-		$(top_builddir)/htcommon/libcommon.la \
-		$(top_builddir)/htword/libhtword.la \
-		$(top_builddir)/htlib/libht.la \
-		$(top_builddir)/htcommon/libcommon.la \
-		$(top_builddir)/htword/libhtword.la \
-		$(top_builddir)/db/libhtdb.la \
-		$(top_builddir)/htlib/libht.la
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/libhtdb.la 		$(top_builddir)/htlib/libht.la
 
 
 bindir = $(CGIBIN_DIR)
@@ -139,35 +125,19 @@ LOCAL_DEFINES = -DCONFIG_DIR=\"$(CONFIG_DIR)\" -I$(top_srcdir)/htfuzzy
 
 bin_PROGRAMS = htsearch qtest
 
-htsearch_SOURCES = Display.cc DocMatch.cc ResultList.cc ResultMatch.cc \
-		Template.cc TemplateList.cc WeightWord.cc htsearch.cc \
-		parser.cc Collection.cc SplitMatches.cc HtURLSeedScore.cc 
+htsearch_SOURCES = Display.cc DocMatch.cc ResultList.cc ResultMatch.cc 		Template.cc TemplateList.cc WeightWord.cc htsearch.cc 		parser.cc Collection.cc SplitMatches.cc HtURLSeedScore.cc 
 
-noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h \
-	Template.h TemplateList.h WeightWord.h htsearch.h parser.h \
-	Collection.h SplitMatches.h HtURLSeedScore.h \
-	WordSearcher.h AndQuery.h AndQueryParser.h BooleanLexer.h \
-	BooleanQueryParser.h ExactWordQuery.h FuzzyExpander.h GParser.h \
-	NearQuery.h NotQuery.h OperatorQuery.h OrFuzzyExpander.h \
-	OrQuery.h OrQueryParser.h PhraseQuery.h Query.h QueryCache.h \
-	QueryLexer.h QueryParser.h SimpleLexer.h SimpleQueryParser.h \
-	VolatileCache.h
+noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h 	Template.h TemplateList.h WeightWord.h htsearch.h parser.h 	Collection.h SplitMatches.h HtURLSeedScore.h 	WordSearcher.h AndQuery.h AndQueryParser.h BooleanLexer.h 	BooleanQueryParser.h ExactWordQuery.h FuzzyExpander.h GParser.h 	NearQuery.h NotQuery.h OperatorQuery.h OrFuzzyExpander.h 	OrQuery.h OrQueryParser.h PhraseQuery.h Query.h QueryCache.h 	QueryLexer.h QueryParser.h SimpleLexer.h SimpleQueryParser.h 	VolatileCache.h
 
 htsearch_DEPENDENCIES = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
 htsearch_LDFLAGS = $(PROFILING)
 htsearch_LDADD = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
 
-qtest_SOURCES = DocMatch.cc ResultList.cc AndQuery.cc \
-	BooleanLexer.cc BooleanQueryParser.cc ExactWordQuery.cc \
-	GParser.cc NearQuery.cc NotQuery.cc OperatorQuery.cc \
-	OrFuzzyExpander.cc OrQuery.cc PhraseQuery.cc Query.cc \
-	QueryLexer.cc QueryParser.cc SimpleQueryParser.cc VolatileCache.cc \
-	WordSearcher.cc qtest.cc
+qtest_SOURCES = DocMatch.cc ResultList.cc AndQuery.cc 	BooleanLexer.cc BooleanQueryParser.cc ExactWordQuery.cc 	GParser.cc NearQuery.cc NotQuery.cc OperatorQuery.cc 	OrFuzzyExpander.cc OrQuery.cc PhraseQuery.cc Query.cc 	QueryLexer.cc QueryParser.cc SimpleQueryParser.cc VolatileCache.cc 	WordSearcher.cc qtest.cc
 
 qtest_DEPENDENCIES = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
 qtest_LDFLAGS = $(PROFILING)
 qtest_LDADD = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
-subdir = htsearch
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
 CONFIG_CLEAN_FILES = 
@@ -177,53 +147,46 @@ PROGRAMS =  $(bin_PROGRAMS)
 DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
-am_htsearch_OBJECTS =  Display.o DocMatch.o ResultList.o ResultMatch.o \
+htsearch_OBJECTS =  Display.o DocMatch.o ResultList.o ResultMatch.o \
 Template.o TemplateList.o WeightWord.o htsearch.o parser.o Collection.o \
 SplitMatches.o HtURLSeedScore.o
-htsearch_OBJECTS =  $(am_htsearch_OBJECTS)
-am_qtest_OBJECTS =  DocMatch.o ResultList.o AndQuery.o BooleanLexer.o \
+qtest_OBJECTS =  DocMatch.o ResultList.o AndQuery.o BooleanLexer.o \
 BooleanQueryParser.o ExactWordQuery.o GParser.o NearQuery.o NotQuery.o \
 OperatorQuery.o OrFuzzyExpander.o OrQuery.o PhraseQuery.o Query.o \
 QueryLexer.o QueryParser.o SimpleQueryParser.o VolatileCache.o \
 WordSearcher.o qtest.o
-qtest_OBJECTS =  $(am_qtest_OBJECTS)
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
-CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES =  $(htsearch_SOURCES) $(qtest_SOURCES)
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(noinst_HEADERS)
 
-depcomp = $(SHELL) $(top_srcdir)/depcomp
-DEP_FILES =  @AMDEP@ $(DEPDIR)/AndQuery.Po $(DEPDIR)/BooleanLexer.Po \
-$(DEPDIR)/BooleanQueryParser.Po $(DEPDIR)/Collection.Po \
-$(DEPDIR)/Display.Po $(DEPDIR)/DocMatch.Po $(DEPDIR)/ExactWordQuery.Po \
-$(DEPDIR)/GParser.Po $(DEPDIR)/HtURLSeedScore.Po $(DEPDIR)/NearQuery.Po \
-$(DEPDIR)/NotQuery.Po $(DEPDIR)/OperatorQuery.Po \
-$(DEPDIR)/OrFuzzyExpander.Po $(DEPDIR)/OrQuery.Po \
-$(DEPDIR)/PhraseQuery.Po $(DEPDIR)/Query.Po $(DEPDIR)/QueryLexer.Po \
-$(DEPDIR)/QueryParser.Po $(DEPDIR)/ResultList.Po \
-$(DEPDIR)/ResultMatch.Po $(DEPDIR)/SimpleQueryParser.Po \
-$(DEPDIR)/SplitMatches.Po $(DEPDIR)/Template.Po \
-$(DEPDIR)/TemplateList.Po $(DEPDIR)/VolatileCache.Po \
-$(DEPDIR)/WeightWord.Po $(DEPDIR)/WordSearcher.Po $(DEPDIR)/htsearch.Po \
-$(DEPDIR)/parser.Po $(DEPDIR)/qtest.Po
-DIST_COMMON =  $(noinst_HEADERS) Makefile.am Makefile.in
+DIST_COMMON =  Makefile.am Makefile.in
 
 
-DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
+DEP_FILES =  .deps/AndQuery.P .deps/BooleanLexer.P \
+.deps/BooleanQueryParser.P .deps/Collection.P .deps/Display.P \
+.deps/DocMatch.P .deps/ExactWordQuery.P .deps/GParser.P \
+.deps/HtURLSeedScore.P .deps/NearQuery.P .deps/NotQuery.P \
+.deps/OperatorQuery.P .deps/OrFuzzyExpander.P .deps/OrQuery.P \
+.deps/PhraseQuery.P .deps/Query.P .deps/QueryLexer.P \
+.deps/QueryParser.P .deps/ResultList.P .deps/ResultMatch.P \
+.deps/SimpleQueryParser.P .deps/SplitMatches.P .deps/Template.P \
+.deps/TemplateList.P .deps/VolatileCache.P .deps/WeightWord.P \
+.deps/WordSearcher.P .deps/htsearch.P .deps/parser.P .deps/qtest.P
 SOURCES = $(htsearch_SOURCES) $(qtest_SOURCES)
-OBJECTS = $(am_htsearch_OBJECTS) $(am_qtest_OBJECTS)
+OBJECTS = $(htsearch_OBJECTS) $(qtest_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .c .cc .lo .o
+.SUFFIXES: .S .c .cc .lo .o .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.config
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign htsearch/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -242,19 +205,22 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    f="`echo $$p|sed -e 's/$(EXEEXT)$$//' -e '$(transform)' -e 's/$$/$(EXEEXT)/'`"; \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/$$f"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/$$f; \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	  else :; fi; \
 	done
 
 uninstall-binPROGRAMS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  f="`echo $$p|sed -e 's/$(EXEEXT)$$//' -e '$(transform)' -e 's/$$/$(EXEEXT)/'`"; \
-	  echo " rm -f $(DESTDIR)$(bindir)/$$f"; \
-	  rm -f $(DESTDIR)$(bindir)/$$f; \
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	done
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
@@ -265,6 +231,12 @@ distclean-compile:
 	-rm -f *.tab.c
 
 maintainer-clean-compile:
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -283,30 +255,30 @@ htsearch: $(htsearch_OBJECTS) $(htsearch_DEPENDENCIES)
 qtest: $(qtest_OBJECTS) $(qtest_DEPENDENCIES)
 	@rm -f qtest
 	$(CXXLINK) $(qtest_LDFLAGS) $(qtest_OBJECTS) $(qtest_LDADD) $(LIBS)
+.cc.o:
+	$(CXXCOMPILE) -c $<
+.cc.lo:
+	$(LTCXXCOMPILE) -c $<
 
 tags: TAGS
 
-ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
-	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
-	unique=`for i in $$list; do \
-	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	  done | \
-	  $(AWK) '    { files[$$0] = 1; } \
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	mkid -fID $$unique $(LISP)
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
-		$(TAGS_FILES) $(LISP)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
-	unique=`for i in $$list; do \
-	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	  done | \
-	  $(AWK) '    { files[$$0] = 1; } \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -317,75 +289,77 @@ distclean-tags:
 
 maintainer-clean-tags:
 
-@AMDEP@include $(DEPDIR)/AndQuery.Po
-@AMDEP@include $(DEPDIR)/BooleanLexer.Po
-@AMDEP@include $(DEPDIR)/BooleanQueryParser.Po
-@AMDEP@include $(DEPDIR)/Collection.Po
-@AMDEP@include $(DEPDIR)/Display.Po
-@AMDEP@include $(DEPDIR)/DocMatch.Po
-@AMDEP@include $(DEPDIR)/ExactWordQuery.Po
-@AMDEP@include $(DEPDIR)/GParser.Po
-@AMDEP@include $(DEPDIR)/HtURLSeedScore.Po
-@AMDEP@include $(DEPDIR)/NearQuery.Po
-@AMDEP@include $(DEPDIR)/NotQuery.Po
-@AMDEP@include $(DEPDIR)/OperatorQuery.Po
-@AMDEP@include $(DEPDIR)/OrFuzzyExpander.Po
-@AMDEP@include $(DEPDIR)/OrQuery.Po
-@AMDEP@include $(DEPDIR)/PhraseQuery.Po
-@AMDEP@include $(DEPDIR)/Query.Po
-@AMDEP@include $(DEPDIR)/QueryLexer.Po
-@AMDEP@include $(DEPDIR)/QueryParser.Po
-@AMDEP@include $(DEPDIR)/ResultList.Po
-@AMDEP@include $(DEPDIR)/ResultMatch.Po
-@AMDEP@include $(DEPDIR)/SimpleQueryParser.Po
-@AMDEP@include $(DEPDIR)/SplitMatches.Po
-@AMDEP@include $(DEPDIR)/Template.Po
-@AMDEP@include $(DEPDIR)/TemplateList.Po
-@AMDEP@include $(DEPDIR)/VolatileCache.Po
-@AMDEP@include $(DEPDIR)/WeightWord.Po
-@AMDEP@include $(DEPDIR)/WordSearcher.Po
-@AMDEP@include $(DEPDIR)/htsearch.Po
-@AMDEP@include $(DEPDIR)/parser.Po
-@AMDEP@include $(DEPDIR)/qtest.Po
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = htsearch
+
+distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign htsearch/Makefile
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+
+DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
+
+-include $(DEP_FILES)
 
 mostlyclean-depend:
 
 clean-depend:
 
 distclean-depend:
-	-rm -rf $(DEPDIR)
+	-rm -rf .deps
 
 maintainer-clean-depend:
 
-@AMDEP@CXXDEPMODE = @CXXDEPMODE@
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
 
-.cc.o:
-@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXXCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
 
-.cc.lo:
-@AMDEP@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
-@AMDEP@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
-@AMDEP@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(LTCXXCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+%.o: %.cc
+	@echo '$(CXXCOMPILE) -c $<'; \
+	$(CXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
 
-
-distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
-
-distdir: $(DISTFILES)
-	@for file in $(DISTFILES); do \
-	  d=$(srcdir); \
-	  if test -d $$d/$$file; then \
-	    cp -pR $$d/$$file $(distdir) \
-	    || exit 1; \
-	  else \
-	    test -f $(distdir)/$$file \
-	    || cp -p $$d/$$file $(distdir)/$$file \
-	    || exit 1; \
-	  fi; \
-	done
+%.lo: %.cc
+	@echo '$(LTCXXCOMPILE) -c $<'; \
+	$(LTCXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
 info-am:
 info: info-am
 dvi-am:
@@ -408,7 +382,7 @@ uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS) $(HEADERS)
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir)
 
@@ -422,7 +396,6 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-	-rm -f Makefile.in
 mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic
@@ -455,13 +428,14 @@ maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags mostlyclean-depend \
-distclean-depend clean-depend maintainer-clean-depend distdir info-am \
-info dvi-am dvi check check-am installcheck-am installcheck \
-install-exec-am install-exec install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all install-strip \
-installdirs mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+distclean-tags clean-tags maintainer-clean-tags distdir \
+mostlyclean-depend distclean-depend clean-depend \
+maintainer-clean-depend info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
