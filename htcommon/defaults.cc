@@ -4,6 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.32  1999/01/15 04:34:14  ghutchis
+// Set compression_factor to 0 for default (no compression).
+//
 // Revision 1.31  1999/01/14 03:01:25  ghutchis
 // Added search_results_wrapper for the location of the wrapper file, if used.
 // (The default is empty, which uses header.html and footer.html)
@@ -108,7 +111,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.31 1999/01/14 03:01:25 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.32 1999/01/15 04:34:14 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -140,7 +143,7 @@ ConfigDefaults	defaults[] =
     {"case_sensitive"                   "true"},
     {"create_image_list",		"false"},
     {"create_url_list",			"false"},
-    {"compression_factor",              "9"},
+    {"compression_factor",              "0"},
     {"date_factor",                     "0"},
     {"database_base",			"${database_dir}/db"},
     {"description_factor",              "150"},
