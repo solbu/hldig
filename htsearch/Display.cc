@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.86 1999/07/10 02:14:32 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.87 1999/07/11 23:07:00 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -416,8 +416,12 @@ Display::setVariables(int pageNumber, List *matches)
     if (i > nMatches)
 	i = nMatches;
     vars.Add("LASTDISPLAYED", new String(form("%d", i)));
-	
-    vars.Add("CGI", new String(getenv("SCRIPT_NAME")));
+
+    if (strlen(config["script_name"]) != 0) {
+      vars.Add("CGI", new String(config["script_name"]));
+    } else {
+      vars.Add("CGI", new String(getenv("SCRIPT_NAME")));
+    }
 	
     String	*str;
     char	*format = input->get("format");
@@ -555,7 +559,14 @@ Display::createURL(String &url, int pageNumber)
     String	s;
     int         i;
 
-    url << getenv("SCRIPT_NAME") << '?';
+    if (strlen(config["script_name"]) != 0) {
+      url << config["script_name"];
+    } else {
+      url << getenv("SCRIPT_NAME");
+    }
+
+    url << '?';
+
     if (input->exists("restrict"))
 	s << "restrict=" << input->get("restrict") << '&';
     if (input->exists("exclude"))
