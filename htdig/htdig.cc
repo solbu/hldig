@@ -156,6 +156,13 @@ main(int ac, char **av)
 	    configValue << ".work";
 	    config.Add("doc_index", configValue);
 	}
+
+	configValue = config["doc_excerpt"];
+	if (configValue.length() != 0)
+	{
+	    configValue << ".work";
+	    config.Add("doc_excerpt", configValue);
+	}
     }
     
     //
@@ -225,7 +232,11 @@ main(int ac, char **av)
     if (initial)
 	unlink(index_filename);
 
-    if (docs.Open(filename, index_filename) < 0)
+    String		head_filename = config["doc_excerpt"];
+    if (initial)
+        unlink(head_filename);
+
+    if (docs.Open(filename, index_filename, head_filename) < 0)
     {
 	reportError(form("Unable to open/create document database '%s'",
 			 filename.get()));
@@ -243,7 +254,7 @@ main(int ac, char **av)
     // URLs?
     //
     Retriever	retriever(flag);
-    if (minimal == 0)
+    if (minimalFile == 0)
       {
 	List	*list = docs.URLs();
 	retriever.Initial(*list);
