@@ -39,7 +39,7 @@ __mpe_fsync(fd)
 #define	fsync(fd)	__mpe_fsync(fd);
 #endif
 #ifdef _WIN32
-#define	fsync(fd)	_commit(fd);
+#define _commit(fd)     fsync(fd);
 #endif
 
 /*

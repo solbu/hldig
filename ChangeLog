@@ -1,3 +1,8 @@
+Fri Dec  4 20:15:41 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* db/os/os_fsync.c, db/mutex/mutex.c: Patch from Klaus Mueller
+	<K.Mueller@intershop.de> to compile under CygWinB20.
+
 Fri Dec  4 19:21:17 1998  Didier Gautheron <dgautheron@magic.fr>
 
 	* htdig/HTML.cc: Fix parser bug with &lt; becoming a tag.

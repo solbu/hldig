@@ -122,8 +122,12 @@ static const char sccsid[] = "@(#)mutex.c	10.51 (Sleepycat) 9/16/98";
  * XXX
  * DBDB this needs to be byte-aligned!!
  */
+#ifndef TSL_INIT
 #define	TSL_INIT(tsl)
+#endif
+#ifndef TSL_SET
 #define	TSL_SET(tsl)	(!InterlockedExchange((PLONG)tsl, 1))
+#endif
 #define	TSL_UNSET(tsl)	(*(tsl) = 0)
 #endif
 
