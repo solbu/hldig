@@ -10,6 +10,7 @@
 #include "DocumentRef.h"
 #include "good_strtok.h"
 #include "WordList.h"
+#include "WordRecord.h"
 #include "Configuration.h"
 #include "HtURLCodec.h"
 #include "HtWordType.h"
@@ -442,7 +443,6 @@ void DocumentRef::AddDescription(char *d)
     if (!words) // Hey... We only want to do this once, right?
     {
 	words = new WordList();
-	words->WordTempFile(config["word_list"]);
 	words->BadWordFile(config["bad_word_list"]);
     }
 
@@ -451,7 +451,6 @@ void DocumentRef::AddDescription(char *d)
     // Parse words.
     char         *p                   = desc;
     static int    minimum_word_length = config.Value("minimum_word_length", 3);
-    static double description_factor  = config.Double("description_factor");
     static int    max_descriptions    = config.Value("max_descriptions", 5);
 
     // Not restricted to this size, just used as a hint.
@@ -469,7 +468,7 @@ void DocumentRef::AddDescription(char *d)
 
       if (word.length() >= minimum_word_length)
         // The wordlist takes care of lowercasing; just add it.
-        words->Word(word, 0, 0, description_factor);
+        words->Word(word, 0, 0, FLAG_LINK_TEXT);
 
       while (*p && !HtIsStrictWordChar(*p))
         p++;
