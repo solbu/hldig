@@ -4,6 +4,14 @@
  * Copyright (c) 1999
  *	Loic Dachary.  All rights reserved.
  * 
+ * TODO:
+ *   Keith Bostic says:
+ *   The only change I'd probably think about is if
+ *   we should merge the call to __memp_pg and __memp_cmpr -- kind
+ *   of a stack of page modification routines, that sits on top of
+ *   __os_io.  That's a bigger change, but it's probably cleaner
+ *   in the long-run.
+ * 
  * Pending questions:
  *
  *  The CMPR structure contains binary data. Should we store them in network order ?

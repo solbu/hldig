@@ -134,15 +134,13 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 		F_SET(dbmfp, MP_READONLY);
 	if (LF_ISSET(DB_COMPRESS)) {
 #ifdef HAVE_LIBZ
-	    if((ret = __memp_cmpr_open(path, dbenv, &dbmfp->weakcmpr)) != 0)
-	      goto err;
-	    F_SET(dbmfp, MP_CMPR);
+		F_SET(dbmfp, MP_CMPR);
 #else /* HAVE_LIBZ */	    
-	    __db_err(dbenv,
-		     "memp_fopen: not compiled with zlib, compression not available");
-	    ret = EINVAL;
-	    goto err;
-#endif	    
+		__db_err(dbenv,
+			 "memp_fopen: not compiled with zlib, compression not available");
+		ret = EINVAL;
+		goto err;
+#endif /* HAVE_LIBZ */
 	}
 
 	if (path == NULL) {
@@ -152,6 +150,14 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 			ret = EINVAL;
 			goto err;
 		}
+#ifdef HAVE_LIBZ
+		if (LF_ISSET(DB_COMPRESS)) {
+			__db_err(dbenv,
+			    "memp_fopen: temporary files can't be compressed");
+			ret = EINVAL;
+			goto err;
+		}
+#endif /* HAVE_LIBZ */
 		last_pgno = 0;
 	} else {
 	       size_t disk_pagesize = F_ISSET(dbmfp, MP_CMPR) ? DB_CMPR_DIVIDE(pagesize) : pagesize;
@@ -210,6 +216,10 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 			if ((ret = __os_fileid(dbenv, rpath, 0, idbuf)) != 0)
 				goto err;
 			finfop->fileid = idbuf;
+		}
+		if (LF_ISSET(DB_COMPRESS)) {
+		  if((ret = __memp_cmpr_open(path, dbenv, &dbmfp->weakcmpr)) != 0)
+		    goto err;
 		}
 	}
 
