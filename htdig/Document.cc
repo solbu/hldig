@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.47 1999/08/06 21:40:47 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.48 1999/08/09 21:02:31 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -188,7 +188,7 @@ Document::Url(char *u)
 time_t
 Document::getdate(char *datestring)
 {
-    struct tm   tm;
+    static struct tm   tm;	// static so it's cleared to zeros
     time_t      ret;    
     char        *s;    
 
@@ -215,6 +215,8 @@ Document::getdate(char *datestring)
 	// correct for mystrptime, if %Y format saw only a 2 digit year
 	if (tm.tm_year < 0)
 	  tm.tm_year += 1900;
+	// tm is static, so don't worry about tm_yday, tm_wday, tm_zone, etc.
+	// they'll be set to 0, to avoid problems in strftime().
 	
 	if (debug > 2)
 	  {

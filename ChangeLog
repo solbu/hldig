@@ -1,4 +1,8 @@
-Mon Aug  9 15:49:54 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Aug  9 15:59:39 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc (getdate): make tm static, so it's initialized
+	to zeros.  Should fix PR#81 & PR#472, where strftime() would crash
+	on some systems.  Idea submitted by benoit.sibaud@cnet.francetelecom.fr
 
 	* htlib/URL.cc (parse): fix PR#348, to make sure a missing or invalid
 	port number will get set correctly.
