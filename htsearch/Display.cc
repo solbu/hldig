@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.60 1999/03/16 02:04:38 hp Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.61 1999/03/21 14:42:20 hp Exp $";
 #endif
 
 #include "htsearch.h"
@@ -951,11 +951,18 @@ Display::buildMatchList()
 String *
 Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first)
 {
+    // It is necessary to keep alive the String you .get() a char * from,
+    // as long as you use the char *.
+    String head_string;
+
     char	*head = ref->DocHead();
     if (config.Boolean("use_meta_description",0) 
 	&& strlen(ref->DocMetaDsc()) != 0)
 	head = ref->DocMetaDsc();
-    head = HtSGMLCodec::instance()->decode(head).get();
+
+    head_string = HtSGMLCodec::instance()->decode(head);
+
+    head = head_string.get();
 
     int		which, length;
     char	*temp = head;

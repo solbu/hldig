@@ -1,3 +1,10 @@
+Sun Mar 21 15:19:00 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* htdig/HTML.cc (parse): Keep contents in String variable
+	textified_contents while using its "char *".
+
+	* htsearch/Display.cc (excerpt): Similar for head_string.
+
 Thu Mar 18 20:01:24 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* installdir/long.html, installdir/short.html: Write out HTML
