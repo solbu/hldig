@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.31 2000/01/20 15:55:22 loic Exp $
+// $Id: WordList.cc,v 1.6.2.32 2000/01/25 10:09:06 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -45,14 +45,14 @@
 
 #define cdebug cerr
 
-//*****************************************************************************
+// *****************************************************************************
 //
 WordList::~WordList()
 {
     Close();
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 WordList::WordList(const Configuration& config_arg) :
   wtype(config_arg),
@@ -75,7 +75,7 @@ WordList::WordList(const Configuration& config_arg) :
 
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 int WordList::Open(const String& filename, int mode)
 {
@@ -113,7 +113,7 @@ int WordList::Open(const String& filename, int mode)
   return ret;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 int WordList::Close()
 {
@@ -125,7 +125,7 @@ int WordList::Close()
   return OK;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 int WordList::Put(const WordReference& arg, int flags)
 {
@@ -158,14 +158,14 @@ int WordList::Put(const WordReference& arg, int flags)
 }
 
 
-//*****************************************************************************
+// *****************************************************************************
 //
 List *WordList::operator [] (const WordReference& wordRef)
 {
   return Collect(wordRef);
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 List *WordList::Prefix (const WordReference& prefix)
 {
@@ -174,14 +174,14 @@ List *WordList::Prefix (const WordReference& prefix)
     return Collect(prefix2);
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 List *WordList::WordRefs()
 {
   return Collect(WordReference());
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 List *
 WordList::Collect(const WordSearchDescription &csearch)
@@ -191,7 +191,7 @@ WordList::Collect(const WordSearchDescription &csearch)
     return search.collectRes;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 List *WordList::Collect(const WordReference& wordRef)
 {
@@ -200,7 +200,7 @@ List *WordList::Collect(const WordReference& wordRef)
   return search.collectRes;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 inline void 
 WordList::WalkBenchmark_Get(WordSearchDescription &search, int cursor_get_flags)
@@ -217,7 +217,7 @@ WordList::WalkBenchmark_Get(WordSearchDescription &search, int cursor_get_flags)
     }
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 // Walk and collect data from the word database.
 //
@@ -452,7 +452,7 @@ WordList::WalkFinish(WordSearchDescription &search)
   return cursor.Close();
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 // Find out if we should better jump to the next possible key (DB_SET_RANGE) instead of 
 // sequential iterating (DB_NEXT). 
@@ -520,7 +520,7 @@ WordList::SkipUselessSequentialWalking(WordSearchDescription &search)
   return status;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 // Callback data dedicated to Dump and dump_word communication
 //
@@ -532,7 +532,7 @@ public:
   int count;
 };
 
-//*****************************************************************************
+// *****************************************************************************
 //
 //
 static int delete_word(WordList *words, WordDBCursor &cursor, const WordReference *word, Object &data)
@@ -547,7 +547,7 @@ static int delete_word(WordList *words, WordDBCursor &cursor, const WordReferenc
   }
 }
 
-//*****************************************************************************
+// *****************************************************************************
 // 
 // Delete all records matching wordRef, return the number of 
 // deleted records.
@@ -560,7 +560,7 @@ int WordList::WalkDelete(const WordReference& wordRef)
   return data.count;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 //
 List *WordList::Words()
@@ -594,7 +594,7 @@ List *WordList::Words()
     return list;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 // Returns the reference count for word in <count> arg
 //
@@ -613,7 +613,7 @@ int WordList::Noccurence(const WordKey& key, unsigned int& noccurence) const
   return OK;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 // Increment reference count for wordRef
 //
@@ -632,7 +632,7 @@ int WordList::Ref(const WordReference& wordRef)
   return db.Put(stat, 0);
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 // Decrement reference count for wordRef
 //
@@ -664,7 +664,7 @@ int WordList::Unref(const WordReference& wordRef)
 }
 
 
-//*****************************************************************************
+// *****************************************************************************
 //
 // streaming operators for ascii dumping and reading a list
 class StreamOutData : public Object
@@ -674,7 +674,7 @@ public:
     StreamOutData(ostream &no):o(no){;}
 };
 
-//*****************************************************************************
+// *****************************************************************************
 //
 int
 wordlist_walk_callback_stream_out(WordList *, WordDBCursor& , const WordReference *word, Object &data)
@@ -683,7 +683,7 @@ wordlist_walk_callback_stream_out(WordList *, WordDBCursor& , const WordReferenc
     return OK;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 ostream &
 operator << (ostream &o,  WordList &list)
@@ -696,7 +696,7 @@ operator << (ostream &o,  WordList &list)
     return o;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 istream &
 operator >> (istream &in,  WordList &list)
@@ -774,12 +774,12 @@ operator >> (istream &in,  WordList &list)
   return in;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 // WordSearchDescription implementation
 // 
 
-//*****************************************************************************
+// *****************************************************************************
 //
 WordSearchDescription::WordSearchDescription(const WordKey &nsearchKey, int naction /* = HTDIG_WORDLIST_WALKER */)
 {
@@ -788,7 +788,7 @@ WordSearchDescription::WordSearchDescription(const WordKey &nsearchKey, int nact
     action = naction;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 WordSearchDescription::WordSearchDescription(const WordKey &nsearchKey,wordlist_walk_callback_t ncallback,Object * ncallback_data)
 {
@@ -799,7 +799,7 @@ WordSearchDescription::WordSearchDescription(const WordKey &nsearchKey,wordlist_
     callback_data = ncallback_data;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 WordSearchDescription::WordSearchDescription(wordlist_walk_callback_t ncallback,Object * ncallback_data)
 {
@@ -809,7 +809,7 @@ WordSearchDescription::WordSearchDescription(wordlist_walk_callback_t ncallback,
     callback_data = ncallback_data;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 void 
 WordSearchDescription::Clear()
@@ -831,7 +831,7 @@ WordSearchDescription::Clear()
   benchmarking = 0;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 void
 WordSearchDescription::ClearInternal()
@@ -845,7 +845,7 @@ WordSearchDescription::ClearInternal()
   searchKeyIsSameAsPrefix = 0;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 void
 WordSearchDescription::ClearResult()
@@ -854,7 +854,7 @@ WordSearchDescription::ClearResult()
   status = WORD_WALK_OK;
 }
 
-//*****************************************************************************
+// *****************************************************************************
 //
 // Intuitive meaning is : set the document number in key and prepare to
 // move to this document, if any.
