@@ -3,7 +3,7 @@
 //
 // Do sanity checking in "doc_db", remove insane documents.
 //
-// $Id: docs.cc,v 1.19 1999/06/18 14:20:41 grdetil Exp $
+// $Id: docs.cc,v 1.20 1999/07/19 02:03:47 ghutchis Exp $
 //
 //
 
@@ -11,17 +11,27 @@
 
 
 //*****************************************************************************
-// void convertDocs(char *doc_db, char *doc_index, char *doc_excerpt)
+// void convertDocs()
 //
 void
-convertDocs(char *doc_db, char *doc_index, char *doc_excerpt)
+convertDocs()
 {
-    int			document_count = 0;
-    unsigned long	docdb_size = 0;
+    char		*doc_db = config["doc_db"];
+    char		*doc_index = config["doc_index"];
+    char		*doc_excerpt = config["doc_excerpt"];
     int			remove_unused = config.Boolean("remove_bad_urls");
     DocumentDB		db;
-    List		*urls;
+    List		*IDs;
+    int			document_count = 0;
+    unsigned long	docdb_size = 0;
 
+    if (access(doc_db, R_OK) < 0)
+    {
+	reportError(form("Unable to open document database '%s'", doc_db));
+    }
+
+    // These don't need to be fatal since we could make do otherwise...
+    // It is (very) nice to have the URL around for messages though!
     if (access(doc_index, R_OK) < 0)
     {
 	reportError(form("Unable to open document index '%s'", doc_index));
@@ -29,10 +39,6 @@ convertDocs(char *doc_db, char *doc_index, char *doc_excerpt)
     if (access(doc_excerpt, R_OK) < 0)
     {
 	reportError(form("Unable to open document excerpts '%s'", doc_excerpt));
-    }
-    if (access(doc_db, R_OK) < 0)
-    {
-	reportError(form("Unable to open document database '%s'", doc_db));
     }
 
     // Check "uncompressed"/"uncoded" urls at the price of time
@@ -44,54 +50,57 @@ convertDocs(char *doc_db, char *doc_index, char *doc_excerpt)
     // the document database
     //
     db.Open(doc_db, doc_index, doc_excerpt);
-    urls = db.URLs();
+    IDs = db.DocIDs();
 	
-    urls->Start_Get();
-    String		*url;
-    String		id;
-    while ((url = (String *) urls->Get_Next()))
+    IDs->Start_Get();
+    IntObject		*id;
+    String		idStr;
+    String		url;
+    while ((id = (IntObject *) IDs->Get_Next()))
     {
-	DocumentRef	*ref = db[url->get()];
-
-	// moet eigenlijk wat tussen, maar heb ik niet gedaan....
-	// (Translation Dutch -> English)
-	// something should be inserted here but I didn't do that
+	DocumentRef	*ref = db[id->Value()];
 
 	if (!ref)
 	    continue;
-	id = 0;
-	id << ref->DocID();
+
 	db.ReadExcerpt(*ref);
-	if (strlen(ref->DocHead()) == 0)
+	url = ref->DocURL();
+	idStr = id->Value();
+
+	if (ref->DocState() == Reference_noindex)
+	  {
+	    // This document either wasn't found or shouldn't be indexed.
+	    db.Delete(ref->DocID());
+            if (verbose)
+              cout << "Deleted, noindex: " << id->Value() << " URL: "
+                   << url << endl;
+	    discard_list.Add(idStr.get(), NULL);
+	  }
+	else if (remove_unused && ref->DocState() == Reference_not_found)
+	  {
+	    // This document wasn't actually found
+	    db.Delete(ref->DocID());
+            if (verbose)
+              cout << "Deleted, noindex: " << id->Value() << " URL: "
+                   << url << endl;
+	    discard_list.Add(idStr.get(), NULL);
+	  }
+	else if (remove_unused && strlen(ref->DocHead()) == 0)
 	  {
 	    // For some reason, this document doesn't have an excerpt
 	    // (probably because of a noindex directive, or disallowed
 	    // by robots.txt or server_max_docs). Remove it
 	    db.Delete(ref->DocID());
             if (verbose)
-              cout << "Deleted, no excerpt: " << id.get() << "/"
-                   << url->get() << endl;
-	  }
-	else if ((ref->DocState()) == Reference_noindex)
-	  {
-	    // This document has been marked with a noindex tag. Remove it
-	    db.Delete(ref->DocID());
-            if (verbose)
-              cout << "Deleted, noindex: " << id.get() << "/"
-                   << url->get() << endl;
-	  }
-	else if (remove_unused && discard_list.Exists(id))
-	  {
-	    // This document is not valid anymore.  Remove it
-	    db.Delete(ref->DocID());
-            if (verbose)
-              cout << "Deleted, invalid: " << id.get() << "/"
-                   << url->get() << endl;
+              cout << "Deleted, no excerpt: " << id->Value() << " URL:  "
+                   << url << endl;
+	    discard_list.Add(idStr.get(), NULL);
 	  }
 	else
 	  {
+	    // This is a valid document. Let's keep stats on it.
             if (verbose > 1)
-              cout << "" << id.get() << "/" << url->get() << endl;
+              cout << "" << id->Value() << "/" << url << endl;
 
 	    document_count++;
 	    docdb_size += ref->DocSize();
@@ -112,7 +121,7 @@ convertDocs(char *doc_db, char *doc_index, char *doc_excerpt)
 	cout << docdb_size / 1024 << endl;
       }
 
-    delete urls;
+    delete IDs;
     db.Close();
 }
 
