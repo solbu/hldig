@@ -8,8 +8,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	String.cc StringList.cc StringMatch.cc String_fmt.cc \
 	good_strtok.cc strcasecmp.cc \
 	mktime.c strptime.c timegm.c \
-	getcwd.c memcmp.c memcpy.c memmove.c raise.c snprintf.c strerror.c \
-	vsnprintf.c \
+	getcwd.c memcmp.c memcpy.c memmove.c raise.c strerror.c \
 	HtCodec.cc HtWordCodec.cc \
 	HtVector.cc HtHeap.cc \
 	HtPack.cc HtDateTime.cc HtRegex.cc \

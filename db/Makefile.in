@@ -38,7 +38,7 @@ pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
 
-top_builddir = ..
+top_builddir = .
 
 ACLOCAL = @ACLOCAL@
 AUTOCONF = @AUTOCONF@
@@ -60,52 +60,51 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
-APACHE = @APACHE@
-APACHE_MODULES = @APACHE_MODULES@
-AR = @AR@
 AS = @AS@
 CC = @CC@
-CGIBIN_DIR = @CGIBIN_DIR@
-COMMON_DIR = @COMMON_DIR@
-CONFIG_DIR = @CONFIG_DIR@
-CXX = @CXX@
-CXXFLAGS = @CXXFLAGS@
-DATABASE_DIR = @DATABASE_DIR@
-DEFAULT_CONFIG_FILE = @DEFAULT_CONFIG_FILE@
 DLLTOOL = @DLLTOOL@
-FIND = @FIND@
-GUNZIP = @GUNZIP@
-HTDIG_MAJOR_VERSION = @HTDIG_MAJOR_VERSION@
-HTDIG_MICRO_VERSION = @HTDIG_MICRO_VERSION@
-HTDIG_MINOR_VERSION = @HTDIG_MINOR_VERSION@
-IMAGE_DIR = @IMAGE_DIR@
-IMAGE_URL_PREFIX = @IMAGE_URL_PREFIX@
 LD = @LD@
-LDFLAGS = @LDFLAGS@
-LEX = @LEX@
-LIBOBJS = @LIBOBJS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
+MAJOR_VERSION = @MAJOR_VERSION@
 MAKEINFO = @MAKEINFO@
-MV = @MV@
+MICRO_VERSION = @MICRO_VERSION@
+MINOR_VERSION = @MINOR_VERSION@
 NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
-PERL = @PERL@
 RANLIB = @RANLIB@
-RRDTOOL = @RRDTOOL@
-SEARCH_DIR = @SEARCH_DIR@
-SEARCH_FORM = @SEARCH_FORM@
-SED = @SED@
-SENDMAIL = @SENDMAIL@
-SHELL = @SHELL@
-TAR = @TAR@
-TIME = @TIME@
-TIMEV = @TIMEV@
-USER = @USER@
 VERSION = @VERSION@
-YACC = @YACC@
+db_cv_path_ar = @db_cv_path_ar@
+db_cv_path_chmod = @db_cv_path_chmod@
+db_cv_path_cmp = @db_cv_path_cmp@
+db_cv_path_cp = @db_cv_path_cp@
+db_cv_path_diff = @db_cv_path_diff@
+db_cv_path_grep = @db_cv_path_grep@
+db_cv_path_kill = @db_cv_path_kill@
+db_cv_path_ln = @db_cv_path_ln@
+db_cv_path_mkdir = @db_cv_path_mkdir@
+db_cv_path_mv = @db_cv_path_mv@
+db_cv_path_perl5 = @db_cv_path_perl5@
+db_cv_path_ranlib = @db_cv_path_ranlib@
+db_cv_path_rm = @db_cv_path_rm@
+db_cv_path_sed = @db_cv_path_sed@
+db_cv_path_sh = @db_cv_path_sh@
+db_cv_path_sleep = @db_cv_path_sleep@
+db_cv_path_sort = @db_cv_path_sort@
+db_cv_path_strip = @db_cv_path_strip@
+db_cv_path_tr = @db_cv_path_tr@
+int16_decl = @int16_decl@
+int32_decl = @int32_decl@
+ssize_t_decl = @ssize_t_decl@
+u_char_decl = @u_char_decl@
+u_int16_decl = @u_int16_decl@
+u_int32_decl = @u_int32_decl@
+u_int8_decl = @u_int8_decl@
+u_int_decl = @u_int_decl@
+u_long_decl = @u_long_decl@
+u_short_decl = @u_short_decl@
 
 INCLUDES = -I$(top_srcdir)/../htlib
 
@@ -119,18 +118,20 @@ pkglib_LTLIBRARIES = libhtdb.la
 libhtdb_la_SOURCES =  	bt_compare.c 	bt_conv.c 	bt_curadj.c 	bt_cursor.c 	bt_delete.c 	bt_method.c 	bt_open.c 	bt_put.c 	bt_rec.c 	bt_reclaim.c 	bt_recno.c 	bt_rsearch.c 	bt_search.c 	bt_split.c 	bt_stat.c 	bt_upgrade.c 	btree_auto.c 	crdel_auto.c 	crdel_rec.c 	db.c 	db_am.c 	db_auto.c 	db_byteorder.c 	db_conv.c 	db_dispatch.c 	db_dup.c 	db_err.c 	db_getlong.c 	db_iface.c 	db_join.c 	db_log2.c 	db_meta.c 	db_method.c 	db_overflow.c 	db_pr.c 	db_rec.c 	db_reclaim.c 	db_ret.c 	db_salloc.c 	db_shash.c 	db_upgrade.c 	env_method.c 	env_open.c 	env_recover.c 	env_region.c 	hash.c 	hash_auto.c 	hash_conv.c 	hash_dup.c 	hash_func.c 	hash_meta.c 	hash_method.c 	hash_page.c 	hash_rec.c 	hash_reclaim.c 	hash_stat.c 	hash_upgrade.c 	lock.c 	lock_conflict.c 	lock_deadlock.c 	lock_region.c 	lock_util.c 	log.c 	log_archive.c 	log_auto.c 	log_compare.c 	log_findckp.c 	log_get.c 	log_method.c 	log_put.c 	log_rec.c 	log_register.c 	mp_alloc.c 	mp_bh.c 	mp_cmpr.c 	mp_fget.c 	mp_fopen.c 	mp_fput.c 	mp_fset.c 	mp_method.c 	mp_region.c 	mp_register.c 	mp_stat.c 	mp_sync.c 	mp_trickle.c 	mut_fcntl.c 	mut_pthread.c 	mut_tas.c 	mutex.c 	os_abs.c 	os_alloc.c 	os_dir.c 	os_errno.c 	os_fid.c 	os_finit.c 	os_fsync.c 	os_handle.c 	os_map.c 	os_method.c 	os_oflags.c 	os_open.c 	os_region.c 	os_rename.c 	os_root.c 	os_rpath.c 	os_rw.c 	os_seek.c 	os_sleep.c 	os_spin.c 	os_stat.c 	os_tmpdir.c 	os_unlink.c 	qam.c 	qam_auto.c 	qam_conv.c 	qam_method.c 	qam_open.c 	qam_rec.c 	qam_stat.c 	txn.c 	txn_auto.c 	txn_rec.c 	txn_region.c 	xa.c 	xa_db.c 	xa_map.c
 
 
-libhtdb_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
+libhtdb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 
 pkginclude_HEADERS =  	btree.h 	btree_auto.h 	btree_ext.h 	common_ext.h 	crdel_auto.h 	db.h 	db_am.h 	db_auto.h 	db_config.h 	db_dispatch.h 	db_ext.h 	db_int.h 	db_join.h 	db_page.h 	db_shash.h 	db_swap.h 	debug.h 	env_ext.h 	hash.h 	hash_auto.h 	hash_ext.h 	lock.h 	lock_ext.h 	log.h 	log_auto.h 	log_ext.h 	mp.h 	mp_ext.h 	mutex.h 	mutex_ext.h 	os.h 	os_ext.h 	os_jump.h 	qam.h 	qam_auto.h 	qam_ext.h 	queue.h 	region.h 	shqueue.h 	txn.h 	txn_auto.h 	txn_ext.h 	xa.h 	xa_ext.h
 
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = ../include/htconfig.h
-CONFIG_CLEAN_FILES = 
+ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
+mkinstalldirs = $(SHELL) $(top_srcdir)/../mkinstalldirs
+CONFIG_HEADER = db_config.h
+CONFIG_CLEAN_FILES =  db.h
 LTLIBRARIES =  $(pkglib_LTLIBRARIES)
 
 
-DEFS = @DEFS@ -I. -I$(srcdir) -I../include
+DEFS = @DEFS@ -I. -I$(srcdir) -I.
 CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libhtdb_la_LIBADD = 
 libhtdb_la_OBJECTS =  bt_compare.lo bt_conv.lo bt_curadj.lo bt_cursor.lo \
@@ -164,12 +165,14 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(pkginclude_HEADERS)
 
-DIST_COMMON =  README Makefile.am Makefile.in acinclude.m4 configure \
-configure.in
+DIST_COMMON =  README ./stamp-h.in Makefile.am Makefile.in acconfig.h \
+acinclude.m4 aclocal.m4 configure configure.in db.h.in db_config.h.in \
+mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
+TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/bt_compare.P .deps/bt_conv.P .deps/bt_curadj.P \
 .deps/bt_cursor.P .deps/bt_delete.P .deps/bt_method.P .deps/bt_open.P \
@@ -212,12 +215,49 @@ all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign db/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
-	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
+$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in  acinclude.m4
+	cd $(srcdir) && $(ACLOCAL)
+
+config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+	$(SHELL) ./config.status --recheck
+$(srcdir)/configure: @MAINTAINER_MODE_TRUE@$(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
+	cd $(srcdir) && $(AUTOCONF)
+
+db_config.h: stamp-h
+	@if test ! -f $@; then \
+		rm -f stamp-h; \
+		$(MAKE) stamp-h; \
+	else :; fi
+stamp-h: $(srcdir)/db_config.h.in $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES= CONFIG_HEADERS=db_config.h \
+	     $(SHELL) ./config.status
+	@echo timestamp > stamp-h 2> /dev/null
+$(srcdir)/db_config.h.in: @MAINTAINER_MODE_TRUE@$(srcdir)/stamp-h.in
+	@if test ! -f $@; then \
+		rm -f $(srcdir)/stamp-h.in; \
+		$(MAKE) $(srcdir)/stamp-h.in; \
+	else :; fi
+$(srcdir)/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) acconfig.h
+	cd $(top_srcdir) && $(AUTOHEADER)
+	@echo timestamp > $(srcdir)/stamp-h.in 2> /dev/null
+
+mostlyclean-hdr:
+
+clean-hdr:
+
+distclean-hdr:
+	-rm -f db_config.h
+
+maintainer-clean-hdr:
+db.h: $(top_builddir)/config.status db.h.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 mostlyclean-pkglibLTLIBRARIES:
 
@@ -304,15 +344,15 @@ ID: $(HEADERS) $(SOURCES) $(LISP)
 	here=`pwd` && cd $(srcdir) \
 	  && mkid -f$$here/ID $$unique $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+TAGS:  $(HEADERS) $(SOURCES) db_config.h.in $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
 	list='$(SOURCES) $(HEADERS)'; \
 	unique=`for i in $$list; do echo $$i; done | \
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	test -z "$(ETAGS_ARGS)db_config.h.in$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags db_config.h.in $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -323,16 +363,49 @@ distclean-tags:
 
 maintainer-clean-tags:
 
-distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+distdir = $(PACKAGE)-$(VERSION)
+top_distdir = $(distdir)
 
-subdir = db
-
+# This target untars the dist file and tries a VPATH configuration.  Then
+# it guarantees that the distribution is self-contained by making another
+# tarfile.
+distcheck: dist
+	-rm -rf $(distdir)
+	GZIP=$(GZIP_ENV) $(TAR) zxf $(distdir).tar.gz
+	mkdir $(distdir)/=build
+	mkdir $(distdir)/=inst
+	dc_install_base=`cd $(distdir)/=inst && pwd`; \
+	cd $(distdir)/=build \
+	  && ../configure --srcdir=.. --prefix=$$dc_install_base \
+	  && $(MAKE) $(AM_MAKEFLAGS) \
+	  && $(MAKE) $(AM_MAKEFLAGS) dvi \
+	  && $(MAKE) $(AM_MAKEFLAGS) check \
+	  && $(MAKE) $(AM_MAKEFLAGS) install \
+	  && $(MAKE) $(AM_MAKEFLAGS) installcheck \
+	  && $(MAKE) $(AM_MAKEFLAGS) dist
+	-rm -rf $(distdir)
+	@banner="$(distdir).tar.gz is ready for distribution"; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"
+dist: distdir
+	-chmod -R a+r $(distdir)
+	GZIP=$(GZIP_ENV) $(TAR) chozf $(distdir).tar.gz $(distdir)
+	-rm -rf $(distdir)
+dist-all: distdir
+	-chmod -R a+r $(distdir)
+	GZIP=$(GZIP_ENV) $(TAR) chozf $(distdir).tar.gz $(distdir)
+	-rm -rf $(distdir)
 distdir: $(DISTFILES)
+	-rm -rf $(distdir)
+	mkdir $(distdir)
+	-chmod 777 $(distdir)
 	here=`cd $(top_builddir) && pwd`; \
-	top_distdir=`cd $(top_distdir) && pwd`; \
+	top_distdir=`cd $(distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign db/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -383,6 +456,9 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
+all-recursive-am: db_config.h
+	$(MAKE) $(AM_MAKEFLAGS) all-recursive
+
 install-exec-am: install-pkglibLTLIBRARIES
 install-exec: install-exec-am
 
@@ -394,7 +470,7 @@ install-am: all-am
 install: install-am
 uninstall-am: uninstall-pkglibLTLIBRARIES uninstall-pkgincludeHEADERS
 uninstall: uninstall-am
-all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS) db_config.h
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
@@ -411,25 +487,27 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-pkglibLTLIBRARIES mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
-		mostlyclean-generic
+mostlyclean-am:  mostlyclean-hdr mostlyclean-pkglibLTLIBRARIES \
+		mostlyclean-compile mostlyclean-libtool \
+		mostlyclean-tags mostlyclean-depend mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-pkglibLTLIBRARIES clean-compile clean-libtool \
+clean-am:  clean-hdr clean-pkglibLTLIBRARIES clean-compile clean-libtool \
 		clean-tags clean-depend clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-pkglibLTLIBRARIES distclean-compile \
-		distclean-libtool distclean-tags distclean-depend \
-		distclean-generic clean-am
+distclean-am:  distclean-hdr distclean-pkglibLTLIBRARIES \
+		distclean-compile distclean-libtool distclean-tags \
+		distclean-depend distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
+	-rm -f config.status
 
-maintainer-clean-am:  maintainer-clean-pkglibLTLIBRARIES \
+maintainer-clean-am:  maintainer-clean-hdr \
+		maintainer-clean-pkglibLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-depend \
 		maintainer-clean-generic distclean-am
@@ -437,8 +515,10 @@ maintainer-clean-am:  maintainer-clean-pkglibLTLIBRARIES \
 	@echo "it deletes files that may require special tools to rebuild."
 
 maintainer-clean: maintainer-clean-am
+	-rm -f config.status
 
-.PHONY: mostlyclean-pkglibLTLIBRARIES distclean-pkglibLTLIBRARIES \
+.PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
+mostlyclean-pkglibLTLIBRARIES distclean-pkglibLTLIBRARIES \
 clean-pkglibLTLIBRARIES maintainer-clean-pkglibLTLIBRARIES \
 uninstall-pkglibLTLIBRARIES install-pkglibLTLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
@@ -447,9 +527,9 @@ clean-libtool maintainer-clean-libtool uninstall-pkgincludeHEADERS \
 install-pkgincludeHEADERS tags mostlyclean-tags distclean-tags \
 clean-tags maintainer-clean-tags distdir mostlyclean-depend \
 distclean-depend clean-depend maintainer-clean-depend info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
+dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \
+install-exec-am install-exec install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 

@@ -14,13 +14,7 @@
 #
 # To compile with profiling do the following:
 #
-# make clean
-# ( cd db ; make all )
-# make CXXFLAGS=-g PROFILING=-p all
-#
-# Note that it's necessary to rebuild Berkeley DB without CXXFLAGS set because
-# it has undesirable effects. CXXFLAGS must be set to -g because it defaults
-# to -g -O2 when g++ is used and profiling is not done in a intuitive way.
+# make CFLAGS=-g CXXFLAGS=-g PROFILING=-p all
 #
 
 
@@ -130,7 +124,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 pkglib_LTLIBRARIES = libht.la
 
-libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c 	getcwd.c memcmp.c memcpy.c memmove.c raise.c snprintf.c strerror.c 	vsnprintf.c 	HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc 	HtPack.cc HtDateTime.cc HtRegex.cc 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc
+libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c 	getcwd.c memcmp.c memcpy.c memmove.c raise.c strerror.c 	HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc 	HtPack.cc HtDateTime.cc HtRegex.cc 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc
 
 
 libht_la_LIBADD = @LIBOBJS@
@@ -153,10 +147,9 @@ libht_la_OBJECTS =  Configuration.lo Database.lo Dictionary.lo DB2_db.lo \
 IntObject.lo List.lo Object.lo ParsedString.lo Queue.lo \
 QuotedStringList.lo Stack.lo String.lo StringList.lo StringMatch.lo \
 String_fmt.lo good_strtok.lo strcasecmp.lo mktime.lo strptime.lo \
-timegm.lo getcwd.lo memcmp.lo memcpy.lo memmove.lo raise.lo snprintf.lo \
-strerror.lo vsnprintf.lo HtCodec.lo HtWordCodec.lo HtVector.lo \
-HtHeap.lo HtPack.lo HtDateTime.lo HtRegex.lo HtVectorGeneric.lo \
-HtMaxMin.lo HtWordType.lo
+timegm.lo getcwd.lo memcmp.lo memcpy.lo memmove.lo raise.lo strerror.lo \
+HtCodec.lo HtWordCodec.lo HtVector.lo HtHeap.lo HtPack.lo HtDateTime.lo \
+HtRegex.lo HtVectorGeneric.lo HtMaxMin.lo HtWordType.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -168,7 +161,7 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(pkginclude_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  Makefile.am Makefile.in snprintf.c vsnprintf.c
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)

@@ -137,7 +137,7 @@ libhtdb_la_SOURCES = \
 	xa_db.c \
 	xa_map.c
 
-libhtdb_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
+libhtdb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 
 pkginclude_HEADERS = \
 	btree.h \

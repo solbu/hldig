@@ -631,7 +631,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.1.2.1 2000/05/05 17:09:32 ghutchis Exp $
+dnl @version $Id: aclocal.m4,v 1.1.2.2 2000/05/07 00:58:00 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -700,7 +700,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.1.2.1 2000/05/05 17:09:32 ghutchis Exp $
+dnl @version $Id: aclocal.m4,v 1.1.2.2 2000/05/07 00:58:00 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 

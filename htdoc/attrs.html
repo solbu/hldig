@@ -11352,75 +11352,6 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name="wordlist_compress_debug">
-		wordlist_compress_debug</a></strong>
-	  </dt>
-	  <dd>
-		<dl>
-		  <dt>
-			<em>type:</em>
-		  </dt>
-		  <dd>
-			number
-		  </dd>
-		  <dt>
-			<em>used by:</em>
-		  </dt>
-		  <dd>
-			<a href="htdig.html">htdig</a>,
-			<a href="htmerge.html">htmerge</a>,
-			<a href="htsearch.html" target="_top">htsearch</a>,
-			<a href="htfuzzy.html">htfuzzy</a>
-		  </dd>
-		  <dt>
-			<em>default:</em>
-		  </dt>
-		  <dd>
-			0
-		  </dd>
-		  <dt>
-			<em>block:</em>
-		  </dt>
-		  <dd>
-			Global
-		  </dd>
-		  <dt>
-		      <em>version:</em>
-		  </dt>
-		  <dd>
-		      3.2.0b1 or later
-		  </dd>
-		  <dt>
-			<em>description:</em>
-		  </dt>
-		  <dd>
-	Debuging value for the  compression system for the indexer.              <br>
-	0 : none								 <br>
-	1 : transparent autotest while compressing (small performance decrease)	 <br>
-	2 : ------------------              big performance decrease		 <br>
-	3 : verbose
-		  </dd>
-		  <dt>
-			<em>example:</em>
-		  </dt>
-		  <dd>
-			<table border="0">
-			  <tr>
-				<td valign="top">
-				  wordlist_compress_debug:
-				</td>
-				<td nowrap>
-				     2
-				</td>
-			  </tr>
-			</table>
-		  </dd>
-		</dl>
-	  </dd>
-	</dl>
-	<hr>
-	<dl>
-	  <dt>
 		<strong><a name="wordlist_wordkey_description">
 		wordlist_wordkey_description</a></strong>
 	  </dt>
@@ -11445,7 +11376,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0
+			Word/DocID 32/Flags 8/Location 16
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -11464,64 +11395,6 @@ http://www.htdig.org/
 		  </dt>
 		  <dd>
 	Internal key description: *not user configurable*
-		  </dd>
-		  <dt>
-			<em>example:</em>
-		  </dt>
-		  <dd>
-			<table border="0">
-			  <tr> <td valign="top"><em>No example provided</em></td> </tr>
-			</table>
-		  </dd>
-		</dl>
-	  </dd>
-	</dl>
-	<hr>
-	<dl>
-	  <dt>
-		<strong><a name="wordlist_wordkey_description_file">
-		wordlist_wordkey_description_file</a></strong>
-	  </dt>
-	  <dd>
-		<dl>
-		  <dt>
-			<em>type:</em>
-		  </dt>
-		  <dd>
-			string
-		  </dd>
-		  <dt>
-			<em>used by:</em>
-		  </dt>
-		  <dd>
-			<a href="htdig.html">htdig</a>,
-			<a href="htmerge.html">htmerge</a>,
-			<a href="htsearch.html" target="_top">htsearch</a>,
-			<a href="htfuzzy.html">htfuzzy</a>
-		  </dd>
-		  <dt>
-			<em>default:</em>
-		  </dt>
-		  <dd>
-			<em>No default</em>
-		  </dd>
-		  <dt>
-			<em>block:</em>
-		  </dt>
-		  <dd>
-			Global
-		  </dd>
-		  <dt>
-		      <em>version:</em>
-		  </dt>
-		  <dd>
-		      3.2.0b1 or later
-		  </dd>
-		  <dt>
-			<em>description:</em>
-		  </dt>
-		  <dd>
-	Internal key description file: *not user configurable*
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -11685,7 +11558,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			1.0
+			0
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -11703,7 +11576,7 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	Sets the number of seconnds between each monitor output
+	Sets the number of seconds between each monitor output.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -11716,90 +11589,6 @@ http://www.htdig.org/
 				</td>
 				<td nowrap>
 				     .1
-				</td>
-			  </tr>
-			</table>
-		  </dd>
-		</dl>
-	  </dd>
-	</dl>
-	<hr>
-	<dl>
-	  <dt>
-		<strong><a name="wordlist_monitor_fields">
-		wordlist_monitor_fields</a></strong>
-	  </dt>
-	  <dd>
-		<dl>
-		  <dt>
-			<em>type:</em>
-		  </dt>
-		  <dd>
-			string
-		  </dd>
-		  <dt>
-			<em>used by:</em>
-		  </dt>
-		  <dd>
-			<a href="htdig.html">htdig</a>,
-			<a href="htmerge.html">htmerge</a>,
-			<a href="htsearch.html" target="_top">htsearch</a>,
-			<a href="htfuzzy.html">htfuzzy</a>
-		  </dd>
-		  <dt>
-			<em>default:</em>
-		  </dt>
-		  <dd>
-			totput put/s cmpr/s ucmpr/s put_time cmpr_ucmpr_time
-		  </dd>
-		  <dt>
-			<em>block:</em>
-		  </dt>
-		  <dd>
-			Global
-		  </dd>
-		  <dt>
-		      <em>version:</em>
-		  </dt>
-		  <dd>
-		      3.2.0b1 or later
-		  </dd>
-		  <dt>
-			<em>description:</em>
-		  </dt>
-		  <dd>
-        Sets what values you want to monitor in the indexer. Here is a list
-        of the currently available fields:                                                                <br>
-        Compression related:                                                                              <br>
-	mxtreelevel         : maximal depth of compressed/uncompressed pages (db tree grow bottom up...)  <br>
-	cmpr/s              : number of pages compressed per second					  <br>
-	ucmpr/s             : number of pages uncompressed per second					  <br>
-	cmpr_ucmpr_time     : proportion of total time spent compressing/uncompressing pages		  <br>
-	nonleave/leave      : proportion of pages compressed/uncompressed pages that weren't tree leaves  <br>
-	cmpr_ratio          : average atained compression ration					  <br>
-	cmpr_overflow       : proportion of pages that didn't fit in the specified compression ratio	  <br>
-        Others:												  <br>
-        totput              : total number of entries inserted into the index				  <br>
-        put/s               : number of inserts per second						  <br>
-        put_time            : proportion of total time spent inserting					  <br>
-        nwalks/s            : number of walks per second						  <br>
-        walk_time           : proportion of total time spent walking					  <br>
-        nwalk_set           : number of walk jumps							  <br>
-        nwalk_set/s         : number of walk jumps per second						  <br>
-        nwalk_next          : number of walk next's            						  <br>
-        nwalk_next/s        : number of walk next's per second						  <br>
-		  </dd>
-		  <dt>
-			<em>example:</em>
-		  </dt>
-		  <dd>
-			<table border="0">
-			  <tr>
-				<td valign="top">
-				  wordlist_monitor_fields:
-				</td>
-				<td nowrap>
-				     put/s nwalks/s
 				</td>
 			  </tr>
 			</table>
@@ -11834,7 +11623,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			1.0
+			<em>No default</em>
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -11852,7 +11641,7 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	Specifies word monitor output. Currently file or stdout
+        Print monitoring output on file instead of the default stderr.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -11864,7 +11653,7 @@ http://www.htdig.org/
 				  wordlist_monitor_output:
 				</td>
 				<td nowrap>
-				     file:/home/bosc/trash/wlmonout
+				     myfile
 				</td>
 			  </tr>
 			</table>
@@ -11873,6 +11662,6 @@ http://www.htdig.org/
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: Mon Apr 10 22:05:23 CDT 2000
+		Last modified: Sun May  7 04:03:00 CEST 2000
   </body>
 </html>

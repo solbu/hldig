@@ -178,9 +178,13 @@ typedef char bool;
  * Big-file configuration.
  */
 #ifdef	HAVE_FILE_OFFSET_BITS
+#ifndef _FILE_OFFSET_BITS
 #define	_FILE_OFFSET_BITS	64
-#endif
+#endif /* _FILE_OFFSET_BITS */
+#endif /* HAVE_FILE_OFFSET_BITS */
 
 #ifdef	HAVE_LARGEFILE_SOURCE
+#ifndef _LARGEFILE_SOURCE
 #define	_LARGEFILE_SOURCE
-#endif
+#endif /* _LARGEFILE_SOURCE */
+#endif /* HAVE_LARGEFILE_SOURCE */
