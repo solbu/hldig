@@ -1,10 +1,16 @@
+Fri Oct 29 15:28:22 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(setVariables & hilight): added Sergey's idea
+	for start_highlight, end_highlight & page_number_separator attributes.
+	* htcommon/defaults.cc: added & documented these.
+	* htdoc/attrs.html, cf_by{name,prog}.html: reran cf_generate.pl
+
 Thu Oct 28 13:06:23 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/ExternalParser.cc: added support for external converters
 	as extension to external_parsers attribute.
 	* htcommon/defaults.cc: Updated external_parsers with new description
 	and examples of external converters.
-	* htdoc/attrs.html, cf_by{name,prog}.html: reran cf_generate.pl
 
 Thu Oct 28 12:52:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 

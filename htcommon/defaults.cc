@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.64.2.9 1999/10/28 18:18:59 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.64.2.10 1999/10/29 20:41:38 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -273,6 +273,15 @@ http://www.htdig.org/", "
 	reminder to the user that the excerpt is only part of
 	the complete document.
 " },
+{ "end_highlight", "</strong>", 
+	"string", "htsearch", "end_highlight: &lt;/font&gt;", "
+	When excerpts are displayed in the search output, matched
+	words will be highlighted using <a href=\"#start_highlight\">
+	start_highlight</a> and this string.
+	You should ensure that highlighting tags are balanced,
+	that is, this string should close any formatting
+	tag opened by start_highlight.
+" },
 { "endings_affix_file", "${common_dir}/english.aff", 
 	"string", "htfuzzy", "endings_affix_file: /var/htdig/affix_rules", "
 	Specifies the location of the file which contains the
@@ -321,13 +330,16 @@ http://www.htdig.org/", "
 	"number", "htsearch", "excerpt_length: 500", "
 	This is the maximum number of characters the displayed
 	excerpt will be limited to. The first matched word will
-	be bolded in the middle of the excerpt so that there is
+	be highlighted in the middle of the excerpt so that there is
 	some surrounding context.<br>
 	The <em><a href=\"#start_ellipses\">
 	start_ellipses</a></em> and
 	<em><a href=\"#end_ellipses\">end_ellipses</a></em> are used to
 	indicate that the document contains text before and
 	after the displayed excerpt respectively.
+	The <em><a href=\"#start_highlight\">start_highlight</a></em> and
+	<em><a href=\"#end_highlight\">end_highlight</a></em> are used to
+	specify what formatting tags are used to highlight matched words.
 " },
 { "excerpt_show_top", "false", 
 	"boolean", "htsearch", "excerpt_show_top: yes", "
@@ -1179,6 +1191,23 @@ http://www.htdig.org/", "
 	<a href=\"#search_results_footer\">search_results_footer</a>
 	file, when all search results fit on more than one page.
 " },
+{ "page_number_separator", "\" \"", 
+	"quoted string list", "htsearch", "page_number_separator: \"&lt;/td&gt; &lt;td&gt;\"", "
+	The text strings in this list will be used when putting
+	together the PAGELIST variable, for use in templates or
+	the <a href=\"#search_results_footer\">search_results_footer</a>
+	file, when search results fit on more than page. The PAGELIST
+	is the list of links at the bottom of the search results page.
+	The strings in the list will be used in rotation, and will
+	separate individual entries taken from
+	<a href=\"#page_number_text\">page_number_text</a> and
+	<a href=\"#no_page_number_text\">no_page_number_text</a>.
+	There can be as many or as few strings in the list as you like.
+	If there are not enough for the number of pages listed, it goes
+	back to the start of the list. If the list is empty, a space is
+	used. The text strings can contain HTML tags. The strings need
+	to be quoted if they contain spaces, or to specify an empty string.
+" },
 { "page_number_text", "", 
 	"quoted string list", "htsearch", "page_number_text:
 				  &lt;em&gt;1&lt;/em&gt; &lt;em&gt;2&lt;/em&gt; \\<br>
@@ -1722,6 +1751,15 @@ http://www.htdig.org/", "
 	text before the text displayed. This is just a visual
 	reminder to the user that the excerpt is only part of
 	the complete document.
+" },
+{ "start_highlight", "<strong>", 
+	"string", "htsearch", "start_highlight: &lt;font color=\"#FF0000\"&gt;", "
+	When excerpts are displayed in the search output, matched
+	words will be highlighted using this string and
+	<a href=\"#end_highlight\"> end_highlight</a>.
+	You should ensure that highlighting tags are balanced,
+	that is, any formatting tags that this string
+	opens should be closed by end_highlight.
 " },
 { "start_url", "http://www.htdig.org/", 
 	"string list", "htdig", "start_url: http://www.somewhere.org/alldata/index.html", "
