@@ -1,3 +1,24 @@
+Sun Nov 22 14:03:06 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* installdir/rundig: Added checks for synonym databases older than
+	the synonym files.
+
+	* htcommon/defaults.cc: New config options "description_factor"
+	for weighting words added as link descriptions, and
+	"no_excerpt_show_top" to show the top of an excerpt instead of the
+	"no_excerpt_text".
+
+	* htdig/Retriever.cc: Use "description_factor" to weight link
+	descriptions with the documents at the end of the link.
+
+	* htsearch/Display.cc: Adjust date_factor and backlink_factor
+	rankings to produce better results.
+
+	* htsearch/Display.cc: Use "no_excerpt_show_top."
+
+	* htsearch/htsearch.cc: Don't remove boolean operators from
+	boolean search strings!
+
 Tue Nov 17 23:13:04 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* contrib/wordfreq/wordfreq.pl: Added changes by Isoif.
@@ -38,7 +59,7 @@ Sun Nov 15 17:04:34 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htmerge/docs.cc, htmerge/words.cc: Change \r to \n, as mentioned
 	by Andrew Bishop.
 
-        * htcommon/DocumentRef.h, htcommon/DocumentRef.cc: Define new fields
+	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc: Define new fields
         docBackLinks (backlink count) and docSig (document signature).
 	
 	* htdig/Retriever.cc: Keep track of docBackLinks.
