@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.64.2.10 1999/10/29 20:41:38 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.64.2.11 1999/11/10 21:24:21 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -1466,12 +1466,6 @@ http://www.htdig.org/", "
 				document$(PLURAL_MATCHES) were found\"
 			  </dd>
 			  <dt>
-				MAX_MATCHES
-			  </dt>
-			  <dd>
-				The number of maximum displayed matches.
-			  </dd>
-			  <dt>
 				MAX_STARS
 			  </dt>
 			  <dd>
@@ -1546,12 +1540,6 @@ http://www.htdig.org/", "
 				else it is an empty string. This can be used to say
 				something like \"$(MATCHES)
 				document$(PLURAL_MATCHES) were found\"
-			  </dd>
-			  <dt>
-				MAX_MATCHES
-			  </dt>
-			  <dd>
-				The number of maximum displayed matches.
 			  </dd>
 			  <dt>
 				MAX_STARS
