@@ -29,16 +29,22 @@ AC_SUBST(HTDIG_TOP)
 dnl Get any --with or --disable flags now
 dnl This looks a little messy, but it's word-wrapping problems :-(
 AC_ARG_ENABLE(zlib,[  --disable-zlib          do not compile with zlib support],
-	WITH_ZLIB=$enableval, WITH_ZLIB="yes")
+ WITH_ZLIB=$enableval, WITH_ZLIB="yes")
 AC_ARG_WITH(cgi-bin-dir, [  --with-cgi-bin-dir=DIR  where your cgi-bin directory is],
-	CGIBIN_DIR="$withval", CGIBIN_DIR="/opt/www/cgi-bin")
+ CGIBIN_DIR="$withval", CGIBIN_DIR="/opt/www/cgi-bin")
 AC_SUBST(CGIBIN_DIR)
 AC_ARG_WITH(image-dir, [  --with-image-dir=DIR    where the ht://Dig images are installed],
-	IMAGE_DIR="$withval", IMAGE_DIR="/opt/www/htdocs/htdig")
+ IMAGE_DIR="$withval", IMAGE_DIR="/opt/www/htdocs/htdig")
 AC_SUBST(IMAGE_DIR)
 AC_ARG_WITH(search-dir, [  --with-search-dir=DIR   where the sample search form should be installed],
-	SEARCH_DIR="$withval", SEARCH_DIR="/opt/www/htdocs/htdig")
+ SEARCH_DIR="$withval", SEARCH_DIR="/opt/www/htdocs/htdig")
 AC_SUBST(SEARCH_DIR)
+AC_ARG_WITH(image-url-prefix, [  --with-image-url-prefix=DIR   the URL path to the installed images],
+ IMAGE_URL_PREFIX="$withval", IMAGE_URL_PREFIX="/htdig")
+AC_SUBST(IMAGE_URL_PREFIX)
+AC_ARG_WITH(search-form, [  --with-search-form=DIR   the name for the sample search form],
+ SEARCH_FORM="$withval", SEARCH_FORM="/htdig")
+AC_SUBST(SEARCH_FORM)
 
 dnl While we're at it, let's work out the program transformations
 AC_ARG_PROGRAM
@@ -157,7 +163,7 @@ AC_CONFIG_SUBDIRS(db/dist)
 
 CF_MAKE_INCLUDE
 
-AC_OUTPUT(CONFIG Makefile Makefile.config htcommon/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile makedp, chmod +x makedp, echo timestamp > stamp-h)
+AC_OUTPUT(Makefile Makefile.config htcommon/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile makedp, chmod +x makedp, echo timestamp > stamp-h)
 
 echo ""
 echo ""
