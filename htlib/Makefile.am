@@ -11,7 +11,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	getcwd.c memcmp.c memcpy.c memmove.c raise.c strerror.c \
 	HtCodec.cc HtWordCodec.cc \
 	HtVector.cc HtHeap.cc \
-	HtPack.cc HtDateTime.cc HtRegex.cc \
+	HtPack.cc HtDateTime.cc HtRegex.cc HtRegexList.cc \
 	HtRegexReplace.cc HtRegexReplaceList.cc \
 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc \
 	myqsort.c \
@@ -33,6 +33,7 @@ pkginclude_HEADERS = \
 	HtHeap.h \
 	HtPack.h \
 	HtRegex.h \
+	HtRegexList.h \
 	HtRegexReplace.h \
 	HtRegexReplaceList.h \
 	HtVector.h \
