@@ -1,3 +1,13 @@
+Mon Jan 15 23:09:37 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htnet/Connection.cc: Back out previous change--this should not
+	in any way be needed since the configure script should set
+	FD_SET_T.
+
+	* configure.in, configure: Add more lenient prototyping for
+	select() test--now allows "const struct timeval" for compilation
+	on BSDI.
+
 Mon Jan 15 17:46:07 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/TemplateList.cc (createFromString), htcommon/defaults.cc:

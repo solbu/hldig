@@ -4332,19 +4332,21 @@ echo $ac_n "checking how to call select?""... $ac_c" 1>&6
 echo "configure:4333: checking how to call select?" >&5
 for fd_set_t in 'fd_set' 'int'
   do
+  for timeval_t in 'struct timeval' 'const struct timeval'
+  do
     cat > conftest.$ac_ext <<EOF
-#line 4337 "configure"
+#line 4339 "configure"
 #include "confdefs.h"
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
- extern "C" int select(int, $fd_set_t *, $fd_set_t *, $fd_set_t *, struct timeval *);
+ extern "C" int select(int, $fd_set_t *, $fd_set_t *, $fd_set_t *, $timeval_t *);
  $fd_set_t fd; 
 int main() {
  select(0, &fd, 0, 0, 0); 
 ; return 0; }
 EOF
-if { (eval echo configure:4348: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:4350: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_found=yes ; break 2
 else
@@ -4354,6 +4356,7 @@ else
   ac_found=no
 fi
 rm -f conftest*
+ done
 done
 
 if test "$ac_found" = no
@@ -4372,16 +4375,16 @@ EOF
 fi
 
 echo $ac_n "checking for bool data type?""... $ac_c" 1>&6
-echo "configure:4376: checking for bool data type?" >&5
+echo "configure:4379: checking for bool data type?" >&5
 cat > conftest.$ac_ext <<EOF
-#line 4378 "configure"
+#line 4381 "configure"
 #include "confdefs.h"
 
 int main() {
 bool i;
 ; return 0; }
 EOF
-if { (eval echo configure:4385: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:4388: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   echo "$ac_t""yes" 1>&6;cat >> confdefs.h <<\EOF
 #define HAVE_BOOL 1
@@ -4396,16 +4399,16 @@ fi
 rm -f conftest*
 
 echo $ac_n "checking for true and false?""... $ac_c" 1>&6
-echo "configure:4400: checking for true and false?" >&5
+echo "configure:4403: checking for true and false?" >&5
 cat > conftest.$ac_ext <<EOF
-#line 4402 "configure"
+#line 4405 "configure"
 #include "confdefs.h"
 
 int main() {
 int i, j; i= true; j= false;
 ; return 0; }
 EOF
-if { (eval echo configure:4409: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:4412: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   echo "$ac_t""yes" 1>&6
      cat >> confdefs.h <<\EOF
@@ -4438,7 +4441,7 @@ fi
 if test x$htdig_cv_tests = xyes
 then
 	echo $ac_n "checking user name""... $ac_c" 1>&6
-echo "configure:4442: checking user name" >&5
+echo "configure:4445: checking user name" >&5
 test -n "$LOGNAME" && USER=$LOGNAME
 
 echo "$ac_t""$USER" 1>&6
@@ -4448,7 +4451,7 @@ echo "$ac_t""$USER" 1>&6
 #
 
  echo $ac_n "checking if apache is wanted""... $ac_c" 1>&6
-echo "configure:4452: checking if apache is wanted" >&5
+echo "configure:4455: checking if apache is wanted" >&5
  # Check whether --with-apache or --without-apache was given.
 if test "${with_apache+set}" = set; then
   withval="$with_apache"
@@ -4489,7 +4492,7 @@ fi
       # Extract the first word of "httpd", so it can be a program name with args.
 set dummy httpd; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:4493: checking for $ac_word" >&5
+echo "configure:4496: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_APACHE'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -4542,7 +4545,7 @@ fi
     #
     if test -n "1.3.1" ; then
       echo $ac_n "checking apache version >= 1.3.1""... $ac_c" 1>&6
-echo "configure:4546: checking apache version >= 1.3.1" >&5
+echo "configure:4549: checking apache version >= 1.3.1" >&5
       APACHE_REQUEST=`echo 1.3.1 | sed -e 's/\.//g'`
       APACHE_REQUEST_MAJOR=`expr $APACHE_REQUEST : '\(..\)'`
       APACHE_REQUEST_MINOR=`expr $APACHE_REQUEST : '..\(.*\)'`
@@ -4558,7 +4561,7 @@ echo "configure:4546: checking apache version >= 1.3.1" >&5
     #
     HTTP_ROOT=`$APACHE -V | grep HTTPD_ROOT | sed -e 's/.*"\(.*\)"/\1/'`
     echo $ac_n "checking apache modules""... $ac_c" 1>&6
-echo "configure:4562: checking apache modules" >&5
+echo "configure:4565: checking apache modules" >&5
     for dir in libexec modules lib/apache
     do
       if test -f $HTTP_ROOT/$dir/mod_env.*

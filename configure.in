@@ -224,13 +224,16 @@ fi
 AC_MSG_CHECKING(how to call select?)
 for fd_set_t in 'fd_set' 'int'
   do
+  for timeval_t in 'struct timeval' 'const struct timeval'
+  do
     AC_TRY_COMPILE([#include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
- extern "C" int select(int, $fd_set_t *, $fd_set_t *, $fd_set_t *, struct timeval *);
+ extern "C" int select(int, $fd_set_t *, $fd_set_t *, $fd_set_t *, $timeval_t *);
  $fd_set_t fd; ],
     [ select(0, &fd, 0, 0, 0); ],
     [ac_found=yes ; break 2],[ac_found=no])
+ done
 done
 
 if test "$ac_found" = no
