@@ -1,3 +1,21 @@
+Mon Jan 10 09:07:19 2000  Loic Dachary  <loic@ceic.com>
+
+	* WordContext.h,WordKey.h,WordList.h: Added #if SWIG for perl 
+	  interfaces. Remove InSortOrder, useless now that everything
+	  is manipulated in sort order as far as the interface is concerned.
+
+	* WordKey.cc,WordList.cc: remove InSortOrder
+
+	* WordKey.h,WordRecord.h,WordReference.h: commented out Set/Get for
+	  ascii Set/Get for SWIG.
+
+	* WordKey.h: turn CopyFrom to public for those who dont want to
+	  use operator =.
+
+	* WordKey.h: rename info -> Info and nfields NFields
+
+	* WordKey.h: remove int IsFullyDefined() const redundant with Filled
+
 Thu Jan 06 14:41:15 2000  Marcel Bosc    <bosc@ceic.com>
 
 	* htword,all: Changed interface to overloaded Walk function that was

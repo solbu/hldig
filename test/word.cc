@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.11 2000/01/06 14:42:31 loic Exp $
+// $Id: word.cc,v 1.14.2.12 2000/01/10 16:47:20 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -197,7 +197,7 @@ static void dolist(params_t*)
 
     // create entries from word_list
     WordReference wordRef;
-    wordRef.Key().SetInSortOrder(2, 67);
+    wordRef.Key().Set(2, 67);
     unsigned int location = 0;
     unsigned int anchor = 0;
     unsigned int docid = 1;
@@ -207,8 +207,8 @@ static void dolist(params_t*)
     {
 	if(verbose > 4) cerr << "inserting word:" << *p << "\n";
 	wordRef.Key().SetWord(*p);
-  	wordRef.Key().SetInSortOrder(1, docid);
-  	wordRef.Key().SetInSortOrder(3, location);
+  	wordRef.Key().Set(1, docid);
+  	wordRef.Key().Set(3, location);
 	wordRef.Record().info.data = anchor;
   	if(verbose > 2) pack_show(wordRef);
 	if(verbose > 1) cerr << wordRef << "\n";
@@ -231,9 +231,9 @@ static void dolist(params_t*)
     {
       // recreate wordref from each word
       wordRef.Key().SetWord(*p);
-      wordRef.Key().SetInSortOrder(3, location);
+      wordRef.Key().Set(3, location);
       wordRef.Record().info.data = anchor;
-      wordRef.Key().SetInSortOrder(1, docid);
+      wordRef.Key().Set(1, docid);
 
       location += strlen(*p);
       anchor++;
@@ -380,7 +380,7 @@ static void dolist(params_t*)
     words.Open(config["word_db"], O_RDWR);
 
     WordReference wordRef;
-    wordRef.Key().SetInSortOrder(1, 5);
+    wordRef.Key().Set(1, 5);
     int count;
     if((count = words.WalkDelete(wordRef)) != 1) {
       fprintf(stderr, "dolist: delete occurences in DocID 5, %d deletion instead of 1\n", count);
@@ -441,7 +441,7 @@ dokey(params_t* params)
 	    WordKeyInfo::SetKeyDescriptionRandom();
 	}
 
-  	if(verbose)WordKeyInfo::Get()->Show();	
+  	if(verbose)WordKeyInfo::Get()->Show();
 	for(ikey=0;ikey<20;ikey++)
 	{
 	    WordKey word;
@@ -457,18 +457,18 @@ dokey(params_t* params)
 
   	    if(verbose>1)cout << "OTHER_WORD:" << other_word << endl;
 	    int failed =0 ;
-	    for(j=1;j<word.nfields();j++)
+	    for(j=1;j<word.NFields();j++)
 	    {
-		if(word.GetInSortOrder(j)!=other_word.GetInSortOrder(j))
+		if(word.Get(j)!=other_word.Get(j))
 		{failed=1;}
 	    }
-	    if(word.GetWord()!=other_word.GetWord() || !word.IsDefinedInSortOrder(0))
+	    if(word.GetWord()!=other_word.GetWord() || !word.IsDefined(0))
 	    {failed=1;}
 
 	    if(failed)
 	    {
 		printf("DOKEY failed, original and packed/unpacked not equal\n");
-		WordKeyInfo::Get()->Show();	
+		WordKeyInfo::Get()->Show();
 		cout << "WORD :" << word << endl;
 		WordKey::ShowPacked(packed,1);
 		cout << "OTHER_WORD:" << other_word << endl;
@@ -500,7 +500,7 @@ dokey(params_t* params)
 	    }
 
 	    word.SetWord("Test string");
-	    word.SetInSortOrder(1,1);
+	    word.Set(1,1);
 	    other_word.SetWord("Test string");
 	    word.Pack(packed);
 	    //
@@ -544,7 +544,7 @@ dokey(params_t* params)
 	    // Substract one to the first numeric field
 	    // The difference must be one.
 	    //
-	    other_word.SetInSortOrder(1,word.GetInSortOrder(1) - 1);
+	    other_word.Set(1,word.Get(1) - 1);
 	    other_word.Pack(other_packed);
 	    {
 		int ret;
