@@ -21,7 +21,9 @@
 // 	    -  bool  	 local_time
 //
 // 	    Obviously Ht_t contains the most important piece of information.
-// 	    local_time assumes 
+// 	    local_time assumes a true value if we wanna consider the date and
+// 	    time information as local. False means that our object value is
+// 	    referred to the Greenwich Meridian time.
 
 // Interface provided:
 //
@@ -119,12 +121,6 @@
 # include <htconfig.h>
 #endif
 
-
-#ifdef NEED_BOOL_TYPE
-typedef int bool;
-#define true 1
-#define false 0
-#endif
 
 // If you wanna do some tests
 #define TEST_HTDATETIME
