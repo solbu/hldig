@@ -4,6 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.35  1999/01/17 21:12:55  ghutchis
+// Change default pdf_parser attribute to include acrobat-specific flags.
+//
 // Revision 1.34  1999/01/17 20:32:20  ghutchis
 // Added support for url_log, save and restart digs.
 //
@@ -118,7 +121,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.34 1999/01/17 20:32:20 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.35 1999/01/17 21:12:55 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -133,7 +136,7 @@ ConfigDefaults	defaults[] =
     {"database_dir",			DATABASE_DIR},
     {"bin_dir",				BIN_DIR},
     {"image_url_prefix",		IMAGE_URL_PREFIX},
-    {"pdf_parser",                      PDF_PARSER},
+    {"pdf_parser",                      PDF_PARSER " -toPostScript -pairs"},
     {"version",				VERSION},
 
     //
