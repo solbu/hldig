@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.17 2000/05/06 18:20:46 loic Exp $
+// $Id: word.cc,v 1.14.2.18 2000/05/06 21:25:24 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <fcntl.h>
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H

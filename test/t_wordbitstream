@@ -5,11 +5,11 @@
 # or the GNU General Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_wordlist,v 1.2.2.2 2000/05/06 21:25:24 loic Exp $
+# $Id: t_wordbitstream,v 1.1.2.1 2000/05/06 21:25:24 loic Exp $
 #
 
 . ./test_functions
 
-./word  -l $VERBOSE
-rm -f test test_weakcmpr __db*
-./word  -l -z $VERBOSE
+verbose=$1
+
+./word -b $verbose 

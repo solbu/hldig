@@ -15,8 +15,9 @@
 // 
 // DESCRIPTION
 // 
-// WordContext::Initialize() must be called before any other 
-// <b>mifluz</b> class are used. 
+// The WordContext::Initialize() method initialize the global context
+// for the mifluz library. All other classes depend on it. It must
+// therefore be called before any other <i>mifluz</i> classes are used. 
 // 
 // CONFIGURATION
 // 
@@ -38,7 +39,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordContext.h,v 1.1.2.6 2000/05/05 21:55:17 loic Exp $
+// $Id: WordContext.h,v 1.1.2.7 2000/05/06 21:25:24 loic Exp $
 //
 #ifndef _WordContext_h_
 #define _WordContext_h_
@@ -61,7 +62,7 @@ class WordContext
   // that all WordList and WordCursor objects have been
   // destroyed. WordList and WordCursor internal state depends on the
   // current WordContext that will be lost by a second call. 
-  //
+  // <br>
   // For those interested by the internals, the <b>Initialize</b> function
   // maintains a Berkeley DB environment (DB_ENV) in the following way:
   //
