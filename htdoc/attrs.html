@@ -296,6 +296,7 @@
 			with documents. Some HTTP servers do not have a correct
 			list of MIME-types and so can advertise certain
 			documents as text while they are some binary format.
+			See also <a href="#valid_extensions">valid_extensions</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -6806,6 +6807,57 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="valid_extensions">
+		valid_extensions</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This is a list of extensions on URLs which are
+			the only ones considered acceptable. This list is used to
+			supplement the MIME-types that the HTTP server provides
+			with documents. Some HTTP servers do not have a correct
+			list of MIME-types and so can advertise certain
+			documents as text while they are some binary format.
+			If the list is empty, then all extensions are acceptable,
+			provided they pass other criteria for acceptance or rejection.
+			If the list is not empty, only documents with one of the
+			extensions in the list are parsed.
+			See also <a href="#bad_extensions">bad_extensions</a>.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			valid_extensions: .html .htm .shtml
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="valid_punctuation">
 		valid_punctuation</a></strong>
 	  </dt>
@@ -7001,7 +7053,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Tue Nov 23 22:14:50 EST 1999
+Last modified: Tue Nov 30 10:29:54 EST 1999
 <!-- hhmts end -->
   </body>
 </html>

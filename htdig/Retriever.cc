@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.11 1999/11/30 15:18:19 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.12 1999/11/30 15:50:00 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -597,6 +597,7 @@ int
 Retriever::IsValidURL(char *u)
 {
     static Dictionary	*invalids = 0;
+    static Dictionary	*valids = 0;
 
     //
     // Invalid extensions will be kept in a dictionary for quick
@@ -607,11 +608,35 @@ Retriever::IsValidURL(char *u)
     {
 	// A list of bad extensions, separated by spaces or tabs
 	String	t = config["bad_extensions"];
+	String	lowerp;
 	char	*p = strtok(t, " \t");
 	invalids = new Dictionary;
 	while (p)
 	{
-	    invalids->Add(p, 0);
+	    // Extensions are case insensitive
+	    lowerp = p;
+	    lowerp.lowercase();
+	    invalids->Add(lowerp, 0);
+	    p = strtok(0, " \t");
+	}
+    }
+
+    //
+    // Valid extensions are performed similarly
+    //
+    if (!valids)
+    {
+	// A list of allowed extensions, separated by spaces or tabs
+	String	t = config["valid_extensions"];
+	String	lowerp;
+	char	*p = strtok(t, " \t");
+	valids = new Dictionary;
+	while (p)
+	{
+	    // Extensions are case insensitive
+	    lowerp = p;
+	    lowerp.lowercase();
+	    valids->Add(lowerp, 0);
 	    p = strtok(0, " \t");
 	}
     }
@@ -656,10 +681,28 @@ Retriever::IsValidURL(char *u)
     // See if the path extension is in the list of invalid ones
     //
     char	*ext = strrchr(url, '.');
-    if (ext && invalids->Exists(ext))
+    String	lowerext;
+    if (ext)
+      {
+	lowerext = ext;
+	lowerext.lowercase();
+	if (invalids->Exists(lowerext))
+	  {
+	    if (debug > 2)
+	      cout << endl <<"   Rejected: Extension is invalid!";
+	    return FALSE;
+	  }
+      }
+
+    //
+    // Or NOT in the list of valid ones
+    //
+    char	*ext = strrchr(url, '.');
+    String	lowerext;
+    if (ext && valids->Count() > 0 && !valids->Exists(lowerext))
       {
 	if (debug > 2)
-	  cout << endl <<"   Rejected: Extension is invalid!";
+	  cout << endl <<"   Rejected: Extension is not valid!";
 	return FALSE;
       }
 
