@@ -1,3 +1,12 @@
+Thu Jun 12 13:28:01 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc, htcommon/HtSGMLCodec.cc (ctor): Added
+	  translate_latin1 option to allow disable Latin 1 specific SGML 
+	  translations.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	  Regenerated using cf_generate.pl.
+
 Mon Jun 9 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* htsearch/htsearch.cc: Fixed setupWords loop for junk at end of query

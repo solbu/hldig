@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.84 2003/06/02 13:54:56 lha Exp $
+// $Id: defaults.cc,v 1.85 2003/06/12 18:33:18 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -2525,6 +2525,19 @@ http://www.htdig.org/", " \
 	ignored. The number may be a floating point number. See \
 	also the <a href=\"#heading_factor\"> \
 	heading_factor</a> attribute. \
+" }, \
+{ "translate_latin1", "true",  \
+	"boolean", "htdig htsearch", "", "3.2.0b5", "Indexing:What", "translate_latin1: false", " \
+	If set to false, the SGML entities for ISO-8859-1 (or \
+	Latin 1) characters above &amp;nbsp; (or &amp;#160;) \
+	will not be translated into their 8-bit equivalents. \
+	This attribute should be set to false when using a \
+	<a href=\"#locale\">locale</a> that doesn't use the \
+	ISO-8859-1 character set, to avoid these entities \
+	being mapped to inappropriate 8-bit characters, or \
+	perhaps more importantly to avoid 8-bit characters from \
+	your locale being mapped back to Latin 1 SGML entities \
+	in search results. \
 " }, \
 { "url_list", "${database_base}.urls",  \
 	"string", "htdig", "", "all", "Extra Output", "url_list: /tmp/urls", " \

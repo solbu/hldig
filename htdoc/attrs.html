@@ -1938,10 +1938,9 @@ http://www.htdig.org/
 	If non-zero and the
 	<a href="http://www.cdrom.com/pub/infozip/zlib/">zlib</a>
 	compression library was available when compiled,
-	this attribute controls
-	the amount of compression used in the
+	this attribute controls the amount of compression used in the
 	<a href="#doc_excerpt">doc_excerpt</a> file.
-	<br/>This must be non-zero when
+	<br/>This must be in the range 0-9, and must be non-zero when
 	<a href="#wordlist_compress_zlib">wordlist_compress_zlib</a>
 	is used.
 		  </dd>
@@ -2154,6 +2153,75 @@ http://www.htdig.org/
 				</td>
 				<td nowrap>
 				     file -i -b
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="cookies_input_file">
+		cookies_input_file</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>No default</em>
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b4 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Specifies the location of the file used for importing cookies
+	for the crawl. These cookies will be preloaded into htdig's
+	in-memory cookie jar, but aren't written back to the file.
+	Cookies are specified according to Netscape's format
+	(tab-separated fields). If this attribute is left blank,
+	no cookie file will be read.
+	For more information, see the sample cookies.txt file in the
+	ht://Dig source distribution.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  cookies_input_file:
+				</td>
+				<td nowrap>
+				     ${common_dir}/cookies.txt
 				</td>
 			  </tr>
 			</table>
@@ -2647,7 +2715,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			string list
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -5016,8 +5084,13 @@ http://www.htdig.org/
 	retrievals will be done using the HTTP-PROXY protocol.
 	The URL specified in this attribute points to the host
 	and port where the proxy server resides.<br>
+	Later, this should be able to be overridden by the
+	<code>http_proxy</code> environement variable, but it currently cannot.
 	The use of a proxy server greatly improves performance
-	of the indexing process.
+	of the indexing process.<br>
+	See also
+	<a href="#http_proxy_authorization">http_proxy_authorization</a> and
+	<a href="#http_proxy_exclude">#http_proxy_exclude</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -5084,7 +5157,10 @@ http://www.htdig.org/
 	when using a proxy with authorization requested.
 	The credentials will be encoded using the "Basic" authentication
 	scheme. There <em>must</em> be a colon (:) between the username and
-	password.
+	password.<br>
+	If you use this option, be sure to protect the configuration file
+	so it is readable only by you, and do not
+	use that same configuration file for htsearch.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -6693,7 +6769,7 @@ http://www.htdig.org/
 		  <dd>
 	While gathering descriptions of URLs,
 	<a href="htdig.html">htdig</a> will only record those
-	descriptions which are shorter than this length. This
+	descriptions which are shorter than this length (in bytes). This
 	is used mostly to deal with broken HTML. (If a
 	hyperlink is not terminated with a &lt;/a&gt; the
 	description will go on until the end of the document.)
@@ -6826,7 +6902,7 @@ http://www.htdig.org/
 		  </dt>
 		  <dd>
 	This is the upper limit to the amount of data retrieved
-	for documents. This is mainly used to prevent
+	for documents (in bytes). This is mainly used to prevent
 	unreasonable memory consumption since each document
 	will be read into memory by <a href="htdig.html">
 	htdig</a>.
@@ -6957,7 +7033,7 @@ http://www.htdig.org/
 		  <dd>
 	For each document retrieved, the top of the document is
 	stored. This attribute determines the size of this
-	block. The text that will be stored is only the text;
+	block (in bytes). The text that will be stored is only the text;
 	no markup is stored.<br>
 	We found that storing 50,000 bytes will store about
 	95% of all the documents completely. This really
@@ -7160,7 +7236,7 @@ http://www.htdig.org/
 		  <dd>
 	While gathering descriptions from meta description tags,
 	<a href="htdig.html">htdig</a> will only store up to
-	this much of the text for each document.
+	this much of the text (in bytes) for each document.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7258,7 +7334,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -7321,7 +7397,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -12554,6 +12630,78 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="translate_latin1">
+		translate_latin1</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			true
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b5 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	If set to false, the SGML entities for ISO-8859-1 (or
+	Latin 1) characters above &amp;nbsp; (or &amp;#160;)
+	will not be translated into their 8-bit equivalents.
+	This attribute should be set to false when using a
+	<a href="#locale">locale</a> that doesn't use the
+	ISO-8859-1 character set, to avoid these entities
+	being mapped to inappropriate 8-bit characters, or
+	perhaps more importantly to avoid 8-bit characters from
+	your locale being mapped back to Latin 1 SGML entities
+	in search results.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  translate_latin1:
+				</td>
+				<td nowrap>
+				     false
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="url_list">
 		url_list</a></strong>
 	  </dt>
@@ -13410,15 +13558,16 @@ form during indexing and translated for results.
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	This is the set of characters which will be deleted
+	This is the set of characters which may be deleted
 	from the document before determining what a word is.
 	This means that if a document contains something like
-	<code>Andrew's</code> the digger will see this as <code>
-	Andrews</code>.<br>
-	The same transformation is performed on the keywords
-	the search engine gets.<br>
-	See also the <a
-	href="#extra_word_characters">extra_word_characters</a>
+	<code>half-hearted</code> the digger will see this as the three
+	words <code> half</code>, <code>hearted</code> and
+	<code>halfhearted</code>.<br>
+	These characters are also removed before keywords are passed to the
+	search engine, so a search for "half-hearted" works as expected.<br>
+	See also the
+	<a href="#extra_word_characters">extra_word_characters</a>
 	attribute.
 		  </dd>
 		  <dt>
@@ -13640,6 +13789,72 @@ form during indexing and translated for results.
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="wordlist_cache_dirty_level">
+		wordlist_cache_dirty_level</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			4
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b4 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Maximum ratio of dirty pages to clean pages in the cache.  If fewer
+	are clean, then all pages are written out (but kept in the cache).
+	Useful values are between 1 (slow, minimal chance of allocation )
+	and about 3000 (fastest, but may cause problems with small page
+	sizes if <a href"#wordlist_compress">compression</a> is used).
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  wordlist_cache_dirty_level:
+				</td>
+				<td nowrap>
+				     2
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="wordlist_cache_size">
 		wordlist_cache_size</a></strong>
 	  </dt>
@@ -13679,7 +13894,7 @@ form during indexing and translated for results.
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	Size of memory cache used by Berkeley DB (DB used by the indexer)
+	Size (in bytes) of memory cache used by Berkeley DB (DB used by the indexer)
 	IMPORTANT: It  makes a <strong>huge</strong> difference. The rule
 	is that the cache size should be at least 2% of the expected index size. The
 	Berkeley DB file has 1% of internal pages that <em>must</em> be cached for good
@@ -13746,7 +13961,7 @@ form during indexing and translated for results.
 		  </dt>
 		  <dd>
 	Enables or disables the default compression system for the indexer.
-	This currently compresses the index by a factor of 8. If the
+	This currently attempts to compress the index by a factor of 8. If the
 	Zlib library is not found on the system, the default is false.
 		  </dd>
 		  <dt>
@@ -13759,7 +13974,7 @@ form during indexing and translated for results.
 				  wordlist_compress:
 				</td>
 				<td nowrap>
-				     true
+				     false
 				</td>
 			  </tr>
 			</table>
@@ -13824,7 +14039,7 @@ form during indexing and translated for results.
 				  wordlist_compress_zlib:
 				</td>
 				<td nowrap>
-				     true
+				     false
 				</td>
 			  </tr>
 			</table>
@@ -14061,7 +14276,8 @@ form during indexing and translated for results.
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	Size of pages used by Berkeley DB (DB used by the indexer)
+	Size (in bytes) of pages used by Berkeley DB (DB used by the indexer).
+	Must be a power of two.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -14256,6 +14472,6 @@ form during indexing and translated for results.
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: Tue Feb 11 21:06:54 EST 2003
+		Last modified: Thu Jun 12 13:19:54 CDT 2003
   </body>
 </html>

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtSGMLCodec.cc,v 1.2 2002/02/01 22:49:28 ghutchis Exp $
+// $Id: HtSGMLCodec.cc,v 1.3 2003/06/12 18:33:18 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -18,18 +18,27 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "HtSGMLCodec.h"
+#include "HtConfiguration.h"
 
 // Constructor: parses the appropriate parameters using the
 // encapsulated HtWordCodec class.
 // Only used in privacy.
 HtSGMLCodec::HtSGMLCodec()
 {
+  HtConfiguration* config= HtConfiguration::config();
+  int translate_latin1 = config->Boolean("translate_latin1", 1);
   StringList *myTextFromList = new StringList(); // For &foo;
   StringList *myNumFromList = new StringList(); // For &#nnn;
   StringList *myToList = new StringList();
   String myTextFromString(770); // Full text list
   
   // Is this really the best way to do this?
+ if (!translate_latin1 )
+ {
+  myTextFromString = "&nbsp;";
+ }
+ else
+ {
   myTextFromString = "&nbsp;|&iexcl;|&cent;|&pound;|&curren;|&yen;|&brvbar;|&sect;|";
   myTextFromString << "&uml;|&copy;|&ordf;|&laquo;|&not;|&shy;|&reg;|&macr;|&deg;|";
   myTextFromString << "&plusmn;|&sup2;|&sup3;|&acute;|&micro;|&para;|&middot;|&cedil;|";
@@ -42,6 +51,7 @@ HtSGMLCodec::HtSGMLCodec()
   myTextFromString << "&eacute;|&ecirc;|&euml;|&igrave;|&iacute;|&icirc;|&iuml;|&eth;|";
   myTextFromString << "&ntilde;|&ograve;|&oacute;|&ocirc;|&otilde;|&ouml;|&divide;|&oslash;|";
   myTextFromString << "&ugrave;|&uacute;|&ucirc;|&uuml;|&yacute;|&thorn;|&yuml;";
+ }
 
   myTextFromList->Create(myTextFromString, '|');
 
@@ -54,6 +64,8 @@ HtSGMLCodec::HtSGMLCodec()
       temp = 0;
       temp << "&#" << i << ";";
       myNumFromList->Add(temp);
+      if (!translate_latin1 )
+	break;
     }
 
   // Now let's take care of the low-bit characters with encodings.
