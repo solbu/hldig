@@ -3,14 +3,13 @@
 //
 // Display: Takes results of search and fills in the HTML templates
 //
-//           
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.13 2000/02/23 21:19:56 grdetil Exp $
+// $Id: Display.cc,v 1.100.2.14 2000/02/27 04:34:00 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -27,20 +26,20 @@
 #include "HtSGMLCodec.h"
 #include "HtURLCodec.h"
 #include "WordType.h"
+#include "Collection.h"
 
 #include <fstream.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <syslog.h>
 #include <locale.h>
+#include <math.h>
 
 //*****************************************************************************
 //
-Display::Display(const String& docFile, const String& indexFile, const String& excerptFile)
+Display::Display(Dictionary *collections)
 {
-  // Set up the document database so we can read the records
-    docDB.Read(docFile, indexFile, excerptFile);
-
+    selected_collections = collections;
     limitTo = 0;
     excludeFrom = 0;
     //    needExcerpt = 0;
@@ -88,7 +87,7 @@ Display::Display(const String& docFile, const String& indexFile, const String& e
 //*****************************************************************************
 Display::~Display()
 {
-    docDB.Close();
+    // docDB.Close();
 }
 
 //*****************************************************************************
@@ -197,12 +196,14 @@ Display::display(int pageNumber)
     {
 	if (currentMatch >= startAt)
 	{
-	    DocumentRef	*ref = docDB[match->getID()];
+	    // DocumentRef	*ref = docDB[match->getID()];
+            Collection *collection = match->getCollection();
+            DocumentRef *ref = collection->getDocumentRef(match->getID());
 	    if (!ref || ref->DocState() != Reference_normal)
 		continue;	// The document isn't present or shouldn't be displayed
 	    ref->DocAnchor(match->getAnchor());
 	    ref->DocScore(match->getScore());
-	    displayMatch(ref,currentMatch+1);
+	    displayMatch(match, ref, currentMatch+1);
 	    numberDisplayed++;
 	    delete ref;
 	}
@@ -243,10 +244,10 @@ Display::includeURL(const String& url)
 
 //*****************************************************************************
 void
-Display::displayMatch(DocumentRef *ref, int current)
+Display::displayMatch(ResultMatch *match, DocumentRef *ref, int current)
 {
     String	*str = 0;
-	
+
     char    *url = ref->DocURL();
     vars.Add("URL", new String(url));
     
@@ -274,7 +275,7 @@ Display::displayMatch(DocumentRef *ref, int current)
     String urlanchor(url);
     if (anchor)
       urlanchor << anchor;
-    vars.Add("EXCERPT", excerpt(ref, urlanchor, fanchor, first));
+    vars.Add("EXCERPT", excerpt(match, ref, urlanchor, fanchor, first));
     //
     // anchor only relevant if an excerpt was found, i.e.,
     // the search expression matches the body of the document
@@ -472,6 +473,40 @@ Display::setVariables(int pageNumber, List *matches)
 
     vars.Add("SELECTED_METHOD", new String(config["match_method"]));
 
+    ////////////////// Multiple database support //////////////////////
+    // Emit collection table. Ensure that previously selected collections
+    // are "checked".
+    // Collections are specified in the config file with the
+    // "collection_names" attribute. An example of the corresponding snippet
+    // in the config file is as follows:
+    //
+    // collection_names: htdig_docs htdig_bugs
+    //
+    // htdig_bugs and htdig_docs are the two collections (databases) and
+    // their corresponding config files are: $CONFIG_DIR/htdig_bugs.conf and
+    // $CONFIG_DIR/htdig_docs.conf respectively.
+    //
+    QuotedStringList    clist(config["collection_names"], " \t\r\n");
+    for (i =0; i < clist.Count(); i++)
+    {
+        String config_name = clist[i];
+
+        for (int j=0; j < collectionList.Count(); j++)
+        {
+            if (strcmp(config_name.get(), collectionList[j]) == 0)
+            {
+                str = new String();
+                *str << "checked";
+                String collection_id = "COLLECTION_";
+                collection_id << config_name;
+                vars.Add(collection_id, str);
+                break;
+            }
+        }
+    }
+
+    ////////////////// Multiple database support //////////////////////
+
     str = new String();
     QuotedStringList	sl(config["sort_names"], " \t\r\n");
     const String	st = config["sort"];
@@ -631,6 +666,25 @@ Display::createURL(String &url, int pageNumber)
 	url << "exclude=" << encodeInput("exclude") << ';';
     if (input->exists("config"))
 	url << "config=" << encodeInput("config") << ';';
+
+    // Put out all specified collections. If none selected, resort to
+    // default behaviour.
+    char *config_name = collectionList[0];
+    String config_encoded;
+    if (config_name && config_name[0] == '\0')
+      config_name = NULL;
+ 
+    if (config_name)
+      {
+	for (int i=0; i < collectionList.Count(); i++)
+	  {
+	    config_name = collectionList[i];
+	    config_encoded = config_name;
+	    encodeURL(config_encoded);
+	    url << "config=" << config_encoded << ';';
+	  }
+      }
+
     if (input->exists("method"))
 	url << "method=" << encodeInput("method") << ';';
     if (input->exists("format"))
@@ -993,12 +1047,27 @@ Display::buildMatchList()
     double      backlink_factor = config.Double("backlink_factor");
     double      date_factor = config.Double("date_factor");
 	
+// Deal with all collections
+//
+  selected_collections->Start_Get();
+  while (Collection *collection = (Collection *)
+                      selected_collections->Get_NextElement())
+  {
+    ResultList *results = collection->getResultList();
+    if (results == NULL)
+        continue;
+
     results->Start_Get();
     while ((cpid = results->Get_Next()))
     {
 	int id = atoi(cpid);
 
-	DocumentRef *thisRef = docDB[id];
+	// DocumentRef *thisRef = docDB[id];
+
+        DocMatch        *dm = results->find(cpid);
+        Collection *collection = (dm ? dm->collection : NULL);
+        if (collection == NULL)                                                             continue;
+        DocumentRef *thisRef = collection->getDocumentRef(id);      
 
 	//
 	// If it wasn't there, then ignore it
@@ -1019,6 +1088,7 @@ Display::buildMatchList()
 
 	thisMatch = ResultMatch::create();
 	thisMatch->setID(id);
+        thisMatch->setCollection(collection);
 
 	//
 	// Assign the incomplete score to this match.  This score was
@@ -1026,7 +1096,8 @@ Display::buildMatchList()
 	// known at that time, or info about the document itself, 
 	// so this still needs to be done.
 	//
-	DocMatch	*dm = results->find(cpid);
+
+	// Moved up: DocMatch	*dm = results->find(cpid);
 	double           score = dm->score;
 
 	// We need to scale based on date relevance and backlinks
@@ -1048,8 +1119,8 @@ Display::buildMatchList()
   
 	    score += backlink_factor
 	      * (thisRef->DocBackLinks() / (double)links);
-	    if (score <= 0.0)
-	      score = 0.0;
+	    if (score <= 1.0)
+	      score = 1.0;
 	}
 
 	thisMatch->setTime(thisRef->DocTime());   
@@ -1058,7 +1129,7 @@ Display::buildMatchList()
 	// Get rid of it to free the memory!
 	delete thisRef;
 
-	thisMatch->setScore(score);
+	thisMatch->setScore(1.0 + log(score));
 	thisMatch->setAnchor(dm->anchor);
 		
 	//
@@ -1068,6 +1139,7 @@ Display::buildMatchList()
 	if (matches->Count() == 1 || maxScore < (int)score)
 	    maxScore = (int)score;
     }
+  }
 
     //
     // The matches need to be ordered by relevance level.
@@ -1080,7 +1152,7 @@ Display::buildMatchList()
 
 //*****************************************************************************
 String *
-Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
+Display::excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor, int fanchor, int &first)
 {
     // It is necessary to keep alive the String you .get() a char * from,
     // as long as you use the char *.
@@ -1089,6 +1161,7 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 
     char	*head;
     int use_meta_description=0;
+    Collection *collection = match->getCollection();
 
     if (config.Boolean("use_meta_description",0) 
 	&& strlen(ref->DocMetaDsc()) != 0)
@@ -1099,7 +1172,8 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
       }
     else
       {
-	docDB.ReadExcerpt(*ref);
+	// docDB.ReadExcerpt(*ref);
+        collection->ReadExcerpt(*ref);
 	head = ref->DocHead(); // head points to the top
       }
 
@@ -1110,6 +1184,11 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
     char	*temp = head;
     String	part;
     String	*text = new String("");
+
+    StringMatch *allWordsPattern =
+        (collection ? collection->getSearchWordsPattern() : NULL);
+    if (!allWordsPattern)
+        return text;  
 
     // htsearch displays the description when:
     // 1) a description has been found
@@ -1167,14 +1246,14 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 	if (end > temp + headLength)
 	{
 	    end = temp + headLength;
-	    *text << hilight(start, urlanchor, fanchor);
+	    *text << hilight(match, start, urlanchor, fanchor);
 	}
 	else
 	{
 	    while (*end && HtIsStrictWordChar(*end))
 		end++;
 	    *end = '\0';
-	    *text << hilight(start, urlanchor, fanchor);
+	    *text << hilight(match, start, urlanchor, fanchor);
 	    *text << config["end_ellipses"];
 	}
     }
@@ -1183,7 +1262,7 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 
 //*****************************************************************************
 String
-Display::hilight(const String& str_arg, const String& urlanchor, int fanchor)
+Display::hilight(ResultMatch *match, const String& str_arg, const String& urlanchor, int fanchor)
 {
     const String start_highlight = config["start_highlight"];
     const String end_highlight = config["end_highlight"];
@@ -1195,6 +1274,14 @@ Display::hilight(const String& str_arg, const String& urlanchor, int fanchor)
     int			first = 1;
 
     result = 0;
+    Collection *collection = match->getCollection();
+    StringMatch *allWordsPattern =
+        (collection ? collection->getSearchWordsPattern() : NULL);
+    List *searchWords =
+        (collection ? collection->getSearchWords() : NULL);
+    if (!allWordsPattern || !searchWords)
+        return result;                                           
+
     while ((pos = allWordsPattern->FindFirstWord(str, which, length)) >= 0)
     {
 	result.append(str, pos);

@@ -1,40 +1,31 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.4 1998/10/17 14:15:57 ghutchis Exp $
+// Display: Takes results of search and fills in the HTML templates
 //
-// $Log: Display.h,v $
-// Revision 1.4  1998/10/17 14:15:57  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Added variable CURRENT as the number of the current match, adapted from a
-// patch by Reni Seindal <seindal@webadm.kb.dk>
+// $Id: Display.h,v 1.22.2.1 2000/02/27 04:34:00 ghutchis Exp $
 //
-// Revision 1.3  1998/10/12 02:09:28  ghutchis
-//
-// Added htsearch logging patch from Alexander Bergolth.
-//
-// Revision 1.2  1998/09/10 04:16:26  ghutchis
-//
-// More bug fixes.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-//
+
 #ifndef _Display_h_
 #define _Display_h_
 
-#include <Object.h>
+#include "Object.h"
 #include "ResultList.h"
 #include "ResultMatch.h"
 #include "TemplateList.h"
-#include <cgi.h>
-#include <StringMatch.h>
-#include <StringMatch.h>
-#include <List.h>
-#include <DocumentDB.h>
-#include <Database.h>
-#include <Dictionary.h>
+#include "cgi.h"
+#include "StringMatch.h"
+#include "List.h"
+#include "DocumentDB.h"
+#include "Database.h"
+#include "Dictionary.h"
+#include "HtRegex.h"
 
 class Display : public Object
 {
@@ -42,62 +33,68 @@ public:
     //
     // Construction/Destruction
     //
-    Display(char *indexFile, char *docFile);
+    // Display(const String& docFile, const String& indexFile, const String& excerptFile);
+
+    Display(Dictionary *selected_collections);
     ~Display();
 
-    void		setStartTemplate(char *templateName);
-    void		setMatchTemplate(char *templateName);
-    void		setEndTemplate(char *templateName);
+    void		setStartTemplate(const String& templateName);
+    void		setMatchTemplate(const String& templateName);
+    void		setEndTemplate(const String& templateName);
 	
-    void		setResults(ResultList *results);
-    void		setSearchWords(List *searchWords);
-    void		setLimit(StringMatch *);
-    void		setExclude(StringMatch *);
-    void		setAllWordsPattern(StringMatch *);
-    void		setLogicalWords(char *);
-    void		setOriginalWords(char *);
-    void		setCGI(cgi *);
+    // inline void		setResults(ResultList *results);
+    // inline void		setSearchWords(List *searchWords);
+    inline void		setLimit(HtRegex *);
+    inline void		setExclude(HtRegex *);
+    // inline void		setAllWordsPattern(StringMatch *);
+    inline void		setLogicalWords(char *);
+    inline void		setOriginalWords(char *);
+    inline void		setCGI(cgi *);
 	
     void		display(int pageNumber);
-    void		displayMatch(ResultMatch *, int current);
+    void		displayMatch(ResultMatch *match, DocumentRef *ref, int current);
     void		displayHeader();
     void		displayFooter();
     void		displayNomatch();
-    void		displaySyntaxError(char *);
+    void		displaySyntaxError(const String &);
 	
     int                 hasTemplateError() {return templateError;}
 
 protected:
     //
+    // Multiple database support
+    //
+    Dictionary          *selected_collections;
+
+    //
+    // Search Policy
+    char                *search_policy;
+
+    //
     // The list of search results.
     //
-    ResultList		*results;
+    // ResultList		*results;
 
     //
     // The database that contains documents.
     //
-    DocumentDB		docDB;
-
-    //
-    // The database that translates document IDs to URLs.
-    //
-    Database		*docIndex;
+    // DocumentDB		docDB;
 
     //
     // A list of words that we are searching for
     //
-    List		*searchWords;
+    // List		*searchWords;
 
     //
     // Pattern that all result URLs must match or exclude
     //
-    StringMatch		*limitTo;
-    StringMatch		*excludeFrom;
+    HtRegex		*limitTo;
+    HtRegex		*excludeFrom;
 
     //
     // Pattern of all the words
     //
-    StringMatch		*allWordsPattern;
+    // StringMatch		*allWordsPattern;
 	
     //
     // Variables for substitution into text are stored in a dictionary
@@ -116,6 +113,13 @@ protected:
     // what happened.
     //
     int                 templateError;
+
+    //
+    // To allow the result templates to be dependant on the match URL, we need
+    // the following:
+    //
+    StringMatch		URLtemplate;
+    List		URLtemplateList;
 
     //
     // To allow the star images to be dependant on the match URL, we need
@@ -154,15 +158,18 @@ protected:
     //
     List		*buildMatchList();
     void		sort(List *);
-    static int		compare(const void *, const void *);
-    int			includeURL(char *);
-    String		*readFile(char *);
-    void		expandVariables(char *);
-    String		*excerpt(DocumentRef *ref, char *url = 0);
-    char		*hilight(char *, char *);
+
+    int			includeURL(const String&);
+    String		*readFile(const String&);
+    void		expandVariables(const String&);
+    void		outputVariable(const String&);
+    String		*excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor,
+				 int fanchor, int &first);
+    String		hilight(ResultMatch *match, const String& str, const String& urlanchor, int fanchor);
+    void		setupTemplates();
     void		setupImages();
     String		*generateStars(DocumentRef *, int);
-    void		displayParsedFile(char *);
+    void		displayParsedFile(const String&);
     void		setVariables(int, List *);
     void		createURL(String &, int);
     void		logSearch(int, List *);
@@ -170,17 +177,18 @@ protected:
 
 //*****************************************************************************
 inline void
-Display::setLimit(StringMatch *limit)
+Display::setLimit(HtRegex *limit)
 {
     limitTo = limit;
 }
 
 inline void
-Display::setExclude(StringMatch *exclude)
+Display::setExclude(HtRegex *exclude)
 {
     excludeFrom = exclude;
 }
 
+#if 0
 inline void
 Display::setAllWordsPattern(StringMatch *pattern)
 {
@@ -198,6 +206,7 @@ Display::setSearchWords(List *searchWords)
 {
     this->searchWords = searchWords;
 }
+#endif
 
 inline void
 Display::setLogicalWords(char *s)
