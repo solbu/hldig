@@ -8340,6 +8340,77 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="search_results_order">
+		search_results_order</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string_list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<i>No default</i>
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b2 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	This specifies a list of patterns for URLs in
+ 	search results.  Results will be displayed in the
+ 	specified order, with the search algorithm result
+ 	as the second order.  Remaining areas, that do not
+ 	match any of the specified patterns, can be placed
+ 	by using * as the pattern.  If no * is specified,
+ 	one will be implicitly placed at the end of the
+ 	list.<br>
+ 	See also <a href="#url_seed_score">url_seed_score</a>.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  search_results_order:
+				</td>
+				<td nowrap>
+				     
+         /docs/|faq.html * /maillist/ /testresults/
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="search_results_wrapper">
 		search_results_wrapper</a></strong>
 	  </dt>
@@ -10328,6 +10399,94 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="url_seed_score">
+		url_seed_score</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<i>No default</i>
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b2 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+ 	This is a list of pairs, <em>pattern</em>
+ 	<em>formula</em>, used to weigh the score of
+ 	hits, depending on the URL of the document.<br>
+ 	The <em>pattern</em> part is a substring to match
+ 	against the URL.  Pipe ('|') characters can be
+ 	used in the pattern to concatenate substrings for
+ 	web-areas that have the same formula.<br>
+ 	The formula describes a <em>factor</em> and a
+ 	<em>constant</em>, by which the hit score is
+ 	weighed.  The <em>factor</em> part is multiplied
+ 	to the original score, then the <em>constant</em>
+ 	part is added.<br>
+ 	The format of the formula is the factor part:
+ 	&quot;*<em>N</em>&quot; optionally followed by comma and
+ 	spaces, followed by the constant part :
+ 	&quot;+<em>M</em>&quot;, where the plus sign may be emitted
+ 	for negative numbers.  Either part is optional,
+ 	but must come in this order.<br>
+ 	The numbers <em>N</em> and <em>M</em> are floating
+ 	point constants.<br>
+ 	More straightforward is to think of the format as
+ 	&quot;newscore = oldscore*<em>N</em>+<em>M</em>&quot;,
+ 	but with the &quot;newscore = oldscore&quot; part left out.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  url_seed_score:
+				</td>
+				<td nowrap>
+				     
+	      /mailinglist/ *.5-1e6 <br>
+	      /docs/|/news/ *1.5 <br>
+	      /testresults/ &quot;*.7 -200&quot; <br>
+	      /faq-area/ *2+10000
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="use_doc_date">
 		use_doc_date</a></strong>
 	  </dt>
@@ -11652,6 +11811,6 @@ http://www.htdig.org/
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
-Last modified: Mon Mar 20 19:17:28 CST 2000
+Last modified: Sat Mar 25 21:55:55 CST 2000
   </body>
 </html>
