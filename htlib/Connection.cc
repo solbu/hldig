@@ -7,6 +7,9 @@
 // Implementation of the Connection class
 //
 // $Log: Connection.cc,v $
+// Revision 1.12  1999/01/23 04:29:19  ghutchis
+// Change __sun__ to NEED_PROTO_GETHOSTNAME since we prefer feature tests.
+//
 // Revision 1.11  1999/01/05 20:10:20  bergolth
 // check for strings.h
 //
@@ -514,7 +517,7 @@ char *Connection::get_peerip()
     return inet_ntoa(peer.sin_addr);
 }
 
-#if defined(__sun__)
+#ifdef NEED_PROTO_GETHOSTNAME
 extern "C" int gethostname(char *name, int namelen);
 #endif
 
