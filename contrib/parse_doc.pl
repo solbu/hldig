@@ -32,6 +32,8 @@
 # Added:        uses pdfinfo to handle PDF titles    <grdetil@scrc.umanitoba.ca>
 # Changed:      keep hyphens by default, as htdig    <grdetil@scrc.umanitoba.ca>
 #               does, but change dashes to hyphens
+# 1999/09/09
+# Changed:      fix to handle empty PDF title right  <grdetil@scrc.umanitoba.ca>
 #########################################
 #
 # set this to your MS Word to text converter
@@ -114,7 +116,8 @@ if ($magic =~ /%!|^\033%-12345/) {      # it's PostScript (or HP print job)
                 while (<INFO>) {
                         if (/^Title:/) {
                                 $title = $_;
-                                $title =~ s/^Title:\s+(.*[^\s])\s*$/$1/;
+                                $title =~ s/^Title:\s+//;
+                                $title =~ s/\s+$//;
                                 $title =~ s/\s+/ /g;
                                 $title =~ s/&/\&amp\;/g;
                                 $title =~ s/</\&lt\;/g;

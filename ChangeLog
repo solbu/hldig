@@ -1,3 +1,7 @@
+Thu Sep  9 14:55:59 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/parse_doc.pl: fix bug in pdf title extraction.
+
 Tue Sep  7 23:49:41 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/ExternalParser.h, htdig/ExternalParser.cc (parse): Change
