@@ -4,6 +4,9 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.9  1998/10/21 16:34:19  bergolth
+// Added translation of server names. Additional limiting after normalization of the URL.
+//
 // Revision 1.8  1998/09/07 04:27:39  ghutchis
 //
 // Bug fixes.
@@ -35,7 +38,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.8 1998/09/07 04:27:39 ghutchis Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.9 1998/10/21 16:34:19 bergolth Exp $";
 #endif
 
 #include "URL.h"
@@ -490,6 +493,7 @@ void URL::normalize()
 	    _host = realname->get();
 	else
 	    machines.Add(key, new String(_host));
+	ServerAlias();
     }
     
     //
@@ -525,3 +529,43 @@ char *URL::signature()
     return _signature;
 }
 
+
+void URL::ServerAlias()
+{
+  static Dictionary *serveraliases= 0;
+
+  if (! serveraliases)
+    {
+      String l= config["server_aliases"];
+      serveraliases = new Dictionary();
+      char *p = strtok(l, " \t");
+      char *salias= NULL;
+      while (p)
+	{
+	  salias = strchr(p, '=');
+	  if (! salias)
+	    continue;
+	  *salias++= '\0';
+	  serveraliases->Add(p, new String(salias));
+	  // cout << "Alias: " << p << "->" << salias << "\n";
+	  // printf ("Alias: %s->%s\n", p, salias);
+	  p = strtok(0, " \t");
+	}
+    }
+
+  String *al= 0;
+  int newport;
+  char *p;
+  int delim;
+  _signature = _host;
+  _signature << ':' << _port;
+  if (al= (String *) serveraliases->Find(_signature))
+    {
+      delim= al->indexOf(':');
+      // printf("%s->%s\n", (char *) _signature, (char *) *al);
+      _host= al->sub(0,delim);
+      sscanf(al->sub(delim+1), "%d", &newport);
+      _port= newport;
+      // printf("\nNeuer URL: %s:%d\n", (char *) _host, _port);
+    }
+}

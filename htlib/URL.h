@@ -1,9 +1,12 @@
 //
 // URL.h
 //
-// $Id: URL.h,v 1.3 1997/12/11 00:28:59 turtle Exp $
+// $Id: URL.h,v 1.4 1998/10/21 16:34:19 bergolth Exp $
 //
 // $Log: URL.h,v $
+// Revision 1.4  1998/10/21 16:34:19  bergolth
+// Added translation of server names. Additional limiting after normalization of the URL.
+//
 // Revision 1.3  1997/12/11 00:28:59  turtle
 // Added double slash removal code.  These were causing loops.
 //
@@ -61,6 +64,7 @@ private:
 
     void		removeIndex(String &);
     void                normalizePath();
+    void		ServerAlias();
 };
 
 

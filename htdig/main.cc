@@ -10,6 +10,7 @@ int			debug = 0;
 int			report_statistics = 0;
 DocumentDB		docs;
 StringMatch		limits;
+StringMatch		limitsn;
 StringMatch		excludes;
 FILE			*urls_seen = NULL;
 FILE			*images_seen = NULL;
@@ -151,6 +152,19 @@ main(int ac, char **av)
     }
     limits.IgnoreCase();
     limits.Pattern(pattern);
+
+    l = config["limit_normalized"];
+    p = strtok(l, " \t");
+    pattern = 0;
+    while (p)
+    {
+	if (pattern.length())
+	    pattern << '|';
+	pattern << p;
+	p = strtok(0, " \t");
+    }
+    limitsn.IgnoreCase();
+    limitsn.Pattern(pattern);
 
     //
     // Patterns to exclude from urls...

@@ -4,6 +4,9 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.13  1998/10/21 16:34:19  bergolth
+// Added translation of server names. Additional limiting after normalization of the URL.
+//
 // Revision 1.12  1998/10/18 20:37:41  ghutchis
 //
 // Fixed database corruption bug and other misc. cleanups.
@@ -842,7 +845,7 @@ Retriever::got_href(URL &url, char *description)
 	}
 
 	url.normalize();
-	if (IsValidURL(url.get()))
+	if (limitsn.FindFirst(url.get()) >= 0)
 	{
 	    //
 	    // First add it to the document database
@@ -952,7 +955,7 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 	}
 
 	url.normalize();
-	if (IsValidURL(url.get()))
+	if (limitsn.FindFirst(url.get()) >= 0)
 	{
 	    //
 	    // First add it to the document database
