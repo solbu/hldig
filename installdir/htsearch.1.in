@@ -34,22 +34,22 @@ for debugging purposes.  The default verbose mode
 gives a progress on what it is doing and where it is.
 .SH "FILES"
 .TP
-.B /etc/htdig/htdig.conf
+.B @DEFAULT_CONFIG_FILE@
 The default configuration file.
 .TP
-.B /etc/htdig/header.html
+.B @COMMON_DIR@/header.html
 The default search results header file
 .TP
-.B /etc/htdig/footer.html
+.B @COMMON_DIR@/footer.html
 The default search results footer file
 .TP
-.B /etc/htdig/wrapper.html
+.B @COMMON_DIR@/wrapper.html
 The default search results wrapper file, that contains the header and footer together in one file
 .TP
-.B /etc/htdig/nomatch.html
+.B @COMMON_DIR@/nomatch.html
 The default 'no matches found' HTML file
 .TP
-.B /etc/htdig/syntax.html
+.B @COMMON_DIR@/syntax.html
 The default file that explains boolean expression syntax errors 
 .SH "SEE ALSO"
 Please refer to the HTML pages (in the htdig-doc package)

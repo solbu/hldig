@@ -1,0 +1,77 @@
+.TH htdig 1 "21 July 1997"
+.\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
+.\" other parms are allowed: see man(7), man(1)
+.SH NAME
+htfuzzy \- fuzzy command-line search utility for the ht://Dig search engine
+.SH SYNOPSIS
+.B htfuzzy [-c configfile] [-v] algorithm
+.I "[options]"
+.SH "DESCRIPTION"
+Description to follow here
+.SH OPTIONS
+.TP
+.B \-c \fIconfigfile\fR
+Use the specified
+.I configfile
+instead of the default. 
+.TP
+.B \-v 
+.I Verbose mode
+. Use this to get more verbose output while running htfuzzy. More than one \fIv\fR can be specified (ie. 
+.\fI-vv\fR
+,
+\fI-vvv\fR
+ etc
+). Specifying more than two v's is probably only useful for debugging purposes.
+.SH "Supported Algorithms"
+.TP
+Different algoritms are supported for searching:
+\fIsoundex\fR
+Creates  a slightly modified soundex key database. Differences with the standard soundex algorithm are: 
+Keys are 6 digits and the first letter is also encoded.
+	      
+\fImetaphone\fR
+Creates a metaphone key database. This algorithm is more specific to English, but  will  get  fewer  "weird"
+matches than the soundex algorithm.
+
+\fIaccents\fR
+(No description of the algorithm at the moment)
+
+\fIendings\fR
+Creates  two  databases  which  can  be  used  to match common word endings. The creation of these databases
+requires a list of affix rules and a dictionary which uses those affix rules. The format of the affix  rules
+and  dictionary  files are the ones used by the ispell program. Included with the distribution are the affix
+rules for English and a fairly small English dictionary.  Other languages can be supported  by  getting  the
+appropriate affix rules and dictionaries. These are available for many languages; check the ispell distribu-
+tion for more details.
+
+\fIsynonyms\fR
+Creates a database of synonyms for words. It reads a text database of synonyms and creates a  database  that
+htsearch  can  then use. Each line of the text database consists of words where the first word will have the
+other words on that line as synonyms.
+
+.SH "Notes on searching"
+.TP
+Please consult specialised literature to find out how the different algorithms work or simply try another 
+search stragegy you do not get the intended search results.
+
+.SH "FILES"
+.TP
+.B @DEFAULT_CONFIG_FILE@
+The default configuration file.
+.SH "SEE ALSO"
+Please refer to the HTML pages (in the htdig-doc package)
+.B /usr/share/doc/htdig-doc/html/index.html
+and the manual pages
+.I htdigconfig(8)
+,
+.I htmerge(1)
+,
+.I htnotify(1)
+,
+.I htsearch(1)
+and
+.I rundig(1)
+for a detailed description of ht://Dig and its commands.
+.SH AUTHOR
+This manual page was written by Robert Ribnitz. It is based on documentation of ht://Dig, and on earlier manpages provided by Christian Schwarz and Stijn de Bekker.

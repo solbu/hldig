@@ -25,7 +25,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: acinclude.m4,v 1.17 2004/02/19 10:43:03 lha Exp $
+dnl @version $Id: acinclude.m4,v 1.18 2004/03/12 08:10:53 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -85,7 +85,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: acinclude.m4,v 1.17 2004/02/19 10:43:03 lha Exp $
+dnl @version $Id: acinclude.m4,v 1.18 2004/03/12 08:10:53 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -136,7 +136,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: acinclude.m4,v 1.17 2004/02/19 10:43:03 lha Exp $
+dnl @version $Id: acinclude.m4,v 1.18 2004/03/12 08:10:53 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -175,7 +175,7 @@ then
     AC_CHECK_HEADER(zlib.h, [zlib_cv_zlib_h=yes], [zlib_cv_zlib_h=no])
     dnl Only check for library if header is found.  This check sets HAVE_LIBZ
     if test "$zlib_cv_zlib_h" = yes; then
-	AC_DEFINE(HAVE_ZLIB_H)
+	AC_DEFINE([HAVE_ZLIB_H],,[Define if Zlib is enabled])
 	AC_CHECK_LIB(z, inflateEnd)
     fi
     if test "${ac_cv_lib_z_inflateEnd:+yes}" != yes
@@ -223,7 +223,7 @@ dnl LoadModule env_module         @APACHE_MODULES@/mod_env.so
 dnl LoadModule config_log_module  @APACHE_MODULES@/mod_log_config.so
 dnl ...
 dnl
-dnl @version $Id: acinclude.m4,v 1.17 2004/02/19 10:43:03 lha Exp $
+dnl @version $Id: acinclude.m4,v 1.18 2004/03/12 08:10:53 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -405,7 +405,7 @@ dnl      .if ${HAVE_SSL} == "yes"
 dnl      SRCS+= @srcdir@/my_file_that_needs_ssl.c
 dnl      .endif
 dnl
-dnl @version $Id: acinclude.m4,v 1.17 2004/02/19 10:43:03 lha Exp $
+dnl @version $Id: acinclude.m4,v 1.18 2004/03/12 08:10:53 angusgb Exp $
 dnl @author Mark Ethan Trostler <trostler@juniper.net>
 dnl
 AC_DEFUN([CHECK_SSL],
@@ -438,7 +438,7 @@ dnl Don't check the directory "yes"...
 	HAVE_SSL=yes
     fi
     AC_SUBST(HAVE_SSL)
-    AC_DEFINE(HAVE_SSL_H)
+    AC_DEFINE([HAVE_SSL_H],, [Define if SSL is enabled])
 ],
 [
     AC_MSG_RESULT(no)

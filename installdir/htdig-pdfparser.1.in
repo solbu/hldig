@@ -1,0 +1,33 @@
+.TH htdig-pdfparser 1 "17 February 2002"
+.\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
+.\" other parms are allowed: see man(7), man(1)
+.SH NAME
+htdig-pdfparser \- parse a PDF document (wrapper script for htdig)
+.SH SYNOPSIS
+.B htdig-pdfparser
+.SH "DESCRIPTION"
+This script acts as a wrapper script for the htdig program. The exact
+program that htdig uses to search in pdf documents for
+index words, can be set in the htdig config file. Set the program by
+using the
+.I debian_pdf_parser
+directive.
+.SH "OPTIONS"
+.TP
+.B acrobat
+Use the acroread utility to parse PDF documents
+.TP
+.B xpdf
+Use the pstotext utility, part of the xpdf package, to parse PDF documents
+.SH "FILES"
+.TP
+.B @DEFAULT_CONFIG_FILE@
+The default configuration file.
+.SH "SEE ALSO"
+Please refer to the HTML pages (in the htdig-doc package)
+.B /usr/share/doc/htdig-doc/html/index.html
+and the manual pages
+.I htdig(1)
+for a detailed description of ht://Dig and its commands.
+.SH AUTHOR
+Stijn de Bekker <stijn@debian.org>

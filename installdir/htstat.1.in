@@ -35,7 +35,7 @@ purposes. The default verbose mode (using only one \fI\-v\fR) gives
 a nice progress report while digging. 
 .SH "FILES"
 .TP
-.B /etc/htdig/htdig.conf
+.B @DEFAULT_CONFIG_FILE@
 The default configuration file.
 .SH "SEE ALSO"
 Please refer to the HTML pages (in the htdig-doc package)

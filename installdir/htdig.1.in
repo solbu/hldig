@@ -97,7 +97,7 @@ If there are no "*", "+" or "-" symbols after the URL, it doesn't mean the docum
 .TP
 .SH "FILES"
 .TP
-.B /etc/htdig/htdig.conf
+.B @DEFAULT_CONFIG_FILE@
 The default configuration file.
 .SH "SEE ALSO"
 Please refer to the HTML pages (in the htdig-doc package)

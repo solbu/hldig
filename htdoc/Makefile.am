@@ -1,13 +1,6 @@
 
 include $(top_srcdir)/Makefile.config
 
-man_MANS = htdig.1 \
-	   htdump.1 \
-	   htfuzzy.1 \
-	   htnotify.1 \
-	   htsearch.1 \
-	   htdigconfig.8
-
 EXTRA_DIST = COPYING  \
 	ChangeLog \
 	FAQ.html \

@@ -53,7 +53,7 @@ will be used to designate the directory where
 intermediate files are stored during the sorting process. 
 .SH "FILES"
 .TP
-.B /etc/htdig/htdig.conf
+.B @DEFAULT_CONFIG_FILE@
 The default configuration file.
 .SH "SEE ALSO"
 Please refer to the HTML pages (in the htdig-doc package)

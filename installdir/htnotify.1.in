@@ -30,7 +30,7 @@ sent. Used more than once will display information about
 each document that has email notification set.
 .SH "FILES"
 .TP
-.B /etc/htdig/htdig.conf
+.B @DEFAULT_CONFIG_FILE@
 The default configuration file.
 .SH "SEE ALSO"
 Please refer to the HTML pages (in the htdig-doc package)
