@@ -4,6 +4,9 @@
 // Implementation of the Dictionary class
 //
 // $Log: Dictionary.cc,v $
+// Revision 1.4  1999/01/10 01:59:56  ghutchis
+// Remember special case of an empty dictionary.
+//
 // Revision 1.3  1998/12/05 00:51:13  ghutchis
 // Added check for empty dictionaries.
 //
@@ -203,6 +206,9 @@ Dictionary::Add(char *name, Object *obj)
 int
 Dictionary::Remove(char *name)
 {
+    if (!count)
+      return 0;
+
     unsigned int	hash = hashCode(name);
     int			index = hash % tableLength;
     DictionaryEntry	*e, *prev;
@@ -262,6 +268,9 @@ Object *Dictionary::operator[](char *name)
 //
 int Dictionary::Exists(char *name)
 {
+    if (!count)
+      return 0;
+
     unsigned int	hash = hashCode(name);
     int			index = hash % tableLength;
     DictionaryEntry	*e;
