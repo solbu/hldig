@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.cc,v 1.47.2.3 2000/03/28 04:05:21 ghutchis Exp $
+// $Id: DocumentRef.cc,v 1.47.2.4 2000/04/09 15:19:56 ghutchis Exp $
 //
 
 #include "DocumentRef.h"
@@ -70,6 +70,29 @@ void DocumentRef::Clear()
   docSubject = 0;
   docScore = 0;
   docAnchor = 0;
+}
+
+//*****************************************************************************
+// void DocumentRef::DocState(int s)
+//
+void DocumentRef::DocState(int s)
+{
+  // You can't easily do this with a cast, so we'll use a switch
+  switch(s)
+    {
+      case 0:
+	docState = Reference_normal;
+	break;
+      case 1:
+	docState = Reference_not_found;
+	break;
+      case 2:
+	docState = Reference_noindex;
+	break;
+      case 3:
+	docState = Reference_obsolete;
+	break;
+    }
 }
 
 

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.h,v 1.24.2.2 2000/03/28 01:45:51 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.24.2.3 2000/04/09 15:19:56 ghutchis Exp $
 //
 
 #ifndef _DocumentRef_h_
@@ -84,6 +84,7 @@ class DocumentRef : public Object
     void		Descriptions(List &l)		{descriptions = l;}
     void		AddDescription(const char *d, HtWordList &words);
     void		DocState(ReferenceState s)	{docState = s;}
+    void		DocState(int s);
     void		DocSize(int s)			{docSize = s;}
     void                DocSig(int s)                   {docSig = s;}
     void		DocAnchors(List &l)		{docAnchors = l;}
