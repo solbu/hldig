@@ -1,7 +1,7 @@
 //
 // htsearch.h
 //
-// $Id: htsearch.h,v 1.3 1999/03/16 02:04:39 hp Exp $
+// $Id: htsearch.h,v 1.4 1999/03/21 15:23:56 hp Exp $
 //
 
 #ifndef _htsearch_h_
@@ -37,6 +37,7 @@ extern StringMatch	wm;
 extern Database		*dbf;
 extern String		logicalWords;
 extern String		originalWords;
+extern int              debug;
 
 
 #endif

@@ -1,0 +1,350 @@
+//
+// HtPack: Compress and uncompress data in e.g. simple structures.
+//	   The structure must have the layout defined in the ABI;
+//	   the layout the compiler generates.
+//
+// $Id: HtPack.cc,v 1.1 1999/03/21 15:23:56 hp Exp $
+//
+
+#include <iostream.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include "HtPack.h"
+
+// For the moment, only the "i" (for native "int") and "u" (for
+// unsigned native int) formats are accepted.
+//
+//  If someone adds other formats (and uses them), please note
+// that structure padding may give surprising effects on some
+// (most) platforms, for example if you try to unpack a
+// structure with the  signature "isi" (int, short, int).  You
+// will want to solve that portably.
+//
+// Compression is done to 2 bits description (overhead) each,
+// plus variable-sized data.
+//  Theoretically, different formats can use different number of
+// bits in the description with a few changes.
+//  The description is located in a byte before every four
+// "fields".
+String
+htPack(char format[], const char *data)
+{
+  char *s = format;
+
+  // We insert the encodings by number, rather than shifting and
+  // inserting at the "bottom".	 This should make it faster for
+  // decoding, which presumably is more important than the speed
+  // of encoding.
+  int code_no = 0;
+
+  // Make a wild guess that we will compress some ordinary sized
+  // struct.  This guess only has speed effects.
+  String compressed(60);
+
+  // Accumulated codes.
+  unsigned int description = 0;
+
+  // Store the encoding here.  We cannot use a char *, as the
+  // string may be reallocated and moved.
+  int code_index = 0;
+
+  // Make place for the first codes.
+  compressed << '\0';
+
+  // Format string loop.
+  while (*s)
+  {
+    int fchar = *s++;
+    int n;
+
+    if (isdigit(*s))
+    {
+      // This is the inner reason why format is not "const"; the
+      // second argument to strtol is seldom "const char **".
+      // I don't think it is worth the portability fuss to cast it.
+      n = strtol(s, &s, 10);
+    }
+    else
+      n = 1;
+
+    // Loop over N in e.g. "iN" (default 1).
+    while (n--)
+    {
+      // Format character handling.
+      switch (fchar)
+      {
+	case 'i':
+	{
+	  // We compress a (signed) int as follows:
+	  // 00 - value is 0.
+	  // 01 - value fits in char - appended.
+	  // 10 - value fits in short - appended.
+	  // 11 - just plain int - appended (you lose).
+	  int value;
+
+	  // Initialize, but allow disalignment.
+	  memcpy(&value, data, sizeof value);
+	  data += sizeof(int);
+
+	  int mycode;
+	  if (value == 0)
+	  {
+	    mycode = 0;
+	  }
+	  else
+	  {
+	    char charvalue = char(value);
+	    short shortvalue = short(value);
+	    if (value == charvalue)
+	    {
+	      mycode = 1;
+	      compressed << charvalue;
+	    }
+	    else if (value == shortvalue)
+	    {
+	      mycode = 2;
+	      compressed.append((char *) &shortvalue, sizeof shortvalue);
+	    }
+	    else
+	    {
+	      mycode = 3;
+	      compressed.append((char *) &value, sizeof value);
+	    }
+	  }
+
+	  description |= mycode << (2*code_no++);
+	}
+	break;
+
+	case 'u':
+	{
+	  // We compress an unsigned int like an int:
+	  // 00 - value is 0.
+	  // 01 - value fits in unsigned char - appended.
+	  // 10 - value fits in unsigned short - appended.
+	  // 11 - just plain unsigned int - appended (you lose).
+	  unsigned int value;
+
+	  // Initialize, but allow disalignment.
+	  memcpy(&value, data, sizeof value);
+	  data += sizeof(unsigned int);
+
+	  int mycode;
+	  if (value == 0)
+	  {
+	    mycode = 0;
+	  }
+	  else
+	  {
+	    unsigned char charvalue = (unsigned char) value;
+	    unsigned short shortvalue = (unsigned short) value;
+	    if (value == charvalue)
+	    {
+	      mycode = 1;
+	      compressed << charvalue;
+	    }
+	    else if (value == shortvalue)
+	    {
+	      mycode = 2;
+	      compressed.append((char *) &shortvalue, sizeof shortvalue);
+	    }
+	    else
+	    {
+	      mycode = 3;
+	      compressed.append((char *) &value, sizeof value);
+	    }
+	  }
+
+	  description |= mycode << (2*code_no++);
+	}
+	break;
+
+	default:
+#ifdef DEBUG
+	  if (1)
+	    cerr << "Invalid char \'" << char(fchar)
+		 << "\' in pack format \"" << format << "\""
+		 << endl;
+	  return "";
+#endif
+	  ; // Must always have a statement after a label.
+      }
+
+      // Assuming 8-bit chars here.  If there was more than 4
+      // encodings (2 bits each), then we need another char to
+      // fit them into.
+      if (code_no == 4)
+      {
+	char *codepos = compressed.get() + code_index;
+
+	*codepos = description;
+	description = 0;
+	code_no = 0;
+
+	if (*s)
+	{
+	  // If more encodings, then we need a new place to
+	  // store them.
+	  code_index = compressed.length();
+	  compressed << '\0';
+	}
+      }
+    }
+  }
+
+  return compressed;
+}
+
+
+// Reverse the effect of htPack.  Update dataref according to
+// used amount of data.
+String
+htUnpack(char format[], char * &dataref)
+{
+  char *s = format;
+  char *data = dataref;
+
+  // The description needs to be renewed immediately.
+  unsigned int description = 1;
+
+  // Make a wild guess about that we decompress to some ordinary
+  // sized struct and assume the cost of allocation some extra
+  // memory is much less than the cost of allocating more.
+  // This guess only has speed effects.
+  String decompressed(60);
+
+  // Format string loop.
+  while (*s)
+  {
+    int fchar = *s++;
+    int n;
+
+    if (isdigit(*s))
+    {
+      // This is the inner reason why format is not "const"; the
+      // second argument to strtol is seldom "const char **".
+      // I don't think it is worth the portability fuss to cast it.
+      n = strtol(s, &s, 10);
+    }
+    else
+      n = 1;
+
+    // Loop over N in e.g. "iN" (default 1).
+    while (n--)
+    {
+      // Time to renew description?
+      if (description == 1)
+	description = 256 | *data++;
+
+      // Format character handling.
+      switch (fchar)
+      {
+	case 'i':
+	{
+	  // A (signed) int is compressed as follows:
+	  // 00 - value is 0.
+	  // 01 - value fits in char - appended.
+	  // 10 - value fits in short - appended.
+	  // 11 - just plain int - appended (you lose).
+	  int value;
+
+	  switch (description & 3)
+	  {
+	    case 0:
+	    value = 0;
+	    break;
+
+	    case 1:
+	    {
+	      char charvalue;
+	      memcpy(&charvalue, data, sizeof charvalue);
+	      value = charvalue;
+	      data++;
+	    }
+	    break;
+
+	    case 2:
+	    {
+	      short int shortvalue;
+	      memcpy(&shortvalue, data, sizeof shortvalue);
+	      value = shortvalue;
+	      data += sizeof shortvalue;
+	    }
+	    break;
+
+	    case 3:
+	    {
+	      memcpy(&value, data, sizeof value);
+	      data += sizeof value;
+	    }
+	    break;
+	  }
+	  decompressed.append((char *) &value, sizeof value);
+	}
+	break;
+
+	case 'u':
+	{
+	  // An unsigned int is compressed as follows:
+	  // 00 - value is 0.
+	  // 01 - value fits in unsigned char - appended.
+	  // 10 - value fits in unsigned short - appended.
+	  // 11 - just plain unsigned int - appended (you lose).
+	  unsigned int value;
+
+	  switch (description & 3)
+	  {
+	    case 0:
+	    value = 0;
+	    break;
+
+	    case 1:
+	    {
+	      unsigned char charvalue;
+	      memcpy(&charvalue, data, sizeof charvalue);
+	      value = charvalue;
+	      data++;
+	    }
+	    break;
+
+	    case 2:
+	    {
+	      unsigned short int shortvalue;
+	      memcpy(&shortvalue, data, sizeof shortvalue);
+	      value = shortvalue;
+	      data += sizeof shortvalue;
+	    }
+	    break;
+
+	    case 3:
+	    {
+	      memcpy(&value, data, sizeof value);
+	      data += sizeof value;
+	    }
+	    break;
+	  }
+	  decompressed.append((char *) &value, sizeof value);
+	}
+	break;
+
+	default:
+#ifdef DEBUG
+	  if (1)
+	    cerr << "Invalid char \'" << char(fchar)
+		 << "\' in unpack format \"" << format << "\""
+		 << endl;
+	  return "";
+#endif
+	  ; // Must always have a statement after a label.
+      }
+
+      description >>= 2;
+    }
+  }
+
+  // Don't forget to say how much was used.
+  dataref = data;
+  return decompressed;
+}
+
+// End of HtPack.cc

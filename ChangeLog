@@ -1,5 +1,7 @@
 Sun Mar 21 15:19:00 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
+	* htlib/HtPack.cc (htPack): New.
+	* htlib/HtPack.h: New.
 	* htsearch/parser.cc (perform_push): Unpack WordRecords using
 	htUnpack.
 	* htsearch/htsearch.h: Add "debug" declaration.
