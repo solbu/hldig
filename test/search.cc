@@ -42,7 +42,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: search.cc,v 1.6 2003/06/20 07:49:54 lha Exp $
+// $Id: search.cc,v 1.7 2003/06/22 03:12:44 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -2298,7 +2298,7 @@ int WordTreeOptional::AscendingFrequency()
   //
   WordSort *tmp = new WordSort[cursors_length];
 
-  memset((char*)tmp, '\0', cursors_length * sizeof(WordSort[0]));
+  memset((char*)tmp, '\0', cursors_length * sizeof(WordSort));
 
   unsigned int i;
   for(i = 0; i < cursors_length; i++) {
@@ -2328,7 +2328,7 @@ int WordTreeOptional::StripNonExistent(unsigned int& stripped)
   stripped = 0;
 
   WordTree** tmp = new WordTree*[cursors_length];
-  memset((char*)tmp, '\0', cursors_length * sizeof(WordTree*[0]));
+  memset((char*)tmp, '\0', cursors_length * sizeof(WordTree*));
 
   unsigned int from;
   unsigned int to;

@@ -801,7 +801,9 @@ CDB___memp_cmpr_open(dbenv, path, flags, mode, cmpr_context)
       goto err;
     sprintf(tmp, "%s%s", path, DB_CMPR_SUFFIX);
 
-    if(CDB_db_create(&dbp, dbenv, 0) != 0)
+    /* Use *standalone* database, to prevent recursion when writing pages */
+    /* from the cache, shared with other members of the environment */
+    if(CDB_db_create(&dbp, NULL, 0) != 0)
       goto err;
 
     cmpr_context->weakcmpr = dbp;

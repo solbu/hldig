@@ -1,3 +1,11 @@
+Sun Jun 22 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* db/mp_cmpr.c (CDB___memp_cmpr_open):
+	  Make weak compression database standalone to avoid recursion
+	  This *should* fix all of the recent problems with dirty cache etc.
+
+	* test/search.cc:  Don't take sizeof zero sized array
+
 Fri Jun 20 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* configure,aclocal.m4,acinclude.m4: --with-ssl set CPPFLAGS, not CFLAGS
