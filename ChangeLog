@@ -1,3 +1,9 @@
+Tue Jun 19 17:07:01 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (setVariables): Fixed handling of
+	build_select_lists attribute, to deal with new restrict & exclude
+	attributes.
+
 Fri Jun 15 17:45:40 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/require.html: Added mentions of accents, prefix & substring,
