@@ -9,11 +9,15 @@
 // link is followed, but this process is done only once (to prevent loops.)
 // If the redirect didn't work, Document_not_found is returned.
 //
-// $Id: Document.h,v 1.1 1997/02/03 17:11:06 turtle Exp $
+// $Id: Document.h,v 1.2 1997/02/10 17:32:38 turtle Exp $
 //
 // $Log: Document.h,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.2  1997/02/10 17:32:38  turtle
+// Applied AIX specific patches supplied by Lars-Owe Ivarsson
+// <lars-owe.ivarsson@its.uu.se>
+//
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 //
 #ifndef _Document_h_
@@ -79,7 +83,7 @@ public:
 	Document_redirect,
 	Document_no_server,
 	Document_no_host,
-	Document_not_authorized,
+      Document_not_authorized
     };
     DocStatus			Retrieve(time_t date);
 
@@ -101,7 +105,7 @@ private:
 	Header_not_changed,
 	Header_redirect,
 	Header_not_text,
-	Header_not_authorized,
+      Header_not_authorized
     };
 
     URL				*url;

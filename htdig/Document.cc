@@ -4,12 +4,16 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.2  1997/02/10 17:32:37  turtle
+// Applied AIX specific patches supplied by Lars-Owe Ivarsson
+// <lars-owe.ivarsson@its.uu.se>
+//
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.1 1997/02/03 17:11:06 turtle Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.2 1997/02/10 17:32:37 turtle Exp $";
 #endif
 
 #include <signal.h>
@@ -216,7 +220,11 @@ timeout()
     current_connection->stop_io();
 
     struct sigaction    sa;
+#ifdef _AIX
+    sa.sa_handler = (void(*)(int)) timeout;
+#else
     sa.sa_handler = (SIGNAL_HANDLER) timeout;
+#endif
     sigemptyset ((sigset_t *) &sa.sa_mask);
     sigaddset ((sigset_t *) &sa.sa_mask, SIGALRM);
 #if defined(SA_INTERRUPT)
@@ -325,7 +333,11 @@ Document::Retrieve(time_t date)
     // Setup a timeout for the connection
     //
     struct sigaction    sa;
+#ifdef _AIX
+    sa.sa_handler = (void(*)(int)) timeout;
+#else
     sa.sa_handler = (SIGNAL_HANDLER) timeout;
+#endif
     sigemptyset ((sigset_t *) &sa.sa_mask);
     sigaddset ((sigset_t *) &sa.sa_mask, SIGALRM);
 #if defined(SA_INTERRUPT)

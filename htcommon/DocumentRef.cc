@@ -4,15 +4,19 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
-// Revision 1.1  1997/02/03 17:11:07  turtle
-// Initial revision
+// Revision 1.2  1997/02/10 17:30:58  turtle
+// Applied AIX specific patches supplied by Lars-Owe Ivarsson
+// <lars-owe.ivarsson@its.uu.se>
+//
+// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
+// Initial CVS
 //
 // Revision 1.1  1995/07/06 23:43:12  turtle
 // *** empty log message ***
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: DocumentRef.cc,v 1.1 1997/02/03 17:11:07 turtle Exp $";
+static char RCSid[] = "$Id: DocumentRef.cc,v 1.2 1997/02/10 17:30:58 turtle Exp $";
 #endif
 
 #include "DocumentRef.h"
@@ -78,7 +82,7 @@ enum
 	DOC_EMAIL,				// 13
 	DOC_NOTIFICATION,		// 14
 	DOC_SUBJECT,			// 15
-	DOC_STRING,				// 16
+      DOC_STRING                              // 16
 };
 
 
