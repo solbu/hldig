@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.54.2.3 1999/12/21 15:42:27 bosc Exp $
+// $Id: htsearch.cc,v 1.54.2.4 2000/01/13 14:47:09 loic Exp $
 //
 
 #include "htsearch.h"
@@ -25,7 +25,7 @@
 #include "StringList.h"
 #include "IntObject.h"
 #include "HtURLCodec.h"
-#include "WordType.h"
+#include "WordContext.h"
 #include "HtRegex.h"
 
 #include <time.h>
@@ -158,6 +158,9 @@ main(int ac, char **av)
     }
     config.Read(configFile);
 
+    // Initialize htword library (key description + wordtype...)
+    WordContext::Initialize(config);
+
     if (input.exists("method"))
 	config.Add("match_method", input["method"]);
     if (input.exists("format"))
@@ -193,9 +196,6 @@ main(int ac, char **av)
 	config.Add(form_vars[i], input[form_vars[i]]);
     }
  
-    // Initialize htword library (key description + wordtype...)
-    WordList::Initialize(config);
-
     //
     // Check url_part_aliases and common_url_parts for
     // errors.

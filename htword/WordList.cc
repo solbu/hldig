@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.28 2000/01/12 18:12:49 loic Exp $
+// $Id: WordList.cc,v 1.6.2.29 2000/01/13 14:47:10 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -64,27 +64,6 @@ WordList::WordList(const Configuration& config_arg) :
     extended = config.Boolean("wordlist_extend");
     verbose =  config.Value("wordlist_verbose",0);
 
-    const String &keydescfile = config["wordlist_wordkey_description_file"];
-    const String &keydesc     = config["wordlist_wordkey_description"];
-
-    if(!keydesc.empty())
-    {
-	WordKeyInfo::SetKeyDescriptionFromString(keydesc);
-    }
-    else
-    if(!keydescfile.empty())
-    {
-	WordKeyInfo::SetKeyDescriptionFromFile(keydescfile);
-    }
-    else
-    {
-	if(!WordKey::Info())
-	{
-	    cerr << "WordList::WordList: didn't find key description " << endl;
-	    cerr <<"are you shure you called WordList::Initialize with a valid key description" << endl;
-	}
-    }
-
     // DEBUGING / BENCHMARKING
     cmprInfo = NULL; 
     bm_put_count = 0;
@@ -98,25 +77,8 @@ WordList::WordList(const Configuration& config_arg) :
 
 //*****************************************************************************
 //
-void
-WordList::Initialize(const Configuration &config0)
-{
-    WordContext::Initialize(config0);
-}
-
-//*****************************************************************************
-//
 int WordList::Open(const String& filename, int mode)
 {
-  //
-  // Info initialization
-  //
-  if(!WordContext::CheckInitialized())
-  {
-      cerr << "WordList::Open: htword library not initialized!" << endl;
-      cerr << "are you sure you called WordContext::Initialize ??" << endl;
-  }
-
   int usecompress=0;
 
   db.dbinfo.set_bt_compare(word_db_cmp);

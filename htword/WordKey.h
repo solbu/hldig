@@ -166,9 +166,9 @@ class WordKey
   //
   // Convinience functions to access key structure information (see WordKeyInfo.h)
   //
-  static inline const WordKeyInfo *Info()   { return WordKeyInfo::Get(); }
+  static inline const WordKeyInfo *Info()    { return WordKeyInfo::Instance(); }
 #endif /* SWIG */
-  static inline const int         NFields() { return WordKeyInfo::Get()->nfields; }
+  static inline int 	           NFields() { return Info()->nfields; }
 
   //
   // Accessors

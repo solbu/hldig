@@ -93,30 +93,95 @@ WordKeyField::Show()
 // WordKeyInfo implementation
 //
 
-//
-// Static interface to SetDescriptionFromString fct
-//
-void 
-WordKeyInfo::SetKeyDescriptionFromString(const String &desc)
-{
-    if(WordContext::key_info) { delete WordContext::key_info; }
-    WordContext::key_info=new WordKeyInfo();
-    WordContext::key_info->SetDescriptionFromString(desc);
-}
+WordKeyInfo* WordKeyInfo::instance = 0;
 
-//
-// Static interface to SetDescriptionFromFile fct
-//
-void 
-WordKeyInfo::SetKeyDescriptionFromFile(const String &filename)
+WordKeyInfo::WordKeyInfo(const Configuration& config)
 {
-    if(WordContext::key_info){delete WordContext::key_info;}
-    WordContext::key_info=new WordKeyInfo();
-    WordContext::key_info->SetDescriptionFromFile(filename);
+  sort = NULL;
+  nfields = -1;
+
+  const String &keydescfile = config["wordlist_wordkey_description_file"];
+  const String &keydesc     = config["wordlist_wordkey_description"];
+
+  if(!keydesc.empty()) {
+    SetDescriptionFromString(keydesc);
+  } else if(!keydescfile.empty()) {
+    SetDescriptionFromFile(keydescfile);
+  } else {
+    cerr << "WordKeyInfo::WordKeyInfo: didn't find key description in config" << endl;
+  }
 }
 
 void 
-WordKeyInfo::Initialize(String &line)
+WordKeyInfo::Initialize(const Configuration &config_arg)
+{
+  if(instance == 0)
+    delete instance;
+  instance = new WordKeyInfo(config_arg);
+}
+
+void 
+WordKeyInfo::InitializeFromString(const String &desc)
+{
+  Configuration config;
+  config.Add("wordlist_wordkey_description", desc);
+  Initialize(config);
+}
+
+void 
+WordKeyInfo::InitializeFromFile(const String &filename)
+{
+  Configuration config;
+  config.Add("wordlist_wordkey_description_file", filename);
+  Initialize(config);
+}
+
+void
+WordKeyInfo::InitializeRandom(int maxbitsize/*=100*/,int maxnnfields/*=10*/)
+{
+    int bitsize=HtRandom::rnd(1,maxbitsize/8);
+    bitsize*=8;// byte aligned (for word)
+    int nfields0=HtRandom::rnd(2,bitsize > maxnnfields ? maxnnfields : bitsize);
+    int i;
+    char sdesc[10000];
+    char sfield[10000];
+    sdesc[0]=0;
+
+    // build sortorder
+    sprintf(sfield,"nfields: %d",nfields0);
+    strcat(sdesc,sfield);
+
+    int *sortv=HtRandom::randomize_v(NULL,nfields0-1);
+
+    int bits;
+    int totbits=0;
+    // build fields
+    for(i=0;i<nfields0-1;i++)
+    {
+	int maxf=(bitsize-totbits)-nfields0+i+2;
+	if(maxf>32){maxf=32;}
+	bits=HtRandom::rnd(1,maxf);
+	if(i==nfields0-2)
+	{
+	    bits=maxf;
+	    if((totbits+bits)%8)
+	    {// argh really bad case :-(
+		InitializeRandom(maxbitsize,maxnnfields);
+		return;
+	    }
+	}
+	totbits+=bits;
+	sprintf(sfield,"/Field%d %d %d",i,bits,sortv[i]+1);
+	strcat(sdesc,sfield);
+    }
+    sprintf(sfield,"/Word 0 0");
+    strcat(sdesc,sfield);
+
+    InitializeFromString(sdesc);
+}
+
+void 
+WordKeyInfo::GetNFields(String &line)
 {
     StringList fields(line, "\t ");
 
@@ -134,7 +199,7 @@ WordKeyInfo::Initialize(String &line)
 	{
 	    if(i>1 || (*found!=String("nfields:") && *found!=String("nfields")) )
 	    {
-		cerr << "WordKeyInfo::Initialize: syntax error at begining entry:" << i <<
+		cerr << "WordKeyInfo::GetNFields: syntax error at begining entry:" << i <<
 		    " line:\"" << line << "\"" << endl;
 	    }
 	}
@@ -142,14 +207,14 @@ WordKeyInfo::Initialize(String &line)
     }
     if(nnfields<2 || nnfields>=WORD_KEY_MAX_NFIELDS)
     {
-	cerr << "WordKeyInfo::Initialize: invalid nfields:" << nnfields << endl;
+	cerr << "WordKeyInfo::GetNFields: invalid nfields:" << nnfields << endl;
     }
-    Initialize(nnfields);
+    Alloc(nnfields);
 }
 void 
-WordKeyInfo::Initialize( int nnfields)
+WordKeyInfo::Alloc( int nnfields)
 {
-//      cerr << "WordKeyInfo::Initialize: nfields:" << nnfields << endl;
+//      cerr << "WordKeyInfo::Alloc: nfields:" << nnfields << endl;
     nfields = nnfields;
     sort = new WordKeyField[nfields];
     encode = new WordKeyField[nfields];
@@ -250,7 +315,7 @@ WordKeyInfo::SetDescriptionFromString(const String &desc)
     lines.Start_Get();
     while((found = (String*)lines.Get_Next()))
     {
-	if(!initok){Initialize(*found);initok=1;}
+	if(!initok){GetNFields(*found);initok=1;}
 	else
 	{
 	    if( encoding_position >= nfields )
@@ -321,7 +386,7 @@ WordKeyInfo::SetDescriptionFromFile(const String &filename)
 	    if(line[0] != '#')
 	    {
 
-		if( nfields < 0 ){Initialize(line);}
+		if( nfields < 0 ){GetNFields(line);}
 		else
 		{
 		    AddFieldInEncodingOrder(line);
@@ -379,72 +444,4 @@ WordKeyInfo::Show()
     printf("%s (bits)\n",str);
     printf("^0      ^1      ^2      ^3      ^4      ^5      ^6      ^7\n");
     printf("0123456701234567012345670123456701234567012345670123456701234567\n");
-}
-
-void 
-WordKeyInfo::Initialize(const Configuration &config)
-{
-    const String &keydescfile = config["wordlist_wordkey_description_file"];
-    const String &keydesc     = config["wordlist_wordkey_description"];
-
-    if(!keydesc.empty())
-    {
-	WordKeyInfo::SetKeyDescriptionFromString(keydesc);
-    }
-    else
-    if(!keydescfile.empty())
-    {
-	WordKeyInfo::SetKeyDescriptionFromFile(keydescfile);
-    }
-    else
-    {
-	cerr << "WordList::Initialize: didn't find key description file in config" << endl;
-    }
-
-}
-
-void
-WordKeyInfo::SetKeyDescriptionRandom(int maxbitsize/*=100*/,int maxnnfields/*=10*/)
-{
-    int bitsize=HtRandom::rnd(1,maxbitsize/8);
-    bitsize*=8;// byte aligned (for word)
-    int nfields0=HtRandom::rnd(2,bitsize > maxnnfields ? maxnnfields : bitsize);
-    int i;
-    char sdesc[10000];
-    char sfield[10000];
-    sdesc[0]=0;
-
-    // build sortorder
-    sprintf(sfield,"nfields: %d",nfields0);
-    strcat(sdesc,sfield);
-
-    int *sortv=HtRandom::randomize_v(NULL,nfields0-1);
-
-    int bits;
-    int totbits=0;
-    // build fields
-    for(i=0;i<nfields0-1;i++)
-    {
-	int maxf=(bitsize-totbits)-nfields0+i+2;
-	if(maxf>32){maxf=32;}
-	bits=HtRandom::rnd(1,maxf);
-	if(i==nfields0-2)
-	{
-	    bits=maxf;
-	    if((totbits+bits)%8)
-	    {// argh really bad case :-(
-		WordKeyInfo::SetKeyDescriptionRandom(maxbitsize,maxnnfields);
-		return;
-	    }
-	}
-	totbits+=bits;
-	sprintf(sfield,"/Field%d %d %d",i,bits,sortv[i]+1);
-	strcat(sdesc,sfield);
-    }
-    sprintf(sfield,"/Word 0 0");
-    strcat(sdesc,sfield);
-
-//      if(verbose)cout << "SetRandomKeyDesc:" << sdesc << endl;
-    WordKeyInfo::SetKeyDescriptionFromString(sdesc);
-
 }

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.18 2000/01/12 18:12:49 loic Exp $
+// $Id: WordList.h,v 1.5.2.19 2000/01/13 14:47:11 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -303,7 +303,6 @@ public:
     //
     const WordType&      GetWordType() const { return wtype; }
     const Configuration& GetConfiguration() const { return config; }
-    static void Initialize(const Configuration &config0);
 
     //
     // Input/Output

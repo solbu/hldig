@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.13 2000/01/12 18:12:49 loic Exp $
+// $Id: word.cc,v 1.14.2.14 2000/01/13 14:47:11 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -28,7 +28,7 @@
 
 #include "WordKey.h"
 #include "WordList.h"
-#include "WordType.h"
+#include "WordContext.h"
 #include "Configuration.h"
 
 static ConfigDefaults defaults[] = {
@@ -143,7 +143,7 @@ static void doword(params_t* params)
       }
       else{config.Defaults(defaults);}
     // Ctype-like functions for what constitutes a word.
-    WordList::Initialize(config);
+    WordContext::Initialize(config);
     unlink(config["word_db"]);
   }
 
@@ -191,7 +191,7 @@ static void dolist(params_t*)
 	
     // setup a new wordlist
     WordList words(config);
-    if(verbose)WordKeyInfo::Get()->Show();	
+    if(verbose)WordKeyInfo::Instance()->Show();	
     words.Open(config["word_db"], O_RDWR);
 
 
@@ -433,15 +433,15 @@ dokey(params_t* params)
         // check predefined keys structures first
 	if( ikeydesc < (int)(sizeof(test_keys)/sizeof(*test_keys)))
 	{
-	    WordKeyInfo::SetKeyDescriptionFromString(test_keys[ikeydesc]);
+	    WordKeyInfo::InitializeFromString(test_keys[ikeydesc]);
 	}
 	else
 	{
 	// check random predefined keys structures afterwards
-	    WordKeyInfo::SetKeyDescriptionRandom();
+	    WordKeyInfo::InitializeRandom();
 	}
 
-  	if(verbose)WordKeyInfo::Get()->Show();
+  	if(verbose)WordKeyInfo::Instance()->Show();
 	for(ikey=0;ikey<20;ikey++)
 	{
 	    WordKey word;
@@ -468,7 +468,7 @@ dokey(params_t* params)
 	    if(failed)
 	    {
 		printf("DOKEY failed, original and packed/unpacked not equal\n");
-		WordKeyInfo::Get()->Show();
+		WordKeyInfo::Instance()->Show();
 		cout << "WORD :" << word << endl;
 		WordKey::ShowPacked(packed,1);
 		cout << "OTHER_WORD:" << other_word << endl;

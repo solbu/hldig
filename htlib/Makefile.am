@@ -11,9 +11,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc \
 	HtVector.cc HtHeap.cc regex.c \
 	HtPack.cc HtDateTime.cc HtRegex.cc \
-	HtVectorGeneric.cc HtMaxMin.cc
-
-
+	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 

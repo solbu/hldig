@@ -15,7 +15,6 @@
 #ifndef _WordKeyInfo_h_
 #define _WordKeyInfo_h_
 
-#include "WordContext.h"
 #include "Configuration.h"
 
 //
@@ -58,35 +57,38 @@ class WordKeyField
 class WordKeyInfo 
 {
  public:
-    WordKeyInfo()
-    {
-	sort = NULL;
-	nfields = -1;
-    }
+    WordKeyInfo(const Configuration& config);
     ~WordKeyInfo()
     {
 	if(sort) { delete [] sort; }
 	if(encode) { delete [] encode; }
     }
-    
-    static void Initialize(const Configuration &config);
-    void        Initialize(int nnfields);
-    void        Initialize(String &line);
-    void        AddFieldInEncodingOrder(String &name, int bits, int sort_position);
-    void        AddFieldInEncodingOrder(const String &line);
-    void        SetDescriptionFromFile(const String &filename);
-    static void SetKeyDescriptionFromFile(const String &filename);
-    void        SetDescriptionFromString(const String &desc);
-    static void SetKeyDescriptionFromString(const String &desc);
 
-    void  Show();
-
-    static inline WordKeyInfo *Get(){return WordContext::key_info;}
-
+    //
+    // Unique instance handlers 
+    //
+    static void Initialize(const Configuration& config);
+    static void InitializeFromFile(const String &filename);
+    static void InitializeFromString(const String &desc);
     //
     // Build a random description key for test purpose.
     //
-    static void SetKeyDescriptionRandom(int maxbitsize=100, int maxnnfields=10);
+    static void InitializeRandom(int maxbitsize=100, int maxnnfields=10);
+    static WordKeyInfo* Instance() {
+      if(instance) return instance;
+      fprintf(stderr, "WordKeyInfo::Instance: no instance\n");
+      return 0;
+    }
+
+    void        Alloc(int nnfields);
+    void        GetNFields(String &line);
+    void        AddFieldInEncodingOrder(String &name, int bits, int sort_position);
+    void        AddFieldInEncodingOrder(const String &line);
+    void        SetDescriptionFromFile(const String &filename);
+    void        SetDescriptionFromString(const String &desc);
+
+    void  Show();
+
 
     //
     // Array describing the fields, in sort order.
@@ -107,6 +109,11 @@ class WordKeyInfo
 
     WordKeyField *previous;
     int encoding_position;
+
+    //
+    // Unique instance pointer
+    //
+    static WordKeyInfo* instance;
 };
 
 #endif

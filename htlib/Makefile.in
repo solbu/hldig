@@ -73,58 +73,65 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+APACHE = @APACHE@
+APACHE_MODULES = @APACHE_MODULES@
 AR = @AR@
 AS = @AS@
 CC = @CC@
+CGIBIN_DIR = @CGIBIN_DIR@
+COMMON_DIR = @COMMON_DIR@
+CONFIG_DIR = @CONFIG_DIR@
 CXX = @CXX@
 CXXFLAGS = @CXXFLAGS@
+DATABASE_DIR = @DATABASE_DIR@
+DEFAULT_CONFIG_FILE = @DEFAULT_CONFIG_FILE@
 DLLTOOL = @DLLTOOL@
-DOCUMENTATION = @DOCUMENTATION@
-DVIPS = @DVIPS@
 FIND = @FIND@
 GUNZIP = @GUNZIP@
+HTDIGDIRS = @HTDIGDIRS@
 HTDIG_MAJOR_VERSION = @HTDIG_MAJOR_VERSION@
 HTDIG_MICRO_VERSION = @HTDIG_MICRO_VERSION@
 HTDIG_MINOR_VERSION = @HTDIG_MINOR_VERSION@
-HTMLDIR = @HTMLDIR@
-INFODIR = @INFODIR@
+IMAGE_DIR = @IMAGE_DIR@
+IMAGE_URL_PREFIX = @IMAGE_URL_PREFIX@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LEX = @LEX@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
-MIFLUZDIRS = @MIFLUZDIRS@
 NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
+PDF_PARSER = @PDF_PARSER@
 PERL = @PERL@
-PNMTOPNG = @PNMTOPNG@
-PSTOPNM = @PSTOPNM@
 RANLIB = @RANLIB@
+SEARCH_DIR = @SEARCH_DIR@
+SEARCH_FORM = @SEARCH_FORM@
 SED = @SED@
+SENDMAIL = @SENDMAIL@
 SHELL = @SHELL@
 TAR = @TAR@
-TEXI2DVI = @TEXI2DVI@
-TEXI2HTML = @TEXI2HTML@
 TIME = @TIME@
 TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
+YACC = @YACC@
 
 CFLAGS = -g
 
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES) $(PROFILING)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES) $(PROFILING)
 
 
-HTLIBS = $(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/db/dist/libdb.a
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libhtdb.a
 
 
 lib_LTLIBRARIES = libht.la
 
-libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc regex.c 	HtPack.cc HtDateTime.cc HtRegex.cc 	HtVectorGeneric.cc HtMaxMin.cc
+libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc regex.c 	HtPack.cc HtDateTime.cc HtRegex.cc 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc
 
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
@@ -146,7 +153,8 @@ IntObject.lo List.lo Object.lo ParsedString.lo Queue.lo \
 QuotedStringList.lo Stack.lo String.lo StringList.lo StringMatch.lo \
 String_fmt.lo good_strtok.lo strcasecmp.lo mktime.lo strptime.lo \
 timegm.lo HtCodec.lo HtWordCodec.lo HtVector.lo HtHeap.lo regex.lo \
-HtPack.lo HtDateTime.lo HtRegex.lo HtVectorGeneric.lo HtMaxMin.lo
+HtPack.lo HtDateTime.lo HtRegex.lo HtVectorGeneric.lo HtMaxMin.lo \
+HtWordType.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -166,9 +174,9 @@ GZIP_ENV = --best
 DEP_FILES =  .deps/Configuration.P .deps/DB2_db.P .deps/Database.P \
 .deps/Dictionary.P .deps/HtCodec.P .deps/HtDateTime.P .deps/HtHeap.P \
 .deps/HtMaxMin.P .deps/HtPack.P .deps/HtRegex.P .deps/HtVector.P \
-.deps/HtVectorGeneric.P .deps/HtWordCodec.P .deps/IntObject.P \
-.deps/List.P .deps/Object.P .deps/ParsedString.P .deps/Queue.P \
-.deps/QuotedStringList.P .deps/Stack.P .deps/String.P \
+.deps/HtVectorGeneric.P .deps/HtWordCodec.P .deps/HtWordType.P \
+.deps/IntObject.P .deps/List.P .deps/Object.P .deps/ParsedString.P \
+.deps/Queue.P .deps/QuotedStringList.P .deps/Stack.P .deps/String.P \
 .deps/StringList.P .deps/StringMatch.P .deps/String_fmt.P \
 .deps/good_strtok.P .deps/mktime.P .deps/regex.P .deps/strcasecmp.P \
 .deps/strptime.P .deps/timegm.P

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.h,v 1.1.2.3 2000/01/03 10:04:48 bosc Exp $
+// $Id: WordType.h,v 1.1.2.4 2000/01/13 14:47:11 loic Exp $
 //
 
 #ifndef _WordType_h
@@ -19,16 +19,6 @@
 
 #include "htString.h"
 #include "Configuration.h"
-#include"WordContext.h"
-//
-// Compatibility functions
-//
-#ifdef OUTDATED
-#define HtIsWordChar(c)       (WordContext::word_type_default->IsChar(c))
-#define HtIsStrictWordChar(c) (WordContext::word_type_default->IsStrictChar(c))
-#define HtWordNormalize(w)    (WordContext::word_type_default->Normalize(w))
-#define HtStripPunctuation(c) (WordContext::word_type_default->StripPunctuation(c))
-#endif
 //
 // Return values of Normalize, to get them in string form use NormalizeStatus
 //
@@ -62,7 +52,16 @@ public:
   // Constructors
   //
   WordType(const Configuration& config);
+
+  //
+  // Unique instance handlers 
+  //
   static void Initialize(const Configuration& config);
+  static WordType* Instance() {
+    if(instance) return instance;
+    fprintf(stderr, "WordType::Instance: no instance\n");
+    return 0;
+  }
   
   //
   // Predicates
@@ -92,6 +91,11 @@ private:
   int			maximum_length;		// Maximum word length
   int			allow_numbers;		// True if a word may contain numbers
   Dictionary		badwords;		// List of excluded words
+
+  //
+  // Unique instance pointer
+  //
+  static WordType* instance;
 };
 
 // Bits to set in chrtypes[]:

@@ -12,6 +12,7 @@
 
 #include "WordRecord.h"
 
+WordRecordInfo* WordRecordInfo::instance = 0;
 
 //
 // WordRecordInfo implementation
@@ -19,21 +20,22 @@
 void 
 WordRecordInfo::Initialize(const Configuration &config)
 {
-    const String &recorddesc = config["wordlist_wordrecord_description"];
-    WordContext::record_info = new WordRecordInfo;
-    if(recorddesc == (String)"DATA")
-    {
-	WordRecordInfo::Get()->default_type = WORD_RECORD_DATA;
-    }
-    else
-    if(recorddesc==(String)"NONE" || recorddesc.empty())
-    {
-	WordRecordInfo::Get()->default_type = WORD_RECORD_NONE;	
-    }
-    else
-    {
-	cerr << "WordRecordInfo::Initialize: invalid wordlist_wordrecord_description:" << recorddesc << endl;
-    }
+  if(instance == 0)
+    delete instance;
+  instance = new WordRecordInfo(config);
+}
+
+WordRecordInfo::WordRecordInfo(const Configuration& config)
+{
+  default_type = WORD_RECORD_INVALID;
+  const String &recorddesc = config["wordlist_wordrecord_description"];
+  if(recorddesc.nocase_compare("data")) {
+    default_type = WORD_RECORD_DATA;
+  } else if(recorddesc.nocase_compare("none") || recorddesc.empty()) {
+    default_type = WORD_RECORD_NONE;	
+  } else {
+    cerr << "WordRecordInfo::WordRecordInfo: invalid wordlist_wordrecord_description:" << recorddesc << endl;
+  }
 }
 
 //

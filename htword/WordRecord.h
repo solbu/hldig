@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordRecord.h,v 1.6.2.7 2000/01/10 16:19:13 loic Exp $
+// $Id: WordRecord.h,v 1.6.2.8 2000/01/13 14:47:11 loic Exp $
 //
 
 #ifndef _WordRecord_h_
@@ -19,13 +19,13 @@
 #ifndef SWIG
 #include "HtPack.h"
 #include "StringList.h"
-#include "WordContext.h"
 #include "Configuration.h"
 #endif /* SWIG */
 
 //
 // Possible values of the type data field
 //
+#define WORD_RECORD_INVALID	0
 #define WORD_RECORD_DATA	1
 #define WORD_RECORD_STATS	2
 #define WORD_RECORD_NONE	3
@@ -56,10 +56,23 @@
 class WordRecordInfo
 {
  public:
-    static WordRecordInfo *Get() { return WordContext::record_info; }
+    WordRecordInfo(const Configuration& config);
+    //
+    // Unique instance handlers 
+    //
     static void Initialize(const Configuration& config);
+    static WordRecordInfo* Instance() {
+      if(instance) return instance;
+      fprintf(stderr, "WordRecordInfo::Instance: no instance\n");
+      return 0;
+    }
 
     int default_type;
+
+    //
+    // Unique instance pointer
+    //
+    static WordRecordInfo* instance;
 };
 #endif /* SWIG */
 
@@ -104,7 +117,13 @@ class WordRecord
 
   void	Clear() { memset((char*)&info, '\0', sizeof(info)); type = DefaultType(); }
 
-  inline int DefaultType() { return WordRecordInfo::Get()->default_type; }
+#ifndef SWIG
+  //
+  // Convinience functions to access key structure information (see WordKeyInfo.h)
+  //
+  static inline const WordRecordInfo* Info()   { return WordRecordInfo::Instance(); }
+#endif /* SWIG */
+  static inline int                   DefaultType() { return Info()->default_type; }
 
 #ifndef SWIG
   int Pack(String& packed) const {

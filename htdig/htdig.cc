@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.7 1999/12/27 22:27:03 loic Exp $
+// $Id: htdig.cc,v 1.26.2.8 2000/01/13 14:47:08 loic Exp $
 //
 
 #include "Document.h"
@@ -19,7 +19,7 @@
 #include "htdig.h"
 #include "defaults.h"
 #include "HtURLCodec.h"
-#include "WordType.h"
+#include "WordContext.h"
 #include "HtDateTime.h"
 
 // If we have this, we probably want it.
@@ -127,6 +127,9 @@ int main(int ac, char **av)
     }
     config.Read(configFile);
 
+    // Initialize htword
+    WordContext::Initialize(config);
+
     if (config["locale"].empty() && debug > 0)
       cout << "Warning: unknown locale!\n";
 
@@ -138,9 +141,6 @@ int main(int ac, char **av)
     // Set up credentials for this run
     if (credentials.length())
 	config.Add("authorization", credentials);
-
-    // Initialize htword
-    WordList::Initialize(config);
 
     //
     // Check url_part_aliases and common_url_parts for

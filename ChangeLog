@@ -1,3 +1,42 @@
+Thu Jan 13 13:23:17 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordContext.h (class WordContext): simplifies a lot. WordContext is
+	  no longer a repository for pointers of class instances. Only a place to call
+	  Initialize for classes that have a single instance.
+
+	* htlib/HtWordType.cc: added to include definition of functions shortcuts for
+	  WordType.
+
+	* htword/WordRecord.h,WordType.h,WordKeyInfo.h: implement homogeneous scheme to
+	  handle unique instance of the class.
+	  - constructor takes const Configuration& argument and init object with config
+	    values
+	  - static member instance
+	  - static method Initialize the static member instance
+	  - static method Instance returns the pointer in instance data member
+	
+        * htword/WordRecord.cc: add constructor for WordRecordInfo, and Instance static
+	  function. Add WORD_RECORD_INVALID to depict uninitialize WordRecordInfo object.
+
+	* htword/WordKeyInfo.h: rename SetKeyDescriptionFromFile and SetKeyDescriptionFromString
+	  to InitializeFromFile and InitializeFromString and implement them by calling Initialize.
+	  rename SetKeyDescriptionRandom to InitializeRandom
+	  rename Initialize(String& line) to GetNFields(String& line)
+	  rename Initialize(int nfields) to Alloc(int nfields)
+
+	* htdig/htdig.cc,htmerge/htmerge.cc,htsearch/htsearch.cc,test/word.cc: replace 
+	  WordList::Initialize with WordContext::Initialize and run immediately after
+	  config is read. Otherwise WordType fails to work and configuration value
+	  extraction will fail.
+
+	* htmerge/htmerge.cc: move initialization 
+
+	* test/conf/htdig.conf2.in: reorder so that it looks as much as possible as conf.in
+	
+Thu Jan 13 12:33:46 2000  Loic Dachary  <loic@ceic.com>
+
+	* htdb/htstat.cc,htdump.cc,htload.cc: set proper progname
+
 Wed Jan 12 20:02:26 2000  Loic Dachary  <loic@ceic.com>
 
 	* htcommon/HtWordList.cc (Dump): Use Walk instead of Collect otherwise does not work.

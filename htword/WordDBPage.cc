@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.cc,v 1.1.2.6 2000/01/12 18:12:49 loic Exp $
+// $Id: WordDBPage.cc,v 1.1.2.7 2000/01/13 14:47:10 loic Exp $
 //
 
 #include"WordDBPage.h"
@@ -970,7 +970,7 @@ WordDBPage::show()
 	      int keycl=tkey.NFields();
 	      for(j=1;j<tkey.NFields();j++)
 	      {
-		  if(fieldchanged[j]){keycl+=WordKeyInfo::Get()->sort[j].bits;}
+		  if(fieldchanged[j]){keycl+=WordKeyInfo::Instance()->sort[j].bits;}
 	      }
 	      if(fieldchanged[0]){keycl+=3;keycl+=8*strlen(wordchange);}
 	      printf("  ::%2d  %f",keycl,keycl/8.0);

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.cc,v 1.3.2.4 2000/01/03 10:04:48 bosc Exp $
+// $Id: WordType.cc,v 1.3.2.5 2000/01/13 14:47:11 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -27,19 +27,14 @@
 
 #include "WordType.h"
 
+WordType* WordType::instance = 0;
 
-int HtIsWordChar(char c)          {return WordContext::Get_word_type_default()->IsChar(c);}          
-int HtIsStrictWordChar(char c)	  {return WordContext::Get_word_type_default()->IsStrictChar(c);}    
-int HtWordNormalize(String &w)	  {return WordContext::Get_word_type_default()->Normalize(w);}       
-int HtStripPunctuation(String &w) {return WordContext::Get_word_type_default()->StripPunctuation(w);}
-
-// Must only be called once (no tests, though).
 void 
 WordType::Initialize(const Configuration &config_arg)
 {
-  if(WordContext::word_type_default == 0) {
-     WordContext::word_type_default = new WordType(config_arg);
-  }
+  if(instance == 0)
+    delete instance;
+  instance = new WordType(config_arg);
 }
 
 WordType::WordType(const Configuration &config)
