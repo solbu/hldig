@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.31 1999/04/07 23:43:00 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.32 1999/05/04 19:45:39 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -675,7 +675,10 @@ reportError(char *msg)
     cout << "<body bgcolor=\"#ffffff\">\n";
     cout << "<h1>ht://Dig error</h1>\n";
     cout << "<p>htsearch detected an error.  Please report this to the\n";
-    cout << "webmaster of this site.  The error message is:</p>\n";
+    cout << "webmaster of this site by sending an e-mail to:\n";
+    cout << "<a href=\"mailto:" << config["maintainer"] << "\">";
+    cout << config["maintainer"] << "</a>\n";
+    cout << "The error message is:</p>\n";
     cout << "<pre>\n" << msg << "\n</pre>\n</body></html>\n";
     exit(1);
 }
