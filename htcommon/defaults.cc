@@ -4,9 +4,14 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.31  1999/01/14 03:01:25  ghutchis
+// Added search_results_wrapper for the location of the wrapper file, if used.
+// (The default is empty, which uses header.html and footer.html)
+//
 // Revision 1.30  1999/01/14 00:31:02  ghutchis
 // Removed use_document_compression (redundant) and fixed problem with missing
-// comma. Setting compression_factor to 0 is the equivalent of turning off use_document_compression.
+// comma. Setting compression_factor to 0 is the equivalent of turning 
+// off use_document_compression.
 //
 // Revision 1.29  1999/01/12 18:09:24  ghutchis
 // Added config options use_document_compression and compression_factor for
@@ -103,7 +108,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.30 1999/01/14 00:31:02 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.31 1999/01/14 03:01:25 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -204,6 +209,7 @@ ConfigDefaults	defaults[] =
     {"search_algorithm",		"exact:1"},
     {"search_results_footer",		"${common_dir}/footer.html"},
     {"search_results_header",		"${common_dir}/header.html"},
+    {"search_results_wrapper",		""},
     {"server_aliases",                  ""},
     {"server_wait_time",                "0"},
     {"server_max_docs",                 "-1"},
