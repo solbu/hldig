@@ -347,14 +347,25 @@ following line would do it:<br>
 
 	  4.7. <a name="q4.7">Can I use SSI or other CGIs in my
 	  htsearch results?</a><br>
+
 	  <p>Yes, but not directly. The htsearch CGI does not
 	  understand SSI markup and thus cannot include other
-	  CGIs. However, you can easily write a "wrapper" CGI or other
-	  server-parsed file that includes the htsearch results. For
-	  perl script examples, see the files in contrib/ewswrap. For
-	  PHP examples, see PHP guide in the <a
-	  href="http://www.htdig.org/contrib/guides.html">contributed guides</a>.
-	  </p>
+	  CGIs. However, it is possible doing it the other way round:
+	  you can have the htsearch results included in your dynamic
+	  page.<p>
+
+	  The easiest approach is using SSI with the help of the <a
+	  href="attrs.html#script_name">script_name</a> configuration
+	  file attribute. See the <tt>contrib/scriptname</tt>
+	  directory for a small example using SSI.</p>
+
+	  <p>For CGI and PHP, you need a &quot;wrapper&quot; script to
+	  do that. For perl script examples, see the files in
+	  <tt>contrib/ewswrap</tt>. The PHP guide (see <a
+	  href="http://www.htdig.org/contrib/guides.html">contributed
+	  guides</a>) not only describes a wrapper script for PHP, but
+	  also offers a step by step tutorial to the basics of
+	  ht://dig and is well worth reading.</p>
 
 	  4.8. <a name="q4.8">How do I index Word or PostScript
 	  documents?</a><br>
