@@ -3,20 +3,8 @@
 //
 // This is a class which defines the interface to a generic, simple database.
 //
-// $Id: Database.h,v 1.4 1999/01/23 01:25:02 hp Exp $
+// $Id: Database.h,v 1.5 1999/03/03 04:48:37 ghutchis Exp $
 //
-// $Log: Database.h,v $
-// Revision 1.4  1999/01/23 01:25:02  hp
-// Fixed _some_ missing const qualifiers on common methods (requiring temps)
-//
-// Revision 1.3  1998/06/21 23:20:07  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
-//
-// Revision 1.2  1997/03/24 04:33:19  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
 //
 //
 #ifndef _Database_h_
@@ -24,6 +12,11 @@
 
 #include "Object.h"
 #include "htString.h"
+
+// Database Types
+#define DB_BTREE 0
+#define DB_HASH 1
+#define GDBM_HASH 2
 
 class Database : public Object
 {
@@ -43,7 +36,7 @@ public:
     // The idea here is that the particular type of database used by
     // all the programs is to be defined in one place.
     //
-    static Database	*getDatabaseInstance();
+    static Database	*getDatabaseInstance(int type = DB_BTREE);
 	
     //
     // Common interface

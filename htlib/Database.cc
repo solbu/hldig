@@ -3,26 +3,14 @@
 //
 // Implementation of Database
 //
-// $Log: Database.cc,v $
-// Revision 1.4  1999/01/23 01:25:02  hp
-// Fixed _some_ missing const qualifiers on common methods (requiring temps)
-//
-// Revision 1.3  1998/06/21 23:20:06  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
-//
-// Revision 1.2  1998/05/26 03:58:07  turtle
-// Got rid of compiler warnings.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: Database.cc,v 1.4 1999/01/23 01:25:02 hp Exp $";
+static char RCSid[] = "$Id: Database.cc,v 1.5 1999/03/03 04:48:37 ghutchis Exp $";
 #endif
 
 #include "Database.h"
 #include "DB2_db.h"
+#include "DB2_hash.h"
 
 //*****************************************************************************
 // Database::Database()
@@ -106,8 +94,11 @@ Database::Delete(char *key)
 // Database *Database::getDatabaseInstance()
 //
 Database *
-Database::getDatabaseInstance()
+Database::getDatabaseInstance(int type = DB_BTREE)
 {
+  if (type == DB_HASH) // Hash
+    return DB2_hash::getDatabaseInstance();
+  else
     return DB2_db::getDatabaseInstance();
 }
 
