@@ -4,6 +4,9 @@
 // Implementation of Plaintext
 //
 // $Log: Plaintext.cc,v $
+// Revision 1.4  1997/04/20 15:23:40  turtle
+// Fixed bug
+//
 // Revision 1.3  1997/03/27 00:06:05  turtle
 // Applied patch supplied by Peter Enderborg <pme@ufh.se> to fix a problem with
 // a pointer running off the end of a string.
@@ -16,7 +19,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Plaintext.cc,v 1.3 1997/03/27 00:06:05 turtle Exp $";
+static char RCSid[] = "$Id: Plaintext.cc,v 1.4 1997/04/20 15:23:40 turtle Exp $";
 #endif
 
 #include "Plaintext.h"
@@ -133,7 +136,7 @@ Plaintext::parse(Retriever &retriever, URL &)
 		in_space = 0;
 	    }
 	}
-	if (!*position)
+	if (*position)
 	    position++;
     }
     retriever.got_head(head);
