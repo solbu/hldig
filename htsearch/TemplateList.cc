@@ -4,6 +4,9 @@
 // Implementation of TemplateList
 //
 // $Log: TemplateList.cc,v $
+// Revision 1.4.2.2  2000/02/17 16:49:48  grdetil
+// silly little typo.
+//
 // Revision 1.4.2.1  2000/02/17 16:46:26  grdetil
 // [ Improve htsearch's HTML 4.0 compliance ]
 // * htsearch/TemplateList.cc (createFromString): Use file name rather
@@ -31,7 +34,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: TemplateList.cc,v 1.4.2.1 2000/02/17 16:46:26 grdetil Exp $";
+static char RCSid[] = "$Id: TemplateList.cc,v 1.4.2.2 2000/02/17 16:49:48 grdetil Exp $";
 #endif
 
 #include "TemplateList.h"
@@ -102,7 +105,7 @@ TemplateList::createFromString(char *str)
 	    s << "$(STARSLEFT)\n";
 	    s << "</dt><dd>$(EXCERPT)<br>\n";
 	    s << "<i><a href=\"$(URL)\">$(URL)</a></i>\n";
-	    s << " <font size="-1">$(MODIFIED), $(SIZE) bytes</font>\n";
+	    s << " <font size=\"-1\">$(MODIFIED), $(SIZE) bytes</font>\n";
 	    s << "</dd></dl>\n";
 	    t->setMatchTemplate(s);
 	}
