@@ -1,3 +1,12 @@
+Tue Aug 26 12:25:40 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+   * configure.in: removed AC_FUNC_MKTIME because it may not work properly
+     and added default replacement directory (htlib) for future uses
+   * htlib/Makefile.am: back-step with re-inclusion of mktime.c in the
+     list of files to be always compiled (caused linking errors 
+     for the __mktime_internal function)
+   * global: updated with 'autoreconf -if'
+
 Sun Aug 24 12:44:29 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
    * updated with 'autoreconf -if': autoconf 2.57, automake 1.7.6 and

@@ -38,7 +38,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.33 2003/08/24 02:47:20 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.34 2003/08/26 02:33:01 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -98,7 +98,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.33 2003/08/24 02:47:20 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.34 2003/08/26 02:33:01 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -149,7 +149,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.33 2003/08/24 02:47:20 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.34 2003/08/26 02:33:01 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -235,7 +235,7 @@ dnl LoadModule env_module         @APACHE_MODULES@/mod_env.so
 dnl LoadModule config_log_module  @APACHE_MODULES@/mod_log_config.so
 dnl ...
 dnl
-dnl @version $Id: aclocal.m4,v 1.33 2003/08/24 02:47:20 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.34 2003/08/26 02:33:01 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -414,7 +414,7 @@ dnl      .if ${HAVE_SSL} == "yes"
 dnl      SRCS+= @srcdir@/my_file_that_needs_ssl.c
 dnl      .endif
 dnl
-dnl @version $Id: aclocal.m4,v 1.33 2003/08/24 02:47:20 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.34 2003/08/26 02:33:01 angusgb Exp $
 dnl @author Mark Ethan Trostler <trostler@juniper.net>
 dnl
 AC_DEFUN([CHECK_SSL],

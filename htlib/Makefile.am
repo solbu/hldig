@@ -7,7 +7,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc \
 	String.cc StringList.cc StringMatch.cc String_fmt.cc \
 	good_strtok.cc strcasecmp.cc \
-	strptime.cc timegm.c \
+	mktime.c strptime.cc timegm.c \
 	getcwd.c memcpy.c memmove.c raise.c strerror.c \
 	HtCodec.cc HtWordCodec.cc \
 	HtVector.cc HtHeap.cc \

@@ -200,7 +200,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc \
 	String.cc StringList.cc StringMatch.cc String_fmt.cc \
 	good_strtok.cc strcasecmp.cc \
-	strptime.cc timegm.c \
+	mktime.c strptime.cc timegm.c \
 	getcwd.c memcpy.c memmove.c raise.c strerror.c \
 	HtCodec.cc HtWordCodec.cc \
 	HtVector.cc HtHeap.cc \
@@ -271,9 +271,9 @@ am_libht_la_OBJECTS = Configuration.lo Database.lo Dictionary.lo \
 	DB2_db.lo IntObject.lo List.lo Object.lo ParsedString.lo \
 	Queue.lo QuotedStringList.lo Stack.lo String.lo StringList.lo \
 	StringMatch.lo String_fmt.lo good_strtok.lo strcasecmp.lo \
-	strptime.lo timegm.lo getcwd.lo memcpy.lo memmove.lo raise.lo \
-	strerror.lo HtCodec.lo HtWordCodec.lo HtVector.lo HtHeap.lo \
-	HtPack.lo HtDateTime.lo HtRegex.lo HtRegexList.lo \
+	mktime.lo strptime.lo timegm.lo getcwd.lo memcpy.lo memmove.lo \
+	raise.lo strerror.lo HtCodec.lo HtWordCodec.lo HtVector.lo \
+	HtHeap.lo HtPack.lo HtDateTime.lo HtRegex.lo HtRegexList.lo \
 	HtRegexReplace.lo HtRegexReplaceList.lo HtVectorGeneric.lo \
 	HtMaxMin.lo HtWordType.lo myqsort.lo md5.lo mhash_md5.lo
 libht_la_OBJECTS = $(am_libht_la_OBJECTS)
@@ -301,8 +301,7 @@ HEADERS = $(pkginclude_HEADERS)
 
 DIST_COMMON = $(pkginclude_HEADERS) $(top_srcdir)/Makefile.config \
 	Makefile.am Makefile.in error.c error.h lstat.c malloc.c \
-	memcmp.c mktime.c realloc.c regex.c snprintf.c stat.c \
-	vsnprintf.c
+	memcmp.c realloc.c regex.c snprintf.c stat.c vsnprintf.c
 SOURCES = $(libht_la_SOURCES)
 
 all: all-am
