@@ -3,124 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Log: Retriever.cc,v $
-// Revision 1.35  1999/01/24 03:31:54  ghutchis
-// If a server ignores the If-Modified-Since request, still compare the
-// retrieved date to the stored date to see if it has been modified.
-//
-// Revision 1.34  1999/01/18 00:52:26  ghutchis
-// Fix compiler warnings.
-//
-// Revision 1.33  1999/01/17 20:32:21  ghutchis
-// Added support for url_log, save and restart digs.
-//
-// Revision 1.32  1999/01/14 01:09:12  ghutchis
-// Small speed improvements based on gprof.
-//
-// Revision 1.31  1999/01/14 00:35:22  ghutchis
-// Call AddDescription even if max_hop_count is reached.
-//
-// Revision 1.30  1999/01/07 04:05:25  ghutchis
-// Skip changing to lowercase in got_word, we do it in WordList::Word.
-//
-// Revision 1.29  1999/01/05 19:12:59  bergolth
-// fixed bug in bad_querystring detection
-//
-// Revision 1.28  1998/12/19 18:09:03  bergolth
-// Added bad_querystr option.
-//
-// Revision 1.27  1998/12/13 05:38:14  ghutchis
-// Added check to prevent currenthopcount from becoming -1.
-//
-// Revision 1.26  1998/12/12 01:44:33  ghutchis
-// Added additional debugging info on the reason for excluding a URL, based on
-// a patch by Benoit Majeau <Benoit.Majeau@nrc.ca>.
-//
-// Revision 1.25  1998/12/11 02:54:07  ghutchis
-// Changed support for server_wait_time to use delay() method in Server. Delay
-// is from beginning of last connection to this one.
-//
-// Revision 1.24  1998/12/08 02:54:24  ghutchis
-// Use server_wait_time to call sleep() before requests. Should help prevent
-// server abuse. :-)
-//
-// Revision 1.23  1998/12/06 18:44:00  ghutchis
-// Don't add the text of descriptions to the word db here, it's better to do it
-// in the DocumentRef itself.
-//
-// Revision 1.22  1998/12/05 00:52:55  ghutchis
-// Added a parameter to Initial function to prevent URLs from being checked
-// twice during an update dig.
-//
-// Revision 1.21  1998/12/02 02:45:10  ghutchis
-// Update hopcount correctly by taking the shortest paths to documents.
-//
-// Revision 1.20  1998/11/27 18:33:37  ghutchis
-// Changed Retriever::got_word to check for small words, valid_punctuation to
-// remove bugs in HTML.cc.
-//
-// Revision 1.18  1998/11/22 19:14:16  ghutchis
-// Use "description_factor" to weight link descriptions with the documents at
-// the end of the link.
-//
-// Revision 1.17  1998/11/16 16:10:17  ghutchis
-// Fix back link count.
-//
-// Revision 1.16  1998/11/15 22:29:27  ghutchis
-// Implement docBackLinks backlink count.
-//
-// Revision 1.15  1998/11/01 00:00:40  ghutchis
-// Replaced system calls with htlib/my* functions.
-//
-// Revision 1.14  1998/10/26 20:43:31  ghutchis
-// Fixed bug introduced by Oct 18 change. Authorization will not be cleared.
-//
-// Revision 1.13  1998/10/21 16:34:19  bergolth
-// Added translation of server names. Additional limiting after normalization
-// of the URL.
-//
-// Revision 1.12  1998/10/18 20:37:41  ghutchis
-// Fixed database corruption bug and other misc. cleanups.
-//
-// Revision 1.11  1998/10/09 04:34:06  ghutchis
-// Fixed typos
-//
-// Revision 1.10  1998/10/02 17:17:20  ghutchis
-// Added check for docs marked noindex--words aren't indexed anymore
-//
-// Revision 1.8  1998/09/08 03:29:09  ghutchis
-// Clean up for 3.1.0b1.
-//
-// Revision 1.7  1998/09/07 04:37:16  ghutchis
-// Added DocState for documents marked as "noindex".
-//
-// Revision 1.6  1998/08/11 08:58:31  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.5  1998/08/06 14:18:32  ghutchis
-// Added config option "local_default_doc" for default filename in a local
-// directory. Fixed spelling mistake in "elipses" attributes.
-//
-// Revision 1.4  1998/08/03 16:50:34  ghutchis
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.3  1998/07/09 09:38:59  ghutchis
-// Added support for local file digging using patches by Pasi. Patches
-// include support for local user (~username) digging.
-//
-// Revision 1.2  1998/01/05 05:14:16  turtle
-// fixed memory leak
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
-// Revision 1.1  1995/12/11 22:46:24  turtle
-// This uses the backwards model of only parsing HTML
-//
-// Revision 1.0  1995/08/18 16:27:37  turtle
-// Before change to use Server class
-//
+// $Id: Retriever.cc,v 1.36 1999/01/31 19:45:35 hp Exp $
 //
 
 #include "Retriever.h"
@@ -250,7 +133,6 @@ Retriever::Initial(char *list, int from)
 	URL	u(tokens[i]);
 	server = (Server *) servers[u.signature()];
 	url = u.get();
-	url.lowercase();
 	if (debug > 2)
            cout << "\t" << from << ":" << (int) log << ":" << url;
 	if (!server)
@@ -702,7 +584,6 @@ Retriever::Need2Get(char *u)
 {
     static String	url;
     url = u;
-    url.lowercase();
 
     return !visited.Exists(url);
 }
@@ -739,7 +620,6 @@ Retriever::IsValidURL(char *u)
 
     static String	url;
     url = u;
-    url.lowercase();
 
     //
     // Currently, we only deal with HTTP URLs.  Gopher and ftp will
@@ -974,7 +854,6 @@ Retriever::GetRef(char *u)
 {
     static String	url;
     url = u;
-    url.lowercase();
 
     return docs[url];
 }
@@ -1140,7 +1019,6 @@ Retriever::got_href(URL &url, char *description)
 		  server->push(url.get(), ref->DocHopCount(), base->get());
 
 		String	temp = url.get();
-		temp.lowercase();
 		visited.Add(temp, 0);
 		if (debug)
 		    cout << '+';
@@ -1265,7 +1143,6 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 		server->push(url.get(), ref->DocHopCount(), base->get());
 
 		String	temp = url.get();
-		temp.lowercase();
 		visited.Add(temp, 0);
 	    }
 

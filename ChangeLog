@@ -1,3 +1,8 @@
+Sun Jan 31 11:07:38 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htdig/Retriever.cc (Initial, GetRef, Need2Get, IsValidURL,
+	got_href, got_redirect): Do not lowercase URLs.
+
 Sat Jan 30 22:29:50 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure, configure.in: Add support for program name
