@@ -1,3 +1,42 @@
+Mon Apr 19 00:53:06 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* htsearch/ResultMatch.h (create): New.  All (the only) ctor
+	caller changed to use this.
+	(setRef, getRef): Removed.  Callers changed to use nearby data.
+	(incomplete): Removed.
+	(setIncompleteScore): Renamed to...
+ 	(setScore): ...this.  All callers changed.
+	(setSortType): New.
+	(getTitle, getTime, setTitle, setTime, getSortFun): New virtual
+	functions.
+	(enum SortType): Moved from Display, private.
+	(mySortType): New static member.
+
+	* htsearch/ResultMatch.cc (mySortType): Define static member
+	variable.
+	(getScore): Remove handling of "incomplete". Moved to ResultMatch.h
+	(getTitle, getTime, setTitle, setTime): New dummy functions.
+	(class ScoreMatch, class TimeMatch, class IDMatch, class
+	TitleMatch): Derived classes with compare functions (from Display)
+	and extra sort-method-related members, as needed.
+	(setSortType): New, mostly moved from Display.
+	(create): New.
+
+	* htsearch/Display.h: Changed first argument from ResultMatch * to
+	DocumentRef *.
+	(compare, compareTime, compareID, compareTitle, enum SortType,
+	sortType): Removed.
+
+	* htsearch/Display.cc (display): Call ResultMatch::setSortType and
+	output syntax error page for invalid sort methods.
+	(displayMatch): Change first argument from ResultMatch * to
+	DocumentRef *ref.  All callers changed.
+	(buildMatchList): Remove call to sortType and typ variable.
+	Always call (ResultMatch::)setTime and setTitle.  Remove extra
+	call to setID.
+	(sort): Call (ResultMatch::)getSortFun for qsort compare function.
+	(compare, compareTime, compareID, compareTitle, sortType): Removed.
+
 Wed Apr 14 21:21:35 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
 	* htlib/regex.c: fixed compile problem with AIX xlc compiler

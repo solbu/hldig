@@ -1,7 +1,7 @@
 //
 // ResultMatch.h
 //
-// $Id: ResultMatch.h,v 1.3 1999/03/12 00:46:57 hp Exp $
+// $Id: ResultMatch.h,v 1.4 1999/04/19 01:21:51 hp Exp $
 //
 
 #ifndef _ResultMatch_h_
@@ -20,26 +20,49 @@ public:
 	//
 					ResultMatch();
 					~ResultMatch();
-
+					static ResultMatch *create();
 	//
 	// Data access members
 	//
 	void			setAnchor(int a)			{anchor = a;}
 	void			setID(int i)			{id = i;}
-	void			setRef(DocumentRef *r)		{ref = r;}
-	void			setIncompleteScore(float s)	{score = s;}
+	void			setScore(float s)	{score = s;}
 	
 	int				getAnchor()					{return anchor;}
-	int				getScore();
+	int				getScore()	{ return (int) score; }
 	int			getID()						{return id;}
-	DocumentRef		*getRef()					{return ref;}
+
+	static int		setSortType(char *);
+
+	// A method for each type of data Display wants to cram in.
+	// Will only store the pieces necessary for the
+	// search-type as defined in setSortType, the others are dummies.
+	virtual char *getTitle();
+	virtual time_t getTime();
+
+	virtual void setTitle(char *);
+	virtual void setTime(time_t);
+
+	// This is likely to help weak compilers as well as the eye.
+	typedef int (*CmpFun)(const void *, const void *);
+
+	// The purpose of the derived classes is to define their own.
+	virtual CmpFun getSortFun() = 0;
 
 private:
+	enum SortType
+	{
+	    SortByScore,
+	    SortByTime,
+	    SortByTitle,
+	    SortByID
+	};
+
 	float			score;
-	int				incomplete;
 	int				anchor;
 	int				id;
-	DocumentRef		*ref;
+
+	static SortType		mySortType;
 };
 
 #endif

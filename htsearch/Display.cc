@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.70 1999/04/14 19:36:01 bergolth Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.71 1999/04/19 01:21:51 hp Exp $";
 #endif
 
 #include "htsearch.h"
@@ -88,6 +88,18 @@ Display::~Display()
 void
 Display::display(int pageNumber)
 {
+    int			good_sort = ResultMatch::setSortType(config["sort"]);
+    if (!good_sort)
+    {
+      // Must temporarily stash the message in a String, since
+      // displaySyntaxError will overwrite the static temp used in form.
+
+      String s(form("No such sort method: `%s'", config["sort"]));
+
+      displaySyntaxError(s);
+      return;
+    }
+
     List		*matches = buildMatchList();
     int			currentMatch = 0;
     int			numberDisplayed = 0;
@@ -173,15 +185,13 @@ Display::display(int pageNumber)
     {
 	if (currentMatch >= startAt)
 	{
-	    match->setRef(docDB[match->getID()]);
-	    DocumentRef	*ref = match->getRef();
+	    DocumentRef	*ref = docDB[match->getID()];
 	    if (!ref)
 		continue;	// The document isn't present for some reason
 	    ref->DocAnchor(match->getAnchor());
 	    ref->DocScore(match->getScore());
-	    displayMatch(match,currentMatch+1);
+	    displayMatch(ref,currentMatch+1);
 	    numberDisplayed++;
-	    match->setRef(NULL);
 	    delete ref;
 	}
 	currentMatch++;
@@ -223,12 +233,10 @@ Display::includeURL(char *url)
 
 //*****************************************************************************
 void
-Display::displayMatch(ResultMatch *match, int current)
+Display::displayMatch(DocumentRef *ref, int current)
 {
     String	*str = 0;
 	
-    DocumentRef	*ref = match->getRef();
-
     char    *url = ref->DocURL();
     vars.Add("URL", new String(url));
     
@@ -267,7 +275,7 @@ Display::displayMatch(ResultMatch *match, int current)
 	vars.Remove("ANCHOR");
       }
     
-    vars.Add("SCORE", new String(form("%d", match->getScore())));
+    vars.Add("SCORE", new String(form("%d", ref->DocScore())));
     vars.Add("CURRENT", new String(form("%d", current)));
     char	*title = ref->DocTitle();
     if (!title || !*title)
@@ -866,7 +874,6 @@ Display::buildMatchList()
     List	*matches = new List();
     double      backlink_factor = config.Double("backlink_factor");
     double      date_factor = config.Double("date_factor");
-    SortType	typ = sortType();
 	
     results->Start_Get();
     while ((cpid = results->Get_Next()))
@@ -892,9 +899,8 @@ Display::buildMatchList()
 	}
 	
 
-	thisMatch = new ResultMatch();
+	thisMatch = ResultMatch::create();
 	thisMatch->setID(id);
-	thisMatch->setRef(NULL);
 
 	//
 	// Assign the incomplete score to this match.  This score was
@@ -913,7 +919,7 @@ Display::buildMatchList()
 	// We want older docs to have smaller values and the
 	// ultimate values to be a reasonable size (max about 100)
 
-	if (date_factor != 0.0 || backlink_factor != 0.0 || typ != SortByScore)
+	if (date_factor != 0.0 || backlink_factor != 0.0)
 	{
 	    score += date_factor * 
 	      ((thisRef->DocTime() * 1000 / (double)time(0)) - 900);
@@ -926,22 +932,15 @@ Display::buildMatchList()
 	      * (thisRef->DocBackLinks() / (double)links);
 	    if (score <= 0.0)
 	      score = 0.0;
-  
-	    if (typ != SortByScore)
-	    {
-		DocumentRef *sortRef = new DocumentRef();
-		sortRef->DocTime(thisRef->DocTime());
-		sortRef->DocID(thisRef->DocID());
-		if (typ == SortByTitle)
-		  sortRef->DocTitle(thisRef->DocTitle());
-		thisMatch->setRef(sortRef);
-	    }
 	}
+
+	thisMatch->setTime(thisRef->DocTime());   
+	thisMatch->setTitle(thisRef->DocTitle());   
 
 	// Get rid of it to free the memory!
 	delete thisRef;
 
-	thisMatch->setIncompleteScore(score);
+	thisMatch->setScore(score);
 	thisMatch->setAnchor(dm->anchor);
 		
 	//
@@ -1104,12 +1103,8 @@ Display::sort(List *matches)
     }
     matches->Release();
 
-    SortType	typ = sortType();
     qsort((char *) array, numberOfMatches, sizeof(ResultMatch *),
-	  (typ == SortByTitle) ? Display::compareTitle :
-	  (typ == SortByTime) ? Display::compareTime : 
-	  (typ == SortByID) ? Display::compareID :
-	  Display::compare);
+	  array[0]->getSortFun());
 
     char	*st = config["sort"];
     if (st && *st && mystrncasecmp("rev", st, 3) == 0)
@@ -1123,86 +1118,6 @@ Display::sort(List *matches)
 	    matches->Add(array[i]);
     }
     delete [] array;
-}
-
-//*****************************************************************************
-int
-Display::compare(const void *a1, const void *a2)
-{
-    ResultMatch	*m1 = *((ResultMatch **) a1);
-    ResultMatch *m2 = *((ResultMatch **) a2);
-
-    return m2->getScore() - m1->getScore();
-}
-
-//*****************************************************************************
-int
-Display::compareTime(const void *a1, const void *a2)
-{
-    ResultMatch	*m1 = *((ResultMatch **) a1);
-    ResultMatch *m2 = *((ResultMatch **) a2);
-    time_t	t1 = (m1->getRef()) ? m1->getRef()->DocTime() : 0;
-    time_t	t2 = (m2->getRef()) ? m2->getRef()->DocTime() : 0;
-
-    return (int) (t2 - t1);
-}
-
-//*****************************************************************************
-int
-Display::compareID(const void *a1, const void *a2)
-{
-    ResultMatch       *m1 = *((ResultMatch **) a1);
-    ResultMatch *m2 = *((ResultMatch **) a2);
-    int               i1 = m1->getID();
-    int               i2 = m2->getID();
-
-    return (i1 - i2);
-}
-
-//*****************************************************************************
-int
-Display::compareTitle(const void *a1, const void *a2)
-{
-    ResultMatch	*m1 = *((ResultMatch **) a1);
-    ResultMatch *m2 = *((ResultMatch **) a2);
-    char	*t1 = (m1->getRef()) ? m1->getRef()->DocTitle() : (char *)"";
-    char	*t2 = (m2->getRef()) ? m2->getRef()->DocTitle() : (char *)"";
-
-    if (!t1) t1 = "";
-    if (!t2) t2 = "";
-    return mystrcasecmp(t1, t2);
-}
-
-//*****************************************************************************
-Display::SortType
-Display::sortType()
-{
-    static struct
-    {
-	char		*typest;
-	SortType	type;
-    }
-    sorttypes[] =
-    {
-	{"score", SortByScore},
-	{"date", SortByTime},
-	{"time", SortByTime},
-        {"title", SortByTitle},
-        {"id", SortByID}
-    };
-    int		i = 0;
-    char	*st = config["sort"];
-    if (st && *st)
-    {
-	if (mystrncasecmp("rev", st, 3) == 0)
-	    st += 3;
-	for (i = sizeof(sorttypes)/sizeof(sorttypes[0]); --i > 0; )
-	{
-	    if (mystrcasecmp(sorttypes[i].typest, st) == 0)
-		break;
-	}
-    }
-    return sorttypes[i].type;
 }
 
 //*****************************************************************************

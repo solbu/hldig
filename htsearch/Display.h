@@ -1,7 +1,7 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.10 1999/04/14 04:25:22 ghutchis Exp $
+// $Id: Display.h,v 1.11 1999/04/19 01:21:51 hp Exp $
 //
 
 #ifndef _Display_h_
@@ -42,7 +42,7 @@ public:
     void		setCGI(cgi *);
 	
     void		display(int pageNumber);
-    void		displayMatch(ResultMatch *, int current);
+    void		displayMatch(DocumentRef *, int current);
     void		displayHeader();
     void		displayFooter();
     void		displayNomatch();
@@ -132,17 +132,6 @@ protected:
     //
     List		*buildMatchList();
     void		sort(List *);
-    static int		compare(const void *, const void *);
-    static int		compareTime(const void *, const void *);
-    static int		compareID(const void *, const void *);
-    static int		compareTitle(const void *, const void *);
-    enum SortType {
-	SortByScore,
-	SortByTime,
-	SortByTitle,
-	SortByID
-    };
-    SortType		sortType();
     int			includeURL(char *);
     String		*readFile(char *);
     void		expandVariables(char *);
