@@ -123,7 +123,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 pkglib_LTLIBRARIES = libht.la
 
-libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c 	getcwd.c memcmp.c memcpy.c memmove.c raise.c strerror.c 	HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc 	HtPack.cc HtDateTime.cc HtRegex.cc 	HtRegexReplace.cc HtRegexReplaceList.cc 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc 	md5.cc mhash_md5.c scandir.c
+libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c 	getcwd.c memcmp.c memcpy.c memmove.c raise.c strerror.c 	HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc 	HtPack.cc HtDateTime.cc HtRegex.cc 	HtRegexReplace.cc HtRegexReplaceList.cc 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc 	md5.cc mhash_md5.c
 
 
 libht_la_LIBADD = @LTLIBOBJS@
@@ -149,7 +149,7 @@ String_fmt.lo good_strtok.lo strcasecmp.lo mktime.lo strptime.lo \
 timegm.lo getcwd.lo memcmp.lo memcpy.lo memmove.lo raise.lo strerror.lo \
 HtCodec.lo HtWordCodec.lo HtVector.lo HtHeap.lo HtPack.lo HtDateTime.lo \
 HtRegex.lo HtRegexReplace.lo HtRegexReplaceList.lo HtVectorGeneric.lo \
-HtMaxMin.lo HtWordType.lo md5.lo mhash_md5.lo scandir.lo
+HtMaxMin.lo HtWordType.lo md5.lo mhash_md5.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -177,8 +177,8 @@ DEP_FILES =  .deps/Configuration.P .deps/DB2_db.P .deps/Database.P \
 .deps/StringList.P .deps/StringMatch.P .deps/String_fmt.P \
 .deps/getcwd.P .deps/good_strtok.P .deps/md5.P .deps/memcmp.P \
 .deps/memcpy.P .deps/memmove.P .deps/mhash_md5.P .deps/mktime.P \
-.deps/raise.P .deps/scandir.P .deps/snprintf.P .deps/strcasecmp.P \
-.deps/strerror.P .deps/strptime.P .deps/timegm.P .deps/vsnprintf.P
+.deps/raise.P .deps/snprintf.P .deps/strcasecmp.P .deps/strerror.P \
+.deps/strptime.P .deps/timegm.P .deps/vsnprintf.P
 SOURCES = $(libht_la_SOURCES)
 OBJECTS = $(libht_la_OBJECTS)
 

@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: lib.h,v 1.11.2.2 2000/11/19 06:17:22 ghutchis Exp $
+// $Id: lib.h,v 1.11.2.3 2000/11/19 07:06:04 ghutchis Exp $
 //
 
 #ifndef _lib_h
@@ -61,18 +61,5 @@ extern "C" char *Htstrptime(char *buf, char *fmt, struct tm *tm);
 // timegm() is quite rare, so provide our own.
 //
 extern "C" time_t Httimegm(struct tm *tm);
-
-//
-// SYSV systems don't usually have scandir or alphasort so we provide our own
-//
-extern "C"
-{ 
-  int Htscandir(const char *dir, struct dirent ***namelist,
-              int (*select)(const struct dirent *),
-              int (*compar)(const struct dirent **, const struct dirent **));
-}
-
-extern "C" int Htalphasort(const struct dirent **a, const struct dirent **b);
-
 
 #endif
