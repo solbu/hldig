@@ -1,3 +1,12 @@
+Tue Jan 11 09:37:36 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordList.h: move operator << and operator >> to end of
+	  functions declarations instead of data members.
+
+	* htword/WordList.h: added more comments on functions behaviour.
+
+	* htword/WordList.h: added #if SWIG for Perl interface
+
 Mon Jan 10 17:55:05 2000  Marcel Bosc  <bosc@ceic.com>
 
 	* htword/WordDBPage: enhanced compression debugging output
