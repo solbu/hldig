@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.62 2003/02/11 09:49:38 lha Exp $
+// $Id: htsearch.cc,v 1.63 2003/06/09 10:24:07 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -536,6 +536,8 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
     {
 	while (1)
 	{
+	    if (debug > 3)
+		cerr << "setupWords: " << pos << endl;
 	    t = *pos++;
 	    if (isspace(t))
 	    {
@@ -569,6 +571,8 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 			word << (char) t;
 			t = *pos++;
 		    }
+		    if (debug > 2)
+			cerr << "word: " << word << endl;
 		    if (t == ':')	// e.g. "author:word" to search
 		    {			// only in author 
 			word.lowercase();
@@ -582,6 +586,8 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 			    // linear search of known prefixes, with "" flag.
 			    for (i = 0; (cmp = mystrcasecmp (w, colonPrefix[i].name)) < 0; i++)
 				;
+			    if (debug > 2)
+				cerr << "field: "<< colonPrefix[i].name << endl;
 			    if (cmp == 0)	// if prefix found...
 			    {
 				fieldFlag |= colonPrefix [i].flag;
@@ -589,9 +595,11 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 			    }
 			}
 		    }
-		} while (!word.length());
-
+		} while (!word.length() && t);
 		pos--;
+		if (!t && !word.length())	// query ended with junk chars
+		    break;
+
 		if (boolean && (mystrcasecmp(word.get(), "+") == 0
 		    || mystrcasecmp(word.get(), boolean_keywords[AND]) == 0))
 		{

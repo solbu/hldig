@@ -1,4 +1,8 @@
 Mon Jun 9 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* htsearch/htsearch.cc: Fixed setupWords loop for junk at end of query
+	
+Mon Jun 9 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 	
 	* htsearch/Display.cc: Set CONFIG template variable to the base name
 	  of the config file (no directory or .conf), as expected by  htsearch
