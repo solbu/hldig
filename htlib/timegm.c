@@ -35,12 +35,23 @@
 #include <stdlib.h>
 #endif
 
+static struct tm *my_mktime_gmtime_r (const time_t *t, struct tm *tp);
+
+static struct tm *my_mktime_gmtime_r (const time_t *t, struct tm *tp)
+{
+  struct tm *l = gmtime (t);
+  if (! l)
+    return 0;
+  *tp = *l;
+  return tp;
+}
+
 time_t Httimegm(tmp)
 struct tm *tmp;
 {
   static time_t gmtime_offset;
   tmp->tm_isdst = 0;
-  return __mktime_internal (tmp, gmtime, &gmtime_offset);
+  return __mktime_internal (tmp, my_mktime_gmtime_r, &gmtime_offset);
 }
 
 #ifdef TEST_TIMEGM
@@ -92,7 +103,7 @@ int main(void)
     "2000.02.29 23:00:05",
     "2000.03.01 00:00:05",
     "2007.06.05 17:55:35",
-    "2038.01.19 03:14:07"
+    "2038.01.19 03:14:07",
     0
   };
   int i, ok = 1;
@@ -102,7 +113,7 @@ int main(void)
   for (i = 0; (test_dates[i]); i++)
   {
     parse_time(test_dates[i], &orig);
-    t = mytimegm(&orig);
+    t = Httimegm(&orig);
     conv = gmtime(&t);
     if (!time_equal(&orig, conv))
     {
