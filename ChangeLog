@@ -1,3 +1,9 @@
+Mon Mar 22 18:39:27 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Dictionary.h, htlib/Dictionary.cc(hashCode): Check if key
+	can be converted to an integer using strtol. If so, use the
+	integer as the hash code.  (Geoff's patch)
+
 Mon Mar 22 18:23:11 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/List.cc(Nth): Check for out-of-bounds requests before

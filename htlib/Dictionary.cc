@@ -3,22 +3,7 @@
 //
 // Implementation of the Dictionary class
 //
-// $Log: Dictionary.cc,v $
-// Revision 1.5  1999/01/14 00:26:01  ghutchis
-// Add new method GetNextElement to directly return next object when iterating.
-//
-// Revision 1.4  1999/01/10 01:59:56  ghutchis
-// Remember special case of an empty dictionary.
-//
-// Revision 1.3  1998/12/05 00:51:13  ghutchis
-// Added check for empty dictionaries.
-//
-// Revision 1.2  1998/01/05 05:20:43  turtle
-// Fixed memory leaks
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
+// $Id: Dictionary.cc,v 1.5.2.1 1999/03/23 00:46:45 grdetil Exp $
 //
 
 #include "Dictionary.h"
@@ -142,6 +127,10 @@ Dictionary::init(int initialCapacity, float loadFactor)
 unsigned int
 Dictionary::hashCode(char *key)
 {
+    char *test;
+    long  conv_key = strtol(key,  &test, 10);
+    if (key && *key && !*test) // Conversion succeeded
+      return conv_key;
     unsigned int	h = 0;
     int			length = strlen(key);
 
