@@ -22,6 +22,59 @@
 	</p>
 
 	<p>
+	<strong>Release notes for htdig-3.1.5</strong> 25 Feb 2000<br>
+	This version cleans up some remaining bugs in the 3.1.4
+	release. As the latest stable release of ht://Dig, it is
+	recommended for all production servers.
+	</p>
+	<ul>
+	<li>Fixed a nasty security hole in htsearch, which would allow
+	    users to view any file on your site that had read permission.</li>
+	<li>Fixed a bug that could cause problems with 8-bit
+	    characters on some systems.</li>
+	<li>Made some attempts to get htsearch's output to be more HTML 4.0
+	    compliant. It quotes all HTML tag parameters, and uses ";"
+	    instead of "&amp;" as parameter separator in URLs for next
+	    pages. Reserved characters in parameters are now
+	    encoded. Please note that this may break a variety of CGI
+	    wrappers, for example, those written in PHP3.</li>
+	<li>Fixed handling of SGML entities: htdig will still decode
+	    them to store as single characters in the database, but
+	    htsearch now encodes some of them back for compliant results.</li>
+	<li>Added two new formats for variables in htsearch templates,
+	    $%(var), which escapes the variable for a URL, and $&(var),
+	    which HTML-escapes the variable as necessary.</li>
+	<li>Fixed htdig's handling of robots.txt, such that only the first
+	    applicable User-agent field bearing its name will be used, rather
+	    than only the last.</li>
+	<li>Fixed htdig's handling of servers that return 2-digit years.</li>
+	<li>Fixed handling of embedded quotes in quoted string lists.</li>
+	<li>Fixed handling of relative URLs with trailing ".." or leading
+	    "//".</li>
+	<li>Fixed handling of the
+	    <a href="attrs.html#valid_extensions">valid_extensions</a>
+	    attribute, which sometimes failed in the previous version.</li>
+	<li>Enhanced the handling of local filesystem indexing with the
+	    <a href="attrs.html#local_urls">local_urls</a>,
+	    <a href="attrs.html#local_user_urls">local_user_urls</a> or
+	    <a href="attrs.html#local_default_doc">local_default_doc</a>
+	    attributes, which now allow multiple directory or file names to
+	    be tried.</li>
+	<li>Added the <a
+	    href="attrs.html#build_select_lists">build_select_lists</a>
+	    attribute to allow the config file to specify
+	    &lt;select&gt; form elements in htsearch output as a
+	    template variable, much like $(SORT) and $(METHOD).</li>
+	<li>Added support for two additional configuration attributes:
+	    <a href="attrs.html#max_keywords">max_keywords</a>, and
+	    <a href="attrs.html#nph">nph</a>.</li>
+	<li>A variety of other bug fixes, and many documentation updates.
+	    See the <a href="ChangeLog">ChangeLog</a> for details.</li>
+	<li>Once again, thanks to everyone who reported bugs and bug
+	    fixes.</li>
+	</ul>
+
+	<p>
 	<strong>Release notes for htdig-3.2.0b1</strong>4 Feb 2000<br>
 	This marks the first beta version of the 3.2.0 codebase,
 	over a year in the works. Since it has not received as much
@@ -1199,7 +1252,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 
-Last modified: $Date: 2000/02/02 06:19:35 $
+Last modified: $Date: 2000/04/07 04:31:43 $
 
   </body>
 </html>
