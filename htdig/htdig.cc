@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.20 1999/09/24 10:28:57 loic Exp $
+// $Id: htdig.cc,v 1.21 1999/09/24 16:47:09 loic Exp $
 //
 
 #include "Document.h"
@@ -213,22 +213,22 @@ main(int ac, char **av)
     //
     StringList l(config["limit_urls_to"], " \t");
     limits.setEscaped(l);
-    l.Release();
+    l.Destroy();
 
     l.Create(config["limit_normalized"], " \t");
     limitsn.setEscaped(l);
-    l.Release();
+    l.Destroy();
 
     //
     // Patterns to exclude from urls...
     //
     l.Create(config["exclude_urls"], " \t");
     excludes.setEscaped(l);
-    l.Release();
+    l.Destroy();
 
     l.Create(config["bad_querystr"], " \t");
     badquerystr.setEscaped(l);
-    l.Release();
+    l.Destroy();
 
     // Check "uncompressed"/"uncoded" urls at the price of time
     // (extra DB probes).

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: List.cc,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: List.cc,v 1.5 1999/09/24 16:47:10 loic Exp $
 //
 
 #include "List.h"
@@ -343,39 +343,39 @@ Object *List::Previous(Object *prev)
 //
 Object *List::Nth(int n)
 {
-    if (n < 0 || n >= number)
-        return 0;
+  if (n < 0 || n >= number)
+    return 0;
 
-    listnode	*temp = head;
+  listnode	*temp = head;
 
-    if (current_index == n)
-	return current->object;
+  if (current_index == n)
+    return current->object;
 
-    if (current && current_index >= 0 && n == current_index + 1)
+  if (current && current_index >= 0 && n == current_index + 1)
     {
-	current = current->next;
-	if (!current)
+      current = current->next;
+      if (!current)
 	{
-	    current_index = -1;
-	    return 0;
+	  current_index = -1;
+	  return 0;
 	}
-	current_index = n;
-	return current->object;
+      current_index = n;
+      return current->object;
     }
 
-    for (int i = 0; temp && i < n; i++)
+  for (int i = 0; temp && i < n; i++)
     {
-	temp = temp->next;
+      temp = temp->next;
     }
 
-    if (temp)
+  if (temp)
     {
-	current_index = n;
-	current = temp;
-	return temp->object;
+      current_index = n;
+      current = temp;
+      return temp->object;
     }
-    else
-	return 0;
+  else
+    return 0;
 }
 
 

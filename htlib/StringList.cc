@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.cc,v 1.7 1999/09/24 10:29:03 loic Exp $
+// $Id: StringList.cc,v 1.8 1999/09/24 16:47:10 loic Exp $
 //
 
 #include "StringList.h"
@@ -226,16 +226,16 @@ void StringList::Sort(int)
     delete array;
 }
 
-String StringList::Join(char sep)
+String StringList::Join(char sep) const
 {
-  String *str = new String();
+  String str;
   int i;
 
   for (i=0; i < number; i++)
   {
-      if (str->length())
-	str->append(sep);
-      str->append(*((String *) Nth(i)));
+      if (str.length())
+	str.append(sep);
+      str.append(*((const String *) Nth(i)));
   }
-  return *str;
+  return str;
 }

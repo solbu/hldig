@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.h,v 1.6 1999/09/24 10:29:03 loic Exp $
+// $Id: StringList.h,v 1.7 1999/09/24 16:47:10 loic Exp $
 //
 
 #ifndef _StringList_h_
@@ -63,7 +63,7 @@ public:
     //
     // Join the Elements of the StringList together
     //
-    String              Join(char);
+    String              Join(char) const;
 
     //
     // Getting at the parts of the StringList

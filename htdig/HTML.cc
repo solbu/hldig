@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.56 1999/09/24 10:28:57 loic Exp $
+// $Id: HTML.cc,v 1.57 1999/09/24 16:47:09 loic Exp $
 //
 
 #include "htdig.h"
@@ -442,7 +442,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     }
     retriever.got_head(head);
 
-    delete text;
+    delete [] text;
 }
 
 

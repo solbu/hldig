@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.cc,v 1.42 1999/09/24 10:28:56 loic Exp $
+// $Id: DocumentRef.cc,v 1.43 1999/09/24 16:47:09 loic Exp $
 //
 
 #include "DocumentRef.h"
@@ -48,22 +48,28 @@ DocumentRef::~DocumentRef()
 //
 void DocumentRef::Clear()
 {
-    docID = 0;
-    docURL = 0;
-    docTitle = 0;
-    docState = Reference_normal;
-    docTime = 0;
-    docSize = 0;
-    docImageSize = 0;
-    docHead = 0;
-    docHeadIsSet = 0;
-    docMetaDsc = 0;
-    docAccessed = 0;
-    docLinks = 0;
-    descriptions.Destroy();
-    docAnchors.Destroy();
-    docHopCount = 0;
-    docBackLinks = 0;
+  docID = 0;
+  docURL = 0;
+  docTime = 0;
+  docAccessed = 0;
+  docHead = 0;
+  docHeadIsSet = 0;
+  docMetaDsc = 0;
+  docTitle = 0;
+  descriptions.Destroy();
+  docState = Reference_normal;
+  docSize = 0;
+  docLinks = 0;
+  docBackLinks = 0;
+  docImageSize = 0;
+  docAnchors.Destroy();
+  docHopCount = 0;
+  docSig = 0;
+  docEmail = 0;
+  docNotification = 0;
+  docSubject = 0;
+  docScore = 0;
+  docAnchor = 0;
 }
 
 

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVector.cc,v 1.6 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: HtVector.cc,v 1.7 1999/09/24 16:47:10 loic Exp $
 //
 
 #include "HtVector.h"
@@ -109,7 +109,8 @@ void HtVector::Add(Object *object)
 //
 void HtVector::Insert(Object *object, int position)
 {
-  if (position > element_count)
+  if (position < 0) return;
+  if (position >= element_count)
     {
       Add(object);
       return;
@@ -142,15 +143,7 @@ void HtVector:: Assign(Object *object, int position)
 //
 int HtVector::Remove(Object *object)
 {
-  int position = Index(object);
-
-  if (position == -1)
-      return NOTOK;
-  
-  for (int i = position; i < element_count; i++)
-    data[i] = data[i+1];
-  element_count -= 1;
-  return OK;
+  return RemoveFrom(Index(object));
 }
 
 
@@ -160,10 +153,10 @@ int HtVector::Remove(Object *object)
 //
 int HtVector::RemoveFrom(int position)
 {
-  if (position < 0 || position > element_count)
+  if (position < 0 || position >= element_count)
     return NOTOK;
 
-  for (int i = position; i < element_count; i++)
+  for (int i = position; i < element_count - 1; i++)
     data[i] = data[i+1];
   element_count -= 1;
   return OK;
@@ -177,7 +170,7 @@ int HtVector::RemoveFrom(int position)
 Object *HtVector::Get_Next()
 {
   current_index++;
-  if (current_index > element_count)
+  if (current_index >= element_count)
     return 0;
   return data[current_index];
 }
@@ -230,7 +223,7 @@ Object *HtVector::Next(Object *prev)
     return 0;
 
   current_index++; // We should probably do this with remainders
-  if (current_index > element_count)
+  if (current_index >= element_count)
     current_index = 0;
   return data[current_index];
 }
@@ -248,8 +241,8 @@ Object *HtVector::Previous(Object *next)
     return 0;
 
   current_index--; // We should probably do this with remainders
-  if (current_index > element_count)
-    current_index = 0;
+  if (current_index < 0)
+    current_index = element_count - 1;
   return data[current_index];
 }
 

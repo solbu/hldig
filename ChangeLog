@@ -1,3 +1,36 @@
+Fri Sep 24 16:35:47 1999  Loic Dachary  <loic@ceic.com>
+
+	* htcommon/DocumentDB.ccf (Open): change mode to 666 instead of 664, 
+	  it's the bizness of umask to remove permission bits.
+
+	* htlib/URL.cc (removeIndex): Memory leak. do not use l.Release
+	  since standard Destroy called by destructor is ok.
+
+	* htdig/htdig.cc (main): Memory leak. Use l.Destroy instead of 
+	  l.Release.
+
+	* htlib/StringList.cc (Join): Memory leak (new String str + 
+	  return *str). Also change to const fct.
+
+	* htlib/List.cc (Nth): add const version to help StringList::Join save
+	  memory.
+
+	* htdig/HTML.cc (parse): delete [] text (was missing [])
+
+	* htlib/HtVector.cc: Most of the boundary tests with element_count
+	  (but not all of them) were wrong (> instead of >= for instance).
+	
+	* htlib/HtVector.cc (Previous): limit test cut and pasted from Next
+	  and obviously completely wrong. Fix.
+
+	* htlib/HtVector.cc (Remove): use RemoveFrom, avoid code duplication.
+
+	* htcommon/DocumentRef.cc (Clear): set all numerical fields to 0,
+	  and truncate strings to 0. Some were missing.
+
+	* htlib/Connection.cc (Connection): free(server_name) because allocated
+	  by strdup not new.
+
 Fri Sep 24 14:30:21 1999  Loic Dachary  <loic@ceic.com>
 
 	* */.cvsignore: update to include .pure, *.la, *.lo, .purify

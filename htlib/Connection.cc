@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.16 1999/09/24 10:29:03 loic Exp $
+// $Id: Connection.cc,v 1.17 1999/09/24 16:47:09 loic Exp $
 //
 
 #include "Connection.h"
@@ -90,7 +90,7 @@ Connection::~Connection()
     all_connections.Remove(this);
     this->close();
     delete peer;
-    delete server_name;
+    free(server_name);
 }
 
 

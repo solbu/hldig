@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: List.h,v 1.3 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: List.h,v 1.4 1999/09/24 16:47:10 loic Exp $
 //
 
 #ifndef	_List_h_
@@ -90,8 +90,10 @@ public:
     // objects from the list.  To assign new objects, use Insert(),
     // Add(), or Assign().
     //
-    Object		*operator[] (int n)		{return Nth(n);}
+    Object		*operator[] (int n)		{ return Nth(n); }
+    const Object	*operator[] (int n) const	{ return Nth(n); }
     Object		*Nth(int n);
+    const Object	*Nth(int n) const { return ((List*)this)->Nth(n); }
 
     //
     // Access to the number of elements

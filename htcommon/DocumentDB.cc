@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.25 1999/09/24 10:28:56 loic Exp $
+// $Id: DocumentDB.cc,v 1.26 1999/09/24 16:47:09 loic Exp $
 //
 
 #include "DocumentDB.h"
@@ -76,17 +76,17 @@ int DocumentDB::Open(const String& filename, const String& indexfilename, const 
 
     i_dbf = Database::getDatabaseInstance(DB_HASH);
 
-    if (i_dbf->OpenReadWrite(indexfilename, 0664) != OK)
+    if (i_dbf->OpenReadWrite(indexfilename, 0666) != OK)
 	return NOTOK;
 
     h_dbf = Database::getDatabaseInstance(DB_HASH);
 
-    if (h_dbf->OpenReadWrite(headname, 0664) != OK)
+    if (h_dbf->OpenReadWrite(headname, 0666) != OK)
 	return NOTOK;
 
     dbf = Database::getDatabaseInstance(DB_HASH);
 	
-    if (dbf->OpenReadWrite(filename, 0664) == OK)
+    if (dbf->OpenReadWrite(filename, 0666) == OK)
     {
 	String		data;
 	int             specialRecordNumber = NEXT_DOC_ID_RECORD;

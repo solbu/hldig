@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.32 1999/09/24 10:29:03 loic Exp $
+// $Id: URL.cc,v 1.33 1999/09/24 16:47:10 loic Exp $
 //
 
 #include "URL.h"
@@ -463,7 +463,6 @@ void URL::removeIndex(String &path)
       defaultdoc = new StringMatch();
       defaultdoc->IgnoreCase();
       defaultdoc->Pattern(l.Join('|'));
-      l.Release();
     }
     if (defaultdoc->hasPattern() &&
             defaultdoc->CompareWord(path.sub(filename)))
