@@ -5,81 +5,10 @@
 // Expects the databases are generated using htdig, htmerge, and htfuzzy
 // Outputs HTML-ized results of the search based on the templates specified
 //
-// $Log: htsearch.cc,v $
-// Revision 1.22  1999/01/21 13:41:24  ghutchis
-// Check HtURLCodec for errors.
-//
-// Revision 1.21  1999/01/14 03:15:25  ghutchis
-// Create originalWords from input, not via setupWords().
-//
-// Revision 1.20  1999/01/14 03:01:49  ghutchis
-// Added check for sort config.
-//
-// Revision 1.19  1999/01/12 03:59:02  ghutchis
-// Do not skip words if "boolean" search.
-//
-// Revision 1.18  1998/12/19 16:55:11  bergolth
-// Added allow_in_form option.
-//
-// Revision 1.17  1998/12/08 02:53:21  ghutchis
-// Fix thinko with multiple excludes and restricts. Pointed out by Gilles.
-//
-// Revision 1.16  1998/12/05 00:53:53  ghutchis
-// Added usage message for the command line.
-//
-// revision 1.15 1998/12/04 04:13:52 ghutchis
-// Use configure check to only include getopt.h when it exists.
-// 
-// revision 1.14 1998/12/02 02:44:44 ghutchis
-// Add include <getopt.h> to help compiling under Win32 with CygWinB20.
-//
-// revision 1.13 1998/11/30 02:28:50 ghutchis
-// Fix mistake in last update so the code compiles.
-//
-// Revision 1.12  1998/11/30 01:50:38  ghutchis
-// Improved support for multiple restrict and exclude patterns, based on code
-// from Gilles Detillieux and William Rhee <willrhee@umich.edu>.
-//
-// Revision 1.11  1998/11/22 19:15:35  ghutchis
-// Don't remove boolean operators from boolean search strings!
-//
-// Revision 1.10  1998/11/01 00:00:40  ghutchis
-// Replaced system calls with htlib/my* functions.
-//
-// Revision 1.9  1998/10/26 20:34:33  ghutchis
-// Added patch by Esa Ahola to fix bug with not properly ignoring bad_words
-//
-// Revision 1.8  1998/09/30 17:31:51  ghutchis
-// Changes for 3.1.0b2
-//
-// Revision 1.7  1998/09/10 04:16:26  ghutchis
-// More bug fixes.
-//
-// Revision 1.6  1998/06/21 23:20:12  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
-//
-// Revision 1.5  1997/04/27 14:43:30  turtle
-// changes
-//
-// Revision 1.4  1997/04/21 15:44:39  turtle
-// Added code to check the search words against the minimum_word_length attribute
-//
-// Revision 1.3  1997/02/24 17:52:55  turtle
-// Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
-// ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
-//
-// Revision 1.2  1997/02/11 00:38:48  turtle
-// Renamed the very bad wordlist variable to badWords
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-// Revision 1.1  1996/01/03 18:59:56  turtle
-// Before rewrite
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.22 1999/01/21 13:41:24 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.23 1999/01/29 18:47:25 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -87,15 +16,15 @@ static char RCSid[] = "$Id: htsearch.cc,v 1.22 1999/01/21 13:41:24 ghutchis Exp 
 #include "parser.h"
 #include "Display.h"
 #include "../htfuzzy/Fuzzy.h"
-#include <cgi.h>
-#include <WordRecord.h>
-#include <WordList.h>
-#include <StringList.h>
-#include <IntObject.h>
+#include "cgi.h"
+#include "WordRecord.h"
+#include "WordList.h"
+#include "StringList.h"
+#include "IntObject.h"
 #include <time.h>
 #include <ctype.h>
 #include <signal.h>
-#include <HtURLCodec.h>
+#include "HtURLCodec.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -106,8 +35,8 @@ typedef void (*SIGNAL_HANDLER) (...);
 
 ResultList *htsearch(char *, List &, Parser *);
 
-void setupWords(char *, List &, int, Parser *);
-void createLogicalWords(List &, String &, StringMatch &);
+void setupWords(char *, List &, int, Parser *, String &);
+void createLogicalWords(List &, String &, String &);
 void reportError(char *);
 void convertToBoolean(List &words);
 void doFuzzy(WeightWord *, List &, List &);
@@ -133,6 +62,8 @@ main(int ac, char **av)
     StringMatch		limit_to;
     StringMatch		exclude_these;
     String		logicalWords;
+    String              origPattern;
+    String              logicalPattern;
     StringMatch		searchWordsPattern;
     StringList		requiredWords;
     int                 i;
@@ -266,13 +197,22 @@ main(int ac, char **av)
     originalWords.chop(" \t\r\n");
     setupWords(originalWords, searchWords,
 	       strcmp(config["match_method"], "boolean") == 0,
-	       parser);
+	       parser, origPattern);
 
     //
     // Convert the list of WeightWord objects to a pattern string
     // that we can compile.
     //
-    createLogicalWords(searchWords, logicalWords, searchWordsPattern);
+    createLogicalWords(searchWords, logicalWords, logicalPattern);
+
+    // 
+    // Assemble the full pattern for excerpt matching and highlighting
+    //
+    origPattern += logicalPattern;
+    searchWordsPattern.IgnoreCase();
+    searchWordsPattern.Pattern(origPattern);
+    if (debug > 2)
+      cout << "Excerpt pattern: " << origPattern << "\n";
 
     //
     // If required keywords were given in the search form, we will
@@ -336,7 +276,7 @@ main(int ac, char **av)
 
 //*****************************************************************************
 void
-createLogicalWords(List &searchWords, String &logicalWords, StringMatch &wm)
+createLogicalWords(List &searchWords, String &logicalWords, String &wm)
 {
     String		pattern;
     int			i;
@@ -368,8 +308,7 @@ createLogicalWords(List &searchWords, String &logicalWords, StringMatch &wm)
 	    pattern << ww->word;
 	}
     }
-    wm.IgnoreCase();
-    wm.Pattern(pattern);
+    wm = pattern;
 
     if (debug)
     {
@@ -395,10 +334,11 @@ dumpWords(List &words, char *msg = "")
 
 //*****************************************************************************
 // void setupWords(char *allWords, List &searchWords,
-//					int boolean, Parser *parser)
+//		   int boolean, Parser *parser, String &originalPattern)
 //
 void
-setupWords(char *allWords, List &searchWords, int boolean, Parser *parser)
+setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
+	   String &originalPattern)
 {
     List	tempWords;
     int		i;
@@ -456,7 +396,7 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser)
 		    word << (char) t;
 		    t = *pos++;
 		}
-		word.remove(valid_punctuation);
+
 		pos--;
 		if (boolean && mystrcasecmp(word.get(), "and") == 0)
 		{
@@ -472,6 +412,9 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser)
 		}
 		else
 		{
+		    // Add word to excerpt matching list
+		    originalPattern << word << "|";
+	  	    word.remove(valid_punctuation);
 		    WeightWord	*ww = new WeightWord(word, 1.0);
 		    if (!badWords.IsValid(word) ||
 			word.length() < minimum_word_length)
@@ -685,6 +628,8 @@ htsearch(char *wordfile, List &searchWords, Parser *parser)
 
 	parser->setDatabase(dbf);
 	parser->parse(&searchWords, *matches);
+	dbf->Close();
+	delete dbf;
     }
 	
     return matches;
