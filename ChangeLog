@@ -1,3 +1,9 @@
+Wed Dec 15 13:59:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc: remove include of sys/stat.h, which is no
+	longer needed after hack removed from Need2Get(), and could pose
+	a problem on systems that need sys/types.h included first.
+
 Wed Dec 15 17:00:04 1999  Loic Dachary  <loic@ceic.com>
 
 	* htword/WordDB.h: add inline keyword for portability

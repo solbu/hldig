@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.9 1999/12/11 16:19:46 vadim Exp $
+// $Id: Retriever.cc,v 1.72.2.10 1999/12/15 20:19:04 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -31,7 +31,6 @@
 #include <signal.h>
 #include <assert.h>
 #include <stdio.h>
-#include <sys/stat.h>
 
 #ifndef HAVE_STRPTIME_DECL
 extern "C" {
