@@ -4,6 +4,12 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.7  1998/07/22 10:04:31  ghutchis
+//
+// Added patches from Sylvain Wallez <s.wallez.alcatel@e-mail.com> to
+// Display.cc to use the filename if no title is found and Chris Jason
+// Richards <richards@cs.tamu.edu> to htnotify.cc to fix problems with sendmail.
+//
 // Revision 1.6  1998/07/21 09:56:58  ghutchis
 //
 // Added patch by Rob Stone <rob@psych.york.ac.uk> to create new
@@ -28,7 +34,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.6 1998/07/21 09:56:58 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.7 1998/07/22 10:04:31 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -179,12 +185,25 @@ Display::displayMatch(ResultMatch *match)
     {
 	vars.Add("EXCERPT", excerpt(ref));
     }
-    vars.Add("URL", new String(match->getURL()));
+    char    *url = match->getURL();
+    vars.Add("URL", new String(url));
     vars.Add("SCORE", new String(form("%d", match->getScore())));
     char	*title = ref->DocTitle();
     if (!title || !*title)
-	title = "[No title]";
-    vars.Add("TITLE", new String(title));
+      {
+	title = strrchr(url, '/');
+	if (title)
+	  {
+	    title++; // Skip slash
+	    str = new String(form("[%s]", title));
+	  }
+	else
+	  // URL without '/' ??
+	  str = new String("[No title]");
+      }
+    else
+      str = new String(title);
+    vars.Add("TITLE", str);
     vars.Add("STARSRIGHT", generateStars(ref, 1));
     vars.Add("STARSLEFT", generateStars(ref, 0));
     vars.Add("SIZE", new String(form("%d", ref->DocSize())));

@@ -4,6 +4,12 @@
 // Implementation of htnotify
 //
 // $Log: htnotify.cc,v $
+// Revision 1.4  1998/07/22 10:04:28  ghutchis
+//
+// Added patches from Sylvain Wallez <s.wallez.alcatel@e-mail.com> to
+// Display.cc to use the filename if no title is found and Chris Jason
+// Richards <richards@cs.tamu.edu> to htnotify.cc to fix problems with sendmail.
+//
 // Revision 1.3  1997/06/23 02:27:24  turtle
 // Added version info to the usage output
 //
@@ -15,7 +21,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.3 1997/06/23 02:27:24 turtle Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.4 1998/07/22 10:04:28 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -172,64 +178,49 @@ void send_notification(char *date, char *email, char *url, char *subject)
     int		fildes[2];
     String	to = email;
 
-    pipe(fildes);
-    switch (fork())
+    String command;
+    command << "/usr/lib/sendmail -F \"HTDig Notification Service\" -f ";
+    command << config["htnotify_sender"];
+
+    char *token = strtok(to, " ,\t\r\n");
+    while (token)
     {
-    case 0:		// child
-    {
-	char	*token = strtok(to, " ,\t\r\n");
-	char	*argv[100];
-	argv[0] = "sendmail";
-	argv[1] = "-F";
-	argv[2] = "HTDig notification service";
-	argv[3] = "-f";
-	argv[4] = config["notify_sender"];
-	int		n = 5;
-	while (token)
-	{
-	    argv[n++] = token;
-	    token = strtok(0, " ,\t\r\n");
-	}
-	argv[n++] = 0;
-	close(fildes[1]);
-	dup2(fildes[0], 0);			
-			
-	execv("/usr/lib/sendmail", argv);
-	exit(1);			
-	break;
+      command << " " << token;
+      token = strtok(0, " ,\t\r\n");
     }
-    case -1:	// error!
-	perror("fork");
-	return;
-    default:	// parent
-	close(fildes[0]);
-	break;
+    
+    FILE *fileptr;
+    if( (fileptr = popen(command.get(), "w")) != NULL ) {
+
+      if (!subject || !*subject)
+	subject = "notification";
+      String	out;
+      out << "From: " << config["htnotify_sender"] << "\n";
+      out << "Subject: WWW notification: " << subject << '\n';
+      out << "To: " << to.get() << '\n';
+      out << "Reply-To: " << config["htnotify_sender"] << "\n";
+      out << "\n";
+      out << "The following page was tagged to notify you after " << date
+	  << '\n';
+      out << "\n";
+      out << "URL:     " << url << '\n';
+      out << "Date:    " << date << '\n';
+      out << "Subject: " << subject << '\n';
+      out << "Email:   " << email << '\n';
+      out << "\n";
+      out << "Note: This message will be sent again if you do not change or\n";
+      out << "take away the notification of the above mentioned HTML page.\n";
+      out << "\n";
+      out << "Find out more about the notification service at\n\n";
+      out << "    http://www.htdig.org/meta.html\n\n";
+      out << "Cheers!\n\nHTDig Notification Service\n";
+
+      fputs( out.get(), fileptr );
+      pclose( fileptr );
+    } else {
+      perror( "popen" );
     }
 
-    if (!subject || !*subject)
-	subject = "notification";
-    String	out;
-    out << "From: " << config["htnotify_sender"] << "\n";
-    out << "Subject: WWW notification: " << subject << '\n';
-    out << "To: " << to.get() << '\n';
-    out << "Reply-To: " << config["htnotify_sender"] << "\n";
-    out << "\n";
-    out << "The following page was tagged to notify you after " << date
-	<< '\n';
-    out << "\n";
-    out << "URL:     " << url << '\n';
-    out << "Date:    " << date << '\n';
-    out << "Subject: " << subject << '\n';
-    out << "Email:   " << email << '\n';
-    out << "\n";
-    out << "Note: This message will be sent again if you do not change or\n";
-    out << "take away the notification of the above mentioned HTML page.\n";
-    out << "\n";
-    out << "Find out more about the notification service at\n\n";
-    out << "    http://htdig.sdsu.edu/meta.html\n\n";
-    out << "Cheers!\n\nHTDig Notification Service\n";
-    write(fildes[1], out.get(), out.length());
-    close(fildes[1]);
 }
 
 
