@@ -1,0 +1,11 @@
+Files:
+
+WordDB        :  Interface to berkeley DB
+WordKey       :  key manipulation
+WordRecord    :  record manipulation
+WordReference :  record and key manipulation
+WordStat      :  derived from WordReference -> per unique word statistics
+WordType      :  word normalisation and transformation (accents, lowercase, ...)
+WordList      :  inverted index interface (word insert, word delete, list browsing)
+
+

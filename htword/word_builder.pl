@@ -75,7 +75,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: word_builder.pl,v 1.2 1999/10/05 16:03:31 loic Exp $
+# $Id: word_builder.pl,v 1.3 1999/10/15 10:27:23 bosc Exp $
 #
 use strict;
 
@@ -102,7 +102,7 @@ sub field2define {
 }
 
 #
-# Prepare file template <$file>.tmp for substitution by
+# Prepare file template <$file>.tmpl for substitution by
 # <$function>. When done template_build is called and
 # the result written to <$file>.
 #
@@ -116,7 +116,7 @@ sub handle {
     croak($@) if($@);
     my($template) = template_parse($file, $content);
     my($assoc) = $template->{'assoc'};
-    my($warning) = "// WARNING : this file was generated from $file.tmp\n// by word_builder.pl using instructions from word.desc";
+    my($warning) = "// WARNING : this file was generated from $file.tmpl\n// by word_builder.pl using instructions from word.desc";
     &$function($file, $template, $assoc, @args);
     my($content) = template_build($template);
     system("rm -f $file");
