@@ -4,6 +4,9 @@
 // Implementation of StringList
 //
 // $Log: StringList.cc,v $
+// Revision 1.5  1999/01/06 16:21:20  bergolth
+// fixed bug in StringList::Join
+//
 // Revision 1.4  1998/12/19 14:39:41  bergolth
 // Added StringList::Join and fixed URL::removeIndex.
 //
@@ -19,7 +22,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: StringList.cc,v 1.4 1998/12/19 14:39:41 bergolth Exp $";
+static char	RCSid[] = "$Id: StringList.cc,v 1.5 1999/01/06 16:21:20 bergolth Exp $";
 #endif
 
 #include <stdlib.h>
@@ -299,7 +302,7 @@ String StringList::Join(char sep)
   {
       if (str->length())
 	str->append(sep);
-      str->append((String *) Nth(i));
+      str->append(*((String *) Nth(i)));
   }
   return *str;
 }
