@@ -1,3 +1,9 @@
+Thu Feb  3 16:06:45 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc (RetrieveLocal): fix bug that prevented local
+	filesystem digging, because max_doc_size was initialized to 0.
+	Now sets it to max_doc_size for current url.
+
 Thu Feb  3 12:36:56 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* installdir/Makefile.{am,in}: install mime.types as mime.types,

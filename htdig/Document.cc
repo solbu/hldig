@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.13 2000/02/02 21:53:07 grdetil Exp $
+// $Id: Document.cc,v 1.55.2.14 2000/02/03 22:10:31 grdetil Exp $
 //
 
 #include <signal.h>
@@ -457,6 +457,7 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
     //
     // Read in the document itself
     //
+    max_doc_size = config.Value(url,"max_doc_size");
     contents = 0;
     char	docBuffer[8192];
     int		bytesRead;
