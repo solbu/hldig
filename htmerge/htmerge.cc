@@ -4,12 +4,15 @@
 // Implementation of htmerge
 //
 // $Log: htmerge.cc,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.2  1997/06/23 02:24:49  turtle
+// Added version info to usage message
+//
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htmerge.cc,v 1.1 1997/02/03 17:11:06 turtle Exp $";
+static char RCSid[] = "$Id: htmerge.cc,v 1.2 1997/06/23 02:24:49 turtle Exp $";
 #endif
 
 #include "htmerge.h"
@@ -137,6 +140,7 @@ int main(int ac, char **av)
 void usage()
 {
     cout << "usage: htmerge [-v][-d][-w][-c configfile]\n";
+    cout << "This program is part of ht://Dig " << HTDIG_VERSION << "\n\n";
     cout << "Options:\n";
     cout << "\t-v\tVerbose mode.  This increases the verbosity of the\n";
     cout << "\t\tprogram.  Using more than 2 is probably only useful\n";
