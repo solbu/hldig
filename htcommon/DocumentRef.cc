@@ -4,6 +4,9 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.17  1999/01/17 20:28:37  ghutchis
+// Save space when lengths can fit in an unsigned char or unsigned short.
+//
 // Revision 1.16  1999/01/14 03:06:26  ghutchis
 // Update from Randy Winch to eliminate use_document_compression and fix
 // compilation problems noted by Hans-Peter.
@@ -144,6 +147,9 @@ enum
     DOC_SIG                             // 19
 };
 
+// Must be powers of two never reached by the DOC_... enums.
+#define CHARSIZE_MARKER_BIT 64
+#define SHORTSIZE_MARKER_BIT 128
 
 //*****************************************************************************
 // void DocumentRef::Serialize(String &s)
@@ -161,31 +167,109 @@ void DocumentRef::Serialize(String &s)
 // value for this class, it it NOT serialized.  This means that
 // storage will be saved...
 //
-#define addnum(id, out, var)	if (var != 0)										\
-    {													\
-                                                                                                            out << (char) id;								\
-    out.append((char *) &var, sizeof(var));			\
-    }
-#define	addstring(id, out, str)	if (str.length())									\
-    {													\
-                                                                                                            length = str.length();							\
-    out << (char) id;								\
-    out.append((char *) &length, sizeof(length));	\
-    out.append(str);								\
-    }
-#define	addlist(id, out, list)	if (list.Count())									\
-    {													\
-                                                                                                            length = list.Count();							\
-    out << (char) id;								\
-    out.append((char *) &length, sizeof(length));	\
-    list.Start_Get();								\
-    while ((str = (String *) list.Get_Next()))		\
-        {												\
-                                                                                                            length = str->length();						\
-        out.append((char*) &length, sizeof(length));\
-        out.append(*str);							\
-        }												\
-    }
+#define addnum(id, out, var) \
+ if (var != 0)                                                        \
+ {                                                                    \
+   if (var <= (unsigned char) ~1)                                     \
+   {                                                                  \
+     unsigned char _tmp = var;                                        \
+     out << (char) (id | CHARSIZE_MARKER_BIT);                        \
+     out.append((char *) &_tmp, sizeof(_tmp));                        \
+   }                                                                  \
+   else if (var <= (unsigned short int) ~1)                           \
+   {                                                                  \
+     unsigned short int _tmp = var;                                   \
+     out << (char) (id | SHORTSIZE_MARKER_BIT);                       \
+     out.append((char *) &_tmp, sizeof(_tmp));                        \
+   }                                                                  \
+   else                                                               \
+   {                                                                  \
+     out << (char) id;                                                \
+     out.append((char *) &var, sizeof(var));                          \
+   }                                                                  \
+ }
+
+#define	addstring(id, out, str)	\
+ if (str.length())                                                    \
+ {                                                                    \
+   length = str.length();                                             \
+   if (length <= (unsigned char) ~1)                                  \
+   {                                                                  \
+     unsigned char _tmp = length;                                     \
+     out << (char) (id | CHARSIZE_MARKER_BIT);                        \
+     out.append((char *) &_tmp, sizeof(_tmp));                        \
+   }                                                                  \
+   else if (length <= (unsigned short int) ~1)                        \
+   {                                                                  \
+     unsigned short int _tmp = length;                                \
+     out << (char) (id | SHORTSIZE_MARKER_BIT);                       \
+     out.append((char *) &_tmp, sizeof(_tmp));                        \
+   }                                                                  \
+   else                                                               \
+   {                                                                  \
+     out << (char) id;                                                \
+     out.append((char *) &length, sizeof(length));                    \
+   }                                                                  \
+   out.append(str);                                                   \
+ }
+
+// To keep compatibility with old databases, don't bother
+// with long lists at all.  Bloat the size for long strings with
+// one char to just keep a ~1 marker since we don't know the
+// endianness; we don't know where to put a endian-safe
+// size-marker, and we probably rather want the full char to
+// keep the length.  Only strings shorter than (unsigned char) ~1 
+// will be "optimized"; trying to optimize strings that fit in
+// (unsigned short) does not seem to give anything substantial.
+#define	addlist(id, out, list) \
+ if (list.Count())                                                    \
+ {                                                                    \
+   length = list.Count();                                             \
+   if (length <= (unsigned short int) ~1)                             \
+   {                                                                  \
+     if (length <= (unsigned char) ~1)                                \
+     {                                                                \
+       unsigned char _tmp = length;                                   \
+       out << (char) (id | CHARSIZE_MARKER_BIT);                      \
+       out.append((char *) &_tmp, sizeof(_tmp));                      \
+     }                                                                \
+     else                                                             \
+     {                                                                \
+       unsigned short int _tmp = length;                              \
+       out << (char) (id | SHORTSIZE_MARKER_BIT);                     \
+       out.append((char *) &_tmp, sizeof(_tmp));                      \
+     }                                                                \
+     list.Start_Get();                                                \
+     while ((str = (String *) list.Get_Next()))		              \
+     {                                                                \
+       length = str->length();                                        \
+       if (length < (unsigned char) ~1)                               \
+       {                                                              \
+         unsigned char _tmp = length;                                 \
+         out.append((char*) &_tmp, sizeof(_tmp));                     \
+       }                                                              \
+       else                                                           \
+       {                                                              \
+         unsigned char _tmp = ~1;                                     \
+         out.append((char*) &_tmp, sizeof(_tmp));                     \
+         out.append((char*) &length, sizeof(length));                 \
+       }                                                              \
+       out.append(*str);                                              \
+     }                                                                \
+   }                                                                  \
+   else                                                               \
+   {                                                                  \
+     out << (char) id;                                                \
+     out.append((char *) &length, sizeof(length));                    \
+     list.Start_Get();                                                \
+     while ((str = (String *) list.Get_Next()))                       \
+     {                                                                \
+       length = str->length();                                        \
+       out.append((char*) &length, sizeof(length));                   \
+       out.append(*str);                                              \
+     }                                                                \
+   }                                                                  \
+ }
 
     addnum(DOC_ID, s, docID);
     addnum(DOC_TIME, s, docTime);
@@ -304,83 +388,122 @@ void DocumentRef::Deserialize(String &stream)
     String	*str;
 
 
-#define	getnum(in, var)			memcpy((char *) &var, in, sizeof(var));			\
-    in += sizeof(var)
-#define	getstring(in, str)		getnum(in, length);								\
-        str = 0;										\
-    str.append(in, length);							\
-    in += length
-#define	getlist(in, list)		getnum(in, count);								\
-                                                                                    for (i = 0; i < count; i++)						\
-        {												\
-                                                                                                            getnum(in, length);							\
-        str = new String;							\
-        str->append(in, length);					\
-        list.Add(str);								\
-        in += length;								\
-        }
+#define	getnum(type, in, var) \
+ if (type & CHARSIZE_MARKER_BIT)                                      \
+ {                                                                    \
+   var = (int) *(unsigned char *) in;                                 \
+   in += sizeof(unsigned char);                                       \
+ }                                                                    \
+ else if (type & SHORTSIZE_MARKER_BIT)                                \
+ {                                                                    \
+   var = (int) *(unsigned short int *) in;                            \
+   in += sizeof(unsigned short int);                                  \
+ }                                                                    \
+ else                                                                 \
+ {                                                                    \
+   memcpy((char *) &var, in, sizeof(var));                            \
+   in += sizeof(var);                                                 \
+ }
+
+#define	getstring(type, in, str) \
+ getnum(type, in, length);                                            \
+ str = 0;                                                             \
+ str.append(in, length);                                              \
+ in += length
+
+#define	getlist(type, in, list) \
+ getnum(type, in, count);                                             \
+ if (type & (CHARSIZE_MARKER_BIT | SHORTSIZE_MARKER_BIT))             \
+ {                                                                    \
+   for (i = 0; i < count; i++)                                        \
+   {                                                                  \
+     unsigned char _tmp = *(unsigned char *) in;                      \
+     in += sizeof(_tmp);                                              \
+     if (_tmp < (unsigned char) ~1)                                   \
+       length = _tmp;                                                 \
+     else                                                             \
+       getnum(~(CHARSIZE_MARKER_BIT | SHORTSIZE_MARKER_BIT), in,      \
+              length);                                                \
+     str = new String;                                                \
+     str->append(in, length);                                         \
+     list.Add(str);                                                   \
+     in += length;                                                    \
+   }                                                                  \
+ }                                                                    \
+ else                                                                 \
+ {                                                                    \
+   for (i = 0; i < count; i++)                                        \
+   {                                                                  \
+     getnum(~(CHARSIZE_MARKER_BIT | SHORTSIZE_MARKER_BIT), in,        \
+            length);                                                  \
+     str = new String;                                                \
+     str->append(in, length);                                         \
+     list.Add(str);                                                   \
+     in += length;                                                    \
+   }                                                                  \
+ }
 
     while (s < end)
     {
-        x = *s++;
-        switch (x)
+        x = (unsigned char) *s++;
+        switch (x & ~(CHARSIZE_MARKER_BIT | SHORTSIZE_MARKER_BIT))
         {
         case DOC_ID:
-            getnum(s, docID);
+            getnum(x, s, docID);
             break;
         case DOC_TIME:
-            getnum(s, docTime);
+            getnum(x, s, docTime);
             break;
         case DOC_ACCESSED:
-            getnum(s, docAccessed);
+            getnum(x, s, docAccessed);
             break;
         case DOC_STATE:
-            getnum(s, docState);
+            getnum(x, s, docState);
             break;
         case DOC_SIZE:
-            getnum(s, docSize);
+            getnum(x, s, docSize);
             break;
         case DOC_LINKS:
-            getnum(s, docLinks);
+            getnum(x, s, docLinks);
             break;
         case DOC_IMAGESIZE:
-            getnum(s, docImageSize);
+            getnum(x, s, docImageSize);
             break;
         case DOC_HOPCOUNT:
-            getnum(s, docHopCount);
+            getnum(x, s, docHopCount);
             break;
 	case DOC_BACKLINKS:
-	    getnum(s, docBackLinks);
+	    getnum(x, s, docBackLinks);
 	    break;
 	case DOC_SIG:
-	    getnum(s, docSig);
+	    getnum(x, s, docSig);
 	    break;
         case DOC_URL:
-            getstring(s, docURL);
+            getstring(x, s, docURL);
             break;
         case DOC_HEAD:
-            getstring(s, docHead);
+            getstring(x, s, docHead);
             break;
 	case DOC_METADSC:
-	    getstring(s, docMetaDsc);
+	    getstring(x, s, docMetaDsc);
 	    break;
         case DOC_TITLE:
-            getstring(s, docTitle);
+            getstring(x, s, docTitle);
             break;
         case DOC_DESCRIPTIONS:
-            getlist(s, descriptions);
+            getlist(x, s, descriptions);
             break;
         case DOC_ANCHORS:
-            getlist(s, docAnchors);
+            getlist(x, s, docAnchors);
             break;
         case DOC_EMAIL:
-            getstring(s, docEmail);
+            getstring(x, s, docEmail);
             break;
         case DOC_NOTIFICATION:
-            getstring(s, docNotification);
+            getstring(x, s, docNotification);
             break;
         case DOC_SUBJECT:
-            getstring(s, docSubject);
+            getstring(x, s, docSubject);
             break;
 	case DOC_STRING:
 	  // This is just a debugging string. Ignore it.
