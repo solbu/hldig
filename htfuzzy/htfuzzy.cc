@@ -1,21 +1,25 @@
 //
 // htfuzzy.cc
 //
-// Create one or more ``fuzzy'' indexes into the main word database.
-// These indexes can be used by htsearch to perform a search that uses
-// other algorithms than exact word match.
+//: Create one or more ``fuzzy'' indexes into the main word database.
+//  These indexes can be used by htsearch to perform a search that uses
+//  other algorithms than exact word match.
 //
-// This program is meant to be run after htmerge has created the word
-// database.
+//  This program is meant to be run after htmerge has created the word
+//  database.
 //
-// For each fuzzy algorithm, there will be a separate database.  Each
-// database is simply a mapping from the fuzzy key to a list of words
-// in the main word database.
+//  For each fuzzy algorithm, there will be a separate database.  Each
+//  database is simply a mapping from the fuzzy key to a list of words
+//  in the main word database.
 //
-//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char RCSid[] = "$Id: htfuzzy.cc,v 1.10 1999/03/03 04:46:57 ghutchis Exp $";
+static char RCSid[] = "$Id: htfuzzy.cc,v 1.11 1999/09/10 01:37:39 ghutchis Exp $";
 #endif
 
 #include "htfuzzy.h"
@@ -122,63 +126,59 @@ main(int ac, char **av)
         //
         // Open the word database so that we can grab the words from it.
         //
-        String  wordFile = config["word_db"];
-        if (access(wordFile, R_OK) < 0)
-        {
-            reportError(form("Unable to read word database file '%s'\nDid you run htmerge?",
-                             wordFile.get()));
-        }
-	Database *worddb = Database::getDatabaseInstance(DB_BTREE);
-	if (worddb->OpenRead(wordFile) == OK)
-	{
+        WordList	worddb;
+	if (worddb.Read(config["word_db"]))
+	  {
 	    //
 	    // Go through all the words in the database
 	    //
-	    char		*key;
+	    List		*words = worddb.Words();
+	    String		*key;
 	    Fuzzy		*fuzzy = 0;
 	    String		word, fuzzyKey;
 	    int			count = 0;
-
-	    worddb->Start_Get();
-	    while ((key = worddb->Get_Next()))
-	    {
-		word = key;
+	    
+	    words->Start_Get();
+	    while ((key = (String *) words->Get_Next()))
+	      {
+		word = *key;
 		wordAlgorithms.Start_Get();
 		while ((fuzzy = (Fuzzy *) wordAlgorithms.Get_Next()))
-		{
+		  {
 		    fuzzy->addWord(word);
-		}
+		  }
 		count++;
 		if ((count % 100) == 0 && debug)
-		{
+		  {
 		    cout << "htfuzzy: words: " << count << '\n';
 		    cout.flush();
-		}
-	    }
+		  }
+	      }	
 	    if (debug)
-	    {
+	      {
 		cout << "htfuzzy: total words: " << count << "\n";
 		cout << "htfuzzy: Writing index files...\n";
-	    }
-
+	      }
+	    
 	    //
 	    // All the information is now in memory.
 	    // Write all of it out to the individual databases
 	    //
 	    wordAlgorithms.Start_Get();
 	    while ((fuzzy = (Fuzzy *) wordAlgorithms.Get_Next()))
-	    {
+	      {
 		fuzzy->writeDB(config);
-	    }
-	    worddb->Close();
-	    delete worddb;
+	      }
+	    worddb.Close();
+	    words->Destroy();
+	    delete words;
 	    if (fuzzy)
-	    	delete fuzzy;
-	}
+	      delete fuzzy;
+	  }
 	else
-	{
+	  {
 	    reportError("Unable to open word database");
-	}
+	  }
     }
     if (noWordAlgorithms.Count() > 0)
     {

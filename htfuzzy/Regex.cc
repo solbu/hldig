@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Regex.cc,v 1.2 1999/07/10 03:43:16 ghutchis Exp $
+// $Id: Regex.cc,v 1.3 1999/09/10 01:37:39 ghutchis Exp $
 //
 //
 #include "Regex.h"
@@ -73,23 +73,29 @@ Regex::getWords(char *w, List &words)
 
     regexMatch.set(stripped);
 
-    Database	*dbf = Database::getDatabaseInstance(DB_BTREE);
-    dbf->OpenRead(config["word_db"]);
+    WordList    wordDB;
+    List        *wordList;
+    String	*key;
+    wordDB.Read(config["word_db"]);
+    wordList = wordDB.Words();
 
-    int		wordCount = 0;
-    int		maximumWords = config.Value("regex_max_words", 25);
-    
-    dbf->Start_Get();
-    while (wordCount < maximumWords && (w = dbf->Get_Next()))
-    {
-        if (regexMatch.match(w, 0, 0) != 0)
-	{
-	    words.Add(new String(w));
-	    wordCount++;
-	}
+    int         wordCount = 0;
+    int         maximumWords = config.Value("regex_max_words", 25);
+
+    wordList->Start_Get();
+    while (wordCount < maximumWords && (key = (String *) wordList->Get_Next()))
+      {
+        if (regexMatch.match(*key, 0, 0) != 0)
+	  {
+            words.Add(new String(*key));
+            wordCount++;
+	  }
+      }
+    if (wordList) {
+      wordList->Destroy();
+      delete wordList;
     }
-    dbf->Close();
-    delete dbf;
+    wordDB.Close();
 }
 
 

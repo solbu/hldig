@@ -14,9 +14,8 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-//
 #if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.12 1999/08/09 22:17:41 grdetil Exp $";
+static char RCSid[] = "$Id: Fuzzy.cc,v 1.13 1999/09/10 01:37:39 ghutchis Exp $";
 #endif
 
 #include "Fuzzy.h"
@@ -117,7 +116,7 @@ Fuzzy::openIndex(Configuration &config)
     var << "_db";
     String	filename = config[var];
 
-    index = Database::getDatabaseInstance(DB_BTREE);
+    index = Database::getDatabaseInstance(DB_HASH);
     if (index->OpenRead(filename) == NOTOK)
       {
 	delete index;
@@ -139,7 +138,7 @@ Fuzzy::writeDB(Configuration &config)
     var << "_db";
     String	filename = config[var];
 
-    index = Database::getDatabaseInstance(DB_BTREE);
+    index = Database::getDatabaseInstance(DB_HASH);
     if (index->OpenReadWrite(filename, 0664) == NOTOK)
 	return NOTOK;
 

@@ -1,9 +1,17 @@
 //
 // Prefix.cc
 //
-// Implementation of Prefix
+//: The prefix fuzzy algorithm. Performs a O(log n) search on for words
+//  matching the *prefix* specified--thus significantly faster than a full
+//  substring search.
 //
-// $Id: Prefix.cc,v 1.9 1999/07/10 02:10:57 ghutchis Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: Prefix.cc,v 1.10 1999/09/10 01:37:39 ghutchis Exp $
 //
 
 #include "Prefix.h"
@@ -67,12 +75,13 @@ Prefix::getWords(char *w, List &words)
 	    && strcmp(prefix_suffix, w+strlen(w)-prefix_suffix_length)) 
 	return;
 
-    Database	*dbf = Database::getDatabaseInstance(DB_BTREE);
-    dbf->OpenRead(config["word_db"]);
+    WordList	wordDB;
+    if (wordDB.Read(config["word_db"]) == NOTOK)
+      return;
 
     int		wordCount = 0;
     int		maximumWords = config.Value("max_prefix_matches", 1000);
-    char	*s;
+    String	*s;
     int		len = strlen(w) - prefix_suffix_length;
     
     // Strip the prefix character(s)
@@ -82,17 +91,20 @@ Prefix::getWords(char *w, List &words)
     w2[strlen(w2) - prefix_suffix_length] = '\0';
     String w3(w2);
     w3.lowercase();
-    dbf->Start_Seq(w3.get());
+    List	*wordList = wordDB[w3.get()];
 
-    while (wordCount < maximumWords && (s = dbf->Get_Next_Seq()))
+    while (wordCount < maximumWords && (s = (String *) wordList->Get_Next()))
     {
-	if (mystrncasecmp(s, w, len))
+	if (mystrncasecmp(s->get(), w, len))
 	    break;
-	words.Add(new String(s));
+	words.Add(new String(*s));
 	wordCount++;
     }
-    dbf->Close();
-    delete dbf;
+    if (wordList) {
+      wordList->Destroy();
+      delete wordList;
+    }
+    wordDB.Close();
 }
 
 

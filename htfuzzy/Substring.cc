@@ -1,11 +1,19 @@
 //
 // Substring.cc
 //
-// Implementation of Substring
+//: The substring fuzzy algorithm. Currently a rather slow, naive approach
+//  that checks the substring against every word in the word db.
+//  It does not generate a separate database.
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Substring.cc,v 1.6 1999/07/10 02:10:57 ghutchis Exp $";
+static char RCSid[] = "$Id: Substring.cc,v 1.7 1999/09/10 01:37:39 ghutchis Exp $";
 #endif
 
 #include "Substring.h"
@@ -45,29 +53,38 @@ Substring::~Substring()
 void
 Substring::getWords(char *w, List &words)
 {
-    StringMatch	match;
+    // First strip the punctuation
     String	stripped = w;
     HtStripPunctuation(stripped);
 
+    // Now set up the StringMatch object
+    StringMatch	match;
     match.Pattern(stripped);
 
-    Database	*dbf = Database::getDatabaseInstance(DB_BTREE);
-    dbf->OpenRead(config["word_db"]);
+    // And get the list of all possible words
+    WordList	wordDB;
+    List	*wordList;
+    String	*key;
+    wordDB.Read(config["word_db"]);
+    wordList = wordDB.Words();
 
     int		wordCount = 0;
     int		maximumWords = config.Value("substring_max_words", 25);
-    
-    dbf->Start_Get();
-    while (wordCount < maximumWords && (w = dbf->Get_Next()))
+
+    wordList->Start_Get();
+    while (wordCount < maximumWords && (key = (String *) wordList->Get_Next()))
     {
-	if (match.FindFirst(w) >= 0)
+	if (match.FindFirst(*key) >= 0)
 	{
-	    words.Add(new String(w));
+	    words.Add(new String(*key));
 	    wordCount++;
 	}
     }
-    dbf->Close();
-    delete dbf;
+    if (wordList) {
+      wordList->Destroy();
+      delete wordList;
+    }
+    wordDB.Close();
 }
 
 

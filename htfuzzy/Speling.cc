@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Speling.cc,v 1.2 1999/07/10 02:10:57 ghutchis Exp $
+// $Id: Speling.cc,v 1.3 1999/09/10 01:37:39 ghutchis Exp $
 //
 //
 #include "Speling.h"
@@ -52,8 +52,9 @@ Speling::getWords(char *w, List &words)
     if (strlen(w) < config.Value("minimum_speling_length",5))
 	return;
 
-    Database	*dbf = Database::getDatabaseInstance(DB_BTREE);
-    dbf->OpenRead(config["word_db"]);
+    WordList	wordDB;
+    if (wordDB.Read(config["word_db"]) == NOTOK)
+      return;
 
     String	initial = w;
     String	stripped = initial;
@@ -70,7 +71,7 @@ Speling::getWords(char *w, List &words)
       initial[pos] = initial[pos+1];
       initial[pos+1] = temp;
       
-      if (!dbf->Exists(initial))   // Seems weird, but this is correct
+      if (!wordDB.Exists(initial))   // Seems weird, but this is correct
 	words.Add(new String(initial));
 
       // Now let's do deletions
@@ -84,7 +85,7 @@ Speling::getWords(char *w, List &words)
       else
 	initial = tail;
 
-      if (!dbf->Exists(initial))   // Seems weird, but this is correct
+      if (!wordDB.Exists(initial))   // Seems weird, but this is correct
 	words.Add(new String(initial));
     }
 
@@ -92,11 +93,10 @@ Speling::getWords(char *w, List &words)
     initial = stripped;
     initial = initial.sub(0, initial.length() - 1);
     
-    if (!dbf->Exists(initial))   // Seems weird, but this is correct
+    if (!wordDB.Exists(initial))   // Seems weird, but this is correct
       words.Add(new String(initial));    
     
-    dbf->Close();
-    delete dbf;
+    wordDB.Close();
 }
 
 
