@@ -1,7 +1,7 @@
 Thu Jan 21 05:30:40 1999  Hans-Peter Nilsson  <hp@axis.se>
 
-	* htlib/HtWordCodec.h, htlib/HtWordCodec.cc, htlib/HtWordCodec.h,
-	htlib/HtCodec.cc, htlib/HtCodec.h: New files.
+	* htlib/HtURLCodec.h, htlib/HtURLCodec.cc, htlib/HtWordCodec.cc,
+	htlib/HtWordCodec.h, htlib/HtCodec.cc, htlib/HtCodec.h: New files.
 
 	* htlib/Makefile.in (OBJS): Add the corresponding *.o files
 
