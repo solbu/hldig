@@ -6,6 +6,7 @@
 # ChangeLog
 # 960321 IL  Reversed sorting to show newest documents first
 # 981026 JR  Modified to work with Berkeley DB2.
+# 980204 GRH Modified to work with changes in ht://Dig db format
 #
 # Produces a HTML 'Whats New' page with custom header and footer.
 #
@@ -331,6 +332,32 @@ sub parse_ref_record
 	    $length = unpack("i", $value);
 	    $rec{"SUBJECT"} = unpack("x4 A$length", $value);
 	    $value = substr($value, 4 + $length);
+	}
+	elsif ($what == 16)
+	{
+	    # STRING (ignore, but unpack)
+	    $length = unpack("i", $value);
+	    $rec{"STRING"} = unpack("x4 A$length", $value);
+	    $value = substr($value, 4 + $length);
+	}
+	elsif ($what == 17)
+	{
+	    # METADSC
+	    $length = unpack("i", $value);
+	    $rec{"METADSC"} = unpack("x4 A$length", $value);
+	    $value = substr($value, 4 + $length);
+	}
+	elsif ($what == 18)
+	{
+	    # BACKLINKS
+	    $rec{"BACKLINKS"} = unpack("i", $value);
+	    $value = substr($value, 4);
+	}
+	elsif ($what == 19)
+	{
+	    # SIGNATURE
+	    $rec{"SIG"} = unpack("i", $value);
+	    $value = substr($value, 4);
 	}
     }
     return %rec;
