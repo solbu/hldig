@@ -4,6 +4,11 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.19  1998/11/27 18:33:36  ghutchis
+//
+// Changed Retriever::got_word to check for small words, valid_punctuation to
+// remove bugs in HTML.cc.
+//
 // Revision 1.18  1998/11/15 22:06:27  ghutchis
 //
 // Fix for refresh tags w/o URLs.
@@ -73,7 +78,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.18 1998/11/15 22:06:27 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.19 1998/11/27 18:33:36 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -294,14 +299,9 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 
 	    if (word.length() >= minimumWordLength && doindex)
 	    {
-		word.lowercase();
-		word.remove(valid_punctuation);
-		if (word.length() >= minimumWordLength)
-		{
-		    retriever.got_word(word,
-				       int(offset * 1000 / contents->length()),
-				       in_heading);
-		}
+	      retriever.got_word(word,
+				 int(offset * 1000 / contents->length()),
+				 in_heading);
 	    }
 	}
 	else
@@ -671,7 +671,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		while (w)
 		{
 		    if (strlen(w) >= minimumWordLength)
-			retriever.got_word(w, 1, 10);
+		      retriever.got_word(w, 1, 10);
 		    w = strtok(0, " ,\t\r\n");
 		}
 		w = '\0';
@@ -715,7 +715,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    while (w)
 		    {
 			if (strlen(w) >= minimumWordLength)
-			    retriever.got_word(w, 1, 10);
+			  retriever.got_word(w, 1, 10);
 			w = strtok(0, " ,\t\r\n");
 		    }
 		    w = '\0';
@@ -765,11 +765,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    //
 		    meta_dsc = conf["content"];
 		    if (meta_dsc.length() > max_meta_description_length)
-		      {
-			String temp = meta_dsc.sub(0, max_meta_description_length);
-			meta_dsc = temp;
-			temp = 0;
-		      }
+		      meta_dsc = meta_dsc.sub(0, max_meta_description_length).get();
 		    if (debug > 1)
 		      cout << "META Description: " << conf["content"] << endl;
 		    retriever.got_meta_dsc(meta_dsc);

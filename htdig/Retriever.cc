@@ -4,10 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
-// Revision 1.19  1998/11/24 21:00:11  ghutchis
+// Revision 1.20  1998/11/27 18:33:37  ghutchis
 //
-// Added patch to use local_default doc with local_user_urls from Gilles
-// Detillieux <grdetil@scrc.umanitoba.ca>.
+// Changed Retriever::got_word to check for small words, valid_punctuation to
+// remove bugs in HTML.cc.
 //
 // Revision 1.18  1998/11/22 19:14:16  ghutchis
 //
@@ -130,6 +130,8 @@ Retriever::Retriever()
     words.BadWordFile(config["bad_word_list"]);
 
     doc = new Document();
+    valid_punctuation = config["valid_punctuation"];
+    minimumWordLength = config.Value("minimum_word_length", 3);
 }
 
 
@@ -740,7 +742,7 @@ Retriever::IsLocalUser(char *url)
 	*local += *dir;
 	*local += rest;
 	if (local->last() == '/' && config["local_default_doc"] != "")
-	    *local += config["local_default_doc"];
+	  *local += config["local_default_doc"];
 	return local;
     }
     return 0;
@@ -774,7 +776,11 @@ Retriever::got_word(char *word, int location, int heading)
 	cout << "word: " << word << '@' << location << endl;
     if (trackWords)
     {
-	words.Word(word, location, current_anchor_number, factor[heading]);
+      String w = word;
+      w.lowercase();
+      w.remove(valid_punctuation);
+      if (w.length() >= minimumWordLength)
+	words.Word(w, location, current_anchor_number, factor[heading]);
     }
 }
 
@@ -892,10 +898,18 @@ Retriever::got_href(URL &url, char *description)
 	    while (w)
 	      {
 		if (strlen(w) >= config.Value("minimum_word_length", 3))
-		  this->got_word(w, 1, 9); // description_factor
+		  {
+		    String word = w;
+		    word.lowercase();
+		    word.remove(valid_punctuation);
+		    if (word.length() >= minimumWordLength)
+		      this->got_word(word, 0, 9); //description factor
+		  }
 		w = strtok(0, " ,\t\r\n");
 	      }
 	    w = '\0';
+	    // And let's flush the words!
+	    //	    words.Flush();
 	    // Now clean up by resetting words.DocID and current_anchor_num
 	    words.DocumentID(old_id);
 	    current_anchor_number = old_anchor;

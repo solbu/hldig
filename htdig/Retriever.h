@@ -1,9 +1,14 @@
 //
 // Retriever.h
 //
-// $Id: Retriever.h,v 1.4 1998/09/07 04:37:16 ghutchis Exp $
+// $Id: Retriever.h,v 1.5 1998/11/27 18:34:52 ghutchis Exp $
 //
 // $Log: Retriever.h,v $
+// Revision 1.5  1998/11/27 18:34:52  ghutchis
+//
+// Changed Retriever::got_word to check for small words, valid_punctuation to
+// remove bugs in HTML.cc.
+//
 // Revision 1.4  1998/09/07 04:37:16  ghutchis
 //
 // Added DocState for documents marked as "noindex".
@@ -125,7 +130,11 @@ private:
     Document		*doc;
 
     String		notFound;
-    
+
+    // Some useful constants
+    char             *valid_punctuation;
+    int              minimumWordLength;
+
     //
     // Helper routines
     //
