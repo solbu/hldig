@@ -23,6 +23,8 @@ This distribution includes:
 
     * htnet     - Net stuff classes
 
+    * htword    - word occurences list handling, aka inverted index
+
     * htcommon  - ht://Dig specific classes
 
     * htdoc     - ht://Dig documentation in HTML
