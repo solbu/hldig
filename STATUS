@@ -1,0 +1,28 @@
+STATUS of ht://Dig branch 3-2-x
+
+Releases:
+   3.2.0b1: Unscheduled, Feature-Freeze
+
+Features Pending:
+* Vadim's config parser: in place, but currently only set for one attribute.
+* Marcel's 8x compression: not yet ready.
+	Vote: 
+
+Showstoppers:
+* Serious problems reported with synonym fuzzy.
+* Retriever/Server classes still need a cleanup.
+   (Geoff has outline, needs to implement.)
+
+Known Bugs:
+(Need to compile list from bug DB.)
+
+Tests:
+* ExternalTransport with non 'http' URLs.
+* URL parser
+* htfuzzy tests
+* New config parser
+
+Documentation:
+* Update cf_* pages to mention regex, new parser
+* Update THANKS.html
+* Update to mention phrase searching, regex fuzzy
