@@ -1,0 +1,222 @@
+INTRODUCTION
+============
+
+This DETAILS file accompanies doc2html.pl version 1.0.
+
+Read this file for instructions on the installation and use of the 
+doc2html.pl script.
+
+The set of files is:
+
+	DETAILS		- this file
+	doc2html.pl	- the script
+	doc2html.cfg	- configuration file for use with wp2html
+	doc2html.sty	- style file for use with wp2html
+	README		- brief description
+
+Doc2html.pl is a Perl5 script for use as an external converter with 
+htdig 3.1.4 or later.  It takes as input the name of a file containing
+a document in a number of possible formats and uses the appropriate
+conversion utility to convert it to HTML on standard output.
+
+Doc2html.pl was designed to be easily adapted to use whatever 
+conversion utilities are available, and although it has been written 
+around the "wp2html" utility, it does not require wp2html to function.
+
+NOTE: version 1.0 has only been tested on Unix.
+
+
+INSTALLATION
+============
+
+Installation requires that you acquire, compile and install the utilities 
+you need to do the conversions.  Those already setup in doc2html.pl are 
+described below.
+
+Edit doc2html.pl to include the full pathnames of the utilities you have
+installed.  If you don't have a particular utility then set or leave its
+location as a null string.  For example:
+
+$WP2HTML = '';
+
+Place doc2html.pl where htdig can access it.  
+
+Edit the htdig.conf configuration file to use the script as in this example:
+
+external_parsers:	application/rtf->text/html /usr/local/scripts/doc2html.pl \
+		 	text/rtf->text/html /usr/local/scripts/doc2html.pl \
+			application/pdf->text/html /usr/local/scripts/doc2html.pl \
+			application/postscript->text/html /usr/local/scripts/doc2html.pl \
+			application/msword->text/html /usr/local/scripts/doc2html.pl \
+			application/Wordperfect5.1->text/html /usr/local/scripts/doc2html.pl
+
+
+If you are using wp2html then place the files doc2html.cfg and doc2html.sty in the
+wp2html library directory.
+
+
+WP2HTML
+=======
+
+Obtain Wp2html from http://www.res.bbsrc.ac.uk/wp2html/
+
+Note that wp2html is not free; its author charges a small fee for
+"registration".  Various pre-compiled versions and the source code
+are available, togther with extensive documentation.  Upgrades are
+available at no further charge. 
+
+Wp2html converts WordPerfect documents (5.1 and later) to HTML.
+Version 3.2 will also convert Word97 documents to HTML, and there
+is the possibility that future versions may convert a wider range
+of Word documents into HTML.  A feature of wp2html which doc2html.pl
+exploits is that the -q option will result in either good HTML or
+no output at all.
+
+Wp2html is very flexible in the output it creates.  The two files,
+doc2html.cfg and doc2html.sty, should be placed in the wp2html library
+directory along with the .cfg and .sty files supplied with wp2html.
+ 
+Edit the line in doc2html.pl:
+
+$WP2HTML = '';
+
+to set $WP2HTML to the full pathname of wp2html.
+
+If wp2html is unable to convert a document, or is not installed,
+then doc2html.pl will use the "catdoc" utility instead.
+
+Note: wp2html creates a small file, CmdLine.ovr, in the current directory.
+      Version 1.0 does not attempt to remove this file.
+
+
+CATDOC
+======
+
+Obtain Catdoc from http://www.fe.msk.ru/~vitus/catdoc/
+
+Edit the lines in doc2html.pl:
+
+$CATDOC = '';
+
+and
+
+$CATDOC2 = '';
+
+to set the variables to the full pathname(s) of catdoc.  You might
+want to use a different version of catdoc for Word2 documents.
+
+Catdoc converts MS Word6, Word97, etc., documents to plain text.  
+The latest beta version is also able to convert Word2 documents.
+Catdoc also produces a certaint amount of "garbage" as well as
+the text of the document.  The -b option improves the likelyhood
+that catdoc will extract all the text from the document, but at the
+expense of increasing the garbage as well.  Doc2html.pl removes all
+non-printing characters to minimise the garbage.  If a later version
+of catdoc than 0.91.4 is obtained then the use of the -b option
+should be reviewed.
+
+
+RTF2HTML
+========
+
+Obtain rtf2html from http://www.fe.msk.ru/~vitus/catdoc/
+
+Edit the line:
+
+$RTF2HTML = '';
+
+to set $RTF2HTML to the full pathname of rtf2html.
+
+Rtf2html converts Rich Text Font documents into HTML.  It uses
+the input filename as the title.  Doc2html.pl replaces this with
+the original filename from the URL.
+
+
+PS2ASCII
+========
+
+Ps2ascii is a PostScript to text converter.
+
+Edit the line:
+
+$PS2ASCII = '';
+
+to the full pathname of rtf2html.
+
+Ps2ascii comes with ghostscript 3.33 (or later) package, which is
+often pre-installed on many Unix systems.  Commonly, it is a
+Bourne-shell script which invokes "gs", the Ghostscript binary.
+Doc2html.pl has provision for adding the location of gs to the
+search path.
+
+
+PDFTOTEXT
+=========
+
+Pdftotext converts Adobe PDF files to text.  Pdfinfo is a tool
+which displays information about the document, and is used to
+obtain its title.
+
+Get them from the xpdf 0.90 package at http://www.foolabs.com/xpdf/
+
+Edit the lines:
+
+$PDF2TEXT = '';
+$PDFINFO = '';
+
+to the full pathnames.
+
+Note: pdftotext fails to convert PDF documents which contain errors.
+
+
+ABOUT DOC2HTML.PL
+=================
+
+Doc2html.pl is essentially a wrapper script, and is itself only capable
+of reading plain text files.  It requires the utility programs described
+above to work properly.
+
+Doc2html.pl was written by David Adams <d.j.adams@soton.ac.uk>, it is 
+based on conv_doc.pl written by Gilles Detillieux 
+<grdetil@scrc.umanitoba.ca>.  This in turn was based on the
+parse_word_doc.pl script, written by Jesse op den Brouw 
+<MSQL_User@st.hhs.nl>.
+
+Doc2html.pl makes up to three attempts to read a file.  It first tries
+utilities which convert directly into HTML.  If one is not found, or
+no output is produced, it then tries utilities which convert into text.
+If none is found, and the file is not of a type known to be unconvertable,
+then doc2html.pl attempts itself to read the file, stripping out any
+non-word characters.
+
+Doc2html.pl is written to be flexible and easy to adapt to whatever
+conversion utilites are available.  New conversion utilities may be
+added simply by making changes to routine 'start'.
+
+Htdig provides three arguments: 
+
+1)	the name of a temporary file containing a copy of the 
+	document to be converted.
+
+2)	the MIME type of the document.
+
+3)	the URL of the document (which is used in generating the
+	title in the output).
+
+Version 1.0 of doc2html.pl only uses the second argument in diagnostic messages.  
+In version 1.0 the test for document type is based soley on the "Magic number" 
+of the file, that is on its first few bytes.
+
+
+Contact
+=======
+
+Any queries regarding doc2html.pl are best sent to the mailing list htdig@htdig.org
+
+The author can be emailed at D.J.Adams@soton.ac.uk
+
+David Adams
+Computing Services
+University of Southampton
+
+4-April-2000

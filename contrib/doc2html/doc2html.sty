@@ -1,0 +1,40 @@
+Any Font  8 On  ="<H6>"
+Any Font  8 Off ="</H6>"
+Any Font  9 On  =" "
+Any Font  9 Off =" "
+Any Font 10 On  =" "
+Any Font 10 Off =" "
+Any Font 11 On  =" "
+Any Font 11 Off =" "
+Any Font 12 On  ="<H4>"
+Any Font 12 Off ="</H4>"
+Any Font 14 On  ="<H3>"
+Any Font 14 Off ="</H3>"
+Any Font 18 On  ="<H3>"
+Any Font 18 Off ="</H3>"
+Any Font 24 On  ="<H2>"
+Any Font 24 Off ="</H2>"
+Any Font 28 On  ="<H2>"
+Any Font 28 Off ="</H2>"
+Any Font 32 On  ="<H1>"
+Any Font 32 Off ="</H1>"
+Any Font 36 On  ="<H1>"
+Any Font 36 Off ="</H1>"
+
+# Now the really specific stuff for WWW Urls
+# This one decodes the special Url macro which puts the URL reference
+# inside a WP Comment (so it is hidden but editable) and makes the
+# link text blue and underline
+# If we find a comment inside an Url style pair defined by the user
+# we can be pretty sure it was deliberate ( done by MACRO), so we
+# have this special translation just for Comments inside Url Styles
+# Course, if not defined (UrlComment) it will default to standard
+#
+UrlOn="%e"                          # Eat style codes
+UrlOnEnd="%f"                       # Style end for UrlOn, restart output
+# the comment text, passed as parameter 2 text, is the URL
+UrlCommentOn="<a href=\""
+UrlCommentOff="\">"                 #  URL link
+UrlOff="</a>%e"                     # Anchor Off and eat style codes
+UrlOffEnd="%f"                      # Style end for UrlOff, restart output
+

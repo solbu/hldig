@@ -1,0 +1,14 @@
+Readme for doc2html.pl
+
+Sample external converter script for ht://Dig 3.1.4 and above, that
+converts MS-Word, PDF, PostScript, RTF and WordPerfect files to text 
+(in HTML form) so they can be indexed.  Uses the "wp2html" program to
+convert Wordperfect and Word97 documents to HTML, the "rtf2html"
+program to convert RTF documents to HTML, the "catdoc" program to 
+extract text from other Word documents, "pdftotext" to extract text 
+from PDFs, and "ps2ascii" to extract text from PostScript.
+
+Written by David Adams (University of Southampton), and based on the 
+conv_doc.pl script by Gilles Detillieux.
+
+For more information see the DETAILS file.

@@ -1,3 +1,7 @@
+Tue Apr  4 12:46:37 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/doc2html/*: Added parser submitted by D.J.Adams@soton.ac.uk
+
 Mon Apr  3 13:48:59 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc: Fix error in description of new attribute
