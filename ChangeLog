@@ -1,3 +1,11 @@
+Thu Mar 18 20:01:24 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* installdir/long.html, installdir/short.html: Write out HTML
+	versions of the builtin templates.
+
+	* installdir/htdig.conf: Add commented-out template_map and
+	template_name attributes to use the on-disk versions.
+
 Tue Mar 16 03:06:06 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
 	* htcommon/DocumentDB.cc (Delete): Fix bad parameter to Get: use
