@@ -1,3 +1,13 @@
+Wed Oct  4 12:12:31 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc (limit_normalized, server_aliases,
+	server_max_docs, server_wait_time): Added clarification
+	to server_aliases description. Changed word "directive" to
+	"attribute" where appropriate. Added cross-link to server_aliases
+	from limit_normalized.
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
 Wed Sep 27 00:05:41 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdb/mifluz[dict, dump, load].cc, htdb/util_sig.h,

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.60 2000/09/10 02:38:51 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.61 2000/10/04 17:25:15 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1130,12 +1130,13 @@ http://www.htdig.org/", "
 	"pattern list", "htdig", "URL", "3.1.0b2", "Indexing:Where", "limit_normalized: http://www.mydomain.com", "
 	This specifies a set of patterns that all URLs have to
 	match against in order for them to be included in the
-	search. Unlike the limit_urls_to directive, this is done
-	<strong>after</strong> the URL is normalized and the server_aliases
-	directive is applied. This allows filtering after any
+	search. Unlike the limit_urls_to attribute, this is done
+	<strong>after</strong> the URL is normalized and the
+	<a href=\"#server_aliases\">server_aliases</a>
+	attribute is applied. This allows filtering after any
 	hostnames and DNS aliases are resolved. Otherwise, this
-	directive is the same as the <a
-	href=\"#limit_urls_to\">limit_urls_to</a> directive.
+	attribute is the same as the <a
+	href=\"#limit_urls_to\">limit_urls_to</a> attribute.
 " },
 { "limit_urls_to", "${start_url}", 
 	"pattern list", "htdig", "URL", "all", "Indexing:Where", "limit_urls_to: .sdsu.edu kpbs [.*\\.html]", "
@@ -2007,19 +2008,22 @@ http://www.htdig.org/", "
 				  foo.mydomain.com:80=www.mydomain.com:80 \\<br>
 				  bar.mydomain.com:80=www.mydomain.com:80
 ", "
-	This directive tells the indexer that servers have several
+	This attribute tells the indexer that servers have several
 	DNS aliases, which all point to the same machine and are NOT
 	virtual hosts. This allows you to ensure pages are indexed
 	only once on a given machine, despite the alias used in a URL.
+	As shown in the example, the mapping goes from left to right,
+	so the server name on the right hand side is the one that is
+	used. As of version 3.1.3, the port number is optional.
 " },
 { "server_max_docs", "-1", 
 	"integer", "htdig", "Server", "3.1.0b3", "Indexing:Where", "server_max_docs: 50", "
-	This directive tells htdig to limit the dig to retrieve a maximum
+	This attribute tells htdig to limit the dig to retrieve a maximum
 	number of documents from each server. This can cause
 	unusual behavior on update digs since the old URLs are
 	stored alphabetically. Therefore, update digs will add
 	additional URLs in pseudo-alphabetical order, up to the
-	limit of the directive. However, it is most useful to
+	limit of the attribute. However, it is most useful to
 	partially index a server as the URLs of additional
 	documents are entered into the database, marked as never
 	retrieved.<br>
@@ -2027,12 +2031,12 @@ http://www.htdig.org/", "
 " },
 { "server_wait_time", "0", 
 	"integer", "htdig", "Server", "3.1.0b3", "Indexing:Connection", "server_wait_time: 20", "
-	This directive tells htdig to ensure a server has had a
+	This attribute tells htdig to ensure a server has had a
 	delay (in seconds) from the beginning of the last
 	connection. This can be used to prevent \"server abuse\"
 	by digging without delay. It's recommended to set this
 	to 10-30 (seconds) when indexing servers that you don't
-	monitor yourself. Additionally, this directive can slow
+	monitor yourself. Additionally, this attribute can slow
 	down local indexing if set, which may or may not be what
 	you intended.
 " },
