@@ -29,7 +29,7 @@ OBJS=   bt_compare.o bt_conv.o bt_curadj.o bt_cursor.o bt_delete.o \
 	lock_conflict.o lock_deadlock.o lock_util.o lock_region.o log.o \
 	log_archive.o log_auto.o log_compare.o log_findckp.o log_get.o \
 	log_put.o log_rec.o log_register.o mp_bh.o mp_fget.o mp_fopen.o \
-	mp_fput.o mp_fset.o mp_open.o mp_pr.o mp_region.o mp_sync.o \
+	mp_fput.o mp_fset.o mp_open.o mp_pr.o mp_region.o mp_sync.o mp_cmpr.o \
 	mutex.o os_abs.o os_alloc.o os_config.o os_dir.o os_fid.o \
 	os_fsync.o os_map.o os_oflags.o os_open.o os_rpath.o os_rw.o \
 	os_seek.o os_sleep.o os_spin.o os_stat.o os_tmpdir.o os_unlink.o \
@@ -141,11 +141,11 @@ realclean distclean: clean
 	$(rm) -f confdefs.h db.h db_int.h db_185.h include.tcl
 
 prefix=	@prefix@
-bindir=	$(prefix)/BerkeleyDB/bin
-datadir=$(prefix)/BerkeleyDB/share
-includedir=$(prefix)/BerkeleyDB/include
-libdir=	$(prefix)/BerkeleyDB/lib
-mandir=	$(prefix)/BerkeleyDB/docs
+bindir=	$(prefix)/bin
+datadir=$(prefix)/share
+includedir=$(prefix)/include
+libdir=	$(prefix)/lib
+mandir=	$(prefix)/docs
 
 dmode=	755
 emode=	555
@@ -368,6 +368,8 @@ mp_pr.o: $(srcdir)/mp/mp_pr.c
 mp_region.o: $(srcdir)/mp/mp_region.c
 	$(CC) $(CFLAGS) $?
 mp_sync.o: $(srcdir)/mp/mp_sync.c
+	$(CC) $(CFLAGS) $?
+mp_cmpr.o: $(srcdir)/mp/mp_cmpr.c
 	$(CC) $(CFLAGS) $?
 
 # Mutex source files.
