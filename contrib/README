@@ -15,9 +15,10 @@ changehost	A script to change hostnames of URLs in the databases
 doclist		List the information in the doc db (or after a certain date)
 ewswrap		Two sample htsearch wrappers to emulate Excite for Web
 		Servers (EWS) and to simplify queries
-htparsedoc	Two sample external parsers (shell and perl) to index
-		Word documents.
+htparsedoc	A sample shell script to parse Word documents
 multidig	A set of scripts to simplify updating multiple databases
+parse_doc.pl	A general external parser script that handles MS Word documents
+		(among others)
 run-robot.sh	Another example of automating the database building
 status.pl	Build a status page of last 5 runs and top 10
 		servers (by # URLs)
