@@ -4,6 +4,11 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.5  1998/07/16 15:15:28  ghutchis
+//
+// Added patch from Stephan Muehlstrasser <smuehlst@Rational.Com> to fix
+// delete syntax and a memory leak.
+//
 // Revision 1.4  1998/06/21 23:20:10  turtle
 // patches by Esa and Jesse to add BerkeleyDB and Prefix searching
 //
@@ -18,7 +23,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.4 1998/06/21 23:20:10 turtle Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.5 1998/07/16 15:15:28 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -95,6 +100,7 @@ Display::display(int pageNumber)
 	//
 	// No matches.
 	//
+        delete matches;
 	displayNomatch();
 	return;
     }

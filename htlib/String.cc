@@ -6,6 +6,11 @@
 // AWS	10/13/93	Fixed the constructors and operator = routines so that a NULL can be passed
 //
 // $Log: String.cc,v $
+// Revision 1.6  1998/07/16 15:15:26  ghutchis
+//
+// Added patch from Stephan Muehlstrasser <smuehlst@Rational.Com> to fix
+// delete syntax and a memory leak.
+//
 // Revision 1.5  1998/06/22 04:33:24  turtle
 // New Berkeley database stuff
 //
@@ -24,7 +29,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.5 1998/06/22 04:33:24 turtle Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.6 1998/07/16 15:15:26 ghutchis Exp $";
 #endif
 
 
@@ -95,7 +100,7 @@ String::String(const String &s, int allocation_hint)
 String::~String()
 {
     if (Data)
-	delete Data;
+	delete [] Data;
 }
 
 void String::operator = (String &s)
@@ -564,7 +569,7 @@ void String::reallocate_space(int len)
 	if (old_data)
 	{
 	    copy_data_from(old_data, old_data_len);
-	    delete old_data;
+	    delete [] old_data;
 	}
     }
 }

@@ -6,6 +6,11 @@
 // Implementation of StringMatch
 //
 // $Log: StringMatch.cc,v $
+// Revision 1.3  1998/07/16 15:15:27  ghutchis
+//
+// Added patch from Stephan Muehlstrasser <smuehlst@Rational.Com> to fix
+// delete syntax and a memory leak.
+//
 // Revision 1.2  1997/02/24 17:52:52  turtle
 // Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
 // ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
@@ -15,7 +20,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: StringMatch.cc,v 1.2 1997/02/24 17:52:52 turtle Exp $";
+static char RCSid[] = "$Id: StringMatch.cc,v 1.3 1998/07/16 15:15:27 ghutchis Exp $";
 #endif
 
 #include "StringMatch.h"
@@ -54,9 +59,9 @@ StringMatch::StringMatch()
 StringMatch::~StringMatch()
 {
     for (int i = 0; i < 256; i++)
-	delete table[i];
+	delete [] table[i];
     if (local_alloc)
-	delete trans;
+	delete [] trans;
 }
 
 
@@ -451,7 +456,7 @@ int StringMatch::CompareWord(char *string, int &which, int &length)
 void StringMatch::TranslationTable(char *table)
 {
     if (local_alloc)
-	delete trans;
+	delete [] trans;
     trans = (unsigned char *) table;
     local_alloc = 0;
 }
