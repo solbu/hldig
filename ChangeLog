@@ -1,3 +1,12 @@
+Fri Jan 29 13:30:11 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/htsearch.cc: Construct the StringMatch used for finding
+	excerpts in two pieces--user input and post-fuzzy matching. Fixes
+	problems with matching searches with punctuation.
+
+	* htlib/StringMatch.cc(IgnoreCase): Fix small memory leak pointed
+	out by Gilles.
+
 Thu Jan 28 21:36:03 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/*.html: Changed copyright information to mention the

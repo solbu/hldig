@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.46 1999/01/29 02:53:15 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.47 1999/01/29 18:55:08 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -869,12 +869,12 @@ Display::buildMatchList()
 	// No special precations re: the option
 	// "uncoded_db_compatible" needs to be taken.
 	url = HtURLCodec::instance()->decode(coded_url);
-
 	if (!includeURL(url.get()))
 	{
 	    continue;
 	}
-		
+	
+
 	thisMatch = new ResultMatch();
 	thisMatch->setURL(url);
 	thisMatch->setRef(NULL);

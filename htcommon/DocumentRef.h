@@ -1,51 +1,15 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.10 1999/01/12 18:08:57 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.11 1999/01/29 18:55:05 ghutchis Exp $
 //
-// $Log: DocumentRef.h,v $
-// Revision 1.10  1999/01/12 18:08:57  ghutchis
-// Added support for compressing data using zlib if available, contributed by
-// Randy Winch <gumby@cafes.net>.
-//
-// Revision 1.9  1999/01/05 19:29:40  ghutchis
-// Added comments on the members (fields) of DocumentRef objects.
-//
-// Revision 1.8  1998/11/15 22:29:27  ghutchis
-// Implement docBackLinks backlink count.
-//
-// Revision 1.7  1998/09/10 04:16:25  ghutchis
-// More bug fixes.
-//
-// Revision 1.6  1998/09/07 04:37:16  ghutchis
-// Added DocState for documents marked as "noindex".
-//
-// Revision 1.5  1998/08/11 08:58:25  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.4  1998/01/05 00:50:30  turtle
-// format changes
-//
-// Revision 1.3  1997/03/24 04:33:15  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.2  1997/02/10 17:30:58  turtle
-// Applied AIX specific patches supplied by Lars-Owe Ivarsson
-// <lars-owe.ivarsson@its.uu.se>
-//
-// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
-// Initial CVS
-//
-// Revision 1.1  1995/07/06 23:44:00  turtle
-// *** empty log message ***
 //
 //
 #ifndef _DocumentRef_h_
 #define _DocumentRef_h_
 
-#include <htString.h>
-#include <List.h>
+#include "htString.h"
+#include "List.h"
 #include <time.h>
 
 enum ReferenceState
