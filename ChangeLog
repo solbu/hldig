@@ -1,3 +1,8 @@
+Tue Dec 12 12:25:04 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Add call to wait for child process,
+	to avoid zombie buildup.
+
 Mon Dec 11 23:57:43 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/ExternalParser.cc (parse): Fix up handling of fds in child

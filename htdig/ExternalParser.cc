@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.15 2000/12/12 06:09:11 grdetil Exp $
+// $Id: ExternalParser.cc,v 1.19.2.16 2000/12/12 18:36:10 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -484,6 +484,9 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     } // while(readLine)
     fclose(input);
     // close(stdout_pipe[0]); // This is closed for us by the fclose()
+    int rpid, status;
+    while ((rpid = wait(&status)) != fork_result && rpid != -1)
+	;
     unlink((char*)path);
 
     if (newcontent.length() > 0)
