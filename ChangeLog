@@ -1,3 +1,7 @@
+Fri Mar 19 16:50:58 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/mytimegm.cc: Fix Y2K problems.
+
 Fri Mar 19 16:43:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc: Add patch from Gabriele to ensure META
