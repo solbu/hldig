@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3.2.10 2000/01/03 11:48:36 bosc Exp $
+// $Id: WordKey.cc,v 1.3.2.11 2000/01/03 13:36:55 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -494,7 +494,7 @@ WordKey::Set(StringList& fields)
   int length = fields.Count();
 
   if(length < info0.nfields + 1) {
-    cerr << "WordKey::Set: expected at least " << info0.nfields << " fields and found " << length << " (ignored) " << endl;
+    cerr << "WordKey::Set: expected at least " << info0.nfields+1 << " fields and found " << length << " (ignored) " << endl;
     return NOTOK;
   }
   if(length < 2) {
