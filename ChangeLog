@@ -1,3 +1,10 @@
+Tue Nov 23 21:20:35 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc, htsearch/Display.h, htsearch/Display.cc,
+	htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htdoc/hts_templates.html: add template_patterns attribute, to select
+	result templates based on URL patterns.
+
 Tue Nov 23 20:52:38 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/cgi.h, htlib/cgi.cc(cgi & init), htsearch/htsearch.cc

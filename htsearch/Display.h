@@ -1,7 +1,7 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.8.2.2 1999/09/01 19:54:36 grdetil Exp $
+// $Id: Display.h,v 1.8.2.3 1999/11/24 03:33:09 grdetil Exp $
 //
 //
 //
@@ -106,6 +106,13 @@ protected:
     // what happened.
     //
     int                 templateError;
+
+    //
+    // To allow the result templates to be dependant on the match URL, we need
+    // the following:
+    //
+    StringMatch		URLtemplate;
+    List		URLtemplateList;
 
     //
     // To allow the star images to be dependant on the match URL, we need

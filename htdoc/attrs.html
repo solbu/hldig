@@ -6047,6 +6047,67 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="template_patterns">template_patterns</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This attribute allows the results template to be changed
+			depending on the URL or the match it is used for. This
+			is mainly to make a visual distinction between matches
+			on different web sites. The results for each site could
+			thus be shown in a style matching that site.<br>
+			to.<br>
+			 The format is simply a list of pairs. The first
+			element of each pair is a pattern, the second element
+			is the name of the template file for that pattern.<br>
+			 More information about templates can be found in the
+			<a href="htsearch.html" target="_top">htsearch</a>
+			documentation.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  template_patterns:
+				</td>
+				<td nowrap>
+				  http://www.sdsu.edu ${common_dir}/sdsu.html \<br>
+				  http://www.ucsd.edu ${common_dir}/ucsd.html
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="text_factor">text_factor</a></strong>
 	  </dt>
 	  <dd>
@@ -6877,7 +6938,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Tue Nov 23 21:25:16 EST 1999
+Last modified: Tue Nov 23 22:14:50 EST 1999
 <!-- hhmts end -->
   </body>
 </html>
