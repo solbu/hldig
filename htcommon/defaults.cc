@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.19  1998/11/17 04:06:14  ghutchis
+//
+// Add new ranking factors backlink_factor and date_factor
+//
 // Revision 1.18  1998/10/21 17:33:03  ghutchis
 //
 // Added defaults for server_aliases and limit_normalized
@@ -49,7 +53,6 @@
 //
 // Revision 1.6  1998/07/09 09:32:02  ghutchis
 //
-//
 // Added support for META name=description tags. Uses new config-file
 // option "use_meta_description" which is off by default.
 //
@@ -70,7 +73,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.18 1998/10/21 17:33:03 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.19 1998/11/17 04:06:14 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -93,11 +96,13 @@ ConfigDefaults	defaults[] =
     {"add_anchors_to_excerpt",		"true"},
     {"allow_numbers",			"false"},
     {"allow_virtual_hosts",		"true"},
+    {"backlink_factor",                 "0"},
     {"bad_extensions",			".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram"},
     {"bad_word_list",			"${common_dir}/bad_words"},
     {"case_sensitive"                   "true"},
     {"create_image_list",		"false"},
     {"create_url_list",			"false"},
+    {"date_factor",                     "0"},
     {"database_base",			"${database_dir}/db"},
     {"doc_db",				"${database_base}.docdb"},
     {"doc_index",			"${database_base}.docs.index"},

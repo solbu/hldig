@@ -1,3 +1,17 @@
+Mon Nov 16 22:30:07 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Declare new config options backlink_factor
+	and date_factor for counting document backlink counts and modifed
+	dates in rankings.
+
+	* htsearch/Display.cc: Use above factors.
+
+	* htsearch/ResultMatch.cc: Clarify getScore() comments.
+
+	* htlib/mktime.c: Import new version.
+
+	* installdir/htdig.conf: Add max_doc_size example (to help w/FAQ).
+
 Mon Nov 16 10:46:15 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/ExternalParser.cc: Add checks for null tokens, adapted

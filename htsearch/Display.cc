@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.20  1998/11/17 04:06:14  ghutchis
+//
+// Add new ranking factors backlink_factor and date_factor
+//
 // Revision 1.19  1998/11/15 22:29:27  ghutchis
 //
 // Implement docBackLinks backlink count.
@@ -84,7 +88,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.19 1998/11/15 22:29:27 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.20 1998/11/17 04:06:14 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -793,17 +797,31 @@ Display::buildMatchList()
 	//
 	// Get the actual document record into the current ResultMatch
 	//
-//	thisMatch->setRef(docDB[thisMatch->getURL()]);
+	//	thisMatch->setRef(docDB[thisMatch->getURL()]);
 
 	//
 	// Assign the incomplete score to this match.  This score was
 	// computed from the word database only, no excerpt context was
-	// known at that time, so this still needs to be done by the
-	// ResultMatch object.
+	// known at that time, or info about the document itself, 
+	// so this still needs to be done.
 	//
 	DocMatch	*dm = results->find(id);
-		
-	thisMatch->setIncompleteScore(dm->score);
+	float           score = dm->score;
+	DocumentRef     *thisRef = docDB[thisMatch->getURL()];
+
+	// We need to scale based on date relevance and backlinks
+	// Other changes to the score can happen now
+	// Or be calculated by the result match in getScore()
+
+	float modified = thisRef->DocTime();
+	float now = time(0);
+	// This formula derived through experimentation
+	// We want older docs to have smaller values and the
+	// ultimate values to be a reasonable size (here about 100)
+	score += config.Double("date_factor") * ((modified * 1000 / now) - 900);
+	score += config.Double("backlink_factor") * thisRef->DocBackLinks();
+
+	thisMatch->setIncompleteScore(score);
 	thisMatch->setAnchor(dm->anchor);
 		
 	//
