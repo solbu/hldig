@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.4 1999/11/26 22:09:49 grdetil Exp $
+// $Id: Display.cc,v 1.100.2.5 2000/01/14 00:57:15 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -549,8 +549,10 @@ Display::setVariables(int pageNumber, List *matches)
 		createURL(tmp, i);
 		*str << tmp << "\">" << p << "</a>";
 	    }
-	    if (i != nPages)
-		*str << ((sep.Count() > 0) ? sep[(i-1)%sep.Count()] : " ");
+	    if (i != nPages && sep.Count() > 0)
+		*str << sep[(i-1)%sep.Count()];
+	    else if (i != nPages && sep.Count() <= 0)
+	      *str << " ";
 	}
 	vars.Add("PAGELIST", str);
     }

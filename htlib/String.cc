@@ -9,9 +9,8 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.30.2.5 2000/01/03 12:10:39 bosc Exp $
+// $Id: String.cc,v 1.30.2.6 2000/01/14 00:57:15 ghutchis Exp $
 //
-
 
 #include "htString.h"
 #include "Object.h"
@@ -323,6 +322,18 @@ int String::indexOf(char ch) const
 {
     int		i;
     for (i = 0; i < Length; i++)
+    {
+	if (Data[i] == ch)
+	    return i;
+    }
+    return -1;
+}
+
+int String::indexOf(char ch, int pos) const
+{
+    if (pos >= Length)
+      return -1;
+    for (int i = pos; i < Length; i++)
     {
 	if (Data[i] == ch)
 	    return i;

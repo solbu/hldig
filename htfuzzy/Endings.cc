@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Endings.cc,v 1.8.2.1 1999/12/07 19:54:11 bosc Exp $
+// $Id: Endings.cc,v 1.8.2.2 2000/01/14 00:57:15 ghutchis Exp $
 //
 
 #include "Endings.h"

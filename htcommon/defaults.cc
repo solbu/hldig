@@ -10,13 +10,14 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.21 2000/01/03 13:26:28 bosc Exp $
+// $Id: defaults.cc,v 1.64.2.22 2000/01/14 00:57:14 ghutchis Exp $
 //
 
 #include "HtConfiguration.h"
 
 ConfigDefaults	defaults[] =
 {
+
 
 { "add_anchors_to_excerpt", "true", 
 	"boolean", "htsearch", "add_anchors_to_excerpt: no", "

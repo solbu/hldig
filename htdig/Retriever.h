@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.18.2.1 1999/11/30 05:47:20 ghutchis Exp $
+// $Id: Retriever.h,v 1.18.2.2 2000/01/14 00:57:15 ghutchis Exp $
 //
 
 #ifndef _Retriever_h_
@@ -77,7 +77,7 @@ public:
     // Allow for the indexing of protected sites by using a
     // username/password
     //
-	void		setUsernamePassword(const char *credentials);
+    void		setUsernamePassword(const char *credentials);
 
     //
     // Routines for dealing with local filesystem access

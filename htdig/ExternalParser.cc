@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.2 2000/01/05 11:40:30 loic Exp $
+// $Id: ExternalParser.cc,v 1.19.2.3 2000/01/14 00:57:15 ghutchis Exp $
 //
 
 #include "ExternalParser.h"
@@ -177,6 +177,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     int		get_hdr = (convertToType.nocase_compare("user-defined") == 0);
     int		get_file = (convertToType.length() != 0);
     String	newcontent;
+
     while (readLine(input, line))
     {
 	if (get_hdr)

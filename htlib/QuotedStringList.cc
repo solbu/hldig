@@ -1,16 +1,18 @@
 //
 // QuotedStringList.cc
 //
-// Implementation of QuotedStringList
+// QuotedStringList: Fed with a string it will extract separator delimited
+//                   words and store them in a list. The words may be 
+//                   delimited by " or ', hence the name.
 //
-// $Log: QuotedStringList.cc,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: QuotedStringList.cc,v 1.3.2.1 2000/01/14 00:57:15 ghutchis Exp $
 //
-#if RELEASE
-static char RCSid[] = "$Id: QuotedStringList.cc,v 1.1 1997/02/03 17:11:05 turtle Exp $";
-#endif
 
 #include "QuotedStringList.h"
 
@@ -28,54 +30,11 @@ QuotedStringList::~QuotedStringList()
 
 
 //*****************************************************************************
-QuotedStringList::QuotedStringList(char *str, char sep, int single)
-{
-    Create(str, sep, single);
-}
-
-
-//*****************************************************************************
-QuotedStringList::QuotedStringList(String &str, char sep, int single)
-{
-    Create(str, sep, single);
-}
-
-
-//*****************************************************************************
-QuotedStringList::QuotedStringList(char *str, char *sep, int single)
-{
-    Create(str, sep, single);
-}
-
-
-//*****************************************************************************
-QuotedStringList::QuotedStringList(String &str, char *sep, int single)
-{
-    Create(str, sep, single);
-}
-
-
-//*****************************************************************************
 int
-QuotedStringList::Create(String &str, char sep, int single)
-{
-    return Create(str.get(), sep, single);
-}
-
-
-//*****************************************************************************
-int
-QuotedStringList::Create(String &str, char *sep, int single)
-{
-    return Create(str.get(), sep, single);
-}
-
-
-//*****************************************************************************
-int
-QuotedStringList::Create(char *str, char *sep, int single)
+QuotedStringList::Create(const char *str, const char *sep, int single)
 {
     char	quote = 0;
+    int	quoted = 0;
     String	word;
 
     while (str && *str)
@@ -91,11 +50,13 @@ QuotedStringList::Create(char *str, char *sep, int single)
 	else if (*str == '"' || *str == '\'')
 	{
 	    quote = *str;
+	    quoted++;
 	}
 	else if (quote == 0 && strchr(sep, *str))
 	{
 	    List::Add(new String(word));
 	    word = 0;
+	    quoted = 0;
 	    if (!single)
 	    {
 		while (strchr(sep, *str))
@@ -111,7 +72,7 @@ QuotedStringList::Create(char *str, char *sep, int single)
     //
     // Add the last word to the list
     //
-    if (word.length())
+    if (word.length() || quoted)
 	List::Add(new String(word));
     return Count();
 }
@@ -119,7 +80,7 @@ QuotedStringList::Create(char *str, char *sep, int single)
 
 //*****************************************************************************
 int
-QuotedStringList::Create(char *str, char sep, int single)
+QuotedStringList::Create(const char *str, char sep, int single)
 {
     char	t[2] = "1";
 

@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.cc,v 1.15.2.3 1999/12/09 10:34:21 bosc Exp $
+// $Id: Configuration.cc,v 1.15.2.4 2000/01/14 00:57:15 ghutchis Exp $
 //
 
 #include <stdio.h>
@@ -126,12 +126,9 @@ void Configuration::Add(const String& str_arg)
                 str++;
             continue;
         }
-	else if (*str == '\'')
+        else if (*str == '\'')
         {
-            //
-            // Ah!  A quoted value.  This should be easy to deal with...
-            // (Just kidding!)
-            //
+            // A single quoted value.
             str++;
             while (*str && *str != '\'')
             {
