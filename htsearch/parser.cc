@@ -4,6 +4,10 @@
 // Implementation of parser
 //
 // $Log: parser.cc,v $
+// Revision 1.5  1998/11/27 18:37:33  ghutchis
+//
+// Removed bogus code with "%01" -> "|"
+//
 // Revision 1.4  1998/10/12 02:09:28  ghutchis
 //
 // Added htsearch logging patch from Alexander Bergolth.
@@ -20,7 +24,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.4 1998/10/12 02:09:28 ghutchis Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.5 1998/11/27 18:37:33 ghutchis Exp $";
 #endif
 
 #include "parser.h"
@@ -77,8 +81,6 @@ Parser::lexan()
 	return '(';
     else if (mystrcasecmp(current->word, ")") == 0)
 	return ')';
-    else if (mystrcasecmp(current->word, "%01") == 0)
-        return '|';
     else
 	return WORD;
 }
