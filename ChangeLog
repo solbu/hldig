@@ -1,3 +1,13 @@
+Wed Feb  3 19:09:31 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc: Add check for URLs with no / in the
+	no_title code.
+
+	* htdig/Document.cc: Fix problems with dates returned from servers
+	with incorrect formats. Those simply missing the day of week are
+	parsed correctly, otherwise output an error, use the current date,
+	and keep going.
+
 Wed Feb  3 09:57:14 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* installdir/nomatch.html: Fix small typo.
