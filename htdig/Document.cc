@@ -11,12 +11,12 @@
 //           work, Document_not_found is returned.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.25 2000/09/09 18:20:02 ghutchis Exp $
+// $Id: Document.cc,v 1.55.2.26 2000/09/10 02:49:36 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -583,12 +583,21 @@ Document::getParsable()
 	if (!plaintext)
 	    plaintext = new Plaintext();
 	parsable = plaintext;
-	if (debug)
+	if (debug > 1)
 	{
 	    cout << '"' << contentType <<
 		"\" not a recognized type.  Assuming text/plain\n";
 	}
     }
+    else
+      {
+	if (debug > 1)
+	{
+	    cout << '"' << contentType <<
+		"\" not a recognized type.  Ignoring\n";
+	}
+	return NULL;
+      }
 
     parsable->setContents(contents.get(), contents.length());
     return parsable;
