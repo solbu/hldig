@@ -1,3 +1,15 @@
+Thu Jan 14 23:27:24 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.cc: Fix looping in query string caused by
+	slashes. Noted by Adam Coyne <adam@criticalmass.com>.
+
+Thu Jan 14 00:04:03 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* README: Fix for upcoming 3.1.0 release.
+
+	* htcommon/defaults.cc: Set compression_factor to 0 for default
+	(no compression).
+
 Thu Jan 14 03:16:15 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htdig/ExternalParser.cc (parse): Added support for 'm': meta element.
