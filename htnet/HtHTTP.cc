@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.9 2000/02/09 08:46:47 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.10 2000/02/10 05:56:27 ghutchis Exp $ 
 //
 
 #include "lib.h"
@@ -203,6 +203,7 @@ Transport::DocStatus HtHTTP::HTTPRequest()
             if (debug>1)
                cout << "Unable to open the connection with host: "
                   << _url.host() << " (port " << _url.port() << ")" << endl;
+	    CloseConnection();
             return FinishRequest(Document_no_connection);
             break;
 
@@ -211,6 +212,7 @@ Transport::DocStatus HtHTTP::HTTPRequest()
             if (debug>1)
                cout << "Unable to find the host: "
                   << _url.host() << " (port " << _url.port() << ")" << endl;
+	    CloseConnection();
             return FinishRequest(Document_no_host);
             break;
 	    
@@ -219,6 +221,7 @@ Transport::DocStatus HtHTTP::HTTPRequest()
             if (debug>1)
                cout << "Unable to connect with the port " << _url.port()
                   << " of the host: " << _url.host() << endl;
+	    CloseConnection();
             return FinishRequest(Document_no_port);
             break;
 	    
@@ -227,6 +230,7 @@ Transport::DocStatus HtHTTP::HTTPRequest()
             if (debug>1)
                cout << "Unable to establish the connection with host: "
                   << _url.host() << " (port " << _url.port() << ")" << endl;
+	    CloseConnection();
             return FinishRequest(Document_no_connection);
             break;
 
@@ -236,6 +240,7 @@ Transport::DocStatus HtHTTP::HTTPRequest()
                cout << "connection failed with unexpected result: result = "
                   << (int)result << ", "
                   << _url.host() << " (port " << _url.port() << ")" << endl;
+	    CloseConnection();
             return FinishRequest(Document_other_error);
             break;
          }
