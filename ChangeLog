@@ -1,3 +1,26 @@
+Sun Aug 29 00:33:17 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/htsearch.cc(createLogicalWords): Hack to produce correct output
+	with phrase searching (e.g. anything in quotes is essentially left
+	alone). Ensure the StringMatch pattern includes the phrase with
+	correct spacing as well.
+	(setupWords): Add a " token whenever it occurs in the query.
+	(convertToBoolean): Make sure booleans are not inserted into
+	phrases.
+
+	* htsearch/parser.h: Add new methods phrase and perfor_phrase to
+	take care of parsing phrases and performing the actual matching.
+
+	* htsearch/parser.cc(lexan): Return a '"' when present for phrase
+	searching.
+	(factor): Call phrase() before parsing a factor--phrases are the
+	highest priority, so ("RedHat Linux" & Debian) ! Windows makes
+	sense.
+	(phrase): New method--slurps up the rest of a phrase and calls
+	perform_phrase to do the matching.
+	(perform_phrase): New method--currently just calls perform_and to
+	give the simulation of a phrase match.
+	
 Sat Aug 28 15:57:53 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Server.h, htdig/Server.cc: Undo yesterdays change -- still
