@@ -4,8 +4,11 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.2  1998/01/05 05:14:16  turtle
+// fixed memory leak
+//
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 // Revision 1.1  1995/12/11 22:46:24  turtle
 // This uses the backwards model of only parsing HTML
@@ -14,9 +17,6 @@
 // Before change to use Server class
 //
 //
-#if RELEASE
-static char RCSid[] = "$Id: Retriever.cc,v 1.1 1997/02/03 17:11:06 turtle Exp $";
-#endif
 
 #include "Retriever.h"
 #include "htdig.h"
@@ -183,6 +183,7 @@ Retriever::Start()
 	    // Deal with the actual URL.
 	    //
 	    parse_url(*ref);
+            delete ref;
 	}
     }
 }
