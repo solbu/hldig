@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.7 2000/01/24 18:51:04 grdetil Exp $
+// $Id: Display.cc,v 1.100.2.8 2000/01/24 19:00:29 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -528,8 +528,8 @@ Display::setVariables(int pageNumber, List *matches)
 		*str << '>' << namelist[i+ilabel-1] << '\n';
 	    }
 	    if (!nsel && builds[b+7][0] && input->exists(builds[b+1]))
-		*str << "<option value=" << input->get(builds[b+1])
-		     << " selected>" << builds[b+7] << '\n';
+		*str << "<option value=\"" << input->get(builds[b+1])
+		     << "\" selected>" << builds[b+7] << '\n';
 	    *str << "</select>\n";
 	    vars.Add(builds[b], str);
 	}

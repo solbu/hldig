@@ -1,3 +1,8 @@
+Mon Jan 24 12:57:45 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(setVariables): Added double quotes around
+	default selection value in build_select_lists handling.
+
 Mon Jan 24 12:37:22 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(setVariables), htcommon/defaults.cc: Added
