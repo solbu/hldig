@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.3.2.1 2000/02/10 06:04:13 ghutchis Exp $
+// $Id: Connection.cc,v 1.3.2.2 2000/02/10 21:01:07 loic Exp $
 //
 
 #include "Connection.h"
@@ -62,7 +62,7 @@ Connection::Connection()
     server_name = 0;
     all_connections.Add(this);
     timeout_value = 0;
-    retry_value = 0;
+    retry_value = 1;
 
     pos = pos_max = 0;
 }
@@ -88,7 +88,7 @@ Connection::Connection(int socket)
     server_name = 0;
     all_connections.Add(this);
     timeout_value = 0;
-    retry_value = 0;
+    retry_value = 1;
 
     pos = pos_max = 0;
 }
