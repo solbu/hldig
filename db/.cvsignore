@@ -10,3 +10,4 @@ stamp-h
 libtool
 db_config.h
 db.h
+autom4te.cache

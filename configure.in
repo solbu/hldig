@@ -165,14 +165,12 @@ if test $WITH_RX = no; then
 		   return regcomp(&re, "ht.*Dig", REG_ICASE);
 		}
 		],
-   [AC_MSG_RESULT(yes);LIBOBJS="$LIBOBJS regex.${ac_objext}"],
+   [AC_MSG_RESULT(yes);AC_LIBOBJ([regex])],
    [AC_MSG_RESULT(no);AC_DEFINE(HAVE_BROKEN_REGEX)],
    [AC_MSG_RESULT(unknown);AC_DEFINE(HAVE_BROKEN_REGEX)]
  )
  CFLAGS=$OLD_CFLAGS
 fi
-LTLIBOBJS=`echo "$LIBOBJS" | sed 's/\.o/.lo/g'`
-AC_SUBST(LTLIBOBJS)
 
 AC_MSG_CHECKING(if --enable-bigfile option specified)
 AC_ARG_ENABLE(bigfile,
