@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.67 1999/04/01 18:13:38 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.68 1999/04/11 11:10:04 hp Exp $";
 #endif
 
 #include "htsearch.h"
@@ -885,13 +885,16 @@ Display::buildMatchList()
 
 	if (!includeURL(thisRef->DocURL()))
 	{
+	    // Get rid of it to free the memory!
+	    delete thisRef;
+
 	    continue;
 	}
 	
 
 	thisMatch = new ResultMatch();
 	thisMatch->setID(id);
-	thisMatch->setRef(thisRef);
+	thisMatch->setRef(NULL);
 
 	//
 	// Assign the incomplete score to this match.  This score was

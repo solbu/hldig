@@ -1,3 +1,8 @@
+Sun Apr 11 12:51:39 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* htsearch/Display.cc (buildMatchList): Delete thisRef if excluded
+	by URL.  Call setRef(NULL), not setRef(thisRef).
+
 Wed Apr  7 19:35:42 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc(usage): Remove bogus -w flag.
