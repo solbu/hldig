@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.1 1999/10/28 18:19:00 grdetil Exp $
+// $Id: ExternalParser.cc,v 1.19.2.2 2000/01/05 11:40:30 loic Exp $
 //
 
 #include "ExternalParser.h"
@@ -174,7 +174,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     int		loc = 0, hd = 0;
     URL		url;
     String	convertToType = ((String *)toTypes->Find(contentType))->get();
-    int		get_hdr = (mystrcasecmp(convertToType, "user-defined") == 0);
+    int		get_hdr = (convertToType.nocase_compare("user-defined") == 0);
     int		get_file = (convertToType.length() != 0);
     String	newcontent;
     while (readLine(input, line))
@@ -184,7 +184,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	    line.chop('\r');
 	    if (line.length() == 0)
 		get_hdr = FALSE;
-	    else if (mystrncasecmp(line, "content-type:", 13) == 0)
+	    else if (mystrncasecmp((char*)line, "content-type:", 13) == 0)
 	    {
 		token1 = line.get() + 13;
 		while (*token1 && isspace(*token1))
@@ -198,10 +198,10 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	{
 	    if (newcontent.length() == 0 &&
 		!canParse(convertToType) &&
-		mystrncasecmp(convertToType, "text/", 5) != 0 &&
-		mystrncasecmp(convertToType, "application/pdf", 15) != 0)
+		mystrncasecmp((char*)convertToType, "text/", 5) != 0 &&
+		mystrncasecmp((char*)convertToType, "application/pdf", 15) != 0)
 	    {
-		if (mystrcasecmp(convertToType, "user-defined") == 0)
+		if (mystrcasecmp((char*)convertToType, "user-defined") == 0)
 		    cerr << "External parser error: no Content-Type given\n";
 		else
 		    cerr << "External parser error: can't parse Content-Type \""
@@ -415,19 +415,19 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	    currentParser = ((String *)parsers->Find(contentType))->get();
 	    parsable = this;
 	}
-	else if (mystrncasecmp(contentType, "text/html", 9) == 0)
+	else if (mystrncasecmp((char*)contentType, "text/html", 9) == 0)
 	{
 	    if (!html)
 		html = new HTML();
 	    parsable = html;
 	}
-	else if (mystrncasecmp(contentType, "text/plain", 10) == 0)
+	else if (mystrncasecmp((char*)contentType, "text/plain", 10) == 0)
 	{
 	    if (!plaintext)
 		plaintext = new Plaintext();
 	    parsable = plaintext;
 	}
-	else if (mystrncasecmp(contentType, "application/pdf", 15) == 0)
+	else if (mystrncasecmp((char*)contentType, "application/pdf", 15) == 0)
 	{
 	    if (!pdf)
 		pdf = new PDF();

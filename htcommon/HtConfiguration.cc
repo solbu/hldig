@@ -46,7 +46,7 @@ HtConfiguration::Add(char *name, char *value, HtConfiguration *aList) {
 const String HtConfiguration::Find(const char *blockName,const char *name,const char *value) const
 {
   if (!(blockName && name && value) )
-    return NULL;
+    return String();
   union {
     void      *ptr;
     Object *obj;
@@ -88,7 +88,7 @@ const String HtConfiguration::Find(const char *blockName,const char *name,const 
   cerr << "Could not find configuration option " << blockName<<":"
        <<name<<":"<<value<< "\n";
 #endif
-  return NULL;
+  return String();
 }
 
 //*********************************************************************
@@ -96,7 +96,7 @@ const String HtConfiguration::Find(const char *blockName,const char *name,const 
 const String HtConfiguration::Find(URL *aUrl, const char *value) const
 {
  if (!aUrl)
-    return NULL;
+    return String();
   Dictionary *tmpPtr=(Dictionary *)dcUrls.Find( aUrl->host() );
   if (tmpPtr) {       // We've got such host in config
     tmpPtr->Start_Get();

@@ -1,3 +1,26 @@
+Wed Jan 05 13:26:16 2000  Loic Dachary  <loic@ceic.com>
+
+	* htdig/ExternalParser.cc (parse): use nocase_compare instead of mystrcasecmp to
+	  suppress warnings. (char*)String for mystrncasecmp that has no equivalent in
+	  the String class.
+
+	* htdig/Retriever.cc (IsValidURL): remove warning by (char*)url
+
+Wed Jan 05 11:54:19 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordKey.h: kill obsolete comment and add suffix explanation at
+	  the beginning of the file.
+	
+	* htword/WordKey.h (class WordKey): rename copy_from and initialize to CopyFrom
+	  and Initialize to fit naming conventions. Reorganize the methods to group them
+	  in logical sets. Fix indenting. Comment each method. 
+
+	* htword/WordKey.h (Clear): add kword.trunc()
+
+	* htword/WordKey.h: protect SetWord(const char *str,int len) because it opens
+	  the door to all kind of specific derivations. Should be 
+	  SetWord(String(foo, foo_length)) if not performance critical.
+
 Wed Dec 29 18:41:14 1999   Marcel Bosc <bosc@ceic.com>
 
 	* htlib/HtMaxMin:  added max/min  of  arrays,  added comments  to

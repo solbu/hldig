@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.12 1999/12/21 08:03:15 toivo Exp $
+// $Id: Retriever.cc,v 1.72.2.13 2000/01/05 11:40:31 loic Exp $
 //
 
 #include "Retriever.h"
@@ -794,7 +794,7 @@ Retriever::IsValidURL(char *u)
     // After that gauntlet, check to see if the server allows it
     // (robots.txt)
     //
-    URL	testURL(url);
+    URL	testURL((char*)url);
     Server *server = (Server *) servers[testURL.signature()];
     if (server && server->IsDisallowed(url) != 0)
       {

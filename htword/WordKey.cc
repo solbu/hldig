@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3.2.11 2000/01/03 13:36:55 bosc Exp $
+// $Id: WordKey.cc,v 1.3.2.12 2000/01/05 11:40:31 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -351,7 +351,6 @@ WordKey::Unpack(const char* string,int length)
     return NOTOK;
   }
 
-//    SetWord(String(&string[info0.sort[0].bytes_offset], length - info0.minimum_length));
   SetWord(&(string[info0.sort[0].bytes_offset]), length - info0.minimum_length);
 
   for(int j = 1; j < info0.nfields; j++) 
