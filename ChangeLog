@@ -1,3 +1,11 @@
+Wed Feb 23 16:53:40 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc (backlink_factor, external_parser,
+	local_default_doc, local_urls, local_urls_only, local_user_urls):
+	Add some updates from 3.1.5's attrs.html.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerate using cf_generate.pl.
+
 Wed Feb 23 15:11:51 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	[ Improve htsearch's HTML 4.0 compliance ]

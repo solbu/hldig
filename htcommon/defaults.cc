@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.35 2000/02/23 16:49:10 loic Exp $
+// $Id: defaults.cc,v 1.64.2.36 2000/02/23 23:01:11 grdetil Exp $
 //
 
 #include "HtConfiguration.h"
@@ -81,8 +81,10 @@ ConfigDefaults	defaults[] =
 	This is a weight of \"how important\" a page is, based on
 	the number of URLs pointing to it. It's actually
 	multiplied by the ratio of the incoming URLs (backlinks)
-	and outgoing URLs, to balance out pages with lots of
-	links to pages that link back to them. This factor can
+	and outgoing URLs (links on the page), to balance out pages
+	with lots of links to pages that link back to them. The ratio
+	gives lower weight to \"link farms\", which often have many
+	links to them.  This factor can
 	be changed without changing the database in any way.
 	However, setting this value to something other than 0
 	incurs a slowdown on search results.
@@ -625,7 +627,9 @@ http://www.htdig.org/", "
 			be one that htdig can parse, either internally,
 			or with another external parser or converter.<br>
 			 Only one external parser or converter can be
-			specified for any given content-type.<p>
+			specified for any given content-type.
+			There are two internal parsers, for text/html and
+			text/plain.<p>
 			 The parser program takes four command-line
 			parameters, not counting any parameters already
 			given in the command string:<br>
@@ -1081,27 +1085,41 @@ http://www.htdig.org/", "
 	The list should only contain names that the local server
 	recognizes as default documents for directory URLs, as defined
 	by the DirectoryIndex setting in Apache's srm.conf, for example.
-	As of 3.2.0b1, this can be a string list rather than a single name,
+	As of 3.1.5, this can be a string list rather than a single name,
 	and htdig will use the first name that works. Since this requires a
         loop, setting the most common name first will improve performance.
+	Special characters can be embedded in these names using %xx hex encoding.
 " },
 { "local_urls", "", 
 	"string list", "htdig", "3.0.8b2", "Indexing:Where", "local_urls: http://www.foo.com/=/usr/www/htdocs/", "
 	Set this to tell ht://Dig to access certain URLs through
 	local filesystems. At first ht://Dig will try to access
 	pages with URLs matching the patterns through the
-	filesystems specified. If it cannot find the file, it will
+	filesystems specified. If it cannot find the file, or
+	if it doesn't recognize the file name extension, it will
 	try the URL through HTTP instead. Note the example--the
 	equal sign and the final slashes in both the URL and the
 	directory path are critical.
-	As of 3.2.0b1, you can provide multiple mappings of a given
+	<br>The fallback to HTTP can be disabled by setting the
+	<a href=\"#local_urls_only\">local_urls_only</a> attribute to true.
+	To access user directory URLs through the local filesystem,
+	set <a href=\"#local_user_urls\">local_user_urls</a>.  The only
+	file name extensions currently recognized for local filesystem
+	access are .html, .htm, .txt, .asc, .ps, .eps and .pdf. For
+	anything else, htdig must ask the HTTP server for the file,
+	so it can determine the MIME content-type of it.
+	As of 3.1.5, you can provide multiple mappings of a given
 	URL to different directories, and htdig will use the first
 	mapping that works.
+	Special characters can be embedded in these names using %xx hex encoding.
+	For example, you can use %3D to embed an \"=\" sign in an URL pattern.
 " },
 { "local_urls_only", "false", 
 	"boolean", "htdig", "3.1.4", "Indexing:Where", "local_urls_only: true", "
-	Set this to tell ht://Dig to only access files through the 
-	local filesystem using the local_urls attribute. If it cannot 
+	Set this to tell ht://Dig to access files only through the 
+	local filesystem, for URLs matching the patterns in the
+	<a href=\"#local_urls\">local_urls</a> or
+	<a href=\"#local_user_urls\">local_user_urls</a> attribute. If it cannot 
 	find the file, it will give up rather than trying HTTP or another protocol.
 " },
 { "local_user_urls", "", 
@@ -1109,13 +1127,18 @@ http://www.htdig.org/", "
 	Set this to access user directory URLs through the local
 	filesystem. If you leave the \"path\" portion out, it will
 	look up the user's home directory in /etc/password (or NIS
-	or whatever). As with local_urls, if the files are not
-	found, ht://Dig will try with HTTP or the appropriate protocol. Again, note the
+	or whatever). As with <a href=\"#local_urls\">local_urls</a>,
+	if the files are not found, ht://Dig will try with HTTP or the
+	appropriate protocol. Again, note the
 	example's format. To map http://www.my.org/~joe/foo/bar.html
 	to /home/joe/www/foo/bar.html, try the example below.
-	As of 3.2.0b1, you can provide multiple mappings of a given
+	<br>The fallback to HTTP can be disabled by setting the
+	<a href=\"#local_urls_only\">local_urls_only</a> attribute to true.
+	As of 3.1.5, you can provide multiple mappings of a given
 	URL to different directories, and htdig will use the first
 	mapping that works.
+	Special characters can be embedded in these names using %xx hex encoding.
+	For example, you can use %3D to embed an \"=\" sign in an URL pattern.
 " },
 { "locale", "C", 
 	"string", "htdig", "3.0", "Indexing:What,Presentation:How", "locale: en_US", "
