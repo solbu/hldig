@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Synonym.cc,v 1.8.2.2 1999/12/07 19:54:11 bosc Exp $
+// $Id: Synonym.cc,v 1.8.2.3 2000/01/29 22:35:40 ghutchis Exp $
 //
 
 #include "Synonym.h"
@@ -64,7 +64,7 @@ Synonym::createDB(const HtConfiguration &config)
 	return NOTOK;
     }
 
-    Database	*db = Database::getDatabaseInstance(DB_BTREE);
+    Database	*db = Database::getDatabaseInstance(DB_HASH);
 
     if (db->OpenReadWrite(dbFile, 0664) == NOTOK)
     {
@@ -123,7 +123,7 @@ Synonym::openIndex()
         delete db;
         db = 0;
     }
-    db = Database::getDatabaseInstance(DB_BTREE);
+    db = Database::getDatabaseInstance(DB_HASH);
     if (db->OpenRead(dbFile) == NOTOK)
     {
 	delete db;
