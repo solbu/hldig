@@ -1,4 +1,7 @@
-Wed Sep  1 14:52:19 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 14:54:56 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc(IsValidURL): Fix PR#493, to avoid rejecting
+	a valid URL with ".." in it.
 
 	* htlib/URL.cc(parse): Fix PR#348, to make sure a missing
 	or invalid port number will get set correctly.
