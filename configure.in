@@ -17,7 +17,7 @@
 #
 
 AC_INIT(htcommon/DocumentDB.cc)
-AM_INIT_AUTOMAKE(htdig, 3.1.0b2)
+AM_INIT_AUTOMAKE([htdig], [3.1.0b2])
 AC_PREREQ(2.12)
 
 AC_CONFIG_HEADER(include/htconfig.h)
@@ -49,14 +49,15 @@ dnl Checks for libraries.
 AC_CHECK_LIB(socket, socket, [LIBS="$LIBS -lsocket"])
 AC_CHECK_LIB(nsl, t_accept, [LIBS="$LIBS -lnsl"])
 
-AC_LANG_CPLUSPLUS
-
 AC_SUBST(CXXFLAGS)dnl
 AC_SUBST(LDFLAGS)dnl
 
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_TIME
+
+dnl More header checks--here use C++
+AC_LANG_CPLUSPLUS
 AC_CHECK_HEADERS(fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h)
 AC_CHECK_HEADER(fstream.h,nofstream=0,nofstream=1)
 if test "x$nofstream" = "x1" ; then
@@ -64,20 +65,23 @@ AC_MSG_ERROR([To compile ht://Dig, you will need a C++ library. Try installing l
 fi
 
 dnl Checks for typedefs, structures, and compiler characteristics.
+AC_LANG_C
 AC_C_CONST
 AC_STRUCT_TM
 dnl AC_CHECK_SIZEOF(int *) => SIZEOF_INT_P
 
 dnl Checks for library functions.
 AC_CHECK_FUNCS(strdup strerror strstr)
+AC_CHECK_FUNCS(localtime_r)
 dnl Check for timegm
-AC_CHECK_FUNC(timegm,
-  AC_DEFINE(HAVE_TIMEGM),
-  AC_MSG_CHECKING(whether our timegm replacement works);
-  AC_TRY_RUN([
-#define TEST_TIMEGM 1
-#include "$srcdir/htlib/timegm.c"
-], AC_MSG_RESULT(yes), AC_MSG_ERROR([no!]), AC_MSG_RESULT([I hope so])))
+AC_CHECK_FUNC(timegm)
+dnl AC_DEFINE(HAVE_TIMEGM),
+dnl  AC_MSG_CHECKING(whether our timegm replacement works);
+dnl  AC_TRY_RUN([
+dnl #define TEST_TIMEGM 1
+dnl #include "$srcdir/htlib/mktime.c"
+dnl #include "$srcdir/htlib/timegm.c"
+dnl ], AC_MSG_RESULT(yes), AC_MSG_ERROR([no!]), AC_MSG_RESULT([I hope so])))
 
 AC_MSG_CHECKING(whether we need gethostname() prototype?)
 AC_TRY_COMPILE([#include <unistd.h>

@@ -37,7 +37,7 @@
 #endif
 
 #ifndef __gmtime_r
-extern struct tm *__gmtime_r __P ((__const time_t *__timer, \
+extern struct tm *__gmtime_r __P ((const time_t *__timer, \
                struct tm *__tp));
 #endif
 

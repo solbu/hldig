@@ -1,3 +1,18 @@
+Tue Oct 27 20:00:16 1998  Geoff Hutchison  <ghutchis@ethel.williams.edu>
+
+	* Makefile.in: Fix buglet with distclean target
+
+	* configure configure.in: Added check for LOCALTIME_R, removed
+	test for timegm replacement, changed compiler for most tests to
+	$CC.
+
+	* include/htconfig.in: Added option for LOCALTIME_R.
+
+	* htlib/timegm.c, htlib/mktime.c: Fixed some compilation problems.
+	
+	* htlib/Makefile.in: Remove mktime.o since source is included in
+	timegm.o.
+
 Tue Oct 27 13:31:25 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/mktime.c: Imported new version from glibc-2.0.99.

@@ -47,13 +47,13 @@ clean:
 
 distclean:
 	rm -rf config.cache config.status config.log config.h \
-		Makefile Makefile.config makedp *.gz test *~ \
-		include/htconfig.h
+		makedp *.gz test *~ include/htconfig.h
 	rm -f @RX_DIR@/config.cache @RX_DIR@/config.status
 	@for i in $(DIRS); do \
 		(cd $$i; $(MAKE) $(MFLAGS) distclean) \
 		|| case "$(MFLAGS)" in *k*) fail=yes;; *) exit 1;; esac; \
 	done && test -z "$$fail"
+	rm -f Makefile Makefile.config
 
 install:	all
 	@echo "Installing ht://Dig"
