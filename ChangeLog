@@ -1,7 +1,15 @@
 Sun Dec 14 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
+    * test/{t_validwords,t_templates,t_fuzzy,t_factors}
+    * test/{set_attr,synonym_dict,dummy.stems,dummy.affixes,bad_word_list}
+    * test/conf/main-template test/htdocs/set1/{site2.html,site4.html}:
+      Added four new tests to test suite.  Not included in "make check",
+      but can be run explicitly by "make TESTS=t_... check".
+
+Sun Dec 14 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
     * htcommon/conf_lexer.{lxx,cxx}:
-      Back out changes to try to accept files without EOL.
+      Back out changes to try to accept files without EOL :(
 
 Sat Dec 13 2003 Lachlan Andrew <lha@users.sourceforge.net>
 

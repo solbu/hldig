@@ -1,0 +1,9 @@
+#!/bin/sh
+
+conf=conf/htdig.conf.tmp
+if grep $1 $conf > /dev/null ; then
+    mv $conf tmp_conf
+    sed "s@$1.*@$1: $2@" < tmp_conf > $conf
+else
+    echo "$1: $2" >> $conf
+fi

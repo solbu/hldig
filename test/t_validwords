@@ -1,0 +1,196 @@
+#!/bin/sh
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999-2003 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU Library General Public License (LGPL) version 2 or later
+# <http://www.gnu.org/copyleft/lgpl.html>
+#
+# $Id: t_validwords,v 1.1 2003/12/14 01:53:13 lha Exp $
+#
+
+try() {
+    comment="$1"
+    shift
+    query="$1"
+    shift
+    $htsearch -c $config "$query" > $tmp 2> /dev/null
+    for pattern
+    do
+	if grep "$pattern" $tmp > /dev/null 
+	then :
+	else
+	    $htsearch -vv -c $config "$query" > /dev/null
+	    echo "Output doesn't match \"$pattern\""
+	    fail "$htsearch -c $config '$query' >> $tmp --
+		  $comment"
+	fi
+    done
+}
+
+
+
+
+test_functions_action=--start-apache
+. ./test_functions
+
+config=$testdir/conf/htdig.conf.tmp
+tmp=/tmp/t_htsearch$$
+
+# set up config file with chosen non-default values
+cp $testdir/conf/htdig.conf $config
+
+set_attr allow_numbers		"false"
+set_attr minimum_word_length	"3"
+set_attr maximum_word_length	"10"
+set_attr translate_latin1	"0"
+set_attr valid_punctuation	"."
+set_attr extra_word_characters	"çé"
+#set_attr locale fr
+
+$htdig "$@" -t -i -c $config	|| fail "Couldn't dig"
+
+set_attr remove_bad_urls		"false"
+set_attr remove_unretrieved_urls	"true"
+$htpurge -vv -c $config > tmp1		|| fail "Couldn't purge"
+
+# How can I check that unretrieved urls have been removed, but bad ones haven't?
+
+
+
+try "Search for '2001' without allow_numbers" \
+    "words=2001" \
+    'No matches'
+
+try "Search for '0b3' without allow_numbers" \
+    "words=0b3" \
+    '1 matches' 'bad_local.htm' '3.2.<strong>0b3</strong>'
+
+try "Search for '3.2.0b3' without allow_numbers" \
+    "words=3.2.0b3" \
+    '1 matches' 'bad_local.htm' '<strong>3.2.0b3</strong>'
+
+try "Search for '320b3' without allow_numbers" \
+    "words=320b3" \
+    '1 matches' 'bad_local.htm'
+
+try 'Search for "archive." without . in extra_word_characters' \
+    'words=archive.' \
+    '1 matches' 'bad_local.htm' '<strong>archive</strong>.'
+
+try 'Search for "archive" without . in extra_word_characters' \
+    'words=archive' \
+    '1 matches' 'bad_local.htm' '<strong>archive</strong>.'
+
+try "Search for 'graduateprofessional' which should not match a slash" \
+    "words=graduateprofessional" \
+    'No matches'
+
+try "Search for 'now' with minimum_word_length=3" \
+    "words=now" \
+    '1 matches' 'bad_local.htm'
+
+try "Search for 'français' without translate_latin1" \
+    "words=français" \
+    '1 matches' 'site4.html' '<strong>français</strong>'
+
+try "Search for 'québec' without translate_latin1" \
+    "words=québec" \
+    'No matches'
+
+try "Search for 'with' with default bad_word_list" \
+    "words=with" \
+    'No matches'
+
+try "Search for 'technical' with default bad_word_list" \
+    "words=technical" \
+    '1 matches' 'site%201.html'
+
+
+
+
+
+set_attr allow_numbers		"true"
+set_attr minimum_word_length	"4"
+set_attr maximum_word_length	"13"
+set_attr translate_latin1	"yes"
+set_attr valid_punctuation	"/"
+set_attr extra_word_characters	'.\\\$çé'	# string is .\$çé, chars: .$çé
+set_attr bad_word_list		"${testdir}/bad_word_list"
+#set_attr locale fr
+
+$htdig "$@" -t -i -c $config	|| fail "Couldn't dig"
+
+set_attr remove_bad_urls		"true"
+set_attr remove_unretrieved_urls	"false"
+$htpurge -vv -c $config > tmp		|| fail "Couldn't purge"
+
+# How can I check that bad urls have been removed, but unretrieved ones haven't?
+
+
+
+try "Search for '2001' " \
+    "words=2001" \
+    '1 matches' '1995-<strong>2001</strong>'
+
+try "Search for '9.00'" \
+    "words=9.00" \
+    '1 matches' 'site4.html' '<strong>9.00</strong>'
+
+try "Search for '9/00' -- checking . is not just valid_punctuation" \
+    "words=9/00" \
+    'No matches'
+
+try 'Search for "archive." with . in extra_word_characters' \
+    'words=archive.' \
+    '1 matches' 'bad_local.htm' '<strong>archive.</strong>'
+
+try 'Search for "archive" with . in extra_word_characters' \
+    'words=archive' \
+    'No matches'
+
+try 'Search for "$195"' \
+    'words=$195' \
+    '1 matches' 'site4.html' '<strong>$195</strong>,000'
+
+try "Search for 'graduateprofessional' which should match a slash" \
+    "words=graduateprofessional" \
+    '1 matches' 'site4.html' '<strong>graduate/professional</strong>'
+
+#try "Search for 'graduateprofexyz' which should match a truncated word" \
+#    "words=graduateprofexyz" \
+#    '1 matches' 'site4.html' '<strong>graduate/professional</strong>'
+
+try "Search for 'graduateprofexyz' which should match a truncated word" \
+    "words=graduateprofexyz" \
+    '1 matches' 'site4.html'
+
+try "Search for 'graduateprofxyz' which should fail to match a truncated word" \
+    "words=graduateprofxyz" \
+    'No matches'
+
+try "Search for 'part' with minimum_word_length=4" \
+    "words=part" \
+    '2 matches' 'bad_local.htm' 'script.html'
+
+try "Search for 'now' with minimum_word_length=4" \
+    "words=now" \
+    'No matches'
+
+try "Search for 'français' with translate_latin1" \
+    "words=français" \
+    '1 matches' 'site4.html' '<strong>fran&ccedil;ais</strong>'
+
+try "Search for 'québec' with translate_latin1" \
+    "words=québec" \
+    '1 matches' 'site4.html' '<strong>Qu&eacute;bec</strong>'
+
+try "Search for 'with' with new bad_word_list" \
+    "words=with" \
+    '4 matches' 'bad_local.htm' 'script.html' 'site4.html' 'site%201.html'
+
+try "Search for 'technical' with new bad_word_list" \
+    "words=technical" \
+    'No matches'
+
+test_functions_action=--stop-apache
+. ./test_functions

@@ -10,7 +10,7 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: test_functions.in,v 1.13 2003/09/27 06:53:29 lha Exp $
+# $Id: test_functions.in,v 1.14 2003/12/14 01:53:13 lha Exp $
 #
 
 if [ "$test_functions_action" = --stop-apache ]
@@ -92,6 +92,7 @@ htpurge=../httools/htpurge
 htstat=../httools/htstat
 htdump=../httools/htdump
 htload=../httools/htload
+htfuzzy=../htfuzzy/htfuzzy
 
 #
 # Default index description used for testing
@@ -112,6 +113,17 @@ fail() {
       rm -f logs/httpd.pid
     fi
     exit 1
+}
+
+conf=conf/htdig.conf.tmp
+set_attr ()
+{
+    if @EGREP@ "^$1" $conf > /dev/null ; then
+	@MV@ $conf tmp_conf
+	@SED@ "s@^$1.*@$1: $2@" < tmp_conf > $conf
+    else
+	echo "$1: $2" >> $conf
+    fi
 }
 
 fi	# $1 != --stop-apache

@@ -1,0 +1,37 @@
+<html>
+CGI             =${CGI}-		<br>
+CONFIG          =${CONFIG}-		<br>
+EXCLUDE         =${EXCLUDE}-		<br>
+FIRSTDISPLAYED  =${FIRSTDISPLAYED}-	<br>
+FORMAT          =${FORMAT}-		<br>
+KEYWORDS        =${KEYWORDS}-		<br>
+LASTDISPLAYED   =${LASTDISPLAYED}-	<br>
+LOGICAL_WORDS   =${LOGICAL_WORDS}-	<br>
+MATCHES         =${MATCHES}-		<br>
+MATCHES_PER_PAGE=${MATCHES_PER_PAGE}-	<br>
+MATCH_MESSAGE   =${MATCH_MESSAGE}-	<br>
+MAX_STARS       =${MAX_STARS}-		<br>
+METADESCRIPTION =${METADESCRIPTION}-	<br>
+METHOD          =${METHOD}-		<br>
+MODIFIED        =${MODIFIED}-		<br>
+NEXTPAGE        =${NEXTPAGE}-		<br>
+NSTARS          =${NSTARS}-		<br>
+PAGE            =${PAGE}-		<br>
+PAGEHEADER      =${PAGEHEADER}-		<br>
+PAGELIST        =${PAGELIST}-		<br>
+PAGES           =${PAGES}-		<br>
+PLURAL_MATCHES  =${PLURAL_MATCHES}-	<br>
+PREVPAGE        =${PREVPAGE}-		<br>
+RESTRICT        =${RESTRICT}-		<br>
+SELECTED_FORMAT =${SELECTED_FORMAT}-	<br>
+SELECTED_METHOD =${SELECTED_METHOD}-	<br>
+SELECTED_SORT   =${SELECTED_SORT}-	<br>
+SORT            =${SORT}-		<br>
+starting date   =${STARTYEAR}/${STARTMONTH}/${STARTDAY}-<br>
+ending date     =${ENDYEAR}/${ENDMONTH}/${ENDDAY}-<br>
+VERSION         =${VERSION}-		<br>
+WORDS           =${WORDS}-		<br>
+MATCH_LIST      =${MATCH_LIST}		<br>
+
+$(HTSEARCH_RESULTS)
+</html>

@@ -1,0 +1,263 @@
+#!/bin/sh
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999-2003 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU Library General Public License (LGPL) version 2 or later
+# <http://www.gnu.org/copyleft/lgpl.html>
+#
+# $Id: t_templates,v 1.1 2003/12/14 01:53:13 lha Exp $
+#
+
+try() {
+    comment="$1"
+    shift
+    query="$1"
+    shift
+    $htsearch -c $config "$query" > $tmp 2> /dev/null
+    for pattern
+    do
+	if grep "$pattern" $tmp > /dev/null 
+	then :
+	else
+	    $htsearch -vv -c $config "$query" > /dev/null
+	    echo "Output doesn't match \"$pattern\""
+	    fail "$htsearch -c $config '$query' >> $tmp --
+		  $comment"
+	fi
+    done
+}
+
+
+
+
+test_functions_action=--start-apache
+. ./test_functions
+
+config=$testdir/conf/htdig.conf.tmp
+tmp=/tmp/t_htsearch$$
+
+# set up config file with chosen non-default values
+cp $testdir/conf/htdig.conf $config
+
+$htdig "$@" -t -i -c $config	|| fail "Couldn't dig"
+
+$htpurge -vv -c $config > tmp1		|| fail "Couldn't purge"
+
+# How can I check that unretrieved urls have been removed, but bad ones haven't?
+
+set_attr search_results_wrapper "$testdir/conf/main-template"
+set_attr any_keywords "true"
+set_attr image_url_prefix "image-prefix"
+
+try ".  Single page of results" \
+    "words=also;config=hello;exclude=site2;format=builtin-short;keywords=subject+please+node;matchesperpage=10;method=and;page=1;restrict=http;sort=score;startyear=1999;startmonth=8;startday=1;endyear=2005;endmonth=9;endday=30" \
+    'MATCHES *=3' 'bad_local.htm' 'script.html' 'site4.html' \
+    'CGI *=-' 'CONFIG *=hello' 'EXCLUDE *=site2' 'FIRSTDISPLAYED *=1' \
+    'builtin-short" selected>Short' 'KEYWORDS *=subject please node' \
+    'LASTDISPLAYED *=3' 'LOGICAL_WORDS *=also' \
+    'MATCHES_PER_PAGE *=10' 'MATCH_MESSAGE *=All' 'MAX_STARS *=4' \
+    'METADESCRIPTION *=-' 'selected>All' 'MODIFIED *=-' \
+    'NEXTPAGE *=-' 'NSTARS *=-' 'PAGE *=1' 'PAGEHEADER *=-' \
+    'PAGELIST *=-' 'PAGES *=1' 'PLURAL_MATCHES *=s' \
+    'PREVPAGE *=-' 'RESTRICT *=http' 'SELECTED_FORMAT *=builtin-short' \
+    'SELECTED_METHOD *=and' 'SELECTED_SORT *=score' \
+    'selected>Score' 'VERSION *=3.2' 'WORDS *=also' \
+    'image-prefix/star.gif'
+
+set_attr plural_suffix "es"
+set_attr allow_in_form "script_name"
+set_attr page_list_header "head"
+set_attr add_anchors_to_excerpt "true"
+
+# (Ensure keyword 'moderate' for script.html occurs after 'also', as anchors
+# are broken if keyword preceeds anchor, but search term follows it.)
+try "2nd page, 1 match per page, no excludes" \
+    "words=also;script_name=qtest;format=builtin-long;keywords=subject+please+moderate;matchesperpage=1;method=or;page=2;restrict=http;sort=revtime;startyear=1999;startmonth=8;startday=1;endyear=2005;endmonth=9;endday=30" \
+    'MATCHES *=3' 'script.html' \
+    'CGI *=qtest' 'CONFIG *=-' 'EXCLUDE *=-' 'FIRSTDISPLAYED *=2' \
+    'builtin-long" selected>Long' 'KEYWORDS *=subject please moderate' \
+    'LASTDISPLAYED *=2' 'LOGICAL_WORDS *=also' \
+    'MATCHES_PER_PAGE *=1' 'MATCH_MESSAGE *=Any' 'MAX_STARS *=4' \
+    'METADESCRIPTION *=-' 'selected>Any' 'MODIFIED *=-' \
+    'NEXTPAGE *=.*;page=3' 'NSTARS *=-' 'PAGE *=1' 'PAGEHEADER *=head' \
+    'PAGELIST *=.*;page=1.*;page=3' 'PAGES *=3' 'PLURAL_MATCHES *=es' \
+    'PREVPAGE *=.*;page=1' 'RESTRICT *=http' 'SELECTED_FORMAT *=builtin-long' \
+    'SELECTED_METHOD *=or' 'SELECTED_SORT *=revtime' \
+    'selected>Reverse Time' 'VERSION *=3.2' 'WORDS *=also' \
+    '<strong><code>\.\.\. </code></strong>' '<strong><a href="[^"]*">also</a></strong>'
+
+set_attr method_names "or Or and And boolean Logical"
+set_attr    page_list_header 'multiple'
+set_attr no_page_list_header 'single'
+set_attr anchor_target "body"
+set_attr maximum_page_buttons "2"
+set_attr no_next_page_text "none"
+set_attr no_prev_page_text "none"
+set_attr next_page_text "following"
+set_attr prev_page_text "preceeding"
+
+try "2nd page, 1 match per page, no excludes, no keywords" \
+    "words=also;script_name=qtest;format=builtin-long;matchesperpage=1;method=or;page=2;restrict=http;sort=revtime;startyear=1999;startmonth=8;startday=1;endyear=2005;endmonth=9;endday=30" \
+    'MATCHES *=4' \
+    'CGI *=qtest' 'CONFIG *=-' 'EXCLUDE *=-' 'FIRSTDISPLAYED *=2' \
+    'builtin-long" selected>Long' 'KEYWORDS *=-' \
+    'LASTDISPLAYED *=2' 'LOGICAL_WORDS *=also' \
+    'MATCHES_PER_PAGE *=1' 'MATCH_MESSAGE *=Or' 'MAX_STARS *=4' \
+    'METADESCRIPTION *=-' 'selected>Or' 'MODIFIED *=-' \
+    'NEXTPAGE *=.*;page=3.*following' 'NSTARS *=-' 'PAGE *=1' 'PAGEHEADER *=multiple' \
+    'PAGELIST *=.*;page=1.*2[^0-9]*-' 'PAGES *=4' 'PLURAL_MATCHES *=es' \
+    'PREVPAGE *=.*;page=1.*preceeding' 'RESTRICT *=http' 'SELECTED_FORMAT *=builtin-long' \
+    'SELECTED_METHOD *=or' 'SELECTED_SORT *=revtime' \
+    'selected>Reverse Time' 'VERSION *=3.2' 'WORDS *=also' \
+    '<strong><code>\.\.\. </code></strong>' '<strong><a target="body" href="[^"]*">also</a></strong>'
+
+# ('\\\\' because original line in htdig.conf has a continuation '\' )
+set_attr page_number_text "first second third fourth \\\\"
+set_attr no_page_number_text "FIRST SECOND THIRD FOURTH \\\\"
+set_attr page_number_separator "PAGE_SEP"
+set_attr maximum_pages 2
+
+try "2nd page, 1 match per page, no excludes, no keywords" \
+    "words=also;script_name=qtest;format=builtin-long;matchesperpage=1;method=or;page=2;restrict=http;sort=revtime;startyear=1999;startmonth=8;startday=1;endyear=2005;endmonth=9;endday=30" \
+    'MATCHES *=4' \
+    'CGI *=qtest' 'CONFIG *=-' 'EXCLUDE *=-' 'FIRSTDISPLAYED *=2' \
+    'builtin-long" selected>Long' 'KEYWORDS *=-' \
+    'LASTDISPLAYED *=2' 'LOGICAL_WORDS *=also' \
+    'MATCHES_PER_PAGE *=1' 'MATCH_MESSAGE *=Or' 'MAX_STARS *=4' \
+    'METADESCRIPTION *=-' 'selected>Or' 'MODIFIED *=-' \
+    'NEXTPAGE *=none' 'NSTARS *=-' 'PAGE *=1' 'PAGEHEADER *=multiple' \
+    'PAGELIST *=.*first.*PAGE_SEP.*SECOND' 'PAGES *=2' 'PLURAL_MATCHES *=es' \
+    'PREVPAGE *=.*;page=1' 'RESTRICT *=http' 'SELECTED_FORMAT *=builtin-long' \
+    'SELECTED_METHOD *=or' 'SELECTED_SORT *=revtime' \
+    'selected>Reverse Time' 'VERSION *=3.2' 'WORDS *=also' \
+    '<strong><code>\.\.\. </code></strong>' '<strong><a target="body" href="[^"]*">also</a></strong>'
+
+#'MATCHES *=4' 'bad_local.htm' 'script.html' 'site2.html' 'site4.html'
+
+set_attr any_keywords "false"
+set_attr nothing_found_file "$testdir/conf/main-template"
+set_attr add_anchors_to_excerpt "false"
+try "fails keyword match" \
+    "words=also;script_name=qtest;format=builtin-long;keywords=subject+please+node;matchesperpage=1;method=or;page=2;restrict=http;sort=revtime;startyear=1999;startmonth=8;startday=1;endyear=2005;endmonth=9;endday=30" \
+    'MATCHES *=0' \
+    'CGI *=qtest' 'CONFIG *=-' 'EXCLUDE *=-' \
+    'builtin-long" selected>Long' 'KEYWORDS *=subject please node' \
+    'LOGICAL_WORDS *=also' \
+    'MATCHES_PER_PAGE *=1' 'MATCH_MESSAGE *=Or' 'MAX_STARS *=4' \
+    'METADESCRIPTION *=-' 'selected>Or' 'MODIFIED *=-' \
+    'NSTARS *=-' 'PAGELIST *=-' 'PAGES *=1' \
+    'RESTRICT *=http' 'SELECTED_FORMAT *=builtin-long' \
+    'SELECTED_METHOD *=or' 'SELECTED_SORT *=revtime' \
+    'selected>Reverse Time' 'VERSION *=3.2' 'WORDS *=also' \
+    'starting date   =1999/8/1-' \
+    'ending date     =2005/9/30-'
+
+set_attr start_ellipses  "START_ELLIPSES"
+set_attr end_ellipses    "END_ELLIPSES"
+set_attr star_blank	 "NIL"
+set_attr star_image	 "STAR"
+set_attr matches_per_page 8
+
+try "test highlighting" \
+    "words=also;script_name=qtest;format=builtin-long;method=or;restrict=http;sort=revscore" \
+    'MATCHES *=4' \
+    'CGI *=qtest' 'CONFIG *=-' 'EXCLUDE *=-' 'FIRSTDISPLAYED *=1' \
+    'LASTDISPLAYED *=4' 'LOGICAL_WORDS *=also' \
+    'MATCHES_PER_PAGE *=8' 'MATCH_MESSAGE *=Or' 'MAX_STARS *=4' \
+    'METADESCRIPTION *=-' 'selected>Or' 'MODIFIED *=-' \
+    'NEXTPAGE *=-' 'NSTARS *=-' 'PAGE *=1' 'PAGEHEADER *=single' \
+    'PAGELIST *=-' 'PAGES *=1' 'PLURAL_MATCHES *=es' \
+    'PREVPAGE *=-' 'RESTRICT *=http' 'SELECTED_FORMAT *=builtin-long' \
+    'SELECTED_METHOD *=or' 'SELECTED_SORT *=revscore' \
+    'selected>Reverse Score' 'VERSION *=3.2' 'WORDS *=also' \
+    'START_ELLIPSES' 'END_ELLIPSES' '<strong>also</strong>' \
+    '^[^S]*"STAR".*"NIL".*"NIL".*"NIL"' \
+
+set_attr max_stars 5
+set_attr start_highlight "START"
+set_attr end_highlight   "STOP"
+try "test max_stars" \
+    "words=also;script_name=qtest;format=builtin-long;method=or;restrict=http;sort=revscore" \
+    'MATCHES *=4' \
+    'CGI *=qtest' 'CONFIG *=-' 'EXCLUDE *=-' 'FIRSTDISPLAYED *=1' \
+    'LASTDISPLAYED *=4' 'LOGICAL_WORDS *=also' \
+    'MATCHES_PER_PAGE *=8' 'MATCH_MESSAGE *=Or' 'MAX_STARS *=5' \
+    'METADESCRIPTION *=-' 'selected>Or' 'MODIFIED *=-' \
+    'NEXTPAGE *=-' 'NSTARS *=-' 'PAGE *=1' 'PAGEHEADER *=single' \
+    'PAGELIST *=-' 'PAGES *=1' 'PLURAL_MATCHES *=es' \
+    'PREVPAGE *=-' 'RESTRICT *=http' 'SELECTED_FORMAT *=builtin-long' \
+    'SELECTED_METHOD *=or' 'SELECTED_SORT *=revscore' \
+    'selected>Reverse Score' 'VERSION *=3.2' 'WORDS *=also' \
+    'START_ELLIPSES' 'END_ELLIPSES' 'STARTalsoSTOP' \
+    '^[^N]*"STAR".*"NIL".*"NIL".*"NIL".*"NIL"'
+
+try "Search for 'empty'" \
+    "words=empty;format=builtin-long" \
+    'MATCHES *=2' \
+    'empty%20file.html' 'empty file.html' 'sub%2520dir' 'INDEX OF /SET1/SUB%20DIR'
+set_attr no_title_text "Empty-Title"
+try "Search for 'empty'" \
+    "words=empty;format=builtin-long" \
+    'MATCHES *=2' \
+    'empty%20file.html' 'Empty-Title' 'sub%2520dir'
+
+set_attr star_patterns "site foo bad_local bar"
+try "test star_patterns" \
+    "words=also;format=builtin-long" \
+    'MATCHES *=4' '"foo"' '"bar"'
+
+set_attr star_patterns "site foo bad_local"
+try "test star_patterns syntax error" \
+    "words=also;format=builtin-long" \
+    'MATCHES *=4' '"foo"' '""'
+
+set_attr search_results_contenttype "foo"
+set_attr use_star_image "false"
+try "Checking use_star_image" \
+    "words=bad_local;format=builtin-short" \
+    "^[^*]*bad_local" "Content-type: foo"
+
+set_attr search_results_contenttype ""
+set_attr no_excerpt_text "No-excerpt-found"
+try "Checking no_excerpt_show_top true" \
+    "words=Yuki" \
+    "a#bcd"
+
+set_attr no_excerpt_show_top "false"
+try "Checking no_excerpt_show_top false" \
+    "words=Yuki" \
+    "No-excerpt-found"
+
+try "Checking excerpt_show_top false" \
+    "words=also" \
+    "STARTalsoSTOP"
+
+set_attr build_select_lists 'MATCH_LIST,multiple matchesperpage matches_per_page_list 2 2 1 matches_per_page "Previous Amount"'
+set_attr matches_per_page_list 'one 1 five 5 ten 10 twenty 20 "one hundred" 100 "two hundred" 200'
+set_attr sort_names "score 'Best Match' time Newest title A-Z revscore 'Worst Match' revtime Oldest revtitle Z-A"
+set_attr excerpt_show_top "true"
+
+try "Checking excerpt_show_top true" \
+    "words=also;matchesperpage=40" \
+    "Copyright" \
+    "MATCH_LIST *=<" "selected>Previous Amount" '<option value="1">one' \
+    'SORT *=<select name="sort">' \
+    '<option value="score" selected>Best Match' \
+    '<option value="time">Newest' \
+    '<option value="title">A-Z' \
+    '<option value="revscore">Worst Match' \
+    '<option value="revtime">Oldest' \
+    '<option value="revtitle">Z-A' \
+    '</select>'
+
+set_attr syntax_error_file "$testdir/conf/main-template"
+try "Checking syntax error file" \
+    "words=also+and;method=boolean" \
+    'MATCHES *=0' 'LOGICAL_WORDS *=also and' \
+    'MATCH_MESSAGE *=Logical' 'METADESCRIPTION *=-' 'selected>Logical' \
+    'PAGELIST *=-' 'PAGES *=1' 'SELECTED_METHOD *=boolean' \
+    'VERSION *=3.2' 'WORDS *=also and'
+
+
+test_functions_action=--stop-apache
+. ./test_functions

@@ -1,0 +1,290 @@
+#!/bin/sh
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999-2003 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU Library General Public License (LGPL) version 2 or later
+# <http://www.gnu.org/copyleft/lgpl.html>
+#
+# $Id: t_fuzzy,v 1.1 2003/12/14 01:53:13 lha Exp $
+#
+
+try() {
+    comment="$1"
+    shift
+    query="$1"
+    shift
+    $htsearch -c $config "$query" > $tmp
+    for pattern
+    do
+	if grep "$pattern" $tmp > /dev/null 
+	then :
+	else
+	    $htsearch -vv -c $config "$query" > /dev/null
+	    echo "Output doesn't match \"$pattern\""
+	    fail "$htsearch -c $config '$query' >> $tmp --
+		  $comment"
+	fi
+    done
+}
+
+
+
+
+test_functions_action=--start-apache
+. ./test_functions
+
+config=$testdir/conf/htdig.conf.tmp
+tmp=/tmp/t_htsearch$$
+
+databases="accents metaphone soundex synonym endings_root2word endings_word2root"
+
+# set up config file with chosen non-default values
+cp $testdir/conf/htdig.conf $config
+for database in $databases; do
+    set_attr ${database}_db "$testdir/var/htdig/test_${database}.db"
+    rm -f $testdir/var/htdig/test_${database}.db
+done
+set_attr synonym_dictionary "$testdir/synonym_dict"
+set_attr endings_affix_file "$testdir/dummy.affixes"
+set_attr endings_dictionary "$testdir/dummy.stems"
+
+# db.words.db needed by  htfuzzy, so dig before generating fuzzy databases
+#set_attr locale fr
+set_attr extra_word_characters çé
+$htdig "$@" -t -i -c $config
+$htpurge -c $config
+
+# Check that databases can be generated
+$htfuzzy -c $config accents soundex metaphone endings synonyms || fail "Error generating fuzzy database"
+
+# Make sure databases put in correct locations
+for database in $databases; do
+    if [ ! -f $testdir/var/htdig/test_${database}.db ] ; then
+	fail "htfuzzy didn't recognise ${database}_db attribute"
+    fi
+done
+
+try "Search for '&aacute;lso' without search_algorithm=accents" \
+    "words=álso;search_algorithm=exact" \
+    'No matches'
+
+try "Search for '&aacute;lso' with search_algorithm not in  allow_in_form" \
+    "words=álso;search_algorithm=accents" \
+    'No matches'
+
+set_attr allow_in_form search_algorithm
+
+try "Search for '&aacute;lso' with search_algorithm=accents" \
+    "words=álso;search_algorithm=accents:0.1" \
+    '4 matches' 'bad_local.htm' 'site2.html' 'script.html' 'site4.html' '<strong>also</strong>'
+
+try "Search for 'francais' without search_algorithm=accents" \
+    "words=francais;search_algorithm=exact:0.1" \
+    'No matches'
+
+#try "Search for '\"fran ais\"' with search_algorithm=accents" \
+#    "words=%22fran+ais%22;search_algorithm=accents:1" \
+#    '1 matches' 'site4.html'
+
+try "Search for 'francais' with search_algorithm=accents" \
+    "words=francais;search_algorithm=accents:0.1" \
+    '1 matches' 'site4.html'
+
+try "Search for 'quebec' without search_algorithm=accents" \
+    "words=quebec;search_algorithm=exact:0.1" \
+    'No matches'
+
+try "Search for 'quebec' with search_algorithm=accents" \
+    "words=quebec;search_algorithm=accents:0.1" \
+    '1 matches' 'site4.html'
+
+
+
+
+try "Search for 'accownt' without search_algorithm=soundex" \
+    "words=accownt;search_algorithm=exact:1" \
+    'No matches'
+
+try "Search for 'accownt' with search_algorithm=soundex" \
+    "words=accownt;search_algorithm=soundex:1" \
+    '2 matches' 'script.html' 'site4.html' '<strong>account</strong>'
+
+try "Search for 'accownt' with search_algorithm=metaphone" \
+    "words=accownt;search_algorithm=metaphone:1" \
+    '2 matches' 'script.html' 'site4.html' '<strong>account</strong>'
+
+
+
+
+try "Search for 'zzyyxx' without search_algorithm=synonyms" \
+    "words=zzyyxx;search_algorithm=exact:1" \
+    'No matches'
+
+try "Checking synonyms of the form   word-in-doc word-in-query" \
+    "words=zzyyxx;search_algorithm=synonyms:1" \
+    '1 matches' 'site3.html'
+
+try "Search for 'xxyyzz' without search_algorithm=synonyms" \
+    "words=xxyyzz;search_algorithm=exact:1" \
+    'No matches'
+
+try "Checking synonyms of the form   word-in-query word-in-doc" \
+    "words=xxyyzz;search_algorithm=synonyms:1" \
+    '1 matches' 'site3.html'
+
+try "Search for 'xyzxyz' without search_algorithm=synonyms" \
+    "words=xyzxyz;search_algorithm=exact:1" \
+    'No matches'
+
+try "Checking synonyms of the form   common-word word-in-query word-in-doc" \
+    "words=xyzxyz;search_algorithm=synonyms:1" \
+    '1 matches' 'site3.html'
+
+try "Checking exact is used as a default if fuzzy rules yield no word" \
+    "words=road;search_algorithm=synonyms:1" \
+    '1 matches' 'site4.html' '<strong>Road</strong>'
+
+
+try "Searching for 'copy' without 'endings'" \
+    "words=copy;search_algorithm=exact:1" \
+    'No matches'
+
+try "Searching for 'copy' with 'endings'" \
+    "words=copy;search_algorithm=endings:1" \
+    '2 matches' 'bad_local.htm' 'site3.html' '<strong>Copyright</strong>'
+
+
+
+try "Searching for 'univers*' without 'prefix'" \
+    "words=univers*;search_algorithm=exact:1" \
+    'No matches'
+
+try "Searching for 'univers*' with 'prefix'" \
+    "words=univers*;search_algorithm=prefix:1" \
+    '2 matches' 'script.html' 'site4.html'
+
+set_attr allow_in_form "search_algorithm max_prefix_matches min_prefix_length"
+set_attr prefix_match_character "?"
+
+try "Searching for 'res?' with 'prefix'" \
+    "words=res?;search_algorithm=prefix:1;max_prefix_matches=100" \
+    '3 matches' 'script.html' 'site3.html' 'site4.html' 'reserved' 'residency' 'residents' 'resources' 'respectively' 'response' 'restricted'
+
+try "Searching for 'res?' with 'prefix', at most 2 prefixes" \
+    "words=res?;search_algorithm=prefix:1;max_prefix_matches=2" \
+    '2 matches' 'site3.html' 'site4.html' 'reserved' 'residency)'
+
+set_attr prefix_match_character "etc"
+
+try "Searching for 'resetc' with 'prefix', prefix_match_character=etc" \
+    "words=resetc;search_algorithm=prefix:1;max_prefix_matches=2" \
+    '2 matches' 'site3.html' 'site4.html' 'reserved' 'residency)'
+
+set_attr minimum_prefix_length 4
+
+# Check it doesn't count the prefix_match "character" as part of the
+# "minimum_prefix_length"
+try "Searching for 'resetc' with 'prefix', minimum prefix length 4" \
+    "words=resetc;search_algorithm=prefix:1;max_prefix_matches=4" \
+    'No matches'
+
+set_attr prefix_match_character "?"
+
+try "Searching for 'res?' with 'prefix', minimum prefix length 4" \
+    "words=res?;search_algorithm=prefix:1;max_prefix_matches=100" \
+    'No matches'
+
+
+
+
+
+
+try "Searching for 'ili' without 'substring'" \
+    "words=ili;search_algorithm=exact:1" \
+    'No matches'
+
+try "Searching for 'ili' with 'substring'" \
+    "words=ili;search_algorithm=substring:1" \
+    '2 matches' 'script.html' 'site4.html' '(affiliated' 'utilised)'
+
+set_attr allow_in_form "search_algorithm substring_max_words"
+
+try "Searching for 'ili' with 'substring', substring_max_words=3" \
+    "words=ili;search_algorithm=substring:1;substring_max_words=3" \
+    '2 matches' 'script.html' 'site4.html' 'eligibility)'
+
+
+
+try "Searching for 'acccount' without 'speling'" \
+    "words=acccount;search_algorithm=exact:1" \
+    'No matches'
+
+try "Searching for 'acccount' with 'speling'" \
+    "words=acccount;search_algorithm=speling:1" \
+    '2 matches' 'script.html' 'site4.html' '<strong>account</strong>'
+
+try "Searching for 'accountx' with 'speling'" \
+    "words=accountx;search_algorithm=speling:1" \
+    '2 matches' 'script.html' 'site4.html' '<strong>account</strong>'
+
+
+set_attr allow_in_form "search_algorithm minimum_speling_length"
+
+try "Searching for 'accountx' with minimum_speling_length=9" \
+    "words=accountx;search_algorithm=speling:1;minimum_speling_length=9" \
+    'No matches'
+
+try "Searching for 'accountx' with minimum_speling_length=8" \
+    "words=accountx;search_algorithm=speling:1;minimum_speling_length=8" \
+    '2 matches' 'script.html' 'site4.html' '<strong>account</strong>'
+
+
+
+
+
+try "Searching for '.*vers[^a].*' without 'regex'" \
+    "words=.*vers[^a].*;search_algorithm=exact:1" \
+    'No matches'
+
+set_attr extra_word_characters ".*[^]\\$"
+
+try "Searching for '.*vers[^a].*' with 'regex'" \
+    "words=.*vers[^a].*;search_algorithm=regex:1" \
+    '3 matches' '(universities' 'versions)'
+
+set_attr allow_in_form "search_algorithm regex_max_words"
+
+try "Searching for '.*vers[^a].*' with 'regex', regex_max_words=3" \
+    "words=.*vers[^a].*;search_algorithm=regex:1;regex_max_words=3" \
+    '2 matches' '(universities' 'version)'
+
+
+
+
+try "Searching for 'versi' without 'substring'" \
+    "words=versi;search_algorithm=exact:1" \
+    'No matches'
+
+try "Searching for 'versi' with 'substring'" \
+    "words=versi;search_algorithm=substring:1" \
+    '3 matches' '(universities' 'versions)'
+
+set_attr allow_in_form "search_algorithm substring_max_words"
+
+try "Searching for 'versi' with 'substring', substring_max_words=3" \
+    "words=versi;search_algorithm=substring:1;substring_max_words=3" \
+    '2 matches' '(universities' 'version)'
+
+
+
+
+
+for database in $databases; do
+    rm -f $testdir/var/htdig/test_${database}.db
+    try "Searching width $database database missing" \
+        "words=account" \
+	'2 matches'
+done
+
+test_functions_action=--stop-apache
+. ./test_functions

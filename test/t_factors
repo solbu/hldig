@@ -1,0 +1,68 @@
+#!/bin/sh
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999-2003 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU Library General Public License (LGPL) version 2 or later
+# <http://www.gnu.org/copyleft/lgpl.html>
+#
+# $Id: t_factors,v 1.1 2003/12/14 01:53:13 lha Exp $
+#
+
+try() {
+    comment="$1"
+    shift
+    query="$1"
+    shift
+    $htsearch -c $config "$query" > $tmp 2> /dev/null
+    for pattern
+    do
+	if grep "$pattern" $tmp > /dev/null 
+	then :
+	else
+	    $htsearch -vv -c $config "$query" > /dev/null
+	    echo "Output doesn't match \"$pattern\""
+	    fail "$htsearch -c $config '$query' >> $tmp --
+		  $comment"
+	fi
+    done
+}
+
+
+
+
+test_functions_action=--start-apache
+. ./test_functions
+
+config=$testdir/conf/htdig.conf.tmp
+tmp=/tmp/t_htsearch$$
+
+# set up config file with chosen non-default values
+cp $testdir/conf/htdig.conf $config
+
+set_attr author_factor			0
+set_attr backlink_factor		0
+set_attr caps_factor			0
+set_attr date_factor			0
+set_attr description_factor		0
+set_attr heading_factor			0
+set_attr keywords_factor		0
+set_attr meta_description_factor	0
+set_attr multimatch_factor		0
+set_attr text_factor			0
+set_attr title_factor			0
+set_attr url_text_factor		0
+
+$htdig "$@" -t -i -c $config	|| fail "Couldn't dig"
+$htpurge -c $config		|| fail "Couldn't purge"
+
+################################################################################
+## Add tests here
+################################################################################
+
+set_attr author_factor			0
+try "Search for '2001' without allow_numbers" \
+    "words=2001" \
+    'No matches'
+
+test_functions_action=--stop-apache
+. ./test_functions
