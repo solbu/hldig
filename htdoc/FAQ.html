@@ -126,8 +126,8 @@
       and improvements from users. If you have an idea (or even better,
       a patch), please send it to the ht://Dig mailing list so others
       can use it. For suggestions on how to submit patches, please check 
-      the <a href="http://dev.htdig.org/patches.html">"Guidelines for
-      Patch Submissions"</a>. If you'd like to make a feature request,
+      the <a href="http://dev.htdig.org/patches.html">Guidelines for
+      Patch Submissions</a>. If you'd like to make a feature request,
       you can do so through the ht://Dig bug database, either off of &lt;<a
       href="http://www.htdig.org/">www.htdig.org</a>&gt; or by sending
       mail to &lt;<a
@@ -146,7 +146,7 @@
       do?</a><br>
       <p>Well, there are probably bugs out there. You have two options
       for bug-reporting. You can either mail the ht://Dig mailing list
-      at &lt;<a href="mailto:htdig@htdig.org">htdig@sdsu.org</a>&gt; or
+      at &lt;<a href="mailto:htdig@htdig.org">htdig@htdig.org</a>&gt; or
       better yet, report it to the bug database, which ensures it won't
       become lost amongst all of the other mail on the list. To do this,
       either follow the link from &lt;<a
@@ -172,7 +172,7 @@
 
       <h3>2. Getting ht://Dig</h3>
       2.1. <a name="q2.1">What's the latest version of ht://Dig?</a><br>
-      <p>The latest version is 3.1.0b4 as of this writing. Development
+      <p>The latest version is 3.1.0 as of this writing. Development
       is beginning on htdig4 as well as a few interim releases of
       htdig3.</p>
 
@@ -233,7 +233,8 @@
       The solution is to modify the c++ command so it explicity
       references the correct libdb.a .  You can do this by replacing
       the "-ldb" directive in the c++ command with
-      "../db-2.4.14/dist/libdb.a"</p>
+      "../db-2.4.14/dist/libdb.a" This problem has been resolved as of
+      version 3.1.0.</p>
 
       <hr noshade size=2>
 
@@ -290,7 +291,8 @@ following line would do it:<br>
 
       4.5. <a name="q4.5">OK, I can use multiple databases. Can I
       merge them into one?</a><br>
-      <p>Not at the moment. This is on the TODO list.</a></p>
+      <p>As of version 3.1.0, you can do this with the -m option to
+      <a href="htmerge.html">htmerge</a>.</p>
 
       4.6. <a name="q4.6">Wow, ht://Dig eats up a lot of disk space. How can I cut down?</a><br>
       <p>There are several ways to cut down on disk space. One is to
@@ -367,7 +369,7 @@ following line would do it:<br>
       <address><a href="THANKS.html">$Author: ghutchis $</a></address>
 <!-- Created: Sun Jun 22 23:16:38 PDT 1997 -->
 <!-- hhmts start -->
-Last modified: Thu Jan 28 22:20:37 EST 1999
+Last modified: Mon Feb  8 20:47:17 EST 1999
 <!-- hhmts end -->
   </body>
 </html>

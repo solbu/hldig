@@ -23,10 +23,15 @@
     <strong>Release notes for htdig-3.1.0</strong> 9 Feb 1999<br>
     <p>This version marks the "full release" of version
     3.1.0. Naturally, this version adds a few new feature and fixes a
-    large number of remaining bugs. <strong>NOTE:</strong> You
-    <emph>must</emph> rebuild your databases from scratch after
-    updating to this version. Several database-related bugs were
-    fixed and will remain unless you rebuild from scratch.
+    large number of remaining bugs. This version is the latest stable
+    release of ht://Dig and is recommended for all production servers
+    for current bug-fixes and oft-requested
+    features.
+    <blockquote><strong>NOTE:</strong> You <emph>must</emph> rebuild
+    your databases from scratch after updating to this
+    version. Several database-related bugs were fixed and will remain
+    unless you rebuild from scratch. We're sorry for any
+    inconvenience.</blockquote>
     </p>
     <ul>
       <li>Fixed a variety of small memory leaks.</li>
@@ -49,7 +54,7 @@
       test for the age of databases.</li>
       <li>Fixed bugs in the fuzzy matching code that could prevent
       searches from completing if fuzzy databases were not present.</li>
-      (li>Fixed bugs in the soundex and metaphone algorithms that
+      <li>Fixed bugs in the soundex and metaphone algorithms that
       would only return the first word of several matching
       words. <b>Note</b> that to completely fix this bug, you must
       rebuild your soundex and metaphone databases.</li>
@@ -89,7 +94,7 @@
       present.</li>
       <li>Added the options <a
       href="attrs.html#noindex_start">noindex_start</a> and <a
-      href="attrs.html#noindex_end">noindex_end</a> to delimit
+      href="attrs.html#noindex_stop">noindex_stop</a> to delimit
       sections of HTML documents to be ignored.</li>
       <li>Added the option <a
       href="attrs.html#allow_in_form">allow_in_form</a> to allow
@@ -856,7 +861,7 @@
           &lt;andrew@contigo.com&gt;</a>
         </address>
         <!-- hhmts start -->
-Last modified: Mon Feb  8 20:37:45 EST 1999
+Last modified: Mon Feb  8 23:47:28 EST 1999
 <!-- hhmts end -->
       </li>
     </ul>
