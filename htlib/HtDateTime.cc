@@ -354,6 +354,8 @@ void HtDateTime::RefreshStructTM() const
 }
 
 
+// Set the date time from a struct tm pointer
+
 void HtDateTime::SetDateTime(struct tm *ptm)
 {
 
@@ -362,6 +364,20 @@ void HtDateTime::SetDateTime(struct tm *ptm)
    else
    	 Ht_t = Httimegm(ptm);	// Invoke timegm alike function
    
+}
+
+
+// We must set the local time notation before setting time to now
+
+void HtDateTime::SettoNow()
+{
+   bool previous = local_time;
+   
+   ToLocalTime();
+   
+   SetDateTime ( (const time_t &) time(NULL) );
+   
+   local_time = previous;
 }
 
 
@@ -762,10 +778,25 @@ time_t HtDateTime::Httimegm (struct tm *tm)
 #if HAVE_TIMEGM
    return ::timegm (tm);
 #else
-   return ::Httimegm (tm); // To be changed if managed here
+   // return ::Httimegm (tm); // To be changed if managed here
+   static time_t gmtime_offset;
+   tm->tm_isdst = 0;
+   return __mktime_internal (tm, gmtime, &gmtime_offset);
 #endif
    
 }
+
+
+
+// Returns the difference in seconds between two HtDateTime Objects
+
+int HtDateTime::GetDiff(HtDateTime &d1, HtDateTime &d2)
+{
+
+   return (int) ( d1.Ht_t - d2.Ht_t );
+   
+}
+
 
 
 

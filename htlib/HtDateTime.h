@@ -5,7 +5,7 @@
 ///////
 
 // Version: 1.0
-// Release date: 29.04.1999
+// Release date: 07.05.1999
 
 // General purpose of HtDateTime
 // 	 The general purpose of this class, is to provide an interface for
@@ -96,6 +96,7 @@
 // 	    - check for a valid day
 // 	    - converts a 2 digits year number into a 4 digits one: from 1970 to 2069.
 // 	    - converts a 4 digits year number into a 2 digits one.
+// 	    - retrieve the difference in seconds between 2 HtDateTime objs
 //
 // 	 Test Interface (only by defining TEST_HTDATETIME directive).
 //
@@ -177,7 +178,7 @@ public:
       	             	int hour=0, int min=0, int sec=0);
 				
    // Set to Now
-   void SettoNow() { SetDateTime ( (const time_t &) time(NULL) ); }
+   void SettoNow();
 
    // Parsing various input string format 
    // It ignores time Zone value - always stores as GM
@@ -349,6 +350,7 @@ public:
    	 else return y - 1900;
    }
 
+   static int GetDiff(HtDateTime &, HtDateTime &);
 
    // Check equality from 2 struct tm pointers
    // Returns 0 if equal, -1 if tm1 is lower than tm2, 1 if tm1 is greater than tm2
