@@ -14667,7 +14667,7 @@ echo "${ECHO_T}yes" >&6
     HTTP_ROOT=`$APACHE -V | grep HTTPD_ROOT | sed -e 's/.*"\(.*\)"/\1/'`
     echo "$as_me:$LINENO: checking apache modules" >&5
 echo $ECHO_N "checking apache modules... $ECHO_C" >&6
-    for dir in libexec modules lib/apache
+    for dir in libexec modules lib/apache libexec/httpd
     do
       if test -f $HTTP_ROOT/$dir/mod_env.*
       then

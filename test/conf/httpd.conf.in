@@ -11,8 +11,8 @@
 #LoadModule mmap_static_module _MODULES_/mod_mmap_static.so
 LoadModule env_module         _MODULES_/mod_env.so
 LoadModule config_log_module  _MODULES_/mod_log_config.so
-LoadModule agent_log_module   _MODULES_/mod_log_agent.so
-LoadModule referer_log_module _MODULES_/mod_log_referer.so
+#LoadModule agent_log_module   _MODULES_/mod_log_agent.so
+#LoadModule referer_log_module _MODULES_/mod_log_referer.so
 #LoadModule mime_magic_module  _MODULES_/mod_mime_magic.so
 LoadModule mime_module        _MODULES_/mod_mime.so
 LoadModule negotiation_module _MODULES_/mod_negotiation.so
@@ -34,7 +34,7 @@ LoadModule access_module      _MODULES_/mod_access.so
 LoadModule auth_module        _MODULES_/mod_auth.so
 LoadModule anon_auth_module   _MODULES_/mod_auth_anon.so
 #LoadModule dbm_auth_module    _MODULES_/mod_auth_dbm.so
-LoadModule db_auth_module     _MODULES_/mod_auth_db.so
+#LoadModule db_auth_module     _MODULES_/mod_auth_db.so
 LoadModule digest_module      _MODULES_/mod_digest.so
 #LoadModule cern_meta_module   _MODULES_/mod_cern_meta.so
 LoadModule expires_module     _MODULES_/mod_expires.so
@@ -56,8 +56,8 @@ ClearModuleList
 #AddModule mod_mmap_static.c
 AddModule mod_env.c
 AddModule mod_log_config.c
-AddModule mod_log_agent.c
-AddModule mod_log_referer.c
+#AddModule mod_log_agent.c
+#AddModule mod_log_referer.c
 #AddModule mod_mime_magic.c
 AddModule mod_mime.c
 AddModule mod_negotiation.c
@@ -79,7 +79,7 @@ AddModule mod_access.c
 AddModule mod_auth.c
 AddModule mod_auth_anon.c
 #AddModule mod_auth_dbm.c
-AddModule mod_auth_db.c
+#AddModule mod_auth_db.c
 AddModule mod_digest.c
 #AddModule mod_cern_meta.c
 AddModule mod_expires.c

@@ -19,7 +19,7 @@ static const char sccsid[] = "@(#)mp_alloc.c	11.3 (Sleepycat) 9/29/99";
 #include "db_shash.h"
 #include "mp.h"
 
-#if 1
+#if 0
 #  define DEBUG
 #endif
 
@@ -79,7 +79,8 @@ CDB___memp_alloc(dbmp, memreg, mfp, len, offsetp, retp)
 		"Can't allocate %lu bytes: Recursive call (mfp %p)\n",
 		(u_long)len, mfp);
 #ifdef DEBUG
-	    static flag = 1;
+	    {
+	    static int flag = 1;
 	    if (flag)
 	    {
 		flag = 0;
@@ -100,6 +101,7 @@ CDB___memp_alloc(dbmp, memreg, mfp, len, offsetp, retp)
 
 		  free (strings);
 		}
+	    }
 	    }
 #endif
 	    ret = ENOMEM;

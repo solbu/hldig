@@ -1,5 +1,13 @@
 Sun May 18 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
+	* db/mp_alloc.c: Hopefully the *last* fix for this morning's patch...
+
+	* configure, aclocal.m4, acinclude.m4:
+	  Look for  httpd  modules in  .../libexec/httpd  for OS X
+	* test/conf/httpd.conf: Disabled mod_auth_db, mod_log{agent,referer}.
+
+Sun May 18 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
 	* db/db.h.in: Declare variable introduced in  db/mp_cmpr.c  patch
 
 Sun May 18 2003 Lachlan Andrew  <lha@users.sourceforge.net>

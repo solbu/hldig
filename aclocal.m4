@@ -38,7 +38,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.25 2003/01/30 18:50:22 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.26 2003/05/18 05:24:15 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -98,7 +98,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.25 2003/01/30 18:50:22 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.26 2003/05/18 05:24:15 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -148,7 +148,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.25 2003/01/30 18:50:22 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.26 2003/05/18 05:24:15 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -243,7 +243,7 @@ dnl LoadModule env_module         @APACHE_MODULES@/mod_env.so
 dnl LoadModule config_log_module  @APACHE_MODULES@/mod_log_config.so
 dnl ...
 dnl
-dnl @version $Id: aclocal.m4,v 1.25 2003/01/30 18:50:22 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.26 2003/05/18 05:24:15 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -326,7 +326,7 @@ AC_DEFUN(AC_PROG_APACHE,
     #
     HTTP_ROOT=`$APACHE -V | grep HTTPD_ROOT | sed -e 's/.*"\(.*\)"/\1/'`
     AC_MSG_CHECKING(apache modules)
-    for dir in libexec modules lib/apache
+    for dir in libexec modules lib/apache libexec/httpd
     do
       if test -f $HTTP_ROOT/$dir/mod_env.*
       then
@@ -422,7 +422,7 @@ dnl      .if ${HAVE_SSL} == "yes"
 dnl      SRCS+= @srcdir@/my_file_that_needs_ssl.c
 dnl      .endif
 dnl
-dnl @version $Id: aclocal.m4,v 1.25 2003/01/30 18:50:22 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.26 2003/05/18 05:24:15 lha Exp $
 dnl @author Mark Ethan Trostler <trostler@juniper.net>
 dnl
 AC_DEFUN([CHECK_SSL],

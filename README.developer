@@ -1,0 +1,83 @@
+ht://Dig 3.2.0b4 README.developer
+Copyright (c) 2002-03 The ht://Dig Group
+
+This README file is for newbie developers like myself.  As I learn stuff,
+I'm putting it here.  If anyone wants to write a better guide, please do!
+
+Lachlan   lha@users.sourceforge.net
+
+AUTOMATICALLY GENERATED FILES
+=============================
+Many files, such as  attrs.html,  are automatically generated from a "master"
+documents, such as  defaults.cc.  The procedure for generating these files
+is as follows.
+
+To generate		From			Use
+===========		====			===
+htdoc/attrs.html,	htcommon/defaults.cc,	htdoc/cf_generate.pl
+htdoc/cf_byprog.html,	htdoc/attrs_head.html,
+htdoc/cf_byname.html	htdoc/attrs_tail.html,
+			htdoc/cf_byprog_head.html
+			htdoc/cf_byprog_tail.html
+			htdoc/cf_byname_head.html
+			htdoc/cf_byname_tail.html
+
+Many files are automatically overwritten by the configuration process from
+their "*.in" variants.  These include:
+    */Makefile
+    db/db.h
+    db/configure
+    db/db_config.h
+    db/stamp-h
+    include/htconfig.h
+    include/stamp.h
+    test/test_functions
+    test/conf/access.conf
+    test/conf/htdig.conf
+    test/conf/htdig.conf2
+    test/conf/htdig.conf3
+    test/conf/httpd.conf
+    test/conf/mime.types.in
+    test/conf/srm.conf.in
+
+AUTO{CONF,MAKE}
+===============
+Don't change the  Makefiles  or  configure  directly.  They are generated
+automatically from the  Makefile.in  and  configure.in  files.  The
+Makefile.in  files are in turn generated from  Makefile.am  and  configure.in
+is generated from aclocal.m4, which is generated from...
+
+The dependencies seem to be:
+configure <-- configure.in
+	   |
+	   |- aclocal.m4 <-- *** acinclude.m4 (change this) ***
+
+Make changes to  Makefile.am  or  acinclude.m4  and then type:
+    aclocal
+    libtoolize --copy
+    autoconf
+    automake --foreign --add-missing --copy -v -f
+    autoreconf
+
+#if 0
+I've used this with  automake-1.4-p6  with  autoconf-2.54.  This
+generates a  libtool  file which tests  LTCONFIG_VERSION, and aborts if
+this environment is unset.  I delete this test manually.
+
+** It seems that this was because of a problem with  aclocal.  It now
+seems to work if I don't run  aclocal  and instead use the existing
+aclocal.m4  in the top directory. **
+#endif
+
+See <http://www.murrayc.com/learning/linux/automake/automake.shtml>.
+
+
+THINGS TO DO WHEN MAKING A CHANGE:
+==================================
+
+- Add any new attributes to  defaults.cc  and run  cf_generate.pl
+- Add any new dependencies to  */Makefile.am  and run  aclocal  etc., as above.
+- Add new tests in  test/  to test the new functionality
+- Test by (at least!)  "./configure --enable-tests"  then  "make check"
+- Write a Changelog entry.
+- Update STATUS if appropriate
