@@ -1,6 +1,475 @@
-Tue Mar  2 02:35:50 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+Wed Apr 21 22:45:16 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
-	* attrs.html: Rephrase and clarify entry for url_part_aliases.
+	* .version: Bump for final 3.1.2 release.
+
+	* htdoc/where.html, htdoc/FAQ.html: Update to mention the new release.
+
+Tue Apr 20 13:34:22 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/RELEASE.html: Fixed a few typos, updated modification date.
+
+Tue Apr 20 10:54:59 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/RELEASE.html: Add notes on changes in the 3.1.2 release.
+
+	* htdoc/contents.html, htdoc/mailarchive.html, htdoc/where.html,
+	htdoc/uses.html: Update with versions from maindocs.
+
+	* installdir/htdig.conf: Add example max_doc_size attribute to cut
+	down on FAQ, also add comment on including a file for start_url.
+
+Mon Apr 19 15:40:24 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/WordList.cc(valid_word): fixed to avoid having the new
+	HtIsStrictWordChar() test circumvent the allow_numbers option by
+	allowing numbers all the time. Also fixed to allow HtIsStrictWordChar()
+	to override iscntrl(), so extra_word_characters can define characters
+	that a broken locale would define as control characters.
+
+Mon Apr 19 15:17:12 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/WordList.cc(valid_word): fixed bug introduced Jan 9,
+	where it stopped scanning for control characters prematurely.
+	Now also use iscntrl() to detect all control characters.
+
+Fri Apr 16 10:30:42 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/FAQ.html: fixed typo - use_meta_description was plural.
+
+Wed Apr 14 20:22:31 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
+
+	* htlib/regex.h: fixed compile problem with AIX xlc compiler
+
+Tue Apr 13 13:01:04 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(generateStars): Set status to -1 if
+	URLimage.hasPattern() fails, to avoid empty URLimageList.
+	(Fix to Mar 31 change.)
+
+Tue Apr 13 11:27:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.h(class Display): move enum SortType up to public
+	section, to avoid problem compiling on IBM AIX C++ compiler.
+
+Mon Apr 12 17:36:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/FAQ.html: added sections on indexing docs in other languages,
+	practical & theoretical limits of ht://Dig.
+
+Fri Apr  9 16:47:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/FAQ.html: Fixed a few typos.
+
+Fri Apr  9 16:24:21 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc(RetrieveHTTP): Show "Unable to build connection"
+	message at lower debug level.
+
+Fri Apr  9 15:17:53 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/FAQ.html: Added changes in maindocs from Mar 18, a few
+	clarifications, and four new questions.
+
+Wed Apr  7 19:41:12 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/htsearch.cc (usage): Remove bogus -w flag.
+
+Thu Apr  1 11:58:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc(main): Apply Gabriele's patch to avoid using an
+	invalid matchesperpage CGI input variable.
+
+	* htsearch/Display.cc(display) & (setVariables): Correct any invalid
+	values for matches_per_page attribute to avoid div. by 0 error.
+
+Wed Mar 31 18:21:21 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/htdig.cc: Undo March 30 change.
+
+	* htdig/Retriever.cc: Use excludes.hasPattern before using the
+	exclude list. (More elegant solution to problem, as pointed out by
+	Gilles.) 
+
+	* htsearch/Display.cc: Remove code setting URLimage to a bogus
+	pattern. Instead, check that URLimage.hasPattern() before using
+	it.
+	
+Wed Mar 31 15:16:36 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Synonym.cc: Fix previous fix of minor memory leak.
+	(db pointer wasn't properly set)
+
+Tue Mar 30 20:08:18 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/htdig.cc: If exclude_urls attribute is set to empty, set
+	it to something that will never match a URL to ensure nothing is
+	excluded.
+
+	* Makefile.config.in: Fix typo leading to HTLIBS referring to itself.
+
+Mon Mar 29 16:47:48 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(excerpt): Added patch from Gabriele to
+	improve display of excerpts--show top of description always,
+	otherwise try to find the excerpt.
+
+Mon Mar 29 15:57:06 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/htdig.cc: Rename main.cc for consistency with other 
+	directories.
+
+	* htdig/Makefile.in: Use it.
+
+Mon Mar 29 12:53:17 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/HtWordType.h (HtIsWordChar): Avoid matching 0 when using
+	strchr.
+	(HtIsStrictWordChar): Ditto.  (Patch from Hans-Peter Nilsson)
+
+Mon Mar 29 10:51:54 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/regex.h, htlib/regex.c: Include glibc versions of the
+	regex functions to override possibly buggy system versions.
+
+	* htlib/Makefile.in: Use them.
+
+	* htfuzzy/EndingsDB.cc: Use glibc regex functions instead of rx
+	for massive speedups on non-English affix files. 
+
+	* configure, configure.in: Use the system timegm function if present.
+	Don't configure rx since we don't use it any more. Don't worry
+	about tsort since that was only needed for rx.
+
+	* Makefile.in, Makefile.config.in: Ignore the rx directory if present.
+
+Thu Mar 25 12:24:18 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/long.html, installdir/short.html: Remove backslashes 
+	before quotes in HTML versions of the builtin templates.
+
+	* Makefile.in: Add long.html & short.html to COMMONHTML list, so
+	they get installed in common_dir.
+
+Thu Mar 25 11:45:59 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(displayMatch), htcommon/defaults.cc,
+	htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Add date_format attribute suggested by Marc Pohl.
+
+Thu Mar 25 09:49:33 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(displayMatch): Avoid segfault when DocAnchors
+	list has too few entries for current anchor number.
+
+Wed Mar 24 12:20:02 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/main.cc (main): Call HtWordType::Initialize.  (Missed this
+	one yesterday.  Oops!)
+
+Tue Mar 23 17:11:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* backport Hans-Peter Nilsson's suite of changes for HtWordType
+	and extra_word_characters support, to 3.1.2...
+
+	* htlib/HtWordType.h (class HtWordType): New.
+	* htlib/HtWordType.cc: New.
+	* htlib/Makefile.in (OBJS): Add HtWordType.o
+
+	* htdoc/attrs.html: Document attribute extra_word_characters.
+	* htdoc/cf_byprog.html: Ditto.
+	* htdoc/cf_byname.html: Ditto.
+
+	* htcommon/defaults.cc (defaults): Add extra_word_characters.
+
+	* htsearch/htsearch.h: Lose spurious extern declaration of unused
+	variable valid_punctuation.
+	* htsearch/htsearch.cc (main): Call HtWordType::Initialize.
+	(setupWords): Use HtIsWordChar, HtIsStrictWordChar and
+	HtStripPunctuation.  Do not read valid_punctuation.
+
+	* htsearch/Display.cc (excerpt): Use HtIsStrictWordChar.
+
+	* htlib/StringMatch.cc (FindFirstWord): Ditto.
+	(CompareWord): Ditto.
+
+	* htdig/Retriever.h (class Retriever): Lose member
+	valid_punctuation.
+	* htdig/Retriever.cc (Retriever): Lose its initialization.
+
+	* htdig/Postscript.h (class Postscript): Lose member
+	valid_punctuation.
+	* htdig/Postscript.cc (Postscript): Lose its initialization.
+	(flush_word): Use HtStripPunctuation.
+	(parse_string): Use HtIsWordChar,
+	HtIsStrictWordChar and HtStripPunctuation.
+
+	* htdig/Parsable.h (class Parsable): Lose member
+	valid_punctuation.
+	* htdig/Parsable.cc (Parsable): Lose its initilization.
+
+	* htcommon/WordList.cc (valid_word): Use HtIsStrictWordChar.
+	(BadWordFile): Use HtStripPunctuation.  Do not read
+	valid_punctuation.
+
+	* htcommon/DocumentRef.cc (AddDescription): Use HtIsWordChar,
+	HtIsStrictWordChar and HtStripPunctuation.  Do not read
+	valid_punctuation.
+
+	* htdig/PDF.cc (parseString): Similar..
+
+	* htdig/HTML.cc (parse): Similar.
+
+	* htdig/Plaintext.cc (parse): Similar.
+
+Tue Mar 23 15:52:33 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* .version: Bump to 3.1.2-dev.
+
+Tue Mar 23 14:50:37 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/String.cc: Fix up code to be cleaner with memory
+	allocation, inline next_power_of_2, fix some memory leaks.
+	(Geoff's changes of Feb 22-25)
+
+Tue Mar 23 14:35:37 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/HtWordCodec.cc(HtWordCodec): Fix bug with constructing from
+	uninitialized variables!
+
+	* htlib/HtURLCodec.cc (~HtURLCodec): Add missing deletion of
+	myWordCodec.
+
+Tue Mar 23 14:18:16 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/PDF.cc(parseString): Use minimum_word_length instead of
+	hardcoded constant.
+
+Tue Mar 23 12:02:00 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(generateStars): Add in support for use_star_image
+	which was lost when template support was put in way back when.
+
+Tue Mar 23 11:47:52 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* Makefile.in: add missing ';' in for loops, between fi & done
+
+Mon Mar 22 19:26:56 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/DocumentRef.cc(AddDescription): Check to see that
+	description isn't a null string or contains only whitespace before
+	doing anything.
+
+Mon Mar 22 19:21:16 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc: Fix #ifdef
+	problems with zlib.
+
+Mon Mar 22 19:14:40 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html (template_name): Typo; used by htsearch, not htdig.
+
+Mon Mar 22 19:10:56 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc (got_href): Check if the ref is for the
+	current document before adding it to the db. (From H-P Nilsson, Mar 8)
+
+Mon Mar 22 19:03:23 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html: Rephrase and clarify entry for url_part_aliases.
+	(From Hans-Peter Nilsson, Mar 2)
+
+Mon Mar 22 18:48:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Synonym.cc: Fix minor memory leak.
+
+	* htlib/Dictionary.h, htlib/Dictionary.cc(hashCode): Check if key
+	can be converted to an integer using strtol. If so, use the
+	integer as the hash code.  (Geoff's patch)
+
+Mon Mar 22 18:23:11 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/List.cc(Nth): Check for out-of-bounds requests before
+	doing anything.
+
+Mon Mar 22 17:50:47 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(display): Free DocumentRef memory after
+	displaying them.
+	(displayMatch): Fix memory leak when documents did not have anchors,
+	fix problems when documents did not have descriptions.
+
+Mon Mar 22 17:32:14 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htmerge/docs.cc(convertDocs): Replace previous verbose patch
+	with H-P Nilsson's.
+
+Mon Mar 22 17:13:35 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Plaintext.cc, htmerge/words.cc: removed Log lines.
+
+Mon Mar 22 16:11:31 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc: Add patch from Jerome Alet <alet@unice.fr>
+	to allow '.' in config field but NOT './' for security reasons.
+
+Mon Mar 22 15:56:55 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* installdir/long.html, installdir/short.html: Write out HTML
+	versions of the builtin templates.  (committed to 3.1.2 by Gilles)
+
+	* installdir/htdig.conf: Add commented-out template_map and
+	template_name attributes to use the on-disk versions.
+
+Mon Mar 22 15:13:33 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc, htdoc/attrs.html: Change default locale
+	to "C", as H-P Nilsson recommended.
+
+	* htlib/Configuration.cc(Add): Fix small memory leak in locale code,
+	as Geoff discovered.
+
+Mon Mar 22 15:03:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/parse_doc.pl: uses pdftotext to handle PDF files,
+	generates a head record with punctuation intact, extra checks
+	for file "wrappers" & check for MS Word signature (no longer
+	defaults to catdoc), strip extra punct. from start & end of words,
+	rehyphenate text from PDFs, fix handling of minimum word length.
+
+Mon Mar 22 14:38:01 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Plaintext.cc(parse): Use minimum_word_length instead of
+	hardcoded constant.
+
+Mon Mar 22 14:33:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Configuration.cc(Add): Fix function to avoid infinite loop
+	on some systems, which don't allow all the letters in isalnum() that
+	isalpha() does, e.g. accented ones.
+
+	* htdig/HTML.cc: Fix three reported bugs about inconsistent
+	handling of space and punctuation in title, href description & head.
+	Now makes destinction between tags that cause word breaks and those
+	that don't, and which of the latter add space.
+
+Mon Mar 22 14:25:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htmerge/docs.cc: Make htmerge -vv report reasons for deleting docs.
+
+	* htmerge/words.cc(mergeWords): Fix to prevent description text
+	words from clobbering anchor number of merged anchor text words.
+
+Fri Mar 19 17:09:21 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc: Fix bug where noindex_start was empty, allow case
+	insensitive matching of noindex_start & noindex_end.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Fix inconsistencies in documentation for noindex_start & noindex_end.
+
+Fri Mar 19 17:05:16 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc: Add check for <a href=...> tag that is missing a
+	closing </a> tag, terminating it at next href.
+
+Fri Mar 19 17:00:18 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc: Fix check of Content-type header in readHeader(),
+	correcting bug introduced Jan 10 (for PR#91), and check against
+	allowed external parsers.
+
+	* htdig/HTML.cc: More lenient comment parsing, allows extra dashes.
+
+Fri Mar 19 16:52:51 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc: Check for presence of more than one <title> tag.
+
+	* htlib/mytimegm.cc: Fix Y2K problems.
+
+Fri Mar 19 16:43:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc: Add patch from Gabriele to ensure META
+	descriptions are parsed, even if 'description' is added to the
+	keyword list.
+
+Fri Mar 19 16:37:08 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/parser.h, htsearch/parser.cc: Clean up patch made for
+	error messages, made on Feb 16.
+
+Tue Feb 16 23:48:09 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in, configure: Default to 'int' when we cannot
+	establish type used by getpeername.
+
+	* htdoc/RELEASE.html: Additional notes on everything fixed in 3.1.1.
+
+Tue Feb 16 23:45:26 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* contrib/parse_doc.pl: Add replacement for less-capable (and
+	buggy) parse_word_doc.pl script. Handles Word, PS, RTF, and
+	WordPerfect files, with appropriate file->text converters.
+
+	* htsearch/parser.cc, htsearch/parser.h: Add more error messages
+	when the boolean expression is invalid.
+
+Mon Feb 15 21:02:24 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Document.cc(RetrieveLocal): Fix to ensure we report
+	reading only max_doc_size bytes, even when the document is larger.
+
+	* configure.in, configure: Add 'socklen_t' to getpeername check to
+	prevent problems configuring on Solaris 7.
+
+	* htdoc/RELEASE.html: Minor changes for 3.1.1 release.
+	
+Sun Feb 14 16:29:48 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Document.cc(retrieveHTTP, retrieveLocal): Fix document
+	size when the document is larger than max_doc_size. Size should be
+	that sent by the server or as given by stat().
+
+	* htdoc/*.html: More cleanups from Marjolein.
+
+Sat Feb 13 20:53:34 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc(got_word): Ensure heading is in a normal range.
+
+	* htdoc/RELEASE.html: Added information on the bugs fixed in 3.1.1.
+
+	* htdoc/attrs.html: Added info on the changed syntax of the pdf_parser
+	attribute in 3.1.0 and later.
+	
+Sat Feb 13 20:29:26 1999  Marjolein Katsma <webmaster@javawoman.com>
+
+	* htdoc/*.html: Cleaned up HTML, fixed typos, added appropriate
+	HTML 4.0 syntax, added DTDs to files, other minor fixed.
+
+Fri Feb 12 19:58:28 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* .version: Bump for version 3.1.1.
+
+	* configure.in, configure: Fix problems determining getpeername
+	syntax under IRIX.
+
+	* db/os/os_map.c: Fixed problems on AlphaLinux pointed out by Paul
+	J. Meyer.
+
+Fri Feb 12 12:00:25 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc: Fix crashes noted by Frank Richter.
+
+	* contrib/htparsedoc/parse_word_doc.pl: Use updated version (with
+	fixed line breaks).
+
+	* htnotify/htnotify.cc: Add patch mentioned in Feb 8 documentation
+	change.
+
+Thu Feb 11 00:29:42 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htcommon/DocumentRef.cc (NUM_ASSIGN): Expand from unsigned types.
+	(getnum): Use temporary for "unsigned short", and memcpy data into
+	it instead of assignment.
 
 Tue Feb  9 19:21:55 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 

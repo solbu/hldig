@@ -1,3 +1,29 @@
+Sat Apr 24 21:08:35 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* Merge in changes from 3.1.2 (see below).
+
+	* htcommon/WordList.cc: Change valid_word to use iscntl().
+
+	* htdig/Plaintext.cc: Remove CVS Log.
+
+	* htdig/Retriever.cc: Fix ancient bug with empty excludes list.
+
+	* htlib/List.cc: Remove CVS Log, use more succinct test for
+	out-of-bounds.
+
+	* htsearch/Display.cc: Fix logic with starPatterns, only show top
+	of META description.
+
+	* htsearch/Display.h: Introduce headers needed for sort functionality.
+	
+	* installdir/htdig.conf: Add example max_doc_size attribute as
+	well as example for including start_url from a file.
+
+	* htdoc/ChangeLog, htdoc/RELEASE.html, htdoc/FAQ.html,
+	htdoc/where.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htdoc/uses.html, htdoc/contents.html, htdoc/mailarchive.html:
+	Merge in documentation updates from 3.1.2.
+
 Sat Apr 24 15:18:45 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
 	* htsearch/Display.cc (sort): Return immediately if <= 1 items to
@@ -406,6 +432,11 @@ Mon Mar  8 13:30:44 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 	* htdig/Retriever.cc (got_href): Check if the ref is for the
 	current document before adding it to the db.
 
+Mon Mar  8 01:36:38 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* htlib/DB2_db.cc: Remove errno.
+	* htlib/DB2_hash.cc: Ditto.
+
 Sun Mar  7 20:50:37 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htfuzzy/EndingsDB.cc(createDB): Use link and unlink to move,
@@ -413,11 +444,6 @@ Sun Mar  7 20:50:37 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc: Fix #ifdef
 	problems with zlib.
-	
-Mon Mar  8 01:36:38 1999  Hans-Peter Nilsson  <hp@bitrange.com>
-
-	* htlib/DB2_db.cc: Remove errno.
-	* htlib/DB2_hash.cc: Ditto.
 
 Sun Mar  7 09:39:37 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 

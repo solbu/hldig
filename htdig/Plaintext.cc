@@ -3,49 +3,13 @@
 //
 // Implementation of Plaintext
 //
-// $Log: Plaintext.cc,v $
-// Revision 1.9  1999/03/23 18:21:54  grdetil
-// Use minimum_word_length instead of hardcoded constant 2.
-//
-// Revision 1.8  1999/03/16 02:04:27  hp
-// * New attribute extra_word_characters
-// * Remove all code "everywhere". reading and caching
-//   valid_punctuation, replace with new ctype-like functions
-//   HtIsWordChar(), HtIsStrictWordChar() and HtStripPunctuation()
-//
-// Revision 1.7  1999/01/08 19:39:18  bergolth
-// bugfixes in htdig/Plaintext.cc and htlib/URL.cc
-//
-// Revision 1.6  1998/12/04 04:13:08  ghutchis
-//
-// Removed compiler warnings.
-//
-// Revision 1.5  1998/11/04 18:53:29  ghutchis
-//
-// Added patch from Vadim Chekan to change char to unsigned char to fix reading
-// Cyrillic plaintext files.
-//
-// Revision 1.4  1997/04/20 15:23:40  turtle
-// Fixed bug
-//
-// Revision 1.3  1997/03/27 00:06:05  turtle
-// Applied patch supplied by Peter Enderborg <pme@ufh.se> to fix a problem with
-// a pointer running off the end of a string.
-//
-// Revision 1.2  1997/03/24 04:33:17  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
-//
 #if RELEASE
-static char RCSid[] = "$Id: Plaintext.cc,v 1.9 1999/03/23 18:21:54 grdetil Exp $";
+static char RCSid[] = "$Id: Plaintext.cc,v 1.10 1999/04/25 01:40:32 ghutchis Exp $";
 #endif
 
 #include "Plaintext.h"
 #include "htdig.h"
-#include <htString.h>
+#include "htString.h"
 #include <ctype.h>
 #include "HtWordType.h"
 

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.72 1999/04/24 22:41:24 hp Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.73 1999/04/25 01:40:37 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -192,6 +192,7 @@ Display::display(int pageNumber)
 	    ref->DocScore(match->getScore());
 	    displayMatch(ref,currentMatch+1);
 	    numberDisplayed++;
+	    match->setRef(NULL);
 	    delete ref;
 	}
 	currentMatch++;
@@ -350,10 +351,10 @@ Display::displayMatch(DocumentRef *ref, int current)
 	    *str << ((String*) (*list)[i])->get() << "<br>\n";
 	}
 	vars.Add("DESCRIPTIONS", str);
-	String *description = new String();
-	if (list->Count())
-	    *description << ((String*) (*list)[0]);
-	vars.Add("DESCRIPTION", description);
+        String *description = new String();
+        if (list->Count())
+            *description << ((String*) (*list)[0]);
+        vars.Add("DESCRIPTION", description);
     }
 
     expandVariables(currentTemplate->getMatchTemplate());
@@ -630,7 +631,7 @@ void
 Display::setupImages()
 {
     char	*starPatterns = config["star_patterns"];
-    if (!starPatterns || !*starPatterns)
+    if (starPatterns && *starPatterns)
     {
 	//
 	// Set the StringMatch object up so that it will never match
@@ -702,7 +703,12 @@ Display::generateStars(DocumentRef *ref, int right)
 
     int		match = 0;
     int		length = 0;
-    int		status = URLimage.FindFirst(ref->DocURL(), match, length);
+    int		status;
+
+    if (URLimage.hasPattern())
+      status = URLimage.FindFirst(ref->DocURL(), match, length);
+    else
+      status = -1;
 
     if (status >= 0 && match >= 0)
     {
@@ -980,7 +986,6 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first)
     else head = ref->DocHead(); // head points to the top
 
     head_string = HtSGMLCodec::instance()->decode(head);
-
     head = head_string.get();
 
     int		which, length;
@@ -994,7 +999,7 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first)
     // If previous conditions are false and "excerpt_show_top" is set to true
     // it shows the whole head. Else, it acts as default.
 
-    if (config.Boolean("excerpt_show_top", 0) || use_meta_description )
+    if (config.Boolean("excerpt_show_top", 0) || use_meta_description)
       first = 0;
     else
       first = allWordsPattern->FindFirstWord(head, which, length);

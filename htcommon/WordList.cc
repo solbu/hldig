@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.17 1999/03/16 02:04:26 hp Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.18 1999/04/25 01:40:32 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -107,17 +107,18 @@ int WordList::valid_word(char *word)
 
     while (word && *word)
     {
-      if (HtIsStrictWordChar((unsigned char)*word))
+      if (HtIsStrictWordChar((unsigned char)*word) && !isdigit(*word))
 	{
 	    alpha = 1;
-	    break;
+	    // break;	/* Can't stop here, there may still be control chars! */
 	}
-      if (allow_numbers && isdigit(*word))
+      else if (allow_numbers && isdigit(*word))
 	{
 	  alpha = 1;
-	  break;
+	  // break;	/* Can't stop here, there may still be control chars! */
 	}
-      if (*word >= 0 && *word < ' ')
+//    if (*word >= 0 && *word < ' ')
+      else if (iscntrl(*word))
 	{
 	    control = 1;
 	    break;
