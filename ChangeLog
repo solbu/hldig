@@ -1,3 +1,10 @@
+Wed Apr 12 19:09:40 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* .version: Bump to 3.2.0b3.
+
+	* htdoc/htload.html, htdoc/htpurge.html, htdoc/htstat.html: Fix
+	typos in headers.
+
 Tue Apr 11 00:21:48 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc (setupWords): Does not apply fuzzy
