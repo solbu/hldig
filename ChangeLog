@@ -1,3 +1,8 @@
+Wed Jan 30 17:15:49 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/synonyms: Updated with the version contributed by
+	David Adams, with minor changes.  Kept old one as synonyms.original.
+
 Wed Jan 30 16:39:51 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* installdir/english.0: Changed lots more dubious uses of suffixes to
