@@ -4,6 +4,10 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.9  1998/01/05 00:59:40  turtle
+// *  Alarm was not cancelled if readHeader returned anything but OK
+// *  Use our own timegm() replacement if necessary
+//
 // Revision 1.8  1997/12/16 15:57:22  turtle
 // Added little patch by Tobias Oetiker <oetiker@ee.ethz.ch> that should
 // fix problems with timeouts.
@@ -32,7 +36,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.8 1997/12/16 15:57:22 turtle Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.9 1998/01/05 00:59:40 turtle Exp $";
 #endif
 
 #include <signal.h>
@@ -200,17 +204,7 @@ time_t
 Document::getdate(char *datestring)
 {
     String	d = datestring;
-
-    time_t	now = time(0);
-#if HAVE_LOCALTIME
-    struct tm	*tm = localtime(&now);
-#else
-    struct tm	*tm = gmtime(&now);
-#endif
-#if HAVE_TM_GMTOFF
-    tm->tm_zone = "GMT";
-    tm->tm_gmtoff = 0;
-#endif
+    struct tm   tm;
     
     //
     // Two possible time designations:
@@ -233,11 +227,21 @@ Document::getdate(char *datestring)
 	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", tm);
 	cout << buffer << " (" << tm->tm_year << ")" << endl;
     }
-#if HAVE_MKTIME
-    return mktime(tm);
+    time_t      ret;
+#if HAVE_TIMEGM
+    ret = timegm(&tm);
 #else
-    return timelocal(tm);
+    ret = mytimegm(&tm);
 #endif
+    if (debug > 2)
+    {
+        cout << "And converted to ";
+        struct tm *tm2 = gmtime(&ret);
+        char    buffer[100];
+        strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", tm2);
+        cout << buffer << endl;
+    }
+    return ret;
 }
 
 
@@ -389,20 +393,32 @@ Document::Retrieve(time_t date)
     int		timeout_interval = config.Value("timeout");
     alarm(timeout_interval);
 
+    DocStatus   returnStatus;
     switch (readHeader(c))
     {
 	case Header_ok:
+            returnStatus = Document_ok;
 	    break;
 	case Header_not_changed:
-	    return Document_not_changed;
+	    returnStatus = Document_not_changed;
+            break;
 	case Header_not_found:
-	    return Document_not_found;
+	    returnStatus = Document_not_found;
+            break;
 	case Header_redirect:
-	    return Document_redirect;
+	    returnStatus = Document_redirect;
+            break;
 	case Header_not_text:
-	    return Document_not_html;
+	    returnStatus = Document_not_html;
+            break;
 	case Header_not_authorized:
-	    return Document_not_authorized;
+	    returnStatus = Document_not_authorized;
+            break;
+    }
+    if (returnStatus != Document_ok)
+    {
+        alarm(0);
+        return returnStatus;
     }
 
     //
