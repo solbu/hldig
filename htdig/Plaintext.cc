@@ -4,6 +4,11 @@
 // Implementation of Plaintext
 //
 // $Log: Plaintext.cc,v $
+// Revision 1.5  1998/11/04 18:53:29  ghutchis
+//
+// Added patch from Vadim Chekan to change char to unsigned char to fix reading
+// Cyrillic plaintext files.
+//
 // Revision 1.4  1997/04/20 15:23:40  turtle
 // Fixed bug
 //
@@ -19,7 +24,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Plaintext.cc,v 1.4 1997/04/20 15:23:40 turtle Exp $";
+static char RCSid[] = "$Id: Plaintext.cc,v 1.5 1998/11/04 18:53:29 ghutchis Exp $";
 #endif
 
 #include "Plaintext.h"
@@ -53,8 +58,8 @@ Plaintext::parse(Retriever &retriever, URL &)
     if (contents == 0 || contents->length() == 0)
 	return;
 
-    char	*position = contents->get();
-    char	*start = position;
+    unsigned char	*position = contents->get();
+    unsigned char	*start = position;
     int		offset = 0;
     int		in_space = 0;
     String	word;
