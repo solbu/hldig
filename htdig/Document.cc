@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34.2.5 1999/09/01 20:04:00 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34.2.6 1999/09/01 20:05:59 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -480,14 +480,18 @@ Document::readHeader(Connection &c)
 	    inHeader = 0;
 	else
 	{
+	    char	*token = line.get();
+	    while (*token && !isspace(*token))
+		token++;
+	    while (*token && isspace(*token))
+		token++;
 	    if (strncmp(line, "HTTP/", 5) == 0)
 	    {
 		//
 		// Found the status line.  This will determine if we
 		// continue or not
 		//
-		strtok(line, " ");
-		char	*status = strtok(0, " ");
+		char	*status = strtok(token, " ");
 		if (status && strcmp(status, "200") == 0)
 		{
 		    returnStatus = Header_ok;
@@ -510,22 +514,19 @@ Document::readHeader(Connection &c)
 		    returnStatus = Header_not_authorized;
 		}
 	    }
-	    else if (modtime == 0 
+	    else if (modtime == 0 && *token
 		     && mystrncasecmp(line, "last-modified:", 14) == 0)
 	    {
-		strtok(line, " \t");
-		modtime = getdate(strtok(0, "\n\t"));
+		modtime = getdate(strtok(token, "\n\t"));
 	    }
-	    else if (contentLength == -1 
+	    else if (contentLength == -1 && *token
 		     && mystrncasecmp(line, "content-length:", 15) == 0)
 	    {
-		strtok(line, " \t");
-		contentLength = atoi(strtok(0, "\n\t"));
+		contentLength = atoi(strtok(token, "\n\t"));
 	    }
-	    else if (mystrncasecmp(line, "content-type:", 13) == 0)
+	    else if (*token && mystrncasecmp(line, "content-type:", 13) == 0)
 	    {
-		strtok(line, " \t");
-		char	*token = strtok(0, "\n\t");
+		token = strtok(token, "\n\t");
 				
 		if ((returnStatus == Header_not_found ||
 			returnStatus == Header_ok) &&
@@ -539,8 +540,7 @@ Document::readHeader(Connection &c)
 	    }
 	    else if (mystrncasecmp(line, "location:", 9) == 0)
 	    {
-		strtok(line, " \t");
-		redirected_to = strtok(0, "\r\n \t");
+		redirected_to = strtok(token, "\r\n \t");
 	    }
 	}
     }

@@ -1,4 +1,7 @@
-Wed Sep  1 14:59:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:01:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc(readHeader): Fixed a few problems with header
+	parsing, including PR#535 & PR#557.
 
 	* htdig/Document.cc(getdate): This should help with PR#81 & PR#472,
 	where strftime() would crash on some systems.  Idea submitted
