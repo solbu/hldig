@@ -1,5 +1,9 @@
 Sun May 18 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
+	* db/db.h.in: Declare variable introduced in  db/mp_cmpr.c  patch
+
+Sun May 18 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
 	* db/mp.h, db/mp_{alloc,bh,cmpr,region}.c,
 	* htword/WordDB.cc, htdig/htdig.cc:
 	  Avoid infinite loop if memp_alloc  has only dirty,

@@ -8420,7 +8420,7 @@ Saiva
 Sakai
 Sakharov
 Sakyamuni
-Sal/Y
+Sal
 Salem
 Salerno
 Salesian
@@ -11829,7 +11829,8 @@ afrikaans
 afrit
 afro
 afrormosia
-aft/RZ
+aft
+after/S
 afterbirth
 afterbody
 afterbrain
@@ -26578,7 +26579,7 @@ cupsful
 cupular
 cupulate
 cupule
-cur/SY
+cur/S
 curability/I
 curable/IP
 curably/I
@@ -33799,7 +33800,7 @@ evaporitic
 evapotranspiration
 evasion/S
 evasive/PY
-eve/RS
+eve/S
 evection
 even/DGJPRSY
 evenfall
@@ -33872,8 +33873,9 @@ evolve/DGS
 evolvement
 evulsion/S
 evzone
-ewe/MRS
+ewe/MS
 ewen
+ewer
 ex
 exacerbate/DGNSX
 exact/DGPRSY
@@ -38843,7 +38845,7 @@ gossipry
 gossipy
 gossoon
 goster
-got/IU
+got/U
 gotama
 gotcha/MS
 goth/MS
@@ -41190,7 +41192,7 @@ hiccupping
 hick/S
 hickok
 hickory/S
-hid/DGR
+hid
 hidalgo
 hidden
 hiddenite
@@ -43362,7 +43364,7 @@ immurement
 immutability
 immutable/P
 immutably
-imp/MSY
+imp/MS
 impact/DGRSV
 impaction/S
 impactionise/S
@@ -44314,6 +44316,7 @@ ingleborough
 inglenook
 ingoing
 ingolstadt
+ingot/S
 ingraft
 ingrain
 ingrained/Y
@@ -44430,7 +44433,7 @@ inmate/MS
 inmesh
 inmigrant
 inmost
-inn/GJS
+inn/S
 innard
 innards
 innate/PY
@@ -44441,6 +44444,7 @@ innerspring
 innervate/DGNS
 innervational
 innerve
+inning/S
 inniskilling
 innkeeper/MS
 innocence
@@ -45387,7 +45391,7 @@ iodothyronines
 iodotyrosines
 iodous
 iolite
-ion/IUMS
+ion/MS
 iona
 ione
 ionic
@@ -47522,13 +47526,13 @@ laryngoscope
 laryngoscopic
 laryngotomy
 larynx/S
-las/G
+las
 lasagna
 lasagne
 lascar
 lascaux
 lascivious/PY
-lase
+lase/G
 laser/MS
 lash/DGJRS
 lashed/U
@@ -47826,7 +47830,7 @@ led
 lederhosen
 ledge/RSZ
 ledgy
-lee/RSZ
+lee/SZ
 leeboard
 leech/MS
 leeds
@@ -47918,7 +47922,7 @@ legwork
 lehmann
 lehmbruck
 lehr
-lei/H
+lei
 leiria
 leishmaniasis
 leister
@@ -48060,7 +48064,7 @@ leukemoid
 leukocyte
 leukocytic
 leuven
-lev/N
+lev/S
 levalloisian
 levanter
 levator/S
@@ -48079,6 +48083,7 @@ leveller/S
 levellest
 levelling
 levelling/U
+leven/DS
 lever/DGMS
 leverage/DGS
 leveret
@@ -49187,7 +49192,7 @@ lukewarm/PY
 lull/DS
 lullaby
 lulu
-lum/X
+lum
 lumbago
 lumbar
 lumbarisation/MS
@@ -49201,7 +49206,7 @@ lumberyard
 lumbian
 lumbricalis
 lumbricoid
-lumen
+lumen/S
 lumenal
 lumiere
 lumina
@@ -51386,7 +51391,7 @@ mestee
 mester
 mestizo
 mestranol
-met/DGRSZ
+met/SZ
 meta
 metabole
 metabolic
@@ -55674,7 +55679,7 @@ noordbrabant
 noose/GS
 nopal
 nope
-nor/H
+nor
 noradrenalin
 noradrenaline
 nord
@@ -64521,7 +64526,7 @@ prussiate
 prussic
 prut
 prutot
-pry/DGRST
+pry/DGRS
 pryer
 prying/Y
 prynne
@@ -65036,7 +65041,7 @@ pustulant
 pustular
 pustulate/DN
 pustule/S
-put/IS
+put/S
 putains
 putamen
 putas
@@ -65614,7 +65619,7 @@ quizzicality
 quizzing
 qum
 qumran
-quo/H
+quo
 quod
 quodlibet
 quoin
@@ -65629,6 +65634,7 @@ quotable
 quotation/MS
 quote/DGS
 quoted/U
+quoth
 quotha
 quotidian
 quotient/S
@@ -67980,7 +67986,7 @@ revisor
 revisory
 revisualise
 revisualize
-revitalisation
+revitalisation/MS
 revitalise/DGRSZ
 revitalization
 revitalize/DGRSZ
@@ -68259,7 +68265,7 @@ ricochet/DGS
 ricotta
 rictal
 rictus
-rid/DGJRSZ
+rid/SZ
 ridable
 riddance
 ridded
@@ -68576,9 +68582,10 @@ rogue/GMS
 rogueing
 roguery
 roguish/PY
-roi/Y
+roi
 roic
-roil/G
+roil/DGS
+roily
 roister/DGR
 roisterous
 rolamite
@@ -68931,7 +68938,7 @@ rudimental
 rudimentarily
 rudimentary/P
 rudish
-rue/GS
+rue/DGS
 rueful/P
 ruefully
 rufescent
@@ -72173,7 +72180,7 @@ shutting
 shuttle/DGS
 shuttlecock/S
 shuz
-shy/DGRSTY
+shy/DGPRSY
 shyer
 shyes
 shyest
@@ -72504,7 +72511,7 @@ simulator/MS
 simulcast
 simultaneity
 simultaneous/PY
-sin/AMS
+sin/MS
 sinan
 sinanthropus
 sinapism
@@ -73082,7 +73089,7 @@ slush
 slushy/PR
 slut
 sluttish/PY
-sly/RTY
+sly/Y
 slyboots
 slyer
 slyest
@@ -76596,8 +76603,7 @@ suds/GR
 sudsless
 sudsy/R
 sue/DGRS
-sued/DG
-suede
+suede/DG
 suet
 suetonius
 suey
@@ -76845,7 +76851,7 @@ sunup
 sunward/S
 sunwise
 suo
-sup/R
+sup/S
 super/DG
 superable/P
 superably
@@ -78564,7 +78570,7 @@ teilhard
 tejo
 tektite/S
 tektitic
-tel/Y
+tel
 tela
 telaesthesia
 telaesthetic
@@ -85253,9 +85259,7 @@ vita
 vitaceous
 vitae
 vital/SY
-vitalisation's/A
 vitalisation/MS
-vitalisations/A
 vitalise/DGJRSZ
 vitalising/MSY
 vitalism
@@ -86290,7 +86294,7 @@ whispery
 whist
 whistle/DGRSZ
 whistleable
-whit/DGNRTX
+whit/DGNRX
 whitby
 white/DGPRSTY
 whitebait
@@ -86644,7 +86648,7 @@ witchlike
 witchy
 wite
 witenagemot
-with/RZ
+with
 withal
 withdraw/GRS
 withdrawable
@@ -86734,7 +86738,7 @@ womanly/P
 womanpower
 womb/DMS
 wombat/MS
-women/MS
+women/M
 womenfolk/S
 womenkind
 womera
@@ -86753,7 +86757,7 @@ wonsan
 wont/DG
 wonted/PUY
 wonton
-woo/DGRSY
+woo/DGRS
 wood/DGMNS
 woodberry
 woodborer
