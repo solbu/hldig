@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.h,v 1.1.2.3 2000/01/10 17:09:37 bosc Exp $
+// $Id: WordDBPage.h,v 1.1.2.4 2000/01/11 18:48:47 bosc Exp $
 //
 //
 // Access to Berkeley DB internal
@@ -284,7 +284,7 @@ class WordDBPage
 
     int pgsz;
 
-    void show(int redo=0);
+    void show();
 
     int TestCompress(int debuglevel);
     int Compare(WordDBPage &other);
@@ -306,7 +306,7 @@ class WordDBPage
     int  Uncompress_main(Compressor *pin);
     void Uncompress_vals_chaged_flags(Compressor &in,unsigned int **pcflags,int *pn);
     int  Uncompress_header(Compressor &in);
-    void Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_sizes,int nnums,byte *rworddiffs,int nrworddiffs);
+    void Uncompress_rebuild(unsigned int **rnums,int *rnum_sizes,int nnums,byte *rworddiffs,int nrworddiffs);
     void Uncompress_show_rebuild(unsigned int **rnums,int *rnum_sizes,int nnums,byte *rworddiffs,int nrworddiffs);
 
     // the following functions are use to compress/uncompress

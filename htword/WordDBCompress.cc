@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.cc,v 1.1.2.14 2000/01/06 11:31:18 bosc Exp $
+// $Id: WordDBCompress.cc,v 1.1.2.15 2000/01/11 18:48:47 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -89,7 +89,7 @@ WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **
     if(debug>2)
     {
 	printf("###########################  WordDBCompress::Compress:%5d  #################################################\n",word_debug_cmprcount);
-	pg.show(3);
+	pg.show();
 	printf("~~~~~~~~~~~~~\n");
     }
 

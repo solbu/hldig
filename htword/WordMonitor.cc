@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordMonitor.cc,v 1.1.2.5 2000/01/11 18:37:34 bosc Exp $
+// $Id: WordMonitor.cc,v 1.1.2.6 2000/01/11 18:48:47 bosc Exp $
 //
 #include<stdlib.h>
 
@@ -255,7 +255,7 @@ WordMonitor::ProcessCommand(const String& command)
     if(cfields[0]==(String)"monitor_period")
     {
 	if(n!=2){error="bad number of args";}
-	periodic.change_period(atof(cfields[1]));
+	periodic.change_period(atof((char *)cfields[1]));
     }
     else
     if(cfields[0]==(String)"display")
@@ -294,7 +294,7 @@ WordMonitor::ProcessCommand(const String& command)
     return OK;
 }
 
-WordMonitorInput::WordMonitorInput(const Configuration &config, CommandProcessor *ncommandProcessor):
+WordMonitorInput::WordMonitorInput(const Configuration &, CommandProcessor *ncommandProcessor):
     periodic(2)
 {
     commandProcessor=ncommandProcessor;

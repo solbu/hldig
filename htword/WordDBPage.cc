@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.cc,v 1.1.2.3 2000/01/10 17:09:37 bosc Exp $
+// $Id: WordDBPage.cc,v 1.1.2.4 2000/01/11 18:48:47 bosc Exp $
 //
 
 #include"WordDBPage.h"
@@ -125,7 +125,7 @@ static int first_diff(const String &s1,const String &s2)
 
 // ******* Uncompress Compressor into this page
 int 
-WordDBPage::Uncompress(Compressor *pin,int  ndebug, DB_CMPR_INFO *cmprInfo/*=NULL*/)
+WordDBPage::Uncompress(Compressor *pin,int  ndebug, DB_CMPR_INFO */*=NULL*/)
 {
     debug=ndebug;
     if(debug>1){verbose=1;}
@@ -220,7 +220,7 @@ WordDBPage::Uncompress_main(Compressor *pin)
 
 
 	//  ********* rebuild original page
-	Uncompress_rebuild(in,rnums,rnum_sizes,nnums,rworddiffs,nrworddiffs);
+	Uncompress_rebuild(rnums,rnum_sizes,nnums,rworddiffs,nrworddiffs);
 	Uncompress_show_rebuild(rnums,rnum_sizes,nnums,rworddiffs,nrworddiffs);
 
 
@@ -288,7 +288,7 @@ WordDBPage::Uncompress_header(Compressor &in)
     return OK;
 }
 void 
-WordDBPage::Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_sizes,int nnums0,byte *rworddiffs,int nrworddiffs)
+WordDBPage::Uncompress_rebuild(unsigned int **rnums,int *rnum_sizes,int nnums0,byte *rworddiffs,int nrworddiffs)
 {
     int irwordiffs=0;
     int nfields=WordKey::NFields();
@@ -550,7 +550,7 @@ WordDBPage::Compress_main(Compressor &out)
 }
 
 void 
-WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int nnums0,HtVector_byte &worddiffs)
+WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int ,HtVector_byte &worddiffs)
 {
     WordDBKey pkey;
 
@@ -895,10 +895,9 @@ WordDBPage::Compare(WordDBPage &other)
 // redo=1 -> oops, dont show!
 // redo=2 -> 
 void
-WordDBPage::show(int redo)
+WordDBPage::show()
 {
   int i,j,dd,l;
-//    if(redo==1){silent=1;}
 
   printf("************************************\n");
   printf("************************************\n");
