@@ -1,6 +1,8 @@
-Wed Dec  1 15:14:36 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Dec  1 16:21:40 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/conv_doc.pl: Added a sample external converter script.
+	* htdoc/THANKS.html: A couple more additions.
+	* htdoc/ChangeLog: Update with latest version.
 
 Tue Nov 30 15:02:25 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
@@ -8,7 +10,6 @@ Tue Nov 30 15:02:25 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	valid_extensions list handling.
 	* contrib/htdig-3.1.4.spec, contrib/htdig-3.1.4-conf.patch:
 	Added sample RPM spec file and config patch for it.
-	* htdoc/ChangeLog: Update with latest version.
 
 Tue Nov 30 14:01:51 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
