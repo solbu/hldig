@@ -5,6 +5,13 @@
 # Replaced:     matching patterns. they match words starting or ending with ()[
 ]'`;:?.,! now, not when in between!
 # Gone:         the variable $line is gone (using $_ now)
+#
+# 1998/12/11
+# Added:        catdoc test (is catdoc runnable?)    <carl@dpiwe.tas.gov.au>
+# Changed:      push line semi-colomn wrong.         <carl@dpiwe.tas.gov.au>
+# Changed:      matching works for end of lines now  <carl@dpiwe.tas.gov.au>
+# Added:        option to rigorously delete all punctuation <carl@dpiwe.tas.gov
+.au>
 #########################################
 #
 # set this to your catdoc proggie
@@ -26,17 +33,27 @@ $calc = 0;
 #       print STDERR "$ARGV[$x]\n";
 #}
 
-open(CAT, "$CATDOC -a -w $ARGV[0] |") || die "Hmmm. Something is wrong.\n";
+#
+# catdoc present
+die "Hmm. catdoc is absent or unwilling to execute.\n" unless -x $CATDOC;
+
+#
+# open it
+open(CAT, "$CATDOC -a -w $ARGV[0] |") || die "Hmmm. catdoc doesn't want to be o
+pened using pipe.\n";
 while (<CAT>) {
-        s/[\(\)\[\]\\\^\;\:\"\'\`\.\,\?\!]\s|\s[\(\)\[\]\\\^\;\:\"\'\`\.\,\?\!]
-|^[\(\)\[\]\\\^\;\:\"\'\`\.\,\?\!]/ /g;  # replace reading-chars with space (on
-ly at end or begin of word)
-        @fields = split;                        # split up line
-        next if (@fields == 0);                 # skip if no fields
+        s/\s[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]|[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?
+!\*]\s|^[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]|[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]
+$/ /g;    # replace reading-chars with space (only at end or begin of word)
+#       s/[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]/ /g;      # rigorously replace al
+l by <carl@dpiwe.tas.gov.au>
+        @fields = split;                                # split up line
+        next if (@fields == 0);                         # skip if no fields (do
+es it speed up?)
         for ($x=0; $x<@fields; $x++) {                  # check each field if s
 tring length > 3
                 if (length($fields[$x]) > 3) {
-                        push @allwords, $fields[$x]     # add to list;
+                        push @allwords, $fields[$x];    # add to list
                 }
         }
 }
@@ -73,3 +90,4 @@ for ($x=0; $x<@allwords; $x++) {
 
 $calc=@allwords;
 print STDERR "# of words indexed: $calc\n";
+
