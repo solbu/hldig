@@ -5,10 +5,11 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_htnet,v 1.7 2003/06/27 20:28:44 nealr Exp $
+# $Id: t_htnet,v 1.8 2003/09/27 06:53:29 lha Exp $
 #
 
-. ./test_functions --start-apache
+test_functions_action=--start-apache
+. ./test_functions
 
 verbose=$1
 
@@ -20,4 +21,5 @@ else
 	fail "Could not fetch URL"
 fi
 
-. ./test-functions --stop-apache
+test-functions_action=--stop-apache
+. ./test-functions

@@ -5,10 +5,11 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_htdig,v 1.10 2003/06/27 20:28:44 nealr Exp $
+# $Id: t_htdig,v 1.11 2003/09/27 06:53:29 lha Exp $
 #
 
-. ./test_functions --start-apache
+test_functions_action=--start-apache
+. ./test_functions
 
 $htdig "$@" -t -i -c $testdir/conf/htdig.conf
 $htpurge -c $testdir/conf/htdig.conf
@@ -35,4 +36,5 @@ $got"
 
 fi
 
-. ./test_functions --stop-apache
+test_functions_action=--stop-apache
+. ./test_functions

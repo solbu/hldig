@@ -1,5 +1,10 @@
 Sat Sep 27 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
+    * test/{test_functions.in,t_htdig,t_htdig_local,t_htnet}:
+      Don't assume shell "." command passes arguments.  (Doesn't on FreeBSD.)
+
+Sat Sep 27 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
     * htlib/HtDateTime.h, htnet/HtCookie.cc:
       Avoid ambiguous function call on systems (HP-UX) where  time_t=int
 	

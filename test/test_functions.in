@@ -10,10 +10,10 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: test_functions.in,v 1.12 2003/07/05 15:45:46 lha Exp $
+# $Id: test_functions.in,v 1.13 2003/09/27 06:53:29 lha Exp $
 #
 
-if [ "$1" == --stop-apache ]
+if [ "$test_functions_action" = --stop-apache ]
 then
     if [ -n "$httpd"  -a  -f logs/httpd.pid ]
     then
@@ -46,7 +46,7 @@ fi
 httpd=@APACHE@
 
 # if apache requested, either start it or warn it was not configured.
-if [ "$1" == --start-apache ]
+if [ "$test_functions_action" = --start-apache ]
 then
 
     if [ -z "$httpd" ]
