@@ -3,7 +3,7 @@
 //
 //: This is a class which defines the interface to a generic, simple database.
 //
-// $Id: Database.h,v 1.7 1999/07/19 01:08:08 ghutchis Exp $
+// $Id: Database.h,v 1.8 1999/08/28 21:12:27 ghutchis Exp $
 //
 //
 //
@@ -61,7 +61,7 @@ public:
 
     virtual void	Start_Get() = 0;
     virtual char	*Get_Next() = 0;
-    virtual char	*Get_Item() = 0;
+    virtual char	*Get_Next(String &data) = 0;
     virtual void	Start_Seq(char *str) = 0;
     virtual char	*Get_Next_Seq() = 0;
 };

@@ -1,27 +1,13 @@
 //
 // DB2_db.h
 //
-// $Id: DB2_db.h,v 1.3 1999/07/19 01:08:08 ghutchis Exp $
-//
-// $Log: DB2_db.h,v $
-// Revision 1.3  1999/07/19 01:08:08  ghutchis
-// Add new method Get_Item to access the data of the current item when using
-// Get_Next() or Get_Next_Seq().
-//
-// Revision 1.2  1999/01/23 01:25:02  hp
-// Fixed _some_ missing const qualifiers on common methods (requiring temps)
-//
-// Revision 1.1  1998/06/21 23:20:06  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
+// $Id: DB2_db.h,v 1.4 1999/08/28 21:12:27 ghutchis Exp $
 //
 //
 #ifndef _DB2_db_h_
 #define _DB2_db_h_
 
-#include <Database.h>
+#include "Database.h"
 #include <db.h>
 #include <fcntl.h>
 
@@ -44,7 +30,7 @@ public:
 	
     virtual void	Start_Get();
     virtual char	*Get_Next();
-    virtual char	*Get_Item();
+    virtual char	*Get_Next(String &item);
     virtual void	Start_Seq(char *str);
     virtual char	*Get_Next_Seq();
 	
@@ -53,6 +39,7 @@ private:
     DB			*dbp;		// database
     DBC			*dbcp;		// cursor
     DBT			skey;
+    DBT			data;
     DB_ENV		*dbenv;		// database enviroment
     DB_INFO		dbinfo;
 

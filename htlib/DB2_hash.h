@@ -1,13 +1,13 @@
 //
 // DB2_hash.h
 //
-// $Id: DB2_hash.h,v 1.2 1999/07/19 01:08:08 ghutchis Exp $
+// $Id: DB2_hash.h,v 1.3 1999/08/28 21:12:27 ghutchis Exp $
 //
 //
 #ifndef _DB2_hash_h_
 #define _DB2_hash_h_
 
-#include <Database.h>
+#include "Database.h"
 #include <db.h>
 #include <fcntl.h>
 
@@ -30,7 +30,7 @@ public:
 	
     virtual void	Start_Get();
     virtual char	*Get_Next();
-    virtual char	*Get_Item();
+    virtual char	*Get_Next(String &item);
     virtual void	Start_Seq(char *str);
     virtual char	*Get_Next_Seq();
 	
@@ -39,6 +39,7 @@ private:
     DB			*dbp;		// database
     DBC			*dbcp;		// cursor
     DBT			skey;
+    DBT			data;
     DB_ENV		*dbenv;		// database enviroment
     DB_INFO		dbinfo;
 

@@ -4,7 +4,7 @@
 // Implementation of DB2_db
 //
 #if RELEASE
-static char RCSid[] = "$Id: DB2_db.cc,v 1.11 1999/07/19 01:08:08 ghutchis Exp $";
+static char RCSid[] = "$Id: DB2_db.cc,v 1.12 1999/08/28 21:12:27 ghutchis Exp $";
 #endif
 
 #include "DB2_db.h"
@@ -152,13 +152,11 @@ DB2_db::Close()
 void
 DB2_db::Start_Get()
 {
-    DBT	nextkey;
-
     //
     // skey and nextkey are just dummies
     //
-    memset(&nextkey, 0, sizeof(DBT));
     memset(&skey, 0, sizeof(DBT));
+    memset(&data, 0, sizeof(DBT));
 
 //    skey.data = "";
 //    skey.size = 0;
@@ -168,7 +166,7 @@ DB2_db::Start_Get()
 	//
 	// Set the cursor to the first position.
 	//
-        seqrc = dbcp->c_get(dbcp, &skey, &nextkey, DB_FIRST);
+        seqrc = dbcp->c_get(dbcp, &skey, &data, DB_FIRST);
 	seqerr = seqrc;
     }
 }
@@ -183,9 +181,6 @@ DB2_db::Get_Next()
     //
     // Looks like get Get_Next() and Get_Next_Seq() are pretty much the same...
     //
-    DBT	nextkey;
-	
-    memset(&nextkey, 0, sizeof(DBT));
 
     if (isOpen && !seqrc)
     {
@@ -193,7 +188,7 @@ DB2_db::Get_Next()
 	lkey.append((char *)skey.data, skey.size);
 	// DON'T forget to set the flags to 0!
 	skey.flags = 0;
-        seqrc = dbcp->c_get(dbcp, &skey, &nextkey, DB_NEXT);
+        seqrc = dbcp->c_get(dbcp, &skey, &data, DB_NEXT);
 	seqerr = seqrc;
 	return lkey.get();
     }
@@ -202,25 +197,26 @@ DB2_db::Get_Next()
 }
 
 //*****************************************************************************
-// char *DB2_db::Get_Item()
+// char *DB2_db::Get_Next(String &item)
 //
 char *
-DB2_db::Get_Item()
+DB2_db::Get_Next(String &item)
 {
-    // This uses the cursor to get the current item
-    DBT	data;
-	
-    memset(&data, 0, sizeof(DBT));
 
     if (isOpen && !seqrc)
     {
-        String returnData = 0;
+	lkey = 0;
+	lkey.append((char *)skey.data, skey.size);
+
+	item = 0;
+	item.append((char *)data.data, data.size);
+
 	// DON'T forget to set the flags to 0!
 	skey.flags = 0;
-        seqrc = dbcp->c_get(dbcp, &skey, &data, DB_CURRENT);
+        seqrc = dbcp->c_get(dbcp, &skey, &data, DB_NEXT);
 	seqerr = seqrc;
-        returnData.append((char *)data.data, data.size);
-	return returnData.get();
+
+	return lkey.get();
     }
     else
 	return 0;
@@ -232,10 +228,9 @@ DB2_db::Get_Item()
 void
 DB2_db::Start_Seq(char *str)
 {
-    DBT	nextkey;
 
     memset(&skey, 0, sizeof(DBT));
-    memset(&nextkey, 0, sizeof(DBT));
+    memset(&data, 0, sizeof(DBT));
 
     skey.data = str;
     skey.size = strlen(str);
@@ -249,7 +244,7 @@ DB2_db::Start_Seq(char *str)
 	// anything. Setting to DB_SET_RANGE will still find the `first'
 	// word after boo* (which is book).
 	//
-        seqrc = dbcp->c_get(dbcp, &skey, &nextkey, DB_SET_RANGE);
+        seqrc = dbcp->c_get(dbcp, &skey, &data, DB_SET_RANGE);
 	seqerr = seqrc;
     }
 }
@@ -261,16 +256,12 @@ DB2_db::Start_Seq(char *str)
 char *
 DB2_db::Get_Next_Seq()
 {
-    DBT	nextkey;
-	
-    memset(&nextkey, 0, sizeof(DBT));
-
     if (isOpen && !seqrc)
     {
 	lkey = 0;
 	lkey.append((char *)skey.data, skey.size);
 	skey.flags = 0;
-        seqrc = dbcp->c_get(dbcp, &skey, &nextkey, DB_NEXT);
+        seqrc = dbcp->c_get(dbcp, &skey, &data, DB_NEXT);
 	seqerr = seqrc;
 	return lkey.get();
     }
