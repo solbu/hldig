@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.16 1999/11/24 04:12:17 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.17 1999/11/24 05:12:39 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -654,8 +654,8 @@ Display::displayParsedFile(char *filename)
 void
 Display::setupTemplates()
 {
-    String templatePatterns = config["template_patterns"];
-    if (!templatePatterns.empty())
+    char	*templatePatterns = config["template_patterns"];
+    if (templatePatterns && *templatePatterns)
     {
 	//
 	// The templatePatterns string will have pairs of values.  The first
