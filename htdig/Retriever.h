@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.18.2.2 2000/01/14 00:57:15 ghutchis Exp $
+// $Id: Retriever.h,v 1.18.2.3 2000/01/20 03:59:20 ghutchis Exp $
 //
 
 #ifndef _Retriever_h_
@@ -140,7 +140,6 @@ private:
     // Helper routines
     //
     int			Need2Get(char *url);
-    DocumentRef	*	GetRef(char *url);
     int			IsValidURL(char *url);
     void		RetrievedDocument(Document &, char *url, DocumentRef *ref);
     void		parse_url(URLRef &urlRef);

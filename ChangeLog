@@ -11,6 +11,8 @@ Wed Jan 19 21:49:57 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	documents with various errors as something other than
 	Reference_normal, as appropriate--these probably should be pruned.
 
+	* htdig/Retriever.h: Get rid of GetRef() method--it's only used once!
+	
 	* htsearch/Display.cc (display): Don't show DocumentRefs with
 	states other than Reference_normal--these documents have various
 	errors.
