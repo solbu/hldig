@@ -1,3 +1,31 @@
+Fri Dec 11 10:40:48 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc: Added additional debugging info on the
+	reason for excluding a URL, based on a patch by Benoit Majeau
+	<Benoit.Majeau@nrc.ca>.
+
+	* htmerge/words.cc: Fixed a bug where pointer, rather than strings
+	were assigned. Silly references...
+
+	* htsearch/Display.cc, htsearch/Display.h: Added patch from Gilles
+	to allow CGI environment variables in templates.
+	
+Thu Dec 10 22:28:44 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc, htdig/Server.cc, htdig/Server.h:
+	Changed support for server_wait_time to use delay() method in
+	Server. Delay is from beginning of last connection to this
+	one. Currently this also delays local digging, which may not be ideal.
+
+	* htcommon/defaults.cc: Added option for server_max_docs as a
+	limit on the number of docs returned from a server.
+
+	* contrib/htparsedoc/parse_word_doc.pl: New version from
+	Jesse. New code speedups and better matching of punctuation.
+
+	* htdig/Document.cc: Check http_proxy_exclude to see if it's
+	empty. If so, use the proxy.
+	
 Mon Dec  7 21:46:34 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc: Fix thinko with multiple excludes and
