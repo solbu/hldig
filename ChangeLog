@@ -1,3 +1,8 @@
+Mon Jan 15 17:12:00 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalTransport.cc (Request): Fix up handling of fork/exec
+	and command arguments, add wait() call.
+
 Wed Jan 10 19:23:36 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* installdir/rundig: Fix -a handling to move db.words.db.work_weakcmpr

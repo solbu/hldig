@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalTransport.cc,v 1.1.2.5 2000/12/10 21:44:08 ghutchis Exp $
+// $Id: ExternalTransport.cc,v 1.1.2.6 2001/01/15 23:27:41 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -26,6 +26,13 @@
 
 #include <ctype.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#ifdef HAVE_WAIT_H
+#include <wait.h>
+#elif HAVE_SYS_WAIT_H
+#include <sys/wait.h>
+#endif
 
 static Dictionary	*handlers = 0;
 static Dictionary	*toTypes = 0;
@@ -110,44 +117,72 @@ void ExternalTransport::SetConnection (URL *u)
 Transport::DocStatus ExternalTransport::Request()
 {
     //
-    // Start the external handler, passing the URL quoted on the command-line
+    // Start the external handler, passing the protocol, URL and config file
+    // as command arguments
     //
-    String	command = _Handler;
-    command << ' ' << _Protocol << " \"" << _URL.get() << "\" " << configFile;
+    StringList	hargs(_Handler);
+    char   **handlargs = new char * [hargs.Count() + 5];
+    int    argi;
+    for (argi = 0; argi < hargs.Count(); argi++)
+	handlargs[argi] = (char *)hargs[argi];
+    handlargs[argi++] = _Protocol.get();
+    handlargs[argi++] = (char *)_URL.get().get();
+    handlargs[argi++] = configFile.get();
+    handlargs[argi++] = 0;
 
     int    stdout_pipe[2];
-    int	   fork_result;
+    int	   fork_result = -1;
+    int	   fork_try;
 
-    if( (pipe(stdout_pipe) == 0) )
-      {
-	fork_result = fork(); // Fork so we can execute in the child process
-	if(fork_result == -1)
-	  {
-	    cerr << "Fork Failure in ExternalTransport" << endl;
-	    exit(EXIT_FAILURE); // Do we really want to exit?
-	  }
-	else if(fork_result == 0) // Child process
-	  {
-	    close(STDIN_FILENO); // Close STDIN
-	    close(STDERR_FILENO); // Close STDERR
-	    close(STDOUT_FILENO); // Close then handle STDOUT
-	    dup(stdout_pipe[1]);
-	    close(stdout_pipe[0]);
-	    close(stdout_pipe[1]);
+    if (pipe(stdout_pipe) == -1)
+    {
+      if (debug)
+	cerr << "External transport error: Can't create pipe!" << endl;
+      delete [] handlargs;
+      return GetDocumentStatus(_Response);
+    }
 
-	    // Call External Parser
-	    execl(_Handler.get(), _Handler.get(), _Protocol.get(),
-		  _URL.get().get(), configFile.get(), 0);
+    for (fork_try = 4; --fork_try >= 0;)
+    {
+      fork_result = fork(); // Fork so we can execute in the child process
+      if (fork_result != -1)
+	break;
+      if (fork_try)
+	sleep(3);
+    }
+    if (fork_result == -1)
+    {
+      if (debug)
+	cerr << "Fork Failure in ExternalTransport" << endl;
+      delete [] handlargs;
+      return GetDocumentStatus(_Response);
+    }
 
-	    // If we got here, then something is wrong...
-	    // (ExternalParser should have taken over
-	    exit(EXIT_FAILURE);
-	  }
+    if (fork_result == 0) // Child process
+    {
+	close(STDOUT_FILENO); // Close handle STDOUT to replace with pipe
+	dup(stdout_pipe[1]);
+	close(stdout_pipe[0]);
+	close(stdout_pipe[1]);
+	close(STDIN_FILENO); // Close STDIN to replace with file
+	open((char*)path, O_RDONLY);
 
-	else // Parent Process
-	  {
-	    close(stdout_pipe[1]); // Close STDOUT for writing
-	    FILE *input = fdopen(stdout_pipe[0], "r");
+	// Call External Transport Handler
+	execv(handlargs[0], handlargs);
+
+	exit(EXIT_FAILURE);
+    }
+
+    // Parent Process
+    delete [] handlargs;
+    close(stdout_pipe[1]); // Close STDOUT for writing
+    FILE *input = fdopen(stdout_pipe[0], "r");
+    if (input == NULL)
+    {
+      if (debug)
+	cerr << "Fdopen Failure in ExternalTransport" << endl;
+      return GetDocumentStatus(_Response);
+    }
     
     // Set up a response for this request
     _Response->Reset();
@@ -244,8 +279,10 @@ Transport::DocStatus ExternalTransport::Request()
     _Response->_document_length = _Response->_contents.length();
     fclose(input);
     // close(stdout_pipe[0]); // This is closed for us by the fclose()
-    } // fork_result
-    } // create pipes
+
+    int rpid, status;
+    while ((rpid = wait(&status)) != fork_result && rpid != -1)
+	;
 
     return GetDocumentStatus(_Response);
 }

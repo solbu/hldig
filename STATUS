@@ -6,7 +6,7 @@ RELEASES:
    3.2.0b1: Released:   4 Feb 2000.
 
 SHOWSTOPPERS:
-* ExternalTransport needs checking similar to ExternalParser.
+* I don't know, the HtRegex bug below seems serious enough...
 
 KNOWN BUGS:
 * HtRegex seems to bail out with patterns that are too long, at least
@@ -49,6 +49,7 @@ TESTING:
 * Major revisions to ExternalParser.cc, including fork/exec instead of popen,
   argument handling for parser/converter, allowing binary output from an
   external converter.
+* ExternalTransport needs testing of changes similar to ExternalParser.
 
 DOCUMENTATION:
 * List of supported platforms/compilers is ancient.
