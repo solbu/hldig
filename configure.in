@@ -100,6 +100,7 @@ AC_PATH_PROG(PERL, perl, /usr/bin/perl)
 AC_PATH_PROG(FIND, find, /bin/find)
 AC_PATH_PROG(GUNZIP, gunzip, /bin/gunzip)
 AC_CHECK_PROGS(TAR, tar gtar gnutar, tar)
+AC_PATH_PROG(MV, mv, /bin/mv)
 AC_PATH_PROG(PDF_PARSER, acroread, /usr/local/bin/acroread)
 AC_PATH_PROG(SENDMAIL, sendmail, /usr/lib/sendmail, 
    $PATH:/usr/libexec:/usr/sbin:/usr/lib:/usr/etc:etc)

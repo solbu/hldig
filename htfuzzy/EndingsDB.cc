@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: EndingsDB.cc,v 1.9.2.1 1999/12/07 19:54:11 bosc Exp $
+// $Id: EndingsDB.cc,v 1.9.2.2 2000/02/03 02:04:11 ghutchis Exp $
 //
 
 #include "Endings.h"
@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 
 //*****************************************************************************
@@ -65,11 +66,19 @@ Endings::createDB(const HtConfiguration &config)
     // to now move them to the correct location as defined in the config
     // database.
     //
-
-    link(root2word.get(), config["endings_root2word_db"]);
-    unlink(root2word.get());
-    link(word2root.get(), config["endings_word2root_db"]);
-    unlink(word2root.get());
+    struct stat stat_buf;
+    if ((stat(MV, &stat_buf) != -1) && S_ISREG(stat_buf.st_mode))
+      {
+	system(form("MV %s %s;MV %s %s",
+		root2word.get(), config["endings_root2word_db"],
+		word2root.get(), config["endings_word2root_db"]));
+      }
+    else // assume it's in the path
+      {
+	system(form("mv %s %s;mv %s %s",
+		root2word.get(), config["endings_root2word_db"],
+		word2root.get(), config["endings_word2root_db"]));
+      }
 
     return OK;
 }

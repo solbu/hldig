@@ -1,3 +1,19 @@
+Wed Feb  2 19:44:33 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtDateTime.cc (SetRFC1123): Strip off weekday, if present
+	and use LOOSE format.
+	(SetRFC850): Ditto.
+
+	* configure.in, configure: Add configure check for "mv."
+
+	* htfuzzy/Makefile.am: Use it.
+
+	* */Makefile.in: Regenerate using automake.
+
+	* htfuzzy/EndingsDB.cc (createDB): Use the detected mv, or
+	whatever is in the path to move the endings DB when they're
+	finished.
+
 Wed Feb  2 15:49:14 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Document.cc (RetrieveLocal), htdig/Retriever.cc (GetLocal):
