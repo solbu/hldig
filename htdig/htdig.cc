@@ -200,7 +200,7 @@ main(int ac, char **av)
     l.Release();
 
     l.Create(config["bad_querystr"], " \t");
-    excludes.setEscaped(l);
+    badquerystr.setEscaped(l);
     l.Release();
 
     // Check "uncompressed"/"uncoded" urls at the price of time
@@ -232,7 +232,6 @@ main(int ac, char **av)
 	unlink(filename);
     }
 
-    //
     // Create the Retriever object which we will use to parse all the
     // HTML files.
     // In case this is just an update dig, we will add all existing
@@ -243,12 +242,14 @@ main(int ac, char **av)
     retriever.Initial(*list);
     delete list;
 
+    // Set up credentials for this run
+    if (credentials.length())
+	retriever.setUsernamePassword(credentials);
+
     // Add start_url to the initial list of the retriever.
     // Don't check a URL twice!
     // Beware order is important, if this bugs you could change 
     // previous line retriever.Initial(*list, 0) to Initial(*list,1)
-    if (credentials.length())
-	retriever.setUsernamePassword(credentials);
     retriever.Initial(config["start_url"], 1);
 
     //

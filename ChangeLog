@@ -1,9 +1,23 @@
+Wed May 26 11:30:22 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.h, htsearch/Display.cc, htsearch/htsearch.cc:
+	Switch restrict and excludes to use HtRegex instead of StringMatch.
+
+Wed May 26 11:29:27 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/htdig.cc (main): Fix typo clobbering setting of
+	excludes. Obviously fixes problems with badquerystr and excludes!
+
+	* htdig/HtHTTP.cc (ParseHeader): Change parsing to skip extra
+	whitespace, as in 5/19 Document.cc(readHeader) change.
+
 Wed May 19 22:17:49 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HtHTTP.cc, htdig/HtHTTP.h: Add new files, contributed by 
 	Gabriele. A start at an HTTP/1.1 implementation.
 	
-	* htdig/Document (readHeader): Fix change of 5/16 to actually work! :-)
+	* htdig/Document.cc (readHeader): Fix change of 5/16 to actually
+	work! :-) 
 
 	* htsearch/Display.cc (expandVariables): Change end-of-expansion
 	test to include states 2 and 5 to ensure templates ending in } are
