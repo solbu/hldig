@@ -1,3 +1,7 @@
+Sat Jan 23 02:38:08 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htsearch/Display.cc (logSearch): Fix simple typo in last change.
+
 Sat Jan 23 01:18:05 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htlib/String.cc (operator =): Add const modifier: const String &.

@@ -4,6 +4,9 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.40  1999/01/23 01:46:29  hp
+// Typo: "-", not '-'
+//
 // Revision 1.39  1999/01/22 04:40:57  ghutchis
 // Fix thinko in that last patch.
 //
@@ -141,7 +144,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.39 1999/01/22 04:40:57 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.40 1999/01/23 01:46:29 hp Exp $";
 #endif
 
 #include "htsearch.h"
@@ -1289,7 +1292,7 @@ Display::logSearch(int page, List *matches)
       host = getenv("REMOTE_ADDR");
 
     if (ref == NULL)
-      ref = '-';
+      ref = "-";
 
     if (matches)
 	nMatches = matches->Count();
