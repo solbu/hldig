@@ -1,3 +1,44 @@
+Tue Jan 19 12:55:36 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htlib/StringMatch.cc (Pattern): Always set PreviousState before
+	checking PreviousValue.
+
+	* htlib/StringMatch.cc (FindFirst): Be "greedy"; match longest.
+	(Compare): Ditto.
+
+	* htcommon/DocumentRef.cc (MEMCPY_ASSIGN, NUM_ASSIGN): New macros
+	for assigning portably to some possibly-enum numeric type.
+	(getnum): Use them.
+
+	* htlib/StringMatch.cc (FINAL): Remove.
+	(MATCH_INDEX_MASK): Include highest bit.
+	(Pattern, FindFirst, Compare, FindFirstWord, CompareWord): Do not
+	use FINAL.
+	(FindFirst, Compare, FindFirstWord, CompareWord): When shifting by
+	INDEX_SHIFT, cast to unsigned.
+
+Mon Jan 18 17:43:29 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Added no_title_text option to allow
+	configuration of the text when no title is available. Default is
+	the filename.
+
+	* htsearch/Display.cc: Use no_title_text to set the title
+	appropriately, as contributed by Marjolein.
+
+	* htsearch/Display.cc: Ensure PERCENT variable has a minimum of 1.
+
+Mon Jan 18 17:41:44 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Server.cc: Use max_doc_size when retrieving robots.txt
+	files instead of a hard-coded 10k limit.
+
+	* htdig/Document.cc: When reading chunks of document, if a chunk
+	puts us over the max_doc_size limit, take everything up to that
+	limit (rather than discarding the entire chunk).
+
+	* htcommon/DocumentRef.cc: Fix thinko with compression_level.
+	
 Sun Jan 17 21:48:05 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/(attrs.html, cf_byname.html, cf_byprog.html, config.html,
