@@ -1,30 +1,16 @@
 //
 // URL.h
 //
-// $Id: URL.h,v 1.4 1998/10/21 16:34:19 bergolth Exp $
+// A URL parsing class, implementing as closely as possible the standard
+// laid out in RFC2396 (e.g. http://www.faqs.org/rfcs/rfc2396.html)
+// including support for multiple schemes.
 //
-// $Log: URL.h,v $
-// Revision 1.4  1998/10/21 16:34:19  bergolth
-// Added translation of server names. Additional limiting after normalization of the URL.
-//
-// Revision 1.3  1997/12/11 00:28:59  turtle
-// Added double slash removal code.  These were causing loops.
-//
-// Revision 1.2  1997/03/24 04:33:22  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-// Revision 1.0  1995/08/22 17:08:01  turtle
-// Support for HTTP only
-//
+// $Id: URL.h,v 1.5 1999/03/14 03:17:35 ghutchis Exp $
 //
 #ifndef _URL_h_
 #define _URL_h_
 
 #include "htString.h"
-
 
 class URL
 {
@@ -46,6 +32,8 @@ public:
     void		path(char *p);
     int			hopcount()		{return _hopcount;}
     void		hopcount(int h)		{_hopcount = h;}
+    char		*user()			{return _user;}
+    void		user(char *u) 		{_user = u;}
 
     char		*get()			{return _url;}
     void		dump();
@@ -61,14 +49,17 @@ private:
     int			_normal;
     int			_hopcount;
     String		_signature;
+    String		_user;
 
     void		removeIndex(String &);
     void                normalizePath();
     void		ServerAlias();
+    void		constructURL();
 };
 
 
-void encodeURL(String &, char *valid = "?_@.=&/:");
+void encodeURL(String &, char *reserved = ";/?:@&=+$,");
+	       //	       char *unreserved = "-_.!~*'()");
 void decodeURL(String &);
 
 #endif

@@ -1,11 +1,13 @@
 //
 // URL.cc
 //
-// Implementation of URL
+// A URL parsing class, implementing as closely as possible the standard
+// laid out in RFC2396 (e.g. http://www.faqs.org/rfcs/rfc2396.html)
+// including support for multiple services. (schemes in the RFC)
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.18 1999/01/27 00:26:05 ghutchis Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.19 1999/03/14 03:17:35 ghutchis Exp $";
 #endif
 
 #include "URL.h"
@@ -16,6 +18,7 @@ static char RCSid[] = "$Id: URL.cc,v 1.18 1999/01/27 00:26:05 ghutchis Exp $";
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <fstream.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -26,21 +29,23 @@ extern Configuration	config;
 
 //*****************************************************************************
 // URL::URL()
+// Default Constructor
 //
 URL::URL()
 {
     _normal = 0;
-    _port = 80;
     _hopcount = 0;
 }
 
 
 //*****************************************************************************
 // URL::URL(URL &nurl)
+// Copy constructor
 //
 URL::URL(URL &nurl)
 {
     _service = nurl._service;
+    _user = nurl._user;
     _host = nurl._host;
     _port = nurl._port;
     _url = nurl._url;
@@ -53,13 +58,10 @@ URL::URL(URL &nurl)
 
 //*****************************************************************************
 // URL::URL(char *nurl)
-//   Parse a URL.  The general format is:
-//
-//		<service>://<host>[:<port>]/<path>
-//
+// Construct a URL from a String (obviously parses the string passed in)
+// 
 URL::URL(char *nurl)
 {
-    _port = 80;
     _normal = 0;
     _hopcount = 0;
     parse(nurl);
@@ -77,11 +79,15 @@ URL::URL(char *ref, URL &parent)
     temp.remove(" \r\n\t");
     ref = temp;
 
+    // Grab as much from the original URL as possible
+    _service = parent._service;
+    _user = parent._user;
     _host = parent._host;
     _port = parent._port;
-    _service = parent._service;
     _normal = parent._normal;
-    _hopcount = 0;
+    _signature = parent._signature;
+    // Since this is one hop *after* the parent, we should account for this
+    _hopcount = parent._hopcount + 1;
 
     //
     // Strip any optional anchor from the reference.  If, however, the
@@ -111,23 +117,22 @@ URL::URL(char *ref, URL &parent)
 
     //
     // If, after the removal of a possible '#' we have nothing left,
-    // we just want to use the base URL.
+    // we just want to use the base URL (we're on the same page but
+    // different anchors
     //
     if (!*ref)
     {
-	_service = parent._service;
-	_host = parent._host;
-	_port = parent._port;
+        // We've already copied much of the info
 	_url = parent._url;
 	_path = parent._path;
-	_normal = parent._normal;
-	_signature = parent._signature;
+	// Since this is on the same page, we want the same hopcount
 	_hopcount = parent._hopcount;
 	return;
     }
 
+    // OK, now we need to work out what type of child URL this is
     char	*p = ref;
-    while (isalpha(*p))
+    while (isalpha(*p))  // Skip through the service portion
 	p++;
     int	hasService = (*p == ':');
     if (hasService && ((strncmp(ref, "http://", 6) == 0) ||
@@ -212,13 +217,7 @@ URL::URL(char *ref, URL &parent)
     //
     // Build the url.  (Note, the host name has NOT been normalized!)
     //
-    _url = _service;
-    _url << ":";
-    if (_host.length())
-	_url << "//" << _host;
-    if (_port != 80 && strcmp(_service, "http") == 0)
-	_url << ':' << _port;
-    _url << _path;
+    constructURL();
 }
 
 
@@ -287,7 +286,18 @@ void URL::parse(char *u)
     {
 	_host = strtok(p, "/");
 	_host.chop(" \t");
-	_port = 80;
+	if (strcmp(_service, "http") == 0)
+	  _port = 80;
+	if (strcmp(_service, "https") == 0)
+	  _port = 442;
+	if (strcmp(_service, "ftp") == 0)
+	  _port = 21;
+	if (strcmp(_service, "gopher") == 0)
+	  _port = 70;
+	if (strcmp(_service, "news") == 0)
+	  _port = 532;
+	if (strcmp(_service, "file") == 0)
+	  _port = 0;
     }
 
     //
@@ -304,11 +314,7 @@ void URL::parse(char *u)
     //
     // Build the url.  (Note, the host name has NOT been normalized!)
     //
-    _url = _service;
-    _url << "://" << _host;
-    if (_port != 80)
-	_url << ':' << _port;
-    _url << _path;
+    constructURL();
 }
 
 
@@ -345,7 +351,7 @@ void URL::normalizePath()
     }
 
     //
-    // Also get rid of redundent "/./".  This could cause infinite
+    // Also get rid of redundant "/./".  This could cause infinite
     // loops.
     //
     while ((i = _path.indexOf("/./")) >= 0 && i < pathend)
@@ -392,11 +398,12 @@ void URL::normalizePath()
 //
 void URL::dump()
 {
-    printf("service = '%s'\n", _service.get());
-    printf("host = '%s'\n", _host.get());
-    printf("port = %d\n", _port);
-    printf("url = '%s'\n", _url.get());
-    printf("path = '%s'\n", _path.get());
+    cout << "service = " << _service.get() << endl;
+    cout << "user = " << _user.get() << endl;
+    cout << "host = " << _host.get() << endl;
+    cout << "port = " << _port << endl;
+    cout << "path = " << _path << endl;
+    cout << "url = " << _url << endl;
 }
 
 
@@ -406,11 +413,7 @@ void URL::dump()
 void URL::path(char *newpath)
 {
     _path = newpath;
-    _url = _service;
-    _url << "://" << _host;
-    if (_port != 80)
-	_url << ':' << _port;
-    _url << _path;
+    constructURL();
 }
 
 
@@ -509,13 +512,7 @@ void URL::normalize()
     //
     // Reconstruct the url
     //
-    _url = _service;
-    _url << ":";
-    if (_host.length())
-	_url << "//" << _host;
-    if (_port != 80 && strcmp(_service, "http") == 0)
-	_url << ':' << _port;
-    _url << _path;
+    constructURL();
     _normal = 1;
     _signature = 0;
 }
@@ -534,12 +531,19 @@ char *URL::signature()
 
     if (!_normal)
 	normalize();
-    _signature = _host;
+    _signature = 0;
+    if (_user.length())
+      _signature << _user << '@';
+    _signature << _host;
     _signature << ':' << _port;
     return _signature;
 }
 
-
+//*****************************************************************************
+// void URL::ServerAlias()
+// Takes care of the server aliases, which attempt to simplify virtual
+// host problems
+//
 void URL::ServerAlias()
 {
   static Dictionary *serveraliases= 0;
@@ -577,4 +581,36 @@ void URL::ServerAlias()
       _port= newport;
       // printf("\nNewer URL: %s:%d\n", (char *) _host, _port);
     }
+}
+
+//*****************************************************************************
+// void URL::constructURL()
+// Constructs the _url member from everything else
+// Also ensures the port number is correct for the service
+//
+void URL::constructURL()
+{
+    _url = _service;
+    _url << ":";
+    if (_user.length())
+      _url << _user << '@';
+    if (_host.length() && !(strcmp(_service, "news") == 0 ||
+			   strcmp(_service, "mailto") == 0))
+	_url << "//" << _host;
+
+    if (strcmp(_service, "file") == 0)
+      _url << "//"; // no host needed, localhost known.
+
+    if (_port != 80 && strcmp(_service, "http") == 0)
+      _url << ':' << _port;
+    if (_port != 21 && strcmp(_service, "ftp") == 0)
+      _url << ':' << _port;
+    if (_port != 443 && strcmp(_service, "https") == 0)
+      _url << ':' << _port;
+    if (_port != 70 && strcmp(_service, "gopher") == 0)
+      _url << ':' << _port;
+    if (_port != 532 && strcmp(_service, "news") == 0)
+      _url << ':' << _port;
+
+    _url << _path;
 }
