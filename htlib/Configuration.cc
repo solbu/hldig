@@ -6,19 +6,20 @@
 // http headers in native format. 
 //
 // $Log: Configuration.cc,v $
+// Revision 1.8  1999/01/25 04:09:54  ghutchis
+// Complain when an option to be retrieved is not in the list.
+//
 // Revision 1.7  1999/01/23 02:23:55  ghutchis
 // Add support for keyword "include" to include other config files.
 //
 // Revision 1.6  1999/01/14 00:26:48  ghutchis
 // Fixed time format to standard to avoid sending If-Modified-Since http
 // headers in native format (which would be incorrect behavior). Use C locale.
-//
 // 
 // Revision 1.5  1999/01/02 16:13:30  bergolth
 // added warning message if locale selection failed
 //
 // Revision 1.4  1998/08/04 15:36:43  ghutchis
-//
 // Added fix by Philippe Rochat <prochat@lbdsun.epfl.ch> to remove
 // whitespace after config options.
 //
@@ -33,7 +34,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: Configuration.cc,v 1.7 1999/01/23 02:23:55 ghutchis Exp $";
+static char	RCSid[] = "$Id: Configuration.cc,v 1.8 1999/01/25 04:09:54 ghutchis Exp $";
 #endif
 
 #include "Configuration.h"
@@ -213,6 +214,7 @@ char *Configuration::Find(char *name)
     }
     else
     {
+        cerr << "Could not find configuration option " << name << "\n";
         return 0;
     }
 }
