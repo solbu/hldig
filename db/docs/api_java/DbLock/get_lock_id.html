@@ -1,0 +1,43 @@
+<! "@(#)get_lock_id.so	10.5 (Sleepycat) 10/2/98">
+<html>
+<body bgcolor=white>
+<head>
+<title>Berkeley DB: DbLock.get_lock_id</title>
+<meta name="description" content="DB: A database programmatic toolkit.">
+<meta name="keywords" content="embedded,database,programmatic,toolkit,b+tree,btr
+ee,hash,hashing,transaction,transactions,locking,logging,access method,access me
+thods,java,C,C++">
+</head>
+<h1>DbLock.get_lock_id</h1>
+<hr size=1 noshade>
+<tt>
+<h3>
+<pre>
+import com.sleepycat.db.*;
+<p>
+public native int get_lock_id()
+    throws DbException;
+public native void set_lock_id(int lockid)
+    throws DbException;
+</pre>
+</h3>
+<h1>Description</h1>
+<p>
+Get/set the underlying representation of the lock ID.  Direct
+manipulation of the underlying representation is <b>not</b>
+recommended.
+Rather, <a href="../../api_java/DbLockTab/get.html">DbLockTab.get</a> should be used to initialize locks,
+and the copy constructor can be used to create new DbLock objects from
+existing ones.
+<p>
+<h1>Class</h1>
+<a href="../../api_java/DbLock/class.html">DbLock</a>
+<p>
+<h1>See Also</h1>
+DbLock.get_lock_id,
+<a href="../../api_java/DbLock/put.html">DbLock.put</a>
+and
+<a href="../../api_java/DbLock/get_lock_id.html">DbLock.set_lock_id</a>.
+</tt>
+</body>
+</html>

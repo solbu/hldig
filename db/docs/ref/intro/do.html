@@ -1,0 +1,72 @@
+<! "@(#)do.so	10.10 (Sleepycat) 10/18/98">
+<html>
+<body bgcolor=white>
+<head>
+<title>Berkeley DB Programmer's Reference: Introduction</title>
+<meta name="description" content="DB: A database programmatic toolkit.">
+<meta name="keywords" content="embedded,database,programmatic,toolkit,b+tree,btr
+ee,hash,hashing,transaction,transactions,locking,logging,access method,access me
+thods,java,C,C++">
+</head>
+<h3>Berkeley DB Programmer's Reference: Introduction</h3>
+<p>
+<h1 align=center>What can you do with Berkeley DB?</h1>
+<p>
+Berkeley DB was designed to provide database functionality for applications.
+It is a classic C library style <i>toolkit</i>, providing a broad base
+of functionality to application writers.  Berkeley DB is powerful enough to use
+as the underlying support for large network servers.  There are many
+large, complex multi-threaded servers running on fast, multi-processor
+machines, depending on Berkeley DB transaction semantics for recovery after
+system or application failure.
+<p>
+Most Berkeley DB applications fall into two categories: simple data management,
+and data management with recovery.  In simple data management,
+applications use the Berkeley DB access methods to manage their data without
+concern for application or system failure.  The only Berkeley DB interfaces that
+are necessary for this purpose are the <i>Access Method</i> interfaces
+and potentially the locking subsystem if the data is not read-only and
+more than a single thread of control will be accessing the database
+simultaneously.  In data management with recovery, the Berkeley DB locking,
+logging, and transaction subsystems are wrapped around the simple data
+management accesses to the database, providing complete recoverability in
+the face of application or system failure.
+<p>
+Generally, both of these categories involve embedding Berkeley DB directly into
+the process' address space.  It is also possible to implement
+client-server models using Berkeley DB.  In such case, the application writer
+uses Berkeley DB to implement the server as described above, and then chooses
+an IPC mechanism which the client will use to talk to the server.  (Note,
+the Berkeley DB distribution does not include an IPC mechanism, and it is up to
+the application writer to implement this functionality.)
+<p>
+While Berkeley DB's primary purpose is to provide a complete database
+environment to applications, it is important to realize that Berkeley DB
+includes general-purpose shared memory buffer-pool and general-purpose
+lock manager interfaces, among others.  These interfaces are directly
+useful to application writers that may have no interest in databases.
+<p>
+Additionally, because of the tool-based approach and separate interfaces
+for each subsystem, you can support a complete transaction environment
+for other system operations, e.g., Berkeley DB allows you to wrap transactions
+around the standard UNIX read/write operations!  Further, Berkeley DB was
+designed to interact correctly with the UNIX toolset, a feature no other
+database package offers.  For example, Berkeley DB supports "hot backups"
+(database backups while the database is in use), and you can use the
+standard UNIX tools to do those backups, e.g., dump(1), tar(1), cpio(1),
+pax(1) or even cp(1).
+<p>
+Finally, because
+<a href="../../ref/arch/apis.html">scripting language interfaces</a>
+are available for Berkeley DB (notably Python, Tcl and Perl), application
+writers can build incredibly powerful database engines with little effort,
+(e.g., you can build transaction-protected databases using your standard
+scripting languages, an increasingly important feature in a world using
+CGI scripts to deliver HTML).
+<p>
+<a href="../../ref/intro/distrib.html"><img src="../../images/prev.gif"></a>
+<a href="../../ref/toc.html"><img src="../../images/toc.gif"></a>
+<a href="../../ref/simple_tut/intro.html"><img src="../../images/next.gif"></a>
+</tt>
+</body>
+</html>

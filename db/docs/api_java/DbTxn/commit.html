@@ -1,0 +1,84 @@
+<! "@(#)commit.so	10.8 (Sleepycat) 9/29/98">
+<html>
+<body bgcolor=white>
+<head>
+<title>Berkeley DB: DbTxn.commit</title>
+<meta name="description" content="DB: A database programmatic toolkit.">
+<meta name="keywords" content="embedded,database,programmatic,toolkit,b+tree,btr
+ee,hash,hashing,transaction,transactions,locking,logging,access method,access me
+thods,java,C,C++">
+</head>
+<h1>DbTxn.commit</h1>
+<hr size=1 noshade>
+<tt>
+<h3>
+<pre>
+import com.sleepycat.db.*;
+<p>
+public void commit()
+	throws DbException;
+</pre>
+</h3>
+<h1>Description</h1>
+<p>
+The DbTxn.commit method ends the transaction specified by the <b>tid</b>
+argument.
+<p>
+If DB_TXN_NOSYNC was not specified, a commit log record is written and
+flushed to disk, as are all previously written log records.
+<p>
+If the transaction is nested, its locks are acquired by the parent
+transaction, otherwise its locks are released.
+<b>Note: nested transactions are not yet supported.</b>
+<p>
+Any applications that require strict two-phase locking must not release
+any locks explicitly, leaving them all to be released by DbTxn.commit.
+<p>
+The DbTxn.commit
+method throws an exception that encapsulates an <b>errno</b> on failure.
+<p>
+<h1>Errors</h1>
+If a fatal error occurs in Berkeley DB, the DbTxn.commit method may fail and throw a
+<a href="../../api_java/DbRunRecoveryException/class.html">DbRunRecoveryException</a>, at which point all subsequent database
+calls will also fail in the same way.
+<p>
+The DbTxn.commit
+method may fail and throw an exception
+for any of the errors specified for the following Berkeley DB and C library
+functions:
+abort(3),
+fcntl(3),
+fflush(3),
+fprintf(3),
+free(3),
+getpid(3),
+<a href="../../api_java/DbLockTab/vec.html">DbLockTab.vec</a>,
+<a href="../../api_java/DbLog/put.html">DbLog.put</a>,
+malloc(3),
+memcpy(3),
+memset(3),
+strerror(3),
+vfprintf(3),
+and
+vsnprintf(3).
+<p>
+In addition, the DbTxn.commit
+method may fail and throw an exception
+encapsulating <b>errno</b>
+for the following conditions:
+<dl compact>
+<p><dt>EINVAL<dd>The transaction was already aborted.
+</dl>
+<p>
+<h1>Class</h1>
+<a href="../../api_java/DbTxn/class.html">DbTxn</a>
+<p>
+<h1>See Also</h1>
+<a href="../../api_java/DbTxn/abort.html">DbTxn.abort</a>,
+DbTxn.commit,
+<a href="../../api_java/DbTxn/id.html">DbTxn.id</a>
+and
+<a href="../../api_java/DbTxn/prepare.html">DbTxn.prepare</a>.
+</tt>
+</body>
+</html>
