@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.6 1999/12/09 11:31:27 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.7 1999/12/09 11:46:39 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -86,7 +86,7 @@ int WordList::Open(const String& filename, int mode)
       cmpr_info->uncompress=WordDBCompress_uncompress_c;
       cmpr_info->coefficient=3;
       cmpr_info->max_npages=9;
-      compressor->debug=config.Value("wordlist_compress_debug",0);
+      compressor->debug=config.Value("wordlist_compress_debug",1);
 //        cmpr_info->coefficient=3;
 //        cmpr_info->max_npages=9;
       db.dbenv.set_mp_cmpr_info(cmpr_info);
