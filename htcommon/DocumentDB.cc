@@ -183,17 +183,6 @@ int DocumentDB::Add(DocumentRef &doc)
     String key((char *) &docID, sizeof docID);
     dbf->Put(key, temp);
 
-    if (i_dbf)
-    {
-	String url(doc.DocURL());
-	temp = doc.DocURL();
-	i_dbf->Put(HtURLCodec::instance()->encode(url), key);
-	return OK;
-    }
-    else
-      // If there was no index when we write, something is wrong.
-      return NOTOK;
-
     if (h_dbf)
       {
 	// We'll eventually need to deal with compression *FIX*
@@ -203,7 +192,18 @@ int DocumentDB::Add(DocumentRef &doc)
 	h_dbf->Put(key, temp);
       }
     else
-      // If there was no excerpt index when we write, something is also wrong.
+      // If there was no excerpt index when we write, something is wrong.
+      return NOTOK;
+
+    if (i_dbf)
+    {
+	String url(doc.DocURL());
+	temp = doc.DocURL();
+	i_dbf->Put(HtURLCodec::instance()->encode(url), key);
+	return OK;
+    }
+    else
+      // If there was no index when we write, something is wrong.
       return NOTOK;
 }
 
@@ -215,14 +215,15 @@ int DocumentDB::Add(DocumentRef &doc)
 int DocumentDB::ReadExcerpt(DocumentRef &ref)
 {
     String	data;
-    String	key((char *) &(ref->docID()), sizeof ref->docID());
+    int		docID = ref.DocID();
+    String	key((char *) &docID, sizeof docID);
 
-    if (h_dbf)
+    if (!h_dbf)
       return NOTOK;
     if (h_dbf->Get(key, data) == NOTOK)
       return NOTOK;
 
-    ref->DocHead(data);
+    ref.DocHead(data);
 
     return OK;
 }
