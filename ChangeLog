@@ -1,3 +1,11 @@
+Wed Jun  6 15:31:00 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/doc2html/DETAILS, contrib/doc2html/README,
+	contrib/doc2html/doc2html.cfg, contrib/doc2html/doc2html.sty,
+	contrib/doc2html/doc2html.pl, contrib/doc2html/pdf2html.pl,
+	contrib/doc2html/swf2html.pl: Added version 3.0 of doc2html,
+	contributed by David Adams <D.J.Adams@soton.ac.uk>.
+
 Mon Jun 4 10:31:45 CEST 2001 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* htdoc/cf_byname.html: I forgot to insert the 'restrict' attribute.
