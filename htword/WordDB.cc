@@ -7,7 +7,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.cc,v 1.5 2003/05/17 23:19:36 lha Exp $
+// $Id: WordDB.cc,v 1.6 2003/06/23 22:18:20 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -64,7 +64,9 @@ int WordDB::Open(const String& filename, DBTYPE type, int flags, int mode) {
     // Useful values are from 1 (at most half dirty) to about 3000 (never
     // flush cache unnecessarily).
     HtConfiguration *config = HtConfiguration::config();
-    CDB___mp_dirty_level = config->Value("wordlist_cache_dirty_level");
+    
+    //CDB___mp_dirty_level = config->Value("wordlist_cache_dirty_level");
+    CDB_set_mp_diry_level(config->Value("wordlist_cache_dirty_level"));
   }
 
   int error = db->open(db, filename, NULL, type, (u_int32_t)flags, mode);

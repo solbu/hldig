@@ -7,7 +7,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordMonitor.cc,v 1.3 2002/02/01 22:49:36 ghutchis Exp $
+// $Id: WordMonitor.cc,v 1.4 2003/06/23 22:18:21 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -16,7 +16,10 @@
 
 #include <stdlib.h>
 #include <signal.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
 
 #include "StringList.h"
 #include "WordMonitor.h"
@@ -153,6 +156,7 @@ WordMonitor::TimerStart()
     return;
   }
 
+#ifndef _MSC_VER //_WIN32
   struct sigaction action;
   struct sigaction old_action;
   memset((char*)&action, '\0', sizeof(struct sigaction));
@@ -162,6 +166,7 @@ WordMonitor::TimerStart()
     fprintf(stderr, "WordMonitor::TimerStart: installing SIGALRM ");
     perror("");
   }
+  
   if(old_action.sa_handler != SIG_DFL) {
     fprintf(stderr, "WordMonitor::TimerStart: found an installed action while installing SIGALRM, restoring old action\n");
     if(sigaction(SIGALRM, &old_action, NULL) != 0) {
@@ -170,6 +175,7 @@ WordMonitor::TimerStart()
     }
     return;
   }
+#endif
 
   fprintf(output, "----------------- WordMonitor starting -------------------\n");
   if(output_style == WORD_MONITOR_RRD) {
@@ -201,13 +207,16 @@ WordMonitor::TimerClick(int signal)
       fflush(output);
     }
   }
+#ifndef _MSC_VER //_WIN32
   alarm(period);
+#endif
 }
 
 void
 WordMonitor::TimerStop()
 {
   if(period > 0) {
+#ifndef _MSC_VER //_WIN32
     alarm(0);
     struct sigaction action;
     memset((char*)&action, '\0', sizeof(struct sigaction));
@@ -216,13 +225,14 @@ WordMonitor::TimerStop()
       fprintf(stderr, "WordMonitor::TimerStart: resetting SIGALRM to SIG_DFL ");
       perror("");
     }
-    //
+
     // Make sure last report is at least one second older than the previous one.
     //
     if(time(0) - elapsed < 1)
       sleep(2);
     fprintf(output, "%s\n", (const char*)Report());
     fprintf(output, "----------------- WordMonitor finished -------------------\n");
+#endif
   }
 }
 
@@ -234,8 +244,10 @@ extern "C" {
   void word_monitor_click()
   {
     WordMonitor* monitor = WordMonitor::Instance();
+#ifndef _MSC_VER //_WIN32
     if(monitor)
       monitor->TimerClick(SIGALRM);
+#endif
   }
   void word_monitor_add(int index, unsigned int value) 
   {

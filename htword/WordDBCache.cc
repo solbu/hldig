@@ -10,7 +10,11 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <stdio.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
+
 #include <stdlib.h>
 #include <sys/stat.h>
 

@@ -7,7 +7,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordListOne.cc,v 1.2 2002/02/02 18:18:13 ghutchis Exp $
+// $Id: WordListOne.cc,v 1.3 2003/06/23 22:18:21 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -29,7 +29,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
+
 #include <ctype.h>
 #include <errno.h>
 
