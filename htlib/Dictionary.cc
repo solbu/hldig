@@ -3,7 +3,7 @@
 //
 // Implementation of the Dictionary class
 //
-// $Id: Dictionary.cc,v 1.5.2.1 1999/03/23 00:46:45 grdetil Exp $
+// $Id: Dictionary.cc,v 1.5.2.2 2001/07/26 03:33:45 grdetil Exp $
 //
 
 #include "Dictionary.h"
@@ -218,6 +218,7 @@ Dictionary::Remove(char *name)
 		table[index] = e->next;
 	    }
 	    count--;
+	    e->next = NULL; // FIXED: Otherwise ALL entries after e will be deleted by DictionaryEntry's dtor
             delete e;
 	    return 1;
 	}
