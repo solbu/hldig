@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.58 1999/03/12 00:46:57 hp Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.59 1999/03/14 03:16:37 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -16,6 +16,7 @@ static char RCSid[] = "$Id: Display.cc,v 1.58 1999/03/12 00:46:57 hp Exp $";
 #include "StringMatch.h"
 #include "QuotedStringList.h"
 #include "URL.h"
+#include "HtSGMLCodec.h"
 #include <fstream.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -338,9 +339,9 @@ Display::displayMatch(ResultMatch *match, int current)
 	    *str << ((String*) (*list)[i])->get() << "<br>\n";
 	}
 	vars.Add("DESCRIPTIONS", str);
-	// This is a very bad construction. Fix it.
-	// It should copy the data from that list into a new String()
-	// vars.Add("DESCRIPTION", ((String*) (*list)[1]));
+       String *description = new String();
+       *description << ((String*) (*list)[0]);
+       vars.Add("DESCRIPTION", description);
     }
 
     expandVariables(currentTemplate->getMatchTemplate());
@@ -953,6 +954,8 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first)
     if (config.Boolean("use_meta_description",0) 
 	&& strlen(ref->DocMetaDsc()) != 0)
 	head = ref->DocMetaDsc();
+    head = HtSGMLCodec::instance()->decode(head).get();
+
     int		which, length;
     char	*temp = head;
     String	part;
