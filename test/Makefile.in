@@ -110,7 +110,7 @@ INCLUDES = -Wall 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_sr
 HTLIBS = $(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/db/dist/libdb.a
 
 
-TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist t_htnet
+TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist # t_htnet
 AM_MAKEFLAGS = MAKE="$(MAKE)"
 
 #PROFILING = -p

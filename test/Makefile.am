@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.config
 
-TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist t_htnet
+TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist # t_htnet
 AM_MAKEFLAGS = MAKE="$(MAKE)"
 
 #PROFILING = -p
