@@ -24,7 +24,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookieMemJar.cc,v 1.3 2002/04/09 14:43:58 angusgb Exp $ 
+// $Id: HtCookieMemJar.cc,v 1.4 2003/01/28 11:17:01 angusgb Exp $ 
 //
 
 #include "HtCookieMemJar.h"
@@ -40,6 +40,43 @@ HtCookieMemJar::HtCookieMemJar()
 : _key(0), _list(0), _idx(0)
 {
    cookieDict = new Dictionary();
+   cookieDict->Start_Get(); // reset the iterator
+}
+
+// Copy constructor
+HtCookieMemJar::HtCookieMemJar(const HtCookieMemJar& rhs)
+: _key(0), _list(0), _idx(0)
+{
+
+	if (rhs.cookieDict)
+	{
+		// Let's perform a deep copy of the 'jar'
+		cookieDict = new Dictionary();
+		rhs.cookieDict->Start_Get();
+
+		// Let's walk the domains
+		while (char* d = rhs.cookieDict->Get_Next())
+		{
+			List* l = new List();
+			cookieDict->Add(d, l); // add that domain
+
+			// Let's walk the cookies for that domain
+			if (List* rhsl = (List*) rhs.cookieDict->Find(d))
+			{
+				
+				rhsl->Start_Get();
+			
+				while (HtCookie* cookie = ((HtCookie *)rhsl->Get_Next()))
+				{
+					HtCookie* new_cookie = new HtCookie(*cookie);
+					l->Add((Object *)new_cookie); // add this cookie
+				}
+			}
+		}
+	}
+	else
+	   cookieDict = new Dictionary();
+
    cookieDict->Start_Get(); // reset the iterator
 }
 
@@ -158,13 +195,20 @@ int HtCookieMemJar::AddCookieForHost(HtCookie *cookie, String HostName)
                 if (r>s)
                     Domain.set((char*) r);  // Set the new 'shorter' domain
 
+
                 if (HostName.indexOf(Domain.get()) != -1)
                 {
                     if (debug > 2)
                         cout << "Cookie - valid domain: "
                             << Domain << endl;
                 }
-                else
+                else if (HostName.length() == 0)
+		{
+                    if (debug > 2)
+                        cout << "Imported cookie - valid domain: "
+                            << Domain << endl;
+		}
+		else
                 {
                     cookie->SetIsDomainValid(false);
                     if (debug > 2)
@@ -361,7 +405,7 @@ int HtCookieMemJar::WriteDomainCookiesString(const URL &_url,
 		 // max_age property that is to say:
 		 // (now - issuetime <= maxage).
 		 //
-         
+cookie->printDebug();         
          const bool expired =
 		    (cookie->GetExpires() && (*(cookie->GetExpires()) < now))	// Expires
 			|| (HtDateTime::GetDiff(now, cookie->GetIssueTime())
