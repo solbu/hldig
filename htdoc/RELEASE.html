@@ -22,7 +22,7 @@
 	</p>
 
 	<p>
-	 <strong>Release notes for htdig-3.1.1</strong> 16 Feb 1999<br>
+	 <strong>Release notes for htdig-3.1.1</strong> 17 Feb 1999<br>
 	 This version cleans up some remaining bugs in the 3.1.0
 	 release. As the latest stable release of ht://Dig, it is
 	 recommended for all production servers.
@@ -35,8 +35,9 @@
 	  <li>Fixed a serious bug causing bus errors on several platforms,
 	  notably Solaris SPARC, caused by unaligned access to database
 	  structures.</li>
-	  <li>Fixed the contributed parse_word_doc script to prevent
-	  crashes on non-Word documents with a .doc extension.</li>
+	  <li>Fixed some bugs in the boolean search parser.</li>
+	  <li>Replaced the contributed parse_word_doc.pl script with a
+	  more capable parse_doc.pl script.</li>
 	  <li>Fixed the htnotify program to parse dates as mentioned in the
 	  <a href="notification.html">documentation</a>.</li>
 	  <li>Cleaned up some minor mistakes in the documentation and moved
@@ -940,7 +941,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Mon Feb 15 21:08:52 EST 1999
+Last modified: Tue Feb 16 23:43:43 EST 1999
 <!-- hhmts end -->
   </body>
 </html>
