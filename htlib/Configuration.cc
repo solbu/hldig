@@ -2,8 +2,15 @@
 // Configuration.cc
 //
 // Implementation of the Configuration class
+// fix: Set time format to standard to avoid sending If-Modified-Since
+// http headers in native format. 
 //
 // $Log: Configuration.cc,v $
+// Revision 1.6  1999/01/14 00:26:48  ghutchis
+// Fixed time format to standard to avoid sending If-Modified-Since http
+// headers in native format (which would be incorrect behavior). Use C locale.
+//
+// 
 // Revision 1.5  1999/01/02 16:13:30  bergolth
 // added warning message if locale selection failed
 //
@@ -23,7 +30,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: Configuration.cc,v 1.5 1999/01/02 16:13:30 bergolth Exp $";
+static char	RCSid[] = "$Id: Configuration.cc,v 1.6 1999/01/14 00:26:48 ghutchis Exp $";
 #endif
 
 #include "Configuration.h"
@@ -173,7 +180,7 @@ void Configuration::Add(char *name, char *value)
         // http headers in native format which http servers can't
         // understand
         //
-        setlocale(LC_TIME, "");
+        setlocale(LC_TIME, "C");
     }
     dict.Add(name, ps);
 }
