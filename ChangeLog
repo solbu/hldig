@@ -1,5 +1,7 @@
-Tue Nov 30 12:18:12 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Nov 30 13:01:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	* htdoc/ChangeLog: Update with latest version.
+	* htdoc/RELEASE.html: Add release notes for 3.1.4 release.
 	* .version, README: Bump for 3.1.4.
 
 Tue Nov 30 11:03:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>

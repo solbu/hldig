@@ -1,3 +1,172 @@
+Tue Nov 30 13:01:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/ChangeLog: Update with latest version.
+	* htdoc/RELEASE.html: Add release notes for 3.1.4 release.
+	* .version, README: Bump for 3.1.4.
+
+Tue Nov 30 11:03:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html(backlink_factor): Added Geoff's clarification of
+	what this attribute does.
+
+Tue Nov 30 09:47:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc(RetrieveLocal): Handle common extensions for
+	text/plain, application/pdf & application/postscript.
+        * htdig/Retriever.cc (IsValidURL): Add valid_extensions list handling,
+	make it and bad_extensions case insensitive.
+        * htcommon/defaults.cc: Add config attribute valid_extensions,
+        with default as empty.
+	* htdoc/attrs.html, cf_by{name,prog}.html: Document valid_extensions.
+
+Tue Nov 30 09:02:02 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc(got_href & got_redirect): remove all of Patrick's
+	case insensitive server code, to replace it with Geoff's fix to URL.cc
+	* htlib/URL.cc(normalizePath, path): If not case_sensitive,
+	lowercase the URL. Should ensure that all URLs are appropriately
+	lowercased, regardless of where they're generated.
+
+Mon Nov 29 20:25:01 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc, htdig/Retriever.h, htdig/Server.cc(push),
+	htdig/Server.h: added Alexis's patch for persistent local digging
+	even if HTTP server is down. Also made new GetLocal() method
+	call GetLocalUser() itself, to simplify its use, and made it
+	non-private, for eventual use by Server code.
+
+Mon Nov 29 19:18:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc(got_href & got_redirect): corrections to case
+	insensitive server fix, to handle redirects, to make more thorough
+	use of mapped URL, and to update it after normalization.
+
+Fri Nov 26 17:14:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc(RetrieveHTTP): always c.close() the connection
+	when returning.
+	* htdig/HTML.cc(HTML & do_tag): add code to turn off indexing between
+	<style> and </style> tags.
+
+Fri Nov 26 16:31:06 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Configuration.cc(Read): fixed to allow final line without
+	terminating newline character, rather than ignoring it.
+	* htlib/String.cc(write): added Alexis Mikhailov's fix to bump up
+	pointer after writing a block.
+	* htsearch/Display.cc(setVariables): added Alexis Mikhailov's fix
+	to check the number of pages against maximum_pages at the right time.
+	(Put it even earlier, to make sure nPages is at least 1.)
+	* htsearch/Display.cc(generateStars): Remove extra newline after
+	STARSRIGHT and STARSLEFT variables, noted by Torsten Neuer
+	<tneuer@inwise.de>.
+
+Wed Nov 24 20:33:13 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/htdig.conf: Add bad_extensions to make it
+	more obvious to users how to exclude certain document types.
+	Fix the comments for search_algorithm to refer to all the current
+	possibilities.	Add example of no_excerpt_show_top attribute in
+	line with most user's expectations.  (Geoff's changes)
+
+Wed Nov 24 20:02:32 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/search.html (Match): Add Boolean to default search
+	form, as suggested by PR#561.
+
+Tue Nov 23 23:03:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(setupTemplates), htsearch/Display.h: fixed a
+	couple of compilation errors in template_patterns code.
+
+Tue Nov 23 22:16:31 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc(got_href): Applied Patrick's case insensitive
+	server fix, to lowercase all URLs if case_sensitive is false.
+
+Tue Nov 23 22:08:22 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/StringList.cc(Join): Applied Loic's patch to fix memory leak.
+
+Tue Nov 23 21:52:18 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	[Applied patch from Hanno Mueller <kontakt@hanno.de>, which includes...]
+	* contrib/README: Add scriptname directory.
+	* contrib/scriptname/*: An example of using htsearch within
+	dynamic SSI pages
+	* htcommon/defaults.cc: Add script_name attribute to override
+	SCRIPT_NAME CGI environment variable.
+	* htdoc/FAQ.html: Update question 4.7 based on including htsearch
+	as a CGI in SSI markup.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htdoc/hts_templates.html: Update based on behavior of script_name
+	attribute.
+	* htsearch/Display.cc: Set SCRIPT_NAME variable to attribute
+	script_name if set and CGI environment variable if undefined.
+
+Tue Nov 23 21:29:03 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/FAQ.html: Added the past few month's updates to the FAQ.
+
+Tue Nov 23 21:20:35 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc, htsearch/Display.h, htsearch/Display.cc,
+	htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htdoc/hts_templates.html: add template_patterns attribute, to select
+	result templates based on URL patterns.
+
+Tue Nov 23 20:52:38 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/cgi.h, htlib/cgi.cc(cgi & init), htsearch/htsearch.cc
+	(main & usage): allow a query string to be passed as an argument.
+
+Tue Nov 23 20:35:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(setVariables & createURL),
+	htsearch/htsearch.cc(main), htdoc/hts_templates.html: handle keywords
+	input parameter like others, and make it propagate to followups.
+
+Tue Nov 23 20:25:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html: removed vestigial references to MAX_MATCHES
+	template variables in search_results_{header,footer}.
+
+	* htdoc/hts_form.html: add disclaimer about keywords parameter not
+	being limited to meta keywords.
+
+	* htdoc/meta.html: add description of "keywords" meta tag property.
+	add links to keywords_factor & meta_description_factor attributes.
+
+Tue Nov 23 20:07:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(setVariables & hilight): added Sergey's idea
+	for start_highlight, end_highlight & page_number_separator attributes.
+	* htcommon/defaults.cc: added defaults for these.
+	* htdoc/attrs.html, cf_by{name,prog}.html: documented them.
+
+Tue Nov 23 19:58:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc: added support for external converters
+	as extension to external_parsers attribute.
+	* htdoc/attrs.html: Updated external_parsers with new description
+	and examples of external converters.
+
+Tue Nov 23 19:52:27 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc(transSGML), htdig/SGMLEntities.cc(translateAndUpdate):
+	Fix the infamous problem in htdig 3.1.3 of mangling URL parameters that
+	contain bare ampersands (&), and not converting &amp; entities in URLs.
+
+	* htdig/Retriever.cc(IsLocal & IsLocalUser): Fix PR#688, where
+	htdig goes into an infinite loop if an entry in local_urls
+	(or local_user_urls) is missing a '=' (or a ',').
+
+	* htcommon/cgi.cc(cgi): Fix bug in reading long queries via POST
+	method (PR#668).
+
+	* htnotify/htnotify.cc(send_notification): apply Jason Haar's fix
+	to quote the sender name "ht://Dig Notification Service".
+
 Wed Sep 22 11:12:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/ChangeLog, htdoc/isp.html, htdoc/FAQ.html,
