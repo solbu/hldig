@@ -1,3 +1,9 @@
+Thu Jan  3 16:43:31 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/htmerge.html: Added extra description for -m option to clear
+	up common points of confusion, added note about LC_COLLATE environment
+	variable.
+
 Fri Dec 21 18:52:32 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc: Added parsedcdate function, used by got_time,
