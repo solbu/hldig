@@ -1,3 +1,8 @@
+Wed Apr  5 15:07:52 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc: Added #if test to make sure DBL_MAX is
+	defined on Solaris, as reported by Terry Luedtke.
+
 Tue Apr  4 12:46:37 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/doc2html/*: Added parser submitted by D.J.Adams@soton.ac.uk

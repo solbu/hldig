@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.18 2000/03/31 04:29:59 ghutchis Exp $
+// $Id: Display.cc,v 1.100.2.19 2000/04/05 19:08:11 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -36,6 +36,10 @@
 #include <syslog.h>
 #include <locale.h>
 #include <math.h>
+
+#if !defined(DBL_MAX) && defined(MAXFLOAT)
+# define DBL_MAX MAXFLOAT
+#endif
 
 //*****************************************************************************
 //
