@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.52 1999/02/03 13:39:18 bergolth Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.53 1999/02/04 00:13:00 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -275,8 +275,10 @@ Display::displayMatch(ResultMatch *match, int current)
 	      {
 		title++; // Skip slash
 		str = new String(form("[%s]", title));
-		// URL without '/' ??
 	      }
+	    else
+	      // URL without '/' ??
+	      str = new String("[No title]");
 	  }
 	else
 	  // use configure 'no title' text
