@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.20  1998/11/22 19:13:38  ghutchis
+//
+// New config options "description_factor" and "no_excerpt_show_top"
+//
 // Revision 1.19  1998/11/17 04:06:14  ghutchis
 //
 // Add new ranking factors backlink_factor and date_factor
@@ -73,7 +77,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.19 1998/11/17 04:06:14 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.20 1998/11/22 19:13:38 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -104,6 +108,7 @@ ConfigDefaults	defaults[] =
     {"create_url_list",			"false"},
     {"date_factor",                     "0"},
     {"database_base",			"${database_dir}/db"},
+    {"description_factor",              "0"},
     {"doc_db",				"${database_base}.docdb"},
     {"doc_index",			"${database_base}.docs.index"},
     {"doc_list",			"${database_base}.docs"},
@@ -154,6 +159,7 @@ ConfigDefaults	defaults[] =
     {"modification_time_is_now",        "false"},
     {"next_page_text",			"[next]"},
     {"no_excerpt_text",			"<em>(None of the search words were found in the top of this document.)</em>"},
+    {"no_excerpt_show_top",             "false"},
     {"no_next_page_text",		"[next]"},
     {"no_prev_page_text",		"[prev]"},
     {"nothing_found_file",		"${common_dir}/nomatch.html"},
