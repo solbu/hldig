@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.20 2000/06/08 11:55:02 grdetil Exp $
+// $Id: Display.cc,v 1.100.2.21 2000/06/11 17:48:46 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -324,7 +324,7 @@ Display::displayMatch(ResultMatch *match, DocumentRef *ref, int current)
     vars.Add("SIZEK", new String(form("%d",
 					  (ref->DocSize() + 1023) / 1024)));
 
-    if (maxScore != 0)
+    if (maxScore != 0 && maxScore != minScore)
       {
 	int percent = (int)((ref->DocScore() - minScore) * 100 /
 			    (maxScore - minScore));
@@ -860,9 +860,7 @@ Display::generateStars(DocumentRef *ref, int right)
     const String blank = config["star_blank"];
     double	score;
 
- 
-
-    if (maxScore != 0)
+    if (maxScore != 0 && maxScore != minScore)
     {
 	score = (ref->DocScore() - minScore) / (maxScore - minScore);
         if(debug) cerr << "generateStars: doc, min, max " << ref->DocScore() << ", " << minScore << ", " << maxScore <<endl;
