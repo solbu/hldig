@@ -1,3 +1,14 @@
+Wed Jan 20 20:20:35 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc(logSearch): Use REMOTE_ADDR when REMOTE_HOST
+	is unavailable (otherwise we silently dump core). Fixes PR #138.
+
+	* htcommon/WordList.cc(valid_word): Words cannot be valid if
+	they're shorter than minimum_word_length! Fixes PR #139.
+
+	* htsearch/Display.cc(expandVariables): Allow variables of the
+	form ${VAR}, fixes PR #121.
+	
 Wed Jan 20 17:21:33 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
 	* htmerge/docs.cc: Fix logic to remove documents--missing else
