@@ -1,3 +1,8 @@
+Thu Feb  7 11:32:14 2002  Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htnet/HtHTTP.cc (ReadChunkedBody): gets control of Read_Line
+	methods (return error when they fail).
+
 Fri Feb  1 17:12:31 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* Merged htdig-3-2-x branch back into CVS mainline.

@@ -8,12 +8,12 @@
 // 	 -  Response message class
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2001 The ht://Dig Group
+// Copyright (c) 1995-2002 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.17 2002/02/01 22:49:35 ghutchis Exp $ 
+// $Id: HtHTTP.cc,v 1.18 2002/02/07 17:35:42 ghutchis Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1021,7 +1021,8 @@ int HtHTTP::ReadChunkedBody()
    _response._contents.trunc();	// Initialize the string
 
    // Read chunk-size and CRLF
-   _connection->Read_Line(ChunkHeader, "\r\n");
+   if (!_connection->Read_Line(ChunkHeader, "\r\n"))
+     return -1;
 
    sscanf ((char *)ChunkHeader, "%x", &chunk_size);
 
@@ -1061,10 +1062,12 @@ int HtHTTP::ReadChunkedBody()
      //       return -1;
 
       // Read CRLF - to be ignored
-      _connection->Read_Line(ChunkHeader, "\r\n");
+      if (!_connection->Read_Line(ChunkHeader, "\r\n"))
+	return -1;
 
       // Read chunk-size and CRLF
-      _connection->Read_Line(ChunkHeader, "\r\n");
+      if (!_connection->Read_Line(ChunkHeader, "\r\n"))
+	return -1;
 
       sscanf ((char *)ChunkHeader, "%x", &chunk_size);
 
