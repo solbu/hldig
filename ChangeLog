@@ -1,3 +1,8 @@
+Tue Jul 24 16:12:45 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html: Added reference to maximum_page_buttons in the
+	section on maximum_pages.
+
 Tue Jul 24 15:38:39 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (generateStars): Add NSTARS variable for
