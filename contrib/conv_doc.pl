@@ -37,6 +37,8 @@
 #               stripped out all parser-related code
 # Added:        test to silently ignore wrapped EPS files    < " >
 # Added:        test for null device on Win32 env.   <PBISSET@emergency.qld.gov.au>
+# 2000/01/12
+# Changed:      "break" to "last" (no break in Perl) <wjones@tc.fluke.com>
 #########################################
 #
 # set this to your MS Word to text converter
