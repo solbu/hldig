@@ -30,7 +30,7 @@ NWORDS =
 
 bench:
 	rm -f $(BASE) $(BASE)_weakcmpr
-	$(top_builddir)/test/dbbench $(CACHESIZE) $(PAGESIZE) $(CMPR) $(WORDS) $(LOOP) -B $(BASE) $(NWORDS)
+	time -v $(top_builddir)/test/dbbench $(CACHESIZE) $(PAGESIZE) $(CMPR) $(WORDS) $(LOOP) -B $(BASE) $(NWORDS)
 	ls -l $(BASE)
 	if [ -f $(BASE)_weakcmpr ] ; then $(top_builddir)/db/dist/db_dump -p $(BASE)_weakcmpr ; fi
 	$(top_builddir)/db/dist/db_stat $(CMPR) -d $(BASE)
