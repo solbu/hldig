@@ -5,6 +5,9 @@
 // generating several databases to be used by htmerge
 //
 // $Log: main.cc,v $
+// Revision 1.11  1999/01/17 20:32:21  ghutchis
+// Added support for url_log, save and restart digs.
+//
 // Revision 1.10  1999/01/02 16:13:30  bergolth
 // added warning message if locale selection failed
 //
@@ -65,11 +68,12 @@ main(int ac, char **av)
     int			alt_work_area = 0;
     int			create_text_database = 0;
     char		*max_hops = 0;
+    RetrieverLog	flag  = Retriever_noLog;
 	
     //
     // Parse command line arguments
     //
-    while ((c = getopt(ac, av, "sc:vith:u:a")) != -1)
+    while ((c = getopt(ac, av, "lsc:vith:u:a")) != -1)
     {
 	switch (c)
 	{
@@ -96,6 +100,9 @@ main(int ac, char **av)
 		break;
 	    case 'a':
 		alt_work_area++;
+		break;
+	    case 'l':
+		flag = Retriever_logUrl;
 		break;
 	    case '?':
 		usage();
@@ -223,7 +230,7 @@ main(int ac, char **av)
     // In case this is just an update dig, we will add all existing
     // URLs?
     //
-    Retriever	retriever;
+    Retriever	retriever(flag);
     List	*list = docs.URLs();
     retriever.Initial(*list);
     delete list;
@@ -318,6 +325,9 @@ void usage()
     cout << "\t\tthe original files to be used by htsearch during the\n";
     cout << "\t\tindexing run.\n\n";
 	
+    // FIXME
+    cout << "\t-l\tStop and restart.\n";
+
     exit(0);
 }
 

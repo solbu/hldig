@@ -4,6 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.34  1999/01/17 20:32:20  ghutchis
+// Added support for url_log, save and restart digs.
+//
 // Revision 1.33  1999/01/15 04:52:18  ghutchis
 // Added options noindex_start and noindex_end to enable NOT indexing some
 // sections of HTML.
@@ -115,7 +118,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.33 1999/01/15 04:52:18 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.34 1999/01/17 20:32:20 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -238,6 +241,7 @@ ConfigDefaults	defaults[] =
     {"timeout",				"30"},
     {"title_factor",			"100"},
     {"url_list",			"${database_base}.urls"},
+    {"url_log",				"${database_base}.log"},
     {"use_star_image",			"true"},
     {"use_meta_description",            "false"},
     {"user_agent",			"htdig"},

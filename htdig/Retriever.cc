@@ -4,6 +4,9 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.33  1999/01/17 20:32:21  ghutchis
+// Added support for url_log, save and restart digs.
+//
 // Revision 1.32  1999/01/14 01:09:12  ghutchis
 // Small speed improvements based on gprof.
 //
@@ -122,15 +125,21 @@
 #include "Document.h"
 #include <StringList.h>
 #include <pwd.h>
+#include <signal.h>
+#include <assert.h>
+#include <stdio.h>
 
 static WordList	words;
+static int noSignal;
 
 
 //*****************************************************************************
 // Retriever::Retriever()
 //
-Retriever::Retriever()
+Retriever::Retriever(RetrieverLog flags)
 {
+FILE	*urls_parsed;
+
     currenthopcount = 0;
     max_hop_count = config.Value("max_hop_count", 999999);
 		
@@ -161,6 +170,30 @@ Retriever::Retriever()
     doc = new Document();
     valid_punctuation = config["valid_punctuation"];
     minimumWordLength = config.Value("minimum_word_length", 3);
+
+    log = flags;
+    // if in restart mode
+    if (Retriever_noLog != log ) 
+    {
+    String	filelog = config["url_log"];
+    char buffer[1000];	// FIXME
+    int  l;
+
+	urls_parsed = fopen(filelog,   "r" );
+	if (0 != urls_parsed)
+        {
+  	    // read all url discovered but not fetched before 
+	    while (fgets(buffer, sizeof(buffer), urls_parsed))
+      	    {
+	       l = strlen(buffer);
+	       assert(l && buffer[l -1] == '\n');
+	       buffer[l -1] = 0;
+	       Initial(buffer,2);
+            }
+            fclose(urls_parsed);
+	}
+        unlink(filelog);
+    }
 }
 
 
@@ -184,13 +217,18 @@ Retriever::setUsernamePassword(char *credentials)
 
 
 //*****************************************************************************
-// void Retriever::Initial(char *list, int check)
+// void Retriever::Initial(char *list, int from)
 //   Add a single URL to the list of URLs to visit.
 //   Since URLs are stored on a per server basis, we first need to find the
 //   the correct server to add the URL's path to.
 //
+//   from == 0 urls in db.docs and no db.log
+//   from == 1 urls in start_url add url only if not already in the list 
+//   from == 2 add url from db.log 
+//   from == 3 urls in db.docs and there was a db.log 
+//
 void
-Retriever::Initial(char *list, int check)
+Retriever::Initial(char *list, int from)
 {
     //
     // Split the list of urls up into individual urls.
@@ -207,33 +245,92 @@ Retriever::Initial(char *list, int check)
 	server = (Server *) servers[sig];
 	url = u.get();
 	url.lowercase();
+	if (debug > 2)
+           cout << "\t" << from << ":" << log << ":" << url;
 	if (!server)
 	{
 	    server = new Server(u.host(), u.port());
 	    servers.Add(sig, server);
 	}
-	else if (check && visited.Exists(url)) 
+	else if (from && visited.Exists(url)) 
 	{
+	    if (debug > 2)
+                cout << " skipped" << endl;
 	    continue;
 	}
+        if (Retriever_noLog == log || from != 3) 
+        {
+	    if (debug > 2)
+                cout << " pushed";
      	server->push(u.get(), 0, 0);
+        }
+	if (debug > 2)
+           cout << endl;
 	visited.Add(url, 0);
     }
 }
 
 
 //*****************************************************************************
-// void Retriever::Initial(List &list, int check)
+// void Retriever::Initial(List &list, int from)
 //
 void
-Retriever::Initial(List &list, int check)
+Retriever::Initial(List &list,int from)
 {
     list.Start_Get();
     String	*str;
+    // from == 0 is an optimisation for pushing url in update mode
+    //  assuming that 
+    // 1) there's many more urls in docdb 
+    // 2) they're pushed first
+    // 3)  there's no duplicate url in docdb
+    // then they don't need to be check against already pushed urls
+    // But 2) can be false with -l option
+    //
+    // FIXME it's nasty, what have to be test is :
+    // we have urls to push from db.docs but do we already have them in
+    // db.log? For this it's using a side effect with 'visited' and that
+    // urls in db.docs are only pushed via this method, and that db.log are pushed
+    // first, db.docs second, start_urls third!
+    //  
+    if (!from && visited.Count())  
+    {
+       from = 3;
+    }
     while ((str = (String *) list.Get_Next()))
     {
-	Initial(str->get(), check);
+	Initial(str->get(),from);
     }
+}
+
+//*****************************************************************************
+//
+static void sigexit(int signum)
+{
+ noSignal=0;
+}
+
+//*****************************************************************************
+// static void sig_handlers
+//	initialise signal handlers
+//
+static void
+sig_handlers(void)
+{
+struct sigaction action;
+
+ /* SIGINT, SIGQUIT, SIGTERM */
+ action.sa_handler = sigexit;
+ sigemptyset(&action.sa_mask);
+ action.sa_flags = 0;
+ if (sigaction(SIGINT, &action, NULL) != 0)
+	reportError("Cannot install SIGINT handler\n");
+ if(sigaction(SIGQUIT, &action, NULL) != 0)
+	reportError("Cannot install SIGQUIT handler\n");
+ if(sigaction(SIGTERM, &action, NULL) != 0)
+	reportError("Cannot install SIGTERM handler\n");
+ if(sigaction(SIGHUP, &action, NULL) != 0)
+	reportError("Cannot install SIGHUP handler\n");
 }
 
 
@@ -256,7 +353,16 @@ Retriever::Start()
     Server	*server;
     URLRef	*ref;
     
-    while (more)
+    //  
+    // Always sig . The delay bother me but a bad db is worst
+    // 
+    if (1 || Retriever_noLog != log ) 
+    {
+	sig_handlers();
+    }
+    noSignal = 1;
+
+    while (more && noSignal)
     {
 	more = 0;
 		
@@ -266,7 +372,7 @@ Retriever::Start()
 	// on the servers is distributed evenly.
 	//
 	servers.Start_Get();
-	while ( (server = (Server *)servers.Get_NextElement()) )
+	while ( (server = (Server *)servers.Get_NextElement()) && noSignal)
 	{
 	    if (debug > 1)
 		cout << "pick: " << server->host() << ", # servers = " <<
@@ -294,6 +400,32 @@ Retriever::Start()
 	    parse_url(*ref);
             delete ref;
 	}
+    }
+    // if we exited on signal 
+    if (Retriever_noLog != log && !noSignal) 
+    {
+    FILE	*urls_parsed;
+    String	filelog = config["url_log"];
+        // save url seen but not fetched
+	urls_parsed = fopen(filelog,   "w" );
+	if (0 == urls_parsed)
+	{
+	    reportError(form("Unable to create URL log file '%s'",
+			     filelog.get()));
+	}
+        else {
+  	   servers.Start_Get();
+	   while ((server_sig = servers.Get_Next()))
+	   {
+	      server = (Server *) servers[server_sig];
+   	      while (NULL != (ref = server->pop())) 
+              {
+      	          fprintf(urls_parsed, "%s\n", ref->URL());
+ 		  delete ref;
+              }
+           }
+           fclose(urls_parsed);
+        }
     }
 }
 

@@ -1,9 +1,12 @@
 //
 // Retriever.h
 //
-// $Id: Retriever.h,v 1.6 1998/12/05 00:52:55 ghutchis Exp $
+// $Id: Retriever.h,v 1.7 1999/01/17 20:32:21 ghutchis Exp $
 //
 // $Log: Retriever.h,v $
+// Revision 1.7  1999/01/17 20:32:21  ghutchis
+// Added support for url_log, save and restart digs.
+//
 // Revision 1.6  1998/12/05 00:52:55  ghutchis
 //
 // Added a parameter to Initial function to prevent URLs from being checked
@@ -51,13 +54,19 @@ class URL;
 class Document;
 class URLRef;
 
+enum  RetrieverLog {
+    Retriever_noLog,
+    Retriever_logUrl,
+    Retriever_Restart,
+};
+
 class Retriever
 {
 public:
     //
     // Construction/Destruction
     //
-    			Retriever();
+    			Retriever(RetrieverLog flags = Retriever_noLog);
     virtual		~Retriever();
 
     //
@@ -111,6 +120,7 @@ private:
     Images		images;
     String		credentials;
 	
+    RetrieverLog log;
     //
     // These are weights for the words.  The index is the heading level.
     //
