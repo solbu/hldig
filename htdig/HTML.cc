@@ -12,7 +12,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.47 1999/07/13 01:39:30 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.48 1999/07/13 20:58:06 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -765,14 +765,16 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	case 22:	// area
         case 26:	// link
 	{
-	  if (attrs["src"])
+	  if (attrs["href"])
 	    {
-	      // src seen
+	      // href seen
 	      if (dofollow)
 		{
-		  delete href;
-		  href = new URL(attrs["src"], *base);
-		  retriever.got_href(*href, 0);
+		  if (href)
+		    delete href;
+		  href = new URL(attrs["href"], *base);
+		  // area & link are like anchor tags -- one hopcount!
+		  retriever.got_href(*href, "", 1);
 		  in_ref = 0;
 		}
 	    }

@@ -1,3 +1,8 @@
+Tue Jul 13 15:36:40 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (do_tag): Fix handling of <link> and <area>,
+	to use href= instead of src=.
+
 Mon Jul 12 22:31:48 1999  Hanno Mueller <kontakt@hanno.de>
 	
 	* contrib/scriptname/results.shtml: Remove unintentional $(VERSION).
