@@ -4,6 +4,10 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.11  1998/10/31 23:58:22  ghutchis
+//
+// Fixed compiler warning.
+//
 // Revision 1.10  1998/10/26 20:44:00  ghutchis
 //
 // Cleaned up -Wall warnings.
@@ -42,7 +46,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.10 1998/10/26 20:44:00 ghutchis Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.11 1998/10/31 23:58:22 ghutchis Exp $";
 #endif
 
 #include "URL.h"
@@ -566,7 +570,7 @@ void URL::ServerAlias()
     {
       delim= al->indexOf(':');
       // printf("%s->%s\n", (char *) _signature, (char *) *al);
-      _host= al->sub(0,delim);
+      _host= al->sub(0,delim).get();
       sscanf(al->sub(delim+1), "%d", &newport);
       _port= newport;
       // printf("\nNewer URL: %s:%d\n", (char *) _host, _port);
