@@ -1,3 +1,7 @@
+Fri Dec  1 14:45:33 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.2.0.spec: Updated to 3.2.0b3.
+
 Fri Dec  1 13:59:09 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/Makefile.am: Fix pkginclude_HEADERS to list missing headers

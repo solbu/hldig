@@ -1,6 +1,6 @@
 Summary: A web indexing and searching system for a small domain or intranet
 Name: htdig
-Version: 3.2.0b2
+Version: 3.2.0b3
 Release: 0
 Copyright: GPL
 Group: Networking/Utilities
@@ -91,6 +91,9 @@ fi
 %doc README htdoc/*
 
 %changelog
+* Fri Dec  1 2000 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+  - updated to 3.2.0b3
+
 * Mon Feb 21 2000 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
   - fixed %post script to add more descriptive entries in htdig.conf
   - made cron script a config file
