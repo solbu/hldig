@@ -1,3 +1,12 @@
+Sat Jun 12 14:41:54 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc (displayMatch): Added patch from Torsten
+	Neuer <tneuer@inwise.de> to fix PR# 554.
+
+	* htdig/HTML.cc (do_tag): Add parsing for <embed> and <object>,
+	including suggestions from Gilles as to condensing cases with
+	<img> parsing.
+
 Sat Jun 12 14:00:39 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/ExternalParser.cc (parse): Quote the filename before
