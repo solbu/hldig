@@ -4,6 +4,10 @@
 // Implementation of DB2_db
 //
 // $Log: DB2_db.cc,v $
+// Revision 1.5  1998/12/02 02:45:33  ghutchis
+//
+// Added fix from Alexander Bergolth for Berkeley DB under AIX.
+//
 // Revision 1.4  1998/10/12 02:50:15  ghutchis
 //
 // Added fix suggested by Domotor Akos <dome@impulzus.sch.bme.hu> with (char
@@ -27,7 +31,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: DB2_db.cc,v 1.4 1998/10/12 02:50:15 ghutchis Exp $";
+static char RCSid[] = "$Id: DB2_db.cc,v 1.5 1998/12/02 02:45:33 ghutchis Exp $";
 #endif
 
 #include "DB2_db.h"
@@ -35,6 +39,7 @@ static char RCSid[] = "$Id: DB2_db.cc,v 1.4 1998/10/12 02:50:15 ghutchis Exp $";
 #include <stdlib.h>
 #include <fstream.h>
 #include <malloc.h>
+#include <unistd.h>
 
 // Where do I need this for? I don't know.
 int errno;
@@ -83,8 +88,11 @@ DB2_db::OpenReadWrite(char *filename, int mode)
     //
     // Create the database.
     //
-    if ((errno = db_open(filename, DB_BTREE, DB_CREATE, mode, dbenv,
-			 &dbinfo, &dbp)) == 0)
+    if (access(filename, F_OK) == 0)
+      errno = db_open(filename, DB_BTREE, 0, 0, dbenv, &dbinfo, &dbp);
+    else
+      errno = db_open(filename, DB_BTREE, DB_CREATE, mode, dbenv, &dbinfo, &dbp);
+    if (errno == 0)
     {
         //
 	// Acquire a cursor for the database.
