@@ -7,6 +7,12 @@ Sun Feb 28 23:25:40 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 	* htlib/HtURLCodec.cc (~HtURLCodec): Add missing deletion of
 	myWordCodec.
 
+Fri Feb 26 19:03:58 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure, configure.in: Fix typo on timegm test.
+
+	* htlib/mytimegm.cc: Fix Y2K problems.
+
 Wed Feb 24 21:09:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc(main): Remember to delete the parser!
