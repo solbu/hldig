@@ -1,3 +1,7 @@
+Sat Jul 5 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+	* htcommon/defaults.cc: Disable cache flushing to avoid "page leak".
+
 Tue Jun 24 2003 Neal Richter <nearl@rightnow.com>
 
     * Update Copyright Notices in code & documentation to 2003

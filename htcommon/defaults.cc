@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.89 2003/06/24 20:05:44 nealr Exp $
+// $Id: defaults.cc,v 1.90 2003/07/05 12:48:04 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -2678,7 +2678,7 @@ form during indexing and translated for results. \
 	words. The file is easy to parse with tools like \
 	perl or tcl. \
 " }, \
-{ "wordlist_cache_dirty_level", "1",  \
+{ "wordlist_cache_dirty_level", "10000",  \
 	"integer", "htdig", "", "3.2.0b4", "Indexing:How", "wordlist_cache_dirty_level: 2", " \
 	Maximum ratio of dirty pages to clean pages in the cache.  If fewer \
 	are clean, then all pages are written out (but kept in the cache). \
