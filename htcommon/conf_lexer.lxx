@@ -17,7 +17,7 @@
 
 #include "HtConfiguration.h"
 //#include "Dictionary.h"
-#include "conf.tab.cc.h"
+#include "conf_parser.h"
 #define MAX_INCLUDE_DEPTH 10
 YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
 int include_stack_ptr = 0;
