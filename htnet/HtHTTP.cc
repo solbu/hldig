@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.7 2000/01/29 01:35:36 ghutchis Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.8 2000/02/07 13:12:07 angus Exp $ 
 //
 
 #include "lib.h"
@@ -956,7 +956,11 @@ int HtHTTP::ReadChunkedBody()
    // Ignoring next part of the body - the TRAILER
    // (it contains further headers - not implemented)
 
+    // Set content length
    _response._content_length = length;
+
+    // Set document length
+    _response._document_length = length;
 
    return length;
 
