@@ -4,6 +4,11 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.18  1998/11/22 19:14:16  ghutchis
+//
+// Use "description_factor" to weight link descriptions with the documents at
+// the end of the link.
+//
 // Revision 1.17  1998/11/16 16:10:17  ghutchis
 //
 // Fix back link count.
@@ -107,7 +112,8 @@ Retriever::Retriever()
     factor[5] = config.Double("heading_factor_4");
     factor[6] = config.Double("heading_factor_5");
     factor[7] = config.Double("heading_factor_6");
-    factor[8] = factor[9] = 0;
+    factor[8] = 0;
+    factor[9] = config.Double("description_factor");
     factor[10] = config.Double("keywords_factor");
     factor[11] = config.Double("meta_description_factor");
 	
@@ -867,6 +873,26 @@ Retriever::got_href(URL &url, char *description)
 	    ref->DocBackLinks(ref->DocBackLinks() + 1); // This one!
 	    ref->DocURL(url.get());
 	    ref->AddDescription(description);
+
+	    // Add the description text to the word database with proper factor
+	    // Make sure we save the old DocID of the word DB and init for the
+	    // description. Also save the current_anchor_number
+	    char    *w = strtok(description, " ,\t\r\n");
+	    int    old_id = current_id;
+	    int    old_anchor = current_anchor_number;
+	    words.DocumentID(ref->DocID());
+	    current_anchor_number = 0;
+	    while (w)
+	      {
+		if (strlen(w) >= config.Value("minimum_word_length", 3))
+		  this->got_word(w, 1, 9); // description_factor
+		w = strtok(0, " ,\t\r\n");
+	      }
+	    w = '\0';
+	    // Now clean up by resetting words.DocID and current_anchor_num
+	    words.DocumentID(old_id);
+	    current_anchor_number = old_anchor;
+
 	    if (ref->DocHopCount() < currenthopcount + 1)
 		ref->DocHopCount(currenthopcount + 1);
 
