@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtConfiguration.h,v 1.1.2.6 2000/02/21 23:17:12 grdetil Exp $
+// $Id: HtConfiguration.h,v 1.1.2.7 2000/03/21 00:35:16 ghutchis Exp $
 //
 
 
@@ -25,12 +25,17 @@ class HtConfiguration : public Configuration
 {
  public:
     const String	Find(const String& name) const {return(Configuration::Find(name));}
-    int		Value(const String& name, int default_value = 0) const     {return(Configuration::Value  (name,default_value));}
-    double	Double(const String& name, double default_value = 0) const {return(Configuration::Double (name,default_value));}
-    int		Boolean(const String& name, int default_value = 0) const   {return(Configuration::Boolean(name,default_value));}
+    int			Value(const String& name, int default_value = 0) const
+      {return(Configuration::Value  (name,default_value));}
+    double	Double(const String& name, double default_value = 0) const 
+      {return(Configuration::Double (name,default_value));}
+    int		Boolean(const String& name, int default_value = 0) const   
+      {return(Configuration::Boolean(name,default_value));}
     void		Add(const String& str){Configuration::Add(str);}
-    void		Add(const String& name, const String& value){Configuration::Add(name,value);}
-    void		AddParsed(const String& name, const String& value){Configuration::AddParsed(name,value);}
+    void		Add(const String& name, const String& value)
+      {Configuration::Add(name,value);}
+    void		AddParsed(const String& name, const String& value)
+      {Configuration::AddParsed(name,value);}
 
     void		Add(char *name, char *value, Configuration *aList);
     const String	Find(URL *aUrl, const char *value) const;
