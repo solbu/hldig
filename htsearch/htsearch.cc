@@ -6,6 +6,9 @@
 // Outputs HTML-ized results of the search based on the templates specified
 //
 // $Log: htsearch.cc,v $
+// Revision 1.19  1999/01/12 03:59:02  ghutchis
+// Do not skip words if "boolean" search.
+//
 // Revision 1.18  1998/12/19 16:55:11  bergolth
 // Added allow_in_form option.
 //
@@ -67,7 +70,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.18 1998/12/19 16:55:11 bergolth Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.19 1999/01/12 03:59:02 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -417,11 +420,9 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
 	    i++;
 	    continue;
 	}
-	if (badWords.IsValid(p))
+	if (boolean)
 	    parsedWords << p << ' ';
-	if (boolean && ((mystrncasecmp(p, "or", 2) == 0) || 
-			(mystrncasecmp(p, "and", 3) == 0) ||
-			(mystrncasecmp(p, "not", 3) == 0)))
+	else if (badWords.IsValid(p))
 	    parsedWords << p << ' ';
     }
 
