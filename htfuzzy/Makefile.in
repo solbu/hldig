@@ -1,7 +1,10 @@
 include @HTDIG_TOP@/Makefile.config
-include .sniffdir/ofiles.incl
 
-OBJS=		$(OFILES)
+OBJS=		Endings.o EndingsDB.o Exact.o \
+		Fuzzy.o Metaphone.o Soundex.o \
+		SuffixEntry.o Synonym.o htfuzzy.o \
+		Substring.o Prefix.o
+
 LIBOBJS=	Endings.o Exact.o Fuzzy.o Metaphone.o \
 		Soundex.o Synonym.o EndingsDB.o SuffixEntry.o Substring.o Prefix.o
 

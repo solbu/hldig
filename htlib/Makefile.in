@@ -1,7 +1,14 @@
 include @HTDIG_TOP@/Makefile.config
-include .sniffdir/ofiles.incl
 
-OBJS=	$(OFILES)
+OBJS=	Configuration.o Connection.o Database.o \
+		Dictionary.o DB2_db.o \
+		IntObject.o List.o Object.o \
+		ParsedString.o Queue.o QuotedStringList.o \
+		Stack.o String.o \
+		StringList.o StringMatch.o String_fmt.o \
+		URL.o URLTrans.o cgi.o \
+		good_strtok.o io.o strcasecmp.o \
+		strptime.o timegm.o
 
 TARGET=		libht.a
 

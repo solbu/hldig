@@ -1,7 +1,6 @@
 include @HTDIG_TOP@/Makefile.config
-include .sniffdir/ofiles.incl
 
-OBJS=		$(OFILES)
+OBJS=		htnotify.o 
 
 TARGET=		htnotify
 

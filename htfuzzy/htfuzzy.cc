@@ -13,6 +13,10 @@
 // in the main word database.
 //
 // $Log: htfuzzy.cc,v $
+// Revision 1.4  1998/09/18 02:38:08  ghutchis
+//
+// Bug fixes for 3.1.0b2
+//
 // Revision 1.3  1997/06/23 02:26:15  turtle
 // Added version info the usage output
 //
@@ -24,7 +28,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htfuzzy.cc,v 1.3 1997/06/23 02:26:15 turtle Exp $";
+static char RCSid[] = "$Id: htfuzzy.cc,v 1.4 1998/09/18 02:38:08 ghutchis Exp $";
 #endif
 
 #include "htfuzzy.h"
@@ -155,7 +159,7 @@ main(int ac, char **av)
 		count++;
 		if ((count % 100) == 0 && debug)
 		{
-		    cout << "htfuzzy: words: " << count << '\r';
+		    cout << "htfuzzy: words: " << count << '\n';
 		    cout.flush();
 		}
 	    }

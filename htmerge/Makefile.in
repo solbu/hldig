@@ -1,7 +1,7 @@
 include @HTDIG_TOP@/Makefile.config
-include .sniffdir/ofiles.incl
 
-OBJS=		$(OFILES)
+OBJS=		docs.o htmerge.o words.o 
+
 TARGET=		htmerge
 LOCAL_DEFINES=	-DSORT_PROG=\"@SORT@\"
 

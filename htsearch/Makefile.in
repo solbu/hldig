@@ -1,7 +1,9 @@
 include @HTDIG_TOP@/Makefile.config
-include .sniffdir/ofiles.incl
 
-OBJS=		$(OFILES)
+OBJS=		Display.o DocMatch.o ResultList.o ResultMatch.o \
+		Template.o TemplateList.o WeightWord.o htsearch.o \
+		parser.o
+
 FOBJS=		../htfuzzy/libfuzzy.a
 TARGET=		htsearch
 LOCAL_DEFINES=	-DCONFIG_DIR=\"$(CONFIG_DIR)\"

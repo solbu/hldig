@@ -4,12 +4,16 @@
 // Implementation of Endings class DB related methods
 //
 // $Log: EndingsDB.cc,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Revision 1.2  1998/09/18 02:38:08  ghutchis
+//
+// Bug fixes for 3.1.0b2
+//
+// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: EndingsDB.cc,v 1.1 1997/02/03 17:11:12 turtle Exp $";
+static char RCSid[] = "$Id: EndingsDB.cc,v 1.2 1998/09/18 02:38:08 ghutchis Exp $";
 #endif
 
 #include "Endings.h"
@@ -158,7 +162,7 @@ Endings::createRoot(Dictionary &rules, char *word2root, char *root2word, char *d
     {
 	if ((count % 100) == 0 && debug == 1)
 	{
-	    cout << "htfuzzy/endings: words: " << count << '\r';
+	    cout << "htfuzzy/endings: words: " << count << '\n';
 	    cout.flush();
 	}
 	count++;

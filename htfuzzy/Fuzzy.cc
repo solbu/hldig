@@ -4,6 +4,10 @@
 // Implementation of Fuzzy
 //
 // $Log: Fuzzy.cc,v $
+// Revision 1.3  1998/09/18 02:38:08  ghutchis
+//
+// Bug fixes for 3.1.0b2
+//
 // Revision 1.2  1998/06/21 23:20:02  turtle
 // patches by Esa and Jesse to add BerkeleyDB and Prefix searching
 //
@@ -12,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.2 1998/06/21 23:20:02 turtle Exp $";
+static char RCSid[] = "$Id: Fuzzy.cc,v 1.3 1998/09/18 02:38:08 ghutchis Exp $";
 #endif
 
 #include "Fuzzy.h"
@@ -143,7 +147,7 @@ Fuzzy::writeDB(Configuration &config)
 	count++;
 	if ((count % 100) == 0 && debug == 1)
 	{
-	    cout << "htfuzzy: keys: " << count << '\r';
+	    cout << "htfuzzy: keys: " << count << '\n';
 	    cout.flush();
 	}
     }

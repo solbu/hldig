@@ -4,12 +4,16 @@
 // Implementation of Synonym
 //
 // $Log: Synonym.cc,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Revision 1.2  1998/09/18 02:38:08  ghutchis
+//
+// Bug fixes for 3.1.0b2
+//
+// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Synonym.cc,v 1.1 1997/02/03 17:11:12 turtle Exp $";
+static char RCSid[] = "$Id: Synonym.cc,v 1.2 1998/09/18 02:38:08 ghutchis Exp $";
 #endif
 
 #include "Synonym.h"
@@ -85,8 +89,7 @@ Synonym::createDB(Configuration &config)
 	    db->Put(word, data, data.length() - 1);
 	    if (debug && (count % 10) == 0)
 	    {
-		cout << "htfuzzy/synonyms: " << count << ' ' << word
-		     << "            \r";
+                cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
 		cout.flush();
 	    }
 	    count++;
@@ -96,8 +99,7 @@ Synonym::createDB(Configuration &config)
     db->Close();
     if (debug)
     {
-	cout << "htfuzzy/synonyms: " << count << ' ' << word
-	     << "            \n";
+        cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
 	cout << "htfuzzy/synonyms: Done.\n";
     }
     return OK;

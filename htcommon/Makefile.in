@@ -1,7 +1,7 @@
 include @HTDIG_TOP@/Makefile.config
-include .sniffdir/ofiles.incl
 
-OBJS=	$(OFILES)
+OBJS=	DocumentDB.o DocumentRef.o WordList.o \
+		defaults.o 
 
 TARGET=		libcommon.a
 LOCAL_DEFINES=	-DBIN_DIR=\"$(BIN_DIR)\" \
