@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: Configuration.cc,v 1.9.2.5 2000/02/16 21:55:13 grdetil Exp $";
+static char	RCSid[] = "$Id: Configuration.cc,v 1.9.2.6 2001/07/05 16:26:35 ghutchis Exp $";
 #endif
 
 #include "Configuration.h"
@@ -349,13 +349,16 @@ int Configuration::Read(char *filename)
         while (*value == ' ' || *value == '\t')
             value++;
 	len = strlen(value) - 1;
-	//
-	// Skip any whitespace after the actual text
-	//
-	while (value[len] == ' ' || value[len] == '\t')
+	if (len >= 0)
 	  {
-	    value[len] = '\0';
-	    len--;
+	    //
+	    // Skip any whitespace after the actual text
+	    //
+	    while (value[len] == ' ' || value[len] == '\t')
+	      {
+		value[len] = '\0';
+		len--;
+	      }
 	  }
 
 	if (mystrcasecmp(name, "include") == 0)

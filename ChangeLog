@@ -1,3 +1,18 @@
+Thu Jul  5 11:23:40 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* db/dist/config.guess: Update with more recent GNU version that
+	recognizes various flavors of Mac OS X automatically.
+
+	* htlib/DB2_db.cc: Only #include <malloc.h> if we have it. Fixes
+	compilation problems on Mac OS X.
+
+	* htlib/String.cc: Include <iostream.h> instead of depreciated
+	<stream.h>. Fixes compilation problems with Mac OS X.
+
+	* htlib/Configuration.cc: Make sure we never try to operate on
+	strings of no length--accessing string[-1] is a bug--exposed on
+	Mac OS X.
+
 Fri Jun 29 11:56:25 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc (got_redirect): Allow the redirect to accept

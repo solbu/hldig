@@ -1,7 +1,7 @@
 //
 // Implementation of String class
 //
-// $Id: String.cc,v 1.16.2.4 2001/06/07 20:23:59 grdetil Exp $
+// $Id: String.cc,v 1.16.2.5 2001/07/05 16:26:35 ghutchis Exp $
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2001 The ht://Dig Group
@@ -10,14 +10,14 @@
 // <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.16.2.4 2001/06/07 20:23:59 grdetil Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.16.2.5 2001/07/05 16:26:35 ghutchis Exp $";
 #endif
 
 
 #include "htString.h"
 
 #include <unistd.h>
-#include <stream.h>
+#include <fstream.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>

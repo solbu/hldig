@@ -4,6 +4,20 @@
 // Implementation of DB2_db
 //
 // $Log: DB2_db.cc,v $
+// Revision 1.7.2.2  2001/07/05 16:26:35  ghutchis
+//         * db/dist/config.guess: Update with more recent GNU version that
+//         recognizes various flavors of Mac OS X automatically.
+//
+//         * htlib/DB2_db.cc: Only #include <malloc.h> if we have it. Fixes
+//         compilation problems on Mac OS X.
+//
+//         * htlib/String.cc: Include <iostream.h> instead of depreciated
+//         <stream.h>. Fixes compilation problems with Mac OS X.
+//
+//         * htlib/Configuration.cc: Make sure we never try to operate on
+//         strings of no length--accessing string[-1] is a bug--exposed on
+//         Mac OS X.
+//
 // Revision 1.7.2.1  2000/03/01 06:05:52  ghutchis
 // * htlib/DB2_db.cc (Error): Simply fprint the error message on
 // stderr. This is not a method since the db.h interface expects a C function.
@@ -42,17 +56,19 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: DB2_db.cc,v 1.7.2.1 2000/03/01 06:05:52 ghutchis Exp $";
+static char RCSid[] = "$Id: DB2_db.cc,v 1.7.2.2 2001/07/05 16:26:35 ghutchis Exp $";
 #endif
 
 #include "DB2_db.h"
 #include <errno.h>
 #include <stdlib.h>
 #include <fstream.h>
-#include <malloc.h>
 #include <unistd.h>
 
-// Where do I need this for? I don't know.
+#ifdef HAVE_MALLOC_H
+#include <malloc.h>
+#endif
+
 int errno;
 
 // Default cache size in kilobytes.
