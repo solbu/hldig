@@ -66,7 +66,7 @@
 		<a href="hts_templates.html">Output Templates</a> section.<br>
 		 The <i>format</i> value can be specified as either a
 		hidden input field or a drop down menu.<br>
-		 The default is specified by the <i>template_name</i>
+		 The default is specified by the <a href="attrs.html#template_name">template_name</a>
 		attribute in the configuration file.
 	  </dd>
 	  <dt>
@@ -75,7 +75,9 @@
 	  <dd>
 		Used to specify a list of required words that have to be in
 		the documents. This list of words is added to the normal
-		<i>words</i> value using logical "and"s.<br>
+		<i>words</i> value using logical "and"s, or logical "or"s
+		if the <a href="attrs.html#any_keywords">any_keywords</a>
+		attribute is set to true in the configuration file.<br>
 		 An example use for this value is to make it a drop down
 		menu with a limited set of predetermined categories or
 		keywords to restrict the search. This can be very useful
@@ -91,7 +93,7 @@
 	  <dd>
 		Specifies how many matches will be displayed on each page
 		of results.<br>
-		 The default is specified by the <i>matches_per_page</i>
+		 The default is specified by the <a href="attrs.html#matches_per_page">matches_per_page</a>
 		attribute in the configuration file. Since this value has
 		to be a number, it either needs to be set using a hidden
 		input field or a with a drop down menu.
@@ -103,7 +105,7 @@
 		This can be one of <i>and</i>, <i>or</i>, or <i>
 		boolean</i>. It determines what type of search will be
 		performed.<br>
-		 The default is specified by the <i>match_method</i>
+		 The default is specified by the <a href="attrs.html#match_method">match_method</a>
 		attribute in the configuration file. It is quite useful to
 		make this item a drop down menu so the user can select the
 		type of search at search time.
@@ -140,7 +142,7 @@
 		by the server.
 		The sort methods that begin with <i>rev</i> simply reverse
 		the order of the sort.<br>
-		 The default is specified by the <i>sort</i>
+		 The default is specified by the <a href="attrs.html#sort">sort</a>
 		attribute in the configuration file. It is quite useful to
 		make this item a drop down menu so the user can select the
 		type of sort at search time.
@@ -151,7 +153,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 
-Last modified: $Date: 2000/01/30 03:38:26 $
+Last modified: $Date: 2000/03/17 21:20:36 $
 
   </body>
 </html>

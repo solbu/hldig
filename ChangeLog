@@ -1,3 +1,14 @@
+Fri Mar 17 16:17:54 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc (addRequiredWords), htcommon/defaults.cc:
+	Add any_keywords attribute, to OR keywords rather than ANDing,
+	fix addRequiredWords not to mess up expression when there are
+	no search words, but required words are given.
+	* htdoc/hts_form.html: Mention new attribute, add links to all
+	mentioned attributes.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerate using cf_generate.pl.
+
 Fri Mar 17 15:48:12 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htfuzzy/Accents.cc (generateKey): Truncate words to

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.54.2.6 2000/03/06 23:37:53 grdetil Exp $
+// $Id: htsearch.cc,v 1.54.2.7 2000/03/17 21:20:36 grdetil Exp $
 //
 
 #include "htsearch.h"
@@ -741,13 +741,32 @@ htsearch(Collection *collection, List &searchWords, Parser *parser)
 void
 addRequiredWords(List &searchWords, StringList &requiredWords)
 {
-    searchWords.Insert(new WeightWord("(", -1.0), 0);
-    searchWords.Add(new WeightWord(")", -1.0));
-
-    for (int i = 0; i < requiredWords.Count(); i++)
+    static int	any_keywords = config.Boolean("any_keywords", 0);
+    if (requiredWords.Count() == 0)
+	return;
+    if (searchWords.Count() > 0)
     {
+	searchWords.Insert(new WeightWord("(", -1.0), 0);
+	searchWords.Add(new WeightWord(")", -1.0));
 	searchWords.Add(new WeightWord("&", -1.0));
-	searchWords.Add(new WeightWord(requiredWords[i], 1.0));
+    }
+    if (requiredWords.Count() == 1)
+    {
+	searchWords.Add(new WeightWord(requiredWords[0], 1.0));
+    }
+    else
+    {
+	searchWords.Add(new WeightWord("(", -1.0));
+	searchWords.Add(new WeightWord(requiredWords[0], 1.0));
+	for (int i = 1; i < requiredWords.Count(); i++)
+	{
+	    if (any_keywords)
+		searchWords.Add(new WeightWord("|", -1.0));
+	    else
+		searchWords.Add(new WeightWord("&", -1.0));
+	    searchWords.Add(new WeightWord(requiredWords[i], 1.0));
+	}
+	searchWords.Add(new WeightWord(")", -1.0));
     }
 }
 

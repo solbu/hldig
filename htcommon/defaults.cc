@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.44 2000/03/03 10:42:04 angus Exp $
+// $Id: defaults.cc,v 1.64.2.45 2000/03/17 21:20:32 grdetil Exp $
 //
 
 #include "HtConfiguration.h"
@@ -69,6 +69,15 @@ ConfigDefaults	defaults[] =
 	address to map to. If this option is set to false,
 	there is no way to index either \"soft\" or \"hard\"
 	virtual web sites.
+" },
+{ "any_keywords", "false", 
+	"boolean", "htsearch", "3.2.0b2", "Searching:Method", "any_keywords: yes", "
+	If set to true, the words in the <strong>keywords</strong>
+	input parameter in the search form will be joined with logical
+	ORs rather than ANDs, so that any of the words provided will do.
+	Note that this has nothing to do with limiting the search to
+	words in META keywords tags. See the <a href=\"hts_form.html\">
+	search form</a> documentation for details on this.
 " },
 { "authorization", "", 
 	"string", "htdig", "3.1.4", "Indexing:Out", "authorization: myusername:mypassword", "
