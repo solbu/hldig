@@ -10,7 +10,8 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	good_strtok.cc strcasecmp.cc \
 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc \
 	HtVector.cc HtHeap.cc regex.c \
-	HtPack.cc HtDateTime.cc HtRegex.cc 
+	HtPack.cc HtDateTime.cc HtRegex.cc \
+	HtVectorGeneric.cc 
 
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
@@ -40,5 +41,9 @@ include_HEADERS = \
 	htString.h \
 	lib.h \
 	langinfo.h \
-	regex.h 
+	regex.h  \
+	HtVectorGeneric.h   \
+	HtVectorGenericCode.h
+
+
 
