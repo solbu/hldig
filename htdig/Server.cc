@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.14 2000/08/13 18:22:27 ghutchis Exp $
+// $Id: Server.cc,v 1.17.2.15 2000/08/30 08:10:22 angus Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -294,9 +294,9 @@ void Server::robotstxt(Document &doc)
 
 
 //*****************************************************************************
-// void Server::push(char *path, int hopcount, char *referer, int local)
+// void Server::push(String &path, int hopcount, char *referer, int local)
 //
-void Server::push(char *path, int hopcount, char *referer, int local)
+void Server::push(const String &path, int hopcount, const String &referer, int local)
 {
     if (_bad_server && !local)
 	return;

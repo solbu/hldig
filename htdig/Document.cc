@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.22 2000/08/13 18:22:27 ghutchis Exp $
+// $Id: Document.cc,v 1.55.2.23 2000/08/30 08:10:21 angus Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -152,11 +152,11 @@ Document::Reset()
 
 
 //*****************************************************************************
-// void Document::Url(char *u)
+// void Document::Url(const String &u)
 //   Set the URL for this document
 //
 void
-Document::Url(char *u)
+Document::Url(const String &u)
 {
     if (url)
       delete url;
@@ -176,11 +176,11 @@ Document::Url(char *u)
 
 
 //*****************************************************************************
-// void Document::Referer(char *u)
+// void Document::Referer(const String &u)
 //   Set the Referring URL for this document
 //
 void
-Document::Referer(char *u)
+Document::Referer(const String &u)
 {
     if (referer)
       delete referer;

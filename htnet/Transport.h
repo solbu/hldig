@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.6.2.7 2000/08/23 11:28:53 angus Exp $
+// $Id: Transport.h,v 1.6.2.8 2000/08/30 08:10:22 angus Exp $
 //
 //
 
@@ -214,6 +214,11 @@ class Transport : public Object
 // Set the debug level   
    static void SetDebugLevel (int d) { debug=d;}   
 
+// Get statistics info
+   static int GetTotOpen () { return _tot_open; }   
+   static int GetTotClose () { return _tot_close; }   
+   static int GetTotServerChanges () { return _tot_changes; }   
+
 
 protected:
 
@@ -260,11 +265,6 @@ protected:
    // Close the connection
    
    int CloseConnection();
-
-   // Get statistics info
-   static int GetTotOpen () { return _tot_open; }   
-   static int GetTotClose () { return _tot_close; }   
-   static int GetTotServerChanges () { return _tot_changes; }   
 
    // Reset Stats
    static void ResetStatistics ()

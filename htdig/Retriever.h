@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.18.2.6 2000/08/30 04:40:53 toivo Exp $
+// $Id: Retriever.h,v 1.18.2.7 2000/08/30 08:10:22 angus Exp $
 //
 
 #ifndef _Retriever_h_
@@ -83,9 +83,9 @@ public:
     //
     // Routines for dealing with local filesystem access
     //
-    StringList *	GetLocal(char *url);
-    StringList *	GetLocalUser(char *url, StringList *defaultdocs);
-    int			IsLocalURL(char *url);
+    StringList *	GetLocal(const String &strurl);
+    StringList *	GetLocalUser(const String &url, StringList *defaultdocs);
+    int			IsLocalURL(const String &url);
 
 private:
     //
@@ -145,12 +145,12 @@ private:
     //
     // Helper routines
     //
-    int			Need2Get(char *url);
-    int			IsValidURL(char *url);
-    void		RetrievedDocument(Document &, char *url, DocumentRef *ref);
+    int			Need2Get(const String &url);
+    int			IsValidURL(const String &url);
+    void		RetrievedDocument(Document &, const String &url, DocumentRef *ref);
     void		parse_url(URLRef &urlRef);
     void		got_redirect(const char *, DocumentRef *);
-    void		recordNotFound(char *url, char *referer, int reason);
+    void		recordNotFound(const String &url, const String &referer, int reason);
 };
 
 #endif

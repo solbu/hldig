@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalTransport.cc,v 1.1.2.2 2000/05/10 18:23:42 loic Exp $
+// $Id: ExternalTransport.cc,v 1.1.2.3 2000/08/30 08:10:21 angus Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -34,7 +34,7 @@ extern String		configFile;
 //*****************************************************************************
 // ExternalTransport::ExternalTransport(char *protocol)
 //
-ExternalTransport::ExternalTransport(char *protocol)
+ExternalTransport::ExternalTransport(const String &protocol)
 {
     if (canHandle(protocol))
     {
@@ -58,10 +58,10 @@ ExternalTransport::~ExternalTransport()
 
 
 //*****************************************************************************
-// int ExternalTransport::canHandle(char *protocol)
+// int ExternalTransport::canHandle(const String &protocol)
 //
 int
-ExternalTransport::canHandle(char *protocol)
+ExternalTransport::canHandle(const String &protocol)
 {
     if (!handlers)
     {

@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.h,v 1.10.2.8 2000/03/02 17:58:47 angus Exp $
+// $Id: Document.h,v 1.10.2.9 2000/08/30 08:10:21 angus Exp $
 //
 //
 #ifndef _Document_h_
@@ -60,8 +60,8 @@ public:
     //
     char			*Redirected()		{return redirected_to;}
     URL				*Url()			{return url;}
-    void			Url(char *url);
-    void			Referer(char *url);
+    void			Url(const String &url);
+    void			Referer(const String &url);
     time_t			ModTime()		{return modtime.GetTime_t();}
 
     Transport::DocStatus	Retrieve(Server *server, HtDateTime date);

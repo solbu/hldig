@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtConfiguration.cc,v 1.1.2.9 2000/05/06 20:46:37 loic Exp $
+// $Id: HtConfiguration.cc,v 1.1.2.10 2000/08/30 08:10:21 angus Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -32,7 +32,7 @@
 //  Add complex entry to the configuration
 //
 void
-HtConfiguration::Add(char *name, char *value, Configuration *aList) {
+HtConfiguration::Add(const char *name, const char *value, Configuration *aList) {
 
   if (strcmp("url",name)==0) {  //add URL entry
     URL tmpUrl(strdup(value));
@@ -124,7 +124,7 @@ const String HtConfiguration::Find(URL *aUrl, const char *value) const
     // (or create Dictionary::FindBest ?)
     // or make url list sorted ?
     // or implement abstract Dictionary::Compare?
-    char *strParamUrl=aUrl->path();
+    const char *strParamUrl=(const char *)aUrl->path();
     while ( char *confUrl=tmpPtr->Get_Next() ) {   
       if (strncmp(confUrl,strParamUrl,strlen(confUrl))==0 
 	  && (strlen(confUrl)>=candidate.len))  {
@@ -149,8 +149,8 @@ const String HtConfiguration::Find(URL *aUrl, const char *value) const
 
 
 //*********************************************************************
-int HtConfiguration::Value(char *blockName,char *name,char *value,
-			 int default_value = 0) {
+int HtConfiguration::Value(const char *blockName, const char *name,
+   const char *value, int default_value = 0) {
 int retValue=default_value;
 String tmpStr=Find(blockName,name,value);
  if (tmpStr[0]!=0) {
@@ -160,8 +160,8 @@ return retValue;
 }
 
 //*********************************************************************
-double HtConfiguration::Double(char *blockName,char *name,char *value,
-				double default_value = 0) {
+double HtConfiguration::Double(const char *blockName, const char *name,
+   const char *value, double default_value = 0) {
 double retValue=default_value;
 String tmpStr=Find(blockName,name,value);
  if (tmpStr[0]!=0) {
@@ -171,8 +171,8 @@ return retValue;
 }
 
 //*********************************************************************
-int HtConfiguration::Boolean(char *blockName,char *name,char *value,
-				 int default_value = 0) {
+int HtConfiguration::Boolean(const char *blockName, const char *name,
+   const char *value, int default_value = 0) {
 int retValue=default_value;
 String tmpStr=Find(blockName,name,value);
  if (tmpStr[0]!=0) {
@@ -191,7 +191,7 @@ return retValue;
 
 //*********************************************************************
 //*********************************************************************
-int HtConfiguration::Value(URL *aUrl,char *value,
+int HtConfiguration::Value(URL *aUrl, const char *value,
 			 int default_value = 0) {
 int retValue=default_value;
 String tmpStr=Find(aUrl,value);
@@ -202,7 +202,7 @@ return retValue;
 }
 
 //*********************************************************************
-double HtConfiguration::Double(URL *aUrl,char *value,
+double HtConfiguration::Double(URL *aUrl,const char *value,
 				double default_value = 0) {
 double retValue=default_value;
 String tmpStr=Find(aUrl,value);
@@ -213,7 +213,7 @@ return retValue;
 }
 
 //*********************************************************************
-int HtConfiguration::Boolean(URL *aUrl,char *value,
+int HtConfiguration::Boolean(URL *aUrl,const char *value,
 				 int default_value = 0) {
 int retValue=default_value;
 String tmpStr=Find(aUrl,value);

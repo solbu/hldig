@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.18 2000/08/23 11:28:52 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.19 2000/08/30 08:10:22 angus Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -569,7 +569,7 @@ void HtHTTP::SetRequestCommand(String &cmd)
    
 
    // Referer
-   if (_referer.get() && strlen(_referer.get()))
+   if (_referer.get().length())
      cmd << "Referer: " << _referer.get() << "\r\n";
 
 

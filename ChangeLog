@@ -1,3 +1,10 @@
+Wed Aug 30 10:01:59 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* substition of char * returned types to const String & in URL and
+	Server classes. This change made me do lots of changes in other files:
+	HtFile.cc, HtHTTP.cc, HtConfiguration.*, Document.*, ExternalParser.*,
+	Retriever.*.
+
 Tue Aug 30 12:00:00 2000  Toivo Pedaste <toivo@ucs.uwa.edu.au>
 
 	* htlibs/md5.cc, htlibs/md5.h: Generate md5 hash of

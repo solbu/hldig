@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalTransport.h,v 1.1.2.1 1999/11/28 02:43:12 ghutchis Exp $
+// $Id: ExternalTransport.h,v 1.1.2.2 2000/08/30 08:10:22 angus Exp $
 //
 
 #ifndef _ExternalTransport_h_
@@ -38,14 +38,14 @@ public:
     //
     // Construction/Destruction
     //
-                        ExternalTransport(char *protocol);
+                        ExternalTransport(const String &protocol);
     virtual		~ExternalTransport();
 
 
     //
     // Check if the given protocol has a handler
     //
-    static int		canHandle(char *protocol);
+    static int		canHandle(const String &protocol);
     
     // Setting connections is obviously a bit different than the base class
     // from a URL pointer

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.h,v 1.9.2.8 2000/08/13 18:22:27 ghutchis Exp $
+// $Id: Server.h,v 1.9.2.9 2000/08/30 08:10:22 angus Exp $
 //
 
 #ifndef _Server_h_
@@ -46,8 +46,8 @@ public:
 	//
 	// Provide some way of getting at the host and port for this server
 	//
-	int			port()	{return _port;}
-	char			*host()	{return _host;}
+	int port() const            {return _port;}
+	const String &host() const  {return _host;}
 	
 	//
 	// Provide some way of getting at the status of this server
@@ -60,7 +60,8 @@ public:
 	// This will check to see if the server is up if the URL is not local
 	// if it's down, it simply will not be added
 	//
-	void			push(char *path, int hopcount, char *referer, int local = 0);
+	void push(const String &path, int hopcount, const String &referer,
+         int local = 0);
 
 	//
 	// Return the next URL from the queue for this server.
@@ -82,16 +83,17 @@ public:
         // Methods for managing persistent connections
 	//
         void			AllowPersistentConnection() { _persistent_connections = true; }
-        void			AvoidPersistentConnection() { _persistent_connections = false; }
-        bool			IsPersistentConnectionAllowed () { return _persistent_connections; }
+        void AvoidPersistentConnection() { _persistent_connections = false; }
+        bool IsPersistentConnectionAllowed () const
+         { return _persistent_connections; }
 
         // Methods for getting info regarding server configuration
-        bool			HeadBeforeGet() { return _head_before_get; }
-        unsigned int            TimeOut() { return _timeout; }
-        unsigned int            TcpWaitTime() { return _tcp_wait_time; }
-        unsigned int            TcpMaxRetries() { return _tcp_max_retries; }
-        unsigned int            MaxDocuments() { return _max_documents; }
-	String			UserAgent() { return _user_agent; }
+        bool HeadBeforeGet() const { return _head_before_get; }
+        unsigned int TimeOut() const { return _timeout; }
+        unsigned int TcpWaitTime() const { return _tcp_wait_time; }
+        unsigned int TcpMaxRetries() const { return _tcp_max_retries; }
+        unsigned int MaxDocuments() const { return _max_documents; }
+	const String &UserAgent() const { return _user_agent; }
         
 	//
 	// Return the URLs to be excluded from this server

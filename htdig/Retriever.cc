@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.32 2000/08/30 04:40:53 toivo Exp $
+// $Id: Retriever.cc,v 1.72.2.33 2000/08/30 08:10:22 angus Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -173,7 +173,7 @@ Retriever::Initial(const String& list, int from)
 	{
 	  String robotsURL = u.signature();
 	  robotsURL << "robots.txt";
-	  StringList *localRobotsFile = GetLocal(robotsURL.get());
+	  StringList *localRobotsFile = GetLocal(robotsURL);
 	  
 	  server = new Server(u, localRobotsFile);
 	  servers.Add(u.signature(), server);
@@ -451,7 +451,7 @@ Retriever::Start()
 	   {
    	      while (NULL != (ref = server->pop())) 
               {
-      	          fprintf(urls_parsed, "%s\n", ref->GetURL().get());
+      	          fprintf(urls_parsed, "%s\n", (const char *)ref->GetURL().get());
  		  delete ref;
               }
            }
@@ -761,13 +761,13 @@ Retriever::parse_url(URLRef &urlRef)
 
 
 //*****************************************************************************
-// void Retriever::RetrievedDocument(Document &doc, char *url, DocumentRef *ref)
+// void Retriever::RetrievedDocument(Document &doc, const String &url, DocumentRef *ref)
 //   We found a document that needs to be parsed.  Since we don't know the
 //   document type, we'll let the Document itself return an appropriate
 //   Parsable object which we can call upon to parse the document contents.
 //
 void
-Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
+Retriever::RetrievedDocument(Document &doc, const String &url, DocumentRef *ref)
 {
     n_links = 0;
     current_ref = ref;
@@ -808,12 +808,12 @@ Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
 
 
 //*****************************************************************************
-// int Retriever::Need2Get(char *u)
+// int Retriever::Need2Get(const String &u)
 //   Return TRUE if we need to retrieve the given url.  This will
 //   check the list of urls we have already visited.
 //
 int
-Retriever::Need2Get(char *u)
+Retriever::Need2Get(const String &u)
 {
     static String	url;
     url = u;
@@ -828,12 +828,12 @@ Retriever::Need2Get(char *u)
 
 
 //*****************************************************************************
-// int Retriever::IsValidURL(char *u)
+// int Retriever::IsValidURL(const String &u)
 //   Return TRUE if we need to retrieve the given url.  We will check
 //   for limits here.
 //
 int
-Retriever::IsValidURL(char *u)
+Retriever::IsValidURL(const String &u)
 {
     Dictionary	invalids;
     Dictionary	valids;
@@ -971,15 +971,17 @@ Retriever::IsValidURL(char *u)
 
 
 //*****************************************************************************
-// StringList* Retriever::GetLocal(char *url)
+// StringList* Retriever::GetLocal(const String &url)
 //   Returns a list of strings containing the (possible) local filenames
 //   of the given url, or 0 if it's definitely not local.
 //   THE CALLER MUST FREE THE STRINGLIST AFTER USE!
 //
 StringList*
-Retriever::GetLocal(char *url)
+Retriever::GetLocal(const String &strurl)
 {
     static StringList *prefixes = 0;
+    String url = strurl;
+    
     static StringList *paths = 0;
     StringList *defaultdocs = 0;
     URL aUrl(url);
@@ -1088,14 +1090,14 @@ Retriever::GetLocal(char *url)
 
 
 //*****************************************************************************
-// StringList* Retriever::GetLocalUser(char *url, StringList *defaultdocs)
+// StringList* Retriever::GetLocalUser(const String &url, StringList *defaultdocs)
 //   If the URL has ~user part, return a list of strings containing the
 //   (possible) local filenames of the given url, or 0 if it's
 //   definitely not local.
 //   THE CALLER MUST FREE THE STRINGLIST AFTER USE!
 //
 StringList*
-Retriever::GetLocalUser(char *url, StringList *defaultdocs)
+Retriever::GetLocalUser(const String &url, StringList *defaultdocs)
 {
     static StringList *prefixes = 0, *paths = 0, *dirs = 0;
     static Dictionary home_cache;
@@ -1216,12 +1218,12 @@ Retriever::GetLocalUser(char *url, StringList *defaultdocs)
 
 
 //*****************************************************************************
-// int Retriever::IsLocalURL(char *url)
+// int Retriever::IsLocalURL(const String &url)
 //   Returns 1 if the given url has a (possible) local filename
 //   or 0 if it's definitely not local.
 //
 int
-Retriever::IsLocalURL(char *url)
+Retriever::IsLocalURL(const String &url)
 {
     int ret;
 
@@ -1364,7 +1366,7 @@ void
 Retriever::got_image(const char *src)
 {
     URL	url(src, *base);
-    char	*image = url.get();
+    const char *image = (const char *)url.get();
 	
     if (debug > 2)
 	cout << "image: " << image << endl;
@@ -1391,7 +1393,7 @@ Retriever::got_href(URL &url, const char *description, int hops)
     n_links++;
 
     if (urls_seen)
-	fprintf(urls_seen, "%s\n", url.get());
+	fprintf(urls_seen, "%s\n", (const char *)url.get());
 
     //
     // Check if this URL falls within the valid range of URLs.
@@ -1534,7 +1536,7 @@ Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
     n_links++;
 
     if (urls_seen)
-	fprintf(urls_seen, "%s\n", url.get());
+	fprintf(urls_seen, "%s\n", (const char *)url.get());
 
     //
     // Check if this URL falls within the valid range of URLs.
@@ -1696,7 +1698,7 @@ Retriever::got_noindex()
 //*****************************************************************************
 //
 void
-Retriever::recordNotFound(char *url, char *referer, int reason)
+Retriever::recordNotFound(const String &url, const String &referer, int reason)
 {
     char	*message = "";
     

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFile.cc,v 1.1.2.4 2000/05/06 20:46:40 loic Exp $ 
+// $Id: HtFile.cc,v 1.1.2.5 2000/08/30 08:10:22 angus Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -143,7 +143,7 @@ HtFile::DocStatus HtFile::Request()
 
    _response._modification_time = new HtDateTime(stat_buf.st_mtime);
 
-   ifstream in(_url.path());
+   ifstream in((const char *)_url.path());
    if (!in)
      return Document_not_found;
 

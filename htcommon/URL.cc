@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.3.2.10 2000/08/21 02:32:33 ghutchis Exp $
+// $Id: URL.cc,v 1.3.2.11 2000/08/30 08:10:21 angus Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -68,10 +68,10 @@ URL::URL(URL &nurl)
 
 
 //*****************************************************************************
-// URL::URL(const char *nurl)
+// URL::URL(const String &nurl)
 // Construct a URL from a String (obviously parses the string passed in)
 // 
-URL::URL(const char *nurl)
+URL::URL(const String &nurl)
 {
     _port = 0;
     _normal = 0;
@@ -81,11 +81,11 @@ URL::URL(const char *nurl)
 
 
 //*****************************************************************************
-// URL::URL(char *ref, URL &parent)
+// URL::URL(const String &url, const URL &parent)
 //   Parse a reference given a parent url.  This is needed to resolve relative
 //   references which do NOT have a full url.
 //
-URL::URL(const char *url, URL &parent)
+URL::URL(const String &url, const URL &parent)
 {
     String	temp(url);
     temp.remove(" \r\n\t");
@@ -252,10 +252,10 @@ void URL::rewrite()
 
 
 //*****************************************************************************
-// void URL::parse(const char *u)
+// void URL::parse(const String &u)
 //   Given a URL string, extract the service, host, port, and path from it.
 //
-void URL::parse(const char *u)
+void URL::parse(const String &u)
 {
     String	temp(u);
     temp.remove(" \t\r\n");
@@ -508,9 +508,9 @@ void URL::dump()
 
 
 //*****************************************************************************
-// void URL::path(char *newpath)
+// void URL::path(const String &newpath)
 //
-void URL::path(char *newpath)
+void URL::path(const String &newpath)
 {
     _path = newpath;
     if (!config.Boolean("case_sensitive",1))
@@ -620,13 +620,13 @@ void URL::normalize()
 
 
 //*****************************************************************************
-// char *URL::signature()
+// const String &URL::signature()
 //   Return a string which uniquely identifies the server the current
 //   URL is refering to.
 //   This is the first portion of a url: service://user@host:port/
 //   (in short this is the URL pointing to the root of this server)
 //
-char *URL::signature()
+const String &URL::signature()
 {
     if (_signature.length())
 	return _signature;

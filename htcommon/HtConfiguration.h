@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtConfiguration.h,v 1.1.2.7 2000/03/21 00:35:16 ghutchis Exp $
+// $Id: HtConfiguration.h,v 1.1.2.8 2000/08/30 08:10:21 angus Exp $
 //
 
 
@@ -37,15 +37,19 @@ class HtConfiguration : public Configuration
     void		AddParsed(const String& name, const String& value)
       {Configuration::AddParsed(name,value);}
 
-    void		Add(char *name, char *value, Configuration *aList);
+    void		Add(const char *name, const char *value,
+                           Configuration *aList);
     const String	Find(URL *aUrl, const char *value) const;
     const String	Find(const char *blockName, const char *name, const char *value) const;
-    int		Value(char *blockName,char *name,char *value,int default_value = 0);
-    double	Double(char *blockName,char *name,char *value,double default_value = 0);
-    int		Boolean(char *blockName,char *name,char *value,int default_value = 0);
-    int		Value(URL *aUrl,char *value,int default_value = 0);
-    double	Double(URL *aUrl,char *value,double default_value = 0);
-    int		Boolean(URL *aUrl,char *value,int default_value = 0);
+    int		Value(const char *blockName, const char *name, const char *value,
+                  int default_value = 0);
+    double	Double(const char *blockName, const char *name, const char *value,
+                  double default_value = 0);
+    int		Boolean(const char *blockName, const char *name, const char *value,
+                  int default_value = 0);
+    int		Value(URL *aUrl,const char *value,int default_value = 0);
+    double	Double(URL *aUrl,const char *value,double default_value = 0);
+    int		Boolean(URL *aUrl,const char *value,int default_value = 0);
     inline
     String	ParseString(const char*) const;   // parse ${var} string
     String	getFileName() const { return FileName; }

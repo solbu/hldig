@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.h,v 1.1.2.2 2000/08/21 02:32:33 ghutchis Exp $
+// $Id: URL.h,v 1.1.2.3 2000/08/30 08:10:21 angus Exp $
 //
 
 #ifndef _URL_h_
@@ -23,30 +23,35 @@ class URL
 {
 public:
     URL();
-    URL(const char *url);
+    URL(const String &url);
     URL(URL &url);
-    URL(const char *ref, URL &parent);
+    URL(const String &ref, const URL &parent);
 
-    void		parse(const char *url);
+    void parse(const String &url);
 
-    char		*host()			{return _host;}
-    void		host(char *h)		{_host = h;}
-    int			port()			{return _port;}
-    void		port(int p)		{_port = p;}
-    char		*service()		{return _service;}
-    void		service(char *s)	{_service = s;}
-    char		*path()			{return _path;}
-    void		path(char *p);
-    int			hopcount()		{return _hopcount;}
-    void		hopcount(int h)		{_hopcount = h;}
-    char		*user()			{return _user;}
-    void		user(char *u) 		{_user = u;}
+    const String &host() const      {return _host;}
+    void host(const String &h)      {_host = h;}
+    
+    int port() const                {return _port;}
+    void port(const int p)          {_port = p;}
+    
+    const String &service() const   {return _service;}
+    void service(const String &s)   {_service = s;}
 
-    char		*get()			{return _url;}
+    const String &path() const      {return _path;}
+    void path(const String &p);
+    
+    int hopcount() const            {return _hopcount;}
+    void hopcount(int h)            {_hopcount = h;}
+    
+    const String &user() const      {return _user;}
+    void user(const String &u)      {_user = u;}
+
+    const String &get() const {return _url;}
     void		dump();
     void		normalize();
     void		rewrite();
-    char		*signature();
+    const String &signature();
 
 private:
     String		_url;
