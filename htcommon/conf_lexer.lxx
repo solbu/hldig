@@ -6,12 +6,12 @@
 //             files.  
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: conf_lexer.lxx,v 1.1.2.8 2000/05/06 20:46:37 loic Exp $
+// $Id: conf_lexer.lxx,v 1.1.2.9 2000/08/18 05:24:13 ghutchis Exp $
 //
 */
 %{
@@ -131,13 +131,13 @@ include[ \t]*:		BEGIN(incl);
 		        }
 
 <<EOF>> 		{
-		        if ( --include_stack_ptr < 0 )
+		        if ( include_stack_ptr <= 0 )
 		            yyterminate();
 		        else
 		            {
 		            yy_delete_buffer( YY_CURRENT_BUFFER );
 		            yy_switch_to_buffer(
-		                 include_stack[include_stack_ptr] );
+		                 include_stack[--include_stack_ptr] );
 		            }
 		        }
 
