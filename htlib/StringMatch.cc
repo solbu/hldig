@@ -29,11 +29,11 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringMatch.cc,v 1.12 1999/09/24 10:29:03 loic Exp $
+// $Id: StringMatch.cc,v 1.13 1999/09/30 15:56:43 loic Exp $
 //
 
 #include "StringMatch.h"
-#include "HtWordType.h"
+#include "WordType.h"
 
 #include <string.h>
 #include <ctype.h>

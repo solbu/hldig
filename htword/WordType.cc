@@ -1,7 +1,7 @@
 //
-// HtWordType.cc
+// WordType.cc
 //
-// HtWordType:  Wrap some attributes to make is...() type
+// WordType:  Wrap some attributes to make is...() type
 //              functions and other common functions without having to manage
 //              the attributes or the exact attribute combination semantics.
 //
@@ -11,14 +11,14 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordType.cc,v 1.6 1999/09/28 07:30:35 loic Exp $
+// $Id: WordType.cc,v 1.1 1999/09/30 15:56:46 loic Exp $
 //
 
 #include <iostream.h>
 #include <ctype.h>
 #include <stdio.h>
 
-#include "HtWordType.h"
+#include "WordType.h"
 
 WordType* word_type_default = 0;
 

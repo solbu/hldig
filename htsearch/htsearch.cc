@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.49 1999/09/28 07:30:35 loic Exp $
+// $Id: htsearch.cc,v 1.50 1999/09/30 15:56:45 loic Exp $
 //
 
 #include "htsearch.h"
@@ -25,7 +25,7 @@
 #include "StringList.h"
 #include "IntObject.h"
 #include "HtURLCodec.h"
-#include "HtWordType.h"
+#include "WordType.h"
 #include "HtRegex.h"
 
 #include <time.h>

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.59 1999/09/29 16:33:12 loic Exp $
+// $Id: HTML.cc,v 1.60 1999/09/30 15:56:42 loic Exp $
 //
 
 #include "htdig.h"
@@ -20,7 +20,7 @@
 #include "StringMatch.h"
 #include "StringList.h"
 #include "URL.h"
-#include "HtWordType.h"
+#include "WordType.h"
 
 #include <ctype.h>
 

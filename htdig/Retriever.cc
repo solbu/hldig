@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.65 1999/09/28 07:30:34 loic Exp $
+// $Id: Retriever.cc,v 1.66 1999/09/30 15:56:42 loic Exp $
 //
 
 #include "Retriever.h"
@@ -24,7 +24,7 @@
 #include "Parsable.h"
 #include "Document.h"
 #include "StringList.h"
-#include "HtWordType.h"
+#include "WordType.h"
 #include <pwd.h>
 #include <signal.h>
 #include <assert.h>

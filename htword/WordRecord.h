@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordRecord.h,v 1.12 1999/09/24 10:28:56 loic Exp $
+// $Id: WordRecord.h,v 1.1 1999/09/30 15:56:46 loic Exp $
 //
 
 #ifndef _WordRecord_h_

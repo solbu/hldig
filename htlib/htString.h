@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.16 1999/09/29 16:33:12 loic Exp $
+// $Id: htString.h,v 1.17 1999/09/30 15:56:43 loic Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -65,6 +65,7 @@ public:
     //
     // Assignment
     //
+    inline String&	set(const char *s, int l) { trunc(); append(s, l); return *this; }
     void		operator = (const String &s);
     void		operator = (const char *s);
     inline void		operator += (const String &s) { append(s); }
@@ -125,6 +126,7 @@ public:
     void		append(const char *s, int n);
     void		append(char ch);
 
+    inline String	&trunc() { Length = 0; return *this; }
     String		&chop(int n = 1);
     String		&chop(char ch = '\n');
     String		&chop(char *str = "\r\n");

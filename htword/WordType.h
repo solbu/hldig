@@ -1,7 +1,7 @@
 //
-// HtWordType.h
+// WordType.h
 //
-// HtWordType:  Wrap some attributes to make is...() type
+// WordType:  Wrap some attributes to make is...() type
 //              functions and other common functions without having to manage
 //              the attributes or the exact attribute combination semantics.
 //
@@ -11,11 +11,11 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordType.h,v 1.7 1999/09/28 07:30:35 loic Exp $
+// $Id: WordType.h,v 1.1 1999/09/30 15:56:46 loic Exp $
 //
 
-#ifndef __HtWordType_h
-#define __HtWordType_h
+#ifndef __WordType_h
+#define __WordType_h
 
 #include "htString.h"
 #include "Configuration.h"
@@ -126,4 +126,4 @@ WordType::StripPunctuation(String &s) const
 //
 extern WordType* word_type_default;
 
-#endif /* __HtWordType_h */
+#endif /* __WordType_h */

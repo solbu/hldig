@@ -10,7 +10,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	URL.cc URLTrans.cc cgi.cc good_strtok.cc io.cc strcasecmp.cc \
 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc \
 	HtURLCodec.cc HtVector.cc HtHeap.cc regex.c HtSGMLCodec.cc \
-	HtWordType.cc HtPack.cc HtDateTime.cc HtRegex.cc HtZlibCodec.cc
+	HtPack.cc HtDateTime.cc HtRegex.cc HtZlibCodec.cc
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
@@ -28,7 +28,6 @@ noinst_HEADERS = \
 	HtURLCodec.h \
 	HtVector.h \
 	HtWordCodec.h \
-	HtWordType.h \
 	HtZlibCodec.h \
 	IntObject.h \
 	List.h \

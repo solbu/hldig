@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.94 1999/09/24 10:29:04 loic Exp $
+// $Id: Display.cc,v 1.95 1999/09/30 15:56:45 loic Exp $
 //
 
 #include "htsearch.h"
@@ -22,7 +22,7 @@
 #include "URL.h"
 #include "HtSGMLCodec.h"
 #include "HtURLCodec.h"
-#include "HtWordType.h"
+#include "WordType.h"
 
 #include <fstream.h>
 #include <stdio.h>

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: lib.h,v 1.10 1999/09/29 16:33:12 loic Exp $
+// $Id: lib.h,v 1.11 1999/09/30 15:56:43 loic Exp $
 //
 
 #ifndef _lib_h
@@ -41,14 +41,6 @@
 //
 int mystrcasecmp(const char *, const char *);
 int mystrncasecmp(const char *, const char *, int);
-
-//
-// strdup is a really handy function except that the standard version
-// relies on malloc and free.  Since it is sometimes hard to keep track
-// of when strdup is used and when new is used, we will solve the problem
-// be using our own version of strdup which uses new to allocate memory.
-//
-char *strdup(const char *);
 
 //
 // The standard strstr() function is limited in that it does case-sensitive

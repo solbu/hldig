@@ -19,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Fuzzy.h,v 1.6 1999/09/24 10:29:01 loic Exp $
+// $Id: Fuzzy.h,v 1.7 1999/09/30 15:56:43 loic Exp $
 //
 
 #ifndef _Fuzzy_h_
@@ -28,7 +28,7 @@
 #include "Object.h"
 #include "htString.h"
 #include "Database.h"
-#include "HtWordType.h"
+#include "WordType.h"
 #include "WordList.h"
 
 class Configuration;

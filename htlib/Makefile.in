@@ -104,20 +104,20 @@ TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES)
 
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/db/dist/libdb.a
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/db/dist/libdb.a
 
 
 lib_LTLIBRARIES = libht.la
 
-libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	URL.cc URLTrans.cc cgi.cc good_strtok.cc io.cc strcasecmp.cc 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc 	HtURLCodec.cc HtVector.cc HtHeap.cc regex.c HtSGMLCodec.cc 	HtWordType.cc HtPack.cc HtDateTime.cc HtRegex.cc HtZlibCodec.cc
+libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	URL.cc URLTrans.cc cgi.cc good_strtok.cc io.cc strcasecmp.cc 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc 	HtURLCodec.cc HtVector.cc HtHeap.cc regex.c HtSGMLCodec.cc 	HtPack.cc HtDateTime.cc HtRegex.cc HtZlibCodec.cc
 
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS =  	Configuration.h 	DB2_db.h 	Database.h 	Dictionary.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtSGMLCodec.h 	HtURLCodec.h 	HtVector.h 	HtWordCodec.h 	HtWordType.h 	HtZlibCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	URL.h 	cgi.h 	good_strtok.h 	htString.h 	io.h 	lib.h 	langinfo.h 	regex.h
+noinst_HEADERS =  	Configuration.h 	DB2_db.h 	Database.h 	Dictionary.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtSGMLCodec.h 	HtURLCodec.h 	HtVector.h 	HtWordCodec.h 	HtZlibCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	URL.h 	cgi.h 	good_strtok.h 	htString.h 	io.h 	lib.h 	langinfo.h 	regex.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -134,8 +134,8 @@ IntObject.lo List.lo Object.lo ParsedString.lo Queue.lo \
 QuotedStringList.lo Stack.lo String.lo StringList.lo StringMatch.lo \
 String_fmt.lo URL.lo URLTrans.lo cgi.lo good_strtok.lo io.lo \
 strcasecmp.lo mktime.lo strptime.lo timegm.lo HtCodec.lo HtWordCodec.lo \
-HtURLCodec.lo HtVector.lo HtHeap.lo regex.lo HtSGMLCodec.lo \
-HtWordType.lo HtPack.lo HtDateTime.lo HtRegex.lo HtZlibCodec.lo
+HtURLCodec.lo HtVector.lo HtHeap.lo regex.lo HtSGMLCodec.lo HtPack.lo \
+HtDateTime.lo HtRegex.lo HtZlibCodec.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -156,13 +156,13 @@ GZIP_ENV = --best
 DEP_FILES =  .deps/Configuration.P .deps/DB2_db.P .deps/Database.P \
 .deps/Dictionary.P .deps/HtCodec.P .deps/HtDateTime.P .deps/HtHeap.P \
 .deps/HtPack.P .deps/HtRegex.P .deps/HtSGMLCodec.P .deps/HtURLCodec.P \
-.deps/HtVector.P .deps/HtWordCodec.P .deps/HtWordType.P \
-.deps/HtZlibCodec.P .deps/IntObject.P .deps/List.P .deps/Object.P \
-.deps/ParsedString.P .deps/Queue.P .deps/QuotedStringList.P \
-.deps/Stack.P .deps/String.P .deps/StringList.P .deps/StringMatch.P \
-.deps/String_fmt.P .deps/URL.P .deps/URLTrans.P .deps/cgi.P \
-.deps/good_strtok.P .deps/io.P .deps/mktime.P .deps/regex.P \
-.deps/strcasecmp.P .deps/strptime.P .deps/timegm.P
+.deps/HtVector.P .deps/HtWordCodec.P .deps/HtZlibCodec.P \
+.deps/IntObject.P .deps/List.P .deps/Object.P .deps/ParsedString.P \
+.deps/Queue.P .deps/QuotedStringList.P .deps/Stack.P .deps/String.P \
+.deps/StringList.P .deps/StringMatch.P .deps/String_fmt.P .deps/URL.P \
+.deps/URLTrans.P .deps/cgi.P .deps/good_strtok.P .deps/io.P \
+.deps/mktime.P .deps/regex.P .deps/strcasecmp.P .deps/strptime.P \
+.deps/timegm.P
 SOURCES = $(libht_la_SOURCES)
 OBJECTS = $(libht_la_OBJECTS)
 

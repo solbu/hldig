@@ -71,7 +71,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: word_builder.pl,v 1.2 1999/09/27 13:55:47 loic Exp $
+# $Id: word_builder.pl,v 1.1 1999/09/30 15:56:46 loic Exp $
 #
 use strict;
 

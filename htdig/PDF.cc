@@ -23,7 +23,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: PDF.cc,v 1.20 1999/09/24 10:28:57 loic Exp $
+// $Id: PDF.cc,v 1.21 1999/09/30 15:56:42 loic Exp $
 //
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
@@ -33,7 +33,7 @@
 #include "htdig.h"
 #include "htString.h"
 #include "StringList.h"
-#include "HtWordType.h"
+#include "WordType.h"
 
 #include <stdlib.h>
 #include <ctype.h>

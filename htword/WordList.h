@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.13 1999/09/28 16:18:14 loic Exp $
+// $Id: WordList.h,v 1.1 1999/09/30 15:56:46 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -24,14 +24,15 @@
 
 #include "Dictionary.h"
 #include "List.h"
+#include "db_cxx.h"
 #include "htString.h"
-#include "Database.h"
 #include "WordRecord.h"
 #include "WordReference.h"
-#include "HtWordType.h"
+#include "WordType.h"
 #include "Configuration.h"
 
 class WordList;
+class WordCursor;
 
 //
 // Possible values of the action argument of WordList::Walk
@@ -54,7 +55,7 @@ class WordList;
 //
 // Type of the callback argument of WordList::Walk
 //
-typedef int (*wordlist_walk_callback_t)(WordList *words, const WordReference *word, Object &data);
+typedef int (*wordlist_walk_callback_t)(WordList *words, WordCursor& cursor, const WordReference *word, Object &data);
 
 class WordList
 {
@@ -79,7 +80,8 @@ public:
     // Delete permanently
     //
     int                 WalkDelete(const WordReference& wordRef);
-    int                 Delete(const WordReference& wordRef) { return dbf->Delete(wordRef.KeyPack()) == 0; }
+    int                 Delete(const WordReference& wordRef);
+    int                 Delete(WordCursor& cursor);
 
     //
     // Mark a document as already scanned for words or mark it as disappeared
@@ -150,7 +152,9 @@ private:
 
     List			*words;
 
-    Database            	*dbf;
+    Db		            	*db;
+    DbEnv	            	dbenv;
+    DbInfo	            	dbinfo;
     int                 	isopen;
     int                 	isread;
 

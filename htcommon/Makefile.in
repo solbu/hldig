@@ -104,22 +104,19 @@ TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES)
 
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/db/dist/libdb.a
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/db/dist/libdb.a
 
-
-EXTRA_DIST = word.desc word_builder.pl WordKey.h.tmpl
 
 lib_LTLIBRARIES = libcommon.la
 
-libcommon_la_SOURCES = WordKey.cc DocumentDB.cc DocumentRef.cc WordList.cc 		WordReference.cc defaults.cc 
-
+libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc defaults.cc 
 
 libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS = DocumentDB.h 	DocumentRef.h 	WordList.h 	WordRecord.h 	WordReference.h 	WordKey.h 	defaults.h
+noinst_HEADERS = DocumentDB.h 	DocumentRef.h 	defaults.h
 
 
 LOCAL_DEFINES = -DBIN_DIR=\"$(bindir)\" 		-DCOMMON_DIR=\"$(COMMON_DIR)\" 		-DCONFIG_DIR=\"$(CONFIG_DIR)\" 		-DDATABASE_DIR=\"$(DATABASE_DIR)\" 		-DIMAGE_URL_PREFIX=\"$(IMAGE_URL_PREFIX)\" 		-DPDF_PARSER=\"$(PDF_PARSER)\"
@@ -134,8 +131,7 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 libcommon_la_LIBADD = 
-libcommon_la_OBJECTS =  WordKey.lo DocumentDB.lo DocumentRef.lo \
-WordList.lo WordReference.lo defaults.lo
+libcommon_la_OBJECTS =  DocumentDB.lo DocumentRef.lo defaults.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -148,8 +144,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/DocumentDB.P .deps/DocumentRef.P .deps/WordKey.P \
-.deps/WordList.P .deps/WordReference.P .deps/defaults.P
+DEP_FILES =  .deps/DocumentDB.P .deps/DocumentRef.P .deps/defaults.P
 SOURCES = $(libcommon_la_SOURCES)
 OBJECTS = $(libcommon_la_OBJECTS)
 
@@ -405,9 +400,6 @@ uninstall-am uninstall all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-
-WordKey.h: $(top_srcdir)/htcommon/WordKey.h.tmpl $(top_srcdir)/htcommon/word.desc $(top_srcdir)/htcommon/word_builder.pl
-	@PERL@ $(top_srcdir)/htcommon/word_builder.pl $(top_srcdir)/htcommon/word.desc
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

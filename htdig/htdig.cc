@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.22 1999/09/28 07:30:34 loic Exp $
+// $Id: htdig.cc,v 1.23 1999/09/30 15:56:42 loic Exp $
 //
 
 #include "Document.h"
@@ -19,7 +19,7 @@
 #include "htdig.h"
 #include "defaults.h"
 #include "HtURLCodec.h"
-#include "HtWordType.h"
+#include "WordType.h"
 #include "HtDateTime.h"
 
 // If we have this, we probably want it.

@@ -9,13 +9,13 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Plaintext.cc,v 1.15 1999/09/24 10:28:57 loic Exp $
+// $Id: Plaintext.cc,v 1.16 1999/09/30 15:56:42 loic Exp $
 //
 
 #include "Plaintext.h"
 #include "htdig.h"
 #include "htString.h"
-#include "HtWordType.h"
+#include "WordType.h"
 
 #include <ctype.h>
 

@@ -1,3 +1,29 @@
+Thu Sep 30 17:56:55 1999  Loic Dachary  <loic@ceic.com>
+
+	* htmerge/words.cc (delete_word): Upgrade to use WordCursor.
+
+	* htword/WordList: Walk now uses a local WordCursor. Many concurent
+	  Walk can happen at the same time.
+
+	* htword/WordList: Walk callback now take the current WordCursor.
+	  Added a Delete method that takes the WordCursor. Allows to delete
+	  the current record while walking.
+	
+	* db/include/db_cxx.h (DB_ENV): add int return type to operator = 
+
+	* db/dist/configure.in (CXXFLAGS): disable adding obsolete
+	  g++ option.
+
+	* configure.in: enable C++ support when configuring Berkeley DB
+
+	* htword: create. move Word* from htcommon. move HtWordType
+	  from htlib and rename WordType.
+
+	* htword/WordList: use db_cxx interface instead of Database.
+	  Less interface overhead. Get access to full capabilities of
+	  Berkeley DB. Much more error checking done.
+	  Create WordCursor private class to use String instead of Dbt.
+
 Wed Sep 29 20:03:31 1999  Loic Dachary  <loic@yoda.ceic.com>
 
 	* htlib/lib.h: AIX xlC does is confused by overloaded mystrcasestr

@@ -89,10 +89,6 @@ AC_MSG_RESULT($db_cv_cxx)
 if test "$db_cv_cxx" = "yes"; then
 	AC_PROG_CXX
 
-	if test "$GXX" = "yes"; then
-		CXXFLAGS="-fhandle-exceptions $CXXFLAGS"
-	fi
-
 	LIBOBJS="$LIBOBJS \$(COBJS)"
 fi
 

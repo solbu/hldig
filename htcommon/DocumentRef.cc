@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.cc,v 1.43 1999/09/24 16:47:09 loic Exp $
+// $Id: DocumentRef.cc,v 1.44 1999/09/30 15:56:41 loic Exp $
 //
 
 #include "DocumentRef.h"
@@ -19,7 +19,7 @@
 #include "WordRecord.h"
 #include "Configuration.h"
 #include "HtURLCodec.h"
-#include "HtWordType.h"
+#include "WordType.h"
 #include <stdlib.h>
 #include <ctype.h>
 #include <fstream.h>

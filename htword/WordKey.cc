@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.2 1999/09/28 14:35:37 loic Exp $
+// $Id: WordKey.cc,v 1.1 1999/09/30 15:56:45 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H

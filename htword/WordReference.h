@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.h,v 1.9 1999/09/28 14:35:37 loic Exp $
+// $Id: WordReference.h,v 1.1 1999/09/30 15:56:46 loic Exp $
 //
 #ifndef _WordReference_h_
 #define _WordReference_h_

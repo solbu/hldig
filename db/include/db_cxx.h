@@ -4,7 +4,7 @@
  * Copyright (c) 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)db_cxx.h	10.29 (Sleepycat) 11/2/98
+ *	@(#)db_cxx.h	10.30 (Sleepycat) 11/22/98
  */
 
 #ifndef _DB_CXX_H_
@@ -300,7 +300,7 @@ private:
 
     // no copying
     DbLog(const DbLog &);
-    operator = (const DbLog &);
+    int operator = (const DbLog &);
 
     DEFINE_DB_CLASS(DbLog);
 };
@@ -345,7 +345,7 @@ protected:
 private:
     // no copying
     DbMpoolFile(const DbMpoolFile &);
-    operator = (const DbMpoolFile &);
+    int operator = (const DbMpoolFile &);
 
     DEFINE_DB_CLASS(DbMpoolFile);
 };
@@ -432,7 +432,7 @@ private:
 
     // no copying
     DbTxnMgr(const DbTxnMgr &);
-    operator = (const DbTxnMgr &);
+    int operator = (const DbTxnMgr &);
 
     DEFINE_DB_CLASS(DbTxnMgr);
 };
@@ -461,7 +461,7 @@ private:
 
     // no copying
     DbTxn(const DbTxn &);
-    operator = (const DbTxn &);
+    int operator = (const DbTxn &);
 
     DEFINE_DB_CLASS(DbTxn);
 };
@@ -730,7 +730,7 @@ private:
 
     // no copying
     DbEnv(const DbEnv &);
-    operator = (const DbEnv &);
+    int operator = (const DbEnv &);
 
     ErrorModel error_model_;
     static void stream_error_function(const char *, char *);
@@ -752,7 +752,7 @@ class _exported Db
 
 public:
     int close(u_int32_t flags);
-    int cursor(DbTxn *txnid, Dbc **cursorp);
+    int cursor(DbTxn *txnid, Dbc **cursorp, u_int32_t flags);
     int del(DbTxn *txnid, Dbt *key, u_int32_t flags);
     int fd(int *fdp);
     int get(DbTxn *txnid, Dbt *key, Dbt *data, u_int32_t flags);
@@ -767,6 +767,8 @@ public:
     static int open(const char *fname, DBTYPE type, u_int32_t flags,
                     int mode, DbEnv *dbenv, DbInfo *info, Db **dbpp);
 
+    static int xa_open(const char *fname, DBTYPE type, u_int32_t flags,
+                    int mode, DbInfo *info, Db **dbpp);
 private:
     // We can add data to this class if needed
     // since it is implemented via a pointer.

@@ -14,25 +14,93 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.36 1999/09/29 10:10:07 loic Exp $
+// $Id: WordList.cc,v 1.1 1999/09/30 15:56:45 loic Exp $
 //
 
 #include "WordList.h"
 #include "WordReference.h"
 #include "WordRecord.h"
-#include "HtWordType.h"
+#include "WordType.h"
 #include "Configuration.h"
 #include "htString.h"
-#include "DB2_db.h"
+#include "db_cxx.h"
 #include "HtPack.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <iostream.h>
 #include <fstream.h>
 #include <errno.h>
 
-extern Configuration	config;
+//
+// Interface to Dbc that uses String instead of Dbt
+//
+class WordCursor {
+public:
+  WordCursor() { cursor = 0; }
+  ~WordCursor() {
+    Close();
+  }
+
+  int Open(Db* db) {
+    Close();
+    if((errno = db->cursor(0, &cursor, 0)) != 0) {
+      cerr << "WordCursor::Open failed " << strerror(errno) << "\n";
+      return NOTOK;
+    }
+    return OK;
+  }
+
+  int Close() {
+    if(cursor) cursor->close();
+    cursor = 0;
+    return OK;
+  }
+
+  int Get(String& key, String& data, int flags) {
+    Dbt rkey;
+    Dbt rdata;
+    switch(flags & DB_OPFLAGS_MASK) {
+    case DB_SET_RANGE:
+    case DB_SET:
+    case DB_GET_BOTH:
+      rkey.set_data((void*)key.get());
+      rkey.set_size((u_int32_t)key.length());
+      break;
+    }
+    if((errno = cursor->get(&rkey, &rdata, (u_int32_t)flags)) != 0) {
+      if(errno != DB_NOTFOUND) {
+	cerr << "WordCursor::Get(" << flags << ") failed " << strerror(errno) << "\n";
+      }
+      return NOTOK;
+    }
+    key.set((const char*)rkey.get_data(), (int)rkey.get_size());
+    data.set((const char*)rdata.get_data(), (int)rdata.get_size());
+    return OK;
+  }
+
+  int Put(const String& key, const String& data, int flags) {
+    Dbt rkey((void*)key.get(), (size_t)key.length());
+    Dbt rdata((void*)data.get(), (size_t)data.length());
+    if((errno = cursor->put(&rkey, &rdata, (u_int32_t)flags)) != 0) {
+      cerr << "WordCursor::Put(" << key << ", " << data << ", " << flags << ") failed " << strerror(errno) << "\n";
+      return NOTOK;
+    }
+    return OK;
+  }
+
+  int Del() {
+    if((errno = cursor->del((u_int32_t)0)) != 0) {
+      cerr << "WordCursor::Del() failed " << strerror(errno) << "\n";
+      return NOTOK;
+    }
+    return OK;
+  }
+  
+private:
+    Dbc* cursor;
+};
 
 //*****************************************************************************
 // WordList::~WordList()
@@ -52,6 +120,7 @@ WordList::WordList(const Configuration& config_arg) :
     words = new List;
 
     // The database itself hasn't been opened yet
+    db = 0;
     isopen = 0;
     isread = 0;
 }
@@ -116,26 +185,38 @@ void WordList::MarkGone()
 int WordList::Open(const String& filename, int mode)
 {
   Close();
-  
-  dbf = 0;
 
-  dbf = Database::getDatabaseInstance(DB_BTREE);
+  const char* progname = "WordList";
 
-  if(!dbf) return NOTOK;
+  //
+  // Environment initialization
+  //
+  // Output errors to the application's log.
+  //
+  dbenv.set_error_stream(&cerr);
+  dbenv.set_errpfx(progname);
+  //
+  // Do not trust C++ portability of exception handling. I may be
+  // wrong about that but have no proof. 
+  //
+  dbenv.set_error_model(DbEnv::ErrorReturn);
 
-  dbf->SetCompare(word_db_cmp);
+  if ((errno = dbenv.appinit(0, 0, DB_CREATE)) != 0) {
+    cerr << progname << ": DbEnv::appinit: " << strerror(errno) << "\n";
+    return NOTOK;
+  }
+  //
+  // Info initialization
+  //
+  dbinfo.set_bt_compare(word_db_cmp);
 
   isread = mode & O_RDONLY;
+  mode = isread ? DB_RDONLY : DB_CREATE;
 
-  int ret;
-
-  if(isread)
-    ret = dbf->OpenRead(filename);
-  else
-    ret = dbf->OpenReadWrite(filename, 0777);
-  
-  if(ret != OK)
+  if ((errno = Db::open(filename, DB_BTREE, (u_int32_t)mode, 0666, &dbenv, &dbinfo, &db)) != 0) {
+    cerr << progname << ": Db::open: " << strerror(errno) << "\n";
     return NOTOK;
+  }
 
   isopen = 1;
 
@@ -149,9 +230,8 @@ int WordList::Open(const String& filename, int mode)
 int WordList::Close()
 {
   if(isopen) {
-    dbf->Close();
-    delete dbf;
-    dbf = 0;
+    db->close(0);
+    db = 0;
     isopen = 0;
     isread = 0;
   }
@@ -172,7 +252,12 @@ int WordList::Add(const WordReference& wordRef)
   String	record;
 
   if((ret = wordRef.Pack(key, record)) == OK) {
-    dbf->Put(key, record);
+    Dbt rkey(key.get(), key.length());
+    Dbt rrecord(record.get(), record.length());
+    if((errno = db->put(0, &rkey, &rrecord, 0)) != 0) {
+      cerr << "WordList::Add(" << wordRef << ") failed " << strerror(errno) << "\n";
+      return NOTOK;
+    }
   }
 
   return ret;
@@ -216,12 +301,11 @@ public:
 };
 
 //*****************************************************************************
-// static int dump_word(WordList* words, WordReference* word)
 //
 // Write the ascii representation of a word occurence. Helper
 // of WordList::Dump
 //
-static int dump_word(WordList *, const WordReference *word, Object &data)
+static int dump_word(WordList *, WordCursor &, const WordReference *word, Object &data)
 {
   DumpWordData &info = (DumpWordData &)data;
 
@@ -301,27 +385,29 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
     List        	*list = 0;
     int			prefixLength = wordRef.Word().length();
     WordKey		prefixKey;
+    WordCursor		cursor;
+    
+    if(cursor.Open(db) == NOTOK) return 0;
+    
+    String key;
+    String data;
 
-    if(action & HTDIG_WORDLIST_COLLECTOR) {
-      list = new List;
-    }
-
+    //
+    // Move the cursor to start walking and do some sanity checks.
+    //
     if(action & HTDIG_WORDLIST) {
-      dbf->Start_Get();
+      if(cursor.Get(key, data, DB_FIRST) != OK) return 0;
     } else {
-      //
-      // Find the best place to start walking and do some sanity checks.
-      //
-      const WordKey& key = wordRef.Key();
+      const WordKey& wordKey = wordRef.Key();
       //
       // If searching for words beginning with a prefix, ignore the
       // rest of the key even if set, otherwise it will fail to place
       // the cursor in position.
       //
       if(action & HTDIG_WORDLIST_PREFIX)
-	prefixKey.SetWord(key.GetWord());
+	prefixKey.SetWord(wordKey.GetWord());
       else {
-	prefixKey = key;
+	prefixKey = wordKey;
 	//
 	// If the key is not a prefix, the start key is
 	// the longest possible prefix contained in the key. If the
@@ -336,52 +422,52 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
       // No heuristics possible, we have to start from the beginning. *sigh*
       //
       if(prefixKey.Empty()) {
-	dbf->Start_Get();
+	if(cursor.Get(key, data, DB_FIRST) != OK) return 0;
       } else {
-	String packed;
-	prefixKey.Pack(packed);
-	dbf->Start_Seq(packed);
+	prefixKey.Pack(key);
+	if(cursor.Get(key, data, DB_SET_RANGE) != OK) return 0;
       }
     }
 
-    String data;
-    String key;
-    while (dbf->Get_Next(data, key))
-      {
-	WordReference found(key, data);
-	//
-	// Don't bother to compare keys if we want to walk all the entries
-	//
-	if(!(action & HTDIG_WORDLIST)) {
-	  //
-	  // Stop loop if we reach a record whose key does not
-	  // match prefix key requirement, provided we have a valid
-	  // prefix key.
-	  //
-	  if(!prefixKey.Empty() &&
-	     !prefixKey.Equal(found.Key(), action & HTDIG_WORDLIST_PREFIX ? prefixLength : 0))
-	    break;
-	  //
-	  // Skip entries that do not exactly match the specified key.
-	  //
-	  if(!wordRef.Key().Equal(found.Key(), action & HTDIG_WORDLIST_PREFIX ? prefixLength : 0))
-	    continue;
-	}
+    if(action & HTDIG_WORDLIST_COLLECTOR) {
+      list = new List;
+    }
 
-	if(action & HTDIG_WORDLIST_COLLECTOR) {
-	  list->Add(new WordReference(found));
-	} else if(action & HTDIG_WORDLIST_WALKER) {
-	  int ret = callback(this, &found, callback_data);
-	  //
-	  // The callback function tells us that something went wrong, might
-	  // as well stop walking.
-	  //
-	  if(ret == NOTOK) break;
-	} else {
-	  // Useless to continue since we're not doing anything
+    do {
+      WordReference found(key, data);
+      //
+      // Don't bother to compare keys if we want to walk all the entries
+      //
+      if(!(action & HTDIG_WORDLIST)) {
+	//
+	// Stop loop if we reach a record whose key does not
+	// match prefix key requirement, provided we have a valid
+	// prefix key.
+	//
+	if(!prefixKey.Empty() &&
+	   !prefixKey.Equal(found.Key(), action & HTDIG_WORDLIST_PREFIX ? prefixLength : 0))
 	  break;
-	}
+	//
+	// Skip entries that do not exactly match the specified key.
+	//
+	if(!wordRef.Key().Equal(found.Key(), action & HTDIG_WORDLIST_PREFIX ? prefixLength : 0))
+	  continue;
       }
+
+      if(action & HTDIG_WORDLIST_COLLECTOR) {
+	list->Add(new WordReference(found));
+      } else if(action & HTDIG_WORDLIST_WALKER) {
+	int ret = callback(this, cursor, &found, callback_data);
+	//
+	// The callback function tells us that something went wrong, might
+	// as well stop walking.
+	//
+	if(ret == NOTOK) break;
+      } else {
+	// Useless to continue since we're not doing anything
+	break;
+      }
+    } while(cursor.Get(key, data, DB_NEXT) == OK);
 
     return list;
 }
@@ -390,7 +476,20 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
 //
 int WordList::Exists(const WordReference& wordRef)
 {
-    return dbf->Exists(wordRef.KeyPack());
+  String key;
+
+  wordRef.Key().Pack(key);
+
+  Dbt rkey((void*)key.get(), (u_int32_t)key.length());
+  Dbt rdata;
+
+  if((errno = db->get(0, &rkey, &rdata, 0)) != 0) {
+    if(errno != DB_NOTFOUND)
+      cerr << "WordList::Exists(" << wordRef << ") failed " << strerror(errno) << "\n";
+    return NOTOK;
+  }
+  
+  return OK;
 }
 
 //
@@ -407,9 +506,9 @@ public:
 //*****************************************************************************
 //
 //
-static int delete_word(WordList *words, const WordReference *word, Object &data)
+static int delete_word(WordList *words, WordCursor &cursor, const WordReference *word, Object &data)
 {
-  if(words->Delete(*word) == 1) {
+  if(words->Delete(cursor) == 1) {
     ((DeleteWordData&)data).count++;
     return OK;
   } else {
@@ -430,6 +529,38 @@ int WordList::WalkDelete(const WordReference& wordRef)
   return data.count;
 }
 
+//*****************************************************************************
+// 
+// Delete record matching wordRef exactly.
+//
+int WordList::Delete(const WordReference& wordRef)
+{
+  String key;
+
+  wordRef.Key().Pack(key);
+
+  Dbt rkey((void*)key.get(), (u_int32_t)key.length());
+  Dbt rdata;
+
+  if((errno = db->del(0, &rkey, 0)) != 0) {
+    if(errno != DB_NOTFOUND) {
+      cerr << "WordList::Delete(" << wordRef << ") failed " << strerror(errno) << "\n";
+      return -1;
+    }
+    return 0;
+  }
+  
+  return 1;
+}
+
+//*****************************************************************************
+// 
+// Delete record at cursor position
+//
+int WordList::Delete(WordCursor& cursor)
+{
+  return cursor.Del() == OK ? 1 : 0;
+}
 
 //*****************************************************************************
 // List *WordList::Words()
@@ -440,11 +571,12 @@ List *WordList::Words()
     List		*list = new List;
     String		key;
     String		record;
-    String		word;
     WordReference	lastWord;
+    WordCursor		cursor;
 
-    dbf->Start_Get();
-    while (dbf->Get_Next(record, key))
+    if(cursor.Open(db) != OK) return 0;
+
+    while (cursor.Get(key, record, DB_NEXT) == OK)
       {
 	WordReference	wordRef(key, record);
 

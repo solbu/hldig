@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.8 1999/09/29 10:10:09 loic Exp $
+// $Id: word.cc,v 1.9 1999/09/30 15:56:47 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -29,7 +29,7 @@
 #include "defaults.h"
 #include "WordKey.h"
 #include "WordList.h"
-#include "HtWordType.h"
+#include "WordType.h"
 
 typedef struct {
   char* word_desc;

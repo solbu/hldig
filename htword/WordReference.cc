@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.cc,v 1.3 1999/09/28 14:35:37 loic Exp $
+// $Id: WordReference.cc,v 1.1 1999/09/30 15:56:46 loic Exp $
 //
 
 #include <iostream.h>
