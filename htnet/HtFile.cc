@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFile.cc,v 1.1.2.6 2000/09/08 04:26:24 ghutchis Exp $ 
+// $Id: HtFile.cc,v 1.1.2.7 2000/09/08 04:30:25 ghutchis Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -137,8 +137,6 @@ HtFile::DocStatus HtFile::Request()
 	       filename = _url.path();
 	       filename << namelist[i]->d_name;
 
-	       cout << " file name " << filename << endl;
-
 	       if ( namelist[i]->d_name[0] != '.' 
 		    && stat(filename.get(), &stat_buf) == 0 )
 		 {
@@ -154,7 +152,7 @@ HtFile::DocStatus HtFile::Request()
 	 }
        _response._contents << "</head><body></body></html>\n";
 
-       if (debug > 3)
+       if (debug > 4)
 	 cout << " Directory listing: " << endl << _response._contents << endl;
 
        _response._content_length = stat_buf.st_size;
