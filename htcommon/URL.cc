@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.3.2.4 2000/01/14 01:24:36 ghutchis Exp $
+// $Id: URL.cc,v 1.3.2.5 2000/02/22 22:27:28 grdetil Exp $
 //
 
 #include "URL.h"
@@ -149,6 +149,13 @@ URL::URL(const char *url, URL &parent)
 	// No need to look at the parent url since this is a complete url...
 	//
 	parse(ref);
+    }
+    else if (strncmp(ref, "//", 2) == 0)
+    {
+	// look at the parent url's _service, to make this is a complete url...
+	String	fullref(parent._service);
+	fullref << ':' << ref;
+	parse(fullref);
     }
     else
     {
@@ -375,6 +382,7 @@ void URL::normalizePath()
     // We will rewrite the path to be the minimal.
     //
     int	i, limit;
+    int	leadingdotdot = 0;
     String	newPath;
     int	pathend = _path.indexOf('?');	// Don't mess up query strings.
     if (pathend < 0)
@@ -390,10 +398,37 @@ void URL::normalizePath()
         else
         {
             _path = _path.sub(i + 3).get();
+            leadingdotdot++;
         }
         pathend = _path.indexOf('?');
         if (pathend < 0)
             pathend = _path.length();
+    }
+    if ((i = _path.indexOf("/..")) >= 0 && i == pathend-3)
+    {
+        if ((limit = _path.lastIndexOf('/', i - 1)) >= 0)
+            newPath = _path.sub(0, limit+1).get();	// keep trailing slash
+        else
+        {
+            newPath = '/';
+            leadingdotdot++;
+        }
+        newPath << _path.sub(i + 3).get();
+        _path = newPath;
+        pathend = _path.indexOf('?');
+        if (pathend < 0)
+            pathend = _path.length();
+    }
+    while (--leadingdotdot >= 0)
+    {
+        // RFC 2396 says if there are more .. segments than hierarchical levels,
+        // we should keep the extra .. segments.  For the code above to work,
+        // we have to strip off the leading .. segments to handle later ones,
+        // so we'll just add them back here...
+        newPath = "/..";
+        newPath << _path;
+        _path = newPath;
+        pathend += 3;
     }
 
     //
@@ -408,6 +443,13 @@ void URL::normalizePath()
         pathend = _path.indexOf('?');
         if (pathend < 0)
             pathend = _path.length();
+    }
+    if ((i = _path.indexOf("/.")) >= 0 && i == pathend-2)
+    {
+        newPath = _path.sub(0, i+1).get();		// keep trailing slash
+        newPath << _path.sub(i + 2).get();
+        _path = newPath;
+        pathend--;
     }
 
     //
