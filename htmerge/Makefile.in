@@ -1,6 +1,7 @@
 top_srcdir=		@top_srcdir@
 srcdir=			@srcdir@
 VPATH=			@srcdir@
+INSTALL=		@INSTALL@
 
 top_builddir= ..
 include $(top_builddir)/Makefile.config
