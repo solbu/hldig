@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: cgi.cc,v 1.2.2.2 2000/02/16 14:47:30 vadim Exp $
+// $Id: cgi.cc,v 1.2.2.3 2000/02/23 19:45:47 grdetil Exp $
 //
 
 #include "cgi.h"
@@ -81,7 +81,7 @@ cgi::init(char *s)
 		if (!buf || !*buf || (n = atoi(buf)) <= 0)
 			return;		// null query
 		buf = new char[n + 1];
-		int     r, i = 0;
+		int	r, i = 0;
 		while (i < n && (r = read(0, buf+i, n-i)) > 0)
 			i += r;
 		buf[i] = '\0';
@@ -92,7 +92,7 @@ cgi::init(char *s)
 	//
 	// Now we need to split the line up into name/value pairs
 	//
-	StringList	list(results, '&');
+	StringList	list(results, "&;");
 	
 	//
 	// Each name/value pair now needs to be added to the dictionary

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.11 2000/02/14 06:05:23 ghutchis Exp $
+// $Id: Display.cc,v 1.100.2.12 2000/02/23 19:45:47 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -615,6 +615,7 @@ Display::createURL(String &url, int pageNumber)
 {
     String	s;
     int         i;
+#define encodeInput(name) (s = input->get(name), encodeURL(s), s.get())
 
     if (!config["script_name"].empty()) {
       url << config["script_name"];
@@ -625,34 +626,35 @@ Display::createURL(String &url, int pageNumber)
     url << '?';
 
     if (input->exists("restrict"))
-	s << "restrict=" << input->get("restrict") << '&';
+	url << "restrict=" << encodeInput("restrict") << ';';
     if (input->exists("exclude"))
-	s << "exclude=" << input->get("exclude") << '&';
+	url << "exclude=" << encodeInput("exclude") << ';';
     if (input->exists("config"))
-	s << "config=" << input->get("config") << '&';
+	url << "config=" << encodeInput("config") << ';';
     if (input->exists("method"))
-	s << "method=" << input->get("method") << '&';
+	url << "method=" << encodeInput("method") << ';';
     if (input->exists("format"))
-	s << "format=" << input->get("format") << '&';
+	url << "format=" << encodeInput("format") << ';';
     if (input->exists("sort"))
-	s << "sort=" << input->get("sort") << '&';
+	url << "sort=" << encodeInput("sort") << ';';
     if (input->exists("matchesperpage"))
-	s << "matchesperpage=" << input->get("matchesperpage") << '&';
+	url << "matchesperpage=" << encodeInput("matchesperpage") << ';';
     if (input->exists("keywords"))
-	s << "keywords=" << input->get("keywords") << '&';
+	url << "keywords=" << encodeInput("keywords") << ';';
     if (input->exists("words"))
-	s << "words=" << input->get("words") << '&';
+	url << "words=" << encodeInput("words") << ';';
     StringList form_vars(config["allow_in_form"], " \t\r\n");
     for (i= 0; i < form_vars.Count(); i++)
     {
       if (input->exists(form_vars[i]))
       {
-	s << form_vars[i] << '=' << input->get(form_vars[i]) << '&';
+	s = form_vars[i];
+	encodeURL(s);		// shouldn't be needed, but just in case
+	url << s << '=';
+	url << encodeInput(form_vars[i]) << ';';
       }
     }
-    s << "page=" << pageNumber;
-    encodeURL(s);
-    url << s;
+    url << "page=" << pageNumber;
 }
 
 //*****************************************************************************

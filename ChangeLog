@@ -1,3 +1,12 @@
+Wed Feb 23 13:40:27 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/URL.h (encodeURL): Change list of valid characters to
+	include only unreserved ones.
+	* htcommon/cgi.cc (init): Allow "&" and ";" as input param. separators.
+	* htsearch/Display.cc (createURL): Encode each parameter separately,
+	using new unreserved list, before piecing together query string, to
+	allow characters like "?=&" within parameters to be encoded.
+
 Wed Feb 23 13:22:29 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/URL.cc (ServerAlias): Fix server_aliases processing to prevent
