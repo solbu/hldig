@@ -1,6 +1,6 @@
 Summary: A web indexing and searching system for a small domain or intranet
 Name: htdig
-Version: 3.2.0b1
+Version: 3.2.0b2
 Release: 0
 Copyright: GPL
 Group: Networking/Utilities
@@ -54,9 +54,24 @@ if [ "$1" = 1 ]; then
 	SERVERNAME="`grep '^ServerName' /etc/httpd/conf/httpd.conf | awk 'NR == 1 {print $2}'`"
 	[ -z "$SERVERNAME" ] && SERVERNAME="`hostname -f`"
 	[ -z "$SERVERNAME" ] && SERVERNAME="localhost"
-	echo "start_url:	http://$SERVERNAME/
+	sed 's/^start_url:.*/#&\
+# (See end of file for this parameter.)/' /etc/htdig/htdig.conf > /tmp/ht.$$
+	cat /tmp/ht.$$ > /etc/htdig/htdig.conf
+	rm /tmp/ht.$$
+	cat >> /etc/htdig/htdig.conf <<!
+
+# Automatically set up by htdig RPM, from your current Apache httpd.conf...
+# Verify and configure these, and set maintainer above, before running
+# /usr/sbin/rundig.
+# See /usr/doc/htdig*/attrs.html for descriptions of attributes.
+
+# The URL(s) where htdig will start.  See also limit_urls_to above.
+start_url:	http://$SERVERNAME/
+
+# These attributes allow indexing server via local filesystem rather than HTTP.
 local_urls:	http://$SERVERNAME/=/home/httpd/html/
-local_user_urls:	http://$SERVERNAME/=/home/,/public_html/" >> /etc/htdig/htdig.conf
+local_user_urls:	http://$SERVERNAME/=/home/,/public_html/
+!
 
 fi
 
@@ -66,7 +81,7 @@ fi
 %config /etc/htdig/mime.types
 %config /usr/sbin/rundig
 %config /home/httpd/html/search.html
-/etc/cron.daily/htdig-dbgen
+%config(missingok) /etc/cron.daily/htdig-dbgen
 /usr/sbin/ht*
 /usr/lib/*
 /var/lib/htdig
@@ -76,6 +91,11 @@ fi
 %doc README htdoc/*
 
 %changelog
+* Mon Feb 21 2000 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+  - fixed %post script to add more descriptive entries in htdig.conf
+  - made cron script a config file
+  - updated to 3.2.0b2
+
 * Thu Feb  3 2000 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
   - added mime.types as a %config file
 

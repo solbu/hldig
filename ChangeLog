@@ -1,4 +1,8 @@
-Mon Feb 21 17:15:19 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Feb 21 17:25:21 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.2.0.spec: Fixed %post script to add more
+	descriptive entries in htdig.conf, made cron script a config file,
+	updated to 3.2.0b2.
 
 	* contrib/conv_doc.pl, contrib/parse_doc.pl: Added comments to show
 	Warren Jones's updates in change history.
