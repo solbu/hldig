@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HTML.cc,v 1.76 2004/06/09 17:35:34 grdetil Exp $
+// $Id: HTML.cc,v 1.77 2004/07/11 10:28:22 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -487,17 +487,18 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    if (head.length() < max_head_length && !noindex && !in_title)
 	    {
 		//
-		// Capitalize H1 and H2 blocks
-	        //
-	        if (in_heading > 1 && in_heading < 4)
-	         {
-	           word.uppercase();
-	         }
-
-		//
 		// Append the word to the head (excerpt)
 		//
-		  head << word;
+	        if (in_heading > 1 && in_heading < 4)
+	         {
+		   //
+		   // Capitalize H1 and H2 blocks, but don't capitalise  word
+	           //
+		   String tmp (word);
+	           tmp.uppercase();
+		   head << tmp;
+	         } else
+		   head << word;
 	    }
 
 	    if (word.length() >= (int)minimum_word_length && !noindex)

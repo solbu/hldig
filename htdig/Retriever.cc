@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.95 2004/06/14 12:16:17 lha Exp $
+// $Id: Retriever.cc,v 1.96 2004/07/11 10:28:22 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1443,6 +1443,12 @@ void Retriever::got_word(const char *word, int location, int heading)
 		String w = word;
 		HtWordReference wordRef;
 
+		// Record if word capitalised for "caps_factor".
+		// Only check first letter for efficiency.
+		int heading_flags = factor[heading];
+		if (isupper(word[0]))
+		    heading_flags |= FLAG_CAPITAL;
+
 		if (no_store_phrases)
 		{
 		    // Add new word, or mark existing word as also being at
@@ -1453,12 +1459,12 @@ void Retriever::got_word(const char *word, int location, int heading)
 			words_to_add.Add(w, new word_entry (location, factor[heading], word_context));
 		    } else
 		    {
-			entry->flags |= factor[heading];
+			entry->flags |= heading_flags;
 		    }
 		} else
 		{
 		    wordRef.Location(location);
-		    wordRef.Flags(factor[heading]);
+		    wordRef.Flags(heading_flags);
 		    wordRef.Word(w);
 		    words.Replace(WordReference::Merge(wordRef, word_context));
 		}

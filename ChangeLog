@@ -1,3 +1,11 @@
+Sun 11 Jul 2004   Lachlan Andrew  <lha at users.sourceforge.net>
+
+    * htdig/{HTML.cc,Retriever.cc}, htsearch/{DocMatch.cc,parser.cc},
+    * test/t_factors:
+      Record capitalisation information for  caps_factor
+
+    * htcommon/HtWordReference.h, htcommon/defaults.cc: documentation fixes
+
 Sun 20 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
 
     * test/{t_factors,t_fuzzy,t_htsearch,t_parsing,t_templates,t_validwords},

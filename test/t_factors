@@ -5,7 +5,7 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_factors,v 1.8 2004/06/20 12:02:41 lha Exp $
+# $Id: t_factors,v 1.9 2004/07/11 10:28:23 lha Exp $
 #
 
 # Tests (or should eventually test) the following config attributes:
@@ -99,7 +99,7 @@ set_attr url_seed_score			""
 set_attr search_results_order		""
 set_attr author_factor			0
 set_attr backlink_factor		0
-set_attr caps_factor			0	# not implemented
+set_attr caps_factor			0
 set_attr date_factor			0	# TODO
 set_attr description_factor		0
 set_attr heading_factor			0
@@ -146,6 +146,12 @@ try_order "Search for 'media' with author_factor 1" \
     '1 matches' 'script.html'
 set_attr author_factor			0
 
+set_attr caps_factor			1
+try_order "Search for 'media' with caps_factor 1" \
+    "words=media" \
+    '1 matches' 'script.html'
+set_attr caps_factor			0
+
 set_attr meta_description_factor	1
 try_order "Search for 'stars' with meta_description_factor 1" \
     "words=stars" \
@@ -186,11 +192,14 @@ try_order "Search for 'crossRef' with description_factor 0" \
     '1 matches' 'title.html'
 set_attr description_factor		1
 
+# (All words in author are also capitalised, so set caps factor 0 too)
 set_attr author_factor			0
+set_attr caps_factor			0
 try_order "Search for 'media' with author_factor 0" \
     "words=media" \
     'No matches'
 set_attr author_factor			1
+set_attr caps_factor			1
 
 set_attr meta_description_factor	0
 try_order "Search for 'stars' with meta_description_factor 0" \

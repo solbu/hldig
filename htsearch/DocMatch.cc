@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocMatch.cc,v 1.8 2004/05/28 13:15:24 lha Exp $
+// $Id: DocMatch.cc,v 1.9 2004/07/11 10:28:22 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -204,11 +204,12 @@ DocMatch::GetScore()
       while(loc)
 	{
 	  locresult = 0.0;
-	  if (loc->flags == FLAG_TEXT)		locresult += text_factor;
-	  if (loc->flags & FLAG_CAPITAL)		locresult += caps_factor;
+	  if ((loc->flags & ~FLAG_CAPITAL) == FLAG_TEXT)
+	      					locresult += text_factor;
+	  if (loc->flags & FLAG_CAPITAL)	locresult += caps_factor;
 	  if (loc->flags & FLAG_TITLE)		locresult += title_factor;
-	  if (loc->flags & FLAG_HEADING)		locresult += heading_factor;
-	  if (loc->flags & FLAG_KEYWORDS)		locresult += keywords_factor;
+	  if (loc->flags & FLAG_HEADING)	locresult += heading_factor;
+	  if (loc->flags & FLAG_KEYWORDS)	locresult += keywords_factor;
 	  if (loc->flags & FLAG_DESCRIPTION)	locresult += meta_desc_factor;
 	  if (loc->flags & FLAG_AUTHOR)		locresult += author_factor;
 	  if (loc->flags & FLAG_LINK_TEXT)	locresult += description_factor;

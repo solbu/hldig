@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtWordReference.h,v 1.6 2004/05/28 13:15:12 lha Exp $
+// $Id: HtWordReference.h,v 1.7 2004/07/11 10:28:22 lha Exp $
 //
 #ifndef _HtWordReference_h_
 #define _HtWordReference_h_
@@ -20,7 +20,7 @@
 
 //
 // Flags
-// (If extra flags added, also update  htsearch.cc:colonPrefix
+// (If extra flags added, also update  htsearch.cc:colonPrefix)
 // 
 #define FLAG_TEXT 0
 #define FLAG_CAPITAL 1

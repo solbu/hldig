@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: parser.cc,v 1.37 2004/06/19 00:55:55 lha Exp $
+// $Id: parser.cc,v 1.38 2004/07/11 10:28:23 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -560,8 +560,10 @@ Parser::score(List *wordList, double weight, unsigned int flags)
 	//
 
 	// If word not in one of the required fields, skip the entry.
-	// Plain text sets no flag in dbase, so treat it separately.
-	if (!(wr->Flags() & flags) && (wr->Flags() || !(flags & FLAG_PLAIN)))
+	// Plain text sets no flag in dbase, so treat it separately in
+	// second line.  A capitalised word is still "plain".
+	if (!(wr->Flags() & flags) &&
+		((wr->Flags() & ~FLAG_CAPITAL) || !(flags & FLAG_PLAIN)))
 	{
 	    if (debug > 2)
 		cerr << "Flags " << wr->Flags() << " lack " << flags << endl;
@@ -569,7 +571,8 @@ Parser::score(List *wordList, double weight, unsigned int flags)
 	}
 
 	wscore = 0.0;
-	if (wr->Flags() == FLAG_TEXT)		wscore += text_factor;
+	if ((wr->Flags() & ~FLAG_CAPITAL) == FLAG_TEXT)
+	    					wscore += text_factor;
 	if (wr->Flags() & FLAG_CAPITAL)		wscore += caps_factor;
 	if (wr->Flags() & FLAG_TITLE)		wscore += title_factor;
 	if (wr->Flags() & FLAG_HEADING)		wscore += heading_factor;
@@ -589,6 +592,9 @@ Parser::score(List *wordList, double weight, unsigned int flags)
 	    // We wish to *update* this, not add a duplicate
 	    list->remove(wr->DocID());
 	  }
+
+	if (debug > 2)
+	    cerr << "Flags " << wr->Flags() << " score " << wscore << endl;
 
 	dm = new DocMatch;
 	dm->id = wr->DocID();
