@@ -1,3 +1,13 @@
+Thu Jan 21 02:42:14 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htdoc/cf_byprog.html, htdoc/cf_byname, htdoc/attrs.html:
+	Document url_part_aliases and common_url_parts.
+
+	* htlib/StringMatch.h (StringMatch::Pattern): Add default
+	parameter sep = '|'.
+
+	* htlib/StringMatch.cc (Pattern): Similar.
+	
 Wed Jan 20 20:20:35 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.cc(logSearch): Use REMOTE_ADDR when REMOTE_HOST
