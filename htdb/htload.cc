@@ -37,7 +37,7 @@ extern "C" {
 
 void	badnum __P((void));
 void	configure __P((DB_INFO *, char **));
-DB_ENV *db_init __P((char *, int));
+DB_ENV *db_init __P((char *, int, int));
 int	dbt_rdump __P((DBT *));
 int	dbt_rprint __P((DBT *));
 int	digitize __P((int));
@@ -67,6 +67,7 @@ main(int argc, char* argv[])
 	u_int32_t db_nooverwrite;
 	int ch, checkprint, existed, no_header, ret;
 	int compress = 0;
+	int wordlist = 0;
 	char **clist, **clp, *home;
 
 	/* Allocate enough room for configuration arguments. */
@@ -78,7 +79,7 @@ main(int argc, char* argv[])
 	db_nooverwrite = 0;
 	checkprint = existed = no_header = ret = 0;
 	argtype = dbtype = DB_UNKNOWN;
-	while ((ch = getopt(argc, argv, "c:f:h:nTt:C:S:z")) != EOF)
+	while ((ch = getopt(argc, argv, "c:f:h:nTt:C:S:zW")) != EOF)
 		switch (ch) {
 		case 'c':
 			*clp++ = optarg;
@@ -104,6 +105,9 @@ main(int argc, char* argv[])
 			break;
 		case 'z':
 			compress = DB_COMPRESS;
+			break;
+		case 'W':
+		        wordlist = 1;
 			break;
 		case 't':
 			if (strcmp(optarg, "btree") == 0) {
@@ -175,7 +179,7 @@ main(int argc, char* argv[])
 
 	/* Initialize the environment if the user specified one. */
 	siginit();
-	dbenv = db_init(home, compress);
+	dbenv = db_init(home, compress, wordlist);
 
 	/* Open the DB file. */
 	if ((errno = db_open(argv[0], dbtype, (DB_CREATE | compress),
@@ -254,7 +258,7 @@ err:		ret = 1;
  *	Initialize the environment.
  */
 DB_ENV *
-db_init(char *home, int compress)
+db_init(char *home, int compress, int wordlist)
 {
 	DB_ENV *dbenv;
 
@@ -273,7 +277,7 @@ db_init(char *home, int compress)
 				DB_INIT_LOG | DB_INIT_MPOOL | DB_INIT_TXN | DB_USE_ENVIRON)) == 0) {
 	  dbenv->db_errfile = stderr;
 	  dbenv->db_errpfx = progname;
-	  if(compress) dbenv->mp_cmpr_info = WordDB::CmprInfo();
+	  if(compress && wordlist) dbenv->mp_cmpr_info = WordDB::CmprInfo();
 	  return (dbenv);
 	}
 
@@ -281,7 +285,7 @@ db_init(char *home, int compress)
 	memset(dbenv, 0, sizeof(*dbenv));
 	dbenv->db_errfile = stderr;
 	dbenv->db_errpfx = progname;
-	if(compress) dbenv->mp_cmpr_info = WordDB::CmprInfo();
+	if(compress && wordlist) dbenv->mp_cmpr_info = WordDB::CmprInfo();
 
 	/* Try again, and it's fatal if we fail. */
 	if ((errno = db_appinit(home, NULL, dbenv, DB_USE_ENVIRON)) != 0)
@@ -576,7 +580,7 @@ void
 usage()
 {
 	(void)fprintf(stderr, "%s\n\t%s\n",
-	    "usage: db_load [-nTz]",
+	    "usage: htload [-nTzW]",
     "[-c name=value] [-f file] [-h home] [-C cachesize] [-t btree | hash | recno] db_file");
 	exit(1);
 }

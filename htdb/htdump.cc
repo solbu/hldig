@@ -36,7 +36,7 @@ extern "C" {
 #include "WordDB.h"
 
 void	configure __P((char *));
-DB_ENV *db_init __P((char *, int));
+DB_ENV *db_init __P((char *, int, int));
 int	main __P((int, char *[]));
 void	pheader __P((DB *, int));
 void	usage __P((void));
@@ -56,13 +56,14 @@ main(int argc, char *argv[])
 	DB_ENV *dbenv;
 	int ch, checkprint, dflag;
 	int compress = 0;
+	int wordlist = 0;
 	char *home;
 
 	home = NULL;
 	checkprint = dflag = 0;
 	memset(&dbinfo, 0, sizeof(dbinfo));
 
-	while ((ch = getopt(argc, argv, "df:h:NpC:S:z")) != EOF)
+	while ((ch = getopt(argc, argv, "df:h:NpC:S:zW")) != EOF)
 		switch (ch) {
 		case 'd':
 			dflag = 1;
@@ -89,6 +90,9 @@ main(int argc, char *argv[])
 		case 'z':
 			compress = DB_COMPRESS;
 			break;
+		case 'W':
+			wordlist = 1;
+			break;
 		case '?':
 		default:
 			usage();
@@ -103,7 +107,7 @@ main(int argc, char *argv[])
 		errx(1, "the -d and -p options may not both be specified");
 
 	/* Initialize the environment. */
-	dbenv = db_init(home, compress);
+	dbenv = db_init(home, compress, wordlist);
 
 	/* Open the DB file. */
 	if ((errno =
@@ -151,7 +155,7 @@ main(int argc, char *argv[])
  *	Initialize the environment.
  */
 DB_ENV *
-db_init(char *home, int compress)
+db_init(char *home, int compress, int wordlist)
 {
 	DB_ENV *dbenv;
 
@@ -172,7 +176,7 @@ db_init(char *home, int compress)
 	    NULL, dbenv, DB_USE_ENVIRON | DB_INIT_MPOOL)) == 0) {
 		dbenv->db_errfile = stderr;
 		dbenv->db_errpfx = progname;
-		if(compress) dbenv->mp_cmpr_info = WordDB::CmprInfo();
+		if(compress && wordlist) dbenv->mp_cmpr_info = WordDB::CmprInfo();
 		return (dbenv);
 	}
 
@@ -180,7 +184,7 @@ db_init(char *home, int compress)
 	memset(dbenv, 0, sizeof(*dbenv));
 	dbenv->db_errfile = stderr;
 	dbenv->db_errpfx = progname;
-	if(compress) dbenv->mp_cmpr_info = WordDB::CmprInfo();
+	if(compress && wordlist) dbenv->mp_cmpr_info = WordDB::CmprInfo();
 
 	/* Try again, and it's fatal if we fail. */
 	if ((errno = db_appinit(home, NULL, dbenv, DB_USE_ENVIRON)) != 0)
@@ -267,6 +271,6 @@ void
 usage()
 {
 	(void)fprintf(stderr,
-	    "usage: db_dump [-dNpz] [-C cachesize] [-f file] [-h home] db_file\n");
+	    "usage: htdump [-dNpzW] [-C cachesize] [-f file] [-h home] db_file\n");
 	exit(1);
 }

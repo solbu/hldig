@@ -41,7 +41,7 @@ typedef enum { T_NOTSET, T_DB, T_LOCK, T_LOG, T_MPOOL, T_TXN } test_t;
 
 int	argcheck __P((char *, const char *));
 void	btree_stats __P((DB *));
-DB_ENV *db_init __P((char *, test_t, int));
+DB_ENV *db_init __P((char *, test_t, int, int));
 void	dl __P((const char *, u_long));
 void	hash_stats __P((DB *));
 int	lock_ok __P((char *));
@@ -71,13 +71,14 @@ main(int argc, char *argv[])
 	test_t ttype;
 	int ch;
 	int compress = 0;
+	int wordlist = 0;
 	char *db, *home;
 
 	ttype = T_NOTSET;
 	db = home = NULL;
 	memset(&dbinfo, 0, sizeof(dbinfo));
 
-	while ((ch = getopt(argc, argv, "C:cd:h:lM:mNtS:z")) != EOF)
+	while ((ch = getopt(argc, argv, "C:cd:h:lM:mNtS:zW")) != EOF)
 		switch (ch) {
 		case 'C':
 			ttype = T_LOCK;
@@ -114,6 +115,9 @@ main(int argc, char *argv[])
 		case 'z':
 			compress = DB_COMPRESS;
 			break;
+		case 'W':
+			wordlist = 1;
+			break;
 		case 't':
 			ttype = T_TXN;
 			break;
@@ -132,7 +136,7 @@ main(int argc, char *argv[])
 	 * spending all of our time in the DB library.
 	 */
 	nosig();
-	dbenv = db_init(home, ttype, compress);
+	dbenv = db_init(home, ttype, compress, wordlist);
 
 	switch (ttype) {
 	case T_DB:
@@ -517,7 +521,7 @@ prflags(u_int32_t flags, const FN *fnp)
  *	Initialize the environment.
  */
 DB_ENV *
-db_init(char *home, test_t ttype, int compress)
+db_init(char *home, test_t ttype, int compress, int wordlist)
 {
 	DB_ENV *dbenv;
 	u_int32_t flags;
@@ -561,7 +565,7 @@ db_init(char *home, test_t ttype, int compress)
 	if ((errno = db_appinit(home, NULL, dbenv, flags)) == 0) {
 		dbenv->db_errfile = stderr;
 		dbenv->db_errpfx = progname;
-		if(compress) dbenv->mp_cmpr_info = WordDB::CmprInfo();
+		if(compress && wordlist) dbenv->mp_cmpr_info = WordDB::CmprInfo();
 		return (dbenv);
 	}
 
@@ -573,7 +577,7 @@ db_init(char *home, test_t ttype, int compress)
 	memset(dbenv, 0, sizeof(*dbenv));
 	dbenv->db_errfile = stderr;
 	dbenv->db_errpfx = progname;
-	if(compress) dbenv->mp_cmpr_info = WordDB::CmprInfo();
+	if(compress && wordlist) dbenv->mp_cmpr_info = WordDB::CmprInfo();
 
 	/* Try again, and it's fatal if we fail. */
 	if ((errno = db_appinit(home, NULL, dbenv, flags)) != 0)
@@ -613,6 +617,6 @@ void
 usage()
 {
 	fprintf(stderr,
-    "usage: db_stat [-clmNtz] [-C Acflmo] [-d file] [-h home] [-M Ahlm]\n");
+    "usage: htstat [-clmNtzW] [-C Acflmo] [-d file] [-h home] [-M Ahlm]\n");
 	exit (1);
 }
