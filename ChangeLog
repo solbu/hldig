@@ -1,3 +1,18 @@
+Thu Dec 09 15:07:11 1999  Loic Dachary  <loic@ceic.com>
+
+	* acinclude.m4,db/dist/acinclude.mr: CHECK_ZLIB now fails if either
+	  zlib.h or libz is not found.
+
+	* configure.in: do not test zlib.h
+
+	* db/db/db.c,db/mp/mp_fopen.c: added #ifdef HAVE_ZLIB so that
+	  compilation works if zlib is not found
+
+	* htlib/.cvsignore: remove wrong *.cxx
+
+	* test/dbbench.cc: added #ifdef HAVE_ZLIB so that
+	  compilation works if zlib is not found
+
 Thu Dec 09 13:25:45 1999  Marcel Bosc  <bosc@ceic.com>
 
 	* test/Word.cc,t_wordlist,Makefile.am: upgraded tests

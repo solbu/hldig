@@ -5,5 +5,3 @@ Makefile
 .pure
 .deps
 .libs
-conf_parser.cxx
-conf_lexer.cxx

@@ -160,7 +160,11 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 #endif /* HAVE_LIBZ */
 		last_pgno = 0;
 	} else {
+#ifdef HAVE_LIBZ
 	       size_t disk_pagesize = F_ISSET(dbmfp, MP_CMPR) ? DB_CMPR_DIVIDE(dbenv, pagesize) : pagesize;
+#else /* HAVE_LIBZ */
+	       size_t disk_pagesize = pagesize;
+#endif /* HAVE_LIBZ */
 		/* Get the real name for this file and open it. */
 		if ((ret = __db_appname(dbenv,
 		    DB_APP_DATA, NULL, path, 0, NULL, &rpath)) != 0)

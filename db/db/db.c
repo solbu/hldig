@@ -506,7 +506,11 @@ empty:	/*
 	 * If compression is on, the minimum page size must be multiplied
 	 * by the compression factor.
 	 */
+#ifdef HAVE_ZLIB
 	if (dbp->pgsize < (F_ISSET(dbp, DB_AM_CMPR) ? DB_CMPR_MULTIPLY(dbenv, DB_MIN_PGSIZE) : DB_MIN_PGSIZE) ||
+#else /* HAVE_ZLIB */
+	if (dbp->pgsize < DB_MIN_PGSIZE ||
+#endif /* HAVE_ZLIB */
 	    dbp->pgsize > DB_MAX_PGSIZE ||
 	    dbp->pgsize & (sizeof(db_indx_t) - 1)) {
 		__db_err(dbenv, "illegal page size");

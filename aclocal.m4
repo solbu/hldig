@@ -31,7 +31,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.5 1999/12/09 10:28:42 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.6 1999/12/09 13:07:52 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -49,7 +49,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.5 1999/12/09 10:28:42 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.6 1999/12/09 13:07:52 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -87,17 +87,19 @@ dnl and then in /usr. If the --with-zlib=DIR is specified, it will try
 dnl to find it in DIR/include/zlib.h and DIR/lib/libz.a. If --without-zlib
 dnl is specified, the library is not searched at all.
 dnl
-dnl It defines the symbol HAVE_LIBZ if the library is found. You should
-dnl use autoheader to include a definition for this symbol in a config.h
-dnl file.
+dnl If either the header file (zlib.h) or the library (libz) is not
+dnl found, the configuration exits on error, asking for a valid
+dnl zlib installation directory or --without-zlib.
 dnl
-dnl Sources files should then use something like
+dnl The macro defines the symbol HAVE_LIBZ if the library is found. You should
+dnl use autoheader to include a definition for this symbol in a config.h
+dnl file. Sample usage in a C/C++ source is as follows:
 dnl
 dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.5 1999/12/09 10:28:42 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.6 1999/12/09 13:07:52 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -129,9 +131,33 @@ fi
 #
 if test -n "${ZLIB_HOME}"
 then
+	ZLIB_OLD_LDFLAGS=$LDFLAGS
+	ZLIB_OLD_CPPFLAGS=$LDFLAGS
 	LDFLAGS="$LDFLAGS -L${ZLIB_HOME}/lib"
 	CPPFLAGS="$CPPFLAGS -I${ZLIB_HOME}/include"
-	AC_CHECK_LIB(z, inflateEnd)
+        AC_LANG_SAVE
+        AC_LANG_C
+	AC_CHECK_LIB(z, inflateEnd, [zlib_cv_libz=yes], [zlib_cv_libz=no])
+        AC_CHECK_HEADER(zlib.h, [zlib_cv_zlib_h=yes], [zlib_cvs_zlib_h=no])
+        AC_LANG_RESTORE
+	if test "$zlib_cv_libz" = "yes" -a "$zlib_cv_zlib_h" = "yes"
+	then
+		#
+		# If both library and header were found, use them
+		#
+		AC_CHECK_LIB(z, inflateEnd)
+		AC_MSG_CHECKING(zlib in ${ZLIB_HOME})
+		AC_MSG_RESULT(ok)
+	else
+		#
+		# If either header or library was not found, revert and bomb
+		#
+		AC_MSG_CHECKING(zlib in ${ZLIB_HOME})
+		LDFLAGS="$ZLIB_OLD_LDFLAGS"
+		CPPFLAGS="$ZLIB_OLD_CPPFLAGS"
+		AC_MSG_RESULT(failed)
+		AC_MSG_ERROR(either specify a valid zlib installation with --with-zlib=DIR or disable zlib usage with --without-zlib)
+	fi
 fi
 
 ])
@@ -168,7 +194,7 @@ dnl LoadModule env_module         @APACHE_MODULES@/mod_env.so
 dnl LoadModule config_log_module  @APACHE_MODULES@/mod_log_config.so
 dnl ...
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.5 1999/12/09 10:28:42 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.6 1999/12/09 13:07:52 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
