@@ -1,3 +1,8 @@
+Thu Jan  7 17:29:52 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/(attrs.html, cf_byname.html, cf_byprog.html): Fix typo
+	noted by Joe Jah: keyword_factor -> keywords_factor.
+
 Thu Jan  7 14:32:34 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (display): The start template, if provided,
