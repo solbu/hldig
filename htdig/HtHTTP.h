@@ -76,6 +76,7 @@
 #include "htString.h"
 #include "HtDateTime.h"
 #include "Connection.h"
+#include "Transport.h"
 
 #define DEFAULT_CONNECTION_TIMEOUT 15
 #define DEFAULT_MAX_DOCUMENT_SIZE	 100000
@@ -83,10 +84,10 @@
 
 // In advance declarations
 
-class HtHTTP;
+class HtHTTP
 
 
-class HtHTTP_Response
+class HtHTTP_Response : public Transport_Response
 {
 
    friend class HtHTTP;    // declaring friendship
@@ -117,13 +118,13 @@ class HtHTTP_Response
    	 char *GetReasonPhrase() { return _reason_phrase; }
 
 	 // Get the Content type
-   	 char *GetContentType() { return _content_type; }
+   	 String GetContentType() { return _content_type; }
 
 	 // Get the Content length
    	 int GetContentLength() const { return _content_length; }
 
    	 // Get the contents
-   	 char *GetContents() { return _contents; }
+   	 String GetContents() { return _contents; }
 	 
 	 // Get the modification time object pointer
 	 HtDateTime *GetModificationTime() const { return _modification_time; }
@@ -157,7 +158,7 @@ class HtHTTP_Response
 
 
 
-class HtHTTP
+class HtHTTP : public Transport
 {
 public:
 
@@ -167,20 +168,6 @@ public:
 
     HtHTTP();
     ~HtHTTP();
-
-   // Information about the status of a document retrieving
-   
-   enum DocStatus
-   {
-   	 Document_ok,
-   	 Document_not_changed,
-   	 Document_not_found,
-   	 Document_not_parsable,
-   	 Document_redirect,
-   	 Document_not_authorized,
-	 Document_connection_down,
-	 Document_no_header
-   };
 
    // Information about the method to be used in the request
 
@@ -208,31 +195,7 @@ public:
  ///////
 
    // Set Connection parameters
-   void SetHttpConnection (char *server, int port);
-
-   // Set and get the connection time out value
-   static void SetTimeOut ( int t ) { _timeout=t; }
-   static int GetTimeOut () { return _timeout; }
-
-
- ///////
-    //    Interface for the HTTP Request
- ///////
-
-   // Set and get the host
-   void SetRequestHost(char *h) { _host = h; }
-   char *GetRequestHost() const { return _host; }
-
-   // Set and get the document to be retrieved
-   void SetRequestDocument(char *d) { _document = d; }
-   char *GetRequestDocument () const { return _document; }
-
-   // Set the modification date and time for If-Modified-Since   
-   void SetRequestModificationTime (HtDateTime *p) { _modification_time=p; }
-   void SetRequestModificationTime (HtDateTime &p)
-   	       	   	       	   	    { SetRequestModificationTime (&p) ; }
-   // Get the modification date time
-   HtDateTime *GetRequestModificationTime () { return _modification_time; }
+   void SetHttpConnection (URL u);
 
    // Get the date time information about the request
    const HtDateTime *GetStartTime() const { return &_start_time; }
@@ -243,10 +206,6 @@ public:
    // Get the User agent string
    static void SetRequestUserAgent (char *s) { _user_agent=s; }
    static char *GetRequestUserAgent() { return _user_agent; }
-
-   // Get and set the max document size to be retrieved
-   static void SetRequestMaxDocumentSize (int t) { _max_document_size=t; }
-   static int GetRequestMaxDocumentSize() { return _max_document_size; }
 
 
  ///////
@@ -319,21 +278,10 @@ protected:
 
    Connection  _connection;	   // Connection object
 
-   static int	_timeout;     	   // Connection Time out (static)
-
-   char *   	_server;    	   // Server or proxy to connect with
-   int      	_port;       	   // Port of the remote host or proxy
-
 
    ///////
       //    Http single Request information (Member attributes)
    ///////
-
-   char *   	_document;  	   // Document to be retrieved
-   char *   	_host;     	   // HTTP host
-   
-   HtDateTime *_modification_time;  // Set the modification time for
-   	       	   	       	   	 // If-Modified-Since
 
    HtDateTime  _start_time;	   	 // Start time of the request
    HtDateTime  _end_time;	   	 // end time of the request
@@ -344,8 +292,6 @@ protected:
    ///////
       //    Http multiple Request information
    ///////
-
-   static int      	_max_document_size;  // Max document size to retrieve
 
    static String   	_user_agent;  	   // User agent
    
@@ -399,21 +345,6 @@ protected:
 ///////
    //    Protected Services or method (Hidden by outside)
 ///////
-
-
- ///////
-    //    Hidden Interface for the connection
- ///////
-
-   // Set and get the remote server to be connected with
-   
-   void SetConnectionServer(char *server) { _server = server; }
-   char *GetConnectionServer () const { return _server; }
-
-   // Set and get the remote host port to be connected with
-   
-   void SetConnectionPort(int port) { _port = port; }     // Set the remote host port
-   int GetConnectionPort () const { return _port; } 	   // and get it
 
 
    ///////

@@ -1,3 +1,7 @@
+Wed Jun 23 23:00:18 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HtHTTP.h, htdig/HtHTTP.cc: Make a subclass of Transport.
+
 Wed Jun 23 22:08:20 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/Configuration.cc (Add): Handle single-quoted values for

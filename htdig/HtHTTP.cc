@@ -9,13 +9,13 @@
 //
 
 
+#include "lib.h"
+#include "HtHTTP.h"
+#include "htdig.h"
 #include <signal.h>
 #include <sys/types.h>
 #include <ctype.h>
-#include "lib.h"
-#include "HtHTTP.h"
 #include <iostream.h>
-//#include "htcheck.h"
 
 #include <unistd.h>  // for sleep
 
@@ -25,16 +25,6 @@ typedef void (*SIGNAL_HANDLER) (...);
 typedef SIG_PF SIGNAL_HANDLER;
 #endif
 
-
-///////
-   //    Initializing Static variables
-///////
-
-   // Timeout of the HTTP connection
-   	 int HtHTTP::_timeout=DEFAULT_CONNECTION_TIMEOUT;
-
-   // Maximum document size
-   	 int HtHTTP::_max_document_size=DEFAULT_MAX_DOCUMENT_SIZE;
 
    // Debug level
    	 int HtHTTP::debug = 0;
@@ -139,10 +129,8 @@ void HtHTTP_Response::Reset()
 HtHTTP::HtHTTP()
 {
    _modification_time=NULL;
-   _host=NULL;
    _persistent_connection_possible = false;
    _persistent_connection_allowed = true; // by default
-   _server = " ";
 
    _bytes_read=0;
 
@@ -177,7 +165,7 @@ HtHTTP::DocStatus HtHTTP::Request(HtHTTP::HttpRequestMethod _Method)
 
    if( debug > 3)
    	 cout << "Try to get through to host "
-			   << _server << " (port " << _port << ")" << endl;
+	      << _url.host() << " (port " << _url.port() << ")" << endl;
 
    ConnectionStatus result;
 
@@ -197,25 +185,25 @@ HtHTTP::DocStatus HtHTTP::Request(HtHTTP::HttpRequestMethod _Method)
 		  
 	       case Connection_open_failed:
 		  	cout << "Unable to open the connection with host: "
-			   << _server << " (port " << _port << ")" << endl;
+			   << _url.host() << " (port " << _url.port() << ")" << endl;
 			break;
 
    	       // Server not reached
 	       case Connection_no_server:
 		  	cout << "Unable to find the host: "
-			   << _server << " (port " << _port << ")" << endl;
+			   << _url.host() << " (port " << _url.port() << ")" << endl;
 			break;
 	    
    	       // Port not reached
 	       case Connection_no_port:
-		  	cout << "Unable to connect with the port " << _port
-   	       	   << " of the host: " << _server << endl;
+		  	cout << "Unable to connect with the port " << _url.port()
+   	       	   << " of the host: " << _url.host() << endl;
 			break;
 	    
    	       // Connection failed
 	       case Connection_failed:
 		  	cout << "Unable to establish the connection with host: "
-			   << _server << " (port " << _port << ")" << endl;
+			   << _url.host() << " (port " << _url.port() << ")" << endl;
 			break;
 	    }
 	 
@@ -251,10 +239,8 @@ HtHTTP::DocStatus HtHTTP::Request(HtHTTP::HttpRequestMethod _Method)
 
    // Let's check if the host has been set before
    // If not, we assume that the host oh the HTTP request
-   // is the same of the TCP connection (that is to say _server)
+   // is the same of the TCP connection (that is to say _url.host())
    
-   if (!_host) _host=_server;
-
    SetRequestCommand(command);
 
    if (debug > 5)
@@ -294,8 +280,8 @@ HtHTTP::DocStatus HtHTTP::Request(HtHTTP::HttpRequestMethod _Method)
    if (debug > 2)
    {
 
-   	 cout << "Retrieving document " << _document << " on host: "
-	       << _host << ":" << _port << endl;
+   	 cout << "Retrieving document " << _url.path() << " on host: "
+	       << _url.host() << ":" << _url.port() << endl;
 		  
       cout << "Http version: " << _response._version << endl;
       cout << "Status Code: " << _response._status_code << endl;
@@ -375,16 +361,16 @@ HtHTTP::ConnectionStatus HtHTTP::EstablishConnection()
    {
 
       // Assign the remote host
-      if (!AssignConnectionServer())
+      if (!_connection.assign_server(_url.host()))
       	 return Connection_no_server;   	 
 	 else if (debug > 4)
-	       cout << "\tAssigned the remote host " << _server << endl;
+	       cout << "\tAssigned the remote host " << _url.host() << endl;
    
       // Assign the port of the remote host
-      if (!AssignConnectionPort())
+      if (!_connection.assign_port(_url.port()))
       	 return Connection_no_port;   	 
 	 else if (debug > 4)
-	       cout << "\tAssigned the port " << _port << endl;
+	       cout << "\tAssigned the port " << _url.port() << endl;
    }
 
    // Connect
@@ -396,30 +382,30 @@ HtHTTP::ConnectionStatus HtHTTP::EstablishConnection()
 }
 
 
-void HtHTTP::SetHttpConnection (char *server, int port)
+void HtHTTP::SetHttpConnection (URL u)
 {
    bool ischanged = false;
 
    // Checking the connection server   
-   if(strcmp(server, _server))   	 // server is gonna change
+   if( u.host() != _url.host() )   	 // server is gonna change
    {
-   	 SetConnectionServer(server);  // let's change the server
-   	 ischanged=true;
+     _url.host(u.host());
+     ischanged=true;
    }
 
    // Checking the connection port
-   if(port != _port)   	  	   	 // the port is gonna change
+   if( u.port() != _url.port() )  	 // the port is gonna change
    {
-   	 SetConnectionPort(port);   	 // let's change the port
-   	 ischanged=true;
+     _url.port(u.port());
+     ischanged=true;
    }
 
    if (ischanged)
    {
-   	 // Let's close any pendant connection with the old
-	 // server / port pair
+     // Let's close any pendant connection with the old
+     // server / port pair
 	 
-	 CloseConnection();
+     CloseConnection();
    }
 
 }
@@ -433,12 +419,11 @@ void HtHTTP::SetRequestCommand(String &cmd)
 
    // Initialize it
 
-   cmd << _document << " HTTP/1.1\r\n";
+   cmd << _url.path() << " HTTP/1.1\r\n";
 
    // Insert the "virtual" host to which ask the document
    
-   if(_host)
-   	 cmd << "Host: " << _host << "\r\n";
+   cmd << "Host: " << _url.host() << "\r\n";
 
 	 
    // Insert the User Agent
@@ -476,25 +461,6 @@ int HtHTTP::OpenConnection()
    
    if(_connection.open() == NOTOK) return 0; // failed
 
-   return 1;
-}
-
-
-// Assign the server to the connection
-
-int HtHTTP::AssignConnectionServer()
-{
-   if (_connection.assign_server(_server) == NOTOK) return 0;
-   
-   return 1;
-}
-
-// Assign the remote server port to the connection
-
-int HtHTTP::AssignConnectionPort()
-{
-   if (_connection.assign_port(_port) == NOTOK) return 0;
-   
    return 1;
 }
 
