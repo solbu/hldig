@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.6 1999/02/05 03:20:23 ghutchis Exp $";
+static char RCSid[] = "$Id: Fuzzy.cc,v 1.6.2.1 1999/09/01 20:20:43 grdetil Exp $";
 #endif
 
 #include "Fuzzy.h"
@@ -54,6 +54,8 @@ void
 Fuzzy::getWords(char *word, List &words)
 {
     if (!index)
+	return;
+    if (!word || !*word)
 	return;
 
     //

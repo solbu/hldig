@@ -1,4 +1,11 @@
-Wed Sep  1 15:10:37 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:14:47 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Fuzzy.cc(getWords), htfuzzy/Metaphone.cc(vscode,generateKey):
+	Should fix PR#514 in the bug database.  It's Geoff's first patch,
+	with a minor correction, plus an added test in the vscode macro,
+	which is where the problem seemed to be happening.  This won't
+	map accented vowels to their unaccented counterparts, but
+	it should hopefully put an end to the segmentation faults.
 
 	* include/htconfig.h.in, htcommon/WordReference.h,
 	htcommon/WordList.cc(Word, Flush, BadWordFile),
