@@ -4,6 +4,10 @@
 // Implementation of ExternalParser
 //
 // $Log: ExternalParser.cc,v $
+// Revision 1.3  1998/11/16 15:47:19  ghutchis
+//
+// Add checks for null tokens, adapted from patch by Vadim Checkan.
+//
 // Revision 1.2  1997/03/24 04:33:16  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -12,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: ExternalParser.cc,v 1.2 1997/03/24 04:33:16 turtle Exp $";
+static char RCSid[] = "$Id: ExternalParser.cc,v 1.3 1998/11/16 15:47:19 ghutchis Exp $";
 #endif
 
 #include "ExternalParser.h"
@@ -156,34 +160,52 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		token1 = strtok(0, "\t");
 		token2 = strtok(0, "\t");
 		token3 = strtok(0, "\t");
-		retriever.got_word(token1, atoi(token2), atoi(token3));
+		if ( token1!=NULL & token2!=NULL & token3!=NULL )
+		  retriever.got_word(token1, atoi(token2), atoi(token3));
+		else
+		  cerr<< "External parser error in line:"<<line<<"\n";
 		break;
 		
 	    case 'u':	// href
 		token1 = strtok(0, "\t");
 		token2 = strtok(0, "\t");
 		url.parse(token1);
-		retriever.got_href(url, token2);
+		if (token1 != NULL & token2 != NULL )
+		  retriever.got_href(url, token2);
+		else
+		  cerr<< "External parser error in line:"<<line<<"\n";
 		break;
 		
 	    case 't':	// title
 		token1 = strtok(0, "\t");
-		retriever.got_title(token1);
+		if (token1 != NULL )
+		  retriever.got_title(token1);
+		else
+		  cerr<< "External parser error in line:"<<line<<"\n";
 		break;
 		
 	    case 'h':	// head
 		token1 = strtok(0, "\t");
-		retriever.got_head(token1);
+		if (token1 != NULL )
+		  retriever.got_head(token1);
+		else
+		  cerr<< "External parser error in line:"<<line<<"\n";
 		break;
 		
 	    case 'a':	// anchor
 		token1 = strtok(0, "\t");
-		retriever.got_anchor(token1);
+		if (token1 != NULL)
+		  retriever.got_anchor(token1);
+		else
+		  cerr<< "External parser error in line:"<<line<<"\n";
 		break;
 		
 	    case 'i':	// image url
 		token1 = strtok(0, "\t");
-		retriever.got_image(token1);
+		if (token1 != NULL)
+		  retriever.got_image(token1);
+		else
+		  cerr<< "External parser error in line:"<<line<<"\n";
 		break;
 	}
     }

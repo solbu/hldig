@@ -1,3 +1,8 @@
+Mon Nov 16 10:46:15 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/ExternalParser.cc: Add checks for null tokens, adapted
+	from patch by Vadim Checkan.
+
 Sun Nov 15 17:04:34 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.cc(do_tag): Fix for refresh tags w/o URLs.
