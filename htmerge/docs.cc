@@ -3,7 +3,7 @@
 //
 // Do sanity checking in "doc_db", remove insane documents.
 //
-// $Id: docs.cc,v 1.17 1999/06/01 01:55:30 ghutchis Exp $
+// $Id: docs.cc,v 1.18 1999/06/12 18:39:39 ghutchis Exp $
 //
 //
 
@@ -16,11 +16,11 @@
 void
 convertDocs(char *doc_db, char *doc_index, char *doc_excerpt)
 {
-    int		document_count = 0;
-    unsigned long docdb_size = 0;
-    int		remove_unused = config.Boolean("remove_bad_urls");
-    DocumentDB	db;
-    List	*urls;
+    int			document_count = 0;
+    unsigned long	docdb_size = 0;
+    int			remove_unused = config.Boolean("remove_bad_urls");
+    DocumentDB		db;
+    List		*urls;
 
     if (access(doc_index, R_OK) < 0)
     {
@@ -61,16 +61,17 @@ convertDocs(char *doc_db, char *doc_index, char *doc_excerpt)
 	    continue;
 	id = 0;
 	id << ref->DocID();
-	//	if (strlen(ref->DocHead()) == 0)
-	//	  {
-	//	    // For some reason, this document doesn't have an excerpt
-	//	    // (probably because of a noindex directive, or disallowed
-	//	    // by robots.txt or server_max_docs). Remove it
-	//	    db.Delete(ref->DocID());
-	//            if (verbose)
-	//              cout << "Deleted, no excerpt: " << id.get() << "/"
-	//                   << url->get() << endl;
-	//	  }
+	db.ReadExcerpt(*ref);
+	if (strlen(ref->DocHead()) == 0)
+	  {
+	    // For some reason, this document doesn't have an excerpt
+	    // (probably because of a noindex directive, or disallowed
+	    // by robots.txt or server_max_docs). Remove it
+	    db.Delete(ref->DocID());
+            if (verbose)
+              cout << "Deleted, no excerpt: " << id.get() << "/"
+                   << url->get() << endl;
+	  }
 	if ((ref->DocState()) == Reference_noindex)
 	  {
 	    // This document has been marked with a noindex tag. Remove it
