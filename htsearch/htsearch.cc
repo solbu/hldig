@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.13 2001/06/15 21:53:59 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.14 2001/07/26 04:18:11 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -46,6 +46,7 @@ void usage();
 
 int			debug = 0;
 int			minimum_word_length = 3;
+StringList		boolean_keywords;
 
 
 //*****************************************************************************
@@ -233,6 +234,14 @@ main(int ac, char **av)
       reportError(form("Invalid url_part_aliases or common_url_parts: %s",
                        url_part_errors.get()));
 
+    // Load boolean_keywords from configuration
+    // they should be placed in this order:
+    //    0       1       2
+    //    and     or      not
+    boolean_keywords.Create(config["boolean_keywords"], "| \t\r\n\001");
+    if (boolean_keywords.Count() != 3)
+	reportError("boolean_keywords attribute is not correctly specified");
+
     Parser	*parser = new Parser();
 	
     //
@@ -337,11 +346,11 @@ createLogicalWords(List &searchWords, String &logicalWords, String &wm)
 	if (!ww->isHidden)
 	{
 	    if (strcmp(ww->word, "&") == 0 && wasHidden == 0)
-		logicalWords << " and ";
+		logicalWords << " " << boolean_keywords[0] << " ";
 	    else if (strcmp(ww->word, "|") == 0 && wasHidden == 0)
-		logicalWords << " or ";
+		logicalWords << " " << boolean_keywords[1] << " ";
 	    else if (strcmp(ww->word, "!") == 0 && wasHidden == 0)
-		logicalWords << " not ";
+		logicalWords << " " << boolean_keywords[2] << " ";
 	    else if (wasHidden == 0)
 	    {
 		logicalWords << ww->word;
@@ -441,15 +450,15 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 
 		pos--;
 	  	word.lowercase();
-		if (boolean && mystrcasecmp(word.get(), "and") == 0)
+		if (boolean && mystrcasecmp(word.get(), boolean_keywords[0]) == 0)
 		{
 		    tempWords.Add(new WeightWord("&", -1.0));
 		}
-		else if (boolean && mystrcasecmp(word.get(), "or") == 0)
+		else if (boolean && mystrcasecmp(word.get(), boolean_keywords[1]) == 0)
 		{
 		    tempWords.Add(new WeightWord("|", -1.0));
 		}
-		else if (boolean && mystrcasecmp(word.get(), "not") == 0)
+		else if (boolean && mystrcasecmp(word.get(), boolean_keywords[2]) == 0)
 		{
 		    tempWords.Add(new WeightWord("!", -1.0));
 		}

@@ -616,6 +616,51 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="boolean_keywords">boolean_keywords</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			and or not
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			These 3 strings are used as the keywords used in
+			constructing the LOGICAL_WORDS template variable,
+			and in parsing the words input parameter when the
+			<strong>method</strong> parameter or
+			<a href="#match_method">match_method</a> attribute
+			is set to boolean.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			boolean_keywords: et ou non
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="build_select_lists">
 		build_select_lists</a></strong>
 	  </dt>
@@ -8046,7 +8091,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: $Date: 2001/07/26 03:12:41 $
+Last modified: $Date: 2001/07/26 04:18:10 $
 <!-- hhmts end -->
   </body>
 </html>

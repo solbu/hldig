@@ -1,3 +1,10 @@
+Wed Jul 25 23:15:24 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc, htsearch/htsearch.cc, htdoc/attrs.html,
+	htdoc/cf_by{name,prog}.html: Added new attribute boolean_keywords
+	and used it to make LOGICAL_WORDS and parse "words" using boolean
+	method.
+
 Wed Jul 25 22:31:19 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/Dictionary.cc (Remove): Fixed so it doesn't clobber rest of
