@@ -11,7 +11,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.9 1999/07/03 20:56:39 ghutchis Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.10 1999/08/27 15:53:42 ghutchis Exp $";
 #endif
 
 #include <ctype.h>
@@ -235,10 +235,10 @@ void Server::push(char *path, int hopcount, char *referer)
     ref->SetURL(path);
     ref->SetHopCount(hopcount);
     ref->SetReferer(referer);
-    _paths.push(ref);
+    _paths.Add(ref);
     _documents++;
 
-//	cout << "***** pushing '" << path << "' with '" << referer << "'\n";
+    //    cout << "***** pushing '" << path << "' with '" << referer << "'\n";
 }
 
 
@@ -247,7 +247,8 @@ void Server::push(char *path, int hopcount, char *referer)
 //
 URLRef *Server::pop()
 {
-    URLRef	*ref = (URLRef *) _paths.pop();
+    URLRef	*ref = (URLRef *) _paths.Remove();
+    
     if (!ref)
 	return 0;
 

@@ -1,3 +1,17 @@
+Fri Aug 27 09:44:09 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc (Need2Get): Remove duplicate detection code for
+	local_urls. The code is somewhat buggy and should be replaced by
+	more general code shortly.
+
+	* htdig/Server.h, htdig/Server.cc (push, pop): Change _paths to a 
+	HtHeap sorted on hopcount first (and order placed on heap
+	second). Ensures that on each server, the order indexed is
+	guaranteed to be level-order by hopcount.
+
+	* htdig/URLRef.h, htdig/URLRef.cc (compare): Add comparison method
+	to enable sorting by hopcount.
+	
 Fri Aug 27 09:36:35 1999  Geoff Hutchison <ghutchis@wso.williams.edu>
 
 	* htcommon/WordList.h, htcommon/WordList.cc (WordList): Change
