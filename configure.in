@@ -17,7 +17,8 @@
 #
 
 AC_INIT(htcommon/DocumentDB.cc)
-AM_INIT_AUTOMAKE([htdig], [3.1.0b2])
+VERSION=`cat ${srcdir}/.version`
+AM_INIT_AUTOMAKE([htdig], $VERSION)
 AC_PREREQ(2.12)
 
 AC_CONFIG_HEADER(include/htconfig.h)
