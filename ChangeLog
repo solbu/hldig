@@ -1,3 +1,8 @@
+Thu Jan 06 14:41:15 2000  Marcel Bosc    <bosc@ceic.com>
+
+	* htword,all: Changed interface to overloaded Walk function that was
+	ambigous on some compilers...
+
 Thu Jan 06 12:01:47 2000  Marcel Bosc  <bosc@ceic.com>
 
 	* htword/compression: Split WordDBCompress.* to WordDBCompress +

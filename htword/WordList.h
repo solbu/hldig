@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.10 2000/01/03 11:48:36 bosc Exp $
+// $Id: WordList.h,v 1.5.2.11 2000/01/06 13:58:29 bosc Exp $
 //
 
 #ifndef _WordList_h_
@@ -230,8 +230,8 @@ public:
     //
 #ifndef SWIG
 //      List 		*Walk (const WordReference& word, int action, wordlist_walk_callback_t callback, Object &callback_data);
-    int Walk(WordSearchDescription &SearchDescription);
-    List *Walk(const WordSearchDescription &SearchDescription);
+    int   Walk(      WordSearchDescription &SearchDescription);
+    List *Search(const WordSearchDescription &SearchDescription);
     int SkipUselessSequentialWalking(const WordSearchDescription &search,WordKey &foundKey,String &key,int &cursor_get_flags);
 
 

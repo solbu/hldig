@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.9 2000/01/06 11:39:06 bosc Exp $
+// $Id: word.cc,v 1.14.2.10 2000/01/06 13:58:29 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -622,7 +622,7 @@ public:
     char *goodorder;
     void GetSearchKey(WordKey &searchKey)
     {
-	searchKey.Set(searchkey);
+	searchKey.Set((String)searchkey);
 	if(verbose) cout << "GetSearchKey: string:" << searchkey << " got:" << searchKey << endl;
     }
     int Check(WordList &WList)
@@ -634,7 +634,7 @@ public:
 	if(verbose) cout << "checking SkipUselessSequentialWalking on:" << srchwrd << endl;
 	if(verbose) cout << "walking all:" << endl;
 //	WList.verbose=5;
-	List *all=WList.Walk(WordSearchDescription(empty));
+	List *all=WList.Search(WordSearchDescription(empty));
 	if(verbose) cout << "walking search: searching for:" << srchwrd <<endl;
 
 	WordSearchDescription search(srchwrd.Key());

@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.21 2000/01/06 11:31:18 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.22 2000/01/06 13:58:29 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -288,7 +288,7 @@ WordList::WalkBenchmark_Get(WordSearchDescription &search, int cursor_get_flags)
 }
 
 List *
-WordList::Walk(const WordSearchDescription &csearch)
+WordList::Search(const WordSearchDescription &csearch)
 {
     WordSearchDescription search=csearch;
     Walk(search);
