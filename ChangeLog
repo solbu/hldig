@@ -1,3 +1,8 @@
+Sun Feb 28 23:25:40 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* htlib/HtURLCodec.cc (~HtURLCodec): Add missing deletion of
+	myWordCodec.
+
 Wed Feb 24 21:09:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc(main): Remember to delete the parser!

@@ -1,12 +1,7 @@
 //
 // Methods for HtURLCodec
 //
-// $Id: HtURLCodec.cc,v 1.1 1999/01/21 13:43:03 ghutchis Exp $
-//
-// $Log: HtURLCodec.cc,v $
-// Revision 1.1  1999/01/21 13:43:03  ghutchis
-// New files.
-//
+// $Id: HtURLCodec.cc,v 1.2 1999/02/28 22:30:57 hp Exp $
 //
 
 #include "HtURLCodec.h"
@@ -25,7 +20,9 @@ HtURLCodec::HtURLCodec()
 
 
 HtURLCodec::~HtURLCodec()
-{}
+{
+  delete myWordCodec;
+}
 
 
 // Supposedly used as HtURLCodec::instance()->ErrMsg()
