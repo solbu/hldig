@@ -7,6 +7,9 @@
 //
 //
 // $Log: htmerge.cc,v $
+// Revision 1.10  1999/01/21 13:41:22  ghutchis
+// Check HtURLCodec for errors.
+//
 // Revision 1.9  1999/01/09 20:18:07  ghutchis
 // Set up merge_config file and add options for mergeDB code.
 //
@@ -112,6 +115,15 @@ int main(int ac, char **av)
 	
     config.Read(configfile);
     
+    //
+    // Check url_part_aliases and common_url_parts for
+    // errors.
+    String url_part_errors = HtURLCodec::instance()->ErrMsg();
+
+    if (url_part_errors.length() != 0)
+      reportError(form("Invalid url_part_aliases or common_url_parts: %s",
+                       url_part_errors.get()));
+
     if (merge_configfile.length())
     {
     	merge_config.Defaults(&defaults[0]);

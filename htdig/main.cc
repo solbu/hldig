@@ -5,6 +5,9 @@
 // generating several databases to be used by htmerge
 //
 // $Log: main.cc,v $
+// Revision 1.12  1999/01/21 13:41:25  ghutchis
+// Check HtURLCodec for errors.
+//
 // Revision 1.11  1999/01/17 20:32:21  ghutchis
 // Added support for url_log, save and restart digs.
 //
@@ -32,6 +35,7 @@
 #include "StringList.h"
 #include "htdig.h"
 #include <defaults.h>
+#include <HtURLCodec.h>
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -128,6 +132,15 @@ main(int ac, char **av)
     {
 	config.Add("max_hop_count", max_hops);
     }
+
+    //
+    // Check url_part_aliases and common_url_parts for
+    // errors.
+    String url_part_errors = HtURLCodec::instance()->ErrMsg();
+
+    if (url_part_errors.length() != 0)
+      reportError(form("Invalid url_part_aliases or common_url_parts: %s",
+                       url_part_errors.get()));
 
     //
     // If indicated, change the database file names to have the .work

@@ -1,9 +1,12 @@
 //
 // htmerge.h
 //
-// $Id: htmerge.h,v 1.3 1999/01/09 20:17:07 ghutchis Exp $
+// $Id: htmerge.h,v 1.4 1999/01/21 13:41:22 ghutchis Exp $
 //
 // $Log: htmerge.h,v $
+// Revision 1.4  1999/01/21 13:41:22  ghutchis
+// Check HtURLCodec for errors.
+//
 // Revision 1.3  1999/01/09 20:17:07  ghutchis
 // Declare new mergeDB code.
 //
@@ -29,6 +32,7 @@
 #include <Database.h>
 #include <ctype.h>
 #include <string.h>
+#include <HtURLCodec.h>
 
 
 extern char			**array;

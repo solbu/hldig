@@ -6,6 +6,9 @@
 // Outputs HTML-ized results of the search based on the templates specified
 //
 // $Log: htsearch.cc,v $
+// Revision 1.22  1999/01/21 13:41:24  ghutchis
+// Check HtURLCodec for errors.
+//
 // Revision 1.21  1999/01/14 03:15:25  ghutchis
 // Create originalWords from input, not via setupWords().
 //
@@ -76,7 +79,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.21 1999/01/14 03:15:25 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.22 1999/01/21 13:41:24 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -92,6 +95,7 @@ static char RCSid[] = "$Id: htsearch.cc,v 1.21 1999/01/14 03:15:25 ghutchis Exp 
 #include <time.h>
 #include <ctype.h>
 #include <signal.h>
+#include <HtURLCodec.h>
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -191,7 +195,8 @@ main(int ac, char **av)
     // got from the HTML form.
     //
     config.Defaults(&defaults[0]);
-    if (!override_config && input.exists("config") && !strchr(input["config"], '.'))
+    if (!override_config && input.exists("config") 
+	&& !strchr(input["config"], '.'))
     {
 	char	*configDir = getenv("CONFIG_DIR");
 	if (configDir)
@@ -242,6 +247,15 @@ main(int ac, char **av)
 	config.Add(form_vars[i], input[form_vars[i]]);
     }
  
+    //
+    // Check url_part_aliases and common_url_parts for
+    // errors.
+    String url_part_errors = HtURLCodec::instance()->ErrMsg();
+
+    if (url_part_errors.length() != 0)
+      reportError(form("Invalid url_part_aliases or common_url_parts: %s",
+                       url_part_errors.get()));
+
     Parser	*parser = new Parser();
 	
     //

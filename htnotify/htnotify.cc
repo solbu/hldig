@@ -6,6 +6,9 @@
 // has "expired"
 //
 // $Log: htnotify.cc,v $
+// Revision 1.15  1999/01/21 13:41:23  ghutchis
+// Check HtURLCodec for errors.
+//
 // Revision 1.14  1999/01/14 03:00:40  ghutchis
 // Bring latest security patch from 3.1.0b4 onto the mainline source.
 //
@@ -55,7 +58,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.14 1999/01/14 03:00:40 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.15 1999/01/21 13:41:23 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -68,6 +71,7 @@ static char RCSid[] = "$Id: htnotify.cc,v 1.14 1999/01/14 03:00:40 ghutchis Exp 
 #include <fstream.h>
 #include <time.h>
 #include <stdio.h>
+#include <HtURLCodec.h>
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -120,6 +124,18 @@ int main(int ac, char **av)
 
     config.Defaults(&defaults[0]);
     config.Read(configFile);
+
+    //
+    // Check url_part_aliases and common_url_parts for
+    // errors.
+    String url_part_errors = HtURLCodec::instance()->ErrMsg();
+
+    if (url_part_errors.length() != 0)
+    {
+      cerr << form("htnotify: Invalid url_part_aliases or common_url_parts: %s",
+                   url_part_errors.get()) << endl;
+      exit (1);
+    }
 
     if (base.length())
     {
