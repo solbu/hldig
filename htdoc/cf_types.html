@@ -31,10 +31,20 @@
 		<strong>String List</strong>
 	  </dt>
 	  <dd>
-		A sequence of string separated by whitespace. Individual
-		strings within the list may be quoted using double quotes.
-		The quotes are needed when the individual strings contain
-		whitespace.
+		A sequence of strings separated by whitespace. Individual
+		strings within the list cannot be quoted and therefore
+		cannot contain whitespace.
+	  </dd>
+	  <dt>
+		<strong>Quoted String List</strong>
+	  </dt>
+	  <dd>
+		A sequence of strings separated by whitespace. Individual
+		strings within the list may be quoted using single or double
+		quotes. The quotes are needed when the individual strings
+		contain whitespace. If you want a quote mark or a backslash
+		to be inserted as-is into a string, you must preceed it with
+		a backslash.
 	  </dd>
 	  <dt>
 	        <strong>Pattern List</strong>
@@ -87,7 +97,7 @@
 	</dl>
 	<hr size="4" noshade>
 
-	Last modified: $Date: 2003/06/24 21:07:01 $
+	Last modified: $Date: 2003/10/24 22:05:30 $
 
   </body>
 </html>

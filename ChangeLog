@@ -1,3 +1,8 @@
+Fri Oct 24 17:03:56 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+    * htdoc/cf_types.html: Make clear distinction between String List and
+      Quoted String List.
+
 Fri Oct 24 15:30:08 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
     * htsearch/Display.cc: Fix bug #829746. Applied Niel Kohl's fix for this,
