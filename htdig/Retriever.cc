@@ -4,6 +4,9 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.31  1999/01/14 00:35:22  ghutchis
+// Call AddDescription even if max_hop_count is reached.
+//
 // Revision 1.30  1999/01/07 04:05:25  ghutchis
 // Skip changing to lowercase in got_word, we do it in WordList::Word.
 //
@@ -912,12 +915,6 @@ Retriever::got_href(URL &url, char *description)
 	fprintf(urls_seen, "%s\n", url.get());
 
     //
-    // If the dig is restricting by hop count, perform the check here.
-    //
-    if (currenthopcount + 1 > max_hop_count)
-	return;
-
-    //
     // Check if this URL falls within the valid range of URLs.
     //
     if (IsValidURL(url.get()))
@@ -939,6 +936,11 @@ Retriever::got_href(URL &url, char *description)
 	    // First add it to the document database
 	    //
 	    ref = docs[url.get()];
+	    // if ref exists we have to call AddDescription even
+            // if max_hop_count is reached
+    	    if (!ref && currenthopcount + 1 > max_hop_count)
+		return;
+
 	    if (!ref)
 	    {
 		//
@@ -952,6 +954,15 @@ Retriever::got_href(URL &url, char *description)
 	    ref->DocBackLinks(ref->DocBackLinks() + 1); // This one!
 	    ref->DocURL(url.get());
 	    ref->AddDescription(description);
+
+	    //
+    	    // If the dig is restricting by hop count, perform the check here 
+	    // too
+    	    if (currenthopcount + 1 > max_hop_count)
+	    {
+		delete ref;
+		return;
+	    }
 
 	    if (ref->DocHopCount() != -1 &&
 		ref->DocHopCount() < currenthopcount + 1)
