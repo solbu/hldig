@@ -30,7 +30,7 @@ database_dir:		_TESTDIR_/var/htdig2
 # You could also index all the URLs in a file like so:
 # start_url:	       `${common_dir}/start.url`
 #
-start_url:		http://localhost:_PORT_/normal.html
+start_url:		http://localhost:_PORT_/set2/normal.html
 
 #
 # This attribute limits the scope of the indexing process.  The default is to

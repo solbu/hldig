@@ -1,3 +1,8 @@
+Tue Sep 28 10:20:23 1999  Loic Dachary  <loic@ceic.com>
+
+	* test/htdocs: move html files in set1/set2 subdirectories to allows
+	  tests that use different set of files. Change htdig.conf accordingly.
+
 Tue Sep 28 09:31:12 1999  Loic Dachary  <loic@ceic.com>
 
 	* test/Makefile.am: comment test options, add LONG_TEST='y' for lengthy
