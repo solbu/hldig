@@ -1,3 +1,34 @@
+Sat Feb  6 23:24:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/cf_byname, htdoc/cf_byprog.html, htdoc/attrs.html: Added
+	entries for url_log, compression_level, noindex_start, noindex_end,
+	allow_in_form, bad_querystr, no_title_text.
+
+	* htdoc/THANKS.cc: Added Gabriele Bartolini.
+
+	* htdoc/uses.html, htdoc/FAQ.html, htdoc/bugs.html: Synch with the
+	latest versions from the website tree.
+	
+Fri Feb  5 19:57:39 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* htnotify/htnotify.cc: Add function parse_date() to parse date
+	strings from htnotify-date tags. It tries to be as flexible as
+	possible about formatting and will report invalid dates. Based in
+	part from code contributed by Gabriele Bartolini.
+
+Fri Feb  5 19:28:24 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure, configure.in: Add a test to ensure the zlib.h header
+	file exists.
+
+	* include/htconfig.h.in: Added definition for HAVE_ZLIB_H.
+
+	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc: Add checks for
+	HAVE_ZLIB_H in addition to HAVE_LIBZ. Ensures the library is
+	actually accessible, not just present.
+
+	* htfuzzy/Soundex.cc: Fix typo.
+
 Thu Feb  4 22:51:37 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
 	* Makefile.in: Clean up previous patch and tidy up HTML and
@@ -571,7 +602,7 @@ Sun Jan 17 14:03:54 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htsearch/TemplateList.h
 	htsearch/TemplateList.cc(createFromString): Ensure
 	template_map config has three members for each template we add,
-	contributed by <tlm@mbox.comune.prato.it>.
+	contributed by Gabriele Bartolini <tlm@mbox.comune.prato.it>.
 
 	* htsearch/Display.cc(Display): Take advantage of createFromString
 	returning an error value to bail out of poorly-constructed

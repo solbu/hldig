@@ -47,6 +47,12 @@
       <li>Fixed a bug that caused problems with large robots.txt files.</li>
       <li>Fixed a bug in the sample rundig script from a non-portable
       test for the age of databases.</li>
+      <li>Fixed bugs in the fuzzy matching code that could prevent
+      searches from completing if fuzzy databases were not present.</li>
+      (li>Fixed bugs in the soundex and metaphone algorithms that
+      would only return the first word of several matching
+      words. <b>Note</b> that to completely fix this bug, you must
+      rebuild your soundex and metaphone databases.</li>
       <li>Fixed up many compilation warnings and errors.</li>
       <li>Fixed a performance slowdown in htsearch when <a
       href="attrs.html#backlink_factor">backlink_factor</a> and <a
@@ -850,7 +856,7 @@
           &lt;andrew@contigo.com&gt;</a>
         </address>
         <!-- hhmts start -->
-Last modified: Wed Feb  3 10:13:02 EST 1999
+Last modified: Fri Feb  5 21:03:13 EST 1999
 <!-- hhmts end -->
       </li>
     </ul>
