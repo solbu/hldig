@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htsearch.cc,v 1.67 2003/10/05 10:27:59 lha Exp $
+// $Id: htsearch.cc,v 1.68 2003/10/12 07:29:04 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -695,10 +695,13 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 	fuzzy = Fuzzy::getFuzzyByName(name, *config);
 	if (fuzzy)
 	{
+	    if (debug > 1)
+		cerr << "Adding algorithm " << name.get() << endl;
 	    fuzzy->setWeight(fweight);
 	    fuzzy->openIndex();
 	    algorithms.Add(fuzzy);
-	}
+	} else if (debug)
+	    cerr << "Unknown fuzzy search algorithm " << name.get() << endl;
     }
 
     dumpWords(searchWords, "initial");
@@ -759,13 +762,13 @@ doFuzzy(WeightWord *ww, List &searchWords, List &algorithms)
     while ((fuzzy = (Fuzzy *) algorithms.Get_Next()))
     {
         if (debug > 1)
-	  cout << "   " << fuzzy->getName();
+	  cerr << "   " << fuzzy->getName();
 	fuzzy->getWords(ww->word, fuzzyWords);
 	fuzzyWords.Start_Get();
 	while ((word = (String *) fuzzyWords.Get_Next()))
 	{
 	    if (debug > 1)
-	      cout << " " << word->get();
+	      cerr << " " << word->get();
 	    // (should be a "copy with changed weight" constructor...)
 	    newWw = new WeightWord(word->get(), fuzzy->getWeight());
 	    newWw->isExact = ww->isExact;
@@ -774,7 +777,7 @@ doFuzzy(WeightWord *ww, List &searchWords, List &algorithms)
 	    weightWords.Add(newWw);
 	}
 	if (debug > 1)
-	  cout << endl;
+	  cerr << endl;
 	fuzzyWords.Destroy();
     }
 
@@ -797,7 +800,7 @@ doFuzzy(WeightWord *ww, List &searchWords, List &algorithms)
     }
     else	// if no fuzzy matches, add exact word, but give it tiny weight
     {
-	searchWords.Add(new WeightWord(word->get(), 0.000001));
+	searchWords.Add(new WeightWord(ww->word.get(), 0.000001));
     }
     weightWords.Release();
 }

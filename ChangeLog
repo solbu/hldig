@@ -1,5 +1,11 @@
 Sun Oct 12 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
+    * htsearch/htsearch.cc:
+    Fix bug if fuzzy algorithms produced no search words.
+    Send all debugging output to  cerr  not  cout.  More debugging output.
+
+Sun Oct 12 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
     * htdig/{Retriever,Server}.cc: Back out the previous.
       Gilles pointed out inconsistency with Retriever::IsValidURL().
 
