@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HTML.cc,v 1.71 2003/06/24 20:05:23 nealr Exp $
+// $Id: HTML.cc,v 1.72 2003/10/24 17:51:38 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -102,7 +102,7 @@ HTML::HTML() :
 
     // These are the name values of meta tags that carry date information.
     metadatetags.IgnoreCase();
-    metadatetags.Pattern("date|dc.date|dc.date.created|dc.data.modified");
+    metadatetags.Pattern("date|dc.date|dc.date.created|dc.date.modified");
 
     // These are the name values of meta tags that carry descriptions.
     StringList descrNames(config->Find("description_meta_tag_names"), " \t");
