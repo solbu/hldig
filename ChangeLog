@@ -1,3 +1,9 @@
+Tue Feb 08 10:54:08 2000  Loic Dachary  <loic@ceic.com>
+
+	* db/dist/configure.in: Added AC_PREFIX_DEFAULT(/opt/www)
+	  so that headers and libraries are installed in the proper
+	  directory when no --prefix is given. 
+
 Tue Feb 08 10:32:48 2000  Loic Dachary  <loic@ceic.com>
 
 	* test/t_wordskip: copy $srcdir/skiptest_db.txt to allow running
