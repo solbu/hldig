@@ -7,7 +7,7 @@ include $(top_srcdir)/Makefile.config
 # Comment these to ease debugging.
 #
 AM_LFLAGS = -L
-AM_YFLAGS = -l
+AM_YFLAGS = -l -d
 
 EXTRA_DIST=conf_lexer.cxx conf_parser.cxx
 
