@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.17 2000/01/12 17:50:56 loic Exp $
+// $Id: WordList.h,v 1.5.2.18 2000/01/12 18:12:49 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -101,6 +101,7 @@ class WordSearchDescription
 {
     friend WordList;
  public:
+    WordSearchDescription(wordlist_walk_callback_t ncallback, Object * ncallback_data);
     WordSearchDescription(const WordKey &nsearchKey, int naction = HTDIG_WORDLIST_WALKER);
     WordSearchDescription(const WordKey &nsearchKey, wordlist_walk_callback_t ncallback, Object * ncallback_data);
 

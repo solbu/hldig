@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.27 2000/01/12 17:50:56 loic Exp $
+// $Id: WordList.cc,v 1.6.2.28 2000/01/12 18:12:49 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -802,6 +802,16 @@ WordSearchDescription::WordSearchDescription(const WordKey &nsearchKey,wordlist_
 {
     Clear();
     searchKey = nsearchKey;
+    action = HTDIG_WORDLIST_WALKER;
+    callback = ncallback;
+    callback_data = ncallback_data;
+}
+
+//*****************************************************************************
+//
+WordSearchDescription::WordSearchDescription(wordlist_walk_callback_t ncallback,Object * ncallback_data)
+{
+    Clear();
     action = HTDIG_WORDLIST_WALKER;
     callback = ncallback;
     callback_data = ncallback_data;

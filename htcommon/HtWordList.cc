@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.cc,v 1.2.2.4 2000/01/06 13:58:29 bosc Exp $
+// $Id: HtWordList.cc,v 1.2.2.5 2000/01/12 18:12:48 loic Exp $
 //
 
 #include "HtWordList.h"
@@ -108,7 +108,7 @@ public:
 // Write the ascii representation of a word occurence. Helper
 // of WordList::Dump
 //
-static int dump_word(WordList *, WordCursor &, const WordReference *word, Object &data)
+static int dump_word(WordList *, WordDBCursor &, const WordReference *word, Object &data)
 {
   const HtWordReference *word_tmp = (const HtWordReference *)word;
 
@@ -140,7 +140,8 @@ int HtWordList::Dump(const String& filename)
 
   HtWordReference::DumpHeader(fl);
   DumpWordData data(fl);
-  (void)Search(WordSearchDescription(WordKey(), dump_word, &data));
+  WordSearchDescription search(dump_word, &data);
+  Walk(search);
   
   fclose(fl);
 

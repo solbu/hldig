@@ -1,7 +1,35 @@
+Wed Jan 12 20:02:26 2000  Loic Dachary  <loic@ceic.com>
+
+	* htcommon/HtWordList.cc (Dump): Use Walk instead of Collect otherwise does not work.
+
 Wed Jan 12 19:38:33 2000  Loic Dachary  <loic@ceic.com>
 
 	* htlib/HtDateTime.h (class HtDateTime): killed void SetDateTime(const int t)
 	  because they cause problems when time_t is an int and were useless anyway.
+
+Wed Jan 12 13:31:45 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordBitCompress.h: remove inline qualifier on check_tag1: its not inline
+	
+	* htword/WordKey.h: #define WORD_KEY_UNKNOWN_POSITION to -1. Remove default
+	  argument to SetToFollowing so that its more explicit when used with
+	  WORD_KEY_UNKNOWN_POSITION.
+
+	* htword/WordKey.cc: change name of variable info0 to info
+
+	* htword/WordList.cc: use WordKey::Info instead of WordKeyInfo::Get as done
+	  in WordKey.cc for consistency.
+
+	* htword/WordList.{cc,h},htword/WordDB.h: rename WordCursor to WordDBCursor
+	  for consistency.
+
+	* htword/WordList.h: Kill the WordSearchDescription::Setup useless function
+
+	* htword/WordList.h: WordSearchDescription constructor now have a straightforward
+	  semantics.
+
+	* htword/WordList.h: Rename Search into Collect since it already existed, just
+	  with a different prototype.
 
 Wed Jan 12 12:36:46 2000  Loic Dachary  <loic@ceic.com>
 

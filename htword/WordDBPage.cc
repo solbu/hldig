@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.cc,v 1.1.2.5 2000/01/12 17:04:49 bosc Exp $
+// $Id: WordDBPage.cc,v 1.1.2.6 2000/01/12 18:12:49 loic Exp $
 //
 
 #include"WordDBPage.h"
@@ -718,7 +718,7 @@ WordDBPage::Compress_show_extracted(int *nums,int *nums_pos,int nnums0,HtVector_
 		if(nbits<8){show_bits(val,nbits);printf(" ");}
 		else
 		{
-		    printf("% 12u ",val);
+		    printf("%12u ",val);
 		}
 	    }
 	    else
