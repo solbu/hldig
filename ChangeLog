@@ -1,3 +1,26 @@
+Fri Mar 31 21:48:02 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in, configure: Add test using AC_TRY_RUN to compile
+	against the htlib/regex.c and attempt to compile a regexp. This
+	should allow us to find out if the included regex code causes
+	problems.
+
+	* acconfig.h: Add HAVE_BROKEN_REGEX as a result of the configure
+	script to conditionally include the appropriate regex.h file.
+
+	* include/htconfig.h.in: Regenerate using autoheader.
+
+	* htlib/regex.c: Move #include "htconfig.h" inside HAVE_CONFIG_H
+	tests. This file is only created when this is true anyway. This
+	prevents problems with the configure test.
+	
+	* htlib/HtRegex.h, htfuzzy/EndingsDB.cc: Use HAVE_BROKEN_REGEX
+	switch to use the system include instead of the local include
+	where appropriate.
+
+	* htlib/Makefile.am, htlib/Makefile.in: Only compile regex.lo if
+	the configure script added it to LIBOBJS.
+
 Thu Mar 30 22:41:38 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/URL.cc (normalizePath): Remove Gilles's loop to add

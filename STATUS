@@ -1,7 +1,7 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b2: Release date (31 Mar 2000), Unfrozen
+   3.2.0b2: Release date 3 Apr 2000.
    3.2.0b1: Released: 4 Feb 2000.
 
 SHOWSTOPPERS:
@@ -14,8 +14,6 @@ KNOWN BUGS:
 * If exact isn't specified in the search_algorithms, $(WORDS) is not set 
    correctly: PR#650. (The documentation for 3.2.0b1 is updated, but can
    we fix this?)
-* Running on BSDI and similar systems causes coredumps because the regex
-   code is incompatible. We need some sort of configure test for this.
 * Modified database can cause problems with systems using the Berkeley db for 
    other tasks (e.g. networking)
 
