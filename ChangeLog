@@ -1,3 +1,19 @@
+Mon Jun 23 2003 Neal Richter <nearl@rightnow.com>
+
+    * Raft of changes.  Most todo with Native Win32 support
+
+    * TODO: ExternalTranport & ExternalParser are effectively dissabled with
+      #ifdefs for Native WIN32
+
+    * remove global CDB___mp_dirty_level variable and subsitute functions to set/get variable
+
+    * Added local copies of GNU LGPL regex, POSIX-like dirent routines, getopt
+      library and filecopy routines - mainly for Native WIN32 support
+
+    * improve IsValidURL with return codes (htdig/Retriever.cc)
+
+    * lots of improvements/new-features to libhtdig
+
 Sun Jun 22 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* db/mp_cmpr.c (CDB___memp_cmpr_open):
