@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.74 1999/04/27 15:35:11 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.75 1999/04/27 23:12:27 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -631,15 +631,6 @@ Display::setupImages()
 {
     char	*starPatterns = config["star_patterns"];
     if (starPatterns && *starPatterns)
-    {
-	//
-	// Set the StringMatch object up so that it will never match
-	// anything.  We know that '<' is an illegal character for
-	// URLs, so this will effectively disable the matching.
-	//
-	URLimage.Pattern("<<<");
-    }
-    else
     {
 	//
 	// The starPatterns string will have pairs of values.  The first

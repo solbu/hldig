@@ -1,3 +1,8 @@
+Tue Apr 27 18:01:52 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(setupImages): Remove code setting URLimage to
+	a bogus pattern (remnant left over after merge).
+
 Tue Apr 27 16:43:08 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Document.cc(RetrieveHTTP): Show "Unable to build connection"
