@@ -112,12 +112,12 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 lib_LTLIBRARIES = libcommon.la
 
-libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc 	HtWordReference.cc HtWordList.cc defaults.cc 	HtURLCodec.cc URL.cc URLTrans.cc 	HtZlibCodec.cc cgi.cc
+libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc 	HtWordReference.cc HtWordList.cc defaults.cc 	HtURLCodec.cc URL.cc URLTrans.cc 	HtZlibCodec.cc cgi.cc HtSGMLCodec.cc
 
 
 libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS = DocumentDB.h 	DocumentRef.h 	HtWordReference.h 	HtWordList.h 	HtURLCodec.h 	URL.h 	cgi.h 	HtZlibCodec.h 	defaults.h
+noinst_HEADERS = DocumentDB.h 	DocumentRef.h 	HtWordReference.h 	HtWordList.h 	HtURLCodec.h 	HtSGMLCodec.h 	URL.h 	cgi.h 	HtZlibCodec.h 	defaults.h
 
 
 LOCAL_DEFINES = -DBIN_DIR=\"$(bindir)\" 		-DCOMMON_DIR=\"$(COMMON_DIR)\" 		-DCONFIG_DIR=\"$(CONFIG_DIR)\" 		-DDATABASE_DIR=\"$(DATABASE_DIR)\" 		-DIMAGE_URL_PREFIX=\"$(IMAGE_URL_PREFIX)\" 		-DPDF_PARSER=\"$(PDF_PARSER)\"
@@ -134,7 +134,7 @@ LIBS = @LIBS@
 libcommon_la_LIBADD = 
 libcommon_la_OBJECTS =  DocumentDB.lo DocumentRef.lo HtWordReference.lo \
 HtWordList.lo defaults.lo HtURLCodec.lo URL.lo URLTrans.lo \
-HtZlibCodec.lo cgi.lo
+HtZlibCodec.lo cgi.lo HtSGMLCodec.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -147,9 +147,10 @@ DIST_COMMON =  Makefile.am Makefile.in
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/DocumentDB.P .deps/DocumentRef.P .deps/HtURLCodec.P \
-.deps/HtWordList.P .deps/HtWordReference.P .deps/HtZlibCodec.P \
-.deps/URL.P .deps/URLTrans.P .deps/cgi.P .deps/defaults.P
+DEP_FILES =  .deps/DocumentDB.P .deps/DocumentRef.P .deps/HtSGMLCodec.P \
+.deps/HtURLCodec.P .deps/HtWordList.P .deps/HtWordReference.P \
+.deps/HtZlibCodec.P .deps/URL.P .deps/URLTrans.P .deps/cgi.P \
+.deps/defaults.P
 SOURCES = $(libcommon_la_SOURCES)
 OBJECTS = $(libcommon_la_OBJECTS)
 

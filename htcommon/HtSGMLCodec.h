@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtSGMLCodec.h,v 1.2 1999/09/08 14:42:29 loic Exp $
+// $Id: HtSGMLCodec.h,v 1.1 1999/10/06 10:16:34 loic Exp $
 //
 #ifndef __HtSGMLCodec_h
 #define __HtSGMLCodec_h
