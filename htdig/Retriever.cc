@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.71 1999/10/08 12:59:56 loic Exp $
+// $Id: Retriever.cc,v 1.72 1999/10/08 14:51:37 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -25,6 +25,7 @@
 #include "Document.h"
 #include "StringList.h"
 #include "WordType.h"
+#include "Transport.h"
 #include <pwd.h>
 #include <signal.h>
 #include <assert.h>
@@ -344,7 +345,7 @@ Retriever::parse_url(URLRef &urlRef)
     DocumentRef        *ref;
     int			old_document;
     time_t		date;
-    static int	index = 1;
+    static int	index = 0;
 
     url.parse(urlRef.GetURL().get());
 	
@@ -408,8 +409,8 @@ Retriever::parse_url(URLRef &urlRef)
 
     base = doc->Url();
 
-    // Retrive document, first trying local file access if possible.
-    Document::DocStatus status;
+    // Retrieve document, first trying local file access if possible.
+    Transport::DocStatus status;
     String *local_filename = IsLocalUser(url.get());
     if (!local_filename)
         local_filename = IsLocal(url.get());
@@ -418,16 +419,16 @@ Retriever::parse_url(URLRef &urlRef)
         if (debug > 1)
 	    cout << "Trying local file " << *local_filename << endl;
         status = doc->RetrieveLocal(date, *local_filename);
-        if (status == Document::Document_not_local)
+        if (status == Transport::Document_not_local)
         {
             if (debug > 1)
    	        cout << "Local retrieval failed, trying HTTP" << endl;
-            status = doc->RetrieveHTTP(date);
+            status = doc->Retrieve(date);
         }
         delete local_filename;
     }
     else
-        status = doc->RetrieveHTTP(date);
+        status = doc->Retrieve(date);
 
     current_ref = ref;
 	
@@ -437,7 +438,7 @@ Retriever::parse_url(URLRef &urlRef)
     //
     switch (status)
     {
-	case Document::Document_ok:
+	case Transport::Document_ok:
 	    trackWords = 1;
 	    if (old_document)
 	    {
@@ -445,7 +446,6 @@ Retriever::parse_url(URLRef &urlRef)
 		{
 		  if (debug)
 		    cout << " retrieved but not changed" << endl;
-		  words.MarkGone();
 		  break;
 		}
 		//
@@ -483,63 +483,63 @@ Retriever::parse_url(URLRef &urlRef)
 		cout << " size = " << doc->Length() << endl;
 	    break;
 
-	case Document::Document_not_changed:
+	case Transport::Document_not_changed:
 	    if (debug)
 		cout << " not changed" << endl;
 	    words.MarkGone();
 	    break;
 
-	case Document::Document_not_found:
+	case Transport::Document_not_found:
 	    ref->DocState(Reference_not_found);
 	    if (debug)
 		cout << " not found" << endl;
 	    recordNotFound(url.get(),
 			   urlRef.GetReferer().get(),
-			   Document::Document_not_found);
+			   Transport::Document_not_found);
 	    words.MarkGone();
 	    break;
 
-	case Document::Document_no_host:
+	case Transport::Document_no_host:
 	    ref->DocState(Reference_not_found);
 	    if (debug)
 		cout << " host not found" << endl;
 	    recordNotFound(url.get(),
 			   urlRef.GetReferer().get(),
-			   Document::Document_no_host);
+			   Transport::Document_no_host);
 	    words.MarkGone();
 	    break;
 
-	case Document::Document_no_server:
-	    ref->DocState(Reference_not_found);
-	    if (debug)
-		cout << " no server running" << endl;
-	    recordNotFound(url.get(),
-			   urlRef.GetReferer().get(),
-			   Document::Document_no_server);
-	    words.MarkGone();
-	    break;
+	case Transport::Document_not_parsable:
+  	    if (debug)
+ 		cout << " not Parsable" << endl;
+  	    words.MarkGone();
+  	    break;
 
-	case Document::Document_not_html:
-	    if (debug)
-		cout << " not HTML" << endl;
-	    words.MarkGone();
-	    break;
-
-	case Document::Document_redirect:
+	case Transport::Document_redirect:
 	    if (debug)
 		cout << " redirect" << endl;
 	    words.MarkGone();
 	    got_redirect(doc->Redirected(), ref);
 	    break;
 	    
-       case Document::Document_not_authorized:
+       case Transport::Document_not_authorized:
 	    if (debug)
 	      cout << " not authorized" << endl;
 	    break;
 
-      case Document::Document_not_local:
+      case Transport::Document_not_local:
 	   if (debug)
 	     cout << " not local" << endl;
+	   break;
+
+      case Transport::Document_no_header:
+	   if (debug)
+	     cout << " no header" << endl;
+	   break;
+
+      case Transport::Document_connection_down:
+	   if (debug)
+	     cout << " connection down" << endl;
 	   break;
     }
     docs.Add(*ref);
@@ -999,16 +999,7 @@ Retriever::got_title(const char *title)
 void
 Retriever::got_time(const char *time)
 {
-    time_t   new_time;
-    struct tm   tm;
-
-    //	Initialize the tm construct to ensure correct results
-    tm.tm_hour = 0;
-    tm.tm_min = 0;
-    tm.tm_sec = 0;
-    tm.tm_mon = 0;
-    tm.tm_mday = 1;
-    tm.tm_year = 0;
+    HtDateTime   new_time(current_time);
 
     if (debug > 1)
       cout << "\ntime: " << time << endl;
@@ -1018,15 +1009,8 @@ Retriever::got_time(const char *time)
     // In the future, we'll need to deal with the scheme portion
     //  in case someone picks a different format.
     //
-    if (strptime(time, "%Y-%m-%d", &tm))
-      {
-#if HAVE_TIMEGM
-        new_time = timegm(&tm);
-#else
-        new_time = Httimegm(&tm);
-#endif
-	current_time = new_time;
-      }
+    new_time.SetFTime(time, "%Y-%m-%d");
+    current_time = new_time.GetTime_t();
 
     // If we can't convert it, current_time stays the same and we get
     // the default--the date returned by the server...
@@ -1387,17 +1371,17 @@ Retriever::recordNotFound(char *url, char *referer, int reason)
     
     switch (reason)
     {
-	case Document::Document_not_found:
+	case Transport::Document_not_found:
 	    message = "Not found";
 	    break;
 	
-	case Document::Document_no_host:
-	    message = "Unknown host";
+        case Transport::Document_no_host:
+	    message = "Unknown host or unable to contact server";
+	    break;
+
+        default:
 	    break;
 	
-	case Document::Document_no_server:
-	    message = "Unable to contact server";
-	    break;
     }
 
     notFound << message << ": " << url << " Ref: " << referer << '\n';
