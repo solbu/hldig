@@ -1,7 +1,7 @@
 //
 // Retriever.h
 //
-// $Id: Retriever.h,v 1.11 1999/06/21 00:49:02 ghutchis Exp $
+// $Id: Retriever.h,v 1.12 1999/07/19 01:58:47 ghutchis Exp $
 //
 
 #ifndef _Retriever_h_
@@ -89,7 +89,7 @@ private:
     //
     // These are weights for the words.  The index is the heading level.
     //
-    double		factor[12];
+    long int		factor[10];
     int			currenthopcount;
 
     //

@@ -1,3 +1,21 @@
+Sun Jul 18 22:33:49 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Collapse the multiple heading_factors into
+	one. (It's prohibitive to define a flag for each h* tag).
+	Add a new url_factor for the text of URLs (presently unused).
+
+	* htcommon/DocumentRef.cc(AddDescription): Use FLAG_LINK_TEXT as
+	defined in htcommon/WordRecord.h.
+
+	* htdig/Retriever.h: Change factor to accomodate flags instead of
+	weighting factors.
+
+	* htdig/Retriever.cc: Update to use flags, and define the indexed
+	flags in factor as appropriate.
+
+	* htdig/HTML.cc: Update calls to got_word with appropriate new
+	offsets into factor[].
+
 Sun Jul 18 22:18:16 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/WordReference.h, htcommon/WordRecord.h: Update to use

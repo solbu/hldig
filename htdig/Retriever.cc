@@ -3,12 +3,13 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.53 1999/07/03 20:56:39 ghutchis Exp $
+// $Id: Retriever.cc,v 1.54 1999/07/19 01:58:47 ghutchis Exp $
 //
 
 #include "Retriever.h"
 #include "htdig.h"
 #include "WordList.h"
+#include "WordRecord.h"
 #include "URLRef.h"
 #include "Server.h"
 #include "Parsable.h"
@@ -36,27 +37,27 @@ Retriever::Retriever(RetrieverLog flags)
     max_hop_count = config.Value("max_hop_count", 999999);
 		
     //
-    // Initialize the weight factors for words in the different
-    // HTML headers
+    // Initialize the flags for the various HTML factors
     //
-    factor[0] = config.Double("text_factor"); // Normal words
-    factor[1] = config.Double("title_factor");
-    factor[2] = config.Double("heading_factor_1");
-    factor[3] = config.Double("heading_factor_2");
-    factor[4] = config.Double("heading_factor_3");
-    factor[5] = config.Double("heading_factor_4");
-    factor[6] = config.Double("heading_factor_5");
-    factor[7] = config.Double("heading_factor_6");
-    factor[8] = config.Double("img_alt_factor");
-    factor[9] = 0;
-    factor[10] = config.Double("keywords_factor");
-    factor[11] = config.Double("meta_description_factor");
+
+    // text_factor
+    factor[0] = FLAG_TEXT;
+    // title_factor
+    factor[1] = FLAG_TITLE;
+    // heading factor (now generic)
+    factor[2] = FLAG_HEADING;
+    factor[3] = FLAG_HEADING;
+    factor[4] = FLAG_HEADING;
+    factor[5] = FLAG_HEADING;
+    factor[6] = FLAG_HEADING;
+    factor[7] = FLAG_HEADING;
+    // img alt text
+    factor[8] = FLAG_KEYWORDS;
+    // keywords factor
+    factor[9] = FLAG_KEYWORDS;
+    // META description factor
+    factor[10] = FLAG_DESCRIPTION;
 	
-    //
-    // Open the file to which we will append words.
-    //
-    String	filename = config["word_list"];
-    words.WordTempFile(filename);
     words.BadWordFile(config["bad_word_list"]);
 
     doc = new Document();
