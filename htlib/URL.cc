@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.20 1999/03/28 22:11:32 hp Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.21 1999/04/30 17:06:21 bergolth Exp $";
 #endif
 
 #include "URL.h"
@@ -563,6 +563,7 @@ void URL::ServerAlias()
   if (! serveraliases)
     {
       String l= config["server_aliases"];
+      String *from, *to;
       serveraliases = new Dictionary();
       char *p = strtok(l, " \t");
       char *salias= NULL;
@@ -572,9 +573,14 @@ void URL::ServerAlias()
 	  if (! salias)
 	    continue;
 	  *salias++= '\0';
-	  serveraliases->Add(p, new String(salias));
-	  // cout << "Alias: " << p << "->" << salias << "\n";
-	  // printf ("Alias: %s->%s\n", p, salias);
+	  from= new String(p);
+	  if (from->indexOf(':') == -1)
+	    from->append(":80");
+	  to= new String(salias);
+	  if (to->indexOf(':') == -1)
+	    to->append(":80");
+	  serveraliases->Add(from->get(), to);
+	  // fprintf (stderr, "Alias: %s->%s\n", from->get(), to->get());
 	  p = strtok(0, " \t");
 	}
     }
@@ -587,11 +593,11 @@ void URL::ServerAlias()
   if ((al= (String *) serveraliases->Find(_signature)))
     {
       delim= al->indexOf(':');
-      // printf("%s->%s\n", (char *) _signature, (char *) *al);
+      // fprintf(stderr, "\nOld URL: %s->%s\n", (char *) _signature, (char *) *al);
       _host= al->sub(0,delim).get();
       sscanf(al->sub(delim+1), "%d", &newport);
       _port= newport;
-      // printf("\nNewer URL: %s:%d\n", (char *) _host, _port);
+      // fprintf(stderr, "New URL: %s:%d\n", (char *) _host, _port);
     }
 }
 
