@@ -1,3 +1,7 @@
+Sun May 07 02:02:46 2000  Loic Dachary  <loic@senga.org>
+
+	* htword/WordDB.cc: Move Open to WordDB.cc.
+
 Sun May 07 01:32:47 2000  Loic Dachary  <loic@senga.org>
 
 	* test/t_*: check/fix scripts. All regression tests pass

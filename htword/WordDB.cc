@@ -7,7 +7,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.cc,v 1.2.2.3 2000/05/05 21:55:17 loic Exp $
+// $Id: WordDB.cc,v 1.2.2.4 2000/05/06 21:55:46 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -15,8 +15,6 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "WordDB.h"
-
-
 
 const char* dberror(int errval) {
 #define DB_MAX_ERROR	(-DB_TXN_CKP + 1)
@@ -41,4 +39,29 @@ const char* dberror(int errval) {
     return strerror(errval);
 }
 
+int WordDB::Open(const String& filename, DBTYPE type, int flags, int mode) {
+  if(is_open) {
+    int error = 0;
+    if((error = Close()) != 0)
+      return error;
+  }
 
+  if(!dbenv) {
+    const char* progname = "WordDB";
+
+    //
+    // Environment initialization
+    //
+    // Output errors to the application's log.
+    //
+    db->set_errfile(db, stderr);
+    db->set_errpfx(db, progname);
+  }
+
+  int error = db->open(db, filename, NULL, type, (u_int32_t)flags, mode);
+
+  if(error == 0)
+    is_open = 1;
+
+  return error;
+}

@@ -9,18 +9,18 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.18 2000/05/06 21:25:24 loic Exp $
+// $Id: word.cc,v 1.14.2.19 2000/05/06 21:55:47 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
-#include <fcntl.h>
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H

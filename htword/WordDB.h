@@ -19,7 +19,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.h,v 1.3.2.12 2000/05/06 20:46:42 loic Exp $
+// $Id: WordDB.h,v 1.3.2.13 2000/05/06 21:55:47 loic Exp $
 //
 
 #ifndef _WordDB_h_
@@ -84,32 +84,7 @@ class WordDB {
     return error;
   }
 
-  inline int Open(const String& filename, DBTYPE type, int flags, int mode) {
-    if(is_open) {
-      int error = 0;
-      if((error = Close()) != 0)
-	return error;
-    }
-
-    if(!dbenv) {
-      const char* progname = "WordDB";
-
-      //
-      // Environment initialization
-      //
-      // Output errors to the application's log.
-      //
-      db->set_errfile(db, stderr);
-      db->set_errpfx(db, progname);
-    }
-
-    int error = db->open(db, filename, NULL, type, (u_int32_t)flags, mode);
-
-    if(error == 0)
-      is_open = 1;
-
-    return error;
-  }
+  int Open(const String& filename, DBTYPE type, int flags, int mode);
 
   inline int Close() {
     int error;
