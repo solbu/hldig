@@ -4,6 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.40  1999/01/21 13:41:50  ghutchis
+// Add common_url_parts and url_part_aliases.
+//
 // Revision 1.39  1999/01/20 05:25:17  ghutchis
 // Use translate_quote, _lt_gt, and _amp to optionally translate these entities.
 //
@@ -135,7 +138,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.39 1999/01/20 05:25:17 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.40 1999/01/21 13:41:50 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -165,6 +168,7 @@ ConfigDefaults	defaults[] =
     {"bad_querystr",                    ""},
     {"bad_word_list",			"${common_dir}/bad_words"},
     {"case_sensitive"                   "true"},
+    {"common_url_parts",                "http:// http://www. ftp:// ftp://ftp. /pub/ .html .htm .gif .jpg .jpeg /index.html /index.htm .com/ .com mailto:"},
     {"create_image_list",		"false"},
     {"create_url_list",			"false"},
     {"compression_level",               "0"},
@@ -264,6 +268,7 @@ ConfigDefaults	defaults[] =
     {"translate_lt_gt",                 "false"},
     {"translate_quot",                  "false"},
     {"url_list",			"${database_base}.urls"},
+    {"url_part_aliases",                ""},
     {"url_log",				"${database_base}.log"},
     {"use_star_image",			"true"},
     {"use_meta_description",            "false"},
