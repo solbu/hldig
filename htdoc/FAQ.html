@@ -440,17 +440,18 @@
 
 	  <h3>2. Getting ht://Dig</h3>
 	  <strong>2.1. <a name="q2.1">What's the latest version of ht://Dig?</a></strong><br>
-	  <p>The latest version is 3.1.5 as of this writing. A beta
+	  <p>The latest version is 3.1.6 as of this writing. A beta
 	  version of the 3.2 code, 3.2.0b3 is also available, for
 	  those who wish to test it.
 	  You can find out about the latest version by reading the
 	  <a href="RELEASE.html">release
 	  notes</a>.</p>
-	  <p><strong>Note</strong> that if you're running any version older than 3.1.5 on
-	  a public web site, you should upgrade immediately, as older
-	  versions have a rather serious security hole which is explained
-	  in detail in this
-	  <a href="http://www.htdig.org/htdig-dev/2000/02/0272.html">advisory</a>
+	  <p><strong>Note</strong> that if you're running any version
+	  older than 3.1.5 (including 3.2.0b3) on a public web site,
+	  you should upgrade immediately, as older versions have a
+	  rather serious security hole which is explained in detail in
+	  this <a
+	  href="http://www.htdig.org/htdig-dev/2000/02/0272.html">advisory</a>
 	  which was sent to the BugTraq mailing list.
 	  </p>
 
@@ -1533,15 +1534,10 @@ require group foo
 	  If you're running htsearch or htfuzzy on a BSDI system, a common
 	  cause of core dumps is due to a conflict between the GNU regex
 	  code bundled in htdig 3.1.2 and later, and the BSD C or C++ library.
-	  The solution is to use the BSD library's own regex code instead,
-	  as summarized by Joe Jah:</p>
+	  The solution is to use the BSD library's own rx code instead,
+	  using version 3.1.6 or newer as summarized by Joe Jah:</p>
 		<ul>
-		<li> make clean
-		<li> Remove references to regex.o from htlib/Makefile.
-		<li> Remove htlib/regex.h.
-		<li> Remove references to htlib/regex.h in htfuzzy/Makefile,
-			which will be there if you have previously done a
-			"make depend".
+		<li> ./configure --with-rx
 		<li> make
 		</ul>
 	  <p>This solution may work on some other platforms as well (we haven't
@@ -1635,7 +1631,7 @@ require group foo
 	  <a href="http://www.w3.org/TR/html4/struct/links.html#h-12.3.3">Links
 	  and search engines</a> in W3C's HTML 4.0 Specification - requires
 	  htdig 3.1.3 or greater, but then <em>everyone</em> should be running
-	  3.1.5 or greater anyway),
+	  3.1.6 or greater anyway),
 	  <li>Compose a list of all the unreachable documents, or write
 	  a program to do so, and feed that list as part of htdig's
 	  <a href="attrs.html#start_url">start_url</a> attribute.
@@ -1896,6 +1892,6 @@ find /path/to/your/document/root -type f -name \*.html -print | \
 	  <br>
 
 	  <hr noshade size=4>
-	  	Last modified: $Date: 2002/01/29 16:01:11 $
+	  	Last modified: $Date: 2002/01/30 23:22:23 $
   </body>
 </html>

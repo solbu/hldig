@@ -1,9 +1,12 @@
+Wed Jan 30 17:20:51 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/FAQ.html: Updated to mention 3.1.6 as the newest version
+	and --with-rx as a fix for regex problems on BSDI.
+
 Wed Jan 30 17:15:49 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* installdir/synonyms: Updated with the version contributed by
 	David Adams, with minor changes.  Kept old one as synonyms.original.
-
-Wed Jan 30 16:39:51 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* installdir/english.0: Changed lots more dubious uses of suffixes to
 	get more appropriate and correct fuzzy endings expansions.
