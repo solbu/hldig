@@ -1,3 +1,8 @@
+Sun May  2 18:49:04 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
+
+	* configure.in, include/htconfig.h.in: Added a configure test for
+	the availability of the bool type.
+
 Fri Apr 30 20:00:09 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtDateTime.h, htlib/HtDateTime.cc: Update with new

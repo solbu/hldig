@@ -107,4 +107,22 @@
 #define FALSE 0
 #endif
 
+/* Define if you have the bool type */
+#undef HAVE_BOOL
+
+#ifndef HAVE_BOOL
+typedef char bool;
+#endif
+
+/* Define if you C++ compiler doesn't know true and false */
+#undef HAVE_TRUE
+#undef HAVE_FALSE
+
+#ifndef HAVE_TRUE
+#define true  TRUE
+#endif
+#ifndef HAVE_FALSE
+#define false FALSE
+#endif
+
 #endif

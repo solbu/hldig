@@ -134,6 +134,21 @@ done
   AC_DEFINE_UNQUOTED(GETPEERNAME_LENGTH_T, $getpeername_length_t)
   fi
 
+dnl Check if the c++ compiler knows bool
+AC_LANG_CPLUSPLUS
+AC_MSG_CHECKING(for bool data type?)
+AC_TRY_COMPILE(,[bool i;],
+  [AC_MSG_RESULT(yes);AC_DEFINE(HAVE_BOOL)],
+  [AC_MSG_RESULT(no)])
+
+dnl Check if the c++ compiler knows true and false
+AC_MSG_CHECKING(for true and false?)
+AC_TRY_COMPILE(,[int i, j; i= true; j= false;],
+  [AC_MSG_RESULT(yes)
+     AC_DEFINE(HAVE_TRUE)
+     AC_DEFINE(HAVE_FALSE)],
+  [AC_MSG_RESULT(no)])
+
 dnl Any remaining tests probably want the C compiler
 AC_LANG_C
 if test ! -d "./db"; then

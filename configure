@@ -2459,6 +2459,66 @@ EOF
 
   fi
 
+ac_ext=C
+# CXXFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='${CXX-g++} -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext 1>&5'
+ac_link='${CXX-g++} -o conftest${ac_exeext} $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS 1>&5'
+cross_compiling=$ac_cv_prog_cxx_cross
+
+echo $ac_n "checking for bool data type?""... $ac_c" 1>&6
+echo "configure:2471: checking for bool data type?" >&5
+cat > conftest.$ac_ext <<EOF
+#line 2473 "configure"
+#include "confdefs.h"
+
+int main() {
+bool i;
+; return 0; }
+EOF
+if { (eval echo configure:2480: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  echo "$ac_t""yes" 1>&6;cat >> confdefs.h <<\EOF
+#define HAVE_BOOL 1
+EOF
+
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  echo "$ac_t""no" 1>&6
+fi
+rm -f conftest*
+
+echo $ac_n "checking for true and false?""... $ac_c" 1>&6
+echo "configure:2495: checking for true and false?" >&5
+cat > conftest.$ac_ext <<EOF
+#line 2497 "configure"
+#include "confdefs.h"
+
+int main() {
+int i, j; i= true; j= false;
+; return 0; }
+EOF
+if { (eval echo configure:2504: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  echo "$ac_t""yes" 1>&6
+     cat >> confdefs.h <<\EOF
+#define HAVE_TRUE 1
+EOF
+
+     cat >> confdefs.h <<\EOF
+#define HAVE_FALSE 1
+EOF
+
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  echo "$ac_t""no" 1>&6
+fi
+rm -f conftest*
+
 ac_ext=c
 # CFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
 ac_cpp='$CPP $CPPFLAGS'
@@ -2474,7 +2534,7 @@ subdirs="db/dist"
 
 
 echo $ac_n "checking for style of include in makefiles""... $ac_c" 1>&6
-echo "configure:2478: checking for style of include in makefiles" >&5
+echo "configure:2538: checking for style of include in makefiles" >&5
 
 make_include_left=""
 make_include_right=""
