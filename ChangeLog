@@ -1,3 +1,7 @@
+Tue Mar 23 11:47:52 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* Makefile.in: add missing ';' in for loops, between fi & done
+
 Mon Mar 22 16:06:15 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc: Check for presence of more than one <title> tag.
