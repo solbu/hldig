@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.35  1999/01/24 03:31:54  ghutchis
+// If a server ignores the If-Modified-Since request, still compare the
+// retrieved date to the stored date to see if it has been modified.
+//
 // Revision 1.34  1999/01/18 00:52:26  ghutchis
 // Fix compiler warnings.
 //
@@ -540,6 +544,13 @@ Retriever::parse_url(URLRef &urlRef)
 	    trackWords = 1;
 	    if (old_document)
 	    {
+	      if (doc->ModTime() == ref->DocTime())
+		{
+		  if (debug)
+		    cout << " retrieved but not changed" << endl;
+		  words.MarkScanned();
+		  break;
+		}
 		//
 		// Since we already had a record of this document and
 		// we were able to retrieve it, it must have changed
