@@ -1,5 +1,5 @@
-HTDig 3.0.8b1 README
-Copyright (C) 1995, 1996, 1997 Andrew Scherpbier <andrew@contigo.com>
+HTDig 3.1.0b1 README
+Copyright (C) 1995-1998 Andrew Scherpbier <andrew@contigo.com>
 
 HTDig is a world-wide-web search system for an intranet or small internet.
 
@@ -22,13 +22,13 @@ This distribution includes:
 
     * htdoc     - HTDig documentation in HTML
 
-HTDig has been tested extensively under Solaris 2.5
-using g++ 2.7.2.
+HTDig has been tested extensively under Linux 2.0 using g++
 If you use g++, make absolutely sure you have libg++ installed
 as well.
 
 To build, first read the htdoc/install.html document
 
-Questions/suggestions should be directed at htdig@sdsu.edu
+Questions/suggestions should be directed to the ht://Dig mailing list.  Find
+subscription instructions at http://www.htdig.org/
 
-For the most up-to-date documentation, use http://htdig.sdsu.edu/
+For the most up-to-date documentation, use http://www.htdig.org/
