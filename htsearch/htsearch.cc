@@ -6,9 +6,11 @@
 // Outputs HTML-ized results of the search based on the templates specified
 //
 // $Log: htsearch.cc,v $
+// Revision 1.17  1998/12/08 02:53:21  ghutchis
+// Fix thinko with multiple excludes and restricts. Pointed out by Gilles.
+//
 // Revision 1.16  1998/12/05 00:53:53  ghutchis
 // Added usage message for the command line.
-//
 //
 // revision 1.15 1998/12/04 04:13:52 ghutchis
 // Use configure check to only include getopt.h when it exists.
@@ -62,7 +64,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.16 1998/12/05 00:53:53 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.17 1998/12/08 02:53:21 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -159,14 +161,14 @@ main(int ac, char **av)
 	char *sep = input["restrict"];
 	while ((sep = strchr(sep, '\001')) != NULL)
 	  *sep++ = '|';
-	limit_to.Pattern(sep);
+	limit_to.Pattern(input["restrict"]);
     }
     if (input.exists("exclude"))
     {
        char *sep = input["exclude"];
        while ((sep = strchr(sep, '\001')) != NULL)
-	 *sep++ = '|';
-       exclude_these.Pattern(sep);
+       	 *sep++ = '|';
+       exclude_these.Pattern(input["exclude"]);
     }
 
     //
