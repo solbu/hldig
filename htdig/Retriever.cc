@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.7  1998/09/07 04:37:16  ghutchis
+//
+// Added DocState for documents marked as "noindex".
+//
 // Revision 1.6  1998/08/11 08:58:31  ghutchis
 // Second patch for META description tags. New field in DocDB for the
 // desc., space in word DB w/ proper factor.
@@ -1039,6 +1043,18 @@ Retriever::got_meta_subject(char *e)
     if (debug > 1)
 	cout << "\nmeta subect: " << e << endl;
     current_ref->DocSubject(e);
+}
+
+
+//*****************************************************************************
+// void Retriever::got_noindex()
+//
+void
+Retriever::got_noindex()
+{
+    if (debug > 1)
+      cout << "\nMETA ROBOT: Noindex " << endl;
+    current_ref->DocState(Reference_noindex);
 }
 
 

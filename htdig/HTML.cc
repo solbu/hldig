@@ -4,6 +4,10 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.8  1998/09/07 04:37:16  ghutchis
+//
+// Added DocState for documents marked as "noindex".
+//
 // Revision 1.7  1998/08/11 08:58:27  ghutchis
 // Second patch for META description tags. New field in DocDB for the
 // desc., space in word DB w/ proper factor.
@@ -28,7 +32,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.7 1998/08/11 08:58:27 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.8 1998/09/07 04:37:16 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -643,13 +647,17 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    String   content_cache = conf["content"];
 
 		    if (content_cache.indexOf("noindex") != 0)
-		      doindex = 0;
+		      {
+			doindex = 0;
+			retriever.got_noindex();
+		      }
 		    else if (content_cache.indexOf("nofollow") != 0)
 		      dofollow = 0;
 		    else if (content_cache.indexOf("none") != 0)
 		      {
 			doindex = 0;
 			dofollow = 0;
+			retriever.got_noindex();
 		      }
 		  }
 		else if (mystrcasecmp(cache, "description") == 0 

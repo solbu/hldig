@@ -1,9 +1,13 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.5 1998/08/11 08:58:25 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.6 1998/09/07 04:37:16 ghutchis Exp $
 //
 // $Log: DocumentRef.h,v $
+// Revision 1.6  1998/09/07 04:37:16  ghutchis
+//
+// Added DocState for documents marked as "noindex".
+//
 // Revision 1.5  1998/08/11 08:58:25  ghutchis
 // Second patch for META description tags. New field in DocDB for the
 // desc., space in word DB w/ proper factor.
@@ -35,7 +39,8 @@
 enum ReferenceState
 {
     Reference_normal,
-    Reference_not_found
+    Reference_not_found,
+    Reference_noindex
 };
 
 class DocumentRef : public Object

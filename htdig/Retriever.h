@@ -1,9 +1,13 @@
 //
 // Retriever.h
 //
-// $Id: Retriever.h,v 1.3 1998/08/11 08:58:32 ghutchis Exp $
+// $Id: Retriever.h,v 1.4 1998/09/07 04:37:16 ghutchis Exp $
 //
 // $Log: Retriever.h,v $
+// Revision 1.4  1998/09/07 04:37:16  ghutchis
+//
+// Added DocState for documents marked as "noindex".
+//
 // Revision 1.3  1998/08/11 08:58:32  ghutchis
 // Second patch for META description tags. New field in DocDB for the
 // desc., space in word DB w/ proper factor.
@@ -71,6 +75,7 @@ public:
     void		got_meta_email(char *);
     void		got_meta_notification(char *);
     void		got_meta_subject(char *);
+    void                got_noindex();
 
     //
     // Allow for the indexing of protected sites by using a

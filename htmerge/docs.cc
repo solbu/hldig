@@ -4,6 +4,10 @@
 // Implementation of newclass
 //
 // $Log: docs.cc,v $
+// Revision 1.7  1998/09/07 04:37:16  ghutchis
+//
+// Added DocState for documents marked as "noindex".
+//
 // Revision 1.6  1998/08/11 08:58:33  ghutchis
 // Second patch for META description tags. New field in DocDB for the
 // desc., space in word DB w/ proper factor.
@@ -70,18 +74,19 @@ convertDocs(char *doc_db, char *doc_index)
 	id = 0;
 	id << ref->DocID();
 	if (strlen(ref->DocHead()) == 0)
-	{
-	    //
-	    // This document doesn't have an excerpt
+	  {
+	    // For some reason, this document doesn't have an excerpt
 	    // (probably because of a noindex directive) Remove it
-	    // 
-	  db.Delete(url->get());
-	}
+	    db.Delete(url->get());
+	  }
+	if ((ref->DocState()) == Reference_noindex)
+	  {
+	    // This document has been marked with a noindex tag. Remove it
+	    db.Delete(url->get());
+	  }
 	if (remove_unused && discard_list.Exists(id))
 	  {
-	    //
 	    // This document is not valid anymore.  Remove it
-	    //
 	    db.Delete(url->get());
 	  }
 	else
