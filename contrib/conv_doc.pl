@@ -37,6 +37,8 @@
 #               stripped out all parser-related code
 # Added:        test to silently ignore wrapped EPS files    < " >
 # Added:        test for null device on Win32 env.   <PBISSET@emergency.qld.gov.au>
+# 2000/01/12
+# Changed:      "break" to "last" (no break in Perl) <wjones@tc.fluke.com>
 #########################################
 #
 # set this to your MS Word to text converter
@@ -131,7 +133,7 @@ if ($magic =~ /%!|^\033%-12345/) {      # it's PostScript (or HP print job)
                 s/</\&lt\;/g;
                 s/>/\&gt\;/g;
                 $title = $_;
-                break;
+                last;
             }
         }
         close INFO;
@@ -190,7 +192,7 @@ print "</head>\n<body>\n";
 open(CAT, "$cvtcmd |") || die "$cvtr doesn't want to be opened using pipe.\n";
 while (<CAT>) {
     while (/[A-Za-z\300-\377]-\s*$/ && $dehyphenate) {
-        $_ .= <CAT> || break;
+        $_ .= <CAT> || last;
         s/([A-Za-z\300-\377])-\s*\n\s*([A-Za-z\300-\377])/$1$2/
     }
     s/[\255]/-/g;                       # replace dashes with hyphens

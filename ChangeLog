@@ -1,4 +1,7 @@
-Tue Feb 15 14:52:26 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Feb 15 15:29:16 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/conv_doc.pl, contrib/parse_doc.pl: Applied Warren Jones's
+	changes to these scripts.
 
 	* htdig/PDF.cc (parseNonTextLine): Fix bogus escape sequences
 	around Title parsing.  (Fixes PR#740)
