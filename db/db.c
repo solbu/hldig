@@ -598,7 +598,7 @@ CDB___db_dbenv_setup(dbp, name, flags)
 
 	if ((ret = CDB_memp_fopen(dbenv, name,
 	    LF_ISSET(DB_RDONLY | DB_NOMMAP | DB_COMPRESS),
-	    0, dbp->pgsize, &finfo, &dbp->mpf)) != 0)
+	    0666, dbp->pgsize, &finfo, &dbp->mpf)) != 0)
 		return (ret);
 
 	/*

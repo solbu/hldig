@@ -1,3 +1,9 @@
+Wed Jun 07 10:53:53 2000  Loic Dachary  <loic@senga.org>
+
+	* db/db.c (CDB___db_dbenv_setup): open mode is 0666 instead
+	  of 0 otherwise the weakcmpr file is not open with the proper
+	  mode.
+
 Tue Jun  6 23:48:48 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* httools/htpurge.cc: Fix coredump problems by passing
