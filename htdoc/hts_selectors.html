@@ -23,7 +23,7 @@
 	  <a href="hts_form.html">form</a>.
 	  The input fields in this form can be defined as any type that
 	  HTML allows, but some of these are best handled through HTML
-	  <i>select</i> lists.
+	  <em>select</em> lists.
 	</p>
 	<h3>
 	  <a name="predefined"></a>
@@ -31,7 +31,7 @@
 	</h3>
 	<p>
 	  In order to propagate these select lists to the search form
-	  in the results template, so that the default <i>selected</i>
+	  in the results template, so that the default <em>selected</em>
 	  value will be the one the user last selected, htsearch defines
 	  a few of these select lists as
 	  <a href="hts_templates.html">template variables</a>.
@@ -39,39 +39,39 @@
 	</p>
 	<ul>
 	  <li>
-		<b>FORMAT</b>, which selects the <b>format</b> input parameter
+		<strong>FORMAT</strong>, which selects the <b>format</b> input parameter
 		for follow-up searches, with the current value being the
-		default. The current value is taken from the <b>format</b>
+		default. The current value is taken from the <strong>format</strong>
 		input parameter, if one was provided, or from the
 		<a href="attrs.html#template_name">template_name</a>
 		attribute otherwise, and this value will also be given in
-		the <b>SELECTED_FORMAT</b> template variable.
+		the <strong>SELECTED_FORMAT</strong> template variable.
 		The various parameter values, and their corresponding
 		labels for the select list, are taken from the
 		<a href="attrs.html#template_map">template_map</a>
 		attribute.
 	  </li>
 	  <li>
-		<b>METHOD</b>, which selects the <b>method</b> input parameter
+		<strong>METHOD</strong>, which selects the <b>method</b> input parameter
 		for follow-up searches, with the current value being the
-		default. The current value is taken from the <b>method</b>
+		default. The current value is taken from the <strong>method</strong>
 		input parameter, if one was provided, or from the
 		<a href="attrs.html#match_method">match_method</a>
 		attribute otherwise, and this value will also be given in
-		the <b>SELECTED_METHOD</b> template variable.
+		the <strong>SELECTED_METHOD</strong> template variable.
 		The various parameter values, and their corresponding
 		labels for the select list, are taken from the
 		<a href="attrs.html#method_names">method_names</a>
 		attribute.
 	  </li>
 	  <li>
-		<b>SORT</b>, which selects the <b>sort</b> input parameter
+		<strong>SORT</strong>, which selects the <b>sort</b> input parameter
 		for follow-up searches, with the current value being the
-		default. The current value is taken from the <b>sort</b>
+		default. The current value is taken from the <strong>sort</strong>
 		input parameter, if one was provided, or from the
 		<a href="attrs.html#sort">sort</a>
 		attribute otherwise, and this value will also be given in
-		the <b>SELECTED_SORT</b> template variable.
+		the <strong>SELECTED_SORT</strong> template variable.
 		The various parameter values, and their corresponding
 		labels for the select list, are taken from the
 		<a href="attrs.html#sort_names">sort_names</a>
@@ -124,7 +124,7 @@
 	  the allow_in_form attribute.
 	</p>
 	<p>
-	  The entries in this list each consist of an <i>octuple</i>, a
+	  The entries in this list each consist of an <em>octuple</em>, a
 	  set of eight strings defining the variables and how they are to
 	  be used to build a select list. The attribute can contain many
 	  of these octuples. The strings in the string list are merely
@@ -140,12 +140,12 @@
 	  </li>
 	  <li>
 		the name of the user-defined attribute containing the
-		<i>name list</i>, that is the list of values and labels
+		<em>name list</em>, that is the list of values and labels
 		for the select list items, much like the template_map,
 		method_name and sort_name attributes
 	  </li>
 	  <li>
-		the <i>tuple</i> size used in the name list above
+		the <em>tuple</em> size used in the name list above
 	  </li>
 	  <li>
 		the index into a name list tuple for the value
@@ -185,7 +185,7 @@
 	  Any of the strings in an octuple may be quoted, and should be if
 	  you want to include spaces or define an empty string.  If the
 	  the default label, the eight element in an entry, is an empty
-	  string, the select list will not have a <i>selected</i> item
+	  string, the select list will not have a <em>selected</em> item
 	  if the current input parameter value doesn't match any value
 	  in the name list. If a default label is given, an additional
 	  list item will be added to the list using this label, if the
@@ -221,7 +221,7 @@ restrict_names: "http://www.myschool.edu/Admin/" "Admin Web Pages" \
 	<p>
 	  The addition of the <a href="attrs.html#template_patterns">
 	  template_patterns</a> attribute has added a new wrinkle to
-	  the pre-defined select list for the <b>format</b> parameter.
+	  the pre-defined select list for the <strong>format</strong> parameter.
 	  If a document URL matches an entry in template_patterns, its
 	  corresponding result template will override any template the
 	  user selected with the format parameter. The problem stems
@@ -245,7 +245,7 @@ template_patterns: .pdf ${common_dir}/${template_name}-pdffile.html \
 	<p>
 	  This works because the template_name attribute gets set
 	  internally in htsearch, to the user-selected value of the
-	  <b>format</b> input parameter, before the variable expansion
+	  <strong>format</strong> input parameter, before the variable expansion
 	  in template_patterns takes place. As long as you stick to
 	  a template file naming convention that uses the internal
 	  name element of template_map (second element in a triple) as
@@ -266,7 +266,7 @@ template_patterns: .pdf ${common_dir}/${template_name}-pdffile.html \
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 
-Last modified: $Date: 2000/01/30 03:38:26 $
+Last modified: $Date: 2000/04/09 15:42:18 $
 
   </body>
 </html>

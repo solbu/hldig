@@ -49,23 +49,23 @@
 	</h2>
 	<p>
 	  The distribution of ht://Dig is in the form of a gzipped tar
-	  file. The name of the file will be something like <tt>
-	  htdig-3.2.0.tar.gz</tt>. To extract, you can use either the GNU
+	  file. The name of the file will be something like <code>
+	  htdig-3.2.0.tar.gz</code>. To extract, you can use either the GNU
 	  tar command as follows:
 	</p>
 	<blockquote>
-	  % <b>tar xzf <em>tarfile.tar.gz</em></b>
+	  % <strong>tar xzf <em>tarfile.tar.gz</em></strong>
 	</blockquote>
 	<p>
 	  If you do not have GNU tar, you can do the following:
 	</p>
 	<blockquote>
-	  % <b>gunzip -c <em>tarfile.tar.gz</em> | tar xf -</b>
+	  % <strong>gunzip -c <em>tarfile.tar.gz</em> | tar xf -</strong>
 	</blockquote>
 	<p>
 	  In either case, a new directory will be created under which the
 	  distribution will be extracted. The directory it creates will
-	  be <tt>htdig-</tt> followed by the version number.
+	  be <code>htdig-</code> followed by the version number.
 	</p>
 	<hr noshade>
 	<h2>
@@ -74,9 +74,9 @@
 	<p>
 	  Once the distribution has been extracted, change to the newly
 	  created directory.<br>
-	  In this directory you will need execute the <tt>configure</tt> program:
+	  In this directory you will need execute the <code>configure</code> program:
 	<blockquote>
-	  % <b>./configure</b>
+	  % <strong>./configure</strong>
 	</blockquote>
 	<p>
 	  This program will attempt to determine what your particular
@@ -84,7 +84,7 @@
 	</p>
 <!--
 	<p>
-	  The <b>configure</b> program may produce some warnings about
+	  The <strong>configure</strong> program may produce some warnings about
 	  libguile and guile. Ignore those warnings since they do not
 	  affect the ht://Dig program at all.
 	</p>
@@ -94,14 +94,14 @@
 	  to all the Makefiles with the command
 	</p>
 	<blockquote>
-	  % <b>automake</b>
+	  % <strong>automake</strong>
 	</blockquote>
 	<p>
 	  This only needs to be done if you are going to change any of
-	  the sources to ht://Dig and requires <b>GCC</b>.
+	  the sources to ht://Dig and requires <strong>GCC</strong>.
 	</p>
 	<p>
-	  The <b>configure</b> program has some ht://Dig specific options
+	  The <strong>configure</strong> program has some ht://Dig specific options
 	  in addition to the standard ones that you get when running
 	  <pre>
 	  ./configure --help
@@ -109,7 +109,7 @@
 	</p>
 	<dl>
 	  <dt>
-		<tt>--prefix=DIR</tt>
+		<code>--prefix=DIR</code>
 	  </dt>
 	  <dd>
 		This is where all of the ht://Dig parts will be installed.
@@ -117,34 +117,34 @@
 		[default=/opt/www]
 	  </dd>
 	  <dt>
-		<tt>--bindir=DIR</tt>
+		<code>--bindir=DIR</code>
 	  </dt>
 	  <dd>
 		All the ht://Dig executable programs will go here
 		[default=/opt/www/bin].
 	  </dd>
 	  <dt>
-		<tt>--with-config-dir=DIR</tt>
+		<code>--with-config-dir=DIR</code>
 	  </dt>
 	  <dd>
 		where your config directory is [default=/opt/www/conf]
 	  </dd>
 	  <dt>
-		<tt>--with-default-config-file=FILE</tt>
+		<code>--with-default-config-file=FILE</code>
 	  </dt>
 	  <dd>
 		Point this to where all the tools will look for the
 		configuration file [default=/opt/www/conf/htdig.conf].
 	  </dd>
 	  <dt>
-		<tt>--with-common-dir=DIR</tt>
+		<code>--with-common-dir=DIR</code>
 	  </dt>
 	  <dd>
 		This directory is for files which can be shared between
 		different search databases [default=/opt/www/share/htdig].
 	  </dd>
 	  <dt>
-		<tt>--with-database-dir=DIR</tt>
+		<code>--with-database-dir=DIR</code>
 	  </dt>
 	  <dd>
 		Set this to the directory where the search databases are
@@ -152,7 +152,7 @@
 		partition you put this on!) [default=/opt/www/var/htdig].
 	  </dd>
 	  <dt>
-		<tt>--with-cgi-bin-dir=DIR</tt>
+		<code>--with-cgi-bin-dir=DIR</code>
 	  </dt>
 	  <dd>
 		The directory where your HTTP server looks for CGI
@@ -160,7 +160,7 @@
 		[default=/opt/www/cgi-bin].
 	  </dd>
 	  <dt>
-		<tt>--with-image-dir=DIR</tt>
+		<code>--with-image-dir=DIR</code>
 	  </dt>
 	  <dd>
 		Define this to be a place that can be accessed by your web
@@ -168,27 +168,27 @@
 		[default=/opt/www/htdocs/htdig].
 	  </dd>
 	  <dt>
-		<tt>--with-image-url-prefix=LOCATION</tt>
+		<code>--with-image-url-prefix=LOCATION</code>
 	  </dt>
 	  <dd>
 		This is the URL which points to the directory specified by
-		the <tt>--with-image-dir=DIR</tt> option above
+		the <code>--with-image-dir=DIR</code> option above
 		[default=/htdig].
 	  </dd>
 	  <dt>
-		<tt>--with-search-dir=FILE</tt>
+		<code>--with-search-dir=FILE</code>
 	  </dt>
 	  <dd>
 		where the sample search form should be installed
 		[default=/opt/www/htdocs/htdig].
 	  </dd>
 	  <dt>
-		<tt>--with-search-form=FILE</tt>
+		<code>--with-search-form=FILE</code>
 	  </dt>
 	  <dd>
 		The name of the file in which the sample search form will
 		be installed, relative to the directory specified with
-		<tt>--with-search-dir=DIR</tt> [default=search.html]. 
+		<code>--with-search-dir=DIR</code> [default=search.html]. 
 	  </dd>
 	</dl>
 	<hr noshade>
@@ -199,7 +199,7 @@
 	  The configure program will have created Makefiles in all the
 	  important directories. 
 	<p>
-	  If <b>make</b> is not able to deal with the generated Makefiles,
+	  If <strong>make</strong> is not able to deal with the generated Makefiles,
 	  you should probably obtain 
 	  <a href="ftp://ftp.gnu.org/pub/gnu/">GNU make</a>.
 	</p>
@@ -207,7 +207,7 @@
 	  Now build the complete system with
 	</p>
 	<blockquote>
-	  % <b>make</b>
+	  % <strong>make</strong>
 	</blockquote>
 	<p>
 	  (Sit back and relax for a while...)
@@ -224,7 +224,7 @@
 	</h2>
 	<p>
 	  Once built, you can run tests if you provided the
-	  <tt>--enable-tests</tt> at configure time. These tests
+	  <code>--enable-tests</code> at configure time. These tests
 	  require that you have a working
 	  <a href=http://www.apache.org/>Apache</a> daemon available with
 	  version >= 1.3.1. To run the tests execute:
@@ -232,10 +232,10 @@
 	<p>
 	  If your <a href=http://www.apache.org/>Apache</a> daemon is 
 	  installed in a non standard place, specify it with the 
-	  <tt>--with-apache=PATH</tt> configure option.
+	  <code>--with-apache=PATH</code> configure option.
 	</p>
 	<blockquote>
-	  % <b>make check</b>
+	  % <strong>make check</strong>
 	</blockquote>
 	<hr noshade>
 	<h2>
@@ -246,13 +246,13 @@
 	  software, you need to execute
 	</p>
 	<blockquote>
-	  % <b>make install</b>
+	  % <strong>make install</strong>
 	</blockquote>
 	<p>
 	  This will perform several tasks. It will first attempt to
-	  create the directories that you specified to <b>./configure</b>.
-	  It will then copy the following programs to the <tt>
-	  --bindir=DIR</tt> directory:
+	  create the directories that you specified to <strong>./configure</strong>.
+	  It will then copy the following programs to the <code>
+	  --bindir=DIR</code> directory:
 	</p>
 	<ul>
 	  <li>
@@ -279,7 +279,7 @@
 	</ul>
 	<p>
 	  It will also copy the htsearch program to your 
-	  <tt>--with-cgi-bin-dir=DIR</tt> directory.
+	  <code>--with-cgi-bin-dir=DIR</code> directory.
 	</p>
 	<p>
 	  After this, several files will be customized and installed.
@@ -288,67 +288,67 @@
 	  <blockquote>
 		<dl>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"><tt>--with-config-dir=DIR</tt></em>/htdig.conf
+			<em><img src="bdot.gif" width=9 height=9 alt="*"><code>--with-config-dir=DIR</code></em>/htdig.conf
 		  </dt>
 		  <dd>
 			A minimal config file which can be used to create a
 			search database for http://www.htdig.org/
 		  </dd>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"><tt>--with-search-form=FILE</tt></em>
+			<em><img src="bdot.gif" width=9 height=9 alt="*"><code>--with-search-form=FILE</code></em>
 		  </dt>
 		  <dd>
 			A sample HTML document that contains a search form.
 		  </dd>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"> <tt>--with-common-dir=DIR</tt></em>/footer.html
+			<em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-common-dir=DIR</code></em>/footer.html
 		  </dt>
 		  <dd>
 			A sample HTML document that can be used as the search
 			results footer.
 		  </dd>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"> <tt>--with-common-dir=DIR</tt></em>/header.html
+			<em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-common-dir=DIR</code></em>/header.html
 		  </dt>
 		  <dd>
 			A sample HTML document that can be used as the search
 			results header.
 		  </dd>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"> <tt>--with-common-dir=DIR</tt></em>/nomatch.html
+			<em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-common-dir=DIR</code></em>/nomatch.html
 		  </dt>
 		  <dd>
 			A sample HTML document that can be used if nothing was
 			found.
 		  </dd>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"> <tt>--with-common-dir=DIR</tt></em>/syntax.html
+			<em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-common-dir=DIR</code></em>/syntax.html
 		  </dt>
 		  <dd>
 			A sample HTML document that will be displayed if the
 			user entered an illegal boolean expression. found.
 		  </dd>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"> <tt>--with-common-dir=DIR</tt></em>/english.0
+			<em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-common-dir=DIR</code></em>/english.0
 		  </dt>
 		  <dd>
 			Default list of words with affixes that is used by
 			htfuzzy.
 		  </dd>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"> <tt>--with-common-dir=DIR</tt></em>/english.aff
+			<em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-common-dir=DIR</code></em>/english.aff
 		  </dt>
 		  <dd>
 			Default affix rule database that is used by htfuzzy.
 		  </dd>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"> <tt>--with-image-dir=DIR</tt></em>/star.gif
+			<em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-image-dir=DIR</code></em>/star.gif
 		  </dt>
 		  <dd>
 			The default star image that is used to rank matches.
 		  </dd>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"> <tt>--with-image-dir=DIR</tt></em>/star_blank.gif
+			<em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-image-dir=DIR</code></em>/star_blank.gif
 		  </dt>
 		  <dd>
 			The default placeholder image that is the same size as
@@ -356,31 +356,31 @@
 			results in the short listing.
 		  </dd>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"> <tt>--with-image-dir=DIR</tt></em>/htdig.gif
+			<em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-image-dir=DIR</code></em>/htdig.gif
 		  </dt>
 		  <dd>
 			The nifty ht://Dig logo.
 		  </dd>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"> <tt>--with-image-dir=DIR</tt></em>/button*.gif
+			<em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-image-dir=DIR</code></em>/button*.gif
 		  </dt>
 		  <dd>
 			Sample images used to show the search result pages.
 		  </dd>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"> <tt>--bindir=DIR</tt></em>/rundig
+			<em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--bindir=DIR</code></em>/rundig
 		  </dt>
 		  <dd>
 			A sample shell script which will create a database.
 		  </dd>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"> <tt>--prefix=DIR</tt>/lib/htdig</em>/*.{a,so}
+			<em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--prefix=DIR</code>/lib/htdig</em>/*.{a,so}
 		  </dt>
 		  <dd>
 			The shared and static libraries.
 		  </dd>
 		  <dt>
-			<em><img src="bdot.gif" width=9 height=9 alt="*"> <tt>--prefix=DIR</tt>/include/htdig</em>/*.h
+			<em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--prefix=DIR</code>/include/htdig</em>/*.h
 		  </dt>
 		  <dd>
 			The header files that allow anyone to develop a program
@@ -399,14 +399,14 @@
 	</p>
 	<p>
 	  After the installation, you will be ready to test out
-	  everything. You can use the <tt>rundig</tt> script to make a
+	  everything. You can use the <code>rundig</code> script to make a
 	  test database of the online documentation at
 	  http://www.htdig.org/
 	</p>
 	<p>
-	  The only thing left to do is to modify the <tt>
-	  htdig.conf</tt> config file which was placed in <em>
-	  <tt>--with-config-dir=DIR</tt></em>/htdig.conf. The <a href="attrs.html">
+	  The only thing left to do is to modify the <code>
+	  htdig.conf</code> config file which was placed in <em>
+	  <code>--with-config-dir=DIR</code></em>/htdig.conf. The <a href="attrs.html">
 	  Configuration</a> manual has the details on how what
 	  attributes are needed.
 	</p>
@@ -418,7 +418,7 @@
 	  By default ht://Dig is compiled with shared libraries. If
 	  running on a platform other than Linux or FreeBSD, this may
 	  be a problem. We recommend that you compile with the 
-	  <tt>--disable-shared</tt> configure option.
+	  <code>--disable-shared</code> configure option.
 	</p>
 	<p>
 	  If you installed with shared libraries, you must be sure the
@@ -432,7 +432,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt; &amp; the ht://Dig Group</a>
 	</address>
 
-Last modified: $Date: 2000/02/15 17:43:58 $
+Last modified: $Date: 2000/04/09 15:42:18 $
 
   </body>
 </html>

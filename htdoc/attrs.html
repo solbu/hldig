@@ -201,12 +201,12 @@
 	<table>
 	<tr>
 	<td nowrap>
-	<tt>
+	<code>
 	&nbsp;&nbsp;&lt;SELECT NAME="search_algorithm"&gt;<br>
 	&nbsp;&nbsp;&lt;OPTION VALUE="exact:1 prefix:0.6 synonyms:0.5 endings:0.1" SELECTED&gt;fuzzy<br>
 	&nbsp;&nbsp;&lt;OPTION VALUE="exact:1"&gt;exact<br>
 	&nbsp;&nbsp;&lt;/SELECT&gt;
-	</tt></td>
+	</code></td>
 	</tr>
 	</table>
 		  </dd>
@@ -472,7 +472,7 @@
 		  </dt>
 		  <dd>
 	This tells htdig to send the supplied
-	<em>username</em><b>:</b><em>password</em> with each HTTP request.
+	<em>username</em><strong>:</strong><em>password</em> with each HTTP request.
 	The credentials will be encoded using the "Basic" authentication
 	scheme. There <em>must</em> be a colon (:) between the username and
 	password.<br>
@@ -752,10 +752,10 @@
 	This specifies a file which contains words which should
 	be excluded when digging or searching. This list should
 	include the most common words or other words that you
-	don't want to be able to search on (things like <i>
-	sex</i> or <i>smut</i> are examples of these.)<br>
+	don't want to be able to search on (things like <em>
+	sex</em> or <em>smut</em> are examples of these.)<br>
 	The file should contain one word per line. A sample
-	bad words file is located in the <tt>contrib/examples</tt>
+	bad words file is located in the <code>contrib/examples</code>
 	directory.
 		  </dd>
 		  <dt>
@@ -1404,7 +1404,7 @@ http://www.htdig.org/
 	were seen will be created, one URL per line. This list
 	will not be in any order and there will be lots of
 	duplicates, so after htdig has completed, it should be
-	piped through <tt>sort -u</tt> to get a unique list.
+	piped through <code>sort -u</code> to get a unique list.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -1470,7 +1470,7 @@ http://www.htdig.org/
 	will be created, one URL per line. This list will not
 	be in any order and there will be lots of duplicates,
 	so after htdig has completed, it should be piped
-	through <tt>sort -u</tt> to get a unique list.
+	through <code>sort -u</code> to get a unique list.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -2135,7 +2135,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			&lt;b&gt;&lt;tt&gt; ...&lt;/tt&gt;&lt;/b&gt;
+			&lt;strong&gt;&lt;code&gt; ...&lt;/code&gt;&lt;/strong&gt;
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -2970,13 +2970,13 @@ http://www.htdig.org/
 					  8
 					</dt>
 					<dd>
-					  <i>unused</i>
+					  <em>unused</em>
 					</dd>
 					<dt>
 					  9
 					</dt>
 					<dd>
-					  <i>unused</i>
+					  <em>unused</em>
 					</dd>
 					<dt>
 					  10
@@ -3069,7 +3069,7 @@ http://www.htdig.org/
 				</td>
 				<td>
 				  The HTTP-EQUIV attribute of a
-				  <a href="meta.html"><i>META</i> tag</a>.
+				  <a href="meta.html"><em>META</em> tag</a>.
 				  May be empty.
 				</td>
 			  </tr>
@@ -3079,7 +3079,7 @@ http://www.htdig.org/
 				</td>
 				<td>
 				  The NAME attribute of this
-				  <a href="meta.html"><i>META</i> tag</a>.
+				  <a href="meta.html"><em>META</em> tag</a>.
 				  May be empty.
 				</td>
 			  </tr>
@@ -3089,7 +3089,7 @@ http://www.htdig.org/
 				</td>
 				<td>
 				  The CONTENTS attribute of this
-				  <a href="meta.html"><i>META</i> tag</a>.
+				  <a href="meta.html"><em>META</em> tag</a>.
 				  May be empty.
 				</td>
 			  </tr>
@@ -3475,7 +3475,7 @@ http://www.htdig.org/
 		  </dt>
 		  <dd>
         This option works only if we take advantage of persistent connections (see
-        persistent_connections attribute). If set to true an HTTP/1.1 <I>HEAD</I>
+        persistent_connections attribute). If set to true an HTTP/1.1 <em>HEAD</em>
         call is made in order to retrieve header information about a document.
         If the status code and the content-type returned let the document be parsable,
         then a following 'GET' call is made.
@@ -3811,7 +3811,7 @@ http://www.htdig.org/
 	<a href="#create_image_list">create_image_list</a> is set to
 	true. As image URLs are seen, they are just appended to
 	this file, so after htdig finishes it is probably a
-	good idea to run <tt>sort -u</tt> on the file to
+	good idea to run <code>sort -u</code> on the file to
 	eliminate duplicates from the file.
 		  </dd>
 		  <dt>
@@ -4160,13 +4160,13 @@ http://www.htdig.org/
 		  </dt>
 		  <dd>
 	The words in this list are used to search for keywords
-	in HTML <i>META</i> tags. This list can contain any
+	in HTML <em>META</em> tags. This list can contain any
 	number of strings that each will be seen as the name
 	for whatever keyword convention is used.<br>
-	The <i>META</i> tags have the following format:<br>
-<tt>
-&nbsp;&nbsp;&lt;META name="<i>somename</i>" content="<i>somevalue</i>"&gt;
-</tt>
+	The <em>META</em> tags have the following format:<br>
+<code>
+&nbsp;&nbsp;&lt;META name="<em>somename</em>" content="<em>somevalue</em>"&gt;
+</code>
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -4231,7 +4231,7 @@ http://www.htdig.org/
 	This specifies a set of patterns that all URLs have to
 	match against in order for them to be included in the
 	search. Unlike the limit_urls_to directive, this is done
-	<b>after</b> the URL is normalized and the server_aliases
+	<strong>after</strong> the URL is normalized and the server_aliases
 	directive is applied. This allows filtering after any
 	hostnames and DNS aliases are resolved. Otherwise, this
 	directive is the same as the <a
@@ -4307,7 +4307,7 @@ http://www.htdig.org/
         attribute is set. The match will be performed <em>after</em>
 	the relative references have been converted to a valid
 	URL. This means that the URL will <em>always</em> start
-	with <tt>http://</tt>.<br>
+	with <code>http://</code>.<br>
 	Granted, this is not the perfect way of doing this,
 	but it is simple enough and it covers most cases.
 		  </dd>
@@ -6996,9 +6996,9 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	This specifies the file which contains the <tt>
-	HTML</tt> text to display when no matches were found.
-	The file should contain a complete <tt>HTML</tt>
+	This specifies the file which contains the <code>
+	HTML</code> text to display when no matches were found.
+	The file should contain a complete <code>HTML</code>
 	document.<br>
 	Note that this attribute could also be defined in
 	terms of <a href="#database_base">database_base</a> to
@@ -7347,7 +7347,7 @@ http://www.htdig.org/
 		  </dt>
 		  <dd>
 	If set to true, when servers make it possible, htdig can take advantage
-        of persistent connections, as defined by HTTP/1.1 (<I>RFC2616</I>). This permits
+        of persistent connections, as defined by HTTP/1.1 (<em>RFC2616</em>). This permits
         to reduce the number of open/close operations of connections, when retrieving
         a document with HTTP.
 		  </dd>
@@ -7954,7 +7954,7 @@ http://www.htdig.org/
 	other server scripting languages, as
 	well. (You still need a wrapper script when
 	using PHP, though.)<br>
-	Check out the <tt>contrib/scriptname</tt>
+	Check out the <code>contrib/scriptname</code>
 	directory for a small example. Note that this
 	attribute also affects the value of the <a
 	href="hts_templates.html#CGI">CGI</a> variable
@@ -9239,7 +9239,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			&lt;b&gt;&lt;tt&gt;... &lt;/tt&gt;&lt;/b&gt;
+			&lt;strong&gt;&lt;code&gt;... &lt;/code&gt;&lt;/strong&gt;
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -9990,7 +9990,7 @@ http://www.htdig.org/
 	<a href="htsearch.html" target="_top">htsearch</a>
 	documentation.<br>
 	Normally, when using this template selection method, you
-	would disable user selection of templates via the <b>format</b>
+	would disable user selection of templates via the <strong>format</strong>
 	input parameter in search forms, as the two methods were not
 	really designed to interact. Templates selected by URL patterns
 	would override any user selection made in the form. If you want
@@ -10925,8 +10925,8 @@ http://www.htdig.org/
 	This is the set of characters which will be deleted
 	from the document before determining what a word is.
 	This means that if a document contains something like
-	<tt>Andrew's</tt> the digger will see this as <tt>
-	Andrews</tt>.<br>
+	<code>Andrew's</code> the digger will see this as <code>
+	Andrews</code>.<br>
 	The same transformation is performed on the keywords
 	the search engine gets.<br>
 	See also the <a
@@ -11876,6 +11876,6 @@ http://www.htdig.org/
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
-Last modified: Mon Apr  3 13:47:41 CDT 2000
+Last modified: Sun Apr  9 12:51:57 CDT 2000
   </body>
 </html>
