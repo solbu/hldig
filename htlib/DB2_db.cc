@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DB2_db.cc,v 1.17.2.1 2000/02/24 20:17:27 grdetil Exp $
+// $Id: DB2_db.cc,v 1.17.2.2 2000/03/01 06:10:50 ghutchis Exp $
 //
 
 #include "DB2_db.h"
@@ -320,6 +320,15 @@ DB2_db::getDatabaseInstance(DBTYPE)
     return new DB2_db();
 }
 
+//*****************************************************************************
+// void Error(const char *error_prefix, char *message);
+//
+void Error(const char *error_prefix, char *message)
+{
+  // We don't do anything here, it's mostly a stub so we can set a breakpoint
+  // for debugging purposes
+  fprintf(stderr, "%s: %s\n", error_prefix, message);
+}
 
 //******************************************************************************
 
@@ -341,8 +350,9 @@ DB2_db::db_init(char *home)
 	fprintf(stderr, "%s: %s\n", progname, strerror(ENOMEM));
 	exit (1);
     }
-    dbenv->db_errfile = stderr;
+    // dbenv->db_errfile = stderr;
     dbenv->db_errpfx = progname;
+    dbenv->db_errcall = &Error;
 
     if ((errno = db_appinit(home, NULL, dbenv, DB_CREATE)) != 0)
     {

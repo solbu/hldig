@@ -1,3 +1,11 @@
+Tue Feb 29 23:11:49 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+        * htlib/DB2_db.cc (Error): Simply fprint the error message on
+        stderr. This is not a method since the db.h interface expects a C
+        function.
+        (db_init): Don't set db_errfile, instead set errcall to point to
+        the new Error function.
+
 Tue Feb 29 15:09:41 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htfuzzy/Accents.h, htfuzzy/Accents.cc: Adapted writeDB() for 3.2.
