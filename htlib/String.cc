@@ -1,10 +1,10 @@
 //
 // Implementation of String class
 //
-// $Id: String.cc,v 1.18 1999/02/24 20:23:48 ghutchis Exp $
+// $Id: String.cc,v 1.19 1999/02/25 02:19:51 ghutchis Exp $
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.18 1999/02/24 20:23:48 ghutchis Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.19 1999/02/25 02:19:51 ghutchis Exp $";
 #endif
 
 
@@ -56,12 +56,7 @@ String::String(char *s, int len)
     Allocated = 0;
     Length = 0;
     if (s && len != 0)
-      {
-	int slen = strlen(s);
-	if (len < slen)
-	  copy(s, slen, slen);
 	copy(s, len, len);
-      }
 }
 
 String::String(const String &s)
