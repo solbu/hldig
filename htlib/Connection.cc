@@ -7,6 +7,9 @@
 // Implementation of the Connection class
 //
 // $Log: Connection.cc,v $
+// Revision 1.11  1999/01/05 20:10:20  bergolth
+// check for strings.h
+//
 // Revision 1.10  1998/12/04 20:33:35  bergolth
 // Added configure check for the getpeername argument types.
 //
@@ -63,7 +66,9 @@
 #include <netdb.h>
 #include <stdlib.h>
 #include <unistd.h>
+#ifdef HAVE_STRINGS_H
 #include <strings.h>
+#endif
 #include <htconfig.h>
 
 extern "C" {
