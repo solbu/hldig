@@ -12,7 +12,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.45 1999/07/03 19:54:35 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.46 1999/07/09 00:45:17 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -67,7 +67,7 @@ HTML::HTML()
     // the attrs Match object is used to match names of tag parameters.
     //
     tags.IgnoreCase();
-    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object");
+    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object|link");
 
     // These tags don't cause a word break.  They may also be in "tags" above,
     // except for the "a" tag, which must be handled as a special case.
@@ -818,6 +818,26 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	      }
 	    break;
 	}
+      }
+
+    case 26: // link
+      {
+	  if (attrs["href"])
+	    {
+	      //
+	      // src seen
+	      //
+	      if (dofollow)
+		{
+		  if (href)
+		    delete href;
+		  href = new URL(attrs["href"], *base);
+		  // Links are like anchor tags -- one hopcount!
+		  retriever.got_href(*href, 0, 1);
+		  in_ref = 0;
+		}
+	    }
+	  break;
       }
 
 	default:
