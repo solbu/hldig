@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.2 1999/10/15 11:02:37 angus Exp $
+// $Id: Document.cc,v 1.55.2.3 1999/10/18 10:04:16 bosc Exp $
 //
 
 #include <signal.h>
@@ -369,7 +369,7 @@ Document::Retrieve(HtDateTime date)
 //   retriever tries it again using the standard retrieve method).
 //
 Transport::DocStatus
-Document::RetrieveLocal(HtDateTime date, String filename)
+Document::RetrieveLocal(HtDateTime date, const String filename)
 {
     struct stat stat_buf;
     // Check that it exists, and is a regular file. 

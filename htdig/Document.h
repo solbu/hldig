@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.h,v 1.10.2.2 1999/10/15 11:02:37 angus Exp $
+// $Id: Document.h,v 1.10.2.3 1999/10/18 10:04:16 bosc Exp $
 //
 //
 #ifndef _Document_h_
@@ -60,7 +60,7 @@ public:
     time_t			ModTime()		{return modtime.GetTime_t();}
 
     Transport::DocStatus	Retrieve(HtDateTime date);
-    Transport::DocStatus	RetrieveLocal(HtDateTime date, String filename);
+    Transport::DocStatus	RetrieveLocal(HtDateTime date, const String filename);
 
     //
     // Return an appropriate parsable object for the document type.
