@@ -6,7 +6,8 @@ RELEASES:
 
 
 SHOWSTOPPERS:
-* (None known at the moment)
+* htdoc/install.html does not describe current installation method.
+  (For example, what is the current directory structure?)
 
 KNOWN BUGS:
 * htdig/Image.cc doesn't use Transport classes.
@@ -17,8 +18,6 @@ KNOWN BUGS:
 * If exact isn't specified in the search_algorithms, $(WORDS) is not set 
    correctly: PR#650. (The documentation for 3.2.0b1 is updated, but should
    we fix this?)
-* htfuzzy endings: use of unlink fails if TMPDIR is not on the same 
-   volume.
 
 PENDING FEATURES:
 * (Is there anything approved and not in the current CVS tree?)
@@ -33,7 +32,6 @@ TESTING:
 
 DOCUMENTATION:
 * Update cf_* pages to mention new config parser (i.e. URL-dependent config)
-* Update to mention phrase searching.
 
 OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
