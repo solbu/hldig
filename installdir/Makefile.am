@@ -18,7 +18,7 @@ install-data-local:	all
 	@echo "Installing default configuration files..."
 	$(mkinstalldirs) $(DESTDIR)$(CONFIG_DIR)
 	@if [ ! -f $(DESTDIR)$(CONFIG_DIR)/htdig.conf ]; then sed -e s%@\DATABASE_DIR@%$(DATABASE_DIR)% -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/htdig.conf >$(DESTDIR)$(CONFIG_DIR)/htdig.conf; echo $(DESTDIR)$(CONFIG_DIR)/htdig.conf;fi
-	@if [ ! -f $(DESTDIR)$(CONFIG_DIR)/mime.types ]; then cp $(top_srcdir)/installdir/mime.types $(DESTDIR)$(CONFIG_DIR)/htdig.conf; echo $(DESTDIR)$(CONFIG_DIR)/mime.types;fi
+	@if [ ! -f $(DESTDIR)$(CONFIG_DIR)/mime.types ]; then cp $(top_srcdir)/installdir/mime.types $(DESTDIR)$(CONFIG_DIR)/mime.types; echo $(DESTDIR)$(CONFIG_DIR)/mime.types;fi
 	$(mkinstalldirs) $(DESTDIR)$(SEARCH_DIR)
 	@if [ ! -f $(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM) ]; then sed -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/search.html >$(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM); echo $(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM);fi
 	$(mkinstalldirs) $(DESTDIR)$(COMMON_DIR)
