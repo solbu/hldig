@@ -1,8 +1,7 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.12 1999/01/30 04:00:37 hp Exp $
-//
+// $Id: DocumentRef.h,v 1.13 1999/01/31 04:28:41 ghutchis Exp $
 //
 //
 #ifndef _DocumentRef_h_
@@ -18,6 +17,15 @@ enum ReferenceState
     Reference_not_found,
     Reference_noindex
 };
+
+#ifdef HAVE_LIBZ
+enum HeadState
+{
+    Empty,
+    Compressed,
+    Uncompressed
+};
+#endif
 
 class DocumentRef : public Object
 {
@@ -42,7 +50,7 @@ class DocumentRef : public Object
     char		*DocURL()			{return docURL;}
     time_t		DocTime()			{return docTime;}
     char		*DocTitle()			{return docTitle;}
-    char		*DocHead()			{return docHead;}
+    char		*DocHead();
     char                *DocMetaDsc()                   {return docMetaDsc;}
     time_t		DocAccessed()			{return docAccessed;}
     int			DocLinks()			{return docLinks;}
@@ -64,7 +72,7 @@ class DocumentRef : public Object
     void		DocURL(char *u)			{docURL = u;}
     void		DocTime(time_t t)		{docTime = t;}
     void		DocTitle(char *t)		{docTitle = t;}
-    void		DocHead(char *h)		{docHead = h;}
+    void		DocHead(char *h);
     void                DocMetaDsc(char *md)            {docMetaDsc = md;}
     void		DocAccessed(time_t t)		{docAccessed = t;}
     void		DocLinks(int l)		{docLinks = l;}
@@ -147,10 +155,14 @@ class DocumentRef : public Object
     int			docScore;
     // This is the nearest anchor for the search word.
     int			docAnchor;
-    // Static member variable so we get only one copy
-    // Used to buffer zlib compression
 #ifdef HAVE_LIBZ
-    static unsigned char c_buffer[60000];
+    //
+    // Compression functions
+    //
+    //static unsigned char c_buffer[32000];
+    int Compress(String& s);
+    int Decompress(String &s);
+    HeadState docHeadState;
 #endif
 };
 
