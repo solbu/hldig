@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.26 2000/02/16 21:14:59 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.27 2000/02/17 16:46:25 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -431,7 +431,7 @@ Display::setVariables(int pageNumber, List *matches)
     vars.Add("SELECTED_FORMAT", new String(format));
 
     str = new String();
-    *str << "<select name=format>\n";
+    *str << "<select name=\"format\">\n";
     for (i = 0; i < templates.displayNames.Count(); i++)
     {
 	in = (String *) templates.internalNames[i];
@@ -447,10 +447,10 @@ Display::setVariables(int pageNumber, List *matches)
 
     str = new String();
     QuotedStringList	ml(config["method_names"], " \t\r\n");
-    *str << "<select name=method>\n";
+    *str << "<select name=\"method\">\n";
     for (i = 0; i < ml.Count(); i += 2)
     {
-	*str << "<option value=" << ml[i];
+	*str << "<option value=\"" << ml[i] << '"';
 	if (mystrcasecmp(ml[i], config["match_method"]) == 0)
 	    *str << " selected";
 	*str << '>' << ml[i + 1] << '\n';
@@ -466,10 +466,10 @@ Display::setVariables(int pageNumber, List *matches)
     StringMatch		datetime;
     datetime.IgnoreCase();
     datetime.Pattern("date|time");
-    *str << "<select name=sort>\n";
+    *str << "<select name=\"sort\">\n";
     for (i = 0; i < sl.Count(); i += 2)
     {
-	*str << "<option value=" << sl[i];
+	*str << "<option value=\"" << sl[i] << '"';
 	if (mystrcasecmp(sl[i], st) == 0 ||
 		datetime.Compare(sl[i]) && datetime.Compare(st) ||
 		mystrncasecmp(sl[i], st, 3) == 0 &&
@@ -503,7 +503,7 @@ Display::setVariables(int pageNumber, List *matches)
 	  && ilabel > 0 && ilabel <= ntuple && namelist.Count() % ntuple == 0)
 	{
 	    str = new String();
-	    *str << "<select name="<<builds[b+1]<<">\n";
+	    *str << "<select name=\"" << builds[b+1] << "\">\n";
 	    for (i = 0; i < namelist.Count(); i += ntuple)
 	    {
 		*str << "<option value=\"" << namelist[i+ivalue-1] << '"';

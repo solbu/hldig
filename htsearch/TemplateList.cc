@@ -4,6 +4,20 @@
 // Implementation of TemplateList
 //
 // $Log: TemplateList.cc,v $
+// Revision 1.4.2.1  2000/02/17 16:46:26  grdetil
+// [ Improve htsearch's HTML 4.0 compliance ]
+// * htsearch/TemplateList.cc (createFromString): Use file name rather
+// than internal name to select builtin-* templates, use $&(TITLE) in
+// templates and quote HTML tag parameters.
+// * installdir/long.html, installdir/short.html: Use $&(TITLE) in
+// templates and quote HTML tag parameters.
+// * htsearch/Display.cc (setVariables): quote all HTML tag parameters
+// in generated select lists.
+// * installdir/footer.html, installdir/header.html,
+// installdir/nomatch.html, installdir/search.html,
+// installdir/syntax.html, installdir/wrapper.html:
+// Use $&(var) where appropriate, and quote HTML tag parameters.
+//
 // Revision 1.4  1999/01/17 20:29:37  ghutchis
 // Ensure template_map config has three members for each template we add,
 // contributed by <tlm@mbox.comune.prato.it>.
@@ -17,7 +31,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: TemplateList.cc,v 1.4 1999/01/17 20:29:37 ghutchis Exp $";
+static char RCSid[] = "$Id: TemplateList.cc,v 1.4.2.1 2000/02/17 16:46:26 grdetil Exp $";
 #endif
 
 #include "TemplateList.h"
@@ -81,20 +95,20 @@ TemplateList::createFromString(char *str)
 
 	t = new Template();
 		
-	if (mystrcasecmp(internal, "builtin-long") == 0)
+	if (mystrcasecmp(file, "builtin-long") == 0)
 	{
 	    String	s;
-	    s << "<dl><dt><strong><a href=\"$(URL)\">$(TITLE)</a></strong>";
+	    s << "<dl><dt><strong><a href=\"$(URL)\">$&(TITLE)</a></strong>";
 	    s << "$(STARSLEFT)\n";
 	    s << "</dt><dd>$(EXCERPT)<br>\n";
 	    s << "<i><a href=\"$(URL)\">$(URL)</a></i>\n";
-	    s << " <font size=-1>$(MODIFIED), $(SIZE) bytes</font>\n";
+	    s << " <font size="-1">$(MODIFIED), $(SIZE) bytes</font>\n";
 	    s << "</dd></dl>\n";
 	    t->setMatchTemplate(s);
 	}
-	else if (mystrcasecmp(internal, "builtin-short") == 0)
+	else if (mystrcasecmp(file, "builtin-short") == 0)
 	{
-	    t->setMatchTemplate("$(STARSRIGHT) <strong><a href=\"$(URL)\">$(TITLE)</a></strong><br>\n");
+	    t->setMatchTemplate("$(STARSRIGHT) <strong><a href=\"$(URL)\">$&(TITLE)</a></strong><br>\n");
 	}
 	else
 	{
