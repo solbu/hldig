@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.cc,v 1.1.2.13 2000/01/14 15:51:20 bosc Exp $
+// $Id: WordBitCompress.cc,v 1.1.2.14 2000/01/14 17:38:08 bosc Exp $
 //
 
 
@@ -178,13 +178,44 @@ class VlengthCoder
 public:
     int verbose;
 
-    // compress and insert a value into the bitstream
-    inline int code(unsigned int v)
+    // find interval where value v resides
+    // fast version, this one recursively splits initial interval
+    inline int find_interval2(const unsigned int v,unsigned int &lboundary)
+    {
+	int i0=0;
+	int i1=nintervals;
+	int i;
+	for(;;)
+	{
+	    if(i1==i0+1){break;}
+	    i=(i0+i1)>>1;
+	    lboundary=lboundaries[i];
+//  	    if(verbose)printf("considering i0:%3d i1:%3d : i:%3d  v:%12u lboundary:%12u (%12u - %12u)\n",i0,i1,i,v,lboundary,lboundaries[i0],lboundaries[i1]);
+	    if(v<lboundary){i1=i;continue;}
+	    else           {i0=i;continue;}
+	    
+	}
+
+	lboundary=lboundaries[i0];
+//  	i=i0;
+//    	unsigned int sboundary=lboundary+intervalsizes[i];
+//    	if(!( (lboundary!=sboundary && v>=lboundary && v<sboundary) || 
+//    	    (lboundary==sboundary && v==lboundary)                   ))
+//    	{
+//    	    printf("interval fd:i0:%3d i1:%3d : i:%3d  v:%12u lboundary:%12u (%12u - %12u)\n",i0,i1,i,v,lboundary,lboundaries[i0],lboundaries[i1]);
+//    	    errr("bad interval");
+//    	}
+	return i0;
+    }
+
+    // find interval where value v resides
+    // slow version, this tries every interval
+    inline int find_interval(const unsigned int v,unsigned int &lboundary)
     {
 	// SPEED CRITICAL SECTION
 	register int i;
-	register unsigned int lboundary=0;
 	register unsigned int sboundary=0;
+	lboundary=0;
 	for(i=0;i<nintervals-1;i++)
 	{
 //  	    if(i>=nintervals){errr("code argh!");}
@@ -194,6 +225,18 @@ public:
 		(lboundary==sboundary && v==lboundary)                   ){break;}
 	    lboundary=sboundary;
 	}
+
+	return i;
+    }
+
+    // compress and insert a value into the bitstream
+    inline void code(unsigned int v)
+    {
+	unsigned int lboundary=0;
+	// SPEED CRITICAL SECTION
+	int i;
+//  	i=find_interval(v,lboundary);
+  	i=find_interval2(v,lboundary);
 	// were in the i'th interval;
   	bs.put_uint(i,nlev,"int");// store interval
 	const int bitsremaining=(intervals[i]>0 ? intervals[i]-1 : 0);
@@ -201,7 +244,6 @@ public:
 	v-=lboundary;
 //  	if(verbose>1)printf("remain:%6d  totalbits:%2d\n",v,bitsremaining+nlev);
     	bs.put_uint(v,bitsremaining,"rem");
-	return(bitsremaining + nlev);
     }
     // get and uncompress  a value from  the bitstream
     inline unsigned int get()
