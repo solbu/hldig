@@ -1,5 +1,8 @@
-Mon Dec  6 14:06:01 CST 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Dec  6 14:27:54 CST 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	* htcommon/defaults.cc: add default and description for authorization
+	attribute.
+	* htdoc/attrs.html, cf_by{name,prog}.html: reran cf_generate.pl
 	* htdig/htdig.cc(main): set authorization parameter before Retriever
 	constuctor is called, as it may initialize a Server.  (Should complete
 	fix of PR#490.)
