@@ -5,12 +5,12 @@
 //       to the Retriever
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2001 The ht://Dig Group
+// Copyright (c) 1995-2003 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
-// <http://www.gnu.org/copyleft/gpl.html>
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HTML.cc,v 1.70 2003/05/22 14:43:56 lha Exp $
+// $Id: HTML.cc,v 1.71 2003/06/24 20:05:23 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H

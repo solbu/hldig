@@ -24,12 +24,12 @@
 //              to be 256 characters.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999, 2000 The ht://Dig Group
+// Copyright (c) 1999-2003 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU General Public License version 2 or later 
-// <http://www.gnu.org/copyleft/gpl.html>
+// or the GNU Library General Public License (LGPL) version 2 or later 
+// <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: StringMatch.h,v 1.11 2002/12/30 12:42:59 lha Exp $
+// $Id: StringMatch.h,v 1.12 2003/06/24 20:05:45 nealr Exp $
 //
 
 #ifndef _StringMatch_h_

@@ -4,12 +4,12 @@
 // htstat: A utility to give statistics on the contents of the word and doc DB.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999-2000 The ht://Dig Group
+// Copyright (c) 1999-2003 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
-// <http://www.gnu.org/copyleft/gpl.html>
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htstat.cc,v 1.3 2003/06/23 22:25:12 nealr Exp $
+// $Id: htstat.cc,v 1.4 2003/06/24 20:05:23 nealr Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"

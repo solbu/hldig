@@ -5,12 +5,12 @@
 //		    implementing explicit accessors.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2000 The ht://Dig Group
+// Copyright (c) 1995-2003 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
-// <http://www.gnu.org/copyleft/gpl.html>
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtWordReference.h,v 1.4 2003/02/11 09:49:29 lha Exp $
+// $Id: HtWordReference.h,v 1.5 2003/06/24 20:05:44 nealr Exp $
 //
 #ifndef _HtWordReference_h_
 #define _HtWordReference_h_

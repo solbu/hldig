@@ -1,3 +1,22 @@
+As decided by the HtDig Board Members and ratified by the HtDig Membership
+in October of 2002 the HtDig codebase is now licensed under the LGPL.
+
+The primary reason for doing this is to promote wider usage of HtDig by
+allowing more liberal use of the code as a library while preserving 
+the "all changes/improvements must be given back" philosophy of the GPL.
+
+Here's a quote from the FSF site
+[http://www.gnu.org/philosophy/why-not-lgpl.html]
+
+"Using the ordinary GPL is not advantageous for every library. There are
+reasons that can make it better to use the Library GPL in certain cases. The
+most common case is when a free library's features are readily available for
+proprietary software through other alternative libraries. In that case, the
+library cannot give free software any particular advantage, so it is better to
+use the Library GPL for that library."
+
+
+-----------------------------------------------------------------------
 		  GNU LIBRARY GENERAL PUBLIC LICENSE
 		       Version 2, June 1991
 

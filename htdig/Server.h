@@ -4,12 +4,12 @@
 // Server: A class to keep track of server specific information.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2000 The ht://Dig Group
+// Copyright (c) 1995-2003 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
-// <http://www.gnu.org/copyleft/gpl.html>
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Server.h,v 1.11 2002/02/01 22:49:29 ghutchis Exp $
+// $Id: Server.h,v 1.12 2003/06/24 20:05:23 nealr Exp $
 //
 
 #ifndef _Server_h_

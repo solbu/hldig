@@ -5,12 +5,12 @@
 //           it, and return the encoded string.  And vice versa.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999, 2000 The ht://Dig Group
+// Copyright (c) 1999-2003 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU General Public License version 2 or later 
-// <http://www.gnu.org/copyleft/gpl.html>
+// or the GNU Library General Public License (LGPL) version 2 or later 
+// <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtCodec.h,v 1.4 2002/02/01 22:49:33 ghutchis Exp $
+// $Id: HtCodec.h,v 1.5 2003/06/24 20:05:44 nealr Exp $
 //
 #ifndef __HtCodec_h
 #define __HtCodec_h

@@ -5,7 +5,7 @@
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 2003 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Library Public License version 2 or later
+// or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
 //  Added to HtDig code June 2003 by Neal Richter, RightNow Technologies
