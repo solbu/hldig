@@ -84,7 +84,7 @@
 
 // In advance declarations
 
-class HtHTTP
+class HtHTTP;
 
 
 class HtHTTP_Response : public Transport_Response
