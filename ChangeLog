@@ -1,3 +1,9 @@
+Fri Jun 13 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* htsearch/Display.cc (setVariables), htdocs/hts_template.html:
+	  Set MATCH_MESSAGE from  method_names  (for internationalisability).
+	  Removed all trace of hack for config attribute...
+
 Thu Jun 12 14:16:05 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/htsearch.cc (main): Fixed boolean_keywords handling to
@@ -22,7 +28,7 @@ Thu Jun 12 13:28:01 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 Mon Jun 9 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* htsearch/htsearch.cc: Fixed setupWords loop for junk at end of query
-	
+
 Mon Jun 9 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 	
 	* htsearch/Display.cc: Set CONFIG template variable to the base name

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.111 2003/06/12 19:14:34 grdetil Exp $
+// $Id: Display.cc,v 1.112 2003/06/13 13:56:03 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -434,25 +434,11 @@ Display::setVariables(int pageNumber, List *matches)
 	nPages = 1;			// We always have at least one page...
     vars.Add("MATCHES_PER_PAGE", new String(config->Find("matches_per_page")));
     vars.Add("MAX_STARS", new String(config->Find("max_stars")));
-#ifdef CONFIG_HACK
-    // Remove components of config file name which are added back by htsearch
-    // Should check that they are there, but this will do for now...
-    // (Actually, no, it won't...  --  fixed in htcommon/defaults.cc)
-    i = strlen(CONFIG_DIR);
-    tmp = config->Find("config");
-    tmp = tmp.sub(i, tmp.length() - i - strlen (".conf"));
-    vars.Add("CONFIG",    new String(tmp));
-#else
     vars.Add("CONFIG", new String(config->Find("config")));
-#endif
     vars.Add("VERSION", new String(config->Find("version")));
     vars.Add("RESTRICT", new String(config->Find("restrict")));
     vars.Add("EXCLUDE", new String(config->Find("exclude")));
     vars.Add("KEYWORDS", new String(config->Find("keywords")));
-    if (mystrcasecmp(config->Find("match_method"), "and") == 0)
-	vars.Add("MATCH_MESSAGE", new String("all"));
-    else if (mystrcasecmp(config->Find("match_method"), "or") == 0)
-	vars.Add("MATCH_MESSAGE", new String("some"));
     vars.Add("MATCHES", new String(form("%d", nMatches)));
     vars.Add("PLURAL_MATCHES", new String((nMatches == 1) ? (char *)"" :  (const char *) config->Find("plural_suffix")));
     vars.Add("PAGE", new String(form("%d", pageNumber)));
@@ -504,19 +490,22 @@ Display::setVariables(int pageNumber, List *matches)
     vars.Add("FORMAT", str);
 
     str = new String();
+    tmp = config->Find("match_method");
+    vars.Add("SELECTED_METHOD", new String(tmp));
     QuotedStringList	ml(config->Find("method_names"), " \t\r\n");
     *str << "<select name=\"method\">\n";
     for (i = 0; i < ml.Count(); i += 2)
     {
 	*str << "<option value=\"" << ml[i] << '"';
-	if (mystrcasecmp(ml[i], config->Find("match_method")) == 0)
+	if (mystrcasecmp(ml[i], tmp) == 0)
+	{
 	    *str << " selected";
+	    vars.Add("MATCH_MESSAGE", new String(ml[i+1]));
+	}
 	*str << '>' << ml[i + 1] << '\n';
     }
     *str << "</select>\n";
     vars.Add("METHOD", str);
-
-    vars.Add("SELECTED_METHOD", new String(config->Find("match_method")));
 
     ////////////////// Multiple database support //////////////////////
     // Emit collection table. Ensure that previously selected collections
