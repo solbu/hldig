@@ -2819,6 +2819,18 @@
 			page. To set the level and facility used in logging, change
 			LOG_LEVEL and LOG_FACILITY in the include/htconfig.h file
 			before compiling.
+			<dl>
+			  <dt>
+			    Each line logged by htsearch contains the following:
+			  </dt>
+			  <dd>
+			    REMOTE_ADDR [config] (match_method) [words]
+			    [logicalWords] (matches/matches_per_page) -
+			    page, HTTP_REFERER
+			  </dd>
+			</dl>
+			where any of the above are null or empty, it
+			either puts in '-' or 'default' (for config).
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -6829,7 +6841,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Mon Aug  9 16:42:03 EDT 1999
+Last modified: Thu Aug 12 12:10:11 EDT 1999
 <!-- hhmts end -->
   </body>
 </html>
