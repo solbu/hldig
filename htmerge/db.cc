@@ -6,6 +6,10 @@
 // convertDocs are performed to ensure database integrity.
 //
 // $Log: db.cc,v $
+// Revision 1.2  1999/01/12 03:59:29  ghutchis
+// Fixed thinko with setting the docIDs of new words in the destination
+// wordlist.
+//
 // Revision 1.1  1999/01/09 20:19:19  ghutchis
 // Implements merging of two database sets specified by the
 // merge_config and config variables.
@@ -265,6 +269,9 @@ mergeDB()
 	      }
 	    continue;
 	  }
+
+	// Add the DocID offset...
+	wr.id += docIDOffset;
 
 	// Record the word in the new file
 	fprintf(wordlist, "%s", word.get());
