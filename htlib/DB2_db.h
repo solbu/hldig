@@ -1,20 +1,22 @@
 //
 // DB2_db.h
 //
-// $Id: DB2_db.h,v 1.1 1998/06/21 23:20:06 turtle Exp $
+// DB2_db: Implements the Berkeley B-Tree database as a Database object
+//        (including duplicate values to allow duplicate word entries)
 //
-// $Log: DB2_db.h,v $
-// Revision 1.1  1998/06/21 23:20:06  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999, 2000 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU General Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
+// $Id: DB2_db.h,v 1.8.2.1 2000/05/10 18:23:43 loic Exp $
 //
-//
+
 #ifndef _DB2_db_h_
 #define _DB2_db_h_
 
-#include <Database.h>
+#include "Database.h"
 #include <db.h>
 #include <fcntl.h>
 
@@ -28,37 +30,24 @@ protected:
 public:
     ~DB2_db();
 
-    static DB2_db	*getDatabaseInstance();
+    static DB2_db	*getDatabaseInstance(DBTYPE type);
 	
-    virtual int		OpenReadWrite(char *filename, int mode);
-    virtual int		OpenRead(char *filename);
+    virtual int		OpenReadWrite(const char *filename, int mode) { return Open(filename, DB_CREATE, mode); }
+    virtual int		OpenRead(const char *filename) { return Open(filename, DB_RDONLY, 0666); }
     virtual int		Close();
-    virtual int		Delete(String &);
+    virtual int		Get(const String &, String &);
+    virtual int		Put(const String &, const String &);
+    virtual int		Exists(const String &);
+    virtual int		Delete(const String &);
 	
     virtual void	Start_Get();
-    virtual char	*Get_Next();
-    virtual void	Start_Seq(char *str);
-    virtual char	*Get_Next_Seq();
+    virtual char	*Get_Next(String &item, String &key);
+    virtual void	Start_Seq(const String& key);
 	
 private:
-    int			isOpen;
-    DB			*dbp;		// database
-    DBC			*dbcp;		// cursor
-    DBT			skey;
-    DB_ENV		*dbenv;		// database enviroment
-    DB_INFO		dbinfo;
-
-    String		lkey;
-    int			seqrc;
-    int			seqerr;
-
     DB_ENV		*db_init(char *);
 
-    virtual int		Get(String &, String &);
-    virtual int		Put(String &, String &);
-    virtual int		Exists(String &);
+    int			Open(const char *filename, int flags, int mode);
 };
 
 #endif
-
-

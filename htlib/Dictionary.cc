@@ -7,12 +7,12 @@
 //             string index.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Dictionary.cc,v 1.10.2.4 2000/04/20 01:54:01 ghutchis Exp $
+// $Id: Dictionary.cc,v 1.10.2.5 2000/05/10 18:23:43 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H

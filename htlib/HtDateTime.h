@@ -5,12 +5,12 @@
 //  	       Uses locale.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.h,v 1.10.2.2 2000/02/23 18:56:19 grdetil Exp $
+// $Id: HtDateTime.h,v 1.10.2.3 2000/05/10 18:23:44 loic Exp $
 
 ///////
    //   Class for Date and Time

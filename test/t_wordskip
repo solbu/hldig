@@ -5,12 +5,10 @@
 # or the GNU General Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_wordskip,v 1.1.2.3 2000/05/06 21:25:24 loic Exp $
+# $Id: t_wordskip,v 1.1.2.4 2000/05/10 18:23:46 loic Exp $
 #
 
 . ./test_functions
-
-verbose=$1
 
 if [ ! -f skiptest_db.txt ]
 then

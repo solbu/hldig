@@ -4,14 +4,13 @@
 // String: (interface in htString.h) Just Another String class.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.30.2.9 2000/04/20 01:54:01 ghutchis Exp $
+// $Id: String.cc,v 1.30.2.10 2000/05/10 18:23:45 loic Exp $
 //
-
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
@@ -564,11 +563,13 @@ int operator >= (const String &a, const String &b)
     return a.compare(b) >= 0;
 }
 
+#ifndef NOSTREAM
 ostream &operator << (ostream &o, const String &s)
 {
     o.write(s.Data, s.length());
     return o;
 }
+#endif /* NOSTREAM */
 
 //------------------------------------------------------------------------
 // Private Methods.
@@ -640,12 +641,13 @@ void String::copy(const char *s, int len, int allocation_hint)
   copy_data_from(s, len);
 }
 
+#ifndef NOSTREAM
 void String::debug(ostream &o)
 {
     o << "Length: " << Length << " Allocated: " << Allocated <<
 	" Data: " << ((void*) Data) << " '" << *this << "'\n";
 }
-
+#endif /* NOSTREAM */
 
 int String::readLine(FILE *in)
 {
@@ -683,6 +685,7 @@ int String::readLine(FILE *in)
     return Length > 0;
 }
 
+#ifndef NOSTREAM
 istream &operator >> (istream &in, String &line)
 {
     line.Length = 0;
@@ -717,4 +720,4 @@ istream &operator >> (istream &in, String &line)
 
     return in;
 }
-
+#endif /* NOSTREAM */

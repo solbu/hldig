@@ -1,5 +1,4 @@
-#for i in db.h.in ../*/*.[ch] ../*/*.cc 
-for i in db.h.in *.[ch] ../*.cc 
+for i in db.h.in ../*/*.[ch] ../*/*.cc 
 do
 echo $i
 perl -pi -e 's/CDB_//g' $i

@@ -10,8 +10,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalTransport.cc,v 1.1.2.1 1999/11/28 02:43:12 ghutchis Exp $
+// $Id: ExternalTransport.cc,v 1.1.2.2 2000/05/10 18:23:42 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "ExternalTransport.h"
 #include "htdig.h"

@@ -10,8 +10,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62.2.10 2000/05/08 20:40:42 loic Exp $
+// $Id: HTML.cc,v 1.62.2.11 2000/05/10 18:23:43 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htdig.h"
 #include "HTML.h"

@@ -12,8 +12,11 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.3.2.7 2000/03/31 04:28:31 ghutchis Exp $
+// $Id: Connection.cc,v 1.3.2.8 2000/05/10 18:23:45 loic Exp $
 //
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Connection.h"
 #include "Object.h"

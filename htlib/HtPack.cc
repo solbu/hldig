@@ -6,12 +6,12 @@
 //	   the layout the compiler generates.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtPack.cc,v 1.5.2.1 2000/04/20 01:54:01 ghutchis Exp $
+// $Id: HtPack.cc,v 1.5.2.2 2000/05/10 18:23:44 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -428,12 +428,14 @@ htUnpack(const char format[], const char *data)
 	break;
 
 	default:
+#ifndef NOSTREAM
 #ifdef DEBUG
 	  if (1)
 	    cerr << "Invalid char \'" << char(fchar)
 		 << "\' in unpack format \"" << format << "\""
 		 << endl;
 	  return "";
+#endif
 #endif
 	  ; // Must always have a statement after a label.
       }

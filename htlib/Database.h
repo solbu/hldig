@@ -5,12 +5,12 @@
 //           simple database.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Database.h,v 1.12.2.1 2000/05/05 21:55:15 loic Exp $
+// $Id: Database.h,v 1.12.2.2 2000/05/10 18:23:43 loic Exp $
 //
 
 #ifndef _Database_h_

@@ -6,12 +6,12 @@
 //               dictionary given in argument.
 // 
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ParsedString.cc,v 1.6.2.1 2000/04/20 01:54:01 ghutchis Exp $
+// $Id: ParsedString.cc,v 1.6.2.2 2000/05/10 18:23:45 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H

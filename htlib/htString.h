@@ -4,12 +4,12 @@
 // htString: (implementation in String.cc) Just Another String class.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.18.2.6 2000/04/20 01:54:01 ghutchis Exp $
+// $Id: htString.h,v 1.18.2.7 2000/05/10 18:23:45 loic Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -18,7 +18,9 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#ifndef NOSTREAM
 #include <iostream.h>
+#endif /* NOSTREAM */
 
 class String : public Object
 {
@@ -147,7 +149,7 @@ public:
 
 #ifndef NOSTREAM
     void		debug(ostream &o);
-#endif
+#endif /* NOSTREAM */
 
     //
     // Non-member operators
@@ -164,7 +166,7 @@ public:
     friend ostream	&operator << (ostream &o, const String &s);
 
     friend istream	&operator >> (istream &in, String &line);
-#endif
+#endif /* NOSTREAM */
 
     int			readLine(FILE *in);
 

@@ -4,12 +4,12 @@
 //  functions for determining valid words/characters
 // 
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordType.h,v 1.8.2.3 2000/02/22 23:15:49 grdetil Exp $
+// $Id: HtWordType.h,v 1.8.2.4 2000/05/10 18:23:45 loic Exp $
 //
 #ifndef _HtWordType_h
 #define _HtWordType_h

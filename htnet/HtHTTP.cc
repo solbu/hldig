@@ -13,8 +13,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.14 2000/03/03 10:42:05 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.15 2000/05/10 18:23:46 loic Exp $ 
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "lib.h"
 #include "Transport.h"

@@ -1,19 +1,18 @@
 //
 // Stack.h
 //
-// (c) Copyright 1993, San Diego State University -- College of Sciences
-//       (See the COPYRIGHT file for more Copyright information)
+// Stack: This class implements a linked list of objects.  It itself is also an
+//        object
 //
-// This class implements a linked list of objects.  It itself is also an
-// object
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999, 2000 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU General Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Stack.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: Stack.h,v 1.3.2.1 2000/05/10 18:23:45 loic Exp $
 //
-// $Log: Stack.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
-//
-//
+
 #ifndef	_Stack_h_
 #define	_Stack_h_
 

@@ -4,12 +4,12 @@
 // List: A List class which holds objects of type Object.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: List.h,v 1.5.2.3 2000/05/09 14:28:29 loic Exp $
+// $Id: List.h,v 1.5.2.4 2000/05/10 18:23:45 loic Exp $
 //
 
 #ifndef	_List_h_

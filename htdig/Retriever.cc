@@ -12,8 +12,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.28 2000/05/08 20:40:42 loic Exp $
+// $Id: Retriever.cc,v 1.72.2.29 2000/05/10 18:23:43 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Retriever.h"
 #include "htdig.h"

@@ -4,12 +4,12 @@
 // StringList: Specialized List containing String objects. 
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.cc,v 1.9.2.6 2000/05/08 20:40:42 loic Exp $
+// $Id: StringList.cc,v 1.9.2.7 2000/05/10 18:23:45 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H

@@ -9,8 +9,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: docs.cc,v 1.27.2.2 2000/02/14 06:05:23 ghutchis Exp $
+// $Id: docs.cc,v 1.27.2.3 2000/05/10 18:23:45 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htmerge.h"
 

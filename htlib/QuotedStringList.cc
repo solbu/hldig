@@ -6,12 +6,12 @@
 //                   delimited by " or ', hence the name.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: QuotedStringList.cc,v 1.3.2.4 2000/05/08 20:40:42 loic Exp $
+// $Id: QuotedStringList.cc,v 1.3.2.5 2000/05/10 18:23:45 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
