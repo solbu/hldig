@@ -3,6 +3,9 @@ Mon May  3 23:20:22 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htdig/Retriever.cc (IsValidURL): Fix typo with #else statement
 	for REGEX.
 
+	* htdig/htdig.cc: Add conditionals for REGEX to use HtRegex
+	instead of StringMatch methods when defined. 
+	
 	* htlib/HtDateTime.h: Update to remove definitions of true and
 	false, established by May 2 change in
 	include/htconfig.h.in as contributed by Gabriele.

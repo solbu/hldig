@@ -191,21 +191,33 @@ main(int ac, char **av)
     // Set up the limits list
     //
     StringList l(config["limit_urls_to"], " \t");
+#ifdef  REGEX
+    limits.set(l.Join('|'));
+#else
     limits.IgnoreCase();
     limits.Pattern(l.Join('|'));
+#endif
     l.Release();
 
     l.Create(config["limit_normalized"], " \t");
+#ifdef  REGEX
+    limitsn.set(l.Join('|'));
+#else
     limitsn.IgnoreCase();
     limitsn.Pattern(l.Join('|'));
+#endif
     l.Release();
 
     //
     // Patterns to exclude from urls...
     //
     l.Create(config["exclude_urls"], " \t");
+#ifdef  REGEX
+    excludes.set(l.Join('|'));
+#else
     excludes.IgnoreCase();
     excludes.Pattern(l.Join('|'));
+#endif
     l.Release();
 
     l.Create(config["bad_querystr"], " \t");
