@@ -1,3 +1,47 @@
+Sat Aug 28 15:57:53 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Server.h, htdig/Server.cc: Undo yesterdays change -- still
+	very buggy and shouldn't be used yet.
+
+	* htdig/Retriever.cc (parse_url): Change default index to 1 to
+	more closely match DocIDs shown with verbose output.
+
+	* htsearch/DocMatch.h: Change score to double and clean up
+	headers.
+
+	* htcommon/WordRecord.h: Change unnecessary long ints (id and
+	flags) to plain ints.
+
+	* htdig/HTML.cc (parse): Call got_word with actual word sequence
+	(i.e. 1, 2, 3...) rather than scaling to 1-1000 by character
+	offset.
+
+	* htlib/Database.h, htlib/DB2_db.h, htlib/DB2_hash.h: Change
+	Get_Item to Get_Next(String item) to return the data as a
+	reference. This makes it easier to use in a loop and cuts the
+	database calls in half.
+
+	* htlib/DB2_db.cc, htlib/DB2_hash.cc: Implement it, making sure we
+	keep the possibly useful data around, rather than tossing it!
+
+	* htsearch/htsearch.cc(htsearch): Don't attempt to open the word db
+	ourselves. Instead, pass the filename off to the parser, which
+	will do it through WordList.
+
+	* htsearch/parser.h: Use a WordList instead of a generic Database.
+
+	* htsearch/parser.cc(perform_push): Use the WordList[] operator to
+	return a list of all matching WordRefs and loop through, summing
+	the score.
+
+	* htcommon/WordList.cc (Flush): Don't use HtPack on the
+	data--somehow when unpacking, there's a mismatch of sizes.
+	(Read): Fix thinko where we attempted to open the database as a
+	DB_HASH.
+	([]): Don't use HtUnpack since we get mismatches. Use the new
+	Get_Next(data) call instead of calling Get_Item separately.
+	(WordRefs): Same as above.
+	
 Fri Aug 27 09:44:09 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc (Need2Get): Remove duplicate detection code for
