@@ -4,7 +4,7 @@
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
 #if RELEASE
-static char RCSid[] = "$Id: PDF.cc,v 1.9.2.5 1999/09/01 21:02:47 grdetil Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.9.2.6 2000/02/15 20:57:04 grdetil Exp $";
 #endif
 
 #include <sys/types.h>
@@ -290,7 +290,7 @@ void PDF::parseNonTextLine(String &line)
 
 	    _pages = val;
 	}
-	if (!strncmp(position, "\%\%Title: (", 10))
+	if (!strncmp(position, "%%Title: (", 10))
 	{
 	    // Title of the PDF document
 	    // Decode the title in _parsedString

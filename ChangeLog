@@ -1,4 +1,7 @@
-Tue Feb 15 14:37:17 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Feb 15 14:52:26 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/PDF.cc (parseNonTextLine): Fix bogus escape sequences
+	around Title parsing.  (Fixes PR#740)
 
 	* htsearch/Display.cc (display, displaySyntaxError),
 	htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
