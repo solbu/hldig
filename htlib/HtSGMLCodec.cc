@@ -12,7 +12,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: HtSGMLCodec.cc,v 1.1 1999/03/14 03:15:41 ghutchis Exp $";
+static char	RCSid[] = "$Id: HtSGMLCodec.cc,v 1.2 1999/03/14 03:36:56 ghutchis Exp $";
 #endif
 
 #include "HtSGMLCodec.h"
@@ -29,23 +29,23 @@ HtSGMLCodec::HtSGMLCodec()
   
   // Is this really the best way to do this?
   myFromString = "&nbsp;|&iexcl;|&cent;|&pound;|&curren;|&yen;|";
-  myFromString.Append("&brvbar;|&sect;|&uml;|&copy;|&ordf;|&laquo;|");
-  myFromString.Append("&not;|&shy;|&reg;|&hibar;|&deg;|&plusmn;|&sup2;|");
-  myFromString.Append("&sup3;|&acute;|&micro;|&para;|&middot;|&cedil;|");
-  myFromString.Append("&sup1;|&ordm;|&raquo;|&frac14;|&frac12;|");
-  myFromString.Append("&frac34;|&iquest;|&Agrave;|&Aacute;|&Acirc;|");
-  myFromString.Append("&Atilde;|&Auml;|&Aring;|&AElig;|&Ccedil;|");
-  myFromString.Append("&Egrave;|&Eacute;|&Ecirc;|&Euml;|&Igrave;|");
-  myFromString.Append("&Iacute;|&Icirc;|&Iuml;|&ETH;|&Ntilde;|");
-  myFromString.Append("&Ograve;|&Oacute;|&Ocirc;|&Otilde;|&Ouml;|");
-  myFromString.Append("&times;|&Oslash;|&Ugrave;|&Uacute;|&Ucirc;|");
-  myFromString.Append("&Uuml;|&Yacute;|&THORN;|&szlig;|&agrave;|");
-  myFromString.Append("&aacute;|&acirc;|&atilde;|&auml;|&aring;|");
-  myFromString.Append("&aelig;|&ccedil;|&egrave;|&eacute;|&ecirc;|");
-  myFromString.Append("&euml;|&igrave;|&iacute;|&icirc;|&iuml;|&eth;|");
-  myFromString.Append("&ntilde;|&ograve;|&oacute;|&ocirc;|&otilde;|");
-  myFromString.Append("&ouml;|&divide;|&oslash;|&ugrave;|&uacute;|");
-  myFromString.Append("&ucirc;|&uuml;|&yacute;|&thorn;|&yuml;");
+  myFromString << "&brvbar;|&sect;|&uml;|&copy;|&ordf;|&laquo;|";
+  myFromString << "&not;|&shy;|&reg;|&hibar;|&deg;|&plusmn;|&sup2;|";
+  myFromString << "&sup3;|&acute;|&micro;|&para;|&middot;|&cedil;|";
+  myFromString << "&sup1;|&ordm;|&raquo;|&frac14;|&frac12;|";
+  myFromString << "&frac34;|&iquest;|&Agrave;|&Aacute;|&Acirc;|";
+  myFromString << "&Atilde;|&Auml;|&Aring;|&AElig;|&Ccedil;|";
+  myFromString << "&Egrave;|&Eacute;|&Ecirc;|&Euml;|&Igrave;|";
+  myFromString << "&Iacute;|&Icirc;|&Iuml;|&ETH;|&Ntilde;|";
+  myFromString << "&Ograve;|&Oacute;|&Ocirc;|&Otilde;|&Ouml;|";
+  myFromString << "&times;|&Oslash;|&Ugrave;|&Uacute;|&Ucirc;|";
+  myFromString << "&Uuml;|&Yacute;|&THORN;|&szlig;|&agrave;|";
+  myFromString << "&aacute;|&acirc;|&atilde;|&auml;|&aring;|";
+  myFromString << "&aelig;|&ccedil;|&egrave;|&eacute;|&ecirc;|";
+  myFromString << "&euml;|&igrave;|&iacute;|&icirc;|&iuml;|&eth;|";
+  myFromString << "&ntilde;|&ograve;|&oacute;|&ocirc;|&otilde;|";
+  myFromString << "&ouml;|&divide;|&oslash;|&ugrave;|&uacute;|";
+  myFromString << "&ucirc;|&uuml;|&yacute;|&thorn;|&yuml;";
 
   myFromList->Create(myFromString, '|');
 
