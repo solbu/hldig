@@ -67,7 +67,7 @@ install:	all
 	@echo "Installing images..."
 	@for i in $(IMAGES); \
 	do \
-		if [ ! -f $(IMAGE_DIR)/$$i ]; then $(INSTALL) -m 0664 installdir/$$i $(IMAGE_DIR)/$$i; echo $(IMAGE_DIR)/$$i;fi \
+		if [ ! -f $(IMAGE_DIR)/$$i ]; then $(INSTALL) -m 0664 installdir/$$i $(IMAGE_DIR)/$$i; echo $(IMAGE_DIR)/$$i;fi; \
 	done;
 	@echo "Creating rundig script..."
 	@if [ ! -f $(BIN_DIR)/rundig ]; then \
