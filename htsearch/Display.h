@@ -1,7 +1,7 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.12 1999/04/25 01:40:37 ghutchis Exp $
+// $Id: Display.h,v 1.13 1999/04/27 15:35:11 ghutchis Exp $
 //
 //
 
@@ -49,13 +49,6 @@ public:
     void		displaySyntaxError(char *);
 	
     int                 hasTemplateError() {return templateError;}
-
-    enum SortType {
-	SortByScore,
-	SortByTime,
-	SortByTitle
-    };
-    SortType		sortType();
 
 protected:
     //
@@ -139,10 +132,6 @@ protected:
     //
     List		*buildMatchList();
     void		sort(List *);
-
-    static int		compare(const void *, const void *);
-    static int		compareTime(const void *, const void *);
-    static int		compareTitle(const void *, const void *);
 
     int			includeURL(char *);
     String		*readFile(char *);

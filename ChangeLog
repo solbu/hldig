@@ -1,3 +1,11 @@
+Tue Apr 27 11:24:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.h: Remove sort, compare functions re-introduced
+	in merge. Moved to ResultMatch by Hans-Peter's April 19th chnages.
+
+	* htsearch/Display.cc: Remove bogus call to ResultMatch:setRef,
+	removed by Hans-Pater's April 19th changes.
+
 Sat Apr 24 21:08:35 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* Merge in changes from 3.1.2 (see below).

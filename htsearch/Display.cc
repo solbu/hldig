@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.73 1999/04/25 01:40:37 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.74 1999/04/27 15:35:11 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -192,7 +192,6 @@ Display::display(int pageNumber)
 	    ref->DocScore(match->getScore());
 	    displayMatch(ref,currentMatch+1);
 	    numberDisplayed++;
-	    match->setRef(NULL);
 	    delete ref;
 	}
 	currentMatch++;
