@@ -1,3 +1,7 @@
+Tue Jun 1 20:23:40 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * htcommon/HtSGMLCodec.cc: changed &curren; to &euro;
+
 Fri 28 May 2004  Lachlan Andrew  <lha at users.sourceforge.net>
 
     * Most files: Update copyright to 2004

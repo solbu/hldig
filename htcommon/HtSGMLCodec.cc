@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtSGMLCodec.cc,v 1.5 2004/05/28 13:15:12 lha Exp $
+// $Id: HtSGMLCodec.cc,v 1.6 2004/06/01 18:25:01 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -39,7 +39,9 @@ HtSGMLCodec::HtSGMLCodec()
  }
  else
  {
-  myTextFromString = "&nbsp;|&iexcl;|&cent;|&pound;|&curren;|&yen;|&brvbar;|&sect;|";
+  // this set has been slightly modified in order to manage the &euro; entity
+  // the resulting charset is therefore a ISO-8859-1 partially moved to ISO-8859-15
+  myTextFromString = "&nbsp;|&iexcl;|&cent;|&pound;|&euro;|&yen;|&brvbar;|&sect;|";
   myTextFromString << "&uml;|&copy;|&ordf;|&laquo;|&not;|&shy;|&reg;|&macr;|&deg;|";
   myTextFromString << "&plusmn;|&sup2;|&sup3;|&acute;|&micro;|&para;|&middot;|&cedil;|";
   myTextFromString << "&sup1;|&ordm;|&raquo;|&frac14;|&frac12;|&frac34;|&iquest;|&Agrave;|";
