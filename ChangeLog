@@ -1,3 +1,7 @@
+Wed Dec  8 18:19:32 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/FAQ.html, htdoc/bugs.html: Update to refer to latest versions.
+
 Wed Dec  8 18:10:27 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/QuotedStringList.cc (Create): Make sure that an empty
