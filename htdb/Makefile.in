@@ -130,17 +130,17 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 bin_PROGRAMS = htload htdump htstat
 
-htload_SOURCES = htload.cc err.cc getlong.cc
+htload_SOURCES = htload.cc err.c getlong.c
 htload_DEPENDENCIES = $(HTLIBS)
 htload_LDFLAGS = $(PROFILING)
 htload_LDADD = $(HTLIBS)
 
-htdump_SOURCES = htdump.cc err.cc
+htdump_SOURCES = htdump.cc err.c
 htdump_DEPENDENCIES = $(HTLIBS)
 htdump_LDFLAGS = $(PROFILING)
 htdump_LDADD = $(HTLIBS)
 
-htstat_SOURCES = htstat.cc err.cc
+htstat_SOURCES = htstat.cc err.c
 htstat_DEPENDENCIES = $(HTLIBS)
 htstat_LDADD = $(HTLIBS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -160,6 +160,11 @@ CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DIST_COMMON =  Makefile.am Makefile.in
 
 

@@ -24,8 +24,6 @@ static const char sccsid[] = "@(#)err.c	10.5 (Sleepycat) 11/24/98";
 #endif
 #endif
 
-extern "C"
-{
 #include "db.h"
 #include "clib_ext.h"
 
@@ -171,5 +169,4 @@ warnx(fmt, va_alist)
 		(void)vfprintf(stderr, fmt, ap);
 	(void)fprintf(stderr, "\n");
 	va_end(ap);
-}
 }

@@ -1,3 +1,12 @@
+Mon Dec 20 21:59:03 1999  Loic Dachary  <loic@ceic.com>
+
+	* htdb/{Makefile.am,err.c,getlong.c}: Fix mistake: err.c and
+	  getlong.c contain C functions (declared in clib_ext) and 
+	  must be C compiled otherwise the prototype won't fit. Checking
+	  db Makefiles, getlong.c and err.c are added to the list of objects
+	  for each utility program. This guaranties that they won't conflict
+	  with objects included in libdb.a. 
+
 Sun Dec 19 20:04:42 1999  Loic Dachary  <loic@ceic.com>
 
 	* htdb/{Makefile.am, err.cc}: add err.cc for portability
