@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.28.2.2 2000/03/20 19:14:48 ghutchis Exp $
+// $Id: DocumentDB.cc,v 1.28.2.3 2000/03/21 00:34:33 ghutchis Exp $
 //
 
 #include "DocumentDB.h"
@@ -374,7 +374,7 @@ int DocumentDB::DumpDB(const String& filename)
 	    if (h_dbf)
 	      {
 		h_dbf->Get(docKey,data);
-		ref->DocHead((char*)data);
+		ref->DocHead((char*)HtZlibCodec::instance()->decode(data));
 	      }
 	    fprintf(fl, "%d", ref->DocID());
 	    fprintf(fl, "\tu:%s", ref->DocURL());
