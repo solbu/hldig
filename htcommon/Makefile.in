@@ -11,7 +11,7 @@ OBJS=	DocumentDB.o DocumentRef.o WordList.o \
 		defaults.o 
 
 TARGET=		libcommon.a
-LOCAL_DEFINES=	-DBIN_DIR=\"$(BIN_DIR)\" \
+LOCAL_DEFINES=	-DBIN_DIR=\"$(bindir)\" \
 		-DCOMMON_DIR=\"$(COMMON_DIR)\" \
 		-DCONFIG_DIR=\"$(CONFIG_DIR)\" \
 		-DDATABASE_DIR=\"$(DATABASE_DIR)\" \

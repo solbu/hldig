@@ -1,3 +1,10 @@
+Wed Jun 16 08:43:09 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/Makefile.in, htdig/Makefile.in, htfuzzy/Makefile.in,
+	htmerge/Makefile.in, htnotify/Makefile.in: Use standard $(bindir)
+	variable instead of $(BIN_DIR). Allows for standard configure flags
+	to set this. (Completes Geoff's change on May 15.)
+
 Tue Jun 15 14:31:50 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/PDF.cc(parseNonTextLine): move line that clears _parsedString,
