@@ -3,7 +3,7 @@
 #
 # rundig
 #
-# $Id: rundig,v 1.6 1999/01/29 02:52:48 ghutchis Exp $
+# $Id: rundig,v 1.7 1999/01/31 04:27:02 ghutchis Exp $
 #
 # This is a sample script to create a search database for ht://Dig.
 #
@@ -11,6 +11,8 @@ DBDIR=@DATABASE_DIR@
 COMMONDIR=@COMMON_DIR@
 BINDIR=@BIN_DIR@
 
+# To help debug problems, try running rundig -vvv
+# This will add lots of debugging output to all of the programs
 stats= opts= alt=
 for arg
 do
@@ -41,8 +43,17 @@ case "$alt" in
         mv -f $f `basename $f .work`
     done ) ;;
 esac
+# If you're low on disk space and you don't mind completely reindexing
+# every time you run this script, you can always
+# rm $DBDIR/db.wordlist
+# OR
+# If you'd rather run update digs all the time with the minimal databases
+# Keep only the following files (and don't call htdig with -i):
+# db.docdb, db.docdb.work, db.docs.index, db.wordlist.work, db.words.db
 $BINDIR/htnotify $opts
-$BINDIR/htfuzzy $opts soundex metaphone
+# If you want to use the soundex and (or) metaphone fuzzy matchings,
+# Uncomment the following line
+# $BINDIR/htfuzzy $opts soundex metaphone
 
 #
 # Create the endings and synonym databases if they don't exist
@@ -50,13 +61,13 @@ $BINDIR/htfuzzy $opts soundex metaphone
 # These databases are semi-static, so even if pages change,
 # these databases will not need to be rebuilt.
 #
-if [ "`ls -t $COMMONDIR/english.0 $COMMONDIR/word2root.db 2>/dev/null`" = \
+if [ "`ls -t $COMMONDIR/english.0 $COMMONDIR/word2root.db 2>/dev/null | sed 1q`" = \
 	"$COMMONDIR/english.0" ]
 then
     $BINDIR/htfuzzy $opts endings
 fi
 
-if [ "`ls -t $COMMONDIR/synonyms $COMMONDIR/synonyms.db 2>/dev/null`" = \
+if [ "`ls -t $COMMONDIR/synonyms $COMMONDIR/synonyms.db 2>/dev/null | sed 1q`" = \
 	"$COMMONDIR/synonyms" ]
 then
     $BINDIR/htfuzzy $opts synonyms
