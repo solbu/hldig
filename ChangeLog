@@ -1,3 +1,9 @@
+Tue Jan 26 18:08:19 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
+
+	* include/htconfig.h.in: Added HAVE_STRINGS_H. (I forgot that when
+	added the configure check.)
+	* htdig/Retriever.h: Fix small compiler error. Removed Log-lines.
+
 Tue Jan 26 02:22:45 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htdig/main.cc (main): Fix typo "uncoded_db_compatbile".
