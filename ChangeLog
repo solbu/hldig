@@ -1,3 +1,15 @@
+Sat Sep 16 20:14:32 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in, configure, acinclude.m4, aclocal.m4, acconfig.h,
+	include/htconfig.h.in: Merged with mifluz versions. Main
+	difference is that top-level configure script now also configures
+	db/ directory as well.
+
+	* Makefile.am, */Makefile.in: Updated with automake for new build
+	environment (with db/ run through top-level configure).
+
+	* db/*.c: Updated to use htconfig.h instead of config.h.
+
 Wed Sep 13 22:05:33 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* Merged in mifluz-0.19 branch. Everything will break
