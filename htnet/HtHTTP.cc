@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.19 2002/08/06 07:32:29 angusgb Exp $ 
+// $Id: HtHTTP.cc,v 1.20 2002/09/19 07:07:34 angusgb Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -775,7 +775,7 @@ int HtHTTP::ParseHeader()
  	    // Found a cookie
 		
             // Are cookies enabled?
-            if (_send_cookies)
+			if (_send_cookies && _cookie_jar)
             {
                token = strtok(token, "\n\t");
 
