@@ -1,3 +1,20 @@
+Fri Oct  8 09:35:30 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtDateTime.cc (SetFTime): Change buffer argument to const
+	char* to prevent problems passing in const buffers.
+
+	* htnet/HtHTTP.h: Change SetUserAgent to take a const char* to
+	prevent problems passing in const parameters.
+	
+	* htdig/Document.h, htdig/Document.cc(): Use Transport class for
+	obtaining documents. Remove duplication of declarations
+	(e.g. DocStatus).
+
+	* htdig/Retriever.cc: Adapt switch statements from
+	Document::DocStatus to Transport::DocStatus.
+
+	* htdig/Server.cc: Use Document::Retrieve instead of RetrieveHTTP.
+
 Fri Oct 08 16:35:16 1999  Loic Dachary  <loic@ceic.com>
 
 	* test/t_htnet: succeed if timeout occurs. It was the opposite.
