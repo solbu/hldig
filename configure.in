@@ -116,34 +116,19 @@ extern "C" int gethostname(char *, int);],
   [AC_MSG_RESULT(yes);AC_DEFINE(NEED_PROTO_GETHOSTNAME)],
   [AC_MSG_RESULT(no)])
 
+AC_LANG_C
 AC_MSG_CHECKING(how to call getpeername?)
-param=void
+for getpeername_length_t in 'size_t' 'int' 'unsigned int'; do
 AC_TRY_COMPILE([#include <sys/types.h>
 #include <sys/socket.h>],
-[ int socket;
-  struct sockaddr server;
-  size_t length;
-  getpeername(socket, &server, &length);],
-  AC_DEFINE(GETPEERNAME_LENGTH_T, size_t) param=size_t)
-if test $param = void; then
-AC_TRY_COMPILE([#include <sys/types.h>
-#include <sys/socket.h>],
-[ int socket;
-  struct sockaddr server;
-  int length;
-  getpeername(socket, &server, &length);],
-  AC_DEFINE(GETPEERNAME_LENGTH_T, int) param=int)
-fi
-if test $param = void; then
-AC_TRY_COMPILE([#include <sys/types.h>
-#include <sys/socket.h>],
-[ int socket;
-  struct sockaddr server;
-  unsigned int length;
-  getpeername(socket, &server, &length);],
-  AC_DEFINE(GETPEERNAME_LENGTH_T, unsigned int) param=unsigned)
-fi
-AC_MSG_RESULT($param)
+[extern getpeername(int, struct sockaddr *, $getpeername_length_t *)],
+[ac_found=yes ; break 1],ac_found=no)
+done
+  if test "$ac_found" = no; then
+    AC_MSG_ERROR([can't determine argument type])
+  fi
+  AC_MSG_RESULT($getpeername_length_t)
+  AC_DEFINE_UNQUOTED(GETPEERNAME_LENGTH_T, $getpeername_length_t)
 
 dnl Any final tests probably want the C compiler
 AC_LANG_C

@@ -2406,83 +2406,44 @@ else
 fi
 rm -f conftest*
 
+ac_ext=c
+# CFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='${CC-cc} -c $CFLAGS $CPPFLAGS conftest.$ac_ext 1>&5'
+ac_link='${CC-cc} -o conftest${ac_exeext} $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS 1>&5'
+cross_compiling=$ac_cv_prog_cc_cross
+
 echo $ac_n "checking how to call getpeername?""... $ac_c" 1>&6
-echo "configure:2411: checking how to call getpeername?" >&5
-param=void
+echo "configure:2418: checking how to call getpeername?" >&5
+for getpeername_length_t in 'size_t' 'int' 'unsigned int'; do
 cat > conftest.$ac_ext <<EOF
-#line 2414 "configure"
+#line 2421 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #include <sys/socket.h>
 int main() {
- int socket;
-  struct sockaddr server;
-  size_t length;
-  getpeername(socket, &server, &length);
+extern getpeername(int, struct sockaddr *, $getpeername_length_t *)
 ; return 0; }
 EOF
-if { (eval echo configure:2425: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2429: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
-  cat >> confdefs.h <<\EOF
-#define GETPEERNAME_LENGTH_T size_t
-EOF
- param=size_t
+  ac_found=yes ; break 1
 else
   echo "configure: failed program was:" >&5
   cat conftest.$ac_ext >&5
-fi
-rm -f conftest*
-if test $param = void; then
-cat > conftest.$ac_ext <<EOF
-#line 2438 "configure"
-#include "confdefs.h"
-#include <sys/types.h>
-#include <sys/socket.h>
-int main() {
- int socket;
-  struct sockaddr server;
-  int length;
-  getpeername(socket, &server, &length);
-; return 0; }
-EOF
-if { (eval echo configure:2449: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
-  cat >> confdefs.h <<\EOF
-#define GETPEERNAME_LENGTH_T int
-EOF
- param=int
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
+  ac_found=no
 fi
 rm -f conftest*
-fi
-if test $param = void; then
-cat > conftest.$ac_ext <<EOF
-#line 2463 "configure"
-#include "confdefs.h"
-#include <sys/types.h>
-#include <sys/socket.h>
-int main() {
- int socket;
-  struct sockaddr server;
-  unsigned int length;
-  getpeername(socket, &server, &length);
-; return 0; }
+done
+  if test "$ac_found" = no; then
+    { echo "configure: error: can't determine argument type" 1>&2; exit 1; }
+  fi
+  echo "$ac_t""$getpeername_length_t" 1>&6
+  cat >> confdefs.h <<EOF
+#define GETPEERNAME_LENGTH_T $getpeername_length_t
 EOF
-if { (eval echo configure:2474: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  cat >> confdefs.h <<\EOF
-#define GETPEERNAME_LENGTH_T unsigned int
-EOF
- param=unsigned
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-fi
-rm -f conftest*
-fi
-echo "$ac_t""$param" 1>&6
+
 
 ac_ext=c
 # CFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
@@ -2494,7 +2455,7 @@ cross_compiling=$ac_cv_prog_cc_cross
 # Extract the first word of "tsort", so it can be a program name with args.
 set dummy tsort; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:2498: checking for $ac_word" >&5
+echo "configure:2459: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_TSORT'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
