@@ -24,10 +24,10 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.55 1999/10/15 03:33:17 jtillman Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.56 1999/10/15 03:42:55 jtillman Exp $";
 #endif
 
-#include "new_htsearch.h"
+#include "htsearch.h"
 #include "Display.h"
 #include "cgi.h"
 #include "WordRecord.h"
