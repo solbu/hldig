@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.3 1999/11/30 05:47:20 ghutchis Exp $
+// $Id: Server.cc,v 1.17.2.4 1999/12/02 02:48:48 ghutchis Exp $
 //
 
 #include "htdig.h"
@@ -26,64 +26,64 @@
 
 
 //*****************************************************************************
-// Server::Server(char *host, int port)
+// Server::Server(URL u, char *localRobots)
+//  u is the base URL for this server
+//  localRobots is the path to the robots.txt file for this server
+//              on the local filesystem (if possible)
 //
-Server::Server(char *host, int port)
+Server::Server(URL u, char *localRobots)
 {
-    if (debug > 0)
-	cout << endl << "New server: " << host << ", " << port << endl;
+    if (debug)
+      cout << endl << "New server: " << u.host() << ", " << u.port() << endl;
 
-   if(debug>1)
-      cout << "Trying to retrieve robots.txt file on it" << endl;
-
-    _host = host;
-    _port = port;
+    _host = u.host();
+    _port = u.port();
     _bad_server = 0;
     _documents = 0;
-    
-   _persistent_connections = 1;  // Allowed by default
+    _persistent_connections = 1;  // Allowed by default
 
-    if (!config.Boolean("case_sensitive"))
-      _disallow.IgnoreCase();
     _max_documents = config.Value("server_max_docs", -1);
     _connection_space = config.Value("server_wait_time", 0);
     _last_connection.SettoNow();  // For getting robots.txt
 
-    //
-    // Attempt to get a robots.txt file from the specified server
-    //
-    String	url;
+    if (strcmp(u.service(),"http") == 0 || strcmp(u.service(),"https") == 0)
+      {
+	//
+	// Attempt to get a robots.txt file from the specified server
+	//
+	String	url;
+	url.trunc();
 
-    url.trunc();
-        
-    url << "http://" << host << ':' << port << "/robots.txt";
+	if (debug>1)
+	  cout << "Trying to retrieve robots.txt file on it" << endl;        
 
-    time_t	timeZero = 0; // Right now we want to get this regardless
+	url << u.signature() << "robots.txt";
+	
+	time_t	timeZero = 0; // Right now we want to get this every time
 
-    Document	doc(url, 0);
-    cout.flush();
+	Document	doc(url, 0);
     
-    switch (doc.Retrieve(timeZero))
-    {
-	case Transport::Document_ok:
+	switch (doc.Retrieve(timeZero))
+	  {
+	  case Transport::Document_ok:
 	    //
 	    // Found a robots.txt file.  Go parse it.
 	    //
 	    robotstxt(doc);
 	    break;
 			
-	case Transport::Document_not_found:
-	case Transport::Document_not_parsable:
-	case Transport::Document_redirect:
-	case Transport::Document_not_authorized:
+	  case Transport::Document_not_found:
+	  case Transport::Document_not_parsable:
+	  case Transport::Document_redirect:
+	  case Transport::Document_not_authorized:
 	    //
 	    // These cases are for when there is no robots.txt file.
 	    // We will just go on happily without restrictions
 	    //
 	    break;
 			
-	case Transport::Document_no_host:
-	default:
+	  case Transport::Document_no_host:
+	  default:
 	    //
 	    // In all other cases the server could not be reached.
 	    // We will remember this fact so that no more attempts to
@@ -91,8 +91,8 @@ Server::Server(char *host, int port)
 	    //
 	    _bad_server = 1;
 	    break;
-    }
-
+	  } // end switch
+      } // end if (http || https)
 }
 
 
@@ -214,7 +214,7 @@ void Server::robotstxt(Document &doc)
     if (debug > 1)
 	cout << "Pattern: " << pattern << endl;
 		
-    _disallow.Pattern(pattern);
+    _disallow.set(pattern, config.Boolean("case_sensitive"));
 }
 
 
@@ -225,21 +225,6 @@ void Server::push(char *path, int hopcount, char *referer, int local)
 {
     if (_bad_server && !local)
 	return;
-
-    //
-    // Make sure that the path is allowed on this server
-    //
-    int	which, length;
-    char	*serverPath = strchr(path + 7, '/');
-    if (!serverPath)
-	serverPath = path;
-    if (_disallow.Compare(serverPath, which, length))
-    {
-	if (debug > 1)
-	    cout << "robots.txt: discarding '" << path <<
-		"', which = " << which << ", length = " << length << endl;
-	return;
-    }
 
     // We use -1 as no limit
     if (_max_documents != -1 &&

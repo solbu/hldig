@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.6 1999/12/01 23:20:19 grdetil Exp $
+// $Id: Retriever.cc,v 1.72.2.7 1999/12/02 02:48:48 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -26,7 +26,7 @@
 #include "StringList.h"
 #include "WordType.h"
 #include "Transport.h"
-#include "Transport.h"
+
 #include <pwd.h>
 #include <signal.h>
 #include <assert.h>
@@ -156,7 +156,7 @@ Retriever::Initial(const String& list, int from)
            cout << "\t" << from << ":" << (int) log << ":" << url;
 	if (!server)
 	{
-	    server = new Server(u.host(), u.port());
+	    server = new Server(u);
 	    servers.Add(u.signature(), server);
 	}
 	else if (from && visited.Exists(url)) 
@@ -193,11 +193,12 @@ Retriever::Initial(List &list,int from)
 {
     list.Start_Get();
     String	*str;
+
     // from == 0 is an optimisation for pushing url in update mode
     //  assuming that 
     // 1) there's many more urls in docdb 
     // 2) they're pushed first
-    // 3)  there's no duplicate url in docdb
+    // 3) there's no duplicate url in docdb
     // then they don't need to be check against already pushed urls
     // But 2) can be false with -l option
     //
@@ -371,6 +372,7 @@ Retriever::parse_url(URLRef &urlRef)
     int			old_document;
     time_t		date;
     static int	index = 0;
+    Server		*server;
 
     url.parse(urlRef.GetURL().get());
 	
@@ -436,6 +438,7 @@ Retriever::parse_url(URLRef &urlRef)
 
     // Retrieve document, first trying local file access if possible.
     Transport::DocStatus status;
+    server = (Server *) servers[url.signature()];
     String *local_filename = GetLocal(url.get());
     if (local_filename)
     {  
@@ -446,12 +449,18 @@ Retriever::parse_url(URLRef &urlRef)
         {
             if (debug > 1)
    	        cout << "Local retrieval failed, trying HTTP" << endl;
-            status = doc->Retrieve(date);
+	    if (server && !server->IsDead()
+			&& !config.Boolean("local_urls_only"))
+		status = doc->Retrieve(date);
+	    else
+		status = Transport::Document_no_host;
         }
         delete local_filename;
     }
-    else
+    else if (server && !server->IsDead())
         status = doc->Retrieve(date);
+    else
+	status = Transport::Document_no_host;
 
     current_ref = ref;
 	
@@ -530,6 +539,10 @@ Retriever::parse_url(URLRef &urlRef)
 			   urlRef.GetReferer().get(),
 			   Transport::Document_no_host);
 	    words.MarkGone();
+
+	    // Mark the server as being down
+	    if (server)
+	      server->IsDead(1);
 	    break;
 
         case Transport::Document_no_port:
@@ -540,6 +553,10 @@ Retriever::parse_url(URLRef &urlRef)
 			   urlRef.GetReferer().get(),
 			   Transport::Document_no_port);
 	    words.MarkGone();
+
+	    // Mark the server as being down
+	    if (server)
+	      server->IsDead(1);
 	    break;
 
 	case Transport::Document_not_parsable:
@@ -583,6 +600,10 @@ Retriever::parse_url(URLRef &urlRef)
       case Transport::Document_not_recognized_service:
 	   if (debug)
 	     cout << " service not recognized" << endl;
+
+	    // Mark the server as being down
+	    if (server)
+	      server->IsDead(1);
 	   break;
 
       case Transport::Document_other_error:
@@ -764,6 +785,19 @@ Retriever::IsValidURL(char *u)
       {
 	if (debug > 2)
 	  cout << endl <<"   Rejected: Extension is not valid!";
+	return FALSE;
+      }
+
+    //
+    // After that gauntlet, check to see if the server allows it
+    // (robots.txt)
+    //
+    URL	testURL(url);
+    Server *server = (Server *) servers[testURL.signature()];
+    if (server && server->IsDisallowed(url) != 0)
+      {
+	if (debug > 2)
+	  cout << endl << "   Rejected: forbidden by server robots.txt!";
 	return FALSE;
       }
 
@@ -1231,7 +1265,7 @@ Retriever::got_href(URL &url, const char *description, int hops)
 		    //
 		    // Hadn't seen this server, yet.  Register it
 		    //
-		    server = new Server(url.host(), url.port());
+		    server = new Server(url);
 		    servers.Add(url.signature(), server);
 		}
 		//
@@ -1360,7 +1394,7 @@ Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 		    //
 		    // Hadn't seen this server, yet.  Register it
 		    //
-		    server = new Server(url.host(), url.port());
+		    server = new Server(url);
 		    servers.Add(url.signature(), server);
 		}
 		server->push(url.get(), ref->DocHopCount(), base->get(),

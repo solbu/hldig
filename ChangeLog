@@ -1,3 +1,37 @@
+Wed Dec  1 19:47:20 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtRegex.cc, htlib/HtRegex.h (set*): Add a case_sensitive
+	flag which defaults to insensitive. This better mirrors the
+	StringMatch class.
+	
+	* htcommon/URL.cc(signature): Make the signature a proper URL to
+	the base of the server.
+
+	* htdig/Server.h: Add IsDead() methods to query the status of the
+	server, as well as an IsDisallowed() method to query whether a URL
+	is forbidden by the robots.txt rules. Change _disallow to HtRegex.
+
+	* htdig/Server.cc(ctor): Only retrieve the robots.txt file if this
+	is an http or https server.
+	(robotstxt): Use the proper HtRegex method for setting the pattern.
+	(push): Remove logic checking the _disallow patterns. This is now
+	done by the Retriever object.
+
+	* htcommon/defaults.cc: Add new attribute "local_urls_only" which
+	defaults to false, which dictates whether retrieval should revert
+	to another method if RetrieveLocal() fails.
+	
+	* htdig/Retriever.cc(parse_url): Check to see if the server is
+	dead before calling the Retrieve() method. Notify the server
+	object if a connection fails. Also respects the new
+	local_urls_only attribute as described above.
+	(IsValidURL): Check the server's IsDisallowed() method to see if
+	the robots.txt forbids this URL.
+	
+	* htdoc/THANKS.html: Updated to reflect current contributions, etc.
+
+	* README: Update to mention version 3.2.0b1.
+	
 Wed Dec  1 17:05:48 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc(GetLocal): Fix error in GetLocalUser() return
@@ -10,9 +44,10 @@ Wed Dec  1 15:57:09 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 Mon Nov 29 23:19:35 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriver.cc, htdig/Retriver.h, htdig/Server.cc,
-	htdig/Server.h: forward-ported Alexis and Gilles's work for
-	cleaning up IsLocal/GetLocal. Makes local digging persistent, even
-	when HTTP server is down.
+	htdig/Server.h: forward-ported patch provided by Alexis Mikhailov
+	<alexis@medinf.chuvashia.su> and Gilles's for cleaning up
+	IsLocal/GetLocal. Makes local digging persistent, even when HTTP
+	server is down.
 
 Mon Nov 29 22:35:06 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
