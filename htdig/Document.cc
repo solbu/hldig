@@ -4,6 +4,10 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.25  1998/11/30 02:28:50  ghutchis
+//
+// Fix mistake in last update so the code compiles.
+//
 // Revision 1.24  1998/11/30 01:55:00  ghutchis
 //
 // Fixed problems under FreeBSD where <sys/types.h> needed to be before
@@ -97,7 +101,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.24 1998/11/30 01:55:00 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.25 1998/11/30 02:28:50 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -281,7 +285,8 @@ Document::getdate(char *datestring)
 {
     String	d = datestring;
     struct tm   tm;
-    
+    time_t      ret;    
+
     //
     // Two possible time designations:
     //      Tuesday, 01-Jul-97 16:48:02 GMT
@@ -305,7 +310,6 @@ Document::getdate(char *datestring)
 	    strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", &tm);
 	    cout << buffer << " (" << tm.tm_year << ")" << endl;
 	  }
-	time_t      ret;
 #if HAVE_TIMEGM
 	ret = timegm(&tm);
 #else
@@ -314,7 +318,7 @@ Document::getdate(char *datestring)
       }
     else
       {
-	time_t      ret = time(0); // This isn't the best, but it works. *fix*
+	ret = time(0); // This isn't the best, but it works. *fix*
       }
     if (debug > 2)
     {

@@ -4,6 +4,10 @@
 // Implementation of htsearch
 //
 // $Log: htsearch.cc,v $
+// Revision 1.13  1998/11/30 02:28:50  ghutchis
+//
+// Fix mistake in last update so the code compiles.
+//
 // Revision 1.12  1998/11/30 01:50:38  ghutchis
 //
 // Improved support for multiple restrict and exclude patterns, based on code
@@ -53,7 +57,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.12 1998/11/30 01:50:38 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.13 1998/11/30 02:28:50 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -142,14 +146,14 @@ main(int ac, char **av)
 	char *sep = input["restrict"];
 	while ((sep = strchr(sep, '\001')) != NULL)
 	  *sep++ = '|';
-	limit_to.Pattern(*sep);
+	limit_to.Pattern(sep);
     }
     if (input.exists("exclude"))
     {
        char *sep = input["exclude"];
        while ((sep = strchr(sep, '\001')) != NULL)
 	 *sep++ = '|';
-       exclude_these.Pattern(*sep);
+       exclude_these.Pattern(sep);
     }
 
     //

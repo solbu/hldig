@@ -1,3 +1,9 @@
+Sun Nov 29 21:26:56 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/htsearch.cc: Fix last update so it compiles (oops!).
+
+	* htdig/Document.cc: As above!
+
 Sun Nov 29 20:06:58 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc: Improved support for multiple restrict and
