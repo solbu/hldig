@@ -31,7 +31,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookie.cc,v 1.8 2003/01/28 11:15:46 angusgb Exp $
+// $Id: HtCookie.cc,v 1.9 2003/02/01 12:59:14 angusgb Exp $
 //
 
 #include "HtCookie.h"
@@ -360,31 +360,33 @@ const HtCookie &HtCookie::operator = (const HtCookie &rhs)
       
 
 // Print a debug message
-void HtCookie::printDebug()
+ostream& HtCookie::printDebug(ostream &out)
 {
 
-   cout << "   - ";
+   out << "   - ";
 
-   cout << "NAME=" << name << " VALUE=" << value << " PATH=" << path;
+   out << "NAME=" << name << " VALUE=" << value << " PATH=" << path;
 
    if (expires)
-      cout << " EXPIRES=" << expires->GetRFC850();
+      out << " EXPIRES=" << expires->GetRFC850();
 
    if (domain.length())
-      cout << " DOMAIN=" << domain << " ("
+      out << " DOMAIN=" << domain << " ("
       << (isDomainValid?"VALID":"INVALID")
       << ")";
 
    if (max_age >= 0)
-      cout << " MAX-AGE=" << max_age;
+      out << " MAX-AGE=" << max_age;
 
    if (isSecure)
-      cout << " SECURE";
+      out << " SECURE";
 
    if (srcURL.length() > 0)
-      cout << " - Issued by: " << srcURL;
+      out << " - Issued by: " << srcURL;
    
-   cout << endl;
+   out << endl;
+
+   return out;
 
 }
 

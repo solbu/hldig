@@ -29,7 +29,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookie.h,v 1.5 2003/01/28 11:15:46 angusgb Exp $ 
+// $Id: HtCookie.h,v 1.6 2003/02/01 12:59:14 angusgb Exp $ 
 //
 
 #ifndef _HTCOOKIE_H
@@ -87,7 +87,7 @@ class HtCookie : public Object
 	  const int GetVersion() const { return rfc_version; }
 
       // Print debug info
-      void printDebug();
+      virtual ostream &printDebug(ostream &out = std::cout);
 
       // Set the debug level
       static void SetDebugLevel (int d) { debug=d;}

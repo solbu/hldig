@@ -1,3 +1,8 @@
+Sat Feb 1 13:57:17 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htnet/HtCookie.[h,cc]: allowed printDebug to be passed an ostream object
+	* htnet/HtCookieMemJar.cc: removed a debug call
+
 Thu Jan 30 19:28:32 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* configure.in: used AC_LIBOBJ instead of deprecated LTLIBOBJS's workaround

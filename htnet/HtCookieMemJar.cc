@@ -24,7 +24,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookieMemJar.cc,v 1.4 2003/01/28 11:17:01 angusgb Exp $ 
+// $Id: HtCookieMemJar.cc,v 1.5 2003/02/01 12:59:14 angusgb Exp $ 
 //
 
 #include "HtCookieMemJar.h"
@@ -405,7 +405,6 @@ int HtCookieMemJar::WriteDomainCookiesString(const URL &_url,
 		 // max_age property that is to say:
 		 // (now - issuetime <= maxage).
 		 //
-cookie->printDebug();         
          const bool expired =
 		    (cookie->GetExpires() && (*(cookie->GetExpires()) < now))	// Expires
 			|| (HtDateTime::GetDiff(now, cookie->GetIssueTime())
