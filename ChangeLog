@@ -1,3 +1,8 @@
+Tue Oct  2 09:34:43 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html (start_url): Added a reference and link to
+	limit_urls_to, explaining how the two are tied together.
+
 Fri Sep 28 17:19:45 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/htdig-3.1.6.spec: Fixed %install to make symlinks for

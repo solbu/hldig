@@ -6973,6 +6973,13 @@
 			This is the list of URLs that will be used to start a
 			dig when there was no existing database. Note that
 			multiple URLs can be given here.
+			 <br>Note also that the value of <em>start_url</em>
+			will be the default value for
+			<a href="#limit_urls_to">limit_urls_to</a>, so if
+			you set start_url to the URLs for specific files,
+			rather than a site or subdirectory URL, you may need
+			to set limit_urls_to to something less restrictive
+			so htdig doesn't reject links in the documents.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -8358,7 +8365,7 @@
 	</dl>
 	<hr size="4" noshade>
 <!-- hhmts start -->
-Last modified: $Date: 2001/09/28 19:33:43 $
+Last modified: $Date: 2001/10/02 14:35:23 $
 <!-- hhmts end -->
   </body>
 </html>
