@@ -1,7 +1,7 @@
 //
 // Just Another String class.
 //
-// $Id: htString.h,v 1.5 1999/02/01 04:02:25 hp Exp $
+// $Id: htString.h,v 1.6 1999/02/23 03:16:07 ghutchis Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -14,7 +14,7 @@ class ostream;
 class String : public Object
 {
 public:
-    String()	{Length = 0,Allocated = 0;}				// Create an empty string
+    String()	{Length = 0,Allocated = 0;} // Create an empty string
     String(int init);			// initial allocated length
     String(char *s);			// from null terminated s
     String(char *s, int len);		// from s with length len
@@ -44,7 +44,7 @@ public:
     void		allocate(int init)	{reallocate_space(init);}
 
     //	
-    // allocate space for a new char *, and cope the String in.
+    // allocate space for a new char *, and copy the String in.
     //
     char		*new_char() const;
 
@@ -172,8 +172,8 @@ private:
     //
     void		allocate_space(int len);
     // Allocate some space without rounding
-	 void 	allocate_fix_space(int len);
-	
+    void 	allocate_fix_space(int len);
+
     friend		class StringIndex;
 };
 

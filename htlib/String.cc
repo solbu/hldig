@@ -1,10 +1,10 @@
 //
 // Implementation of String class
 //
-// $Id: String.cc,v 1.16 1999/02/01 04:02:25 hp Exp $
+// $Id: String.cc,v 1.17 1999/02/23 03:16:07 ghutchis Exp $
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.16 1999/02/01 04:02:25 hp Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.17 1999/02/23 03:16:07 ghutchis Exp $";
 #endif
 
 
@@ -45,21 +45,32 @@ String::String(char *s)
     Length = 0;
 
     int	len;
-    if (s) {
+    if (s)
+      {
 	len = strlen(s);
-    copy(s, len, len);
-    }
+	copy(s, len, len);
+      }
 }
 
 String::String(char *s, int len)
 {
     Allocated = 0;
-    copy(s, len, len);
+    Length = 0;
+    if (s && len != 0)
+      {
+	int slen = strlen(s);
+	if (len < slen)
+	  copy(s, slen, slen);
+	copy(s, len, len);
+      }
 }
 
 String::String(const String &s)
 {
-    copy(s.Data, s.length(), s.length());
+    Allocated = 0;
+    Length = 0;
+    if (s.length() != 0)
+      copy(s.Data, s.length(), s.length());
 }
 
 //
@@ -70,10 +81,12 @@ String::String(const String &s, int allocation_hint)
 {
     Allocated = 0;
     Length = 0;
-    if (allocation_hint < s.length())
-	allocation_hint = s.length();
-
-    copy(s.Data, s.length(), allocation_hint);
+    if (s.length() != 0)
+      {
+	if (allocation_hint < s.length())
+	  allocation_hint = s.length();
+	copy(s.Data, s.length(), allocation_hint);
+      }
 }
 
 String::~String()
@@ -84,8 +97,8 @@ String::~String()
 
 void String::operator = (const String &s)
 {
+    allocate_space(s.length());
     Length = s.length();
-    allocate_space(Length);
     copy_data_from(s.Data, Length);
 }
 
@@ -93,9 +106,10 @@ void String::operator = (char *s)
 {
     if (s)
     {
-	Length = strlen(s);
-    allocate_space(Length);
-    copy_data_from(s, Length);	
+      int len = strlen(s);
+	allocate_fix_space(len);
+	Length = len;
+	copy_data_from(s, Length);	
     }
     else
 	Length = 0;
@@ -537,13 +551,11 @@ void String::allocate_space(int len)
 {
     len++;				// In case we want to add a null.
 
+    if (len <= Allocated)
+      return;
+
     if (Allocated)
-    {
-	if (len > Allocated)
-	    delete [] Data;
-	else
-	    return;		// No need to allocate space.
-    }
+      delete [] Data;
 
     Allocated = next_power_of_2(len);
     Data = new char[Allocated];
@@ -551,8 +563,14 @@ void String::allocate_space(int len)
 
 void String::allocate_fix_space(int len)
 {
-    // FIXME pb if we are under MinimumAllocationSize ?
-    len++;
+    len++;				// In case we want to add a null.
+
+    if (len <= Allocated)
+      return;
+
+    if (Allocated)
+      delete [] Data;
+
     Allocated = len;
     Data = new char[Allocated];
 }
@@ -578,9 +596,11 @@ void String::reallocate_space(int len)
 
 void String::copy(char *s, int len, int allocation_hint)
 {
-    Length = len;
-    allocate_fix_space(allocation_hint);
-    copy_data_from(s, Length);
+  if (len == 0 || allocation_hint == 0)
+    return;         // We're not actually copying anything!
+  allocate_fix_space(allocation_hint);
+  Length = len;
+  copy_data_from(s, len);
 }
 
 void String::debug(ostream &o)
@@ -597,12 +617,10 @@ int next_power_of_2(int n)
     //
     // There must be a faster way...
     //
-    int	result = MinimumAllocationSize;
+  int	result = MinimumAllocationSize;
     
-    while (result < n)
-	result <<= 1;
-
-    return result;
+  while (result < n)
+    result <<= 1;
 }
 
 
