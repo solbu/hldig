@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: List.h,v 1.5.2.1 2000/01/03 11:49:09 bosc Exp $
+// $Id: List.h,v 1.5.2.2 2000/03/28 02:00:54 ghutchis Exp $
 //
 
 #ifndef	_List_h_
@@ -126,6 +126,9 @@ public:
     //
     List		&operator= (List *list)		{return *this = *list;}
     List		&operator= (List &list);
+
+    // Move one list to the end of another, emptying the other list.
+    void		AppendList (List &list);
 
 protected:
     //

@@ -1,18 +1,28 @@
 //
 // List.cc
 //
-// Implementation of the List class
+// List: A List class which holds objects of type Object.
 //
-// $Log: List.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: List.cc,v 1.6.2.1 2000/03/28 02:00:54 ghutchis Exp $
 //
-#if RELEASE
-static char	RCSid[] = "$Id: List.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
-#endif
 
 #include "List.h"
+
+class listnode
+{
+public:
+
+  listnode		*next;
+  listnode		*prev;
+  Object		*object;
+};
+
 
 //*********************************************************************
 // List::List()
@@ -20,9 +30,8 @@ static char	RCSid[] = "$Id: List.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
 //
 List::List()
 {
-    head = tail = current = 0;
+    head = tail = 0;
     number = 0;
-    current_index = -1;
 }
 
 
@@ -49,9 +58,9 @@ void List::Release()
 	head = head->next;
 	delete node;
     }
-    head = tail = current = 0;
+    head = tail = 0;
     number = 0;
-    current_index = -1;
+    cursor.Clear();
 }
 
 
@@ -69,9 +78,9 @@ void List::Destroy()
 	delete node->object;
 	delete node;
     }
-    head = tail = current = 0;
+    head = tail = 0;
     number = 0;
-    current_index = -1;
+    cursor.Clear();
 }
 
 
@@ -144,7 +153,7 @@ void List::Insert(Object *object, int position)
 	}
     }
 
-    current_index = -1;;
+    cursor.current_index = -1;
     number++;
 }
 
@@ -173,7 +182,7 @@ void List::Assign(Object *object, int position)
 	temp = temp->next;
     }
 
-    current_index = -1;
+    cursor.current_index = -1;
     delete temp->object;
     temp->object = object;
 }
@@ -197,9 +206,9 @@ int List::Remove(Object *object)
 	    // If we are in the middle of a Get_Next() sequence, we need to
 	    // fix up any problems with the current node.
 	    //
-	    if (current == node)
+	    if (cursor.current == node)
 	    {
-		current = node->next;
+		cursor.current = node->next;
 	    }
 
 	    if (head == tail)
@@ -224,7 +233,7 @@ int List::Remove(Object *object)
 
 	    delete node;
 	    number--;
-	    current_index = -1;
+	    cursor.current_index = -1;
 	    return 1;
 	}
 	node = node->next;
@@ -237,15 +246,15 @@ int List::Remove(Object *object)
 // Object *List::Get_Next()
 //   Return the next object in the list.
 //
-Object *List::Get_Next()
+Object *List::Get_Next(ListCursor& cursor) const
 {
-    listnode	*temp = current;
+    listnode	*temp = cursor.current;
 
-    if (current)
+    if (cursor.current)
     {
-	current = current->next;
-	if (current_index >= 0)
-	    current_index++;
+	cursor.current = cursor.current->next;
+	if (cursor.current_index >= 0)
+	    cursor.current_index++;
     }
     else
 	return 0;
@@ -338,41 +347,43 @@ Object *List::Previous(Object *prev)
 
 
 //*********************************************************************
-// Object *List::Nth(int n)
 //   Return the nth object in the list.
 //
-Object *List::Nth(int n)
+const Object *List::Nth(ListCursor& cursor, int n) const
 {
-    listnode	*temp = head;
+  if (n < 0 || n >= number)
+    return 0;
 
-    if (current_index == n)
-	return current->object;
+  listnode	*temp = head;
 
-    if (current && current_index >= 0 && n == current_index + 1)
+  if (cursor.current_index == n)
+    return cursor.current->object;
+
+  if (cursor.current && cursor.current_index >= 0 && n == cursor.current_index + 1)
     {
-	current = current->next;
-	if (!current)
+      cursor.current = cursor.current->next;
+      if (!cursor.current)
 	{
-	    current_index = -1;
-	    return 0;
+	  cursor.current_index = -1;
+	  return 0;
 	}
-	current_index = n;
-	return current->object;
+      cursor.current_index = n;
+      return cursor.current->object;
     }
 
-    for (int i = 0; temp && i < n; i++)
+  for (int i = 0; temp && i < n; i++)
     {
-	temp = temp->next;
+      temp = temp->next;
     }
 
-    if (temp)
+  if (temp)
     {
-	current_index = n;
-	current = temp;
-	return temp->object;
+      cursor.current_index = n;
+      cursor.current = temp;
+      return temp->object;
     }
-    else
-	return 0;
+  else
+    return 0;
 }
 
 
@@ -392,16 +403,17 @@ Object *List::Last()
 
 
 //*********************************************************************
-// Object *List::Copy()
+// Object *List::Copy() const
 //   Return a deep copy of the list.
 //
-Object *List::Copy()
+Object *List::Copy() const
 {
     List	*list = new List;
+    ListCursor  cursor;
 
-    Start_Get();
+    Start_Get(cursor);
     Object	*obj;
-    while ((obj = Get_Next()))
+    while ((obj = Get_Next(cursor)))
     {
 	list->Add(obj->Copy());
     }
@@ -426,3 +438,38 @@ List &List::operator=(List &list)
 }
 
 
+//*********************************************************************
+// void AppendList(List &list)
+//   Move contents of other list to the end of this list, and empty the
+//   other list.
+//
+void List::AppendList(List &list)
+{
+    // Never mind an empty list or ourselves.
+    if (list.number == 0 || &list == this)
+	return;
+
+    // Correct our pointers in head and tail.
+    if (tail)
+    {
+	// Link in other list.
+	tail->next = list.head;
+	list.head->prev = tail;
+
+	// Update members for added contents.
+	number += list.number;
+	tail = list.tail;
+    }
+    else
+    {
+	head = list.head;
+	tail = list.tail;
+	number = list.number;
+    }
+
+    // Clear others members to be an empty list.
+    list.head = list.tail = 0;
+    list.cursor.current = 0;
+    list.cursor.current_index = -1;
+    list.number = 0;
+}
