@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.3.2.15 2000/10/20 03:40:55 ghutchis Exp $
+// $Id: URL.cc,v 1.3.2.16 2000/12/10 21:43:13 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -707,7 +707,7 @@ void URL::constructURL()
 	_url << _host;
       }
 
-   if (_port != DefaultPort())  // Different to the default port
+   if (_port != DefaultPort() && _port != 0)  // Different than the default port
       _url << ':' << _port;
 
     _url << _path;
