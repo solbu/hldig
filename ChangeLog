@@ -1,3 +1,18 @@
+Sat May 15 11:24:26 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htfuzzy/Speling.h, htfuzzy/Speling.cc: New files for simple
+	spelling corection. Currently limited to transpostion and added
+	character errors. Missing character errors to be added soon.
+
+	* htfuzzy/Makefile.in: Compile it.
+
+	* htfuzzy/Fuzzy.cc (getFuzzyByName): Use it.
+
+	* htcommon/defaults.cc: Add new option minimum_speling_length for
+	the shortest query word to receive speling fuzzy
+	modifications. Should prevent problems with valid words generating
+	unrelated "corrections" of words. Default is 5 chars.
+	
 Sat May 15 11:18:27 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htfuzzy/Fuzzy.cc (getWords): Ensure word is not an empty or null
