@@ -4,6 +4,10 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.18  1998/10/18 21:22:16  ghutchis
+//
+// Revised connection timeout methods.
+//
 // Revision 1.17  1998/10/12 02:04:00  ghutchis
 //
 // Updated Makefiles and configure variables.
@@ -66,7 +70,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.17 1998/10/12 02:04:00 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.18 1998/10/18 21:22:16 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -87,9 +91,6 @@ typedef void (*SIGNAL_HANDLER) (...);
 typedef SIG_PF SIGNAL_HANDLER;
 #endif
 
-static Connection	*current_connection;
-
-
 //*****************************************************************************
 // Document::Document(char *u)
 //   Initialize with the given url as the location for this document.
@@ -101,6 +102,7 @@ Document::Document(char *u, int max_size)
     url = 0;
     proxy = 0;
     referer = 0;
+    contents = 0;
 
     if (max_size > 0)
 	max_doc_size = max_size;
@@ -280,32 +282,6 @@ Document::getdate(char *datestring)
 }
 
 
-static void
-timeout()
-{
-    if (debug > 1)
-	printf(" Timeout\n");
-    current_connection->ndelay();
-    current_connection->stop_io();
-
-    struct sigaction    sa;
-#ifdef _AIX
-    sa.sa_handler = (void(*)(int)) timeout;
-#else
-    sa.sa_handler = (SIGNAL_HANDLER) timeout;
-#endif
-    sigemptyset ((sigset_t *) &sa.sa_mask);
-    sigaddset ((sigset_t *) &sa.sa_mask, SIGALRM);
-#if defined(SA_INTERRUPT)
-    sa.sa_flags = SA_INTERRUPT;
-#else
-    sa.sa_flags = 0;
-#endif
-    sigaction(SIGALRM, &sa, 0);
-    alarm(config.Value("timeout"));
-}
-
-
 //*****************************************************************************
 // DocStatus Document::RetrieveHTTP(time_t date)
 //   Attempt to retrieve the document pointed to by our internal URL
@@ -340,8 +316,6 @@ Document::RetrieveHTTP(time_t date)
 	}
 	return Document_no_server;
     }
-
-    current_connection = &c;
 
     //
     // Construct and send the request to the server
@@ -411,22 +385,7 @@ Document::RetrieveHTTP(time_t date)
     //
     // Setup a timeout for the connection
     //
-    struct sigaction    sa;
-#ifdef _AIX
-    sa.sa_handler = (void(*)(int)) timeout;
-#else
-    sa.sa_handler = (SIGNAL_HANDLER) timeout;
-#endif
-    sigemptyset ((sigset_t *) &sa.sa_mask);
-    sigaddset ((sigset_t *) &sa.sa_mask, SIGALRM);
-#if defined(SA_INTERRUPT)
-    sa.sa_flags = SA_INTERRUPT;
-#else
-    sa.sa_flags = 0;
-#endif
-    sigaction(SIGALRM, &sa, 0);
-    int		timeout_interval = config.Value("timeout");
-    alarm(timeout_interval);
+    c.timeout(config.Value("timeout"));
 
     DocStatus   returnStatus = Document_ok;;
     switch (readHeader(c))
@@ -451,10 +410,7 @@ Document::RetrieveHTTP(time_t date)
             break;
     }
     if (returnStatus != Document_ok)
-    {
-        alarm(0);
         return returnStatus;
-    }
 
     //
     // Read in the document itself
@@ -463,8 +419,6 @@ Document::RetrieveHTTP(time_t date)
     char	docBuffer[8192];
     int		bytesRead;
 
-    if (debug < 2)
-	alarm(timeout_interval);
     while ((bytesRead = c.read(docBuffer, sizeof(docBuffer))) > 0)
     {
 	if (debug > 2)
@@ -472,11 +426,8 @@ Document::RetrieveHTTP(time_t date)
 	if (contents.length() + bytesRead > max_doc_size)
 	    break;
 	contents.append(docBuffer, bytesRead);
-	if (debug < 2)
-	    alarm(timeout_interval);
     }
     c.close();
-    alarm(0);
     document_length = contents.length();
 
     if (debug > 2)

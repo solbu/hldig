@@ -7,6 +7,10 @@
 // Implementation of the Connection class
 //
 // $Log: Connection.cc,v $
+// Revision 1.9  1998/10/18 21:22:16  ghutchis
+//
+// Revised connection timeout methods.
+//
 // Revision 1.8  1998/10/17 14:29:18  ghutchis
 //
 // Included fixes sent by Paul J. Meyer <pmeyer@rimeice.msfc.nasa.gov> to fix
@@ -55,6 +59,7 @@
 #include <fcntl.h>
 #include <netdb.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 extern "C" {
     int rresvport(int *);
@@ -69,6 +74,7 @@ Connection::Connection()
     peer = 0;
     server_name = 0;
     all_connections.Add(this);
+    timeout_value = 0;
 }
 
 
@@ -91,6 +97,7 @@ Connection::Connection(int socket)
     peer = 0;
     server_name = 0;
     all_connections.Add(this);
+    timeout_value = 0;
 }
 
 
@@ -146,6 +153,16 @@ int Connection::ndelay()
 int Connection::nondelay()
 {
     return fcntl(sock, F_SETFL, 0);
+}
+
+//*****************************************************************************
+// int Connection::timeout(int value)
+//
+int Connection::timeout(int value)
+{
+    int oval = timeout_value;
+    timeout_value = value;
+    return oval;
 }
 
 
@@ -379,9 +396,29 @@ int Connection::read_partial(char *buffer, int maxlength)
 {
     int		count;
 
+    need_io_stop = 0;
     do
     {
-	count = ::read(sock, buffer, maxlength);
+      errno = 0;
+
+      if (timeout_value > 0) {
+          fd_set fds;
+          FD_ZERO(&fds);
+          FD_SET(sock, &fds);
+
+          timeval tv;
+          tv.tv_sec = timeout_value;
+          tv.tv_usec = 0;
+
+          int selected = ::select(sock+1, &fds, 0, 0, &tv);
+          if (selected <= 0)
+              need_io_stop++;
+      }
+
+      if (!need_io_stop)
+          count = ::read(sock, buffer, maxlength);
+      else
+          count = -1;         // Input timed out
     }
     while (count < 0 && errno == EINTR && !need_io_stop);
     need_io_stop = 0;

@@ -8,9 +8,13 @@
 // All the calls are basically the same, but the parameters do not have any
 // stray _addr or _in mixed in...
 //
-// $Id: Connection.h,v 1.2 1998/10/17 14:29:18 ghutchis Exp $
+// $Id: Connection.h,v 1.3 1998/10/18 21:22:16 ghutchis Exp $
 //
 // $Log: Connection.h,v $
+// Revision 1.3  1998/10/18 21:22:16  ghutchis
+//
+// Revised connection timeout methods.
+//
 // Revision 1.2  1998/10/17 14:29:18  ghutchis
 //
 // Included fixes sent by Paul J. Meyer <pmeyer@rimeice.msfc.nasa.gov> to fix
@@ -47,6 +51,7 @@ public:
     int				close();
     int				ndelay();
     int				nondelay();
+    int                         timeout(int value);
 
     // Port stuff
     int				assign_port(int port = 0);
@@ -90,6 +95,7 @@ private:
     char				*peer;
     char				*server_name;
     int				need_io_stop;
+    int                         timeout_value;
 };
 
 

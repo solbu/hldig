@@ -1,3 +1,10 @@
+Sun Oct 18 17:19:51 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/Connection.h, htlib/Connection.cc: Define new function
+	timeout() as adapted from a patch by Reni Seindal.
+
+	* htdig/Document.cc: Use it as adapted from a patch by Reni Seindal.
+
 Sun Oct 18 16:33:58 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/DocumentDB.cc: Changed deserialize function to
