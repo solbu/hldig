@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htpurge.cc,v 1.1.2.1 2000/03/19 03:58:41 ghutchis Exp $
+// $Id: htpurge.cc,v 1.1.2.2 2000/03/20 19:13:40 ghutchis Exp $
 //
 
 #include "WordContext.h"
@@ -268,12 +268,12 @@ static int delete_word(WordList *words, WordDBCursor& cursor, const WordReferenc
 
   if(d.discard.Exists(docIDStr)) {
     if(words->Delete(cursor) != 1) {
-      cerr << "htmerge: deletion of " << *word << " failed " << strerror(errno) << "\n";
+      cerr << "htpurge: deletion of " << *word << " failed " << strerror(errno) << "\n";
       return NOTOK;
     }
     if (verbose)
       {
-	cout << "htmerge: Discarding ";
+	cout << "htpurge: Discarding ";
 	if(verbose > 2)
 	  cout << *word;
 	else 
@@ -322,10 +322,8 @@ void usage()
     cout << "\t\tfor debugging purposes.  The default verbose mode\n";
     cout << "\t\tgives a progress on what it is doing and where it is.\n\n";
     cout << "\t-a\tUse alternate work files.\n";
-    cout << "\t\tTells htmerge to append .work to database files causing\n";
-    cout << "\t\ta second copy of the database to be built.  This allows\n";
-    cout << "\t\toriginal files to be used by htsearch during the indexing\n";
-    cout << "\t\trun.\n\n";
+    cout << "\t\tTells htpurge to append .work to the database files \n";
+    cout << "\t\tallowing it to operate on a second set of databases.\n";
     cout << "\t-c configfile\n";
     cout << "\t\tUse the specified configuration file instead on the\n";
     cout << "\t\tdefault.\n\n";
