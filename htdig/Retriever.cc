@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.26  1998/12/12 01:44:33  ghutchis
+// Added additional debugging info on the reason for excluding a URL, based on
+// a patch by Benoit Majeau <Benoit.Majeau@nrc.ca>.
+//
 // Revision 1.25  1998/12/11 02:54:07  ghutchis
 // Changed support for server_wait_time to use delay() method in Server. Delay
 // is from beginning of last connection to this one.
@@ -582,27 +586,51 @@ Retriever::IsValidURL(char *u)
     // come later...  ***FIX***
     //
     if (strstr(u, "..") || strncmp(u, "http://", 7) != 0)
+      {
+	if (debug > 2)
+	  cout << endl <<"   Rejected: Not an http or relative link!";
 	return FALSE;
+      }
 
     //
     // If the URL contains any of the patterns in the exclude list,
     // mark it as invalid
     //
-    if (excludes.FindFirst(url) >= 0)
-	return FALSE;
+    int retValue;     // Returned value of findFirst
+    int myWhich = 0;    // Item # that matched [0 .. n]
+    int myLength = 0;   // Length of the matching value
+    retValue = excludes.FindFirst(url, myWhich, myLength);
+    if (retValue >= 0)
+      {
+      if (debug > 2)
+	{
+	  myWhich++;         // [0 .. n] --> [1 .. n+1]
+	  cout << endl <<"   Rejected: Item in the exclude list: item # ";
+	  cout << myWhich << " length: " << myLength << endl;
+      }
+      return FALSE;
+    }
 
     //
     // See if the path extension is in the list of invalid ones
     //
     char	*ext = strrchr(url, '.');
     if (ext && invalids->Exists(ext))
+      {
+	if (debug > 2)
+	  cout << endl <<"   Rejected: Extension is invalid!";
 	return FALSE;
+      }
 
     //
     // If any of the limits are met, we allow the URL
     //
     if (limits.FindFirst(url) >= 0)
 	return TRUE;
+
+    if (debug > 2)
+      cout << endl <<"   Rejected: URL not in the limits!";
+
     return FALSE;
 }
 
