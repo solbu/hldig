@@ -63,7 +63,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: WordList.h,v 1.8 2003/06/24 19:57:27 nealr Exp $
+// $Id: WordList.h,v 1.9 2003/10/13 11:04:30 lha Exp $
 //
 
 #ifndef _WordList_h_
@@ -169,9 +169,12 @@ public:
     // may be <i>O_RDONLY</i> or <i>O_RDWR.</i> If mode is 
     // <i>O_RDWR</i> it can be or'ed with <i>O_TRUNC</i> to reset
     // the content of an existing inverted index.
+    // If  word_only  is true, entries will compare equal if the "word" part
+    // of the key is equal, even if the numeric fields aren't.  (What are the
+    // numeric fields, anyway??)
     // Return OK on success, NOTOK otherwise.
     //
-    int                 Open(const String& filename, int mode);
+    int                 Open(const String& filename, int mode, int word_only=false);
     //-
     // Close inverted index.
     // 

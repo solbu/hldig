@@ -19,7 +19,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: WordList.cc,v 1.11 2003/06/24 19:57:27 nealr Exp $
+// $Id: WordList.cc,v 1.12 2003/10/13 11:04:30 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -65,11 +65,14 @@ WordList::~WordList()
 
 // *****************************************************************************
 //
-int WordList::Open(const String& filename, int mode)
+int WordList::Open(const String& filename, int mode, int word_only)
 {
   int usecompress=0;
 
-  db.set_bt_compare(word_db_cmp);
+  // If  word_only,  entries compare equal if the "word" part matches.
+  // This should only be used for querying the database, not writing it.
+  // It is needed by  speling  to test for the existence of words.
+  db.set_bt_compare(word_only ? word_only_db_cmp : word_db_cmp);
 
   if(config.Value("wordlist_page_size", 0))
     db.set_pagesize(config.Value("wordlist_page_size"));

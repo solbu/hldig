@@ -1,8 +1,18 @@
+Mon Oct 13 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htfuzzy/Regex.cc:  Search for regular expression.  (Used to ignore it!)
+
+    * htfuzzy/Speling.cc, htword/{WordList.cc,WordList.h,WordKey.cc,WordKey.h}:
+      When looking in word database for misspelt words, don't ask to match
+      trailing numeric fields in database key.
+
+    * htcommon/defaults.cc, htdoc/htfuzzy.cc: Update docs.
+
 Sun Oct 12 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htsearch/htsearch.cc:
-    Fix bug if fuzzy algorithms produced no search words.
-    Send all debugging output to  cerr  not  cout.  More debugging output.
+      Fix bug if fuzzy algorithms produced no search words.
+      Send all debugging output to  cerr  not  cout.  More debugging output.
 
 Sun Oct 12 2003 Lachlan Andrew <lha@users.sourceforge.net>
 

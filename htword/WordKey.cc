@@ -14,7 +14,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: WordKey.cc,v 1.7 2003/06/24 19:57:27 nealr Exp $
+// $Id: WordKey.cc,v 1.8 2003/10/13 11:04:30 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -75,6 +75,7 @@ int WordKey::Equal(const WordKey& other) const
 //
 // Compare <a> and <b> in the Berkeley DB fashion. 
 // <a> and <b> are packed keys.
+// Compares full WordKey, unlike  Compare_WordOnly.
 //
 inline int 
 WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
@@ -110,6 +111,7 @@ WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
   }
   //
   //  following fields: numerical
+  //  				But what *are* they?? -- lha
   //
   for(int j = 1; j < info.nfields; j++) 
   {
@@ -137,10 +139,45 @@ WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
   //
   return 0;
 }
+//
+// Compare <a> and <b> in the Berkeley DB fashion. 
+// <a> and <b> are packed keys.
+// Only compares "word" part of WordKey, unlike  Compare.
+//
+inline int 
+WordKey::Compare_WordOnly(const char *a, int a_length, const char *b, int b_length)
+{
+  const WordKeyInfo& info = *WordKey::Info();
+
+  if(a_length < info.num_length || b_length < info.num_length) {
+      fprintf(stderr, "WordKey::Compare: key length %d or %d < info.num_length = %d\n", a_length, b_length, info.num_length);
+      return NOTOK;
+  }
+
+  //
+  //  compare first field only: actual word
+  //
+  const int p1_length = a_length - info.num_length;
+  const int p2_length = b_length - info.num_length;
+  {
+      int len = p1_length > p2_length ? p2_length : p1_length;
+      const unsigned char* p1 = (unsigned char *)a;
+      const unsigned char* p2 = (unsigned char *)b;
+
+      for (;len--; ++p1, ++p2) {
+	  if (*p1 != *p2)
+	      return (int)*p1 - (int)*p2;
+      }
+      if(p1_length != p2_length)
+	  return p1_length - p2_length;
+  }
+  return 0;
+}
 
 //
 // Compare <a> and <b> in the Berkeley DB fashion. 
 // <a> and <b> are packed keys.
+// Compares full WordKey, unlike  Compare_WordOnly.
 //
 int 
 WordKey::Compare(const String& a, const String& b)
@@ -149,15 +186,40 @@ WordKey::Compare(const String& a, const String& b)
 }
 
 //
+// Compare <a> and <b> in the Berkeley DB fashion. 
+// <a> and <b> are packed keys.
+// Only compares "word" part of WordKey, unlike  Compare.
+//
+int 
+WordKey::Compare_WordOnly(const String& a, const String& b)
+{
+  return WordKey::Compare_WordOnly(a, a.length(), b, b.length());
+}
+
+//
 // C comparison function interface for Berkeley DB (bt_compare)
 // Just call the static Compare function of WordKey. It is *critical*
 // that this function is as fast as possible. See the Berkeley DB
 // documentation for more information on the return values.
+// Compares full WordKey, unlike  word_only_db_cmp.
 //
 int
 word_db_cmp(const DBT *a, const DBT *b)
 {
   return WordKey::Compare((char*)a->data, a->size, (char*)b->data, b->size);
+}
+
+//
+// C comparison function interface for Berkeley DB (bt_compare)
+// Just call the static Compare function of WordKey.
+// See the Berkeley DB
+// documentation for more information on the return values.
+// Only compares text part of the WordKey, unlike  word_db_cmp.
+//
+int
+word_only_db_cmp(const DBT *a, const DBT *b)
+{
+  return WordKey::Compare_WordOnly((char*)a->data, a->size, (char*)b->data, b->size);
 }
 
 //

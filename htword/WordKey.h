@@ -113,6 +113,7 @@
 // C comparison function interface for Berkeley DB (bt_compare)
 //
 int word_db_cmp(const DBT *a, const DBT *b);
+int word_only_db_cmp(const DBT *a, const DBT *b);
 #endif /* SWIG */
 
 #ifndef SWIG
@@ -487,6 +488,7 @@ class WordKey
   // found in <i>WordKeyInfo.</i>
   //
   static int 	    Compare(const String& a, const String& b);
+  static int 	    Compare_WordOnly(const String& a, const String& b);
   //-
   // Compare <b>a</b> and <b>b</b> in the Berkeley DB fashion. 
   // <b>a</b> and <b>b</b> are packed keys. The semantics of the
@@ -494,6 +496,7 @@ class WordKey
   // found in <i>WordKeyInfo.</i>
   //
   static int        Compare(const char *a, int a_length, const char *b, int b_length);
+  static int        Compare_WordOnly(const char *a, int a_length, const char *b, int b_length);
   //-
   // Compare object defined fields with <b>other</b> key defined fields only,
   // ignore fields that are not defined in object or <b>other.</b> 

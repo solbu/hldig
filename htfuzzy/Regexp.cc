@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Regexp.cc,v 1.3 2003/06/24 20:06:19 nealr Exp $
+// $Id: Regexp.cc,v 1.4 2003/10/13 11:04:30 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -52,13 +52,14 @@ Regexp::~Regexp()
 // linear search, but with much less overhead.
 //
 void
-Regexp::getWords(char *, List &words)
+Regexp::getWords(char *pattern, List &words)
 {
     HtRegex	regexMatch;
-    String	stripped;
+    String	stripped (pattern);
 
     // First we have to strip the necessary punctuation
-    stripped.remove("^.[]$()|*+?{},-\\");
+// Why??  lha
+//    stripped.remove("^.[]$()|*+?{},-\\");
 
     // Anchor the string to be matched
     regexMatch.set(String("^") + stripped);

@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Speling.cc,v 1.10 2003/07/21 08:16:10 angusgb Exp $
+// $Id: Speling.cc,v 1.11 2003/10/13 11:04:30 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -65,7 +65,8 @@ Speling::getWords(char *w, List &words)
 	return;
 
     HtWordList	wordDB(config);
-    if (wordDB.Open(config["word_db"], O_RDONLY) == NOTOK)
+    // last arg=1 -> open to compare only "word" part of of word keys
+    if (wordDB.Open(config["word_db"], O_RDONLY, 1) == NOTOK)
       return;
 
     String	initial = w;
@@ -82,7 +83,6 @@ Speling::getWords(char *w, List &words)
       char	temp = initial[pos];
       initial[pos] = initial[pos+1];
       initial[pos+1] = temp;
-      
       if (!wordDB.Exists(initial))   // Seems weird, but this is correct
 	words.Add(new String(initial));
 

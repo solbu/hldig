@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.91 2003/08/28 00:45:31 angusgb Exp $
+// $Id: defaults.cc,v 1.92 2003/10/13 11:04:30 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -994,7 +994,13 @@ http://www.htdig.org/", " \
 	characters.<br> \
 	Note that the <a href=\"#locale\">locale</a> attribute \
 	is normally used to configure which characters \
-	constitute letter characters. \
+	constitute letter characters.<br> \
+	Note also that it is an error to have characters in both \
+	extra_word_characters and \
+	<a href=\"#valid_punctuation\">valid_punctuation</a>. \
+	To add one of the characters in the default valid_punctuation to \
+	extra_word_characters, an explicit valid_punctuation entry must be \
+	added to the configuration file. \
 " }, \
 { "head_before_get", "false",  \
 	"boolean", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "head_before_get: true", " \
@@ -1418,7 +1424,8 @@ http://www.htdig.org/", " \
 " }, \
 { "max_prefix_matches", "1000",  \
 	"integer", "htsearch", "", "3.1.0b1", "Searching:Method", "max_prefix_matches: 100", " \
-	The Prefix fuzzy algorithm could potentially match a \
+	The Prefix <a href=\"#search_algorithm\">fuzzy algorithm</a> \
+	could potentially match a \
 	very large number of words. This value limits the \
 	number of words each prefix can match. Note \
 	that this does not limit the number of documents that \
@@ -1735,7 +1742,8 @@ http://www.htdig.org/", " \
 " }, \
 { "regex_max_words", "25",  \
 	"integer", "htsearch", "", "3.2.0b1", "Searching:Method", "regex_max_words: 10", " \
-	The \"regex\" fuzzy algorithm could potentially match a \
+	The \"regex\" <a href=\"#search_algorithm\">fuzzy algorithm</a> \
+	could potentially match a \
 	very large number of words. This value limits the \
 	number of words each regular expression can match. Note \
 	that this does not limit the number of documents that \
@@ -1846,7 +1854,7 @@ http://www.htdig.org/", " \
 				soundex \
 			  </dt> \
 			  <dd> \
-				Uses a slightly modified soundex algorithm to match \
+				Uses a slightly modified <a href=\"http://www.sog.org.uk/cig/vol6/605tdrake.pdf\">soundex</a> algorithm to match \
 				words. This requires that the soundex database be \
 				present. It is generated with the \
 				<a href=\"htfuzzy.html\">htfuzzy</a> program. \
@@ -1919,7 +1927,10 @@ http://www.htdig.org/", " \
 			  Matches all words that match the patterns given as regular  \
 			  expressions. Since this requires checking every word in \
 			  the database, this can really slow down searches \
-			  considerably. \
+			  considerably.  The config file used for searching \
+			  must include the regex meta-characters (^$\\[-]|.*) \
+			  included in <a href=\"extra_word_characters\">extra_word_characters</a>, \
+			  while the config file used for digging should not.\
 			<dd> \
 			<dt> \
 			speling \
@@ -2340,7 +2351,8 @@ http://www.htdig.org/", " \
 " }, \
 { "substring_max_words", "25",  \
 	"integer", "htsearch", "", "3.0.8b1", "Searching:Method", "substring_max_words: 100", " \
-	The Substring fuzzy algorithm could potentially match a \
+	The Substring <a href=\"#search_algorithm\">fuzzy algorithm</a> \
+	could potentially match a \
 	very large number of words. This value limits the \
 	number of words each substring pattern can match. Note \
 	that this does not limit the number of documents that \
