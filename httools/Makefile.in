@@ -128,7 +128,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 LOCAL_DEFINES = -DSENDMAIL=\"$(SENDMAIL)\"
 
-bin_PROGRAMS = htpurge htnotify
+bin_PROGRAMS = htpurge htnotify htdump htstat
 
 htpurge_SOURCES = htpurge.cc
 htpurge_DEPENDENCIES = $(HTLIBS)
@@ -139,6 +139,16 @@ htnotify_SOURCES = htnotify.cc
 htnotify_DEPENDENCIES = $(HTLIBS)
 htnotify_LDFLAGS = $(PROFILING)
 htnotify_LDADD = $(HTLIBS)
+
+htdump_SOURCES = htdump.cc
+htdump_DEPENDENCIES = $(HTLIBS)
+htdump_LDFLAGS = $(PROFILING)
+htdump_LDADD = $(HTLIBS)
+
+htstat_SOURCES = htstat.cc
+htstat_DEPENDENCIES = $(HTLIBS)
+htstat_LDFLAGS = $(PROFILING)
+htstat_LDADD = $(HTLIBS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
 CONFIG_CLEAN_FILES = 
@@ -150,6 +160,8 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 htpurge_OBJECTS =  htpurge.o
 htnotify_OBJECTS =  htnotify.o
+htdump_OBJECTS =  htdump.o
+htstat_OBJECTS =  htstat.o
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -160,9 +172,10 @@ DIST_COMMON =  Makefile.am Makefile.in
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/htnotify.P .deps/htpurge.P
-SOURCES = $(htpurge_SOURCES) $(htnotify_SOURCES)
-OBJECTS = $(htpurge_OBJECTS) $(htnotify_OBJECTS)
+DEP_FILES =  .deps/htdump.P .deps/htnotify.P .deps/htpurge.P \
+.deps/htstat.P
+SOURCES = $(htpurge_SOURCES) $(htnotify_SOURCES) $(htdump_SOURCES) $(htstat_SOURCES)
+OBJECTS = $(htpurge_OBJECTS) $(htnotify_OBJECTS) $(htdump_OBJECTS) $(htstat_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -239,6 +252,14 @@ htpurge: $(htpurge_OBJECTS) $(htpurge_DEPENDENCIES)
 htnotify: $(htnotify_OBJECTS) $(htnotify_DEPENDENCIES)
 	@rm -f htnotify
 	$(CXXLINK) $(htnotify_LDFLAGS) $(htnotify_OBJECTS) $(htnotify_LDADD) $(LIBS)
+
+htdump: $(htdump_OBJECTS) $(htdump_DEPENDENCIES)
+	@rm -f htdump
+	$(CXXLINK) $(htdump_LDFLAGS) $(htdump_OBJECTS) $(htdump_LDADD) $(LIBS)
+
+htstat: $(htstat_OBJECTS) $(htstat_DEPENDENCIES)
+	@rm -f htstat
+	$(CXXLINK) $(htstat_LDFLAGS) $(htstat_OBJECTS) $(htstat_LDADD) $(LIBS)
 .cc.o:
 	$(CXXCOMPILE) -c $<
 .cc.lo:
