@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.6.2.3 1999/11/28 02:46:08 ghutchis Exp $
+// $Id: Transport.h,v 1.6.2.4 2000/02/10 06:04:13 ghutchis Exp $
 //
 //
 
@@ -165,6 +165,10 @@ class Transport : public Object
    void SetTimeOut ( int t ) { _timeout=t; }
    int GetTimeOut () { return _timeout; }
 
+   // Set and get the connection retry number
+   void SetRetry ( int r ) { _retries=r; }
+   int GetRetry () { return _retries; }
+
    // Get the Connection Host
    const String &GetHost() { return _host; }
 
@@ -236,6 +240,11 @@ protected:
    inline int AssignConnectionTimeOut()
       { return _connection.timeout(_timeout); }
 
+   // Assign the retry number to the connection (returns the old value)
+
+   inline int AssignConnectionRetries()
+      { return _connection.retries(_retries); }
+
    // Flush the connection
    void FlushConnection();
       
@@ -279,6 +288,7 @@ protected:
    int          _port;                 // TCP Connection port
    
    int		_timeout;              // Connection timeout
+   int		_retries;              // Connection retry limit
 
    HtDateTime	*_modification_time;   // Stored modification time if avail.
    int		_max_document_size;    // Max document size to retrieve

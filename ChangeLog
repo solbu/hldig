@@ -1,3 +1,15 @@
+Wed Feb  9 23:52:55 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htnet/Connection.cc (connect): Add alarm(timeout) ... alarm(0)
+	around ::connect() call to ensure this does timeout as appropriate
+	as suggested by Russ Lentini <rlentini@atl.lmco.com> to resolve
+	PR#762 (and probably others as well).
+	(connect): Add a retry loop as suggested by Wilhelm Schnell
+	<Wilhelm.Schnell@mn.man.de> to resolve PR#754.
+
+	* htnet/HtHTTP.cc (HTTPRequest): Add CloseConnection() when the
+	connection fails on open before returning from the method.
+
 Wed Feb  9 09:21:00 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Server.cc (robotstxt): apply more rigorous parsing of
@@ -70,6 +82,7 @@ Fri Feb 04 17:28:32 2000  Loic Dachary  <loic@ceic.com>
 	* htword/WordKey.cc,WordReference.cc,WordRecord.cc (Print): use
 	  cerr instead of cout for immediate printing under debugger.
 
+>>>>>>> 1.469.2.167
 Thu Feb  3 16:06:45 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Document.cc (RetrieveLocal): fix bug that prevented local
