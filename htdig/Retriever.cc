@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.7 1999/11/24 02:02:27 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.8 1999/11/24 04:40:32 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -993,9 +993,12 @@ Retriever::got_href(URL &url, char *description)
 {
     DocumentRef		*ref;
     Server		*server;
+    String		caseurl = url.get();
+    if (!config.Boolean("case_sensitive"))
+	caseurl.lowercase();
 
     if (debug > 2)
-	cout << "href: " << url.get() << " (" << description << ')' << endl;
+	cout << "href: " << caseurl << " (" << description << ')' << endl;
 
     n_links++;
 
@@ -1013,7 +1016,7 @@ Retriever::got_href(URL &url, char *description)
 	//
 	if (debug > 2)
 	{
-	    cout << "resolving '" << url.get() << "'\n";
+	    cout << "resolving '" << caseurl << "'\n";
 	    cout.flush();
 	}
 
@@ -1027,17 +1030,17 @@ Retriever::got_href(URL &url, char *description)
 	// current document is never referenced before, as in a
 	// start_url.
 
-	if (strcmp(url.get(), current_ref->DocURL()) == 0)
+	if (strcmp(caseurl, current_ref->DocURL()) == 0)
 	{
 	    current_ref->DocBackLinks(current_ref->DocBackLinks() + 1);
 	    current_ref->AddDescription(description);
 	}
-	else if (limitsn.FindFirst(url.get()) >= 0)
+	else if (limitsn.FindFirst(caseurl) >= 0)
 	{
 	    //
 	    // First add it to the document database
 	    //
-	    ref = docs[url.get()];
+	    ref = docs[caseurl];
 	    // if ref exists we have to call AddDescription even
             // if max_hop_count is reached
     	    if (!ref && currenthopcount + 1 > max_hop_count)
@@ -1054,7 +1057,7 @@ Retriever::got_href(URL &url, char *description)
 		ref->DocHopCount(currenthopcount + 1);
 	    }
 	    ref->DocBackLinks(ref->DocBackLinks() + 1); // This one!
-	    ref->DocURL(url.get());
+	    ref->DocURL(caseurl);
 	    ref->AddDescription(description);
 
 	    //
@@ -1077,7 +1080,7 @@ Retriever::got_href(URL &url, char *description)
 	    //
 	    // Now put it in the list of URLs to still visit.
 	    //
-	    if (Need2Get(url.get()))
+	    if (Need2Get(caseurl))
 	    {
 		if (debug > 1)
 		    cout << "\n   pushing " << url.get() << endl;
@@ -1093,10 +1096,10 @@ Retriever::got_href(URL &url, char *description)
 		//
 		// Let's just be sure we're not pushing an empty URL
 		//
-		if (strlen(url.get()))
-		  server->push(url.get(), ref->DocHopCount(), base->get());
+		if (strlen(caseurl))
+		  server->push(caseurl, ref->DocHopCount(), base->get());
 
-		String	temp = url.get();
+		String	temp = caseurl;
 		visited.Add(temp, 0);
 		if (debug)
 		    cout << '+';

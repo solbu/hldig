@@ -1,3 +1,8 @@
+Tue Nov 23 22:16:31 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc(got_href): Applied Patrick's case insensitive
+	server fix, to lowercase all URLs if case_sensitive is false.
+
 Tue Nov 23 22:08:22 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/StringList.cc(Join): Applied Loic's patch to fix memory leak.
