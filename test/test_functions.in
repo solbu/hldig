@@ -1,3 +1,8 @@
+# 
+# Initialise variables and directories to prepare to run test suite.
+# If run with argument  --start-apache  it will also start  httpd.
+# If run with argument  --stop-apache   it will stop  httpd  and exit.
+# If there is a problem before the test, "exit 77" skips the test (not fails it)
 #
 # Part of the ht://Dig package   <http://www.htdig.org/>
 # Copyright (c) 1999, 2000 The ht://Dig Group
@@ -5,8 +10,17 @@
 # or the GNU General Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: test_functions.in,v 1.8 2002/02/01 22:49:37 ghutchis Exp $
+# $Id: test_functions.in,v 1.9 2003/06/08 07:27:12 lha Exp $
 #
+
+if [ "$1" == --stop-apache ]
+then
+    if [ -n "$httpd"  -a  -f logs/httpd.pid ]
+    then
+	kill -15 `cat logs/httpd.pid`
+	sleep 2
+    fi
+else
 
 testdir=`pwd`
 
@@ -14,7 +28,7 @@ perl=@PERL@
 
 @SET_MAKE@
 
-if test -z "$MAKE"
+if [ -z "$MAKE" ]
 then
 	echo "no make command found"
 	exit 77
@@ -30,35 +44,42 @@ fi
 
 httpd=@APACHE@
 
-if test -z "$httpd"
+# if apache requested, either start it or warn it was not configured.
+if [ "$1" == --start-apache ]
 then
-	echo "no apache server provided. Run configure with --with-apache=<httpd path>"
-	exit 77
-fi
 
-if [ ! -d logs ] 
-then 
-  mkdir -p logs
-else
-  if [ -f logs/httpd.pid ]
-  then
-    kill -15 `cat logs/httpd.pid`
-    sleep 2
-  fi
+    if [ -z "$httpd" ]
+    then
+	    prog_name=`basename $0`
+	    echo "Run configure with --with-apache=<httpd path> to run $prog_name."
+	    exit 77
+    fi
+
+    if [ ! -d logs ] 
+    then 
+      mkdir -p logs
+    else
+      if [ -f logs/httpd.pid ]
+      then
+	kill -15 `cat logs/httpd.pid`
+	sleep 2
+      fi
+    fi
+    if ! $httpd -f $testdir/conf/httpd.conf
+    then
+        echo
+        echo "****Could not start apache. This test may fail, but that is not ht://Dig's fault"
+        echo
+    fi
 fi
-$httpd -f $testdir/conf/httpd.conf
 
 #
 # Prepare htdig test environment
 #
 rm -fr var/htdig
+rm -fr var/htdig2
 mkdir -p var/htdig
 mkdir -p var/htdig2
-
-fail() {
-   echo $1
-   exit 1
-}
 
 htdig=../htdig/htdig
 htsearch=../htsearch/htsearch
@@ -75,8 +96,17 @@ export MIFLUZ_CONFIG ; MIFLUZ_CONFIG=${srcdir}/mifluz.conf
 
 rm -f test test_weakcmpr __db*
 
+#
+# Provide a unified means for scripts to clean up.
+#
 fail() {
-   echo $1
-   exit 1
+    echo "$1"
+    if [ -n "$httpd"  -a  -f logs/httpd.pid ]
+    then
+      kill -15 `cat logs/httpd.pid`
+      sleep 2
+    fi
+    exit 1
 }
 
+fi	# $1 != --stop-apache

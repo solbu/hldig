@@ -41,6 +41,8 @@
 # 2001/07/12
 # Changed:      fix "last" handling in dehyphenation <grdetil@scrc.umanitoba.ca>
 # Added:        handle %xx codes in title from URL   <grdetil@scrc.umanitoba.ca>
+# 2003/06/07
+# Changed:	allow file names with spaces         <lha@users.sourceforge.net>
 #########################################
 #
 # set this to your MS Word to text converter
@@ -101,9 +103,9 @@ if ($magic =~ /^\0\n/) {                # possible MacBinary header
 
 if ($magic =~ /%!|^\033%-12345/) {      # it's PostScript (or HP print job)
         $parser = $CATPS;               # gs 3.33 leaves _temp_.??? files in .
-        $parsecmd = "(cd /tmp; $parser; rm -f _temp_.???) < $ARGV[0] |";
+        $parsecmd = "(cd /tmp; $parser; rm -f _temp_.???) < \"$ARGV[0]\" |";
 # keep quiet even if PS gives errors...
-#       $parsecmd = "(cd /tmp; $parser; rm -f _temp_.???) < $ARGV[0] 2>/dev/null |";
+#       $parsecmd = "(cd /tmp; $parser; rm -f _temp_.???) < \"$ARGV[0]\" 2>/dev/null |";
         $type = "PostScript";
         $dehyphenate = 0;               # ps2ascii already does this
         if ($magic =~ /^\033%-12345/) { # HP print job
@@ -114,12 +116,12 @@ if ($magic =~ /%!|^\033%-12345/) {      # it's PostScript (or HP print job)
         }
 } elsif ($magic =~ /%PDF-/) {           # it's PDF (Acrobat)
         $parser = $CATPDF;
-        $parsecmd = "$parser -raw $ARGV[0] - |";
+        $parsecmd = "$parser -raw \"$ARGV[0]\" - |";
 # to handle single-column, strangely laid out PDFs, use coalescing feature...
-#       $parsecmd = "$parser $ARGV[0] - |";
+#       $parsecmd = "$parser \"$ARGV[0]\" - |";
         $type = "PDF";
         $dehyphenate = 1;               # PDFs often have hyphenated lines
-        if (open(INFO, "$PDFINFO $ARGV[0] 2>/dev/null |")) {
+        if (open(INFO, "$PDFINFO \"$ARGV[0]\" 2>/dev/null |")) {
                 while (<INFO>) {
                         if (/^Title:/) {
                                 $title = $_;
@@ -136,17 +138,17 @@ if ($magic =~ /%!|^\033%-12345/) {      # it's PostScript (or HP print job)
         }
 } elsif ($magic =~ /WPC/) {             # it's WordPerfect
         $parser = $CATWP;
-        $parsecmd = "$parser $ARGV[0] |";
+        $parsecmd = "$parser \"$ARGV[0]\" |";
         $type = "WordPerfect";
         $dehyphenate = 0;               # WP documents not likely hyphenated
 } elsif ($magic =~ /^{\\rtf/) {         # it's Richtext
         $parser = $CATRTF;
-        $parsecmd = "$parser $ARGV[0] |";
+        $parsecmd = "$parser \"$ARGV[0]\" |";
         $type = "RTF";
         $dehyphenate = 0;               # RTF documents not likely hyphenated
 } elsif ($magic =~ /\320\317\021\340/) {    # it's MS Word
         $parser = $CATDOC;
-        $parsecmd = "$parser -a -w $ARGV[0] |";
+        $parsecmd = "$parser -a -w \"$ARGV[0]\" |";
         $type = "Word";
         $dehyphenate = 0;               # Word documents not likely hyphenated
 } else {

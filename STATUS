@@ -28,6 +28,9 @@ CHECKLIST FOR 3.2.0b5:
     - HP-UX 10.20, gcc 2.8.1 (Jesse)
     - RedHat, other versions anyone?
     - RedHat AdvanceServer Itanium II (David Bannon)
+  Known to have problems:
+    - SGI/Irix 6.5.3 using SGI compilers
+      <http://www.geocrawler.com/mail/msg.php3?msg_id=8025827&list=8825>
 * Check bugs listed in bug-tracker...
 * Polish release docs (Geoff)
 

@@ -5,10 +5,10 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_htdig_local,v 1.4 2003/01/11 02:33:28 lha Exp $
+# $Id: t_htdig_local,v 1.5 2003/06/08 07:27:12 lha Exp $
 #
 
-. ./test_functions
+. ./test_functions --start-apache
 
 #test for local-file-system access to <http://...> URLs
 
@@ -16,10 +16,11 @@ expected='bad_local.htm'
 got=`$htdig "$@" -t -i -vv -c $testdir/conf/htdig.conf2 | grep "Bad local extension:" | sed -e"s-.*/--"`
 if [ "$expected" != "$got" ]
 then
-	echo "running htdig: expected 
-$expected but got
+	fail "running htdig: expected 
+$expected
+but got
 $got"
-	exit 1
+
 fi
 
 $htpurge -c $testdir/conf/htdig.conf2
@@ -40,10 +41,11 @@ got=`./document -c $testdir/conf/htdig.conf2 -u | sort`
 
 if [ "$expected" != "$got" ]
 then
-	echo "running htdig: expected 
-$expected but got
+	fail "running htdig: expected 
+$expected
+but got
 $got"
-	exit 1
+
 fi
 
 
@@ -54,10 +56,11 @@ sed "s#^start_url.*#start_url: file://$PWD/htdocs/set1/#" < $testdir/conf/htdig.
 got=`$htdig "$@" -t -i -vv -c tmp.conf | grep "Bad local extension:" | sed -e"s-.*/--"`
 if [ "$expected" != "$got" ]
 then
-	echo "running htdig: expected 
-$expected but got
+	fail "running htdig: expected 
+$expected
+but got
 $got"
-	exit 1
+
 fi
 
 $htpurge -c $testdir/conf/htdig.conf2
@@ -76,8 +79,11 @@ got=`./document -c tmp.conf -u | sed "s#${PWD}/htdocs##" | sort`
 
 if [ "$expected" != "$got" ]
 then
-	echo "running htdig: expected 
-$expected but got
+	fail "running htdig: expected 
+$expected
+but got
 $got"
-	exit 1
+
 fi
+
+. ./test_functions --stop-apache

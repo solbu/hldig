@@ -5,10 +5,10 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_htdig,v 1.8 2003/01/11 02:33:28 lha Exp $
+# $Id: t_htdig,v 1.9 2003/06/08 07:27:12 lha Exp $
 #
 
-. ./test_functions
+. ./test_functions --start-apache
 
 $htdig "$@" -t -i -c $testdir/conf/htdig.conf
 $htpurge -c $testdir/conf/htdig.conf
@@ -28,8 +28,11 @@ got=`./document -c $testdir/conf/htdig.conf -u | sort`
 
 if [ "$expected" != "$got" ]
 then
-	echo "running htdig: expected 
-$expected but got
+	fail "running htdig: expected 
+$expected
+but got
 $got"
-	exit 1
+
 fi
+
+. ./test_functions --stop-apache

@@ -5,10 +5,10 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_htnet,v 1.5 2002/02/01 22:49:37 ghutchis Exp $
+# $Id: t_htnet,v 1.6 2003/06/08 07:27:12 lha Exp $
 #
 
-. ./test_functions
+. ./test_functions --start-apache
 
 verbose=$1
 
@@ -17,6 +17,7 @@ if test $? = 1
 then
 	exit 0
 else
-	exit 1
+	fail "Could not fetch URL"
 fi
 
+. ./test-functions --stop-apache
