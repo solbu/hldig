@@ -133,9 +133,16 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 	if (LF_ISSET(DB_RDONLY))
 		F_SET(dbmfp, MP_READONLY);
 	if (LF_ISSET(DB_COMPRESS)) {
+#ifdef HAVE_LIBZ
 	    if((ret = __memp_cmpr_open(path, dbenv, &dbmfp->weakcmpr)) != 0)
 	      goto err;
 	    F_SET(dbmfp, MP_CMPR);
+#else /* HAVE_LIBZ */	    
+	    __db_err(dbenv,
+		     "memp_fopen: not compiled with zlib, compression not available");
+	    ret = EINVAL;
+	    goto err;
+#endif	    
 	}
 
 	if (path == NULL) {
@@ -488,12 +495,14 @@ memp_fclose(dbmfp)
 			t_ret = ret;
 	}
 
+#ifdef HAVE_LIBZ
 	if(F_ISSET(dbmfp, MP_CMPR)) {
 	  if((ret = __memp_cmpr_close(&dbmfp->weakcmpr)) != 0)
 		__db_err(dbmp->dbenv,
 			 "%s: %s", __memp_fn(dbmfp), strerror(ret));
 	  F_CLR(dbmfp, MP_CMPR);
 	}
+#endif /* HAVE_LIBZ */
 	
 	/* Free memory. */
 	if (dbmfp->mutexp != NULL) {

@@ -40,16 +40,8 @@
 /* Define if you have sigfillset (and sigprocmask). */
 #undef HAVE_SIGFILLSET
 
-/*
- * Define if building on AIX, HP, Solaris to get big-file environment.
- *
- * XXX: _LARGE_FILES is for AIX.
- */
+/* Define if building big-file environment (e.g., Solaris, HP/UX). */
 #undef HAVE_FILE_OFFSET_BITS
-#ifdef HAVE_FILE_OFFSET_BITS
-#define _LARGE_FILES
-#define _FILE_OFFSET_BITS 64
-#endif
 
 /* Define if you have spinlocks. */
 #undef HAVE_SPINLOCKS
@@ -120,6 +112,9 @@
 /* Define if you have the pstat_getdynamic function.  */
 #undef HAVE_PSTAT_GETDYNAMIC
 
+/* Define if you have the qsort function.  */
+#undef HAVE_QSORT
+
 /* Define if you have the raise function.  */
 #undef HAVE_RAISE
 
@@ -161,3 +156,26 @@
 
 /* Define if you have the <sys/time.h> header file.  */
 #undef HAVE_SYS_TIME_H
+
+/* Define if you have the z library (-lz).  */
+#undef HAVE_LIBZ
+
+/*
+ * Don't step on the namespace.  Also, other libraries have real snprintf(3)
+ * implementations, don't want to override them just because they're loaded
+ * after us.
+ */
+#ifndef HAVE_SNPRINTF
+#define	snprintf	__db_snprintf
+#endif
+#ifndef HAVE_VSNPRINTF
+#define	vsnprintf	__db_vsnprintf
+#endif
+
+/*
+ * Big-file configuration.
+ */
+#ifdef	HAVE_FILE_OFFSET_BITS
+#define	_LARGE_FILES				/* AIX specific. */
+#define	_FILE_OFFSET_BITS	64
+#endif

@@ -170,8 +170,14 @@ db_open(fname, type, flags, mode, dbenv, dbinfo, dbpp)
 		F_SET(dbp, DB_AM_RDONLY);
 	if (LF_ISSET(DB_THREAD))
 		F_SET(dbp, DB_AM_THREAD);
-	if (LF_ISSET(DB_COMPRESS))
+	if (LF_ISSET(DB_COMPRESS)) {
+#ifdef HAVE_LIBZ
 		F_SET(dbp, DB_AM_CMPR);
+#else /* HAVE_LIBZ */
+		__db_err(dbenv, "not compiled with libz, compression not available");
+		goto einval;
+#endif /* HAVE_LIBZ */
+	}
 
 	/* Convert the dbinfo structure flags. */
 	if (dbinfo != NULL) {

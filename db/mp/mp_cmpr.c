@@ -30,6 +30,8 @@
 
 #include "config.h"
 
+#ifdef HAVE_LIBZ
+
 #ifndef lint
 static const char sccsid[] = "@(#)mp_cmpr.c	1.0 (Senga) 01/08/99";
 #endif /* not lint */
@@ -406,7 +408,11 @@ __memp_cmpr_page(cmpr, db_io, niop)
  * PUBLIC: int __memp_cmpr_inflate __P((u_int8_t *, int, u_int8_t *, int));
  */
 int
-__memp_cmpr_inflate(u_int8_t* inbuff, int inbuff_length, u_int8_t* outbuff, int outbuff_length)
+__memp_cmpr_inflate(inbuff, inbuff_length, outbuff, outbuff_length)
+     u_int8_t* inbuff;
+     int inbuff_length;
+     u_int8_t* outbuff;
+     int outbuff_length;
 {
   int ret = 0;
   z_stream c_stream;
@@ -697,3 +703,5 @@ __memp_cmpr_free(dbmfp, pgno)
  err:
   return ret;
 }
+
+#endif /* HAVE_LIBZ */

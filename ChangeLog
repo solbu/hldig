@@ -1,3 +1,8 @@
+Fri Aug 06 15:06:23 1999    <loic@yoda.ceic.com>
+
+	* db/dist/config.hin, db/mp/mp_cmpr.c db/db/db.c, db/mp/mp_fopen.c: 
+	  disable compression if zlib not found by configure.
+
 Thu Aug 05 12:27:15 1999    <loic@yoda.ceic.com>
 
 	* test/dbbench.cc: invert -z and -Z for consistency
