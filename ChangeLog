@@ -1,3 +1,13 @@
+Mon Aug  3 16:50:46 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+       * htsearch/ResultList.cc, htnotify/htnotify.cc,
+        htmerge/htmerge.cc, htmerge/docs.cc, htlib/String.cc,
+        htlib/ParsedString.cc, htfuzzy/Substring.cc,
+        htfuzzy/Prefix.cc, htfuzzy/Exact.cc,
+        htdig/SGMLEntities.cc, htdig/Retriever.cc, htdig/PDF.cc,
+        htdig/HTML.cc, htdig/Document.cc:
+        Fixed compiler warnings under -Wall
+
 Mon Aug  3 05:56:23 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.cc: Spelling correction for "ellipses"
