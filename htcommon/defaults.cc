@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.17 2001/06/07 21:03:52 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.18 2001/06/07 21:38:36 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -118,6 +118,7 @@ ConfigDefaults	defaults[] =
     {"page_list_header",		"<hr noshade size=2>Pages:<br>"},
     {"page_number_separator",		"\" \""},
     {"page_number_text",		""},
+    {"plural_suffix",			"s"},
     {"prefix_match_character",		"*"},
     {"prev_page_text",			"[prev]"},
     {"remove_bad_urls",			"true"},

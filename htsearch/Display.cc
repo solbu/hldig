@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.32 2001/06/07 21:03:52 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.33 2001/06/07 21:38:37 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -402,7 +402,7 @@ Display::setVariables(int pageNumber, List *matches)
     else if (mystrcasecmp(config["match_method"], "or") == 0)
 	vars.Add("MATCH_MESSAGE", new String("some"));
     vars.Add("MATCHES", new String(form("%d", nMatches)));
-    vars.Add("PLURAL_MATCHES", new String(nMatches == 1 ? (char *)"" : (char *)"s"));
+    vars.Add("PLURAL_MATCHES", new String(nMatches == 1 ? (char *)"" : config["plural_suffix"]));
     vars.Add("PAGE", new String(form("%d", pageNumber)));
     vars.Add("PAGES", new String(form("%d", nPages)));
     vars.Add("FIRSTDISPLAYED",
