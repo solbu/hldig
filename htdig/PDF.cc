@@ -14,7 +14,7 @@
 //
 #if RELEASE
 // Put the compilation date in the object file.
-static char RCSid[] = "$Id: PDF.cc,v 1.6 1999/01/17 20:35:46 ghutchis Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.7 1999/01/17 21:12:05 ghutchis Exp $";
 #endif
 
 #include <sys/types.h>
@@ -147,13 +147,15 @@ PDF::parse(Retriever &retriever, URL &url)
 
 
     // Use acroread as a filter to convert to PostScript.
-    acroread << " -toPostScript " << pdfName << " " << tmpdir << " 2>&1";
+    // Now generalized to allow xpdf as a parser (works with most recent xpdf)
+    //    acroread << " -toPostScript " << pdfName << " " << tmpdir << " 2>&1";
+    acroread << " " << pdfName << " " << psName << " 2>&1";
 
     system(acroread);
     FILE* psFile = fopen(psName, "r");
     if (!psFile)
     {
-	printf("PDF::parse: cannot open acroread output\n");
+	printf("PDF::parse: cannot open acroread output from %s\n", url.get());
 	unlink(pdfName);
 	return;
     }
@@ -188,7 +190,7 @@ PDF::parse(Retriever &retriever, URL &url)
     unlink(psName);
 
     if (lines < 2) // No output or one error line
-	printf("PDF::parse: no data from acroread\n");
+	printf("PDF::parse: no data from acroread on url %s\n", url.get());
     else if (debug > 2)
 	printf("PDF::parse: %d lines parsed\n", lines);
 
