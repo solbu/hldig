@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.4 1999/10/04 15:46:23 angus Exp $
+// $Id: Transport.cc,v 1.5 1999/10/07 14:55:43 loic Exp $
 //
 //
 
@@ -132,6 +132,8 @@ void Transport_Response::Reset()
 
 Transport::Transport()
 {
+  _port = 0;
+  _max_document_size = 0;
   _timeout = DEFAULT_CONNECTION_TIMEOUT;
 }
 

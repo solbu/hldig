@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.11 1999/10/07 14:40:06 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.12 1999/10/07 14:55:42 loic Exp $ 
 //
 
 #include "lib.h"
@@ -917,23 +917,24 @@ int HtHTTP::ReadChunkedBody()
    while (chunk_size > 0)
    {
       // Read Chunk data
-      if (_connection.read(buffer, chunk_size) == -1)
+      int bytes_read;
+      if((bytes_read = _connection.read(buffer, chunk_size)) == -1)
          return -1;
 
       // Read CRLF - to be ignored
       _connection.read_line(ChunkHeader);
 
       // Append the chunk-data to the contents of the response
-      _response._contents << buffer;
+      _response._contents.append(buffer,bytes_read);
                   
-      length+=chunk_size;
+      length+=bytes_read;
 
       // Read chunk-size and CRLF
       _connection.read_line(ChunkHeader);
       sscanf ((char *)ChunkHeader, "%x", &chunk_size);
 
-      if (debug>4)
-         cout << "Chunk-size: " << chunk_size << endl;
+      if(debug>4)
+	cout << "Chunk-size: " << chunk_size << endl;
    }
    
    ChunkHeader = 0;

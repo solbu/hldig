@@ -1,3 +1,11 @@
+Thu Oct 07 16:19:46 1999  Loic Dachary  <loic@ceic.com>
+
+	* htnet/HtHTTP.cc (ReadChunkedBody): use append instead of 
+	  << because buffer is *not* null terminated.
+
+	* htnet/Transport.cc (Transport): initialize _port and _max_document_size
+	  otherwise comparison with undefined value occurs.
+
 Thu Oct 07 16:34:21 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* HtHTTP.cc: call FinishRequest everytime in HTTPRequest() a value is
