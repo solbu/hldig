@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.24 2000/01/10 16:19:13 loic Exp $
+// $Id: WordList.cc,v 1.6.2.25 2000/01/11 18:38:23 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -672,7 +672,7 @@ public:
 //*****************************************************************************
 //
 int
-wordlist_walk_callback_stream_out(WordList *words, WordCursor& cursor, const WordReference *word, Object &data)
+wordlist_walk_callback_stream_out(WordList *, WordCursor& , const WordReference *word, Object &data)
 {
     ((StreamOutData&)data).o << *word <<endl;
     return OK;

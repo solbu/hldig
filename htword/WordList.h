@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.14 2000/01/11 10:48:43 loic Exp $
+// $Id: WordList.h,v 1.5.2.15 2000/01/11 18:38:24 bosc Exp $
 //
 
 #ifndef _WordList_h_
@@ -48,7 +48,7 @@ class WordMonitor;
 //
 // Type of the callback argument in WordSearchDescription
 //
-typedef int (*wordlist_walk_callback_t)(WordList *words, WordCursor& cursor, const WordReference *word, Object &data);
+typedef int (*wordlist_walk_callback_t)(WordList *, WordCursor& , const WordReference *, Object &);
 
 //
 // Benchmarking helper
