@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.105 2004/02/08 10:19:32 lha Exp $
+// $Id: defaults.cc,v 1.106 2004/02/19 10:43:04 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -2747,13 +2747,10 @@ form during indexing and translated for results. \
 	words. The file is easy to parse with tools like \
 	perl or tcl. \
 " }, \
-{ "wordlist_cache_dirty_level", "10000",  \
-	"integer", "htdig", "", "3.2.0b4", "Indexing:How", "wordlist_cache_dirty_level: 2", " \
-	Maximum ratio of dirty pages to clean pages in the cache.  If fewer \
-	are clean, then all pages are written out (but kept in the cache). \
-	Useful values are between 1 (slow, minimal chance of allocation ) \
-	and about 3000 (fastest, but may cause problems with small page \
-	sizes if <a href\"#wordlist_compress\">compression</a> is used).\
+{ "wordlist_cache_inserts", "false",  \
+	"boolean", "???", "", "???", "Indexing:How", "wordlist_cache_inserts: true", " \
+	 If true, create a cache of size  wordlist_cache_size/2  for class \
+	 WordListOne. <em>I don't know what this is for.  Does anyone?</em> \
 " }, \
 { "wordlist_cache_size", "10000000",  \
 	"integer", "all", "", "3.2.0b1", "Indexing:How", "wordlist_cache_size: 40000000", " \

@@ -1,3 +1,27 @@
+Thu 19 Feb 2004 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * aclocal.m4, acinclude.m4, configure.in:
+      Remove duplicate tests for  zlib
+      Fix tests for SSL  (Fixes bug #829081)
+      Fix  configure --help  formatting
+
+    * htdoc/*.[18].in, htdoc/Makefile.am, configure.in: Added man pages
+
+    * htdoc/attrs.html.in, htdoc/cf_generate.pl, htdoc/Makefile.am:
+      Fill in #define'd attribs  (Fixes bug #692125)
+
+    * test/Makefile.am: Incorporate new tests in  make check
+
+    * test/t_htdig, test/t_parsing: suppress unwanted diagnostics
+
+    * STATUS: list Cygwin bug (#814268)
+
+    * htcommon/default.cc:
+      added wordlist_cache_inserts, remove worlist_cache_dirty_level
+
+    * configure, */Makefile.in, */Makefile, htdoc/cf_by{name,prog}.html:
+      regenerated
+
 Fri 13 Feb 2004 Lachlan Andrew <lha@users.sourceforge.net>
 
     * db/mp_cmpr.c: Fix bug with  --without-zlib

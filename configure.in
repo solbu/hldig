@@ -29,48 +29,68 @@ AC_PREFIX_DEFAULT([/opt/www])
 # Initialize maintainer mode
 AM_MAINTAINER_MODE
 
-AC_ARG_WITH(config-dir, [  --with-config-dir=DIR  where your config directory is [default=$ac_default_prefix/conf]],
+AC_ARG_WITH(config-dir, [AC_HELP_STRING([--with-config-dir=DIR],
+	[where your config directory is @<:@PREFIX/conf@:>@])],
  CONFIG_DIR="$withval", CONFIG_DIR='${prefix}/conf')
 AC_SUBST(CONFIG_DIR)
 
-AC_ARG_WITH(default-config-file, [  --with-default-config-file=FILE Where the various programs will look for a configuration file  [default=$ac_default_prefix/conf/htdig.conf]],
+# In the below, the strings @<:@ and @:>@ expand to [ and ]
+AC_ARG_WITH(default-config-file,
+	[AC_HELP_STRING([--with-default-config-file=FILE],
+	[where the various programs will look for a configuration file
+	@<:@PREFIX/conf/htdig.conf@:>@])],
  DEFAULT_CONFIG_FILE="$withval", DEFAULT_CONFIG_FILE='${CONFIG_DIR}/htdig.conf')
 AC_SUBST(DEFAULT_CONFIG_FILE)
 
-AC_ARG_WITH(common-dir, [  --with-common-dir=DIR  where your .html templates are stored [default=$ac_default_prefix/share/htdig]],
+AC_ARG_WITH(common-dir, [AC_HELP_STRING([--with-common-dir=DIR],
+	[where your .html templates are stored
+	@<:@PREFIX/share/htdig@:>@])],
  COMMON_DIR="$withval", COMMON_DIR='${datadir}/htdig')
 AC_SUBST(COMMON_DIR)
 
-AC_ARG_WITH(database-dir, [  --with-database-dir=DIR  where your database directory is [default=$ac_default_prefix/var/htdig]],
+AC_ARG_WITH(database-dir, [AC_HELP_STRING([--with-database-dir=DIR],
+	[where your database directory is
+	@<:@PREFIX/var/htdig@:>@])],
  DATABASE_DIR="$withval", DATABASE_DIR='${localstatedir}/htdig')
 AC_SUBST(DATABASE_DIR)
 
-AC_ARG_WITH(cgi-bin-dir, [  --with-cgi-bin-dir=DIR  where your web server cgi-bin directory is  [default=$ac_default_prefix/cgi-bin]],
+AC_ARG_WITH(cgi-bin-dir, [AC_HELP_STRING([--with-cgi-bin-dir=DIR],
+	[where your web server cgi-bin directory is
+	@<:@PREFIX/cgi-bin@:>@])],
  CGIBIN_DIR="$withval", CGIBIN_DIR='${prefix}/cgi-bin')
 AC_SUBST(CGIBIN_DIR)
 
-AC_ARG_WITH(search-dir, [  --with-search-dir=DIR   where the sample search form should be installed [default=$ac_default_prefix/htdocs/htdig]],
+AC_ARG_WITH(search-dir, [AC_HELP_STRING([--with-search-dir=DIR],
+	[where the sample search form should be installed
+	@<:@PREFIX/htdocs/htdig@:>@])],
  SEARCH_DIR="$withval", SEARCH_DIR='${prefix}/htdocs/htdig')
 AC_SUBST(SEARCH_DIR)
 
-AC_ARG_WITH(search-form, [  --with-search-form=FILE   the name for the sample search form [default=search.html]],
+AC_ARG_WITH(search-form, [AC_HELP_STRING([--with-search-form=FILE],
+	[the name for the sample search form @<:@search.html@:>@])],
  SEARCH_FORM="$withval", SEARCH_FORM='search.html')
 AC_SUBST(SEARCH_FORM)
 
-AC_ARG_WITH(image-dir, [  --with-image-dir=DIR    where the ht://Dig images are installed [default=$ac_default_prefix/htdocs/htdig]],
+AC_ARG_WITH(image-dir, [AC_HELP_STRING([--with-image-dir=DIR],
+	[where the ht://Dig images are installed
+	@<:@PREFIX/htdocs/htdig@:>@])],
  IMAGE_DIR="$withval", IMAGE_DIR='${prefix}/htdocs/htdig')
 AC_SUBST(IMAGE_DIR)
 
-AC_ARG_WITH(image-url-prefix, [  --with-image-url-prefix=LOCATION   the URL path to the installed images [default=/htdig]],
+AC_ARG_WITH(image-url-prefix,
+	[AC_HELP_STRING([--with-image-url-prefix=LOCATION],
+	[the URL path to the installed images @<:@/htdig@:>@])],
  IMAGE_URL_PREFIX="$withval", IMAGE_URL_PREFIX='/htdig')
 AC_SUBST(IMAGE_URL_PREFIX)
 
-AC_ARG_WITH(rx, [  --with-rx  with system rx instead of regex [default=no]],
+AC_ARG_WITH(rx, [AC_HELP_STRING([--with-rx],
+	[with system rx instead of regex @<:@no@:>@])],
  WITH_RX="$withval", WITH_RX='no')
 
 # If the user doesn't want tests
 AC_ARG_ENABLE(tests,
-	[  --enable-tests      Do build a version with run-time tests.],
+	[AC_HELP_STRING([--enable-tests],
+		[do build a version with run-time tests.])],
 	[htdig_cv_tests="$enable_tests"], [htdig_cv_tests="no"])
 AM_CONDITIONAL(TESTS, test x$htdig_cv_tests = xyes)
 
@@ -103,7 +123,7 @@ AM_PROG_TIME
 
 
 # Checks for libraries.
-AC_CHECK_LIB([z], [main])
+#AC_CHECK_LIB([z], [main])
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, t_accept)
 CHECK_SSL
@@ -120,8 +140,9 @@ AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h langinfo.h libintl.h limits.h locale.h malloc.h netdb.h netinet/in.h stddef.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/socket.h sys/time.h sys/timeb.h syslog.h unistd.h wchar.h wctype.h])
-AC_CHECK_HEADERS([zlib.h sys/wait.h wait.h alloca.h])
-AC_CHECK_HEADERS(ssl.h)
+#AC_CHECK_HEADERS([zlib.h sys/wait.h wait.h alloca.h])
+AC_CHECK_HEADERS([sys/wait.h wait.h alloca.h])
+#AC_CHECK_HEADERS(ssl.h)
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STAT
@@ -249,7 +270,7 @@ fi
 # Enable big files?
 AC_MSG_CHECKING(if --enable-bigfile option specified)
 AC_ARG_ENABLE(bigfile,
-	[  --enable-bigfile       Enable Linux, AIX, HP/UX, Solaris big files.],
+	[AC_HELP_STRING([--enable-bigfile], [enable Linux, AIX, HP/UX, Solaris big files.])],
 	[db_cv_bigfile="$enable_bigfile"], [db_cv_bigfile="yes"])
 AC_MSG_RESULT($db_cv_bigfile)
 
@@ -296,11 +317,38 @@ echo configuring ht://Dig version $VERSION
 
 AC_CONFIG_SUBDIRS(db)
 
+# expand variables which appear in  attrs.html
+while echo $bindir | grep '\$' >/dev/null ; do
+  eval "bindir=$bindir"
+done
+while echo $COMMON_DIR | grep '\$' >/dev/null ; do
+  eval "COMMON_DIR=$COMMON_DIR"
+done
+while echo $CONFIG_DIR | grep '\$' >/dev/null ; do
+  eval "CONFIG_DIR=$CONFIG_DIR"
+done
+while echo $DATABASE_DIR | grep '\$' >/dev/null ; do
+  eval "DATABASE_DIR=$DATABASE_DIR"
+done
+while echo $IMAGE_URL_PREFIX | grep '\$' >/dev/null ; do
+  eval "IMAGE_URL_PREFIX=$IMAGE_URL_PREFIX"
+done
+while echo $VERSION | grep '\$' >/dev/null ; do
+  eval "VERSION=$VERSION"
+done
+
 AC_CONFIG_FILES([Makefile
                  htcommon/Makefile
                  htdb/Makefile
                  htdig/Makefile
                  htdoc/Makefile
+                 htdoc/attrs.html
+                 htdoc/htdig.1
+                 htdoc/htdigconfig.8
+                 htdoc/htdump.1
+                 htdoc/htfuzzy.1
+                 htdoc/htnotify.1
+                 htdoc/htsearch.1
                  htfuzzy/Makefile
                  htlib/Makefile
                  htnet/Makefile

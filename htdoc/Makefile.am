@@ -1,6 +1,13 @@
 
 include $(top_srcdir)/Makefile.config
 
+man_MANS = htdig.1 \
+	   htdump.1 \
+	   htfuzzy.1 \
+	   htnotify.1 \
+	   htsearch.1 \
+	   htdigconfig.8
+
 EXTRA_DIST = COPYING  \
 	ChangeLog \
 	FAQ.html \
@@ -48,7 +55,7 @@ EXTRA_DIST = COPYING  \
 	where.html \
 	cf_generate.pl
 
-attrs.html: attrs_head.html attrs_tail.html ../htcommon/defaults.cc cf_generate.pl
+attrs.html.in: attrs_head.html attrs_tail.html ../htcommon/defaults.cc cf_generate.pl
 	@PERL@ ${srcdir}/cf_generate.pl ${top_srcdir}
 
 cf_byname.html: cf_byname_head.html cf_byname_tail.html ../htcommon/defaults.cc cf_generate.pl

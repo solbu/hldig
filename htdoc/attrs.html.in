@@ -1152,7 +1152,7 @@
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			BIN_DIR
+			@bindir@
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -1548,7 +1548,14 @@
 		  <dd>
 	This specifies whether ht://Dig should consider URLs
 	case-sensitive or not. If your server is case-insensitive,
-	you should probably set this to false.
+	you should probably set this to false. <br>
+	Even if this is false,
+	<a href="#common_url_parts">common_url_parts</a>,
+	<a href="#url_part_aliases">url_part_aliases</a> and
+	<a href="#url_rewrite_rules">url_rewrite_rules</a>
+	are all still case sensitive, and
+	<a href="#server_aliases">server_aliases</a>
+	is still case insensitive.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -1786,7 +1793,7 @@
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			COMMON_DIR
+			@COMMON_DIR@
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -1850,7 +1857,7 @@
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			http:// http://www. ftp:// ftp://ftp. /pub/ .html .htm .gif .jpg .jpeg /index.html /index.htm .com/ .com mailto:
+			http:// http://www. ftp:// ftp://ftp. /pub/ .html .htm .shtml /index.html /index.htm .com/ .com mailto:
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -2053,7 +2060,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			CONFIG_DIR
+			@CONFIG_DIR@
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -2458,7 +2465,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			DATABASE_DIR
+			@DATABASE_DIR@
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -5428,7 +5435,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			IMAGE_URL_PREFIX
+			@IMAGE_URL_PREFIX@
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -5935,9 +5942,9 @@ http://www.htdig.org/
 	search. Any number of strings can be specified,
 	separated by spaces. If multiple patterns are given, at
 	least one of the patterns has to match the URL.<br>
-	Matching, by default, is a case-insensitive string match on the URL
+	Matching, by default, is a case-sensitive string match on the URL
 	to be used, unless the <a href="#case_sensitive">case_sensitive</a>
-	attribute is set. The match will be performed <em>after</em>
+	attribute is false. The match will be performed <em>after</em>
 	the relative references have been converted to a valid
 	URL. This means that the URL will <em>always</em> start
 	with a transport specifier (<code>http://</code> if none is
@@ -6171,7 +6178,8 @@ http://www.htdig.org/
 	<a href="#local_urls">local_urls</a> or
 	<a href="#local_user_urls">local_user_urls</a> attribute. If it
 	cannot find the file, it will give up rather than trying HTTP or
-	another protocol.
+	another protocol.  With this option, even <code>file://</code> urls
+	are not retrieved, except throught the local_urls mechanism.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -12989,8 +12997,12 @@ http://www.htdig.org/
 	a regular expression; the right hand string is  a literal string with
 	embedded placeholders for fragments that matched  inside brackets in
 	the regex. \0 is the whole matched string, \1 to \9 are  bracketted
-	substrings. Rewrite rules are applied sequentially to each
-	incoming URL  before normalization occurs. Rewriting does not stop
+	substrings. Note that the <strong>entire</strong> URL is replaced by
+	the right hand string (not just the portion which matches the left hand
+	string).  Thus, a leading and trailing (.*) should be included in the
+	pattern, with matching placeholders in the replacement string.<br>
+	Rewrite rules are applied sequentially to each
+	incoming URL before normalization occurs. Rewriting does not stop
 	once a match has been made, so multiple rules may affect a given URL.
 	See also <a href="#url_part_aliases">url_part_aliases</a> which
 	allows URLs to be of one
@@ -13602,7 +13614,7 @@ form during indexing and translated for results.
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			VERSION
+			@VERSION@
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -13779,8 +13791,8 @@ form during indexing and translated for results.
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name="wordlist_cache_dirty_level">
-		wordlist_cache_dirty_level</a></strong>
+		<strong><a name="wordlist_cache_inserts">
+		wordlist_cache_inserts</a></strong>
 	  </dt>
 	  <dd>
 		<dl>
@@ -13788,19 +13800,19 @@ form during indexing and translated for results.
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			integer
+			boolean
 		  </dd>
 		  <dt>
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href="htdig.html">htdig</a>
+			<a href="???.html">???</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			10000
+			false
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -13812,17 +13824,14 @@ form during indexing and translated for results.
 		      <em>version:</em>
 		  </dt>
 		  <dd>
-		      3.2.0b4 or later
+		      ???
 		  </dd>
 		  <dt>
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	Maximum ratio of dirty pages to clean pages in the cache.  If fewer
-	are clean, then all pages are written out (but kept in the cache).
-	Useful values are between 1 (slow, minimal chance of allocation )
-	and about 3000 (fastest, but may cause problems with small page
-	sizes if <a href"#wordlist_compress">compression</a> is used).
+	 If true, create a cache of size  wordlist_cache_size/2  for class
+	 WordListOne. <em>I don't know what this is for.  Does anyone?</em>
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -13831,10 +13840,10 @@ form during indexing and translated for results.
 			<table border="0">
 			  <tr>
 				<td valign="top">
-				  wordlist_cache_dirty_level:
+				  wordlist_cache_inserts:
 				</td>
 				<td nowrap>
-				     2
+				     true
 				</td>
 			  </tr>
 			</table>
@@ -14462,6 +14471,6 @@ form during indexing and translated for results.
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: Sun Jan 18 22:31:22 EST 2004
+		Last modified: Sun Feb 15 16:24:06 EST 2004
   </body>
 </html>

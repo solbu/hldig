@@ -502,9 +502,9 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-	-rm -f conf_lexer.cxx
 	-rm -f conf_parser.cxx
 	-rm -f conf_parser.h
+	-rm -f conf_lexer.cxx
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-pkglibLTLIBRARIES \

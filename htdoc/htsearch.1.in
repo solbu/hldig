@@ -1,0 +1,65 @@
+.TH htsearch 1 "6 October 2001"
+.\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
+.\" other parms are allowed: see man(7), man(1)
+.SH NAME
+htsearch \- create document index and word database for the ht://Dig
+search engine
+.SH SYNOPSIS
+.B htsearch
+.I "[options]" "[query_string]"
+.SH "DESCRIPTION"
+.I Htsearch
+is used to search in de databases created by \fIhtdig\fR for content.
+is the actual search engine of the \fIhtdig\fR search system. It is a CGI
+program that is expected to be invoked by an HTML form. It will accept both the
+GET and POST methods of passing data to the CGI program. 
+.SH OPTIONS
+.TP
+.B query_string
+A CGI-style query string can be given as a single
+argument, and is only used if the REQUEST_METHOD environment
+variable is not set.  If no query_string is given, and
+REQUEST_METHOD is not set, htsearch will prompt for the query.
+.TP
+.B \-c \fIconfigfile\fR
+Use the specified
+.I configfile
+instead of the default (for security reasons this option is only
+available when htsearch is used on the commandline).
+.TP
+.B \-v \-d
+Run in verbose mode.  This increases the verbosity of the
+program.  Using more than 2 is probably only useful
+for debugging purposes.  The default verbose mode
+gives a progress on what it is doing and where it is.
+.SH "FILES"
+.TP
+.B @DEFAULT_CONFIG_FILE@
+The default configuration file.
+.TP
+.B @COMMON_DIR@header.html
+The default search results header file
+.TP
+.B @COMMON_DIR@footer.html
+The default search results footer file
+.TP
+.B @COMMON_DIR@wrapper.html
+The default search results wrapper file, that contains the header and footer together in one file
+.TP
+.B @COMMON_DIR@nomatch.html
+The default 'no matches found' HTML file
+.TP
+.B @COMMON_DIR@syntax.html
+The default file that explains boolean expression syntax errors 
+.SH "SEE ALSO"
+Please refer to the HTML pages (in the htdig-doc package)
+.B (THIS MUST BE CUSTOMISED...)
+.B /usr/share/doc/htdig-doc/html/index.html
+and the manual pages
+.I htdig(1)
+and
+.I htmerge(1)
+for a detailed description of ht://Dig and its commands.
+.SH AUTHOR
+This manual page was written by Stijn de Bekker, based on the HTML
+documentation of ht://Dig.

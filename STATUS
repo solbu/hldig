@@ -12,7 +12,8 @@ we can be sure they're fixed. Geoff is currently trying to add PR#s for
 what's currently here.)
 
 SHOWSTOPPERS:
-(none)
+* --without-zlib  is broken
+* Database compression problems with  CygWin.   PR#814268
 
 KNOWN BUGS:
 (none serious.

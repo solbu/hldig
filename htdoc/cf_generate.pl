@@ -14,7 +14,7 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: cf_generate.pl,v 1.6 2003/08/28 01:13:12 angusgb Exp $
+# $Id: cf_generate.pl,v 1.7 2004/02/19 10:43:05 lha Exp $
 #
 use strict;
 
@@ -66,10 +66,13 @@ $content =~ s/([\@\$])/\\$1/gs;
 $content =~ s/^\{/\[/mg;
 $content =~ s/^\"\s*\},$/\" \],/mg;
 #
-# Transform macro substituted strings by strings
+# Transform macro substituted strings by @strings@ (substitued by ../configure)
+# Three step process ( -> \@ string\@ -> \@string\@ -> @string@ )
+# as perl seems to get confused by @$2.
 #
-$content =~ s|^(\[ \"\w+\", )([A-Z].*?),\n|$1\"$2\",\n|mg;
+$content =~ s|^(\[ \"\w+\", )([A-Z].*?),\n|$1\"\\\@$2\\@\",\n|mg;
 #$content =~ s/^(\[ \"\w+\", )\"(.*?)\"(.*?)\"(.*?)\",\n/$1\"$2\\\"$3\\\"$4\",\n/mg;
+$content =~ s/BIN_DIR/bindir/g;
 my($config);
 eval "\$config = $content";
 
@@ -85,7 +88,7 @@ my($file);
 #
 # Complete list of attributes with descriptions and examples.
 #
-$file = "attrs.html";
+$file = "attrs.html.in";
 open(ATTR, ">$file") or die "cannot open $file for writing : $!";
 
 $file = $dir . "/htdoc/attrs_head.html";

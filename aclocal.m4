@@ -38,7 +38,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.35 2003/08/28 03:07:56 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.36 2004/02/19 10:43:03 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -98,7 +98,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.35 2003/08/28 03:07:56 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.36 2004/02/19 10:43:03 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -149,7 +149,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.35 2003/08/28 03:07:56 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.36 2004/02/19 10:43:03 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -159,8 +159,8 @@ AC_DEFUN(CHECK_ZLIB,
 #
 [AC_MSG_CHECKING(if zlib is wanted)
 AC_ARG_WITH(zlib,
-[  --with-zlib=DIR root directory path of zlib installation
-  --without-zlib to disable zlib usage completely],
+[  --with-zlib=DIR         root directory path of zlib installation
+  --without-zlib          to disable zlib usage completely],
 [if test "$withval" = no ; then
   AC_MSG_RESULT(no)
 else
@@ -188,6 +188,7 @@ then
     AC_CHECK_HEADER(zlib.h, [zlib_cv_zlib_h=yes], [zlib_cv_zlib_h=no])
     dnl Only check for library if header is found.  This check sets HAVE_LIBZ
     if test "$zlib_cv_zlib_h" = yes; then
+	AC_DEFINE(HAVE_ZLIB_H)
 	AC_CHECK_LIB(z, inflateEnd)
     fi
     if test "${ac_cv_lib_z_inflateEnd:+yes}" != yes
@@ -235,7 +236,7 @@ dnl LoadModule env_module         @APACHE_MODULES@/mod_env.so
 dnl LoadModule config_log_module  @APACHE_MODULES@/mod_log_config.so
 dnl ...
 dnl
-dnl @version $Id: aclocal.m4,v 1.35 2003/08/28 03:07:56 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.36 2004/02/19 10:43:03 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -397,8 +398,8 @@ dnl a user-supplied directory.
 dnl The user uses '--with-ssl' or '--with-ssl=/path/to/ssl' as arguments
 dnl to configure.
 dnl
-dnl If OpenSSL is found the include directory gets added to CPPFLAGS as well
-dnl as '-DHAVE_SSL', '-lssl' & '-lcrypto' get added to LIBS, and
+dnl If OpenSSL is found the include directory gets added to CPPFLAGS and
+dnl '-lssl' & '-lcrypto' get added to LIBS, and
 dnl the libraries location gets added to LDFLAGS.
 dnl Finally 'HAVE_SSL' gets set to 'yes' for use in your Makefile.in
 dnl I use it like so (valid for gmake):
@@ -414,38 +415,40 @@ dnl      .if ${HAVE_SSL} == "yes"
 dnl      SRCS+= @srcdir@/my_file_that_needs_ssl.c
 dnl      .endif
 dnl
-dnl @version $Id: aclocal.m4,v 1.35 2003/08/28 03:07:56 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.36 2004/02/19 10:43:03 lha Exp $
 dnl @author Mark Ethan Trostler <trostler@juniper.net>
 dnl
 AC_DEFUN([CHECK_SSL],
 [AC_MSG_CHECKING(if ssl is wanted)
 AC_ARG_WITH(ssl,
-[  --with-ssl              enable ssl [will check /usr/local/ssl
-                            /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr ]
-],
+[AC_HELP_STRING([--with-ssl=DIR],
+  [      enable ssl @<:@ default paths, then /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg @:>@])],
 [   AC_MSG_RESULT(yes)
-    for dir in $withval /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr; do
-        ssldir="$dir"
-        if test -f "$dir/include/openssl/ssl.h"; then
-            found_ssl="yes";
-            CPPFLAGS="$CPPFLAGS -I$ssldir/include/openssl -DHAVE_SSL";
-            break;
-        fi
-        if test -f "$dir/include/ssl.h"; then
-            found_ssl="yes";
-            CPPFLAGS="$CPPFLAGS -I$ssldir/include/ -DHAVE_SSL";
-            break
-        fi
-    done
+    if test "$withval" = "yes" ; then
+dnl Don't check the directory "yes"...
+	withval=""
+	AC_CHECK_HEADER(openssl/ssl.h, [ssldir="default paths"; found_ssl=yes])
+    fi
+    if test "$found_ssl" = "" ;then
+	for dir in $withval /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg ; do
+	    ssldir="$dir"
+	    if test -f "$dir/include/openssl/ssl.h"; then
+		found_ssl=yes;
+		CPPFLAGS="$CPPFLAGS -I$ssldir/include";
+		LDFLAGS="$LDFLAGS -L$ssldir/lib";
+		break;
+	    fi
+	done
+    fi
     if test x_$found_ssl != x_yes; then
         AC_MSG_ERROR(Cannot find ssl libraries)
     else
         printf "OpenSSL found in $ssldir\n";
         LIBS="$LIBS -lssl -lcrypto";
-        LDFLAGS="$LDFLAGS -L$ssldir/lib";
 	HAVE_SSL=yes
     fi
     AC_SUBST(HAVE_SSL)
+    AC_DEFINE(HAVE_SSL_H)
 ],
 [
     AC_MSG_RESULT(no)
@@ -3132,8 +3135,10 @@ AC_DEFUN([AC_LIBTOOL_WIN32_DLL],
 AC_DEFUN([AC_ENABLE_SHARED],
 [define([AC_ENABLE_SHARED_DEFAULT], ifelse($1, no, no, yes))dnl
 AC_ARG_ENABLE([shared],
-    [AC_HELP_STRING([--enable-shared@<:@=PKGS@:>@],
-	[build shared libraries @<:@default=]AC_ENABLE_SHARED_DEFAULT[@:>@])],
+dnl HACK!! Don't use  AC_HELP_STRING  as it miscounts @<:@ as four chars
+dnl    [AC_HELP_STRING([--enable-shared@<:@=PKGS@:>@],
+dnl	[build shared libraries @<:@default=]AC_ENABLE_SHARED_DEFAULT[@:>@])],
+[[  --enable-shared@<:@=PKGS@:>@  build shared libraries @<:@default=]AC_ENABLE_SHARED_DEFAULT[@:>@]],
     [p=${PACKAGE-default}
     case $enableval in
     yes) enable_shared=yes ;;
@@ -3171,8 +3176,10 @@ AC_ENABLE_SHARED(no)
 AC_DEFUN([AC_ENABLE_STATIC],
 [define([AC_ENABLE_STATIC_DEFAULT], ifelse($1, no, no, yes))dnl
 AC_ARG_ENABLE([static],
-    [AC_HELP_STRING([--enable-static@<:@=PKGS@:>@],
-	[build static libraries @<:@default=]AC_ENABLE_STATIC_DEFAULT[@:>@])],
+dnl HACK!! Don't use  AC_HELP_STRING  as it miscounts @<:@ as four chars
+dnl    [AC_HELP_STRING([--enable-static@<:@=PKGS@:>@],
+dnl	[build static libraries @<:@default=]AC_ENABLE_STATIC_DEFAULT[@:>@])],
+[[  --enable-static@<:@=PKGS@:>@  build static libraries @<:@default=]AC_ENABLE_STATIC_DEFAULT[@:>@]],
     [p=${PACKAGE-default}
     case $enableval in
     yes) enable_static=yes ;;
