@@ -1,3 +1,8 @@
+Wed Jan 30 16:39:51 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/english.0: Changed lots more dubious uses of suffixes to
+	get more appropriate and correct fuzzy endings expansions.
+
 Wed Jan 30 12:30:16 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/Connection.cc (connect): Fixed bug with allow_EINTR and
