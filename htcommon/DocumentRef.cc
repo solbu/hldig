@@ -4,6 +4,10 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.7  1998/11/18 05:16:28  ghutchis
+//
+// Remove limit on link descriptions.
+//
 // Revision 1.6  1998/11/15 22:29:27  ghutchis
 //
 // Implement docBackLinks backlink count.
@@ -282,7 +286,7 @@ void DocumentRef::Deserialize(String &stream)
 //
 void DocumentRef::AddDescription(char *d)
 {
-    if (!d || descriptions.Count() >= 5)
+    if (!d)
         return;
 
     while (isspace(*d))
