@@ -103,6 +103,25 @@
 			information can be extracted from it for purposes other
 			than searching. One could gather some interesting
 			statistics from this database.
+			<p>
+			Each line in the file starts with the document id 
+			followed by a list of <b>\t<i>fieldname</i>:<i>value</i></b>. 
+			The fields always appear in the order listed bellow:
+			<table border=0>
+			<tr> <td><b>fieldname</b></td><td><b>value</b></td></tr>
+			<tr> <td>u</td><td>URL</td></tr>
+			<tr> <td>t</td><td>Title</td></tr>
+			<tr> <td>a</td><td>State (0 = normal, 1 = not found, 2 = not indexed)</td></tr>
+			<tr> <td>m</td><td>Last modification time as reported by the server</td></tr>
+			<tr> <td>s</td><td>Size in bytes</td></tr>
+			<tr> <td>h</td><td>Excerpt</td></tr>
+			<tr> <td>h</td><td>Meta description</td></tr>
+			<tr> <td>l</td><td>Time of last retrieval</td></tr>
+			<tr> <td>L</td><td>Count of the links in the document (outgoing links)</td></tr>
+			<tr> <td>I</td><td>Size when including images</td></tr>
+			<tr> <td>d</td><td>The text of links pointing to this document. (e.g. &lt;a href="docURL"&gt;description&lt;/a&gt;)</td></tr>
+			<tr> <td>A</td><td>Anchors in the document (i.e. &lt;A NAME=...)</td></tr>
+			</table>
 		  </dd>
 		  <dt>
 			-u <em>username:password</em>
