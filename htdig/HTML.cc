@@ -4,6 +4,10 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.18  1998/11/15 22:06:27  ghutchis
+//
+// Fix for refresh tags w/o URLs.
+//
 // Revision 1.17  1998/11/15 04:07:14  turtle
 // *  fixed bug which assumed that all http-equiv=refresh attributes also have
 //    url=something.  The url=something is optional
@@ -69,7 +73,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.17 1998/11/15 04:07:14 turtle Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.18 1998/11/15 22:06:27 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -675,27 +679,26 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	
 	    // <META HTTP-EQUIV=REFRESH case
 	    if (conf["http-equiv"])
-	    {// && conf["content"])
-		{
+	      {
 		if (mystrcasecmp(conf["http-equiv"], "refresh") == 0)
-		{
+		  {
 		    char *content=conf["content"];
 		    char *q = mystrcasestr(content, "url=");
 		    if (q && *q)
-		    {
+		      {
 			q += 4; // skiping "URL="
 			char *qq = q;
 			while (*qq && (*qq != ';') && (*qq != '"') &&
-				!isspace(*qq))qq++;
+			       !isspace(*qq))qq++;
 			*qq = 0;
 			URL *href = new URL(q, *base);
 			// I don't know why anyone would do this, but hey...
 			if (dofollow)
 			  retriever.got_href(*href, "");
 			delete href;
-		    }
-		}
-	    }
+		      }
+		  }
+	      }
 
 	    //
 	    // Now check for <meta name=...  content=...> tags that

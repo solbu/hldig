@@ -1,3 +1,7 @@
+Sun Nov 15 17:04:34 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HTML.cc(do_tag): Fix for refresh tags w/o URLs.
+
 Sat Nov 14 20:30:18 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.cc(parse, do_tag): Ensure links respect META robot
