@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.cc,v 1.12.2.1 2000/01/03 12:10:39 bosc Exp $
+// $Id: HtDateTime.cc,v 1.12.2.2 2000/02/03 02:01:43 ghutchis Exp $
 //
 
 #include "HtDateTime.h"
@@ -41,12 +41,15 @@ static char _strtime[MAXSTRTIME];
 
 //     RFC1123: Sun, 06 Nov 1994 08:49:37 GMT
 #define RFC1123_FORMAT "%a, %d %b %Y %H:%M:%S %Z"
+#define LOOSE_RFC1123_FORMAT "%d %b %Y %H:%M:%S %Z"
 
 //     RFC850 : Sunday, 06-Nov-94 08:49:37 GMT
 #define RFC850_FORMAT  "%A, %d-%b-%y %H:%M:%S %Z"
+#define LOOSE_RFC850_FORMAT  "%d-%b-%y %H:%M:%S %Z"
 
 //     ANSI C's asctime() format : Sun Nov  6 08:49:37 1994
 #define ASCTIME_FORMAT  "%a %b %e %H:%M:%S %Y"
+#define LOOSE_ASCTIME_FORMAT  "%b %e %H:%M:%S %Y"
 
 // 	  ISO8601 : 1994-11-06 08:49:37 GMT
 #define ISO8601_FORMAT "%Y-%m-%d %H:%M:%S %Z"
@@ -100,6 +103,8 @@ char *HtDateTime::SetFTime(const char *buf, const char *format)
 void HtDateTime::SetAscTime(char *s)
 {
 
+   // Unfortunately, I cannot think of an easy test to 
+   // see if we have a weekday *FIX*
    SetFTime(s, ASCTIME_FORMAT);
 
 }
@@ -121,7 +126,15 @@ void HtDateTime::SetRFC1123(char *s)
    // seconds ( 00 - 59);
    // time zone name;
 
-   SetFTime(s, RFC1123_FORMAT);
+   // First, if we have it, strip off the weekday
+   char *stripped;
+   stripped = strchr(s, ',');
+   if (stripped)
+        stripped++;
+   else
+        stripped = s;
+
+   SetFTime(stripped, LOOSE_RFC1123_FORMAT);
 
 }
 
@@ -143,7 +156,15 @@ void HtDateTime::SetRFC850(char *s)
    // seconds ( 00 - 59);
    // time zone name;
 
-   SetFTime(s, RFC850_FORMAT);
+   // First, if we have it, strip off the weekday
+   char *stripped;
+   stripped = strchr(s, ',');
+   if (stripped)
+        stripped++;
+   else
+        stripped = s;
+
+   SetFTime(stripped, LOOSE_RFC850_FORMAT);
 
 }
 
