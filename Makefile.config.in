@@ -44,7 +44,7 @@ SEARCH_DIR=		@SEARCH_DIR@
 
 # Set this to the name you want to give to the search form.  This form
 # will be located in the SEARCH_DIR directory.
-SEARCH_FORM=		search.html
+SEARCH_FORM=		@SEARCH_FORM@
 
 
 

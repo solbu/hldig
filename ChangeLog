@@ -1,3 +1,8 @@
+Wed Jun 16 09:58:12 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* configure.in, configure, Makefile.config.in: Correct handling of
+	SEARCH_FORM variable, as Gabriele recommended.
+
 Wed Jun 16 09:32:06 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/cgi.h, htlib/cgi.cc(cgi & init), htsearch/htsearch.cc

@@ -43,7 +43,7 @@ AC_ARG_WITH(image-url-prefix, [  --with-image-url-prefix=DIR   the URL path to t
  IMAGE_URL_PREFIX="$withval", IMAGE_URL_PREFIX="/htdig")
 AC_SUBST(IMAGE_URL_PREFIX)
 AC_ARG_WITH(search-form, [  --with-search-form=DIR   the name for the sample search form],
- SEARCH_FORM="$withval", SEARCH_FORM="/htdig")
+ SEARCH_FORM="$withval", SEARCH_FORM="search.html")
 AC_SUBST(SEARCH_FORM)
 
 dnl While we're at it, let's work out the program transformations

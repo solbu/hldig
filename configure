@@ -846,7 +846,7 @@ if test "${with_search_form+set}" = set; then
   withval="$with_search_form"
   SEARCH_FORM="$withval"
 else
-  SEARCH_FORM="/htdig"
+  SEARCH_FORM="search.html"
 fi
 
 
