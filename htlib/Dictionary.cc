@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Dictionary.cc,v 1.8 1999/09/24 10:29:03 loic Exp $
+// $Id: Dictionary.cc,v 1.9 1999/09/24 14:30:11 loic Exp $
 //
 
 #include "Dictionary.h"
@@ -33,7 +33,7 @@ public:
 
 DictionaryEntry::~DictionaryEntry()
 {
-    delete [] key;
+    free(key);
     delete value;
     if (next)
         delete next;

@@ -1,3 +1,23 @@
+Fri Sep 24 14:30:21 1999  Loic Dachary  <loic@ceic.com>
+
+	* */.cvsignore: update to include .pure, *.la, *.lo, .purify
+	
+	* htlib/String.cc (String): add Data = 0
+
+	* htlib/htString.h (class String): add Data = 0
+
+	* htlib/String.cc (String): init set to MinimumAllocationSize at least
+	  prevents leaking if init = 0.
+
+	* htlib/String.cc (nocase_compare): use get() instead of direct
+	  pointer to Data so that the trailing null will be added.
+
+	* htlib/Dictionary.cc (DictionaryEntry): free(key) instead of
+	  delete [] key because obtained with strdup.
+
+	* htlib/DB2_db.cc (Close): free(dbenv) because db_appexit does not
+	  free this although it free everything else.
+
 Thu Sep 23 18:18:40 1999  Loic Dachary  <loic@ceic.com>
 
 	* configure.in: add PERL detection & use in Makefile.am

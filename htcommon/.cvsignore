@@ -1,1 +1,7 @@
 Makefile
+*.lo
+*.la
+.purify
+.pure
+.deps
+.libs

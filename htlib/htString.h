@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.11 1999/09/24 10:29:03 loic Exp $
+// $Id: htString.h,v 1.12 1999/09/24 14:30:11 loic Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -23,7 +23,7 @@ class ostream;
 class String : public Object
 {
 public:
-    String()	{Length = 0,Allocated = 0;} // Create an empty string
+    String()	{ Length = 0; Allocated = 0; Data = 0; } // Create an empty string
     String(int init);			// initial allocated length
     String(const char *s);		// from null terminated s
     String(const char *s, int len);	// from s with length len

@@ -1,0 +1,12 @@
+Makefile
+*.lo
+*.la
+.pure
+.purify
+.deps
+.libs
+test_functions
+dbbench
+word
+logs
+var

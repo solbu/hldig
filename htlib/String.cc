@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.25 1999/09/24 10:29:03 loic Exp $
+// $Id: String.cc,v 1.26 1999/09/24 14:30:11 loic Exp $
 //
 
 
@@ -30,17 +30,15 @@ String::String()
 {
     Length = 0;
     Allocated = 0;
-//  Ok it's a hack,  but we are in big league here
-//  70 000 000 call
-//  Data = 0;
+    Data = 0;
 }
 #endif
 
 String::String(int init)
 {
     Length = 0;
-    Allocated = init;
-    Data = new char[init];
+    Allocated = init >= MinimumAllocationSize ? init : MinimumAllocationSize;
+    Data = new char[Allocated];
 }
 
 String::String(const char *s)
@@ -66,8 +64,7 @@ String::String(const char *s, int len)
 
 String::String(const String &s)
 {
-    Allocated = 0;
-    Length = 0;
+    Allocated = Length = Data = 0;
     if (s.length() != 0)
       copy(s.Data, s.length(), s.length());
 }
@@ -78,8 +75,7 @@ String::String(const String &s)
 //
 String::String(const String &s, int allocation_hint)
 {
-    Allocated = 0;
-    Length = 0;
+    Allocated = Length = Data = 0;
     if (s.length() != 0)
       {
 	if (allocation_hint < s.length())
@@ -197,8 +193,8 @@ int String::compare(const String& obj) const
 
 int String::nocase_compare(const String &s) const
 {
-    char	*p1 = Data;
-    char	*p2 = s.Data;
+    const char	*p1 = get();
+    const char	*p2 = s.get();
 
     return mystrcasecmp(p1, p2);
 }

@@ -3,5 +3,5 @@ Makefile
 config.log
 config.status
 config.cache
-rx
-rx-1.5
+libtool
+

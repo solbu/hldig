@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DB2_db.cc,v 1.14 1999/09/24 10:29:03 loic Exp $
+// $Id: DB2_db.cc,v 1.15 1999/09/24 14:30:11 loic Exp $
 //
 
 #include "DB2_db.h"
@@ -99,6 +99,8 @@ DB2_db::Close()
         (void)(dbcp->c_close)(dbcp);
 	(void)(dbp->close)(dbp, 0);
 	(void) db_appexit(dbenv);
+	free(dbenv);
+	dbenv = 0;
     }
     isOpen = 0;
     return OK;

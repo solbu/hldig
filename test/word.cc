@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.1 1999/09/24 10:29:06 loic Exp $
+// $Id: word.cc,v 1.2 1999/09/24 14:30:13 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -66,9 +66,11 @@ int main(int ac, char **av)
 	  verbose++;
 	  break;
 	case 'w':
+	  free(params.word_desc);
 	  params.word_desc = strdup(optarg);
 	  break;
 	case 'c':
+	  free(params.config);
 	  params.config = strdup(optarg);
 	  break;
 	case 'k':
@@ -178,7 +180,7 @@ static void dolist(params_t* params)
       }
       if(verbose) fprintf(stderr, "done\n");
 
-      result->Destroy();
+      delete result;
 
       location += strlen(*p);
       anchor++;
@@ -209,7 +211,7 @@ static void dolist(params_t* params)
       fprintf(stderr, "dolist: searching occurences of '%s', got %d matches instead of 2\n", (const char*)wordRef.Word(), count);
     }
 
-    result->Destroy();
+    delete result;
   }
 }
 
@@ -318,7 +320,7 @@ static void dokey(params_t* params)
   // the difference must be minus one.
   //
   {
-    String tmp = other_word.Get(String(0), info.nfields - 1);
+    String tmp = other_word.Get(String(""), info.nfields - 1);
     tmp.append("a");
     other_word.Set(tmp, info.nfields - 1);
   }
@@ -339,7 +341,7 @@ static void dokey(params_t* params)
   // the difference must be one.
   //
   {
-    String tmp = other_word.Get(String(0), info.nfields - 1);
+    String tmp = other_word.Get(String(""), info.nfields - 1);
     tmp[tmp.indexOf('T')] = 'S';
     other_word.Set(tmp, info.nfields - 1);
   }
