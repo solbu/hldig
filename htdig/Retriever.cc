@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.57 1999/08/25 22:00:56 grdetil Exp $
+// $Id: Retriever.cc,v 1.58 1999/08/27 15:49:15 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -598,31 +598,6 @@ Retriever::Need2Get(char *u)
     if ( visited.Exists(url) )
     	return FALSE;
     	
-    String *local_filename = IsLocal(u);    // For local URL's, check
-    if ( local_filename )		    // list for device and inode
-    {					    // to make sure we haven't
-	struct stat buf;		    // already indexed a link
-					    // to this file.
-	if ( stat(local_filename->get(),&buf) == 0 )
-	{
-	    char key[2*sizeof(ino_t)+2*sizeof(dev_t)+2];      // Make hash key
-	    sprintf( key, "%x+%x", buf.st_dev, buf.st_ino );  // from device
-	    if ( visited.Exists(key) )			      // and inode.
-	    {
-		if ( debug ) {
-		    String *dup = (String*)visited.Find(key);
-		    cout << endl
-			 << "Duplicate: " << local_filename->get()
-			 << " -> "        << dup->get() << endl;
-		}
-		delete local_filename;
-		return FALSE;
-	    }
-	    visited.Add(key,local_filename);
-	    return TRUE;
-	}
-	delete local_filename;
-    }
     return TRUE;
 
 }
