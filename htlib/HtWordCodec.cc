@@ -1,17 +1,7 @@
 //
 // Translation methods for HtWordCodec
 //
-// $Id: HtWordCodec.cc,v 1.2 1999/01/24 15:33:10 hp Exp $
-//
-// $Log: HtWordCodec.cc,v $
-// Revision 1.2  1999/01/24 15:33:10  hp
-// - Fix bug in HtWordCodec::code() when replacement list is empty;
-//   e.g. common_url_parts and url_part_aliases are both empty.
-// - Non-fatal bug in calculating limits for replacement lists and
-//   smaller nits in HtWordCodec constructors.
-//
-// Revision 1.1  1999/01/21 13:43:03  ghutchis
-// New files.
+// $Id: HtWordCodec.cc,v 1.3 1999/03/14 03:17:10 ghutchis Exp $
 //
 //
 
@@ -61,6 +51,9 @@ HtWordCodec::HtWordCodec(StringList *from, StringList *to, char joiner)
   myFromMatch = new StringMatch;
   myToMatch = new StringMatch;
 
+  myTo = to;
+  myFrom = from;
+
   String to_pattern(myTo->Join(joiner));
 
   // After being initialized with Join, the strings are not
@@ -70,8 +63,6 @@ HtWordCodec::HtWordCodec(StringList *from, StringList *to, char joiner)
   String from_pattern(myFrom->Join(joiner));
   myFromMatch->Pattern(from_pattern, joiner);
 
-  myTo = to;
-  myFrom = from;
 }
 
 
