@@ -1,5 +1,11 @@
 Mon Dec 29 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
+    * htdig/htdig.cc, htdoc/htdig.html:  Fix bug #845054
+      Fix behaviour of -m and additional list of urls at the end of a command.
+      In either case, "-" denotes stdin.
+
+Mon Dec 29 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
     * installdir/rundig, installdir/Makefile.{in,am}:  Address bug #860708
       Make  bin/rundig -a  handle multiple database directories
 

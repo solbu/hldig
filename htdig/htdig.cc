@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htdig.cc,v 1.39 2003/12/14 03:42:05 lha Exp $
+// $Id: htdig.cc,v 1.40 2003/12/29 13:12:25 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -171,7 +171,6 @@ int main(int ac, char **av)
 	    cout << "Warning: Configuration option " << *option <<
 		" is no longer supported\n";
     }
-
 
     if (config->Find("locale").empty() && debug > 0)
       cout << "Warning: unknown locale!\n";
@@ -365,14 +364,24 @@ int main(int ac, char **av)
 	retriever.Initial(config->Find("start_url"), 1);
       }
 
-    // Handle list of URLs given on stdin, if optional "-" argument given.
-    if (optind < ac && strcmp(av[optind], "-") == 0)
+    // Handle list of URLs given in a file (stdin, if "-") specified as
+    // argument to -m or as an optional trailing argument.
+    if (optind < ac)
+    {
+	if (debug)
+	    if (minimalFile.length() != 0)
+		cout << "Warning: argument " << av[optind]
+		     << " overrides -m " << minimalFile << endl;
+	minimalFile = av[optind];
+    }
+    if (strcmp (minimalFile.get(), "-") == 0)
       {
 	String str;
+	// Why not combine this with the code below, with  input = stdin ?
 	while (!cin.eof())
 	  {
 	    cin >> str;
-	    str.chop("\r\n");
+	    str.chop("\r\n");	// (Why "\r\n" here and "\r\n\t " below?)
 	    if (str.length() > 0)
 	        retriever.Initial(str, 1);
 	  }
@@ -392,6 +401,12 @@ int main(int ac, char **av)
 		      retriever.Initial(str, 1);
 		  }
 		fclose(input);
+	      }
+	    else
+	      {
+		cerr << "Could not open argument '" << minimalFile
+		     << "' of flag -m\n";
+		exit (1);
 	      }
       }
 
@@ -456,7 +471,7 @@ int main(int ac, char **av)
 //
 void usage()
 {
-    cout << "usage: htdig [-v][-i][-c configfile][-t]\n";
+    cout << "usage: htdig [-v][-i][-c configfile][-t][-m minimalfile]\n";
     cout << "This program is part of ht://Dig " << VERSION << "\n\n";
     cout << "Options:\n";
 
@@ -494,6 +509,15 @@ void usage()
     cout << "\t\ta second copy of the database to be built.  This allows\n";
     cout << "\t\tthe original files to be used by htsearch during the\n";
     cout << "\t\tindexing run.\n\n";
+
+    cout << "\t-m minimalfile  (or just a file name at end of arguments)\n";
+    cout << "\t\tTells htdig to read URLs from the supplied file and index\n";
+    cout << "\t\tthem in place of (or in addition to) the existing URLs in\n";
+    cout << "\t\tthe database and the start_url.  With the -m, only the\n";
+    cout << "\t\tURLs specified are added to the database.  A file name of\n";
+    cout << "\t\t'-' indicates the standard input.\n\n";
+
+
 	
     exit(0);
 }
