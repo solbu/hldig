@@ -1,4 +1,4 @@
-// $Id: testnet.cc,v 1.4 1999/10/04 16:48:07 angus Exp $
+// $Id: testnet.cc,v 1.5 1999/10/06 12:08:13 angus Exp $
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
 #endif /* HAVE_CONFIG_H */
@@ -10,16 +10,13 @@
 #include <iostream.h>
 #include <errno.h>
 #include <string.h>
-// If we have this, we probably want it.
-#ifdef HAVE_GETOPT_H
-#include <getopt.h>
-#endif
-#include <unistd.h>
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
 #endif
+
+#include <unistd.h>
 
 int debug = 0;
 int timesvar = 1;
@@ -27,11 +24,11 @@ int persistent = 1;
 
 URL *url;
 Transport *transportConnect = NULL;
+HtHTTP    *HTTPConnect = NULL;
 
 #define DEFAULT_MAX_DOCUMENT_SIZE 40000
 
 static void usage();
-void CreateHTTP(Transport **);
 void reportError(char *msg);
 Transport::DocStatus Retrieve();
 int Parser(char *ct);
@@ -115,8 +112,12 @@ int main(int ac, char **av)
          
 
    // Memory freeing
-   
-   if (transportConnect) delete transportConnect;
+
+   if (HTTPConnect)
+   {
+      /// HERE DUMPS THE CORE
+     delete HTTPConnect;
+   }
    
    if (url) delete url;
 
@@ -158,32 +159,12 @@ void reportError(char *msg)
 }
 
 
-void CreateHTTP(Transport **pTransport)
-{
-   if (debug>1)
-      cout << "Creating an HtHTTP object" << endl;
-      
-   *pTransport = new HtHTTP();
-   
-   if (!*pTransport) reportError(strerror(errno));
-
-   (*pTransport)->SetRequestMaxDocumentSize(DEFAULT_MAX_DOCUMENT_SIZE);
-   
-}
-
-
-
-
-
-
 Transport::DocStatus Retrieve()
 {
     // Right now we just handle http:// service
     // Soon this will include file://
     // as well as an ExternalTransport system
     // eventually maybe ftp:// and a few others
-
-    static HtHTTP		*http = 0;
 
     Transport::DocStatus	status;
     Transport_Response		*response = 0;
@@ -198,33 +179,41 @@ Transport::DocStatus Retrieve()
 
     if (mystrncasecmp(url->service(), "http", 4) == 0)
     {
-	if (!http)
-	  CreateHTTP((Transport **)&http);
 
-        if (http)
+	if (!HTTPConnect)
+        {
+
+            if (debug>1)
+            cout << "Creating an HtHTTP object" << endl;
+      
+            HTTPConnect = new HtHTTP();
+
+            if (!HTTPConnect)
+               reportError(strerror(errno));
+        }
+
+        if (HTTPConnect)
         {
             // Here we must set only thing for a HTTP request
             
-	    http->SetRequestURL(*url);
+	    HTTPConnect->SetRequestURL(*url);
+
+            HTTPConnect->SetRequestMaxDocumentSize(DEFAULT_MAX_DOCUMENT_SIZE);
 
             // Set the referer
 
             // We may issue a config paramater to enable/disable them
-            if (!persistent) http->DisablePersistentConnection();
+            if (!persistent) HTTPConnect->DisablePersistentConnection();
                       
-            // http->SetRequestMethod(HtHTTP::Method_GET);
+            // HTTPConnect->SetRequestMethod(HtHTTP::Method_GET);
             if (debug > 2)
             {
                cout << "Making HTTP request on " << url->get();
-
-//               if (useproxy)
-//                 cout << " via proxy (" << proxy->host() << ":" << proxy->port() << ")";
-
                cout << endl;
             }
         }
         
-	transportConnect = http;
+	transportConnect = HTTPConnect;
     }
     else
     {
