@@ -3,7 +3,7 @@ include $(top_srcdir)/Makefile.config
 
 LOCAL_DEFINES=  -DSENDMAIL=\"$(SENDMAIL)\"
 
-bin_PROGRAMS = htpurge htnotify htdump htstat
+bin_PROGRAMS = htpurge htnotify htdump htstat htload
 
 htpurge_SOURCES = htpurge.cc
 htpurge_DEPENDENCIES = $(HTLIBS)
@@ -24,3 +24,8 @@ htstat_SOURCES = htstat.cc
 htstat_DEPENDENCIES = $(HTLIBS)
 htstat_LDFLAGS = $(PROFILING)
 htstat_LDADD = $(HTLIBS)
+
+htload_SOURCES = htload.cc
+htload_DEPENDENCIES = $(HTLIBS)
+htload_LDFLAGS = $(PROFILING)
+htload_LDADD = $(HTLIBS)
