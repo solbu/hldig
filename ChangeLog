@@ -1,4 +1,8 @@
-<<<<<<< ChangeLog
+Fri Apr 30 20:00:09 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtDateTime.h, htlib/HtDateTime.cc: Update with new
+	versions sent by Gabriele.
+
 Fri Apr 30 19:30:42 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtRegex.h, htlib/HtRegex.cc: New class, contributed by

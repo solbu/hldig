@@ -127,6 +127,37 @@ void HtDateTime::SetRFC850(char *s)
 }
 
 
+///////
+   //   ISO8601 standard Date format
+ //     1994-11-06 08:49:37 GMT
+///////
+
+void HtDateTime::SetISO8601(char *s)
+{
+
+   // year as ccyy;
+   // month ( 01 - 12)
+   // day of the month
+   // hour ( 00 - 23)
+   // minute ( 00 - 59)
+   // seconds ( 00 - 59);
+   // time zone name;
+
+   SetFTime(s, ISO8601_FORMAT);
+   
+}
+
+
+///////
+   //   Default date and time format for the locale
+///////
+
+void HtDateTime::SetDateTimeDefault(char *s)
+{
+
+   SetFTime(s, "%c");
+   
+}
 
 
 
@@ -265,6 +296,19 @@ char *HtDateTime::GetShortISO8601() const
 }
 
 ///////
+   //   Default date and time format for the locale
+///////
+
+char *HtDateTime::GetDateTimeDefault() const
+{
+
+   GetFTime(_strtime, MAXSTRTIME, "%c");
+
+   return (char *)_strtime;
+   
+}
+
+///////
    //   Default date format for the locale
 ///////
 
@@ -369,6 +413,8 @@ bool HtDateTime::SetGMDateTime ( int year, int mon, int mday,
    tm_tmp.tm_yday = 0; // day of the year (to be ignored)
    tm_tmp.tm_isdst = 0; // default for GM (to be ignored)
 
+   // Now we are going to insert the new values as time_t value
+   // This can only be done using GM Time and so ...
 
    if (isLocalTime())
    {
@@ -395,6 +441,18 @@ struct tm &HtDateTime::GetStructTM() const
 	return Ht_tm;
 }
 
+
+struct tm &HtDateTime::GetGMStructTM() const 
+{
+   GetGMStructTM (Ht_tm);
+   return Ht_tm;
+}
+
+void HtDateTime::GetGMStructTM(struct tm & t) const
+{
+   // Directly gets gmtime value
+   memcpy(& t , gmtime(& Ht_t), sizeof(struct tm));
+}
 
 
 ///////
@@ -498,10 +556,111 @@ bool HtDateTime::operator<(const HtDateTime &right) const
 
 HtDateTime &HtDateTime::operator=(const HtDateTime &right)
 {
-	Ht_t=right.Ht_t;
+	Ht_t=right.Ht_t;      	   	 // Copy the time_t value
+	local_time=right.local_time;	 // Copy the local_time flag
+	
 	return *this;
 }
 
+
+///////
+   //   Comparison methods
+///////
+
+
+int HtDateTime::DateTimeCompare (const HtDateTime & right) const
+{
+   int result;
+   
+   // Let's compare the date
+
+   result=DateCompare(right);
+   
+   if(result) return result;
+   
+   // Same date. Let's compare the time
+
+   result=TimeCompare(right);
+
+   return result; // Nothing more to check
+
+}
+
+
+int HtDateTime::GMDateTimeCompare (const HtDateTime & right) const
+{
+	// We must compare the whole time_t value
+	
+	if ( * this > right) return 1;	 // 1st greater than 2nd
+	if ( * this < right) return 1;	 // 1st lower than 2nd
+	
+	return 0;
+	
+}
+
+
+int HtDateTime::DateCompare (const HtDateTime & right) const
+{
+
+   // We must transform them in 2 struct tm variables
+	
+   struct tm tm1, tm2;
+   
+   this->GetGMStructTM (tm1);
+   right.GetGMStructTM (tm2);
+
+   // Let's compare them
+   return DateCompare (&tm1, &tm2);
+	
+}
+
+
+int HtDateTime::GMDateCompare (const HtDateTime & right) const
+{
+
+   // We must transform them in 2 struct tm variables
+   // both referred to GM time
+	
+   struct tm tm1, tm2;
+   
+   this->GetGMStructTM (tm1);
+   right.GetGMStructTM (tm2);
+
+   // Let's compare them
+   return DateCompare (&tm1, &tm2);
+	
+}
+
+
+int HtDateTime::TimeCompare (const HtDateTime & right) const
+{
+
+   // We must transform them in 2 struct tm variables
+	
+   struct tm tm1, tm2;
+	
+   this->GetStructTM (tm1);
+   right.GetStructTM (tm2);
+
+   return TimeCompare (&tm1, &tm2);
+	
+}
+
+
+int HtDateTime::GMTimeCompare (const HtDateTime & right) const
+{
+
+   // We must transform them in 2 struct tm variables
+	
+   struct tm tm1, tm2;
+
+   // We take the GM value of the time	
+   this->GetGMStructTM (tm1);
+   right.GetGMStructTM (tm2);
+
+   return TimeCompare (&tm1, &tm2);
+	
+}
 
 
 
@@ -520,16 +679,16 @@ int HtDateTime::DateCompare(const struct tm *tm1, const struct tm *tm2)
    // Let's check the year
    
    if (tm1->tm_year < tm2->tm_year) return -1;
-   if (tm1->tm_year > tm2->tm_year) return  0;
+   if (tm1->tm_year > tm2->tm_year) return  1;
 
    // Same year. Let's check the month
    if (tm1->tm_mon < tm2->tm_mon) return -1;
-   if (tm1->tm_mon > tm2->tm_mon) return 0;
+   if (tm1->tm_mon > tm2->tm_mon) return 1;
    
    // Same month. Let's check the day of the month
    
    if (tm1->tm_mday < tm2->tm_mday) return -1;
-   if (tm1->tm_mday > tm2->tm_mday) return 0;
+   if (tm1->tm_mday > tm2->tm_mday) return 1;
 
    // They are equal for the date
    return 0;
@@ -546,17 +705,17 @@ int HtDateTime::TimeCompare(const struct tm *tm1, const struct tm *tm2)
    // Let's check the hour
    
    if (tm1->tm_hour < tm2->tm_hour) return -1;
-   if (tm1->tm_hour > tm2->tm_hour) return  0;
+   if (tm1->tm_hour > tm2->tm_hour) return  1;
 
    // Same hour . Let's check the minutes
    
    if (tm1->tm_min < tm2->tm_min) return -1;
-   if (tm1->tm_min > tm2->tm_min) return 0;
+   if (tm1->tm_min > tm2->tm_min) return 1;
 
    // Ooops !!! Same minute. Let's check the seconds
    
    if (tm1->tm_sec < tm2->tm_sec) return -1;
-   if (tm1->tm_sec > tm2->tm_sec) return 0;
+   if (tm1->tm_sec > tm2->tm_sec) return 1;
 
    // They are equal for the time
    return 0;
@@ -603,7 +762,12 @@ time_t HtDateTime::Httimegm (struct tm *tm)
 #if HAVE_TIMEGM
    return ::timegm (tm);
 #else
-   return ::Httimegm (tm); // To be changed if managed here
+   // return ::Httimegm (tm); // To be changed if managed here
+   static time_t gmtime_offset;
+   tm->tm_isdst = 0;
+   return __mktime_internal (tm, gmtime, &gmtime_offset);
+}
+
 #endif
    
 }
@@ -782,6 +946,8 @@ int HtDateTime::Test(char **test_dates, const char *format)
 
    	 orig.SetFTime(test_dates[i], format);
    
+   	 orig.ComparisonTest(conv);
+	 
       conv=orig;
    
       if (orig != conv)
@@ -808,6 +974,113 @@ int HtDateTime::Test(char **test_dates, const char *format)
    
    return ok;
 }
+
+
+void HtDateTime::ComparisonTest (const HtDateTime &right) const
+{
+   int result;
+   
+   
+   cout << "Comparison between:" << endl;
+   
+   cout << " 1. " << this->GetRFC1123() << endl;
+   cout << " 2. " << right.GetRFC1123() << endl;
+   cout << endl;
+
+
+///////
+   //   Complete comparison
+///////
+   
+      cout << "\tComplete comparison (date and time)" << endl;
+      result = this->DateTimeCompare (right);
+
+   cout << "\t\t " << this->GetDateTimeDefault();
+   
+   if (result > 0 )
+   	 cout << " is greater than ";
+   else if (result < 0 )
+   	 cout << " is lower than ";
+	 else cout << " is equal to ";
+
+   cout << " " << right.GetDateTimeDefault() << endl;
+
+
+
+///////
+   //   Date comparison
+///////
+   
+      cout << "\tDate comparison (ignoring time)" << endl;
+      result = this->DateCompare (right);
+
+   cout << "\t\t " << this->GetDateDefault();
+   
+   if (result > 0 )
+   	 cout << " is greater than ";
+   else if (result < 0 )
+   	 cout << " is lower than ";
+	 else cout << " is equal to ";
+
+   cout << " " << right.GetDateDefault() << endl;
+
+
+///////
+   //   Date comparison (after GM time conversion)
+///////
+   
+      cout << "\tDate comparison (ignoring time) - GM time conversion" << endl;
+      result = this->GMDateCompare (right);
+
+   cout << "\t\t " << this->GetDateDefault();
+   
+   if (result > 0 )
+   	 cout << " is greater than ";
+   else if (result < 0 )
+   	 cout << " is lower than ";
+	 else cout << " is equal to ";
+
+   cout << " " << right.GetDateDefault() << endl;
+
+
+	 
+///////
+   //   Time comparison
+///////
+   
+      cout << "\tTime comparison (ignoring date)" << endl;
+      result = this->TimeCompare (right);
+
+   cout << "\t\t " << this->GetTimeDefault();
+   
+   if (result > 0 )
+   	 cout << " is greater than ";
+   else if (result < 0 )
+   	 cout << " is lower than ";
+	 else cout << " is equal to ";
+
+   cout << " " << right.GetTimeDefault() << endl;
+
+
+///////
+   //   Time comparison (after GM time conversion)
+///////
+   
+      cout << "\tTime comparison (ignoring date) - GM time conversion" << endl;
+      result = this->GMTimeCompare (right);
+
+   cout << "\t\t " << this->GetTimeDefault();
+   
+   if (result > 0 )
+   	 cout << " is greater than ";
+   else if (result < 0 )
+   	 cout << " is lower than ";
+	 else cout << " is equal to ";
+
+   cout << " " << right.GetTimeDefault() << endl;
+   
+}
+
 
 
 void HtDateTime::ViewFormats()
