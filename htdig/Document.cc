@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Document.cc,v 1.69 2004/02/03 17:08:11 angusgb Exp $
+// $Id: Document.cc,v 1.70 2004/02/08 10:19:32 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -620,7 +620,6 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
     // Loop through list of potential filenames until the list is exhausted
     // or a suitable file is found to exist as a regular file.
     while ((filename = (String *)filenames->Get_Next()) &&
-	    decodeURL (*filename) &&	// convert '%20' to ' ' etc.
 	   ((stat((char*)*filename, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode)))
         if (debug > 1)
 	    cout << "  tried local file " << *filename << endl;

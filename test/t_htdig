@@ -5,15 +5,28 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_htdig,v 1.12 2003/12/14 06:02:50 lha Exp $
+# $Id: t_htdig,v 1.13 2004/02/08 10:19:33 lha Exp $
 #
+
+# Tests the following config attributes:
+#	case_sensitive
+#	common_url_parts
+#	limit_urls_to
+#	robotstxt_name
+#	url_part_aliases
+#	url_rewrite_rules
+
+flags="$@"
 
 try() {
     config=$1
     expected=$2
 
-    $htdig "$@" -t -i -c $config
+    $htdig "$flags" -t -i -c $config
     $htpurge -c $config
+
+    	# only used when  url_part_aliases  was set before the call...
+    set_attr url_part_aliases "bar foo"
 
     got=`./document -c $config -u | sort`
 
@@ -30,9 +43,13 @@ $got"
 test_functions_action=--start-apache
 . ./test_functions
 
+conf=$testdir/conf/htdig.conf.tmp
+cp $testdir/conf/htdig.conf $conf
+
 # complete dig of set 1
 
-expected='http://localhost:7400/set1/
+try $conf \
+'http://localhost:7400/set1/
 http://localhost:7400/set1/bad_local.htm
 http://localhost:7400/set1/script.html
 http://localhost:7400/set1/site%201.html
@@ -43,25 +60,90 @@ http://localhost:7400/set1/sub%2520dir/
 http://localhost:7400/set1/sub%2520dir/empty%20file.html
 http://localhost:7400/set1/title.html'
 
-try $testdir/conf/htdig.conf "$expected"
 
+# Check  common_url_parts  being encoded properly
+set_attr common_url_parts "dummy1 dummy2 dummy3 dummy4 dummy5 dummy6 dummy7 dummy8 dummy9 dummy10 dummy11 dummy12"
+got=`./document -c $config -u | sort`
+expected='dummy1localhost:7400/set1/
+dummy1localhost:7400/set1/bad_localdummy7
+dummy1localhost:7400/set1/scriptdummy6
+dummy1localhost:7400/set1/site%201dummy6
+dummy1localhost:7400/set1/site2dummy6
+dummy1localhost:7400/set1/site3dummy6
+dummy1localhost:7400/set1/site4dummy6
+dummy1localhost:7400/set1/sub%2520dir/
+dummy1localhost:7400/set1/sub%2520dir/empty%20filedummy6
+dummy1localhost:7400/set1/titledummy6'
+if [ "$expected" != "$got" ]
+then
+    fail "running htdig: expected 
+$expected
+but got
+$got"
+fi
 
 
 # Pretend we are another user; robots.txt bans us from seeing 'site*'
 
-conf=$testdir/conf/htdig.conf.tmp
-cp $testdir/conf/htdig.conf $conf
 set_attr robotstxt_name other
+# (Reverse mapping from 'foo' to 'bar' implemented in  try.)
+set_attr url_part_aliases "http://localhost:7400/set1 foo"
 
-expected='http://localhost:7400/set1/
+try $conf \
+'bar/
+bar/bad_local.htm
+bar/script.html
+bar/sub%2520dir/
+bar/sub%2520dir/empty%20file.html
+bar/title.html'
+
+# back to default.
+set_attr url_part_aliases
+
+# check  limit_urls_to  obeys case sensitive
+set_attr start_url HTTP://LocalHost:7400/Set1/
+try $conf ""
+
+set_attr case_sensitive false
+set_attr robotstxt_name htdig
+# common_url_parts is case sensitive, despite  case_sensitive=false
+set_attr common_url_parts "http:// http://local HTTP://LocalHost 7400/set1"
+# Replace site4.html by a file:/// URL.  Must explicitly add leading chars
+set_attr url_rewrite_rules '(.*)si[a-z]*[4-9]*\.([a-z]*)tml file:///'$PWD'/htdocs/set1/site4.\\2tml'
+set_attr limit_urls_to '${start_url} site4.html'
+
+try $conf \
+'file://'$PWD'/htdocs/set1/site4.html
+http://localhost:7400/set1/
 http://localhost:7400/set1/bad_local.htm
 http://localhost:7400/set1/script.html
+http://localhost:7400/set1/site%201.html
+http://localhost:7400/set1/site2.html
+http://localhost:7400/set1/site3.html
 http://localhost:7400/set1/sub%2520dir/
 http://localhost:7400/set1/sub%2520dir/empty%20file.html
 http://localhost:7400/set1/title.html'
 
-try $conf "$expected"
-
+# Check  common_url_parts  being encoded properly
+set_attr common_url_parts "dummy1 dummy2 dummy3 dummy4"
+got=`./document -c $config -u | sort`
+expected='dummy2host:dummy4/
+dummy2host:dummy4/bad_local.htm
+dummy2host:dummy4/script.html
+dummy2host:dummy4/site%201.html
+dummy2host:dummy4/site2.html
+dummy2host:dummy4/site3.html
+dummy2host:dummy4/sub%2520dir/
+dummy2host:dummy4/sub%2520dir/empty%20file.html
+dummy2host:dummy4/title.html
+file://'$PWD'/htdocs/set1/site4.html'
+if [ "$expected" != "$got" ]
+then
+    fail "running htdig: expected 
+$expected
+but got
+$got"
+fi
 
 test_functions_action=--stop-apache
 . ./test_functions

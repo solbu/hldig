@@ -1,3 +1,25 @@
+Sun 8 Feb 2004 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htcommon/URL.cc: Make server_alias case insensitive.
+
+    * htdig/Document.cc: Don't hex-decode twice.  (Caused problems with names
+      like  file%20name)
+
+    * htdig/Retriever.cc: Test validity of URL value *before* calling
+      signature(), as that implictly normalises, and confuses
+      limit_normalised vs limit_urls_to
+
+    * htdig/htdig.cc: Remove stale  md5_db  if  -i  specified
+
+    * installdir/htdig.conf: Set  common_url_parts  to contain all strings
+      which *must* be in a valid URL.  Probably contains whole domain name,
+      so more compression than using standard strings.
+
+    * htcommon/defaults.cc: Update docs.  Remove default "bad_extensions"
+      from  common_url_parts,  and add  .shtml
+
+    * test/t_htdig, test/t_htdig_local: Update self-tests
+
 Tue Feb 3 18:06:38 CET 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
    * htcommon/HtConfiguration.cc: changed the Find method in order not to

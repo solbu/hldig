@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.89 2004/01/12 12:48:24 lha Exp $
+// $Id: Retriever.cc,v 1.90 2004/02/08 10:19:32 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -175,8 +175,8 @@ void Retriever::Initial(const String & list, int from)
 	for (int i = 0; i < tokens.Count(); i++)
 	{
 		URL u(tokens[i]);
+		url = u.get();	// get before  u.signature()  resolves aliases
 		server = (Server *) servers[u.signature()];
-		url = u.get();
 		if (debug > 2)
 			cout << "\t" << from << ":" << (int) log << ":" << url;
 		if (!server)
@@ -1053,7 +1053,7 @@ int Retriever::IsValidURL(const String & u)
 	}
 
 	//
-	// If any of the limits are met, we allow the URL
+	// If none of the limits is met, we disallow the URL
 	//
 	if (limits.match(url, 1, 0) == 0)
 	{
@@ -1062,13 +1062,15 @@ int Retriever::IsValidURL(const String & u)
 		return (HTDIG_ERROR_TESTURL_LIMITS);
 	}
 	//
-	// or not in list of normalized urls
+	// Likewise if not in list of normalized urls
 	//
 	// Warning!
 	// should be last in checks because of aUrl normalization
 	//
-	aUrl.normalize();
-	if (limitsn.match(url.get(), 1, 0) == 0)
+		// signature()  implicitly normalizes the URL.  Be efficient...
+	Server *server = (Server *) servers[aUrl.signature()];
+//	aUrl.normalize();
+	if (limitsn.match(aUrl.get(), 1, 0) == 0)
 	{
 		if (debug > 2)
 			cout << endl << "   Rejected: not in \"limit_normalized\" list!";
@@ -1079,8 +1081,6 @@ int Retriever::IsValidURL(const String & u)
 	// After that gauntlet, check to see if the server allows it
 	// (robots.txt)
 	//
-	URL testURL((char *) url);
-	Server *server = (Server *) servers[testURL.signature()];
 	if (server && server->IsDisallowed(url) != 0)
 	{
 		if (debug > 2)
@@ -1097,6 +1097,7 @@ int Retriever::IsValidURL(const String & u)
 //   Returns a list of strings containing the (possible) local filenames
 //   of the given url, or 0 if it's definitely not local.
 //   THE CALLER MUST FREE THE STRINGLIST AFTER USE!
+//   Returned strings are not hex encoded.
 //
 StringList *Retriever::GetLocal(const String & strurl)
 {

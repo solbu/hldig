@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.104 2004/01/18 12:54:14 lha Exp $
+// $Id: defaults.cc,v 1.105 2004/02/08 10:19:32 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -316,7 +316,14 @@ ConfigDefaults	defaults[] =
 	"boolean", "htdig", "", "3.1.0b2", "Indexing:Where", "case_sensitive: false", " \
 	This specifies whether ht://Dig should consider URLs \
 	case-sensitive or not. If your server is case-insensitive, \
-	you should probably set this to false. \
+	you should probably set this to false. <br> \
+	Even if this is false, \
+	<a href=\"#common_url_parts\">common_url_parts</a>, \
+	<a href=\"#url_part_aliases\">url_part_aliases</a> and \
+	<a href=\"#url_rewrite_rules\">url_rewrite_rules</a> \
+	are all still case sensitive, and \
+	<a href=\"#server_aliases\">server_aliases</a> \
+	is still case insensitive. \
 " }, \
 { "check_unique_date", "false",  \
 	"boolean", "htdig", "Global", "3.2.0b3", "", "check_unique_date: false", " \
@@ -344,7 +351,7 @@ ConfigDefaults	defaults[] =
 	shared among different search databases. The default \
 	value for this attribute is defined at compile time. \
 " }, \
-{ "common_url_parts", "http:// http://www. ftp:// ftp://ftp. /pub/ .html .htm .gif .jpg .jpeg /index.html /index.htm .com/ .com mailto:",  \
+{ "common_url_parts", "http:// http://www. ftp:// ftp://ftp. /pub/ .html .htm .shtml /index.html /index.htm .com/ .com mailto:",  \
 	"string list", "all", "", "3.1.0", "URLs", "common_url_parts: http://www.htdig.org/ml/ \\<br> \
 .html \\<br> \
 http://dev.htdig.org/ \\<br> \
@@ -1224,9 +1231,9 @@ http://www.htdig.org/", " \
 	search. Any number of strings can be specified, \
 	separated by spaces. If multiple patterns are given, at \
 	least one of the patterns has to match the URL.<br> \
-	Matching, by default, is a case-insensitive string match on the URL \
+	Matching, by default, is a case-sensitive string match on the URL \
 	to be used, unless the <a href=\"#case_sensitive\">case_sensitive</a> \
-	attribute is set. The match will be performed <em>after</em> \
+	attribute is false. The match will be performed <em>after</em> \
 	the relative references have been converted to a valid \
 	URL. This means that the URL will <em>always</em> start \
 	with a transport specifier (<code>http://</code> if none is \
@@ -1286,7 +1293,8 @@ http://www.htdig.org/", " \
 	<a href=\"#local_urls\">local_urls</a> or \
 	<a href=\"#local_user_urls\">local_user_urls</a> attribute. If it \
 	cannot find the file, it will give up rather than trying HTTP or \
-	another protocol. \
+	another protocol.  With this option, even <code>file://</code> urls \
+	are not retrieved, except throught the local_urls mechanism.\
 " }, \
 { "local_user_urls", "",  \
 	"string list", "htdig", "", "3.0.8b2", "Indexing:Where", "local_user_urls: http://www.my.org/=/home/,/www/", " \
@@ -2609,8 +2617,12 @@ url_part_aliases: \
 	a regular expression; the right hand string is  a literal string with \
 	embedded placeholders for fragments that matched  inside brackets in \
 	the regex. \\0 is the whole matched string, \\1 to \\9 are  bracketted \
-	substrings. Rewrite rules are applied sequentially to each  \
-	incoming URL  before normalization occurs. Rewriting does not stop \
+	substrings. Note that the <strong>entire</strong> URL is replaced by \
+	the right hand string (not just the portion which matches the left hand\
+	string).  Thus, a leading and trailing (.*) should be included in the \
+	pattern, with matching placeholders in the replacement string.<br> \
+	Rewrite rules are applied sequentially to each  \
+	incoming URL before normalization occurs. Rewriting does not stop \
 	once a match has been made, so multiple rules may affect a given URL. \
 	See also <a href=\"#url_part_aliases\">url_part_aliases</a> which \
 	allows URLs to be of one  \

@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htdig.cc,v 1.40 2003/12/29 13:12:25 lha Exp $
+// $Id: htdig.cc,v 1.41 2004/02/08 10:19:33 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -337,6 +337,9 @@ int main(int ac, char **av)
     {
        unlink(word_filename);
        unlink((word_filename + "_weakcmpr").get());
+
+       // Remove "duplicate detection" database
+       unlink(config->Find("md5_db"));
 
        // using  -i,  also ignore seen-but-not-processed URLs from last pass
        unlink(config->Find("url_log"));

@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: URL.cc,v 1.13 2004/01/18 12:54:14 lha Exp $
+// $Id: URL.cc,v 1.14 2004/02/08 10:19:32 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -752,9 +752,11 @@ void URL::ServerAlias()
 	    }
 	  *salias++= '\0';
 	  from = p;
+	  from.lowercase();
 	  if (from.indexOf(':') == -1)
 	    from.append(":80");
 	  to= new String(salias);
+	  to->lowercase();
 	  if (to->indexOf(':') == -1)
 	    to->append(":80");
 	  serveraliases->Add(from.get(), to);

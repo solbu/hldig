@@ -5,16 +5,26 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_htdig_local,v 1.8 2004/01/17 05:31:56 lha Exp $
+# $Id: t_htdig_local,v 1.9 2004/02/08 10:19:33 lha Exp $
 #
 
 # Tests the following config attributes:
 #	bad_local_extensions
+#	check_unique_md5
 #	content_classifier
 #	database_dir
 #	exclude_urls
+#	limit_normalized
+#	limit_urls_to
 #	local_extensions
+#	local_urls
+#	local_urls_only
+#	local_user_urls
+#	max_hop_count
+#	md5_db
 #	mime_types
+#	remove_default_doc
+#	server_aliases
 #	start_url
 
 test_functions_action=--start-apache
@@ -24,9 +34,14 @@ test_functions_action=--start-apache
 config=$testdir/conf/htdig.conf.tmp
 cp $testdir/conf/htdig.conf2 $config
 
+################################################################################
 #test for local-file-system access to <http://...> URLs
 
 /bin/rm -f var/htdig2/*
+set_attr start_url "http://localhost:7400/set1/ http://localhost:7400/set1/title.html?site3.html http://localhost:7400/set1/title.html?site4.html"
+# ban  ite3.htm from query, but not from main URL.
+# Allow site3.html, but not title.html?site3.html
+set_attr bad_querystr ite3.htm
 expected='bad_local.htm'
 got=`$htdig "$@" -t -i -vv -c $config | grep "Bad local extension:" | sed -e"s-.*/--"`
 if [ "$expected" != "$got" ]
@@ -35,7 +50,6 @@ then
 $expected
 but got
 $got"
-
 fi
 
 expected='db.docdb
@@ -66,7 +80,8 @@ http://localhost:7400/set1/site3.html
 http://localhost:7400/set1/site4.html
 http://localhost:7400/set1/sub%2520dir/
 http://localhost:7400/set1/sub%2520dir/empty%20file.html
-http://localhost:7400/set1/title.html'
+http://localhost:7400/set1/title.html
+http://localhost:7400/set1/title.html?site4.html'
 
 got=`./document -c $config -u | sort`
 
@@ -76,26 +91,104 @@ then
 $expected
 but got
 $got"
-
 fi
 
+set_attr bad_query_str
 
-#test for  <file:///...> URLs
 
-expected=''	# no "bad local" extensions for file:///
-#sed "s#^start_url.*#start_url: file://$PWD/htdocs/set1/#" < $config > tmp.conf
-set_attr start_url file://$PWD/htdocs/set1/
-got=`$htdig "$@" -t -i -vv -c $config | grep "Bad local extension:" | sed -e"s-.*/--"`
+################################################################################
+# limit_urls_to applies before server alias expansion
+set_attr start_url http://myhost/set1/index.html
+set_attr limit_urls_to "http://myhost/set1/"
+set_attr server_aliases myhost=localhost:7400
+$htdig "$@" -t -i -c $config	|| fail "couldn't dig second time"
+$htpurge -c $config		|| fail "couldn't purge second time"
+# only start_url uses alias, so only it passes the  limit_urls_to  test
+expected='http://localhost:7400/set1/'
+
+got=`./document -c $config -u | sort`
+
 if [ "$expected" != "$got" ]
 then
-	fail "second htdig: expected 
+	fail "second document: expected 
 $expected
 but got
 $got"
-
 fi
 
-$htpurge -c $config || fail "couldn't purge second time"
+
+
+################################################################################
+# Check remote URLs not retrieved if  local_urls_only  specified
+set_attr local_urls_only true
+set_attr remove_default_doc site2.html
+# Note: local_urls_only  doesn't handle directories without a default doc
+set_attr local_default_doc "site2.html empty%20file.html"
+set_attr start_url http://myhost/set1/index.html
+# don't care what the aliased URL is; only check the normalized one
+set_attr limit_urls_to
+set_attr limit_normalized "http://localhost:7400/set1/"
+set_attr server_aliases myhost=localhost:7400
+$htdig "$@" -t -i -c $config	|| fail "couldn't dig third time"
+$htpurge -c $config		|| fail "couldn't purge third time"
+expected='http://localhost:7400/set1/
+http://localhost:7400/set1/index.html
+http://localhost:7400/set1/script.html
+http://localhost:7400/set1/site%201.html
+http://localhost:7400/set1/site3.html
+http://localhost:7400/set1/site4.html
+http://localhost:7400/set1/sub%2520dir/
+http://localhost:7400/set1/title.html'
+
+got=`./document -c $config -u | sort`
+
+if [ "$expected" != "$got" ]
+then
+	fail "third document: expected 
+$expected
+but got
+$got"
+fi
+set_attr remove_default_doc index.html
+set_attr local_urls_only false
+set_attr limit_normalized
+
+
+################################################################################
+#test for  <file:///...> URLs
+
+expected=''	# no "bad local" extensions for file:///
+# Check only one "title.html" found...
+set_attr check_unique_md5 true
+set_attr start_url "http://localhost:7400/set1/title.html file://$PWD/htdocs/set1/"
+set_attr limit_urls_to '${start_url}'
+got=`$htdig "$@" -t -i -vv -c $config | grep "Bad local extension:" | sed -e"s-.*/--"`
+if [ "$expected" != "$got" ]
+then
+	fail "fourth htdig: expected 
+$expected
+but got
+$got"
+fi
+
+expected='db.docdb
+db.docs
+db.docs.index
+db.excerpts
+db.md5hash.db
+db.worddump
+db.words.db
+db.words.db_weakcmpr'
+got=`/bin/ls var/htdig2`
+if [ "$expected" != "$got" ]
+then
+	fail "fourth created files: expected 
+$expected
+but got
+$got"
+fi
+
+$htpurge -c $config || fail "couldn't purge fourth time"
 
 expected='file:///set1/bad_local.htm
 file:///set1/index.html
@@ -105,23 +198,31 @@ file:///set1/site2.html
 file:///set1/site3.html
 file:///set1/site4.html
 file:///set1/sub%2520dir/empty%20file.html
-file:///set1/title.html'
+/title.html'
 
-got=`./document -c $config -u | sed "s#${PWD}/htdocs##" | sort`
+got=`./document -c $config -u | sed "s#${PWD}/htdocs##" | sort | sed "s#.*/title.html#/title.html#"`
 
 if [ "$expected" != "$got" ]
 then
-	fail "second document: expected 
+	fail "fourth document: expected 
 $expected
 but got
 $got"
-
 fi
 
 
+################################################################################
 #test mime types handling
 
 expected=''	# no "bad local" extensions for file:///
+set_attr max_hop_count 1	# removes "empty%20file.html"
+set_attr exclude_urls "site4.html script.html site[3].html"
+set_attr bad_extensions .foo
+set_attr local_urls_only false
+
+rm -f var/htdig2/db.md5hash.db
+set_attr md5_db '${database_base}.md5.db'
+
 set_attr mime_types $PWD/mime-without-htm
 set_attr content_classifier $PWD/say-text
 echo 'text/html	html' > mime-without-htm
@@ -131,17 +232,74 @@ chmod 700 say-text
 got=`$htdig "$@" -t -i -vv -c $config | grep "MIME type:" | sed -e"s-.*/--"`
 if [ "$expected" != "$got" ]
 then
-	fail "third htdig: expected 
+	fail "fifth htdig: expected 
 $expected
 but got
 $got"
-
 fi
 
-$htpurge -c $config || fail "couldn't purge second time"
+expected='db.docdb
+db.docs
+db.docs.index
+db.excerpts
+db.md5.db
+db.worddump
+db.words.db
+db.words.db_weakcmpr'
+got=`/bin/ls var/htdig2`
+if [ "$expected" != "$got" ]
+then
+	fail "fifth created files: expected 
+$expected
+but got
+$got"
+fi
+
+$htpurge -c $config || fail "couldn't purge fifth time"
 
 expected='file:///set1/bad_local.htm
 file:///set1/index.html
+file:///set1/nph-location.cgi
+file:///set1/site%201.html
+file:///set1/site2.html
+file:///set1/site3.html
+file:///set1/title.html'
+
+got=`./document -c $config -u | sed "s#${PWD}/htdocs##" | sort`
+
+if [ "$expected" != "$got" ]
+then
+	fail "fifth document: expected 
+$expected
+but got
+$got"
+fi
+
+################################################################################
+expected=''	# no "bad local" extensions for file:///
+set_attr max_hop_count 	# removes "empty%20file.html"
+set_attr exclude_urls /CVS/
+set_attr valid_extensions ".foo .html"
+set_attr bad_extensions
+
+set_attr mime_types $PWD/mime-without-htm
+set_attr content_classifier $PWD/say-text
+echo 'text/html	html' > mime-without-htm
+echo '#!/bin/sh
+      echo text/plain' > say-text
+chmod 700 say-text
+got=`$htdig "$@" -t -i -vv -c $config | grep "MIME type:" | sed -e"s-.*/--"`
+if [ "$expected" != "$got" ]
+then
+	fail "sixth htdig: expected 
+$expected
+but got
+$got"
+fi
+
+$htpurge -c $config || fail "couldn't purge sixth time"
+
+expected='file:///set1/index.html
 file:///set1/nph-location.foo
 file:///set1/script.html
 file:///set1/site%201.html
@@ -155,12 +313,45 @@ got=`./document -c $config -u | sed "s#${PWD}/htdocs##" | sort`
 
 if [ "$expected" != "$got" ]
 then
-	fail "third document: expected 
+	fail "sixth document: expected 
 $expected
 but got
 $got"
-
 fi
+
+
+################################################################################
+set_attr local_urls_only
+set_attr local_urls "http://somewhere/=$PWD/htdocs/"
+set_attr local_user_urls "http://somewhere/=$PWD/,/set1/"
+set_attr start_url "http://somewhere/~htdocs/"
+
+set_attr valid_extensions
+set_attr  local_default_doc index.html
+set_attr remove_default_doc index.html
+
+$htdig "$@" -t -i -c $config || fail "couldn't dig seventh time"
+$htpurge -c $config || fail "couldn't purge seventh time"
+
+#local_urls_only can't handle .../~htdocs/sub%2520dir/empty%20file.html
+expected='http://somewhere/~htdocs/
+http://somewhere/~htdocs/script.html
+http://somewhere/~htdocs/site%201.html
+http://somewhere/~htdocs/site2.html
+http://somewhere/~htdocs/site3.html
+http://somewhere/~htdocs/site4.html
+http://somewhere/~htdocs/title.html'
+
+got=`./document -c $config -u | sort`
+
+if [ "$expected" != "$got" ]
+then
+	fail "seventh document: expected 
+$expected
+but got
+$got"
+fi
+
 
 /bin/rm mime-without-htm say-text
 
