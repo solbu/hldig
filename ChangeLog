@@ -1,3 +1,8 @@
+Wed May 15 09:45:40 CEST 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+   * htnet/Retriever.cc: fixed the bug regarding the server_wait_time feature
+	 after the maximum number of requests per connection has been reached.
+
 Tue Apr 9 16:41:33 CEST 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
    * htnet/HtCookie*.[h,cc]: RFC2109 compliant.

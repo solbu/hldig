@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.75 2002/02/12 06:12:05 ghutchis Exp $
+// $Id: Retriever.cc,v 1.76 2002/05/15 07:46:55 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -326,8 +326,8 @@ Retriever::Start()
     {
         more = 0;
 		
-	//
-	// Go through all the current servers in sequence.
+		//
+		// Go through all the current servers in sequence.
         // If they support persistent connections, we keep on popping
         // from the same server queue until it's empty or we reach a maximum
         // number of consecutive requests ("max_connection_requests").
@@ -335,10 +335,14 @@ Retriever::Start()
         // if we set the "max_connection_requests" to -1.
         // If the server doesn't support persistent connection, we take
         // only an URL from it, then we skip to the next server.
-	//
+		//
+		// Since 15.05.02: even when persistent connections are activated
+		// we should wait for a 'server_wait_time' number of seconds
+		// after the 'max_connection_requests' value has been reached.
+		//
 
         // Let's position at the beginning
-	servers.Start_Get();
+		servers.Start_Get();
 
         int count;
 
@@ -404,34 +408,35 @@ Retriever::Start()
 
             count = 0;
 
-	    while ( ( (max_connection_requests ==-1) ||
+	    	while ( ( (max_connection_requests ==-1) ||
                           (count < max_connection_requests) ) &&
                     (ref = server->pop()) && noSignal)
             {
                 count ++;
 
-	        //
-	        // We have a URL to index, now.  We need to register the
-	        // fact that we are not done yet by setting the 'more'
-	        // variable. So, we have to restart scanning the queue.
-	        //
+	        	//
+	        	// We have a URL to index, now.  We need to register the
+	        	// fact that we are not done yet by setting the 'more'
+	        	// variable. So, we have to restart scanning the queue.
+	        	//
 
-	        more = 1;
+	        	more = 1;
 
-	        //
-	        // Deal with the actual URL.
-	        // We'll check with the server to see if we need to sleep()
-	        // before parsing it.
-	        //
+	        	//
+	        	// Deal with the actual URL.
+	        	// We'll check with the server to see if we need to sleep()
+	        	// before parsing it.
+	        	//
 
-	        parse_url(*ref);
-                delete ref;
+	        	parse_url(*ref);
+                	delete ref;
 
-                // No HTTP connections available, so we change server and pause
-	        if (max_connection_requests == 1)
+				// We reached the maximum number of connections (either with
+				// or without persistent connections) and we must pause and
+				// respect the 'net ethic'.
+	        	if ((max_connection_requests - count) == 0)
                     server->delay();   // This will pause if needed
                                        // and reset the time
-
             }
         }
     }
