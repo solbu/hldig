@@ -1,3 +1,9 @@
+Mon Mar 29 16:47:48 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(excerpt): Added patch from Gabriele to
+	improve display of excerpts--show top of description always,
+	otherwise try to find the excerpt.
+
 Mon Mar 29 15:57:06 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/htdig.cc: Rename main.cc for consistency with other 

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.5 1999/03/25 17:55:14 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.6 1999/03/29 21:56:14 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -961,19 +961,33 @@ Display::buildMatchList()
 String *
 Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first)
 {
-    char	*head = ref->DocHead();
+    char	*head;
+    int		use_meta_description = 0;
+
     if (config.Boolean("use_meta_description",0) 
 	&& strlen(ref->DocMetaDsc()) != 0)
+      {
+	// Set the head to point to description
 	head = ref->DocMetaDsc();
+	use_meta_description = 1;
+      }
+    else head = ref->DocHead(); // head points to the top
+
     int		which, length;
     char	*temp = head;
     String	part;
     String	*text = new String();
 
-    first = allWordsPattern->FindFirstWord(head, which, length);
+    // htsearch displays the description when:
+    // 1) a description has been found
+    // 2) the option "use_meta_description" is set to true
+    // If previous conditions are false and "excerpt_show_top" is set to true
+    // it shows the whole head. Else, it acts as default.
 
-    if (config.Boolean("excerpt_show_top", 0))
-	first = 0;
+    if (config.Boolean("excerpt_show_top", 0) || use_meta_description)
+      first = 0;
+    else
+      first = allWordsPattern->FindFirstWord(head, which, length);
 
     if (first < 0 && config.Boolean("no_excerpt_show_top"))
       first = 0;  // No excerpt, but we want to show the top.
