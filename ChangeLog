@@ -1,3 +1,7 @@
+Fri Apr 16 10:30:42 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/FAQ.html: fixed typo - use_meta_description was plural.
+
 Wed Apr 14 20:22:31 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
 	* htlib/regex.h: fixed compile problem with AIX xlc compiler
