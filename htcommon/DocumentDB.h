@@ -6,7 +6,7 @@
 // database is used for searching.  This is because digging requires a
 // different index than searching.
 //
-// $Id: DocumentDB.h,v 1.6 1999/03/12 00:47:00 hp Exp $
+// $Id: DocumentDB.h,v 1.7 1999/05/31 18:35:50 ghutchis Exp $
 //
 #ifndef _DocumentDB_h_
 #define _DocumentDB_h_
@@ -38,13 +38,16 @@ public:
     //
     // Standard database operations
     //
-    int			Open(char *filename, char *indexfilename);
-    int			Read(char *filename, char *indexfilename = 0);
+    int			Open(char *filename, char *indexfilename, char *headname);
+    int			Read(char *filename, char *indexfilename = 0, char *headfilename = 0);
     int			Close();
 
     int			Add(DocumentRef &);
+    // These do not read in the excerpt
     DocumentRef		*operator [] (int DocID);
     DocumentRef		*operator [] (char *url);
+    // You must call this to read the excerpt
+    int			ReadExcerpt(DocumentRef &);
     int			Exists(int DocID);
     int			Delete(int DocID);
 
@@ -72,16 +75,17 @@ public:
     // Set compatibility mode (try to support when index
     // contains *unencoded* URLs as keys).
     //
-    inline void                SetCompatibility(int on_flag = 1)
+    inline void		SetCompatibility(int on_flag = 1)
     { myTryUncoded = on_flag; }
 
 private:
     Database		*dbf;
     Database		*i_dbf;
+    Database		*h_dbf;
     int			isopen;
     int			isread;
     int			nextDocID;
-    String                    temp;
+    String		temp;
     int			myTryUncoded;	// "Compatibility" mode.
 };
 
