@@ -1,3 +1,13 @@
+Tue Jun 22 23:35:39 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Transport.h, htdig/Transport.cc: Virtual classes to handle
+	transport protocols such as HTTP, FTP, WAIS, gopher, etc.
+
+	* htdig/Makefile.in: Make sure they're compiled (not that there's
+	much!)
+
+	* htdig/HtHTTP.h: Add htdig.h to ensure config is defined.
+	
 Mon Jun 21 14:33:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Document.cc(readHeader), htdig/HtHTTP.cc(ParseHeader): fix
