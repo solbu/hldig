@@ -1,4 +1,9 @@
-Tue Feb 15 15:35:19 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Feb 15 15:39:28 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/QuotedStringList.cc (Create): fix PR#743, where quoted string
+	lists didn't allow embedded quotes of opposite sort in strings
+	(e.g. "'" or '"'), and fix to avoid overrunning end of string
+	if it ends with backslash.
 
 	* htcommon/WordList.cc (valid_word): Applied Marc Pohl's fix to make
 	this 8-bit clean on Solaris.

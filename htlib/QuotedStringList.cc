@@ -4,6 +4,12 @@
 // Implementation of QuotedStringList
 //
 // $Log: QuotedStringList.cc,v $
+// Revision 1.1.1.1.2.2  2000/02/15 21:43:47  grdetil
+// htlib/QuotedStringList.cc (Create): fix PR#743, where quoted string
+// lists didn't allow embedded quotes of opposite sort in strings
+// (e.g. "'" or '"'), and fix to avoid overrunning end of string
+// if it ends with backslash.
+//
 // Revision 1.1.1.1.2.1  1999/12/09 00:27:36  ghutchis
 // (Create): Make sure an empty token isn't ignored.
 //
@@ -12,7 +18,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: QuotedStringList.cc,v 1.1.1.1.2.1 1999/12/09 00:27:36 ghutchis Exp $";
+static char RCSid[] = "$Id: QuotedStringList.cc,v 1.1.1.1.2.2 2000/02/15 21:43:47 grdetil Exp $";
 #endif
 
 #include "QuotedStringList.h"
@@ -86,13 +92,15 @@ QuotedStringList::Create(char *str, char *sep, int single)
     {
 	if (*str == '\\')
 	{
+	    if (!str[1])
+		break;
 	    word << *++str;
 	}
 	else if (*str == quote)
 	{
 	    quote = 0;
 	}
-	else if (*str == '"' || *str == '\'')
+	else if (!quote && (*str == '"' || *str == '\''))
 	{
 	    quote = *str;
 	    quoted++;
