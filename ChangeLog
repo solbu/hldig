@@ -6,6 +6,10 @@ Wed Mar 31 18:21:21 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	exclude list. (More elegant solution to problem, as pointed out by
 	Gilles.) 
 
+	* htsearch/Display.cc: Remove code setting URLimage to a bogus
+	pattern. Instead, check that URLimage.hasPattern() before using
+	it.
+	
 Wed Mar 31 15:16:36 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htfuzzy/Synonym.cc: Fix previous fix of minor memory leak.
