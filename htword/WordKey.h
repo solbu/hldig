@@ -414,8 +414,7 @@ private:
 //
 inline int WordKey::UnpackNumber(const unsigned char* from, const int from_size, WordKeyNum& to, int lowbits, int bits)
 {
-  WordKeyNum to = 0;
-
+  to = 0;
   to = ((from[0] & 0xff) >> lowbits);
 
   if(lowbits) to &= WORD_BIT_MASK(8 - lowbits);
@@ -431,8 +430,6 @@ inline int WordKey::UnpackNumber(const unsigned char* from, const int from_size,
   if(bits < (int)(sizeof(WordKeyNum) * 8))
     to &= ( 1 << bits ) - 1;
   
-  *top = to;
-
   return OK;
 }
 
