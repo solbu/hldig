@@ -1,3 +1,8 @@
+Fri Jun 29 11:56:25 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc (got_redirect): Allow the redirect to accept
+	relative redirects instead of just full URLs.
+
 Fri Jun 22 16:25:21 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/THANKS.html: Credit Marc Pohl and Robert Marchand.
