@@ -1,5 +1,5 @@
 /***************************************************************************
-                          new_htsearch.h  -  description
+                          htsearch.h  -  description
                              -------------------
     begin                : Fri Oct 8 1999
     copyright            : (C) 1999 by 
@@ -17,7 +17,7 @@
 //
 // htsearch.h
 //
-// $Id: htsearch.h,v 1.8 1999/10/15 03:33:50 jtillman Exp $
+// $Id: htsearch.h,v 1.9 1999/10/15 03:44:35 jtillman Exp $
 //
 
 #ifndef _htsearch_h_
