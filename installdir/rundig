@@ -3,11 +3,23 @@
 #
 # rundig
 #
+# $Id: rundig,v 1.2 1998/06/22 04:32:23 turtle Exp $
+#
 # This is a sample script to create a search database for ht://Dig.
 #
 if [ "$1" = "-v" ]; then
     verbose=-v
 fi
+
+#
+# Set the TMPDIR variable if you want htmerge to put files in a location
+# other than the default.  This is important if you do not have enough
+# disk space for the big sort that htmerge runs.  Also, be aware that
+# on some systems, /tmp is a memory mapped filesystem that takes away
+# from virtual memory.
+#
+TMPDIR=@DATABASE_DIR@
+export TMPDIR
 
 @BIN_DIR@/htdig -i $verbose -s
 @BIN_DIR@/htmerge $verbose -s
@@ -18,12 +30,12 @@ fi
 # This database is static, so even if pages change, this database will not
 # need to be rebuilt.
 #
-if [ ! -f @COMMON_DIR@/word2root.gdbm ]
+if [ ! -f @COMMON_DIR@/word2root.db ]
 then
     @BIN_DIR@/htfuzzy $verbose endings
 fi
 
-if [ ! -f @COMMON_DIR@/synonyms.gdbm ]
+if [ ! -f @COMMON_DIR@/synonyms.db ]
 then
     @BIN_DIR@/htfuzzy $verbose synonyms
 fi
