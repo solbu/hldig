@@ -1,3 +1,17 @@
+Sun Feb 21 14:45:26 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/htsearch.cc: Add patch from Jerome Alet <alet@unice.fr>
+	to allow '.' in config field but NOT './' for security reasons.
+
+	* htdig/HTML.cc: Add patch from Gabriele to ensure META
+	descriptions are parsed, even if 'description' is added to the
+	keyword list.
+
+Sun Feb 21 14:43:44 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/parser.h, htsearch/parser.cc: Clean up patch made for
+	error messages, made on Feb 16.
+
 Thu Feb 18 20:19:30 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtVector.h, htlib/HtVector.cc: Added new Vector class.
