@@ -1,4 +1,8 @@
 Sat Jul 5 2003 Lachlan Andrew <lha@users.sourceforge.net>
+	
+	* test/test_functions.in: Fix bugs starting/killing apache
+
+Sat Jul 5 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
 	* htcommon/defaults.cc: Disable cache flushing to avoid "page leak".
 
