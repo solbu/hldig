@@ -1,25 +1,25 @@
-///////
-   //
-   // HtHTTP.h
-   //
-   // Class for HTTP messaging (derived from Transport)
-   // Gabriele Bartolini - Prato - Italia
-   // started: 03.05.1999
-   //
-   // ////////////////////////////////////////////////////////////
-   //
-   // The HtHTTP class should provide (as I hope) an interface for
-   // retrieving document on the Web. It derives from Transport class.
-   //
-   // It should be HTTP/1.1 compatible.
-   //
-   // It also let us take advantage of persitent connections use,
-   // and optimize request times (specially if directed to the same
-   // server).
-   //
-   // HtHTTP use another class to store the response returned by the
-   // remote server.
-   //
+//
+// HtHTTP.h
+//
+// HtHTTP: Class for HTTP messaging (derived from Transport)
+//
+// Gabriele Bartolini - Prato - Italia
+// started: 03.05.1999
+//
+// ////////////////////////////////////////////////////////////
+//
+// The HtHTTP class should provide (as I hope) an interface for
+// retrieving document on the Web. It derives from Transport class.
+//
+// It should be HTTP/1.1 compatible.
+//
+// It also let us take advantage of persitent connections use,
+// and optimize request times (specially if directed to the same
+// server).
+//
+// HtHTTP use another class to store the response returned by the
+// remote server.
+//
 ///////
 
 

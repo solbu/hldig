@@ -1,7 +1,10 @@
 //
 // Retriever.cc
 //
-//: 
+// Retriever: Crawl from a list of URLs and calls appropriate parsers. The
+//            parser notifies the Retriever object that it got something
+//            (got_* functions) and the Retriever object feed the databases
+//            and statistics accordingly.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -9,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.61 1999/09/08 04:58:19 ghutchis Exp $
+// $Id: Retriever.cc,v 1.62 1999/09/08 17:11:16 loic Exp $
 //
 
 #include "Retriever.h"

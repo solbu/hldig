@@ -1,7 +1,7 @@
 //
 // Server.cc
 //
-// A class to keep track of server specific information.
+// Server: A class to keep track of server specific information.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -11,7 +11,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.13 1999/09/05 06:47:08 ghutchis Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.14 1999/09/08 17:11:16 loic Exp $";
 #endif
 
 #include <ctype.h>

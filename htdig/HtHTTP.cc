@@ -1,7 +1,7 @@
 //
 // HtHTTP.cc
 //
-// Interface classes for HTTP messaging
+// HtHTTP: Interface classes for HTTP messaging
 //
 // Including:
 // 	 -  Generic class

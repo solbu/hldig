@@ -1,10 +1,12 @@
 //
-// PDF.cc : Implementation of class PDF
+// PDF.cc 
+//
+// PDF: Implementation of class PDF
 //
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
 #if RELEASE
-static char RCSid[] = "$Id: PDF.cc,v 1.17 1999/09/08 04:57:10 ghutchis Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.18 1999/09/08 17:11:16 loic Exp $";
 #endif
 
 #include <sys/types.h>

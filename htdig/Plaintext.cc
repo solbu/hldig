@@ -2,7 +2,7 @@
 // Plaintext.cc
 //
 //
-// Parses plaintext files. Not much to do, really.
+// Plaintext: Parses plaintext files. Not much to do, really.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -11,7 +11,7 @@
 // <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char RCSid[] = "$Id: Plaintext.cc,v 1.12 1999/09/08 04:57:10 ghutchis Exp $";
+static char RCSid[] = "$Id: Plaintext.cc,v 1.13 1999/09/08 17:11:16 loic Exp $";
 #endif
 
 #include "Plaintext.h"

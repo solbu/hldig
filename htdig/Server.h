@@ -1,7 +1,7 @@
 //
 // Server.h
 //
-// A class to keep track of server specific information.
+// Server: A class to keep track of server specific information.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.h,v 1.7 1999/09/03 21:29:36 ghutchis Exp $
+// $Id: Server.h,v 1.8 1999/09/08 17:11:16 loic Exp $
 //
 //
 #ifndef _Server_h_

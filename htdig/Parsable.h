@@ -1,7 +1,9 @@
 //
 // Parsable.h
 //
-// $Id: Parsable.h,v 1.4 1999/03/16 02:04:27 hp Exp $
+// Parsable: Base class for file parsers (HTML, PDF, ExternalParser ...)
+//
+// $Id: Parsable.h,v 1.5 1999/09/08 17:11:16 loic Exp $
 //
 
 #ifndef _Parsable_h_

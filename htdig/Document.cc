@@ -1,12 +1,12 @@
 //
 // Document.cc
 //
-// Implementation of Document
+// Document: Implementation of Document
 //
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.50 1999/08/12 09:26:24 loic Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.51 1999/09/08 17:11:16 loic Exp $";
 #endif
 
 #include <signal.h>

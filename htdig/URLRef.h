@@ -1,7 +1,7 @@
 //
 // URLRef.h
 //
-// A definition of a URL/Referer pair with associated hopcount
+// URLRef: A definition of a URL/Referer pair with associated hopcount
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URLRef.h,v 1.4 1999/08/27 15:52:48 ghutchis Exp $
+// $Id: URLRef.h,v 1.5 1999/09/08 17:11:16 loic Exp $
 //
 //
 #ifndef _URLRef_h_

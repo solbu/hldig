@@ -1,8 +1,10 @@
-
 //
 // htdig.h
 //
-// $Id: htdig.h,v 1.7 1999/05/15 17:08:23 ghutchis Exp $
+// htdig: Indexes the web sites specified in the config file
+//        generating several databases to be used by htmerge
+//
+// $Id: htdig.h,v 1.8 1999/09/08 17:11:16 loic Exp $
 //
 //
 #ifndef _htdig_h_

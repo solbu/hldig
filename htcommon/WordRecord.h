@@ -1,8 +1,8 @@
 //
 // WordRecord.h
 //
-//: Record for storing word information in the word database
-//  Each word is stored as a separate key/record pair.
+// WordRecord: Record for storing word information in the word database
+//             Each word is stored as a separate key/record pair.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordRecord.h,v 1.9 1999/09/08 04:51:56 ghutchis Exp $
+// $Id: WordRecord.h,v 1.10 1999/09/08 17:10:40 loic Exp $
 //
 
 #ifndef _WordRecord_h_

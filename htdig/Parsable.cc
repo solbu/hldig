@@ -1,11 +1,11 @@
 //
 // Parsable.cc
 //
-// Implementation of Parsable
+// Parsable: Implementation of Parsable
 //
 
 #if RELEASE
-static char RCSid[] = "$Id: Parsable.cc,v 1.3 1999/03/16 02:04:27 hp Exp $";
+static char RCSid[] = "$Id: Parsable.cc,v 1.4 1999/09/08 17:11:16 loic Exp $";
 #endif
 
 #include "Parsable.h"

@@ -1,7 +1,7 @@
 //
 // URLRef.cc
 //
-// A definition of a URL/Referer pair with associated hopcount
+// URLRef: A definition of a URL/Referer pair with associated hopcount
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -11,7 +11,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URLRef.cc,v 1.3 1999/08/27 15:52:48 ghutchis Exp $";
+static char RCSid[] = "$Id: URLRef.cc,v 1.4 1999/09/08 17:11:16 loic Exp $";
 #endif
 
 #include "URLRef.h"

@@ -1,7 +1,7 @@
 //
 // defaults.cc
 //
-//: Default configuration values for the ht programs
+// defaults: Default configuration values for the ht programs
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -11,7 +11,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.59 1999/09/08 04:52:23 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.60 1999/09/08 17:10:40 loic Exp $";
 #endif
 
 #include "Configuration.h"

@@ -1,9 +1,10 @@
 //
 // ExternalParser.h
 //
-//: Allows external programs to parse unknown document formats.
-//  The parser is expected to return the document in a specific format.
-//  The format is documented in http://www.htdig.org/attrs.html#external_parser
+// ExternalParser: Allows external programs to parse unknown document formats.
+//                 The parser is expected to return the document in a 
+//                 specific format. The format is documented 
+//                 in http://www.htdig.org/attrs.html#external_parser
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -11,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.h,v 1.3 1999/09/08 04:57:10 ghutchis Exp $
+// $Id: ExternalParser.h,v 1.4 1999/09/08 17:11:16 loic Exp $
 //
 #ifndef _ExternalParser_h_
 #define _ExternalParser_h_

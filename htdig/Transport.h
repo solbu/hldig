@@ -1,8 +1,9 @@
 //
 // Transport.h
 //
-// A virtual pure transport interface class for accessing remote documents.
-// Used to grab URLs based on the scheme (e.g. http://, ftp://...)
+// Transport: A virtual transport interface class for accessing
+//            remote documents. Used to grab URLs based on the 
+//            scheme (e.g. http://, ftp://...)
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -10,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.7 1999/08/10 01:19:49 ghutchis Exp $
+// $Id: Transport.h,v 1.8 1999/09/08 17:11:16 loic Exp $
 //
 //
 

@@ -1,10 +1,11 @@
 //
 // DocumentDB.cc
 //
-//: This class is the interface to the database of document references.
-//  This database is only used while digging.  An extract of this
-//  database is used for searching.  This is because digging requires a
-//  different index than searching.
+// DocumentDB: This class is the interface to the database of document
+//             references. This database is only used while digging.  
+//             An extract of this database is used for searching.  
+//             This is because digging requires a different index
+//             than searching.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -12,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.19 1999/09/06 15:55:36 ghutchis Exp $
+// $Id: DocumentDB.cc,v 1.20 1999/09/08 17:10:40 loic Exp $
 //
 
 #include "DocumentDB.h"

@@ -1,10 +1,11 @@
 //
 // ExternalParser.cc
 //
-//: Implementation of ExternalParser
-//  Allows external programs to parse unknown document formats.
-//  The parser is expected to return the document in a specific format.
-//  The format is documented in http://www.htdig.org/attrs.html#external_parser
+// ExternalParser: Implementation of ExternalParser
+//                 Allows external programs to parse unknown document formats.
+//                 The parser is expected to return the document in a 
+//                 specific format. The format is documented 
+//                 in http://www.htdig.org/attrs.html#external_parser
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -13,7 +14,7 @@
 // <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char RCSid[] = "$Id: ExternalParser.cc,v 1.13 1999/09/08 04:57:10 ghutchis Exp $";
+static char RCSid[] = "$Id: ExternalParser.cc,v 1.14 1999/09/08 17:11:16 loic Exp $";
 #endif
 
 #include "ExternalParser.h"

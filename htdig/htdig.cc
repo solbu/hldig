@@ -1,8 +1,8 @@
 //
 // htdig.cc
 // 
-// Indexes the web sites specified in the config file
-// generating several databases to be used by htmerge
+// htdig: Indexes the web sites specified in the config file
+//        generating several databases to be used by htmerge
 //
 //
 //

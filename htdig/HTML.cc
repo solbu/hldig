@@ -1,8 +1,9 @@
 //
 // HTML.cc
 //
-// Implementation of HTML
-// Class to parse HTML documents and return useful information to the Retriever
+// HTML: Implementation of HTML
+//       Class to parse HTML documents and return useful information 
+//       to the Retriever
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -12,7 +13,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.53 1999/08/28 21:11:52 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.54 1999/09/08 17:11:16 loic Exp $";
 #endif
 
 #include "htdig.h"

@@ -1,9 +1,12 @@
 //
 // Images.cc
 //
-// Implementation of Images
+// Images: Implementation of Images
 //
 // $Log: Images.cc,v $
+// Revision 1.4  1999/09/08 17:11:16  loic
+// update comments
+//
 // Revision 1.3  1998/10/12 02:04:00  ghutchis
 //
 // Updated Makefiles and configure variables.
@@ -13,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Images.cc,v 1.3 1998/10/12 02:04:00 ghutchis Exp $";
+static char RCSid[] = "$Id: Images.cc,v 1.4 1999/09/08 17:11:16 loic Exp $";
 #endif
 
 #include "Images.h"

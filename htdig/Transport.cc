@@ -1,8 +1,9 @@
 //
 // Transport.cc
 //
-// A virtual transport interface class for accessing remote documents.
-// Used to grab URLs based on the scheme (e.g. http://, ftp://...)
+// Transport: A virtual transport interface class for accessing
+//            remote documents. Used to grab URLs based on the 
+//            scheme (e.g. http://, ftp://...)
 //
 // Keep constructor and destructor in a file of its own.
 // Also takes care of the lower-level connection code.
@@ -13,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.6 1999/07/22 15:22:36 angus Exp $
+// $Id: Transport.cc,v 1.7 1999/09/08 17:11:16 loic Exp $
 //
 //
 

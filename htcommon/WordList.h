@@ -1,10 +1,12 @@
 //
 // WordList.h
 //
-//: Interface to the word database. Previously, this wrote to a temporary text
-//  file. Now it writes directly to the word database.
-//  NOTE: Some code previously attempted to directly read from the word db.
-//  This will no longer work, so it's preferred to use the access methods here
+// WordList: Interface to the word database. Previously, this wrote to 
+//           a temporary text file. Now it writes directly to the 
+//           word database. 
+//           NOTE: Some code previously attempted to directly read from 
+//           the word db. This will no longer work, so it's preferred to 
+//           use the access methods here.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -12,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5 1999/09/08 04:53:53 ghutchis Exp $
+// $Id: WordList.h,v 1.6 1999/09/08 17:10:40 loic Exp $
 //
 //
 #ifndef _WordList_h_

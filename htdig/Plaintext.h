@@ -1,7 +1,7 @@
 //
 // Plaintext.h
 //
-// Parses plaintext files. Not much to do, really.
+// Plaintext: Parses plaintext files. Not much to do, really.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Plaintext.h,v 1.2 1999/09/08 04:57:10 ghutchis Exp $
+// $Id: Plaintext.h,v 1.3 1999/09/08 17:11:16 loic Exp $
 //
 #ifndef _Plaintext_h_
 #define _Plaintext_h_

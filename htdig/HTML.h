@@ -1,7 +1,8 @@
 //
 // HTML.h
 //
-// Interface to the ht://Dig HTML parser
+// HTML: Class to parse HTML documents and return useful information 
+//       to the Retriever
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -9,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.h,v 1.7 1999/08/10 16:54:32 grdetil Exp $
+// $Id: HTML.h,v 1.8 1999/09/08 17:11:16 loic Exp $
 //
 #ifndef _HTML_h_
 #define _HTML_h_

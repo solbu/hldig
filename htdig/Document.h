@@ -1,15 +1,16 @@
 //
 // Document.h
 //
-// This class holds everything there is to know about a document.
-// The actual contents of the document may or may not be present at
-// all times for memory conservation reasons.
-// The document can be told to retrieve its contents.  This is done
-// with the Retrieve call.  In case the retrieval causes a redirect, the
-// link is followed, but this process is done only once (to prevent loops.)
-// If the redirect didn't work, Document_not_found is returned.
+// Document: This class holds everything there is to know about a document.
+//           The actual contents of the document may or may not be present at
+//           all times for memory conservation reasons.
+//           The document can be told to retrieve its contents.  This is done
+//           with the Retrieve call.  In case the retrieval causes a 
+//           redirect, the link is followed, but this process is done 
+//           only once (to prevent loops.) If the redirect didn't 
+//           work, Document_not_found is returned.
 //
-// $Id: Document.h,v 1.6 1999/01/27 00:27:21 ghutchis Exp $
+// $Id: Document.h,v 1.7 1999/09/08 17:11:16 loic Exp $
 //
 //
 #ifndef _Document_h_
