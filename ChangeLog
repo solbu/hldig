@@ -1,3 +1,18 @@
+Wed Nov 29 23:31:10 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdb/htdb_stat.cc, htdb_load.cc, htdb_dump.cc: Make sure we
+	include htconfig.h to include proper declarations.
+
+	* htlib/strptime.cc: Change to strptime.cc, from htdig-3.1 series
+	hopefully more portable until I can find a more suitable
+	replacement.
+
+	* htlib/Makefile.am, htlib/Makefile.in: As above.
+
+	* htlib/clib.h, htlib/lib.h: Ditto.
+
+	* htdoc/all.html: Add a first draft of program summaries.
+
 Wed Nov 29 18:00:15 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc (parse_url): Remove undeclared "dup" variable,

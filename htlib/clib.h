@@ -10,6 +10,9 @@
 
 #include <sys/types.h>
 
+extern "C"
+{
+
 #ifndef HAVE_GETCWD
 char *getcwd(char *, size_t);
 #endif
@@ -41,5 +44,6 @@ char *strerror(int);
 #ifndef HAVE_VSNPRINTF
 int vsnprintf(char *, size_t, const char *, ...);
 #endif
+}
 
 #endif /* _clib_h_ */

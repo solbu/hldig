@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.44 2000/11/30 00:10:48 grdetil Exp $
+// $Id: Retriever.cc,v 1.72.2.45 2000/11/30 05:47:15 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -603,8 +603,8 @@ Retriever::parse_url(URLRef &urlRef)
 		d_md5->Get(shash,sx);
 
 		 if (!sx.empty()) {
-		  if (debug) {
-		    cout << "DUP\n";
+		  if (debug > 1) {
+		    cout << " Detected duplicate by md5 hash" << endl;
 		  }
 		  words.Skip();
 		  break;            // Duplicate - don't index
@@ -619,6 +619,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    {
 	      if (doc->ModTime() == ref->DocTime())
 		{
+		  words.Skip();
 		  if (debug)
 		    cout << " retrieved but not changed" << endl;
 		  words.Skip();

@@ -25,30 +25,6 @@
 #define LOG_FACILITY LOG_LOCAL5
 
 
-/* Define if on AIX 3.
-   System headers sometimes define this.
-   We just want to avoid a redefinition error message.  */
-#ifndef _ALL_SOURCE
-#undef _ALL_SOURCE
-#endif
-
-/* Define to empty if the keyword does not work.  */
-#undef const
-
-/* Define if you have the strftime function.  */
-#undef HAVE_STRFTIME
-
-/* Define if you have the ANSI C header files.  */
-#undef STDC_HEADERS
-
-/* Define if you can safely include both <sys/time.h> and <time.h>.  */
-#undef TIME_WITH_SYS_TIME
-
-/* Define if your <sys/time.h> declares struct tm.  */
-#undef TM_IN_SYS_TIME
-
-/* Define if lex declares yytext as a char * by default, not a char[].  */
-#undef YYTEXT_POINTER
 
 /* Define this to the type of the third argument of getpeername() */
 #undef GETPEERNAME_LENGTH_T
@@ -89,105 +65,161 @@ typedef char bool;
 /* Define if the included regex doesn't work */
 #undef HAVE_BROKEN_REGEX
 
-/* The number of bytes in a unsigned char.  */
-#undef SIZEOF_UNSIGNED_CHAR
+/*
+ * Don't step on the namespace.  Other libraries may have their own
+ * implementations of these functions, we don't want to use their
+ * implementations or force them to use ours based on the load order.
+ */
+#ifndef	HAVE_GETCWD
+#define	getcwd		__db_Cgetcwd
+#endif
+#ifndef	HAVE_MEMCMP
+#define	memcmp		__db_Cmemcmp
+#endif
+#ifndef	HAVE_MEMCPY
+#define	memcpy		__db_Cmemcpy
+#endif
+#ifndef	HAVE_MEMMOVE
+#define	memmove		__db_Cmemmove
+#endif
+#ifndef	HAVE_RAISE
+#define	raise		__db_Craise
+#endif
+#ifndef HAVE_SNPRINTF
+#define	snprintf	__db_Csnprintf
+#endif
+#ifndef	HAVE_STRERROR
+#define	strerror	__db_Cstrerror
+#endif
+#ifndef HAVE_VSNPRINTF
+#define	vsnprintf	__db_Cvsnprintf
+#endif
 
-/* The number of bytes in a unsigned int.  */
-#undef SIZEOF_UNSIGNED_INT
 
-/* The number of bytes in a unsigned long int.  */
-#undef SIZEOF_UNSIGNED_LONG_INT
-
-/* The number of bytes in a unsigned long long int.  */
-#undef SIZEOF_UNSIGNED_LONG_LONG_INT
-
-/* The number of bytes in a unsigned short int.  */
-#undef SIZEOF_UNSIGNED_SHORT_INT
-
-/* Define if you have the getcwd function.  */
-#undef HAVE_GETCWD
-
-/* Define if you have the localtime_r function.  */
-#undef HAVE_LOCALTIME_R
-
-/* Define if you have the memcmp function.  */
-#undef HAVE_MEMCMP
-
-/* Define if you have the memcpy function.  */
-#undef HAVE_MEMCPY
-
-/* Define if you have the memmove function.  */
-#undef HAVE_MEMMOVE
-
-/* Define if you have the raise function.  */
-#undef HAVE_RAISE
-
-/* Define if you have the snprintf function.  */
-#undef HAVE_SNPRINTF
-
-/* Define if you have the strdup function.  */
-#undef HAVE_STRDUP
-
-/* Define if you have the strerror function.  */
-#undef HAVE_STRERROR
-
-/* Define if you have the strptime function.  */
-#undef HAVE_STRPTIME
-
-/* Define if you have the strstr function.  */
-#undef HAVE_STRSTR
-
-/* Define if you have the timegm function.  */
-#undef HAVE_TIMEGM
-
-/* Define if you have the vsnprintf function.  */
-#undef HAVE_VSNPRINTF
-
-/* Define if you have the <fcntl.h> header file.  */
+/* Define if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
-/* Define if you have the <getopt.h> header file.  */
+/* Define if you have the `getcwd' function. */
+#undef HAVE_GETCWD
+
+/* Define if you have the <getopt.h> header file. */
 #undef HAVE_GETOPT_H
 
-/* Define if you have the <limits.h> header file.  */
-#undef HAVE_LIMITS_H
-
-/* Define if you have the <malloc.h> header file.  */
-#undef HAVE_MALLOC_H
-
-/* Define if you have the <strings.h> header file.  */
-#undef HAVE_STRINGS_H
-
-/* Define if you have the <sys/file.h> header file.  */
-#undef HAVE_SYS_FILE_H
-
-/* Define if you have the <sys/ioctl.h> header file.  */
-#undef HAVE_SYS_IOCTL_H
-
-/* Define if you have the <sys/time.h> header file.  */
-#undef HAVE_SYS_TIME_H
-
-/* Define if you have the <unistd.h> header file.  */
-#undef HAVE_UNISTD_H
-
-/* Define if you have the <zlib.h> header file.  */
-#undef HAVE_ZLIB_H
-
-/* Define if you have the nsl library (-lnsl).  */
+/* Define if you have the `nsl' library (-lnsl). */
 #undef HAVE_LIBNSL
 
-/* Define if you have the socket library (-lsocket).  */
+/* Define if you have the `socket' library (-lsocket). */
 #undef HAVE_LIBSOCKET
 
-/* Define if you have the z library (-lz).  */
+/* Define if you have the `z' library (-lz). */
 #undef HAVE_LIBZ
+
+/* Define if you have the <limits.h> header file. */
+#undef HAVE_LIMITS_H
+
+/* Define if you have the `localtime_r' function. */
+#undef HAVE_LOCALTIME_R
+
+/* Define if you have the <malloc.h> header file. */
+#undef HAVE_MALLOC_H
+
+/* Define if you have the `memcmp' function. */
+#undef HAVE_MEMCMP
+
+/* Define if you have the `memcpy' function. */
+#undef HAVE_MEMCPY
+
+/* Define if you have the `memmove' function. */
+#undef HAVE_MEMMOVE
+
+/* Define if you have the `raise' function. */
+#undef HAVE_RAISE
+
+/* Define if you have the `snprintf' function. */
+#undef HAVE_SNPRINTF
+
+/* Define if you have the `strdup' function. */
+#undef HAVE_STRDUP
+
+/* Define if you have the `strerror' function. */
+#undef HAVE_STRERROR
+
+/* Define if you have the `strftime' function. */
+#undef HAVE_STRFTIME
+
+/* Define if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define if you have the `strptime' function. */
+#undef HAVE_STRPTIME
+
+/* Define if you have the `strstr' function. */
+#undef HAVE_STRSTR
+
+/* Define if you have the <sys/file.h> header file. */
+#undef HAVE_SYS_FILE_H
+
+/* Define if you have the <sys/ioctl.h> header file. */
+#undef HAVE_SYS_IOCTL_H
+
+/* Define if you have the <sys/time.h> header file. */
+#undef HAVE_SYS_TIME_H
+
+/* Define if you have the `timegm' function. */
+#undef HAVE_TIMEGM
+
+/* Define if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define if you have the `vsnprintf' function. */
+#undef HAVE_VSNPRINTF
+
+/* Define if you have the <zlib.h> header file. */
+#undef HAVE_ZLIB_H
 
 /* Name of package */
 #undef PACKAGE
 
+/* The size of a `unsigned char', as computed by sizeof. */
+#undef SIZEOF_UNSIGNED_CHAR
+
+/* The size of a `unsigned int', as computed by sizeof. */
+#undef SIZEOF_UNSIGNED_INT
+
+/* The size of a `unsigned long int', as computed by sizeof. */
+#undef SIZEOF_UNSIGNED_LONG_INT
+
+/* The size of a `unsigned long long int', as computed by sizeof. */
+#undef SIZEOF_UNSIGNED_LONG_LONG_INT
+
+/* The size of a `unsigned short int', as computed by sizeof. */
+#undef SIZEOF_UNSIGNED_SHORT_INT
+
+/* Define if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define if you can safely include both <sys/time.h> and <time.h>. */
+#undef TIME_WITH_SYS_TIME
+
+/* Define if your <sys/time.h> declares `struct tm'. */
+#undef TM_IN_SYS_TIME
+
 /* Version number of package */
 #undef VERSION
 
+/* Define if `lex' declares `yytext' as a `char *' by default, not a `char[]'.
+   */
+#undef YYTEXT_POINTER
+
+/* Define if on AIX 3.
+   System headers sometimes define this.
+   We just want to avoid a redefinition error message.  */
+#ifndef _ALL_SOURCE
+# undef _ALL_SOURCE
+#endif
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
 
 /*
  * Big-file configuration.
