@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.9.2.4 2001/06/07 20:33:05 grdetil Exp $
+// $Id: ExternalParser.cc,v 1.9.2.5 2002/01/08 23:39:54 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -398,6 +398,13 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 			keywordsMatch->Pattern(kn.Join('|'));
 			kn.Release();
 		  }
+		  static StringMatch *metadatetags = 0;
+		  if (!metadatetags)
+		  {
+			metadatetags = new StringMatch();
+			metadatetags->IgnoreCase();
+			metadatetags->Pattern("date|dc.date|dc.date.created|dc.data.modified");
+		  }
     
 		  // <URL:http://www.w3.org/MarkUp/html-spec/html-spec_5.html#SEC5.2.5> 
 		  // says that the "name" attribute defaults to
@@ -441,6 +448,11 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 			  retriever.got_word(w, 1, 10);
 			w = strtok(0, " ,\t\r");
 		      }
+		    }
+		    else if (metadatetags->CompareWord(name) &&
+					config.Boolean("use_doc_date", 0))
+		    {
+		      retriever.got_time(content);
 		    }
 		    else if (mystrcasecmp(name, "htdig-email") == 0)
 		    {
