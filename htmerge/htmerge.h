@@ -1,20 +1,31 @@
 //
 // htmerge.h
 //
-// $Id: htmerge.h,v 1.5 1999/06/01 01:55:58 ghutchis Exp $
+// The interface to the htmerge program
+// Defines the calling conventions for
+//    mergeDB -> db.cc (merging two databases)
+//    mergeWords -> words.cc (updating the word db)
+//    convertDocs -> docs.cc (updating the doc db)
+//    reportError -> htmerge.cc (reporting errors)
+//    
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: htmerge.h,v 1.6 1999/07/19 02:02:56 ghutchis Exp $
 //
 //
 #ifndef _htmerge_h_
 #define _htmerge_h_
 
 #include "defaults.h"
-#include "WordRecord.h"
 #include "DocumentDB.h"
-#include "Database.h"
 #include "HtURLCodec.h"
+#include "WordList.h"
+#include "WordRecord.h"
 #include "htString.h"
-#include "good_strtok.h"
 #include <fstream.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -23,18 +34,19 @@
 #include <string.h>
 
 
-extern char		**array;
-extern int		n_array_elements;
+// Globals shared by one or more components of htmerge
 extern Dictionary	discard_list;
 extern int		verbose;
 extern int		stats;
 extern Configuration	merge_config;
 
 
+// Component procedures
 void mergeDB();
-void mergeWords(char *wordtmp, char *wordfile);
-void convertDocs(char *docs, char *index, char *excerpt);
-void sort(char *);
+void mergeWords();
+void convertDocs();
+
+// Of course reporting errors too
 void reportError(char *msg);
 
 #endif
