@@ -1,3 +1,8 @@
+Mon Aug  9 15:49:54 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.cc (parse): fix PR#348, to make sure a missing or invalid
+	port number will get set correctly.
+
 Mon Aug  9 15:42:41 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:

@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.27 1999/07/16 00:46:03 ghutchis Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.28 1999/08/09 20:51:49 grdetil Exp $";
 #endif
 
 #include "URL.h"
@@ -289,6 +289,9 @@ void URL::parse(char *u)
 	    p = strtok(0, "/");
 	    if (p)
 	      _port = atoi(p);
+	    if (!p || _port <= 0)
+	      _port = 80;
+
 	}
 	else
 	{
