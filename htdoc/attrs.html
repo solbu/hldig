@@ -3433,7 +3433,7 @@
 	<dl>
 	  <dt>
 		<strong><a name="noindex_start">noindex_start</a>,
-		<a name="noindex_stop">noindex_stop</a></strong>
+		<a name="noindex_end">noindex_end</a></strong>
 	  </dt>
 	  <dd>
 		<dl>
@@ -3453,7 +3453,7 @@
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			&lt;!--htdig-noindex--&gt; &lt;!--/htdig-noindex--&gt;
+			&lt;!--htdig_noindex--&gt; &lt;!--/htdig_noindex--&gt;
 		  </dd>
 		  <dt>
 			<em>description:</em>
@@ -3468,14 +3468,14 @@
 			SCRIPT sections in 'uneditable' documents can be skipped; note how
 			noindex_start does not contain an ending &gt;: this allows for all SCRIPT
 			tags to be matched regardless of attributes defined (different types or
-			languages).
+			languages). Note that the match for this string is case insensitive.
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
 			noindex_start: &lt;SCRIPT<br>
-			noindex_stop: &lt;/SCRIPT&gt;
+			noindex_end: &lt;/SCRIPT&gt;
 		  </dd>
 		</dl>
 	  </dd>
