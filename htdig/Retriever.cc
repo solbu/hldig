@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.7 1999/12/02 02:48:48 ghutchis Exp $
+// $Id: Retriever.cc,v 1.72.2.8 1999/12/02 23:12:29 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -156,8 +156,13 @@ Retriever::Initial(const String& list, int from)
            cout << "\t" << from << ":" << (int) log << ":" << url;
 	if (!server)
 	{
-	    server = new Server(u);
-	    servers.Add(u.signature(), server);
+	  String robotsURL = u.signature();
+	  robotsURL << "robots.txt";
+	  String *localRobotsFile = GetLocal(robotsURL.get());
+	  
+	  server = new Server(u, localRobotsFile);
+	  servers.Add(u.signature(), server);
+	  delete localRobotsFile;
 	}
 	else if (from && visited.Exists(url)) 
 	{
@@ -371,7 +376,8 @@ Retriever::parse_url(URLRef &urlRef)
     DocumentRef        *ref;
     int			old_document;
     time_t		date;
-    static int	index = 0;
+    static int		index = 0;
+    static int		local_urls_only = config.Boolean("local_urls_only");
     Server		*server;
 
     url.parse(urlRef.GetURL().get());
@@ -450,14 +456,14 @@ Retriever::parse_url(URLRef &urlRef)
             if (debug > 1)
    	        cout << "Local retrieval failed, trying HTTP" << endl;
 	    if (server && !server->IsDead()
-			&& !config.Boolean("local_urls_only"))
+			&& !local_urls_only)
 		status = doc->Retrieve(date);
 	    else
 		status = Transport::Document_no_host;
         }
         delete local_filename;
     }
-    else if (server && !server->IsDead())
+    else if (server && !server->IsDead() && !local_urls_only)
         status = doc->Retrieve(date);
     else
 	status = Transport::Document_no_host;
@@ -1265,8 +1271,13 @@ Retriever::got_href(URL &url, const char *description, int hops)
 		    //
 		    // Hadn't seen this server, yet.  Register it
 		    //
-		    server = new Server(url);
+		    String robotsURL = url.signature();		    
+		    robotsURL << "robots.txt";
+		    String *localRobotsFile = GetLocal(robotsURL.get());
+		    
+		    server = new Server(url, localRobotsFile);
 		    servers.Add(url.signature(), server);
+		    delete localRobotsFile;
 		}
 		//
 		// Let's just be sure we're not pushing an empty URL
@@ -1394,8 +1405,13 @@ Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 		    //
 		    // Hadn't seen this server, yet.  Register it
 		    //
-		    server = new Server(url);
+		    String robotsURL = url.signature();		    
+		    robotsURL << "robots.txt";
+		    String *localRobotsFile = GetLocal(robotsURL.get());
+		    
+		    server = new Server(url, localRobotsFile);
 		    servers.Add(url.signature(), server);
+		    delete localRobotsFile;
 		}
 		server->push(url.get(), ref->DocHopCount(), base->get(),
 			     IsLocalURL(url.get()));
