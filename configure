@@ -2416,7 +2416,7 @@ cross_compiling=$ac_cv_prog_cc_cross
 echo $ac_n "checking how to call getpeername?""... $ac_c" 1>&6
 echo "configure:2418: checking how to call getpeername?" >&5
 for sock_t in 'struct sockaddr' 'void'; do
-for getpeername_length_t in 'size_t' 'int' 'unsigned int'; do
+for getpeername_length_t in 'size_t' 'int' 'unsigned int' 'socklen_t'; do
 cat > conftest.$ac_ext <<EOF
 #line 2422 "configure"
 #include "confdefs.h"
