@@ -1,40 +1,34 @@
 //
 // DocumentDB.cc
 //
-// Implementation of DocumentDB
+// DocumentDB: This class is the interface to the database of document
+//             references. This database is only used while digging.  
+//             An extract of this database is used for searching.  
+//             This is because digging requires a different index
+//             than searching.
 //
-// $Log: DocumentDB.cc,v $
-// Revision 1.6  1998/10/27 18:35:17  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Fixed bug noted by Vadim Chekan with CreateSearchDB.
-//
-// Revision 1.5  1998/10/18 20:37:41  ghutchis
-//
-// Fixed database corruption bug and other misc. cleanups.
-//
-// Revision 1.4  1998/10/12 02:03:59  ghutchis
-//
-// Updated Makefiles and configure variables.
-//
-// Revision 1.3  1998/08/11 08:58:23  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.2  1998/01/05 00:44:29  turtle
-// Fixed major memory leak
-//
-// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
-// Initial CVS
-//
+// $Id: DocumentDB.cc,v 1.28.2.1 2000/02/14 06:07:30 ghutchis Exp $
 //
 
 #include "DocumentDB.h"
+#include "Database.h"
+#include "HtURLCodec.h"
+#include "IntObject.h"
+#include "HtZlibCodec.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <iostream.h>
 #include <fstream.h>
-#include <Database.h>
+#include <errno.h>
 
 
 //*****************************************************************************
@@ -44,7 +38,12 @@ DocumentDB::DocumentDB()
 {
     isopen = 0;
     isread = 0;
-    nextDocID = 0;
+
+    // The first document number (NEXT_DOC_ID_RECORD) is used to
+    // store the nextDocID number itself into.  We avoid using
+    // an all-0 key for this, mostly for being superstitious
+    // about letting in bugs.
+    nextDocID = NEXT_DOC_ID_RECORD + 1;
 }
 
 
@@ -53,44 +52,98 @@ DocumentDB::DocumentDB()
 //
 DocumentDB::~DocumentDB()
 {
-    if (isopen)
-	Close();
+  Close();
 }
 
 
 //*****************************************************************************
-// int DocumentDB::Open(char *filename)
+// int DocumentDB::Open(char *filename, char *indexname, char *headname)
 //   We will attempt to open up an existing document database.  If it
-//   doesn't exist, we'll create a new one.  If we are succesfull in
+//   doesn't exist, we'll create a new one.  If we are succesful in
 //   opening the database, we need to look for our special record
 //   which contains the next document ID to use.
+//    There may also be an URL -> DocID index database to take
+//   care of, as well as a DocID -> DocHead excerpt database.
 //
-int DocumentDB::Open(char *filename)
+int DocumentDB::Open(const String& filename, const String& indexfilename, const String& headname)
 {
-    dbf = Database::getDatabaseInstance();
+  // If the database is already open, we'll close it
+  // We might be opening this object with a new filename, so we'll be safe
+  Close();
+
+  dbf = 0;
+  i_dbf = 0;
+  h_dbf = 0;
+
+  i_dbf = Database::getDatabaseInstance(DB_HASH);
+
+  if (i_dbf->OpenReadWrite(indexfilename, 0666) != OK) {
+    cerr << "DocumentDB::Open: " << indexfilename << " " << strerror(errno) << "\n";
+    return NOTOK;
+  }
+
+  h_dbf = Database::getDatabaseInstance(DB_HASH);
+
+  if (h_dbf->OpenReadWrite(headname, 0666) != OK) {
+    cerr << "DocumentDB::Open: " << headname << " " << strerror(errno) << "\n";
+    return NOTOK;
+  }
+
+  dbf = Database::getDatabaseInstance(DB_HASH);
 	
-    if (dbf->OpenReadWrite(filename, 0664) == OK)
+  if (dbf->OpenReadWrite(filename, 0666) == OK)
     {
-	String		data;
-	if (dbf->Get("nextDocID", data) == OK)
+      String		data;
+      int             specialRecordNumber = NEXT_DOC_ID_RECORD;
+      String          key((char *) &specialRecordNumber,
+			  sizeof specialRecordNumber);
+      if (dbf->Get(key, data) == OK)
 	{
-	    nextDocID = atoi(data);
+	  memcpy(&nextDocID, data.get(), sizeof nextDocID);
 	}
-	isopen = 1;
-	return OK;
+
+      isopen = 1;
+      return OK;
     }
-    else
-	return NOTOK;
+  else {
+    cerr << "DocumentDB::Open: " << filename << " " << strerror(errno) << "\n";
+    return NOTOK;
+  }
 }
 
 
 //*****************************************************************************
-// int DocumentDB::Read(char *filename)
-//   We will attempt to open up an existing document database.
+// int DocumentDB::Read(char *filename, char *indexname, char *headname)
+//   We will attempt to open up an existing document database,
+//   and accompanying index database and excerpt database
 //
-int DocumentDB::Read(char *filename)
+int DocumentDB::Read(const String& filename, const String& indexfilename = 0, const String& headfilename = 0)
 {
-    dbf = Database::getDatabaseInstance();
+    // If the database is already open, we'll close it
+    // We might be opening this object with a new filename, so we'll be safe
+    Close();
+
+    dbf = 0;
+    i_dbf = 0;
+    h_dbf = 0;
+
+    if (!indexfilename.empty())
+    {
+	i_dbf = Database::getDatabaseInstance(DB_HASH);
+
+	if (i_dbf->OpenRead(indexfilename) != OK)
+	    return NOTOK;
+    }
+
+    if (!headfilename.empty())
+      {
+	h_dbf = Database::getDatabaseInstance(DB_HASH);
+	
+	if (h_dbf->OpenRead(headfilename) != OK)
+	  return NOTOK;
+      }
+
+    dbf = Database::getDatabaseInstance(DB_HASH);
 	
     if (dbf->OpenRead(filename) == OK)
     {
@@ -110,13 +163,30 @@ int DocumentDB::Read(char *filename)
 //
 int DocumentDB::Close()
 {
-    String	data;
+    if (!isopen) return OK;
 
     if (!isread)
     {
-	data << nextDocID;
-	dbf->Put("nextDocID", data.get(), data.length() + 1);
+	int specialRecordNumber = NEXT_DOC_ID_RECORD;
+	String key((char *) &specialRecordNumber,
+		   sizeof specialRecordNumber);
+	String data((char *) &nextDocID, sizeof nextDocID);
+
+	dbf->Put(key, data);
     }
+
+    if (i_dbf)
+    {
+	i_dbf->Close();
+	delete i_dbf;
+	i_dbf = 0;
+    }
+    if (h_dbf)
+      {
+	h_dbf->Close();
+	delete h_dbf;
+	h_dbf = 0;
+      }
 
     dbf->Close();
     delete dbf;
@@ -132,26 +202,69 @@ int DocumentDB::Close()
 //
 int DocumentDB::Add(DocumentRef &doc)
 {
-    String	url, s;
-    url = doc.DocURL();
-    url.lowercase();
-    doc.Serialize(s);
-    dbf->Put(url, s);
-    return OK;
+    int docID = doc.DocID();
+
+    String temp = 0;
+
+    doc.Serialize(temp);
+
+    String key((char *) &docID, sizeof docID);
+    dbf->Put(key, temp);
+
+    if (h_dbf)
+      {
+	if (doc.DocHeadIsSet())
+	  {
+	    temp = HtZlibCodec::instance()->encode(doc.DocHead());
+	    h_dbf->Put(key, temp);
+	  }
+      }
+    else
+      // If there was no excerpt index when we write, something is wrong.
+      return NOTOK;
+
+    if (i_dbf)
+    {
+	temp = doc.DocURL();
+	i_dbf->Put(HtURLCodec::instance()->encode(temp), key);
+	return OK;
+    }
+    else
+      // If there was no index when we write, something is wrong.
+      return NOTOK;
 }
 
 
 //*****************************************************************************
-// DocumentRef *DocumentDB::operator [] (char *u)
+// int DocumentDB::ReadExcerpt(DocumentRef &ref)
+// We will attempt to access the excerpt for this ref
 //
-DocumentRef *DocumentDB::operator [] (char *u)
+int DocumentDB::ReadExcerpt(DocumentRef &ref)
+{
+    String	data;
+    int		docID = ref.DocID();
+    String	key((char *) &docID, sizeof docID);
+
+    if (!h_dbf)
+      return NOTOK;
+    if (h_dbf->Get(key, data) == NOTOK)
+      return NOTOK;
+
+    ref.DocHead((char*)HtZlibCodec::instance()->decode(data));
+
+    return OK;
+}
+
+//*****************************************************************************
+// DocumentRef *DocumentDB::operator [] (int docID)
+//
+DocumentRef *DocumentDB::operator [] (int docID)
 {
     String			data;
-    String			url = u;
-    url.lowercase();
+    String			key((char *) &docID, sizeof docID);
 
-    if (dbf->Get(url, data) == NOTOK)
-	return 0;
+    if (dbf->Get(key, data) == NOTOK)
+      return 0;
 
     DocumentRef		*ref = new DocumentRef;
     ref->Deserialize(data);
@@ -160,68 +273,109 @@ DocumentRef *DocumentDB::operator [] (char *u)
 
 
 //*****************************************************************************
-// int DocumentDB::Exists(char *u)
+// DocumentRef *DocumentDB::operator [] (const String& u)
 //
-int DocumentDB::Exists(char *u)
+DocumentRef *DocumentDB::operator [] (const String& u)
 {
-    String			url = u;
-    url.lowercase();
+    String			data;
+    String			docIDstr;
 
-    return dbf->Exists(url);
+    // If there is no index db, then just give up 
+    // (do *not* construct a list and traverse it).
+    if (i_dbf == 0)
+      return 0;
+    else
+    {
+	String url(u);
+  
+	if (i_dbf->Get(HtURLCodec::instance()->encode(url), docIDstr) == NOTOK)
+	  return 0;
+    }
+
+    if (dbf->Get(docIDstr, data) == NOTOK)
+      return 0;
+
+    DocumentRef		*ref = new DocumentRef;
+    ref->Deserialize(data);
+    return ref;
 }
-
 
 //*****************************************************************************
-// int DocumentDB::Delete(char *u)
+// int DocumentDB::Exists(int docID)
 //
-int DocumentDB::Delete(char *u)
+int DocumentDB::Exists(int docID)
 {
-    String			url = u;
-    url.lowercase();
-
-    return dbf->Delete(url);
+    String key((char *) &docID, sizeof docID);
+    return dbf->Exists(key);
 }
 
+//*****************************************************************************
+// int DocumentDB::Delete(int docID)
+//
+int DocumentDB::Delete(int docID)
+{
+    String key((char*) &docID, sizeof docID);
+    String data;
+  
+    if (i_dbf == 0 || dbf->Get(key, data) == NOTOK)
+      return NOTOK;
+  
+    DocumentRef		*ref = new DocumentRef;
+    ref->Deserialize(data);
+    String url = ref->DocURL();
+    delete ref;
+  
+    if (i_dbf->Delete(HtURLCodec::instance()->encode(url)) == NOTOK)
+      return 0;
+  
+    if (h_dbf == 0 || h_dbf->Delete(key) == NOTOK)
+      return NOTOK;
+
+    return dbf->Delete(key);
+}
 
 //*****************************************************************************
 // int DocumentDB::CreateSearchDB(char *filename)
-//   Create an extract from our database which can be used by the
-//   search engine.  The extract will consist of lines with fields
-//   separated by tabs.  The fields are:
-//        docID
-//        docURL
-//        docTime
-//        docHead
-//        docMetaDsc
-//        descriptions (separated by tabs)
+//   Create an extract from our database which can be used by an
+//   external application. The extract will consist of lines with fields
+//   separated by tabs. 
 //
 //   The extract will be sorted by docID.
 //
-int DocumentDB::CreateSearchDB(char *filename)
+int DocumentDB::CreateSearchDB(const String& filename)
 {
     DocumentRef	        *ref;
     List		*descriptions, *anchors;
-    char		*key;
+    char		*strkey;
     String		data;
     FILE		*fl;
-    String		command = SORT_PROG;
-    String		tmpdir = getenv("TMPDIR");
+    String		docKey(sizeof(int));
 
-    command << " -n -o" << filename;
-    if (tmpdir.length())
-    {
-	command << " -T " << tmpdir;
+    if((fl = fopen(filename, "w")) == 0) {
+      perror(form("DocumentDB::CreateSearchDB: opening %s for writing", (const char*)filename));
+      return NOTOK;
     }
-    fl = popen(command, "w");
 
     dbf->Start_Get();
-    while ((key = dbf->Get_Next()))
+    while ((strkey = dbf->Get_Next()))
     {
-	dbf->Get(key, data);
-	if (strncmp(key, "http:", 5) == 0)
+	int docID;
+	memcpy(&docID, strkey, sizeof docID);
+
+	docKey = 0;
+	docKey.append((char *) &docID, sizeof docID);
+
+	dbf->Get(docKey, data);
+
+	if (docID != NEXT_DOC_ID_RECORD)
 	{
 	    ref = new DocumentRef;
 	    ref->Deserialize(data);
+	    if (h_dbf)
+	      {
+		h_dbf->Get(docKey,data);
+		ref->DocHead((char*)data);
+	      }
 	    fprintf(fl, "%d", ref->DocID());
 	    fprintf(fl, "\tu:%s", ref->DocURL());
 	    fprintf(fl, "\tt:%s", ref->DocTitle());
@@ -262,21 +416,40 @@ int DocumentDB::CreateSearchDB(char *filename)
 	}
     }
 
-    int	sortRC = pclose(fl);
-    if (sortRC)
-    {
-	cerr << "Document sort failed\n\n";
-	exit(1);
-    }
-    return 0;
+    fclose(fl);
+
+    return OK;
 }
 
 
 //*****************************************************************************
 // List *DocumentDB::URLs()
 //   Return a list of all the URLs in the database
+//   Only available when there's an URL -> DocID index db handy.
 //
 List *DocumentDB::URLs()
+{
+    List	*list = new List;
+    char	*coded_key;
+
+    if (i_dbf == 0)
+	return 0;
+
+    i_dbf->Start_Get();
+    while ((coded_key = i_dbf->Get_Next()))
+    {
+	String *key = new String(HtURLCodec::instance()->decode(coded_key));
+	list->Add(key);
+    }
+    return list;
+}
+
+
+//*****************************************************************************
+// List *DocumentDB::DocIDs()
+//   Return a list of all the DocIDs in the database
+//
+List *DocumentDB::DocIDs()
 {
     List	*list = new List;
     char	*key;
@@ -284,15 +457,14 @@ List *DocumentDB::URLs()
     dbf->Start_Get();
     while ((key = dbf->Get_Next()))
     {
-	if (mystrncasecmp(key, "http:", 5) == 0)
-	{
-	    DocumentRef	*ref = (*this)[key];
-	    if (ref)
-	    	list->Add(new String(ref->DocURL()));
-            delete ref;
-	}
+	int	    docID;
+	memcpy (&docID, key, sizeof docID);
+
+	if (docID != NEXT_DOC_ID_RECORD)
+	    list->Add(new IntObject(docID));
     }
     return list;
 }
 
 
+// End of DocumentDB.cc
