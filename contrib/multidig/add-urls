@@ -1,4 +1,4 @@
-#!%BASH%
+#!@BASH@
 
 #
 # add-urls 1.1
@@ -16,7 +16,7 @@
 #
 
 # You may need to set the following:
-MULTIDIG_CONF=%CONFIG_DIR%/multidig.conf
+MULTIDIG_CONF=@CONFIG_DIR@/multidig.conf
 source $MULTIDIG_CONF
 
 # Catch people who don't supply an argument

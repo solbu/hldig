@@ -1,4 +1,4 @@
-#!%BASH%
+#!@BASH@
 
 #
 # multidig 1.1
@@ -27,7 +27,7 @@ if [ "$1" = "-v" ]; then
 fi
 
 # You may need to set the following:
-MULTIDIG_CONF=%CONFIG_DIR%/multidig.conf
+MULTIDIG_CONF=@CONFIG_DIR@/multidig.conf
 source $MULTIDIG_CONF
 
 # Start indexing.
@@ -35,15 +35,15 @@ rm $REPORT
 for db in `cat $DB_LIST`; do
     echo Digging $db at: `date`
     # What's the conf file for this database?
-    CONF=$BASEDIR/conf/$db.conf
+    CONF=$CONFIG_DIR/$db.conf
     if [ "$1" = "-v" ]; then
 	echo "  Indexing $db at: `date`"
     fi
-    $BASEDIR/bin/htdig -a $verbose -s -c $CONF >>$REPORT
+    $BINDIR/htdig -a $verbose -s -c $CONF >>$REPORT
     if [ "$1" = "-v" ]; then
 	echo "  Merging $db at: `date`"
     fi
-    $BASEDIR/bin/htmerge -a $verbose -s -c $CONF >>$REPORT
+    $BINDIR/htmerge -a $verbose -s -c $CONF >>$REPORT
 
     if [ "$1" = "-v" ]; then
 	echo "  Moving files $db at: `date`"
@@ -62,8 +62,8 @@ for db in `cat $DB_LIST`; do
     # .work file is needed for update digs and the non-work file isn't needed
     # cp $DB_BASE/$db/db.wordlist.work    $DB_BASE/$db/db.wordlist
     # These .work files are never used, so let's just keep the active copy
-    cp $DB_BASE/$db/db.docs.index.work    $DB_BASE/$db/db.docs.index
-    cp $DB_BASE/$db/db.words.db.work      $DB_BASE/$db/db.words.db
+    mv $DB_BASE/$db/db.docs.index.work    $DB_BASE/$db/db.docs.index
+    mv $DB_BASE/$db/db.words.db.work      $DB_BASE/$db/db.words.db
 
     # Make them world readable!
     chmod 644 $DB_BASE/$db/db.docdb     
@@ -76,63 +76,8 @@ for db in `cat $DB_LIST`; do
     fi
 done
 # Now generate the collections by merging their component databases
-for collect in `cat $COLLECT_LIST`; do
-    # What's the conf file for this database?
-    CONF=$BASEDIR/conf/$collect.conf
-    echo Generating $collect at: `date`
-
-    # We want to replace the old .work files with the first database
-    # This ensures that we *only* get documents from the merged db
-    # and not old ones left around in our previous collected db
-    firstdb=`head -n 1 $DB_BASE/$collect/$collect.collect`
-    cp $DB_BASE/$firstdb/db.docdb      $DB_BASE/$collect/db.docdb.work
-    cp $DB_BASE/$firstdb/db.docs.index $DB_BASE/$collect/db.docs.index.work
-    cp $DB_BASE/$firstdb/db.wordlist.work $DB_BASE/$collect/db.wordlist.work
-    cp $DB_BASE/$firstdb/db.words.db   $DB_BASE/$collect/db.words.db.work
-    # Now we need to work out the number of remaining db in the collection
-    LENGTH=`wc -l $DB_BASE/$collect/$collect.collect | awk '{print $1;}'`
-    let NUM=LENGTH-1
-
-    for db in `tail -n $NUM $DB_BASE/$collect/$collect.collect`; do
-	if [ "$1" = "-v" ]; then
-	    echo Merging db $db of collect $collect
-	fi
-	MERGE_CONF=$BASEDIR/conf/$db.conf
-	$BASEDIR/bin/htmerge -a $verbose -s -d -w -m $MERGE_CONF -c $CONF >>$REPORT
-    done
-
-    # Now after merging in all of those databases
-    # we need to do the usual htmerge run
-    $BASEDIR/bin/htmerge -a $verbose -s -c $CONF >>$REPORT
-
-    if [ "$1" = "-v" ]; then
-	echo Moving files $collect at: `date`
-    fi
-    # If you don't have the space for backups, this step can be omitted
-    if [ $BACKUPS = "true" ]; then
-	cp $DB_BASE/$collect/db.docdb      $DB_BASE/$collect/db.docdb.bak
-	cp $DB_BASE/$collect/db.docs.index $DB_BASE/$collect/db.docs.index.bak
-	# cp $DB_BASE/$collect/db.wordlist $DB_BASE/$collect/db.wordlist.bak
-	cp $DB_BASE/$collect/db.words.db   $DB_BASE/$collect/db.words.db.bak
-    fi
-
-    # Move them because we don't want .work files around
-    # (Remember, we're generating using merging,
-    # so we want to make sure we don't have old stuff to gum up the works...
-    mv $DB_BASE/$collect/db.docdb.work         $DB_BASE/$collect/db.docdb
-    mv $DB_BASE/$collect/db.docs.index.work    $DB_BASE/$collect/db.docs.index
-    # mv $DB_BASE/$collect/db.wordlist.work    $DB_BASE/$collect/db.wordlist
-    mv $DB_BASE/$collect/db.words.db.work      $DB_BASE/$collect/db.words.db
-
-    # Make them world readable!
-    chmod 644 $DB_BASE/$collect/db.docdb
-    chmod 644 $DB_BASE/$collect/db.docs.index
-    # chmod 644 $DB_BASE/$collect/db.wordlist
-    chmod 644 $DB_BASE/$collect/db.words.db
-    if [ "$1" = "-v" ]; then
-	echo Done with $collect at: `date`
-    fi
-done
+# We do this in our gen-collect script, so we won't do that here.
+$BINDIR/gen-collect $1
 
 if [ "$1" = "-v" ]; then
 	echo

@@ -1,4 +1,4 @@
-#!%BASH%
+#!@BASH@
 
 #
 # gen-collect 1.1
@@ -27,14 +27,13 @@ if [ "$1" = "-v" ]; then
 fi
 
 # You may need to set the following:
-MULTIDIG_CONF=%CONFIG_DIR%/multidig.conf
+MULTIDIG_CONF=@CONFIG_DIR@/multidig.conf
 source $MULTIDIG_CONF
 
-# Generate the collections by merging their component databases
-rm $REPORT
+# We may be called inside multidig, so we don't want to mess with the report.
 for collect in `cat $COLLECT_LIST`; do
     # What's the conf file for this database?
-    CONF=$BASEDIR/conf/$collect.conf
+    CONF=$CONFIG_DIR/$collect.conf
     echo Generating $collect at: `date`
 
     # We want to replace the old .work files with the first database
@@ -53,13 +52,20 @@ for collect in `cat $COLLECT_LIST`; do
 	if [ "$1" = "-v" ]; then
 	    echo Merging db $db of collect $collect
 	fi
-	MERGE_CONF=$BASEDIR/conf/$db.conf
-	$BASEDIR/bin/htmerge -a $verbose -s -d -w -m $MERGE_CONF -c $CONF >>$REPORT
+	MERGE_CONF=$CONFIG_DIR/$db.conf
+	# There's a slight bug in the merge function.
+	# It's looking for db.wordlist, not .work. So lets copy it temporarily
+	cp $DB_BASE/$db/db.wordlist.work $DB_BASE/$db/db.wordlist
+	# Do the merging, using -d and -w to prevent normal merging
+	# (it would be a waste of time, we'd repeat it multiple times)
+	$BINDIR/htmerge $verbose -s -d -w -m $MERGE_CONF -a -c $CONF >>$REPORT
+	# And now remove the copy
+	rm $DB_BASE/$db/db.wordlist
     done
 
     # Now after merging in all of those databases
     # we need to do the usual htmerge run
-    $BASEDIR/bin/htmerge -a $verbose -s -c $CONF >>$REPORT
+    $BINDIR/htmerge -a $verbose -s -c $CONF >>$REPORT
 
     if [ "$1" = "-v" ]; then
 	echo Moving files $collect at: `date`
@@ -90,15 +96,4 @@ for collect in `cat $COLLECT_LIST`; do
     fi
 done
 
-if [ "$1" = "-v" ]; then
-	echo
-	fgrep "htdig:" $REPORT
-	echo
-	fgrep "htmerge:" $REPORT
-	echo
-	echo Total lines in $REPORT: `wc -l $REPORT`
-fi
-
-# You probably don't need to do this since the script will remove it next
-# time it's run. But you can do it anyway
-# rm $REPORT
+# That's it!
