@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.47 2000/03/28 01:51:44 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.48 2000/03/31 04:29:59 ghutchis Exp $
 //
 
 #include "HtConfiguration.h"
@@ -1554,6 +1554,13 @@ http://www.htdig.org/", "
         of persistent connections, as defined by HTTP/1.1 (<I>RFC2616</I>). This permits
         to reduce the number of open/close operations of connections, when retrieving
         a document with HTTP.
+" },
+{ "plural_suffix", "s",
+	"string", "htsearch", "", "3.2.0b2", "Presentation: Text", "plural_suffix: en", "
+	Specifies the value of the PLURAL_MATCHES environtment
+	attribute used in the header, footer and template files.
+	This can be used for localization for non-English languages
+	where 's' is not the appropriate suffix.
 " },
 { "prefix_match_character", "*", 
 	"string", "htsearch", "", "3.1.0b1", "Searching:Method", "prefix_match_character: ing", "

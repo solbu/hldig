@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.17 2000/03/28 02:01:59 ghutchis Exp $
+// $Id: Display.cc,v 1.100.2.18 2000/03/31 04:29:59 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -419,7 +419,7 @@ Display::setVariables(int pageNumber, List *matches)
     else if (mystrcasecmp(config["match_method"], "or") == 0)
 	vars.Add("MATCH_MESSAGE", new String("some"));
     vars.Add("MATCHES", new String(form("%d", nMatches)));
-    vars.Add("PLURAL_MATCHES", new String(nMatches == 1 ? (char *)"" : (char *)"s"));
+    vars.Add("PLURAL_MATCHES", new String((nMatches == 1) ? (char *)"" :  (const char *) config["plural_suffix"]));
     vars.Add("PAGE", new String(form("%d", pageNumber)));
     vars.Add("PAGES", new String(form("%d", nPages)));
     vars.Add("FIRSTDISPLAYED",
