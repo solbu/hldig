@@ -1,4 +1,7 @@
-Wed Nov 10 14:54:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Nov 10 15:04:53 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/hts_form.html: add disclaimer about keywords parameter not
+	being limited to meta keywords.
 
 	* htdoc/meta.html: add description of "keywords" meta tag property.
 	add links to keywords_factor & meta_description_factor attributes.
