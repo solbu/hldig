@@ -238,6 +238,19 @@ mergeDB()
     // Read it in a line at a time...
     while (fgets(buffer, sizeof(buffer), mergewords))
       {
+if (*buffer == '+') {
+	    // This will prevent removing documents from main
+	    // config db with id of bad documents from merged config
+	    // It was happened when I run htmerge -m test1.conf -c test.conf
+	    // without previous runned htmerge -c test1.conf, which
+	    // normally must remove strings +ID, -ID, !ID from wordlist
+	    //
+ fprintf(wordlist, "+%d\n", atoi(strtok(buffer + 1, "\n"))+docIDOffset);
+} else if (*buffer == '-') {
+ fprintf(wordlist, "-%d\n", atoi(strtok(buffer + 1, "\n"))+docIDOffset);
+} else if (*buffer == '!') {
+ fprintf(wordlist, "!%d\n", atoi(strtok(buffer + 1, "\n"))+docIDOffset);
+} else {
 	// Split the line up into the word, count, location, and
 	// document id, just like in words.cc(mergeWords).
 	word = good_strtok(buffer, '\t');
@@ -304,6 +317,7 @@ mergeDB()
 	    fprintf(wordlist, "\ta:%d", wr.anchor);
 	  }
 	putc('\n', wordlist);
+      }
       }
     fclose(mergewords);
 

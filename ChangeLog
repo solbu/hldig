@@ -1,9 +1,14 @@
+Wed May 26 23:15:46 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htmerge/db.cc (mergeDB): Add patch contributed by Roman Dimov
+	<roman@twist.mark-itt.ru> to fix problems with confusing docIDs,
+	resulting in documents in main db removed when the corresponding
+	DocID was supposed to be removed from the merged db.
+
 Wed May 26 11:30:22 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.h, htsearch/Display.cc, htsearch/htsearch.cc:
 	Switch restrict and excludes to use HtRegex instead of StringMatch.
-
-Wed May 26 11:29:27 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/htdig.cc (main): Fix typo clobbering setting of
 	excludes. Obviously fixes problems with badquerystr and excludes!
