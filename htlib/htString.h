@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.18.2.2 2000/01/03 11:49:09 bosc Exp $
+// $Id: htString.h,v 1.18.2.3 2000/01/03 12:10:39 bosc Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -203,8 +203,8 @@ private:
     friend		class StringIndex;
 };
 
-extern char *form(char *, ...);
-extern char *vform(char *, va_list);
+extern char *form(const char *, ...);
+extern char *vform(const char *, va_list);
 
 //
 // Inline methods.

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.30.2.4 2000/01/03 11:49:09 bosc Exp $
+// $Id: String.cc,v 1.30.2.5 2000/01/03 12:10:39 bosc Exp $
 //
 
 
@@ -222,7 +222,7 @@ int String::write(int fd) const
 
 const char *String::get() const
 {
-  static char	*null = "";
+  static const char	*null = "";
   if (!Allocated)
     return null;
   Data[Length] = '\0';	// We always leave room for this.

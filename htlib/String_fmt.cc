@@ -1,21 +1,21 @@
 //
-// String.cc
+// String_fmt.cc
 //
-// Formatting code for the String class
+// String_fmt: Formatting functions for the String class. Those functions
+//             are also used in other files, they are not purely internal
+//             to the String class.
 //
-// $Log: String_fmt.cc,v $
-// Revision 1.2  1997/03/24 04:33:22  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
+// $Id: String_fmt.cc,v 1.5.2.1 2000/01/03 12:10:39 bosc Exp $
 //
-//
-#if RELEASE
-static char RCSid[] = "$Id: String_fmt.cc,v 1.2 1997/03/24 04:33:22 turtle Exp $";
-#endif
 
 #include "htString.h"
+
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -24,7 +24,7 @@ static char	buf[10000];
 //*****************************************************************************
 // char *form(char *fmt, ...)
 //
-char *form(char *fmt, ...)
+char *form(const char *fmt, ...)
 {
 	va_list	args;
 	va_start(args, fmt);
@@ -37,7 +37,7 @@ char *form(char *fmt, ...)
 //*****************************************************************************
 // char *vform(char *fmt, va_list args)
 //
-char *vform(char *fmt, va_list args)
+char *vform(const char *fmt, va_list args)
 {
 	vsprintf(buf, fmt, args);
 	return buf;
