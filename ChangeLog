@@ -1,5 +1,10 @@
 Sun Oct  5 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
+    * htdig/{Retriever,Server}.cc: Jim Cole's patch to bug #765726.
+      Don't block paths with subpaths excluded by robots.txt.
+
+Sun Oct  5 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
     * htsearch/htsearch.cc: Highlight phrases containing stop words
     * test/t_htsearch, test/conf/htdig.conf.in:  Tests for the above
 

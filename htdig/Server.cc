@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Server.cc,v 1.21 2003/06/24 20:05:23 nealr Exp $
+// $Id: Server.cc,v 1.22 2003/10/05 10:46:34 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -316,9 +316,9 @@ void Server::robotstxt(Document &doc)
 	    if (*rest)
 	    {
 		if (pattern.length())
-		    pattern << '|' << rest;
+		    pattern << '|' << '^' << rest;
 		else
-		    pattern = rest;
+		    pattern << '^' << rest;
 	    }
 	}
 	//
