@@ -1,11 +1,12 @@
-Wed Sep  1 14:41:36 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 14:43:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URLTrans.cc(encodeURL): Fix encoding so all non-ascii
+	characters get hex-encoded. I think this is what PR#339 was all about.
 
 	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
 	Added descriptions for attributes that were missing, added
 	a few clarifications, and corrected a few defaults and typos.
 	Covers PR#558, PR#626, and then some.
-
-Wed Sep  1 14:40:01 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* configure.in, configure, include/htconfig.h.in, htlib/regex.c:
 	Fix PR#545, to test for presence of alloca.h

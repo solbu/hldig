@@ -4,6 +4,9 @@
 // Implementation of URL
 //
 // $Log: URLTrans.cc,v $
+// Revision 1.2.2.1  1999/09/01 19:48:38  grdetil
+// Fix encoding so all non-ascii characters get hex-encoded. (PR#339)
+//
 // Revision 1.2  1997/03/24 04:33:22  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -12,7 +15,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URLTrans.cc,v 1.2 1997/03/24 04:33:22 turtle Exp $";
+static char RCSid[] = "$Id: URLTrans.cc,v 1.2.2.1 1999/09/01 19:48:38 grdetil Exp $";
 #endif
 
 #include "URL.h"
@@ -75,7 +78,7 @@ void encodeURL(String &str, char *valid)
 
     for (p = str; p && *p; p++)
     {
-	if (isdigit(*p) || isalpha(*p) || strchr(valid, *p))
+	if (isascii(*p) && (isdigit(*p) || isalpha(*p) || strchr(valid, *p)))
 	    temp << *p;
 	else
 	{
