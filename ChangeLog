@@ -1,10 +1,15 @@
+Tue Nov 30 14:22:02 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.1.4.spec, contrib/htdig-3.1.4-conf.patch:
+	Added sample RPM spec file and config patch for it.
+	* htdoc/ChangeLog: Update with latest version.
+
 Tue Nov 30 14:01:51 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/where.html: Bump to version 3.1.4.
 	* htdoc/THANKS.html: Added new contributors.
 	* htdoc/isp.html, htdoc/uses.html, htdoc/main.html, htdoc/mailing.html:
 	Updated to versions from htdig.org web site.
-	* htdoc/ChangeLog: Update with latest version.
 
 Tue Nov 30 13:01:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
