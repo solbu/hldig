@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.9 1999/12/06 19:53:30 vadim Exp $
+// $Id: Document.cc,v 1.55.2.10 2000/01/14 01:23:43 ghutchis Exp $
 //
 
 #include <signal.h>
@@ -57,6 +57,7 @@ Document::Document(char *u, int max_size)
     contents = 0;
     transportConnect = 0;
     HTTPConnect = 0;
+    FileConnect = 0;
     externalConnect = 0;
 
     if (max_size > 0)
@@ -106,6 +107,8 @@ Document::~Document()
    // We delete only the derived class objects
     if (HTTPConnect)
       delete HTTPConnect;
+    if (FileConnect)
+      delete FileConnect;
       
 #if MEM_DEBUG
     char *p = new char;
@@ -287,6 +290,35 @@ Document::Retrieve(HtDateTime date)
 
       HTTPConnect->SetProxy(useproxy);
       transportConnect = HTTPConnect;
+   }
+   else if (mystrncasecmp(url->service(), "file", 4) == 0)
+   {
+      if (!FileConnect)
+      {
+         if (debug>4)
+            cout << "Creating an HtFile object" << endl;
+      
+         FileConnect = new HtFile();
+
+         if (!FileConnect)
+               return Transport::Document_other_error;
+      }
+      
+      if (FileConnect)
+      {
+         // Here we must set only thing for a file request
+	  
+         FileConnect->SetRequestURL(*url);
+	  
+         // Set the referer
+         if (referer)
+            FileConnect->SetRefererURL(*referer);
+	  
+         if (debug > 2)
+            cout << "Making 'file' request on " << url->get() << endl;
+      }
+
+      transportConnect = FileConnect;
    }
    else
    {
