@@ -1,3 +1,8 @@
+Wed Jun 16 11:03:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/HtDateTime.cc(SettoNow): Strip out all the nonsense that
+	doesn't work, set Ht_t directly instead.
+
 Wed Jun 16 09:58:12 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* configure.in, configure, Makefile.config.in: Correct handling of

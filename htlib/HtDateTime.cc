@@ -367,17 +367,11 @@ void HtDateTime::SetDateTime(struct tm *ptm)
 }
 
 
-// We must set the local time notation before setting time to now
+// Set time to now
 
 void HtDateTime::SettoNow()
 {
-   bool previous = local_time;
-   
-   ToLocalTime();
-   
-   SetDateTime ( (const time_t &) time(NULL) );
-   
-   local_time = previous;
+   Ht_t = time(NULL);
 }
 
 
