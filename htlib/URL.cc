@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.18.2.7 2000/02/22 18:40:33 grdetil Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.18.2.8 2001/08/31 21:07:33 grdetil Exp $";
 #endif
 
 #include "URL.h"
@@ -202,12 +202,12 @@ URL::URL(char *ref, URL &parent)
 		    //
 		}
 	    }
-
-            //
-            // Get rid of loop-causing constructs in the path
-            //
-            normalizePath();
 	}
+
+        //
+        // Get rid of loop-causing constructs in the path
+        //
+        normalizePath();
     }
 	
     //

@@ -1,3 +1,8 @@
+Fri Aug 31 16:00:37 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.cc (URL): Fixed to call normalizePath() even if URL
+	is relative but with absolute path. Should fix bug #408586.
+
 Fri Aug 31 15:21:49 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.h, htdig/HTML.cc (HTML, parse, do_tag): Fixed buggy
