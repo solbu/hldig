@@ -3,22 +3,14 @@
 //
 // Implementation of Endings
 //
-// $Log: Endings.cc,v $
-// Revision 1.2  1998/10/12 02:04:00  ghutchis
-//
-// Updated Makefiles and configure variables.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: Endings.cc,v 1.2 1998/10/12 02:04:00 ghutchis Exp $";
+static char RCSid[] = "$Id: Endings.cc,v 1.3 1999/03/03 04:46:57 ghutchis Exp $";
 #endif
 
 #include "Endings.h"
 #include "htfuzzy.h"
-#include <Configuration.h>
+#include "Configuration.h"
 
 
 //*****************************************************************************
@@ -129,12 +121,12 @@ Endings::openIndex(Configuration &)
 {
     String	filename;
     filename = config["endings_word2root_db"];
-    word2root = Database::getDatabaseInstance();
+    word2root = Database::getDatabaseInstance(DB_BTREE);
     if (word2root->OpenRead(filename) == NOTOK)
 	return NOTOK;
 
     filename = config["endings_root2word_db"];
-    root2word = Database::getDatabaseInstance();
+    root2word = Database::getDatabaseInstance(DB_BTREE);
     if (root2word->OpenRead(filename) == NOTOK)
 	return NOTOK;
 

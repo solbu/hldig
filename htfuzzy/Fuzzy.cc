@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.6 1999/02/05 03:20:23 ghutchis Exp $";
+static char RCSid[] = "$Id: Fuzzy.cc,v 1.7 1999/03/03 04:46:57 ghutchis Exp $";
 #endif
 
 #include "Fuzzy.h"
@@ -101,7 +101,7 @@ Fuzzy::openIndex(Configuration &config)
     var << "_db";
     String	filename = config[var];
 
-    index = Database::getDatabaseInstance();
+    index = Database::getDatabaseInstance(DB_BTREE);
     if (index->OpenRead(filename) == NOTOK)
       {
 	delete index;
@@ -123,7 +123,7 @@ Fuzzy::writeDB(Configuration &config)
     var << "_db";
     String	filename = config[var];
 
-    index = Database::getDatabaseInstance();
+    index = Database::getDatabaseInstance(DB_BTREE);
     if (index->OpenReadWrite(filename, 0664) == NOTOK)
 	return NOTOK;
 

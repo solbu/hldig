@@ -3,10 +3,10 @@
 //
 // Implementation of Prefix
 //
-// $Id: Prefix.cc,v 1.6 1999/02/01 04:02:25 hp Exp $
+// $Id: Prefix.cc,v 1.7 1999/03/03 04:46:57 ghutchis Exp $
 //
 #if RELEASE
-static char RCSid[] = "$Id: Prefix.cc,v 1.6 1999/02/01 04:02:25 hp Exp $";
+static char RCSid[] = "$Id: Prefix.cc,v 1.7 1999/03/03 04:46:57 ghutchis Exp $";
 #endif
 
 #include "Prefix.h"
@@ -66,7 +66,7 @@ Prefix::getWords(char *w, List &words)
 	    && strcmp(prefix_suffix, w+strlen(w)-prefix_suffix_length)) 
 	return;
 
-    Database	*dbf = Database::getDatabaseInstance();
+    Database	*dbf = Database::getDatabaseInstance(DB_BTREE);
     dbf->OpenRead(config["word_db"]);
 
     int		wordCount = 0;

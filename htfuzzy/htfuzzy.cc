@@ -12,33 +12,10 @@
 // database is simply a mapping from the fuzzy key to a list of words
 // in the main word database.
 //
-// $Log: htfuzzy.cc,v $
-// Revision 1.9  1999/01/07 03:13:49  ghutchis
-// Fix minor memory leaks.
-//
-// Revision 1.8  1998/12/04 04:13:51  ghutchis
-// Use configure check to only include getopt.h when it exists.
-//
-// Revision 1.6  1998/10/12 02:04:00  ghutchis
-//
-// Updated Makefiles and configure variables.
-//
-// Revision 1.4  1998/09/18 02:38:08  ghutchis
-//
-// Bug fixes for 3.1.0b2
-//
-// Revision 1.3  1997/06/23 02:26:15  turtle
-// Added version info the usage output
-//
-// Revision 1.2  1997/03/24 04:33:19  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htfuzzy.cc,v 1.9 1999/01/07 03:13:49 ghutchis Exp $";
+static char RCSid[] = "$Id: htfuzzy.cc,v 1.10 1999/03/03 04:46:57 ghutchis Exp $";
 #endif
 
 #include "htfuzzy.h"
@@ -47,10 +24,10 @@ static char RCSid[] = "$Id: htfuzzy.cc,v 1.9 1999/01/07 03:13:49 ghutchis Exp $"
 #include "Endings.h"
 #include "Metaphone.h"
 #include "Synonym.h"
-#include <htString.h>
-#include <List.h>
-#include <Dictionary.h>
-#include <defaults.h>
+#include "htString.h"
+#include "List.h"
+#include "Dictionary.h"
+#include "defaults.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -151,7 +128,7 @@ main(int ac, char **av)
             reportError(form("Unable to read word database file '%s'\nDid you run htmerge?",
                              wordFile.get()));
         }
-	Database *worddb = Database::getDatabaseInstance();
+	Database *worddb = Database::getDatabaseInstance(DB_BTREE);
 	if (worddb->OpenRead(wordFile) == OK)
 	{
 	    //

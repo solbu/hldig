@@ -1,3 +1,26 @@
+Tue Mar  2 23:18:20 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/htdig.cc: Renamed main.cc for consistency with other programs.
+
+	* htlib/DB2_hash.h, htlib/DB2_hash.cc: Added interface to Berkeley
+	hash database format.
+
+	* htlib/Makefile.in: Use them!
+	
+	* htlib/Database.h: Define database types, allowing a choice
+	between different formats.
+
+	* htlib/Database.cc(getDatabaseInstance): Use passed type to pick
+	between subclasses. Currently only uses Hash and B-Tree formats of
+	Berkeley DB.
+
+	* htcommon/DocumentDB.cc, htfuzzy/Endings.cc,
+	htfuzzy/EndingsDB.cc, htfuzzy/Fuzzy.cc, htfuzzy/Prefix.cc,
+	htfuzzy/Substring.cc, htfuzzy/Synonym.cc, htfuzzy/htfuzzy.cc,
+	htmerge/docs.cc, htmerge/words.cc, htsearch/Display.cc,
+	htsearch/htsearch.cc: Use new form of getDatabaseInstance(),
+	currently with DB_BTREE option (for compatibility).
+
 Mon Mar  1 22:53:37 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/regex.c, htlib/striptime.c: Import new versions from

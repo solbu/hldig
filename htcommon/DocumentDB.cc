@@ -41,13 +41,13 @@ DocumentDB::~DocumentDB()
 //*****************************************************************************
 // int DocumentDB::Open(char *filename)
 //   We will attempt to open up an existing document database.  If it
-//   doesn't exist, we'll create a new one.  If we are succesfull in
+//   doesn't exist, we'll create a new one.  If we are succesful in
 //   opening the database, we need to look for our special record
 //   which contains the next document ID to use.
 //
 int DocumentDB::Open(char *filename)
 {
-    dbf = Database::getDatabaseInstance();
+    dbf = Database::getDatabaseInstance(DB_BTREE);
 	
     if (dbf->OpenReadWrite(filename, 0664) == OK)
     {
@@ -70,7 +70,7 @@ int DocumentDB::Open(char *filename)
 //
 int DocumentDB::Read(char *filename)
 {
-    dbf = Database::getDatabaseInstance();
+    dbf = Database::getDatabaseInstance(DB_BTREE);
 	
     if (dbf->OpenRead(filename) == OK)
     {

@@ -3,7 +3,7 @@
 //
 // Indexing the "doc_db" database by id-number in "doc_index".
 //
-// $Id: docs.cc,v 1.14 1999/01/31 04:25:31 ghutchis Exp $
+// $Id: docs.cc,v 1.15 1999/03/03 04:46:57 ghutchis Exp $
 //
 //
 
@@ -16,7 +16,7 @@
 void
 convertDocs(char *doc_db, char *doc_index)
 {
-    Database	*index = Database::getDatabaseInstance();
+    Database	*index = Database::getDatabaseInstance(DB_BTREE);
     int		document_count = 0;
     unsigned long docdb_size = 0;
     int		remove_unused = config.Boolean("remove_bad_urls");

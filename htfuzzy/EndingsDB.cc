@@ -3,32 +3,22 @@
 //
 // Implementation of Endings class DB related methods
 //
-// $Log: EndingsDB.cc,v $
-// Revision 1.3  1998/12/06 18:46:59  ghutchis
-// Ensure temporary files are placed in TMPDIR if it's set.
-//
-// Revision 1.2  1998/09/18 02:38:08  ghutchis
-//
-// Bug fixes for 3.1.0b2
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: EndingsDB.cc,v 1.3 1998/12/06 18:46:59 ghutchis Exp $";
+static char RCSid[] = "$Id: EndingsDB.cc,v 1.4 1999/03/03 04:46:57 ghutchis Exp $";
 #endif
 
 #include "Endings.h"
 #include "htfuzzy.h"
 #include "SuffixEntry.h"
+#include "Dictionary.h"
+#include "List.h"
+#include "Configuration.h"
 extern "C"
 {
-# include <rxposix.h>
+#include <rxposix.h>
 }
-#include <Dictionary.h>
-#include <List.h>
-#include <Configuration.h>
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>
@@ -158,8 +148,8 @@ Endings::createRoot(Dictionary &rules, char *word2root, char *root2word, char *d
     if (fl == NULL)
 	return NOTOK;
 
-    Database	*w2r = Database::getDatabaseInstance();
-    Database	*r2w = Database::getDatabaseInstance();
+    Database	*w2r = Database::getDatabaseInstance(DB_BTREE);
+    Database	*r2w = Database::getDatabaseInstance(DB_BTREE);
 
     w2r->OpenReadWrite(word2root, 0664);
     r2w->OpenReadWrite(root2word, 0664);

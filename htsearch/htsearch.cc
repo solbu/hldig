@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.26 1999/02/25 02:19:32 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.27 1999/03/03 04:46:56 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -413,6 +413,10 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		{
 		    tempWords.Add(new WeightWord("!", -1.0));
 		}
+		else if (boolean && mystrcasecmp(word.get(), "+") == 0)
+		  tempWords.Add(new WeightWord("&", -1.0));
+		else if (boolean && mystrcasecmp(word.get(), "-") == 0)
+		  tempWords.Add(new WeightWord("!", -1.0));
 		else
 		{
 		    // Add word to excerpt matching list
@@ -631,7 +635,7 @@ htsearch(char *wordfile, List &searchWords, Parser *parser)
     ResultList	*matches = new ResultList;
     if (searchWords.Count() > 0)
     {
-	Database	*dbf = Database::getDatabaseInstance();
+	Database	*dbf = Database::getDatabaseInstance(DB_BTREE);
 
 	dbf->OpenRead(wordfile);
 

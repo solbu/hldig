@@ -3,43 +3,9 @@
 //
 // Implementation of htmerge
 //
-// $Log: words.cc,v $
-// Revision 1.10  1999/01/25 04:55:54  ghutchis
-// Ignore word count by compile-time option NO_WORD_COUNT.
-//
-// Revision 1.9  1999/01/20 18:08:32  ghutchis
-// Call good_strtok with appropriate parameters (explicitly include NULL first
-// parameter, second param is char, not char *).
-//
-// Revision 1.8  1999/01/14 00:27:38  ghutchis
-// Small speed improvements.
-//
-// Revision 1.7  1999/01/07 03:13:50  ghutchis
-// Fix minor memory leaks.
-//
-// Revision 1.6  1998/12/12 17:49:38  bergolth
-// Small change so that it compiles on AIX
-//
-// Revision 1.5  1998/12/12 01:44:58  ghutchis
-// Fixed a bug where pointer, rather than strings were assigned. Silly
-// references...
-//
-// Revision 1.4  1998/12/06 18:43:31  ghutchis
-// Check for word entries that are duplicates and compact them.
-//
-// Revision 1.3  1998/12/05 00:53:24  ghutchis
-// Don't store c:1 and a:0 entries in db.wordlist to save space.
-//
-// Revision 1.2  1998/11/15 22:24:19  ghutchis
-//
-// Change \r to \n as noted by Andrew Bishop.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.10 1999/01/25 04:55:54 ghutchis Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.11 1999/03/03 04:46:58 ghutchis Exp $";
 #endif
 
 #include "htmerge.h"
@@ -52,7 +18,7 @@ void
 mergeWords(char *wordtmp, char *wordfile)
 {
     FILE	*wordlist = fopen(form("%s.new", wordtmp), "w");
-    Database	*dbf = Database::getDatabaseInstance();
+    Database	*dbf = Database::getDatabaseInstance(DB_BTREE);
     String	out;
     String	currentWord;
     int		removeBadUrls = config.Boolean("remove_bad_urls");

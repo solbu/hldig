@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.56 1999/02/25 02:29:31 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.57 1999/03/03 04:46:57 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -26,7 +26,7 @@ static char RCSid[] = "$Id: Display.cc,v 1.56 1999/02/25 02:29:31 ghutchis Exp $
 //
 Display::Display(char *indexFile, char *docFile)
 {
-    docIndex = Database::getDatabaseInstance();
+    docIndex = Database::getDatabaseInstance(DB_BTREE);
     docIndex->OpenRead(indexFile);
 
     // Check "uncompressed"/"uncoded" urls at the price of time

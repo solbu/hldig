@@ -3,27 +3,16 @@
 //
 // Implementation of Substring
 //
-// $Log: Substring.cc,v $
-// Revision 1.3  1998/08/03 16:50:39  ghutchis
-//
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.2  1997/03/24 04:33:18  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: Substring.cc,v 1.3 1998/08/03 16:50:39 ghutchis Exp $";
+static char RCSid[] = "$Id: Substring.cc,v 1.4 1999/03/03 04:46:57 ghutchis Exp $";
 #endif
 
 #include "Substring.h"
-#include <htString.h>
-#include <List.h>
-#include <StringMatch.h>
-#include <Configuration.h>
+#include "htString.h"
+#include "List.h"
+#include "StringMatch.h"
+#include "Configuration.h"
 
 extern Configuration	config;
 
@@ -59,7 +48,7 @@ Substring::getWords(char *w, List &words)
 
     match.Pattern(w);
 
-    Database	*dbf = Database::getDatabaseInstance();
+    Database	*dbf = Database::getDatabaseInstance(DB_BTREE);
     dbf->OpenRead(config["word_db"]);
 
     int		wordCount = 0;
