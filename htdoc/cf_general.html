@@ -16,11 +16,7 @@
 	</p>
 	<hr size="4" noshade>
 	<p>
-	  All programs in the ht://Dig system
-	  (<a href="htdig.html">htdig</a>, <a href="htmerge.html">htmerge</a>,
-	  <a href="htsearch.html" target="_top">htsearch</a>,
-	  <a href="htfuzzy.html">htfuzzy</a>, and
-	  <a href="htnotify.html">htnotify</a>) use a flexible configuration
+	  All programs in the ht://Dig system use a flexible configuration
 	  file. This configuration file is a plain ASCII text file. Each line in
 	  the file is either a comment or contains an attribute.
 	  Comment lines are blank lines or lines that start with a '#'.
@@ -49,14 +45,15 @@
 	</p>
 	<p>
 	  Each program only extracts the attributes it needs and hence
-	  it is most convenient to use the same configuration file with
+	  it is often convenient to use the same configuration file with
 	  all ht://Dig programs. If an attribute is specified more than
 	  once in the file, only the last one will be used.
 	</p>
 	<p>
 	  If a program needs a particular attribute and it is not in
 	  the configuration file, it will use the default value which
-	  is defined in <code>htcommon/defaults.cc</code>.
+	  is compiled into the program as defined in
+	  <code>htcommon/defaults.cc</code>.
 	</p>
 	<p>
 	  A configuration file can include another file, by using the special
@@ -77,7 +74,7 @@
 	</dl>
 	<hr size="4" noshade>
 
-	Last modified: $Date: 2000/04/11 03:18:01 $
+	Last modified: $Date: 2001/01/16 05:57:26 $
 
   </body>
 </html>
