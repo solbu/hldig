@@ -190,7 +190,7 @@ MD5Final(context)
 {
 	unsigned char bits[8];
 	unsigned int index, padLen;
-	char *digest = malloc(16);
+	unsigned char *digest = malloc(16);
 
 	/*
 	   Save number of bits 

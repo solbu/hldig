@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: dbbench.cc,v 1.10 2003/05/24 14:30:22 lha Exp $
+// $Id: dbbench.cc,v 1.11 2003/05/27 12:51:27 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -19,7 +19,7 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif /* HAVE_UNISTD_H */
-#include <fcntl.h>
+//#include <fcntl.h>	// included later, as non __STDC__ may #define open
 #include <errno.h>
 
 // If we have this, we probably want it.
@@ -30,7 +30,6 @@
 #include <malloc.h>
 #endif /* HAVE_MALLOC_H */
 #include <stdlib.h>
-#include <errno.h>
 
 /* AIX requires this to be the first thing in the file.  */
 //#ifndef __GNUC__	// Why not if g++?  Needed by g++ on Solaris 2.8
@@ -807,6 +806,8 @@ int compressone(params_t* params, unsigned char* buffin, int buffin_length) {
 
   return buffout_length > (params->page_size / 2) ? 1 : 0;
 }
+
+#include <fcntl.h>	// if included at top, db->open may have caused problems
 
 static void docompress(params_t* params)
 {

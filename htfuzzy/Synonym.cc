@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Synonym.cc,v 1.11 2002/12/30 12:42:59 lha Exp $
+// $Id: Synonym.cc,v 1.12 2003/05/27 12:51:27 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -81,7 +81,7 @@ Synonym::createDB(const HtConfiguration &config)
 
     Database	*db = Database::getDatabaseInstance(DB_HASH);
 
-    if (db->OpenReadWrite(dbFile, 0664) == NOTOK)
+    if (db->OpenReadWrite(dbFile.get(), 0664) == NOTOK)
     {
 	delete db;
 	db = 0;

@@ -8585,6 +8585,7 @@ then
   ac_compile_warnings_msg="$ac_compile_warnings_opt for C++"
 fi
 
+ac_compile_warnings_opt=
 if test -n "$CC"
 then
   if test "$GCC" = "yes"

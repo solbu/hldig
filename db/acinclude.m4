@@ -619,7 +619,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: acinclude.m4,v 1.2 2002/02/02 18:18:05 ghutchis Exp $
+dnl @version $Id: acinclude.m4,v 1.3 2003/05/27 12:51:26 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -688,7 +688,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: acinclude.m4,v 1.2 2002/02/02 18:18:05 ghutchis Exp $
+dnl @version $Id: acinclude.m4,v 1.3 2003/05/27 12:51:26 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -704,6 +704,7 @@ then
   ac_compile_warnings_msg="$ac_compile_warnings_opt for C++"
 fi
 
+ac_compile_warnings_opt=
 if test -n "$CC"
 then
   if test "$GCC" = "yes"

@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.h,v 1.4 2003/05/17 23:19:36 lha Exp $
+// $Id: WordDBPage.h,v 1.5 2003/05/27 12:51:27 lha Exp $
 //
 //
 // Access to Berkeley DB internal
@@ -35,7 +35,7 @@ extern "C"
 #include "WordKey.h"
 
 
-#define WORD_ALLIGN_TO(v,a) ( (v)%(a) ? (v+((a)-(v)%(a))) : v)
+#define WORD_ALIGN_TO(v,a) ( (v)%(a) ? (v+((a)-(v)%(a))) : v)
 #define NBITS_KEYLEN 16
 #define NBITS_DATALEN 16
 
@@ -206,7 +206,7 @@ class WordDBPage
     // allocate space (in the db page) for adding an entry to this page
     void *alloc_entry(int size)
     {
-	size=WORD_ALLIGN_TO(size,4);	
+	size=WORD_ALIGN_TO(size,4);	
 	int inp_pos=((byte *)&(pg->inp[insert_indx]))-(byte *)pg;
 	insert_pos-=size;
 	if(insert_pos<=inp_pos)
@@ -264,7 +264,8 @@ class WordDBPage
 	if(empty)
 	{
 	    if(verbose){printf("WordDBPage::insert_btikey: empty : BINTERNAL:%d datapos:%d keylen:%d size:%d alligned to:%d\n",(int)sizeof(BINTERNAL),
-			       ((byte *)&(bti.data))-((byte *)&bti),keylen,size,WORD_ALLIGN_TO(size,4));}
+			       (int)((byte *)&(bti.data))-((byte *)&bti),
+			       keylen,size,WORD_ALIGN_TO(size,4));}
 	}
 
 	BINTERNAL *btik=(BINTERNAL *)alloc_entry(size);

@@ -33,7 +33,7 @@
 // Copyright (c) 1995-2003 The ht://Dig Group
 //
 ///////////////////////////////////////////////////////////////
-// $Id: HtCookieInFileJar.cc,v 1.1 2003/01/28 11:12:43 angusgb Exp $
+// $Id: HtCookieInFileJar.cc,v 1.2 2003/05/27 12:51:27 lha Exp $
 ///////////////////////////////////////////////////////////////
 
 #ifndef __HtCookieInFileJar_H
@@ -76,7 +76,7 @@ HtCookieInFileJar& HtCookieInFileJar::operator=(const HtCookieInFileJar& rhs)
 // Loads the contents of a cookies file into memory
 int HtCookieInFileJar::Load()
 {
-	FILE *f = fopen((const char *)_filename, "r");
+	FILE *f = fopen((const char *)_filename.get(), "r");
 
 	if (f == NULL)
 		return -1;

@@ -1,3 +1,18 @@
+Tue May 27 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* {,db/}configure, {,db/}ac{local,include}.m4:
+	  Stop test for zlib from adding -I/default/path (broke SunOS cc)
+	  Fix -Wall test if CCC is g++ but CC is not gcc
+
+	* test/dbbench.cc: #include <fcntl.h> later, to avoid #define open
+	  causing problems
+
+	* includedir/synonyms: Remove trailing blank line which caused warning
+	* htnet/HtCookieInFileJar.cc,htfuzzy/Synonym.cc: .get() to stop warnings
+	* htlib/mhash_md5.c: char -> unsigned char to stop warnings
+	* test/search.cc, htword/WordDBPage.h:
+	  Casts to (int) to stop printf warnings. ALLIGN -> ALIGN
+
 Sat May 24 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* htcommon/defaults.cc: Keep more wordlist cache pages clean

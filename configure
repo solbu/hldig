@@ -1050,8 +1050,7 @@ Optional Packages:
   --with-ssl enable ssl will check /usr/local/ssl
                             /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr
 
-  --with-zlib=DIR root directory path of zlib installation defaults to
-		    /usr/local or /usr if not found in /usr/local
+  --with-zlib=DIR root directory path of zlib installation
   --without-zlib to disable zlib usage completely
   --with-apache=PATH absolute path name of apache server (default is to search httpd in
     /usr/local/apache/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin),
@@ -4616,7 +4615,7 @@ test "x$enable_libtool_lock" != xno && enable_libtool_lock=yes
 case $host in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 4619 "configure"' > conftest.$ac_ext
+  echo '#line 4618 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -5145,7 +5144,7 @@ chmod -w .
 save_CFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS -o out/conftest2.$ac_objext"
 compiler_c_o=no
-if { (eval echo configure:5148: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
+if { (eval echo configure:5147: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
   # The compiler can only warn and ignore the option if not recognized
   # So say no if there are warnings
   if test -s out/conftest.err; then
@@ -6329,7 +6328,7 @@ linux-gnu*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*)
-    echo '#line 6332 "configure"' > conftest.$ac_ext
+    echo '#line 6331 "configure"' > conftest.$ac_ext
     if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7001,7 +7000,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7004 "configure"
+#line 7003 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7099,7 +7098,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7102 "configure"
+#line 7101 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10287,23 +10286,25 @@ echo $ECHO_N "checking if zlib is wanted... $ECHO_C" >&6
 # Check whether --with-zlib or --without-zlib was given.
 if test "${with_zlib+set}" = set; then
   withval="$with_zlib"
-  if test "$withval" != no ; then
-  echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-  ZLIB_HOME="$withval"
-else
+  if test "$withval" = no ; then
   echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6
+else
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+  if test "$withval" = yes ; then
+    ZLIB_HOME="default path"
+  else
+    LDFLAGS="$LDFLAGS -L$withval/lib"
+    CPPFLAGS="$CPPFLAGS -I$withval/include"
+    ZLIB_HOME="$withval"
+  fi
 fi
 else
 
 echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-ZLIB_HOME=/usr/local
-if test ! -f "${ZLIB_HOME}/include/zlib.h"
-then
-	ZLIB_HOME=/usr
-fi
+ZLIB_HOME="default path"
 
 fi;
 
@@ -10312,79 +10313,17 @@ fi;
 #
 if test -n "${ZLIB_HOME}"
 then
-	ZLIB_OLD_LDFLAGS=$LDFLAGS
-	ZLIB_OLD_CPPFLAGS=$LDFLAGS
-	LDFLAGS="$LDFLAGS -L${ZLIB_HOME}/lib"
-	CPPFLAGS="$CPPFLAGS -I${ZLIB_HOME}/include"
 
 
-        ac_ext=c
+    ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-	echo "$as_me:$LINENO: checking for inflateEnd in -lz" >&5
-echo $ECHO_N "checking for inflateEnd in -lz... $ECHO_C" >&6
-if test "${ac_cv_lib_z_inflateEnd+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lz  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char inflateEnd ();
-int
-main ()
-{
-inflateEnd ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_z_inflateEnd=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_lib_z_inflateEnd=no
-fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_z_inflateEnd" >&5
-echo "${ECHO_T}$ac_cv_lib_z_inflateEnd" >&6
-if test $ac_cv_lib_z_inflateEnd = yes; then
-  zlib_cv_libz=yes
-else
-  zlib_cv_libz=no
-fi
-
-        if test "${ac_cv_header_zlib_h+set}" = set; then
+    echo "$as_me:$LINENO: checking for zlib in $ZLIB_HOME" >&5
+echo $ECHO_N "checking for zlib in $ZLIB_HOME... $ECHO_C" >&6
+    if test "${ac_cv_header_zlib_h+set}" = set; then
   echo "$as_me:$LINENO: checking for zlib.h" >&5
 echo $ECHO_N "checking for zlib.h... $ECHO_C" >&6
 if test "${ac_cv_header_zlib_h+set}" = set; then
@@ -10516,21 +10455,11 @@ fi
 if test $ac_cv_header_zlib_h = yes; then
   zlib_cv_zlib_h=yes
 else
-  zlib_cvs_zlib_h=no
+  zlib_cv_zlib_h=no
 fi
 
 
-        ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-	if test "$zlib_cv_libz" = "yes" -a "$zlib_cv_zlib_h" = "yes"
-	then
-		#
-		# If both library and header were found, use them
-		#
+        if test "$zlib_cv_zlib_h" = yes; then
 
 echo "$as_me:$LINENO: checking for inflateEnd in -lz" >&5
 echo $ECHO_N "checking for inflateEnd in -lz... $ECHO_C" >&6
@@ -10595,24 +10524,22 @@ _ACEOF
 
 fi
 
-		echo "$as_me:$LINENO: checking zlib in ${ZLIB_HOME}" >&5
-echo $ECHO_N "checking zlib in ${ZLIB_HOME}... $ECHO_C" >&6
-		echo "$as_me:$LINENO: result: ok" >&5
-echo "${ECHO_T}ok" >&6
-	else
-		#
-		# If either header or library was not found, revert and bomb
-		#
-		echo "$as_me:$LINENO: checking zlib in ${ZLIB_HOME}" >&5
-echo $ECHO_N "checking zlib in ${ZLIB_HOME}... $ECHO_C" >&6
-		LDFLAGS="$ZLIB_OLD_LDFLAGS"
-		CPPFLAGS="$ZLIB_OLD_CPPFLAGS"
-		echo "$as_me:$LINENO: result: failed" >&5
-echo "${ECHO_T}failed" >&6
-		{ { echo "$as_me:$LINENO: error: either specify a valid zlib installation with --with-zlib=DIR or disable zlib usage with --without-zlib" >&5
-echo "$as_me: error: either specify a valid zlib installation with --with-zlib=DIR or disable zlib usage with --without-zlib" >&2;}
+    fi
+    if test "${ac_cv_lib_z_inflateEnd:+yes}" != yes
+    then
+	#
+	# If either header or library was not found, bomb
+	#
+	{ { echo "$as_me:$LINENO: error: Either specify a valid zlib installation with --with-zlib=DIR or disable zlib   usage with --without-zlib." >&5
+echo "$as_me: error: Either specify a valid zlib installation with --with-zlib=DIR or disable zlib   usage with --without-zlib." >&2;}
    { (exit 1); exit 1; }; }
-	fi
+    fi
+    ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
 fi
 
 
@@ -10839,6 +10766,23 @@ ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+if test -n $CXX; then
+   echo "$as_me:$LINENO: checking Checking if -Wno-deprecated required" >&5
+echo $ECHO_N "checking Checking if -Wno-deprecated required... $ECHO_C" >&6
+   cat <<ACEOF >conftest.$ac_ext
+#include <fstream.h>
+ACEOF
+    if $CXX -c $CXXFLAGS conftest.$ac_ext 2>&1 | grep deprecated >/dev/null; then
+        CXXFLAGS="$CXXFLAGS -Wno-deprecated"
+        echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+    else
+        echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+    fi
+fi
 
 ac_ext=cc
 ac_cpp='$CXXCPP $CPPFLAGS'
@@ -11069,22 +11013,6 @@ ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-if test -n $CXX; then
-   echo "$as_me:$LINENO: checking Checking if -Wno-deprecated required" >&5
-echo $ECHO_N "checking Checking if -Wno-deprecated required... $ECHO_C" >&6
-   cat <<ACEOF >conftest.$ac_ext
-#include <fstream.h>
-ACEOF
-    if $CXX -c $CXXFLAGS conftest.$ac_ext 2>&1 | grep deprecated >/dev/null; then
-	CXXFLAGS="$CXXFLAGS -Wno-deprecated"
-	echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-    else
-	echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-    fi
-fi
 
 
 
@@ -14602,7 +14530,7 @@ fi;
     if test -z "$APACHE" ; then
       for ac_prog in httpd apache
 do
-  # Extract the first word of "httpd", so it can be a program name with args.
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
@@ -14655,8 +14583,9 @@ echo "$as_me: error: \"apache server executable not found\"" >&2;}
     #
     # Collect apache version number. If for nothing else, this
     # guaranties that httpd is a working apache executable.
+    # (Want at least 3 chars in version, to skip  "(Mandrake Linux/4mdk)")
     #
-        APACHE_READABLE_VERSION=`$APACHE -v | grep 'Server version' | sed -e 's;.*/\([0-9\.][0-9\.]*\).*;\1;'`
+        APACHE_READABLE_VERSION=`$APACHE -v | grep 'Server version' | sed -e 's;.*/\([0-9\.][0-9\.][0-9\.][0-9\.]*\).*;\1;'`
         APACHE_VERSION=`echo $APACHE_READABLE_VERSION | sed -e 's/\.//g'`
     if test -z "$APACHE_VERSION" ; then
 	{ { echo "$as_me:$LINENO: error: \"could not determine apache version number\"" >&5

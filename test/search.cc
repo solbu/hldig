@@ -42,7 +42,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: search.cc,v 1.4 2003/05/22 11:49:13 lha Exp $
+// $Id: search.cc,v 1.5 2003/05/27 12:51:27 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -513,7 +513,7 @@ private:
 int WordExclude::Initialize(unsigned int length)
 {
   if(length > WORD_EXCLUDE_MAX) {
-    fprintf(stderr, "WordExclude::Initialize: length must be < %d\n", WORD_EXCLUDE_MAX);
+    fprintf(stderr, "WordExclude::Initialize: length must be < %d\n", (int)WORD_EXCLUDE_MAX);
     return NOTOK;
   }
 

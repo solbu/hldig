@@ -10,10 +10,13 @@ CHECKLIST FOR 3.2.0b5:
     - Mandrake 8.2, gcc 3.2 (lha, 21 May)
     - FreeBSD 4.6, gcc 2.95.3 (lha, 23 May)
     - Debian, Linux kernel 2.2.19, gcc 2.95.4 (lha, 23 May)
+    - SunOS 5.8 = Solaris 2.8, gcc 3.1 (lha, 25 May)
   Partly tested:
-    - SunOS 5.8 = Solaris 2.8, gcc 3.1 (lha.  Makes check.  Big dig not tested)
     - SunOS 5.8 = Solaris 2.8, Sun cc with g++ 3.1 (lha. Compiles, fails check)
+    - RedHat 7.3 (lha.  Makes check minus apache.  Digs small htdig.org. 25 May)
+    - Alpha Debian (lha. Makes check minus apache. Digs small htdig.org. 25 May)
   To be tested:
+    - HP-UX 10.20, gcc 2.8.1 (Jesse)
     - RedHat anyone?
     - OS X anyone?
 * Latin-encodings (Gilles)
