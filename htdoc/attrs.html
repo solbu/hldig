@@ -903,7 +903,9 @@
 	taken eight at a time. For each octuple of strings specified in
 	build_select_lists, the elements have the following meaning: 
 	<ol>
-	   <li>the name of the template variable to be defined as a list 
+	   <li>the name of the template variable to be defined as a list,
+	   optionally followed by a comma and the type of list, and
+	   optional formatting codes
 	   <li>the input parameter name that the select list will set 
 	   <li>the name of the user-defined attribute containing the
 	   name list
@@ -933,8 +935,8 @@
 				    
 		MATCH_LIST matchesperpage matches_per_page_list \<br>
 				1 1 1 matches_per_page "Previous Amount" \<br>
-		RESTRICT_LIST restrict restrict_names 2 1 2 restrict "" \<br>
-		FORMAT_LIST format template_map 3 2 1 template_name ""
+		RESTRICT_LIST,multiple restrict restrict_names 2 1 2 restrict "" \<br>
+		FORMAT_LIST,radio format template_map 3 2 1 template_name ""
 				</td>
 			  </tr>
 			</table>
@@ -11662,6 +11664,6 @@ http://www.htdig.org/
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: Sun May  7 04:03:00 CEST 2000
+		Last modified: Wed Aug  2 11:43:43 CDT 2000
   </body>
 </html>

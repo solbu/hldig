@@ -1,3 +1,12 @@
+Wed Aug  2 11:44:11 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (setVariables), htcommon/defaults.cc: Enhanced
+	build_select_lists attribute, to generate not only single-choice
+	select lists, but also select multiple lists, radio button lists
+	and checkbox lists. Added explanation and examples in documentation.
+	* htdoc/hts_selectors.html: Added detailed explanation of new feature.
+	* htdoc/attrs.html, cf_by{name,prog}.html: reran cf_generate.pl
+
 Tue Aug  1 21:50:22 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/ParseTree.cc (Parse): Fix problems with token

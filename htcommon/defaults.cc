@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.52 2000/05/06 20:46:37 loic Exp $
+// $Id: defaults.cc,v 1.64.2.53 2000/08/02 06:45:59 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -154,8 +154,8 @@ ConfigDefaults	defaults[] =
 	"quoted string list", "htsearch", "", "3.2.0b1", "Searching:UI", "build_select_lists:
 		MATCH_LIST matchesperpage matches_per_page_list \\<br>
 				1 1 1 matches_per_page \"Previous Amount\" \\<br>
-		RESTRICT_LIST restrict restrict_names 2 1 2 restrict \"\" \\<br>
-		FORMAT_LIST format template_map 3 2 1 template_name \"\"", "
+		RESTRICT_LIST,multiple restrict restrict_names 2 1 2 restrict \"\" \\<br>
+		FORMAT_LIST,radio format template_map 3 2 1 template_name \"\"", "
 	This list allows you to define any htsearch input parameter as
 	a select list for use in templates, provided you also define
 	the corresponding name list attribute which enumerates all the
@@ -168,7 +168,9 @@ ConfigDefaults	defaults[] =
 	taken eight at a time. For each octuple of strings specified in
 	build_select_lists, the elements have the following meaning: 
 	<ol>
-	   <li>the name of the template variable to be defined as a list 
+	   <li>the name of the template variable to be defined as a list,
+	   optionally followed by a comma and the type of list, and
+	   optional formatting codes
 	   <li>the input parameter name that the select list will set 
 	   <li>the name of the user-defined attribute containing the
 	   name list
