@@ -7,14 +7,14 @@
 //
 
 #include "DocumentDB.h"
+#include "Database.h"
+#include "HtURLCodec.h"
+#include "IntObject.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <unistd.h>
 #include <fstream.h>
-#include "Database.h"
-#include "HtURLCodec.h"
-#include "IntObject.h"
 
 
 //*****************************************************************************
@@ -45,22 +45,28 @@ DocumentDB::~DocumentDB()
 
 
 //*****************************************************************************
-// int DocumentDB::Open(char *filename, char *indexname)
+// int DocumentDB::Open(char *filename, char *indexname, char *headname)
 //   We will attempt to open up an existing document database.  If it
 //   doesn't exist, we'll create a new one.  If we are succesful in
 //   opening the database, we need to look for our special record
 //   which contains the next document ID to use.
 //    There may also be an URL -> DocID index database to take
-//   care of.
+//   care of, as well as a DocID -> DocHead excerpt database.
 //
-int DocumentDB::Open(char *filename, char *indexname)
+int DocumentDB::Open(char *filename, char *indexname, char *headname)
 {
     dbf = 0;
     i_dbf = 0;
+    h_dbf = 0;
 
     i_dbf = Database::getDatabaseInstance(DB_HASH);
 
     if (i_dbf->OpenReadWrite(indexname, 0664) != OK)
+	return NOTOK;
+
+    h_dbf = Database::getDatabaseInstance(DB_HASH);
+
+    if (h_dbf->OpenReadWrite(headname, 0664) != OK)
 	return NOTOK;
 
     dbf = Database::getDatabaseInstance(DB_HASH);
@@ -85,14 +91,15 @@ int DocumentDB::Open(char *filename, char *indexname)
 
 
 //*****************************************************************************
-// int DocumentDB::Read(char *filename, char *indexname)
+// int DocumentDB::Read(char *filename, char *indexname, char *headname)
 //   We will attempt to open up an existing document database,
-//   and accompanying index database.
+//   and accompanying index database and excerpt database
 //
-int DocumentDB::Read(char *filename, char *indexname)
+int DocumentDB::Read(char *filename, char *indexname, char *headname)
 {
     dbf = 0;
     i_dbf = 0;
+    h_dbf = 0;
 
     if (indexname)
     {
@@ -101,6 +108,14 @@ int DocumentDB::Read(char *filename, char *indexname)
 	if (i_dbf->OpenRead(indexname) != OK)
 	    return NOTOK;
     }
+
+    if (headname)
+      {
+	h_dbf = Database::getDatabaseInstance(DB_HASH);
+	
+	if (h_dbf->OpenRead(headname) != OK)
+	  return NOTOK;
+      }
 
     dbf = Database::getDatabaseInstance(DB_HASH);
 	
@@ -138,6 +153,12 @@ int DocumentDB::Close()
 	delete i_dbf;
 	i_dbf = 0;
     }
+    if (h_dbf)
+      {
+	h_dbf->Close();
+	delete h_dbf;
+	h_dbf = 0;
+      }
 
     dbf->Close();
     delete dbf;
@@ -172,8 +193,39 @@ int DocumentDB::Add(DocumentRef &doc)
     else
       // If there was no index when we write, something is wrong.
       return NOTOK;
+
+    if (h_dbf)
+      {
+	// We'll eventually need to deal with compression *FIX*
+	temp = doc.DocHead();
+
+	String key((char *) &docID, sizeof docID);
+	h_dbf->Put(key, temp);
+      }
+    else
+      // If there was no excerpt index when we write, something is also wrong.
+      return NOTOK;
 }
 
+
+//*****************************************************************************
+// int DocumentDB::ReadExcerpt(DocumentRef &ref)
+// We will attempt to access the excerpt for this ref
+//
+int DocumentDB::ReadExcerpt(DocumentRef &ref)
+{
+    String	data;
+    String	key((char *) &(ref->docID()), sizeof ref->docID());
+
+    if (h_dbf)
+      return NOTOK;
+    if (h_dbf->Get(key, data) == NOTOK)
+      return NOTOK;
+
+    ref->DocHead(data);
+
+    return OK;
+}
 
 //*****************************************************************************
 // DocumentRef *DocumentDB::operator [] (int docID)
@@ -250,6 +302,9 @@ int DocumentDB::Delete(int docID)
 	&& (! myTryUncoded || i_dbf->Delete(url) == NOTOK))
       return 0;
   
+    if (h_dbf == 0 || h_dbf->Delete(key) == NOTOK)
+      return NOTOK;
+
     return dbf->Delete(key);
 }
 
@@ -300,6 +355,11 @@ int DocumentDB::CreateSearchDB(char *filename)
 	{
 	    ref = new DocumentRef;
 	    ref->Deserialize(data);
+	    if (h_dbf)
+	      {
+		h_dbf->Get(docKey,data);
+		ref->DocHead(data);
+	      }
 	    fprintf(fl, "%d", ref->DocID());
 	    fprintf(fl, "\tu:%s", ref->DocURL());
 	    fprintf(fl, "\tt:%s", ref->DocTitle());
