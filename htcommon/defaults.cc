@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.54 1999/07/11 23:05:13 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.55 1999/07/19 01:57:55 ghutchis Exp $";
 #endif
 
 #include "Configuration.h"
@@ -58,12 +58,7 @@ ConfigDefaults	defaults[] =
     {"exclude_urls",			"/cgi-bin/ .cgi"},
     {"external_parsers",		""},
     {"extra_word_characters",		""},
-    {"heading_factor_1",		"5"},
-    {"heading_factor_2",		"4"},
-    {"heading_factor_3",		"3"},
-    {"heading_factor_4",		"1"},
-    {"heading_factor_5",		"1"},
-    {"heading_factor_6",		"0"},
+    {"heading_factor",			"5"},
     {"htnotify_sender",			"webmaster@www"},
     {"http_proxy",			""},
     {"http_proxy_exclude",		""},
@@ -144,9 +139,10 @@ ConfigDefaults	defaults[] =
     {"translate_amp",                   "false"},
     {"translate_lt_gt",                 "false"},
     {"translate_quot",                  "false"},
+    {"url_factor",			"2"},
     {"url_list",			"${database_base}.urls"},
-    {"url_part_aliases",                ""},
     {"url_log",				"${database_base}.log"},
+    {"url_part_aliases",                ""},
     {"uncoded_db_compatible",		"true"},
     {"use_doc_date",			"false"},
     {"use_star_image",			"true"},
