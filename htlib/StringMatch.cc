@@ -6,6 +6,10 @@
 // Implementation of StringMatch
 //
 // $Log: StringMatch.cc,v $
+// Revision 1.5  1999/01/20 04:48:40  ghutchis
+// Fix bugs with clobbering multi-state matches and non-greedy behavior,
+// contributed by Hans-Peter Nilsson.
+//
 // Revision 1.4  1998/12/02 02:45:58  ghutchis
 //
 // Added fix from Christian Schneider <cschneid@relog.ch>, discovered from
@@ -25,7 +29,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: StringMatch.cc,v 1.4 1998/12/02 02:45:58 ghutchis Exp $";
+static char RCSid[] = "$Id: StringMatch.cc,v 1.5 1999/01/20 04:48:40 ghutchis Exp $";
 #endif
 
 #include "StringMatch.h"
@@ -139,6 +143,7 @@ StringMatch::Pattern(char *pattern)
 	else
 	{
 	    previousValue = table[chr][state];
+	    previousState = state;
 	    if (previousValue)
 	    {
 		if (previousValue & FINAL)
@@ -150,7 +155,6 @@ StringMatch::Pattern(char *pattern)
 		    else
 		    {
 			table[chr][state] |= ++totalStates;
-			previousState = state;
 			state = totalStates;
 		    }
 		}
@@ -162,7 +166,6 @@ StringMatch::Pattern(char *pattern)
 	    else
 	    {
 		table[chr][state] = ++totalStates;
-		previousState = state;
 		state = totalStates;
 	    }
 	}
@@ -211,6 +214,10 @@ int StringMatch::FindFirst(char *string, int &which, int &length)
 	    //
 	    if (state)
 	    {
+		// But we may already have a match, and are just being greedy.
+		if (which != -1)
+		    return start_pos;
+   
 		pos = start_pos + 1;
 	    }
 	    else
@@ -227,10 +234,19 @@ int StringMatch::FindFirst(char *string, int &which, int &length)
 	    //
 	    which = ((state & MATCH_INDEX_MASK) >> INDEX_SHIFT) - 1;
 	    length = pos - start_pos + 1;
-	    return start_pos;
+	    state &= STATE_MASK;
+
+	    // Continue to find the longest, if there is one.
+	    if (state == 0)
+		return start_pos;
 	}
 	pos++;
     }
+
+    // Maybe we were too greedy.
+    if (which != -1)
+	return start_pos;
+
     return -1;
 }
 
@@ -265,6 +281,10 @@ int StringMatch::Compare(char *string, int &which, int &length)
 	}
 	else
 	{
+	    // We may already have a match, and are just being greedy.
+	    if (which != -1)
+		return 1;
+   
 	    return 0;
 	}
 	state = new_state;
@@ -275,10 +295,19 @@ int StringMatch::Compare(char *string, int &which, int &length)
 	    //
 	    which = ((state & MATCH_INDEX_MASK) >> INDEX_SHIFT) - 1;
 	    length = pos - start_pos + 1;
-	    return 1;
+
+	    // Continue to find the longest, if there is one.
+	    state &= STATE_MASK;
+	    if (state == 0)
+		return 1;
 	}
 	pos++;
     }
+
+    // Maybe we were too greedy.
+    if (which != -1)
+	return 1;
+
     return 0;
 }
 
