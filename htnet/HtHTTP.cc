@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.22 2000/10/20 03:40:57 ghutchis Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.23 2000/12/17 19:00:08 angus Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -970,7 +970,8 @@ int HtHTTP::ReadChunkedBody()
    _response._contents.trunc();	// Initialize the string
 
    // Read chunk-size and CRLF
-   _connection.Read_Line(ChunkHeader);
+   _connection.Read_Line(ChunkHeader, "\r\n");
+
    sscanf ((char *)ChunkHeader, "%x", &chunk_size);
 
    if (debug>4)
@@ -1009,10 +1010,11 @@ int HtHTTP::ReadChunkedBody()
      //       return -1;
 
       // Read CRLF - to be ignored
-      _connection.Read_Line(ChunkHeader);
+      _connection.Read_Line(ChunkHeader, "\r\n");
 
       // Read chunk-size and CRLF
-      _connection.Read_Line(ChunkHeader);
+      _connection.Read_Line(ChunkHeader, "\r\n");
+
       sscanf ((char *)ChunkHeader, "%x", &chunk_size);
 
       if (debug>4)

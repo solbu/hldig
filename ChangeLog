@@ -1,3 +1,8 @@
+Sun Dec 06 19:46:15 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htnet/HtHTTP.cc: Fixed bug for Read_Line function call in
+	ReadChunkedBody method. Many thanks to Robert LaFerla. ;-)
+
 Tue Dec 12 13:24:49 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/ExternalParser.cc (parse): Fixed to properly handle binary
