@@ -1,9 +1,12 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.4 1998/10/17 14:15:57 ghutchis Exp $
+// $Id: Display.h,v 1.5 1998/12/12 01:45:29 ghutchis Exp $
 //
 // $Log: Display.h,v $
+// Revision 1.5  1998/12/12 01:45:29  ghutchis
+// Added a patch from Gilles allowing CGI environment variables in templates.
+//
 // Revision 1.4  1998/10/17 14:15:57  ghutchis
 //
 // Added variable CURRENT as the number of the current match, adapted from a
@@ -158,6 +161,7 @@ protected:
     int			includeURL(char *);
     String		*readFile(char *);
     void		expandVariables(char *);
+    void		outputVariable(char *);
     String		*excerpt(DocumentRef *ref, char *url = 0);
     char		*hilight(char *, char *);
     void		setupImages();

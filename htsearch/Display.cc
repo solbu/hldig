@@ -4,6 +4,9 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.23  1998/12/12 01:45:29  ghutchis
+// Added a patch from Gilles allowing CGI environment variables in templates.
+//
 // Revision 1.22  1998/11/22 19:16:13  ghutchis
 //
 // Adjust date_factor and backlink_factor rankings to produce better results,
@@ -93,7 +96,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.22 1998/11/22 19:16:13 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.23 1998/12/12 01:45:29 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -669,7 +672,6 @@ Display::expandVariables(char *str)
 {
     int		state = 0;
     String	var = "";
-    String	*temp;
 
     while (str && *str)
     {
@@ -692,9 +694,7 @@ Display::expandVariables(char *str)
 		// We have a complete variable in var. Look it up and
 		// see if we can find a good replacement for it.
 		//
-		temp = (String *) vars[var];
-		if (temp)
-		    cout << *temp;
+		outputVariable(var);
 		var = "";
 		if (*str == '$')
 		    state = 3;
@@ -741,10 +741,8 @@ Display::expandVariables(char *str)
 		// We have a complete variable in var. Look it up and
 		// see if we can find a good replacement for it.
 		//
-		temp = (String *) vars[var];
-		if (temp)
-		    cout << *temp;
-		var = 0;
+		outputVariable(var);
+		var = "";
 		if (*str == '(')
 		    state = 4;
 		else if (isalpha(*str) || *str == '_')
@@ -765,9 +763,28 @@ Display::expandVariables(char *str)
 	// put a variable together.  Since we now have a complete
 	// variable, we will look up the value for it.
 	//
-	temp = (String *) vars[var];
-	if (temp)
-	    cout << *temp;
+	outputVariable(var);
+    }
+}
+
+//*****************************************************************************
+void
+Display::outputVariable(char *var)
+{
+    String	*temp;
+    char	*ev;
+
+    // We have a complete variable name in var. Look it up and
+    // see if we can find a good replacement for it, either in our
+    // vars dictionary or in the environment variables.
+    temp = (String *) vars[var];
+    if (temp)
+	cout << *temp;
+    else
+    {
+	ev = getenv(var);
+	if (ev)
+	    cout << ev;
     }
 }
 
