@@ -412,7 +412,7 @@ private:
 // Decode integer found in <from> using <from_size> bytes. The integer starts at <lowbits> bit
 // in the first byte and occupies a total of <bits> bits. The resulting integer is stored in *<top>
 //
-inline int WordKey::UnpackNumber(const unsigned char* from, const int from_size, W\ordKeyNum& to, int lowbits, int bits)
+inline int WordKey::UnpackNumber(const unsigned char* from, const int from_size, WordKeyNum& to, int lowbits, int bits)
 {
   WordKeyNum to = 0;
 
