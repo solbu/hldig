@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.4 1999/07/03 03:50:33 ghutchis Exp $
+// $Id: Transport.h,v 1.5 1999/07/03 20:55:58 ghutchis Exp $
 //
 //
 
@@ -181,7 +181,7 @@ class Transport : public Object
    
    // Write a message
    virtual int ConnectionWrite(char *cmd)
-      { _connection.write(cmd); }
+      { return _connection.write(cmd); }
 
 
    // Assign the timeout to the connection (returns the old value)
