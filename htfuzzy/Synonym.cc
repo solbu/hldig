@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Synonym.cc,v 1.3.2.2 1999/03/31 21:25:12 grdetil Exp $";
+static char RCSid[] = "$Id: Synonym.cc,v 1.3.2.3 2001/11/20 22:42:25 grdetil Exp $";
 #endif
 
 #include "Synonym.h"
@@ -74,6 +74,16 @@ Synonym::createDB(Configuration &config)
     while (fgets(input, sizeof(input), fl))
     {
 	StringList	sl(input, " \t\r\n");
+	if (sl.Count() < 2)
+	{
+	    if (debug)
+	    {
+		cout << "htfuzzy/synonyms: Rejected line with less than 2 words: "
+		     << input << endl;
+		cout.flush();
+	    }
+	    continue;
+	}
 	for (int i = 0; i < sl.Count(); i++)
 	{
 	    data = 0;
