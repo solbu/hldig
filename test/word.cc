@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.12 1999/10/01 15:41:12 loic Exp $
+// $Id: word.cc,v 1.13 1999/10/05 16:03:32 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -202,6 +202,37 @@ static void dolist(params_t*)
     }
   }
   //
+  // Print all records as sorted within Berkeley DB with number
+  // of occurences.
+  //
+  if(verbose) {
+    WordList words(config);
+    words.Open(config["word_db"], O_RDWR);
+
+    List *result = words.Words();
+    if(result == 0) {
+      fprintf(stderr, "dolist: getting all words failed\n");
+      exit(1);
+    }
+    result->Start_Get();
+    int count = 0;
+    String* found;
+    while((found = (String*)result->Get_Next())) {
+      unsigned int noccurence;
+      WordKey key;
+      key.SetWord(*found);
+      words.Noccurence(key, noccurence);
+      cerr << *found << " (" << noccurence << ")\n";
+      count++;
+    }
+    if(count != 8) {
+      fprintf(stderr, "dolist: getting all words, got %d matches instead of 8\n", count);
+      exit(1);
+    }
+
+    delete result;
+  }
+  //
   // Search all occurences of 'the'
   //
   {
@@ -211,6 +242,14 @@ static void dolist(params_t*)
     WordReference wordRef;
     wordRef.Key().SetWord("the");
 
+    unsigned int noccurence;
+    if(words.Noccurence(wordRef.Key(), noccurence) != OK) {
+      fprintf(stderr, "dolist: get ref count of 'the' failed\n");
+      exit(1);
+    } else if(noccurence != 2) {
+      fprintf(stderr, "dolist: get ref count of 'the' failed, got %d instead of 2\n", noccurence);
+      exit(1);
+    }
     List *result = words[wordRef];
     result->Start_Get();
     int count = 0;
@@ -220,7 +259,7 @@ static void dolist(params_t*)
 	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (const char*)wordRef.Key().GetWord(), (const char*)found->Key().GetWord());
 	  exit(1);
 	}
-	if(verbose) cerr << found << "\n";
+	if(verbose) cerr << *found << "\n";
 	count++;
     }
     if(count != 2) {
@@ -251,6 +290,15 @@ static void dolist(params_t*)
       exit(1);
     }
     delete result;
+
+    unsigned int noccurence;
+    if(words.Noccurence(wordRef.Key(), noccurence) != OK) {
+      fprintf(stderr, "dolist: get ref count of 'thy' failed\n");
+      exit(1);
+    } else if(noccurence != 0) {
+      fprintf(stderr, "dolist: get ref count of 'thy' failed, got %d instead of 0\n", noccurence);
+      exit(1);
+    }
   }
   //
   // Delete all words in document 5 (only one word : jumps)
@@ -275,6 +323,15 @@ static void dolist(params_t*)
       exit(1);
     }
     delete result;
+
+    unsigned int noccurence;
+    if(words.Noccurence(wordRef.Key(), noccurence) != OK) {
+      fprintf(stderr, "dolist: get ref count of 'jumps' failed\n");
+      exit(1);
+    } else if(noccurence != 0) {
+      fprintf(stderr, "dolist: get ref count of 'jumps' failed, got %d instead of 0\n", noccurence);
+      exit(1);
+    }
   }
 }
 
@@ -295,21 +352,33 @@ static void dokey(params_t* params)
   for(int i = 0; i < info.nfields; i++) {
     if(verbose > 1) fprintf(stderr, "%s\t=\t", info.fields[i].name);
     switch(info.fields[i].type) {
-    case WORD_ISA_pool_String:
+    case WORD_ISA_String:
       {
-	word.Set("Test string", info.fields[i].index);
-	String tmp;
-	if(verbose > 1) fprintf(stderr, "%s", word.Get(tmp, info.fields[i].index).get());
+	word.SetWord("Test string");
+	if(verbose > 1) fprintf(stderr, "%s", word.GetWord().get());
       }
       break;
-    case WORD_ISA_pool_unsigned_int:
-    case WORD_ISA_pool_unsigned_short:
-    case WORD_ISA_pool_unsigned_char:
-      {
-	word.Set(0x12579ade & WORD_BIT_MASK(info.fields[i].bits), info.fields[i].index);
-	if(verbose > 1) fprintf(stderr, "0x%0x", word.Get(0, info.fields[i].index));
-      }
+
+#define STATEMENT(type) \
+    case WORD_ISA_##type: \
+      { \
+	word.Set##type(0x12579ade & WORD_BIT_MASK(info.fields[i].bits), info.fields[i].index); \
+	if(verbose > 1) fprintf(stderr, "0x%0x", word.Get##type(info.fields[i].index)); \
+      } \
       break;
+
+#ifdef WORD_HAVE_TypeA
+STATEMENT(TypeA)
+#endif /* WORD_HAVE_TypeA */
+#ifdef WORD_HAVE_TypeB
+STATEMENT(TypeB)
+#endif /* WORD_HAVE_TypeB */
+#ifdef WORD_HAVE_TypeC
+STATEMENT(TypeC)
+#endif /* WORD_HAVE_TypeC */
+
+#undef STATEMENT
+
     }
     if(verbose > 1) fprintf(stderr, "\n");
   }
@@ -334,24 +403,35 @@ static void dokey(params_t* params)
   WordKey other_word;
   other_word.Unpack(packed);
 
-  for(int i = 0; i < info.nfields; i++) {
-    if(verbose > 1) fprintf(stderr, "%s\t=\t", info.fields[i].name);
-    switch(info.fields[i].type) {
-    case WORD_ISA_pool_String:
-      {
-	String tmp;
-	if(verbose > 1) fprintf(stderr, "%s", other_word.Get(tmp, info.fields[i].index).get());
+  if(verbose > 1) {
+    for(int i = 0; i < info.nfields; i++) {
+      fprintf(stderr, "%s\t=\t", info.fields[i].name);
+      switch(info.fields[i].type) {
+      case WORD_ISA_String:
+	fprintf(stderr, "%s", (const char*)other_word.GetWord());
+	break;
+#define STATEMENT(type) \
+      case WORD_ISA_##type: \
+        { \
+	  fprintf(stderr, "0x%0x", other_word.Get##type(info.fields[i].index)); \
+        } \
+        break;
+
+#ifdef WORD_HAVE_TypeA
+	STATEMENT(TypeA)
+#endif /* WORD_HAVE_TypeA */
+#ifdef WORD_HAVE_TypeB
+	STATEMENT(TypeB)
+#endif /* WORD_HAVE_TypeB */
+#ifdef WORD_HAVE_TypeC
+	STATEMENT(TypeC)
+#endif /* WORD_HAVE_TypeC */
+
+#undef STATEMENT
+
       }
-      break;
-    case WORD_ISA_pool_unsigned_int:
-    case WORD_ISA_pool_unsigned_short:
-    case WORD_ISA_pool_unsigned_char:
-      {
-	if(verbose > 1) fprintf(stderr, "0x%0x", other_word.Get(0, info.fields[i].index));
-      }
-      break;
+      fprintf(stderr, "\n");
     }
-    if(verbose > 1) fprintf(stderr, "\n");
   }
 
   //
@@ -360,6 +440,7 @@ static void dokey(params_t* params)
   //
   if(!word.PackEqual(other_word)) {
     fprintf(stderr, "dokey: %s not equal (object compare)\n", params->word_desc);
+    exit(1);
   }
 
   //
@@ -376,60 +457,53 @@ static void dokey(params_t* params)
   //
   if(WordKey::Compare(packed, other_packed) != 0) {
     fprintf(stderr, "dokey: %s not equal (fast compare)\n", params->word_desc);
+    exit(1);
   }
 
   //
   // Add one char to the word, they must not compare equal and
   // the difference must be minus one.
   //
-  {
-    String tmp = other_word.Get(String(""), info.nfields - 1);
-    tmp.append("a");
-    other_word.Set(tmp, info.nfields - 1);
-  }
+  other_word.GetWord().append("a");
   other_word.Pack(other_packed);
   {
     int ret;
     if((ret = WordKey::Compare(packed, other_packed)) != -1) {
       fprintf(stderr, "dokey: %s different length, expected -1 got %d\n", params->word_desc, ret);
+      exit(1);
     }
   }
-  {
-    String tmp("Test string");
-    other_word.Set(tmp, info.nfields - 1);
-  }
+  other_word.GetWord().set("Test string");
 
   //
   // Change T to S
   // the difference must be one.
   //
   {
-    String tmp = other_word.Get(String(""), info.nfields - 1);
+    String& tmp = other_word.GetWord();
     tmp[tmp.indexOf('T')] = 'S';
-    other_word.Set(tmp, info.nfields - 1);
   }
   other_word.Pack(other_packed);
   {
     int ret;
     if((ret = WordKey::Compare(packed, other_packed)) != 1) {
       fprintf(stderr, "dokey: %s different letter (S instead of T), expected 1 got %d\n", params->word_desc, ret);
+      exit(1);
     }
   }
-  {
-    String tmp("Test string");
-    other_word.Set(tmp, info.nfields - 1);
-  }
+  other_word.GetWord().set("Test string");
   
   //
   // Substract one to the first numeric field
   // The difference must be one.
   //
-  other_word.Set(other_word.Get((unsigned int)0, 0) - 1, 0);
+  other_word.SetTypeA(other_word.GetTypeA(0) - 1, 0);
   other_word.Pack(other_packed);
   {
     int ret;
     if((ret = WordKey::Compare(packed, other_packed)) != 1) {
       fprintf(stderr, "dokey: %s different numeric field, expected 1 got %d\n", params->word_desc, ret);
+      exit(1);
     }
   }
 }

@@ -13,7 +13,7 @@
 # Specifies the directory for files that will or can be
 # shared among different search databases. The default
 # value for this attribute is defined at compile time.
-common_dir:		_TESTDIR_/../installdir
+common_dir:		_SRCDIR_/../installdir
 
 #
 # Specify where the database files need to go.  Make sure that there is
@@ -135,6 +135,11 @@ search_algorithm:	exact:1
 # template_map: Long long ${common_dir}/long.html \
 #		Short short ${common_dir}/short.html
 # template_name: long
+
+#
+# Enable extended features of WordList
+#
+wordlist_extend:	true
 
 #
 # The following are used to change the text for the page index.

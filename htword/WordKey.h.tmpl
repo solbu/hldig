@@ -44,13 +44,15 @@ _SERIALS_
 int word_db_cmp(const DBT *a, const DBT *b);
 
 //
+// Symbolic names for numerical type used
+//
+_TYPEDEFS_
+
+//
 // Type number associated to each possible type for a key element
 // (type field of struct WordKeyInfo).
 //
-#define WORD_ISA_pool_String			1
-#define WORD_ISA_pool_unsigned_int		2
-#define WORD_ISA_pool_unsigned_short		3
-#define WORD_ISA_pool_unsigned_char		4
+_TYPEINDEX_
 
 //
 // Describes the structure of the key, ie meta information
@@ -112,6 +114,7 @@ class WordKey
 {
 public:
   WordKey() { set = 0; _CLEAR_; }
+  WordKey(const String& word) { set = 0; _CLEAR_; SetWord(word); }
   void	Clear() { 
     set = 0;
     _CLEAR_;
@@ -122,30 +125,6 @@ public:
   //
 
 _ACCESSORS_
-
-
-#define WORD_ACCESSOR(tag,type) \
-	inline type	Get(const type&, int position) const { return pool_##tag##[word_key_info.fields[position].index]; } \
-	inline type	Set(const type& arg, int position) { type tmp; (void)Get(tmp, position); pool_##tag##[word_key_info.fields[position].index] = arg; Set(position); return tmp; } \
-        inline type    Unset(const type& arg, int position) { type tmp = Get(arg, position); Set((type)0, position); Unset(position); return tmp; }
-
-#ifdef WORD_HAVE_pool_unsigned_int
-WORD_ACCESSOR(unsigned_int, unsigned int)
-#endif /* WORD_HAVE_pool_unsigned_int */
-
-#ifdef WORD_HAVE_pool_unsigned_short
-WORD_ACCESSOR(unsigned_short, unsigned short)
-#endif /* WORD_HAVE_pool_unsigned_short */
-
-#ifdef WORD_HAVE_pool_unsigned_char
-WORD_ACCESSOR(unsigned_char, unsigned char)
-#endif /* WORD_HAVE_pool_unsigned_char */
-
-#ifdef WORD_HAVE_pool_String
-WORD_ACCESSOR(String, String)
-#endif /* WORD_HAVE_pool_String */
-
-#undef WORD_ACCESSOR
 
   //
   // Field value existenz information
@@ -270,6 +249,8 @@ sub {
     my($nfields) = 0;
     my($sortinfo) = '';
     my($serials) = '';
+    my($typedefs) = '';
+    my($typeindex) = '';
 
     #
     # Loop over the fields, in sorting order
@@ -293,16 +274,15 @@ EOF
 	}
     }
     
+    my(%types);
     #
     # Loop over the fields, in encoding order
     #
     {
-	my(%types);
 	my($field);
 	foreach $field (split(',', $config->{'EncodingOrder'})) {
 	    my($spec) = $config->{'Definition'}->{$field};
 	    my($type) = $spec->{'type'};
-	    my($var) = type2var($type);
 	    my($define) = field2define("WORD_KEY_", $field);
 	    my($undef) = "${define}_DEFINED";
 
@@ -319,14 +299,15 @@ EOF
 	    #
 	    # Reset field to null value
 	    #
-	    $clear .= "\t$var" . "[$define] = 0;\n";
+	    $clear .= "\tpool_$type" . "[$define] = 0;\n";
 
 	    #
 	    # Set, Get, Unset accessors for the field
 	    #
-	    $accessors .= "\t$type\tGet$field() const { return $var" . "[$define]; }\n";
-	    $accessors .= "\t$type\tSet$field($type arg) { $type tmp = Get$field(); $var\[$define] = arg; set |= $undef; return tmp; } \n";
-	    $accessors .= "\t$type\tUnset$field() { $type tmp = Get$field(); $var\[$define] = 0; set &= ~$undef; return tmp; } \n";
+	    $accessors .= "\tinline $type\tGet$field() const { return pool_$type" . "[$define]; }\n";
+	    $accessors .= "\tinline $type&\tGet$field() { return pool_$type" . "[$define]; }\n";
+	    $accessors .= "\tinline void\tSet$field($type arg) { pool_$type\[$define] = arg; set |= $undef; } \n";
+	    $accessors .= "\tinline void\tUnset$field() { pool_$type\[$define] = 0; set &= ~$undef; } \n";
 
 	    #
 	    # Meta information for the structure
@@ -334,7 +315,7 @@ EOF
 	    $meta .= <<EOF;
 	{
 		"$field",
-		WORD_ISA_$var,
+		WORD_ISA_$type,
 		$spec->{'lowbits'},
 		$spec->{'lastbits'},
 		$spec->{'bytesize'},
@@ -349,24 +330,41 @@ EOF
     }
     $accessors .= "\n";
     #
-    # Loop over the type used
+    # Loop the types
     #
     {
-	my($types) = $config->{'Definition'}->{'types'};
-	my($type);
-	foreach $type (keys(%$types)) {
-	    my($var) = type2var($type);
+	my($typemap) = $config->{'Definition'}->{'typemap'};
+	my($ctype, $type);
+	my($typenum) = 1;
+	while(($ctype, $type) = each(%$typemap)) {
+	    #
+	    # Typedefs mapping symbolic typenames to real types
+	    #
+	    $typedefs .= "typedef $ctype $type;\n" if($type ne $ctype);
+	    #
+	    # Number associated to each type
+	    #
+	    $typeindex .= "#define WORD_ISA_$type\t\t$typenum\n";
+	    $typenum++;
 	    #
 	    # Array of objects definition
 	    #
-	    $fields .= "\t$type\t$var" . "[$types->{$type}];\n";
+	    $fields .= "\t$type\tpool_$type" . "[$types{$type}];\n";
 	    #
 	    # A macro telling that this type is used
 	    #
-	    $accessors .= "\#define WORD_HAVE_$var 1\n";
+	    $accessors .= "\#define WORD_HAVE_$type 1\n";
+	    #
+	    # Generic accessor for each type
+	    #
+	    $accessors .= "\tinline $type	Get${type}(int position) const { return pool_$type\[word_key_info.fields[position].index]; }\n";
+	    $accessors .= "\tinline $type&	Get${type}(int position) { return pool_$type\[word_key_info.fields[position].index]; }\n";
+	    $accessors .= "\tinline void	Set${type}(const $type& arg, int position) { pool_$type\[word_key_info.fields[position].index] = arg; Set(position); }\n";
 	}
     }
 
+    template_set($assoc, '_TYPEDEFS_', $typedefs);
+    template_set($assoc, '_TYPEINDEX_', $typeindex);
     template_set($assoc, '_FIELDS_', $fields);
     template_set($assoc, '_META_', $meta);
     template_set($assoc, '_FIELDNAMES_', $fieldnames);

@@ -114,12 +114,12 @@ EXTRA_DIST = word.desc word_builder.pl WordKey.h.tmpl
 
 lib_LTLIBRARIES = libhtword.la
 
-libhtword_la_SOURCES = WordKey.cc WordList.cc WordReference.cc WordType.cc 	WordDB.cc
+libhtword_la_SOURCES = WordKey.cc WordList.cc WordReference.cc WordType.cc 	WordDB.cc WordStat.cc
 
 
 libhtword_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS = WordList.h 	WordRecord.h 	WordReference.h 	WordType.h 	WordKey.h 	WordDB.h
+noinst_HEADERS = WordList.h 	WordRecord.h 	WordReference.h 	WordType.h 	WordKey.h 	WordDB.h 	WordStat.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -132,7 +132,7 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 libhtword_la_LIBADD = 
 libhtword_la_OBJECTS =  WordKey.lo WordList.lo WordReference.lo \
-WordType.lo WordDB.lo
+WordType.lo WordDB.lo WordStat.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -146,7 +146,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
 DEP_FILES =  .deps/WordDB.P .deps/WordKey.P .deps/WordList.P \
-.deps/WordReference.P .deps/WordType.P
+.deps/WordReference.P .deps/WordStat.P .deps/WordType.P
 SOURCES = $(libhtword_la_SOURCES)
 OBJECTS = $(libhtword_la_OBJECTS)
 

@@ -1,3 +1,40 @@
+Tue Oct 05 14:54:17 1999  Loic Dachary  <loic@ceic.com>
+
+	* htlib/htString.h (class String): add set(char*)
+
+	* htword/WordKey.cc: define typedefs for key components. Leads to more
+	  regular code and no dependency on a predefined set of known types.
+	  All types must still be castable to unsigned int.
+	  Assume Word of type String always exists.
+	  Generic Get/Set/Unset methods made simpler. Added const and ref
+	  for Get in both forms.
+
+	* htword/WordList.cc: enable word reference counting only if wordlist_extend
+	  configuration parameter is set. This parameter is hidden because 
+	  no code uses per word statistics at present. It is only activated
+	  in the test directory. 
+	
+	* htword/word_list.pl: add mapping to symbolic type names, 
+	  force and check to have exactly one String field named Word.
+	
+Mon Oct 04 20:05:35 1999  Loic Dachary  <loic@ceic.com>
+
+	* test: add thingies to make test work when doing ./configure
+	  outside the source directory.
+	
+	* htword/WordList: Add Ref and Unref to update statistics.
+	  Fix walking to start from the end of statistics. All statistics
+	  words start with \001, therefore at the beginning of the file and
+	  all clustered together.
+
+	* htword/WordStat: derived from WordReference to implement
+	  uniq word statistics.
+
+	* test/word.cc: test statistics updating.
+
+	* htword/WordKey.cc: fix bugous compare (returned length diff
+	  if key of different length).
+
 Mon Oct 04 18:43:56 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* test/testnet.cc: added the option for HEAD before GET control
@@ -17,6 +54,10 @@ Mon Oct 04 12:43:41 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* htnet/HtHTTP.cc: manage the chunk correctly, by calling the  flush()
 	  method after reading it.
+
+Mon Oct 04 12:02:24 1999  Loic Dachary  <loic@ceic.com>
+
+	* htlib/htString.h: move null outside inline operator [] functions.
 
 Fri Oct 01 14:55:56 1999  Loic Dachary  <loic@ceic.com>
 

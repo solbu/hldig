@@ -5,10 +5,10 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_htsearch,v 1.4 1999/09/28 10:32:18 loic Exp $
+# $Id: t_htsearch,v 1.5 1999/10/05 16:03:32 loic Exp $
 #
 
-. t_htdig
+. $srcdir/t_htdig
 
 config=$testdir/conf/htdig.conf
 tmp=/tmp/t_htsearch$$

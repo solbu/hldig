@@ -5,7 +5,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_wordkey,v 1.4 1999/10/01 15:41:12 loic Exp $
+# $Id: t_wordkey,v 1.5 1999/10/05 16:03:32 loic Exp $
 #
 
 . test_functions
@@ -38,7 +38,7 @@ exercise() {
 
 if [ "$LONG_TEST" = "y" ]
 then
-	desc="../test/word.try1 ../test/word.try2 ../test/word.try3 ../test/word.try4 ../test/word.try5 word.desc"
+	desc="$srcdir/../test/word.try1 $srcdir/../test/word.try2 $srcdir/../test/word.try3 $srcdir/../test/word.try4 $srcdir/../test/word.try5 word.desc"
 	if [ -z "$verbose" ]
 	then
 		verbose=-v

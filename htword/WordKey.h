@@ -54,13 +54,18 @@
 int word_db_cmp(const DBT *a, const DBT *b);
 
 //
+// Symbolic names for numerical type used
+//
+typedef unsigned int TypeA;
+
+
+//
 // Type number associated to each possible type for a key element
 // (type field of struct WordKeyInfo).
 //
-#define WORD_ISA_pool_String			1
-#define WORD_ISA_pool_unsigned_int		2
-#define WORD_ISA_pool_unsigned_short		3
-#define WORD_ISA_pool_unsigned_char		4
+#define WORD_ISA_TypeA		1
+#define WORD_ISA_String		2
+
 
 //
 // Describes the structure of the key, ie meta information
@@ -108,7 +113,7 @@ static const struct WordKeyInfo word_key_info = {
 {
   	{
 		"Location",
-		WORD_ISA_pool_unsigned_int,
+		WORD_ISA_TypeA,
 		0,
 		0,
 		2,
@@ -118,7 +123,7 @@ static const struct WordKeyInfo word_key_info = {
 	},
 	{
 		"Flags",
-		WORD_ISA_pool_unsigned_int,
+		WORD_ISA_TypeA,
 		0,
 		0,
 		1,
@@ -128,7 +133,7 @@ static const struct WordKeyInfo word_key_info = {
 	},
 	{
 		"DocID",
-		WORD_ISA_pool_unsigned_int,
+		WORD_ISA_TypeA,
 		0,
 		0,
 		4,
@@ -138,7 +143,7 @@ static const struct WordKeyInfo word_key_info = {
 	},
 	{
 		"Word",
-		WORD_ISA_pool_String,
+		WORD_ISA_String,
 		-1,
 		-1,
 		-1,
@@ -177,16 +182,21 @@ static const struct WordKeyInfo word_key_info = {
 class WordKey
 {
 public:
-  WordKey() { set = 0; 	pool_unsigned_int[WORD_KEY_LOCATION] = 0;
-	pool_unsigned_int[WORD_KEY_FLAGS] = 0;
-	pool_unsigned_int[WORD_KEY_DOCID] = 0;
+  WordKey() { set = 0; 	pool_TypeA[WORD_KEY_LOCATION] = 0;
+	pool_TypeA[WORD_KEY_FLAGS] = 0;
+	pool_TypeA[WORD_KEY_DOCID] = 0;
 	pool_String[WORD_KEY_WORD] = 0;
 ; }
+  WordKey(const String& word) { set = 0; 	pool_TypeA[WORD_KEY_LOCATION] = 0;
+	pool_TypeA[WORD_KEY_FLAGS] = 0;
+	pool_TypeA[WORD_KEY_DOCID] = 0;
+	pool_String[WORD_KEY_WORD] = 0;
+; SetWord(word); }
   void	Clear() { 
     set = 0;
-    	pool_unsigned_int[WORD_KEY_LOCATION] = 0;
-	pool_unsigned_int[WORD_KEY_FLAGS] = 0;
-	pool_unsigned_int[WORD_KEY_DOCID] = 0;
+    	pool_TypeA[WORD_KEY_LOCATION] = 0;
+	pool_TypeA[WORD_KEY_FLAGS] = 0;
+	pool_TypeA[WORD_KEY_DOCID] = 0;
 	pool_String[WORD_KEY_WORD] = 0;
 ;
   }
@@ -195,46 +205,32 @@ public:
   // Accessors
   //
 
-	unsigned int	GetLocation() const { return pool_unsigned_int[WORD_KEY_LOCATION]; }
-	unsigned int	SetLocation(unsigned int arg) { unsigned int tmp = GetLocation(); pool_unsigned_int[WORD_KEY_LOCATION] = arg; set |= WORD_KEY_LOCATION_DEFINED; return tmp; } 
-	unsigned int	UnsetLocation() { unsigned int tmp = GetLocation(); pool_unsigned_int[WORD_KEY_LOCATION] = 0; set &= ~WORD_KEY_LOCATION_DEFINED; return tmp; } 
-	unsigned int	GetFlags() const { return pool_unsigned_int[WORD_KEY_FLAGS]; }
-	unsigned int	SetFlags(unsigned int arg) { unsigned int tmp = GetFlags(); pool_unsigned_int[WORD_KEY_FLAGS] = arg; set |= WORD_KEY_FLAGS_DEFINED; return tmp; } 
-	unsigned int	UnsetFlags() { unsigned int tmp = GetFlags(); pool_unsigned_int[WORD_KEY_FLAGS] = 0; set &= ~WORD_KEY_FLAGS_DEFINED; return tmp; } 
-	unsigned int	GetDocID() const { return pool_unsigned_int[WORD_KEY_DOCID]; }
-	unsigned int	SetDocID(unsigned int arg) { unsigned int tmp = GetDocID(); pool_unsigned_int[WORD_KEY_DOCID] = arg; set |= WORD_KEY_DOCID_DEFINED; return tmp; } 
-	unsigned int	UnsetDocID() { unsigned int tmp = GetDocID(); pool_unsigned_int[WORD_KEY_DOCID] = 0; set &= ~WORD_KEY_DOCID_DEFINED; return tmp; } 
-	String	GetWord() const { return pool_String[WORD_KEY_WORD]; }
-	String	SetWord(String arg) { String tmp = GetWord(); pool_String[WORD_KEY_WORD] = arg; set |= WORD_KEY_WORD_DEFINED; return tmp; } 
-	String	UnsetWord() { String tmp = GetWord(); pool_String[WORD_KEY_WORD] = 0; set &= ~WORD_KEY_WORD_DEFINED; return tmp; } 
+	inline TypeA	GetLocation() const { return pool_TypeA[WORD_KEY_LOCATION]; }
+	inline TypeA&	GetLocation() { return pool_TypeA[WORD_KEY_LOCATION]; }
+	inline void	SetLocation(TypeA arg) { pool_TypeA[WORD_KEY_LOCATION] = arg; set |= WORD_KEY_LOCATION_DEFINED; } 
+	inline void	UnsetLocation() { pool_TypeA[WORD_KEY_LOCATION] = 0; set &= ~WORD_KEY_LOCATION_DEFINED; } 
+	inline TypeA	GetFlags() const { return pool_TypeA[WORD_KEY_FLAGS]; }
+	inline TypeA&	GetFlags() { return pool_TypeA[WORD_KEY_FLAGS]; }
+	inline void	SetFlags(TypeA arg) { pool_TypeA[WORD_KEY_FLAGS] = arg; set |= WORD_KEY_FLAGS_DEFINED; } 
+	inline void	UnsetFlags() { pool_TypeA[WORD_KEY_FLAGS] = 0; set &= ~WORD_KEY_FLAGS_DEFINED; } 
+	inline TypeA	GetDocID() const { return pool_TypeA[WORD_KEY_DOCID]; }
+	inline TypeA&	GetDocID() { return pool_TypeA[WORD_KEY_DOCID]; }
+	inline void	SetDocID(TypeA arg) { pool_TypeA[WORD_KEY_DOCID] = arg; set |= WORD_KEY_DOCID_DEFINED; } 
+	inline void	UnsetDocID() { pool_TypeA[WORD_KEY_DOCID] = 0; set &= ~WORD_KEY_DOCID_DEFINED; } 
+	inline String	GetWord() const { return pool_String[WORD_KEY_WORD]; }
+	inline String&	GetWord() { return pool_String[WORD_KEY_WORD]; }
+	inline void	SetWord(String arg) { pool_String[WORD_KEY_WORD] = arg; set |= WORD_KEY_WORD_DEFINED; } 
+	inline void	UnsetWord() { pool_String[WORD_KEY_WORD] = 0; set &= ~WORD_KEY_WORD_DEFINED; } 
 
-#define WORD_HAVE_pool_unsigned_int 1
-#define WORD_HAVE_pool_String 1
+#define WORD_HAVE_TypeA 1
+	inline TypeA	GetTypeA(int position) const { return pool_TypeA[word_key_info.fields[position].index]; }
+	inline TypeA&	GetTypeA(int position) { return pool_TypeA[word_key_info.fields[position].index]; }
+	inline void	SetTypeA(const TypeA& arg, int position) { pool_TypeA[word_key_info.fields[position].index] = arg; Set(position); }
+#define WORD_HAVE_String 1
+	inline String	GetString(int position) const { return pool_String[word_key_info.fields[position].index]; }
+	inline String&	GetString(int position) { return pool_String[word_key_info.fields[position].index]; }
+	inline void	SetString(const String& arg, int position) { pool_String[word_key_info.fields[position].index] = arg; Set(position); }
 
-
-
-#define WORD_ACCESSOR(tag,type) \
-	inline type	Get(const type&, int position) const { return pool_##tag##[word_key_info.fields[position].index]; } \
-	inline type	Set(const type& arg, int position) { type tmp; (void)Get(tmp, position); pool_##tag##[word_key_info.fields[position].index] = arg; Set(position); return tmp; } \
-        inline type    Unset(const type& arg, int position) { type tmp = Get(arg, position); Set((type)0, position); Unset(position); return tmp; }
-
-#ifdef WORD_HAVE_pool_unsigned_int
-WORD_ACCESSOR(unsigned_int, unsigned int)
-#endif /* WORD_HAVE_pool_unsigned_int */
-
-#ifdef WORD_HAVE_pool_unsigned_short
-WORD_ACCESSOR(unsigned_short, unsigned short)
-#endif /* WORD_HAVE_pool_unsigned_short */
-
-#ifdef WORD_HAVE_pool_unsigned_char
-WORD_ACCESSOR(unsigned_char, unsigned char)
-#endif /* WORD_HAVE_pool_unsigned_char */
-
-#ifdef WORD_HAVE_pool_String
-WORD_ACCESSOR(String, String)
-#endif /* WORD_HAVE_pool_String */
-
-#undef WORD_ACCESSOR
 
   //
   // Field value existenz information
@@ -280,7 +276,7 @@ private:
   // Data members
   //
   unsigned int set;
-	unsigned int	pool_unsigned_int[3];
+	TypeA	pool_TypeA[3];
 	String	pool_String[1];
 
 };

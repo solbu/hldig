@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.h,v 1.2 1999/10/01 15:19:30 loic Exp $
+// $Id: WordReference.h,v 1.3 1999/10/05 16:03:31 loic Exp $
 //
 #ifndef _WordReference_h_
 #define _WordReference_h_
@@ -52,10 +52,12 @@ class WordReference : public Object
   void			Key(const WordKey& arg) { key = arg; }
   void			KeyUnpack(const String& packed) { key.Unpack(packed); }
   String		KeyPack() const { String tmp; key.Pack(tmp); return tmp; }
+  int			KeyPack(String& packed) const { return key.Pack(packed); }
 
   void			Record(const WordRecord& arg) { record = arg; }
   void			RecordUnpack(const String& packed) { record.Unpack(packed); }
   String		RecordPack() const { String tmp; record.Pack(tmp); return tmp; }
+  int			RecordPack(String& packed) const { return record.Pack(packed); }
 
   inline int		Pack(String& ckey, String& crecord) const {
     if(key.Pack(ckey) == NOTOK) return NOTOK;

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.2 1999/10/01 15:19:30 loic Exp $
+// $Id: WordKey.cc,v 1.3 1999/10/05 16:03:31 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -69,8 +69,7 @@ int WordKey::Equal(const WordKey& other, int prefix_length) const
     int k = info.fields[i].index;
 
     switch(info.fields[i].type) {
-#ifdef WORD_HAVE_pool_String
-    case WORD_ISA_pool_String:
+    case WORD_ISA_String:
       if(prefix_length > 0) {
 	if(pool_String[k] != other.pool_String[k].sub(0, prefix_length))
 	  return 0;
@@ -79,22 +78,22 @@ int WordKey::Equal(const WordKey& other, int prefix_length) const
 	  return 0;
       }
       break;
-#endif /* WORD_HAVE_pool_String */
-#ifdef WORD_HAVE_pool_unsigned_int
-    case WORD_ISA_pool_unsigned_int:
-      if(pool_unsigned_int[k] != other.pool_unsigned_int[k]) return 0;
+#define STATEMENT(type) \
+    case WORD_ISA_##type: \
+      if(pool_##type[k] != other.pool_##type[k]) return 0; \
       break;
-#endif /* WORD_HAVE_pool_unsigned_int */
-#ifdef WORD_HAVE_pool_unsigned_short
-    case WORD_ISA_pool_unsigned_short:
-      if(pool_unsigned_short[k] != other.pool_unsigned_short[k]) return 0;
-      break;
-#endif /* WORD_HAVE_pool_unsigned_short */
-#ifdef WORD_HAVE_pool_unsigned_char
-    case WORD_ISA_pool_unsigned_char:
-      if(pool_unsigned_char[k] != other.pool_unsigned_char[k]) return 0;
-      break;
-#endif /* WORD_HAVE_pool_unsigned_char */
+
+#ifdef WORD_HAVE_TypeA
+STATEMENT(TypeA)
+#endif /* WORD_HAVE_TypeA */
+#ifdef WORD_HAVE_TypeB
+STATEMENT(TypeB)
+#endif /* WORD_HAVE_TypeB */
+#ifdef WORD_HAVE_TypeC
+STATEMENT(TypeC)
+#endif /* WORD_HAVE_TypeC */
+
+#undef STATEMENT
     }
   }
   return 1;
@@ -123,12 +122,6 @@ int WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
   }
 
   //
-  // Keys of different length are not equal
-  //
-  if(a_length != b_length)
-    return a_length - b_length;
-
-  //
   // Walk the fields in sorting order. As soon as one of them
   // does not compare equal, return.
   //
@@ -143,8 +136,7 @@ int WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
       a = b; a_length = b_length; b = tmp; b_length = tmp_length;
     }
     switch(info.fields[i].type) {
-#ifdef WORD_HAVE_pool_String
-    case WORD_ISA_pool_String:
+    case WORD_ISA_String:
       {
 	const char* p1 = a + info.fields[i].bytes_offset;
 	int p1_length = a_length - info.fields[i].bytes_offset;
@@ -154,18 +146,19 @@ int WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
 	for (p1 = a + info.fields[i].bytes_offset, p2 = b + info.fields[i].bytes_offset; len--; ++p1, ++p2)
 	  if (*p1 != *p2)
 	    return ((int)*p1 - (int)*p2);
+	if(p1_length != p2_length)
+	  return p1_length - p2_length;
       }
       break;
-#endif /* WORD_HAVE_pool_String */
-#ifdef WORD_HAVE_pool_unsigned_int
-    case WORD_ISA_pool_unsigned_int:
-#endif /* WORD_HAVE_pool_unsigned_int */
-#ifdef WORD_HAVE_pool_unsigned_short
-    case WORD_ISA_pool_unsigned_short:
-#endif /* WORD_HAVE_pool_unsigned_short */
-#ifdef WORD_HAVE_pool_unsigned_char
-    case WORD_ISA_pool_unsigned_char:
-#endif /* WORD_HAVE_pool_unsigned_char */
+#ifdef WORD_HAVE_TypeA
+    case WORD_ISA_TypeA:
+#endif /* WORD_HAVE_TypeA */
+#ifdef WORD_HAVE_TypeB
+    case WORD_ISA_TypeB:
+#endif /* WORD_HAVE_TypeB */
+#ifdef WORD_HAVE_TypeC
+    case WORD_ISA_TypeC:
+#endif /* WORD_HAVE_TypeC */
       {
 	unsigned int p1;
 	unsigned int p2;
@@ -315,55 +308,36 @@ int WordKey::Unpack(const String& data)
 
     switch(info.fields[i].type) {
 
-#ifdef WORD_HAVE_pool_String
-    case WORD_ISA_pool_String:
-      pool_String[info.fields[i].index] = 0;
-      pool_String[info.fields[i].index].append(&string[info.fields[i].bytes_offset], length - info.minimum_length);
+    case WORD_ISA_String:
+      pool_String[info.fields[i].index].set(&string[info.fields[i].bytes_offset], length - info.minimum_length);
       Set(i);
       break;
-#endif /* WORD_HAVE_pool_String */
 
-#ifdef WORD_HAVE_pool_unsigned_int
-    case WORD_ISA_pool_unsigned_int:
-      pool_unsigned_int[info.fields[i].index] = 0;
-      WordKey::UnpackNumber(&string[info.fields[i].bytes_offset],
-			       info.fields[i].bytesize,
-			       &pool_unsigned_int[info.fields[i].index],
-			       info.fields[i].lowbits,
-			       info.fields[i].bits);
-      Set(i);
+#define STATEMENT(type) \
+    case WORD_ISA_##type: \
+      { \
+	unsigned int value = 0; \
+	WordKey::UnpackNumber(&string[info.fields[i].bytes_offset], \
+				 info.fields[i].bytesize, \
+				 &value, \
+				 info.fields[i].lowbits, \
+				 info.fields[i].bits); \
+	pool_##type[info.fields[i].index] = (##type)value; \
+	Set(i); \
+      } \
       break;
-#endif /* WORD_HAVE_pool_unsigned_int */
 
-#ifdef WORD_HAVE_pool_unsigned_short
-    case WORD_ISA_pool_unsigned_short:
-      {
-	unsigned int value = 0;
-	WordKey::UnpackNumber(&string[info.fields[i].bytes_offset],
-				 info.fields[i].bytesize,
-				 &value,
-				 info.fields[i].lowbits,
-				 info.fields[i].bits);
-	pool_short[info.fields[i].index] = (unsigned short)value;
-	Set(i);
-      }
-      break;
-#endif /* WORD_HAVE_pool_unsigned_short */
+#ifdef WORD_HAVE_TypeA
+STATEMENT(TypeA)
+#endif /* WORD_HAVE_TypeA */
+#ifdef WORD_HAVE_TypeB
+STATEMENT(TypeB)
+#endif /* WORD_HAVE_TypeB */
+#ifdef WORD_HAVE_TypeC
+STATEMENT(TypeC)
+#endif /* WORD_HAVE_TypeC */
 
-#ifdef WORD_HAVE_pool_unsigned_char
-    case WORD_ISA_pool_unsigned_char:
-      {
-	unsigned int value = 0;
-	WordKey::UnpackNumber(&string[info.fields[i].bytes_offset],
-				 info.fields[i].bytesize,
-				 &value,
-				 info.fields[i].lowbits,
-				 info.fields[i].bits);
-	pool_char[info.fields[i].index] = (unsigned char)value;
-	Set(i);
-      }
-      break;
-#endif /* WORD_HAVE_pool_unsigned_char */
+#undef STATEMENT
     }
   }
 
@@ -380,9 +354,7 @@ int WordKey::Pack(String& packed) const
   char* string;
   int length = info.minimum_length;
 
-#ifdef WORD_HAVE_pool_String
   length += pool_String[0].length();
-#endif /* WORD_HAVE_pool_String */
 
   if((string = (char*)malloc(length)) == 0) {
     cerr << "WordKey::Pack: malloc returned 0\n";
@@ -393,52 +365,34 @@ int WordKey::Pack(String& packed) const
   for(int i = 0; i < info.nfields; i++) {
 
     switch(info.fields[i].type) {
-#ifdef WORD_HAVE_pool_String
-    case WORD_ISA_pool_String:
+    case WORD_ISA_String:
       memcpy(&string[info.fields[i].bytes_offset], pool_String[info.fields[i].index].get(), pool_String[info.fields[i].index].length());
       break;
-#endif /* WORD_HAVE_pool_String */
 
-#ifdef WORD_HAVE_pool_unsigned_int
-    case WORD_ISA_pool_unsigned_int:
-      WordKey::PackNumber(pool_unsigned_int[info.fields[i].index],
-			       &string[info.fields[i].bytes_offset],
-			       info.fields[i].bytesize,
-			       info.fields[i].lowbits,
-			       info.fields[i].lastbits);
+#define STATEMENT(type) \
+    case WORD_ISA_##type: \
+      WordKey::PackNumber((unsigned int)pool_##type[info.fields[i].index], \
+			  &string[info.fields[i].bytes_offset], \
+			  info.fields[i].bytesize, \
+			  info.fields[i].lowbits, \
+			  info.fields[i].lastbits); \
       break;
-#endif /* WORD_HAVE_pool_unsigned_int */
 
-#ifdef WORD_HAVE_pool_unsigned_short
-    case WORD_ISA_pool_unsigned_short:
-      {
-	unsigned int value = (unsigned int)pool_short[info.fields[i].index];
-	WordKey::PackNumber(pool_short[info.fields[i].index],
-			       &value,
-			       info.fields[i].bytesize,
-			       info.fields[i].lowbits,
-			       info.fields[i].lastbits);
-      }
-      break;
-#endif /* WORD_HAVE_pool_unsigned_short */
+#ifdef WORD_HAVE_TypeA
+STATEMENT(TypeA)
+#endif /* WORD_HAVE_TypeA */
+#ifdef WORD_HAVE_TypeB
+STATEMENT(TypeB)
+#endif /* WORD_HAVE_TypeB */
+#ifdef WORD_HAVE_TypeC
+STATEMENT(TypeC)
+#endif /* WORD_HAVE_TypeC */
 
-#ifdef WORD_HAVE_pool_unsigned_char
-    case WORD_ISA_pool_unsigned_char:
-      {
-	unsigned int value = (unsigned int)pool_char[info.fields[i].index];
-	WordKey::PackNumber(value,
-			       &string[info.fields[i].bytes_offset],
-			       info.fields[i].bytesize,
-			       info.fields[i].lowbits,
-			       info.fields[i].lastbits);
-      }
-      break;
-#endif /* WORD_HAVE_pool_unsigned_char */
+#undef STATEMENT
     }
   }
   
-  packed = 0;
-  packed.append(string, length);
+  packed.set(string, length);
 
   free(string);
 
@@ -457,29 +411,23 @@ int WordKey::Merge(const WordKey& other)
     if(!IsSet(i) && other.IsSet(i)) {
       switch(info.fields[i].type) {
 
-#define WORD_MERGER(tag,type) \
-      case WORD_ISA_pool_##tag: \
-        { \
-	  type value; \
-	  Set(other.Get(value, i), i); \
-	} \
+#define STATEMENT(type) \
+      case WORD_ISA_##type: \
+	Set##type(other.Get##type(i), i); \
 	break;
 
-#ifdef WORD_HAVE_pool_unsigned_int
-WORD_MERGER(unsigned_int, unsigned int)
-#endif /* WORD_HAVE_pool_unsigned_int */
+#ifdef WORD_HAVE_TypeA
+STATEMENT(TypeA)
+#endif /* WORD_HAVE_TypeA */
+#ifdef WORD_HAVE_TypeB
+STATEMENT(TypeB)
+#endif /* WORD_HAVE_TypeB */
+#ifdef WORD_HAVE_TypeC
+STATEMENT(TypeC)
+#endif /* WORD_HAVE_TypeC */
 
-#ifdef WORD_HAVE_pool_unsigned_short
-WORD_MERGER(unsigned_short, unsigned short)
-#endif /* WORD_HAVE_pool_unsigned_short */
+#undef STATEMENT
 
-#ifdef WORD_HAVE_pool_unsigned_char
-WORD_MERGER(unsigned_char, unsigned char)
-#endif /* WORD_HAVE_pool_unsigned_char */
-
-#ifdef WORD_HAVE_pool_String
-WORD_MERGER(String, String)
-#endif /* WORD_HAVE_pool_String */
       }
     }
   }
@@ -500,26 +448,25 @@ ostream &operator << (ostream &o, const WordKey &key)
     int index = info.fields[i].index;
 
     switch(info.fields[i].type) {
-#ifdef WORD_HAVE_pool_String
-    case WORD_ISA_pool_String:
+    case WORD_ISA_String:
       o << key.pool_String[index] << "\t";
       break;
-#endif /* WORD_HAVE_pool_String */
-#ifdef WORD_HAVE_pool_unsigned_int
-    case WORD_ISA_pool_unsigned_int:
-      o << key.pool_unsigned_int[index] << "\t";
+#define STATEMENT(type) \
+    case WORD_ISA_##type: \
+      o << key.pool_##type[index] << "\t"; \
       break;
-#endif /* WORD_HAVE_pool_unsigned_int */
-#ifdef WORD_HAVE_pool_unsigned_short
-    case WORD_ISA_pool_unsigned_short:
-      o << key.pool_unsigned_short[index] << "\t";
-      break;
-#endif /* WORD_HAVE_pool_unsigned_short */
-#ifdef WORD_HAVE_pool_unsigned_char
-    case WORD_ISA_pool_unsigned_char:
-      o << key.pool_unsigned_char[index] << "\t";
-      break;
-#endif /* WORD_HAVE_pool_unsigned_char */
+
+#ifdef WORD_HAVE_TypeA
+STATEMENT(TypeA)
+#endif /* WORD_HAVE_TypeA */
+#ifdef WORD_HAVE_TypeB
+STATEMENT(TypeB)
+#endif /* WORD_HAVE_TypeB */
+#ifdef WORD_HAVE_TypeC
+STATEMENT(TypeC)
+#endif /* WORD_HAVE_TypeC */
+
+#undef STATEMENT
     default:
       cerr << "WordKey::operator <<: invalid type " << info.fields[i].type << " for field " << i << "\n";
       break;

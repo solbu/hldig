@@ -1,0 +1,9 @@
+#
+# Make sure all data has been copied from the source directory
+#
+test_prog=$1
+
+[ ! -d conf ] && cp -rp $srcdir/conf .
+[ ! -d htdocs ] && cp -rp $srcdir/htdocs .
+
+exec $srcdir/$test_prog

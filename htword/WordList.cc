@@ -14,13 +14,14 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.4 1999/10/01 16:45:51 loic Exp $
+// $Id: WordList.cc,v 1.5 1999/10/05 16:03:31 loic Exp $
 //
 
 #include "WordList.h"
 #include "WordReference.h"
 #include "WordRecord.h"
 #include "WordType.h"
+#include "WordStat.h"
 #include "Configuration.h"
 #include "htString.h"
 #include "HtPack.h"
@@ -33,7 +34,6 @@
 #include <errno.h>
 
 //*****************************************************************************
-// WordList::~WordList()
 //
 WordList::~WordList()
 {
@@ -49,6 +49,7 @@ WordList::WordList(const Configuration& config_arg) :
     // The database itself hasn't been opened yet
     isopen = 0;
     isread = 0;
+    extended = config.Boolean("wordlist_extend");
 }
 
 //*****************************************************************************
@@ -60,7 +61,7 @@ int WordList::Open(const String& filename, int mode)
   //
   db.dbinfo.set_bt_compare(word_db_cmp);
 
-  int ret = db.Open(filename, mode == O_RDONLY ? DB_RDONLY : DB_CREATE);
+  int ret = db.Open(filename, DB_BTREE, mode == O_RDONLY ? DB_RDONLY : DB_CREATE, 0666);
 
   isread = mode & O_RDONLY;
   isopen = 1;
@@ -70,7 +71,6 @@ int WordList::Open(const String& filename, int mode)
 
 
 //*****************************************************************************
-// int WordList::Close()
 //
 int WordList::Close()
 {
@@ -87,8 +87,10 @@ int WordList::Close()
 //
 int WordList::Put(const WordReference& arg, int flags)
 {
-  if (arg.Key().GetWord().length() == 0)
+  if (arg.Key().GetWord().length() == 0) {
+    cerr << "WordList::Put(" << arg << ") word is zero length\n";
     return NOTOK;
+  }
 
   WordReference	wordRef(arg);
   String 	word = wordRef.Key().GetWord();
@@ -96,12 +98,15 @@ int WordList::Put(const WordReference& arg, int flags)
     return NOTOK;
   wordRef.Key().SetWord(word);
 
-  return db.Put(wordRef, flags);
+  
+  int ret = db.Put(wordRef, flags);
+  if(ret == OK)
+    ret = Ref(wordRef);
+  return ret;
 }
 
 
 //*****************************************************************************
-// List *WordList::operator [] (const WordReference& wordRef)
 //
 List *WordList::operator [] (const WordReference& wordRef)
 {
@@ -110,7 +115,6 @@ List *WordList::operator [] (const WordReference& wordRef)
 
 
 //*****************************************************************************
-// List *WordList::Prefix (const WordReference& prefix)
 //
 List *WordList::Prefix (const WordReference& prefix)
 {
@@ -118,7 +122,6 @@ List *WordList::Prefix (const WordReference& prefix)
 }
 
 //*****************************************************************************
-// List *WordList::WordRefs()
 //
 List *WordList::WordRefs()
 {
@@ -165,21 +168,30 @@ List *WordList::Collect (const WordReference& wordRef, int action)
 //
 List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_callback_t callback, Object &callback_data)
 {
-    List        	*list = 0;
-    int			prefixLength = wordRef.Key().GetWord().length();
-    WordKey		prefixKey;
-    WordCursor		cursor;
+    List        		*list = 0;
+    int				prefixLength = wordRef.Key().GetWord().length();
+    WordKey			prefixKey;
+    WordCursor			cursor;
+    const WordReference&	last = WordStat::Last();
     
     if(cursor.Open(db.db) == NOTOK) return 0;
     
     String key;
     String data;
 
+
+    if(action & HTDIG_WORDLIST_COLLECTOR) {
+      list = new List;
+    }
+
     //
     // Move the cursor to start walking and do some sanity checks.
     //
     if(action & HTDIG_WORDLIST) {
-      if(cursor.Get(key, data, DB_FIRST) != OK) return 0;
+      //
+      // Move past the stat data
+      //
+      last.KeyPack(key);
     } else {
       const WordKey& wordKey = wordRef.Key();
       //
@@ -205,15 +217,15 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
       // No heuristics possible, we have to start from the beginning. *sigh*
       //
       if(prefixKey.Empty()) {
-	if(cursor.Get(key, data, DB_FIRST) != OK) return 0;
+	//
+	// Move past the stat data
+	//
+	last.KeyPack(key);
       } else {
 	prefixKey.Pack(key);
-	if(cursor.Get(key, data, DB_SET_RANGE) != OK) return 0;
       }
-    }
-
-    if(action & HTDIG_WORDLIST_COLLECTOR) {
-      list = new List;
+      if(cursor.Get(key, data, DB_SET_RANGE) != 0)
+	return list;
     }
 
     do {
@@ -250,11 +262,12 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
 	// Useless to continue since we're not doing anything
 	break;
       }
-    } while(cursor.Get(key, data, DB_NEXT) == OK);
+    } while(cursor.Get(key, data, DB_NEXT) == 0);
 
     return list;
 }
 
+//*****************************************************************************
 //
 // Callback data dedicated to Dump and dump_word communication
 //
@@ -272,6 +285,7 @@ public:
 static int delete_word(WordList *words, WordCursor &cursor, const WordReference *word, Object &data)
 {
   if(words->Delete(cursor) == 1) {
+    words->Unref(*word);
     ((DeleteWordData&)data).count++;
     return OK;
   } else {
@@ -293,12 +307,11 @@ int WordList::WalkDelete(const WordReference& wordRef)
 }
 
 //*****************************************************************************
-// List *WordList::Words()
 //
 //
 List *WordList::Words()
 {
-    List		*list = new List;
+    List		*list = 0;
     String		key;
     String		record;
     WordReference	lastWord;
@@ -306,15 +319,90 @@ List *WordList::Words()
 
     if(cursor.Open(db.db) != OK) return 0;
 
-    while (cursor.Get(key, record, DB_NEXT) == OK)
-      {
+    //
+    // Move past the first word count record
+    //
+    const WordReference& last = WordStat::Last();
+    last.Pack(key, record);
+    if(cursor.Get(key, record, DB_SET_RANGE) != 0)
+      return 0;
+
+    list = new List;
+    do {
 	WordReference	wordRef(key, record);
 
-	if ( (lastWord.Key().GetWord() == String("")) || (wordRef.Key().GetWord() != lastWord.Key().GetWord()) )
-	  {
-            list->Add(new String(wordRef.Key().GetWord()));
-	    lastWord = wordRef;
-	  }
-      }
+	if(!lastWord.Key().GetWord().empty() ||
+	   wordRef.Key().GetWord() != lastWord.Key().GetWord()) {
+	  list->Add(new String(wordRef.Key().GetWord()));
+	  lastWord = wordRef;
+	}
+    } while (cursor.Get(key, record, DB_NEXT) == 0);
+    
     return list;
+}
+
+//*****************************************************************************
+//
+// Returns the reference count for word in <count> arg
+//
+int WordList::Noccurence(const WordKey& key, unsigned int& noccurence) const
+{
+  noccurence = 0;
+  WordStat stat(key.GetWord());
+  int ret;
+  if((ret = db.Get(stat)) != 0) {
+    if(ret != DB_NOTFOUND)
+      return NOTOK;
+  } else {
+    noccurence = stat.Noccurence();
+  }
+
+  return OK;
+}
+
+//*****************************************************************************
+//
+// Increment reference count for wordRef
+//
+int WordList::Ref(const WordReference& wordRef)
+{
+  if(!extended) return OK;
+
+  WordStat stat(wordRef.Key().GetWord());
+  int ret;
+  if((ret = db.Get(stat)) != 0 && ret != DB_NOTFOUND)
+    return NOTOK;
+
+  stat.Noccurence()++;
+
+  return db.Put(stat, 0);
+}
+
+//*****************************************************************************
+//
+// Decrement reference count for wordRef
+//
+int WordList::Unref(const WordReference& wordRef)
+{
+  if(!extended) return OK;
+
+  WordStat stat(wordRef.Key().GetWord());
+  int ret;
+  if((ret = db.Get(stat)) != 0) {
+    if(ret == DB_NOTFOUND)
+      cerr << "WordList::Unref(" << wordRef << ") Unref on non existing word occurence\n";
+    return NOTOK;
+  }
+
+  if(stat.Noccurence() == 0) {
+    cerr << "WordList::Unref(" << wordRef << ") Unref on 0 occurences word\n";
+    return NOTOK;
+  }
+  stat.Noccurence()--;
+
+  if(stat.Noccurence() > 0)
+    ret = db.Put(stat, 0);
+  else
+    ret = db.Del(stat) == 0 ? OK : NOTOK;
+  return ret;
 }

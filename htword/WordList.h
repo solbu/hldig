@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.4 1999/10/01 16:45:51 loic Exp $
+// $Id: WordList.h,v 1.5 1999/10/05 16:03:31 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -75,10 +75,21 @@ public:
     int                 Put(const WordReference& wordRef, int flags);
 
     //
+    // Check for existence
+    //
+    int                 Exists(const WordReference& wordRef) { return db.Exists(wordRef); }
+    int                 Exists(const String& word) { return Exists(WordReference(word)); }
+
+    //
     // Delete permanently
     //
     int                 WalkDelete(const WordReference& wordRef);
-    int                 Delete(const WordReference& wordRef) { return db.Del(wordRef); }
+    int                 Delete(const WordReference& wordRef) {
+      if(db.Del(wordRef) == 0)
+	return Unref(wordRef);
+      else
+	return NOTOK;
+    }
     int                 Delete(WordCursor& cursor) { return cursor.Del() == OK ? 1 : 0; }
 
     //
@@ -105,11 +116,6 @@ public:
     List		*Prefix (const WordReference& prefix);
     List		*Prefix (const String& prefix) { return this->Prefix(WordReference(prefix)); }
 
-    //
-    // Check for existence
-    //
-    int                 Exists(const WordReference& wordRef) { return db.Exists(wordRef); }
-    int                 Exists(const String& word) { return Exists(WordReference(word)); }
 
 
     //
@@ -127,6 +133,13 @@ public:
     //
     List 		*Walk (const WordReference& word, int action, wordlist_walk_callback_t callback, Object &callback_data);
 
+    //
+    // Update/get global word statistics statistics
+    //
+    int Ref(const WordReference& wordRef);
+    int Unref(const WordReference& wordRef);
+    int Noccurence(const WordKey& key, unsigned int& noccurence) const;
+
 protected:
     //
     // Retrieve WordReferences from the database. 
@@ -139,6 +152,13 @@ protected:
 
     int				isopen;
     int				isread;
+
+    //
+    // If true enable extended functionalities of WordList such
+    // as per-word statistics. Read from wordlist_extended configuration
+    // parameter.
+    //
+    int				extended;
     
 private:
 

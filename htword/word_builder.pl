@@ -12,7 +12,7 @@
 # The Definition section is made of sub sections whose name
 # is the name of a field. Each sub section may contain two
 # variables 
-#           type = (String|unsigned int|unsigned short|unsigned char)
+#           type = (String|C type)
 #           bits = number of bits used (except for String)
 # The EncodingOrder specifies the order in which the fields will be
 # stored on disk. 
@@ -20,6 +20,10 @@
 # field name may be followed by asc for ascending order or desc for
 # descending order (think SQL).
 # 
+# There must be exactly one field of type String, its name must
+# be Word, it must be last in EncodingOrder and first in SortOrder.
+# All this is designed for inverted index and needs a word somewhere.
+#
 # Example file:
 #
 # Key 
@@ -71,7 +75,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: word_builder.pl,v 1.1 1999/09/30 15:56:46 loic Exp $
+# $Id: word_builder.pl,v 1.2 1999/10/05 16:03:31 loic Exp $
 #
 use strict;
 
@@ -85,19 +89,6 @@ sub main {
 
     prepare($config->{'Key'});
     handle("WordKey.h", $config->{'Key'});
-}
-
-#
-# Replace white spaces by underscore and prepend pool_
-# Example 'unsigned char' => pool_unsigned_char
-#
-sub type2var {
-    my($type) = @_;
-
-    my($var) = "pool_";
-    ($var .= $type) =~ s/ /_/g;
-
-    return $var;
 }
 
 #
@@ -148,7 +139,13 @@ sub handle {
 #         found in the definition. The value is the number
 #         of times this type occurs.
 #
+# typemap = a hash that maps each C type to a symbolic name
+#
 # For each field you find in Definition->field hash:
+#
+# type = the type of the field, after mapping
+#
+# ctype = the type of the field, before mapping
 #
 # bits = the number of bits in the field
 #
@@ -260,16 +257,29 @@ The .... show a String.
 
 " if($verbose);
 
+    my($symbolic_type_base) = "TypeA";
+    my($position) = 0;
     #
     # Total bits offset of the field
     #
-    my($position) = 0;
     my($bits_offset) = 0;
     my($field);
     my($definition) = $config->{'Definition'};
+    $definition->{'typemap'}->{'String'} = 'String';
     foreach $field (split(',', $config->{'EncodingOrder'})) {
 	my($spec) = $definition->{$field};
 	my($new_bits_offset) = $bits_offset;
+	if($spec->{'type'} ne 'String' &&
+	   !defined($definition->{'typemap'}->{$spec->{'type'}})) {
+	    $definition->{'typemap'}->{$spec->{'type'}} = $symbolic_type_base;
+	    $symbolic_type_base++;
+	}
+	#
+	# Remap type into typedef
+	#
+	$spec->{'ctype'} = $spec->{'type'};
+	$spec->{'type'} = $definition->{'typemap'}->{$spec->{'type'}};
+
 	$definition->{'types'}->{$spec->{'type'}}++;
 	if($spec->{'type'} ne 'String') {
 	    my($bits) = $spec->{'bits'};
@@ -327,6 +337,23 @@ The .... show a String.
     }
     $config->{'Definition'}->{'minimum_length'} = int(($bits_offset + 7) / 8) if(!$config->{'Definition'}->{'minimum_length'});
 
+    #
+    # Sanity checks
+    #
+    {
+	if($config->{'Definition'}->{'types'}->{'String'} != 1) {
+	    print STDERR "There must exactly one field of type String\n";
+	    exit(1);
+	}
+	if(!defined($config->{'Definition'}->{'Word'})) {
+	    print STDERR "There must be one field named Word\n";
+	    exit(1);
+	}
+	if(!defined($config->{'Definition'}->{'Word'}->{'type'})) {
+	    print STDERR "The Word field must be of type String\n";
+	    exit(1);
+	}
+    }
     if($verbose) {
 	foreach $field (split(',', $config->{'EncodingOrder'})) {
 	    my($spec) = $config->{'Definition'}->{$field};
@@ -416,7 +443,7 @@ sub config_load {
     my($file) = locate_file($base, $ENV{'CONFIG_DIR'});
     $file = getcwd() . "/$file" if(defined($file) && $file !~ /^\//);
     if(!defined($file)) {
-	dbg("no config file found in path " . ($ENV{'CONFIG_DIR'} || '') . " for $base", "config");
+	print STDERR "no config file found in path " . ($ENV{'CONFIG_DIR'} || '') . " for $base";
     } elsif(!defined($::config{$file})) {
 	my(%config);
 	open(FILE, "<$file") or croak("cannot open $file for reading : $!");

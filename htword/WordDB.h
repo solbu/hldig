@@ -3,9 +3,15 @@
 //
 // WordDB: Interface to Berkeley DB verbose on errors, return OK or NOTOK,
 //         uses String and WordReference instead of Dbt, add some convinience
-//	   methods.
-//         Beside these the goal is to offer an interface that allows exactly 
-//	   the same things than the underlying Berkeley DB classes.
+//	   methods and implements string translation of Berkeley DB error codes.
+//         It does not include the 'join' feature.
+//         Beside this, the interface it identical to the Db class.
+//         The next evolution for this set of class is to have a single object per
+//         application so that they all share the same environment (transactions,
+//         shared pool, database directory). This implies a static common object
+//         that is refered by each actual instance of WordDB. The static object
+//         holds the DbEnv and DbInfo, the instances of WordDB only have an open
+//         descriptor using the same DbEnv and DbInfo.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -13,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.h,v 1.1 1999/10/01 16:45:51 loic Exp $
+// $Id: WordDB.h,v 1.2 1999/10/05 16:03:31 loic Exp $
 //
 
 #ifndef _WordDB_h_
@@ -28,12 +34,30 @@
 
 extern const char* dberror(int errval);
 
+//
+// Encapsulate the Berkeley DB Db class
+//
+// Implements the same methods with String instead of Dbt.
+//
+// Add convinience methods taking WordReference instead of String
+//
+// Most method return OK or NOTOK and issue an error message on cerr
+// if appropriate. 
+//
+// The error model is *not* to use exceptions. 
+//
+// To get a cursor use the Open method of WordCursor. I find this
+// more convinient than getting a cursor from WordDB.
+//
+// The WordDB has DbInfo and DbEnv members that can be set before
+// calling Open to configure it.
+//
 class WordDB {
  public:
   WordDB() { db = 0; }
   ~WordDB() { Close(); }
 
-  int Open(const String& filename, int mode) {
+  int Open(const String& filename, DBTYPE type, int flags, int mode) {
 
     if(db) Close();
 
@@ -57,7 +81,7 @@ class WordDB {
       return NOTOK;
     }
 
-    if ((errno = Db::open(filename, DB_BTREE, (u_int32_t)mode, 0666, &dbenv, &dbinfo, &db)) != 0) {
+    if ((errno = Db::open(filename, type, (u_int32_t)flags, mode, &dbenv, &dbinfo, &db)) != 0) {
       cerr << progname << ": Db::open: " << dberror(errno) << "\n";
       return NOTOK;
     }
@@ -69,6 +93,44 @@ class WordDB {
     if(db) db->close(0);
     db = 0;
     return OK;
+  }
+
+  int Fd(int *fdp) {
+    if(!db) return NOTOK;
+
+    if((errno = db->fd(fdp)) != 0) {
+      cerr << "WordDB::Fd() failed " << dberror(errno) << "\n";
+      return NOTOK;
+    }
+    return OK;
+  }
+
+  int Stat(void *sp, void *(*db_malloc)(size_t), int flags) {
+    if(!db) return NOTOK;
+    if((errno = db->stat(sp, db_malloc, (u_int32_t) flags)) != 0) {
+      cerr << "WordDB::Stat(" << flags << ") failed " << dberror(errno) << "\n";
+      return NOTOK;
+    }
+    return OK;
+  }
+  
+  int Sync(int flags) {
+    if(!db) return NOTOK;
+    if((errno = db->sync((u_int32_t) flags)) != 0) {
+      cerr << "WordDB::Sync(" << flags << ") failed " << dberror(errno) << "\n";
+      return NOTOK;
+    }
+    return OK;
+  }
+
+  int get_byteswapped() const {
+    if(!db) return -1;
+    return db->get_byteswapped();
+  }
+
+  DBTYPE get_type() const {
+    if(!db) return DB_UNKNOWN;
+    return db->get_type();
   }
 
   //
@@ -83,20 +145,26 @@ class WordDB {
     return errno;
   }
 
-  int Get(DbTxn *txnid, String& key, String& data, int flags) {
+  int Get(DbTxn *txnid, String& key, String& data, int flags) const {
     Dbt rkey((void*)key.get(), (u_int32_t)key.length());
     Dbt rdata((void*)data.get(), (u_int32_t)data.length());
 
     if((errno = db->get(0, &rkey, &rdata, 0)) != 0) {
       if(errno != DB_NOTFOUND)
 	cerr << "WordDB::Get(" << key << ", " << data << ", " << flags << ") failed " << dberror(errno) << "\n";
+    } else {
+      //
+      // Only set arguments if found something.
+      //
+      key.set((const char*)rkey.get_data(), (int)rkey.get_size());
+      data.set((const char*)rdata.get_data(), (int)rdata.get_size());
     }
+
     return errno;
   }
 
   int Del(DbTxn *txnid, const String& key) {
     Dbt rkey((void*)key.get(), (u_int32_t)key.length());
-    Dbt rdata;
 
     if((errno = db->del(0, &rkey, 0)) != 0) {
       if(errno != DB_NOTFOUND)
@@ -127,22 +195,40 @@ class WordDB {
 
     wordRef.Key().Pack(key);
 
-    if((errno = Del(0, key)) != 0) {
-      if(errno != DB_NOTFOUND)
-	return -1;
-      else
-	return 0;
-    }
-  
-    return 1;
+    return Del(0, key);
   }
-  
-  int Exists(const WordReference& wordRef) {
+
+  //
+  // Search entry matching wkey exactly, return key and data
+  // in wordRef.
+  //
+  int Get(WordReference& wordRef) const {
+    if(!db) return DB_RUNRECOVERY;
+
+    String data;
+    String key;
+
+    if(wordRef.Key().Pack(key) != OK) return DB_RUNRECOVERY;
+
+    int ret;
+    if((ret = Get(0, key, data, 0)) != 0)
+      return ret;
+
+    return wordRef.Unpack(key, data) == OK ? 0 : DB_RUNRECOVERY;
+  }
+
+  //
+  // Returns OK of the key of wordRef matches an entry in the base.
+  // Could be implemented with Get but is not because we don't
+  // need to build a wordRef with the entry found in the base. 
+  //
+  int Exists(const WordReference& wordRef) const {
     if(!db) return NOTOK;
 
     String key;
     String data;
-    wordRef.Key().Pack(key);
+
+    if(wordRef.Key().Pack(key) != OK) return NOTOK;
 
     if(Get(0, key, data, 0) != 0)
       return NOTOK;
@@ -181,6 +267,9 @@ class WordCursor {
     return OK;
   }
 
+  //
+  // String arguments
+  //
   int Get(String& key, String& data, int flags) {
     Dbt rkey;
     Dbt rdata;
@@ -193,14 +282,13 @@ class WordCursor {
       break;
     }
     if((errno = cursor->get(&rkey, &rdata, (u_int32_t)flags)) != 0) {
-      if(errno != DB_NOTFOUND) {
+      if(errno != DB_NOTFOUND)
 	cerr << "WordCursor::Get(" << flags << ") failed " << dberror(errno) << "\n";
-      }
-      return NOTOK;
+      return errno;
     }
     key.set((const char*)rkey.get_data(), (int)rkey.get_size());
     data.set((const char*)rdata.get_data(), (int)rdata.get_size());
-    return OK;
+    return errno;
   }
 
   int Put(const String& key, const String& data, int flags) {
@@ -220,7 +308,6 @@ class WordCursor {
     }
     return OK;
   }
-  
 private:
     Dbc* cursor;
 };

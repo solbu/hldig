@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordRecord.h,v 1.3 1999/10/01 15:30:10 loic Exp $
+// $Id: WordRecord.h,v 1.4 1999/10/05 16:03:31 loic Exp $
 //
 
 #ifndef _WordRecord_h_
@@ -35,7 +35,13 @@
    unsigned chars and unsigned short ints when possible. */
 
 #define WORD_RECORD_DATA_FORMAT "u"
-#define WORD_RECORD_STATS_FORMAT "2u"
+#define WORD_RECORD_STATS_FORMAT "u2"
+
+class WordRecordStat {
+ public:
+  unsigned int		noccurence;
+  unsigned int		ndoc;
+};
 
 class WordRecord
 {
@@ -100,10 +106,7 @@ class WordRecord
 
   union {
     unsigned int		data;
-    struct {
-      unsigned int		noccurence;
-      unsigned int		ndoc;
-    } stats;
+    WordRecordStat		stats;
   } info;
 };
 
