@@ -1,3 +1,7 @@
+Sun Nov 9 14:44:02 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * Tagged release htdig-3-2-0b5
+
 Sat Nov 8 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htcommon/default.cc, htsearch/parser.cc:  Fix bug #825877
