@@ -1,3 +1,8 @@
+Tue Mar 23 12:11:04 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htmerge/words.cc(mergeWords): Fix to prevent description text
+	words from clobbering anchor number of merged anchor text words.
+
 Tue Mar 23 12:02:00 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(generateStars): Add in support for use_star_image

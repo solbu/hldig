@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.12 1999/03/21 15:19:28 hp Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.13 1999/03/23 18:18:33 grdetil Exp $";
 #endif
 
 #include "htmerge.h"
@@ -176,7 +176,8 @@ mergeWords(char *wordtmp, char *wordfile)
 		last_wr.weight += wr.weight;
 		if (wr.location < last_wr.location)
 		  last_wr.location = wr.location;
-		if (wr.anchor < last_wr.anchor)
+		if (wr.anchor > 0 && wr.anchor < last_wr.anchor
+		    || last_wr.anchor == 0)
 		  last_wr.anchor = wr.anchor;
 		continue;
 	      }
