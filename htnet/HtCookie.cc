@@ -7,14 +7,20 @@
 //
 // by Robert La Ferla.  Started 12/5/2000.
 // Reviewed by G.Bartolini - since 24 Feb 2001
+// Cookies input file by G.Bartolini - since 27 Jan 2003
 //
 ////////////////////////////////////////////////////////////
 //
-// HtCookie: This class allows you to store details about a single
+// The HtCookie class represents a single HTTP cookie.
 //
 // See "PERSISTENT CLIENT STATE HTTP COOKIES" Specification
 // at http://www.netscape.com/newsref/std/cookie_spec.html
 // Modified according to RFC2109 (max age and version attributes)
+//
+// This class also manages the creation of a cookie from a line
+// of a cookie file format, which is a text file as proposed by Netscape;
+// each line contains a name-value pair for a cookie.
+// Fields within a single line are separated by the 'tab' character;
 //
 ///////
 //
@@ -25,7 +31,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookie.cc,v 1.7 2002/08/06 16:23:54 angusgb Exp $
+// $Id: HtCookie.cc,v 1.8 2003/01/28 11:15:46 angusgb Exp $
 //
 
 #include "HtCookie.h"
@@ -39,6 +45,15 @@
 
    // Debug level
    int HtCookie::debug = 0;
+
+// Precompiled constants regarding the cookies file format (field order)
+#define COOKIES_FILE_DOMAIN	0
+#define COOKIES_FILE_FLAG	1
+#define COOKIES_FILE_PATH	2
+#define COOKIES_FILE_SECURE	3
+#define COOKIES_FILE_EXPIRES	4
+#define COOKIES_FILE_NAME	5
+#define COOKIES_FILE_VALUE	6
 
 
 // Default constructor
@@ -161,13 +176,86 @@ HtCookie::HtCookie(const String &setCookieLine, const String& aURL)
 }
 
 
+// Constructor from a line of a cookie file (according to Netscape format)
+HtCookie::HtCookie(const String &CookieFileLine)
+:   name(0),
+   value(0),
+   path(0),
+   domain(0),
+   expires(0),
+   isSecure(false),
+   isDomainValid(true),
+   srcURL(0),
+   issue_time(),
+   max_age(-1),
+   rfc_version(0)
+{
+
+   String cookieLineStr(CookieFileLine);
+   char * token;
+   const char * str;
+
+   if (debug > 5)
+      cout << "Creating cookie from a cookie file line: " << cookieLineStr << endl;
+
+   // Parse the cookie line
+   if ((str = strtok(cookieLineStr, "\t")))
+   {
+       int num_field = 0;
+       int expires_value; // Holds the expires value that will be read
+
+       // According to the field number, set the appropriate object member's value       
+       do
+       {
+       
+          token = stripAllWhitespace(str);
+	  
+	  switch(num_field)
+	  {
+	     case COOKIES_FILE_DOMAIN:
+	        SetDomain(token);
+	        break;
+	     case COOKIES_FILE_FLAG:
+	        // Ignored
+	        break;
+	     case COOKIES_FILE_PATH:
+	        SetPath(token);
+	        break;
+	     case COOKIES_FILE_SECURE:
+	        if (mystrcasecmp(token, "false"))
+		   SetIsSecure(true);
+		else
+		   SetIsSecure(false);
+	        break;
+	     case COOKIES_FILE_EXPIRES:
+		if ((expires_value = atoi(token) > 0)) // Sets the expires value only if > 0
+		   expires = new HtDateTime(atoi(token));
+	        break;
+	     case COOKIES_FILE_NAME:
+	        SetName(token);
+	        break;
+	     case COOKIES_FILE_VALUE:
+	        SetValue(token);
+		break;
+	  }
+
+          ++num_field;
+       } while((str = strtok(NULL, "\t")));
+   }
+
+   if (debug>3)
+      printDebug();
+
+}
+
+
 // Copy constructor
 HtCookie::HtCookie(const HtCookie& rhs)
 :   name(rhs.name),
    value(rhs.value),
    path(rhs.path),
    domain(rhs.domain),
-   expires(rhs.expires),
+   expires(0),
    isSecure(rhs.isSecure),
    isDomainValid(rhs.isDomainValid),
    srcURL(rhs.srcURL),
@@ -175,6 +263,8 @@ HtCookie::HtCookie(const HtCookie& rhs)
    max_age(rhs.max_age),
    rfc_version(rhs.rfc_version)
 {
+	if (rhs.expires)
+		expires = new HtDateTime(*rhs.expires);
 }
 
 // Destructor
@@ -291,7 +381,8 @@ void HtCookie::printDebug()
    if (isSecure)
       cout << " SECURE";
 
-   cout << " - Issued by: " << srcURL;
+   if (srcURL.length() > 0)
+      cout << " - Issued by: " << srcURL;
    
    cout << endl;
 

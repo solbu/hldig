@@ -5,6 +5,7 @@
 //
 // by Robert La Ferla.  Started 12/5/2000.
 // Reviewed by G.Bartolini - since 24 Feb 2001
+// Cookies input file by G.Bartolini - since 27 Jan 2003
 //
 ////////////////////////////////////////////////////////////
 //
@@ -13,6 +14,11 @@
 // See "PERSISTENT CLIENT STATE HTTP COOKIES" Specification
 // at http://www.netscape.com/newsref/std/cookie_spec.html
 // Modified according to RFC2109 (max age and version attributes)
+//
+// This class also manages the creation of a cookie from a line
+// of a cookie file format, which is a text file as proposed by Netscape;
+// each line contains a name-value pair for a cookie.
+// Fields within a single line are separated by the 'tab' character;
 //
 ///////
 //
@@ -23,7 +29,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookie.h,v 1.4 2002/08/06 16:23:54 angusgb Exp $ 
+// $Id: HtCookie.h,v 1.5 2003/01/28 11:15:46 angusgb Exp $ 
 //
 
 #ifndef _HTCOOKIE_H
@@ -48,6 +54,7 @@ class HtCookie : public Object
       HtCookie(); // default constructor
       HtCookie(const String &setCookieLine, const String& aURL);
       HtCookie(const String &aName, const String &aValue, const String& aURL);
+      HtCookie(const String &line);	// From a line of cookie file
       HtCookie(const HtCookie& rhs); // default constructor
       
       ~HtCookie();   // Destructor
