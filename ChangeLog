@@ -1,3 +1,18 @@
+Thu Jun 29 23:33:51 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/ParseTree.h, htsearch/ParseTree.cc: New parent class
+	for the new htsearch framework. Still needs work.
+
+	* htsearch/*ParseTree.*: Derived classes appropriate to the method
+	indicated.
+
+	* htsearch/parsetest.cc: New program to alllow initial
+	command-line testing of ParseTree classes.
+
+	* htsearch/Makefile.am, htsearch/Makefile.in: Build parsetest in
+	addition to htsearch. Eventually, parsetest is probably best
+	modified slightly and moved into the tests directory.
+
 Tue Jun 20 22:29:57 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* httools/htmerge.cc (mergeDB): Merge in patch contributed by
