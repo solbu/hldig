@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.20 2000/02/15 23:10:36 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.21 2001/06/07 19:06:16 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -823,7 +823,7 @@ Retriever::GetLocal(char *url)
     if (strstr(url, ".."))
         return 0;
     
-    String *prefix, *path;
+    String *prefix, *path, *defaultdoc;
     StringList *local_names = new StringList();
     prefixes->Start_Get();
     paths->Start_Get();
@@ -837,7 +837,7 @@ Retriever::GetLocal(char *url)
 	    *local += &url[prefix->length()];
 	    if (local->last() == '/' && defaultdocs) {
 	      defaultdocs->Start_Get();
-	      while (String *defaultdoc = (String *)defaultdocs->Get_Next()) {
+	      while (defaultdoc = (String *)defaultdocs->Get_Next()) {
 		String *localdefault = new String(*local, local->length()+defaultdoc->length()+1);
 		localdefault->append(*defaultdoc);
 		local_names->Add(localdefault);
@@ -868,6 +868,7 @@ Retriever::GetLocalUser(char *url, StringList *defaultdocs)
 {
     static StringList *prefixes = 0, *paths = 0, *dirs = 0;
     static Dictionary home_cache;
+    String *defaultdoc;
 
     //
     // Initialize prefix/path list if this is the first time.
@@ -964,7 +965,7 @@ Retriever::GetLocalUser(char *url, StringList *defaultdocs)
 	*local += rest;
 	if (local->last() == '/' && defaultdocs) {
 	  defaultdocs->Start_Get();
-	  while (String *defaultdoc = (String *)defaultdocs->Get_Next()) {
+	  while (defaultdoc = (String *)defaultdocs->Get_Next()) {
 	    String *localdefault = new String(*local, local->length()+defaultdoc->length()+1);
 	    localdefault->append(*defaultdoc);
 	    local_names->Add(localdefault);
