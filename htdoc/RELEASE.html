@@ -20,6 +20,28 @@
       is also a <a href="ChangeLog">ChangeLog</a> file which has
       more details on the code changes.
     </p>
+    <strong>Release notes for htdig-3.1.1</strong> 16 Feb 1999<br>
+    <p>This version cleans up some remaining bugs in the 3.1.0
+    release. As the latest stable release of ht://Dig, it is
+    recommended for all production servers.</p>
+    <ul>
+    <li>Fixed a bug in the configure script under IRIX</li>
+    <li>Fixed a minor bug with the Berkeley database code under
+    AlphaLinux.</li>
+    <li>Fixed a serious bug causing bus errors on several platforms,
+    notably Solaris SPARC, caused by unaligned access to database
+    information.</li>
+    <li>Fixed the contributed parse_word_doc script to prevent
+    crashes on non-Word documents with a .doc extension.</li>
+    <li>Fixed the htnotify program to parse dates as mentioned in the
+    <a href="notification.html">documentation</a>.</li>
+    <li>Cleaned up some minor mistakes in the documentation and moved
+    to HTML 4.0 Transitional syntax.</li>
+    <li>Fixed the documentation for the <a
+    href="attrs.html#pdf_parser">pdf_parser</a> attribute that was
+    changed in version 3.1.0. This attribute must call the parser with
+    all command-line options.
+    </ul>
     <strong>Release notes for htdig-3.1.0</strong> 9 Feb 1999<br>
     <p>This version marks the "full release" of version
     3.1.0. Naturally, this version adds a few new feature and fixes a
@@ -864,7 +886,7 @@
       <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
     </address>
     <!-- hhmts start -->
-Last modified: Mon Feb  8 23:47:28 EST 1999
+Last modified: Sat Feb 13 20:57:09 EST 1999
 <!-- hhmts end -->
   </body>
 </html>
