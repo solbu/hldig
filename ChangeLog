@@ -1,5 +1,10 @@
 Sun 25 Apr 2004 Lachlan Andrew <lha at users.sourceforge.net>
 
+    * htdig/Retriever.cc:
+    Gilles's patch to avoid regex compile for every URL encountered.
+
+Sun 25 Apr 2004 Lachlan Andrew <lha at users.sourceforge.net>
+
     * contrib/htdig-3.2.0.spec:
     Karl Eichwalder's patch to use mktemp to create safe temp file.
 

@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.91 2004/04/07 22:02:00 grdetil Exp $
+// $Id: Retriever.cc,v 1.92 2004/04/25 08:45:31 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -995,10 +995,21 @@ int Retriever::IsValidURL(const String & u)
 	// If the URL contains any of the patterns in the exclude list,
 	// mark it as invalid
 	//
-	tmpList.Create(config->Find(&aUrl, "exclude_urls"), " \t");
-	HtRegexList excludes;
-	excludes.setEscaped(tmpList, config->Boolean("case_sensitive"));
-	if (excludes.match(url, 0, 0) != 0)
+	String exclude_urls = config->Find(&aUrl, "exclude_urls");
+	static String *prevexcludes = 0;
+	static HtRegexList *excludes = 0;
+	if (!excludes || !prevexcludes || prevexcludes->compare(exclude_urls) != 0)
+	{
+		if (!excludes)
+			excludes = new HtRegexList;
+		if (prevexcludes)
+			delete prevexcludes;
+		prevexcludes = new String(exclude_urls);
+		tmpList.Create(exclude_urls, " \t");
+		excludes->setEscaped(tmpList, config->Boolean("case_sensitive"));
+		tmpList.Destroy();
+	}
+	if (excludes->match(url, 0, 0) != 0)
 	{
 		if (debug > 2)
 			cout << endl << "   Rejected: item in exclude list ";
@@ -1009,12 +1020,22 @@ int Retriever::IsValidURL(const String & u)
 	// If the URL has a query string and it is in the bad query list
 	// mark it as invalid
 	//
-	tmpList.Destroy();
-	tmpList.Create(config->Find(&aUrl, "bad_querystr"), " \t");
-	HtRegexList badquerystr;
-	badquerystr.setEscaped(tmpList, config->Boolean("case_sensitive"));
+	String bad_querystr = config->Find(&aUrl, "bad_querystr");
+	static String *prevbadquerystr = 0;
+	static HtRegexList *badquerystr = 0;
+	if (!badquerystr || !prevbadquerystr || prevbadquerystr->compare(bad_querystr) != 0)
+	{
+		if (!badquerystr)
+			badquerystr = new HtRegexList;
+		if (prevbadquerystr)
+			delete prevbadquerystr;
+		prevbadquerystr = new String(bad_querystr);
+		tmpList.Create(bad_querystr, " \t");
+		badquerystr->setEscaped(tmpList, config->Boolean("case_sensitive"));
+		tmpList.Destroy();
+	}
 	char *ext = strrchr((char *) url, '?');
-	if (ext && badquerystr.match(ext, 0, 0) != 0)
+	if (ext && badquerystr->match(ext, 0, 0) != 0)
 	{
 		if (debug > 2)
 			cout << endl << "   Rejected: item in bad query list ";
