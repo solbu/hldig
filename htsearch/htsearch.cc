@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.42 1999/08/25 21:50:17 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.43 1999/08/28 21:14:54 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -641,14 +641,8 @@ htsearch(char *wordfile, List &searchWords, Parser *parser)
     ResultList	*matches = new ResultList;
     if (searchWords.Count() > 0)
     {
-	Database	*dbf = Database::getDatabaseInstance(DB_BTREE);
-
-	dbf->OpenRead(wordfile);
-
-	parser->setDatabase(dbf);
+	parser->setDatabase(wordfile);
 	parser->parse(&searchWords, *matches);
-	dbf->Close();
-	delete dbf;
     }
 	
     return matches;
