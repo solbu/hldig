@@ -1,4 +1,6 @@
-Mon Mar 22 14:16:48 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Mar 22 14:25:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htmerge/docs.cc: Make htmerge -vv report reasons for deleting docs.
 
 	* htmerge/words.cc: Fix to prevent description text words from
 	clobbering anchor number of merged anchor text words.

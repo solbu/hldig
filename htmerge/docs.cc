@@ -3,7 +3,7 @@
 //
 // Indexing the "doc_db" database by id-number in "doc_index".
 //
-// $Id: docs.cc,v 1.14 1999/01/31 04:25:31 ghutchis Exp $
+// $Id: docs.cc,v 1.14.2.1 1999/03/22 20:32:19 grdetil Exp $
 //
 //
 
@@ -63,16 +63,34 @@ convertDocs(char *doc_db, char *doc_index)
 	    // For some reason, this document doesn't have an excerpt
 	    // (probably because of a noindex directive, or disallowed
 	    // by robots.txt or server_max_docs). Remove it
+	    if (verbose > 1)
+	    {
+		cout << "htmerge: " << url->get() << " (id " << id
+		     << ") discarded: empty or disallowed, no DocHead" << endl;
+		cout.flush();
+	    }
 	    db.Delete(url->get());
 	  }
 	else if ((ref->DocState()) == Reference_noindex)
 	  {
 	    // This document has been marked with a noindex tag. Remove it
+	    if (verbose > 1)
+	    {
+		cout << "htmerge: " << url->get() << " (id " << id
+		     << ") discarded: noindex meta tag" << endl;
+		cout.flush();
+	    }
 	    db.Delete(url->get());
 	  }
 	else if (remove_unused && discard_list.Exists(id))
 	  {
 	    // This document is not valid anymore.  Remove it
+	    if (verbose > 1)
+	    {
+		cout << "htmerge: " << url->get() << " (id " << id
+		     << ") discarded: gone or modified" << endl;
+		cout.flush();
+	    }
 	    db.Delete(url->get());
 	  }
 	else
