@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.14 2000/01/13 14:47:11 loic Exp $
+// $Id: word.cc,v 1.14.2.15 2000/02/05 16:14:23 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -676,7 +676,7 @@ SkipTestEntry SkipTestEntries[]=
      },
      {
  	"et  <UNDEF>    20            0       <UNDEF> ",
- 	"3 4 5 6 7 8 9 14 15 16 17",
+ 	"3 4 5 6 7 8 9 14 17",
      },
 };
 
