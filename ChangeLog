@@ -1,3 +1,8 @@
+Fri Jun 11 15:59:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.cc(removeIndex): use CompareWord instead of FindFirstWord,
+	to avoid substring matches.
+
 Wed Jun  2 15:51:00 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/URLTrans.cc(encodeURL): Fix to ensure that non-ASCII letters

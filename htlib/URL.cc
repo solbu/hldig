@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.23 1999/05/30 15:59:34 bergolth Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.24 1999/06/11 20:15:04 grdetil Exp $";
 #endif
 
 #include "URL.h"
@@ -452,7 +452,7 @@ void URL::removeIndex(String &path)
       l.Release();
     }
     if (defaultdoc->hasPattern() &&
-            defaultdoc->FindFirstWord(path.sub(filename)) >= 0)
+            defaultdoc->CompareWord(path.sub(filename)))
 	path.chop(path.length() - filename);
 }
 
