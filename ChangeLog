@@ -1,3 +1,8 @@
+Tue Apr 9 16:41:33 CEST 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+   * htnet/HtCookie*.[h,cc]: RFC2109 compliant.
+   * htlib/HtDateTime.[h,cc]: Add const-ness to the DiffTime static method
+
 Tue Apr 9 12:52:30 CEST 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htnet/HtCookie.cc: fixed a bug regarding expiry date recognition

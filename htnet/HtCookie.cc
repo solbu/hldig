@@ -14,6 +14,7 @@
 //
 // See "PERSISTENT CLIENT STATE HTTP COOKIES" Specification
 // at http://www.netscape.com/newsref/std/cookie_spec.html
+// Modified according to RFC2109 (max age and version attributes)
 //
 ///////
 //
@@ -24,7 +25,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookie.cc,v 1.5 2002/04/09 10:53:38 angusgb Exp $ 
+// $Id: HtCookie.cc,v 1.6 2002/04/09 14:43:58 angusgb Exp $ 
 //
 
 #include "HtCookie.h"
@@ -49,7 +50,9 @@ HtCookie::HtCookie()
    expires(0),
    isSecure(false),
    isDomainValid(true),
-   srcURL(0)
+   srcURL(0),
+   issue_time(),
+   max_age(-1)
 {
 }
 
@@ -65,7 +68,9 @@ HtCookie::HtCookie(const String &aName, const String &aValue,
    expires(0),
    isSecure(false),
    isDomainValid(true),
-   srcURL(aURL)
+   srcURL(aURL),
+   issue_time(),
+   max_age(-1)
 {
 }
 
@@ -79,7 +84,9 @@ HtCookie::HtCookie(const String &setCookieLine, const String& aURL)
    expires(0),
    isSecure(false),
    isDomainValid(true),
-   srcURL(aURL)
+   srcURL(aURL),
+   issue_time(),
+   max_age(-1)
 {
 
    String cookieLineStr(setCookieLine);
@@ -111,37 +118,32 @@ HtCookie::HtCookie(const String &setCookieLine, const String& aURL)
       	 ctoken = strtok(NULL, ";");
       	 SetPath(ctoken);
       }
-      else
-      {
-      	 if (mystrcasecmp(token, "expires") == 0)
-	     {
-      	    // Let's grab the expiration date
-      	    HtDateTime dt;
+      else if (mystrcasecmp(token, "expires") == 0)
+	  {
+         // Let's grab the expiration date
+      	 HtDateTime dt;
 	
-      	    ctoken = strtok(NULL, ";");
+      	 ctoken = strtok(NULL, ";");
 
-      	    if (ctoken && SetDate(ctoken, dt))
-      	       SetExpires(&dt);
-            else
-               SetExpires(0);
-            
-      	 }
-      	 else
-      	 {
-      	    if (mystrcasecmp(token, "secure") == 0)
-      	       SetIsSecure(true);
-      	    else
-            {
-      	       if (mystrcasecmp(token, "domain") == 0)
-      	       {
-      	          ctoken = strtok(NULL, ";");
-      	          SetDomain(ctoken);
-      	       }
-      	    }
-      	 }
+      	 if (ctoken && SetDate(ctoken, dt))
+      	    SetExpires(&dt);
+         else
+            SetExpires(0);
+      } else if (mystrcasecmp(token, "secure") == 0)
+         SetIsSecure(true);
+      else if (mystrcasecmp(token, "domain") == 0)
+      {
+         ctoken = strtok(NULL, ";");
+         SetDomain(ctoken);
+      }
+      else if (mystrcasecmp(token, "max-age") == 0)
+      {
+         ctoken = strtok(NULL, ";");
+         SetMaxAge(atoi(ctoken));
       }
 
-      if (token) delete[](token);
+      if (token)
+	     delete[](token);
 
    }
 
@@ -160,7 +162,9 @@ HtCookie::HtCookie(const HtCookie& rhs)
    expires(rhs.expires),
    isSecure(rhs.isSecure),
    isDomainValid(rhs.isDomainValid),
-   srcURL(rhs.srcURL)
+   srcURL(rhs.srcURL),
+   issue_time(rhs.issue_time),
+   max_age(rhs.max_age)
 {
 }
 
@@ -248,6 +252,9 @@ const HtCookie &HtCookie::operator = (const HtCookie &rhs)
 
    isSecure = rhs.isSecure;
    isDomainValid = rhs.isDomainValid;
+
+   issue_time = rhs.issue_time;
+   max_age = rhs.max_age;
    
    return *this;
 }
@@ -268,6 +275,9 @@ void HtCookie::printDebug()
       cout << " DOMAIN=" << domain << " ("
       << (isDomainValid?"VALID":"INVALID")
       << ")";
+
+   if (max_age >= 0)
+      cout << " MAX-AGE=" << max_age;
 
    if (isSecure)
       cout << " SECURE";

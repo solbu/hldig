@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.h,v 1.13 2002/03/18 10:30:20 angusgb Exp $
+// $Id: HtDateTime.h,v 1.14 2002/04/09 14:43:57 angusgb Exp $
 
 ///////
    //   Class for Date and Time
@@ -390,7 +390,7 @@ public:
    	 else return y - 1900;
    }
 
-   static int GetDiff(HtDateTime &, HtDateTime &);
+   static int GetDiff(const HtDateTime &, const HtDateTime &);
 
    // Check equality from 2 struct tm pointers
    // Returns 0 if equal, -1 if tm1 is lower than tm2, 1 if tm1 is greater than tm2

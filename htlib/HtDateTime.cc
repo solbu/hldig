@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.cc,v 1.15 2002/03/13 00:24:14 grdetil Exp $
+// $Id: HtDateTime.cc,v 1.16 2002/04/09 14:43:57 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1079,7 +1079,7 @@ time_t HtDateTime::HtTimeGM (struct tm *tm)
 
 // Returns the difference in seconds between two HtDateTime Objects
 
-int HtDateTime::GetDiff(HtDateTime &d1, HtDateTime &d2)
+int HtDateTime::GetDiff(const HtDateTime &d1, const HtDateTime &d2)
 {
 
    return (int) ( d1.Ht_t - d2.Ht_t );

@@ -12,6 +12,7 @@
 //
 // See "PERSISTENT CLIENT STATE HTTP COOKIES" Specification
 // at http://www.netscape.com/newsref/std/cookie_spec.html
+// Modified according to RFC2109 (max age and version attributes)
 //
 ///////
 //
@@ -22,7 +23,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookie.h,v 1.2 2002/02/02 18:18:13 ghutchis Exp $ 
+// $Id: HtCookie.h,v 1.3 2002/04/09 14:43:58 angusgb Exp $ 
 //
 
 #ifndef _HTCOOKIE_H
@@ -63,6 +64,7 @@ class HtCookie : public Object
       void SetIsSecure(const bool flag) { isSecure = flag; }
       void SetIsDomainValid(const bool flag) { isDomainValid = flag; }
       void SetSrcURL(const String &aURL) { srcURL = aURL; }
+	  void SetMaxAge(const int ma) { max_age = ma; }
 
       const String &GetName() const { return name; }
       const String &GetValue()const { return value; }
@@ -72,6 +74,8 @@ class HtCookie : public Object
       const bool getIsSecure() const { return isSecure; }
       const bool getIsDomainValid() const { return isDomainValid; }
       const String &GetSrcURL()const { return srcURL; }
+      const int GetMaxAge()const { return max_age; }
+      const HtDateTime &GetIssueTime() const { return issue_time; }
 
       // Print debug info
       void printDebug();
@@ -112,6 +116,8 @@ class HtCookie : public Object
       bool isSecure;
       bool isDomainValid;
       String srcURL;
+      HtDateTime issue_time;	// When the cookie has been created
+	  int max_age;				// rfc2109: lifetime of the cookie, in seconds
 
    ///////
       //    Debug level

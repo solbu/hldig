@@ -13,6 +13,7 @@
 //
 // See "PERSISTENT CLIENT STATE HTTP COOKIES" Specification
 // at http://www.netscape.com/newsref/std/cookie_spec.html
+// Modified according to RFC2109 (max age and version attributes)
 //
 ///////
 //
@@ -23,7 +24,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookieMemJar.h,v 1.2 2002/02/02 18:18:13 ghutchis Exp $ 
+// $Id: HtCookieMemJar.h,v 1.3 2002/04/09 14:43:58 angusgb Exp $ 
 //
 
 #ifndef _HTCOOKIE_MEM_JAR_H

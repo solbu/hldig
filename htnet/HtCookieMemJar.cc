@@ -13,6 +13,7 @@
 //
 // See "PERSISTENT CLIENT STATE HTTP COOKIES" Specification
 // at http://www.netscape.com/newsref/std/cookie_spec.html
+// Modified according to RFC2109 (max age and version attributes)
 //
 ///////
 //
@@ -23,7 +24,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookieMemJar.cc,v 1.2 2002/02/02 18:18:13 ghutchis Exp $ 
+// $Id: HtCookieMemJar.cc,v 1.3 2002/04/09 14:43:58 angusgb Exp $ 
 //
 
 #include "HtCookieMemJar.h"
@@ -355,9 +356,16 @@ int HtCookieMemJar::WriteDomainCookiesString(const URL &_url,
          // If it's not empty and the datetime
          // is before now.
          //
+		 // Another way of determining whether a
+		 // cookie is expired is checking the
+		 // max_age property that is to say:
+		 // (now - issuetime <= maxage).
+		 //
          
-         const bool expired = cookie->GetExpires() &&
-            (*(cookie->GetExpires()) < now);
+         const bool expired =
+		    (cookie->GetExpires() && (*(cookie->GetExpires()) < now))	// Expires
+			|| (HtDateTime::GetDiff(now, cookie->GetIssueTime())
+			   <= cookie->GetMaxAge()); // Max-age
 
          if (debug > 5)
       	    cout << "Trying to match paths and expiration time: "
