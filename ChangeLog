@@ -1,7 +1,8 @@
-Wed Nov 21 11:29:40 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Nov 21 11:37:52 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/TemplateList.cc (createFromString), htdoc/attrs.html:
-	Treat template_map as a _quoted_ string list.
+	Treat template_map as a _quoted_ string list.  Change <i> tags to
+	the HTML-4.0 compliant <em> tags in builtin-long template.
 
 Tue Nov 20 17:13:27 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 

@@ -12,7 +12,7 @@
 // <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char RCSid[] = "$Id: TemplateList.cc,v 1.4.2.4 2001/11/21 17:33:21 grdetil Exp $";
+static char RCSid[] = "$Id: TemplateList.cc,v 1.4.2.5 2001/11/21 17:40:45 grdetil Exp $";
 #endif
 
 #include "TemplateList.h"
@@ -82,7 +82,7 @@ TemplateList::createFromString(char *str)
 	    s << "<dl><dt><strong><a href=\"$&(URL)\">$&(TITLE)</a></strong>";
 	    s << "$(STARSLEFT)\n";
 	    s << "</dt><dd>$(EXCERPT)<br>\n";
-	    s << "<i><a href=\"$&(URL)\">$&(URL)</a></i>\n";
+	    s << "<em><a href=\"$&(URL)\">$&(URL)</a></em>\n";
 	    s << " <font size=\"-1\">$(MODIFIED), $(SIZE) bytes</font>\n";
 	    s << "</dd></dl>\n";
 	    t->setMatchTemplate(s);
