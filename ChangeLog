@@ -53,6 +53,13 @@ Wed Jan 13 18:45:17 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/THANKS.html: Added Akos Domotor.
 
+Wed Jan 13 07:07:35 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htsearch/htsearch.cc (setupWords): Remove parsedWords parameter
+	with accociated processing of original words - deletion of
+	bad_words, spacing and on-the-fly modifiers. 
+	(main): Create originalWords from input, not via setupWords().
+	
 Tue Jan 12 09:16:49 1999 didier Gautheron <dgautheron@magic.fr>
 
 	* htcommon/WordList.cc, htmerge/words.cc: Changed field order 

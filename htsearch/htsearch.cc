@@ -6,6 +6,9 @@
 // Outputs HTML-ized results of the search based on the templates specified
 //
 // $Log: htsearch.cc,v $
+// Revision 1.21  1999/01/14 03:15:25  ghutchis
+// Create originalWords from input, not via setupWords().
+//
 // Revision 1.20  1999/01/14 03:01:49  ghutchis
 // Added check for sort config.
 //
@@ -73,7 +76,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.20 1999/01/14 03:01:49 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.21 1999/01/14 03:15:25 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -99,7 +102,7 @@ typedef void (*SIGNAL_HANDLER) (...);
 
 ResultList *htsearch(char *, List &, Parser *);
 
-void setupWords(char *, List &, String&, int, Parser *);
+void setupWords(char *, List &, int, Parser *);
 void createLogicalWords(List &, String &, StringMatch &);
 void reportError(char *);
 void convertToBoolean(List &words);
@@ -125,7 +128,6 @@ main(int ac, char **av)
     int			pageNumber = 1;
     StringMatch		limit_to;
     StringMatch		exclude_these;
-    String		originalWords;
     String		logicalWords;
     StringMatch		searchWordsPattern;
     StringList		requiredWords;
@@ -246,9 +248,9 @@ main(int ac, char **av)
     // Parse the words to search for from the argument list.
     // This will produce a list of WeightWord objects.
     //
-    String	tmp = input["words"];
-    tmp.chop(" \t\r\n");
-    setupWords(tmp, searchWords, originalWords,
+    String	 originalWords = input["words"];
+    originalWords.chop(" \t\r\n");
+    setupWords(originalWords, searchWords,
 	       strcmp(config["match_method"], "boolean") == 0,
 	       parser);
 
@@ -378,12 +380,11 @@ dumpWords(List &words, char *msg = "")
 }
 
 //*****************************************************************************
-// void setupWords(char *allWords, List &searchWords, String &parsedWords,
+// void setupWords(char *allWords, List &searchWords,
 //					int boolean, Parser *parser)
 //
 void
-setupWords(char *allWords, List &searchWords, String &parsedWords,
-	   int boolean, Parser *parser)
+setupWords(char *allWords, List &searchWords, int boolean, Parser *parser)
 {
     List	tempWords;
     int		i;
@@ -405,34 +406,6 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
     WordList	badWords;		// Just used to check for valid words.
     badWords.BadWordFile(config["bad_word_list"]);
 
-    //
-    // Create a string with the original search words minus any attributes
-    // and minus hidden keywords.
-    //
-    StringList	origList(allWords, ' ');
-    for (i = 0; i < origList.Count(); i++)
-    {
-	char	*p = origList[i];
-	if (mystrncasecmp(p, "hidden:", 7) == 0)
-	{
-	    i++;
-	    continue;
-	}
-	if (mystrncasecmp(p, "exact:", 6) == 0)
-	    p += 6;
-	if (mystrncasecmp(p, "hidden:", 7) == 0)
-	{
-	    i++;
-	    continue;
-	}
-	if (boolean)
-	    parsedWords << p << ' ';
-	else if (badWords.IsValid(p))
-	    parsedWords << p << ' ';
-    }
-
-    parsedWords.chop(' ');
-	
     //
     // Convert the string to a list of WeightWord objects.  The special
     // characters '(' and ')' will be put into their own WeightWord objects.
