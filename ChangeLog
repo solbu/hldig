@@ -1,4 +1,7 @@
-Tue Nov 23 19:26:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Nov 23 19:39:40 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/cgi.cc(init): Fix bug in reading long queries via POST
+	method (PR#668).
 
 	* htnotify/htnotify.cc(send_notification): apply Jason Haar's fix
 	to quote the sender name "ht://Dig Notification Service".

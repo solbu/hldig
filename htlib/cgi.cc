@@ -4,6 +4,9 @@
 // Implementation of cgi
 //
 // $Log: cgi.cc,v $
+// Revision 1.5.2.2  1999/11/24 01:52:21  grdetil
+// htcommon/cgi.cc(init): Fix bug in reading long queries via POST method (PR#668).
+//
 // Revision 1.5.2.1  1999/09/01 20:27:29  grdetil
 // Fix PR#572, where htsearch crashed if CONTENT_LENGTH was not set but REQUEST_METHOD was.
 //
@@ -26,7 +29,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: cgi.cc,v 1.5.2.1 1999/09/01 20:27:29 grdetil Exp $";
+static char RCSid[] = "$Id: cgi.cc,v 1.5.2.2 1999/11/24 01:52:21 grdetil Exp $";
 #endif
 
 #include "cgi.h"
@@ -74,8 +77,10 @@ cgi::cgi()
 		if (!buf || !*buf || (n = atoi(buf)) <= 0)
 			return;		// null query
 		buf = new char[n + 1];
-		read(0, buf, n);
-		buf[n] = '\0';
+		int	r, i = 0;
+		while (i < n && (r = read(0, buf+i, n-i)) > 0)
+			i += r;
+		buf[i] = '\0';
 		results = buf;
 		delete buf;
 	}
