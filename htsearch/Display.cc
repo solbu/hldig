@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.39 2001/07/24 19:05:06 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.40 2001/07/24 19:14:01 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -23,6 +23,8 @@ static char RCSid[] = "$Id: Display.cc,v 1.54.2.39 2001/07/24 19:05:06 grdetil E
 #include <locale.h>
 #include "HtURLCodec.h"
 #include "HtWordType.h"
+
+extern int		debug;
 
 //*****************************************************************************
 //
@@ -782,6 +784,8 @@ Display::displayParsedFile(char *filename)
     }
     if (fl)
 	fclose(fl);
+    else if (debug)
+	cerr << "displayParsedFile: Can't open " << filename << endl;
 }
 
 //*****************************************************************************
@@ -939,6 +943,10 @@ Display::readFile(char *filename)
     {
 	*s << line;
     }
+    if (fl)
+	fclose(fl);
+    else if (debug)
+	cerr << "readFile: Can't open " << filename << endl;
     return s;
 }
 

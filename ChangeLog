@@ -1,3 +1,11 @@
+Tue Jul 24 14:12:06 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (readFile): Added missing fclose() call, and
+	debugging message for when file can't be opened.
+
+	* htsearch/Display.cc (displayParsedFile): Added debugging message
+	for when file can't be opened.
+
 Tue Jul 24 14:03:12 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (setVariables), htcommon/defaults.cc: Added
