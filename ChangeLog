@@ -1,3 +1,8 @@
+Thu Oct 07 11:56:52 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* HtHTTP.cc : fixed bug of double deleting _access_time
+	  and _modification_time objects in ~HtHTTP().
+
 Thu Oct 07 10:17:22 1999  Loic Dachary  <loic@ceic.com>
 
 	* htword/WordRecord.h: change (const char*) cast to (char*)

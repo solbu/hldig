@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.9 1999/10/06 13:15:35 loic Exp $ 
+// $Id: HtHTTP.cc,v 1.10 1999/10/07 10:01:52 angus Exp $ 
 //
 
 #include "lib.h"
@@ -74,12 +74,6 @@ HtHTTP_Response::HtHTTP_Response()
 
 HtHTTP_Response::~HtHTTP_Response()
 {
-   // Delete the HtDateTime Object, if present
-   
-   if(_modification_time) delete _modification_time;
-
-   if(_access_time) delete _access_time;
-      
 }
 
 
