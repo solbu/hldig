@@ -3,13 +3,9 @@
 //
 // Implementation of the List class
 //
-// $Log: List.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
-//
 //
 #if RELEASE
-static char	RCSid[] = "$Id: List.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
+static char	RCSid[] = "$Id: List.cc,v 1.1.1.1.2.1 1999/03/23 00:34:19 grdetil Exp $";
 #endif
 
 #include "List.h"
@@ -343,6 +339,9 @@ Object *List::Previous(Object *prev)
 //
 Object *List::Nth(int n)
 {
+    if (n < 0 || n >= number)
+        return 0;
+
     listnode	*temp = head;
 
     if (current_index == n)

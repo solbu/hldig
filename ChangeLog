@@ -1,3 +1,8 @@
+Mon Mar 22 18:23:11 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/List.cc(Nth): Check for out-of-bounds requests before
+	doing anything.
+
 Mon Mar 22 17:50:47 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(display): Free DocumentRef memory after
@@ -7,7 +12,8 @@ Mon Mar 22 17:50:47 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 Mon Mar 22 17:32:14 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
-	* htmerge/docs.cc: Replace previous verbose patch with H-P Nilsson's.
+	* htmerge/docs.cc(convertDocs): Replace previous verbose patch
+	with H-P Nilsson's.
 
 Mon Mar 22 17:13:35 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
@@ -44,12 +50,12 @@ Mon Mar 22 15:03:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 Mon Mar 22 14:38:01 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
-	* htdig/Plaintext.cc: Use minimum_word_length instead of hardcoded
-	constant.
+	* htdig/Plaintext.cc(parse): Use minimum_word_length instead of
+	hardcoded constant.
 
 Mon Mar 22 14:33:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
-	* htlib/Configuration.cc: Fix Add() function to avoid infinite loop
+	* htlib/Configuration.cc(Add): Fix function to avoid infinite loop
 	on some systems, which don't allow all the letters in isalnum() that
 	isalpha() does, e.g. accented ones.
 
@@ -62,8 +68,8 @@ Mon Mar 22 14:25:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htmerge/docs.cc: Make htmerge -vv report reasons for deleting docs.
 
-	* htmerge/words.cc: Fix to prevent description text words from
-	clobbering anchor number of merged anchor text words.
+	* htmerge/words.cc(mergeWords): Fix to prevent description text
+	words from clobbering anchor number of merged anchor text words.
 
 Fri Mar 19 17:09:21 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
