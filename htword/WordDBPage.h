@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.h,v 1.1.2.4 2000/01/11 18:48:47 bosc Exp $
+// $Id: WordDBPage.h,v 1.1.2.5 2000/01/14 11:27:41 bosc Exp $
 //
 //
 // Access to Berkeley DB internal
@@ -64,10 +64,7 @@ public:
 	    info.stats.ndoc      =data[pstat1][i];
 	}
     }
-    WordDBRecord():WordRecord()
-    {
-;
-    }
+    WordDBRecord():WordRecord(){;}
     WordDBRecord(byte *dat,int len,int rectyp):WordRecord()
     {
 	type=(rectyp ? DefaultType() : WORD_RECORD_STATS);
@@ -142,9 +139,9 @@ class WordDBPage
     int n;   // number of entries
     int nk;  // number of keys
     int type; // for now 3(btreeinternal) && 5(leave:normal case) are allowed
-    int decmpr_pos;
-    int decmpr_indx;
-    PAGE *pg;
+    int pgsz;
+
+    PAGE *pg;         // pointer to BerkeleyDB BTREE page structure
 
     // assert this page is a leave
     void isleave()
@@ -169,6 +166,8 @@ class WordDBPage
 	{errr("WordDBPage:get_WordDBKey: bad page type");}
 	return WordDBKey();
     }
+
+    // ******************* Accessors to packed entries ****************
 
     // get the i'th key stored in this (internal==nonleave) page. (ptr to packed)
     BINTERNAL *btikey(int i)
@@ -196,22 +195,28 @@ class WordDBPage
 	isleave(); return(GET_BKEYDATA (pg,i*2+1));
     }
 
+
+    // ********************* Inserting entries into a page ***************
+
+    int insert_pos;   // offset in page of last inserted entry 
+    int insert_indx;  // index of next entry to be inserted
+
     int e_offset(int i) {return((int)(pg->inp[i]));}
 
     // allocate space (in the db page) for adding an entry to this page
     void *alloc_entry(int size)
     {
 	size=WORD_ALLIGN_TO(size,4);	
-	int inp_pos=((byte *)&(pg->inp[decmpr_indx]))-(byte *)pg;
-	decmpr_pos-=size;
-	if(decmpr_pos<=inp_pos)
+	int inp_pos=((byte *)&(pg->inp[insert_indx]))-(byte *)pg;
+	insert_pos-=size;
+	if(insert_pos<=inp_pos)
 	{
 	    show();
-	    printf("alloc_entry: allocating size:%4d entrynum:decmpr_indx:%4d at:decmpr_pos:%4d\n",size,decmpr_indx,decmpr_pos);
+	    printf("alloc_entry: allocating size:%4d entrynum:insert_indx:%4d at:insert_pos:%4d\n",size,insert_indx,insert_pos);
 	    errr("WordDBPage::alloc_entry: PAGE OVERFLOW");
 	}
-	pg->inp[decmpr_indx++]=decmpr_pos;
-	return((void *)((byte *)pg+decmpr_pos));
+	pg->inp[insert_indx++]=insert_pos;
+	return((void *)((byte *)pg+insert_pos));
     }
 
     
@@ -219,7 +224,7 @@ class WordDBPage
     void insert_data(WordDBRecord &wrec)
     {
 	isleave();
-	if(!(decmpr_indx%2)){errr("WordDBPage::insert_data data must be an odd number!");}
+	if(!(insert_indx%2)){errr("WordDBPage::insert_data data must be an odd number!");}
 	String prec;
 	wrec.Pack(prec);
 	int len=prec.length();
@@ -234,7 +239,7 @@ class WordDBPage
     void insert_key(WordDBKey &ky)
     {
 	isleave();
-	if(decmpr_indx%2){errr("WordDBPage::insert_key key must be an even number!");}
+	if(insert_indx%2){errr("WordDBPage::insert_key key must be an even number!");}
 	String pkey;
 	ky.Pack(pkey);
 	int keylen=pkey.length();
@@ -282,16 +287,10 @@ class WordDBPage
 
     
 
-    int pgsz;
 
-    void show();
 
-    int TestCompress(int debuglevel);
-    int Compare(WordDBPage &other);
+    // ************** Comrpession/Uncompression ***************************
     
-    int verbose;
-    int debug;
-
     // The compression functions
     void Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int nnums,HtVector_byte &wordiffs);
     void Compress_show_extracted(int *nums,int *nums_pos,int nnums,HtVector_byte &wordiffs);
@@ -308,6 +307,9 @@ class WordDBPage
     int  Uncompress_header(Compressor &in);
     void Uncompress_rebuild(unsigned int **rnums,int *rnum_sizes,int nnums,byte *rworddiffs,int nrworddiffs);
     void Uncompress_show_rebuild(unsigned int **rnums,int *rnum_sizes,int nnums,byte *rworddiffs,int nrworddiffs);
+
+    int TestCompress(int debuglevel);
+    int Compare(WordDBPage &other);
 
     // the following functions are use to compress/uncompress
     // keys/data directly
@@ -390,15 +392,8 @@ class WordDBPage
 	return res;
     }
 
-    // initialize when header is valid
-    void init() 
-    {
-	type=pg->type;
-	n=pg->entries;
-	nk=(type==P_LBTREE ? n/2 : n);
-	decmpr_pos=pgsz;
-	decmpr_indx=0;
-    }
+    
+    // exctracted numerical fields
 
     const char* number_field_label(int j)
     {
@@ -413,7 +408,6 @@ class WordDBPage
 	if( j==CNWORDDIFFLEN  )return "CNWORDDIFFLEN"  ;
 	return "BADFIELD";
     }
-
     // positions of different fileds in 
     // number arrays that are extracted
     int CNFLAGS        ;// FLAGS: which key-fields have changed 
@@ -426,6 +420,26 @@ class WordDBPage
     int CNWORDDIFFPOS  ;// position of first caracter that changed in word
     int CNWORDDIFFLEN  ;// number of chars that  changed in word
     int nnums      ;
+
+
+    // ************** DEBUGING/BENCHMARKING  ***************
+    void show();
+    int verbose;
+    int debug;
+
+
+    // ************** Initialization/Destruction *****************
+
+    // initialize when header is valid
+    void init() 
+    {
+	type=pg->type;
+	n=pg->entries;
+	nk=(type==P_LBTREE ? n/2 : n);
+	insert_pos=pgsz;
+	insert_indx=0;
+    }
+
     void init0()
     {
 	CNFLAGS        =0;
@@ -446,8 +460,8 @@ class WordDBPage
 	type=-1;
 	verbose=0;
 	debug=0;
-	decmpr_pos=pgsz;
-	decmpr_indx=0;
+	insert_pos=pgsz;
+	insert_indx=0;
     }
 
     // db page was created here, destroy it
@@ -475,17 +489,19 @@ class WordDBPage
 	pgsz=npgsz;
 	pg=(PAGE *)(new byte[pgsz]);
 	CHECK_MEM(pg);
-	decmpr_pos=pgsz;
-	decmpr_indx=0;
+	insert_pos=pgsz;
+	insert_indx=0;
     }
     WordDBPage(const u_int8_t* buff,int buff_length)
     {
 	init0();
 	pg=(PAGE *)buff;
 	pgsz=buff_length;
-	decmpr_pos=pgsz;
-	decmpr_indx=0;
+	insert_pos=pgsz;
+	insert_indx=0;
 	init();
     }
 };
+
+
 #endif// _WordDBPage_h_
