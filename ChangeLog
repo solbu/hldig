@@ -1,3 +1,7 @@
+Thu Feb 24 15:20:08 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/RELEASE.html, htdoc/main.html: Updated notes for 3.1.5 release.
+
 Thu Feb 24 10:37:45 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html (external_parsers): Add references to FAQ 4.8 & 4.9.
