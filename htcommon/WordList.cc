@@ -14,7 +14,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.23 1999/08/31 07:25:01 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.24 1999/09/05 06:46:09 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -42,6 +42,7 @@ WordList::WordList()
     // The database itself hasn't been opened yet
     isopen = 0;
     isread = 0;
+
 }
 
 
@@ -148,47 +149,22 @@ int WordList::valid_word(char *word)
 void WordList::Flush()
 {
     WordReference	*wordRef;
-    WordRecord		*wordRec = new WordRecord;
-    Database		*dbf = Database::getDatabaseInstance(DB_BTREE);
-    char		*wordfile = config["word_db"];
-    String		compressedData;
-    String		key;
 
-
-    if (dbf->OpenReadWrite(wordfile, 0664) == NOTOK)
-    {
-      // Need a useful error here, yet we're basically dead.
-    }
-
+    // Provided for backwards compatibility
+    if (!isopen)
+      Open(config["word_db"]);
+    
     words->Start_Get();
     while ((wordRef = (WordReference *) words->Get_Next()))
-    {
-      if (wordRef->Word.length() == 0)
-	continue;
+      {
+	if (wordRef->Word.length() == 0)
+	  continue;
 
-      // Construct the key, which is word conjoined by the DocID
-      // \001 is used to join them simply because it's never a word char
-      key = wordRef->Word;
-      key << "\001" << wordRef->DocumentID;
-
-      // Now split out the WordRecord to store
-      wordRec->id = wordRef->DocumentID;
-      wordRec->flags = wordRef->Flags;
-      wordRec->anchor = wordRef->Anchor;
-      wordRec->location = wordRef->Location;
-
-      // We need to compress the WordRecord and convert it into a binary form
-      compressedData = htPack(WORD_RECORD_COMPRESSED_FORMAT,
-			      (char *) wordRec);
-  
-      dbf->Put(wordRef->Word, compressedData.get(), compressedData.length());
-    }
-
+	Add(wordRef);
+      }	
+    
     // Cleanup
-    delete wordRec;
     words->Destroy();
-    dbf->Close();
-    delete dbf;
 }
 
 
@@ -319,6 +295,9 @@ int WordList::Close()
 //
 int WordList::Add(WordReference *wordRef)
 {
+  if (!wordRef || wordRef->Word.length() == 0)
+    return NOTOK;
+
   String	key;
   String	compressedData;
   WordRecord	*wordRec = new WordRecord;
@@ -354,7 +333,7 @@ List *WordList::operator [] (String word)
     List        *list = new List;
     char        *key;
     String	wordKey;
-    String      data;
+    String	data;
     String      decompressed;
     WordRecord  *wr = new WordRecord;
 
@@ -369,8 +348,9 @@ List *WordList::operator [] (String word)
 
         if (data.length())
           {
+	    char	*unpack = data.get();
 	    decompressed = htUnpack(WORD_RECORD_COMPRESSED_FORMAT,
-			  data.get());
+			  unpack);
 
             if (decompressed.length() != sizeof (WordRecord))
 	      {
@@ -473,8 +453,9 @@ List *WordList::WordRefs()
 
         if (data.length())
           {
+	    char	*unpack = data.get();
 	    decompressed = htUnpack(WORD_RECORD_COMPRESSED_FORMAT,
-			  data.get());
+			  unpack);
 
             if (decompressed.length() != sizeof (WordRecord))
 	      {
