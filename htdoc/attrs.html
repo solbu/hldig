@@ -3786,7 +3786,7 @@
             <em>default:</em>
           </dt>
           <dd>
-            acroread
+            acroread -toPostScript -pairs
           </dd>
           <dt>
             <em>description:</em>
@@ -3794,18 +3794,21 @@
           <dd>
             Set this to the path of the program used to parse PDF
             files. The program will be called with the parameters:<br>
-            <tt>-toPostScript</tt> <em>infile tempdir</em>,<br>
-            where <em>infile</em> is a file to parse and <em>tempdir</em>
-            is a directory for storing temporary files. The program is
+            <em>infile outfile</em>,<br>
+            where <em>infile</em> is a file to parse and <em>outfile</em>
+	    is the PostScript output of the parser. The program is
             supposed to convert to a variant of PostScript, which is then
-            parsed internally.  Currently only the acroread
-            program has been tested as a PDF parser.
+            parsed internally. Currently, Adobe's <a
+            href="http://www.adobe.com/prodindex/acrobat/readstep.html">
+	    acroread</a> program and the pdftops program that is part
+            of the <a href="http://www.foolabs.com/xpdf/">xpdf</a>
+            0.80 package have been tested as pdf_parsers.
           </dd>
           <dt>
             <em>example:</em>
           </dt>
           <dd>
-            pdf_parser: /usr/local/bin/acroread
+            pdf_parser: /usr/local/bin/acroread  -toPostScript -pairs
           </dd>
         </dl>
       </dd>
@@ -6049,7 +6052,7 @@
       <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
     </address>
     <!-- hhmts start -->
-Last modified: Mon Feb  8 20:37:26 EST 1999
+Last modified: Sat Feb 13 21:05:59 EST 1999
 <!-- hhmts end -->
   </body>
 </html>
