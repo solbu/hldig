@@ -1,3 +1,8 @@
+Sun Dec 19 20:04:42 1999  Loic Dachary  <loic@ceic.com>
+
+	* htdb/{Makefile.am, err.cc}: add err.cc for portability
+	  purposes.
+
 Fri Dec 17 18:04:09 1999  Loic Dachary  <loic@ceic.com>
 
 	* Makefile.config: add PROFILING variable and document it. Designed
