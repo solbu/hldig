@@ -1,3 +1,9 @@
+Sun Jul 19 09:51:47 1998  Andrew Scherpbier  <andrew@contigo.com>
+
+	* configure.in (berkeley db stuff): Added the berkeley db .tar.gz
+ 	to the distribution and modified configure.in to extract it if it
+	needs to.
+
 Thu Jul  9 09:39:01 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Server.cc, htdig/Retriever.h, htdig/Retriever.cc,
