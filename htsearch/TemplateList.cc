@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: TemplateList.cc,v 1.8.2.1 2000/02/23 21:19:56 grdetil Exp $
+// $Id: TemplateList.cc,v 1.8.2.2 2000/04/09 15:13:55 ghutchis Exp $
 //
 
 #include "TemplateList.h"
@@ -82,7 +82,7 @@ TemplateList::createFromString(const String& str)
 	    s << "<dl><dt><strong><a href=\"$&(URL)\">$&(TITLE)</a></strong>";
 	    s << "$(STARSLEFT)\n";
 	    s << "</dt><dd>$(EXCERPT)<br>\n";
-	    s << "<i><a href=\"$&(URL)\">$&(URL)</a></i>\n";
+	    s << "<em><a href=\"$&(URL)\">$&(URL)</a></em>\n";
 	    s << " <font size=\"-1\">$(MODIFIED), $(SIZE) bytes</font>\n";
 	    s << "</dd></dl>\n";
 	    t->setMatchTemplate((char*)s);

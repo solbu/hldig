@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.49 2000/04/03 17:49:09 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.50 2000/04/09 15:13:56 ghutchis Exp $
 //
 
 #include "HtConfiguration.h"
@@ -43,12 +43,12 @@ ConfigDefaults	defaults[] =
 	<table>
 	<tr>
 	<td nowrap>
-	<tt>
+	<code>
 	&nbsp;&nbsp;&lt;SELECT NAME=\"search_algorithm\"&gt;<br>
 	&nbsp;&nbsp;&lt;OPTION VALUE=\"exact:1 prefix:0.6 synonyms:0.5 endings:0.1\" SELECTED&gt;fuzzy<br>
 	&nbsp;&nbsp;&lt;OPTION VALUE=\"exact:1\"&gt;exact<br>
 	&nbsp;&nbsp;&lt;/SELECT&gt;
-	</tt></td>
+	</code></td>
 	</tr>
 	</table>
 " },
@@ -82,7 +82,7 @@ ConfigDefaults	defaults[] =
 { "authorization", "", 
 	"string", "htdig", "URL", "3.1.4", "Indexing:Out", "authorization: myusername:mypassword", "
 	This tells htdig to send the supplied
-	<em>username</em><b>:</b><em>password</em> with each HTTP request.
+	<em>username</em><strong>:</strong><em>password</em> with each HTTP request.
 	The credentials will be encoded using the \"Basic\" authentication
 	scheme. There <em>must</em> be a colon (:) between the username and
 	password.<br>
@@ -129,10 +129,10 @@ ConfigDefaults	defaults[] =
 	This specifies a file which contains words which should
 	be excluded when digging or searching. This list should
 	include the most common words or other words that you
-	don't want to be able to search on (things like <i>
-	sex</i> or <i>smut</i> are examples of these.)<br>
+	don't want to be able to search on (things like <em>
+	sex</em> or <em>smut</em> are examples of these.)<br>
 	The file should contain one word per line. A sample
-	bad words file is located in the <tt>contrib/examples</tt>
+	bad words file is located in the <code>contrib/examples</code>
 	directory.
 " },
 { "bin_dir", BIN_DIR, 
@@ -244,7 +244,7 @@ http://www.htdig.org/", "
 	were seen will be created, one URL per line. This list
 	will not be in any order and there will be lots of
 	duplicates, so after htdig has completed, it should be
-	piped through <tt>sort -u</tt> to get a unique list.
+	piped through <code>sort -u</code> to get a unique list.
 " },
 { "create_url_list", "false", 
 	"boolean", "htdig", "", "all", "Extra Output", "create_url_list: yes", "
@@ -252,7 +252,7 @@ http://www.htdig.org/", "
 	will be created, one URL per line. This list will not
 	be in any order and there will be lots of duplicates,
 	so after htdig has completed, it should be piped
-	through <tt>sort -u</tt> to get a unique list.
+	through <code>sort -u</code> to get a unique list.
 " },
 { "database_base", "${database_dir}/db", 
 	"string", "htdig htnotify htfuzzy htmerge htsearch", "", "all", "File Layout", "database_base: ${database_dir}/sales", "
@@ -340,7 +340,7 @@ http://www.htdig.org/", "
 	documents. The file is easy to parse with tools like
 	perl or tcl.
 " },
-{ "end_ellipses", "<b><tt> ...</tt></b>", 
+{ "end_ellipses", "<strong><code> ...</code></strong>", 
 	"string", "htsearch", "", "all", "Presentation:Text", "end_ellipses: ...", "
 	When excerpts are displayed in the search output, this
 	string will be appended to the excerpt if there is text
@@ -638,13 +638,13 @@ http://www.htdig.org/", "
 					  8
 					</dt>
 					<dd>
-					  <i>unused</i>
+					  <em>unused</em>
 					</dd>
 					<dt>
 					  9
 					</dt>
 					<dd>
-					  <i>unused</i>
+					  <em>unused</em>
 					</dd>
 					<dt>
 					  10
@@ -737,7 +737,7 @@ http://www.htdig.org/", "
 				</td>
 				<td>
 				  The HTTP-EQUIV attribute of a
-				  <a href=\"meta.html\"><i>META</i> tag</a>.
+				  <a href=\"meta.html\"><em>META</em> tag</a>.
 				  May be empty.
 				</td>
 			  </tr>
@@ -747,7 +747,7 @@ http://www.htdig.org/", "
 				</td>
 				<td>
 				  The NAME attribute of this
-				  <a href=\"meta.html\"><i>META</i> tag</a>.
+				  <a href=\"meta.html\"><em>META</em> tag</a>.
 				  May be empty.
 				</td>
 			  </tr>
@@ -757,7 +757,7 @@ http://www.htdig.org/", "
 				</td>
 				<td>
 				  The CONTENTS attribute of this
-				  <a href=\"meta.html\"><i>META</i> tag</a>.
+				  <a href=\"meta.html\"><em>META</em> tag</a>.
 				  May be empty.
 				</td>
 			  </tr>
@@ -965,7 +965,7 @@ http://www.htdig.org/", "
 { "head_before_get", "false", 
 	"boolean", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "head_before_get: true", "
         This option works only if we take advantage of persistent connections (see
-        persistent_connections attribute). If set to true an HTTP/1.1 <I>HEAD</I>
+        persistent_connections attribute). If set to true an HTTP/1.1 <em>HEAD</em>
         call is made in order to retrieve header information about a document.
         If the status code and the content-type returned let the document be parsable,
         then a following 'GET' call is made.
@@ -1011,7 +1011,7 @@ http://www.htdig.org/", "
 	<a href=\"#create_image_list\">create_image_list</a> is set to
 	true. As image URLs are seen, they are just appended to
 	this file, so after htdig finishes it is probably a
-	good idea to run <tt>sort -u</tt> on the file to
+	good idea to run <code>sort -u</code> on the file to
 	eliminate duplicates from the file.
 " },
 { "image_url_prefix", IMAGE_URL_PREFIX, 
@@ -1065,20 +1065,20 @@ http://www.htdig.org/", "
 { "keywords_meta_tag_names", "keywords htdig-keywords", 
 	"string list", "htdig", "URL", "3.0.6", "Indexing:What", "keywords_meta_tag_names: keywords description", "
 	The words in this list are used to search for keywords
-	in HTML <i>META</i> tags. This list can contain any
+	in HTML <em>META</em> tags. This list can contain any
 	number of strings that each will be seen as the name
 	for whatever keyword convention is used.<br>
-	The <i>META</i> tags have the following format:<br>
-<tt>
-&nbsp;&nbsp;&lt;META name=\"<i>somename</i>\" content=\"<i>somevalue</i>\"&gt;
-</tt>
+	The <em>META</em> tags have the following format:<br>
+<code>
+&nbsp;&nbsp;&lt;META name=\"<em>somename</em>\" content=\"<em>somevalue</em>\"&gt;
+</code>
 " },
 { "limit_normalized", "", 
 	"pattern list", "htdig", "URL", "3.1.0b2", "Indexing:Where", "limit_normalized: http://www.mydomain.com", "
 	This specifies a set of patterns that all URLs have to
 	match against in order for them to be included in the
 	search. Unlike the limit_urls_to directive, this is done
-	<b>after</b> the URL is normalized and the server_aliases
+	<strong>after</strong> the URL is normalized and the server_aliases
 	directive is applied. This allows filtering after any
 	hostnames and DNS aliases are resolved. Otherwise, this
 	directive is the same as the <a
@@ -1096,7 +1096,7 @@ http://www.htdig.org/", "
         attribute is set. The match will be performed <em>after</em>
 	the relative references have been converted to a valid
 	URL. This means that the URL will <em>always</em> start
-	with <tt>http://</tt>.<br>
+	with <code>http://</code>.<br>
 	Granted, this is not the perfect way of doing this,
 	but it is simple enough and it covers most cases.
 " },
@@ -1483,9 +1483,9 @@ http://www.htdig.org/", "
 " },
 { "nothing_found_file", "${common_dir}/nomatch.html", 
 	"string", "htsearch", "", "all", "Presentation:Files", "nothing_found_file: /www/searching/nothing.html", "
-	This specifies the file which contains the <tt>
-	HTML</tt> text to display when no matches were found.
-	The file should contain a complete <tt>HTML</tt>
+	This specifies the file which contains the <code>
+	HTML</code> text to display when no matches were found.
+	The file should contain a complete <code>HTML</code>
 	document.<br>
 	Note that this attribute could also be defined in
 	terms of <a href=\"#database_base\">database_base</a> to
@@ -1551,7 +1551,7 @@ http://www.htdig.org/", "
 { "persistent_connections", "true", 
 	"boolean", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "persistent_connections: false", "
 	If set to true, when servers make it possible, htdig can take advantage
-        of persistent connections, as defined by HTTP/1.1 (<I>RFC2616</I>). This permits
+        of persistent connections, as defined by HTTP/1.1 (<em>RFC2616</em>). This permits
         to reduce the number of open/close operations of connections, when retrieving
         a document with HTTP.
 " },
@@ -1636,7 +1636,7 @@ http://www.htdig.org/", "
 	other server scripting languages, as
 	well. (You still need a wrapper script when
 	using PHP, though.)<br>
-	Check out the <tt>contrib/scriptname</tt>
+	Check out the <code>contrib/scriptname</code>
 	directory for a small example. Note that this
 	attribute also affects the value of the <a
 	href=\"hts_templates.html#CGI\">CGI</a> variable
@@ -2066,7 +2066,7 @@ http://www.htdig.org/", "
 	element of each pair is a pattern, the second element
 	is a URL to the image for that pattern.
 " },
-{ "start_ellipses", "<b><tt>... </tt></b>", 
+{ "start_ellipses", "<strong><code>... </code></strong>", 
 	"string", "htsearch", "", "all", "Presentation:Text", "start_ellipses: ...", "
 	When excerpts are displayed in the search output, this
 	string will be prepended to the excerpt if there is
@@ -2172,7 +2172,7 @@ http://www.htdig.org/", "
 	<a href=\"htsearch.html\" target=\"_top\">htsearch</a>
 	documentation.<br>
 	Normally, when using this template selection method, you
-	would disable user selection of templates via the <b>format</b>
+	would disable user selection of templates via the <strong>format</strong>
 	input parameter in search forms, as the two methods were not
 	really designed to interact. Templates selected by URL patterns
 	would override any user selection made in the form. If you want
@@ -2338,8 +2338,8 @@ url_part_aliases:
 	This is the set of characters which will be deleted
 	from the document before determining what a word is.
 	This means that if a document contains something like
-	<tt>Andrew's</tt> the digger will see this as <tt>
-	Andrews</tt>.<br>
+	<code>Andrew's</code> the digger will see this as <code>
+	Andrews</code>.<br>
 	The same transformation is performed on the keywords
 	the search engine gets.<br>
 	See also the <a
