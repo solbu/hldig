@@ -31,9 +31,11 @@
  */
 
 #ifndef lint
+/*
 static char copyright[] =
 "@(#) Copyright (c) 1994 Powerdog Industries.  All rights reserved.";
 static char sccsid[] = "@(#)strptime.c	1.0 (Powerdog) 94/03/27";
+*/
 #endif /* not lint */
 
 #include <lib.h>
@@ -43,7 +45,7 @@ static char sccsid[] = "@(#)strptime.c	1.0 (Powerdog) 94/03/27";
 #include <locale.h>
 #include <string.h>
 
-#define asizeof(a)	(sizeof (a) / sizeof ((a)[0]))
+#define asizeof(a)	((int)(sizeof (a) / sizeof ((a)[0])))
 
 struct mydtconv {
     char	*abbrev_month_names[12];
@@ -76,7 +78,7 @@ static struct mydtconv	En_US = {
 };
 
 char	*
-mystrptime(char *buf, char *fmt, struct tm *tm)
+mystrptime(const char *buf, const char *fmt, struct tm *tm)
 {
     char	c,
 	*ptr;

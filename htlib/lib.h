@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: lib.h,v 1.11.2.4 2000/11/30 05:47:16 ghutchis Exp $
+// $Id: lib.h,v 1.11.2.5 2000/11/30 20:12:05 grdetil Exp $
 //
 
 #ifndef _lib_h
@@ -55,7 +55,7 @@ const char *mystrcasestr(const char *s, const char *pattern);
 // Too many problems with system strptime() functions...  Just use our own
 // version of it.
 //
-char *mystrptime(char *buf, char *fmt, struct tm *tm);
+char *mystrptime(const char *buf, const char *fmt, struct tm *tm);
 
 //
 // timegm() is quite rare, so provide our own.
