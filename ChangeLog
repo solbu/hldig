@@ -1,3 +1,8 @@
+Mon Aug 27 17:22:56 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (do_tag): Improve handling of whitespace in META
+	refresh handling. Fixes bug #406244.
+
 Mon Aug 27 16:38:43 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc (parse): Fixed delete [] text (was missing []), added

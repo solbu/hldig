@@ -11,7 +11,7 @@
 // <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.18 2001/08/27 21:43:10 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.19 2001/08/27 22:27:31 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -830,10 +830,11 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    && conf["content"])
 		  {
 		    char *content = conf["content"];
-		    char *q = mystrcasestr(content, "url=");
+		    char *q = mystrcasestr(content, "url");
 		    if (q && *q)
 		      {
-			q += 4; // skiping "URL="
+			q += 3; // skiping "URL"
+			while (*q && ((*q == '=') || isspace(*q))) q++;
 			char *qq = q;
 			while (*qq && (*qq != ';') && (*qq != '"') &&
 			       !isspace(*qq))qq++;
