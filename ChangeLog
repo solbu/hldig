@@ -9,6 +9,8 @@ Tue Jan  5 14:24:52 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/DocumentRef.cc: Support restriction of max_descriptions.
 
+	* .version: Bump to 3.1.0b5dev.
+	
 Tue Jan  5 20:07:05 1999  Alexander Bergolth  <bergolth@ariel.wu-wien.ac.at>
 
 	* htdig/Retriever.cc: fixed bug in bad_querystring detection
