@@ -1,4 +1,16 @@
-Mon Dec 30 2002  Lachlan Andrew  <lha@users.sourcefourge.net>
+Mon Dec 31 2002  Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* configure.in,htfuzzy/EndingsDB.cc,htlib/{HtR,r}egex.h,Makefile.am:
+	Renamed  regex.h  to  gregex.h  and allow use of  rx  instead.
+
+	* htcommon/defaults.cc,htdocs/{attrs,cf_byprog,cf_byname}.html: 
+	Fixed typo in cross-references to  restrict  and  limit_urls_to.
+
+	* test/t_htmerge:  Re-enabled  htmerge  command (discarding output).
+
+	* test/Makefile,test/conf/htdig.conf3.in: Added conf3 and fixed db path.
+
+Mon Dec 30 2002  Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* contrib/doc2html/*: Incorporated David Adams' latest version, 3.0.1.
 

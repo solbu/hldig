@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: EndingsDB.cc,v 1.11 2002/02/01 22:49:33 ghutchis Exp $
+// $Id: EndingsDB.cc,v 1.12 2002/12/31 07:59:05 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -27,10 +27,14 @@
 
 // This is an attempt to get around compatibility problems 
 // with the included regex
-#ifdef HAVE_BROKEN_REGEX
-#include <regex.h>
-#else
-#include "regex.h"
+#ifdef USE_RX
+# include <rxposix.h>
+#else // Use regex
+# ifdef HAVE_BROKEN_REGEX
+#  include <regex.h>
+# else // include regex code and header
+#  include "gregex.h"
+# endif
 #endif
 
 #include <stdio.h>

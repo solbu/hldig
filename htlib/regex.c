@@ -209,7 +209,7 @@ char *realloc ();
 #endif
 
 /* Get the interface, including the syntax bits.  */
-#include <regex.h>
+#include <gregex.h>
 
 /* isalpha etc. are used for the character classes.  */
 #include <ctype.h>

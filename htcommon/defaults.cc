@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.72 2002/12/30 12:42:58 lha Exp $
+// $Id: defaults.cc,v 1.73 2002/12/31 07:59:03 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1374,7 +1374,7 @@ http://www.htdig.org/", " \
 	Granted, this is not the perfect way of doing this, \
 	but it is simple enough and it covers most cases.<br> \
 	To limit URLs in htsearch, use \
-	<a href=\"restrict\">restrict\">. \
+	<a href=\"restrict\">restrict</a>. \
 " }, \
 { "local_default_doc", "index.html",  \
 	"string list", "htdig", "Server", "3.0.8b2", "Indexing:Where", "local_default_doc: default.html default.htm index.html index.htm", " \
@@ -1960,7 +1960,7 @@ http://www.htdig.org/", " \
 	<a href=\"#exclude\">exclude</a> list - if a URL matches patterns \
 	in both lists it is still excluded from the search results. \
 	<br>To restrict URLs in htdig, use \
-	<a href=\"limit_urls_to\">limit_urls_to\">. \
+	<a href=\"limit_urls_to\">limit_urls_to</a>. \
 " }, \
 { "robotstxt_name", "htdig",  \
 	"string", "htdig", "Server", "3.0.7", "Indexing:Out", "robotstxt_name: myhtdig", " \

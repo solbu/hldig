@@ -20,7 +20,7 @@ common_dir:		_SRCDIR_/../installdir
 # plenty of free disk space available for the databases.  They can get
 # pretty big.
 #
-database_dir:		_TESTDIR_/var/htdig2
+database_dir:		_TESTDIR_/var/htdig
 
 #
 # This specifies the URL where the robot (htdig) will start.  You can specify

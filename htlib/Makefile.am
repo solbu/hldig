@@ -50,7 +50,7 @@ pkginclude_HEADERS = \
 	good_strtok.h \
 	htString.h \
 	lib.h \
-	regex.h  \
+	gregex.h  \
 	HtVectorGeneric.h   \
 	HtVectorGenericCode.h \
 	HtVector_int.h \

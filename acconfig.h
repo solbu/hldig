@@ -68,6 +68,9 @@ typedef char bool;
 /* Define if the included regex doesn't work */
 #undef HAVE_BROKEN_REGEX
 
+/* Define if we should use rxposix.h instead of regex.h */
+#undef USE_RX
+
 /*
  * Don't step on the namespace.  Other libraries may have their own
  * implementations of these functions, we don't want to use their

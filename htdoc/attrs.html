@@ -2033,6 +2033,74 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="content_classifier">
+		content_classifier</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			${bin_dir}/HtContent.sh
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b4 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	When ht://Dig can't determine the type of a local file or a file://
+	URL from its extension, this program is used to determine the type.
+	The program is called with one argument, the name of (possibly a
+	temporary copy of) the file.
+	<p>
+	See also <a href="#mime_types">mime_types</a>.
+	</p>
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  content_classifier:
+				</td>
+				<td nowrap>
+				     file -i -k
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="create_image_list">
 		create_image_list</a></strong>
 	  </dt>
@@ -5903,9 +5971,12 @@ http://www.htdig.org/
 	attribute is set. The match will be performed <em>after</em>
 	the relative references have been converted to a valid
 	URL. This means that the URL will <em>always</em> start
-	with <code>http://</code>.<br>
+	with a transport specifier (<code>http://</code> if none is
+	specified).<br>
 	Granted, this is not the perfect way of doing this,
-	but it is simple enough and it covers most cases.
+	but it is simple enough and it covers most cases.<br>
+	To limit URLs in htsearch, use
+	<a href="restrict">restrict</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7525,7 +7596,8 @@ http://www.htdig.org/
 		  </dt>
 		  <dd>
 			<a href="htdig.html">htdig</a>,
-			<a href="htsearch.html" target="_top">htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>,
+			<a href="htfuzzy.html">htfuzzy</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7884,6 +7956,8 @@ http://www.htdig.org/
 	file:// URLs to ensure the files are parsable. If you are running
 	a webserver with its own MIME file, you should set this attribute
 	to point to that file.
+	<p>
+	See also <a href="#content_classifier">content_classifier</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -9769,6 +9843,8 @@ http://www.htdig.org/
 	that the restrict list does not take precedence over the
 	<a href="#exclude">exclude</a> list - if a URL matches patterns
 	in both lists it is still excluded from the search results.
+	<br>To restrict URLs in htdig, use
+	<a href="limit_urls_to">limit_urls_to</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -10094,6 +10170,70 @@ http://www.htdig.org/
 				</td>
 				<td nowrap>
 				     exact:1 soundex:0.3
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="search_results_contenttype">
+		search_results_contenttype</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			text/html
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      all
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	This specifies a Content-type to be output as an HTTP header
+	at the start of search results. If set to an empty string,
+	the Content-type header will be omitted altogether.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  search_results_contenttype:
+				</td>
+				<td nowrap>
+				     text/xml
 				</td>
 			  </tr>
 			</table>
@@ -14183,6 +14323,6 @@ form during indexing and translated for results.
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: Tue Dec  3 23:47:12 EST 2002
+		Last modified: Tue Dec 31 17:09:27 EST 2002
   </body>
 </html>
