@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.37 1999/02/14 02:31:19 ghutchis Exp $
+// $Id: Retriever.cc,v 1.38 1999/03/08 12:49:04 hp Exp $
 //
 
 #include "Retriever.h"
@@ -956,7 +956,21 @@ Retriever::got_href(URL &url, char *description)
 	}
 
 	url.normalize();
-	if (limitsn.FindFirst(url.get()) >= 0)
+
+	// If it is a backlink from the current document,
+	// just update that field.  Writing to the database
+	// is meaningless, as it will be overwritten.
+	// Adding it as a new document may even be harmful, as
+	// that will be a duplicate.  This can happen if the
+	// current document is never referenced before, as in a
+	// start_url.
+
+	if (strcmp(url.get(), current_ref->DocURL()) == 0)
+	{
+	    current_ref->DocBackLinks(current_ref->DocBackLinks() + 1);
+	    current_ref->AddDescription(description);
+	}
+	else if (limitsn.FindFirst(url.get()) >= 0)
 	{
 	    //
 	    // First add it to the document database
