@@ -1,4 +1,6 @@
-Thu Nov 30 13:41:53 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Thu Nov 30 13:47:47 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/DocMatch.cc: Change include from iostream to iostream.h
 
 	* htsearch/Display.cc (createURL, buildMatchList, excerpt, hilight):
 	Clean up code to get rid of warnings, especially resulting from

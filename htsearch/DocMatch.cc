@@ -10,11 +10,11 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocMatch.cc,v 1.3.2.4 2000/10/20 03:40:59 ghutchis Exp $
+// $Id: DocMatch.cc,v 1.3.2.5 2000/11/30 19:57:23 grdetil Exp $
 //
 
 #include "DocMatch.h"
-#include <iostream>
+#include <iostream.h>
 
 
 //*******************************************************************************
