@@ -1,3 +1,36 @@
+Tue Jan 26 19:29:08 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* include/htconfig.h.in: Define TRUE and FALSE if not
+	defined. Change default of NO_WORD_COUNT (now undefined) for
+	compatibility.
+
+	* htdig/htdig.h: Remove definition of TRUE and FALSE (for consistency).
+
+Tue Jan 26 19:07:03 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: Define remove_default_doc as option of
+	default document to strip off URLs (e.g. /index.html -> /).
+
+	* htlib/URL.cc(removeIndex): Use it.
+	(normalizePath): Fix bug with stripping double slashes and the
+	like from a query string.
+
+	* htdig/Document.h, htdig/Document.cc: Add new variable
+	contentLength and consider content-length headers when reading in
+	documents.
+
+	* htdig/PDF.cc: Fix broken code calling acroread.
+
+	* htsearch/Display.cc: Allow braces in wrapper file.
+
+	* htdoc/hts_general.html, htdoc/hts_templates.html: Add info on
+	the wrapper alternative to separate header and footer files.
+
+	* htdoc/config.html, installdir/header.html,
+	installdir/nomatch.html, installdir/wrapper.html,
+	installdir/search.html: Change sort option to be more grammatically
+	correct.
+
 Tue Jan 26 21:19:02 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htmerge/docs.cc (convertDocs): Use HtURLCodec to encode URLs
