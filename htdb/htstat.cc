@@ -58,7 +58,7 @@ void	usage __P((void));
 
 char	*internal;
 const char
-	*progname = "db_stat";				/* Program name. */
+	*progname = "htstat";				/* Program name. */
 
 int
 main(int argc, char *argv[])

@@ -50,7 +50,7 @@ void	usage __P((void));
 
 int	 interrupted;
 const char
-	*progname = "db_load";				/* Program name. */
+	*progname = "htload";				/* Program name. */
 
 int
 main(int argc, char* argv[])

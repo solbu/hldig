@@ -42,7 +42,7 @@ void	pheader __P((DB *, int));
 void	usage __P((void));
 
 const char
-	*progname = "db_dump";				/* Program name. */
+	*progname = "htdump";				/* Program name. */
 
 int
 main(int argc, char *argv[])
