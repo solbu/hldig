@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.h,v 1.1.2.4 2000/01/13 14:47:11 loic Exp $
+// $Id: WordType.h,v 1.1.2.5 2000/01/14 01:03:28 ghutchis Exp $
 //
 
 #ifndef _WordType_h
@@ -68,6 +68,8 @@ public:
   // 
   int IsChar(int c) const;
   int IsStrictChar(int c) const;
+  int IsDigit(int c) const;
+  int IsControl(int c) const;
 
   //
   // Transformations
@@ -103,6 +105,7 @@ private:
 #define WORD_TYPE_DIGIT	0x02
 #define WORD_TYPE_EXTRA	0x04
 #define WORD_TYPE_VALIDPUNCT	0x08
+#define WORD_TYPE_CONTROL	0x10
 
 // One for characters that when put together are a word
 // (including punctuation).
@@ -117,6 +120,20 @@ inline int
 WordType::IsStrictChar(int c) const
 {
   return (chrtypes[(unsigned char)c] & (WORD_TYPE_ALPHA|WORD_TYPE_DIGIT|WORD_TYPE_EXTRA)) != 0;
+}
+
+// Reimplementation of isdigit() using the lookup table chrtypes[] 
+inline int
+WordType::IsDigit(int c) const
+{
+  return (chrtypes[(unsigned char)c] & WORD_TYPE_DIGIT) != 0;
+}
+
+// Similar to IsDigit, but for iscntrl()
+inline int
+WordType::IsControl(int c) const
+{
+  return (chrtypes[(unsigned char)c] & WORD_TYPE_CONTROL) != 0;
 }
 
 // Let caller get rid of getting and holding a configuration parameter.

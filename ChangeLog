@@ -1,3 +1,9 @@
+Thu Jan 13 18:42:29 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htword/WordType.h, htword/WordType.cc: Implementation of new
+	methods IsDigit() and IsCntrl() as contributed by Marc Pohl
+	<marc.pohl@wdr.de>. Fixes some problems with 8-bit characters.
+
 Thu Jan 13 17:17:47 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* ChangeLog.0, configure, configure.in, htfuzzy/Endings.cc,
