@@ -4,6 +4,11 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.6  1998/07/21 09:56:58  ghutchis
+//
+// Added patch by Rob Stone <rob@psych.york.ac.uk> to create new
+// environment variables to htsearch: SELECTED_FORMAT and SELECTED_METHOD.
+//
 // Revision 1.5  1998/07/16 15:15:28  ghutchis
 //
 // Added patch from Stephan Muehlstrasser <smuehlst@Rational.Com> to fix
@@ -23,7 +28,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.5 1998/07/16 15:15:28 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.6 1998/07/21 09:56:58 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -272,6 +277,8 @@ Display::setVariables(int pageNumber, List *matches)
     char	*format = input->get("format");
     String	*in;
 
+    vars.Add("SELECTED_FORMAT", new String(format));
+
     str = new String();
     *str << "<select name=format>\n";
     for (i = 0; i < templates.displayNames.Count(); i++)
@@ -299,6 +306,8 @@ Display::setVariables(int pageNumber, List *matches)
     }
     *str << "</select>\n";
     vars.Add("METHOD", str);
+
+    vars.Add("SELECTED_METHOD", new String(config["match_method"]));
 	
     //
     // If a paged output is required, set the appropriate variables
