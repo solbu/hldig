@@ -4,13 +4,13 @@
 // Implementation of Metaphone
 //
 // $Log: Metaphone.cc,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Revision 1.2  1998/01/05 05:16:39  turtle
+// formatting changes
+//
+// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
+// Initial CVS
 //
 //
-#if RELEASE
-static char RCSid[] = "$Id: Metaphone.cc,v 1.1 1997/02/03 17:11:12 turtle Exp $";
-#endif
 
 #include "Metaphone.h"
 #include <ctype.h>
@@ -66,236 +66,237 @@ static char     vsvfn[26] = {
 void
 Metaphone::generateKey(char *word, String &key)
 {
-	char			*n;
-	String			ntrans;
+    char			*n;
+    String			ntrans;
 	
-	/*
-	 * Copy Word to internal buffer, dropping non-alphabetic characters
-	 * and converting to upper case
-	 */
+    /*
+     * Copy Word to internal buffer, dropping non-alphabetic characters
+     * and converting to upper case
+     */
 
-	ntrans << "0000";
+    ntrans << "0000";
 	
-	for (; *word; word++)
-	{
-		if (isalpha(*word))
-			ntrans << *word;
-	}
-	ntrans.uppercase();
+    for (; *word; word++)
+    {
+        if (isalpha(*word))
+            ntrans << *word;
+    }
+    ntrans.uppercase();
 	
-	/* ntrans[0] will always be == 0 */
-	n = ntrans.get();
-	*n++ = 0;
-	*n++ = 0;
-	*n++ = 0;
-	*n = 0;                 /* Pad with nulls */
-	n = ntrans.get() + 4;         /* Assign pointer to start */
-	ntrans << '\0';
-	ntrans << '\0';
-	ntrans << '\0';
+    /* ntrans[0] will always be == 0 */
+    n = ntrans.get();
+    *n++ = 0;
+    *n++ = 0;
+    *n++ = 0;
+    *n = 0;                 /* Pad with nulls */
+    n = ntrans.get() + 4;   /* Assign pointer to start */
+    ntrans << '\0';
+    ntrans << '\0';
+    ntrans << '\0';
 
-	/* Check for PN, KN, GN, AE, WR, WH, and X at start */
-	switch (*n)
-	{
-        case 'P':
-        case 'K':
-        case 'G':
-			/* 'PN', 'KN', 'GN' becomes 'N' */
-			if (*(n + 1) == 'N')
-				*n++ = 0;
-			break;
-        case 'A':
-			/* 'AE' becomes 'E' */
-			if (*(n + 1) == 'E')
-				*n++ = 0;
-			break;
-        case 'W':
-			/* 'WR' becomes 'R', and 'WH' to 'H' */
-			if (*(n + 1) == 'R')
-				*n++ = 0;
-			else if (*(n + 1) == 'H') {
-				*(n + 1) = *n;
-				*n++ = 0;
-			}
-			break;
-        case 'X':
-			/* 'X' becomes 'S' */
-			*n = 'S';
-			break;
-	}
+    /* Check for PN, KN, GN, AE, WR, WH, and X at start */
+    switch (*n)
+    {
+    case 'P':
+    case 'K':
+    case 'G':
+        /* 'PN', 'KN', 'GN' becomes 'N' */
+        if (*(n + 1) == 'N')
+            *n++ = 0;
+        break;
+    case 'A':
+        /* 'AE' becomes 'E' */
+        if (*(n + 1) == 'E')
+            *n++ = 0;
+        break;
+    case 'W':
+        /* 'WR' becomes 'R', and 'WH' to 'H' */
+        if (*(n + 1) == 'R')
+            *n++ = 0;
+        else if (*(n + 1) == 'H') {
+            *(n + 1) = *n;
+            *n++ = 0;
+        }
+        break;
+    case 'X':
+        /* 'X' becomes 'S' */
+        *n = 'S';
+        break;
+    }
 
-	/*
-	 * Now, loop step through string, stopping at end of string or when
-	 * the computed 'metaph' is MAXPHONEMELEN characters long
-	 */
+    /*
+     * Now, loop step through string, stopping at end of string or when
+     * the computed 'metaph' is MAXPHONEMELEN characters long
+     */
 
-	for (; *n && key.length() < MAXPHONEMELEN; n++)
-	{
-		/* Drop duplicates except for CC */
-		if (*(n - 1) == *n && *n != 'C')
-			continue;
-		/* Check for F J L M N R or first letter vowel */
-		if (same(*n) || (*(n - 1) == '\0' && vowel(*n)))
-			key << *n;
-		else
-		{
-			switch (*n)
-			{
-				case 'B':
+    for (; *n && key.length() < MAXPHONEMELEN; n++)
+    {
+        /* Drop duplicates except for CC */
+        if (*(n - 1) == *n && *n != 'C')
+            continue;
+        /* Check for F J L M N R or first letter vowel */
+        if (same(*n) || (*(n - 1) == '\0' && vowel(*n)))
+            key << *n;
+        else
+        {
+            switch (*n)
+            {
+            case 'B':
 
-					/*
-					 * B unless in -MB
-					 */
-					if (*(n + 1) || *(n - 1) != 'M')
-						key << *n;
-					break;
-				case 'C':
+                /*
+                 * B unless in -MB
+                 */
+                if (*(n + 1) || *(n - 1) != 'M')
+                    key << *n;
+                break;
+            case 'C':
 
-					/*
-					 * X if in -CIA-, -CH- else S if in
-					 * -CI-, -CE-, -CY- else dropped if
-					 * in -SCI-, -SCE-, -SCY- else K
-					 */
-					if (*(n - 1) != 'S' || !frontv(*(n + 1)))
-					{
-						if (*(n + 1) == 'I' && *(n + 2) == 'A')
-							key << 'X';
-						else if (frontv(*(n + 1)))
-							key << 'S';
-						else if (*(n + 1) == 'H')
-							key << (((*(n - 1) == '\0' && !vowel(*(n + 2)))
-									 || *(n - 1) == 'S')
-									? (char) 'K' : (char) 'X');
-						else
-							key << 'K';
-					}
-					break;
-				case 'D':
+                /*
+                 * X if in -CIA-, -CH- else S if in
+                 * -CI-, -CE-, -CY- else dropped if
+                 * in -SCI-, -SCE-, -SCY- else K
+                 */
+                if (*(n - 1) != 'S' || !frontv(*(n + 1)))
+                {
+                    if (*(n + 1) == 'I' && *(n + 2) == 'A')
+                        key << 'X';
+                    else if (frontv(*(n + 1)))
+                        key << 'S';
+                    else if (*(n + 1) == 'H')
+                        key << (((*(n - 1) == '\0' && !vowel(*(n + 2)))
+                                 || *(n - 1) == 'S')
+                                ? (char) 'K' : (char) 'X');
+                    else
+                        key << 'K';
+                }
+                break;
+            case 'D':
 
-					/*
-					 * J if in DGE or DGI or DGY else T
-					 */
-					key << ((*(n + 1) == 'G' && frontv(*(n + 2)))
-							? (char) 'J' : (char) 'T');
-					break;
-				case 'G':
+                /*
+                 * J if in DGE or DGI or DGY else T
+                 */
+                key << ((*(n + 1) == 'G' && frontv(*(n + 2)))
+                        ? (char) 'J' : (char) 'T');
+                break;
+            case 'G':
 
-					/*
-					 * F if in -GH and not B--GH, D--GH,
-					 * -H--GH, -H---GH else dropped if
-					 * -GNED, -GN, -DGE-, -DGI-, -DGY-
-					 * else J if in -GE-, -GI-, -GY- and
-					 * not GG else K
-					 */
-					if ((*(n + 1) != 'J' || vowel(*(n + 2))) &&
-						(*(n + 1) != 'N' || (*(n + 1) &&
-											 (*(n + 2) != 'E' || *(n + 3) != 'D'))) &&
-						(*(n - 1) != 'D' || !frontv(*(n + 1))))
-						key << (frontv(*(n + 1)) &&
-								*(n + 2) != 'G') ? (char) 'G' : (char) 'K';
-					else if (*(n + 1) == 'H' && !noghf(*(n - 3)) &&
-							 *(n - 4) != 'H')
-						key << 'F';
-					break;
-				case 'H':
+                /*
+                 * F if in -GH and not B--GH, D--GH,
+                 * -H--GH, -H---GH else dropped if
+                 * -GNED, -GN, -DGE-, -DGI-, -DGY-
+                 * else J if in -GE-, -GI-, -GY- and
+                 * not GG else K
+                 */
+                if ((*(n + 1) != 'J' || vowel(*(n + 2))) &&
+                    (*(n + 1) != 'N' || (*(n + 1) &&
+                                         (*(n + 2) != 'E' ||
+                                          *(n + 3) != 'D'))) &&
+                    (*(n - 1) != 'D' || !frontv(*(n + 1))))
+                    key << (frontv(*(n + 1)) &&
+                            *(n + 2) != 'G') ? (char) 'G' : (char) 'K';
+                else if (*(n + 1) == 'H' && !noghf(*(n - 3)) &&
+                         *(n - 4) != 'H')
+                    key << 'F';
+                break;
+            case 'H':
 
-					/*
-					 * H if before a vowel and not after
-					 * C, G, P, S, T else dropped
-					 */
-					if (!varson(*(n - 1)) && (!vowel(*(n - 1
-													   )) ||
-											  vowel(*(n + 1))))
-						key << 'H';
-					break;
-				case 'K':
+                /*
+                 * H if before a vowel and not after
+                 * C, G, P, S, T else dropped
+                 */
+                if (!varson(*(n - 1)) && (!vowel(*(n - 1
+                                                   )) ||
+                                          vowel(*(n + 1))))
+                    key << 'H';
+                break;
+            case 'K':
 
-					/*
-					 * dropped if after C else K
-					 */
-					if (*(n - 1) != 'C')
-						key << 'K';
-					break;
-				case 'P':
+                /*
+                 * dropped if after C else K
+                 */
+                if (*(n - 1) != 'C')
+                    key << 'K';
+                break;
+            case 'P':
 
-					/*
-					 * F if before H, else P
-					 */
-					key << (*(n + 1) == 'H' ?
-							(char) 'F' : (char) 'P');
-					break;
-				case 'Q':
+                /*
+                 * F if before H, else P
+                 */
+                key << (*(n + 1) == 'H' ?
+                        (char) 'F' : (char) 'P');
+                break;
+            case 'Q':
 
-					/*
-					 * K
-					 */
-					key << 'K';
-					break;
-				case 'S':
+                /*
+                 * K
+                 */
+                key << 'K';
+                break;
+            case 'S':
 
-					/*
-					 * X in -SH-, -SIO- or -SIA- else S
-					 */
-					key << ((*(n + 1) == 'H' ||
-							 (*(n + 1) == 'I' && (*(n + 2) == 'O' ||
-												  *(n + 2) == 'A')))
-							? (char) 'X' : (char) 'S');
-					break;
-				case 'T':
+                /*
+                 * X in -SH-, -SIO- or -SIA- else S
+                 */
+                key << ((*(n + 1) == 'H' ||
+                         (*(n + 1) == 'I' && (*(n + 2) == 'O' ||
+                                              *(n + 2) == 'A')))
+                        ? (char) 'X' : (char) 'S');
+                break;
+            case 'T':
 
-					/*
-					 * X in -TIA- or -TIO- else 0 (zero)
-					 * before H else dropped if in -TCH-
-					 * else T
-					 */
-					if (*(n + 1) == 'I' && (*(n + 2) == 'O' ||
-											*(n + 2) == 'A'))
-						key << 'X';
-					else if (*(n + 1) == 'H')
-						key << '0';
-					else if (*(n + 1) != 'C' || *(n + 2) != 'H')
-						key << 'T';
-					break;
-				case 'V':
+                /*
+                 * X in -TIA- or -TIO- else 0 (zero)
+                 * before H else dropped if in -TCH-
+                 * else T
+                 */
+                if (*(n + 1) == 'I' && (*(n + 2) == 'O' ||
+                                        *(n + 2) == 'A'))
+                    key << 'X';
+                else if (*(n + 1) == 'H')
+                    key << '0';
+                else if (*(n + 1) != 'C' || *(n + 2) != 'H')
+                    key << 'T';
+                break;
+            case 'V':
 
-					/*
-					 * F
-					 */
-					key << 'F';
-					break;
-				case 'W':
+                /*
+                 * F
+                 */
+                key << 'F';
+                break;
+            case 'W':
 
-					/*
-					 * W after a vowel, else dropped
-					 */
-				case 'Y':
+                /*
+                 * W after a vowel, else dropped
+                 */
+            case 'Y':
 
-					/*
-					 * Y unless followed by a vowel
-					 */
-					if (vowel(*(n + 1)))
-						key << *n;
-					break;
-				case 'X':
+                /*
+                 * Y unless followed by a vowel
+                 */
+                if (vowel(*(n + 1)))
+                    key << *n;
+                break;
+            case 'X':
 
-					/*
-					 * KS
-					 */
-					if (*(n - 1) == '\0')
-						key << 'S';
-					else
-						key << "KS";        /* Insert K, then S */
-					break;
-				case 'Z':
+                /*
+                 * KS
+                 */
+                if (*(n - 1) == '\0')
+                    key << 'S';
+                else
+                    key << "KS";        /* Insert K, then S */
+                break;
+            case 'Z':
 
-					/*
-					 * S
-					 */
-					key << 'S';
-					break;
-			}
-		}
-	}
+                /*
+                 * S
+                 */
+                key << 'S';
+                break;
+            }
+        }
+    }
 }
 
 
@@ -305,24 +306,24 @@ Metaphone::generateKey(char *word, String &key)
 void
 Metaphone::addWord(char *word)
 {
-	if (!dict)
-	{
-		dict = new Dictionary;
-	}
+    if (!dict)
+    {
+        dict = new Dictionary;
+    }
 
-	String	key;
-	generateKey(word, key);
+    String	key;
+    generateKey(word, key);
 
-	if (key.length() == 0)
-		return;
-	String	*s = (String *) dict->Find(key);
-	if (s)
-	{
-		if (mystrcasestr(s->get(), word) != 0)
-			(*s) << ' ' << word;
-	}
-	else
-	{
-		dict->Add(key, new String(word));
-	}
+    if (key.length() == 0)
+        return;
+    String	*s = (String *) dict->Find(key);
+    if (s)
+    {
+        if (mystrcasestr(s->get(), word) != 0)
+            (*s) << ' ' << word;
+    }
+    else
+    {
+        dict->Add(key, new String(word));
+    }
 }
