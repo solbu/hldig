@@ -4,6 +4,9 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.28  1998/12/19 18:09:03  bergolth
+// Added bad_querystr option.
+//
 // Revision 1.27  1998/12/13 05:38:14  ghutchis
 // Added check to prevent currenthopcount from becoming -1.
 //
@@ -624,6 +627,15 @@ Retriever::IsValidURL(char *u)
 	  cout << endl <<"   Rejected: Extension is invalid!";
 	return FALSE;
       }
+
+    ext = strrchr(url, '?');
+    if (badquerystr.hasPattern() &&
+       (badquerystr.FindFirst(ext) >= 0))
+    {
+      if (debug > 2)
+	  cout << endl <<"   Rejected: Invalid Querystring!";
+       return FALSE;
+    }
 
     //
     // If any of the limits are met, we allow the URL

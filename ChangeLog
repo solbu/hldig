@@ -1,5 +1,8 @@
 Sat Dec 19 17:53:44 1998  Alexander Bergolth  <leo@strike.wu-wien.ac.at>
 
+	* htdig/main.cc, htdig/htdig.h, htdig/Retriever.cc: Added new option
+	bad_querystr. Allows exclusion when digging CGI-Scripts.
+
 	* htsearch/htsearch.cc, htsearch/Display.cc: Added new option
 	allow_in_form. Does currently not work with some special variable
 	names!

@@ -1,9 +1,12 @@
 //
 // htdig.h
 //
-// $Id: htdig.h,v 1.3 1998/10/21 16:34:19 bergolth Exp $
+// $Id: htdig.h,v 1.4 1998/12/19 18:09:03 bergolth Exp $
 //
 // $Log: htdig.h,v $
+// Revision 1.4  1998/12/19 18:09:03  bergolth
+// Added bad_querystr option.
+//
 // Revision 1.3  1998/10/21 16:34:19  bergolth
 // Added translation of server names. Additional limiting after normalization of the URL.
 //
@@ -33,6 +36,7 @@ extern DocumentDB	docs;
 extern StringMatch	limits;
 extern StringMatch	limitsn;
 extern StringMatch	excludes;
+extern StringMatch      badquerystr;
 extern FILE		*urls_seen;
 extern FILE		*images_seen;
 

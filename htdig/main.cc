@@ -5,6 +5,9 @@
 // generating several databases to be used by htmerge
 //
 // $Log: main.cc,v $
+// Revision 1.9  1998/12/19 18:09:03  bergolth
+// Added bad_querystr option.
+//
 // Revision 1.8  1998/12/19 14:39:42  bergolth
 // Added StringList::Join and fixed URL::removeIndex.
 //
@@ -38,6 +41,7 @@ DocumentDB		docs;
 StringMatch		limits;
 StringMatch		limitsn;
 StringMatch		excludes;
+StringMatch             badquerystr;
 FILE			*urls_seen = NULL;
 FILE			*images_seen = NULL;
 String			configFile = DEFAULT_CONFIG_FILE;
@@ -182,6 +186,11 @@ main(int ac, char **av)
     l.Create(config["exclude_urls"], " \t");
     excludes.IgnoreCase();
     excludes.Pattern(l.Join('|'));
+    l.Release();
+
+    l.Create(config["bad_querystr"], " \t");
+    badquerystr.IgnoreCase();
+    badquerystr.Pattern(l.Join('|'));
     l.Release();
 
     //
