@@ -58,12 +58,12 @@ int DocumentDB::Open(char *filename, char *indexname)
     dbf = 0;
     i_dbf = 0;
 
-    i_dbf = Database::getDatabaseInstance(DB_BTREE);
+    i_dbf = Database::getDatabaseInstance(DB_HASH);
 
     if (i_dbf->OpenReadWrite(indexname, 0664) != OK)
 	return NOTOK;
 
-    dbf = Database::getDatabaseInstance(DB_BTREE);
+    dbf = Database::getDatabaseInstance(DB_HASH);
 	
     if (dbf->OpenReadWrite(filename, 0664) == OK)
     {
@@ -96,13 +96,13 @@ int DocumentDB::Read(char *filename, char *indexname)
 
     if (indexname)
     {
-	i_dbf = Database::getDatabaseInstance(DB_BTREE);
+	i_dbf = Database::getDatabaseInstance(DB_HASH);
 
 	if (i_dbf->OpenRead(indexname) != OK)
 	    return NOTOK;
     }
 
-    dbf = Database::getDatabaseInstance(DB_BTREE);
+    dbf = Database::getDatabaseInstance(DB_HASH);
 	
     if (dbf->OpenRead(filename) == OK)
     {
