@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.31 2000/02/10 06:38:41 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.32 2000/02/13 03:43:57 ghutchis Exp $
 //
 
 #include "HtConfiguration.h"
@@ -2159,37 +2159,6 @@ http://www.htdig.org/", "
 	also the <a href=\"#heading_factor\">
 	heading_factor</a> attribute.
 " },
-{ "translate_amp", "false", 
-	"boolean", "htdig htsearch", "3.1.0", "Indexing:How", "translate_amp: true", "
-	If set to false, the entity &amp;amp; (or &amp;#38;) will not be
-	translated into its ASCII equivalent &amp;. If translation were taking
-	place, an excerpt containing a &amp; might be misinterpreted by the browser
-	and look unrecognizable to the user. For this reason, not translating this
-	entity is the default behavior.
-	This should be fixed in 3.2.0, as htsearch does the reverse translation
-	in excerpts.
-" },
-{ "translate_lt_gt", "false", 
-	"boolean", "htdig htsearch", "3.1.0", "Indexing:How", "translate_lt_gt: true", "
-	If set to false, the entities &amp;lt; (or &amp;#60;) and &amp;gt;
-	(or &amp;#62;) will not be translated into their ASCII equivalents &lt; and
-	&gt;. If translation were taking place, an excerpt containing &lt; and
-	&gt; might be misinterpreted by the browser and look unrecognizable to the
-	user. For this reason, not translating these entities is the default
-	behavior.
-	This should be fixed in 3.2.0, as htsearch does the reverse translation
-	in excerpts.
-" },
-{ "translate_quot", "false", 
-	"boolean", "htdig htsearch", "3.1.0", "Indexing:How", "translate_quot: true", "
-	If set to false, the entity &amp;quot; (or &amp;#34;) will not be
-	translated into its ASCII equivalent &quot;. If translation were taking
-	place, an excerpt containing a &quot; might be misinterpreted by the browser
-	and look unrecognizable to the user. For this reason, not translating this
-	entity is the default behavior.
-	This should be fixed in 3.2.0, as htsearch does the reverse translation
-	in excerpts.
-" },
 { "uncoded_db_compatible", "true", 
 	"boolean", "htdig htnotify htmerge htsearch", "3.1.0", "URLs", "uncoded_db_compatible: false<p>", "
 	At the cost of time for extra database accesses and
@@ -2336,18 +2305,6 @@ url_part_aliases:
 	only use is to have a human readable database of all
 	words. The file is easy to parse with tools like
 	perl or tcl.
-" },
-{ "word_list", "${database_base}.wordlist", 
-	"string", "htdig htmerge", "all", "File Layout", "word_list: ${database_base}.allwords.text", "
-	This is the input file that <a href=\"htmerge.html\">
-	htmerge</a> uses to create the main words database
-	specified by <em><a href=\"#word_db\">word_db</a></em>.
-	This file gets about as large as the main words
-	database. If this file exists when htdig is running, it
-	will append data to this file. htmerge will then use
-	the existing data and the appended data to create a
-	completely new main word database.<br>
-        This attribute is depreciated in versions 3.2.0b1 and later.
 " },
 { "wordlist_compress", "false", 
 	"boolean", "htdig htmerge htsearch htfuzzy", "3.2.0b1", "Indexing:How", "wordlist_compress: true", "
