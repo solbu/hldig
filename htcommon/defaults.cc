@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.54 2000/08/11 05:51:07 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.55 2000/08/13 18:24:25 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1602,8 +1602,8 @@ http://www.htdig.org/", "
 	are matched in any way.
 " },
 { "remove_bad_urls", "true", 
-	"boolean", "htmerge", "Server", "all", "Indexing:How", "remove_bad_urls: true", "
-	If TRUE, htmerge will remove any URLs which were marked
+	"boolean", "htpurge", "Server", "all", "Indexing:How", "remove_bad_urls: true", "
+	If TRUE, htpurge will remove any URLs which were marked
 	as unreachable by htdig from the database. If FALSE, it
 	will not do this. When htdig is run in initial mode,
 	documents which were referred to but could not be
@@ -1628,8 +1628,8 @@ http://www.htdig.org/", "
 	by the DirectoryIndex setting in Apache's srm.conf, for example.
 " },
 { "remove_unretrieved_urls", "false", 
-	"boolean", "htmerge", "Server", "3.2.0b1", "Indexing:How", "remove_unretrieved_urls: true", "
-	If TRUE, htmerge will remove any URLs which were discovered
+	"boolean", "htpurge", "Server", "3.2.0b1", "Indexing:How", "remove_unretrieved_urls: true", "
+	If TRUE, htpurge will remove any URLs which were discovered
 	and included as stubs in the database but not yet retrieved. If FALSE, it
 	will not do this. When htdig is run in initial mode with no restrictions 
         on hopcount or maximum documents, these should probably be removed and set
