@@ -1,3 +1,8 @@
+Thu Aug 28 11:16:19 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * htlib/error.[h,c]: removed for now, until replacement functions will be
+    correctly performed.
+
 Thu Aug 28 11:11:32 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htdoc/cf_generate.pl: fixed an error when opening tail and head files
