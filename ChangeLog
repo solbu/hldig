@@ -1,3 +1,8 @@
+Thu Feb 17 14:01:34 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.1.5.spec: Fix silly typos in %post script,
+	make cron script a %config file.
+
 Thu Feb 17 10:34:05 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	[ Improve htsearch's HTML 4.0 compliance ]

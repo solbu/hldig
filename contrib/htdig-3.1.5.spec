@@ -53,11 +53,11 @@ if [ "$1" = 1 ]; then
 	SERVERNAME="`grep '^ServerName' /etc/httpd/conf/httpd.conf | awk 'NR == 1 {print $2}'`"
 	[ -z "$SERVERNAME" ] && SERVERNAME="`hostname -f`"
 	[ -z "$SERVERNAME" ] && SERVERNAME="localhost"
-	sed 's/^start_url:.*/#&
+	sed 's/^start_url:.*/#&\
 # (See end of file for this parameter.)/' /etc/htdig/htdig.conf > /tmp/ht.$$
-	cat /tmp/ht.$$ > /etc/htdig.conf
+	cat /tmp/ht.$$ > /etc/htdig/htdig.conf
 	rm /tmp/ht.$$
-	cat >> /etc/htdig.conf <<!
+	cat >> /etc/htdig/htdig.conf <<!
 
 # Automatically set up by htdig RPM, from your current Apache httpd.conf...
 # Verify and configure these, and set maintainer above, before running
@@ -79,7 +79,7 @@ fi
 %config /etc/htdig/htdig.conf
 %config /usr/sbin/rundig
 %config /home/httpd/html/search.html
-/etc/cron.daily/htdig-dbgen
+%config(missingok) /etc/cron.daily/htdig-dbgen
 /usr/sbin/htdig
 /usr/sbin/htfuzzy
 /usr/sbin/htmerge
@@ -93,6 +93,7 @@ fi
 %changelog
 * Thu Feb 17 2000 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
   - fixed %post script to add more descriptive entries in htdig.conf
+  - made cron script a config file
 
 * Wed Feb 16 2000 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
   - updated to version 3.1.5
