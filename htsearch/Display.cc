@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54 1999/02/05 03:51:38 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.55 1999/02/25 02:20:41 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -82,6 +82,7 @@ Display::Display(char *indexFile, char *docFile)
 Display::~Display()
 {
     delete docIndex;
+    docDB.Close();
 }
 
 //*****************************************************************************
@@ -92,7 +93,7 @@ Display::display(int pageNumber)
     List		*matches = buildMatchList();
     int			currentMatch = 0;
     int			numberDisplayed = 0;
-    ResultMatch	*match = 0;
+    ResultMatch		*match = 0;
     int			number = config.Value("matches_per_page");
     int			startAt = (pageNumber - 1) * number;
 
@@ -180,6 +181,8 @@ Display::display(int pageNumber)
 	    ref->DocScore(match->getScore());
 	    displayMatch(match,currentMatch+1);
 	    numberDisplayed++;
+	    match->setRef(NULL);
+	    delete ref;
 	}
 	currentMatch++;
     }
@@ -231,8 +234,8 @@ Display::displayMatch(ResultMatch *match, int current)
     
     int     iA = ref->DocAnchor();
     
+    String  *anchor = 0;
     int             fanchor = 0;
-    String  *anchor = new String();
     if (iA > 0)             // if an anchor was found
       {
 	List    *anchors = ref->DocAnchors();
@@ -250,7 +253,8 @@ Display::displayMatch(ResultMatch *match, int current)
     //
     int first = -1;
     String urlanchor(url);
-    urlanchor << anchor;
+    if (anchor)
+      urlanchor << anchor;
     vars.Add("EXCERPT", excerpt(ref, urlanchor, fanchor, first));
     //
     // anchor only relevant if an excerpt was found, i.e.,
@@ -337,7 +341,9 @@ Display::displayMatch(ResultMatch *match, int current)
 	    *str << ((String*) (*list)[i])->get() << "<br>\n";
 	}
 	vars.Add("DESCRIPTIONS", str);
-	vars.Add("DESCRIPTION", ((String*) (*list)[1]));
+	// This is a very bad construction. Fix it.
+	// It should copy the data from that list into a new String()
+	// vars.Add("DESCRIPTION", ((String*) (*list)[1]));
     }
 
     expandVariables(currentTemplate->getMatchTemplate());
