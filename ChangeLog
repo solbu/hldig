@@ -1,3 +1,13 @@
+Sat May  5 21:43:32 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in, configure: Add tests for wait.h, sys/wait.h,
+	mkstemp() and malloc.h.
+
+	* acconfig.h, include/htconfig.h.in: Update with autoheader for
+	new tests.
+
+	* htlib/regex.[h,c]: Update with backports from 3.2.0b4 development.
+
 Tue Feb 29 23:04:04 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/DB2_db.cc (Error): Simply fprint the error message on

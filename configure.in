@@ -1,5 +1,5 @@
 # Configuration for ht://Dig 3.x
-# Copyright (c) 1995-1999 The ht://Dig Group
+# Copyright (c) 1995-2001 The ht://Dig Group
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ AC_HEADER_TIME
 
 dnl More header checks--here use C++
 AC_LANG_CPLUSPLUS
-AC_CHECK_HEADERS(fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h getopt.h strings.h zlib.h alloca.h sys/select.h)
+AC_CHECK_HEADERS(fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h getopt.h strings.h zlib.h alloca.h sys/select.h wait.h sys/wait.h malloc.h)
 AC_CHECK_HEADER(fstream.h,nofstream=0,nofstream=1)
 if test "x$nofstream" = "x1" ; then
 AC_MSG_ERROR([To compile ht://Dig, you will need a C++ library. Try installing libstdc++.])
@@ -95,7 +95,20 @@ dnl Checks for library functions.
 AC_CHECK_FUNCS(strdup strerror strstr)
 AC_CHECK_FUNCS(localtime_r)
 dnl Check for timegm
-AC_CHECK_FUNCS(timegm)
+AC_CHECK_FUNCS(timegm mkstemp)
+
+dnl Regex is compiled by the C compiler so we need to do it before we switch
+AC_MSG_CHECKING(if we should use the included regex?)
+AC_TRY_RUN([	#include "${srcdir}/htlib/regex.c"
+		int main() {
+		   regex_t re;
+		   return regcomp(&re, "ht.*Dig", REG_ICASE);
+		}
+		],
+  [AC_MSG_RESULT(yes);LIBOBJS="$LIBOBJS regex.${ac_objext}"],
+  [AC_MSG_RESULT(no);AC_DEFINE(HAVE_BROKEN_REGEX)],
+  [AC_MSG_RESULT(unknown);AC_DEFINE(HAVE_BROKEN_REGEX)]
+)
 
 dnl These tests need to be run through the c++ compiler
 AC_LANG_CPLUSPLUS

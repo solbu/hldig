@@ -2010,7 +2010,7 @@ fi
 CXXCPP="$ac_cv_prog_CXXCPP"
 echo "$ac_t""$CXXCPP" 1>&6
 
-for ac_hdr in fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h getopt.h strings.h zlib.h alloca.h sys/select.h
+for ac_hdr in fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h getopt.h strings.h zlib.h alloca.h sys/select.h wait.h sys/wait.h malloc.h
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
@@ -2315,7 +2315,7 @@ else
 fi
 done
 
-for ac_func in timegm
+for ac_func in timegm mkstemp
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
 echo "configure:2322: checking for $ac_func" >&5
@@ -2371,6 +2371,41 @@ fi
 done
 
 
+echo $ac_n "checking if we should use the included regex?""... $ac_c" 1>&6
+echo "configure:2376: checking if we should use the included regex?" >&5
+if test "$cross_compiling" = yes; then
+  echo "$ac_t""unknown" 1>&6;cat >> confdefs.h <<\EOF
+#define HAVE_BROKEN_REGEX 1
+EOF
+
+
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2385 "configure"
+#include "confdefs.h"
+	#include "${srcdir}/htlib/regex.c"
+		int main() {
+		   regex_t re;
+		   return regcomp(&re, "ht.*Dig", REG_ICASE);
+		}
+		
+EOF
+if { (eval echo configure:2394: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+  echo "$ac_t""yes" 1>&6;LIBOBJS="$LIBOBJS regex.${ac_objext}"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+  echo "$ac_t""no" 1>&6;cat >> confdefs.h <<\EOF
+#define HAVE_BROKEN_REGEX 1
+EOF
+
+fi
+rm -fr conftest*
+fi
+
+
 ac_ext=C
 # CXXFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
 ac_cpp='$CXXCPP $CPPFLAGS'
@@ -2379,9 +2414,9 @@ ac_link='${CXX-g++} -o conftest${ac_exeext} $CXXFLAGS $CPPFLAGS $LDFLAGS conftes
 cross_compiling=$ac_cv_prog_cxx_cross
 
 echo $ac_n "checking whether we need gethostname() prototype?""... $ac_c" 1>&6
-echo "configure:2383: checking whether we need gethostname() prototype?" >&5
+echo "configure:2418: checking whether we need gethostname() prototype?" >&5
 cat > conftest.$ac_ext <<EOF
-#line 2385 "configure"
+#line 2420 "configure"
 #include "confdefs.h"
 #include <unistd.h>
 #include <stdio.h>
@@ -2399,7 +2434,7 @@ int main() {
 gethostname("sdsu.edu", (int) 8);
 ; return 0; }
 EOF
-if { (eval echo configure:2403: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2438: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   echo "$ac_t""yes" 1>&6;cat >> confdefs.h <<\EOF
 #define NEED_PROTO_GETHOSTNAME 1
@@ -2421,11 +2456,11 @@ ac_link='${CC-cc} -o conftest${ac_exeext} $CFLAGS $CPPFLAGS $LDFLAGS conftest.$a
 cross_compiling=$ac_cv_prog_cc_cross
 
 echo $ac_n "checking how to call getpeername?""... $ac_c" 1>&6
-echo "configure:2425: checking how to call getpeername?" >&5
+echo "configure:2460: checking how to call getpeername?" >&5
 for sock_t in 'struct sockaddr' 'void'; do
 for getpeername_length_t in 'size_t' 'int' 'unsigned int' 'long unsigned int' 'socklen_t'; do
 cat > conftest.$ac_ext <<EOF
-#line 2429 "configure"
+#line 2464 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -2433,7 +2468,7 @@ int main() {
 extern getpeername(int, $sock_t *, $getpeername_length_t *)
 ; return 0; }
 EOF
-if { (eval echo configure:2437: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2472: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_found=yes ; break 2
 else
