@@ -1,5 +1,10 @@
 Mon Dec 29 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
+    * htdig/Retriever.cc:
+      Fix bug in which validity of first URL from each server was not checked.
+
+Mon Dec 29 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
     * htdig/htdig.cc, htdoc/htdig.html:  Fix bug #845054
       Fix behaviour of -m and additional list of urls at the end of a command.
       In either case, "-" denotes stdin.

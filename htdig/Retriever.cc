@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.87 2003/10/23 02:10:55 angusgb Exp $
+// $Id: Retriever.cc,v 1.88 2003/12/29 13:21:00 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -189,7 +189,8 @@ void Retriever::Initial(const String & list, int from)
 			servers.Add(u.signature(), server);
 			delete localRobotsFile;
 		}
-		else if (from && visited.Exists(url))
+
+		if (from && visited.Exists(url))
 		{
 			if (debug > 2)
 				cout << " skipped" << endl;
