@@ -1,5 +1,6 @@
-Mon Dec  6 15:52:43 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Dec  6 16:41:04 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	* htdoc/main.html: Update news with latest version.
 	* htdig/htdig.cc(main), htdig/Document.cc(Document),
 	htcommon/defaults.cc, htdoc/attrs.html, htdoc/cf_byname.html,
 	htdoc/cf_byprog.html: Add authorization attribute, settable by
