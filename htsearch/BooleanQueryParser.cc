@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 // 
-// $Id: BooleanQueryParser.cc,v 1.1.2.1 2000/09/12 14:58:54 qss Exp $
+// $Id: BooleanQueryParser.cc,v 1.1.2.2 2000/10/21 22:20:14 ghutchis Exp $
 //
 
 #include "BooleanQueryParser.h"
@@ -22,7 +22,7 @@
 #include "FuzzyExpander.h"
 
 //
-// expr == andlist { 'or' andlist }
+// expr == andlist ( 'or' andlist )
 //
 Query *
 BooleanQueryParser::ParseExpression()
@@ -51,43 +51,6 @@ BooleanQueryParser::ParseExpression()
 		}
 	}
 	if(!term && result)
-	{
-		delete result;
-		result = 0;
-	}
-	return result;
-}
-
-//
-// andlist = notlist { 'and' notlist }
-//
-Query *
-BooleanQueryParser::ParseAnd()
-{
-	Query *result = 0;
-	Query *not = ParseNot();
-	if(not)
-	{
-		if(token.IsAnd())
-		{
-			result = new AndQuery();
-			result->Add(not);
-			while(not && token.IsAnd())
-			{
-				token.Next();
-				not = ParseNot();
-				if(not)
-				{
-					result->Add(not);
-				}
-			}
-		}
-		else
-		{
-			result = not;
-		}
-	}
-	if(!not && result)
 	{
 		delete result;
 		result = 0;
@@ -125,6 +88,44 @@ BooleanQueryParser::ParseNot()
 		}
 	}
 	if(!near && result)
+	{
+		delete result;
+		result = 0;
+	}
+	return result;
+}
+
+//
+// andlist = notlist { 'and' notlist }
+//
+Query *
+BooleanQueryParser::ParseAnd()
+{
+	Query *result = 0;
+	Query *notList = ParseNot();
+
+	if(notList)
+	{
+		if(token.IsAnd())
+		{
+			result = new AndQuery();
+			result->Add(notList);
+			while(notList && token.IsAnd())
+			{
+				token.Next();
+				notList = ParseNot();
+				if(notList)
+				{
+					result->Add(notList);
+				}
+			}
+		}
+		else
+		{
+			result = notList;
+		}
+	}
+	if(!notList && result)
 	{
 		delete result;
 		result = 0;
