@@ -4,6 +4,9 @@
 // Implementation of WordList
 //
 // $Log: WordList.cc,v $
+// Revision 1.11  1999/01/10 02:00:17  ghutchis
+// Break out of looping once we're sure the word is invalid.
+//
 // Revision 1.10  1998/12/13 06:13:13  ghutchis
 // Change undefined minimumWordLength to config("minimum_word_length").
 //
@@ -39,7 +42,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.10 1998/12/13 06:13:13 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.11 1999/01/10 02:00:17 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -132,13 +135,22 @@ int WordList::valid_word(char *word)
 
     while (word && *word)
     {
-	if (isalpha((unsigned char)*word))
+      if (isalpha((unsigned char)*word))
+	{
 	    alpha = 1;
-	if (allow_numbers && isdigit(*word))
-	    alpha = 1;
-	if (*word >= 0 && *word < ' ')
+	    break;
+	}
+      if (allow_numbers && isdigit(*word))
+	{
+	  alpha = 1;
+	  break;
+	}
+      if (*word >= 0 && *word < ' ')
+	{
 	    control = 1;
-	word++;
+	    break;
+	}
+      word++;
     }
 
     return alpha && !control;
