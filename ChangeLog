@@ -1,3 +1,16 @@
+Mon Feb 19 18:24:42 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htfuzzy/Synonym.cc (createDB): Create database in a temporary
+	directory before we move it into place, much like the endings
+	code. This should prevent problems when we just append to the DB
+	instead of making a new one.
+
+	* htdig/htdig.cc (main): Fix bug discovered by Gilles--htword
+	should be initialized *after* we are finished modifying config
+	attributes based on flags and unlink with -i.
+
+	* installdir/rundig: Fix bug with calling htpurge with -s option.
+
 Thu Feb 15 11:03:42 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/*.html: Update with 2001 copyrights and various changes
