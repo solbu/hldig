@@ -1,3 +1,7 @@
+Wed Feb 23 13:55:01 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/syntax.html: Fixed a $(WORDS) I'd missed earlier.
+
 Tue Feb 22 12:40:22 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/RELEASE.html, htdoc/main.html: Updated notes for 3.1.5 release.
