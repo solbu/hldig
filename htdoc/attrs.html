@@ -2857,7 +2857,7 @@
 			local server recognizes as default documents for
 			directory URLs, as defined by the DirectoryIndex
 			setting in Apache's srm.conf, for example.
-			As of 3.1.5, this can be a string list rather
+			As of version 3.1.5, this can be a string list rather
 			than a single name, and htdig will use the first
 			name that works. Since this requires a loop,
 			setting the most common name first will improve
@@ -2930,7 +2930,7 @@
 			.asc, .ps, .eps and .pdf. For anything else, htdig
 			must ask the HTTP server for the file, so it can
 			determine the MIME content-type of it.
-			As of 3.1.5, you can provide multiple mappings
+			As of version 3.1.5, you can provide multiple mappings
 			of a given URL to different directories, and
 			htdig will use the first mapping that works.
 			Special characters can be embedded in
@@ -3048,7 +3048,7 @@
 			<br>The fallback to HTTP can be disabled by setting the
 			<a href="#local_urls_only">local_urls_only</a>
 			attribute to true.
-			As of 3.1.5, you can provide multiple mappings
+			As of version 3.1.5, you can provide multiple mappings
 			of a given URL to different directories, and
 			htdig will use the first mapping that works.
 			Special characters can be embedded in
@@ -3707,8 +3707,8 @@
 		  <dd>
 			This value limits the number of page links that will be
 			included in the page list at the bottom of the search
-			results page. Note that this does not limit the number
-			of documents that are matched in any way.
+			results page. As of version 3.1.4, this will limit the
+			total number of matching documents that are shown.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7440,7 +7440,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: $Date: 2000/02/24 16:42:52 $
+Last modified: $Date: 2000/02/25 16:22:22 $
 <!-- hhmts end -->
   </body>
 </html>

@@ -1,3 +1,8 @@
+Fri Feb 25 10:11:50 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html (maximum_pages): Describe new bahaviour (as of
+	3.1.4), where this limits total matches shown.
+
 Thu Feb 24 20:24:24 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/FAQ.html: Update to refer to 3.1.5 and edit comments about 3.2.
