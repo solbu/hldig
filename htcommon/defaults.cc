@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.30  1999/01/14 00:31:02  ghutchis
+// Removed use_document_compression (redundant) and fixed problem with missing
+// comma. Setting compression_factor to 0 is the equivalent of turning off use_document_compression.
+//
 // Revision 1.29  1999/01/12 18:09:24  ghutchis
 // Added config options use_document_compression and compression_factor for
 // zlib support.
@@ -99,7 +103,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.29 1999/01/12 18:09:24 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.30 1999/01/14 00:31:02 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -219,7 +223,6 @@ ConfigDefaults	defaults[] =
     {"timeout",				"30"},
     {"title_factor",			"100"},
     {"url_list",			"${database_base}.urls"},
-    {"use_document_compression",        "false"}
     {"use_star_image",			"true"},
     {"use_meta_description",            "false"},
     {"user_agent",			"htdig"},
