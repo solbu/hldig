@@ -12,12 +12,18 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.81 2003/04/18 00:14:09 nealr Exp $
+// $Id: Retriever.cc,v 1.82 2003/06/23 21:17:29 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
+
+#ifdef _MSC_VER //_WIN32
+# include <sys/types.h>
+# include <winsock2.h>
+#endif
+
 
 #include "Retriever.h"
 #include "htdig.h"
@@ -34,7 +40,10 @@
 #include "md5.h"
 #include "defaults.h"
 
+#ifndef _MSC_VER //_WIN32
 #include <pwd.h>
+#endif
+
 #include <signal.h>
 #include <stdio.h>
 
@@ -186,7 +195,7 @@ void Retriever::Initial(const String & list, int from)
 				cout << " skipped" << endl;
 			continue;
 		}
-		else if (!IsValidURL(url))
+		else if (IsValidURL(url) != 1)
 		{
 			if (debug > 2)
 				cout << endl;
@@ -242,7 +251,7 @@ void Retriever::Initial(List & list, int from)
 //
 static void sigexit(int)
 {
-	noSignal = 0;
+	noSignal = 0;   //don't exit here.. just set the flag.
 }
 
 static void sigpipe(int)
@@ -255,6 +264,8 @@ static void sigpipe(int)
 //
 static void sig_handlers(void)
 {
+#ifndef _MSC_VER //_WIN32
+    //POSIX SIGNALS
 	struct sigaction action;
 
 	/* SIGINT, SIGQUIT, SIGTERM */
@@ -269,11 +280,18 @@ static void sig_handlers(void)
 		reportError("Cannot install SIGTERM handler\n");
 	if (sigaction(SIGHUP, &action, NULL) != 0)
 		reportError("Cannot install SIGHUP handler\n");
+#else
+    //ANSI C signal handling - Limited to supported Windows signals.
+    signal(SIGINT, sigexit); 
+    signal(SIGTERM, sigexit); 
+#endif //_MSC_VER //_WIN32
 }
+
 
 
 static void sig_phandler(void)
 {
+#ifndef _MSC_VER //_WIN32
 	struct sigaction action;
 
 	sigemptyset(&action.sa_mask);
@@ -281,7 +299,54 @@ static void sig_phandler(void)
 	action.sa_flags = SA_RESTART;
 	if (sigaction(SIGPIPE, &action, NULL) != 0)
 		reportError("Cannot install SIGPIPE handler\n");
+#endif //_MSC_VER //_WIN32
 }
+
+
+//*****************************************************************************
+// static void win32_check_messages
+//   Check WIN32 messages!
+//
+#ifdef _MSC_VER //_WIN32
+static void win32_check_messages(void)
+{
+// NEAL - NEEDS FINISHING/TESTING
+#if 0
+    MSG msg = {0, 0, 0, 0};
+    int cDown = 0;
+    int controlDown = 0;
+
+    if( GetMessage(&msg, 0, 0, 0) )
+    {
+
+        switch(msg.message)
+        {
+            case WM_KEYDOWN:
+                {
+                    if(LOWORD(msg.message)== 17)
+                        controlDown = 1;
+                    else if(LOWORD(msg.message) == 67)
+                    {
+                        cDown = 1;
+                    }
+                }
+                break;
+            case WM_KEYUP:
+                {
+                    if(LOWORD(msg.message) == 17)
+                        controlDown = 0;
+                    else if(LOWORD(msg.message) == 67)
+                        cDown = 0;
+                }
+                break;
+        }
+    }
+
+    DispatchMessage(&msg);
+#endif
+}
+#endif //_MSC_VER //_WIN32
+
 
 //*****************************************************************************
 // void Retriever::Start()
@@ -319,6 +384,10 @@ void Retriever::Start()
 	//    or all the servers' queues are empty.
 ///////
 
+#ifdef _MSC_VER //_WIN32
+    win32_check_messages();
+#endif
+
 	while (more && noSignal)
 	{
 		more = 0;
@@ -347,6 +416,10 @@ void Retriever::Start()
 		// TCP connection (so on the same Server:Port).
 
 		int max_connection_requests;
+
+#ifdef _MSC_VER //_WIN32
+        win32_check_messages();
+#endif
 
 		while ((server = (Server *) servers.Get_NextElement()) && noSignal)
 		{
@@ -400,6 +473,11 @@ void Retriever::Start()
 
 			count = 0;
 
+#ifdef _MSC_VER //_WIN32
+            win32_check_messages();
+#endif
+
+
 			while (((max_connection_requests == -1) ||
 				   (count < max_connection_requests)) && (ref = server->pop()) && noSignal)
 			{
@@ -428,9 +506,24 @@ void Retriever::Start()
 				if ((max_connection_requests - count) == 0)
 					server->delay();	// This will pause if needed
 				// and reset the time
+
+#ifdef _MSC_VER //_WIN32
+                win32_check_messages();
+#endif
+
 			}
+
+#ifdef _MSC_VER //_WIN32
+            win32_check_messages();
+#endif
+
 		}
 	}
+
+#ifdef _MSC_VER //_WIN32
+    win32_check_messages();
+#endif
+
 
 	// if we exited on signal 
 	if (Retriever_noLog != log && !noSignal)
@@ -665,6 +758,13 @@ void Retriever::parse_url(URLRef & urlRef)
 			words.Flush();
 		if (debug)
 			cout << " size = " << doc->Length() << endl;
+
+		if (urls_seen)
+		{
+			fprintf(urls_seen, "%s|%d|%s|%d|%d|1\n",
+				   (const char *) url.get(), doc->Length(), doc->ContentType(),
+				   (int) doc->ModTime(), currenthopcount);
+		}
 		break;
 
 	case Transport::Document_not_changed:
@@ -901,7 +1001,7 @@ int Retriever::IsValidURL(const String & u)
 	{
 		if (debug > 2)
 			cout << endl << "   Rejected: item in exclude list ";
-		return (FALSE);
+		return (HTDIG_ERROR_TESTURL_EXCLUDE);
 	}
 
 	//
@@ -917,7 +1017,7 @@ int Retriever::IsValidURL(const String & u)
 	{
 		if (debug > 2)
 			cout << endl << "   Rejected: item in bad query list ";
-		return (FALSE);
+		return (HTDIG_ERROR_TESTURL_BADQUERY);
 	}
 
 	//
@@ -938,7 +1038,7 @@ int Retriever::IsValidURL(const String & u)
 		{
 			if (debug > 2)
 				cout << endl << "   Rejected: Extension is invalid!";
-			return FALSE;
+			return (HTDIG_ERROR_TESTURL_EXTENSION);
 		}
 	}
 	//
@@ -948,7 +1048,7 @@ int Retriever::IsValidURL(const String & u)
 	{
 		if (debug > 2)
 			cout << endl << "   Rejected: Extension is not valid!";
-		return FALSE;
+		return (HTDIG_ERROR_TESTURL_EXTENSION2);
 	}
 
 	//
@@ -956,9 +1056,9 @@ int Retriever::IsValidURL(const String & u)
 	//
 	if (limits.match(url, 1, 0) == 0)
 	{
-		if (debug > 2)
-			cout << endl << "   Rejected: URL not in the limits!";
-		return (FALSE);
+		if (debug > 1)
+			cout << endl << "   Rejected: URL not in the limits! ";
+		return (HTDIG_ERROR_TESTURL_LIMITS);
 	}
 	//
 	// or not in list of normalized urls
@@ -971,7 +1071,7 @@ int Retriever::IsValidURL(const String & u)
 	{
 		if (debug > 2)
 			cout << endl << "   Rejected: not in \"limit_normalized\" list!";
-		return (FALSE);
+		return (HTDIG_ERROR_TESTURL_LIMITSNORM);
 	}
 
 	//
@@ -984,11 +1084,10 @@ int Retriever::IsValidURL(const String & u)
 	{
 		if (debug > 2)
 			cout << endl << "   Rejected: forbidden by server robots.txt!";
-		return FALSE;
+		return (HTDIG_ERROR_TESTURL_ROBOT_FORBID);
 	}
 
-
-	return TRUE;
+	return (1);
 }
 
 
@@ -1130,6 +1229,8 @@ StringList *Retriever::GetLocal(const String & strurl)
 //
 StringList *Retriever::GetLocalUser(const String & url, StringList * defaultdocs)
 {
+//  NOTE:  Native Windows does not have this contruct for the user Web files
+#ifndef _MSC_VER //_WIN32
 	HtConfiguration *config = HtConfiguration::config();
 	static StringList *prefixes = 0, *paths = 0, *dirs = 0;
 	static Dictionary home_cache;
@@ -1248,7 +1349,9 @@ StringList *Retriever::GetLocalUser(const String & url, StringList * defaultdocs
 		return local_names;
 
 	delete local_names;
-	return 0;
+#endif //_MSC_VER //_WIN32
+
+    return 0;
 }
 
 
@@ -1421,6 +1524,7 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 {
 	DocumentRef *ref = 0;
 	Server *server = 0;
+	int valid_url_code = 0;
 
 	// Rewrite the URL (if need be) before we do anything to it.
 	url.rewrite();
@@ -1436,7 +1540,8 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 	//
 	// Check if this URL falls within the valid range of URLs.
 	//
-	if (IsValidURL(url.get()))
+	valid_url_code = IsValidURL(url.get());
+	if (valid_url_code > 0)
 	{
 		//
 		// It is valid.  Normalize it (resolve cnames for the server)
@@ -1465,6 +1570,7 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 		}
 		else
 		{
+
 			//
 			// First add it to the document database
 			//
@@ -1548,6 +1654,12 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 			cout << "\nurl rejected: (level 1)" << url.get() << endl;
 		if (debug == 1)
 			cout << '-';
+
+		if (urls_seen)
+		{
+			fprintf(urls_seen, "%s|||||%d\n", (const char *) url.get(), valid_url_code);
+		}
+
 	}
 	if (debug)
 		cout.flush();
@@ -1577,7 +1689,7 @@ void Retriever::got_redirect(const char *new_url, DocumentRef * old_ref, const c
 	//
 	// Check if this URL falls within the valid range of URLs.
 	//
-	if (IsValidURL(url.get()))
+	if (IsValidURL(url.get()) > 0)
 	{
 		//
 		// It is valid.  Normalize it (resolve cnames for the server)
