@@ -1,7 +1,6 @@
 
-/*  A Bison parser, made from conf_parser.yxx
- by  GNU Bison version 1.27
-  */
+/*  A Bison parser, made from ../../htdig3/htcommon/conf_parser.yxx
+    by GNU Bison version 1.28  */
 
 #define YYBISON 1  /* Identify Bison output.  */
 
@@ -169,7 +168,7 @@ static const short yycheck[] = {     0,
 };
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
 
-/* This file comes from bison-1.27.  */
+/* This file comes from bison-1.28.  */
 
 /* Skeleton output parser for bison,
    Copyright (C) 1984, 1989, 1990 Free Software Foundation, Inc.
@@ -833,7 +832,7 @@ case 12:
 case 13:
 { 
 	// Paste 2 strings. Reallocate memory for 2 str.
-	if ((yyval.str=new char[yyvsp[-1].str,strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
+	if ((yyval.str=new char[strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
 		fprintf(stderr,"Can't allocate memory\n");
 		exit(1);
 	}
@@ -846,8 +845,6 @@ case 13:
     break;}
 case 14:
 { 
-                char *ptr;
-		int len=strlen(yyval.str);
 		char *old=yyval.str;
 		if ((yyval.str=new char [strlen(yyval.str)+strlen(yyvsp[0].str)+1+1])==NULL) {
 		  fprintf(stderr,"Can't reallocate memory\n");
