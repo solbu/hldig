@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVectorGeneric.h,v 1.1.2.4 2000/01/11 17:38:17 bosc Exp $
+// $Id: HtVectorGeneric.h,v 1.1.2.5 2000/01/11 18:14:50 bosc Exp $
 //
 //
 //  #ifndef	_HtVectorGeneric_h_
@@ -70,13 +70,10 @@ public:
     ~HtVectorGType();
 
 protected:    
-    //
-    // Many functions used to check for NULL (Object *) pointers , this is no longer possible
+    // 
     // this error checking should be made optional!
     // 
-//    inline void CheckBounds(const int n) const {if(n<0 || n>=element_count){cerr << "HtVectorGType::CheckBounds: out of bounds!!" << endl;}}
-// empty version
-    inline void CheckBounds(const int n) const {;}
+    inline void CheckBounds(const int n) const {if(n<0 || n>=element_count){cerr << "HtVectorGType::CheckBounds: out of bounds!!" << endl;}}
 
 public:
       
@@ -122,8 +119,20 @@ public:
     // Direct access to vector items. To assign new objects, use
     // Insert() or Add() or Assign()
     //
-    inline GType &            Nth(int n)			{CheckBounds(n);return data[n];}
-    inline const GType &      Nth(int n) const			{CheckBounds(n);return data[n];}
+    inline GType &            Nth(int n)			
+    {
+#ifdef HtVectorGeneric_CheckBounds
+	CheckBounds(n);
+#endif
+	return data[n];
+    }
+    inline const GType &      Nth(int n) const			
+    {
+#ifdef HtVectorGeneric_CheckBounds
+	CheckBounds(n);
+#endif
+	return data[n];
+    }
     inline GType &            operator[] (int n)		{return Nth(n);}
     inline const GType &      operator[] (int n) const		{return Nth(n);}
 
