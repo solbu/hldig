@@ -9,8 +9,12 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.cc,v 1.9.2.3 2000/01/03 11:49:09 bosc Exp $
+// $Id: StringList.cc,v 1.9.2.4 2000/04/20 01:54:01 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "StringList.h"
 #include "htString.h"

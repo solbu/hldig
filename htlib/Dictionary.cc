@@ -12,8 +12,12 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Dictionary.cc,v 1.10.2.3 1999/12/21 05:56:12 toivo Exp $
+// $Id: Dictionary.cc,v 1.10.2.4 2000/04/20 01:54:01 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Dictionary.h"
 

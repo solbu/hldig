@@ -1,23 +1,23 @@
 //
 // Object.h
 //
-// (c) Copyright 1993, San Diego State University -- College of Sciences
-//       (See the COPYRIGHT file for more Copyright information)
+// Object: This baseclass defines how an object should behave.
+//         This includes the ability to be put into a list
 //
-// This baseclass defines how an object should behave.
-// This includes the ability to be put into a list
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Object.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: Object.h,v 1.6.2.1 2000/04/20 01:54:01 ghutchis Exp $
 //
-// $Log: Object.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
-//
-//
+
 #ifndef	_Object_h_
 #define	_Object_h_
 
 #include "lib.h"
+#include <stdio.h>
 
 class String;
 
@@ -27,28 +27,20 @@ public:
 	//
 	// Constructor/Destructor
 	//
-					Object();
-	virtual			~Object();
+			Object()	{}
+	virtual		~Object()	{}
 
 	//
 	// To ensure a consistent comparison interface and to allow comparison
 	// of all kinds of different objects, we will define a comparison functions.
 	//
-	virtual int		compare(Object *);
+	virtual int	compare(const Object &)	{ return 0;}
 
 	//
 	// To allow a deep copy of data structures we will define a standard interface...
 	// This member will return a copy of itself, freshly allocated and deep copied.
 	//
-	virtual Object	*Copy();
-
-	//
-	// Persistent storage routines.
-	//
-	virtual void	Serialize(String &);
-	virtual void	Deserialize(String &, int &index);
-
-protected:
+	virtual Object	*Copy() const { fprintf(stderr, "Object::Copy: derived class does not implement Copy\n"); return new Object(); }
 };
 
 

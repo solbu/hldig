@@ -1,27 +1,31 @@
 //
 // Object.cc
 //
-// (c) Copyright 1993, San Diego State University -- College of Sciences
-//       (See the COPYRIGHT file for more Copyright information)
+// Object: This baseclass defines how an object should behave.
+//         This includes the ability to be put into a list
 //
-// Implementation of the Object class
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Object.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// $Id: Object.cc,v 1.3.2.1 2000/04/20 01:54:01 ghutchis Exp $
 //
-//
-#if RELEASE
-static char	RCSid[] = "$Id: Object.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
-#endif
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Object.h"
+
 #include <stdio.h>
 
 
 //***************************************************************************
 // Object::Object()
 //
+#ifdef NOINLINE
 Object::Object()
 {
 }
@@ -67,5 +71,6 @@ void Object::Serialize(String &)
 void Object::Deserialize(String &, int &)
 {
 }
+#endif
 
 

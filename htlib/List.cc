@@ -9,8 +9,12 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: List.cc,v 1.6.2.1 2000/03/28 02:00:54 ghutchis Exp $
+// $Id: List.cc,v 1.6.2.2 2000/04/20 01:54:01 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "List.h"
 

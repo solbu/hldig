@@ -13,15 +13,18 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.cc,v 1.15.2.6 2000/02/23 18:22:41 grdetil Exp $
+// $Id: Configuration.cc,v 1.15.2.7 2000/04/20 01:54:01 ghutchis Exp $
 //
 
-#include <stdio.h>
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
 #include "Configuration.h"
 #include "htString.h"
 #include "ParsedString.h"
 
-#include <fstream.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <locale.h>
@@ -222,7 +225,7 @@ const String Configuration::Find(const String& name) const
     else
     {
 #ifdef DEBUG
-        cerr << "Could not find configuration option " << name << "\n";
+        fprintf (stderr, "Could not find configuration option %s\n", (const char*)name);
 #endif
         return 0;
     }
@@ -285,27 +288,27 @@ const String Configuration::operator[](const String& name) const
 //
 int Configuration::Read(const String& filename)
 {
-    ifstream	in((const char*)filename);
+    FILE* in = fopen((const char*)filename, "r");
  
-     if (in.bad() || in.eof())
-         return NOTOK;
- 
+    if(!in) {
+      fprintf(stderr, "Configuration::Read: cannot open %s for reading : ", (const char*)filename);
+      perror("");
+      return NOTOK;
+    }
+
+#define CONFIG_BUFFER_SIZE (50*1024) 
      //
      // Make the line buffer large so that we can read long lists of start
      // URLs.
      //
-     char	buffer[50000];
+     char	buffer[CONFIG_BUFFER_SIZE + 1];
      char	*current;
      String	line;
      String	name;
      char	*value;
      int         len;
-     while (!in.bad() && !in.eof())
+     while (fgets(buffer, CONFIG_BUFFER_SIZE, in))
      {
-	 buffer[0] = '\0';
-         in.getline(buffer, sizeof(buffer));
-         if (in.eof() && !*buffer)
-             break;
          line << buffer;
          line.chop("\r\n");
          if (line.last() == '\\')
@@ -363,7 +366,7 @@ int Configuration::Read(const String& filename)
          AddParsed(name, value);
          line = 0;
      }
-     in.close();
+     fclose(in);
      return OK;
 }
 

@@ -13,16 +13,14 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.h,v 1.6.2.9 2000/03/21 00:37:20 ghutchis Exp $
+// $Id: Configuration.h,v 1.6.2.10 2000/04/20 01:54:01 ghutchis Exp $
 //
 
 #ifndef	_Configuration_h_
 #define	_Configuration_h_
 
 #include "Dictionary.h"
-#include "htconfig.h"
 #include "htString.h"
-
 
 
 struct ConfigDefaults

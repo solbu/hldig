@@ -1,9 +1,26 @@
+Wed Apr 19 22:13:02 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* Merging in changes from mifluz 0.14 from Loic.
+
+	* htlib/Configuration.cc (Read): Removed dependency on fstream.h,
+	use fopen, fprintf, fgets, fclose instead of iostream.
+
+	* htlib/HtPack.cc, htlib/HtVectorGeneric.h, htlib/Object.h,
+	htlib/ParsedString.cc, htlib/String.cc: Remove use of cerr,
+	instead use fprintf(stderr ...).
+
+	* htlib/Dictionary.cc, htlib/HtVectorGeneric.cc, htlib/List.cc,
+	htlib/Object.cc, htlib/StringList.cc, htlib/htString.h,
+	htlib/strcasecmp.cc: Add #ifdef blocks for htconfig.h
+
 Wed Apr 12 19:09:40 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* .version: Bump to 3.2.0b3.
 
 	* htdoc/htload.html, htdoc/htpurge.html, htdoc/htstat.html: Fix
 	typos in headers.
+
+	* htdoc/main.html: Fix link to download to actually point to 3.2.0b2.
 
 Tue Apr 11 00:21:48 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 

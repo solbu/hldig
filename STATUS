@@ -1,7 +1,8 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b2: Release date 11 Apr 2000.
+   3.2.0b3: Release date unscheduled: Unfrozen Tree.
+   3.2.0b2: Released:  11 Apr 2000.
    3.2.0b1: Released: 4 Feb 2000.
 
 SHOWSTOPPERS:
@@ -14,6 +15,8 @@ KNOWN BUGS:
 * If exact isn't specified in the search_algorithms, $(WORDS) is not set 
    correctly: PR#650. (The documentation for 3.2.0b1 is updated, but can
    we fix this?)
+* Odd behavior with $(MODIFIED) and scores not working with
+   wordlist_compress set but work fine without wordlist_compress.
 * Modified database can cause problems with systems using the Berkeley db for 
    other tasks (e.g. networking)
 

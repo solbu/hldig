@@ -9,8 +9,12 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.30.2.8 2000/03/17 15:30:18 grdetil Exp $
+// $Id: String.cc,v 1.30.2.9 2000/04/20 01:54:01 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htString.h"
 #include "Object.h"
@@ -239,7 +243,7 @@ char *String::get()
 
 String::operator int () const
 {
-  cerr << "String: int(): either use empty() or as_integer()\n";
+  fprintf(stderr, "String: int(): either use empty() or as_integer()\n");
   abort();
 }
 

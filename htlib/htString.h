@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.18.2.5 2000/02/23 18:56:19 grdetil Exp $
+// $Id: htString.h,v 1.18.2.6 2000/04/20 01:54:01 ghutchis Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -18,8 +18,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
-
-class ostream;
+#include <iostream.h>
 
 class String : public Object
 {
@@ -146,7 +145,9 @@ public:
     //
     int			Write(int fd) const;
 
+#ifndef NOSTREAM
     void		debug(ostream &o);
+#endif
 
     //
     // Non-member operators
@@ -159,9 +160,11 @@ public:
     friend int		operator <= (const String &a, const String &b);
     friend int		operator >= (const String &a, const String &b);
 
+#ifndef NOSTREAM
     friend ostream	&operator << (ostream &o, const String &s);
 
     friend istream	&operator >> (istream &in, String &line);
+#endif
 
     int			readLine(FILE *in);
 

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVectorGeneric.h,v 1.1.2.5 2000/01/11 18:14:50 bosc Exp $
+// $Id: HtVectorGeneric.h,v 1.1.2.6 2000/04/20 01:54:01 ghutchis Exp $
 //
 //
 //  #ifndef	_HtVectorGeneric_h_
@@ -73,7 +73,7 @@ protected:
     // 
     // this error checking should be made optional!
     // 
-    inline void CheckBounds(const int n) const {if(n<0 || n>=element_count){cerr << "HtVectorGType::CheckBounds: out of bounds!!" << endl;}}
+    inline void CheckBounds(const int n) const {if(n<0 || n>=element_count){ fprintf(stderr, "HtVectorGType::CheckBounds: out of bounds! \n");}}
 
 public:
       
