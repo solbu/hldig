@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.9  1998/09/30 17:31:51  ghutchis
+//
+// Changes for 3.1.0b2
+//
 // Revision 1.8  1998/09/08 03:29:09  ghutchis
 //
 // Clean up for 3.1.0b1.
@@ -250,6 +254,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    old_document = 0;
 	ref->DocAccessed(time(0));
 	ref->DocState(Reference_normal);
+        currenthopcount=ref->DocHopCount();
     }
     else
     {
@@ -264,6 +269,7 @@ Retriever::parse_url(URLRef &urlRef)
 	ref->DocURL(url.get());
 	ref->DocState(Reference_normal);
 	ref->DocAccessed(time(0));
+        ref->DocHopCount(currenthopcount);
 	old_document = 0;
     }
 
@@ -350,6 +356,7 @@ Retriever::parse_url(URLRef &urlRef)
 		ref->DocURL(url.get());
 		ref->DocState(Reference_normal);
 		ref->DocAccessed(time(0));
+		ref->DocHopCount(currenthopcount);
 		if (debug)
 		    cout << " (changed) ";
 	    }
@@ -833,7 +840,7 @@ Retriever::got_href(URL &url, char *description)
 	    }
 	    ref->DocURL(url.get());
 	    ref->AddDescription(description);
-	    if (ref->DocHopCount() > currenthopcount + 1)
+	    if (ref->DocHopCount() < currenthopcount + 1)
 		ref->DocHopCount(currenthopcount + 1);
 
 	    docs.Add(*ref);
@@ -939,7 +946,7 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 		//
 		ref = new DocumentRef;
 		ref->DocID(docs.NextDocID());
-		ref->DocHopCount(currenthopcount + 1);
+		ref->DocHopCount(currenthopcount);
 	    }
 	    ref->DocURL(url.get());
 			

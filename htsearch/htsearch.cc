@@ -4,6 +4,10 @@
 // Implementation of htsearch
 //
 // $Log: htsearch.cc,v $
+// Revision 1.8  1998/09/30 17:31:51  ghutchis
+//
+// Changes for 3.1.0b2
+//
 // Revision 1.7  1998/09/10 04:16:26  ghutchis
 //
 // More bug fixes.
@@ -32,7 +36,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.7 1998/09/10 04:16:26 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.8 1998/09/30 17:31:51 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -70,6 +74,9 @@ int			minimum_word_length = 3;
 int
 main(int ac, char **av)
 {
+    int			c;
+    extern char		*optarg;
+    int		        override_config=0;
     List		searchWords;
     String		configFile = DEFAULT_CONFIG_FILE;
     int			pageNumber = 1;
@@ -80,10 +87,26 @@ main(int ac, char **av)
     StringMatch		searchWordsPattern;
     StringList		requiredWords;
 
-    if (ac > 1 && strcmp(av[1], "-d") == 0)
-	debug = 1;
-    // Hier staat in de patch een toewijzing naar een niet bestaande config file...
-    
+     //
+     // Parse command line arguments
+     //
+     while ((c = getopt(ac, av, "c:dv")) != -1)
+     {
+ 	switch (c)
+ 	{
+ 	    case 'c':
+ 		configFile = optarg;
+                 override_config=1;
+ 		break;
+ 	    case 'v':
+ 		debug++;
+ 		break;
+ 	    case 'd':
+ 		debug++;
+ 		break;
+ 	}
+     }
+
     //
     // The total search can NEVER take more than 5 minutes.
     //
@@ -113,7 +136,7 @@ main(int ac, char **av)
     // got from the HTML form.
     //
     config.Defaults(&defaults[0]);
-    if (input.exists("config") && !strchr(input["config"], '.'))
+    if (!override_config && input.exists("config") && !strchr(input["config"], '.'))
     {
 	char	*configDir = getenv("CONFIG_DIR");
 	if (configDir)

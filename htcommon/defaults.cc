@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.14  1998/09/30 17:31:50  ghutchis
+//
+// Changes for 3.1.0b2
+//
 // Revision 1.13  1998/09/23 14:58:21  ghutchis
 //
 // Many, many bug fixes
@@ -58,7 +62,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.13 1998/09/23 14:58:21 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.14 1998/09/30 17:31:50 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -83,6 +87,7 @@ ConfigDefaults	defaults[] =
     {"allow_virtual_hosts",		"true"},
     {"bad_extensions",			".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram"},
     {"bad_word_list",			"${common_dir}/bad_words"},
+    {"case_sensitive"                   "true"},
     {"create_image_list",		"false"},
     {"create_url_list",			"false"},
     {"database_base",			"${database_dir}/db"},
@@ -131,6 +136,7 @@ ConfigDefaults	defaults[] =
     {"method_names",			"and All or Any boolean Boolean"},
     {"minimum_word_length",		"3"},
     {"minimum_prefix_length",		"1"},
+    {"modification_time_is_now",        "false"},
     {"next_page_text",			"[next]"},
     {"no_excerpt_text",			"<em>(None of the search words were found in the top of this document.)</em>"},
     {"no_next_page_text",		"[next]"},

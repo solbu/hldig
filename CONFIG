@@ -5,6 +5,16 @@
 ##
 
 #
+# These variables are set by configure
+#
+# This specifies the root of the directory tree to be used by ht://Dig
+prefix=                 @prefix@
+
+# This specifies the root of the directory tree to be used for programs
+# installed by ht://Dig
+exec_prefix=            @exec_prefix@
+
+#
 # Please modify the variables below to reflect your preferences.
 #
 
@@ -13,13 +23,13 @@
 #
 # This specifies the root of the directory tree to be used by ht://Dig
 #
-DEST=                  /opt/www/htdig
+DEST=                  $(prefix)
 
 #
 # BIN_DIR
 # Set this macro to where you want the binaries to be installed.
 #
-BIN_DIR=               $(DEST)/bin
+BIN_DIR=               $(exec_prefix)/bin
 
 #
 # CONFIG_DIR

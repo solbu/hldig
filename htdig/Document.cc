@@ -4,6 +4,10 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.16  1998/09/30 17:31:50  ghutchis
+//
+// Changes for 3.1.0b2
+//
 // Revision 1.15  1998/09/08 03:29:09  ghutchis
 //
 // Clean up for 3.1.0b1.
@@ -62,7 +66,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.15 1998/09/08 03:29:09 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.16 1998/09/30 17:31:50 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -147,7 +151,10 @@ Document::Reset()
     delete url;
     url = 0;
     referer = 0;
-    modtime = 0;
+    if(config.Boolean("modification_time_is_now"))
+       modtime = time(NULL);
+    else
+       modtime = 0;
 
     contents = 0;
     redirected_to = 0;
@@ -488,8 +495,11 @@ Document::readHeader(Connection &c)
     String	line;
     int		inHeader = 1;
     int		returnStatus = Header_not_found;
-	
-    modtime = 0;
+
+    if(config.Boolean("modification_time_is_now"))
+       modtime = time(NULL);
+    else
+       modtime = 0;
 
     while (inHeader)
     {
@@ -531,7 +541,7 @@ Document::readHeader(Connection &c)
 		    returnStatus = Header_not_authorized;
 		}
 	    }
-	    else if (mystrncasecmp(line, "last-modified:", 14) == 0)
+	    else if (modtime == 0 && mystrncasecmp(line, "last-modified:", 14) == 0)
 	    {
 		strtok(line, " \t");
 		modtime = getdate(strtok(0, "\n\t"));

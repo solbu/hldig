@@ -4,6 +4,10 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.14  1998/09/30 17:31:50  ghutchis
+//
+// Changes for 3.1.0b2
+//
 // Revision 1.13  1998/09/23 14:58:21  ghutchis
 //
 // Many, many bug fixes
@@ -52,7 +56,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.13 1998/09/23 14:58:21 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.14 1998/09/30 17:31:50 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -373,7 +377,7 @@ void
 HTML::do_tag(Retriever &retriever, String &tag)
 {
     char	*position = tag.get() + 1;		// Skip the '<'
-    char	*q;
+    char	*q, *t;
     int		which, length;
 
     while (isspace(*position))
@@ -422,12 +426,34 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			position++;
 			while (isspace(*position))
 			    position++;
-			if (*position == '"')
+                       //
+		       // Allow either single quotes or double quotes
+                       // around the URL itself
+                       //
+                       if (*position == '"'||*position == '\'')
 			{
 			    position++;
-			    q = strchr(position, '"');
+			    q = strchr(position, position[-1]);
 			    if (!q)
 				break;
+                           //
+                           // We seem to have matched the opening quote char
+                           // Mark the end of the quotes as our endpoint, so
+                           // that we can continue parsing after the current
+                           // text
+                           //
+                           *q = '\0';
+                           //
+                           // If a '?' or '#' is present in a quoted URL,
+                           //  treat that as the end of the URL, but we skip
+                           //  past the quote to parse the rest of the anchor.
+                           //
+                           // Is there a better way of looking for these?
+                           //
+                           if ((t = strchr(position, '#')) != NULL)
+                               *t = '\0';
+                           if ((t = strchr(position, '?')) != NULL)
+                               *t = '\0';
 			}
 			else
 			{
@@ -438,8 +464,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 				   *q != '?' &&
 				   *q != '#')
 				q++;
+			    *q = '\0';
 			}
-			*q = '\0';
 			delete href;
 			href = new URL(position, *base);
 			in_ref = 1;
@@ -460,20 +486,42 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			position++;
 			while (isspace(*position))
 			    position++;
-			if (*position == '"')
+                       //
+                       // Allow either single quotes or double quotes
+                       // around the URL itself
+                       //
+                       if (*position == '"'||*position == '\'')
 			{
 			    position++;
-			    q = strchr(position, '"');
+			    q = strchr(position, position[-1]);
 			    if (!q)
 				break;
+                           //
+                           // We seem to have matched the opening quote char
+                           // Mark the end of the quotes as our endpoint, so
+                           // that we can continue parsing after the current
+                           // text
+                           //
+                           *q = '\0';
+                           //
+                           // If a '?' or '#' is present in a quoted URL,
+                           //  treat that as the end of the URL, but we skip
+                           //  past the quote to parse the rest of the anchor.
+                           //
+                           // Is there a better way of looking for these?
+                           //
+                           if ((t = strchr(position, '#')) != NULL)
+                               *t = '\0';
+                           if ((t = strchr(position, '?')) != NULL)
+                               *t = '\0';
 			}
 			else
 			{
 			    q = position;
 			    while (*q && *q != '>' && !isspace(*q))
 				q++;
-			}
 			*q = '\0';
+			}
 			retriever.got_anchor(position);
 			position = q + 1;
 			break;
@@ -550,20 +598,42 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    position++;
 	    while (isspace(*position))
 		position++;
-	    if (*position == '"')
+           //
+           // Allow either single quotes or double quotes
+           // around the URL itself
+           //
+           if (*position == '"'||*position == '\'')
 	    {
 		position++;
-		q = strchr(position, '"');
+		q = strchr(position, position[-1]);
 		if (!q)
 		    break;
+               //
+               // We seem to have matched the opening quote char
+               // Mark the end of the quotes as our endpoint, so
+               // that we can continue parsing after the current
+               // text
+               //
+               *q = '\0';
+               //
+               // If a '?' or '#' is present in a quoted URL,
+               //  treat that as the end of the URL, but we skip
+               //  past the quote to parse the rest of the anchor.
+               //
+               // Is there a better way of looking for these?
+               //
+               if ((t = strchr(position, '#')) != NULL)
+                   *t = '\0';
+               if ((t = strchr(position, '?')) != NULL)
+                   *t = '\0';
 	    }
 	    else
 	    {
 		q = position;
 		while (*q && *q != '>' && !isspace(*q))
 		    q++;
-	    }
 	    *q = '\0';
+	    }
 	    retriever.got_image(position);
 	    break;
 	}
@@ -624,6 +694,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			retriever.got_word(w, 1, 10);
 		    w = strtok(0, " ,\t\r\n");
 		}
+		w = '\0';
 	    }
 
 	    //
@@ -644,6 +715,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			    retriever.got_word(w, 1, 10);
 			w = strtok(0, " ,\t\r\n");
 		    }
+		    w = '\0';
 		}
 		else if (mystrcasecmp(cache, "htdig-email") == 0)
 		{
@@ -693,6 +765,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		      {
 			String temp = meta_dsc.sub(0, max_meta_description_length);
 			meta_dsc = temp;
+			temp = 0;
 		      }
 		    if (debug > 1)
 		      cout << "META Description: " << conf["content"] << endl;
@@ -709,6 +782,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			  retriever.got_word(w, 1, 11);
 			w = strtok(0, " \t\r\n");
 		      }
+		    w = '\0';
 		  }
 	    }
 	    else if (conf["name"] &&
@@ -740,12 +814,34 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    position++;
 		    while (isspace(*position))
 			position++;
-		    if (*position == '"')
+                   //
+                   // Allow either single quotes or double quotes
+                   // around the URL itself
+                   //
+                   if (*position == '"'||*position == '\'')
 		    {
 			position++;
-			q = strchr(position, '"');
+			q = strchr(position, position[-1]);
 			if (!q)
 			    break;
+                       //
+                       // We seem to have matched the opening quote char
+                       // Mark the end of the quotes as our endpoint, so
+                       // that we can continue parsing after the current
+                       // text
+                       //
+                       *q = '\0';
+                       //
+                       // If a '?' or '#' is present in a quoted URL,
+                       //  treat that as the end of the URL, but we skip
+                       //  past the quote to parse the rest of the anchor.
+                       //
+                       // Is there a better way of looking for these?
+                       //
+                       if ((t = strchr(position, '#')) != NULL)
+                           *t = '\0';
+                       if ((t = strchr(position, '?')) != NULL)
+                           *t = '\0';
 		    }
 		    else
 		    {
@@ -756,8 +852,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			       *q != '?' &&
 			       *q != '#')
 			    q++;
+			*q = '\0';
 		    }
-		    *q = '\0';
 		    delete href;
 		    href = new URL(position, *base);
 		    if (dofollow)
@@ -792,12 +888,34 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    position++;
 		    while (isspace(*position))
 			position++;
-		    if (*position == '"')
+                   //
+                   // Allow either single quotes or double quotes
+                   // around the URL itself
+                   //
+                   if (*position == '"'||*position == '\'')
 		    {
 			position++;
-			q = strchr(position, '"');
+			q = strchr(position, position[-1]);
 			if (!q)
 			    break;
+                       //
+                       // We seem to have matched the opening quote char
+                       // Mark the end of the quotes as our endpoint, so
+                       // that we can continue parsing after the current
+                       // text
+                       //
+                       *q = '\0';
+                       //
+                       // If a '?' or '#' is present in a quoted URL,
+                       //  treat that as the end of the URL, but we skip
+                       //  past the quote to parse the rest of the anchor.
+                       //
+                       // Is there a better way of looking for these?
+                       //
+                       if ((t = strchr(position, '#')) != NULL)
+                           *t = '\0';
+                       if ((t = strchr(position, '?')) != NULL)
+                           *t = '\0';
 		    }
 		    else
 		    {
@@ -808,8 +926,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			       *q != '?' &&
 			       *q != '#')
 			    q++;
+			*q = '\0';
 		    }
-		    *q = '\0';
 		    delete href;
 		    href = new URL(position, *base);
 		    if (dofollow)
@@ -843,12 +961,34 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    position++;
 		    while (isspace(*position))
 			position++;
-		    if (*position == '"')
+                   //
+                   // Allow either single quotes or double quotes
+                   // around the URL itself
+                   //
+                   if (*position == '"'||*position == '\'')
 		    {
 			position++;
-			q = strchr(position, '"');
+			q = strchr(position, position[-1]);
 			if (!q)
 			    break;
+                       //
+                       // We seem to have matched the opening quote char
+                       // Mark the end of the quotes as our endpoint, so
+                       // that we can continue parsing after the current
+                       // text
+                       //
+                       *q = '\0';
+                       //
+                       // If a '?' or '#' is present in a quoted URL,
+                       //  treat that as the end of the URL, but we skip
+                       //  past the quote to parse the rest of the anchor.
+                       //
+                       // Is there a better way of looking for these?
+                       //
+                       if ((t = strchr(position, '#')) != NULL)
+                           *t = '\0';
+                       if ((t = strchr(position, '?')) != NULL)
+                           *t = '\0';
 		    }
 		    else
 		    {
@@ -859,8 +999,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			       *q != '?' &&
 			       *q != '#')
 			    q++;
-		    }
 		    *q = '\0';
+		    }
 		    URL tempBase(position, *base);
 		    *base = tempBase;
 		}

@@ -1,8 +1,29 @@
-Wed Sep 23 14:58:22 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+Tue Sep 29 19:26:11 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HTML.cc: Added patch from Tim Frost <tim@nz.eds.com> for
+	single quotes around URLs.
+
+	* htfuzzy/Prefix.cc: Added patch from Esa to fix Prefix matching
+	for capitalization. 
+
+	* htcommon/defaults.cc: Added modification_time_is_now config
+
+	* htdig/Document.cc:, htdig/Retriever.cc: Added patch from Andrew
+	Bishop <amb@gedanken.demon.co.uk> for above to use modification
+	times when servers do not supply them. 
+
+	* htsearch/htsearch.cc: Added patch from Andrew Bishop for -c switch.
+
+Wed Sep 23 14:46:34 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc, htdig/Server.cc: Added case_sensitive
+	attribute to work on case insensitive servers.
+
+Wed Sep 23 11:58:22 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.cc: re-fixed bug noted by Alexander Bergolth
 
-        * htlib/Attic/timegm.cc, htlib/Makefile.in, htlib/mktime.c,
+	* htlib/Attic/timegm.cc, htlib/Makefile.in, htlib/mktime.c,
 	htlib/mytimegm.cc, htlib/timegm.c: Switched to using glibc timegm
 	replacement.
 

@@ -4,6 +4,10 @@
 // Implementation of Prefix
 //
 // $Log: Prefix.cc,v $
+// Revision 1.3  1998/09/30 17:31:51  ghutchis
+//
+// Changes for 3.1.0b2
+//
 // Revision 1.2  1998/08/03 16:50:38  ghutchis
 //
 // Fixed compiler warnings under -Wall
@@ -19,7 +23,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Prefix.cc,v 1.2 1998/08/03 16:50:38 ghutchis Exp $";
+static char RCSid[] = "$Id: Prefix.cc,v 1.3 1998/09/30 17:31:51 ghutchis Exp $";
 #endif
 
 #include "Prefix.h"
@@ -64,7 +68,7 @@ Prefix::getWords(char *w, List &words)
     int 	minimum_prefix_length = config.Value("minimum_prefix_length");
 
     if (debug)
-         cout << " word=" << w << " prefix_suffix=" << prefix_suffix 
+         cerr << " word=" << w << " prefix_suffix=" << prefix_suffix 
 		<< " prefix_suffix_length=" << prefix_suffix_length
 		<< " minimum_prefix_length=" << minimum_prefix_length << "\n";
 
@@ -92,11 +96,13 @@ Prefix::getWords(char *w, List &words)
     strncpy(w2, w, sizeof(w2) - 1);
     w2[sizeof(w2) - 1] = '\0';
     w2[strlen(w2) - prefix_suffix_length] = '\0';
-    dbf->Start_Seq(w2);
+    String w3 = new String(w2);
+    w3.lowercase();
+    dbf->Start_Seq(w3.get());
 
     while (wordCount < maximumWords && (s = dbf->Get_Next_Seq()))
     {
-	if (strncmp(s, w, len))
+	if (strncasecmp(s, w, len))
 	    break;
 	words.Add(new String(s));
 	wordCount++;

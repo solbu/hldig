@@ -4,6 +4,10 @@
 // Implementation of Server
 //
 // $Log: Server.cc,v $
+// Revision 1.4  1998/09/30 17:31:51  ghutchis
+//
+// Changes for 3.1.0b2
+//
 // Revision 1.3  1998/07/09 09:39:01  ghutchis
 //
 //
@@ -18,7 +22,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.3 1998/07/09 09:39:01 ghutchis Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.4 1998/09/30 17:31:51 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -44,7 +48,9 @@ Server::Server(char *host, int port)
     _port = port;
     _bad_server = 0;
     _documents = 0;
-	
+    if (!config.Boolean("case_sensitive"))
+      _disallow.IgnoreCase();
+
     //
     // Attempt to get a robots.txt file from the specified server
     //
@@ -129,6 +135,7 @@ void Server::robotstxt(Document &doc)
 	name = good_strtok(line, ":");
 	if (!name)
 	    continue;
+	while (name && isspace(*name))  name++;
 	rest = good_strtok("\r");
 	if (!rest)
 	    rest = "";
