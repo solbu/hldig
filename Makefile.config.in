@@ -22,18 +22,18 @@ INSTALL=	@HTDIG_TOP@/install-sh -c
 TAR=		@TAR@
 
 CCC=		$(CXX)
-LIBDIRS=	-L../htlib -L../htcommon -L../@GDBM_DIR@ -L../@DB_DIR@ -L../@RX_DIR@/rx -L/usr/lib
-INCS=		-I../htlib -I../htcommon -I../include -I../@GDBM_DIR@ -I../@DB_DIR@ -I../@RX_DIR@/rx
-LIBS=		-lcommon -lht -ldb -lrx -lgdbm @LIBS@
+LIBDIRS=	-L../htlib -L../htcommon -L../@DB_DIR@ -L../@RX_DIR@/rx -L/usr/lib
+INCS=		-I../htlib -I../htcommon -I../include -I../@DB_DIR@ -I../@RX_DIR@/rx
+LIBS=		-lcommon -lht -ldb -lrx @LIBS@
 
 DIST=		htdig-@HTDIG_VERSION@
 DISTDIR=	@HTDIG_TOP@/../$(DIST)
 
-#CPPFLAGS=	$(CC_OPTIONS) -g -static @CXXFLAGS@ @DEFS@ $(INCS)
-#CXXFLAGS=	@CXXFLAGS@ -g -static $(LOCAL_DEFINES) $(DEFINES) $(INCS)
-CPPFLAGS=	$(CC_OPTIONS) -g -O2 @CXXFLAGS@ @DEFS@ $(INCS)
-CXXFLAGS=	@CXXFLAGS@ -g -O2 $(LOCAL_DEFINES) $(DEFINES) $(INCS)
-LDFLAGS=	-g $(LIBDIRS)
+#CPPFLAGS=	$(CC_OPTIONS) -ggdb -static @CXXFLAGS@ @DEFS@ $(INCS)
+#CXXFLAGS=	@CXXFLAGS@ -ggdb -static $(LOCAL_DEFINES) $(DEFINES) $(INCS)
+CPPFLAGS=	$(CC_OPTIONS) -ggdb -O2 @CXXFLAGS@ @DEFS@ $(INCS)
+CXXFLAGS=	@CXXFLAGS@ -ggdb -O2 $(LOCAL_DEFINES) $(DEFINES) $(INCS)
+LDFLAGS=	-ggdb $(LIBDIRS)
 
 .SUFFIXES: .cc
 .cc.o:
