@@ -1,4 +1,8 @@
-Tue Feb 15 16:03:53 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Feb 15 16:14:23 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc (setupWords): Fix problem reported by
+	D.J. Adams, in which bad_words removal failed on upper-case
+	search words.
 
 	* htsearch/Display.cc(setVariables), htcommon/defaults.cc: Added
 	build_select_lists attribute, to generate selector menus in forms.

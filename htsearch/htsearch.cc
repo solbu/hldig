@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.8 1999/11/24 03:09:17 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.9 2000/02/15 22:20:02 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -408,6 +408,7 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		}
 
 		pos--;
+	  	word.lowercase();
 		if (boolean && mystrcasecmp(word.get(), "and") == 0)
 		{
 		    tempWords.Add(new WeightWord("&", -1.0));
