@@ -6,6 +6,9 @@
 // Outputs HTML-ized results of the search based on the templates specified
 //
 // $Log: htsearch.cc,v $
+// Revision 1.20  1999/01/14 03:01:49  ghutchis
+// Added check for sort config.
+//
 // Revision 1.19  1999/01/12 03:59:02  ghutchis
 // Do not skip words if "boolean" search.
 //
@@ -70,7 +73,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.19 1999/01/12 03:59:02 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.20 1999/01/14 03:01:49 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -225,6 +228,8 @@ main(int ac, char **av)
 	config.Add("exclude", input["exclude"]);
     if (input.exists("keywords"))
 	requiredWords.Create(input["keywords"], " \t\r\n");
+    if (input.exists("sort"))
+	config.Add("sort", input["sort"]);
 
     minimum_word_length = config.Value("minimum_word_length", minimum_word_length);
 
