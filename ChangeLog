@@ -1,3 +1,8 @@
+Mon Dec 11 23:57:43 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Fix up handling of fds in child
+	process, more fault-tolerant handling of pipe or fork errors.
+
 Mon Dec 11 23:30:55 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/ExternalParser.cc (parse): Fix up handling of creation

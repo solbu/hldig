@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.14 2000/12/12 05:42:13 grdetil Exp $
+// $Id: ExternalParser.cc,v 1.19.2.15 2000/12/12 06:09:11 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -208,36 +208,59 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     String	newcontent;
 
     int    stdout_pipe[2];
-    int	   fork_result;
+    int	   fork_result = -1;
+    int	   fork_try;
 
-    if( (pipe(stdout_pipe) == 0) )
-      {
-	fork_result = fork(); // Fork so we can execute in the child process
-	if(fork_result == -1)
-	  {
-	    cout << "Fork Failure in ExternalParser" << endl;
-	    exit(EXIT_FAILURE); // Do we really want to exit?
-	  }
-	else if(fork_result == 0) // Child process
-	  {
-	    close(STDIN_FILENO); // Close STDIN
-	    close(STDERR_FILENO); // Close STDERR
-	    close(STDOUT_FILENO); // Close then handle STDOUT
-	    dup(stdout_pipe[1]);
-	    close(stdout_pipe[0]);
-	    close(stdout_pipe[1]);
+    if (pipe(stdout_pipe) == -1)
+    {
+      if (debug)
+	cout << "External parser error: Can't create pipe!" << endl;
+      unlink((char*)path);
+      return;
+    }
 
-	    // Call External Parser
-	    execl(currentParser.get(), currentParser.get(), path.get(),
-		  contentType.get(), base.get().get(), configFile.get(), 0);
+    for (fork_try = 4; --fork_try >= 0;)
+    {
+      fork_result = fork(); // Fork so we can execute in the child process
+      if (fork_result != -1)
+	break;
+      if (fork_try)
+	sleep(3);
+    }
+    if (fork_result == -1)
+    {
+      if (debug)
+	cout << "Fork Failure in ExternalParser" << endl;
+      unlink((char*)path);
+      return;
+    }
 
-	    exit(EXIT_FAILURE);
-	  }
+    if (fork_result == 0) // Child process
+    {
+	close(STDOUT_FILENO); // Close handle STDOUT to replace with pipe
+	dup(stdout_pipe[1]);
+	close(stdout_pipe[0]);
+	close(stdout_pipe[1]);
+	close(STDIN_FILENO); // Close STDIN to replace with file
+	open((char*)path, O_RDONLY);
 
-	else // Parent Process
-	  {
-	    close(stdout_pipe[1]); // Close STDOUT for writing
-	    FILE *input = fdopen(stdout_pipe[0], "r");
+	// Call External Parser
+	execl(currentParser.get(), currentParser.get(), path.get(),
+		contentType.get(), base.get().get(), configFile.get(), 0);
+
+	exit(EXIT_FAILURE);
+    }
+
+    // Parent Process
+    close(stdout_pipe[1]); // Close STDOUT for writing
+    FILE *input = fdopen(stdout_pipe[0], "r");
+    if (input == NULL)
+    {
+      if (debug)
+	cout << "Fdopen Failure in ExternalParser" << endl;
+      unlink((char*)path);
+      return;
+    }
 
     while (readLine(input, line))
     {
@@ -461,8 +484,6 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     } // while(readLine)
     fclose(input);
     // close(stdout_pipe[0]); // This is closed for us by the fclose()
-	  } // fork_result
-      } // create pipes
     unlink((char*)path);
 
     if (newcontent.length() > 0)
