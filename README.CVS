@@ -1,0 +1,10 @@
+README.CVS
+
+You almost definitely do not want to be messing with this branch,
+unless you intend on working on post-3.2.0 developments. 
+
+Currently *ALL* development is on the htdig-3-2-x branch, which you
+can access by running:
+
+cvs update -Pd -r htdig-3-2-x
+
