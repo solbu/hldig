@@ -6,7 +6,7 @@ INSTALL=		@INSTALL@
 top_builddir= ..
 include $(top_builddir)/Makefile.config
 
-OBJS=		docs.o htmerge.o words.o 
+OBJS=		db.o docs.o htmerge.o words.o 
 
 TARGET=		htmerge
 LOCAL_DEFINES=	-DSORT_PROG=\"@SORT@\"
