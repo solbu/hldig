@@ -1,3 +1,23 @@
+Sun Sep  5 01:37:27 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/WordList.cc(Flush): Call Add() instead of storing the
+	data ourselves. Additionally, don't open the database ourself (and
+	then close it), instead call Open() if it's not open already.
+
+	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc(AddDescription):
+	Pass in a WordList to use when adding link text words. Ensures
+	that the word db is never opened twice for writing.
+
+	* htdig/Retriever.cc: Call AddDescription as above.
+
+	* htdig/Server.cc(ctor): If debugging, write out an entry for the
+	robots.txt file.
+
+	* htlib/HtHeap.cc(percolateUp): Fix a bug where the parent was not
+	updated when moving up more than once.
+	(pushDownRoot): Fix a bug where the root was inproperly pushed
+	down when it required looping.
+
 Fri Sep  3 16:23:23 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtHeap.cc(Remove): Correct bug where after a removal, the
