@@ -1,29 +1,44 @@
 //
-// PDF.cc : Implementation of class PDF
+// PDF.cc 
+//
+// PDF: This class parses PDF (acrobat) files.
+//      Parsing is done on PostScript translation of the PDF file 
+//      by Acrobat Reader (acroread). It is freely available for 
+//      most platform at www.adobe.com
+//
+//     Using acroread as a translator avoids writing a complicated PDF
+//     parser that can handle the various compression mechanisms available 
+//     in PDF. It allows also to keep this parser up to date when Adobe 
+//     issues a new release of the PDF specification (PDF spec is available at 
+//     www.adobe.com)
+//
+//     However, there are still 2 problems :
+//     - you need acroread on your system
+//     - PDF 1.2 files can contain hrefs, and they are not included in PS 
+//       conversion, preventing htDig to follow these links
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: PDF.cc,v 1.23.2.1 2000/02/13 03:41:14 ghutchis Exp $
 //
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
-// Revision history
-// ----------------
-// Revision 1.0.1 1998/04/28 wallez
-// Do not use acroread as a filter via popen(), because it leaves files
-// in /tmp. Use regular files and system() instead.
-//
-// Revision 1.0  1998/04/16
-// Initial revision
-//
-#if RELEASE
-// Put the compilation date in the object file.
-static char RCSid[] = "PDF.cc "__DATE__;
-#endif
 
-#include <sys/stat.h>
 #include "PDF.h"
 #include "URL.h"
 #include "htdig.h"
-#include <htString.h>
-#include <StringList.h>
+#include "htString.h"
+#include "StringList.h"
+#include "WordType.h"
+
+#include <stdlib.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 
 //*****************************************************************************
@@ -33,6 +48,7 @@ PDF::PDF()
 {
     _data = 0;
     _dataLength = 0;
+    _bigSpacing = 0;
 
     initParser();
 }
@@ -101,17 +117,42 @@ PDF::parse(Retriever &retriever, URL &url)
     initParser();
     _retriever = &retriever;
 
+    String acroread;
+    const String configValue = config["pdf_parser"];
+    if (!configValue.empty())
+	acroread = configValue;
+    else
+	// Assume it's in the path
+        acroread = "acroread";
+
+    // Check for existance of acroread program! (if not, return)
+    struct stat stat_buf;
+    static int notfound = 0;
+    if (notfound)	// we only need to complain once
+	return;
+    const String arg0 = acroread;
+    char *endarg = strchr(arg0.get(), ' ');
+    if (endarg)
+	*endarg = '\0';
+    // If first arg is a path, check that it exists, and is a regular file. 
+    if (strchr(arg0.get(), '/') &&
+	((stat(arg0.get(), &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode)))
+    {
+	printf("PDF::parse: cannot find pdf parser %s\n", arg0.get());
+	notfound = 1;
+	return;
+    }
+
     // Write the pdf contents in a temp file to give it to acroread
 
     // First build the base name. If pdf has no title, acroread will use this.
     _tempFileBase = "htdig";
     _tempFileBase << getpid();
 
-    String pdfName("/tmp/");
-    pdfName << _tempFileBase;
-    String psName = pdfName;
-    pdfName << ".pdf";
-    psName << ".ps";
+
+    const String tmpdir(getenv("TMPDIR") ? getenv("TMPDIR") : "/tmp");
+    const String pdfName(tmpdir + String("/") + _tempFileBase + String(".pdf"));
+    const String psName(tmpdir + String("/") + _tempFileBase + String(".ps"));
 
     FILE *file = fopen(pdfName, "w");
     if (!file)
@@ -123,31 +164,32 @@ PDF::parse(Retriever &retriever, URL &url)
     fwrite(_data, 1, _dataLength, file);
     fclose(file);
 
-    String acroread;
-    char* configValue = config["pdf_parser"];
-    if (configValue && strlen(configValue))
-	acroread = configValue;
-    else
-	// Assume it's in the path
-        acroread = "acroread";
-
-    // Check for existance of acroread program! (if not, return)
-    struct stat stat_buf;
-    // Check that it exists, and is a regular file. 
-    if ((stat(acroread, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode))
-      {
-	printf("PDF::parse: cannot find acroread\n");
-	return;
-      }
 
     // Use acroread as a filter to convert to PostScript.
-    acroread << " -toPostScript " << pdfName << " /tmp 2>&1";
+    // Now generalized to allow xpdf as a parser, or other compatible parsers
+    // (It was claimed it works with most recent xpdf, but it doesn't!)
+    //    acroread << " -toPostScript " << pdfName << " " << tmpdir << " 2>&1";
+    String dest = psName;
+    if (strstr(acroread.get(), "acroread"))
+    {
+	// special-case tests only for acroread (what else you gonna use?)
+	if (!strstr(acroread.get(), "-toPostScript"))
+	    acroread << " -toPostScript ";	// add missing option
+	if (!strstr(acroread.get(), "-pairs"))	// don't use -pairs with 4.0
+	    dest = tmpdir;
+    }
+    acroread << " " << pdfName << " " << dest << " 2>&1";
 
-    system(acroread);
+    if (system((char*)acroread))
+    {
+	printf("PDF::parse: error running pdf_parser on %s\n", url.get());
+	unlink(pdfName);
+	return;
+    }
     FILE* psFile = fopen(psName, "r");
     if (!psFile)
     {
-	printf("PDF::parse: cannot open acroread output\n");
+	printf("PDF::parse: cannot open acroread output from %s\n", url.get());
 	unlink(pdfName);
 	return;
     }
@@ -175,14 +217,14 @@ PDF::parse(Retriever &retriever, URL &url)
     if (debug > 3)
 	printf("PDF::parse: head = \"%s\"\n", _head.get());
 
-    _retriever->got_head(_head);
+    _retriever->got_head((char*)_head);
 
     fclose(psFile);
     unlink(pdfName);
     unlink(psName);
 
     if (lines < 2) // No output or one error line
-	printf("PDF::parse: no data from acroread\n");
+	printf("PDF::parse: no data from acroread on url %s\n", url.get());
     else if (debug > 2)
 	printf("PDF::parse: %d lines parsed\n", lines);
 
@@ -265,7 +307,7 @@ void PDF::parseNonTextLine(String &line)
 
 	    _pages = val;
 	}
-	if (!strncmp(position, "\%\%Title: (", 10))
+	if (!strncmp(position, "%%Title: (", 10))
 	{
 	    // Title of the PDF document
 	    // Decode the title in _parsedString
@@ -276,16 +318,16 @@ void PDF::parseNonTextLine(String &line)
 
 	    addToString(position);
 
-	    if (strncmp(_tempFileBase, _parsedString, _tempFileBase.length()))
+	    if (strncmp((char*)_tempFileBase, (char*)_parsedString, _tempFileBase.length()))
 	    {
 		// PDF file really has a title
 		if (debug > 3)
 		    printf("PDF::parseNonTextLine: title is \"%s\"\n",
 			_parsedString.get());
 
-		_retriever->got_title(_parsedString);
-		_parsedString = 0;
+		_retriever->got_title((char*)_parsedString);
 	    }
+	    _parsedString = 0;
 	}
 	
    }
@@ -358,9 +400,16 @@ void PDF::parseTextLine(String &line)
     else if (!strcmp(cmd, "Td") || !strcmp(cmd, "TD") ||
              !strcmp(cmd, "Tm") || !strcmp(cmd, "T*"))
     {
-	// Text positionning commands Td, TD, Tm and T* are condidered
+	// Text positioning commands Td, TD, Tm and T* are considered
 	// as a word break (see PDF 1.2 spec, chapter 8.7.3)
 	parseString();
+    }
+    else if (!strcmp(cmd, "Tc"))
+    {
+	// Text positioning command Tc, with operand of 3 or more, seems
+	// sometimes to act as a word break between or after characters in
+	// the following Tj command.  (E.g. PDFs generated from .cdr files.)
+	_bigSpacing = (atof(position) >= 3.0);
     }
     else
     {
@@ -412,6 +461,8 @@ char * PDF::addToString(char *position)
 			default:
 			    _parsedString << (char)val;
 		    }
+		    if (_bigSpacing)
+			_parsedString << ' ';
 
 		    // To do : handle more special characters
 		}
@@ -433,6 +484,8 @@ char * PDF::addToString(char *position)
 		    default :
 			// Add the escaped character
 			_parsedString << *pos;
+			if (_bigSpacing)
+			    _parsedString << ' ';
 			pos++;
 		}
 	    }
@@ -441,6 +494,8 @@ char * PDF::addToString(char *position)
 	{
 	    // Add character to the string
 	    _parsedString << *pos;
+	    if (_bigSpacing)
+		_parsedString << ' ';
 	    pos++;
 	}
     }
@@ -456,10 +511,12 @@ void PDF::parseString()
     if (_parsedString.length() == 0)
 	return;
 
+    static int	minimumWordLength = config.Value("minimum_word_length", 3);
     char	*position = _parsedString.get();
     /* Currently unused    char	*start = position; */
     int		in_space = 0;
     String	word;
+    int		wordIndex = 1;
 
     int		head_length = _head.length();
 
@@ -467,13 +524,13 @@ void PDF::parseString()
     {
 	word = 0;
 
-	if (isalnum(*position))
+	if (HtIsStrictWordChar(*position))
 	{
 	    //
 	    // Start of a word.  Try to find the whole thing
 	    //
 	    in_space = 0;
-	    while (*position && (isalnum(*position) || strchr(valid_punctuation, *position)))
+	    while (*position && HtIsWordChar(*position))
 	    {
 		word << *position;
 		position++;
@@ -484,18 +541,11 @@ void PDF::parseString()
 		_head << word;
 	    }
 
-	    if (word.length() > 2)
+	    if (word.length() >= minimumWordLength)
 	    {
-		word.lowercase();
-		word.remove(valid_punctuation);
-		if (word.length() > 2)
-		{
-		    _retriever->got_word(word,
-				       int(_curPage * 1000 / _pages),
-				       0);
-		    if (debug > 3)
-			printf("PDF::parseString: got word %s\n", word.get());
-		}
+		_retriever->got_word((char*)word, wordIndex++, 0);
+		if (debug > 3)
+		    printf("PDF::parseString: got word %s\n", word.get());
 	    }
 	}
 		
@@ -504,7 +554,7 @@ void PDF::parseString()
 	    //
 	    // Characters that are not part of a word
 	    //
-	    if (!*position && isspace(*position))
+	    if (*position && isspace(*position))
 	    {
 		//
 		// Reduce all multiple whitespace to a single space
@@ -552,5 +602,6 @@ void PDF::parseString()
 
     // Flush parsed string
     _parsedString = 0;
+    _bigSpacing = 0;
 }
 
