@@ -4,6 +4,9 @@
 // Implementation of DB2_db
 //
 // $Log: DB2_db.cc,v $
+// Revision 1.2  1998/06/22 04:33:21  turtle
+// New Berkeley database stuff
+//
 // Revision 1.1  1998/06/21 23:20:06  turtle
 // patches by Esa and Jesse to add BerkeleyDB and Prefix searching
 //
@@ -15,7 +18,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: DB2_db.cc,v 1.1 1998/06/21 23:20:06 turtle Exp $";
+static char RCSid[] = "$Id: DB2_db.cc,v 1.2 1998/06/22 04:33:21 turtle Exp $";
 #endif
 
 #include "DB2_db.h"
@@ -60,18 +63,25 @@ DB2_db::~DB2_db()
 int
 DB2_db::OpenReadWrite(char *filename, int mode)
 {
-    /* Initialize the database environment. */
+    //
+    // Initialize the database environment.
+    //
     dbenv = db_init(NULL);
     memset(&dbinfo, 0, sizeof(dbinfo));
-    dbinfo.db_cachesize = CACHE_SIZE_IN_KB * 1024;	/* Cachesize: 64K. */
-    dbinfo.db_pagesize = 1024;      			/* Page size: 1K. */
+//    dbinfo.db_cachesize = CACHE_SIZE_IN_KB * 1024;	// Cachesize: 64K.
+    dbinfo.db_pagesize = 1024;      			// Page size: 1K.
 
-
-
-    /* Create the database. */
-    if ((errno = db_open(filename, DB_BTREE, DB_CREATE, mode, dbenv, &dbinfo, &dbp)) == 0) {
-        /* Acquire a cursor for the database. */
-        if ((seqrc = dbp->cursor(dbp, NULL, &dbcp)) != 0) {
+    //
+    // Create the database.
+    //
+    if ((errno = db_open(filename, DB_BTREE, DB_CREATE, mode, dbenv,
+			 &dbinfo, &dbp)) == 0)
+    {
+        //
+	// Acquire a cursor for the database.
+	//
+        if ((seqrc = dbp->cursor(dbp, NULL, &dbcp)) != 0)
+	{
             seqerr = seqrc;
 	    isOpen = 0;
             Close();
@@ -93,17 +103,25 @@ DB2_db::OpenReadWrite(char *filename, int mode)
 int
 DB2_db::OpenRead(char *filename)
 {
-    /* Initialize the database environment. */
+    //
+    // Initialize the database environment.
+    //
     dbenv = db_init(NULL);
     memset(&dbinfo, 0, sizeof(dbinfo));
-    dbinfo.db_cachesize = CACHE_SIZE_IN_KB * 1024;	/* Cachesize: 64K. */
-    dbinfo.db_pagesize = 1024;				/* Page size: 1K. */
+//    dbinfo.db_cachesize = CACHE_SIZE_IN_KB * 1024;	// Cachesize: 64K.
+    dbinfo.db_pagesize = 1024;				// Page size: 1K.
 
-
-    /* Open the database. */
-    if ((errno = db_open(filename, DB_BTREE, DB_RDONLY, 0, dbenv, &dbinfo, &dbp)) == 0) {
-        /* Acquire a cursor for the database. */
-        if ((seqrc = dbp->cursor(dbp, NULL, &dbcp)) != 0) {
+    //
+    // Open the database.
+    //
+    if ((errno = db_open(filename, DB_BTREE, DB_RDONLY, 0, dbenv,
+			 &dbinfo, &dbp)) == 0)
+    {
+        //
+	// Acquire a cursor for the database.
+	//
+        if ((seqrc = dbp->cursor(dbp, NULL, &dbcp)) != 0)
+	{
             seqerr = seqrc;
 	    isOpen = 0;
             Close();
@@ -127,7 +145,9 @@ DB2_db::Close()
 {
     if (isOpen)
     {
+	//
 	// Close cursor, database and clean up environment
+	//
         (void)(dbcp->c_close)(dbcp);
 	(void)(dbp->close)(dbp, 0);
 	(void) db_appexit(dbenv);
@@ -145,15 +165,20 @@ DB2_db::Start_Get()
 {
     DBT	nextkey;
 
+    //
     // skey and nextkey are just dummies
+    //
     memset(&nextkey, 0, sizeof(DBT));
     memset(&skey, 0, sizeof(DBT));
 
 //    skey.data = "";
 //    skey.size = 0;
 //    skey.flags = 0;
-    if (isOpen && dbp) {
+    if (isOpen && dbp)
+    {
+	//
 	// Set the cursor to the first position.
+	//
         seqrc = dbcp->c_get(dbcp, &skey, &nextkey, DB_FIRST);
 	seqerr = seqrc;
     }
@@ -169,7 +194,6 @@ DB2_db::Get_Next()
     //
     // Looks like get Get_Next() and Get_Next_Seq() are pretty much the same...
     //
-
     DBT	nextkey;
 	
     memset(&nextkey, 0, sizeof(DBT));
@@ -201,14 +225,16 @@ DB2_db::Start_Seq(char *str)
 
     skey.data = str;
     skey.size = strlen(str);
-    if (isOpen && dbp) {
-	// Okay, get the first key. Use DB_SET_RANGE for finding
-	// partial keys also. If you set it to DB_SET, and the
-	// words book, books and bookstore do exists, it will
-	// find them if you specify book*. However if you
-	// specify boo* if will not find anything. Setting to
-	// DB_SET_RANGE will still find the `first' word after boo*
-	// (which is book).
+    if (isOpen && dbp)
+    {
+	//
+	// Okay, get the first key. Use DB_SET_RANGE for finding partial
+	// keys also. If you set it to DB_SET, and the words book, books
+	// and bookstore do exists, it will find them if you specify
+	// book*. However if you specify boo* if will not find
+	// anything. Setting to DB_SET_RANGE will still find the `first'
+	// word after boo* (which is book).
+	//
         seqrc = dbcp->c_get(dbcp, &skey, &nextkey, DB_SET_RANGE);
 	seqerr = seqrc;
     }
@@ -260,8 +286,10 @@ DB2_db::Put(String &key, String &data)
     d.data = data.get();
     d.size = data.length();
 
-    // A 0 in the flags in put means replace, if you didn't
-    // specify DB_DUP somewhere else...
+    //
+    // A 0 in the flags in put means replace, if you didn't specify DB_DUP
+    // somewhere else...
+    //
     return (dbp->put)(dbp, NULL, &k, &d, 0) == 0 ? OK : NOTOK;
 }
 
@@ -344,22 +372,25 @@ DB2_db::getDatabaseInstance()
 DB_ENV *
 DB2_db::db_init(char *home)
 {
-        DB_ENV *dbenv;
-	char *progname = "Somewhere_deep_inside...";
+    DB_ENV *dbenv;
+    char *progname = "Somewhere_deep_inside...";
 
-        /* Rely on calloc to initialize the structure. */
-        if ((dbenv = (DB_ENV *)calloc(sizeof(DB_ENV), 1)) == NULL) {
-                fprintf(stderr, "%s: %s\n", progname, strerror(ENOMEM));
-                exit (1);
-        }
-        dbenv->db_errfile = stderr;
-        dbenv->db_errpfx = progname;
+    //
+    // Rely on calloc to initialize the structure.
+    //
+    if ((dbenv = (DB_ENV *)calloc(sizeof(DB_ENV), 1)) == NULL)
+    {
+	fprintf(stderr, "%s: %s\n", progname, strerror(ENOMEM));
+	exit (1);
+    }
+    dbenv->db_errfile = stderr;
+    dbenv->db_errpfx = progname;
 
-        if ((errno = db_appinit(home, NULL, dbenv, DB_CREATE)) != 0) {
-                fprintf(stderr,
-                    "%s: db_appinit: %s\n", progname, strerror(errno));
-                exit (1);
-        }
-        return (dbenv);
+    if ((errno = db_appinit(home, NULL, dbenv, DB_CREATE)) != 0)
+    {
+	fprintf(stderr, "%s: db_appinit: %s\n", progname, strerror(errno));
+	exit (1);
+    }
+    return (dbenv);
 }
 

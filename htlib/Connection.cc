@@ -7,6 +7,9 @@
 // Implementation of the Connection class
 //
 // $Log: Connection.cc,v $
+// Revision 1.7  1998/06/22 04:33:20  turtle
+// New Berkeley database stuff
+//
 // Revision 1.6  1998/05/26 03:58:06  turtle
 // Got rid of compiler warnings.
 //
@@ -252,9 +255,9 @@ int Connection::connect(int allow_EINTR)
     if (status == ECONNREFUSED)
     {
 	//
-	// For the case where the connection attempt is refused, we
-	// need to close the socket and create a new one in order to
-	// do any more with it.
+	// For the case where the connection attempt is refused, we need
+	// to close the socket and create a new one in order to do any
+	// more with it.
 	//
 	::close(sock);
 	open();
