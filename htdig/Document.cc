@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.61 2002/08/06 16:23:54 angusgb Exp $
+// $Id: Document.cc,v 1.62 2002/08/29 21:16:05 svc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -70,6 +70,7 @@ Document::Document(char *u, int max_size)
     HTTPConnect = 0;
     HTTPSConnect = 0;
     FileConnect = 0;
+    FTPConnect = 0;
     NNTPConnect = 0;
     externalConnect = 0;
 	HtConfiguration* config= HtConfiguration::config();
@@ -121,6 +122,8 @@ Document::~Document()
       delete HTTPSConnect;
     if (FileConnect)
       delete FileConnect;
+    if (FTPConnect)
+      delete FTPConnect;
     if (NNTPConnect)
       delete NNTPConnect;
     if (externalConnect)
@@ -425,7 +428,44 @@ Document::Retrieve(Server *server, HtDateTime date)
       }
 
       transportConnect = FileConnect;
-   }
+   } 
+   else if (mystrncasecmp(url->service(), "ftp", 3) == 0)
+     { 
+       // the following FTP handling is modeled very closely on 
+       // the prior 'file'-protocol handling, so beware of bugs
+
+      if (!FTPConnect)
+      {
+         if (debug>4)
+            cout << "Creating an HtFTP object" << endl;
+
+         FTPConnect = new HtFTP();
+
+         if (!FTPConnect)
+               return Transport::Document_other_error;
+      }
+      if (FTPConnect)
+      {
+         // Here we must set only thing for a FTP request
+	
+         FTPConnect->SetRequestURL(*url);
+         ////////////////////////////////////////////////////    
+	 ///
+         /// stuff may be missing here or in need of change             
+         ///
+	 ///////////////////////////////////////////////////
+
+         // Set the referer
+         if (referer)
+            FTPConnect->SetRefererURL(*referer);
+	
+         if (debug > 2)
+            cout << "Making 'ftp' request on " << url->get() << endl;
+      }
+
+      transportConnect = FTPConnect;
+   } // end of else if (mystrncasecmp(url->service(), "ftp", 3) == 0)
+
    else if (mystrncasecmp(url->service(), "news", 4) == 0)
    {
       if (!NNTPConnect)
