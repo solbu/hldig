@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.47 1999/05/16 21:20:33 ghutchis Exp $
+// $Id: Retriever.cc,v 1.48 1999/06/01 01:54:06 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -660,15 +660,14 @@ Retriever::IsValidURL(char *u)
     url = u;
 
     //
-    // Currently, we only deal with HTTP URLs.  Gopher and ftp will
-    // come later...  ***FIX***
+    // We used to only deal with http urls. This shouldn't be necessary.
     //
-    if (strstr(u, "..") || strncmp(u, "http://", 7) != 0)
-      {
-	if (debug > 2)
-	  cout << endl <<"   Rejected: Not an http or relative link!";
-	return FALSE;
-      }
+    //    if (strstr(u, "..") || strncmp(u, "http://", 7) != 0)
+    //      {
+    //	if (debug > 2)
+    //	  cout << endl <<"   Rejected: Not an http or relative link!";
+    //	return FALSE;
+    //      }
 
     //
     // If the URL contains any of the patterns in the exclude list,
