@@ -128,6 +128,7 @@ fi
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_LANG_C
+AC_FUNC_ALLOCA
 AC_C_CONST
 AC_STRUCT_TM
 dnl AC_CHECK_SIZEOF(int *) => SIZEOF_INT_P

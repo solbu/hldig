@@ -1,3 +1,22 @@
+Mon Dec 27 22:17:48 1999  Loic Dachary  <loic@ceic.com>
+
+	* htdig/htdig.cc (main): change '\r\n' to "\r\n"
+
+	* Makefile.config,db/dist/Makefile.in: rename libdb to libhtdb to
+	  prevent conflicts with installed libdb.
+
+	* db/dist/Makefile.in: do not install documentation nor binary
+	  utilities (db_dump & al) since they are replaced by htdb binaries
+	  (htdump & al).
+
+	* db/dist/Makefile.in (prefix): prepend $(DESTDIR) to prefix
+	  to support make DESTDIR=/staging install for binary distribution
+	  packages generation.
+
+	* configure.in: use AC_FUNC_ALLOCA to check for alloca. Used 
+	  in regex and test/dbbench.cc only but definitely a usefull 
+	  feature to have.
+
 Thu Dec 23 11:10:24 1999  Marcel Bosc  <bosc@ceic.com>
 
 	* htcommon/defaults.cc: set wordlist_cache_size default to 10Meg

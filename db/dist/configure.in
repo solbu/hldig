@@ -656,7 +656,7 @@ CHECK_ZLIB
 
 AC_MSG_CHECKING(shared lib)
 case "$host_os" in
-linux*)	LIBDBSHARED=libdb.so ;;
+linux*)	LIBDBSHARED=libhtdb.so ;;
 esac
 
 if test -n "$LIBDBSHARED" -a "$enable_shared" != "no"

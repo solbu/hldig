@@ -2,8 +2,8 @@ all clean install:
 	cd dist ; if [ -f Makefile ] ; then $(MAKE) $@ ; fi
 
 distclean:
-	rm -f Makefile
 	cd dist ; if [ -f Makefile ] ; then $(MAKE) $@ ; fi
+	rm -f Makefile
 
 dvi dist installcheck check:
 

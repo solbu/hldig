@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.6 1999/12/21 15:42:27 bosc Exp $
+// $Id: htdig.cc,v 1.26.2.7 1999/12/27 22:27:03 loic Exp $
 //
 
 #include "Document.h"
@@ -283,7 +283,7 @@ int main(int ac, char **av)
 	while (!cin.eof())
 	{
 	    cin >> str;
-	    str.chop('\r\n');
+	    str.chop("\r\n");
 	    if (str.length() > 0)
 		retriever.Initial(str, 1);
 	}

@@ -43,16 +43,16 @@ PROGS=	@build_additional@ db_archive db_checkpoint db_deadlock \
 LOBJS=	@LIBOBJS@
 POBJS=	err.o getlong.o
 
-libdb=	libdb.a
+libdb=	libhtdb.a
 
 libdbshared= @LIBDBSHARED@
 
 all: $(libdb) $(libdbshared) $(PROGS)
 
-libdb.so: $(libdb)
+libhtdb.so: $(libdb)
 	rm -fr tmp
 	mkdir tmp
-	cd tmp ; ar x ../$(libdb) ; $(CC) -shared @LIBDBSHAREDDEPS@ -o ../libdb.so *.o
+	cd tmp ; ar x ../$(libdb) ; $(CC) -shared @LIBDBSHAREDDEPS@ -o ../libhtdb.so *.o
 	rm -fr tmp
 
 $(libdb): db.h $(OBJS) $(LOBJS)
@@ -141,7 +141,7 @@ clean:
 	$(rm) -f $(DBI) $(DBJ) $(DBK) $(DBL) $(DBM) $(DBN) $(DBO) $(DBP)
 	$(rm) -f $(DBT)
 	$(rm) -f $(PROGS) $(EPROGS) $(POBJS) $(LOBJS) @build_test@
-	$(rm) -f core *.core .dbtestrc $(libdb)
+	$(rm) -f core *.core .dbtestrc $(libdb) $(libdbshared)
 
 depend obj:
 
@@ -149,7 +149,9 @@ realclean distclean: clean
 	$(rm) -f Makefile config.cache config.h config.log config.status
 	$(rm) -f confdefs.h db.h db_int.h db_185.h include.tcl
 
-prefix=	@prefix@
+DESTDIR = 
+
+prefix=	$(DESTDIR)@prefix@
 bindir=	$(prefix)/bin
 datadir=$(prefix)/share
 includedir=$(prefix)/include
@@ -184,17 +186,6 @@ install: all
 	   $(cp) -p $(libdbshared) $(libdir) ; \
 	   ( cd $(libdir) && ln -s $(libdbshared) $(libdbshared).3 ) ; \
 	fi
-	@echo "Installing DB utilities: $(bindir) ..."
-	@test -d $(bindir) || \
-	    ($(mkdir) -p $(bindir) && $(chmod) $(dmode) $(bindir))
-	@cd $(bindir) && $(rm) -f $(PROGS)
-	@$(cp) -p $(PROGS) $(bindir)
-	@cd $(bindir) && (test ! -f $(strip) || $(strip) $(PROGS))
-	@cd $(bindir) && $(chmod) $(emode) $(PROGS)
-	@echo "Installing documentation: $(mandir) ..."
-	@test -d $(mandir) || \
-	    ($(mkdir) -p $(mandir) && $(chmod) $(dmode) $(mandir))
-	@cd $(srcdir)/docs && $(cp) -pr * $(mandir)/
 
 uninstall:
 	-cd $(bindir) && $(rm) -f $(PROGS)
