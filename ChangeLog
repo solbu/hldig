@@ -1,3 +1,8 @@
+Sun Nov  8 20:33:22 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Document.cc: Changed reset to keep proxy settings--fixes
+	bug noted by Didier Gautheron <dgautheron@magic.fr>
+
 Fri Nov  6 17:07:00 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* contrib/wordfreq/wordfreq.pl: Updated with patch from Isoif
@@ -121,7 +126,7 @@ Wed Oct 21 13:30:05 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htcommon/defaults.cc: Added defaults for new directives
 	server_aliases and limit_normalized.
 
-	* htdig/HTML.cc: Cleaned up HTML parsing based on patch by Reni 
+	* htdig/HTML.cc: Cleaned up HTML parsing based on patch by Rene' 
 	Seindal.
 	
 Wed Oct 21 18:31:00 1998  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
@@ -136,9 +141,9 @@ Wed Oct 21 18:31:00 1998  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 Sun Oct 18 17:19:51 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/Connection.h, htlib/Connection.cc: Define new function
-	timeout() as adapted from a patch by Reni Seindal.
+	timeout() as adapted from a patch by Rene' Seindal.
 
-	* htdig/Document.cc: Use it as adapted from a patch by Reni Seindal.
+	* htdig/Document.cc: Use it as adapted from a patch by Rene' Seindal.
 
 Sun Oct 18 16:33:58 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
@@ -169,7 +174,7 @@ Sat Oct 17 10:15:57 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	
 	* htsearch/Display.cc, htsearch/Display.h,
 	htdoc/hts_templates.html: Added variable CURRENT as the number of
-	the current match, adapted from a patch by Reni Seindal
+	the current match, adapted from a patch by Rene' Seindal
 	<seindal@webadm.kb.dk>
 
 	* htcommon/defaults.cc: Changed htdig.sdsu.edu to www.htdig.org in

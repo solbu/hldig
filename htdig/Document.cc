@@ -4,6 +4,11 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.22  1998/11/09 19:35:09  ghutchis
+//
+// Changed reset to keep proxy settings--fixes bug noted by Didier Gautheron
+// <dgautheron@magic.fr>.
+//
 // Revision 1.21  1998/11/02 20:30:35  ghutchis
 //
 // Remove const from *ext to fix compiler warning.
@@ -82,7 +87,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.21 1998/11/02 20:30:35 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.22 1998/11/09 19:35:09 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -167,9 +172,6 @@ Document::Reset()
     if (!url)
       delete url;
     url = 0;
-    if (!proxy)
-      delete proxy;
-    proxy = 0;
     referer = 0;
     if(config.Boolean("modification_time_is_now"))
        modtime = time(NULL);
@@ -182,6 +184,10 @@ Document::Reset()
 
     // Don't reset the authorization since it's a pain to set up again.
     //    authorization = 0;
+    // Don't reset the proxy since it's a pain to set up too.
+    //    if (!proxy)
+    //      delete proxy;
+    //    proxy = 0;
 }
 
 
