@@ -4,6 +4,10 @@
 // Implementation of WordList
 //
 // $Log: WordList.cc,v $
+// Revision 1.12  1999/01/14 00:28:14  ghutchis
+// Changed field order in db.wordlist. With the old order, words from HTML body
+// and words from links to that url weren't merged sometimes.
+//
 // Revision 1.11  1999/01/10 02:00:17  ghutchis
 // Break out of looping once we're sure the word is invalid.
 //
@@ -42,7 +46,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.11 1999/01/10 02:00:17 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.12 1999/01/14 00:28:14 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -175,15 +179,15 @@ void WordList::Flush()
 	wordRef = (WordReference *) words->Find(word);
 
 	fprintf(fl, "%s",wordRef->Word);
-        if (1 != wordRef->WordCount)
+        fprintf(fl, "\ti:%d\tl:%d\tw:%d",
+		wordRef->DocumentID,
+	        wordRef->Location,
+		wordRef->Weight);
+        if (wordRef->WordCount != 1)
         {
            fprintf(fl, "\tc:%d",wordRef->WordCount);
         }
-        fprintf(fl, "\tl:%d\ti:%d\tw:%d",
-	        wordRef->Location,
-		wordRef->DocumentID,
-		wordRef->Weight);
-        if (0 != wordRef->Anchor)
+	if (wordRef->Anchor != 0)
         {
            fprintf(fl, "\ta:%d",wordRef->Anchor);
         }
