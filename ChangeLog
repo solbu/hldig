@@ -1,3 +1,8 @@
+Tue Feb 22 14:09:26 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc (RetrieveLocal): Handle common extensions for
+	text/plain, application/pdf & application/postscript.
+
 Mon Feb 21 17:25:21 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/htdig-3.2.0.spec: Fixed %post script to add more
