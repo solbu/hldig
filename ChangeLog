@@ -1,3 +1,8 @@
+Mon Mar 22 19:10:56 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc (got_href): Check if the ref is for the
+	current document before adding it to the db. (From H-P Nilsson, Mar 8)
+
 Mon Mar 22 19:03:23 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html: Rephrase and clarify entry for url_part_aliases.
