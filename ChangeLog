@@ -1,3 +1,9 @@
+Tue Jul 24 14:21:53 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (expandVariables, outputVariable),
+	htdoc/hts_templates.html: Add support for $=(var) template variable
+	references, as suggested by Quim Sanmarti.
+
 Tue Jul 24 14:12:06 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (readFile): Added missing fclose() call, and

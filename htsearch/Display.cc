@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.40 2001/07/24 19:14:01 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.41 2001/07/24 19:25:20 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -1004,8 +1004,8 @@ Display::expandVariables(char *str)
 		state = StStart;
 		break;
 	    case StVarStart:
-		if (*str == '%')
-		    var << *str;	// code for URL-encoded variable
+		if (*str == '%' || *str == '=')
+		    var << *str;	// code for URL-encoded/decoded variable
 		else if (*str == '&')
 		{
 		    var << *str;	// code for SGML-encoded variable
@@ -1074,7 +1074,7 @@ Display::outputVariable(char *var)
     // see if we can find a good replacement for it, either in our
     // vars dictionary or in the environment variables.
     name = var;
-    while (*name == '&' || *name == '%')
+    while (*name == '&' || *name == '%' || *name == '=')
 	name++;
     temp = (String *) vars[name];
     if (temp)
@@ -1089,7 +1089,9 @@ Display::outputVariable(char *var)
     {
 	if (*name == '%')
 	    encodeURL(value);
-	else
+	else if (*name == '=')
+	    decodeURL(value);
+	else // (*name == '&')
 	    encodeSGML(value);
     }
     cout << value;
