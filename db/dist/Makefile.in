@@ -169,28 +169,28 @@ install: all
 	@test -f $(cp) || (echo 'cp not found.'; exit 1)
 	@test -f $(mkdir) || (echo 'mkdir not found.'; exit 1)
 	@test -f $(rm) || (echo 'rm not found.'; exit 1)
-	@echo "Installing DB include files: $(includedir) ..."
-	@test -d $(includedir) || \
-	    ($(mkdir) -p $(includedir) && $(chmod) $(dmode) $(includedir))
-	@cd $(includedir) && $(rm) -f db.h db_185.h db_cxx.h
-	@$(cp) -p db.h db_185.h $(srcdir)/include/db_cxx.h $(includedir)
-	@cd $(includedir) && $(chmod) $(fmode) db.h db_185.h db_cxx.h
-	@echo "Installing DB library: $(libdir) ..."
-	@test -d $(libdir) || \
-	    ($(mkdir) -p $(libdir) && $(chmod) $(dmode) $(libdir))
-	@cd $(libdir) && $(rm) -f $(libdb)
-	@$(cp) -p $(libdb) $(libdir)
-	@cd $(libdir) && $(chmod) $(fmode) $(libdb)
+	@echo "Installing DB include files: $(includedir)/$(PACKAGE) ..."
+	@test -d $(includedir)/$(PACKAGE) || \
+	    ($(mkdir) -p $(includedir)/$(PACKAGE) && $(chmod) $(dmode) $(includedir)/$(PACKAGE))
+	@cd $(includedir)/$(PACKAGE) && $(rm) -f db.h db_185.h db_cxx.h
+	@$(cp) -p db.h db_185.h $(srcdir)/include/db_cxx.h $(includedir)/$(PACKAGE)
+	@cd $(includedir)/$(PACKAGE) && $(chmod) $(fmode) db.h db_185.h db_cxx.h
+	@echo "Installing DB library: $(libdir)/$(PACKAGE) ..."
+	@test -d $(libdir)/$(PACKAGE) || \
+	    ($(mkdir) -p $(libdir)/$(PACKAGE) && $(chmod) $(dmode) $(libdir)/$(PACKAGE))
+	@cd $(libdir)/$(PACKAGE) && $(rm) -f $(libdb)
+	@$(cp) -p $(libdb) $(libdir)/$(PACKAGE)
+	@cd $(libdir)/$(PACKAGE) && $(chmod) $(fmode) $(libdb)
 	@if test -f "$(libdbshared)" ; then \
-	   ( cd $(libdir) && $(rm) -f $(libdbshared)* ) ; \
-	   $(cp) -p $(libdbshared) $(libdir) ; \
-	   ( cd $(libdir) && ln -s $(libdbshared) $(libdbshared).3 ) ; \
+	   ( cd $(libdir)/$(PACKAGE) && $(rm) -f $(libdbshared)* ) ; \
+	   $(cp) -p $(libdbshared) $(libdir)/$(PACKAGE) ; \
+	   ( cd $(libdir)/$(PACKAGE) && ln -s $(libdbshared) $(libdbshared).3 ) ; \
 	fi
 
 uninstall:
 	-cd $(bindir) && $(rm) -f $(PROGS)
-	-cd $(includedir) && $(rm) -f db.h db_185.h db_cxx.h
-	-cd $(libdir) && $(rm) -f $(libdb)
+	-cd $(includedir)/$(PACKAGE) && $(rm) -f db.h db_185.h db_cxx.h
+	-cd $(libdir)/$(PACKAGE) && $(rm) -f $(libdb)
 	-cd $(mandir) && $(rm) -rf docs
 
 # Programs.

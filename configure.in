@@ -203,7 +203,7 @@ if test ! -d "./db"; then
   mkdir db
 fi
 
-if $htdig_cv_test
+if $htdig_cv_tests
 then
 	CHECK_USER
 	AC_PROG_APACHE(1.3.1)

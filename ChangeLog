@@ -46,6 +46,23 @@ Sat Feb 12 21:29:20 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
 	Regenerate using cf_generate.pl.
 	
+Fri Feb 11 11:41:36 2000  Loic Dachary  <loic@ceic.com>
+
+	* htlib/Makefile.am: removed CFLAGS=-g (use make CXXFLAGS=-g all
+	  instead).
+
+	* htdoc/install.html: specify header/lib install directory now
+	  is prefix/include/htdig and prefix/lib/htdig.
+
+	* Makefile.am (distclean-local): use TESTDIR instead of deprecated
+	  HTDIGDIRS.
+
+	* */Makefile.am: install libraries in prefix/lib/htdig and
+	  includes in prefix/include/htdig. Just prepend pkg in front of
+	  automake targets.
+
+	* include/Makefile.am: install htconfig.h
+	
 Thu Feb 10 23:18:37 2000  Loic Dachary  <loic@ceic.com>
 
 	*  Connection.cc (Connection): set retry_value to 1 instead of

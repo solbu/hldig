@@ -11,7 +11,7 @@ AM_YFLAGS = -l -d
 
 EXTRA_DIST=conf_lexer.cxx conf_parser.cxx
 
-lib_LTLIBRARIES = libcommon.la
+pkglib_LTLIBRARIES = libcommon.la
 
 libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc \
 	HtWordReference.cc HtWordList.cc defaults.cc \

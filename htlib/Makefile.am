@@ -1,7 +1,6 @@
-CFLAGS=-g
 include $(top_srcdir)/Makefile.config
 
-lib_LTLIBRARIES = libht.la
+pkglib_LTLIBRARIES = libht.la
 
 libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	DB2_db.cc IntObject.cc List.cc Object.cc \
@@ -15,7 +14,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-include_HEADERS = \
+pkginclude_HEADERS = \
 	Configuration.h \
 	DB2_db.h \
 	Database.h \

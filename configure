@@ -4199,7 +4199,7 @@ if test ! -d "./db"; then
   mkdir db
 fi
 
-if $htdig_cv_test
+if $htdig_cv_tests
 then
 	echo $ac_n "checking user name""... $ac_c" 1>&6
 echo "configure:4206: checking user name" >&5

@@ -3,7 +3,7 @@ include $(top_srcdir)/Makefile.config
 
 LOCAL_DEFINES=  -DMV=\"$(MV)\"
 
-lib_LTLIBRARIES = libfuzzy.la
+pkglib_LTLIBRARIES = libfuzzy.la
 
 libfuzzy_la_SOURCES = Endings.cc EndingsDB.cc Exact.cc \
 		Fuzzy.cc Metaphone.cc Soundex.cc \

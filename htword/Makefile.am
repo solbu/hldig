@@ -5,7 +5,7 @@ EXTRA_DIST = word.desc
 
 LOCAL_DEFINES = 
 
-lib_LTLIBRARIES = libhtword.la
+pkglib_LTLIBRARIES = libhtword.la
 
 libhtword_la_SOURCES = WordKey.cc WordList.cc WordReference.cc WordType.cc \
 	WordDB.cc WordStat.cc WordDBCompress.cc WordBitCompress.cc \
@@ -13,7 +13,7 @@ libhtword_la_SOURCES = WordKey.cc WordList.cc WordReference.cc WordType.cc \
 
 libhtword_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-include_HEADERS = WordList.h \
+pkginclude_HEADERS = WordList.h \
 	WordRecord.h \
 	WordReference.h \
 	WordType.h \

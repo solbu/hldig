@@ -19,9 +19,8 @@ dist-hook:
 # the test/Makefile anyway
 #
 distclean-local:
-	if echo "@HTDIGDIRS@" | grep 'test ' > /dev/null ; \
-	then : ; \
-	else \
+	if "$(TESTDIR)" = "test" ; \
+	then \
 		rm -f test/Makefile test/test_functions ; \
 	fi
 

@@ -6,10 +6,10 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = db
 
 all clean install:
-	cd dist ; if [ -f Makefile ] ; then $(MAKE) $@ ; fi
+	cd dist ; if [ -f Makefile ] ; then $(MAKE) PACKAGE=$(PACKAGE) $@ ; fi
 
 distclean:
-	cd dist ; if [ -f Makefile ] ; then $(MAKE) $@ ; fi
+	cd dist ; if [ -f Makefile ] ; then $(MAKE) PACKAGE=$(PACKAGE) $@ ; fi
 	rm -f Makefile
 
 dvi dist installcheck check:
