@@ -1,3 +1,8 @@
+Wed Apr  7 17:12:33 2004  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+    * htdig/Retriever.cc (IsValidURL): Fixed bug #931377 so bad_extensions
+      and valid_extensions not thrown off by periods in query strings.
+
 Mon Mar 15 11:56:04 CET 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htsearch/Display.cc: changed (and fixed) the date factor formula as

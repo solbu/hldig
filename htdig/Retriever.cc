@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.90 2004/02/08 10:19:32 lha Exp $
+// $Id: Retriever.cc,v 1.91 2004/04/07 22:02:00 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1024,16 +1024,17 @@ int Retriever::IsValidURL(const String & u)
 	//
 	// See if the file extension is in the list of invalid ones
 	//
-	ext = strrchr((char *) url, '.');
+	String urlpath = url.get();
+	int parm = urlpath.indexOf('?');	// chop off URL parameter
+	if (parm >= 0)
+		urlpath.chop(urlpath.length() - parm);
+	ext = strrchr((char *) urlpath.get(), '.');
 	String lowerext;
 	if (ext && strchr(ext, '/'))	// Ignore a dot if it's not in the
 		ext = NULL;		  // final component of the path.
 	if (ext)
 	{
 		lowerext.set(ext);
-		int parm = lowerext.indexOf('?');	// chop off URL parameter
-		if (parm >= 0)
-			lowerext.chop(lowerext.length() - parm);
 		lowerext.lowercase();
 		if (invalids.Exists(lowerext))
 		{
