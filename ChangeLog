@@ -1,3 +1,8 @@
+Mon Apr 26 15:12:22 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
+
+    * htfuzzy/Soundex.cc (generateKey): Applied Alex Kiesel's fix to prevent
+      segfaults when word has no letters.
+
 Sun 25 Apr 2004 Lachlan Andrew <lha at users.sourceforge.net>
 
     * htdig/HTML.cc: Handle empty  noindex_start/noindex_end  lists.
@@ -37,17 +42,17 @@ Sun 25 Apr 2004 Lachlan Andrew <lha at users.sourceforge.net>
     * contrib/htdig-3.2.0.spec:
     Karl Eichwalder's patch to use mktemp to create safe temp file.
 
-Wed Apr  7 17:12:33 2004  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Apr  7 17:12:33 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 
     * htdig/Retriever.cc (IsValidURL): Fixed bug #931377 so bad_extensions
       and valid_extensions not thrown off by periods in query strings.
 
-Mon Mar 15 11:56:04 CET 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Mon Mar 15 11:56:04 CET 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
     * htsearch/Display.cc: changed (and fixed) the date factor formula as
     Lachlan and David Lippi suggested, in order not to give negative results.
 
-Fri Mar 12 09:13:28 CET 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Fri Mar 12 09:13:28 CET 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
     * configure.in: removed 'eval' expressions which caused the 'NONE' prefix
       path to be instantiated and the make script to hang
@@ -68,17 +73,17 @@ Sat 21 Feb 2004 Lachlan Andrew <lha at users.sourceforge.net>
 
     * installdir/HtFileType: Use mktemp to create safe temp file (bug #901555)
 
-Wed Feb 25 11:14:45 CET 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Wed Feb 25 11:14:45 CET 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
     * htdocs/THANKS.html: added Robert Ribnitz to the 'thanks' page and fixed
       Nenciarini's position (it was not in alphabetical order - sorry!).
 
-Wed Feb 25 11:02:37 CET 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Wed Feb 25 11:02:37 CET 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
     * installdir/*.[1,8]: added man pages (htdig-pdfparser.1, htdig.1,
       htdump.1, htfuzzy.1, htload.1, htmerge.1, htnotify.1, htpurge.1,
       htsearch.1, htstat.1, rundig.1, htdigconfig.8) provided by
-      Robert Ribnitz <ribnitz@linuxbourg.ch> of the Debian Project
+      Robert Ribnitz <ribnitz at linuxbourg.ch> of the Debian Project
     * installdir/Makefile.am: prepared the automake script for correctly
       handling the man pages
 
@@ -1223,7 +1228,7 @@ Wed Aug  7 12:11:31 2002  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 
 Tue Aug 6 18:21:11 CEST 2002 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
-	* these changes were suggested by David Reed <DReed1@citgo.com> (thanks)
+	* these changes were suggested by David Reed <DReed1 at citgo.com> (thanks)
 
 	* htdig/Document.cc: manage cookies via SSL
 
@@ -1327,7 +1332,7 @@ Mon Feb 11 23:28:37 2002  Geoff Hutchison  <ghutchis at wso.williams.edu>
 
 	* htdig/Document.cc (Retrieve): Fix bug that prevented external
 	transport methods from reporting redirects as reported by Jamie
-	Anstice <Jamie.Anstice@sli-systems.com>.
+	Anstice <Jamie.Anstice at sli-systems.com>.
 	
 	* htlib/Dictionary.cc (hashCode): Trial of hash function suggested
 	by Jamie Anstice.
@@ -1403,7 +1408,7 @@ Fri Jan  4 12:17:10 2002  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 Fri Jan 4 15:13:13 CET 2002 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
 	* htnet/HtHTTP.cc: parse the transfer-encoding header as case insens.
-	[fix htdig-Bugs-499388 by Matthias Emmert <Matthias.Emmert2@start.de>]
+	[fix htdig-Bugs-499388 by Matthias Emmert <Matthias.Emmert2 at start.de>]
 
 Sun Dec 30 15:47:35 CET 2001 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
@@ -1811,7 +1816,7 @@ Wed Jun  6 15:24:04 2001  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 	* contrib/doc2html/DETAILS, contrib/doc2html/README,
 	contrib/doc2html/doc2html.pl, contrib/doc2html/pdf2html.pl,
 	contrib/doc2html/swf2html.pl: Update to version 3.0 of doc2html,
-	contributed by David Adams <D.J.Adams@soton.ac.uk>.
+	contributed by David Adams <D.J.Adams at soton.ac.uk>.
 
 Wed May 16 11:23:04 2001  Geoff Hutchison  <ghutchis at wso.williams.edu>
 
@@ -2267,7 +2272,7 @@ Sat Jan  6 21:50:58 2001  Geoff Hutchison  <ghutchis at wso.williams.edu>
 
 	* htdoc/upgrade.html: A few "remaining features" have been implemented.
 	
-Sun Dec 06 19:46:15 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+Sun Dec 06 19:46:15 CEST 2000 Gabriele Bartolini <g.bartol at comune.prato.it>
 
 	* htnet/HtHTTP.cc: Fixed bug for Read_Line function call in
 	ReadChunkedBody method. Many thanks to Robert LaFerla. ;-)
@@ -2683,7 +2688,7 @@ Fri Sep  8 22:59:10 2000  Geoff Hutchison  <ghutchis at wso.williams.edu>
 	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
 
 	* httools/htnotify.cc: Added in code from Richard Beton
-	<richard.beton@roke.co.uk> to collect multiple URLs per e-mail
+	<richard.beton at roke.co.uk> to collect multiple URLs per e-mail
 	address and allow customization of notification messages by
 	reading in header/footer text as designated by the new attributes
 	above.
@@ -2705,12 +2710,12 @@ Thu Sep  7 22:56:19 2000  Geoff Hutchison  <ghutchis at wso.williams.edu>
 	* htnet/HtFile.cc (Request): Handle directory listings by using
 	scandir and generating minimal HTML file with appropriate noindex listing.
 
-Wed Sep 06 10:00:50 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+Wed Sep 06 10:00:50 CEST 2000 Gabriele Bartolini <g.bartol at comune.prato.it>
 
 	* htlib/URL.h, htlib/URL.cc: Restored corrected versions of URL.*
 	* htnet/HtNNTP.h: Removed the error in the NNTP class declaration
 
-Mon Sep 04 13:43:40 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+Mon Sep 04 13:43:40 CEST 2000 Gabriele Bartolini <g.bartol at comune.prato.it>
 
 	* htnet/HtHTTP.cc: Restored previous version of HtHTTP. I removed
 	an initialization in the constructor (_modification_time). Sorry.
@@ -2724,13 +2729,13 @@ Sun Sep  3 16:51:24 2000  Geoff Hutchison  <ghutchis at wso.williams.edu>
 	db/acinclude.m4, db/aclocal.m4: Ensure --enable-bigfile is handled
 	correctly by the configure scripts as pointed out by Jesse.
 
-Fri Sep 01 23:28:43 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+Fri Sep 01 23:28:43 CEST 2000 Gabriele Bartolini <g.bartol at comune.prato.it>
 
 	* URL.cc: added DefaultPort() method and changed NNTP default port
 	from 523 to 119.
 	* Document.cc: management of NNTP documents retrieval.
 
-Fri Sep 01 19:05:02 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+Fri Sep 01 19:05:02 CEST 2000 Gabriele Bartolini <g.bartol at comune.prato.it>
 
 	* htnet/HtNNTP.* : just created them ...
 	* htnet/HtHTTP.cc : removed modification_time deletion in the
@@ -2749,7 +2754,7 @@ Thu Aug 31 13:21:12 2000  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 
 	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
 
-Wed Aug 30 10:01:59 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+Wed Aug 30 10:01:59 CEST 2000 Gabriele Bartolini <g.bartol at comune.prato.it>
 
 	* substition of char * returned types to const String & in URL and
 	Server classes. This change made me do lots of changes in other files:
@@ -2814,7 +2819,7 @@ Wed Aug 23 23:34:44 2000  Geoff Hutchison  <ghutchis at wso.williams.edu>
 
 	* htsearch/OrParseTree.cc (Parse): Ditto.
 
-Wed Aug 23 13:24:31 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+Wed Aug 23 13:24:31 CEST 2000 Gabriele Bartolini <g.bartol at comune.prato.it>
 
 	* htnet/HtHTTP.*, htnet/Transport.h: all 'char *', when possibile,
 	have been changed into 'const String &' types.
@@ -2888,12 +2893,12 @@ Thu Aug 17 16:59:05 2000  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 	* htsearch/Display.cc (createURL): Get rid of extra "config="
 	parameter that was inserted before collections stuff.
 
-Thu Aug 17 15:47:58 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+Thu Aug 17 15:47:58 CEST 2000 Gabriele Bartolini <g.bartol at comune.prato.it>
 
 	* htnet/HtHTTP.cc: ask again for a document after a <NoHeader>
 	response is given by the HTTPRequest() method.
 
-Thu Aug 17 12:25:33 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+Thu Aug 17 12:25:33 CEST 2000 Gabriele Bartolini <g.bartol at comune.prato.it>
 
 	* htnet/HtHTTP.*, htnet/Transport.* : fixed bug with HTTP/1.1 management.
 	Now the "Connection: close" directive is handled and force the connection
@@ -2953,7 +2958,7 @@ Wed Aug  9 23:04:39 2000  Geoff Hutchison  <ghutchis at wso.williams.edu>
 Wed Aug  9 22:58:39 2000  Geoff Hutchison  <ghutchis at wso.williams.edu>
 
 	* htsearch/parser.cc (score): Merged in patch contributed by
-	Lorenzo Campedelli <lorenzo.campedelli@libero.it> and Arthur
+	Lorenzo Campedelli <lorenzo.campedelli at libero.it> and Arthur
 	Prokosch <prokosch at aptima.com> to fix problems with AND operators
 	and phrase matches.
 
@@ -2997,7 +3002,7 @@ Thu Jun 29 23:33:51 2000  Geoff Hutchison  <ghutchis at wso.williams.edu>
 Tue Jun 20 22:29:57 2000  Geoff Hutchison  <ghutchis at wso.williams.edu>
 
 	* httools/htmerge.cc (mergeDB): Merge in patch contributed by
-	Lorenzo Campedelli <lorenzo.campedelli@libero.it> to greatly
+	Lorenzo Campedelli <lorenzo.campedelli at libero.it> to greatly
 	reduce memory usage.
 
 Sun Jun 18 13:15:43 2000  Geoff Hutchison  <ghutchis at wso.williams.edu>
@@ -3438,7 +3443,7 @@ Wed Apr  5 15:07:52 2000  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 
 Tue Apr  4 12:46:37 2000  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 
-	* contrib/doc2html/*: Added parser submitted by D.J.Adams@soton.ac.uk
+	* contrib/doc2html/*: Added parser submitted by D.J.Adams at soton.ac.uk
 
 Mon Apr  3 13:48:59 2000  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 
@@ -3697,21 +3702,21 @@ Sat Mar 04 19:41:49 2000  Loic Dachary  <loic at ceic.com>
 
 	* db/mp/mp_cmpr.c (__memp_cmpr_free_chain): clear BH_CMPR
 	  flag. Was causing core dumps, thanks to 
-	  Peter Marelas maral@phase-one.com.au for providing 
+	  Peter Marelas maral at phase-one.com.au for providing 
 	  a simple case to reproduce the error.
 
-Fri Mar  3 11:32:34 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Fri Mar  3 11:32:34 2000 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* Fixed bugs regarding yesterday's changes. Even Leonardo da Vinci
 	  used to commit errors, so  ...
 
-Fri Mar  3 11:25:42 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Fri Mar  3 11:25:42 2000 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* testnet.cc: added the -r and -w options in order to set how many
 	  times it retries to re-connect after a timeout occurs, and how long
 	  it should wait after it.
 
-Thu Mar  2 18:45:15 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Thu Mar  2 18:45:15 2000 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* htnet/Connection.*: management of wait_time and number of retries
           after a timeout occurs.
@@ -4175,7 +4180,7 @@ Wed Feb  9 23:52:55 2000  Geoff Hutchison  <ghutchis at wso.williams.edu>
 	as suggested by Russ Lentini <rlentini at atl.lmco.com> to resolve
 	PR#762 (and probably others as well).
 	(connect): Add a retry loop as suggested by Wilhelm Schnell
-	<Wilhelm.Schnell@mn.man.de> to resolve PR#754.
+	<Wilhelm.Schnell at mn.man.de> to resolve PR#754.
 
 	* htnet/HtHTTP.cc (HTTPRequest): Add CloseConnection() when the
 	connection fails on open before returning from the method. Should
@@ -4200,7 +4205,7 @@ Wed Feb  9 09:21:00 2000  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 	* htlib/HtRegex.cc (set): apply the fix from Valdas Andrulis, to
 	properly compile case_sensitive expressions.
 
-Mon Feb 09 09:43:59 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Mon Feb 09 09:43:59 2000 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
         * htnet/HtHTTP.cc: changed "<<" to append() for content_length
           assignment in ReadChunkedBody() function (as Gilles suggested)
@@ -4225,7 +4230,7 @@ Mon Feb 07 17:40:47 2000  Loic Dachary  <loic at ceic.com>
 
 	* htlib/htString.h (last): turn to const
 
-Mon Feb 07 14:05:37 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Mon Feb 07 14:05:37 2000 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
         * htnet/HtHTTP.cc: fixed a bug in ReadChunkedBody() function
 	  regarding document size assignment (raised by Valdas Andrulis)
@@ -4465,7 +4470,7 @@ Wed Jan 26 20:05:33 2000  Loic Dachary  <loic at ceic.com>
 
 	* htword/WordList.cc,htword/WordList.h: get rid of obsolete WordBenchmarking
 
-Wed Jan 26 9:14:32 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Wed Jan 26 9:14:32 2000 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
         * htcommon/defaults.cc: added "max_connection_requests".
 
@@ -4476,7 +4481,7 @@ Tue Jan 25 12:59:01 2000  Loic Dachary  <loic at ceic.com>
 	* htsearch/Display.cc (setVariables): fixed 
 	  Display.cc:505: warning: multiline `//' comment
 
-Tue Jan 25 8:37:15 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Tue Jan 25 8:37:15 2000 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* htdig/Document.h: Added the "HtHTTP *GetHTTPHandler()" method, in
 	  order to be able to control an HTTP object outside the Document class.
@@ -4651,7 +4656,7 @@ Thu Jan 13 18:42:29 2000  Geoff Hutchison  <ghutchis at wso.williams.edu>
 
 	* htword/WordType.h, htword/WordType.cc: Implementation of new
 	methods IsDigit() and IsCntrl() as contributed by Marc Pohl
-	<marc.pohl@wdr.de>. Fixes some problems with 8-bit characters.
+	<marc.pohl at wdr.de>. Fixes some problems with 8-bit characters.
 
 Thu Jan 13 17:17:47 2000  Geoff Hutchison  <ghutchis at wso.williams.edu>
 
@@ -5683,29 +5688,29 @@ Fri Oct 15 17:46:23 1999  Loic Dachary  <loic at ceic.com>
 
 	* test/test_functions.in: More portable call to apache.
 
-Fri Oct 15 12:55:47 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Fri Oct 15 12:55:47 1999 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* htdig/Document: added the management of 'persistent_connections',
 	  'head_before_get', 'max_retries' configuration attributes.
 
-Fri Oct 15 12:54:11 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Fri Oct 15 12:54:11 1999 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* test/testnet.cc: added the option '-m' for setting the max size
 	  of the document.
 
-Fri Oct 15 12:48:49 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Fri Oct 15 12:48:49 1999 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* htdig/Server: added a flag for persistent connections.
 	  It's set to true if the Server allows persistent connections.
 	  It should be used when retrieving a document.
 
-Fri Oct 15 12:45:42 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Fri Oct 15 12:45:42 1999 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* defaults.cc: added the configuration attributes 'persistent_connections',
 	  'max_retries' and 'head_before_get'. Their default values are
 	  respectively true, 3, false.
 
-Fri Oct 15 12:35:51 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Fri Oct 15 12:35:51 1999 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* HtHTTP.cc: managing of uncompleted stream reading with persistent
 	  connections (it occurs when max_doc_size is lower than the real
@@ -5724,7 +5729,7 @@ Thu Oct 14 11:29:35 1999  Geoff Hutchison  <ghutchis at wso.williams.edu>
 	Updated with latest glibc versions. Merging from glibc sources may
 	have introduced bugs, so this is the last merge before htdig-3.2.0b1.
 
-Thu Oct 14 13:09:32 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Thu Oct 14 13:09:32 1999 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* htnet/Transport: added statistics for open and close of connections
 	  and changes of servers.
@@ -5736,7 +5741,7 @@ Thu Oct 14 13:09:32 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* test/testnet.cc: now receives changes above.
 
-Wed Oct 13 13:35:42 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Wed Oct 13 13:35:42 1999 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* htdig/Document.h: added an HtHTTP pointer to the class.
 
@@ -5799,19 +5804,19 @@ Fri Oct 08 14:04:21 1999  Loic Dachary  <loic at yoda.ceic.com>
 
 	* Completely disable exception code from db.
 	
-Fri Oct 08 13:44:32 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Fri Oct 08 13:44:32 1999 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* HtHTTP.cc: fixed a little bug in setting the modification time
 	  if not returned by the server.
 
-Fri Oct 08 11:30:53 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Fri Oct 08 11:30:53 1999 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* HtHTTP.cc: better management of connection failures return values.
 	* Transport.h: added Document_no_connection and
 	  Document_connection_no_port enum values.
 	* testnet.cc: management of above changes.
 
-Fri Oct 08 11:27:31 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Fri Oct 08 11:27:31 1999 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* configure.in: modified getpeername() test.
 
@@ -5834,19 +5839,19 @@ Thu Oct 07 16:19:46 1999  Loic Dachary  <loic at ceic.com>
 	* htnet/Transport.cc (Transport): initialize _port and _max_document_size
 	  otherwise comparison with undefined value occurs.
 
-Thu Oct 07 16:34:21 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Thu Oct 07 16:34:21 1999 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* HtHTTP.cc: call FinishRequest everytime in HTTPRequest() a value is
 	  returned.
 	* testnet.cc: improved with more statistics and connections timeouts
 	  control.
 
-Thu Oct 07 12:53:12 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Thu Oct 07 12:53:12 1999 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* configure.in: modified getpeername() test function with
 	  AC_LANG_CPLUSPLUS instead of AC_LANG_C.
 
-Thu Oct 07 11:56:52 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+Thu Oct 07 11:56:52 1999 CEST Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* HtHTTP.cc : fixed bug of double deleting _access_time
 	  and _modification_time objects in ~HtHTTP().
@@ -5880,7 +5885,7 @@ Wed Oct 06 12:08:38 1999  Loic Dachary  <loic at ceic.com>
 	* Move htlib/HtSGMLCodec.* to htcommon to prevent
 	  crossed interdependencies between htlib and htcommon
 	
-Wed Oct 06 12:07:32 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+Wed Oct 06 12:07:32 1999  Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* HtHTTP.cc: patch from Michal Hirohama regarding
 	  the SetBodyReadingController() method
@@ -5890,7 +5895,7 @@ Wed Oct 06 11:49:15 1999  Loic Dachary  <loic at ceic.com>
 	* Move htlib/HtZlibCodec.* htlib/cgi.* to htcommon to prevent
 	  crossed interdependencies between htlib and htcommon
 
-Wed Oct 06 11:40:48 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+Wed Oct 06 11:40:48 1999  Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* HtHTTP: stores the server info correctly and removed some debug info
 	  in chunk managing
@@ -5905,7 +5910,7 @@ Wed Oct 06 10:09:19 1999  Loic Dachary  <loic at ceic.com>
 
 	* test/t_htnet: fix variable set problem & return code problem
 
-Wed Oct 06 08:53:52 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+Wed Oct 06 08:53:52 1999  Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* Written t_htnet test
 
@@ -5957,11 +5962,11 @@ Mon Oct 04 20:05:35 1999  Loic Dachary  <loic at ceic.com>
 	* htword/WordKey.cc: fix bugous compare (returned length diff
 	  if key of different length).
 
-Mon Oct 04 18:43:56 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+Mon Oct 04 18:43:56 1999  Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* test/testnet.cc: added the option for HEAD before GET control
 
-Mon Oct 04 17:33:24 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+Mon Oct 04 17:33:24 1999  Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* htnet/Transport.h .cc: added the FlushConnection() method
 
@@ -5970,7 +5975,7 @@ Mon Oct 04 17:33:24 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
 	  can be changed by using the methods Enable/DisableHeadBeforeGet().
 	  A configuration option can be raised to manage it.
 
-Mon Oct 04 12:43:41 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+Mon Oct 04 12:43:41 1999  Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* htlib/io.h .cc: added a flush() method.
 
@@ -6068,7 +6073,7 @@ Wed Sep 29 16:51:58 1999  Loic Dachary  <loic at yoda.ceic.com>
 
 	* htdoc/default_check.pl: remove, unused
 
-Wed Sep 29 13:07:58 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+Wed Sep 29 13:07:58 1999  Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* htnet/Transport: fixed some bugs on construction and destruction
         
@@ -6139,7 +6144,7 @@ Tue Sep 28 12:56:12 1999  Loic Dachary  <loic at ceic.com>
 	* htmerge/docs.cc (convertDocs): rely on error reporting from DocumentDB
 	  instead of implementing a custom one.
 
-Tue Sep 28 11:36:28 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+Tue Sep 28 11:36:28 1999  Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* htnet/Transport.h: added the status code and the reason phrase
 
@@ -6187,7 +6192,7 @@ Mon Sep 27 20:37:38 1999  Loic Dachary  <loic at ceic.com>
 
 	* htlib/String.cc(remove): return the number of chars removed.
 
-Mon Sep 27 17:43:23 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+Mon Sep 27 17:43:23 1999  Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* Created testnet.cc under test dir for trying the htnet library
           It's a simple program that retrieves an URL.
@@ -6203,7 +6208,7 @@ Mon Sep 27 10:52:51 1999  Loic Dachary  <loic at ceic.com>
 	* htmerge/db.cc (mergeDB): delete words instead of words->Destroy()
 	  because the words object itself was not freed.
 
-Mon Sep 27 10:38:37 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+Mon Sep 27 10:38:37 1999  Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* Created 'htnet' library
 
@@ -6211,7 +6216,7 @@ Mon Sep 27 12:39:24 1999  Loic Dachary  <loic at ceic.com>
 
 	* test/word.cc (dolist): don't deal with upper case at present and prevent warning.
 
-Mon Sep 27 10:38:37 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+Mon Sep 27 10:38:37 1999  Gabriele Bartolini  <g.bartol at comune.prato.it>
 
 	* htlib/String.cc: removed compiler warnings
 
@@ -7081,7 +7086,7 @@ Mon Aug  9 16:34:14 1999  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 
 	* htdig/Document.cc (getdate): make tm static, so it's initialized
 	to zeros.  Should fix PR#81 & PR#472, where strftime() would crash
-	on some systems.  Idea submitted by benoit.sibaud@cnet.francetelecom.fr
+	on some systems.  Idea submitted by benoit.sibaud at cnet.francetelecom.fr
 
 	* htlib/URL.cc (parse): fix PR#348, to make sure a missing or invalid
 	port number will get set correctly.
@@ -7152,17 +7157,17 @@ Wed Aug  4 01:58:52 1999  Geoff Hutchison  <ghutchis at wso.williams.edu>
 	FSF. In particular, this version has the correct mailing address
 	of the FSF.
 
-Mon Aug 02 11:28:00 1999 Gabriele Bartolini <g.bartol@comune.prato.it>
+Mon Aug 02 11:28:00 1999 Gabriele Bartolini <g.bartol at comune.prato.it>
 
 	* htlib/htString.h, htlib/String.cc : added the possibility to
 	insert an unsigned int into a string.
 	* htdig.cc : with verbose mode shows start and end time.
 
-Thu Jul 22 18:10:00 1999 Gabriele Bartolini <g.bartol@comune.prato.it>
+Thu Jul 22 18:10:00 1999 Gabriele Bartolini <g.bartol at comune.prato.it>
 
 	* htdig/Transport.cc, htdig/HtHTTP.cc : modified the destructors.
 
-Thu Jul 22 13:10:00 1999 Gabriele Bartolini <g.bartol@comune.prato.it>
+Thu Jul 22 13:10:00 1999 Gabriele Bartolini <g.bartol at comune.prato.it>
 
 	* htdig/Transport.cc, htdig/Transport.h, htdig/HtHTTP.cc, 
 	htdig/HtHTTP.h: Re-analyzed inheritance methods and attributes of
@@ -7321,7 +7326,7 @@ Thu Jul 15 15:54:30 1999  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 	* htdoc/attrs.html(pdf_parser & external_parsers): add corrections &
 	clarifications, links to relevant FAQ entries.
 
-Thu Jul 15 18:00:00 1999 CEST Gabriele Bartolini <g.bartol@comune.prato.it>
+Thu Jul 15 18:00:00 1999 CEST Gabriele Bartolini <g.bartol at comune.prato.it>
 
 	* htlib/HtDateTime.cc, htlib/HtDateTime.h : added the possibility
         to initialize and compares HtDateTime with integers. Added the
@@ -7421,7 +7426,7 @@ Sat Jul  3 16:37:29 1999  Geoff Hutchison  <ghutchis at wso.williams.edu>
 
 	* htdig/HTML.cc (do_tag): Fix <meta> robots parsing to allow
 	multiple directives to work correctly. Fixes PR#578, as provided
-	by Chris Liddiard <c.h.liddiard@qmw.ac.uk>.
+	by Chris Liddiard <c.h.liddiard at qmw.ac.uk>.
 
 Sat Jul  3 00:47:51 1999  Geoff Hutchison  <ghutchis at wso.williams.edu>
 
@@ -7440,7 +7445,7 @@ Sat Jul  3 00:26:55 1999  Geoff Hutchison  <ghutchis at wso.williams.edu>
 	(SetRequestCommand): Use Referer and Authentication headers if
 	supplied.
 
-Sun Jun 30 11:26:00 1999  Gabriele Bartolini <g.bartol@comune.prato.it>
+Sun Jun 30 11:26:00 1999  Gabriele Bartolini <g.bartol at comune.prato.it>
 
 	* htdig/Transport.h: Inserted the methods declarations regarding
 	the connection management. The code has been moved out from the
@@ -7629,7 +7634,7 @@ Sat Jun 12 22:37:22 1999  Geoff Hutchison  <ghutchis at wso.williams.edu>
 
 	* htsearch/Display.h, htsearch/Display.cc (excerpt): Fix
 	declaration to refer to first as reference--ensures ANCHOR is
-	properly set. Fixes PR#541 as suggested by <pmb1@york.ac.uk>.
+	properly set. Fixes PR#541 as suggested by <pmb1 at york.ac.uk>.
 
 	* htfuzzy/Endings.cc (getWords): Fixed PR#560 as suggested by
 	Steve Arlow <yorick at ClarkHill.com>. Solves problems with fuzzy

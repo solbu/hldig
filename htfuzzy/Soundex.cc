@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Soundex.cc,v 1.9 2003/06/24 20:06:19 nealr Exp $
+// $Id: Soundex.cc,v 1.10 2004/04/26 20:18:05 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -59,10 +59,10 @@ Soundex::generateKey(char *word, String &key)
 	return;
       }
 
-    while (!isalpha(*word))
+    while (*word && !isalpha(*word))
       word++;
 
-    if (word)
+    if (*word)
     {
 	key << *word++;
     }
