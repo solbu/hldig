@@ -3,31 +3,16 @@
 //
 // Implementation of Fuzzy
 //
-// $Log: Fuzzy.cc,v $
-// Revision 1.4  1998/10/12 02:04:00  ghutchis
-//
-// Updated Makefiles and configure variables.
-//
-// Revision 1.3  1998/09/18 02:38:08  ghutchis
-//
-// Bug fixes for 3.1.0b2
-//
-// Revision 1.2  1998/06/21 23:20:02  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.4 1998/10/12 02:04:00 ghutchis Exp $";
+static char RCSid[] = "$Id: Fuzzy.cc,v 1.5 1999/02/01 04:24:06 ghutchis Exp $";
 #endif
 
 #include "Fuzzy.h"
 #include "htfuzzy.h"
-#include <Configuration.h>
-#include <List.h>
-#include <StringList.h>
+#include "Configuration.h"
+#include "List.h"
+#include "StringList.h"
 #include "Endings.h"
 #include "Exact.h"
 #include "Metaphone.h"
@@ -115,7 +100,14 @@ Fuzzy::openIndex(Configuration &config)
     String	filename = config[var];
 
     index = Database::getDatabaseInstance();
-    return index->OpenRead(filename);
+    if (index->OpenRead(filename) == NOTOK)
+      {
+	delete index;
+	index = 0;
+        return NOTOK;
+      }
+
+    return OK;
 }
 
 
