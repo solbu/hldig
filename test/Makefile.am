@@ -50,37 +50,37 @@ check_PROGRAMS = word dbbench txt2mifluz search testnet document url
 
 dbbench_SOURCES = dbbench.cc
 dbbench_DEPENDENCIES = $(HTLIBS)
-dbbench_LDFLAGS = $(PROFILING)
+dbbench_LDFLAGS = $(PROFILING) ${extra_ldflags}
 dbbench_LDADD = $(HTLIBS)
 
 word_SOURCES = word.cc
 word_DEPENDENCIES = $(HTLIBS)
-word_LDFLAGS = $(PROFILING)
+word_LDFLAGS = $(PROFILING) ${extra_ldflags}
 word_LDADD = $(HTLIBS)
 
 txt2mifluz_SOURCES = txt2mifluz.cc
 txt2mifluz_DEPENDENCIES = $(HTLIBS)
-txt2mifluz_LDFLAGS = $(PROFILING)
+txt2mifluz_LDFLAGS = $(PROFILING) ${extra_ldflags}
 txt2mifluz_LDADD = $(HTLIBS)
 
 search_SOURCES = search.cc
 search_DEPENDENCIES = $(HTLIBS)
-search_LDFLAGS = $(PROFILING)
+search_LDFLAGS = $(PROFILING) ${extra_ldflags}
 search_LDADD = $(HTLIBS)
 
 testnet_SOURCES = testnet.cc
 testnet_DEPENDENCIES = $(HTLIBS)
-testnet_LDFLAGS = $(PROFILING)
+testnet_LDFLAGS = $(PROFILING) ${extra_ldflags}
 testnet_LDADD = $(HTLIBS)
 
 document_SOURCES = document.cc
 document_DEPENDENCIES = $(HTLIBS)
-document_LDFLAGS = $(PROFILING)
+document_LDFLAGS = $(PROFILING) ${extra_ldflags}
 document_LDADD = $(HTLIBS)
 
 url_SOURCES = url.cc
 url_DEPENDENCIES = $(HTLIBS)
-url_LDFLAGS = $(PROFILING)
+url_LDFLAGS = $(PROFILING) ${extra_ldflags}
 url_LDADD = $(HTLIBS)
 
 clean-local:

@@ -20,7 +20,7 @@ libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc \
 	HtConfiguration.cc HtURLRewriter.cc \
 	conf_lexer.lxx conf_parser.yxx 
 
-libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
+libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION) ${extra_ldflags}
 
 noinst_HEADERS = DocumentDB.h \
 	DocumentRef.h \

@@ -1,3 +1,8 @@
+Thu Aug 28 11:36:42 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * [htcommon,htdb,htdig,htfuzzy,htlib,htnet,htsearch,httools,htword,test]/Makefile.am:
+      added the option above to every *_LDFLAGS
+
 Thu Aug 28 11:30:39 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * Makefile.am: removed acconfig.h from the EXTRA_DIST list

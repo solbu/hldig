@@ -20,7 +20,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 libht_la_LIBADD=@LTLIBOBJS@
 # this includes regex.c
 
-libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
+libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION) ${extra_ldflags}
 
 pkginclude_HEADERS = \
 	clib.h \

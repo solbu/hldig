@@ -10,7 +10,7 @@ libfuzzy_la_SOURCES = Endings.cc EndingsDB.cc Exact.cc \
 		SuffixEntry.cc Synonym.cc \
 		Substring.cc Prefix.cc Regexp.cc Speling.cc
 
-libfuzzy_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
+libfuzzy_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION) ${extra_ldflags}
 
 noinst_HEADERS = Accents.h \
 	Endings.h \
@@ -30,5 +30,5 @@ bin_PROGRAMS = htfuzzy
 
 htfuzzy_SOURCES = htfuzzy.cc
 htfuzzy_DEPENDENCIES = libfuzzy.la $(HTLIBS)
-htfuzzy_LDFLAGS = $(PROFILING)
+htfuzzy_LDFLAGS = $(PROFILING) ${extra_ldflags}
 htfuzzy_LDADD = libfuzzy.la $(HTLIBS)

@@ -20,7 +20,7 @@ noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h \
 	QueryLexer.h QueryParser.h SimpleLexer.h SimpleQueryParser.h \
 	VolatileCache.h
 htsearch_DEPENDENCIES = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
-htsearch_LDFLAGS = $(PROFILING)
+htsearch_LDFLAGS = $(PROFILING) ${extra_ldflags}
 htsearch_LDADD = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
 
 qtest_SOURCES = DocMatch.cc ResultList.cc AndQuery.cc \
@@ -30,6 +30,6 @@ qtest_SOURCES = DocMatch.cc ResultList.cc AndQuery.cc \
 	QueryLexer.cc QueryParser.cc SimpleQueryParser.cc VolatileCache.cc \
 	WordSearcher.cc qtest.cc
 qtest_DEPENDENCIES = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
-qtest_LDFLAGS = $(PROFILING)
+qtest_LDFLAGS = $(PROFILING) ${extra_ldflags}
 qtest_LDADD = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
 

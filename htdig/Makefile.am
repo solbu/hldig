@@ -12,5 +12,5 @@ noinst_HEADERS = Document.h ExternalParser.h HTML.h \
 	Parsable.h Plaintext.h Retriever.h Server.h  URLRef.h htdig.h \
 	ExternalTransport.h
 htdig_DEPENDENCIES = $(HTLIBS)
-htdig_LDFLAGS = $(PROFILING)
+htdig_LDFLAGS = $(PROFILING) ${extra_ldflags}
 htdig_LDADD = $(HTLIBS)
