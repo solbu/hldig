@@ -9,9 +9,12 @@
 // link is followed, but this process is done only once (to prevent loops.)
 // If the redirect didn't work, Document_not_found is returned.
 //
-// $Id: Document.h,v 1.2 1997/02/10 17:32:38 turtle Exp $
+// $Id: Document.h,v 1.3 1997/03/24 04:33:15 turtle Exp $
 //
 // $Log: Document.h,v $
+// Revision 1.3  1997/03/24 04:33:15  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
 // Revision 1.2  1997/02/10 17:32:38  turtle
 // Applied AIX specific patches supplied by Lars-Owe Ivarsson
 // <lars-owe.ivarsson@its.uu.se>
@@ -26,7 +29,7 @@
 #include "Parsable.h"
 #include <Object.h>
 #include <URL.h>
-#include <String.h>
+#include <htString.h>
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <time.h>

@@ -8,18 +8,21 @@
 //    1) Creation of a fuzzy index
 //    2) Searching for a word using the fuzzy index
 //
-// $Id: Fuzzy.h,v 1.1 1997/02/03 17:11:12 turtle Exp $
+// $Id: Fuzzy.h,v 1.2 1997/03/24 04:33:18 turtle Exp $
 //
 // $Log: Fuzzy.h,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Revision 1.2  1997/03/24 04:33:18  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
+// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
+// Initial CVS
 //
 //
 #ifndef _Fuzzy_h_
 #define _Fuzzy_h_
 
 #include <Object.h>
-#include <String.h>
+#include <htString.h>
 #include <Database.h>
 
 class Configuration;

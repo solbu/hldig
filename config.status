@@ -2,7 +2,7 @@
 # Generated automatically by configure.
 # Run this file to recreate the current configuration.
 # This directory was configured as follows,
-# on host shelly:
+# on host kiwi:
 #
 # ./configure 
 #
@@ -55,7 +55,7 @@ s%@includedir@%${prefix}/include%g
 s%@oldincludedir@%/usr/include%g
 s%@infodir@%${prefix}/info%g
 s%@mandir@%${prefix}/man%g
-s%@HTDIG_VERSION@%3.0.7%g
+s%@HTDIG_VERSION@%3.0.8%g
 s%@CXX@%c++%g
 s%@CC@%gcc%g
 s%@RANLIB@%ranlib%g
@@ -63,9 +63,10 @@ s%@AR@%/usr/ccs/bin/ar%g
 s%@SHELL@%/bin/bash%g
 s%@SED@%/opt/bin/sed%g
 s%@SORT@%/opt/bin/sort%g
+s%@FIND@%/opt/bin/find%g
 s%@TAR@%tar%g
 s%@CXXCPP@%c++ -E%g
-s%@HTDIG_TOP@%/home/turtle/src/ht%g
+s%@HTDIG_TOP@%/home/turtle/src/www/htdig%g
 s%@GDBM_DIR@%gdbm-1.7.3%g
 s%@RX_DIR@%rx-1.5%g
 
@@ -154,9 +155,9 @@ for ac_file in .. $CONFIG_HEADERS; do if test "x$ac_file" != x..; then
   cp $ac_given_srcdir/$ac_file_in conftest.in
 
   cat > conftest.frag <<CEOF
-${ac_dA}HTDIG_VERSION${ac_dB}HTDIG_VERSION${ac_dC}"3.0.7"${ac_dD}
-${ac_uA}HTDIG_VERSION${ac_uB}HTDIG_VERSION${ac_uC}"3.0.7"${ac_uD}
-${ac_eA}HTDIG_VERSION${ac_eB}HTDIG_VERSION${ac_eC}"3.0.7"${ac_eD}
+${ac_dA}HTDIG_VERSION${ac_dB}HTDIG_VERSION${ac_dC}"3.0.8"${ac_dD}
+${ac_uA}HTDIG_VERSION${ac_uB}HTDIG_VERSION${ac_uC}"3.0.8"${ac_uD}
+${ac_eA}HTDIG_VERSION${ac_eB}HTDIG_VERSION${ac_eC}"3.0.8"${ac_eD}
 ${ac_dA}HAVE_SYS_TIME_H${ac_dB}HAVE_SYS_TIME_H${ac_dC}1${ac_dD}
 ${ac_uA}HAVE_SYS_TIME_H${ac_uB}HAVE_SYS_TIME_H${ac_uC}1${ac_uD}
 ${ac_eA}HAVE_SYS_TIME_H${ac_eB}HAVE_SYS_TIME_H${ac_eC}1${ac_eD}

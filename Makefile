@@ -1,5 +1,5 @@
 # Generated automatically from Makefile.in by configure.
-include /home/turtle/src/ht/Makefile.config
+include /home/turtle/src/www/htdig/Makefile.config
 
 DIRS=		gdbm-1.7.3 rx-1.5 \
 		htlib htcommon htfuzzy htdig \
@@ -9,7 +9,9 @@ INSTALLDIRS=	htfuzzy htdig \
 CREATEDIRS=	$(BIN_DIR) $(CONFIG_DIR) $(COMMON_DIR) $(DATABASE_DIR) \
 		$(IMAGE_DIR) $(CGIBIN_DIR) $(SEARCH_DIR)
 NO_DIST=	BETA.DIST htdig/*.conf htmerge/*.conf htsearch/*.conf \
-		htfuzzy/*.conf *.gz */*.gz *~ */*~ mailarchive
+		htfuzzy/*.conf *.gz */*.gz *~ */*~ mailarchive \
+		.\#* */.\#* */*/.\#* \
+		CVS */CVS */*/CVS */*/*/CVS
 IMAGES=		button1.gif button2.gif button3.gif button4.gif button5.gif \
 		button6.gif button7.gif button8.gif button9.gif buttonl.gif \
 		buttonr.gif button10.gif htdig.gif star.gif star_blank.gif
@@ -92,7 +94,7 @@ dist:
 	(cd $(DISTDIR); $(MAKE) distclean)
 	-for i in $(DIRS); \
 	do \
-		(cd $(DISTDIR)/$$i; $(RM) -fr RCS docu); \
+		(cd $(DISTDIR)/$$i; $(RM) -fr RCS CVS docu .#\*); \
 	done;
 	(cd $(DISTDIR); $(RM) -rf $(NO_DIST))
 	(cd $(DISTDIR)/..; $(TAR) czf $(DIST).tar.gz $(DIST))

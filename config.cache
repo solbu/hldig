@@ -26,6 +26,7 @@ ac_cv_header_unistd_h=${ac_cv_header_unistd_h='yes'}
 ac_cv_lib_nsl=${ac_cv_lib_nsl='yes'}
 ac_cv_lib_socket=${ac_cv_lib_socket='yes'}
 ac_cv_path_AR=${ac_cv_path_AR='/usr/ccs/bin/ar'}
+ac_cv_path_FIND=${ac_cv_path_FIND='/opt/bin/find'}
 ac_cv_path_SED=${ac_cv_path_SED='/opt/bin/sed'}
 ac_cv_path_SHELL=${ac_cv_path_SHELL='/bin/bash'}
 ac_cv_path_SORT=${ac_cv_path_SORT='/opt/bin/sort'}

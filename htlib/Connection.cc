@@ -7,6 +7,9 @@
 // Implementation of the Connection class
 //
 // $Log: Connection.cc,v $
+// Revision 1.3  1997/03/24 04:33:19  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
 // Revision 1.2  1997/02/10 17:32:47  turtle
 // Applied AIX specific patches supplied by Lars-Owe Ivarsson
 // <lars-owe.ivarsson@its.uu.se>
@@ -16,13 +19,13 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: Connection.cc,v 1.2 1997/02/10 17:32:47 turtle Exp $";
+static char	RCSid[] = "$Id: Connection.cc,v 1.3 1997/03/24 04:33:19 turtle Exp $";
 #endif
 
 
 #include "Connection.h"
 #include "Object.h"
-#include "String.h"
+#include "htString.h"
 #include "List.h"
 
 #include <errno.h>

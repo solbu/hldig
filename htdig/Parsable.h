@@ -1,17 +1,20 @@
 //
 // Parsable.h
 //
-// $Id: Parsable.h,v 1.1 1997/02/03 17:11:06 turtle Exp $
+// $Id: Parsable.h,v 1.2 1997/03/24 04:33:16 turtle Exp $
 //
 // $Log: Parsable.h,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.2  1997/03/24 04:33:16  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 //
 #ifndef _Parsable_h_
 #define _Parsable_h_
 
-#include <String.h>
+#include <htString.h>
 #include "Retriever.h"
 
 class URL;

@@ -1,11 +1,14 @@
 //
 // htsearch.h
 //
-// $Id: htsearch.h,v 1.1 1997/02/03 17:11:05 turtle Exp $
+// $Id: htsearch.h,v 1.2 1997/03/24 04:33:25 turtle Exp $
 //
 // $Log: htsearch.h,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.2  1997/03/24 04:33:25  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 // Revision 1.1  1996/01/03 19:01:40  turtle
 // Before rewrite
@@ -25,7 +28,7 @@
 #include <Database.h>
 #include <good_strtok.h>
 #include <DocumentDB.h>
-#include <String.h>
+#include <htString.h>
 #include <Configuration.h>
 #include "ResultMatch.h"
 #include "ResultList.h"

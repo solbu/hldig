@@ -4,16 +4,19 @@
 // Implementation of ResultList
 //
 // $Log: ResultList.cc,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.2  1997/03/24 04:33:24  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: ResultList.cc,v 1.1 1997/02/03 17:11:05 turtle Exp $";
+static char RCSid[] = "$Id: ResultList.cc,v 1.2 1997/03/24 04:33:24 turtle Exp $";
 #endif
 
 #include "ResultList.h"
-#include <String.h>
+#include <htString.h>
 
 
 //*****************************************************************************

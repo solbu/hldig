@@ -1,5 +1,5 @@
 # Generated automatically from Makefile.in by configure.
-include /home/turtle/src/ht/Makefile.config
+include /home/turtle/src/www/htdig/Makefile.config
 include .sniffdir/ofiles.incl
 
 OBJS=		$(OFILES)
@@ -24,7 +24,7 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND)  $(CXXFLAGS) -- $(OBJS)
 
-htsearch.o:		/home/turtle/src/ht/CONFIG
+htsearch.o:		/home/turtle/src/www/htdig/CONFIG
 #DO NOT EDIT BELOW
 Display.o: Display.cc htsearch.h ../htlib/List.h ../htlib/Object.h \
  ../htlib/lib.h /opt/lib/g++-include/string.h \
@@ -37,7 +37,7 @@ Display.o: Display.cc htsearch.h ../htlib/List.h ../htlib/Object.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/StringList.h ../htlib/String.h \
+ ../htlib/StringList.h ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Dictionary.h ../htcommon/DocumentRef.h \
@@ -76,7 +76,7 @@ ResultList.o: ResultList.cc ResultList.h ../htlib/Dictionary.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h ../htlib/List.h \
- DocMatch.h ../htlib/String.h \
+ DocMatch.h ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h
 ResultMatch.o: ResultMatch.cc ResultMatch.h ../htlib/Object.h \
@@ -90,7 +90,7 @@ ResultMatch.o: ResultMatch.cc ResultMatch.h ../htlib/Object.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/String.h \
+ ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h
 Template.o: Template.cc Template.h ../htlib/Object.h ../htlib/lib.h \
@@ -104,7 +104,7 @@ Template.o: Template.cc Template.h ../htlib/Object.h ../htlib/lib.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/String.h \
+ ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdio.h
@@ -119,11 +119,11 @@ TemplateList.o: TemplateList.cc TemplateList.h Template.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/String.h \
+ ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/List.h ../htlib/URL.h ../htlib/StringList.h
-WeightWord.o: WeightWord.cc WeightWord.h ../htlib/String.h \
+WeightWord.o: WeightWord.cc WeightWord.h ../htlib/htString.h \
  ../htlib/Object.h ../htlib/lib.h /opt/lib/g++-include/string.h \
  /opt/lib/g++-include/cstring /opt/lib/g++-include/std/cstring.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/string.h \
@@ -150,7 +150,7 @@ htsearch.o: htsearch.cc htsearch.h ../htlib/List.h ../htlib/Object.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/StringList.h ../htlib/String.h \
+ ../htlib/StringList.h ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Dictionary.h ../htcommon/DocumentRef.h \
@@ -167,6 +167,7 @@ htsearch.o: htsearch.cc htsearch.h ../htlib/List.h ../htlib/Object.h \
  ../htcommon/WordRecord.h parser.h ../htlib/Stack.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/ctype.h Display.h \
  TemplateList.h Template.h ../htlib/cgi.h ../htfuzzy/Fuzzy.h \
+ /opt/lib/g++-include/String.h /opt/lib/g++-include/Regex.h \
  ../htcommon/WordList.h ../htlib/IntObject.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/signal.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/sys/signal.h \
@@ -182,7 +183,7 @@ parser.o: parser.cc parser.h htsearch.h ../htlib/List.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/StringList.h ../htlib/String.h \
+ ../htlib/StringList.h ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Dictionary.h ../htcommon/DocumentRef.h \

@@ -13,12 +13,15 @@
 // in the main word database.
 //
 // $Log: htfuzzy.cc,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Revision 1.2  1997/03/24 04:33:19  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
+// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htfuzzy.cc,v 1.1 1997/02/03 17:11:12 turtle Exp $";
+static char RCSid[] = "$Id: htfuzzy.cc,v 1.2 1997/03/24 04:33:19 turtle Exp $";
 #endif
 
 #include "htfuzzy.h"
@@ -27,7 +30,7 @@ static char RCSid[] = "$Id: htfuzzy.cc,v 1.1 1997/02/03 17:11:12 turtle Exp $";
 #include "Endings.h"
 #include "Metaphone.h"
 #include "Synonym.h"
-#include <String.h>
+#include <htString.h>
 #include <List.h>
 #include <Dictionary.h>
 #include <defaults.h>

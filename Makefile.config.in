@@ -15,6 +15,7 @@ CC=		@CC@
 RANLIB=		@RANLIB@
 MAKEDEPEND=	@HTDIG_TOP@/makedp
 RM=		rm -f
+FIND=		@FIND@
 AR=		@AR@
 SED=		@SED@
 INSTALL=	@HTDIG_TOP@/install-sh -c

@@ -4,17 +4,20 @@
 // Implementation of ExternalParser
 //
 // $Log: ExternalParser.cc,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.2  1997/03/24 04:33:16  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: ExternalParser.cc,v 1.1 1997/02/03 17:11:06 turtle Exp $";
+static char RCSid[] = "$Id: ExternalParser.cc,v 1.2 1997/03/24 04:33:16 turtle Exp $";
 #endif
 
 #include "ExternalParser.h"
 #include "htdig.h"
-#include <String.h>
+#include <htString.h>
 #include <QuotedStringList.h>
 #include <URL.h>
 #include <Dictionary.h>

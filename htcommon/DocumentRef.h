@@ -1,9 +1,12 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.2 1997/02/10 17:30:58 turtle Exp $
+// $Id: DocumentRef.h,v 1.3 1997/03/24 04:33:15 turtle Exp $
 //
 // $Log: DocumentRef.h,v $
+// Revision 1.3  1997/03/24 04:33:15  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
 // Revision 1.2  1997/02/10 17:30:58  turtle
 // Applied AIX specific patches supplied by Lars-Owe Ivarsson
 // <lars-owe.ivarsson@its.uu.se>
@@ -18,7 +21,7 @@
 #ifndef _DocumentRef_h_
 #define _DocumentRef_h_
 
-#include <String.h>
+#include <htString.h>
 #include <List.h>
 #include <time.h>
 

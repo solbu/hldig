@@ -4,6 +4,9 @@
 // Implementation of SGMLEntities
 //
 // $Log: SGMLEntities.cc,v $
+// Revision 1.4  1997/03/24 04:33:17  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
 // Revision 1.3  1997/03/13 18:37:49  turtle
 // Changes
 //
@@ -16,11 +19,11 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: SGMLEntities.cc,v 1.3 1997/03/13 18:37:49 turtle Exp $";
+static char RCSid[] = "$Id: SGMLEntities.cc,v 1.4 1997/03/24 04:33:17 turtle Exp $";
 #endif
 
 #include "SGMLEntities.h"
-#include <String.h>
+#include <htString.h>
 #include <ctype.h>
 #include <stdlib.h>
 

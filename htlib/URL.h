@@ -1,11 +1,14 @@
 //
 // URL.h
 //
-// $Id: URL.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: URL.h,v 1.2 1997/03/24 04:33:22 turtle Exp $
 //
 // $Log: URL.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1997/03/24 04:33:22  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 // Revision 1.0  1995/08/22 17:08:01  turtle
 // Support for HTTP only
@@ -14,7 +17,7 @@
 #ifndef _URL_h_
 #define _URL_h_
 
-#include <String.h>
+#include "htString.h"
 
 
 class URL

@@ -4,17 +4,20 @@
 // Implementation of StringList
 //
 // $Log: StringList.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1997/03/24 04:33:22  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: StringList.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
+static char	RCSid[] = "$Id: StringList.cc,v 1.2 1997/03/24 04:33:22 turtle Exp $";
 #endif
 
 #include <stdlib.h>
 #include "StringList.h"
-#include "String.h"
+#include "htString.h"
 #include "List.h"
 
 

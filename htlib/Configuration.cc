@@ -4,16 +4,19 @@
 // Implementation of the Configuration class
 //
 // $Log: Configuration.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1997/03/24 04:33:19  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: Configuration.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
+static char	RCSid[] = "$Id: Configuration.cc,v 1.2 1997/03/24 04:33:19 turtle Exp $";
 #endif
 
 #include "Configuration.h"
-#include "String.h"
+#include "htString.h"
 #include "ParsedString.h"
 #include <fstream.h>
 #include <stdlib.h>

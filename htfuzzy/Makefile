@@ -1,5 +1,5 @@
 # Generated automatically from Makefile.in by configure.
-include /home/turtle/src/ht/Makefile.config
+include /home/turtle/src/www/htdig/Makefile.config
 include .sniffdir/ofiles.incl
 
 OBJS=		$(OFILES)
@@ -30,7 +30,7 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND)  $(CXXFLAGS) -- $(OBJS)
 
-htfuzzy.o:	/home/turtle/src/ht/CONFIG
+htfuzzy.o:	/home/turtle/src/www/htdig/CONFIG
 #DO NOT EDIT BELOW
 Endings.o: Endings.cc Endings.h Fuzzy.h ../htlib/Object.h \
  ../htlib/lib.h /opt/lib/g++-include/string.h \
@@ -43,7 +43,7 @@ Endings.o: Endings.cc Endings.h Fuzzy.h ../htlib/Object.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/String.h \
+ ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Database.h htfuzzy.h ../htlib/Configuration.h \
@@ -65,7 +65,7 @@ EndingsDB.o: EndingsDB.cc Endings.h Fuzzy.h ../htlib/Object.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/String.h \
+ ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Database.h htfuzzy.h ../htlib/Configuration.h \
@@ -93,7 +93,7 @@ Exact.o: Exact.cc Exact.h Fuzzy.h ../htlib/Object.h ../htlib/lib.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/String.h \
+ ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Database.h ../htlib/List.h
@@ -108,7 +108,7 @@ Fuzzy.o: Fuzzy.cc Fuzzy.h ../htlib/Object.h ../htlib/lib.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/String.h \
+ ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Database.h htfuzzy.h ../htlib/Configuration.h \
@@ -132,7 +132,7 @@ Metaphone.o: Metaphone.cc Metaphone.h Fuzzy.h ../htlib/Object.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/String.h \
+ ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Database.h \
@@ -149,7 +149,7 @@ Soundex.o: Soundex.cc Soundex.h Fuzzy.h ../htlib/Object.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/String.h \
+ ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Database.h ../htlib/Dictionary.h ../htlib/List.h
@@ -164,7 +164,7 @@ SuffixEntry.o: SuffixEntry.cc SuffixEntry.h ../htlib/Object.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/String.h \
+ ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  Endings.h Fuzzy.h ../htlib/Database.h
@@ -179,7 +179,7 @@ Synonym.o: Synonym.cc Synonym.h Fuzzy.h ../htlib/Object.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/String.h \
+ ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Database.h htfuzzy.h ../htlib/Configuration.h \
@@ -209,7 +209,7 @@ htfuzzy.o: htfuzzy.cc htfuzzy.h ../htlib/Configuration.h \
  /opt/lib/g++-include/iostream.h /opt/lib/g++-include/streambuf.h \
  /opt/lib/g++-include/libio.h /opt/lib/g++-include/_G_config.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdio.h Fuzzy.h \
- ../htlib/String.h \
+ ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Database.h Soundex.h Endings.h Metaphone.h Synonym.h \
@@ -225,7 +225,7 @@ Substring.o: Substring.cc Substring.h Fuzzy.h ../htlib/Object.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h \
- ../htlib/String.h \
+ ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Database.h ../htlib/List.h ../htlib/StringMatch.h \

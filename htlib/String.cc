@@ -6,6 +6,9 @@
 // AWS	10/13/93	Fixed the constructors and operator = routines so that a NULL can be passed
 //
 // $Log: String.cc,v $
+// Revision 1.3  1997/03/24 04:33:21  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
 // Revision 1.2  1997/02/24 17:52:52  turtle
 // Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
 // ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
@@ -15,11 +18,11 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.2 1997/02/24 17:52:52 turtle Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.3 1997/03/24 04:33:21 turtle Exp $";
 #endif
 
 
-#include "String.h"
+#include "htString.h"
 
 #include <unistd.h>
 #include <stream.h>
@@ -63,8 +66,10 @@ String::String(char *s, int len)
 String::String(String *s)
 {
     Data = 0;
+    Length = 0;
 
-    copy(s->Data, s->length(), s->length());
+    if (s)
+	copy(s->Data, s->length(), s->length());
 }
 
 //

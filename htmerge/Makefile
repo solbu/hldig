@@ -1,5 +1,5 @@
 # Generated automatically from Makefile.in by configure.
-include /home/turtle/src/ht/Makefile.config
+include /home/turtle/src/www/htdig/Makefile.config
 include .sniffdir/ofiles.incl
 
 OBJS=		$(OFILES)
@@ -23,7 +23,7 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) $(CXXFLAGS) -- $(OBJS)
 
-htmerge.o:		/home/turtle/src/ht/CONFIG
+htmerge.o:		/home/turtle/src/www/htdig/CONFIG
 #DO NOT EDIT BELOW
 docs.o: docs.cc htmerge.h ../htcommon/defaults.h \
  ../htlib/Configuration.h ../htlib/Dictionary.h ../htlib/Object.h \
@@ -38,7 +38,7 @@ docs.o: docs.cc htmerge.h ../htcommon/defaults.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h ../htlib/List.h \
  ../htcommon/WordRecord.h ../htcommon/DocumentDB.h \
- ../htcommon/DocumentRef.h ../htlib/String.h \
+ ../htcommon/DocumentRef.h ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Database.h ../htlib/good_strtok.h \
@@ -63,7 +63,7 @@ htmerge.o: htmerge.cc htmerge.h ../htcommon/defaults.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h ../htlib/List.h \
  ../htcommon/WordRecord.h ../htcommon/DocumentDB.h \
- ../htcommon/DocumentRef.h ../htlib/String.h \
+ ../htcommon/DocumentRef.h ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Database.h ../htlib/good_strtok.h \
@@ -88,7 +88,7 @@ words.o: words.cc htmerge.h ../htcommon/defaults.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h ../htlib/List.h \
  ../htcommon/WordRecord.h ../htcommon/DocumentDB.h \
- ../htcommon/DocumentRef.h ../htlib/String.h \
+ ../htcommon/DocumentRef.h ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htlib/Database.h ../htlib/good_strtok.h \

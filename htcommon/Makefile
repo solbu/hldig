@@ -1,5 +1,5 @@
 # Generated automatically from Makefile.in by configure.
-include /home/turtle/src/ht/Makefile.config
+include /home/turtle/src/www/htdig/Makefile.config
 include .sniffdir/ofiles.incl
 
 OBJS=	$(OFILES)
@@ -29,10 +29,10 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) $(CXXFLAGS)  -- $(OBJS)
 
-defaults.o:		/home/turtle/src/ht/CONFIG
+defaults.o:		/home/turtle/src/www/htdig/CONFIG
 #DO NOT EDIT BELOW
 DocumentDB.o: DocumentDB.cc DocumentDB.h DocumentRef.h \
- ../htlib/String.h ../htlib/Object.h ../htlib/lib.h \
+ ../htlib/htString.h ../htlib/Object.h ../htlib/lib.h \
  /opt/lib/g++-include/string.h /opt/lib/g++-include/cstring \
  /opt/lib/g++-include/std/cstring.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/string.h \
@@ -53,7 +53,7 @@ DocumentDB.o: DocumentDB.cc DocumentDB.h DocumentRef.h \
  /usr/include/sys/unistd.h /opt/lib/g++-include/fstream.h \
  /opt/lib/g++-include/iostream.h /opt/lib/g++-include/streambuf.h \
  /opt/lib/g++-include/libio.h /opt/lib/g++-include/_G_config.h
-DocumentRef.o: DocumentRef.cc DocumentRef.h ../htlib/String.h \
+DocumentRef.o: DocumentRef.cc DocumentRef.h ../htlib/htString.h \
  ../htlib/Object.h ../htlib/lib.h /opt/lib/g++-include/string.h \
  /opt/lib/g++-include/cstring /opt/lib/g++-include/std/cstring.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/string.h \
@@ -83,7 +83,7 @@ WordList.o: WordList.cc WordList.h ../htlib/Dictionary.h \
  /usr/include/sys/machtypes.h /usr/include/sys/select.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
  /usr/include/sys/siginfo.h /usr/include/sys/machsig.h ../htlib/List.h \
- ../htlib/String.h \
+ ../htlib/htString.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
  /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
  ../htcommon/WordReference.h ../htlib/Configuration.h \

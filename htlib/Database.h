@@ -3,18 +3,21 @@
 //
 // This is a class which defines the interface to a generic, simple database.
 //
-// $Id: Database.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: Database.h,v 1.2 1997/03/24 04:33:19 turtle Exp $
 //
 // $Log: Database.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1997/03/24 04:33:19  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #ifndef _Database_h_
 #define _Database_h_
 
 #include "Object.h"
-#include "String.h"
+#include "htString.h"
 
 class Database : public Object
 {

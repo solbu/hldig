@@ -1,11 +1,14 @@
 //
 // parser.h
 //
-// $Id: parser.h,v 1.1 1997/02/03 17:11:05 turtle Exp $
+// $Id: parser.h,v 1.2 1997/03/24 04:33:25 turtle Exp $
 //
 // $Log: parser.h,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.2  1997/03/24 04:33:25  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 //
 #ifndef _parser_h_
@@ -16,7 +19,7 @@
 #include "ResultList.h"
 #include "DocMatch.h"
 #include <Database.h>
-#include <String.h>
+#include <htString.h>
 #include <Stack.h>
 #include <ctype.h>
 

@@ -4,6 +4,9 @@
 // Implementation of WordList
 //
 // $Log: WordList.cc,v $
+// Revision 1.3  1997/03/24 04:33:15  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
 // Revision 1.2  1997/02/24 17:52:39  turtle
 // Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
 // ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
@@ -13,13 +16,13 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.2 1997/02/24 17:52:39 turtle Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.3 1997/03/24 04:33:15 turtle Exp $";
 #endif
 
 #include "WordList.h"
 #include <WordReference.h>
 #include <Configuration.h>
-#include <String.h>
+#include <htString.h>
 #include <stdio.h>
 #include <ctype.h>
 

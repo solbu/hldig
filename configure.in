@@ -33,6 +33,7 @@ AC_PATH_PROG(AR, ar, ar)
 AC_PATH_PROG(SHELL, sh, /bin/sh)
 AC_PATH_PROG(SED, sed, /bin/sed)
 AC_PATH_PROG(SORT, sort, /bin/sort)
+AC_PATH_PROG(FIND, find, /bin/find)
 AC_CHECK_PROGS(TAR, tar gnutar, tar)
 
 dnl Checks for libraries.

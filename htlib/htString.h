@@ -1,9 +1,12 @@
 //
-// $Id: String.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: htString.h,v 1.1 1997/03/24 04:33:23 turtle Exp $
 //
-// $Log: String.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// $Log: htString.h,v $
+// Revision 1.1  1997/03/24 04:33:23  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #ifndef __String_h

@@ -4,21 +4,24 @@
 // Implementation of cgi
 //
 // $Log: cgi.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1997/03/24 04:33:23  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: cgi.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
+static char RCSid[] = "$Id: cgi.cc,v 1.2 1997/03/24 04:33:23 turtle Exp $";
 #endif
 
 #include "cgi.h"
+#include "htString.h"
 #include <Dictionary.h>
 #include <good_strtok.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fstream.h>
-#include <String.h>
 #include <StringList.h>
 #include <URL.h>
 

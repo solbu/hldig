@@ -1,11 +1,14 @@
 //
 // htmerge.h
 //
-// $Id: htmerge.h,v 1.1 1997/02/03 17:11:06 turtle Exp $
+// $Id: htmerge.h,v 1.2 1997/03/24 04:33:23 turtle Exp $
 //
 // $Log: htmerge.h,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.2  1997/03/24 04:33:23  turtle
+// Renamed the String.h file to htString.h to help compiling under win32
+//
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 //
 #ifndef _htmerge_h_
@@ -14,7 +17,7 @@
 #include <defaults.h>
 #include <WordRecord.h>
 #include <DocumentDB.h>
-#include <String.h>
+#include <htString.h>
 #include <good_strtok.h>
 #include <fstream.h>
 #include <stdio.h>
