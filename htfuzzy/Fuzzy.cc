@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Fuzzy.cc,v 1.16.2.3 2000/05/06 20:46:38 loic Exp $
+// $Id: Fuzzy.cc,v 1.16.2.4 2000/09/27 05:17:55 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -82,7 +82,8 @@ Fuzzy::getWords(char *word, List &words)
     String	fuzzyKey;
     String	data;
     String	stripped = word;
-    HtStripPunctuation(stripped);
+    WordType	type(config);
+    type.StripPunctuation(stripped);
     generateKey(stripped, fuzzyKey);
     if (debug > 2)
       cout << "\n\tkey: " << fuzzyKey << endl;

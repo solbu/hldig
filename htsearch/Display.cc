@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.26 2000/09/08 09:30:20 qss Exp $
+// $Id: Display.cc,v 1.100.2.27 2000/09/27 05:21:31 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1331,6 +1331,7 @@ Display::excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor, int fan
 	int	length = config.Value("excerpt_length", 50);
 	char	*start;
 	char	*end;
+	WordType type(config);
 		
        if (!config.Boolean("add_anchors_to_excerpt"))
 	 // negate flag if it's on (anchor available)
@@ -1346,7 +1347,7 @@ Display::excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor, int fan
 	else
 	{
 	    *text << config["start_ellipses"];
-	    while (*start && HtIsStrictWordChar(*start))
+	    while (*start && type.IsStrictChar(*start))
 		start++;
 	}
 
@@ -1361,7 +1362,7 @@ Display::excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor, int fan
 	}
 	else
 	{
-	    while (*end && HtIsStrictWordChar(*end))
+	    while (*end && type.IsStrictChar(*end))
 		end++;
 	    *end = '\0';
 	    *text << hilight(match, start, urlanchor, fanchor);

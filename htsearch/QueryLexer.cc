@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 // 
-// $Id: QueryLexer.cc,v 1.1.2.1 2000/09/12 14:58:55 qss Exp $
+// $Id: QueryLexer.cc,v 1.1.2.2 2000/09/27 05:21:32 ghutchis Exp $
 // 
 
 #include "QueryLexer.h"
@@ -39,11 +39,12 @@ void
 QueryLexer::Next()
 {
 	unsigned char	text = query[current_char];
+	WordType	type(config);
 	current = "";
 
 	while (text
 	&& !current.length()
-	&& !WordType::Instance()->IsStrictChar(text))
+	&& !type.IsStrictChar(text))
 	{
 		if (text == '(' || text == ')' || text == '\"' || text == '/')
 		{
@@ -56,7 +57,7 @@ QueryLexer::Next()
 	if (!current.length() && text)
 	{
 		while (text
-		&& (WordType::Instance()->IsChar(text) && text != '/'
+		&& (type.IsChar(text) && text != '/'
 			|| prefix_match.indexOf(text, 0) != -1))
 		{
 			current << text;

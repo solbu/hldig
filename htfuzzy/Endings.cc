@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Endings.cc,v 1.8.2.3 2000/05/06 20:46:38 loic Exp $
+// $Id: Endings.cc,v 1.8.2.4 2000/09/27 05:17:55 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -68,10 +68,11 @@ Endings::getWords(char *w, List &words)
 	return;
 
     String	data;
-
     String	word = w;
+    WordType	type(config);
+
     word.lowercase();
-    HtStripPunctuation(word);
+    type.StripPunctuation(word);
 
     if (root2word->Get(word, data) == OK)
       {

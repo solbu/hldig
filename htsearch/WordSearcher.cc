@@ -10,11 +10,11 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordSearcher.cc,v 1.1.2.1 2000/09/12 14:58:55 qss Exp $
+// $Id: WordSearcher.cc,v 1.1.2.2 2000/09/27 05:21:32 ghutchis Exp $
 //
 
 #include "WordSearcher.h"
-#include "HtWordType.h"
+#include "WordType.h"
 #include "ResultList.h"
 #include "HtWordReference.h"
 #include "defaults.h"
@@ -57,7 +57,8 @@ bool
 WordSearcher::IsIgnore(const String &word)
 {
 	String copy = word;
-	return 0 != WordType::Instance()->Normalize(copy);
+	WordType type(config);
+	return 0 != type.Normalize(copy);
 }
 
 //

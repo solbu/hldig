@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.9 2000/09/11 17:07:22 grdetil Exp $
+// $Id: ExternalParser.cc,v 1.19.2.10 2000/09/27 05:21:31 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -196,6 +196,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     String	line;
     char	*token1, *token2, *token3;
     int		loc = 0, hd = 0;
+    int		sep;
     URL		url;
     String mime = contentType;
     mime.lowercase();
