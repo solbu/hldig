@@ -1,3 +1,8 @@
+Fri Jan 14 18:39:12 2000  Marcel Bosc   <bosc@ceic.com>
+
+	* htword/WordBitCompress.cc: speedup, VlengthCoder::code()
+	finds appropriate coding interval much faster
+
 Fri Jan 14 11:30:41 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriver.cc(IsValidURL): Fix problem with valid_extensions,
