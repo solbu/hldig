@@ -6,5 +6,5 @@ OFILES = Configuration.o Connection.o Database.o \
 		StringList.o StringMatch.o String_fmt.o \
 		URL.o URLTrans.o cgi.o \
 		good_strtok.o io.o strcasecmp.o \
-		strptime.o 
+		strptime.o timegm.o
 
