@@ -386,6 +386,61 @@
     <hr>
     <dl>
       <dt>
+        <strong><a name="common_url_parts">
+        common_url_parts</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            string list
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>, <a href=
+            "htnotify.html">htnotify</a>,
+            <a href="htmerge.html">htmerge</a> and <a
+            href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            http:// http://www. ftp:// ftp://ftp. /pub/ .html .gif
+            .jpg .jpeg /index.html /index.htm .com/ .com mailto:
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            Sub-strings often found in URLs stored in the
+            database.  These are replaced in the database by an
+            internal space-saving encoding.  If a string
+            specified in <a href="#url_part_aliases">url_part_aliases</a>,
+            overlaps any string in common_url_parts, the
+            common_url_parts string is ignored.<br>
+            Note that when this attribute is changed, the
+            database should be rebuilt, unless the effect of
+            "changing" the affected URLs in the database is
+            wanted.<br>
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            common_url_parts: http://www.htdig.org/ml/ .html \<br>
+              http://dev.htdig.org/ http://www.htdig.org/<p>
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
         <strong><a name="create_image_list">
         create_image_list</a></strong>
       </dt>
@@ -4976,6 +5031,78 @@
           </dt>
           <dd>
             url_list: /tmp/urls
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
+        <strong><a name="url_part_aliases">
+        url_part_aliases</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            string list
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>,
+            <a href="htnotify.html">htnotify</a>,
+            <a href="htmerge.html">htmerge</a> and <a
+            href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            <em>&lt;empty&gt;</em>
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            A list of translations pairs used in the database,
+            <em>from</em> and <em>to</em>.  If a part of an URL
+            matches with the <em>from</em>-string of each pair,
+            it will be translated into the <em>to</em>-string
+            just before writing the URL to the database, and
+            just after reading it from the database.<br>
+            See also <a
+            href="#common_url_parts">common_url_parts</a>.<br>
+            Strings that are incorrect or very seldom used in
+            URLs should be used as <em>to</em>-strings, since
+            extra storage will be used each time one is found as
+            normal part of a URL.  Translations will be
+            performed with priority for the leftmost longest
+            match.  Each <em>to</em>-string must be unique and
+            not be a part of any other <em>to</em>-string.<br>
+            Note that when this attribute is changed, the
+            database should be rebuilt, unless the effect of
+            "moving" the affected URLs in the database is
+            wanted; then the same <em>to</em>-strings should
+            be specified, while changing the
+            <em>from</em>-strings.  This is primarily used to
+            provide an easy way to rename parts of URLs for
+            e.g. changing www.example.com/~htdig to
+            www.htdig.org.  The parts subject to be renamed must
+            be anticipated before creating the database.
+            Different configuration files are then used for
+            digging and searching.<br>
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            url_part_aliases: http://www.htdig.org/ *1
+             http://www.htdig.org/ml/ *2 \<br>
+             http://dev.htdig.org/ *3 .html *4<p>
           </dd>
         </dl>
       </dd>
