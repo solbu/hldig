@@ -1,3 +1,11 @@
+Fri Jun 22 15:55:24 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (buildMatchList): Fix date_factor calculation
+	to avoid 32-bit int overflow after multiplication by 1000, and avoid
+	repetitive time(0) call, as contributed by Marc Pohl.  Also move the
+	localtime() call up before gmtime() call, to avoid clobbering gmtime's
+	returned static structure (my thinko).
+
 Tue Jun 19 17:07:01 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (setVariables): Fixed handling of

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.35 2001/06/19 22:07:58 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.36 2001/06/22 20:57:22 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -1100,6 +1100,10 @@ Display::buildMatchList()
 
     tm startdate;     // structure to hold the startdate specified by the user
     tm enddate;       // structure to hold the enddate specified by the user
+    time_t now = time((time_t *)0); 	// fill in all fields for mktime
+    tm *lt = localtime(&now); 		//  - Gilles's fix
+    startdate = *lt; 
+    enddate = *lt; 
 
     time_t eternity = ~(1<<(sizeof(time_t)*8-1));  // will be the largest value holdable by a time_t
     tm *endoftime;     // the time_t eternity will be converted into a tm, held by this variable
@@ -1121,11 +1125,6 @@ Display::buildMatchList()
 
     if(dategiven)    // user specified some sort of date information
       {
-	time_t now = time((time_t *)0); 	// fill in all fields for mktime
-	tm *lt = localtime(&now); 		//  - Gilles's fix
-	startdate = *lt; 
-	enddate = *lt; 
-
 	// set up the startdate structure
 	// see man mktime for details on the tm structure
 	startdate.tm_sec = 0;
@@ -1332,7 +1331,7 @@ Display::buildMatchList()
 	    if (thisRef)   // We better hope it's not null!
 	      {
 		score += date_factor * 
-		  ((thisRef->DocTime() * 1000 / (double)time(0)) - 900);
+		  ((thisRef->DocTime() * 1000.0 / (double)now) - 900);
 		int links = thisRef->DocLinks();
 		if (links == 0)
 		  links = 1; // It's a hack, but it helps...
