@@ -27,7 +27,11 @@ static const char sccsid[] = "@(#)CDB_log_put.c	11.4 (Sleepycat) 11/10/99";
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
+
 #endif
 
 #include "db_int.h"
