@@ -4,6 +4,9 @@
 // Implementation of htnotify
 //
 // $Log: htnotify.cc,v $
+// Revision 1.3  1997/06/23 02:27:24  turtle
+// Added version info to the usage output
+//
 // Revision 1.2  1997/03/13 18:37:50  turtle
 // Changes
 //
@@ -12,7 +15,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.2 1997/03/13 18:37:50 turtle Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.3 1997/06/23 02:27:24 turtle Exp $";
 #endif
 
 #include <Configuration.h>
@@ -236,6 +239,7 @@ void send_notification(char *date, char *email, char *url, char *subject)
 void usage()
 {
     cout << "usage: htnotify [-c configfile][-b db_base]\n";
+    cout << "This program is part of ht://Dig " << HTDIG_VERSION << "\n\n";
     cout << "There can be any number or words.\n";
     cout << "Options:\n";
     cout << "\t-c configfile\n";
