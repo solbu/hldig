@@ -1,3 +1,16 @@
+Sat Jan 11 2003  Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* htnet/HtFile.cc (Request), htdig/Document.cc (RetrieveLocal),
+	htcommon/URL.h htcommon/URLTrans.cc:
+	Decode URL paths before use as local filenames (file:/// & local_urls).
+
+	* test/{t_htdig,t_htdig_local,t_htsearch}, test/conf/htdig.conf2.in,
+	test/htdocs/set1/{index.html,site 1,sub%20dir/empty file.html}:
+	Tests for the above.
+
+	* htcommon/HtConfiguration.cc: brackets around assignment in 'if'.
+	* test/search.cc (LocationCompare): Only specify default arg once.
+
 Fri Jan 10 2003  Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* htlib/String.cc (operator>> (istream&,String&) ):

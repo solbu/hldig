@@ -5,7 +5,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_htsearch,v 1.7 2003/01/03 13:26:19 lha Exp $
+# $Id: t_htsearch,v 1.8 2003/01/11 02:33:28 lha Exp $
 #
 
 . $srcdir/t_htdig
@@ -46,23 +46,23 @@ try "Explicit and search with two words 'also movies'" \
 
 try "Implicit or search for 'also distribution'" \
     "method=or&words=also+distribution" \
-    '5 matches' 'bad_local.htm' 'site2.html' 'script.html' 'site4.html' 'site1.html'
+    '5 matches' 'bad_local.htm' 'site2.html' 'script.html' 'site4.html' 'site%201.html'
 
 try "Explicit or search for 'also distribution'" \
     "method=boolean&words=also+or+distribution" \
-    '5 matches' 'bad_local.htm' 'site2.html' 'script.html' 'site4.html' 'site1.html'
+    '5 matches' 'bad_local.htm' 'site2.html' 'script.html' 'site4.html' 'site%201.html'
 
 try "Boolean and/or mixed 'also or distribution and ltd'" \
     "method=boolean&words=also+or+distribution+and+ltd" \
-    '5 matches' 'bad_local.htm' 'site2.html' 'script.html' 'site4.html' 'site1.html'
+    '5 matches' 'bad_local.htm' 'site2.html' 'script.html' 'site4.html' 'site%201.html'
 
 try "Boolean explicit priority '(also or distribution) and ltd'" \
     "method=boolean&words=(also+or+distribution)+and+ltd" \
-    '2 matches' 'script.html' 'site1.html'
+    '2 matches' 'script.html' 'site%201.html'
 
 try "Wildcard search for '*'" \
     "method=and&words=*" \
-    '8 matches' 'set1/bad_local.htm' 'set1/title.html' 'set1/site2.html' 'set1/script.html' 'set1/"' 'set1/site3.html' 'set1/site4.html' 'set1/site1.html'
+    '10 matches' 'set1/bad_local.htm' 'set1/title.html' 'set1/site2.html' 'set1/script.html' 'set1/"' 'set1/site3.html' 'set1/site4.html' 'set1/site%201.html' 'set1/sub%2520dir/' 'set1/sub%2520dir/empty%20file.html'
 
 try "Phrase search for '\"who offer\" and \"loans to graduate\"'" \
     "method=boolean&words=%22who+offer%22+and+%22loans+to+graduate%22" \
@@ -110,7 +110,7 @@ config=$testdir/conf/htdig.conf3
 
 try "Testing boolean_keywords and search_rewrite_urls" \
     "method=boolean&words=also+ou+distribution+et+ltd" \
-    '5 matches' 'bad_local.htm' 'place2.html' 'script.html' 'place4.html' 'place1.html'
+    '5 matches' 'bad_local.htm' 'place2.html' 'script.html' 'place4.html' 'place%201.html'
 
 try "Testing boolean_syntax_errors" \
     "method=boolean&words=ou+distribution" \

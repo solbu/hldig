@@ -42,7 +42,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: search.cc,v 1.2 2002/02/02 18:18:13 ghutchis Exp $
+// $Id: search.cc,v 1.3 2003/01/11 02:33:28 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -271,7 +271,7 @@ void WordKeySemantic::LocationSet(const WordKey& from, WordKey& to)
   to.Set(location, from.Get(location));
 }
 
-int WordKeySemantic::LocationCompare(const WordKey& expected, const WordKey& actual, int proximity = 0)
+int WordKeySemantic::LocationCompare(const WordKey& expected, const WordKey& actual, int proximity)
 {
   int ret = 1;
   if((ret = DocumentCompare(expected, actual)) != 0) return ret;

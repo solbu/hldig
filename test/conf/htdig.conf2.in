@@ -55,7 +55,7 @@ limit_urls_to:		${start_url}
 # may not work on your web server.  Check the  path prefix used on your web
 # server.)
 #
-exclude_urls:		/cgi-bin/ .cgi
+exclude_urls:		/cgi-bin/ .cgi /CVS
 
 #
 # The string htdig will send in every request to identify the robot.  Change

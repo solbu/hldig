@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFile.cc,v 1.4 2003/01/03 13:26:19 lha Exp $ 
+// $Id: HtFile.cc,v 1.5 2003/01/11 02:33:28 lha Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -173,12 +173,18 @@ HtFile::DocStatus HtFile::Request()
    _response.Reset();
    
    struct stat stat_buf;
+
+   String path (_url.path());
+   decodeURL (path);		// Convert '%20' to ' ' etc
+
    // Check that it exists, and is a regular file or directory
    // Don't allow symbolic links to directories; they mess up '../'.
    // Should we allow FIFO's?
-   if ( stat(_url.path(), &stat_buf) != 0 || 
+   if ( stat(path, &stat_buf) != 0 || 
 	!(S_ISREG(stat_buf.st_mode) || S_ISDIR(stat_buf.st_mode)) )
+   {
      return Transport::Document_not_found;
+   }
 
    // Now handle directories with a pseudo-HTML document (and appropriate noindex)
    if ( S_ISDIR(stat_buf.st_mode) )
@@ -189,12 +195,13 @@ HtFile::DocStatus HtFile::Request()
        struct dirent *namelist;
        DIR *dirList;
        String filename;
+       String encodedName;
 
-       if (( dirList = opendir(_url.path()) ))
+       if (( dirList = opendir(path) ))
 	 {
 	   while (( namelist = readdir(dirList) ))
 	    {
-	     filename = _url.path();
+	     filename = path;
 	     filename << namelist->d_name;
 	     
 	     if ( namelist->d_name[0] != '.' 
@@ -214,8 +221,11 @@ HtFile::DocStatus HtFile::Request()
 		     if (count < 0)
 			 break;
 		     link [count] = '\0';
-		     URL newURL (link, _url);	// resolve relative paths
+		     encodedName = link;
+		     encodeURL (encodedName);
+		     URL newURL (encodedName, _url);	// resolve relative paths
 		     filename = newURL.path();
+		     decodeURL (filename);
 		     if (debug > 2)
 			 cout << "Link to " << link << " gives "
 			      << filename.get() << endl;
@@ -223,6 +233,7 @@ HtFile::DocStatus HtFile::Request()
 		 }
 		 // filename now only sym-link if nested too deeply or I/O err.
 
+		 encodeURL (filename, UNRESERVED "/");	// convert ' ' to '%20' etc., but leave "/" intact
 		 if (S_ISDIR(stat_buf.st_mode))
 		   _response._contents << "<link href=\"file://"
 				       << filename.get() << "/\">\n";
@@ -250,7 +261,7 @@ HtFile::DocStatus HtFile::Request()
      return Transport::Document_not_changed;
 
    bool unknown_ext = false;
-   char *ext = strrchr(_url.path(), '.');
+   char *ext = strrchr(path, '.');
    if (ext == NULL)
       unknown_ext = true;
    else
@@ -263,14 +274,14 @@ HtFile::DocStatus HtFile::Request()
    }
    if (unknown_ext)
    {
-       _response._content_type = File2Mime (_url.path());
+       _response._content_type = File2Mime (path);
        if (!strncmp (_response._content_type.get(), "application/x-", 14))
            return Transport::Document_not_local;
    }
 
    _response._modification_time = new HtDateTime(stat_buf.st_mtime);
 
-   FILE *f = fopen((const char *)_url.path(), "r");
+   FILE *f = fopen((const char *)path, "r");
    if (f == NULL)
      return Document_not_found;
 

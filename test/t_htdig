@@ -5,7 +5,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_htdig,v 1.7 2003/01/03 13:26:19 lha Exp $
+# $Id: t_htdig,v 1.8 2003/01/11 02:33:28 lha Exp $
 #
 
 . ./test_functions
@@ -16,10 +16,12 @@ $htpurge -c $testdir/conf/htdig.conf
 expected='http://localhost:7400/set1/
 http://localhost:7400/set1/bad_local.htm
 http://localhost:7400/set1/script.html
-http://localhost:7400/set1/site1.html
+http://localhost:7400/set1/site%201.html
 http://localhost:7400/set1/site2.html
 http://localhost:7400/set1/site3.html
 http://localhost:7400/set1/site4.html
+http://localhost:7400/set1/sub%2520dir/
+http://localhost:7400/set1/sub%2520dir/empty%20file.html
 http://localhost:7400/set1/title.html'
 
 got=`./document -c $testdir/conf/htdig.conf -u | sort`

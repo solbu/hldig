@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URLTrans.cc,v 1.2 2002/02/01 22:49:28 ghutchis Exp $
+// $Id: URLTrans.cc,v 1.3 2003/01/11 02:33:28 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -24,13 +24,13 @@
 
 
 //*****************************************************************************
-// void decodeURL(String &str)
+// String &decodeURL(String &str)
 //   Convert the given URL string to a normal string.  This means that
 //   all escaped characters are converted to their normal values.  The
 //   escape character is '%' and is followed by 2 hex digits
 //   representing the octet.
 //
-void decodeURL(String &str)
+String &decodeURL(String &str)
 {
     String	temp;
     char	*p;
@@ -58,17 +58,18 @@ void decodeURL(String &str)
 	    temp << *p;
     }
     str = temp;
+    return (str);
 }
 
 
 //*****************************************************************************
-// void encodeURL(String &str, char *valid)
+// String &encodeURL(String &str, char *valid)
 //   Convert a normal string to a URL 'safe' string.  This means that
 //   all characters not explicitly mentioned in the URL BNF will be
 //   escaped.  The escape character is '%' and is followed by 2 hex
 //   digits representing the octet.
 //
-void encodeURL(String &str, char *valid)
+String &encodeURL(String &str, char *valid)
 {
     String	temp;
     static char	*digits = "0123456789ABCDEF";
@@ -86,6 +87,7 @@ void encodeURL(String &str, char *valid)
 	}
     }
     str = temp;
+    return (str);
 }
 
 

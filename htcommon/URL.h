@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.h,v 1.4 2002/11/04 10:00:17 angusgb Exp $
+// $Id: URL.h,v 1.5 2003/01/11 02:33:28 lha Exp $
 //
 
 #ifndef _URL_h_
@@ -88,12 +88,12 @@ private:
 
 #define UNRESERVED	"-_.!~*"
 
-//void encodeURL(String &, char *valid = "?_@.=&/:");
-//void encodeURL(String &, char *reserved = ";/?:@&=+$,");
-//	       	       char *unreserved = "-_.!~*'()");
-void encodeURL(String &, char *valid = UNRESERVED);
+//String &encodeURL(String &, char *valid = "?_@.=&/:");
+//String &encodeURL(String &, char *reserved = ";/?:@&=+$,");
+//	       	              char *unreserved = "-_.!~*'()");
+String &encodeURL(String &, char *valid = UNRESERVED);
 
-void decodeURL(String &);
+String &decodeURL(String &);
 
 #endif
 

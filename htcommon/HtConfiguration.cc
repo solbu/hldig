@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtConfiguration.cc,v 1.4 2002/12/30 12:42:58 lha Exp $
+// $Id: HtConfiguration.cc,v 1.5 2003/01/11 02:33:27 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -126,7 +126,7 @@ const String HtConfiguration::Find(URL *aUrl, const char *value) const
     // or implement abstract Dictionary::Compare?
     const char *strParamUrl=(const char *)aUrl->path();
 	char* confUrl= NULL;
-    while ( confUrl=tmpPtr->Get_Next() ) {   
+    while ( (confUrl=tmpPtr->Get_Next()) ) {   
       if (strncmp(confUrl,strParamUrl,strlen(confUrl))==0 
 	  && (strlen(confUrl)>=candidate.len))  {
 	// it seems this URL match better
