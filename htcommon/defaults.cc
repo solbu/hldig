@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.64.2.8 1999/10/28 18:03:22 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.64.2.9 1999/10/28 18:18:59 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -345,7 +345,9 @@ http://www.htdig.org/", "
 " },
 { "external_parsers", "", 
 	"quoted string list", "htdig", "external_parsers: text/html /usr/local/bin/htmlparser \\<br>
-application/ms-word \"/usr/local/bin/mswordparser -w\"", "
+	application/pdf /usr/local/bin/parse_doc.pl \\<br>
+	application/msword-&gt;text/plain \"/usr/local/bin/mswordtotxt -w\" \\<br>
+	application/x-gunzip-&gt;user-defined /usr/local/bin/ungzipper", "
 			This attribute is used to specify a list of
 			content-type/parsers that are to be used to parse
 			documents that cannot by parsed by any of the internal
@@ -358,9 +360,29 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 			content-type that the parser can handle while the
 			second string of each pair is the path to the external
 			parsing program. If quoted, it may contain parameters,
-			separated by spaces.<p>
+			separated by spaces.<br>
+			 External parsing can also be done with external
+			converters, which convert one content-type to
+			another. To do this, instead of just specifying
+			a single content-type as the first string
+			of a pair, you specify two types, in the form
+			<em>type1</em><strong>-&gt;</strong><em>type2</em>,
+			as a single string with no spaces. The second
+			string will define an external converter
+			rather than an external parser, to convert
+			the first type to the second. If the second
+			type is <strong>user-defined</strong>, then
+			it's up to the converter script to put out a
+			\"Content-Type:&nbsp;<em>type</em>\" header followed
+			by a blank line, to indicate to htdig what type it
+			should expect for the output, much like what a CGI
+			script would do. The resulting content-type must
+			be one that htdig can parse, either internally,
+			or with another external parser or converter.<br>
+			 Only one external parser or converter can be
+			specified for any given content-type.<p>
 			 The parser program takes four command-line
-			parameters, not counting parameters and parameters
+			parameters, not counting any parameters already
 			given in the command string:<br>
 			<em>infile content-type URL configuration-file</em><br>
 			<table border=\"1\">
@@ -421,7 +443,10 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 			  </tr>
 			</table><p>
 			The external parser is to write information for
-			htdig on its standard output.<br>
+			htdig on its standard output. Unless it is an
+			external converter, which will output a document
+			of a different content-type, then its output must
+			follow the format described here.<br>
 			 The output consists of records, each record terminated
 			with a newline. Each record is a series of (unless
 			expressively allowed to be empty) non-empty tab-separated

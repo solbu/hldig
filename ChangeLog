@@ -1,3 +1,11 @@
+Thu Oct 28 13:06:23 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc: added support for external converters
+	as extension to external_parsers attribute.
+	* htcommon/defaults.cc: Updated external_parsers with new description
+	and examples of external converters.
+	* htdoc/attrs.html, cf_by{name,prog}.html: reran cf_generate.pl
+
 Thu Oct 28 12:52:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc: Updated programs lists for *_factor, so they

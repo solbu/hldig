@@ -1188,7 +1188,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href="htdig.html">htdig</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1205,8 +1205,7 @@ http://www.htdig.org/
 	these descriptions of the document. Not surprisingly,
 	these can be pretty accurate summaries of a document's
 	content. See also <a href="#title_factor">title_factor</a> or <a
-	href="#text_factor">text_factor</a>. Changing this
-	factor will require updating your database.
+	href="#text_factor">text_factor</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -1939,9 +1938,29 @@ http://www.htdig.org/
 			content-type that the parser can handle while the
 			second string of each pair is the path to the external
 			parsing program. If quoted, it may contain parameters,
-			separated by spaces.<p>
+			separated by spaces.<br>
+			 External parsing can also be done with external
+			converters, which convert one content-type to
+			another. To do this, instead of just specifying
+			a single content-type as the first string
+			of a pair, you specify two types, in the form
+			<em>type1</em><strong>-&gt;</strong><em>type2</em>,
+			as a single string with no spaces. The second
+			string will define an external converter
+			rather than an external parser, to convert
+			the first type to the second. If the second
+			type is <strong>user-defined</strong>, then
+			it's up to the converter script to put out a
+			"Content-Type:&nbsp;<em>type</em>" header followed
+			by a blank line, to indicate to htdig what type it
+			should expect for the output, much like what a CGI
+			script would do. The resulting content-type must
+			be one that htdig can parse, either internally,
+			or with another external parser or converter.<br>
+			 Only one external parser or converter can be
+			specified for any given content-type.<p>
 			 The parser program takes four command-line
-			parameters, not counting parameters and parameters
+			parameters, not counting any parameters already
 			given in the command string:<br>
 			<em>infile content-type URL configuration-file</em><br>
 			<table border="1">
@@ -2002,7 +2021,10 @@ http://www.htdig.org/
 			  </tr>
 			</table><p>
 			The external parser is to write information for
-			htdig on its standard output.<br>
+			htdig on its standard output. Unless it is an
+			external converter, which will output a document
+			of a different content-type, then its output must
+			follow the format described here.<br>
 			 The output consists of records, each record terminated
 			with a newline. Each record is a series of (unless
 			expressively allowed to be empty) non-empty tab-separated
@@ -2245,7 +2267,9 @@ http://www.htdig.org/
 				</td>
 				<td nowrap>
 				     text/html /usr/local/bin/htmlparser \<br>
-application/ms-word "/usr/local/bin/mswordparser -w"
+	application/pdf /usr/local/bin/parse_doc.pl \<br>
+	application/msword-&gt;text/plain "/usr/local/bin/mswordtotxt -w" \<br>
+	application/x-gunzip-&gt;user-defined /usr/local/bin/ungzipper
 				</td>
 			  </tr>
 			</table>
@@ -2883,7 +2907,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href="htdig.html">htdig</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4161,7 +4185,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href="htdig.html">htdig</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7273,7 +7297,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href="htdig.html">htdig</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7384,7 +7408,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href="htdig.html">htdig</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7439,7 +7463,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href="htdig.html">htdig</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7456,6 +7481,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	place, an excerpt containing a &amp; might be misinterpreted by the browser
 	and look unrecognizable to the user. For this reason, not translating this
 	entity is the default behavior.
+	This should be fixed in 3.2.0, as htsearch does the reverse translation
+	in excerpts.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7493,7 +7520,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href="htdig.html">htdig</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7511,6 +7539,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	&gt; might be misinterpreted by the browser and look unrecognizable to the
 	user. For this reason, not translating these entities is the default
 	behavior.
+	This should be fixed in 3.2.0, as htsearch does the reverse translation
+	in excerpts.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7548,7 +7578,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href="htdig.html">htdig</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7565,6 +7596,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	place, an excerpt containing a &quot; might be misinterpreted by the browser
 	and look unrecognizable to the user. For this reason, not translating this
 	entity is the default behavior.
+	This should be fixed in 3.2.0, as htsearch does the reverse translation
+	in excerpts.
 		  </dd>
 		  <dt>
 			<em>example:</em>
