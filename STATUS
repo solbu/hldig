@@ -12,9 +12,6 @@ SHOWSTOPPERS:
     so this must be some sort of weird htsearch bug)
 
 KNOWN BUGS:
-* URL.cc tries to parse malformed URLs (which causes further problems)
-   (It should probably just set everything to empty) This relates to 
-   PR#348.
 * Not all htsearch input parameters are handled properly: PR#648.
 * If exact isn't specified in the search_algorithms, $(WORDS) is not set 
    correctly: PR#650. (The documentation for 3.2.0b1 is updated, but can
@@ -24,23 +21,22 @@ KNOWN BUGS:
 * If external converters have NULs in output, ExternalParser.cc will
    mangle the data. Could be a problem when "chaining" parsers, e.g. if
    an intermediate output is application/pdf.
-* file:// assumes text MIME type for too many files (e.g. image/png ?)
-* ExternalParser.cc is too picky about MIME types--extra semicolon throws it off.
 
 PENDING PATCHES (available but need work):
+* htsearch rewrite from Quim.
 * Additional support for Win32.
-* htnotify improvements.
 * Date-restricted searching (maybe 1/2 done).
 * Merge in mifluz-0.19 changes.
+* (My)SQL patches to 3.1.x to be forward-ported and cleaned up.
 
 NEEDED FEATURES:
 * Make URL and Server blocks match documentation--i.e. change config
    lookups in htdig to work as suggested. Many already work this way.
-* Field-restricted searching
-* Return all results
-* Handle noindex_start & noindex_end as string lists
-* Handle local_urls through file:// handler, for mime.types support
-* Handle directory redirects in RetrieveLocal
+* Field-restricted searching.
+* Return all results.
+* Handle noindex_start & noindex_end as string lists.
+* Handle local_urls through file:// handler, for mime.types support.
+* Handle directory redirects in RetrieveLocal.
 
 TESTING:
 * httools programs: 
@@ -52,7 +48,7 @@ TESTING:
 DOCUMENTATION:
 * Update cf_* pages to mention new config parser (i.e. URL-dependent config)
 * Add thorough documentation on htsearch restrict/exclude behavior
-   (including | and regex).
+   (including '|' and regex).
 * Split attrs.html into categories for faster loading.
 * require.html is not updated to list new features and disk space
    requirements of 3.2.x (e.g. phrase searching, regex matching,
@@ -61,5 +57,8 @@ DOCUMENTATION:
 
 OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
-   (Does this work with Loic's new database code?)
+   (Does Loic's new database code make this work?)
 * The code needs a security audit, esp. htsearch
+* URL.cc tries to parse malformed URLs (which causes further problems)
+   (It should probably just set everything to empty) This relates to 
+   PR#348.
