@@ -54,10 +54,11 @@ if [ "$1" = 1 ]; then
 	SERVERNAME="`grep '^ServerName' /etc/httpd/conf/httpd.conf | awk 'NR == 1 {print $2}'`"
 	[ -z "$SERVERNAME" ] && SERVERNAME="`hostname -f`"
 	[ -z "$SERVERNAME" ] && SERVERNAME="localhost"
+        TMPFILE=$(mktemp /tmp/ht.XXXXXX) || exit 1
 	sed 's/^start_url:.*/#&\
-# (See end of file for this parameter.)/' /etc/htdig/htdig.conf > /tmp/ht.$$
-	cat /tmp/ht.$$ > /etc/htdig/htdig.conf
-	rm /tmp/ht.$$
+# (See end of file for this parameter.)/' /etc/htdig/htdig.conf > $TMPFILE
+	cat $TMPFILE > /etc/htdig/htdig.conf
+	rm $TMPFILE
 	cat >> /etc/htdig/htdig.conf <<!
 
 # Automatically set up by htdig RPM, from your current Apache httpd.conf...

@@ -1,3 +1,8 @@
+Sun 25 Apr 2004 Lachlan Andrew <lha at users.sourceforge.net>
+
+    * contrib/htdig-3.2.0.spec:
+    Karl Eichwalder's patch to use mktemp to create safe temp file.
+
 Wed Apr  7 17:12:33 2004  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
     * htdig/Retriever.cc (IsValidURL): Fixed bug #931377 so bad_extensions
