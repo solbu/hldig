@@ -142,7 +142,7 @@ AC_CHECK_FUNCS(strdup strerror strstr getcwd memcmp memcpy memmove raise)
 AC_REPLACE_FUNCS(snprintf vsnprintf)
 AC_FUNC_STRFTIME
 AC_FUNC_STRPTIME
-AC_CHECK_FUNCS(localtime_r timegm)
+AC_CHECK_FUNCS(localtime_r timegm mkstemp)
 
 dnl Regex is compiled by the C compiler so we need to do it before we switch
 AC_MSG_CHECKING(if we should use the included regex?)

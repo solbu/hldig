@@ -3534,7 +3534,7 @@ else
 int main() {
 
 /* Ultrix mips cc rejects this.  */
-typedef int charset[2]; const charset x={0,0};
+typedef int charset[2]; const charset x;
 /* SunOS 4.1.1 cc rejects this.  */
 char const *const *ccp;
 char **p;
@@ -4117,7 +4117,7 @@ rm -f conftest*
 
 
 
-for ac_func in localtime_r timegm
+for ac_func in localtime_r timegm mkstemp
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
 echo "configure:4124: checking for $ac_func" >&5
