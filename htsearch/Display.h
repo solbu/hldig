@@ -1,7 +1,7 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.8.2.3 1999/11/24 03:33:09 grdetil Exp $
+// $Id: Display.h,v 1.8.2.4 1999/11/24 05:17:10 grdetil Exp $
 //
 //
 //
@@ -160,6 +160,7 @@ protected:
     void		outputVariable(char *);
     String		*excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first);
     char		*hilight(char *str, String urlanchor, int fanchor);
+    void		setupTemplates();
     void		setupImages();
     String		*generateStars(DocumentRef *, int);
     void		displayParsedFile(char *);

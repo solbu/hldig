@@ -1,7 +1,7 @@
-Tue Nov 23 22:59:23 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Nov 23 23:03:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
-	* htsearch/Display.cc(setupTemplates): fixed a compilation error
-	in template_patterns code.
+	* htsearch/Display.cc(setupTemplates), htsearch/Display.h: fixed a
+	couple of compilation errors in template_patterns code.
 
 Tue Nov 23 22:16:31 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
