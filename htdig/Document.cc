@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34.2.3 1999/03/19 23:08:55 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34.2.4 1999/04/09 21:34:29 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -313,7 +313,7 @@ Document::RetrieveHTTP(time_t date)
 	
     if (c.connect(1) == NOTOK)
     {
-	if (debug > 1)
+	if (debug)
 	{
 	    cout << "Unable to build connection with " << url->host() << ':' << url->port() << endl;
 	    if (useproxy)

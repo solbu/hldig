@@ -1,3 +1,8 @@
+Fri Apr  9 16:24:21 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc(RetrieveHTTP): Show "Unable to build connection"
+	message at lower debug level.
+
 Fri Apr  9 15:17:53 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/FAQ.html: Added changes in maindocs from Mar 18, a few
