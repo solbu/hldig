@@ -1,3 +1,8 @@
+Thu Oct 07 12:53:12 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* configure.in: modified getpeername() test function with
+	  AC_LANG_CPLUSPLUS instead of AC_LANG_C.
+
 Thu Oct 07 11:56:52 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* HtHTTP.cc : fixed bug of double deleting _access_time
