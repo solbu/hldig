@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.cc,v 1.47.2.5 2000/05/06 20:46:37 loic Exp $
+// $Id: DocumentRef.cc,v 1.47.2.6 2000/09/27 05:29:30 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -483,7 +483,8 @@ void DocumentRef::AddDescription(const char *d, HtWordList &words)
     static int    max_descriptions    = config.Value("max_descriptions", 5);
 
     String word;
-    HtWordReference wordRef;
+    HtWordReference wordRef(words.GetWordContext());
+    WordType	    type(config);
     wordRef.Flags(FLAG_LINK_TEXT);
     wordRef.DocID(docID);
 
@@ -492,10 +493,10 @@ void DocumentRef::AddDescription(const char *d, HtWordList &words)
       // Reset contents before adding chars each round.
       word = 0;
 
-      while (*p && HtIsWordChar(*p))
+      while (*p && type.IsChar(*p))
         word << *p++;
 
-      HtStripPunctuation(word);
+      type.StripPunctuation(word);
 
       if (word.length() >= minimum_word_length) {
         // The wordlist takes care of lowercasing; just add it.
@@ -504,7 +505,7 @@ void DocumentRef::AddDescription(const char *d, HtWordList &words)
         words.Replace(wordRef);
       }
 
-      while (*p && !HtIsStrictWordChar(*p))
+      while (*p && !type.IsStrictChar(*p))
         p++;
     }
 
