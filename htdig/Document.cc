@@ -4,6 +4,9 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.7  1997/07/07 22:15:45  turtle
+// Removed old getdate() code that replaced '-' with ' '.
+//
 // Revision 1.6  1997/07/07 21:22:14  turtle
 // Added better date parsing.  Now also supports the old RFC 850 format
 //
@@ -25,7 +28,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.6 1997/07/07 21:22:14 turtle Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.7 1997/07/07 22:15:45 turtle Exp $";
 #endif
 
 #include <signal.h>
@@ -193,7 +196,6 @@ time_t
 Document::getdate(char *datestring)
 {
     String	d = datestring;
-    d.replace('-', ' ');
 
     time_t	now = time(0);
 #if HAVE_LOCALTIME
