@@ -1,3 +1,17 @@
+Thu Dec  2 16:47:30 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc(parse_url): Use a static int to avoid
+	re-fetching local_urls_only from the config object.
+	(Initial, got_href, got_redirect): Try to get the local filename
+	for a server's robots.txt file and pass it along to the newly
+	generated server.
+	
+	* htdig/Server.cc(ctor): Retrieve the robots.txt file from the
+	filesystem when possible and respect the local_urls_only option.
+
+	* htdig/Server.h: Change type of local_robots_file to String* to
+	better match Retriever::GetLocal().
+	
 Wed Dec  1 19:47:20 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtRegex.cc, htlib/HtRegex.h (set*): Add a case_sensitive
