@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.64 1999/03/25 15:54:21 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.65 1999/03/25 18:03:56 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -313,15 +313,15 @@ Display::displayMatch(ResultMatch *match, int current)
 	if (t)
 	{
 	    struct tm	*tm = localtime(&t);
-//			strftime(buffer, sizeof(buffer), "%e-%h-%Y", tm);
-	    if (config.Boolean("iso_8601"))
+	    char	*datefmt = config["date_format"];
+	    if (!datefmt || !*datefmt)
 	      {
-		strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S %Z", tm);
+		if (config.Boolean("iso_8601"))
+		    datefmt = "%Y-%m-%d %H:%M:%S %Z";
+		else
+		    datefmt = "%x";
 	      }
-	    else
-	      {
-		strftime(buffer, sizeof(buffer), "%x", tm);
-	      }
+	    strftime(buffer, sizeof(buffer), datefmt, tm);
 	    *str << buffer;
 	}
 	vars.Add("MODIFIED", str);

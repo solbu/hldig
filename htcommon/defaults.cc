@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.45 1999/03/16 02:04:26 hp Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.46 1999/03/25 18:03:44 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -41,6 +41,7 @@ ConfigDefaults	defaults[] =
     {"create_url_list",			"false"},
     {"compression_level",               "0"},
     {"date_factor",                     "0"},
+    {"date_format",                     ""},
     {"database_base",			"${database_dir}/db"},
     {"description_factor",              "150"},
     {"doc_db",				"${database_base}.docdb"},

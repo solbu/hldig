@@ -848,6 +848,56 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="date_format">date_format</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This format string determines the output format for
+			modification dates of documents in the search results.
+			It is interpreted by your system's <em>strftime</em>
+			function. Please refer to your system's manual page
+			for this function, for a description of available
+			format codes. If this format string is empty, as it
+			is by default, 
+			<a href="htsearch.html" target="_top">htsearch</a>
+			will pick a format itself. In this case, the <a
+			href="#iso_8601">iso_8601</a> attribute can be used
+			to modify the appearance of the date.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			date_format: %Y-%m-%d
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="description_factor">description_factor</a></strong>
 	  </dt>
 	  <dd>
@@ -2115,6 +2165,14 @@
 		  <dd>
 			This sets whether dates should be output in ISO 8601
 			format. For example, this was written on: 1998-10-31 11:28:13 EST.
+			See also the <a
+			href="#date_format">date_format</a> attribute, which
+			can override any date format that
+			<a href="htsearch.html" target="_top">htsearch</a>
+			picks by default.<br>
+			 This attribute also affects the format of the date
+			<a href="htnotify.html">htnotify</a> expects to find
+			in a <strong>htdig-notification-date</strong> field.
 		  </dd>
 		  <dt>
 			<em>example:</em>
