@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htsearch.cc,v 1.68 2003/10/12 07:29:04 lha Exp $
+// $Id: htsearch.cc,v 1.69 2003/12/21 11:40:44 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -236,9 +236,17 @@ main(int ac, char **av)
 	if (input.exists("config"))
 	    config->Add("config", input["config"]);
 	if (input.exists("restrict"))
-	    config->Add("restrict", input["restrict"]);
+	{
+	    String tmpURL (input["restrict"]);
+	    encodeURL (tmpURL);
+	    config->Add("restrict", tmpURL);
+	}
 	if (input.exists("exclude"))
-	    config->Add("exclude", input["exclude"]);
+	{
+	    String tmpURL (input["exclude"]);
+	    encodeURL (tmpURL);
+	    config->Add("exclude", tmpURL);
+	}
 	if (input.exists("keywords"))
 	    config->Add("keywords", input["keywords"]);
 	requiredWords.Create(config->Find("keywords"), " \t\r\n\001");

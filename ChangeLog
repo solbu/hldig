@@ -1,5 +1,10 @@
 Sun Dec 21 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
+    * htsearch/htsearch.cc:
+      Improve handling of restrict/exclude URLs with spaces or encoded chars
+
+Sun Dec 21 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
     * htsearch/HtURLSeedScore.cc, htsearch/SplitMatches.cc:  Fix bug #863860
       Split patterns at "|".
       For SplitMatches, make "*" only match if all other patterns fail.
