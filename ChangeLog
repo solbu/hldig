@@ -1,3 +1,8 @@
+Mon Dec 13 16:31:27 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* htword/WordBitCompress.cc : fixed bug that made compression
+	fail on big documents or big number of url's ...
+
 Mon Dec 13 13:49:35 1999  Loic Dachary  <loic@ceic.com>
 
 	* htword/WordKey.h.tmpl: Added *_POSITION macro generation

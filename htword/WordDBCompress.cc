@@ -215,8 +215,8 @@ class WordDBPage
 	int size=keylen+((byte *)&(bti.data))-((byte *)&bti);// pos of data field in BINTERNAL
 	if(empty)
 	{
-	    if(verbose)printf("insert_btikey: empty : BINTERNAL:%d datapos:%d keylen:%d size:%d alligned to:%d\n",sizeof(BINTERNAL),
-		   ((byte *)&(bti.data))-((byte *)&bti),keylen,size,allign(size,4));
+	    if(verbose){printf("WordDBPage::insert_btikey: empty : BINTERNAL:%d datapos:%d keylen:%d size:%d alligned to:%d\n",sizeof(BINTERNAL),
+			       ((byte *)&(bti.data))-((byte *)&bti),keylen,size,allign(size,4));}
 	}
 
 	BINTERNAL *btik=(BINTERNAL *)alloc_entry(size);
@@ -243,7 +243,7 @@ class WordDBPage
 	{
 	    int len=btikey(i)->len;
 	    out.put(len,NBITS_KEYLEN,label_str("seperatekey_len",i));
-	    if(verbose)printf("compress(typ3):%d ::: sizeof(BINTERNAL):%d\n",len,sizeof(BINTERNAL));
+	    if(verbose){printf("WordDBPage::compress_key:compress(typ3):%d ::: sizeof(BINTERNAL):%d\n",len,sizeof(BINTERNAL));}
 	    out.put(btikey(i)->len  ,sizeof(btikey(i)->len  )*8,label_str("seperatekey_bti_len"  ,i));
 	    out.put(btikey(i)->type ,sizeof(btikey(i)->type )*8,label_str("seperatekey_bti_type" ,i));
 	    out.put(btikey(i)->pgno ,sizeof(btikey(i)->pgno )*8,label_str("seperatekey_bti_pgno" ,i));
@@ -254,7 +254,7 @@ class WordDBPage
 	{
 	    int len=key(i)->len;
 	    out.put(len,NBITS_KEYLEN,label_str("seperatekey_len",i));
-	    if(verbose)printf("compress(typ5):%d\n",len);
+	    if(verbose){printf("WordDBPage::compress_key: compress(typ5):%d\n",len);}
 	    out.put_zone((byte *)key(i)->data,8*len,label_str("seperatekey_data",i));
 	}
     }
@@ -262,14 +262,14 @@ class WordDBPage
     {
 	int len=data(i)->len;
 	out.put(len,NBITS_DATALEN,label_str("seperatedata_len",i));
-	if(verbose)printf("compressdata(typ5):%d\n",len);
+	if(verbose){printf("WordDBPage::compress_data: compressdata(typ5):%d\n",len);}
 	out.put_zone((byte *)data(i)->data,8*len,label_str("seperatedata_data",i));
     }
     WordDBKey uncompress_key(Compressor &in,int i)
     {
 	WordDBKey res;
 	int len=in.get(NBITS_KEYLEN,label_str("seperatekey_len",i));
-	if(verbose)printf("uncompress:len:%d\n",len);
+	if(verbose){printf("WordDBPage::uncompress_key: seperatekey:len:%d\n",len);}
 	
 	if(type==3)
 	{
@@ -455,12 +455,21 @@ int WordDBCompress_uncompress_c(const u_int8_t* inbuff, int inbuff_length, u_int
 }
 }
 
+int cmprcount=0;
 //  Compresses inbuff to outbuff
 int 
 WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **outbuffp, int *outbuff_lengthp)
 {
     // create a page from inbuff
     WordDBPage pg(inbuff,inbuff_length);
+
+    if(debug>2)
+    {
+	printf("###########################  WordDBCompress::Compress:%5d  #################################################\n",cmprcount);
+	pg.show(3);
+	printf("~~~~~~~~~~~~~\n");
+    }
+
 
 //      pg.show();
     // DEBUG: check if decompressed compresed page is equivalent to original
@@ -473,6 +482,16 @@ WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **
     (*outbuffp)=res->get_data();
     (*outbuff_lengthp)=res->buffsize();
 
+
+
+
+
+    if(debug>2)
+    {
+	res->show();
+	printf("\n%%%%%%%% Final COMPRESSED size:%4d   %f\n",res->size(),res->size()/8.0);
+	printf("***************************  %5d  #################################################\n",cmprcount++);
+    }
 
     delete res;
     if(debug>2){printf("WordDBCompress::Compress: final output size:%6d\n",(*outbuff_lengthp));}
@@ -489,6 +508,7 @@ WordDBCompress::Uncompress(const u_int8_t *inbuff, int inbuff_length, u_int8_t *
     if(debug>2){printf("WordDBCompress::Uncompress::  %5d -> %5d\n",inbuff_length,outbuff_length);}
     // create a page for decompressing into it
     WordDBPage pg(outbuff_length);
+    if(debug>2){printf("------------------------  WordDBCompress::Uncompress:%5d --------------------------------\n",cmprcount);}
 
     // create a Compressor from inbuff and setit up
     Compressor in(inbuff_length);
@@ -502,6 +522,7 @@ WordDBCompress::Uncompress(const u_int8_t *inbuff, int inbuff_length, u_int8_t *
     memcpy((void *)outbuff,(void *)pg.pg,outbuff_length);
 
     pg.delete_page();
+    if(debug>2){printf("------------------------  WordDBCompress::Uncompress: END %d\n",cmprcount);}
     return(0);
 }
 
@@ -527,6 +548,7 @@ WordDBCompress::TestCompress(const  u_int8_t* pagebuff, int pagebuffsize,int deb
 int
 WordDBPage::TestCompress(int debuglevel)
 {
+    if(debuglevel>2){printf("ttttttttttttt WordDBPage::TestCompress  BEGIN\n");}
     int compress_debug=debuglevel-1;
 //      printf("WordDBPage::TestCompress: \n");
     // start by compressing this page
@@ -578,6 +600,7 @@ WordDBPage::TestCompress(int debuglevel)
 
     }else {errr("WordDBPage::TestCompress: Compress failed");}
 
+    if(debuglevel>2){printf("ttttttttttttt WordDBPage::TestCompress  END\n");}
     return OK;
 }
 
@@ -589,7 +612,6 @@ int first_diff(const String &s1,const String &s2)
     return(j);
 }
 
-int vcount=0;
 
 
 // ******* Uncompress Compressor into this page
@@ -601,6 +623,7 @@ WordDBPage::Uncompress(Compressor *pin,int  ndebug)
 //      printf("WordDBPage::Uncompress after show\n");
     debug=ndebug;
     if(debug>1){verbose=1;}
+    if(verbose){printf("uuuuuuuuu WordDBPage::Uncompress: BEGIN\n");}
     
     int cmprtype=pin->get(2,"CMPRTYPE");   
     // two possible cases
@@ -617,6 +640,8 @@ WordDBPage::Uncompress(Compressor *pin,int  ndebug)
     default:
 	errr("WordDBPage::Uncompress: CMPRTYPE incoherent");
     }
+
+    if(verbose){printf("uuuuuuuuu WordDBPage::Uncompress: END\n");}
     return OK;
 }
 
@@ -663,9 +688,10 @@ WordDBPage::Uncompress_main(Compressor *pin)
 	for(j=0;j<nnums;j++)
 	{
 	    if(verbose)printf("field %2d : start position:%4d  \n",j,in.size());
-	    if(j==3 && verbose){TMPDISPLAY=1;}
+	    if(j==3 && verbose){in.verbose=2;}
 	    rnum_sizes[j]=in.get_vals(&(rnums[j]),label_str("NumField",j));//***
-	    if(j==3 && verbose){TMPDISPLAY=0;}
+	    if(j==3 && verbose){in.verbose=0;}
+	    if(verbose){printf("WordDBPage::Uncompress_main:got numfield:%2d:nvals:%4d\n",j,rnum_sizes[j]);}
 	}
 
 	//  ********* read word differences
@@ -698,7 +724,23 @@ WordDBPage::Uncompress_header(Compressor &in)
     pg->type         =in.get(  8*sizeof(pg->type        ),"page:type");
 
     init();
-    
+
+    if(verbose)
+    {
+	printf("************************************\n");
+	printf("********   WordDBPage::Uncompress: page header ***\n");
+	printf("************************************\n");
+	printf("page size:%d\n",(int)pgsz);
+	printf(" 00-07: Log sequence number.  file  : %d\n",                            pg->lsn.file            );      
+	printf(" 00-07: Log sequence number.  offset: %d\n",                            pg->lsn.offset            );      
+	printf(" 08-11: Current page number.  : %d\n",		               pg->pgno            );     
+	printf(" 12-15: Previous page number. : %d\n",		               pg->prev_pgno         );
+	printf(" 16-19: Next page number.     : %d\n",			       pg->next_pgno           );
+	printf(" 20-21: Number of item pairs on the page. : %d\n",	               pg->entries           );  
+	printf(" 22-23: High free byte page offset.       : %d\n",	               pg->hf_offset        );
+	printf("    24: Btree tree level.                 : %d\n",                pg->level             );	
+	printf("    25: Page type.                        : %d\n",                pg->type               );		
+    }
     return OK;
 }
 void 
@@ -809,6 +851,7 @@ WordDBPage::Uncompress_show_rebuild(unsigned int **rnums,int *rnum_sizes,int nnu
     int i,j;
     if(verbose)
     {
+	printf("WordDBPage::Uncompress_show_rebuild: rebuilt numerical fields\n");
 	for(j=0;j<nnums;j++)
 	{
 	    printf("resfield %2d:",j);
@@ -839,12 +882,12 @@ WordDBPage::Compress(int ndebug)
     CHECK_MEM(res);
     if(debug>0){res->set_use_tags();}
     res->put(0,2,"CMPRTYPE");
-//      printf("WordDBPage::Compress: trying normal copress\n");
+    if(verbose){printf("WordDBPage::Compress: trying normal compress\n");}
     int cmpr_ok=Compress_main(*((Compressor *)res));
 
     if(cmpr_ok!=OK || res->buffsize()>pgsz)
     {
-//    	printf("WordDBCompress::Compress failed ... not compressing\n");
+    	if(verbose){printf("WordDBCompress::Compress full compress failed ... not compressing at all\n");}
   	show();
 	if(res){delete res;}
 	res=new Compressor;
@@ -853,6 +896,12 @@ WordDBPage::Compress(int ndebug)
 	res->put(1,2,"CMPRTYPE");
 	res->put_zone((byte *)pg,pgsz*8,"INITIALBUFFER");
     }
+
+    if(verbose)
+    {
+	printf("WordDBPage::Compress: Final bitstream result for %d\n",cmprcount);
+	res->show();
+    }
     return res;
 };
 
@@ -860,15 +909,10 @@ int
 WordDBPage::Compress_main(Compressor &out)
 {
     if(debug>1){verbose=1;}
+    if(verbose){printf("WordDBPage::Compress_main: starting compression\n");}
     
     if(pg->type!=5 && pg->type!=3){    printf("pg->type:%3d\n",pg->type);return NOTOK;}
 //        if(pg->type==3){show();}
-    if(verbose)
-    {
-	printf("###########################  %5d  #################################################\n",vcount);
-	show(3);
-	printf("~~~~~~~~~~~~~\n");
-    }
 
 
     // *************** initialize data structures **************
@@ -924,12 +968,6 @@ WordDBPage::Compress_main(Compressor &out)
 
 
 
-    if(verbose)
-    {
-	out.show();
-	printf("\n%%%%%%%% Final COMPRESSED size:%4d   %f\n",out.size(),out.size()/8.0);
-	printf("***************************  %5d  #################################################\n",vcount++);
-    }
 
 
     // *************** cleanup **************
@@ -1028,12 +1066,12 @@ WordDBPage::Compress_vals(Compressor &out,int *nums,int *nums_pos,int nnums)
     {
 	int n=nums_pos[j];
 	unsigned int *v=(unsigned int *)(nums+j*nk);
-	if(j==3 && verbose){TMPDISPLAY=1;}
+	if(j==3 && verbose){out.verbose=2;}
 	int dud;
 	for(int i=0;i<n;i++){dud=v[i]>1;}// make purify error if v unintialized
 	int size=out.put_vals(v,n,label_str("NumField",j));
-	if(j==3 && verbose){TMPDISPLAY=0;}
-	if(verbose)printf("compressed field %2d : %3d values: %4d bits %4f bytes\n",j,n,size,size/8.0);
+	if(j==3 && verbose){out.verbose=0;}
+	if(verbose)printf("compressed field %2d : %3d values: %4d bits %8f bytes  : ended bit field pos:%6d\n",j,n,size,size/8.0,out.size());
     }
 }
 void
@@ -1263,7 +1301,7 @@ WordDBPage::show(int redo)
   printf("************************************\n");
   printf("************************************\n");
   printf("************************************\n");
-  printf("page:%x page size:%d\n",(int)pg,(int)pgsz);
+  printf("page size:%d\n",(int)pgsz);
   printf(" 00-07: Log sequence number.  file  : %d\n",                            pg->lsn.file            );      
   printf(" 00-07: Log sequence number.  offset: %d\n",                            pg->lsn.offset            );      
   printf(" 08-11: Current page number.  : %d\n",		               pg->pgno            );     

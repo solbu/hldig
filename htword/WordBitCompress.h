@@ -41,6 +41,9 @@ char *label_str(char *s,int n);
 // *************** BitStream  ***********************
 // **************************************************
 #define NBITS_NVALS 16
+#define NBITS_VAL 32
+#define NBITS_NBITS_VAL  5
+#define NBITS_NBITS_CHARVAL 4
 class BitStream
 {
 protected:
@@ -199,6 +202,7 @@ extern unsigned int max_v(unsigned int *vals,int n);
 class Compressor : public BitStream
 {
 public:
+    int verbose;
     int put_vals(unsigned int *vals,int n,char *tag);
     int get_vals(unsigned int **pres,char *tag="BADTAG!");
     int put_fixedbitl(byte *vals,int n,char *tag);
@@ -213,11 +217,11 @@ public:
     void compress_fixed(unsigned int *vals,int n);
     Compressor():BitStream()
 	{
-	    ;
+	    verbose=0;
 	}
     Compressor(int size):BitStream(size)
 	{
-	    ;
+	    verbose=0;
 	}
 
 };
