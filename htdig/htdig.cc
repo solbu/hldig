@@ -284,6 +284,7 @@ main(int ac, char **av)
     // Go do it!
     //
     retriever.Start();
+    retriever.Start();
 
     //
     // All done with parsing.
