@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.23 1999/01/29 18:47:25 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24 1999/02/04 07:23:46 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -507,7 +507,7 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 	    // Apply all the algorithms to the word.
 	    //
 	    if (debug)
-		cerr << "Fuzzy on: " << ww->word << endl;
+	      cerr << "Fuzzy on: " << ww->word << endl;
 	    doFuzzy(ww, searchWords, algorithms);
 	    delete ww;
 	}
@@ -544,15 +544,21 @@ doFuzzy(WeightWord *ww, List &searchWords, List &algorithms)
     algorithms.Start_Get();
     while ((fuzzy = (Fuzzy *) algorithms.Get_Next()))
     {
+        if (debug > 1)
+	  cout << "   " << fuzzy->getName();
 	fuzzy->getWords(ww->word, fuzzyWords);
 	fuzzyWords.Start_Get();
 	while ((word = (String *) fuzzyWords.Get_Next()))
 	{
+	    if (debug > 1)
+	      cout << " " << word->get();
 	    newWw = new WeightWord(word->get(), fuzzy->getWeight());
 	    newWw->isExact = ww->isExact;
 	    newWw->isHidden = ww->isHidden;
 	    weightWords.Add(newWw);
 	}
+	if (debug > 1)
+	  cout << endl;
 	fuzzyWords.Destroy();
     }
 
