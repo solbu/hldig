@@ -1,11 +1,10 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b2: Release date X Apr 2000.
+   3.2.0b2: Release date 10 Apr 2000.
    3.2.0b1: Released: 4 Feb 2000.
 
 SHOWSTOPPERS:
-* build_select_lists parses incorrectly.
 
 KNOWN BUGS:
 * URL.cc tries to parse malformed URLs (which causes further problems)
@@ -28,18 +27,19 @@ PENDING FEATURES:
 * Return all results
 * Update db and htdb code to synch with mifluz-0.14 (will fix last item above)
 * Duplicate document detection while indexing
+* Method "exact" for phrase-searching on the entire query
 
 TESTING:
-* ExternalTransport with non 'http' URLs.
-* URL parser
-* htfuzzy tests
-* New config parser
-* htmerge -m
+* httools programs: 
+  (htload a test file, check a few characteristics, htdump and compare)
+* Turn on URL parser test as part of test suite.
+* htsearch phrase support tests
 
 DOCUMENTATION:
 * Update cf_* pages to mention new config parser (i.e. URL-dependent config)
 * Add thorough documentation on htsearch restrict/exclude behavior
    (including | and regex).
+* Split attrs.html into categories for faster loading.
 * require.html is not updated to list new features and disk space
    requirements of 3.2.x (e.g. phrase searching, regex matching,
    external parsers and transport methods, database compression.)
@@ -49,4 +49,5 @@ OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
 * Error messages should be more informative if no URLs are indexed by htdig
    PR#672. In short, programs should do a little more checking.
-
+* Should htmerge only merge databases and become part of the httools
+   directory? (The clean-up duties have now been implemented into htpurge.)
