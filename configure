@@ -1435,7 +1435,7 @@ fi
 HTDIG_TOP=`pwd`
 
 
-GDBM_DIR=`echo gdbm*`
+DB_DIR=`echo db-*/build.unix`
 
 
 RX_DIR=`echo rx*`
@@ -1477,9 +1477,9 @@ fi
 rm -f conftest*
 
 echo ""
-echo "Configuring GNU GDBM"
-(cd gdbm*; ./configure)
-echo "GDBM Configuration complete"
+echo "Configuring Berkeley DBM"
+(cd db-*/build.unix; ../dist/configure)
+echo "Berkeley DBM Configuration complete"
 echo ""
 
 # Extract the first word of "tsort", so it can be a program name with args.
@@ -1665,7 +1665,7 @@ s%@SORT@%$SORT%g
 s%@FIND@%$FIND%g
 s%@TAR@%$TAR%g
 s%@HTDIG_TOP@%$HTDIG_TOP%g
-s%@GDBM_DIR@%$GDBM_DIR%g
+s%@DB_DIR@%$DB_DIR%g
 s%@RX_DIR@%$RX_DIR%g
 s%@TSORT@%$TSORT%g
 
