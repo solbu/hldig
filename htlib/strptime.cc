@@ -348,6 +348,8 @@ mystrptime(char *buf, char *fmt, struct tm *tm)
 		    i *= 10;
 		    i += *buf - '0';
 		}
+		if (c == 'y' && i < 69)	/* Unix Epoch pivot year */
+		    i += 100;
 		if (c == 'Y')
 		    i -= 1900;
 		if (i < 0)

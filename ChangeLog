@@ -1,4 +1,7 @@
-Tue Feb 15 14:03:11 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Feb 15 14:12:46 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/strptime.cc (mystrptime): Use Warren Jones's fix to deal
+	with a web server that returns dates with a two digit year field.
 
 	* htdig/HTML.cc (HTML, parse, do_tag), htcommon/defaults.cc,
 	htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
