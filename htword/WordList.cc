@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.1 1999/10/15 16:07:41 loic Exp $
+// $Id: WordList.cc,v 1.6.2.2 1999/10/18 09:54:47 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -231,9 +231,9 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
       } else {
 	prefixKey.Pack(key);
       }
-      if(cursor.Get(key, data, DB_SET_RANGE) != 0)
-	return list;
     }
+    if(cursor.Get(key, data, DB_SET_RANGE) != 0)
+	return list;
 
     do {
       WordReference found(key, data);
