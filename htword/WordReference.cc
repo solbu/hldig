@@ -2,19 +2,17 @@
 // WordReference.cc
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
+// or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.cc,v 1.5 2000/02/19 05:29:08 ghutchis Exp $
+// $Id: WordReference.cc,v 1.6 2002/02/01 22:49:36 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
-
-#include <iostream.h>
 
 #include "WordReference.h"
 
@@ -33,18 +31,18 @@ int
 WordReference::Set(const String& buffer)
 {
   StringList fields(buffer, "\t ");
-  return Set(fields);
+  return SetList(fields);
 }
 
 //
 // Set the structure from list of fields
 //
 int
-WordReference::Set(StringList& fields)
+WordReference::SetList(StringList& fields)
 {
   Clear();
-  if(key.Set(fields) != OK ||
-     record.Set(fields) != OK)
+  if(key.SetList(fields) != OK ||
+     record.SetList(fields) != OK)
     return NOTOK;
   else
     return OK;
@@ -68,15 +66,23 @@ WordReference::Get(String& buffer) const
   return OK;
 }
 
-ostream &operator << (ostream &o, const WordReference &wordRef)
+String
+WordReference::Get() const
 {
   String tmp;
-  wordRef.Get(tmp);
-  o << tmp;
-  return o;
+  key.Get(tmp);
+  return tmp;
+}
+
+int WordReference::Write(FILE* f) const
+{
+  String tmp;
+  key.Get(tmp);
+  fprintf(f, "%s", (char*)tmp);
+  return 0;
 }
 
 void WordReference::Print() const
 {
-  cout << *this;
+  Write(stderr);
 }

@@ -5,13 +5,17 @@
 //  	       Uses locale.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.cc,v 1.13 2000/02/19 05:29:03 ghutchis Exp $
+// $Id: HtDateTime.cc,v 1.14 2002/02/01 22:49:33 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "HtDateTime.h"
 
@@ -19,11 +23,16 @@
 #include <string.h>
 #include <iostream.h>
 
+#ifndef HAVE_STRPTIME
+// mystrptime() declared in lib.h, defined in htlib/strptime.cc
+#define strptime(s,f,t)	mystrptime(s,f,t)
+#else /* HAVE_STRPTIME */
 #ifndef HAVE_STRPTIME_DECL
 extern "C" {
 extern char *strptime(const char *__s, const char *__fmt, struct tm *__tp);
 }
 #endif /* HAVE_STRPTIME_DECL */
+#endif /* HAVE_STRPTIME */
 
 ///////
    //    Static local variable : Visible only here !!!
@@ -41,11 +50,11 @@ static char _strtime[MAXSTRTIME];
 
 //     RFC1123: Sun, 06 Nov 1994 08:49:37 GMT
 #define RFC1123_FORMAT "%a, %d %b %Y %H:%M:%S %Z"
-#define LOOSE_RFC1123_FORMAT "%d %b %Y %H:%M:%S %Z"
+#define LOOSE_RFC1123_FORMAT "%d %b %Y %H:%M:%S"
 
 //     RFC850 : Sunday, 06-Nov-94 08:49:37 GMT
 #define RFC850_FORMAT  "%A, %d-%b-%y %H:%M:%S %Z"
-#define LOOSE_RFC850_FORMAT  "%d-%b-%y %H:%M:%S %Z"
+#define LOOSE_RFC850_FORMAT  "%d-%b-%y %H:%M:%S"
 
 //     ANSI C's asctime() format : Sun Nov  6 08:49:37 1994
 #define ASCTIME_FORMAT  "%a %b %e %H:%M:%S %Y"
@@ -56,6 +65,9 @@ static char _strtime[MAXSTRTIME];
 
 // 	  ISO8601 (short version): 1994-11-06
 #define ISO8601_SHORT_FORMAT "%Y-%m-%d"
+
+// 	  Timestamp : 19941106084937
+#define TIMESTAMP_FORMAT "%Y%m%d%H%M%S"
 
 
 
@@ -191,6 +203,26 @@ void HtDateTime::SetISO8601(char *s)
 
 
 ///////
+   //   Timestamp Date format (MySQL) without timezone
+ //     19941106084937
+///////
+
+void HtDateTime::SetTimeStamp(char *s)
+{
+
+   // year as ccyy;
+   // month ( 01 - 12)
+   // day of the month
+   // hour ( 00 - 23)
+   // minute ( 00 - 59)
+   // seconds ( 00 - 59);
+
+   SetFTime(s, TIMESTAMP_FORMAT);
+   
+}
+
+
+///////
    //   Default date and time format for the locale
 ///////
 
@@ -235,7 +267,7 @@ char *HtDateTime::GetFTime(const char *format) const
    
    if(GetFTime(_strtime, MAXSTRTIME, format))
       return (char *)_strtime;
-   else return NULL;
+   else return 0;
 
 }
 
@@ -338,6 +370,27 @@ char *HtDateTime::GetShortISO8601() const
 }
 
 ///////
+   //   Timestamp Date format (MySQL) without timezone
+ //     19941106084937
+///////
+
+char *HtDateTime::GetTimeStamp() const
+{
+
+   // year as ccyy;
+   // month ( 01 - 12)
+   // day of the month
+   // hour ( 00 - 23)
+   // minute ( 00 - 59)
+   // seconds ( 00 - 59);
+
+   GetFTime(_strtime, MAXSTRTIME, TIMESTAMP_FORMAT);
+
+   return (char *)_strtime;
+   
+}
+
+///////
    //   Default date and time format for the locale
 ///////
 
@@ -404,7 +457,7 @@ void HtDateTime::SetDateTime(struct tm *ptm)
    if(local_time)
    	 Ht_t = mktime(ptm);  	// Invoke mktime
    else
-   	 Ht_t = Httimegm(ptm);	// Invoke timegm alike function
+   	 Ht_t = HtTimeGM(ptm);	// Invoke timegm alike function
    
 }
 
@@ -413,7 +466,7 @@ void HtDateTime::SetDateTime(struct tm *ptm)
 
 void HtDateTime::SettoNow()
 {
-   Ht_t = time(NULL);
+   Ht_t = time(0);
 }
 
 
@@ -579,48 +632,6 @@ bool HtDateTime::isAValidDay (int d, int m, int y)
    if (d >= 1 && d <= days [m -1]) return true;
    else return false;
    
-}
-
-
-
-///////
-   //   Operator overloading
-///////
-
-bool HtDateTime::operator==(const HtDateTime &right) const
-{
-	if(Ht_t==right.Ht_t)
-		return true;
-	else
-		return false;
-}
-
-bool HtDateTime::operator<(const HtDateTime &right) const
-{
-	if(Ht_t < right.Ht_t) return true;
-	else return false;
-}
-
-
-///////
-   //   Copy
-///////
-
-HtDateTime &HtDateTime::operator=(const HtDateTime &right)
-{
-	Ht_t=right.Ht_t;      	   	 // Copy the time_t value
-	local_time=right.local_time;	 // Copy the local_time flag
-	
-	return *this;
-}
-
-
-HtDateTime &HtDateTime::operator=(const int right)
-{
-	Ht_t=(time_t)right;   // Copy the int as a time_t value
-	ToLocalTime();
-	
-	return *this;
 }
 
 
@@ -803,13 +814,13 @@ int HtDateTime::DateTimeCompare(const struct tm *tm1, const struct tm *tm2)
    return 0;
 }
 
-time_t HtDateTime::Httimegm (struct tm *tm)
+time_t HtDateTime::HtTimeGM (struct tm *tm)
 {
 
 #if HAVE_TIMEGM
-   return ::timegm (tm);
+   return timegm (tm);
 #else
-   return ::Httimegm (tm); // timegm replacement in timegm.c
+   return Httimegm (tm); // timegm replacement in timegm.c
    // static time_t gmtime_offset;
    // tm->tm_isdst = 0;
    // return __mktime_internal (tm, gmtime, &gmtime_offset);

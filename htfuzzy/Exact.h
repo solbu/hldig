@@ -4,12 +4,12 @@
 // Exact: The exact-match "fuzzy" matching.  Simply returns the word (minus punctuation)
 //           
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Exact.h,v 1.4 2000/02/19 05:29:02 ghutchis Exp $
+// $Id: Exact.h,v 1.5 2002/02/01 22:49:33 ghutchis Exp $
 //
 
 #ifndef _Exact_h_

@@ -4,12 +4,12 @@
 // Display: Takes results of search and fills in the HTML templates
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.h,v 1.23 1999/10/15 03:35:17 jtillman Exp $
+// $Id: Display.h,v 1.24 2002/02/01 22:49:35 ghutchis Exp $
 //
 
 #ifndef _Display_h_
@@ -33,25 +33,26 @@ public:
     //
     // Construction/Destruction
     //
-//    Display(char *docFile, char *indexFile, char *excerptFile);
-		Display();
+    // Display(const String& docFile, const String& indexFile, const String& excerptFile);
+
+    Display(Dictionary *selected_collections);
     ~Display();
 
     void		setStartTemplate(const String& templateName);
     void		setMatchTemplate(const String& templateName);
     void		setEndTemplate(const String& templateName);
 	
-    inline void		setResults(ResultList *results);
-    inline void		setSearchWords(List *searchWords);
+    // inline void		setResults(ResultList *results);
+    // inline void		setSearchWords(List *searchWords);
     inline void		setLimit(HtRegex *);
     inline void		setExclude(HtRegex *);
-    inline void		setAllWordsPattern(StringMatch *);
+    // inline void		setAllWordsPattern(StringMatch *);
     inline void		setLogicalWords(char *);
     inline void		setOriginalWords(char *);
     inline void		setCGI(cgi *);
 	
     void		display(int pageNumber);
-    void		displayMatch(DocumentRef *, int current);
+    void		displayMatch(ResultMatch *match, DocumentRef *ref, int current);
     void		displayHeader();
     void		displayFooter();
     void		displayNomatch();
@@ -61,19 +62,28 @@ public:
 
 protected:
     //
+    // Multiple database support
+    //
+    Dictionary          *selected_collections;
+
+    //
+    // Search Policy
+    char                *search_policy;
+
+    //
     // The list of search results.
     //
-    ResultList		*results;
+    // ResultList		*results;
 
     //
     // The database that contains documents.
     //
-    //DocumentDB		docDB;
+    // DocumentDB		docDB;
 
     //
     // A list of words that we are searching for
     //
-    List		*searchWords;
+    // List		*searchWords;
 
     //
     // Pattern that all result URLs must match or exclude
@@ -84,7 +94,7 @@ protected:
     //
     // Pattern of all the words
     //
-    StringMatch		*allWordsPattern;
+    // StringMatch		*allWordsPattern;
 	
     //
     // Variables for substitution into text are stored in a dictionary
@@ -122,7 +132,8 @@ protected:
     // Maximum number of stars to display
     //
     int			maxStars;
-    int			maxScore;
+    double		maxScore;
+    double		minScore;
 
     //
     // For display, we have different versions of the list of words.
@@ -153,9 +164,9 @@ protected:
     String		*readFile(const String&);
     void		expandVariables(const String&);
     void		outputVariable(const String&);
-    String		*excerpt(DocumentRef *ref, String urlanchor,
+    String		*excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor,
 				 int fanchor, int &first);
-    String		hilight(const String& str, const String& urlanchor, int fanchor);
+    String		hilight(ResultMatch *match, const String& str, const String& urlanchor, int fanchor);
     void		setupTemplates();
     void		setupImages();
     String		*generateStars(DocumentRef *, int);
@@ -178,6 +189,7 @@ Display::setExclude(HtRegex *exclude)
     excludeFrom = exclude;
 }
 
+#if 0
 inline void
 Display::setAllWordsPattern(StringMatch *pattern)
 {
@@ -195,6 +207,7 @@ Display::setSearchWords(List *searchWords)
 {
     this->searchWords = searchWords;
 }
+#endif
 
 inline void
 Display::setLogicalWords(char *s)
@@ -217,7 +230,4 @@ Display::setCGI(cgi *aCgi)
 }
 
 #endif
-
-
-
 

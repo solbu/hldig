@@ -2,19 +2,19 @@
 # cf_generate.pl
 #
 # cf_generate: Build the files cf_byprog.html, cf_byname.html and
-#              attrs.html from the informations found 
-#              in ../htcommon/defaults.cc. 
-#              attrs.html : attrs_head.html + generation + attrs_tail.html
-#              cf_byprog.html : cf_byprog_head.html + generation + cf_byprog_tail.html
-#              cf_byname.html : cf_byname_head.html + generation + cf_byname_tail.html
+#           attrs.html from the informations found 
+#           in ../htcommon/defaults.cc. 
+#           attrs.html : attrs_head.html + generation + attrs_tail.html
+#           cf_byprog.html : cf_byprog_head.html + generation + cf_byprog_tail.html
+#           cf_byname.html : cf_byname_head.html + generation + cf_byname_tail.html
 #              
-# Part of the ht:#Dig package   <http://www.htdig.org/>
-# Copyright (c) 1999 The ht://Dig Group
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999-2000 The ht://Dig Group
 # For copyright details, see the file COPYING in your distribution
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: cf_generate.pl,v 1.2 2000/02/19 05:29:01 ghutchis Exp $
+# $Id: cf_generate.pl,v 1.3 2002/02/01 22:49:32 ghutchis Exp $
 #
 use strict;
 
@@ -52,14 +52,15 @@ close(FILE);
 # of hashes. Order is important.
 #
 $content =~ s/.*ConfigDefaults.*?\{(.*)\{0, 0.*/[$1]/s;
+$content =~ s/\s*\\*$//mg;
 $content =~ s/([\@\$])/\\$1/gs;
 $content =~ s/^\{/\[/mg;
 $content =~ s/^\"\s*\},$/\" \],/mg;
 #
 # Transform macro substituted strings by strings
 #
-$content =~ s|^(\[ \"\w+\", )([A-Z].*?), \n|$1\"$2\",\n|mg;
-$content =~ s/^(\[ \"\w+\", )\"(.*?)\"(.*?)\"(.*?)\",\n/$1\"$2\\\"$3\\\"$4\",\n/mg;
+$content =~ s|^(\[ \"\w+\", )([A-Z].*?),\n|$1\"$2\",\n|mg;
+#$content =~ s/^(\[ \"\w+\", )\"(.*?)\"(.*?)\"(.*?)\",\n/$1\"$2\\\"$3\\\"$4\",\n/mg;
 my($config);
 eval "\$config = $content";
 
@@ -99,12 +100,12 @@ close(FILE);
 my($letter) = '';
 my($record);
 foreach $record (@$config) {
-    my($name, $default, $type, $programs, $version, $category, $example, $description) = @$record;
+    my($name, $default, $type, $programs, $block, $version, $category, $example, $description) = @$record;
 
     if($letter ne uc(substr($name, 0, 1))) {
 	print BYNAME "\t</font> <br>\n" if($letter);
 	$letter = uc(substr($name, 0, 1));
-	print BYNAME "\t<b>$letter</b> <font face=\"helvetica,arial\" size=\"2\"><br>\n";
+	print BYNAME "\t<strong>$letter</strong> <font face=\"helvetica,arial\" size=\"2\"><br>\n";
     }
 
     print BYNAME "\t <img src=\"dot.gif\" alt=\"*\" width=9 height=9> <a target=\"body\" href=\"attrs.html#$name\">$name</a><br>\n";
@@ -116,12 +117,16 @@ foreach $record (@$config) {
 			}
 			split(' ', $programs));
 
+    if ($block eq '') {
+	$block = "Global";
+    }
+
     if($version != 'all') {
 	$version = "$version or later";
     }
 
     if(!($example =~ /^$name:/)) {
-	$example = "\t\t\t  <tr> <td valign=\"top\"><i>No example provided</i></td> </tr>\n";
+	$example = "\t\t\t  <tr> <td valign=\"top\"><em>No example provided</em></td> </tr>\n";
     } elsif($example =~ /\A$name:\s*\Z/s) {
 	$example = "\t\t\t  <tr> <td valign=\"top\">$name:</td> </tr>\n";
     } else {
@@ -144,7 +149,7 @@ EOF
     }
 
     if($default =~ /^\s*$/) {
-	$default = "<i>No default</i>";
+	$default = "<em>No default</em>";
     } else {
 	$default =~ s/^([A-Z][A-Z_]*) \" (.*?)\"/$1 $2/;	# for PDF_PARSER
 	$default = html_escape($default);
@@ -174,6 +179,12 @@ EOF
 		  </dt>
 		  <dd>
 			$default
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			$block
 		  </dd>
 		  <dt>
 		      <em>version:</em>
@@ -246,7 +257,7 @@ foreach $record (@$config) {
 my($prog);
 foreach $prog (sort(keys(%prog2attr))) {
     my($top) = $prog eq 'htsearch' ? "target=\"_top\"" : "target=\"body\"";
-    print BYPROG "\t<br><b><a href=\"$prog.html\" $top>$prog</a></b> <font face=\"helvetica,arial\" size=\"2\"><br>\n";
+    print BYPROG "\t<br><strong><a href=\"$prog.html\" $top>$prog</a></strong> <font face=\"helvetica,arial\" size=\"2\"><br>\n";
     my($record);
     foreach $record (@{$prog2attr{$prog}}) {
 	my($name, $default, $type, $programs, $example, $description) = @$record;

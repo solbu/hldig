@@ -11,12 +11,12 @@
 //           work, Document_not_found is returned.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.h,v 1.11 2000/02/19 05:28:51 ghutchis Exp $
+// $Id: Document.h,v 1.12 2002/02/01 22:49:29 ghutchis Exp $
 //
 //
 #ifndef _Document_h_
@@ -30,7 +30,10 @@
 #include "Transport.h"
 #include "HtHTTP.h"
 #include "HtFile.h"
+#include "HtNNTP.h"
 #include "ExternalTransport.h"
+#include "Server.h"
+
 
 class Connection;
 
@@ -49,6 +52,8 @@ public:
     //
     void			Reset();
     int				Length()	  {return document_length;}
+    int				ContentLength()	  {return contentLength;}
+    int				StoredLength()	  {return contents.length();}
     char			*Contents()	  {return contents;}
     void			Contents(char *s) {contents = s; document_length = contents.length();}
 
@@ -58,11 +63,11 @@ public:
     //
     char			*Redirected()		{return redirected_to;}
     URL				*Url()			{return url;}
-    void			Url(char *url);
-    void			Referer(char *url);
+    void			Url(const String &url);
+    void			Referer(const String &url);
     time_t			ModTime()		{return modtime.GetTime_t();}
 
-    Transport::DocStatus	Retrieve(HtDateTime date);
+    Transport::DocStatus	Retrieve(Server *server, HtDateTime date);
     Transport::DocStatus	RetrieveLocal(HtDateTime date, StringList *filenames);
 
     //
@@ -106,7 +111,9 @@ private:
 
     Transport			*transportConnect;
     HtHTTP			*HTTPConnect;
+    HtHTTP			*HTTPSConnect;
     HtFile			*FileConnect;
+    HtNNTP			*NNTPConnect;
     ExternalTransport		*externalConnect;
     
 

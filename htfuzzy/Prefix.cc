@@ -6,19 +6,26 @@
 //         substring search.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Prefix.cc,v 1.14 2000/02/19 05:29:02 ghutchis Exp $
+// $Id: Prefix.cc,v 1.15 2002/02/01 22:49:33 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <fcntl.h>
 
 #include "Prefix.h"
 #include "htString.h"
 #include "List.h"
 #include "StringMatch.h"
 #include "HtConfiguration.h"
+
 
 //*****************************************************************************
 // Prefix::Prefix(const HtConfiguration& config_arg)
@@ -88,15 +95,24 @@ Prefix::getWords(char *w, List &words)
     w2[strlen(w2) - prefix_suffix_length] = '\0';
     String w3(w2);
     w3.lowercase();
-    List	*wordList = wordDB.Prefix(w3.get());
-    WordReference *word_ref;
+    List		*wordList = wordDB.Prefix(w3.get());
+    WordReference	*word_ref;
+    String		last_word;
 
     wordList->Start_Get();
     while (wordCount < maximumWords && (word_ref = (WordReference *) wordList->Get_Next() ))
     {
 	s = word_ref->Key().GetWord();
+
+	// If we're somehow past the original word, we're done
 	if (mystrncasecmp(s.get(), w, len))
 	    break;
+
+	// If this is a duplicate word, ignore it
+	if (last_word.length() != 0 && last_word == s)
+	    continue;
+
+	last_word = s;
 	words.Add(new String(s));
 	wordCount++;
     }

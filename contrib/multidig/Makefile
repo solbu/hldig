@@ -1,7 +1,7 @@
 #
 # Makefile for the multidig system
 #
-# Copyright (c) 1998-1999 The ht://Dig Group
+# Copyright (c) 1998-2000 The ht://Dig Group
 # Distributed under the terms of the GNU General Public License (GPL)
 #   version 2 or later.
 # for the ht://Dig search system http://www.htdig.org/
@@ -41,6 +41,7 @@ install:
 	@for i in $(SCRIPTS); do \
 		sed -e s%@BASH@%$(BASH)% \
 		-e s%@CONFIG_DIR@%$(CONFIG_DIR)% $$i >$(BINDIR)/$$i; \
+		chmod a+x $(BINDIR)/$$i; \
 	echo $(BINDIR)/$$i; \
 	done && test -z "$$fail"
 	@echo

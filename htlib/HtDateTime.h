@@ -5,12 +5,12 @@
 //  	       Uses locale.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.h,v 1.11 2000/02/19 05:29:03 ghutchis Exp $
+// $Id: HtDateTime.h,v 1.12 2002/02/01 22:49:33 ghutchis Exp $
 
 ///////
    //   Class for Date and Time
@@ -56,7 +56,7 @@
 // 	    - from time_t: copy the time_t value into the object
 // 	    - from struct tm: set the object's time_t value by converting
 //  	       the value from the struct tm. If local_time is set to true,
-// 	 	  converts it with mktime, else uses Httimegm.
+// 	 	  converts it with mktime, else uses HtTimeGM.
 // 	    - set to now
 // 	    - from a string, by passing the input format: the method uses
 // 	       strptime syntax (and invokes Htstrptime). For now, timezone
@@ -201,6 +201,7 @@ public:
    void SetRFC1123(char *);	   	 // Sun, 06 Nov 1994 08:49:37 GMT
    void SetRFC850(char *);	   	 // Sunday, 06-Nov-94 08:49:37 GMT
    void SetISO8601(char *);     	 // 1994-11-06 08:49:37 GMT
+   void SetTimeStamp(char *);     	 // 19941106084937
 
    void SetDateTimeDefault(char *); // Default date and time representation
    	       	   	       	   	 // for the locale
@@ -230,6 +231,7 @@ public:
    char *GetRFC1123() const;	   	 // Sun, 06 Nov 1994 08:49:37 GMT
    char *GetRFC850() const;	   	 // Sunday, 06-Nov-94 08:49:37 GMT
    char *GetISO8601() const;     	 // 1994-11-06 08:49:37 GMT
+   char *GetTimeStamp() const;     	 // 19941106084937
 
    char *GetDateTimeDefault() const;   // Default date and time representation
    	       	   	       	   	    // for the locale
@@ -435,7 +437,7 @@ protected: 		// to permit inheritance
 ///////
 
    // Interface for timegm
-   static time_t Httimegm (struct tm*);
+   static time_t HtTimeGM (struct tm*);
    
 
 #ifdef TEST_HTDATETIME
@@ -460,6 +462,48 @@ public:
 #endif
 
 };
+
+///////
+   //   Operator overloading
+///////
+
+inline
+bool HtDateTime::operator==(const HtDateTime &right) const
+{
+	if(Ht_t==right.Ht_t)
+		return true;
+	else
+		return false;
+}
+
+inline
+bool HtDateTime::operator<(const HtDateTime &right) const
+{
+	if(Ht_t < right.Ht_t) return true;
+	else return false;
+}
+
+///////
+   //   Copy
+///////
+
+inline
+HtDateTime &HtDateTime::operator=(const HtDateTime &right)
+{
+	Ht_t=right.Ht_t;             // Copy the time_t value
+	local_time=right.local_time;     // Copy the local_time flag
+	return *this;
+}
+
+inline
+HtDateTime &HtDateTime::operator=(const int right)
+{
+	Ht_t=(time_t)right;   // Copy the int as a time_t value
+	ToLocalTime();
+	return *this;
+}
+
+
 
 
 #endif

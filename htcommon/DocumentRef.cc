@@ -6,13 +6,17 @@
 //              or temporary search information.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.cc,v 1.48 2000/02/19 05:28:49 ghutchis Exp $
+// $Id: DocumentRef.cc,v 1.49 2002/02/01 22:49:28 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "DocumentRef.h"
 #include "good_strtok.h"
@@ -62,7 +66,6 @@ void DocumentRef::Clear()
   docSize = 0;
   docLinks = 0;
   docBackLinks = 0;
-  docImageSize = 0;
   docAnchors.Destroy();
   docHopCount = 0;
   docSig = 0;
@@ -71,6 +74,29 @@ void DocumentRef::Clear()
   docSubject = 0;
   docScore = 0;
   docAnchor = 0;
+}
+
+//*****************************************************************************
+// void DocumentRef::DocState(int s)
+//
+void DocumentRef::DocState(int s)
+{
+  // You can't easily do this with a cast, so we'll use a switch
+  switch(s)
+    {
+      case 0:
+	docState = Reference_normal;
+	break;
+      case 1:
+	docState = Reference_not_found;
+	break;
+      case 2:
+	docState = Reference_noindex;
+	break;
+      case 3:
+	docState = Reference_obsolete;
+	break;
+    }
 }
 
 
@@ -82,7 +108,7 @@ enum
     DOC_STATE,				// 3
     DOC_SIZE,				// 4
     DOC_LINKS,				// 5
-    DOC_IMAGESIZE,			// 6
+    DOC_IMAGESIZE,			// 6 -- No longer used
     DOC_HOPCOUNT,			// 7
     DOC_URL,				// 8
     DOC_HEAD,				// 9
@@ -229,7 +255,6 @@ void DocumentRef::Serialize(String &s)
     addnum(DOC_SIZE, s, docSize);
     addnum(DOC_LINKS, s, docLinks);
     addnum(DOC_BACKLINKS, s, docBackLinks);
-    addnum(DOC_IMAGESIZE, s, docImageSize);
     addnum(DOC_HOPCOUNT, s, docHopCount);
     addnum(DOC_SIG, s, docSig);
 
@@ -266,6 +291,7 @@ void DocumentRef::Deserialize(String &stream)
     int		count;
     int		i;
     int		x;
+    int		throwaway; // As the name sounds--used for old fields
     String	*str;
 
 // There is a problem with getting a numeric value into a
@@ -369,11 +395,11 @@ void DocumentRef::Deserialize(String &stream)
         case DOC_SIZE:
             getnum(x, s, docSize);
             break;
+        case DOC_IMAGESIZE: // No longer used
+	    getnum(x, s, throwaway);
+	    break;
         case DOC_LINKS:
             getnum(x, s, docLinks);
-            break;
-        case DOC_IMAGESIZE:
-            getnum(x, s, docImageSize);
             break;
         case DOC_HOPCOUNT:
             getnum(x, s, docHopCount);

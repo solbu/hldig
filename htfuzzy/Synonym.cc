@@ -5,13 +5,19 @@
 //          (or misspellings) that should be searched together.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Synonym.cc,v 1.9 2000/02/19 05:29:02 ghutchis Exp $
+// $Id: Synonym.cc,v 1.10 2002/02/01 22:49:33 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <fcntl.h>
 
 #include "Synonym.h"
 #include "htfuzzy.h"
@@ -22,7 +28,7 @@
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>
-
+#include <sys/stat.h>
 
 //*****************************************************************************
 Synonym::Synonym(const HtConfiguration& config_arg) :
@@ -49,11 +55,20 @@ Synonym::~Synonym()
 int
 Synonym::createDB(const HtConfiguration &config)
 {
+    String      tmpdir = getenv("TMPDIR");
+    String 	dbFile;
+
+    if (tmpdir.length())
+      dbFile = tmpdir;
+    else
+      dbFile = "/tmp";
+
+    dbFile << "/synonyms.db";
+
     char	input[1000];
     FILE	*fl;
 	
     const String sourceFile = config["synonym_dictionary"];
-    const String dbFile = config["synonym_db"];
 
     fl = fopen(sourceFile, "r");
     if (fl == NULL)
@@ -102,6 +117,14 @@ Synonym::createDB(const HtConfiguration &config)
     fclose(fl);
     db->Close();
     delete db;
+
+    struct stat stat_buf;
+    String mv("mv");	// assume it's in the PATH if predefined setting fails
+    if ((stat(MV, &stat_buf) != -1) && S_ISREG(stat_buf.st_mode))
+	mv = MV;
+    system(form("%s %s %s",
+		mv.get(), dbFile.get(), config["synonym_db"].get()));
+
     if (debug)
     {
         cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";

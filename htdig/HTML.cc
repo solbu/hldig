@@ -5,13 +5,17 @@
 //       to the Retriever
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.63 2000/02/19 05:28:51 ghutchis Exp $
+// $Id: HTML.cc,v 1.64 2002/02/01 22:49:29 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htdig.h"
 #include "HTML.h"
@@ -24,6 +28,14 @@
 
 #include <ctype.h>
 
+#include "defaults.h"
+
+// Flags for noindex & nofollow, indicating who turned indexing off/on...
+#define TAGnoindex		0x0001
+#define TAGstyle		0x0002
+#define TAGscript		0x0004
+#define TAGmeta_htdig_noindex	0x0008
+#define TAGmeta_robots		0x0010
 
 static StringMatch	tags;
 static StringMatch	nobreaktags;
@@ -41,7 +53,7 @@ static int		max_keywords;
 #define ADDSPACE(in_space)	\
     if (!in_space)							\
     {									\
-	if (in_title && doindex)					\
+	if (in_title && !noindex)					\
 	{								\
 	    title << ' ';						\
 	}								\
@@ -49,7 +61,7 @@ static int		max_keywords;
 	{								\
 	    description << ' ';						\
 	}								\
-	if (head.length() < max_head_length && doindex && !in_title)	\
+	if (head.length() < max_head_length && !noindex && !in_title)	\
 	{								\
 	    head << ' ';						\
 	}								\
@@ -62,13 +74,13 @@ static int		max_keywords;
 //
 HTML::HTML()
 {
+	HtConfiguration *config= HtConfiguration::config();
     //
     // Initialize the patterns that we will try to match.
     // The tags Match object is used to match tag commands while
-    // the attrs Match object is used to match names of tag parameters.
     //
     tags.IgnoreCase();
-    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object|link|style|/style");
+    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object|link|style|/style|script|/script");
 
     // These tags don't cause a word break.  They may also be in "tags" above,
     // except for the "a" tag, which must be handled as a special case.
@@ -83,11 +95,10 @@ HTML::HTML()
     spaceaftertags.IgnoreCase();
     spaceaftertags.Pattern("/title|/h1|/h2|/h3|/h4|/h5|/h6|/address|/blockquote");
 
-    StringList keywordNames(config["keywords_meta_tag_names"], " \t");
+    StringList keywordNames(config->Find("keywords_meta_tag_names"), " \t");
     keywordsMatch.IgnoreCase();
     keywordsMatch.Pattern(keywordNames.Join('|'));
-    keywordNames.Release();
-    max_keywords = config.Value("max_keywords", -1);
+    max_keywords = config->Value("max_keywords", -1);
     if (max_keywords < 0)
 	max_keywords = (int) ((unsigned int) ~1 >> 1);
     
@@ -102,9 +113,9 @@ HTML::HTML()
     in_ref = 0;
     in_heading = 0;
     base = 0;
-    doindex = 1;
-    dofollow = 1;
-    minimumWordLength = config.Value("minimum_word_length", 3);
+    noindex = 0;
+    nofollow = 0;
+    minimumWordLength = config->Value("minimum_word_length", 3);
 }
 
 
@@ -127,6 +138,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     if (contents == 0 || contents->length() == 0)
 	return;
 
+	HtConfiguration* config= HtConfiguration::config();
     base = &baseURL;
     
     //
@@ -141,15 +153,15 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     unsigned char	*position = (unsigned char *) contents->get();
     unsigned char       *text = (unsigned char *) new char[contents->length()+1];
     unsigned char       *ptext = text;
-    const String	skip_start = config["noindex_start"];
-    const String	skip_end = config["noindex_end"];
+    const String	skip_start = config->Find("noindex_start");
+    const String	skip_end = config->Find("noindex_end");
 
     keywordsCount = 0;
     title = 0;
     head = 0;
     meta_dsc = 0;
-    doindex = 1;
-    dofollow = 1;
+    noindex = 0;
+    nofollow = 0;
     in_heading = 0;
     in_title = 0;
     in_ref = 0;
@@ -256,8 +268,8 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		scratch = 0;
 		scratch.append((char*)position, q+1 - position);
 		textified = HtSGMLCodec::instance()->encode(scratch);
-		if (textified[0] != '&')	// it was decoded, copy it
-		  {
+		if (textified[0] != '&' || textified.length() == 1)
+		  {	// it was decoded, copy it
 		    position = (unsigned char *)textified.get();
 		    while (*position)
 		      {
@@ -366,7 +378,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		}
 	    }
 
-	    if (in_title && doindex)
+	    if (in_title && !noindex)
 	    {
 		title << word;
 	    }
@@ -380,14 +392,14 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		else
 		{
 		    description << " ...";
-		    if (dofollow)
+		    if (!nofollow)
 		      retriever.got_href(*href, (char*)description);
 		    in_ref = 0;
 		    description = 0;
 		}
 	    }
 
-	    if (head.length() < max_head_length && doindex && !in_title)
+	    if (head.length() < max_head_length && !noindex && !in_title)
 	    {
 		//
 		// Capitalize H1 and H2 blocks
@@ -403,7 +415,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		  head << word;
 	    }
 
-	    if (word.length() >= (int)minimumWordLength && doindex)
+	    if (word.length() >= (int)minimumWordLength && !noindex)
 	    {
 	      retriever.got_word((char*)word, wordindex++, in_heading);
 	    }
@@ -423,7 +435,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		//
 		// Not whitespace
 		//
-		if (head.length() < max_head_length && doindex && !in_title)
+		if (head.length() < max_head_length && !noindex && !in_title)
 		{
 		    // We don't want to add random chars to the 
 		    // excerpt if we're in the title.
@@ -433,7 +445,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		{
 		    description << *position;
 		}
-		if (in_title && doindex)
+		if (in_title && !noindex)
 		{
 		    title << *position;
 		}
@@ -461,6 +473,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
     int			wordindex = 1;
     char		*position = tag.get();
     int			which, length;
+	HtConfiguration* config= HtConfiguration::config();
 
     while (isspace(*position))
 	position++;
@@ -475,7 +488,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
     attrs.Add(position);
 
     if (debug > 3)
-	cout << "Tag: " << tag << ", matched " << which << endl;
+	cout << "Tag: <" << tag << ">, matched " << which << endl;
     
     switch (which)
     {
@@ -512,8 +525,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    cout << "Terminating previous <a href=...> tag,"
 			 << " which didn't have a closing </a> tag."
 			 << endl;
-		  if (dofollow)
-		    retriever.got_href(*href, (char*)description);
+		  if (!nofollow)
+		      retriever.got_href(*href, (char*)description);
 		  in_ref = 0;
 		}
 	      if (href)
@@ -524,6 +537,14 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	      break;
 	    }
 	  
+	  if (!attrs["title"].empty() && !attrs["href"].empty())
+	    {
+	      //
+	      // a title seen for href
+	      //
+	      retriever.got_href(*href, transSGML(attrs["title"]));
+	    }
+
 	  if (!attrs["name"].empty())
 	    {
 	      //
@@ -537,7 +558,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	case 3:		// "/a"
 	    if (in_ref)
 	    {
-	      if (dofollow)
+	      if (!nofollow)
 		retriever.got_href(*href, (char*)description);
 	      in_ref = 0;
 	    }
@@ -577,19 +598,39 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    break;
 
 	case 16:	// "noindex"
+	    noindex |= TAGnoindex;
+	    nofollow |= TAGnoindex;
+	    if (!attrs["follow"].empty())
+		nofollow &= ~TAGnoindex;
+	    break;
+
 	case 27:	// "style"
-	    doindex = 0;
-	    dofollow = 0;
+	    noindex |= TAGstyle;
+	    nofollow |= TAGstyle;
+	    break;
+
+        case 29:        // "script"
+	    noindex |= TAGscript;
+	    nofollow |= TAGscript;
 	    break;
 
 	case 17:	// "/noindex"
+	    noindex &= ~TAGnoindex;
+	    nofollow &= ~TAGnoindex;
+	    break;
+
 	case 28:	// "/style"
-	    doindex = 1;
-	    dofollow = 1;
+	    noindex &= ~TAGstyle;
+	    nofollow &= ~TAGstyle;
+	    break;
+
+        case 30:	// "/script"
+	    noindex &= ~TAGscript;
+	    nofollow &= ~TAGscript;
 	    break;
 
 	case 19:	// "li"
-	    if (doindex && !in_title && head.length() < max_head_length)
+	    if (!noindex && !in_title && head.length() < max_head_length)
 		head << "* ";
 	    break;
 
@@ -602,13 +643,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    if (!attrs["htdig-noindex"].empty())
 	      {
 		retriever.got_noindex();
-		doindex = 0;
-		dofollow = 0;
+		noindex |= TAGmeta_htdig_noindex;
+		nofollow |= TAGmeta_htdig_noindex;
 	      }
 	    if (!attrs["htdig-index"].empty())
 	      {
-		doindex = 1;
-		dofollow = 1;
+		noindex &= ~TAGmeta_htdig_noindex;
+		nofollow &= ~TAGmeta_htdig_noindex;
 	      }
 	    if (!attrs["htdig-email"].empty())
 	      retriever.got_meta_email(transSGML(attrs["htdig-email"]));
@@ -624,22 +665,22 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		//
 		// Keywords are added as being at the very top of the
 		// document and have a weight factor of
-		// keywords-factor which is assigned to slot 10 in the
+		// keywords-factor which is assigned to slot 9 in the
 		// factor table.
 		//
 		const String keywords = attrs["htdig-keywords"].empty() ?
 		  attrs["htdig-keywords"] :
 		  attrs["keywords"];
-		if (doindex)
+		if (!noindex)
 		  {
 		    String tmp = transSGML(keywords);
-		    char	*w = strtok(tmp, " ,\t\r\n");
+		    char	*w = HtWordToken(tmp);
 		    while (w)
 		      {
 			if (strlen(w) >= minimumWordLength
 				&& ++keywordsCount <= max_keywords)
 			  retriever.got_word(w, wordindex++, 9);
-			w = strtok(0, " ,\t\r\n");
+			w = HtWordToken(0);
 		      }
 		    w = '\0';
 		  }
@@ -653,10 +694,11 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    && !attrs["content"].empty())
 		  {
 		    String content = attrs["content"];
-		    char *q = (char*)mystrcasestr((char*)content, "url=");
+		    char *q = (char*)mystrcasestr((char*)content, "url");
 		    if (q && *q)
 		      {
-			q += 4; // skiping "URL="
+			q += 3; // skiping "URL"
+			while (*q && ((*q == '=') || isspace(*q))) q++;
 			char *qq = q;
 			while (*qq && (*qq != ';') && (*qq != '"') &&
 			       !isspace(*qq))qq++;
@@ -665,7 +707,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			  delete href;
 			href = new URL(transSGML(q), *base);
 			// I don't know why anyone would do this, but hey...
-			if (dofollow)
+			if (!nofollow)
 			  retriever.got_href(*href, "");
 		      }
 		  }
@@ -689,9 +731,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		  {
 		    //
 		    // We need to do two things. First grab the description
+		    // and clean it up
 		    //
 		    meta_dsc = transSGML(attrs["content"]);
-		   if (meta_dsc.length() > max_meta_description_length)
+		    meta_dsc.replace('\n', ' ');
+		    meta_dsc.replace('\r', ' ');
+		    meta_dsc.replace('\t', ' ');
+		    if (meta_dsc.length() > max_meta_description_length)
 		     meta_dsc = meta_dsc.sub(0, max_meta_description_length).get();
 		   if (debug > 1)
 		     cout << "META Description: " << attrs["content"] << endl;
@@ -703,30 +749,30 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		   // Slot 10 is the current slot for this
 		   //
 
-		   if (doindex)
+		   if (!noindex)
 		     {
 		       String tmp = transSGML(attrs["content"]);
-		       char        *w = strtok(tmp, " \t\r\n");
+		       char        *w = HtWordToken(tmp);
 		       while (w)
 			 {
 			   if (strlen(w) >= minimumWordLength)
 			     retriever.got_word(w, wordindex++,10);
-			   w = strtok(0, " \t\r\n");
+			   w = HtWordToken(0);
 			 }
 		       w = '\0';
 		     }
 		}
 
-		if (keywordsMatch.CompareWord(cache) && doindex)
+		if (keywordsMatch.CompareWord(cache) && !noindex)
 		{
 		    String tmp = transSGML(attrs["content"]);
-		    char	*w = strtok(tmp, " ,\t\r\n");
+		    char	*w = HtWordToken(tmp);
 		    while (w)
 		    {
 			if (strlen(w) >= minimumWordLength
 				&& ++keywordsCount <= max_keywords)
 			  retriever.got_word(w, wordindex++, 9);
-			w = strtok(0, " ,\t\r\n");
+			w = HtWordToken(0);
 		    }
 		    w = '\0';
 		}
@@ -735,7 +781,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    retriever.got_meta_email(transSGML(attrs["content"]));
 		}
 		else if (mystrcasecmp(cache, "date") == 0 && 
-			 config.Boolean("use_doc_date",0))
+			 config->Boolean("use_doc_date",0))
 		  {
 		    retriever.got_time(transSGML(attrs["content"]));
 		  }
@@ -750,25 +796,25 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		else if (mystrcasecmp(cache, "htdig-noindex") == 0)
 		  {
 		    retriever.got_noindex();
-		    doindex = 0;
-		    dofollow = 0;
+		    noindex |= TAGmeta_htdig_noindex;
+		    nofollow |= TAGmeta_htdig_noindex;
 		  }
 		else if (mystrcasecmp(cache, "robots") == 0
 			 && !attrs["content"].empty())
 		  {
-		    const String   content_cache = attrs["content"];
-
+		    String   content_cache = attrs["content"];
+		    content_cache.lowercase();
 		    if (content_cache.indexOf("noindex") != -1)
 		      {
-			doindex = 0;
+			noindex |= TAGmeta_robots;
 			retriever.got_noindex();
 		      }
 		    if (content_cache.indexOf("nofollow") != -1)
-		      dofollow = 0;
+			nofollow |= TAGmeta_robots;
 		    if (content_cache.indexOf("none") != -1)
 		      {
-			doindex = 0;
-			dofollow = 0;
+			noindex |= TAGmeta_robots;
+			nofollow |= TAGmeta_robots;
 			retriever.got_noindex();
 		      }
 		  }
@@ -776,28 +822,47 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    else if (mystrcasecmp(attrs["name"], "htdig-noindex") == 0)
 	    {
 	        retriever.got_noindex();
-	        doindex = 0;
-		dofollow = 0;
+		noindex |= TAGmeta_htdig_noindex;
+		nofollow |= TAGmeta_htdig_noindex;
 	    }
 	    break;
 	}
 
 	case 21:	// frame
         case 24:	// embed
-        case 25:	// object
 	{
 	  if (!attrs["src"].empty())
 	    {
 	      //
 	      // src seen
 	      //
-	      if (dofollow)
+	      if (!nofollow)
 		{
 		  if (href)
 		    delete href;
 		  href = new URL(transSGML(attrs["src"]), *base);
 		  // Frames have the same hopcount as the parent.
-		  retriever.got_href(*href, 0, 0);
+		  retriever.got_href(*href, transSGML(attrs["title"]), 0);
+		  in_ref = 0;
+		}
+	    }
+	  break;
+	}
+	  
+        case 25:	// object
+	{
+	  if (!attrs["data"].empty())
+	    {
+	      //
+	      // data seen
+	      //
+	      if (!nofollow)
+		{
+		  if (href)
+		    delete href;
+		  href = new URL(transSGML(attrs["data"]), *base);
+		  // Assume objects have the same hopcount as the parent.
+		  retriever.got_href(*href, transSGML(attrs["title"]), 0);
 		  in_ref = 0;
 		}
 	    }
@@ -810,13 +875,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	  if (!attrs["href"].empty())
 	    {
 	      // href seen
-	      if (dofollow)
+	      if (!nofollow)
 		{
 		  if (href)
 		    delete href;
 		  href = new URL(transSGML(attrs["href"]), *base);
 		  // area & link are like anchor tags -- one hopcount!
-		  retriever.got_href(*href, "", 1);
+		  retriever.got_href(*href, transSGML(attrs["title"]), 1);
 		  in_ref = 0;
 		}
 	    }
@@ -833,29 +898,35 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	  break;
 	}
 	
-         case 18: // img
-	   {
-	     if (!attrs["src"].empty())
-	       {
-		 retriever.got_image(transSGML(attrs["src"]));
-		 if (!attrs["alt"].empty() && doindex)
-		   {
-		     String tmp = transSGML(attrs["alt"]);
-		     char *w = strtok(tmp, " ,\t\r\n");
-		     while (w)
-		       {
-			 if (strlen(w) >= minimumWordLength)
-			   retriever.got_word(w, wordindex++, 8); // slot for img_alt
-			 w = strtok(0, " ,\t\r\n");
-		       }
-		     w = '\0';
-		   }
-	       }
-	     break;
-	   }
+	case 18: // img
+	  {
+	    if (!attrs["alt"].empty())
+	      {
+		String tmp = transSGML(attrs["alt"]);
+		if (!noindex && in_title)
+		    title << tmp << " ";
+		if (in_ref && description.length() < max_description_length)
+		    description << tmp << " ";
+		if (!noindex && !in_title && head.length() < max_head_length)
+		    head << tmp << " ";
+		char *w = HtWordToken(tmp);
+		while (w && !noindex)
+		  {
+		    if (strlen(w) >= minimumWordLength)
+		      retriever.got_word(w, wordindex++, 8); // slot for img_alt
+		    w = HtWordToken(0);
+		  }
+		w = '\0';
+	      }
+	    if (!attrs["src"].empty())
+	      {
+		retriever.got_image(transSGML(attrs["src"]));
+	      }
+	    break;
+	  }
 
-         default:
-	   return;	// Nothing...
+	default:
+	  return;	// Nothing...
     }
 }
 

@@ -5,13 +5,17 @@
 //        generating several databases to be used by htmerge
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.27 2000/02/19 05:28:52 ghutchis Exp $
+// $Id: htdig.cc,v 1.28 2002/02/01 22:49:29 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Document.h"
 #include "Retriever.h"
@@ -21,13 +25,22 @@
 #include "HtURLCodec.h"
 #include "WordContext.h"
 #include "HtDateTime.h"
+#include "HtURLRewriter.h"
+
+////////////////////////////
+// For cookie jar
+////////////////////////////
+#include "HtCookieJar.h"
+#include "HtCookieMemJar.h"
+#include "HtHTTP.h"
+////////////////////////////
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
 #endif
 
-#include <stream.h>
+#include <iostream.h>
 
 //
 // Global variables
@@ -35,8 +48,8 @@
 int			debug = 0;
 int			report_statistics = 0;
 DocumentDB		docs;
-HtRegex			limits;
-HtRegex			limitsn;
+HtRegexList		limits;
+HtRegexList		limitsn;
 FILE			*urls_seen = NULL;
 FILE			*images_seen = NULL;
 String			configFile = DEFAULT_CONFIG_FILE;
@@ -60,7 +73,11 @@ int main(int ac, char **av)
     int			alt_work_area = 0;
     int			create_text_database = 0;
     char		*max_hops = 0;
-    RetrieverLog	flag  = Retriever_noLog;
+
+    // Cookie jar dynamic creation.
+    HtCookieJar*        _cookie_jar = new HtCookieMemJar(); // new cookie jar
+    if (_cookie_jar)
+       HtHTTP::SetCookieJar(_cookie_jar);
 
 //extern int yydebug;
 //yydebug=1;
@@ -99,15 +116,14 @@ int main(int ac, char **av)
 	    case 'a':
 		alt_work_area++;
 		break;
-	    case 'l':
-		flag = Retriever_logUrl;
-		break;
 	    case 'm':
 	        minimalFile = optarg;
-		max_hops = 0;
+		max_hops = "0";
 	        break;
 	    case '?':
 		usage();
+	    default:
+	        break;
 	}
     }
 
@@ -119,28 +135,26 @@ int main(int ac, char **av)
     // First set all the defaults and then read the specified config
     // file to override the defaults.
     //
-    config.Defaults(&defaults[0]);
+	HtConfiguration* const config= HtConfiguration::config();
+    config->Defaults(&defaults[0]);
     if (access((char*)configFile, R_OK) < 0)
     {
 	reportError(form("Unable to find configuration file '%s'",
 			 configFile.get()));
     }
-    config.Read(configFile);
+    config->Read(configFile);
 
-    // Initialize htword
-    WordContext::Initialize(config);
-
-    if (config["locale"].empty() && debug > 0)
+    if (config->Find("locale").empty() && debug > 0)
       cout << "Warning: unknown locale!\n";
 
     if (max_hops)
     {
-	config.Add("max_hop_count", max_hops);
+	config->Add("max_hop_count", max_hops);
     }
 
     // Set up credentials for this run
     if (credentials.length())
-	config.Add("authorization", credentials);
+	config->Add("authorization", credentials);
 
     //
     // Check url_part_aliases and common_url_parts for
@@ -152,47 +166,62 @@ int main(int ac, char **av)
                        url_part_errors.get()));
 
     //
+    // Check url_rewrite_rules for errors.
+    String url_rewrite_rules = HtURLRewriter::instance()->ErrMsg();
+    
+    if (url_rewrite_rules.length() != 0)
+      reportError(form("Invalid url_rewrite_rules: %s",
+		       url_rewrite_rules.get()));
+
+    //
     // If indicated, change the database file names to have the .work
     // extension
     //
     if (alt_work_area != 0)
     {
-	String	configValue = config["doc_db"];
+	String	configValue = config->Find("doc_db");
 
 	if (configValue.length() != 0)
 	{
 	    configValue << ".work";
-	    config.Add("doc_db", configValue);
+	    config->Add("doc_db", configValue);
 	}
 
-	configValue = config["word_db"];
+	configValue = config->Find("word_db");
 	if (configValue.length() != 0)
 	{
 	    configValue << ".work";
-	    config.Add("word_db", configValue);
+	    config->Add("word_db", configValue);
 	}
 
-	configValue = config["doc_index"];
+	configValue = config->Find("doc_index");
 	if (configValue.length() != 0)
 	{
 	    configValue << ".work";
-	    config.Add("doc_index", configValue);
+	    config->Add("doc_index", configValue);
 	}
 
-	configValue = config["doc_excerpt"];
+	configValue = config->Find("doc_excerpt");
 	if (configValue.length() != 0)
 	{
 	    configValue << ".work";
-	    config.Add("doc_excerpt", configValue);
+	    config->Add("doc_excerpt", configValue);
+	}
+
+	configValue = config->Find("md5_db");
+	if (configValue.length() != 0)
+	{
+	    configValue << ".work";
+	    config->Add("md5_db", configValue);
 	}
     }
     
     //
     // If needed, we will create a list of every URL we come across.
     //
-    if (config.Boolean("create_url_list"))
+    if (config->Boolean("create_url_list"))
     {
-	const String	filename = config["url_list"];
+	const String	filename = config->Find("url_list");
 	urls_seen = fopen(filename, initial ? "w" : "a");
 	if (urls_seen == 0)
 	{
@@ -204,9 +233,9 @@ int main(int ac, char **av)
     //
     // If needed, we will create a list of every image we come across.
     //
-    if (config.Boolean("create_image_list"))
+    if (config->Boolean("create_image_list"))
     {
-	const String	filename = config["image_list"];
+	const String	filename = config->Find("image_list");
 	images_seen = fopen(filename, initial ? "w" : "a");
 	if (images_seen == 0)
 	{
@@ -218,32 +247,26 @@ int main(int ac, char **av)
     //
     // Set up the limits list
     //
-    StringList l(config["limit_urls_to"], " \t");
-    limits.setEscaped(l);
+    StringList l(config->Find("limit_urls_to"), " \t");
+    limits.setEscaped(l, config->Boolean("case_sensitive"));
     l.Destroy();
 
-    l.Create(config["limit_normalized"], " \t");
-    limitsn.setEscaped(l);
+    l.Create(config->Find("limit_normalized"), " \t");
+    limitsn.setEscaped(l, config->Boolean("case_sensitive"));
     l.Destroy();
-
-    // Check "uncompressed"/"uncoded" urls at the price of time
-    // (extra DB probes).
-    docs.
-      SetCompatibility(config.
-                       Boolean("uncoded_db_compatible", TRUE));
 
     //
     // Open the document database
     //
-    const String		filename = config["doc_db"];
+    const String		filename = config->Find("doc_db");
     if (initial)
 	unlink(filename);
 
-    const String		index_filename = config["doc_index"];
+    const String		index_filename = config->Find("doc_index");
     if (initial)
 	unlink(index_filename);
 
-    const String		head_filename = config["doc_excerpt"];
+    const String		head_filename = config->Find("doc_excerpt");
     if (initial)
         unlink(head_filename);
 
@@ -253,41 +276,61 @@ int main(int ac, char **av)
 			 filename.get()));
     }
 
-    const String		word_filename = config["word_db"];
+    const String		word_filename = config->Find("word_db");
     if (initial)
        unlink(word_filename);
+
+    // Initialize htword
+    WordContext::Initialize(*config);
 
     // Create the Retriever object which we will use to parse all the
     // HTML files.
     // In case this is just an update dig, we will add all existing
     // URLs?
     //
-    Retriever	retriever(flag);
+    Retriever	retriever(Retriever_logUrl);
     if (minimalFile.length() == 0)
       {
 	List	*list = docs.URLs();
 	retriever.Initial(*list);
 	delete list;
-      }
 
-    // Add start_url to the initial list of the retriever.
-    // Don't check a URL twice!
-    // Beware order is important, if this bugs you could change 
-    // previous line retriever.Initial(*list, 0) to Initial(*list,1)
-    retriever.Initial(config["start_url"], 1);
+	// Add start_url to the initial list of the retriever.
+	// Don't check a URL twice!
+	// Beware order is important, if this bugs you could change 
+	// previous line retriever.Initial(*list, 0) to Initial(*list,1)
+	retriever.Initial(config->Find("start_url"), 1);
+      }
 
     // Handle list of URLs given on stdin, if optional "-" argument given.
     if (optind < ac && strcmp(av[optind], "-") == 0)
-    {
+      {
 	String str;
 	while (!cin.eof())
-	{
+	  {
 	    cin >> str;
 	    str.chop("\r\n");
 	    if (str.length() > 0)
-		retriever.Initial(str, 1);
-	}
-    }
+	        retriever.Initial(str, 1);
+	  }
+      }
+    else if (minimalFile.length() != 0)
+      {
+	    FILE	*input = fopen(minimalFile.get(), "r");
+	    char	buffer[1000];
+
+	    if (input)
+	      {
+		while (fgets(buffer, sizeof(buffer), input))
+		  {
+		    String	str(buffer);
+		    str.chop("\r\n\t ");
+		    if (str.length() > 0)
+		      retriever.Initial(str, 1);
+		  }
+		fclose(input);
+	      }
+      }
 
     //
     // Go do it!
@@ -304,15 +347,15 @@ int main(int ac, char **av)
 
     if (create_text_database)
     {
-	const String doc_list = config["doc_list"];
+	const String doc_list = config->Find("doc_list");
 	if (initial)
 	    unlink(doc_list);
-	docs.CreateSearchDB(doc_list);
-	const String word_dump = config["word_dump"];
+	docs.DumpDB(doc_list);
+	const String word_dump = config->Find("word_dump");
 	if (initial)
 	    unlink(word_dump);
-	HtWordList words(config);
-	if(words.Open(config["word_db"], O_RDONLY) == OK) {
+	HtWordList words(*config);
+	if(words.Open(config->Find("word_db"), O_RDONLY) == OK) {
 	  words.Dump(word_dump);
 	}
     }
@@ -339,6 +382,9 @@ int main(int ac, char **av)
 	EndTime.SettoNow();
 	cout << "ht://dig End Time: " << EndTime.GetAscTime() << endl;
     }
+
+    if (_cookie_jar)
+        delete _cookie_jar;
 }
 
 
@@ -347,7 +393,7 @@ int main(int ac, char **av)
 //
 void usage()
 {
-    cout << "usage: htdig [-l][-v][-i][-c configfile][-t]\n";
+    cout << "usage: htdig [-v][-i][-c configfile][-t]\n";
     cout << "This program is part of ht://Dig " << VERSION << "\n\n";
     cout << "Options:\n";
 
@@ -386,11 +432,6 @@ void usage()
     cout << "\t\tthe original files to be used by htsearch during the\n";
     cout << "\t\tindexing run.\n\n";
 	
-    cout << "\t-l\tStop and restart.\n";
-    cout << "\t\tReads in the progress of any previous interrupted digs\n";
-    cout << "\t\tfrom the log file and write the progress out if\n";
-    cout << "\t\tinterrupted by a signal.\n\n";
-
     exit(0);
 }
 

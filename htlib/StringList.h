@@ -4,12 +4,12 @@
 // StringList: Specialized List containing String objects. 
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.h,v 1.8 2000/02/19 05:29:03 ghutchis Exp $
+// $Id: StringList.h,v 1.9 2002/02/01 22:49:34 ghutchis Exp $
 //
 
 #ifndef _StringList_h_
@@ -27,10 +27,7 @@ public:
     // Construction/Destruction
     //
     StringList();
-    ~StringList();
 
-    void SRelease();
-    
     //
     // Creation of a String from a string or String
     //
@@ -48,13 +45,11 @@ public:
     // Standard List operations...
     //
     void		Add(char *);
-    void		Add(Object *obj);
+    void		Add(String *obj) { List::Add(obj); }
     void		Insert(char *, int pos);
-    void		Insert(Object *obj, int pos);
+    void		Insert(String *obj, int pos) { List::Insert(obj, pos); }
     void		Assign(char *, int pos);
-    void		Assign(Object *obj, int pos);
-    int			Remove(int pos);
-    int			Remove(Object *obj);
+    void		Assign(String *obj, int pos) { List::Assign(obj, pos); }
 
     //
     // Since we know we only store strings, we can reliably sort them.

@@ -10,7 +10,7 @@
 	  htsearch
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -23,7 +23,7 @@
 	  <a href="hts_form.html">form</a>.
 	  The input fields in this form can be defined as any type that
 	  HTML allows, but some of these are best handled through HTML
-	  <i>select</i> lists.
+	  <em>select</em> lists.
 	</p>
 	<h3>
 	  <a name="predefined"></a>
@@ -31,7 +31,7 @@
 	</h3>
 	<p>
 	  In order to propagate these select lists to the search form
-	  in the results template, so that the default <i>selected</i>
+	  in the results template, so that the default <em>selected</em>
 	  value will be the one the user last selected, htsearch defines
 	  a few of these select lists as
 	  <a href="hts_templates.html">template variables</a>.
@@ -39,39 +39,39 @@
 	</p>
 	<ul>
 	  <li>
-		<b>FORMAT</b>, which selects the <b>format</b> input parameter
+		<strong>FORMAT</strong>, which selects the <b>format</b> input parameter
 		for follow-up searches, with the current value being the
-		default. The current value is taken from the <b>format</b>
+		default. The current value is taken from the <strong>format</strong>
 		input parameter, if one was provided, or from the
 		<a href="attrs.html#template_name">template_name</a>
 		attribute otherwise, and this value will also be given in
-		the <b>SELECTED_FORMAT</b> template variable.
+		the <strong>SELECTED_FORMAT</strong> template variable.
 		The various parameter values, and their corresponding
 		labels for the select list, are taken from the
 		<a href="attrs.html#template_map">template_map</a>
 		attribute.
 	  </li>
 	  <li>
-		<b>METHOD</b>, which selects the <b>method</b> input parameter
+		<strong>METHOD</strong>, which selects the <b>method</b> input parameter
 		for follow-up searches, with the current value being the
-		default. The current value is taken from the <b>method</b>
+		default. The current value is taken from the <strong>method</strong>
 		input parameter, if one was provided, or from the
 		<a href="attrs.html#match_method">match_method</a>
 		attribute otherwise, and this value will also be given in
-		the <b>SELECTED_METHOD</b> template variable.
+		the <strong>SELECTED_METHOD</strong> template variable.
 		The various parameter values, and their corresponding
 		labels for the select list, are taken from the
 		<a href="attrs.html#method_names">method_names</a>
 		attribute.
 	  </li>
 	  <li>
-		<b>SORT</b>, which selects the <b>sort</b> input parameter
+		<strong>SORT</strong>, which selects the <b>sort</b> input parameter
 		for follow-up searches, with the current value being the
-		default. The current value is taken from the <b>sort</b>
+		default. The current value is taken from the <strong>sort</strong>
 		input parameter, if one was provided, or from the
 		<a href="attrs.html#sort">sort</a>
 		attribute otherwise, and this value will also be given in
-		the <b>SELECTED_SORT</b> template variable.
+		the <strong>SELECTED_SORT</strong> template variable.
 		The various parameter values, and their corresponding
 		labels for the select list, are taken from the
 		<a href="attrs.html#sort_names">sort_names</a>
@@ -124,7 +124,7 @@
 	  the allow_in_form attribute.
 	</p>
 	<p>
-	  The entries in this list each consist of an <i>octuple</i>, a
+	  The entries in this list each consist of an <em>octuple</em>, a
 	  set of eight strings defining the variables and how they are to
 	  be used to build a select list. The attribute can contain many
 	  of these octuples. The strings in the string list are merely
@@ -133,19 +133,21 @@
 	</p>
 	<ol>
 	  <li>
-		the name of the template variable to be defined as a list
+		the name of the template variable to be defined as a list,
+		optionally followed by a comma and the type of list, and
+		optional formatting codes
 	  </li>
 	  <li>
 		the input parameter name that the select list will set
 	  </li>
 	  <li>
 		the name of the user-defined attribute containing the
-		<i>name list</i>, that is the list of values and labels
+		<em>name list</em>, that is the list of values and labels
 		for the select list items, much like the template_map,
 		method_name and sort_name attributes
 	  </li>
 	  <li>
-		the <i>tuple</i> size used in the name list above
+		the <em>tuple</em> size used in the name list above
 	  </li>
 	  <li>
 		the index into a name list tuple for the value
@@ -167,6 +169,28 @@
 	  </li>
 	</ol>
 	<p>
+	  The first element in an entry is actually a comma separated
+	  list. The first item within this list is the name of the
+	  template variable to be created. The next item, if specified,
+	  is the type of select list or input list to be created in this
+	  template variable. Choices are <strong>select</strong>,
+	  <strong>multiple</strong>, <strong>radio</strong>,
+	  and <strong>checkbox</strong>, with the default being
+	  <strong>select</strong>. The word <strong>multiple</strong>
+	  refers to a &lt;select multiple&gt; type of select list,
+	  where more than one option can be selected. The choices
+	  <strong>radio</strong> and <strong>checkbox</strong> will build
+	  lists of &lt;input&gt; tags of these types, rather than a select
+	  list with &lt;option&gt; tags. The optional third and fourth
+	  items in this comma separated list are text or formatting tags
+	  that will be prepended and appended, respectively, to each item
+	  in the built list, before the &lt;option&gt; or &lt;input&gt;
+	  tag and after the label for that tag. This first element is
+	  parsed as a quoted string list within a quoted string list,
+	  so you can embed quotes and commas within elements of this
+	  inner list if you use correct quoting. See examples below.
+	</p>
+	<p>
 	  The name list that you define will most commonly consist
 	  of pairs of values, and therefore you'd use a tuple size of
 	  2. The method_names and sort_names attributes are samples of
@@ -184,21 +208,30 @@
 	<p>
 	  Any of the strings in an octuple may be quoted, and should be if
 	  you want to include spaces or define an empty string.  If the
-	  the default label, the eight element in an entry, is an empty
-	  string, the select list will not have a <i>selected</i> item
+	  default label, the eight element in an entry, is an empty
+	  string, the select list will not have a <em>selected</em> item
 	  if the current input parameter value doesn't match any value
 	  in the name list. If a default label is given, an additional
 	  list item will be added to the list using this label, if the
 	  current input parameter value doesn't match.
 	</p>
 	<p>
+	  If the seventh element, the configuration attribute name, is
+	  an empty string, the default value will be taken from from
+	  the input parameter, the second element, instead. This is
+	  especially useful for input parameters that don't get mapped
+	  to a configuration attribute, or for checkboxes or multiple
+	  selects, where the separation between individual choices may
+	  get lost when the input parameter is mapped to an attribute.
+	</p>
+	<p>
 	  Here is an example of its usage, which illustrates different
 	  tuple sizes and orders:
 	</p>
 	<pre>
-build_select_lists:     MATCH_LIST matchesperpage matches_per_page_list \
+build_select_lists:     MATCH_LIST,radio matchesperpage matches_per_page_list \
                                 1 1 1 matches_per_page "Previous Amount" \
-                RESTRICT_LIST restrict restrict_names 2 1 2 restrict "" \
+                RESTRICT_LIST,multiple restrict restrict_names 2 1 2 restrict "" \
                 FORMAT_LIST format template_map 3 2 1 template_name ""
 
 matches_per_page_list:  1 5 10 20 100 500
@@ -214,6 +247,28 @@ restrict_names: "http://www.myschool.edu/Admin/" "Admin Web Pages" \
 	  an additional example of how to specify the tuple size and indices of
 	  values and labels in a tuple.
 	</p>
+	<p>
+	  Here is an example which illustrates additional formatting tags,
+	  and the quoting that may be required:
+	</p>
+	<pre>
+build_select_lists:     "RESTRICT_LIST,checkbox,'&lt;font face=\\"Arial,Helvetica\\" size=\\"+2\\"&gt;',&lt;/font&gt;&lt;br&gt;" \
+                                restrict restrict_names 2 1 2 restrict ""
+	</pre>
+	<p>
+	  In this example, the font tag will be inserted before each
+	  checkbox input tag, and the closing font tag and line break will
+	  be appended after each label that follows the input tag. Because
+	  the font tag has an embeded comma, which is also the separator
+	  for the list in the first element, the whole tag (i.e. the whole
+	  third item in the comma separated list) is quoted, and it's
+	  quoted with single quotes so as not to conflict with the double
+	  quotes enclosing the whole element. Finally, to embed a double
+	  quote in the font tag, it must be escaped with two backslashes -
+	  the first of these is absorbed by the variable expansion phase
+	  that all attribute values go through, and the second is used
+	  to embed the double quote within a double quoted string.
+	</p>
 	<h3>
 	  <a name="template_patterns"></a>
 	  Combining the format select list with template_patterns
@@ -221,7 +276,7 @@ restrict_names: "http://www.myschool.edu/Admin/" "Admin Web Pages" \
 	<p>
 	  The addition of the <a href="attrs.html#template_patterns">
 	  template_patterns</a> attribute has added a new wrinkle to
-	  the pre-defined select list for the <b>format</b> parameter.
+	  the pre-defined select list for the <strong>format</strong> parameter.
 	  If a document URL matches an entry in template_patterns, its
 	  corresponding result template will override any template the
 	  user selected with the format parameter. The problem stems
@@ -245,7 +300,7 @@ template_patterns: .pdf ${common_dir}/${template_name}-pdffile.html \
 	<p>
 	  This works because the template_name attribute gets set
 	  internally in htsearch, to the user-selected value of the
-	  <b>format</b> input parameter, before the variable expansion
+	  <strong>format</strong> input parameter, before the variable expansion
 	  in template_patterns takes place. As long as you stick to
 	  a template file naming convention that uses the internal
 	  name element of template_map (second element in a triple) as
@@ -262,11 +317,8 @@ template_patterns: .pdf ${common_dir}/${template_name}-pdffile.html \
 	</p>
 
 	<hr size="4" noshade>
-	<address>
-	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
-	</address>
 
-Last modified: $Date: 2000/02/19 05:29:01 $
+	Last modified: $Date: 2002/02/01 22:49:32 $
 
   </body>
 </html>

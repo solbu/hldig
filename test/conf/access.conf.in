@@ -15,10 +15,10 @@
 Options Indexes FollowSymLinks ExecCGI
 </Directory>
 
-<Directory _TESTDIR_/htdocs/cookies>
-Options Indexes FollowSymLinks ExecCGI
-CookieTracking on
-</Directory>
+#<Directory _TESTDIR_/htdocs/cookies>
+#Options Indexes FollowSymLinks ExecCGI
+#CookieTracking on
+#</Directory>
 
 # This should be changed to whatever you set DocumentRoot to.
 

@@ -4,13 +4,17 @@
 // StringList: Specialized List containing String objects. 
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.cc,v 1.10 2000/02/19 05:29:03 ghutchis Exp $
+// $Id: StringList.cc,v 1.11 2002/02/01 22:49:34 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "StringList.h"
 #include "htString.h"
@@ -24,31 +28,6 @@
 //
 StringList::StringList()
 {
-}
-
-
-//*****************************************************************************
-// StringList::~StringList()
-//
-StringList::~StringList()
-{
-}
-
-//*****************************************************************************
-// void StringList::~SRelease()
-//
-void StringList::SRelease()
-{
-    ListCursor  cursor;
-    int i;
-    int n = Count();
-
-    Start_Get(cursor);
-    Object	*obj;
-    for(i = 0; i < n && (obj = Get_Next(cursor)); i++) {
-	List::Remove(obj);
-	delete (String*)obj;
-    }
 }
 
 //*****************************************************************************
@@ -136,34 +115,12 @@ void StringList::Add(char *str)
 
 
 //*****************************************************************************
-// void StringList::Add(Object *obj)
-//
-void StringList::Add(Object *obj)
-{
-    if (!obj)
-	Add((char *) 0);
-    else
-	Add(((String *) obj)->get());
-}
-
-
-//*****************************************************************************
 // void StringList::Assign(char *str, int pos)
 //
 void StringList::Assign(char *str, int pos)
 {
     List::Assign(new String(str), pos);
 }
-
-
-//*****************************************************************************
-// void StringList::Assign(Object *obj, int pos)
-//
-void StringList::Assign(Object *obj, int pos)
-{
-    Assign(((String *) obj)->get(), pos);
-}
-
 
 //*****************************************************************************
 // void StringList::Insert(char *str, int pos)
@@ -172,36 +129,6 @@ void StringList::Insert(char *str, int pos)
 {
     List::Insert(new String(str), pos);
 }
-
-
-//*****************************************************************************
-// void StringList::Insert(Object *obj, int pos)
-//
-void StringList::Insert(Object *obj, int pos)
-{
-    Insert(((String *) obj)->get(), pos);
-}
-
-
-//*******************************************************************************
-// int StringList::Remove(int pos)
-//
-int StringList::Remove(int pos)
-{
-    Object *o = List::operator[](pos);
-    delete o;
-    return List::Remove(o);
-}
-
-
-//*****************************************************************************
-// int StringList::Remove(Object *obj)
-//
-int StringList::Remove(Object *obj)
-{
-    return List::Remove(obj);
-}
-
 
 static int StringCompare(const void *a, const void *b)
 {

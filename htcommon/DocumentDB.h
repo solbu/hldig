@@ -8,12 +8,12 @@
 //             than searching.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.h,v 1.11 1999/09/24 10:28:56 loic Exp $
+// $Id: DocumentDB.h,v 1.12 2002/02/01 22:49:28 ghutchis Exp $
 //
 
 #ifndef _DocumentDB_h_
@@ -38,10 +38,6 @@ public:
     DocumentDB();
     ~DocumentDB();
 
-    //
-    // The database used for searching is generated from our internal database:
-    //
-    int			CreateSearchDB(const String& filename);
 
     //
     // Standard database operations
@@ -79,12 +75,12 @@ public:
     // This returns a list of all the DocIDs, as IntObject *
     List		*DocIDs();
 
-    //
-    // Set compatibility mode (try to support when index
-    // contains *unencoded* URLs as keys).
-    //
-    inline void		SetCompatibility(int on_flag = 1)
-    { myTryUncoded = on_flag; }
+    // Dump the database out to an ASCII text file
+    int			DumpDB(const String& filename, int verbose = 0);
+
+    // Read in the database from an ASCII text file
+    // (created by DumpDB)
+    int			LoadDB(const String& filename, int verbose = 0);
 
 private:
     Database		*dbf;
@@ -93,7 +89,6 @@ private:
     int			isopen;
     int			isread;
     int			nextDocID;
-    int			myTryUncoded;	// "Compatibility" mode.
 };
 
 #endif

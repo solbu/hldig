@@ -8,20 +8,23 @@
 //                variables with ${variable}
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.cc,v 1.16 2000/02/19 05:29:02 ghutchis Exp $
+// $Id: Configuration.cc,v 1.17 2002/02/01 22:49:33 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include <stdio.h>
 #include "Configuration.h"
 #include "htString.h"
 #include "ParsedString.h"
 
-#include <fstream.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <locale.h>
@@ -30,10 +33,8 @@
 //*********************************************************************
 // Configuration::Configuration()
 //
-Configuration::Configuration()
+Configuration::Configuration() : separators("=:"), allow_multiple(0)
 {
-    separators = String("=:");
-    allow_multiple = 0;
 }
 
 
@@ -157,14 +158,34 @@ void Configuration::Add(const String& str_arg)
 
 
 //*********************************************************************
-//   Add an entry to the configuration table.
+//   Add an entry to the configuration table, without allowing variable
+//   or file expansion of the value.
 //
 void Configuration::Add(const String& name, const String& value)
+{
+    String	escaped;
+    const char	*s = value.get();
+    while (*s)
+    {
+        if (strchr("$`\\", *s))
+            escaped << '\\';
+        escaped << *s++;
+    }
+    ParsedString	*ps = new ParsedString(escaped);
+    dcGlobalVars.Add(name, ps);
+}
+
+
+//*********************************************************************
+//   Add an entry to the configuration table, allowing parsing for variable
+//   or file expansion of the value.
+//
+void Configuration::AddParsed(const String& name, const String& value)
 {
     ParsedString	*ps = new ParsedString(value);
     if (mystrcasecmp(name, "locale") == 0)
     {
-        String str(setlocale(LC_ALL, value));
+        String str(setlocale(LC_ALL, ps->get(dcGlobalVars)));
         ps->set(str);
 
         //
@@ -202,7 +223,7 @@ const String Configuration::Find(const String& name) const
     else
     {
 #ifdef DEBUG
-        cerr << "Could not find configuration option " << name << "\n";
+        fprintf (stderr, "Could not find configuration option %s\n", (const char*)name);
 #endif
         return 0;
     }
@@ -265,26 +286,27 @@ const String Configuration::operator[](const String& name) const
 //
 int Configuration::Read(const String& filename)
 {
-    ifstream	in((const char*)filename);
+    FILE* in = fopen((const char*)filename, "r");
  
-     if (in.bad() || in.eof())
-         return NOTOK;
- 
+    if(!in) {
+      fprintf(stderr, "Configuration::Read: cannot open %s for reading : ", (const char*)filename);
+      perror("");
+      return NOTOK;
+    }
+
+#define CONFIG_BUFFER_SIZE (50*1024) 
      //
      // Make the line buffer large so that we can read long lists of start
      // URLs.
      //
-     char	buffer[50000];
+     char	buffer[CONFIG_BUFFER_SIZE + 1];
      char	*current;
      String	line;
      String	name;
      char	*value;
      int         len;
-     while (!in.bad())
+     while (fgets(buffer, CONFIG_BUFFER_SIZE, in))
      {
-         in.getline(buffer, sizeof(buffer));
-         if (in.eof())
-             break;
          line << buffer;
          line.chop("\r\n");
          if (line.last() == '\\')
@@ -314,7 +336,7 @@ int Configuration::Read(const String& filename)
  	//
  	// Skip any whitespace after the actual text
  	//
- 	while (value[len] == ' ' || value[len] == '\t')
+	while (len >= 0 && (value[len] == ' ' || value[len] == '\t'))
  	  {
  	    value[len] = '\0';
  	    len--;
@@ -339,10 +361,10 @@ int Configuration::Read(const String& filename)
  	    continue;
  	}
  
-         Add(name, value);
+         AddParsed(name, value);
          line = 0;
      }
-     in.close();
+     fclose(in);
      return OK;
 }
 
@@ -354,7 +376,7 @@ void Configuration::Defaults(const ConfigDefaults *array)
 {
     for (int i = 0; array[i].name; i++)
     {
-        Add(array[i].name, array[i].value);
+        AddParsed(array[i].name, array[i].value);
     }
 }
 

@@ -2,12 +2,12 @@
 // WordDB.cc
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
+// or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.cc,v 1.3 2000/02/19 05:29:07 ghutchis Exp $
+// $Id: WordDB.cc,v 1.4 2002/02/01 22:49:35 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -15,8 +15,6 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "WordDB.h"
-
-
 
 const char* dberror(int errval) {
 #define DB_MAX_ERROR	(-DB_TXN_CKP + 1)
@@ -41,4 +39,29 @@ const char* dberror(int errval) {
     return strerror(errval);
 }
 
+int WordDB::Open(const String& filename, DBTYPE type, int flags, int mode) {
+  if(is_open) {
+    int error = 0;
+    if((error = Close()) != 0)
+      return error;
+  }
 
+  if(!dbenv) {
+    const char* progname = "WordDB";
+
+    //
+    // Environment initialization
+    //
+    // Output errors to the application's log.
+    //
+    db->set_errfile(db, stderr);
+    db->set_errpfx(db, progname);
+  }
+
+  int error = db->open(db, filename, NULL, type, (u_int32_t)flags, mode);
+
+  if(error == 0)
+    is_open = 1;
+
+  return error;
+}

@@ -1,7 +1,6 @@
 
-/*  A Bison parser, made from conf_parser.yxx
- by  GNU Bison version 1.27
-  */
+/*  A Bison parser, made from /home/hutchisn/src/htdig/htcommon/conf_parser.yxx
+    by GNU Bison version 1.28  */
 
 #define YYBISON 1  /* Identify Bison output.  */
 
@@ -15,6 +14,25 @@
 #define	T_KEYWORD	264
 #define	T_NUMBER	265
 
+
+//
+// conf_parser.yxx
+//
+//             This syntax analyzer is used to parse ht://Dig config
+//             files.
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: conf_parser.cxx,v 1.3 2002/02/01 22:49:28 ghutchis Exp $
+//
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 /* Bison version > 1.25 needed */
 /* TODO: 
@@ -50,7 +68,7 @@ typedef union {
 
 
 
-#define	YYFINAL		32
+#define	YYFINAL		36
 #define	YYFLAG		-32768
 #define	YYNTBASE	12
 
@@ -89,7 +107,7 @@ static const char yytranslate[] = {     0,
 #if YYDEBUG != 0
 static const short yyprhs[] = {     0,
      0,     1,     4,     6,     8,    13,    18,    23,    27,    29,
-    42,    44,    47,    50
+    42,    44,    47,    50,    53,    56,    59,    62
 };
 
 static const short yyrhs[] = {    -1,
@@ -97,16 +115,17 @@ static const short yyrhs[] = {    -1,
      5,     0,    10,     4,    11,     5,     0,    10,     4,    17,
      5,     0,    10,     4,     5,     0,     5,     0,     7,    10,
      4,     9,     6,     5,    16,     7,     8,    10,     6,     5,
-     0,    14,     0,    16,    14,     0,     9,     9,     0,    17,
-     9,     0
+     0,    14,     0,    16,    14,     0,     9,     9,     0,    11,
+     9,     0,     9,    11,     0,    11,    11,     0,    17,     9,
+     0,    17,    11,     0
 };
 
 #endif
 
 #if YYDEBUG != 0
 static const short yyrline[] = { 0,
-    37,    38,    41,    53,    61,    71,    77,    83,    91,    94,
-   115,   133,   147,   160
+    56,    57,    60,    72,    80,    90,    96,   102,   110,   113,
+   134,   152,   166,   179,   192,   205,   218,   230
 };
 #endif
 
@@ -122,54 +141,56 @@ static const char * const yytname[] = {   "$","error","$undefined.","NUM","T_DEL
 
 static const short yyr1[] = {     0,
     12,    12,    13,    13,    14,    14,    14,    14,    14,    15,
-    16,    16,    17,    17
+    16,    16,    17,    17,    17,    17,    17,    17
 };
 
 static const short yyr2[] = {     0,
      0,     2,     1,     1,     4,     4,     4,     3,     1,    12,
-     1,     2,     2,     2
+     1,     2,     2,     2,     2,     2,     2,     2
 };
 
 static const short yydefact[] = {     1,
      0,     9,     0,     0,     2,     3,     4,     0,     0,     0,
-     8,     0,     0,     0,     0,     5,    13,     6,     7,    14,
-     0,     0,    11,     0,     0,    12,     0,     0,     0,    10,
-     0,     0
+     8,     0,     0,     0,     0,     5,    13,    15,     6,    14,
+    16,     7,    17,    18,     0,     0,    11,     0,     0,    12,
+     0,     0,     0,    10,     0,     0
 };
 
 static const short yydefgoto[] = {     1,
-     5,     6,     7,    24,    14
+     5,     6,     7,    28,    14
 };
 
 static const short yypact[] = {-32768,
-     0,-32768,    -6,     9,-32768,-32768,-32768,    14,    -3,    12,
--32768,    10,    17,    11,    18,-32768,-32768,-32768,-32768,-32768,
-    20,     7,-32768,     4,    15,-32768,    16,    21,    23,-32768,
-    29,-32768
+     0,-32768,    -6,    20,-32768,-32768,-32768,    22,    -3,     2,
+-32768,     4,     7,    12,    21,-32768,-32768,-32768,-32768,-32768,
+-32768,-32768,-32768,-32768,    23,     9,-32768,    15,    24,-32768,
+    19,    25,    28,-32768,    30,-32768
 };
 
 static const short yypgoto[] = {-32768,
--32768,   -21,-32768,-32768,-32768
+-32768,   -25,-32768,-32768,-32768
 };
 
 
-#define	YYLAST		29
+#define	YYLAST		33
 
 
-static const short yytable[] = {    31,
-    23,    11,    26,     8,     2,    12,     3,    13,     2,     4,
-    25,     2,     9,     4,    16,    19,     4,    10,    17,    20,
-    15,    18,    27,    21,    22,    28,    29,    30,    32
+static const short yytable[] = {    35,
+    27,    11,    30,     8,     2,    12,     3,    13,    16,     4,
+    15,    19,    17,     2,    18,    20,    22,    21,     4,     2,
+    23,    29,    24,     9,     4,    10,    25,    26,    32,    36,
+    33,    31,    34
 };
 
 static const short yycheck[] = {     0,
-    22,     5,    24,    10,     5,     9,     7,    11,     5,    10,
-     7,     5,     4,    10,     5,     5,    10,     4,     9,     9,
-     9,     5,     8,     6,     5,    10,     6,     5,     0
+    26,     5,    28,    10,     5,     9,     7,    11,     5,    10,
+     9,     5,     9,     5,    11,     9,     5,    11,    10,     5,
+     9,     7,    11,     4,    10,     4,     6,     5,    10,     0,
+     6,     8,     5
 };
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
 
-/* This file comes from bison-1.27.  */
+/* This file comes from bison-1.28.  */
 
 /* Skeleton output parser for bison,
    Copyright (C) 1984, 1989, 1990 Free Software Foundation, Inc.
@@ -716,7 +737,7 @@ case 2:
 case 3:
 {   
   // name: value
-               ((HtConfiguration *)aConf)->Add(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
+               ((HtConfiguration *)aConf)->AddParsed(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
 	       #ifdef DEBUG
 	       if (sn_debug>=2) {
 		 cout<<"Added to conf: "<<yyvsp[0].ConfLine->name<<":"<<yyvsp[0].ConfLine->value<<endl;
@@ -748,7 +769,7 @@ case 5:
     break;}
 case 6:
 { 
-	  // max_head_lenght: 300000
+	  // max_head_length: 300000
 	  //
 	                                yyval.ConfLine=new ConfigDefaults;
 					yyval.ConfLine->name = yyvsp[-3].str; yyval.ConfLine->value=yyvsp[-1].str;
@@ -782,7 +803,7 @@ case 10:
 			// todo: setup error string, return with error.
 			// Inform about line number
 			cerr<<"Brackets mismatch: Opened: "<<yyvsp[-10].str<<" Closed: "<<yyvsp[-2].str<<endl;
-			exit(1);
+			// exit(1);
 		      }
 		      // Oll right. Append set of parameters to object($2)
 		      ((HtConfiguration *)aConf)->Add(yyvsp[-10].str,yyvsp[-8].str,yyvsp[-5].ConfLines);
@@ -804,7 +825,7 @@ case 11:
   //
   // First entry. We need to create conf to store it.
   HtConfiguration *expressionList=new HtConfiguration();
-  expressionList->Add(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
+  expressionList->AddParsed(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
   yyval.ConfLines=expressionList;
   #ifdef DEBUG
   if (sn_debug>=2) {
@@ -818,7 +839,7 @@ case 11:
     break;}
 case 12:
 {
-				yyvsp[-1].ConfLines->Add(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
+				yyvsp[-1].ConfLines->AddParsed(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
 				#ifdef DEBUG
 				if (sn_debug>=2) {
 				  cout<<yyvsp[0].ConfLine->name<<":"<<yyvsp[0].ConfLine->value<<" added to "<<yyvsp[-1].ConfLines<<endl;
@@ -832,8 +853,8 @@ case 12:
     break;}
 case 13:
 { 
-	// Paste 2 strings. Reallocate memory for 2 str.
-	if ((yyval.str=new char[yyvsp[-1].str,strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
+	// Paste 2 components. Reallocate memory for 2 components.
+	if ((yyval.str=new char[strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
 		fprintf(stderr,"Can't allocate memory\n");
 		exit(1);
 	}
@@ -846,8 +867,62 @@ case 13:
     break;}
 case 14:
 { 
-                char *ptr;
-		int len=strlen(yyval.str);
+	// Paste 2 components. Reallocate memory for 2 components.
+	if ((yyval.str=new char[strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
+		fprintf(stderr,"Can't allocate memory\n");
+		exit(1);
+	}
+	strcpy(yyval.str,yyvsp[-1].str);
+	strcat(yyval.str," ");		// Delimiter in list
+	strcat(yyval.str,yyvsp[0].str);
+	delete [] yyvsp[-1].str; 
+	delete [] yyvsp[0].str;
+	;
+    break;}
+case 15:
+{ 
+	// Paste 2 components. Reallocate memory for 2 components.
+	if ((yyval.str=new char[strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
+		fprintf(stderr,"Can't allocate memory\n");
+		exit(1);
+	}
+	strcpy(yyval.str,yyvsp[-1].str);
+	strcat(yyval.str," ");		// Delimiter in list
+	strcat(yyval.str,yyvsp[0].str);
+	delete [] yyvsp[-1].str; 
+	delete [] yyvsp[0].str;
+	;
+    break;}
+case 16:
+{ 
+	// Paste 2 components. Reallocate memory for 2 components.
+	if ((yyval.str=new char[strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
+		fprintf(stderr,"Can't allocate memory\n");
+		exit(1);
+	}
+	strcpy(yyval.str,yyvsp[-1].str);
+	strcat(yyval.str," ");		// Delimiter in list
+	strcat(yyval.str,yyvsp[0].str);
+	delete [] yyvsp[-1].str; 
+	delete [] yyvsp[0].str;
+	;
+    break;}
+case 17:
+{ 
+		char *old=yyval.str;
+		if ((yyval.str=new char [strlen(yyval.str)+strlen(yyvsp[0].str)+1+1])==NULL) {
+		  fprintf(stderr,"Can't reallocate memory\n");
+		  exit(1);
+		}
+		strcpy(yyval.str,old);
+		delete [] old;
+		strcat(yyval.str," ");
+		strcat(yyval.str,yyvsp[0].str);
+		delete [] yyvsp[0].str;
+	;
+    break;}
+case 18:
+{
 		char *old=yyval.str;
 		if ((yyval.str=new char [strlen(yyval.str)+strlen(yyvsp[0].str)+1+1])==NULL) {
 		  fprintf(stderr,"Can't reallocate memory\n");
@@ -1088,5 +1163,6 @@ yyerror (char *s)  /* Called by yyparse on error */
 {
 extern int yylineno;	// I don't know what about included files
    printf ("%s\nIn line %d\n",s,yylineno);
-   exit(1);
+   // exit(1);
+   return -1;
 }

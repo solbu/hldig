@@ -5,12 +5,12 @@
 //                    unknown protocols.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalTransport.h,v 1.2 2000/02/19 05:28:51 ghutchis Exp $
+// $Id: ExternalTransport.h,v 1.3 2002/02/01 22:49:29 ghutchis Exp $
 //
 
 #ifndef _ExternalTransport_h_
@@ -26,7 +26,7 @@
 class ExternalTransport;
 class ExternalTransport_Response : public Transport_Response
 {
-  friend ExternalTransport;
+  friend class ExternalTransport;
 
   // Nothing else... We just want it so we can access the protected fields
 };
@@ -38,14 +38,14 @@ public:
     //
     // Construction/Destruction
     //
-                        ExternalTransport(char *protocol);
+                        ExternalTransport(const String &protocol);
     virtual		~ExternalTransport();
 
 
     //
     // Check if the given protocol has a handler
     //
-    static int		canHandle(char *protocol);
+    static int		canHandle(const String &protocol);
     
     // Setting connections is obviously a bit different than the base class
     // from a URL pointer
@@ -59,7 +59,7 @@ public:
     DocStatus Request();
    
     // Get the response or the status
-    ExternalTransport_Response *GetResponse()	 { return _Response; }
+    Transport_Response	*GetResponse()	 { return _Response; }
     DocStatus GetDocumentStatus() { return GetDocumentStatus(_Response); }
     
 

@@ -10,7 +10,7 @@
 	  htsearch
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -70,9 +70,9 @@
 	</ol>
 	<p>
 	  There are two predefined templates that are used by default.
-	  They have the internal names <i>builtin-long</i> and <i>
-	  builtin-short</i>. As such, the default value for the <i>
-	  template_map</i> attribute is as follows:
+	  They have the internal names <em>builtin-long</em> and <em>
+	  builtin-short</em>. As such, the default value for the <em>
+	  template_map</em> attribute is as follows:
 	</p>
 	<blockquote>
 	  Long builtin-long builtin-long \<br>
@@ -90,11 +90,11 @@
 	</h4>
 	<p>
 	  When a custom template is required, one or more template files
-	  need to be created and referenced in the <i>template_map</i>
+	  need to be created and referenced in the <em>template_map</em>
 	  attribute. These templates are user-selectable from the search
 	  form. It is also possible to select result templates based on
 	  URL patterns of the search matches, using the
-	  <i>template_patterns</i> attribute. This allows distinct visual
+	  <em>template_patterns</em> attribute. This allows distinct visual
 	  styles to be used for matches on different web sites.
 	</p>
 	<p>
@@ -105,12 +105,12 @@
 	  listed in the <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">cgi
 	  specification</a>. Variables will be substituted normally
 	  with the format $(VAR), escaped for use in a URL with the
-	  format $%(VAR) and HTML-escaped with the format $&(VAR). The
-	  variables are:
+	  format $%(VAR), URL-encoding decoded with the format $=(VAR),
+	  and HTML-escaped with the format $&(VAR). The variables are:
 	</p>
 	<dl>
 	  <dt>
-		<b>ANCHOR</b>
+		<strong>ANCHOR</strong>
 	  </dt>
 	  <dd>
 		Expands to the named anchor found just before the first match; it
@@ -118,7 +118,7 @@
 		variable. If no anchor was found, ANCHOR is empty.
 	  </dd>
 	  <dt>
-		<b><a name="CGI">CGI</a></b>
+		<strong><a name="CGI">CGI</a></strong>
 	  </dt>
 	  <dd>
 		Unless the configuration file sets a different value,
@@ -128,19 +128,19 @@
 		configuration file attribute for more information.
 	  </dd>
 	  <dt>
-		<b>CURRENT</b>
+		<strong>CURRENT</strong>
 	  </dt>
 	  <dd>
 		The number of the current match.
 	  </dd>
 	  <dt>
-		<b>DESCRIPTION</b>
+		<strong>DESCRIPTION</strong>
 	  </dt>
 	  <dd>
 		The first URL description for the matched document.
 	  </dd>
 	  <dt>
-		<b>DESCRIPTIONS</b>
+		<strong>DESCRIPTIONS</strong>
 	  </dt>
 	  <dd>
 		A list of URL text descriptions for the matched document. The
@@ -148,25 +148,25 @@
 		text used between the &lt;a href...&gt; and &lt;/a&gt;tags.
 	  </dd>
 	  <dt>
-		<b>DOCID</b>
+		<strong>DOCID</strong>
 	  </dt>
 	  <dd>
 		The internal ID for the document for the current match.
 	  </dd>
 	  <dt>
-		<b>EXCERPT</b>
+		<strong>EXCERPT</strong>
 	  </dt>
 	  <dd>
 		The relevant excerpt for the current match
 	  </dd>
 	  <dt>
-		<b>FIRSTDISPLAYED</b>
+		<strong>FIRSTDISPLAYED</strong>
 	  </dt>
 	  <dd>
 		The index of the first match on this page.
 	  </dd>
 	  <dt>
-		<b>FORMAT</b>
+		<strong>FORMAT</strong>
 	  </dt>
 	  <dd>
 		Expands to an HTML menu of all the available formats. The
@@ -178,60 +178,66 @@
 		<a href="hts_selectors.html">select list documentation</a>.
 	  </dd>
 	  <dt>
-		<b>HOPCOUNT</b>
+		<strong>HOPCOUNT</strong>
 	  </dt>
 	  <dd>
 		The distance of this match away from the starting
 		document(s).
 	  </dd>
 	  <dt>
-		<b>KEYWORDS</b>
+		<strong>KEYWORDS</strong>
 	  </dt>
 	  <dd>
 		A string of the search keywords with spaces in between, as
-		specified in the <i>keywords</i> input parameter.
+		specified in the <em>keywords</em> input parameter.
 	  </dd>
 	  <dt>
-		<b>LASTDISPLAYED</b>
+		<strong>LASTDISPLAYED</strong>
 	  </dt>
 	  <dd>
 		The index of the last match on this page.
 	  </dd>
 	  <dt>
-		<b>LOGICAL_WORDS</b>
+		<strong>LOGICAL_WORDS</strong>
 	  </dt>
 	  <dd>
 		A string of the search words with either "and" or "or"
 		between the words, depending on the type of search.
 	  </dd>
 	  <dt>
-		<b>MATCH_MESSAGE</b>
+		<strong>MATCH_MESSAGE</strong>
 	  </dt>
 	  <dd>
-		This is either <tt>all</tt> or <tt>some</tt> depending on
+		This is either <code>all</code> or <code>some</code> depending on
 		the match method used.
 	  </dd>
 	  <dt>
-		<b>MATCHES</b>
+		<strong>MATCHES</strong>
 	  </dt>
 	  <dd>
 		The total number of matches that were found.
 	  </dd>
 	  <dt>
-		<b>MATCHES_PER_PAGE</b>
+		<strong>MATCHES_PER_PAGE</strong>
 	  </dt>
 	  <dd>
 		The configured maximum number of matches on this page
 	  </dd>
 	  <dt>
-		<b>MAX_STARS</b>
+		<strong>MAX_STARS</strong>
 	  </dt>
 	  <dd>
 		The configured maximum number of stars to display in
 		matches.
 	  </dd>
 	  <dt>
-		<b>METHOD</b>
+		<strong>METADESCRIPTION</strong>
+	  </dt>
+	  <dd>
+		The meta description text (if any) for the matched document.
+	  </dd>
+	  <dt>
+		<strong>METHOD</strong>
 	  </dt>
 	  <dd>
 		Expands to an HTML menu of all the available matching
@@ -243,13 +249,13 @@
 		<a href="hts_selectors.html">select list documentation</a>.
 	  </dd>
 	  <dt>
-		<b>MODIFIED</b>
+		<strong>MODIFIED</strong>
 	  </dt>
 	  <dd>
 		The date and time the document was last modified
 	  </dd>
 	  <dt>
-		<b>NEXTPAGE</b>
+		<strong>NEXTPAGE</strong>
 	  </dt>
 	  <dd>
 		This expands to the value of the
@@ -258,13 +264,21 @@
 		attributes depending on whether there is a next page or not.
 	  </dd>
 	  <dt>
-		<b>PAGE</b>
+	        <strong>NSTARS</strong>
+	  </dt>
+	  <dd>
+	       The number of stars calculated for this document as an
+	       integer, up to a maximum specified by the <a
+	       href="attrs.html#max_stars">max_stars</a> attribute.
+	  </dd>
+	  <dt>
+		<strong>PAGE</strong>
 	  </dt>
 	  <dd>
 		The current page number.
 	  </dd>
 	  <dt>
-		<b>PAGEHEADER</b>
+		<strong>PAGEHEADER</strong>
 	  </dt>
 	  <dd>
 		This expands to either the value of the
@@ -273,7 +287,7 @@
 		attributes depending on how many pages there are.
 	  </dd>
 	  <dt>
-		<b>PAGELIST</b>
+		<strong>PAGELIST</strong>
 	  </dt>
 	  <dd>
 		This expands to a list of hyperlinks using the
@@ -282,13 +296,13 @@
 		attributes.
 	  </dd>
 	  <dt>
-		<b>PAGES</b>
+		<strong>PAGES</strong>
 	  </dt>
 	  <dd>
 		The total number of pages.
 	  </dd>
 	  <dt>
-		<b>PERCENT</b>
+		<strong>PERCENT</strong>
 	  </dt>
 	  <dd>
 		The match score as a percentage. Its range is 1 to 100,
@@ -297,14 +311,14 @@
 		attribute.
 	  </dd>
 	  <dt>
-		<b>PLURAL_MATCHES</b>
+		<strong>PLURAL_MATCHES</strong>
 	  </dt>
 	  <dd>
-		If the <b>MATCHES</b> variable is other than 1, this will
+		If the <strong>MATCHES</strong> variable is other than 1, this will
 		be a single 's'.
 	  </dd>
 	  <dt>
-		<b>PREVPAGE</b>
+		<strong>PREVPAGE</strong>
 	  </dt>
 	  <dd>
 		This expands to the value of the
@@ -313,43 +327,43 @@
 		attributes depending on whether there is a previous page or not.
 	  </dd>
 	  <dt>
-		<b>SCORE</b>
+		<strong>SCORE</strong>
 	  </dt>
 	  <dd>
 		The score of the current match
 	  </dd>
 	  <dt>
-		<b>SELECTED_FORMAT</b>
+		<strong>SELECTED_FORMAT</strong>
 	  </dt>
 	  <dd>
 		The currently selected format.
 	  </dd>
 	  <dt>
-		<b>SELECTED_METHOD</b>
+		<strong>SELECTED_METHOD</strong>
 	  </dt>
 	  <dd>
 		The currently selected matching method.
 	  </dd>
 	  <dt>
-		<b>SELECTED_SORT</b>
+		<strong>SELECTED_SORT</strong>
 	  </dt>
 	  <dd>
 		The currently selected sorting method.
 	  </dd>
 	  <dt>
-		<b>SIZE</b>
+		<strong>SIZE</strong>
 	  </dt>
 	  <dd>
 		The size of the document for the current match
 	  </dd>
 	  <dt>
-		<b>SIZEK</b>
+		<strong>SIZEK</strong>
 	  </dt>
 	  <dd>
 		The size in kilobytes of the document for the current match
 	  </dd>
 	  <dt>
-		<b>SORT</b>
+		<strong>SORT</strong>
 	  </dt>
 	  <dd>
 		Expands to an HTML menu of all the available sorting
@@ -361,56 +375,61 @@
 		<a href="hts_selectors.html">select list documentation</a>.
 	  </dd>
 	  <dt>
-		<b>STARSLEFT</b>
+		<strong>STARSLEFT</strong>
 	  </dt>
 	  <dd>
 		A set of HTML &lt;img&gt; tags with the stars aligned on
 		the left.
 	  </dd>
 	  <dt>
-		<b>STARSRIGHT</b>
+		<strong>STARSRIGHT</strong>
 	  </dt>
 	  <dd>
 		A set of HTML &lt;img&gt; tags with the stars aligned on
 		the right.
 	  </dd>
 	  <dt>
-		<b>SYNTAXERROR</b>
+		<strong>STARTYEAR</strong>, <strong>STARTMONTH</strong>, <strong>STARTDAY</strong>,
+		<strong>ENDYEAR</strong>, <strong>ENDMONTH</strong>, <strong>ENDDAY</strong>
+	  </dt>
+	  <dd>
+		The currently specified date range for restricting search
+		results.
+	  </dd>
+	  <dt>
+		<strong>SYNTAXERROR</strong>
 	  </dt>
 	  <dd>
 		Is the text of the boolean expression syntax error.
 	  </dd>
 	  <dt>
-		<b>TITLE</b>
+		<strong>TITLE</strong>
 	  </dt>
 	  <dd>
 		The title of the document for the current match
 	  </dd>
 	  <dt>
-		<b>URL</b>
+		<strong>URL</strong>
 	  </dt>
 	  <dd>
 		The URL to the document for the current match
 	  </dd>
 	  <dt>
-		<b>VERSION</b>
+		<strong>VERSION</strong>
 	  </dt>
 	  <dd>
 		The ht://Dig version number
 	  </dd>
 	  <dt>
-		<b>WORDS</b>
+		<strong>WORDS</strong>
 	  </dt>
 	  <dd>
 		A string of the search words with spaces in between.
 	  </dd>
 	</dl>
 	<hr size="4" noshade>
-	<address>
-	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
-	</address>
 
-Last modified: $Date: 2000/02/19 05:29:01 $
+	Last modified: $Date: 2002/02/01 22:49:32 $
 
   </body>
 </html>

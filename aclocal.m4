@@ -11,6 +11,12 @@ dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
 dnl
+dnl Part of the ht://Dig package   <http://www.htdig.org/>
+dnl Copyright (c) 1999, 2000 The ht://Dig Group
+dnl For copyright details, see the file COPYING in your distribution
+dnl or the GNU General Public License version 2 or later
+dnl <http://www.gnu.org/copyleft/gpl.html>
+dnl
 dnl Local autoconf definitions. Try to follow the guidelines of the autoconf
 dnl macro repository so that integration in the repository is easy.
 dnl To submit a macro to the repository send the macro (one macro per mail)
@@ -31,7 +37,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.23 2000/02/19 05:28:45 ghutchis Exp $
+dnl @version $Id: aclocal.m4,v 1.24 2002/02/01 22:49:26 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -42,6 +48,48 @@ AC_SUBST(USER)
 AC_MSG_RESULT($USER)
 ])
 
+dnl
+dnl Prevent accidental use of Run Time Type Information g++ builtin
+dnl functions.
+dnl
+AC_DEFUN(NO_RTTI,
+[AC_MSG_CHECKING(adding -fno-rtti to g++)
+if test -n "$CXX"
+then
+  if test "$GXX" = "yes"
+  then
+    CXXFLAGS_save="$CXXFLAGS"
+    CXXFLAGS="$CXXFLAGS -fno-rtti"
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+    AC_TRY_COMPILE(,,,CXXFLAGS="$CXXFLAGS_save")
+    AC_LANG_RESTORE
+  fi
+fi
+AC_MSG_RESULT(ok)
+])
+
+dnl
+dnl Prevent accidental use of Exceptions g++ builtin
+dnl functions.
+dnl
+AC_DEFUN(NO_EXCEPTIONS,
+[AC_MSG_CHECKING(adding -fno-exceptions to g++)
+if test -n "$CXX"
+then
+  if test "$GXX" = "yes"
+  then
+    CXXFLAGS_save="$CXXFLAGS"
+    CXXFLAGS="$CXXFLAGS -fno-exceptions"
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+    AC_TRY_COMPILE(,,,CXXFLAGS="$CXXFLAGS_save")
+    AC_LANG_RESTORE
+  fi
+fi
+AC_MSG_RESULT(ok)
+])
+
 dnl @synopsis AC_COMPILE_WARNINGS
 dnl
 dnl Set the maximum warning verbosity according to compiler used.
@@ -49,7 +97,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.23 2000/02/19 05:28:45 ghutchis Exp $
+dnl @version $Id: aclocal.m4,v 1.24 2002/02/01 22:49:26 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -99,7 +147,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.23 2000/02/19 05:28:45 ghutchis Exp $
+dnl @version $Id: aclocal.m4,v 1.24 2002/02/01 22:49:26 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -194,7 +242,7 @@ dnl LoadModule env_module         @APACHE_MODULES@/mod_env.so
 dnl LoadModule config_log_module  @APACHE_MODULES@/mod_log_config.so
 dnl ...
 dnl
-dnl @version $Id: aclocal.m4,v 1.23 2000/02/19 05:28:45 ghutchis Exp $
+dnl @version $Id: aclocal.m4,v 1.24 2002/02/01 22:49:26 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -277,7 +325,7 @@ AC_DEFUN(AC_PROG_APACHE,
     #
     HTTP_ROOT=`$APACHE -V | grep HTTPD_ROOT | sed -e 's/.*"\(.*\)"/\1/'`
     AC_MSG_CHECKING(apache modules)
-    for dir in libexec modules
+    for dir in libexec modules lib/apache
     do
       if test -f $HTTP_ROOT/$dir/mod_env.*
       then
@@ -304,7 +352,7 @@ AC_PATH_PROG(TIME, time, time)
 AC_MSG_CHECKING(verbose time flag)
 for timev in "$TIME -v" "$TIME -l" $TIME
 do
-	if $timev >/dev/null 2>&1
+	if $timev echo >/dev/null 2>&1
 	then
 		TIMEV=$timev
 		break
@@ -467,7 +515,7 @@ done<<>>dnl>>)
 changequote([,]))])
 
 
-# serial 40 AC_PROG_LIBTOOL
+# serial 39 AC_PROG_LIBTOOL
 AC_DEFUN(AC_PROG_LIBTOOL,
 [AC_REQUIRE([AC_LIBTOOL_SETUP])dnl
 
@@ -828,7 +876,6 @@ AC_DEFUN(AC_LIBLTDL_CONVENIENCE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
       ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
   esac
   LIBLTDL=ifelse($#,1,$1,['${top_builddir}/libltdl'])/libltdlc.la
-  INCLTDL=ifelse($#,1,-I$1,['-I${top_builddir}/libltdl'])
 ])
 
 # AC_LIBLTDL_INSTALLABLE[(dir)] - sets LIBLTDL to the link flags for
@@ -852,11 +899,9 @@ AC_DEFUN(AC_LIBLTDL_INSTALLABLE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   if test x"$enable_ltdl_install" = x"yes"; then
     ac_configure_args="$ac_configure_args --enable-ltdl-install"
     LIBLTDL=ifelse($#,1,$1,['${top_builddir}/libltdl'])/libltdl.la
-    INCLTDL=ifelse($#,1,-I$1,['-I${top_builddir}/libltdl'])
   else
     ac_configure_args="$ac_configure_args --enable-ltdl-install=no"
     LIBLTDL="-lltdl"
-    INCLTDL=
   fi
 ])
 
@@ -869,8 +914,8 @@ AC_DEFUN(AM_DISABLE_STATIC, [indir([AC_DISABLE_STATIC], $@)])dnl
 AC_DEFUN(AM_PROG_LD, [indir([AC_PROG_LD])])dnl
 AC_DEFUN(AM_PROG_NM, [indir([AC_PROG_NM])])dnl
 
-dnl This is just to silence aclocal about the macro not being used
-ifelse([AC_DISABLE_FAST_INSTALL])dnl
+dnl This is just to quiet aclocal about the macro not being used
+if(a,b,[AC_DISABLE_FAST_INSTALL])dnl
 
 # Add --enable-maintainer-mode option to configure.
 # From Jim Meyering
@@ -909,8 +954,51 @@ fi])
 dnl AM_PROG_LEX
 dnl Look for flex, lex or missing, then run AC_PROG_LEX and AC_DECL_YYTEXT
 AC_DEFUN(AM_PROG_LEX,
-[missing_dir=ifelse([$1],,`cd $ac_aux_dir && pwd`,$1)
-AC_CHECK_PROGS(LEX, flex lex, "$missing_dir/missing flex")
+[missing_dir=ifelse([$1],,$srcdir,$1)
+AC_CHECK_PROGS(LEX, flex lex "$missing_dir/missing flex")
 AC_PROG_LEX
 AC_DECL_YYTEXT])
 
+
+dnl AM_PROG_YACC
+dnl Look for bison, yacc or missing, then run AC_PROG_YACC
+AC_DEFUN(AM_PROG_YACC,
+[missing_dir=ifelse([$1],,$srcdir,$1)
+AC_CHECK_PROGS(YACC, "bison -y" yacc "$missing_dir/missing yacc")
+AC_PROG_YACC])
+
+
+AC_DEFUN([CHECK_SSL],
+[AC_MSG_CHECKING(if ssl is wanted)
+AC_ARG_WITH(ssl,
+[  --with-ssl enable ssl [will check /usr/local/ssl
+                            /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr ]
+],
+[   AC_MSG_RESULT(yes)
+    for dir in $withval /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr; do
+        ssldir="$dir"
+        if test -f "$dir/include/openssl/ssl.h"; then
+            found_ssl="yes";
+            CFLAGS="$CFLAGS -I$ssldir/include/openssl -DHAVE_SSL";
+            break;
+        fi
+        if test -f "$dir/include/ssl.h"; then
+            found_ssl="yes";
+            CFLAGS="$CFLAGS -I$ssldir/include/ -DHAVE_SSL";
+            break
+        fi
+    done
+    if test x_$found_ssl != x_yes; then
+        AC_MSG_ERROR(Cannot find ssl libraries)
+    else
+        printf "OpenSSL found in $ssldir\n";
+        LIBS="$LIBS -lssl -lcrypto";
+        LDFLAGS="$LDFLAGS -L$ssldir/lib";
+        HAVE_SSL=yes
+    fi
+    AC_SUBST(HAVE_SSL)
+],
+[
+    AC_MSG_RESULT(no)
+])
+])

@@ -6,12 +6,12 @@
 //                   delimited by " or ', hence the name.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: QuotedStringList.h,v 1.4 1999/09/24 10:29:03 loic Exp $
+// $Id: QuotedStringList.h,v 1.5 2002/02/01 22:49:34 ghutchis Exp $
 //
 
 #ifndef _QuotedStringList_h_
@@ -26,7 +26,6 @@ public:
     // Construction/Destruction
     //
     QuotedStringList();
-    ~QuotedStringList();
 
     //
     // Creation of a String from a string or String

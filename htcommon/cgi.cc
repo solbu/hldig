@@ -4,13 +4,17 @@
 // cgi: Parse cgi arguments and put them in a dictionary.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: cgi.cc,v 1.3 2000/02/19 05:28:50 ghutchis Exp $
+// $Id: cgi.cc,v 1.4 2002/02/01 22:49:28 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "cgi.h"
 #include "htString.h"
@@ -81,18 +85,18 @@ cgi::init(char *s)
 		if (!buf || !*buf || (n = atoi(buf)) <= 0)
 			return;		// null query
 		buf = new char[n + 1];
-		int     r, i = 0;
+		int	r, i = 0;
 		while (i < n && (r = read(0, buf+i, n-i)) > 0)
 			i += r;
 		buf[i] = '\0';
 		results = buf;
-		delete buf;
+		delete [] buf;
 	}
 
 	//
 	// Now we need to split the line up into name/value pairs
 	//
-	StringList	list(results, '&');
+	StringList	list(results, "&;");
 	
 	//
 	// Each name/value pair now needs to be added to the dictionary

@@ -1,26 +1,76 @@
 //
 // WordList.h
 //
-// WordList: Interface to the word database. Previously, this wrote to 
-//           a temporary text file. Now it writes directly to the 
-//           word database. 
-//           NOTE: Some code previously attempted to directly read from 
-//           the word db. This will no longer work, so it's preferred to 
-//           use the access methods here.
+// NAME
+// 
+// manage and use an inverted index file.
+//
+// SYNOPSIS
+// 
+// #include <mifluz.h>
+// 
+// Configuration* config;
+// WordReference wordRef;
+// ...
+// WordList* words = new WordList(config)
+// 
+// delete words;
+// 
+// DESCRIPTION
+// 
+// WordList is the <i>mifluz</i> equivalent of a database handler. Each
+// WordList object is bound to an inverted index file and implements the
+// operations to create it, fill it with word occurrences and search 
+// for an entry matching a given criterion.
+// 
+// CONFIGURATION
+// 
+// wordlist_extend {true|false} (default false)
+//   If <b>true</b> maintain reference count of unique 
+//   words. The <b>Noccurrence</b> method gives access to this count.
+// 
+// wordlist_verbose <number> (default 0)
+//   Set the verbosity level of the WordList class. 
+//   <br>
+//   1 walk logic
+//   <br>
+//   2 walk logic details
+//   <br>
+//   3 walk logic lots of details
+// 
+// wordlist_page_size <bytes> (default 8192)
+//   Berkeley DB page size (see Berkeley DB documentation)
+// 
+// wordlist_cache_size <bytes> (default 500K)
+//   Berkeley DB cache size (see Berkeley DB documentation)
+//   Cache makes a huge difference in performance. It must be at least 2%
+//   of the expected total data size. Note that if compression is activated
+//   the data size is eight times larger than the actual file size. In this
+//   case the cache must be scaled to 2% of the data size, not 2% 
+//   of the file size. See <b>Cache tuning</b> in the mifluz guide for
+//   more hints.
+// 
+// wordlist_compress {true|false} (default false)
+//   Activate compression of the index. The resulting index is eight times
+//   smaller than the uncompressed index.
+// 
+//
+// END
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
+// or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.6 2000/02/19 05:29:08 ghutchis Exp $
+// $Id: WordList.h,v 1.7 2002/02/01 22:49:36 ghutchis Exp $
 //
 
 #ifndef _WordList_h_
 #define _WordList_h_
 
 #include <fcntl.h>
+#include <stdio.h>
 
 #ifndef SWIG
 #include "Dictionary.h"
@@ -32,164 +82,12 @@
 #include "WordDB.h"
 #include "WordDBCompress.h"
 #include "Configuration.h"
+#include "WordCursor.h"
 #endif /* SWIG */
 
 class List;
 class WordList;
 class WordDBCursor;
-class WordMonitor;
-//
-// Possible values of the action argument of WordList::Walk
-// check walk function in WordList.cc for info on these:
-//
-#define HTDIG_WORDLIST_COLLECTOR	0x0001
-#define HTDIG_WORDLIST_WALKER		0x0002
-
-#ifndef SWIG
-//
-// Type of the callback argument in WordSearchDescription
-//
-typedef int (*wordlist_walk_callback_t)(WordList *, WordDBCursor& , const WordReference *, Object &);
-
-//
-// Possible values of the status member
-//
-//
-// WordSearchDescription contains valid data
-//
-#define WORD_WALK_OK			0x0000
-//
-// WalkNext reached the end of the matches
-//
-#define WORD_WALK_ATEND			0x0001
-//
-// Failed to acquire Berkeley DB cursor
-//
-#define WORD_WALK_CURSOR_FAILED		0x0002
-//
-// Berkeley DB Get operation failed
-//
-#define WORD_WALK_GET_FAILED		0x0004
-//
-// Callback function returned NOTOK
-//
-#define WORD_WALK_CALLBACK_FAILED	0x0008
-//
-// WalkNextStep hit an entry that does not match the
-// searched key.
-//
-#define WORD_WALK_NOMATCH_FAILED	0x0010
-//
-// WordSearchDescription contains undefined data
-//
-#define WORD_WALK_FAILED		0xffff
-
-//
-// Wordlist::Walk uses WordSearchDescription for :
-// state information : cursor
-// search term description
-// debug/trace/benchmarking
-// search result format description
-//
-class WordSearchDescription
-{
-    friend WordList;
- public:
-    WordSearchDescription(wordlist_walk_callback_t ncallback, Object * ncallback_data);
-    WordSearchDescription(const WordKey &nsearchKey, int naction = HTDIG_WORDLIST_WALKER);
-    WordSearchDescription(const WordKey &nsearchKey, wordlist_walk_callback_t ncallback, Object * ncallback_data);
-
-    void Clear();
-    void ClearInternal();
-    void ClearResult();
-
-    //
-    // Set the document number in key and prepare to
-    // move to this document, if any.
-    //
-    int ModifyKey(const WordKey& patch);
-
-    //
-    // Input parameters
-    //
-    //
-    // The key to be searched
-    //
-    WordKey searchKey;
-    //
-    // What do do when a WordReference is found
-    // Can either be
-    // HTDIG_WORDLIST_COLLECTOR  WordReference found stored in collectRes
-    // HTDIG_WORDLIST_WALKER     callback is called for each WordReference found
-    //
-    int action;
-    //
-    // Callback function called for each WordReference found
-    //
-    wordlist_walk_callback_t callback;
-    //
-    // Argument given to callback, contains arbitrary caller defined data
-    //
-    Object *callback_data;
-
-    //
-    // Output parameters
-    //
-    //
-    // List of WordReference found in the search
-    //
-    List *collectRes;
-    //
-    // Last match found.
-    //
-    WordReference found;
-    //
-    // Description of the last NOTOK condition
-    //
-    int status;
-
-    //
-    // Debugging section. Do not use unless you know exactly what you do.
-    //
-    //
-    // Do not not skip entries
-    //
-    int noskip;
-    //
-    // Collect everything found while searching (not necessarily matching)
-    //
-    List *traceRes;
-
- private:
-    //
-    // Internal state
-    //
-    //
-    // A pointer to the current location of the search within the index
-    // Allows to resume search if necessary.
-    //
-    WordDBCursor cursor;
-    //
-    // The latest retrieved key and data
-    //
-    String key;
-    String data;
-    //
-    // The shorted prefix key computed from searchKey
-    //
-    WordKey prefixKey;
-    //
-    // Next leap is either DB_NEXT or DB_SET_RANGE
-    //
-    int cursor_get_flags;
-    //
-    // True if search key is a prefix key
-    //
-    int searchKeyIsSameAsPrefix;
-
-    int first_skip_field;
-};
-#endif /* SWIG */
 
 // 
 // Inverted index interface
@@ -197,37 +95,55 @@ class WordSearchDescription
 class WordList
 {
 public:
-    //
-    // Construction/Destruction
+    //-
+    // Constructor. Build inverted index handling object using
+    // run time configuration parameters listed in the <b>CONFIGURATION</b>
+    // section.
     //
     WordList(const Configuration& config_arg);
     virtual ~WordList();
     
-    //
-    // Insert
+    //-
+    // Insert <b>wordRef</b> in index. It is an error to insert
+    // the same <b>wordRef</b> twice. This requires a lookup in the index 
+    // prior to the insertion.
+    // Returns OK on success, NOTOK on error.
     //
     int			Insert(const WordReference& wordRef) { return Put(wordRef, DB_NOOVERWRITE); }
+    //-
+    // Insert <b>wordRef</b> in index. If the <i>Key()</i> part of
+    // the <b>wordRef</b> exists in the index, override it.
+    // Returns OK on success, NOTOK on error.
+    //
     int			Override(const WordReference& wordRef) { return Put(wordRef, 0); }
 #ifndef SWIG
     int                 Put(const WordReference& wordRef, int flags);
 #endif /* SWIG */
 
+    //-
+    // Returns OK if <b>wordRef</b> exists in the index, NOTOK otherwise.
     //
-    // Check for existence. Returns OK if exists, NOTOK otherwise.
-    //
-    int                 Exists(const WordReference& wordRef) { return db.Exists(wordRef); }
+    int                 Exists(const WordReference& wordRef) { return db.Exists(wordRef) == 0 ? OK : NOTOK; }
 #ifndef SWIG
+    //-
+    // Returns OK if <b>word</b> exists in the index, NOTOK otherwise.
+    //
     int                 Exists(const String& word) { return Exists(WordReference(word)); }
 #endif /* SWIG */
 
     //
     // Delete permanently
     //
-    //
+    //-
+    // Delete all entries in the index whose key matches the 
+    // <i>Key()</i> part of <b>wordRef</b>, using the <i>Walk</i>
+    // method.
     // Returns the number of entries successfully deleted.
     //
     int                 WalkDelete(const WordReference& wordRef);
-    //
+    //-
+    // Delete the entry in the index that exactly matches the
+    // <i>Key()</i> part of <b>wordRef.</b>
     // Returns OK if deletion is successfull, NOTOK otherwise.
     //
     int                 Delete(const WordReference& wordRef) {
@@ -239,116 +155,190 @@ public:
 #ifdef SWIG
 %name(DeleteCursor)
 #endif /* SWIG */
-    int                 Delete(WordDBCursor& cursor) { return cursor.Del() == OK ? 1 : 0; }
-
+    //-
+    // Delete the inverted index entry currently pointed to by the
+    // <b>cursor.</b> 
+    // Returns 0 on success, Berkeley DB error code on error. This
+    // is mainly useful when implementing a callback function for
+    // a <b>WordCursor.</b> 
     //
-    // Open underlying db file
-    // mode may be O_RDONLY or O_RDWR
+    int                 Delete(WordDBCursor& cursor) { return cursor.Del(); }
+
+    //-
+    // Open inverted index <b>filename.</b> <b>mode</b>
+    // may be <i>O_RDONLY</i> or <i>O_RDWR.</i> If mode is 
+    // <i>O_RDWR</i> it can be or'ed with <i>O_TRUNC</i> to reset
+    // the content of an existing inverted index.
+    // Return OK on success, NOTOK otherwise.
     //
     int                 Open(const String& filename, int mode);
-    //
-    // Close underlying db file
+    //-
+    // Close inverted index.
     // 
     int			Close();
 
     //
-    // This returns a list of all the WordReference * matching 
+    // These returns a list of all the WordReference * matching 
     // the constraint.
-    //
-    // Return the list of word occurences exactly matching the wordRef
+    //-
+    // Returns the list of word occurrences exactly matching the
+    // <i>Key()</i> part of <b>wordRef.</b> The <i>List</i> returned
+    // contains pointers to <i>WordReference</i> objects. It is
+    // the responsibility of the caller to free the list. See List.h
+    // header for usage.
     //
     List		*Find(const WordReference& wordRef) { return (*this)[wordRef]; }
+    //-
+    // Returns the list of word occurrences exactly matching the
+    // <b>word.</b> The <i>List</i> returned
+    // contains pointers to <i>WordReference</i> objects. It is
+    // the responsibility of the caller to free the list. See List.h
+    // header for usage.
+    //
     List		*FindWord(const String& word) { return (*this)[word]; }
 #ifndef SWIG
+    //-
+    // Alias to the <b>Find</b> method.
+    //
     List		*operator [] (const WordReference& wordRef);
+    //-
+    // Alias to the <b>FindWord</b> method.
+    //
     List		*operator [] (const String& word)  { return (*this)[WordReference(word)]; }
 #endif /* SWIG */
-    //
-    // Return the list of word occurences matching the beginning of wordRef
+    //-
+    // Returns the list of word occurrences matching the <i>Key()</i>
+    // part of <b>wordRef.</b> In the <i>Key()</i>, the string
+    // (accessed with <i>GetWord()</i>) matches any string that begins
+    // with it. The <i>List</i> returned contains pointers to
+    // <i>WordReference</i> objects. It is the responsibility of the
+    // caller to free the list.
     //
     List		*Prefix (const WordReference& prefix);
 #ifndef SWIG
+    //-
+    // Returns the list of word occurrences matching the
+    // <b>word.</b> In the <i>Key()</i>, the string (accessed with
+    // <i>GetWord()</i>) matches any string that begins with it. The
+    // <i>List</i> returned contains pointers to <i>WordReference</i>
+    // objects. It is the responsibility of the caller to free the
+    // list.
+    //
     List		*Prefix (const String& prefix) { return this->Prefix(WordReference(prefix)); }
+#endif /* SWIG */
 
     //
     // Iterate over the complete database.
     //
-    // This returns a list of all the Words, as String *
+#ifndef SWIG
+    //- 
+    // Returns a list of all unique words contained in the inverted
+    // index. The <i>List</i> returned contains pointers to
+    // <i>String</i> objects. It is the responsibility of the caller
+    // to free the list. See List.h header for usage.
+    //
     List                *Words();
-    // This returns a list of all the Words, as WordReference *
+#endif /* SWIG */
+    //- 
+    // Returns a list of all entries contained in the
+    // inverted index. The <i>List</i> returned contains pointers to
+    // <i>WordReference</i> objects. It is the responsibility of
+    // the caller to free the list. See List.h header for usage.
+    //
     List		*WordRefs();
 
+#ifndef SWIG
+    //-
+    // Create a cursor that searches all the occurrences in the
+    // inverted index and call <b>ncallback</b> with
+    // <b>ncallback_data</b> for every match.
     //
-    // Walk and collect data from the word database.
-    // Backend of Collect, Dump, Delete...
+    WordCursor *Cursor(wordlist_walk_callback_t callback, Object *callback_data) { return new WordCursor(this, callback, callback_data); }
+#endif /* SWIG */
+    //- 
+    // Create a cursor that searches all the occurrences in the
+    // inverted index and that match <b>nsearchKey.</b> If
+    // <b>naction</b> is set to HTDIG_WORDLIST_WALKER calls
+    // <b>searchKey.callback</b> with <b>searchKey.callback_data</b>
+    // for every match. If <b>naction</b> is set to
+    // HTDIG_WORDLIST_COLLECT push each match in <b>searchKey.collectRes</b>
+    // data member as a <b>WordReference</b> object. It is the responsibility
+    // of the caller to free the <b>searchKey.collectRes</b> list.
     //
-    int                 Walk(WordSearchDescription &search);
+    WordCursor *Cursor(const WordKey &searchKey, int action = HTDIG_WORDLIST_WALKER) { return new WordCursor(this, searchKey, action); }
+#ifndef SWIG
+    //-
+    // Create a cursor that searches all the occurrences in the
+    // inverted index and that match <b>nsearchKey</b> and calls
+    // <b>ncallback</b> with <b>ncallback_data</b> for every match.
     //
-    // Fill internal state according to input parameters.
-    // Move to the first matching entry.
-    // Returns OK if successfull, NOTOK if it fails.
-    //
-    int                 WalkInit(WordSearchDescription& search);
-    //
-    // Move to the first matching entry.
-    // Returns OK if successfull, NOTOK if it fails.
-    //
-    int                 WalkRewind(WordSearchDescription& search);
-    //
-    // Move to the next match
-    // Returns OK if successfull, NOTOK if it fails.
-    //
-    int                 WalkNext(WordSearchDescription& search);
-    //
-    // Advance the cursor one step, be it a match or not
-    // Returns OK if successfull, NOTOK if it fails.
-    // If NOTOK and WORD_WALK_NOMATCH_FAILED is in status, it's safe to
-    // call WalkNextStep again.
-    //
-    int                 WalkNextStep(WordSearchDescription& search);
-    //
-    // Terminate walk, free allocated resources.
-    // Returns OK if successfull, NOTOK if it fails.
-    //
-    int                 WalkFinish(WordSearchDescription& search);
-    List               *Collect(const WordSearchDescription &search);
+    WordCursor *Cursor(const WordKey &searchKey, wordlist_walk_callback_t callback, Object * callback_data) { return new WordCursor(this, searchKey, callback, callback_data); }
+#endif /* SWIG */
 
     //
     // Update/get global word statistics statistics
     //
+    //-
+    // Add one to the reference count for the string contained
+    // in the <i>Key().GetWord()</i> part of <b>wordRef.</b>
+    // Returns OK on success, NOTOK otherwise.
+    //
     int Ref(const WordReference& wordRef);
+    //-
+    // Substract one to the reference count for the string contained
+    // in the <i>Key().GetWord()</i> part of <b>wordRef.</b>
+    // Returns OK on success, NOTOK otherwise.
+    //
     int Unref(const WordReference& wordRef);
-    int Noccurence(const WordKey& key, unsigned int& noccurence) const;
+#ifndef SWIG
+    //-
+    // Return in <b>noccurrence</b> the number of occurrences of the
+    // string contained in the <i>GetWord()</i> part of <b>key.</b>
+    // Returns OK on success, NOTOK otherwise.
+    //
+    int Noccurrence(const WordKey& key, unsigned int& noccurrence) const;
 
     //
     // Accessors
     //
+    //
+    // Get the Berkeley DB object
+    //
     const WordType&      GetWordType() const { return wtype; }
+#endif /* SWIG */
+    //-
+    // Return the <i>Configuration</i> object used to initialize
+    // the <i>WordList</i> object. 
+    //
     const Configuration& GetConfiguration() const { return config; }
 
+#ifndef SWIG
     //
     // Input/Output
     //
-    friend ostream &operator << (ostream &o, WordList &list); 
-    friend istream &operator >> (istream &o, WordList &list); 
+    //-
+    // Write on file descriptor <b>f</b> an ASCII description of the
+    // index. Each line of the file contains a <i>WordReference</i>
+    // ASCII description.
+    // Returns 0 on success, not 0 otherwise.
+    //
+    int Write(FILE* f);
+    //
+    //-
+    // Read <i>WordReference</i> ASCII descriptions from <b>f</b>,
+    // returns the number of inserted WordReference or < 0 if an error
+    // occurs. Invalid descriptions are ignored as well as empty
+    // lines.
+    //
+    int Read(FILE* f);
 
- protected:
+#endif /* SWIG */
     //
     // Retrieve WordReferences from the database. 
     // Backend of WordRefs, operator[], Prefix...
     //
-    List		*Collect (const WordReference& word);
-    //
-    // Find out if we should better jump to the next possible key (DB_SET_RANGE) instead of 
-    // sequential iterating (DB_NEXT). 
-    // If it is decided that jump is a better move :
-    //   search.cursor_set_flags = DB_SET_RANGE
-    //   search.key = calculated next possible key
-    // Else
-    //   do nothing
-    // Returns NOTOK if not skipping, OK if skipping.
-    // 
-    int SkipUselessSequentialWalking(WordSearchDescription &search);
+    List		*Collect(const WordReference& word);
+#ifndef SWIG
     //
     // Compressor object accessors
     //
@@ -368,25 +358,12 @@ public:
     //
     int				extended;
 
- private:
 
     WordDB	            	db;
     WordDBCompress	       *compressor;
     int                         verbose;
-
- protected:
-    //
-    // Debugging section. Do not use unless you know exactly what you do.
-    //
- public:
-    int    bm_put_count;
-    double bm_put_time;
-    int    bm_walk_count;
-    double bm_walk_time;
-    int    bm_walk_count_DB_SET_RANGE;
-    int    bm_walk_count_DB_NEXT;
-    WordMonitor *monitor;
 #endif /* SWIG */
 };
 
-#endif
+#endif /* _WordList_h_ */
+

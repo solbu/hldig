@@ -6,12 +6,12 @@
 //              or temporary search information.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.h,v 1.25 2000/02/19 05:28:49 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.26 2002/02/01 22:49:28 ghutchis Exp $
 //
 
 #ifndef _DocumentRef_h_
@@ -63,9 +63,8 @@ class DocumentRef : public Object
     List		*Descriptions()			{return &descriptions;}
     ReferenceState	DocState()			{return docState;}
     int			DocSize()			{return docSize;}
-    int			DocImageSize()			{return docImageSize;}
     List		*DocAnchors()			{return &docAnchors;}
-    int			DocScore()			{return docScore;}
+    double     		DocScore()			{return docScore;}
     int                 DocSig()                        {return docSig;}
     int			DocAnchor()			{return docAnchor;}
     int			DocHopCount()			{return docHopCount;}
@@ -85,12 +84,12 @@ class DocumentRef : public Object
     void		Descriptions(List &l)		{descriptions = l;}
     void		AddDescription(const char *d, HtWordList &words);
     void		DocState(ReferenceState s)	{docState = s;}
+    void		DocState(int s);
     void		DocSize(int s)			{docSize = s;}
-    void		DocImageSize(int s)		{docImageSize = s;}
     void                DocSig(int s)                   {docSig = s;}
     void		DocAnchors(List &l)		{docAnchors = l;}
     void		AddAnchor(const char *a);
-    void		DocScore(int s)			{docScore = s;}
+    void		DocScore(double s)		{docScore = s;}
     void		DocAnchor(int a)		{docAnchor = a;}
     void		DocHopCount(int h)		{docHopCount = h;}
     void		DocEmail(const char *e)		{docEmail = e;}
@@ -133,8 +132,6 @@ class DocumentRef : public Object
     int			docLinks;
     // This is a count of the links to the document (incoming links).
     int                 docBackLinks;
-    // This is the size of the document when including images.
-    int			docImageSize;
     // This is a list of the anchors in the document (i.e. <A NAME=...)
     List		docAnchors;
     // This is a count of the number of hops from start_urls to here.
@@ -159,7 +156,7 @@ class DocumentRef : public Object
     //
     
     // This is the current score of this document.
-    int			docScore;
+    double			docScore;
     // This is the nearest anchor for the search word.
     int			docAnchor;
 

@@ -6,12 +6,12 @@
 //           This class is very similar in interface to the List class
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVector.h,v 1.7 1999/09/29 16:33:12 loic Exp $
+// $Id: HtVector.h,v 1.8 2002/02/01 22:49:33 ghutchis Exp $
 //
 //
 #ifndef	_HtVector_h_
@@ -103,7 +103,7 @@ public:
     //
     // Deep copy member function
     //
-    HtVector		*Copy() const;
+    Object			*Copy() const;
 
     //
     // Vector Assignment

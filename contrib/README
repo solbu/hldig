@@ -13,6 +13,7 @@ More contributed work is available on the ht://Dig website:
 
 What's here:
 
+acroconv.pl	An external converter script that uses acroread to parse PDFs
 autorun		An example of automating the database building
 changehost	A script to change hostnames of URLs in the databases
 conv_doc.pl	A sample script to use the conversion features of external_parsers

@@ -5,13 +5,17 @@
 //                    unknown protocols.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalTransport.cc,v 1.2 2000/02/19 05:28:51 ghutchis Exp $
+// $Id: ExternalTransport.cc,v 1.3 2002/02/01 22:49:29 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "ExternalTransport.h"
 #include "htdig.h"
@@ -22,6 +26,15 @@
 
 #include <ctype.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#ifdef HAVE_WAIT_H
+#include <wait.h>
+#elif HAVE_SYS_WAIT_H
+#include <sys/wait.h>
+#endif
+
+#include "defaults.h"
 
 static Dictionary	*handlers = 0;
 static Dictionary	*toTypes = 0;
@@ -30,7 +43,7 @@ extern String		configFile;
 //*****************************************************************************
 // ExternalTransport::ExternalTransport(char *protocol)
 //
-ExternalTransport::ExternalTransport(char *protocol)
+ExternalTransport::ExternalTransport(const String &protocol)
 {
     if (canHandle(protocol))
     {
@@ -54,17 +67,18 @@ ExternalTransport::~ExternalTransport()
 
 
 //*****************************************************************************
-// int ExternalTransport::canHandle(char *protocol)
+// int ExternalTransport::canHandle(const String &protocol)
 //
 int
-ExternalTransport::canHandle(char *protocol)
+ExternalTransport::canHandle(const String &protocol)
 {
+	HtConfiguration* config= HtConfiguration::config();
     if (!handlers)
     {
 	handlers = new Dictionary();
 	toTypes = new Dictionary();
 	
-	QuotedStringList	qsl(config["external_protocols"], " \t");
+	QuotedStringList	qsl(config->Find("external_protocols"), " \t");
 	String			from, to;
 	int			i;
 	int			sep;
@@ -106,17 +120,79 @@ void ExternalTransport::SetConnection (URL *u)
 Transport::DocStatus ExternalTransport::Request()
 {
     //
-    // Start the external handler, passing the URL quoted on the command-line
+    // Start the external handler, passing the protocol, URL and config file
+    // as command arguments
     //
-    String	command = _Handler;
-    command << ' ' << _Protocol << " \"" << _URL.get() << "\" " << configFile;
+    StringList	hargs(_Handler);
+    char   **handlargs = new char * [hargs.Count() + 5];
+    int    argi;
+    for (argi = 0; argi < hargs.Count(); argi++)
+	handlargs[argi] = (char *)hargs[argi];
+    handlargs[argi++] = _Protocol.get();
+    handlargs[argi++] = (char *)_URL.get().get();
+    handlargs[argi++] = configFile.get();
+    handlargs[argi++] = 0;
 
-    FILE	*input = popen((char*)command, "r");
+    int    stdout_pipe[2];
+    int	   fork_result = -1;
+    int	   fork_try;
+
+    if (pipe(stdout_pipe) == -1)
+    {
+      if (debug)
+	cerr << "External transport error: Can't create pipe!" << endl;
+      delete [] handlargs;
+      return GetDocumentStatus(_Response);
+    }
+
+    for (fork_try = 4; --fork_try >= 0;)
+    {
+      fork_result = fork(); // Fork so we can execute in the child process
+      if (fork_result != -1)
+	break;
+      if (fork_try)
+	sleep(3);
+    }
+    if (fork_result == -1)
+    {
+      if (debug)
+	cerr << "Fork Failure in ExternalTransport" << endl;
+      delete [] handlargs;
+      return GetDocumentStatus(_Response);
+    }
+
+    if (fork_result == 0) // Child process
+    {
+	close(STDOUT_FILENO); // Close handle STDOUT to replace with pipe
+	dup(stdout_pipe[1]);
+	close(stdout_pipe[0]);
+	close(stdout_pipe[1]);
+	// not really necessary, and may pose Cygwin incompatibility...
+	//close(STDIN_FILENO); // Close STDIN to replace with null dev.
+	//open("/dev/null", O_RDONLY);
+
+	// Call External Transport Handler
+	execv(handlargs[0], handlargs);
+
+	exit(EXIT_FAILURE);
+    }
+
+    // Parent Process
+    delete [] handlargs;
+    close(stdout_pipe[1]); // Close STDOUT for writing
+    FILE *input = fdopen(stdout_pipe[0], "r");
+    if (input == NULL)
+    {
+      if (debug)
+	cerr << "Fdopen Failure in ExternalTransport" << endl;
+      return GetDocumentStatus(_Response);
+    }
     
     // Set up a response for this request
     _Response->Reset();
     // We just accessed the document
-    //    _Response->_access_time->SettoNow();
+    _Response->_access_time = new HtDateTime();
+    _Response->_access_time->SettoNow();
     
     
     // OK, now parse the stuff we got back from the handler...
@@ -206,7 +282,12 @@ Transport::DocStatus ExternalTransport::Request()
             break;
       }
     _Response->_document_length = _Response->_contents.length();
-    pclose(input);
+    fclose(input);
+    // close(stdout_pipe[0]); // This is closed for us by the fclose()
+
+    int rpid, status;
+    while ((rpid = wait(&status)) != fork_result && rpid != -1)
+	;
 
     return GetDocumentStatus(_Response);
 }

@@ -7,13 +7,17 @@
 //              href field in db.docdb.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtURLCodec.cc,v 1.1 1999/10/06 09:35:21 loic Exp $
+// $Id: HtURLCodec.cc,v 1.2 2002/02/01 22:49:28 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "HtURLCodec.h"
 #include "defaults.h" // For "config"
@@ -23,8 +27,9 @@
 // Only used in privacy.
 HtURLCodec::HtURLCodec()
 {
-  StringList l1(config["url_part_aliases"], " \t");
-  StringList l2(config["common_url_parts"], " \t");
+  HtConfiguration* config= HtConfiguration::config();
+  StringList l1(config->Find("url_part_aliases"), " \t");
+  StringList l2(config->Find("common_url_parts"), " \t");
 
   myWordCodec = new HtWordCodec(l1, l2, myErrMsg);
 }

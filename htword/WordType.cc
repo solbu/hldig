@@ -9,19 +9,18 @@
 //            maximum_word_length,allow_numbers,bad_word_list
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.cc,v 1.5 2000/02/19 05:29:08 ghutchis Exp $
+// $Id: WordType.cc,v 1.6 2002/02/01 22:49:36 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <iostream.h>
 #include <ctype.h>
 #include <stdio.h>
 
@@ -83,9 +82,7 @@ WordType::WordType(const Configuration &config)
 	    int flags;
 	    new_word = word;
 	    if((flags = Normalize(new_word)) & WORD_NORMALIZE_NOTOK) {
-	      cerr << "WordType::WordType: reading bad words from " <<
-		filename << " found " << word << ", ignored because " <<
-		NormalizeStatus(flags & WORD_NORMALIZE_NOTOK) << "\n";
+	      fprintf(stderr, "WordType::WordType: reading bad words from %s found %s, ignored because %s\n", (const char*)filename, word, (char*)NormalizeStatus(flags & WORD_NORMALIZE_NOTOK));
 	    } else {
 	      badwords.Add(new_word, 0);
 	    }
@@ -95,6 +92,10 @@ WordType::WordType(const Configuration &config)
     if (fl)
 	fclose(fl);
   }
+}
+
+WordType::~WordType()
+{
 }
 
 //
@@ -191,4 +192,28 @@ WordType::NormalizeStatus(int flags)
   if(tmp.empty()) tmp << "GOOD";
 
   return tmp;
+}
+
+//
+// Non-destructive tokenizer using external int as pointer into String
+//  does word separation by our rules (so it can be subclassed too)
+//
+String
+WordType::WordToken(const String tokens, int &current) const
+{
+    unsigned char	text = tokens[current];
+    String		ret;
+
+    while (text && !IsStrictChar(text))
+      text = tokens[++current];
+
+    if (text)
+    {
+	while (text && IsChar(text))
+	  {
+	    ret << text;
+	    text = tokens[++current];
+	  }
+    }
+    return ret;
 }

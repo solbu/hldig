@@ -1,109 +1,141 @@
 //
 // WordMonitor.h
 //
+// NAME
+// monitoring classes activity.
+//
+// SYNOPSIS
+//
+// Only called thru WordContext::Initialize()
+//
+// DESCRIPTION
+// 
+// The test directory contains a <i>benchmark-report</i> script used to generate
+// and archive graphs from the output of <i>WordMonitor</i>.
+//
+// CONFIGURATION
+//
+// wordlist_monitor_period <sec> (default 0)
+//   If the value <b>sec</b> is a positive integer, set a timer to
+//   print reports every <b>sec</b> seconds. The timer is set using
+//   the ALRM signal and will fail if the calling application already
+//   has a handler on that signal.
+//
+// wordlist_monitor_output <file>[,{rrd,readable] (default stderr)
+//   Print reports on <b>file</b> instead of the default <b>stderr</b>.
+//   If <b>type</b> is set to <b>rrd</b> the output is fit for the
+//   <i>benchmark-report</b> script. Otherwise it a (hardly :-) readable
+//   string.
+//
+//
+// END
+//
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
+// or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordMonitor.h,v 1.2 2000/02/19 05:29:08 ghutchis Exp $
+// $Id: WordMonitor.h,v 1.3 2002/02/01 22:49:36 ghutchis Exp $
 //
 #ifndef _WordMonitor_h_
 #define _WordMonitor_h_
 
-#include"HtTime.h"
-#include"Configuration.h"
-#include"HtVector_String.h"
-
-// filter that alows user selctable/configurable output monitoring
-class WordMonitorOutput
-{
-    
-    Dictionary pending_out;
-    int all_fields; // show all fields
-    HtVector_String fields;
-    FILE *out;
-
- public:
-    void SetOutputFields(const String &sfields);
-
-    void put(const String &name,const String &value);// add output value
-    void put(const String &name,double val);// add output value
-    void put(const String &name,int val);// add output value
-    void go();// do output
-
-    double period; // sampling period
-    WordMonitorOutput(const Configuration &config);
-    ~WordMonitorOutput();
-};
-
-class CommandProcessor
-{
-public:
-    virtual int ProcessCommand(const String& command)=0;
-};
-
-
-// command line input 
-class WordMonitorInput
-{
-    CommandProcessor *commandProcessor;
-    HtTime::Periodic periodic;    
-    FILE *fin;
-    const char *ifname;
-    int inputpos;
-    void ParseInput();
- public:
-    inline void operator () ()
-    {
-	if(periodic()){ParseInput();}
-    }
-    WordMonitorInput(const Configuration &config, CommandProcessor *ncommandProcessor);
-};
-class WordList;
-class WordDBCompress;
-
-// generates  mifluz-specific  monitor data 
-class WordMonitor : public CommandProcessor
-{
-    int nomonitor;
-    WordMonitorInput  *input;
-    WordMonitorOutput output;
-    HtTime::Periodic periodic;
-    WordDBCompress *cmpr;
-    WordList *wlist;
-    void process(double rperiod);
-
-// WordDBCompress info
-    int    dbc_last_cmpr_count ;
-    double dbc_last_cmpr_time  ;
-    int    dbc_last_ucmpr_count;
-    double dbc_last_ucmpr_time ;
-    int    dbc_last_mxtreelevel;
-    int    dbc_last_nonleave_count;
-    double dbc_last_cmpr_ratio;
-    int    dbc_last_cmpr_overflow;
-
-// WordList info
-    int    wl_last_put_count              ;
-    double wl_last_put_time               ;
-    int    wl_last_walk_count             ;
-    double wl_last_walk_time              ;
-    int    wl_last_walk_count_DB_SET_RANGE;
-    int    wl_last_walk_count_DB_NEXT     ;
-
- public:    
-    virtual int ProcessCommand(const String& command);
-    inline void operator () ()
-    {
-	if(nomonitor){return;}
-	double rperiod;
-	if(periodic(&rperiod)){process(rperiod);}
-	if(input){(*input)();}
-    }
-    virtual ~WordMonitor(){;}
-    WordMonitor(const Configuration &config,WordDBCompress *ncmpr,WordList *nwlist);
-};
-
+#include <stdio.h>
+#if TIME_WITH_SYS_TIME
+#include <sys/time.h>
+#include <time.h>
+#else
+# if HAVE_SYS_TIME_H
+#  include <sys/time.h>
+# else
+#  include <time.h>
+# endif
 #endif
+
+#define WORD_MONITOR_WRITE			1
+#define WORD_MONITOR_READ			2
+#define WORD_MONITOR_COMPRESS_01		3
+#define WORD_MONITOR_COMPRESS_02		4
+#define WORD_MONITOR_COMPRESS_03		5
+#define WORD_MONITOR_COMPRESS_04		6
+#define WORD_MONITOR_COMPRESS_05		7
+#define WORD_MONITOR_COMPRESS_06	        8
+#define WORD_MONITOR_COMPRESS_07	        9
+#define WORD_MONITOR_COMPRESS_08	       10
+#define WORD_MONITOR_COMPRESS_09	       11
+#define WORD_MONITOR_COMPRESS_10	       12
+#define WORD_MONITOR_COMPRESS_MORE	       13
+#define WORD_MONITOR_PAGE_IBTREE	       14
+#define WORD_MONITOR_PAGE_LBTREE	       15
+#define WORD_MONITOR_PAGE_UNKNOWN	       16
+#define WORD_MONITOR_PUT		       17
+#define WORD_MONITOR_GET		       18
+#define WORD_MONITOR_GET_NEXT		       19
+#define WORD_MONITOR_GET_SET_RANGE	       20
+#define WORD_MONITOR_GET_OTHER		       21
+#define WORD_MONITOR_LEVEL		       22
+#define WORD_MONITOR_PGNO		       23
+#define WORD_MONITOR_CMP		       24
+
+#define WORD_MONITOR_VALUES_SIZE	       50
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+  void word_monitor_click();
+  void word_monitor_add(int index, unsigned int value);
+  void word_monitor_set(int index, unsigned int value);
+  unsigned int word_monitor_get(int index);
+
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+
+#include "Configuration.h"
+#include "htString.h"
+
+class WordMonitor {
+ public:
+    WordMonitor(const Configuration &config);
+    ~WordMonitor();
+
+    //
+    // Unique instance handlers 
+    //
+    static void Initialize(const Configuration& config);
+    static WordMonitor* Instance() { return instance; }
+
+    void Add(int index, unsigned int value) { values[index] += value; }
+    void Set(int index, unsigned int value) { values[index] = value; }
+    unsigned int Get(int index) { return values[index]; }
+
+    const String Report() const;
+
+    void TimerStart();
+    void TimerClick(int signal);
+    void TimerStop();
+
+ private:
+    unsigned int values[WORD_MONITOR_VALUES_SIZE];
+    unsigned int old_values[WORD_MONITOR_VALUES_SIZE];
+    time_t started;
+    time_t elapsed;
+    int period;
+    FILE* output;
+    int output_style;
+    static char* values_names[WORD_MONITOR_VALUES_SIZE];
+
+    //
+    // Unique instance pointer
+    //
+    static WordMonitor* instance;
+};
+
+#endif /* __cplusplus */
+
+#endif /* _WordMonitor_h_ */
+

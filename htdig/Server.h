@@ -4,12 +4,12 @@
 // Server: A class to keep track of server specific information.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.h,v 1.10 2000/02/19 05:28:52 ghutchis Exp $
+// $Id: Server.h,v 1.11 2002/02/01 22:49:29 ghutchis Exp $
 //
 
 #ifndef _Server_h_
@@ -20,6 +20,7 @@
 #include "StringList.h"
 #include "Stack.h"
 #include "HtHeap.h"
+#include "HtRegex.h"
 #include "StringMatch.h"
 #include "URLRef.h"
 #include "HtDateTime.h"
@@ -34,6 +35,7 @@ public:
 	// Construction/Destruction
 	//
 	Server(URL u, StringList *local_robots_files = NULL);
+	Server(const Server& rhs);
 	~Server();
 
 	//
@@ -45,8 +47,8 @@ public:
 	//
 	// Provide some way of getting at the host and port for this server
 	//
-	int			port()	{return _port;}
-	char			*host()	{return _host;}
+	int port() const            {return _port;}
+	const String &host() const  {return _host;}
 	
 	//
 	// Provide some way of getting at the status of this server
@@ -59,7 +61,8 @@ public:
 	// This will check to see if the server is up if the URL is not local
 	// if it's down, it simply will not be added
 	//
-	void			push(char *path, int hopcount, char *referer, int local = 0);
+	void push(const String &path, int hopcount, const String &referer,
+         int local = 0, int newDoc = 1);
 
 	//
 	// Return the next URL from the queue for this server.
@@ -80,10 +83,21 @@ public:
 	//
         // Methods for managing persistent connections
 	//
-        void			AllowPersistentConnection() { _persistent_connections = 1; }
-        void			AvoidPersistentConnection() { _persistent_connections = 0; }
-        int			IsPersistentConnectionAllowed () { return _persistent_connections; }
+        void			AllowPersistentConnection() { _persistent_connections = true; }
+        void AvoidPersistentConnection() { _persistent_connections = false; }
+        bool IsPersistentConnectionAllowed () const
+         { return _persistent_connections; }
 
+        // Methods for getting info regarding server configuration
+        bool HeadBeforeGet() const { return _head_before_get; }
+        unsigned int TimeOut() const { return _timeout; }
+        unsigned int TcpWaitTime() const { return _tcp_wait_time; }
+        unsigned int TcpMaxRetries() const { return _tcp_max_retries; }
+        unsigned int MaxDocuments() const { return _max_documents; }
+	const String &UserAgent() const { return _user_agent; }
+	const String &AcceptLanguage() const { return _accept_language; }
+        bool DisableCookies() const { return _disable_cookies; }
+        
 	//
 	// Return the URLs to be excluded from this server
 	// (for inclusion in the exclude_urls attribute)
@@ -99,8 +113,26 @@ private:
 	HtHeap			_paths;
 	HtRegex			_disallow;	// This pattern will be used to test paths
 	int		        _documents;	// Number of documents visited
+
 	int                     _max_documents;  // Maximum number of documents from this server
-        int                     _persistent_connections; // Are pcs allowed
+
+        bool                    _persistent_connections; // Are pcs allowed
+
+        bool                    _head_before_get; // HEAD call before a GET?
+
+        bool                    _disable_cookies; // Should we send cookies?
+
+        int                     _timeout;       // Timeout for this server
+                                                
+        unsigned int            _tcp_wait_time;     // Wait time after a timeout
+                                                // has been raised.
+                                                
+        unsigned int            _tcp_max_retries;   // Max number of retries when
+                                                // connection is not possible
+                                                // and timeout occurs
+	String			_user_agent;    // User agent to use for this server
+	String			_accept_language; // Accept-language to be sent
+      	             	      	             	   // for the HTTP server
 
         
 };

@@ -6,12 +6,12 @@
 //	<http://www.faqs.org/rfcs/rfc2396.html>
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: url.cc,v 1.2 2000/02/19 05:29:10 ghutchis Exp $
+// $Id: url.cc,v 1.3 2002/02/01 22:49:37 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -48,7 +48,6 @@ typedef struct {
   int test_children;
 } params_t;
 
-static HtConfiguration	config;
 
 static void usage();
 static void dourl(params_t* params);
@@ -105,7 +104,8 @@ static void dourl(params_t* params)
 {
   if(verbose) cerr << "Test WordKey class with " <<
 		params->url_parents << " and " << params->url_children << "\n";
-  config.Defaults(defaults);
+  HtConfiguration* const config= HtConfiguration::config();
+  config->Defaults(defaults);
   dolist(params);
 }
 

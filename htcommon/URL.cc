@@ -6,19 +6,24 @@
 //      including support for multiple services. (schemes in the RFC)
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.4 2000/02/19 05:28:49 ghutchis Exp $
+// $Id: URL.cc,v 1.5 2002/02/01 22:49:28 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "URL.h"
 #include "Dictionary.h"
 #include "HtConfiguration.h"
 #include "StringMatch.h"
 #include "StringList.h"
+#include "HtURLRewriter.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -30,71 +35,82 @@
 #include <arpa/inet.h>
 #include <ctype.h>
 
-extern HtConfiguration	config;
+#define NNTP_DEFAULT_PORT 119
 
 //*****************************************************************************
 // URL::URL()
 // Default Constructor
 //
 URL::URL()
+: _url(0),
+    _path(0),
+    _service(0),
+    _host(0),
+    _port(0),
+    _normal(0),
+    _hopcount(0),
+    _signature(0),
+    _user(0)
 {
-  _port = 0;
-  _normal = 0;
-  _hopcount = 0;
 }
 
 
 //*****************************************************************************
-// URL::URL(URL &nurl)
+// URL::URL(const URL& rhs)
 // Copy constructor
 //
-URL::URL(URL &nurl)
+URL::URL(const URL& rhs)
+: _url(rhs._url),
+    _path(rhs._path),
+    _service(rhs._service),
+    _host(rhs._host),
+    _port(rhs._port),
+    _normal(rhs._normal),
+    _hopcount(rhs._hopcount),
+    _signature(rhs._signature),
+    _user(rhs._user)
 {
-    _service = nurl._service;
-    _user = nurl._user;
-    _host = nurl._host;
-    _port = nurl._port;
-    _url = nurl._url;
-    _path = nurl._path;
-    _normal = nurl._normal;
-    _signature = nurl._signature;
-    _hopcount = nurl._hopcount;
 }
 
 
 //*****************************************************************************
-// URL::URL(const char *nurl)
+// URL::URL(const String &nurl)
 // Construct a URL from a String (obviously parses the string passed in)
 // 
-URL::URL(const char *nurl)
+URL::URL(const String &nurl)
+: _url(0),
+    _path(0),
+    _service(0),
+    _host(0),
+    _port(0),
+    _normal(0),
+    _hopcount(0),
+    _signature(0),
+    _user(0)
 {
-    _port = 0;
-    _normal = 0;
-    _hopcount = 0;
     parse(nurl);
 }
 
 
 //*****************************************************************************
-// URL::URL(char *ref, URL &parent)
+// URL::URL(const String &url, const URL &parent)
 //   Parse a reference given a parent url.  This is needed to resolve relative
 //   references which do NOT have a full url.
 //
-URL::URL(const char *url, URL &parent)
+URL::URL(const String &url, const URL &parent)
+: _url(0),
+    _path(0),
+    _service(parent._service),
+    _host(parent._host),
+    _port(parent._port),
+    _normal(parent._normal),
+    _hopcount(parent._hopcount + 1), // Since this is one hop *after* the parent, we should account for this
+    _signature(parent._signature),
+    _user(parent._user)
 {
     String	temp(url);
     temp.remove(" \r\n\t");
     char* ref = temp;
-
-    // Grab as much from the original URL as possible
-    _service = parent._service;
-    _user = parent._user;
-    _host = parent._host;
-    _port = parent._port;
-    _normal = parent._normal;
-    _signature = parent._signature;
-    // Since this is one hop *after* the parent, we should account for this
-    _hopcount = parent._hopcount + 1;
 
     //
     // Strip any optional anchor from the reference.  If, however, the
@@ -150,6 +166,13 @@ URL::URL(const char *url, URL &parent)
 	//
 	parse(ref);
     }
+    else if (strncmp(ref, "//", 2) == 0)
+    {
+	// look at the parent url's _service, to make this is a complete url...
+	String	fullref(parent._service);
+	fullref << ':' << ref;
+	parse((char*)fullref);
+    }
     else
     {
 	if (hasService)
@@ -169,6 +192,11 @@ URL::URL(const char *url, URL &parent)
 	    // an absolute path was given...
 	    //
 	    _path = ref;
+
+            //
+            // Get rid of loop-causing constructs in the path
+            //
+            normalizePath();
 	}
 	else
 	{
@@ -230,10 +258,20 @@ URL::URL(const char *url, URL &parent)
 
 
 //*****************************************************************************
-// void URL::parse(const char *u)
+// void URL::rewrite()
+//
+void URL::rewrite()
+{
+	if (HtURLRewriter::instance()->replace(_url) > 0)
+		parse(_url.get());
+}
+
+
+//*****************************************************************************
+// void URL::parse(const String &u)
 //   Given a URL string, extract the service, host, port, and path from it.
 //
-void URL::parse(const char *u)
+void URL::parse(const String &u)
 {
     String	temp(u);
     temp.remove(" \t\r\n");
@@ -280,6 +318,8 @@ void URL::parse(const char *u)
 	_port = 0;
 	_url = 0;
 	_path = p;
+	if (strcmp((char*)_service, "file") == 0)
+	  _host = "localhost";
     }
     else
     {
@@ -313,8 +353,7 @@ void URL::parse(const char *u)
 	    if (p)
 	      _port = atoi(p);
 	    if (!p || _port <= 0)
-	      _port = 80;
-
+               _port = DefaultPort();
 	    //
 	    // The rest of the input string is the path.
 	    //
@@ -325,16 +364,7 @@ void URL::parse(const char *u)
 	{
 	    _host = strtok(p, "/");
 	    _host.chop(" \t");
-	    if (strcmp((char*)_service, "http") == 0)
-	      _port = 80;
-	    if (strcmp((char*)_service, "https") == 0)
-	      _port = 443;
-	    if (strcmp((char*)_service, "ftp") == 0)
-	      _port = 21;
-	    if (strcmp((char*)_service, "gopher") == 0)
-	      _port = 70;
-	    if (strcmp((char*)_service, "news") == 0)
-	      _port = 532;
+            _port = DefaultPort();
 
 	    //
 	    // The rest of the input string is the path.
@@ -375,6 +405,7 @@ void URL::normalizePath()
     // We will rewrite the path to be the minimal.
     //
     int	i, limit;
+    int	leadingdotdot = 0;
     String	newPath;
     int	pathend = _path.indexOf('?');	// Don't mess up query strings.
     if (pathend < 0)
@@ -390,11 +421,30 @@ void URL::normalizePath()
         else
         {
             _path = _path.sub(i + 3).get();
+            leadingdotdot++;
         }
         pathend = _path.indexOf('?');
         if (pathend < 0)
             pathend = _path.length();
     }
+    if ((i = _path.indexOf("/..")) >= 0 && i == pathend-3)
+    {
+        if ((limit = _path.lastIndexOf('/', i - 1)) >= 0)
+            newPath = _path.sub(0, limit+1).get();	// keep trailing slash
+        else
+        {
+            newPath = '/';
+            leadingdotdot++;
+        }
+        newPath << _path.sub(i + 3).get();
+        _path = newPath;
+        pathend = _path.indexOf('?');
+        if (pathend < 0)
+            pathend = _path.length();
+    }
+    // The RFC gives us a choice of what to do when we have .. left and
+    // we're at the top level. By principle of least surprise, we'll just
+    // toss any "leftovers" Otherwise, we'd have a loop here to add them.
 
     //
     // Also get rid of redundant "/./".  This could cause infinite
@@ -408,6 +458,13 @@ void URL::normalizePath()
         pathend = _path.indexOf('?');
         if (pathend < 0)
             pathend = _path.length();
+    }
+    if ((i = _path.indexOf("/.")) >= 0 && i == pathend-2)
+    {
+        newPath = _path.sub(0, i+1).get();		// keep trailing slash
+        newPath << _path.sub(i + 2).get();
+        _path = newPath;
+        pathend--;
     }
 
     //
@@ -435,8 +492,9 @@ void URL::normalizePath()
             pathend = _path.length();
       }
 
+	HtConfiguration* config= HtConfiguration::config();
     // If the server *isn't* case sensitive, we want to lowercase the path
-    if (!config.Boolean("case_sensitive", 1))
+    if (!config->Boolean("case_sensitive", 1))
       _path.lowercase();
 
     // And don't forget to remove index.html or similar file.
@@ -459,12 +517,13 @@ void URL::dump()
 
 
 //*****************************************************************************
-// void URL::path(char *newpath)
+// void URL::path(const String &newpath)
 //
-void URL::path(char *newpath)
+void URL::path(const String &newpath)
 {
+	HtConfiguration* config= HtConfiguration::config();
     _path = newpath;
-    if (!config.Boolean("case_sensitive",1))
+    if (!config->Boolean("case_sensitive",1))
       _path.lowercase();
     constructURL();
 }
@@ -478,6 +537,7 @@ void URL::path(char *newpath)
 //
 void URL::removeIndex(String &path)
 {
+	HtConfiguration* config= HtConfiguration::config();
     static StringMatch *defaultdoc = 0;
 
     if (path.length() == 0 || strchr((char*)path, '?'))
@@ -489,13 +549,15 @@ void URL::removeIndex(String &path)
 
     if (! defaultdoc)
     {
-      StringList  l(config["remove_default_doc"], " \t");
+      StringList  l(config->Find("remove_default_doc"), " \t");
       defaultdoc = new StringMatch();
       defaultdoc->IgnoreCase();
       defaultdoc->Pattern(l.Join('|'));
     }
+    int which, length;
     if (defaultdoc->hasPattern() &&
-            defaultdoc->CompareWord((char*)path.sub(filename)))
+	    defaultdoc->CompareWord((char*)path.sub(filename), which, length) &&
+	    filename+length == path.length())
 	path.chop(path.length() - filename);
 }
 
@@ -506,6 +568,7 @@ void URL::removeIndex(String &path)
 //
 void URL::normalize()
 {
+	HtConfiguration* config= HtConfiguration::config();
     static int	hits = 0, misses = 0;
 
     if (_service.length() == 0 || _normal)
@@ -521,7 +584,7 @@ void URL::normalize()
     //
     _host.lowercase();
 
-    if (!config.Boolean("allow_virtual_hosts", 1))
+    if (!config->Boolean("allow_virtual_hosts", 1))
     {
 	static Dictionary	hostbyname;
 	unsigned long		addr;
@@ -571,13 +634,13 @@ void URL::normalize()
 
 
 //*****************************************************************************
-// char *URL::signature()
+// const String &URL::signature()
 //   Return a string which uniquely identifies the server the current
 //   URL is refering to.
 //   This is the first portion of a url: service://user@host:port/
 //   (in short this is the URL pointing to the root of this server)
 //
-char *URL::signature()
+const String &URL::signature()
 {
     if (_signature.length())
 	return _signature;
@@ -600,11 +663,12 @@ char *URL::signature()
 //
 void URL::ServerAlias()
 {
+  HtConfiguration* config= HtConfiguration::config();
   static Dictionary *serveraliases= 0;
 
   if (! serveraliases)
     {
-      String l= config["server_aliases"];
+      String l= config->Find("server_aliases");
       String from, *to;
       serveraliases = new Dictionary();
       char *p = strtok(l, " \t");
@@ -613,7 +677,10 @@ void URL::ServerAlias()
 	{
 	  salias = strchr(p, '=');
 	  if (! salias)
-	    continue;
+	    {
+	      p = strtok(0, " \t");
+	      continue;
+	    }
 	  *salias++= '\0';
 	  from = p;
 	  if (from.indexOf(':') == -1)
@@ -630,12 +697,12 @@ void URL::ServerAlias()
   String *al= 0;
   int newport;
   int delim;
-  _signature = _host;
-  _signature << ':' << _port;
-  if ((al= (String *) serveraliases->Find(_signature)))
+  String serversig = _host;
+  serversig << ':' << _port;
+  if ((al= (String *) serveraliases->Find(serversig)))
     {
       delim= al->indexOf(':');
-      // fprintf(stderr, "\nOld URL: %s->%s\n", (char *) _signature, (char *) *al);
+      // fprintf(stderr, "\nOld URL: %s->%s\n", (char *) serversig, (char *) *al);
       _host= al->sub(0,delim).get();
       sscanf((char*)al->sub(delim+1), "%d", &newport);
       _port= newport;
@@ -650,6 +717,11 @@ void URL::ServerAlias()
 //
 void URL::constructURL()
 {
+    if (strcmp((char*)_service, "file") != 0 && _host.length() == 0) {
+	_url = "";
+	return;
+    }
+
     _url = _service;
     _url << ":";
 
@@ -664,16 +736,30 @@ void URL::constructURL()
 	_url << _host;
       }
 
-    if (_port != 80 && strcmp((char*)_service, "http") == 0)
-      _url << ':' << _port;
-    if (_port != 21 && strcmp((char*)_service, "ftp") == 0)
-      _url << ':' << _port;
-    if (_port != 443 && strcmp((char*)_service, "https") == 0)
-      _url << ':' << _port;
-    if (_port != 70 && strcmp((char*)_service, "gopher") == 0)
-      _url << ':' << _port;
-    if (_port != 532 && strcmp((char*)_service, "news") == 0)
+   if (_port != DefaultPort() && _port != 0)  // Different than the default port
       _url << ':' << _port;
 
     _url << _path;
+}
+
+
+///////
+   //    Get the default port for the recognised service
+///////
+
+int URL::DefaultPort()
+{
+   if (strcmp((char*)_service, "http") == 0)
+      return 80;
+   else if (strcmp((char*)_service, "https") == 0)
+      return 443;
+   else if (strcmp((char*)_service, "ftp") == 0)
+      return 21;
+   else if (strcmp((char*)_service, "gopher") == 0)
+      return 70;
+   else if (strcmp((char*)_service, "file") == 0)
+      return 0;
+   else if (strcmp((char*)_service, "news") == 0)
+      return NNTP_DEFAULT_PORT;
+   else return 80;
 }

@@ -6,12 +6,12 @@
 //              assignment functions.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtZlibCodec.h,v 1.1 1999/10/06 09:54:25 loic Exp $
+// $Id: HtZlibCodec.h,v 1.2 2002/02/01 22:49:28 ghutchis Exp $
 //
 //
 #ifndef __HtZlibCodec_h

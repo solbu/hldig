@@ -4,12 +4,12 @@
 //  functions for determining valid words/characters
 // 
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordType.h,v 1.9 2000/02/19 05:29:03 ghutchis Exp $
+// $Id: HtWordType.h,v 1.10 2002/02/01 22:49:34 ghutchis Exp $
 //
 #ifndef _HtWordType_h
 #define _HtWordType_h
@@ -20,5 +20,8 @@ extern int HtIsWordChar(char c);
 extern int HtIsStrictWordChar(char c);
 extern int HtWordNormalize(String &w);
 extern int HtStripPunctuation(String &w);
+
+// Like strtok(), but using our rules for word separation.
+extern char *HtWordToken(char *s);
 
 #endif /* _HtWordType_h */

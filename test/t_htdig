@@ -5,13 +5,13 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_htdig,v 1.5 2000/02/19 05:29:10 ghutchis Exp $
+# $Id: t_htdig,v 1.6 2002/02/01 22:49:37 ghutchis Exp $
 #
 
 . ./test_functions
 
 $htdig "$@" -t -i -c $testdir/conf/htdig.conf
-$htmerge -c $testdir/conf/htdig.conf
+$htpurge -c $testdir/conf/htdig.conf
 
 expected='http://localhost:7400/set1/
 http://localhost:7400/set1/script.html

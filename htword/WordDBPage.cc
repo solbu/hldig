@@ -5,13 +5,16 @@
 //                 Berkeley DB pages containing WordReferences objects.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
+// or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.cc,v 1.2 2000/02/19 05:29:07 ghutchis Exp $
+// $Id: WordDBPage.cc,v 1.3 2002/02/01 22:49:36 ghutchis Exp $
 //
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include"WordDBPage.h"
 #include"WordDBCompress.h"
@@ -21,15 +24,12 @@
 #define CMPRTYPE_NORMALCOMRPESS 0
 #define CMPRTYPE_BADCOMPRESS 1
 
-extern int word_debug_cmprcount;
-
-
 // ***********************************************
 // **********  Compression Versions **************
 // ***********************************************
 
 // never change NBITS_COMPRESS_VERSION ! (otherwise version tracking will fail)
-#define NBITS_COMPRESS_VERSION 10
+#define NBITS_COMPRESS_VERSION 11
 
 // IMPORTANT: change these EVERY time you change something that affects the compression
 #define COMPRESS_VERSION 4
@@ -469,7 +469,7 @@ WordDBPage::Compress(int ndebug, DB_CMPR_INFO *cmprInfo/*=NULL*/)
 
     if(verbose)
     {
-	printf("WordDBPage::Compress: Final bitstream result for %d\n",word_debug_cmprcount);
+	printf("WordDBPage::Compress: Final bitstream result\n");
 	res->show();
     }
     return res;
@@ -569,7 +569,7 @@ WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int ,HtVector
 	    // add record 
 	    if(arec.type==WORD_RECORD_STATS)
 	    {
-		nums[CNDATASTATS0*nk+nums_pos[CNDATASTATS0]++]=arec.info.stats.noccurence;
+		nums[CNDATASTATS0*nk+nums_pos[CNDATASTATS0]++]=arec.info.stats.noccurrence;
 		nums[CNDATASTATS1*nk+nums_pos[CNDATASTATS1]++]=arec.info.stats.ndoc;
 	    }
 	    else 

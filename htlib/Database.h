@@ -5,12 +5,12 @@
 //           simple database.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Database.h,v 1.12 1999/09/29 10:10:08 loic Exp $
+// $Id: Database.h,v 1.13 2002/02/01 22:49:33 ghutchis Exp $
 //
 
 #ifndef _Database_h_
@@ -80,7 +80,6 @@ protected:
     String		lkey;		// Contains the last key returned by iterator
 
     DB_ENV		*dbenv;		// database enviroment
-    DB_INFO		dbinfo;		// See Open
     int			(*_compare)(const DBT *a, const DBT *b); // Key comparison
     size_t		(*_prefix)(const DBT *a, const DBT *b);  // Key reduction
 

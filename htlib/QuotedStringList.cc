@@ -6,13 +6,17 @@
 //                   delimited by " or ', hence the name.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: QuotedStringList.cc,v 1.4 2000/02/19 05:29:03 ghutchis Exp $
+// $Id: QuotedStringList.cc,v 1.5 2002/02/01 22:49:34 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "QuotedStringList.h"
 
@@ -21,13 +25,6 @@
 QuotedStringList::QuotedStringList()
 {
 }
-
-
-//*****************************************************************************
-QuotedStringList::~QuotedStringList()
-{
-}
-
 
 //*****************************************************************************
 int
@@ -56,7 +53,7 @@ QuotedStringList::Create(const char *str, const char *sep, int single)
 	}
 	else if (quote == 0 && strchr(sep, *str))
 	{
-	    List::Add(new String(word));
+	    Add(new String(word));
 	    word = 0;
 	    quoted = 0;
 	    if (!single)
@@ -75,7 +72,7 @@ QuotedStringList::Create(const char *str, const char *sep, int single)
     // Add the last word to the list
     //
     if (word.length() || quoted)
-	List::Add(new String(word));
+	Add(new String(word));
     return Count();
 }
 

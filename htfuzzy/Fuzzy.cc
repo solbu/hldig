@@ -9,13 +9,19 @@
 //    2) Searching for a word using the fuzzy index
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Fuzzy.cc,v 1.17 2000/02/19 05:29:02 ghutchis Exp $
+// $Id: Fuzzy.cc,v 1.18 2002/02/01 22:49:33 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <fcntl.h>
 
 #include "Fuzzy.h"
 #include "htfuzzy.h"
@@ -29,8 +35,9 @@
 #include "Synonym.h"
 #include "Substring.h"
 #include "Prefix.h"
-#include "Regex.h"
+#include "Regexp.h"
 #include "Speling.h"
+#include "Accents.h"
 
 //*****************************************************************************
 // Fuzzy::Fuzzy(const HtConfiguration& config)
@@ -184,6 +191,8 @@ Fuzzy::getFuzzyByName(char *name, const HtConfiguration& config)
 	return new Soundex(config);
     else if (mystrcasecmp(name, "metaphone") == 0)
 	return new Metaphone(config);
+    else if (mystrcasecmp(name, "accents") == 0)
+	return new Accents(config);
     else if (mystrcasecmp(name, "endings") == 0)
 	return new Endings(config);
     else if (mystrcasecmp(name, "synonyms") == 0)
@@ -193,7 +202,7 @@ Fuzzy::getFuzzyByName(char *name, const HtConfiguration& config)
     else if (mystrcasecmp(name, "prefix") == 0)
 	return new Prefix(config);
     else if (mystrcasecmp(name, "regex") == 0)
-	return new Regex(config);
+	return new Regexp(config);
     else if (mystrcasecmp(name, "speling") == 0)
 	return new Speling(config);
     else

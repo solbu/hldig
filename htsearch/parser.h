@@ -5,12 +5,12 @@
 //         the resulting document list
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.h,v 1.13 1999/10/08 12:59:58 loic Exp $
+// $Id: parser.h,v 1.14 2002/02/01 22:49:35 ghutchis Exp $
 //
 
 #ifndef _parser_h_
@@ -26,6 +26,8 @@
 #include "HtWordList.h"
 #include <ctype.h>
 
+class Collection;
+
 class Parser
 {
 public:
@@ -34,7 +36,8 @@ public:
     int			checkSyntax(List *);
     void		parse(List *, ResultList &);
 
-    void		setDatabase(const String& db)		{ words.Open(db, O_RDONLY); }
+    // void		setDatabase(const String& db)		{ words.Open(db, O_RDONLY); }
+    void                setCollection(Collection *collection);
     char		*getErrorMessage()		{return error.get();}
     int			hadError()			{return valid == 0;}
 	
@@ -48,9 +51,10 @@ protected:
     int			match(int);
     void		setError(char *);
     void		perform_push();
-    void		perform_and(int);
+    void		perform_and();
+    void		perform_not();
     void		perform_or();
-    void		perform_phrase(List &);
+    void		perform_phrase(List * &);
 
     void		score(List *, double weight);
 
@@ -61,6 +65,7 @@ protected:
     int			valid;
     Stack		stack;
     String		error;
+    Collection          *collection; // Multiple database support
 
     HtWordList		words;
 };

@@ -4,12 +4,12 @@
 // Parsable: Base class for file parsers (HTML, PDF, ExternalParser ...)
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Parsable.h,v 1.6 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: Parsable.h,v 1.7 2002/02/01 22:49:29 ghutchis Exp $
 //
 
 #ifndef _Parsable_h_

@@ -1,9 +1,16 @@
 # Main Makefile for ht://Dig
-# Copyright (c) 1995-1999 The ht://Dig Group
+# Copyright (c) 1995-2000 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU General Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
 
 include $(top_srcdir)/Makefile.config
 
-SUBDIRS=        @HTDIGDIRS@
+if TESTS
+TESTDIR = test
+endif
+
+SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include htdoc $(TESTDIR)
 
 EXTRA_DIST = .version acconfig.h Makefile.config ChangeLog.0 contrib
 
@@ -15,9 +22,8 @@ dist-hook:
 # the test/Makefile anyway
 #
 distclean-local:
-	if echo "@HTDIGDIRS@" | grep 'test ' > /dev/null ; \
-	then : ; \
-	else \
+	if "X$(TESTDIR)" = "Xtest" ; \
+	then \
 		rm -f test/Makefile test/test_functions ; \
 	fi
 

@@ -6,12 +6,12 @@
 //           This class is very similar in interface to the List class
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVectorGeneric.h,v 1.2 2000/02/19 05:29:03 ghutchis Exp $
+// $Id: HtVectorGeneric.h,v 1.3 2002/02/01 22:49:33 ghutchis Exp $
 //
 //
 //  #ifndef	_HtVectorGeneric_h_
@@ -73,7 +73,7 @@ protected:
     // 
     // this error checking should be made optional!
     // 
-    inline void CheckBounds(const int n) const {if(n<0 || n>=element_count){cerr << "HtVectorGType::CheckBounds: out of bounds!!" << endl;}}
+    inline void CheckBounds(const int n) const {if(n<0 || n>=element_count){ fprintf(stderr, "HtVectorGType::CheckBounds: out of bounds.\n");}}
 
 public:
       
@@ -167,7 +167,7 @@ public:
     //
     // Deep copy member function
     //
-    HtVectorGType		*Copy() const;
+    Object				*Copy() const;
 
     //
     // Vector Assignment

@@ -7,13 +7,17 @@
 //             string index.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Dictionary.cc,v 1.12 2000/02/19 05:29:03 ghutchis Exp $
+// $Id: Dictionary.cc,v 1.13 2002/02/01 22:49:33 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Dictionary.h"
 
@@ -181,9 +185,8 @@ Dictionary::hashCode(const char *key) const
 }
 
 //*********************************************************************
-//   Add an entry to the hash table.  This will *not* delete the
-//   data associated with an already existing key.  Use the Replace
-//   method for that function.
+//   Add an entry to the hash table.  This will replace the
+//   data associated with an already existing key.
 //
 void
 Dictionary::Add(const String& name, Object *obj)

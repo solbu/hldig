@@ -1,11 +1,11 @@
 #
 # Part of the ht://Dig package   <http://www.htdig.org/>
-# Copyright (c) 1999 The ht://Dig Group
+# Copyright (c) 1999, 2000 The ht://Dig Group
 # For copyright details, see the file COPYING in your distribution
-# or the GNU Public License version 2 or later
+# or the GNU General Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: test_functions.in,v 1.7 2000/02/19 05:29:10 ghutchis Exp $
+# $Id: test_functions.in,v 1.8 2002/02/01 22:49:37 ghutchis Exp $
 #
 
 testdir=`pwd`
@@ -51,14 +51,9 @@ $httpd -f $testdir/conf/httpd.conf
 #
 # Prepare htdig test environment
 #
-if [ ! -d var/htdig ] 
-then 
-  mkdir -p var/htdig
-fi
-if [ ! -d var/htdig2 ] 
-then 
-  mkdir -p var/htdig2
-fi
+rm -fr var/htdig
+mkdir -p var/htdig
+mkdir -p var/htdig2
 
 fail() {
    echo $1
@@ -67,4 +62,21 @@ fail() {
 
 htdig=../htdig/htdig
 htsearch=../htsearch/htsearch
-htmerge=../htmerge/htmerge
+htmerge=../httools/htmerge
+htpurge=../httools/htpurge
+htstat=../httools/htstat
+htdump=../httools/htdump
+htload=../httools/htload
+
+#
+# Default index description used for testing
+#
+export MIFLUZ_CONFIG ; MIFLUZ_CONFIG=${srcdir}/mifluz.conf
+
+rm -f test test_weakcmpr __db*
+
+fail() {
+   echo $1
+   exit 1
+}
+

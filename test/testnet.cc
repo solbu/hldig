@@ -1,10 +1,11 @@
-// $Id: testnet.cc,v 1.9 2000/02/19 05:29:10 ghutchis Exp $
+// $Id: testnet.cc,v 1.10 2002/02/01 22:49:37 ghutchis Exp $
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
 #endif /* HAVE_CONFIG_H */
 
 #include "Transport.h"
 #include "HtHTTP.h"
+#include "HtHTTPBasic.h"
 #include "HtDateTime.h"
 #include <URL.h>
 #include <iostream.h>
@@ -27,6 +28,8 @@ int persistent = 1;
 int timeout = 10;
 int head_before_get = 1;
 int max_doc = DEFAULT_MAX_DOCUMENT_SIZE;
+int retries = 1;
+int waittime = 5;
 
 
 URL *url;
@@ -66,7 +69,7 @@ int main(int ac, char **av)
    //	Retrieving options from command line with getopt
 ///////
 
-   while((c = getopt(ac, av, "vU:T:t:ngm:")) != -1)
+   while((c = getopt(ac, av, "vU:T:t:ngm:r:w:")) != -1)
    {
       switch (c)
       {
@@ -81,6 +84,12 @@ int main(int ac, char **av)
             break;
          case 't':
             timeout=atoi(optarg);
+            break;
+         case 'r':
+            retries=atoi(optarg);
+            break;
+         case 'w':
+            waittime=atoi(optarg);
             break;
          case 'm':
             max_doc=atoi(optarg);
@@ -227,6 +236,10 @@ int main(int ac, char **av)
 
       
       cout << " Timeout value             : " << timeout << endl;
+
+      cout << " Retries for timeout       : " << retries << endl;
+      
+      cout << " Sleep after timeout       : " << waittime << endl;
       
       cout << " Document requests         : " << timesvar << endl;
 
@@ -267,6 +280,12 @@ void usage()
 
 	cout << "\t-t timeout" << endl;
 	cout << "\t\tTimeout value" << endl << endl;
+
+	cout << "\t-r retries" << endl;
+	cout << "\t\tNumber of retries after a timeout" << endl << endl;
+
+	cout << "\t-w wait time" << endl;
+	cout << "\t\tWait time value after a timeout" << endl << endl;
 
 	cout << "\t-m maxdocsize" << endl;
 	cout << "\t\tMax Document size to be retrieved" << endl << endl;
@@ -316,7 +335,7 @@ Transport::DocStatus Retrieve()
             if (debug>1)
             cout << "Creating an HtHTTP object" << endl;
       
-            HTTPConnect = new HtHTTP();
+            HTTPConnect = new HtHTTPBasic();
 
             if (!HTTPConnect)
                reportError(strerror(errno));
@@ -328,7 +347,8 @@ Transport::DocStatus Retrieve()
             
 	    HTTPConnect->SetRequestURL(*url);
 
-            // Set the referer
+            // Let's disable the cookies for this test
+	    HTTPConnect->DisableCookies();
 
             // We may issue a config paramater to enable/disable them
             if (!persistent) HTTPConnect->DisablePersistentConnection();
@@ -345,6 +365,8 @@ Transport::DocStatus Retrieve()
 
         transportConnect->SetRequestMaxDocumentSize(max_doc);
         transportConnect->SetTimeOut(timeout);
+        transportConnect->SetRetry(retries);
+        transportConnect->SetWaitTime(waittime);
 
     }
     else

@@ -11,7 +11,7 @@
 	  WWW Search Engine Software
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -20,24 +20,30 @@
 	  Recent News
 	</h2>
 	<ul>
-	  <li><strong> 6 Dec 1999:</strong> A new stable release of
-	      ht://Dig, htdig-3.1.4, is released. This release is
-	      recommended for all production systems. It solves most of
-	      the outstanding bugs in the 3.1.x releases. See the <a
-	      href="RELEASE.html">release notes</a> or <a
-	      href="where.html">download it</a>.
-	  </li>
-	  <li><strong>1 June 1999:</strong> Unfortunately, due to lack
-	      of interest from key developers, the ht://Dig Conference
-	      from Aug 19-20 will be cancelled. We hope to have either
-	      a BOF session or a workshop as part of a larger
-	      conference within the next 6-12 months. More information
-	      will be forthcoming.
-	      </li>
-	  <li><strong>5 May 1999:</strong> A list of ISPs that offer
-	  third-party site-hosting and ht://Dig to clients has
-	  started. <a href="isp.html">Full list</a></li>
-
+	  <li><strong>11 April 2000:</strong> A new beta release of the 3.2 
+	  codebase has been released, htdig-3.2.0b2. This release is intended 
+	  for testing purposes and to get feedback as to performance, features, 
+	  and of course bugs. For more information, see the <a
+	  href="/dev/htdig-3.2/RELEASE.html">release notes</a> or <a
+	  href="/dev/htdig-3.2/" target="_top">documentation</a> or
+	  <a href="where.html">download it</a>.
+          </li>
+	  <li><strong> 25 Feb 2000:</strong> A new stable release of
+	  ht://Dig, htdig-3.1.5, has been released. This release fixes a
+	  number of bugs in the 3.1.x releases, including a serious
+	  security-related bug in all previous releases. It is <em>highly</em>
+	  recommended that all production systems upgrade to this
+	  version. See the <a
+              href="RELEASE.html">release notes</a> or <a
+              href="where.html">download it</a>.</li>
+	  <li><strong> 19 Feb 2000:</strong> James Tillman released
+	  version 1.0.1 of his ConfigDig web-based configuration
+	  system. This package is intended to help configure ht://Dig
+	  and all of its components, feature multi-user awareness,
+	  auto-detects previous configurations, supports multiple
+	  configurations, automated logging and more. See the <a
+	  href="http://configdig.sourceforge.net/">ConfigDig
+	  website</a> for more.</li>
 	</ul>
 	<hr size="4" noshade>
 	<h2>
@@ -45,16 +51,16 @@
 	</h2>
 	<p>
 	  The ht://Dig system is a complete world wide web indexing and
-	  searching system for a small domain or intranet. This system
+	  searching system for a domain or intranet. This system
 	  is <strong>not</strong> meant to replace the need for
 	  powerful internet-wide search systems like Lycos, Infoseek,
-	  Webcrawler and AltaVista. Instead it is meant to cover the
+	  Google and AltaVista. Instead it is meant to cover the
 	  search needs for a single company, campus, or even a
 	  particular sub section of a web site.<br>
 	   As opposed to some WAIS-based or web-server based search
-	  engines, ht://Dig can span several web servers at a site. The
+	  engines, ht://Dig can easily span several web servers. The
 	  type of these different web servers doesn't matter as long as
-	  they understand the HTTP 1.0 protocol.
+	  they understand common protocols like HTTP.
 	</p>
 	<p>
 	  ht://Dig was developed at <a href="http://www.sdsu.edu/">San
@@ -80,12 +86,20 @@
 		online documentation</a>
 	  </li>
 	</ul>
-	<form action="http://www.htdig.org/cgi-bin/htsearch" method="post">
+	<form action="http://cgi.htdig.org/cgi-bin/htsearch" method="post">
 	  <p>
 		You can search this documentation as well:<br>
 		<input type="hidden" name="config" value="htdig">
 		<input type="hidden" name="method" value="and">
-		<input type="text" name="words" size="40">
+		<input type="text" name="words" size="40"><br>
+	        Restrict to: <select name="restrict">
+	        <option value="">Everything
+	        <option value="www.htdig.org">www.htdig.org only
+	        <option value="www.htdig.org/dev/">Developer pages only
+	        <option value="/mail/|/htdig-dev/">Mailing list archives
+	        <option value="/mail/">htdig@htdig.org archive
+	        <option value="/htdig-dev/">htdig3-dev@htdig.org archive
+	        </select>
 		<input type="submit" value="Search">
 	  </p>
 	</form>
@@ -98,11 +112,9 @@
 	  online documentation.
 	</p>
 <hr size="4" noshade>
-	<address>
-	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
-	</address>
-
-Last modified: $Date: 2000/02/19 05:29:02 $
-
+	Last modified: $Date: 2002/02/01 22:49:32 $
+<br>
+    <a href="http://sourceforge.net/">
+      <img src="http://sourceforge.net/sflogo.php?group_id=4593&amp;type=1" width="88" height="31" border="0" alt="SourceForge Logo"></a>
   </body>
 </html>

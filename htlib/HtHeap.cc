@@ -10,13 +10,17 @@
 //                 this is a "min heap" for that definition.)
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHeap.cc,v 1.8 1999/09/29 16:33:12 loic Exp $
+// $Id: HtHeap.cc,v 1.9 2002/02/01 22:49:33 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "HtHeap.h"
 #include <fstream.h>
@@ -39,7 +43,7 @@ HtHeap::HtHeap()
 HtHeap::HtHeap(HtVector vector)
 {
   int size = vector.Count();
-  data = vector.Copy();
+  data = static_cast<HtVector*>(vector.Copy());
 
   // Now we have to "heapify" -- start at the first interior node
   // And push each node down into its subtree
@@ -105,7 +109,7 @@ Object *HtHeap::Remove()
 // HtHeap *HtHeap::Copy() const
 //   Return a deep copy of the heap.
 //
-HtHeap *HtHeap::Copy() const
+Object *HtHeap::Copy() const
 {
     HtHeap	*heap = new HtHeap(*data);
 

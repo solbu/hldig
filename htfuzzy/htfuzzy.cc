@@ -13,16 +13,20 @@
 //  in the main word database.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htfuzzy.cc,v 1.16 2000/02/19 05:29:02 ghutchis Exp $
+// $Id: htfuzzy.cc,v 1.17 2002/02/01 22:49:33 ghutchis Exp $
 //
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htfuzzy.h"
 #include "Fuzzy.h"
+#include "Accents.h"
 #include "Soundex.h"
 #include "Endings.h"
 #include "Metaphone.h"
@@ -32,6 +36,7 @@
 #include "Dictionary.h"
 #include "defaults.h"
 #include "HtWordList.h"
+#include "WordContext.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -74,6 +79,7 @@ main(int ac, char **av)
 	}
     }
 
+	HtConfiguration* config= HtConfiguration::config();
     //
     // Determine what algorithms to use
     //
@@ -83,19 +89,23 @@ main(int ac, char **av)
     {
 	if (mystrcasecmp(av[i], "soundex") == 0)
 	{
-	    wordAlgorithms.Add(new Soundex(config));
+	    wordAlgorithms.Add(new Soundex(*config));
 	}
 	else if (mystrcasecmp(av[i], "metaphone") == 0)
 	{
-	    wordAlgorithms.Add(new Metaphone(config));
+	    wordAlgorithms.Add(new Metaphone(*config));
+	}
+	else if (mystrcasecmp(av[i], "accents") == 0)
+	{
+	    wordAlgorithms.Add(new Accents(*config));
 	}
 	else if (mystrcasecmp(av[i], "endings") == 0)
 	{
-	    noWordAlgorithms.Add(new Endings(config));
+	    noWordAlgorithms.Add(new Endings(*config));
 	}
 	else if (mystrcasecmp(av[i], "synonyms") == 0)
 	{
-	    noWordAlgorithms.Add(new Synonym(config));
+	    noWordAlgorithms.Add(new Synonym(*config));
 	}
 	else
 	{
@@ -112,13 +122,16 @@ main(int ac, char **av)
     //
     // Find and parse the configuration file.
     //
-    config.Defaults(&defaults[0]);
+    config->Defaults(&defaults[0]);
     if (access((char*)configFile, R_OK) < 0)
     {
 	reportError(form("Unable to find configuration file '%s'",
 			 configFile.get()));
     }
-    config.Read(configFile);
+    config->Read(configFile);
+
+    // Initialize htword library (key description + wordtype...)
+    WordContext::Initialize(*config);
 
     Fuzzy	*fuzzy;
     if (wordAlgorithms.Count() > 0)
@@ -126,8 +139,8 @@ main(int ac, char **av)
         //
         // Open the word database so that we can grab the words from it.
         //
-        HtWordList	worddb(config);
-	if (worddb.Open(config["word_db"], O_RDONLY))
+        HtWordList	worddb(*config);
+	if (worddb.Open(config->Find("word_db"), O_RDONLY) == OK)
 	  {
 	    //
 	    // Go through all the words in the database
@@ -177,7 +190,7 @@ main(int ac, char **av)
 	  }
 	else
 	  {
-	    reportError("Unable to open word database");
+	    reportError(form("Unable to open word database %s", config->Find("word_db").get()));
 	  }
     }
     if (noWordAlgorithms.Count() > 0)
@@ -190,7 +203,7 @@ main(int ac, char **av)
 		cout << "htfuzzy: Selected algorithm: " << fuzzy->getName()
 		     << endl;
 	    }
-	    if (fuzzy->createDB(config) == NOTOK)
+	    if (fuzzy->createDB(*config) == NOTOK)
 	      {
 		cout << "htfuzzy: Could not create database for algorithm: "
 		     << fuzzy->getName() << endl;
@@ -218,6 +231,7 @@ usage()
     cout << "Supported algorithms:\n";
     cout << "\tsoundex\n";
     cout << "\tmetaphone\n";
+    cout << "\taccents\n";
     cout << "\tendings\n";
     cout << "\tsynonyms\n";
     cout << "\n";

@@ -6,12 +6,12 @@
 //            good for foreign languages.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Metaphone.h,v 1.4 2000/02/19 05:29:02 ghutchis Exp $
+// $Id: Metaphone.h,v 1.5 2002/02/01 22:49:33 ghutchis Exp $
 //
 
 #ifndef _Metaphone_h_

@@ -6,12 +6,12 @@
 //               dictionary given in argument.
 // 
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ParsedString.h,v 1.6 1999/10/08 12:05:20 loic Exp $
+// $Id: ParsedString.h,v 1.7 2002/02/01 22:49:34 ghutchis Exp $
 
 #ifndef _ParsedString_h_
 #define _ParsedString_h_

@@ -6,13 +6,17 @@
 //             to the String class.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String_fmt.cc,v 1.6 2000/02/19 05:29:03 ghutchis Exp $
+// $Id: String_fmt.cc,v 1.7 2002/02/01 22:49:34 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htString.h"
 
@@ -28,7 +32,7 @@ char *form(const char *fmt, ...)
 {
 	va_list	args;
 	va_start(args, fmt);
-	vsprintf(buf, fmt, args);
+	vsnprintf(buf, sizeof(buf), fmt, args);
 	va_end(args);
 	return buf;
 }
@@ -39,7 +43,7 @@ char *form(const char *fmt, ...)
 //
 char *vform(const char *fmt, va_list args)
 {
-	vsprintf(buf, fmt, args);
+	vsnprintf(buf, sizeof(buf), fmt, args);
 	return buf;
 }
 

@@ -5,13 +5,19 @@
 //              for the endings fuzzy DB.
 //           
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: SuffixEntry.cc,v 1.2 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: SuffixEntry.cc,v 1.3 2002/02/01 22:49:33 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <fcntl.h>
 
 #include "SuffixEntry.h"
 #include "Endings.h"

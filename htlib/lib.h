@@ -5,19 +5,22 @@
 //      most sources in this directory.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: lib.h,v 1.11 1999/09/30 15:56:43 loic Exp $
+// $Id: lib.h,v 1.12 2002/02/01 22:49:34 ghutchis Exp $
 //
 
 #ifndef _lib_h
 #define _lib_h
 
+#include "clib.h"
+
 #include <string.h>
-#include "htconfig.h"
+#include <dirent.h> // for scandir
+
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <time.h>
@@ -52,7 +55,7 @@ const char *mystrcasestr(const char *s, const char *pattern);
 // Too many problems with system strptime() functions...  Just use our own
 // version of it.
 //
-extern "C" char *Htstrptime(char *buf, char *fmt, struct tm *tm);
+char *mystrptime(const char *buf, const char *fmt, struct tm *tm);
 
 //
 // timegm() is quite rare, so provide our own.

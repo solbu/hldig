@@ -5,12 +5,12 @@
 //              ISO 8859-1 entities and high-bit characters.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtSGMLCodec.h,v 1.1 1999/10/06 10:16:34 loic Exp $
+// $Id: HtSGMLCodec.h,v 1.2 2002/02/01 22:49:28 ghutchis Exp $
 //
 #ifndef __HtSGMLCodec_h
 #define __HtSGMLCodec_h
@@ -26,13 +26,15 @@ public:
   static HtSGMLCodec *instance();
   virtual ~HtSGMLCodec();
 
-  // Same as in the HtWordCodec class.  Each string may contain
-  // zero  or more of words from the lists.
+  // Similar to the HtWordCodec class.  Each string may contain
+  // zero or more of words from the lists. Here we need to run
+  // it through two codecs because we might have two different forms
   inline String encode(const String &uncoded) const
-  { return myWordCodec->encode(uncoded); }
+  { return myTextWordCodec->encode(myNumWordCodec->encode(uncoded)); }
 
+  // But we only want to decode into one form i.e. &foo; NOT &#nnn;
   String decode(const String &coded) const
-  { return myWordCodec->decode(coded); }
+  { return myTextWordCodec->decode(coded); }
 
   // If an error was discovered during the parsing of
   // entities, this returns an error message
@@ -53,7 +55,8 @@ private:
   HtSGMLCodec(const HtSGMLCodec &);
   void operator= (const HtSGMLCodec &);
 
-  HtWordCodec *myWordCodec;
+  HtWordCodec *myTextWordCodec; // For &foo;
+  HtWordCodec *myNumWordCodec; // For &#foo;
   String myErrMsg;
 };
 

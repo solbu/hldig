@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -14,13 +14,7 @@
 #
 # To compile with profiling do the following:
 #
-# make clean
-# ( cd db ; make all )
-# make CXXFLAGS=-g PROFILING=-p all
-#
-# Note that it's necessary to rebuild Berkeley DB without CXXFLAGS set because
-# it has undesirable effects. CXXFLAGS must be set to -g because it defaults
-# to -g -O2 when g++ is used and profiling is not done in a intuitive way.
+# make CFLAGS=-g CXXFLAGS=-g PROFILING=-p all
 #
 
 
@@ -59,10 +53,9 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -88,7 +81,6 @@ DEFAULT_CONFIG_FILE = @DEFAULT_CONFIG_FILE@
 DLLTOOL = @DLLTOOL@
 FIND = @FIND@
 GUNZIP = @GUNZIP@
-HTDIGDIRS = @HTDIGDIRS@
 HTDIG_MAJOR_VERSION = @HTDIG_MAJOR_VERSION@
 HTDIG_MICRO_VERSION = @HTDIG_MICRO_VERSION@
 HTDIG_MINOR_VERSION = @HTDIG_MINOR_VERSION@
@@ -99,15 +91,16 @@ LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MV = @MV@
 NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
-PDF_PARSER = @PDF_PARSER@
 PERL = @PERL@
 RANLIB = @RANLIB@
+RRDTOOL = @RRDTOOL@
 SEARCH_DIR = @SEARCH_DIR@
 SEARCH_FORM = @SEARCH_FORM@
 SED = @SED@
@@ -120,18 +113,22 @@ USER = @USER@
 VERSION = @VERSION@
 YACC = @YACC@
 
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign no-dependencies
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES) $(PROFILING)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db -I$(top_builddir)/db 		$(LOCAL_DEFINES) $(PROFILING)
 
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libhtdb.a
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/libhtdb.la 		$(top_builddir)/htlib/libht.la
 
 
 EXTRA_DIST = htconfig.h.in stamp-h.in
+
+pkginclude_HEADERS = htconfig.h
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = htconfig.h
 CONFIG_CLEAN_FILES = 
+HEADERS =  $(pkginclude_HEADERS)
+
 DIST_COMMON =  ./stamp-h.in Makefile.am Makefile.in htconfig.h.in
 
 
@@ -143,7 +140,7 @@ all: all-redirect
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.config
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign include/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -175,20 +172,56 @@ distclean-hdr:
 	-rm -f htconfig.h
 
 maintainer-clean-hdr:
-tags: TAGS
-TAGS:
 
+install-pkgincludeHEADERS: $(pkginclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgincludedir)
+	@list='$(pkginclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgincludedir)/$$p; \
+	done
+
+uninstall-pkgincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(pkginclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pkgincludedir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES) htconfig.h.in $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)htconfig.h.in$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags htconfig.h.in $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
 subdir = include
 
 distdir: $(DISTFILES)
-	here=`cd $(top_builddir) && pwd`; \
-	top_distdir=`cd $(top_distdir) && pwd`; \
-	distdir=`cd $(distdir) && pwd`; \
-	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign include/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -213,19 +246,20 @@ all-recursive-am: htconfig.h
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am:
+install-data-am: install-pkgincludeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am:
+uninstall-am: uninstall-pkgincludeHEADERS
 uninstall: uninstall-am
-all-am: Makefile htconfig.h
+all-am: Makefile $(HEADERS) htconfig.h
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(pkgincludedir)
 
 
 mostlyclean-generic:
@@ -237,28 +271,30 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-hdr mostlyclean-generic
+mostlyclean-am:  mostlyclean-hdr mostlyclean-tags mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-hdr clean-generic mostlyclean-am
+clean-am:  clean-hdr clean-tags clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-hdr distclean-generic clean-am
+distclean-am:  distclean-hdr distclean-tags distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-hdr maintainer-clean-generic \
-		distclean-am
+maintainer-clean-am:  maintainer-clean-hdr maintainer-clean-tags \
+		maintainer-clean-generic distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 maintainer-clean: maintainer-clean-am
 
 .PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
-tags distdir info-am info dvi-am dvi check check-am installcheck-am \
+uninstall-pkgincludeHEADERS install-pkgincludeHEADERS tags \
+mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+distdir info-am info dvi-am dvi check check-am installcheck-am \
 installcheck all-recursive-am install-exec-am install-exec \
 install-data-am install-data install-am install uninstall-am uninstall \
 all-redirect all-am all installdirs mostlyclean-generic \

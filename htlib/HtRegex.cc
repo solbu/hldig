@@ -4,24 +4,25 @@
 // HtRegex: A simple C++ wrapper class for the system regex routines.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.cc,v 1.10 2000/02/19 05:29:03 ghutchis Exp $
+// $Id: HtRegex.cc,v 1.11 2002/02/01 22:49:33 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "HtRegex.h"
 #include <locale.h>
 
 
-HtRegex::HtRegex()
-{
-	compiled = 0;
-}
+HtRegex::HtRegex() : compiled(0) { }
 
-HtRegex::HtRegex(const char *str, int case_sensitive)
+HtRegex::HtRegex(const char *str, int case_sensitive) : compiled(0)
 {
         set(str, case_sensitive);
 }
@@ -32,21 +33,36 @@ HtRegex::~HtRegex()
 	compiled = 0;
 }
 
-void
-HtRegex::set(const char * str, int case_sensitive)
+const String &HtRegex::lastError()
 {
-	compiled = 0;
-	if (str == NULL) return;
-	if (strlen(str) <= 0) return;
-	if (!case_sensitive)
-	  if (regcomp(&re, str, REG_EXTENDED|REG_ICASE) == 0)
-		compiled = 1;
-	else
-	  if (regcomp(&re, str, REG_EXTENDED) == 0)
-		compiled = 1;
+	return lastErrorMessage;
 }
 
-void
+int
+HtRegex::set(const char * str, int case_sensitive)
+{
+  if (compiled != 0) regfree(&re);
+
+  int err;
+  compiled = 0;
+  if (str == NULL) return 0;
+  if (strlen(str) <= 0) return 0;
+  if (err = regcomp(&re, str, case_sensitive ? REG_EXTENDED : (REG_EXTENDED|REG_ICASE)), err == 0)
+    {
+      compiled = 1;
+    }
+  else
+    {
+      size_t len = regerror(err, &re, 0, 0);
+      char *buf = new char[len];
+      regerror(err, &re, buf, len);
+      lastErrorMessage = buf;
+      delete buf;
+    }
+  return compiled;
+}
+
+int
 HtRegex::setEscaped(StringList &list, int case_sensitive)
 {
     String *str;
@@ -71,7 +87,7 @@ HtRegex::setEscaped(StringList &list, int case_sensitive)
       }
     transformedLimits.chop(1);
 
-    set(transformedLimits, case_sensitive);
+    return set(transformedLimits, case_sensitive);
 }
 
 int

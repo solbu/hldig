@@ -6,13 +6,17 @@
 //             whether the word should be hidden (ignored).
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WeightWord.cc,v 1.5 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: WeightWord.cc,v 1.6 2002/02/01 22:49:35 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "WeightWord.h"
 

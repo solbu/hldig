@@ -7,12 +7,12 @@
 //              DocMatch class but designed for result display purposes.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ResultMatch.h,v 1.7 1999/09/24 10:29:05 loic Exp $
+// $Id: ResultMatch.h,v 1.8 2002/02/01 22:49:35 ghutchis Exp $
 //
 
 #ifndef _ResultMatch_h_
@@ -22,6 +22,7 @@
 #include "htString.h"
 
 class DocumentRef;
+class Collection;
 
 class ResultMatch : public Object
 {
@@ -37,11 +38,15 @@ public:
 	//
 	void			setAnchor(int a)	{anchor = a;}
 	void			setID(int i)		{id = i;}
-	void			setScore(float s)	{score = s;}
+	void			setScore(double s)	{score = s;}
 	
 	int				getAnchor()	{return anchor;}
-	int				getScore()	{return (int) score;}
+	double				getScore()	{return score;}
 	int			getID()			{return id;}
+
+        // Multiple database support
+        void            setCollection(Collection *coll) { collection = coll; }
+        Collection      *getCollection() { return collection; }  
 
 	static int		setSortType(const String& sorttype);
 
@@ -51,7 +56,7 @@ public:
 	virtual char *getTitle();
 	virtual time_t getTime();
 
-	virtual void setTitle(const String& title);
+	virtual void setTitle(char *title);
 	virtual void setTime(time_t t);
 
 	// This is likely to help weak compilers as well as the eye.
@@ -69,9 +74,10 @@ private:
 	    SortByID
 	};
 
-	float			score;
+	double			score;
 	int				anchor;
 	int				id;
+        Collection              *collection;
 
 	static SortType		mySortType;
 };

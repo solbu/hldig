@@ -37,6 +37,11 @@
 #               stripped out all parser-related code
 # Added:        test to silently ignore wrapped EPS files    < " >
 # Added:        test for null device on Win32 env.   <PBISSET@emergency.qld.gov.au>
+# 2000/01/12
+# Changed:      "break" to "last" (no break in Perl) <wjones@tc.fluke.com>
+# 2001/07/12
+# Changed:      fix "last" handling in dehyphenation <grdetil@scrc.umanitoba.ca>
+# Added:        handle %xx codes in title from URL   <grdetil@scrc.umanitoba.ca>
 #########################################
 #
 # set this to your MS Word to text converter
@@ -180,6 +185,7 @@ print "<HTML>\n<head>\n";
 # print out the title, if it's set, and not just a file name, or make one up
 if ($title eq "" || $title =~ /^[A-G]:[^\s]+\.[Pp][Dd][Ff]$/) {
     @parts = split(/\//, $ARGV[2]);         # get the file basename
+    $parts[-1] =~ s/%([A-F0-9][A-F0-9])/pack("C", hex($1))/gie;
     $title = "$type Document $parts[-1]";   # use it in title
 }
 print "<title>$title</title>\n";
@@ -190,8 +196,9 @@ print "</head>\n<body>\n";
 open(CAT, "$cvtcmd |") || die "$cvtr doesn't want to be opened using pipe.\n";
 while (<CAT>) {
     while (/[A-Za-z\300-\377]-\s*$/ && $dehyphenate) {
-        $_ .= <CAT> || last;
-        s/([A-Za-z\300-\377])-\s*\n\s*([A-Za-z\300-\377])/$1$2/
+        $_ .= <CAT>;
+        last if eof;
+        s/([A-Za-z\300-\377])-\s*\n\s*([A-Za-z\300-\377])/$1$2/s
     }
     s/[\255]/-/g;                       # replace dashes with hyphens
     s/\f/\n/g;                          # replace form feed

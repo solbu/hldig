@@ -4,12 +4,13 @@
 // HtRegex: A simple C++ wrapper class for the system regex routines.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.h,v 1.6 2000/02/19 05:29:03 ghutchis Exp $
+// $Id: HtRegex.h,v 1.7 2002/02/01 22:49:33 ghutchis Exp $
+//
 //
 
 #ifndef	_HtRegex_h_
@@ -18,8 +19,15 @@
 #include "Object.h"
 #include "StringList.h"
 
-#include <sys/types.h>
+// This is an attempt to get around compatibility problems 
+// with the included regex
+#ifdef HAVE_BROKEN_REGEX
 #include <regex.h>
+#else
+#include "regex.h"
+#endif
+
+#include <sys/types.h>
 #include <fstream.h>
 
 class HtRegex : public Object
@@ -30,14 +38,16 @@ public:
     //
     HtRegex();
     HtRegex(const char *str, int case_sensitive = 0);
-    ~HtRegex();
+    virtual ~HtRegex();
 
     //
     // Methods for setting the pattern
     //
-    void	set(const String& str, int case_sensitive = 0) { set(str.get(), case_sensitive); }
-    void	set(const char *str, int case_sensitive = 0);
-    void	setEscaped(StringList &list, int case_sensitive = 0);
+    int		set(const String& str, int case_sensitive = 0) { return set(str.get(), case_sensitive); }
+    int		set(const char *str, int case_sensitive = 0);
+    int		setEscaped(StringList &list, int case_sensitive = 0);
+
+	virtual const String &lastError();	// returns the last error message
 
     //
     // Methods for checking a match
@@ -48,6 +58,8 @@ public:
 protected:
     int			compiled;
     regex_t		re;
+
+    String		lastErrorMessage;
 };
 
 #endif

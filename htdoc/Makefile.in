@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -14,13 +14,7 @@
 #
 # To compile with profiling do the following:
 #
-# make clean
-# ( cd db ; make all )
-# make CXXFLAGS=-g PROFILING=-p all
-#
-# Note that it's necessary to rebuild Berkeley DB without CXXFLAGS set because
-# it has undesirable effects. CXXFLAGS must be set to -g because it defaults
-# to -g -O2 when g++ is used and profiling is not done in a intuitive way.
+# make CFLAGS=-g CXXFLAGS=-g PROFILING=-p all
 #
 
 
@@ -59,10 +53,9 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -88,7 +81,6 @@ DEFAULT_CONFIG_FILE = @DEFAULT_CONFIG_FILE@
 DLLTOOL = @DLLTOOL@
 FIND = @FIND@
 GUNZIP = @GUNZIP@
-HTDIGDIRS = @HTDIGDIRS@
 HTDIG_MAJOR_VERSION = @HTDIG_MAJOR_VERSION@
 HTDIG_MICRO_VERSION = @HTDIG_MICRO_VERSION@
 HTDIG_MINOR_VERSION = @HTDIG_MINOR_VERSION@
@@ -99,15 +91,16 @@ LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MV = @MV@
 NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
-PDF_PARSER = @PDF_PARSER@
 PERL = @PERL@
 RANLIB = @RANLIB@
+RRDTOOL = @RRDTOOL@
 SEARCH_DIR = @SEARCH_DIR@
 SEARCH_FORM = @SEARCH_FORM@
 SED = @SED@
@@ -120,15 +113,15 @@ USER = @USER@
 VERSION = @VERSION@
 YACC = @YACC@
 
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign no-dependencies
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES) $(PROFILING)
-
-
-HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libhtdb.a
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db -I$(top_builddir)/db 		$(LOCAL_DEFINES) $(PROFILING)
 
 
-EXTRA_DIST = COPYING  	ChangeLog 	FAQ.html 	RELEASE.html 	THANKS.html 	TODO.html 	author.html 	bdot.gif 	bugs.html 	attrs.html attrs_head.html attrs_tail.html 	cf_byname.html cf_byname_head.html cf_byname_tail.html 	cf_byprog.html cf_byprog_head.html cf_byprog_tail.html 	cf_general.html 	cf_types.html 	cf_variables.html 	config.html 	confindex.html 	confmenu.html 	contents.html 	dot.gif 	howitworks.html 	htdig.gif 	htdig.html 	htdig_big.gif 	htfuzzy.html 	htmerge.html 	htnotify.html 	hts_form.html 	hts_general.html 	hts_menu.html 	hts_method.html 	hts_templates.html 	htsearch.html 	index.html 	install.html 	ma_menu.html 	mailarchive.html 	mailing.html 	main.html 	meta.html 	notification.html 	require.html 	triangle.gif 	up.gif 	uses.html 	where.html 	cf_generate.pl
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/libhtdb.la 		$(top_builddir)/htlib/libht.la
+
+
+EXTRA_DIST = COPYING  	ChangeLog 	FAQ.html 	RELEASE.html 	THANKS.html 	TODO.html 	author.html 	bdot.gif 	bugs.html 	attrs.html attrs_head.html attrs_tail.html 	cf_byname.html cf_byname_head.html cf_byname_tail.html 	cf_byprog.html cf_byprog_head.html cf_byprog_tail.html 	cf_general.html 	cf_types.html 	cf_variables.html 	config.html 	confindex.html 	confmenu.html 	contents.html 	dot.gif 	htdig.gif 	htdig.html 	htdig_big.gif 	htfuzzy.html 	htmerge.html 	htnotify.html 	hts_form.html 	hts_general.html 	hts_menu.html 	hts_method.html 	hts_templates.html 	htsearch.html 	index.html 	install.html 	ma_menu.html 	mailarchive.html 	mailing.html 	main.html 	meta.html 	notification.html 	require.html 	triangle.gif 	up.gif 	uses.html 	where.html 	cf_generate.pl
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -144,7 +137,7 @@ all: all-redirect
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.config
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign htdoc/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -157,11 +150,6 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = htdoc
 
 distdir: $(DISTFILES)
-	here=`cd $(top_builddir) && pwd`; \
-	top_distdir=`cd $(top_distdir) && pwd`; \
-	distdir=`cd $(distdir) && pwd`; \
-	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign htdoc/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -194,7 +182,7 @@ uninstall: uninstall-am
 all-am: Makefile
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 
 

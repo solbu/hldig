@@ -10,7 +10,7 @@
 	  htsearch
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -28,130 +28,156 @@
 	</p>
 	<p>
 	  The HTML form is expected to contain at least an input text
-	  field named <b>words</b>. This is where the user will enter
+	  field named <strong>words</strong>. This is where the user will enter
 	  the search words. Other values are also recognized but have
 	  appropriate defaults in case they are not used:
 	</p>
 	<dl>
 	  <dt>
-		<b>config</b>
+		<strong>config</strong>
 	  </dt>
 	  <dd>
 		Specifies the name of the configuration file. The name here
-		is the name without the path and without the <i>.conf</i>
+		is the name without the path and without the <em>.conf</em>
 		at the end. This file is assumed to be located in the
-		CONFIG_DIR directory. Periods are <b>not</b> allowed in this
+		CONFIG_DIR directory. Periods are <strong>not</strong> allowed in this
 		field for security reasons (to prevent HTML authors from
 		pointing all around at your files).<br>
-		The default is <i>htdig</i>
+		The default is <em>htdig</em>
 	  </dd>
 	  <dt>
-		<b>exclude</b>
+		<strong>exclude</strong>
 	  </dt>
 	  <dd>
-		This value is a pattern that all URLs of the search results
-		cannot match. This pattern may include regular
-	      expressions when enclosed within [ and ] characters.<br>
-		 The default is blank.
+		This value is a pattern that specifies which URLs are to be
+		excluded from the search results. If a URL matches one of
+		these patterns it is discarded. Multiple patterns can be
+		given, separated by a bar ("|"), or multiple definitions
+		of the exclude input parameter can be given. This pattern
+		may include regular expressions when enclosed within [ and ]
+		characters.<br>
+		 The default is specified by the <a href="attrs.html#exclude">exclude</a>
+		attribute in the configuration file.
+
 	  </dd>
 	  <dt>
-		<b>format</b>
+		<strong>format</strong>
 	  </dt>
 	  <dd>
 		This specifies the name of the template to display the
 		search results in. There are two builtin templates named
-		<i>builtin-long</i> and <i>builtin-short</i> which can be
+		<em>builtin-long</em> and <i>builtin-short</i> which can be
 		used, but any number of custom templates can also be
 		defined. Find out more about the templates in the
 		<a href="hts_templates.html">Output Templates</a> section.<br>
-		 The <i>format</i> value can be specified as either a
+		 The <em>format</em> value can be specified as either a
 		hidden input field or a drop down menu.<br>
-		 The default is specified by the <i>template_name</i>
+		 The default is specified by the <a href="attrs.html#template_name">template_name</a>
 		attribute in the configuration file.
 	  </dd>
 	  <dt>
-		<b>keywords</b>
+		<strong>keywords</strong>
 	  </dt>
 	  <dd>
 		Used to specify a list of required words that have to be in
 		the documents. This list of words is added to the normal
-		<i>words</i> value using logical "and"s.<br>
+		<em>words</em> value using logical "and"s, or logical "or"s
+		if the <a href="attrs.html#any_keywords">any_keywords</a>
+		attribute is set to true in the configuration file.<br>
 		 An example use for this value is to make it a drop down
 		menu with a limited set of predetermined categories or
 		keywords to restrict the search. This can be very useful
 		for very structured pages.
 		<br>Note that the words may appear anywhere in the document.
-		The scope of these required words is <b>not</b> limited to
+		The scope of these required words is <strong>not</strong> limited to
 		words in META tags with the "keywords" or "htdig-keywords"
 		property, despite what the parameter name may suggest.
 	  </dd>
 	  <dt>
-		<b>matchesperpage</b>
+		<strong>matchesperpage</strong>
 	  </dt>
 	  <dd>
 		Specifies how many matches will be displayed on each page
 		of results.<br>
-		 The default is specified by the <i>matches_per_page</i>
+		 The default is specified by the <a href="attrs.html#matches_per_page">matches_per_page</a>
 		attribute in the configuration file. Since this value has
 		to be a number, it either needs to be set using a hidden
 		input field or a with a drop down menu.
 	  </dd>
 	  <dt>
-		<b>method</b>
+		<strong>method</strong>
 	  </dt>
 	  <dd>
-		This can be one of <i>and</i>, <i>or</i>, or <i>
-		boolean</i>. It determines what type of search will be
+		This can be one of <em>and</em>, <i>or</i>, or <i>
+		boolean</em>. It determines what type of search will be
 		performed.<br>
-		 The default is specified by the <i>match_method</i>
+		 The default is specified by the <a href="attrs.html#match_method">match_method</a>
 		attribute in the configuration file. It is quite useful to
 		make this item a drop down menu so the user can select the
 		type of search at search time.
 	  </dd>
 	  <dt>
-		<b>page</b>
+		<strong>page</strong>
 	  </dt>
 	  <dd>
 		This should normally not be used. It is generated by the
 		paged results display.
 	  </dd>
 	  <dt>
-		<b>restrict</b>
+		<strong>restrict</strong>
 	  </dt>
 	  <dd>
 		This value is a pattern that all URLs of the search results
 		will have to match. This can be used to restrict the search
-		to a particular subtree or subsection of a bigger
-		database. The pattern may include regular expressions
-	      when the expression is enclosed by [ and ] characters.<br>
-		 The default is blank.
+		to a particular subtree or subsection of a bigger database.
+		Multiple patterns can be given, separated by a bar ("|"), or
+		multiple definitions of the restrict input parameter can be
+		given. Any URL in the search results will have to match at
+		least one of these patterns. The pattern may include regular
+		expressions when the expression is enclosed by [ and ]
+		characters.<br>
+		Note that the restrict list does not take precedence over the
+		exclude list - if a URL matches patterns in both lists it is
+		still excluded from the search results.<br>
+		 The default is specified by the <a href="attrs.html#resctict">resctict</a>
+		attribute in the configuration file.
 	  </dd>
 	  <dt>
-		<b>sort</b>
+		<strong>sort</strong>
 	  </dt>
 	  <dd>
-		This can be one of <i>score</i>, <i>time</i>, <i>date</i>,
-		<i>title</i>, <i>revscore</i>, <i>revtime</i>, <i>revdate</i>,
-		or <i>revtitle</i>. It determines what type of sort will be
-		performed on the search results. The types <i>time</i> and
-		<i>date</i> are synonymous, as are <i>revtime</i> and
-		<i>revdate</i>, as all four sort on the time that the
+		This can be one of <em>score</em>, <i>time</i>, <i>date</i>,
+		<em>title</em>, <i>revscore</i>, <i>revtime</i>, <i>revdate</i>,
+		or <em>revtitle</em>. It determines what type of sort will be
+		performed on the search results. The types <em>time</em> and
+		<em>date</em> are synonymous, as are <i>revtime</i> and
+		<em>revdate</em>, as all four sort on the time that the
 		documents were last modified, if this information is given
 		by the server.
-		The sort methods that begin with <i>rev</i> simply reverse
+		The sort methods that begin with <em>rev</em> simply reverse
 		the order of the sort.<br>
-		 The default is specified by the <i>sort</i>
+		 The default is specified by the <a href="attrs.html#sort">sort</a>
 		attribute in the configuration file. It is quite useful to
 		make this item a drop down menu so the user can select the
 		type of sort at search time.
 	  </dd>
+	  <dt>
+		<strong>startyear</strong>, <strong>startmonth</strong>, <strong>startday</strong>,
+		<strong>endyear</strong>, <strong>endmonth</strong>, <strong>endday</strong>
+	  </dt>
+	  <dd>
+		These values specify the allowed range of document
+		modification dates allowed in the search results.
+		They can be used to restrict the search
+		to particular "ages" of documents, new or old.<br>
+		 The default is the full range of documents in the database.
+		These values can also be specified by configuration attributes
+		of the same names in the configuration file.
+	  </dd>
 	</dl>
 	<hr size="4" noshade>
-	<address>
-	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
-	</address>
 
-Last modified: $Date: 2000/02/19 05:29:01 $
+	Last modified: $Date: 2002/02/01 22:49:32 $
 
   </body>
 </html>

@@ -7,13 +7,17 @@
 //            and statistics accordingly.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.73 2000/02/19 05:28:51 ghutchis Exp $
+// $Id: Retriever.cc,v 1.74 2002/02/01 22:49:29 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Retriever.h"
 #include "htdig.h"
@@ -27,16 +31,12 @@
 #include "WordType.h"
 #include "Transport.h"
 #include "HtHTTP.h"    // For HTTP statistics
+#include "md5.h"
+#include "defaults.h"
 
 #include <pwd.h>
 #include <signal.h>
 #include <stdio.h>
-
-#ifndef HAVE_STRPTIME_DECL
-extern "C" {
-extern char *strptime(const char *__s, const char *__fmt, struct tm *__tp);
-}
-#endif /* HAVE_STRPTIME_DECL */
 
 
 static int noSignal;
@@ -46,12 +46,13 @@ static int noSignal;
 // Retriever::Retriever()
 //
 Retriever::Retriever(RetrieverLog flags) :
-  words(config)
+  words(*(HtConfiguration::config()))
 {
+	HtConfiguration* config= HtConfiguration::config();
     FILE	*urls_parsed;
 
     currenthopcount = 0;
-    max_hop_count = config.Value("max_hop_count", 999999);
+    max_hop_count = config->Value("max_hop_count", 999999);
 		
     //
     // Initialize the flags for the various HTML factors
@@ -69,20 +70,22 @@ Retriever::Retriever(RetrieverLog flags) :
     factor[6] = FLAG_HEADING;
     factor[7] = FLAG_HEADING;
     // img alt text
-    factor[8] = FLAG_KEYWORDS;
+    //factor[8] = FLAG_KEYWORDS;
+    factor[8] = FLAG_TEXT;	// treat alt text as plain text, until it has
+				// its own FLAG and factor.
     // keywords factor
     factor[9] = FLAG_KEYWORDS;
     // META description factor
     factor[10] = FLAG_DESCRIPTION;
 	
     doc = new Document();
-    minimumWordLength = config.Value("minimum_word_length", 3);
+    minimumWordLength = config->Value("minimum_word_length", 3);
 
     log = flags;
     // if in restart mode
     if (Retriever_noLog != log ) 
     {
-    String	filelog = config["url_log"];
+    String	filelog = config->Find("url_log");
     char buffer[1024];
     int  l;
 
@@ -101,6 +104,19 @@ Retriever::Retriever(RetrieverLog flags) :
         unlink((char*)filelog);
     }
     
+    check_unique_md5 = config->Boolean("check_unique_md5", 0); 
+    check_unique_date = config->Boolean("check_unique_date", 0); 
+
+    d_md5 = 0;
+    if (check_unique_md5)
+      {
+	d_md5 = Database::getDatabaseInstance(DB_HASH);
+
+	if (d_md5->OpenReadWrite(config->Find("md5_db"), 0666) != OK) {
+	  cerr << "DocumentDB::Open: " << config->Find("md5_db") << " " << strerror(errno) << "\n";
+	}
+      }
+
 }
 
 
@@ -109,6 +125,8 @@ Retriever::Retriever(RetrieverLog flags) :
 //
 Retriever::~Retriever()
 {
+    if (d_md5)
+      d_md5->Close();
     delete doc;
 }
 
@@ -156,7 +174,7 @@ Retriever::Initial(const String& list, int from)
 	{
 	  String robotsURL = u.signature();
 	  robotsURL << "robots.txt";
-	  StringList *localRobotsFile = GetLocal(robotsURL.get());
+	  StringList *localRobotsFile = GetLocal(robotsURL);
 	  
 	  server = new Server(u, localRobotsFile);
 	  servers.Add(u.signature(), server);
@@ -285,6 +303,8 @@ Retriever::Start()
     int		more = 1;
     Server	*server;
     URLRef	*ref;
+
+	HtConfiguration* config= HtConfiguration::config();
     
     //  
     // Always sig . The delay bother me but a bad db is worst
@@ -346,11 +366,13 @@ Retriever::Start()
                // Let's check for a '0' value (out of range)
                // If set, we change it to 1.
                
-               if (config.Value("max_connection_requests") == 0)
-                  max_connection_requests = 1;
+               if (config->Value("server", server->host(),
+                  "max_connection_requests") == 0)
+                     max_connection_requests = 1;
                else                  
                   max_connection_requests =
-                     config.Value("max_connection_requests");
+                     config->Value("server", server->host(),
+                        "max_connection_requests");
 
                if (debug > 2)
                {
@@ -418,7 +440,7 @@ Retriever::Start()
     if (Retriever_noLog != log && !noSignal) 
     {
         FILE	*urls_parsed;
-	String	filelog = config["url_log"];
+	String	filelog = config->Find("url_log");
         // save url seen but not fetched
 	urls_parsed = fopen((char*)filelog,   "w" );
 	if (0 == urls_parsed)
@@ -432,7 +454,7 @@ Retriever::Start()
 	   {
    	      while (NULL != (ref = server->pop())) 
               {
-      	          fprintf(urls_parsed, "%s\n", ref->GetURL().get());
+      	          fprintf(urls_parsed, "%s\n", (const char *)ref->GetURL().get());
  		  delete ref;
               }
            }
@@ -449,12 +471,13 @@ Retriever::Start()
 void
 Retriever::parse_url(URLRef &urlRef)
 {
+	HtConfiguration* config= HtConfiguration::config();
     URL			url;
     DocumentRef        *ref;
     int			old_document;
     time_t		date;
     static int		index = 0;
-    static int		local_urls_only = config.Boolean("local_urls_only");
+    static int		local_urls_only = config->Boolean("local_urls_only");
     Server		*server;
 
     url.parse(urlRef.GetURL().get());
@@ -534,14 +557,14 @@ Retriever::parse_url(URLRef &urlRef)
    	        cout << "Local retrieval failed, trying HTTP" << endl;
 	    if (server && !server->IsDead()
 			&& !local_urls_only)
-		status = doc->Retrieve(date);
+		status = doc->Retrieve(server, date);
 	    else
 		status = Transport::Document_no_host;
         }
         delete local_filenames;
     }
     else if (server && !server->IsDead() && !local_urls_only)
-        status = doc->Retrieve(date);
+        status = doc->Retrieve(server, date);
     else
 	status = Transport::Document_no_host;
 
@@ -551,16 +574,54 @@ Retriever::parse_url(URLRef &urlRef)
     // Determine what to do by looking at the status code returned by
     // the Document retrieval process.
     //
+
+    String shash;
+    String sx;
+    char bhash[16];
+    time_t ddate;
+
     switch (status)
     {
+
 	case Transport::Document_ok:
 	    trackWords = 1;
+
+	    if (check_unique_md5) {
+	      if (doc->StoredLength() > 0) {
+		if (check_unique_date) {
+		  ddate = doc->ModTime();
+		  if (ddate < time(NULL) - 10) { // Unknown date was set to current time
+		     md5(bhash, doc->Contents(),doc->StoredLength(),&ddate,debug);
+		   } else {
+		     md5(bhash, doc->Contents(),doc->StoredLength(),0,debug);
+		   }
+		} else
+		  md5(bhash, doc->Contents(),doc->StoredLength(),0,debug);
+
+		shash.append(bhash,MD5_LENGTH);
+		d_md5->Get(shash,sx);
+
+		 if (!sx.empty()) {
+		  if (debug > 1) {
+		    cout << " Detected duplicate by md5 hash" << endl;
+		  }
+		  words.Skip();
+		  break;            // Duplicate - don't index
+		} else {
+		   d_md5->Put(shash,"x");
+		}
+		 
+	      }
+	    }
+
 	    if (old_document)
 	    {
 	      if (doc->ModTime() == ref->DocTime())
 		{
+		  words.Skip();
 		  if (debug)
 		    cout << " retrieved but not changed" << endl;
+		  words.Skip();
 		  break;
 		}
 		//
@@ -664,30 +725,35 @@ Retriever::parse_url(URLRef &urlRef)
 	    ref->DocState(Reference_not_found);
 	    if (debug)
 	      cout << " not authorized" << endl;
+	    words.Skip();
 	    break;
 
       case Transport::Document_not_local:
 	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " not local" << endl;
+	   words.Skip();
 	   break;
 
       case Transport::Document_no_header:
 	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " no header" << endl;
+	   words.Skip();
 	   break;
 
       case Transport::Document_connection_down:
 	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " connection down" << endl;
+	   words.Skip();
 	   break;
 
       case Transport::Document_no_connection:
 	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " no connection" << endl;
+	   words.Skip();
 	   break;
 
       case Transport::Document_not_recognized_service:
@@ -698,12 +764,14 @@ Retriever::parse_url(URLRef &urlRef)
 	    // Mark the server as being down
 	    if (server)
 	      server->IsDead(1);
+	    words.Skip();
 	   break;
 
       case Transport::Document_other_error:
 	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " other error" << endl;
+	   words.Skip();
 	   break;
     }
     docs.Add(*ref);
@@ -712,13 +780,13 @@ Retriever::parse_url(URLRef &urlRef)
 
 
 //*****************************************************************************
-// void Retriever::RetrievedDocument(Document &doc, char *url, DocumentRef *ref)
+// void Retriever::RetrievedDocument(Document &doc, const String &url, DocumentRef *ref)
 //   We found a document that needs to be parsed.  Since we don't know the
 //   document type, we'll let the Document itself return an appropriate
 //   Parsable object which we can call upon to parse the document contents.
 //
 void
-Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
+Retriever::RetrievedDocument(Document &doc, const String &url, DocumentRef *ref)
 {
     n_links = 0;
     current_ref = ref;
@@ -735,7 +803,13 @@ Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
     // This will generate the Parsable object as a specific parser
     //
     Parsable	*parsable = doc.getParsable();
-    parsable->parse(*this, *base);
+    if (parsable)
+      parsable->parse(*this, *base);
+    else
+      { // If we didn't get a parser, then we should get rid of this!
+	ref->DocState(Reference_noindex);
+	return;
+      }
 
     //
     // We don't need to dispose of the parsable object since it will
@@ -755,45 +829,41 @@ Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
     ref->DocSize(doc.Length());
     ref->DocAccessed(time(0));
     ref->DocLinks(n_links);
-    ref->DocImageSize(ref->DocImageSize() + doc.Length());
 }
 
 
 //*****************************************************************************
-// int Retriever::Need2Get(char *u)
+// int Retriever::Need2Get(const String &u)
 //   Return TRUE if we need to retrieve the given url.  This will
 //   check the list of urls we have already visited.
 //
 int
-Retriever::Need2Get(char *u)
+Retriever::Need2Get(const String &u)
 {
-    static String	url;
-    url = u;
+  static String url; 
+  url = u;
 
-    if ( visited.Exists(url) )
-    	return FALSE;
-    	
-    return TRUE;
-
+  return !visited.Exists(url);
 }
 
 
 
 //*****************************************************************************
-// int Retriever::IsValidURL(char *u)
+// int Retriever::IsValidURL(const String &u)
 //   Return TRUE if we need to retrieve the given url.  We will check
 //   for limits here.
 //
 int
-Retriever::IsValidURL(char *u)
+Retriever::IsValidURL(const String &u)
 {
+	HtConfiguration* config= HtConfiguration::config();
     Dictionary	invalids;
     Dictionary	valids;
     URL 	aUrl(u);
     StringList	tmpList;
 
 	// A list of bad extensions, separated by spaces or tabs
-	String	t = config.Find(&aUrl,"bad_extensions");
+	String	t = config->Find(&aUrl,"bad_extensions");
 	String lowerp;
 	char	*p = strtok(t, " \t");
 	while (p)
@@ -810,7 +880,7 @@ Retriever::IsValidURL(char *u)
 	//
 	// A list of valid extensions, separated by spaces or tabs
 
-	t = config.Find(&aUrl,"valid_extensions");
+	t = config->Find(&aUrl,"valid_extensions");
 	p = strtok(t, " \t");
 	while (p)
 	{
@@ -828,13 +898,12 @@ Retriever::IsValidURL(char *u)
     // If the URL contains any of the patterns in the exclude list,
     // mark it as invalid
     //
-    tmpList.Create(config.Find(&aUrl,"exclude_urls")," \t");
-    HtRegex excludes;
-    excludes.setEscaped(tmpList);
-    tmpList.SRelease();
+    tmpList.Create(config->Find(&aUrl,"exclude_urls")," \t");
+    HtRegexList excludes;
+    excludes.setEscaped(tmpList, config->Boolean("case_sensitive"));
     if (excludes.match(url, 0, 0) != 0)
       {
-                if (debug >= 2)
+                if (debug > 2)
 		  cout << endl << "   Rejected: item in exclude list ";
                 return(FALSE);
       }
@@ -843,14 +912,14 @@ Retriever::IsValidURL(char *u)
     // If the URL has a query string and it is in the bad query list
     // mark it as invalid
     //
-    tmpList.Create(config.Find(&aUrl,"bad_querystr")," \t");
-    HtRegex badquerystr;
-    badquerystr.setEscaped(tmpList);
-    tmpList.SRelease();
+    tmpList.Destroy();
+    tmpList.Create(config->Find(&aUrl,"bad_querystr")," \t");
+    HtRegexList badquerystr;
+    badquerystr.setEscaped(tmpList, config->Boolean("case_sensitive"));
     char *ext = strrchr((char*)url, '?');
-    if (ext && badquerystr.match(url, 0, 0) != 0)
+    if (ext && badquerystr.match(ext, 0, 0) != 0)
       {
-                if (debug >= 2)
+                if (debug > 2)
 		  cout << endl << "   Rejected: item in bad query list ";
                 return(FALSE);
       }
@@ -920,25 +989,27 @@ Retriever::IsValidURL(char *u)
        return(FALSE);
     }  
 
-    tmpList.SRelease();
-    
   return TRUE;
 }
 
 
 //*****************************************************************************
-// StringList* Retriever::GetLocal(char *url)
+// StringList* Retriever::GetLocal(const String &url)
 //   Returns a list of strings containing the (possible) local filenames
 //   of the given url, or 0 if it's definitely not local.
 //   THE CALLER MUST FREE THE STRINGLIST AFTER USE!
 //
 StringList*
-Retriever::GetLocal(char *url)
+Retriever::GetLocal(const String &strurl)
 {
+	HtConfiguration* config= HtConfiguration::config();
     static StringList *prefixes = 0;
+    String url = strurl;
+    
     static StringList *paths = 0;
     StringList *defaultdocs = 0;
     URL aUrl(url);
+    url = aUrl.get();		// make sure we look at a parsed URL
 
     //
     // Initialize prefix/path list if this is the first time.
@@ -949,7 +1020,7 @@ Retriever::GetLocal(char *url)
     	prefixes = new StringList();
 	paths = new StringList();
 
-	String t = config["local_urls"];
+	String t = config->Find("local_urls");
 	char *p = strtok(t, " \t");
 	while (p)	
 	{
@@ -960,38 +1031,54 @@ Retriever::GetLocal(char *url)
    		continue;
 	    }
    	    *path++ = '\0';
-            prefixes->Add(p);
-            paths->Add(path);
+	    String *pre = new String(p);
+	    decodeURL(*pre);
+	    prefixes->Add(pre);
+	    String *pat = new String(path);
+	    decodeURL(*pat);
+	    paths->Add(pat);
 	    p = strtok(0, " \t");
 	}
     }
-    if (!config.Find(&aUrl,"local_default_doc").empty())
+    if (!config->Find(&aUrl,"local_default_doc").empty())
     {
 	defaultdocs = new StringList();
-	String t = config.Find(&aUrl,"local_default_doc");
+	String t = config->Find(&aUrl,"local_default_doc");
 	char *p = strtok(t, " \t");
 	while (p)	
 	{
-	    defaultdocs->Add(p);
+	    String *def = new String(p);
+	    decodeURL(*def);
+	    defaultdocs->Add(def);
 	    p = strtok(0, " \t");
 	}
-	if (defaultdocs->Count() == 0)
+	if (defaultdocs->Count() == 0) {
 	    delete defaultdocs;
+	    defaultdocs = 0;
+	}
     }
 
+    // Begin by hex-decoding URL...
+    String hexurl = url;
+    decodeURL(hexurl);
+    url = hexurl.get();
+
     // Check first for local user...
-    if (strchr(url, '~'))
+    if (strchr(url.get(), '~'))
     {
 	StringList *local = GetLocalUser(url, defaultdocs);
-	if (local)
+	if (local) {
+	    if(defaultdocs) delete defaultdocs;
 	    return local;
+	}
     }
 
     // This shouldn't happen, but check anyway...
-    if (strstr(url, ".."))
+    if (strstr(url.get(), ".."))
         return 0;
     
     String *prefix, *path;
+    String *defaultdoc;
     StringList *local_names = new StringList();
     prefixes->Start_Get();
     paths->Start_Get();
@@ -1000,12 +1087,12 @@ Retriever::GetLocal(char *url)
 	path = (String*) paths->Get_Next();
         if (mystrncasecmp((char*)*prefix, (char*)url, prefix->length()) == 0)
 	{
-	    int l = strlen(url)-prefix->length()+path->length()+4;
+	    int l = strlen(url.get())-prefix->length()+path->length()+4;
 	    String *local = new String(*path, l);
 	    *local += &url[prefix->length()];
 	    if (local->last() == '/' && defaultdocs) {
 	      defaultdocs->Start_Get();
-	      while (String *defaultdoc = (String *)defaultdocs->Get_Next()) {
+	      while ((defaultdoc = (String *)defaultdocs->Get_Next())) {
 		String *localdefault = new String(*local, local->length()+defaultdoc->length()+1);
 		localdefault->append(*defaultdoc);
 		local_names->Add(localdefault);
@@ -1017,23 +1104,28 @@ Retriever::GetLocal(char *url)
 	}	
     }
     if (local_names->Count() > 0)
+      {
+	if(defaultdocs) delete defaultdocs;
         return local_names;
+      }
 
+    if(defaultdocs) delete defaultdocs;
     delete local_names;
     return 0;
 }
 
 
 //*****************************************************************************
-// StringList* Retriever::GetLocalUser(char *url, StringList *defaultdocs)
+// StringList* Retriever::GetLocalUser(const String &url, StringList *defaultdocs)
 //   If the URL has ~user part, return a list of strings containing the
 //   (possible) local filenames of the given url, or 0 if it's
 //   definitely not local.
 //   THE CALLER MUST FREE THE STRINGLIST AFTER USE!
 //
 StringList*
-Retriever::GetLocalUser(char *url, StringList *defaultdocs)
+Retriever::GetLocalUser(const String &url, StringList *defaultdocs)
 {
+	HtConfiguration* config= HtConfiguration::config();
     static StringList *prefixes = 0, *paths = 0, *dirs = 0;
     static Dictionary home_cache;
     URL aUrl(url);
@@ -1048,7 +1140,7 @@ Retriever::GetLocalUser(char *url, StringList *defaultdocs)
         prefixes = new StringList();
 	paths = new StringList();
 	dirs = new StringList();
-	String t = config["local_user_urls"];
+	String t = config->Find("local_user_urls");
 	char *p = strtok(t, " \t");
 	while (p)
 	{
@@ -1066,9 +1158,15 @@ Retriever::GetLocalUser(char *url, StringList *defaultdocs)
 	        continue;
 	    }
 	    *dir++ = '\0';
-	    prefixes->Add(p);
-	    paths->Add(path);
-	    dirs->Add(dir);
+	    String *pre = new String(p);
+	    decodeURL(*pre);
+	    prefixes->Add(pre);
+	    String *pat = new String(path);
+	    decodeURL(*pat);
+	    paths->Add(pat);
+	    String *ptd = new String(dir);
+	    decodeURL(*ptd);
+	    dirs->Add(ptd);
 	    p = strtok(0, " \t");
 	}
     }
@@ -1091,6 +1189,7 @@ Retriever::GetLocalUser(char *url, StringList *defaultdocs)
     paths->Start_Get();
     dirs->Start_Get();
     String *prefix, *path, *dir;
+    String *defaultdoc;
     StringList *local_names = new StringList();
     while ((prefix = (String*) prefixes->Get_Next()))
     {
@@ -1127,7 +1226,7 @@ Retriever::GetLocalUser(char *url, StringList *defaultdocs)
 	*local += rest;
 	if (local->last() == '/' && defaultdocs) {
 	  defaultdocs->Start_Get();
-	  while (String *defaultdoc = (String *)defaultdocs->Get_Next()) {
+	  while ((defaultdoc = (String *)defaultdocs->Get_Next())) {
 	    String *localdefault = new String(*local, local->length()+defaultdoc->length()+1);
 	    localdefault->append(*defaultdoc);
 	    local_names->Add(localdefault);
@@ -1147,18 +1246,19 @@ Retriever::GetLocalUser(char *url, StringList *defaultdocs)
 
 
 //*****************************************************************************
-// int Retriever::IsLocalURL(char *url)
+// int Retriever::IsLocalURL(const String &url)
 //   Returns 1 if the given url has a (possible) local filename
 //   or 0 if it's definitely not local.
 //
 int
-Retriever::IsLocalURL(char *url)
+Retriever::IsLocalURL(const String &url)
 {
     int ret;
 
     StringList *local_filename = GetLocal(url);
     ret = (local_filename != 0);
-    delete local_filename;
+    if (local_filename)
+      delete local_filename;
 
     return ret;
 }
@@ -1173,7 +1273,7 @@ Retriever::got_word(const char *word, int location, int heading)
 {
     if (debug > 3)
 	cout << "word: " << word << '@' << location << endl;
-    if (heading > 11 || heading < 0) // Current limits for headings
+    if (heading >= 11 || heading < 0) // Current limits for headings
       heading = 0;  // Assume it's just normal text
     if (trackWords)
     {
@@ -1294,14 +1394,13 @@ void
 Retriever::got_image(const char *src)
 {
     URL	url(src, *base);
-    char	*image = url.get();
+    const char *image = (const char *)url.get();
 	
     if (debug > 2)
 	cout << "image: " << image << endl;
 
     if (images_seen)
 	fprintf(images_seen, "%s\n", image);
-//	current_ref->DocImageSize(current_ref->DocImageSize() + images.Sizeof(image));
 }
 
 
@@ -1313,13 +1412,16 @@ Retriever::got_href(URL &url, const char *description, int hops)
     DocumentRef		*ref = 0;
     Server		*server = 0;
 
+    // Rewrite the URL (if need be) before we do anything to it.
+    url.rewrite();
+
     if (debug > 2)
 	cout << "href: " << url.get() << " (" << description << ')' << endl;
 
     n_links++;
 
     if (urls_seen)
-	fprintf(urls_seen, "%s\n", url.get());
+	fprintf(urls_seen, "%s\n", (const char *)url.get());
 
     //
     // Check if this URL falls within the valid range of URLs.
@@ -1371,9 +1473,9 @@ Retriever::got_href(URL &url, const char *description, int hops)
 		ref = new DocumentRef;
 		ref->DocID(docs.NextDocID());
 		ref->DocHopCount(currenthopcount + hops);
+		ref->DocURL(url.get());
 	    }
 	    ref->DocBackLinks(ref->DocBackLinks() + 1); // This one!
-	    ref->DocURL(url.get());
 	    ref->AddDescription(description, words);
 
 	    //
@@ -1385,11 +1487,8 @@ Retriever::got_href(URL &url, const char *description, int hops)
 		return;
 	    }
 
-	    if (ref->DocHopCount() != 0 &&
-		ref->DocHopCount() < currenthopcount + hops)
-	       // If we had taken the path through this ref
-	       // We'd be here faster than currenthopcount
-	       currenthopcount = ref->DocHopCount();  // So update it!
+	    if (ref->DocHopCount() > currenthopcount + hops)
+	      ref->DocHopCount(currenthopcount + hops);
 
 	    docs.Add(*ref);
 
@@ -1452,7 +1551,9 @@ Retriever::got_href(URL &url, const char *description, int hops)
 void
 Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 {
-    URL	url(new_url);
+    // First we must piece together the new URL, which may be relative
+    URL parent(old_ref->DocURL());
+    URL	url(new_url, parent);
 
     if (debug > 2)
 	cout << "redirect: " << url.get() << endl;
@@ -1460,7 +1561,7 @@ Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
     n_links++;
 
     if (urls_seen)
-	fprintf(urls_seen, "%s\n", url.get());
+	fprintf(urls_seen, "%s\n", (const char *)url.get());
 
     //
     // Check if this URL falls within the valid range of URLs.
@@ -1537,7 +1638,7 @@ Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 		    delete localRobotsFile;
 		}
 		server->push(url.get(), ref->DocHopCount(), base->get(),
-			     IsLocalURL(url.get()));
+			     IsLocalURL(url.get()), 0);
 
 		String	temp = url.get();
 		visited.Add(temp, 0);
@@ -1622,7 +1723,7 @@ Retriever::got_noindex()
 //*****************************************************************************
 //
 void
-Retriever::recordNotFound(char *url, char *referer, int reason)
+Retriever::recordNotFound(const String &url, const String &referer, int reason)
 {
     char	*message = "";
     
@@ -1654,6 +1755,7 @@ Retriever::recordNotFound(char *url, char *referer, int reason)
 void
 Retriever::ReportStatistics(const String& name)
 {
+	HtConfiguration* config= HtConfiguration::config();
     cout << name << ": Run complete\n";
     cout << name << ": " << servers.Count() << " server";
     if (servers.Count() > 1)
@@ -1693,18 +1795,18 @@ Retriever::ReportStatistics(const String& name)
     cout << "HTTP statistics" << endl;
     cout << "===============" << endl;
 
-    if (config.Boolean("persistent_connections"))
+    if (config->Boolean("persistent_connections"))
     {
         cout << " Persistent connections    : Yes" << endl;
 
-        if (config.Boolean("head_before_get"))
+        if (config->Boolean("head_before_get"))
             cout << " HEAD call before GET      : Yes" << endl;
         else
             cout << " HEAD call before GET      : No" << endl;
     }
     else
     {
-        cout << "Persistent connections    : No" << endl;
+        cout << " Persistent connections    : No" << endl;
     }
 
     HtHTTP::ShowStatistics(cout) << endl;

@@ -1,5 +1,5 @@
 # Configuration for ht://Dig 3.x
-# Copyright (c) 1995-1999 The ht://Dig Group
+# Copyright (c) 1995-2001 The ht://Dig Group
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -38,50 +38,46 @@ dnl Initialize maintainer mode
 AM_MAINTAINER_MODE
 
 AC_ARG_WITH(config-dir, [  --with-config-dir=DIR  where your config directory is [default=$ac_default_prefix/conf]],
- CONFIG_DIR="$withval", CONFIG_DIR="$ac_default_prefix/conf")
+ CONFIG_DIR="$withval", CONFIG_DIR='${prefix}/conf')
 AC_SUBST(CONFIG_DIR)
 
-AC_ARG_WITH(common-dir, [  --with-common-dir=DIR  where your common directory is [default=$datadir/htdig]],
- COMMON_DIR="$withval", COMMON_DIR="$datadir/htdig")
+AC_ARG_WITH(common-dir, [  --with-common-dir=DIR  where your common directory is [default=$ac_default_prefix/share/htdig]],
+ COMMON_DIR="$withval", COMMON_DIR='${datadir}/htdig')
 AC_SUBST(COMMON_DIR)
 
-AC_ARG_WITH(database-dir, [  --with-database-dir=DIR  where your database directory is [default=$localstatedir/htdig]],
- DATABASE_DIR="$withval", DATABASE_DIR="$localstatedir/htdig")
+AC_ARG_WITH(database-dir, [  --with-database-dir=DIR  where your database directory is [default=$ac_default_prefix/var/htdig]],
+ DATABASE_DIR="$withval", DATABASE_DIR='${localstatedir}/htdig')
 AC_SUBST(DATABASE_DIR)
 
-AC_ARG_WITH(default-config-file, [  --with-default-config-file=FILE Where the various programs will look for a configuration file  [default=$CONFIG_DIR/htdig.conf]],
- DEFAULT_CONFIG_FILE="$withval", DEFAULT_CONFIG_FILE="$CONFIG_DIR/htdig.conf")
+AC_ARG_WITH(default-config-file, [  --with-default-config-file=FILE Where the various programs will look for a configuration file  [default=$ac_default_prefix/conf/htdig.conf]],
+ DEFAULT_CONFIG_FILE="$withval", DEFAULT_CONFIG_FILE='${CONFIG_DIR}/htdig.conf')
 AC_SUBST(DEFAULT_CONFIG_FILE)
 
 AC_ARG_WITH(cgi-bin-dir, [  --with-cgi-bin-dir=DIR  where your cgi-bin directory is  [default=$ac_default_prefix/cgi-bin]],
- CGIBIN_DIR="$withval", CGIBIN_DIR="$ac_default_prefix/cgi-bin")
+ CGIBIN_DIR="$withval", CGIBIN_DIR='${prefix}/cgi-bin')
 AC_SUBST(CGIBIN_DIR)
 
 AC_ARG_WITH(image-dir, [  --with-image-dir=DIR    where the ht://Dig images are installed [default=$ac_default_prefix/htdocs/htdig]],
- IMAGE_DIR="$withval", IMAGE_DIR="$ac_default_prefix/htdocs/htdig")
+ IMAGE_DIR="$withval", IMAGE_DIR='${prefix}/htdocs/htdig')
 AC_SUBST(IMAGE_DIR)
 
 AC_ARG_WITH(search-dir, [  --with-search-dir=DIR   where the sample search form should be installed [default=$ac_default_prefix/htdocs/htdig]],
- SEARCH_DIR="$withval", SEARCH_DIR="$ac_default_prefix/htdocs/htdig")
+ SEARCH_DIR="$withval", SEARCH_DIR='${prefix}/htdocs/htdig')
 AC_SUBST(SEARCH_DIR)
 
-AC_ARG_WITH(image-url-prefix, [  --with-image-url-prefix=LOCATION   the URL path to the installed images [default=/hdig]],
- IMAGE_URL_PREFIX="$withval", IMAGE_URL_PREFIX="/htdig")
+AC_ARG_WITH(image-url-prefix, [  --with-image-url-prefix=LOCATION   the URL path to the installed images [default=/htdig]],
+ IMAGE_URL_PREFIX="$withval", IMAGE_URL_PREFIX='/htdig')
 AC_SUBST(IMAGE_URL_PREFIX)
 
 AC_ARG_WITH(search-form, [  --with-search-form=FILE   the name for the sample search form [default=search.html]],
- SEARCH_FORM="$withval", SEARCH_FORM="search.html")
+ SEARCH_FORM="$withval", SEARCH_FORM='search.html')
 AC_SUBST(SEARCH_FORM)
 
-dnl If the user wants tests
-AC_MSG_CHECKING(if --enable-tests option specified)
+dnl If the user doesn't want tests
 AC_ARG_ENABLE(tests,
-	[  --enable-tests     Build a version with run-time tests.],
+	[  --enable-tests      Do build a version with run-time tests.],
 	[htdig_cv_tests="$enable_tests"], [htdig_cv_tests="no"])
-AC_MSG_RESULT($htdig_cv_tests)
-if test "$htdig_cv_tests" = yes; then
-	TESTDIR=test
-fi
+AM_CONDITIONAL(TESTS, test x$htdig_cv_tests = xyes)
 
 dnl While we're at it, let's work out the program transformations
 AC_ARG_PROGRAM
@@ -91,7 +87,10 @@ echo configuring ht://Dig version $VERSION
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
+AC_AIX
 AC_COMPILE_WARNINGS
+NO_RTTI
+NO_EXCEPTIONS
 AC_PROG_RANLIB
 AC_PATH_PROG(AR, ar, ar)
 AC_PATH_PROG(SHELL, sh, /bin/sh)
@@ -99,9 +98,9 @@ AC_PATH_PROG(SED, sed, /bin/sed)
 AC_PATH_PROG(PERL, perl, /usr/bin/perl)
 AC_PATH_PROG(FIND, find, /bin/find)
 AC_PATH_PROG(GUNZIP, gunzip, /bin/gunzip)
+AC_CHECK_PROGS(RRDTOOL, rrdtool)
 AC_CHECK_PROGS(TAR, tar gtar gnutar, tar)
 AC_PATH_PROG(MV, mv, /bin/mv)
-AC_PATH_PROG(PDF_PARSER, acroread, /usr/local/bin/acroread)
 AC_PATH_PROG(SENDMAIL, sendmail, /usr/lib/sendmail, 
    $PATH:/usr/libexec:/usr/sbin:/usr/lib:/usr/etc:etc)
 AM_PROG_TIME
@@ -109,12 +108,10 @@ AM_PROG_TIME
 AM_PROG_LEX
 AC_PROG_YACC
 
-dnl Check for AIX problems
-AC_AIX
-
 dnl Checks for libraries.
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, t_accept)
+CHECK_SSL
 CHECK_ZLIB
 AC_SUBST(CXXFLAGS)dnl
 AC_SUBST(LDFLAGS)dnl
@@ -125,24 +122,64 @@ AC_HEADER_TIME
 
 dnl More header checks--here use C++
 AC_LANG_CPLUSPLUS
-AC_CHECK_HEADERS(fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h getopt.h strings.h zlib.h alloca.h sys/select.h)
+AC_CHECK_HEADERS(fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h getopt.h strings.h zlib.h sys/wait.h wait.h alloca.h)
+AC_CHECK_HEADERS(ssl.h)
 AC_CHECK_HEADER(fstream.h,nofstream=0,nofstream=1)
 if test "x$nofstream" = "x1" ; then
-AC_MSG_ERROR([To compile ht://Dig, you will need a C++ library. Try installing libstdc++.])
+AC_MSG_ERROR([To compile, you will need a C++ library. Try installing libstdc++.])
 fi
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_LANG_C
-AC_FUNC_ALLOCA
 AC_C_CONST
 AC_STRUCT_TM
 dnl AC_CHECK_SIZEOF(int *) => SIZEOF_INT_P
+AC_CHECK_SIZEOF(unsigned long long int, 8)
+AC_CHECK_SIZEOF(unsigned long int, 4)
+AC_CHECK_SIZEOF(unsigned int, 4)
+AC_CHECK_SIZEOF(unsigned short int, 2)
+AC_CHECK_SIZEOF(unsigned char, 1)
 
 dnl Checks for library functions.
-AC_CHECK_FUNCS(strdup strerror strstr)
+AC_CHECK_FUNCS(strdup strerror strstr getcwd memcmp memcpy memmove raise mkstemp)
+AC_REPLACE_FUNCS(snprintf vsnprintf)
 AC_FUNC_STRFTIME
 AC_FUNC_STRPTIME
-AC_CHECK_FUNCS(localtime_r timegm)
+AC_CHECK_FUNCS(localtime_r timegm mkstemp)
+
+dnl Regex is compiled by the C compiler so we need to do it before we switch
+AC_MSG_CHECKING(if we should use the included regex?)
+AC_TRY_RUN([	#include "${srcdir}/htlib/regex.c"
+		int main() {
+		   regex_t re;
+		   return regcomp(&re, "ht.*Dig", REG_ICASE);
+		}
+		],
+  [AC_MSG_RESULT(yes);LIBOBJS="$LIBOBJS regex.${ac_objext}"],
+  [AC_MSG_RESULT(no);AC_DEFINE(HAVE_BROKEN_REGEX)],
+  [AC_MSG_RESULT(unknown);AC_DEFINE(HAVE_BROKEN_REGEX)]
+)
+
+LTLIBOBJS=`echo "$LIBOBJS" | sed 's/\.o/.lo/g'`
+AC_SUBST(LTLIBOBJS)
+
+AC_MSG_CHECKING(if --enable-bigfile option specified)
+AC_ARG_ENABLE(bigfile,
+	[  --enable-bigfile       Enable Linux, AIX, HP/UX, Solaris big files.],
+	[db_cv_bigfile="$enable_bigfile"], [db_cv_bigfile="yes"])
+AC_MSG_RESULT($db_cv_bigfile)
+
+dnl Vendors are doing 64-bit lseek in different ways.
+dnl Linux, AIX, HP/UX and Solaris all use _FILE_OFFSET_BITS to specify a "big-file"
+dnl environment.
+if test "$db_cv_bigfile" = yes; then
+	case "$host_os" in
+	bsdi*|aix*|hpux*|solaris*)	AC_DEFINE(HAVE_FILE_OFFSET_BITS);;
+	linux*)	AC_DEFINE(HAVE_FILE_OFFSET_BITS)
+		AC_DEFINE(HAVE_LARGEFILE_SOURCE)
+		;;
+	esac
+fi
 
 dnl These tests need to be run through the c++ compiler
 AC_LANG_CPLUSPLUS
@@ -163,7 +200,7 @@ extern "C" int gethostname(char *, int);],
   [AC_MSG_RESULT(yes);AC_DEFINE(NEED_PROTO_GETHOSTNAME)],
   [AC_MSG_RESULT(no)])
 
-AC_LANG_CPLUSPLUS
+dnl We're still using the C++ compiler for this test
 AC_MSG_CHECKING(how to call getpeername?)
 for sock_t in 'struct sockaddr' 'void'; do
   for getpeername_length_t in 'size_t' 'int' 'unsigned int' 'long unsigned int' 'socklen_t'
@@ -179,15 +216,39 @@ done
 
 if test "$ac_found" = no
 then
-  AC_MSG_WARN([can't determine argument type using int])
-  AC_DEFINE_UNQUOTED(GETPEERNAME_LENGTH_T, int)
+  AC_MSG_WARN([can't determine, using size_t])
+  AC_DEFINE_UNQUOTED(GETPEERNAME_LENGTH_T, size_t)
 else
   AC_MSG_RESULT($getpeername_length_t)
   AC_DEFINE_UNQUOTED(GETPEERNAME_LENGTH_T, $getpeername_length_t)
 fi
 
+AC_MSG_CHECKING(how to call select?)
+for fd_set_t in 'fd_set' 'int'
+  do
+  for timeval_t in 'struct timeval' 'const struct timeval'
+  do
+    AC_TRY_COMPILE([#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+ extern "C" int select(int, $fd_set_t *, $fd_set_t *, $fd_set_t *, $timeval_t *);
+ $fd_set_t fd; ],
+    [ select(0, &fd, 0, 0, 0); ],
+    [ac_found=yes ; break 2],[ac_found=no])
+ done
+done
+
+if test "$ac_found" = no
+then
+  AC_MSG_WARN([can't determine argument type using int])
+  AC_DEFINE_UNQUOTED(FD_SET_T, int)
+else
+  AC_MSG_RESULT($fd_set_t)
+  AC_DEFINE_UNQUOTED(FD_SET_T, $fd_set_t)
+fi
+
 dnl Check if the c++ compiler knows bool
-AC_LANG_CPLUSPLUS
+dnl AC_LANG_C++ is still set
 AC_MSG_CHECKING(for bool data type?)
 AC_TRY_COMPILE(,[bool i;],
   [AC_MSG_RESULT(yes);AC_DEFINE(HAVE_BOOL)],
@@ -207,24 +268,19 @@ if test ! -d "./db"; then
   mkdir db
 fi
 
-if test -n "$TESTDIR"
+if test x$htdig_cv_tests = xyes
 then
 	CHECK_USER
 	AC_PROG_APACHE(1.3.1)
 fi
 
-#
-# See db/dist/configure.in
-# We always want the C++ support enabled.
-#
-ac_configure_args="$ac_configure_args --enable-cxx"
+if test ! -d "./db"; then
+  mkdir db
+fi
 
-AC_CONFIG_SUBDIRS(db/dist)
+AC_CONFIG_SUBDIRS(db)
 
-HTDIGDIRS="db htlib htword htcommon htnet htfuzzy htdb htdig htsearch htmerge htnotify installdir include htdoc $TESTDIR ."
-AC_SUBST(HTDIGDIRS)
-
-AC_OUTPUT(Makefile db/Makefile htcommon/Makefile htword/Makefile htnet/Makefile htlib/Makefile htdb/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile test/test_functions)
+AC_OUTPUT(Makefile htcommon/Makefile htword/Makefile htnet/Makefile htlib/Makefile htdb/Makefile htdig/Makefile httools/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile test/test_functions)
 
 echo ""
 echo ""

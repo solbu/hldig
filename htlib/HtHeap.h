@@ -10,12 +10,12 @@
 //                 this is a "min heap" for that definition.)
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHeap.h,v 1.4 1999/09/29 16:33:12 loic Exp $
+// $Id: HtHeap.h,v 1.5 2002/02/01 22:49:33 ghutchis Exp $
 //
 //
 #ifndef	_HtHeap_h_
@@ -64,7 +64,7 @@ public:
     //
     // Deep copy member function
     //
-    HtHeap		*Copy() const;
+    Object		*Copy() const;
 
     //
     // Assignment

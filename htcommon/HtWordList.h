@@ -5,18 +5,19 @@
 //	       of words waiting to be inserted in the database.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.h,v 1.3 2000/02/19 05:28:49 ghutchis Exp $
+// $Id: HtWordList.h,v 1.4 2002/02/01 22:49:28 ghutchis Exp $
 //
 
 #ifndef _HtWordList_h_
 #define _HtWordList_h_
 
 #include <fcntl.h>
+#include <stdlib.h>
 
 #include"HtConfiguration.h"
 #include "WordList.h"
@@ -54,6 +55,9 @@ public:
 
     // Write an ascii version of the word database in <filename>
     int			Dump(const String& filename);
+
+    // Read in an ascii version of the word database in <filename>
+    int			Load(const String& filename);
 
 private:
 

@@ -4,12 +4,12 @@
 // htString: (implementation in String.cc) Just Another String class.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.19 2000/02/19 05:29:03 ghutchis Exp $
+// $Id: htString.h,v 1.20 2002/02/01 22:49:34 ghutchis Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -18,8 +18,9 @@
 
 #include <stdarg.h>
 #include <stdio.h>
-
-class ostream;
+#ifndef NOSTREAM
+#include <iostream.h>
+#endif /* NOSTREAM */
 
 class String : public Object
 {
@@ -43,7 +44,6 @@ public:
     const char		*get() const;
     operator 		char*()	{ return get(); }
     operator 		const char*() const { return get(); }
-    operator 		int() const;
 
     //
     // Interpretation
@@ -92,7 +92,7 @@ public:
     inline char		&operator [] (int n);
     inline char		operator [] (int n) const;
     inline char		Nth (int n) { return (*this)[n]; }
-    inline char		last() { return Length > 0 ? Data[Length - 1] : '\0'; }
+    inline char		last() const { return Length > 0 ? Data[Length - 1] : '\0'; }
 
     //
     // Removing
@@ -144,9 +144,11 @@ public:
     //
     // IO
     //
-    int			write(int fd) const;
+    int			Write(int fd) const;
 
+#ifndef NOSTREAM
     void		debug(ostream &o);
+#endif /* NOSTREAM */
 
     //
     // Non-member operators
@@ -159,9 +161,11 @@ public:
     friend int		operator <= (const String &a, const String &b);
     friend int		operator >= (const String &a, const String &b);
 
+#ifndef NOSTREAM
     friend ostream	&operator << (ostream &o, const String &s);
 
     friend istream	&operator >> (istream &in, String &line);
+#endif /* NOSTREAM */
 
     int			readLine(FILE *in);
 

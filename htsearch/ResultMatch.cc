@@ -7,13 +7,17 @@
 //              DocMatch class but designed for result display purposes.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ResultMatch.cc,v 1.7 1999/09/29 10:10:08 loic Exp $
+// $Id: ResultMatch.cc,v 1.8 2002/02/01 22:49:35 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "ResultMatch.h"
 
@@ -42,7 +46,7 @@ char *ResultMatch::getTitle()
 time_t ResultMatch::getTime()
 { return 0; }
 
-void ResultMatch::setTitle(const String&)
+void ResultMatch::setTitle(char *)
 { }
 
 void ResultMatch::setTime(time_t)
@@ -79,8 +83,17 @@ ScoreMatch::compare(const void *a1, const void *a2)
 {
     ResultMatch	*m1 = *((ResultMatch **) a1);
     ResultMatch	*m2 = *((ResultMatch **) a2);
+    double score1 = m1->getScore();
+    double score2 = m2->getScore();
 
-    return m2->getScore() - m1->getScore();
+    if(score1 == score2)
+       return 0;
+    else if(score1 < score2)
+       return 1;
+    else
+       return -1;
+
+    //    return m2->getScore() - m1->getScore();
 }
 
 ResultMatch::CmpFun

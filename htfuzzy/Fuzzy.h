@@ -14,12 +14,12 @@
 // database specific to the method, or by generating words on the fly.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Fuzzy.h,v 1.9 2000/02/19 05:29:02 ghutchis Exp $
+// $Id: Fuzzy.h,v 1.10 2002/02/01 22:49:33 ghutchis Exp $
 //
 
 #ifndef _Fuzzy_h_

@@ -6,12 +6,12 @@
 //      including support for multiple schemes.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.h,v 1.1 1999/10/06 09:35:21 loic Exp $
+// $Id: URL.h,v 1.2 2002/02/01 22:49:28 ghutchis Exp $
 //
 
 #ifndef _URL_h_
@@ -23,29 +23,36 @@ class URL
 {
 public:
     URL();
-    URL(const char *url);
-    URL(URL &url);
-    URL(const char *ref, URL &parent);
+    URL(const String &url);
+    URL(const URL& rhs);
+    URL(const String &ref, const URL &parent);
 
-    void		parse(const char *url);
+    void parse(const String &url);
 
-    char		*host()			{return _host;}
-    void		host(char *h)		{_host = h;}
-    int			port()			{return _port;}
-    void		port(int p)		{_port = p;}
-    char		*service()		{return _service;}
-    void		service(char *s)	{_service = s;}
-    char		*path()			{return _path;}
-    void		path(char *p);
-    int			hopcount()		{return _hopcount;}
-    void		hopcount(int h)		{_hopcount = h;}
-    char		*user()			{return _user;}
-    void		user(char *u) 		{_user = u;}
+    const String &host() const      {return _host;}
+    void host(const String &h)      {_host = h;}
+    
+    int port() const                {return _port;}
+    void port(const int p)          {_port = p;}
+    int DefaultPort();
+    
+    const String &service() const   {return _service;}
+    void service(const String &s)   {_service = s;}
 
-    char		*get()			{return _url;}
+    const String &path() const      {return _path;}
+    void path(const String &p);
+    
+    int hopcount() const            {return _hopcount;}
+    void hopcount(int h)            {_hopcount = h;}
+    
+    const String &user() const      {return _user;}
+    void user(const String &u)      {_user = u;}
+
+    const String &get() const {return _url;}
     void		dump();
     void		normalize();
-    char		*signature();
+    void		rewrite();
+    const String &signature();
 
 private:
     String		_url;
@@ -65,8 +72,23 @@ private:
 };
 
 
-void encodeURL(String &, char *reserved = ";/?:@&=+$,");
-	       //	       char *unreserved = "-_.!~*'()");
+// Unreserved punctuation allowed unencoded in URLs.  We use a more restricted
+// list of unreserved characters than allowed by RFC 2396 (which revises and
+// replaces RFC 1738), because it can't hurt to encode any of these
+// characters, and they can pose problems in some contexts.  RFC 2396 says
+// that only alphanumerics, the unreserved characters "-_.!~*'(),", and
+// reserved characters used for their reserved purposes may be used
+// unencoded within a URL.  We encode reserved characters because we now
+// encode URL parameter values individually before piecing together the whole
+// query string using reserved characters.
+
+#define UNRESERVED	"-_.!~*"
+
+//void encodeURL(String &, char *valid = "?_@.=&/:");
+//void encodeURL(String &, char *reserved = ";/?:@&=+$,");
+//	       	       char *unreserved = "-_.!~*'()");
+void encodeURL(String &, char *valid = UNRESERVED);
+
 void decodeURL(String &);
 
 #endif

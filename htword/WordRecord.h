@@ -1,16 +1,39 @@
 //
 // WordRecord.h
 //
-// WordRecord: Record for storing word information in the word database
-//             Each word occurence is stored as a separate key/record pair.
+// NAME
+// inverted index record.
+//
+// SYNOPSIS
+//
+// #include <WordRecord.h>
+// 
+// WordRecord record();
+// if(record.DefaultType() == WORD_RECORD_DATA) {
+//   record.info.data = ...
+// }
+//
+// DESCRIPTION
+// 
+// The record can only contain one integer, if the default record
+// type (see CONFIGURATION in <i>WordKeyInfo</i>) is set to <i>DATA.</i>
+// If the default type is set to <i>NONE</i> the record does not contain
+// any usable information.
+//
+// ASCII FORMAT
+//
+// If default type is <i>DATA</i> it is the decimal representation of
+// an integer. If default type is <i>NONE</i> it is the empty string.
+//
+// END
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
+// or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordRecord.h,v 1.7 2000/02/19 05:29:08 ghutchis Exp $
+// $Id: WordRecord.h,v 1.8 2002/02/01 22:49:36 ghutchis Exp $
 //
 
 #ifndef _WordRecord_h_
@@ -20,15 +43,8 @@
 #include "HtPack.h"
 #include "StringList.h"
 #include "Configuration.h"
+#include "WordRecordInfo.h"
 #endif /* SWIG */
-
-//
-// Possible values of the type data field
-//
-#define WORD_RECORD_INVALID	0
-#define WORD_RECORD_DATA	1
-#define WORD_RECORD_STATS	2
-#define WORD_RECORD_NONE	3
 
 /* And this is how we will compress this structure, for disk
    storage.  See HtPack.h  (If there's a portable method by
@@ -42,38 +58,6 @@
 #ifndef SWIG
 #define WORD_RECORD_DATA_FORMAT "u"
 #define WORD_RECORD_STATS_FORMAT "u2"
-
-//
-// Meta information about WordRecord
-//
-// wordlist_wordrecord_description: DATA 
-//   use WordRecordStorage::data for each word occurent
-// wordlist_wordrecord_description: NONE 
-//  or
-// wordlist_wordrecord_description not specified
-//   the data associated with each word occurence is empty
-//
-class WordRecordInfo
-{
- public:
-    WordRecordInfo(const Configuration& config);
-    //
-    // Unique instance handlers 
-    //
-    static void Initialize(const Configuration& config);
-    static WordRecordInfo* Instance() {
-      if(instance) return instance;
-      fprintf(stderr, "WordRecordInfo::Instance: no instance\n");
-      return 0;
-    }
-
-    int default_type;
-
-    //
-    // Unique instance pointer
-    //
-    static WordRecordInfo* instance;
-};
 #endif /* SWIG */
 
 //
@@ -81,7 +65,7 @@ class WordRecordInfo
 //
 class WordRecordStat {
  public:
-  unsigned int		noccurence;
+  unsigned int		noccurrence;
   unsigned int		ndoc;
 };
 
@@ -119,7 +103,7 @@ class WordRecord
 
 #ifndef SWIG
   //
-  // Convinience functions to access key structure information (see WordKeyInfo.h)
+  // Convenience functions to access key structure information (see WordKeyInfo.h)
   //
   static inline const WordRecordInfo* Info()   { return WordRecordInfo::Instance(); }
 #endif /* SWIG */
@@ -142,7 +126,7 @@ class WordRecord
       break;
 
     default:
-      cerr << "WordRecord::Pack: unknown type " << type << "\n";
+      fprintf(stderr, "WordRecord::Pack: unknown type %d\n", type);
       return NOTOK;
       break;
     }
@@ -157,7 +141,7 @@ class WordRecord
     case WORD_RECORD_DATA:
       decompressed = htUnpack(WORD_RECORD_DATA_FORMAT, packed);
       if(decompressed.length() != sizeof(info.data)) {
-	cerr << "WordRecord::Unpack: decoding mismatch\n";
+	fprintf(stderr, "WordRecord::Unpack: decoding mismatch\n");
 	return NOTOK;
       }
       memcpy((char*)&info.data, (char*)decompressed, sizeof(info.data));
@@ -166,7 +150,7 @@ class WordRecord
     case WORD_RECORD_STATS:
       decompressed = htUnpack(WORD_RECORD_STATS_FORMAT, packed);
       if(decompressed.length() != sizeof(info.stats)) {
-	cerr << "WordRecord::Unpack: decoding mismatch\n";
+	fprintf(stderr, "WordRecord::Unpack: decoding mismatch\n");
 	return NOTOK;
       }
       memcpy((char*)&info.stats, (char*)decompressed, sizeof(info.stats));
@@ -176,7 +160,7 @@ class WordRecord
       break;
 
     default:
-      cerr << "WordRecord::Pack: unknown type " << (int)type << "\n";
+      fprintf(stderr, "WordRecord::Pack: unknown type %d\n", (int)type);
       return NOTOK;
       break;
     }
@@ -187,18 +171,22 @@ class WordRecord
 
 #ifndef SWIG
   //
-  // Set the whole structure from ascii string description
+  // Set the whole structure from ASCII string description
   //
   int Set(const String& bufferin);
-  int Set(StringList& fields);
+  int SetList(StringList& fields);
   //
-  // Convert the whole structure to an ascii string description
+  // Convert the whole structure to an ASCII string description
   //
   int Get(String& bufferout) const;
+  String Get() const;
 #endif /* SWIG */
 
 #ifndef SWIG
-  friend ostream	&operator << (ostream &o, const WordRecord &record);
+  //
+  // Print object in ASCII form on FILE (uses Get)
+  //
+  int Write(FILE* f) const;
 #endif /* SWIG */
   void Print() const;
   
@@ -206,4 +194,5 @@ class WordRecord
   WordRecordStorage		info;
 };
 
-#endif
+#endif /* _WordRecord_h_ */
+

@@ -1,8 +1,8 @@
 //
 // WordDB.h
 //
-// WordDB: Interface to Berkeley DB verbose on errors, return OK or NOTOK,
-//         uses String and WordReference instead of Dbt, add some convinience
+// WordDB: Interface to Berkeley DB
+//         uses String and WordReference instead of Dbt, add some convenience
 //	   methods and implements string translation of Berkeley DB error codes.
 //         It does not include the 'join' feature.
 //         Beside this, the interface it identical to the Db class.
@@ -14,38 +14,43 @@
 //         descriptor using the same DbEnv and DbInfo.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
+// or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.h,v 1.4 2000/02/19 05:29:07 ghutchis Exp $
+// $Id: WordDB.h,v 1.5 2002/02/01 22:49:35 ghutchis Exp $
 //
 
 #ifndef _WordDB_h_
 #define _WordDB_h_
 
-#include "db_cxx.h"
-#include "WordReference.h"
-#include "htString.h"
-
-#include <iostream.h>
+#include <stdio.h>
 #include <errno.h>
 
-#include <iomanip.h>
-#include <ctype.h>
+#include "db.h"
+#include "WordReference.h"
+#include "WordDBInfo.h"
+#include "htString.h"
 
-extern const char* dberror(int errval);
+#define WORD_DBT_DCL(v) \
+    DBT v; \
+    memset((char*)&(v), '\0', sizeof(DBT))
+
+#define WORD_DBT_SET(v,d,s) \
+    v.data = (d); \
+    v.size = (s)
+
+#define WORD_DBT_INIT(v,d,s) \
+    WORD_DBT_DCL(v); \
+    WORD_DBT_SET(v,d,s)
 
 //
-// Encapsulate the Berkeley DB Db class
+// Encapsulate the Berkeley DB DB type
 //
 // Implements the same methods with String instead of Dbt.
 //
-// Add convinience methods taking WordReference instead of String
-//
-// Most method return OK or NOTOK and issue an error message on cerr
-// if appropriate. 
+// Add convenience methods taking WordReference instead of String
 //
 // The error model is *not* to use exceptions. 
 //
@@ -57,166 +62,110 @@ extern const char* dberror(int errval);
 //
 class WordDB {
  public:
-  inline WordDB() 
-  {
-      db = 0; 
-      put_stat_N=0;
-      put_stat_totksz=0;
-      put_stat_totdsz=0;
-      verbose=0;
+  inline WordDB() { Alloc(); }
+  inline ~WordDB() { Dealloc(); }
+
+  inline int Alloc() {
+    db = 0;
+    is_open = 0;
+    dbenv = WordDBInfo::Instance()->dbenv;
+    return CDB_db_create(&db, dbenv, 0);
   }
-  inline ~WordDB() { Close(); }
 
-  inline int Open(const String& filename, DBTYPE type, int flags, int mode) {
-
-    if(db) Close();
-
-    const char* progname = "WordDB";
-
-    //
-    // Environment initialization
-    //
-    // Output errors to the application's log.
-    //
-    dbenv.set_error_stream(&cerr);
-    dbenv.set_errpfx(progname);
-    //
-    // Do not trust C++ portability of exception handling. I may be
-    // wrong about that but have no proof. 
-    //
-    dbenv.set_error_model(DbEnv::ErrorReturn);
-
-    if ((errno = dbenv.appinit(0, 0, DB_CREATE)) != 0) {
-      cerr << progname << ": DbEnv::appinit: " << dberror(errno) << "\n";
-      return NOTOK;
-    }
-
-    if ((errno = Db::open(filename, type, (u_int32_t)flags, mode, &dbenv, &dbinfo, &db)) != 0) {
-      cerr << progname << ": Db::open: " << dberror(errno) << "\n";
-      return NOTOK;
-    }
-
-    return OK;
+  inline int Dealloc() {
+    int error = 0;
+    is_open = 0;
+    if(db)
+      error = db->close(db, 0);
+    else
+      fprintf(stderr, "WordDB::Dealloc: null db\n");
+    dbenv = 0;
+    db = 0;
+    return error;
   }
+
+  int Open(const String& filename, DBTYPE type, int flags, int mode);
 
   inline int Close() {
-    if(db) db->close(0);
-    db = 0;
-    return OK;
+    int error;
+    if((error = Dealloc()) != 0)
+      return error;
+    return Alloc();
   }
 
   inline int Fd(int *fdp) {
-    if(!db) return NOTOK;
-
-    if((errno = db->fd(fdp)) != 0) {
-      cerr << "WordDB::Fd() failed " << dberror(errno) << "\n";
-      return NOTOK;
-    }
-    return OK;
+    if(!is_open) return DB_UNKNOWN;
+    return db->fd(db, fdp);
   }
 
   inline int Stat(void *sp, void *(*db_malloc)(size_t), int flags) {
-    if(!db) return NOTOK;
-    if((errno = db->stat(sp, db_malloc, (u_int32_t) flags)) != 0) {
-      cerr << "WordDB::Stat(" << flags << ") failed " << dberror(errno) << "\n";
-      return NOTOK;
-    }
-    return OK;
+    if(!is_open) return DB_UNKNOWN;
+    return db->stat(db, sp, db_malloc, (u_int32_t) flags);
   }
   
   inline int Sync(int flags) {
-    if(!db) return NOTOK;
-    if((errno = db->sync((u_int32_t) flags)) != 0) {
-      cerr << "WordDB::Sync(" << flags << ") failed " << dberror(errno) << "\n";
-      return NOTOK;
-    }
-    return OK;
+    if(!is_open) return DB_UNKNOWN;
+    return db->sync(db, (u_int32_t) flags);
   }
 
   inline int get_byteswapped() const {
-    if(!db) return -1;
-    return db->get_byteswapped();
+    if(!is_open) return DB_UNKNOWN;
+    return db->get_byteswapped(db);
   }
 
   inline DBTYPE get_type() const {
-    if(!db) return DB_UNKNOWN;
-    return db->get_type();
+    if(!is_open) return DB_UNKNOWN;
+    return db->get_type(db);
   }
 
   //
   // String arguments
   //
-  inline int Put(DbTxn *, const String& key, const String& data, int flags) {
-    Dbt rkey((void*)key.get(), (size_t)key.length());
-    Dbt rdata((void*)data.get(), (size_t)data.length());
+  inline int Put(DB_TXN *txn, const String& key, const String& data, int flags) {
+    WORD_DBT_INIT(rkey, (void*)key.get(), key.length());
+    WORD_DBT_INIT(rdata, (void*)data.get(), data.length());
 
-    put_stat_N++;     
-    put_stat_totksz+=key.length();
-    put_stat_totdsz+=data.length();
-    if(verbose && !(put_stat_N%10000))
-    {
-	cout << "insert num " << put_stat_N << ": avg key sz:" << put_stat_totksz/(double)put_stat_N
-	     << ": avg data sz:" << put_stat_totdsz/(double)put_stat_N << endl;
-
-    }
-    if(0 && verbose)//DEBUGTMP
-    {
-	cout << "WordDB::Put: keylength:" << setw(3) << key.length() << " datalength:" << data.length() << " ::key: ";
-	WordKey::ShowPacked(key);
-	cout << " data:";
-	WordKey::ShowPacked(data);
-	cout << endl;
-    }
-    if((errno = db->put(0, &rkey, &rdata, flags)) != 0) 
-    {
-	cerr << "WordDB::Put(" << key << ", " << data << ", " << flags << ") failed " << dberror(errno) << "\n";
-    }
-    return errno;
+    return db->put(db, txn, &rkey, &rdata, flags);
   }
 
-  inline int Get(DbTxn *, String& key, String& data, int flags) const {
-    Dbt rkey((void*)key.get(), (u_int32_t)key.length());
-    Dbt rdata((void*)data.get(), (u_int32_t)data.length());
+  inline int Get(DB_TXN *txn, String& key, String& data, int flags) const {
+    WORD_DBT_INIT(rkey, (void*)key.get(), (u_int32_t)key.length());
+    WORD_DBT_INIT(rdata, (void*)data.get(), (u_int32_t)data.length());
 
-    if((errno = db->get(0, &rkey, &rdata, 0)) != 0) {
-      if(errno != DB_NOTFOUND)
-	cerr << "WordDB::Get(" << key << ", " << data << ", " << flags << ") failed " << dberror(errno) << "\n";
+    int error;
+    if((error = db->get(db, txn, &rkey, &rdata, 0)) != 0) {
+      if(error != DB_NOTFOUND)
+	fprintf(stderr, "WordDB::Get(%s,%s) using %d failed %s\n", (char*)key, (char*)data, flags, CDB_db_strerror(error));
     } else {
       //
       // Only set arguments if found something.
       //
-      key.set((const char*)rkey.get_data(), (int)rkey.get_size());
-      data.set((const char*)rdata.get_data(), (int)rdata.get_size());
+      key.set((const char*)rkey.data, (int)rkey.size);
+      data.set((const char*)rdata.data, (int)rdata.size);
     }
 
-    return errno;
+    return error;
   }
 
-  inline int Del(DbTxn *, const String& key) {
-    Dbt rkey((void*)key.get(), (u_int32_t)key.length());
+  inline int Del(DB_TXN *txn, const String& key) {
+    WORD_DBT_INIT(rkey, (void*)key.get(), (u_int32_t)key.length());
 
-    if((errno = db->del(0, &rkey, 0)) != 0) {
-      if(errno != DB_NOTFOUND)
-	cerr << "WordDB::Del(" << key << ") failed " << dberror(errno) << "\n";
-    }
-  
-    return errno;
+    return db->del(db, txn, &rkey, 0);
   }
 
   //
   // WordReference argument
   //
   inline int Put(const WordReference& wordRef, int flags) {
-    if(!db) return NOTOK;
+    if(!is_open) return DB_UNKNOWN;
 
     int ret;
     String key;
     String record;
 
-    if((ret = wordRef.Pack(key, record)) == OK) {
-      ret = Put(0, key, record, flags) == 0 ? OK : NOTOK;
-    }
-    return ret;
+    if((ret = wordRef.Pack(key, record)) != OK) return DB_RUNRECOVERY;
+
+    return Put(0, key, record, flags);
   }
 
   inline int Del(const WordReference& wordRef) {
@@ -232,7 +181,7 @@ class WordDB {
   // in wordRef.
   //
   inline int Get(WordReference& wordRef) const {
-    if(!db) return DB_RUNRECOVERY;
+    if(!is_open) return DB_UNKNOWN;
 
     String data;
     String key;
@@ -247,45 +196,45 @@ class WordDB {
   }
 
   //
-  // Returns OK of the key of wordRef matches an entry in the base.
+  // Returns 0 of the key of wordRef matches an entry in the database.
   // Could be implemented with Get but is not because we don't
   // need to build a wordRef with the entry found in the base. 
   //
   inline int Exists(const WordReference& wordRef) const {
-    if(!db) return NOTOK;
+    if(!is_open) return DB_UNKNOWN;
 
     String key;
     String data;
 
-    if(wordRef.Key().Pack(key) != OK) return NOTOK;
+    if(wordRef.Key().Pack(key) != OK) return DB_RUNRECOVERY;
 
-    if(Get(0, key, data, 0) != 0)
-      return NOTOK;
-  
-    return OK;
+    return Get(0, key, data, 0);
+  }
+
+  //
+  // Accessors
+  //
+  inline int set_bt_compare(int (*compare)(const DBT *, const DBT *)) {
+    return db->set_bt_compare(db, compare);
+  }
+
+  inline int set_pagesize(u_int32_t pagesize) {
+    return db->set_pagesize(db, pagesize);
   }
 
   //
   // Accessors for description of the compression scheme
   //
-  inline DB_CMPR_INFO* CmprInfo() { return dbenv.get_mp_cmpr_info(); }
-  inline void CmprInfo(DB_CMPR_INFO* info) { dbenv.set_mp_cmpr_info(info); }
+  inline DB_CMPR_INFO* CmprInfo() { return dbenv->mp_cmpr_info; }
+  inline void CmprInfo(DB_CMPR_INFO* info) { dbenv->mp_cmpr_info = info; }
 
-  Db*			db;
-  DbEnv	            	dbenv;
-  DbInfo            	dbinfo;
-
- private:
-  // Debuging:count number and sizes of inserted keys/data
-  int put_stat_N;
-  int put_stat_totksz;
-  int put_stat_totdsz;
-  int verbose;
+  int			is_open;
+  DB*			db;
+  DB_ENV*            	dbenv;
 };
 
 //
-// Interface to Dbc that uses String instead of Dbt
-// Methods report errors on cerr and return OK/NOTOK status.
+// Interface to DBC that uses String instead of DBT
 //
 class WordDBCursor {
  public:
@@ -294,65 +243,53 @@ class WordDBCursor {
     Close();
   }
 
-  inline int Open(Db* db) {
+  inline int Open(DB* db) {
     Close();
-    if((errno = db->cursor(0, &cursor, 0)) != 0) {
-      cerr << "WordDBCursor::Open failed " << dberror(errno) << "\n";
-      return NOTOK;
-    }
-    return OK;
+    return db->cursor(db, 0, &cursor, 0);
   }
 
   inline int Close() {
-    if(cursor) cursor->close();
+    if(cursor) cursor->c_close(cursor);
     cursor = 0;
-    return OK;
+    return 0;
   }
 
   //
   // String arguments
   //
   inline int Get(String& key, String& data, int flags) {
-    Dbt rkey;
-    Dbt rdata;
+    WORD_DBT_DCL(rkey);
+    WORD_DBT_DCL(rdata);
     switch(flags & DB_OPFLAGS_MASK) {
     case DB_SET_RANGE:
     case DB_SET:
     case DB_GET_BOTH:
-      rkey.set_data((void*)key.get());
-      rkey.set_size((u_int32_t)key.length());
+      WORD_DBT_SET(rkey, (void*)key.get(), key.length());
       break;
     }
-    if((errno = cursor->get(&rkey, &rdata, (u_int32_t)flags)) != 0) {
-      if(errno != DB_NOTFOUND)
-	cerr << "WordDBCursor::Get(" << flags << ") failed " << dberror(errno) << "\n";
-      return errno;
+    int error;
+    if((error = cursor->c_get(cursor, &rkey, &rdata, (u_int32_t)flags)) != 0) {
+      if(error != DB_NOTFOUND)
+	fprintf(stderr, "WordDBCursor::Get(%d) failed %s\n", flags, CDB_db_strerror(error));
+    } else {
+      key.set((const char*)rkey.data, (int)rkey.size);
+      data.set((const char*)rdata.data, (int)rdata.size);
     }
-    key.set((const char*)rkey.get_data(), (int)rkey.get_size());
-    data.set((const char*)rdata.get_data(), (int)rdata.get_size());
-    return errno;
+    return error;
   }
 
   inline int Put(const String& key, const String& data, int flags) {
-    Dbt rkey((void*)key.get(), (size_t)key.length());
-    Dbt rdata((void*)data.get(), (size_t)data.length());
-    if((errno = cursor->put(&rkey, &rdata, (u_int32_t)flags)) != 0) {
-      cerr << "WordDBCursor::Put(" << key << ", " << data << ", " << flags << ") failed " << dberror(errno) << "\n";
-      return NOTOK;
-    }
-    return OK;
+    WORD_DBT_INIT(rkey, (void*)key.get(), (size_t)key.length());
+    WORD_DBT_INIT(rdata, (void*)data.get(), (size_t)data.length());
+    return cursor->c_put(cursor, &rkey, &rdata, (u_int32_t)flags);
   }
 
   inline int Del() {
-    if((errno = cursor->del((u_int32_t)0)) != 0) {
-      cerr << "WordDBCursor::Del() failed " << dberror(errno) << "\n";
-      return NOTOK;
-    }
-    return OK;
+    return cursor->c_del(cursor, (u_int32_t)0);
   }
 
 private:
-  Dbc* cursor;
+  DBC* cursor;
 };
 
 #endif /* _WordDB_h */

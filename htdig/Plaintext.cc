@@ -4,13 +4,17 @@
 // Plaintext: Parses plaintext files. Not much to do, really.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Plaintext.cc,v 1.17 1999/10/08 12:05:20 loic Exp $
+// $Id: Plaintext.cc,v 1.18 2002/02/01 22:49:29 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Plaintext.h"
 #include "htdig.h"
@@ -18,6 +22,7 @@
 #include "WordType.h"
 
 #include <ctype.h>
+#include "defaults.h"
 
 
 //*****************************************************************************
@@ -45,8 +50,9 @@ Plaintext::parse(Retriever &retriever, URL &)
     if (contents == 0 || contents->length() == 0)
 	return;
 
+	HtConfiguration* config= HtConfiguration::config();
     unsigned char       *position = (unsigned char *) contents->get();
-    static int	minimumWordLength = config.Value("minimum_word_length", 3);
+    static int	minimumWordLength = config->Value("minimum_word_length", 3);
     int		wordIndex = 1;
     int		in_space = 0;
     String	word;
@@ -97,26 +103,7 @@ Plaintext::parse(Retriever &retriever, URL &)
 	    }
 	    else
 	    {
-		//
-		// Non whitespace
-		//
-		switch (*position)
-		{
-		    case '<':
-			head << "&lt;";
-			break;
-		    case '>':
-			head << "&gt;";
-			break;
-		    case '&':
-			head << "&amp;";
-			break;
-		    case '\0':
-			break;
-		    default:
-			head << *position;
-			break;
-		}
+	        head << *position;
 		in_space = 0;
 	    }
 	}

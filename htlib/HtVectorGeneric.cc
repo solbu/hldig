@@ -1,4 +1,22 @@
+//
+// HtVectorGeneric.cc
+//
+// HtVectorGeneric: A Vector class which holds objects of type GType.
+//           (A vector is an array that can expand as necessary)
+//           This class is very similar in interface to the List class
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999, 2000 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU General Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: HtVectorGeneric.cc,v 1.3 2002/02/01 22:49:33 ghutchis Exp $
+//
 
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "HtVector_int.h"
 #define GType int

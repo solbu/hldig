@@ -5,14 +5,21 @@
 //          used by the ispell dictionary files.
 //           
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Endings.cc,v 1.9 2000/02/19 05:29:02 ghutchis Exp $
+// $Id: Endings.cc,v 1.10 2002/02/01 22:49:33 ghutchis Exp $
 //
 
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <fcntl.h>
+
+#include "StringList.h"
 #include "Endings.h"
 #include "htfuzzy.h"
 #include "HtConfiguration.h"
@@ -66,56 +73,53 @@ Endings::getWords(char *w, List &words)
     String	word = w;
     word.lowercase();
     HtStripPunctuation(word);
+    String	saveword = word.get();
 
-    if (root2word->Get(word, data) == OK)
-      {
-        //
-        // Found the root's permutations
-        //
-        char    *token = strtok(data.get(), " ");
-        while (token)
-	  {
-            if (mystrcasecmp(token, w) != 0)
-	      {
-                words.Add(new String(token));
-	      }
-            token = strtok(0, " ");
-	  }
-      }
-    else
-      {
-	if (word2root->Get(word, data) == OK)
-	  {
-	    //
-	    // Found the root of the word.  We'll add it to the list already
-	    //
-	    word = data;
-	    words.Add(new String(word));
-	  }
-	else
-	  {
-	    //
-	    // The root wasn't found.  This could mean that the word
-	    // is already the root.
-	    //
-	  }
-
+    //
+    // Look for word's root(s).  Some words may have more than one root,
+    // so handle them all.  Whether or not a word has a root, it's assumed
+    // to be root in itself.
+    //
+    if (word2root->Get(word, data) == OK)
+	word << ' ' << data;
+ 
+    StringList	roots(word, " ");
+    Object	*root;
+    roots.Start_Get();
+    while ((root = roots.Get_Next()) != 0)
+    {
+	//
+	// Found a root.  Look for new words that have this root.
+	//
+	word = ((String *)root)->get();
 	if (root2word->Get(word, data) == OK)
-	  {
-	    //
-	    // Found the root's permutations
-	    //
-	    char	*token = strtok(data.get(), " ");
-	    while (token)
-	      {
-		if (mystrcasecmp(token, w) != 0)
-		  {
+	    word << ' ' << data;
+
+	//
+	// Iterate through the root's permutations
+	//
+	char	*token = strtok(word.get(), " ");
+	while (token)
+	{
+	    if (mystrcasecmp(token, saveword.get()) != 0)
+	    {
+		//
+		// This permutation isn't the original word, so we add it
+		// to the list if it's not already there.
+		//
+		Object	*obj;
+		words.Start_Get();
+		while((obj = words.Get_Next()) != 0)
+		{
+		    if (mystrcasecmp(token, ((String *)obj)->get()) == 0)
+			break;
+		}
+		if (obj == 0)
 		    words.Add(new String(token));
-		  }
-		token = strtok(0, " ");
-	      }
-	  }
-      }
+	    }
+	    token = strtok(0, " ");
+	}
+    }
 }
 
 

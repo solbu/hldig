@@ -20,21 +20,28 @@
 // HtHTTP use another class to store the response returned by the
 // remote server.
 //
+// Now cookies management is enabled.
+//
 ///////
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.9 2000/02/19 05:29:05 ghutchis Exp $ 
+// $Id: HtHTTP.h,v 1.10 2002/02/01 22:49:35 ghutchis Exp $ 
 //
 
 #ifndef _HTHTTP_H
 #define _HTHTTP_H
 
 #include "Transport.h"
+
+// Cookie support
+#include "HtCookie.h"
+#include "HtCookieJar.h"
+
 #include "URL.h"
 #include "htString.h"
 #include <iostream.h>   // for HtHTTP::ShowStatistics
@@ -67,13 +74,20 @@ class HtHTTP_Response : public Transport_Response
 	 void Reset();
 	 
 	 // Get the HTTP version
-   	 char *GetVersion() { return _version; }
+   	 const String &GetVersion() const { return _version; }
 
 	 // Get the Transfer-encoding
-   	 char *GetTransferEncoding() { return _transfer_encoding; }
+   	 const String &GetTransferEncoding() const
+            { return _transfer_encoding; }
 
 	 // Get server info
-   	 char *GetServer() { return _server; }
+   	 const String &GetServer() const { return _server; }
+
+	 // Get Connection info
+   	 const String &GetConnectionInfo() const { return _hdrconnection; }
+
+	 // Get Content language
+   	 const String &GetContentLanguage() const { return _content_language; }
 
 
    protected:
@@ -86,6 +100,8 @@ class HtHTTP_Response : public Transport_Response
    
 	 String    _transfer_encoding;    // Transfer-encoding
    	 String	   _server;	          // Server string returned
+   	 String	   _hdrconnection;	  // Connection header
+	 String    _content_language;     // Content-language
 
 };
 
@@ -93,14 +109,17 @@ class HtHTTP_Response : public Transport_Response
 
 class HtHTTP : public Transport
 {
+private:
+   HtHTTP() {}    // Declared private - avoids default constructor to be created
+      	          // in some cases by the compiler.
 public:
 
 ///////
    //    Construction/Destruction
 ///////
 
-    HtHTTP();
-    ~HtHTTP();
+    HtHTTP(Connection&);
+    virtual ~HtHTTP() = 0;
 
    // Information about the method to be used in the request
 
@@ -140,23 +159,26 @@ public:
  ///////
 
    // Set and get the document to be retrieved
-   void SetRequestURL(URL &u) { _url = u;}
+   void SetRequestURL(const URL &u) { _url = u;}
    URL GetRequestURL () { return _url;}
 
 
    // Set and get the referring URL
-   void SetRefererURL (URL u) { _referer = u;}
+   void SetRefererURL (const URL& u) { _referer = u;}
    URL GetRefererURL () { return _referer;}
 
+   // Set and get the accept-language string
+   void SetAcceptLanguage (const String& al) { _accept_language = al; }
+   URL GetAcceptLanguage () { return _accept_language; }
 
    // Info for multiple requests (static)
    // Get the User agent string
-   static void SetRequestUserAgent (String s) { _user_agent=s; }
-   static char *GetRequestUserAgent() { return _user_agent; }
+   static void SetRequestUserAgent (const String &s) { _user_agent=s; }
+   static const String &GetRequestUserAgent() { return _user_agent; }
 
 
    // Set (Basic) Authentication Credentials
-   void SetCredentials (String s);
+   void SetCredentials (const String& s);
 
  ///////
     //    Interface for the HTTP Response
@@ -169,7 +191,7 @@ public:
    {
       if (_response._status_code != -1)
          return &_response;
-      else return NULL;}
+      else return 0;}
 
 
    // Get the document status 
@@ -191,8 +213,8 @@ public:
    // Is possible
    bool isPersistentConnectionPossible() {return _persistent_connection_possible;}
 
-   // Check if a persistent connection is possible depending on the HTTP version
-   void CheckPersistentConnection(const char *);
+   // Check if a persistent connection is possible depending on the HTTP response
+   void CheckPersistentConnection(HtHTTP_Response &);
 
    // Is Up (is both allowed and permitted by the server too)
    bool isPersistentConnectionUp()
@@ -205,8 +227,24 @@ public:
    // Disable Persistent Connection
    void DisablePersistentConnection() { _persistent_connection_allowed=false; }
    
+   // Allow Cookies
+   void AllowCookies() { _send_cookies=true; }
+   
+   // Disable Persistent Connection
+   void DisableCookies() { _send_cookies=false; }
+   
 
-// Manage statistics
+///////
+   // 	 Set the cookie manager class (that is to say the class)
+///////
+
+   // It's set only if not done before
+   static void SetCookieJar(HtCookieJar *cj) { if (!_cookie_jar) _cookie_jar = cj; }
+
+
+///////
+   // 	 Manage statistics
+///////
    
    static int GetTotSeconds () { return _tot_seconds; }   
 
@@ -269,6 +307,7 @@ protected:
    URL		_referer;	    // Referring URL
    int		_useproxy;	    // if true, GET should include full url,
 				    // not path only
+   String      _accept_language;    // accept-language directive
    
    ///////
       //    Http multiple Request information
@@ -298,6 +337,12 @@ protected:
    ///////
 
    bool _persistent_connection_possible;
+
+   ///////
+      //    Are cookies enabled?
+   ///////
+
+   bool _send_cookies;
 
    ///////
       //    Option that, if set to true, make a request to be made up
@@ -379,6 +424,9 @@ protected:
    //    Static attributes and methods
 ///////
    
+   // Unique cookie Jar
+   static HtCookieJar *_cookie_jar;  // Jar containing all of the cookies
+      
    static int  _tot_seconds;  	 // Requests last (in seconds)
    static int  _tot_requests; 	 // Number of requests
    static int  _tot_bytes;    	 // Number of bytes read

@@ -3,7 +3,7 @@
 #
 # rundig
 #
-# $Id: rundig,v 1.7 1999/01/31 04:27:02 ghutchis Exp $
+# $Id: rundig,v 1.8 2002/02/01 22:49:37 ghutchis Exp $
 #
 # This is a sample script to create a search database for ht://Dig.
 #
@@ -24,32 +24,27 @@ do
 done
 
 #
-# Set the TMPDIR variable if you want htmerge to put files in a location
-# other than the default.  This is important if you do not have enough
-# disk space for the big sort that htmerge runs.  Also, be aware that
-# on some systems, /tmp is a memory mapped filesystem that takes away
-# from virtual memory.
+# Set the TMPDIR variable if you want htdig and other programs to put 
+# files in a location other than the default.  This is important if
+# you are running this script as root, since /tmp is usually not
+# secure.  Also, be aware that on some systems, /tmp is a memory
+# mapped filesystem that takes away from virtual memory.
 #
 TMPDIR=$DBDIR
 export TMPDIR
 
 $BINDIR/htdig -i $opts $stats $alt
-$BINDIR/htmerge $opts $stats $alt
+$BINDIR/htpurge $opts $alt
 case "$alt" in
 -a)
   ( cd $DBDIR && test -f db.docdb.work &&
     for f in *.work
     do
         mv -f $f `basename $f .work`
-    done ) ;;
+    done
+    test -f db.words.db.work_weakcmpr &&
+	mv -f db.words.db.work_weakcmpr db.words.db_weakcmpr) ;;
 esac
-# If you're low on disk space and you don't mind completely reindexing
-# every time you run this script, you can always
-# rm $DBDIR/db.wordlist
-# OR
-# If you'd rather run update digs all the time with the minimal databases
-# Keep only the following files (and don't call htdig with -i):
-# db.docdb, db.docdb.work, db.docs.index, db.wordlist.work, db.words.db
 $BINDIR/htnotify $opts
 # If you want to use the soundex and (or) metaphone fuzzy matchings,
 # Uncomment the following line

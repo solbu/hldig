@@ -4,13 +4,17 @@
 // Display: Takes results of search and fills in the HTML templates
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.103 2000/02/19 05:29:05 ghutchis Exp $
+// $Id: Display.cc,v 1.104 2002/02/01 22:49:35 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htsearch.h"
 #include "Display.h"
@@ -22,43 +26,47 @@
 #include "HtSGMLCodec.h"
 #include "HtURLCodec.h"
 #include "WordType.h"
+#include "Collection.h"
+#include "HtURLSeedScore.h"
+#include "SplitMatches.h"
 
 #include <fstream.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <syslog.h>
 #include <locale.h>
+#include <math.h>
+#include <float.h>
+
+#if !defined(DBL_MAX) && defined(MAXFLOAT)
+# define DBL_MAX MAXFLOAT
+#endif
 
 //*****************************************************************************
 //
-//Display::Display(char *docFile, char *indexFile, char *excerptFile)
-Display::Display()
+Display::Display(Dictionary *collections)
 {
-    // Check "uncompressed"/"uncoded" urls at the price of time
-    // (extra DB probes).
-
-//These are soon to be handled by ResultList
-//    docDB.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
-//    docDB.Read(docFile, indexFile, excerptFile);
-
+	HtConfiguration* config= HtConfiguration::config();
+    selected_collections = collections;
     limitTo = 0;
     excludeFrom = 0;
     //    needExcerpt = 0;
     templateError = 0;
 
-    maxStars = config.Value("max_stars");
-    maxScore = 100;
+    maxStars = config->Value("max_stars");
+    maxScore = -DBL_MAX;
+    minScore = DBL_MAX;
     setupImages();
     setupTemplates();
 
-    if (!templates.createFromString(config["template_map"]))
+    if (!templates.createFromString(config->Find("template_map")))
       {
 	// Error in createFromString.
 	// Let's try the default template_map
 	
-	config.Add("template_map", 
+	config->Add("template_map", 
 		   "Long builtin-long builtin-long Short builtin-short builtin-short");
-        if (!templates.createFromString(config["template_map"]))
+        if (!templates.createFromString(config->Find("template_map")))
 	  {
 	    // Unrecoverable Error
 	    // (No idea why this would happen)
@@ -66,7 +74,7 @@ Display::Display()
 	  }
       }
 
-    currentTemplate = templates.get(config["template_name"]);
+    currentTemplate = templates.get(config->Find("template_name"));
     if (!currentTemplate)
     {
 	//
@@ -88,7 +96,7 @@ Display::Display()
 //*****************************************************************************
 Display::~Display()
 {
-//    docDB.Close();
+    // docDB.Close();
 }
 
 //*****************************************************************************
@@ -96,14 +104,15 @@ Display::~Display()
 void
 Display::display(int pageNumber)
 {
+	HtConfiguration* config= HtConfiguration::config();
     int good_sort = 0;
-    good_sort = ResultMatch::setSortType(config["sort"]);
+    good_sort = ResultMatch::setSortType(config->Find("sort"));
     if (!good_sort)
     {
       // Must temporarily stash the message in a String, since
       // displaySyntaxError will overwrite the static temp used in form.
 
-      String s(form("No such sort method: `%s'", (const char*)config["sort"]));
+      String s(form("No such sort method: `%s'", (const char*)config->Find("sort")));
 
       displaySyntaxError(s);
       return;
@@ -113,15 +122,13 @@ Display::display(int pageNumber)
     int			currentMatch = 0;
     int			numberDisplayed = 0;
     ResultMatch		*match = 0;
-//    int			number = config.Value("matches_per_page");
-		int number = 0;
-    number = config.Value("matches_per_page");
-
+    int			number = 0;
+    number = config->Value("matches_per_page");
     if (number <= 0)
 	number = 10;
     int			startAt = (pageNumber - 1) * number;
 
-    if (config.Boolean("logging"))
+    if (config->Boolean("logging"))
     {
         logSearch(pageNumber, matches);
     }
@@ -140,14 +147,16 @@ Display::display(int pageNumber)
 	// No matches.
 	//
         delete matches;
+	if( config->Boolean("nph") ) cout << "HTTP/1.0 200 OK\r\n";
 	cout << "Content-type: text/html\r\n\r\n";
 	displayNomatch();
 	return;
     }
     // maxScore = match->getScore();	// now done in buildMatchList()
     	
+    if( config->Boolean("nph") ) cout << "HTTP/1.0 200 OK\r\n";
     cout << "Content-type: text/html\r\n\r\n";
-    String	wrap_file = config["search_results_wrapper"];
+    String	wrap_file = config->Find("search_results_wrapper");
     String	*wrapper = 0;
     char	*header = 0, *footer = 0;
     if (wrap_file.length())
@@ -197,13 +206,14 @@ Display::display(int pageNumber)
     {
 	if (currentMatch >= startAt)
 	{
-//	    DocumentRef	*ref = docDB[match->getID()];
-				DocumentRef *ref = results->getDocumentRef(match->getID());
+	    // DocumentRef	*ref = docDB[match->getID()];
+            Collection *collection = match->getCollection();
+            DocumentRef *ref = collection->getDocumentRef(match->getID());
 	    if (!ref || ref->DocState() != Reference_normal)
 		continue;	// The document isn't present or shouldn't be displayed
 	    ref->DocAnchor(match->getAnchor());
 	    ref->DocScore(match->getScore());
-	    displayMatch(ref,currentMatch+1);
+	    displayMatch(match, ref, currentMatch+1);
 	    numberDisplayed++;
 	    delete ref;
 	}
@@ -244,10 +254,11 @@ Display::includeURL(const String& url)
 
 //*****************************************************************************
 void
-Display::displayMatch(DocumentRef *ref, int current)
+Display::displayMatch(ResultMatch *match, DocumentRef *ref, int current)
 {
+	HtConfiguration* config= HtConfiguration::config();
     String	*str = 0;
-	
+
     char    *url = ref->DocURL();
     vars.Add("URL", new String(url));
     
@@ -275,7 +286,7 @@ Display::displayMatch(DocumentRef *ref, int current)
     String urlanchor(url);
     if (anchor)
       urlanchor << anchor;
-    vars.Add("EXCERPT", excerpt(ref, urlanchor, fanchor, first));
+    vars.Add("EXCERPT", excerpt(match, ref, urlanchor, fanchor, first));
     //
     // anchor only relevant if an excerpt was found, i.e.,
     // the search expression matches the body of the document
@@ -286,12 +297,13 @@ Display::displayMatch(DocumentRef *ref, int current)
 	vars.Remove("ANCHOR");
       }
     
-    vars.Add("SCORE", new String(form("%d", ref->DocScore())));
+    vars.Add("METADESCRIPTION", new String(ref->DocMetaDsc()));
+    vars.Add("SCORE", new String(form("%f", ref->DocScore())));
     vars.Add("CURRENT", new String(form("%d", current)));
     char	*title = ref->DocTitle();
     if (!title || !*title)
       {
-	if ( strcmp(config["no_title_text"], "filename") == 0 )
+	if ( strcmp(config->Find("no_title_text"), "filename") == 0 )
 	  {
 	    // use actual file name
 	    title = strrchr(url, '/');
@@ -306,7 +318,7 @@ Display::displayMatch(DocumentRef *ref, int current)
 	  }
 	else
 	  // use configure 'no title' text
-	  str = new String(config["no_title_text"]);
+	  str = new String(config->Find("no_title_text"));
       }
     else
       str = new String(title);
@@ -317,9 +329,10 @@ Display::displayMatch(DocumentRef *ref, int current)
     vars.Add("SIZEK", new String(form("%d",
 					  (ref->DocSize() + 1023) / 1024)));
 
-    if (maxScore != 0)
+    if (maxScore != 0 && maxScore != minScore)
       {
-	int percent = (int)(ref->DocScore() * 100 / (double)maxScore);
+	int percent = (int)((ref->DocScore() - minScore) * 100 /
+			    (maxScore - minScore));
 	if (percent <= 0)
 	  percent = 1;
 	vars.Add("PERCENT", new String(form("%d", percent)));
@@ -334,11 +347,11 @@ Display::displayMatch(DocumentRef *ref, int current)
 	if (t)
 	{
 	    struct tm	*tm = localtime(&t);
-	    String datefmt = config["date_format"];
-	    const String locale  = config["locale"];
-	    if (!datefmt.empty())
+	    String datefmt = config->Find("date_format");
+	    const String locale  = config->Find("locale");
+	    if (datefmt.empty())
 	      {
-		if (config.Boolean("iso_8601"))
+		if (config->Boolean("iso_8601"))
 		    datefmt = "%Y-%m-%d %H:%M:%S %Z";
 		else
 		    datefmt = "%x";
@@ -387,6 +400,7 @@ Display::displayMatch(DocumentRef *ref, int current)
 void
 Display::setVariables(int pageNumber, List *matches)
 {
+	HtConfiguration* config= HtConfiguration::config();
     String	tmp;
     int		i;
     int		nMatches = 0;
@@ -394,48 +408,54 @@ Display::setVariables(int pageNumber, List *matches)
     if (matches)
 	nMatches = matches->Count();
 	
-    int		matchesPerPage = config.Value("matches_per_page");
+    int		matchesPerPage = config->Value("matches_per_page");
     if (matchesPerPage <= 0)
 	matchesPerPage = 10;
     int		nPages = (nMatches + matchesPerPage - 1) / matchesPerPage;
 
-    if (nPages > config.Value("maximum_pages", 10))
-	nPages = config.Value("maximum_pages", 10);
+    if (nPages > config->Value("maximum_pages", 10))
+	nPages = config->Value("maximum_pages", 10);
     if (nPages < 1)
 	nPages = 1;			// We always have at least one page...
-    vars.Add("MATCHES_PER_PAGE", new String(config["matches_per_page"]));
-    vars.Add("MAX_STARS", new String(config["max_stars"]));
-    vars.Add("CONFIG", new String(config["config"]));
-    vars.Add("VERSION", new String(config["version"]));
-    vars.Add("RESTRICT", new String(config["restrict"]));
-    vars.Add("EXCLUDE", new String(config["exclude"]));
-    vars.Add("KEYWORDS", new String(config["keywords"]));
-    if (mystrcasecmp(config["match_method"], "and") == 0)
+    vars.Add("MATCHES_PER_PAGE", new String(config->Find("matches_per_page")));
+    vars.Add("MAX_STARS", new String(config->Find("max_stars")));
+    vars.Add("CONFIG", new String(config->Find("config")));
+    vars.Add("VERSION", new String(config->Find("version")));
+    vars.Add("RESTRICT", new String(config->Find("restrict")));
+    vars.Add("EXCLUDE", new String(config->Find("exclude")));
+    vars.Add("KEYWORDS", new String(config->Find("keywords")));
+    if (mystrcasecmp(config->Find("match_method"), "and") == 0)
 	vars.Add("MATCH_MESSAGE", new String("all"));
-    else if (mystrcasecmp(config["match_method"], "or") == 0)
+    else if (mystrcasecmp(config->Find("match_method"), "or") == 0)
 	vars.Add("MATCH_MESSAGE", new String("some"));
     vars.Add("MATCHES", new String(form("%d", nMatches)));
-    vars.Add("PLURAL_MATCHES", new String(nMatches == 1 ? (char *)"" : (char *)"s"));
+    vars.Add("PLURAL_MATCHES", new String((nMatches == 1) ? (char *)"" :  (const char *) config->Find("plural_suffix")));
     vars.Add("PAGE", new String(form("%d", pageNumber)));
     vars.Add("PAGES", new String(form("%d", nPages)));
     vars.Add("FIRSTDISPLAYED",
 		 new String(form("%d", (pageNumber - 1) *
 				 matchesPerPage + 1)));
     if (nPages > 1)
-	vars.Add("PAGEHEADER", new String(config["page_list_header"]));
+	vars.Add("PAGEHEADER", new String(config->Find("page_list_header")));
     else
-	vars.Add("PAGEHEADER", new String(config["no_page_list_header"]));
+	vars.Add("PAGEHEADER", new String(config->Find("no_page_list_header")));
 	
     i = pageNumber * matchesPerPage;
     if (i > nMatches)
 	i = nMatches;
     vars.Add("LASTDISPLAYED", new String(form("%d", i)));
 
-    if (config["script_name"].length() != 0) {
-      vars.Add("CGI", new String(config["script_name"]));
+    if (config->Find("script_name").length() != 0) {
+      vars.Add("CGI", new String(config->Find("script_name")));
     } else {
       vars.Add("CGI", new String(getenv("SCRIPT_NAME")));
     }
+    vars.Add("STARTYEAR", new String(config->Find("startyear")));
+    vars.Add("STARTMONTH", new String(config->Find("startmonth")));
+    vars.Add("STARTDAY", new String(config->Find("startday")));
+    vars.Add("ENDYEAR", new String(config->Find("endyear")));
+    vars.Add("ENDMONTH", new String(config->Find("endmonth")));
+    vars.Add("ENDDAY", new String(config->Find("endday")));
 	
     String	*str;
     char	*format = input->get("format");
@@ -444,7 +464,7 @@ Display::setVariables(int pageNumber, List *matches)
     vars.Add("SELECTED_FORMAT", new String(format));
 
     str = new String();
-    *str << "<select name=format>\n";
+    *str << "<select name=\"format\">\n";
     for (i = 0; i < templates.displayNames.Count(); i++)
     {
 	in = (String *) templates.internalNames[i];
@@ -459,30 +479,64 @@ Display::setVariables(int pageNumber, List *matches)
     vars.Add("FORMAT", str);
 
     str = new String();
-    QuotedStringList	ml(config["method_names"], " \t\r\n");
-    *str << "<select name=method>\n";
+    QuotedStringList	ml(config->Find("method_names"), " \t\r\n");
+    *str << "<select name=\"method\">\n";
     for (i = 0; i < ml.Count(); i += 2)
     {
-	*str << "<option value=" << ml[i];
-	if (mystrcasecmp(ml[i], config["match_method"]) == 0)
+	*str << "<option value=\"" << ml[i] << '"';
+	if (mystrcasecmp(ml[i], config->Find("match_method")) == 0)
 	    *str << " selected";
 	*str << '>' << ml[i + 1] << '\n';
     }
     *str << "</select>\n";
     vars.Add("METHOD", str);
 
-    vars.Add("SELECTED_METHOD", new String(config["match_method"]));
+    vars.Add("SELECTED_METHOD", new String(config->Find("match_method")));
+
+    ////////////////// Multiple database support //////////////////////
+    // Emit collection table. Ensure that previously selected collections
+    // are "checked".
+    // Collections are specified in the config file with the
+    // "collection_names" attribute. An example of the corresponding snippet
+    // in the config file is as follows:
+    //
+    // collection_names: htdig_docs htdig_bugs
+    //
+    // htdig_bugs and htdig_docs are the two collections (databases) and
+    // their corresponding config files are: $CONFIG_DIR/htdig_bugs.conf and
+    // $CONFIG_DIR/htdig_docs.conf respectively.
+    //
+    QuotedStringList    clist(config->Find("collection_names"), " \t\r\n");
+    for (i =0; i < clist.Count(); i++)
+    {
+        String config_name = clist[i];
+
+        for (int j=0; j < collectionList.Count(); j++)
+        {
+            if (strcmp(config_name.get(), collectionList[j]) == 0)
+            {
+                str = new String();
+                *str << "checked";
+                String collection_id = "COLLECTION_";
+                collection_id << config_name;
+                vars.Add(collection_id, str);
+                break;
+            }
+        }
+    }
+
+    ////////////////// Multiple database support //////////////////////
 
     str = new String();
-    QuotedStringList	sl(config["sort_names"], " \t\r\n");
-    const String	st = config["sort"];
+    QuotedStringList	sl(config->Find("sort_names"), " \t\r\n");
+    const String	st = config->Find("sort");
     StringMatch		datetime;
     datetime.IgnoreCase();
     datetime.Pattern("date|time");
-    *str << "<select name=sort>\n";
+    *str << "<select name=\"sort\">\n";
     for (i = 0; i < sl.Count(); i += 2)
     {
-	*str << "<option value=" << sl[i];
+	*str << "<option value=\"" << sl[i] << '"';
 	if (mystrcasecmp(sl[i], st) == 0 ||
 		datetime.Compare(sl[i]) && datetime.Compare(st) ||
 		mystrncasecmp(sl[i], st, 3) == 0 &&
@@ -504,34 +558,103 @@ Display::setVariables(int pageNumber, List *matches)
     // EXCLUDE_LIST exclude exclude_names 2 1 2 exclude ""
     // MATCH_LIST matchesperpage matches_per_page_list 1 1 1
     //					matches_per_page "Previous Amount"
-    QuotedStringList	builds(config["build_select_lists"], " \t\r\n");
+    QuotedStringList	builds(config->Find("build_select_lists"), " \t\r\n");
     for (int b = 0; b <= builds.Count()-8; b += 8)
     {
 	int	ntuple = atoi(builds[b+3]);
 	int	ivalue = atoi(builds[b+4]);
 	int	ilabel = atoi(builds[b+5]);
 	int	nsel = 0;
-	QuotedStringList	namelist(config[builds[b+2]], " \t\r\n");
+	int	mult = 0, asinput = 0;
+	const char *cp;
+	char	sepc = '\001';
+	String	currval;
+	String	pre, post;
+	QuotedStringList	nameopt(builds[b], ",", 1);
+	QuotedStringList	namelist(config->Find(builds[b+2]), " \t\r\n");
 	if (ntuple > 0 && ivalue > 0 && ivalue <= ntuple
-	  && ilabel > 0 && ilabel <= ntuple && namelist.Count() % ntuple == 0)
+	  && ilabel > 0 && ilabel <= ntuple && namelist.Count() % ntuple == 0
+	  && nameopt.Count() > 0)
 	{
+	    if (strcmp(builds[b+1], "restrict") == 0
+		|| strcmp(builds[b+1], "exclude") == 0)
+		    sepc = '|';
+	    if (nameopt.Count() == 1)
+		;		// default is single select
+	    else if (mystrcasecmp(nameopt[1], "multiple") == 0)
+		mult = 1;
+	    else if (mystrcasecmp(nameopt[1], "radio") == 0)
+		asinput = 1;
+	    else if (mystrcasecmp(nameopt[1], "checkbox") == 0)
+	    {
+		mult = 1;
+		asinput = 1; 
+	    }
+	    if (nameopt.Count() > 2)
+		pre = nameopt[2];
+	    else
+		pre = "";
+	    if (nameopt.Count() > 3)
+		post = nameopt[3];
+	    else
+		post = "";
+
 	    str = new String();
-	    *str << "<select name="<<builds[b+1]<<">\n";
+	    if (!asinput)
+	    {
+		*str << "<select ";
+		if (mult)
+		    *str << "multiple ";
+		*str << "name=\"" << builds[b+1] << "\">\n";
+	    }
 	    for (i = 0; i < namelist.Count(); i += ntuple)
 	    {
-		*str << "<option value=\"" << namelist[i+ivalue-1] << '"';
-		if (mystrcasecmp(namelist[i+ivalue-1],config[builds[b+6]]) == 0)
+		if (*builds[b+6])
+		    currval = config->Find(builds[b+6]);
+		else if (input->exists(builds[b+1]))
+		    currval = input->get(builds[b+1]);
+		else
+		    currval = 0;
+		if (!asinput)
+		    *str << pre << "<option value=\"" << namelist[i+ivalue-1] << '"';
+		else if (mult)
+		    *str << pre << "<input type=\"checkbox\" name=\"" << builds[b+1]
+			 << "\" value=\"" << namelist[i+ivalue-1] << '"';
+		else
+		    *str << pre << "<input type=\"radio\" name=\"" << builds[b+1]
+			 << "\" value=\"" << namelist[i+ivalue-1] << '"';
+		if (!mult && mystrcasecmp(namelist[i+ivalue-1], currval) == 0
+		    || mult &&
+		     (cp = mystrcasestr(currval, namelist[i+ivalue-1])) != NULL
+			&& (cp == currval.get() || cp[-1] == '\001' || cp[-1] == sepc)
+			&& (*(cp += strlen(namelist[i+ivalue-1])) == '\0'
+				|| *cp == '\001' || *cp == sepc))
 		{
-		    *str << " selected";
+		    if (!asinput)
+			*str << " selected";
+		    else
+			*str << " checked";
 		    ++nsel;
 		}
-		*str << '>' << namelist[i+ilabel-1] << '\n';
+		*str << '>' << namelist[i+ilabel-1] << post << '\n';
 	    }
 	    if (!nsel && builds[b+7][0] && input->exists(builds[b+1]))
-		*str << "<option value=\"" << input->get(builds[b+1])
-		     << "\" selected>" << builds[b+7] << '\n';
-	    *str << "</select>\n";
-	    vars.Add(builds[b], str);
+	    {
+		if (!asinput)
+		    *str << pre << "<option value=\"" << input->get(builds[b+1])
+		         << "\" selected>" << builds[b+7] << post << '\n';
+		else if (mult)
+		    *str << pre << "<input type=\"checkbox\" name=\"" << builds[b+1]
+			 << "\" value=\"" << input->get(builds[b+1])
+			 << "\" checked>" << builds[b+7] << post << '\n';
+		else
+		    *str << pre << "<input type=\"radio\" name=\"" << builds[b+1]
+			 << "\" value=\"" << input->get(builds[b+1])
+			 << "\" checked>" << builds[b+7] << post << '\n';
+	    }
+	    if (!asinput)
+		*str << "</select>\n";
+	    vars.Add(nameopt[0], str);
 	}
     }
 	
@@ -545,11 +668,11 @@ Display::setVariables(int pageNumber, List *matches)
 	    str = new String("<a href=\"");
 	    tmp = 0;
 	    createURL(tmp, pageNumber - 1);
-	    *str << tmp << "\">" << config["prev_page_text"] << "</a>";
+	    *str << tmp << "\">" << config->Find("prev_page_text") << "</a>";
 	}
 	else
 	{
-	    str = new String(config["no_prev_page_text"]);
+	    str = new String(config->Find("no_prev_page_text"));
 	}
 	vars.Add("PREVPAGE", str);
 		
@@ -558,19 +681,21 @@ Display::setVariables(int pageNumber, List *matches)
 	    str = new String("<a href=\"");
 	    tmp = 0;
 	    createURL(tmp, pageNumber + 1);
-	    *str << tmp << "\">" << config["next_page_text"] << "</a>";
+	    *str << tmp << "\">" << config->Find("next_page_text") << "</a>";
 	}
 	else
 	{
-	    str = new String(config["no_next_page_text"]);
+	    str = new String(config->Find("no_next_page_text"));
 	}
 	vars.Add("NEXTPAGE", str);
 
 	str = new String();
 	char	*p;
-	QuotedStringList	pnt(config["page_number_text"], " \t\r\n");
-	QuotedStringList	npnt(config["no_page_number_text"], " \t\r\n");
-	QuotedStringList	sep(config["page_number_separator"], " \t\r\n");
+	QuotedStringList	pnt(config->Find("page_number_text"), " \t\r\n");
+	QuotedStringList	npnt(config->Find("no_page_number_text"), " \t\r\n");
+	QuotedStringList	sep(config->Find("page_number_separator"), " \t\r\n");
+	if (nPages > config->Value("maximum_page_buttons", 10))
+	    nPages = config->Value("maximum_page_buttons", 10);
 	for (i = 1; i <= nPages; i++)
 	{
 	    if (i == pageNumber)
@@ -597,15 +722,15 @@ Display::setVariables(int pageNumber, List *matches)
 	}
 	vars.Add("PAGELIST", str);
     }
-    StringList form_vars(config["allow_in_form"], " \t\r\n");
+    StringList form_vars(config->Find("allow_in_form"), " \t\r\n");
     String* key;
     for (i= 0; i < form_vars.Count(); i++)
     {
-      if(!config[form_vars[i]].empty())
+      if(!config->Find(form_vars[i]).empty())
       {
 	key= new String(form_vars[i]);
 	key->uppercase();
-	vars.Add(key->get(), new String(config[form_vars[i]]));
+	vars.Add(key->get(), new String(config->Find(form_vars[i])));
       }
     }
 }
@@ -614,11 +739,13 @@ Display::setVariables(int pageNumber, List *matches)
 void
 Display::createURL(String &url, int pageNumber)
 {
+	HtConfiguration* config= HtConfiguration::config();
     String	s;
     int         i;
+#define encodeInput(name) (s = input->get(name), encodeURL(s), s.get())
 
-    if (!config["script_name"].empty()) {
-      url << config["script_name"];
+    if (!config->Find("script_name").empty()) {
+      url << config->Find("script_name");
     } else {
       url << getenv("SCRIPT_NAME");
     }
@@ -626,66 +753,104 @@ Display::createURL(String &url, int pageNumber)
     url << '?';
 
     if (input->exists("restrict"))
-	s << "restrict=" << input->get("restrict") << '&';
+	url << "restrict=" << encodeInput("restrict") << ';';
     if (input->exists("exclude"))
-	s << "exclude=" << input->get("exclude") << '&';
-    if (input->exists("config"))
-	s << "config=" << input->get("config") << '&';
+	url << "exclude=" << encodeInput("exclude") << ';';
+    // Not needed: The next loop below handles this output
+    //if (input->exists("config"))
+    //	url << "config=" << encodeInput("config") << ';';
+
+    // Put out all specified collections. If none selected, resort to
+    // default behaviour.
+    char *config_name = collectionList[0];
+    String config_encoded;
+    if (config_name && config_name[0] == '\0')
+      config_name = NULL;
+ 
+    if (config_name)
+      {
+	for (i = 0; i < collectionList.Count(); i++)
+	  {
+	    config_name = collectionList[i];
+	    config_encoded = config_name;
+	    encodeURL(config_encoded);
+	    url << "config=" << config_encoded << ';';
+	  }
+      }
+
     if (input->exists("method"))
-	s << "method=" << input->get("method") << '&';
+	url << "method=" << encodeInput("method") << ';';
     if (input->exists("format"))
-	s << "format=" << input->get("format") << '&';
+	url << "format=" << encodeInput("format") << ';';
     if (input->exists("sort"))
-	s << "sort=" << input->get("sort") << '&';
+	url << "sort=" << encodeInput("sort") << ';';
     if (input->exists("matchesperpage"))
-	s << "matchesperpage=" << input->get("matchesperpage") << '&';
+	url << "matchesperpage=" << encodeInput("matchesperpage") << ';';
     if (input->exists("keywords"))
-	s << "keywords=" << input->get("keywords") << '&';
+	url << "keywords=" << encodeInput("keywords") << ';';
     if (input->exists("words"))
-	s << "words=" << input->get("words") << '&';
-    StringList form_vars(config["allow_in_form"], " \t\r\n");
+	url << "words=" << encodeInput("words") << ';';
+    if (input->exists("startyear"))
+	url << "startyear=" << encodeInput("startyear") << ';';
+    if (input->exists("startmonth"))
+	url << "startmonth=" << encodeInput("startmonth") << ';';
+    if (input->exists("startday"))
+	url << "startday=" << encodeInput("startday") << ';';
+    if (input->exists("endyear"))
+	url << "endyear=" << encodeInput("endyear") << ';';
+    if (input->exists("endmonth"))
+	url << "endmonth=" << encodeInput("endmonth") << ';';
+    if (input->exists("endday"))
+	url << "endday=" << encodeInput("endday") << ';';
+    StringList form_vars(config->Find("allow_in_form"), " \t\r\n");
     for (i= 0; i < form_vars.Count(); i++)
     {
       if (input->exists(form_vars[i]))
       {
-	s << form_vars[i] << '=' << input->get(form_vars[i]) << '&';
+	s = form_vars[i];
+	encodeURL(s);		// shouldn't be needed, but just in case
+	url << s << '=';
+	url << encodeInput(form_vars[i]) << ';';
       }
     }
-    s << "page=" << pageNumber;
-    encodeURL(s);
-    url << s;
+    url << "page=" << pageNumber;
 }
 
 //*****************************************************************************
 void
 Display::displayHeader()
 {
-    displayParsedFile(config["search_results_header"]);
+	HtConfiguration* config= HtConfiguration::config();
+    displayParsedFile(config->Find("search_results_header"));
 }
 
 //*****************************************************************************
 void
 Display::displayFooter()
 {
-    displayParsedFile(config["search_results_footer"]);
+	HtConfiguration* config= HtConfiguration::config();
+    displayParsedFile(config->Find("search_results_footer"));
 }
 
 //*****************************************************************************
 void
 Display::displayNomatch()
 {
-    displayParsedFile(config["nothing_found_file"]);
+	HtConfiguration* config= HtConfiguration::config();
+    displayParsedFile(config->Find("nothing_found_file"));
 }
 
 //*****************************************************************************
 void
 Display::displaySyntaxError(const String& message)
 {
+	HtConfiguration* config= HtConfiguration::config();
+    if( config->Boolean("nph") ) cout << "HTTP/1.0 200 OK\r\n";
     cout << "Content-type: text/html\r\n\r\n";
 
     setVariables(0, 0);
     vars.Add("SYNTAXERROR", new String(message));
-    displayParsedFile(config["syntax_error_file"]);
+    displayParsedFile(config->Find("syntax_error_file"));
 }
 
 //*****************************************************************************
@@ -701,6 +866,8 @@ Display::displayParsedFile(const String& filename)
     }
     if (fl)
 	fclose(fl);
+    else if (debug)
+	cerr << "displayParsedFile: Can't open " << filename << endl;
 }
 
 //*****************************************************************************
@@ -713,7 +880,8 @@ Display::displayParsedFile(const String& filename)
 void
 Display::setupTemplates()
 {
-    String templatePatterns = config["template_patterns"];
+	HtConfiguration* config= HtConfiguration::config();
+    String templatePatterns = config->Find("template_patterns");
     if (!templatePatterns.empty())
     {
 	//
@@ -753,7 +921,8 @@ Display::setupTemplates()
 void
 Display::setupImages()
 {
-    String starPatterns = config["star_patterns"];
+	HtConfiguration* config= HtConfiguration::config();
+    String starPatterns = config->Find("star_patterns");
     if (!starPatterns.empty())
     {
 	//
@@ -789,16 +958,18 @@ Display::generateStars(DocumentRef *ref, int right)
 {
     int		i;
     String	*result = new String();
-    if (!config.Boolean("use_star_image", 1))
+	HtConfiguration* config= HtConfiguration::config();
+    if (!config->Boolean("use_star_image", 1))
 	return result;
 
-    String image = config["star_image"];
-    const String blank = config["star_blank"];
+    String image = config->Find("star_image");
+    const String blank = config->Find("star_blank");
     double	score;
 
-    if (maxScore != 0)
+    if (maxScore != 0 && maxScore != minScore)
     {
-	score = ref->DocScore() / (double)maxScore;
+	score = (ref->DocScore() - minScore) / (maxScore - minScore);
+        if(debug) cerr << "generateStars: doc, min, max " << ref->DocScore() << ", " << minScore << ", " << maxScore <<endl;
     }
     else
     {
@@ -806,6 +977,9 @@ Display::generateStars(DocumentRef *ref, int right)
 	score = 1;
     }
     int		nStars = int(score * (maxStars - 1) + 0.5) + 1;
+
+    vars.Add("NSTARS", new String(form("%.d", nStars)));
+    if(debug) cerr << "generateStars: nStars " << nStars << " of " << maxStars <<endl;
 
     if (right)
     {
@@ -858,6 +1032,10 @@ Display::readFile(const String& filename)
     {
 	*s << line;
     }
+    if (fl)
+	fclose(fl);
+    else if (debug)
+	cerr << "readFile: Can't open " << filename << endl;
     return s;
 }
 
@@ -889,8 +1067,8 @@ Display::expandVariables(const String& str_arg)
 		state = StStart;
 		break;
 	    case StVarStart:
-		if (*str == '%')
-		    var << *str;	// code for URL-encoded variable
+		if (*str == '%' || *str == '=')
+		    var << *str;	// code for URL-encoded/decoded variable
 		else if (*str == '&')
 		{
 		    var << *str;	// code for SGML-encoded variable
@@ -899,7 +1077,7 @@ Display::expandVariables(const String& str_arg)
 		}
 		else if (*str == '(' || *str == '{')
 		    state = StVarClose;
-		else if (isalpha(*str) || *str == '_')
+		else if (isalnum(*str) || *str == '_' || *str == '-')
 		{
 		    var << *str;
 		    state = StVarPlain;
@@ -910,13 +1088,13 @@ Display::expandVariables(const String& str_arg)
 	    case StVarClose:
 		if (*str == ')' || *str == '}')
 		    state = StGotVar;
-		else if (isalpha(*str) || *str == '_')
+		else if (isalnum(*str) || *str == '_' || *str == '-')
 		    var << *str;
 		else
 		    state = StStart;
 		break;
 	    case StVarPlain:
-		if (isalpha(*str) || *str == '_')
+		if (isalnum(*str) || *str == '_' || *str == '-')
 		    var << *str;
 		else
 		{
@@ -959,7 +1137,7 @@ Display::outputVariable(const String& var)
     // see if we can find a good replacement for it, either in our
     // vars dictionary or in the environment variables.
     name = var;
-    while (*name == '&' || *name == '%')
+    while (*name == '&' || *name == '%' || *name == '=')
 	name++;
     temp = (String *) vars[name];
     if (temp)
@@ -974,8 +1152,10 @@ Display::outputVariable(const String& var)
     {
 	if (*name == '%')
 	    encodeURL(value);
-	else
+	else if(*name == '&')
 	    value = HtSGMLCodec::instance()->decode(value);
+	else // (*name == '=')
+	    decodeURL(value);
     }
     cout << value;
 }
@@ -984,20 +1164,218 @@ Display::outputVariable(const String& var)
 List *
 Display::buildMatchList()
 {
+	HtConfiguration* config= HtConfiguration::config();
     char	*cpid;
     String	url;
     ResultMatch	*thisMatch;
-    List	*matches = new List();
-    double      backlink_factor = config.Double("backlink_factor");
-    double      date_factor = config.Double("date_factor");
-	
+    SplitMatches matches(*config);
+    double      backlink_factor = config->Double("backlink_factor");
+    double      date_factor = config->Double("date_factor");
+    double backlink_score = 0;
+    double date_score = 0;
+    double base_score = 0;
+
+
+    // Additions made here by Mike Grommet ...
+
+    tm startdate;     // structure to hold the startdate specified by the user
+    tm enddate;       // structure to hold the enddate specified by the user
+    time_t now = time((time_t *)0); 	// fill in all fields for mktime
+    tm *lt = localtime(&now); 		//  - Gilles's fix
+    startdate = *lt; 
+    enddate = *lt; 
+
+    time_t eternity = ~(1<<(sizeof(time_t)*8-1));  // will be the largest value holdable by a time_t
+    tm *endoftime;     // the time_t eternity will be converted into a tm, held by this variable
+
+    time_t timet_startdate;
+    time_t timet_enddate;
+    int monthdays[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+
+    // boolean to test to see if we need to build date information or not
+    int dategiven = ((config->Value("startmonth")) ||
+		     (config->Value("startday"))   ||
+		     (config->Value("startyear"))  ||
+		     (config->Value("endmonth"))   ||
+		     (config->Value("endday"))     ||
+		     (config->Value("endyear")));
+
+    // find the end of time
+    endoftime = gmtime(&eternity);
+
+    if(dategiven)    // user specified some sort of date information
+      {
+	// set up the startdate structure
+	// see man mktime for details on the tm structure
+	startdate.tm_sec = 0;
+	startdate.tm_min = 0;
+	startdate.tm_hour = 0;
+	startdate.tm_yday = 0;
+	startdate.tm_wday = 0;
+
+	// The concept here is that if a user did not specify a part of a date,
+	// then we will make assumtions...
+	// For instance, suppose the user specified Feb, 1999 as the start
+	// range, we take steps to make sure that the search range date starts
+	// at Feb 1, 1999,
+	// along these same lines:  (these are in MM-DD-YYYY format)
+	// Startdates:      Date          Becomes
+	//                  01-01         01-01-1970
+	//                  01-1970       01-01-1970
+	//                  04-1970       04-01-1970
+	//                  1970          01-01-1970
+	// These things seem to work fine for start dates, as all months have
+	// the same first day however the ending date can't work this way.
+
+	if(config->Value("startmonth"))	// form input specified a start month
+	  {
+	    startdate.tm_mon = config->Value("startmonth") - 1;
+	    // tm months are zero based.  They are passed in as 1 based
+	  }
+	else startdate.tm_mon = 0;	// otherwise, no start month, default to 0
+
+	if(config->Value("startday"))	// form input specified a start day
+	  {
+	    startdate.tm_mday = config->Value("startday");
+	    // tm days are 1 based, they are passed in as 1 based
+	  }
+	else startdate.tm_mday = 1;	// otherwise, no start day, default to 1
+
+	// year is handled a little differently... the tm_year structure
+	// wants the tm_year in a format of year - 1900.
+	// since we are going to convert these dates to a time_t,
+	// a time_t value of zero, the earliest possible date
+	// occurs Jan 1, 1970.  If we allow dates < 1970, then we
+	// could get negative time_t values right???
+	// (barring minor timezone offsets west of GMT, where Epoch is 12-31-69)
+
+	if(config->Value("startyear"))	// form input specified a start year
+	  {
+	    startdate.tm_year = config->Value("startyear") - 1900;
+	    if (startdate.tm_year < 69-1900)	// correct for 2-digit years 00-68
+		startdate.tm_year += 2000;	//  - Gilles's fix
+	    if (startdate.tm_year < 0)	// correct for 2-digit years 69-99
+		startdate.tm_year += 1900;
+	  }
+	else startdate.tm_year = 1970-1900;
+	     // otherwise, no start day, specify start at 1970
+
+	// set up the enddate structure
+	enddate.tm_sec = 59;		// allow up to last second of end day
+	enddate.tm_min = 59;		//  - Gilles's fix
+	enddate.tm_hour = 23;
+	enddate.tm_yday = 0;
+	enddate.tm_wday = 0;
+
+	if(config->Value("endmonth"))	// form input specified an end month
+	  {
+	    enddate.tm_mon = config->Value("endmonth") - 1;
+	    // tm months are zero based.  They are passed in as 1 based
+	  }
+	else enddate.tm_mon = 11;	// otherwise, no end month, default to 11
+
+	if(config->Value("endyear"))	// form input specified a end year
+	  {
+	    enddate.tm_year = config->Value("endyear") - 1900;
+	    if (enddate.tm_year < 69-1900)	// correct for 2-digit years 00-68
+		enddate.tm_year += 2000;	//  - Gilles's fix
+	    if (enddate.tm_year < 0)	// correct for 2-digit years 69-99
+		enddate.tm_year += 1900;
+	  }
+	else enddate.tm_year = endoftime->tm_year;
+	     // otherwise, no end year, specify end at the end of time allowable
+
+	// Months have different number of days, and this makes things more
+	// complicated than the startdate range.
+	// Following the example above, here is what we want to happen:
+	// Enddates:        Date          Becomes
+	//                  04-31         04-31-endoftime->tm_year
+	//                  05-1999       05-31-1999, may has 31 days... we want to search until the end of may so...
+	//                  1999          12-31-1999, search until the end of the year
+
+	if(config->Value("endday"))	// form input specified an end day
+	  {
+	    enddate.tm_mday = config->Value("endday");
+	    // tm days are 1 based, they are passed in as 1 based
+	  }
+	else
+	  {
+	    // otherwise, no end day, default to the end of the month
+	    enddate.tm_mday = monthdays[enddate.tm_mon];
+	    if (enddate.tm_mon == 1)	// February, so check for leap year
+		if (((enddate.tm_year+1900) % 4 == 0 &&
+			    (enddate.tm_year+1900) % 100 != 0) ||
+		    (enddate.tm_year+1900) % 400 == 0)
+			enddate.tm_mday += 1;	// Feb. 29  - Gilles's fix
+	  }
+
+	// Convert the tm values into time_t values.
+	// Web servers specify modification times in GMT, but htsearch
+	// displays these modification times in the server's local time zone.
+	// For consistency, we would prefer to select based on this same
+	// local time zone.  - Gilles's fix
+
+	timet_startdate = mktime(&startdate);
+	timet_enddate = mktime(&enddate);
+
+	// I'm not quite sure what behavior I want to happen if
+	// someone reverses the start and end dates, and one of them is invalid.
+	// for now, if there is a completely invalid date on the start or end
+	// date, I will force the start date to time_t 0, and the end date to
+	// the maximum that can be handled by a time_t.
+
+	if(timet_startdate < 0)
+	    timet_startdate = 0;
+	if(timet_enddate < 0)
+	    timet_enddate = eternity;
+
+	// what if the user did something really goofy like choose an end date
+	// that's before the start date
+
+	if(timet_enddate < timet_startdate)  // if so, then swap them so they are in order
+	  {
+	    time_t timet_temp = timet_enddate;
+	    timet_enddate = timet_startdate;
+	    timet_startdate = timet_temp;
+	  }
+      }
+    else   // no date was specifed, so plug in some defaults
+      {
+	timet_startdate = 0;
+	timet_enddate = eternity;
+      }
+
+    // ... MG
+
+
+    URLSeedScore adjustments(*config);
+ 
+    // If we knew where to pass it, this would be a good place to pass
+    // on errors from adjustments.ErrMsg().
+
+// Deal with all collections
+//
+  selected_collections->Start_Get();
+  Collection *collection= NULL;
+  while ((collection = (Collection *) selected_collections->Get_NextElement()))
+  {
+    ResultList *results = collection->getResultList();
+    if (results == NULL)
+        continue;
+
     results->Start_Get();
     while ((cpid = results->Get_Next()))
     {
 	int id = atoi(cpid);
 
-//	DocumentRef *thisRef = docDB[id];
-	DocumentRef *thisRef = results->getDocumentRef(id);
+	// DocumentRef *thisRef = docDB[id];
+
+        DocMatch        *dm = results->find(cpid);
+        Collection *collection = NULL;
+        if (dm)
+	    collection = dm->collection;
+        if (collection == NULL)                                                             continue;
+        DocumentRef *thisRef = collection->getDocumentRef(id);      
 
 	//
 	// If it wasn't there, then ignore it
@@ -1015,9 +1393,18 @@ Display::buildMatchList()
 	    continue;
 	}
 	
+	// Code added by Mike Grommet for date search ranges
+	// check for valid date range.  toss it out if it isn't relevant.
+	if ((timet_startdate > 0 || enddate.tm_year < endoftime->tm_year) &&
+	    (thisRef->DocTime() < timet_startdate || thisRef->DocTime() > timet_enddate))
+	{
+	    delete thisRef;
+	    continue;
+	}
 
 	thisMatch = ResultMatch::create();
 	thisMatch->setID(id);
+        thisMatch->setCollection(collection);
 
 	//
 	// Assign the incomplete score to this match.  This score was
@@ -1025,7 +1412,8 @@ Display::buildMatchList()
 	// known at that time, or info about the document itself, 
 	// so this still needs to be done.
 	//
-	DocMatch	*dm = results->find(cpid);
+
+	// Moved up: DocMatch	*dm = results->find(cpid);
 	double           score = dm->score;
 
 	// We need to scale based on date relevance and backlinks
@@ -1036,60 +1424,91 @@ Display::buildMatchList()
 	// We want older docs to have smaller values and the
 	// ultimate values to be a reasonable size (max about 100)
 
-	if (date_factor != 0.0 || backlink_factor != 0.0)
+	base_score = score;
+	if (date_factor != 0.0)
 	{
-	    score += date_factor * 
-	      ((thisRef->DocTime() * 1000 / (double)time(0)) - 900);
+	    date_score =  date_factor * 
+	      ((thisRef->DocTime() * 1000.0 / (double)now) - 900);
+	    score += date_score;
+        }
   
+	if (backlink_factor != 0.0)
+	{
 	    int links = thisRef->DocLinks();
 	    if (links == 0)
 	      links = 1; // It's a hack, but it helps...
   
-	    score += backlink_factor
+	    backlink_score = backlink_factor
 	      * (thisRef->DocBackLinks() / (double)links);
-	    if (score <= 0.0)
-	      score = 0.0;
+	    score += backlink_score;
 	}
 
-	thisMatch->setTime(thisRef->DocTime());   
+        if (debug) {
+	   cerr << thisRef->DocURL() << "\n";
+	}
+
+        thisMatch->setTime(thisRef->DocTime());   
 	thisMatch->setTitle(thisRef->DocTitle());   
+
+	score = adjustments.adjust_score(score, thisRef->DocURL());
 
 	// Get rid of it to free the memory!
 	delete thisRef;
 
+	score = log(1.0 + score);
 	thisMatch->setScore(score);
 	thisMatch->setAnchor(dm->anchor);
 		
 	//
 	// Append this match to our list of matches.
 	//
-	matches->Add(thisMatch);
-	if (matches->Count() == 1 || maxScore < (int)score)
-	    maxScore = (int)score;
+ 	matches.Add(thisMatch, url.get());
+
+        if (debug)
+        {
+	  cerr << "   base_score " << base_score << " date_score " << date_score << " backlink_score " << backlink_score << "\n";
+	  cerr << "   score " << score << "(" << thisMatch->getScore() << "), maxScore " << maxScore <<", minScore " << minScore << endl;
+        }
+ 
+ 	if (maxScore < score)
+	  {if(debug) cerr << "Set maxScore = score" <<endl;
+           maxScore = score;
+          }
+ 	if (minScore > score)
+	  {if(debug) cerr << "Set minScore = score" <<endl;
+ 	    minScore = score;
+          }
     }
+  }
 
-    //
-    // The matches need to be ordered by relevance level.
-    // Sort it.
-    //
-    sort(matches);
-
-    return matches;
+  //
+  // Each sub-area is then sorted by relevance level.
+  //
+  List *matches_part;  // Outside of loop to keep for-scope warnings away.
+  for (matches_part = matches.Get_First();
+       matches_part != 0;
+       matches_part = matches.Get_Next())
+    sort(matches_part);
+  
+  // Then all sub-lists are concatenated and put in a new list.
+  return matches.JoinedLists();
 }
 
 //*****************************************************************************
 String *
-Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
+Display::excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor, int fanchor, int &first)
 {
+	HtConfiguration* config= HtConfiguration::config();
     // It is necessary to keep alive the String you .get() a char * from,
     // as long as you use the char *.
 
-    String head_string;
+    //String head_string;
 
     char	*head;
     int use_meta_description=0;
+    Collection *collection = match->getCollection();
 
-    if (config.Boolean("use_meta_description",0) 
+    if (config->Boolean("use_meta_description",0) 
 	&& strlen(ref->DocMetaDsc()) != 0)
       {
 	// Set the head to point to description 
@@ -1098,18 +1517,24 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
       }
     else
       {
-//	docDB.ReadExcerpt(*ref);
-	results->readExcerpt(*ref);
+	// docDB.ReadExcerpt(*ref);
+        collection->ReadExcerpt(*ref);
 	head = ref->DocHead(); // head points to the top
       }
 
-    head_string = HtSGMLCodec::instance()->decode(head);
-    head = head_string.get();
+    //head_string = HtSGMLCodec::instance()->decode(head);
+    //head = head_string.get();
 
     int		which, length;
     char	*temp = head;
     String	part;
     String	*text = new String("");
+
+    StringMatch *allWordsPattern = NULL;
+    if (collection)
+	allWordsPattern = collection->getSearchWordsPattern();
+    if (!allWordsPattern)
+        return text;  
 
     // htsearch displays the description when:
     // 1) a description has been found
@@ -1117,12 +1542,13 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
     // If previous conditions are false and "excerpt_show_top" is set to true
     // it shows the whole head. Else, it acts as default.
 
-    if (config.Boolean("excerpt_show_top", 0) || use_meta_description)
+    if (config->Boolean("excerpt_show_top", 0) || use_meta_description ||
+		!allWordsPattern->hasPattern())
       first = 0;
     else
       first = allWordsPattern->FindFirstWord(head, which, length);
 
-    if (first < 0 && config.Boolean("no_excerpt_show_top"))
+    if (first < 0 && config->Boolean("no_excerpt_show_top"))
       first = 0;  // No excerpt, but we want to show the top.
 
     if (first < 0)
@@ -1130,19 +1556,20 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 	//
 	// No excerpt available, don't show top, so display message
 	//
-	if (!config["no_excerpt_text"].empty())
+	if (!config->Find("no_excerpt_text").empty())
 	{
-	    *text << config["no_excerpt_text"];
+	    *text << config->Find("no_excerpt_text");
 	}
     }
     else
     {
 	int	headLength = strlen(head);
-	int	length = config.Value("excerpt_length", 50);
+	int	length = config->Value("excerpt_length", 50);
 	char	*start;
 	char	*end;
+	WordType type(*config);
 		
-       if (!config.Boolean("add_anchors_to_excerpt"))
+       if (!config->Boolean("add_anchors_to_excerpt"))
 	 // negate flag if it's on (anchor available)
 	 fanchor = 0;
 
@@ -1155,8 +1582,8 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 	    start = temp;
 	else
 	{
-	    *text << config["start_ellipses"];
-	    while (*start && HtIsStrictWordChar(*start))
+	    *text << config->Find("start_ellipses");
+	    while (*start && type.IsStrictChar(*start))
 		start++;
 	}
 
@@ -1167,15 +1594,15 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 	if (end > temp + headLength)
 	{
 	    end = temp + headLength;
-	    *text << hilight(start, urlanchor, fanchor);
+	    *text << hilight(match, start, urlanchor, fanchor);
 	}
 	else
 	{
-	    while (*end && HtIsStrictWordChar(*end))
+	    while (*end && type.IsStrictChar(*end))
 		end++;
 	    *end = '\0';
-	    *text << hilight(start, urlanchor, fanchor);
-	    *text << config["end_ellipses"];
+	    *text << hilight(match, start, urlanchor, fanchor);
+	    *text << config->Find("end_ellipses");
 	}
     }
     return text;
@@ -1183,33 +1610,50 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 
 //*****************************************************************************
 String
-Display::hilight(const String& str_arg, const String& urlanchor, int fanchor)
+Display::hilight(ResultMatch *match, const String& str_arg, const String& urlanchor, int fanchor)
 {
-    const String start_highlight = config["start_highlight"];
-    const String end_highlight = config["end_highlight"];
+	HtConfiguration* config= HtConfiguration::config();
+    const String start_highlight = config->Find("start_highlight");
+    const String end_highlight = config->Find("end_highlight");
     const char		*str = str_arg;
     String		result;
-    int			pos;
+    int			pos = 0;
     int			which, length;
     WeightWord		*ww;
     int			first = 1;
+    String		s;
+#define SGMLencodedChars(p, l) (s = 0, s.append(p, l), HtSGMLCodec::instance()->decode(s))
 
     result = 0;
-    while ((pos = allWordsPattern->FindFirstWord(str, which, length)) >= 0)
+    Collection *collection = match->getCollection();
+    StringMatch *allWordsPattern = NULL;
+    if (collection)
+	allWordsPattern = collection->getSearchWordsPattern();
+    List *searchWords = NULL;
+    if (collection)
+	searchWords = collection->getSearchWords();
+    if (!allWordsPattern || !searchWords)
+        return result;                                           
+
+    while (allWordsPattern->hasPattern() &&
+	   (pos = allWordsPattern->FindFirstWord(str, which, length)) >= 0)
     {
-	result.append(str, pos);
+	//result.append(str, pos);
+	result << SGMLencodedChars(str, pos);
 	ww = (WeightWord *) (*searchWords)[which];
 	result << start_highlight;
 	if (first && fanchor)
 	    result << "<a href=\"" << urlanchor << "\">";
-	result.append(str + pos, length);
+	//result.append(str + pos, length);
+	result << SGMLencodedChars(str + pos, length);
 	if (first && fanchor)
 	    result << "</a>";
 	result << end_highlight;
 	str += pos + length;
 	first = 0;
     }
-    result.append(str);
+    //result.append(str);
+    result << SGMLencodedChars(str, strlen(str));
     return result;
 }
 
@@ -1217,6 +1661,7 @@ Display::hilight(const String& str_arg, const String& urlanchor, int fanchor)
 void
 Display::sort(List *matches)
 {
+	HtConfiguration* config= HtConfiguration::config();
     int		numberOfMatches = matches->Count();
     int		i;
 
@@ -1233,7 +1678,7 @@ Display::sort(List *matches)
     qsort((char *) array, numberOfMatches, sizeof(ResultMatch *),
 	  array[0]->getSortFun());
 
-    const String st = config["sort"];
+    const String st = config->Find("sort");
     if (!st.empty() && mystrncasecmp("rev", st, 3) == 0)
     {
 	for (i = numberOfMatches; --i >= 0; )
@@ -1251,6 +1696,7 @@ Display::sort(List *matches)
 void
 Display::logSearch(int page, List *matches)
 {
+	HtConfiguration* config= HtConfiguration::config();
     // Currently unused    time_t	t;
     int		nMatches = 0;
     int         level = LOG_LEVEL;
@@ -1273,16 +1719,8 @@ Display::logSearch(int page, List *matches)
     syslog(level, "%s [%s] (%s) [%s] [%s] (%d/%s) - %d -- %s\n",
 	   host,
 	   input->exists("config") ? input->get("config") : "default",
-	   (const char*)config["match_method"], input->get("words"), logicalWords.get(),
-	   nMatches, (const char*)config["matches_per_page"],
+	   (const char*)config->Find("match_method"), input->get("words"), logicalWords.get(),
+	   nMatches, (const char*)config->Find("matches_per_page"),
 	   page, ref
 	   );
 }
-
-
-
-
-
-
-
-

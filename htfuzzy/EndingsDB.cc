@@ -4,13 +4,19 @@
 // EndingsDB: Implementation of the private endings database
 //           
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: EndingsDB.cc,v 1.10 2000/02/19 05:29:02 ghutchis Exp $
+// $Id: EndingsDB.cc,v 1.11 2002/02/01 22:49:33 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <fcntl.h>
 
 #include "Endings.h"
 #include "htfuzzy.h"
@@ -19,7 +25,14 @@
 #include "List.h"
 #include "HtConfiguration.h"
 
+// This is an attempt to get around compatibility problems 
+// with the included regex
+#ifdef HAVE_BROKEN_REGEX
 #include <regex.h>
+#else
+#include "regex.h"
+#endif
+
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>
@@ -167,7 +180,7 @@ Endings::createRoot(Dictionary &rules, char *word2root, char *root2word, const S
     String	word;
     List	wordList;
     int		count = 0;
-    String	key, data;
+    String	data;
 	
     while (fgets(input, sizeof(input), fl))
     {
@@ -200,7 +213,14 @@ Endings::createRoot(Dictionary &rules, char *word2root, char *root2word, const S
 	//
 	for (int i = 0; i < wordList.Count(); i++)
 	{
-	    w2r->Put(*(String *)wordList[i], String(word, strlen(input)));
+	    //
+	    // Append to existing record if there is one.
+	    //
+	    data = "";
+	    if (w2r->Get(*(String *)wordList[i], data) == OK)
+		data << ' ';
+	    data << word;
+	    w2r->Put(*(String *)wordList[i], data);
 	}
     }
 

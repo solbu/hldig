@@ -6,12 +6,12 @@
 //              the attributes or the exact attribute combination semantics.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.h,v 1.2 2000/02/19 05:29:08 ghutchis Exp $
+// $Id: WordType.h,v 1.3 2002/02/01 22:49:36 ghutchis Exp $
 //
 
 #ifndef _WordType_h
@@ -54,6 +54,11 @@ public:
   WordType(const Configuration& config);
 
   //
+  // Destructor
+  //
+  virtual	~WordType();
+
+  //
   // Unique instance handlers 
   //
   static void Initialize(const Configuration& config);
@@ -66,16 +71,21 @@ public:
   //
   // Predicates
   // 
-  int IsChar(int c) const;
-  int IsStrictChar(int c) const;
-  int IsDigit(int c) const;
-  int IsControl(int c) const;
+  virtual int IsChar(int c) const;
+  virtual int IsStrictChar(int c) const;
+  virtual int IsDigit(int c) const;
+  virtual int IsControl(int c) const;
 
   //
   // Transformations
   //
-  int StripPunctuation(String &s) const;
-  int Normalize(String &s) const;
+  virtual int StripPunctuation(String &s) const;
+  virtual int Normalize(String &s) const;
+
+  //
+  // Splitting
+  //
+  virtual String WordToken(const String s, int &pointer) const;
 
   //
   // Error handling

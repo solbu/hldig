@@ -4,12 +4,12 @@
 // URLRef: A definition of a URL/Referer pair with associated hopcount
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URLRef.h,v 1.6 1999/09/29 16:33:12 loic Exp $
+// $Id: URLRef.h,v 1.7 2002/02/01 22:49:29 ghutchis Exp $
 //
 //
 #ifndef _URLRef_h_
@@ -28,13 +28,13 @@ public:
 	                URLRef();
 	                ~URLRef();
 
-	URL		GetURL()			{return url;}
-	int		GetHopCount()			{return hopcount;}
-	URL		GetReferer()			{return referer;}
+	const URL	&GetURL() const			{return url;}
+	int		GetHopCount() const		{return hopcount;}
+	const URL	&GetReferer() const		{return referer;}
 	
-	void		SetURL(URL u)			{url = u;}
+	void		SetURL(const URL &u)	        {url = u;}
 	void		SetHopCount(int h)		{hopcount = h;}
-	void		SetReferer(URL ref)		{referer = ref;}
+	void		SetReferer(const URL &ref)	{referer = ref;}
 
 	int		compare(const Object& to) const	{ return compare((const URLRef&) to); }
 	int		compare(const URLRef& to) const;

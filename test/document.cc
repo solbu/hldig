@@ -4,12 +4,12 @@
 // document: Query the document database
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: document.cc,v 1.1 1999/09/28 10:32:18 loic Exp $
+// $Id: document.cc,v 1.2 2002/02/01 22:49:37 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -85,11 +85,12 @@ int main(int ac, char **av)
 
 static void dodoc(params_t* params)
 {
-  config.Defaults(&defaults[0]);
-  config.Read(params->config);
+  HtConfiguration* const config= HtConfiguration::config();
+  config->Defaults(&defaults[0]);
+  config->Read(params->config);
 
   DocumentDB docs;
-  if(docs.Read(config["doc_db"], config["doc_index"], config["doc_excerpt"]) < 0) {
+  if(docs.Read(config->Find("doc_db"), config->Find("doc_index"), config->Find("doc_excerpt")) < 0) {
     cerr << "dodoc: cannot open\n";
     exit(1);
   }
@@ -106,6 +107,7 @@ static void dodoc(params_t* params)
       delete docref;
     }
   }
+  delete docids;
 }
 
 //*****************************************************************************

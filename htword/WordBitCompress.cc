@@ -12,14 +12,17 @@
 //
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
+// or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.cc,v 1.2 2000/02/19 05:29:07 ghutchis Exp $
+// $Id: WordBitCompress.cc,v 1.3 2002/02/01 22:49:35 ghutchis Exp $
 //
 
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include <stdlib.h>
 

@@ -6,12 +6,12 @@
 //            scheme (e.g. http://, ftp://...)
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.7 2000/02/19 05:29:05 ghutchis Exp $
+// $Id: Transport.h,v 1.8 2002/02/01 22:49:35 ghutchis Exp $
 //
 //
 
@@ -46,7 +46,7 @@ class Transport_Response : public Object
    virtual void Reset();  // This function must be defined
 
    // Get the contents
-   virtual String GetContents() { return _contents; }
+   virtual const String &GetContents() const { return _contents; }
 	 
    // Get the modification time object pointer
    virtual HtDateTime *GetModificationTime() const { return _modification_time; }
@@ -55,7 +55,7 @@ class Transport_Response : public Object
    virtual HtDateTime *GetAccessTime() const { return _access_time; }
 
    // Get the Content type
-   virtual String GetContentType() { return _content_type; }
+   virtual const String &GetContentType() const { return _content_type; }
 
    // Get the Content length
    virtual int GetContentLength() const { return _content_length; }
@@ -67,10 +67,10 @@ class Transport_Response : public Object
    virtual int GetStatusCode() const { return _status_code; }
 
    // Get the Status Code reason phrase
-   char *GetReasonPhrase() { return _reason_phrase; }
+   virtual const String &GetReasonPhrase() { return _reason_phrase; }
 
    // Get the location (redirect)
-   char *GetLocation() { return _location; }
+   virtual const String &GetLocation() { return _location; }
 
    
    protected:
@@ -107,7 +107,7 @@ class Transport : public Object
    //    Construction / Destruction
 ///////
 
-   Transport();
+   Transport(Connection* _connection = 0);
    virtual ~Transport();
 
 ///////
@@ -165,6 +165,14 @@ class Transport : public Object
    void SetTimeOut ( int t ) { _timeout=t; }
    int GetTimeOut () { return _timeout; }
 
+   // Set and get the connection retry number
+   void SetRetry ( int r ) { _retries=r; }
+   int GetRetry () { return _retries; }
+
+   // Set and get the wait time after a failed connection
+   void SetWaitTime ( unsigned int t ) { _wait_time = t; }
+   unsigned int GetWaitTime () { return _wait_time; }
+
    // Get the Connection Host
    const String &GetHost() { return _host; }
 
@@ -173,7 +181,7 @@ class Transport : public Object
    
    // Set and get the credentials
    // Likely to vary based on transport protocol
-   virtual void SetCredentials (String s) { _credentials = s;}
+   virtual void SetCredentials (const String& s) { _credentials = s;}
    virtual String GetCredentials () { return _credentials;}
 
    // Set the modification date and time for If-Modified-Since   
@@ -200,11 +208,20 @@ class Transport : public Object
    // This is the only part regarding
    // a connection that's got a public access
 
-   virtual bool isConnected(){ return _connection.isconnected(); }
+   virtual bool isConnected(){ return _connection?_connection->IsConnected():0; }
 
 
+// Set the default parser string for the content-type
+   static void SetDefaultParserContentType (const String &ct)
+      { _default_parser_content_type = ct; }
+   
 // Set the debug level   
    static void SetDebugLevel (int d) { debug=d;}   
+
+// Get statistics info
+   static int GetTotOpen () { return _tot_open; }   
+   static int GetTotClose () { return _tot_close; }   
+   static int GetTotServerChanges () { return _tot_changes; }   
 
 
 protected:
@@ -216,7 +233,7 @@ protected:
 
    // Open the connection
    
-   int OpenConnection();
+   virtual int OpenConnection();
 
    // Assign the host and the port for the connection
    
@@ -228,13 +245,23 @@ protected:
    
    // Write a message
    inline int ConnectionWrite(char *cmd)
-      { return _connection.write(cmd); }
+      { return _connection?_connection->Write(cmd):0; }
 
 
    // Assign the timeout to the connection (returns the old value)
 
    inline int AssignConnectionTimeOut()
-      { return _connection.timeout(_timeout); }
+      { return _connection?_connection->Timeout(_timeout):0; }
+
+   // Assign the retry number to the connection (returns the old value)
+
+   inline int AssignConnectionRetries()
+      { return _connection?_connection->Retries(_retries):0; }
+
+   // Assign the wait time (after a failure) to the connection
+
+   inline int AssignConnectionWaitTime()
+      { return _connection?_connection->WaitTime(_wait_time):0; }
 
    // Flush the connection
    void FlushConnection();
@@ -242,11 +269,6 @@ protected:
    // Close the connection
    
    int CloseConnection();
-
-   // Get statistics info
-   static int GetTotOpen () { return _tot_open; }   
-   static int GetTotClose () { return _tot_close; }   
-   static int GetTotServerChanges () { return _tot_changes; }   
 
    // Reset Stats
    static void ResetStatistics ()
@@ -273,12 +295,14 @@ protected:
 
  protected:
 
-   Connection	_connection;	       // Connection object
+   Connection	*_connection;	       // Connection object
 
    String       _host;                 // TCP Connection host
    int          _port;                 // TCP Connection port
    
    int		_timeout;              // Connection timeout
+   int		_retries;              // Connection retry limit
+   unsigned int _wait_time;            // Connection wait time (if failed)
 
    HtDateTime	*_modification_time;   // Stored modification time if avail.
    int		_max_document_size;    // Max document size to retrieve
@@ -288,6 +312,17 @@ protected:
    HtDateTime  _start_time;         // Start time of the request
    HtDateTime  _end_time;           // end time of the request
 
+
+   ///////
+      //    Default parser content-type
+      //    This string is matched in order to determine
+      //    what content type can be considered parsed
+      //    directly by the internal indexer (not by using
+      //    any external parser)
+   ///////
+
+   static String  _default_parser_content_type;
+   
 
    ///////
       //    Debug level

@@ -22,9 +22,8 @@
    mktime.  */
 /* #define DEBUG 1 */
 
-#include "htconfig.h"
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#include "htconfig.h"
 #endif
 
 #ifdef _LIBC
@@ -367,7 +366,7 @@ static time_t localtime_offset;
 
 /* Convert *TP to a time_t value.  */
 time_t
-mktime (tp)
+mymktime (tp)
      struct tm *tp;
 {
 #ifdef _LIBC

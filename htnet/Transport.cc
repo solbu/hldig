@@ -9,14 +9,18 @@
 // Also takes care of the lower-level connection code.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.6 2000/02/19 05:29:05 ghutchis Exp $
+// $Id: Transport.cc,v 1.7 2002/02/01 22:49:35 ghutchis Exp $
 //
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Transport.h"
 
@@ -32,6 +36,9 @@
    // Debug level
    	 int Transport::debug = 0;
 
+   // Default parser content-type string
+      	 String Transport::_default_parser_content_type = 0;
+	 
    // Statistics
    	 int Transport::_tot_open = 0;
    	 int Transport::_tot_close = 0;
@@ -43,15 +50,15 @@
 ///////
 
  ///////
-    //    Empty constructor
+    //    Class Constructor
  ///////
 
 Transport_Response::Transport_Response()
 {
 
    // Initialize the pointers to the HtDateTime objs
-   _modification_time = NULL;
-   _access_time = NULL;
+   _modification_time = 0;
+   _access_time = 0;
 
    // Set the content length and the return status code to negative values
    _content_length = -1;
@@ -60,8 +67,15 @@ Transport_Response::Transport_Response()
    // Also set the document length, but to zero instead of -1
    _document_length = 0;
 
-   // Zeroes the contents
+   // Zeroes the contents and the content-type
    _contents = 0;
+   _content_type = 0;
+   
+   // Initialize the reason_phrase
+   _reason_phrase = 0;
+
+   // Initialize the location
+   _location = 0;
 
 }
 
@@ -78,13 +92,13 @@ Transport_Response::~Transport_Response()
    if(_modification_time)
    {
    	 delete _modification_time;
-      _modification_time=NULL;
+      _modification_time=0;
    }
 
    if(_access_time)
    {
    	 delete _access_time;
-      _access_time=NULL;
+      _access_time=0;
    }
 
 }
@@ -99,13 +113,13 @@ void Transport_Response::Reset()
    if(_modification_time)
    {
    	 delete _modification_time;
-      _modification_time=NULL;
+      _modification_time=0;
    }
 
    if(_access_time)
    {
    	 delete _access_time;
-      _access_time=NULL;
+      _access_time=0;
    }
 
    // Set the content length to a negative value
@@ -115,14 +129,17 @@ void Transport_Response::Reset()
    _document_length=0;
 
    // Zeroes the contents and content type strings
-   _contents=0;
-   _content_type=0;
+   _contents.trunc();
+   _content_type.trunc();
 
    // Set the return status code to a negative value
    _status_code=-1;
 
    // Zeroes the reason phrase of the s.c.
-   _reason_phrase=0;
+   _reason_phrase.trunc();
+
+   // Reset the location
+   _location.trunc();
       
 }
 
@@ -136,12 +153,13 @@ void Transport_Response::Reset()
     //    Constructor
  ///////
 
-Transport::Transport()
+Transport::Transport(Connection* connection)
+: _connection(connection),
+   _host(0), _port(-1), _timeout(DEFAULT_CONNECTION_TIMEOUT),
+   _retries(1), _wait_time(5),
+   _modification_time(0), _max_document_size(0),
+   _credentials(0)
 {
-  _port = -1;     // Initialize port
-  _host = 0;      // Initialize the host
-  _max_document_size = 0;
-  _timeout = DEFAULT_CONNECTION_TIMEOUT;
 }
 
 
@@ -157,6 +175,9 @@ Transport::~Transport()
       if ( debug > 4 )
          cout  << setw(5) << GetTotOpen() << " - "
             << "Closing previous connection with the remote host" << endl;
+
+   if (_connection)
+      delete (_connection);
 
 }
 
@@ -187,13 +208,15 @@ ostream &Transport::ShowStatistics (ostream &out)
 
 int Transport::OpenConnection()
 {
-   if(_connection.isopen() && _connection.isconnected())
+   if (!_connection) return 0;
+
+   if(_connection->IsOpen() && _connection->IsConnected())
       return -1; // Already open and connection is up
 
    // No open connection
    // Let's open a new one
    
-   if(_connection.open() == NOTOK) return 0; // failed
+   if(_connection->Open() == NOTOK) return 0; // failed
 
    _tot_open ++;
    return 1;
@@ -206,8 +229,14 @@ int Transport::AssignConnectionServer()
 {
    if (debug > 5)
       cout << "\tAssigning the server (" << _host << ") to the TCP connection" << endl;
+
+   if( _connection == 0 )
+     {
+       cout << "Transport::AssignConnectionServer: _connection is NULL\n";
+       exit(0);
+     }
       
-   if (_connection.assign_server(_host) == NOTOK) return 0;
+   if (_connection->Assign_Server(_host) == NOTOK) return 0;
    
    return 1;
 }
@@ -220,7 +249,13 @@ int Transport::AssignConnectionPort()
    if (debug > 5)
       cout << "\tAssigning the port (" << _port << ") to the TCP connection" << endl;
       
-   if (_connection.assign_port(_port) == NOTOK) return 0;
+   if( _connection == 0 )
+     {
+       cout << "Transport::AssignConnectionPort: _connection is NULL\n";
+       exit(0);
+     }
+      
+   if (_connection->Assign_Port(_port) == NOTOK) return 0;
    
    return 1;
 }
@@ -240,7 +275,14 @@ int Transport::Connect()
       cout << "\tConnecting via TCP to (" << _host << ":" << _port << ")" << endl;
 
    if (isConnected()) return -1; // Already connected
-   if ( _connection.connect(1) == NOTOK) return 0;  // Connection failed
+
+   if( _connection == 0 )
+     {
+       cout << "Transport::Connection: _connection is NULL\n";
+       exit(0);
+     }
+
+   if ( _connection->Connect() == NOTOK) return 0;  // Connection failed
    
    return 1;	// Connected
 }
@@ -250,7 +292,12 @@ int Transport::Connect()
    
 void Transport::FlushConnection()
 {
-   _connection.flush();
+      
+  if(_connection)
+    {
+      _connection->Flush();
+    }
+  
 }
 
 
@@ -262,8 +309,17 @@ void Transport::FlushConnection()
 
 int Transport::CloseConnection()
 {
-   if(_connection.isopen())
-   	 _connection.close(); 	// Close the connection
+   if( _connection == 0 )
+   {
+      // We can't treat this as a fatal error, because CloseConnection()
+      // may be called from our destructor after _connection already deleted.
+      // cout << "Transport::CloseConnection: _connection is NULL\n";
+      // exit(0);
+      return 0;
+   }
+
+   if(_connection->IsOpen())
+   	 _connection->Close(); 	// Close the connection
    else return 0;
 
    _tot_close ++;
@@ -326,7 +382,7 @@ HtDateTime *Transport::NewDate(const char *datestring)
 	 if(debug > 0)
    	 	 cout << "Date Format not recognized: " << datestring << endl;
 	 
-	 return NULL;
+	 return 0;
    }
 
    HtDateTime *dt = new HtDateTime;

@@ -8,27 +8,39 @@
 //                 in http://www.htdig.org/attrs.html#external_parser
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.20 2000/02/19 05:28:51 ghutchis Exp $
+// $Id: ExternalParser.cc,v 1.21 2002/02/01 22:49:29 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "ExternalParser.h"
 #include "HTML.h"
 #include "Plaintext.h"
-#include "PDF.h"
 #include "htdig.h"
 #include "htString.h"
 #include "QuotedStringList.h"
 #include "URL.h"
 #include "Dictionary.h"
+#include "good_strtok.h"
 
 #include <ctype.h>
 #include <stdio.h>
-#include "good_strtok.h"
+#include <unistd.h>
+#include <stdlib.h>
+#ifdef HAVE_WAIT_H
+#include <wait.h>
+#elif HAVE_SYS_WAIT_H
+#include <sys/wait.h>
+#endif
+
+#include "defaults.h"
 
 static Dictionary	*parsers = 0;
 static Dictionary	*toTypes = 0;
@@ -39,9 +51,18 @@ extern String		configFile;
 //
 ExternalParser::ExternalParser(char *contentType)
 {
+  String mime;
+  int sep;
+
     if (canParse(contentType))
     {
-	currentParser = ((String *)parsers->Find(contentType))->get();
+        String mime = contentType;
+	mime.lowercase();
+	sep = mime.indexOf(';');
+	if (sep != -1)
+	  mime = mime.sub(0, sep).get();
+	
+	currentParser = ((String *)parsers->Find(mime))->get();
     }
     ExternalParser::contentType = contentType;
 }
@@ -64,7 +85,7 @@ ExternalParser::readLine(FILE *in, String &line)
     char	buffer[2048];
     int		length;
     
-    line = 0;
+    line = 0; // read(in, buffer, sizeof(buffer)
     while (fgets(buffer, sizeof(buffer), in))
     {
 	length = strlen(buffer);
@@ -96,15 +117,17 @@ ExternalParser::readLine(FILE *in, String &line)
 int
 ExternalParser::canParse(char *contentType)
 {
+  HtConfiguration* config= HtConfiguration::config();
+  int			sep;
+
     if (!parsers)
     {
 	parsers = new Dictionary();
 	toTypes = new Dictionary();
 	
-	QuotedStringList	qsl(config["external_parsers"], " \t");
+	QuotedStringList	qsl(config->Find("external_parsers"), " \t");
 	String			from, to;
 	int			i;
-	int			sep;
 
 	for (i = 0; qsl[i]; i += 2)
 	{
@@ -116,11 +139,22 @@ ExternalParser::canParse(char *contentType)
 		to = from.sub(sep+2).get();
 		from = from.sub(0, sep).get();
 	    }
+	    from.lowercase();
+	    sep = from.indexOf(';');
+	    if (sep != -1)
+	      from = from.sub(0, sep).get();
+
 	    parsers->Add(from, new String(qsl[i + 1]));
 	    toTypes->Add(from, new String(to));
 	}
     }
-    return parsers->Exists(contentType);
+
+    String mime = contentType;
+    mime.lowercase();
+    sep = mime.indexOf(';');
+    if (sep != -1)
+      mime = mime.sub(0, sep).get();
+    return parsers->Exists(mime);
 }
 
 //*****************************************************************************
@@ -129,6 +163,7 @@ ExternalParser::canParse(char *contentType)
 void
 ExternalParser::parse(Retriever &retriever, URL &base)
 {
+	HtConfiguration* config= HtConfiguration::config();
     if (contents == 0 || contents->length() == 0 ||
 	currentParser.length() == 0)
     {
@@ -139,46 +174,121 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     // Write the contents to a temporary file.
     //
     String      path = getenv("TMPDIR");
+    int		fd;
     if (path.length() == 0)
       path = "/tmp";
-    path << "/htdext." << getpid();
+#ifndef HAVE_MKSTEMP
+    path << "/htdext." << getpid(); // This is unfortunately predictable
 
-    FILE	*fl = fopen((char*)path, "w");
-    if (!fl)
+#ifdef O_BINARY
+    fd = open((char*)path, O_WRONLY|O_CREAT|O_EXCL|O_BINARY);
+#else
+    fd = open((char*)path, O_WRONLY|O_CREAT|O_EXCL);
+#endif
+#else
+    path << "/htdex.XXXXXX";
+    fd = mkstemp((char*)path);
+    // can we force binary mode somehow under Cygwin, if it has mkstemp?
+#endif
+    if (fd < 0)
     {
-	return;
+      if (debug)
+	cout << "External parser error: Can't create temp file "
+	     << (char *)path << endl;
+      return;
     }
     
-    fwrite(contents->get(), 1, contents->length(), fl);
-    fclose(fl);
-    
-    //
-    // Now start the external parser.
-    //
-    String	command = currentParser;
-    command << ' ' << path << ' ' << contentType << " \"" << base.get() <<
-	"\" " << configFile;
+    write(fd, contents->get(), contents->length());
+    close(fd);
 
-    FILE	*input = popen((char*)command, "r");
-    if (!input)
-    {
-	unlink((char*)path);
-	return;
-    }
-
-    unsigned int minimum_word_length
-      = config.Value("minimum_word_length", 3);
-
+    unsigned int minimum_word_length = config->Value("minimum_word_length", 3);
     String	line;
     char	*token1, *token2, *token3;
     int		loc = 0, hd = 0;
     URL		url;
-    String	convertToType = ((String *)toTypes->Find(contentType))->get();
+    String mime = contentType;
+    mime.lowercase();
+    int	sep = mime.indexOf(';');
+    if (sep != -1)
+      mime = mime.sub(0, sep).get();
+    String	convertToType = ((String *)toTypes->Find(mime))->get();
     int		get_hdr = (convertToType.nocase_compare("user-defined") == 0);
     int		get_file = (convertToType.length() != 0);
     String	newcontent;
 
-    while (readLine(input, line))
+    StringList	cpargs(currentParser);
+    char   **parsargs = new char * [cpargs.Count() + 5];
+    int    argi;
+    for (argi = 0; argi < cpargs.Count(); argi++)
+	parsargs[argi] = (char *)cpargs[argi];
+    parsargs[argi++] = path.get();
+    parsargs[argi++] = contentType.get();
+    parsargs[argi++] = (char *)base.get().get();
+    parsargs[argi++] = configFile.get();
+    parsargs[argi++] = 0;
+
+    int    stdout_pipe[2];
+    int	   fork_result = -1;
+    int	   fork_try;
+
+    if (pipe(stdout_pipe) == -1)
+    {
+      if (debug)
+	cout << "External parser error: Can't create pipe!" << endl;
+      unlink((char*)path);
+      delete [] parsargs;
+      return;
+    }
+
+    for (fork_try = 4; --fork_try >= 0;)
+    {
+      fork_result = fork(); // Fork so we can execute in the child process
+      if (fork_result != -1)
+	break;
+      if (fork_try)
+	sleep(3);
+    }
+    if (fork_result == -1)
+    {
+      if (debug)
+	cout << "Fork Failure in ExternalParser" << endl;
+      unlink((char*)path);
+      delete [] parsargs;
+      return;
+    }
+
+    if (fork_result == 0) // Child process
+    {
+	close(STDOUT_FILENO); // Close handle STDOUT to replace with pipe
+	dup(stdout_pipe[1]);
+	close(stdout_pipe[0]);
+	close(stdout_pipe[1]);
+	close(STDIN_FILENO); // Close STDIN to replace with file
+	open((char*)path, O_RDONLY);
+
+	// Call External Parser
+	execv(parsargs[0], parsargs);
+
+	exit(EXIT_FAILURE);
+    }
+
+    // Parent Process
+    delete [] parsargs;
+    close(stdout_pipe[1]); // Close STDOUT for writing
+#ifdef O_BINARY
+    FILE *input = fdopen(stdout_pipe[0], "rb");
+#else
+    FILE *input = fdopen(stdout_pipe[0], "r");
+#endif
+    if (input == NULL)
+    {
+      if (debug)
+	cout << "Fdopen Failure in ExternalParser" << endl;
+      unlink((char*)path);
+      return;
+    }
+
+    while ((!get_file || get_hdr) && readLine(input, line))
     {
 	if (get_hdr)
 	{
@@ -195,24 +305,9 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	    }
 	    continue;
 	}
-	if (get_file)
-	{
-	    if (newcontent.length() == 0 &&
-		!canParse(convertToType) &&
-		mystrncasecmp((char*)convertToType, "text/", 5) != 0 &&
-		mystrncasecmp((char*)convertToType, "application/pdf", 15) != 0)
-	    {
-		if (mystrcasecmp((char*)convertToType, "user-defined") == 0)
-		    cerr << "External parser error: no Content-Type given\n";
-		else
-		    cerr << "External parser error: can't parse Content-Type \""
-			 << convertToType << "\"\n";
-		cerr << " URL: " << base.get() << "\n";
-		break;
-	    }
-	    newcontent << line << '\n';
-	    continue;
-	}
+#ifdef O_BINARY
+	line.chop('\r');
+#endif
 	token1 = strtok(line, "\t");
 	if (token1 == NULL)
 	    token1 = "";
@@ -300,11 +395,10 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		  static StringMatch *keywordsMatch = 0;
 		  if (!keywordsMatch)
 		  {
-			StringList kn(config["keywords_meta_tag_names"], " \t");
+			StringList kn(config->Find("keywords_meta_tag_names"), " \t");
 			keywordsMatch = new StringMatch();
 			keywordsMatch->IgnoreCase();
 			keywordsMatch->Pattern(kn.Join('|'));
-			kn.Release();
 		  }
     
 		  // <URL:http://www.w3.org/MarkUp/html-spec/html-spec_5.html#SEC5.2.5> 
@@ -399,15 +493,38 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		  cerr<< "External parser error: unknown field in line "<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 	}
+    } // while(readLine)
+    if (get_file)
+    {
+	if (!canParse(convertToType) &&
+	    mystrncasecmp((char*)convertToType, "text/", 5) != 0)
+	{
+	    if (mystrcasecmp((char*)convertToType, "user-defined") == 0)
+		cerr << "External parser error: no Content-Type given\n";
+	    else
+		cerr << "External parser error: can't parse Content-Type \""
+		     << convertToType << "\"\n";
+	    cerr << " URL: " << base.get() << "\n";
+	}
+	else
+	{
+	    char	buffer[2048];
+	    int		length;
+	    while ((length = fread(buffer, 1, sizeof(buffer), input)) > 0)
+		newcontent.append(buffer, length);
+	}
     }
-    pclose(input);
+    fclose(input);
+    // close(stdout_pipe[0]); // This is closed for us by the fclose()
+    int rpid, status;
+    while ((rpid = wait(&status)) != fork_result && rpid != -1)
+	;
     unlink((char*)path);
 
     if (newcontent.length() > 0)
     {
 	static HTML			*html = 0;
 	static Plaintext		*plaintext = 0;
-	static PDF			*pdf = 0;
 	Parsable			*parsable = 0;
 
 	contentType = convertToType;
@@ -428,20 +545,14 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		plaintext = new Plaintext();
 	    parsable = plaintext;
 	}
-	else if (mystrncasecmp((char*)contentType, "application/pdf", 15) == 0)
-	{
-	    if (!pdf)
-		pdf = new PDF();
-	    parsable = pdf;
-	}
-	else
+	else 
 	{
 	    if (!plaintext)
 		plaintext = new Plaintext();
 	    parsable = plaintext;
 	    if (debug)
 		cout << "External parser error: \"" << contentType <<
-			"\" not a recognized type.  Assuming text\n";
+			"\" not a recognized type.  Assuming text/plain\n";
 	}
 	parsable->setContents(newcontent.get(), newcontent.length());
 	parsable->parse(retriever, base);

@@ -3,7 +3,7 @@
 #
 # new-collect 1.1
 #
-# Copyright (c) 1998-1999 The ht://Dig Group
+# Copyright (c) 1998-2000 The ht://Dig Group
 # Distributed under the terms of the GNU General Public License (GPL)
 #   version 2 or later.
 # for the ht://Dig search system http://www.htdig.org/
@@ -17,7 +17,7 @@
 #
 
 # You may need to set the following:
-MULTIDIG_CONF=$CONFIG_DIR/multidig.conf
+MULTIDIG_CONF=@CONFIG_DIR@/multidig.conf
 source $MULTIDIG_CONF
 
 # Catch people who don't supply an argument

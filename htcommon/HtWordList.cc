@@ -5,13 +5,17 @@
 //	       of words waiting to be inserted in the database.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.cc,v 1.3 2000/02/19 05:28:49 ghutchis Exp $
+// $Id: HtWordList.cc,v 1.4 2002/02/01 22:49:28 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "HtWordList.h"
 #include "HtWordReference.h"
@@ -140,11 +144,56 @@ int HtWordList::Dump(const String& filename)
 
   HtWordReference::DumpHeader(fl);
   DumpWordData data(fl);
-  WordSearchDescription search(dump_word, &data);
-  Walk(search);
+  WordCursor* search = Cursor(dump_word, &data);
+  search->Walk();
+  delete search;
   
   fclose(fl);
 
   return OK;
 }
 
+//*****************************************************************************
+// int HtWordList::Load(char* filename)
+//
+// Read in an ascii version of the word database in <filename>
+//
+int HtWordList::Load(const String& filename)
+{
+  FILE		*fl;
+  String	data;
+  HtWordReference *next;
+
+  if (!isopen) {
+    cerr << "WordList::Load: database must be opened first\n";
+    return NOTOK;
+  }
+
+  if((fl = fopen(filename, "r")) == 0) {
+    perror(form("WordList::Load: opening %s for reading", (const char*)filename));
+    return NOTOK;
+  }
+
+  if (HtWordReference::LoadHeader(fl) != OK)
+    {
+      cerr << "WordList::Load: header is not correct\n";
+      return NOTOK;
+    }
+
+  while (data.readLine(fl))
+    {
+      next = new HtWordReference;
+      if (next->Load(data) != OK)
+	{
+	  delete next;
+	  continue;
+	}
+  
+      words->Add(next);
+    }
+
+  Flush();
+  fclose(fl);
+
+  return OK;
+}

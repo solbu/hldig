@@ -7,24 +7,24 @@
 //            and statistics accordingly.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.19 2000/02/19 05:28:52 ghutchis Exp $
+// $Id: Retriever.h,v 1.20 2002/02/01 22:49:29 ghutchis Exp $
 //
 
 #ifndef _Retriever_h_
 #define _Retriever_h_
 
 #include "DocumentRef.h"
-#include "Images.h"
 #include "Dictionary.h"
 #include "Queue.h"
 #include "HtWordReference.h"
 #include "List.h"
 #include "StringList.h"
+#include "DocumentDB.h"
 
 class URL;
 class Document;
@@ -83,9 +83,9 @@ public:
     //
     // Routines for dealing with local filesystem access
     //
-    StringList *	GetLocal(char *url);
-    StringList *	GetLocalUser(char *url, StringList *defaultdocs);
-    int			IsLocalURL(char *url);
+    StringList *	GetLocal(const String &strurl);
+    StringList *	GetLocalUser(const String &url, StringList *defaultdocs);
+    int			IsLocalURL(const String &url);
 
 private:
     //
@@ -103,16 +103,19 @@ private:
     int			current_anchor_number;
     int			trackWords;
     int			n_links;
-    Images		images;
     String		credentials;
     HtWordReference	word_context;
     HtWordList		words;
 	
+    int			check_unique_md5;
+    int			check_unique_date;
+
+
     RetrieverLog log;
     //
     // These are weights for the words.  The index is the heading level.
     //
-    long int		factor[10];
+    long int		factor[11];
     int			currenthopcount;
 
     //
@@ -132,6 +135,8 @@ private:
     //
     Document		*doc;
 
+    Database 		*d_md5;
+
     String		notFound;
 
     // Some useful constants
@@ -140,12 +145,12 @@ private:
     //
     // Helper routines
     //
-    int			Need2Get(char *url);
-    int			IsValidURL(char *url);
-    void		RetrievedDocument(Document &, char *url, DocumentRef *ref);
+    int			Need2Get(const String &url);
+    int			IsValidURL(const String &url);
+    void		RetrievedDocument(Document &, const String &url, DocumentRef *ref);
     void		parse_url(URLRef &urlRef);
     void		got_redirect(const char *, DocumentRef *);
-    void		recordNotFound(char *url, char *referer, int reason);
+    void		recordNotFound(const String &url, const String &referer, int reason);
 };
 
 #endif

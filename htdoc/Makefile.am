@@ -21,7 +21,6 @@ EXTRA_DIST = COPYING  \
 	confmenu.html \
 	contents.html \
 	dot.gif \
-	howitworks.html \
 	htdig.gif \
 	htdig.html \
 	htdig_big.gif \

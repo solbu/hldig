@@ -5,12 +5,12 @@
 //        generating several databases to be used by htmerge
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.h,v 1.10 2000/02/19 05:28:52 ghutchis Exp $
+// $Id: htdig.h,v 1.11 2002/02/01 22:49:29 ghutchis Exp $
 //
 
 #ifndef _htdig_h_
@@ -21,19 +21,18 @@
 #include "DocumentDB.h"
 #include "StringMatch.h"
 #include "htconfig.h"
-#include "HtRegex.h"
+#include "HtRegexList.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <fstream.h>
 #include <stdio.h>
 
-extern HtConfiguration	config;
 extern int		debug;
 extern DocumentDB	docs;
-extern HtRegex		limits;
-extern HtRegex		limitsn;
-extern HtRegex		excludes;
-extern HtRegex		badquerystr;
+extern HtRegexList	limits;
+extern HtRegexList	limitsn;
+extern HtRegexList	excludes;
+extern HtRegexList	badquerystr;
 extern FILE		*urls_seen;
 extern FILE		*images_seen;
 

@@ -5,19 +5,16 @@
 //                 Berkeley DB pages containing WordReferences objects.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
+// or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.h,v 1.2 2000/02/19 05:29:07 ghutchis Exp $
+// $Id: WordDBCompress.h,v 1.3 2002/02/01 22:49:35 ghutchis Exp $
 //
 
 #ifndef _WordDBCompress_h_
 #define _WordDBCompress_h_
-
-class WordMonitor;
-
 
 // ***********************************************
 // *************** WordDBCompress*****************
@@ -29,13 +26,14 @@ class WordMonitor;
 //
 // ** General outline: 
 //
-// BerkeleyDB pages are stored in a  memory pool. When the memory pool is
-// full,  least used pages  are swaped  to disk.  Page compression  is an
-// interface  between  disk  and  memory.  The  WordDBCompress_compress_c
-// functions are C callbacks that  are called by the the page compression
-// code  in  BerkeleyDB. The  C  callbacks  the  call the  WordDBCompress
-// comress/uncompress  methods. The  WordDBCompress creates  a WordDBPage
-// which does the actual compress/uncompress job.
+// BerkeleyDB pages are stored in a memory pool. When the memory pool
+// is full, least recently used pages are swaped to disk.  Page
+// compression occurs at page in/out level.  The
+// WordDBCompress_compress_c functions are C callbacks that are called
+// by the the page compression code in BerkeleyDB. The C callbacks the
+// call the WordDBCompress comress/uncompress methods. The
+// WordDBCompress creates a WordDBPage which does the actual
+// compress/uncompress job.
 // 
 // The  WordDBPage compression/uncompression methods  store/retreive data
 // from a bitstream.  BitStream is  a simple bitstream, and Compressor is
@@ -67,11 +65,9 @@ class WordMonitor;
 // "trois"     1 4634    1   48    
 // .... etc ....
 // 
-// In practice most pages only contain a single word! 
+// To compress we chose to only code differences between succesive entries.
 // 
-// So to compress we chose to only code differences between succesive entries.
-// 
-// Diffrences in words are coded by 2 numbers and some letters: 
+// Differences in words are coded by 2 numbers and some letters: 
 // - the position within the word of the first letter that changes
 // - the size of the new suffix
 // - the letters in the new suffix
@@ -84,20 +80,21 @@ class WordMonitor;
 // and sent to the bitstream.
 //
 //
-
-   
 class WordDBCompress
 {
  public:
+    WordDBCompress();
+
     int Compress(const  u_int8_t* inbuff, int inbuff_length, u_int8_t** outbuffp, int* outbuff_lengthp);
     int Uncompress(const  u_int8_t* inbuff, int inbuff_length, u_int8_t* outbuff, int outbuff_length);
-    WordDBCompress();
     
     //
     // Return a new DB_CMPR_INFO initialized with characteristics of the
     // current object and suitable as WordDB::CmprInfo argument.
     //
     DB_CMPR_INFO *CmprInfo();
+
+ private:
     DB_CMPR_INFO *cmprInfo;
 
 // DEBUGING / BENCHMARKING
@@ -107,25 +104,6 @@ class WordDBCompress
 // 2 : use_tags (BitStream) within TestCompress ->  Compress Uncompress
 // 3 : verbose
     int TestCompress(const  u_int8_t* pagebuff, int pagebuffsize);
-    WordMonitor *monitor;
-    void SetMonitor(WordMonitor *nmonitor){monitor=nmonitor;}
-
-    int    bm_cmpr_count;
-    double bm_cmpr_time;
-    int    bm_ucmpr_count;
-    double bm_ucmpr_time;
-    int    bm_mxtreelevel;
-    int    bm_nonleave_count;
-    double bm_cmpr_ratio;
-    int    bm_cmpr_overflow;
 };
 
-
-extern WordDBCompress wordDBCompress;
-
-extern "C"
-{
-    extern int WordDBCompress_compress_c(const u_int8_t* inbuff, int inbuff_length, u_int8_t** outbuffp, int* outbuff_lengthp, void *user_data);
-    extern int WordDBCompress_uncompress_c(const u_int8_t* inbuff, int inbuff_length, u_int8_t* outbuff, int outbuff_length, void *user_data);
-}
 #endif

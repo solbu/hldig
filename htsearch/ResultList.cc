@@ -5,45 +5,37 @@
 //             documents found for a search.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ResultList.cc,v 1.7 1999/10/15 03:31:13 jtillman Exp $
+// $Id: ResultList.cc,v 1.8 2002/02/01 22:49:35 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "ResultList.h"
 #include "htString.h"
-#include "defaults.h"
+
 
 //*****************************************************************************
 // ResultList::ResultList()
 //
-ResultList::ResultList(const String& docFile, const String& indexFile, const String& excerptFile)
-{
-
-//This provides for a smarter "db-aware" result list, which can
-// retrieve the data for its matches
-    docDB.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
-    docDB.Read(docFile, indexFile, excerptFile);
-    dbIsOpen = 1;
-    isIgnore = 0;
-}
-
 ResultList::ResultList()
 {
-		//This constructor creates the original "non-db-aware" ResultList
-		dbIsOpen = 0;
     isIgnore = 0;
 }
+
 
 //*****************************************************************************
 // ResultList::~ResultList()
 //
 ResultList::~ResultList()
 {
-    Destroy();
+    //Destroy();
 }
 
 
@@ -53,7 +45,7 @@ void
 ResultList::add(DocMatch *dm)
 {
     String	t;
-    t << dm->id;
+    t << dm->GetId();
     Add(t, dm);
 }
 
@@ -61,7 +53,7 @@ ResultList::add(DocMatch *dm)
 //*****************************************************************************
 //
 DocMatch *
-ResultList::find(int id)
+ResultList::find(int id) const
 {
     String	t;
     t << id;
@@ -72,7 +64,7 @@ ResultList::find(int id)
 //*****************************************************************************
 //
 DocMatch *
-ResultList::find(char *id)
+ResultList::find(char *id) const
 {
     return (DocMatch *) Find(id);
 }
@@ -92,7 +84,7 @@ ResultList::remove(int id)
 //*****************************************************************************
 //
 int
-ResultList::exists(int id)
+ResultList::exists(int id) const
 {
     String	t;
     t << id;
@@ -116,25 +108,44 @@ ResultList::elements()
     return list;
 }
 
-
-
-
-/** Returns a reference to the data for the 
-document matching the id provided */
-DocumentRef *ResultList::getDocumentRef(int docID){
-	if (dbIsOpen) {
-		return docDB[docID];
-	}
-	else
-		return 0;
-}
-
-
-/** Retrieves the excerpt for the document into 
-memory */
-void ResultList::readExcerpt(DocumentRef &ref)
+void
+ResultList::SetWeight(double weight)
 {
-	if (dbIsOpen)
-		docDB.ReadExcerpt(ref);
+	HtVector *els = elements();
+	for(int i = 0; i < els->Count(); i++)
+	{
+		DocMatch *match = (DocMatch *)(*els)[i];
+		match->SetWeight(weight);
+	}
+	els->Release();
 }
 
+
+ResultList::ResultList(const ResultList &other)
+{
+	DictionaryCursor c;
+	isIgnore = other.isIgnore;
+	other.Start_Get(c);
+	DocMatch *match = (DocMatch *)other.Get_NextElement(c);
+	while(match)
+	{
+		add(new DocMatch(*match));
+		match = (DocMatch *)other.Get_NextElement(c);
+	}
+}
+
+void
+ResultList::Dump() const
+{
+	cerr << "ResultList {" << endl;
+	cerr << "Ignore: " << isIgnore << " Count: " << Count() << endl;
+	DictionaryCursor c;
+	Start_Get(c);
+	DocMatch *match = (DocMatch *)Get_NextElement(c);
+	while(match)
+	{
+		match->Dump();
+		match = (DocMatch *)Get_NextElement(c);
+	}
+	cerr << "}" << endl;
+}

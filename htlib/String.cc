@@ -4,19 +4,22 @@
 // String: (interface in htString.h) Just Another String class.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.31 2000/02/19 05:29:03 ghutchis Exp $
+// $Id: String.cc,v 1.32 2002/02/01 22:49:34 ghutchis Exp $
 //
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htString.h"
 #include "Object.h"
 
 #include <unistd.h>
-#include <stream.h>
+#include <iostream.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -94,9 +97,16 @@ String::~String()
 
 void String::operator = (const String &s)
 {
-    allocate_space(s.length());
-    Length = s.length();
-    copy_data_from(s.Data, Length);
+  if (s.length() > 0) 
+    {
+      allocate_space(s.length());
+      Length = s.length();
+      copy_data_from(s.Data, Length);
+    }
+  else
+    {
+      Length = 0;
+    }
 }
 
 void String::operator = (const char *s)
@@ -201,14 +211,14 @@ int String::nocase_compare(const String &s) const
     return mystrcasecmp(p1, p2);
 }
 
-int String::write(int fd) const
+int String::Write(int fd) const
 {
     int	left = Length;
     char	*wptr = Data;
 	
     while (left)
     {
-	int result = ::write(fd, wptr, left);
+	int result = write(fd, wptr, left);
 		
 	if (result < 0)
 	    return result;
@@ -235,12 +245,6 @@ char *String::get()
     return null;
   Data[Length] = '\0';	// We always leave room for this.
   return Data;
-}
-
-String::operator int () const
-{
-  cerr << "String: int(): either use empty() or as_integer()\n";
-  abort();
 }
 
 char *String::new_char() const
@@ -435,7 +439,7 @@ int String::uppercase()
   int converted = 0;
   for (int i = 0; i < Length; i++)
     {
-      if ((unsigned char)islower(Data[i])) {
+      if (islower((unsigned char)Data[i])) {
 	Data[i] = toupper((unsigned char)Data[i]);
 	converted++;
       }
@@ -560,11 +564,13 @@ int operator >= (const String &a, const String &b)
     return a.compare(b) >= 0;
 }
 
+#ifndef NOSTREAM
 ostream &operator << (ostream &o, const String &s)
 {
     o.write(s.Data, s.length());
     return o;
 }
+#endif /* NOSTREAM */
 
 //------------------------------------------------------------------------
 // Private Methods.
@@ -636,12 +642,13 @@ void String::copy(const char *s, int len, int allocation_hint)
   copy_data_from(s, len);
 }
 
+#ifndef NOSTREAM
 void String::debug(ostream &o)
 {
     o << "Length: " << Length << " Allocated: " << Allocated <<
 	" Data: " << ((void*) Data) << " '" << *this << "'\n";
 }
-
+#endif /* NOSTREAM */
 
 int String::readLine(FILE *in)
 {
@@ -679,6 +686,7 @@ int String::readLine(FILE *in)
     return Length > 0;
 }
 
+#ifndef NOSTREAM
 istream &operator >> (istream &in, String &line)
 {
     line.Length = 0;
@@ -713,4 +721,4 @@ istream &operator >> (istream &in, String &line)
 
     return in;
 }
-
+#endif /* NOSTREAM */

@@ -5,7 +5,7 @@ Makefile
 .pure
 .deps
 .libs
-htdump
-htload
-htstat
+htdb_dump
+htdb_load
+htdb_stat
 

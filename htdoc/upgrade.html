@@ -2,28 +2,33 @@
 <html>
   <head>
 	<title>
-	  ht://Dig: Upgrading to 3.2.0b1
+	  ht://Dig: Upgrading to 3.2.x
 	</title>
   </head>
   <body bgcolor="#eef7ff">
 	<h1>
-	  Upgrading from 3.1.x to 3.2.0b1
+	  Upgrading from 3.1.x to 3.2.x
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
 	<hr size="4" noshade>
 	<p>
 	This guide is intended for those upgrading from 3.1.x or
-	earlier versions to 3.2.0b1. The best advice is
-	<emph>don't</emph>. That is, it is highly recommended that you
+	earlier versions to 3.2.x. The best advice is
+	<em>don't</em>. That is, it is highly recommended that you
 	install the 3.2 release in a separate directory tree and treat
 	everything as if you were installing it for the first
 	time. This is not just because this is a beta release. There
-	are two main reasons for this:
+	are several main reasons for this:
 	<ul>
+	<li>The htmerge program now <strong>only</strong> merges. You
+	do not need to run it after running htdig as before. The
+	&quot;cleanup&quot; duties have been moved to the <a
+	href="htpurge.html">htpurge</a> program that also deletes
+	URLs. The sample rundig script is modified accordingly.</li>
 	<li>The default directory structure of this release is
 	different from previous releases, more in line with other UNIX
 	programs.</li>
@@ -31,7 +36,12 @@
 	cannot read databases from previous versions since the new
 	formats have significantly more information and this cannot be
 	reconstructed from old databases. This goes for fuzzy
-	databases as well.</li>
+	databases as well. Future versions can use the new <a
+	href="htdump.html">htdump</a> and <a
+	href="htload.html">htload</a> programs to dump and load
+	databases to/from text files. These will also allow databases
+	to be transfered between platforms.
+	</li>
 	</ul>
 	Text files, such as config files, result templates, etc. are
 	the same between releases, so you will probably wish to copy
@@ -51,20 +61,13 @@
 	<li>Date-based searching--restricting to a range of dates.</li>
 	<li>Implementation of a more accurate scoring system.</li>
 	<li>Parallel indexing and searching.</li>
-	<li>"Collections" of multiple databases.</li>
-	<li>Support for nntp: and ftp: access</li>
-	<li>Detection of loops and/or duplicate documents</li>
-	<li>An accent-based fuzzy algorithm: match r&eacute;sum&eacute;
-	with resume.</li>
+	<li>Support for https: and ftp: access</li>
 	</ul>
 	Please send comments, patches, etc. to the &lt;<a
 	href="mailto:htdig3-dev@htdig.org">htdig3-dev@htdig.org</a>&gt;
 	mailing list.
 
 	<hr size="4" noshade>
-	<address>
-	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
-	</address>
-	Last modified: $Date: 2000/02/19 05:29:02 $
+		Last modified: $Date: 2002/02/01 22:49:32 $
   </body>
 </html>

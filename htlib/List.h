@@ -4,12 +4,12 @@
 // List: A List class which holds objects of type Object.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: List.h,v 1.6 2000/02/19 05:29:03 ghutchis Exp $
+// $Id: List.h,v 1.7 2002/02/01 22:49:34 ghutchis Exp $
 //
 
 #ifndef	_List_h_
@@ -17,18 +17,26 @@
 
 #include "Object.h"
 
+//
+// Behaviour of the Remove method. See comment before method
+// declaration for more information.
+//
+#define LIST_REMOVE_DESTROY	1
+#define LIST_REMOVE_RELEASE	2
+
 class List;
 class listnode;
 
 class ListCursor {
  public:
-  ListCursor() { current = 0; current_index = -1; }
-  void Clear() { current = 0; current_index = -1; }
+  ListCursor() { current = 0; prev = 0; current_index = -1; }
+  void Clear() { current = 0; prev = 0; current_index = -1; }
 
   //
   // Support for the Start_Get and Get_Next routines
   //
   listnode		*current;
+  listnode		*prev;
   int			current_index;
 };
 
@@ -40,6 +48,28 @@ public:
     //
     List();
     virtual		~List();
+
+    //
+    // Insert at beginning of list.
+    //
+    virtual void	Unshift(Object *o) { Insert(o, 0); }
+    //
+    // Remove from the beginning of the list and return the
+    // object.
+    //
+    virtual Object*	Shift(int action = LIST_REMOVE_DESTROY) {
+      Object* o = Nth(0);
+      if(Remove(0, action) == NOTOK) return 0;
+      return o;
+    }
+    //
+    // Append an Object to the end of the list
+    //
+    virtual void	Push(Object *o) { Add(o); }
+    //
+    // Remove the last object from the list and return it.
+    //
+    virtual Object	*Pop(int action = LIST_REMOVE_DESTROY);
 
     //
     // Add() will append an Object to the end of the list
@@ -71,6 +101,15 @@ public:
     virtual int		Remove(Object *);
 
     //
+    // Remove object at position from the list. If action is 
+    // LIST_REMOVE_DESTROY delete the object stored at position.
+    // If action is LIST_REMOVE_RELEASE the object is not deleted.
+    // If the object is not found,
+    // NOTOK will be returned, else OK.
+    //
+    virtual int		Remove(int position, int action = LIST_REMOVE_DESTROY);
+
+    //
     // Release() will set the list to empty.  This call will NOT
     // delete objects that were in the list before this call.
     //
@@ -86,7 +125,7 @@ public:
     // List traversel
     //
     void		Start_Get()	{ Start_Get(cursor); }
-    void		Start_Get(ListCursor& cursor0) const { cursor0.current = head; cursor0.current_index = -1;}
+    void		Start_Get(ListCursor& cursor0) const { cursor0.current = head; cursor0.prev = 0; cursor0.current_index = -1;}
     Object		*Get_Next()	{ return Get_Next(cursor); }
     Object		*Get_Next(ListCursor& cursor) const;
     Object		*Get_First();
@@ -126,6 +165,9 @@ public:
     //
     List		&operator= (List *list)		{return *this = *list;}
     List		&operator= (List &list);
+
+    // Move one list to the end of another, emptying the other list.
+    void		AppendList (List &list);
 
 protected:
     //

@@ -4,26 +4,31 @@
 // Server: A class to keep track of server specific information.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.18 2000/02/19 05:28:52 ghutchis Exp $
+// $Id: Server.cc,v 1.19 2002/02/01 22:49:29 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htdig.h"
 #include "Server.h"
 #include "good_strtok.h"
 #include "htString.h"
 #include "URL.h"
-#include "htdig.h"
 #include "Document.h"
 #include "URLRef.h"
 #include "Transport.h"
 #include "HtHTTP.h"    // for checking persistent connections
+#include "StringList.h"
 
 #include <ctype.h>
+#include "defaults.h"
 
 
 //*****************************************************************************
@@ -31,20 +36,67 @@
 //  u is the base URL for this server
 //
 Server::Server(URL u, StringList *local_robots_files)
+:
+    _host(u.host()),
+    _port(u.port()),
+    _bad_server(0),
+    _documents(0),
+   _accept_language(0)
 {
+	HtConfiguration* config= HtConfiguration::config();
     if (debug)
-      cout << endl << "New server: " << u.host() << ", " << u.port() << endl;
-
-    _host = u.host();
-    _port = u.port();
-    _bad_server = 0;
-    _documents = 0;
+      cout << endl << "New server: " << _host << ", " << _port << endl;
 
     // We take it from the configuration
-    _persistent_connections = config.Boolean("persistent_connections");
+    _persistent_connections = config->Boolean("server", _host,"persistent_connections");
+    _head_before_get = config->Boolean("server", _host,"head_before_get");
 
-    _max_documents = config.Value("server",_host,"server_max_docs", -1);
-    _connection_space = config.Value("server",_host,"server_wait_time", 0);
+    _max_documents = config->Value("server",_host,"server_max_docs");
+    _connection_space = config->Value("server",_host,"server_wait_time");
+    _user_agent = config->Find("server", _host, "user_agent");
+    _disable_cookies = config->Boolean("server", _host, "disable_cookies");
+
+    // Accept-Language directive
+    StringList _accept_language_list(config->Find("server", _host,
+      "accept_language"), " \t");
+
+    _accept_language.trunc(); // maybe not needed
+    
+    for (int i = 0; i < _accept_language_list.Count(); i++)
+    {
+       if (i>0)
+       	 _accept_language << ",";   // for multiple choices
+
+       	 _accept_language << _accept_language_list[i];
+    }
+    
+    // Timeout setting
+    _timeout = config->Value("server",_host,"timeout");
+
+    // Number of consecutive attempts to establish a TCP connection
+    _tcp_max_retries = config->Value("server",_host,"tcp_max_retries");
+
+    // Seconds to wait after a timeout occurs
+    _tcp_wait_time = config->Value("server",_host,"tcp_wait_time");
+
+
+    if (debug)
+    {
+      cout << " - Persistent connections: " <<
+         (_persistent_connections?"enabled":"disabled") << endl;
+
+      cout << " - HEAD before GET: " <<
+         (_head_before_get?"enabled":"disabled") << endl;
+
+      cout << " - Timeout: " << _timeout << endl;
+      cout << " - Connection space: " << _connection_space << endl;
+      cout << " - Max Documents: " << _max_documents << endl;
+      cout << " - TCP retries: " << _tcp_max_retries << endl;
+      cout << " - TCP wait time: " << _tcp_wait_time << endl;
+      cout << " - Accept-Language: " << _accept_language << endl;
+
+    }
+
     _last_connection.SettoNow();  // For getting robots.txt
 
     if (strcmp(u.service(),"http") == 0 || strcmp(u.service(),"https") == 0)
@@ -59,7 +111,7 @@ Server::Server(URL u, StringList *local_robots_files)
 	  cout << "Trying to retrieve robots.txt file" << endl;        
 	url << u.signature() << "robots.txt";
 	
-	static int	local_urls_only = config.Boolean("local_urls_only");
+	static int	local_urls_only = config->Boolean("local_urls_only");
 	time_t 		timeZero = 0; // Right now we want to get this every time
 	Document	doc(url, 0);
 	Transport::DocStatus	status;
@@ -76,13 +128,13 @@ Server::Server(URL u, StringList *local_robots_files)
 		  {
 		    if (debug > 1)
 		      cout << "Local retrieval failed, trying HTTP" << endl;
-		    status = doc.Retrieve(timeZero);
+		    status = doc.Retrieve(this, timeZero);
 		  }
 	      }
 	  }
 	else if (!local_urls_only)
         {
-	  status = doc.Retrieve(timeZero);
+	  status = doc.Retrieve(this, timeZero);
 
           // Let's check if persistent connections are both
           // allowed by the configuration and possible after
@@ -133,6 +185,28 @@ Server::Server(URL u, StringList *local_robots_files)
       } // end if (http || https)
 }
 
+// Copy constructor
+Server::Server(const Server& rhs)
+:_host(_host),
+_port(rhs._port),
+_bad_server(rhs._bad_server),
+_connection_space(rhs._connection_space),
+_last_connection(rhs._last_connection),
+_paths(rhs._paths),
+_disallow(rhs._disallow),
+_documents(rhs._documents),
+_max_documents(rhs._max_documents),
+_persistent_connections(rhs._persistent_connections),
+_head_before_get(rhs._head_before_get),
+_disable_cookies(rhs._disable_cookies),
+_timeout(rhs._timeout),
+_tcp_wait_time(rhs._tcp_wait_time),
+_tcp_max_retries(rhs._tcp_max_retries),
+_user_agent(rhs._user_agent),
+_accept_language(rhs._accept_language)
+{
+}
+
 
 //*****************************************************************************
 // Server::~Server()
@@ -148,11 +222,12 @@ Server::~Server()
 //
 void Server::robotstxt(Document &doc)
 {
+	HtConfiguration* config= HtConfiguration::config();
     String	contents = doc.Contents();
     int		length;
     int		pay_attention = 0;
     String	pattern;
-    String	myname = config["robotstxt_name"];
+    String	myname = config->Find("server", _host.get(), "robotstxt_name");
     int		seen_myname = 0;
     char	*name, *rest;
     
@@ -213,9 +288,14 @@ void Server::robotstxt(Document &doc)
 		// This is for us!  This will override any previous patterns
 		// that may have been set.
 		//
-		seen_myname = 1;
-		pay_attention = 1;
-		pattern = 0;
+		if (!seen_myname)	// only take first section with our name
+		{
+		    seen_myname = 1;
+		    pay_attention = 1;
+		    pattern = 0;	// ignore previous User-agent: *
+		}
+		else
+		    pay_attention = 0;
 	    }
 	    else
 	    {
@@ -252,29 +332,46 @@ void Server::robotstxt(Document &doc)
     if (debug > 1)
 	cout << "Pattern: " << pattern << endl;
 		
-    _disallow.set(pattern, config.Boolean("case_sensitive"));
+    _disallow.set(pattern, config->Boolean("case_sensitive"));
 }
 
 
 //*****************************************************************************
-// void Server::push(char *path, int hopcount, char *referer, int local)
+// void Server::push(String &path, int hopcount, char *referer, int local, int newDoc)
 //
-void Server::push(char *path, int hopcount, char *referer, int local)
+void Server::push(const String &path, int hopcount, const String &referer,
+		  int local, int newDoc)
 {
     if (_bad_server && !local)
 	return;
 
-    // We use -1 as no limit
-    if (_max_documents != -1 &&
-	_documents >= _max_documents)     // Hey! we only want to get max_docs
-      return;
+    if (IsDisallowed(path) != 0)
+      {
+	if (debug > 2)
+	  cout << endl << "   Rejected: forbidden by server robots.txt!";
+
+	return;
+      }
+
+    // We use -1 as no limit, but we also don't want
+    // to forbid redirects from old places
+    if (_max_documents != -1 && newDoc &&
+	_documents >= _max_documents)
+    {
+       if (debug>2)     // Hey! we only want to get max_docs
+          cout << "Limit of " << _max_documents << " reached for " << _host << endl;
+        
+       return;
+    }
+
     URLRef	*ref = new URLRef();
     ref->SetURL(path);
     ref->SetHopCount(hopcount);
     ref->SetReferer(referer);
     _paths.Add(ref);
 
-    _documents++;
+    if (newDoc)
+      _documents++;
 
 //     cout << "***** pushing '" << path << "' with '" << referer << "'\n";
 }

@@ -9,13 +9,17 @@
 //              checked at construction.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordCodec.cc,v 1.6 1999/09/24 10:29:03 loic Exp $
+// $Id: HtWordCodec.cc,v 1.7 2002/02/01 22:49:33 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "HtWordCodec.h"
 
@@ -123,7 +127,7 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
       return;
     }
 
-    myFrom->Add(from);
+    myFrom->Add(new String(*from));
 
     // This must be non-null since we checked "oddness" above.
     to = (String *) requested_encodings.Get_Next();
@@ -171,7 +175,7 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
     }
 
     // All ok, just add this one.
-    myTo->Add(to);
+    myTo->Add(new String(*to));
   }
 
   // Check that none of the "to"-strings is a substring of any
@@ -307,8 +311,8 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
       }
 
       // Add to replacement pairs.
-      myFrom->Add(common_part);
-      myTo->Add(&to);
+      myFrom->Add(new String(*common_part));
+      myTo->Add(new String(to));
     }
   }
 
@@ -338,13 +342,13 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
     // StringList, despite not having an iterator class.
     current = (String *) myTo->Nth(i);
 
-    myFrom->Add(current);
+    myFrom->Add(new String(*current));
 
     temp = 0; // Reset any previous round.
     temp.append(char(QUOTE_CHAR));
     temp.append(*current);
 
-    myTo->Add(&temp);
+    myTo->Add(new String(temp));
   }
 
   myFromMatch = new StringMatch;

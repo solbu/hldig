@@ -1,4 +1,10 @@
 dnl
+dnl Part of the ht://Dig package   <http://www.htdig.org/>
+dnl Copyright (c) 1999, 2000 The ht://Dig Group
+dnl For copyright details, see the file COPYING in your distribution
+dnl or the GNU General Public License version 2 or later
+dnl <http://www.gnu.org/copyleft/gpl.html>
+dnl
 dnl Local autoconf definitions. Try to follow the guidelines of the autoconf
 dnl macro repository so that integration in the repository is easy.
 dnl To submit a macro to the repository send the macro (one macro per mail)
@@ -19,7 +25,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: acinclude.m4,v 1.8 2000/02/19 05:28:45 ghutchis Exp $
+dnl @version $Id: acinclude.m4,v 1.9 2002/02/01 22:49:26 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -30,6 +36,48 @@ AC_SUBST(USER)
 AC_MSG_RESULT($USER)
 ])
 
+dnl
+dnl Prevent accidental use of Run Time Type Information g++ builtin
+dnl functions.
+dnl
+AC_DEFUN(NO_RTTI,
+[AC_MSG_CHECKING(adding -fno-rtti to g++)
+if test -n "$CXX"
+then
+  if test "$GXX" = "yes"
+  then
+    CXXFLAGS_save="$CXXFLAGS"
+    CXXFLAGS="$CXXFLAGS -fno-rtti"
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+    AC_TRY_COMPILE(,,,CXXFLAGS="$CXXFLAGS_save")
+    AC_LANG_RESTORE
+  fi
+fi
+AC_MSG_RESULT(ok)
+])
+
+dnl
+dnl Prevent accidental use of Exceptions g++ builtin
+dnl functions.
+dnl
+AC_DEFUN(NO_EXCEPTIONS,
+[AC_MSG_CHECKING(adding -fno-exceptions to g++)
+if test -n "$CXX"
+then
+  if test "$GXX" = "yes"
+  then
+    CXXFLAGS_save="$CXXFLAGS"
+    CXXFLAGS="$CXXFLAGS -fno-exceptions"
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+    AC_TRY_COMPILE(,,,CXXFLAGS="$CXXFLAGS_save")
+    AC_LANG_RESTORE
+  fi
+fi
+AC_MSG_RESULT(ok)
+])
+
 dnl @synopsis AC_COMPILE_WARNINGS
 dnl
 dnl Set the maximum warning verbosity according to compiler used.
@@ -37,7 +85,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: acinclude.m4,v 1.8 2000/02/19 05:28:45 ghutchis Exp $
+dnl @version $Id: acinclude.m4,v 1.9 2002/02/01 22:49:26 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -87,7 +135,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: acinclude.m4,v 1.8 2000/02/19 05:28:45 ghutchis Exp $
+dnl @version $Id: acinclude.m4,v 1.9 2002/02/01 22:49:26 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -182,7 +230,7 @@ dnl LoadModule env_module         @APACHE_MODULES@/mod_env.so
 dnl LoadModule config_log_module  @APACHE_MODULES@/mod_log_config.so
 dnl ...
 dnl
-dnl @version $Id: acinclude.m4,v 1.8 2000/02/19 05:28:45 ghutchis Exp $
+dnl @version $Id: acinclude.m4,v 1.9 2002/02/01 22:49:26 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -265,7 +313,7 @@ AC_DEFUN(AC_PROG_APACHE,
     #
     HTTP_ROOT=`$APACHE -V | grep HTTPD_ROOT | sed -e 's/.*"\(.*\)"/\1/'`
     AC_MSG_CHECKING(apache modules)
-    for dir in libexec modules
+    for dir in libexec modules lib/apache
     do
       if test -f $HTTP_ROOT/$dir/mod_env.*
       then
@@ -295,7 +343,7 @@ AC_PATH_PROG(TIME, time, time)
 AC_MSG_CHECKING(verbose time flag)
 for timev in "$TIME -v" "$TIME -l" $TIME
 do
-	if $timev >/dev/null 2>&1
+	if $timev echo >/dev/null 2>&1
 	then
 		TIMEV=$timev
 		break

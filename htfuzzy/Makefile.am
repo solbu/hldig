@@ -3,21 +3,22 @@ include $(top_srcdir)/Makefile.config
 
 LOCAL_DEFINES=  -DMV=\"$(MV)\"
 
-lib_LTLIBRARIES = libfuzzy.la
+pkglib_LTLIBRARIES = libfuzzy.la
 
 libfuzzy_la_SOURCES = Endings.cc EndingsDB.cc Exact.cc \
-		Fuzzy.cc Metaphone.cc Soundex.cc \
+		Fuzzy.cc Metaphone.cc Soundex.cc Accents.cc \
 		SuffixEntry.cc Synonym.cc htfuzzy.cc \
-		Substring.cc Prefix.cc Regex.cc Speling.cc
+		Substring.cc Prefix.cc Regexp.cc Speling.cc
 
 libfuzzy_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS = Endings.h \
+noinst_HEADERS = Accents.h \
+	Endings.h \
 	Exact.h \
 	Fuzzy.h \
 	Metaphone.h \
 	Prefix.h \
-	Regex.h \
+	Regexp.h \
 	Soundex.h \
 	Speling.h \
 	Substring.h \

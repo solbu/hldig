@@ -1,7 +1,71 @@
-STATUS of ht://Dig main trunk
+STATUS of ht://Dig branch 3-2-x
+
+RELEASES:
+   3.2.0b4: In progress
+   3.2.0b3: Released:  22 Feb 2001.
+   3.2.0b2: Released:  11 Apr 2000.
+   3.2.0b1: Released:   4 Feb 2000.
 
 SHOWSTOPPERS:
-N/A: See htdig-3-2-x for current release branch
 
-NEEDED WORK:
-* Should blow away everything here, which has been superceded by 3-2-x branch.
+KNOWN BUGS:
+* Odd behavior with $(MODIFIED) and scores not working with
+   wordlist_compress set but work fine without wordlist_compress.
+   (the date is definitely stored correctly, even with compression on
+    so this must be some sort of weird htsearch bug)
+* Not all htsearch input parameters are handled properly: PR#648. Use a
+   consistant mapping of input -> config -> template for all inputs where
+   it makes sense to do so (everything but "config" and "words"?).
+* If exact isn't specified in the search_algorithms, $(WORDS) is not set 
+   correctly: PR#650. (The documentation for 3.2.0b1 is updated, but can
+   we fix this?)
+* META descriptions are somehow added to the database as FLAG_TITLE,
+   not FLAG_DESCRIPTION. (PR#859)
+
+PENDING PATCHES (available but need work):
+* Additional support for Win32.
+* Memory improvements to htmerge. (Backed out b/c htword API changed.)
+* MySQL patches to 3.1.x to be forward-ported and cleaned up.
+  (Should really only attempt to use SQL for doc_db and related, not word_db)
+
+NEEDED FEATURES:
+* Field-restricted searching.
+* Return all URLs.
+* Handle noindex_start & noindex_end as string lists.
+* Handle local_urls through file:// handler, for mime.types support.
+* Handle directory redirects in RetrieveLocal.
+* Merge with mifluz
+
+TESTING:
+* httools programs: 
+  (htload a test file, check a few characteristics, htdump and compare)
+* Turn on URL parser test as part of test suite.
+* htsearch phrase support tests
+* Tests for new config file parser
+* Duplicate document detection while indexing
+* Major revisions to ExternalParser.cc, including fork/exec instead of popen,
+  argument handling for parser/converter, allowing binary output from an
+  external converter.
+* ExternalTransport needs testing of changes similar to ExternalParser.
+
+DOCUMENTATION:
+* List of supported platforms/compilers is ancient.
+* Add thorough documentation on htsearch restrict/exclude behavior
+   (including '|' and regex).
+* Document all of htsearch's mappings of input parameters to config attributes
+   to template variables. (Relates to PR#648.) Also make sure these config
+   attributes are all documented in defaults.cc, even if they're only set by
+   input parameters and never in the config file.
+* Split attrs.html into categories for faster loading.
+* require.html is not updated to list new features and disk space
+   requirements of 3.2.x (e.g. phrase searching, regex matching,
+   external parsers and transport methods, database compression.)
+* TODO.html has not been updated for current TODO list and completions.
+
+OTHER ISSUES:
+* Can htsearch actually search while an index is being created?
+   (Does Loic's new database code make this work?)
+* The code needs a security audit, esp. htsearch
+* URL.cc tries to parse malformed URLs (which causes further problems)
+   (It should probably just set everything to empty) This relates to 
+   PR#348.

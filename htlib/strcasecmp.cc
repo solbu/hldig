@@ -5,13 +5,17 @@
 //             not have it.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: strcasecmp.cc,v 1.7 1999/09/24 10:29:03 loic Exp $
+// $Id: strcasecmp.cc,v 1.8 2002/02/01 22:49:34 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "lib.h"
 #include <ctype.h>
