@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordMonitor.h,v 1.1.2.1 2000/01/03 10:02:06 bosc Exp $
+// $Id: WordMonitor.h,v 1.1.2.2 2000/01/06 11:31:19 bosc Exp $
 //
 #ifndef _WordMonitor_h_
 #define _WordMonitor_h_
@@ -26,6 +26,7 @@ class WordMonitorOutput
     FILE *out;
 
  public:
+    void SetOutputFields(const String &sfields);
 
     void put(const String &name,const String &value);// add output value
     void put(const String &name,double val);// add output value
@@ -37,13 +38,35 @@ class WordMonitorOutput
     ~WordMonitorOutput();
 };
 
+class CommandProcessor
+{
+public:
+    virtual int ProcessCommand(const String& command)=0;
+};
+
+
+// command line input 
+class WordMonitorInput
+{
+    CommandProcessor *commandProcessor;
+    HtTime::Periodic periodic;    
+    FILE *fin;
+    void ParseInput();
+ public:
+    inline void operator () ()
+    {
+	if(periodic()){ParseInput();}
+    }
+    WordMonitorInput(const Configuration &config, CommandProcessor *ncommandProcessor);
+};
 class WordList;
 class WordDBCompress;
 
 // generates  mifluz-specific  monitor data 
-class WordMonitor
+class WordMonitor : public CommandProcessor
 {
     int nomonitor;
+    WordMonitorInput  *input;
     WordMonitorOutput output;
     HtTime::Periodic periodic;
     WordDBCompress *cmpr;
@@ -69,12 +92,15 @@ class WordMonitor
     int    wl_last_walk_count_DB_NEXT     ;
 
  public:    
+    virtual int ProcessCommand(const String& command);
     inline void operator () ()
     {
 	if(nomonitor){return;}
 	double rperiod;
 	if(periodic(&rperiod)){process(rperiod);}
+	if(input){(*input)();}
     }
+    virtual ~WordMonitor(){;}
     WordMonitor(const Configuration &config,WordDBCompress *ncmpr,WordList *nwlist);
 };
 

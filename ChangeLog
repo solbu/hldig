@@ -1,3 +1,19 @@
+Thu Jan 06 12:01:47 2000  Marcel Bosc  <bosc@ceic.com>
+
+	* htword/compression: Split WordDBCompress.* to WordDBCompress +
+	WordDBPage.*
+
+	* htword/WordBitCompress: renamed put/get to put_uint/get_uint. added get/put_uint_vl
+
+	* htword/compression: modified slightly the compression: this makes old databases
+	OBSOLETE: headers compress better. Chaged Flags compress better and faster.
+
+	* htword/WordKey: added operator [] and Get/Set accessors
+
+	* htword: removed the obsolete --with_key configure option (KEYDESC)
+
+	* htword/WordMonitor: addded  monitor input
+	
 Wed Jan 05 13:26:16 2000  Loic Dachary  <loic@ceic.com>
 
 	* htdig/ExternalParser.cc (parse): use nocase_compare instead of mystrcasecmp to

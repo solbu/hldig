@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.h,v 1.1.2.6 2000/01/03 11:48:36 bosc Exp $
+// $Id: WordBitCompress.h,v 1.1.2.7 2000/01/06 11:31:18 bosc Exp $
 //
 
 #ifndef   _WordBitCompress_h
@@ -52,6 +52,7 @@ typedef char * charptr;
 #define TMin(a,b) (((a)<(b)) ? (a) : (b))
 
 // compute integer log2
+// == minimum number of bits needed to code value 
 inline int
 num_bits(unsigned int maxval )
 {
@@ -122,7 +123,7 @@ public:
     }
 
     // gets a bit from the bitstream
-    inline byte get(char *tag=NULL)
+    inline byte get(const char *tag=NULL)
     {
 	// SPEED CRITICAL SECTION
 	if(check_tag(tag)==NOTOK){errr("BitStream::get() check_tag failed");}
@@ -134,8 +135,8 @@ public:
     }
 
     // get/put an integer using n bits
-    void         put(unsigned int v,int n,const char *tag="NOTAG");
-    unsigned int get(               int n,const char *tag=NULL);
+    void         put_uint(unsigned int v,int n,const char *tag="NOTAG");
+    unsigned int get_uint(               int n,const char *tag=NULL);
 
     // get/put n bits of data stored in vals
     void put_zone(byte *vals,int n,const char *tag);
@@ -217,6 +218,23 @@ class Compressor : public BitStream
 {
 public:
     int verbose;
+    // get/put an integer using a variable number of bits
+    void         put_uint_vl(unsigned int v,int maxn,const char *tag="NOTAG");
+    unsigned int get_uint_vl(               int maxn,const char *tag=NULL);
+
+    // get/put an integer checking for an expected value
+    void         put_uint_ex(unsigned int v,unsigned int ex,int maxn,const char *tag="NOTAG")
+	{
+	    if(v==ex){put(1,tag);}
+	    else{put(0,tag);put_uint(v,maxn,NULL);}
+	}
+    unsigned int get_uint_ex(               unsigned int ex,int maxn,const char *tag=NULL)
+	{
+	    if(get(tag)){return ex;}
+	    else{return get_uint(maxn,NULL);}
+	}
+
+
     // compress/decompress an array of unsigned ints (choosing best method)
     int put_vals(unsigned int *vals,int n,const char *tag);
     int get_vals(unsigned int **pres,const char *tag="BADTAG!");

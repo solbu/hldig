@@ -177,6 +177,7 @@ class WordKey
 #ifndef SWIG
   inline const String&  GetWord() const { return kword; }
 #endif /* SWIG */
+
   inline String&	GetWord()       { return kword; }
   inline void	        SetWord(const String& arg) { kword = arg; setbits |= WORD_KEY_WORDFULLY_DEFINED; } 
  protected:
@@ -191,16 +192,32 @@ class WordKey
   //
   inline WordKeyNum GetInSortOrder(int position) const 
   {
-      if(position<1 || position>=nfields()){errr("GetInSortOrder: out of bounds");}
+//        if(position<1 || position>=nfields()){errr("GetInSortOrder: out of bounds");}
       return(numerical_fields[position-1]);
   }
 
   inline void SetInSortOrder(int position,WordKeyNum val)
   {
-      if(position<1 || position>=nfields()){errr("SetInSortOrder: out of bounds");}
+//        if(position<1 || position>=nfields()){errr("SetInSortOrder: out of bounds");}
       SetDefinedInSortOrder(position);
       numerical_fields[position-1] = val;
   }
+
+  inline WordKeyNum Get(int position) const 
+  {
+//        if(position<1 || position>=nfields()){errr("GetInSortOrder: out of bounds");}
+      return(numerical_fields[position-1]);
+  }
+
+  inline void Set(int position,WordKeyNum val)
+  {
+//        if(position<1 || position>=nfields()){errr("SetInSortOrder: out of bounds");}
+      SetDefinedInSortOrder(position);
+      numerical_fields[position-1] = val;
+  }
+
+    inline       WordKeyNum &      operator[] (int n)		{return(numerical_fields[n-1]);}
+    inline const WordKeyNum &      operator[] (int n) const     {return(numerical_fields[n-1]);}
     
   //
   // Key field value existenz. Defined means the value of the field contains

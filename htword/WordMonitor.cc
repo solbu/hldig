@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordMonitor.cc,v 1.1.2.3 2000/01/03 12:59:01 bosc Exp $
+// $Id: WordMonitor.cc,v 1.1.2.4 2000/01/06 11:31:19 bosc Exp $
 //
 #include<stdlib.h>
 
@@ -15,6 +15,18 @@
 #include"WordList.h"
 #include"WordDBCompress.h"
 #include"HtMaxMin.h"
+int
+StringVect(HtVector_String &sv,const String &str,const char *sep)
+{
+    StringList fields(str,sep);
+    fields.Start_Get();
+    String *found;
+    while((found=(String*)fields.Get_Next()))
+    {sv.push_back(*found);}
+
+    return sv.size();
+}
+
 WordMonitorOutput::WordMonitorOutput(const Configuration &config)
 {
     all_fields = 0;
@@ -29,22 +41,7 @@ WordMonitorOutput::WordMonitorOutput(const Configuration &config)
     // parse fields
     String fieldsstr = config["wordlist_monitor_fields"];
 
-    if( fieldsstr.empty() ){ fieldsstr="all"; }
-
-    StringList sfields(fieldsstr, "\t ");
-
-    sfields.Start_Get();
-
-    String *found;
-    while((found = (String*)sfields.Get_Next()))
-    {
-	if( *found == (String)"all" )
-	{
-	    all_fields = 1;
-	    break;
-	}
-	fields.push_back(*found);
-    }
+    SetOutputFields(fieldsstr);
 
     // parse output fields
     String outputstr = config["wordlist_monitor_output"];
@@ -57,6 +54,22 @@ WordMonitorOutput::WordMonitorOutput(const Configuration &config)
 
     if(!out){out=stdout;}
 
+}
+void 
+WordMonitorOutput::SetOutputFields(const String &sfields)
+{
+    all_fields=0;
+    if( sfields.empty() ){ all_fields = 1;return;}
+
+    fields.Destroy();
+
+    StringVect(fields,sfields, "\t ");
+//      int i;
+//      for(i=0;i<fields.size();i++)
+//      {
+//  	cout << "field " << i << ":" << fields[i] << endl;
+//      }
+    if(fields[0] == (String)"all" ){all_fields = 1;return;}
 }
 
 
@@ -130,6 +143,10 @@ WordMonitor::WordMonitor(const Configuration &config,WordDBCompress *ncmpr,WordL
     wlist=nwlist;
     nomonitor=0;
     if(!config.Boolean("wordlist_monitor")){nomonitor=1;}
+
+    input=NULL;
+
+    if(config.Boolean("wordlist_monitor_input")){input=new WordMonitorInput(config,this);}
 
     dbc_last_cmpr_count = 0;
     dbc_last_cmpr_time  = 0;
@@ -214,6 +231,73 @@ WordMonitor::process(double rperiod)
 }
 
 
+int
+WordMonitor::ProcessCommand(const String& command)
+{
+    cout << "WordMonitor::ProcessCommand:\"" << command << "\"" << endl;
+    HtVector_String cfields;
+    int n=StringVect(cfields,command, "\t ");
+    String error;
 
+    if(!n){error="empty command";}
+    else
+    if(cfields[0]==(String)"compress_debug")
+    {
+	if(n!=2){error="compress_debug:bad number of args";}
+	else
+	if(!cmpr){error="compress_debug: compression not present!";}
+	else
+	{
+	    cmpr->debug=atoi((char *)cfields[1]);
+	}
+    }
+    else
+    if(cfields[0]==(String)"display")
+    {
+	if(n==1){nomonitor=1-nomonitor;}
+	else
+	{
+	    if(cfields[1]==(String)"cmpr")
+	    {
+		output.SetOutputFields("cmpr/s ucmpr/s cmpr_ucmpr_time  cmpr_ratio cmpr_overflow nonleave/leave mxtreelevel");
+	    }
+	    else
+	    if(cfields[1]==(String)"cmpr0")
+	    {
+		output.SetOutputFields("cmpr/s ucmpr/s cmpr_ucmpr_time  cmpr_ratio cmpr_overflow");
+	    }
+	    else{error="unknown display option";}
+	}
+//	{error="display:bad number of args";}
+    }
+    else
+    {
+	error="unknown command";
+    }
 
+    if(!error.empty())
+    {
+	cerr << "WordMonitor::ProcessCommand: error:" << error << endl;
+    }
+	
+    return OK;
+}
+
+WordMonitorInput::WordMonitorInput(const Configuration &config, CommandProcessor *ncommandProcessor):
+    periodic(.1)
+{
+    commandProcessor=ncommandProcessor;
+    fin=fopen("monin","w+");;
+}
+
+void 
+WordMonitorInput::ParseInput()
+{
+    char line[1000];
+    while(fgets(line,1000,fin))
+    {
+	line[strlen(line)-1]=0;
+	commandProcessor->ProcessCommand((String)line);
+    }	
+}    
 

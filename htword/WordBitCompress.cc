@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.cc,v 1.1.2.8 2000/01/03 11:48:36 bosc Exp $
+// $Id: WordBitCompress.cc,v 1.1.2.9 2000/01/06 11:31:17 bosc Exp $
 //
 
 
@@ -165,23 +165,23 @@ public:
 	    lboundary=sboundary;
 	}
 	// were in the i'th interval;
-  	bs.put(i,nlev,"int");// store interval
+  	bs.put_uint(i,nlev,"int");// store interval
 	const int bitsremaining=(intervals[i]>0 ? intervals[i]-1 : 0);
 //  	if(verbose>1)printf("v:%6d interval:%2d (%5d - %5d) bitsremaining:%2d ",v,i,lboundary,sboundary,bitsremaining);
 	v-=lboundary;
 //  	if(verbose>1)printf("remain:%6d  totalbits:%2d\n",v,bitsremaining+nlev);
-    	bs.put(v,bitsremaining,"rem");
+    	bs.put_uint(v,bitsremaining,"rem");
 	return(bitsremaining + nlev);
     }
     // get and uncompress  a value from  the bitstream
     inline unsigned int get()
     {
 	// SPEED CRITICAL SECTION
-	int i=bs.get(nlev,"int");// get interval
+	int i=bs.get_uint(nlev,"int");// get interval
 //  	if(verbose>1)printf("get:interval:%2d ",i);
 	const int bitsremaining=(intervals[i]>0 ? intervals[i]-1 : 0);
 //  	if(verbose>1)printf("bitsremain:%2d ",bitsremaining);
-	unsigned int v=bs.get(bitsremaining,"rem");
+	unsigned int v=bs.get_uint(bitsremaining,"rem");
 //  	if(verbose>1)printf("v0:%3d ",v);
 //  	unsigned int lboundary=0;
 	v+=lboundaries[i];
@@ -216,20 +216,20 @@ VlengthCoder::code_begin()
 {
     int i;
     bs.add_tag("VlengthCoder:Header");
-    bs.put(nbits,5,"nbits");
-    bs.put(nlev,5,"nlev");
+    bs.put_uint(nbits,5,"nbits");
+    bs.put_uint(nlev,5,"nlev");
     for(i=0;i<nintervals;i++)
     {
-	bs.put(intervals[i],5,label_str("interval",i));
+	bs.put_uint(intervals[i],5,label_str("interval",i));
     }
 }
 void 
 VlengthCoder::get_begin()
 {
     int i;
-    nbits=bs.get(5,"nbits");
+    nbits=bs.get_uint(5,"nbits");
     if(verbose>1)printf("get_begin nbits:%d\n",nbits);
-    nlev=bs.get(5,"nlev");
+    nlev=bs.get_uint(5,"nlev");
     if(verbose>1)printf("get_begin nlev:%d\n",nlev);
     nintervals=pow2(nlev);
 
@@ -242,7 +242,7 @@ VlengthCoder::get_begin()
 
     for(i=0;i<nintervals;i++)
     {
-	intervals[i]=bs.get(5,label_str("interval",i));
+	intervals[i]=bs.get_uint(5,label_str("interval",i));
 	intervalsizes[i]=intervalsize0(i);
 	if(verbose>1)printf("get_begin intervals:%2d:%2d\n",i,intervals[i]);
     }
@@ -318,17 +318,17 @@ void
 BitStream::put_zone(byte *vals,int n,const char *tag)
 {
     add_tag(tag);
-    for(int i=0;i<(n+7)/8;i++){put(vals[i],TMin(8,n-8*i),NULL);}
+    for(int i=0;i<(n+7)/8;i++){put_uint(vals[i],TMin(8,n-8*i),NULL);}
 }
 void 
 BitStream::get_zone(byte *vals,int n,const char *tag)
 {
     check_tag(tag);
-    for(int i=0;i<(n+7)/8;i++){vals[i]=get(TMin(8,n-8*i));}
+    for(int i=0;i<(n+7)/8;i++){vals[i]=get_uint(TMin(8,n-8*i));}
 }
 
 void 
-BitStream::put(unsigned int v,int n,const char *tag/*="NOTAG"*/)
+BitStream::put_uint(unsigned int v,int n,const char *tag/*="NOTAG"*/)
 {
     // SPEED CRITICAL SECTION
     if(freezeon){bitpos+=n;return;}
@@ -402,7 +402,7 @@ BitStream::put(unsigned int v,int n,const char *tag/*="NOTAG"*/)
 
 
 unsigned int 
-BitStream::get(int n,const char *tag/*=NULL*/)
+BitStream::get_uint(int n,const char *tag/*=NULL*/)
 {
     // SPEED CRITICAL SECTION
     if(check_tag(tag)==NOTOK){errr("BitStream::get(int) check_tag failed");}    
@@ -614,13 +614,28 @@ BitStream::set_data(const byte *nbuff,int nbits)
 // **************************************************
 
 
+void 
+Compressor::put_uint_vl(unsigned int v,int maxn,const char *tag/*="NOTAG"*/)
+{
+    int nbits=num_bits(v);
+    put_uint(nbits,num_bits(maxn),tag);
+    if(nbits){put_uint(v,nbits,(char *)NULL);}
+}
+unsigned int 
+Compressor::get_uint_vl(int maxn,const char *tag/*=NULL*/)
+{
+    int nbits=get_uint(num_bits(maxn),tag);
+    if(!nbits){return 0;}
+    else{return(get_uint(nbits,(char *)NULL));}
+}
+
 int 
 Compressor::put_vals(unsigned int *vals,int n,const char *tag)
 {
     int cpos=bitpos;
     add_tag(tag);
     if(n>=pow2(NBITS_NVALS)){errr("Compressor::put(uint *,nvals) : overflow: nvals>2^16");}
-    put(n,NBITS_NVALS,"size");
+    put_uint_vl(n,NBITS_NVALS,"size");
     if(n==0){return NBITS_NVALS;}
 
 
@@ -635,13 +650,13 @@ Compressor::put_vals(unsigned int *vals,int n,const char *tag)
     if(sdecr<sfixed)
     {
 	if(verbose)printf("put_vals: comptyp:0\n");
-	put(0,2,"put_valsCompType");
+	put_uint(0,2,"put_valsCompType");
 	put_decr(vals,n);
     }
     else
     {
 	if(verbose)printf("put_vals: comptyp:1\n");
-	put(1,2,"put_valsCompType");
+	put_uint(1,2,"put_valsCompType");
 	put_fixedbitl(vals,n);
     }
 
@@ -652,7 +667,7 @@ int
 Compressor::get_vals(unsigned int **pres,const char *tag/*="BADTAG!"*/)
 {
     if(check_tag(tag)==NOTOK){errr("Compressor::get_vals(unsigned int): check_tag failed");}
-    int n=get(NBITS_NVALS);
+    int n=get_uint_vl(NBITS_NVALS);
     if(verbose>1)printf("get_vals n:%d\n",n);
     if(!n){*pres=NULL;return 0;}
 
@@ -661,7 +676,7 @@ Compressor::get_vals(unsigned int **pres,const char *tag/*="BADTAG!"*/)
     CHECK_MEM(res);
 
 
-    int comptype=get(2,"put_valsCompType");
+    int comptype=get_uint(2,"put_valsCompType");
     if(verbose)printf("get_vals:comptype:%d\n",comptype);
     switch(comptype)
     {
@@ -686,7 +701,7 @@ Compressor::put_fixedbitl(byte *vals,int n,const char *tag)
     int i,j;
     add_tag(tag);
 
-    put(n,NBITS_NVALS,"size");
+    put_uint_vl(n,NBITS_NVALS,"size");
     if(n==0){return 0;}
 
     byte maxv=vals[0];
@@ -697,7 +712,7 @@ Compressor::put_fixedbitl(byte *vals,int n,const char *tag)
     }
     int nbits=num_bits(maxv);
     if(n>=pow2(NBITS_NVALS)){errr("Compressor::put_fixedbitl(byte *) : overflow: nvals>2^16");}
-    put(nbits,NBITS_NBITS_CHARVAL,"nbits");
+    put_uint(nbits,NBITS_NBITS_CHARVAL,"nbits");
     add_tag("data");
     for(i=0;i<n;i++)
     {
@@ -711,40 +726,40 @@ Compressor::put_fixedbitl(unsigned int *vals,int n)
 {
     int nbits=num_bits(HtMaxMin::max_v(vals,n));
 
-    put(nbits,NBITS_NBITS_VAL,"nbits");
+    put_uint_vl(nbits,NBITS_NBITS_VAL,"nbits");
     add_tag("data");
     if(verbose)printf("put_fixedbitl:nbits:%4d nvals:%6d\n",nbits,n);
     for(int i=0;i<n;i++)
     {
-	put(vals[i],nbits,NULL);
+	put_uint(vals[i],nbits,NULL);
     }	
 }
 
 void
 Compressor::get_fixedbitl(unsigned int *res,int n)
 {
-    int nbits=get(NBITS_NBITS_VAL);
+    int nbits=get_uint_vl(NBITS_NBITS_VAL);
     if(verbose)printf("get_fixedbitl(uint):n%3d nbits:%2d\n",n,nbits);
     int i;
     for(i=0;i<n;i++)
     {
-	res[i]=get(nbits);
+	res[i]=get_uint(nbits);
     }
 }
 int 
 Compressor::get_fixedbitl(byte **pres,const char *tag/*="BADTAG!"*/)
 {
     if(check_tag(tag)==NOTOK){errr("Compressor::get_fixedbitl(byte *): check_tag failed");}
-    int n=get(NBITS_NVALS);
+    int n=get_uint_vl(NBITS_NVALS);
     if(!n){*pres=NULL;return 0;}
-    int nbits=get(NBITS_NBITS_CHARVAL);
+    int nbits=get_uint(NBITS_NBITS_CHARVAL);
     if(verbose)printf("get_fixedbitl(byte):n%3d nbits:%2d\n",n,nbits);
     int i;
     byte *res=new byte[n];
     CHECK_MEM(res);
     for(i=0;i<n;i++)
     {
-	res[i]=get(nbits);
+	res[i]=get_uint(nbits);
     }
     *pres=res;
     return(n);

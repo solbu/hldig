@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.20 2000/01/03 10:14:35 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.21 2000/01/06 11:31:18 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -88,12 +88,8 @@ WordList::WordList(const Configuration& config_arg) :
     {
 	if(!WordKeyInfo::Get())
 	{
-#ifdef KEYDESC
-	    WordKeyInfo::SetKeyDescriptionFromFile(KEYDESC);	
-#else
 	    cerr << "WordList::WordList: didn't find key description " << endl;
 	    cerr <<"are you shure you called WordList::Initialize with a valid key description" << endl;
-#endif
 	}
     }
 
