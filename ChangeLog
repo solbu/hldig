@@ -1,3 +1,14 @@
+Thu Jul 15 21:25:12 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Document.cc (readHeader, getParsable): Add back
+	application/pdf to use builtin PDF code. 
+
+	* htdig/Makefile.in: Remove broken Postscript parser as it never
+	worked.
+
+	* htlib/URL.cc (normalizePath, path): Use config.Boolean as
+	pointed out by Gilles.
+
 Thu Jul 15 15:54:30 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html(pdf_parser & external_parsers): add corrections &
