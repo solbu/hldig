@@ -4,6 +4,10 @@
 // Implementation of TemplateList
 //
 // $Log: TemplateList.cc,v $
+// Revision 1.4  1999/01/17 20:29:37  ghutchis
+// Ensure template_map config has three members for each template we add,
+// contributed by <tlm@mbox.comune.prato.it>.
+//
 // Revision 1.3  1998/09/10 04:16:26  ghutchis
 //
 // More bug fixes.
@@ -13,7 +17,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: TemplateList.cc,v 1.3 1998/09/10 04:16:26 ghutchis Exp $";
+static char RCSid[] = "$Id: TemplateList.cc,v 1.4 1999/01/17 20:29:37 ghutchis Exp $";
 #endif
 
 #include "TemplateList.h"
@@ -57,12 +61,14 @@ TemplateList::get(char *internalName)
 // created.  All other templates are read in from the specified
 // filename.
 //
-void
+int
 TemplateList::createFromString(char *str)
 {
     StringList	sl(str, "\t \r\n");
     String		display, internal, file;
     Template	*t;
+
+    if ( sl.Count() % 3) return 0; // Make sure we have a multiple of three
 
     for (int i = 0; i < sl.Count(); i += 3)
     {
@@ -96,4 +102,6 @@ TemplateList::createFromString(char *str)
 	}
 	templates.Add(t);
     }
+    
+    return 1;
 }
