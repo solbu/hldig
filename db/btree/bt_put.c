@@ -64,7 +64,8 @@ static const char sccsid[] = "@(#)bt_put.c	10.54 (Sleepycat) 12/6/98";
 static int __bam_fixed __P((DBC *, DBT *));
 static int __bam_ndup __P((DBC *, PAGE *, u_int32_t));
 static int __bam_ovput __P((DBC *, PAGE *, u_int32_t, DBT *));
-static int __bam_partial __P((DBC *, DBT *, PAGE *, u_int32_t, u_int32_t));
+static int __bam_partial __P((DBC *,
+    DBT *, PAGE *, u_int32_t, u_int32_t, u_int32_t));
 static u_int32_t __bam_partsize __P((DBT *, PAGE *, u_int32_t));
 
 /*
@@ -206,7 +207,8 @@ __bam_iitem(dbc, hp, indxp, key, data, op, flags)
 	/* Handle partial puts: build the real record. */
 	if (F_ISSET(data, DB_DBT_PARTIAL)) {
 		tdbt = *data;
-		if ((ret = __bam_partial(dbc, &tdbt, h, indx, data_size)) != 0)
+		if ((ret = __bam_partial(dbc,
+		    &tdbt, h, indx, data_size, flags)) != 0)
 			return (ret);
 		data = &tdbt;
 	}
@@ -711,11 +713,11 @@ __bam_fixed(dbc, dbt)
  *	Build the real record for a partial put.
  */
 static int
-__bam_partial(dbc, dbt, h, indx, nbytes)
+__bam_partial(dbc, dbt, h, indx, nbytes, flags)
 	DBC *dbc;
 	DBT *dbt;
 	PAGE *h;
-	u_int32_t indx, nbytes;
+	u_int32_t indx, nbytes, flags;
 {
 	BKEYDATA *bk, tbk;
 	BOVERFLOW *bo;
@@ -739,6 +741,24 @@ __bam_partial(dbc, dbt, h, indx, nbytes)
 		dbc->rdata.ulen = nbytes;
 	}
 
+	/*
+	 * We use nul bytes for any part of the record that isn't specified;
+	 * get it over with.
+	 */
+	memset(dbc->rdata.data, 0, nbytes);
+
+	/*
+	 * In the next clauses, we need to do three things: a) set p to point
+	 * to the place at which to copy the user's data, b) set tlen to the
+	 * total length of the record, not including the bytes contributed by
+	 * the user, and c) copy any valid data from an existing record.
+	 */
+	if (LF_ISSET(BI_NEWKEY)) {
+		tlen = dbt->doff;
+		p = (u_int8_t *)dbc->rdata.data + dbt->doff;
+		goto ucopy;
+	}
+
 	/* Find the current record. */
 	if (indx < NUM_ENT(h)) {
 		bk = GET_BKEYDATA(h, indx + (TYPE(h) == P_LBTREE ? O_INDX : 0));
@@ -748,13 +768,6 @@ __bam_partial(dbc, dbt, h, indx, nbytes)
 		B_TSET(bk->type, B_KEYDATA, 0);
 		bk->len = 0;
 	}
-
-	/*
-	 * We use nul bytes for any part of the record that isn't specified,
-	 * get it over with.
-	 */
-	memset(dbc->rdata.data, 0, nbytes);
-
 	if (B_TYPE(bk->type) == B_OVERFLOW) {
 		/*
 		 * In the case of an overflow record, we shift things around
@@ -786,20 +799,12 @@ __bam_partial(dbc, dbt, h, indx, nbytes)
 				memmove(p + dbt->size, p + dbt->dlen, len);
 			tlen += len;
 		}
-
-		/* Copy in the application provided data. */
-		memcpy(p, dbt->data, dbt->size);
-		tlen += dbt->size;
 	} else {
 		/* Copy in any leading data from the original record. */
 		memcpy(dbc->rdata.data,
 		    bk->data, dbt->doff > bk->len ? bk->len : dbt->doff);
 		tlen = dbt->doff;
 		p = (u_int8_t *)dbc->rdata.data + dbt->doff;
-
-		/* Copy in the application provided data. */
-		memcpy(p, dbt->data, dbt->size);
-		tlen += dbt->size;
 
 		/* Copy in any trailing data from the original record. */
 		len = dbt->doff + dbt->dlen;
@@ -808,6 +813,13 @@ __bam_partial(dbc, dbt, h, indx, nbytes)
 			tlen += bk->len - len;
 		}
 	}
+
+ucopy:	/*
+	 * Copy in the application provided data -- p and tlen must have been
+	 * initialized above.
+	 */
+	memcpy(p, dbt->data, dbt->size);
+	tlen += dbt->size;
 
 	/* Set the DBT to reference our new record. */
 	dbc->rdata.size = tlen;

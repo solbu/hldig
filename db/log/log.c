@@ -226,12 +226,12 @@ __log_recover(dblp)
 	}
 
 	/*
-	 * We know where the end of the log is.  Since that record is on disk,
-	 * it's also the last-synced LSN.
+	 * We now know where the end of the log is.  Set the first LSN that
+	 * we want to return to an application and the LSN of the last known
+	 * record on disk.
 	 */
-	lp->lsn = lsn;
+	lp->lsn = lp->s_lsn = lsn;
 	lp->lsn.offset += dblp->c_len;
-	lp->s_lsn = lp->lsn;
 
 	/* Set up the current buffer information, too. */
 	lp->len = dblp->c_len;

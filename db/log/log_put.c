@@ -300,8 +300,7 @@ __log_flush(dblp, lsn)
 	 * buffer's starting LSN.
 	 */
 	current = 0;
-	if (lp->b_off != 0 &&
-	    lsn->file >= lp->f_lsn.file && lsn->offset >= lp->f_lsn.offset) {
+	if (lp->b_off != 0 && log_compare(lsn, &lp->f_lsn) >= 0) {
 		if ((ret = __log_write(dblp, lp->buf, lp->b_off)) != 0)
 			return (ret);
 

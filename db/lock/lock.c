@@ -159,6 +159,7 @@ __lock_vec_internal(lt, locker, txn, flags, list, nlist, elistp)
 			list[i].mode = lp->mode;
 
 			ret = __lock_put_internal(lt, lp, 0);
+			__lock_checklocker(lt, lp, 0);
 			break;
 		case DB_LOCK_PUT_ALL:
 			/* Find the locker. */

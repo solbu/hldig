@@ -381,6 +381,13 @@ struct __db_txn {
  * Initialized in os/os_config.c, don't change this unless you change it
  * as well.
  */
+
+struct __rmname {
+	char *dbhome;
+	int rmid;
+	TAILQ_ENTRY(__rmname) links;
+};
+
 typedef struct __db_globals {
 	int db_mutexlocks;		/* DB_MUTEXLOCKS */
 	int db_pageyield;		/* DB_PAGEYIELD */
@@ -389,6 +396,8 @@ typedef struct __db_globals {
 	int db_tsl_spins;		/* DB_TSL_SPINS */
 					/* XA: list of opened environments. */
 	TAILQ_HEAD(__db_envq, __db_env) db_envq;
+					/* XA: list of id to dbhome mappings. */
+	TAILQ_HEAD(__db_nameq, __rmname) db_nameq;
 } DB_GLOBALS;
 
 extern	DB_GLOBALS	__db_global_values;

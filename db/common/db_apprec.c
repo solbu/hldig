@@ -115,7 +115,8 @@ first:		if ((ret = log_get(lp, &ckp_lsn, &data, DB_FIRST)) != 0) {
 		__db_err(dbenv, "Invalid checkpoint record at [%ld][%ld]\n",
 		    (u_long)ckp_lsn.file, (u_long)ckp_lsn.offset);
 		goto out;
-	} else if ((ret = log_get(lp, &ckp_args->last_ckp, &data, DB_SET)) != 0)
+	} else if (IS_ZERO_LSN(ckp_args->last_ckp) ||
+		(ret = log_get(lp, &ckp_args->last_ckp, &data, DB_SET)) != 0)
 		goto first;
 	else
 		open_lsn = ckp_args->last_ckp;

@@ -393,18 +393,6 @@ region_init:
 		}
 
 		/*
-		 * Problem #2: We want a bigger region than has previously been
-		 * created.  Detected by checking if the region is smaller than
-		 * our caller requested.  If it is, we grow the region, (which
-		 * does the detach and re-attach for us).
-		 */
-		if (grow_region != 0 &&
-		    (ret = __db_rgrow(infop, grow_region)) != 0) {
-			(void)__db_mutex_unlock(&rlp->lock, infop->fd);
-			goto err;
-		}
-
-		/*
 		 * Problem #3: when we checked the size of the file, it was
 		 * still growing as part of creation.  Detected by the fact
 		 * that infop->size isn't the same size as the region.

@@ -59,8 +59,7 @@ static const char sccsid[] = "@(#)log_rec.c	10.26 (Sleepycat) 10/21/98";
 static int __log_do_open __P((DB_LOG *,
     u_int8_t *, char *, DBTYPE, u_int32_t));
 static int __log_lid_to_fname __P((DB_LOG *, u_int32_t, FNAME **));
-static int __log_open_file __P((DB_LOG *,
-    u_int8_t *, char *, DBTYPE, u_int32_t));
+static int __log_open_file __P((DB_LOG *, __log_register_args *));
 
 /*
  * PUBLIC: int __log_register_recover
@@ -98,8 +97,7 @@ __log_register_recover(logp, dbtp, lsnp, redo, info)
 		 * If we are redoing an open or undoing a close, then we need
 		 * to open a file.
 		 */
-		ret = __log_open_file(logp,
-		    argp->uid.data, argp->name.data, argp->ftype, argp->id);
+		ret = __log_open_file(logp, argp);
 		if (ret == ENOENT) {
 			if (redo == TXN_OPENFILES)
 				__db_err(logp->dbenv, "warning: %s: %s",
@@ -136,8 +134,7 @@ __log_register_recover(logp, dbtp, lsnp, redo, info)
  		 * closed and has therefore not been reopened yet.  If
  		 * so, we need to try to open it.
  		 */
- 		ret = __log_open_file(logp,
- 		    argp->uid.data, argp->name.data, argp->ftype, argp->id);
+ 		ret = __log_open_file(logp, argp);
  		if (ret == ENOENT) {
  			__db_err(logp->dbenv, "warning: %s: %s",
 			    argp->name.data, strerror(ENOENT));
@@ -159,23 +156,23 @@ out:	F_CLR(logp, DBC_RECOVER);
  * Returns 0 on success, non-zero on error.
  */
 static int
-__log_open_file(lp, uid, name, ftype, ndx)
+__log_open_file(lp, argp)
 	DB_LOG *lp;
-	u_int8_t *uid;
-	char *name;
-	DBTYPE ftype;
-	u_int32_t ndx;
+	__log_register_args *argp;
 {
 	LOCK_LOGTHREAD(lp);
-	if (ndx < lp->dbentry_cnt &&
-	    (lp->dbentry[ndx].deleted == 1 || lp->dbentry[ndx].dbp != NULL)) {
-		lp->dbentry[ndx].refcount++;
+	if (argp->id < lp->dbentry_cnt &&
+	    (lp->dbentry[argp->id].deleted == 1 ||
+	    lp->dbentry[argp->id].dbp != NULL)) {
+		if (argp->opcode != LOG_CHECKPOINT)
+			lp->dbentry[argp->id].refcount++;
 
 		UNLOCK_LOGTHREAD(lp);
 		return (0);
 	}
 	UNLOCK_LOGTHREAD(lp);
-	return (__log_do_open(lp, uid, name, ftype, ndx));
+	return (__log_do_open(lp,
+	    argp->uid.data, argp->name.data, argp->ftype, argp->id));
 }
 
 /*
@@ -350,8 +347,12 @@ __log_close_files(logp)
 
 	LOCK_LOGTHREAD(logp);
 	for (i = 0; i < logp->dbentry_cnt; i++)
-		if (logp->dbentry[i].dbp)
+		if (logp->dbentry[i].dbp) {
 			logp->dbentry[i].dbp->close(logp->dbentry[i].dbp, 0);
+			logp->dbentry[i].dbp = NULL;
+			logp->dbentry[i].deleted = 0;
+		}
+	F_CLR(logp, DBC_RECOVER);
 	UNLOCK_LOGTHREAD(logp);
 }
 

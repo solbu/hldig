@@ -69,7 +69,7 @@ __db_cursor(dbp, txn, dbcp, flags)
 	DBC **dbcp;
 	u_int32_t flags;
 {
-	DBC *dbc;
+	DBC *dbc, *adbc;
 	int ret;
 	db_lockmode_t mode;
 	u_int32_t op;
@@ -91,9 +91,20 @@ __db_cursor(dbp, txn, dbcp, flags)
 
 		/* Set up locking information. */
 		if (F_ISSET(dbp, DB_AM_LOCKING | DB_AM_CDB)) {
-			if ((ret =
-			    lock_id(dbp->dbenv->lk_info, &dbc->lid)) != 0)
-				goto err;
+ 			/*
+ 			 * If we are not threaded, then there is no need to
+ 			 * create new locker ids.  We know that no one else
+ 			 * is running concurrently using this DB, so we can
+ 			 * take a peek at any cursors on the active queue.
+ 			 */
+ 			if (!F_ISSET(dbp, DB_AM_THREAD) &&
+ 			    (adbc = TAILQ_FIRST(&dbp->active_queue)) != NULL)
+ 				dbc->lid = adbc->lid;
+ 			else
+ 				if ((ret = lock_id(dbp->dbenv->lk_info,
+ 				    &dbc->lid)) != 0)
+ 					goto err;
+ 
 			memcpy(dbc->lock.fileid, dbp->fileid, DB_FILE_ID_LEN);
 			if (F_ISSET(dbp, DB_AM_CDB)) {
 				dbc->lock_dbt.size = DB_FILE_ID_LEN;

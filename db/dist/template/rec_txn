@@ -92,32 +92,32 @@ out:	if (argp != NULL)
 }
 
 /*
- * __txn_xa_regop_recover --
- *	Recovery function for xa_regop.
+ * __txn_ckp_recover --
+ *	Recovery function for ckp.
  *
- * PUBLIC: int __txn_xa_regop_recover
+ * PUBLIC: int __txn_ckp_recover
  * PUBLIC:   __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__txn_xa_regop_recover(logp, dbtp, lsnp, redo, info)
+__txn_ckp_recover(logp, dbtp, lsnp, redo, info)
 	DB_LOG *logp;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
 {
-	__txn_xa_regop_args *argp;
+	__txn_ckp_args *argp;
 	DB *file_dbp;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
 	int cmp_n, cmp_p, modified, ret;
 
 #ifdef DEBUG_RECOVER
-	(void)__txn_xa_regop_print(logp, dbtp, lsnp, redo, info);
+	(void)__txn_ckp_print(logp, dbtp, lsnp, redo, info);
 #endif
 	info = info;				/* XXX: Shut the compiler up. */
 
-	if ((ret = __txn_xa_regop_read(dbtp->data, &argp)) != 0)
+	if ((ret = __txn_ckp_read(dbtp->data, &argp)) != 0)
 		goto out;
 	if (__db_fileid_to_db(logp, &file_dbp, argp->fileid)) {
 		ret = 0;
@@ -169,32 +169,32 @@ out:	if (argp != NULL)
 }
 
 /*
- * __txn_ckp_recover --
- *	Recovery function for ckp.
+ * __txn_xa_regop_recover --
+ *	Recovery function for xa_regop.
  *
- * PUBLIC: int __txn_ckp_recover
+ * PUBLIC: int __txn_xa_regop_recover
  * PUBLIC:   __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__txn_ckp_recover(logp, dbtp, lsnp, redo, info)
+__txn_xa_regop_recover(logp, dbtp, lsnp, redo, info)
 	DB_LOG *logp;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
 {
-	__txn_ckp_args *argp;
+	__txn_xa_regop_args *argp;
 	DB *file_dbp;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
 	int cmp_n, cmp_p, modified, ret;
 
 #ifdef DEBUG_RECOVER
-	(void)__txn_ckp_print(logp, dbtp, lsnp, redo, info);
+	(void)__txn_xa_regop_print(logp, dbtp, lsnp, redo, info);
 #endif
 	info = info;				/* XXX: Shut the compiler up. */
 
-	if ((ret = __txn_ckp_read(dbtp->data, &argp)) != 0)
+	if ((ret = __txn_xa_regop_read(dbtp->data, &argp)) != 0)
 		goto out;
 	if (__db_fileid_to_db(logp, &file_dbp, argp->fileid)) {
 		ret = 0;

@@ -42,7 +42,6 @@ static void __bam_c_reset __P((CURSOR *));
 static int __bam_c_rget __P((DBC *, DBT *, u_int32_t));
 static int __bam_c_search __P((DBC *, CURSOR *, const DBT *, u_int32_t, int *));
 static int __bam_dsearch __P((DBC *, CURSOR *,  DBT *, u_int32_t *));
-static int __bam_dupnodel __P((DBC *, CURSOR *, u_int32_t));
 
 /* Discard the current page/lock held by a cursor. */
 #undef	DISCARD
@@ -454,16 +453,25 @@ __bam_c_get(dbc, key, data, flags)
 			goto err;
 
 		/*
-		 * We may be referencing a duplicates page.  Move to the next
-		 * non-deleted record.  Check to make sure that we're didn't
-		 * switch records because there were no non-deleted entries.
+		 * We cannot currently be referencing a deleted record, but we
+		 * may be referencing off-page duplicates.
+		 *
+		 * If we're referencing off-page duplicates, move off-page.
+		 * If we moved off-page, move to the next non-deleted record.  
+		 * If we moved to the next non-deleted record, check to make
+		 * sure we didn't switch records because our current record
+		 * had no non-deleted data items.
 		 */
 		start = *cp;
-		if ((ret = __bam_dupnodel(dbc, cp, cp->indx)) != 0)
+		if ((ret = __bam_dup(dbc, cp, cp->indx, 0)) != 0)
 			goto err;
-		if (!POSSIBLE_DUPLICATE(cp, start)) {
-			ret = DB_NOTFOUND;
-			goto err;
+		if (cp->dpgno != PGNO_INVALID && IS_CUR_DELETED(cp)) {
+			if ((ret = __bam_c_next(dbc, cp, 0)) != 0)
+				goto err;
+			if (!POSSIBLE_DUPLICATE(cp, start)) {
+				ret = DB_NOTFOUND;
+				goto err;
+			}
 		}
 		break;
 	case DB_SET_RECNO:
@@ -514,16 +522,22 @@ __bam_c_get(dbc, key, data, flags)
 		 * may have returned an entry past the end of the page.  If
 		 * so, move to the next entry.
 		 */
-		if (cp->indx == NUM_ENT(cp->page))
-			if ((ret = __bam_c_next(dbc, cp, 0)) != 0)
-				goto err;
+		if (cp->indx == NUM_ENT(cp->page) &&
+		    (ret = __bam_c_next(dbc, cp, 0)) != 0)
+			goto err;
 
 		/*
-		 * We may be referencing a duplicates page.  Move to the first
-		 * non-deleted duplicate.  We don't care if we switch records,
-		 * we just want the next useful entry.
+		 * We may be referencing off-page duplicates, if so, move
+		 * off-page.
 		 */
-		if ((ret = __bam_dupnodel(dbc, cp, cp->indx)) != 0)
+		if ((ret = __bam_dup(dbc, cp, cp->indx, 0)) != 0)
+			goto err;
+
+		/*
+		 * We may be referencing a deleted record, if so, move to
+		 * the next non-deleted record.
+		 */
+		if (IS_CUR_DELETED(cp) && (ret = __bam_c_next(dbc, cp, 0)) != 0)
 			goto err;
 		break;
 	}
@@ -1041,7 +1055,7 @@ err:		/* Discard any pinned pages. */
 		*cp = copy;
 	}
 
-	if (F_ISSET(dbc, DBC_RMW))
+	if (F_ISSET(dbp, DB_AM_CDB) && F_ISSET(dbc, DBC_RMW))
 		(void)__lock_downgrade(dbp->dbenv->lk_info, dbc->mylock,
 		    DB_LOCK_IWRITE, 0);
 
@@ -1553,34 +1567,6 @@ search:		ret = __bam_search(dbc, key, sflags, 1, NULL, exactp);
 }
 
 /*
- * __bam_dupnodel --
- *	Check for an off-page duplicates entry, and if found, move to the
- *	first or last non-deleted entry.
- */
-static int
-__bam_dupnodel(dbc, cp, indx)
-	DBC *dbc;
-	CURSOR *cp;
-	u_int32_t indx;
-{
-	int ret;
-
-	/* Move to any off-page duplicates entry. */
-	if ((ret = __bam_dup(dbc, cp, indx, 0)) != 0)
-		return (ret);
-
-	/* If we didn't move to a duplicates page, we're done. */
-	if (cp->dpgno == PGNO_INVALID)
-		return (0);
-
-	/* If it's a deleted record, go to the next valid record. */
-	if (IS_CUR_DELETED(cp))
-		if ((ret = __bam_c_next(dbc, cp, 0)) != 0)
-			return (ret);
-	return (0);
-}
-
-/*
  * __bam_dup --
  *	Check for an off-page duplicates entry, and if found, move to the
  *	first or last entry.
@@ -1685,7 +1671,8 @@ __bam_c_physdel(dbc, cp, h)
 	/*
 	 * If this is concurrent DB, upgrade the lock if necessary.
 	 */
-	if (F_ISSET(dbc, DBC_RMW) && (ret = lock_get(dbp->dbenv->lk_info,
+	if (F_ISSET(dbp, DB_AM_CDB) && F_ISSET(dbc, DBC_RMW) &&
+	    (ret = lock_get(dbp->dbenv->lk_info,
 	    dbc->locker, DB_LOCK_UPGRADE, &dbc->lock_dbt, DB_LOCK_WRITE,
 	    &dbc->mylock)) != 0)
 		return (EAGAIN);

@@ -51,6 +51,7 @@ db_xa_open(fname, type, flags, mode, dbinfo, dbpp)
 {
 	DB *dbp, *real_dbp;
 	DB_ENV *dbenv;
+	struct __rmname *rp;
 	int ret;
 
 	/*
@@ -60,7 +61,19 @@ db_xa_open(fname, type, flags, mode, dbinfo, dbpp)
 	 * The dbenv argument is taken from the global list of environments.
 	 * When the transaction manager called xa_start() (__db_xa_start()),
 	 * the "current" DB environment was moved to the start of the list.
+	 * However, if we were called in a tpsvrinit function (which is
+	 * entirely plausible), then it's possible that xa_open was called
+	 * (which simply recorded the name of the environment to open) and
+	 * this is the next call into DB.  In that case, we still have to
+	 * open the environment.
+	 *
+	 * The way that we know that xa_open and nothing else was called
+	 * is because the nameq is not NULL.
 	 */
+	if ((rp = TAILQ_FIRST(&DB_GLOBAL(db_nameq))) != NULL &&
+	    (ret = __db_rmid_to_env(rp->rmid, &dbenv, 1)) != 0)
+		return (ret);
+
 	dbenv = TAILQ_FIRST(&DB_GLOBAL(db_envq));
 	if ((ret = db_open(fname,
 	    type, flags, mode, dbenv, dbinfo, &real_dbp)) != 0)
@@ -80,6 +93,7 @@ db_xa_open(fname, type, flags, mode, dbinfo, dbpp)
 	dbp->dbenv = dbenv;
 	dbp->internal = real_dbp;
 	TAILQ_INIT(&dbp->active_queue);
+	TAILQ_INIT(&dbp->free_queue);
 	dbp->close = __xa_close;
 	dbp->cursor = __xa_cursor;
 	dbp->del = __xa_del;
@@ -147,6 +161,7 @@ __xa_cursor(dbp, txn, dbcp, flags)
 	dbc->c_get = __xa_c_get;
 	dbc->c_put = __xa_c_put;
 	dbc->internal = real_dbc;
+	TAILQ_INSERT_TAIL(&dbp->active_queue, dbc, links);
 
 	*dbcp = dbc;
 	return (0);

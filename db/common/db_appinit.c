@@ -268,10 +268,10 @@ db_appexit(dbenv)
 	if (dbenv->tx_info && (t_ret = txn_close(dbenv->tx_info)) != 0)
 		if (ret == 0)
 			ret = t_ret;
-	if (dbenv->mp_info && (t_ret = memp_close(dbenv->mp_info)) != 0)
+	if (dbenv->lg_info && (t_ret = log_close(dbenv->lg_info)) != 0)
 		if (ret == 0)
 			ret = t_ret;
-	if (dbenv->lg_info && (t_ret = log_close(dbenv->lg_info)) != 0)
+	if (dbenv->mp_info && (t_ret = memp_close(dbenv->mp_info)) != 0)
 		if (ret == 0)
 			ret = t_ret;
 	if (dbenv->lk_info && (t_ret = lock_close(dbenv->lk_info)) != 0)

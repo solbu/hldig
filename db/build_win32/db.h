@@ -75,8 +75,8 @@ typedef unsigned long u_long;
 
 #define	DB_VERSION_MAJOR	2
 #define	DB_VERSION_MINOR	7
-#define	DB_VERSION_PATCH	3
-#define	DB_VERSION_STRING	"Sleepycat Software: Berkeley DB 2.7.3: (02/04/99)"
+#define	DB_VERSION_PATCH	5
+#define	DB_VERSION_STRING	"Sleepycat Software: Berkeley DB 2.7.5: (04/18/99)"
 
 typedef	u_int32_t	db_pgno_t;	/* Page number type. */
 typedef	u_int16_t	db_indx_t;	/* Page offset type. */

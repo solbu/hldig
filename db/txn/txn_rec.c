@@ -54,7 +54,13 @@ static const char sccsid[] = "@(#)txn_rec.c	10.15 (Sleepycat) 1/3/99";
 #include "shqueue.h"
 #include "txn.h"
 #include "db_am.h"
+#include "log.h"
+#include "common_ext.h"
 
+static int __txn_restore_txn __P((DB_ENV *, DB_LSN *, __txn_xa_regop_args *));
+
+#define	IS_XA_TXN(R) (R->xid.size != 0)
+	
 /*
  * PUBLIC: int __txn_regop_recover
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
@@ -122,9 +128,33 @@ __txn_xa_regop_recover(logp, dbtp, lsnp, redo, info)
 
 	if (argp->opcode != TXN_PREPARE)
 		ret = EINVAL;
-	else
-		/* Call __db_txnlist_find so that we update the maxid. */
-		(void)__db_txnlist_find(info, argp->txnid->txnid);
+	else {
+		/*
+		 * Whether we are in XA or not, we need to call
+		 * __db_txnlist_find so that we update the maxid.
+		 * If this is an XA transaction, then we treat
+		 * prepares like commits so that we roll forward to
+		 * a point where we can handle commit/abort calls
+		 * from the TMS.  If this isn't XA, then a prepare
+		 * is treated like a No-op; we only care about the
+		 * commit.
+		 */
+		ret = __db_txnlist_find(info, argp->txnid->txnid);
+		if (IS_XA_TXN(argp) && ret == DB_NOTFOUND) {
+			/*
+			 * This is an XA prepared, but not yet committed
+			 * transaction.  We need to add it to the
+			 * transaction list, so that it gets rolled
+			 * forward. We also have to add it to the region's
+			 * internal state so it can be properly aborted
+			 * or recovered.
+			 */
+			ret = __db_txnlist_add(info, argp->txnid->txnid);
+			if (ret == 0)
+				ret = __txn_restore_txn(logp->dbenv,
+				    lsnp, argp);
+		}
+	}
 
 	if (ret == 0)
 		*lsnp = argp->prev_lsn;
@@ -214,4 +244,53 @@ __txn_child_recover(logp, dbtp, lsnp, redo, info)
 	__os_free(argp, 0);
 
 	return (ret);
+}
+
+/*
+ * __txn_restore_txn --
+ *	Using only during XA recovery.  If we find any transactions that are
+ * prepared, but not yet committed, then we need to restore the transaction's
+ * state into the shared region, because the TM is going to issue a txn_abort
+ * or txn_commit and we need to respond correctly.
+ *
+ * lsnp is the LSN of the returned LSN
+ * argp is the perpare record (in an appropriate structure)
+ */
+static int
+__txn_restore_txn(dbenv, lsnp, argp)
+	DB_ENV *dbenv;
+	DB_LSN *lsnp;
+	__txn_xa_regop_args *argp;
+{
+	DB_TXNMGR *mgr;
+	TXN_DETAIL *td;
+	int ret;
+
+	if (argp->xid.size == 0)
+		return(0);
+
+	mgr = dbenv->tx_info;
+	LOCK_TXNREGION(mgr);
+
+	/* Allocate a new transaction detail structure. */
+	if ((ret = __db_shalloc(mgr->mem, sizeof(TXN_DETAIL), 0, &td)) != 0)
+		return (ret);
+
+	/* Place transaction on active transaction list. */
+	SH_TAILQ_INSERT_HEAD(&mgr->region->active_txn, td, links, __txn_detail);
+
+	td->txnid = argp->txnid->txnid;
+	td->begin_lsn = argp->begin_lsn;
+	td->last_lsn = *lsnp;
+	td->last_lock = 0;
+	td->parent = 0;
+	td->status = TXN_PREPARED;
+	td->xa_status = TXN_XA_PREPARED;
+	memcpy(td->xid, argp->xid.data, argp->xid.size);
+	td->bqual = argp->bqual;
+	td->gtrid = argp->gtrid;
+	td->format = argp->formatID;
+
+	UNLOCK_TXNREGION(mgr);
+	return (0);
 }

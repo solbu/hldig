@@ -253,6 +253,7 @@ global alphabet
 	    [expr $psize * 10]}
 	set cmd [concat $cmd $envopts]
 	set dbenv [eval $cmd]
+	error_check_good dbenv [is_valid_widget $dbenv env] TRUE
 
 	# First open and create the file.
 

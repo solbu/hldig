@@ -431,8 +431,21 @@ __dd_abort(dbenv, info)
 		goto out;
 
 	lockp = SH_LIST_FIRST(&lockerp->heldby, __db_lock);
-	if (LOCK_TO_OFFSET(lt, lockp) != info->last_lock ||
-	    lockp == NULL || lockp->status != DB_LSTAT_WAITING)
+
+	/*
+	 * It's possible that this locker was already aborted.
+	 * If that's the case, make sure that we remove its
+	 * locker from the hash table.
+	 */
+	if (lockp == NULL) {
+		HASHREMOVE_EL(lt->hashtab, __db_lockobj,
+		    links, lockerp, lt->region->table_size, __lock_lhash);
+		SH_TAILQ_INSERT_HEAD(&lt->region->free_objs,
+		    lockerp, links, __db_lockobj);
+		lt->region->nlockers--;
+		goto out;
+	} else if (LOCK_TO_OFFSET(lt, lockp) != info->last_lock ||
+	    lockp->status != DB_LSTAT_WAITING)
 		goto out;
 
 	/* Abort lock, take it off list, and wake up this lock. */

@@ -39,6 +39,7 @@ static int  __db_xa_prepare __P((XID *, int, long));
 static int  __db_xa_recover __P((XID *, long, int, long));
 static int  __db_xa_rollback __P((XID *, int, long));
 static int  __db_xa_start __P((XID *, int, long));
+static void __xa_txn_end __P((DB_ENV *));
 static void __xa_txn_init __P((DB_ENV *, TXN_DETAIL *, size_t));
 
 /*
@@ -88,7 +89,6 @@ __db_xa_open(xa_info, rmid, flags)
 	long flags;
 {
 	DB_ENV *env;
-	int ret;
 
 	if (LF_ISSET(TMASYNC))
 		return (XAER_ASYNC);
@@ -96,29 +96,18 @@ __db_xa_open(xa_info, rmid, flags)
 		return (XAER_INVAL);
 
 	/* Verify if we already have this environment open. */
-	if (__db_rmid_to_env(rmid, &env) == 0)
+	if (__db_rmid_to_env(rmid, &env, 0) == 0)
 		return (XA_OK);
-	if ((ret = __os_calloc(1, sizeof(DB_ENV), &env)) != 0)
-		return (XAER_RMERR);
 
-#define	XA_FLAGS \
-	DB_CREATE | DB_INIT_LOCK | DB_INIT_LOG | DB_INIT_MPOOL | DB_INIT_TXN
-	if ((ret = db_appinit(xa_info, NULL, env, XA_FLAGS)) != 0)
-		goto err1;
-
-	if ((ret = __db_map_rmid(rmid, env)) != 0)
-		goto err2;
-
-	if ((ret = __os_calloc(1, sizeof(DB_TXN), &env->xa_txn)) != 0)
-		goto err2;
-	env->xa_txn->txnid = TXN_INVALID;
-
-	return (XA_OK);
-
-err2:	(void)db_appexit(env);
-err1:	__os_free(env, sizeof(DB_ENV));
-
-	return (XAER_RMERR);
+	/*
+	 * Since we cannot tell whether the environment is OK or not,
+	 * we can't actually do the db_appinit in xa_open.  Instead,
+	 * we save the mapping between the rmid and the xa_info.  If
+	 * we next get a call to __xa_recover, we do the db_appinit
+	 * with DB_RECOVER set.  If we get any other call, then we
+	 * do the db_appinit.
+	 */
+	return (__db_map_rmid_name(rmid, xa_info));
 }
 
 /*
@@ -146,7 +135,7 @@ __db_xa_close(xa_info, rmid, flags)
 		return (XAER_INVAL);
 
 	/* If the environment is closed, then we're done. */
-	if (__db_rmid_to_env(rmid, &env) != 0)
+	if (__db_rmid_to_env(rmid, &env, 0) != 0)
 		return (XA_OK);
 
 	/* Check if there are any pending transactions. */
@@ -158,8 +147,6 @@ __db_xa_close(xa_info, rmid, flags)
 	if ((t_ret = db_appexit(env)) != 0 && ret == 0)
 		ret = t_ret;
 
-	if (env->xa_txn != NULL)
-		__os_free(env->xa_txn, sizeof(DB_TXN));
 	__os_free(env, sizeof(DB_ENV));
 
 	return (ret == 0 ? XA_OK : XAER_RMERR);
@@ -184,13 +171,13 @@ __db_xa_start(xid, rmid, flags)
 	if (LF_ISSET(~OK_FLAGS))
 		return (XAER_INVAL);
 
-	if (LF_ISSET(TMJOIN) || LF_ISSET(TMRESUME))
+	if (LF_ISSET(TMJOIN) && LF_ISSET(TMRESUME))
 		return (XAER_INVAL);
 
 	if (LF_ISSET(TMASYNC))
 		return (XAER_ASYNC);
 
-	if (__db_rmid_to_env(rmid, &env) != 0)
+	if (__db_rmid_to_env(rmid, &env, 1) != 0)
 		return (XAER_PROTO);
 
 	is_known = __db_xid_to_txn(env, xid, &off) == 0;
@@ -247,7 +234,7 @@ __db_xa_end(xid, rmid, flags)
 	if (flags != TMNOFLAGS && !LF_ISSET(TMSUSPEND | TMSUCCESS | TMFAIL))
 		return (XAER_INVAL);
 
-	if (__db_rmid_to_env(rmid, &env) != 0)
+	if (__db_rmid_to_env(rmid, &env, 0) != 0)
 		return (XAER_PROTO);
 
 	if (__db_xid_to_txn(env, xid, &off) != 0)
@@ -308,7 +295,7 @@ __db_xa_prepare(xid, rmid, flags)
 	 * reflect that fact that prepare has been called, and if
 	 * it's ever called again, it's an error.
 	 */
-	if (__db_rmid_to_env(rmid, &env) != 0)
+	if (__db_rmid_to_env(rmid, &env, 1) != 0)
 		return (XAER_PROTO);
 
 	if (__db_xid_to_txn(env, xid, &off) != 0)
@@ -330,7 +317,8 @@ __db_xa_prepare(xid, rmid, flags)
 
 	td->xa_status = TXN_XA_PREPARED;
 
-	/* No fatal value that would require an XAER_RMFAIL); */
+	/* No fatal value that would require an XAER_RMFAIL. */
+	__xa_txn_end(env);
 	return (XA_OK);
 }
 
@@ -359,7 +347,7 @@ __db_xa_commit(xid, rmid, flags)
 	 * We need to know if we've ever called prepare on this.
 	 * We can verify this by examining the xa_status field.
 	 */
-	if (__db_rmid_to_env(rmid, &env) != 0)
+	if (__db_rmid_to_env(rmid, &env, 1) != 0)
 		return (XAER_PROTO);
 
 	if (__db_xid_to_txn(env, xid, &off) != 0)
@@ -376,6 +364,7 @@ __db_xa_commit(xid, rmid, flags)
 	if (LF_SET(TMONEPHASE) &&
 	    td->xa_status != TXN_XA_ENDED && td->xa_status != TXN_XA_SUSPENDED)
 		return (XAER_PROTO);
+
 	if (!LF_SET(TMONEPHASE) && td->xa_status != TXN_XA_PREPARED)
 		return (XAER_PROTO);
 
@@ -385,7 +374,8 @@ __db_xa_commit(xid, rmid, flags)
 	if (txn_commit(env->xa_txn) != 0)
 		return (XAER_RMERR);
 
-	/* No fatal value that would require an XAER_RMFAIL); */
+	/* No fatal value that would require an XAER_RMFAIL. */
+	__xa_txn_end(env);
 	return (XA_OK);
 }
 
@@ -408,24 +398,47 @@ __db_xa_recover(xids, count, rmid, flags)
 	DB_ENV *env;
 	DB_LOG *log;
 	XID *xidp;
+	char *dbhome;
 	int err, ret;
 	u_int32_t rectype, txnid;
 
 	ret = 0;
 	xidp = xids;
 
-	/* If the environment is closed, then we're done. */
-	if (__db_rmid_to_env(rmid, &env) != 0)
-		return (XAER_PROTO);
 
 	/*
-	 * If we are starting a scan, then we need to figure out where
-	 * to begin.  If we are not starting a scan, we'll start from
-	 * wherever the log cursor is.  Since XA apps cannot be threaded,
-	 * we don't have to worry about someone else having moved it.
+	 * If we are starting a scan, then we need to open the environment
+	 * and run recovery.  This recovery puts us in a state where we can
+	 * either commit or abort any transactions that were prepared but not
+	 * yet committed.  Once we've done that, we need to figure out where
+	 * to begin checking for such transactions.  If we are not starting
+	 * a scan, then the environment had better have already been recovered
+	 * and we'll start from * wherever the log cursor is.  Since XA apps
+	 * cannot be threaded, we don't have to worry about someone else
+	 * having moved it.
 	 */
-	log = env->lg_info;
 	if (LF_ISSET(TMSTARTRSCAN)) {
+		/* If the environment is open, we have a problem. */
+		if (__db_rmid_to_env(rmid, &env, 0) == XA_OK)
+			return (XAER_PROTO);
+
+		if ((ret = __os_calloc(1, sizeof(DB_ENV), &env)) != 0)
+			return (XAER_RMERR);
+
+		if (__db_rmid_to_name(rmid, &dbhome) != 0)
+			goto err1;
+
+#undef XA_FLAGS
+#define	XA_FLAGS DB_RECOVER | \
+	DB_CREATE | DB_INIT_LOCK | DB_INIT_LOG | DB_INIT_MPOOL | DB_INIT_TXN
+		if ((ret = db_appinit(dbhome, NULL, env, XA_FLAGS)) != 0)
+			goto err1;
+
+		if (__db_map_rmid(rmid, env) != 0)
+			goto err2;
+
+		/* Now figure out from where to begin scan. */
+		log = env->lg_info;
 		if ((err = __log_findckp(log, &log->xa_first)) == DB_NOTFOUND) {
 			/*
 			 * If there were no log files, then we have no
@@ -434,12 +447,16 @@ __db_xa_recover(xids, count, rmid, flags)
 			return (0);
 		}
 		if ((err = __db_txnlist_init(&log->xa_info)) != 0)
-			return (XAER_RMERR);
+			goto err3;
 	} else {
+		/* We had better already know about this rmid. */
+		if (__db_rmid_to_env(rmid, &env, 0) != 0)
+			return (XAER_PROTO);
 		/*
 		 * If we are not starting a scan, the log cursor had
 		 * better be set.
 		 */
+		log = env->lg_info;
 		if (IS_ZERO_LSN(log->xa_lsn))
 			return (XAER_PROTO);
 	}
@@ -515,6 +532,11 @@ out:		__db_txnlist_end(log->xa_info);
 		log->xa_info = NULL;
 	}
 	return (ret);
+
+err3:	(void)__db_unmap_rmid(rmid);
+err2:	(void)db_appexit(env);
+err1:	__os_free(env, sizeof(DB_ENV));
+	return (XAER_RMERR);
 }
 
 /*
@@ -536,7 +558,7 @@ __db_xa_rollback(xid, rmid, flags)
 	if (flags != TMNOFLAGS)
 		return (XAER_INVAL);
 
-	if (__db_rmid_to_env(rmid, &env) != 0)
+	if (__db_rmid_to_env(rmid, &env, 1) != 0)
 		return (XAER_PROTO);
 
 	if (__db_xid_to_txn(env, xid, &off) != 0)
@@ -553,6 +575,7 @@ __db_xa_rollback(xid, rmid, flags)
 	if (LF_SET(TMONEPHASE) &&
 	    td->xa_status != TXN_XA_ENDED && td->xa_status != TXN_XA_SUSPENDED)
 		return (XAER_PROTO);
+
 	if (!LF_SET(TMONEPHASE) && td->xa_status != TXN_XA_PREPARED)
 		return (XAER_PROTO);
 
@@ -561,7 +584,8 @@ __db_xa_rollback(xid, rmid, flags)
 	if (txn_abort(env->xa_txn) != 0)
 		return (XAER_RMERR);
 
-	/* No fatal value that would require an XAER_RMFAIL); */
+	/* No fatal value that would require an XAER_RMFAIL. */
+	__xa_txn_end(env);
 	return (XA_OK);
 }
 
@@ -586,7 +610,7 @@ __db_xa_forget(xid, rmid, flags)
 	if (flags != TMNOFLAGS)
 		return (XAER_INVAL);
 
-	if (__db_rmid_to_env(rmid, &env) != 0)
+	if (__db_rmid_to_env(rmid, &env, 1) != 0)
 		return (XAER_PROTO);
 
 	/*
@@ -597,7 +621,7 @@ __db_xa_forget(xid, rmid, flags)
 
 	__db_unmap_xid(env, xid, off);
 
-	/* No fatal value that would require an XAER_RMFAIL); */
+	/* No fatal value that would require an XAER_RMFAIL. */
 	return (XA_OK);
 }
 
@@ -640,3 +664,19 @@ __xa_txn_init(env, td, off)
 	txn->off = off;
 	txn->flags = 0;
 }
+
+/*
+ * __xa_txn_end --
+ * 	Invalidate a transaction structure that was generated by xa_txn_init.
+ */
+static void
+__xa_txn_end(env)
+	DB_ENV *env;
+{
+	DB_TXN *txn;
+
+	txn = env->xa_txn;
+	if (txn != NULL)
+		txn->txnid = TXN_INVALID;
+}
+

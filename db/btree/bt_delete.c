@@ -73,13 +73,10 @@ __bam_delete(dbp, txn, key, flags)
 	DBT *key;
 	u_int32_t flags;
 {
-	BOVERFLOW *bo;
-	CURSOR *cp;
 	DBC *dbc;
-	DBT dkey, ddata;
-	PAGE *h;
-	db_indx_t cnt, i, indx;
-	int dpage, exact, ret, stack, t_ret;
+	DBT data;
+	u_int32_t f_init, f_next;
+	int ret, t_ret;
 
 	DB_PANIC_CHECK(dbp);
 
@@ -91,105 +88,44 @@ __bam_delete(dbp, txn, key, flags)
 	/* Allocate a cursor. */
 	if ((ret = dbp->cursor(dbp, txn, &dbc, DB_WRITELOCK)) != 0)
 		return (ret);
+
 	DEBUG_LWRITE(dbc, txn, "bam_delete", key, NULL, flags);
 
-	cp = dbc->internal;
-	stack = 0;
-
-	/* Search the tree for the key; delete only deletes exact matches. */
-	if ((ret = __bam_search(dbc, key, S_DELETE, 1, NULL, &exact)) != 0)
-		goto err;
-	stack = 1;
-	h = cp->csp->page;
-	indx = cp->csp->indx;
-
 	/*
-	 * Delete the key/data pair, including any on-or-off page duplicates.
-	 * If this isn't an off-page duplicate set, or there are currently no
-	 * cursors walking through the off-page duplicates, we do the delete
-	 * here without further work.  Alternatively, we have to walk through
-	 * the off-page duplicates, marking/deleting each item.  The latter
-	 * is infinitely slower, and could be a performance problem at some
-	 * point.
+	 * Walk a cursor through the key/data pairs, deleting as we go.  Set
+	 * the DB_DBT_USERMEM flag, as this might be a threaded application
+	 * and the flags checking will catch us.  We don't actually want the
+	 * keys or data, so request a partial of length 0.
 	 */
-	bo = GET_BOVERFLOW(h, indx + O_INDX);
-	if (B_TYPE(bo->type) == B_DUPLICATE &&
-	    __bam_ca_delete(dbp, h->pgno, indx, 1) != 0) {
-		/* Set the cursor to reference the first off-page duplicate. */
-		cp->pgno = h->pgno;
-		cp->indx = indx;
-		cp->dpgno = bo->pgno;
-		cp->dindx = 0;
+	memset(&data, 0, sizeof(data));
+	F_SET(&data, DB_DBT_USERMEM | DB_DBT_PARTIAL);
 
-		/*
-		 * We're going to walk a cursor through the duplicate chain,
-		 * deleting as we go.  Set DB_DBT_USERMEM, as this might be a
-		 * threaded application and the flags checking will catch us.
-		 * We don't want the actual keys or data, so request a partial
-		 * of length 0.
-		 */
-		memset(&dkey, 0, sizeof(dkey));
-		F_SET(&dkey, DB_DBT_USERMEM | DB_DBT_PARTIAL);
-		memset(&ddata, 0, sizeof(ddata));
-		F_SET(&ddata, DB_DBT_USERMEM | DB_DBT_PARTIAL);
-
-		/* Delete duplicates... */
-		for (;;) {
-			if ((ret = dbc->c_del(dbc, 0)) != 0)
-				goto err;
-			if ((ret =
-			    dbc->c_get(dbc, &dkey, &ddata, DB_NEXT_DUP)) != 0)
-				if (ret == DB_NOTFOUND) {
-					ret = 0;
-					break;
-				} else
-					goto err;
-		}
-
-		dpage = 0;
-	} else {
-		/* Find out how many on-page duplicates there are. */
-		for (cnt = 1, i = indx;; ++cnt) {
-			i += P_INDX;
-			if (i >= NUM_ENT(h) || h->inp[i] != h->inp[indx])
-				break;
-		}
-
-		/* Delete them. */
-		for (; cnt > 0; --cnt) {
-			/*
-			 * XXX
-			 * Delete the key item first, otherwise the duplicate
-			 * checks in __bam_ditem() won't work!
-			 */
-			if ((ret = __bam_ditem(dbc, h, indx)) != 0)
-				goto err;
-			if ((ret = __bam_ditem(dbc, h, indx)) != 0)
-				goto err;
-		}
-
-		/* If the page is now empty, delete it. */
-		dpage = NUM_ENT(h) == 0 && h->pgno != PGNO_ROOT;
+	/* If locking, set read-modify-write flag. */
+	f_init = DB_SET;
+	f_next = DB_NEXT_DUP;
+	if (dbp->dbenv != NULL && dbp->dbenv->lk_info != NULL) {
+		f_init |= DB_RMW;
+		f_next |= DB_RMW;
 	}
 
-	/* If we're using record numbers, update internal page record counts. */
-	if (F_ISSET(dbp, DB_BT_RECNUM) && (ret = __bam_adjust(dbc, -1)) != 0)
+	/* Walk through the set of key/data pairs, deleting as we go. */
+	if ((ret = dbc->c_get(dbc, key, &data, f_init)) != 0)
 		goto err;
+	for (;;) {
+		if ((ret = dbc->c_del(dbc, 0)) != 0)
+			goto err;
+		if ((ret = dbc->c_get(dbc, key, &data, f_next)) != 0) {
+			if (ret == DB_NOTFOUND) {
+				ret = 0;
+				break;
+			}
+			goto err;
+		}
+	}
 
-	/*
-	 * Release the stack (we may need to acquire another one during page
-	 * deletion.
-	 */
-	__bam_stkrel(dbc, 0);
-	stack = 0;
-
-	ret = dpage ? __bam_dpage(dbc, key) : 0;
-
-err:	if (stack)
-		__bam_stkrel(dbc, 0);
-
-	/* Discard the cursor. */
-	if ((t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
+err:	/* Discard the cursor. */
+	if ((t_ret = dbc->c_close(dbc)) != 0 &&
+	    (ret == 0 || ret == DB_NOTFOUND))
 		ret = t_ret;
 
 	return (ret);

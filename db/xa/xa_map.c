@@ -32,14 +32,16 @@ static const char sccsid[] = "@(#)xa_map.c	10.4 (Sleepycat) 10/20/98";
  * __db_rmid_to_env
  *	Return the environment associated with a given XA rmid.
  *
- * PUBLIC: int __db_rmid_to_env __P((int rmid, DB_ENV **envp));
+ * PUBLIC: int __db_rmid_to_env __P((int rmid, DB_ENV **envp, int open_ok));
  */
 int
-__db_rmid_to_env(rmid, envp)
+__db_rmid_to_env(rmid, envp, open_ok)
 	int rmid;
 	DB_ENV **envp;
+	int open_ok;
 {
 	DB_ENV *env;
+	char *dbhome;
 
 	env = TAILQ_FIRST(&DB_GLOBAL(db_envq));
 	if (env != NULL && env->xa_rmid == rmid) {
@@ -60,6 +62,36 @@ __db_rmid_to_env(rmid, envp)
 			return (0);
 		}
 
+	/*
+	 * We have not found the rmid on the environment list.  If we
+	 * are allowed to do an open, search for the rmid on the name
+	 * list and, if we find it, then open it.
+	 */
+	if (!open_ok)
+		return (1);
+
+	if (__db_rmid_to_name(rmid, &dbhome) != 0)
+		return (1);
+#undef XA_FLAGS
+#define	XA_FLAGS \
+	DB_CREATE | DB_INIT_LOCK | DB_INIT_LOG | DB_INIT_MPOOL | DB_INIT_TXN
+
+	if (__os_calloc(1, sizeof(DB_ENV), &env) != 0)
+		return (1);
+
+	if (db_appinit(dbhome, NULL, env, XA_FLAGS) != 0) 
+		goto err;
+
+	if (__db_map_rmid(rmid, env) != 0)
+		goto err1;
+
+	__db_unmap_rmid_name(rmid);
+
+	*envp = env;
+	return (0);
+
+err1:	(void)db_appexit(env);
+err:	__os_free(env, sizeof(DB_ENV));
 	return (1);
 }
 
@@ -111,9 +143,12 @@ __db_map_rmid(rmid, env)
 	int rmid;
 	DB_ENV *env;
 {
+	if (__os_calloc(1, sizeof(DB_TXN), &env->xa_txn) != 0)
+		return (XAER_RMERR);
+	env->xa_txn->txnid = TXN_INVALID;
 	env->xa_rmid = rmid;
-	TAILQ_INSERT_TAIL(&DB_GLOBAL(db_envq), env, links);
-	return (0);
+	TAILQ_INSERT_HEAD(&DB_GLOBAL(db_envq), env, links);
+	return (XA_OK);
 }
 
 /*
@@ -136,6 +171,8 @@ __db_unmap_rmid(rmid)
 		return (EINVAL);
 
 	TAILQ_REMOVE(&DB_GLOBAL(db_envq), e, links);
+	if (e->xa_txn != NULL)
+		__os_free(e->xa_txn, sizeof(DB_TXN));
 	return (0);
 }
 
@@ -184,4 +221,85 @@ __db_unmap_xid(env, xid, off)
 
 	td = (TXN_DETAIL *)((u_int8_t *)env->tx_info->region + off);
 	memset(td->xid, 0, sizeof(td->xid));
+}
+
+/*
+ * __db_map_rmid_name --
+ * 	Create a mapping from an rmid to a name (the xa_info argument).
+ * We use this during create and then at some later point when we are
+ * trying to map an rmid, we might indicate that it's OK to do an open
+ * in which case, we'll get the xa_info parameter from here and then
+ * free it up.
+ *
+ * PUBLIC: int __db_map_rmid_name __P((int, char *));
+ */
+
+int
+__db_map_rmid_name(rmid, dbhome)
+	int rmid;
+	char *dbhome;
+{
+	struct __rmname *entry;
+	int ret;
+
+	if ((ret = __os_malloc(sizeof(struct __rmname), NULL, &entry)) != 0)
+		return (ret);
+
+	if ((ret = __os_strdup(dbhome, &entry->dbhome)) != 0) {
+		__os_free(entry, sizeof(struct __rmname));
+		return (ret);
+	}
+
+	entry->rmid = rmid;
+
+	TAILQ_INSERT_HEAD(&DB_GLOBAL(db_nameq), entry, links);
+	return (0);
+}
+
+/*
+ * __db_rmid_to_name --
+ *	Given an rmid, return the name of the home directory for that
+ * rmid.
+ *
+ * PUBLIC: int __db_rmid_to_name __P((int, char **));
+ */
+int
+__db_rmid_to_name(rmid, dbhomep)
+	int rmid;
+	char **dbhomep;
+{
+	struct __rmname *np;
+
+	for (np = TAILQ_FIRST(&DB_GLOBAL(db_nameq)); np != NULL;
+	    np = TAILQ_NEXT(np, links)) {
+		if (np->rmid == rmid) {
+			*dbhomep = np->dbhome;
+			return (0);
+		}
+	}
+	return (1);
+}
+
+/*
+ * __db_unmap_rmid_name --
+ *	Given an rmid, remove its entry from the name list.
+ *
+ * PUBLIC:  void __db_unmap_rmid_name __P((int));
+ */
+void
+__db_unmap_rmid_name(rmid)
+	int rmid;
+{
+	struct __rmname *np, *next;
+
+	for (np = TAILQ_FIRST(&DB_GLOBAL(db_nameq)); np != NULL; np = next) {
+		next = TAILQ_NEXT(np, links);
+		if (np->rmid == rmid) {
+			TAILQ_REMOVE(&DB_GLOBAL(db_nameq), np, links);
+			__os_freestr(np->dbhome);
+			__os_free(np, sizeof(struct __rmname));
+			return;
+		}
+	}
+	return;
 }

@@ -771,7 +771,7 @@ split:		arg = &cp->recno;
 	/* The cursor was reset, no further delete adjustment is necessary. */
 	CD_CLR(dbp, cp);
 
-err:	if (F_ISSET(dbc, DBC_RMW))
+err:	if (F_ISSET(dbp, DB_AM_CDB) && F_ISSET(dbc, DBC_RMW))
 		(void)__lock_downgrade(dbp->dbenv->lk_info, dbc->mylock,
 		    DB_LOCK_IWRITE, 0);
 

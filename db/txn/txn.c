@@ -465,11 +465,20 @@ txn_prepare(txnp)
 	dbenv = txnp->mgrp->dbenv;
 	memset(&xid, 0, sizeof(xid));
 	xid.data = td->xid;
-	xid.size = sizeof(td->xid);
+	/*
+	 * We indicate that a transaction is an XA transaction by putting
+	 * a valid size in the xid.size fiels.  XA requires that the transaction
+	 * be either ENDED or SUSPENDED when prepare is called, so we know
+	 * that if the xa_status isn't in one of those states, but we are
+	 * calling prepare that we are not an XA transaction.
+	 */
+	xid.size =
+	    td->xa_status != TXN_XA_ENDED && td->xa_status != TXN_XA_SUSPENDED ?
+	    0 : sizeof(td->xid);
 	if (dbenv->lg_info != NULL &&
 	    (ret = __txn_xa_regop_log(dbenv->lg_info, txnp, &txnp->last_lsn,
 	    F_ISSET(txnp->mgrp, DB_TXN_NOSYNC) ? 0 : DB_FLUSH, TXN_PREPARE,
-	    &xid, td->format, td->gtrid, td->bqual)) != 0) {
+	    &xid, td->format, td->gtrid, td->bqual, &td->begin_lsn)) != 0) {
 		__db_err(dbenv,
 		    "txn_prepare: log_write failed %s\n", strerror(ret));
 		return (ret);

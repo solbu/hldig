@@ -70,9 +70,9 @@ log_register(dblp, dbp, name, type, idp)
 	 */
 	for (maxid = 0, fnp = SH_TAILQ_FIRST(&dblp->lp->fq, __fname);
 	    fnp != NULL; fnp = SH_TAILQ_NEXT(fnp, q, __fname)) {
-		if (fnp->ref == 0 && reuse_fnp == NULL) {
-			/* Entry is not in use. */
-			reuse_fnp = fnp;
+		if (fnp->ref == 0) {		/* Entry is not in use. */
+			if (reuse_fnp == NULL)
+				reuse_fnp = fnp;
 			continue;
 		}
 		if (!memcmp(dbp->fileid, fnp->ufid, DB_FILE_ID_LEN)) {

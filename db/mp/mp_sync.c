@@ -39,7 +39,7 @@ memp_sync(dbmp, lsnp)
 	DB_ENV *dbenv;
 	MPOOL *mp;
 	MPOOLFILE *mfp;
-	int ar_cnt, nalloc, next, ret, wrote;
+	int ar_cnt, nalloc, next, maxpin, ret, wrote;
 
 	MP_PANIC_CHECK(dbmp);
 
@@ -119,10 +119,15 @@ memp_sync(dbmp, lsnp)
 	 * finish.  Since the application may have restarted the sync, clear
 	 * any BH_WRITE flags that appear to be left over from previous calls.
 	 *
+	 * We don't want to pin down the entire buffer cache, otherwise we'll
+	 * starve threads needing new pages.  Don't pin down more than 80% of
+	 * the cache.
+	 *
 	 * Keep a count of the total number of buffers we need to write in
 	 * MPOOL->lsn_cnt, and for each file, in MPOOLFILE->lsn_count.
 	 */
 	ar_cnt = 0;
+	maxpin = ((mp->stat.st_page_dirty + mp->stat.st_page_clean) * 8) / 10;
 	for (bhp = SH_TAILQ_FIRST(&mp->bhq, __bh);
 	    bhp != NULL; bhp = SH_TAILQ_NEXT(bhp, q, __bh))
 		if (F_ISSET(bhp, BH_DIRTY) || bhp->ref != 0) {
@@ -144,11 +149,15 @@ memp_sync(dbmp, lsnp)
 			 * while holding a region lock, so we set the flag to
 			 * force the checkpoint to be done again, from scratch,
 			 * later.
+			 *
+			 * If we've pinned down too much of the cache stop, and
+			 * set a flag to force the checkpoint to be tried again
+			 * later.
 			 */
 			if (bhp->ref == 0) {
 				++bhp->ref;
 				bharray[ar_cnt] = bhp;
-				if (++ar_cnt >= nalloc) {
+				if (++ar_cnt >= nalloc || ar_cnt >= maxpin) {
 					F_SET(mp, MP_LSN_RETRY);
 					break;
 				}
