@@ -1,3 +1,7 @@
+Thu Dec  6 13:14:22 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/examples/rundig.sh: Fixed to make use of DBDIR variable.
+
 Wed Nov 21 12:54:42 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/rundig.html: Added note about effect of changing database_base.

@@ -13,7 +13,7 @@ fi
 BASEDIR=/export/htdig
 
 # This is the db dir
-DBDIR=$BASEDIR/db/
+DBDIR=$BASEDIR/db
 
 # This is the name of a temporary report file
 REPORT=/tmp/htdig.report
@@ -58,12 +58,12 @@ echo rundig: Done Merging: $TIME >> $REPORT
 
 # Move 'em into place. Since we only need db.wordlist to do update digs
 # and we always use -a, we just leave it as .work
-# mv $BASEDIR/db/db.wordlist.work $BASEDIR/db/db.wordlist
+# mv $DBDIR/db.wordlist.work $DBDIR/db.wordlist
 # We need the .work for next time as an update dig, plus the copy for searching
-cp $BASEDIR/db/db.docdb.work $BASEDIR/db/db.docdb
+cp $DBDIR/db.docdb.work $DBDIR/db.docdb
 # These are generated from htmerge, so we don't want copies of them.
-mv $BASEDIR/db/db.docs.index.work $BASEDIR/db/db.docs.index
-mv $BASEDIR/db/db.words.db.work $BASEDIR/db/db.words.db
+mv $DBDIR/db.docs.index.work $DBDIR/db.docs.index
+mv $DBDIR/db.words.db.work $DBDIR/db.words.db
 
 END=`date`
 echo End time: $END
