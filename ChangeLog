@@ -1,3 +1,8 @@
+Mon Dec 29 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * installdir/rundig, installdir/Makefile.{in,am}:  Address bug #860708
+      Make  bin/rundig -a  handle multiple database directories
+
 Sun Dec 21 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htsearch/htsearch.cc:

@@ -384,7 +384,7 @@ install-data-local:	all
 	@echo "Creating rundig script..."
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@if [ ! -f $(DESTDIR)$(bindir)/rundig ]; then \
-		sed -e s%@\BIN_DIR@%$(bindir)% -e s%@\COMMON_DIR@%$(COMMON_DIR)% -e s%@\DATABASE_DIR@%$(DATABASE_DIR)% $(top_srcdir)/installdir/rundig >$(DESTDIR)$(bindir)/rundig; \
+		sed -e s%@\BIN_DIR@%$(bindir)% -e s%@\COMMON_DIR@%$(COMMON_DIR)% -e s%@\DATABASE_DIR@%$(DATABASE_DIR)% -e s%@\DEFAULT_CONFIG_FILE@%$(DEFAULT_CONFIG_FILE)% $(top_srcdir)/installdir/rundig >$(DESTDIR)$(bindir)/rundig; \
 		chmod 755 $(DESTDIR)$(bindir)/rundig; \
 	fi
 	@echo "Installing file-type identification script..."

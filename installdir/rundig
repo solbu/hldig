@@ -3,25 +3,45 @@
 #
 # rundig
 #
-# $Id: rundig,v 1.8 2002/02/01 22:49:37 ghutchis Exp $
+# $Id: rundig,v 1.9 2003/12/29 08:49:05 lha Exp $
 #
 # This is a sample script to create a search database for ht://Dig.
 #
 DBDIR=@DATABASE_DIR@
 COMMONDIR=@COMMON_DIR@
 BINDIR=@BIN_DIR@
+conffile=@DEFAULT_CONFIG_FILE@
 
 # To help debug problems, try running rundig -vvv
 # This will add lots of debugging output to all of the programs
 stats= opts= alt=
-for arg
+while [ "$#" -gt 0 ]
 do
-    case "$arg" in
-    -a)  alt="$arg" ;;
-    -s)  stats="$arg" ;;
-    *)   opts="$opts $arg" ;;	# e.g. -v or -c config
+    case "$1" in
+    -a)  alt="$1" ;;
+    -s)  stats="$1" ;;
+    -c)  shift
+         conffile="$1"
+	 opts="$opts -c $conffile"
+	;;
+    *)   opts="$opts $1" ;;	# e.g. -v
     esac
+    shift
 done
+
+# If -a specified, note the database directory to move the temp files correctly
+# TODO: Should also check for files relative to COMMONDIR.
+if [ -f "$conffile" ]
+then
+    new_db_dir=`awk '/^[^#a-zA-Z]*database_dir/ { print $NF }' < $conffile`
+    if [ "$new_db_dir" != "" ]
+    then
+	DBDIR=$new_db_dir
+    fi
+else
+    echo "Config file $conffile cannot be found"
+    exit 1
+fi
 
 #
 # Set the TMPDIR variable if you want htdig and other programs to put 
