@@ -1,3 +1,7 @@
+Mon Mar 22 17:13:35 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Plaintext.cc, htmerge/words.cc: removed Log lines.
+
 Mon Mar 22 16:11:31 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/htsearch.cc: Add patch from Jerome Alet <alet@unice.fr>
