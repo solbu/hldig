@@ -1,3 +1,8 @@
+Fri Nov 26 17:07:52 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc(HTML & do_tag): add code to turn off indexing between
+	<style> and </style> tags.
+
 Fri Nov 26 15:56:47 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(setVariables): added Alexis Mikhailov's fix
