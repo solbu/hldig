@@ -4,6 +4,9 @@
 // Implementation of WordList
 //
 // $Log: WordList.cc,v $
+// Revision 1.7  1998/12/06 18:45:57  ghutchis
+// Ensure duplicate words have minimum location and anchor attributes.
+//
 // Revision 1.6  1998/12/05 00:53:23  ghutchis
 // Don't store c:1 and a:0 entries in db.wordlist to save space.
 //
@@ -26,7 +29,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.6 1998/12/05 00:53:23 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.7 1998/12/06 18:45:57 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -76,10 +79,14 @@ void WordList::Word(char *word, int location, int anchor_number, double weight_f
     if (wordRef)
     {
 	//
-	// Already had this word.  Just update the count and the weight
+	// Already had this word.  Update the record
 	//
 	wordRef->WordCount++;
 	wordRef->Weight += int((1000 - location) * weight_factor);
+	if (location < wordRef->Location)
+	  wordRef->Location = location;
+	if (anchor_number < wordRef->Anchor)
+	  wordRef->Anchor = anchor_number;
     }
     else
     {
