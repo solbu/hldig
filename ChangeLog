@@ -1,3 +1,33 @@
+Tue Sep  7 23:49:41 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/ExternalParser.h, htdig/ExternalParser.cc (parse): Change
+	parsing of location to allow phrase searching -- location is *not*
+	just 0-1000.
+
+	* htdig/Plaintext.h, htdig/Plaintext.cc, htdig/PDF.cc: Ditto.
+
+	* htdig/Retriever.h, htdig/Retriever.cc: Don't call
+	HtStripPunctuation. This is now done in the WordList::Word method.
+	
+	* htcommon/WordList.h htcommon/WordList.cc (Prefix): New method to
+	do prefix retrievals. Essentially the same as [], except the loop
+	is broken only in the unlikely event that we retrieve something
+	beyond the range set.
+	(Exists): New method for checking the existance of a
+	string--attempt to retrieve it and determine if anything's
+	actually there.
+	(Word): Call HtStripPunctuation as part of the cleanup.
+
+Tue Sep  7 21:37:44 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+	
+	* htcommon/defaults.cc: Add new configuration option
+	removed_unretrieved_urls to remove docs that have not been accessed.
+
+	* htmerge/docs.cc (convertDocs): Use it.
+
+	* htcommon/defaults.h, htcommon/WordRecord.h,
+	htcommon/WordReference.h: Add copyright notice to head of file.
+	
 Mon Sep  6 10:32:59 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtZlibCodec.h, htlib/HtZlibCodec.cc(instance): New method
