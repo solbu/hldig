@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.h,v 1.8 1999/09/24 10:28:56 loic Exp $
+// $Id: WordReference.h,v 1.9 1999/09/28 14:35:37 loic Exp $
 //
 #ifndef _WordReference_h_
 #define _WordReference_h_
@@ -41,7 +41,7 @@ public:
 	//
 	// Construction/Destruction
 	//
-        WordReference()		{ Clear(); }
+        WordReference()	{ record.anchor = 0; }
         WordReference(const String& key, const String& record) {
 	  Clear();
 	  Unpack(key, record);
@@ -111,6 +111,7 @@ public:
 	//
 	int			Dump(FILE *fl) const;
 	static int		DumpHeader(FILE *fl);
+	friend ostream		&operator << (ostream &o, const WordReference &wordRef);
 
 private:
 

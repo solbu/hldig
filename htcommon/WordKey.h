@@ -177,7 +177,11 @@ static const struct WordKeyInfo word_key_info = {
 class WordKey
 {
 public:
-  WordKey() { Clear(); }
+  WordKey() { set = 0; 	pool_unsigned_int[WORD_KEY_LOCATION] = 0;
+	pool_unsigned_int[WORD_KEY_FLAGS] = 0;
+	pool_unsigned_int[WORD_KEY_DOCID] = 0;
+	pool_String[WORD_KEY_WORD] = 0;
+; }
   void	Clear() { 
     set = 0;
     	pool_unsigned_int[WORD_KEY_LOCATION] = 0;
@@ -246,17 +250,19 @@ WORD_ACCESSOR(String, String)
   int 		Pack(String& data) const;
 
   //
-  // Merge two objects
+  // Transformations
   //
   int		Merge(const WordKey& other);
+  int		PrefixOnly();
 
   //
   // Predicates
   //
-  int		Filled() { return set == (unsigned int)(1 << word_key_info.nfields) - 1; }
-  int		Empty() { return set == 0; }
+  int		Filled() const { return set == (unsigned int)(1 << word_key_info.nfields) - 1; }
+  int		Empty() const { return set == 0; }
   int 		Equal(const WordKey& other, int prefix_length) const;
   int 		PackEqual(const WordKey& other) const;
+  int		Prefix() const;
   static int 	Compare(const String& a, const String& b);
   static int 	Compare(const char *a, int a_length, const char *b, int b_length);
 

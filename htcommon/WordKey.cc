@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.1 1999/09/24 10:28:56 loic Exp $
+// $Id: WordKey.cc,v 1.2 1999/09/28 14:35:37 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -213,6 +213,87 @@ int WordKey::PackEqual(const WordKey& other) const
   other.Pack(other_pack);
 
   return this_pack == other_pack;
+}
+
+//
+// Return true if the key may be used as a prefix for search.
+// In other words return true if the fields set in the key
+// are all contiguous, starting from the first field in sort order.
+//
+int WordKey::Prefix() const
+{
+  const struct WordKeyInfo& info = word_key_info;
+  //
+  // If all fields are set, it can be considered as a prefix although
+  // it really is a fully qualified key.
+  //
+  if(Filled()) return OK;
+  //
+  // If the first field is not set this cannot be a prefix
+  //
+  if(!IsSet(info.sort[0].field_number)) return NOTOK;
+  
+  int found_unset = 0;
+  //
+  // Walk the fields in sorting order. 
+  //
+  for(int j = 1; j < info.nfields; j++) {
+    int i = info.sort[j].field_number;
+
+    //
+    // Fields set, then fields unset then field set -> not a prefix
+    //
+    if(IsSet(i))
+      if(found_unset) return NOTOK;
+    else
+      //
+      // Found unset fields and this is fine as long as we do
+      // not find a field set later on.
+      //
+      found_unset++;
+  }
+
+  return OK;
+}
+
+//
+// Unset all fields past the first unset field
+// Return the number of fields in the prefix or 0 if
+// first field is not set, ie no possible prefix.
+//
+int WordKey::PrefixOnly()
+{
+  const struct WordKeyInfo& info = word_key_info;
+  //
+  // If all fields are set, the whole key is the prefix.
+  //
+  if(Filled()) return info.nfields;
+  //
+  // If the first field is not set there is no possible prefix
+  //
+  if(!IsSet(info.sort[0].field_number)) return 0;
+  
+  int field_count = 0;
+  int found_unset = 0;
+  //
+  // Walk the fields in sorting order. 
+  //
+  for(int j = 0; j < info.nfields; j++) {
+    int i = info.sort[j].field_number;
+
+    //
+    // Unset all fields after the first unset field
+    //
+    if(IsSet(i)) {
+      if(found_unset)
+	Unset(i);
+      else
+	field_count++;
+    } else
+      found_unset++;
+  }
+
+  return field_count;
 }
 
 //

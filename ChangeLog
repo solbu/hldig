@@ -1,3 +1,24 @@
+Tue Sep 28 16:34:56 1999  Loic Dachary  <loic@ceic.com>
+
+	* test/word.cc (dolist): Add regression tests for Delete.
+
+	* htcommon/WordList.cc (Delete): Reimplement from scratch. Use Walk
+	  to find records to delete. This allows to say delete all occurence
+	  of this word, delete all words in this document (slow), delete
+	  all occurences of this word in this document etc.
+
+	* htcommon/WordList.cc (Walk): extend so that it handles walk for
+	  partially specified keys, remains fully backward compatible. It allows
+	  to extract all the words in a specific document (slow) or all occurences
+	  of a word in a specific document etc.
+
+Tue Sep 28 12:56:12 1999  Loic Dachary  <loic@ceic.com>
+
+	* htcommon/DocumentDB.cc (Open): report errors on stderr
+
+	* htmerge/docs.cc (convertDocs): rely on error reporting from DocumentDB
+	  instead of implementing a custom one.
+
 Tue Sep 28 11:36:28 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* htnet/Transport.h: added the status code and the reason phrase
@@ -5,6 +26,11 @@ Tue Sep 28 11:36:28 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
 	* htnet/HtHTTP.cc .h: removed the attributes above.
 	  Read the body of a response if the code is 2xx. Issues the
 	  GetLocation() method.
+
+Tue Sep 28 10:32:47 1999  Loic Dachary  <loic@ceic.com>
+
+	* test/htdocs/set3: create and populate with cgi scripts have
+	  bad behaviour (time out and, slow connection).
 
 Tue Sep 28 10:20:23 1999  Loic Dachary  <loic@ceic.com>
 

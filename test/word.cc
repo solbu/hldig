@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.5 1999/09/28 07:30:36 loic Exp $
+// $Id: word.cc,v 1.6 1999/09/28 14:35:37 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -115,15 +115,15 @@ static void doword(params_t* params)
 static void dolist(params_t* params)
 {
   static char* word_list[] = {
-    "The",
-    "quick",
-    "brown",
-    "fox",
-    "jumps",
-    "over",
-    "the",
-    "lazy",
-    "dog",
+    "The",	// DocID = 1
+    "quick",	// DocID = 2
+    "brown",	// DocID = 3
+    "fox",	// DocID = 4
+    "jumps",	// DocID = 5
+    "over",	// DocID = 6
+    "the",	// DocID = 7
+    "lazy",	// DocID = 8
+    "dog",	// DocID = 9
     0
   };
 
@@ -136,14 +136,15 @@ static void dolist(params_t* params)
     words.Open(config["word_db"], O_RDWR);
 
     WordReference wordRef;
-    wordRef.DocID(3);
     wordRef.Flags(FLAG_TEXT);
     unsigned int location = 0;
     unsigned int anchor = 0;
+    unsigned int docid = 1;
     if(verbose) fprintf(stderr, "Inserting\n");
 
     for(char** p = word_list; *p; p++) {
       wordRef.Word(*p);
+      wordRef.DocID(docid);
       wordRef.Location(location);
       wordRef.Anchor(anchor);
       if(verbose > 2) pack_show(wordRef);
@@ -151,12 +152,13 @@ static void dolist(params_t* params)
       words.Replace(wordRef);
       location += strlen(*p);
       anchor++;
+      docid++;
     }
     words.Flush();
     words.Close();
 
-    wordRef.Location(location = 0);
-    wordRef.Anchor(anchor = 0);
+    location = anchor = 0;
+    docid = 1;
 
     if(verbose) fprintf(stderr, "Searching\n");
 
@@ -165,9 +167,11 @@ static void dolist(params_t* params)
       wordRef.Word(*p);
       wordRef.Location(location);
       wordRef.Anchor(anchor);
+      wordRef.DocID(docid);
 
       location += strlen(*p);
       anchor++;
+      docid++;
 
       //
       // Skip first word because we don't want to deal with upper/lower case at present.
@@ -184,11 +188,13 @@ static void dolist(params_t* params)
       while((found = (WordReference*)result->Get_Next())) {
 	if(wordRef.Word() != found->Word()) {
 	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (const char*)wordRef.Word(), (const char*)found->Word());
+	  exit(1);
 	}
 	count++;
       }
       if(count != 1) {
 	fprintf(stderr, "dolist: simple: searching %s, got %d matches instead of 1\n", (const char*)wordRef.Word(), count);
+	exit(1);
       }
       if(verbose) fprintf(stderr, "done\n");
 
@@ -213,14 +219,62 @@ static void dolist(params_t* params)
     while((found = (WordReference*)result->Get_Next())) {
 	if(wordRef.Word() != found->Word()) {
 	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (const char*)wordRef.Word(), (const char*)found->Word());
+	  exit(1);
 	}
 	if(verbose) found->Dump(stderr);
 	count++;
     }
     if(count != 2) {
       fprintf(stderr, "dolist: searching occurences of '%s', got %d matches instead of 2\n", (const char*)wordRef.Word(), count);
+      exit(1);
     }
 
+    delete result;
+  }
+  //
+  // Delete all occurences of 'the'
+  //
+  {
+    WordList words(config);
+    words.Open(config["word_db"], O_RDWR);
+
+    WordReference wordRef("the");
+
+    int count;
+    if((count = words.Delete(wordRef)) != 2) {
+      fprintf(stderr, "dolist: delete occurences of 'the', got %d deletion instead of 2\n", count);
+      exit(1);
+    }
+
+    List* result = words[wordRef];
+    if(result->Count() != 0) {
+      fprintf(stderr, "dolist: unexpectedly found 'the' \n");
+      exit(1);
+    }
+    delete result;
+  }
+  //
+  // Delete all words in document 5 (only one word : jumps)
+  //
+  {
+    WordList words(config);
+    words.Open(config["word_db"], O_RDWR);
+
+    WordReference wordRef;
+    wordRef.DocID(5);
+    int count;
+    if((count = words.Delete(wordRef)) != 1) {
+      fprintf(stderr, "dolist: delete occurences in DocID 5, %d deletion instead of 1\n", count);
+      exit(1);
+    }
+
+    wordRef.Clear();
+    wordRef.Word("jumps");
+    List* result = words[wordRef];
+    if(result->Count() != 0) {
+      fprintf(stderr, "dolist: unexpectedly found 'jumps' \n");
+      exit(1);
+    }
     delete result;
   }
 }

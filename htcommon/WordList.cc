@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.33 1999/09/28 07:30:34 loic Exp $
+// $Id: WordList.cc,v 1.34 1999/09/28 14:35:37 loic Exp $
 //
 
 #include "WordList.h"
@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <fstream.h>
+#include <errno.h>
 
 extern Configuration	config;
 
@@ -289,9 +290,9 @@ List *WordList::Collect (const WordReference& wordRef, int action)
 //
 // If action bit HTDIG_WORDLIST is set all the words are retrieved.
 // If action bit HTDIG_WORDLIST_WORD is set all the occurences of
-//    the <word> argument (exact match) are retrieved.
+//    the <wordRef> argument are retrieved.
 // If action bit HTDIG_WORDLIST_PREFIX is set all the occurences of
-//    the words starting with <word> are retrieved.
+//    the words starting with <wordRef.Word()> are retrieved.
 //
 // If action bit HTDIG_WORDLIST_COLLECTOR is set WordReferences are
 //    stored in a list and the list is returned.
@@ -299,10 +300,25 @@ List *WordList::Collect (const WordReference& wordRef, int action)
 //    is called for each WordReference found. No list is built and the
 //    function returns a null pointer.
 //
-List *WordList::Walk (const WordReference& wordRef, int action, wordlist_walk_callback_t callback, Object &callback_data)
+//
+// The <wordRef> argument may be a fully qualified key, containing precise values for each
+// field of the key. It may also contain only some fields of the key. In both cases
+// all the word occurences matching the fields set in the key are retrieved. It may
+// be fast if <wordRef.Key()> is a prefix (see WordKey::Prefix for a definition). It may
+// be *slow* if <wordRef.Key()> is not a prefix because it forces a complete walk of the
+// index. 
+//
+// The idea of a prefix key is not to be confused with the idea of a prefix word. A prefix
+// key is a partially specified key, a prefix word is the start of a word. A prefix key may
+// contain a prefix word if HTDIG_WORDLIST_PREFIX is set and a fully qualified key may 
+// contain a prefix word if HTDIG_WORDLIST_PREFIX is set. These are two unrelated things, 
+// although similar in concept.
+//
+List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_callback_t callback, Object &callback_data)
 {
     List        	*list = 0;
     int			prefixLength = wordRef.Word().length();
+    WordKey		prefixKey;
 
     if(action & HTDIG_WORDLIST_COLLECTOR) {
       list = new List;
@@ -311,7 +327,39 @@ List *WordList::Walk (const WordReference& wordRef, int action, wordlist_walk_ca
     if(action & HTDIG_WORDLIST) {
       dbf->Start_Get();
     } else {
-      dbf->Start_Seq(wordRef.KeyPack());
+      //
+      // Find the best place to start walking and do some sanity checks.
+      //
+      const WordKey& key = wordRef.Key();
+      //
+      // If searching for words beginning with a prefix, ignore the
+      // rest of the key even if set, otherwise it will fail to place
+      // the cursor in position.
+      //
+      if(action & HTDIG_WORDLIST_PREFIX)
+	prefixKey.SetWord(key.GetWord());
+      else {
+	prefixKey = key;
+	//
+	// If the key is not a prefix, the start key is
+	// the longest possible prefix contained in the key. If the
+	// key does not contain any prefix, start from the beginning
+	// of the file.
+	//
+	if(!prefixKey.PrefixOnly())
+	  prefixKey.Clear();
+      }
+
+      //
+      // No heuristics possible, we have to start from the beginning. *sigh*
+      //
+      if(prefixKey.Empty()) {
+	dbf->Start_Get();
+      } else {
+	String packed;
+	prefixKey.Pack(packed);
+	dbf->Start_Seq(packed);
+      }
     }
 
     String data;
@@ -321,15 +369,17 @@ List *WordList::Walk (const WordReference& wordRef, int action, wordlist_walk_ca
 	WordReference found(key, data);
 	//
 	// Stop loop if we reach a record whose key does not
-	// match requirements.
+	// match prefix key requirement, provided we have a valid
+	// prefix key.
 	//
-	if(action & HTDIG_WORDLIST_PREFIX) {
-	  if(!wordRef.Key().Equal(found.Key(), prefixLength))
-            break;
-	} else if(action & HTDIG_WORDLIST_WORD) {
-	  if(!wordRef.Key().Equal(found.Key(), 0))
-	    break;
-	}
+	if(!prefixKey.Empty() &&
+	   !prefixKey.Equal(found.Key(), action & HTDIG_WORDLIST_PREFIX ? prefixLength : 0))
+	  break;
+	//
+	// Skip entries that do not exactly match the specified key.
+	//
+	if(!wordRef.Key().Equal(found.Key(), action & HTDIG_WORDLIST_PREFIX ? prefixLength : 0))
+	  continue;
 
 	if(action & HTDIG_WORDLIST_COLLECTOR) {
 	  list->Add(new WordReference(found));
@@ -352,12 +402,44 @@ int WordList::Exists(const WordReference& wordRef)
     return dbf->Exists(wordRef.KeyPack());
 }
 
+//
+// Callback data dedicated to Dump and dump_word communication
+//
+class DeleteWordData : public Object
+{
+public:
+  DeleteWordData() { count = 0; }
+
+  int count;
+};
+
 //*****************************************************************************
-// int WordList::Delete(const WordReference& wordRef)
+//
+//
+static int delete_word(WordList *words, const WordReference *word, Object &data)
+{
+  if(words->Dbf()->Delete(word->KeyPack()) == 0) {
+    ((DeleteWordData&)data).count++;
+    return OK;
+  } else {
+    cerr << "WordList delete_word: deleting " << *word << " failed " << strerror(errno) << "\n";
+    return NOTOK;
+  }
+}
+
+//*****************************************************************************
+// 
+// Delete all records matching wordRef, return the number of 
+// deleted records.
 //
 int WordList::Delete(const WordReference& wordRef)
 {
-    return dbf->Delete(wordRef.KeyPack());
+  //
+  // Simple case : a fully qualified key that only matches one word occurence
+  //
+  DeleteWordData data;
+  (void)Walk(wordRef, HTDIG_WORDLIST_WALK_WORD, delete_word, data);
+  return data.count;
 }
 
 
@@ -386,4 +468,3 @@ List *WordList::Words()
       }
     return list;
 }
-

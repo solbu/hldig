@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.cc,v 1.2 1999/09/24 10:28:56 loic Exp $
+// $Id: WordReference.cc,v 1.3 1999/09/28 14:35:37 loic Exp $
 //
 
 #include <iostream.h>
@@ -36,6 +36,19 @@ int WordReference::Dump(FILE *fl) const
 	  Location(),
 	  Anchor());
   return OK;
+}
+
+//
+// Ascii representation of a word occurence.
+//
+ostream &operator << (ostream &o, const WordReference &wordRef)
+{
+  o << wordRef.Word() << "\t";
+  o << wordRef.DocID() << "\t";
+  o << wordRef.Flags() << "\t";
+  o << wordRef.Location() << "\t";
+  o << wordRef.Anchor();
+  return o;
 }
 
 int WordReference::Pack(String& ckey, String& crecord) const

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.11 1999/09/28 07:30:34 loic Exp $
+// $Id: WordList.h,v 1.12 1999/09/28 14:35:37 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -81,6 +81,10 @@ public:
     // Close underlying db file
     // 
     int			Close();
+    //
+    // Get the Database pointer
+    //
+    Database		*Dbf() { return dbf; }
 
     //
     // This returns a list of all the WordReference * matching 

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: docs.cc,v 1.26 1999/09/24 10:29:04 loic Exp $
+// $Id: docs.cc,v 1.27 1999/09/28 14:35:37 loic Exp $
 //
 
 #include "htmerge.h"
@@ -31,22 +31,6 @@ convertDocs()
     int			document_count = 0;
     unsigned long	docdb_size = 0;
 
-    if (access(doc_db, R_OK) < 0)
-    {
-	reportError(form("Unable to open document database '%s'", (const char*)doc_db));
-    }
-
-    // These don't need to be fatal since we could make do otherwise...
-    // It is (very) nice to have the URL around for messages though!
-    if (access(doc_index, R_OK) < 0)
-    {
-	reportError(form("Unable to open document index '%s'", (const char*)doc_index));
-    }
-    if (access(doc_excerpt, R_OK) < 0)
-    {
-	reportError(form("Unable to open document excerpts '%s'", (const char*)doc_excerpt));
-    }
-
     // Check "uncompressed"/"uncoded" urls at the price of time
     // (extra DB probes).
     db.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
@@ -55,7 +39,9 @@ convertDocs()
     // Start the conversion by going through all the URLs that are in
     // the document database
     //
-    db.Open(doc_db, doc_index, doc_excerpt);
+    if(db.Open(doc_db, doc_index, doc_excerpt) != OK)
+      return;
+    
     IDs = db.DocIDs();
 	
     IDs->Start_Get();

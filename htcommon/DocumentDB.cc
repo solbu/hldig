@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.26 1999/09/24 16:47:09 loic Exp $
+// $Id: DocumentDB.cc,v 1.27 1999/09/28 14:35:37 loic Exp $
 //
 
 #include "DocumentDB.h"
@@ -26,7 +26,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <iostream.h>
 #include <fstream.h>
+#include <errno.h>
 
 
 //*****************************************************************************
@@ -66,42 +68,48 @@ DocumentDB::~DocumentDB()
 //
 int DocumentDB::Open(const String& filename, const String& indexfilename, const String& headname)
 {
-    // If the database is already open, we'll close it
-    // We might be opening this object with a new filename, so we'll be safe
-    Close();
+  // If the database is already open, we'll close it
+  // We might be opening this object with a new filename, so we'll be safe
+  Close();
 
-    dbf = 0;
-    i_dbf = 0;
-    h_dbf = 0;
+  dbf = 0;
+  i_dbf = 0;
+  h_dbf = 0;
 
-    i_dbf = Database::getDatabaseInstance(DB_HASH);
+  i_dbf = Database::getDatabaseInstance(DB_HASH);
 
-    if (i_dbf->OpenReadWrite(indexfilename, 0666) != OK)
-	return NOTOK;
+  if (i_dbf->OpenReadWrite(indexfilename, 0666) != OK) {
+    cerr << "DocumentDB::Open: " << indexfilename << " " << strerror(errno) << "\n";
+    return NOTOK;
+  }
 
-    h_dbf = Database::getDatabaseInstance(DB_HASH);
+  h_dbf = Database::getDatabaseInstance(DB_HASH);
 
-    if (h_dbf->OpenReadWrite(headname, 0666) != OK)
-	return NOTOK;
+  if (h_dbf->OpenReadWrite(headname, 0666) != OK) {
+    cerr << "DocumentDB::Open: " << headname << " " << strerror(errno) << "\n";
+    return NOTOK;
+  }
 
-    dbf = Database::getDatabaseInstance(DB_HASH);
+  dbf = Database::getDatabaseInstance(DB_HASH);
 	
-    if (dbf->OpenReadWrite(filename, 0666) == OK)
+  if (dbf->OpenReadWrite(filename, 0666) == OK)
     {
-	String		data;
-	int             specialRecordNumber = NEXT_DOC_ID_RECORD;
-	String          key((char *) &specialRecordNumber,
-			    sizeof specialRecordNumber);
-	if (dbf->Get(key, data) == OK)
+      String		data;
+      int             specialRecordNumber = NEXT_DOC_ID_RECORD;
+      String          key((char *) &specialRecordNumber,
+			  sizeof specialRecordNumber);
+      if (dbf->Get(key, data) == OK)
 	{
-	    memcpy(&nextDocID, data.get(), sizeof nextDocID);
+	  memcpy(&nextDocID, data.get(), sizeof nextDocID);
 	}
 
-	isopen = 1;
-	return OK;
+      isopen = 1;
+      return OK;
     }
-    else
-	return NOTOK;
+  else {
+    cerr << "DocumentDB::Open: " << filename << " " << strerror(errno) << "\n";
+    return NOTOK;
+  }
 }
 
 
