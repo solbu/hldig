@@ -3,20 +3,9 @@
 //
 // Implementation of WeightWord
 //
-// $Log: WeightWord.cc,v $
-// Revision 1.2  1998/11/01 00:00:40  ghutchis
-//
-// Replaced system calls with htlib/my* functions.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-// Revision 1.1  1996/01/03 19:02:00  turtle
-// Before rewrite
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: WeightWord.cc,v 1.2 1998/11/01 00:00:40 ghutchis Exp $";
+static char RCSid[] = "$Id: WeightWord.cc,v 1.3 1999/02/01 04:24:28 ghutchis Exp $";
 #endif
 
 #include "WeightWord.h"
@@ -105,5 +94,6 @@ void WeightWord::set(char *word)
 		
     }
     this->word = word;
+    this->word.lowercase();
 }
 
