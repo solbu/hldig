@@ -3377,7 +3377,7 @@ else
 #include "confdefs.h"
 #include <alloca.h>
 int main() {
-char *p = alloca(2 * sizeof(int));
+char *p = (char *)alloca(2 * sizeof(int));
 ; return 0; }
 EOF
 if { (eval echo configure:3384: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
@@ -3611,7 +3611,7 @@ else
 int main() {
 
 /* Ultrix mips cc rejects this.  */
-typedef int charset[2]; const charset x;
+typedef int charset[2]; const charset x={0,0};
 /* SunOS 4.1.1 cc rejects this.  */
 char const *const *ccp;
 char **p;
@@ -3999,6 +3999,41 @@ fi
 done
 
 
+echo $ac_n "checking if we should use the included regex?""... $ac_c" 1>&6
+echo "configure:4004: checking if we should use the included regex?" >&5
+if test "$cross_compiling" = yes; then
+  echo "$ac_t""unknown" 1>&6;cat >> confdefs.h <<\EOF
+#define HAVE_BROKEN_REGEX 1
+EOF
+
+
+else
+  cat > conftest.$ac_ext <<EOF
+#line 4013 "configure"
+#include "confdefs.h"
+	#include "${srcdir}/htlib/regex.c"
+		int main() {
+		   regex_t re;
+		   return regcomp(&re, "ht.*Dig", REG_ICASE);
+		}
+		
+EOF
+if { (eval echo configure:4022: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+  echo "$ac_t""yes" 1>&6;LIBOBJS="$LIBOBJS regex.lo"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+  echo "$ac_t""no" 1>&6;cat >> confdefs.h <<\EOF
+#define HAVE_BROKEN_REGEX 1
+EOF
+
+fi
+rm -fr conftest*
+fi
+
+
 ac_ext=C
 # CXXFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
 ac_cpp='$CXXCPP $CPPFLAGS'
@@ -4007,9 +4042,9 @@ ac_link='${CXX-g++} -o conftest${ac_exeext} $CXXFLAGS $CPPFLAGS $LDFLAGS conftes
 cross_compiling=$ac_cv_prog_cxx_cross
 
 echo $ac_n "checking whether we need gethostname() prototype?""... $ac_c" 1>&6
-echo "configure:4011: checking whether we need gethostname() prototype?" >&5
+echo "configure:4046: checking whether we need gethostname() prototype?" >&5
 cat > conftest.$ac_ext <<EOF
-#line 4013 "configure"
+#line 4048 "configure"
 #include "confdefs.h"
 #include <unistd.h>
 #include <stdio.h>
@@ -4027,7 +4062,7 @@ int main() {
 gethostname("sdsu.edu", (int) 8);
 ; return 0; }
 EOF
-if { (eval echo configure:4031: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:4066: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   echo "$ac_t""yes" 1>&6;cat >> confdefs.h <<\EOF
 #define NEED_PROTO_GETHOSTNAME 1
@@ -4041,20 +4076,13 @@ else
 fi
 rm -f conftest*
 
-ac_ext=C
-# CXXFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='${CXX-g++} -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext 1>&5'
-ac_link='${CXX-g++} -o conftest${ac_exeext} $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS 1>&5'
-cross_compiling=$ac_cv_prog_cxx_cross
-
 echo $ac_n "checking how to call getpeername?""... $ac_c" 1>&6
-echo "configure:4053: checking how to call getpeername?" >&5
+echo "configure:4081: checking how to call getpeername?" >&5
 for sock_t in 'struct sockaddr' 'void'; do
   for getpeername_length_t in 'size_t' 'int' 'unsigned int' 'long unsigned int' 'socklen_t'
   do
     cat > conftest.$ac_ext <<EOF
-#line 4058 "configure"
+#line 4086 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -4064,7 +4092,7 @@ int main() {
  getpeername(0, &s, &l); 
 ; return 0; }
 EOF
-if { (eval echo configure:4068: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:4096: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_found=yes ; break 2
 else
@@ -4093,11 +4121,11 @@ EOF
 fi
 
 echo $ac_n "checking how to call select?""... $ac_c" 1>&6
-echo "configure:4097: checking how to call select?" >&5
+echo "configure:4125: checking how to call select?" >&5
 for fd_set_t in 'fd_set' 'int'
   do
     cat > conftest.$ac_ext <<EOF
-#line 4101 "configure"
+#line 4129 "configure"
 #include "confdefs.h"
 #include <sys/time.h>
 #include <sys/types.h>
@@ -4108,7 +4136,7 @@ int main() {
  select(0, &fd, 0, 0, 0); 
 ; return 0; }
 EOF
-if { (eval echo configure:4112: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:4140: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_found=yes ; break 2
 else
@@ -4135,24 +4163,17 @@ EOF
 
 fi
 
-ac_ext=C
-# CXXFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='${CXX-g++} -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext 1>&5'
-ac_link='${CXX-g++} -o conftest${ac_exeext} $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS 1>&5'
-cross_compiling=$ac_cv_prog_cxx_cross
-
 echo $ac_n "checking for bool data type?""... $ac_c" 1>&6
-echo "configure:4147: checking for bool data type?" >&5
+echo "configure:4168: checking for bool data type?" >&5
 cat > conftest.$ac_ext <<EOF
-#line 4149 "configure"
+#line 4170 "configure"
 #include "confdefs.h"
 
 int main() {
 bool i;
 ; return 0; }
 EOF
-if { (eval echo configure:4156: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:4177: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   echo "$ac_t""yes" 1>&6;cat >> confdefs.h <<\EOF
 #define HAVE_BOOL 1
@@ -4167,16 +4188,16 @@ fi
 rm -f conftest*
 
 echo $ac_n "checking for true and false?""... $ac_c" 1>&6
-echo "configure:4171: checking for true and false?" >&5
+echo "configure:4192: checking for true and false?" >&5
 cat > conftest.$ac_ext <<EOF
-#line 4173 "configure"
+#line 4194 "configure"
 #include "confdefs.h"
 
 int main() {
 int i, j; i= true; j= false;
 ; return 0; }
 EOF
-if { (eval echo configure:4180: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:4201: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   echo "$ac_t""yes" 1>&6
      cat >> confdefs.h <<\EOF
@@ -4209,7 +4230,7 @@ fi
 if $htdig_cv_tests
 then
 	echo $ac_n "checking user name""... $ac_c" 1>&6
-echo "configure:4213: checking user name" >&5
+echo "configure:4234: checking user name" >&5
 test -n "$LOGNAME" && USER=$LOGNAME
 
 echo "$ac_t""$USER" 1>&6
@@ -4219,7 +4240,7 @@ echo "$ac_t""$USER" 1>&6
 #
 
  echo $ac_n "checking if apache is wanted""... $ac_c" 1>&6
-echo "configure:4223: checking if apache is wanted" >&5
+echo "configure:4244: checking if apache is wanted" >&5
  # Check whether --with-apache or --without-apache was given.
 if test "${with_apache+set}" = set; then
   withval="$with_apache"
@@ -4260,7 +4281,7 @@ fi
       # Extract the first word of "httpd", so it can be a program name with args.
 set dummy httpd; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:4264: checking for $ac_word" >&5
+echo "configure:4285: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_APACHE'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -4313,7 +4334,7 @@ fi
     #
     if test -n "1.3.1" ; then
       echo $ac_n "checking apache version >= 1.3.1""... $ac_c" 1>&6
-echo "configure:4317: checking apache version >= 1.3.1" >&5
+echo "configure:4338: checking apache version >= 1.3.1" >&5
       APACHE_REQUEST=`echo 1.3.1 | sed -e 's/\.//g'`
       APACHE_REQUEST_MAJOR=`expr $APACHE_REQUEST : '\(..\)'`
       APACHE_REQUEST_MINOR=`expr $APACHE_REQUEST : '..\(.*\)'`
@@ -4329,7 +4350,7 @@ echo "configure:4317: checking apache version >= 1.3.1" >&5
     #
     HTTP_ROOT=`$APACHE -V | grep HTTPD_ROOT | sed -e 's/.*"\(.*\)"/\1/'`
     echo $ac_n "checking apache modules""... $ac_c" 1>&6
-echo "configure:4333: checking apache modules" >&5
+echo "configure:4354: checking apache modules" >&5
     for dir in libexec modules lib/apache
     do
       if test -f $HTTP_ROOT/$dir/mod_env.*
@@ -4552,6 +4573,7 @@ s%@LEX_OUTPUT_ROOT@%$LEX_OUTPUT_ROOT%g
 s%@YACC@%$YACC%g
 s%@CXXCPP@%$CXXCPP%g
 s%@ALLOCA@%$ALLOCA%g
+s%@LIBOBJS@%$LIBOBJS%g
 s%@USER@%$USER%g
 s%@APACHE@%$APACHE%g
 s%@APACHE_MODULES@%$APACHE_MODULES%g
