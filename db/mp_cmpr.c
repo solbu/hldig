@@ -94,7 +94,6 @@ static const char sccsid[] = "@(#)mp_cmpr.c	1.1 (Senga) 01/08/99";
 #ifdef HAVE_LIBZ
 #include "zlib.h"
 #endif /* HAVE_LIBZ */
-//static global
 static int  memp_cmpr_zlib_level = -1;
 
 /*
@@ -432,6 +431,7 @@ CDB___memp_cmpr_write(dbmfp, bhp, db_io, niop)
     if(length > copy_length) {
       if (dbmfp->dbmp->recursion_level >= 2 ) {
 	  fprintf(stderr,"CDB___memp_cmpr_write: Wanted %d > %d bytes\n", length, copy_length);
+	  fprintf(stderr,"Reducing  wordlist_cache_dirty_level  may help.\n");
 	  ret = EBUSY;
 	  goto err;
       }
@@ -655,7 +655,6 @@ CDB___memp_cmpr_deflate(inbuff, inbuff_length, outbuffp, outbuff_lengthp, user_d
       off = LOFFSET(pg);
       freesp = P_FREESPACE(pg);
       memset((char*)(inbuff + off), 0, freesp);
-      //memset((char*)(inbuff + LOFFSET(pg)), '\0', P_FREESPACE(pg));
       break;
     }
   }
@@ -664,7 +663,6 @@ CDB___memp_cmpr_deflate(inbuff, inbuff_length, outbuffp, outbuff_lengthp, user_d
   c_stream.zfree=(free_func)0;
   c_stream.opaque=(voidpf)0;
 
-  //if(deflateInit(&c_stream, Z_DEFAULT_COMPRESSION) != Z_OK) 
   if(deflateInit(&c_stream, memp_cmpr_zlib_level) != Z_OK) 
   {
     ret = EIO;

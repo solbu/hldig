@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: dbbench.cc,v 1.9 2002/02/01 22:49:37 ghutchis Exp $
+// $Id: dbbench.cc,v 1.10 2003/05/24 14:30:22 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -33,7 +33,7 @@
 #include <errno.h>
 
 /* AIX requires this to be the first thing in the file.  */
-#ifndef __GNUC__
+//#ifndef __GNUC__	// Why not if g++?  Needed by g++ on Solaris 2.8
 # if HAVE_ALLOCA_H
 #  include <alloca.h>
 # else
@@ -45,7 +45,7 @@ char *alloca ();
 #   endif
 #  endif
 # endif
-#endif
+//#endif
 
 #include <htString.h>
 #include <WordList.h>

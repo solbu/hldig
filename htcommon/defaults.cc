@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.82 2003/05/22 14:43:56 lha Exp $
+// $Id: defaults.cc,v 1.83 2003/05/24 14:30:21 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1128,8 +1128,13 @@ http://www.htdig.org/", " \
 	retrievals will be done using the HTTP-PROXY protocol. \
 	The URL specified in this attribute points to the host \
 	and port where the proxy server resides.<br> \
+	Later, this should be able to be overridden by the \
+	<code>http_proxy</code> environement variable, but it currently cannot.\
 	The use of a proxy server greatly improves performance \
-	of the indexing process. \
+	of the indexing process.<br> \
+	See also \
+	<a href=\"#http_proxy_authorization\">http_proxy_authorization</a> and \
+	<a href=\"#http_proxy_exclude\">#http_proxy_exclude</a>. \
 " }, \
 { "http_proxy_authorization", "",  \
 	"string", "htdig", "URL", "3.2.0b4", "Indexing:Connection", "http_proxy_authorization: myusername:mypassword", " \
@@ -1138,7 +1143,10 @@ http://www.htdig.org/", " \
 	when using a proxy with authorization requested. \
 	The credentials will be encoded using the \"Basic\" authentication \
 	scheme. There <em>must</em> be a colon (:) between the username and \
-	password. \
+	password.<br> \
+	If you use this option, be sure to protect the configuration file \
+	so it is readable only by you, and do not \
+	use that same configuration file for htsearch. \
 " }, \
 { "http_proxy_exclude", "", \
 	"pattern list", "htdig", "", "3.1.0b3", "Indexing:Connection", "http_proxy_exclude: http://intranet.foo.com/", " \
@@ -2724,7 +2732,7 @@ form during indexing and translated for results. \
 	words. The file is easy to parse with tools like \
 	perl or tcl. \
 " }, \
-{ "wordlist_cache_dirty_level", "40",  \
+{ "wordlist_cache_dirty_level", "4",  \
 	"integer", "htdig", "", "3.2.0b4", "Indexing:How", "wordlist_cache_dirty_level: 2", " \
 	Maximum ratio of dirty pages to clean pages in the cache.  If fewer \
 	are clean, then all pages are written out (but kept in the cache). \

@@ -1,3 +1,19 @@
+Sat May 24 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* htcommon/defaults.cc: Keep more wordlist cache pages clean
+
+	* {,db/}configure{,.in}, {,db/}ac{local,include}.m4:
+	  Patch by Richard Munroe to test if  -Wno-deprecated  needed.
+	  Many bug fixes / extra search paths added.
+
+	* include/htconfig.h.in, db/db_config.h.in:
+	  Only '#define const' if not C++ (htword/WordDB.cc uses db_config.h)
+	* test/dbbench.cc: check for  alloca  even if gcc
+	* test/t_url: used grep -C instead of grep -c (for portability)
+	* db/mp_{alloc,cmpr}.c: Removed/replaced C++ style comments
+
+	* htdoc/require.html: Revised list of supported platforms
+
 Thu May 22 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* htnet/HtFile.cc: Fix previous  .get()  patch...
@@ -15,7 +31,7 @@ Thu May 22 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
 Thu May 22 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
-	* ltmain.sh, test/Makefile.in:  Hack list library dependencies
+	* ltmain.sh, test/Makefile.in:  Hack to list library dependencies
 	  multiple times in  g++  command, to get MacOS X to 'make check'.
 
 	* test/{search,word}.cc: cast sizeof() to (int) to avoid warnings.

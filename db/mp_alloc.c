@@ -374,7 +374,7 @@ CDB___memp_clean_page(dbmp, memreg)
 	    if (!F_ISSET(bhp, BH_DIRTY))
 		continue;
 
-	    ++bhp->ref;		// are these needed?  I just copied from above!
+	    ++bhp->ref;		/* are these needed? I just copied from above!*/
 	    if (!CDB___memp_bhwrite(dbmp, bh_mfp, bhp, &restart, &wrote))
 		cleaned++;
 	    --bhp->ref;
