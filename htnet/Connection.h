@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.h,v 1.3.2.3 2000/02/29 11:41:01 loic Exp $
+// $Id: Connection.h,v 1.3.2.4 2000/03/02 17:58:48 angus Exp $
 //
 
 #ifndef _Connection_h_
@@ -43,6 +43,7 @@ public:
     int				Nondelay();
     int                         Timeout(int value);
     int				Retries(int value);
+    int  			WaitTime(unsigned int _wt);
 
     // Port stuff
     int				Assign_Port(int port = 0);
@@ -107,6 +108,9 @@ private:
     int				need_io_stop;
     int                         timeout_value;
     int                         retry_value;
+
+    unsigned int                wait_time;   // time to wait after an
+                                             // unsuccessful connection
 };
 
 

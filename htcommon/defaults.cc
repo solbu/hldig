@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.42 2000/03/01 19:44:11 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.43 2000/03/02 17:58:46 angus Exp $
 //
 
 #include "HtConfiguration.h"
@@ -2088,6 +2088,16 @@ http://www.htdig.org/", "
 	"string", "htsearch", "all", "Presentation:Files", "syntax_error_file: ${common_dir}/synerror.html", "
 	This points to the file which will be displayed if a
 	boolean expression syntax error was found.
+" },
+{ "tcp_max_retries", "1", 
+	"number", "htdig", "3.2.0b1", "Indexing:Connection", "tcp_max_retries: 6", "
+         This option set the maximum number of attempts when a connection timeouts.
+         After all these retries, the connection attempt results <timed out>.
+" },
+{ "tcp_wait_time", "5", 
+	"number", "htdig", "3.2.0b1", "Indexing:Connection", "tcp_max_retries: 10", "
+         This attribute sets the wait time after a connection fails and the timeout
+         is raised.
 " },
 { "template_map", "Long builtin-long builtin-long Short builtin-short builtin-short", 
 	"string list", "htsearch", "3.0", "Presentation:Files,Searching:UI", "template_map:

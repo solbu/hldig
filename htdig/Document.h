@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.h,v 1.10.2.7 2000/02/02 19:01:03 grdetil Exp $
+// $Id: Document.h,v 1.10.2.8 2000/03/02 17:58:47 angus Exp $
 //
 //
 #ifndef _Document_h_
@@ -31,6 +31,8 @@
 #include "HtHTTP.h"
 #include "HtFile.h"
 #include "ExternalTransport.h"
+#include "Server.h"
+
 
 class Connection;
 
@@ -62,7 +64,7 @@ public:
     void			Referer(char *url);
     time_t			ModTime()		{return modtime.GetTime_t();}
 
-    Transport::DocStatus	Retrieve(HtDateTime date);
+    Transport::DocStatus	Retrieve(Server *server, HtDateTime date);
     Transport::DocStatus	RetrieveLocal(HtDateTime date, StringList *filenames);
 
     //

@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.17 2000/02/22 20:19:53 grdetil Exp $
+// $Id: Document.cc,v 1.55.2.18 2000/03/02 17:58:47 angus Exp $
 //
 
 #include <signal.h>
@@ -211,7 +211,7 @@ Document::UseProxy()
 //   Attempt to retrieve the document pointed to by our internal URL
 //
 Transport::DocStatus
-Document::Retrieve(HtDateTime date)
+Document::Retrieve(Server *server, HtDateTime date)
 {
    // Right now we just handle http:// service
    // Soon this will include file://
@@ -259,13 +259,13 @@ Document::Retrieve(HtDateTime date)
             HTTPConnect->SetRefererURL(*referer);
 	  
 	  // We may issue a config paramater to enable/disable them
-         if (config.Boolean("persistent_connections"))
+         if (server->IsPersistentConnectionAllowed())
          {
             // Persistent connections allowed
             HTTPConnect->AllowPersistentConnection();
 
             // Head before Get option control
-            if (config.Boolean("head_before_get"))
+            if (server->HeadBeforeGet())
                HTTPConnect->EnableHeadBeforeGet();
             else
                HTTPConnect->DisableHeadBeforeGet();
@@ -338,10 +338,16 @@ Document::Retrieve(HtDateTime date)
          transportConnect->SetConnection(url);
       
       // OK. Let's set the connection time out
-      transportConnect->SetTimeOut(config.Value("timeout"));
+      transportConnect->SetTimeOut(server->TimeOut());
+      
+      // Let's set number of retries for a failed connection attempt
+      transportConnect->SetRetry(server->TcpMaxRetries());
+      
+      // ... And the wait time after a failure
+      transportConnect->SetWaitTime(server->TcpWaitTime());
       
       // OK. Let's set the maximum size of a document to be retrieved
-      transportConnect->SetRequestMaxDocumentSize(config.Value(url,"max_doc_size"));
+      transportConnect->SetRequestMaxDocumentSize(server->MaxDocuments());
       
       // Let's set the credentials
       if (authorization.length())

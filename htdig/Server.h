@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.h,v 1.9.2.6 2000/02/02 19:01:03 grdetil Exp $
+// $Id: Server.h,v 1.9.2.7 2000/03/02 17:58:47 angus Exp $
 //
 
 #ifndef _Server_h_
@@ -20,6 +20,7 @@
 #include "StringList.h"
 #include "Stack.h"
 #include "HtHeap.h"
+#include "HtRegex.h"
 #include "StringMatch.h"
 #include "URLRef.h"
 #include "HtDateTime.h"
@@ -80,10 +81,17 @@ public:
 	//
         // Methods for managing persistent connections
 	//
-        void			AllowPersistentConnection() { _persistent_connections = 1; }
-        void			AvoidPersistentConnection() { _persistent_connections = 0; }
-        int			IsPersistentConnectionAllowed () { return _persistent_connections; }
+        void			AllowPersistentConnection() { _persistent_connections = true; }
+        void			AvoidPersistentConnection() { _persistent_connections = false; }
+        bool			IsPersistentConnectionAllowed () { return _persistent_connections; }
 
+        // Methods for getting info regarding server configuration
+        bool			HeadBeforeGet() { return _head_before_get; }
+        unsigned int            TimeOut() { return _timeout; }
+        unsigned int            TcpWaitTime() { return _tcp_wait_time; }
+        unsigned int            TcpMaxRetries() { return _tcp_max_retries; }
+        unsigned int            MaxDocuments() { return _max_documents; }
+        
 	//
 	// Return the URLs to be excluded from this server
 	// (for inclusion in the exclude_urls attribute)
@@ -99,8 +107,22 @@ private:
 	HtHeap			_paths;
 	HtRegex			_disallow;	// This pattern will be used to test paths
 	int		        _documents;	// Number of documents visited
+
 	int                     _max_documents;  // Maximum number of documents from this server
-        int                     _persistent_connections; // Are pcs allowed
+
+        bool                    _persistent_connections; // Are pcs allowed
+
+        bool                    _head_before_get; // HEAD call before a GET?
+
+        int                     _timeout;       // Timeout for this server
+                                                
+        unsigned int            _tcp_wait_time;     // Wait time after a timeout
+                                                // has been raised.
+                                                
+        unsigned int            _tcp_max_retries;   // Max number of retries when
+                                                // connection is not possible
+                                                // and timeout occurs
+
 
         
 };

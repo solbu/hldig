@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.6.2.5 2000/02/19 05:02:45 ghutchis Exp $
+// $Id: Transport.h,v 1.6.2.6 2000/03/02 17:58:48 angus Exp $
 //
 //
 
@@ -169,6 +169,10 @@ class Transport : public Object
    void SetRetry ( int r ) { _retries=r; }
    int GetRetry () { return _retries; }
 
+   // Set and get the wait time after a failed connection
+   void SetWaitTime ( unsigned int t ) { _wait_time = t; }
+   unsigned int GetWaitTime () { return _wait_time; }
+
    // Get the Connection Host
    const String &GetHost() { return _host; }
 
@@ -245,6 +249,11 @@ protected:
    inline int AssignConnectionRetries()
       { return _connection.Retries(_retries); }
 
+   // Assign the wait time (after a failure) to the connection
+
+   inline int AssignConnectionWaitTime()
+      { return _connection.WaitTime(_wait_time); }
+
    // Flush the connection
    void FlushConnection();
       
@@ -289,6 +298,7 @@ protected:
    
    int		_timeout;              // Connection timeout
    int		_retries;              // Connection retry limit
+   unsigned int _wait_time;            // Connection wait time (if failed)
 
    HtDateTime	*_modification_time;   // Stored modification time if avail.
    int		_max_document_size;    // Max document size to retrieve

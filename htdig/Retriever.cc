@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.22 2000/02/24 17:47:08 grdetil Exp $
+// $Id: Retriever.cc,v 1.72.2.23 2000/03/02 17:58:47 angus Exp $
 //
 
 #include "Retriever.h"
@@ -348,11 +348,13 @@ Retriever::Start()
                // Let's check for a '0' value (out of range)
                // If set, we change it to 1.
                
-               if (config.Value("max_connection_requests") == 0)
-                  max_connection_requests = 1;
+               if (config.Value("server", server->host(),
+                  "max_connection_requests") == 0)
+                     max_connection_requests = 1;
                else                  
                   max_connection_requests =
-                     config.Value("max_connection_requests");
+                     config.Value("server", server->host(),
+                        "max_connection_requests");
 
                if (debug > 2)
                {
@@ -536,14 +538,14 @@ Retriever::parse_url(URLRef &urlRef)
    	        cout << "Local retrieval failed, trying HTTP" << endl;
 	    if (server && !server->IsDead()
 			&& !local_urls_only)
-		status = doc->Retrieve(date);
+		status = doc->Retrieve(server, date);
 	    else
 		status = Transport::Document_no_host;
         }
         delete local_filenames;
     }
     else if (server && !server->IsDead() && !local_urls_only)
-        status = doc->Retrieve(date);
+        status = doc->Retrieve(server, date);
     else
 	status = Transport::Document_no_host;
 

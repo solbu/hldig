@@ -1,3 +1,25 @@
+Thu Mar  2 18:45:15 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* htnet/Connection.*: management of wait_time and number of retries
+          after a timeout occurs.
+
+        * htnet/Transport.*: Management of connection attributes above.
+
+        * htdig/Server.*: Set members for managing timeout retries taken from
+          the configuration file ("timeout", "tcp_max_retries", "tcp_wait_time").
+          
+        * htdig/Document.cc: Added the chance to configure on a server basis
+          "persistent_connections", "head_before_get", "timeout",
+          "tcp_max_retries", "tcp_wait_time". Changed Retrieve method accepting
+          now a server object pointer: Retrieve (server*, HtDateTime).
+          
+        * htdig/Retriever.cc: Added the chance to configure on a server basis
+          "max_connection_requests" attribute.
+        
+        * htcommon/defaults.cc: Added "tcp_max_retries", "tcp_wait_time" -- Need
+          to be go over by someone who speaks english better than me. Not a hard
+          work !!! ;-)
+        
 Wed Mar  1 17:01:09 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (excerpt, hilight): move SGML encoding into

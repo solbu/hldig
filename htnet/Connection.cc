@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.3.2.5 2000/03/01 06:39:13 ghutchis Exp $
+// $Id: Connection.cc,v 1.3.2.6 2000/03/02 17:58:48 angus Exp $
 //
 
 #include "Connection.h"
@@ -64,6 +64,7 @@ Connection::Connection()
     all_connections.Add(this);
     timeout_value = 0;
     retry_value = 1;
+    wait_time = 5;  // wait 5 seconds after a failed connection attempt
 
     pos = pos_max = 0;
 }
@@ -307,7 +308,7 @@ int Connection::Connect()
 	// cout << " <"  << ::strerror(errno) << "> ";
 	close(sock);
         Open();
-        sleep(5);
+        sleep(wait_time);
       }
 
 #if 0
@@ -768,4 +769,15 @@ unsigned int GetHostIP(char *ip, int length)
     if (ip)
 	strncpy(ip, inet_ntoa(addr), length);
     return addr.s_addr;
+}
+
+
+
+//*************************************************************************
+// int Connection::WaitTime(unsigned int _wt)
+//
+int Connection::WaitTime(unsigned int _wt)
+{
+   wait_time = _wt;
+   return OK;
 }

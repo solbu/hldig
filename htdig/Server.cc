@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.9 2000/02/09 15:30:20 grdetil Exp $
+// $Id: Server.cc,v 1.17.2.10 2000/03/02 17:58:47 angus Exp $
 //
 
 #include "htdig.h"
@@ -41,10 +41,22 @@ Server::Server(URL u, StringList *local_robots_files)
     _documents = 0;
 
     // We take it from the configuration
-    _persistent_connections = config.Boolean("persistent_connections");
+    _persistent_connections = config.Boolean("server", _host,"persistent_connections", 1);
+    _head_before_get = config.Boolean("server", _host,"head_before_get", 0);
 
     _max_documents = config.Value("server",_host,"server_max_docs", -1);
     _connection_space = config.Value("server",_host,"server_wait_time", 0);
+
+    // Timeout setting
+    _timeout = config.Value("server",_host,"timeout");
+
+    // Number of consecutive attempts to establish a TCP connection
+    _tcp_max_retries = config.Value("server",_host,"tcp_max_retries", 0);
+
+    // Seconds to wait after a timeout occurs
+    _tcp_wait_time = config.Value("server",_host,"tcp_wait_time", 0);
+
+
     _last_connection.SettoNow();  // For getting robots.txt
 
     if (strcmp(u.service(),"http") == 0 || strcmp(u.service(),"https") == 0)
@@ -76,13 +88,13 @@ Server::Server(URL u, StringList *local_robots_files)
 		  {
 		    if (debug > 1)
 		      cout << "Local retrieval failed, trying HTTP" << endl;
-		    status = doc.Retrieve(timeZero);
+		    status = doc.Retrieve(this, timeZero);
 		  }
 	      }
 	  }
 	else if (!local_urls_only)
         {
-	  status = doc.Retrieve(timeZero);
+	  status = doc.Retrieve(this, timeZero);
 
           // Let's check if persistent connections are both
           // allowed by the configuration and possible after
