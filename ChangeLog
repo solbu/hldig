@@ -1,3 +1,9 @@
+Mon Mar 18 11:28:02 CET 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * htlib/HtDateTime.h: added the copy constructor
+    * htnet/HtCookie.cc: fixed a NULL pointer bug regarding 'datestring' management
+      and HtDateTime copy constructor is now used
+
 Tue Mar 12 18:19:49 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/HtDateTime.cc (Parse, SetFTime): Added Parse method for

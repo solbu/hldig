@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.h,v 1.12 2002/02/01 22:49:33 ghutchis Exp $
+// $Id: HtDateTime.h,v 1.13 2002/03/18 10:30:20 angusgb Exp $
 
 ///////
    //   Class for Date and Time
@@ -159,6 +159,9 @@ public:
    // From a struct tm value and pointer
    HtDateTime(struct tm &t) {SetDateTime(t); ToLocalTime();}
    HtDateTime(struct tm *t) {SetDateTime(t); ToLocalTime();}
+
+   // Copy constructor
+   inline HtDateTime(const HtDateTime& rhs);
 
 ///////
    //   Interface methods
@@ -463,6 +466,19 @@ public:
 
 };
 
+
+///////
+   //   Copy constructor
+///////
+
+inline
+HtDateTime::HtDateTime (const HtDateTime& rhs)
+{
+	// Copy the contents
+	Ht_t = rhs.Ht_t;
+	local_time = rhs.local_time;
+}
+
 ///////
    //   Operator overloading
 ///////
@@ -490,8 +506,12 @@ bool HtDateTime::operator<(const HtDateTime &right) const
 inline
 HtDateTime &HtDateTime::operator=(const HtDateTime &right)
 {
-	Ht_t=right.Ht_t;             // Copy the time_t value
-	local_time=right.local_time;     // Copy the local_time flag
+	if (this != &right)
+	{
+	   Ht_t=right.Ht_t;             // Copy the time_t value
+	   local_time=right.local_time;     // Copy the local_time flag
+	}
+
 	return *this;
 }
 

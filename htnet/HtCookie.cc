@@ -24,7 +24,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookie.cc,v 1.2 2002/02/02 18:18:12 ghutchis Exp $ 
+// $Id: HtCookie.cc,v 1.3 2002/03/18 10:30:20 angusgb Exp $ 
 //
 
 #include "HtCookie.h"
@@ -199,10 +199,7 @@ void HtCookie::SetExpires(const HtDateTime *aDateTime)
 
       // Let's check whether expires has already been created
       if (!expires)
-         expires = new HtDateTime(); // No ... let's create it
-
-      // We certainly have now an instantiated object
-      (*expires) = (*aDateTime);   // copy the contents
+         expires = new HtDateTime(*aDateTime); // No ... let's create it and copy it
 
    }
 
@@ -293,7 +290,7 @@ int HtCookie::SetDate(const char *datestring, HtDateTime &dt)
 {
    DateFormat df;
 
-   while (isspace(*datestring))
+   while (*datestring && isspace(*datestring))
       datestring++; // skip initial spaces
 
    df = RecognizeDateFormat(datestring);
@@ -356,23 +353,27 @@ HtCookie::DateFormat HtCookie::RecognizeDateFormat(const char *datestring)
 
    register char *s;
 
-   if ((s=strchr(datestring, ',')))
+   if (!datestring)
    {
-      // A comma is present.
-      // Two chances: RFC1123 or RFC850
-    
-      if(strchr(s, '-'))
-      	 return DateFormat_RFC850;  // RFC 850 recognized   
-      else return DateFormat_RFC1123; // RFC 1123 recognized
-   }
-   else
-   {
-      // No comma present
-    
-      // Let's try C Asctime:    Sun Nov  6 08:49:37 1994
-      if (strlen(datestring) == 24)
+
+      if ((s=strchr(datestring, ',')))
       {
-      	 return DateFormat_AscTime;
+         // A comma is present.
+         // Two chances: RFC1123 or RFC850
+    
+         if(strchr(s, '-'))
+      	    return DateFormat_RFC850;  // RFC 850 recognized   
+         else return DateFormat_RFC1123; // RFC 1123 recognized
+      }
+      else
+      {
+         // No comma present
+    
+         // Let's try C Asctime:    Sun Nov  6 08:49:37 1994
+         if (strlen(datestring) == 24)
+         {
+      	    return DateFormat_AscTime;
+         }
       }
    }
 
