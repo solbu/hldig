@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.14 2001/07/26 04:18:11 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.15 2001/09/09 03:12:41 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -78,9 +78,18 @@ main(int ac, char **av)
  	switch (c)
  	{
  	    case 'c':
- 		configFile = optarg;
-                 override_config=1;
- 		break;
+	      // The default is obviously to do this securely
+	      // but if people want to shoot themselves in the foot...
+#ifndef ALLOW_INSECURE_CGI_CONFIG
+	      if (!getenv("REQUEST_METHOD"))
+		{
+#endif
+		  configFile = optarg;
+		  override_config=1;
+#ifndef ALLOW_INSECURE_CGI_CONFIG
+		}
+#endif
+	      break;
  	    case 'v':
  		debug++;
  		break;

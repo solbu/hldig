@@ -1,3 +1,13 @@
+Sat Sep  8 22:04:47 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* acconfig.h, include/htconfig.h.in: Add undef for
+	ALLOW_INSECURE_CGI_CONFIG, which if defined does about what you'd
+	expect. (This is for any wrapper authors who don't want to rewrite
+	but are willing to run insecure.)
+
+	* htsearch/htsearch.cc: Only allow the -c flag to work when
+	REQUEST_METHOD is undefined. Fixes PR#458013.
+
 Fri Aug 31 16:00:37 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/URL.cc (URL): Fixed to call normalizePath() even if URL

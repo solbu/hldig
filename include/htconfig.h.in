@@ -119,6 +119,10 @@
 /* Define to the syslog facility for htsearch logging. */
 #define LOG_FACILITY LOG_LOCAL5
 
+/* Define this if you're willing to allow htsearch to take -c even as a CGI */
+/*  regardless of the security problems with this. */
+#undef ALLOW_INSECURE_CGI_CONFIG
+
 
 /* Define to remove the word count in db and WordRef struct. */
 #undef NO_WORD_COUNT
