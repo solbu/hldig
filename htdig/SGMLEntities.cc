@@ -2,44 +2,19 @@
 // SGMLEntities.cc
 //
 // Implementation of SGMLEntities
-//
-// $Log: SGMLEntities.cc,v $
-// Revision 1.8  1999/01/20 05:41:20  ghutchis
-// Declare extern config
-//
-// Revision 1.7  1999/01/20 05:25:17  ghutchis
-// Use translate_quote, _lt_gt, and _amp to optionally translate these entities.
-//
-// Revision 1.6  1999/01/07 03:22:03  ghutchis
-// Fix minor memory leaks.
-//
-// Revision 1.5  1998/08/03 16:50:35  ghutchis
-//
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.4  1997/03/24 04:33:17  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.3  1997/03/13 18:37:49  turtle
-// Changes
-//
-// Revision 1.2  1997/02/24 17:52:51  turtle
-// Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
-// ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
+// Translate SGML entities to ISO 8859 equivalents
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: SGMLEntities.cc,v 1.8 1999/01/20 05:41:20 ghutchis Exp $";
+static char RCSid[] = "$Id: SGMLEntities.cc,v 1.9 1999/01/27 18:09:23 ghutchis Exp $";
 #endif
 
 #include "SGMLEntities.h"
-#include <htString.h>
+#include "htString.h"
 #include <ctype.h>
 #include <stdlib.h>
-#include <Configuration.h>
+#include "Configuration.h"
+#include "StringMatch.h"
 
 extern Configuration config;
 
@@ -230,8 +205,16 @@ SGMLEntities::translateAndUpdate(unsigned char *&entityStart)
 	//
 	// Do NOT translate entities for '"' (quote).
 	//
-	if (strcmp(entity.get(), "quot") == 0 ||
-	    strcmp(entity.get(), "#34") == 0 )
+
+	static StringMatch *quoteMatch = 0;
+	if (!quoteMatch)
+	  {
+	    quoteMatch = new StringMatch();
+	    quoteMatch->Pattern("quot|#34");
+	  }
+
+	if (quoteMatch->hasPattern() &&
+	    quoteMatch->FindFirstWord(entity.get()) >= 0)
 	  {
 	    entityStart = orig + 1;
 	    return '&';
@@ -244,8 +227,16 @@ SGMLEntities::translateAndUpdate(unsigned char *&entityStart)
 	// Do NOT translate entities for '&' since they can
 	// occur in code samples that might end up in an excerpt.
 	//
-	if (strcmp(entity.get(), "amp") == 0 ||
-	    strcmp(entity.get(), "#38") == 0 )
+
+	static StringMatch *ampMatch = 0;
+	if (!ampMatch)
+	  {
+	    ampMatch = new StringMatch();
+	    ampMatch->Pattern("amp|#38");
+	  }
+	
+	if (ampMatch->hasPattern() &&
+	    ampMatch->FindFirstWord(entity.get()) >= 0)
 	  {
 	    entityStart = orig + 1;
 	    return '&';
@@ -258,10 +249,16 @@ SGMLEntities::translateAndUpdate(unsigned char *&entityStart)
 	// Do NOT translate entities for '<' and '>' since they can
 	// occur in code samples that might end up in an excerpt.
 	//
-	if (strcmp(entity.get(), "lt") == 0 ||
-	    strcmp(entity.get(), "#60") == 0 ||
-	    strcmp(entity.get(), "gt") == 0 ||
-	    strcmp(entity.get(), "#62") == 0 )
+
+	static StringMatch *ltgtMatch = 0;
+	if (!ltgtMatch)
+	  {
+	    ltgtMatch = new StringMatch();
+	    ltgtMatch->Pattern("lt|#60|gt|#62");
+	  }
+
+	if (ltgtMatch->hasPattern() &&
+	    ltgtMatch->FindFirstWord(entity.get()) >= 0)
 	  {
 	    entityStart = orig + 1;
 	    return '&';

@@ -1,3 +1,11 @@
+Wed Jan 27 13:02:39 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/SGMLEntities.cc: Use StringMatch class for matching
+	&quot; &amp; &lt; and &gt; as defined by config options. Should
+	speed up translation.
+
+	* htdoc/THANKS.html: Minor updates for contributions towards 3.1.0.
+	
 Tue Jan 26 19:29:08 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* include/htconfig.h.in: Define TRUE and FALSE if not
