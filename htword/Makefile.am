@@ -19,4 +19,4 @@ include_HEADERS = WordList.h \
 	WordStat.h
 
 WordKey.h: $(top_srcdir)/htword/WordKey.h.tmpl $(top_srcdir)/htword/word.desc $(top_srcdir)/htword/word_builder.pl
-	@PERL@ $(top_srcdir)/htword/word_builder.pl $(top_srcdir)/htword/word.desc
+	@PERL@ $(top_srcdir)/htword/word_builder.pl @KEYDESC@
