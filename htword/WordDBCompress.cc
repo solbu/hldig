@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.cc,v 1.1.2.15 2000/01/11 18:48:47 bosc Exp $
+// $Id: WordDBCompress.cc,v 1.1.2.16 2000/01/14 14:41:05 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -41,6 +41,7 @@
 WordDBCompress::WordDBCompress()
 {
     debug=1;
+    monitor = 0;
     bm_cmpr_count=0;
     bm_cmpr_time=0;
     bm_ucmpr_count=0;
@@ -130,7 +131,7 @@ WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **
 	if(pg.type!=5){bm_nonleave_count++;}
 	bm_mxtreelevel=HtMAX(pg.pg->level,bm_mxtreelevel);
 	bm_cmpr_time+=HtTime::DTime(start_time);
-	(*monitor)();
+	if(monitor) (*monitor)();
     }
 
     // cleanup
@@ -170,7 +171,7 @@ WordDBCompress::Uncompress(const u_int8_t *inbuff, int inbuff_length, u_int8_t *
 	if(pg.type!=5){bm_nonleave_count++;}
 	bm_mxtreelevel=HtMAX(pg.pg->level, bm_mxtreelevel);
 	bm_ucmpr_time+=HtTime::DTime(start_time);
-	(*monitor)();
+	if(monitor) (*monitor)();
     }
 
     pg.delete_page();

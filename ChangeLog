@@ -1,3 +1,15 @@
+Fri Jan 14 14:24:39 2000  Loic Dachary  <loic@ceic.com>
+
+        * htdig/htdig.cc,htmerge/htmerge.cc,htsearch/htsearch.cc: Use Initialize(defaults)
+	  to load configuration file if provided.
+	
+	* htword/WordDBCompress.cc (Compress): initialize monitor to null in
+	  constructor and check if null before usage. Core dumped in htdb/htload.
+
+	* htword/WordContext.h (class WordContext): Add 
+	  Initialize(const ConfigDefaults* config_defaults = 0)
+	  that probe configuration files. Usefull when htword is used as a standalone library.
+
 Thu Jan 13 19:52:27 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriver.cc: Fix problem with valid_extensions when an
