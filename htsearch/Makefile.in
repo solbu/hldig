@@ -1,10 +1,15 @@
-include @top_srcdir@/Makefile.config
+top_srcdir=		@top_srcdir@
+srcdir=			@srcdir@
+VPATH=			@srcdir@
+
+top_builddir= ..
+include $(top_builddir)/Makefile.config
 
 OBJS=		Display.o DocMatch.o ResultList.o ResultMatch.o \
 		Template.o TemplateList.o WeightWord.o htsearch.o \
 		parser.o
 
-FOBJS=		@top_srcdir@/htfuzzy/libfuzzy.a
+FOBJS=		$(top_builddir)/htfuzzy/libfuzzy.a
 TARGET=		htsearch
 LOCAL_DEFINES=	-DCONFIG_DIR=\"$(CONFIG_DIR)\"
 
@@ -27,4 +32,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) @CPPFLAGS@ $(CXXFLAGS) $(INCS) -- $(OBJS)
 
-htsearch.o:		@top_srcdir@/CONFIG
+htsearch.o:		$(top_builddir)/CONFIG

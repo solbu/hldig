@@ -3,16 +3,13 @@
 ##
 ## This file is part of ht://Dig
 ##
-include @HTDIG_TOP@/CONFIG
+include $(top_builddir)/CONFIG
 
 #
 # You should not have to modify anything below this point.
 #
 
 SHELL=                  /bin/sh
-top_srcdir=             @top_srcdir@
-srcdir=                 @srcdir@
-VPATH=                  @srcdir@
 
 #
 # Locations of programs
@@ -31,7 +28,7 @@ SENDMAIL=	@SENDMAIL@
 
 DEFINES=	-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\"
 LIBDIRS=	-L../htlib -L../htcommon -L../db/dist -L../rx/rx -L/usr/lib
-INCS=		-I../htlib -I../htcommon -I../db/dist -I../rx/rx -I../include
+INCS=		-I$(top_srcdir)/htlib -I$(top_srcdir)/htcommon -I../db/dist -I$(top_srcdir)/rx/rx -I../include
 HTLIBS=		../htcommon/libcommon.a \
 		../htlib/libht.a \
 		../db/dist/libdb.a \

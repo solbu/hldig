@@ -1,4 +1,9 @@
-include @top_srcdir@/Makefile.config
+top_srcdir=		@top_srcdir@
+srcdir=			@srcdir@
+VPATH=			@srcdir@
+
+top_builddir= ..
+include $(top_builddir)/Makefile.config
 
 OBJS=		docs.o htmerge.o words.o 
 
@@ -24,4 +29,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) $(CXXFLAGS) $(INCS) -- $(OBJS)
 
-htmerge.o:		@top_srcdir@/CONFIG
+htmerge.o:		$(top_builddir)/CONFIG

@@ -1,3 +1,9 @@
+Sat Jan  2 16:39:34 1999  Alexander Bergolth  <leo@strike.wu-wien.ac.at>
+
+	* {.,htcommon,htdig,htfuzzy,htlib,htmerge,htnotify,htsearch}/
+	Makefile.in, Makefile.config.in, configure.in: Changed to allow
+	compiling in seperate build directories.
+	
 Sun Dec 27 14:52:45 1998  Alexander Bergolth  <leo@strike.wu-wien.ac.at>
 
 	* htlib/URL.cc: Small change in URL::removeIndex so that URLs are not

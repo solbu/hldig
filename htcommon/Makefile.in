@@ -1,4 +1,9 @@
-include @top_srcdir@/Makefile.config
+top_srcdir=		@top_srcdir@
+srcdir=			@srcdir@
+VPATH=			@srcdir@
+
+top_builddir= ..
+include $(top_builddir)/Makefile.config
 
 OBJS=	DocumentDB.o DocumentRef.o WordList.o \
 		defaults.o 
@@ -33,4 +38,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) $(CXXFLAGS) @CPPFLAGS@ $(INCS) -- $(OBJS)
 
-defaults.o:		@top_srcdir@/CONFIG
+defaults.o:		$(top_builddir)/CONFIG

@@ -1,4 +1,9 @@
-include @top_srcdir@/Makefile.config
+top_srcdir=		@top_srcdir@
+srcdir=			@srcdir@
+VPATH=			@srcdir@
+
+top_builddir= ..
+include $(top_builddir)/Makefile.config
 
 OBJS=	Configuration.o Connection.o Database.o \
 		Dictionary.o DB2_db.o \

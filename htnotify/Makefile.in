@@ -1,4 +1,9 @@
-include @top_srcdir@/Makefile.config
+top_srcdir=		@top_srcdir@
+srcdir=			@srcdir@
+VPATH=			@srcdir@
+
+top_builddir= ..
+include $(top_builddir)/Makefile.config
 
 OBJS=		htnotify.o 
 
@@ -25,4 +30,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) @CPPFLAGS@ $(CXXFLAGS) $(INCS) -- $(OBJS)
 
-htnotify.o:		@top_srcdir@/CONFIG
+htnotify.o:		$(top_builddir)/CONFIG
