@@ -3,7 +3,7 @@
 #
 # rundig
 #
-# $Id: rundig,v 1.7.4.2 2001/01/12 15:00:39 grdetil Exp $
+# $Id: rundig,v 1.7.4.3 2001/02/20 00:54:23 ghutchis Exp $
 #
 # This is a sample script to create a search database for ht://Dig.
 #
@@ -34,7 +34,7 @@ TMPDIR=$DBDIR
 export TMPDIR
 
 $BINDIR/htdig -i $opts $stats $alt
-$BINDIR/htpurge $opts $stats $alt
+$BINDIR/htpurge $opts $alt
 case "$alt" in
 -a)
   ( cd $DBDIR && test -f db.docdb.work &&
