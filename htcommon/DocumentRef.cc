@@ -4,6 +4,10 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.15  1999/01/12 18:08:57  ghutchis
+// Added support for compressing data using zlib if available, contributed by
+// Randy Winch <gumby@cafes.net>.
+//
 // Revision 1.14  1999/01/06 18:21:16  ghutchis
 // Applied fix from Dave Alden <alden@math.ohio-state.edu> to compile under
 // SunPRO compilers by eliminating trailing comma in enum.
@@ -62,7 +66,15 @@
 #include "WordList.h"
 #include <Configuration.h>
 
+#ifdef HAVE_LIBZ
+#include <zlib.h>
+#endif
+
 extern Configuration config;
+
+// Static member variable so we get only a single copy
+// Used to buffer the zlib compression
+unsigned char DocumentRef::c_buffer[60000];
 
 //*****************************************************************************
 // DocumentRef::DocumentRef()
@@ -193,6 +205,43 @@ void DocumentRef::Serialize(String &s)
     addstring(DOC_EMAIL, s, docEmail);
     addstring(DOC_NOTIFICATION, s, docNotification);
     addstring(DOC_SUBJECT, s, docSubject);
+#ifdef HAVE_LIBZ
+    if (config.Boolean("use_document_compression",0)) {
+      //
+      // Now compress s into c_s
+      //
+      String c_s;
+      z_stream c_stream; /* compression stream */
+      c_stream.zalloc=(alloc_func)0;
+      c_stream.zfree=(free_func)0;
+      c_stream.opaque=(voidpf)0;
+      // Get compression factor, default to best
+      int cf=config.Value("compression_factor",9);
+      if (cf<-1) cf=-1; else if (cf>9) cf=9;
+      int err=deflateInit(&c_stream,cf);
+      if (err!=Z_OK) return;
+      int len=s.length();
+      c_stream.next_in=(Bytef*)(char *)s;
+      c_stream.avail_in=len;
+      while (err==Z_OK && c_stream.total_in!=(uLong)len) {
+        c_stream.next_out=c_buffer;
+        c_stream.avail_out=sizeof(c_buffer);
+        err=deflate(&c_stream,Z_NO_FLUSH);
+        c_s.append((char *)c_buffer,c_stream.next_out-c_buffer);
+      }
+      // Finish the stream
+      for (;;) {
+        c_stream.next_out=c_buffer;
+        c_stream.avail_out=sizeof(c_buffer);
+        err=deflate(&c_stream,Z_FINISH);
+        c_s.append((char *)c_buffer,c_stream.next_out-c_buffer);
+        if (err==Z_STREAM_END) break;
+        //CHECK_ERR(err, "deflate");
+      }
+      err = deflateEnd(&c_stream); 
+      s=c_s;
+    }
+#endif
 }
 
 
@@ -204,15 +253,51 @@ void DocumentRef::Serialize(String &s)
 //
 void DocumentRef::Deserialize(String &stream)
 {
-    char	*s = stream.get();
-    char	*end = s + stream.length();
+    Clear();
+    char	*s;
+    char	*end;
+    String c_s;
+#ifdef HAVE_LIBZ
+    if (config.Boolean("use_document_compression",0)) {
+      // Decompress stream
+      z_stream d_stream; /* decompression stream */
+
+      d_stream.zalloc = (alloc_func)0;
+      d_stream.zfree = (free_func)0;
+      d_stream.opaque = (voidpf)0;
+
+      d_stream.next_in  = (Bytef*)(char *)stream;
+      d_stream.avail_in = 0;
+
+      int err = inflateInit(&d_stream);
+      if (err!=Z_OK) return;
+
+      int len=stream.length();
+      d_stream.avail_in=len;
+      while (err==Z_OK && d_stream.total_in<len) {
+        d_stream.next_out=c_buffer;
+        d_stream.avail_out=sizeof(c_buffer);
+        err=inflate(&d_stream,Z_NO_FLUSH);
+        c_s.append((char *)c_buffer,d_stream.next_out-c_buffer);
+        if (err == Z_STREAM_END) break;
+      }
+
+      err = inflateEnd(&d_stream);
+      s = c_s.get();
+      end = s + c_s.length();
+    } else {
+      s = stream.get();
+      end = s + stream.length();
+    }
+#endif
+    //char	*s = c_s.get();
+    //char	*end = s + c_s.length();
     int		length;
     int		count;
     int		i;
     int		x;
     String	*str;
 
-    Clear();
 
 #define	getnum(in, var)			memcpy((char *) &var, in, sizeof(var));			\
     in += sizeof(var)

@@ -1,9 +1,13 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.9 1999/01/05 19:29:40 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.10 1999/01/12 18:08:57 ghutchis Exp $
 //
 // $Log: DocumentRef.h,v $
+// Revision 1.10  1999/01/12 18:08:57  ghutchis
+// Added support for compressing data using zlib if available, contributed by
+// Randy Winch <gumby@cafes.net>.
+//
 // Revision 1.9  1999/01/05 19:29:40  ghutchis
 // Added comments on the members (fields) of DocumentRef objects.
 //
@@ -179,6 +183,9 @@ class DocumentRef : public Object
     int			docScore;
     // This is the nearest anchor for the search word.
     int			docAnchor;
+    // Static member variable so we get only one copy
+    // Used to buffer zlib compression
+    static unsigned char c_buffer[60000];
 };
 
 #endif
