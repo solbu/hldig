@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.79 1999/06/01 01:57:25 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.80 1999/06/12 17:57:08 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -17,12 +17,13 @@ static char RCSid[] = "$Id: Display.cc,v 1.79 1999/06/01 01:57:25 ghutchis Exp $
 #include "QuotedStringList.h"
 #include "URL.h"
 #include "HtSGMLCodec.h"
+#include "HtURLCodec.h"
+#include "HtWordType.h"
 #include <fstream.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <syslog.h>
-#include "HtURLCodec.h"
-#include "HtWordType.h"
+#include <locale.h>
 
 //*****************************************************************************
 //
@@ -322,12 +323,17 @@ Display::displayMatch(DocumentRef *ref, int current)
 	{
 	    struct tm	*tm = localtime(&t);
 	    char	*datefmt = config["date_format"];
+	    char        *locale  = config["locale"];
 	    if (!datefmt || !*datefmt)
 	      {
 		if (config.Boolean("iso_8601"))
 		    datefmt = "%Y-%m-%d %H:%M:%S %Z";
 		else
 		    datefmt = "%x";
+	      }
+	    if ( locale && *locale )
+	      {
+		setlocale(LC_TIME,locale);
 	      }
 	    strftime(buffer, sizeof(buffer), datefmt, tm);
 	    *str << buffer;
