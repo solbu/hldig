@@ -1,3 +1,16 @@
+Wed Aug  9 23:04:39 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* httools/htmerge.cc (mergeDB): Add fix to prevent duplicate
+	documents when you merge a database with a copy of itself
+	contributed by Lorenzo.
+
+Wed Aug  9 22:58:39 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/parser.cc (score): Merged in patch contributed by
+	Lorenzo Campedelli <lorenzo.campedelli@libero.it> and Arthur
+	Prokosch <prokosch@aptima.com> to fix problems with AND operators
+	and phrase matches.
+
 Wed Aug  2 11:44:11 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (setVariables), htcommon/defaults.cc: Enhanced
