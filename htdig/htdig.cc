@@ -33,6 +33,7 @@ HtRegex			badquerystr;
 FILE			*urls_seen = NULL;
 FILE			*images_seen = NULL;
 String			configFile = DEFAULT_CONFIG_FILE;
+String			minimalFile = 0;
 
 void usage();
 void reportError(char *msg);
@@ -55,7 +56,7 @@ main(int ac, char **av)
     //
     // Parse command line arguments
     //
-    while ((c = getopt(ac, av, "lsc:vith:u:a")) != -1)
+    while ((c = getopt(ac, av, "lsm:c:vith:u:a")) != -1)
     {
 	switch (c)
 	{
@@ -86,6 +87,10 @@ main(int ac, char **av)
 	    case 'l':
 		flag = Retriever_logUrl;
 		break;
+	    case 'm':
+	        minimalFile = optarg;
+		max_hops = 0;
+	        break;
 	    case '?':
 		usage();
 	}
@@ -238,9 +243,12 @@ main(int ac, char **av)
     // URLs?
     //
     Retriever	retriever(flag);
-    List	*list = docs.URLs();
-    retriever.Initial(*list);
-    delete list;
+    if (minimal == 0)
+      {
+	List	*list = docs.URLs();
+	retriever.Initial(*list);
+	delete list;
+      }
 
     // Set up credentials for this run
     if (credentials.length())
@@ -264,6 +272,7 @@ main(int ac, char **av)
     //
     // If the user so wants, create a text version of the document database.
     //
+
     if (create_text_database)
     {
 	filename = config["doc_list"];
