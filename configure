@@ -44,7 +44,7 @@ ac_help="$ac_help
 ac_help="$ac_help
   --with-search-form=FILE   the name for the sample search form [default=search.html]"
 ac_help="$ac_help
-  --disable-tests     Do NOT build a version with run-time tests."
+  --enable-tests      Do build a version with run-time tests."
 ac_help="$ac_help
   --with-zlib=DIR root directory path of zlib installation [defaults to
 		    /usr/local or /usr if not found in /usr/local]
@@ -1653,7 +1653,7 @@ if test "${enable_tests+set}" = set; then
   enableval="$enable_tests"
   htdig_cv_tests="$enable_tests"
 else
-  htdig_cv_tests="yes"
+  htdig_cv_tests="no"
 fi
 
 
