@@ -4,6 +4,10 @@
 // Implementation of htnotify
 //
 // $Log: htnotify.cc,v $
+// Revision 1.8  1998/11/02 20:36:30  ghutchis
+//
+// Changed HTDig to ht://Dig.
+//
 // Revision 1.7  1998/10/02 17:07:32  ghutchis
 //
 // More configure changes
@@ -33,7 +37,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.7 1998/10/02 17:07:32 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.8 1998/11/02 20:36:30 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -198,7 +202,7 @@ void send_notification(char *date, char *email, char *url, char *subject)
     String	to = email;
 
     String command = SENDMAIL;
-    command << "-F \"HTDig Notification Service\" -f ";
+    command << "-F \"ht://Dig Notification Service\" -f ";
     command << config["htnotify_sender"];
 
     char *token = strtok(to, " ,\t\r\n");
@@ -232,7 +236,7 @@ void send_notification(char *date, char *email, char *url, char *subject)
       out << "\n";
       out << "Find out more about the notification service at\n\n";
       out << "    http://www.htdig.org/meta.html\n\n";
-      out << "Cheers!\n\nHTDig Notification Service\n";
+      out << "Cheers!\n\nht://Dig Notification Service\n";
 
       fputs( out.get(), fileptr );
       pclose( fileptr );
