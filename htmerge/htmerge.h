@@ -1,9 +1,12 @@
 //
 // htmerge.h
 //
-// $Id: htmerge.h,v 1.2 1997/03/24 04:33:23 turtle Exp $
+// $Id: htmerge.h,v 1.3 1999/01/09 20:17:07 ghutchis Exp $
 //
 // $Log: htmerge.h,v $
+// Revision 1.3  1999/01/09 20:17:07  ghutchis
+// Declare new mergeDB code.
+//
 // Revision 1.2  1997/03/24 04:33:23  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -33,7 +36,10 @@ extern int			n_array_elements;
 extern Dictionary	discard_list;
 extern int			verbose;
 extern int			stats;
+extern Configuration	merge_config;
 
+
+void mergeDB();
 void mergeWords(char *wordtmp, char *wordfile);
 void convertDocs(char *docs, char *docgdbm);
 void sort(char *);
