@@ -1,4 +1,4 @@
-ht://Dig 3.2.0b2 README
+ht://Dig 3.2.0b3 README
 Copyright (c) 1995-2000 The ht://Dig Group
 Contributions from many, see htdoc/THANKS.html
 
@@ -12,26 +12,17 @@ See the htdoc/install.html file for compilation and installation instructions.
 This distribution includes:
 
     * htdig     - A www information gathering and indexing system
-
-    * htmerge   - A htdig database merging program
-
     * htfuzzy   - A fuzzy search database creation program
-
     * htsearch  - A search engine.
-
     * httools   - An assortment of tools for operating on the databases
 
     * htlib     - A small general purpose C++ class library
-
     * htnet     - Net stuff classes
-
     * htword    - word occurences list handling, aka inverted index
-
     * htcommon  - ht://Dig specific classes
+    * db        - The latest Berkeley DB package from Sleepycat Software
 
     * htdoc     - ht://Dig documentation in HTML
-
-    * db        - The latest Berkeley DB package from Sleepycat Software
 
 ht://Dig has been tested extensively under Linux using gcc/g++
 If you use g++, make absolutely sure you have libstdc++ installed
