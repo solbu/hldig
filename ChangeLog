@@ -1,3 +1,8 @@
+Thu Jan 31 15:13:07 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* Makefile.in: Fixed install-strip target to properly handle relative
+	paths in INSTALL_PROGRAM when passing it to subdirectories.
+
 Thu Jan 31 11:41:39 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/FAQ.html: Updated questions 4.8 & 4.9 to emphasize use of

@@ -117,8 +117,11 @@ install:	all
 	@echo "installed as " $(INSTALL_ROOT)$(BIN_DIR)/rundig
 
 install-strip:
-	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' \
-		install
+	@case "$(INSTALL_PROGRAM)" in \
+	/*)	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install ;; \
+	*)	$(MAKE) INSTALL_PROGRAM='../$(INSTALL_PROGRAM) -s' install ;; \
+	esac
+
 #installdirs: mkinstalldirs
 #        $(srcdir)/mkinstalldirs $(bindir) $(datadir) \
 #                                $(libdir) $(infodir) \
