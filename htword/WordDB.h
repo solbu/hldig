@@ -19,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.h,v 1.3.2.3 1999/12/20 10:28:26 bosc Exp $
+// $Id: WordDB.h,v 1.3.2.4 1999/12/20 10:33:02 bosc Exp $
 //
 
 #ifndef _WordDB_h_
@@ -29,7 +29,6 @@
 #include "WordReference.h"
 #include "WordDBCompress.h"
 #include "htString.h"
-#include "Configuration.h"
 
 #include <iostream.h>
 #include <errno.h>

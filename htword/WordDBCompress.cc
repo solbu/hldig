@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.cc,v 1.1.2.8 1999/12/17 15:23:08 loic Exp $
+// $Id: WordDBCompress.cc,v 1.1.2.9 1999/12/20 10:33:02 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -476,7 +476,7 @@ class WordDBPage
 
 WordDBCompress::WordDBCompress()
 {
-    debug=2;
+    debug=1;
 }
 
 extern "C"
