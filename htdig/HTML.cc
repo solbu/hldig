@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.38 1999/03/23 20:07:19 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.39 1999/03/23 20:09:22 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -168,9 +168,10 @@ HTML::parse(Retriever &retriever, URL &baseURL)
       // Filter out section marked to be ignored for indexing. 
       // This can contain any HTML. 
       //
-      if (strncmp((char *)position, skip_start, strlen(skip_start)) == 0)
+      if (*skip_start &&
+	  mystrncasecmp((char *)position, skip_start, strlen(skip_start)) == 0)
 	{
-	  q = (unsigned char*)strstr((char *)position, skip_end);
+	  q = (unsigned char*)mystrcasestr((char *)position, skip_end);
 	  if (!q)
 	    *position = '\0';       // Rest of document will be skipped...
 	  else

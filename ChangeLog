@@ -1,3 +1,11 @@
+Tue Mar 23 14:02:40 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc: Fix bug where noindex_start was empty, allow case
+	insensitive matching of noindex_start & noindex_end.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Fix inconsistencies in documentation for noindex_start & noindex_end.
+
 Tue Mar 23 14:01:16 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc: Add check for <a href=...> tag that is missing a
