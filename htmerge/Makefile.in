@@ -7,7 +7,7 @@ LOCAL_DEFINES=	-DSORT_PROG=\"@SORT@\"
 
 all:		$(TARGET)
 
-$(TARGET):	$(OBJS) @top_srcdir@/htcommon/libcommon.a @top_srcdir@/htlib/libht.a
+$(TARGET):	$(OBJS) $(HTLIBS)
 	$(CXX) -o $(TARGET) $(LDFLAGS) $(OBJS) $(LIBS)
 
 install:	$(TARGET)
@@ -15,6 +15,8 @@ install:	$(TARGET)
 
 clean:
 	rm -f $(OBJS) $(TARGET) *~ *% *.bak core a.out *.orig
+
+mostlyclean:	clean
 
 distclean:	clean
 	rm -f Makefile *.proj

@@ -23,16 +23,20 @@ RANLIB=		@RANLIB@
 MAKEDEPEND=	@HTDIG_TOP@/makedp
 FIND=		@FIND@
 AR=		@AR@
-SED=		@SED@
 INSTALL=	@INSTALL@
-TAR=		@TAR@
+INSTALL_PROGRAM= $(INSTALL)
+INSTALL_DATA=   $(INSTALL)
 PDF_PARSER=	@PDF_PARSER@
 SENDMAIL=	@SENDMAIL@
 
 DEFINES=	-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\"
 LIBDIRS=	-L../htlib -L../htcommon -L../db/dist -L../rx/rx -L/usr/lib
 INCS=		-I../htlib -I../htcommon -I../db/dist -I../rx/rx -I../include
-LIBS=		-lcommon -lht -ldb -lrx @LIBS@
+HTLIBS=		../htcommon/libcommon.a \
+		../htlib/libht.a \
+		../db/dist/libdb.a \
+		../rx/rx/librx.a
+LIBS=		$(HTLIBS) @LIBS@
 
 DIST=		@PACKAGE@-@VERSION@
 DISTDIR=	$(top_srcdir)/../$(DIST)

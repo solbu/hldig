@@ -24,6 +24,9 @@ install:	$(TARGET)
 clean:
 	rm -f $(OBJS) $(TARGET) *~ *.bak *% a.out core *.orig
 
+mostlyclean:
+	rm -f *~ *.bak *% a.out core *.orig
+
 distclean:	clean
 	rm -f Makefile *.proj
 

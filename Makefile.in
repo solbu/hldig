@@ -1,4 +1,4 @@
-# Main Makefile for ht://Dig 3.1.0b2
+# Main Makefile for ht://Dig 3.1.0b3
 # Copyright (c) 1995-1998 Andrew Scherpbier
 
 # This program is free software; you can redistribute it and/or modify
@@ -22,7 +22,7 @@ DIRS=		db/dist rx \
 		htsearch htmerge htnotify
 INSTALLDIRS=	htfuzzy htdig \
 		htsearch htmerge htnotify
-DEPDIRS=	htlib htcommon htfuzzy htdig \
+HTDIRS=		htlib htcommon htfuzzy htdig \
 		htsearch htmerge htnotify
 CREATEDIRS=	$(BIN_DIR) $(CONFIG_DIR) $(COMMON_DIR) $(DATABASE_DIR) \
 		$(IMAGE_DIR) $(CGIBIN_DIR) $(SEARCH_DIR)
@@ -47,6 +47,14 @@ clean:
 		|| case "$(MFLAGS)" in *k*) fail=yes;; *) exit 1;; esac; \
 	done && test -z "$$fail"
 
+mostlyclean:
+	rm -f *~
+	@for i in $(HTDIRS); do \
+		(cd $$i; $(MAKE) $(MFLAGS) mostlyclean) \
+		|| case "$(MFLAGS)" in *k*) fail=yes;; *) exit 1;; esac; \
+	done && test -z "$$fail"
+
+
 distclean:
 	rm -rf config.cache config.status config.log config.h \
 		makedp *.gz test *~ include/htconfig.h
@@ -63,33 +71,31 @@ install:	all
 	@echo "Creating directories (if needed)..."
 	-@for i in $(CREATEDIRS); do \
 		$(top_srcdir)/mkinstalldirs $$i; \
-	done;
+	done && test -z "$$fail"
 	@echo ""
 	@echo "Installing individual programs..."
-	@for i in $(INSTALLDIRS); \
-	do \
+	@for i in $(INSTALLDIRS); do \
 		(cd $$i; $(MAKE) $(MFLAGS) install); \
-	done;
+	done && test -z "$$fail"
 	@echo ""
 	@echo "Installing default configuration files..."
-	@if [ ! -f $(CONFIG_DIR)/htdig.conf ]; then $(SED) -e s%@DATABASE_DIR@%$(DATABASE_DIR)% -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% installdir/htdig.conf >$(CONFIG_DIR)/htdig.conf; echo $(CONFIG_DIR)/htdig.conf;fi
+	@if [ ! -f $(CONFIG_DIR)/htdig.conf ]; then sed -e s%@DATABASE_DIR@%$(DATABASE_DIR)% -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% installdir/htdig.conf >$(CONFIG_DIR)/htdig.conf; echo $(CONFIG_DIR)/htdig.conf;fi
 	@if [ ! -f $(COMMON_DIR)/bad_words ]; then $(INSTALL) installdir/bad_words $(COMMON_DIR); echo $(COMMON_DIR)/bad_words; fi
-	@if [ ! -f $(SEARCH_DIR)/$(SEARCH_FORM) ]; then $(SED) -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% installdir/search.html >$(SEARCH_DIR)/$(SEARCH_FORM); echo $(SEARCH_DIR)/$(SEARCH_FORM);fi
-	@if [ ! -f $(COMMON_DIR)/footer.html ]; then $(SED) -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% installdir/footer.html >$(COMMON_DIR)/footer.html; echo $(COMMON_DIR)/footer.html;fi
-	@if [ ! -f $(COMMON_DIR)/header.html ]; then $(SED) -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% installdir/header.html >$(COMMON_DIR)/header.html; echo $(COMMON_DIR)/header.html;fi
-	@if [ ! -f $(COMMON_DIR)/nomatch.html ]; then $(SED) -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% installdir/nomatch.html >$(COMMON_DIR)/nomatch.html; echo $(COMMON_DIR)/nomatch.html;fi
-	@if [ ! -f $(COMMON_DIR)/syntax.html ]; then $(SED) -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% installdir/syntax.html >$(COMMON_DIR)/syntax.html; echo $(COMMON_DIR)/syntax.html;fi
+	@if [ ! -f $(SEARCH_DIR)/$(SEARCH_FORM) ]; then sed -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% installdir/search.html >$(SEARCH_DIR)/$(SEARCH_FORM); echo $(SEARCH_DIR)/$(SEARCH_FORM);fi
+	@if [ ! -f $(COMMON_DIR)/footer.html ]; then sed -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% installdir/footer.html >$(COMMON_DIR)/footer.html; echo $(COMMON_DIR)/footer.html;fi
+	@if [ ! -f $(COMMON_DIR)/header.html ]; then sed -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% installdir/header.html >$(COMMON_DIR)/header.html; echo $(COMMON_DIR)/header.html;fi
+	@if [ ! -f $(COMMON_DIR)/nomatch.html ]; then sed -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% installdir/nomatch.html >$(COMMON_DIR)/nomatch.html; echo $(COMMON_DIR)/nomatch.html;fi
+	@if [ ! -f $(COMMON_DIR)/syntax.html ]; then sed -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% installdir/syntax.html >$(COMMON_DIR)/syntax.html; echo $(COMMON_DIR)/syntax.html;fi
 	@if [ ! -f $(COMMON_DIR)/english.0 ]; then $(INSTALL) installdir/english.0 $(COMMON_DIR); echo $(COMMON_DIR)/english.0;fi
 	@if [ ! -f $(COMMON_DIR)/english.aff ]; then $(INSTALL) installdir/english.aff $(COMMON_DIR); echo $(COMMON_DIR)/english.aff;fi
 	@if [ ! -f $(COMMON_DIR)/synonyms ]; then $(INSTALL) installdir/synonyms $(COMMON_DIR); echo $(COMMON_DIR)/synonyms;fi
 	@echo "Installing images..."
-	@for i in $(IMAGES); \
-	do \
+	@for i in $(IMAGES); do \
 		if [ ! -f $(IMAGE_DIR)/$$i ]; then $(INSTALL) -m 0664 installdir/$$i $(IMAGE_DIR)/$$i; echo $(IMAGE_DIR)/$$i;fi; \
-	done;
+	done && test -z "$$fail"
 	@echo "Creating rundig script..."
 	@if [ ! -f $(BIN_DIR)/rundig ]; then \
-		$(SED) -e s%@BIN_DIR@%$(BIN_DIR)% -e s%@COMMON_DIR@%$(COMMON_DIR)% -e s%@DATABASE_DIR@%$(DATABASE_DIR)% installdir/rundig >$(BIN_DIR)/rundig; \
+		sed -e s%@BIN_DIR@%$(BIN_DIR)% -e s%@COMMON_DIR@%$(COMMON_DIR)% -e s%@DATABASE_DIR@%$(DATABASE_DIR)% installdir/rundig >$(BIN_DIR)/rundig; \
 		chmod 755 $(BIN_DIR)/rundig; \
 	fi
 	@echo "Installation done."
@@ -98,31 +104,29 @@ install:	all
 	@echo "search database.  A sample script to do this has been"
 	@echo "installed as " $(BIN_DIR)/rundig
 
-#install-strip:
-#	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' \
-#		install
+install-strip:
+	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' \
+		install
 #installdirs: mkinstalldirs
 #        $(srcdir)/mkinstalldirs $(bindir) $(datadir) \
 #                                $(libdir) $(infodir) \
 #                                $(mandir)
 
 depend:
-	@for i in $(DEPDIRS); \
-	do \
+	@for i in $(HTDIRS); do \
 		(cd $$i; $(MAKE) $(MFLAGS) depend); \
-	done;
+	done && test -z "$$fail"
 
 dist:
 	rm -rf $(DISTDIR)
 	mkdir $(DISTDIR)
-	$(TAR) cf - . | (cd $(DISTDIR); $(TAR) xf -)
+	tar cf - . | (cd $(DISTDIR); tar xf -)
 	(cd $(DISTDIR); $(MAKE) distclean)
-	-for i in $(DIRS); \
-	do \
+	-for i in $(DIRS); do \
 		(cd $(DISTDIR)/$$i; rm -fr RCS CVS docu .#\*); \
-	done;
+	done && test -z "$$fail"
 	(cd $(DISTDIR); rm -rf $(NO_DIST))
-	(cd $(DISTDIR)/..; $(TAR) czf $(DIST).tar.gz $(DIST))
+	(cd $(DISTDIR)/..; tar czf $(DIST).tar.gz $(DIST))
 
 tar:
 	tar czf ht.tar.gz --exclude ht.tar.gz .

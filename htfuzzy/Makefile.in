@@ -6,14 +6,15 @@ OBJS=		Endings.o EndingsDB.o Exact.o \
 		Substring.o Prefix.o
 
 LIBOBJS=	Endings.o Exact.o Fuzzy.o Metaphone.o \
-		Soundex.o Synonym.o EndingsDB.o SuffixEntry.o Substring.o Prefix.o
+		Soundex.o Synonym.o EndingsDB.o SuffixEntry.o \
+		Substring.o Prefix.o
 
 TARGET=		htfuzzy
 LIBTARGET=	libfuzzy.a
 
 all:	$(TARGET) $(LIBTARGET)
 
-$(TARGET):	$(OBJS) @top_srcdir@/htcommon/libcommon.a @top_srcdir@/htlib/libht.a
+$(TARGET):	$(OBJS) $(HTLIBS)
 	$(CXX) -o $(TARGET) $(LDFLAGS) $(OBJS) $(LIBS)
 
 $(LIBTARGET):		$(LIBOBJS)
@@ -25,6 +26,9 @@ install:	$(TARGET)
 
 clean:
 	rm -f $(TARGET) $(LIBTARGET) $(OBJS) *~ *.bak *% a.out *.orig core
+
+mostlyclean:
+	rm -f $(TARGET) *~ *.bak *% a.out *.orig core
 
 distclean:	clean
 	rm -f Makefile *.proj

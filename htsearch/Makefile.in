@@ -4,13 +4,13 @@ OBJS=		Display.o DocMatch.o ResultList.o ResultMatch.o \
 		Template.o TemplateList.o WeightWord.o htsearch.o \
 		parser.o
 
-FOBJS=		../htfuzzy/libfuzzy.a
+FOBJS=		@top_srcdir@/htfuzzy/libfuzzy.a
 TARGET=		htsearch
 LOCAL_DEFINES=	-DCONFIG_DIR=\"$(CONFIG_DIR)\"
 
 all:	$(TARGET)
 
-$(TARGET):	$(OBJS) $(FOBJS) @top_srcdir@/htcommon/libcommon.a @top_srcdir@/htlib/libht.a
+$(TARGET):	$(OBJS) $(FOBJS) $(HTLIBS)
 	$(CXX) -o $(TARGET) $(LDFLAGS) $(OBJS) $(FOBJS) $(LIBS)
 
 install:	all
@@ -18,6 +18,8 @@ install:	all
 
 clean:
 	rm -f $(OBJS) $(TARGET) *~ *.bak *% core *.orig a.out
+
+mostlyclean:	clean
 
 distclean:	clean
 	rm -f Makefile *.proj
