@@ -4,6 +4,10 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.3  1998/06/22 04:38:27  turtle
+// Applied patch that prevented SGML entities that translate to
+// valid_punctuation characters from becoming part of words
+//
 // Revision 1.2  1998/06/15 18:15:50  turtle
 // Added suggestion by Chris Liddiard to add ',' to the list of separator
 // characters for meta keyword parsing
@@ -13,7 +17,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.2 1998/06/15 18:15:50 turtle Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.3 1998/06/22 04:38:27 turtle Exp $";
 #endif
 
 #include "htdig.h"
@@ -196,7 +200,24 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		{
 		    unsigned char	ch;
 		    ch = SGMLEntities::translateAndUpdate(position);
-		    word << (char) ch;
+
+                    //
+                    // Quick workaround to avoid sticking of &nbsp; and
+                    // &quot; (converted to space and quote) to extracted
+                    // words I am going to check all possible cases
+                    // (&copy;, etc) later and may be rewrite this 'if'
+                    //
+                    if (isalnum(ch) || strchr(valid_punctuation, ch) ||
+                        ch >= 160)
+                    {
+                        word << (char) ch;
+                    }
+                    else
+                    {
+                        position--;
+                        position[0] = ch;
+                        break;
+                    }
 		}
 		else
 		{
