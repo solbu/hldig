@@ -8,7 +8,7 @@ libfuzzy_la_SOURCES = Endings.cc EndingsDB.cc Exact.cc \
 		SuffixEntry.cc Synonym.cc htfuzzy.cc \
 		Substring.cc Prefix.cc Regex.cc Speling.cc
 
-libfuzzy_la_LDFLAGS = -version-info $(HTDIG_MAJOR_VERSION):$(HTDIG_MINOR_VERSION):$(HTDIG_MICRO_VERSION)
+libfuzzy_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
 noinst_HEADERS = Endings.h \
 	Exact.h \

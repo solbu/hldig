@@ -114,7 +114,7 @@ lib_LTLIBRARIES = libcommon.la
 libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc WordList.cc 		defaults.cc 
 
 
-libcommon_la_LDFLAGS = -version-info $(HTDIG_MAJOR_VERSION):$(HTDIG_MINOR_VERSION):$(HTDIG_MICRO_VERSION)
+libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
 noinst_HEADERS = DocumentDB.h 	DocumentRef.h 	WordList.h 	WordRecord.h 	WordReference.h 	defaults.h
 

@@ -1,3 +1,11 @@
+Wed Aug 11 16:59:41 1999  Loic Dachary  <loic@ceic.com>
+
+	* */Makefile.am: use -release instead of -version-info because nobody
+	  wants to bother with published shared lib interfaces version numbers
+	  at present.
+
+	* htlib/Makefile.am: added langinfo.h
+
 Wed Aug 11 15:00:07 1999  Loic Dachary  <loic@yoda.ceic.com>
 
 	* acconfig.h: removed MAX_WORD_LENGTH

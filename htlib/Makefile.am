@@ -12,7 +12,7 @@ libht_la_SOURCES = Configuration.cc Connection.cc Database.cc Dictionary.cc \
 	HtURLCodec.cc HtVector.cc HtHeap.cc regex.c HtSGMLCodec.cc \
 	HtWordType.cc HtPack.cc HtDateTime.cc HtRegex.cc
 
-libht_la_LDFLAGS = -version-info $(HTDIG_MAJOR_VERSION):$(HTDIG_MINOR_VERSION):$(HTDIG_MICRO_VERSION)
+libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
 noinst_HEADERS = BTree.h \
 	Configuration.h \
@@ -48,4 +48,5 @@ noinst_HEADERS = BTree.h \
 	htString.h \
 	io.h \
 	lib.h \
+	langinfo.h \
 	regex.h
