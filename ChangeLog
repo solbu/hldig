@@ -14,6 +14,12 @@ Thu Jul 15 15:54:30 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	* htdoc/attrs.html(pdf_parser & external_parsers): add corrections &
 	clarifications, links to relevant FAQ entries.
 
+Thu Jul 15 18:00:00 1999 CEST Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htlib/HtDateTime.cc, htlib/HtDateTime.h : added the possibility
+        to initialize and compares HtDateTime with integers. Added the
+	constructor HtDateTime (int) and various operator overloading methods.
+
 Wed Jul 14 22:57:14 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/URL.cc (normalizePath, path): If not case_sensitive,
