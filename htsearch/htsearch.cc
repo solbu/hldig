@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.25 1999/02/21 19:52:49 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.26 1999/02/25 02:19:32 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -273,6 +273,7 @@ main(int ac, char **av)
 	display.display(pageNumber);
 
     delete results;
+    delete parser;
     return 0;
 }
 
