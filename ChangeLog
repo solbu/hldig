@@ -1,3 +1,7 @@
+Wed Dec  1 15:57:09 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/conv_doc.pl: Added a sample external converter script.
+
 Mon Nov 29 23:19:35 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriver.cc, htdig/Retriver.h, htdig/Server.cc,
