@@ -1,3 +1,10 @@
+Tue Aug 6 17:12:22 CEST 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htcommon/defaults.cc: added the 'http_proxy_authorization' attribute.
+	Needs revision due to my usual *spaghetti* english. :-)
+
+	* htdig/Document.[h,cc]: proxy authorization is now enabled
+
 Tue Aug 6 09:28:39 CEST 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* htnet/Connection.[h,cc]: IP address storing as string (sync with ht://Check)

@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.59 2002/08/02 20:42:31 grdetil Exp $
+// $Id: Document.cc,v 1.60 2002/08/06 15:13:56 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -162,6 +162,7 @@ Document::Reset()
 
     proxy=0;
     authorization=0;
+    proxy_authorization=0;
     contents = 0;
     document_length = 0;
     redirected_to = 0;
@@ -182,15 +183,19 @@ Document::Url(const String &u)
     url = new URL(u);
 
     const String proxyURL = config->Find(url,"http_proxy");
-    if (proxyURL[0])
+    if (proxyURL.length())
     {
 	proxy = new URL(proxyURL);
 	proxy->normalize();
     }
 
     const String credentials = config->Find(url,"authorization");
-    if (credentials[0] )
+    if (credentials.length() )
 	setUsernamePassword(credentials);
+
+    const String proxy_credentials = config->Find(url,"http_proxy_authorization");
+    if (proxy_credentials.length() )
+	setProxyUsernamePassword(proxy_credentials);
 }
 
 
@@ -458,7 +463,11 @@ Document::Retrieve(Server *server, HtDateTime date)
    {
       // Set all the appropriate parameters
       if (useproxy)
+      {
          transportConnect->SetConnection(proxy);
+	 if (proxy_authorization.length())
+	     transportConnect->SetProxyCredentials(proxy_authorization);
+      }
       else
          transportConnect->SetConnection(url);
       

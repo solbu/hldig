@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.h,v 1.12 2002/02/01 22:49:29 ghutchis Exp $
+// $Id: Document.h,v 1.13 2002/08/06 15:13:56 angusgb Exp $
 //
 //
 #ifndef _Document_h_
@@ -78,8 +78,11 @@ public:
     //
     // Set the username and password to be used in any requests
     //
-    void			setUsernamePassword(const char *credentials)
+    void			setUsernamePassword(const String& credentials)
                                           { authorization = credentials;}
+
+    void			setProxyUsernamePassword(const String& credentials)
+                                          { proxy_authorization = credentials;}
 
     HtHTTP *GetHTTPHandler() const { return HTTPConnect; }
 	
@@ -101,6 +104,7 @@ private:
     String			redirected_to;
     String			contentType;
     String			authorization;
+    String			proxy_authorization;
     int				contentLength;
     int				document_length;
     HtDateTime			modtime;

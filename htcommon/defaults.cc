@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.66 2002/02/01 22:49:28 ghutchis Exp $
+// $Id: defaults.cc,v 1.67 2002/08/06 15:13:56 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1080,6 +1080,15 @@ http://www.htdig.org/", " \
 	and port where the proxy server resides.<br> \
 	The use of a proxy server greatly improves performance \
 	of the indexing process. \
+" }, \
+{ "http_proxy_authorization", "",  \
+	"string", "htdig", "URL", "3.0", "Indexing:Connection", "http_proxy_authorization: myusername:mypassword", " \
+	This tells htdig to send the supplied \
+        <em>username</em><strong>:</strong><em>password</em> with each HTTP request, \
+	when using a proxy with authorization requested. \
+        The credentials will be encoded using the \"Basic\" authentication \
+        scheme. There <em>must</em> be a colon (:) between the username and \
+        password.<br>
 " }, \
 { "http_proxy_exclude", "", \
 	"pattern list", "htdig", "", "3.1.0b3", "Indexing:Connection", "http_proxy_exclude: http://intranet.foo.com/", " \
