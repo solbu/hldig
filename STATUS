@@ -6,7 +6,6 @@ RELEASES:
 
 SHOWSTOPPERS:
 * build_select_lists parses incorrectly.
-* collection_names doesn't seem to work in recent snapshots.
 
 KNOWN BUGS:
 * URL.cc tries to parse malformed URLs (which causes further problems)
@@ -45,14 +44,9 @@ DOCUMENTATION:
    requirements of 3.2.x (e.g. phrase searching, regex matching,
    external parsers and transport methods, database compression.)
 * TODO.html has not been updated for current TODO list and completions.
-* Need man-style pages for the httool programs as well as updates to
-   the existing htdig.html page.
 
 OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
-* Can we reproduce the DB2 errors that sometimes cropped up in 3.1.x?
-   (e.g. PR#473, PR#476)
-   (Now partially resolved--we can now stop on an error message using gdb.)
 * Error messages should be more informative if no URLs are indexed by htdig
    PR#672. In short, programs should do a little more checking.
 
