@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.30 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: WordList.cc,v 1.31 1999/09/17 17:24:01 bergolth Exp $
 //
 
 #include "WordList.h"
@@ -559,7 +559,7 @@ List *WordList::Words()
 	// Break off the \001 and the docID
 	word = strtok(key, "\001");
 
-	if ( (lastWord == 0) || (word != lastWord) )
+	if ( ((char *) lastWord == NULL) || (word != lastWord) )
 	  {
             list->Add(new String(word));
 	    lastWord = word;

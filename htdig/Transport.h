@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.8 1999/09/08 17:11:16 loic Exp $
+// $Id: Transport.h,v 1.9 1999/09/17 17:24:01 bergolth Exp $
 //
 //
 
@@ -192,15 +192,15 @@ protected:
 
    // Open the connection
    
-   inline int OpenConnection();
+   int OpenConnection();
 
    // Assign the host and the port for the connection
    
-   inline int AssignConnectionServer();
-   inline int AssignConnectionPort();   
+   int AssignConnectionServer();
+   int AssignConnectionPort();   
 
    // Connect to the specified host and port
-   inline int Connect();
+   int Connect();
    
    // Write a message
    inline int ConnectionWrite(char *cmd)
@@ -215,7 +215,7 @@ protected:
       
    // Close the connection
    
-   inline int CloseConnection();
+   int CloseConnection();
 
 
 

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.18 1999/09/12 17:34:01 ghutchis Exp $
+// $Id: htdig.cc,v 1.19 1999/09/17 17:24:01 bergolth Exp $
 //
 
 #include "Document.h"
@@ -67,6 +67,7 @@ main(int ac, char **av)
     //
     while ((c = getopt(ac, av, "lsm:c:vith:u:a")) != -1)
     {
+        int pos;
 	switch (c)
 	{
 	    case 'c':
@@ -89,7 +90,7 @@ main(int ac, char **av)
 		break;
 	    case 'u':
 		credentials = optarg;
-		for (int pos = 0; pos < strlen(optarg); pos++)
+		for (pos = 0; pos < strlen(optarg); pos++)
 		  optarg[pos] = '*';
 		break;
 	    case 'a':

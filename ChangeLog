@@ -1,3 +1,24 @@
+Fri Sep 17 18:27:57 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
+
+	A few changes so that it compiles with xlC on AIX:
+
+	* configure.in, include/htconfig.h.in: Add check for sys/select.h.
+        Add "long unsigned int" to the possible getpeername_length types.
+
+	* htdig/htdig.cc: Moved variable declaration out of case block.
+
+	* htlib/Connection.cc: Include sys/select.h.
+
+	* htcommon/WordList.cc: just a type cast
+
+	* htlib/regex.c: define true and false only if they aren't already
+
+	* htdig/Transport.{h,cc}: removed inline keywords (inline functions
+	have to be defined and declared simultaneously)
+	
+	* htlib/{mktime.c,regex.h,strptime.c,timegm.c}: change // comments
+	to /* ... */
+
 Tue Sep 14 01:15:48 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htmerge/db.cc: Rewrite to use the WordList functions to merge

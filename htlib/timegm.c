@@ -1,18 +1,18 @@
-//
-// timegm.cc
-//
-// timegm: Portable version of timegm (mytimegm) for ht://Dig
-//         Based on a version from the GNU C Library
-//         and a previous implementation for ht://Dig
-//
-// Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
-// For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
-// <http://www.gnu.org/copyleft/gpl.html>
-//
-// $Id: timegm.c,v 1.14 1999/09/11 05:03:52 ghutchis Exp $
-//
+/*
+   timegm.cc
+  
+   timegm: Portable version of timegm (mytimegm) for ht://Dig
+           Based on a version from the GNU C Library
+           and a previous implementation for ht://Dig
+  
+   Part of the ht://Dig package   <http://www.htdig.org/>
+   Copyright (c) 1999 The ht://Dig Group
+   For copyright details, see the file COPYING in your distribution
+   or the GNU Public License version 2 or later 
+   <http://www.gnu.org/copyleft/gpl.html>
+  
+   $Id: timegm.c,v 1.15 1999/09/17 17:24:01 bergolth Exp $
+*/
 
 /* Copyright (C) 1993, 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
    This file is part of the GNU C Library.

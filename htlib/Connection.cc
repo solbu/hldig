@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.14 1999/09/11 05:03:51 ghutchis Exp $
+// $Id: Connection.cc,v 1.15 1999/09/17 17:24:01 bergolth Exp $
 //
 
 #include "Connection.h"
@@ -35,6 +35,9 @@
 #include <sys/time.h>
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
+#endif
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
 #endif
 
 #include "htconfig.h"

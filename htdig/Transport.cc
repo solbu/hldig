@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.7 1999/09/08 17:11:16 loic Exp $
+// $Id: Transport.cc,v 1.8 1999/09/17 17:24:01 bergolth Exp $
 //
 //
 
@@ -201,7 +201,7 @@ void Transport::SetConnection (char *host, int port)
    bool ischanged = false;
 
    // Checking the connection server   
-   if( _host != host )   	 // server is gonna change
+   if( (char *) _host != host )   	 // server is gonna change
      ischanged=true;
 
    // Checking the connection port

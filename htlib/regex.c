@@ -370,8 +370,12 @@ init_syntax_once ()
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 typedef char boolean;
+#ifndef false
 #define false 0
+#endif
+#ifndef true
 #define true 1
+#endif
 
 static int re_match_2_internal PARAMS ((struct re_pattern_buffer *bufp,
 					const char *string1, int size1,
