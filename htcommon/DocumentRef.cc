@@ -4,6 +4,10 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.19  1999/01/20 04:58:02  ghutchis
+// New macros for assigning portably to some possibly-enum numeric type.
+// (getnum): Use them.
+//
 // Revision 1.18  1999/01/18 23:15:36  ghutchis
 // Fix thinko with compression_level.
 //
@@ -390,16 +394,39 @@ void DocumentRef::Deserialize(String &stream)
     int		x;
     String	*str;
 
+// There is a problem with getting a numeric value into a
+// numeric unknown type that may be an enum (the other way
+// around is simply by casting (int)).
+//  Supposedly the enum incarnates as a simple type, so we can
+// just check the size and copy the bits.
+#define MEMCPY_ASSIGN(to, from, type) \
+ do {                                                                 \
+   type _tmp = (type) (from);                                         \
+   memcpy((char *) &(to), (char *) &_tmp, sizeof(to));                \
+ } while (0)
+
+#define NUM_ASSIGN(to, from) \
+ do {                                                                 \
+   if (sizeof(to) == sizeof(long int))                                \
+     MEMCPY_ASSIGN(to, from, long int);                               \
+   else if (sizeof(to) == sizeof(int))                                \
+     MEMCPY_ASSIGN(to, from, int);                                    \
+   else if (sizeof(to) == sizeof(short int))                          \
+     MEMCPY_ASSIGN(to, from, short int);                              \
+   else if (sizeof(to) == sizeof(char))                               \
+     MEMCPY_ASSIGN(to, from, char);                                   \
+   /* else fatal error here? */                                       \
+ } while (0)
 
 #define	getnum(type, in, var) \
  if (type & CHARSIZE_MARKER_BIT)                                      \
  {                                                                    \
-   var = (int) *(unsigned char *) in;                                 \
+   NUM_ASSIGN(var, *(unsigned char *) in);                            \
    in += sizeof(unsigned char);                                       \
  }                                                                    \
  else if (type & SHORTSIZE_MARKER_BIT)                                \
  {                                                                    \
-   var = (int) *(unsigned short int *) in;                            \
+   NUM_ASSIGN(var, *(unsigned short int *) in);                       \
    in += sizeof(unsigned short int);                                  \
  }                                                                    \
  else                                                                 \
