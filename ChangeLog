@@ -1,3 +1,12 @@
+Thu Feb 10 00:02:41 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* .version: Bump for 3.2.0b2.
+
+	* htcommon/defaults.cc: Add category fields for each
+	attribute. Though these are currently unused, they could allow the
+	documentation to be split into multiple files based on logical
+	categories and subcategories.
+
 Wed Feb  9 23:52:55 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htnet/Connection.cc (connect): Add alarm(timeout) ... alarm(0)
@@ -8,7 +17,8 @@ Wed Feb  9 23:52:55 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	<Wilhelm.Schnell@mn.man.de> to resolve PR#754.
 
 	* htnet/HtHTTP.cc (HTTPRequest): Add CloseConnection() when the
-	connection fails on open before returning from the method.
+	connection fails on open before returning from the method. Should
+	take care of PR#670 for htdig-3-2-x.
 
 Wed Feb  9 09:21:00 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
