@@ -1,3 +1,8 @@
+Tue Aug 10 17:04:54 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(expandVariables, outputVariable): add handling
+	for $%(var) and $&(var) in templates.  Still to be documented.
+
 Tue Aug 10 20:13:52 1999  Loic Dachary  <loic@yoda.ceic.com>
 
 	* db/mp/mp_bh.c: fixed HAVE_ZLIB -> HAVE_LIBZ

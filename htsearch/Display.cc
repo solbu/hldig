@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.87 1999/07/11 23:07:00 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.88 1999/08/10 22:10:40 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -842,7 +842,15 @@ Display::expandVariables(char *str)
 		}
 		break;
 	    case 3:
-		if (*str == '(' || *str == '{')
+		if (*str == '%')
+		    var << *str;	// code for URL-encoded variable
+		else if (*str == '&')
+		{
+		    var << *str;	// code for SGML-encoded variable
+		    if (mystrncasecmp("&amp;", str, 5))
+			str += 4;
+		}
+		else if (*str == '(' || *str == '{')
 		    state = 4;
 		else if (isalpha(*str) || *str == '_')
 		{
@@ -878,7 +886,19 @@ Display::expandVariables(char *str)
 		//
 		outputVariable(var);
 		var = "";
-		if (*str == '(' || *str == '{')
+		if (*str == '%')
+		{
+		    var << *str;	// code for URL-encoded variable
+		    state = 3;
+		}
+		else if (*str == '&')
+		{
+		    var << *str;	// code for SGML-encoded variable
+		    if (mystrncasecmp("&amp;", str, 5))
+			str += 4;
+		    state = 3;
+		}
+		else if (*str == '(' || *str == '{')
 		    state = 4;
 		else if (isalpha(*str) || *str == '_')
 		{
@@ -907,20 +927,32 @@ void
 Display::outputVariable(char *var)
 {
     String	*temp;
-    char	*ev;
+    String	value = "";
+    char	*ev, *name;
 
     // We have a complete variable name in var. Look it up and
     // see if we can find a good replacement for it, either in our
     // vars dictionary or in the environment variables.
-    temp = (String *) vars[var];
+    name = *var;
+    while (*name == '&' || *name == '%')
+	name++;
+    temp = (String *) vars[name];
     if (temp)
-	cout << *temp;
+	value = *temp;
     else
     {
-	ev = getenv(var);
+	ev = getenv(name);
 	if (ev)
-	    cout << ev;
+	    value = ev;
     }
+    while (--name >= var && value.length())
+    {
+	if (*name == '%')
+	    encodeURL(value);
+	else
+	    value = HtSGMLCodec::instance()->decode(value);
+    }
+    cout << value;
 }
 
 //*****************************************************************************
