@@ -1,18 +1,20 @@
+//
+// WordDBCompress.h
+//
+// WordDBCompress: Implements specific compression scheme for
+//                 Berkeley DB pages containing WordReferences objects.
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: WordDBCompress.h,v 1.1.2.3 1999/12/15 17:26:35 loic Exp $
+//
 
 #ifndef _WordDBCompress_h_
 #define _WordDBCompress_h_
-
-#include "WordList.h"
-extern "C"
-{
-#include "zlib.h"
-#include "db_int.h"
-#include "shqueue.h"
-#include "db_shash.h"
-#include "mp.h"
-#include "db_page.h"
-#include "common_ext.h"
-}
 
 class WordDBCompress
 {

@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.10 1999/12/14 17:49:33 loic Exp $
+// $Id: WordList.cc,v 1.6.2.11 1999/12/15 17:26:35 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -32,7 +32,6 @@
 #include "Configuration.h"
 #include "htString.h"
 #include "HtPack.h"
-#include "WordDBCompress.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -78,19 +77,7 @@ int WordList::Open(const String& filename, int mode)
   if(config.Boolean("wordlist_compress",0) == 1)
   {
       usecompress=DB_COMPRESS;
-      DB_CMPR_INFO *cmpr_info=new DB_CMPR_INFO;
-      WordDBCompress *compressor=new WordDBCompress;
-      cmpr_info->user_data=(void *)compressor;
-      cmpr_info->compress  =WordDBCompress_compress_c;
-      cmpr_info->uncompress=WordDBCompress_uncompress_c;
-      cmpr_info->coefficient=3;
-      cmpr_info->max_npages=9;
-      compressor->debug=config.Value("wordlist_compress_debug",1);
-//        cmpr_info->coefficient=3;
-//        cmpr_info->max_npages=9;
-      db.dbenv.set_mp_cmpr_info(cmpr_info);
-//        db_page_compress  =word_db_page_compress;
-//        db_page_uncompress=word_db_page_uncompress;
+      db.dbenv.set_mp_cmpr_info(WordDB::CmprInfo());
   }
 
   db.dbinfo.set_bt_compare(word_db_cmp);

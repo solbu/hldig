@@ -1,18 +1,48 @@
+//
+// WordDBCompress.h
+//
+// WordDBCompress: Implements specific compression scheme for
+//                 Berkeley DB pages containing WordReferences objects.
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: WordDBCompress.cc,v 1.1.2.7 1999/12/15 17:26:35 loic Exp $
+//
 
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
+//
+// Access to Berkeley DB internal
+//
+extern "C"
+{
+#include "db_int.h"
+#include "shqueue.h"
+#include "db_shash.h"
+#include "mp.h"
+#include "db_page.h"
+#include "common_ext.h"
+}
 
 #include "WordDBCompress.h"
 #include "WordBitCompress.h"
 #include "WordRecord.h"
-
+#include "WordKey.h"
 
 // never change NBITS_COMPRESS_VERSION ! (otherwise version tracking will fail)
 #define NBITS_COMPRESS_VERSION 10
 
 // IMPORTANT: change these EVERY time you change something that affects the compression
 #define COMPRESS_VERSION 3
-char *version_label[]={"INVALID_VERSION_0","INVALID_VERSION_1","INVALID_VERSION_2","14 Dec 1999",NULL};
+static char *version_label[]={"INVALID_VERSION_0","INVALID_VERSION_1","INVALID_VERSION_2","14 Dec 1999",NULL};
 
-char *
+static char *
 get_version_label(int v)
 {
     if(COMPRESS_VERSION <0 || COMPRESS_VERSION>((sizeof(version_label)/sizeof(*version_label))-1))
@@ -25,6 +55,7 @@ get_version_label(int v)
     }
     return(version_label[v]);
 }
+
 #define NBITS_CMPRTYPE 2
 #define CMPRTYPE_NORMALCOMRPESS 0
 #define CMPRTYPE_BADCOMPRESS 1
@@ -33,8 +64,6 @@ get_version_label(int v)
 #define allign(v,a) ( (v)%(a) ? (v+((a)-(v)%(a))) : v)
 #define NBITS_KEYLEN 16
 #define NBITS_DATALEN 16
-
-
 
 // ***********************************************
 // *************** WordDBRecord  *****************
@@ -77,7 +106,6 @@ public:
     }
 };
 
-
 // ***********************************************
 // ****************  WordDBKey   *****************
 // ***********************************************
@@ -86,7 +114,6 @@ class WordDBKey : public WordKey
 {
     BKEYDATA *key;
 public:
-//      String word;
     int nbytes;
     u_int8_t bytes(int i){return(key->data[nbytes-i-1]);}
 
@@ -130,10 +157,7 @@ public:
 	if(!data || !len){errr("WordDBKey::WordDBKey(data,len) !data || !len");}
 	Unpack(String((char *)data,len));
     }
-//      WordDBKey(){;}
 };
-
-
 
 // ***********************************************
 // ****************  WordDBPage  *****************
@@ -148,7 +172,6 @@ class WordDBPage
     int decmpr_pos;
     int decmpr_indx;
     PAGE *pg;
-
 
     void isleave()
     {
@@ -374,7 +397,6 @@ class WordDBPage
 	decmpr_indx=0;
     }
 
-
     int CNFLAGS        ;
     int CNFIELDS       ;
     int CNDATASTATS0   ;
@@ -444,12 +466,6 @@ class WordDBPage
     }
 };
 
-
-
-
-
-
-
 // ***********************************************
 // *********** WordDBCompress  *******************
 // ***********************************************
@@ -463,8 +479,6 @@ WordDBCompress::WordDBCompress()
 
 extern "C"
 {
-extern int __memp_cmpr_inflate (const u_int8_t *, int, u_int8_t *, int, void *);
-extern int __memp_cmpr_deflate (const u_int8_t *, int, u_int8_t **, int*, void *);
 /*
  *   WordDBCompress: C-callbacks, actually called by Berkeley-DB
  *      they just call their WordDBCompress equivalents (by using user_data)
@@ -483,7 +497,7 @@ int WordDBCompress_uncompress_c(const u_int8_t* inbuff, int inbuff_length, u_int
 }
 }
 
-int cmprcount=0;
+static int cmprcount=0;
 //  Compresses inbuff to outbuff
 int 
 WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **outbuffp, int *outbuff_lengthp)
@@ -564,13 +578,9 @@ WordDBCompress::TestCompress(const  u_int8_t* pagebuff, int pagebuffsize,int deb
     return 0;
 }
 
-
-
-
 // ***********************************************
 // **********  WordDBPage  ***********************
 // ***********************************************
-
 
 // checks if compression/decompression sequence is harmless
 int
@@ -633,14 +643,12 @@ WordDBPage::TestCompress(int debuglevel)
 }
 
 // find position of first difference between 2 strings
-int first_diff(const String &s1,const String &s2)
+static int first_diff(const String &s1,const String &s2)
 {
     int j;
     for(j=0;j<s1.length() && j<s2.length() && s1[j]==s2[j];j++);
     return(j);
 }
-
-
 
 // ******* Uncompress Compressor into this page
 int 
@@ -911,6 +919,7 @@ WordDBPage::Uncompress_show_rebuild(unsigned int **rnums,int *rnum_sizes,int nnu
 	printf("\n");
     }
 }
+
 Compressor *
 WordDBPage::Compress(int ndebug)
 {
@@ -1007,10 +1016,6 @@ WordDBPage::Compress_main(Compressor &out)
 	if(verbose)printf("compressed wordiffs : %3d values: %4d bits %4f bytes\n",worddiffs.size(),size,size/8.0);
     }
 
-
-
-
-
     // *************** cleanup **************
 
     delete [] nums ;
@@ -1019,6 +1024,7 @@ WordDBPage::Compress_main(Compressor &out)
 
     return OK;
 }
+
 void 
 WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int nnums,HtVector_byte &worddiffs)
 {
@@ -1099,6 +1105,7 @@ WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int nnums,HtV
 //      nums_pos[CNFLAGS]=nk-1;
 
 }
+
 void 
 WordDBPage::Compress_vals(Compressor &out,int *nums,int *nums_pos,int nnums)
 {
@@ -1115,6 +1122,7 @@ WordDBPage::Compress_vals(Compressor &out,int *nums,int *nums_pos,int nnums)
 	if(verbose)printf("compressed field %2d : %3d values: %4d bits %8f bytes  : ended bit field pos:%6d\n",j,n,size,size/8.0,out.size());
     }
 }
+
 void
 WordDBPage::Compress_header(Compressor &out)
 {
@@ -1321,15 +1329,10 @@ WordDBPage::Compare(WordDBPage &other)
     return(res);
 }
 
-
-
-
 // Bit stream description
 // | field[last] changed only | yes -> delta field[last]
 // 
 
-
-int show_page_ct=0;
 // redo=0 -> 
 // redo=1 -> oops, dont show!
 // redo=2 -> 

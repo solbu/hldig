@@ -19,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.h,v 1.3.2.1 1999/12/09 11:31:26 bosc Exp $
+// $Id: WordDB.h,v 1.3.2.2 1999/12/15 17:26:35 loic Exp $
 //
 
 #ifndef _WordDB_h_
@@ -27,12 +27,13 @@
 
 #include "db_cxx.h"
 #include "WordReference.h"
+#include "WordDBCompress.h"
 #include "htString.h"
 
 #include <iostream.h>
 #include <errno.h>
 
-#include<iomanip.h>
+#include <iomanip.h>
 #include <ctype.h>
 
 extern const char* dberror(int errval);
@@ -57,14 +58,8 @@ void show_packed(const String& key);// for debuging purposes
 // calling Open to configure it.
 //
 class WordDB {
-
-    // Debuging:count number and sizes of inserted keys/data
-    int put_stat_N;
-    int put_stat_totksz;
-    int put_stat_totdsz;
-    int verbose;
  public:
-  WordDB() 
+  inline WordDB() 
   {
       db = 0; 
       put_stat_N=0;
@@ -72,9 +67,9 @@ class WordDB {
       put_stat_totdsz=0;
       verbose=0;
   }
-  ~WordDB() { Close(); }
+  inline ~WordDB() { Close(); }
 
-  int Open(const String& filename, DBTYPE type, int flags, int mode) {
+  inline int Open(const String& filename, DBTYPE type, int flags, int mode) {
 
     if(db) Close();
 
@@ -106,13 +101,13 @@ class WordDB {
     return OK;
   }
 
-  int Close() {
+  inline int Close() {
     if(db) db->close(0);
     db = 0;
     return OK;
   }
 
-  int Fd(int *fdp) {
+  inline int Fd(int *fdp) {
     if(!db) return NOTOK;
 
     if((errno = db->fd(fdp)) != 0) {
@@ -122,7 +117,7 @@ class WordDB {
     return OK;
   }
 
-  int Stat(void *sp, void *(*db_malloc)(size_t), int flags) {
+  inline int Stat(void *sp, void *(*db_malloc)(size_t), int flags) {
     if(!db) return NOTOK;
     if((errno = db->stat(sp, db_malloc, (u_int32_t) flags)) != 0) {
       cerr << "WordDB::Stat(" << flags << ") failed " << dberror(errno) << "\n";
@@ -131,7 +126,7 @@ class WordDB {
     return OK;
   }
   
-  int Sync(int flags) {
+  inline int Sync(int flags) {
     if(!db) return NOTOK;
     if((errno = db->sync((u_int32_t) flags)) != 0) {
       cerr << "WordDB::Sync(" << flags << ") failed " << dberror(errno) << "\n";
@@ -140,12 +135,12 @@ class WordDB {
     return OK;
   }
 
-  int get_byteswapped() const {
+  inline int get_byteswapped() const {
     if(!db) return -1;
     return db->get_byteswapped();
   }
 
-  DBTYPE get_type() const {
+  inline DBTYPE get_type() const {
     if(!db) return DB_UNKNOWN;
     return db->get_type();
   }
@@ -153,7 +148,7 @@ class WordDB {
   //
   // String arguments
   //
-  int Put(DbTxn *, const String& key, const String& data, int flags) {
+  inline int Put(DbTxn *, const String& key, const String& data, int flags) {
     Dbt rkey((void*)key.get(), (size_t)key.length());
     Dbt rdata((void*)data.get(), (size_t)data.length());
 
@@ -181,7 +176,7 @@ class WordDB {
     return errno;
   }
 
-  int Get(DbTxn *, String& key, String& data, int flags) const {
+  inline int Get(DbTxn *, String& key, String& data, int flags) const {
     Dbt rkey((void*)key.get(), (u_int32_t)key.length());
     Dbt rdata((void*)data.get(), (u_int32_t)data.length());
 
@@ -199,7 +194,7 @@ class WordDB {
     return errno;
   }
 
-  int Del(DbTxn *, const String& key) {
+  inline int Del(DbTxn *, const String& key) {
     Dbt rkey((void*)key.get(), (u_int32_t)key.length());
 
     if((errno = db->del(0, &rkey, 0)) != 0) {
@@ -213,7 +208,7 @@ class WordDB {
   //
   // WordReference argument
   //
-  int Put(const WordReference& wordRef, int flags) {
+  inline int Put(const WordReference& wordRef, int flags) {
     if(!db) return NOTOK;
 
     int ret;
@@ -226,7 +221,7 @@ class WordDB {
     return ret;
   }
 
-  int Del(const WordReference& wordRef) {
+  inline int Del(const WordReference& wordRef) {
     String key;
 
     wordRef.Key().Pack(key);
@@ -238,7 +233,7 @@ class WordDB {
   // Search entry matching wkey exactly, return key and data
   // in wordRef.
   //
-  int Get(WordReference& wordRef) const {
+  inline int Get(WordReference& wordRef) const {
     if(!db) return DB_RUNRECOVERY;
 
     String data;
@@ -258,7 +253,7 @@ class WordDB {
   // Could be implemented with Get but is not because we don't
   // need to build a wordRef with the entry found in the base. 
   //
-  int Exists(const WordReference& wordRef) const {
+  inline int Exists(const WordReference& wordRef) const {
     if(!db) return NOTOK;
 
     String key;
@@ -272,9 +267,32 @@ class WordDB {
     return OK;
   }
 
+  //
+  // Return object describing the compression scheme
+  //
+  static inline DB_CMPR_INFO* CmprInfo() {
+      DB_CMPR_INFO *cmpr_info=new DB_CMPR_INFO;
+
+      WordDBCompress *compressor=new WordDBCompress;
+      cmpr_info->user_data=(void *)compressor;
+      cmpr_info->compress  =WordDBCompress_compress_c;
+      cmpr_info->uncompress=WordDBCompress_uncompress_c;
+      cmpr_info->coefficient=3;
+      cmpr_info->max_npages=9;
+
+      return cmpr_info;
+  }
+
   Db*			db;
   DbEnv	            	dbenv;
   DbInfo            	dbinfo;
+
+ private:
+  // Debuging:count number and sizes of inserted keys/data
+  int put_stat_N;
+  int put_stat_totksz;
+  int put_stat_totdsz;
+  int verbose;
 };
 
 //
@@ -283,12 +301,12 @@ class WordDB {
 //
 class WordCursor {
  public:
-  WordCursor() { cursor = 0; }
-  ~WordCursor() {
+  inline WordCursor() { cursor = 0; }
+  inline ~WordCursor() {
     Close();
   }
 
-  int Open(Db* db) {
+  inline int Open(Db* db) {
     Close();
     if((errno = db->cursor(0, &cursor, 0)) != 0) {
       cerr << "WordCursor::Open failed " << dberror(errno) << "\n";
@@ -297,7 +315,7 @@ class WordCursor {
     return OK;
   }
 
-  int Close() {
+  inline int Close() {
     if(cursor) cursor->close();
     cursor = 0;
     return OK;
@@ -306,7 +324,7 @@ class WordCursor {
   //
   // String arguments
   //
-  int Get(String& key, String& data, int flags) {
+  inline int Get(String& key, String& data, int flags) {
     Dbt rkey;
     Dbt rdata;
     switch(flags & DB_OPFLAGS_MASK) {
@@ -327,7 +345,7 @@ class WordCursor {
     return errno;
   }
 
-  int Put(const String& key, const String& data, int flags) {
+  inline int Put(const String& key, const String& data, int flags) {
     Dbt rkey((void*)key.get(), (size_t)key.length());
     Dbt rdata((void*)data.get(), (size_t)data.length());
     if((errno = cursor->put(&rkey, &rdata, (u_int32_t)flags)) != 0) {
@@ -337,15 +355,16 @@ class WordCursor {
     return OK;
   }
 
-  int Del() {
+  inline int Del() {
     if((errno = cursor->del((u_int32_t)0)) != 0) {
       cerr << "WordCursor::Del() failed " << dberror(errno) << "\n";
       return NOTOK;
     }
     return OK;
   }
+
 private:
-    Dbc* cursor;
+  Dbc* cursor;
 };
 
-#endif
+#endif /* _WordDB_h */
