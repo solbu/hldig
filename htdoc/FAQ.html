@@ -34,6 +34,8 @@
 	  1.8. <a href="#q1.8">I think I found a bug. What should I do?</a><br>
 	  1.9. <a href="#q1.9">Does ht://Dig support phrase or near
 	  matching?</a><br>
+	  1.10. <a href="#q1.10">What are the practical and/or theoretical
+	  limits of ht://Dig?</a><br>
 	  <hr noshade size=2>
 
 	  <h3>2. Getting ht://Dig</h3>
@@ -179,6 +181,23 @@
 	  no "best" way to implement this in the current code, it may take
 	  some time before this happens. Feel free to send suggestions to
 	  &lt;<a href="mailto:bugs@htdig.org">bugs@htdig.org</a>&gt;.</p>
+
+	  1.10. <a href="#q1.10">What are the practical and/or theoretical
+	  limits of ht://Dig?</a><br>
+	  <p>The code itself doesn't put any real limit on the number of
+	  pages. There are several sites in the hundreds of thousands
+	  of pages. As for practical limits, it depends a lot on how
+	  many pages you plan on indexing. Some operating systems limit
+	  files to 2 GB in size, which can become a problem with a large
+	  database. There are also slightly different limits to each of
+	  the programs. Right now htmerge performs a sort on the words
+	  indexed. Most sort programs use a fair amount of RAM and
+	  temporary disk space as they assemble the sorted list. The
+	  htdig program stores a fair amount of information about the
+	  URLs it visits, in part to only index a page once. This takes
+	  a fair amount of RAM. With cheap RAM, it never hurts to throw
+	  more memory at indexing larger sites. In a pinch, swap will
+	  work, but it obviously really slows things down.</p>
 
 	  <hr noshade size=2>
 
@@ -523,7 +542,7 @@ endings_word2root_db: ${lang_dir}/word2root.db
 	</address>
 <!-- Created: Sun Jun 22 23:16:38 PDT 1997 -->
 <!-- hhmts start -->
-Last modified: Fri Apr  9 17:43:12 EDT 1999
+Last modified: Mon Apr 12 17:36:09 EDT 1999
 <!-- hhmts end -->
   </body>
 </html>
