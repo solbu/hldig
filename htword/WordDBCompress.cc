@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.cc,v 1.1.2.18 2000/05/05 21:55:17 loic Exp $
+// $Id: WordDBCompress.cc,v 1.1.2.19 2000/05/06 18:20:45 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -61,7 +61,7 @@ WordDBCompress::WordDBCompress()
   //
   // DEBUGING / BENCHMARKING
   //
-  debug=0;
+  debug = 0;
 }
 
 DB_CMPR_INFO* WordDBCompress::CmprInfo()

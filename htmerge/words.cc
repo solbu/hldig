@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: words.cc,v 1.22.2.7 2000/05/06 00:36:12 loic Exp $
+// $Id: words.cc,v 1.22.2.8 2000/05/06 18:20:45 loic Exp $
 //
 
 #include "htmerge.h"
@@ -43,7 +43,7 @@ static int delete_word(WordList *words, WordDBCursor& cursor, const WordReferenc
   docIDStr << word->DocID();
 
   if(d.discard.Exists(docIDStr)) {
-    if(words->Delete(cursor) != 1) {
+    if(words->Delete(cursor) != 0) {
       cerr << "htmerge: deletion of " << (char*)word->Get() << " failed " << strerror(errno) << "\n";
       return NOTOK;
     }

@@ -1,3 +1,13 @@
+Sat May 06 21:55:58 2000  Loic Dachary  <loic@senga.org>
+
+	* test: import regression tests from mifluz
+	
+	* htlib/DB2_db.cc (db_init): fix flags used when creating the
+	  environment to include a memory pool.
+
+	* htcommon/defaults.cc: change wordkey_description format.
+	  update all wordlist_* attributes
+
 Sat May 06 04:46:03 2000  Loic Dachary  <loic@senga.org>
 
 	* htmerge/words.cc (mergeWords): WordSearchDescription becomes

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DB2_db.cc,v 1.17.2.3 2000/05/05 21:55:15 loic Exp $
+// $Id: DB2_db.cc,v 1.17.2.4 2000/05/06 18:20:45 loic Exp $
 //
 
 #include "DB2_db.h"
@@ -352,7 +352,7 @@ DB2_db::db_init(char *home)
     dbenv->set_errpfx(dbenv, progname);
     dbenv->set_errcall(dbenv, &Error);
 
-    if((error = dbenv->open(dbenv, (const char*)home, NULL, DB_CREATE, 0666)) != 0) {
+    if((error = dbenv->open(dbenv, (const char*)home, NULL, DB_CREATE | DB_PRIVATE | DB_INIT_LOCK | DB_INIT_MPOOL, 0666)) != 0) {
       dbenv->err(dbenv, error, "open %s", (home ? home : ""));
       return 0;
     }

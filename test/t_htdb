@@ -1,0 +1,33 @@
+#
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999, 2000 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU General Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
+#
+# $Id: t_htdb,v 1.1.2.1 2000/05/06 18:20:46 loic Exp $
+#
+
+. ./test_functions
+
+for compress in "" "-z"
+do
+   rm -f test
+   ../htdb/htdb_load -f $srcdir/t_htdb.dump  $compress test || exit 1
+   ../htdb/htdb_dump -p  $compress test > t_htdb.d1 || exit 1
+   cmp $srcdir/t_htdb.dump t_htdb.d1 || exit 1
+   ../htdb/htdb_stat  $compress -d test | grep '11	Number of keys in the tree' > /dev/null || exit 1
+done
+
+export MIFLUZ_CONFIG ; MIFLUZ_CONFIG=${srcdir}/mifluz-search.conf
+
+for compress in "" "-z"
+do
+   rm -f test test_weakcmpr
+   ./txt2mifluz $compress $VERBOSE < $srcdir/search.txt
+   ../htdb/htdb_dump -W -p  $compress test > t_htdb.d1 || exit 1   
+   rm -f test test_weakcmpr
+   ../htdb/htdb_load -W -f t_htdb.d1  $compress test || exit 1
+   ../htdb/htdb_dump -W -p  $compress test > t_htdb.d2 || exit 1   
+   cmp t_htdb.d1 t_htdb.d2 || exit 1
+done

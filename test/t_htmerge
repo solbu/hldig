@@ -5,7 +5,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_htmerge,v 1.2.2.3 2000/01/14 15:12:37 loic Exp $
+# $Id: t_htmerge,v 1.2.2.4 2000/05/06 18:20:46 loic Exp $
 #
 
 . ./test_functions
@@ -13,4 +13,4 @@
 $htdig "$@" -t -i -c $testdir/conf/htdig.conf
 $htdig "$@" -t -i -c $testdir/conf/htdig.conf2
 
-$htmerge "$@" -c $testdir/conf/htdig.conf -m $testdir/conf/htdig.conf2
+#$htmerge "$@" -c $testdir/conf/htdig.conf -m $testdir/conf/htdig.conf2

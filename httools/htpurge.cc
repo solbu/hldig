@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htpurge.cc,v 1.1.2.5 2000/05/06 00:36:12 loic Exp $
+// $Id: htpurge.cc,v 1.1.2.6 2000/05/06 18:20:45 loic Exp $
 //
 
 #include "WordContext.h"
@@ -292,7 +292,7 @@ static int delete_word(WordList *words, WordDBCursor& cursor, const WordReferenc
   docIDStr << word->DocID();
 
   if(d.discard.Exists(docIDStr)) {
-    if(words->Delete(cursor) != 1) {
+    if(words->Delete(cursor) != 0) {
       cerr << "htpurge: deletion of " << (char*)word->Get() << " failed " << strerror(errno) << "\n";
       return NOTOK;
     }
