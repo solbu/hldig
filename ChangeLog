@@ -1,3 +1,10 @@
+Tue Jan 11 12:18:47 2000  Marcel Bosc  <bosc@ceic.com>
+
+	* htword/WordKey.h: fixed uninitialized memory read
+
+	* htword/WordBitCompress.cc: Fixed big number BUG
+	Fixed memeory leak
+
 Tue Jan 11 09:37:36 2000  Loic Dachary  <loic@ceic.com>
 
 	* htword/WordList.h: move operator << and operator >> to end of
