@@ -161,7 +161,11 @@ void DocumentRef::Clear()
     docLinks = 0;
     descriptions.Destroy();
     docAnchors.Destroy();
-    docHopCount = -1;
+    docHopCount = 0;
+    docSig = 0;
+    docEmail = 0;
+    docNotification = 0;
+    docSubject = 0;
     docBackLinks = 0;
 #if defined(HAVE_LIBZ) && defined(HAVE_ZLIB_H)
     docHeadState=Empty;

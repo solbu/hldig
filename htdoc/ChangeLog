@@ -1,3 +1,12 @@
+Fri Dec  3 17:31:47 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/DocumentRef.cc(Clear): Set docHopCount & docSig to 0,
+	and clear docEmail, docNotification & docSubject strings to have
+	a clean slate for Deserialize(), which assume 0/empty for these.
+	Fixes problem with hop counts getting clobbered.
+	* htdoc/RELEASE.html: Update with latest fix.
+	* htdoc/ChangeLog: Update to latest version.
+
 Fri Dec  3 12:12:19 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Document.cc: removed vestiges of internal Postscript
@@ -12,7 +21,6 @@ Fri Dec  3 12:12:19 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	filesystem when possible; fix compilation error.
 	* htdig/Server.h(Server): Add local_robots_file parameter to Server().
 	* htlib/HtWordType.h, htlib/HtWordType.cc: fix compilation errors.
-	* htdoc/ChangeLog: Update to latest version.
 
 Fri Dec  3 10:52:57 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
