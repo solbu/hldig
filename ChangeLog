@@ -1,4 +1,7 @@
-Tue Feb 15 15:29:16 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Feb 15 15:35:19 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/WordList.cc (valid_word): Applied Marc Pohl's fix to make
+	this 8-bit clean on Solaris.
 
 	* contrib/conv_doc.pl, contrib/parse_doc.pl: Applied Warren Jones's
 	changes to these scripts.
