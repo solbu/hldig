@@ -1,3 +1,17 @@
+Sun Jun 27 16:29:49 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HTML.h: Cleanup.
+
+	* htcommon/defaults.cc: Added default for img_alt_factor for text
+	weighting on <IMG ALT="..." tags.
+
+	* htdig/Retriever.cc: Add slot for img_alt_factor.
+
+	* htdig/HTML.cc (do_tag): Rewrite using Configuration class to
+	separate tag attributes.
+	(parse): Ignore final '>' in string passed to do_tag.
+	(do_tag): Index IMG ALT text.
+
 Fri Jun 25 17:58:44 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Transport.h: Fix virtual methods for Transport_Response to

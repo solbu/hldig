@@ -1,30 +1,15 @@
 //
 // HTML.h
 //
-// $Id: HTML.h,v 1.5 1998/10/09 04:34:06 ghutchis Exp $
+// Interface to the ht://Dig HTML parser
 //
-// $Log: HTML.h,v $
-// Revision 1.5  1998/10/09 04:34:06  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Fixed typos
-//
-// Revision 1.4  1998/08/11 08:58:28  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.3  1998/08/04 15:39:28  ghutchis
-//
-// Added support for META robots tags.
-//
-// Revision 1.2  1998/07/09 09:32:04  ghutchis
-//
-//
-// Added support for META name=description tags. Uses new config-file
-// option "use_meta_description" which is off by default.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
+// $Id: HTML.h,v 1.6 1999/06/27 19:51:19 ghutchis Exp $
 //
 #ifndef _HTML_h_
 #define _HTML_h_
