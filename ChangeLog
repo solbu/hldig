@@ -1,3 +1,11 @@
+Sun Oct 22 17:13:08 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/HtWordList.h: Add missing include for stdlib.h needed for
+	abort().
+
+	* htsearch/BooleanQueryParser.cc (ParseAnd): Fix problems with RH7
+	compiler -- shouldn't use "not" as a variable name!
+
 Thu Oct 19 22:19:16 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* ltmain.sh, ltconfig: Update with versions from libtool
