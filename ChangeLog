@@ -1,3 +1,7 @@
+Wed Oct 06 11:39:12 1999  Loic Dachary  <loic@ceic.com>
+
+	* Move htlib/*URL* to htcommon
+
 Wed Oct 06 10:09:19 1999  Loic Dachary  <loic@ceic.com>
 
 	* README: add htword

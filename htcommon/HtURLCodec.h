@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtURLCodec.h,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: HtURLCodec.h,v 1.1 1999/10/06 09:35:21 loic Exp $
 //
 
 #ifndef __HtURLCodec_h
