@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htpurge.cc,v 1.1.2.7 2000/05/06 20:46:42 loic Exp $
+// $Id: htpurge.cc,v 1.1.2.8 2000/06/07 02:47:08 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -37,8 +37,8 @@
 
 int			verbose = 0;
 
-Dictionary purgeDocs(Dictionary);
-void purgeWords(Dictionary);
+Dictionary *purgeDocs(Dictionary *);
+void purgeWords(Dictionary *);
 void usage();
 void reportError(char *msg);
 
@@ -51,8 +51,8 @@ int main(int ac, char **av)
     String		configfile = DEFAULT_CONFIG_FILE;
     int			c;
     extern char		*optarg;
-    Dictionary		discard_ids;
-    Dictionary		discard_urls;
+    Dictionary		*discard_ids = 0;
+    Dictionary		*discard_urls = new Dictionary;
 
     while ((c = getopt(ac, av, "vc:a")) != -1)
     {
@@ -68,7 +68,7 @@ int main(int ac, char **av)
 		alt_work_area++;
 		break;
 	    case 'u':
-	        discard_urls.Add(optarg, NULL);
+	        discard_urls->Add(optarg, NULL);
 		break;
 	    case '?':
 		usage();
@@ -136,7 +136,7 @@ int main(int ac, char **av)
 	    cin >> str;
 	    str.chop("\r\n");
 	    if (str.length() > 0)
-		discard_urls.Add(str, NULL);
+		discard_urls->Add(str, NULL);
 	}
     }
 
@@ -146,17 +146,22 @@ int main(int ac, char **av)
     // and we get back the list of IDs purged from the doc DB
     // to make sure words with these IDs are purged
     discard_ids = purgeDocs(discard_urls);
+    delete discard_urls;
+    discard_urls = 0;
+
     purgeWords(discard_ids);
+    delete discard_ids;
+    discard_ids = 0;
 
     return 0;
 }
 
 //*****************************************************************************
-// Dictionary purgeDocs(Dictionary purgeURLs)
+// Dictionary purgeDocs(Dictionary &purgeURLs)
 // Pass in a hash of the URLs to delete (it could be empty)
 // Return a hash of the IDs deleted from the doc DB
 //
-Dictionary purgeDocs(Dictionary purgeURLs)
+Dictionary *purgeDocs(Dictionary *purgeURLs)
 {
     const String	doc_db = config["doc_db"];
     const String	doc_index = config["doc_index"];
@@ -166,7 +171,7 @@ Dictionary purgeDocs(Dictionary purgeURLs)
     DocumentDB		db;
     List		*IDs;
     int			document_count = 0;
-    Dictionary		discard_list;
+    Dictionary		*discard_list = new Dictionary;
 
     //
     // Start the conversion by going through all the URLs that are in
@@ -200,7 +205,7 @@ Dictionary purgeDocs(Dictionary purgeURLs)
             if (verbose)
               cout << "Deleted, noindex: ID: " << idStr << " URL: "
                    << url << endl;
-	    discard_list.Add(idStr.get(), NULL);
+	    discard_list->Add(idStr.get(), NULL);
 	  }
 	else if (ref->DocState() == Reference_obsolete)
 	  {
@@ -209,7 +214,7 @@ Dictionary purgeDocs(Dictionary purgeURLs)
             if (verbose)
               cout << "Deleted, obsolete: ID: " << idStr << " URL: "
                    << url << endl;
-	    discard_list.Add(idStr.get(), NULL);
+	    discard_list->Add(idStr.get(), NULL);
 	  }
 	else if (remove_unused && ref->DocState() == Reference_not_found)
 	  {
@@ -218,7 +223,7 @@ Dictionary purgeDocs(Dictionary purgeURLs)
             if (verbose)
               cout << "Deleted, not found: ID: " << idStr << " URL: "
                    << url << endl;
-	    discard_list.Add(idStr.get(), NULL);
+	    discard_list->Add(idStr.get(), NULL);
 	  }
 	else if (remove_unused && strlen(ref->DocHead()) == 0 
 		 && ref->DocAccessed() != 0)
@@ -229,7 +234,7 @@ Dictionary purgeDocs(Dictionary purgeURLs)
             if (verbose)
               cout << "Deleted, no excerpt: ID: " << idStr << " URL:  "
                    << url << endl;
-	    discard_list.Add(idStr.get(), NULL);
+	    discard_list->Add(idStr.get(), NULL);
 	  }
 	else if (remove_unretrieved && ref->DocAccessed() == 0)
 	  {
@@ -238,15 +243,16 @@ Dictionary purgeDocs(Dictionary purgeURLs)
             if (verbose)
               cout << "Deleted, never retrieved: ID: " << idStr << " URL:  "
                    << url << endl;
-	    discard_list.Add(idStr.get(), NULL);
+	    discard_list->Add(idStr.get(), NULL);
 	  }
-	else if (purgeURLs.Exists(url))
+	else if (purgeURLs->Exists(url))
 	  {
 	    // This document has been marked to be purged by the user
 	    db.Delete(ref->DocID());
 	    if (verbose)
 	      cout << "Deleted, marked by user input: ID: " << idStr << " URL: "
 		   << url << endl;
+	    discard_list->Add(idStr.get(), NULL);
 	  }
 	else
 	  {
@@ -321,12 +327,12 @@ static int delete_word(WordList *words, WordDBCursor& cursor, const WordReferenc
 }
 
 //*****************************************************************************
-// void purgeWords()
+// void purgeWords(Dictionary *discard_list)
 //
-void purgeWords(Dictionary discard_list)
+void purgeWords(Dictionary *discard_list)
 {
   HtWordList		words(config);
-  DeleteWordData	data(discard_list); 
+  DeleteWordData	data(*discard_list); 
 
   words.Open(config["word_db"], O_RDWR);
   WordCursor* search = words.Cursor(delete_word, &data);
