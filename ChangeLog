@@ -1,3 +1,56 @@
+Sun Apr  9 12:31:13 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* httools/Makefile.am, httools/Makefile.in: Add htload to
+	compilation list.
+
+	* htcommon/DocumentDB.h: Add optional verbose options to DumpDB
+	and LoadDB.
+	
+	* htcommon/DocumentDB.cc (LoadDB): Implement loading and parsing
+	an ASCII version of the document database. Records on disk will
+	replace any matching records in the db.
+	(DumpDB): Add all fields in the DocumentRef to ensure the entire
+	database is written out.
+
+	* htcommon/DocumentRef.h: Add new method for setting DocStatus
+	from an int type.
+
+	* htcommon/DocumentRef.cc (DocStatus): Set it using a switch
+	statement. (It's not pretty, but it works.)
+	
+	* httools/htload.cc: New file. Loads in ASCII versions of the
+	databases, replacing existing records if found.
+
+	* httools/htdump.cc: Pass verbose flags to DumpDB method. Make
+	sure to close the document DB before quitting.
+
+	* httools/htpurge.cc: Add -u option to specify a URL to purge from
+	the command-line.
+
+	* httools/htstat.cc: Add -u option to output the list of URLs in
+	the document DB as well.
+
+Sat Apr  8 16:35:55 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Change all <b>, <i>, and <tt> tags to the
+	HTML-4.0 compliant <strong>, <em>, and <code> tags.
+
+	* installdir/long.html, installdir/header.html,
+	installdir/nomatch.html, installdir/syntax.html,
+	installdir/wrapper.html: Ditto.
+
+	* htdoc/*.html: Ditto. (Don't you just love sed?)
+
+	* htsearch/TemplateList.cc (createFromString): Ditto.
+	
+	* htdoc/htpurge.html, htdoc/htdump.html, htdoc/htload.html,
+	htdoc/htstat.html: New files documenting usage of httools
+	programs.
+
+	* htdoc/contents.html: Add links to above.
+
+	* htdoc/htdig.html: Update table with -t format to match htdump.
+
 Fri Apr  7 00:30:01 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* README: Update to mention 3.2.0b2 and use correct copyright. (It
