@@ -1,4 +1,6 @@
-Mon Jan 15 17:12:00 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Jan 15 17:27:17 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Fix up handling of arguments.
 
 	* htdig/ExternalTransport.cc (Request): Fix up handling of fork/exec
 	and command arguments, add wait() call.

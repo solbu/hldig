@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.21 2001/01/07 04:29:50 ghutchis Exp $
+// $Id: ExternalParser.cc,v 1.19.2.22 2001/01/15 23:41:07 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -232,6 +232,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
       if (debug)
 	cout << "External parser error: Can't create pipe!" << endl;
       unlink((char*)path);
+      delete [] parsargs;
       return;
     }
 
@@ -248,6 +249,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
       if (debug)
 	cout << "Fork Failure in ExternalParser" << endl;
       unlink((char*)path);
+      delete [] parsargs;
       return;
     }
 
@@ -261,7 +263,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	open((char*)path, O_RDONLY);
 
 	// Call External Parser
-	execv(currentParser.get(), parsargs);
+	execv(parsargs[0], parsargs);
 
 	exit(EXIT_FAILURE);
     }
