@@ -1,3 +1,17 @@
+Mon Aug 27 15:31:01 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	[ Backport 3.2.0b4 config files. ]
+	* installdir/htdig.conf: Added .css to bad_extensions default,
+	added missing closing ">", added mentions of accents & substring,
+	fixed a couple typos in comments.
+	* installdir/search.html: Add DTD tag for HTML 4 compliance.
+	* installdir/{long, syntax, header, footer, wrapper, nomatch}.html: 
+	Add DTD tags, ALT attributes and remove bogus </select> tags to
+	fix invalid HTML pointed out in PR#901.  Change all <b> and <i> tags
+	to the HTML-4.0 compliant <strong> and <em> tags.
+	* htdoc/config.html: Updated with sample of latest htdig.conf and
+	installdir/*.html, added blurb on wrapper.html.
+
 Thu Jul 26 15:05:29 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc, htsearch/parser.cc (perform_or),
