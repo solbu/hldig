@@ -1,3 +1,8 @@
+Wed Sep  1 14:40:01 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* configure.in, configure, include/htconfig.h.in, htlib/regex.c:
+	Fix PR#545, to test for presence of alloca.h
+
 Wed Apr 21 22:45:16 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* .version: Bump for final 3.1.2 release.

@@ -56,6 +56,9 @@
 /* Define if you have the <zlib.h> header file. */
 #undef HAVE_ZLIB_H 
 
+/* Define if you have the <alloca.h> header file. */
+#undef HAVE_ALLOCA_H 
+
 /* Define if you have the <sys/file.h> header file.  */
 #undef HAVE_SYS_FILE_H
 
