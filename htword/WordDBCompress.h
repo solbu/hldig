@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.h,v 1.3 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: WordDBCompress.h,v 1.4 2002/10/27 15:47:56 ghutchis Exp $
 //
 
 #ifndef _WordDBCompress_h_
@@ -84,6 +84,7 @@ class WordDBCompress
 {
  public:
     WordDBCompress();
+    WordDBCompress(int, int);
 
     int Compress(const  u_int8_t* inbuff, int inbuff_length, u_int8_t** outbuffp, int* outbuff_lengthp);
     int Uncompress(const  u_int8_t* inbuff, int inbuff_length, u_int8_t* outbuff, int outbuff_length);
@@ -96,6 +97,10 @@ class WordDBCompress
 
  private:
     DB_CMPR_INFO *cmprInfo;
+
+    //ZLIB WordDBCompression Flags
+    int use_zlib;
+    int zlib_level;
 
 // DEBUGING / BENCHMARKING
     int debug;

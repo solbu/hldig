@@ -137,6 +137,7 @@ struct __db_cmpr_info {
 	__P((const u_int8_t*, int, u_int8_t*, int,void *));
     u_int8_t coefficient;	        /* Compression factor is 1<<coefficient  */
     u_int8_t max_npages;                /* Max number of pages  worst case */
+    u_int8_t zlib_flags;                /* Zlib Compresson Level */
     void         *user_data;            /* Persistent information for compression functions */
 };
 

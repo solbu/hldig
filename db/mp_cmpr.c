@@ -67,6 +67,12 @@ static const char sccsid[] = "@(#)mp_cmpr.c	1.1 (Senga) 01/08/99";
 #define DEBUG_CMPR_ALLOC 1
 #endif
 
+#ifdef HAVE_LIBZ
+#include "zlib.h"
+#endif /* HAVE_LIBZ */
+//static global
+static int  memp_cmpr_zlib_level = -1;
+
 /*
  * Helpers declarations.
  */
@@ -121,11 +127,19 @@ CDB___memp_cmpr(dbmfp, bhp, db_io, flag, niop)
   db_pgno_t orig_pgno = db_io->pgno;
   size_t orig_bytes = db_io->bytes;
   DB_ENV *dbenv = dbmfp->dbmp->dbenv;
+  DB_CMPR_INFO *cmpr_info = dbenv->mp_cmpr_info;
   int ret = 0;
 
   db_io->pagesize = CMPR_DIVIDE(db_io->pagesize);
   db_io->bytes = CMPR_DIVIDE(db_io->bytes);
 
+  if(memp_cmpr_zlib_level == -1)
+  {
+        memp_cmpr_zlib_level = cmpr_info->zlib_flags;
+        if(memp_cmpr_zlib_level == -1)
+            memp_cmpr_zlib_level = Z_DEFAULT_COMPRESSION;
+  }
+  
   /*
    * Page 0 is a special case. It contains the metadata information (at most 512 bytes)
    * and must not be compressed because it is read with CDB___os_read and not CDB___os_io.
@@ -285,7 +299,14 @@ CDB___memp_cmpr_read(dbmfp, bhp, db_io, niop)
   /*
    * We gathered all the compressed data in buffcmpr, inflate it.
    */
-  if((ret = (*cmpr_info->uncompress)(buffcmpr, buffcmpr_length, db_io->buf, CMPR_MULTIPLY(db_io->pagesize), cmpr_info->user_data)) != 0) {
+
+  if(cmpr_info->zlib_flags != 0)
+    ret = CDB___memp_cmpr_inflate(buffcmpr, buffcmpr_length, db_io->buf, CMPR_MULTIPLY(db_io->pagesize), cmpr_info->user_data);
+  else
+    ret = (*cmpr_info->uncompress)(buffcmpr, buffcmpr_length, db_io->buf, CMPR_MULTIPLY(db_io->pagesize), cmpr_info->user_data);
+       
+  if(ret != 0) 
+  {
     CDB___db_err(dbmfp->dbmp->dbenv, "CDB___memp_cmpr_read: unable to uncompress page at pgno = %ld", first_pgno);
     ret = CDB___db_panic(dbmfp->dbmp->dbenv, ret);
     goto err;
@@ -334,7 +355,7 @@ CDB___memp_cmpr_write(dbmfp, bhp, db_io, niop)
   int ret;
   u_int8_t *buffcmpr = 0;
   u_int8_t *buffp;
-  int buffcmpr_length;
+  unsigned int buffcmpr_length;
   u_int8_t *orig_buff = db_io->buf;
   DB_ENV *dbenv = dbmfp->dbmp->dbenv;
   DB_CMPR_INFO *cmpr_info = dbenv->mp_cmpr_info;
@@ -342,7 +363,14 @@ CDB___memp_cmpr_write(dbmfp, bhp, db_io, niop)
   if((ret = CDB___os_malloc(CMPR_MULTIPLY(db_io->bytes), NULL, &db_io->buf)) != 0)
     goto err;
 
-  if((ret = (*cmpr_info->compress)(orig_buff, CMPR_MULTIPLY(db_io->pagesize), &buffcmpr, &buffcmpr_length, cmpr_info->user_data)) != 0) {
+
+  if(cmpr_info->zlib_flags != 0)
+        ret = CDB___memp_cmpr_deflate(orig_buff, CMPR_MULTIPLY(db_io->pagesize), &buffcmpr, &buffcmpr_length, cmpr_info->user_data); 
+  else
+        ret = (*cmpr_info->compress)(orig_buff, CMPR_MULTIPLY(db_io->pagesize), &buffcmpr, &buffcmpr_length, cmpr_info->user_data);
+
+  if(ret != 0)
+  {
     CDB___db_err(dbmfp->dbmp->dbenv, "CDB___memp_cmpr_write: unable to compress page at pgno = %ld", db_io->pgno);
     ret = CDB___db_panic(dbmfp->dbmp->dbenv, ret);
     goto err;
@@ -370,8 +398,8 @@ CDB___memp_cmpr_write(dbmfp, bhp, db_io, niop)
 
   /* write pages until the whole compressed data is written */ 
   do {
-    int length = buffcmpr_length - (buffp - buffcmpr);
-    int copy_length = length > DB_CMPR_PAGESIZE(db_io) ? DB_CMPR_PAGESIZE(db_io) : length;
+    unsigned int length = buffcmpr_length - (buffp - buffcmpr);
+    unsigned int copy_length = length > DB_CMPR_PAGESIZE(db_io) ? DB_CMPR_PAGESIZE(db_io) : length;
     /*
      * We handle serious compression stuff only if we need to.
      * overflow! the compressed buffer is too big -> get extra page
@@ -403,7 +431,7 @@ CDB___memp_cmpr_write(dbmfp, bhp, db_io, niop)
     db_io->pgno = cmpr.next;
     cmpr.flags = DB_CMPR_INTERNAL;
     cmpr.next = 0;
-  } while(buffp - buffcmpr < buffcmpr_length);
+  } while((unsigned int)(buffp - buffcmpr) < buffcmpr_length);
 
 #ifdef DEBUG_CMPR
   fprintf(stderr,"CDB___memp_cmpr_write:: chain_length (number of overflow pages):%2d\n",chain_length);
@@ -499,10 +527,6 @@ CDB___memp_cmpr_page(dbmfp, cmpr, db_io, niop)
   return ret;
 }
 
-#ifdef HAVE_LIBZ
-#include "zlib.h"
-#endif /* HAVE_LIBZ */
-
 /*
  * CDB___memp_cmpr_inflate --
  *	Decompress buffer
@@ -565,6 +589,8 @@ CDB___memp_cmpr_deflate(inbuff, inbuff_length, outbuffp, outbuff_lengthp, user_d
 #ifdef HAVE_LIBZ
   int ret = 0;
   int r;
+  int off = 0;
+  int freesp = 0;
   z_stream c_stream;
   u_int8_t* outbuff;
 
@@ -596,7 +622,10 @@ CDB___memp_cmpr_deflate(inbuff, inbuff_length, outbuffp, outbuff_lengthp, user_d
     switch(TYPE(pg)) {
     case P_IBTREE:
     case P_LBTREE:
-      memset((char*)(inbuff + LOFFSET(pg)), '\0', P_FREESPACE(pg));
+      off = LOFFSET(pg);
+      freesp = P_FREESPACE(pg);
+      memset((char*)(inbuff + off), 0, freesp);
+      //memset((char*)(inbuff + LOFFSET(pg)), '\0', P_FREESPACE(pg));
       break;
     }
   }
@@ -605,7 +634,9 @@ CDB___memp_cmpr_deflate(inbuff, inbuff_length, outbuffp, outbuff_lengthp, user_d
   c_stream.zfree=(free_func)0;
   c_stream.opaque=(voidpf)0;
 
-  if(deflateInit(&c_stream, Z_DEFAULT_COMPRESSION) != Z_OK) {
+  //if(deflateInit(&c_stream, Z_DEFAULT_COMPRESSION) != Z_OK) 
+  if(deflateInit(&c_stream, memp_cmpr_zlib_level) != Z_OK) 
+  {
     ret = EIO;
     goto err;
   }

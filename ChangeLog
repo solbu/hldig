@@ -1,3 +1,18 @@
+Sun Oct 27 09:29:02 2002  Geoffrey Hutchison  <ghutchis@localhost>
+
+	Merge in word DB zlib patch from Neal Richter.
+
+	* db/db.h.in, db/mp_cmpr.c, htword/WordList.cc,
+	htword/WordDBCompress.h, htword/WordDBCompress.cc: Add support for
+	using the zlib compression (and compression level) if specified by
+	the new wordlist_compress_zlib, which is "true" by default.
+
+	* htcommon/defaults.cc: Add attribute wordlist_compress_zlib as
+	above.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Update using cf_generate.pl.
+	
 Sat Oct 26 21:59:01 2002  Geoffrey Hutchison  <ghutchis@localhost>
 
 	Merge in fixes from Lachlan Andrew

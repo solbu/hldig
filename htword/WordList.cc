@@ -19,7 +19,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.9 2002/02/01 22:49:36 ghutchis Exp $
+// $Id: WordList.cc,v 1.10 2002/10/27 15:47:57 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -76,7 +76,9 @@ int WordList::Open(const String& filename, int mode)
 
   if(config.Boolean("wordlist_compress") == 1) {
     usecompress = DB_COMPRESS;
-    WordDBCompress* compressor = new WordDBCompress();
+    WordDBCompress* compressor = new WordDBCompress(
+        config.Boolean("wordlist_compress_zlib",0), config.Value("compression_level",0));
+ 
     //      compressor->debug = config.Value("wordlist_compress_debug");
     SetCompressor(compressor);
     db.CmprInfo(compressor->CmprInfo());

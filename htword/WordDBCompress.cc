@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.cc,v 1.3 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: WordDBCompress.cc,v 1.4 2002/10/27 15:47:56 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -56,16 +56,40 @@ static int WordDBCompress_uncompress_c(const u_int8_t* inbuff, int inbuff_length
 
 WordDBCompress::WordDBCompress()
 {
+  
   cmprInfo = 0;
 
   //
   // DEBUGING / BENCHMARKING
   //
   debug = 0;
+
+  //zlib WordDB Compression
+  use_zlib = 0;
+  zlib_level = 0;
+
 }
+
+
+WordDBCompress::WordDBCompress(int zlib, int level)
+{
+
+  cmprInfo = 0;
+
+  //
+  // DEBUGING / BENCHMARKING
+  //
+  debug = 0;
+
+  //zlib WordDB Compression
+  use_zlib = zlib;
+  zlib_level = level;
+}
+
 
 DB_CMPR_INFO* WordDBCompress::CmprInfo()
 {
+
   DB_CMPR_INFO *cmpr_info = new DB_CMPR_INFO;
 
   cmpr_info->user_data = (void *)this;
@@ -73,6 +97,11 @@ DB_CMPR_INFO* WordDBCompress::CmprInfo()
   cmpr_info->uncompress = WordDBCompress_uncompress_c;
   cmpr_info->coefficient = 3;
   cmpr_info->max_npages = 9;
+
+  if(use_zlib == 1)
+      cmpr_info->zlib_flags = zlib_level;
+  else
+      cmpr_info->zlib_flags = 0;
   
   cmprInfo = cmpr_info;
   
