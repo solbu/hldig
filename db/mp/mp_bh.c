@@ -548,14 +548,13 @@ __memp_bhfree(dbmp, mfp, bhp, free_mem)
 	/* Delete the buffer header from the LRU queue. */
 	SH_TAILQ_REMOVE(&dbmp->mp->bhq, bhp, q, __bh);
 
+	if(bhp->chain)
+	  __db_shalloc_free(dbmp->addr, bhp->chain);
 	/*
 	 * If we're not reusing it immediately, free the buffer header
 	 * and data for real.
 	 */
 	if (free_mem) {
-	       if(bhp->chain) {
-		    __db_shalloc_free(dbmp->addr, bhp->chain);
-	       }
 		__db_shalloc_free(dbmp->addr, bhp);
 		--dbmp->mp->stat.st_page_clean;
 	}

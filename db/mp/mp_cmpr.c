@@ -363,7 +363,7 @@ __memp_cmpr_write(dbmfp, bhp, db_io, niop)
     cmpr.flags = DB_CMPR_FREE;
     cmpr.next = 0;
     memcpy(db_io->buf, &cmpr, sizeof(CMPR));
-    for(i = first_nonreused_chain_pos; i < CMPR_MAX && bhp->chain[i]; i++) {
+    for(i = first_nonreused_chain_pos; i < (CMPR_MAX - 1) && bhp->chain[i]; i++) {
       if((ret = __memp_cmpr_free(dbmfp, bhp->chain[i])) != 0)
 	goto err;
       /*
@@ -733,8 +733,8 @@ __memp_cmpr_alloc(dbmfp, pgnop, bhp, first_nonreused_chain_posp)
       goto err;
   }
 
-  if((*first_nonreused_chain_posp) >= CMPR_MAX) {
-      __db_err(dbmfp->dbmp->dbenv, "__memp_cmpr_alloc: first_nonreused_chain_pos >= CMPR_MAX");
+  if((*first_nonreused_chain_posp) >= (CMPR_MAX - 1)) {
+      __db_err(dbmfp->dbmp->dbenv, "__memp_cmpr_alloc: first_nonreused_chain_pos >= (CMPR_MAX - 1)");
       ret = __db_panic(dbmfp->dbmp->dbenv, EINVAL);
       goto err;
   }

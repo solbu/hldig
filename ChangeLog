@@ -1,3 +1,13 @@
+Mon Mar 06 00:58:00 2000  Loic Dachary  <loic@ceic.com>
+
+	* db/mp/mp_bh.c (__memp_bhfree): always free the chain, if
+	  any. The bh is reset to null after free and we loose the
+	  pointer anyway, finally filling the pool with it.
+
+	* db/mp/mp_cmpr.c (__memp_cmpr_write): i < CMPR_MAX - 1 instead of
+	  i < CMPR_MAX otherwise go beyond array limits. This fixes a 
+	  major problem when handling large files.
+
 Sat Mar 04 19:41:49 2000  Loic Dachary  <loic@ceic.com>
 
 	* db/mp/mp_cmpr.c (__memp_cmpr_free_chain): clear BH_CMPR
