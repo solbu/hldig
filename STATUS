@@ -6,7 +6,8 @@ RELEASES:
    3.2.0b1: Released: 4 Feb 2000.
 
 SHOWSTOPPERS:
-* weakcmpr database needs to be writeable by server process.
+* Odd behavior with $(MODIFIED) and scores not working with
+   wordlist_compress set but work fine without wordlist_compress.
 
 KNOWN BUGS:
 * URL.cc tries to parse malformed URLs (which causes further problems)
@@ -16,9 +17,7 @@ KNOWN BUGS:
 * If exact isn't specified in the search_algorithms, $(WORDS) is not set 
    correctly: PR#650. (The documentation for 3.2.0b1 is updated, but can
    we fix this?)
-* Odd behavior with $(MODIFIED) and scores not working with
-   wordlist_compress set but work fine without wordlist_compress.
-   (Is this now fixed with Loic's merge?)
+* db.words_weakcmpr database is created w/o world-read
 
 PENDING FEATURES:
 * Forward-Porting of NNTP code.

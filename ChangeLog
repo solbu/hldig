@@ -1,3 +1,12 @@
+Sun Jun  4 22:17:14 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* test/t_htdig_local: Added test for local filesystem support.
+
+	* test/config/htdig.conf2.in: Change to be a config file for
+	local_urls testing.
+
+	* test/Makefile.am: Add t_htdig_local to list.
+
 Tue May 30 23:52:45 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* httools/htmerge.cc: Move to httools directory, remove "cleanup"

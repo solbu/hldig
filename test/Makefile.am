@@ -34,7 +34,7 @@ include $(top_srcdir)/Makefile.config
 
 TESTS = t_wordkey t_wordlist t_wordskip t_wordbitstream \
 	t_search t_htdb t_rdonly t_trunc \
-	t_htdig t_htsearch t_htmerge t_htnet
+	t_htdig t_htsearch t_htmerge t_htnet t_htdig_local
 
 TESTS_ENVIRONMENT = $(top_srcdir)/test/test_prepare
 AM_MAKEFLAGS = MAKE="$(MAKE)"
