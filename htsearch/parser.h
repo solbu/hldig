@@ -1,7 +1,7 @@
 //
 // parser.h
 //
-// $Id: parser.h,v 1.5 1999/02/21 19:54:07 ghutchis Exp $
+// $Id: parser.h,v 1.6 1999/08/28 21:14:28 ghutchis Exp $
 //
 #ifndef _parser_h_
 #define _parser_h_
@@ -13,6 +13,7 @@
 #include "Database.h"
 #include "htString.h"
 #include "Stack.h"
+#include "WordList.h"
 #include <ctype.h>
 
 class Parser
@@ -23,7 +24,7 @@ public:
     int			checkSyntax(List *);
     void		parse(List *, ResultList &);
 
-    void		setDatabase(Database *db)	{dbf = db;}
+    void		setDatabase(char *db)		{words.Read(db);}
     char		*getErrorMessage()		{return error.get();}
     int			hadError()			{return valid == 0;}
 	
@@ -45,8 +46,9 @@ protected:
     int			lookahead;
     int			valid;
     Stack		stack;
-    Database		*dbf;
     String		error;
+
+    WordList		words;
 };
 
 
