@@ -1,3 +1,13 @@
+Thu Jun 3 10:01:50 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+   * htdoc/RELEASE.html: updated release notes and changes
+   * htdoc/THANKS.html: updated the 'thanks' section
+
+Thu Jun 3 09:32:52 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * global: updated with 'autoreconf -if' (autoconf 2.59, libtool 1.5.6
+      and automake 1.7.9)
+
 Wed Jun 2 19:03:14 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * contrib/rtf2html: added the rtf2html.c source as modified by David Lippi
