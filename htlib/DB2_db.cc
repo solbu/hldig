@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DB2_db.cc,v 1.15 1999/09/24 14:30:11 loic Exp $
+// $Id: DB2_db.cc,v 1.16 1999/09/28 16:18:14 loic Exp $
 //
 
 #include "DB2_db.h"
@@ -59,7 +59,6 @@ DB2_db::Open(const char *filename, int flags, int mode)
     memset(&dbinfo, 0, sizeof(dbinfo));
     dbinfo.bt_compare = _compare ? _compare : 0;
     dbinfo.bt_prefix = _prefix ? _prefix : 0;
-    dbinfo.flags = db_type == DB_HASH ? 0 : DB_DUP;
 
     //
     // Open the database.

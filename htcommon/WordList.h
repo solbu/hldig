@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.12 1999/09/28 14:35:37 loic Exp $
+// $Id: WordList.h,v 1.13 1999/09/28 16:18:14 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -32,6 +32,24 @@
 #include "Configuration.h"
 
 class WordList;
+
+//
+// Possible values of the action argument of WordList::Walk
+//
+#define HTDIG_WORDLIST			0x0001
+#define HTDIG_WORDLIST_PREFIX		0x0002
+#define HTDIG_WORDLIST_WORD		0x0004
+#define HTDIG_WORDLIST_COLLECTOR	0x0008
+#define HTDIG_WORDLIST_WALKER		0x0010
+// 
+// Shorthands
+//
+#define HTDIG_WORDLIST_COLLECT		(HTDIG_WORDLIST|HTDIG_WORDLIST_COLLECTOR)
+#define HTDIG_WORDLIST_COLLECT_PREFIX	(HTDIG_WORDLIST_PREFIX|HTDIG_WORDLIST_COLLECTOR)
+#define HTDIG_WORDLIST_COLLECT_WORD	(HTDIG_WORDLIST_WORD|HTDIG_WORDLIST_COLLECTOR)
+#define HTDIG_WORDLIST_WALK		(HTDIG_WORDLIST|HTDIG_WORDLIST_WALKER)
+#define HTDIG_WORDLIST_WALK_PREFIX	(HTDIG_WORDLIST_PREFIX|HTDIG_WORDLIST_WALKER)
+#define HTDIG_WORDLIST_WALK_WORD	(HTDIG_WORDLIST_WORD|HTDIG_WORDLIST_WALKER)
 
 //
 // Type of the callback argument of WordList::Walk
@@ -60,7 +78,8 @@ public:
     //
     // Delete permanently
     //
-    int                 Delete(const WordReference& wordRef);
+    int                 WalkDelete(const WordReference& wordRef);
+    int                 Delete(const WordReference& wordRef) { return dbf->Delete(wordRef.KeyPack()) == 0; }
 
     //
     // Mark a document as already scanned for words or mark it as disappeared
@@ -81,10 +100,6 @@ public:
     // Close underlying db file
     // 
     int			Close();
-    //
-    // Get the Database pointer
-    //
-    Database		*Dbf() { return dbf; }
 
     //
     // This returns a list of all the WordReference * matching 
@@ -118,6 +133,11 @@ public:
     // Write an ascii version of the word database in <filename>
     int			Dump(const String& filename);
 
+    //
+    // Walk and collect data from the word database.
+    // Backend of Collect, Dump, Delete...
+    //
+    List 		*Walk (const WordReference& word, int action, wordlist_walk_callback_t callback, Object &callback_data);
 
 protected:
     //
@@ -125,11 +145,6 @@ protected:
     // Backend of WordRefs, operator[], Prefix...
     //
     List		*WordList::Collect (const WordReference& word, int action);
-    //
-    // Walk and collect data from the word database.
-    // Backend of Collect, Dump...
-    //
-    List 		*Walk (const WordReference& word, int action, wordlist_walk_callback_t callback, Object &callback_data);
 
 private:
 

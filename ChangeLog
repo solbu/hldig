@@ -1,3 +1,16 @@
+Tue Sep 28 18:23:49 1999  Loic Dachary  <loic@ceic.com>
+
+	* htmerge/words.cc (mergeWords): use WordList::Walk to avoid loading ALL 
+	  the words into memory.
+
+	* htlib/DB2_db.cc (Open): we don't want duplicates. Big mistake. If DUP is
+	  on, every put for update will insert a new entry.
+
+	* htcommon/WordList.cc (Delete): separate Delete (straight Delete and WalkDelete) 
+	  to avoid accessing dbf from outside WordList.
+
+	* htcommon/WordList.cc (Walk): now promoted to public. 
+	
 Tue Sep 28 16:34:56 1999  Loic Dachary  <loic@ceic.com>
 
 	* test/word.cc (dolist): Add regression tests for Delete.

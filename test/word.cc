@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.6 1999/09/28 14:35:37 loic Exp $
+// $Id: word.cc,v 1.7 1999/09/28 16:18:15 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -241,7 +241,7 @@ static void dolist(params_t* params)
     WordReference wordRef("the");
 
     int count;
-    if((count = words.Delete(wordRef)) != 2) {
+    if((count = words.WalkDelete(wordRef)) != 2) {
       fprintf(stderr, "dolist: delete occurences of 'the', got %d deletion instead of 2\n", count);
       exit(1);
     }
@@ -263,7 +263,7 @@ static void dolist(params_t* params)
     WordReference wordRef;
     wordRef.DocID(5);
     int count;
-    if((count = words.Delete(wordRef)) != 1) {
+    if((count = words.WalkDelete(wordRef)) != 1) {
       fprintf(stderr, "dolist: delete occurences in DocID 5, %d deletion instead of 1\n", count);
       exit(1);
     }

@@ -9,64 +9,79 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: words.cc,v 1.18 1999/09/24 10:29:04 loic Exp $
+// $Id: words.cc,v 1.19 1999/09/28 16:18:14 loic Exp $
 //
 
 #include "htmerge.h"
 #include "HtPack.h"
 
+#include <errno.h>
+
+//
+// Callback data dedicated to Dump and dump_word communication
+//
+class DeleteWordData : public Object
+{
+public:
+  DeleteWordData(const Dictionary& discard_arg) : discard(discard_arg) { deleted = remains = 0; }
+
+  const Dictionary& discard;
+  int deleted;
+  int remains;
+};
+
+//*****************************************************************************
+//
+//
+static int delete_word(WordList *words, const WordReference *word, Object &data)
+{
+  DeleteWordData& d = (DeleteWordData&)data;
+  static String docIDStr;
+
+  docIDStr = 0;
+  docIDStr << word->DocID();
+
+  if(d.discard.Exists(docIDStr)) {
+    if(words->Delete(*word) != 1) {
+      cerr << "htmerge: deletion of " << *word << " failed " << strerror(errno) << "\n";
+      return NOTOK;
+    }
+    if (verbose)
+      {
+	cout << "htmerge: Discarding " << *word << "\n";
+	cout.flush();
+      }
+    d.deleted++;
+  } else {
+    d.remains++;
+  }
+
+  return OK;
+}
 
 //*****************************************************************************
 // void mergeWords()
 //
 void mergeWords()
 {
-    WordList		 wordDB(config);
-    List		*words;
-    WordReference	*wordRef = 0;
-    String		docIDStr;
+  WordList		words(config);
+  DeleteWordData	data(discard_list); 
 
-    wordDB.Open(config["word_db"], O_RDWR);
-    words = wordDB.WordRefs();
+  words.Open(config["word_db"], O_RDWR);
 
-    words->Start_Get();
-    while ((wordRef = (WordReference *) words->Get_Next()))
-      {
-	//
-	// If the word is from a document we need to discard, we
-	// don't want to add it to the database
-	//
-	docIDStr = 0;
-	docIDStr << wordRef->DocID();
-	if (discard_list.Exists(docIDStr))
-	  {
-	    if (verbose)
-	      {
-		cout << "htmerge: Discarding " << wordRef->Word()
-		     << " in doc #" << wordRef->DocID() << "     \n";
-		cout.flush();
-	      }
-	    continue;
-	  }
+  (void)words.Walk(WordReference(), HTDIG_WORDLIST_WALK, delete_word, data);
+  
+  words.Close();
 
-	//
-	// The other problem is if this is somehow a word for a document
-	// that no longer exists. In this case, it's deleted by default.
-	// We don't do this yet. *FIX*
-	//
-      }
-    
-    if (verbose)
-	cout << "\n";
-    if (stats)
-      {
-	cout << "htmerge: Total unique word count: " 
-	     << wordDB.Words()->Count() << endl;
-	cout << "htmerge: Total words: " << words->Count() << endl;
-      }
+  if (verbose)
+    cout << "\n";
+  if (stats)
+    {
+      cout << "htmerge: Total word count: " 
+	   << data.remains << endl;
+      cout << "htmerge: Total deleted words: " << data.deleted << endl;
+    }
 
-    delete words;
-    wordDB.Close();
 }
 
 

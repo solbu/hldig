@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.34 1999/09/28 14:35:37 loic Exp $
+// $Id: WordList.cc,v 1.35 1999/09/28 16:18:14 loic Exp $
 //
 
 #include "WordList.h"
@@ -33,24 +33,6 @@
 #include <errno.h>
 
 extern Configuration	config;
-
-//
-// Possible values of the action argument of WordList::Walk
-//
-#define HTDIG_WORDLIST			0x0001
-#define HTDIG_WORDLIST_PREFIX		0x0002
-#define HTDIG_WORDLIST_WORD		0x0004
-#define HTDIG_WORDLIST_COLLECTOR	0x0008
-#define HTDIG_WORDLIST_WALKER		0x0010
-// 
-// Short hand
-//
-#define HTDIG_WORDLIST_COLLECT		(HTDIG_WORDLIST|HTDIG_WORDLIST_COLLECTOR)
-#define HTDIG_WORDLIST_COLLECT_PREFIX	(HTDIG_WORDLIST_PREFIX|HTDIG_WORDLIST_COLLECTOR)
-#define HTDIG_WORDLIST_COLLECT_WORD	(HTDIG_WORDLIST_WORD|HTDIG_WORDLIST_COLLECTOR)
-#define HTDIG_WORDLIST_WALK		(HTDIG_WORDLIST|HTDIG_WORDLIST_WALKER)
-#define HTDIG_WORDLIST_WALK_PREFIX	(HTDIG_WORDLIST_PREFIX|HTDIG_WORDLIST_WALKER)
-#define HTDIG_WORDLIST_WALK_WORD	(HTDIG_WORDLIST_WORD|HTDIG_WORDLIST_WALKER)
 
 //*****************************************************************************
 // WordList::~WordList()
@@ -368,23 +350,32 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
       {
 	WordReference found(key, data);
 	//
-	// Stop loop if we reach a record whose key does not
-	// match prefix key requirement, provided we have a valid
-	// prefix key.
+	// Don't bother to compare keys if we want to walk all the entries
 	//
-	if(!prefixKey.Empty() &&
-	   !prefixKey.Equal(found.Key(), action & HTDIG_WORDLIST_PREFIX ? prefixLength : 0))
-	  break;
-	//
-	// Skip entries that do not exactly match the specified key.
-	//
-	if(!wordRef.Key().Equal(found.Key(), action & HTDIG_WORDLIST_PREFIX ? prefixLength : 0))
-	  continue;
+	if(!(action & HTDIG_WORDLIST)) {
+	  //
+	  // Stop loop if we reach a record whose key does not
+	  // match prefix key requirement, provided we have a valid
+	  // prefix key.
+	  //
+	  if(!prefixKey.Empty() &&
+	     !prefixKey.Equal(found.Key(), action & HTDIG_WORDLIST_PREFIX ? prefixLength : 0))
+	    break;
+	  //
+	  // Skip entries that do not exactly match the specified key.
+	  //
+	  if(!wordRef.Key().Equal(found.Key(), action & HTDIG_WORDLIST_PREFIX ? prefixLength : 0))
+	    continue;
+	}
 
 	if(action & HTDIG_WORDLIST_COLLECTOR) {
 	  list->Add(new WordReference(found));
 	} else if(action & HTDIG_WORDLIST_WALKER) {
 	  int ret = callback(this, &found, callback_data);
+	  //
+	  // The callback function tells us that something went wrong, might
+	  // as well stop walking.
+	  //
 	  if(ret == NOTOK) break;
 	} else {
 	  // Useless to continue since we're not doing anything
@@ -418,7 +409,7 @@ public:
 //
 static int delete_word(WordList *words, const WordReference *word, Object &data)
 {
-  if(words->Dbf()->Delete(word->KeyPack()) == 0) {
+  if(words->Delete(*word) == 1) {
     ((DeleteWordData&)data).count++;
     return OK;
   } else {
@@ -432,11 +423,8 @@ static int delete_word(WordList *words, const WordReference *word, Object &data)
 // Delete all records matching wordRef, return the number of 
 // deleted records.
 //
-int WordList::Delete(const WordReference& wordRef)
+int WordList::WalkDelete(const WordReference& wordRef)
 {
-  //
-  // Simple case : a fully qualified key that only matches one word occurence
-  //
   DeleteWordData data;
   (void)Walk(wordRef, HTDIG_WORDLIST_WALK_WORD, delete_word, data);
   return data.count;
