@@ -6,8 +6,6 @@ RELEASES:
 
 
 SHOWSTOPPERS:
-* htdoc/install.html does not describe current installation method.
-  (For example, what is the current directory structure?)
 
 KNOWN BUGS:
 * htdig/Image.cc doesn't use Transport classes.
@@ -16,33 +14,40 @@ KNOWN BUGS:
    PR#348.
 * Not all htsearch input parameters are handled properly: PR#648.
 * If exact isn't specified in the search_algorithms, $(WORDS) is not set 
-   correctly: PR#650. (The documentation for 3.2.0b1 is updated, but should
+   correctly: PR#650. (The documentation for 3.2.0b1 is updated, but can
    we fix this?)
+* Running on BSDI and similar systems causes coredumps because the regex
+   code is incompatible. We need some sort of configure test for this.
+* SGML encoding/decoding does not work with numeric forms, e.g. &#34; -> quote.
 
 PENDING FEATURES:
 * Hans-Peter's sort-by-url patch for htsearch
 * Creating 'httools' directory and creating a few simple tools.
+* Multiple database patch
 
 TESTING:
 * ExternalTransport with non 'http' URLs.
 * URL parser
 * htfuzzy tests
 * New config parser
-* Reports of problems with long timeouts (e.g PR#350)
 * htmerge -m
 
 DOCUMENTATION:
 * Update cf_* pages to mention new config parser (i.e. URL-dependent config)
+* Add thorough documentation on htsearch restrict/exclude behavior
+  (including | and regex).
+* require.html is not updated to list new features and disk space
+  requirements of 3.2.x (e.g. phrase searching, regex matching,
+  external parsers and transport methods, database compression.)
+* TODO.html has not been updated for current TODO list and completions.
 
 OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
 * Can we reproduce the DB2 errors that sometimes cropped up in 3.1.x?
    (e.g. PR#473, PR#476)
 * Is the HTML output of htsearch HTML 4.0 strictly compliant?
-* Do IP addresses for start_urls cause problems?: PR#634.
 * Error messages should be more informative if no URLs are indexed by htdig 
   or htmerge. PR#672.
-* Should the various translate_* attributes be retired?
-* Should we generate documentation for attributes that are defunct?
-  (e.g. word_list, modification_time_is_now, etc.)
-
+* Should we get rid of uncoded_db_compatible--the databases have
+  changed completely, so all databases should be built with
+  common_url_parts and url_part_aliases now.
