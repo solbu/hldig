@@ -11,7 +11,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htmerge.cc,v 1.1.2.3 2000/08/09 18:06:52 ghutchis Exp $
+// $Id: htmerge.cc,v 1.1.2.4 2000/08/18 05:22:58 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -39,53 +39,14 @@
 #include <getopt.h>
 #endif
 
-class CallbackData : public Object
-{
-public:
-  CallbackData(HtWordList * w, Dictionary * d, int o)
-        { word_db = w; dup_ids = d; docIDOffset = o; }
 
-  HtWordList	*word_db;
-  Dictionary	*dup_ids;
-  int		docIDOffset;
-};
-
-int
-OverrideCallback(WordList * wl,
-                 WordDBCursor &,
-                 const WordReference * w,
-                 Object & d)
-{
-  CallbackData		&data = ((CallbackData &)d);
-  HtWordReference	*ht_wr = (HtWordReference *)w;
-  String		docIDKey;
-
-  docIDKey << ht_wr->DocID();
-  if (!((data.dup_ids)->Exists(docIDKey)))
-    {
-      ht_wr->DocID(ht_wr->DocID() + data.docIDOffset);
-      (data.word_db)->Override(*ht_wr);
-    }
-    
-  return OK;
-}
-
-int
-DeleteCallback(WordList * wl,
-               WordDBCursor &,
-               const WordReference * w,
-               Object & d)
-{
-  CallbackData		&data = ((CallbackData &)d);
-  HtWordReference	*ht_wr = (HtWordReference *)w;
-  String		docIDKey;
-
-  docIDKey << ht_wr->DocID();
-  if ((data.dup_ids)->Exists(docIDKey))
-    (data.word_db)->Delete(*ht_wr);
-    
-  return OK;
-}
+//
+// This hash is used to keep track of all the document IDs which have to be
+// discarded.
+// This is generated from the doc database and is used to prune words
+// from the word db
+//
+Dictionary    discard_list;
 
 
 // This config is used for merging multiple databses
@@ -338,8 +299,9 @@ mergeDB()
     db.Close();
 
     // OK, after merging the doc DBs, we do the same for the words
-
     HtWordList	mergeWordDB(config), wordDB(config);
+    List	*words;
+    String	docIDKey;
 
     if (wordDB.Open(config["word_db"], O_RDWR) < 0)
     {
@@ -356,14 +318,31 @@ mergeDB()
     // Start the merging by going through all the URLs that are in
     // the database to be merged
         
-    CallbackData data(&wordDB, &merge_dup_ids, docIDOffset);
-    WordSearchDescription description(OverrideCallback, (Object *)&data);
-    mergeWordDB.Walk(description);
+    words = mergeWordDB.WordRefs();
 
-    CallbackData data(&wordDB, &db_dup_ids, 0);
-    WordSearchDescription description(DeleteCallback, (Object *)&data);
-    wordDB.Walk(description);
+    words->Start_Get();
+    HtWordReference   *word;
+    while ((word = (HtWordReference *) words->Get_Next()))
+    {
+      docIDKey = word->DocID();
+      if (merge_dup_ids.Exists(docIDKey))
+      continue;
 
+      word->DocID(word->DocID() + docIDOffset);
+      wordDB.Override(*word);
+    }
+    delete words;
+
+    words = wordDB.WordRefs();
+    words->Start_Get();
+    while ((word = (HtWordReference *) words->Get_Next()))
+    {
+      docIDKey = word->DocID();
+      if (db_dup_ids.Exists(docIDKey))
+      wordDB.Delete(*word);
+    }
+    delete words;
+    
     // Cleanup--just close the two word databases
     mergeWordDB.Close();
     wordDB.Close();
