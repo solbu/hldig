@@ -1,3 +1,7 @@
+Tue Dec 21 18:18:01 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* htword: added code for benchmarking
+
 Mon Dec 20 17:59:15 1999  Marcel Bosc  <bosc@ceic.com>
 
 	* WordKey: Made the key structure dynamic: Changing the
