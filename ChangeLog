@@ -1,3 +1,24 @@
+Sun Oct 11 22:16:27 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/Attic/mytimegm.cc: Removed old mytimegm function.
+
+	* installdir/syntax.html: Improved boolean method error
+	message. It now gives examples of boolean expressions.
+
+	* htcommon/defaults.cc, htsearch/Display.cc, htsearch/Display.h,
+	htsearch/parser.cc: Added htsearch logging patch from Alexander
+	Bergolth.
+
+	* htmerge/Makefile.in, htnotify/Makefile.in, htsearch/Makefile.in,
+	include/htconfig.h.in, htdig/Document.cc, htdig/Images.cc,
+	htdig/Makefile.in, htfuzzy/Endings.cc, htfuzzy/Fuzzy.cc,
+	htfuzzy/Makefile.in, htfuzzy/Prefix.cc, htfuzzy/htfuzzy.cc,
+	htlib/DB2_db.cc, htlib/Makefile.in, Attic/.version,
+	Makefile.config.in, Makefile.in, configure, configure.in,
+	htcommon/DocumentDB.cc, htcommon/Makefile.in, mkinstalldirs:
+	Updated Makefiles and configure variables, removed more compiler
+	warnings.
+
 Fri Oct  9 00:29:18 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc: Fixed typo with "meta_desription_factor".
