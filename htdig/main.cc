@@ -5,9 +5,8 @@
 // generating several databases to be used by htmerge
 //
 // $Log: main.cc,v $
-// Revision 1.5  1998/12/02 02:44:43  ghutchis
-//
-// Add include <getopt.h> to help compiling under Win32 with CygWinB20.
+// Revision 1.6  1998/12/04 04:13:51  ghutchis
+// Use configure check to only include getopt.h when it exists.
 //
 //
 
@@ -15,7 +14,11 @@
 #include "Retriever.h"
 #include "htdig.h"
 #include <defaults.h>
+
+// If we have this, we probably want it.
+#ifdef HAVE_GETOPT_H
 #include <getopt.h>
+#endif
 
 //
 // Global variables

@@ -13,9 +13,8 @@
 // in the main word database.
 //
 // $Log: htfuzzy.cc,v $
-// Revision 1.7  1998/12/02 02:44:43  ghutchis
-//
-// Add include <getopt.h> to help compiling under Win32 with CygWinB20.
+// Revision 1.8  1998/12/04 04:13:51  ghutchis
+// Use configure check to only include getopt.h when it exists.
 //
 // Revision 1.6  1998/10/12 02:04:00  ghutchis
 //
@@ -36,7 +35,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htfuzzy.cc,v 1.7 1998/12/02 02:44:43 ghutchis Exp $";
+static char RCSid[] = "$Id: htfuzzy.cc,v 1.8 1998/12/04 04:13:51 ghutchis Exp $";
 #endif
 
 #include "htfuzzy.h"
@@ -49,7 +48,11 @@ static char RCSid[] = "$Id: htfuzzy.cc,v 1.7 1998/12/02 02:44:43 ghutchis Exp $"
 #include <List.h>
 #include <Dictionary.h>
 #include <defaults.h>
+
+// If we have this, we probably want it.
+#ifdef HAVE_GETOPT_H
 #include <getopt.h>
+#endif
 
 int		debug = 0;
 

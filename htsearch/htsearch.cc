@@ -6,9 +6,8 @@
 // Outputs HTML-ized results of the search based on the templates specified
 //
 // $Log: htsearch.cc,v $
-// Revision 1.14  1998/12/02 02:44:44  ghutchis
-//
-// Add include <getopt.h> to help compiling under Win32 with CygWinB20.
+// Revision 1.15  1998/12/04 04:13:52  ghutchis
+// Use configure check to only include getopt.h when it exists.
 //
 // Revision 1.12  1998/11/30 01:50:38  ghutchis
 //
@@ -59,7 +58,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.14 1998/12/02 02:44:44 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.15 1998/12/04 04:13:52 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -75,8 +74,11 @@ static char RCSid[] = "$Id: htsearch.cc,v 1.14 1998/12/02 02:44:44 ghutchis Exp 
 #include <time.h>
 #include <ctype.h>
 #include <signal.h>
-#include <getopt.h>
 
+// If we have this, we probably want it.
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
+#endif
 
 typedef void (*SIGNAL_HANDLER) (...);
 

@@ -7,9 +7,8 @@
 //
 //
 // $Log: htmerge.cc,v $
-// Revision 1.6  1998/12/02 02:44:44  ghutchis
-//
-// Add include <getopt.h> to help compiling under Win32 with CygWinB20.
+// Revision 1.7  1998/12/04 04:13:51  ghutchis
+// Use configure check to only include getopt.h when it exists.
 //
 // Revision 1.5  1998/10/02 17:07:32  ghutchis
 //
@@ -31,7 +30,11 @@
 //
 
 #include "htmerge.h"
+
+// If we have this, we probably want it.
+#ifdef HAVE_GETOPT_H
 #include <getopt.h>
+#endif
 
 //
 // This hash is used to keep track of all the document IDs which have to be

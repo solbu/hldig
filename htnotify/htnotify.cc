@@ -6,9 +6,8 @@
 // has "expired"
 //
 // $Log: htnotify.cc,v $
-// Revision 1.10  1998/12/02 02:44:44  ghutchis
-//
-// Add include <getopt.h> to help compiling under Win32 with CygWinB20.
+// Revision 1.11  1998/12/04 04:13:52  ghutchis
+// Use configure check to only include getopt.h when it exists.
 //
 // Revision 1.9  1998/11/06 23:41:38  ghutchis
 //
@@ -47,7 +46,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.10 1998/12/02 02:44:44 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.11 1998/12/04 04:13:52 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -60,7 +59,11 @@ static char RCSid[] = "$Id: htnotify.cc,v 1.10 1998/12/02 02:44:44 ghutchis Exp 
 #include <fstream.h>
 #include <time.h>
 #include <stdio.h>
+
+// If we have this, we probably want it.
+#ifdef HAVE_GETOPT_H
 #include <getopt.h>
+#endif
 
 void htnotify(DocumentRef &);
 void usage();
