@@ -5,37 +5,9 @@
 //
 // Implementation of StringMatch
 //
-// $Log: StringMatch.cc,v $
-// Revision 1.7  1999/01/21 03:40:31  ghutchis
-// Add default parameter sep = '|'.
-//
-// Revision 1.6  1999/01/20 04:51:52  ghutchis
-// Eliminate FINAL and use all bits in masks, contributed by Hans-Peter.
-//
-// Revision 1.5  1999/01/20 04:48:40  ghutchis
-// Fix bugs with clobbering multi-state matches and non-greedy behavior,
-// contributed by Hans-Peter Nilsson.
-//
-// Revision 1.4  1998/12/02 02:45:58  ghutchis
-//
-// Added fix from Christian Schneider <cschneid@relog.ch>, discovered from
-// behavior with limit_urls_to.
-//
-// Revision 1.3  1998/07/16 15:15:27  ghutchis
-//
-// Added patch from Stephan Muehlstrasser <smuehlst@Rational.Com> to fix
-// delete syntax and a memory leak.
-//
-// Revision 1.2  1997/02/24 17:52:52  turtle
-// Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
-// ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: StringMatch.cc,v 1.7 1999/01/21 03:40:31 ghutchis Exp $";
+static char RCSid[] = "$Id: StringMatch.cc,v 1.8 1999/01/29 18:46:34 ghutchis Exp $";
 #endif
 
 #include "StringMatch.h"
@@ -531,6 +503,8 @@ void StringMatch::TranslationTable(char *table)
 //
 void StringMatch::IgnoreCase()
 {
+    if (local_alloc)
+        delete [] trans;
     trans = new unsigned char[256];
     for (int i = 0; i < 256; i++)
 	trans[i] = tolower((unsigned char)i);
