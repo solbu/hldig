@@ -4,6 +4,10 @@
 // Implementation of htmerge
 //
 // $Log: words.cc,v $
+// Revision 1.5  1998/12/12 01:44:58  ghutchis
+// Fixed a bug where pointer, rather than strings were assigned. Silly
+// references...
+//
 // Revision 1.4  1998/12/06 18:43:31  ghutchis
 // Check for word entries that are duplicates and compact them.
 //
@@ -19,7 +23,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.4 1998/12/06 18:43:31 ghutchis Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.5 1998/12/12 01:44:58 ghutchis Exp $";
 #endif
 
 #include "htmerge.h"
@@ -36,12 +40,12 @@ mergeWords(char *wordtmp, char *wordfile)
     String	out;
     String	currentWord;
     char	buffer[1000];
-    char	*word = 0;
+    String	word;
     char        *sid;
     char	*name, *value, *pair;
     int		word_count = 0;
     WordRecord	wr, last_wr;
-    char        *last_word = 0;
+    String      last_word;
 
     //
     // Check for file access errors
@@ -177,7 +181,7 @@ mergeWords(char *wordtmp, char *wordfile)
 	    // Do we (by horrible chance) duplicate the last entry?
 	    // If we do, update last_word and keep going
 	    if ((last_wr.id == wr.id)
-		&& (strcmp(last_word, word) == 0))
+		&& (last_word == word))
 	      {
 		last_wr.count += wr.count;
 		last_wr.weight += wr.weight;
@@ -191,7 +195,7 @@ mergeWords(char *wordtmp, char *wordfile)
 	    //
 	    // Record the word in the new wordlist file
 	    //
-	    fprintf(wordlist, "%s",last_word);
+	    fprintf(wordlist, "%s", last_word.get());
             if (last_wr.count != 1)
             {
                	fprintf(wordlist, "\tc:%d", last_wr.count);
@@ -271,7 +275,7 @@ mergeWords(char *wordtmp, char *wordfile)
     // We still have to add the last word
     // This could be cleaned up by putting this code and that from the loop
     // above into a separate function. It's not pretty, but it works correctly.
-    fprintf(wordlist, "%s",last_word);
+    fprintf(wordlist, "%s", last_word.get());
     if (last_wr.count != 1)
       {
 	fprintf(wordlist, "\tc:%d", last_wr.count);
