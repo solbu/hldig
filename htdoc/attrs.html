@@ -1004,7 +1004,7 @@
           </dt>
           <dd>
             <a href="htfuzzy.html">htfuzzy</a> and <a href=
-            "htsearch.html" target="_top"></a>
+            "htsearch.html" target="_top">htsearch</a>
           </dd>
           <dt>
             <em>default:</em>
@@ -1056,7 +1056,7 @@
           </dt>
           <dd>
             <a href="htfuzzy.html">htfuzzy</a> and <a href=
-            "htsearch.html" target="_top"></a>
+            "htsearch.html" target="_top">htsearch</a>
           </dd>
           <dt>
             <em>default:</em>
@@ -1900,7 +1900,7 @@
             <em>type:</em>
           </dt>
           <dd>
-            list
+            string list
           </dd>
           <dt>
             <em>used by:</em>
@@ -2859,7 +2859,7 @@
             <em>type:</em>
           </dt>
           <dd>
-            string list
+            quoted string list
           </dd>
           <dt>
             <em>used by:</em>
@@ -3252,6 +3252,75 @@
     <hr>
     <dl>
       <dt>
+        <strong><a name="no_page_number_text">
+        no_page_number_text</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            quoted string list
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            <em>&lt;empty&gt;</em>
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            The text strings in this list will be used when putting
+            together the PAGELIST variable, for use in templates or
+            the <a href="#search_results_footer">search_results_footer</a>
+            file, when search results fit on more than page. The PAGELIST
+            is the list of links at the bottom of the search results page.
+            There should be as many strings in the list as there are
+            pages allowed by the <a href="#maximum_pages">maximum_pages</a>
+            attribute. If there are not enough, or the list is empty,
+            the page numbers alone will be used as the text for the links.
+            An entry from this list is used for the current page, as the
+            current page is shown in the page list without a hypertext link,
+            while entries from the <a href="#page_number_text">
+            page_number_text</a> list are used for the links to other pages.
+            The text strings can contain HTML tags to highlight page numbers
+            or embed images. The strings need to be quoted if they contain
+            spaces.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            <table border="0">
+              <tr>
+                <td valign="top">
+                  no_page_number_text: 
+                </td>
+                <td>
+                  &lt;strong&gt;1&lt;/strong&gt; &lt;strong&gt;2&lt;/strong&gt; \<br>
+                  &lt;strong&gt;3&lt;/strong&gt; &lt;strong&gt;4&lt;/strong&gt; \<br>
+                  &lt;strong&gt;5&lt;/strong&gt; &lt;strong&gt;6&lt;/strong&gt; \<br>
+                  &lt;strong&gt;7&lt;/strong&gt; &lt;strong&gt;8&lt;/strong&gt; \<br>
+                  &lt;strong&gt;9&lt;/strong&gt; &lt;strong&gt;10&lt;/strong&gt;
+                </td>
+              </tr>
+            </table>
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
         <strong><a name="no_prev_page_text">
         no_prev_page_text</a></strong>
       </dt>
@@ -3378,6 +3447,75 @@
           </dt>
           <dd>
             page_list_header:
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
+        <strong><a name="page_number_text">
+        page_number_text</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            quoted string list
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            <em>&lt;empty&gt;</em>
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            The text strings in this list will be used when putting
+            together the PAGELIST variable, for use in templates or
+            the <a href="#search_results_footer">search_results_footer</a>
+            file, when search results fit on more than page. The PAGELIST
+            is the list of links at the bottom of the search results page.
+            There should be as many strings in the list as there are
+            pages allowed by the <a href="#maximum_pages">maximum_pages</a>
+            attribute. If there are not enough, or the list is empty,
+            the page numbers alone will be used as the text for the links.
+            Entries from this list are used for the links to other pages,
+            while an entry from the <a href="#no_page_number_text">
+            no_page_number_text</a> list is used for the current page, as the
+            current page is shown in the page list without a hypertext link.
+            The text strings can contain HTML tags to highlight page numbers
+            or embed images. The strings need to be quoted if they contain
+            spaces.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            <table border="0">
+              <tr>
+                <td valign="top">
+                  page_number_text: 
+                </td>
+                <td>
+                  &lt;em&gt;1&lt;/em&gt; &lt;em&gt;2&lt;/em&gt; \<br>
+                  &lt;em&gt;3&lt;/em&gt; &lt;em&gt;4&lt;/em&gt; \<br>
+                  &lt;em&gt;5&lt;/em&gt; &lt;em&gt;6&lt;/em&gt; \<br>
+                  &lt;em&gt;7&lt;/em&gt; &lt;em&gt;8&lt;/em&gt; \<br>
+                  &lt;em&gt;9&lt;/em&gt; &lt;em&gt;10&lt;/em&gt;
+                </td>
+              </tr>
+            </table>
           </dd>
         </dl>
       </dd>
@@ -3814,7 +3952,7 @@
                 between.
               </dd>
               <dt>
-                <b>PAGEHEADER</b>
+                PAGEHEADER
               </dt>
               <dd>
                 This expands to either the value of the <a href=
@@ -4243,7 +4381,7 @@
             <em>type:</em>
           </dt>
           <dd>
-            string list
+            quoted string list
           </dd>
           <dt>
             <em>used by:</em>
