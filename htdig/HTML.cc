@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62.2.2 1999/12/07 19:54:09 bosc Exp $
+// $Id: HTML.cc,v 1.62.2.3 2000/01/20 03:52:01 ghutchis Exp $
 //
 
 #include "htdig.h"
@@ -624,15 +624,18 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		const String keywords = attrs["htdig-keywords"].empty() ?
 		  attrs["htdig-keywords"] :
 		  attrs["keywords"];
-		String tmp = transSGML(keywords);
-		char	*w = strtok(tmp, " ,\t\r\n");
-		while (w)
-		{
-		    if (strlen(w) >= minimumWordLength)
-		      retriever.got_word(w, wordindex++, 9);
-		    w = strtok(0, " ,\t\r\n");
-		}
-		w = '\0';
+		if (doindex)
+		  {
+		    String tmp = transSGML(keywords);
+		    char	*w = strtok(tmp, " ,\t\r\n");
+		    while (w)
+		      {
+			if (strlen(w) >= minimumWordLength)
+			  retriever.got_word(w, wordindex++, 9);
+			w = strtok(0, " ,\t\r\n");
+		      }
+		    w = '\0';
+		  }
 	    }
 	
 	    if (!attrs["http-equiv"].empty())
@@ -693,18 +696,21 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		   // Slot 10 is the current slot for this
 		   //
 
-		   String tmp = transSGML(attrs["content"]);
-		   char        *w = strtok(tmp, " \t\r\n");
-                   while (w)
+		   if (doindex)
 		     {
-			if (strlen(w) >= minimumWordLength)
-			  retriever.got_word(w, wordindex++,10);
-			w = strtok(0, " \t\r\n");
+		       String tmp = transSGML(attrs["content"]);
+		       char        *w = strtok(tmp, " \t\r\n");
+		       while (w)
+			 {
+			   if (strlen(w) >= minimumWordLength)
+			     retriever.got_word(w, wordindex++,10);
+			   w = strtok(0, " \t\r\n");
+			 }
+		       w = '\0';
 		     }
-		 w = '\0';
 		}
 
-		if (keywordsMatch.CompareWord(cache))
+		if (keywordsMatch.CompareWord(cache) && doindex)
 		{
 		    String tmp = transSGML(attrs["content"]);
 		    char	*w = strtok(tmp, " ,\t\r\n");
@@ -824,7 +830,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	     if (!attrs["src"].empty())
 	       {
 		 retriever.got_image(transSGML(attrs["src"]));
-		 if (!attrs["alt"].empty())
+		 if (!attrs["alt"].empty() && doindex)
 		   {
 		     String tmp = transSGML(attrs["alt"]);
 		     char *w = strtok(tmp, " ,\t\r\n");
