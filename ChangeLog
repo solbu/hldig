@@ -1,3 +1,7 @@
+Mon Jun 4 10:31:45 CEST 2001 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htdoc/cf_byname.html: I forgot to insert the 'restrict' attribute.
+
 Wed May 30 11:30:43 CEST 2001 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* htsearch/htsearch.cc: two new attributes, used by htsearch, have
