@@ -1,3 +1,10 @@
+Wed Oct 21 13:30:05 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/timegm.c: Corrected Oct 17 change. Should now work. :-)
+
+	* htcommon/defaults.cc: Added defaults for new directives
+	server_aliases and limit_normalized.
+
 Wed Oct 21 18:31:00 1998  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
 	* htlib/URL.cc,	htlib/URL.h: Added patch to support translation of

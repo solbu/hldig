@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.18  1998/10/21 17:33:03  ghutchis
+//
+// Added defaults for server_aliases and limit_normalized
+//
 // Revision 1.17  1998/10/17 14:06:08  ghutchis
 //
 // Changed htdig.sdsu.edu to www.htdig.org in start_urls
@@ -66,7 +70,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.17 1998/10/17 14:06:08 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.18 1998/10/21 17:33:03 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -120,6 +124,7 @@ ConfigDefaults	defaults[] =
     {"keywords_factor",			"100"},
     {"keywords_meta_tag_names",		"keywords htdig-keywords"},
     {"limit_urls_to",			"${start_url}"},
+    {"limit_normalized",                ""},
     {"locale",				"iso_8859_1"},
     {"local_default_doc",               "index.html"},
     {"local_urls",			""},
@@ -155,6 +160,7 @@ ConfigDefaults	defaults[] =
     {"search_algorithm",		"exact:1"},
     {"search_results_footer",		"${common_dir}/footer.html"},
     {"search_results_header",		"${common_dir}/header.html"},
+    {"server_aliases",                  ""},
     {"soundex_db",			"${database_base}.soundex.db"},
     {"star_blank",			"${image_url_prefix}/star_blank.gif"},
     {"star_image",			"${image_url_prefix}/star.gif"},
