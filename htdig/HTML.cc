@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.11 1999/11/24 02:06:47 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.12 1999/11/26 23:22:26 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -63,7 +63,7 @@ HTML::HTML()
     // the attrs Match object is used to match names of tag parameters.
     //
     tags.IgnoreCase();
-    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object|link");
+    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object|link|style|/style");
 
     attrs.IgnoreCase();
     attrs.Pattern("src|href|name");
@@ -649,11 +649,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    break;
 
 	case 16:	// "noindex"
+	case 27:	// "style"
 	    doindex = 0;
 	    dofollow = 0;
 	    break;
 
 	case 17:	// "/noindex"
+	case 28:	// "/style"
 	    doindex = 1;
 	    dofollow = 1;
 	    break;
