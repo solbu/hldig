@@ -1,3 +1,7 @@
+Sun Apr  9 12:53:02 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/RELEASE.html: Add a first draft of 3.2.0b2 release notes.
+
 Sun Apr  9 12:31:13 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* httools/Makefile.am, httools/Makefile.in: Add htload to

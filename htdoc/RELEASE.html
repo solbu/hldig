@@ -22,6 +22,81 @@
 	</p>
 
 	<p>
+	<strong>Release notes for htdig-3.2.0b2</strong>X Apr 2000<br>
+	This version is still marked beta because it has still only
+	received limited testing. However, it adds more functionality
+	and should fix all known bugs in the previous 3.2.0b1 release,
+	including the security hole fixed in version 3.1.5 in
+	production versions.
+	</p>
+	<ul>
+	    <li>Fixed several bugs in the new HTTP/1.1 implementation that would 
+	    cause problems with so-called &quot;Chunked&quot; data.</li>
+	    <li>Fixed a bug in the new regex-based configuration options that 
+	    would ignore the case_sensitive attribute.</li>
+	    <li>Fixed the robots.txt parsing to more rigorously stick to the 
+	    standard.</li>
+	    <li>Fixed a bug where upper-case META robots directives would be 
+	    ignored.</li>
+	    <li>Fixed a bug that could leave a connection open when it failed.</li>
+	    <li>Fixed the timeout in the connection code to ensure that hung 
+	    connections are killed properly.</li>
+	    <li>Fixed a bug where duplicates of modified documents could pile up 
+	    over time.</li>
+	    <li>Fixed a bug in the SGML entity handling where numeric entities 
+	    would be ignored. (e.g. &amp;#162; -> &#162;)</li>
+	    <li>The HTML parser now ignores anything between &lt;script&gt; tags, 
+	    much like it does for &lt;style&gt; tags.</li>
+	    <li>Fixed some performance problems in the new word database code.</li>
+	    <li>Removed the attributes translate_quot, translate_lt, translate_gt 
+	    and translate_amp since all SGML entities are now encoded and decoded 
+	    when displayed.</li>
+	    <li>Removed the attribute uncoded_db_compatible since the 3.2 
+	    databases are no longer compatible with previous versions anyway.</li>
+	    <li>Removed the attribute word_list because the db.wordlist file is no 
+	    longer generated. To get an ASCII version of the database, use the 
+	    word_dump attribute.</li>
+	    <li>Removed the pdf_parser attribute. It is now preferred to use the 
+	    external parser or external converter support with xpdf.</li>
+	    <li>The <a
+	    href="attrs.html#wordlist_compress">wordlist_compress</a>
+	    attribute is now turned on by default.</li>
+	    <li>The output from htsearch and the default and included templates 
+	    should now be more HTML-4.0 compliant.</li>
+	    <li>Added support for searching collections of multiple
+	    databases. To use this, supply multiple config fields or
+	    config names separated by &quot;|&quot characters. Also
+	    see the <a
+	    href="attrs.html#collection_names">collection_names</a> attribute.</li>
+	    <li>Added a new accents fuzzy algorithm, which treats
+	    accented and unaccented words the same. You must create an
+	    <a href="attrs.html#accents_db">accents_db</a> with
+	    htfuzzy after indexing.</li>
+	    <li>Added new attributes <a
+	    href="attrs.html#tcp_max_retries">tcp_max_retries</a> and
+	    <a href="attrs.html#tcp_wait_time">tcp_wait_time</a> to
+	    control how many times a low-level connection is retried
+	    and how long to wait on a hung connection.</li>
+	    <li>Add <a href="attrs.html#any_keywords">any_keywords</a>
+	    attribute to OR the keywords field in a search form
+	    instead of AND-ing them together.</li>
+	    <li>Add the attributes <a
+	    href="attrs.html#search_results_order">search_results_order</a>
+	    and <a href="attrs.html#url_seed_score">url_seed_score</a>
+	    to control result ranking and scoring based on URL patterns.</li>
+	    <li>Moved the htnotify program into the new httools directory.</li>
+	    <li>Added the programs <a href="htdump.html">htdump</a>,
+	    <a href="htload.html">htload</a>, <a
+	    href="htstat.html">htstat</a> and <a
+	    href="htpurge.html">htpurge</a>.</li>
+	    <li>There are the usual variety of other fixes and
+	    changes. See the <a href="ChangeLog">ChangeLog</a> for
+	    more details.</li>
+	    <li>Once again, a huge thank you to everyone who
+	    contributed bug reports, fixes and patches!</li>
+	</ul>
+	
+	<p>
 	<strong>Release notes for htdig-3.1.5</strong> 25 Feb 2000<br>
 	This version cleans up some remaining bugs in the 3.1.4
 	release. As the latest stable release of ht://Dig, it is
@@ -75,6 +150,7 @@
 	</ul>
 
 	<p>
+>>>>>>> 1.17.2.4
 	<strong>Release notes for htdig-3.2.0b1</strong>4 Feb 2000<br>
 	This marks the first beta version of the 3.2.0 codebase,
 	over a year in the works. Since it has not received as much
@@ -307,7 +383,7 @@
 	  year and wouldn't correctly parse dates after 29 Feb
 	  2000.</li>
 	<li>Fixed a variety of bugs in the HTML parser.</li>
-	<li>Fixed an old bug that would exclude <b>all</b> URLs if
+	<li>Fixed an old bug that would exclude <strong>all</strong> URLs if
 	  the exclude_urls attribute left empty.</li>
 	<li>Fixed display of META description tags. Now it always
 	  shows the top of a description. If no description exists, it
@@ -399,7 +475,7 @@
 	  searches from completing if fuzzy databases were not present.</li>
 	  <li>Fixed bugs in the soundex and metaphone algorithms that
 	  would only return the first word of several matching
-	  words. <b>Note</b> that to completely fix this bug, you must
+	  words. <strong>Note</strong> that to completely fix this bug, you must
 	  rebuild your soundex and metaphone databases.</li>
 	  <li>Fixed up many compilation warnings and errors.</li>
 	  <li>Fixed a performance slowdown in htsearch when
@@ -512,7 +588,7 @@
 	  <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">environment
 	  variables</a> in the search templates, contributed by Gilles
 	  Detillieux.</li>
-	  <li>Improved memory requirements <b>slightly</b> through
+	  <li>Improved memory requirements <strong>slightly</strong> through
 	  fixing a memory leak in htdig and a general system-wide
 	  adjustment.</li>
 	  <li>Improved support for multiple exclude and restrict items
@@ -569,7 +645,7 @@
 	  </li>
 	  <li>
 	  Fixed many problems with the Makefiles and configure
-	  scripts. Using <tt>./configure --prefix=</tt> now works.
+	  scripts. Using <code>./configure --prefix=</code> now works.
 	  </li>
 	  <li>
 	  Added fixes for connection problems with Digital Alpha-based
@@ -723,7 +799,7 @@
 	  </li>
 	  <li>
 		A search form can now manually add words to any search
-		using the new <i>keywords</i> form attribute.
+		using the new <em>keywords</em> form attribute.
 	  </li>
 	  <li>
 		A problem in the plaintext parser used to cause bogus HTML
@@ -821,10 +897,10 @@
 
 	<p>
 	  <strong>Release notes for htdig-3.0.3</strong> 2-Sep-1996<br>
-	  Bugs bugs bugs... Will they <i>ever</i> all be found?
+	  Bugs bugs bugs... Will they <em>ever</em> all be found?
 	</p>
 	<p>
-	  <b>NOTE</b>: I made extensive changes to the htdig.conf file
+	  <strong>NOTE</strong>: I made extensive changes to the htdig.conf file
 	  that gets installed. I would advise you to remove or rename
 	  your existing htdig.conf and let the installation process
 	  create a new one for you that you can then modify.
@@ -937,7 +1013,7 @@
 	<p>
 	  <strong>Release notes for htdig-3.0</strong>
 	  17-Jul-1996<br>
-	  I decided to make this the <i>official</i> 3.0 release.
+	  I decided to make this the <em>official</em> 3.0 release.
 	</p>
 	<blockquote>
 	  <blockquote>
@@ -962,10 +1038,10 @@
 		the various items that are unique to each match, like
 		URL, EXCERPT, TITLE, etc. The template can be selected
 		at search time (through a menu). There are two builtin
-		templates: <tt>builtin-short</tt> and <tt>
-		builtin-long</tt>. The <tt>builtin-short</tt> template
-		just lists the stars and title while the <tt>
-		builtin-long</tt> template lists results in a similar
+		templates: <code>builtin-short</code> and <tt>
+		builtin-long</code>. The <code>builtin-short</tt> template
+		just lists the stars and title while the <code>
+		builtin-long</code> template lists results in a similar
 		fashion to the way Alta Vista displays results.
 	  </li>
 	  <li>
@@ -992,7 +1068,7 @@
 			filename can use the normal variable expansion so
 			that things like:
 			<blockquote>
-			  <tt>someattribute: `${common_dir}/somefile`</tt>
+			  <code>someattribute: `${common_dir}/somefile`</code>
 			</blockquote>
 		  </li>
 		</ul>
@@ -1038,109 +1114,109 @@
 			New attributes added:
 			<dl>
 			  <dt>
-				<b>http_proxy</b>
+				<strong>http_proxy</strong>
 			  </dt>
 			  <dd>
 				Added to support the use of a HTTP proxy server
 				to index documents
 			  </dd>
 			  <dt>
-				<b>locale</b>
+				<strong>locale</strong>
 			  </dt>
 			  <dd>
 				Added to support international character sets
 			  </dd>
 			  <dt>
-				<b>match_method</b>
+				<strong>match_method</strong>
 			  </dt>
 			  <dd>
 				New way of specifying if a search is an 'or',
 				'and', or 'boolean' search
 			  </dd>
 			  <dt>
-				<b>matches_per_page</b>
+				<strong>matches_per_page</strong>
 			  </dt>
 			  <dd>
 				The new paged results uses this
 			  </dd>
 			  <dt>
-				<b>max_doc_size</b>
+				<strong>max_doc_size</strong>
 			  </dt>
 			  <dd>
 				Limit the size of documents retrieved
 			  </dd>
 			  <dt>
-				<b>next_page_text</b>
+				<strong>next_page_text</strong>
 			  </dt>
 			  <dd>
 				Used in the navigation between pages
 			  </dd>
 			  <dt>
-				<b>no_excerpt_text</b>
+				<strong>no_excerpt_text</strong>
 			  </dt>
 			  <dd>
 				Text displayed if no excerpt was available
 				(this used to be hard-coded)
 			  </dd>
 			  <dt>
-				<b>no_next_page_text</b>
+				<strong>no_next_page_text</strong>
 			  </dt>
 			  <dd>
 				Used in the navigation between pages
 			  </dd>
 			  <dt>
-				<b>no_prev_page_text</b>
+				<strong>no_prev_page_text</strong>
 			  </dt>
 			  <dd>
 				Used in the navigation between pages
 			  </dd>
 			  <dt>
-				<b>prev_page_text</b>
+				<strong>prev_page_text</strong>
 			  </dt>
 			  <dd>
 				Used in the navigation between pages
 			  </dd>
 			  <dt>
-				<b>star_patterns</b>
+				<strong>star_patterns</strong>
 			  </dt>
 			  <dd>
 				Allow different star images to be used
 				depending on the match URL
 			  </dd>
 			  <dt>
-				<b>synonym_dictionary</b>
+				<strong>synonym_dictionary</strong>
 			  </dt>
 			  <dd>
 				Support for the new synonyms fuzzy algorithm
 			  </dd>
 			  <dt>
-				<b>synonym_db</b>
+				<strong>synonym_db</strong>
 			  </dt>
 			  <dd>
 				Support for the new synonyms fuzzy algorithm
 			  </dd>
 			  <dt>
-				<b>syntax_error_file</b>
+				<strong>syntax_error_file</strong>
 			  </dt>
 			  <dd>
 				HTML file displayed if there was a boolean
 				expression syntax error
 			  </dd>
 			  <dt>
-				<b>template_map</b>
+				<strong>template_map</strong>
 			  </dt>
 			  <dd>
 				Used in the support for the new result display
 				templates
 			  </dd>
 			  <dt>
-				<b>template_name</b>
+				<strong>template_name</strong>
 			  </dt>
 			  <dd>
 				Sets the default template name
 			  </dd>
 			  <dt>
-				<b>text_factor</b>
+				<strong>text_factor</strong>
 			  </dt>
 			  <dd>
 				Added to allow normal text to have a variable
@@ -1252,7 +1328,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 
-Last modified: $Date: 2000/04/07 04:31:43 $
+Last modified: $Date: 2000/04/09 15:40:55 $
 
   </body>
 </html>
