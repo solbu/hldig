@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: conf_lexer.lxx,v 1.1.2.9 2000/08/18 05:24:13 ghutchis Exp $
+// $Id: conf_lexer.lxx,v 1.1.2.10 2000/08/19 22:19:28 ghutchis Exp $
 //
 */
 %{
@@ -36,6 +36,7 @@
 #include "conf_parser.h"
 #define MAX_INCLUDE_DEPTH 10
 YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
+String *name_stack[MAX_INCLUDE_DEPTH];
 int include_stack_ptr = 0;
 extern HtConfiguration config;
 %}
@@ -110,21 +111,44 @@ include[ \t]*:		BEGIN(incl);
 			if ( include_stack_ptr >= MAX_INCLUDE_DEPTH )
 			    {
 			    fprintf(stderr,"Includes nested too deeply\n");
-			    exit(1);
+			    // exit(1);	// Seems too harsh!
+			    return(T_NEWLINE);
 			    }
 			include_stack[include_stack_ptr++] =
 			    YY_CURRENT_BUFFER;
 
 			// handle ${var} in file name
-			String ParsedFilename = \
-			config.ParseString(yytext);
+			String ParsedFilename =
+				config.ParseString(yytext);
+
+			if (ParsedFilename[0] != '/')
+			    {	// Given file name not fully qualified
+				// so strip dir. name from current one
+			    String str;
+			    if (include_stack_ptr > 1)
+				str = *name_stack[include_stack_ptr-2];
+			    else	// still at top level config
+				str = config.getFileName();
+			    int len = str.lastIndexOf('/') + 1;
+			    if (len > 0)
+				{	// Current name has directory path
+					// component, so use it for new name
+				str.chop(str.length() - len);
+				str << ParsedFilename;
+				ParsedFilename = str;
+				}
+			    }
 
 			yyin = fopen( ParsedFilename.get(), "r" );
 
 			if ( ! yyin ) {
 			    fprintf(stderr,"can't find file: %s\n",yytext);
-			    exit(1);
+			    // exit(1);	// Seems too harsh!
+		            include_stack_ptr--;
+			    return(T_NEWLINE);
 			}
+			name_stack[include_stack_ptr-1] =
+					new String(ParsedFilename.get());
 		        yy_switch_to_buffer( yy_create_buffer( yyin, YY_BUF_SIZE ) );
 
 		        BEGIN(INITIAL);
@@ -135,6 +159,7 @@ include[ \t]*:		BEGIN(incl);
 		            yyterminate();
 		        else
 		            {
+			    delete name_stack[include_stack_ptr-1];
 		            yy_delete_buffer( YY_CURRENT_BUFFER );
 		            yy_switch_to_buffer(
 		                 include_stack[--include_stack_ptr] );

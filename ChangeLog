@@ -1,3 +1,11 @@
+Sat Aug 19 17:01:36 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/conf_lexer.lxx: Patched to fix the bug with relative
+	filename includes. Keeps a separate stack with the filenames and
+	adjusts accordingly.
+
+	* htcommon/conf_lexer.cxx: Updated using flex 2.5.4.
+
 Thu Aug 17 23:59:26 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/conf_lexer.lxx: Patched to fix a bug reported by Abel
