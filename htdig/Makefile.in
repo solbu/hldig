@@ -19,7 +19,7 @@ clean:
 	rm -f $(TARGET) $(OBJS) *~ *.bak *% a.out *.orig core
 
 distclean:	clean
-	rm-f Makefile *.proj
+	rm -f Makefile *.proj
 
 depend:
 	$(MAKEDEPEND) @CPPFLAGS@ $(CXXFLAGS) $(INCS) -- $(OBJS)
