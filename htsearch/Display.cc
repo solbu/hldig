@@ -4,6 +4,11 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.16  1998/10/17 14:15:57  ghutchis
+//
+// Added variable CURRENT as the number of the current match, adapted from a
+// patch by Reni Seindal <seindal@webadm.kb.dk>
+//
 // Revision 1.15  1998/10/12 02:09:28  ghutchis
 //
 // Added htsearch logging patch from Alexander Bergolth.
@@ -66,7 +71,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.15 1998/10/12 02:09:28 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.16 1998/10/17 14:15:57 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -184,7 +189,7 @@ Display::display(int pageNumber)
 		continue;	// The document isn't present for some reason
 	    ref->DocAnchor(match->getAnchor());
 	    ref->DocScore(match->getScore());
-	    displayMatch(match);
+	    displayMatch(match,currentMatch+1);
 	    numberDisplayed++;
 	}
 	currentMatch++;
@@ -221,7 +226,7 @@ Display::includeURL(char *url)
 
 //*****************************************************************************
 void
-Display::displayMatch(ResultMatch *match)
+Display::displayMatch(ResultMatch *match, int current)
 {
     String	*str;
 	
@@ -234,6 +239,7 @@ Display::displayMatch(ResultMatch *match)
     char    *url = match->getURL();
     vars.Add("URL", new String(url));
     vars.Add("SCORE", new String(form("%d", match->getScore())));
+    vars.Add("CURRENT", new String(form("%d", current)));
     char	*title = ref->DocTitle();
     if (!title || !*title)
       {

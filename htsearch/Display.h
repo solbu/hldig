@@ -1,9 +1,14 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.3 1998/10/12 02:09:28 ghutchis Exp $
+// $Id: Display.h,v 1.4 1998/10/17 14:15:57 ghutchis Exp $
 //
 // $Log: Display.h,v $
+// Revision 1.4  1998/10/17 14:15:57  ghutchis
+//
+// Added variable CURRENT as the number of the current match, adapted from a
+// patch by Reni Seindal <seindal@webadm.kb.dk>
+//
 // Revision 1.3  1998/10/12 02:09:28  ghutchis
 //
 // Added htsearch logging patch from Alexander Bergolth.
@@ -54,7 +59,7 @@ public:
     void		setCGI(cgi *);
 	
     void		display(int pageNumber);
-    void		displayMatch(ResultMatch *);
+    void		displayMatch(ResultMatch *, int current);
     void		displayHeader();
     void		displayFooter();
     void		displayNomatch();
