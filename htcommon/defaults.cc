@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.55 2000/08/13 18:24:25 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.56 2000/08/21 02:31:15 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -2283,6 +2283,20 @@ url_part_aliases:
 	\"moving\" the affected URLs in the database is
 	wanted, as described above.
 " },
+{ "url_rewrite_rules", "",
+    "string list", "htdig", "", "3.2.0b3", "URLs", "url_rewrite_rules:	(.*)\\\\?JServSessionIdroot=.*		\\\\1 \\<br>
+			(.*)\\\\&amp;JServSessionIdroot=.*		\\\\1 \\<br>
+			(.*)&amp;context=.*				\\\\1<br>", "
+This is a list of pairs, <em>regex</em> <em>replacement</em> used to permanently 
+rewrite URLs as they are indexed. The left hand string is a regex; the right 
+hand string is  a literal string with embedded placeholders for fragments that 
+matched  inside brackets in the regex. \\0 is the whole matched string, \\1 to 
+\\9 are  bracketted substrings. Rewrite rules are applied sequentially to each 
+incoming URL  before normalization occurs. Rewriting does not stop once a 
+match has been made, so multiple rules may affect a given URL. See also <a 
+href=\"#url_part_aliases\">url_par_aliases</a> which allows URLs to be of one 
+form during indexing and translated for results.
+"},
 { "url_seed_score", "",
     "string list", "htsearch", "", "3.2.0b2", "Searching::Ranking", "url_seed_score: 
 	      /mailinglist/ *.5-1e6 <br>

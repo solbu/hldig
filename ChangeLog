@@ -1,3 +1,34 @@
+Sun Aug 20 20:37:53 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtRegex.h, htlib/HtRegex.cc: Made destructor virtual,
+	added lastError() and associated support. Changed return type of
+	set*() to int. They now return the value of |compiled|.
+
+	* htcommon/defaults.cc (url_rewrite_rules): Add new attribute to
+	support patch by Andy Armstrong <andy@tagish.com> for permanent
+	URL rewriting.
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
+	* htlib/HtRegexReplace.cc, htlib/HtRegexReplaceList.cc,
+	htlib/HtRegexReplace.h, htlib/HtRegexReplaceList.h, 
+	htcommon/HtURLRewriter.cc, htcommon/HtURLRewriter.h: New classes
+
+	* htcommon/Makefile.am, htcommon/Makefile.in: Add compilation for
+	HtURLRewriter.
+
+	* htlib/Makefile.am, htcommon/Makefile.in: Ditto for
+	HtRegexReplace*
+
+	* htcommon/URL.h, htcommon/URL.cc (rewrite): New method for
+	transforming URLs based on HtURLRewriter.
+
+	* htdig/Retriever.cc (got_href): Rewrite the URL before we do
+	anything with it.
+
+	* htdig/htdig.cc: Include HtURLRewriter headers and check rewrite
+	rules for errors.
+
 Sat Aug 19 17:01:36 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/conf_lexer.lxx: Patched to fix the bug with relative
