@@ -1,3 +1,9 @@
+Mon Aug 02 11:28:00 1999 CEST Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htlib/htString.h, htlib/String.cc : added the possibility to
+	insert an unsigned int into a string.
+	* htdig.cc : with verbose mode shows start and end time.
+
 Thu Jul 22 18:10:00 1999 CEST Gabriele Bartolini <g.bartol@comune.prato.it>
 
 	* htdig/Transport.cc, htdig/HtHTTP.cc : modified the destructors.

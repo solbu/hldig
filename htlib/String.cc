@@ -1,10 +1,10 @@
 //
 // Implementation of String class
 //
-// $Id: String.cc,v 1.20 1999/05/15 17:05:46 ghutchis Exp $
+// $Id: String.cc,v 1.21 1999/08/02 09:04:10 angus Exp $
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.20 1999/05/15 17:05:46 ghutchis Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.21 1999/08/02 09:04:10 angus Exp $";
 #endif
 
 
@@ -331,6 +331,14 @@ String &String::operator << (int i)
 {
     char	str[20];
     sprintf(str, "%d", i);
+    append(str);
+    return *this;
+}
+
+String &String::operator << (unsigned int i)
+{
+    char	str[20];
+    sprintf(str, "%u", i);
     append(str);
     return *this;
 }

@@ -1,7 +1,7 @@
 //
 // Just Another String class.
 //
-// $Id: htString.h,v 1.7 1999/05/15 17:05:46 ghutchis Exp $
+// $Id: htString.h,v 1.8 1999/08/02 09:04:10 angus Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -63,6 +63,7 @@ public:
     inline String		&operator << (char);
     String		&operator << (unsigned char c) {return *this<<(char)c;}
     String		&operator << (int);
+    String		&operator << (unsigned int);
     String		&operator << (long);
     String		&operator << (short i)		{return *this<<(int)i;}
     String		&operator << (String &);

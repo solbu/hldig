@@ -14,6 +14,7 @@
 #include "defaults.h"
 #include "HtURLCodec.h"
 #include "HtWordType.h"
+#include "HtDateTime.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -34,6 +35,8 @@ FILE			*urls_seen = NULL;
 FILE			*images_seen = NULL;
 String			configFile = DEFAULT_CONFIG_FILE;
 String			minimalFile = 0;
+HtDateTime		StartTime;
+HtDateTime		EndTime;
 
 void usage();
 void reportError(char *msg);
@@ -98,6 +101,10 @@ main(int ac, char **av)
 	}
     }
 
+    // Shows Start Time
+    if (debug>0)
+	cout << "ht://dig Start Time: " << StartTime.GetAscTime() << endl;
+    
     //
     // First set all the defaults and then read the specified config
     // file to override the defaults.
@@ -308,6 +315,13 @@ main(int ac, char **av)
     if (report_statistics)
     {
 	retriever.ReportStatistics("htdig");
+    }
+
+    // Shows End Time
+    if (debug>0)
+    {
+	EndTime.SettoNow();
+	cout << "ht://dig End Time: " << EndTime.GetAscTime() << endl;
     }
 }
 
