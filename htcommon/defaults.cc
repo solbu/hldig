@@ -4,6 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.5  1998/06/22 04:35:43  turtle
+// Got rid of my email address as the default maintainer
+//
 // Revision 1.4  1998/06/21 23:20:01  turtle
 // patches by Esa and Jesse to add BerkeleyDB and Prefix searching
 //
@@ -18,7 +21,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.4 1998/06/21 23:20:01 turtle Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.5 1998/06/22 04:35:43 turtle Exp $";
 #endif
 
 #include <Configuration.h>
@@ -51,8 +54,8 @@ ConfigDefaults	defaults[] =
     {"end_elipses",			"<b><tt> ...</tt></b>"},
     {"endings_affix_file",		"${common_dir}/english.aff"},
     {"endings_dictionary",		"${common_dir}/english.0"},
-    {"endings_root2word_db",		"${common_dir}/root2word.gdbm"},
-    {"endings_word2root_db",		"${common_dir}/word2root.gdbm"},
+    {"endings_root2word_db",		"${common_dir}/root2word.db"},
+    {"endings_word2root_db",		"${common_dir}/word2root.db"},
     {"excerpt_length",			"300"},
     {"excerpt_show_top",		"false"},
     {"exclude_urls",			"/cgi-bin/ .cgi"},
@@ -70,7 +73,7 @@ ConfigDefaults	defaults[] =
     {"keywords_meta_tag_names",		"keywords htdig-keywords"},
     {"limit_urls_to",			"${start_url}"},
     {"locale",				"iso_8859_1"},
-    {"maintainer",			"andrew@contigo.com"},
+    {"maintainer",			"bogus@unconfigured.htdig.user"},
     {"match_method",			"or"},
     {"matches_per_page",		"10"},
     {"max_description_length",		"60"},
@@ -80,7 +83,7 @@ ConfigDefaults	defaults[] =
     {"max_prefix_matches",		"1000"},
     {"max_stars",			"4"},
     {"maximum_pages",			"10"},
-    {"metaphone_db",			"${database_base}.metaphone.gdbm"},
+    {"metaphone_db",			"${database_base}.metaphone.db"},
     {"method_names",			"and All or Any boolean Boolean"},
     {"minimum_word_length",		"3"},
     {"minimum_prefix_length",		"1"},
@@ -98,7 +101,7 @@ ConfigDefaults	defaults[] =
     {"search_algorithm",		"exact:1"},
     {"search_results_footer",		"${common_dir}/footer.html"},
     {"search_results_header",		"${common_dir}/header.html"},
-    {"soundex_db",			"${database_base}.soundex.gdbm"},
+    {"soundex_db",			"${database_base}.soundex.db"},
     {"star_image",			"${image_url_prefix}/star.gif"},
     {"star_blank",			"${image_url_prefix}/star_blank.gif"},
     {"star_patterns",			""},
@@ -106,7 +109,7 @@ ConfigDefaults	defaults[] =
     {"start_url",			"http://htdig.sdsu.edu/"},
     {"substring_max_words",		"25"},
     {"synonym_dictionary",		"${common_dir}/synonyms"},
-    {"synonym_db",			"${common_dir}/synonyms.gdbm"},
+    {"synonym_db",			"${common_dir}/synonyms.db"},
     {"syntax_error_file",		"${common_dir}/syntax.html"},
     {"template_map",			"Long builtin-long builtin-long Short builtin-short builtin-short"},
     {"template_name",			"builtin-long"},
@@ -117,7 +120,7 @@ ConfigDefaults	defaults[] =
     {"use_star_image",			"true"},
     {"valid_punctuation",		".-_/!#$%^&'"},
     {"version",				HTDIG_VERSION},
-    {"word_db",				"${database_base}.words.gdbm"},
+    {"word_db",				"${database_base}.words.db"},
     {"word_list",			"${database_base}.wordlist"},
     {0,					0},
 };
