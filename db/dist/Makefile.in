@@ -52,7 +52,7 @@ all: $(libdb) $(libdbshared) $(PROGS)
 libhtdb.so: $(libdb)
 	rm -fr tmp
 	mkdir tmp
-	cd tmp ; ar x ../$(libdb) ; $(CC) -shared @LIBDBSHAREDDEPS@ -o ../libhtdb.so *.o
+	cd tmp ; ar x ../$(libdb) ; $(CC) -shared -o ../libhtdb.so *.o @LIBDBSHAREDDEPS@ 
 	rm -fr tmp
 
 $(libdb): db.h $(OBJS) $(LOBJS)
