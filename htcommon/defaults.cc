@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.64.2.4 1999/10/27 15:31:53 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.64.2.5 1999/10/27 16:26:01 loic Exp $";
 #endif
 
 #include "Configuration.h"
@@ -33,9 +33,9 @@ ConfigDefaults	defaults[] =
 	<tr>
 	<td nowrap>
 	<tt>
-	&nbsp;&nbsp;&lt;SELECT NAME="search_algorithm"&gt;<br>
-	&nbsp;&nbsp;&lt;OPTION VALUE="exact:1 prefix:0.6 synonyms:0.5 endings:0.1" SELECTED&gt;fuzzy<br>
-	&nbsp;&nbsp;&lt;OPTION VALUE="exact:1"&gt;exact<br>
+	&nbsp;&nbsp;&lt;SELECT NAME=\"search_algorithm\"&gt;<br>
+	&nbsp;&nbsp;&lt;OPTION VALUE=\"exact:1 prefix:0.6 synonyms:0.5 endings:0.1\" SELECTED&gt;fuzzy<br>
+	&nbsp;&nbsp;&lt;OPTION VALUE=\"exact:1\"&gt;exact<br>
 	&nbsp;&nbsp;&lt;/SELECT&gt;
 	</tt></td>
 	</tr>

@@ -1,3 +1,8 @@
+Wed Oct 27 18:24:36 1999  Loic Dachary  <loic@ceic.com>
+
+	* htdoc/cf_generate.pl: fixed wrong target for cf_byprog, escape
+	  HTML chars <>&'" for default values.
+
 Wed Oct 27 10:21:18 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc: restored 2nd example for url_part_aliases

@@ -14,9 +14,28 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: cf_generate.pl,v 1.1.2.1 1999/10/26 09:00:59 loic Exp $
+# $Id: cf_generate.pl,v 1.1.2.2 1999/10/27 16:26:03 loic Exp $
 #
 use strict;
+
+use vars qw(%char2quote);
+
+%char2quote = (
+			       '>' => '&gt;',
+			       '<' => '&lt;',
+			       '&' => '&amp;',
+			       "'" => '&#39;',
+			       '"' => '&quot;',
+			       );
+
+sub html_escape {
+    my($toencode) = @_;
+
+    return undef if(!defined($toencode));
+
+    $toencode =~ s;([&\"<>\']);$char2quote{$1};ge;
+    return $toencode;
+}
 
 #
 # Read and parse attributes descriptions found in defaults.cc
@@ -89,7 +108,7 @@ foreach $record (@$config) {
 
     my($used_by) = join(", \n",
 			map {
-			    my($top) = $_ eq 'htsearch' ? "target=_'top'" : "";
+			    my($top) = $_ eq 'htsearch' ? "target='_top'" : "";
 			    "<a href='$_.html' $top>$_</a>";
 			}
 			split(' ', $programs));
@@ -117,7 +136,11 @@ EOF
 	$example = $html;
     }
 
-    $default = "<i>No default</i>" if($default =~ /^\s*$/);
+    if($default =~ /^\s*$/) {
+	$default = "<i>No default</i>";
+    } else {
+	$default = html_escape($default);
+    }
     print ATTR <<EOF;
 	<dl>
 	  <dt>
@@ -205,7 +228,7 @@ foreach $record (@$config) {
 
 my($prog);
 foreach $prog (sort(keys(%prog2attr))) {
-    my($top) = $_ eq 'htsearch' ? "target=_'top'" : "";
+    my($top) = $prog eq 'htsearch' ? "target='_top'" : "target='body'";
     print BYPROG "\t<br><b><a href='$prog.html' $top>$prog</a></b> <font face='helvetica,arial' size='2'><br>\n";
     my($record);
     foreach $record (@{$prog2attr{$prog}}) {
