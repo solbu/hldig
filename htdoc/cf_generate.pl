@@ -14,7 +14,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: cf_generate.pl,v 1.1.2.9 2000/08/12 18:12:05 ghutchis Exp $
+# $Id: cf_generate.pl,v 1.1.2.10 2000/09/10 02:38:50 ghutchis Exp $
 #
 use strict;
 
@@ -256,7 +256,11 @@ foreach $record (@$config) {
 my($prog);
 foreach $prog (sort(keys(%prog2attr))) {
     my($top) = $prog eq 'htsearch' ? "target=\"_top\"" : "target=\"body\"";
-    print BYPROG "\t<br><strong><a href=\"$prog.html\" $top>$prog</a></strong> <font face=\"helvetica,arial\" size=\"2\"><br>\n";
+    if ($prog ne 'all') {
+	print BYPROG "\t<br><strong><a href=\"$prog.html\" $top>$prog</a></strong> <font face=\"helvetica,arial\" size=\"2\"><br>\n";
+    } else {
+	print BYPROG "\t<br><strong>$prog</strong> <font face=\"helvetica,arial\" size=\"2\"><br>\n";
+    }
     my($record);
     foreach $record (@{$prog2attr{$prog}}) {
 	my($name, $default, $type, $programs, $example, $description) = @$record;

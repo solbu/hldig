@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.59 2000/09/09 18:18:14 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.60 2000/09/10 02:38:51 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -71,7 +71,7 @@ ConfigDefaults	defaults[] =
 	configuration attribute.
 " },
 { "allow_numbers", "false", 
-	"boolean", "htdig", "URL", "all", "Indexing:What", "allow_numbers: true", "
+	"boolean", "htdig htsearch", "URL", "all", "Indexing:What", "allow_numbers: true", "
 	If set to true, numbers are considered words. This
 	means that searches can be done on number as well as
 	regular words. All the same rules apply to numbers as
@@ -154,7 +154,7 @@ ConfigDefaults	defaults[] =
 	directory.
 " },
 { "bin_dir", BIN_DIR, 
-	"string", "htdig htnotify htfuzzy htmerge htsearch", "", "all", "File Layout", "bin_dir: /usr/local/bin", "
+	"string", "all", "", "all", "File Layout", "bin_dir: /usr/local/bin", "
 	This is the directory in which the executables
 	related to ht://Dig are installed. It is never used
 	directly by any of the programs, but other attributes
@@ -229,13 +229,13 @@ ConfigDefaults	defaults[] =
         Each listed config file <strong>must</strong> exist, as well as the corresponding databases.
 " },
 { "common_dir", COMMON_DIR, 
-	"string", "htdig htnotify htfuzzy htmerge htsearch", "", "all", "File Layout", "common_dir: /tmp", "
+	"string", "all", "", "all", "File Layout", "common_dir: /tmp", "
 	Specifies the directory for files that will or can be
 	shared among different search databases. The default
 	value for this attribute is defined at compile time.
 " },
 { "common_url_parts", "http:// http://www. ftp:// ftp://ftp. /pub/ .html .htm .gif .jpg .jpeg /index.html /index.htm .com/ .com mailto:", 
-	"string list", "htdig htnotify htmerge htsearch", "", "3.1.0", "URLs", "common_url_parts: http://www.htdig.org/ml/ \\<br>
+	"string list", "all", "", "3.1.0", "URLs", "common_url_parts: http://www.htdig.org/ml/ \\<br>
 .html \\<br>
 http://dev.htdig.org/ \\<br>
 http://www.htdig.org/", "
@@ -260,7 +260,7 @@ http://www.htdig.org/", "
 	href=\"#doc_excerpt\">doc_excerpt</a> file.
 " },
 { "config_dir", CONFIG_DIR, 
-	"string", "htdig htnotify htfuzzy htmerge htsearch", "", "all", "File Layout", "config_dir: /var/htdig/conf", "
+	"string", "all", "", "all", "File Layout", "config_dir: /var/htdig/conf", "
 	This is the directory which contains all configuration
 	files related to ht://Dig. It is never used
 	directly by any of the programs, but other attributes
@@ -288,7 +288,7 @@ http://www.htdig.org/", "
 	through <code>sort -u</code> to get a unique list.
 " },
 { "database_base", "${database_dir}/db", 
-	"string", "htdig htnotify htfuzzy htmerge htsearch", "", "all", "File Layout", "database_base: ${database_dir}/sales", "
+	"string", "all", "", "all", "File Layout", "database_base: ${database_dir}/sales", "
 	This is the common prefix for files that are specific
 	to a search database. Many different attributes use
 	this prefix to specify filenames. Several search
@@ -296,7 +296,7 @@ http://www.htdig.org/", "
 	this value for each of the databases.
 " },
 { "database_dir", DATABASE_DIR, 
-	"string", "htdig htnotify htfuzzy htmerge htsearch", "", "all", "File Layout", "database_dir: /var/htdig", "
+	"string", "all", "", "all", "File Layout", "database_dir: /var/htdig", "
 	This is the directory which contains all database and
 	other files related to ht://Dig. It is never used
 	directly by any of the programs, but other attributes
@@ -340,7 +340,7 @@ http://www.htdig.org/", "
 	href=\"#text_factor\">text_factor</a>.
 " },
 { "doc_db", "${database_base}.docdb", 
-	"string", "htdig htmerge htsearch", "", "all", "File Layout", "doc_db: ${database_base}documents.db", "
+	"string", "all", "", "all", "File Layout", "doc_db: ${database_base}documents.db", "
 	This file will contain a Berkeley database of documents
 	indexed by document number. It contains all the information
 	gathered for each document, except the document excerpts
@@ -348,7 +348,7 @@ http://www.htdig.org/", "
 	doc_excerpt</em></a> file.
 " },
 { "doc_excerpt", "${database_base}.excerpts", 
-	"string", "htdig htmerge htsearch", "", "3.2.0b1", "File Layout", "doc_excerpt: ${database_base}excerpts.db", "
+	"string", "all", "", "3.2.0b1", "File Layout", "doc_excerpt: ${database_base}excerpts.db", "
 	This file will contain a Berkeley database of document excerpts
 	indexed by document number. It contains all the text
 	gathered for each document, so this file can become
@@ -359,14 +359,12 @@ http://www.htdig.org/", "
 	if supported on your system.
 " },
 { "doc_index", "${database_base}.docs.index", 
-	"string", "htmerge htdig", "", "all", "File Layout", "doc_index: documents.index.db", "
-	This file will contain a Berkeley database which maps
-	document URLs to document numbers. It is basically an
-	intermediate database from URLs to the document
-	database.
+	"string", "htdig", "", "all", "File Layout", "doc_index: documents.index.db", "
+	This file contains a mapping of document numbers to URLs and is
+	used by htdig during indexing. It is used on updates if it exists.
 " },
 { "doc_list", "${database_base}.docs", 
-	"string", "htdig", "", "all", "File Layout", "doc_list: /tmp/documents.text", "
+	"string", "htdig htdump htload", "", "all", "File Layout", "doc_list: /tmp/documents.text", "
 	This file is basically a text version of the file
 	specified in <em><a href=\"#doc_db\">doc_db</a></em>. Its
 	only use is to have a human readable database of all
@@ -1083,7 +1081,7 @@ http://www.htdig.org/", "
 	</p>
 " },
 { "include", "",
-        "string", "htdig htnotify htfuzzy htmerge htsearch", "", "3.1.0", "", "include: ${config_dir}/htdig.conf", "
+        "string", "all", "", "3.1.0", "", "include: ${config_dir}/htdig.conf", "
 			This is not quite a configuration attribute, but
 			rather a directive. It can be used within one
 			configuration file to include the definitions of
@@ -1402,7 +1400,10 @@ http://www.htdig.org/", "
 " },
 { "md5_db", "${database_base}.md5hash.db", 
 	"string", "htdig", "", "3.2.0b3", "File Layout", "md5_db: ${database_base}.md5.db", "
-        The database for holding md5 hashes of paages
+        This file holds a database of md5 and date hashes of pages to
+	catch and eliminate duplicates of pages. See also the
+	<a href=\"#check_unique_md5\">check_unique_md5</a> and
+	<a href=\"#check_unique_date\">check_unique_date</a> attributes.
 " },
 { "meta_description_factor", "50", 
 	"number", "htsearch", "", "3.1.0b1", "Searching:Ranking", "meta_description_factor: 20", "
@@ -1721,8 +1722,9 @@ http://www.htdig.org/", "
 			when searching. Each entry in the list consists of the
 			algorithm name, followed by a colon (:) followed by a
 			weight multiplier. The multiplier is a floating point
-			number between 0 and 1. If the exact method is not listed, the 
-                        search may not work since the original terms will not be used. 
+			number between 0 and 1. <strong>Note:</strong>If the exact 
+			method is not listed, the search may not work since the 
+			original terms will not be used.<br>
                         Current algorithms supported are:
 			<dl>
 			  <dt>
@@ -2298,7 +2300,7 @@ http://www.htdig.org/", "
 	after beginning.
 " },
 { "url_part_aliases", "", 
-	"string list", "htdig htnotify htmerge htsearch", "", "3.1.0", "URLs", "url_part_aliases:
+	"string list", "all", "", "3.1.0", "URLs", "url_part_aliases:
 				   http://search.example.com/~htdig *site \\<br>
 				   http://www.htdig.org/this/ *1 \\<br>
 				   .html *2
@@ -2442,13 +2444,13 @@ form during indexing and translated for results.
 	in configuration files.
 " },
 { "word_db", "${database_base}.words.db", 
-	"string", "htdig htmerge htsearch", "", "all", "File Layout", "word_db: ${database_base}.allwords.db", "
+	"string", "all", "", "all", "File Layout", "word_db: ${database_base}.allwords.db", "
 	This is the main word database. It is an index of all
 	the words to a list of documents that contain the
 	words. This database can grow large pretty quickly.
 " },
 { "word_dump", "${database_base}.worddump", 
-	"string", "htdig", "", "3.2.0b1", "File Layout", "word_dump: /tmp/words.txt", "
+	"string", "htdig htdump htload", "", "3.2.0b1", "File Layout", "word_dump: /tmp/words.txt", "
 	This file is basically a text version of the file
 	specified in <em><a href=\"#word_db\">word_db</a></em>. Its
 	only use is to have a human readable database of all
@@ -2456,16 +2458,16 @@ form during indexing and translated for results.
 	perl or tcl.
 " },
 { "wordlist_compress", "true", 
-	"boolean", "htdig htmerge htsearch htfuzzy", "", "3.2.0b1", "Indexing:How", "wordlist_compress: true", "
+	"boolean", "all", "", "3.2.0b1", "Indexing:How", "wordlist_compress: true", "
 	Enables or disables the default compression system for the indexer.
 	This currently compresses the index by a factor of 8.
 " },
 { "wordlist_page_size", "0", 
-	"number", "htdig htmerge htsearch htfuzzy", "", "3.2.0b1", "Indexing:How", "wordlist_page_size: 8192", "
+	"number", "all", "", "3.2.0b1", "Indexing:How", "wordlist_page_size: 8192", "
 	Size of pages used by Berkeley DB (DB used by the indexer)
 " },
 { "wordlist_cache_size", "10000000", 
-	"number", "htdig htmerge htsearch htfuzzy", "", "3.2.0b1", "Indexing:How", "wordlist_cache_size: 40000000", "
+	"number", "all", "", "3.2.0b1", "Indexing:How", "wordlist_cache_size: 40000000", "
 	Size of memory cache used by Berkeley DB (DB used by the indexer)
 	IMPORTANT: It  makes a *huge* difference. The rule 
 	is that the cache size should be at least 2% of the expected index size. The
@@ -2473,24 +2475,24 @@ form during indexing and translated for results.
 	performances. Giving an additional 1% leaves room for caching leaf pages.
 " },
 { "wordlist_wordkey_description", "Word/DocID 32/Flags 8/Location 16",
-	"string", "htdig htmerge htsearch htfuzzy", "", "3.2.0b1", "Indexing:How", "**this should not be configured by user**", "
+	"string", "all", "", "3.2.0b1", "Indexing:How", "**this should not be configured by user**", "
 	Internal key description: *not user configurable*
 " },
 { "wordlist_wordrecord_description", "DATA",
-	"string", "htdig htmerge htsearch htfuzzy", "", "3.2.0b1", "Indexing:How", "**this should not be configured by user**", "
+	"string", "all", "", "3.2.0b1", "Indexing:How", "**this should not be configured by user**", "
 	Internal data description: *not user configurable*
 " },
 { "wordlist_monitor", "false",
-	"boolean", "htdig htmerge htsearch htfuzzy", "", "3.2.0b1", "Extra Output", "wordlist_monitor: true", "
+	"boolean", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor: true", "
 	This enables monitoring of what's happening in the indexer.
         It can help to detect performance/configuration problems.
 " },
 { "wordlist_monitor_period","0",
-	"string", "htdig htmerge htsearch htfuzzy", "", "3.2.0b1", "Extra Output", "wordlist_monitor_period: .1", "
+	"string", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor_period: .1", "
 	Sets the number of seconds between each monitor output.
 " },
 { "wordlist_monitor_output","",
-	"string", "htdig htmerge htsearch htfuzzy", "", "3.2.0b1", "Extra Output", "wordlist_monitor_output: myfile", "
+	"string", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor_output: myfile", "
         Print monitoring output on file instead of the default stderr.
 " },
 {0, 0, 0, 0, 0, 0, 0, 0, 0}
