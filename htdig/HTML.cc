@@ -4,6 +4,9 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.4  1998/07/09 09:32:03  ghutchis
+// Added initial support for META Description tags
+//
 // Revision 1.3  1998/06/22 04:38:27  turtle
 // Applied patch that prevented SGML entities that translate to
 // valid_punctuation characters from becoming part of words
@@ -17,7 +20,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.3 1998/06/22 04:38:27 turtle Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.4 1998/07/09 09:32:03 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -74,6 +77,7 @@ HTML::HTML()
     in_heading = 0;
     base = 0;
     doindex = 1;
+    dohead = 1;
     minimumWordLength = config.Value("minimum_word_length", 3);
 }
 
@@ -111,6 +115,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     start = position;
     title = 0;
     head = 0;
+    dohead = 1;
     doindex = 1;
     in_heading = 0;
     in_title = 0;
@@ -256,7 +261,8 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		//
 		// Append the word to the head (excerpt)
 		//
-		head << word;
+		if (dohead)
+		  head << word;
 	    }
 
 	    if (word.length() >= minimumWordLength && doindex)
@@ -285,7 +291,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		    //
 		    if (!in_space)
 		    {
-			if (head.length() < max_head_length)
+			if (head.length() < max_head_length && dohead)
 			{
 			    head << ' ';
 			}
@@ -305,7 +311,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		    //
 		    // Not whitespace
 		    //
-		    if (head.length() < max_head_length)
+		    if (head.length() < max_head_length && dohead)
 		    {
 			head << *position;
 		    }
@@ -528,7 +534,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	}
 
 	case 19:	// "li"
-	    if (doindex && head.length() < max_head_length)
+	    if (doindex && head.length() < max_head_length && dohead)
 		head << "* ";
 	    break;
 
@@ -613,6 +619,18 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		{
 		    doindex = 0;
 		}
+		else if (mystrcasecmp(cache, "description") == 0 
+			 && config.Boolean("use_meta_description")
+			 && strlen(conf["content"]) != 0)
+		  {
+		    head = conf["content"];
+		    if (head.length() > max_head_length)
+		      head = head.sub(0, max_head_length);
+		    if (debug > 0)
+		      cout << "META Description: " << conf["content"] << endl;
+		    retriever.got_head(head);
+		    dohead = 0;
+		  }
 	    }
 	    else if (conf["name"] &&
 		     mystrcasecmp(conf["name"], "htdig-noindex") == 0)
