@@ -10,14 +10,10 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100 1999/10/08 14:50:40 loic Exp $
+// $Id: Display.cc,v 1.101 1999/10/15 03:34:42 jtillman Exp $
 //
 
-#ifdef HAVE_CONFIG_H
-#include "htconfig.h"
-#endif /* HAVE_CONFIG_H */
-
-#include "htsearch.h"
+#include "new_htsearch.h"
 #include "Display.h"
 #include "ResultMatch.h"
 #include "WeightWord.h"
@@ -36,13 +32,15 @@
 
 //*****************************************************************************
 //
-Display::Display(const String& docFile, const String& indexFile, const String& excerptFile)
+//Display::Display(char *docFile, char *indexFile, char *excerptFile)
+Display::Display()
 {
     // Check "uncompressed"/"uncoded" urls at the price of time
     // (extra DB probes).
-    docDB.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
 
-    docDB.Read(docFile, indexFile, excerptFile);
+//These are soon to be handled by ResultList
+//    docDB.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
+//    docDB.Read(docFile, indexFile, excerptFile);
 
     limitTo = 0;
     excludeFrom = 0;
@@ -91,7 +89,7 @@ Display::Display(const String& docFile, const String& indexFile, const String& e
 //*****************************************************************************
 Display::~Display()
 {
-    docDB.Close();
+//    docDB.Close();
 }
 
 //*****************************************************************************
@@ -116,8 +114,10 @@ Display::display(int pageNumber)
     int			currentMatch = 0;
     int			numberDisplayed = 0;
     ResultMatch		*match = 0;
-    int			number = 0;
+//    int			number = config.Value("matches_per_page");
+		int number = 0;
     number = config.Value("matches_per_page");
+
     if (number <= 0)
 	number = 10;
     int			startAt = (pageNumber - 1) * number;
@@ -198,7 +198,8 @@ Display::display(int pageNumber)
     {
 	if (currentMatch >= startAt)
 	{
-	    DocumentRef	*ref = docDB[match->getID()];
+//	    DocumentRef	*ref = docDB[match->getID()];
+				DocumentRef *ref = results->getDocumentRef(match->getID());
 	    if (!ref)
 		continue;	// The document isn't present for some reason
 	    ref->DocAnchor(match->getAnchor());
@@ -947,7 +948,8 @@ Display::buildMatchList()
     {
 	int id = atoi(cpid);
 
-	DocumentRef *thisRef = docDB[id];
+//	DocumentRef *thisRef = docDB[id];
+	DocumentRef *thisRef = results->getDocumentRef(id);
 
 	//
 	// If it wasn't there, then ignore it
@@ -1048,7 +1050,8 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
       }
     else
       {
-	docDB.ReadExcerpt(*ref);
+//	docDB.ReadExcerpt(*ref);
+	results->readExcerpt(*ref);
 	head = ref->DocHead(); // head points to the top
       }
 
@@ -1225,3 +1228,11 @@ Display::logSearch(int page, List *matches)
 	   page, ref
 	   );
 }
+
+
+
+
+
+
+
+
