@@ -1,3 +1,8 @@
+Fri Sep 28 15:38:00 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (displayMatch): Save rewritten URL in DocumentRef
+	so it'll be used for star_patterns and template_patterns matching.
+
 Fri Sep 28 14:25:29 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (buildMatchList, displayMatch),
