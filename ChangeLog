@@ -1,3 +1,11 @@
+Thu Mar 25 12:18:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/long.html, installdir/short.html: Remove backslashes
+	before quotes in HTML versions of the builtin templates.
+
+	* Makefile.in: Add long.html & short.html to COMMONHTML list, so
+	they get installed in common_dir.
+
 Thu Mar 25 11:56:50 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(displayMatch), htcommon/defaults.cc, 
