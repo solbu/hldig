@@ -7,6 +7,11 @@
 // Implementation of the Connection class
 //
 // $Log: Connection.cc,v $
+// Revision 1.8  1998/10/17 14:29:18  ghutchis
+//
+// Included fixes sent by Paul J. Meyer <pmeyer@rimeice.msfc.nasa.gov> to fix
+// connections on Dec Alpha environments.
+//
 // Revision 1.7  1998/06/22 04:33:20  turtle
 // New Berkeley database stuff
 //
@@ -78,7 +83,7 @@ Connection::Connection(int socket)
 {
     sock = socket;
     connected = 0;
-    size_t length = sizeof(server);
+    unsigned int length = sizeof(server);
     if (getpeername(socket, (struct sockaddr *)&server, &length) < 0)
     {
 	perror("getpeername");
@@ -187,15 +192,15 @@ int Connection::assign_port(char *service)
 }
 
 //*****************************************************************************
-// int Connection::assign_server(unsigned long addr)
+// int Connection::assign_server(unsigned int addr)
 //
-int Connection::assign_server(unsigned long addr)
+int Connection::assign_server(unsigned int addr)
 {
     server.sin_addr.s_addr = addr;
     return OK;
 }
 
-extern "C" unsigned long   inet_addr(char *);
+extern "C" unsigned int   inet_addr(char *);
 
 //*****************************************************************************
 // int Connection::assign_server(char *name)
@@ -203,10 +208,10 @@ extern "C" unsigned long   inet_addr(char *);
 int Connection::assign_server(char *name)
 {
     struct hostent		*hp;
-    unsigned long		addr;
+    unsigned int		addr;
 
     addr = inet_addr(name);
-    if (addr == ~0L)
+    if (addr == ~0 || addr == ~0/*L*/)
     {
 	hp = gethostbyname(name);
 	if (hp == NULL)
@@ -264,7 +269,7 @@ int Connection::connect(int allow_EINTR)
     }
 #else
     ::close(sock);
-    open();
+    open(0);
 #endif
 
     connected = 0;
@@ -290,7 +295,7 @@ int Connection::bind()
 //
 int Connection::get_port()
 {
-    size_t length = sizeof(server);
+    unsigned int length = sizeof(server);
     
     if (getsockname(sock, (struct sockaddr *)&server, &length) == NOTOK)
     {
@@ -318,7 +323,7 @@ Connection *Connection::accept(int priv)
 
     while (1)
     {
-	newsock = ::accept(sock, (struct sockaddr *)0, (size_t *)0);
+	newsock = ::accept(sock, (struct sockaddr *)0, (unsigned int *)0);
 	if (newsock == NOTOK && errno == EINTR)
 	    continue;
 	break;
@@ -329,7 +334,7 @@ Connection *Connection::accept(int priv)
     Connection	*newconnect = new Connection;
     newconnect->sock = newsock;
 
-    size_t length = sizeof(newconnect->server);
+    unsigned int length = sizeof(newconnect->server);
     getpeername(newsock, (struct sockaddr *)&newconnect->server, &length);
 
     if (priv && newconnect->server.sin_port >= IPPORT_RESERVED)
@@ -428,7 +433,7 @@ char *Connection::get_peername()
     if (!peer)
     {
 	struct sockaddr_in	p;
-	size_t			length = sizeof(p);
+	unsigned int			length = sizeof(p);
 	struct hostent		*hp;
 	
 	if (getpeername(sock, (struct sockaddr *) &p, &length) < 0)
@@ -453,7 +458,7 @@ char *Connection::get_peername()
 char *Connection::get_peerip()
 {
     struct sockaddr_in	peer;
-    size_t		length = sizeof(peer);
+    unsigned int		length = sizeof(peer);
     
     if (getpeername(sock, (struct sockaddr *) &peer, &length) < 0)
     {
@@ -467,9 +472,9 @@ extern "C" int gethostname(char *name, int namelen);
 #endif
 
 //*************************************************************************
-// unsigned long gethostip(char *ip, int length)
+// unsigned int gethostip(char *ip, int length)
 //
-unsigned long gethostip(char *ip, int length)
+unsigned int gethostip(char *ip, int length)
 {
     char	hostname[100];
     if (gethostname(hostname, sizeof(hostname)) == NOTOK)
@@ -485,4 +490,3 @@ unsigned long gethostip(char *ip, int length)
 	strncpy(ip, inet_ntoa(addr), length);
     return addr.s_addr;
 }
-

@@ -8,11 +8,16 @@
 // All the calls are basically the same, but the parameters do not have any
 // stray _addr or _in mixed in...
 //
-// $Id: Connection.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: Connection.h,v 1.2 1998/10/17 14:29:18 ghutchis Exp $
 //
 // $Log: Connection.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1998/10/17 14:29:18  ghutchis
+//
+// Included fixes sent by Paul J. Meyer <pmeyer@rimeice.msfc.nasa.gov> to fix
+// connections on Dec Alpha environments.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 
@@ -51,7 +56,7 @@ public:
 
     // Host stuff
     int				assign_server(char *name);
-    int				assign_server(unsigned long addr = INADDR_ANY);
+    int				assign_server(unsigned int addr = INADDR_ANY);
     char				*get_server()		{return server_name;}
 
     // Connection establishment
@@ -106,6 +111,6 @@ inline int Connection::is_privileged()
 // buffer and it will also return the 4 byte unsigned long equivalent of it.
 // The ip buffer can be null...
 //
-unsigned long gethostip(char *ip = 0, int length = 0);
+unsigned int gethostip(char *ip = 0, int length = 0);
 
 #endif

@@ -1,5 +1,9 @@
-Sat Oct 17 14:15:57 1998  Geoff Hutchison  <ghutchis@ethel>
+Sat Oct 17 10:15:57 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
+	* htlib/Connection.h, htlib/Connection.cc: Included fixes sent by
+	Paul J. Meyer <pmeyer@rimeice.msfc.nasa.gov> to fix connections on
+	Dec Alpha environments.
+	
 	* htsearch/Display.cc, htsearch/Display.h,
 	htdoc/hts_templates.html: Added variable CURRENT as the number of
 	the current match, adapted from a patch by Reni Seindal
