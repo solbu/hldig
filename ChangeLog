@@ -1,3 +1,14 @@
+Thu Jun  7 16:48:13 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: Add new attribute any_keywords to allow
+	ORing of keywords input parameter.
+	* htsearch/htsearch.cc (addRequiredWords): Use it.  Fix handling
+	of empty search word list.
+	* htsearch/Display.cc (excerpt, highlight): Fix handling of case
+	where "words" is empty but "keywords" isn't.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Document any_keywords.
+
 Thu Jun  7 16:34:41 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc: Add new attribute plural_suffix to set the

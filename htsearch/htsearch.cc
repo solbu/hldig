@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.11 2001/06/07 19:16:00 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.12 2001/06/07 21:53:33 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -692,13 +692,32 @@ htsearch(char *wordfile, List &searchWords, Parser *parser)
 void
 addRequiredWords(List &searchWords, StringList &requiredWords)
 {
-    searchWords.Insert(new WeightWord("(", -1.0), 0);
-    searchWords.Add(new WeightWord(")", -1.0));
-
-    for (int i = 0; i < requiredWords.Count(); i++)
+    static int	any_keywords = config.Boolean("any_keywords", 0);
+    if (requiredWords.Count() == 0)
+	return;
+    if (searchWords.Count() > 0)
     {
+	searchWords.Insert(new WeightWord("(", -1.0), 0);
+	searchWords.Add(new WeightWord(")", -1.0));
 	searchWords.Add(new WeightWord("&", -1.0));
-	searchWords.Add(new WeightWord(requiredWords[i], 1.0));
+    }
+    if (requiredWords.Count() == 1)
+    {
+	searchWords.Add(new WeightWord(requiredWords[0], 1.0));
+    }
+    else
+    {
+	searchWords.Add(new WeightWord("(", -1.0));
+	searchWords.Add(new WeightWord(requiredWords[0], 1.0));
+	for (int i = 1; i < requiredWords.Count(); i++)
+	{
+	    if (any_keywords)
+		searchWords.Add(new WeightWord("|", -1.0));
+	    else
+		searchWords.Add(new WeightWord("&", -1.0));
+	    searchWords.Add(new WeightWord(requiredWords[i], 1.0));
+	}
+	searchWords.Add(new WeightWord(")", -1.0));
     }
 }
 

@@ -218,6 +218,54 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="any_keywords">
+		any_keywords</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			false
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			If set to true, the words in the
+			<strong>keywords</strong> input parameter in
+			the search form will be joined with logical
+			ORs rather than ANDs, so that any of the words
+			provided will do.  Note that this has nothing
+			to do with limiting the search to words in META
+			keywords tags. See the <a href="hts_form.html">
+			search form</a> documentation for details on this.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			any_keywords: yes
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="authorization">
 		authorization</a></strong>
 	  </dt>
@@ -7627,7 +7675,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: $Date: 2001/06/07 21:38:37 $
+Last modified: $Date: 2001/06/07 21:53:32 $
 <!-- hhmts end -->
   </body>
 </html>

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.33 2001/06/07 21:38:37 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.34 2001/06/07 21:53:33 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -1398,7 +1398,8 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
     // If previous conditions are false and "excerpt_show_top" is set to true
     // it shows the whole head. Else, it acts as default.
 
-    if (config.Boolean("excerpt_show_top", 0) || use_meta_description)
+    if (config.Boolean("excerpt_show_top", 0) || use_meta_description ||
+		!allWordsPattern->hasPattern())
       first = 0;
     else
       first = allWordsPattern->FindFirstWord(head, which, length);
@@ -1576,7 +1577,8 @@ Display::hilight(char *str, String urlanchor, int fanchor)
     int			first = 1;
 
     result = 0;
-    while ((pos = allWordsPattern->FindFirstWord(str, which, length)) >= 0)
+    while (allWordsPattern->hasPattern() &&
+	   (pos = allWordsPattern->FindFirstWord(str, which, length)) >= 0)
     {
 	result.append(str, pos);
 	ww = (WeightWord *) (*searchWords)[which];
