@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.23 2000/01/24 18:51:02 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.24 2000/01/26 08:53:54 angus Exp $
 //
 
 #include "HtConfiguration.h"
@@ -997,6 +997,19 @@ http://www.htdig.org/", "
 	If this is set to a relatively small number, the
 	matches will be shown in pages instead of all at once.
 " },
+
+{ "max_connection_requests", "-1",
+	"integer", "htdig", "max_connection_requests: 100", "
+	This attribute tells htdig to limit the number of requests it will
+	send to a server using a single, persistent HTTP connection. This
+	only applies when the
+	<a href=\"#persistent_connections\">persistent_connections</a>
+	attribute is set. You may set the limit as high as you want,
+	but it must be at least 1. A value of -1 specifies no limit.
+	Requests in the queue for a server will be combined until either
+	the limit is reached, or the queue is empty.
+" },
+
 { "max_description_length", "60", 
 	"number", "htdig", "max_description_length: 40", "
 	While gathering descriptions of URLs,

@@ -1,3 +1,9 @@
+Wed Jan 26 9:14:32 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+        * htcommon/defaults.cc: added "max_connection_requests".
+
+        * htdig/Retriever.cc: now manages the attribute above.
+
 Tue Jan 25 12:59:01 2000  Loic Dachary  <loic@ceic.com>
 
 	* htsearch/Display.cc (setVariables): fixed 

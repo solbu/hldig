@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.16 2000/01/25 07:45:30 angus Exp $
+// $Id: Retriever.cc,v 1.72.2.17 2000/01/26 08:53:54 angus Exp $
 //
 
 #include "Retriever.h"
@@ -296,6 +296,12 @@ Retriever::Start()
     sig_phandler();
     noSignal = 1;
 
+
+///////
+   //    Main loop. We keep on retrieving until a signal is received
+   //    or all the servers' queues are empty.
+///////
+
     while (more && noSignal)
     {
         more = 0;
@@ -303,11 +309,10 @@ Retriever::Start()
 	//
 	// Go through all the current servers in sequence.
         // If they support persistent connections, we keep on popping
-        // from the server queue until we reach a maximum number of
-        // consecutive requests (so we will probably have to issue a new
-        // attribute, like "server_repeat_connections"). Or the loop may
-        // continue for the infinite, if we set the max to -1 (and maybe
-        // the attribute too).
+        // from the same server queue until it's empty or we reach a maximum
+        // number of consecutive requests ("max_connection_requests").
+        // Or the loop may also continue for the infinite,
+        // if we set the "max_connection_requests" to -1.
         // If the server doesn't support persistent connection, we take
         // only an URL from it, then we skip to the next server.
 	//
@@ -318,8 +323,9 @@ Retriever::Start()
         int count;
 
         // Maximum number of repeated requests with the same
-        // socket connection.
-        int max_repeat_requests;
+        // TCP connection (so on the same Server:Port).
+
+        int max_connection_requests;
 
 	while ( (server = (Server *)servers.Get_NextElement()) && noSignal)
 	{
@@ -327,24 +333,57 @@ Retriever::Start()
 	        cout << "pick: " << server->host() << ", # servers = " <<
 		    servers.Count() << endl;
 	    
-            // and if the Server doesn't support persistent connections
-            // turn it down to 1.
-
             // We already know if a server supports HTTP pers. connections,
             // because we asked it for the robots.txt file (constructor of
             // the class).
 
+            // If the Server doesn't support persistent connections
+            // we turn it down to 1.
+
             if (server->IsPersistentConnectionAllowed())
-                // Once the new attribute is set
-                // max_repeat_requests=config["server_repeat_connections"];
-                max_repeat_requests = -1; // Set to -1 (infinite loop)
+            {
+
+               // Let's check for a '0' value (out of range)
+               // If set, we change it to 1.
+               
+               if (config.Value("max_connection_requests") == 0)
+                  max_connection_requests = 1;
+               else                  
+                  max_connection_requests =
+                     config.Value("max_connection_requests");
+
+               if (debug > 2)
+               {
+   
+                  cout << "> " << server->host()
+                     << " supports HTTP persistent connections";
+                  
+                  if (max_connection_requests == -1)
+                     cout << " (" << "infinite" << ")" << endl;
+                  else
+                     cout << " (" << max_connection_requests << ")" << endl;
+
+               }
+	    
+            }
             else
-                max_repeat_requests = 1;
+            {
+
+               // No HTTP persistent connections. So we request only 1 document.
+            
+               max_connection_requests = 1;
+
+               if (debug > 2)
+                  cout << "> " << server->host()
+                     << " with a traditional HTTP connection" << endl;
+	    
+            }
+
 
             count = 0;
 
-	    while ( ( (max_repeat_requests ==-1) ||
-                          (count < max_repeat_requests) ) &&
+	    while ( ( (max_connection_requests ==-1) ||
+                          (count < max_connection_requests) ) &&
                     (ref = server->pop()) && noSignal)
             {
                 count ++;
@@ -367,7 +406,7 @@ Retriever::Start()
                 delete ref;
 
                 // No HTTP connections available, so we change server and pause
-	        if (max_repeat_requests == 1)
+	        if (max_connection_requests == 1)
                     server->delay();   // This will pause if needed
                                        // and reset the time
 
