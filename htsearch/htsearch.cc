@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.43 1999/08/28 21:14:54 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.44 1999/08/29 05:45:57 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -298,6 +298,7 @@ createLogicalWords(List &searchWords, String &logicalWords, String &wm)
     String		pattern;
     int			i;
     int			wasHidden = 0;
+    int			inPhrase = 0;
 
     for (i = 0; i < searchWords.Count(); i++)
     {
@@ -310,9 +311,18 @@ createLogicalWords(List &searchWords, String &logicalWords, String &wm)
 		logicalWords << " or ";
 	    else if (strcmp(ww->word, "!") == 0 && wasHidden == 0)
 		logicalWords << " not ";
+	    else if (strcmp(ww->word, "\"") == 0 && wasHidden == 0)
+	      {
+		if (inPhrase)
+		  logicalWords.chop(' ');
+		inPhrase = !inPhrase;
+		logicalWords << "\"";
+	      }
 	    else if (wasHidden == 0)
 	    {
-		logicalWords << ww->word;
+	      logicalWords << ww->word;
+	      if (inPhrase)
+		logicalWords << " ";
 	    }
 	    wasHidden = 0;
 	}
@@ -321,8 +331,10 @@ createLogicalWords(List &searchWords, String &logicalWords, String &wm)
 	if (ww->weight > 0			// Ignore boolean syntax stuff
 	    && !ww->isIgnore)			// Ignore short or bad words
 	{
-	    if (pattern.length())
+	    if (pattern.length() && !inPhrase)
 		pattern << '|';
+	    else if (pattern.length() && inPhrase)
+	      pattern << ' ';
 	    pattern << ww->word;
 	}
     }
@@ -388,6 +400,11 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 	    {
 		continue;
 	    }
+	    else if (t == '"')
+	      {
+		tempWords.Add(new WeightWord("\"", -1.0));
+		break;
+	      }
 	    else if (boolean && (t == '(' || t == ')'))
 	    {
 		char	s[2];
@@ -537,10 +554,6 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 	dumpWords(searchWords, "searchWords");
     }
     tempWords.Release();
-    // Does the next thing work??
-//    algorithms.Start_Get();
-//    while ((fuzzy = (Fuzzy *) algorithms.Get_Next()))
-//	delete fuzzy;
 }
 
 
@@ -605,16 +618,34 @@ convertToBoolean(List &words)
     List	list;
     int		i;
     int		do_and = strcmp(config["match_method"], "and") == 0;
+    int		in_phrase = 0;
+
+    String	quote = "\"";
 
     if (words.Count() == 0)
 	return;
     list.Add(words[0]);
+
+    // We might start off with a phrase match
+    if (((WeightWord *) words[0])->word == quote)
+      {
+	in_phrase = 1;
+	cout << " *** Found a phrase\n";
+      }
+
     for (i = 1; i < words.Count(); i++)
     {
-	if (do_and)
+	if (do_and && !in_phrase)
 	    list.Add(new WeightWord("&", -1.0));
-	else
+	else if (!in_phrase)
 	    list.Add(new WeightWord("|", -1.0));
+	
+	if (((WeightWord *) words[i])->word == quote)
+	  {
+	    in_phrase = !in_phrase;
+	    cout << " *** Found a phrase, now " << in_phrase << endl;
+	  }
+  
 	list.Add(words[i]);
     }
     words.Release();
