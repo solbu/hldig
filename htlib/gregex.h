@@ -1,3 +1,9 @@
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999-2003 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
+//
 /* Definitions for data structures and routines for the regular
    expression library, version 0.12.
    Copyright (C) 1985,1989-1993,1995-1998, 2000 Free Software Foundation, Inc.

@@ -1,3 +1,10 @@
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999-2003 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
+//
+
 /* Extended regular expression matching and search library,
    version 0.12.
    (Implements POSIX draft P1003.2/D11.2, except for some of the

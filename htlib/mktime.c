@@ -1,3 +1,10 @@
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999-2003 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
+//
+
 /* Convert a `struct tm' to a time_t value.
    Copyright (C) 1993, 94, 95, 96, 97, 98, 99 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
