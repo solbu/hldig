@@ -1,0 +1,16 @@
+rtf2html - a RTF to HTML conversion program
+
+This version of rtf2html has been developed by 
+David Lippi <d.lippi@comune.prato.it> and Gabriele Bartolini
+<g.bartolini@comune.prato.it>, based on an earlier work
+by Chuck Shotton <cshotton@oac.hsc.uth.tmc.edu>
+(see http://www.w3.org/Tools/HTMLGeneration/rtf2html.html)
+and Dmitry Porapov <dpotapov@capitalsoft.com>.
+
+This version can handle character set recognition at run-time:
+currently, the ANSI Windows 1252 code and the Macintosh's are
+supported.
+
+For copyright details, see the file COPYING in your distribution
+or the GNU General Public License (GPL) version 2 or later
+<http://www.gnu.org/copyleft/gpl.html>
