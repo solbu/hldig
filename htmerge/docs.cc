@@ -1,101 +1,117 @@
 //
 // docs.cc
 //
-// Implementation of newclass
+// docs: Do sanity checking in "doc_db", remove insane documents.
 //
-// $Log: docs.cc,v $
-// Revision 1.8  1998/11/15 22:24:19  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Change \r to \n as noted by Andrew Bishoip.
-//
-// Revision 1.7  1998/09/07 04:37:16  ghutchis
-//
-// Added DocState for documents marked as "noindex".
-//
-// Revision 1.6  1998/08/11 08:58:33  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.5  1998/08/03 16:50:42  ghutchis
-//
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.4  1998/06/21 23:20:09  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
-//
-// Revision 1.3  1998/01/05 05:43:23  turtle
-// format changes
-//
-// Revision 1.2  1998/01/05 05:24:19  turtle
-// Fixed memory leak
-//
-// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
-// Initial CVS
-//
+// $Id: docs.cc,v 1.27.2.1 2000/01/20 04:00:01 ghutchis Exp $
 //
 
 #include "htmerge.h"
 
 
 //*****************************************************************************
-// void convertDocs(char *doc_db, char *doc_index)
+// void convertDocs()
 //
 void
-convertDocs(char *doc_db, char *doc_index)
+convertDocs()
 {
-    Database	*index = Database::getDatabaseInstance();
-    int		document_count = 0;
-    unsigned long docdb_size = 0;
-    int		remove_unused = config.Boolean("remove_bad_urls");
-    DocumentDB	db;
-    List	*urls;
+    const String	doc_db = config["doc_db"];
+    const String	doc_index = config["doc_index"];
+    const String	doc_excerpt = config["doc_excerpt"];
+    int			remove_unused = config.Boolean("remove_bad_urls");
+    int			remove_unretrieved = config.Boolean("remove_unretrieved_urls");
+    DocumentDB		db;
+    List		*IDs;
+    int			document_count = 0;
+    unsigned long	docdb_size = 0;
 
-    if (index->OpenReadWrite(doc_index, 0664) == NOTOK)
-    {
-	reportError(form("Unable to create document index '%s'", doc_index));
-    }
-    if (access(doc_db, R_OK) < 0)
-    {
-	reportError(form("Unable to open document database '%s'", doc_db));
-    }
+    // Check "uncompressed"/"uncoded" urls at the price of time
+    // (extra DB probes).
+    db.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
 
     //
     // Start the conversion by going through all the URLs that are in
     // the document database
     //
-    db.Open(doc_db);
-    urls = db.URLs();
+    if(db.Open(doc_db, doc_index, doc_excerpt) != OK)
+      return;
+    
+    IDs = db.DocIDs();
 	
-    urls->Start_Get();
-    String		*url;
-    String		id;
-    while ((url = (String *) urls->Get_Next()))
+    IDs->Start_Get();
+    IntObject		*id;
+    String		idStr;
+    String		url;
+    while ((id = (IntObject *) IDs->Get_Next()))
     {
-	DocumentRef	*ref = db[url->get()];
-	// moet eigenlijk wat tussen, maar heb ik niet gedaan....
+	DocumentRef	*ref = db[id->Value()];
+
 	if (!ref)
 	    continue;
-	id = 0;
-	id << ref->DocID();
-	if (strlen(ref->DocHead()) == 0)
+
+	db.ReadExcerpt(*ref);
+	url = ref->DocURL();
+	idStr = 0;
+	idStr << id->Value();
+
+	if (ref->DocState() == Reference_noindex)
 	  {
-	    // For some reason, this document doesn't have an excerpt
-	    // (probably because of a noindex directive) Remove it
-	    db.Delete(url->get());
+	    // This document either wasn't found or shouldn't be indexed.
+	    db.Delete(ref->DocID());
+            if (verbose)
+              cout << "Deleted, noindex ID: " << idStr << " URL: "
+                   << url << endl;
+	    discard_list.Add(idStr.get(), NULL);
 	  }
-	if ((ref->DocState()) == Reference_noindex)
+	else if (ref->DocState() == Reference_obsolete)
 	  {
-	    // This document has been marked with a noindex tag. Remove it
-	    db.Delete(url->get());
+	    // This document was replaced by a newer one
+	    db.Delete(ref->DocID());
+            if (verbose)
+              cout << "Deleted, obsolete ID: " << idStr << " URL: "
+                   << url << endl;
+	    discard_list.Add(idStr.get(), NULL);
 	  }
-	if (remove_unused && discard_list.Exists(id))
+	else if (remove_unused && ref->DocState() == Reference_not_found)
 	  {
-	    // This document is not valid anymore.  Remove it
-	    db.Delete(url->get());
+	    // This document wasn't actually found
+	    db.Delete(ref->DocID());
+            if (verbose)
+              cout << "Deleted, not found ID: " << idStr << " URL: "
+                   << url << endl;
+	    discard_list.Add(idStr.get(), NULL);
+	  }
+	else if (remove_unused && strlen(ref->DocHead()) == 0 
+		 && ref->DocAccessed() != 0)
+	  {
+	    // For some reason, this document was retrieved, but doesn't
+	    // have an excerpt (probably because of a noindex directive)
+	    db.Delete(ref->DocID());
+            if (verbose)
+              cout << "Deleted, no excerpt ID: " << idStr << " URL:  "
+                   << url << endl;
+	    discard_list.Add(idStr.get(), NULL);
+	  }
+	else if (remove_unretrieved && ref->DocAccessed() == 0)
+	  {
+	    // This document has not been retrieved
+	    db.Delete(ref->DocID());
+            if (verbose)
+              cout << "Deleted, never retrieved ID: " << idStr << " URL:  "
+                   << url << endl;
+	    discard_list.Add(idStr.get(), NULL);
 	  }
 	else
 	  {
-	    index->Put(id, ref->DocURL(), strlen(ref->DocURL()));
+	    // This is a valid document. Let's keep stats on it.
+            if (verbose > 1)
+              cout << "ID: " << idStr << " URL: " << url << endl;
 
 	    document_count++;
 	    docdb_size += ref->DocSize();
@@ -104,7 +120,7 @@ convertDocs(char *doc_db, char *doc_index)
 		cout << "htmerge: " << document_count << '\n';
 		cout.flush();
 	    }
-	}
+	  }
         delete ref;
     }
     if (verbose)
@@ -116,8 +132,7 @@ convertDocs(char *doc_db, char *doc_index)
 	cout << docdb_size / 1024 << endl;
       }
 
-    index->Close();
-    delete urls;
+    delete IDs;
     db.Close();
 }
 
