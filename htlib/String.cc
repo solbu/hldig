@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.30.2.2 1999/12/15 21:04:25 grdetil Exp $
+// $Id: String.cc,v 1.30.2.3 1999/12/28 17:20:37 vadim Exp $
 //
 
 
@@ -410,7 +410,7 @@ int String::lowercase()
   int converted = 0;
   for (int i = 0; i < Length; i++)
     {
-      if (isupper(Data[i])) {
+      if (isupper((unsigned char)Data[i])) {
 	Data[i] = tolower((unsigned char)Data[i]);
 	converted++;
       }
@@ -424,7 +424,7 @@ int String::uppercase()
   int converted = 0;
   for (int i = 0; i < Length; i++)
     {
-      if (islower(Data[i])) {
+      if ((unsigned char)islower(Data[i])) {
 	Data[i] = toupper((unsigned char)Data[i]);
 	converted++;
       }
