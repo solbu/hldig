@@ -6,8 +6,6 @@ RELEASES:
    3.2.0b1: Released:   4 Feb 2000.
 
 SHOWSTOPPERS:
-* Code currently will not build since mifluz merge did not work cleanly.
-  (this is about 50-60% cleared and the rest should be cleared by 9/21)
 * Odd behavior with $(MODIFIED) and scores not working with
    wordlist_compress set but work fine without wordlist_compress.
    (the date is definitely stored correctly, even with compression on
