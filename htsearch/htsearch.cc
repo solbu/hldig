@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.54.2.14 2000/10/20 03:40:59 ghutchis Exp $
+// $Id: htsearch.cc,v 1.54.2.15 2001/02/22 22:23:42 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -222,6 +222,27 @@ for (int cInd=0; errorMsg == NULL && cInd < collectionList.Count(); cInd++)
     requiredWords.Create(config["keywords"], " \t\r\n\001");
     if (input.exists("sort"))
 	config.Add("sort", input["sort"]);
+
+    // Changes added 3-31-99, by Mike Grommet
+    // Check form entries for starting date, and ending date
+    // Each date consists of a month, day, and year
+
+    if (input.exists("startmonth"))
+	config.Add("startmonth", input["startmonth"]);
+    if (input.exists("startday"))
+	config.Add("startday", input["startday"]);
+    if (input.exists("startyear"))
+	config.Add("startyear", input["startyear"]);
+
+    if (input.exists("endmonth"))
+	config.Add("endmonth", input["endmonth"]);
+    if (input.exists("endday"))
+	config.Add("endday", input["endday"]);
+    if (input.exists("endyear"))
+	config.Add("endyear", input["endyear"]);
+
+    // END OF CHANGES BY MIKE GROMMET    
+
 
     minimum_word_length = config.Value("minimum_word_length", minimum_word_length);
 

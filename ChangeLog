@@ -1,3 +1,10 @@
+Thu Feb 22 16:22:05 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc (main), htsearch/Display.cc (setVariables,
+	createURL, buildMatchList), htdoc/hts_form.html,
+	htdoc/hts_templates.html: Add Mike Grommet's date range search
+	feature.
+
 Mon Feb 19 18:24:42 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htfuzzy/Synonym.cc (createDB): Create database in a temporary
