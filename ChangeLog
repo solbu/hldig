@@ -1,3 +1,17 @@
+1999-11-10  Toivo Pedaste  <toivo@ucs.uwa.edu.au>
+
+	* htdig/Retriever.cc : Ignore SIGPIPEs with persistant connections
+
+	* htnet/HtHTTP.cc : Fix buffer overrun reading chunks
+
+	* htdig/Document.cc : Make redirects work
+
+	* htdig/Retriever.cc : Make valid URL checks apply to initial URL's
+	particularly those from a previous run
+
+	* htlib/Dictionary.cc : Fix memory deallocation error
+	
+
 Tue Nov 02 13:44:57 1999  Marcel Bosc  <bosc@ceic.com>
 
 	* htsearch/Display.cc (setVariables): parentheses missing around ternary
