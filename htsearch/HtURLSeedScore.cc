@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtURLSeedScore.cc,v 1.2 2002/02/02 18:18:13 ghutchis Exp $
+// $Id: HtURLSeedScore.cc,v 1.3 2002/06/14 22:31:39 grdetil Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -40,7 +40,7 @@ public:
     ~ScoreAdjustItem();
 
     // Does this item match?
-    inline bool Match(const String &s) { return match.match(s, 1, 0) == 0; }
+    inline bool Match(const String &s) { return match.match(s, 1, 0) != 0; }
 
     // Return the argument adjusted according to this item.
     double adjust_score(double orig)

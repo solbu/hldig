@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.104 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: Display.cc,v 1.105 2002/06/14 22:31:39 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1452,9 +1452,6 @@ Display::buildMatchList()
 
 	score = adjustments.adjust_score(score, thisRef->DocURL());
 
-	// Get rid of it to free the memory!
-	delete thisRef;
-
 	score = log(1.0 + score);
 	thisMatch->setScore(score);
 	thisMatch->setAnchor(dm->anchor);
@@ -1462,7 +1459,10 @@ Display::buildMatchList()
 	//
 	// Append this match to our list of matches.
 	//
- 	matches.Add(thisMatch, url.get());
+ 	matches.Add(thisMatch, thisRef->DocURL());
+
+	// Get rid of it to free the memory!
+	delete thisRef;
 
         if (debug)
         {

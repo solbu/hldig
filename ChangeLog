@@ -1,16 +1,23 @@
+Fri Jun 14 17:26:21 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (buildMatchList), htsearch/HtURLSeedScore.cc
+	(Match), htsearch/SplitMatches.cc (Match): Added Jim Cole's fix to
+	bugs in handling of search_results_order.
+
 Wed May 15 09:45:40 CEST 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
-   * htnet/Retriever.cc: fixed the bug regarding the server_wait_time feature
-	 after the maximum number of requests per connection has been reached.
+	* htnet/Retriever.cc: fixed the bug regarding the server_wait_time
+	feature after the maximum number of requests per connection has been
+	reached.
 
 Tue Apr 9 16:41:33 CEST 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
-   * htnet/HtCookie*.[h,cc]: RFC2109 compliant.
-   * htlib/HtDateTime.[h,cc]: Add const-ness to the DiffTime static method
+	* htnet/HtCookie*.[h,cc]: RFC2109 compliant.
+	* htlib/HtDateTime.[h,cc]: Add const-ness to the DiffTime static method
 
 Tue Apr 9 12:52:30 CEST 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
-    * htnet/HtCookie.cc: fixed a bug regarding expiry date recognition
+	* htnet/HtCookie.cc: fixed a bug regarding expiry date recognition
 
 Fri Apr  5 14:08:39 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 

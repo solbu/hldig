@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: SplitMatches.cc,v 1.2 2002/02/02 18:18:13 ghutchis Exp $
+// $Id: SplitMatches.cc,v 1.3 2002/06/14 22:31:39 grdetil Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -42,7 +42,7 @@ public:
 
     // Does this item match?
     inline bool Match(char *s)
-    { return match.match(s, 1, 0) == 0; }
+    { return match.match(s, 1, 0) != 0; }
 
     // Return the contained list.
     List *MatchList() { return &myList; }
