@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.36 1999/06/16 18:57:21 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.37 1999/06/25 01:46:08 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -132,8 +132,12 @@ main(int ac, char **av)
     if (!override_config && input.exists("config") 
 	&& (strstr(input["config"], "./") == NULL))
     {
-	char	*configDir = getenv("CONFIG_DIR");
-	if (configDir)
+	char	*configDir;
+	if (input.exists("configdir"))
+	{
+	  configFile = input["configdir"];
+	}
+	else if ((configDir = getenv("CONFIG_DIR")) != NULL)
 	{
 	    configFile = configDir;
 	}
@@ -153,6 +157,8 @@ main(int ac, char **av)
     }
     config.Read(configFile);
 
+    if (input.exists("commondir"))
+	config.Add("common_dir", input["commondir"]);
     if (input.exists("method"))
 	config.Add("match_method", input["method"]);
     if (input.exists("format"))

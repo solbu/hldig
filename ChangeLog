@@ -1,3 +1,12 @@
+Thu Jun 24 22:28:44 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/htsearch.cc (main): Add support for form inputs
+	configdir and commondir as contributed by Herbert Martin Dietze
+	<herbert@fh-wedel.de>.
+
+	* htsearch/Display.cc (createURL): If configdir and commondir are
+	defined, add them to URLs sent for other pages.
+
 Wed Jun 23 23:00:18 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HtHTTP.h, htdig/HtHTTP.cc: Make a subclass of Transport.

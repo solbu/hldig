@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.84 1999/06/16 18:34:57 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.85 1999/06/25 01:46:08 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -572,6 +572,11 @@ Display::createURL(String &url, int pageNumber)
 	s << "matchesperpage=" << input->get("matchesperpage") << '&';
     if (input->exists("words"))
 	s << "words=" << input->get("words") << '&';
+    if (input->exists("configdir"))
+      s << "configdir=" << input->get("configdir") << '&';
+    if (input->exists("commondir"))
+      s << "commondir=" << input->get("commondir") << '&';
+
     StringList form_vars(config["allow_in_form"], " \t\r\n");
     for (i= 0; i < form_vars.Count(); i++)
     {
