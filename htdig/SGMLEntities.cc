@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: SGMLEntities.cc,v 1.10.2.1 1999/11/24 02:06:47 grdetil Exp $";
+static char RCSid[] = "$Id: SGMLEntities.cc,v 1.10.2.2 2002/01/11 23:51:38 grdetil Exp $";
 #endif
 
 #include "SGMLEntities.h"
@@ -193,6 +193,7 @@ SGMLEntities::translateAndUpdate(unsigned char *&entityStart)
     static int		translate_quot = config.Boolean("translate_quot");
     static int		translate_amp = config.Boolean("translate_amp");
     static int		translate_lt_gt = config.Boolean("translate_lt_gt");
+    static int		translate_latin1 = config.Boolean("translate_latin1");
     
     if (*entityStart == '&')
 	entityStart++;		// Don't need the '&' that starts the entity
@@ -281,7 +282,8 @@ SGMLEntities::translateAndUpdate(unsigned char *&entityStart)
     if (*entityStart == ';')
 	entityStart++;		// A final ';' is used up.
     unsigned char e = translate(entity);
-    if (e == ' ' && strncmp((char *)orig, "&#32", 4) != 0)
+    if (e == ' ' && strncmp((char *)orig, "&#32", 4) != 0
+	   || !translate_latin1 && e > 160)
     {
 	entityStart = orig + 1;	// Catch unrecognized entities...
 	return '&';

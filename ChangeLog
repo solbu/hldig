@@ -1,3 +1,10 @@
+Fri Jan 11 17:48:54 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/SGMLEntities.cc (translateAndUpdate): Added support for
+	translate_latin1 attribute, to turn off ISO-8859-1-specific entities.
+	* htcommon/defaults.cc: Added translate_latin1 attribute.
+	* htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Documented it.
+
 Fri Jan 11 17:14:54 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/xmlsearch.{README,tar.gz}: Removed older xmlsearch package.

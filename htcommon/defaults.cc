@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.34 2002/01/09 22:12:29 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.35 2002/01/11 23:51:37 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -174,6 +174,7 @@ ConfigDefaults	defaults[] =
     {"timeout",				"30"},
     {"title_factor",			"100"},
     {"translate_amp",                   "true"},
+    {"translate_latin1",                "true"},
     {"translate_lt_gt",                 "true"},
     {"translate_quot",                  "true"},
     {"uncoded_db_compatible",		"true"},

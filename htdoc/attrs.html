@@ -8035,6 +8035,53 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="translate_latin1">translate_latin1</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			true
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			If set to false, the SGML entities for ISO-8859-1 (or
+			Latin 1) characters above &amp;nbsp; (or &amp;#160;)
+			will not be translated into their 8-bit equivalents.
+			This attribute should be set to false when using a
+			<a href="#locale">locale</a> that doesn't use the
+			ISO-8859-1 character set, to avoid these entities
+			being mapped to inappropriate 8-bit characters shown
+			in a different character set in search results.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			translate_latin1: false
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="translate_lt_gt">translate_lt_gt</a></strong>
 	  </dt>
 	  <dd>
@@ -8863,7 +8910,7 @@
 	</dl>
 	<hr size="4" noshade>
 <!-- hhmts start -->
-Last modified: $Date: 2002/01/09 22:12:29 $
+Last modified: $Date: 2002/01/11 23:51:38 $
 <!-- hhmts end -->
   </body>
 </html>
