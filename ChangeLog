@@ -1,3 +1,7 @@
+Mon Mar 22 17:32:14 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htmerge/docs.cc: Replace previous verbose patch with H-P Nilsson's.
+
 Mon Mar 22 17:13:35 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Plaintext.cc, htmerge/words.cc: removed Log lines.
@@ -18,7 +22,7 @@ Mon Mar 22 15:56:55 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 Mon Mar 22 15:13:33 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc, htdoc/attrs.html: Change default locale
-	to "C", as H-P Nielsen recommended.
+	to "C", as H-P Nilsson recommended.
 
 	* htlib/Configuration.cc(Add): Fix small memory leak in locale code,
 	as Geoff discovered.
