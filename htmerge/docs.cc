@@ -3,7 +3,7 @@
 //
 // Do sanity checking in "doc_db", remove insane documents.
 //
-// $Id: docs.cc,v 1.21 1999/09/06 15:57:08 ghutchis Exp $
+// $Id: docs.cc,v 1.22 1999/09/08 04:52:23 ghutchis Exp $
 //
 //
 
@@ -20,6 +20,7 @@ convertDocs()
     char		*doc_index = config["doc_index"];
     char		*doc_excerpt = config["doc_excerpt"];
     int			remove_unused = config.Boolean("remove_bad_urls");
+    int			remove_unretrieved = config.Boolean("remove_unretrieved_urls");
     DocumentDB		db;
     List		*IDs;
     int			document_count = 0;
@@ -81,7 +82,7 @@ convertDocs()
 	    // This document wasn't actually found
 	    db.Delete(ref->DocID());
             if (verbose)
-              cout << "Deleted, noindex: " << id->Value() << " URL: "
+              cout << "Deleted, not found: " << id->Value() << " URL: "
                    << url << endl;
 	    discard_list.Add(idStr.get(), NULL);
 	  }
@@ -93,6 +94,15 @@ convertDocs()
 	    db.Delete(ref->DocID());
             if (verbose)
               cout << "Deleted, no excerpt: " << id->Value() << " URL:  "
+                   << url << endl;
+	    discard_list.Add(idStr.get(), NULL);
+	  }
+	else if (remove_unretrieved && ref->DocAccessed() == 0)
+	  {
+	    // This document has not been retrieved
+	    db.Delete(ref->DocID());
+            if (verbose)
+              cout << "Deleted, never retrieved: " << id->Value() << " URL:  "
                    << url << endl;
 	    discard_list.Add(idStr.get(), NULL);
 	  }

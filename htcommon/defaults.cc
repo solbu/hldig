@@ -1,12 +1,17 @@
 //
 // defaults.cc
 //
-// default values for the ht programs
+//: Default configuration values for the ht programs
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.58 1999/08/26 16:21:39 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.59 1999/09/08 04:52:23 ghutchis Exp $";
 #endif
 
 #include "Configuration.h"
@@ -109,6 +114,7 @@ ConfigDefaults	defaults[] =
     {"prev_page_text",			"[prev]"},
     {"regex_max_words",			"25"},
     {"remove_bad_urls",			"true"},
+    {"remove_unretrieved_urls",		"true"},
     {"remove_default_doc",              "index.html"},
     {"robotstxt_name",			"htdig"},
     {"script_name",                     ""},
