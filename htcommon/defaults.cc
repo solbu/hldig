@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.64.2.5 1999/10/27 16:26:01 loic Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.64.2.6 1999/10/27 18:58:31 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -1845,8 +1845,8 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 				   .html *2
 url_part_aliases:
 				   http://www.htdig.org/ *site \\<br>
--                                  http://www.htdig.org/that/ *1 \\<br>
--                                  .htm *2
+				   http://www.htdig.org/that/ *1 \\<br>
+				   .htm *2
 ", "
 	A list of translations pairs <em>from</em> and
 	<em>to</em>, used when accessing the database.

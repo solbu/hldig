@@ -22,7 +22,7 @@
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='add_anchors_to_excerpt'>
+		<strong><a name="add_anchors_to_excerpt">
 		add_anchors_to_excerpt</a></strong>
 	  </dt>
 	  <dd>
@@ -37,7 +37,7 @@
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -49,28 +49,25 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If set to true, the first occurrence of each matched
 	word in the excerpt will be linked to the closest
 	anchor in the document. This only has effect if the
 	<strong>EXCERPT</strong> variable is used in the output
 	template and the excerpt is actually going to be displayed.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  add_anchors_to_excerpt:
 				</td>
 				<td nowrap>
 				     no
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -79,7 +76,7 @@
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='allow_in_form'>
+		<strong><a name="allow_in_form">
 		allow_in_form</a></strong>
 	  </dt>
 	  <dd>
@@ -94,7 +91,7 @@
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -106,7 +103,6 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Allows the specified config file attributes to be specified
 	in search forms as separate fields. This could be used to
 	allow form writers to design their own headers and footers
@@ -123,22 +119,20 @@
 	</tt></td>
 	</tr>
 	</table>
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  allow_in_form:
 				</td>
 				<td nowrap>
 				     search_algorithm search_results_header
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -147,7 +141,7 @@
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='allow_numbers'>
+		<strong><a name="allow_numbers">
 		allow_numbers</a></strong>
 	  </dt>
 	  <dd>
@@ -162,7 +156,7 @@
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -174,29 +168,26 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If set to true, numbers are considered words. This
 	means that searches can be done on number as well as
 	regular words. All the same rules apply to numbers as
 	to words. See the description of
 	<a href="#valid_punctuation">valid_punctuation</a> for the
 	rules used to determine what a word is.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  allow_numbers:
 				</td>
 				<td nowrap>
 				     true
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -205,7 +196,7 @@
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='allow_virtual_hosts'>
+		<strong><a name="allow_virtual_hosts">
 		allow_virtual_hosts</a></strong>
 	  </dt>
 	  <dd>
@@ -220,7 +211,7 @@
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -232,29 +223,26 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If set to true, htdig will index virtual web sites as
 	expected. If false, all URL host names will be
 	normalized into whatever the DNS server claims the IP
 	address to map to. If this option is set to false,
 	there is no way to index either "soft" or "hard"
 	virtual web sites.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  allow_virtual_hosts:
 				</td>
 				<td nowrap>
 				     false
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -263,7 +251,7 @@
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='backlink_factor'>
+		<strong><a name="backlink_factor">
 		backlink_factor</a></strong>
 	  </dt>
 	  <dd>
@@ -278,7 +266,7 @@
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -290,7 +278,6 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is a weight of "how important" a page is, based on
 	the number of URLs pointing to it. It's actually
 	multiplied by the ratio of the incoming URLs (backlinks)
@@ -299,22 +286,20 @@
 	be changed without changing the database in any way.
 	However, setting this value to something other than 0
 	incurs a slowdown on search results.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  backlink_factor:
 				</td>
 				<td nowrap>
 				     501.1
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -323,7 +308,7 @@
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='bad_extensions'>
+		<strong><a name="bad_extensions">
 		bad_extensions</a></strong>
 	  </dt>
 	  <dd>
@@ -338,7 +323,7 @@
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -350,29 +335,26 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is a list of extensions on URLs which are
 	considered non-parsable. This list is used mainly to
 	supplement the MIME-types that the HTTP server provides
 	with documents. Some HTTP servers do not have a correct
 	list of MIME-types and so can advertise certain
 	documents as text while they are some binary format.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  bad_extensions:
 				</td>
 				<td nowrap>
 				     .foo .bar .bad
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -381,7 +363,7 @@
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='bad_querystr'>
+		<strong><a name="bad_querystr">
 		bad_querystr</a></strong>
 	  </dt>
 	  <dd>
@@ -396,7 +378,7 @@
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -408,27 +390,24 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is a list of CGI query strings to be excluded from
 	indexing. This can be used in conjunction with CGI-generated
 	portions of a website to control which pages are
 	indexed.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  bad_querystr:
 				</td>
 				<td nowrap>
 				     forum=private section=topsecret&amp;passwd=required
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -437,7 +416,7 @@
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='bad_word_list'>
+		<strong><a name="bad_word_list">
 		bad_word_list</a></strong>
 	  </dt>
 	  <dd>
@@ -452,8 +431,8 @@
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -465,7 +444,6 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This specifies a file which contains words which should
 	be excluded when digging or searching. This list should
 	include the most common words or other words that you
@@ -474,22 +452,20 @@
 	The file should contain one word per line. A sample
 	bad words file is located in the <tt>contrib/examples</tt>
 	directory.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  bad_word_list:
 				</td>
 				<td nowrap>
 				     ${common_dir}/badwords.txt
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -498,7 +474,7 @@
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='bin_dir'>
+		<strong><a name="bin_dir">
 		bin_dir</a></strong>
 	  </dt>
 	  <dd>
@@ -513,11 +489,11 @@
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htnotify.html' >htnotify</a>, 
-<a href='htfuzzy.html' >htfuzzy</a>, 
-<a href='htmerge.html' >htmerge</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htnotify.html">htnotify</a>,
+			<a href="htfuzzy.html">htfuzzy</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -529,7 +505,6 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is the directory in which the executables
 	related to ht://Dig are installed. It is never used
 	directly by any of the programs, but other attributes
@@ -538,22 +513,20 @@
 	The default value of this attribute is determined at
 	compile time.
 	</p>
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  bin_dir:
 				</td>
 				<td nowrap>
 				     /usr/local/bin
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -562,7 +535,7 @@
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='case_sensitive'>
+		<strong><a name="case_sensitive">
 		case_sensitive</a></strong>
 	  </dt>
 	  <dd>
@@ -577,7 +550,7 @@
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -589,26 +562,23 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This specifies whether ht://Dig should consider URLs
 	case-sensitive or not. If your server is case-insensitive,
 	you should probably set this to false.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  case_sensitive:
 				</td>
 				<td nowrap>
 				     false
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -617,7 +587,7 @@
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='common_dir'>
+		<strong><a name="common_dir">
 		common_dir</a></strong>
 	  </dt>
 	  <dd>
@@ -632,11 +602,11 @@
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htnotify.html' >htnotify</a>, 
-<a href='htfuzzy.html' >htfuzzy</a>, 
-<a href='htmerge.html' >htmerge</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htnotify.html">htnotify</a>,
+			<a href="htfuzzy.html">htfuzzy</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -648,26 +618,23 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Specifies the directory for files that will or can be
 	shared among different search databases. The default
 	value for this attribute is defined at compile time.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  common_dir:
 				</td>
 				<td nowrap>
 				     /tmp
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -676,7 +643,7 @@
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='common_url_parts'>
+		<strong><a name="common_url_parts">
 		common_url_parts</a></strong>
 	  </dt>
 	  <dd>
@@ -691,10 +658,10 @@
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htnotify.html' >htnotify</a>, 
-<a href='htmerge.html' >htmerge</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htnotify.html">htnotify</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -706,7 +673,6 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Sub-strings often found in URLs stored in the
 	database.  These are replaced in the database by an
 	internal space-saving encoding.  If a string
@@ -717,15 +683,14 @@
 	database should be rebuilt, unless the effect of
 	"changing" the affected URLs in the database is
 	wanted.<br>
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  common_url_parts:
 				</td>
 				<td nowrap>
@@ -735,7 +700,6 @@ http://dev.htdig.org/ \<br>
 http://www.htdig.org/
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -744,7 +708,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='compression_level'>
+		<strong><a name="compression_level">
 		compression_level</a></strong>
 	  </dt>
 	  <dd>
@@ -759,7 +723,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -771,7 +735,6 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If specified and the <a
 	href="http://www.cdrom.com/pub/infozip/zlib/">zlib</a>
 	compression library was available when compiled,
@@ -779,22 +742,20 @@ http://www.htdig.org/
 	the amount of compression used in the <a
 	href="#doc_db">doc_db</a> file. Defaults to zero to
 	provide backward compatility with old databases.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  compression_level:
 				</td>
 				<td nowrap>
 				     6
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -803,7 +764,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='config_dir'>
+		<strong><a name="config_dir">
 		config_dir</a></strong>
 	  </dt>
 	  <dd>
@@ -818,11 +779,11 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htnotify.html' >htnotify</a>, 
-<a href='htfuzzy.html' >htfuzzy</a>, 
-<a href='htmerge.html' >htmerge</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htnotify.html">htnotify</a>,
+			<a href="htfuzzy.html">htfuzzy</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -834,7 +795,6 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is the directory which contains all configuration
 	files related to ht://Dig. It is never used
 	directly by any of the programs, but other attributes
@@ -844,22 +804,20 @@ http://www.htdig.org/
 	The default value of this attribute is determined at
 	compile time.
 	</p>
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  config_dir:
 				</td>
 				<td nowrap>
 				     /var/htdig/conf
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -868,7 +826,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='create_image_list'>
+		<strong><a name="create_image_list">
 		create_image_list</a></strong>
 	  </dt>
 	  <dd>
@@ -883,7 +841,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -895,28 +853,25 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If set to true, a file with all the image URLs that
 	were seen will be created, one URL per line. This list
 	will not be in any order and there will be lots of
 	duplicates, so after htdig has completed, it should be
 	piped through <tt>sort -u</tt> to get a unique list.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  create_image_list:
 				</td>
 				<td nowrap>
 				     yes
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -925,7 +880,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='create_url_list'>
+		<strong><a name="create_url_list">
 		create_url_list</a></strong>
 	  </dt>
 	  <dd>
@@ -940,7 +895,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -952,28 +907,25 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If set to true, a file with all the URLs that were seen
 	will be created, one URL per line. This list will not
 	be in any order and there will be lots of duplicates,
 	so after htdig has completed, it should be piped
 	through <tt>sort -u</tt> to get a unique list.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  create_url_list:
 				</td>
 				<td nowrap>
 				     yes
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -982,7 +934,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='database_base'>
+		<strong><a name="database_base">
 		database_base</a></strong>
 	  </dt>
 	  <dd>
@@ -997,11 +949,11 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htnotify.html' >htnotify</a>, 
-<a href='htfuzzy.html' >htfuzzy</a>, 
-<a href='htmerge.html' >htmerge</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htnotify.html">htnotify</a>,
+			<a href="htfuzzy.html">htfuzzy</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1013,28 +965,25 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is the common prefix for files that are specific
 	to a search database. Many different attributes use
 	this prefix to specify filenames. Several search
 	databases can share the same directory by just changing
 	this value for each of the databases.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  database_base:
 				</td>
 				<td nowrap>
 				     ${database_dir}/sales
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1043,7 +992,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='database_dir'>
+		<strong><a name="database_dir">
 		database_dir</a></strong>
 	  </dt>
 	  <dd>
@@ -1058,11 +1007,11 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htnotify.html' >htnotify</a>, 
-<a href='htfuzzy.html' >htfuzzy</a>, 
-<a href='htmerge.html' >htmerge</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htnotify.html">htnotify</a>,
+			<a href="htfuzzy.html">htfuzzy</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1074,7 +1023,6 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is the directory which contains all database and
 	other files related to ht://Dig. It is never used
 	directly by any of the programs, but other attributes
@@ -1083,22 +1031,20 @@ http://www.htdig.org/
 	The default value of this attribute is determined at
 	compile time.
 	</p>
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  database_dir:
 				</td>
 				<td nowrap>
 				     /var/htdig
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1107,7 +1053,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='date_factor'>
+		<strong><a name="date_factor">
 		date_factor</a></strong>
 	  </dt>
 	  <dd>
@@ -1122,7 +1068,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1134,7 +1080,6 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This factor, like <a
 	href="#backlink_factor">backlink_factor</a> can be
 	changed without modifing the database. It gives higher
@@ -1144,22 +1089,20 @@ http://www.htdig.org/
 	(check the dates returned in the long format).
 	Additionally, setting this to a nonzero value incurs a
 	performance hit on searching.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  date_factor:
 				</td>
 				<td nowrap>
 				     0.35
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1168,7 +1111,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='date_format'>
+		<strong><a name="date_format">
 		date_format</a></strong>
 	  </dt>
 	  <dd>
@@ -1183,7 +1126,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1195,7 +1138,6 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This format string determines the output format for
 	modification dates of documents in the search results.
 	It is interpreted by your system's <em>strftime</em>
@@ -1207,22 +1149,20 @@ http://www.htdig.org/
 	will pick a format itself. In this case, the <a
 	href="#iso_8601">iso_8601</a> attribute can be used
 	to modify the appearance of the date.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  date_format:
 				</td>
 				<td nowrap>
 				     %Y-%m-%d
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1231,7 +1171,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='description_factor'>
+		<strong><a name="description_factor">
 		description_factor</a></strong>
 	  </dt>
 	  <dd>
@@ -1246,7 +1186,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1258,7 +1198,6 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Plain old "descriptions" are the text of a link pointing
 	to a document. This factor gives weight to the words of
 	these descriptions of the document. Not surprisingly,
@@ -1266,22 +1205,20 @@ http://www.htdig.org/
 	content. See also <a href="#title_factor">title_factor</a> or <a
 	href="#text_factor">text_factor</a>. Changing this
 	factor will require updating your database.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  description_factor:
 				</td>
 				<td nowrap>
 				     350
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1290,7 +1227,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='doc_db'>
+		<strong><a name="doc_db">
 		doc_db</a></strong>
 	  </dt>
 	  <dd>
@@ -1305,9 +1242,9 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htmerge.html' >htmerge</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1319,28 +1256,25 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This file will contain a Berkeley database of documents
 	indexed by document number. It contains all the information
 	gathered for each document, so this file can become
 	rather large if <a href="#max_head_length"><em>
 	max_head_length</em></a> is set to a large value.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  doc_db:
 				</td>
 				<td nowrap>
 				     ${database_base}documents.db
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1349,7 +1283,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='doc_excerpt'>
+		<strong><a name="doc_excerpt">
 		doc_excerpt</a></strong>
 	  </dt>
 	  <dd>
@@ -1376,16 +1310,14 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
-
 
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    <i>No example provided</i>
+			<table border="0">
+			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -1394,7 +1326,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='doc_index'>
+		<strong><a name="doc_index">
 		doc_index</a></strong>
 	  </dt>
 	  <dd>
@@ -1409,8 +1341,8 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htmerge.html' >htmerge</a>, 
-<a href='htdig.html' >htdig</a>
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1422,27 +1354,24 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This file will contain a Berkeley database which maps
 	document URLs to document numbers. It is basically an
 	intermediate database from URLs to the document
 	database.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  doc_index:
 				</td>
 				<td nowrap>
 				     documents.index.db
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1451,7 +1380,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='doc_list'>
+		<strong><a name="doc_list">
 		doc_list</a></strong>
 	  </dt>
 	  <dd>
@@ -1466,7 +1395,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1478,28 +1407,25 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This file is basically a text version of the file
 	specified in <em><a href="#doc_db">doc_db</a></em>. Its
 	only use is to have a human readable database of all
 	documents. The file is easy to parse with tools like
 	perl or tcl.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  doc_list:
 				</td>
 				<td nowrap>
 				     /tmp/documents.text
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1508,7 +1434,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='end_ellipses'>
+		<strong><a name="end_ellipses">
 		end_ellipses</a></strong>
 	  </dt>
 	  <dd>
@@ -1523,7 +1449,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1535,28 +1461,25 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	When excerpts are displayed in the search output, this
 	string will be appended to the excerpt if there is text
 	following the text displayed. This is just a visual
 	reminder to the user that the excerpt is only part of
 	the complete document.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  end_ellipses:
 				</td>
 				<td nowrap>
 				     ...
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1565,7 +1488,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='endings_affix_file'>
+		<strong><a name="endings_affix_file">
 		endings_affix_file</a></strong>
 	  </dt>
 	  <dd>
@@ -1580,7 +1503,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htfuzzy.html' >htfuzzy</a>
+			<a href="htfuzzy.html">htfuzzy</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1592,28 +1515,25 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Specifies the location of the file which contains the
 	affix rules used to create the endings search algorithm
 	databases. Consult the documentation on
 	<a href="htfuzzy.html">htfuzzy</a> for more information on the
 	format of this file.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  endings_affix_file:
 				</td>
 				<td nowrap>
 				     /var/htdig/affix_rules
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1622,7 +1542,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='endings_dictionary'>
+		<strong><a name="endings_dictionary">
 		endings_dictionary</a></strong>
 	  </dt>
 	  <dd>
@@ -1637,7 +1557,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htfuzzy.html' >htfuzzy</a>
+			<a href="htfuzzy.html">htfuzzy</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1649,28 +1569,25 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Specifies the location of the file which contains the
 	dictionary used to create the endings search algorithm
 	databases. Consult the documentation on
 	<a href="htfuzzy.html">htfuzzy</a> for more information on the
 	format of this file.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  endings_dictionary:
 				</td>
 				<td nowrap>
 				     /var/htdig/dictionary
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1679,7 +1596,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='endings_root2word_db'>
+		<strong><a name="endings_root2word_db">
 		endings_root2word_db</a></strong>
 	  </dt>
 	  <dd>
@@ -1694,8 +1611,8 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htfuzzy.html' >htfuzzy</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htfuzzy.html">htfuzzy</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1707,7 +1624,6 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This attributes specifies the database filename to be
 	used in the 'endings' fuzzy search algorithm. The
 	database maps word roots to all legal words with that
@@ -1719,22 +1635,20 @@ http://www.htdig.org/
 	<a href="#database_dir">database_dir</a> attribute.
 	This is because this database can be shared with
 	different search databases.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  endings_root2word_db:
 				</td>
 				<td nowrap>
 				     /var/htdig/r2w.db
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1743,7 +1657,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='endings_word2root_db'>
+		<strong><a name="endings_word2root_db">
 		endings_word2root_db</a></strong>
 	  </dt>
 	  <dd>
@@ -1758,8 +1672,8 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htfuzzy.html' >htfuzzy</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htfuzzy.html">htfuzzy</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1771,7 +1685,6 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This attributes specifies the database filename to be
 	used in the 'endings' fuzzy search algorithm. The
 	database maps words to their root. For more information
@@ -1783,22 +1696,20 @@ http://www.htdig.org/
 	<a href="#database_dir">database_dir</a> attribute.
 	This is because this database can be shared with
 	different search databases.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  endings_word2root_db:
 				</td>
 				<td nowrap>
 				     /var/htdig/w2r.bm
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1807,7 +1718,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='excerpt_length'>
+		<strong><a name="excerpt_length">
 		excerpt_length</a></strong>
 	  </dt>
 	  <dd>
@@ -1822,7 +1733,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1834,7 +1745,6 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is the maximum number of characters the displayed
 	excerpt will be limited to. The first matched word will
 	be bolded in the middle of the excerpt so that there is
@@ -1844,22 +1754,20 @@ http://www.htdig.org/
 	<em><a href="#end_ellipses">end_ellipses</a></em> are used to
 	indicate that the document contains text before and
 	after the displayed excerpt respectively.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  excerpt_length:
 				</td>
 				<td nowrap>
 				     500
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1868,7 +1776,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='excerpt_show_top'>
+		<strong><a name="excerpt_show_top">
 		excerpt_show_top</a></strong>
 	  </dt>
 	  <dd>
@@ -1883,7 +1791,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1895,27 +1803,24 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If set to true, the excerpt of a match will always show
 	the top of the matching document. If it is false (the
 	default), the excerpt will attempt to show the part of
 	the document that actually contains one of the words.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  excerpt_show_top:
 				</td>
 				<td nowrap>
 				     yes
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1924,7 +1829,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='exclude_urls'>
+		<strong><a name="exclude_urls">
 		exclude_urls</a></strong>
 	  </dt>
 	  <dd>
@@ -1939,7 +1844,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -1951,27 +1856,24 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If a URL contains any of the space separated patterns,
 	it will be rejected. This is used to exclude such
 	common things such as an infinite virtual web-tree
 	which start with cgi-bin.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  exclude_urls:
 				</td>
 				<td nowrap>
 				     students.html cgi-bin
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -1980,7 +1882,7 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='external_parsers'>
+		<strong><a name="external_parsers">
 		external_parsers</a></strong>
 	  </dt>
 	  <dd>
@@ -1995,7 +1897,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -2007,7 +1909,6 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 			This attribute is used to specify a list of
 			content-type/parsers that are to be used to parse
 			documents that cannot by parsed by any of the internal
@@ -2314,15 +2215,14 @@ http://www.htdig.org/
 	href="FAQ.html#q4.8">4.8</a> and <a
 	href="FAQ.html#q4.9">4.9</a> for more
 	examples.</em></p>
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  external_parsers:
 				</td>
 				<td nowrap>
@@ -2330,7 +2230,6 @@ http://www.htdig.org/
 application/ms-word "/usr/local/bin/mswordparser -w"
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -2339,7 +2238,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='extra_word_characters'>
+		<strong><a name="extra_word_characters">
 		extra_word_characters</a></strong>
 	  </dt>
 	  <dd>
@@ -2354,8 +2253,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -2367,7 +2266,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	These characters are considered part of a word.
 	In contrast to the characters in the
 	<a href="#valid_punctuation">valid_punctuation</a>
@@ -2376,22 +2274,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	Note that the <a href="#locale">locale</a> attribute
 	is normally used to configure which characters
 	constitute letter characters.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  extra_word_characters:
 				</td>
 				<td nowrap>
 				     _
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -2400,7 +2296,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='head_before_get'>
+		<strong><a name="head_before_get">
 		head_before_get</a></strong>
 	  </dt>
 	  <dd>
@@ -2415,7 +2311,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -2427,28 +2323,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
         This option works only if we take advantage of persistent connections (see
         persistent_connections attribute). If set to true an HTTP/1.1 <I>HEAD</I>
         call is made in order to retrieve header information about a document.
         If the status code and the content-type returned let the document be parsable,
         then a following 'GET' call is made.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  head_before_get:
 				</td>
 				<td nowrap>
 				     true
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -2457,7 +2350,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='heading_factor'>
+		<strong><a name="heading_factor">
 		heading_factor</a></strong>
 	  </dt>
 	  <dd>
@@ -2484,16 +2377,14 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
-
 
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    <i>No example provided</i>
+			<table border="0">
+			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -2502,7 +2393,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='htnotify_sender'>
+		<strong><a name="htnotify_sender">
 		htnotify_sender</a></strong>
 	  </dt>
 	  <dd>
@@ -2517,7 +2408,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htnotify.html' >htnotify</a>
+			<a href="htnotify.html">htnotify</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -2529,27 +2420,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This specifies the email address that htnotify email
 	messages get sent out from. The address is forged using
 	/usr/lib/sendmail. Check htnotify/htnotify.cc for
 	detail on how this is done.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  htnotify_sender:
 				</td>
 				<td nowrap>
 				     bigboss@yourcompany.com
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -2558,7 +2446,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='http_proxy'>
+		<strong><a name="http_proxy">
 		http_proxy</a></strong>
 	  </dt>
 	  <dd>
@@ -2573,7 +2461,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -2585,29 +2473,26 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	When this attribute is set, all HTTP document
 	retrievals will be done using the HTTP-PROXY protocol.
 	The URL specified in this attribute points to the host
 	and port where the proxy server resides.<br>
 	The use of a proxy server greatly improves performance
 	of the indexing process.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  http_proxy:
 				</td>
 				<td nowrap>
 				     http://proxy.bigbucks.com:3128
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -2616,7 +2501,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='http_proxy_exclude'>
+		<strong><a name="http_proxy_exclude">
 		http_proxy_exclude</a></strong>
 	  </dt>
 	  <dd>
@@ -2631,7 +2516,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -2643,26 +2528,23 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	When this is set, URLs matching this will not use the
 	proxy. This is useful when you have a mixture of sites
 	near to the digging server and far away.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  http_proxy_exclude:
 				</td>
 				<td nowrap>
 				     http://intranet.foo.com/
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -2671,7 +2553,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='image_list'>
+		<strong><a name="image_list">
 		image_list</a></strong>
 	  </dt>
 	  <dd>
@@ -2686,7 +2568,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -2698,7 +2580,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is the file that a list of image URLs gets written
 	to by <a href="htdig.html">htdig</a> when the
 	<a href="#create_image_list">create_image_list</a> is set to
@@ -2706,22 +2587,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	this file, so after htdig finishes it is probably a
 	good idea to run <tt>sort -u</tt> on the file to
 	eliminate duplicates from the file.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  image_list:
 				</td>
 				<td nowrap>
 				     allimages
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -2730,7 +2609,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='image_url_prefix'>
+		<strong><a name="image_url_prefix">
 		image_url_prefix</a></strong>
 	  </dt>
 	  <dd>
@@ -2745,7 +2624,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -2757,7 +2636,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This specifies the directory portion of the URL used
 	to display star images. This attribute isn't directly
 	used by htsearch, but is used in the default URL for
@@ -2768,22 +2646,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	The default value of this attribute is determined at
 	compile time.
 	</p>
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  image_url_prefix:
 				</td>
 				<td nowrap>
 				     /images/htdig
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -2792,7 +2668,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='img_alt_factor'>
+		<strong><a name="img_alt_factor">
 		img_alt_factor</a></strong>
 	  </dt>
 	  <dd>
@@ -2819,16 +2695,14 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
-
 
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    <i>No example provided</i>
+			<table border="0">
+			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -2837,7 +2711,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='include'>
+		<strong><a name="include">
 		include</a></strong>
 	  </dt>
 	  <dd>
@@ -2852,11 +2726,11 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htnotify.html' >htnotify</a>, 
-<a href='htfuzzy.html' >htfuzzy</a>, 
-<a href='htmerge.html' >htmerge</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htnotify.html">htnotify</a>,
+			<a href="htfuzzy.html">htfuzzy</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -2868,7 +2742,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 			This is not quite a configuration attribute, but
 			rather a directive. It can be used within one
 			configuration file to include the definitions of
@@ -2880,22 +2753,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			same, so all the common attributes can be maintained
 			in a single configuration file. The include directives
 			can be nested, but watch out for nesting loops.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  include:
 				</td>
 				<td nowrap>
 				     ${config_dir}/htdig.conf
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -2904,7 +2775,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='iso_8601'>
+		<strong><a name="iso_8601">
 		iso_8601</a></strong>
 	  </dt>
 	  <dd>
@@ -2919,8 +2790,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>, 
-<a href='htnotify.html' >htnotify</a>
+			<a href="htsearch.html" target="_top">htsearch</a>,
+			<a href="htnotify.html">htnotify</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -2932,7 +2803,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This sets whether dates should be output in ISO 8601
 	format. For example, this was written on: 1998-10-31 11:28:13 EST.
 	See also the <a
@@ -2943,22 +2813,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	This attribute also affects the format of the date
 	<a href="htnotify.html">htnotify</a> expects to find
 	in a <strong>htdig-notification-date</strong> field.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  iso_8601:
 				</td>
 				<td nowrap>
 				     true
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -2967,7 +2835,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='keywords_factor'>
+		<strong><a name="keywords_factor">
 		keywords_factor</a></strong>
 	  </dt>
 	  <dd>
@@ -2982,7 +2850,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -2994,28 +2862,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is a factor which will be used to multiply the
 	weight of words in the list of keywords of a document.
 	The number may be a floating point number. See also the
 	<a href="#title_factor">title_factor</a> and
 	<a href="#text_factor">text_factor</a>attributes.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  keywords_factor:
 				</td>
 				<td nowrap>
 				     12
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3024,7 +2889,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='keywords_meta_tag_names'>
+		<strong><a name="keywords_meta_tag_names">
 		keywords_meta_tag_names</a></strong>
 	  </dt>
 	  <dd>
@@ -3039,7 +2904,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3051,7 +2916,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	The words in this list are used to search for keywords
 	in HTML <i>META</i> tags. This list can contain any
 	number of strings that each will be seen as the name
@@ -3060,22 +2924,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 <tt>
 &nbsp;&nbsp;&lt;META name="<i>somename</i>" content="<i>somevalue</i>"&gt;
 </tt>
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  keywords_meta_tag_names:
 				</td>
 				<td nowrap>
 				     keywords description
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3084,7 +2946,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='limit_normalized'>
+		<strong><a name="limit_normalized">
 		limit_normalized</a></strong>
 	  </dt>
 	  <dd>
@@ -3099,7 +2961,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3111,7 +2973,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This specifies a set of patterns that all URLs have to
 	match against in order for them to be included in the
 	search. Unlike the limit_urls_to directive, this is done
@@ -3120,22 +2981,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	hostnames and DNS aliases are resolved. Otherwise, this
 	directive is the same as the <a
 	href="#limit_urls_to">limit_urls_to</a> directive.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  limit_normalized:
 				</td>
 				<td nowrap>
 				     http://www.mydomain.com
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3144,7 +3003,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='limit_urls_to'>
+		<strong><a name="limit_urls_to">
 		limit_urls_to</a></strong>
 	  </dt>
 	  <dd>
@@ -3159,7 +3018,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3171,7 +3030,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This specifies a set of patterns that all URLs have to
 	match against in order for them to be included in the
 	search. Any number of strings can be specified,
@@ -3184,22 +3042,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	with <tt>http://</tt>.<br>
 	Granted, this is not the perfect way of doing this,
 	but it is simple enough and it covers most cases.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  limit_urls_to:
 				</td>
 				<td nowrap>
 				     .sdsu.edu kpbs
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3208,7 +3064,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='local_default_doc'>
+		<strong><a name="local_default_doc">
 		local_default_doc</a></strong>
 	  </dt>
 	  <dd>
@@ -3223,7 +3079,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3235,27 +3091,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Set this to the default document in a directory used by the
 	server. This is used for local filesystem access to
 	translate URLs like http://foo.com/ into something like
 	/home/foo.com/index.html
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  local_default_doc:
 				</td>
 				<td nowrap>
 				     default.html
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3264,7 +3117,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='local_urls'>
+		<strong><a name="local_urls">
 		local_urls</a></strong>
 	  </dt>
 	  <dd>
@@ -3279,7 +3132,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3291,7 +3144,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Set this to tell ht://Dig to access certain URLs through
 	local filesystems. At first ht://Dig will try to access
 	pages with URLs matching the patterns through the
@@ -3299,22 +3151,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	try the URL through HTTP instead. Note the example--the
 	equal sign and the final slashes in both the URL and the
 	directory path are critical.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  local_urls:
 				</td>
 				<td nowrap>
 				     http://www.foo.com/=/usr/www/htdocs/
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3323,7 +3173,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='local_user_urls'>
+		<strong><a name="local_user_urls">
 		local_user_urls</a></strong>
 	  </dt>
 	  <dd>
@@ -3338,7 +3188,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3350,7 +3200,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Set this to access user directory URLs through the local
 	filesystem. If you leave the "path" portion out, it will
 	look up the user's home directory in /etc/password (or NIS
@@ -3358,22 +3207,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	found, ht://Dig will try with HTTP. Again, note the
 	example's format. To map http://www.my.org/~joe/foo/bar.html
 	to /home/joe/www/foo/bar.html, try the example below.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  local_user_urls:
 				</td>
 				<td nowrap>
 				     http://www.my.org/=/home/,/www/
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3382,7 +3229,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='locale'>
+		<strong><a name="locale">
 		locale</a></strong>
 	  </dt>
 	  <dd>
@@ -3397,7 +3244,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3409,28 +3256,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Set this to whatever locale you want your search
 	database cover. It affects the way international
 	characters are dealt with. On most systems a list of
 	legal locales can be found in /usr/lib/locale. Also
 	check the <strong>setlocale(3C)</strong> man page.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  locale:
 				</td>
 				<td nowrap>
 				     en_US
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3439,7 +3283,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='logging'>
+		<strong><a name="logging">
 		logging</a></strong>
 	  </dt>
 	  <dd>
@@ -3454,7 +3298,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3466,7 +3310,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 			This sets whether htsearch should use the syslog() to log
 			search requests. If set, this will log requests with a
 			default level of LOG_INFO and a facility of LOG_LOCAL5. For
@@ -3487,22 +3330,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			</dl>
 			where any of the above are null or empty, it
 			either puts in '-' or 'default' (for config).
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  logging:
 				</td>
 				<td nowrap>
 				     true
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3511,7 +3352,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='maintainer'>
+		<strong><a name="maintainer">
 		maintainer</a></strong>
 	  </dt>
 	  <dd>
@@ -3526,7 +3367,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3538,27 +3379,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This should be the email address of the person in
 	charge of the digging operation. This string is added
 	to the user-agent: field when the digger sends a
 	request to a server.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  maintainer:
 				</td>
 				<td nowrap>
 				     ben.dover@uptight.com
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3567,7 +3405,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='match_method'>
+		<strong><a name="match_method">
 		match_method</a></strong>
 	  </dt>
 	  <dd>
@@ -3582,7 +3420,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3594,7 +3432,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is the default method for matching that htsearch
 	uses. The valid choices are:
 	<ul>
@@ -3611,22 +3448,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	This attribute will only be used if the HTML form that
 	calls htsearch didn't have the <strong>method</strong>
 	value set.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  match_method:
 				</td>
 				<td nowrap>
 				     boolean
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3635,7 +3470,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='matches_per_page'>
+		<strong><a name="matches_per_page">
 		matches_per_page</a></strong>
 	  </dt>
 	  <dd>
@@ -3650,7 +3485,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3662,25 +3497,22 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If this is set to a relatively small number, the
 	matches will be shown in pages instead of all at once.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  matches_per_page:
 				</td>
 				<td nowrap>
 				     999
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3689,7 +3521,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='max_description_length'>
+		<strong><a name="max_description_length">
 		max_description_length</a></strong>
 	  </dt>
 	  <dd>
@@ -3704,7 +3536,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3716,29 +3548,26 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	While gathering descriptions of URLs,
 	<a href="htdig.html">htdig</a> will only record those
 	descriptions which are shorter than this length. This
 	is used mostly to deal with broken HTML. (If a
 	hyperlink is not terminated with a &lt;/a&gt; the
 	description will go on until the end of the document.)
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  max_description_length:
 				</td>
 				<td nowrap>
 				     40
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3747,7 +3576,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='max_descriptions'>
+		<strong><a name="max_descriptions">
 		max_descriptions</a></strong>
 	  </dt>
 	  <dd>
@@ -3774,16 +3603,14 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
-
 
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    <i>No example provided</i>
+			<table border="0">
+			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -3792,7 +3619,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='max_doc_size'>
+		<strong><a name="max_doc_size">
 		max_doc_size</a></strong>
 	  </dt>
 	  <dd>
@@ -3807,7 +3634,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3819,28 +3646,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is the upper limit to the amount of data retrieved
 	for documents. This is mainly used to prevent
 	unreasonable memory consumption since each document
 	will be read into memory by <a href="htdig.html">
 	htdig</a>.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  max_doc_size:
 				</td>
 				<td nowrap>
 				     5000000
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3849,7 +3673,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='max_head_length'>
+		<strong><a name="max_head_length">
 		max_head_length</a></strong>
 	  </dt>
 	  <dd>
@@ -3864,7 +3688,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3876,7 +3700,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	For each document retrieved, the top of the document is
 	stored. This attribute determines the size of this
 	block. The text that will be stored is only the text;
@@ -3885,22 +3708,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	95% of all the documents completely. This really
 	depends on how much storage is available and how much
 	you want to show.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  max_head_length:
 				</td>
 				<td nowrap>
 				     50000
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3909,7 +3730,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='max_hop_count'>
+		<strong><a name="max_hop_count">
 		max_hop_count</a></strong>
 	  </dt>
 	  <dd>
@@ -3924,7 +3745,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3936,29 +3757,26 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Instead of limiting the indexing process by URL
 	pattern, it can also be limited by the number of hops
 	or clicks a document is removed from the starting URL.
 	Unfortunately, this only works reliably when a complete
 	index is created, not an update.<br>
 	The starting page will have hop count 0.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  max_hop_count:
 				</td>
 				<td nowrap>
 				     4
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -3967,7 +3785,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='max_meta_description_length'>
+		<strong><a name="max_meta_description_length">
 		max_meta_description_length</a></strong>
 	  </dt>
 	  <dd>
@@ -3982,7 +3800,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -3994,26 +3812,23 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	While gathering descriptions from meta description tags,
 	<a href="htdig.html">htdig</a> will truncate
 	descriptions which are longer than this length.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  max_meta_description_length:
 				</td>
 				<td nowrap>
 				     1000
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4022,7 +3837,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='max_prefix_matches'>
+		<strong><a name="max_prefix_matches">
 		max_prefix_matches</a></strong>
 	  </dt>
 	  <dd>
@@ -4037,7 +3852,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4049,28 +3864,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	The Prefix fuzzy algorithm could potentially match a
 	very large number of words. This value limits the
 	number of words each prefix can match. Note
 	that this does not limit the number of documents that
 	are matched in any way.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  max_prefix_matches:
 				</td>
 				<td nowrap>
 				     100
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4079,7 +3891,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='max_retries'>
+		<strong><a name="max_retries">
 		max_retries</a></strong>
 	  </dt>
 	  <dd>
@@ -4094,7 +3906,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4106,25 +3918,22 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
          This option set the maximum number of retries when retrieving a document
          fails (mainly for reasons of connection).
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  max_retries:
 				</td>
 				<td nowrap>
 				     6
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4133,7 +3942,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='max_stars'>
+		<strong><a name="max_stars">
 		max_stars</a></strong>
 	  </dt>
 	  <dd>
@@ -4148,7 +3957,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4160,26 +3969,23 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	When stars are used to display the score of a match,
 	this value determines the maximum number of stars that
 	can be displayed.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  max_stars:
 				</td>
 				<td nowrap>
 				     6
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4188,7 +3994,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='maximum_pages'>
+		<strong><a name="maximum_pages">
 		maximum_pages</a></strong>
 	  </dt>
 	  <dd>
@@ -4203,7 +4009,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4215,27 +4021,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This value limits the number of page links that will be
 	included in the page list at the bottom of the search
 	results page. Note that this does not limit the number
 	of documents that are matched in any way.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  maximum_pages:
 				</td>
 				<td nowrap>
 				     20
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4244,7 +4047,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='maximum_word_length'>
+		<strong><a name="maximum_word_length">
 		maximum_word_length</a></strong>
 	  </dt>
 	  <dd>
@@ -4259,8 +4062,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4272,27 +4075,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This sets the maximum length of words that will be
 	indexed. Words longer than this value will be silently
 	truncated when put into the index, or searched in the
 	index.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  maximum_word_length:
 				</td>
 				<td nowrap>
 				     15
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4301,7 +4101,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='meta_description_factor'>
+		<strong><a name="meta_description_factor">
 		meta_description_factor</a></strong>
 	  </dt>
 	  <dd>
@@ -4316,7 +4116,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4328,28 +4128,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is a factor which will be used to multiply the
 	weight of words in any META description tags in a document.
 	The number may be a floating point number. See also the
 	<a href="#title_factor">title_factor</a> and
 	<a href="#text_factor">text_factor</a> attributes.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  meta_description_factor:
 				</td>
 				<td nowrap>
 				     20
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4358,7 +4155,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='metaphone_db'>
+		<strong><a name="metaphone_db">
 		metaphone_db</a></strong>
 	  </dt>
 	  <dd>
@@ -4373,8 +4170,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htfuzzy.html' >htfuzzy</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htfuzzy.html">htfuzzy</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4386,27 +4183,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	The database file used for the fuzzy "metaphone" search
 	algorithm. This database is created by
 	<a href="htfuzzy.html">htfuzzy</a> and used by
 	<a href="htsearch.html" target="_top">htsearch</a>.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  metaphone_db:
 				</td>
 				<td nowrap>
 				     ${database_base}.mp.db
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4415,7 +4209,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='method_names'>
+		<strong><a name="method_names">
 		method_names</a></strong>
 	  </dt>
 	  <dd>
@@ -4430,7 +4224,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4442,29 +4236,26 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	These values are used to create the <strong>
 	method</strong> menu. It consists of pairs. The first
 	element of each pair is one of the known methods, the
 	second element is the text that will be shown in the
 	menu for that method. This text needs to be quoted if
 	it contains spaces.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  method_names:
 				</td>
 				<td nowrap>
 				     or Or and And
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4473,7 +4264,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='minimum_prefix_length'>
+		<strong><a name="minimum_prefix_length">
 		minimum_prefix_length</a></strong>
 	  </dt>
 	  <dd>
@@ -4488,7 +4279,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4500,26 +4291,23 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This sets the minimum length of prefix matches used by the
 	"prefix" fuzzy matching algorithm. Words shorter than this
 	will not be used in prefix matching.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  minimum_prefix_length:
 				</td>
 				<td nowrap>
 				     2
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4528,7 +4316,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='minimum_speling_length'>
+		<strong><a name="minimum_speling_length">
 		minimum_speling_length</a></strong>
 	  </dt>
 	  <dd>
@@ -4555,16 +4343,14 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
-
 
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    <i>No example provided</i>
+			<table border="0">
+			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -4573,7 +4359,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='minimum_word_length'>
+		<strong><a name="minimum_word_length">
 		minimum_word_length</a></strong>
 	  </dt>
 	  <dd>
@@ -4588,8 +4374,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4601,7 +4387,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This sets the minimum length of words that will be
 	indexed. Words shorter than this value will be silently
 	ignored but still put into the excerpt.<br>
@@ -4609,22 +4394,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	words that are very frequent will be indexed. It might
 	be advisable to add some of these to the bad_words
 	list.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  minimum_word_length:
 				</td>
 				<td nowrap>
 				     2
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4633,7 +4416,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='modification_time_is_now'>
+		<strong><a name="modification_time_is_now">
 		modification_time_is_now</a></strong>
 	  </dt>
 	  <dd>
@@ -4648,7 +4431,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4660,7 +4443,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This sets ht://Dig's response to a server that does not
 	return a modification date. By default, it stores
 	nothing. By setting modification_time_is_now, it will store
@@ -4668,22 +4450,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	date. Though this will return incorrect dates in search
 	results, it will cut down on reindexing from such servers
 	when doing updates.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  modification_time_is_now:
 				</td>
 				<td nowrap>
 				     true
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4692,7 +4472,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='next_page_text'>
+		<strong><a name="next_page_text">
 		next_page_text</a></strong>
 	  </dt>
 	  <dd>
@@ -4707,7 +4487,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4719,25 +4499,22 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	The text displayed in the hyperlink to go to the next
 	page of matches.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  next_page_text:
 				</td>
 				<td nowrap>
 				     &lt;img src="/htdig/buttonr.gif"&gt;
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4746,7 +4523,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='no_excerpt_show_top'>
+		<strong><a name="no_excerpt_show_top">
 		no_excerpt_show_top</a></strong>
 	  </dt>
 	  <dd>
@@ -4761,7 +4538,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4773,27 +4550,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If no excerpt is available, this option will act the
 	same as <a
 	href="#excerpt_show_top">excerpt_show_top</a>, that is,
 	it will show the top of the document.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  no_excerpt_show_top:
 				</td>
 				<td nowrap>
 				     yes
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4802,7 +4576,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='no_excerpt_text'>
+		<strong><a name="no_excerpt_text">
 		no_excerpt_text</a></strong>
 	  </dt>
 	  <dd>
@@ -4817,7 +4591,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4829,19 +4603,17 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This text will be displayed in place of the excerpt if
 	there is no excerpt available. If this attribute is set
 	to nothing (blank), the excerpt label will not be
 	displayed in this case.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			     <tr> <td valign='top'>no_excerpt_text:</td> </tr> 
+			<table border="0">
+			  <tr> <td valign="top">no_excerpt_text:</td> </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -4850,7 +4622,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='no_next_page_text'>
+		<strong><a name="no_next_page_text">
 		no_next_page_text</a></strong>
 	  </dt>
 	  <dd>
@@ -4865,7 +4637,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4877,17 +4649,15 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	The text displayed where there would normally be a
 	hyperlink to go to the next page of matches.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			     <tr> <td valign='top'>no_next_page_text:</td> </tr> 
+			<table border="0">
+			  <tr> <td valign="top">no_next_page_text:</td> </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -4896,7 +4666,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='no_page_list_header'>
+		<strong><a name="no_page_list_header">
 		no_page_list_header</a></strong>
 	  </dt>
 	  <dd>
@@ -4911,7 +4681,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4923,27 +4693,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This text will be used as the value of the PAGEHEADER
 	variable, for use in templates or the
 	<a href="#search_results_footer">search_results_footer</a>
 	file, when all search results fit on a single page.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  no_page_list_header:
 				</td>
 				<td nowrap>
 				     &lt;hr noshade size=2&gt;All results on this page.&lt;br&gt;
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -4952,7 +4719,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='no_page_number_text'>
+		<strong><a name="no_page_number_text">
 		no_page_number_text</a></strong>
 	  </dt>
 	  <dd>
@@ -4967,7 +4734,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -4979,7 +4746,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	The text strings in this list will be used when putting
 	together the PAGELIST variable, for use in templates or
 	the <a href="#search_results_footer">search_results_footer</a>
@@ -4996,15 +4762,14 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	The text strings can contain HTML tags to highlight page numbers
 	or embed images. The strings need to be quoted if they contain
 	spaces.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  no_page_number_text:
 				</td>
 				<td nowrap>
@@ -5017,7 +4782,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -5026,7 +4790,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='no_prev_page_text'>
+		<strong><a name="no_prev_page_text">
 		no_prev_page_text</a></strong>
 	  </dt>
 	  <dd>
@@ -5041,7 +4805,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5053,17 +4817,15 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	The text displayed where there would normally be a
 	hyperlink to go to the previous page of matches.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			     <tr> <td valign='top'>no_prev_page_text:</td> </tr> 
+			<table border="0">
+			  <tr> <td valign="top">no_prev_page_text:</td> </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -5072,7 +4834,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='no_title_text'>
+		<strong><a name="no_title_text">
 		no_title_text</a></strong>
 	  </dt>
 	  <dd>
@@ -5087,7 +4849,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5099,27 +4861,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This specifies the text to use in search results when no
 	title is found in the document itself. If it is set to
 	filename, htsearch will use the name of the file itself,
 	enclosed in brackets (e.g. [index.html]).
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  no_title_text:
 				</td>
 				<td nowrap>
 				     "No Title Found"
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -5128,7 +4887,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='noindex_end'>
+		<strong><a name="noindex_end">
 		noindex_end</a></strong>
 	  </dt>
 	  <dd>
@@ -5143,7 +4902,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5155,7 +4914,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This string marks the end of a section of an HTML file that should be
 	completely ignored when indexing. It works together with noindex_start
 	described below. As in the defaults, this can be SGML comment 
@@ -5165,22 +4923,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	where the files to be indexed can not be edited. The example shows how
 	SCRIPT sections in 'uneditable' documents can be skipped.
 	Note that the match for this string is case insensitive.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  noindex_end:
 				</td>
 				<td nowrap>
 				     &lt;/SCRIPT&gt;
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -5189,7 +4945,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='noindex_start'>
+		<strong><a name="noindex_start">
 		noindex_start</a></strong>
 	  </dt>
 	  <dd>
@@ -5204,7 +4960,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5216,7 +4972,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This string marks the start of a section of an HTML file that should be
 	completely ignored when indexing. It works together with noindex_end
 	described above. As in the defaults, this can be SGML comment
@@ -5228,22 +4983,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	noindex_start does not contain an ending &gt;: this allows for all SCRIPT
 	tags to be matched regardless of attributes defined (different types or
 	languages). Note that the match for this string is case insensitive.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  noindex_start:
 				</td>
 				<td nowrap>
 				     &lt;SCRIPT
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -5252,7 +5005,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='nothing_found_file'>
+		<strong><a name="nothing_found_file">
 		nothing_found_file</a></strong>
 	  </dt>
 	  <dd>
@@ -5267,7 +5020,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5279,7 +5032,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This specifies the file which contains the <tt>
 	HTML</tt> text to display when no matches were found.
 	The file should contain a complete <tt>HTML</tt>
@@ -5287,22 +5039,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	Note that this attribute could also be defined in
 	terms of <a href="#database_base">database_base</a> to
 	make is specific to the current search database.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  nothing_found_file:
 				</td>
 				<td nowrap>
 				     /www/searching/nothing.html
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -5311,7 +5061,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='page_list_header'>
+		<strong><a name="page_list_header">
 		page_list_header</a></strong>
 	  </dt>
 	  <dd>
@@ -5326,7 +5076,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5338,19 +5088,17 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This text will be used as the value of the PAGEHEADER
 	variable, for use in templates or the
 	<a href="#search_results_footer">search_results_footer</a>
 	file, when all search results fit on more than one page.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			     <tr> <td valign='top'>page_list_header:</td> </tr> 
+			<table border="0">
+			  <tr> <td valign="top">page_list_header:</td> </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -5359,7 +5107,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='page_number_text'>
+		<strong><a name="page_number_text">
 		page_number_text</a></strong>
 	  </dt>
 	  <dd>
@@ -5374,7 +5122,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5386,7 +5134,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	The text strings in this list will be used when putting
 	together the PAGELIST variable, for use in templates or
 	the <a href="#search_results_footer">search_results_footer</a>
@@ -5403,15 +5150,14 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	The text strings can contain HTML tags to highlight page numbers
 	or embed images. The strings need to be quoted if they contain
 	spaces.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  page_number_text:
 				</td>
 				<td nowrap>
@@ -5424,7 +5170,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -5433,7 +5178,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='pdf_parser'>
+		<strong><a name="pdf_parser">
 		pdf_parser</a></strong>
 	  </dt>
 	  <dd>
@@ -5448,19 +5193,18 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			PDF_PARSER &quot; -toPostScript -pairs&quot;
+			PDF_PARSER -toPostScript -pairs
 		  </dd>
 		  <dt>
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Set this to the path of the program used to parse PDF
 	files, including all command-line options. The
 	program will be called with the parameters:<br>
@@ -5499,22 +5243,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	compile time, to include the path to the acroread
 	executable.
 	</p>
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  pdf_parser:
 				</td>
 				<td nowrap>
 				     /usr/local/Acrobat3/bin/acroread -toPostScript -pairs
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -5523,7 +5265,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='persistent_connections'>
+		<strong><a name="persistent_connections">
 		persistent_connections</a></strong>
 	  </dt>
 	  <dd>
@@ -5538,7 +5280,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5550,27 +5292,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If set to true, when servers make it possible, htdig can take advantage
         of persistent connections, as defined by HTTP/1.1 (<I>RFC2616</I>). This permits
         to reduce the number of open/close operations of connections, when retrieving
         a document with HTTP.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  persistent_connections:
 				</td>
 				<td nowrap>
 				     false
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -5579,7 +5318,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='prefix_match_character'>
+		<strong><a name="prefix_match_character">
 		prefix_match_character</a></strong>
 	  </dt>
 	  <dd>
@@ -5594,7 +5333,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5606,26 +5345,23 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	A null prefix character means that prefix matching should be
 	applied to every search word. Otherwise a match is
 	returned only if the word does not end in the characters specified.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  prefix_match_character:
 				</td>
 				<td nowrap>
 				     ing
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -5634,7 +5370,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='prev_page_text'>
+		<strong><a name="prev_page_text">
 		prev_page_text</a></strong>
 	  </dt>
 	  <dd>
@@ -5649,7 +5385,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5661,25 +5397,22 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	The text displayed in the hyperlink to go to the
 	previous page of matches.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  prev_page_text:
 				</td>
 				<td nowrap>
 				     &lt;img src="/htdig/buttonl.gif"&gt;
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -5688,7 +5421,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='regex_max_words'>
+		<strong><a name="regex_max_words">
 		regex_max_words</a></strong>
 	  </dt>
 	  <dd>
@@ -5715,16 +5448,14 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
-
 
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    <i>No example provided</i>
+			<table border="0">
+			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -5733,7 +5464,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='remove_bad_urls'>
+		<strong><a name="remove_bad_urls">
 		remove_bad_urls</a></strong>
 	  </dt>
 	  <dd>
@@ -5748,7 +5479,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htmerge.html' >htmerge</a>
+			<a href="htmerge.html">htmerge</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5760,7 +5491,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If TRUE, htmerge will remove any URLs which were marked
 	as unreachable by htdig from the database. If FALSE, it
 	will not do this. When htdig is run in initial mode,
@@ -5771,22 +5501,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	a server which is temporarily unavailable to be
 	removed. This is probably NOT what was intended, so
 	hence this option should be set to FALSE in that case.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  remove_bad_urls:
 				</td>
 				<td nowrap>
 				     true
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -5795,7 +5523,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='remove_default_doc'>
+		<strong><a name="remove_default_doc">
 		remove_default_doc</a></strong>
 	  </dt>
 	  <dd>
@@ -5810,7 +5538,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5822,7 +5550,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Set this to the default documents in a directory used by the
 	servers you are indexing. These document names will be stripped
 	off of URLs when they are normalized, if one of these names appears
@@ -5833,22 +5560,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	The list should only contain names that all servers you index
 	recognize as default documents for directory URLs, as defined
 	by the DirectoryIndex setting in Apache's srm.conf, for example.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  remove_default_doc:
 				</td>
 				<td nowrap>
 				     default.html default.htm index.html index.htm
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -5857,7 +5582,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='robotstxt_name'>
+		<strong><a name="robotstxt_name">
 		robotstxt_name</a></strong>
 	  </dt>
 	  <dd>
@@ -5872,7 +5597,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5884,27 +5609,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Sets the name that htdig will look for when parsing
 	robots.txt files. This can be used to make htdig appear
 	as a different spider than ht://Dig. Useful to
 	distinguish between a private and a global index.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  robotstxt_name:
 				</td>
 				<td nowrap>
 				     myhtdig
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -5913,7 +5635,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='script_name'>
+		<strong><a name="script_name">
 		script_name</a></strong>
 	  </dt>
 	  <dd>
@@ -5928,7 +5650,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -5940,7 +5662,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Overrides the value of the SCRIPT_NAME
 	environment attribute. This is useful if
 	htsearch is not being called directly as a CGI
@@ -5957,22 +5678,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	attribute also affects the value of the <a
 	href="hts_templates.html#CGI">CGI</a> variable
 	used in htsearch templates.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  script_name:
 				</td>
 				<td nowrap>
 				     /search/results.shtml
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -5981,7 +5700,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='search_algorithm'>
+		<strong><a name="search_algorithm">
 		search_algorithm</a></strong>
 	  </dt>
 	  <dd>
@@ -5996,7 +5715,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -6008,7 +5727,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 			Specifies the search algorithms and their weight to use
 			when searching. Each entry in the list consists of the
 			algorithm name, followed by a colon (:) followed by a
@@ -6082,22 +5800,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			  prefix_match_character.
 			</dd>
 			</dl>
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  search_algorithm:
 				</td>
 				<td nowrap>
 				     exact:1 soundex:0.3
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -6106,7 +5822,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='search_results_footer'>
+		<strong><a name="search_results_footer">
 		search_results_footer</a></strong>
 	  </dt>
 	  <dd>
@@ -6121,7 +5837,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -6133,7 +5849,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 			This specifies a filename to be output at the end of
 			search results. While outputting the footer, some
 			variables will be expanded. Variables use the same
@@ -6213,22 +5928,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			overridden by defining the
 			<a href="#search_results_wrapper">search_results_wrapper</a>
 			attribute.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  search_results_footer:
 				</td>
 				<td nowrap>
 				     /usr/local/etc/ht/end-stuff.html
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -6237,7 +5950,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='search_results_header'>
+		<strong><a name="search_results_header">
 		search_results_header</a></strong>
 	  </dt>
 	  <dd>
@@ -6252,7 +5965,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -6264,7 +5977,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 			This specifies a filename to be output at the start of
 			search results. While outputting the header, some
 			variables will be expanded. Variables use the same
@@ -6335,22 +6047,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			overridden by defining the
 			<a href="#search_results_wrapper">search_results_wrapper</a>
 			attribute.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  search_results_header:
 				</td>
 				<td nowrap>
 				     /usr/local/etc/ht/start-stuff.html
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -6359,7 +6069,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='search_results_wrapper'>
+		<strong><a name="search_results_wrapper">
 		search_results_wrapper</a></strong>
 	  </dt>
 	  <dd>
@@ -6374,7 +6084,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -6386,7 +6096,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This specifies a filename to be output at the start and
 	end of search results. This file replaces the
 	<a href="#search_results_header">search_results_header</a> and
@@ -6406,22 +6115,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	if no matches were found. In this case the
 	<a href="#nothing_found_file">nothing_found_file</a>
 	attribute is used instead.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  search_results_wrapper:
 				</td>
 				<td nowrap>
 				     ${common_dir}/wrapper.html
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -6430,7 +6137,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='server_aliases'>
+		<strong><a name="server_aliases">
 		server_aliases</a></strong>
 	  </dt>
 	  <dd>
@@ -6445,7 +6152,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -6457,20 +6164,18 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This directive tells the indexer that servers have several
 	DNS aliases, which all point to the same machine and are NOT
 	virtual hosts. This allows you to ensure pages are indexed
 	only once on a given machine, despite the alias used in a URL.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  server_aliases:
 				</td>
 				<td nowrap>
@@ -6480,7 +6185,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -6489,7 +6193,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='server_max_docs'>
+		<strong><a name="server_max_docs">
 		server_max_docs</a></strong>
 	  </dt>
 	  <dd>
@@ -6504,7 +6208,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -6516,7 +6220,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This directive tells htdig to limit the dig to retrieve a maximum
 	number of documents from each server. This can cause
 	unusual behavior on update digs since the old URLs are
@@ -6527,22 +6230,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	documents are entered into the database, marked as never
 	retrieved.<br>
         A value of -1 specifies no limit.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  server_max_docs:
 				</td>
 				<td nowrap>
 				     50
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -6551,7 +6252,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='server_wait_time'>
+		<strong><a name="server_wait_time">
 		server_wait_time</a></strong>
 	  </dt>
 	  <dd>
@@ -6566,7 +6267,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -6578,7 +6279,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This directive tells htdig to ensure a server has had a
 	delay (in seconds) from the beginning of the last
 	connection. This can be used to prevent "server abuse"
@@ -6587,22 +6287,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	monitor yourself. Additionally, this directive can slow
 	down local indexing if set, which may or may not be what
 	you intended.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  server_wait_time:
 				</td>
 				<td nowrap>
 				     20
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -6611,7 +6309,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='sort'>
+		<strong><a name="sort">
 		sort</a></strong>
 	  </dt>
 	  <dd>
@@ -6626,7 +6324,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -6638,7 +6336,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is the default sorting method that htsearch
 	uses to determine the order in which matches are displayed.
 	The valid choices are:
@@ -6682,22 +6379,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	begin with "rev" simply reverse the order of the
 	sort. Note that setting this to something other than
 	"score" will incur a slowdown in searches.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  sort:
 				</td>
 				<td nowrap>
 				     revtime
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -6706,7 +6401,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='sort_names'>
+		<strong><a name="sort_names">
 		sort_names</a></strong>
 	  </dt>
 	  <dd>
@@ -6721,7 +6416,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -6733,22 +6428,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	These values are used to create the <strong>
 	sort</strong> menu. It consists of pairs. The first
 	element of each pair is one of the known sort methods, the
 	second element is the text that will be shown in the
 	menu for that sort method. This text needs to be quoted if
 	it contains spaces.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  sort_names:
 				</td>
 				<td nowrap>
@@ -6758,7 +6451,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -6767,7 +6459,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='soundex_db'>
+		<strong><a name="soundex_db">
 		soundex_db</a></strong>
 	  </dt>
 	  <dd>
@@ -6782,8 +6474,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htfuzzy.html' >htfuzzy</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htfuzzy.html">htfuzzy</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -6795,27 +6487,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	The database file used for the fuzzy "soundex" search
 	algorithm. This database is created by
 	<a href="htfuzzy.html">htfuzzy</a> and used by
 	<a href="htsearch.html" target="_top">htsearch</a>.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  soundex_db:
 				</td>
 				<td nowrap>
 				     ${database_base}.snd.db
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -6824,7 +6513,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='star_blank'>
+		<strong><a name="star_blank">
 		star_blank</a></strong>
 	  </dt>
 	  <dd>
@@ -6839,7 +6528,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -6851,27 +6540,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This specifies the URL to use to display a blank of the
 	same size as the star defined in the
 	<a href="#image_star">image_star</a> attribute or in the
 	<a href="#star_patterns">star_patterns</a> attribute.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  star_blank:
 				</td>
 				<td nowrap>
 				     http://www.somewhere.org/icons/elephant.gif
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -6880,7 +6566,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='star_image'>
+		<strong><a name="star_image">
 		star_image</a></strong>
 	  </dt>
 	  <dd>
@@ -6895,7 +6581,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -6907,7 +6593,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This specifies the URL to use to display a star. This
 	allows you to use some other icon instead of a star.
 	(We like the star...)<br>
@@ -6918,22 +6603,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<em><a href="#max_stars">max_stars</a></em> attribute.<br>
 	Even though the image can be changed, the ALT value
 	for the image will always be a '*'.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  star_image:
 				</td>
 				<td nowrap>
 				     http://www.somewhere.org/icons/elephant.gif
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -6942,7 +6625,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='star_patterns'>
+		<strong><a name="star_patterns">
 		star_patterns</a></strong>
 	  </dt>
 	  <dd>
@@ -6957,7 +6640,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -6969,7 +6652,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This attribute allows the star image to be changed
 	depending on the URL or the match it is used for. This
 	is mainly to make a visual distinction between matches
@@ -6982,15 +6664,14 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	The format is simple. It is a list of pairs. The first
 	element of each pair is a pattern, the second element
 	is a URL to the image for that pattern.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  star_patterns:
 				</td>
 				<td nowrap>
@@ -7000,7 +6681,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7009,7 +6689,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='start_ellipses'>
+		<strong><a name="start_ellipses">
 		start_ellipses</a></strong>
 	  </dt>
 	  <dd>
@@ -7024,7 +6704,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7036,28 +6716,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	When excerpts are displayed in the search output, this
 	string will be prepended to the excerpt if there is
 	text before the text displayed. This is just a visual
 	reminder to the user that the excerpt is only part of
 	the complete document.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  start_ellipses:
 				</td>
 				<td nowrap>
 				     ...
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7066,7 +6743,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='start_url'>
+		<strong><a name="start_url">
 		start_url</a></strong>
 	  </dt>
 	  <dd>
@@ -7081,7 +6758,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7093,26 +6770,23 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is the list of URLs that will be used to start a
 	dig when there was no existing database. Note that
 	multiple URLs can be given here.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  start_url:
 				</td>
 				<td nowrap>
 				     http://www.somewhere.org/alldata/index.html
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7121,7 +6795,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='substring_max_words'>
+		<strong><a name="substring_max_words">
 		substring_max_words</a></strong>
 	  </dt>
 	  <dd>
@@ -7136,7 +6810,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7148,28 +6822,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	The Substring fuzzy algorithm could potentially match a
 	very large number of words. This value limits the
 	number of words each substring pattern can match. Note
 	that this does not limit the number of documents that
 	are matched in any way.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  substring_max_words:
 				</td>
 				<td nowrap>
 				     100
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7178,7 +6849,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='synonym_db'>
+		<strong><a name="synonym_db">
 		synonym_db</a></strong>
 	  </dt>
 	  <dd>
@@ -7193,8 +6864,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>, 
-<a href='htfuzzy.html' >htfuzzy</a>
+			<a href="htsearch.html" target="_top">htsearch</a>,
+			<a href="htfuzzy.html">htfuzzy</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7206,28 +6877,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Points to the database that <a href="htfuzzy.html">
 	htfuzzy</a> creates when the <strong>synonyms</strong>
 	algorithm is used.<br>
 	<a href="htsearch.html" target="_top">htsearch</a>
 	uses this to perform synonym dictionary lookups.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  synonym_db:
 				</td>
 				<td nowrap>
 				     ${database_base}.syn.db
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7236,7 +6904,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='synonym_dictionary'>
+		<strong><a name="synonym_dictionary">
 		synonym_dictionary</a></strong>
 	  </dt>
 	  <dd>
@@ -7251,7 +6919,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htfuzzy.html' >htfuzzy</a>
+			<a href="htfuzzy.html">htfuzzy</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7263,28 +6931,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This points to a text file containing the synonym
 	dictionary used for the synonyms search algorithm.<br>
 	Each line of this file has at least two words. The
 	first word is the word to replace, the rest of the
 	words are synonyms for that word.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  synonym_dictionary:
 				</td>
 				<td nowrap>
 				     /usr/dict/synonyms
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7293,7 +6958,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='syntax_error_file'>
+		<strong><a name="syntax_error_file">
 		syntax_error_file</a></strong>
 	  </dt>
 	  <dd>
@@ -7308,7 +6973,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7320,25 +6985,22 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This points to the file which will be displayed if a
 	boolean expression syntax error was found.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  syntax_error_file:
 				</td>
 				<td nowrap>
 				     ${common_dir}/synerror.html
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7347,7 +7009,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='template_map'>
+		<strong><a name="template_map">
 		template_map</a></strong>
 	  </dt>
 	  <dd>
@@ -7362,7 +7024,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7374,7 +7036,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This maps match template names to internal names and
 	template file names. It is a list of triplets. The
 	first element in each triplet is the name that will be
@@ -7388,15 +7049,14 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	More information about templates can be found in the
 	<a href="htsearch.html" target="_top">htsearch</a>
 	documentation.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  template_map:
 				</td>
 				<td nowrap>
@@ -7407,7 +7067,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7416,7 +7075,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='template_name'>
+		<strong><a name="template_name">
 		template_name</a></strong>
 	  </dt>
 	  <dd>
@@ -7431,7 +7090,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7443,26 +7102,23 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Specifies the default template if none is given by the
 	search form. This needs to map to the
 	<a href="#template_map">template_map</a>.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  template_name:
 				</td>
 				<td nowrap>
 				     long
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7471,7 +7127,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='template_patterns'>
+		<strong><a name="template_patterns">
 		template_patterns</a></strong>
 	  </dt>
 	  <dd>
@@ -7486,7 +7142,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7498,7 +7154,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This attribute allows the results template to be changed
 	depending on the URL or the match it is used for. This
 	is mainly to make a visual distinction between matches
@@ -7511,15 +7166,14 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	More information about templates can be found in the
 	<a href="htsearch.html" target="_top">htsearch</a>
 	documentation.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  template_patterns:
 				</td>
 				<td nowrap>
@@ -7529,7 +7183,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7538,7 +7191,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='text_factor'>
+		<strong><a name="text_factor">
 		text_factor</a></strong>
 	  </dt>
 	  <dd>
@@ -7553,7 +7206,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7565,7 +7218,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is a factor which will be used to multiply the
 	weight of words that are not in any special part of a
 	document. Setting a factor to 0 will cause normal words
@@ -7574,22 +7226,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	heading_factor_[1-6]</a>, <a href="#title_factor">
 	title_factor</a>, and <a href="#keywords_factor">
 	keywords_factor</a> attributes.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  text_factor:
 				</td>
 				<td nowrap>
 				     0
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7598,7 +7248,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='timeout'>
+		<strong><a name="timeout">
 		timeout</a></strong>
 	  </dt>
 	  <dd>
@@ -7613,7 +7263,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7625,28 +7275,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	Specifies the time the digger will wait to complete a
 	network read. This is just a safeguard against
 	unforeseen things like the all too common
 	transformation from a network to a notwork.<br>
 	The timeout is specified in seconds.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  timeout:
 				</td>
 				<td nowrap>
 				     42
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7655,7 +7302,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='title_factor'>
+		<strong><a name="title_factor">
 		title_factor</a></strong>
 	  </dt>
 	  <dd>
@@ -7670,7 +7317,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7682,29 +7329,26 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is a factor which will be used to multiply the
 	weight of words in the title of a document. Setting a
 	factor to 0 will cause words in the title to be
 	ignored. The number may be a floating point number. See
 	also the <a href="#heading_factor">
 	heading_factor_[1-6]</a> attribute.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  title_factor:
 				</td>
 				<td nowrap>
 				     12
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7713,7 +7357,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='translate_amp'>
+		<strong><a name="translate_amp">
 		translate_amp</a></strong>
 	  </dt>
 	  <dd>
@@ -7728,7 +7372,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7740,28 +7384,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If set to false, the entity &amp;amp; (or &amp;#38;) will not be
 	translated into its ASCII equivalent &amp;. If translation were taking
 	place, an excerpt containing a &amp; might be misinterpreted by the browser
 	and look unrecognizable to the user. For this reason, not translating this
 	entity is the default behavior.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  translate_amp:
 				</td>
 				<td nowrap>
 				     true
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7770,7 +7411,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='translate_lt_gt'>
+		<strong><a name="translate_lt_gt">
 		translate_lt_gt</a></strong>
 	  </dt>
 	  <dd>
@@ -7785,7 +7426,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7797,29 +7438,26 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If set to false, the entities &amp;lt; (or &amp;#60;) and &amp;gt;
 	(or &amp;#62;) will not be translated into their ASCII equivalents &lt; and
 	&gt;. If translation were taking place, an excerpt containing &lt; and
 	&gt; might be misinterpreted by the browser and look unrecognizable to the
 	user. For this reason, not translating these entities is the default
 	behavior.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  translate_lt_gt:
 				</td>
 				<td nowrap>
 				     true
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7828,7 +7466,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='translate_quot'>
+		<strong><a name="translate_quot">
 		translate_quot</a></strong>
 	  </dt>
 	  <dd>
@@ -7843,7 +7481,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7855,28 +7493,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If set to false, the entity &amp;quot; (or &amp;#34;) will not be
 	translated into its ASCII equivalent &quot;. If translation were taking
 	place, an excerpt containing a &quot; might be misinterpreted by the browser
 	and look unrecognizable to the user. For this reason, not translating this
 	entity is the default behavior.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  translate_quot:
 				</td>
 				<td nowrap>
 				     true
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7885,7 +7520,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='uncoded_db_compatible'>
+		<strong><a name="uncoded_db_compatible">
 		uncoded_db_compatible</a></strong>
 	  </dt>
 	  <dd>
@@ -7900,10 +7535,10 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htnotify.html' >htnotify</a>, 
-<a href='htmerge.html' >htmerge</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htnotify.html">htnotify</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7915,7 +7550,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	At the cost of time for extra database accesses and
 	not getting the full effect of the options
 	<a href="#common_url_parts">common_url_parts</a> and
@@ -7930,22 +7564,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	If a <em>to</em>-string in url_part_aliases can
 	occur in normal URLs, this option should be set to
 	<b>false</b> to eliminate surprises.<br>
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  uncoded_db_compatible:
 				</td>
 				<td nowrap>
 				     false<p>
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -7954,7 +7586,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='url_factor'>
+		<strong><a name="url_factor">
 		url_factor</a></strong>
 	  </dt>
 	  <dd>
@@ -7981,16 +7613,14 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
-
 
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    <i>No example provided</i>
+			<table border="0">
+			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -7999,7 +7629,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='url_list'>
+		<strong><a name="url_list">
 		url_list</a></strong>
 	  </dt>
 	  <dd>
@@ -8014,7 +7644,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -8026,27 +7656,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This file is only created if
 	<em><a href="#create_url_list">create_url_list</a></em> is set to
 	true. It will contain a list of all URLs that were
 	seen.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  url_list:
 				</td>
 				<td nowrap>
 				     /tmp/urls
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -8055,7 +7682,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='url_log'>
+		<strong><a name="url_log">
 		url_log</a></strong>
 	  </dt>
 	  <dd>
@@ -8070,7 +7697,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -8082,29 +7709,26 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If <a href="htdig.html">htdig</a> is run with the -l option
 	and interrupted, it will write out its progress to this
 	file. Note that if it has a large number of URLs to write,
 	it may take some time to exit. This can especially happen
 	when running update digs and the run is interrupted soon
 	after beginning.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  url_log:
 				</td>
 				<td nowrap>
 				     /tmp/htdig.progress
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -8113,7 +7737,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='url_part_aliases'>
+		<strong><a name="url_part_aliases">
 		url_part_aliases</a></strong>
 	  </dt>
 	  <dd>
@@ -8128,10 +7752,10 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htnotify.html' >htnotify</a>, 
-<a href='htmerge.html' >htmerge</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htnotify.html">htnotify</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -8143,7 +7767,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	A list of translations pairs <em>from</em> and
 	<em>to</em>, used when accessing the database.
 	If a part of an URL matches with the
@@ -8172,15 +7795,14 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	database should be rebuilt, unless the effect of
 	"moving" the affected URLs in the database is
 	wanted, as described above.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  url_part_aliases:
 				</td>
 				<td nowrap>
@@ -8192,18 +7814,17 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 				</td>
 			  </tr>
 			  <tr>
-				<td valign='top'>
+				<td valign="top">
 				  url_part_aliases:
 				</td>
 				<td nowrap>
 				    
 				   http://www.htdig.org/ *site \<br>
--                                  http://www.htdig.org/that/ *1 \<br>
--                                  .htm *2
+				   http://www.htdig.org/that/ *1 \<br>
+				   .htm *2
 
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -8212,7 +7833,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='use_doc_date'>
+		<strong><a name="use_doc_date">
 		use_doc_date</a></strong>
 	  </dt>
 	  <dd>
@@ -8239,16 +7860,14 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
-
 
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    <i>No example provided</i>
+			<table border="0">
+			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -8257,7 +7876,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='use_meta_description'>
+		<strong><a name="use_meta_description">
 		use_meta_description</a></strong>
 	  </dt>
 	  <dd>
@@ -8272,7 +7891,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -8284,26 +7903,23 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If set to true, any META description tags will be used as
 	excerpts by htsearch. Any documents that do not have META
 	descriptions will retain their normal excerpts.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  use_meta_description:
 				</td>
 				<td nowrap>
 				     true
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -8312,7 +7928,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='use_star_image'>
+		<strong><a name="use_star_image">
 		use_star_image</a></strong>
 	  </dt>
 	  <dd>
@@ -8327,7 +7943,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -8339,27 +7955,24 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	If set to true, the <em><a href="#star_image">
 	star_image</a></em> attribute is used to display upto
 	<em><a href="#max_stars">max_stars</a></em> images for
 	each match.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  use_star_image:
 				</td>
 				<td nowrap>
 				     no
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -8368,7 +7981,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='user_agent'>
+		<strong><a name="user_agent">
 		user_agent</a></strong>
 	  </dt>
 	  <dd>
@@ -8383,7 +7996,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -8395,25 +8008,22 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This allows customization of the user_agent: field sent when
 	the digger requests a file from a server.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  user_agent:
 				</td>
 				<td nowrap>
 				     htdig-digger
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -8422,7 +8032,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='valid_extensions'>
+		<strong><a name="valid_extensions">
 		valid_extensions</a></strong>
 	  </dt>
 	  <dd>
@@ -8449,16 +8059,14 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
-
 
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    <i>No example provided</i>
+			<table border="0">
+			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -8467,7 +8075,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='valid_punctuation'>
+		<strong><a name="valid_punctuation">
 		valid_punctuation</a></strong>
 	  </dt>
 	  <dd>
@@ -8482,8 +8090,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -8495,7 +8103,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is the set of characters which will be deleted
 	from the document before determining what a word is.
 	This means that if a document contains something like
@@ -8506,22 +8113,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	See also the <a
 	href="#extra_word_characters">extra_word_characters</a>
 	attribute.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  valid_punctuation:
 				</td>
 				<td nowrap>
 				     -'
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -8530,7 +8135,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='version'>
+		<strong><a name="version">
 		version</a></strong>
 	  </dt>
 	  <dd>
@@ -8545,7 +8150,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -8557,28 +8162,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This specifies the value of the VERSION
 	variable which can be used in search templates.
 	The default value of this attribute is determined
 	at compile time, and will not normally be set
 	in configuration files.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  version:
 				</td>
 				<td nowrap>
 				     3.2.0
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -8587,7 +8189,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='word_db'>
+		<strong><a name="word_db">
 		word_db</a></strong>
 	  </dt>
 	  <dd>
@@ -8602,9 +8204,9 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htmerge.html' >htmerge</a>, 
-<a href='htsearch.html' target='_top'>htsearch</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -8616,26 +8218,23 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is the main word database. It is an index of all
 	the words to a list of documents that contain the
 	words. This database can grow large pretty quickly.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  word_db:
 				</td>
 				<td nowrap>
 				     ${database_base}.allwords.db
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -8644,7 +8243,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='word_dump'>
+		<strong><a name="word_dump">
 		word_dump</a></strong>
 	  </dt>
 	  <dd>
@@ -8659,7 +8258,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -8671,28 +8270,25 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This file is basically a text version of the file
 	specified in <em><a href="#word_db">word_db</a></em>. Its
 	only use is to have a human readable database of all
 	words. The file is easy to parse with tools like
 	perl or tcl.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  word_dump:
 				</td>
 				<td nowrap>
 				     /tmp/words.txt
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>
@@ -8701,7 +8297,7 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name='word_list'>
+		<strong><a name="word_list">
 		word_list</a></strong>
 	  </dt>
 	  <dd>
@@ -8716,8 +8312,8 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href='htdig.html' >htdig</a>, 
-<a href='htmerge.html' >htmerge</a>
+			<a href="htdig.html">htdig</a>,
+			<a href="htmerge.html">htmerge</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -8729,7 +8325,6 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 			<em>description:</em>
 		  </dt>
 		  <dd>
-		        
 	This is the input file that <a href="htmerge.html">
 	htmerge</a> uses to create the main words database
 	specified by <em><a href="#word_db">word_db</a></em>.
@@ -8738,22 +8333,20 @@ application/ms-word "/usr/local/bin/mswordparser -w"
 	will append data to this file. htmerge will then use
 	the existing data and the appended data to create a
 	completely new main word database.
-
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    			  <tr>
-				<td valign='top'>
+			<table border="0">
+			  <tr>
+				<td valign="top">
 				  word_list:
 				</td>
 				<td nowrap>
 				     ${database_base}.allwords.text
 				</td>
 			  </tr>
-
 			</table>
 		  </dd>
 		</dl>

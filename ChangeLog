@@ -1,3 +1,11 @@
+Wed Oct 27 13:32:50 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/cf_generate.pl: changed formatting of output to more closely
+	match format of old attrs.html (to make diff'ing easier),
+	and fixed handling of pdf_parser default to strip quotes.
+	* htcommon/defaults.cc: oops, fixed typo in url_part_aliases example.
+	* htdoc/attrs.html, cf_by{name,prog}.html: reran cf_generate.pl
+
 Wed Oct 27 18:24:36 1999  Loic Dachary  <loic@ceic.com>
 
 	* htdoc/cf_generate.pl: fixed wrong target for cf_byprog, escape

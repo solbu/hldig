@@ -14,7 +14,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: cf_generate.pl,v 1.1.2.2 1999/10/27 16:26:03 loic Exp $
+# $Id: cf_generate.pl,v 1.1.2.3 1999/10/27 18:58:33 grdetil Exp $
 #
 use strict;
 
@@ -101,22 +101,22 @@ foreach $record (@$config) {
     if($letter ne uc(substr($name, 0, 1))) {
 	print BYNAME "\t</font> <br>\n" if($letter);
 	$letter = uc(substr($name, 0, 1));
-	print BYNAME "\t<b>$letter</b> <font face='helvetica,arial' size='2'><br>\n";
+	print BYNAME "\t<b>$letter</b> <font face=\"helvetica,arial\" size=\"2\"><br>\n";
     }
 
-    print BYNAME "\t <img src='dot.gif' alt='*' width=9 height=9> <a target='body' href='attrs.html#$name'>$name</a><br>\n";
+    print BYNAME "\t <img src=\"dot.gif\" alt=\"*\" width=9 height=9> <a target=\"body\" href=\"attrs.html#$name\">$name</a><br>\n";
 
-    my($used_by) = join(", \n",
+    my($used_by) = join(",\n\t\t\t",
 			map {
-			    my($top) = $_ eq 'htsearch' ? "target='_top'" : "";
-			    "<a href='$_.html' $top>$_</a>";
+			    my($top) = $_ eq 'htsearch' ? " target=\"_top\"" : "";
+			    "<a href=\"$_.html\"$top>$_</a>";
 			}
 			split(' ', $programs));
 
     if(!($example =~ /^$name:/)) {
-	$example = '<i>No example provided</i>';
+	$example = "\t\t\t  <tr> <td valign=\"top\"><i>No example provided</i></td> </tr>\n";
     } elsif($example =~ /\A$name:\s*\Z/s) {
-	$example = " <tr> <td valign='top'>$name:</td> </tr> ";
+	$example = "\t\t\t  <tr> <td valign=\"top\">$name:</td> </tr>\n";
     } else {
 	my($one);
 	my($html) = '';
@@ -124,7 +124,7 @@ foreach $record (@$config) {
 	    next if($one =~ /^\s*$/);
 	    $html .= <<EOF;
 			  <tr>
-				<td valign='top'>
+				<td valign="top">
 				  $name:
 				</td>
 				<td nowrap>
@@ -139,12 +139,13 @@ EOF
     if($default =~ /^\s*$/) {
 	$default = "<i>No default</i>";
     } else {
+	$default =~ s/^([A-Z][A-Z_]*) \" (.*?)\"/$1 $2/;	# for PDF_PARSER
 	$default = html_escape($default);
     }
     print ATTR <<EOF;
 	<dl>
 	  <dt>
-		<strong><a name='$name'>
+		<strong><a name="$name">
 		$name</a></strong>
 	  </dt>
 	  <dd>
@@ -170,16 +171,13 @@ EOF
 		  <dt>
 			<em>description:</em>
 		  </dt>
-		  <dd>
-		        $description
-		  </dd>
+		  <dd>$description		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
-			<table border='0'>
-			    $example
-			</table>
+			<table border="0">
+$example			</table>
 		  </dd>
 		</dl>
 	  </dd>
@@ -228,12 +226,12 @@ foreach $record (@$config) {
 
 my($prog);
 foreach $prog (sort(keys(%prog2attr))) {
-    my($top) = $prog eq 'htsearch' ? "target='_top'" : "target='body'";
-    print BYPROG "\t<br><b><a href='$prog.html' $top>$prog</a></b> <font face='helvetica,arial' size='2'><br>\n";
+    my($top) = $prog eq 'htsearch' ? "target=\"_top\"" : "target=\"body\"";
+    print BYPROG "\t<br><b><a href=\"$prog.html\" $top>$prog</a></b> <font face=\"helvetica,arial\" size=\"2\"><br>\n";
     my($record);
     foreach $record (@{$prog2attr{$prog}}) {
 	my($name, $default, $type, $programs, $example, $description) = @$record;
-	print BYPROG "\t <img src='dot.gif' alt='*' width=9 height=9> <a target='body' href='attrs.html#$name'>$name</a><br>\n";
+	print BYPROG "\t <img src=\"dot.gif\" alt=\"*\" width=9 height=9> <a target=\"body\" href=\"attrs.html#$name\">$name</a><br>\n";
     }
 }
 
