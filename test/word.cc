@@ -9,11 +9,11 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.22 2000/09/14 03:13:29 ghutchis Exp $
+// $Id: word.cc,v 1.14.2.23 2000/09/21 04:25:35 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
 #include <fcntl.h>

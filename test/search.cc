@@ -42,11 +42,11 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: search.cc,v 1.1.2.5 2000/09/14 03:13:28 ghutchis Exp $
+// $Id: search.cc,v 1.1.2.6 2000/09/21 04:25:34 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include <htconfig.h>
 #endif /* HAVE_CONFIG_H */
 
 #ifdef HAVE_UNISTD_H

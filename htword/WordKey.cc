@@ -14,11 +14,11 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3.2.19 2000/09/14 03:13:27 ghutchis Exp $
+// $Id: WordKey.cc,v 1.3.2.20 2000/09/21 04:25:35 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
 #include <stdlib.h>

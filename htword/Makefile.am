@@ -14,38 +14,46 @@ pkglib_LTLIBRARIES = libhtword.la
 libhtword_la_SOURCES = \
 	WordBitCompress.cc \
 	WordContext.cc \
-	WordCursor.cc \
+	WordCursorOne.cc \
 	WordDB.cc \
+	WordDBCache.cc \
 	WordDBCompress.cc \
 	WordDBInfo.cc \
-	WordDBPage.cc \
+	WordDead.cc \
+	WordDict.cc \
 	WordKey.cc \
 	WordKeyInfo.cc \
 	WordList.cc \
+	WordListOne.cc \
+	WordListMulti.cc \
+	WordMeta.cc \
 	WordMonitor.cc \
 	WordRecord.cc \
 	WordRecordInfo.cc \
 	WordReference.cc \
-	WordStat.cc \
 	WordType.cc
 
 libhtword_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
 pkginclude_HEADERS = \
 	WordBitCompress.h \
-	WordCaseIsAStatements.h \
 	WordContext.h \
 	WordCursor.h \
+	WordCursorOne.h \
 	WordDB.h \
+	WordDBCache.h \
 	WordDBCompress.h \
 	WordDBInfo.h \
-	WordDBPage.h \
+	WordDead.h \
+	WordDict.h \
 	WordKey.h \
 	WordKeyInfo.h \
 	WordList.h \
+	WordListOne.h \
+	WordListMulti.h \
+	WordMeta.h \
 	WordMonitor.h \
 	WordRecord.h \
 	WordRecordInfo.h \
 	WordReference.h \
-	WordStat.h \
-	WordType.h
+	WordType.h \

@@ -7,11 +7,11 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.38 2000/09/14 03:13:28 ghutchis Exp $
+// $Id: WordList.cc,v 1.6.2.39 2000/09/21 04:25:35 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
 #include "WordList.h"

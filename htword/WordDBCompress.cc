@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.cc,v 1.1.2.20 2000/09/14 03:13:27 ghutchis Exp $
+// $Id: WordDBCompress.cc,v 1.1.2.21 2000/09/21 04:25:35 ghutchis Exp $
 //
 /*
 
@@ -30,7 +30,7 @@
  *	+-----------------------------------+
  */
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
 #include <stdlib.h>

@@ -120,6 +120,18 @@ TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
 YACC = @YACC@
+db_align_t_decl = @db_align_t_decl@
+db_alignp_t_decl = @db_alignp_t_decl@
+int16_decl = @int16_decl@
+int32_decl = @int32_decl@
+ssize_t_decl = @ssize_t_decl@
+u_char_decl = @u_char_decl@
+u_int16_decl = @u_int16_decl@
+u_int32_decl = @u_int32_decl@
+u_int8_decl = @u_int8_decl@
+u_int_decl = @u_int_decl@
+u_long_decl = @u_long_decl@
+u_short_decl = @u_short_decl@
 
 AUTOMAKE_OPTIONS = foreign
 
@@ -133,13 +145,12 @@ LOCAL_DEFINES =
 
 pkglib_LTLIBRARIES = libhtword.la
 
-libhtword_la_SOURCES =  	WordBitCompress.cc 	WordContext.cc 	WordCursor.cc 	WordDB.cc 	WordDBCompress.cc 	WordDBInfo.cc 	WordDBPage.cc 	WordKey.cc 	WordKeyInfo.cc 	WordList.cc 	WordMonitor.cc 	WordRecord.cc 	WordRecordInfo.cc 	WordReference.cc 	WordStat.cc 	WordType.cc
+libhtword_la_SOURCES =  	WordBitCompress.cc 	WordContext.cc 	WordCursorOne.cc 	WordDB.cc 	WordDBCache.cc 	WordDBCompress.cc 	WordDBInfo.cc 	WordDead.cc 	WordDict.cc 	WordKey.cc 	WordKeyInfo.cc 	WordList.cc 	WordListOne.cc 	WordListMulti.cc 	WordMeta.cc 	WordMonitor.cc 	WordRecord.cc 	WordRecordInfo.cc 	WordReference.cc 	WordType.cc
 
 
 libhtword_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-pkginclude_HEADERS =  	WordBitCompress.h 	WordCaseIsAStatements.h 	WordContext.h 	WordCursor.h 	WordDB.h 	WordDBCompress.h 	WordDBInfo.h 	WordDBPage.h 	WordKey.h 	WordKeyInfo.h 	WordList.h 	WordMonitor.h 	WordRecord.h 	WordRecordInfo.h 	WordReference.h 	WordStat.h 	WordType.h
-
+pkginclude_HEADERS =  	WordBitCompress.h 	WordContext.h 	WordCursor.h 	WordCursorOne.h 	WordDB.h 	WordDBCache.h 	WordDBCompress.h 	WordDBInfo.h 	WordDead.h 	WordDict.h 	WordKey.h 	WordKeyInfo.h 	WordList.h 	WordListOne.h 	WordListMulti.h 	WordMeta.h 	WordMonitor.h 	WordRecord.h 	WordRecordInfo.h 	WordReference.h 	WordType.h 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
 CONFIG_CLEAN_FILES = 
@@ -150,10 +161,11 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 libhtword_la_LIBADD = 
-libhtword_la_OBJECTS =  WordBitCompress.lo WordContext.lo WordCursor.lo \
-WordDB.lo WordDBCompress.lo WordDBInfo.lo WordDBPage.lo WordKey.lo \
-WordKeyInfo.lo WordList.lo WordMonitor.lo WordRecord.lo \
-WordRecordInfo.lo WordReference.lo WordStat.lo WordType.lo
+libhtword_la_OBJECTS =  WordBitCompress.lo WordContext.lo \
+WordCursorOne.lo WordDB.lo WordDBCache.lo WordDBCompress.lo \
+WordDBInfo.lo WordDead.lo WordDict.lo WordKey.lo WordKeyInfo.lo \
+WordList.lo WordListOne.lo WordListMulti.lo WordMeta.lo WordMonitor.lo \
+WordRecord.lo WordRecordInfo.lo WordReference.lo WordType.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -167,11 +179,12 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
 DEP_FILES =  .deps/WordBitCompress.P .deps/WordContext.P \
-.deps/WordCursor.P .deps/WordDB.P .deps/WordDBCompress.P \
-.deps/WordDBInfo.P .deps/WordDBPage.P .deps/WordKey.P \
-.deps/WordKeyInfo.P .deps/WordList.P .deps/WordMonitor.P \
-.deps/WordRecord.P .deps/WordRecordInfo.P .deps/WordReference.P \
-.deps/WordStat.P .deps/WordType.P
+.deps/WordCursorOne.P .deps/WordDB.P .deps/WordDBCache.P \
+.deps/WordDBCompress.P .deps/WordDBInfo.P .deps/WordDead.P \
+.deps/WordDict.P .deps/WordKey.P .deps/WordKeyInfo.P .deps/WordList.P \
+.deps/WordListMulti.P .deps/WordListOne.P .deps/WordMeta.P \
+.deps/WordMonitor.P .deps/WordRecord.P .deps/WordRecordInfo.P \
+.deps/WordReference.P .deps/WordType.P
 SOURCES = $(libhtword_la_SOURCES)
 OBJECTS = $(libhtword_la_OBJECTS)
 
