@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.7 1999/11/24 02:47:48 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.8 1999/11/24 03:09:17 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -100,7 +100,8 @@ main(int ac, char **av)
     //
     // Parse the CGI parameters.
     //
-    cgi		input;
+    char	none[] = "";
+    cgi		input(optind < ac ? av[optind] : none);
 
     //
     // Compile the URL limit pattern.
@@ -692,7 +693,7 @@ reportError(char *msg)
 //
 void usage()
 {
-  cout << "usage: htsearch [-v][-d][-c configfile]\n";
+  cout << "usage: htsearch [-v][-d][-c configfile] [query_string]\n";
   cout << "This program is part of ht://Dig " << VERSION << "\n\n";
   cout << "Options:\n";
   cout << "\t-v -d\tVerbose mode.  This increases the verbosity of the\n";
@@ -702,5 +703,9 @@ void usage()
   cout << "\t-c configfile\n";
   cout << "\t\tUse the specified configuration file instead on the\n";
   cout << "\t\tdefault.\n\n";
+  cout << "\tquery_string\tA CGI-style query string can be given as a single\n";
+  cout << "\t\targument, and is only used if the REQUEST_METHOD environment\n";
+  cout << "\t\tvariable is not set.  If no query_string is given, and\n";
+  cout << "\t\tREQUEST_METHOD is not set, htsearch will prompt for the query.\n\n";
   exit(0);
 }
