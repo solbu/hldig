@@ -1700,6 +1700,12 @@
 			or with another external parser or converter.<br>
 			 Only one external parser or converter can be
 			specified for any given content-type.<p>
+			 The two main internal parsers are for
+			text/html and text/plain. There is also a simple
+			parser for application/pdf, described under
+			<a href="#pdf_parser">pdf_parser</a>, which is
+			quite limited and is typically overridden with
+			an external one.<p>
 			 The parser program takes four command-line
 			parameters, not counting any parameters already
 			given in the command string:<br>
@@ -4482,30 +4488,46 @@
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			acroread -toPostScript
+			<em>path</em>/acroread -toPostScript
 		  </dd>
 		  <dt>
 			<em>description:</em>
 		  </dt>
 		  <dd>
+
 		      Set this to the path of the program used to parse PDF
 		      files, including all command-line options. The
 		      program will be called with the parameters:<br>
 		      <em>infile outfile</em>,<br>
 		      where <em>infile</em> is a file to parse and
 		      <em>outfile</em> is the PostScript output of the
-		      parser. In the case where acroread is the parser, and
-		      the -pairs option is not given, the second parameter
-		      will be the output directory rather than the output
-		      file name. The program is supposed to convert to a
+		      parser.<p>
+
+		      The program is supposed to convert to a
 		      variant of PostScript, which is then parsed
 		      internally. Currently, only Adobe's <a
 		      href="http://www.adobe.com/prodindex/acrobat/readstep.html">
 		      acroread</a> program has been tested as a pdf_parser.
-		      There is a bug in Acrobat 4's acroread command, which
-		      causes it to fail when -pairs is used, hence the special
-		      case above.<br>
-		       The pdftops program that is part of the <a
+		      The default value of <em>path</em> is determined at
+		      compile time, to include the path to the acroread
+		      executable. This defaults to /usr/local/bin
+		      if the configuration program can't find acroread.<p>
+
+		      To successfully index PDF files, be sure to set
+		      the <a href="#max_doc_size">max_doc_size</a>
+		      attribute to a value larger than the size of your
+		      largest PDF file. PDF documents can not be parsed
+		      if they are truncated.<p>
+
+		      Note: There is a bug in Acrobat 4's acroread
+		      command, which causes it to fail when -pairs is
+		      used. Ht://Dig version 3.1.3 and later include a
+		      work-around for this bug such that when acroread
+		      is the parser, and the -pairs option is not given,
+		      the second parameter will be the output directory
+		      rather than the output file name.<p>
+
+		      The pdftops program that is part of the <a
 		      href="http://www.foolabs.com/xpdf/">xpdf</a>
 		      package is not suitable as a pdf_parser,
 		      because its variant of PostScript is slightly
@@ -4514,18 +4536,7 @@
 		      of an <a href="#external_parsers">external
 		      parser</a> with the xpdf 0.90 package installed
 		      on your system, as described in FAQ question <a
-		      href="FAQ.html#q4.9">4.9</a>.<br>
-		       In either case, to successfully index PDF files,
-		      be sure to set the <a
-		      href="#max_doc_size">max_doc_size</a> attribute
-		      to a value larger than the size of your largest
-		      PDF file. PDF documents can not be parsed if they
-		      are truncated.
-			<p>
-			  The default value of this attribute is determined at
-			  compile time, to include the path to the acroread
-			  executable.
-			</p>
+		      href="FAQ.html#q4.9">4.9</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7128,7 +7139,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Thu Dec  2 14:45:50 EST 1999
+Last modified: Thu Dec  2 17:14:21 EST 1999
 <!-- hhmts end -->
   </body>
 </html>

@@ -1,7 +1,12 @@
+Thu Dec  2 16:14:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html: Add Tom Metro's suggested revisions for pdf_parser
+	and external_parsers.
+	* htdoc/ChangeLog: Update to latest version.
+
 Thu Dec  2 15:15:03 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/mailing.html: Updated to version from htdig.org web site.
-	* htdoc/ChangeLog: Update to latest version.
 	* htcommon/defaults.cc: Add missing no_page_number_text and
 	page_number_text attribute definitions.
 	* htdoc/attrs.html(modification_time_is_now): Make the description
