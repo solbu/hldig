@@ -1,3 +1,7 @@
+Sat Dec 12 18:41:29 1998  Alexander Bergolth  <leo@strike.wu-wien.ac.at>
+
+	* htmerge/words.cc: Fix last update so that it compiles on AIX.
+
 Fri Dec 11 10:40:48 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc: Added additional debugging info on the

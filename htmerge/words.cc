@@ -4,6 +4,9 @@
 // Implementation of htmerge
 //
 // $Log: words.cc,v $
+// Revision 1.6  1998/12/12 17:49:38  bergolth
+// Small change so that it compiles on AIX
+//
 // Revision 1.5  1998/12/12 01:44:58  ghutchis
 // Fixed a bug where pointer, rather than strings were assigned. Silly
 // references...
@@ -23,7 +26,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.5 1998/12/12 01:44:58 ghutchis Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.6 1998/12/12 17:49:38 bergolth Exp $";
 #endif
 
 #include "htmerge.h"
@@ -170,7 +173,7 @@ mergeWords(char *wordtmp, char *wordfile)
 
 	    // Are we on the first word?
 	    // If so, last_word == NULL and we don't want to add that!
-	    if (last_word == 0)
+	    if (last_word.length() == 0)
 	      {
 		last_word = word;
 		last_wr = wr;
