@@ -1,3 +1,8 @@
+Tue Jan 11 18:22:58 2000  Marcel Bosc  <bosc@ceic.com>
+
+	* htlib/HtVectorGeneric.h: inlined functions Add and Allocate which
+	are critical to performance
+
 Tue Jan 11 12:18:47 2000  Marcel Bosc  <bosc@ceic.com>
 
 	* htword/WordKey.h: fixed uninitialized memory read
