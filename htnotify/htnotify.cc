@@ -4,6 +4,10 @@
 // Implementation of htnotify
 //
 // $Log: htnotify.cc,v $
+// Revision 1.9  1998/11/06 23:41:38  ghutchis
+//
+// Fixed buglet with -F flag to sendmail.
+//
 // Revision 1.8  1998/11/02 20:36:30  ghutchis
 //
 // Changed HTDig to ht://Dig.
@@ -37,7 +41,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.8 1998/11/02 20:36:30 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.9 1998/11/06 23:41:38 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -202,7 +206,7 @@ void send_notification(char *date, char *email, char *url, char *subject)
     String	to = email;
 
     String command = SENDMAIL;
-    command << "-F \"ht://Dig Notification Service\" -f ";
+    command << " -F \"ht://Dig Notification Service\" -f ";
     command << config["htnotify_sender"];
 
     char *token = strtok(to, " ,\t\r\n");
