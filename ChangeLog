@@ -1,3 +1,10 @@
+Fri Jan  8 20:11:56 1999  Alexander Bergolth  <bergolth@ariel.wu-wien.ac.at>
+
+	* htdig/Plaintext.cc: fixed bug that inhibited compressing of 
+	whitespace
+	
+	* htlib/URL.cc: fixed problem in stripping anchors from URLs
+
 Thu Jan  7 23:29:32 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.cc(parse): Corrected problems with parsing comments,

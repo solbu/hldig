@@ -4,6 +4,9 @@
 // Implementation of Plaintext
 //
 // $Log: Plaintext.cc,v $
+// Revision 1.7  1999/01/08 19:39:18  bergolth
+// bugfixes in htdig/Plaintext.cc and htlib/URL.cc
+//
 // Revision 1.6  1998/12/04 04:13:08  ghutchis
 //
 // Removed compiler warnings.
@@ -28,7 +31,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Plaintext.cc,v 1.6 1998/12/04 04:13:08 ghutchis Exp $";
+static char RCSid[] = "$Id: Plaintext.cc,v 1.7 1999/01/08 19:39:18 bergolth Exp $";
 #endif
 
 #include "Plaintext.h"
@@ -109,7 +112,7 @@ Plaintext::parse(Retriever &retriever, URL &)
 	    //
 	    // Characters that are not part of a word
 	    //
-	    if (!*position && isspace(*position))
+	    if (*position && isspace(*position))
 	    {
 		//
 		// Reduce all multiple whitespace to a single space

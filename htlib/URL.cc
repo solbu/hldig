@@ -4,6 +4,9 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.16  1999/01/08 19:39:19  bergolth
+// bugfixes in htdig/Plaintext.cc and htlib/URL.cc
+//
 // Revision 1.15  1998/12/27 14:22:58  bergolth
 // Fixed memory leaks and local_default_doc bug.
 //
@@ -59,7 +62,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.15 1998/12/27 14:22:58 bergolth Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.16 1999/01/08 19:39:19 bergolth Exp $";
 #endif
 
 #include "URL.h"
@@ -158,7 +161,7 @@ URL::URL(char *ref, URL &parent)
 		{
 		    *anchor++ = *params++;
 		}
-		*params++ = '\0';
+		*anchor = '\0';
 	    }
 	}
     }
