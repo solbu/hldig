@@ -6,6 +6,7 @@
 #--
 # Written by Richard W.M. Jones <rjones@imcl.com>. Distributed freely
 # under the terms of the GNU General Public License (GPL).
+# Modified by Andrew M. Bishop <amb@gedanken.demon.co.uk>
 #--
 
 #----------------------------------------------------------------------
@@ -37,14 +38,14 @@ CATDOC=/usr/local/bin/catdoc
 
 # Format input to word per line.
 
-function wordPerLine () {
-    awk '{for (i=1;i<=NF;++i) print $i;}'
+wordPerLine () {
+    tr '[ \010]' '\012' | awk 'NF==1 {print;}'
 }
 
 # Change non-alphabetical/numeric characters in space.
 
-function removeNonAlNum () {
-    tr -c '[a-zA-Z0-9\n]' ' '
+removeNonAlNum () {
+    tr -c '[a-zA-Z0-9\015]' ' '
 }
 
 #----------------------------------------------------------------------
@@ -55,8 +56,11 @@ $CATDOC $1 | removeNonAlNum | wordPerLine > /tmp/htparsedoc.$$
 # Compute length of list.
 filelen=`wc -l < /tmp/htparsedoc.$$`
 
-# We can't find the title from the word document, so make one up.
-/usr/bin/echo "t\tWord document $3"
+# We can't find the title from the document, so make one up.
+echo "t	Binary Document $3"
+
+# We can't make an excerpt so we make one up.
+echo "h	No excerpt available"
 
 # Pass words to htdig.
 if [ $filelen -gt 0 ]; then

@@ -1,3 +1,13 @@
+Thu Jun  7 11:37:52 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/README: Add in descriptions for web site contrib directory,
+	acroconv.pl & conv_doc.pl.
+	* contrib/examples/rundig.sh: Update to most recent version for 3.1.x.
+	* contrib/htparsedoc/htparsedoc: Add in contributed bug fixes from
+	Andrew Bishop to work on SunOS 4.x machines.
+	* contrib/acroconv.pl: Added external converter script to convert
+	PDFs with acroread.
+
 Thu Jun  7 10:41:05 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/ParsedString.cc (get), htsearch/Display.cc (expandVariables):

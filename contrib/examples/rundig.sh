@@ -56,11 +56,15 @@ echo rundig: Done Merging: $TIME >> $REPORT
 # $BASEDIR/bin/htnotify $verbose >>$REPORT
 # $BASEDIR/bin/htfuzzy $verbose soundex
 
-# Remove db.wordlist
-rm $DBDIR/db.wordlist
-mv $DBDIR/db.docdb.work $DBDIR/db.docdb
-mv $DBDIR/db.docs.index.work $DBDIR/db.docs.index
-mv $DBDIR/db.words.gdbm.work $DBDIR/db.words.gdbm
+# Move 'em into place. Since we only need db.wordlist to do update digs
+# and we always use -a, we just leave it as .work
+# mv $BASEDIR/db/db.wordlist.work $BASEDIR/db/db.wordlist
+# We need the .work for next time as an update dig, plus the copy for searching
+cp $BASEDIR/db/db.docdb.work $BASEDIR/db/db.docdb
+# These are generated from htmerge, so we don't want copies of them.
+mv $BASEDIR/db/db.docs.index.work $BASEDIR/db/db.docs.index
+mv $BASEDIR/db/db.words.db.work $BASEDIR/db/db.words.db
+
 END=`date`
 echo End time: $END
 echo rundig: End time:     $END >> $REPORT

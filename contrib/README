@@ -8,10 +8,15 @@ will be severely broken!  Do not expect them to work; use them only as
 examples of the types of things you can do with the ht://Dig
 databases.
 
+More contributed work is available on the ht://Dig website:
+<http://www.htdig.org/contrib/>
+
 What's here:
 
+acroconv.pl	An external converter script that uses acroread to parse PDFs
 autorun		An example of automating the database building
 changehost	A script to change hostnames of URLs in the databases
+conv_doc.pl	A sample script to use the conversion features of external_parsers
 doclist		List the information in the doc db (or after a certain date)
 ewswrap		Two sample htsearch wrappers to emulate Excite for Web
 		Servers (EWS) and to simplify queries
