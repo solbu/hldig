@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.h,v 1.7 1999/09/24 16:47:10 loic Exp $
+// $Id: StringList.h,v 1.8 2000/02/19 05:29:03 ghutchis Exp $
 //
 
 #ifndef _StringList_h_
@@ -29,18 +29,20 @@ public:
     StringList();
     ~StringList();
 
+    void SRelease();
+    
     //
     // Creation of a String from a string or String
     //
     StringList(const char *str, char sep = '\t') { Create(str, sep); }
     StringList(const String &str, char sep = '\t') { Create(str, sep); }
-    StringList(const char *str, char *sep) { Create(str, sep); }
-    StringList(const String &str, char *sep) { Create(str, sep); }
+    StringList(const char *str, const char *sep) { Create(str, sep); }
+    StringList(const String &str, const char *sep) { Create(str, sep); }
 
     int			Create(const char *str, char sep = '\t');
     int			Create(const String &str, char sep = '\t') { return Create(str.get(), sep); }
-    int			Create(const char *str, char *sep);
-    int			Create(const String &str, char *sep) { return Create(str.get(), sep); }
+    int			Create(const char *str, const char *sep);
+    int			Create(const String &str, const char *sep) { return Create(str.get(), sep); }
 
     //
     // Standard List operations...

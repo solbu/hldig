@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.h,v 1.5 1999/09/24 10:29:03 loic Exp $
+// $Id: HtRegex.h,v 1.6 2000/02/19 05:29:03 ghutchis Exp $
 //
 
 #ifndef	_HtRegex_h_
@@ -29,15 +29,19 @@ public:
     // Construction/Destruction
     //
     HtRegex();
-    HtRegex(const char *str);
+    HtRegex(const char *str, int case_sensitive = 0);
     ~HtRegex();
 
     //
-    // Methods
+    // Methods for setting the pattern
     //
-    void	set(const String& str) { set(str.get()); }
-    void	set(const char *str);
-    void	setEscaped(StringList &list);
+    void	set(const String& str, int case_sensitive = 0) { set(str.get(), case_sensitive); }
+    void	set(const char *str, int case_sensitive = 0);
+    void	setEscaped(StringList &list, int case_sensitive = 0);
+
+    //
+    // Methods for checking a match
+    //
     int		match(const String& str, int nullmatch, int nullstr) { return match(str.get(), nullmatch, nullstr); }
     int		match(const char *str, int nullmatch, int nullstr);
 

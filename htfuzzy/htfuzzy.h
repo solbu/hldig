@@ -18,14 +18,14 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htfuzzy.h,v 1.5 1999/10/01 12:53:53 loic Exp $
+// $Id: htfuzzy.h,v 1.6 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #ifndef _htfuzzy_h_
 #define _htfuzzy_h_
 
 #include "htconfig.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "HtWordList.h"
 
 #include <stdlib.h>

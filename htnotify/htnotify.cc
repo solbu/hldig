@@ -11,10 +11,10 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htnotify.cc,v 1.23 1999/09/10 16:34:31 ghutchis Exp $
+// $Id: htnotify.cc,v 1.24 2000/02/19 05:29:05 ghutchis Exp $
 //
 
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "DocumentDB.h"
 #include "DocumentRef.h"
 #include "defaults.h"
@@ -222,7 +222,7 @@ void htnotify(DocumentRef &ref)
 void send_notification(char *date, char *email, char *url, char *subject)
 {
     String	command = SENDMAIL;
-    command << " -t -F \"ht://Dig Notification Service\" -f \"";
+    command << " -t -F '\"ht://Dig Notification Service\"' -f \"";
     command << config["htnotify_sender"] << '"';
 
     String	em = email;
@@ -253,7 +253,7 @@ void send_notification(char *date, char *email, char *url, char *subject)
       if (!subject || !*subject)
 	subject = "page expired";
       String	out;
-      out << "From: ht://Dig Notification Service <"
+      out << "From: \"ht://Dig Notification Service\" <"
 	  << config["htnotify_sender"] << ">\n";
       out << "Subject: WWW notification: " << subject << '\n';
       out << "To: " << to.get() << '\n';

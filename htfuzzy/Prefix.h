@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Prefix.h,v 1.3 1999/09/24 10:29:01 loic Exp $
+// $Id: Prefix.h,v 1.4 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #ifndef _Prefix_h_
@@ -31,7 +31,7 @@ public:
     //
     // Construction/Destruction
     //
-    Prefix(const Configuration& config_arg);
+    Prefix(const HtConfiguration& config_arg);
     virtual		~Prefix();
 
     virtual void	getWords(char *word, List &words);

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Metaphone.h,v 1.3 1999/09/24 10:29:01 loic Exp $
+// $Id: Metaphone.h,v 1.4 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #ifndef _Metaphone_h_
@@ -25,7 +25,7 @@ public:
 	//
 	// Construction/Destruction
 	//
-			Metaphone(const Configuration& config_arg);
+			Metaphone(const HtConfiguration& config_arg);
 	virtual		~Metaphone();
 
 	virtual void	generateKey(char *word, String &key);

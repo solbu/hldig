@@ -11,6 +11,18 @@
 # PARTICULAR PURPOSE.
 
 
+#
+# To compile with profiling do the following:
+#
+# make clean
+# ( cd db ; make all )
+# make CXXFLAGS=-g PROFILING=-p all
+#
+# Note that it's necessary to rebuild Berkeley DB without CXXFLAGS set because
+# it has undesirable effects. CXXFLAGS must be set to -g because it defaults
+# to -g -O2 when g++ is used and profiling is not done in a intuitive way.
+#
+
 
 SHELL = @SHELL@
 
@@ -62,6 +74,7 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 APACHE = @APACHE@
+APACHE_MODULES = @APACHE_MODULES@
 AR = @AR@
 AS = @AS@
 CC = @CC@
@@ -83,10 +96,12 @@ IMAGE_DIR = @IMAGE_DIR@
 IMAGE_URL_PREFIX = @IMAGE_URL_PREFIX@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LEX = @LEX@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MV = @MV@
 NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
@@ -103,23 +118,28 @@ TIME = @TIME@
 TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
+YACC = @YACC@
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES)
+AUTOMAKE_OPTIONS = foreign
+
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES) $(PROFILING)
 
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libdb.a
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libhtdb.a
 
 
-EXTRA_DIST = word.desc word_builder.pl WordKey.h.tmpl
+EXTRA_DIST = word.desc 
+
+LOCAL_DEFINES = 
 
 lib_LTLIBRARIES = libhtword.la
 
-libhtword_la_SOURCES = WordKey.cc WordList.cc WordReference.cc WordType.cc 	WordDB.cc WordStat.cc
+libhtword_la_SOURCES = WordKey.cc WordList.cc WordReference.cc WordType.cc 	WordDB.cc WordStat.cc WordDBCompress.cc WordBitCompress.cc 	WordRecord.cc WordMonitor.cc WordContext.cc WordKeyInfo.cc WordDBPage.cc
 
 
 libhtword_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS = WordList.h 	WordRecord.h 	WordReference.h 	WordType.h 	WordKey.h 	WordDB.h 	WordStat.h
+include_HEADERS = WordList.h 	WordRecord.h 	WordReference.h 	WordType.h 	WordDBCompress.h 	WordBitCompress.h 	WordKey.h 	WordDB.h 	WordStat.h 	WordCaseIsAStatements.h 	WordMonitor.h 	WordContext.h 	WordKeyInfo.h 	WordDBPage.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -132,21 +152,26 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 libhtword_la_LIBADD = 
 libhtword_la_OBJECTS =  WordKey.lo WordList.lo WordReference.lo \
-WordType.lo WordDB.lo WordStat.lo
+WordType.lo WordDB.lo WordStat.lo WordDBCompress.lo WordBitCompress.lo \
+WordRecord.lo WordMonitor.lo WordContext.lo WordKeyInfo.lo \
+WordDBPage.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
-HEADERS =  $(noinst_HEADERS)
+HEADERS =  $(include_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  README Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/WordDB.P .deps/WordKey.P .deps/WordList.P \
-.deps/WordReference.P .deps/WordStat.P .deps/WordType.P
+DEP_FILES =  .deps/WordBitCompress.P .deps/WordContext.P .deps/WordDB.P \
+.deps/WordDBCompress.P .deps/WordDBPage.P .deps/WordKey.P \
+.deps/WordKeyInfo.P .deps/WordList.P .deps/WordMonitor.P \
+.deps/WordRecord.P .deps/WordReference.P .deps/WordStat.P \
+.deps/WordType.P
 SOURCES = $(libhtword_la_SOURCES)
 OBJECTS = $(libhtword_la_OBJECTS)
 
@@ -224,6 +249,21 @@ libhtword.la: $(libhtword_la_OBJECTS) $(libhtword_la_DEPENDENCIES)
 	$(CXXCOMPILE) -c $<
 .cc.lo:
 	$(LTCXXCOMPILE) -c $<
+
+install-includeHEADERS: $(include_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(includedir)
+	@list='$(include_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p; \
+	done
+
+uninstall-includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(include_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(includedir)/$$p; \
+	done
 
 tags: TAGS
 
@@ -336,20 +376,20 @@ installcheck: installcheck-am
 install-exec-am: install-libLTLIBRARIES
 install-exec: install-exec-am
 
-install-data-am:
+install-data-am: install-includeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLTLIBRARIES
+uninstall-am: uninstall-libLTLIBRARIES uninstall-includeHEADERS
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir)
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(includedir)
 
 
 mostlyclean-generic:
@@ -393,18 +433,16 @@ clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
 uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir mostlyclean-depend \
-distclean-depend clean-depend maintainer-clean-depend info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+maintainer-clean-libtool uninstall-includeHEADERS \
+install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
+clean-depend maintainer-clean-depend info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
-
-WordKey.h: $(top_srcdir)/htword/WordKey.h.tmpl $(top_srcdir)/htword/word.desc $(top_srcdir)/htword/word_builder.pl
-	@PERL@ $(top_srcdir)/htword/word_builder.pl $(top_srcdir)/htword/word.desc
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

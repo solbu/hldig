@@ -1,19 +1,3 @@
-	/***************************************************************************
-                          htsearch.cc  -  description
-                             -------------------
-    begin                : Fri Oct 8 1999
-    copyright            : (C) 1999 by 
-    email                : 
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 //
 // htsearch.cc
 //
@@ -21,11 +5,14 @@
 // Expects the databases are generated using htdig, htmerge, and htfuzzy
 // Outputs HTML-ized results of the search based on the templates specified
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1995-2000 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+// 
+// $Id: htsearch.cc,v 1.57 2000/02/19 05:29:06 ghutchis Exp $
 //
-//
-#if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.56 1999/10/15 03:42:55 jtillman Exp $";
-#endif
 
 #include "htsearch.h"
 #include "Display.h"
@@ -34,13 +21,16 @@ static char RCSid[] = "$Id: htsearch.cc,v 1.56 1999/10/15 03:42:55 jtillman Exp 
 #include "HtWordList.h"
 #include "StringList.h"
 #include "IntObject.h"
-#include <time.h>
-#include <ctype.h>
-#include <signal.h>
 #include "HtURLCodec.h"
+#include "WordContext.h"
+#include "HtRegex.h"
 #include "WordType.h"
 #include "Searcher.h"
 #include "defaults.h"
+
+#include <time.h>
+#include <ctype.h>
+#include <signal.h>
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -259,14 +249,6 @@ main(int ac, char **av)
   delete results;
   return 0;
 }
-
-
-/*
-
-UTILITY FUNCTIONS
-
-*/
-
 
 //*****************************************************************************
 // Report an error.  Since we don't know if we are running as a CGI or not,

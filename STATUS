@@ -1,0 +1,45 @@
+STATUS of ht://Dig main trunk
+
+
+SHOWSTOPPERS:
+N/A: See htdig-3-2-x for current release branch
+
+KNOWN BUGS:
+* htdig/Image.cc doesn't use Transport classes.
+* URL.cc tries to parse malformed URLs (which causes further problems)
+   (It should probably just set everything to empty) This relates to 
+   PR#348.
+* Not all htsearch input parameters are handled properly: PR#648.
+* If exact isn't specified in the search_algorithms, $(WORDS) is not set 
+   correctly: PR#650. (The documentation for 3.2.0b1 is updated, but should
+   we fix this?)
+
+PENDING FEATURES:
+
+
+TESTING:
+* ExternalTransport with non 'http' URLs.
+* URL parser
+* htfuzzy tests
+* New config parser
+* Reports of problems with long timeouts (e.g PR#350)
+* htmerge -m
+
+DOCUMENTATION:
+* Update cf_* pages to mention new config parser (i.e. URL-dependent config)
+* Redesign based on 'categories'
+
+OTHER ISSUES:
+* Can htsearch actually search while an index is being created?
+* Can we reproduce the DB2 errors that sometimes cropped up in 3.1.x?
+   (e.g. PR#473, PR#476)
+* Is the HTML output of htsearch HTML 4.0 strictly compliant?
+* Do IP addresses for start_urls cause problems?: PR#634.
+* Does Document::Retrieve or Transport close the connection properly?
+  (it didn't in 3.1.x): PR#670.
+* Error messages should be more informative if no URLs are indexed by htdig 
+  or htmerge. PR#672.
+* Should the various translate_* attributes be retired?
+* Should we generate documentation for attributes that have been removed?
+  (e.g. word_list, modification_time_is_now, etc.)
+

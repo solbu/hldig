@@ -18,7 +18,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htfuzzy.cc,v 1.15 1999/10/08 12:59:56 loic Exp $
+// $Id: htfuzzy.cc,v 1.16 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #include "htfuzzy.h"
@@ -190,7 +190,11 @@ main(int ac, char **av)
 		cout << "htfuzzy: Selected algorithm: " << fuzzy->getName()
 		     << endl;
 	    }
-	    fuzzy->createDB(config);
+	    if (fuzzy->createDB(config) == NOTOK)
+	      {
+		cout << "htfuzzy: Could not create database for algorithm: "
+		     << fuzzy->getName() << endl;
+	      }
 	}
     }
 	

@@ -12,6 +12,7 @@ struct __db_mpreg;	typedef struct __db_mpreg DB_MPREG;
 struct __mpool;		typedef struct __mpool MPOOL;
 struct __mpoolfile;	typedef struct __mpoolfile MPOOLFILE;
 struct __cmpr;		typedef struct __cmpr CMPR;
+struct __cmpr_context;	typedef struct __cmpr_context CMPR_CONTEXT;
 
 					/* Default mpool name. */
 #define	DB_DEFAULT_MPOOL_FILE	"__db_mpool.share"
@@ -156,6 +157,16 @@ struct __db_mpreg {
 };
 
 /*
+ * CMPR_CONTEXT --
+ *	Shared compresssion information.
+ */
+struct __cmpr_context {
+#define DB_CMPR_SUFFIX	"_weakcmpr"
+	DB 	     *weakcmpr;		/* Free weakcmpr pages pool. */
+        DB_CMPR_INFO *info;             /* Information from user specified page compression */
+};
+
+/*
  * DB_MPOOLFILE --
  *	Per-process DB_MPOOLFILE information.
  */
@@ -188,14 +199,15 @@ struct __db_mpoolfile {
 	void	  *addr;		/* Address of mmap'd region. */
 	size_t	   len;			/* Length of mmap'd region. */
 
-#define DB_CMPR_SUFFIX	"_weakcmpr"
-	DB 	  *weakcmpr;		/* Free weakcmpr pages pool. */
 /* These fields need to be protected for multi-threaded support. */
 #define	MP_READONLY	0x01		/* File is readonly. */
 #define	MP_UPGRADE	0x02		/* File descriptor is readwrite. */
 #define	MP_UPGRADE_FAIL	0x04		/* Upgrade wasn't possible. */
 #define	MP_CMPR		0x08		/* Transparent I/O compression. */
 	u_int32_t  flags;
+
+        CMPR_CONTEXT   cmpr_context;    /* Shared compression information */
+
 };
 
 /*
@@ -280,13 +292,9 @@ struct __mpoolfile {
 /*
  * Convert size to expected compressed size
  */
-#define DB_CMPR_DIVIDE(size) ((size) >> 1)
-#define DB_CMPR_MULTIPLY(size) ((size) << 1)
+#define DB_CMPR_DIVIDE(dbenv, size) ((size) >> __memp_cmpr_coefficient(dbenv) )
+#define DB_CMPR_MULTIPLY(dbenv, size) ((size) << __memp_cmpr_coefficient(dbenv) )
 
-/*
- * Maximum chain length
- */
-#define DB_CMPR_MAX	3
 
 struct __cmpr {
 #define DB_CMPR_FIRST	 	0x01 /* Head of chain. */
@@ -333,7 +341,7 @@ struct __bh {
 #define	BH_CMPR		0x040		/* Chain contains valid data. */
 	u_int16_t  flags;
 
-        db_pgno_t chain[DB_CMPR_MAX-1];	/* Compression chain. */
+        db_pgno_t *chain;         	/* Compression chain. */
 
 	SH_TAILQ_ENTRY	q;		/* LRU queue. */
 	SH_TAILQ_ENTRY	hq;		/* MPOOL hash bucket queue. */

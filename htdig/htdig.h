@@ -10,13 +10,13 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.h,v 1.9 1999/09/11 05:03:51 ghutchis Exp $
+// $Id: htdig.h,v 1.10 2000/02/19 05:28:52 ghutchis Exp $
 //
 
 #ifndef _htdig_h_
 #define _htdig_h_
 
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "List.h"
 #include "DocumentDB.h"
 #include "StringMatch.h"
@@ -27,7 +27,7 @@
 #include <fstream.h>
 #include <stdio.h>
 
-extern Configuration	config;
+extern HtConfiguration	config;
 extern int		debug;
 extern DocumentDB	docs;
 extern HtRegex		limits;

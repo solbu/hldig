@@ -28,7 +28,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.8 1999/10/08 14:50:00 ghutchis Exp $ 
+// $Id: HtHTTP.h,v 1.9 2000/02/19 05:29:05 ghutchis Exp $ 
 //
 
 #ifndef _HTHTTP_H
@@ -37,6 +37,7 @@
 #include "Transport.h"
 #include "URL.h"
 #include "htString.h"
+#include <iostream.h>   // for HtHTTP::ShowStatistics
 
 
 // In advance declarations
@@ -71,9 +72,6 @@ class HtHTTP_Response : public Transport_Response
 	 // Get the Transfer-encoding
    	 char *GetTransferEncoding() { return _transfer_encoding; }
 
-	 // Get the location (redirect)
-   	 char *GetLocation() { return _location; }
-
 	 // Get server info
    	 char *GetServer() { return _server; }
 
@@ -87,7 +85,6 @@ class HtHTTP_Response : public Transport_Response
    // Other header information
    
 	 String    _transfer_encoding;    // Transfer-encoding
-	 String    _location;	          // Location (in case of redirect)
    	 String	   _server;	          // Server string returned
 
 };
@@ -226,9 +223,10 @@ public:
    static void ResetStatistics ()
    	 { _tot_seconds=0; _tot_requests=0; _tot_bytes=0;}   
 
+   // Show stats
+   static ostream &ShowStatistics (ostream &out);
 
-// Set the modification_time_is_now static attribute
-   static void SetModificationTimeIsNow (int d) { modification_time_is_now=d;}   
+
 
 ///////
    //    Set the _head_before_get option 
@@ -251,7 +249,9 @@ public:
 
    static void SetParsingController (int (*f)(char*)) { CanBeParsed = f; }
 
-	
+   // Proxy settings
+	void SetProxy(int aUse) { _useproxy=aUse; }
+
 protected:
 
 ///////
@@ -261,21 +261,14 @@ protected:
    Request_Method    _Method;
    
    ///////
-      //    Modification Time is Now config attribute
-   ///////
-
-   static int modification_time_is_now;
-
-   ///////
       //    Http single Request information (Member attributes)
    ///////
 
    int      	_bytes_read;        // Bytes read
-
    URL		_url;               // URL to retrieve
-
    URL		_referer;	    // Referring URL
-   
+   int		_useproxy;	    // if true, GET should include full url,
+				    // not path only
    
    ///////
       //    Http multiple Request information
@@ -362,29 +355,6 @@ protected:
 
    int ParseHeader();
 
-
-   enum DateFormat
-   {
-   	 DateFormat_RFC1123,
-	 DateFormat_RFC850,
-	 DateFormat_AscTime,
-	 DateFormat_NotRecognized
-   };
-
-
-   ///////
-      //    Create a new HtDateTime object
-   ///////
-
-   HtDateTime *NewDate(const char *);
-
-   ///////
-      //    Recognize Date Format
-   ///////
-
-   DateFormat RecognizeDateFormat (const char *);
-
-
    ///////
       //    Check if a document is parsable looking the content-type info
    ///////
@@ -409,7 +379,6 @@ protected:
    //    Static attributes and methods
 ///////
    
-   // Statistics about requests
    static int  _tot_seconds;  	 // Requests last (in seconds)
    static int  _tot_requests; 	 // Number of requests
    static int  _tot_bytes;    	 // Number of bytes read

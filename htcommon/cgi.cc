@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: cgi.cc,v 1.2 1999/10/08 12:59:55 loic Exp $
+// $Id: cgi.cc,v 1.3 2000/02/19 05:28:50 ghutchis Exp $
 //
 
 #include "cgi.h"
@@ -81,8 +81,10 @@ cgi::init(char *s)
 		if (!buf || !*buf || (n = atoi(buf)) <= 0)
 			return;		// null query
 		buf = new char[n + 1];
-		read(0, buf, n);
-		buf[n] = '\0';
+		int     r, i = 0;
+		while (i < n && (r = read(0, buf+i, n-i)) > 0)
+			i += r;
+		buf[i] = '\0';
 		results = buf;
 		delete buf;
 	}

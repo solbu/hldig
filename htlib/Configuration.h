@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.h,v 1.6 1999/10/08 12:05:20 loic Exp $
+// $Id: Configuration.h,v 1.7 2000/02/19 05:29:03 ghutchis Exp $
 //
 
 #ifndef	_Configuration_h_
@@ -23,12 +23,16 @@
 #include "htconfig.h"
 #include "htString.h"
 
+
+
 struct ConfigDefaults
 {
   char	*name;			// Name of the attribute
   char	*value;			// Default value
   char	*type;			// Type of the value (string, integer, boolean)
   char	*programs;		// White separated list of programs/modules using this attribute
+  char	*version;		// Version that introduced the attribute
+  char	*category;		// Attribute category (to split documentation)
   char	*example;		// Example usage of the attribute (HTML)
   char	*description;		// Long description of the attribute (HTML)
 };
@@ -41,19 +45,23 @@ public:
     // Construction/Destruction
     //
     Configuration();
+#ifndef SWIG
     Configuration(const Configuration& config) :
-      dict(config.dict),
-      separators(config.separators)
+	dcGlobalVars(config.dcGlobalVars),
+	separators(config.separators)
       {
-	allow_multiple = config.allow_multiple;
+        allow_multiple = config.allow_multiple;
       }
+#endif /* SWIG */
     ~Configuration() {}
 
     //
     // Adding and deleting items to and from the Configuration
     //
-    void		Add(const String& name, const String& value);
+#ifndef SWIG
     void		Add(const String& str);
+#endif /* SWIG */
+    void		Add(const String& name, const String& value);
     int			Remove(const String& name);
 
     //
@@ -64,25 +72,28 @@ public:
     //
     // We need some way of reading in the database from a configuration file
     //
-    int			Read(const String& filename);
+    virtual int         Read(const String& filename);
 
     //
     // Searching can be done with the Find() member or the array indexing
     // operator
     //
     const String	Find(const String& name) const;
+#ifndef SWIG
     const String	operator[](const String& name) const;
-    int			Value(const String& name, int default_value = 0) const;
-    double		Double(const String& name, double default_value = 0) const;
-    int			Boolean(const String& name, int default_value = 0) const;
+#endif /* SWIG */
+    int		Value(const String& name, int default_value = 0) const;
+    double	Double(const String& name, double default_value = 0) const;
+    int		Boolean(const String& name, int default_value = 0) const;
+    Object     *Get_Object(char *name);
 
     //
     // Read defaults from an array
     //
-    void		Defaults(const ConfigDefaults *);
+    void		Defaults(const ConfigDefaults *array);
 
 protected:
-    Dictionary		dict;
+    Dictionary		dcGlobalVars;
     String		separators;
     int			allow_multiple;
 };

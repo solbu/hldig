@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Exact.cc,v 1.7 1999/09/24 10:29:01 loic Exp $
+// $Id: Exact.cc,v 1.8 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #include "Exact.h"
@@ -20,7 +20,7 @@
 //*****************************************************************************
 // Exact::Exact()
 //
-Exact::Exact(const Configuration& config_arg) :
+Exact::Exact(const HtConfiguration& config_arg) :
   Fuzzy(config_arg)
 {
   name = "exact";

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.18 1999/10/01 15:19:29 loic Exp $
+// $Id: Retriever.h,v 1.19 2000/02/19 05:28:52 ghutchis Exp $
 //
 
 #ifndef _Retriever_h_
@@ -24,6 +24,7 @@
 #include "Queue.h"
 #include "HtWordReference.h"
 #include "List.h"
+#include "StringList.h"
 
 class URL;
 class Document;
@@ -77,8 +78,15 @@ public:
     // Allow for the indexing of protected sites by using a
     // username/password
     //
-	void		setUsernamePassword(const char *credentials);
-	
+    void		setUsernamePassword(const char *credentials);
+
+    //
+    // Routines for dealing with local filesystem access
+    //
+    StringList *	GetLocal(char *url);
+    StringList *	GetLocalUser(char *url, StringList *defaultdocs);
+    int			IsLocalURL(char *url);
+
 private:
     //
     // A hash to keep track of what we've seen
@@ -133,10 +141,7 @@ private:
     // Helper routines
     //
     int			Need2Get(char *url);
-    DocumentRef	*	GetRef(char *url);
     int			IsValidURL(char *url);
-    String *            IsLocal(char *url);
-    String *            IsLocalUser(char *url);
     void		RetrievedDocument(Document &, char *url, DocumentRef *ref);
     void		parse_url(URLRef &urlRef);
     void		got_redirect(const char *, DocumentRef *);

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: words.cc,v 1.22 1999/10/01 15:19:29 loic Exp $
+// $Id: words.cc,v 1.23 2000/02/19 05:29:04 ghutchis Exp $
 //
 
 #include "htmerge.h"
@@ -33,7 +33,7 @@ public:
 //*****************************************************************************
 //
 //
-static int delete_word(WordList *words, WordCursor& cursor, const WordReference *word_arg, Object &data)
+static int delete_word(WordList *words, WordDBCursor& cursor, const WordReference *word_arg, Object &data)
 {
   const HtWordReference *word = (const HtWordReference *)word_arg;
   DeleteWordData& d = (DeleteWordData&)data;
@@ -69,8 +69,8 @@ void mergeWords()
   DeleteWordData	data(discard_list); 
 
   words.Open(config["word_db"], O_RDWR);
-
-  (void)words.Walk(WordReference(), HTDIG_WORDLIST_WALK, delete_word, data);
+  WordSearchDescription search(delete_word, &data);
+  words.Walk(search);
   
   words.Close();
 

@@ -15,18 +15,18 @@ include $(top_srcdir)/Makefile.config
 # ( cd ../htsearch ; rm -f htsearch ; make CXXLD='purify g++' htsearch )
 # ( cd ../htdig ; rm -f htdig ; make CXXLD='purify g++' htdig )
 #
-TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist t_htnet
+TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist t_wordskip t_htnet
 TESTS_ENVIRONMENT = $(top_srcdir)/test/test_prepare
 AM_MAKEFLAGS = MAKE="$(MAKE)"
 
-#PROFILING = -p
+EXTRA_DIST = test_functions.in test_prepare htdocs conf $(TESTS) \
+	word.try1 word.try2 word.try3 word.try4 word.try5 \
+        skiptest_db.txt \
+        url.parents url.children
 
-EXTRA_DIST = test_prepare htdocs conf $(TESTS) \
-	word.try1 word.try2 word.try3 word.try4 word.try5
+LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include
 
-LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include $(PROFILING)
-
-noinst_PROGRAMS = dbbench word testnet document
+noinst_PROGRAMS = dbbench word testnet document url
 
 dbbench_SOURCES = dbbench.cc
 dbbench_DEPENDENCIES = $(HTLIBS)
@@ -47,6 +47,11 @@ document_SOURCES = document.cc
 document_DEPENDENCIES = $(HTLIBS)
 document_LDFLAGS = $(PROFILING)
 document_LDADD = $(HTLIBS)
+
+url_SOURCES = url.cc
+url_DEPENDENCIES = $(HTLIBS)
+url_LDFLAGS = $(PROFILING)
+url_LDADD = $(HTLIBS)
 
 clean-local:
 	rm -fr gmon.out test test_weakcmpr logs var htdocs/tmp

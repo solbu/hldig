@@ -11,12 +11,12 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.3 1999/10/08 12:59:55 loic Exp $
+// $Id: URL.cc,v 1.4 2000/02/19 05:28:49 ghutchis Exp $
 //
 
 #include "URL.h"
 #include "Dictionary.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "StringMatch.h"
 #include "StringList.h"
 
@@ -30,7 +30,7 @@
 #include <arpa/inet.h>
 #include <ctype.h>
 
-extern Configuration	config;
+extern HtConfiguration	config;
 
 //*****************************************************************************
 // URL::URL()
@@ -268,7 +268,8 @@ void URL::parse(const char *u)
 	_service = "http";
 	p = strtok(nurl, "\n");
     }
-	
+    _service.lowercase();
+
     //
     // Extract the host
     //
@@ -290,7 +291,22 @@ void URL::parse(const char *u)
 	char	*q = strchr(p, ':');
 	char	*slash = strchr(p, '/');
     
-	if (q && ((slash && slash > q) || !slash))
+	_path = "/";
+	if (strcmp((char*)_service, "file") == 0)
+	  {
+	    // These should be of the form file:/// (i.e. no host)
+	    // if there is a file://host/path then strip the host
+	    if (strncmp(p, "/", 1) != 0)
+	      {
+		p = strtok(p, "/");
+		_path << strtok(0, "\n");
+	      }
+	    else
+	      _path << strtok(p, "\n");	      
+	    _host = "localhost";
+	    _port = 0;
+	  }
+	else if (q && ((slash && slash > q) || !slash))
 	{
 	    _host = strtok(p, ":");
 	    p = strtok(0, "/");
@@ -298,6 +314,11 @@ void URL::parse(const char *u)
 	      _port = atoi(p);
 	    if (!p || _port <= 0)
 	      _port = 80;
+
+	    //
+	    // The rest of the input string is the path.
+	    //
+	    _path << strtok(0, "\n");
 
 	}
 	else
@@ -307,22 +328,28 @@ void URL::parse(const char *u)
 	    if (strcmp((char*)_service, "http") == 0)
 	      _port = 80;
 	    if (strcmp((char*)_service, "https") == 0)
-	      _port = 442;
+	      _port = 443;
 	    if (strcmp((char*)_service, "ftp") == 0)
 	      _port = 21;
 	    if (strcmp((char*)_service, "gopher") == 0)
 	      _port = 70;
 	    if (strcmp((char*)_service, "news") == 0)
 	      _port = 532;
-	    if (strcmp((char*)_service, "file") == 0)
-	      _port = 0;
+
+	    //
+	    // The rest of the input string is the path.
+	    //
+	    _path << strtok(0, "\n");
+
 	}
 
-	//
-	// The rest of the input string is the path.
-	//
-	_path = "/";
-	_path << strtok(0, "\n");
+	// Check to see if host contains a user@ portion
+	int atMark = _host.indexOf('@');
+	if (atMark != -1)
+	  {
+	    _user = _host.sub(0, atMark);
+	    _host = _host.sub(atMark + 1);
+	  }
     }
 
     //
@@ -413,7 +440,8 @@ void URL::normalizePath()
       _path.lowercase();
 
     // And don't forget to remove index.html or similar file.
-    removeIndex(_path);
+    if (strcmp((char*)_service, "file") != 0)
+	removeIndex(_path);
 }
 
 //*****************************************************************************
@@ -474,7 +502,7 @@ void URL::removeIndex(String &path)
 
 //*****************************************************************************
 // void URL::normalize()
-//   Make sure that http URLs are always in the same format.
+//   Make sure that URLs are always in the same format.
 //
 void URL::normalize()
 {
@@ -546,7 +574,8 @@ void URL::normalize()
 // char *URL::signature()
 //   Return a string which uniquely identifies the server the current
 //   URL is refering to.
-//   This is just the string containing the host and port.
+//   This is the first portion of a url: service://user@host:port/
+//   (in short this is the URL pointing to the root of this server)
 //
 char *URL::signature()
 {
@@ -555,11 +584,12 @@ char *URL::signature()
 
     if (!_normal)
 	normalize();
-    _signature = 0;
+    _signature = _service;
+    _signature << "://";
     if (_user.length())
       _signature << _user << '@';
     _signature << _host;
-    _signature << ':' << _port;
+    _signature << ':' << _port << '/';
     return _signature;
 }
 
@@ -622,14 +652,17 @@ void URL::constructURL()
 {
     _url = _service;
     _url << ":";
-    if (_user.length())
-      _url << _user << '@';
-    if (_host.length() && !(strcmp((char*)_service, "news") == 0 ||
-			   strcmp((char*)_service, "mailto") == 0))
-	_url << "//" << _host;
 
-    if (strcmp((char*)_service, "file") == 0)
-      _url << "//"; // no host needed, localhost known.
+    if (!(strcmp((char*)_service, "news") == 0 ||
+	  strcmp((char*)_service, "mailto") == 0 ))
+	_url << "//";
+
+    if (strcmp((char*)_service, "file") != 0)
+      {
+	if (_user.length())
+	  _url << _user << '@';
+	_url << _host;
+      }
 
     if (_port != 80 && strcmp((char*)_service, "http") == 0)
       _url << ':' << _port;

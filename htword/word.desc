@@ -1,27 +1,15 @@
 #
 # Structure of a key 
-# For a full description of the format see word_builder.pl
 #
-Key 
-	Definition
-		Word
-			type 	= String
-		end
-		DocID
-			type	= unsigned int
-			bits	= 32
-		end
-		Location
-			type	= unsigned int
-			bits	= 16
-		end
-		Flags
-			type	= unsigned int
-			bits	= 8
-		end
-	end
 
-	EncodingOrder 		= Location,Flags,DocID,Word
+nfields  4
 
-	SortOrder 		= Word asc,DocID asc,Flags asc,Location asc
-end
+#NAME    SIZE   SORTPOSITION
+
+Location 16       3
+
+Flags     8       2
+
+DocID    32       1
+
+Word      0	  0

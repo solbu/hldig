@@ -11,6 +11,18 @@
 # PARTICULAR PURPOSE.
 
 
+#
+# To compile with profiling do the following:
+#
+# make clean
+# ( cd db ; make all )
+# make CXXFLAGS=-g PROFILING=-p all
+#
+# Note that it's necessary to rebuild Berkeley DB without CXXFLAGS set because
+# it has undesirable effects. CXXFLAGS must be set to -g because it defaults
+# to -g -O2 when g++ is used and profiling is not done in a intuitive way.
+#
+
 
 SHELL = @SHELL@
 
@@ -62,6 +74,7 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 APACHE = @APACHE@
+APACHE_MODULES = @APACHE_MODULES@
 AR = @AR@
 AS = @AS@
 CC = @CC@
@@ -83,10 +96,12 @@ IMAGE_DIR = @IMAGE_DIR@
 IMAGE_URL_PREFIX = @IMAGE_URL_PREFIX@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LEX = @LEX@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MV = @MV@
 NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
@@ -103,11 +118,14 @@ TIME = @TIME@
 TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
+YACC = @YACC@
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES)
+AUTOMAKE_OPTIONS = foreign
+
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES) $(PROFILING)
 
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libdb.a
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libhtdb.a
 
 
 IMAGES = button1.gif button2.gif button3.gif button4.gif button5.gif 		button6.gif button7.gif button8.gif button9.gif buttonl.gif 		buttonr.gif button10.gif htdig.gif star.gif star_blank.gif 		button1.png button2.png button3.png button4.png button5.png                 button6.png button7.png button8.png button9.png buttonl.png                 buttonr.png button10.png htdig.png star.png star_blank.png
@@ -116,7 +134,7 @@ COMMONHTML = header.html footer.html wrapper.html nomatch.html syntax.html 		lon
 
 COMMONDICT = bad_words english.0 english.aff synonyms
 
-EXTRA_DIST = $(IMAGES) $(COMMONHTML) $(COMMONDICT) rundig htdig.conf search.html
+EXTRA_DIST = $(IMAGES) $(COMMONHTML) $(COMMONDICT) rundig htdig.conf mime.types search.html
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
 CONFIG_CLEAN_FILES = 
@@ -226,6 +244,7 @@ install-data-local:	all
 	@echo "Installing default configuration files..."
 	$(mkinstalldirs) $(DESTDIR)$(CONFIG_DIR)
 	@if [ ! -f $(DESTDIR)$(CONFIG_DIR)/htdig.conf ]; then sed -e s%@\DATABASE_DIR@%$(DATABASE_DIR)% -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/htdig.conf >$(DESTDIR)$(CONFIG_DIR)/htdig.conf; echo $(DESTDIR)$(CONFIG_DIR)/htdig.conf;fi
+	@if [ ! -f $(DESTDIR)$(CONFIG_DIR)/mime.types ]; then cp $(top_srcdir)/installdir/mime.types $(DESTDIR)$(CONFIG_DIR)/mime.types; echo $(DESTDIR)$(CONFIG_DIR)/mime.types;fi
 	$(mkinstalldirs) $(DESTDIR)$(SEARCH_DIR)
 	@if [ ! -f $(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM) ]; then sed -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/search.html >$(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM); echo $(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM);fi
 	$(mkinstalldirs) $(DESTDIR)$(COMMON_DIR)

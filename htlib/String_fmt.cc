@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String_fmt.cc,v 1.5 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: String_fmt.cc,v 1.6 2000/02/19 05:29:03 ghutchis Exp $
 //
 
 #include "htString.h"
@@ -24,7 +24,7 @@ static char	buf[10000];
 //*****************************************************************************
 // char *form(char *fmt, ...)
 //
-char *form(char *fmt, ...)
+char *form(const char *fmt, ...)
 {
 	va_list	args;
 	va_start(args, fmt);
@@ -37,7 +37,7 @@ char *form(char *fmt, ...)
 //*****************************************************************************
 // char *vform(char *fmt, va_list args)
 //
-char *vform(char *fmt, va_list args)
+char *vform(const char *fmt, va_list args)
 {
 	vsprintf(buf, fmt, args);
 	return buf;

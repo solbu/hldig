@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.cc,v 1.2 1999/10/05 16:48:03 loic Exp $
+// $Id: WordDB.cc,v 1.3 2000/02/19 05:29:07 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -15,6 +15,8 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "WordDB.h"
+
+
 
 const char* dberror(int errval) {
 #define DB_MAX_ERROR	(-DB_TXN_CKP + 1)
@@ -38,3 +40,5 @@ const char* dberror(int errval) {
   else
     return strerror(errval);
 }
+
+

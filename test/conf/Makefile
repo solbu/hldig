@@ -12,5 +12,6 @@ clean:
 	sed -e "s/_USER_/$(user)/g" \
 	    -e "s|_TESTDIR_|$(testdir)|g" \
 	    -e "s|_SRCDIR_|$(srcdir)|g" \
+	    -e "s|_MODULES_|$(modules)|g" \
 	    -e "s|_PORT_|7400|g" \
 	    < $< > $@

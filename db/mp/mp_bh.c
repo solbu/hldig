@@ -553,6 +553,9 @@ __memp_bhfree(dbmp, mfp, bhp, free_mem)
 	 * and data for real.
 	 */
 	if (free_mem) {
+	       if(bhp->chain) {
+		    __db_shalloc_free(dbmp->addr, bhp->chain);
+	       }
 		__db_shalloc_free(dbmp->addr, bhp);
 		--dbmp->mp->stat.st_page_clean;
 	}

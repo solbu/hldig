@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: docs.cc,v 1.27 1999/09/28 14:35:37 loic Exp $
+// $Id: docs.cc,v 1.28 2000/02/19 05:29:04 ghutchis Exp $
 //
 
 #include "htmerge.h"
@@ -66,6 +66,15 @@ convertDocs()
 	    db.Delete(ref->DocID());
             if (verbose)
               cout << "Deleted, noindex ID: " << idStr << " URL: "
+                   << url << endl;
+	    discard_list.Add(idStr.get(), NULL);
+	  }
+	else if (ref->DocState() == Reference_obsolete)
+	  {
+	    // This document was replaced by a newer one
+	    db.Delete(ref->DocID());
+            if (verbose)
+              cout << "Deleted, obsolete ID: " << idStr << " URL: "
                    << url << endl;
 	    discard_list.Add(idStr.get(), NULL);
 	  }

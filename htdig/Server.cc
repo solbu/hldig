@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17 1999/10/08 14:52:33 ghutchis Exp $
+// $Id: Server.cc,v 1.18 2000/02/19 05:28:52 ghutchis Exp $
 //
 
 #include "htdig.h"
@@ -21,58 +21,107 @@
 #include "Document.h"
 #include "URLRef.h"
 #include "Transport.h"
+#include "HtHTTP.h"    // for checking persistent connections
 
 #include <ctype.h>
 
 
 //*****************************************************************************
-// Server::Server(char *host, int port)
+// Server::Server(URL u, StringList *local_robots_files)
+//  u is the base URL for this server
 //
-Server::Server(char *host, int port)
+Server::Server(URL u, StringList *local_robots_files)
 {
-    if (debug > 0)
-	cout << endl << "New server: " << host << ", " << port << endl;
+    if (debug)
+      cout << endl << "New server: " << u.host() << ", " << u.port() << endl;
 
-    _host = host;
-    _port = port;
+    _host = u.host();
+    _port = u.port();
     _bad_server = 0;
     _documents = 0;
-    if (!config.Boolean("case_sensitive"))
-      _disallow.IgnoreCase();
-    _max_documents = config.Value("server_max_docs", -1);
-    _connection_space = config.Value("server_wait_time", 0);
-    _last_connection = time(0);  // For getting robots.txt
 
-    //
-    // Attempt to get a robots.txt file from the specified server
-    //
-    String	url = "http://";
-    url << host << ':' << port << "/robots.txt";
+    // We take it from the configuration
+    _persistent_connections = config.Boolean("persistent_connections");
 
-    time_t	timeZero = 0; // Right now we want to get this regardless
+    _max_documents = config.Value("server",_host,"server_max_docs", -1);
+    _connection_space = config.Value("server",_host,"server_wait_time", 0);
+    _last_connection.SettoNow();  // For getting robots.txt
 
-    Document	doc(url, 0);
-    switch (doc.Retrieve(timeZero))
-    {
-	case Transport::Document_ok:
+    if (strcmp(u.service(),"http") == 0 || strcmp(u.service(),"https") == 0)
+      {
+	//
+	// Attempt to get a robots.txt file from the specified server
+	//
+	String	url;
+	url.trunc();
+
+	if (debug>1)
+	  cout << "Trying to retrieve robots.txt file" << endl;        
+	url << u.signature() << "robots.txt";
+	
+	static int	local_urls_only = config.Boolean("local_urls_only");
+	time_t 		timeZero = 0; // Right now we want to get this every time
+	Document	doc(url, 0);
+	Transport::DocStatus	status;
+	if (local_robots_files)
+	  {  
+	    if (debug > 1)
+	      cout << "Trying local files" << endl;
+	    status = doc.RetrieveLocal(timeZero, local_robots_files);
+	    if (status == Transport::Document_not_local)
+	      {
+		if (local_urls_only)
+		  status = Transport::Document_not_found;
+		else
+		  {
+		    if (debug > 1)
+		      cout << "Local retrieval failed, trying HTTP" << endl;
+		    status = doc.Retrieve(timeZero);
+		  }
+	      }
+	  }
+	else if (!local_urls_only)
+        {
+	  status = doc.Retrieve(timeZero);
+
+          // Let's check if persistent connections are both
+          // allowed by the configuration and possible after
+          // having requested the robots.txt file.
+
+          HtHTTP * http;
+          if (IsPersistentConnectionAllowed() &&
+                  ( http = doc.GetHTTPHandler()))
+          {
+              if (! http->isPersistentConnectionPossible())
+                  _persistent_connections=0;  // not possible. Let's disable
+                                              // them on this server.
+          }
+
+        }
+	else
+	  status = Transport::Document_not_found;
+
+	switch (status)
+	  {
+	  case Transport::Document_ok:
 	    //
 	    // Found a robots.txt file.  Go parse it.
 	    //
 	    robotstxt(doc);
 	    break;
 			
-	case Transport::Document_not_found:
-	case Transport::Document_not_parsable:
-	case Transport::Document_redirect:
-	case Transport::Document_not_authorized:
+	  case Transport::Document_not_found:
+	  case Transport::Document_not_parsable:
+	  case Transport::Document_redirect:
+	  case Transport::Document_not_authorized:
 	    //
 	    // These cases are for when there is no robots.txt file.
 	    // We will just go on happily without restrictions
 	    //
 	    break;
 			
-	case Transport::Document_no_host:
-	default:
+	  case Transport::Document_no_host:
+	  default:
 	    //
 	    // In all other cases the server could not be reached.
 	    // We will remember this fact so that no more attempts to
@@ -80,8 +129,8 @@ Server::Server(char *host, int port)
 	    //
 	    _bad_server = 1;
 	    break;
-    }
-
+	  } // end switch
+      } // end if (http || https)
 }
 
 
@@ -203,32 +252,17 @@ void Server::robotstxt(Document &doc)
     if (debug > 1)
 	cout << "Pattern: " << pattern << endl;
 		
-    _disallow.Pattern(pattern);
+    _disallow.set(pattern, config.Boolean("case_sensitive"));
 }
 
 
 //*****************************************************************************
-// void Server::push(char *path, int hopcount, char *referer)
+// void Server::push(char *path, int hopcount, char *referer, int local)
 //
-void Server::push(char *path, int hopcount, char *referer)
+void Server::push(char *path, int hopcount, char *referer, int local)
 {
-    if (_bad_server)
+    if (_bad_server && !local)
 	return;
-
-    //
-    // Make sure that the path is allowed on this server
-    //
-    int	which, length;
-    char	*serverPath = strchr(path + 7, '/');
-    if (!serverPath)
-	serverPath = path;
-    if (_disallow.Compare(serverPath, which, length))
-    {
-	if (debug > 1)
-	    cout << "robots.txt: discarding '" << path <<
-		"', which = " << which << ", length = " << length << endl;
-	return;
-    }
 
     // We use -1 as no limit
     if (_max_documents != -1 &&
@@ -268,11 +302,16 @@ URLRef *Server::pop()
 //
 void Server::delay()
 {
-  time_t now = time(0);
-  time_t how_long = _connection_space + _last_connection - now;
+  HtDateTime now;
+  int how_long = _connection_space;
+
+  how_long += HtDateTime::GetDiff(_last_connection, now);  
+
   _last_connection = now;  // Reset the clock for the next delay!
+
   if (how_long > 0)
     sleep(how_long);
+
   return;
 }
 

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: EndingsDB.cc,v 1.9 1999/10/08 12:59:56 loic Exp $
+// $Id: EndingsDB.cc,v 1.10 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #include "Endings.h"
@@ -17,18 +17,19 @@
 #include "SuffixEntry.h"
 #include "Dictionary.h"
 #include "List.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 
 #include <regex.h>
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 
 //*****************************************************************************
 //
 int
-Endings::createDB(const Configuration &config)
+Endings::createDB(const HtConfiguration &config)
 {
     Dictionary	rules;
     String      tmpdir = getenv("TMPDIR");
@@ -65,11 +66,13 @@ Endings::createDB(const Configuration &config)
     // to now move them to the correct location as defined in the config
     // database.
     //
-
-    link(root2word.get(), config["endings_root2word_db"]);
-    unlink(root2word.get());
-    link(word2root.get(), config["endings_word2root_db"]);
-    unlink(word2root.get());
+    struct stat stat_buf;
+    String mv("mv");	// assume it's in the PATH if predefined setting fails
+    if ((stat(MV, &stat_buf) != -1) && S_ISREG(stat_buf.st_mode))
+	mv = MV;
+    system(form("%s %s %s;%s %s %s",
+	mv.get(), root2word.get(), config["endings_root2word_db"].get(),
+	mv.get(), word2root.get(), config["endings_word2root_db"].get()));
 
     return OK;
 }

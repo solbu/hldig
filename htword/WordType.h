@@ -11,23 +11,14 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.h,v 1.1 1999/09/30 15:56:46 loic Exp $
+// $Id: WordType.h,v 1.2 2000/02/19 05:29:08 ghutchis Exp $
 //
 
-#ifndef __WordType_h
-#define __WordType_h
+#ifndef _WordType_h
+#define _WordType_h
 
 #include "htString.h"
 #include "Configuration.h"
-
-//
-// Compatibility functions
-//
-#define HtIsWordChar(c) (word_type_default->IsChar(c))
-#define HtIsStrictWordChar(c) (word_type_default->IsStrictChar(c))
-#define HtWordNormalize(w) (word_type_default->Normalize(w))
-#define HtStripPunctuation(c) (word_type_default->StripPunctuation(c))
-
 //
 // Return values of Normalize, to get them in string form use NormalizeStatus
 //
@@ -61,13 +52,24 @@ public:
   // Constructors
   //
   WordType(const Configuration& config);
+
+  //
+  // Unique instance handlers 
+  //
   static void Initialize(const Configuration& config);
+  static WordType* Instance() {
+    if(instance) return instance;
+    fprintf(stderr, "WordType::Instance: no instance\n");
+    return 0;
+  }
   
   //
   // Predicates
   // 
   int IsChar(int c) const;
   int IsStrictChar(int c) const;
+  int IsDigit(int c) const;
+  int IsControl(int c) const;
 
   //
   // Transformations
@@ -91,6 +93,11 @@ private:
   int			maximum_length;		// Maximum word length
   int			allow_numbers;		// True if a word may contain numbers
   Dictionary		badwords;		// List of excluded words
+
+  //
+  // Unique instance pointer
+  //
+  static WordType* instance;
 };
 
 // Bits to set in chrtypes[]:
@@ -98,6 +105,7 @@ private:
 #define WORD_TYPE_DIGIT	0x02
 #define WORD_TYPE_EXTRA	0x04
 #define WORD_TYPE_VALIDPUNCT	0x08
+#define WORD_TYPE_CONTROL	0x10
 
 // One for characters that when put together are a word
 // (including punctuation).
@@ -114,6 +122,20 @@ WordType::IsStrictChar(int c) const
   return (chrtypes[(unsigned char)c] & (WORD_TYPE_ALPHA|WORD_TYPE_DIGIT|WORD_TYPE_EXTRA)) != 0;
 }
 
+// Reimplementation of isdigit() using the lookup table chrtypes[] 
+inline int
+WordType::IsDigit(int c) const
+{
+  return (chrtypes[(unsigned char)c] & WORD_TYPE_DIGIT) != 0;
+}
+
+// Similar to IsDigit, but for iscntrl()
+inline int
+WordType::IsControl(int c) const
+{
+  return (chrtypes[(unsigned char)c] & WORD_TYPE_CONTROL) != 0;
+}
+
 // Let caller get rid of getting and holding a configuration parameter.
 inline int
 WordType::StripPunctuation(String &s) const
@@ -121,9 +143,5 @@ WordType::StripPunctuation(String &s) const
   return s.remove(valid_punctuation);
 }
 
-//
-// Default object for global configuration
-//
-extern WordType* word_type_default;
 
 #endif /* __WordType_h */

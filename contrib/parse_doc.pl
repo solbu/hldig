@@ -70,7 +70,6 @@ $head = "";
 @allwords = ();
 @temp = ();
 $x = 0;
-@fields = ();
 $calc = 0;
 $dehyphenate = 0;
 $title = "";
@@ -122,7 +121,7 @@ if ($magic =~ /%!|^\033%-12345/) {      # it's PostScript (or HP print job)
                                 $title =~ s/&/\&amp\;/g;
                                 $title =~ s/</\&lt\;/g;
                                 $title =~ s/>/\&gt\;/g;
-                                break;
+                                last;
                         }
                 }
                 close INFO;
@@ -153,22 +152,15 @@ die "Hmm. $parser is absent or unwilling to execute.\n" unless -x $parser;
 open(CAT, "$parsecmd") || die "Hmmm. $parser doesn't want to be opened using pipe.\n";
 while (<CAT>) {
         while (/[A-Za-z\300-\377]-\s*$/ && $dehyphenate) {
-                $_ .= <CAT> || break;
+                $_ .= <CAT> || last;
                 s/([A-Za-z\300-\377])-\s*\n\s*([A-Za-z\300-\377])/$1$2/
         }
         $head .= " " . $_;
-        s/\s+[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]+|[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]+\s+|^[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]+|[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]+$/ /g;    # replace reading-chars with space (only at end or begin of word, but allow multiple characters)
-#       s/\s[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]|[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]\s|^[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]|[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]$/ /g;    # replace reading-chars with space (only at end or begin of word)
-#       s/[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]/ /g;      # rigorously replace all by <carl@dpiwe.tas.gov.au>
-#       s/[\-\255]/ /g;                                 # replace hyphens with space
-        s/[\255]/-/g;                                   # replace dashes with hyphens
-        @fields = split;                                # split up line
-        next if (@fields == 0);                         # skip if no fields (does it speed up?)
-        for ($x=0; $x<@fields; $x++) {                  # check each field if string length >= 3
-                if (length($fields[$x]) >= $minimum_word_length) {
-                        push @allwords, $fields[$x];    # add to list
-                }
-        }
+	# Delete valid punctuation.  These are the default values
+	# for valid_punctuation, and should be changed other values
+	# are specified in the config file.
+	tr{-\255._/!#$%^&'}{}d;
+	push @allwords, grep { length >= $minimum_word_length } split /\W+/;
 }
 
 close CAT;
@@ -207,9 +199,10 @@ print "h\t$head\n";
 
 #############################################
 # now the words
-for ($x=0; $x<@allwords; $x++) {
-        $calc=int(1000*$x/@allwords);           # calculate rel. position (0-1000)
-        print "w\t$allwords[$x]\t$calc\t0\n";   # print out word, rel. pos. and text type (0)
+$x = 0;
+for ( @allwords ) {
+    # print out word, rel. pos. and text type (0)
+    printf "w\t%s\t%d\t0\n", $_, 1000*$x++/@allwords;
 }
 
 $calc=@allwords;

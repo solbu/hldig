@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14 1999/10/08 12:59:58 loic Exp $
+// $Id: word.cc,v 1.15 2000/02/19 05:29:10 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -26,29 +26,57 @@
 #include <getopt.h>
 #endif
 
-#include "defaults.h"
 #include "WordKey.h"
 #include "WordList.h"
-#include "WordType.h"
+#include "WordContext.h"
+#include "Configuration.h"
 
-typedef struct {
-  char* word_desc;
-  char* config;
-  int key;
-  int list;
+static ConfigDefaults defaults[] = {
+  { "wordlist_wordkey_description", "nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0", 0 },
+  { "wordlist_wordrecord_description","DATA", 0 },
+  { "word_db", "var/htdig/db.words.db", 0 },
+  { "wordlist_extend", "true", 0 },
+  { "minimum_word_length", "1", 0},
+  { "wordlist_cache_size", "1000000"}, 
+  { 0 }
+};
+static ConfigDefaults compress_defaults[] = {
+  { "wordlist_wordkey_description", "nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0", 0 },
+  { "word_db", "var/htdig/db.words.db", 0 },
+  { "wordlist_extend", "true", 0 },
+  { "minimum_word_length", "1", 0},
+  { "wordlist_compress", "true", 0},
+  { "wordlist_compress_debug", "2", 0},
+  { "wordlist_cache_size", "1000000"}, 
+  { 0 }
+};
+
+static Configuration	config;
+
+typedef struct 
+{
+    char* word_desc;
+    int key;
+    int list;
+    int skip;
+    int bitstream;
+    int compress;
 } params_t;
 
 static void usage();
 static void doword(params_t* params);
 static void dolist(params_t* params);
 static void dokey(params_t* params);
+static void doskip(params_t* params);
+static void dobitstream(params_t* params);
 static void pack_show(const WordReference& wordRef);
 
 static int verbose = 0;
 
-//*****************************************************************************
+// *****************************************************************************
 // int main(int ac, char **av)
 //
+
 int main(int ac, char **av)
 {
   int			c;
@@ -56,11 +84,13 @@ int main(int ac, char **av)
   params_t		params;
 
   params.word_desc = strdup("???");
-  params.config = strdup("???");
   params.key = 0;
   params.list = 0;
+  params.skip = 0;
+  params.bitstream = 0;
+  params.compress = 0;
 
-  while ((c = getopt(ac, av, "vklw:c:")) != -1)
+  while ((c = getopt(ac, av, "vklbszw:")) != -1)
     {
       switch (c)
 	{
@@ -71,15 +101,20 @@ int main(int ac, char **av)
 	  free(params.word_desc);
 	  params.word_desc = strdup(optarg);
 	  break;
-	case 'c':
-	  free(params.config);
-	  params.config = strdup(optarg);
-	  break;
 	case 'k':
 	  params.key = 1;
 	  break;
 	case 'l':
 	  params.list = 1;
+	  break;
+	case 's':
+	  params.skip = 1;
+	  break;
+	case 'b':
+	  params.bitstream = 1;
+	  break;
+	case 'z':
+	  params.compress = 1;
 	  break;
 	case '?':
 	  usage();
@@ -90,7 +125,6 @@ int main(int ac, char **av)
   doword(&params);
 
   free(params.word_desc);
-  free(params.config);
 
   return 0;
 }
@@ -101,15 +135,37 @@ static void doword(params_t* params)
     if(verbose) cerr << "Test WordKey class with " << params->word_desc << "\n";
     dokey(params);
   }
-  if(params->list) {
-    if(verbose) cerr << "Test WordList class\n";
-    config.Defaults(&defaults[0]);
-    config.Read(params->config);
+  if(params->list || params->skip) 
+  {
+      if(params->compress) 
+      {
+	  config.Defaults(compress_defaults);
+      }
+      else{config.Defaults(defaults);}
     // Ctype-like functions for what constitutes a word.
-    WordType::Initialize(config);
+    WordContext::Initialize(config);
     unlink(config["word_db"]);
+  }
+
+
+  if(params->list)
+  {
+    if(verbose) cerr << "Test WordList class\n";
     dolist(params);
   }
+  if(params->skip) 
+  {
+      if(verbose) cerr << "Test SkipUselessSequentialWalking in WordList class "  << "\n";
+      doskip(params);
+  }
+
+  if(params->bitstream) 
+  {
+      if(verbose) cerr << "Test BitStream class "  << "\n";
+      dobitstream(params);
+  }
+
+
 }
 
 static void dolist(params_t*)
@@ -132,27 +188,34 @@ static void dolist(params_t*)
   // search them, using exact match.
   //
   {
+	
+    // setup a new wordlist
     WordList words(config);
+    if(verbose)WordKeyInfo::Instance()->Show();	
     words.Open(config["word_db"], O_RDWR);
 
+
+    // create entries from word_list
     WordReference wordRef;
-    wordRef.Key().SetFlags(67);
+    wordRef.Key().Set(2, 67);
     unsigned int location = 0;
     unsigned int anchor = 0;
     unsigned int docid = 1;
     if(verbose) fprintf(stderr, "Inserting\n");
 
-    for(char** p = word_list; *p; p++) {
-      wordRef.Key().SetWord(*p);
-      wordRef.Key().SetDocID(docid);
-      wordRef.Key().SetLocation(location);
-      wordRef.Record().info.data = anchor;
-      if(verbose > 2) pack_show(wordRef);
-      if(verbose > 1) cerr << wordRef << "\n";
-      words.Insert(wordRef);
-      location += strlen(*p);
-      anchor++;
-      docid++;
+    for(char** p = word_list; *p; p++) 
+    {
+	if(verbose > 4) cerr << "inserting word:" << *p << "\n";
+	wordRef.Key().SetWord(*p);
+  	wordRef.Key().Set(1, docid);
+  	wordRef.Key().Set(3, location);
+	wordRef.Record().info.data = anchor;
+  	if(verbose > 2) pack_show(wordRef);
+	if(verbose > 1) cerr << wordRef << "\n";
+	words.Insert(wordRef);
+	location += strlen(*p);
+	anchor++;
+	docid++;
     }
     words.Close();
 
@@ -161,12 +224,16 @@ static void dolist(params_t*)
 
     if(verbose) fprintf(stderr, "Searching\n");
 
+    // reopen wordlist
     words.Open(config["word_db"], O_RDONLY);
-    for(char** p = word_list; *p; p++) {
+    //  check if each word (from word_list) is there
+    for(char** p = word_list; *p; p++) 
+    {
+      // recreate wordref from each word
       wordRef.Key().SetWord(*p);
-      wordRef.Key().SetLocation(location);
+      wordRef.Key().Set(3, location);
       wordRef.Record().info.data = anchor;
-      wordRef.Key().SetDocID(docid);
+      wordRef.Key().Set(1, docid);
 
       location += strlen(*p);
       anchor++;
@@ -177,15 +244,20 @@ static void dolist(params_t*)
       //
       if(p == word_list) continue;
 
-      if(verbose) fprintf(stderr, "%s ... ", *p);
+      // check if wordref is in wordlist 
+      if(verbose) fprintf(stderr, "searching for %s ... ", *p);
       if(verbose > 2) pack_show(wordRef);
       if(verbose > 1) cerr << wordRef << "\n";
+      // find matches in wordlist
       List *result = words[wordRef];
       result->Start_Get();
       int count = 0;
       WordReference* found;
-      while((found = (WordReference*)result->Get_Next())) {
-	if(wordRef.Key().GetWord() != found->Key().GetWord()) {
+      // loop through found matches
+      while((found = (WordReference*)result->Get_Next())) 
+      {
+	if(wordRef.Key().GetWord() != found->Key().GetWord()) 
+	{
 	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (char*)wordRef.Key().GetWord(), (char*)found->Key().GetWord());
 	  exit(1);
 	}
@@ -193,7 +265,7 @@ static void dolist(params_t*)
       }
       if(count != 1) {
 	fprintf(stderr, "dolist: simple: searching %s, got %d matches instead of 1\n", (char*)wordRef.Key().GetWord(), count);
-	exit(1);
+  	exit(1);
       }
       if(verbose) fprintf(stderr, "done\n");
 
@@ -277,7 +349,7 @@ static void dolist(params_t*)
     words.Open(config["word_db"], O_RDWR);
 
     WordReference wordRef("the");
-
+    if(verbose){cerr << "**** Delete test:" << words  <<endl;cerr << "**** Delete test:" << endl;}
     int count;
     if((count = words.WalkDelete(wordRef)) != 2) {
       fprintf(stderr, "dolist: delete occurences of 'the', got %d deletion instead of 2\n", count);
@@ -308,7 +380,7 @@ static void dolist(params_t*)
     words.Open(config["word_db"], O_RDWR);
 
     WordReference wordRef;
-    wordRef.Key().SetDocID(5);
+    wordRef.Key().Set(1, 5);
     int count;
     if((count = words.WalkDelete(wordRef)) != 1) {
       fprintf(stderr, "dolist: delete occurences in DocID 5, %d deletion instead of 1\n", count);
@@ -341,171 +413,151 @@ static void dolist(params_t*)
 // See WordKey.h
 // Tested: Pack, Unpack, Compare (both forms), accessors, meta information
 //
-static void dokey(params_t* params)
+#include"HtRandom.h"
+
+static void 
+dokey(params_t* params)
 {
-  WordKey word;
-  const struct WordKeyInfo& info = word_key_info;
+    int ikey,j,ikeydesc;
+    char *test_keys[]=
+    {
+	"nfields: 4/DocID 5 1/Flags 8 2/Location 19  3/Word 0 0",
+	"nfields: 4/DocID 3 1/Location  2 3/Flags 11 2/Word 0 0",
+	"nfields: 4/DocID 3 1/Location  5 3/Flags 8  2/Word 0 0",
+	"nfields: 4/DocID 3 1/Location  7 3/Flags 14 2/Word 0 0",
+	"nfields: 6/DocID 3 1/Location  7 3/Flags 9  2/Foo1 13 4/Foo2 16 5/Word 0 0",
+    };
 
-  //
-  // Feed the structure with a pattern
-  //
-  for(int i = 0; i < info.nfields; i++) {
-    if(verbose > 1) fprintf(stderr, "%s\t=\t", info.fields[i].name);
-    switch(info.fields[i].type) {
-    case WORD_ISA_String:
-      {
-	word.SetWord("Test string");
-	if(verbose > 1) fprintf(stderr, "%s", word.GetWord().get());
-      }
-      break;
+    for(ikeydesc=0;ikeydesc<1000;ikeydesc++)
+    {
+        // check predefined keys structures first
+	if( ikeydesc < (int)(sizeof(test_keys)/sizeof(*test_keys)))
+	{
+	    WordKeyInfo::InitializeFromString(test_keys[ikeydesc]);
+	}
+	else
+	{
+	// check random predefined keys structures afterwards
+	    WordKeyInfo::InitializeRandom();
+	}
 
-#define STATEMENT(type) \
-    case WORD_ISA_##type: \
-      { \
-	word.Set##type(0x12579ade & WORD_BIT_MASK(info.fields[i].bits), info.fields[i].index); \
-	if(verbose > 1) fprintf(stderr, "0x%0x", word.Get##type(info.fields[i].index)); \
-      } \
-      break;
+  	if(verbose)WordKeyInfo::Instance()->Show();
+	for(ikey=0;ikey<20;ikey++)
+	{
+	    WordKey word;
+	    word.SetRandom();
+  	    if(verbose>1)cout << "WORD :" << word << endl;
 
-#ifdef WORD_HAVE_TypeA
-STATEMENT(TypeA)
-#endif /* WORD_HAVE_TypeA */
-#ifdef WORD_HAVE_TypeB
-STATEMENT(TypeB)
-#endif /* WORD_HAVE_TypeB */
-#ifdef WORD_HAVE_TypeC
-STATEMENT(TypeC)
-#endif /* WORD_HAVE_TypeC */
+	    String packed;
+	    word.Pack(packed);
+//  	    WordKey::show_packed(packed,1);
 
-#undef STATEMENT
+	    WordKey other_word;
+	    other_word.Unpack(packed);
 
-    }
-    if(verbose > 1) fprintf(stderr, "\n");
-  }
+  	    if(verbose>1)cout << "OTHER_WORD:" << other_word << endl;
+	    int failed =0 ;
+	    for(j=1;j<word.NFields();j++)
+	    {
+		if(word.Get(j)!=other_word.Get(j))
+		{failed=1;}
+	    }
+	    if(word.GetWord()!=other_word.GetWord() || !word.IsDefined(0))
+	    {failed=1;}
 
-  //
-  // Pack the word
-  //
-  String packed;
+	    if(failed)
+	    {
+		printf("DOKEY failed, original and packed/unpacked not equal\n");
+		WordKeyInfo::Instance()->Show();
+		cout << "WORD :" << word << endl;
+		WordKey::ShowPacked(packed,1);
+		cout << "OTHER_WORD:" << other_word << endl;
+		exit(1);
+	    }
 
-  word.Pack(packed);
+	    //
+	    // Compare in packed form
+	    //
+	    if(!word.PackEqual(other_word)) 
+	    {
+		fprintf(stderr, "dokey: %s not equal (object compare)\n", params->word_desc);
+		exit(1);
+	    }
 
-  if(verbose > 1) {
-    for(int i = 0; i < packed.length(); i++) {
-      fprintf(stderr, "0x%02x(%c) ", packed[i] & 0xff, packed[i]);
-    }
-    fprintf(stderr, "\n");
-  }
+	    //
+	    // Pack the other_word
+	    //
+	    String other_packed;
+
+	    other_word.Pack(other_packed);
+	    //
+	    // The two (word and other_word) must compare equal
+	    // using the alternate comparison (fast) interface.
+	    //
+	    if(WordKey::Compare(packed, other_packed) != 0) {
+		fprintf(stderr, "dokey: %s not equal (fast compare)\n", params->word_desc);
+		exit(1);
+	    }
+
+	    word.SetWord("Test string");
+	    word.Set(1,1);
+	    other_word.SetWord("Test string");
+	    word.Pack(packed);
+	    //
+	    // Add one char to the word, they must not compare equal and
+	    // the difference must be minus one.
+	    //
+	    other_word.GetWord().append("a");
+	    other_word.Pack(other_packed);
+	    {
+		int ret;
+		if((ret = WordKey::Compare(packed, other_packed)) != -1) 
+		{
+		    cerr << word << endl << other_word << endl;
+		    fprintf(stderr, "dokey: %s different length, expected -1 got %d\n", params->word_desc, ret);
+		    exit(1);
+		}
+	    }
+	    other_word.GetWord().set("Test string");
+
+	    //
+	    // Change T to S
+	    // the difference must be one.
+	    //
+	    {
+		String& tmp = other_word.GetWord();
+		tmp[tmp.indexOf('T')] = 'S';
+	    }
+	    other_word.Pack(other_packed);
+	    {
+		int ret;
+		if((ret = WordKey::Compare(packed, other_packed)) != 1) 
+		{
+		    cerr << word << endl << other_word << endl;
+		    fprintf(stderr, "dokey: %s different letter (S instead of T), expected 1 got %d\n", params->word_desc, ret);
+		    exit(1);
+		}
+	    }
+	    other_word.GetWord().set("Test string");
   
-  //
-  // Unpack in another object
-  //
-  WordKey other_word;
-  other_word.Unpack(packed);
+	    //
+	    // Substract one to the first numeric field
+	    // The difference must be one.
+	    //
+	    other_word.Set(1,word.Get(1) - 1);
+	    other_word.Pack(other_packed);
+	    {
+		int ret;
+		if((ret = WordKey::Compare(packed, other_packed)) != 1) 
+		{
+		    cerr << word << endl << other_word << endl;
+		    fprintf(stderr, "dokey: %s different numeric field, expected 1 got %d\n", params->word_desc, ret);
+		    exit(1);
+		}
+	    }
 
-  if(verbose > 1) {
-    for(int i = 0; i < info.nfields; i++) {
-      fprintf(stderr, "%s\t=\t", info.fields[i].name);
-      switch(info.fields[i].type) {
-      case WORD_ISA_String:
-	fprintf(stderr, "%s", (char*)other_word.GetWord());
-	break;
-#define STATEMENT(type) \
-      case WORD_ISA_##type: \
-        { \
-	  fprintf(stderr, "0x%0x", other_word.Get##type(info.fields[i].index)); \
-        } \
-        break;
-
-#ifdef WORD_HAVE_TypeA
-	STATEMENT(TypeA)
-#endif /* WORD_HAVE_TypeA */
-#ifdef WORD_HAVE_TypeB
-	STATEMENT(TypeB)
-#endif /* WORD_HAVE_TypeB */
-#ifdef WORD_HAVE_TypeC
-	STATEMENT(TypeC)
-#endif /* WORD_HAVE_TypeC */
-
-#undef STATEMENT
-
-      }
-      fprintf(stderr, "\n");
+	}
     }
-  }
-
-  //
-  // The two (word and other_word) must compare equal, using
-  // comparison of the packed strings.
-  //
-  if(!word.PackEqual(other_word)) {
-    fprintf(stderr, "dokey: %s not equal (object compare)\n", params->word_desc);
-    exit(1);
-  }
-
-  //
-  // Pack the other_word
-  //
-  String other_packed;
-
-  other_word.Pack(other_packed);
-
-  
-  //
-  // The two (word and other_word) must compare equal
-  // using the alternate comparison (fast) interface.
-  //
-  if(WordKey::Compare(packed, other_packed) != 0) {
-    fprintf(stderr, "dokey: %s not equal (fast compare)\n", params->word_desc);
-    exit(1);
-  }
-
-  //
-  // Add one char to the word, they must not compare equal and
-  // the difference must be minus one.
-  //
-  other_word.GetWord().append("a");
-  other_word.Pack(other_packed);
-  {
-    int ret;
-    if((ret = WordKey::Compare(packed, other_packed)) != -1) {
-      fprintf(stderr, "dokey: %s different length, expected -1 got %d\n", params->word_desc, ret);
-      exit(1);
-    }
-  }
-  other_word.GetWord().set("Test string");
-
-  //
-  // Change T to S
-  // the difference must be one.
-  //
-  {
-    String& tmp = other_word.GetWord();
-    tmp[tmp.indexOf('T')] = 'S';
-  }
-  other_word.Pack(other_packed);
-  {
-    int ret;
-    if((ret = WordKey::Compare(packed, other_packed)) != 1) {
-      fprintf(stderr, "dokey: %s different letter (S instead of T), expected 1 got %d\n", params->word_desc, ret);
-      exit(1);
-    }
-  }
-  other_word.GetWord().set("Test string");
-  
-  //
-  // Substract one to the first numeric field
-  // The difference must be one.
-  //
-  other_word.SetTypeA(other_word.GetTypeA(0) - 1, 0);
-  other_word.Pack(other_packed);
-  {
-    int ret;
-    if((ret = WordKey::Compare(packed, other_packed)) != 1) {
-      fprintf(stderr, "dokey: %s different numeric field, expected 1 got %d\n", params->word_desc, ret);
-      exit(1);
-    }
-  }
 }
 
 static void pack_show(const WordReference& wordRef)
@@ -526,6 +578,228 @@ static void pack_show(const WordReference& wordRef)
   fprintf(stderr, "\n");
 }
 
+
+
+//*****************************************************************************
+// void doskip()
+//   Test SkipUselessSequentialWalking in WordList class
+//
+#include<ctype.h>
+#include<fstream.h>
+int 
+get_int_array(char *s,int **plist,int &n)
+{
+    int i=0;
+    for(n=0;s[i];n++)
+    {	
+	for(;s[i] && !isalnum(s[i]);i++);
+	if(!s[i]){break;}
+	for(;s[i] && isalnum(s[i]);i++);
+    }
+    if(!n){*plist=NULL;return(NOTOK);}
+    int *list=new int[n];
+    *plist=list;
+    int j;
+    i=0;
+    for(j=0;s[i];j++)
+    {	
+	for(;s[i] && !isalnum(s[i]);i++);
+	if(!s[i]){break;}
+	list[j]=atoi(s+i);
+//  	cout << "adding number:" << s+i << "=" << atoi(s+i) << endl;
+	for(;s[i] && isalnum(s[i]);i++);
+    }
+//      cout << "get_int_array: input:" << s << ":" << endl;
+//      cout << "result: n:" << n << ":";
+//      for(i=0;i<n;i++){cout << (*plist)[i] << " " ;}
+//      cout << endl;
+    return(OK);
+}
+class SkipTestEntry
+{
+public:
+    char *searchkey;
+    char *goodorder;
+    void GetSearchKey(WordKey &searchKey)
+    {
+	searchKey.Set((String)searchkey);
+	if(verbose) cout << "GetSearchKey: string:" << searchkey << " got:" << searchKey << endl;
+    }
+    int Check(WordList &WList)
+    {
+	WordKey empty;
+	WordReference srchwrd;
+	GetSearchKey(srchwrd.Key());
+	Object o;
+	if(verbose) cout << "checking SkipUselessSequentialWalking on:" << srchwrd << endl;
+	if(verbose) cout << "walking all:" << endl;
+//	WList.verbose=5;
+	List *all=WList.Collect(WordSearchDescription(empty, HTDIG_WORDLIST_COLLECTOR));
+	if(verbose) cout << "walking search: searching for:" << srchwrd <<endl;
+
+	WordSearchDescription search(srchwrd.Key(), HTDIG_WORDLIST_COLLECTOR);
+	search.traceRes = new List;
+	WList.Walk(search);
+	List *wresw = search.collectRes;
+	List *wres  = search.traceRes;
+	wresw->Start_Get();
+	wres->Start_Get();
+	WordReference *found;
+	WordReference *correct;
+	int i;
+	int ngoodorder;
+	int *goodorder_a;
+	get_int_array(goodorder,&goodorder_a,ngoodorder);
+	for(i=0;(found = (WordReference*)wres->Get_Next());i++) 
+	{
+  	    if(i>=ngoodorder){cerr << "SkipUselessSequentialWalking test failed! i>=ngoodorder" << endl;exit(1);}
+	    if(verbose) cout << "Check actual  " << i              << "'th  walked:" << *found   << endl;
+	    correct = (WordReference*)all->Nth(goodorder_a[i]);
+	    if(verbose) cout << "Check correct " << goodorder_a[i] << "           :" << *correct << endl;    
+	    if(!correct->Key().Equal(found->Key()))
+	    {cout << "SkipUselessSequentialWalking test failed! at position:" << i << endl;exit(1);}
+	}
+	if(i<ngoodorder){cerr << "SkipUselessSequentialWalking test failed! n<ngoodorder" << endl;exit(1);}
+	
+	delete [] goodorder_a;
+	delete wresw;
+	delete wres;
+	return OK;
+    }
+};
+
+SkipTestEntry SkipTestEntries[]=
+{
+     {
+ 	"et  <DEF>      <UNDEF>       0       10      ",
+ 	"3 4 5 9 10 12 13 14"
+     },
+     {
+ 	"et  <UNDEF>    20            0       <UNDEF> ",
+ 	"3 4 5 6 7 8 9 14 15 16 17",
+     },
+};
+
+static void 
+doskip(params_t*)
+{
+    if(verbose > 0) cerr << "doing SkipUselessSequentialWalking test" << endl;
+    // read db into WList from file: skiptest_db.txt
+    if(verbose){cout<< "WList config:minimum_word_length:" << config.Value("minimum_word_length")<< endl;}
+    WordList WList(config);
+    WList.Open(config["word_db"], O_RDWR);
+    ifstream ins("skiptest_db.txt");
+    if(!ins.good())
+    {
+	cerr << "SkipUselessSequentialWalking test failed : read db file:skiptest_db.txt failed" << endl;
+	exit(1);
+    }
+    ins >> WList;
+    if(verbose){cout << "WList read:" << endl << WList << endl;}
+    // now check walk order for a few search terms
+    int i;
+    if(verbose) cout << "number of entries:"<< sizeof(SkipTestEntries)/sizeof(SkipTestEntry) << endl;
+    for(i=0;i<(int)(sizeof(SkipTestEntries)/sizeof(SkipTestEntry));i++)
+    {
+	if(SkipTestEntries[i].Check(WList) == NOTOK)
+	{
+	    cerr << "SkipUselessSequentialWalking test failed on SkipTestEntry number:" << i <<endl;
+	    exit(1);
+	}
+    }
+
+}
+
+
+
+#include"WordBitCompress.h"
+
+void bitstream_int();
+void bitstream_bit();
+
+static void 
+dobitstream(params_t*)
+{
+    bitstream_int();
+    bitstream_bit();
+}
+void
+bitstream_int()
+{ 
+    BitStream bs;
+    bs.set_use_tags();
+    const int nnums=5000;
+    unsigned int nums[nnums];
+    unsigned int szs[nnums];
+    int i,sz;
+    char tag[1000];
+    printf("inserting (uint):\n");
+    for(i=0;i<nnums;i++)
+    {
+//  	printf("-----------%5d ------------\n",i);
+	sz=rand()%33;
+	szs[i]=sz;
+	if(sz==32){nums[i]=(rand())&(0xffffffff);}
+	else{nums[i]=(rand())&(pow2(sz)-1);}
+	sprintf(tag,"tag(i:%d,sz:%d,val:%x)",i,sz,nums[i]);
+	bs.put_uint(nums[i],sz,tag);
+    }
+
+    printf("checking (uint):\n");
+//      bs.show();
+    bs.rewind();
+    for(i=0;i<nnums;i++)
+    {
+//    	printf("-----------%5d ------------\n",i);
+	unsigned int v;
+	sz=szs[i];
+	sprintf(tag,"tag(i:%d,sz:%d,val:%x)",i,sz,nums[i]);
+	v=bs.get_uint(sz,tag);
+	if(v!=nums[i])
+	{
+	    cerr << "BitStream failed for pos:" << i << " size:" << sz << " found:" << v << " tag:" << tag << endl;
+	    exit(1);
+	}
+    }
+}
+
+void
+bitstream_bit()
+{ 
+    BitStream bs;
+    bs.set_use_tags();
+    const int nnums=1000;
+    unsigned int nums[nnums];
+    int i;
+    char tag[1000];
+    printf("inserting (bit):\n");
+    for(i=0;i<nnums;i++)
+    {
+//    	printf("-----------%5d ------------\n",i);
+	nums[i]=(rand()/100)%2;
+	sprintf(tag,"tag(i:%d,val:%x)",i,nums[i]);
+//  	printf("tag:%s\n",tag);
+	bs.put(nums[i],tag);
+    }
+
+    printf("checking (bit):\n");
+//       bs.show();
+    bs.rewind();
+    for(i=0;i<nnums;i++)
+    {
+	unsigned int v;
+	sprintf(tag,"tag(i:%d,val:%x)",i,nums[i]);
+	v=bs.get(tag);
+	if((v==0)!=(nums[i]==0))
+	{
+	    cerr << "BitStream failed for pos:" << i << " v:" << v << " should be:" << nums[i] << " tag:" << tag << endl;
+	    exit(1);
+	}
+    }
+}
+
+
+
 //*****************************************************************************
 // void usage()
 //   Display program usage information
@@ -536,9 +810,10 @@ static void usage()
     cout << "Options:\n";
     cout << "\t-v\t\tIncreases the verbosity\n";
     cout << "\t-w file\tname of the word description file used to generate sources\n";
-    cout << "\t-c file\tspecify the config file to load\n";
     cout << "\t-k\t\tTest WordKey\n";
     cout << "\t-l\t\tTest WordList\n";
+    cout << "\t-z\t\tActivate compression test\n";
+    cout << "\t-s\t\tTest Skip\n";
     exit(0);
 }
 

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26 1999/10/08 12:59:56 loic Exp $
+// $Id: htdig.cc,v 1.27 2000/02/19 05:28:52 ghutchis Exp $
 //
 
 #include "Document.h"
@@ -19,13 +19,15 @@
 #include "htdig.h"
 #include "defaults.h"
 #include "HtURLCodec.h"
-#include "WordType.h"
+#include "WordContext.h"
 #include "HtDateTime.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
 #endif
+
+#include <stream.h>
 
 //
 // Global variables
@@ -35,8 +37,6 @@ int			report_statistics = 0;
 DocumentDB		docs;
 HtRegex			limits;
 HtRegex			limitsn;
-HtRegex			excludes;
-HtRegex			badquerystr;
 FILE			*urls_seen = NULL;
 FILE			*images_seen = NULL;
 String			configFile = DEFAULT_CONFIG_FILE;
@@ -61,6 +61,9 @@ int main(int ac, char **av)
     int			create_text_database = 0;
     char		*max_hops = 0;
     RetrieverLog	flag  = Retriever_noLog;
+
+//extern int yydebug;
+//yydebug=1;
 	
     //
     // Parse command line arguments
@@ -124,6 +127,9 @@ int main(int ac, char **av)
     }
     config.Read(configFile);
 
+    // Initialize htword
+    WordContext::Initialize(config);
+
     if (config["locale"].empty() && debug > 0)
       cout << "Warning: unknown locale!\n";
 
@@ -132,8 +138,9 @@ int main(int ac, char **av)
 	config.Add("max_hop_count", max_hops);
     }
 
-    // Word characterization
-    WordType::Initialize(config);
+    // Set up credentials for this run
+    if (credentials.length())
+	config.Add("authorization", credentials);
 
     //
     // Check url_part_aliases and common_url_parts for
@@ -219,17 +226,6 @@ int main(int ac, char **av)
     limitsn.setEscaped(l);
     l.Destroy();
 
-    //
-    // Patterns to exclude from urls...
-    //
-    l.Create(config["exclude_urls"], " \t");
-    excludes.setEscaped(l);
-    l.Destroy();
-
-    l.Create(config["bad_querystr"], " \t");
-    badquerystr.setEscaped(l);
-    l.Destroy();
-
     // Check "uncompressed"/"uncoded" urls at the price of time
     // (extra DB probes).
     docs.
@@ -274,15 +270,24 @@ int main(int ac, char **av)
 	delete list;
       }
 
-    // Set up credentials for this run
-    if (credentials.length())
-	retriever.setUsernamePassword((char*)credentials);
-
     // Add start_url to the initial list of the retriever.
     // Don't check a URL twice!
     // Beware order is important, if this bugs you could change 
     // previous line retriever.Initial(*list, 0) to Initial(*list,1)
     retriever.Initial(config["start_url"], 1);
+
+    // Handle list of URLs given on stdin, if optional "-" argument given.
+    if (optind < ac && strcmp(av[optind], "-") == 0)
+    {
+	String str;
+	while (!cin.eof())
+	{
+	    cin >> str;
+	    str.chop("\r\n");
+	    if (str.length() > 0)
+		retriever.Initial(str, 1);
+	}
+    }
 
     //
     // Go do it!

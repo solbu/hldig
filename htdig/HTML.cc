@@ -10,13 +10,13 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62 1999/10/08 12:05:20 loic Exp $
+// $Id: HTML.cc,v 1.63 2000/02/19 05:28:51 ghutchis Exp $
 //
 
 #include "htdig.h"
 #include "HTML.h"
 #include "HtSGMLCodec.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "StringMatch.h"
 #include "StringList.h"
 #include "URL.h"
@@ -30,6 +30,8 @@ static StringMatch	nobreaktags;
 static StringMatch	spacebeforetags;
 static StringMatch	spaceaftertags;
 static StringMatch	keywordsMatch;
+static int		keywordsCount;
+static int		max_keywords;
 
 
 //*****************************************************************************
@@ -66,7 +68,7 @@ HTML::HTML()
     // the attrs Match object is used to match names of tag parameters.
     //
     tags.IgnoreCase();
-    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object|link");
+    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object|link|style|/style");
 
     // These tags don't cause a word break.  They may also be in "tags" above,
     // except for the "a" tag, which must be handled as a special case.
@@ -85,6 +87,9 @@ HTML::HTML()
     keywordsMatch.IgnoreCase();
     keywordsMatch.Pattern(keywordNames.Join('|'));
     keywordNames.Release();
+    max_keywords = config.Value("max_keywords", -1);
+    if (max_keywords < 0)
+	max_keywords = (int) ((unsigned int) ~1 >> 1);
     
     word = 0;
     href = 0;
@@ -139,6 +144,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     const String	skip_start = config["noindex_start"];
     const String	skip_end = config["noindex_end"];
 
+    keywordsCount = 0;
     title = 0;
     head = 0;
     meta_dsc = 0;
@@ -464,7 +470,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	return; // Nothing matched.
 
     // Use the configuration code to match attributes as key-value pairs
-    Configuration	attrs;
+    HtConfiguration	attrs;
     attrs.NameValueSeparators("=");
     attrs.Add(position);
 
@@ -571,11 +577,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    break;
 
 	case 16:	// "noindex"
+	case 27:	// "style"
 	    doindex = 0;
 	    dofollow = 0;
 	    break;
 
 	case 17:	// "/noindex"
+	case 28:	// "/style"
 	    doindex = 1;
 	    dofollow = 1;
 	    break;
@@ -622,15 +630,19 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		const String keywords = attrs["htdig-keywords"].empty() ?
 		  attrs["htdig-keywords"] :
 		  attrs["keywords"];
-		String tmp = transSGML(keywords);
-		char	*w = strtok(tmp, " ,\t\r\n");
-		while (w)
-		{
-		    if (strlen(w) >= minimumWordLength)
-		      retriever.got_word(w, wordindex++, 9);
-		    w = strtok(0, " ,\t\r\n");
-		}
-		w = '\0';
+		if (doindex)
+		  {
+		    String tmp = transSGML(keywords);
+		    char	*w = strtok(tmp, " ,\t\r\n");
+		    while (w)
+		      {
+			if (strlen(w) >= minimumWordLength
+				&& ++keywordsCount <= max_keywords)
+			  retriever.got_word(w, wordindex++, 9);
+			w = strtok(0, " ,\t\r\n");
+		      }
+		    w = '\0';
+		  }
 	    }
 	
 	    if (!attrs["http-equiv"].empty())
@@ -691,24 +703,28 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		   // Slot 10 is the current slot for this
 		   //
 
-		   String tmp = transSGML(attrs["content"]);
-		   char        *w = strtok(tmp, " \t\r\n");
-                   while (w)
+		   if (doindex)
 		     {
-			if (strlen(w) >= minimumWordLength)
-			  retriever.got_word(w, wordindex++,10);
-			w = strtok(0, " \t\r\n");
+		       String tmp = transSGML(attrs["content"]);
+		       char        *w = strtok(tmp, " \t\r\n");
+		       while (w)
+			 {
+			   if (strlen(w) >= minimumWordLength)
+			     retriever.got_word(w, wordindex++,10);
+			   w = strtok(0, " \t\r\n");
+			 }
+		       w = '\0';
 		     }
-		 w = '\0';
 		}
 
-		if (keywordsMatch.CompareWord(cache))
+		if (keywordsMatch.CompareWord(cache) && doindex)
 		{
 		    String tmp = transSGML(attrs["content"]);
 		    char	*w = strtok(tmp, " ,\t\r\n");
 		    while (w)
 		    {
-			if (strlen(w) >= minimumWordLength)
+			if (strlen(w) >= minimumWordLength
+				&& ++keywordsCount <= max_keywords)
 			  retriever.got_word(w, wordindex++, 9);
 			w = strtok(0, " ,\t\r\n");
 		    }
@@ -822,7 +838,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	     if (!attrs["src"].empty())
 	       {
 		 retriever.got_image(transSGML(attrs["src"]));
-		 if (!attrs["alt"].empty())
+		 if (!attrs["alt"].empty() && doindex)
 		   {
 		     String tmp = transSGML(attrs["alt"]);
 		     char *w = strtok(tmp, " ,\t\r\n");

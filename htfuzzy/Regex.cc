@@ -10,19 +10,19 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Regex.cc,v 1.7 1999/10/01 12:53:53 loic Exp $
+// $Id: Regex.cc,v 1.8 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #include "Regex.h"
 #include "htString.h"
 #include "List.h"
 #include "StringMatch.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 
 //*****************************************************************************
-// Regex::Regex(const Configuration& config_arg)
+// Regex::Regex(const HtConfiguration& config_arg)
 //
-Regex::Regex(const Configuration& config_arg) :
+Regex::Regex(const HtConfiguration& config_arg) :
   Fuzzy(config_arg)
 {
     name = "regex";

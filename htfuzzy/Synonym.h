@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Synonym.h,v 1.3 1999/09/24 10:29:02 loic Exp $
+// $Id: Synonym.h,v 1.4 2000/02/19 05:29:02 ghutchis Exp $
 //
 //
 
@@ -27,7 +27,7 @@ public:
 	//
 	// Construction/Destruction
 	//
-			Synonym(const Configuration& config_arg);
+			Synonym(const HtConfiguration& config_arg);
 			~Synonym();
 
 	//
@@ -39,7 +39,7 @@ public:
 	//
 	// Creation
 	//
-	virtual int	createDB();
+	virtual int	createDB(const HtConfiguration &config);
 	
 protected:
 

@@ -7,6 +7,90 @@
 
 # Originally by Rob McCool
 
+<IfModule mod_so.c>
+#LoadModule mmap_static_module _MODULES_/mod_mmap_static.so
+LoadModule env_module         _MODULES_/mod_env.so
+LoadModule config_log_module  _MODULES_/mod_log_config.so
+LoadModule agent_log_module   _MODULES_/mod_log_agent.so
+LoadModule referer_log_module _MODULES_/mod_log_referer.so
+#LoadModule mime_magic_module  _MODULES_/mod_mime_magic.so
+LoadModule mime_module        _MODULES_/mod_mime.so
+LoadModule negotiation_module _MODULES_/mod_negotiation.so
+LoadModule status_module      _MODULES_/mod_status.so
+LoadModule info_module        _MODULES_/mod_info.so
+LoadModule includes_module    _MODULES_/mod_include.so
+LoadModule autoindex_module   _MODULES_/mod_autoindex.so
+LoadModule dir_module         _MODULES_/mod_dir.so
+LoadModule cgi_module         _MODULES_/mod_cgi.so
+LoadModule asis_module        _MODULES_/mod_asis.so
+LoadModule imap_module        _MODULES_/mod_imap.so
+LoadModule action_module      _MODULES_/mod_actions.so
+#LoadModule speling_module     _MODULES_/mod_speling.so
+LoadModule userdir_module     _MODULES_/mod_userdir.so
+LoadModule proxy_module       _MODULES_/libproxy.so
+LoadModule alias_module       _MODULES_/mod_alias.so
+LoadModule rewrite_module     _MODULES_/mod_rewrite.so
+LoadModule access_module      _MODULES_/mod_access.so
+LoadModule auth_module        _MODULES_/mod_auth.so
+LoadModule anon_auth_module   _MODULES_/mod_auth_anon.so
+#LoadModule dbm_auth_module    _MODULES_/mod_auth_dbm.so
+LoadModule db_auth_module     _MODULES_/mod_auth_db.so
+LoadModule digest_module      _MODULES_/mod_digest.so
+#LoadModule cern_meta_module   _MODULES_/mod_cern_meta.so
+LoadModule expires_module     _MODULES_/mod_expires.so
+LoadModule headers_module     _MODULES_/mod_headers.so
+LoadModule usertrack_module   _MODULES_/mod_usertrack.so
+#LoadModule example_module     _MODULES_/mod_example.so
+#LoadModule unique_id_module   _MODULES_/mod_unique_id.so
+LoadModule setenvif_module    _MODULES_/mod_setenvif.so
+
+# Extra Modules
+#LoadModule php_module         _MODULES_/mod_php.so
+#LoadModule php3_module        _MODULES_/libphp3.so
+#LoadModule perl_module        _MODULES_/libperl.so
+
+#  Reconstruction of the complete module list from all available modules
+#  (static and shared ones) to achieve correct module execution order.
+#  [WHENEVER YOU CHANGE THE LOADMODULE SECTION ABOVE UPDATE THIS, TOO]
+ClearModuleList
+#AddModule mod_mmap_static.c
+AddModule mod_env.c
+AddModule mod_log_config.c
+AddModule mod_log_agent.c
+AddModule mod_log_referer.c
+#AddModule mod_mime_magic.c
+AddModule mod_mime.c
+AddModule mod_negotiation.c
+AddModule mod_status.c
+AddModule mod_info.c
+AddModule mod_include.c
+AddModule mod_autoindex.c
+AddModule mod_dir.c
+AddModule mod_cgi.c
+AddModule mod_asis.c
+AddModule mod_imap.c
+AddModule mod_actions.c
+#AddModule mod_speling.c
+AddModule mod_userdir.c
+AddModule mod_proxy.c
+AddModule mod_alias.c
+AddModule mod_rewrite.c
+AddModule mod_access.c
+AddModule mod_auth.c
+AddModule mod_auth_anon.c
+#AddModule mod_auth_dbm.c
+AddModule mod_auth_db.c
+AddModule mod_digest.c
+#AddModule mod_cern_meta.c
+AddModule mod_expires.c
+AddModule mod_headers.c
+AddModule mod_usertrack.c
+#AddModule mod_example.c
+#AddModule mod_unique_id.c
+AddModule mod_so.c
+AddModule mod_setenvif.c
+</IfModule>
+
 # ServerType is either inetd, or standalone.
 
 ServerType standalone
@@ -30,10 +114,9 @@ User _USER_
 
 ServerAdmin _USER_
 
-# ServerRoot: The directory the server's config, error, and log files
-# are kept in
-
-ServerRoot _TESTDIR_
+ResourceConfig _TESTDIR_/conf/srm.conf
+AccessConfig _TESTDIR_/conf/access.conf
+LockFile _TESTDIR_/logs/accept.lock
 
 # BindAddress: You can support virtual hosts with this option. This option
 # is used to tell the server which IP address to listen to. It can either
@@ -45,15 +128,15 @@ BindAddress *
 # ErrorLog: The location of the error log file. If this does not start
 # with /, ServerRoot is prepended to it.
 
-ErrorLog logs/error_log
+ErrorLog _TESTDIR_/logs/error_log
 
 # TransferLog: The location of the transfer log file. If this does not
 # start with /, ServerRoot is prepended to it.
 
-TransferLog logs/access_log
+TransferLog _TESTDIR_/logs/access_log
 
 # PidFile: The file the server should log its pid to
-PidFile logs/httpd.pid
+PidFile _TESTDIR_/logs/httpd.pid
 
 # ServerName allows you to set a host name which is sent back to clients for
 # your server if it's different than the one the program would get (i.e. use

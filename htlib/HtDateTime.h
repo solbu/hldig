@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.h,v 1.10 1999/10/08 14:50:24 ghutchis Exp $
+// $Id: HtDateTime.h,v 1.11 2000/02/19 05:29:03 ghutchis Exp $
 
 ///////
    //   Class for Date and Time
@@ -160,10 +160,6 @@ public:
    HtDateTime(struct tm &t) {SetDateTime(t); ToLocalTime();}
    HtDateTime(struct tm *t) {SetDateTime(t); ToLocalTime();}
 
-   // From an unsigned int
-   HtDateTime(int t) {SetDateTime (t); ToLocalTime();}
-   
-
 ///////
    //   Interface methods
 ///////
@@ -189,10 +185,6 @@ public:
    inline void SetDateTime(struct tm *);  	   	       	// by pointer
    inline void SetDateTime(struct tm &t) { SetDateTime(&t);}    // by reference
 
-   // Setting from an int
-   void SetDateTime(const int t) { Ht_t =  (time_t) t; }      	// with an int
-   
-   
    // Set GM Time from single values input
    // Return true if it all went good, false else
    bool SetGMDateTime(	int year, int mon, int mday,

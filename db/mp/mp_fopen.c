@@ -160,7 +160,11 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 #endif /* HAVE_LIBZ */
 		last_pgno = 0;
 	} else {
-	       size_t disk_pagesize = F_ISSET(dbmfp, MP_CMPR) ? DB_CMPR_DIVIDE(pagesize) : pagesize;
+#ifdef HAVE_LIBZ
+	       size_t disk_pagesize = F_ISSET(dbmfp, MP_CMPR) ? DB_CMPR_DIVIDE(dbenv, pagesize) : pagesize;
+#else /* HAVE_LIBZ */
+	       size_t disk_pagesize = pagesize;
+#endif /* HAVE_LIBZ */
 		/* Get the real name for this file and open it. */
 		if ((ret = __db_appname(dbenv,
 		    DB_APP_DATA, NULL, path, 0, NULL, &rpath)) != 0)
@@ -219,7 +223,7 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 		}
 #ifdef HAVE_LIBZ
 		if (LF_ISSET(DB_COMPRESS)) {
-		  if((ret = __memp_cmpr_open(path, dbenv, &dbmfp->weakcmpr)) != 0)
+		  if((ret = __memp_cmpr_open(path, dbenv, &dbmfp->cmpr_context)) != 0)
 		    goto err;
 		}
 #endif /* HAVE_LIBZ */
@@ -509,7 +513,7 @@ memp_fclose(dbmfp)
 
 #ifdef HAVE_LIBZ
 	if(F_ISSET(dbmfp, MP_CMPR)) {
-	  if((ret = __memp_cmpr_close(&dbmfp->weakcmpr)) != 0)
+	  if((ret = __memp_cmpr_close(&dbmfp->cmpr_context)) != 0)
 		__db_err(dbmp->dbenv,
 			 "%s: %s", __memp_fn(dbmfp), strerror(ret));
 	  F_CLR(dbmfp, MP_CMPR);

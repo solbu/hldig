@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Soundex.cc,v 1.6 1999/09/24 10:29:01 loic Exp $
+// $Id: Soundex.cc,v 1.7 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #include "Soundex.h"
@@ -20,9 +20,9 @@
 #include <ctype.h>
 
 //*****************************************************************************
-// Soundex::Soundex(const Configuration& config_arg)
+// Soundex::Soundex(const HtConfiguration& config_arg)
 //
-Soundex::Soundex(const Configuration& config_arg) :
+Soundex::Soundex(const HtConfiguration& config_arg) :
   Fuzzy(config_arg)
 {
     name = "soundex";

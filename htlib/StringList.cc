@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.cc,v 1.9 1999/09/29 16:33:12 loic Exp $
+// $Id: StringList.cc,v 1.10 2000/02/19 05:29:03 ghutchis Exp $
 //
 
 #include "StringList.h"
@@ -35,9 +35,26 @@ StringList::~StringList()
 }
 
 //*****************************************************************************
+// void StringList::~SRelease()
+//
+void StringList::SRelease()
+{
+    ListCursor  cursor;
+    int i;
+    int n = Count();
+
+    Start_Get(cursor);
+    Object	*obj;
+    for(i = 0; i < n && (obj = Get_Next(cursor)); i++) {
+	List::Remove(obj);
+	delete (String*)obj;
+    }
+}
+
+//*****************************************************************************
 // int StringList::Create(const char *str, char *sep)
 //
-int StringList::Create(const char *str, char *sep)
+int StringList::Create(const char *str, const char *sep)
 {
     String	word;
 

@@ -79,12 +79,6 @@ maintainer:		_USER_
 #
 max_head_length:	10000
 
-# This sets the maximum length of words that will be
-# indexed. Words longer than this value will be silently
-# truncated when put into the index, or searched in the
-# index.
-maximum_word_length:	50
-
 #
 # To limit network connections, ht://Dig will only pull up to a certain limit
 # of bytes. This prevents the indexing from dying because the server keeps
@@ -93,6 +87,12 @@ maximum_word_length:	50
 # (see <http://www.htdig.org/FAQ.html> for more)
 #
 max_doc_size:		200000
+
+# This sets the maximum length of words that will be
+# indexed. Words longer than this value will be silently
+# truncated when put into the index, or searched in the
+# index.
+maximum_word_length:	50
 
 #
 # Most people expect some sort of excerpt in results. By default, if the 
@@ -126,11 +126,6 @@ no_excerpt_show_top:	true
 search_algorithm:	exact:1
 
 #
-# Enable extended features of WordList
-#
-wordlist_extend:	true
-
-#
 # The following are the templates used in the builtin search results
 # The default is to use compiled versions of these files, which produces
 # slightly faster results. However, uncommenting these lines makes it
@@ -140,6 +135,11 @@ wordlist_extend:	true
 # template_map: Long long ${common_dir}/long.html \
 #		Short short ${common_dir}/short.html
 # template_name: long
+
+#
+# Enable extended features of WordList
+#
+wordlist_extend:	true
 
 #
 # The following are used to change the text for the page index.

@@ -10,14 +10,14 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Synonym.cc,v 1.8 1999/09/24 10:29:02 loic Exp $
+// $Id: Synonym.cc,v 1.9 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #include "Synonym.h"
 #include "htfuzzy.h"
 #include "List.h"
 #include "StringList.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 
 #include <stdio.h>
 #include <fstream.h>
@@ -25,7 +25,7 @@
 
 
 //*****************************************************************************
-Synonym::Synonym(const Configuration& config_arg) :
+Synonym::Synonym(const HtConfiguration& config_arg) :
   Fuzzy(config_arg)
 {
     name = "synonyms";
@@ -47,7 +47,7 @@ Synonym::~Synonym()
 
 //*****************************************************************************
 int
-Synonym::createDB()
+Synonym::createDB(const HtConfiguration &config)
 {
     char	input[1000];
     FILE	*fl;
@@ -64,7 +64,7 @@ Synonym::createDB()
 	return NOTOK;
     }
 
-    Database	*db = Database::getDatabaseInstance(DB_BTREE);
+    Database	*db = Database::getDatabaseInstance(DB_HASH);
 
     if (db->OpenReadWrite(dbFile, 0664) == NOTOK)
     {
@@ -123,7 +123,7 @@ Synonym::openIndex()
         delete db;
         db = 0;
     }
-    db = Database::getDatabaseInstance(DB_BTREE);
+    db = Database::getDatabaseInstance(DB_HASH);
     if (db->OpenRead(dbFile) == NOTOK)
     {
 	delete db;

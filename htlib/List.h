@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: List.h,v 1.5 1999/09/29 16:33:12 loic Exp $
+// $Id: List.h,v 1.6 2000/02/19 05:29:03 ghutchis Exp $
 //
 
 #ifndef	_List_h_
@@ -86,7 +86,7 @@ public:
     // List traversel
     //
     void		Start_Get()	{ Start_Get(cursor); }
-    void		Start_Get(ListCursor& cursor) const { cursor.current = head; cursor.current_index = -1;}
+    void		Start_Get(ListCursor& cursor0) const { cursor0.current = head; cursor0.current_index = -1;}
     Object		*Get_Next()	{ return Get_Next(cursor); }
     Object		*Get_Next(ListCursor& cursor) const;
     Object		*Get_First();

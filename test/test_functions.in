@@ -5,7 +5,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: test_functions.in,v 1.6 1999/10/01 15:41:12 loic Exp $
+# $Id: test_functions.in,v 1.7 2000/02/19 05:29:10 ghutchis Exp $
 #
 
 testdir=`pwd`
@@ -25,14 +25,14 @@ fi
 #
 (
     cd conf
-    $MAKE user="@USER@" testdir=$testdir all > /dev/null
+    $MAKE user="@USER@" modules="@APACHE_MODULES@" testdir=$testdir all > /dev/null
 )
 
 httpd=@APACHE@
 
 if test -z "$httpd"
 then
-	echo "no apache server provided. Run configure with --with-apache=DIR"
+	echo "no apache server provided. Run configure with --with-apache=<httpd path>"
 	exit 77
 fi
 
@@ -46,7 +46,7 @@ else
     sleep 2
   fi
 fi
-$httpd -d $testdir
+$httpd -f $testdir/conf/httpd.conf
 
 #
 # Prepare htdig test environment

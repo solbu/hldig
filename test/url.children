@@ -1,0 +1,10 @@
+./
+./../
+../foo.html
+.../foo.html
+/foo.html
+#top
+index.html
+test.htm
+/top/README
+next/foo.html

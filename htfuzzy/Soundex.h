@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Soundex.h,v 1.3 1999/09/24 10:29:01 loic Exp $
+// $Id: Soundex.h,v 1.4 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #ifndef _Soundex_h_
@@ -25,7 +25,7 @@ public:
 	//
 	// Construction/Destruction
 	//
-        Soundex(const Configuration& config_arg);
+        Soundex(const HtConfiguration& config_arg);
 	virtual			~Soundex();
 
 	virtual void	generateKey(char *word, String &key);

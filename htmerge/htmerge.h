@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htmerge.h,v 1.10 1999/10/01 15:19:29 loic Exp $
+// $Id: htmerge.h,v 1.11 2000/02/19 05:29:04 ghutchis Exp $
 //
 
 #ifndef _htmerge_h_
@@ -39,7 +39,7 @@
 extern Dictionary	discard_list;
 extern int		verbose;
 extern int		stats;
-extern Configuration	merge_config;
+extern HtConfiguration	merge_config;
 
 
 // Component procedures

@@ -11,6 +11,10 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
 
 AC_INIT(htcommon/DocumentDB.cc)
 VERSION=`cat ${srcdir}/.version`
@@ -96,10 +100,14 @@ AC_PATH_PROG(PERL, perl, /usr/bin/perl)
 AC_PATH_PROG(FIND, find, /bin/find)
 AC_PATH_PROG(GUNZIP, gunzip, /bin/gunzip)
 AC_CHECK_PROGS(TAR, tar gtar gnutar, tar)
+AC_PATH_PROG(MV, mv, /bin/mv)
 AC_PATH_PROG(PDF_PARSER, acroread, /usr/local/bin/acroread)
 AC_PATH_PROG(SENDMAIL, sendmail, /usr/lib/sendmail, 
    $PATH:/usr/libexec:/usr/sbin:/usr/lib:/usr/etc:etc)
 AM_PROG_TIME
+
+AM_PROG_LEX
+AC_PROG_YACC
 
 dnl Check for AIX problems
 AC_AIX
@@ -117,7 +125,7 @@ AC_HEADER_TIME
 
 dnl More header checks--here use C++
 AC_LANG_CPLUSPLUS
-AC_CHECK_HEADERS(fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h getopt.h strings.h zlib.h sys/select.h)
+AC_CHECK_HEADERS(fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h getopt.h strings.h zlib.h alloca.h sys/select.h)
 AC_CHECK_HEADER(fstream.h,nofstream=0,nofstream=1)
 if test "x$nofstream" = "x1" ; then
 AC_MSG_ERROR([To compile ht://Dig, you will need a C++ library. Try installing libstdc++.])
@@ -125,6 +133,7 @@ fi
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_LANG_C
+AC_FUNC_ALLOCA
 AC_C_CONST
 AC_STRUCT_TM
 dnl AC_CHECK_SIZEOF(int *) => SIZEOF_INT_P
@@ -201,7 +210,7 @@ fi
 if test -n "$TESTDIR"
 then
 	CHECK_USER
-	AC_PROG_APACHE
+	AC_PROG_APACHE(1.3.1)
 fi
 
 #
@@ -212,10 +221,10 @@ ac_configure_args="$ac_configure_args --enable-cxx"
 
 AC_CONFIG_SUBDIRS(db/dist)
 
-HTDIGDIRS="db htlib htcommon htword htnet htfuzzy htdig htsearch htmerge htnotify installdir include htdoc $TESTDIR ."
+HTDIGDIRS="db htlib htword htcommon htnet htfuzzy htdb htdig htsearch htmerge htnotify installdir include htdoc $TESTDIR ."
 AC_SUBST(HTDIGDIRS)
 
-AC_OUTPUT(Makefile db/Makefile htcommon/Makefile htword/Makefile htnet/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile test/test_functions)
+AC_OUTPUT(Makefile db/Makefile htcommon/Makefile htword/Makefile htnet/Makefile htlib/Makefile htdb/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile test/test_functions)
 
 echo ""
 echo ""

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.h,v 1.9 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: Server.h,v 1.10 2000/02/19 05:28:52 ghutchis Exp $
 //
 
 #ifndef _Server_h_
@@ -17,12 +17,13 @@
 
 #include "Object.h"
 #include "htString.h"
+#include "StringList.h"
 #include "Stack.h"
 #include "HtHeap.h"
 #include "StringMatch.h"
 #include "URLRef.h"
+#include "HtDateTime.h"
 
-#include <time.h>
 
 class Document;
 
@@ -32,7 +33,7 @@ public:
 	//
 	// Construction/Destruction
 	//
-	Server(char *host, int port);
+	Server(URL u, StringList *local_robots_files = NULL);
 	~Server();
 
 	//
@@ -48,11 +49,17 @@ public:
 	char			*host()	{return _host;}
 	
 	//
-	// Add a path to the queue for this server.  This will check to
-	// see if the path in the path is allowed.  If it isn't allowed,
-	// it simply won't be added.
+	// Provide some way of getting at the status of this server
 	//
-	void			push(char *path, int hopcount, char *referer);
+	int			IsDead()		{return _bad_server;}
+	void			IsDead(int flag)	{_bad_server = flag;}
+
+	//
+	// Add a path to the queue for this server.
+	// This will check to see if the server is up if the URL is not local
+	// if it's down, it simply will not be added
+	//
+	void			push(char *path, int hopcount, char *referer, int local = 0);
 
 	//
 	// Return the next URL from the queue for this server.
@@ -69,17 +76,33 @@ public:
 	// Produce statistics for this server.
 	//
 	void			reportStatistics(String &out, char *name);
+
+	//
+        // Methods for managing persistent connections
+	//
+        void			AllowPersistentConnection() { _persistent_connections = 1; }
+        void			AvoidPersistentConnection() { _persistent_connections = 0; }
+        int			IsPersistentConnectionAllowed () { return _persistent_connections; }
+
+	//
+	// Return the URLs to be excluded from this server
+	// (for inclusion in the exclude_urls attribute)
+	//
+	int			IsDisallowed(String url) { return _disallow.match(url, 0, 0); }
 	
 private:
 	String			_host;
 	int			_port;
 	int			_bad_server;		// TRUE if we shouldn't use this one
 	int		        _connection_space;	// Seconds between connections
-	time_t			_last_connection;	// Time of last connection to this server
+	HtDateTime		_last_connection;	// Time of last connection to this server
 	HtHeap			_paths;
-	StringMatch		_disallow;	// This pattern will be used to test paths
+	HtRegex			_disallow;	// This pattern will be used to test paths
 	int		        _documents;	// Number of documents visited
 	int                     _max_documents;  // Maximum number of documents from this server
+        int                     _persistent_connections; // Are pcs allowed
+
+        
 };
 
 #endif

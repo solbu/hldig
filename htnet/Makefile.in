@@ -11,6 +11,18 @@
 # PARTICULAR PURPOSE.
 
 
+#
+# To compile with profiling do the following:
+#
+# make clean
+# ( cd db ; make all )
+# make CXXFLAGS=-g PROFILING=-p all
+#
+# Note that it's necessary to rebuild Berkeley DB without CXXFLAGS set because
+# it has undesirable effects. CXXFLAGS must be set to -g because it defaults
+# to -g -O2 when g++ is used and profiling is not done in a intuitive way.
+#
+
 
 SHELL = @SHELL@
 
@@ -62,6 +74,7 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 APACHE = @APACHE@
+APACHE_MODULES = @APACHE_MODULES@
 AR = @AR@
 AS = @AS@
 CC = @CC@
@@ -83,10 +96,12 @@ IMAGE_DIR = @IMAGE_DIR@
 IMAGE_URL_PREFIX = @IMAGE_URL_PREFIX@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LEX = @LEX@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MV = @MV@
 NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
@@ -103,20 +118,23 @@ TIME = @TIME@
 TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
+YACC = @YACC@
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES)
+AUTOMAKE_OPTIONS = foreign
+
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES) $(PROFILING)
 
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libdb.a
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libhtdb.a
 
 
 lib_LTLIBRARIES = libhtnet.la
 
-libhtnet_la_SOURCES = Connection.cc Transport.cc HtHTTP.cc 
+libhtnet_la_SOURCES = Connection.cc Transport.cc HtHTTP.cc HtFile.cc
 
 libhtnet_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS =  	Connection.h 	Transport.h 	HtHTTP.h
+noinst_HEADERS =  	Connection.h 	Transport.h 	HtHTTP.h 	HtFile.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -128,7 +146,7 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 libhtnet_la_LIBADD = 
-libhtnet_la_OBJECTS =  Connection.lo Transport.lo HtHTTP.lo
+libhtnet_la_OBJECTS =  Connection.lo Transport.lo HtHTTP.lo HtFile.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -141,7 +159,8 @@ DIST_COMMON =  Makefile.am Makefile.in
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/Connection.P .deps/HtHTTP.P .deps/Transport.P
+DEP_FILES =  .deps/Connection.P .deps/HtFile.P .deps/HtHTTP.P \
+.deps/Transport.P
 SOURCES = $(libhtnet_la_SOURCES)
 OBJECTS = $(libhtnet_la_OBJECTS)
 

@@ -14,13 +14,14 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.5 1999/10/07 14:55:43 loic Exp $
+// $Id: Transport.cc,v 1.6 2000/02/19 05:29:05 ghutchis Exp $
 //
 //
 
 #include "Transport.h"
-#include <iostream.h>
 
+#include <iomanip.h>
+#include <ctype.h>
 
 #define DEFAULT_CONNECTION_TIMEOUT 15
 
@@ -30,6 +31,11 @@
 
    // Debug level
    	 int Transport::debug = 0;
+
+   // Statistics
+   	 int Transport::_tot_open = 0;
+   	 int Transport::_tot_close = 0;
+   	 int Transport::_tot_changes = 0;
 
 
 ///////
@@ -132,7 +138,8 @@ void Transport_Response::Reset()
 
 Transport::Transport()
 {
-  _port = 0;
+  _port = -1;     // Initialize port
+  _host = 0;      // Initialize the host
   _max_document_size = 0;
   _timeout = DEFAULT_CONNECTION_TIMEOUT;
 }
@@ -146,8 +153,24 @@ Transport::~Transport()
 {
 
    // Close the connection that was still up
-   if (CloseConnection() && debug > 3)
-	    cout << "Closing previous connection with the remote host" << endl;
+   if (CloseConnection())
+      if ( debug > 4 )
+         cout  << setw(5) << GetTotOpen() << " - "
+            << "Closing previous connection with the remote host" << endl;
+
+}
+
+///////
+   //    Show the statistics
+///////
+
+ostream &Transport::ShowStatistics (ostream &out)
+{
+   out << " Connections opened        : " << GetTotOpen() << endl;
+   out << " Connections closed        : " << GetTotClose() << endl;
+   out << " Changes of server         : " << GetTotServerChanges() << endl;
+         
+   return out;
 
 }
 
@@ -164,13 +187,15 @@ Transport::~Transport()
 
 int Transport::OpenConnection()
 {
-   if(_connection.isopen()) return -1; // Already open
+   if(_connection.isopen() && _connection.isconnected())
+      return -1; // Already open and connection is up
 
    // No open connection
    // Let's open a new one
    
    if(_connection.open() == NOTOK) return 0; // failed
 
+   _tot_open ++;
    return 1;
 }
 
@@ -240,36 +265,123 @@ int Transport::CloseConnection()
    if(_connection.isopen())
    	 _connection.close(); 	// Close the connection
    else return 0;
+
+   _tot_close ++;
    
    return 1;
 }
 
 
-void Transport::SetConnection (char *host, int port)
+void Transport::SetConnection (const String &host, int port)
 {
 
-   bool ischanged = false;
-
-   // Checking the connection server   
-   if( (char *) _host != host )   	 // server is gonna change
-     ischanged=true;
-
-   // Checking the connection port
-   if( _port != port )  	 // the port is gonna change
-     ischanged=true;
-
-   if (ischanged)
+   if (_port != -1)
    {
-     // Let's close any pendant connection with the old
-     // server / port pair
-	 
-     CloseConnection();
+      // Already initialized
+      // Let's check if the server or the port are changed
+      
+      bool ischanged = false;
+
+      // Checking the connection server   
+      if(_host != host)   	 // server is gonna change
+        ischanged=true;
+
+      // Checking the connection port
+      if( _port != port )  	 // the port is gonna change
+        ischanged=true;
+
+      if (ischanged)
+      {
+        // Let's close any pendant connection with the old
+        // server / port pair
+
+         _tot_changes ++;
+      
+         if ( debug > 4 )
+            cout  << setw(5) << GetTotOpen() << " - "
+               << "Change of server. Previous connection closed." << endl;
+      
+        CloseConnection();
+      }
    }
 
    // Copy the host and port information to the object
    _host = host;
    _port = port;
 
+}
+
+
+// Create a new date time object containing the date specified in a string
+HtDateTime *Transport::NewDate(const char *datestring)
+{
+
+   while(isspace(*datestring)) datestring++; // skip initial spaces
+
+   DateFormat df = RecognizeDateFormat (datestring);
+
+   if(df == DateFormat_NotRecognized)
+   {
+   	 // Not recognized
+	 if(debug > 0)
+   	 	 cout << "Date Format not recognized: " << datestring << endl;
+	 
+	 return NULL;
+   }
+
+   HtDateTime *dt = new HtDateTime;
+   
+   dt->ToGMTime(); // Set to GM time
+   
+   switch(df)
+   {
+	       // Asc Time format
+   	 case DateFormat_AscTime:
+   	       	dt->SetAscTime((char *)datestring);
+   	 	       break;
+	       // RFC 1123
+   	 case DateFormat_RFC1123:
+   	       	dt->SetRFC1123((char *)datestring);
+   	 	       break;
+		  // RFC 850
+   	 case DateFormat_RFC850:
+   	       	dt->SetRFC850((char *)datestring);
+   	 	       break;
+         default:
+	        cout << "Date Format not handled: " << (int)df << endl;
+	        break;
+   }
+
+   return dt;
+   
+}
+
+
+// Recognize the possible date format sent by the server
+Transport::DateFormat Transport::RecognizeDateFormat (const char *datestring)
+{
+   register char *s;
+   
+   if((s=strchr(datestring, ',')))
+   {
+   	 // A comma is present.
+	 // Two chances: RFC1123 or RFC850
+
+   	 if(strchr(s, '-'))
+	    return DateFormat_RFC850;  // RFC 850 recognized   
+	 else
+	    return DateFormat_RFC1123; // RFC 1123 recognized
+   }
+   else
+   {
+      // No comma present
+	 
+	 // Let's try C Asctime:    Sun Nov  6 08:49:37 1994
+	 if(strlen(datestring) == 24) return DateFormat_AscTime;
+   }
+   
+   return DateFormat_NotRecognized;
+   
 }
 
 // End of Transport.cc (it's a virtual class anyway!)

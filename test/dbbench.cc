@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: dbbench.cc,v 1.7 1999/09/29 10:10:09 loic Exp $
+// $Id: dbbench.cc,v 1.8 2000/02/19 05:29:10 ghutchis Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
@@ -45,7 +45,9 @@ char *alloca ();
 # endif
 #endif
 
+#ifdef HAVE_LIBZ
 #include <zlib.h>
+#endif /* HAVE_LIBZ */
 #include <htString.h>
 #include <db.h>
 
@@ -69,7 +71,9 @@ typedef struct {
 } params_t;
 
 static void dobench(params_t* params);
+#ifdef HAVE_LIBZ
 static void docompress(params_t* params);
+#endif /* HAVE_LIBZ */
 static int verbose;
 
 void usage();
@@ -168,7 +172,12 @@ int main(int ac, char **av)
     }
 
   if(params.compress_test) {
+#ifdef HAVE_LIBZ
     docompress(&params);
+#else /* HAVE_LIBZ */
+    fprintf(stderr, "compiled without zlib, compression test not available\n");
+    exit(1);
+#endif /* HAVE_LIBZ */
   } else {
     dobench(&params);
   }
@@ -188,12 +197,12 @@ void dbput(DB* db, params_t*, const String& key, const String& data)
     memset(&d, 0, sizeof(DBT));
 
     char* key_string = (char*)alloca(key.length());
-    strcpy(key_string, key.get());
+    memcpy(key_string, key.get(),key.length());
     k.data = key_string;
     k.size = key.length();
 
     char* data_string = (char*)alloca(data.length());
-    strcpy(data_string, data.get());
+    memcpy(data_string, data.get(),data.length());
     d.data = data_string;
     d.size = data.length();
 
@@ -460,6 +469,7 @@ static void dobench(params_t* params)
   free(dbenv);
 }
 
+#ifdef HAVE_LIBZ
 /*
  * Compress file one block after the other. Intended for mesuring the
  * compression overhead.
@@ -518,3 +528,4 @@ static void docompress(params_t* params)
   
   close(in);
 }
+#endif /* HAVE_LIBZ */

@@ -10,7 +10,7 @@
 	  htsearch
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-1999 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -50,7 +50,8 @@
 	  </dt>
 	  <dd>
 		This value is a pattern that all URLs of the search results
-		cannot match.<br>
+		cannot match. This pattern may include regular
+	      expressions when enclosed within [ and ] characters.<br>
 		 The default is blank.
 	  </dd>
 	  <dt>
@@ -79,6 +80,10 @@
 		menu with a limited set of predetermined categories or
 		keywords to restrict the search. This can be very useful
 		for very structured pages.
+		<br>Note that the words may appear anywhere in the document.
+		The scope of these required words is <b>not</b> limited to
+		words in META tags with the "keywords" or "htdig-keywords"
+		property, despite what the parameter name may suggest.
 	  </dd>
 	  <dt>
 		<b>matchesperpage</b>
@@ -117,7 +122,8 @@
 		This value is a pattern that all URLs of the search results
 		will have to match. This can be used to restrict the search
 		to a particular subtree or subsection of a bigger
-		database.<br>
+		database. The pattern may include regular expressions
+	      when the expression is enclosed by [ and ] characters.<br>
 		 The default is blank.
 	  </dd>
 	  <dt>
@@ -144,8 +150,8 @@
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
-<!-- hhmts start -->
-Last modified: Mon Feb  8 20:41:52 EST 1999
-<!-- hhmts end -->
+
+Last modified: $Date: 2000/02/19 05:29:01 $
+
   </body>
 </html>

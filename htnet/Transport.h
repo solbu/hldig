@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.6 1999/10/08 09:49:20 angus Exp $
+// $Id: Transport.h,v 1.7 2000/02/19 05:29:05 ghutchis Exp $
 //
 //
 
@@ -23,6 +23,7 @@
 #include "htString.h"
 #include "URL.h"
 #include "Connection.h"
+#include <iostream.h>
 
 // Declare in advance
 class Transport;
@@ -68,7 +69,8 @@ class Transport_Response : public Object
    // Get the Status Code reason phrase
    char *GetReasonPhrase() { return _reason_phrase; }
 
-
+   // Get the location (redirect)
+   char *GetLocation() { return _location; }
 
    
    protected:
@@ -86,6 +88,8 @@ class Transport_Response : public Object
 
 	 int   	   _status_code;  	  // return Status code
 	 String	   _reason_phrase;	  // status code reason phrase
+
+	 String    _location;	          // Location (in case of redirect) 
    
 };
 
@@ -136,7 +140,7 @@ class Transport : public Object
 ///////
 
    // Set Connection parameters
-   virtual void SetConnection (char *host, int port);
+   virtual void SetConnection (const String &host, int port);
 
    // from a URL pointer
    virtual void SetConnection (URL *u)
@@ -162,7 +166,7 @@ class Transport : public Object
    int GetTimeOut () { return _timeout; }
 
    // Get the Connection Host
-   char *GetHost() { return _host; }
+   const String &GetHost() { return _host; }
 
    // Get the Connection Host
    int GetPort() { return _port; }
@@ -239,7 +243,33 @@ protected:
    
    int CloseConnection();
 
+   // Get statistics info
+   static int GetTotOpen () { return _tot_open; }   
+   static int GetTotClose () { return _tot_close; }   
+   static int GetTotServerChanges () { return _tot_changes; }   
 
+   // Reset Stats
+   static void ResetStatistics ()
+   	 { _tot_open=0; _tot_close=0; _tot_changes=0;}   
+
+   // Show stats
+   static ostream &ShowStatistics (ostream &out);
+
+   // Methods for manipulating date strings -- useful for subclasses
+
+   enum DateFormat
+   {
+   	 DateFormat_RFC1123,
+	 DateFormat_RFC850,
+	 DateFormat_AscTime,
+	 DateFormat_NotRecognized
+   };
+
+   //    Create a new HtDateTime object
+   HtDateTime *NewDate(const char *);
+
+   //    Recognize Date Format
+   DateFormat RecognizeDateFormat (const char *);
 
  protected:
 
@@ -264,6 +294,11 @@ protected:
    ///////
 
    static int debug;
+
+   // Statistics about requests
+   static int  _tot_open;  	 // Number of connections opened
+   static int  _tot_close;  	 // Number of connections closed
+   static int  _tot_changes;  	 // Number of server changes
 
 };
 

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.cc,v 1.12 1999/10/08 14:50:24 ghutchis Exp $
+// $Id: HtDateTime.cc,v 1.13 2000/02/19 05:29:03 ghutchis Exp $
 //
 
 #include "HtDateTime.h"
@@ -41,12 +41,15 @@ static char _strtime[MAXSTRTIME];
 
 //     RFC1123: Sun, 06 Nov 1994 08:49:37 GMT
 #define RFC1123_FORMAT "%a, %d %b %Y %H:%M:%S %Z"
+#define LOOSE_RFC1123_FORMAT "%d %b %Y %H:%M:%S %Z"
 
 //     RFC850 : Sunday, 06-Nov-94 08:49:37 GMT
 #define RFC850_FORMAT  "%A, %d-%b-%y %H:%M:%S %Z"
+#define LOOSE_RFC850_FORMAT  "%d-%b-%y %H:%M:%S %Z"
 
 //     ANSI C's asctime() format : Sun Nov  6 08:49:37 1994
 #define ASCTIME_FORMAT  "%a %b %e %H:%M:%S %Y"
+#define LOOSE_ASCTIME_FORMAT  "%b %e %H:%M:%S %Y"
 
 // 	  ISO8601 : 1994-11-06 08:49:37 GMT
 #define ISO8601_FORMAT "%Y-%m-%d %H:%M:%S %Z"
@@ -100,6 +103,8 @@ char *HtDateTime::SetFTime(const char *buf, const char *format)
 void HtDateTime::SetAscTime(char *s)
 {
 
+   // Unfortunately, I cannot think of an easy test to 
+   // see if we have a weekday *FIX*
    SetFTime(s, ASCTIME_FORMAT);
 
 }
@@ -121,7 +126,15 @@ void HtDateTime::SetRFC1123(char *s)
    // seconds ( 00 - 59);
    // time zone name;
 
-   SetFTime(s, RFC1123_FORMAT);
+   // First, if we have it, strip off the weekday
+   char *stripped;
+   stripped = strchr(s, ',');
+   if (stripped)
+        stripped++;
+   else
+        stripped = s;
+
+   SetFTime(stripped, LOOSE_RFC1123_FORMAT);
 
 }
 
@@ -143,7 +156,15 @@ void HtDateTime::SetRFC850(char *s)
    // seconds ( 00 - 59);
    // time zone name;
 
-   SetFTime(s, RFC850_FORMAT);
+   // First, if we have it, strip off the weekday
+   char *stripped;
+   stripped = strchr(s, ',');
+   if (stripped)
+        stripped++;
+   else
+        stripped = s;
+
+   SetFTime(stripped, LOOSE_RFC850_FORMAT);
 
 }
 
@@ -857,7 +878,7 @@ int HtDateTime::Test(void)
 
    int ok=1;
    
-   char *test_dates[] = 
+   const char *test_dates[] = 
    {
     "1970.01.01 00:00:00",
     "1970.01.01 00:00:01",
@@ -880,7 +901,7 @@ int HtDateTime::Test(void)
     0
    };
 
-   char *test_dates_ISO8601[] = 
+   const char *test_dates_ISO8601[] = 
    {
     "1970-01-01 00:00:00 GMT",
     "1970-01-01 00:00:00 CET",
@@ -890,7 +911,7 @@ int HtDateTime::Test(void)
     0
    };
 
-   char *test_dates_RFC1123[] = 
+   const char *test_dates_RFC1123[] = 
    {
    "Sun, 06 Nov 1994 08:49:37 GMT",
    "Sun, 25 Apr 1999 17:49:37 GMT",
@@ -898,7 +919,7 @@ int HtDateTime::Test(void)
     0
    };
   
-   char *test_dates_RFC850[] = 
+   const char *test_dates_RFC850[] = 
    {
    "Sunday, 06-Nov-94 08:49:37 GMT",
    "Sunday, 25-Apr-99 17:49:37 GMT",
@@ -907,7 +928,7 @@ int HtDateTime::Test(void)
    };
   
 
-   char myformat[]="%Y.%m.%d %H:%M:%S";
+   const char myformat[]="%Y.%m.%d %H:%M:%S";
 
    // Tests a personal format  
    

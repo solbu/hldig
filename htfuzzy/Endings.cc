@@ -10,18 +10,18 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Endings.cc,v 1.8 1999/10/08 12:59:56 loic Exp $
+// $Id: Endings.cc,v 1.9 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #include "Endings.h"
 #include "htfuzzy.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 
 
 //*****************************************************************************
 // Endings::Endings()
 //
-Endings::Endings(const Configuration& config_arg) :
+Endings::Endings(const HtConfiguration& config_arg) :
   Fuzzy(config_arg)
 {
     root2word = 0;

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Metaphone.cc,v 1.8 1999/09/24 10:29:01 loic Exp $
+// $Id: Metaphone.cc,v 1.9 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #include "Metaphone.h"
@@ -21,9 +21,9 @@
 
 
 //*****************************************************************************
-// Metaphone::Metaphone(const Configuration& config_arg)
+// Metaphone::Metaphone(const HtConfiguration& config_arg)
 //
-Metaphone::Metaphone(const Configuration& config_arg) :
+Metaphone::Metaphone(const HtConfiguration& config_arg) :
   Fuzzy(config_arg)
 {
 	name = "metaphone";

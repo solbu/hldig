@@ -10,7 +10,7 @@
 	  htdig
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-1999 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -46,6 +46,14 @@
 	  </dd>
 	  <dd>
 		<dl compact>
+	          <dt>
+		        -
+		  </dt>
+		  <dd>
+		         Get the list of URLs to start indexing from
+		         the STDIN. This will override the default
+		         start_url and the file supplied to -m [url_file].
+		  </dd>
 		  <dt>
 			-a
 		  </dt>
@@ -87,6 +95,12 @@
 			 interrupted digs from the
 			 <a href="attrs.html#url_log">log file</a> and write the
 			 progress out if interrupted by a signal.
+		  </dd>
+		  <dt>
+		      -m [url_file]
+		  </dt>
+		  <dd>
+		         Minimal. Only index the URLs in the file provided and no others.
 		  </dd>
 		  <dt>
 			-s
@@ -181,8 +195,8 @@
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
-<!-- hhmts start -->
-Last modified: Mon Feb  8 20:40:08 EST 1999
-<!-- hhmts end -->
+
+Last modified: $Date: 2000/02/19 05:29:01 $
+
   </body>
 </html>

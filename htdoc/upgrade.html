@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+  <head>
+	<title>
+	  ht://Dig: Upgrading to 3.2.0b1
+	</title>
+  </head>
+  <body bgcolor="#eef7ff">
+	<h1>
+	  Upgrading from 3.1.x to 3.2.0b1
+	</h1>
+	<p>
+	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
+	  Please see the file <a href="COPYING">COPYING</a> for
+	  license information.
+	</p>
+	<hr size="4" noshade>
+	<p>
+	This guide is intended for those upgrading from 3.1.x or
+	earlier versions to 3.2.0b1. The best advice is
+	<emph>don't</emph>. That is, it is highly recommended that you
+	install the 3.2 release in a separate directory tree and treat
+	everything as if you were installing it for the first
+	time. This is not just because this is a beta release. There
+	are two main reasons for this:
+	<ul>
+	<li>The default directory structure of this release is
+	different from previous releases, more in line with other UNIX
+	programs.</li>
+	<li>The databases are all in different formats. This version
+	cannot read databases from previous versions since the new
+	formats have significantly more information and this cannot be
+	reconstructed from old databases. This goes for fuzzy
+	databases as well.</li>
+	</ul>
+	Text files, such as config files, result templates, etc. are
+	the same between releases, so you will probably wish to copy
+	these to your new installation.</li>
+	</p>
+
+	<p>
+	Additionally, you may find things a bit rough at first. We
+	appreciate your comments and suggestions, especially in the
+	form of performance comparisons with the 3.1.x
+	releases. Additionally, there are several things planned for
+	the final 3.2.0 release that have not been implemented yet:
+	<ul>
+	<li>Proximity (near) searching.</li>
+	<li>Phrase searching method (in addition to and, or, and boolean).</li>
+	<li>Field-based searching--restricting to a header, title, etc.</li>
+	<li>Date-based searching--restricting to a range of dates.</li>
+	<li>Implementation of a more accurate scoring system.</li>
+	<li>Parallel indexing and searching.</li>
+	<li>"Collections" of multiple databases.</li>
+	<li>Support for nntp: and ftp: access</li>
+	<li>Detection of loops and/or duplicate documents</li>
+	<li>An accent-based fuzzy algorithm: match r&eacute;sum&eacute;
+	with resume.</li>
+	</ul>
+	Please send comments, patches, etc. to the &lt;<a
+	href="mailto:htdig3-dev@htdig.org">htdig3-dev@htdig.org</a>&gt;
+	mailing list.
+
+	<hr size="4" noshade>
+	<address>
+	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
+	</address>
+	Last modified: $Date: 2000/02/19 05:29:02 $
+  </body>
+</html>

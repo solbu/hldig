@@ -11,10 +11,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htmerge.cc,v 1.17 1999/10/08 12:59:56 loic Exp $
+// $Id: htmerge.cc,v 1.18 2000/02/19 05:29:04 ghutchis Exp $
 //
 
 #include "htmerge.h"
+
+#include "WordContext.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -30,7 +32,7 @@
 Dictionary	discard_list;
 
 // This config is used for merging multiple databses
-Configuration    merge_config;
+HtConfiguration    merge_config;
 
 int		verbose = 0;
 int		stats = 0;
@@ -91,7 +93,7 @@ int main(int ac, char **av)
     }
 	
     config.Read(configfile);
-    
+
     //
     // Check url_part_aliases and common_url_parts for
     // errors.
@@ -144,7 +146,9 @@ int main(int ac, char **av)
 	    config.Add("doc_excerpt", configValue);
 	}
     }
-    
+
+    WordContext::Initialize(config);
+
     if (merge_configfile.length())
     {
 	// Merge the databases specified in merge_configfile into the current

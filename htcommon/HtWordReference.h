@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordReference.h,v 1.1 1999/10/01 15:19:28 loic Exp $
+// $Id: HtWordReference.h,v 1.2 2000/02/19 05:28:49 ghutchis Exp $
 //
 #ifndef _HtWordReference_h_
 #define _HtWordReference_h_
@@ -58,12 +58,12 @@ public:
 	//
 	String			Word() const { return key.GetWord(); }
 	void			Word(const String& arg) { key.SetWord(arg); }
-	unsigned int		DocID() const { return key.GetDocID(); }
-	void			DocID(const unsigned int arg) { key.SetDocID(arg); }
-	unsigned int		Flags() const { return key.GetFlags(); }
-	void			Flags(const unsigned int arg) { key.SetFlags(arg); }
-	unsigned int		Location() const { return key.GetLocation(); }
-	void			Location(const unsigned int arg) { key.SetLocation(arg); }
+	unsigned int		DocID() const { return key.Get( 1 ); }
+	void			DocID(const unsigned int arg) { key.Set( 1, arg); }
+	unsigned int		Flags() const { return key.Get( 2 ); }
+	void			Flags(const unsigned int arg) { key.Set( 2, arg); }
+	unsigned int		Location() const { return key.Get( 3 ); }
+	void			Location(const unsigned int arg) { key.Set( 3, arg); }
 	unsigned int		Anchor() const { return record.info.data; }
 	void			Anchor(const unsigned int arg) { record.info.data = arg; }
 

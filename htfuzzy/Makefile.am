@@ -1,6 +1,8 @@
 
 include $(top_srcdir)/Makefile.config
 
+LOCAL_DEFINES=  -DMV=\"$(MV)\"
+
 lib_LTLIBRARIES = libfuzzy.la
 
 libfuzzy_la_SOURCES = Endings.cc EndingsDB.cc Exact.cc \
@@ -27,4 +29,5 @@ bin_PROGRAMS = htfuzzy
 
 htfuzzy_SOURCES = htfuzzy.cc
 htfuzzy_DEPENDENCIES = libfuzzy.la $(HTLIBS)
+htfuzzy_LDFLAGS = $(PROFILING)
 htfuzzy_LDADD = libfuzzy.la $(HTLIBS)

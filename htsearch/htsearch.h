@@ -1,23 +1,13 @@
-/***************************************************************************
-                          htsearch.h  -  description
-                             -------------------
-    begin                : Fri Oct 8 1999
-    copyright            : (C) 1999 by 
-    email                : 
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 //
 // htsearch.h
 //
-// $Id: htsearch.h,v 1.9 1999/10/15 03:44:35 jtillman Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: htsearch.h,v 1.10 2000/02/19 05:29:06 ghutchis Exp $
 //
 
 #ifndef _htsearch_h_
@@ -35,7 +25,7 @@
 #include "good_strtok.h"
 #include "DocumentDB.h"
 #include "htString.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "ResultMatch.h"
 #include "ResultList.h"
 #include "HtWordReference.h"

@@ -9,22 +9,22 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Speling.cc,v 1.6 1999/10/01 12:53:53 loic Exp $
+// $Id: Speling.cc,v 1.7 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #include "Speling.h"
 #include "htString.h"
 #include "List.h"
 #include "StringMatch.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 
 #include <fstream.h>
 #include <stdio.h>
 
 //*****************************************************************************
-// Speling::Speling(const Configuration& config_arg)
+// Speling::Speling(const HtConfiguration& config_arg)
 //
-Speling::Speling(const Configuration& config_arg) :
+Speling::Speling(const HtConfiguration& config_arg) :
   Fuzzy(config_arg)
 {
     name = "speling";

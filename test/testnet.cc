@@ -1,4 +1,4 @@
-// $Id: testnet.cc,v 1.8 1999/10/08 12:59:58 loic Exp $
+// $Id: testnet.cc,v 1.9 2000/02/19 05:29:10 ghutchis Exp $
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
 #endif /* HAVE_CONFIG_H */
@@ -19,17 +19,20 @@
 
 #include <unistd.h>
 
+#define DEFAULT_MAX_DOCUMENT_SIZE 40000
+
 int debug = 0;
 int timesvar = 1;
 int persistent = 1;
 int timeout = 10;
 int head_before_get = 1;
+int max_doc = DEFAULT_MAX_DOCUMENT_SIZE;
+
 
 URL *url;
 Transport *transportConnect = NULL;
 HtHTTP    *HTTPConnect = NULL;
 
-#define DEFAULT_MAX_DOCUMENT_SIZE 40000
 
 static void usage();
 void reportError(char *msg);
@@ -63,7 +66,7 @@ int main(int ac, char **av)
    //	Retrieving options from command line with getopt
 ///////
 
-   while((c = getopt(ac, av, "vU:T:t:ng")) != -1)
+   while((c = getopt(ac, av, "vU:T:t:ngm:")) != -1)
    {
       switch (c)
       {
@@ -78,6 +81,9 @@ int main(int ac, char **av)
             break;
          case 't':
             timeout=atoi(optarg);
+            break;
+         case 'm':
+            max_doc=atoi(optarg);
             break;
          case 'n':
             persistent = 0;
@@ -192,6 +198,15 @@ int main(int ac, char **av)
    }
 
    HtDateTime EndTime;
+
+   // Memory freeing
+
+   if (HTTPConnect)
+     delete HTTPConnect;
+   
+   if (url) delete url;
+
+   // Show statistics
    
    if(debug>0)
    {
@@ -201,46 +216,31 @@ int main(int ac, char **av)
 
       if (persistent)
       {
-         cout << " Persistent connections: On" << endl;
+         cout << " Persistent connections    : On" << endl;
          if (head_before_get)
-            cout << " HTTP/1.1 HEAD method call before GET: On" << endl;
+            cout << " HTTP/1.1 HEAD before GET  : On" << endl;
          else
-            cout << " HTTP/1.1 HEAD method call before GET: Off" << endl;
+            cout << " HTTP/1.1 HEAD before GET  : Off" << endl;
       }
       else
-         cout << " Persistent connections: Off" << endl;
+         cout << " Persistent connections : Off" << endl;
 
       
-      cout << " Timeout value        : " << timeout << endl;
+      cout << " Timeout value             : " << timeout << endl;
       
-      if (head_before_get)
-         cout << " Requests             : " << timesvar
-            << " (effective " << HtHTTP::GetTotRequests() << ")" << endl;
-      else
-         cout << " Requests             : " << HtHTTP::GetTotRequests() << endl;
-         
-      cout << " Timed out            : " << _timed_out << endl;
-      cout << " Unknown errors       : " << _errors << endl;
-      cout << " Elapsed time         : approximately "
+      cout << " Document requests         : " << timesvar << endl;
+
+      HtHTTP::ShowStatistics(cout);
+
+      cout << " Timed out                 : " << _timed_out << endl;
+      cout << " Unknown errors            : " << _errors << endl;
+      cout << " Elapsed time              : approximately "
          << HtDateTime::GetDiff(EndTime, StartTime) << " secs" << endl;
-      cout << " Connection time      : approximately "
-         << HtHTTP::GetTotSeconds() << " secs" << endl;
-      cout << " KBytes requested     : " << (double)HtHTTP::GetTotBytes()/1024 << endl;
-      cout << " Average request time : approximately "
-      << HtHTTP::GetAverageRequestTime() << " secs" << endl;
-         
-      cout << " Average speed        : " << HtHTTP::GetAverageSpeed()/1024
-         << " KBytes/secs" << endl;
+
    }
-         
 
-   // Memory freeing
-
-   if (HTTPConnect)
-     delete HTTPConnect;
+   // Return values
    
-   if (url) delete url;
-
    if (_errors) return -1;
    
    if (_timed_out) return 1;
@@ -267,6 +267,9 @@ void usage()
 
 	cout << "\t-t timeout" << endl;
 	cout << "\t\tTimeout value" << endl << endl;
+
+	cout << "\t-m maxdocsize" << endl;
+	cout << "\t\tMax Document size to be retrieved" << endl << endl;
 
 	cout << "\t-n\tNormal connection (disable persistent)" << endl << endl;
 
@@ -325,8 +328,6 @@ Transport::DocStatus Retrieve()
             
 	    HTTPConnect->SetRequestURL(*url);
 
-            HTTPConnect->SetRequestMaxDocumentSize(DEFAULT_MAX_DOCUMENT_SIZE);
-
             // Set the referer
 
             // We may issue a config paramater to enable/disable them
@@ -342,7 +343,7 @@ Transport::DocStatus Retrieve()
         
 	transportConnect = HTTPConnect;
 
-        transportConnect->SetRequestMaxDocumentSize(DEFAULT_MAX_DOCUMENT_SIZE);
+        transportConnect->SetRequestMaxDocumentSize(max_doc);
         transportConnect->SetTimeOut(timeout);
 
     }

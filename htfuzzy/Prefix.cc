@@ -11,19 +11,19 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Prefix.cc,v 1.13 1999/10/01 12:53:53 loic Exp $
+// $Id: Prefix.cc,v 1.14 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #include "Prefix.h"
 #include "htString.h"
 #include "List.h"
 #include "StringMatch.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 
 //*****************************************************************************
-// Prefix::Prefix(const Configuration& config_arg)
+// Prefix::Prefix(const HtConfiguration& config_arg)
 //
-Prefix::Prefix(const Configuration& config_arg) :
+Prefix::Prefix(const HtConfiguration& config_arg) :
   Fuzzy(config_arg)
 {
     name = "prefix";
@@ -78,7 +78,7 @@ Prefix::getWords(char *w, List &words)
 
     int		wordCount = 0;
     int		maximumWords = config.Value("max_prefix_matches", 1000);
-    String	*s;
+    String	s;
     int		len = strlen(w) - prefix_suffix_length;
     
     // Strip the prefix character(s)
@@ -88,13 +88,16 @@ Prefix::getWords(char *w, List &words)
     w2[strlen(w2) - prefix_suffix_length] = '\0';
     String w3(w2);
     w3.lowercase();
-    List	*wordList = wordDB[w3.get()];
+    List	*wordList = wordDB.Prefix(w3.get());
+    WordReference *word_ref;
 
-    while (wordCount < maximumWords && (s = (String *) wordList->Get_Next()))
+    wordList->Start_Get();
+    while (wordCount < maximumWords && (word_ref = (WordReference *) wordList->Get_Next() ))
     {
-	if (mystrncasecmp(s->get(), w, len))
+	s = word_ref->Key().GetWord();
+	if (mystrncasecmp(s.get(), w, len))
 	    break;
-	words.Add(new String(*s));
+	words.Add(new String(s));
 	wordCount++;
     }
     if (wordList) {

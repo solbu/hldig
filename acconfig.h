@@ -7,8 +7,6 @@
 #define FALSE 0
 #endif
 
-#define	VERSION	1
-
 /* Define to the syslog level for htsearch logging. */
 #define LOG_LEVEL LOG_INFO
 

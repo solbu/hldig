@@ -10,14 +10,14 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.cc,v 1.2 1999/10/01 15:19:28 loic Exp $
+// $Id: HtWordList.cc,v 1.3 2000/02/19 05:28:49 ghutchis Exp $
 //
 
 #include "HtWordList.h"
 #include "HtWordReference.h"
 #include "WordRecord.h"
 #include "WordType.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "htString.h"
 
 #include <stdio.h>
@@ -37,7 +37,7 @@ HtWordList::~HtWordList()
 
 //*****************************************************************************
 //
-HtWordList::HtWordList(const Configuration& config_arg) :
+HtWordList::HtWordList(const HtConfiguration& config_arg) :
   WordList(config_arg)
 {
     words = new List;
@@ -83,11 +83,11 @@ void HtWordList::Flush()
 }
 
 //*****************************************************************************
-// void HtWordList::MarkGone()
+// void HtWordList::Skip()
 //   The current document has disappeared or been modified. 
 //   We do not need to store these words.
 //
-void HtWordList::MarkGone()
+void HtWordList::Skip()
 {
   words->Destroy();
 }
@@ -108,7 +108,7 @@ public:
 // Write the ascii representation of a word occurence. Helper
 // of WordList::Dump
 //
-static int dump_word(WordList *, WordCursor &, const WordReference *word, Object &data)
+static int dump_word(WordList *, WordDBCursor &, const WordReference *word, Object &data)
 {
   const HtWordReference *word_tmp = (const HtWordReference *)word;
 
@@ -140,7 +140,8 @@ int HtWordList::Dump(const String& filename)
 
   HtWordReference::DumpHeader(fl);
   DumpWordData data(fl);
-  (void)Walk(WordReference(), HTDIG_WORDLIST_WALK, dump_word, data);
+  WordSearchDescription search(dump_word, &data);
+  Walk(search);
   
   fclose(fl);
 

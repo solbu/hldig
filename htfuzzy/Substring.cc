@@ -11,19 +11,19 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Substring.cc,v 1.11 1999/10/08 12:59:56 loic Exp $
+// $Id: Substring.cc,v 1.12 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #include "Substring.h"
 #include "htString.h"
 #include "List.h"
 #include "StringMatch.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 
 //*****************************************************************************
-// Substring::Substring(const Configuration& config_arg)
+// Substring::Substring(const HtConfiguration& config_arg)
 //
-Substring::Substring(const Configuration& config_arg) :
+Substring::Substring(const HtConfiguration& config_arg) :
   Fuzzy(config_arg)
 {
     name = "substring";

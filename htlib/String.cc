@@ -9,9 +9,8 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.30 1999/09/29 16:33:12 loic Exp $
+// $Id: String.cc,v 1.31 2000/02/19 05:29:03 ghutchis Exp $
 //
-
 
 #include "htString.h"
 #include "Object.h"
@@ -215,13 +214,14 @@ int String::write(int fd) const
 	    return result;
 		
 	left -= result;
+	wptr += result;
     }
     return left;
 }
 
 const char *String::get() const
 {
-  static char	*null = "";
+  static const char	*null = "";
   if (!Allocated)
     return null;
   Data[Length] = '\0';	// We always leave room for this.
@@ -329,6 +329,18 @@ int String::indexOf(char ch) const
     return -1;
 }
 
+int String::indexOf(char ch, int pos) const
+{
+    if (pos >= Length)
+      return -1;
+    for (int i = pos; i < Length; i++)
+    {
+	if (Data[i] == ch)
+	    return i;
+    }
+    return -1;
+}
+
 int String::lastIndexOf(char ch, int pos) const
 {
     if (pos >= Length)
@@ -409,7 +421,7 @@ int String::lowercase()
   int converted = 0;
   for (int i = 0; i < Length; i++)
     {
-      if (isupper(Data[i])) {
+      if (isupper((unsigned char)Data[i])) {
 	Data[i] = tolower((unsigned char)Data[i]);
 	converted++;
       }
@@ -423,7 +435,7 @@ int String::uppercase()
   int converted = 0;
   for (int i = 0; i < Length; i++)
     {
-      if (islower(Data[i])) {
+      if ((unsigned char)islower(Data[i])) {
 	Data[i] = toupper((unsigned char)Data[i]);
 	converted++;
       }
@@ -479,7 +491,7 @@ String &String::chop(char ch)
 }
 
 
-String &String::chop(char *str)
+String &String::chop(const char *str)
 {
 	while (Length > 0 && strchr(str, Data[Length - 1]))
 	    Length--;
@@ -630,4 +642,75 @@ void String::debug(ostream &o)
 	" Data: " << ((void*) Data) << " '" << *this << "'\n";
 }
 
+
+int String::readLine(FILE *in)
+{
+    Length = 0;
+    allocate_fix_space(2048);
+
+    while (fgets(Data + Length, Allocated - Length, in))
+    {
+	Length += strlen(Data + Length);
+	if (Length == 0)
+	    continue;
+	if (Data[Length - 1] == '\n')
+	{
+	    //
+	    // A full line has been read.  Return it.
+	    //
+	    chop('\n');
+	    return 1;
+	}
+	if (Allocated > Length + 1)
+	{
+	    //
+	    // Not all available space filled. Probably EOF?
+	    //
+	    continue;
+	}
+	//
+	// Only a partial line was read. Increase available space in 
+	// string and read some more.
+	//
+	reallocate_space(Allocated << 1);
+    }
+    chop('\n');
+
+    return Length > 0;
+}
+
+istream &operator >> (istream &in, String &line)
+{
+    line.Length = 0;
+    line.allocate_fix_space(2048);
+
+    while (in.get(line.Data + line.Length, line.Allocated - line.Length))
+    {
+	line.Length += strlen(line.Data + line.Length);
+	int c = in.get();
+	if (c == '\n' || c == EOF)
+	{
+	    //
+	    // A full line has been read.  Return it.
+	    //
+	    break;
+	}
+	if (line.Allocated > line.Length + 2)
+	{
+	    //
+	    // Not all available space filled.
+	    //
+	    line.Data[line.Length++] = char(c);
+	    continue;
+	}
+	//
+	// Only a partial line was read. Increase available space in 
+	// string and read some more.
+	//
+	line.reallocate_space(line.Allocated << 1);
+	line.Data[line.Length++] = char(c);
+    }
+
+    return in;
+}
 

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.cc,v 1.4 1999/10/12 08:07:28 loic Exp $
+// $Id: WordType.cc,v 1.5 2000/02/19 05:29:08 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -27,15 +27,14 @@
 
 #include "WordType.h"
 
-WordType* word_type_default = 0;
+WordType* WordType::instance = 0;
 
-// Must only be called once (no tests, though).
 void 
 WordType::Initialize(const Configuration &config_arg)
 {
-  if(word_type_default == 0) {
-    word_type_default = new WordType(config_arg);
-  }
+  if(instance != 0)
+    delete instance;
+  instance = new WordType(config_arg);
 }
 
 WordType::WordType(const Configuration &config)
@@ -60,6 +59,8 @@ WordType::WordType(const Configuration &config)
 	chrtypes[i] |= WORD_TYPE_ALPHA;
     if (isdigit(i))
 	chrtypes[i] |= WORD_TYPE_DIGIT;
+    if (iscntrl(i))
+	chrtypes[i] |= WORD_TYPE_CONTROL;
     if (strchr(extra_word_chars, i))
 	chrtypes[i] |= WORD_TYPE_EXTRA;
     if (strchr(valid_punct, i))
@@ -144,10 +145,10 @@ WordType::Normalize(String& word) const
   // Reject if contains control characters
   //
   int alpha = 0;
-  for(const char *p = (char*)word; *p; p++) {
-    if(IsStrictChar((unsigned char)*p) || (allow_numbers && isdigit(*p))) {
+  for(const unsigned char *p = (const unsigned char*)(const char*)(char *)word; *p; p++) {
+    if(IsStrictChar(*p) || (allow_numbers && IsDigit(*p))) {
       alpha = 1;
-    } else if(iscntrl(*p)) {
+    } else if(IsControl(*p)) {
       return status | WORD_NORMALIZE_CONTROL;
     }
   }
@@ -156,6 +157,12 @@ WordType::Normalize(String& word) const
   // Reject if contains no alpha characters (according to configuration)
   //
   if(!alpha) return status | WORD_NORMALIZE_NOALPHA;
+
+  //
+  // Reject if listed in config[bad_word_list]
+  //
+  if(badwords.Exists(word))
+    return status | WORD_NORMALIZE_BAD;
 
   //
   // Accept and report the transformations that occured

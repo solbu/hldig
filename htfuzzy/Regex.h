@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Regex.h,v 1.3 1999/09/24 10:29:01 loic Exp $
+// $Id: Regex.h,v 1.4 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #ifndef _Regex_h_
@@ -30,7 +30,7 @@ public:
     //
     // Construction/Destruction
     //
-    Regex(const Configuration& config_arg);
+    Regex(const HtConfiguration& config_arg);
     virtual		~Regex();
 
     virtual void	getWords(char *word, List &words);

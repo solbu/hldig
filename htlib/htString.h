@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.18 1999/10/05 16:03:31 loic Exp $
+// $Id: htString.h,v 1.19 2000/02/19 05:29:03 ghutchis Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -17,6 +17,7 @@
 #include "Object.h"
 
 #include <stdarg.h>
+#include <stdio.h>
 
 class ostream;
 
@@ -130,7 +131,7 @@ public:
     inline String	&trunc() { Length = 0; return *this; }
     String		&chop(int n = 1);
     String		&chop(char ch = '\n');
-    String		&chop(char *str = "\r\n");
+    String		&chop(const char *str = "\r\n");
 
     //
     // SubStrings
@@ -159,6 +160,10 @@ public:
     friend int		operator >= (const String &a, const String &b);
 
     friend ostream	&operator << (ostream &o, const String &s);
+
+    friend istream	&operator >> (istream &in, String &line);
+
+    int			readLine(FILE *in);
 
     int			lowercase();
     int			uppercase();
@@ -198,8 +203,8 @@ private:
     friend		class StringIndex;
 };
 
-extern char *form(char *, ...);
-extern char *vform(char *, va_list);
+extern char *form(const char *, ...);
+extern char *vform(const char *, va_list);
 
 //
 // Inline methods.

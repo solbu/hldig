@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3 1999/10/05 16:03:31 loic Exp $
+// $Id: WordKey.cc,v 1.4 2000/02/19 05:29:07 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -23,20 +23,12 @@
 
 #include <stdlib.h>
 #include <iostream.h>
+#include <ctype.h>
+#include <fstream.h>
+
+#include "HtRandom.h"
 
 #include "WordKey.h"
-
-
-//
-// C comparison function interface for Berkeley DB (bt_compare)
-// Just call the static Compare function of WordKey. It is *critical*
-// that this function is as fast as possible. See the Berkeley DB
-// documentation for more information on the return values.
-//
-int word_db_cmp(const DBT *a, const DBT *b)
-{
-  return WordKey::Compare((char*)a->data, a->size, (char*)b->data, b->size);
-}
 
 //
 // Returns OK if fields set in 'object' and 'other' are all equal.
@@ -52,48 +44,34 @@ int word_db_cmp(const DBT *a, const DBT *b)
 // are located in a specific document, regardless of their location
 // in the document.
 //
-int WordKey::Equal(const WordKey& other, int prefix_length) const
+int WordKey::Equal(const WordKey& other) const
 {
-  const struct WordKeyInfo& info = word_key_info;
+  const WordKeyInfo& info = *WordKey::Info();
   //
   // Walk the fields in sorting order. As soon as one of them
   // does not compare equal, return.
   //
-  for(int j = 0; j < info.nfields; j++) {
-    int i = info.sort[j].field_number;
+  for(int j = 0; j < info.nfields; j++) 
+  {
     //
     // Only compare fields that are set in both key
     //
-    if(!IsSet(i) || !other.IsSet(i)) continue;
+    if(!IsDefined(j) || !other.IsDefined(j)) continue;
 
-    int k = info.fields[i].index;
-
-    switch(info.fields[i].type) {
-    case WORD_ISA_String:
-      if(prefix_length > 0) {
-	if(pool_String[k] != other.pool_String[k].sub(0, prefix_length))
+    switch(info.sort[j].type) {
+    case WORD_ISA_STRING:
+      if(!IsDefinedWordSuffix()) {
+//  	  cout << "COMPARING UNCOMPLETE WORDS IN WORDKEY" << endl;
+	if(kword != other.kword.sub(0, kword.length()))
 	  return 0;
       } else {
-	if(pool_String[k] != other.pool_String[k])
+	if(kword != other.kword)
 	  return 0;
       }
       break;
-#define STATEMENT(type) \
-    case WORD_ISA_##type: \
-      if(pool_##type[k] != other.pool_##type[k]) return 0; \
+    default:
+      if(Get(j) != other.Get(j)) return 0;
       break;
-
-#ifdef WORD_HAVE_TypeA
-STATEMENT(TypeA)
-#endif /* WORD_HAVE_TypeA */
-#ifdef WORD_HAVE_TypeB
-STATEMENT(TypeB)
-#endif /* WORD_HAVE_TypeB */
-#ifdef WORD_HAVE_TypeC
-STATEMENT(TypeC)
-#endif /* WORD_HAVE_TypeC */
-
-#undef STATEMENT
     }
   }
   return 1;
@@ -103,89 +81,69 @@ STATEMENT(TypeC)
 // Compare <a> and <b> in the Berkeley DB fashion. 
 // <a> and <b> are packed keys.
 //
-int WordKey::Compare(const String& a, const String& b)
+inline int 
+WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
 {
-  return WordKey::Compare(a, a.length(), b, b.length());
-}
-
-//
-// Compare <a> and <b> in the Berkeley DB fashion. 
-// <a> and <b> are packed keys.
-//
-int WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
-{
-  const struct WordKeyInfo& info = word_key_info;
+  const WordKeyInfo& info = *WordKey::Info();
 
   if(a_length < info.minimum_length || b_length < info.minimum_length) {
-    cerr << "WordKey::Compare: key length for a or b < info.minimum_length\n";
-    return NOTOK;
+      cerr << "WordKey::Compare: key length for a or b < info.minimum_length\n";
+      return NOTOK;
   }
 
   //
   // Walk the fields in sorting order. As soon as one of them
   // does not compare equal, return.
   //
-  for(int j = 0; j < info.nfields; j++) {
-    int i = info.sort[j].field_number;
-    //
-    // To sort in inverted order, just swap parameters.
-    //
-    if(info.sort[j].direction == WORD_SORT_DESCENDING) {
-      const char* tmp = a;
-      int tmp_length = a_length;
-      a = b; a_length = b_length; b = tmp; b_length = tmp_length;
-    }
-    switch(info.fields[i].type) {
-    case WORD_ISA_String:
+
+
+  //  first field: string
+  {
+      const int byte_offset=info.sort[0].bytes_offset;
+      const int p1_length = a_length - byte_offset;
+      const int p2_length = b_length - byte_offset;
+      int len = p1_length > p2_length ? p2_length : p1_length;
+      const unsigned char* p1 = (unsigned char *)a + byte_offset;
+      const unsigned char* p2 = (unsigned char *)b + byte_offset;
+
+      for (;len--; ++p1, ++p2)
       {
-	const char* p1 = a + info.fields[i].bytes_offset;
-	int p1_length = a_length - info.fields[i].bytes_offset;
-	const char* p2 = b + info.fields[i].bytes_offset;
-	int p2_length = b_length - info.fields[i].bytes_offset;
-	int len = p1_length > p2_length ? p2_length : p1_length;
-	for (p1 = a + info.fields[i].bytes_offset, p2 = b + info.fields[i].bytes_offset; len--; ++p1, ++p2)
 	  if (*p1 != *p2)
-	    return ((int)*p1 - (int)*p2);
-	if(p1_length != p2_length)
-	  return p1_length - p2_length;
+	  {
+	      return (info.sort[0].direction == WORD_SORT_DESCENDING ?
+		      ((int)*p2 - (int)*p1) :
+		      ((int)*p1 - (int)*p2)    );
+	  }
       }
-      break;
-#ifdef WORD_HAVE_TypeA
-    case WORD_ISA_TypeA:
-#endif /* WORD_HAVE_TypeA */
-#ifdef WORD_HAVE_TypeB
-    case WORD_ISA_TypeB:
-#endif /* WORD_HAVE_TypeB */
-#ifdef WORD_HAVE_TypeC
-    case WORD_ISA_TypeC:
-#endif /* WORD_HAVE_TypeC */
+      if(p1_length != p2_length)
       {
-	unsigned int p1;
-	unsigned int p2;
-	WordKey::UnpackNumber(&a[info.fields[i].bytes_offset],
-			      info.fields[i].bytesize,
-			      &p1,
-			      info.fields[i].lowbits,
-			      info.fields[i].bits);
-	
-	WordKey::UnpackNumber(&b[info.fields[i].bytes_offset],
-			      info.fields[i].bytesize,
-			      &p2,
-			      info.fields[i].lowbits,
-			      info.fields[i].bits);
-	if(p1 != p2)
-	  return p1 - p2;
+	  return (info.sort[0].direction == WORD_SORT_DESCENDING ?
+		  p2_length - p1_length :
+		  p1_length - p2_length );
       }
-      break;
-    default:
-      cerr << "WordKey::Compare: invalid type " << info.fields[i].type << " for field " << i << "\n";
-      break;
-    }
-    if(info.sort[j].direction == WORD_SORT_DESCENDING) {
-      const char* tmp = a;
-      int tmp_length = a_length;
-      a = b; a_length = b_length; b = tmp; b_length = tmp_length;
-    }
+  }
+  //  following fields: numerical
+  for(int j = 1; j < info.nfields; j++) 
+  {
+	WordKeyNum p1;
+	WordKeyNum p2;
+	WordKey::UnpackNumber((unsigned char *)&a[info.sort[j].bytes_offset],
+			      info.sort[j].bytesize,
+			      p1,
+			      info.sort[j].lowbits,
+			      info.sort[j].bits);
+	
+	WordKey::UnpackNumber((unsigned char *)&b[info.sort[j].bytes_offset],
+			      info.sort[j].bytesize,
+			      p2,
+			      info.sort[j].lowbits,
+			      info.sort[j].bits);
+	if(p1 != p2)
+	{
+	    return (info.sort[j].direction == WORD_SORT_DESCENDING ?
+		    p2 - p1 :
+		    p1 - p2   );
+	}
   }
 
   //
@@ -195,9 +153,33 @@ int WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
 }
 
 //
+// Compare <a> and <b> in the Berkeley DB fashion. 
+// <a> and <b> are packed keys.
+//
+int 
+WordKey::Compare(const String& a, const String& b)
+{
+  return WordKey::Compare(a, a.length(), b, b.length());
+}
+
+//
+// C comparison function interface for Berkeley DB (bt_compare)
+// Just call the static Compare function of WordKey. It is *critical*
+// that this function is as fast as possible. See the Berkeley DB
+// documentation for more information on the return values.
+//
+int
+word_db_cmp(const DBT *a, const DBT *b)
+{
+    return WordKey::Compare((char*)a->data, a->size, (char*)b->data, b->size);
+}
+
+
+//
 // Compare object and <other> using comparison of their packed form
 //
-int WordKey::PackEqual(const WordKey& other) const
+int 
+WordKey::PackEqual(const WordKey& other) const
 {
   String this_pack;
   Pack(this_pack);
@@ -209,13 +191,65 @@ int WordKey::PackEqual(const WordKey& other) const
 }
 
 //
+// Set this key to a key immediately greater.
+// The position argument is 
+//
+int 
+WordKey::SetToFollowing(int position)
+{
+    const WordKeyInfo& info = *WordKey::Info();
+    int i;
+
+    //
+    // position = -1 means 
+    //
+    if(position < 0) {
+      position = NFields();
+    }
+
+    if(position==0) {
+      cerr << "WordKey::SetToFollowing with position = 0" << endl;
+      return NOTOK;
+    }
+
+    // increment if numerical field    
+    if(position>1) {
+	int bits=info.sort[position].bits;
+	int f=Get(position-1);
+	// check which direction we're going
+	if(info.sort[position].direction == WORD_SORT_ASCENDING)
+	{
+	    if( bits < 32){if((f+1) >= 1<<bits){return NOTOK;}}// overflow
+            //TODO: add bits>=32 for overflow case....
+	    Set(position-1,f+1);
+	}
+	else
+	{
+	    if(f>0){Set(position-1,f-1);}
+	    else{return (NOTOK);}// underflow
+	}
+    }
+    else
+    {// if non numerical (field 0=word) add a (char)1 to string
+//	if(WLdebug>1){cout << "oops,  previous field is string!" << endl;}
+	GetWord() << (char) 1;
+    }
+
+    // zero fields >=position'th
+    for(i=position;i<NFields();i++){if(IsDefined(i)){Set(i,0);}}
+
+    return(OK);
+}
+
+//
 // Return true if the key may be used as a prefix for search.
 // In other words return true if the fields set in the key
 // are all contiguous, starting from the first field in sort order.
 //
-int WordKey::Prefix() const
+int 
+WordKey::Prefix() const
 {
-  const struct WordKeyInfo& info = word_key_info;
+  const WordKeyInfo& info = *WordKey::Info();
   //
   // If all fields are set, it can be considered as a prefix although
   // it really is a fully qualified key.
@@ -224,19 +258,19 @@ int WordKey::Prefix() const
   //
   // If the first field is not set this cannot be a prefix
   //
-  if(!IsSet(info.sort[0].field_number)) return NOTOK;
+  if(!IsDefined(0)) return NOTOK;
   
   int found_unset = 0;
+  if(!IsDefinedWordSuffix()) { found_unset = 1; }
   //
   // Walk the fields in sorting order. 
   //
-  for(int j = 1; j < info.nfields; j++) {
-    int i = info.sort[j].field_number;
-
+  for(int j = 1; j < info.nfields; j++) 
+  {
     //
     // Fields set, then fields unset then field set -> not a prefix
     //
-    if(IsSet(i))
+    if(IsDefined(j))
       if(found_unset) return NOTOK;
     else
       //
@@ -250,95 +284,94 @@ int WordKey::Prefix() const
 }
 
 //
+// Find and return the position of the first field that must be checked for skip.
+// If no field is to be skipped, NFields() is returned.
+//
+int 
+WordKey::FirstSkipField() const
+{
+  int first_skip_field=-2;
+
+  for(int i = 0; i < NFields(); i++)
+    {
+      if(first_skip_field==-2 && !IsDefined(i)){first_skip_field=-1;}
+      else
+	if(first_skip_field==-2 && i==0 && !IsDefinedWordSuffix()){first_skip_field=-1;}
+	else
+	  if(first_skip_field==-1 &&  IsDefined(i)){first_skip_field=i;break;}
+    }
+  if(first_skip_field<0){first_skip_field=NFields();}
+  return(first_skip_field);
+}
+
+//
 // Unset all fields past the first unset field
 // Return the number of fields in the prefix or 0 if
 // first field is not set, ie no possible prefix.
 //
-int WordKey::PrefixOnly()
+int 
+WordKey::PrefixOnly()
 {
-  const struct WordKeyInfo& info = word_key_info;
+  const WordKeyInfo& info = *WordKey::Info();
   //
   // If all fields are set, the whole key is the prefix.
   //
-  if(Filled()) return info.nfields;
+  if(Filled()) return OK;
   //
   // If the first field is not set there is no possible prefix
   //
-  if(!IsSet(info.sort[0].field_number)) return 0;
+//    cerr << "prefix only: input key:" << *this <<endl;
+  if(!IsDefined(0)) 
+  {
+//        cerr << "prefix only: word not defined " <<endl;
+      return NOTOK;
+  }
   
-  int field_count = 0;
   int found_unset = 0;
   //
   // Walk the fields in sorting order. 
   //
-  for(int j = 0; j < info.nfields; j++) {
-    int i = info.sort[j].field_number;
+  if(!IsDefinedWordSuffix()){found_unset=1;}
 
+  for(int j = 1; j < info.nfields; j++) 
+  {
     //
     // Unset all fields after the first unset field
     //
-    if(IsSet(i)) {
-      if(found_unset)
-	Unset(i);
-      else
-	field_count++;
-    } else
-      found_unset++;
+    if(IsDefined(j)) 
+    {
+	if(found_unset) {Set(j,0);Undefined(j);}
+    } 
+    else {found_unset=1;}
   }
 
-  return field_count;
+  return OK;
 }
 
 //
 // Unpack from data and fill fields of object
 // 
-int WordKey::Unpack(const String& data)
+int 
+WordKey::Unpack(const char* string,int length)
 {
-  const char* string = data;
-  int length = data.length();
-
-  const struct WordKeyInfo& info = word_key_info;
+  const WordKeyInfo& info = *WordKey::Info();
 
   if(length < info.minimum_length) {
     cerr << "WordKey::Unpack: key record length < info.minimum_length\n";
     return NOTOK;
   }
 
-  for(int i = 0; i < info.nfields; i++) {
+  SetWord(&(string[info.sort[0].bytes_offset]), length - info.minimum_length);
 
-    switch(info.fields[i].type) {
-
-    case WORD_ISA_String:
-      pool_String[info.fields[i].index].set(&string[info.fields[i].bytes_offset], length - info.minimum_length);
-      Set(i);
-      break;
-
-#define STATEMENT(type) \
-    case WORD_ISA_##type: \
-      { \
-	unsigned int value = 0; \
-	WordKey::UnpackNumber(&string[info.fields[i].bytes_offset], \
-				 info.fields[i].bytesize, \
-				 &value, \
-				 info.fields[i].lowbits, \
-				 info.fields[i].bits); \
-	pool_##type[info.fields[i].index] = (##type)value; \
-	Set(i); \
-      } \
-      break;
-
-#ifdef WORD_HAVE_TypeA
-STATEMENT(TypeA)
-#endif /* WORD_HAVE_TypeA */
-#ifdef WORD_HAVE_TypeB
-STATEMENT(TypeB)
-#endif /* WORD_HAVE_TypeB */
-#ifdef WORD_HAVE_TypeC
-STATEMENT(TypeC)
-#endif /* WORD_HAVE_TypeC */
-
-#undef STATEMENT
-    }
+  for(int j = 1; j < info.nfields; j++) 
+  {
+      WordKeyNum value = 0; 
+      WordKey::UnpackNumber((unsigned char *)&string[info.sort[j].bytes_offset], 
+			    info.sort[j].bytesize, 
+			    value, 
+			    info.sort[j].lowbits, 
+			    info.sort[j].bits); 
+      Set(j,value);
   }
 
   return OK;
@@ -347,14 +380,15 @@ STATEMENT(TypeC)
 //
 // Pack object into the <packed> string
 //
-int WordKey::Pack(String& packed) const
+int 
+WordKey::Pack(String& packed) const
 {
-  const struct WordKeyInfo& info = word_key_info;
+  const WordKeyInfo& info = *WordKey::Info();
 
   char* string;
   int length = info.minimum_length;
 
-  length += pool_String[0].length();
+  length += kword.length();
 
   if((string = (char*)malloc(length)) == 0) {
     cerr << "WordKey::Pack: malloc returned 0\n";
@@ -362,34 +396,14 @@ int WordKey::Pack(String& packed) const
   }
   memset(string, '\0', length);
 
-  for(int i = 0; i < info.nfields; i++) {
-
-    switch(info.fields[i].type) {
-    case WORD_ISA_String:
-      memcpy(&string[info.fields[i].bytes_offset], pool_String[info.fields[i].index].get(), pool_String[info.fields[i].index].length());
-      break;
-
-#define STATEMENT(type) \
-    case WORD_ISA_##type: \
-      WordKey::PackNumber((unsigned int)pool_##type[info.fields[i].index], \
-			  &string[info.fields[i].bytes_offset], \
-			  info.fields[i].bytesize, \
-			  info.fields[i].lowbits, \
-			  info.fields[i].lastbits); \
-      break;
-
-#ifdef WORD_HAVE_TypeA
-STATEMENT(TypeA)
-#endif /* WORD_HAVE_TypeA */
-#ifdef WORD_HAVE_TypeB
-STATEMENT(TypeB)
-#endif /* WORD_HAVE_TypeB */
-#ifdef WORD_HAVE_TypeC
-STATEMENT(TypeC)
-#endif /* WORD_HAVE_TypeC */
-
-#undef STATEMENT
-    }
+  memcpy(&string[info.sort[0].bytes_offset], kword.get(), kword.length());
+  for(int i = 0; i < info.nfields-1; i++) 
+  {
+      WordKey::PackNumber(Get(info.encode[i].sort_position), 
+			  &string[info.encode[i].bytes_offset], 
+			  info.encode[i].bytesize, 
+			  info.encode[i].lowbits, 
+			  info.encode[i].lastbits); 
   }
   
   packed.set(string, length);
@@ -405,29 +419,21 @@ STATEMENT(TypeC)
 //
 int WordKey::Merge(const WordKey& other)
 {
-  const struct WordKeyInfo& info = word_key_info;
+  const WordKeyInfo& info = *WordKey::Info();
 
-  for(int i = 0; i < info.nfields; i++) {
-    if(!IsSet(i) && other.IsSet(i)) {
-      switch(info.fields[i].type) {
-
-#define STATEMENT(type) \
-      case WORD_ISA_##type: \
-	Set##type(other.Get##type(i), i); \
+  
+  for(int j = 0; j < info.nfields; j++) 
+  {
+    if(!IsDefined(j) && other.IsDefined(j)) 
+    {
+      switch(info.sort[j].type) 
+      {
+      case WORD_ISA_STRING: 
+	  SetWord(other.GetWord());
+	  break;
+      default:
+	  Set(j,other.Get(j)); 
 	break;
-
-#ifdef WORD_HAVE_TypeA
-STATEMENT(TypeA)
-#endif /* WORD_HAVE_TypeA */
-#ifdef WORD_HAVE_TypeB
-STATEMENT(TypeB)
-#endif /* WORD_HAVE_TypeB */
-#ifdef WORD_HAVE_TypeC
-STATEMENT(TypeC)
-#endif /* WORD_HAVE_TypeC */
-
-#undef STATEMENT
-
       }
     }
   }
@@ -435,44 +441,205 @@ STATEMENT(TypeC)
   return OK;
 }
 
-ostream &operator << (ostream &o, const WordKey &key)
+//
+// Convert the whole structure to an ascii string description
+//
+int
+WordKey::Get(String& buffer) const
 {
-  const struct WordKeyInfo& info = word_key_info;
+  buffer.trunc();
+  const WordKeyInfo& info = *WordKey::Info();
 
   //
   // Walk the fields in sorting order. As soon as one of them
   // does not compare equal, return.
   //
-  for(int j = 0; j < info.nfields; j++) {
-    int i = info.sort[j].field_number;
-    int index = info.fields[i].index;
+  for(int j = 0; j < info.nfields; j++) 
+  {
+      if(!IsDefined(j)){buffer << "<UNDEF>";}
+      else
+      {
+	  switch(info.sort[j].type) 
+	  {
+	  case WORD_ISA_STRING:  buffer << GetWord();          break;
+	  case WORD_ISA_NUMBER:  buffer << Get(j);  break;
+  	  default:
+  	      cerr << "WordKey::operator <<: invalid type " << info.sort[j].type << " for field (in sort order) " << j << "\n";
+  	      return NOTOK;
+	  }
+      }
+      //
+      // Output virtual word suffix field
+      //
+      if(j==0) {
+	if(IsDefined(j) && !IsDefinedWordSuffix()) {
+	  buffer << "\t<UNDEF>";
+	} else {
+	  buffer << "\t<DEF>";
+	}
+      }
+      buffer << "\t";
+  }
+  return OK;
+}
 
-    switch(info.fields[i].type) {
-    case WORD_ISA_String:
-      o << key.pool_String[index] << "\t";
-      break;
-#define STATEMENT(type) \
-    case WORD_ISA_##type: \
-      o << key.pool_##type[index] << "\t"; \
-      break;
+//
+// Set a key from an ascii representation
+//
+int
+WordKey::Set(const String& buffer)
+{
+  StringList fields(buffer, "\t ");
+  return Set(fields);
+}
 
-#ifdef WORD_HAVE_TypeA
-STATEMENT(TypeA)
-#endif /* WORD_HAVE_TypeA */
-#ifdef WORD_HAVE_TypeB
-STATEMENT(TypeB)
-#endif /* WORD_HAVE_TypeB */
-#ifdef WORD_HAVE_TypeC
-STATEMENT(TypeC)
-#endif /* WORD_HAVE_TypeC */
+//
+// Set a key from list of fields
+//
+int
+WordKey::Set(StringList& fields)
+{
+  const WordKeyInfo& info = *WordKey::Info();
+  int length = fields.Count();
 
-#undef STATEMENT
-    default:
-      cerr << "WordKey::operator <<: invalid type " << info.fields[i].type << " for field " << i << "\n";
-      break;
-    }
+  if(length < info.nfields + 1) {
+    cerr << "WordKey::Set: expected at least " << info.nfields+1 << " fields and found " << length << " (ignored) " << endl;
+    return NOTOK;
+  }
+  if(length < 2) {
+    cerr << "WordKey::Set: expected at least two fields in line" << endl;
+    return NOTOK;
   }
 
+  Clear();
+
+  //
+  // Handle word and its suffix
+  //
+  int i = 0;
+  {
+    //
+    // Get the word
+    //
+    String* word = (String*)fields.Get_First();
+    if(word == 0) {
+      cerr << "WordKey::Set: failed to word " << i << endl;
+      return NOTOK;
+    }
+    if(word->nocase_compare("<undef>") == 0)
+      UndefinedWord();
+    else
+      SetWord(*word);
+    fields.Remove(word);
+    i++;
+
+    //
+    // Get the word suffix status
+    //
+    String* suffix = (String*)fields.Get_First();
+    if(suffix == 0) {
+      cerr << "WordKey::Set: failed to word suffix " << i << endl;
+      return NOTOK;
+    }
+    if(suffix->nocase_compare("<undef>") == 0)
+      UndefinedWordSuffix();
+    else
+      SetDefinedWordSuffix();
+    fields.Remove(suffix);
+  }
+
+  //
+  // Handle numerical fields
+  //
+  int j;
+  for(j = 1; i < info.nfields; i++, j++) {
+    String* field = (String*)fields.Get_First();
+
+    if(field == 0) {
+      cerr << "WordKey::Set: failed to retrieve field " << i << endl;
+      return NOTOK;
+    }
+    
+    if(field->nocase_compare("<undef>") == 0) {
+      Undefined(j);
+    } else {
+      unsigned int value = atoi(field->get());
+      Set(j, value);
+    }
+
+    fields.Remove(field);
+  }
+
+  return OK;
+}
+
+ostream &operator << (ostream &o, const WordKey &key)
+{
+  String tmp;
+  key.Get(tmp);
+  o << tmp;
   return o;
+}
+
+void WordKey::Print() const
+{
+  cout << *this;
+}
+
+
+// ********************************
+// ************** DEBUGING ********
+// ********************************
+void
+WordKey::ShowPacked(const String& key,int type/*=0*/)
+{
+    int i;
+    char c;
+    if(1)
+    {
+	for(i=0; i<key.length(); i++)
+	{
+	    c = (isprint(key[i]) ? key[i] : '#');
+	    printf("%c-%2x ",c,key[i]);
+	}
+	printf("\n");
+    }
+    if(type>0)
+    {
+	extern void show_bits(int v,int n);
+	for(i=0; i<key.length(); i++)
+	{
+	    show_bits(key[i],-8);
+	}
+	printf("\n");
+	printf("^0      ^1      ^2      ^3      ^4      ^5      ^6      ^7\n");
+	printf("0123456701234567012345670123456701234567012345670123456701234567\n");
+
+    }
+}
+
+void
+WordKey::SetRandom()
+{
+    int j;
+    for(j=1;j<NFields();j++)
+    {
+	int nbits=WordKey::Info()->sort[j].bits;
+	WordKeyNum max=(1<<(nbits));
+	if(nbits==32){max=0xffffffff;}
+	WordKeyNum val=HtRandom::rnd(0,max);
+//  	if(nbits==1)printf("field:%d :val:%d max:%d********************************\n",j,val,max);
+	Set(j,val);
+    }
+    int strl=HtRandom::rnd(0,50);
+    int i;
+    String Word;
+    for(i=0;i<strl;i++)
+    {
+	char c;
+	c=HtRandom::rnd('a','z');
+  	Word << c;
+    }
+    SetWord(Word);
 }
 

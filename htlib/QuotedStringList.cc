@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: QuotedStringList.cc,v 1.3 1999/09/24 10:29:03 loic Exp $
+// $Id: QuotedStringList.cc,v 1.4 2000/02/19 05:29:03 ghutchis Exp $
 //
 
 #include "QuotedStringList.h"
@@ -34,26 +34,31 @@ int
 QuotedStringList::Create(const char *str, const char *sep, int single)
 {
     char	quote = 0;
+    int		quoted = 0;
     String	word;
 
     while (str && *str)
     {
 	if (*str == '\\')
 	{
+	    if (!str[1])
+		break;
 	    word << *++str;
 	}
 	else if (*str == quote)
 	{
 	    quote = 0;
 	}
-	else if (*str == '"' || *str == '\'')
+	else if (!quote && (*str == '"' || *str == '\''))
 	{
 	    quote = *str;
+	    quoted++;
 	}
 	else if (quote == 0 && strchr(sep, *str))
 	{
 	    List::Add(new String(word));
 	    word = 0;
+	    quoted = 0;
 	    if (!single)
 	    {
 		while (strchr(sep, *str))
@@ -69,7 +74,7 @@ QuotedStringList::Create(const char *str, const char *sep, int single)
     //
     // Add the last word to the list
     //
-    if (word.length())
+    if (word.length() || quoted)
 	List::Add(new String(word));
     return Count();
 }

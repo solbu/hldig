@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Endings.h,v 1.3 1999/09/24 10:29:01 loic Exp $
+// $Id: Endings.h,v 1.4 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #ifndef _Endings_h_
@@ -29,7 +29,7 @@ public:
     //
     // Construction/Destruction
     //
-    Endings(const Configuration& config_arg);
+    Endings(const HtConfiguration& config_arg);
     virtual		~Endings();
 
     virtual void	getWords(char *word, List &words);
@@ -42,7 +42,7 @@ public:
     // Special member which will create the two databases needed for this
     // algorithm.
     //
-    int			createDB(const Configuration &config);
+    int			createDB(const HtConfiguration &config);
 	
     static void		mungeWord(char *, String &);
     

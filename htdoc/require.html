@@ -2,18 +2,166 @@
 <html>
   <head>
 	<title>
-	  ht://Dig: System requirements
+	  ht://Dig: Features and System requirements
 	</title>
   </head>
   <body bgcolor="#eef7ff">
 	<h1>
-	  System requirements
+	  Features and System requirements
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-1999 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
+	<hr noshade>
+	<h2>
+	  Features
+	</h2>
+	<p>
+	  Here are some of the major features of ht://Dig. They are in
+	  no particular order.
+	</p>
+	<blockquote>
+	<dl>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Intranet searching</strong>
+	  </dt>
+	  <dd>
+		ht://Dig has the ability to search through many servers
+		on a network by acting as a WWW browser.
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> It is free</strong>
+	  </dt>
+	  <dd>
+		The whole system is released under the
+		<a href="COPYING">GNU General Public License</a>
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Robot exclusion is supported</strong>
+	  </dt>
+	  <dd>
+		The <a href="http://info.webcrawler.com/mak/projects/robots/norobots.html">
+		Standard for Robot Exclusion</a> is supported by
+		ht://Dig.
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Boolean expression searching</strong>
+	  </dt>
+	  <dd>
+		Searches can be arbitrarily complex using boolean
+		expressions.
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Configurable search results</strong>
+	  </dt>
+	  <dd>
+		The output of a search can easily be tailored to your
+		needs by means of providing HTML templates.
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Fuzzy searching</strong>
+	  </dt>
+	  <dd>
+		Searches can be performed using various configurable
+		algorithms. Currently the following algorithms are
+		supported (in any combination):
+		<ul>
+		  <li>
+			exact
+		  </li>
+		  <li>
+			soundex
+		  </li>
+		  <li>
+			metaphone
+		  </li>
+		  <li>
+			common word endings
+		  </li>
+		  <li>
+			synonyms
+		  </li>
+		</ul>
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Searching of HTML and text files</strong>
+	  </dt>
+	  <dd>
+		Both HTML documents and plain text files can be
+		searched. Searching of other file types will be
+		supported in future versions.
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Keywords can be added to HTML
+		documents</strong>
+	   </dt>
+	  <dd>
+		Any number of keywords can be added to HTML documents
+		which will not show up when the document is viewed.
+		This is used to make a document more like to be found
+		and also to make it appear higher in the list of
+		matches.
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Email notification of expired
+		documents</strong>
+	  </dt>
+	  <dd>
+		Special meta information can be added to HTML documents
+		which can be used to notify the maintainer of those
+		documents at a certain time. It is handy to get
+		reminded when to remove the "New" images from a certain
+		page, for example.
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> A Protected server can be indexed</strong>
+	  </dt>
+	  <dd>
+		ht://Dig can be told to use a specific username and
+		password when it retrieves documents. This can be used
+		to index a server or parts of a server that are
+		protected by a username and password.
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Searches on subsections of the
+		database</strong>
+	  </dt>
+	  <dd>
+		It is easy to set up a search which only returns
+		documents whose URL matches a certain pattern. This
+		becomes very useful for people who want to make their
+		own data searchable without having to use a separate
+		search engine or database.
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Full source code included</strong>
+	  </dt>
+	  <dd>
+		The search engine comes with full source code. The
+		whole system is released under the terms and conditions
+		of the <a href="COPYING">GNU Public License version
+		2.0</a>
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> The depth of the search can be limited</strong>
+	  </dt>
+	  <dd>
+		Instead of limiting the search to a set of machines, it
+		can also be restricted to documents that are a certain
+		number of "mouse-clicks" away from the start document.
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Full support for the ISO-Latin-1 character
+		set</strong>
+	  </dt>
+	  <dd>
+		Both SGML entities like '&amp;agrave;' and ISO-Latin-1
+		characters can be indexed and searched.
+	  </dd>
+	</dl>
+	</blockquote>
 	<hr size="4" noshade>
 	<h1>
 	  Requirements to build ht://Dig
@@ -146,8 +294,8 @@
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
-<!-- hhmts start -->
-Last modified: Thu Jan 28 22:12:54 EST 1999
-<!-- hhmts end -->
+
+Last modified: $Date: 2000/02/19 05:29:02 $
+
   </body>
 </html>

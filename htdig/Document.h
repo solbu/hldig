@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.h,v 1.10 1999/10/08 14:52:13 ghutchis Exp $
+// $Id: Document.h,v 1.11 2000/02/19 05:28:51 ghutchis Exp $
 //
 //
 #ifndef _Document_h_
@@ -26,7 +26,11 @@
 #include "Object.h"
 #include "URL.h"
 #include "htString.h"
+#include "StringList.h"
 #include "Transport.h"
+#include "HtHTTP.h"
+#include "HtFile.h"
+#include "ExternalTransport.h"
 
 class Connection;
 
@@ -59,7 +63,7 @@ public:
     time_t			ModTime()		{return modtime.GetTime_t();}
 
     Transport::DocStatus	Retrieve(HtDateTime date);
-    Transport::DocStatus	RetrieveLocal(HtDateTime date, String filename);
+    Transport::DocStatus	RetrieveLocal(HtDateTime date, StringList *filenames);
 
     //
     // Return an appropriate parsable object for the document type.
@@ -71,6 +75,8 @@ public:
     //
     void			setUsernamePassword(const char *credentials)
                                           { authorization = credentials;}
+
+    HtHTTP *GetHTTPHandler() const { return HTTPConnect; }
 	
 private:
     enum
@@ -94,10 +100,23 @@ private:
     int				document_length;
     HtDateTime			modtime;
     int				max_doc_size;
+    int				num_retries;
 
     int				UseProxy();
 
     Transport			*transportConnect;
+    HtHTTP			*HTTPConnect;
+    HtFile			*FileConnect;
+    ExternalTransport		*externalConnect;
+    
+
+ ///////
+    //    Tell us if we should retry to retrieve an URL depending on
+    //    the first returned document status
+ ///////
+
+   int ShouldWeRetry(Transport::DocStatus DocumentStatus);    
+   
 };
 
 #endif

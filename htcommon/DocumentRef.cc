@@ -11,13 +11,13 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.cc,v 1.47 1999/10/08 12:59:55 loic Exp $
+// $Id: DocumentRef.cc,v 1.48 2000/02/19 05:28:49 ghutchis Exp $
 //
 
 #include "DocumentRef.h"
 #include "good_strtok.h"
 #include "WordRecord.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "HtURLCodec.h"
 #include "WordType.h"
 #include "HtWordReference.h"
@@ -25,7 +25,7 @@
 #include <ctype.h>
 #include <fstream.h>
 
-extern Configuration config;
+extern HtConfiguration config;
 
 //*****************************************************************************
 // DocumentRef::DocumentRef()

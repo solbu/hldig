@@ -654,6 +654,28 @@ fi
 
 CHECK_ZLIB
 
+AC_MSG_CHECKING(shared lib)
+case "$host_os" in
+linux*)	LIBDBSHARED=libhtdb.so ;;
+esac
+
+if test -n "$LIBDBSHARED" -a "$enable_shared" != "no"
+then
+	AC_SUBST(LIBDBSHARED)
+	LIBDBSHAREDDEPS="-lstdc++"
+	#
+	# If zlib is included, resolve shared dependencies
+	#
+	if test "$ac_cv_lib_z_inflateEnd" = "yes"
+	then
+		LIBDBSHAREDDEPS="-lz $LIBDBSHAREDDEPS"
+	fi
+	AC_SUBST(LIBDBSHAREDDEPS)
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
 AC_OUTPUT(Makefile include.tcl:../test/include.tcl \
     db.h:../include/db.h db_int.h:../include/db_int.h \
     db_185.h:../include/db_185.h)

@@ -190,7 +190,7 @@ DB_WO_ACCESS_BEFORE_APPINIT(DbEnv, u_int32_t, flags, flags)
 // These fields can be changed after appinit().
 //
 DB_WO_ACCESS(DbEnv, const char *, errpfx, db_errpfx)
-
+DB_RW_ACCESS(DbEnv, DB_CMPR_INFO *, mp_cmpr_info, mp_cmpr_info)
 
 // These access methods require construction of
 // wrapper options DB_FOO* to DbFoo* .

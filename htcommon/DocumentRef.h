@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.h,v 1.24 1999/10/01 12:53:51 loic Exp $
+// $Id: DocumentRef.h,v 1.25 2000/02/19 05:28:49 ghutchis Exp $
 //
 
 #ifndef _DocumentRef_h_
@@ -27,7 +27,8 @@ enum ReferenceState
 {
     Reference_normal,
     Reference_not_found,
-    Reference_noindex
+    Reference_noindex,
+    Reference_obsolete
 };
 
 class DocumentRef : public Object

@@ -7,7 +7,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)mp_region.c	10.34 (Sleepycat) 10/1/98";
+static const char sccsid[] = "@(#)mp_region.c	10.35 (Sleepycat) 12/11/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -99,6 +99,9 @@ alloc:	if ((ret = __db_shalloc(dbmp->addr, len, MUTEX_ALIGNMENT, &p)) == 0) {
 		nbhp = SH_TAILQ_NEXT(bhp, q, __bh);
 
 		SH_TAILQ_REMOVE(&mp->bhfq, bhp, q, __bh);
+	        if(bhp->chain) {
+		    __db_shalloc_free(dbmp->addr, bhp->chain);
+		}
 		__db_shalloc_free(dbmp->addr, bhp);
 		--mp->stat.st_page_clean;
 
@@ -113,7 +116,7 @@ alloc:	if ((ret = __db_shalloc(dbmp->addr, len, MUTEX_ALIGNMENT, &p)) == 0) {
 	}
 
 retry:	/* Find a buffer we can flush; pure LRU. */
-	total = 0;
+	restart = total = 0;
 	for (bhp =
 	    SH_TAILQ_FIRST(&mp->bhq, __bh); bhp != NULL; bhp = nbhp) {
 		nbhp = SH_TAILQ_NEXT(bhp, q, __bh);
@@ -137,9 +140,11 @@ retry:	/* Find a buffer we can flush; pure LRU. */
 		 * the buffer list.
 		 */
 		if (F_ISSET(bhp, BH_DIRTY)) {
+			++bhp->ref;
 			if ((ret = __memp_bhwrite(dbmp,
 			    mfp, bhp, &restart, &wrote)) != 0)
 				return (ret);
+			--bhp->ref;
 
 			/*
 			 * It's possible that another process wants this buffer

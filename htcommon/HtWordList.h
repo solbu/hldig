@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.h,v 1.2 1999/10/01 15:19:28 loic Exp $
+// $Id: HtWordList.h,v 1.3 2000/02/19 05:28:49 ghutchis Exp $
 //
 
 #ifndef _HtWordList_h_
@@ -18,6 +18,7 @@
 
 #include <fcntl.h>
 
+#include"HtConfiguration.h"
 #include "WordList.h"
 
 class HtWordList : public WordList
@@ -26,7 +27,12 @@ public:
     //
     // Construction/Destruction
     //
-    HtWordList(const Configuration& config_arg);
+    HtWordList(const Configuration  & config_arg) : WordList(config_arg) 
+	{
+	    cerr << "HtWordList::HtWordList(Configuration) is not valid" << endl; 
+	    abort();
+	}
+    HtWordList(const HtConfiguration& config_arg);
     virtual ~HtWordList();
     
     //
@@ -36,9 +42,10 @@ public:
     void		Replace(const WordReference& wordRef);
 
     //
-    // Mark a document as already scanned for words or mark it as disappeared
+    // Skip this document -- ignore all words stored in the object
+    //  from this document
     //
-    void		MarkGone();
+    void		Skip();
 
     //
     // Flush the words stored in the object to the database

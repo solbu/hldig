@@ -435,7 +435,7 @@ typedef struct
    unfortunately clutters up the declarations a bit, but I think it's
    worth it.  */
 
-#ifdef __STDC__
+#if __STDC__
 
 # define _RE_ARGS(args) args
 

@@ -8,8 +8,6 @@
 #define FALSE 0
 #endif
 
-#define	VERSION	1
-
 /* Define to the syslog level for htsearch logging. */
 #define LOG_LEVEL LOG_INFO
 
@@ -24,11 +22,33 @@
 #undef _ALL_SOURCE
 #endif
 
+/* Define if using alloca.c.  */
+#undef C_ALLOCA
+
 /* Define to empty if the keyword does not work.  */
 #undef const
 
+/* Define to one of _getb67, GETB67, getb67 for Cray-2 and Cray-YMP systems.
+   This function is required for alloca.c support on those systems.  */
+#undef CRAY_STACKSEG_END
+
+/* Define if you have alloca, as a function or macro.  */
+#undef HAVE_ALLOCA
+
+/* Define if you have <alloca.h> and it should be used (not on Ultrix).  */
+#undef HAVE_ALLOCA_H
+
 /* Define if you have the strftime function.  */
 #undef HAVE_STRFTIME
+
+/* If using the C implementation of alloca, define if you know the
+   direction of stack growth for your system; otherwise it will be
+   automatically deduced at run-time.
+ STACK_DIRECTION > 0 => grows toward higher addresses
+ STACK_DIRECTION < 0 => grows toward lower addresses
+ STACK_DIRECTION = 0 => direction of growth unknown
+ */
+#undef STACK_DIRECTION
 
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
@@ -38,6 +58,9 @@
 
 /* Define if your <sys/time.h> declares struct tm.  */
 #undef TM_IN_SYS_TIME
+
+/* Define if lex declares yytext as a char * by default, not a char[].  */
+#undef YYTEXT_POINTER
 
 /* Define this to the type of the third argument of getpeername() */
 #undef GETPEERNAME_LENGTH_T
@@ -83,6 +106,9 @@ typedef char bool;
 
 /* Define if you have the timegm function.  */
 #undef HAVE_TIMEGM
+
+/* Define if you have the <alloca.h> header file.  */
+#undef HAVE_ALLOCA_H
 
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H

@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15 1999/10/08 12:59:57 loic Exp $ 
+// $Id: HtHTTP.cc,v 1.16 2000/02/19 05:29:04 ghutchis Exp $ 
 //
 
 #include "lib.h"
@@ -23,9 +23,8 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <ctype.h>
-#include <iostream.h>
-#include <stdio.h> // for sscanf
-
+#include <stdio.h>      // for sscanf
+#include <iomanip.h>    // for setw()
 
 #if 1
 typedef void (*SIGNAL_HANDLER) (...);
@@ -33,8 +32,6 @@ typedef void (*SIGNAL_HANDLER) (...);
 typedef SIG_PF SIGNAL_HANDLER;
 #endif
 
-   // Modification Time is now attribute
-         int HtHTTP::modification_time_is_now = 0;
    // User Agent
    	 String HtHTTP::_user_agent = 0;
 
@@ -114,6 +111,7 @@ HtHTTP::HtHTTP()
 
    // Default Method Request
    _Method = Method_GET;
+   _useproxy = 0;
 }
 
 // Destruction
@@ -142,8 +140,12 @@ Transport::DocStatus HtHTTP::Request()
       isPersistentConnectionAllowed() &&  // Persistent Connections allowed
       _Method == Method_GET)              // Initial request method is GET
    {
+
+      if (debug>3)
+         cout << "  Making a HEAD call before the GET" << endl;
+
       _Method = Method_HEAD;
-         
+
       result = HTTPRequest();
       
       _Method = Method_GET;
@@ -285,8 +287,9 @@ Transport::DocStatus HtHTTP::HTTPRequest()
    {
 	    // The connection probably fell down !?!
    	 	 if ( debug > 4 )
-	       cout << "Connection fell down ... let's close it" << endl;
-	    
+	       cout << setw(5) << Transport::GetTotOpen() << " - "
+                  << "Connection fell down ... let's close it" << endl;
+
 	    CloseConnection();	// Let's close the connection which is down now
 	    
 	    // Return that the connection has fallen down during the request
@@ -366,7 +369,8 @@ Transport::DocStatus HtHTTP::HTTPRequest()
       {
          // The connection probably fell down !?!
          if ( debug > 4 )
-            cout << "Connection fell down ... let's close it" << endl;
+            cout  << setw(5) << Transport::GetTotOpen() << " - "
+               << "Connection fell down ... let's close it" << endl;
 	    
          CloseConnection();	// Let's close the connection which is down now
 	    
@@ -376,6 +380,30 @@ Transport::DocStatus HtHTTP::HTTPRequest()
 
       if ( debug > 6 )
          cout << "Contents:" << endl << _response.GetContents();
+
+      // Check if the stream returned by the server has not been completely read
+      
+      if (_response._document_length != _response._content_length)
+      {
+         // Max document size reached
+   
+         if (debug > 4)   
+            cout << "Max document size (" << GetRequestMaxDocumentSize()
+               << ") reached ";
+         
+         if (isPersistentConnectionUp())
+         {
+            if (debug > 4)   
+               cout << "- connection closed. ";
+         
+            CloseConnection();
+         }
+         
+         if (debug > 4)   
+            cout << endl;
+      }
+   
+
 
    }
    else if ( debug > 4 )
@@ -387,13 +415,32 @@ Transport::DocStatus HtHTTP::HTTPRequest()
    if( ! isPersistentConnectionUp() )
    {
       if ( debug > 4 )
-         cout << "Connection closed (No persistent connection)" << endl;
+         cout  << setw(5) << Transport::GetTotOpen() << " - "
+            << "Connection closed (No persistent connection)" << endl;
          
       CloseConnection();
    }
    else
-	 if ( debug > 4 )
-	    cout << "Connection stays up ... (Persistent connection)" << endl;
+   {
+      // Persistent connection is active
+      
+      // If the document is not parsable and we asked for it with a 'GET'
+      // method, the stream's not been completely read.
+
+      if (DocumentStatus == Document_not_parsable && _Method == Method_GET)
+      {
+         // We have to close the connection.
+         if ( debug > 4 )
+            cout << "Connection must be closed (stream not completely read)"
+               << endl;
+
+         CloseConnection();
+
+      }
+      else
+         if ( debug > 4 )
+            cout << "Connection stays up ... (Persistent connection)" << endl;
+   }
 
 
    // Check the doc_status and return a value
@@ -415,11 +462,15 @@ HtHTTP::ConnectionStatus HtHTTP::EstablishConnection()
    
    if (!result)
    	 return Connection_open_failed; // Connection failed
-   else if(debug > 4)
+   else  if(debug > 4)
+         {
+            cout << setw(5) << Transport::GetTotOpen() << " - ";
+            
    	    if (result == -1)
 	       cout << "Connection already open. No need to re-open." << endl;
 	    else
 	       cout << "Open of the connection ok" << endl;
+         }
 
 
    if(result==1) // New connection open
@@ -455,6 +506,9 @@ void HtHTTP::SetRequestCommand(String &cmd)
 
    // Initialize it
 
+   if (_useproxy) {
+	cmd << _url.get() << " HTTP/1.1\r\n";
+   } else 
    cmd << _url.path() << " HTTP/1.1\r\n";
 
    // Insert the "virtual" host to which ask the document
@@ -498,7 +552,7 @@ void HtHTTP::SetRequestCommand(String &cmd)
 //
 int HtHTTP::ParseHeader()
 {
-    String	line;
+    String	line = 0;
     int		inHeader = 1;
 
     if (_response._modification_time)
@@ -508,7 +562,9 @@ int HtHTTP::ParseHeader()
     }
     while (inHeader)
     {
-   
+
+      line.trunc();
+         
       if(! _connection.read_line(line, "\n"))
          return -1;  // Connection down
 	 
@@ -630,7 +686,7 @@ int HtHTTP::ParseHeader()
       }
     }
 
-    if (_response._modification_time == NULL && modification_time_is_now)
+    if (_response._modification_time == NULL)
     {
       if (debug > 3)
          cout << "No modification time returned: assuming now" << endl;
@@ -642,83 +698,6 @@ int HtHTTP::ParseHeader()
     }
     
     return 1;
-   
-}
-
-
-
-// Create a new date time object containing the date specified in a string
-
-HtDateTime *HtHTTP::NewDate(const char *datestring)
-{
-
-   while(isspace(*datestring)) datestring++; // skip initial spaces
-
-   DateFormat df = RecognizeDateFormat (datestring);
-
-   if(df == DateFormat_NotRecognized)
-   {
-   	 // Not recognized
-	 if(debug > 0)
-   	 	 cout << "Date Format not recognized: " << datestring << endl;
-	 
-	 return NULL;
-   }
-
-   HtDateTime *dt = new HtDateTime;
-   
-   dt->ToGMTime(); // Set to GM time
-   
-   switch(df)
-   {
-	       // Asc Time format
-   	 case DateFormat_AscTime:
-   	       	dt->SetAscTime((char *)datestring);
-   	 	       break;
-	       // RFC 1123
-   	 case DateFormat_RFC1123:
-   	       	dt->SetRFC1123((char *)datestring);
-   	 	       break;
-		  // RFC 850
-   	 case DateFormat_RFC850:
-   	       	dt->SetRFC850((char *)datestring);
-   	 	       break;
-         default:
-	        cout << "Date Format not handled: " << (int)df << endl;
-	        break;
-   }
-
-   return dt;
-   
-}
-
-
-
-// Recognize the possible date format sent by the server
-
-HtHTTP::DateFormat HtHTTP::RecognizeDateFormat (const char *datestring)
-{
-   register char *s;
-   
-   if((s=strchr(datestring, ',')))
-   {
-   	 // A comma is present.
-	 // Two chances: RFC1123 or RFC850
-
-   	 if(strchr(s, '-'))
-	    return DateFormat_RFC850;  // RFC 850 recognized   
-	 else
-	    return DateFormat_RFC1123; // RFC 1123 recognized
-   }
-   else
-   {
-      // No comma present
-	 
-	 // Let's try C Asctime:    Sun Nov  6 08:49:37 1994
-	 if(strlen(datestring) == 24) return DateFormat_AscTime;
-   }
-   
-   return DateFormat_NotRecognized;
    
 }
 
@@ -915,10 +894,13 @@ int HtHTTP::ReadChunkedBody()
    // Chunked Transfer decoding
    // as shown in the RFC2616 (HTTP/1.1) - 19.4.6
     
+#define  BSIZE  8192
+
    int            length = 0;  // initialize the length
    unsigned int   chunk_size;
-   String         ChunkHeader;
-   char           buffer[8192];
+   String         ChunkHeader = 0;
+   char           buffer[BSIZE+1];
+   int		  chunk, rsize;
    
    _response._contents.trunc();	// Initialize the string
 
@@ -931,17 +913,35 @@ int HtHTTP::ReadChunkedBody()
 
    while (chunk_size > 0)
    {
-      // Read Chunk data
-      if (_connection.read(buffer, chunk_size) == -1)
-         return -1;
+      chunk = chunk_size;
+
+      do {
+	if (chunk > BSIZE) {
+	  rsize = BSIZE;
+	  if (debug>4)
+	    cout << "Read chunk partial: left=" <<  chunk << endl;
+	} else {
+	  rsize = chunk;
+	}
+	chunk -= rsize;
+
+	// Read Chunk data
+	if (_connection.read(buffer, rsize) == -1)
+	  return -1;
+
+	// Append the chunk-data to the contents of the response
+	buffer[rsize] = 0;
+	_response._contents << buffer;
+                  
+	length+=rsize;
+
+      } while (chunk);
+
+     //     if (_connection.read(buffer, chunk_size) == -1)
+     //       return -1;
 
       // Read CRLF - to be ignored
       _connection.read_line(ChunkHeader);
-
-      // Append the chunk-data to the contents of the response
-      _response._contents << buffer;
-                  
-      length+=chunk_size;
 
       // Read chunk-size and CRLF
       _connection.read_line(ChunkHeader);
@@ -963,3 +963,21 @@ int HtHTTP::ReadChunkedBody()
 }
 
 
+///////
+   //    Show the statistics
+///////
+
+ostream &HtHTTP::ShowStatistics (ostream &out)
+{
+   Transport::ShowStatistics(out);  // call the base class method
+
+   out << " HTTP Requests             : " << GetTotRequests() << endl;
+   out << " HTTP KBytes requested     : " << (double)GetTotBytes()/1024 << endl;
+   out << " HTTP Average request time : " << GetAverageRequestTime()
+      << " secs" << endl;
+         
+   out << " HTTP Average speed        : " << GetAverageSpeed()/1024
+      << " KBytes/secs" << endl;
+
+   return out;
+}

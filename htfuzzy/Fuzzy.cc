@@ -14,12 +14,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Fuzzy.cc,v 1.16 1999/10/08 12:59:56 loic Exp $
+// $Id: Fuzzy.cc,v 1.17 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #include "Fuzzy.h"
 #include "htfuzzy.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "List.h"
 #include "StringList.h"
 #include "Endings.h"
@@ -33,9 +33,9 @@
 #include "Speling.h"
 
 //*****************************************************************************
-// Fuzzy::Fuzzy(const Configuration& config)
+// Fuzzy::Fuzzy(const HtConfiguration& config)
 //
-Fuzzy::Fuzzy(const Configuration& config_arg) :
+Fuzzy::Fuzzy(const HtConfiguration& config_arg) :
   config(config_arg)
 {
     dict = 0;
@@ -107,7 +107,7 @@ Fuzzy::getWords(char *word, List &words)
 
 
 //*****************************************************************************
-// int Fuzzy::openIndex(const Configuration &config)
+// int Fuzzy::openIndex(const HtConfiguration &config)
 //
 int
 Fuzzy::openIndex()
@@ -129,7 +129,7 @@ Fuzzy::openIndex()
 
 
 //*****************************************************************************
-// int Fuzzy::writeDB(Configuration &config)
+// int Fuzzy::writeDB(HtConfiguration &config)
 //
 int
 Fuzzy::writeDB()
@@ -176,7 +176,7 @@ Fuzzy::writeDB()
 // Fuzzy algorithm factory.
 //
 Fuzzy *
-Fuzzy::getFuzzyByName(char *name, const Configuration& config)
+Fuzzy::getFuzzyByName(char *name, const HtConfiguration& config)
 {
     if (mystrcasecmp(name, "exact") == 0)
 	return new Exact(config);
@@ -202,7 +202,7 @@ Fuzzy::getFuzzyByName(char *name, const Configuration& config)
 
 //*****************************************************************************
 int
-Fuzzy::createDB(const Configuration &)
+Fuzzy::createDB(const HtConfiguration &)
 {
     return OK;
 }

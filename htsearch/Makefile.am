@@ -13,4 +13,5 @@ htsearch_SOURCES = Display.cc DocMatch.cc ResultList.cc ResultMatch.cc \
 noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h \
 	Template.h TemplateList.h WeightWord.h htsearch.h Searcher.h
 htsearch_DEPENDENCIES = ../htfuzzy/libfuzzy.la $(HTLIBS)
+htsearch_LDFLAGS = $(PROFILING)
 htsearch_LDADD = ../htfuzzy/libfuzzy.la $(HTLIBS)

@@ -3,14 +3,13 @@
 //
 // Display: Takes results of search and fills in the HTML templates
 //
-//           
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.102 1999/10/15 03:45:22 jtillman Exp $
+// $Id: Display.cc,v 1.103 2000/02/19 05:29:05 ghutchis Exp $
 //
 
 #include "htsearch.h"
@@ -200,8 +199,8 @@ Display::display(int pageNumber)
 	{
 //	    DocumentRef	*ref = docDB[match->getID()];
 				DocumentRef *ref = results->getDocumentRef(match->getID());
-	    if (!ref)
-		continue;	// The document isn't present for some reason
+	    if (!ref || ref->DocState() != Reference_normal)
+		continue;	// The document isn't present or shouldn't be displayed
 	    ref->DocAnchor(match->getAnchor());
 	    ref->DocScore(match->getScore());
 	    displayMatch(ref,currentMatch+1);
@@ -400,6 +399,8 @@ Display::setVariables(int pageNumber, List *matches)
 	matchesPerPage = 10;
     int		nPages = (nMatches + matchesPerPage - 1) / matchesPerPage;
 
+    if (nPages > config.Value("maximum_pages", 10))
+	nPages = config.Value("maximum_pages", 10);
     if (nPages < 1)
 	nPages = 1;			// We always have at least one page...
     vars.Add("MATCHES_PER_PAGE", new String(config["matches_per_page"]));
@@ -408,6 +409,7 @@ Display::setVariables(int pageNumber, List *matches)
     vars.Add("VERSION", new String(config["version"]));
     vars.Add("RESTRICT", new String(config["restrict"]));
     vars.Add("EXCLUDE", new String(config["exclude"]));
+    vars.Add("KEYWORDS", new String(config["keywords"]));
     if (mystrcasecmp(config["match_method"], "and") == 0)
 	vars.Add("MATCH_MESSAGE", new String("all"));
     else if (mystrcasecmp(config["match_method"], "or") == 0)
@@ -491,6 +493,47 @@ Display::setVariables(int pageNumber, List *matches)
     *str << "</select>\n";
     vars.Add("SORT", str);
     vars.Add("SELECTED_SORT", new String(st));
+
+    // Handle user-defined select lists.
+    // Uses octuples containing these values:
+    // <tempvar> <inparm> <namelistattr> <ntuple> <ivalue> <ilabel> 
+    //					<defattr> <deflabel>
+    // e.g.:
+    // METHOD_LIST method method_names 2 1 2 match_method ""
+    // FORMAT_LIST format template_map 3 2 1 template_name ""
+    // EXCLUDE_LIST exclude exclude_names 2 1 2 exclude ""
+    // MATCH_LIST matchesperpage matches_per_page_list 1 1 1
+    //					matches_per_page "Previous Amount"
+    QuotedStringList	builds(config["build_select_lists"], " \t\r\n");
+    for (int b = 0; b <= builds.Count()-8; b += 8)
+    {
+	int	ntuple = atoi(builds[b+3]);
+	int	ivalue = atoi(builds[b+4]);
+	int	ilabel = atoi(builds[b+5]);
+	int	nsel = 0;
+	QuotedStringList	namelist(config[builds[b+2]], " \t\r\n");
+	if (ntuple > 0 && ivalue > 0 && ivalue <= ntuple
+	  && ilabel > 0 && ilabel <= ntuple && namelist.Count() % ntuple == 0)
+	{
+	    str = new String();
+	    *str << "<select name="<<builds[b+1]<<">\n";
+	    for (i = 0; i < namelist.Count(); i += ntuple)
+	    {
+		*str << "<option value=\"" << namelist[i+ivalue-1] << '"';
+		if (mystrcasecmp(namelist[i+ivalue-1],config[builds[b+6]]) == 0)
+		{
+		    *str << " selected";
+		    ++nsel;
+		}
+		*str << '>' << namelist[i+ilabel-1] << '\n';
+	    }
+	    if (!nsel && builds[b+7][0] && input->exists(builds[b+1]))
+		*str << "<option value=\"" << input->get(builds[b+1])
+		     << "\" selected>" << builds[b+7] << '\n';
+	    *str << "</select>\n";
+	    vars.Add(builds[b], str);
+	}
+    }
 	
     //
     // If a paged output is required, set the appropriate variables
@@ -527,8 +570,7 @@ Display::setVariables(int pageNumber, List *matches)
 	char	*p;
 	QuotedStringList	pnt(config["page_number_text"], " \t\r\n");
 	QuotedStringList	npnt(config["no_page_number_text"], " \t\r\n");
-	if (nPages > config.Value("maximum_pages", 10))
-	    nPages = config.Value("maximum_pages");
+	QuotedStringList	sep(config["page_number_separator"], " \t\r\n");
 	for (i = 1; i <= nPages; i++)
 	{
 	    if (i == pageNumber)
@@ -536,7 +578,7 @@ Display::setVariables(int pageNumber, List *matches)
 		p = npnt[i - 1];
 		if (!p)
 		    p = form("%d", i);
-		*str << p << ' ';
+		*str << p;
 	    }
 	    else
 	    {
@@ -546,8 +588,12 @@ Display::setVariables(int pageNumber, List *matches)
 		*str << "<a href=\"";
 		tmp = 0;
 		createURL(tmp, i);
-		*str << tmp << "\">" << p << "</a> ";
+		*str << tmp << "\">" << p << "</a>";
 	    }
+	    if (i != nPages && sep.Count() > 0)
+		*str << sep[(i-1)%sep.Count()];
+	    else if (i != nPages && sep.Count() <= 0)
+	      *str << " ";
 	}
 	vars.Add("PAGELIST", str);
     }
@@ -593,6 +639,8 @@ Display::createURL(String &url, int pageNumber)
 	s << "sort=" << input->get("sort") << '&';
     if (input->exists("matchesperpage"))
 	s << "matchesperpage=" << input->get("matchesperpage") << '&';
+    if (input->exists("keywords"))
+	s << "keywords=" << input->get("keywords") << '&';
     if (input->exists("words"))
 	s << "words=" << input->get("words") << '&';
     StringList form_vars(config["allow_in_form"], " \t\r\n");
@@ -1137,6 +1185,8 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 String
 Display::hilight(const String& str_arg, const String& urlanchor, int fanchor)
 {
+    const String start_highlight = config["start_highlight"];
+    const String end_highlight = config["end_highlight"];
     const char		*str = str_arg;
     String		result;
     int			pos;
@@ -1149,13 +1199,13 @@ Display::hilight(const String& str_arg, const String& urlanchor, int fanchor)
     {
 	result.append(str, pos);
 	ww = (WeightWord *) (*searchWords)[which];
-	result << "<strong>";
+	result << start_highlight;
 	if (first && fanchor)
 	    result << "<a href=\"" << urlanchor << "\">";
 	result.append(str + pos, length);
 	if (first && fanchor)
 	    result << "</a>";
-	result << "</strong>";
+	result << end_highlight;
 	str += pos + length;
 	first = 0;
     }

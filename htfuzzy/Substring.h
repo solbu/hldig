@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Substring.h,v 1.3 1999/09/24 10:29:02 loic Exp $
+// $Id: Substring.h,v 1.4 2000/02/19 05:29:02 ghutchis Exp $
 //
 
 #ifndef _Substring_h_
@@ -30,7 +30,7 @@ public:
     //
     // Construction/Destruction
     //
-    Substring(const Configuration& config_arg);
+    Substring(const HtConfiguration& config_arg);
     virtual		~Substring();
 
     virtual void	getWords(char *word, List &words);
