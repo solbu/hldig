@@ -14,14 +14,13 @@ libht_la_SOURCES = Configuration.cc Connection.cc Database.cc Dictionary.cc \
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS = BTree.h \
+noinst_HEADERS = \
 	Configuration.h \
 	Connection.h \
 	DB2_db.h \
 	DB2_hash.h \
 	Database.h \
 	Dictionary.h \
-	GDBM_db.h \
 	HtCodec.h \
 	HtDateTime.h \
 	HtHeap.h \
