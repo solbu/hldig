@@ -104,17 +104,18 @@ TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
 
-INCLUDES = -Wall 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include 		-I$(top_srcdir)/htlib -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)
+INCLUDES = -Wall 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)
 
 
-HTLIBS = $(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/db/dist/libdb.a
+HTLIBS = $(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/db/dist/libdb.a
 
 
 bin_PROGRAMS = htdig
 
-htdig_SOURCES = Document.cc HTML.cc Images.cc HtHTTP.cc Transport.cc 	Parsable.cc Plaintext.cc 	Retriever.cc Server.cc 	URLRef.cc htdig.cc ExternalParser.cc PDF.cc
+htdig_SOURCES = Document.cc HTML.cc Images.cc 	Parsable.cc Plaintext.cc 	Retriever.cc Server.cc 	URLRef.cc htdig.cc ExternalParser.cc PDF.cc
 
-noinst_HEADERS = Document.h ExternalParser.h HTML.h HtHTTP.h Images.h PDF.h 	Parsable.h Plaintext.h Retriever.h Server.h Transport.h URLRef.h htdig.h
+
+noinst_HEADERS = Document.h ExternalParser.h HTML.h Images.h PDF.h 	Parsable.h Plaintext.h Retriever.h Server.h  URLRef.h htdig.h
 
 htdig_DEPENDENCIES = $(HTLIBS)
 htdig_LDADD = $(HTLIBS)
@@ -127,9 +128,8 @@ PROGRAMS =  $(bin_PROGRAMS)
 DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
-htdig_OBJECTS =  Document.o HTML.o Images.o HtHTTP.o Transport.o \
-Parsable.o Plaintext.o Retriever.o Server.o URLRef.o htdig.o \
-ExternalParser.o PDF.o
+htdig_OBJECTS =  Document.o HTML.o Images.o Parsable.o Plaintext.o \
+Retriever.o Server.o URLRef.o htdig.o ExternalParser.o PDF.o
 htdig_LDFLAGS = 
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -144,9 +144,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
 DEP_FILES =  .deps/Document.P .deps/ExternalParser.P .deps/HTML.P \
-.deps/HtHTTP.P .deps/Images.P .deps/PDF.P .deps/Parsable.P \
-.deps/Plaintext.P .deps/Retriever.P .deps/Server.P .deps/Transport.P \
-.deps/URLRef.P .deps/htdig.P
+.deps/Images.P .deps/PDF.P .deps/Parsable.P .deps/Plaintext.P \
+.deps/Retriever.P .deps/Server.P .deps/URLRef.P .deps/htdig.P
 SOURCES = $(htdig_SOURCES)
 OBJECTS = $(htdig_OBJECTS)
 

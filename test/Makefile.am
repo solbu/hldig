@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.config
 
-TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist
+TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist t_htnet
 AM_MAKEFLAGS = MAKE="$(MAKE)"
 
 #PROFILING = -p
@@ -9,7 +9,7 @@ EXTRA_DIST = htdocs
 
 LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include $(PROFILING)
 
-noinst_PROGRAMS = dbbench word
+noinst_PROGRAMS = dbbench word testnet
 
 dbbench_SOURCES = dbbench.cc
 dbbench_DEPENDENCIES = $(HTLIBS)
@@ -20,6 +20,11 @@ word_SOURCES = word.cc
 word_DEPENDENCIES = $(HTLIBS)
 word_LDFLAGS = $(PROFILING)
 word_LDADD = $(HTLIBS)
+
+testnet_SOURCES = testnet.cc
+testnet_DEPENDENCIES = $(HTLIBS)
+testnet_LDFLAGS = $(PROFILING)
+testnet_LDADD = $(HTLIBS)
 
 clean-local:
 	rm -fr gmon.out test test_weakcmpr logs var

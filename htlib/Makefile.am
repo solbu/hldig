@@ -3,7 +3,7 @@ include $(top_srcdir)/Makefile.config
 
 lib_LTLIBRARIES = libht.la
 
-libht_la_SOURCES = Configuration.cc Connection.cc Database.cc Dictionary.cc \
+libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	DB2_db.cc IntObject.cc List.cc Object.cc \
 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc \
 	String.cc StringList.cc StringMatch.cc String_fmt.cc \
@@ -16,7 +16,6 @@ libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDI
 
 noinst_HEADERS = \
 	Configuration.h \
-	Connection.h \
 	DB2_db.h \
 	Database.h \
 	Dictionary.h \
