@@ -7,30 +7,41 @@ RELEASES:
    3.2.0b2: Released:  11 Apr 2000.
    3.2.0b1: Released:   4 Feb 2000.
 
+(Please note that everything added here should have a tracker PR# so
+we can be sure they're fixed. Geoff is currently trying add PR#s for
+what's currently here.)
+
 SHOWSTOPPERS:
+* Mifluz database errors are a severe problem (PR#428295)
+* The new mifluz merged code is slow.
+ (no PR, Geoff hasn't added mifluz-merge to CVS yet.)
 
 KNOWN BUGS:
 * Odd behavior with $(MODIFIED) and scores not working with
    wordlist_compress set but work fine without wordlist_compress.
    (the date is definitely stored correctly, even with compression on
-    so this must be some sort of weird htsearch bug)
-* Not all htsearch input parameters are handled properly: PR#648. Use a
+    so this must be some sort of weird htsearch bug) PR#618737.
+* Not all htsearch input parameters are handled properly: PR#405278. Use a
    consistant mapping of input -> config -> template for all inputs where
    it makes sense to do so (everything but "config" and "words"?).
 * If exact isn't specified in the search_algorithms, $(WORDS) is not set 
-   correctly: PR#650. (The documentation for 3.2.0b1 is updated, but can
+   correctly: PR#405294. (The documentation for 3.2.0b1 was updated, but can
    we fix this?)
+ (More importantly, do we ever want exact to /not/ be specified?)
 * META descriptions are somehow added to the database as FLAG_TITLE,
-   not FLAG_DESCRIPTION. (PR#859)
+   not FLAG_DESCRIPTION. (PR#618738)
 
 PENDING PATCHES (available but need work):
 * Additional support for Win32.
 * Memory improvements to htmerge. (Backed out b/c htword API changed.)
+* Mifluz merge.
 
 NEEDED FEATURES:
-* Field-restricted searching.
-* Return all URLs.
+* Field-restricted searching. (e.g. PR#460833)
+* Return all URLs. (PR#618743)
 * Handle noindex_start & noindex_end as string lists.
+* Quim's new htsearch/qtest query parser framework.
+* File/Database locking. PR#405764.
 
 TESTING:
 * httools programs: 
@@ -45,23 +56,31 @@ TESTING:
 * ExternalTransport needs testing of changes similar to ExternalParser.
 
 DOCUMENTATION:
-* List of supported platforms/compilers is ancient.
+* List of supported platforms/compilers is ancient. (PR#405279)
 * Add thorough documentation on htsearch restrict/exclude behavior
    (including '|' and regex).
 * Document all of htsearch's mappings of input parameters to config attributes
-   to template variables. (Relates to PR#648.) Also make sure these config
-   attributes are all documented in defaults.cc, even if they're only set by
-   input parameters and never in the config file.
+   to template variables. (Relates to PR#405278.)
+  Should we make sure these config attributes are all documented in
+  defaults.cc, even if they're only set by input parameters and never
+  in the config file?
 * Split attrs.html into categories for faster loading.
+* Turn defaults.cc into an XML file for generating documentation and 
+  defaults.cc.
 * require.html is not updated to list new features and disk space
    requirements of 3.2.x (e.g. phrase searching, regex matching,
    external parsers and transport methods, database compression.)
-* TODO.html has not been updated for current TODO list and completions.
+   PRs# 405280 #405281.
+* TODO.html has not been updated for current TODO list and
+   completions.
+* Htfuzzy could use more documentation on what each fuzzy algorithm
+   does. PR#405714.
+* Document the list of all installed files and default
+   locations. PR#405715.
 
 OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
    (Does Loic's new database code make this work?)
-* The code needs a security audit, esp. htsearch
-* URL.cc tries to parse malformed URLs (which causes further problems)
-   (It should probably just set everything to empty) This relates to 
-   PR#348.
+* The code needs a security audit, esp. htsearch. PR#405765.
+* URL.cc tries to parse malformed URLs (which can cause further problems)
+   (It should probably just set everything to empty).
