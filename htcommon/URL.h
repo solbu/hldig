@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.h,v 1.5 2003/01/11 02:33:28 lha Exp $
+// $Id: URL.h,v 1.6 2003/06/20 07:49:53 lha Exp $
 //
 
 #ifndef _URL_h_
@@ -91,7 +91,7 @@ private:
 //String &encodeURL(String &, char *valid = "?_@.=&/:");
 //String &encodeURL(String &, char *reserved = ";/?:@&=+$,");
 //	       	              char *unreserved = "-_.!~*'()");
-String &encodeURL(String &, char *valid = UNRESERVED);
+String &encodeURL(String &, char *valid = (char *)UNRESERVED);
 
 String &decodeURL(String &);
 

@@ -80,7 +80,7 @@ void	 usage __P((void));
 
 DB_ENV	*dbenv;
 int	 interrupted;
-char	*internal;
+char	*stats_internal;
 const char
 	*progname = "htdb_stat";				/* Program name. */
 
@@ -105,7 +105,7 @@ main(int argc, char *argv[])
 		switch (ch) {
 		case 'C':
 			ttype = T_LOCK;
-			if (!argcheck(internal = optarg, "Acflmo"))
+			if (!argcheck(stats_internal = optarg, "Acflmo"))
 				usage();
 			break;
 		case 'c':
@@ -126,7 +126,7 @@ main(int argc, char *argv[])
 			break;
 		case 'M':
 			ttype = T_MPOOL;
-			if (!argcheck(internal = optarg, "Ahlm"))
+			if (!argcheck(stats_internal = optarg, "Ahlm"))
 				usage();
 			break;
 		case 'm':
@@ -544,8 +544,8 @@ lock_stats(DB_ENV *dbenvp)
 	DB_LOCK_STAT *sp;
 	int ret;
 
-	if (internal != NULL) {
-		CDB___lock_dump_region(dbenvp, internal, stdout);
+	if (stats_internal != NULL) {
+		CDB___lock_dump_region(dbenvp, stats_internal, stdout);
 		return (0);
 	}
 
@@ -631,8 +631,8 @@ mpool_stats(DB_ENV *dbenvp)
 	DB_MPOOL_STAT *gsp;
 	int ret;
 
-	if (internal != NULL) {
-		CDB___memp_dump_region(dbenvp, internal, stdout);
+	if (stats_internal != NULL) {
+		CDB___memp_dump_region(dbenvp, stats_internal, stdout);
 		return (1);
 	}
 

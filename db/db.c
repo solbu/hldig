@@ -1046,12 +1046,12 @@ CDB___db_set_pgsize(dbp, fhp, name)
 	 * If compression is on, the minimum page size must be multiplied
 	 * by the compression factor.
 	 */
-#ifdef HAVE_ZLIB
+#ifdef HAVE_LIBZ
 	if(F_ISSET(dbp, DB_AM_CMPR)) {
 	  if(iopsize < DB_CMPR_MULTIPLY(dbenv, DB_MIN_PGSIZE))
 	    iopsize = DB_CMPR_MULTIPLY(dbenv, DB_MIN_PGSIZE);
 	}
-#endif /* HAVE_ZLIB */
+#endif /* HAVE_LIBZ */
 
 	/*
 	 * Sheer paranoia, but we don't want anything that's not a power-of-2

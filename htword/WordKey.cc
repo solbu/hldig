@@ -14,7 +14,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.5 2002/02/01 22:49:36 ghutchis Exp $
+// $Id: WordKey.cc,v 1.6 2003/06/20 07:49:54 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -82,7 +82,7 @@ WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
   const WordKeyInfo& info = *WordKey::Info();
 
   if(a_length < info.num_length || b_length < info.num_length) {
-      fprintf(stderr, "WordKey::Compare: key length for a or b < info.num_length\n");
+      fprintf(stderr, "WordKey::Compare: key length %d or %d < info.num_length = %d\n", a_length, b_length, info.num_length);
       return NOTOK;
   }
 

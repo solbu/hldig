@@ -31,7 +31,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookie.cc,v 1.9 2003/02/01 12:59:14 angusgb Exp $
+// $Id: HtCookie.cc,v 1.10 2003/06/20 07:49:54 lha Exp $
 //
 
 #include "HtCookie.h"
@@ -465,7 +465,7 @@ int HtCookie::SetDate(const char *datestring, HtDateTime &dt)
 HtCookie::DateFormat HtCookie::RecognizeDateFormat(const char *datestring)
 {
 
-   register char *s;
+   register const char *s;
 
    if (datestring)
    {

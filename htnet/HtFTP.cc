@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFTP.cc,v 1.1 2002/08/29 21:21:34 svc Exp $ 
+// $Id: HtFTP.cc,v 1.2 2003/06/20 07:49:54 lha Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -172,7 +172,7 @@ HtFTP::DocStatus HtFTP::Request()
    if (_modification_time && *_modification_time >= HtDateTime(stat_buf.st_mtime))
      return Transport::Document_not_changed;
 
-   char *ext = strrchr(_url.path(), '.');
+   const char *ext = strrchr(_url.path(), '.');
    if (ext == NULL)
      return Transport::Document_not_local;
 

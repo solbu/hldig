@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.20 2002/02/01 22:49:34 ghutchis Exp $
+// $Id: htString.h,v 1.21 2003/06/20 07:49:54 lha Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -131,7 +131,7 @@ public:
     inline String	&trunc() { Length = 0; return *this; }
     String		&chop(int n = 1);
     String		&chop(char ch = '\n');
-    String		&chop(const char *str = "\r\n");
+    String		&chop(const char *str = (char *)"\r\n");
 
     //
     // SubStrings

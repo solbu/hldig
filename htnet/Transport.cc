@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.8 2002/08/06 07:32:29 angusgb Exp $
+// $Id: Transport.cc,v 1.9 2003/06/20 07:49:54 lha Exp $
 //
 //
 
@@ -418,7 +418,7 @@ HtDateTime *Transport::NewDate(const char *datestring)
 // Recognize the possible date format sent by the server
 Transport::DateFormat Transport::RecognizeDateFormat (const char *datestring)
 {
-   register char *s;
+   register const char *s;
    
    if((s=strchr(datestring, ',')))
    {

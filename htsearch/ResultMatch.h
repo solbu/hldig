@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ResultMatch.h,v 1.8 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: ResultMatch.h,v 1.9 2003/06/20 07:49:54 lha Exp $
 //
 
 #ifndef _ResultMatch_h_
@@ -65,7 +65,8 @@ public:
 	// The purpose of the derived classes is to define their own.
 	virtual CmpFun getSortFun() = 0;
 
-private:
+	// Sun's C++ compiler doesn't like private types used in other  structs
+	// so make this public
 	enum SortType
 	{
 	    SortByScore,
@@ -74,6 +75,7 @@ private:
 	    SortByID
 	};
 
+private:
 	double			score;
 	int				anchor;
 	int				id;

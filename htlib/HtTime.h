@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtTime.h,v 1.3 2002/02/01 22:49:33 ghutchis Exp $
+// $Id: HtTime.h,v 1.4 2003/06/20 07:49:54 lha Exp $
 //
 #ifndef _HtTime_h_
 #define _HtTime_h_
@@ -95,7 +95,7 @@ class HtTime
 	    }
 	    return(0);
 	}
-	Progression(double nperiod=.1,char *nlabel="progression")
+	Progression(double nperiod=.1,char *nlabel=(char *)"progression")
 	{
 	    label=nlabel;
 	    period=nperiod;

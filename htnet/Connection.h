@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.h,v 1.5 2002/08/06 07:32:29 angusgb Exp $
+// $Id: Connection.h,v 1.6 2003/06/20 07:49:54 lha Exp $
 //
 
 #ifndef _Connection_h_
@@ -66,11 +66,11 @@ public:
    int Listen(int n = 5);
 
    // IO
-   String* Read_Line(String &, char *terminator = "\n");
-   char* Read_Line(char *buffer, int maxlength, char *terminator = "\n");
-   String* Read_Line(char *terminator = "\n");
+   String* Read_Line(String &, char *terminator = (char *)"\n");
+   char* Read_Line(char *buffer, int maxlength, char *terminator=(char *)"\n");
+   String* Read_Line(char *terminator = (char *)"\n");
    virtual int Read_Char();
-   int Write_Line(char *buffer, char *eol = "\n");
+   int Write_Line(char *buffer, char *eol = (char *)"\n");
    
    int Write(char *buffer, int maxlength = -1);
    int Read(char *buffer, int maxlength);

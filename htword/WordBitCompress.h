@@ -17,7 +17,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.h,v 1.4 2002/12/30 12:42:59 lha Exp $
+// $Id: WordBitCompress.h,v 1.5 2003/06/20 07:49:54 lha Exp $
 //
 
 #ifndef   _WordBitCompress_h
@@ -135,7 +135,7 @@ public:
     }
 
     // get/put an integer using n bits
-    void         put_uint(unsigned int v,int n,const char *tag="NOTAG");
+    void         put_uint(unsigned int v,int n,const char *tag=(char*)"NOTAG");
     unsigned int get_uint(               int n,const char *tag=(char*)NULL);
 
     // get/put n bits of data stored in vals
@@ -219,11 +219,11 @@ class Compressor : public BitStream
 public:
     int verbose;
     // get/put an integer using a variable number of bits
-    void         put_uint_vl(unsigned int v,int maxn,const char *tag="NOTAG");
+    void         put_uint_vl(unsigned int v,int maxn,const char *tag=(char*)"NOTAG");
     unsigned int get_uint_vl(               int maxn,const char *tag=(char*)NULL);
 
     // get/put an integer checking for an expected value
-    void         put_uint_ex(unsigned int v,unsigned int ex,int maxn,const char *tag="NOTAG")
+    void         put_uint_ex(unsigned int v,unsigned int ex,int maxn,const char *tag=(char*)"NOTAG")
 	{
 	    if(v==ex){put(1,tag);}
 	    else{put(0,tag);put_uint(v,maxn,(char*)NULL);}
@@ -237,11 +237,11 @@ public:
 
     // compress/decompress an array of unsigned ints (choosing best method)
     int put_vals(unsigned int *vals,int n,const char *tag);
-    int get_vals(unsigned int **pres,const char *tag="BADTAG!");
+    int get_vals(unsigned int **pres,const char *tag=(char*)"BADTAG!");
 
     // compress/decompress an array of bytes (very simple)
     int put_fixedbitl(byte *vals,int n,const char *tag);    
-    int get_fixedbitl(byte **pres,const char *tag="BADTAG!");
+    int get_fixedbitl(byte **pres,const char *tag=(char*)"BADTAG!");
 
     // compress/decompress an array of unsigned ints (very simple)
     void get_fixedbitl(unsigned int *res,int n);

@@ -1,3 +1,26 @@
+Fri Jun 20 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* db/configure: Hack which should allow  select  to be detected on HP/UX
+
+	* db/db.c: Replace  HAVE_ZLIB  with  HAVE_LIBZ  (as set by configure)
+
+	* htword/wordKey.cc: More descriptive error message
+
+	  (Changes to compile with Sun's C++)
+	* htnet/{HtCookie.cc,HtFTP.cc,Transport.cc}:
+	  Assign substring of const string to const pointer.
+	* htsearch/ResultMatch.h:
+	  Allow use of  SortType  in ResultMatch::setSortType()
+	* test/search.cc: Don't take  sizeof(variable size array)
+	* htdb/htdb_stat.cc: avoid name clash for global var  internal
+	* htcommon/URL.h, htlib/HtTime.h, htlib/htString.h, htnet/Connection.h,
+	  htword/WordBitCompress.h:
+	  Cast default args of type  string literal  to type  (char*)
+
+	* htdocs/require.html: Remove email address.
+
+	* htlib/gregex.h: Avoid warning if  __restrict_arr  already defined
+
 Sun Jun 14 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* htcommon/defaults.cc:
