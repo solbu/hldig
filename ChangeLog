@@ -2,6 +2,8 @@ Mon Feb  1 14:44:32 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.cc(displayMatch): Remove compiler warnings.
 
+	* */Makefile.in: Define INSTALL_PROGRAM from configure script.
+	
 Mon Feb  1 14:04:18 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
 	* htdig/ExternalParser.cc: Add checks to prevent wayward parsers
