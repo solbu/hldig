@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.h,v 1.10.2.1 1999/10/13 11:55:21 angus Exp $
+// $Id: Document.h,v 1.10.2.2 1999/10/15 11:02:37 angus Exp $
 //
 //
 #ifndef _Document_h_
@@ -95,11 +95,21 @@ private:
     int				document_length;
     HtDateTime			modtime;
     int				max_doc_size;
+    int				num_retries;
 
     int				UseProxy();
 
     Transport			*transportConnect;
     HtHTTP			*HTTPConnect;
+    
+
+ ///////
+    //    Tell us if we should retry to retrieve an URL depending on
+    //    the first returned document status
+ ///////
+
+   int ShouldWeRetry(Transport::DocStatus DocumentStatus);    
+   
 };
 
 #endif

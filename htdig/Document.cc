@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.1 1999/10/13 11:55:21 angus Exp $
+// $Id: Document.cc,v 1.55.2.2 1999/10/15 11:02:37 angus Exp $
 //
 
 #include <signal.h>
@@ -62,6 +62,10 @@ Document::Document(char *u, int max_size)
     else
 	max_doc_size = config.Value("max_doc_size");
 
+   if (config.Value("max_retries") > 0)
+      num_retries = config.Value("max_retries");
+   else num_retries = 2;
+   
    // Initialize some static variables of Transport
 
    Transport::SetDebugLevel(debug);
@@ -213,6 +217,7 @@ Document::Retrieve(HtDateTime date)
    Transport_Response	*response = 0;
    HtDateTime 		*ptrdatetime = 0;
    int			useproxy = UseProxy();
+   int                  NumRetries;
   
    transportConnect = 0;
 
@@ -240,7 +245,18 @@ Document::Retrieve(HtDateTime date)
             HTTPConnect->SetRefererURL(*referer);
 	  
 	  // We may issue a config paramater to enable/disable them
-         HTTPConnect->AllowPersistentConnection();
+         if (config.Boolean("persistent_connections"))
+         {
+            // Persistent connections allowed
+            HTTPConnect->AllowPersistentConnection();
+
+            // Head before Get option control
+            if (config.Boolean("head_before_get"))
+               HTTPConnect->EnableHeadBeforeGet();
+            else
+               HTTPConnect->DisableHeadBeforeGet();
+         }
+         else HTTPConnect->DisablePersistentConnection();
 
 	  // http->SetRequestMethod(HtHTTP::Method_GET);
          if (debug > 2)
@@ -293,8 +309,21 @@ Document::Retrieve(HtDateTime date)
       
       // Make the request
       // Here is the main operation ... Let's make the request !!!
-      status = transportConnect->Request();
+      // We now perform a loop until we want to retry the request
+
+      NumRetries = 0;
       
+      do
+      {
+         status = transportConnect->Request();
+
+         if (NumRetries++)
+            if(debug>0)
+               cout << ".";
+
+      } while (ShouldWeRetry(status) && NumRetries < num_retries);
+      
+            
       // Let's get out the info we need
       response = transportConnect->GetResponse();
       
@@ -454,4 +483,20 @@ Document::getParsable()
 
     parsable->setContents(contents.get(), contents.length());
     return parsable;
+}
+
+
+int Document::ShouldWeRetry(Transport::DocStatus DocumentStatus)
+{
+
+   if (DocumentStatus == Transport::Document_connection_down)
+      return 1;
+      
+   if (DocumentStatus == Transport::Document_no_connection)
+      return 1;
+      
+   if (DocumentStatus == Transport::Document_no_header)
+      return 1;
+      
+   return 0;
 }

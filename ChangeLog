@@ -1,3 +1,8 @@
+Fri Oct 15 12:55:47 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* htdig/Document: added the management of 'persistent_connections',
+	  'head_before_get', 'max_retries' configuration attributes.
+
 Fri Oct 15 12:54:11 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* test/testnet.cc: added the option '-m' for setting the max size
