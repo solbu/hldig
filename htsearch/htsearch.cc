@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.54.2.10 2000/05/08 20:40:43 loic Exp $
+// $Id: htsearch.cc,v 1.54.2.11 2000/06/11 17:49:04 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -325,7 +325,7 @@ tmerge?",
     selected_collections.Add(configFile, collection);
 
     if (parser->hadError())
-        errorMsg = parser->getErrorMessage();      
+      errorMsg = strdup(parser->getErrorMessage());
 
     delete parser;
 }
@@ -347,7 +347,10 @@ tmerge?",
     display.setCGI(&input);
     display.setLogicalWords(logicalWords);
     if (errorMsg)
+      {
 	display.displaySyntaxError(errorMsg);
+	delete [] errorMsg;
+      }
     else
 	display.display(pageNumber);
 
