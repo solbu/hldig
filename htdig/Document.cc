@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.46 1999/07/16 00:46:57 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.47 1999/08/06 21:40:47 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -273,7 +273,7 @@ Document::UseProxy()
 	l.Release();
     }
 
-    if ((proxy) && (excludeProxy->match(url->get(), 1, 0) != 0))
+    if ((proxy) && (excludeProxy->match(url->get(), 0, 0) == 0))
       return TRUE;    // if the exclude pattern is empty, use the proxy
     return FALSE;
 }

@@ -1,3 +1,8 @@
+Fri Aug  6 16:37:33 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc (UseProxy): fix call to match() and test of
+	return value to work as documented for http_proxy_exclude (PR#603).
+
 Fri Aug 06 15:06:23 1999    <loic@yoda.ceic.com>
 
 	* db/dist/config.hin, db/mp/mp_cmpr.c db/db/db.c, db/mp/mp_fopen.c: 
