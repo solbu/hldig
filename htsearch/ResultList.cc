@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ResultList.cc,v 1.6.2.1 2000/05/06 20:46:41 loic Exp $
+// $Id: ResultList.cc,v 1.6.2.2 2000/09/12 14:58:55 qss Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -35,7 +35,7 @@ ResultList::ResultList()
 //
 ResultList::~ResultList()
 {
-    Destroy();
+    //Destroy();
 }
 
 
@@ -45,7 +45,7 @@ void
 ResultList::add(DocMatch *dm)
 {
     String	t;
-    t << dm->id;
+    t << dm->GetId();
     Add(t, dm);
 }
 
@@ -53,7 +53,7 @@ ResultList::add(DocMatch *dm)
 //*****************************************************************************
 //
 DocMatch *
-ResultList::find(int id)
+ResultList::find(int id) const
 {
     String	t;
     t << id;
@@ -64,7 +64,7 @@ ResultList::find(int id)
 //*****************************************************************************
 //
 DocMatch *
-ResultList::find(char *id)
+ResultList::find(char *id) const
 {
     return (DocMatch *) Find(id);
 }
@@ -84,7 +84,7 @@ ResultList::remove(int id)
 //*****************************************************************************
 //
 int
-ResultList::exists(int id)
+ResultList::exists(int id) const
 {
     String	t;
     t << id;
@@ -108,4 +108,44 @@ ResultList::elements()
     return list;
 }
 
+void
+ResultList::SetWeight(double weight)
+{
+	HtVector *els = elements();
+	for(int i = 0; i < els->Count(); i++)
+	{
+		DocMatch *match = (DocMatch *)(*els)[i];
+		match->SetWeight(weight);
+	}
+	els->Release();
+}
 
+
+ResultList::ResultList(const ResultList &other)
+{
+	DictionaryCursor c;
+	isIgnore = other.isIgnore;
+	other.Start_Get(c);
+	DocMatch *match = (DocMatch *)other.Get_NextElement(c);
+	while(match)
+	{
+		add(new DocMatch(*match));
+		match = (DocMatch *)other.Get_NextElement(c);
+	}
+}
+
+void
+ResultList::Dump() const
+{
+	cerr << "ResultList {" << endl;
+	cerr << "Ignore: " << isIgnore << " Count: " << Count() << endl;
+	DictionaryCursor c;
+	Start_Get(c);
+	DocMatch *match = (DocMatch *)Get_NextElement(c);
+	while(match)
+	{
+		match->Dump();
+		match = (DocMatch *)Get_NextElement(c);
+	}
+	cerr << "}" << endl;
+}

@@ -121,23 +121,23 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 bindir = $(CGIBIN_DIR)
 
-LOCAL_DEFINES = -DCONFIG_DIR=\"$(CONFIG_DIR)\"
+LOCAL_DEFINES = -DCONFIG_DIR=\"$(CONFIG_DIR)\" -I$(top_srcdir)/htfuzzy
 
-bin_PROGRAMS = htsearch parsetest
+bin_PROGRAMS = htsearch qtest
 
 htsearch_SOURCES = Display.cc DocMatch.cc ResultList.cc ResultMatch.cc 		Template.cc TemplateList.cc WeightWord.cc htsearch.cc 		parser.cc Collection.cc SplitMatches.cc HtURLSeedScore.cc 
 
-noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h 	Template.h TemplateList.h WeightWord.h htsearch.h parser.h 	Collection.h SplitMatches.h HtURLSeedScore.h 	ParseTree.h AndParseTree.h OrParseTree.h ExactParseTree.h
+noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h 	Template.h TemplateList.h WeightWord.h htsearch.h parser.h 	Collection.h SplitMatches.h HtURLSeedScore.h 	WordSearcher.h AndQuery.h AndQueryParser.h BooleanLexer.h 	BooleanQueryParser.h ExactWordQuery.h FuzzyExpander.h GParser.h 	NearQuery.h NotQuery.h OperatorQuery.h OrFuzzyExpander.h 	OrQuery.h OrQueryParser.h PhraseQuery.h Query.h QueryCache.h 	QueryLexer.h QueryParser.h SimpleLexer.h SimpleQueryParser.h 	VolatileCache.h
 
-htsearch_DEPENDENCIES = ../htfuzzy/libfuzzy.la $(HTLIBS)
+htsearch_DEPENDENCIES = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
 htsearch_LDFLAGS = $(PROFILING)
-htsearch_LDADD = ../htfuzzy/libfuzzy.la $(HTLIBS)
+htsearch_LDADD = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
 
-parsetest_SOURCES = ParseTree.cc AndParseTree.cc OrParseTree.cc 	ExactParseTree.cc WeightWord.cc ResultList.cc 	parsetest.cc
+qtest_SOURCES = DocMatch.cc ResultList.cc AndQuery.cc 	BooleanLexer.cc BooleanQueryParser.cc ExactWordQuery.cc 	GParser.cc NearQuery.cc NotQuery.cc OperatorQuery.cc 	OrFuzzyExpander.cc OrQuery.cc PhraseQuery.cc Query.cc 	QueryLexer.cc QueryParser.cc SimpleQueryParser.cc VolatileCache.cc 	WordSearcher.cc qtest.cc
 
-parsetest_DEPENDENCIES = $(HTLIBS)
-parsetest_LDFLAGS = $(PROFILING)
-parsetest_LDADD = $(HTLIBS)
+qtest_DEPENDENCIES = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
+qtest_LDFLAGS = $(PROFILING)
+qtest_LDADD = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
 CONFIG_CLEAN_FILES = 
@@ -150,8 +150,11 @@ LIBS = @LIBS@
 htsearch_OBJECTS =  Display.o DocMatch.o ResultList.o ResultMatch.o \
 Template.o TemplateList.o WeightWord.o htsearch.o parser.o Collection.o \
 SplitMatches.o HtURLSeedScore.o
-parsetest_OBJECTS =  ParseTree.o AndParseTree.o OrParseTree.o \
-ExactParseTree.o WeightWord.o ResultList.o parsetest.o
+qtest_OBJECTS =  DocMatch.o ResultList.o AndQuery.o BooleanLexer.o \
+BooleanQueryParser.o ExactWordQuery.o GParser.o NearQuery.o NotQuery.o \
+OperatorQuery.o OrFuzzyExpander.o OrQuery.o PhraseQuery.o Query.o \
+QueryLexer.o QueryParser.o SimpleQueryParser.o VolatileCache.o \
+WordSearcher.o qtest.o
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -164,14 +167,18 @@ DIST_COMMON =  Makefile.am Makefile.in
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/AndParseTree.P .deps/Collection.P .deps/Display.P \
-.deps/DocMatch.P .deps/ExactParseTree.P .deps/HtURLSeedScore.P \
-.deps/OrParseTree.P .deps/ParseTree.P .deps/ResultList.P \
-.deps/ResultMatch.P .deps/SplitMatches.P .deps/Template.P \
-.deps/TemplateList.P .deps/WeightWord.P .deps/htsearch.P .deps/parser.P \
-.deps/parsetest.P
-SOURCES = $(htsearch_SOURCES) $(parsetest_SOURCES)
-OBJECTS = $(htsearch_OBJECTS) $(parsetest_OBJECTS)
+DEP_FILES =  .deps/AndQuery.P .deps/BooleanLexer.P \
+.deps/BooleanQueryParser.P .deps/Collection.P .deps/Display.P \
+.deps/DocMatch.P .deps/ExactWordQuery.P .deps/GParser.P \
+.deps/HtURLSeedScore.P .deps/NearQuery.P .deps/NotQuery.P \
+.deps/OperatorQuery.P .deps/OrFuzzyExpander.P .deps/OrQuery.P \
+.deps/PhraseQuery.P .deps/Query.P .deps/QueryLexer.P \
+.deps/QueryParser.P .deps/ResultList.P .deps/ResultMatch.P \
+.deps/SimpleQueryParser.P .deps/SplitMatches.P .deps/Template.P \
+.deps/TemplateList.P .deps/VolatileCache.P .deps/WeightWord.P \
+.deps/WordSearcher.P .deps/htsearch.P .deps/parser.P .deps/qtest.P
+SOURCES = $(htsearch_SOURCES) $(qtest_SOURCES)
+OBJECTS = $(htsearch_OBJECTS) $(qtest_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -245,9 +252,9 @@ htsearch: $(htsearch_OBJECTS) $(htsearch_DEPENDENCIES)
 	@rm -f htsearch
 	$(CXXLINK) $(htsearch_LDFLAGS) $(htsearch_OBJECTS) $(htsearch_LDADD) $(LIBS)
 
-parsetest: $(parsetest_OBJECTS) $(parsetest_DEPENDENCIES)
-	@rm -f parsetest
-	$(CXXLINK) $(parsetest_LDFLAGS) $(parsetest_OBJECTS) $(parsetest_LDADD) $(LIBS)
+qtest: $(qtest_OBJECTS) $(qtest_DEPENDENCIES)
+	@rm -f qtest
+	$(CXXLINK) $(qtest_LDFLAGS) $(qtest_OBJECTS) $(qtest_LDADD) $(LIBS)
 .cc.o:
 	$(CXXCOMPILE) -c $<
 .cc.lo:
