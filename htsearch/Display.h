@@ -1,9 +1,12 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.6 1999/01/08 05:02:24 ghutchis Exp $
+// $Id: Display.h,v 1.7 1999/01/14 03:09:19 ghutchis Exp $
 //
 // $Log: Display.h,v $
+// Revision 1.7  1999/01/14 03:09:19  ghutchis
+// Added support for sorting and reverse sorting by date, time, and score.
+//
 // Revision 1.6  1999/01/08 05:02:24  ghutchis
 // Implement add_anchors_to_excerpt option and new variable ANCHOR as
 // contributed by Marjolein.
@@ -159,6 +162,14 @@ protected:
     List		*buildMatchList();
     void		sort(List *);
     static int		compare(const void *, const void *);
+    static int		compareTime(const void *, const void *);
+    static int		compareTitle(const void *, const void *);
+    enum SortType {
+	SortByScore,
+	SortByTime,
+	SortByTitle
+    };
+    SortType		sortType();
     int			includeURL(char *);
     String		*readFile(char *);
     void		expandVariables(char *);
