@@ -5,12 +5,12 @@
 # If there is a problem before the test, "exit 77" skips the test (not fails it)
 #
 # Part of the ht://Dig package   <http://www.htdig.org/>
-# Copyright (c) 1999, 2000 The ht://Dig Group
+# Copyright (c) 1999-2003 The ht://Dig Group
 # For copyright details, see the file COPYING in your distribution
-# or the GNU General Public License version 2 or later
-# <http://www.gnu.org/copyleft/gpl.html>
+# or the GNU Library General Public License (LGPL) version 2 or later
+# <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: test_functions.in,v 1.10 2003/06/09 06:00:31 lha Exp $
+# $Id: test_functions.in,v 1.11 2003/06/27 20:28:44 nealr Exp $
 #
 
 if [ "$1" == --stop-apache ]

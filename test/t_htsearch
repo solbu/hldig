@@ -1,11 +1,11 @@
 #
 # Part of the ht://Dig package   <http://www.htdig.org/>
-# Copyright (c) 1999 The ht://Dig Group
+# Copyright (c) 1999-2003 The ht://Dig Group
 # For copyright details, see the file COPYING in your distribution
-# or the GNU Public License version 2 or later
-# <http://www.gnu.org/copyleft/gpl.html>
+# or the GNU Library General Public License (LGPL) version 2 or later
+# <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_htsearch,v 1.10 2003/02/11 09:49:38 lha Exp $
+# $Id: t_htsearch,v 1.11 2003/06/27 20:28:44 nealr Exp $
 #
 
 . $srcdir/t_htdig
