@@ -6,32 +6,36 @@
 // Outputs HTML-ized results of the search based on the templates specified
 //
 // $Log: htsearch.cc,v $
-// Revision 1.15  1998/12/04 04:13:52  ghutchis
+// Revision 1.16  1998/12/05 00:53:53  ghutchis
+// Added usage message for the command line.
+//
+//
+// revision 1.15 1998/12/04 04:13:52 ghutchis
 // Use configure check to only include getopt.h when it exists.
+// 
+// revision 1.14 1998/12/02 02:44:44 ghutchis
+// Add include <getopt.h> to help compiling under Win32 with CygWinB20.
+//
+// revision 1.13 1998/11/30 02:28:50 ghutchis
+// Fix mistake in last update so the code compiles.
 //
 // Revision 1.12  1998/11/30 01:50:38  ghutchis
-//
 // Improved support for multiple restrict and exclude patterns, based on code
 // from Gilles Detillieux and William Rhee <willrhee@umich.edu>.
 //
 // Revision 1.11  1998/11/22 19:15:35  ghutchis
-//
 // Don't remove boolean operators from boolean search strings!
 //
 // Revision 1.10  1998/11/01 00:00:40  ghutchis
-//
 // Replaced system calls with htlib/my* functions.
 //
 // Revision 1.9  1998/10/26 20:34:33  ghutchis
-//
 // Added patch by Esa Ahola to fix bug with not properly ignoring bad_words
 //
 // Revision 1.8  1998/09/30 17:31:51  ghutchis
-//
 // Changes for 3.1.0b2
 //
 // Revision 1.7  1998/09/10 04:16:26  ghutchis
-//
 // More bug fixes.
 //
 // Revision 1.6  1998/06/21 23:20:12  turtle
@@ -58,7 +62,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.15 1998/12/04 04:13:52 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.16 1998/12/05 00:53:53 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -89,6 +93,7 @@ void reportError(char *);
 void convertToBoolean(List &words);
 void doFuzzy(WeightWord *, List &, List &);
 void addRequiredWords(List &, StringList &);
+void usage();
 
 int			debug = 0;
 int			minimum_word_length = 3;
@@ -130,6 +135,9 @@ main(int ac, char **av)
  	    case 'd':
  		debug++;
  		break;
+	    case '?':
+	        usage();
+                break;
  	}
      }
 
@@ -709,4 +717,23 @@ reportError(char *msg)
     cout << "webmaster of this site.  The error message is:</p>\n";
     cout << "<pre>\n" << msg << "\n</pre>\n</body></html>\n";
     exit(1);
+}
+
+//*****************************************************************************
+// void usage()
+//   Display program usage information--assumes we're running from a cmd line
+//
+void usage()
+{
+  cout << "usage: htsearch [-v][-d][-w][-c configfile]\n";
+  cout << "This program is part of ht://Dig " << VERSION << "\n\n";
+  cout << "Options:\n";
+  cout << "\t-v -d\tVerbose mode.  This increases the verbosity of the\n";
+  cout << "\t\tprogram.  Using more than 2 is probably only useful\n";
+  cout << "\t\tfor debugging purposes.  The default verbose mode\n";
+  cout << "\t\tgives a progress on what it is doing and where it is.\n\n";
+  cout << "\t-c configfile\n";
+  cout << "\t\tUse the specified configuration file instead on the\n";
+  cout << "\t\tdefault.\n\n";
+  exit(0);
 }
