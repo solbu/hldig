@@ -1,3 +1,15 @@
+Sun Jul 18 22:18:16 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/WordReference.h, htcommon/WordRecord.h: Update to use
+	flags instead of weight.
+
+	* htcommon/WordList.h, htcommon/WordList.cc: Add database access
+	routines to match DocumentDB.cc.
+	(Word): Recognize flags instead of weight, simply add the
+	word. (Duplicates expected!)
+	(mark*): Simply delete the list of words.
+	(flush): Rather than dump to a text file, dump directly to the db.
+
 Sun Jul 18 21:50:04 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/Database.h, htlib/DB2_db.h, htlib/DB2_hash.h: Add new
