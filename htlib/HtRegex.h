@@ -9,7 +9,8 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.h,v 1.5.2.3 2000/05/10 18:23:45 loic Exp $
+// $Id: HtRegex.h,v 1.5.2.4 2000/08/21 02:29:15 ghutchis Exp $
+//
 //
 
 #ifndef	_HtRegex_h_
@@ -37,14 +38,16 @@ public:
     //
     HtRegex();
     HtRegex(const char *str, int case_sensitive = 0);
-    ~HtRegex();
+    virtual ~HtRegex();
 
     //
     // Methods for setting the pattern
     //
-    void	set(const String& str, int case_sensitive = 0) { set(str.get(), case_sensitive); }
-    void	set(const char *str, int case_sensitive = 0);
-    void	setEscaped(StringList &list, int case_sensitive = 0);
+    int		set(const String& str, int case_sensitive = 0) { return set(str.get(), case_sensitive); }
+    int		set(const char *str, int case_sensitive = 0);
+    int		setEscaped(StringList &list, int case_sensitive = 0);
+
+	virtual const String &lastError();	// returns the last error message
 
     //
     // Methods for checking a match
@@ -55,6 +58,8 @@ public:
 protected:
     int			compiled;
     regex_t		re;
+
+    String		lastErrorMessage;
 };
 
 #endif

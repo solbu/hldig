@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.cc,v 1.9.2.4 2000/05/10 18:23:44 loic Exp $
+// $Id: HtRegex.cc,v 1.9.2.5 2000/08/21 02:29:15 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -36,25 +36,34 @@ HtRegex::~HtRegex()
 	compiled = 0;
 }
 
-void
+const String &HtRegex::lastError()
+{
+	return lastErrorMessage;
+}
+
+int
 HtRegex::set(const char * str, int case_sensitive)
 {
+	int err;
 	compiled = 0;
-	if (str == NULL) return;
-	if (strlen(str) <= 0) return;
-	if (!case_sensitive)
+	if (str == NULL) return 0;
+	if (strlen(str) <= 0) return 0;
+	if (err = regcomp(&re, str, case_sensitive ? REG_EXTENDED : (REG_EXTENDED|REG_ICASE)), err == 0)
 	{
-	  if (regcomp(&re, str, REG_EXTENDED|REG_ICASE) == 0)
 		compiled = 1;
 	}
 	else
 	{
-	  if (regcomp(&re, str, REG_EXTENDED) == 0)
-		compiled = 1;
+		size_t len = regerror(err, &re, 0, 0);
+		char *buf = new char[len];
+		regerror(err, &re, buf, len);
+		lastErrorMessage = buf;
+		delete buf;
 	}
+	return compiled;
 }
 
-void
+int
 HtRegex::setEscaped(StringList &list, int case_sensitive)
 {
     String *str;
@@ -79,7 +88,7 @@ HtRegex::setEscaped(StringList &list, int case_sensitive)
       }
     transformedLimits.chop(1);
 
-    set(transformedLimits, case_sensitive);
+    return set(transformedLimits, case_sensitive);
 }
 
 int
