@@ -110,7 +110,7 @@
 			<p>Each line in the file starts with the document id 
 			followed by a list of
 			<strong>\t<em>fieldname</em>:<em>value</em></strong>.
-			The fields always appear in the order listed bellow:
+			The fields always appear in the order listed below:
 			</p>
 			<table border=0>
 			<tr> <th>fieldname</th><th>value</th></tr>
@@ -162,7 +162,26 @@
 			program. Using more than 2 is probably only useful for
 			debugging purposes. The default verbose mode (using
 			only one -v) gives a nice progress report while
-			digging.
+			digging. This progress report can be a bit
+			cryptic, so here is a brief explanation. A line
+			is shown for each URL, with 3 numbers before the
+			URL and some symbols after the URL. The first
+			number is the number of documents parsed so
+			far, the second is the DocID for this document,
+			and the third is the hop count of the document
+			(number of hops from one of the start_url
+			documents). After the URL, it shows a "*" for
+			a link in the document that it already visited,
+			a "+" for a new link it just queued, and a "-"
+			for a link it rejected for any of a number of
+			reasons. To find out what those reasons are,
+			you need to run htdig with at least 3 -v options,
+			i.e. -vvv. If there are no "*", "+" or "-" symbols
+			after the URL, it doesn't mean the document was
+			not parsed or was empty, but only that no links
+			to other documents were found within it. With
+			more verbose output, these symbols will get
+			interspersed in several lines of debugging output.
 		  </dd>
 		</dl>
 	  </dd>
@@ -200,7 +219,7 @@
 	</dl>
 	<hr size="4" noshade>
 
-	Last modified: $Date: 2000/04/25 18:54:19 $
+	Last modified: $Date: 2000/11/29 23:54:15 $
 
   </body>
 </html>

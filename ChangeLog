@@ -1,3 +1,7 @@
+Wed Nov 29 17:44:56 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/htdig.html: Add description of -v output.
+
 Mon Nov 27 12:03:34 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/md5.cc: Added missing include of time.h
