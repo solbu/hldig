@@ -1,3 +1,19 @@
+Tue Dec 21 23:33:06 1999  Loic Dachary  <loic@ceic.com>
+
+	* htdoc/attrs.html,cf_by*.html: regenerate to include 
+	  wordlist_wordkey_description attribute
+	
+	* htcommon/Makefile.am: Add AM_LFLAGS = -L and AM_YFLAGS = -l to
+	  prevent #line generation because it confuses the dependencies
+	  generator of GCC if configure run out of source tree.
+
+	* configure.in: remove --with-key option. Not needed since
+	  word description now dynamic. Destroyed WordKey.h if
+	  specified.
+
+	* htword/Makefile.am: remove commented lines for WordKey.h
+	  generation.
+
 Tue Dec 21 18:18:01 1999  Marcel Bosc  <bosc@ceic.com>
 
 	* htword: added code for benchmarking

@@ -31,7 +31,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.8 1999/12/17 16:05:38 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.9 1999/12/22 08:29:01 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -49,7 +49,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.8 1999/12/17 16:05:38 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.9 1999/12/22 08:29:01 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -99,7 +99,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.8 1999/12/17 16:05:38 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.9 1999/12/22 08:29:01 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -194,7 +194,7 @@ dnl LoadModule env_module         @APACHE_MODULES@/mod_env.so
 dnl LoadModule config_log_module  @APACHE_MODULES@/mod_log_config.so
 dnl ...
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.8 1999/12/17 16:05:38 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.9 1999/12/22 08:29:01 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 

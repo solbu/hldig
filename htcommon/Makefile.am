@@ -1,6 +1,14 @@
 
 include $(top_srcdir)/Makefile.config
 
+#
+# Do not output #line because it confuses the dependencies
+# generator of GCC if configure run out of source tree. 
+# Comment these to ease debugging.
+#
+AM_LFLAGS = -L
+AM_YFLAGS = -l
+
 EXTRA_DIST=conf_lexer.cxx conf_parser.cxx
 
 lib_LTLIBRARIES = libcommon.la

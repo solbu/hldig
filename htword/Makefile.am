@@ -22,10 +22,3 @@ include_HEADERS = WordList.h \
 	WordStat.h \
 	WordCaseIsAStatements.h
 
-# WordKey.h: $(top_srcdir)/htword/WordKey.h.tmpl $(top_srcdir)/htword/word.desc $(top_srcdir)/htword/word_builder.pl
-# 	rm -f $(top_srcdir)/htword/WordKey.h
-# 	@PERL@ $(top_srcdir)/htword/word_builder.pl @KEYDESC@
-# 	chmod -w $(top_srcdir)/htword/WordKey.h
-
-
-

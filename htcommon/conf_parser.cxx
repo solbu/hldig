@@ -1,6 +1,7 @@
 
 /*  A Bison parser, made from conf_parser.yxx
-    by GNU Bison version 1.28  */
+ by  GNU Bison version 1.27
+  */
 
 #define YYBISON 1  /* Identify Bison output.  */
 
@@ -14,7 +15,6 @@
 #define	T_KEYWORD	264
 #define	T_NUMBER	265
 
-#line 1 "conf_parser.yxx"
 
 /* Bison version > 1.25 needed */
 /* TODO: 
@@ -35,7 +35,6 @@ int yylex(void);
 int sn_debug=3;
 #endif
 
-#line 22 "conf_parser.yxx"
 typedef union {
 	char *str;
 	ConfigDefaults	*ConfLine;
@@ -169,8 +168,8 @@ static const short yycheck[] = {     0,
      9,     5,     8,     6,     5,    10,     6,     5,     0
 };
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
-#line 3 "/usr/lib/bison.simple"
-/* This file comes from bison-1.28.  */
+
+/* This file comes from bison-1.27.  */
 
 /* Skeleton output parser for bison,
    Copyright (C) 1984, 1989, 1990 Free Software Foundation, Inc.
@@ -383,7 +382,7 @@ __yy_memcpy (char *to, char *from, unsigned int count)
 #endif
 #endif
 
-#line 217 "/usr/lib/bison.simple"
+
 
 /* The user can define YYPARSE_PARAM as the name of an argument to be passed
    into yyparse.  The argument should have type void *.
@@ -712,11 +711,9 @@ yyreduce:
   switch (yyn) {
 
 case 2:
-#line 38 "conf_parser.yxx"
 { /* Whole config file */ ;
     break;}
 case 3:
-#line 41 "conf_parser.yxx"
 {   
   // name: value
                ((HtConfiguration *)aConf)->Add(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
@@ -731,7 +728,6 @@ case 3:
                ;
     break;}
 case 4:
-#line 53 "conf_parser.yxx"
 {
           // <server www.gc.lviv.ua>
           //    server_max_docs: 456
@@ -740,7 +736,6 @@ case 4:
 	;
     break;}
 case 5:
-#line 61 "conf_parser.yxx"
 { 
   // locale: uk_UA.KOI8-U
                                         //
@@ -752,7 +747,6 @@ case 5:
 					;
     break;}
 case 6:
-#line 71 "conf_parser.yxx"
 { 
 	  // max_head_lenght: 300000
 	  //
@@ -761,7 +755,6 @@ case 6:
 					;
     break;}
 case 7:
-#line 77 "conf_parser.yxx"
 {
 	  // bad_extensions: .XLS .xls .pdf .PDF .doc .DOC 
 	  //
@@ -770,7 +763,6 @@ case 7:
 	;
     break;}
 case 8:
-#line 83 "conf_parser.yxx"
 {
 	  // excude_urls:
 	  //
@@ -781,11 +773,9 @@ case 8:
 					;
     break;}
 case 9:
-#line 91 "conf_parser.yxx"
 { /* Ignore empty lines */  ;
     break;}
 case 10:
-#line 94 "conf_parser.yxx"
 {
 		      // check if "<param> ... </param>" are equal
 		      if (strcmp(yyvsp[-10].str,yyvsp[-2].str)!=0) {
@@ -807,7 +797,6 @@ case 10:
 		    ;
     break;}
 case 11:
-#line 115 "conf_parser.yxx"
 {
   //aaa: nnn
   //bbb: ccc
@@ -828,7 +817,6 @@ case 11:
 ;
     break;}
 case 12:
-#line 133 "conf_parser.yxx"
 {
 				yyvsp[-1].ConfLines->Add(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
 				#ifdef DEBUG
@@ -843,7 +831,6 @@ case 12:
 			;
     break;}
 case 13:
-#line 147 "conf_parser.yxx"
 { 
 	// Paste 2 strings. Reallocate memory for 2 str.
 	if ((yyval.str=new char[yyvsp[-1].str,strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
@@ -854,11 +841,10 @@ case 13:
 	strcat(yyval.str," ");		// Delimiter in list
 	strcat(yyval.str,yyvsp[0].str);
 	delete [] yyvsp[-1].str; 
-	delete yyvsp[0].str;
+	delete [] yyvsp[0].str;
 	;
     break;}
 case 14:
-#line 160 "conf_parser.yxx"
 { 
                 char *ptr;
 		int len=strlen(yyval.str);
@@ -876,7 +862,7 @@ case 14:
     break;}
 }
    /* the action file gets copied in in place of this dollarsign */
-#line 543 "/usr/lib/bison.simple"
+
 
   yyvsp -= yylen;
   yyssp -= yylen;
@@ -1096,7 +1082,6 @@ yyerrhandle:
     }
   return 1;
 }
-#line 175 "conf_parser.yxx"
 
 int
 yyerror (char *s)  /* Called by yyparse on error */
