@@ -13,6 +13,9 @@
 // in the main word database.
 //
 // $Log: htfuzzy.cc,v $
+// Revision 1.9  1999/01/07 03:13:49  ghutchis
+// Fix minor memory leaks.
+//
 // Revision 1.8  1998/12/04 04:13:51  ghutchis
 // Use configure check to only include getopt.h when it exists.
 //
@@ -35,7 +38,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htfuzzy.cc,v 1.8 1998/12/04 04:13:51 ghutchis Exp $";
+static char RCSid[] = "$Id: htfuzzy.cc,v 1.9 1999/01/07 03:13:49 ghutchis Exp $";
 #endif
 
 #include "htfuzzy.h"
@@ -191,6 +194,9 @@ main(int ac, char **av)
 		fuzzy->writeDB(config);
 	    }
 	    worddb->Close();
+	    delete worddb;
+	    if (fuzzy)
+	    	delete fuzzy;
 	}
 	else
 	{

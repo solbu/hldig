@@ -4,6 +4,9 @@
 // Implementation of htmerge
 //
 // $Log: words.cc,v $
+// Revision 1.7  1999/01/07 03:13:50  ghutchis
+// Fix minor memory leaks.
+//
 // Revision 1.6  1998/12/12 17:49:38  bergolth
 // Small change so that it compiles on AIX
 //
@@ -26,7 +29,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.6 1998/12/12 17:49:38 bergolth Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.7 1999/01/07 03:13:50 ghutchis Exp $";
 #endif
 
 #include "htmerge.h"
@@ -335,6 +338,7 @@ mergeWords(char *wordtmp, char *wordfile)
     
     dbf->Put(currentWord, out.get(), out.length());
     dbf->Close();
+    delete dbf;
 
     if (verbose)
 	cout << "\n";

@@ -4,12 +4,13 @@
 // Implementation of newclass
 //
 // $Log: docs.cc,v $
-// Revision 1.8  1998/11/15 22:24:19  ghutchis
+// Revision 1.9  1999/01/07 03:13:50  ghutchis
+// Fix minor memory leaks.
 //
-// Change \r to \n as noted by Andrew Bishoip.
+// Revision 1.8  1998/11/15 22:24:19  ghutchis
+// Change \r to \n as noted by Andrew Bishop.
 //
 // Revision 1.7  1998/09/07 04:37:16  ghutchis
-//
 // Added DocState for documents marked as "noindex".
 //
 // Revision 1.6  1998/08/11 08:58:33  ghutchis
@@ -17,7 +18,6 @@
 // desc., space in word DB w/ proper factor.
 //
 // Revision 1.5  1998/08/03 16:50:42  ghutchis
-//
 // Fixed compiler warnings under -Wall
 //
 // Revision 1.4  1998/06/21 23:20:09  turtle
@@ -117,6 +117,7 @@ convertDocs(char *doc_db, char *doc_index)
       }
 
     index->Close();
+    delete index;
     delete urls;
     db.Close();
 }

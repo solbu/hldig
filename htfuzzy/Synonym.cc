@@ -4,6 +4,9 @@
 // Implementation of Synonym
 //
 // $Log: Synonym.cc,v $
+// Revision 1.3  1999/01/07 03:13:49  ghutchis
+// Fix minor memory leaks.
+//
 // Revision 1.2  1998/09/18 02:38:08  ghutchis
 //
 // Bug fixes for 3.1.0b2
@@ -13,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Synonym.cc,v 1.2 1998/09/18 02:38:08 ghutchis Exp $";
+static char RCSid[] = "$Id: Synonym.cc,v 1.3 1999/01/07 03:13:49 ghutchis Exp $";
 #endif
 
 #include "Synonym.h"
@@ -97,6 +100,7 @@ Synonym::createDB(Configuration &config)
     }
     fclose(fl);
     db->Close();
+    delete db;
     if (debug)
     {
         cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
