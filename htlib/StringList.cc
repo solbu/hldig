@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.cc,v 1.8 1999/09/24 16:47:10 loic Exp $
+// $Id: StringList.cc,v 1.9 1999/09/29 16:33:12 loic Exp $
 //
 
 #include "StringList.h"
@@ -202,15 +202,16 @@ static int StringCompare(const void *a, const void *b)
 //
 void StringList::Sort(int)
 {
-    String	**array = new String*[number];
+    String	**array = new String*[Count()];
     int		i;
-    int		n = number;
+    int		n = Count();
 
-    listnode	*ln = head;
-    for (i = 0; i < n; i++)
-    {
-	array[i] = (String *) ln->object;
-	ln = ln->next;
+    ListCursor  cursor;
+
+    Start_Get(cursor);
+    Object	*obj;
+    for(i = 0; i < n && (obj = Get_Next(cursor)); i++) {
+      array[i] = (String*)obj;
     }
 
     qsort((char *) array, (size_t) n, (size_t) sizeof(String *),

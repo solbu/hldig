@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URLRef.cc,v 1.5 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: URLRef.cc,v 1.6 1999/09/29 16:33:12 loic Exp $
 //
 
 #include "URLRef.h"
@@ -33,13 +33,10 @@ URLRef::~URLRef()
 
 
 //*****************************************************************************
-// int URLRef::compare(Object *to)
 //
-int URLRef::compare(Object *to)
+int URLRef::compare(const URLRef& to) const
 {
-  URLRef	*u = (URLRef *) to;
-
-  return hopcount - u->hopcount;
+  return hopcount - to.hopcount;
 }
 
 

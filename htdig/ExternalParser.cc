@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.16 1999/09/29 10:10:07 loic Exp $
+// $Id: ExternalParser.cc,v 1.17 1999/09/29 16:33:12 loic Exp $
 //
 
 #include "ExternalParser.h"
@@ -265,7 +265,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		    if (mystrcasecmp(httpEquiv, "refresh") == 0
 			&& *content != '\0')
 		    {
-		      char *q = mystrcasestr(content, "url=");
+		      char *q = (char*)mystrcasestr(content, "url=");
 		      if (q && *q)
 		      {
 			q += 4; // skiping "URL="

@@ -15,7 +15,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHeap.h,v 1.3 1999/09/08 14:42:29 loic Exp $
+// $Id: HtHeap.h,v 1.4 1999/09/29 16:33:12 loic Exp $
 //
 //
 #ifndef	_HtHeap_h_
@@ -64,7 +64,7 @@ public:
     //
     // Deep copy member function
     //
-    HtHeap		*Copy();
+    HtHeap		*Copy() const;
 
     //
     // Assignment

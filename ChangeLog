@@ -1,3 +1,28 @@
+Wed Sep 29 20:03:31 1999  Loic Dachary  <loic@yoda.ceic.com>
+
+	* htlib/lib.h: AIX xlC does is confused by overloaded mystrcasestr
+	  that only differ in constness. Only keep const form and use cast
+	  where approriate. *sigh*
+	
+	* htlib/htString.h: accomodate new form of Object::compare and
+	  Copy. Explicitly convert compare arg to String&, prevent hiding
+	  and therefore missing the underlying compare function.
+	
+	* htlib/HtVector.cc (Copy): make it const
+
+	* htlib/HtHeap.cc: accomodate new form of Object::compare
+	
+	* htcommon/List.h,cc: Add ListCursor to allow many pointers that
+	  walk the list to exist in the same program.
+
+	* htlib/Object.h (class Object): kill unused Serialize + Deserialize.
+	  Change unused Copy to const and bark on stderr if called because it
+	  is clearly not was is wanted. If Copy is called and the derived class
+	  does not implement Copy we are in trouble. Alternatives are to make
+	  it pure virtual but it will break things all over the code or to abort
+	  but this will be considered to violent. Change compare to take a
+	  const reference and be a const.
+
 Wed Sep 29 16:51:58 1999  Loic Dachary  <loic@yoda.ceic.com>
 
 	* acinclude.m4,configure.in,Makefile.config: remove -Wall from

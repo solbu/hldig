@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.15 1999/09/29 10:17:08 loic Exp $
+// $Id: htString.h,v 1.16 1999/09/29 16:33:12 loic Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -103,6 +103,7 @@ public:
     //	-1 : 'this' is less than 's'.
     //	 1 : 'this' is greater than 's'.
     //
+    int			compare(const Object& s) const { return compare((const String&)s); }
     int			compare(const String& s) const;
     int			nocase_compare(const String &s) const;
 
@@ -162,7 +163,7 @@ public:
     void		replace(char c1, char c2);
     int			remove(const char *);
 
-    Object		*Copy();
+    Object		*Copy() const { return new String(*this); }
 
     //
     // Persistent storage support

@@ -15,7 +15,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHeap.cc,v 1.7 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: HtHeap.cc,v 1.8 1999/09/29 16:33:12 loic Exp $
 //
 
 #include "HtHeap.h"
@@ -102,10 +102,10 @@ Object *HtHeap::Remove()
 }
 
 //*********************************************************************
-// HtHeap *HtHeap::Copy()
+// HtHeap *HtHeap::Copy() const
 //   Return a deep copy of the heap.
 //
-HtHeap *HtHeap::Copy()
+HtHeap *HtHeap::Copy() const
 {
     HtHeap	*heap = new HtHeap(*data);
 
@@ -134,7 +134,7 @@ void HtHeap:: percolateUp(int leaf)
   int parent = parentOf(leaf);
   Object *value = data->Nth(leaf);
   while (leaf > 0 &&
-	 (value->compare(data->Nth(parent)) < 0))
+	 (value->compare(*(data->Nth(parent))) < 0))
     {
       data->Assign(data->Nth(parent), leaf);
       leaf = parent;
@@ -158,11 +158,11 @@ void HtHeap::pushDownRoot(int root)
       if (childPos < size)
 	{
 	  if ( rightChildOf(root) < size &&
-	       data->Nth(childPos + 1)->compare(data->Nth(childPos)) < 0 )
+	       data->Nth(childPos + 1)->compare(*(data->Nth(childPos))) < 0 )
 	    {
 	      childPos++;
 	    }
-	  if ( data->Nth(childPos)->compare(value) < 0 ) // -1, so smaller
+	  if ( data->Nth(childPos)->compare(*value) < 0 ) // -1, so smaller
 	    {
 	      // We have to swap this node with the root and then loop
 	      data->Assign(data->Nth(childPos), root);

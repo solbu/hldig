@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVector.h,v 1.6 1999/09/08 14:42:29 loic Exp $
+// $Id: HtVector.h,v 1.7 1999/09/29 16:33:12 loic Exp $
 //
 //
 #ifndef	_HtVector_h_
@@ -103,7 +103,7 @@ public:
     //
     // Deep copy member function
     //
-    HtVector		*Copy();
+    HtVector		*Copy() const;
 
     //
     // Vector Assignment

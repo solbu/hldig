@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.29 1999/09/28 07:30:35 loic Exp $
+// $Id: String.cc,v 1.30 1999/09/29 16:33:12 loic Exp $
 //
 
 
@@ -461,13 +461,6 @@ int String::remove(const char *chars)
 
     return skipped;
 }
-
-
-Object *String::Copy()
-{
-    return new String(*this);
-}
-
 
 String &String::chop(int n)
 {

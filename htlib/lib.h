@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: lib.h,v 1.9 1999/09/24 10:29:03 loic Exp $
+// $Id: lib.h,v 1.10 1999/09/29 16:33:12 loic Exp $
 //
 
 #ifndef _lib_h
@@ -55,10 +55,6 @@ char *strdup(const char *);
 // searches.  This version will ignore case.
 //
 const char *mystrcasestr(const char *s, const char *pattern);
-inline char *mystrcasestr(char *s, const char *pattern) {
-  return (char*)mystrcasestr((const char *)s, pattern);
-}
-  
 
 //
 // Too many problems with system strptime() functions...  Just use our own

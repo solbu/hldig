@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: List.h,v 1.4 1999/09/24 16:47:10 loic Exp $
+// $Id: List.h,v 1.5 1999/09/29 16:33:12 loic Exp $
 //
 
 #ifndef	_List_h_
@@ -17,13 +17,20 @@
 
 #include "Object.h"
 
-struct listnode
-{
-    listnode		*next;
-    listnode		*prev;
-    Object		*object;
-};
+class List;
+class listnode;
 
+class ListCursor {
+ public:
+  ListCursor() { current = 0; current_index = -1; }
+  void Clear() { current = 0; current_index = -1; }
+
+  //
+  // Support for the Start_Get and Get_Next routines
+  //
+  listnode		*current;
+  int			current_index;
+};
 
 class List : public Object
 {
@@ -78,8 +85,10 @@ public:
     //
     // List traversel
     //
-    void		Start_Get()	{current = head; current_index = -1;}
-    Object		*Get_Next();
+    void		Start_Get()	{ Start_Get(cursor); }
+    void		Start_Get(ListCursor& cursor) const { cursor.current = head; cursor.current_index = -1;}
+    Object		*Get_Next()	{ return Get_Next(cursor); }
+    Object		*Get_Next(ListCursor& cursor) const;
     Object		*Get_First();
     Object		*Next(Object *current);
     Object		*Previous(Object *current);
@@ -91,14 +100,15 @@ public:
     // Add(), or Assign().
     //
     Object		*operator[] (int n)		{ return Nth(n); }
-    const Object	*operator[] (int n) const	{ return Nth(n); }
-    Object		*Nth(int n);
-    const Object	*Nth(int n) const { return ((List*)this)->Nth(n); }
+    const Object	*operator[] (int n) const	{ return Nth(((List*)this)->cursor, n); }
+    const Object	*Nth(ListCursor& cursor, int n) const;
+    const Object	*Nth(int n) const { return Nth(((List*)this)->cursor, n); }
+    Object		*Nth(int n) { return (Object*)((List*)this)->Nth(((List*)this)->cursor, n); }
 
     //
     // Access to the number of elements
     //
-    int			Count() const			{return number;}
+    int			Count() const			{ return number; }
 
     //
     // Get the index number of an object.  If the object is not found,
@@ -109,7 +119,7 @@ public:
     //
     // Deep copy member function
     //
-    Object		*Copy();
+    Object		*Copy() const;
 
     //
     // Assignment
@@ -127,8 +137,7 @@ protected:
     //
     // For list traversal it is nice to know where we are...
     //
-    listnode		*current;
-    int			current_index;
+    ListCursor		cursor;
 
     //
     // Its nice to keep track of how many things we contain...

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVector.cc,v 1.7 1999/09/24 16:47:10 loic Exp $
+// $Id: HtVector.cc,v 1.8 1999/09/29 16:33:12 loic Exp $
 //
 
 #include "HtVector.h"
@@ -248,19 +248,16 @@ Object *HtVector::Previous(Object *next)
 
 
 //*********************************************************************
-// HtVector *HtVector::Copy()
+// HtVector *HtVector::Copy() const
 //   Return a deep copy of the vector.
 //
-HtVector *HtVector::Copy()
+HtVector *HtVector::Copy() const
 {
     HtVector	*vector = new HtVector(allocated);
 
-    Start_Get();
-    Object	*obj;
-    while ((obj = Get_Next()))
-    {
-	vector->Add(obj->Copy());
-    }
+    for(int i = 0; i < Count(); i++)
+      vector->Add(data[i]->Copy());
+
     return vector;
 }
 
@@ -272,12 +269,10 @@ HtVector *HtVector::Copy()
 HtVector &HtVector::operator=(HtVector &vector)
 {
     Destroy();
-    vector.Start_Get();
-    Object	*obj;
-    while ((obj = vector.Get_Next()))
-    {
-	Add(obj->Copy());
-    }
+
+    for(int i = 0; i < vector.Count(); i++)
+      Add(vector.data[i]->Copy());
+
     return *this;
 }
 

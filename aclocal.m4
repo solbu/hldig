@@ -31,7 +31,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.16 1999/09/29 13:07:17 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.17 1999/09/29 16:33:11 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -49,7 +49,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.16 1999/09/29 13:07:17 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.17 1999/09/29 16:33:11 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -97,7 +97,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.16 1999/09/29 13:07:17 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.17 1999/09/29 16:33:11 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -155,7 +155,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.16 1999/09/29 13:07:17 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.17 1999/09/29 16:33:11 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
