@@ -1,3 +1,10 @@
+Fri Aug 31 15:21:49 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.h, htdig/HTML.cc (HTML, parse, do_tag): Fixed buggy
+	handling of nested tags that independently turn off indexing, so
+	</script> doesn't cancel <meta name=robots ...> tag. Add handling
+	of <noindex follow> tag.
+
 Fri Aug 31 14:33:41 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	[ Backport some 3.2.0b4 HTML parser changes. ]

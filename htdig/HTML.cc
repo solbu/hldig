@@ -11,7 +11,7 @@
 // <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.20 2001/08/31 19:39:32 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.21 2001/08/31 20:28:03 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -22,6 +22,13 @@ static char RCSid[] = "$Id: HTML.cc,v 1.30.2.20 2001/08/31 19:39:32 grdetil Exp 
 #include "StringList.h"
 #include "URL.h"
 #include "HtWordType.h"
+
+// Flags for noindex & nofollow, indicating who turned indexing off/on...
+#define TAGnoindex		0x0001
+#define TAGstyle		0x0002
+#define TAGscript		0x0004
+#define TAGmeta_htdig_noindex	0x0008
+#define TAGmeta_robots		0x0010
 
 static StringMatch	tags;
 static StringMatch	nobreaktags;
@@ -41,7 +48,7 @@ static int		totlength;
 #define ADDSPACE(in_space)	\
     if (!in_space)							\
     {									\
-	if (in_title && doindex)					\
+	if (in_title && !noindex)					\
 	{								\
 	    title << ' ';						\
 	}								\
@@ -49,7 +56,7 @@ static int		totlength;
 	{								\
 	    description << ' ';						\
 	}								\
-	if (head.length() < max_head_length && doindex && !in_title)	\
+	if (head.length() < max_head_length && !noindex && !in_title)	\
 	{								\
 	    head << ' ';						\
 	}								\
@@ -106,8 +113,8 @@ HTML::HTML()
     in_ref = 0;
     in_heading = 0;
     base = 0;
-    doindex = 1;
-    dofollow = 1;
+    noindex = 0;
+    nofollow = 0;
     minimumWordLength = config.Value("minimum_word_length", 3);
 }
 
@@ -153,8 +160,8 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     title = 0;
     head = 0;
     meta_dsc = 0;
-    doindex = 1;
-    dofollow = 1;
+    noindex = 0;
+    nofollow = 0;
     in_heading = 0;
     in_title = 0;
     in_ref = 0;
@@ -357,7 +364,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		}
 	    }
 
-	    if (in_title && doindex)
+	    if (in_title && !noindex)
 	    {
 		title << word;
 	    }
@@ -371,14 +378,14 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		else
 		{
 		    description << " ...";
-		    if (dofollow)
+		    if (!nofollow)
 		      retriever.got_href(*href, description);
 		    in_ref = 0;
 		    description = 0;
 		}
 	    }
 
-	    if (head.length() < max_head_length && doindex && !in_title)
+	    if (head.length() < max_head_length && !noindex && !in_title)
 	    {
 		//
 		// Capitalize H1 and H2 blocks
@@ -395,7 +402,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		  head << word;
 	    }
 
-	    if (word.length() >= minimumWordLength && doindex)
+	    if (word.length() >= minimumWordLength && !noindex)
 	    {
 	      retriever.got_word(word,
 				 int(offset * 1000 / totlength),
@@ -417,7 +424,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		//
 		// Not whitespace
 		//
-		if (head.length() < max_head_length && doindex && !in_title)
+		if (head.length() < max_head_length && !noindex && !in_title)
 		{
 		    // We don't want to add random chars to the 
 		    // excerpt if we're in the title.
@@ -427,7 +434,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		{
 		    description << *position;
 		}
-		if (in_title && doindex)
+		if (in_title && !noindex)
 		{
 		    title << *position;
 		}
@@ -505,7 +512,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    cout << "Terminating previous <a href=...> tag,"
 			 << " which didn't have a closing </a> tag."
 			 << endl;
-		  if (dofollow)
+		  if (!nofollow)
 		      retriever.got_href(*href, description);
 		  in_ref = 0;
 		}
@@ -538,7 +545,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	case 3:		// "/a"
 	    if (in_ref)
 	    {
-	      if (dofollow)
+	      if (!nofollow)
 		retriever.got_href(*href, description);
 	      in_ref = 0;
 	    }
@@ -578,17 +585,35 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    break;
 
 	case 16:	// "noindex"
+	    noindex |= TAGnoindex;
+	    nofollow |= TAGnoindex;
+	    if (attrs["follow"])
+		nofollow &= ~TAGnoindex;
+	    break;
+
 	case 27:	// "style"
+	    noindex |= TAGstyle;
+	    nofollow |= TAGstyle;
+	    break;
+
         case 29:        // "script"
-	    doindex = 0;
-	    dofollow = 0;
+	    noindex |= TAGscript;
+	    nofollow |= TAGscript;
 	    break;
 
 	case 17:	// "/noindex"
+	    noindex &= ~TAGnoindex;
+	    nofollow &= ~TAGnoindex;
+	    break;
+
 	case 28:	// "/style"
+	    noindex &= ~TAGstyle;
+	    nofollow &= ~TAGstyle;
+	    break;
+
         case 30:	// "/script"
-	    doindex = 1;
-	    dofollow = 1;
+	    noindex &= ~TAGscript;
+	    nofollow &= ~TAGscript;
 	    break;
 
 	case 18:	// "img"
@@ -596,14 +621,14 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    if (attrs["alt"])
 	      {
 		char	*alttxt = transSGML(attrs["alt"]);
-		if (doindex && in_title)
+		if (!noindex && in_title)
 		    title << alttxt << " ";
 		if (in_ref && description.length() < max_description_length)
 		    description << alttxt << " ";
-		if (doindex && !in_title && head.length() < max_head_length)
+		if (!noindex && !in_title && head.length() < max_head_length)
 		    head << alttxt << " ";
 		char *w = HtWordToken(alttxt);
-		while (w && doindex)
+		while (w && !noindex)
 		  {
 		    if (strlen(w) >= minimumWordLength)
 		      retriever.got_word(w,
@@ -622,7 +647,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	  }
 
 	case 19:	// "li"
-	    if (doindex && !in_title && head.length() < max_head_length)
+	    if (!noindex && !in_title && head.length() < max_head_length)
 		head << "* ";
 	    break;
 
@@ -635,13 +660,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    if (attrs["htdig-noindex"])
 	      {
 		retriever.got_noindex();
-		doindex = 0;
-		dofollow = 0;
+		noindex |= TAGmeta_htdig_noindex;
+		nofollow |= TAGmeta_htdig_noindex;
 	      }
 	    if (attrs["htdig-index"])
 	      {
-		doindex = 1;
-		dofollow = 1;
+		noindex &= ~TAGmeta_htdig_noindex;
+		nofollow &= ~TAGmeta_htdig_noindex;
 	      }
 	    if (attrs["htdig-email"])
 	      retriever.got_meta_email(transSGML(attrs["htdig-email"]));
@@ -664,7 +689,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		if (!keywords)
 		    keywords = attrs["keywords"];
 		char	*w = HtWordToken(transSGML(keywords));
-		while (w && doindex)
+		while (w && !noindex)
 		{
 		    if (strlen(w) >= minimumWordLength
 				&& ++keywordsCount <= max_keywords)
@@ -695,7 +720,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			  delete href;
 			href = new URL(transSGML(q), *base);
 			// I don't know why anyone would do this, but hey...
-			if (dofollow)
+			if (!nofollow)
 			  retriever.got_href(*href, "");
 		      }
 		  }
@@ -737,7 +762,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 
 		   char        *words = HtWordToken(transSGML(attrs["content"]));
 		   char        *w = words;
-                   while (w && doindex)
+                   while (w && !noindex)
 		     {
 			if (strlen(w) >= minimumWordLength)
 			  retriever.got_word(w,
@@ -749,7 +774,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		   w = '\0';
 		}
 
-		if (keywordsMatch.CompareWord(cache) && doindex)
+		if (keywordsMatch.CompareWord(cache) && !noindex)
 		{
 		    char	*w = HtWordToken(transSGML(attrs["content"]));
 		    while (w)
@@ -781,8 +806,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		else if (mystrcasecmp(cache, "htdig-noindex") == 0)
 		  {
 		    retriever.got_noindex();
-		    doindex = 0;
-		    dofollow = 0;
+		    noindex |= TAGmeta_htdig_noindex;
+		    nofollow |= TAGmeta_htdig_noindex;
 		  }
 		else if (mystrcasecmp(cache, "robots") == 0
 			 && strlen(attrs["content"]) !=0)
@@ -791,15 +816,15 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    content_cache.lowercase();
 		    if (content_cache.indexOf("noindex") != -1)
 		      {
-			doindex = 0;
+			noindex |= TAGmeta_robots;
 			retriever.got_noindex();
 		      }
 		    if (content_cache.indexOf("nofollow") != -1)
-		      dofollow = 0;
+			nofollow |= TAGmeta_robots;
 		    if (content_cache.indexOf("none") != -1)
 		      {
-			doindex = 0;
-			dofollow = 0;
+			noindex |= TAGmeta_robots;
+			nofollow |= TAGmeta_robots;
 			retriever.got_noindex();
 		      }
 		  }
@@ -808,8 +833,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		     mystrcasecmp(attrs["name"], "htdig-noindex") == 0)
 	    {
 	        retriever.got_noindex();
-	        doindex = 0;
-		dofollow = 0;
+		noindex |= TAGmeta_htdig_noindex;
+		nofollow |= TAGmeta_htdig_noindex;
 	    }
 	    break;
 	}
@@ -822,7 +847,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	      //
 	      // src seen
 	      //
-	      if (dofollow)
+	      if (!nofollow)
 		{
 		  if (href)
 		    delete href;
@@ -841,7 +866,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	      //
 	      // data seen
 	      //
-	      if (dofollow)
+	      if (!nofollow)
 		{
 		  if (href)
 		    delete href;
@@ -859,7 +884,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	  if (attrs["href"])
 	    {
 	      // href seen
-	      if (dofollow)
+	      if (!nofollow)
 		{
 		  if (href)
 		    delete href;

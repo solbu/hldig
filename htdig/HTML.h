@@ -1,9 +1,15 @@
 //
 // HTML.h
 //
-// $Id: HTML.h,v 1.5.2.1 1999/09/01 20:40:01 grdetil Exp $
+// $Id: HTML.h,v 1.5.2.2 2001/08/31 20:28:03 grdetil Exp $
 //
 // $Log: HTML.h,v $
+// Revision 1.5.2.2  2001/08/31 20:28:03  grdetil
+// * htdig/HTML.h, htdig/HTML.cc (HTML, parse, do_tag): Fixed buggy
+//   handling of nested tags that independently turn off indexing, so
+//   </script> doesn't cancel <meta name=robots ...> tag. Add handling
+//   of <noindex follow> tag.
+//
 // Revision 1.5.2.1  1999/09/01 20:40:01  grdetil
 // Fix the HTML parser to decode SGML entities within tag attributes.
 //
@@ -66,8 +72,8 @@ private:
     int			in_title;
     int			in_ref;
     int			in_heading;
-    int			doindex;
-    int                 dofollow;
+    int			noindex;
+    int                 nofollow;
     unsigned int	minimumWordLength;
     URL			*base;
     
