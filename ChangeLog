@@ -1,4 +1,4 @@
-Fri Nov 26 16:18:56 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Fri Nov 26 16:31:06 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/Configuration.cc(Read): fixed to allow final line without
 	terminating newline character, rather than ignoring it.
@@ -7,6 +7,9 @@ Fri Nov 26 16:18:56 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	* htsearch/Display.cc(setVariables): added Alexis Mikhailov's fix
 	to check the number of pages against maximum_pages at the right time.
 	(Put it even earlier, to make sure nPages is at least 1.)
+	* htsearch/Display.cc(generateStars): Remove extra newline after
+	STARSRIGHT and STARSLEFT variables, noted by Torsten Neuer
+	<tneuer@inwise.de>.
 
 Wed Nov 24 20:33:13 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
