@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.17 1999/09/29 16:33:12 loic Exp $
+// $Id: ExternalParser.cc,v 1.18 1999/10/07 04:43:27 ghutchis Exp $
 //
 
 #include "ExternalParser.h"
@@ -177,7 +177,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 			(hd = atoi(token3)) >= 0 && hd < 12)
 		  retriever.got_word(token1, loc, hd);
 		else
-		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
+		  cerr<< "External parser error: expected word in line "<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 		
 	    case 'u':	// href
@@ -191,7 +191,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		  retriever.got_href(url, token2);
 		}
 		else
-		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
+		  cerr<< "External parser error: expected URL in line "<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 		
 	    case 't':	// title
@@ -199,7 +199,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		if (token1 != NULL)
 		  retriever.got_title(token1);
 		else
-		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
+		  cerr<< "External parser error: expected title in line "<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 		
 	    case 'h':	// head
@@ -207,7 +207,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		if (token1 != NULL)
 		  retriever.got_head(token1);
 		else
-		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
+		  cerr<< "External parser error: expected text in line "<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 		
 	    case 'a':	// anchor
@@ -215,7 +215,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		if (token1 != NULL)
 		  retriever.got_anchor(token1);
 		else
-		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
+		  cerr<< "External parser error: expected anchor in line "<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 		
 	    case 'i':	// image url
@@ -223,7 +223,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		if (token1 != NULL)
 		  retriever.got_image(token1);
 		else
-		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
+		  cerr<< "External parser error: expected image URL in line "<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 
 	    case 'm':	// meta
@@ -337,12 +337,12 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		  }
 		}
 		else
-		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
+		  cerr<< "External parser error: expected metadata in line "<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 	      }
 
 	    default:
-		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
+		  cerr<< "External parser error: unknown field in line "<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 	}
     }
