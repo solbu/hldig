@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ResultMatch.h,v 1.7.2.1 2000/02/27 04:34:56 ghutchis Exp $
+// $Id: ResultMatch.h,v 1.7.2.2 2000/06/08 11:55:02 grdetil Exp $
 //
 
 #ifndef _ResultMatch_h_
@@ -38,10 +38,10 @@ public:
 	//
 	void			setAnchor(int a)	{anchor = a;}
 	void			setID(int i)		{id = i;}
-	void			setScore(float s)	{score = s;}
+	void			setScore(double s)	{score = s;}
 	
 	int				getAnchor()	{return anchor;}
-	int				getScore()	{return (int) score;}
+	double				getScore()	{return score;}
 	int			getID()			{return id;}
 
         // Multiple database support
@@ -74,7 +74,7 @@ private:
 	    SortByID
 	};
 
-	float			score;
+	double			score;
 	int				anchor;
 	int				id;
         Collection              *collection;

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.h,v 1.24.2.3 2000/04/09 15:19:56 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.24.2.4 2000/06/08 11:55:02 grdetil Exp $
 //
 
 #ifndef _DocumentRef_h_
@@ -64,7 +64,7 @@ class DocumentRef : public Object
     ReferenceState	DocState()			{return docState;}
     int			DocSize()			{return docSize;}
     List		*DocAnchors()			{return &docAnchors;}
-    int			DocScore()			{return docScore;}
+    double     		DocScore()			{return docScore;}
     int                 DocSig()                        {return docSig;}
     int			DocAnchor()			{return docAnchor;}
     int			DocHopCount()			{return docHopCount;}
@@ -89,7 +89,7 @@ class DocumentRef : public Object
     void                DocSig(int s)                   {docSig = s;}
     void		DocAnchors(List &l)		{docAnchors = l;}
     void		AddAnchor(const char *a);
-    void		DocScore(int s)			{docScore = s;}
+    void		DocScore(double s)		{docScore = s;}
     void		DocAnchor(int a)		{docAnchor = a;}
     void		DocHopCount(int h)		{docHopCount = h;}
     void		DocEmail(const char *e)		{docEmail = e;}
@@ -156,7 +156,7 @@ class DocumentRef : public Object
     //
     
     // This is the current score of this document.
-    int			docScore;
+    double			docScore;
     // This is the nearest anchor for the search word.
     int			docAnchor;
 

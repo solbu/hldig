@@ -1,3 +1,12 @@
+Thu Jun  8 09:00:02 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/DocumentRef.h(DocScore, docScore),
+	  htsearch/ResultMatch.cc(ScoreMatch::compare),
+	  htsearch/ResultMatch.h(setScore, getScore, score),
+	  htsearch/Display.cc(displayMatch, generateStars, buildMatchList):
+	  Apply Terry Luedtke's patch for score calculations, to calculate
+	  min & max from log(score).
+
 Thu Jun  8 08:47:03 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/doc2html/doc2html.pl: Apply David Adams' fix for missing

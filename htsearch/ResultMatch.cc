@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ResultMatch.cc,v 1.7.2.1 2000/05/06 20:46:41 loic Exp $
+// $Id: ResultMatch.cc,v 1.7.2.2 2000/06/08 11:55:02 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -83,8 +83,17 @@ ScoreMatch::compare(const void *a1, const void *a2)
 {
     ResultMatch	*m1 = *((ResultMatch **) a1);
     ResultMatch	*m2 = *((ResultMatch **) a2);
+    double score1 = m1->getScore();
+    double score2 = m2->getScore();
 
-    return m2->getScore() - m1->getScore();
+    if(score1 == score2)
+       return 0;
+    else if(score1 < score2)
+       return 1;
+    else
+       return -1;
+
+    //    return m2->getScore() - m1->getScore();
 }
 
 ResultMatch::CmpFun

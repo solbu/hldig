@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.19 2000/04/05 19:08:11 grdetil Exp $
+// $Id: Display.cc,v 1.100.2.20 2000/06/08 11:55:02 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -293,7 +293,7 @@ Display::displayMatch(ResultMatch *match, DocumentRef *ref, int current)
 	vars.Remove("ANCHOR");
       }
     
-    vars.Add("SCORE", new String(form("%d", ref->DocScore())));
+    vars.Add("SCORE", new String(form("%f", ref->DocScore())));
     vars.Add("CURRENT", new String(form("%d", current)));
     char	*title = ref->DocTitle();
     if (!title || !*title)
@@ -860,9 +860,12 @@ Display::generateStars(DocumentRef *ref, int right)
     const String blank = config["star_blank"];
     double	score;
 
+ 
+
     if (maxScore != 0)
     {
 	score = (ref->DocScore() - minScore) / (maxScore - minScore);
+        if(debug) cerr << "generateStars: doc, min, max " << ref->DocScore() << ", " << minScore << ", " << maxScore <<endl;
     }
     else
     {
@@ -870,6 +873,8 @@ Display::generateStars(DocumentRef *ref, int right)
 	score = 1;
     }
     int		nStars = int(score * (maxStars - 1) + 0.5) + 1;
+
+    if(debug) cerr << "generateStars: nStars " << nStars << " of " << maxStars <<endl;
 
     if (right)
     {
@@ -1121,19 +1126,20 @@ Display::buildMatchList()
 	// We want older docs to have smaller values and the
 	// ultimate values to be a reasonable size (max about 100)
 
-	if (date_factor != 0.0 || backlink_factor != 0.0)
+	if (date_factor != 0.0)
 	{
 	    score += date_factor * 
 	      ((thisRef->DocTime() * 1000 / (double)time(0)) - 900);
+        }
   
+	if (backlink_factor != 0.0)
+	{
 	    int links = thisRef->DocLinks();
 	    if (links == 0)
 	      links = 1; // It's a hack, but it helps...
   
 	    score += backlink_factor
 	      * (thisRef->DocBackLinks() / (double)links);
-	    if (score <= 1.0)
-	      score = 1.0;
 	}
 
 	thisMatch->setTime(thisRef->DocTime());   
@@ -1144,18 +1150,28 @@ Display::buildMatchList()
 	// Get rid of it to free the memory!
 	delete thisRef;
 
-	thisMatch->setScore(1.0 + log(score));
+	score = log(1.0 + score);
+	thisMatch->setScore(score);
 	thisMatch->setAnchor(dm->anchor);
 		
 	//
 	// Append this match to our list of matches.
 	//
  	matches.Add(thisMatch, url.get());
+
+        if (debug)
+        {
+	  cerr << "score " << score << "(" << thisMatch->getScore() << "), maxScore " << maxScore <<", minScore " << minScore << endl;
+        }
  
  	if (maxScore < score)
- 	    maxScore = score;
+	  {if(debug) cerr << "Set maxScore = score" <<endl;
+           maxScore = score;
+          }
  	if (minScore > score)
+	  {if(debug) cerr << "Set minScore = score" <<endl;
  	    minScore = score;
+          }
     }
   }
 
