@@ -1,3 +1,13 @@
+Sun Sep  6 21:36:16 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Sorted the current list of defaults, added
+	"pdf_parser" for the program to use in PDF.cc.
+
+	* htdig/PDF.cc: Use it, checking for the file before calling
+	system to fail gracefully.
+
+	* htlib/URL.cc: Bug fix for http:/ v. http://
+
 Sat Sep  5 23:11:48 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/String.cc: Added patch by Zvi Har'El

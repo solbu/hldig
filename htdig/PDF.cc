@@ -17,6 +17,7 @@
 static char RCSid[] = "PDF.cc "__DATE__;
 #endif
 
+#include <sys/stat.h>
 #include "PDF.h"
 #include "URL.h"
 #include "htdig.h"
@@ -123,13 +124,21 @@ PDF::parse(Retriever &retriever, URL &url)
     fclose(file);
 
     String acroread;
-    char* configValue = config["acroread"];
+    char* configValue = config["pdf_parser"];
     if (configValue && strlen(configValue))
 	acroread = configValue;
     else
 	// Assume it's in the path
         acroread = "acroread";
 
+    // Check for existance of acroread program! (if not, return)
+    struct stat stat_buf;
+    // Check that it exists, and is a regular file. 
+    if ((stat(acroread, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode))
+      {
+	printf("PDF::parse: cannot find acroread\n");
+	return;
+      }
 
     // Use acroread as a filter to convert to PostScript.
     acroread << " -toPostScript " << pdfName << " /tmp 2>&1";

@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.11  1998/09/07 04:27:39  ghutchis
+//
+// Bug fixes.
+//
 // Revision 1.10  1998/08/11 08:58:26  ghutchis
 // Second patch for META description tags. New field in DocDB for the
 // desc., space in word DB w/ proper factor.
@@ -46,7 +50,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.10 1998/08/11 08:58:26 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.11 1998/09/07 04:27:39 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -82,9 +86,6 @@ ConfigDefaults	defaults[] =
     {"endings_root2word_db",		"${common_dir}/root2word.db"},
     {"endings_word2root_db",		"${common_dir}/word2root.db"},
     {"excerpt_length",			"300"},
-    {"local_urls",			""},
-    {"local_user_urls",			""},
-    {"local_dir_doc",                   "index.html"},
     {"excerpt_show_top",		"false"},
     {"exclude_urls",			"/cgi-bin/ .cgi"},
     {"external_parsers",		""},
@@ -101,6 +102,9 @@ ConfigDefaults	defaults[] =
     {"keywords_meta_tag_names",		"keywords htdig-keywords"},
     {"limit_urls_to",			"${start_url}"},
     {"locale",				"iso_8859_1"},
+    {"local_dir_doc",                   "index.html"},
+    {"local_urls",			""},
+    {"local_user_urls",			""},
     {"maintainer",			"bogus@unconfigured.htdig.user"},
     {"match_method",			"or"},
     {"matches_per_page",		"10"},
@@ -120,10 +124,10 @@ ConfigDefaults	defaults[] =
     {"next_page_text",			"[next]"},
     {"no_excerpt_text",			"<em>(None of the search words were found in the top of this document.)</em>"},
     {"no_next_page_text",		"[next]"},
-    {"page_list_header",		""},
     {"no_prev_page_text",		"[prev]"},
     {"nothing_found_file",		"${common_dir}/nomatch.html"},
     {"page_list_header",		"<hr noshade size=2>Pages:<br>"},
+    {"pdf_parser",                      "acroread"},
     {"prefix_match_character",		"*"},
     {"prev_page_text",			"[prev]"},
     {"remove_bad_urls",			"true"},
@@ -132,14 +136,14 @@ ConfigDefaults	defaults[] =
     {"search_results_footer",		"${common_dir}/footer.html"},
     {"search_results_header",		"${common_dir}/header.html"},
     {"soundex_db",			"${database_base}.soundex.db"},
-    {"star_image",			"${image_url_prefix}/star.gif"},
     {"star_blank",			"${image_url_prefix}/star_blank.gif"},
+    {"star_image",			"${image_url_prefix}/star.gif"},
     {"star_patterns",			""},
     {"start_ellipses",			"<b><tt>... </tt></b>"},
     {"start_url",			"http://htdig.sdsu.edu/"},
     {"substring_max_words",		"25"},
-    {"synonym_dictionary",		"${common_dir}/synonyms"},
     {"synonym_db",			"${common_dir}/synonyms.db"},
+    {"synonym_dictionary",		"${common_dir}/synonyms"},
     {"syntax_error_file",		"${common_dir}/syntax.html"},
     {"template_map",			"Long builtin-long builtin-long Short builtin-short builtin-short"},
     {"template_name",			"builtin-long"},

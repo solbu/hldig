@@ -4,6 +4,10 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.8  1998/09/07 04:27:39  ghutchis
+//
+// Bug fixes.
+//
 // Revision 1.7  1998/05/26 03:58:10  turtle
 // Got rid of compiler warnings.
 //
@@ -31,7 +35,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.7 1998/05/26 03:58:10 turtle Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.8 1998/09/07 04:27:39 ghutchis Exp $";
 #endif
 
 #include "URL.h"
@@ -154,7 +158,7 @@ URL::URL(char *ref, URL &parent)
     while (isalpha(*p))
 	p++;
     int	hasService = (*p == ':');
-    if (hasService && ((strncmp(ref, "http:/", 6) == 0) ||
+    if (hasService && ((strncmp(ref, "http://", 6) == 0) ||
 		       (strncmp(ref, "http:", 5) != 0)))
     {
 	//
