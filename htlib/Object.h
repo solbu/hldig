@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Object.h,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: Object.h,v 1.5 1999/09/29 10:10:08 loic Exp $
 //
 
 #ifndef	_Object_h_
@@ -26,7 +26,7 @@ public:
 	//
 	// Constructor/Destructor
 	//
-	inline		Object();
+			Object()	{};
 	virtual		~Object()	{}
 
 	//
@@ -49,9 +49,5 @@ public:
 
 protected:
 };
-
-inline Object::Object() 
-{
-}
 
 #endif

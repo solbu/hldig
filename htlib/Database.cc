@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Database.cc,v 1.8 1999/09/24 11:06:11 loic Exp $
+// $Id: Database.cc,v 1.9 1999/09/29 10:10:08 loic Exp $
 //
 
 #include "Database.h"
@@ -36,7 +36,7 @@ Database::~Database()
 // Database *Database::getDatabaseInstance()
 //
 Database *
-Database::getDatabaseInstance(enum DBTYPE type = DB_BTREE)
+Database::getDatabaseInstance(DBTYPE type = DB_BTREE)
 {
   Database* db = DB2_db::getDatabaseInstance(type);
 

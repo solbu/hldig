@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: dbbench.cc,v 1.6 1999/09/28 10:32:18 loic Exp $
+// $Id: dbbench.cc,v 1.7 1999/09/29 10:10:09 loic Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
@@ -55,7 +55,7 @@ typedef struct {
   char* find;
   int nwords;
   int loop;
-  enum DBTYPE type;
+  DBTYPE type;
   int page_size;
   int cache_size;
   int multiply_keys;
@@ -180,7 +180,7 @@ int main(int ac, char **av)
   return 0;
 }
 
-void dbput(DB* db, params_t* params, const String& key, const String& data)
+void dbput(DB* db, params_t*, const String& key, const String& data)
 {
     DBT	k, d;
 

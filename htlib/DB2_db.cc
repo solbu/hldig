@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DB2_db.cc,v 1.16 1999/09/28 16:18:14 loic Exp $
+// $Id: DB2_db.cc,v 1.17 1999/09/29 10:10:08 loic Exp $
 //
 
 #include "DB2_db.h"
@@ -316,7 +316,7 @@ DB2_db::Delete(const String &key)
 // DB2_db *DB2_db::getDatabaseInstance()
 //
 DB2_db *
-DB2_db::getDatabaseInstance(enum DBTYPE type)
+DB2_db::getDatabaseInstance(DBTYPE)
 {
     return new DB2_db();
 }

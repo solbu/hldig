@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.h,v 1.1 1999/09/27 14:00:05 angus Exp $
+// $Id: Connection.h,v 1.2 1999/09/29 10:10:08 loic Exp $
 //
 
 #ifndef _Connection_h_
@@ -47,7 +47,7 @@ public:
     int				assign_port(int port = 0);
     int				assign_port(char *service);
     int				get_port();
-    int				is_privileged();
+    inline int			is_privileged();
 
     // Host stuff
     int				assign_server(const String& name);

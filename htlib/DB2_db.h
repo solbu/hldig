@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DB2_db.h,v 1.7 1999/09/24 10:29:03 loic Exp $
+// $Id: DB2_db.h,v 1.8 1999/09/29 10:10:08 loic Exp $
 //
 
 #ifndef _DB2_db_h_
@@ -30,9 +30,9 @@ protected:
 public:
     ~DB2_db();
 
-    static DB2_db	*getDatabaseInstance(enum DBTYPE type);
+    static DB2_db	*getDatabaseInstance(DBTYPE type);
 	
-    virtual int		OpenReadWrite(const char *filename, int mode) { return Open(filename, DB_CREATE, 0666); }
+    virtual int		OpenReadWrite(const char *filename, int mode) { return Open(filename, DB_CREATE, mode); }
     virtual int		OpenRead(const char *filename) { return Open(filename, DB_RDONLY, 0666); }
     virtual int		Close();
     virtual int		Get(const String &, String &);

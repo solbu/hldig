@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.h,v 1.20 1999/09/24 10:29:04 loic Exp $
+// $Id: Display.h,v 1.21 1999/09/29 10:10:08 loic Exp $
 //
 
 #ifndef _Display_h_
@@ -40,14 +40,14 @@ public:
     void		setMatchTemplate(const String& templateName);
     void		setEndTemplate(const String& templateName);
 	
-    void		setResults(ResultList *results);
-    void		setSearchWords(List *searchWords);
-    void		setLimit(HtRegex *);
-    void		setExclude(HtRegex *);
-    void		setAllWordsPattern(StringMatch *);
-    void		setLogicalWords(char *);
-    void		setOriginalWords(char *);
-    void		setCGI(cgi *);
+    inline void		setResults(ResultList *results);
+    inline void		setSearchWords(List *searchWords);
+    inline void		setLimit(HtRegex *);
+    inline void		setExclude(HtRegex *);
+    inline void		setAllWordsPattern(StringMatch *);
+    inline void		setLogicalWords(char *);
+    inline void		setOriginalWords(char *);
+    inline void		setCGI(cgi *);
 	
     void		display(int pageNumber);
     void		displayMatch(DocumentRef *, int current);

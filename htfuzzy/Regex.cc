@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Regex.cc,v 1.5 1999/09/24 10:29:01 loic Exp $
+// $Id: Regex.cc,v 1.6 1999/09/29 10:10:08 loic Exp $
 //
 
 #include "Regex.h"
@@ -46,7 +46,7 @@ Regex::~Regex()
 // linear search, but with much less overhead.
 //
 void
-Regex::getWords(char *w, List &words)
+Regex::getWords(char *, List &words)
 {
     HtRegex	regexMatch;
     String	stripped;

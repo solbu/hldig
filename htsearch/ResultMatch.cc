@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ResultMatch.cc,v 1.6 1999/09/24 10:29:04 loic Exp $
+// $Id: ResultMatch.cc,v 1.7 1999/09/29 10:10:08 loic Exp $
 //
 
 #include "ResultMatch.h"
@@ -42,10 +42,10 @@ char *ResultMatch::getTitle()
 time_t ResultMatch::getTime()
 { return 0; }
 
-void ResultMatch::setTitle(const String& title)
+void ResultMatch::setTitle(const String&)
 { }
 
-void ResultMatch::setTime(time_t t)
+void ResultMatch::setTime(time_t)
 { }
 
 // Then for each sort-type, we derive a class, which will keep

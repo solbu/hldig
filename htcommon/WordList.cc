@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.35 1999/09/28 16:18:14 loic Exp $
+// $Id: WordList.cc,v 1.36 1999/09/29 10:10:07 loic Exp $
 //
 
 #include "WordList.h"
@@ -221,7 +221,7 @@ public:
 // Write the ascii representation of a word occurence. Helper
 // of WordList::Dump
 //
-static int dump_word(WordList *words, const WordReference *word, Object &data)
+static int dump_word(WordList *, const WordReference *word, Object &data)
 {
   DumpWordData &info = (DumpWordData &)data;
 

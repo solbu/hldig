@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.7 1999/09/28 16:18:15 loic Exp $
+// $Id: word.cc,v 1.8 1999/09/29 10:10:09 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -112,7 +112,7 @@ static void doword(params_t* params)
   }
 }
 
-static void dolist(params_t* params)
+static void dolist(params_t*)
 {
   static char* word_list[] = {
     "The",	// DocID = 1

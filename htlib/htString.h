@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.13 1999/09/28 07:30:35 loic Exp $
+// $Id: htString.h,v 1.14 1999/09/29 10:10:08 loic Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -37,7 +37,7 @@ public:
 	
     ~String();
 
-    int			length() const;
+    inline int		length() const;
     char		*get();
     const char		*get() const;
     operator 		char*()	{ return get(); }
@@ -67,15 +67,15 @@ public:
     //
     void		operator = (const String &s);
     void		operator = (const char *s);
-    void		operator += (const String &s);
-    void		operator += (const char *s);
+    inline void		operator += (const String &s) { append(s); }
+    inline void		operator += (const char *s) { append(s); }
 
     //
     // Appending
     //
-    inline String		&operator << (const char *);
-    inline String		&operator << (char);
-    String		&operator << (unsigned char c) {return *this<<(char)c;}
+    inline String	&operator << (const char *);
+    inline String	&operator << (char);
+    inline String	&operator << (unsigned char c) {return *this<<(char)c;}
     String		&operator << (int);
     String		&operator << (unsigned int);
     String		&operator << (long);
@@ -86,8 +86,8 @@ public:
     //
     // Access to specific characters
     //
-    char		&operator [] (int n);
-    char		operator [] (int n) const;
+    inline char		&operator [] (int n);
+    inline char		operator [] (int n) const;
     char		Nth (int n) { return (*this)[n]; }
     char		last() { return Length > 0 ? Data[Length - 1] : '\0'; }
 
@@ -212,29 +212,9 @@ inline String &String::operator << (char ch)
     return *this;
 }
 
-#ifdef TOTO
-inline char *String::get() const
-{
-    if (Data == 0)
-	    return 0;
-    Data[Length] = '\0';	// We always leave room for this.
-    return Data;
-}
-#endif
-
 inline int String::length() const
 {
     return Length;
-}
-
-inline void String::operator += (const String &s)
-{
-    append(s);
-}
-
-inline void String::operator += (const char *s)
-{
-    append(s);
 }
 
 inline char	String::operator [] (int n) const

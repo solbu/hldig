@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.15 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: ExternalParser.cc,v 1.16 1999/09/29 10:10:07 loic Exp $
 //
 
 #include "ExternalParser.h"
@@ -155,7 +155,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 
     String	line;
     char	*token1, *token2, *token3;
-    int		loc, hd;
+    int		loc = 0, hd = 0;
     URL		url;
     while (readLine(input, line))
     {

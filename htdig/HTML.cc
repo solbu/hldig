@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.57 1999/09/24 16:47:09 loic Exp $
+// $Id: HTML.cc,v 1.58 1999/09/29 10:10:07 loic Exp $
 //
 
 #include "htdig.h"
@@ -640,7 +640,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    && !attrs["content"].empty())
 		  {
 		    String content = attrs["content"];
-		    char *q = mystrcasestr(content, "url=");
+		    char *q = mystrcasestr((char*)content, "url=");
 		    if (q && *q)
 		      {
 			q += 4; // skiping "URL="

@@ -18,7 +18,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: acinclude.m4,v 1.5 1999/09/01 13:32:28 loic Exp $
+dnl @version $Id: acinclude.m4,v 1.6 1999/09/29 10:10:06 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -47,7 +47,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: acinclude.m4,v 1.5 1999/09/01 13:32:28 loic Exp $
+dnl @version $Id: acinclude.m4,v 1.6 1999/09/29 10:10:06 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -105,7 +105,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: acinclude.m4,v 1.5 1999/09/01 13:32:28 loic Exp $
+dnl @version $Id: acinclude.m4,v 1.6 1999/09/29 10:10:06 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -125,7 +125,7 @@ else
   AC_MSG_RESULT(no)
 fi], [
 AC_MSG_RESULT(yes)
-APACHE_PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin
+APACHE_PATH=/usr/local/apache/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin
 ])
 
 #

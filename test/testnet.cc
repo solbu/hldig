@@ -1,4 +1,7 @@
-// $Id: testnet.cc,v 1.2 1999/09/28 17:36:55 loic Exp $
+// $Id: testnet.cc,v 1.3 1999/09/29 10:10:09 loic Exp $
+#ifdef HAVE_CONFIG_H
+#include <htconfig.h>
+#endif /* HAVE_CONFIG_H */
 
 #include "Transport.h"
 #include "HtHTTP.h"
@@ -7,6 +10,11 @@
 #include <iostream.h>
 #include <errno.h>
 #include <string.h>
+// If we have this, we probably want it.
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
+#endif
+#include <unistd.h>
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -263,7 +271,7 @@ Transport::DocStatus Retrieve()
 
 
 
-int Parser(char *ct)
+int Parser(char *)
 {
    return false;
 }

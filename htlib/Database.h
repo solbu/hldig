@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Database.h,v 1.11 1999/09/24 10:29:03 loic Exp $
+// $Id: Database.h,v 1.12 1999/09/29 10:10:08 loic Exp $
 //
 
 #ifndef _Database_h_
@@ -48,7 +48,7 @@ public:
     // The idea here is that the particular type of database used by
     // all the programs is to be defined in one place.
     //
-    static Database	*getDatabaseInstance(enum DBTYPE type);
+    static Database	*getDatabaseInstance(DBTYPE type);
 	
     //
     // Common interface
@@ -86,7 +86,7 @@ protected:
 
     int			seqrc;
     int			seqerr;
-    enum DBTYPE		db_type;
+    DBTYPE		db_type;
 };
 
 #endif

@@ -1,3 +1,17 @@
+Wed Sep 29 13:54:59 1999  Loic Dachary  <loic@yoda.ceic.com>
+
+	* fix all inline method declarations so that they are always declared
+	  inline in the class declaration if an inline definition follows.
+
+	* acinclude.m4: also search apache in /usr/local/apache/bin by default.
+
+	* fix various warnings of gcc-2.95, now compiles ok without warnings
+	  and with -Wall.
+
+	* htlib/htString.h: removed commented out inline get
+
+	* test/testnet.cc: add includes for optarg
+
 Tue Sep 28 18:56:36 1999  Loic Dachary  <loic@ceic.com>
 
 	* Makefile.config (HTLIBS): libhtnet at the beginning of the list. It

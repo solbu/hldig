@@ -3598,7 +3598,7 @@ fi
 else
   
 echo "$ac_t""yes" 1>&6
-APACHE_PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin
+APACHE_PATH=/usr/local/apache/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin
 
 fi
 

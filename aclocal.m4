@@ -30,7 +30,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.14 1999/09/28 07:30:34 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.15 1999/09/29 10:10:06 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -59,7 +59,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.14 1999/09/28 07:30:34 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.15 1999/09/29 10:10:06 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -117,7 +117,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.14 1999/09/28 07:30:34 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.15 1999/09/29 10:10:06 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -137,7 +137,7 @@ else
   AC_MSG_RESULT(no)
 fi], [
 AC_MSG_RESULT(yes)
-APACHE_PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin
+APACHE_PATH=/usr/local/apache/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin
 ])
 
 #
@@ -323,7 +323,7 @@ done<<>>dnl>>)
 changequote([,]))])
 
 
-# serial 40 AC_PROG_LIBTOOL
+# serial 39 AC_PROG_LIBTOOL
 AC_DEFUN(AC_PROG_LIBTOOL,
 [AC_REQUIRE([AC_LIBTOOL_SETUP])dnl
 
@@ -684,7 +684,6 @@ AC_DEFUN(AC_LIBLTDL_CONVENIENCE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
       ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
   esac
   LIBLTDL=ifelse($#,1,$1,['${top_builddir}/libltdl'])/libltdlc.la
-  INCLTDL=ifelse($#,1,-I$1,['-I${top_builddir}/libltdl'])
 ])
 
 # AC_LIBLTDL_INSTALLABLE[(dir)] - sets LIBLTDL to the link flags for
@@ -708,11 +707,9 @@ AC_DEFUN(AC_LIBLTDL_INSTALLABLE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   if test x"$enable_ltdl_install" = x"yes"; then
     ac_configure_args="$ac_configure_args --enable-ltdl-install"
     LIBLTDL=ifelse($#,1,$1,['${top_builddir}/libltdl'])/libltdl.la
-    INCLTDL=ifelse($#,1,-I$1,['-I${top_builddir}/libltdl'])
   else
     ac_configure_args="$ac_configure_args --enable-ltdl-install=no"
     LIBLTDL="-lltdl"
-    INCLTDL=
   fi
 ])
 
@@ -725,8 +722,8 @@ AC_DEFUN(AM_DISABLE_STATIC, [indir([AC_DISABLE_STATIC], $@)])dnl
 AC_DEFUN(AM_PROG_LD, [indir([AC_PROG_LD])])dnl
 AC_DEFUN(AM_PROG_NM, [indir([AC_PROG_NM])])dnl
 
-dnl This is just to silence aclocal about the macro not being used
-ifelse([AC_DISABLE_FAST_INSTALL])dnl
+dnl This is just to quiet aclocal about the macro not being used
+if(a,b,[AC_DISABLE_FAST_INSTALL])dnl
 
 # Add --enable-maintainer-mode option to configure.
 # From Jim Meyering
