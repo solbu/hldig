@@ -1,5 +1,8 @@
 # Main Makefile for ht://Dig
-# Copyright (c) 1995-1999 The ht://Dig Group
+# Copyright (c) 1995-2000 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU General Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
 
 include $(top_srcdir)/Makefile.config
 

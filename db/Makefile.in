@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -12,23 +12,9 @@
 
 
 #
-# Part of the ht://Dig package   <http://www.htdig.org/>
-# Copyright (c) 1999, 2000 The ht://Dig Group
-# For copyright details, see the file COPYING in your distribution
-# or the GNU General Public License version 2 or later
-# <http://www.gnu.org/copyleft/gpl.html>
-#
-
-#
 # To compile with profiling do the following:
 #
-# make clean
-# ( cd db ; make all )
-# make CXXFLAGS=-g PROFILING=-p all
-#
-# Note that it's necessary to rebuild Berkeley DB without CXXFLAGS set because
-# it has undesirable effects. CXXFLAGS must be set to -g because it defaults
-# to -g -O2 when g++ is used and profiling is not done in a intuitive way.
+# make CFLAGS=-g CXXFLAGS=-g PROFILING=-p all
 #
 
 
@@ -67,10 +53,9 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -81,57 +66,60 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+APACHE = @APACHE@
+APACHE_MODULES = @APACHE_MODULES@
 AR = @AR@
 AS = @AS@
 CC = @CC@
+CGIBIN_DIR = @CGIBIN_DIR@
+COMMON_DIR = @COMMON_DIR@
+CONFIG_DIR = @CONFIG_DIR@
 CXX = @CXX@
 CXXFLAGS = @CXXFLAGS@
+DATABASE_DIR = @DATABASE_DIR@
+DEFAULT_CONFIG_FILE = @DEFAULT_CONFIG_FILE@
 DLLTOOL = @DLLTOOL@
-DVIPS = @DVIPS@
 FIND = @FIND@
 GUNZIP = @GUNZIP@
+HTDIG_MAJOR_VERSION = @HTDIG_MAJOR_VERSION@
+HTDIG_MICRO_VERSION = @HTDIG_MICRO_VERSION@
+HTDIG_MINOR_VERSION = @HTDIG_MINOR_VERSION@
+IMAGE_DIR = @IMAGE_DIR@
+IMAGE_URL_PREFIX = @IMAGE_URL_PREFIX@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LEX = @LEX@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
-MAJOR_VERSION = @MAJOR_VERSION@
 MAKEINFO = @MAKEINFO@
-MICRO_VERSION = @MICRO_VERSION@
-MINOR_VERSION = @MINOR_VERSION@
+MV = @MV@
 NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 PERL = @PERL@
 RANLIB = @RANLIB@
 RRDTOOL = @RRDTOOL@
+SEARCH_DIR = @SEARCH_DIR@
+SEARCH_FORM = @SEARCH_FORM@
 SED = @SED@
+SENDMAIL = @SENDMAIL@
 SHELL = @SHELL@
 TAR = @TAR@
-TEXI2DVI = @TEXI2DVI@
 TIME = @TIME@
 TIMEV = @TIMEV@
+USER = @USER@
 VERSION = @VERSION@
-db_align_t_decl = @db_align_t_decl@
-db_alignp_t_decl = @db_alignp_t_decl@
-int16_decl = @int16_decl@
-int32_decl = @int32_decl@
-ssize_t_decl = @ssize_t_decl@
-u_char_decl = @u_char_decl@
-u_int16_decl = @u_int16_decl@
-u_int32_decl = @u_int32_decl@
-u_int8_decl = @u_int8_decl@
-u_int_decl = @u_int_decl@
-u_long_decl = @u_long_decl@
-u_short_decl = @u_short_decl@
-
-INCLUDES = -I$(top_srcdir)/mifluz 		-I$(top_builddir)/db 		-I$(top_srcdir)/db 		-I$(top_srcdir)/clib 		-I$(top_srcdir) 		-DNOSTREAM 		$(LOCAL_DEFINES) $(PROFILING)
-
-
-MIFLUZLIBS = $(top_builddir)/mifluz/libmifluz.la
+YACC = @YACC@
 
 AUTOMAKE_OPTIONS = foreign
+
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db -I$(top_builddir)/db 		$(LOCAL_DEFINES) $(PROFILING)
+
+
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/libhtdb.la 		$(top_builddir)/htlib/libht.la
+
 
 EXTRA_DIST = db.h.in 	68K.gcc alpha.gcc sparc.gcc x86.gcc 	hash.src log.src qam.src txn.src prefix-symbols.sh 	LICENSE
 
@@ -144,12 +132,12 @@ libdb_la_SOURCES =  	bt_compare.c 	bt_conv.c 	bt_curadj.c 	bt_cursor.c 	bt_delet
 pkginclude_HEADERS =  	btree.h 	btree_auto.h 	btree_ext.h 	common_ext.h 	crdel_auto.h 	db.h 	db_am.h 	db_auto.h 	db_dispatch.h 	db_ext.h 	db_int.h 	db_join.h 	db_page.h 	db_shash.h 	db_swap.h 	db_upgrade.h 	db_verify.h 	debug.h 	env_ext.h 	hash.h 	hash_auto.h 	hash_ext.h 	lock.h 	lock_ext.h 	log.h 	log_auto.h 	log_ext.h 	mp.h 	mp_ext.h 	mutex.h 	mutex_ext.h 	os.h 	os_ext.h 	os_jump.h 	qam.h 	qam_auto.h 	qam_ext.h 	queue.h 	region.h 	shqueue.h 	txn.h 	txn_auto.h 	txn_ext.h 	xa.h 	xa_ext.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = ../config.h
+CONFIG_HEADER = ../include/htconfig.h
 CONFIG_CLEAN_FILES =  db.h
 LTLIBRARIES =  $(noinst_LTLIBRARIES)
 
 
-DEFS = @DEFS@ -I. -I$(srcdir) -I..
+DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 libdb_la_LDFLAGS = 
@@ -345,7 +333,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -406,7 +394,7 @@ uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(pkgincludedir)
 

@@ -11,7 +11,10 @@
 # PARTICULAR PURPOSE.
 
 # Main Makefile for ht://Dig
-# Copyright (c) 1995-1999 The ht://Dig Group
+# Copyright (c) 1995-2000 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU General Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
 
 
 #
@@ -295,7 +298,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
