@@ -1,7 +1,7 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.14 1999/05/26 14:43:58 ghutchis Exp $
+// $Id: Display.h,v 1.15 1999/06/01 01:56:29 ghutchis Exp $
 //
 //
 
@@ -26,7 +26,7 @@ public:
     //
     // Construction/Destruction
     //
-    Display(char *docFile);
+    Display(char *docFile, char *indexFile, char *excerptFile);
     ~Display();
 
     void		setStartTemplate(char *templateName);

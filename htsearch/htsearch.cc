@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.33 1999/05/26 14:43:58 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.34 1999/06/01 01:56:29 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -258,7 +258,14 @@ main(int ac, char **av)
 			 doc_db.get()));
     }
 
-    Display	display(doc_db);
+    String	doc_excerpt = config ["doc_excerpt"];
+    if (access(doc_excerpt, R_OK) < 0)
+    {
+	reportError(form("Unable to read document excerpts '%s'\nDid you run htmerge?",
+			 doc_excerpt.get()));
+    }
+
+    Display	display(doc_db, 0, doc_excerpt);
     if (display.hasTemplateError())
       {
 	reportError(form("Unable to read template file '%s'\nDoes it exist?",
