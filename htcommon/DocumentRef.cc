@@ -120,11 +120,11 @@ void DocumentRef::DocHead(char *h) {
 #endif
 #else
  
-inline char *DocumentRef::DocHead() {
+char *DocumentRef::DocHead() {
   return docHead;
 }
 
-inline void DocumentRef::DocHead(char *h) {
+void DocumentRef::DocHead(char *h) {
   docHead=h;
 }
 #endif
