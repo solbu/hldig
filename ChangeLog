@@ -5,6 +5,9 @@ Thu Jan 14 23:37:29 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	HTML. Contributed by Marjolein.
 
 	* htdig/HTML.cc: Use them.
+
+	* contrib/examples/rundig.sh: Add rundig example from Colin
+	Viebrock with a few modifications for using less disk space.
 	
 Thu Jan 14 23:27:24 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
