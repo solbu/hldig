@@ -1,3 +1,7 @@
+Thu Sep  9 14:52:19 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/parse_doc.pl: fix bug in pdf title extraction.
+
 Wed Sep  1 15:58:14 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc(got_word): add code to check for compound words
