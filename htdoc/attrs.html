@@ -3860,6 +3860,66 @@
     <hr>
     <dl>
       <dt>
+        <strong><a name="search_results_wrapper">
+        search_results_wrapper</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            string
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            <em>&lt;empty&gt;</em>
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            This specifies a filename to be output at the start and
+            end of search results. This file replaces the <a href=
+            "#search_results_header">search_results_header</a> and
+            <a href="#search_results_footer">search_results_footer</a>
+            files, with the contents of both in one file, and uses the
+            pseudo-variable <strong>$(HTSEARCH_RESULTS)</strong> as a
+            separator for the header and footer sections.
+            If the filename is not specified, the file is unreadable,
+            or the pseudo-variable above is not found, htsearch reverts
+            to the separate header and footer files instead.
+            While outputting the wrapper,
+            some variables will be expanded, just as for the <a href=
+            "#search_results_header">search_results_header</a> and
+            <a href="#search_results_footer">search_results_footer</a>
+            files.<br>
+            Note that this file will <strong>NOT</strong> be output
+            if no matches were found. In this case the <a href=
+            "#nothing_found_file">nothing_found_file</a> attribute
+            is used instead.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            search_results_wrapper:
+            ${common_dir}/wrapper.html
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
         <strong><a name="server_aliases">server_aliases</a></strong>
       </dt>
       <dd>
