@@ -4,6 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.36  1999/01/18 00:52:50  ghutchis
+// Fix mismatched naming of compression_level (was compression_factor).
+//
 // Revision 1.35  1999/01/17 21:12:55  ghutchis
 // Change default pdf_parser attribute to include acrobat-specific flags.
 //
@@ -121,7 +124,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.35 1999/01/17 21:12:55 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.36 1999/01/18 00:52:50 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -153,7 +156,7 @@ ConfigDefaults	defaults[] =
     {"case_sensitive"                   "true"},
     {"create_image_list",		"false"},
     {"create_url_list",			"false"},
-    {"compression_factor",              "0"},
+    {"compression_level",               "0"},
     {"date_factor",                     "0"},
     {"database_base",			"${database_dir}/db"},
     {"description_factor",              "150"},
