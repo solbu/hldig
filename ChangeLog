@@ -1,3 +1,8 @@
+Tue Mar 23 15:08:40 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(displayMatch): Fix problem when documents
+	did not have descriptions.
+
 Tue Mar 23 14:17:14 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/PDF.cc(parseString): Use minimum_word_length instead of

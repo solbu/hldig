@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.62 1999/03/23 18:10:28 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.63 1999/03/23 21:15:30 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -340,9 +340,10 @@ Display::displayMatch(ResultMatch *match, int current)
 	    *str << ((String*) (*list)[i])->get() << "<br>\n";
 	}
 	vars.Add("DESCRIPTIONS", str);
-       String *description = new String();
-       *description << ((String*) (*list)[0]);
-       vars.Add("DESCRIPTION", description);
+	String *description = new String();
+	if (list->Count())
+	    *description << ((String*) (*list)[0]);
+	vars.Add("DESCRIPTION", description);
     }
 
     expandVariables(currentTemplate->getMatchTemplate());
