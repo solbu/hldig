@@ -1,3 +1,17 @@
+Thu Jan  7 23:29:32 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HTML.cc(parse): Corrected problems with parsing comments,
+	as contributed by Marjolein Katsma <webmaster@javawoman.com> and
+	Gilles.
+
+	* htsearch/Display.cc, htsearch/Display.h: Implement
+	add_anchors_to_excerpt option and new variable ANCHOR as
+	contributed by Marjolein.
+
+	* htdoc/THANKS.html: Added new contributors.
+
+	* README: Update for 1999 copyright, version, etc.
+	
 Thu Jan  7 17:29:52 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/(attrs.html, cf_byname.html, cf_byprog.html): Fix typo
