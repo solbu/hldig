@@ -1,3 +1,17 @@
+Mon Feb 11 23:28:37 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.h (got_redirect): Add referer to properly handle
+	broken links through a redirect as reported by Joe Jah.
+
+	* htdig/Retriever.cc: As above.
+
+	* htdig/Document.cc (Retrieve): Fix bug that prevented external
+	transport methods from reporting redirects as reported by Jamie
+	Anstice <Jamie.Anstice@sli-systems.com>.
+	
+	* htlib/Dictionary.cc (hashCode): Trial of hash function suggested
+	by Jamie Anstice.
+
 Sat Feb  9 18:06:29 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/DocMatch.[h,cc]: Add scoring code for the new htsearch

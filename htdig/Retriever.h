@@ -7,12 +7,12 @@
 //            and statistics accordingly.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2000 The ht://Dig Group
+// Copyright (c) 1995-2002 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.20 2002/02/01 22:49:29 ghutchis Exp $
+// $Id: Retriever.h,v 1.21 2002/02/12 06:12:05 ghutchis Exp $
 //
 
 #ifndef _Retriever_h_
@@ -149,7 +149,7 @@ private:
     int			IsValidURL(const String &url);
     void		RetrievedDocument(Document &, const String &url, DocumentRef *ref);
     void		parse_url(URLRef &urlRef);
-    void		got_redirect(const char *, DocumentRef *);
+    void		got_redirect(const char *, DocumentRef *, const char * = 0);
     void		recordNotFound(const String &url, const String &referer, int reason);
 };
 

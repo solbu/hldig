@@ -7,12 +7,12 @@
 //            and statistics accordingly.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2001 The ht://Dig Group
+// Copyright (c) 1995-2002 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.74 2002/02/01 22:49:29 ghutchis Exp $
+// $Id: Retriever.cc,v 1.75 2002/02/12 06:12:05 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -718,7 +718,7 @@ Retriever::parse_url(URLRef &urlRef)
 		cout << " redirect" << endl;
 	    ref->DocState(Reference_obsolete);
 	    words.Skip();
-	    got_redirect(doc->Redirected(), ref);
+	    got_redirect(doc->Redirected(), ref, (urlRef.GetReferer()).get());
 	    break;
 	    
        case Transport::Document_not_authorized:
@@ -1549,7 +1549,8 @@ Retriever::got_href(URL &url, const char *description, int hops)
 // void Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 //
 void
-Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
+Retriever::got_redirect(const char *new_url, DocumentRef *old_ref, 
+			const char *referer)
 {
     // First we must piece together the new URL, which may be relative
     URL parent(old_ref->DocURL());
@@ -1637,8 +1638,12 @@ Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 		    servers.Add(url.signature(), server);
 		    delete localRobotsFile;
 		}
-		server->push(url.get(), ref->DocHopCount(), base->get(),
-			     IsLocalURL(url.get()), 0);
+		if (!referer || strlen(referer) == 0)
+		  server->push(url.get(), ref->DocHopCount(), base->get(),
+			       IsLocalURL(url.get()), 0);
+		else
+		  server->push(url.get(), ref->DocHopCount(), referer,
+			       IsLocalURL(url.get()), 0);  
 
 		String	temp = url.get();
 		visited.Add(temp, 0);
