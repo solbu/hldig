@@ -29,7 +29,7 @@ DEST=                  $(prefix)
 # BIN_DIR
 # Set this macro to where you want the binaries to be installed.
 #
-BIN_DIR=               $(exec_prefix)/bin
+BIN_DIR=               @bindir@
 
 #
 # CONFIG_DIR

@@ -1,3 +1,10 @@
+Wed Jan  9 22:08:21 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* CONFIG.in: Fixed to allow setting BIN_DIR by configure option.
+	* contrib/htdig-3.1.6.spec: Fixed to make use of new ./configure
+	options for pathnames, do away with patch file.  Used variables for
+	many pathnames to allow easy changes.
+
 Wed Jan  9 16:22:32 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/ExternalParser.cc (parse): Added support for max_keywords
