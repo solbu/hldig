@@ -1,10 +1,10 @@
 //
 // Implementation of String class
 //
-// $Id: String.cc,v 1.16.2.2 1999/09/12 20:26:03 ghutchis Exp $
+// $Id: String.cc,v 1.16.2.3 1999/11/26 21:59:26 grdetil Exp $
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.16.2.2 1999/09/12 20:26:03 ghutchis Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.16.2.3 1999/11/26 21:59:26 grdetil Exp $";
 #endif
 
 
@@ -204,6 +204,7 @@ int String::write(int fd) const
 	    return result;
 		
 	left -= result;
+	wptr += result;
     }
     return left;
 }
