@@ -1,3 +1,16 @@
+Thu Feb  4 22:51:37 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* Makefile.in: Clean up previous patch and tidy up HTML and
+	dictionary installation.
+
+Thu Feb  4 22:31:35 1999  Ric Klaren <klaren@telin.nl>
+
+	* Makefile.in, */Makefile.in: Add support for
+	$INSTALL_ROOT, making it easier to build packages (e.g. RPMs) into
+	directories for later processing.
+
+	* htsearch/Display.cc: Tiny patch to silence a compiler warning.
+
 Thu Feb  4 13:03:44 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htfuzzy/Soundex.cc(generateKey): Skip initial non-alphabetic
