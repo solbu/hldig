@@ -1,3 +1,11 @@
+Sat Aug 12 23:03:32 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/cf_generate.pl (html_escape): Fix mindless thinko with
+	perl stringwise-equal operator. Documentation is now generated
+	with block: portion appropriate to defaults.cc.
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
 Fri Aug 11 16:03:18 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc (parse): fix problem with &amp; not being translated.

@@ -14,7 +14,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: cf_generate.pl,v 1.1.2.8 2000/03/28 01:44:30 ghutchis Exp $
+# $Id: cf_generate.pl,v 1.1.2.9 2000/08/12 18:12:05 ghutchis Exp $
 #
 use strict;
 
@@ -116,7 +116,7 @@ foreach $record (@$config) {
 			}
 			split(' ', $programs));
 
-    if($block == '') {
+    if ($block eq '') {
 	$block = "Global";
     }
 
