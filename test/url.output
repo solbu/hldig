@@ -1,0 +1,8913 @@
+Parent: http://www.williams.edu:803/
+(http://www.williams.edu:803/)
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /
+url = http://www.williams.edu:803/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /
+url = http://www.williams.edu:803/
+
+Child: ./../
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /
+url = http://www.williams.edu:803/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /foo.html
+url = http://www.williams.edu:803/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /.../foo.html
+url = http://www.williams.edu:803/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /foo.html
+url = http://www.williams.edu:803/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /
+url = http://www.williams.edu:803/
+
+Child: index.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /
+url = http://www.williams.edu:803/
+
+Child: test.htm
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /test.htm
+url = http://www.williams.edu:803/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /top/README
+url = http://www.williams.edu:803/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /next/foo.html
+url = http://www.williams.edu:803/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /relative.html
+url = http://www.williams.edu:803/relative.html
+
+Parent: http://wso.williams.edu/
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /.../foo.html
+url = http://wso.williams.edu/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /test.htm
+url = http://wso.williams.edu/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /next/foo.html
+url = http://wso.williams.edu/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /relative.html
+url = http://wso.williams.edu/relative.html
+
+Parent: https://web.horde.org/williams/
+(https://web.horde.org:443/)
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/
+url = https://web.horde.org/williams/
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/
+url = https://web.horde.org/williams/
+
+Child: ./../
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /
+url = https://web.horde.org/
+
+Child: ../foo.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /foo.html
+url = https://web.horde.org/foo.html
+
+Child: .../foo.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/.../foo.html
+url = https://web.horde.org/williams/.../foo.html
+
+Child: /foo.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /foo.html
+url = https://web.horde.org/foo.html
+
+Child: #top
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/
+url = https://web.horde.org/williams/
+
+Child: index.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/
+url = https://web.horde.org/williams/
+
+Child: test.htm
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/test.htm
+url = https://web.horde.org/williams/test.htm
+
+Child: /top/README
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /top/README
+url = https://web.horde.org/top/README
+
+Child: next/foo.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/next/foo.html
+url = https://web.horde.org/williams/next/foo.html
+
+Child: .//relative.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/relative.html
+url = https://web.horde.org/williams/relative.html
+
+Parent: http://www.williams.edu/Administration/index.html
+(http://www.williams.edu:80/)
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/
+url = http://www.williams.edu/Administration/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/
+url = http://www.williams.edu/Administration/
+
+Child: ./../
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /
+url = http://www.williams.edu/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /foo.html
+url = http://www.williams.edu/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/.../foo.html
+url = http://www.williams.edu/Administration/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /foo.html
+url = http://www.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/
+url = http://www.williams.edu/Administration/
+
+Child: index.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/
+url = http://www.williams.edu/Administration/
+
+Child: test.htm
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/test.htm
+url = http://www.williams.edu/Administration/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /top/README
+url = http://www.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/next/foo.html
+url = http://www.williams.edu/Administration/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/relative.html
+url = http://www.williams.edu/Administration/relative.html
+
+Parent: ftp://ghutchis@wso.williams.edu/mail/index
+(ftp://ghutchis@wso.williams.edu:21/)
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/index
+url = ftp://ghutchis@wso.williams.edu/mail/index
+
+Children: 
+
+Child: ./
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/
+url = ftp://ghutchis@wso.williams.edu/mail/
+
+Child: ./../
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /
+url = ftp://ghutchis@wso.williams.edu/
+
+Child: ../foo.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /foo.html
+url = ftp://ghutchis@wso.williams.edu/foo.html
+
+Child: .../foo.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/.../foo.html
+url = ftp://ghutchis@wso.williams.edu/mail/.../foo.html
+
+Child: /foo.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /foo.html
+url = ftp://ghutchis@wso.williams.edu/foo.html
+
+Child: #top
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/index
+url = ftp://ghutchis@wso.williams.edu/mail/index
+
+Child: index.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/index.html
+url = ftp://ghutchis@wso.williams.edu/mail/index.html
+
+Child: test.htm
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/test.htm
+url = ftp://ghutchis@wso.williams.edu/mail/test.htm
+
+Child: /top/README
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /top/README
+url = ftp://ghutchis@wso.williams.edu/top/README
+
+Child: next/foo.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/next/foo.html
+url = ftp://ghutchis@wso.williams.edu/mail/next/foo.html
+
+Child: .//relative.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/relative.html
+url = ftp://ghutchis@wso.williams.edu/mail/relative.html
+
+Parent: http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/bbs_forum.cgi?forum=open
+url = http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/
+url = http://wso.williams.edu/cgi-bin/BBS/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/
+url = http://wso.williams.edu/cgi-bin/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/foo.html
+url = http://wso.williams.edu/cgi-bin/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/.../foo.html
+url = http://wso.williams.edu/cgi-bin/BBS/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/bbs_forum.cgi?forum=open
+url = http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/
+url = http://wso.williams.edu/cgi-bin/BBS/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/test.htm
+url = http://wso.williams.edu/cgi-bin/BBS/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/next/foo.html
+url = http://wso.williams.edu/cgi-bin/BBS/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/relative.html
+url = http://wso.williams.edu/cgi-bin/BBS/relative.html
+
+Parent: http://wso/~ghutchis/bookmarks.html#mac
+(http://wso:80/)
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/bookmarks.html
+url = http://wso/~ghutchis/bookmarks.html
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/
+url = http://wso/~ghutchis/
+
+Child: ./../
+service = http
+user = 
+host = wso
+port = 80
+path = /
+url = http://wso/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso
+port = 80
+path = /foo.html
+url = http://wso/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/.../foo.html
+url = http://wso/~ghutchis/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso
+port = 80
+path = /foo.html
+url = http://wso/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/bookmarks.html
+url = http://wso/~ghutchis/bookmarks.html
+
+Child: index.html
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/
+url = http://wso/~ghutchis/
+
+Child: test.htm
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/test.htm
+url = http://wso/~ghutchis/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso
+port = 80
+path = /top/README
+url = http://wso/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/next/foo.html
+url = http://wso/~ghutchis/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/relative.html
+url = http://wso/~ghutchis/relative.html
+
+Parent: file:///opt/htdig/maindocs/index.html
+(file://localhost:0/)
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/index.html
+url = file:///opt/htdig/maindocs/index.html
+
+Children: 
+
+Child: ./
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/
+url = file:///opt/htdig/maindocs/
+
+Child: ./../
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/
+url = file:///opt/htdig/
+
+Child: ../foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/foo.html
+url = file:///opt/htdig/foo.html
+
+Child: .../foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/.../foo.html
+url = file:///opt/htdig/maindocs/.../foo.html
+
+Child: /foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /foo.html
+url = file:///foo.html
+
+Child: #top
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/index.html
+url = file:///opt/htdig/maindocs/index.html
+
+Child: index.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/index.html
+url = file:///opt/htdig/maindocs/index.html
+
+Child: test.htm
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/test.htm
+url = file:///opt/htdig/maindocs/test.htm
+
+Child: /top/README
+service = file
+user = 
+host = localhost
+port = 0
+path = /top/README
+url = file:///top/README
+
+Child: next/foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/next/foo.html
+url = file:///opt/htdig/maindocs/next/foo.html
+
+Child: .//relative.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/relative.html
+url = file:///opt/htdig/maindocs/relative.html
+
+Parent: http://www.htdig.org/This/Is/A/test.html?dowepass
+(http://www.htdig.org:80/)
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/test.html?dowepass
+url = http://www.htdig.org/This/Is/A/test.html?dowepass
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/
+url = http://www.htdig.org/This/Is/A/
+
+Child: ./../
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/
+url = http://www.htdig.org/This/Is/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/foo.html
+url = http://www.htdig.org/This/Is/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/.../foo.html
+url = http://www.htdig.org/This/Is/A/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /foo.html
+url = http://www.htdig.org/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/test.html?dowepass
+url = http://www.htdig.org/This/Is/A/test.html?dowepass
+
+Child: index.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/
+url = http://www.htdig.org/This/Is/A/
+
+Child: test.htm
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/test.htm
+url = http://www.htdig.org/This/Is/A/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /top/README
+url = http://www.htdig.org/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/next/foo.html
+url = http://www.htdig.org/This/Is/A/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/relative.html
+url = http://www.htdig.org/This/Is/A/relative.html
+
+Parent: http://localhost/index.asp?date=11/21/index.asp?date=12/1/98
+(http://localhost:80/)
+service = http
+user = 
+host = localhost
+port = 80
+path = /index.asp?date=11/21/index.asp?date=12/1/98
+url = http://localhost/index.asp?date=11/21/index.asp?date=12/1/98
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = localhost
+port = 80
+path = /
+url = http://localhost/
+
+Child: ./../
+service = http
+user = 
+host = localhost
+port = 80
+path = /
+url = http://localhost/
+
+Child: ../foo.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /foo.html
+url = http://localhost/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /.../foo.html
+url = http://localhost/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /foo.html
+url = http://localhost/foo.html
+
+Child: #top
+service = http
+user = 
+host = localhost
+port = 80
+path = /index.asp?date=11/21/index.asp?date=12/1/98
+url = http://localhost/index.asp?date=11/21/index.asp?date=12/1/98
+
+Child: index.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /
+url = http://localhost/
+
+Child: test.htm
+service = http
+user = 
+host = localhost
+port = 80
+path = /test.htm
+url = http://localhost/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = localhost
+port = 80
+path = /top/README
+url = http://localhost/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /next/foo.html
+url = http://localhost/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /relative.html
+url = http://localhost/relative.html
+
+Parent: http://www.test.com/cgi-bin/test.cgi?http://this.com/url
+(http://www.test.com:80/)
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/test.cgi?http://this.com/url
+url = http://www.test.com/cgi-bin/test.cgi?http://this.com/url
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/
+url = http://www.test.com/cgi-bin/
+
+Child: ./../
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /
+url = http://www.test.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /foo.html
+url = http://www.test.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/.../foo.html
+url = http://www.test.com/cgi-bin/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /foo.html
+url = http://www.test.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/test.cgi?http://this.com/url
+url = http://www.test.com/cgi-bin/test.cgi?http://this.com/url
+
+Child: index.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/
+url = http://www.test.com/cgi-bin/
+
+Child: test.htm
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/test.htm
+url = http://www.test.com/cgi-bin/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /top/README
+url = http://www.test.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/next/foo.html
+url = http://www.test.com/cgi-bin/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/relative.html
+url = http://www.test.com/cgi-bin/relative.html
+
+Parent: http://wso.williams.edu/%7Eghutchis/index.html
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/.../foo.html
+url = http://wso.williams.edu/~ghutchis/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/test.htm
+url = http://wso.williams.edu/~ghutchis/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/next/foo.html
+url = http://wso.williams.edu/~ghutchis/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/relative.html
+url = http://wso.williams.edu/~ghutchis/relative.html
+
+Parent: http://wso.williams.edu/~ghutchis/
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/.../foo.html
+url = http://wso.williams.edu/~ghutchis/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/test.htm
+url = http://wso.williams.edu/~ghutchis/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/next/foo.html
+url = http://wso.williams.edu/~ghutchis/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/relative.html
+url = http://wso.williams.edu/~ghutchis/relative.html
+
+Parent: http://wso.williams.edu/~ghutchis/index.shtml
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/index.shtml
+url = http://wso.williams.edu/~ghutchis/index.shtml
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/.../foo.html
+url = http://wso.williams.edu/~ghutchis/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/index.shtml
+url = http://wso.williams.edu/~ghutchis/index.shtml
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/test.htm
+url = http://wso.williams.edu/~ghutchis/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/next/foo.html
+url = http://wso.williams.edu/~ghutchis/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/relative.html
+url = http://wso.williams.edu/~ghutchis/relative.html
+
+Parent: http://wso.williams.edu//ghutchis///test/index.html
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /ghutchis/test/
+url = http://wso.williams.edu/ghutchis/test/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /ghutchis/test/
+url = http://wso.williams.edu/ghutchis/test/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /ghutchis/
+url = http://wso.williams.edu/ghutchis/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /ghutchis/foo.html
+url = http://wso.williams.edu/ghutchis/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /ghutchis/test/.../foo.html
+url = http://wso.williams.edu/ghutchis/test/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /ghutchis/test/
+url = http://wso.williams.edu/ghutchis/test/
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /ghutchis/test/
+url = http://wso.williams.edu/ghutchis/test/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /ghutchis/test/test.htm
+url = http://wso.williams.edu/ghutchis/test/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /ghutchis/test/next/foo.html
+url = http://wso.williams.edu/ghutchis/test/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /ghutchis/test/relative.html
+url = http://wso.williams.edu/ghutchis/test/relative.html
+
+Parent: http://wso.williams.edu/./ghutchis/../orgs/life.html
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/life.html
+url = http://wso.williams.edu/orgs/life.html
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/
+url = http://wso.williams.edu/orgs/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/.../foo.html
+url = http://wso.williams.edu/orgs/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/life.html
+url = http://wso.williams.edu/orgs/life.html
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/
+url = http://wso.williams.edu/orgs/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/test.htm
+url = http://wso.williams.edu/orgs/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/next/foo.html
+url = http://wso.williams.edu/orgs/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/relative.html
+url = http://wso.williams.edu/orgs/relative.html
+
+Parent: http://www.example.com/blank_news.shtml?pages/1.i
+(http://www.example.com:80/)
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /blank_news.shtml?pages/1.i
+url = http://www.example.com/blank_news.shtml?pages/1.i
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /
+url = http://www.example.com/
+
+Child: ./../
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /
+url = http://www.example.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /foo.html
+url = http://www.example.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /.../foo.html
+url = http://www.example.com/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /foo.html
+url = http://www.example.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /blank_news.shtml?pages/1.i
+url = http://www.example.com/blank_news.shtml?pages/1.i
+
+Child: index.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /
+url = http://www.example.com/
+
+Child: test.htm
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /test.htm
+url = http://www.example.com/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /top/README
+url = http://www.example.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /next/foo.html
+url = http://www.example.com/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /relative.html
+url = http://www.example.com/relative.html
+
+Parent: http://www.williams.edu:803/Admin/Depts/.test/.news/Index.Html
+(http://www.williams.edu:803/)
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/
+
+Child: ./../
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/
+url = http://www.williams.edu:803/Admin/Depts/.test/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/foo.html
+url = http://www.williams.edu:803/Admin/Depts/.test/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/.../foo.html
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /foo.html
+url = http://www.williams.edu:803/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/
+
+Child: index.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/
+
+Child: test.htm
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/test.htm
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /top/README
+url = http://www.williams.edu:803/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/next/foo.html
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/relative.html
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/relative.html
+
+Parent: http://test.com/test/
+(http://test.com:80/)
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Child: ./../
+service = http
+user = 
+host = test.com
+port = 80
+path = /
+url = http://test.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/.../foo.html
+url = http://test.com/test/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Child: index.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Child: test.htm
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/test.htm
+url = http://test.com/test/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = test.com
+port = 80
+path = /top/README
+url = http://test.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/next/foo.html
+url = http://test.com/test/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/relative.html
+url = http://test.com/test/relative.html
+
+Parent: http://test.com/opt/test/
+(http://test.com:80/)
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/
+url = http://test.com/opt/test/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/
+url = http://test.com/opt/test/
+
+Child: ./../
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/
+url = http://test.com/opt/
+
+Child: ../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/foo.html
+url = http://test.com/opt/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/.../foo.html
+url = http://test.com/opt/test/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/
+url = http://test.com/opt/test/
+
+Child: index.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/
+url = http://test.com/opt/test/
+
+Child: test.htm
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/test.htm
+url = http://test.com/opt/test/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = test.com
+port = 80
+path = /top/README
+url = http://test.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/next/foo.html
+url = http://test.com/opt/test/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/relative.html
+url = http://test.com/opt/test/relative.html
+
+Parent: http://test.com/./opt/../test/
+(http://test.com:80/)
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Child: ./../
+service = http
+user = 
+host = test.com
+port = 80
+path = /
+url = http://test.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/.../foo.html
+url = http://test.com/test/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Child: index.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Child: test.htm
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/test.htm
+url = http://test.com/test/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = test.com
+port = 80
+path = /top/README
+url = http://test.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/next/foo.html
+url = http://test.com/test/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/relative.html
+url = http://test.com/test/relative.html
+
+Parent: http://test.com/./././orgs/life.html
+(http://test.com:80/)
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/life.html
+url = http://test.com/orgs/life.html
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/
+url = http://test.com/orgs/
+
+Child: ./../
+service = http
+user = 
+host = test.com
+port = 80
+path = /
+url = http://test.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/.../foo.html
+url = http://test.com/orgs/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/life.html
+url = http://test.com/orgs/life.html
+
+Child: index.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/
+url = http://test.com/orgs/
+
+Child: test.htm
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/test.htm
+url = http://test.com/orgs/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = test.com
+port = 80
+path = /top/README
+url = http://test.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/next/foo.html
+url = http://test.com/orgs/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/relative.html
+url = http://test.com/orgs/relative.html
+
+Parent: http://test.com/./../../orgs/life.html
+(http://test.com:80/)
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/life.html
+url = http://test.com/orgs/life.html
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/
+url = http://test.com/orgs/
+
+Child: ./../
+service = http
+user = 
+host = test.com
+port = 80
+path = /
+url = http://test.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/.../foo.html
+url = http://test.com/orgs/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/life.html
+url = http://test.com/orgs/life.html
+
+Child: index.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/
+url = http://test.com/orgs/
+
+Child: test.htm
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/test.htm
+url = http://test.com/orgs/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = test.com
+port = 80
+path = /top/README
+url = http://test.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/next/foo.html
+url = http://test.com/orgs/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/relative.html
+url = http://test.com/orgs/relative.html
+
+Parent: http://test.com/blank_news.shtml?pages/3.i
+(http://test.com:80/)
+service = http
+user = 
+host = test.com
+port = 80
+path = /blank_news.shtml?pages/3.i
+url = http://test.com/blank_news.shtml?pages/3.i
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = test.com
+port = 80
+path = /
+url = http://test.com/
+
+Child: ./../
+service = http
+user = 
+host = test.com
+port = 80
+path = /
+url = http://test.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /.../foo.html
+url = http://test.com/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = test.com
+port = 80
+path = /blank_news.shtml?pages/3.i
+url = http://test.com/blank_news.shtml?pages/3.i
+
+Child: index.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /
+url = http://test.com/
+
+Child: test.htm
+service = http
+user = 
+host = test.com
+port = 80
+path = /test.htm
+url = http://test.com/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = test.com
+port = 80
+path = /top/README
+url = http://test.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /next/foo.html
+url = http://test.com/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /relative.html
+url = http://test.com/relative.html
+
+Parent: HTTP://www.Yahoo.com/
+(http://www.yahoo.com:80/)
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /
+url = http://www.yahoo.com/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /
+url = http://www.yahoo.com/
+
+Child: ./../
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /
+url = http://www.yahoo.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /foo.html
+url = http://www.yahoo.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /.../foo.html
+url = http://www.yahoo.com/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /foo.html
+url = http://www.yahoo.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /
+url = http://www.yahoo.com/
+
+Child: index.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /
+url = http://www.yahoo.com/
+
+Child: test.htm
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /test.htm
+url = http://www.yahoo.com/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /top/README
+url = http://www.yahoo.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /next/foo.html
+url = http://www.yahoo.com/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /relative.html
+url = http://www.yahoo.com/relative.html
+
+Parent: http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/chem_102.html
+(http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu:80/)
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/chem_102.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/chem_102.html
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/
+
+Child: ./../
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/
+
+Child: ../foo.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/foo.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/.../foo.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /foo.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/chem_102.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/chem_102.html
+
+Child: index.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/
+
+Child: test.htm
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/test.htm
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /top/README
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/next/foo.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/relative.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/relative.html
+
+Parent: http://this-is-a.slashdot.org/slash/elimination/test//////////////////////////././././.././././/./././.././././../../././.test/
+(http://this-is-a.slashdot.org:80/)
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /.test/
+url = http://this-is-a.slashdot.org/.test/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /.test/
+url = http://this-is-a.slashdot.org/.test/
+
+Child: ./../
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /
+url = http://this-is-a.slashdot.org/
+
+Child: ../foo.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /foo.html
+url = http://this-is-a.slashdot.org/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /.test/.../foo.html
+url = http://this-is-a.slashdot.org/.test/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /foo.html
+url = http://this-is-a.slashdot.org/foo.html
+
+Child: #top
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /.test/
+url = http://this-is-a.slashdot.org/.test/
+
+Child: index.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /.test/
+url = http://this-is-a.slashdot.org/.test/
+
+Child: test.htm
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /.test/test.htm
+url = http://this-is-a.slashdot.org/.test/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /top/README
+url = http://this-is-a.slashdot.org/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /.test/next/foo.html
+url = http://this-is-a.slashdot.org/.test/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /.test/relative.html
+url = http://this-is-a.slashdot.org/.test/relative.html
+
+Parent: http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=338;user=ghutchis;addsignature=1
+(http://www.htdig.org:80/)
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/incoming?id=338;user=ghutchis;addsignature=1
+url = http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=338;user=ghutchis;addsignature=1
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/
+url = http://www.htdig.org/cgi-bin/htdig3.private/
+
+Child: ./../
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/
+url = http://www.htdig.org/cgi-bin/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/foo.html
+url = http://www.htdig.org/cgi-bin/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/.../foo.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /foo.html
+url = http://www.htdig.org/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/incoming?id=338;user=ghutchis;addsignature=1
+url = http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=338;user=ghutchis;addsignature=1
+
+Child: index.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/
+url = http://www.htdig.org/cgi-bin/htdig3.private/
+
+Child: test.htm
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/test.htm
+url = http://www.htdig.org/cgi-bin/htdig3.private/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /top/README
+url = http://www.htdig.org/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/next/foo.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/relative.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/relative.html
+
+Parent: http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=342;user=ghutchis
+(http://www.htdig.org:80/)
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/incoming?id=342;user=ghutchis
+url = http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=342;user=ghutchis
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/
+url = http://www.htdig.org/cgi-bin/htdig3.private/
+
+Child: ./../
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/
+url = http://www.htdig.org/cgi-bin/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/foo.html
+url = http://www.htdig.org/cgi-bin/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/.../foo.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /foo.html
+url = http://www.htdig.org/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/incoming?id=342;user=ghutchis
+url = http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=342;user=ghutchis
+
+Child: index.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/
+url = http://www.htdig.org/cgi-bin/htdig3.private/
+
+Child: test.htm
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/test.htm
+url = http://www.htdig.org/cgi-bin/htdig3.private/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /top/README
+url = http://www.htdig.org/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/next/foo.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/relative.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/relative.html
+
+Parent: http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
+url = http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/
+url = http://wso.williams.edu/cgi-bin/BBS/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/
+url = http://wso.williams.edu/cgi-bin/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/foo.html
+url = http://wso.williams.edu/cgi-bin/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/.../foo.html
+url = http://wso.williams.edu/cgi-bin/BBS/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
+url = http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/
+url = http://wso.williams.edu/cgi-bin/BBS/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/test.htm
+url = http://wso.williams.edu/cgi-bin/BBS/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/next/foo.html
+url = http://wso.williams.edu/cgi-bin/BBS/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/relative.html
+url = http://wso.williams.edu/cgi-bin/BBS/relative.html
+
+Parent: http:/www.fail.com/
+(http://:0/)
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Child: ./../
+service = http
+user = 
+host = 
+port = 0
+path = /
+url = 
+
+Child: ../foo.html
+service = http
+user = 
+host = 
+port = 0
+path = /foo.html
+url = 
+
+Child: .../foo.html
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/.../foo.html
+url = 
+
+Child: /foo.html
+service = http
+user = 
+host = 
+port = 0
+path = /foo.html
+url = 
+
+Child: #top
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Child: index.html
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Child: test.htm
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/test.htm
+url = 
+
+Child: /top/README
+service = http
+user = 
+host = 
+port = 0
+path = /top/README
+url = 
+
+Child: next/foo.html
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/next/foo.html
+url = 
+
+Child: .//relative.html
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/relative.html
+url = 
+
+Parent: http:www.fail.com
+(http://:0/)
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: ./../
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: ../foo.html
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: .../foo.html
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: /foo.html
+service = http
+user = 
+host = 
+port = 0
+path = /foo.html
+url = 
+
+Child: #top
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: index.html
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: test.htm
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: /top/README
+service = http
+user = 
+host = 
+port = 0
+path = /top/README
+url = 
+
+Child: next/foo.html
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: .//relative.html
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Parent: file://localhost/opt/htdig/maindocs/index.html
+(file://localhost:0/)
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/index.html
+url = file:///opt/htdig/maindocs/index.html
+
+Children: 
+
+Child: ./
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/
+url = file:///opt/htdig/maindocs/
+
+Child: ./../
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/
+url = file:///opt/htdig/
+
+Child: ../foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/foo.html
+url = file:///opt/htdig/foo.html
+
+Child: .../foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/.../foo.html
+url = file:///opt/htdig/maindocs/.../foo.html
+
+Child: /foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /foo.html
+url = file:///foo.html
+
+Child: #top
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/index.html
+url = file:///opt/htdig/maindocs/index.html
+
+Child: index.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/index.html
+url = file:///opt/htdig/maindocs/index.html
+
+Child: test.htm
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/test.htm
+url = file:///opt/htdig/maindocs/test.htm
+
+Child: /top/README
+service = file
+user = 
+host = localhost
+port = 0
+path = /top/README
+url = file:///top/README
+
+Child: next/foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/next/foo.html
+url = file:///opt/htdig/maindocs/next/foo.html
+
+Child: .//relative.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/relative.html
+url = file:///opt/htdig/maindocs/relative.html
+
+Parent: file://localhost:80/home/ghutchis/www/home.html
+(file://localhost:0/)
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/home.html
+url = file:///home/ghutchis/www/home.html
+
+Children: 
+
+Child: ./
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/
+url = file:///home/ghutchis/www/
+
+Child: ./../
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/
+url = file:///home/ghutchis/
+
+Child: ../foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/foo.html
+url = file:///home/ghutchis/foo.html
+
+Child: .../foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/.../foo.html
+url = file:///home/ghutchis/www/.../foo.html
+
+Child: /foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /foo.html
+url = file:///foo.html
+
+Child: #top
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/home.html
+url = file:///home/ghutchis/www/home.html
+
+Child: index.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/index.html
+url = file:///home/ghutchis/www/index.html
+
+Child: test.htm
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/test.htm
+url = file:///home/ghutchis/www/test.htm
+
+Child: /top/README
+service = file
+user = 
+host = localhost
+port = 0
+path = /top/README
+url = file:///top/README
+
+Child: next/foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/next/foo.html
+url = file:///home/ghutchis/www/next/foo.html
+
+Child: .//relative.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/relative.html
+url = file:///home/ghutchis/www/relative.html
+
+Parent: http://www.htdig.org/cgi-bin/test.cgi?date=10/1/99#anchor1
+(http://www.htdig.org:80/)
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/test.cgi?date=10/1/99
+url = http://www.htdig.org/cgi-bin/test.cgi?date=10/1/99
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/
+url = http://www.htdig.org/cgi-bin/
+
+Child: ./../
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /
+url = http://www.htdig.org/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /foo.html
+url = http://www.htdig.org/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/.../foo.html
+url = http://www.htdig.org/cgi-bin/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /foo.html
+url = http://www.htdig.org/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/test.cgi?date=10/1/99
+url = http://www.htdig.org/cgi-bin/test.cgi?date=10/1/99
+
+Child: index.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/
+url = http://www.htdig.org/cgi-bin/
+
+Child: test.htm
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/test.htm
+url = http://www.htdig.org/cgi-bin/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /top/README
+url = http://www.htdig.org/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/next/foo.html
+url = http://www.htdig.org/cgi-bin/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/relative.html
+url = http://www.htdig.org/cgi-bin/relative.html
+
+Parent: ftp://default.removal.com/index.html
+(ftp://default.removal.com:21/)
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /index.html
+url = ftp://default.removal.com/index.html
+
+Children: 
+
+Child: ./
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /
+url = ftp://default.removal.com/
+
+Child: ./../
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /
+url = ftp://default.removal.com/
+
+Child: ../foo.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /foo.html
+url = ftp://default.removal.com/foo.html
+
+Child: .../foo.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /.../foo.html
+url = ftp://default.removal.com/.../foo.html
+
+Child: /foo.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /foo.html
+url = ftp://default.removal.com/foo.html
+
+Child: #top
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /index.html
+url = ftp://default.removal.com/index.html
+
+Child: index.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /index.html
+url = ftp://default.removal.com/index.html
+
+Child: test.htm
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /test.htm
+url = ftp://default.removal.com/test.htm
+
+Child: /top/README
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /top/README
+url = ftp://default.removal.com/top/README
+
+Child: next/foo.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /next/foo.html
+url = ftp://default.removal.com/next/foo.html
+
+Child: .//relative.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /relative.html
+url = ftp://default.removal.com/relative.html
+
+Parent: https://test.com/life.html
+(https://test.com:443/)
+service = https
+user = 
+host = test.com
+port = 443
+path = /life.html
+url = https://test.com/life.html
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = test.com
+port = 443
+path = /
+url = https://test.com/
+
+Child: ./../
+service = https
+user = 
+host = test.com
+port = 443
+path = /
+url = https://test.com/
+
+Child: ../foo.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /foo.html
+url = https://test.com/foo.html
+
+Child: .../foo.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /.../foo.html
+url = https://test.com/.../foo.html
+
+Child: /foo.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /foo.html
+url = https://test.com/foo.html
+
+Child: #top
+service = https
+user = 
+host = test.com
+port = 443
+path = /life.html
+url = https://test.com/life.html
+
+Child: index.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /
+url = https://test.com/
+
+Child: test.htm
+service = https
+user = 
+host = test.com
+port = 443
+path = /test.htm
+url = https://test.com/test.htm
+
+Child: /top/README
+service = https
+user = 
+host = test.com
+port = 443
+path = /top/README
+url = https://test.com/top/README
+
+Child: next/foo.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /next/foo.html
+url = https://test.com/next/foo.html
+
+Child: .//relative.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /relative.html
+url = https://test.com/relative.html
+
+Parent: https://default.removal.com/index.html
+(https://default.removal.com:443/)
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /
+url = https://default.removal.com/
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /
+url = https://default.removal.com/
+
+Child: ./../
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /
+url = https://default.removal.com/
+
+Child: ../foo.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /foo.html
+url = https://default.removal.com/foo.html
+
+Child: .../foo.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /.../foo.html
+url = https://default.removal.com/.../foo.html
+
+Child: /foo.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /foo.html
+url = https://default.removal.com/foo.html
+
+Child: #top
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /
+url = https://default.removal.com/
+
+Child: index.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /
+url = https://default.removal.com/
+
+Child: test.htm
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /test.htm
+url = https://default.removal.com/test.htm
+
+Child: /top/README
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /top/README
+url = https://default.removal.com/top/README
+
+Child: next/foo.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /next/foo.html
+url = https://default.removal.com/next/foo.html
+
+Child: .//relative.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /relative.html
+url = https://default.removal.com/relative.html
+
+Parent: https://test.com:803/./../../orgs/life.html
+(https://test.com:803/)
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/life.html
+url = https://test.com:803/orgs/life.html
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/
+url = https://test.com:803/orgs/
+
+Child: ./../
+service = https
+user = 
+host = test.com
+port = 803
+path = /
+url = https://test.com:803/
+
+Child: ../foo.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /foo.html
+url = https://test.com:803/foo.html
+
+Child: .../foo.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/.../foo.html
+url = https://test.com:803/orgs/.../foo.html
+
+Child: /foo.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /foo.html
+url = https://test.com:803/foo.html
+
+Child: #top
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/life.html
+url = https://test.com:803/orgs/life.html
+
+Child: index.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/
+url = https://test.com:803/orgs/
+
+Child: test.htm
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/test.htm
+url = https://test.com:803/orgs/test.htm
+
+Child: /top/README
+service = https
+user = 
+host = test.com
+port = 803
+path = /top/README
+url = https://test.com:803/top/README
+
+Child: next/foo.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/next/foo.html
+url = https://test.com:803/orgs/next/foo.html
+
+Child: .//relative.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/relative.html
+url = https://test.com:803/orgs/relative.html
+
+Parent: https://alias.com:8080/./../../orgs/life.html
+(https://alias.com:8080/)
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/life.html
+url = https://alias.com:8080/orgs/life.html
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/
+url = https://alias.com:8080/orgs/
+
+Child: ./../
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /
+url = https://alias.com:8080/
+
+Child: ../foo.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /foo.html
+url = https://alias.com:8080/foo.html
+
+Child: .../foo.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/.../foo.html
+url = https://alias.com:8080/orgs/.../foo.html
+
+Child: /foo.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /foo.html
+url = https://alias.com:8080/foo.html
+
+Child: #top
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/life.html
+url = https://alias.com:8080/orgs/life.html
+
+Child: index.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/
+url = https://alias.com:8080/orgs/
+
+Child: test.htm
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/test.htm
+url = https://alias.com:8080/orgs/test.htm
+
+Child: /top/README
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /top/README
+url = https://alias.com:8080/top/README
+
+Child: next/foo.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/next/foo.html
+url = https://alias.com:8080/orgs/next/foo.html
+
+Child: .//relative.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/relative.html
+url = https://alias.com:8080/orgs/relative.html
+
+Parent: https://alias.com/./../../orgs/life.html
+(https://true.com:443/)
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/life.html
+url = https://true.com/orgs/life.html
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/
+url = https://true.com/orgs/
+
+Child: ./../
+service = https
+user = 
+host = true.com
+port = 443
+path = /
+url = https://true.com/
+
+Child: ../foo.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /foo.html
+url = https://true.com/foo.html
+
+Child: .../foo.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/.../foo.html
+url = https://true.com/orgs/.../foo.html
+
+Child: /foo.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /foo.html
+url = https://true.com/foo.html
+
+Child: #top
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/life.html
+url = https://true.com/orgs/life.html
+
+Child: index.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/
+url = https://true.com/orgs/
+
+Child: test.htm
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/test.htm
+url = https://true.com/orgs/test.htm
+
+Child: /top/README
+service = https
+user = 
+host = true.com
+port = 443
+path = /top/README
+url = https://true.com/top/README
+
+Child: next/foo.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/next/foo.html
+url = https://true.com/orgs/next/foo.html
+
+Child: .//relative.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/relative.html
+url = https://true.com/orgs/relative.html
+
+Parent: https:/www.fail.com/
+(https://:0/)
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Child: ./../
+service = https
+user = 
+host = 
+port = 0
+path = /
+url = 
+
+Child: ../foo.html
+service = https
+user = 
+host = 
+port = 0
+path = /foo.html
+url = 
+
+Child: .../foo.html
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/.../foo.html
+url = 
+
+Child: /foo.html
+service = https
+user = 
+host = 
+port = 0
+path = /foo.html
+url = 
+
+Child: #top
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Child: index.html
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Child: test.htm
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/test.htm
+url = 
+
+Child: /top/README
+service = https
+user = 
+host = 
+port = 0
+path = /top/README
+url = 
+
+Child: next/foo.html
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/next/foo.html
+url = 
+
+Child: .//relative.html
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/relative.html
+url = 
+
+Parent: https:www.fail.com
+(https://:0/)
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: ./../
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: ../foo.html
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: .../foo.html
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: /foo.html
+service = https
+user = 
+host = 
+port = 0
+path = /foo.html
+url = 
+
+Child: #top
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: index.html
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: test.htm
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: /top/README
+service = https
+user = 
+host = 
+port = 0
+path = /top/README
+url = 
+
+Child: next/foo.html
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: .//relative.html
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Parent: help:/khelpcenter/
+(help://localhost:0/)
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/
+url = help:/khelpcenter/
+
+Children: 
+
+Child: ./
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/
+url = help:/khelpcenter/
+
+Child: ./../
+service = help
+user = 
+host = localhost
+port = 0
+path = /
+url = help:/
+
+Child: ../foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /foo.html
+url = help:/foo.html
+
+Child: .../foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/.../foo.html
+url = help:/khelpcenter/.../foo.html
+
+Child: /foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /foo.html
+url = help:/foo.html
+
+Child: #top
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/
+url = help:/khelpcenter/
+
+Child: index.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/
+url = help:/khelpcenter/
+
+Child: test.htm
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/test.htm
+url = help:/khelpcenter/test.htm
+
+Child: /top/README
+service = help
+user = 
+host = localhost
+port = 0
+path = /top/README
+url = help:/top/README
+
+Child: next/foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/next/foo.html
+url = help:/khelpcenter/next/foo.html
+
+Child: .//relative.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/relative.html
+url = help:/khelpcenter/relative.html
+
+Parent: help:/khelpcenter/what-is-kde.html#what-is-kde-introduction
+(help://localhost:0/)
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/what-is-kde.html
+url = help:/khelpcenter/what-is-kde.html
+
+Children: 
+
+Child: ./
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/
+url = help:/khelpcenter/
+
+Child: ./../
+service = help
+user = 
+host = localhost
+port = 0
+path = /
+url = help:/
+
+Child: ../foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /foo.html
+url = help:/foo.html
+
+Child: .../foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/.../foo.html
+url = help:/khelpcenter/.../foo.html
+
+Child: /foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /foo.html
+url = help:/foo.html
+
+Child: #top
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/what-is-kde.html
+url = help:/khelpcenter/what-is-kde.html
+
+Child: index.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/
+url = help:/khelpcenter/
+
+Child: test.htm
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/test.htm
+url = help:/khelpcenter/test.htm
+
+Child: /top/README
+service = help
+user = 
+host = localhost
+port = 0
+path = /top/README
+url = help:/top/README
+
+Child: next/foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/next/foo.html
+url = help:/khelpcenter/next/foo.html
+
+Child: .//relative.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/relative.html
+url = help:/khelpcenter/relative.html
+
+
+And now without turning // into / ...
+
+Parent: http://www.williams.edu:803/
+(http://www.williams.edu:803/)
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /
+url = http://www.williams.edu:803/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /
+url = http://www.williams.edu:803/
+
+Child: ./../
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /
+url = http://www.williams.edu:803/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /foo.html
+url = http://www.williams.edu:803/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /.../foo.html
+url = http://www.williams.edu:803/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /foo.html
+url = http://www.williams.edu:803/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /
+url = http://www.williams.edu:803/
+
+Child: index.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /
+url = http://www.williams.edu:803/
+
+Child: test.htm
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /test.htm
+url = http://www.williams.edu:803/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /top/README
+url = http://www.williams.edu:803/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /next/foo.html
+url = http://www.williams.edu:803/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = //relative.html
+url = http://www.williams.edu:803//relative.html
+
+Parent: http://wso.williams.edu/
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /.../foo.html
+url = http://wso.williams.edu/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /test.htm
+url = http://wso.williams.edu/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /next/foo.html
+url = http://wso.williams.edu/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = //relative.html
+url = http://wso.williams.edu//relative.html
+
+Parent: https://web.horde.org/williams/
+(https://web.horde.org:443/)
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/
+url = https://web.horde.org/williams/
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/
+url = https://web.horde.org/williams/
+
+Child: ./../
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /
+url = https://web.horde.org/
+
+Child: ../foo.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /foo.html
+url = https://web.horde.org/foo.html
+
+Child: .../foo.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/.../foo.html
+url = https://web.horde.org/williams/.../foo.html
+
+Child: /foo.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /foo.html
+url = https://web.horde.org/foo.html
+
+Child: #top
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/
+url = https://web.horde.org/williams/
+
+Child: index.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/
+url = https://web.horde.org/williams/
+
+Child: test.htm
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/test.htm
+url = https://web.horde.org/williams/test.htm
+
+Child: /top/README
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /top/README
+url = https://web.horde.org/top/README
+
+Child: next/foo.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/next/foo.html
+url = https://web.horde.org/williams/next/foo.html
+
+Child: .//relative.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams//relative.html
+url = https://web.horde.org/williams//relative.html
+
+Parent: http://www.williams.edu/Administration/index.html
+(http://www.williams.edu:80/)
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/
+url = http://www.williams.edu/Administration/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/
+url = http://www.williams.edu/Administration/
+
+Child: ./../
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /
+url = http://www.williams.edu/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /foo.html
+url = http://www.williams.edu/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/.../foo.html
+url = http://www.williams.edu/Administration/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /foo.html
+url = http://www.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/
+url = http://www.williams.edu/Administration/
+
+Child: index.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/
+url = http://www.williams.edu/Administration/
+
+Child: test.htm
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/test.htm
+url = http://www.williams.edu/Administration/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /top/README
+url = http://www.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/next/foo.html
+url = http://www.williams.edu/Administration/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration//relative.html
+url = http://www.williams.edu/Administration//relative.html
+
+Parent: ftp://ghutchis@wso.williams.edu/mail/index
+(ftp://ghutchis@wso.williams.edu:21/)
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/index
+url = ftp://ghutchis@wso.williams.edu/mail/index
+
+Children: 
+
+Child: ./
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/
+url = ftp://ghutchis@wso.williams.edu/mail/
+
+Child: ./../
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /
+url = ftp://ghutchis@wso.williams.edu/
+
+Child: ../foo.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /foo.html
+url = ftp://ghutchis@wso.williams.edu/foo.html
+
+Child: .../foo.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/.../foo.html
+url = ftp://ghutchis@wso.williams.edu/mail/.../foo.html
+
+Child: /foo.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /foo.html
+url = ftp://ghutchis@wso.williams.edu/foo.html
+
+Child: #top
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/index
+url = ftp://ghutchis@wso.williams.edu/mail/index
+
+Child: index.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/index.html
+url = ftp://ghutchis@wso.williams.edu/mail/index.html
+
+Child: test.htm
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/test.htm
+url = ftp://ghutchis@wso.williams.edu/mail/test.htm
+
+Child: /top/README
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /top/README
+url = ftp://ghutchis@wso.williams.edu/top/README
+
+Child: next/foo.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/next/foo.html
+url = ftp://ghutchis@wso.williams.edu/mail/next/foo.html
+
+Child: .//relative.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail//relative.html
+url = ftp://ghutchis@wso.williams.edu/mail//relative.html
+
+Parent: http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/bbs_forum.cgi?forum=open
+url = http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/
+url = http://wso.williams.edu/cgi-bin/BBS/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/
+url = http://wso.williams.edu/cgi-bin/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/foo.html
+url = http://wso.williams.edu/cgi-bin/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/.../foo.html
+url = http://wso.williams.edu/cgi-bin/BBS/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/bbs_forum.cgi?forum=open
+url = http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/
+url = http://wso.williams.edu/cgi-bin/BBS/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/test.htm
+url = http://wso.williams.edu/cgi-bin/BBS/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/next/foo.html
+url = http://wso.williams.edu/cgi-bin/BBS/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS//relative.html
+url = http://wso.williams.edu/cgi-bin/BBS//relative.html
+
+Parent: http://wso/~ghutchis/bookmarks.html#mac
+(http://wso:80/)
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/bookmarks.html
+url = http://wso/~ghutchis/bookmarks.html
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/
+url = http://wso/~ghutchis/
+
+Child: ./../
+service = http
+user = 
+host = wso
+port = 80
+path = /
+url = http://wso/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso
+port = 80
+path = /foo.html
+url = http://wso/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/.../foo.html
+url = http://wso/~ghutchis/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso
+port = 80
+path = /foo.html
+url = http://wso/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/bookmarks.html
+url = http://wso/~ghutchis/bookmarks.html
+
+Child: index.html
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/
+url = http://wso/~ghutchis/
+
+Child: test.htm
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/test.htm
+url = http://wso/~ghutchis/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso
+port = 80
+path = /top/README
+url = http://wso/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/next/foo.html
+url = http://wso/~ghutchis/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis//relative.html
+url = http://wso/~ghutchis//relative.html
+
+Parent: file:///opt/htdig/maindocs/index.html
+(file://localhost:0/)
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/index.html
+url = file:///opt/htdig/maindocs/index.html
+
+Children: 
+
+Child: ./
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/
+url = file:///opt/htdig/maindocs/
+
+Child: ./../
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/
+url = file:///opt/htdig/
+
+Child: ../foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/foo.html
+url = file:///opt/htdig/foo.html
+
+Child: .../foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/.../foo.html
+url = file:///opt/htdig/maindocs/.../foo.html
+
+Child: /foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /foo.html
+url = file:///foo.html
+
+Child: #top
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/index.html
+url = file:///opt/htdig/maindocs/index.html
+
+Child: index.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/index.html
+url = file:///opt/htdig/maindocs/index.html
+
+Child: test.htm
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/test.htm
+url = file:///opt/htdig/maindocs/test.htm
+
+Child: /top/README
+service = file
+user = 
+host = localhost
+port = 0
+path = /top/README
+url = file:///top/README
+
+Child: next/foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/next/foo.html
+url = file:///opt/htdig/maindocs/next/foo.html
+
+Child: .//relative.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs//relative.html
+url = file:///opt/htdig/maindocs//relative.html
+
+Parent: http://www.htdig.org/This/Is/A/test.html?dowepass
+(http://www.htdig.org:80/)
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/test.html?dowepass
+url = http://www.htdig.org/This/Is/A/test.html?dowepass
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/
+url = http://www.htdig.org/This/Is/A/
+
+Child: ./../
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/
+url = http://www.htdig.org/This/Is/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/foo.html
+url = http://www.htdig.org/This/Is/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/.../foo.html
+url = http://www.htdig.org/This/Is/A/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /foo.html
+url = http://www.htdig.org/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/test.html?dowepass
+url = http://www.htdig.org/This/Is/A/test.html?dowepass
+
+Child: index.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/
+url = http://www.htdig.org/This/Is/A/
+
+Child: test.htm
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/test.htm
+url = http://www.htdig.org/This/Is/A/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /top/README
+url = http://www.htdig.org/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/next/foo.html
+url = http://www.htdig.org/This/Is/A/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A//relative.html
+url = http://www.htdig.org/This/Is/A//relative.html
+
+Parent: http://localhost/index.asp?date=11/21/index.asp?date=12/1/98
+(http://localhost:80/)
+service = http
+user = 
+host = localhost
+port = 80
+path = /index.asp?date=11/21/index.asp?date=12/1/98
+url = http://localhost/index.asp?date=11/21/index.asp?date=12/1/98
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = localhost
+port = 80
+path = /
+url = http://localhost/
+
+Child: ./../
+service = http
+user = 
+host = localhost
+port = 80
+path = /
+url = http://localhost/
+
+Child: ../foo.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /foo.html
+url = http://localhost/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /.../foo.html
+url = http://localhost/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /foo.html
+url = http://localhost/foo.html
+
+Child: #top
+service = http
+user = 
+host = localhost
+port = 80
+path = /index.asp?date=11/21/index.asp?date=12/1/98
+url = http://localhost/index.asp?date=11/21/index.asp?date=12/1/98
+
+Child: index.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /
+url = http://localhost/
+
+Child: test.htm
+service = http
+user = 
+host = localhost
+port = 80
+path = /test.htm
+url = http://localhost/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = localhost
+port = 80
+path = /top/README
+url = http://localhost/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /next/foo.html
+url = http://localhost/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = localhost
+port = 80
+path = //relative.html
+url = http://localhost//relative.html
+
+Parent: http://www.test.com/cgi-bin/test.cgi?http://this.com/url
+(http://www.test.com:80/)
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/test.cgi?http://this.com/url
+url = http://www.test.com/cgi-bin/test.cgi?http://this.com/url
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/
+url = http://www.test.com/cgi-bin/
+
+Child: ./../
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /
+url = http://www.test.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /foo.html
+url = http://www.test.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/.../foo.html
+url = http://www.test.com/cgi-bin/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /foo.html
+url = http://www.test.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/test.cgi?http://this.com/url
+url = http://www.test.com/cgi-bin/test.cgi?http://this.com/url
+
+Child: index.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/
+url = http://www.test.com/cgi-bin/
+
+Child: test.htm
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/test.htm
+url = http://www.test.com/cgi-bin/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /top/README
+url = http://www.test.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/next/foo.html
+url = http://www.test.com/cgi-bin/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin//relative.html
+url = http://www.test.com/cgi-bin//relative.html
+
+Parent: http://wso.williams.edu/%7Eghutchis/index.html
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/.../foo.html
+url = http://wso.williams.edu/~ghutchis/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/test.htm
+url = http://wso.williams.edu/~ghutchis/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/next/foo.html
+url = http://wso.williams.edu/~ghutchis/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis//relative.html
+url = http://wso.williams.edu/~ghutchis//relative.html
+
+Parent: http://wso.williams.edu/~ghutchis/
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/.../foo.html
+url = http://wso.williams.edu/~ghutchis/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/test.htm
+url = http://wso.williams.edu/~ghutchis/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/next/foo.html
+url = http://wso.williams.edu/~ghutchis/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis//relative.html
+url = http://wso.williams.edu/~ghutchis//relative.html
+
+Parent: http://wso.williams.edu/~ghutchis/index.shtml
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/index.shtml
+url = http://wso.williams.edu/~ghutchis/index.shtml
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/.../foo.html
+url = http://wso.williams.edu/~ghutchis/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/index.shtml
+url = http://wso.williams.edu/~ghutchis/index.shtml
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/
+url = http://wso.williams.edu/~ghutchis/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/test.htm
+url = http://wso.williams.edu/~ghutchis/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/next/foo.html
+url = http://wso.williams.edu/~ghutchis/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis//relative.html
+url = http://wso.williams.edu/~ghutchis//relative.html
+
+Parent: http://wso.williams.edu//ghutchis///test/index.html
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = //ghutchis///test/
+url = http://wso.williams.edu//ghutchis///test/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = //ghutchis///test/
+url = http://wso.williams.edu//ghutchis///test/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = //ghutchis///
+url = http://wso.williams.edu//ghutchis///
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = //ghutchis///foo.html
+url = http://wso.williams.edu//ghutchis///foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = //ghutchis///test/.../foo.html
+url = http://wso.williams.edu//ghutchis///test/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = //ghutchis///test/
+url = http://wso.williams.edu//ghutchis///test/
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = //ghutchis///test/
+url = http://wso.williams.edu//ghutchis///test/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = //ghutchis///test/test.htm
+url = http://wso.williams.edu//ghutchis///test/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = //ghutchis///test/next/foo.html
+url = http://wso.williams.edu//ghutchis///test/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = //ghutchis///test//relative.html
+url = http://wso.williams.edu//ghutchis///test//relative.html
+
+Parent: http://wso.williams.edu/./ghutchis/../orgs/life.html
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/life.html
+url = http://wso.williams.edu/orgs/life.html
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/
+url = http://wso.williams.edu/orgs/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /
+url = http://wso.williams.edu/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/.../foo.html
+url = http://wso.williams.edu/orgs/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/life.html
+url = http://wso.williams.edu/orgs/life.html
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/
+url = http://wso.williams.edu/orgs/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/test.htm
+url = http://wso.williams.edu/orgs/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/next/foo.html
+url = http://wso.williams.edu/orgs/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs//relative.html
+url = http://wso.williams.edu/orgs//relative.html
+
+Parent: http://www.example.com/blank_news.shtml?pages/1.i
+(http://www.example.com:80/)
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /blank_news.shtml?pages/1.i
+url = http://www.example.com/blank_news.shtml?pages/1.i
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /
+url = http://www.example.com/
+
+Child: ./../
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /
+url = http://www.example.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /foo.html
+url = http://www.example.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /.../foo.html
+url = http://www.example.com/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /foo.html
+url = http://www.example.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /blank_news.shtml?pages/1.i
+url = http://www.example.com/blank_news.shtml?pages/1.i
+
+Child: index.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /
+url = http://www.example.com/
+
+Child: test.htm
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /test.htm
+url = http://www.example.com/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /top/README
+url = http://www.example.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /next/foo.html
+url = http://www.example.com/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = //relative.html
+url = http://www.example.com//relative.html
+
+Parent: http://www.williams.edu:803/Admin/Depts/.test/.news/Index.Html
+(http://www.williams.edu:803/)
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/
+
+Child: ./../
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/
+url = http://www.williams.edu:803/Admin/Depts/.test/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/foo.html
+url = http://www.williams.edu:803/Admin/Depts/.test/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/.../foo.html
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /foo.html
+url = http://www.williams.edu:803/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/
+
+Child: index.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/
+
+Child: test.htm
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/test.htm
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /top/README
+url = http://www.williams.edu:803/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/next/foo.html
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news//relative.html
+url = http://www.williams.edu:803/Admin/Depts/.test/.news//relative.html
+
+Parent: http://test.com/test/
+(http://test.com:80/)
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Child: ./../
+service = http
+user = 
+host = test.com
+port = 80
+path = /
+url = http://test.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/.../foo.html
+url = http://test.com/test/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Child: index.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Child: test.htm
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/test.htm
+url = http://test.com/test/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = test.com
+port = 80
+path = /top/README
+url = http://test.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/next/foo.html
+url = http://test.com/test/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test//relative.html
+url = http://test.com/test//relative.html
+
+Parent: http://test.com/opt/test/
+(http://test.com:80/)
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/
+url = http://test.com/opt/test/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/
+url = http://test.com/opt/test/
+
+Child: ./../
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/
+url = http://test.com/opt/
+
+Child: ../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/foo.html
+url = http://test.com/opt/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/.../foo.html
+url = http://test.com/opt/test/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/
+url = http://test.com/opt/test/
+
+Child: index.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/
+url = http://test.com/opt/test/
+
+Child: test.htm
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/test.htm
+url = http://test.com/opt/test/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = test.com
+port = 80
+path = /top/README
+url = http://test.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/next/foo.html
+url = http://test.com/opt/test/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test//relative.html
+url = http://test.com/opt/test//relative.html
+
+Parent: http://test.com/./opt/../test/
+(http://test.com:80/)
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Child: ./../
+service = http
+user = 
+host = test.com
+port = 80
+path = /
+url = http://test.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/.../foo.html
+url = http://test.com/test/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Child: index.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/
+url = http://test.com/test/
+
+Child: test.htm
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/test.htm
+url = http://test.com/test/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = test.com
+port = 80
+path = /top/README
+url = http://test.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/next/foo.html
+url = http://test.com/test/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test//relative.html
+url = http://test.com/test//relative.html
+
+Parent: http://test.com/./././orgs/life.html
+(http://test.com:80/)
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/life.html
+url = http://test.com/orgs/life.html
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/
+url = http://test.com/orgs/
+
+Child: ./../
+service = http
+user = 
+host = test.com
+port = 80
+path = /
+url = http://test.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/.../foo.html
+url = http://test.com/orgs/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/life.html
+url = http://test.com/orgs/life.html
+
+Child: index.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/
+url = http://test.com/orgs/
+
+Child: test.htm
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/test.htm
+url = http://test.com/orgs/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = test.com
+port = 80
+path = /top/README
+url = http://test.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/next/foo.html
+url = http://test.com/orgs/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs//relative.html
+url = http://test.com/orgs//relative.html
+
+Parent: http://test.com/./../../orgs/life.html
+(http://test.com:80/)
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/life.html
+url = http://test.com/orgs/life.html
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/
+url = http://test.com/orgs/
+
+Child: ./../
+service = http
+user = 
+host = test.com
+port = 80
+path = /
+url = http://test.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/.../foo.html
+url = http://test.com/orgs/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/life.html
+url = http://test.com/orgs/life.html
+
+Child: index.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/
+url = http://test.com/orgs/
+
+Child: test.htm
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/test.htm
+url = http://test.com/orgs/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = test.com
+port = 80
+path = /top/README
+url = http://test.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/next/foo.html
+url = http://test.com/orgs/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs//relative.html
+url = http://test.com/orgs//relative.html
+
+Parent: http://test.com/blank_news.shtml?pages/3.i
+(http://test.com:80/)
+service = http
+user = 
+host = test.com
+port = 80
+path = /blank_news.shtml?pages/3.i
+url = http://test.com/blank_news.shtml?pages/3.i
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = test.com
+port = 80
+path = /
+url = http://test.com/
+
+Child: ./../
+service = http
+user = 
+host = test.com
+port = 80
+path = /
+url = http://test.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /.../foo.html
+url = http://test.com/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /foo.html
+url = http://test.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = test.com
+port = 80
+path = /blank_news.shtml?pages/3.i
+url = http://test.com/blank_news.shtml?pages/3.i
+
+Child: index.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /
+url = http://test.com/
+
+Child: test.htm
+service = http
+user = 
+host = test.com
+port = 80
+path = /test.htm
+url = http://test.com/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = test.com
+port = 80
+path = /top/README
+url = http://test.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /next/foo.html
+url = http://test.com/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = test.com
+port = 80
+path = //relative.html
+url = http://test.com//relative.html
+
+Parent: HTTP://www.Yahoo.com/
+(http://www.yahoo.com:80/)
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /
+url = http://www.yahoo.com/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /
+url = http://www.yahoo.com/
+
+Child: ./../
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /
+url = http://www.yahoo.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /foo.html
+url = http://www.yahoo.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /.../foo.html
+url = http://www.yahoo.com/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /foo.html
+url = http://www.yahoo.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /
+url = http://www.yahoo.com/
+
+Child: index.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /
+url = http://www.yahoo.com/
+
+Child: test.htm
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /test.htm
+url = http://www.yahoo.com/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /top/README
+url = http://www.yahoo.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /next/foo.html
+url = http://www.yahoo.com/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = //relative.html
+url = http://www.yahoo.com//relative.html
+
+Parent: http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/chem_102.html
+(http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu:80/)
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/chem_102.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/chem_102.html
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/
+
+Child: ./../
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/
+
+Child: ../foo.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/foo.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/.../foo.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /foo.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/chem_102.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/chem_102.html
+
+Child: index.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/
+
+Child: test.htm
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/test.htm
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /top/README
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/next/foo.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102//relative.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102//relative.html
+
+Parent: http://this-is-a.slashdot.org/slash/elimination/test//////////////////////////././././.././././/./././.././././../../././.test/
+(http://this-is-a.slashdot.org:80/)
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /slash/elimination/test///////////////////////.test/
+url = http://this-is-a.slashdot.org/slash/elimination/test///////////////////////.test/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /slash/elimination/test///////////////////////.test/
+url = http://this-is-a.slashdot.org/slash/elimination/test///////////////////////.test/
+
+Child: ./../
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /slash/elimination/test///////////////////////
+url = http://this-is-a.slashdot.org/slash/elimination/test///////////////////////
+
+Child: ../foo.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /slash/elimination/test///////////////////////foo.html
+url = http://this-is-a.slashdot.org/slash/elimination/test///////////////////////foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /slash/elimination/test///////////////////////.test/.../foo.html
+url = http://this-is-a.slashdot.org/slash/elimination/test///////////////////////.test/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /foo.html
+url = http://this-is-a.slashdot.org/foo.html
+
+Child: #top
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /slash/elimination/test///////////////////////.test/
+url = http://this-is-a.slashdot.org/slash/elimination/test///////////////////////.test/
+
+Child: index.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /slash/elimination/test///////////////////////.test/
+url = http://this-is-a.slashdot.org/slash/elimination/test///////////////////////.test/
+
+Child: test.htm
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /slash/elimination/test///////////////////////.test/test.htm
+url = http://this-is-a.slashdot.org/slash/elimination/test///////////////////////.test/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /top/README
+url = http://this-is-a.slashdot.org/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /slash/elimination/test///////////////////////.test/next/foo.html
+url = http://this-is-a.slashdot.org/slash/elimination/test///////////////////////.test/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /slash/elimination/test///////////////////////.test//relative.html
+url = http://this-is-a.slashdot.org/slash/elimination/test///////////////////////.test//relative.html
+
+Parent: http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=338;user=ghutchis;addsignature=1
+(http://www.htdig.org:80/)
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/incoming?id=338;user=ghutchis;addsignature=1
+url = http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=338;user=ghutchis;addsignature=1
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/
+url = http://www.htdig.org/cgi-bin/htdig3.private/
+
+Child: ./../
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/
+url = http://www.htdig.org/cgi-bin/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/foo.html
+url = http://www.htdig.org/cgi-bin/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/.../foo.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /foo.html
+url = http://www.htdig.org/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/incoming?id=338;user=ghutchis;addsignature=1
+url = http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=338;user=ghutchis;addsignature=1
+
+Child: index.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/
+url = http://www.htdig.org/cgi-bin/htdig3.private/
+
+Child: test.htm
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/test.htm
+url = http://www.htdig.org/cgi-bin/htdig3.private/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /top/README
+url = http://www.htdig.org/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/next/foo.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private//relative.html
+url = http://www.htdig.org/cgi-bin/htdig3.private//relative.html
+
+Parent: http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=342;user=ghutchis
+(http://www.htdig.org:80/)
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/incoming?id=342;user=ghutchis
+url = http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=342;user=ghutchis
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/
+url = http://www.htdig.org/cgi-bin/htdig3.private/
+
+Child: ./../
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/
+url = http://www.htdig.org/cgi-bin/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/foo.html
+url = http://www.htdig.org/cgi-bin/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/.../foo.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /foo.html
+url = http://www.htdig.org/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/incoming?id=342;user=ghutchis
+url = http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=342;user=ghutchis
+
+Child: index.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/
+url = http://www.htdig.org/cgi-bin/htdig3.private/
+
+Child: test.htm
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/test.htm
+url = http://www.htdig.org/cgi-bin/htdig3.private/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /top/README
+url = http://www.htdig.org/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/next/foo.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private//relative.html
+url = http://www.htdig.org/cgi-bin/htdig3.private//relative.html
+
+Parent: http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
+(http://wso.williams.edu:80/)
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
+url = http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/
+url = http://wso.williams.edu/cgi-bin/BBS/
+
+Child: ./../
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/
+url = http://wso.williams.edu/cgi-bin/
+
+Child: ../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/foo.html
+url = http://wso.williams.edu/cgi-bin/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/.../foo.html
+url = http://wso.williams.edu/cgi-bin/BBS/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /foo.html
+url = http://wso.williams.edu/foo.html
+
+Child: #top
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
+url = http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
+
+Child: index.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/
+url = http://wso.williams.edu/cgi-bin/BBS/
+
+Child: test.htm
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/test.htm
+url = http://wso.williams.edu/cgi-bin/BBS/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /top/README
+url = http://wso.williams.edu/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/next/foo.html
+url = http://wso.williams.edu/cgi-bin/BBS/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS//relative.html
+url = http://wso.williams.edu/cgi-bin/BBS//relative.html
+
+Parent: http:/www.fail.com/
+(http://:0/)
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Child: ./../
+service = http
+user = 
+host = 
+port = 0
+path = /
+url = 
+
+Child: ../foo.html
+service = http
+user = 
+host = 
+port = 0
+path = /foo.html
+url = 
+
+Child: .../foo.html
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/.../foo.html
+url = 
+
+Child: /foo.html
+service = http
+user = 
+host = 
+port = 0
+path = /foo.html
+url = 
+
+Child: #top
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Child: index.html
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Child: test.htm
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/test.htm
+url = 
+
+Child: /top/README
+service = http
+user = 
+host = 
+port = 0
+path = /top/README
+url = 
+
+Child: next/foo.html
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/next/foo.html
+url = 
+
+Child: .//relative.html
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com//relative.html
+url = 
+
+Parent: http:www.fail.com
+(http://:0/)
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: ./../
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: ../foo.html
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: .../foo.html
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: /foo.html
+service = http
+user = 
+host = 
+port = 0
+path = /foo.html
+url = 
+
+Child: #top
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: index.html
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: test.htm
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: /top/README
+service = http
+user = 
+host = 
+port = 0
+path = /top/README
+url = 
+
+Child: next/foo.html
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: .//relative.html
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Parent: file://localhost/opt/htdig/maindocs/index.html
+(file://localhost:0/)
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/index.html
+url = file:///opt/htdig/maindocs/index.html
+
+Children: 
+
+Child: ./
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/
+url = file:///opt/htdig/maindocs/
+
+Child: ./../
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/
+url = file:///opt/htdig/
+
+Child: ../foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/foo.html
+url = file:///opt/htdig/foo.html
+
+Child: .../foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/.../foo.html
+url = file:///opt/htdig/maindocs/.../foo.html
+
+Child: /foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /foo.html
+url = file:///foo.html
+
+Child: #top
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/index.html
+url = file:///opt/htdig/maindocs/index.html
+
+Child: index.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/index.html
+url = file:///opt/htdig/maindocs/index.html
+
+Child: test.htm
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/test.htm
+url = file:///opt/htdig/maindocs/test.htm
+
+Child: /top/README
+service = file
+user = 
+host = localhost
+port = 0
+path = /top/README
+url = file:///top/README
+
+Child: next/foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/next/foo.html
+url = file:///opt/htdig/maindocs/next/foo.html
+
+Child: .//relative.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs//relative.html
+url = file:///opt/htdig/maindocs//relative.html
+
+Parent: file://localhost:80/home/ghutchis/www/home.html
+(file://localhost:0/)
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/home.html
+url = file:///home/ghutchis/www/home.html
+
+Children: 
+
+Child: ./
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/
+url = file:///home/ghutchis/www/
+
+Child: ./../
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/
+url = file:///home/ghutchis/
+
+Child: ../foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/foo.html
+url = file:///home/ghutchis/foo.html
+
+Child: .../foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/.../foo.html
+url = file:///home/ghutchis/www/.../foo.html
+
+Child: /foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /foo.html
+url = file:///foo.html
+
+Child: #top
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/home.html
+url = file:///home/ghutchis/www/home.html
+
+Child: index.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/index.html
+url = file:///home/ghutchis/www/index.html
+
+Child: test.htm
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/test.htm
+url = file:///home/ghutchis/www/test.htm
+
+Child: /top/README
+service = file
+user = 
+host = localhost
+port = 0
+path = /top/README
+url = file:///top/README
+
+Child: next/foo.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/next/foo.html
+url = file:///home/ghutchis/www/next/foo.html
+
+Child: .//relative.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www//relative.html
+url = file:///home/ghutchis/www//relative.html
+
+Parent: http://www.htdig.org/cgi-bin/test.cgi?date=10/1/99#anchor1
+(http://www.htdig.org:80/)
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/test.cgi?date=10/1/99
+url = http://www.htdig.org/cgi-bin/test.cgi?date=10/1/99
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/
+url = http://www.htdig.org/cgi-bin/
+
+Child: ./../
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /
+url = http://www.htdig.org/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /foo.html
+url = http://www.htdig.org/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/.../foo.html
+url = http://www.htdig.org/cgi-bin/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /foo.html
+url = http://www.htdig.org/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/test.cgi?date=10/1/99
+url = http://www.htdig.org/cgi-bin/test.cgi?date=10/1/99
+
+Child: index.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/
+url = http://www.htdig.org/cgi-bin/
+
+Child: test.htm
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/test.htm
+url = http://www.htdig.org/cgi-bin/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /top/README
+url = http://www.htdig.org/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/next/foo.html
+url = http://www.htdig.org/cgi-bin/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin//relative.html
+url = http://www.htdig.org/cgi-bin//relative.html
+
+Parent: ftp://default.removal.com/index.html
+(ftp://default.removal.com:21/)
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /index.html
+url = ftp://default.removal.com/index.html
+
+Children: 
+
+Child: ./
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /
+url = ftp://default.removal.com/
+
+Child: ./../
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /
+url = ftp://default.removal.com/
+
+Child: ../foo.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /foo.html
+url = ftp://default.removal.com/foo.html
+
+Child: .../foo.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /.../foo.html
+url = ftp://default.removal.com/.../foo.html
+
+Child: /foo.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /foo.html
+url = ftp://default.removal.com/foo.html
+
+Child: #top
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /index.html
+url = ftp://default.removal.com/index.html
+
+Child: index.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /index.html
+url = ftp://default.removal.com/index.html
+
+Child: test.htm
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /test.htm
+url = ftp://default.removal.com/test.htm
+
+Child: /top/README
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /top/README
+url = ftp://default.removal.com/top/README
+
+Child: next/foo.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /next/foo.html
+url = ftp://default.removal.com/next/foo.html
+
+Child: .//relative.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = //relative.html
+url = ftp://default.removal.com//relative.html
+
+Parent: https://test.com/life.html
+(https://test.com:443/)
+service = https
+user = 
+host = test.com
+port = 443
+path = /life.html
+url = https://test.com/life.html
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = test.com
+port = 443
+path = /
+url = https://test.com/
+
+Child: ./../
+service = https
+user = 
+host = test.com
+port = 443
+path = /
+url = https://test.com/
+
+Child: ../foo.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /foo.html
+url = https://test.com/foo.html
+
+Child: .../foo.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /.../foo.html
+url = https://test.com/.../foo.html
+
+Child: /foo.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /foo.html
+url = https://test.com/foo.html
+
+Child: #top
+service = https
+user = 
+host = test.com
+port = 443
+path = /life.html
+url = https://test.com/life.html
+
+Child: index.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /
+url = https://test.com/
+
+Child: test.htm
+service = https
+user = 
+host = test.com
+port = 443
+path = /test.htm
+url = https://test.com/test.htm
+
+Child: /top/README
+service = https
+user = 
+host = test.com
+port = 443
+path = /top/README
+url = https://test.com/top/README
+
+Child: next/foo.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /next/foo.html
+url = https://test.com/next/foo.html
+
+Child: .//relative.html
+service = https
+user = 
+host = test.com
+port = 443
+path = //relative.html
+url = https://test.com//relative.html
+
+Parent: https://default.removal.com/index.html
+(https://default.removal.com:443/)
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /
+url = https://default.removal.com/
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /
+url = https://default.removal.com/
+
+Child: ./../
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /
+url = https://default.removal.com/
+
+Child: ../foo.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /foo.html
+url = https://default.removal.com/foo.html
+
+Child: .../foo.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /.../foo.html
+url = https://default.removal.com/.../foo.html
+
+Child: /foo.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /foo.html
+url = https://default.removal.com/foo.html
+
+Child: #top
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /
+url = https://default.removal.com/
+
+Child: index.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /
+url = https://default.removal.com/
+
+Child: test.htm
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /test.htm
+url = https://default.removal.com/test.htm
+
+Child: /top/README
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /top/README
+url = https://default.removal.com/top/README
+
+Child: next/foo.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /next/foo.html
+url = https://default.removal.com/next/foo.html
+
+Child: .//relative.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = //relative.html
+url = https://default.removal.com//relative.html
+
+Parent: https://test.com:803/./../../orgs/life.html
+(https://test.com:803/)
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/life.html
+url = https://test.com:803/orgs/life.html
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/
+url = https://test.com:803/orgs/
+
+Child: ./../
+service = https
+user = 
+host = test.com
+port = 803
+path = /
+url = https://test.com:803/
+
+Child: ../foo.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /foo.html
+url = https://test.com:803/foo.html
+
+Child: .../foo.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/.../foo.html
+url = https://test.com:803/orgs/.../foo.html
+
+Child: /foo.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /foo.html
+url = https://test.com:803/foo.html
+
+Child: #top
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/life.html
+url = https://test.com:803/orgs/life.html
+
+Child: index.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/
+url = https://test.com:803/orgs/
+
+Child: test.htm
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/test.htm
+url = https://test.com:803/orgs/test.htm
+
+Child: /top/README
+service = https
+user = 
+host = test.com
+port = 803
+path = /top/README
+url = https://test.com:803/top/README
+
+Child: next/foo.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/next/foo.html
+url = https://test.com:803/orgs/next/foo.html
+
+Child: .//relative.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs//relative.html
+url = https://test.com:803/orgs//relative.html
+
+Parent: https://alias.com:8080/./../../orgs/life.html
+(https://alias.com:8080/)
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/life.html
+url = https://alias.com:8080/orgs/life.html
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/
+url = https://alias.com:8080/orgs/
+
+Child: ./../
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /
+url = https://alias.com:8080/
+
+Child: ../foo.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /foo.html
+url = https://alias.com:8080/foo.html
+
+Child: .../foo.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/.../foo.html
+url = https://alias.com:8080/orgs/.../foo.html
+
+Child: /foo.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /foo.html
+url = https://alias.com:8080/foo.html
+
+Child: #top
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/life.html
+url = https://alias.com:8080/orgs/life.html
+
+Child: index.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/
+url = https://alias.com:8080/orgs/
+
+Child: test.htm
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/test.htm
+url = https://alias.com:8080/orgs/test.htm
+
+Child: /top/README
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /top/README
+url = https://alias.com:8080/top/README
+
+Child: next/foo.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/next/foo.html
+url = https://alias.com:8080/orgs/next/foo.html
+
+Child: .//relative.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs//relative.html
+url = https://alias.com:8080/orgs//relative.html
+
+Parent: https://alias.com/./../../orgs/life.html
+(https://true.com:443/)
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/life.html
+url = https://true.com/orgs/life.html
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/
+url = https://true.com/orgs/
+
+Child: ./../
+service = https
+user = 
+host = true.com
+port = 443
+path = /
+url = https://true.com/
+
+Child: ../foo.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /foo.html
+url = https://true.com/foo.html
+
+Child: .../foo.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/.../foo.html
+url = https://true.com/orgs/.../foo.html
+
+Child: /foo.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /foo.html
+url = https://true.com/foo.html
+
+Child: #top
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/life.html
+url = https://true.com/orgs/life.html
+
+Child: index.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/
+url = https://true.com/orgs/
+
+Child: test.htm
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/test.htm
+url = https://true.com/orgs/test.htm
+
+Child: /top/README
+service = https
+user = 
+host = true.com
+port = 443
+path = /top/README
+url = https://true.com/top/README
+
+Child: next/foo.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/next/foo.html
+url = https://true.com/orgs/next/foo.html
+
+Child: .//relative.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs//relative.html
+url = https://true.com/orgs//relative.html
+
+Parent: https:/www.fail.com/
+(https://:0/)
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Child: ./../
+service = https
+user = 
+host = 
+port = 0
+path = /
+url = 
+
+Child: ../foo.html
+service = https
+user = 
+host = 
+port = 0
+path = /foo.html
+url = 
+
+Child: .../foo.html
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/.../foo.html
+url = 
+
+Child: /foo.html
+service = https
+user = 
+host = 
+port = 0
+path = /foo.html
+url = 
+
+Child: #top
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Child: index.html
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/
+url = 
+
+Child: test.htm
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/test.htm
+url = 
+
+Child: /top/README
+service = https
+user = 
+host = 
+port = 0
+path = /top/README
+url = 
+
+Child: next/foo.html
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/next/foo.html
+url = 
+
+Child: .//relative.html
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com//relative.html
+url = 
+
+Parent: https:www.fail.com
+(https://:0/)
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Children: 
+
+Child: ./
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: ./../
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: ../foo.html
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: .../foo.html
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: /foo.html
+service = https
+user = 
+host = 
+port = 0
+path = /foo.html
+url = 
+
+Child: #top
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: index.html
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: test.htm
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: /top/README
+service = https
+user = 
+host = 
+port = 0
+path = /top/README
+url = 
+
+Child: next/foo.html
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: .//relative.html
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Parent: help:/khelpcenter/
+(help://localhost:0/)
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/
+url = help:/khelpcenter/
+
+Children: 
+
+Child: ./
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/
+url = help:/khelpcenter/
+
+Child: ./../
+service = help
+user = 
+host = localhost
+port = 0
+path = /
+url = help:/
+
+Child: ../foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /foo.html
+url = help:/foo.html
+
+Child: .../foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/.../foo.html
+url = help:/khelpcenter/.../foo.html
+
+Child: /foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /foo.html
+url = help:/foo.html
+
+Child: #top
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/
+url = help:/khelpcenter/
+
+Child: index.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/
+url = help:/khelpcenter/
+
+Child: test.htm
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/test.htm
+url = help:/khelpcenter/test.htm
+
+Child: /top/README
+service = help
+user = 
+host = localhost
+port = 0
+path = /top/README
+url = help:/top/README
+
+Child: next/foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/next/foo.html
+url = help:/khelpcenter/next/foo.html
+
+Child: .//relative.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter//relative.html
+url = help:/khelpcenter//relative.html
+
+Parent: help:/khelpcenter/what-is-kde.html#what-is-kde-introduction
+(help://localhost:0/)
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/what-is-kde.html
+url = help:/khelpcenter/what-is-kde.html
+
+Children: 
+
+Child: ./
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/
+url = help:/khelpcenter/
+
+Child: ./../
+service = help
+user = 
+host = localhost
+port = 0
+path = /
+url = help:/
+
+Child: ../foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /foo.html
+url = help:/foo.html
+
+Child: .../foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/.../foo.html
+url = help:/khelpcenter/.../foo.html
+
+Child: /foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /foo.html
+url = help:/foo.html
+
+Child: #top
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/what-is-kde.html
+url = help:/khelpcenter/what-is-kde.html
+
+Child: index.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/
+url = help:/khelpcenter/
+
+Child: test.htm
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/test.htm
+url = help:/khelpcenter/test.htm
+
+Child: /top/README
+service = help
+user = 
+host = localhost
+port = 0
+path = /top/README
+url = help:/top/README
+
+Child: next/foo.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/next/foo.html
+url = help:/khelpcenter/next/foo.html
+
+Child: .//relative.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter//relative.html
+url = help:/khelpcenter//relative.html
+

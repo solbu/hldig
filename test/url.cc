@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: url.cc,v 1.3 2002/02/01 22:49:37 ghutchis Exp $
+// $Id: url.cc,v 1.4 2002/10/27 15:15:59 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -34,11 +34,13 @@
 
 // These should probably be tested individually
 // but for now, we'll just assume they're set to defaults
+// (except for external protocol test).
 static ConfigDefaults defaults[] = {
+  { "external_protocols", "https:// dummy.transport help: dummy.transport", 0 },
   { "allow_virtual_hosts", "true", 0 },
   { "case_sensitive", "true", 0 },
   { "remove_default_doc", "index.html", 0 },
-  { "server_aliases", "", 0 },
+  { "server_aliases", "alias.com:443=true.com:443", 0 },
   { 0 }
 };
 
@@ -107,6 +109,10 @@ static void dourl(params_t* params)
   HtConfiguration* const config= HtConfiguration::config();
   config->Defaults(defaults);
   dolist(params);
+
+  cout << "\nAnd now without turning // into / ...\n\n";
+  config->Add(String("allow_dbl_slash"), "true");
+  dolist(params);
 }
 
 static void dolist(params_t* params)
@@ -120,6 +126,10 @@ static void dolist(params_t* params)
     {
       while (fgets(buffer, sizeof(buffer), urllist))
 	{
+	  buffer [sizeof(buffer) - 1] = '\0';	// make strlen() safe
+	  int len = strlen(buffer);
+	  if (len && buffer [len-1] == '\n')
+	      buffer [len-1] = '\0';		// remove trailing '\n'
 	  children.Add(new String(buffer));
 	}
       fclose(urllist);
@@ -131,7 +141,7 @@ static void dolist(params_t* params)
   while (fgets(buffer, sizeof(buffer), urllist))
     {
       parent = URL(buffer);
-      cout << "Parent: \n";
+      cout << "Parent: " << buffer << '(' << parent.signature().get() << ")\n";
       parent.dump();
       if (params->test_children)
 	{
@@ -139,6 +149,7 @@ static void dolist(params_t* params)
 	  children.Start_Get();
 	  while ((current = (String *)children.Get_Next()))
 	    {
+	      cout << "\nChild: " << current->get() << endl;
 	      child = URL(current->get(), parent);
 	      child.dump();
 	    }

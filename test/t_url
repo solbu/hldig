@@ -1,0 +1,12 @@
+#
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 2002 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
+#
+# $Id: t_url,v 1.1 2002/10/27 15:15:59 ghutchis Exp $
+#
+
+# Is there a way to show errors as "Parent + child = url"?
+./url | diff -c1 - url.output

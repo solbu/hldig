@@ -33,7 +33,7 @@ include $(top_srcdir)/Makefile.config
 #
 
 TESTS = t_wordkey t_wordlist t_wordskip t_wordbitstream \
-	t_search t_htdb t_rdonly t_trunc \
+	t_search t_htdb t_rdonly t_trunc t_url \
 	t_htdig t_htsearch t_htmerge t_htnet t_htdig_local
 
 TESTS_ENVIRONMENT = $(top_srcdir)/test/test_prepare
@@ -42,7 +42,7 @@ AM_MAKEFLAGS = MAKE="$(MAKE)"
 EXTRA_DIST = test_functions.in test_prepare $(TESTS) \
 	skiptest_db.txt search.txt mifluz.conf mifluz-search.conf \
 	benchmark-report benchmark t_htdb.dump \
-	htdocs conf url.parents url.children
+	htdocs conf url.parents url.children url.output
 
 LOCAL_DEFINES = -I$(top_builddir)/db -I$(top_srcdir)/db $(PROFILING)
 

@@ -33,3 +33,13 @@ http:www.fail.com
 file://localhost/opt/htdig/maindocs/index.html
 file://localhost:80/home/ghutchis/www/home.html
 http://www.htdig.org/cgi-bin/test.cgi?date=10/1/99#anchor1
+ftp://default.removal.com/index.html
+https://test.com/life.html
+https://default.removal.com/index.html
+https://test.com:803/./../../orgs/life.html
+https://alias.com:8080/./../../orgs/life.html
+https://alias.com/./../../orgs/life.html
+https:/www.fail.com/
+https:www.fail.com
+help:/khelpcenter/
+help:/khelpcenter/what-is-kde.html#what-is-kde-introduction
