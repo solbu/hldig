@@ -226,11 +226,11 @@ class WordKey
     // if(position<1 || position>=NFields()){errr("Get: out of bounds");}
     return(numerical_fields[position-1]);
   }
+#ifndef SWIG
   inline WordKeyNum& Get(int position)
   {
     return(numerical_fields[position-1]);
   }
-#ifndef SWIG
   inline       WordKeyNum &      operator[] (int n)        { return(numerical_fields[n-1]); }
   inline const WordKeyNum &      operator[] (int n) const  { return(numerical_fields[n-1]); }
 #endif /* SWIG */

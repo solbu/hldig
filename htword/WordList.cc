@@ -19,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.35 2000/02/05 15:50:08 loic Exp $
+// $Id: WordList.cc,v 1.6.2.36 2000/02/10 21:10:36 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -82,23 +82,25 @@ int WordList::Open(const String& filename, int mode)
 
   db.dbinfo.set_bt_compare(word_db_cmp);
 
-  if(config.Value("wordlist_page_size" ,0 )) {db.dbinfo.set_pagesize (config.Value("wordlist_page_size" ,0));}
+  if(config.Value("wordlist_page_size", 0)) {
+    db.dbinfo.set_pagesize (config.Value("wordlist_page_size" ,0));
+  }
 
-  int cache_size=config.Value("wordlist_cache_size",10000000);
-  if(cache_size){db.dbinfo.set_cachesize(cache_size);}
-  else
-  {
-      cout << "WordList::Open WARNING no cachesize:: performance might be slow"  << endl;
+  int cache_size=config.Value("wordlist_cache_size", 10*1024*1024);
+  if(cache_size) {
+    db.dbinfo.set_cachesize(cache_size);
+  } else {
+    cerr << "WordList::Open WARNING wordlist_cache_size set to 0, performance might be slow" << endl;
   }
 
   if(config.Boolean("wordlist_compress") == 1)
-  {
+    {
       usecompress=DB_COMPRESS;
       WordDBCompress* compressor = new WordDBCompress();
       compressor->debug = config.Value("wordlist_compress_debug");
       SetCompressor(compressor);
       db.CmprInfo(compressor->CmprInfo());
-  }
+    }
 
   db.dbinfo.set_bt_compare(word_db_cmp);
 
@@ -107,7 +109,7 @@ int WordList::Open(const String& filename, int mode)
     if(GetCompressor()) { GetCompressor()->SetMonitor(monitor); }
   }
 
-  int ret = db.Open(filename, DB_BTREE, (mode == O_RDONLY ? DB_RDONLY : DB_CREATE) | usecompress, 0666);
+  int ret = db.Open(filename, DB_BTREE, (mode == O_RDONLY ? DB_RDONLY : DB_CREATE) | usecompress, 0666) == 0 ? OK : NOTOK;
 
   isread = mode & O_RDONLY;
   isopen = 1;
@@ -120,7 +122,7 @@ int WordList::Open(const String& filename, int mode)
 int WordList::Close()
 {
   if(isopen) {
-    db.Close();
+    if(db.Close() != 0) return NOTOK;
     isopen = 0;
     isread = 0;
   }
@@ -142,7 +144,7 @@ int WordList::Close()
   return OK;
 }
 
-// *****************************************************************************
+// ****************************************************************************
 //
 int WordList::Put(const WordReference& arg, int flags)
 {
@@ -164,9 +166,20 @@ int WordList::Put(const WordReference& arg, int flags)
   double start_time = 0.0;
   if(monitor) start_time = HtTime::DTime();
 
-  int ret = db.Put(wordRef, flags);
-  if(ret == OK)
+  //
+  // First attempt tells us if the key exists. If it
+  // does not we just increment the reference count.
+  // Otherwise, and only if flags does not contain DB_NOOVERWRITE,
+  // we override the key/record pair.
+  //
+  int ret = NOTOK;
+  int error;
+  if((error = db.Put(wordRef, DB_NOOVERWRITE)) != 0) {
+    if(error == DB_KEYEXIST && flags == 0)
+      ret = db.Put(wordRef, 0) == 0 ? OK : NOTOK;
+  } else {
     ret = Ref(wordRef);
+  }
 
   // DEBUGING / BENCHMARKING
   if(monitor) {
@@ -200,16 +213,6 @@ List *WordList::Prefix (const WordReference& prefix)
 List *WordList::WordRefs()
 {
   return Collect(WordReference());
-}
-
-// *****************************************************************************
-//
-List *
-WordList::Collect(const WordSearchDescription &csearch)
-{
-  WordSearchDescription search = csearch;
-  Walk(search);
-  return search.collectRes;
 }
 
 // *****************************************************************************
@@ -269,7 +272,7 @@ WordList::WalkInit(WordSearchDescription &search)
 
   WordReference wordRef;
 
-  if(cursor.Open(db.db) == NOTOK) {
+  if(cursor.Open(db.db) != 0) {
     search.status = WORD_WALK_CURSOR_FAILED;
     return NOTOK;
   }
@@ -669,7 +672,7 @@ List *WordList::Words()
   WordReference	lastWord;
   WordDBCursor		cursor;
 
-  if(cursor.Open(db.db) != OK) return 0;
+  if(cursor.Open(db.db) != 0) return 0;
 
   //
   // Move past the first word count record
@@ -726,7 +729,7 @@ int WordList::Ref(const WordReference& wordRef)
 
   stat.Noccurence()++;
 
-  return db.Put(stat, 0);
+  return db.Put(stat, 0) == 0 ? OK : NOTOK;
 }
 
 // *****************************************************************************
@@ -752,7 +755,7 @@ int WordList::Unref(const WordReference& wordRef)
   stat.Noccurence()--;
 
   if(stat.Noccurence() > 0) {
-    ret = db.Put(stat, 0);
+    ret = db.Put(stat, 0) == 0 ? OK : NOTOK;
   } else
     ret = db.Del(stat) == 0 ? OK : NOTOK;
   return ret;

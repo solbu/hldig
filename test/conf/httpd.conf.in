@@ -29,7 +29,7 @@ LoadModule action_module      _MODULES_/mod_actions.so
 LoadModule userdir_module     _MODULES_/mod_userdir.so
 LoadModule proxy_module       _MODULES_/libproxy.so
 LoadModule alias_module       _MODULES_/mod_alias.so
-LoadModule rewrite_module     _MODULES_/mod_rewrite.so
+#LoadModule rewrite_module     _MODULES_/mod_rewrite.so
 LoadModule access_module      _MODULES_/mod_access.so
 LoadModule auth_module        _MODULES_/mod_auth.so
 LoadModule anon_auth_module   _MODULES_/mod_auth_anon.so
@@ -74,7 +74,7 @@ AddModule mod_actions.c
 AddModule mod_userdir.c
 AddModule mod_proxy.c
 AddModule mod_alias.c
-AddModule mod_rewrite.c
+#AddModule mod_rewrite.c
 AddModule mod_access.c
 AddModule mod_auth.c
 AddModule mod_auth_anon.c

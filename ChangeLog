@@ -1,3 +1,28 @@
+Thu Feb 10 23:18:37 2000  Loic Dachary  <loic@ceic.com>
+
+	*  Connection.cc (Connection): set retry_value to 1 instead of
+	   0 as suggested by Geoff. 
+
+Thu Feb 10 17:36:09 2000  Loic Dachary  <loic@ceic.com>
+
+	* htdig/Document.cc: fix (String)->(char*) conversion warnings.
+
+	* htword/WordList.cc: kill Collect(WordSearchDescription) which
+	  was useless and error prone.
+
+	* htword/WordDB.h (WordDBCursor::Get): small performance improvement
+	  by copying values only if key found.
+
+	* htword/WordDB.h,WordList.cc: fix reference counting bug when
+	  using Override (+1 even if entry existed). Turn WordDB.h return
+	  values to be std Berkeley DB fashion instead of the mixture with
+	  OK/NOTOK that was a stupid idea. This allows to detect Put errors
+	  and handle them properly to fix the Override bug without performance
+	  loss.
+
+	* test/conf/httpd.conf.in: comment out loading of mod_rewrite
+	  since not everyone has it.
+
 Thu Feb 10 00:26:02 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/defaults.cc: Add new attribute "nph" to send out
@@ -37,6 +62,17 @@ Wed Feb  9 23:52:55 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htnet/HtHTTP.cc (HTTPRequest): Add CloseConnection() when the
 	connection fails on open before returning from the method. Should
 	take care of PR#670 for htdig-3-2-x.
+
+Wed Feb 09 17:20:50 2000  Loic Dachary  <loic@ceic.com>
+
+	* db/dist/Makefile.in (libhtdb.so): move dependent libraries 
+	  *after* the list of objects, otherwise it's useless.
+
+	* htword/WordKey.h (class WordKey): move #if SWIG around to
+	  please swig (www.swig.org).
+
+	* htword/WordList.h (class WordList): allow SWIG to see Walk*
+	  functions (#if SWIG).
 
 Wed Feb  9 09:21:00 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 

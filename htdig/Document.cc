@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.14 2000/02/03 22:10:31 grdetil Exp $
+// $Id: Document.cc,v 1.55.2.15 2000/02/10 21:10:35 loic Exp $
 //
 
 #include <signal.h>
@@ -425,7 +425,7 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
     // Loop through list of potential filenames until the list is exhausted
     // or a suitable file is found to exist as a regular file.
     while ((filename = (String *)filenames->Get_Next()) &&
-	   ((stat(*filename, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode)))
+	   ((stat((char*)*filename, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode)))
         if (debug > 1)
 	    cout << "  tried local file " << *filename << endl;
     
@@ -441,7 +441,7 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
 
     // Process only HTML files (this could be changed if we read
     // the server's mime.types file).
-    char *ext = strrchr(*filename, '.');
+    char *ext = strrchr((char*)*filename, '.');
     if (ext == NULL)
       return Transport::Document_not_local;
     if ((mystrcasecmp(ext, ".html") == 0) || (mystrcasecmp(ext, ".htm") == 0))
@@ -450,7 +450,7 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
       return Transport::Document_not_local;
 
     // Open it
-    FILE *f = fopen(*filename, "r");
+    FILE *f = fopen((char*)*filename, "r");
     if (f == NULL)
       return Transport::Document_not_local;
 

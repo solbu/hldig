@@ -4,10 +4,10 @@ include $(top_srcdir)/Makefile.config
 # To run lengthy tests set the LONG_TEST='y' environment variable
 #
 # To run individual tests use (for instance):
-# MAKE=make t_htdig
+# MAKE=make srcdir=. t_htdig
 #
 # To turn on verbosity us (for instance):
-# MAKE=make t_htdig -vv
+# MAKE=make srcdir=. t_htdig -vv
 #
 # To purify objects use:
 # ( cd ../test ; rm -f word ; make CXXLD='purify g++' word )

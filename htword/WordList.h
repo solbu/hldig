@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.23 2000/02/05 15:50:08 loic Exp $
+// $Id: WordList.h,v 1.5.2.24 2000/02/10 21:10:36 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -50,6 +50,7 @@ class WordMonitor;
 // Type of the callback argument in WordSearchDescription
 //
 typedef int (*wordlist_walk_callback_t)(WordList *, WordDBCursor& , const WordReference *, Object &);
+#endif /* SWIG */
 
 //
 // Possible values of the status member
@@ -93,11 +94,13 @@ typedef int (*wordlist_walk_callback_t)(WordList *, WordDBCursor& , const WordRe
 //
 class WordSearchDescription
 {
-    friend WordList;
  public:
+#ifndef SWIG
+    friend WordList;
     WordSearchDescription(wordlist_walk_callback_t ncallback, Object * ncallback_data);
     WordSearchDescription(const WordKey &nsearchKey, int naction = HTDIG_WORDLIST_WALKER);
     WordSearchDescription(const WordKey &nsearchKey, wordlist_walk_callback_t ncallback, Object * ncallback_data);
+#endif /* SWIG */
 
     void Clear();
     void ClearInternal();
@@ -107,13 +110,17 @@ class WordSearchDescription
     // Copy defined fields in patch into foundKey and 
     // initialize internal state so that WalkNext jumps to
     // this key next time it's called.
+    // Returns OK if successfull, NOTOK otherwise.
     //
     int ModifyKey(const WordKey& patch);
 
+#ifndef SWIG
     //
     // Convert the whole structure to an ascii string description
+    // Returns OK if successfull, NOTOK otherwise.
     //
     int Get(String& bufferout) const;
+#endif /* SWIG */
 
     //
     // Input parameters
@@ -129,6 +136,7 @@ class WordSearchDescription
     // HTDIG_WORDLIST_WALKER     callback is called for each WordReference found
     //
     int action;
+#ifndef SWIG
     //
     // Callback function called for each WordReference found
     //
@@ -145,6 +153,7 @@ class WordSearchDescription
     // List of WordReference found in the search
     //
     List *collectRes;
+#endif /* SWIG */
     //
     // Last match found.
     //
@@ -154,6 +163,7 @@ class WordSearchDescription
     //
     int status;
 
+#ifndef SWIG
     //
     // Debugging section. Do not use unless you know exactly what you do.
     //
@@ -187,8 +197,8 @@ class WordSearchDescription
     // True if search key is a prefix key
     //
     int searchKeyIsSameAsPrefix;
-};
 #endif /* SWIG */
+};
 
 // 
 // Inverted index interface
@@ -214,7 +224,7 @@ public:
     //
     // Check for existence. Returns OK if exists, NOTOK otherwise.
     //
-    int                 Exists(const WordReference& wordRef) { return db.Exists(wordRef); }
+    int                 Exists(const WordReference& wordRef) { return db.Exists(wordRef) == 0 ? OK : NOTOK; }
 #ifndef SWIG
     int                 Exists(const String& word) { return Exists(WordReference(word)); }
 #endif /* SWIG */
@@ -268,26 +278,31 @@ public:
     List		*Prefix (const WordReference& prefix);
 #ifndef SWIG
     List		*Prefix (const String& prefix) { return this->Prefix(WordReference(prefix)); }
+#endif /* SWIG */
 
     //
     // Iterate over the complete database.
     //
+#ifndef SWIG
     // This returns a list of all the Words, as String *
     List                *Words();
+#endif /* SWIG */
     // This returns a list of all the Words, as WordReference *
     List		*WordRefs();
 
+#ifndef SWIG
     //
     // Walk and collect data from the word database.
     // Backend of Collect, Dump, Delete...
     //
     int                 Walk(WordSearchDescription &search);
+#endif /* SWIG */
     //
     // Fill internal state according to input parameters.
     // Move to the first matching entry.
     // Returns OK if successfull, NOTOK if it fails.
     //
-    int                 WalkInit(WordSearchDescription& search);
+    int                 WalkInit(WordSearchDescription &search);
     //
     // Move to the first matching entry.
     // Returns OK if successfull, NOTOK if it fails.
@@ -296,8 +311,12 @@ public:
     //
     // Move to the next match
     // Returns OK if successfull, NOTOK if it fails.
+    // At end of list, OK is returned and search.status set to 
+    // WORD_WALK_ATEND.
+    // Extended failure information available in search.status.
     //
     int                 WalkNext(WordSearchDescription& search);
+#ifndef SWIG
     //
     // Advance the cursor one step, be it a match or not
     // Returns OK if successfull, NOTOK if it fails.
@@ -305,18 +324,19 @@ public:
     // call WalkNextStep again.
     //
     int                 WalkNextStep(WordSearchDescription& search);
+#endif /* SWIG */
     //
     // Terminate walk, free allocated resources.
     // Returns OK if successfull, NOTOK if it fails.
     //
     int                 WalkFinish(WordSearchDescription& search);
-    List               *Collect(const WordSearchDescription &search);
 
     //
     // Update/get global word statistics statistics
     //
     int Ref(const WordReference& wordRef);
     int Unref(const WordReference& wordRef);
+#ifndef SWIG
     int Noccurence(const WordKey& key, unsigned int& noccurence) const;
 
     //
@@ -331,11 +351,13 @@ public:
     friend ostream &operator << (ostream &o, WordList &list); 
     friend istream &operator >> (istream &o, WordList &list); 
 
+#endif /* SWIG */
     //
     // Retrieve WordReferences from the database. 
     // Backend of WordRefs, operator[], Prefix...
     //
-    List		*Collect (const WordReference& word);
+    List		*Collect(const WordReference& word);
+#ifndef SWIG
     //
     // Find out if we should better jump to the next possible key (DB_SET_RANGE) instead of 
     // sequential iterating (DB_NEXT). 

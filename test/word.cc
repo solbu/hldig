@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.15 2000/02/05 16:14:23 loic Exp $
+// $Id: word.cc,v 1.14.2.16 2000/02/10 21:10:36 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -634,7 +634,7 @@ public:
 	if(verbose) cout << "checking SkipUselessSequentialWalking on:" << srchwrd << endl;
 	if(verbose) cout << "walking all:" << endl;
 //	WList.verbose=5;
-	List *all=WList.Collect(WordSearchDescription(empty, HTDIG_WORDLIST_COLLECTOR));
+	List *all=WList.WordRefs();
 	if(verbose) cout << "walking search: searching for:" << srchwrd <<endl;
 
 	WordSearchDescription search(srchwrd.Key(), HTDIG_WORDLIST_COLLECTOR);
