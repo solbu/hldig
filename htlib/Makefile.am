@@ -1,6 +1,8 @@
 CFLAGS=-g
 include $(top_srcdir)/Makefile.config
 
+EXTRA_DIST=conf_lexer.cxx conf_parser.cxx
+
 lib_LTLIBRARIES = libht.la
 
 libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
