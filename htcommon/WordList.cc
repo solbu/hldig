@@ -4,13 +4,14 @@
 // Implementation of WordList
 //
 // $Log: WordList.cc,v $
-// Revision 1.5  1998/11/27 18:30:20  ghutchis
+// Revision 1.6  1998/12/05 00:53:23  ghutchis
+// Don't store c:1 and a:0 entries in db.wordlist to save space.
 //
+// Revision 1.5  1998/11/27 18:30:20  ghutchis
 // Fixed bug with bad_words and MAX_WORD_LENGTH, noted by Jeff Breidenbach
 // <jeff@alum.mit.edu>.
 //
 // Revision 1.4  1998/09/04 00:56:22  ghutchis
-//
 // Various bug fixes.
 //
 // Revision 1.3  1997/03/24 04:33:15  turtle
@@ -25,7 +26,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.5 1998/11/27 18:30:20 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.6 1998/12/05 00:53:23 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -137,7 +138,7 @@ int WordList::valid_word(char *word)
 //   Dump the current list of words to the temporary word file.  After
 //   the words have been dumped, the list will be destroyed to make
 //   room for the words of the next document.
-//
+//   
 void WordList::Flush()
 {
     FILE		*fl = fopen(tempfile, "a");
@@ -148,13 +149,21 @@ void WordList::Flush()
     while ((word = words->Get_Next()))
     {
 	wordRef = (WordReference *) words->Find(word);
-	fprintf(fl, "%s\tc:%d\tl:%d\ti:%d\tw:%d\ta:%d\n",
-		wordRef->Word,
-		wordRef->WordCount,
-		wordRef->Location,
+
+	fprintf(fl, "%s",wordRef->Word);
+        if (1 != wordRef->WordCount)
+        {
+           fprintf(fl, "\tc:%d",wordRef->WordCount);
+        }
+        fprintf(fl, "\tl:%d\ti:%d\tw:%d",
+	        wordRef->Location,
 		wordRef->DocumentID,
-		wordRef->Weight,
-		wordRef->Anchor);
+		wordRef->Weight);
+        if (0 != wordRef->Anchor)
+        {
+           fprintf(fl, "\ta:%d",wordRef->Anchor);
+        }
+        putc('\n', fl);
     }
     words->Destroy();
     fclose(fl);

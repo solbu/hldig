@@ -4,6 +4,9 @@
 // Implementation of htmerge
 //
 // $Log: words.cc,v $
+// Revision 1.3  1998/12/05 00:53:24  ghutchis
+// Don't store c:1 and a:0 entries in db.wordlist to save space.
+//
 // Revision 1.2  1998/11/15 22:24:19  ghutchis
 //
 // Change \r to \n as noted by Andrew Bishoip.
@@ -13,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.2 1998/11/15 22:24:19 ghutchis Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.3 1998/12/05 00:53:24 ghutchis Exp $";
 #endif
 
 #include "htmerge.h"
@@ -111,6 +114,9 @@ mergeWords(char *wordtmp, char *wordfile)
 	    word = good_strtok(buffer, "\t");
 	    pair = good_strtok("\t");
 	    wr.Clear();
+            // better place for next two lines in wr.Clear ?
+            wr.count = 1;
+            wr.anchor = 0;
 	    sid = "-";
 	    while (pair && *pair)
 	    {
@@ -159,13 +165,21 @@ mergeWords(char *wordtmp, char *wordfile)
 	    //
 	    // Record the word in the new wordlist file
 	    //
-	    fprintf(wordlist, "%s\tc:%d\tl:%d\ti:%d\tw:%d\ta:%d\n",
-		    word,
-		    wr.count,
+            // Hopes it's not position dependant!
+	    fprintf(wordlist, "%s",word);
+            if (1 != wr.count)
+            {
+               	fprintf(wordlist, "\tc:%d",wr.count);
+            }
+            fprintf(wordlist, "\tl:%d\ti:%d\tw:%d",
 		    wr.location,
 		    wr.id,
-		    wr.weight,
-		    wr.anchor);
+		    wr.weight);
+	    if (0 != wr.anchor)
+            {
+               	fprintf(wordlist, "\ta:%d",wr.anchor);
+            }
+            putc('\n', wordlist);
 	    
 	    //
 	    // Since we will be storing binary equivalents of the
