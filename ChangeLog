@@ -1,3 +1,8 @@
+Thu Apr  6 00:10:23 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc (got_redirect): Allow the redirect to accept
+	relative redirects instead of just full URLs.
+
 Wed Apr  5 15:07:52 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc: Added #if test to make sure DBL_MAX is

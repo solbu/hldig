@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.25 2000/03/28 01:49:11 ghutchis Exp $
+// $Id: Retriever.cc,v 1.72.2.26 2000/04/06 04:19:26 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -1471,7 +1471,9 @@ Retriever::got_href(URL &url, const char *description, int hops)
 void
 Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 {
-    URL	url(new_url);
+    // First we must piece together the new URL, which may be relative
+    URL parent(old_ref->DocURL());
+    URL	url(new_url, parent);
 
     if (debug > 2)
 	cout << "redirect: " << url.get() << endl;
