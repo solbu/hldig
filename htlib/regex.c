@@ -1,9 +1,9 @@
-// Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999-2003 The ht://Dig Group
-// For copyright details, see the file COPYING in your distribution
-// or the GNU Library General Public License (LGPL) version 2 or later
-// <http://www.gnu.org/copyleft/lgpl.html>
-//
+/* Part of the ht://Dig package   <http://www.htdig.org/> *
+/* Copyright (c) 1999-2003 The ht://Dig Group *
+/* For copyright details, see the file COPYING in your distribution *
+/* or the GNU Library General Public License (LGPL) version 2 or later *
+/* <http://www.gnu.org/copyleft/lgpl.html> *
+
 
 /* Extended regular expression matching and search library,
    version 0.12.
@@ -38,7 +38,7 @@
 # include "htconfig.h"
 #endif
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 #define alloca _alloca
 #endif
 

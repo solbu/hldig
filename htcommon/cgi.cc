@@ -9,14 +9,14 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: cgi.cc,v 1.7 2003/07/21 08:16:10 angusgb Exp $
+// $Id: cgi.cc,v 1.8 2004/01/12 12:48:24 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 #include <io.h>
 #endif
 
@@ -29,7 +29,7 @@
 
 #include <stdlib.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 

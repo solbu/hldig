@@ -1,9 +1,9 @@
-// Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999-2003 The ht://Dig Group
-// For copyright details, see the file COPYING in your distribution
-// or the GNU Library General Public License (LGPL) version 2 or later
-// <http://www.gnu.org/copyleft/lgpl.html>
-//
+/* Part of the ht://Dig package   <http://www.htdig.org/> */
+/* Copyright (c) 1999-2003 The ht://Dig Group */
+/* For copyright details, see the file COPYING in your distribution */
+/* or the GNU Library General Public License (LGPL) version 2 or later */
+/* <http://www.gnu.org/copyleft/lgpl.html> */
+
 
 /* Copyright (C) 1991, 1992, 1996, 1997 Free Software Foundation, Inc.
    This file is part of the GNU C Library.

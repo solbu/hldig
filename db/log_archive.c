@@ -18,13 +18,13 @@ static const char sccsid[] = "@(#)CDB_log_archive.c	11.2 (Sleepycat) 9/16/99";
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 #include <direct.h>
 #else
 #include <unistd.h>
 #endif
 
-#endif //!NO_SYSTEM_INCLUDES
+#endif /* !NO_SYSTEM_INCLUDES */
 
 #include "db_int.h"
 #include "db_dispatch.h"

@@ -37,7 +37,7 @@
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
 ///////////////////////////////////////////////////////////////
-// $Id: HtCookieInFileJar.h,v 1.3 2003/06/24 19:58:06 nealr Exp $
+// $Id: HtCookieInFileJar.h,v 1.4 2004/01/12 12:48:25 lha Exp $
 ///////////////////////////////////////////////////////////////
 
 #ifndef __HtCookieInFileJar_H
@@ -65,7 +65,7 @@ public:
 	HtCookieInFileJar& operator=(const HtCookieInFileJar& rhs);
 
 	// Show stats
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 	virtual ostream &ShowSummary (ostream &out = cout);
 #else
 	virtual ostream &ShowSummary (ostream &out = std::cout);

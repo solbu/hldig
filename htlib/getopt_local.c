@@ -1,14 +1,14 @@
-// getopt_local.c
-//
-// Public Domain getopt clone
-//
-// Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 2003 The ht://Dig Group
-// For copyright details, see the file COPYING in your distribution
-// or the GNU Library General Public License (LGPL) version 2 or later or later
-// <http://www.gnu.org/copyleft/lgpl.html>
-//
-//  Added to HtDig code June 2003 by Neal Richter, RightNow Technologies
+/* getopt_local.c */
+
+/* Public Domain getopt clone */
+
+/* Part of the ht://Dig package   <http://www.htdig.org/> */
+/* Copyright (c) 2003 The ht://Dig Group */
+/* For copyright details, see the file COPYING in your distribution */
+/* or the GNU Library General Public License (LGPL) version 2 or later or later */
+/* <http://www.gnu.org/copyleft/lgpl.html> */
+
+/*  Added to HtDig code June 2003 by Neal Richter, RightNow Technologies */
 
 /*
 **      This getopt behaves pretty much like you would expect.
@@ -116,7 +116,7 @@ getopt(int argc, char *argv[], char *optstring)
 
     return(-1);
 }
-#elif defined(_MSC_VER) //_WIN32
+#elif defined(_MSC_VER) /* _WIN32 */
 #error _MSC_VER but !GETOPT_LOCAL
-#endif //GETOPT_LOCAL
+#endif /* GETOPT_LOCAL */
 

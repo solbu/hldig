@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htnotify.cc,v 1.6 2003/07/21 08:16:11 angusgb Exp $
+// $Id: htnotify.cc,v 1.7 2004/01/12 12:48:25 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -27,7 +27,7 @@
 
 #include <stdlib.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 #include <errno.h>

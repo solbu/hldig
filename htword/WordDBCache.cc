@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 

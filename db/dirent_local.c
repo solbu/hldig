@@ -1,16 +1,16 @@
-//
-// dirent_local.c
-//
-//    POSIX directory routines for Windows.
-//
-// Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 2003 The ht://Dig Group
-// For copyright details, see the file COPYING in your distribution
-// or the GNU Library General Public License version 2 or later
-// <http://www.gnu.org/copyleft/lgpl.html>
-//
-// $Id: direct_local.c 
-//
+/*									*/
+/* dirent_local.c							*/
+/*									*/
+/*    POSIX directory routines for Windows.				*/
+/*									*/
+/* Part of the ht://Dig package   <http://www.htdig.org/>		*/
+/* Copyright (c) 2003 The ht://Dig Group				*/
+/* For copyright details, see the file COPYING in your distribution	*/
+/* or the GNU Library General Public License version 2 or later		*/
+/* <http://www.gnu.org/copyleft/lgpl.html>				*/
+/*									*/
+/* $Id: direct_local.c 							*/
+/*									*/
 
 /* 
  * POSIX directory routines for Windows.
@@ -20,7 +20,7 @@
  * 
  */
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 
 #include <windows.h>
 #include <iostream.h>
@@ -103,4 +103,4 @@ closedir(DIR *dirp)
     return(0);
 }
 
-#endif //_MSC_VER (WIN32)
+#endif /* _MSC_VER (WIN32) */

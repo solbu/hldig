@@ -29,7 +29,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtCookie.h,v 1.8 2003/06/24 19:58:06 nealr Exp $ 
+// $Id: HtCookie.h,v 1.9 2004/01/12 12:48:25 lha Exp $ 
 //
 
 #ifndef _HTCOOKIE_H
@@ -87,7 +87,7 @@ class HtCookie : public Object
 	  const int GetVersion() const { return rfc_version; }
 
       // Print debug info
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
       virtual ostream &printDebug(ostream &out = std::cout);
 #else
       virtual ostream &printDebug(ostream &out = cout);

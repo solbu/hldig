@@ -18,7 +18,7 @@ static const char sccsid[] = "@(#)os_handle.c	11.2 (Sleepycat) 11/12/99";
 #include <fcntl.h>
 #include <string.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -54,8 +54,8 @@ CDB___os_openhandle(name, flags, mode, fhp)
 		 * when we're joining already existing DB regions.
 		 */
 
-#ifdef _MSC_VER //_WIN32
-        //THIS IS A HACK TO REINSTATE BINARY MODE!  FIX ME.. FIND THE PROBLEM
+#ifdef _MSC_VER /* _WIN32 */
+        /* THIS IS A HACK TO REINSTATE BINARY MODE!  FIX ME.. FIND THE PROBLEM*/
         mode |= _O_BINARY;
 #endif
         
@@ -67,8 +67,8 @@ CDB___os_openhandle(name, flags, mode, fhp)
 		    open(name, flags, mode);
 #endif
 
-        //DEBUGGING   
- 		//printf("\n[CDB___os_openhandle] name=[%s] mode=[%#x] fhp->fd=[%d]\n", name, mode, fhp->fd);
+        /* DEBUGGING */
+ 		/* printf("\n[CDB___os_openhandle] name=[%s] mode=[%#x] fhp->fd=[%d]\n", name, mode, fhp->fd); */
 		    
 		if (fhp->fd == -1) {
 			/*

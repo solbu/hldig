@@ -20,7 +20,7 @@ static const char sccsid[] = "@(#)db_err.c	11.10 (Sleepycat) 11/8/99";
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef _MSC_VER //WIN32
+#ifndef _MSC_VER /* WIN32 */
 #ifdef __STDC__
 #include <stdarg.h>
 #else
@@ -272,7 +272,7 @@ CDB_db_strerror(error)
  * PUBLIC: #endif
  */
 void
-#if defined( __STDC__) || defined(_MSC_VER) //WIN32
+#if defined( __STDC__) || defined(_MSC_VER) /* WIN32 */
 CDB___db_err(const DB_ENV *dbenv, const char *fmt, ...)
 #else
 CDB___db_err(dbenv, fmt, va_alist)
@@ -283,7 +283,7 @@ CDB___db_err(dbenv, fmt, va_alist)
 {
 	va_list ap;
 
-#if defined(__STDC__) || defined(_MSC_VER) //WIN32
+#if defined(__STDC__) || defined(_MSC_VER) /* WIN32 */
 	va_start(ap, fmt);
 #else
 	va_start(ap);
@@ -387,7 +387,7 @@ CDB___db_errfile(dbenv, error, error_set, fmt, ap)
  * PUBLIC: #endif
  */
 int
-#if defined(__STDC__) || defined(_MSC_VER) //WIN32
+#if defined(__STDC__) || defined(_MSC_VER) /* WIN32 */
 CDB___db_logmsg(DB_ENV *dbenv,
     DB_TXN *txnid, const char *opname, u_int32_t flags, const char *fmt, ...)
 #else
@@ -413,7 +413,7 @@ CDB___db_logmsg(dbenv, txnid, opname, flags, fmt, va_alist)
 
 	memset(&msgdbt, 0, sizeof(msgdbt));
 	msgdbt.data = __logbuf;
-#if defined(__STDC__) || defined(_MSC_VER) //WIN32
+#if defined(__STDC__) || defined(_MSC_VER) /* WIN32 */
 	va_start(ap, fmt);
 #else
 	va_start(ap);

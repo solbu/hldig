@@ -10,19 +10,19 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: lib.h,v 1.14 2003/06/24 20:05:45 nealr Exp $
+// $Id: lib.h,v 1.15 2004/01/12 12:48:24 lha Exp $
 //
 
 #ifndef _lib_h
 #define _lib_h
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include "clib.h"
 #endif
 
 #include <string.h>
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 #include "dirent_local.h"
 #define S_ISDIR(v)  ((v)&_S_IFDIR)
 #define S_ISREG(v)  ((v)&_S_IFREG)
@@ -30,7 +30,7 @@
 #include <dirent.h> // for scandir
 #endif
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 #include <io.h>
 #include <stdlib.h>
 #define S_IFIFO        _S_IFIFO // pipe

@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htdig.h,v 1.14 2003/07/21 08:16:10 angusgb Exp $
+// $Id: htdig.h,v 1.15 2004/01/12 12:48:24 lha Exp $
 //
 
 #ifndef _htdig_h_
@@ -24,7 +24,7 @@
 #include "HtRegexList.h"
 #include <stdlib.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 

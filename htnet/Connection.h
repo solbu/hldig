@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Connection.h,v 1.8 2003/06/24 19:58:06 nealr Exp $
+// $Id: Connection.h,v 1.9 2004/01/12 12:48:25 lha Exp $
 //
 
 #ifndef _Connection_h_
@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 #include <winsock.h>
 #else
 #include <sys/socket.h>

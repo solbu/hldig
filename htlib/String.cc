@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: String.cc,v 1.38 2003/07/21 08:16:11 angusgb Exp $
+// $Id: String.cc,v 1.39 2004/01/12 12:48:24 lha Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -19,7 +19,7 @@
 #include "htString.h"
 #include "Object.h"
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #else
 #include <io.h>

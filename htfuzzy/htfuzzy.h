@@ -18,7 +18,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htfuzzy.h,v 1.10 2003/07/21 08:16:10 angusgb Exp $
+// $Id: htfuzzy.h,v 1.11 2004/01/12 12:48:24 lha Exp $
 //
 
 #ifndef _htfuzzy_h_
@@ -30,7 +30,7 @@
 
 #include <stdlib.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 

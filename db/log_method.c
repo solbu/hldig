@@ -17,11 +17,11 @@ static const char sccsid[] = "@(#)log_method.c	11.3 (Sleepycat) 8/11/99";
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 
-#endif //!NO_SYSTEM_INCLUDES
+#endif /* !NO_SYSTEM_INCLUDES */
 
 #include "db_int.h"
 #include "log.h"

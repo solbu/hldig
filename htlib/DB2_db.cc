@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DB2_db.cc,v 1.24 2003/08/29 16:25:13 nealr Exp $
+// $Id: DB2_db.cc,v 1.25 2004/01/12 12:48:24 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -30,7 +30,7 @@ using namespace std;
 #include <fstream.h>
 #endif /* HAVE_STD */
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 

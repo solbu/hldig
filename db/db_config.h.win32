@@ -5,7 +5,7 @@
 /* #undef const */
 
 /* Define if your struct stat has st_blksize.  */
-//#define HAVE_ST_BLKSIZE 1
+/* #define HAVE_ST_BLKSIZE 1 */
 
 /* Define to `int' if <sys/types.h> doesn't define.  */
 /* #undef mode_t */
@@ -26,7 +26,7 @@
 #define STDC_HEADERS 1
 
 /* Define if you can safely include both <sys/time.h> and <time.h>.  */
-//#define TIME_WITH_SYS_TIME 1
+/* #define TIME_WITH_SYS_TIME 1 */
 
 /* Define if your processor stores words with the most significant
    byte first (like Motorola and SPARC, unlike Intel and VAX).  */
@@ -45,7 +45,7 @@
 /* #undef DIAGNOSTIC */
 
 /* Define if fcntl/F_SETFD denies child access to file descriptors. */
-//#define HAVE_FCNTL_F_SETFD 1
+/* #define HAVE_FCNTL_F_SETFD 1 */
 
 /* Define if building big-file environment (e.g., Solaris, HP/UX). */
 /* #undef HAVE_FILE_OFFSET_BITS */
@@ -82,19 +82,19 @@
 /* #define HAVE_MUTEX_X86_GCC_ASSEMBLY 1 */
 
 /* Define if you have the sigfillset function.  */
-//#define HAVE_SIGFILLSET 1
+/* #define HAVE_SIGFILLSET 1 */
 
 /* Define if your sprintf returns a pointer, not a length. */
 /* #undef SPRINTF_RET_CHARPNT */
 
 /* Define if you have the getuid function.  */
-//#define HAVE_GETUID 1
+/* #define HAVE_GETUID 1 */
 
 /* Define if you have the mlock function.  */
 /* #undef HAVE_MLOCK */
 
 /* Define if you have the mmap function.  */
-//#define HAVE_MMAP 1
+/* #define HAVE_MMAP 1 */
 
 /* Define if you have the munlock function.  */
 /* #undef HAVE_MUNLOCK */
@@ -127,7 +127,7 @@
 /* #undef HAVE_YIELD */
 
 /* Define if you have the <dirent.h> header file.  */
-// #define HAVE_DIRENT_H 1
+/*  #define HAVE_DIRENT_H 1 */
 
 /* Define if you have the <ndir.h> header file.  */
 /* #undef HAVE_NDIR_H */
@@ -139,10 +139,10 @@
 /* #undef HAVE_SYS_NDIR_H */
 
 /* Define if you have the <sys/select.h> header file.  */
-//#define HAVE_SYS_SELECT_H 1
+/* #define HAVE_SYS_SELECT_H 1 */
 
 /* Define if you have the <sys/time.h> header file.  */
-//#define HAVE_SYS_TIME_H 1
+/* #define HAVE_SYS_TIME_H 1 */
 
 /* Define if you have the z library (-lz).  */
 #define HAVE_LIBZ 1

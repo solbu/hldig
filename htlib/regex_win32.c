@@ -1,15 +1,15 @@
-// LGPLd GNU regex for Native WIN32 
-//
-// Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 2003 The ht://Dig Group
-// For copyright details, see the file COPYING in your distribution
-// or the GNU Library General Public License (LGPL) version 2 or later or later
-// <http://www.gnu.org/copyleft/lgpl.html>
-//
-// Added June 2003 Neal Richter, RightNow Technologies
+/* LGPLd GNU regex for Native WIN32 */
 
-// note that this version is significantly different from the original 
-// version 0.12 GNU source code.  It compiles and works on Native WIN32.
+/* Part of the ht://Dig package   <http://www.htdig.org/> */
+/* Copyright (c) 2003 The ht://Dig Group */
+/* For copyright details, see the file COPYING in your distribution */
+/* or the GNU Library General Public License (LGPL) version 2 or later or later */
+/* <http://www.gnu.org/copyleft/lgpl.html> */
+
+/* Added June 2003 Neal Richter, RightNow Technologies */
+
+/* note that this version is significantly different from the original  */
+/* version 0.12 GNU source code.  It compiles and works on Native WIN32. */
 
 /* Extended regular expression matching and search library,
    version 0.12.
@@ -190,7 +190,7 @@ init_syntax_once ()
 #endif /* not emacs */
 
 /* Get the interface, including the syntax bits.  */
-//#include "regex.h"
+/* #include "regex.h" */
 #include "regex_win32.h"
 
 /* isalpha etc. are used for the character classes.  */

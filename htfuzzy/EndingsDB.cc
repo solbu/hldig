@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: EndingsDB.cc,v 1.15 2003/07/21 08:16:10 angusgb Exp $
+// $Id: EndingsDB.cc,v 1.16 2004/01/12 12:48:24 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -29,7 +29,7 @@
 
 // This is an attempt to get around compatibility problems 
 // with the included regex
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 #include "regex_win32.h"
 #else
 # ifdef USE_RX
@@ -41,7 +41,7 @@
 #   include "gregex.h"
 #  endif
 # endif
-#endif //_MSC_VER //_WIN32
+#endif //_MSC_VER /* _WIN32 */
 
 #include <stdio.h>
 #include <stdlib.h>

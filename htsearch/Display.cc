@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Display.cc,v 1.119 2003/12/14 02:14:43 lha Exp $
+// $Id: Display.cc,v 1.120 2004/01/12 12:48:25 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -44,7 +44,7 @@ using namespace std;
 #include <stdio.h>
 #include <ctype.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <syslog.h>
 #endif
 
@@ -1916,7 +1916,7 @@ Display::logSearch(int page, List *matches)
 //Note: This is Posix and dependent on a running syslogd..
 //does not work for Win32
 //TODO: Look into using native windows system logs instead
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 	HtConfiguration* config= HtConfiguration::config();
     // Currently unused    time_t	t;
     int		nMatches = 0;

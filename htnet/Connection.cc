@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Connection.cc,v 1.8 2003/07/21 08:16:11 angusgb Exp $
+// $Id: Connection.cc,v 1.9 2004/01/12 12:48:25 lha Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 #include <windows.h>
 #include <winsock.h>
 #define EALREADY     WSAEALREADY
@@ -40,7 +40,7 @@
 #include <sys/uio.h>
 #endif
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <sys/file.h>
 #include <sys/time.h>
 #else
@@ -51,7 +51,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -64,7 +64,7 @@
 
 typedef void (*SIGNAL_HANDLER) (...);
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 extern "C" {
     int rresvport(int *);
 }
@@ -135,7 +135,7 @@ Connection::~Connection()
 //
 int Connection::Win32Socket_Init(void)
 {
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
     WORD    wVersionRequested;
     WSADATA wsaData;
 
@@ -162,7 +162,7 @@ int Connection::Open(int priv)
 	int	aport = IPPORT_RESERVED - 1;
 
 //  Native Windows (MSVC) has no rresvport
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 	sock = rresvport(&aport);
 #else
 	return NOTOK;
@@ -190,7 +190,7 @@ int Connection::Open(int priv)
 //
 int Connection::Ndelay()
 {
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
     return fcntl(sock, F_SETFL, FNDELAY);
 #else
     // Note:  This function is never called
@@ -205,7 +205,7 @@ int Connection::Ndelay()
 //
 int Connection::Nondelay()
 {
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
     return fcntl(sock, F_SETFL, 0);
 #else
     // Note:  This function is never called
@@ -285,7 +285,7 @@ int Connection::Assign_Server(unsigned int addr)
     return OK;
 }
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 //extern "C" unsigned int   inet_addr(char *);
 #endif
 
@@ -340,7 +340,7 @@ int Connection::Connect()
 
     while (retries--)
       {
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 	//
 	// Set an alarm to make sure the connect() call times out
 	// appropriately This ensures the call won't hang on a
@@ -361,7 +361,7 @@ int Connection::Connect()
 	//
 	// Disable alarm and restore previous policy if any
 	//
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 	alarm(0);
        	sigaction(SIGALRM, &old_action, 0);
 #endif
@@ -779,7 +779,7 @@ char * Connection::Socket_as_String()
     return buffer;
 }
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 extern "C" char *inet_ntoa(struct in_addr);
 #endif
 

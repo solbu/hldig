@@ -6,7 +6,7 @@
  */
 
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 #include <windows.h>
 #endif
 
@@ -32,9 +32,9 @@ typedef unsigned long word64;
 #define TIGER_64BIT
 #elif SIZEOF_UNSIGNED_LONG_LONG_INT == 8
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 typedef unsigned long long word64;
-#else //ifdef _MSC_VER //_WIN32
+#else //ifdef _MSC_VER /* _WIN32 */
 typedef DWORD64 word64;
 #endif
 #else

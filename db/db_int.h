@@ -15,7 +15,7 @@
  *******************************************************/
 #include "db.h"
 
-#ifndef _MSC_VER //WIN32
+#ifndef _MSC_VER /* WIN32 */
 #ifndef NO_SYSTEM_INCLUDES
 #ifdef __STDC__
 #include <stdarg.h>
@@ -272,7 +272,7 @@ struct __mutex_t;	typedef struct __mutex_t MUTEX;
 /*******************************************************
  * Stuff not defined in native WIN32 Env.
  *******************************************************/
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 
 #include <windows.h>
 

@@ -126,7 +126,7 @@ CDB___dbenv_init(dbenv)
  *	Error message, including the standard error string.
  */
 static void
-#if defined(__STDC__) || defined(_MSC_VER)  //WIN32
+#if defined(__STDC__) || defined(_MSC_VER)  /* WIN32 */
 CDB___dbenv_err(const DB_ENV *dbenv, int error, const char *fmt, ...)
 #else
 CDB___dbenv_err(dbenv, error, fmt, va_alist)
@@ -138,7 +138,7 @@ CDB___dbenv_err(dbenv, error, fmt, va_alist)
 {
 	va_list ap;
 
-#if defined(__STDC__) || defined(_MSC_VER)  //WIN32
+#if defined(__STDC__) || defined(_MSC_VER)  /* WIN32 */
 	va_start(ap, fmt);
 #else
 	va_start(ap);
@@ -153,7 +153,7 @@ CDB___dbenv_err(dbenv, error, fmt, va_alist)
  *	Error message.
  */
 static void
-#if defined(__STDC__) || defined(_MSC_VER)  //WIN32
+#if defined(__STDC__) || defined(_MSC_VER)  /* WIN32 */
 CDB___dbenv_errx(const DB_ENV *dbenv, const char *fmt, ...)
 #else
 CDB___dbenv_errx(dbenv, fmt, va_alist)
@@ -164,7 +164,7 @@ CDB___dbenv_errx(dbenv, fmt, va_alist)
 {
 	va_list ap;
 
-#if defined(__STDC__) || defined(_MSC_VER)  //WIN32
+#if defined(__STDC__) || defined(_MSC_VER)  /* WIN32 */
 	va_start(ap, fmt);
 #else
 	va_start(ap);

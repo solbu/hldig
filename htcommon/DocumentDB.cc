@@ -13,7 +13,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentDB.cc,v 1.32 2003/07/21 08:16:10 angusgb Exp $
+// $Id: DocumentDB.cc,v 1.33 2004/01/12 12:48:24 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 

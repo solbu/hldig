@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: ExternalTransport.cc,v 1.7 2003/06/24 20:05:23 nealr Exp $
+// $Id: ExternalTransport.cc,v 1.8 2004/01/12 12:48:24 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -27,7 +27,7 @@
 #include <ctype.h>
 #include <stdio.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -130,7 +130,7 @@ void ExternalTransport::SetConnection (URL *u)
 Transport::DocStatus ExternalTransport::Request()
 {
 // NEAL - ENABLE/REWRITE THIS ASAP FOR WIN32
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
     //
     // Start the external handler, passing the protocol, URL and config file
     // as command arguments

@@ -7,7 +7,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: WordMonitor.cc,v 1.5 2003/06/24 19:57:27 nealr Exp $
+// $Id: WordMonitor.cc,v 1.6 2004/01/12 12:48:25 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <signal.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -156,7 +156,7 @@ WordMonitor::TimerStart()
     return;
   }
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
   struct sigaction action;
   struct sigaction old_action;
   memset((char*)&action, '\0', sizeof(struct sigaction));
@@ -207,7 +207,7 @@ WordMonitor::TimerClick(int signal)
       fflush(output);
     }
   }
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
   alarm(period);
 #endif
 }
@@ -216,7 +216,7 @@ void
 WordMonitor::TimerStop()
 {
   if(period > 0) {
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
     alarm(0);
     struct sigaction action;
     memset((char*)&action, '\0', sizeof(struct sigaction));
@@ -244,7 +244,7 @@ extern "C" {
   void word_monitor_click()
   {
     WordMonitor* monitor = WordMonitor::Instance();
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
     if(monitor)
       monitor->TimerClick(SIGALRM);
 #endif

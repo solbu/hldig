@@ -19,7 +19,7 @@ static const char sccsid[] = "@(#)os_spin.c	11.2 (Sleepycat) 11/3/99";
 
 #include <limits.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 

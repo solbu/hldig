@@ -20,7 +20,7 @@ static const char sccsid[] = "@(#)mut_tas.c	11.4 (Sleepycat) 10/1/99";
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 

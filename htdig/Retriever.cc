@@ -12,14 +12,14 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.88 2003/12/29 13:21:00 lha Exp $
+// $Id: Retriever.cc,v 1.89 2004/01/12 12:48:24 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 # include <sys/types.h>
 # include <winsock2.h>
 #endif
@@ -40,7 +40,7 @@
 #include "md5.h"
 #include "defaults.h"
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <pwd.h>
 #endif
 
@@ -265,7 +265,7 @@ static void sigpipe(int)
 //
 static void sig_handlers(void)
 {
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
     //POSIX SIGNALS
 	struct sigaction action;
 
@@ -285,14 +285,14 @@ static void sig_handlers(void)
     //ANSI C signal handling - Limited to supported Windows signals.
     signal(SIGINT, sigexit); 
     signal(SIGTERM, sigexit); 
-#endif //_MSC_VER //_WIN32
+#endif //_MSC_VER /* _WIN32 */
 }
 
 
 
 static void sig_phandler(void)
 {
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 	struct sigaction action;
 
 	sigemptyset(&action.sa_mask);
@@ -300,7 +300,7 @@ static void sig_phandler(void)
 	action.sa_flags = SA_RESTART;
 	if (sigaction(SIGPIPE, &action, NULL) != 0)
 		reportError("Cannot install SIGPIPE handler\n");
-#endif //_MSC_VER //_WIN32
+#endif //_MSC_VER /* _WIN32 */
 }
 
 
@@ -308,7 +308,7 @@ static void sig_phandler(void)
 // static void win32_check_messages
 //   Check WIN32 messages!
 //
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 static void win32_check_messages(void)
 {
 // NEAL - NEEDS FINISHING/TESTING
@@ -346,7 +346,7 @@ static void win32_check_messages(void)
     DispatchMessage(&msg);
 #endif
 }
-#endif //_MSC_VER //_WIN32
+#endif //_MSC_VER /* _WIN32 */
 
 
 //*****************************************************************************
@@ -385,7 +385,7 @@ void Retriever::Start()
 	//    or all the servers' queues are empty.
 ///////
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
     win32_check_messages();
 #endif
 
@@ -418,7 +418,7 @@ void Retriever::Start()
 
 		int max_connection_requests;
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
         win32_check_messages();
 #endif
 
@@ -474,7 +474,7 @@ void Retriever::Start()
 
 			count = 0;
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
             win32_check_messages();
 #endif
 
@@ -508,20 +508,20 @@ void Retriever::Start()
 					server->delay();	// This will pause if needed
 				// and reset the time
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
                 win32_check_messages();
 #endif
 
 			}
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
             win32_check_messages();
 #endif
 
 		}
 	}
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
     win32_check_messages();
 #endif
 
@@ -1231,7 +1231,7 @@ StringList *Retriever::GetLocal(const String & strurl)
 StringList *Retriever::GetLocalUser(const String & url, StringList * defaultdocs)
 {
 //  NOTE:  Native Windows does not have this contruct for the user Web files
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 	HtConfiguration *config = HtConfiguration::config();
 	static StringList *prefixes = 0, *paths = 0, *dirs = 0;
 	static Dictionary home_cache;
@@ -1350,7 +1350,7 @@ StringList *Retriever::GetLocalUser(const String & url, StringList * defaultdocs
 		return local_names;
 
 	delete local_names;
-#endif //_MSC_VER //_WIN32
+#endif //_MSC_VER /* _WIN32 */
 
     return 0;
 }

@@ -14,7 +14,7 @@ static const char sccsid[] = "@(#)os_rename.c	11.1 (Sleepycat) 7/25/99";
 #ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 

@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htsearch.h,v 1.14 2003/07/21 08:16:11 angusgb Exp $
+// $Id: htsearch.h,v 1.15 2004/01/12 12:48:25 lha Exp $
 //
 
 #ifndef _htsearch_h_
@@ -44,7 +44,7 @@ using namespace std;
 #include <fstream.h>
 #endif /* HAVE_STD */
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -53,7 +53,7 @@ extern int		do_and;
 extern int		do_short;
 extern StringList	fields;
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 extern StringMatch	limit_to;
 #endif
 

@@ -11,7 +11,7 @@
 static const char sccsid[] = "@(#)os_map.c	11.10 (Sleepycat) 10/31/99";
 #endif /* not lint */
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 #include <windows.h>
 #endif
 

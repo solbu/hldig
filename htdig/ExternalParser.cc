@@ -13,7 +13,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: ExternalParser.cc,v 1.27 2003/07/21 08:16:10 angusgb Exp $
+// $Id: ExternalParser.cc,v 1.28 2004/01/12 12:48:24 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -33,7 +33,7 @@
 #include <ctype.h>
 #include <stdio.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -44,7 +44,7 @@
 #include <sys/wait.h>
 #endif
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 #include <process.h>
 #endif
 
@@ -173,7 +173,7 @@ void
 ExternalParser::parse(Retriever &retriever, URL &base)
 {
 // NEAL - ENABLE/REWRITE THIS ASAP FOR WIN32
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 	HtConfiguration* config= HtConfiguration::config();
     if (contents == 0 || contents->length() == 0 ||
 	currentParser.length() == 0)
@@ -608,7 +608,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	parsable->setContents(newcontent.get(), newcontent.length());
 	parsable->parse(retriever, base);
     }
-#endif //ifndef _MSC_VER //_WIN32
+#endif //ifndef _MSC_VER /* _WIN32 */
 }
 
 

@@ -24,7 +24,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtCookieMemJar.cc,v 1.8 2003/07/21 08:16:11 angusgb Exp $ 
+// $Id: HtCookieMemJar.cc,v 1.9 2004/01/12 12:48:25 lha Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -544,7 +544,7 @@ const HtCookie* HtCookieMemJar::NextCookie()
    if (!_list)
       return 0;   // ends
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
    const HtCookie *cookie = ((const HtCookie*)_list->Get_Next()); // Cookie object
 #else
    const HtCookie* cookie( (const HtCookie*)(_list->Get_Next()) ); // Cookie object

@@ -1,10 +1,10 @@
-// Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 2003 The ht://Dig Group
-// For copyright details, see the file COPYING in your distribution
-// or the GNU Library General Public License (LGPL) version 2 or later or later
-// <http://www.gnu.org/copyleft/lgpl.html>
+/* Part of the ht://Dig package   <http://www.htdig.org/> */
+/* Copyright (c) 2003 The ht://Dig Group */
+/* For copyright details, see the file COPYING in your distribution */
+/* or the GNU Library General Public License (LGPL) version 2 or later or later */
+/* <http://www.gnu.org/copyleft/lgpl.html> */
 
-//BDB db.h header file for the Native WIN32 MSVC Platform
+/* BDB db.h header file for the Native WIN32 MSVC Platform */
 
 /*-
  * See the file LICENSE for redistribution information.
@@ -15,7 +15,7 @@
  *	@(#)db.src	11.20 (Sleepycat) 10/28/99
  */
 
-//WIN32 - MSVC++ Version
+/* WIN32 - MSVC++ Version */
 
 #ifndef _DB_H_
 #define	_DB_H_
@@ -24,7 +24,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 
 #include <windows.h>
 
@@ -86,7 +86,7 @@ typedef unsigned long ssize_t;
  * by the system.
  */
 
-#ifndef _MSC_VER //WIN32
+#ifndef _MSC_VER /* WIN32 */
 #ifndef	__BIT_TYPES_DEFINED__
 #define	__BIT_TYPES_DEFINED__
 @u_int8_decl@
@@ -102,7 +102,7 @@ typedef unsigned long ssize_t;
 @u_long_decl@
 @ssize_t_decl@
 
-#endif // _MSC_VER - WIN32
+#endif /* _MSC_VER - WIN32 */
 
 #define	DB_VERSION_MAJOR	3
 #define	DB_VERSION_MINOR	0

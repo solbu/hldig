@@ -18,12 +18,12 @@ static const char sccsid[] = "@(#)env_region.c	11.7 (Sleepycat) 11/12/99";
 #include <errno.h>
 #include <string.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 
 #endif
 
-#endif //!NO_SYSTEM_INCLUDES
+#endif /* !NO_SYSTEM_INCLUDES */
 
 #include "db_int.h"
 

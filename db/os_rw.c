@@ -14,7 +14,7 @@ static const char sccsid[] = "@(#)os_rw.c	11.2 (Sleepycat) 9/20/99";
 #ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 #endif
@@ -166,12 +166,12 @@ CDB___os_write(fhp, addr, len, nwp)
 			return (CDB___os_get_errno());
 
         /* HACK to debug where the O_BINARY mode of the file gets fouled up */
-        //printf("** %d bytes written, wanted to write %d\n", nw, len-offset);
+        /* printf("** %d bytes written, wanted to write %d\n", nw, len-offset); */
     }
 	*nwp = len;
     
     /* HACK to debug where the O_BINARY mode of the file gets fouled up */
-	//printf("[AFTER CDB___os_write] lseek(fhp->fd, 0, SEEK_CUR)=[%d]\n", lseek(fhp->fd, 0, SEEK_CUR));
+	/* printf("[AFTER CDB___os_write] lseek(fhp->fd, 0, SEEK_CUR)=[%d]\n", lseek(fhp->fd, 0, SEEK_CUR)); */
 	
     return (0);
 }

@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htsearch.cc,v 1.69 2003/12/21 11:40:44 lha Exp $
+// $Id: htsearch.cc,v 1.70 2004/01/12 12:48:25 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -143,7 +143,7 @@ main(int ac, char **av)
     //
     // The total search can NEVER take more than 5 minutes.
     //
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
     alarm(5 * 60);
 #endif
 

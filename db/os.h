@@ -15,7 +15,7 @@
  * Filehandle.
  */
 struct __fh_t {
-#if defined(_MSC_VER) //_WIN32
+#if defined(_MSC_VER) /* _WIN32 */
 	HANDLE	  handle;		/* Windows/32 file handle. */
 #endif
 	int	  fd;			/* POSIX file descriptor. */

@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtFile.cc,v 1.11 2003/07/21 08:16:11 angusgb Exp $ 
+// $Id: HtFile.cc,v 1.12 2004/01/12 12:48:25 lha Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -44,17 +44,17 @@ using namespace std;
 #include <stdio.h> // for sscanf
 #include <sys/stat.h>
 
-#ifndef _MSC_VER //_WIN32
+#ifndef _MSC_VER /* _WIN32 */
 #include <unistd.h>
 #endif
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 #include "dirent_local.h"
 #else
 #include <dirent.h> // for scandir
 #endif
 
-#ifdef _MSC_VER //_WIN32
+#ifdef _MSC_VER /* _WIN32 */
 #define popen _popen
 #define pclose _pclose
 #define lstat stat
