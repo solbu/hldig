@@ -1,3 +1,10 @@
+Thu Jun  7 16:03:17 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.{h,cc}, htcommon/defaults.cc: Added multi-excerpt 
+	feature and max_excerpts attribute, as contributed by Jim Cole.
+	* htdoc/THANKS.html, htdoc/attrs.html, htdoc/cf_byname.html,
+	htdoc/cf_byprog.html: Credit where due, and document attribute.
+
 Thu Jun  7 15:27:33 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/ExternalParser.cc: Backported from 3.2.0b3, fixing these

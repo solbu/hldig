@@ -6,9 +6,13 @@
   <body bgcolor="#eef7ff">
 	<h1>Configuration file format -- Attributes</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
+	</p>
+	<p>
+	  See the <a href="config.html#htdig.conf">sample htdig.conf</a> file
+	  for some examples of usage.
 	</p>
 	<hr size="4" noshade>
 	<h2>
@@ -3446,6 +3450,48 @@
 		  </dt>
 		  <dd>
 			max_doc_size: 5000000
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="max_excerpts">max_excerpts</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			1
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This value determines the maximum number of excerpts
+			that can be displayed for one matching document in the
+			search results.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			max_excerpts: 10
 		  </dd>
 		</dl>
 	  </dd>
@@ -7537,7 +7583,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: $Date: 2001/06/07 18:53:03 $
+Last modified: $Date: 2001/06/07 21:03:52 $
 <!-- hhmts end -->
   </body>
 </html>

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.31 2001/06/07 19:16:00 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.32 2001/06/07 21:03:52 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -1417,6 +1417,7 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 	}
     }
     else
+    if ( first == 0 || config.Value( "max_excerpts" ) == 1 )
     {
 	int	headLength = strlen(head);
 	int	length = config.Value("excerpt_length", 50);
@@ -1459,7 +1460,107 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 	    *text << config["end_ellipses"];
 	}
     }
+    else
+    {
+      *text = buildExcerpts( head, urlanchor, fanchor );
+    }
+
     return text;
+}
+
+//*****************************************************************************
+// Handle cases where multiple document excerpts are requested.
+//
+const String
+Display::buildExcerpts( char *head, String urlanchor, int fanchor )
+{
+  if ( !config.Boolean( "add_anchors_to_excerpt" ) )
+  {
+    fanchor = 0;
+  }
+
+  int    headLength    = strlen( head );
+  int    excerptNum    = config.Value( "max_excerpts", 1 );
+  int    excerptLength = config.Value( "excerpt_length", 50 );
+  int    lastPos       = 0;
+  int    curPos        = 0;
+
+  String text;
+
+  for ( int i = 0; i < excerptNum; ++i )
+  {
+    int which, termLength;
+
+    int nextPos = allWordsPattern->FindFirstWord( head + lastPos,
+                                                  which, termLength );
+
+    if ( nextPos < 0 )
+    {
+      // Ran out of matching terms
+      break;
+    }
+    else
+    {
+      // Determine offset from beginning of head
+      curPos = lastPos + nextPos;
+    }
+
+    // Slip a break in since there is another excerpt coming
+    if ( i != 0 )
+    {
+      text << "<br>\n";
+    }
+
+    // Determine where excerpt starts
+    char *start = &head[curPos] - excerptLength / 2;
+
+    if ( start < head )
+    {
+      start = head;
+    }
+    else
+    {
+      text << config["start_ellipses"];
+
+      while ( *start && HtIsStrictWordChar( *start ) )
+      {
+        start++;
+      }
+    }
+
+    // Determine where excerpt ends
+    char *end = start + excerptLength;
+
+    if ( end > head + headLength )
+    {
+      end = head + headLength;
+
+      text << hilight( start, urlanchor, fanchor );
+    }
+    else
+    {
+      while ( *end && HtIsStrictWordChar( *end ) )
+      {
+        end++;
+      }
+
+      // Save end char so that it can be restored
+      char endChar = *end;
+
+      *end = '\0';
+
+      text << hilight(start, urlanchor, fanchor);
+      text << config["end_ellipses"];
+
+      *end = endChar;
+    }
+
+    // No more words left to examine in head
+    if ( (lastPos = curPos + termLength) > headLength )
+     break;
+  }
+
+  return text;
 }
 
 //*****************************************************************************
