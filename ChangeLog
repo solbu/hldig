@@ -1,3 +1,43 @@
+Mon Oct 25 11:42:13 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* htword/ word.cc,t_wordskip,skip_db.txt: Added test for *Skip Speedup*
+	* htword/ WordList: Added tracing of Walk() for debuging purposes
+
+Fri Oct 22 18:22:00 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* htword/ WordList.cc,WordKey: Added a defined/undefined flag for saying
+	if a search key's word is a prefix or not: WORD_KEY_WORDSUFFIX_DEFINED
+	reduces code size and makes it much easier to undertand
+	* htword/ WordList,WordReference,WordKey: Added input output streams for
+	WordList,WordReference,WordKey
+
+Wed Oct 20 16:47:52 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* htword/ WordKey,Makefile.am,WordCaseIsAStatements.h: for readability
+	replaced the switch ... #ifdef ..STATEMENT().... sequence that apeared many times
+	with an	include file :WordCaseIsAStatements.h
+
+	* htword/ WordKey: WordKeyInfo: duplicated all of the fields structure into 
+	sort structure, for fast acces without cross referencing and for simplifying code
+	(required change of perl in template WordKey.h.tmpl)
+
+	* htword/ WordList: *Skip Speedup* added a speedup to avoid wasting time
+	by sequentialy walking through useless entries. see function: 
+	SkipUselessSequentialWalking() for an example and more info
+
+	* htword/ WordKey.h,WordKey.cc: Changed Set,Unset,IsSet Wordkey accesors' names to:
+	SetDefined,Undefined,IsDefined. (easier to read and avoids naming conflicts)
+
+	* htword/ WordKey: added generic numerical accesors for accesing 
+	numerical fields in WordKey (in sorted order):GetInSortOrder,SetInSortOrder
+
+	* htword/ WordKey,word_builder.pl: added a MAX_NFIELDS constant, that specifies
+	a maximum number of fields that a WordKey can have. Sanity check in word_builder.pl.
+
+	* htword/ word_builder.pl: enforced word sort order to ascending
+
+	* htword/ WordList: added a verbose flag using config."wordlist_verbose"
+
 Tue Oct 19 13:10:47 1999  Loic Dachary  <loic@ceic.com>
 
 	* acconfig.h: remove uncessary VERSION (redundant)
@@ -26,10 +66,9 @@ Mon Oct 18 17:21:34 1999  Loic Dachary  <loic@ceic.com>
 
 Mon Oct 18 11:40:17 1999  Marcel Bosc  <bosc@ceic.com>
 
-	* WordList.cc (Walk): fixed bug in Walk: if flag HTDIG_WORDLIST was set 
+	* htword/ WordList.cc (Walk): fixed bug in Walk: if flag HTDIG_WORDLIST was set 
 	then data was uninitialized in loop 
 	 
-
 Fri Oct 15 18:52:03 1999  Marcel Bosc  <bosc@ceic.com>
 
 	* htdig/Document.h (class Document): added const to:
