@@ -1,3 +1,12 @@
+Sat Nov  3 23:55:00 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/htString.h: Add #include for ostream.h to solve compile
+	problems with gcc3.
+
+	* htlib/Connection.h, htlib/Connection.cc: Backport Connection
+	class from 3.2 code--installs alarm() call to timeout connections
+	and will retry connections a few times before giving up.
+
 Fri Nov  2 12:28:35 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc, htdoc/attrs.html: Added support for dc.date,

@@ -8,9 +8,17 @@
 // All the calls are basically the same, but the parameters do not have any
 // stray _addr or _in mixed in...
 //
-// $Id: Connection.h,v 1.3 1998/10/18 21:22:16 ghutchis Exp $
+// $Id: Connection.h,v 1.3.2.1 2001/11/04 23:23:41 ghutchis Exp $
 //
 // $Log: Connection.h,v $
+// Revision 1.3.2.1  2001/11/04 23:23:41  ghutchis
+// 	* htlib/Connection.h, htlib/Connection.cc: Backport Connection
+// 	class from 3.2 code--installs alarm() call to timeout connections
+// 	and will retry connections a few times before giving up.
+//
+// Needs to be used in htdig/* code, but should work w/o problem.
+// (just no way of configuring # retries, etc.)
+//
 // Revision 1.3  1998/10/18 21:22:16  ghutchis
 //
 // Revised connection timeout methods.
@@ -52,6 +60,7 @@ public:
     int				ndelay();
     int				nondelay();
     int                         timeout(int value);
+    int                         retries(int value);
 
     // Port stuff
     int				assign_port(int port = 0);
@@ -96,6 +105,8 @@ private:
     char				*server_name;
     int				need_io_stop;
     int                         timeout_value;
+    int				retry_value;
+    int				wait_time;
 };
 
 

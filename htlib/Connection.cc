@@ -26,6 +26,7 @@
 #include <netdb.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <signal.h>
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
@@ -34,6 +35,8 @@
 #endif
 
 #include <htconfig.h>
+
+typedef void (*SIGNAL_HANDLER) (...);
 
 extern "C" {
     int rresvport(int *);
@@ -49,6 +52,8 @@ Connection::Connection()
     server_name = 0;
     all_connections.Add(this);
     timeout_value = 0;
+    retry_value = 1;
+    wait_time = 5; // wait 5 seconds after a failed connection
 }
 
 
@@ -72,6 +77,8 @@ Connection::Connection(int socket)
     server_name = 0;
     all_connections.Add(this);
     timeout_value = 0;
+    retry_value = 1;
+    wait_time = 5;
 }
 
 
@@ -139,6 +146,15 @@ int Connection::timeout(int value)
     return oval;
 }
 
+//*****************************************************************************
+// int Connection::retries(int value)
+//
+int Connection::retries(int value)
+{
+    int oval = retry_value;
+    retry_value = value;
+    return oval;
+}
 
 //*****************************************************************************
 // int Connection::close()
@@ -222,6 +238,12 @@ int Connection::assign_server(char *name)
     return OK;
 }
 
+//
+// Do nothing, we are only interested in the EINTR return of the
+// running system call.
+//
+static void handler_timeout(int) {
+}
 
 //*****************************************************************************
 // int Connection::connect(int allow_EINTR)
@@ -229,24 +251,48 @@ int Connection::assign_server(char *name)
 int Connection::connect(int allow_EINTR)
 {
     int	status;
+    int retries = retry_value;
 
-    for (;;)
-    {
+     while (retries--)
+      {
+        //
+        // Set an alarm to make sure the connect() call times out
+        // appropriately This ensures the call won't hang on a
+        // dead server or bad DNS call.
+        // Save the previous alarm signal handling policy, if any.
+        //
+        struct sigaction action;
+        struct sigaction old_action;
+        memset((char*)&action, '\0', sizeof(struct sigaction));
+        memset((char*)&old_action, '\0', sizeof(struct sigaction));
+        action.sa_handler = handler_timeout;
+        sigaction(SIGALRM, &action, &old_action);
+        alarm(timeout_value);
+
 	status = ::connect(sock, (struct sockaddr *)&server, sizeof(server));
-	if (status < 0 && errno == EINTR && !allow_EINTR)
-	{
-	    ::close(sock);
-	    open();
-	    continue;
-	}
-	break;
-    }
+	//
+        // Disable alarm and restore previous policy if any
+        //
+        alarm(0);
+        sigaction(SIGALRM, &old_action, 0);
+
+	if (status == 0 || errno == EALREADY || errno == EISCONN)
+	  {
+	    connected = 1;
+	    return OK;
+	  }
+
+        //
+        // Only loop if timed out. Other errors are fatal.
+        //
+        if (status < 0 && errno != EINTR)
+          break;
+
+	::close(sock);
+	open();
+	sleep(wait_time);
+      }
 	
-    if (status == 0 || errno == EALREADY || errno == EISCONN)
-    {
-	connected = 1;
-	return OK;
-    }
 #if 0
     if (status == ECONNREFUSED)
     {
