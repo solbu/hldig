@@ -1,4 +1,8 @@
-Mon Mar 22 14:28:06 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Mar 22 14:33:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Configuration.cc: Fix Add() function to avoid infinite loop
+	on some systems, which don't allow all the letters in isalnum() that
+	isalpha() does, e.g. accented ones.
 
 	* htdig/HTML.cc: Fix three reported bugs about inconsistent
 	handling of space and punctuation in title, href description & head.
