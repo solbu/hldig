@@ -28,7 +28,6 @@ PENDING FEATURES:
 * Field-restricted searching
 * Date-restricted searching
 * Return all results
-* Update db and htdb code to synch with mifluz-0.14 (will fix last item above)
 * Duplicate document detection while indexing
 * Method "exact" for phrase-searching on the entire query
 
