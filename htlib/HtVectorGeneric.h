@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVectorGeneric.h,v 1.1.2.2 2000/01/03 10:04:46 bosc Exp $
+// $Id: HtVectorGeneric.h,v 1.1.2.3 2000/01/06 11:55:05 bosc Exp $
 //
 //
 //  #ifndef	_HtVectorGeneric_h_
@@ -209,8 +209,9 @@ protected:
     inline GType &             back()			 {return Nth(element_count-1);}
     inline const GType &       back()	const		 {return Nth(element_count-1);}
     inline void                pop_back()                {RemoveFrom(size()-1);}
-
-    void                reserve (int n)           {Allocate(n);}
+    inline void                clear()                   {;}
+    
+    void                       reserve (int n)           {Allocate(n);}
 
 // TODO: erase  clear resize insert(...) and many others
 

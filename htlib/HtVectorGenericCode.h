@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVectorGenericCode.h,v 1.1.2.2 2000/01/03 11:49:09 bosc Exp $
+// $Id: HtVectorGenericCode.h,v 1.1.2.3 2000/01/06 11:55:05 bosc Exp $
 //
 
 
@@ -248,6 +248,7 @@ void HtVectorGType::Allocate(int capacity)
 
       // Ensure we have more than the capacity and we aren't
       // always rebuilding the vector (which leads to quadratic behavior)
+      if(!allocated){allocated=1;}
       while (allocated < capacity)
 	allocated *= 2;
 
