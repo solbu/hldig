@@ -11,7 +11,7 @@
 // <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.19 2001/08/27 22:27:31 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.20 2001/08/31 19:39:32 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -27,9 +27,6 @@ static StringMatch	tags;
 static StringMatch	nobreaktags;
 static StringMatch	spacebeforetags;
 static StringMatch	spaceaftertags;
-static StringMatch	attrs;
-static StringMatch	srcMatch;
-static StringMatch	hrefMatch;
 static StringMatch	keywordsMatch;
 static int		keywordsCount;
 static int		max_keywords;
@@ -68,19 +65,9 @@ HTML::HTML()
     //
     // Initialize the patterns that we will try to match.
     // The tags Match object is used to match tag commands while
-    // the attrs Match object is used to match names of tag parameters.
     //
     tags.IgnoreCase();
-    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object|link|style|/style");
-
-    attrs.IgnoreCase();
-    attrs.Pattern("src|href|name");
-
-    srcMatch.IgnoreCase();
-    srcMatch.Pattern("src");
-
-    hrefMatch.IgnoreCase();
-    hrefMatch.Pattern("href");
+    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object|link|style|/style|script|/script");
 
     // These tags don't cause a word break.  They may also be in "tags" above,
     // except for the "a" tag, which must be handled as a special case.
@@ -305,9 +292,9 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    q = (unsigned char*)strchr((char *)position, '>');
 	    if (!q)
 	      break; // Syntax error in the doc.  Tag never ends.
-	    tag = 0;
-	    tag.append((char*)position, q - position + 1);
 	    position++;
+	    tag = 0;
+	    tag.append((char*)position, q - position);
 	    while (isspace(*position))
 		position++;
 	    if (!in_space && spacebeforetags.CompareWord((char *)position)
@@ -360,8 +347,9 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 			q = (unsigned char*)strchr((char *)position, '>');
 			if (q)
 			{
+			    position++;
 			    tag = 0;
-			    tag.append((char*)position, q - position + 1);
+			    tag.append((char*)position, q - position);
 			    do_tag(retriever, tag);
 			    position = q+1;
 			}
@@ -464,8 +452,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 void
 HTML::do_tag(Retriever &retriever, String &tag)
 {
-    char	*position = tag.get() + 1;		// Skip the '<'
-    char	*q, *t;
+    char	*position = tag.get();
     int		which, length;
 
     while (isspace(*position))
@@ -475,8 +462,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
     if (tags.CompareWord(position, which, length) < 0)
 	return; // Nothing matched.
 
+    // Use the configuration code to match attributes as key-value pairs
+    Configuration	attrs;
+    attrs.NameValueSeparators("=");
+    attrs.Add(position);
+
     if (debug > 3)
-	cout << "Tag: " << position << ", matched " << which << endl;
+	cout << "Tag: <" << tag << ">, matched " << which << endl;
     
     switch (which)
     {
@@ -502,135 +494,47 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			
 	case 2:		// "a"
 	{
-	    which = -1;
-	    int pos;
-	    while ((pos = attrs.FindFirstWord(position, which, length)) >= 0)
+	  if (attrs["href"])
 	    {
-		position += pos + length;
-		if (debug > 1)
-		    cout << "A tag: pos = " << pos << ", position = " << position << endl;
-		switch (which)
+	      //
+	      // a href seen
+	      //
+	      if (in_ref)
 		{
-		    case 1:		// "href"
-		    {
-			//
-			// a href seen
-			//
-			while (*position && *position != '=')
-			    position++;
-			if (!*position)
-			    return;
-			position++;
-			while (isspace(*position))
-			    position++;
-                       //
-		       // Allow either single quotes or double quotes
-                       // around the URL itself
-                       //
-                       if (*position == '"'||*position == '\'')
-			{
-			    position++;
-			    q = strchr(position, position[-1]);
-			    if (!q)
-				break;
-                           //
-                           // We seem to have matched the opening quote char
-                           // Mark the end of the quotes as our endpoint, so
-                           // that we can continue parsing after the current
-                           // text
-                           //
-                           *q = '\0';
-                           //
-                           // If a '#' is present in a quoted URL,
-                           //  treat that as the end of the URL, but we skip
-                           //  past the quote to parse the rest of the anchor.
-                           //
-                           if ((t = strchr(position, '#')) != NULL)
-                               *t = '\0';
-			}
-			else
-			{
-			    q = position;
-			    while (*q &&
-				   *q != '>' &&
-				   !isspace(*q) && // *q != '?'  ???? -grh
-				   *q != '#')
-				q++;
-			    *q = '\0';
-			}
-			if (in_ref)
-			{
-			    if (debug > 1)
-				cout << "Terminating previous <a href=...> tag,"
-				     << " which didn't have a closing </a> tag."
-				     << endl;
-			    if (dofollow)
-				retriever.got_href(*href, description);
-			    in_ref = 0;
-			}
-			delete href;
-			href = new URL(transSGML(position), *base);
-			in_ref = 1;
-			description = 0;
-			position = q + 1;
-			break;
-		    }
-
-		    case 2:		// "name"
-		    {
-			//
-			// a name seen
-			//
-			while (*position && *position != '=')
-			    position++;
-			if (!*position)
-			    return;
-			position++;
-			while (isspace(*position))
-			    position++;
-                       //
-                       // Allow either single quotes or double quotes
-                       // around the URL itself
-                       //
-                       if (*position == '"'||*position == '\'')
-			{
-			    position++;
-			    q = strchr(position, position[-1]);
-			    if (!q)
-				break;
-                           //
-                           // We seem to have matched the opening quote char
-                           // Mark the end of the quotes as our endpoint, so
-                           // that we can continue parsing after the current
-                           // text
-                           //
-                           *q = '\0';
-                           //
-                           // If a '#' is present in a quoted URL,
-                           //  treat that as the end of the URL, but we skip
-                           //  past the quote to parse the rest of the anchor.
-                           //
-                           if ((t = strchr(position, '#')) != NULL)
-                               *t = '\0';
-			}
-			else
-			{
-			    q = position;
-			    while (*q && *q != '>' && !isspace(*q))
-				q++;
-			*q = '\0';
-			}
-			retriever.got_anchor(transSGML(position));
-			position = q + 1;
-			break;
-		    }
-		    default:
-			break;
+		  if (debug > 1)
+		    cout << "Terminating previous <a href=...> tag,"
+			 << " which didn't have a closing </a> tag."
+			 << endl;
+		  if (dofollow)
+		      retriever.got_href(*href, description);
+		  in_ref = 0;
 		}
+	      if (href)
+		delete href;
+	      href = new URL(transSGML(attrs["href"]), *base);
+	      in_ref = 1;
+	      description = 0;
+	      break;
 	    }
-	    break;
-	}
+	  
+	  if (attrs["title"] && attrs["href"])
+	    {
+	      //
+	      // a title seen for href
+	      //
+	      retriever.got_href(*href, transSGML(attrs["title"]));
+	    }
 
+	  if (attrs["name"])
+	    {
+	      //
+	      // a name seen
+	      //
+	      retriever.got_anchor(transSGML(attrs["name"]));
+	    }
+	  break;
+	}
+				   
 	case 3:		// "/a"
 	    if (in_ref)
 	    {
@@ -675,92 +579,47 @@ HTML::do_tag(Retriever &retriever, String &tag)
 
 	case 16:	// "noindex"
 	case 27:	// "style"
+        case 29:        // "script"
 	    doindex = 0;
 	    dofollow = 0;
 	    break;
 
 	case 17:	// "/noindex"
 	case 28:	// "/style"
+        case 30:	// "/script"
 	    doindex = 1;
 	    dofollow = 1;
 	    break;
 
 	case 18:	// "img"
-	{
-	    // Handle alt parameter
-	    Configuration	conf;
-	    conf.NameValueSeparators("=");
-	    conf.Add(position+length);
-	    if (conf["alt"])
-	    {
-		char	*alttxt = transSGML(conf["alt"]);
+	  {
+	    if (attrs["alt"])
+	      {
+		char	*alttxt = transSGML(attrs["alt"]);
 		if (doindex && in_title)
 		    title << alttxt << " ";
 		if (in_ref && description.length() < max_description_length)
 		    description << alttxt << " ";
 		if (doindex && !in_title && head.length() < max_head_length)
 		    head << alttxt << " ";
-		char	*w = HtWordToken(alttxt);
+		char *w = HtWordToken(alttxt);
 		while (w && doindex)
-		{
+		  {
 		    if (strlen(w) >= minimumWordLength)
 		      retriever.got_word(w,
 				 int((offset+(w-alttxt)) * 1000
 					/ totlength),
 				 in_heading);
 		    w = HtWordToken(0);
-		}
+		  }
 		w = '\0';
-	    }
-
-	    // Handle src parameter
-	    which = -1;
-	    int pos = attrs.FindFirstWord(position, which, length);
-	    if (pos < 0 || which != 0)
-		break;
-	    position += pos + length;
-	    while (*position && *position != '=')
-		position++;
-	    if (!*position)
-		break;
-	    position++;
-	    while (isspace(*position))
-		position++;
-           //
-           // Allow either single quotes or double quotes
-           // around the URL itself
-           //
-           if (*position == '"'||*position == '\'')
-	    {
-		position++;
-		q = strchr(position, position[-1]);
-		if (!q)
-		    break;
-               //
-               // We seem to have matched the opening quote char
-               // Mark the end of the quotes as our endpoint, so
-               // that we can continue parsing after the current
-               // text
-               //
-               *q = '\0';
-               //
-               // If a '#' is present in a quoted URL,
-               //  treat that as the end of the URL, but we skip
-               //  past the quote to parse the rest of the anchor.
-               //
-               if ((t = strchr(position, '#')) != NULL)
-                   *t = '\0';
-	    }
-	    else
-	    {
-		q = position;
-		while (*q && *q != '>' && !isspace(*q))
-		    q++;
-	    *q = '\0';
-	    }
-	    retriever.got_image(transSGML(position));
+	      }
+	    if (attrs["src"])
+	      {
+		retriever.got_image(transSGML(attrs["src"]));
+	      }
 	    break;
-	}
+	  }
 
 	case 19:	// "li"
 	    if (doindex && !in_title && head.length() < max_head_length)
@@ -768,39 +627,32 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    break;
 
 	case 20:	// "meta"
-	{	    position += length;
-	    Configuration	conf;
-	    conf.NameValueSeparators("=");
-	    conf.Add(position);
-
+	{
 	    //
 	    // First test for old-style meta tags (these break any
 	    // reasonable DTD...)
 	    //
-	    if (conf["htdig-noindex"])
+	    if (attrs["htdig-noindex"])
 	      {
 		retriever.got_noindex();
 		doindex = 0;
 		dofollow = 0;
 	      }
-	    if (conf["htdig-index"])
+	    if (attrs["htdig-index"])
 	      {
 		doindex = 1;
 		dofollow = 1;
 	      }
-	    if (conf["htdig-email"])
-	    {
-		retriever.got_meta_email(transSGML(conf["htdig-email"]));
-	    }
-	    if (conf["htdig-notification-date"])
-	    {
-		retriever.got_meta_notification(transSGML(conf["htdig-notification-date"]));
-	    }
-	    if (conf["htdig-email-subject"])
-	    {
-		retriever.got_meta_subject(transSGML(conf["htdig-email-subject"]));
-	    }
-	    if (conf["htdig-keywords"] || conf["keywords"])
+	    if (attrs["htdig-email"])
+	      retriever.got_meta_email(transSGML(attrs["htdig-email"]));
+
+	    if (attrs["htdig-notification-date"])
+	      retriever.got_meta_notification(transSGML(attrs["htdig-notification-date"]));
+
+	    if (attrs["htdig-email-subject"])
+	      retriever.got_meta_subject(transSGML(attrs["htdig-email-subject"]));
+
+	    if (attrs["htdig-keywords"] || attrs["keywords"])
 	    {
 		//
 		// Keywords are added as being at the very top of the
@@ -808,9 +660,9 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		// keywords-factor which is assigned to slot 10 in the
 		// factor table.
 		//
-		char	*keywords = conf["htdig-keywords"];
+		char	*keywords = attrs["htdig-keywords"];
 		if (!keywords)
-		    keywords = conf["keywords"];
+		    keywords = attrs["keywords"];
 		char	*w = HtWordToken(transSGML(keywords));
 		while (w && doindex)
 		{
@@ -822,14 +674,14 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		w = '\0';
 	    }
 	
-	    if (conf["http-equiv"])
+	    if (attrs["http-equiv"])
 	      {
 
 		// <META HTTP-EQUIV=REFRESH case
-		if (mystrcasecmp(conf["http-equiv"], "refresh") == 0
-		    && conf["content"])
+		if (mystrcasecmp(attrs["http-equiv"], "refresh") == 0
+		    && attrs["content"])
 		  {
-		    char *content = conf["content"];
+		    char *content = attrs["content"];
 		    char *q = mystrcasestr(content, "url");
 		    if (q && *q)
 		      {
@@ -839,11 +691,12 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			while (*qq && (*qq != ';') && (*qq != '"') &&
 			       !isspace(*qq))qq++;
 			*qq = 0;
-			URL *href = new URL(transSGML(q), *base);
+			if (href)
+			  delete href;
+			href = new URL(transSGML(q), *base);
 			// I don't know why anyone would do this, but hey...
 			if (dofollow)
 			  retriever.got_href(*href, "");
-			delete href;
 		      }
 		  }
 	      }
@@ -853,29 +706,27 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    // fly with any reasonable DTD out there
 	    //
 
-	    if (conf["name"] && conf["content"])
+	    if (attrs["name"] && attrs["content"])
 	    {
-		char	*cache = conf["name"];
-
-		which = -1; // What does it do?
+		char	*cache = attrs["name"];
 
 		  // First of all, check for META description
 
 		  if (mystrcasecmp(cache, "description") == 0 
-			 && strlen(conf["content"]) != 0)
+			 && strlen(attrs["content"]) != 0)
 		  {
 		    //
 		    // We need to do two things. First grab the description
 		    // and clean it up
 		    //
-		    meta_dsc = transSGML(conf["content"]);
+		    meta_dsc = transSGML(attrs["content"]);
 		    meta_dsc.replace('\n', ' ');
 		    meta_dsc.replace('\r', ' ');
 		    meta_dsc.replace('\t', ' ');
 		    if (meta_dsc.length() > max_meta_description_length)
 		     meta_dsc = meta_dsc.sub(0, max_meta_description_length).get();
 		   if (debug > 1)
-		     cout << "META Description: " << conf["content"] << endl;
+		     cout << "META Description: " << attrs["content"] << endl;
 		   retriever.got_meta_dsc(meta_dsc);
 
 
@@ -884,7 +735,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		   // (slot 11 is the new slot for this)
 		   //
 
-		   char        *words = HtWordToken(transSGML(conf["content"]));
+		   char        *words = HtWordToken(transSGML(attrs["content"]));
 		   char        *w = words;
                    while (w && doindex)
 		     {
@@ -895,13 +746,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
 				 11);
 			w = HtWordToken(0);
 		     }
-		 w = '\0';
+		   w = '\0';
 		}
 
-		if (keywordsMatch.CompareWord(cache))
+		if (keywordsMatch.CompareWord(cache) && doindex)
 		{
-		    char	*w = HtWordToken(transSGML(conf["content"]));
-		    while (w && doindex)
+		    char	*w = HtWordToken(transSGML(attrs["content"]));
+		    while (w)
 		    {
 			if (strlen(w) >= minimumWordLength
 				&& ++keywordsCount <= max_keywords)
@@ -912,20 +763,20 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		}
 		else if (mystrcasecmp(cache, "htdig-email") == 0)
 		{
-		    retriever.got_meta_email(transSGML(conf["content"]));
+		    retriever.got_meta_email(transSGML(attrs["content"]));
 		}
-		else if (mystrcasecmp(cache, "date") == 0 &&
+		else if (mystrcasecmp(cache, "date") == 0 && 
 				config.Boolean("use_doc_date",0))
 		{
-		    retriever.got_time(transSGML(conf["content"]));
+		    retriever.got_time(transSGML(attrs["content"]));
 		}
 		else if (mystrcasecmp(cache, "htdig-notification-date") == 0)
 		{
-		    retriever.got_meta_notification(transSGML(conf["content"]));
+		    retriever.got_meta_notification(transSGML(attrs["content"]));
 		}
 		else if (mystrcasecmp(cache, "htdig-email-subject") == 0)
 		{
-		    retriever.got_meta_subject(transSGML(conf["content"]));
+		    retriever.got_meta_subject(transSGML(attrs["content"]));
 		}
 		else if (mystrcasecmp(cache, "htdig-noindex") == 0)
 		  {
@@ -934,9 +785,9 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    dofollow = 0;
 		  }
 		else if (mystrcasecmp(cache, "robots") == 0
-			 && strlen(conf["content"]) !=0)
+			 && strlen(attrs["content"]) !=0)
 		  {
-		    String   content_cache = conf["content"];
+		    String   content_cache = attrs["content"];
 		    content_cache.lowercase();
 		    if (content_cache.indexOf("noindex") != -1)
 		      {
@@ -953,8 +804,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		      }
 		  }
 	    }
-	    else if (conf["name"] &&
-		     mystrcasecmp(conf["name"], "htdig-noindex") == 0)
+	    else if (attrs["name"] &&
+		     mystrcasecmp(attrs["name"], "htdig-noindex") == 0)
 	    {
 	        retriever.got_noindex();
 	        doindex = 0;
@@ -964,205 +815,71 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	}
 
 	case 21:	// frame
-	case 24:	// embed
-	case 25:	// object
+        case 24:	// embed
 	{
-	    which = -1;
-	    int pos = srcMatch.FindFirstWord(position, which, length);
-	    position += pos + length;
-	    switch (which)
+	  if (attrs["src"])
 	    {
-		case 0:		// "src"
+	      //
+	      // src seen
+	      //
+	      if (dofollow)
 		{
-		    //
-		    // src seen
-		    //
-		    while (*position && *position != '=')
-			position++;
-		    if (!*position)
-			return;
-		    position++;
-		    while (isspace(*position))
-			position++;
-                   //
-                   // Allow either single quotes or double quotes
-                   // around the URL itself
-                   //
-                   if (*position == '"'||*position == '\'')
-		    {
-			position++;
-			q = strchr(position, position[-1]);
-			if (!q)
-			    break;
-                       //
-                       // We seem to have matched the opening quote char
-                       // Mark the end of the quotes as our endpoint, so
-                       // that we can continue parsing after the current
-                       // text
-                       //
-                       *q = '\0';
-                       //
-                       // If a '#' is present in a quoted URL,
-                       //  treat that as the end of the URL, but we skip
-                       //  past the quote to parse the rest of the anchor.
-                       //
-                       if ((t = strchr(position, '#')) != NULL)
-                           *t = '\0';
-		    }
-		    else
-		    {
-			q = position;
-			while (*q &&
-			       *q != '>' &&
-			       !isspace(*q) && //  *q != '?'   ??? -grh
-			       *q != '#')
-			    q++;
-			*q = '\0';
-		    }
+		  if (href)
 		    delete href;
-		    href = new URL(transSGML(position), *base);
-		    if (dofollow)
-		    {
-			description = 0;
-			retriever.got_href(*href, description);
-			in_ref = 0;
-		    }
-		    break;
+		  href = new URL(transSGML(attrs["src"]), *base);
+		  retriever.got_href(*href, transSGML(attrs["title"]));
+		  in_ref = 0;
 		}
-		break;
 	    }
-	    break;
+	  break;
 	}
-	
+	  
+        case 25:	// object
+	{
+	  if (attrs["data"])
+	    {
+	      //
+	      // data seen
+	      //
+	      if (dofollow)
+		{
+		  if (href)
+		    delete href;
+		  href = new URL(transSGML(attrs["data"]), *base);
+		  retriever.got_href(*href, transSGML(attrs["title"]));
+		  in_ref = 0;
+		}
+	    }
+	  break;
+	}
+	  
 	case 22:	// area
-	case 26:	// link
+        case 26:	// link
 	{
-	    which = -1;
-	    int pos = hrefMatch.FindFirstWord(position, which, length);
-	    position += pos + length;
-	    switch (which)
+	  if (attrs["href"])
 	    {
-		case 0:		// "href"
+	      // href seen
+	      if (dofollow)
 		{
-		    //
-		    // href seen
-		    //
-		    while (*position && *position != '=')
-			position++;
-		    if (!*position)
-			return;
-		    position++;
-		    while (isspace(*position))
-			position++;
-                   //
-                   // Allow either single quotes or double quotes
-                   // around the URL itself
-                   //
-                   if (*position == '"'||*position == '\'')
-		    {
-			position++;
-			q = strchr(position, position[-1]);
-			if (!q)
-			    break;
-                       //
-                       // We seem to have matched the opening quote char
-                       // Mark the end of the quotes as our endpoint, so
-                       // that we can continue parsing after the current
-                       // text
-                       //
-                       *q = '\0';
-                       //
-                       // If a '#' is present in a quoted URL,
-                       //  treat that as the end of the URL, but we skip
-                       //  past the quote to parse the rest of the anchor.
-                       if ((t = strchr(position, '#')) != NULL)
-                           *t = '\0';
-		    }
-		    else
-		    {
-			q = position;
-			while (*q &&
-			       *q != '>' &&
-			       !isspace(*q) && //  *q != '?'   ???? --grh
-			       *q != '#')
-			    q++;
-			*q = '\0';
-		    }
+		  if (href)
 		    delete href;
-		    href = new URL(transSGML(position), *base);
-		    if (dofollow)
-		    {
-			description = 0;
-			retriever.got_href(*href, description);
-			in_ref = 0;
-		    }
-		    break;
+		  href = new URL(transSGML(attrs["href"]), *base);
+		  retriever.got_href(*href, transSGML(attrs["title"]));
+		  in_ref = 0;
 		}
-
-		default:
-		    break;
 	    }
-	    break;
+	  break;
 	}
-
+	  
 	case 23:	// base
 	{
-	    which = -1;
-	    int pos = hrefMatch.FindFirstWord(position, which, length);
-	    position += pos + length;
-	    switch (which)
+	  if (attrs["href"])
 	    {
-		case 0:		// "href"
-		{
-		    while (*position && *position != '=')
-			position++;
-		    if (!*position)
-			return;
-		    position++;
-		    while (isspace(*position))
-			position++;
-                   //
-                   // Allow either single quotes or double quotes
-                   // around the URL itself
-                   //
-                   if (*position == '"'||*position == '\'')
-		    {
-			position++;
-			q = strchr(position, position[-1]);
-			if (!q)
-			    break;
-                       //
-                       // We seem to have matched the opening quote char
-                       // Mark the end of the quotes as our endpoint, so
-                       // that we can continue parsing after the current
-                       // text
-                       //
-                       *q = '\0';
-                       //
-                       // If a '#' is present in a quoted URL,
-                       //  treat that as the end of the URL, but we skip
-                       //  past the quote to parse the rest of the anchor.
-                       //
-                       // Is there a better way of looking for these?
-                       //
-                       if ((t = strchr(position, '#')) != NULL)
-                           *t = '\0';
-		    }
-		    else
-		    {
-			q = position;
-			while (*q &&
-			       *q != '>' &&
-			       !isspace(*q) && // *q != '?'   ??? -grh
-			       *q != '#')
-			    q++;
-		    *q = '\0';
-		    }
-		    URL tempBase(transSGML(position), *base);
-		    *base = tempBase;
-		}
+	      //URL tempBase(transSGML(attrs["href"]), *base);
+	      URL tempBase(transSGML(attrs["href"]));
+	      *base = tempBase;
 	    }
-	    break;
+	  break;
 	}
 	
 	default:
@@ -1181,7 +898,7 @@ HTML::transSGML(char *str)
     unsigned char	*text = (unsigned char *)str;
 
     convert = 0;
-    while (*text)
+    while (text && *text)
     {
 	if (*text == '&')
 	{
