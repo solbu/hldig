@@ -1,3 +1,7 @@
+Sat Jan 29 01:37:45 2000  Loic Dachary  <loic@ceic.com>
+
+	* .version: remove the trailing -dev
+
 Thu Jan 27 12:22:57 2000  Loic Dachary  <loic@ceic.com>
 
 	* htword/WordList.cc: cdebug replaced by cerr. replace lverbose
