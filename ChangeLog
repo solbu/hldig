@@ -1,3 +1,14 @@
+Thu Feb 15 11:03:42 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/*.html: Update with 2001 copyrights and various changes
+	with the website move for the pending 3.2.0b3 release.
+
+Thu Feb 15 10:41:47 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtRegexList.cc (match): Fix thinko with logic for matching
+	and add code to rearrange matching nodes for hopefully better
+	performance.
+
 Sun Feb 11 16:42:11 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtRegexList.h, htlib/HtRegexList.cc (class HtRegexList):

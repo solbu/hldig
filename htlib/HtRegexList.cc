@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegexList.cc,v 1.1.2.1 2001/02/11 23:08:29 ghutchis Exp $
+// $Id: HtRegexList.cc,v 1.1.2.2 2001/02/15 17:06:21 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -18,6 +18,15 @@
 
 #include "HtRegexList.h"
 #include <locale.h>
+
+class listnode
+{
+public:
+
+  listnode		*next;
+  listnode		*prev;
+  Object		*object;
+};
 
 HtRegexList::HtRegexList()
 {
@@ -70,19 +79,37 @@ HtRegexList::setEscaped(StringList &list, int case_sensitive)
 int
 HtRegexList::match(const char * str, int nullpattern, int nullstr)
 {
-  int	rval = 1;
   HtRegex *regx;
 	
   if (compiled == 0) return(nullpattern);
   if (str == NULL) return(nullstr);
   if (strlen(str) <= 0) return(nullstr);
 
+  if (number == 0) return(1);	// An empty pattern matches everything
+
   Start_Get();
   while ((regx = (HtRegex *) Get_Next()))
     {
-      rval = rval && regx->match(str, nullpattern, nullstr);
+      if (regx->match(str, nullpattern, nullstr))
+	{
+	  // Move this one to the front and update pointers
+	  if (cursor.current_index != -1)
+	    {
+	      if (cursor.current->prev)
+		cursor.current->prev->next = cursor.current->next;
+	      if (cursor.current->next)
+		cursor.current->next->prev = cursor.current->prev;
+	      cursor.current->prev = 0;
+	      cursor.current->next = head;
+	      head->prev = cursor.current;
+	      head = cursor.current;
+	      cursor.current = head;
+	      cursor.current_index = 0;
+	    }
+	  return(1);
+	}
     }
 
-  return rval;
+  return(0);
 }
 
