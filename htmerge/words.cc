@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: words.cc,v 1.22.2.5 2000/02/24 17:12:13 loic Exp $
+// $Id: words.cc,v 1.22.2.6 2000/02/24 17:17:04 loic Exp $
 //
 
 #include "htmerge.h"
@@ -49,7 +49,12 @@ static int delete_word(WordList *words, WordDBCursor& cursor, const WordReferenc
     }
     if (verbose)
       {
-	cout << "htmerge: Discarding " << word->Word() << "\n";
+	cout << "htmerge: Discarding ";
+	if(verbose > 2)
+	  cout << *word;
+	else 
+	  cout << word->Word();
+	cout << "\n";
 	cout.flush();
       }
     d.deleted++;

@@ -1,7 +1,7 @@
 Thu Feb 24 19:08:41 2000  Loic Dachary  <loic@ceic.com>
 
 	* htmerge/words.cc: only display Word in verbose message instead
-	  of complete key.
+	  of complete key if verbosity < 3.
 
 Thu Feb 24 10:43:12 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
