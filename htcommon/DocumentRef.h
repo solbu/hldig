@@ -1,7 +1,7 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.11 1999/01/29 18:55:05 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.12 1999/01/30 04:00:37 hp Exp $
 //
 //
 //
@@ -149,7 +149,9 @@ class DocumentRef : public Object
     int			docAnchor;
     // Static member variable so we get only one copy
     // Used to buffer zlib compression
+#ifdef HAVE_LIBZ
     static unsigned char c_buffer[60000];
+#endif
 };
 
 #endif

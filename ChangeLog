@@ -1,3 +1,11 @@
+Sat Jan 30 03:49:21 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htcommon/DocumentRef.h: Add #ifdef around declaration of
+	c_buffer.
+
+	* htcommon/DocumentRef.cc: Remove spurious extra "static" from
+	c_buffer definition.  Add #ifdef HAVE_LIBZ around it.
+
 Fri Jan 29 13:30:11 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc: Construct the StringMatch used for finding

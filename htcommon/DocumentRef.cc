@@ -22,9 +22,11 @@
 
 extern Configuration config;
 
+#ifdef HAVE_LIBZ
 // Static member variable so we get only a single copy
 // Used to buffer the zlib compression
-static unsigned char DocumentRef::c_buffer[60000];
+unsigned char DocumentRef::c_buffer[60000];
+#endif
 
 //*****************************************************************************
 // DocumentRef::DocumentRef()
