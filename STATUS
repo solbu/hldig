@@ -26,8 +26,6 @@ KNOWN BUGS:
 
 PENDING FEATURES:
 * Vadim's config parser: in place, but currently only set for a few attributes.
-* Marcel's 8x compression: not yet ready.
-	Vote: 
 * Autoconf test for locale from Torsten: See PR#356
 
 TESTING:
