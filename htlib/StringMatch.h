@@ -3,31 +3,34 @@
 //
 // (c) 1995 Andrew Scherpbier <andrew@sdsu.edu>
 //
-// This class provides an interface to a fairly specialized string
-// lookup facility.  It is intended to be used as a replace for any
-// regualr expression matching when the pattern string is in the form:
+// StringMatch: This class provides an interface to a fairly specialized string
+//              lookup facility.  It is intended to be used as a replace for any
+//              regualr expression matching when the pattern string is in the form:
 //
-//    <string1>|<string2>|<string3>|...
+//                 <string1>|<string2>|<string3>|...
 //
-// Just like regular expression routines, the pattern needs to be
-// compiled before it can be used.  This is done using the Pattern()
-// member function.  Once the pattern has been compiled, the member
-// function Find() can be used to search for the pattern in a string.
-// If a string has been found, the "which" and "length" parameters
-// will be set to the string index and string length respectively.
-// (The string index is counted starting from 0) The return value of
-// Find() is the position at which the string was found or -1 if no
-// strings could be found.  If a case insensitive match needs to be
-// performed, call the IgnoreCase() member function before calling
-// Pattern().  This function will setup a character translation table
-// which will convert all uppercase characters to lowercase.  If some
-// other translation is required, the TranslationTable() member
-// function can be called to provide a custom table.  This table needs
-// to be 256 characters.
+//              Just like regular expression routines, the pattern needs to be
+//              compiled before it can be used.  This is done using the Pattern()
+//              member function.  Once the pattern has been compiled, the member
+//              function Find() can be used to search for the pattern in a string.
+//              If a string has been found, the "which" and "length" parameters
+//              will be set to the string index and string length respectively.
+//              (The string index is counted starting from 0) The return value of
+//              Find() is the position at which the string was found or -1 if no
+//              strings could be found.  If a case insensitive match needs to be
+//              performed, call the IgnoreCase() member function before calling
+//              Pattern().  This function will setup a character translation table
+//              which will convert all uppercase characters to lowercase.  If some
+//              other translation is required, the TranslationTable() member
+//              function can be called to provide a custom table.  This table needs
+//              to be 256 characters.
 // 
-// $Id: StringMatch.h,v 1.3 1999/08/25 21:50:17 grdetil Exp $
+// $Id: StringMatch.h,v 1.4 1999/09/08 14:42:29 loic Exp $
 //
 // $Log: StringMatch.h,v $
+// Revision 1.4  1999/09/08 14:42:29  loic
+// update comments
+//
 // Revision 1.3  1999/08/25 21:50:17  grdetil
 // Add an IgnorePunct() method, use it to highlight matching words in excerpts
 // regardless of punctuation, and don't add short or bad words to pattern.

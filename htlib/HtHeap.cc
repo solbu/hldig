@@ -1,13 +1,13 @@
 //
-// HtHeap.h
+// HtHeap.cc
 //
-//: A Heap class which holds objects of type Object.
-// (A heap is a semi-ordered tree-like structure.
-//  it ensures that the first item is *always* the largest.
-//  NOTE: To use a heap, you must implement the Compare() function for your
-//        Object classes. The assumption used here is -1 means less-than, 0
-//        means equal, and +1 means greater-than. Thus this is a "min heap"
-//        for that definition.)
+// HtHeap: A Heap class which holds objects of type Object.
+//         (A heap is a semi-ordered tree-like structure.
+//          it ensures that the first item is *always* the largest.
+//          NOTE: To use a heap, you must implement the Compare() function for 
+//                 your Object classes. The assumption used here is -1 means 
+//                 less-than, 0 means equal, and +1 means greater-than. Thus 
+//                 this is a "min heap" for that definition.)
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -17,7 +17,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: HtHeap.cc,v 1.5 1999/09/05 06:49:47 ghutchis Exp $";
+static char	RCSid[] = "$Id: HtHeap.cc,v 1.6 1999/09/08 14:42:29 loic Exp $";
 #endif
 
 #include "HtHeap.h"

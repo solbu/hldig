@@ -1,5 +1,9 @@
+//
+// mytimegm.cc
+//
+// mytimegm: Not used anywhere at present.
+//
 /*
- * Hopefully portable implementation of timegm().
  * Public domain, written by Pasi Eronen <pe@iki.fi>.
  *
  * Notes:

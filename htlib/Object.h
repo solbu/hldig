@@ -4,12 +4,15 @@
 // (c) Copyright 1993, San Diego State University -- College of Sciences
 //       (See the COPYRIGHT file for more Copyright information)
 //
-// This baseclass defines how an object should behave.
-// This includes the ability to be put into a list
+// Object: This baseclass defines how an object should behave.
+//         This includes the ability to be put into a list
 //
-// $Id: Object.h,v 1.2 1999/01/14 01:09:13 ghutchis Exp $
+// $Id: Object.h,v 1.3 1999/09/08 14:42:29 loic Exp $
 //
 // $Log: Object.h,v $
+// Revision 1.3  1999/09/08 14:42:29  loic
+// update comments
+//
 // Revision 1.2  1999/01/14 01:09:13  ghutchis
 // Small speed improvements based on gprof.
 //

@@ -1,7 +1,9 @@
 //
-// HtZlibCodec:
-// Provide a generic access to the zlib compression routines.
-// If zlib is not present, encode and decode are simply assignment functions.
+// HtZlibCodec.cc
+//
+// HtZlibCodec: Provide a generic access to the zlib compression routines.
+//              If zlib is not present, encode and decode are simply 
+//              assignment functions.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group

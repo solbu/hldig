@@ -1,7 +1,11 @@
 //
-// HtWordType:  Wrap some attributes to make is...()-type methods.
+// HtWordType.h
 //
-// $Id: HtWordType.h,v 1.3 1999/08/25 21:39:13 grdetil Exp $
+// HtWordType:  Wrap some attributes to make is...() type
+//              functions and other common functions without having to manage
+//              the attributes or the exact attribute combination semantics.
+//
+// $Id: HtWordType.h,v 1.4 1999/09/08 14:42:29 loic Exp $
 //
 
 #ifndef __HtWordType_h

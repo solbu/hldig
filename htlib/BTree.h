@@ -1,9 +1,14 @@
 //
 // BTree.h
 //
-// $Id: BTree.h,v 1.2 1999/01/23 01:25:02 hp Exp $
+// BTree: Not used anywhere at present.
+//
+// $Id: BTree.h,v 1.3 1999/09/08 14:42:29 loic Exp $
 //
 // $Log: BTree.h,v $
+// Revision 1.3  1999/09/08 14:42:29  loic
+// update comments
+//
 // Revision 1.2  1999/01/23 01:25:02  hp
 // Fixed _some_ missing const qualifiers on common methods (requiring temps)
 //

@@ -1,11 +1,11 @@
 //
 // URL.h
 //
-// A URL parsing class, implementing as closely as possible the standard
-// laid out in RFC2396 (e.g. http://www.faqs.org/rfcs/rfc2396.html)
-// including support for multiple schemes.
+// URL: A URL parsing class, implementing as closely as possible the standard
+//      laid out in RFC2396 (e.g. http://www.faqs.org/rfcs/rfc2396.html)
+//      including support for multiple schemes.
 //
-// $Id: URL.h,v 1.5 1999/03/14 03:17:35 ghutchis Exp $
+// $Id: URL.h,v 1.6 1999/09/08 14:42:29 loic Exp $
 //
 #ifndef _URL_h_
 #define _URL_h_

@@ -1,11 +1,12 @@
 //
 // Dictionary.h
 //
-// This class provides an object lookup table.  Each object in the dictionary
-// is indexed with a string.  The objects can be returned by mentioning their
-// string index.
+// Dictionary: This class provides an object lookup table.  
+//             Each object in the dictionary is indexed with a string.  
+//             The objects can be returned by mentioning their
+//             string index.
 //
-// $Id: Dictionary.h,v 1.3 1999/02/22 13:57:28 ghutchis Exp $
+// $Id: Dictionary.h,v 1.4 1999/09/08 14:42:29 loic Exp $
 //
 //
 //

@@ -1,13 +1,17 @@
 //
-// HtPack: Compress for example structures.
+// HtPack.h
 //
-// Much like the pack()/unpack() function pair in perl, but
-// compressing, not "packing into a binary structure".
+// HtPack: Compress and uncompress data in e.g. simple structures.
+//	   The structure must have the layout defined in the ABI;
+//	   the layout the compiler generates.
 //
-// Note that the contents of the returned "String" is not
-// necessarily aligned to allow using it as a struct.
+//         Much like the pack()/unpack() function pair in perl, but
+//         compressing, not "packing into a binary structure".
 //
-// $Id: HtPack.h,v 1.1 1999/03/21 15:23:56 hp Exp $
+//         Note that the contents of the returned "String" is not
+//         necessarily aligned to allow using it as a struct.
+//
+// $Id: HtPack.h,v 1.2 1999/09/08 14:42:29 loic Exp $
 //
 
 #ifndef __HtPack_h

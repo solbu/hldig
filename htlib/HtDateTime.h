@@ -1,3 +1,6 @@
+//
+// HtDateTime.h
+//
 ///////
    //   Class for Date and Time
   //    Gabriele Bartolini - Prato - Italia
@@ -7,6 +10,9 @@
 // Version: 1.0
 // Release date: 07.05.1999
 
+// HtDateTime: Parse, split, compare and format dates and times.
+//  	       Uses locale.
+//
 // General purpose of HtDateTime
 // 	 The general purpose of this class, is to provide an interface for
 // 	 date and time managing, and to unload the programmer to manage

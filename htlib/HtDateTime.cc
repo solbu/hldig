@@ -1,3 +1,16 @@
+//
+// HtDateTime.cc
+//
+// HtDateTime: Parse, split, compare and format dates and times.
+//  	       Uses locale.
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+//
 #include <stdlib.h>
 #include <HtDateTime.h>
 #include <string.h>

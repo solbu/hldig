@@ -1,8 +1,8 @@
 //
 // HtSGMLCodec.cc
 //
-// A Specialized HtWordCodec class to convert between SGML ISO 8859-1
-// entities and high-bit characters.
+// HtSGMLCodec: A Specialized HtWordCodec class to convert between SGML 
+//              ISO 8859-1 entities and high-bit characters.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -12,7 +12,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: HtSGMLCodec.cc,v 1.2 1999/03/14 03:36:56 ghutchis Exp $";
+static char	RCSid[] = "$Id: HtSGMLCodec.cc,v 1.3 1999/09/08 14:42:29 loic Exp $";
 #endif
 
 #include "HtSGMLCodec.h"

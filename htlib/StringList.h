@@ -1,9 +1,14 @@
 //
 // StringList.h
 //
-// $Id: StringList.h,v 1.3 1998/12/19 14:39:41 bergolth Exp $
+// StringList: Specialized List containing String objects. 
+//
+// $Id: StringList.h,v 1.4 1999/09/08 14:42:29 loic Exp $
 //
 // $Log: StringList.h,v $
+// Revision 1.4  1999/09/08 14:42:29  loic
+// update comments
+//
 // Revision 1.3  1998/12/19 14:39:41  bergolth
 // Added StringList::Join and fixed URL::removeIndex.
 //

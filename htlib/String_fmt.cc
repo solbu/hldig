@@ -1,9 +1,12 @@
 //
-// String.cc
+// String_fmt.cc
 //
-// Formatting code for the String class
+// String_fmt: Formatting functions for the String class
 //
 // $Log: String_fmt.cc,v $
+// Revision 1.3  1999/09/08 14:42:29  loic
+// update comments
+//
 // Revision 1.2  1997/03/24 04:33:22  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -12,7 +15,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: String_fmt.cc,v 1.2 1997/03/24 04:33:22 turtle Exp $";
+static char RCSid[] = "$Id: String_fmt.cc,v 1.3 1999/09/08 14:42:29 loic Exp $";
 #endif
 
 #include "htString.h"

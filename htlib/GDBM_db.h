@@ -1,9 +1,14 @@
 //
 // GDBM_db.h
 //
-// $Id: GDBM_db.h,v 1.2 1999/01/23 01:25:03 hp Exp $
+// GDBM_db: Not used anywhere at present.
+//
+// $Id: GDBM_db.h,v 1.3 1999/09/08 14:42:29 loic Exp $
 //
 // $Log: GDBM_db.h,v $
+// Revision 1.3  1999/09/08 14:42:29  loic
+// update comments
+//
 // Revision 1.2  1999/01/23 01:25:03  hp
 // Fixed _some_ missing const qualifiers on common methods (requiring temps)
 //

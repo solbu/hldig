@@ -1,9 +1,15 @@
 //
+// HtCodec.cc
+//
+//
 // Keep constructor and destructor in a file of its own.
 //
-// $Id: HtCodec.cc,v 1.1 1999/01/21 13:43:03 ghutchis Exp $
+// $Id: HtCodec.cc,v 1.2 1999/09/08 14:42:29 loic Exp $
 //
 // $Log: HtCodec.cc,v $
+// Revision 1.2  1999/09/08 14:42:29  loic
+// update comments
+//
 // Revision 1.1  1999/01/21 13:43:03  ghutchis
 // New files.
 //

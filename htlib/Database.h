@@ -1,9 +1,10 @@
 //
-// DB.h
+// Database.h
 //
-//: This is a class which defines the interface to a generic, simple database.
+// Database: Class which defines the interface to a generic, 
+//           simple database.
 //
-// $Id: Database.h,v 1.8 1999/08/28 21:12:27 ghutchis Exp $
+// $Id: Database.h,v 1.9 1999/09/08 14:42:29 loic Exp $
 //
 //
 //

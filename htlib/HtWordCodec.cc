@@ -1,7 +1,9 @@
 //
+// HtWordCodec.cc
+//
 // Translation methods for HtWordCodec
 //
-// $Id: HtWordCodec.cc,v 1.3 1999/03/14 03:17:10 ghutchis Exp $
+// $Id: HtWordCodec.cc,v 1.4 1999/09/08 14:42:29 loic Exp $
 //
 //
 

@@ -1,9 +1,12 @@
 //
-// URL.cc
+// URLTrans.cc
 //
-// Implementation of URL
+// URLTrans: Helper functions for the implementation of the URL class.
 //
 // $Log: URLTrans.cc,v $
+// Revision 1.4  1999/09/08 14:42:29  loic
+// update comments
+//
 // Revision 1.3  1999/06/02 20:06:23  grdetil
 // Fix encodeURL() to ensure that non-ASCII letters get URL-encoded.
 //
@@ -15,7 +18,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URLTrans.cc,v 1.3 1999/06/02 20:06:23 grdetil Exp $";
+static char RCSid[] = "$Id: URLTrans.cc,v 1.4 1999/09/08 14:42:29 loic Exp $";
 #endif
 
 #include "URL.h"

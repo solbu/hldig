@@ -1,10 +1,12 @@
 //
-// HtURLCodec:  Specialized HtWordCodec which just caters to the
-// needs of "url_part_aliases" and "common_url_parts".
-//  Used for coding URLs when they are on disk; the key and the
-// href field in db.docdb.
+// HtURLCodec.h
 //
-// $Id: HtURLCodec.h,v 1.2 1999/01/31 19:57:22 hp Exp $
+// HtURLCodec:  Specialized HtWordCodec which just caters to the
+//              needs of "url_part_aliases" and "common_url_parts".
+//              Used for coding URLs when they are on disk; the key and the
+//              href field in db.docdb.
+//
+// $Id: HtURLCodec.h,v 1.3 1999/09/08 14:42:29 loic Exp $
 //
 #ifndef __HtURLCodec_h
 #define __HtURLCodec_h

@@ -1,10 +1,12 @@
 //
+// String.cc
+//
 // Implementation of String class
 //
-// $Id: String.cc,v 1.22 1999/09/05 18:25:06 ghutchis Exp $
+// $Id: String.cc,v 1.23 1999/09/08 14:42:29 loic Exp $
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.22 1999/09/05 18:25:06 ghutchis Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.23 1999/09/08 14:42:29 loic Exp $";
 #endif
 
 

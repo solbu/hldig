@@ -1,13 +1,13 @@
 //
 // URL.cc
 //
-// A URL parsing class, implementing as closely as possible the standard
-// laid out in RFC2396 (e.g. http://www.faqs.org/rfcs/rfc2396.html)
-// including support for multiple services. (schemes in the RFC)
+// URL: A URL parsing class, implementing as closely as possible the standard
+//      laid out in RFC2396 (e.g. http://www.faqs.org/rfcs/rfc2396.html)
+//      including support for multiple services. (schemes in the RFC)
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.29 1999/08/09 22:25:51 grdetil Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.30 1999/09/08 14:42:29 loic Exp $";
 #endif
 
 #include "URL.h"

@@ -4,14 +4,17 @@
 // (c) Copyright 1993, San Diego State University -- College of Sciences
 //       (See the COPYRIGHT file for more Copyright information)
 //
-// This class implements a linked list of objects.  It itself is also an
-// object
+// Stack: This class implements a linked list of objects.  It itself is also an
+//        object
 //
-// $Id: Stack.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: Stack.h,v 1.2 1999/09/08 14:42:29 loic Exp $
 //
 // $Log: Stack.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1999/09/08 14:42:29  loic
+// update comments
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #ifndef	_Stack_h_

@@ -1,7 +1,9 @@
 //
 // IntObject.h
 //
-// $Id: IntObject.h,v 1.2 1999/03/12 00:46:58 hp Exp $
+// IntObject: int variable encapsulated in Object derived class
+//
+// $Id: IntObject.h,v 1.3 1999/09/08 14:42:29 loic Exp $
 //
 
 #ifndef _IntObject_h_

@@ -1,11 +1,16 @@
 //
 // io.h
 //
-// $Id: io.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// io: Perform low level I/O. The Connection class is derived from io.
+//
+// $Id: io.h,v 1.2 1999/09/08 14:42:29 loic Exp $
 //
 // $Log: io.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1999/09/08 14:42:29  loic
+// update comments
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #ifndef _io_h_

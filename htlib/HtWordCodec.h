@@ -1,14 +1,19 @@
 //
-// HtWordCodec:  Given two lists of pair of "words" 'from' and 'to';
-// simple one-to-one translations, use those lists to translate.
-//  Only restriction are that no null (0) characters must be
-// used in "words", and that there is a character "joiner" that
-// does not appear in any word.  One-to-one consistency may be
-// checked at construction.
+// HtWordCodec.h
 //
-// $Id: HtWordCodec.h,v 1.1 1999/01/21 13:43:03 ghutchis Exp $
+// HtWordCodec: Given two lists of pair of "words" 'from' and 'to';
+//              simple one-to-one translations, use those lists to translate.
+//              Only restriction are that no null (0) characters must be
+//              used in "words", and that there is a character "joiner" that
+//              does not appear in any word.  One-to-one consistency may be
+//              checked at construction.
+//
+// $Id: HtWordCodec.h,v 1.2 1999/09/08 14:42:29 loic Exp $
 //
 // $Log: HtWordCodec.h,v $
+// Revision 1.2  1999/09/08 14:42:29  loic
+// update comments
+//
 // Revision 1.1  1999/01/21 13:43:03  ghutchis
 // New files.
 //

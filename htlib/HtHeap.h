@@ -1,13 +1,13 @@
 //
 // HtHeap.h
 //
-// A Heap class which holds objects of type Object.
-// (A heap is a semi-ordered tree-like structure.
-//  it ensures that the first item is *always* the largest.
-//  NOTE: To use a heap, you must implement the Compare() function for your
-//        Object classes. The assumption used here is -1 means less-than, 0
-//        means equal, and +1 means greater-than. Thus this is a "min heap"
-//        for that definition.)
+// HtHeap: A Heap class which holds objects of type Object.
+//         (A heap is a semi-ordered tree-like structure.
+//          it ensures that the first item is *always* the largest.
+//          NOTE: To use a heap, you must implement the Compare() function for 
+//                 your Object classes. The assumption used here is -1 means 
+//                 less-than, 0 means equal, and +1 means greater-than. Thus 
+//                 this is a "min heap" for that definition.)
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -15,7 +15,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHeap.h,v 1.2 1999/04/14 19:36:01 bergolth Exp $
+// $Id: HtHeap.h,v 1.3 1999/09/08 14:42:29 loic Exp $
 //
 //
 #ifndef	_HtHeap_h_

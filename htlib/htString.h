@@ -1,7 +1,9 @@
 //
-// Just Another String class.
+// htString.h
 //
-// $Id: htString.h,v 1.8 1999/08/02 09:04:10 angus Exp $
+// htString: (implementation in String.cc) Just Another String class.
+//
+// $Id: htString.h,v 1.9 1999/09/08 14:42:29 loic Exp $
 //
 #ifndef __String_h
 #define __String_h

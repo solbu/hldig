@@ -4,13 +4,17 @@
 // (c) Copyright 1993, San Diego State University -- College of Sciences
 //       (See the COPYRIGHT file for more Copyright information)
 //
-// This class forms a easy to use interface to the berkeley tcp socket library.
-// All the calls are basically the same, but the parameters do not have any
-// stray _addr or _in mixed in...
+// Connection: This class forms a easy to use interface to the berkeley
+//             tcp socket library. All the calls are basically the same, 
+//             but the parameters do not have any stray _addr or _in
+//             mixed in...
 //
-// $Id: Connection.h,v 1.3 1998/10/18 21:22:16 ghutchis Exp $
+// $Id: Connection.h,v 1.4 1999/09/08 14:42:29 loic Exp $
 //
 // $Log: Connection.h,v $
+// Revision 1.4  1999/09/08 14:42:29  loic
+// update comments
+//
 // Revision 1.3  1998/10/18 21:22:16  ghutchis
 //
 // Revised connection timeout methods.

@@ -1,7 +1,7 @@
 //
 // HtRegex.cc
 //
-// A simple C++ wrapper class for the system regex routines.
+// HtRegex: A simple C++ wrapper class for the system regex routines.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.cc,v 1.6 1999/06/16 15:46:03 grdetil Exp $
+// $Id: HtRegex.cc,v 1.7 1999/09/08 14:42:29 loic Exp $
 //
 //
 #include "HtRegex.h"

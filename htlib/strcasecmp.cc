@@ -1,7 +1,8 @@
 //
 // strcasecmp.cc
 //
-// Implementation of strcasecmp
+// strcasecmp: replacement of the strcasecmp functions for architectures that do
+//             not have it.
 //
 #include "lib.h"
 #include <ctype.h>

@@ -1,11 +1,14 @@
-/*
-   Portable version of timegm (mytimegm) for ht://Dig
-   Based on a version from the GNU C Library
-   and a previous implementation for ht://Dig
-   * Hopefully portable implementation of timegm().
-   * Public domain, written by Pasi Eronen <pe@iki.fi>.
+//
+// timegm.cc
+//
+// timegm: Portable version of timegm (mytimegm) for ht://Dig
+//         Based on a version from the GNU C Library
+//         and a previous implementation for ht://Dig
+//
+//   * Hopefully portable implementation of timegm().
+//   * Public domain, written by Pasi Eronen <pe@iki.fi>.
 
-   by Geoffrey R. Hutchison (ghutchis@wso.williams.edu) */
+//   by Geoffrey R. Hutchison (ghutchis@wso.williams.edu)
 
 /* Copyright (C) 1993, 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
    This file is part of the GNU C Library.

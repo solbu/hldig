@@ -1,10 +1,15 @@
 //
-// HtCodec:  Provide a generic means to take a String, code
-// it, and return the encoded string.  And vice versa.
+// HtCodec.h
 //
-// $Id: HtCodec.h,v 1.1 1999/01/21 13:43:03 ghutchis Exp $
+// HtCodec:  Provide a generic means to take a String, code
+//           it, and return the encoded string.  And vice versa.
+//
+// $Id: HtCodec.h,v 1.2 1999/09/08 14:42:29 loic Exp $
 //
 // $Log: HtCodec.h,v $
+// Revision 1.2  1999/09/08 14:42:29  loic
+// update comments
+//
 // Revision 1.1  1999/01/21 13:43:03  ghutchis
 // New files.
 //

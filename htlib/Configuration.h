@@ -1,13 +1,16 @@
 //
 // Configuration.h
 //
-// This class provides an object lookup table.  Each object in the Configuration
-// is indexed with a string.  The objects can be returned by mentioning their
-// string index.
+// Configuration: This class provides an object lookup table.  Each object 
+//                in the Configuration is indexed with a string.  The objects 
+//                can be returned by mentioning their string index.
 //
-// $Id: Configuration.h,v 1.2 1997/07/03 17:44:38 turtle Exp $
+// $Id: Configuration.h,v 1.3 1999/09/08 14:42:29 loic Exp $
 //
 // $Log: Configuration.h,v $
+// Revision 1.3  1999/09/08 14:42:29  loic
+// update comments
+//
 // Revision 1.2  1997/07/03 17:44:38  turtle
 // Added support for virtual hosts
 //

@@ -1,9 +1,11 @@
 //
+// HtPack.cc
+//
 // HtPack: Compress and uncompress data in e.g. simple structures.
 //	   The structure must have the layout defined in the ABI;
 //	   the layout the compiler generates.
 //
-// $Id: HtPack.cc,v 1.2 1999/03/28 01:49:09 hp Exp $
+// $Id: HtPack.cc,v 1.3 1999/09/08 14:42:29 loic Exp $
 //
 
 #include <iostream.h>

@@ -1,7 +1,9 @@
 //
 // DB2_db.h
 //
-// $Id: DB2_db.h,v 1.4 1999/08/28 21:12:27 ghutchis Exp $
+// DB2_db: implements the btree database instance of a Database object
+//
+// $Id: DB2_db.h,v 1.5 1999/09/08 14:42:29 loic Exp $
 //
 //
 #ifndef _DB2_db_h_

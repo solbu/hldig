@@ -1,9 +1,9 @@
 //
 // HtVector.h
 //
-// A Vector class which holds objects of type Object.
-// (A vector is an array that can expand as necessary)
-// This class is very similar in interface to the List class
+// HtVector: A Vector class which holds objects of type Object.
+//           (A vector is an array that can expand as necessary)
+//           This class is very similar in interface to the List class
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVector.h,v 1.5 1999/08/17 21:27:03 grdetil Exp $
+// $Id: HtVector.h,v 1.6 1999/09/08 14:42:29 loic Exp $
 //
 //
 #ifndef	_HtVector_h_

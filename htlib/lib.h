@@ -1,5 +1,10 @@
 //
-// $Id: lib.h,v 1.6 1999/03/02 03:47:22 ghutchis Exp $
+// lib.h
+//
+// lib: Contains typical declarations and header inclusions used by
+//      most sources in this directory.
+//
+// $Id: lib.h,v 1.7 1999/09/08 14:42:29 loic Exp $
 //
 //
 #ifndef _lib_h

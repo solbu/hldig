@@ -1,3 +1,9 @@
+//
+// strptime.cc
+//
+// strptime: replacement of the strptime function for architectures that do
+//             not have it.
+//
 /* Convert a string representation of time to a time value.
    Copyright (C) 1996, 1997, 1998, 1999 Free Software Foundation, Inc.
    This file is part of the GNU C Library.

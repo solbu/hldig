@@ -1,3 +1,9 @@
+//
+// mktime.c
+//
+// mktime: replacement of the mktime function for architectures that do
+//         not have it.
+//
 /* Copyright (C) 1993, 94, 95, 96, 97, 98 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Paul Eggert (eggert@twinsun.com).
