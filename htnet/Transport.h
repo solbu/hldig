@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.1 1999/09/27 14:00:05 angus Exp $
+// $Id: Transport.h,v 1.2 1999/09/28 09:40:02 angus Exp $
 //
 //
 
@@ -62,6 +62,14 @@ class Transport_Response : public Object
    // Get the Document length (really stored)
    virtual int GetDocumentLength() const { return _document_length; }
 
+   // Get the Status Code
+   virtual int GetStatusCode() const { return _status_code; }
+
+   // Get the Status Code reason phrase
+   char *GetReasonPhrase() { return _reason_phrase; }
+
+
+
    
    protected:
 
@@ -75,6 +83,9 @@ class Transport_Response : public Object
 	 String	     _content_type; 	  // Content-type returned by the server
 	 int   	     _content_length;     // Content-length returned by the server
 	 int   	     _document_length;    // Length really stored
+
+	 int   	   _status_code;  	  // return Status code
+	 String	   _reason_phrase;	  // status code reason phrase
    
 };
 
@@ -110,7 +121,9 @@ class Transport : public Object
       Document_connection_down,
       Document_no_header,
       Document_no_host,
-      Document_not_local
+      Document_not_local,
+      Document_not_recognized_service,    // Transport service not recognized
+      Document_other_error                // General error (memory)
    };
 
 

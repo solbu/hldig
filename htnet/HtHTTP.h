@@ -28,7 +28,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.2 1999/09/27 16:18:58 angus Exp $ 
+// $Id: HtHTTP.h,v 1.3 1999/09/28 09:40:02 angus Exp $ 
 //
 
 #ifndef _HTHTTP_H
@@ -68,11 +68,8 @@ class HtHTTP_Response : public Transport_Response
 	 // Get the HTTP version
    	 char *GetVersion() { return _version; }
 
-	 // Get the Status Code
-   	 int GetStatusCode() const { return _status_code; }
-
-	 // Get the Status Code reason phrase
-   	 char *GetReasonPhrase() { return _reason_phrase; }
+	 // Get the location (redirect)
+   	 char *GetLocation() { return _location; }
 
 
    protected:
@@ -80,8 +77,6 @@ class HtHTTP_Response : public Transport_Response
    // Status line information
    
    	 String	   _version;	          // HTTP Version
-	 int   	   _status_code;  	  // return Status code
-	 String	   _reason_phrase;	  // status code reason phrase
 
    // Other header information
    

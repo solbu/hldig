@@ -1,3 +1,11 @@
+Tue Sep 28 11:36:28 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* htnet/Transport.h: added the status code and the reason phrase
+
+	* htnet/HtHTTP.cc .h: removed the attributes above.
+	  Read the body of a response if the code is 2xx. Issues the
+	  GetLocation() method.
+
 Tue Sep 28 10:20:23 1999  Loic Dachary  <loic@ceic.com>
 
 	* test/htdocs: move html files in set1/set2 subdirectories to allows

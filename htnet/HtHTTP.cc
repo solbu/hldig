@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.2 1999/09/27 16:18:58 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.3 1999/09/28 09:40:02 angus Exp $ 
 //
 
 #include "lib.h"
@@ -302,6 +302,11 @@ Transport::DocStatus HtHTTP::Request()
    	 cout << "Persistent connection: "
 	    << (_persistent_connection_possible ? "would be accepted" : "not accepted")
 	    << endl;
+
+
+   // We read the body only if the document has been found
+   if ( _response._status_code < 200 || _response._status_code >=300)
+      ShouldTheBodyBeRead=false;
 
    // If "ShouldTheBodyBeRead" is set to true and	    
    // If the document is parsable, we can read the body
