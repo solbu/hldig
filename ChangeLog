@@ -3,6 +3,16 @@ Sat Jan  9 14:47:17 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htdig/Document.cc(getdate): Strip off weekday before calling
 	strptime since some servers return invalid weekdays.
 
+	* htmerge/htmerge.h: Declare new mergeDB code.
+
+	* htmerge/htmerge.cc: Set up merge_config file and add options for
+	mergeDB code.
+
+	* htmerge/db.cc: New file. Implements merging of two database sets
+	specified by the merge_config and config variables.
+
+	* htmerge/Makefile.in: Add db.o as an object to be compiled.
+
 Fri Jan  8 20:11:56 1999  Alexander Bergolth  <bergolth@ariel.wu-wien.ac.at>
 
 	* htdig/Plaintext.cc: fixed bug that inhibited compressing of 
