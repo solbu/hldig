@@ -1,3 +1,8 @@
+Fri Nov 12 14:17:37 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/cgi.cc(init): Fix bug in reading long queries via POST
+	method (PR#668).
+
 Wed Nov 10 15:34:04 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(setVariables & createURL),
