@@ -12,7 +12,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.50 1999/07/19 01:57:24 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.51 1999/08/10 16:54:32 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -212,7 +212,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    {
 	      // Not a comment declaration after all
 	      // but possibly DTD: get to the end
-	      q = (unsigned char*)strstr((char *)position, ">");
+	      q = (unsigned char*)strchr((char *)position, '>');
 	      if (q)
 		{
 		  position = q + 1;
@@ -246,11 +246,35 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	}
 	else if (*position == '&')
 	  {
-	    scratch = (char *)position;
-	    textified = HtSGMLCodec::instance()->encode(scratch);
-	    *ptext = textified[0];
-	    ptext++;
-	    position++;
+	    q = (unsigned char*)strchr((char *)position, ';');
+	    if (q <= position+10)
+	      {	// got ending, looks like valid SGML entity
+		scratch = 0;
+		scratch.append((char*)position, q+1 - position);
+		textified = HtSGMLCodec::instance()->encode(scratch);
+		if (textified[0] != '&')	// it was decoded, copy it
+		  {
+		    position = (unsigned char *)textified.get();
+		    while (*position)
+		      {
+			if (*position == '<')
+			  { // got a decoded &lt;, make a fake tag for it
+			    // to avoid confusing it with real tag start
+			    *ptext++ = '<';
+			    *ptext++ = '~';
+			    *ptext++ = '>';
+			    position++;
+			  }
+			else
+			    *ptext++ = *position++;
+		      }
+		    position = q+1;
+		  }
+		else	// it wasn't decoded, copy '&', and rest will follow
+		    *ptext++ = *position++;
+	      }
+	    else	// not SGML entity, copy bare '&'
+		*ptext++ = *position++;
 	  }
         else
         {
@@ -267,7 +291,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	offset = position - start;
 	// String = 0 is expensive
 	// word = 0;
-	if (*position == '<')
+	if (*position == '<' && (position[1] != '~' || position[2] != '>'))
 	  {
 	    //
 	    // Start of a tag.  Since tags cannot be nested, we can simply
@@ -314,6 +338,9 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    while (*position && HtIsWordChar(*position))
 	    {
 		word << (char)*position;
+		// handle case where '<' is in extra_word_characters...
+		if (strncmp((char *)position, "<~>", 3) == 0)
+		    position += 2;	// skip over fake tag for decoded '<'
 		position++;
 		if (*position == '<')
 		{
@@ -413,6 +440,9 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		}
 		in_space = 0;
 		in_punct = 1;
+		// handle normal case where decoded '<' is punctuation...
+		if (strncmp((char *)position, "<~>", 3) == 0)
+		    position += 2;	// skip over fake tag for decoded '<'
 	    }
 	    position++;
 	}
@@ -488,7 +518,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		}
 	      if (href)
 		delete href;
-	      href = new URL(attrs["href"], *base);
+	      href = new URL(transSGML(attrs["href"]), *base);
 	      in_ref = 1;
 	      description = 0;
 	      break;
@@ -499,7 +529,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	      //
 	      // a name seen
 	      //
-	      retriever.got_anchor(attrs["name"]);
+	      retriever.got_anchor(transSGML(attrs["name"]));
 	    }
 	  break;
 	}
@@ -579,13 +609,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		dofollow = 1;
 	      }
 	    if (attrs["htdig-email"])
-	      retriever.got_meta_email(attrs["htdig-email"]);
+	      retriever.got_meta_email(transSGML(attrs["htdig-email"]));
 
 	    if (attrs["htdig-notification-date"])
-	      retriever.got_meta_notification(attrs["htdig-notification-date"]);
+	      retriever.got_meta_notification(transSGML(attrs["htdig-notification-date"]));
 
 	    if (attrs["htdig-email-subject"])
-	      retriever.got_meta_subject(attrs["htdig-email-subject"]);
+	      retriever.got_meta_subject(transSGML(attrs["htdig-email-subject"]));
 
 	    if (attrs["htdig-keywords"] || attrs["keywords"])
 	    {
@@ -598,7 +628,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		char	*keywords = attrs["htdig-keywords"];
 		if (!keywords)
 		    keywords = attrs["keywords"];
-		char	*w = strtok(keywords, " ,\t\r\n");
+		char	*w = strtok(transSGML(keywords), " ,\t\r\n");
 		while (w)
 		{
 		    if (strlen(w) >= minimumWordLength)
@@ -626,7 +656,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			*qq = 0;
 			if (href)
 			  delete href;
-			href = new URL(q, *base);
+			href = new URL(transSGML(q), *base);
 			// I don't know why anyone would do this, but hey...
 			if (dofollow)
 			  retriever.got_href(*href, "");
@@ -653,7 +683,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    //
 		    // We need to do two things. First grab the description
 		    //
-		    meta_dsc = attrs["content"];
+		    meta_dsc = transSGML(attrs["content"]);
 		   if (meta_dsc.length() > max_meta_description_length)
 		     meta_dsc = meta_dsc.sub(0, max_meta_description_length).get();
 		   if (debug > 1)
@@ -666,7 +696,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		   // Slot 10 is the current slot for this
 		   //
 
-		   char        *w = strtok(attrs["content"], " \t\r\n");
+		   char        *w = strtok(transSGML(attrs["content"]), " \t\r\n");
                    while (w)
 		     {
 			if (strlen(w) >= minimumWordLength)
@@ -678,7 +708,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 
 		if (keywordsMatch.CompareWord(cache))
 		{
-		    char	*w = strtok(attrs["content"], " ,\t\r\n");
+		    char	*w = strtok(transSGML(attrs["content"]), " ,\t\r\n");
 		    while (w)
 		    {
 			if (strlen(w) >= minimumWordLength)
@@ -689,20 +719,20 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		}
 		else if (mystrcasecmp(cache, "htdig-email") == 0)
 		{
-		    retriever.got_meta_email(attrs["content"]);
+		    retriever.got_meta_email(transSGML(attrs["content"]));
 		}
 		else if (mystrcasecmp(cache, "date") == 0 && 
 			 config.Boolean("use_doc_date",0))
 		  {
-		    retriever.got_time(attrs["content"]);
+		    retriever.got_time(transSGML(attrs["content"]));
 		  }
 		else if (mystrcasecmp(cache, "htdig-notification-date") == 0)
 		{
-		    retriever.got_meta_notification(attrs["content"]);
+		    retriever.got_meta_notification(transSGML(attrs["content"]));
 		}
 		else if (mystrcasecmp(cache, "htdig-email-subject") == 0)
 		{
-		    retriever.got_meta_subject(attrs["content"]);
+		    retriever.got_meta_subject(transSGML(attrs["content"]));
 		}
 		else if (mystrcasecmp(cache, "htdig-noindex") == 0)
 		  {
@@ -753,7 +783,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		{
 		  if (href)
 		    delete href;
-		  href = new URL(attrs["src"], *base);
+		  href = new URL(transSGML(attrs["src"]), *base);
 		  // Frames have the same hopcount as the parent.
 		  retriever.got_href(*href, 0, 0);
 		  in_ref = 0;
@@ -772,7 +802,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		{
 		  if (href)
 		    delete href;
-		  href = new URL(attrs["href"], *base);
+		  href = new URL(transSGML(attrs["href"]), *base);
 		  // area & link are like anchor tags -- one hopcount!
 		  retriever.got_href(*href, "", 1);
 		  in_ref = 0;
@@ -785,7 +815,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	{
 	  if (attrs["href"])
 	    {
-	      URL tempBase(attrs["href"]);
+	      URL tempBase(transSGML(attrs["href"]));
 	      *base = tempBase;
 	    }
 	  break;
@@ -795,10 +825,10 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	   {
 	     if (attrs["src"])
 	       {
-		 retriever.got_image(position);
+		 retriever.got_image(transSGML(attrs["src"]));
 		 if (attrs["alt"])
 		   {
-		     char *w = strtok(attrs["alt"], " ,\t\r\n");
+		     char *w = strtok(transSGML(attrs["alt"]), " ,\t\r\n");
 		     while (w)
 		       {
 			 if (strlen(w) >= minimumWordLength)
@@ -814,4 +844,17 @@ HTML::do_tag(Retriever &retriever, String &tag)
          default:
 	   return;	// Nothing...
     }
+}
+
+
+//*****************************************************************************
+// char * HTML::transSGML(char *text)
+//
+char *
+HTML::transSGML(char *str)
+{
+    static String	convert;
+    String		scratch = str;
+    convert = HtSGMLCodec::instance()->encode(scratch);
+    return convert.get();
 }

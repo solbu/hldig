@@ -19,6 +19,11 @@ Tue Aug 10 17:40:53 1999  Loic Dachary  <loic@yoda.ceic.com>
 	* htlib/langinfo.h: header missing on FreeBSD-3.2, needed
 	  by strptime.c
 
+Tue Aug 10 11:43:14 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.h, htdig/HTML.cc(parse, do_tag): fix problems with
+	SGML entity decoding, add decoding of entities within tag attributes.
+
 Mon Aug  9 21:13:50 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HtHTTP.h(SetRequestMethod): Fix declaration to be void.
@@ -79,8 +84,6 @@ Mon Aug  9 15:42:41 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	Added descriptions for attributes that were missing, added a few
 	clarifications, and corrected a few defaults and typos.
 	Covers PR#558, PR#626, and then some.
-
-Mon Aug  9 15:35:50 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* configure.in, configure, include/htconfig.h.in, htlib/regex.c:
 	PR#545 fixed - configure tests for presence of alloca.h for regex.c
