@@ -4,6 +4,9 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.5  1997/07/03 17:44:37  turtle
+// Added support for virtual hosts
+//
 // Revision 1.4  1997/06/14 18:52:42  turtle
 // Made redirect detection code more general
 //
@@ -19,7 +22,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.4 1997/06/14 18:52:42 turtle Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.5 1997/07/03 17:44:37 turtle Exp $";
 #endif
 
 #include <signal.h>
@@ -326,6 +329,16 @@ Document::Retrieve(time_t date)
 	command << "Authorization: Basic " << authorization << "\r\n";
     }
 
+    //
+    // If we are allowed to index virtual hosts, we will send the special
+    // 'Host:' header that tells the server what virtual web site this
+    // request is for.
+    //
+    if (config.Boolean("allow_virtual_hosts", 1))
+    {
+	command << "Host: " << url->host() << "\r\n";
+    }
+    
     //
     // Finally we can commit the request by sending a blank line.
     //

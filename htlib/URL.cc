@@ -4,6 +4,9 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.4  1997/07/03 17:44:38  turtle
+// Added support for virtual hosts
+//
 // Revision 1.3  1997/04/27 14:43:30  turtle
 // changes
 //
@@ -18,11 +21,12 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.3 1997/04/27 14:43:30 turtle Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.4 1997/07/03 17:44:38 turtle Exp $";
 #endif
 
 #include "URL.h"
 #include "Dictionary.h"
+#include "Configuration.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -32,6 +36,7 @@ static char RCSid[] = "$Id: URL.cc,v 1.3 1997/04/27 14:43:30 turtle Exp $";
 #include <arpa/inet.h>
 #include <ctype.h>
 
+extern Configuration	config;
 
 //*****************************************************************************
 // URL::URL()
@@ -393,44 +398,46 @@ void URL::normalize()
     // Convert a hostname to an IP address
     //
     _host.lowercase();
-    static Dictionary	hostbyname;
-    unsigned long		addr;
-    struct hostent		*hp;
 
-    String	*ip = (String *) hostbyname[_host];
-    if (ip)
+    if (!config.Boolean("allow_virtual_hosts", 1))
     {
-	memcpy((char *) &addr, ip->get(), ip->length());
-	hits++;
-    }
-    else
-    {
-//		printf("Doing lookup on %s\n", _host.get());
+	static Dictionary	hostbyname;
+	unsigned long		addr;
+	struct hostent		*hp;
 
-	addr = inet_addr(_host.get());
-	if (addr == 0xffffffff)
+	String	*ip = (String *) hostbyname[_host];
+	if (ip)
 	{
-	    hp = gethostbyname(_host.get());
-	    if (hp == NULL)
-	    {
-		return;
-	    }
-	    memcpy((char *)&addr, (char *)hp->h_addr, hp->h_length);
-	    ip = new String((char *) &addr, hp->h_length);
-	    hostbyname.Add(_host, ip);
-	    misses++;
+	    memcpy((char *) &addr, ip->get(), ip->length());
+	    hits++;
 	}
+	else
+	{
+	    addr = inet_addr(_host.get());
+	    if (addr == 0xffffffff)
+	    {
+		hp = gethostbyname(_host.get());
+		if (hp == NULL)
+		{
+		    return;
+		}
+		memcpy((char *)&addr, (char *)hp->h_addr, hp->h_length);
+		ip = new String((char *) &addr, hp->h_length);
+		hostbyname.Add(_host, ip);
+		misses++;
+	    }
+	}
+
+	static Dictionary	machines;
+	String			key;
+	key << int(addr);
+	String			*realname = (String *) machines[key];
+	if (realname)
+	    _host = realname->get();
+	else
+	    machines.Add(key, new String(_host));
     }
-
-    static Dictionary	machines;
-    String	key;
-    key << int(addr);
-    String	*realname = (String *) machines[key];
-    if (realname)
-	_host = realname->get();
-    else
-	machines.Add(key, new String(_host));
-
+    
     //
     // Reconstruct the url
     //

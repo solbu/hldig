@@ -51,6 +51,26 @@
 	    <dd>allow_numbers: true</dd>
 	  </dl></dd>
       </dl><hr><dl>
+	<dt><strong><a name="allow_numbers">allow_virtual_hosts</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>boolean</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htdig.html">htdig</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>true</dd>
+	    <dt><em>description:</em></dt>
+	    <dd>If set to true, htdig will index virtual web sites as
+	      expected.  If false, all URL host names will be
+	      normalized into whatever the DNS server claims the IP
+	      address to map to.  If this option is set to false,
+	      there is no way to index either "soft" or "hard" virtual
+	      web sites.</dd>
+	    <dt><em>example:</em></dt>
+	    <dd>allow_virtual_hosts: false</dd>
+	  </dl></dd>
+      </dl><hr><dl>
 	<dt><strong><a name="bad_extensions">bad_extensions</a></strong></dt>
 	<dd>
 	  <dl>
@@ -2198,7 +2218,7 @@
       </dl>
       <hr noshade size=4>
       <p><!-- hhmts start -->
-Last modified: Wed Jan  1 20:43:52 PST 
+Last modified: Thu Jul  3 10:31:29 PDT 
 <!-- hhmts end -->
 	<br><a href="mailto:andrew@contigo.com">andrew@contigo.com</a></p>
   </body>

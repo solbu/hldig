@@ -4,6 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.3  1997/07/03 17:44:38  turtle
+// Added support for virtual hosts
+//
 // Revision 1.2  1997/03/14 17:15:32  turtle
 // Changed default value for remove_bad_urls to true
 //
@@ -12,7 +15,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.2 1997/03/14 17:15:32 turtle Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.3 1997/07/03 17:44:38 turtle Exp $";
 #endif
 
 #include <Configuration.h>
@@ -33,6 +36,7 @@ ConfigDefaults	defaults[] =
     //
     {"add_anchors_to_excerpt",		"true"},
     {"allow_numbers",			"false"},
+    {"allow_virtual_hosts",		"true"},
     {"bad_extensions",			".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .pdf .class .map .ram"},
     {"bad_word_list",			"${common_dir}/bad_words"},
     {"create_image_list",		"false"},
