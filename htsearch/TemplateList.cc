@@ -4,12 +4,16 @@
 // Implementation of TemplateList
 //
 // $Log: TemplateList.cc,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.2  1998/09/07 04:45:26  ghutchis
+//
+// Add builtin-long as a default-template to use in case of errors.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: TemplateList.cc,v 1.1 1997/02/03 17:11:05 turtle Exp $";
+static char RCSid[] = "$Id: TemplateList.cc,v 1.2 1998/09/07 04:45:26 ghutchis Exp $";
 #endif
 
 #include "TemplateList.h"
@@ -59,6 +63,28 @@ TemplateList::createFromString(char *str)
     StringList	sl(str, "\t \r\n");
     String		display, internal, file;
     Template	*t;
+
+    // Insert builtin-long into slot 0 to be sure we always have a
+    // template in case of errors. We won't give it a display name, so
+    // it will only come up in case of an error
+    display = "";
+    internal = "builtin-long";
+    file = "builtin-long";
+    displayNames.Add(new String(display));
+    internalNames.Add(new String(internal));
+
+    t = new Template();
+
+    String	s;
+    s << "<dl><dt><strong><a href=\"$(URL)\">$(TITLE)</a></strong>";
+    s << "$(STARSLEFT)\n";
+    s << "</dt><dd>$(EXCERPT)<br>\n";
+    s << "<i><a href=\"$(URL)\">$(URL)</a></i>\n";
+    s << " <font size=-1>$(MODIFIED), $(SIZE) bytes</font>\n";
+    s << "</dd></dl>\n";
+
+    t->setMatchTemplate(s);
+    templates.Add(t);
 
     for (int i = 0; i < sl.Count(); i += 3)
     {

@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.11  1998/09/07 04:45:26  ghutchis
+//
+// Add builtin-long as a default-template to use in case of errors.
+//
 // Revision 1.10  1998/09/04 00:56:23  ghutchis
 //
 // Various bug fixes.
@@ -46,7 +50,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.10 1998/09/04 00:56:23 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.11 1998/09/07 04:45:26 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -81,7 +85,7 @@ Display::Display(char *indexFile, char *docFile)
     if (!currentTemplate)
     {
 	//
-	// Must have been some error.  Resort to the first template
+	// Must have been some error.  Resort to the builtin-long (slot 0)
 	//
 	currentTemplate = (Template *) templates.templates[0];
     }

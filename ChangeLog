@@ -6,6 +6,11 @@ Mon Sep  7 00:34:19 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htdig/HTML.cc, htdig/Retriever.h, htdig/Retriever.cc,
 	htmerge/docs.cc: Use it to remove them.
 
+	* htsearch/TemplateList.cc: Add default template of builtin-long
+	to slot 0 in case of an error.
+
+	* htsearch/Display.cc: Use it.
+
 Sun Sep  6 21:36:16 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/defaults.cc: Sorted the current list of defaults, added
