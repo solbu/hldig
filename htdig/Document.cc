@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34.2.8 1999/09/01 20:30:19 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34.2.9 1999/11/26 23:27:44 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -298,22 +298,30 @@ Document::RetrieveHTTP(time_t date)
     if (useproxy)
     {
 	if (c.assign_port(proxy->port()) == NOTOK)
+	{
+	    c.close();
 	    return Document_not_found;
+	}
 	if (c.assign_server(proxy->host()) == NOTOK)
 	{
 	    if (debug)
 		cout << "Unknown proxy host: " << proxy->host() << endl;
+	    c.close();
 	    return Document_no_host;
 	}
     }
     else
     {
 	if (c.assign_port(url->port()) == NOTOK)
+	{
+	    c.close();
 	    return Document_not_found;
+	}
 	if (c.assign_server(url->host()) == NOTOK)
 	{
 	    if (debug)
 		cout << "Unknown host: " << url->host() << endl;
+	    c.close();
 	    return Document_no_host;
 	}
     }
@@ -328,6 +336,7 @@ Document::RetrieveHTTP(time_t date)
 		cout << "(Via proxy " << proxy->host() << ':' << proxy->port() << ')' << endl;
 	    }
 	}
+	c.close();
 	return Document_no_server;
     }
 
@@ -424,7 +433,10 @@ Document::RetrieveHTTP(time_t date)
             break;
     }
     if (returnStatus != Document_ok)
+    {
+	c.close();
         return returnStatus;
+    }
 
     //
     // Read in the document itself

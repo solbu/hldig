@@ -1,5 +1,7 @@
-Fri Nov 26 17:10:07 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Fri Nov 26 17:14:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	* htdig/Document.cc(RetrieveHTTP): always c.close() the connection
+	when returning.
 	* htdig/HTML.cc(HTML & do_tag): add code to turn off indexing between
 	<style> and </style> tags.
 
