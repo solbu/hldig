@@ -4,6 +4,10 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.28  1999/01/15 04:52:19  ghutchis
+// Added options noindex_start and noindex_end to enable NOT indexing some
+// sections of HTML.
+//
 // Revision 1.27  1999/01/14 03:24:12  ghutchis
 // Added slight fixes to the comment parsing code, contributed by Marjolein.
 //
@@ -87,7 +91,7 @@
 // Initial CVS
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.27 1999/01/14 03:24:12 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.28 1999/01/15 04:52:19 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -194,6 +198,22 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	
     while (*position)
     {
+
+      //
+      // Filter out section marked to be ignored for indexing. 
+      // This can contain any HTML. 
+      //
+      char *skip_start = config["noindex_start"];
+      char *skip_end = config["noindex_end"];
+      if (strncmp((char *)position, skip_start, strlen(skip_start)) == 0)
+	{
+	  q = (unsigned char*)strstr((char *)position, skip_end);
+	  if (!q)
+	    *position = '\0';       // Rest of document will be skipped...
+	  else
+	    position = q + strlen(skip_end);
+	  continue;
+	}
 
       if (strncmp((char *)position, "<!", 2) == 0)
 	{

@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.33  1999/01/15 04:52:18  ghutchis
+// Added options noindex_start and noindex_end to enable NOT indexing some
+// sections of HTML.
+//
 // Revision 1.32  1999/01/15 04:34:14  ghutchis
 // Set compression_factor to 0 for default (no compression).
 //
@@ -111,7 +115,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.32 1999/01/15 04:34:14 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.33 1999/01/15 04:52:18 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -200,6 +204,8 @@ ConfigDefaults	defaults[] =
     {"next_page_text",			"[next]"},
     {"no_excerpt_text",			"<em>(None of the search words were found in the top of this document.)</em>"},
     {"no_excerpt_show_top",             "false"},
+    {"noindex_start",                   "<!--htdig_noindex-->"},
+    {"noindex_end",                     "<!--/htdig_noindex-->"},
     {"no_next_page_text",		"[next]"},
     {"no_page_list_header",		""},
     {"no_prev_page_text",		"[prev]"},
