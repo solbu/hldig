@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.5 2000/01/14 00:57:15 ghutchis Exp $
+// $Id: Display.cc,v 1.100.2.6 2000/01/20 03:54:26 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -199,8 +199,8 @@ Display::display(int pageNumber)
 	if (currentMatch >= startAt)
 	{
 	    DocumentRef	*ref = docDB[match->getID()];
-	    if (!ref)
-		continue;	// The document isn't present for some reason
+	    if (!ref || ref->DocState() != Reference_normal)
+		continue;	// The document isn't present or shouldn't be displayed
 	    ref->DocAnchor(match->getAnchor());
 	    ref->DocScore(match->getScore());
 	    displayMatch(ref,currentMatch+1);
