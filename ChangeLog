@@ -1,3 +1,8 @@
+Thu Oct 23 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htcommon/default.cc:  Fix bug #828808.  Default  startyear  to empty
+      Document "startyear defaults to 1970 if a start/end date set".
+
 Thu Oct 23 12:14:30 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htdig/htdig.cc: restored the code before Oct 21 (fixes ##828628)
@@ -12,7 +17,7 @@ Thu Oct 23 11:41:15 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
       corrections by an english-speaking developer).
     * These changes fix bug #828628
 
-Fri Oct 17 2003 Lachlan Andrew <lha@users.sourceforge.net>
+Wed Oct 22 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htsearch/parser.cc: Applied Neal's patch to fix bug #823403
       Documents only added to search list if they were successfully dug.

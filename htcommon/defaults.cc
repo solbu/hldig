@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.96 2003/10/23 02:10:55 angusgb Exp $
+// $Id: defaults.cc,v 1.97 2003/10/23 10:27:18 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -2351,12 +2351,13 @@ http://www.htdig.org/", " \
 	to set limit_urls_to to something less restrictive \
 	so htdig doesn't reject links in the documents. \
 " }, \
-{ "startyear", "1970",  \
+{ "startyear", "",  \
 	"integer", "htsearch", "", "3.1.6", "Searching:Method", "startyear: 2001", " \
 	This specifies the year of the cutoff start date for \
 	search results. If the start or end date are specified, \
 	only results with a last modified date within this \
-	range are shown. \
+	range are shown. If a start or end date is specified, but startyear \
+	is not, then it defaults to 1970. \
 	See also <a href=\"#startday\">startday</a>, \
 	<a href=\"#startmonth\">startmonth</a>, \
 	<a href=\"#endday\">endday</a>, \
