@@ -31,7 +31,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.4 1999/12/07 15:07:09 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.5 1999/12/09 10:28:42 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -49,7 +49,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.4 1999/12/07 15:07:09 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.5 1999/12/09 10:28:42 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -97,7 +97,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.4 1999/12/07 15:07:09 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.5 1999/12/09 10:28:42 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -156,7 +156,19 @@ dnl Files using apache should do the following:
 dnl
 dnl   @APACHE@ -d /etc/httpd
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.4 1999/12/07 15:07:09 loic Exp $
+dnl It defines the symbol APACHE_MODULES if a directory containing mod_env.*
+dnl is found in the default server root directory (obtained with httpd -V).
+dnl 
+dnl The httpd.conf file listing modules to be loaded dynamicaly can use
+dnl @APACHE_MODULES@ to grab them in the appropriate sub directory. For
+dnl instance:
+dnl ...
+dnl <IfModule mod_so.c>
+dnl LoadModule env_module         @APACHE_MODULES@/mod_env.so
+dnl LoadModule config_log_module  @APACHE_MODULES@/mod_log_config.so
+dnl ...
+dnl
+dnl @version $Id: aclocal.m4,v 1.22.2.5 1999/12/09 10:28:42 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -234,6 +246,25 @@ AC_DEFUN(AC_PROG_APACHE,
         AC_MSG_RESULT(yes)
       fi
     fi
+    #
+    # Find out if .so modules are in libexec/module.so or modules/module.so
+    #
+    HTTP_ROOT=`$APACHE -V | grep HTTPD_ROOT | sed -e 's/.*"\(.*\)"/\1/'`
+    AC_MSG_CHECKING(apache modules)
+    for dir in libexec modules
+    do
+      if test -f $HTTP_ROOT/$dir/mod_env.*
+      then
+	APACHE_MODULES=$dir
+      fi
+    done
+    if test -z "$APACHE_MODULES"
+    then
+      AC_MSG_RESULT(not found)
+    else
+      AC_MSG_RESULT(in $HTTP_ROOT/$APACHE_MODULES)
+    fi
+    AC_SUBST(APACHE_MODULES)
   fi
 ])
 

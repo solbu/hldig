@@ -1,3 +1,12 @@
+Thu Dec 09 11:01:22 1999  Loic Dachary  <loic@ceic.com>
+
+	* acinclude.m4: upgrade AC_PROG_APACHE macro for 
+	  modules detection.
+
+	* test/conf/httpd.conf,test/test_functions.in,test/conf/Makefile:
+	  use @APACHE_MODULES@ to accomodate various apache modules directory
+	  flavors.
+
 Tue Dec 07 20:32:34 1999  Marcel Bosc   <bosc@ceic.com>
 
 	* htdig: Split the Configuration class into Configuration

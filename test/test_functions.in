@@ -5,7 +5,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: test_functions.in,v 1.6.2.1 1999/10/15 16:07:42 loic Exp $
+# $Id: test_functions.in,v 1.6.2.2 1999/12/09 10:28:43 loic Exp $
 #
 
 testdir=`pwd`
@@ -25,7 +25,7 @@ fi
 #
 (
     cd conf
-    $MAKE user="@USER@" testdir=$testdir all > /dev/null
+    $MAKE user="@USER@" modules="@APACHE_MODULES@" testdir=$testdir all > /dev/null
 )
 
 httpd=@APACHE@

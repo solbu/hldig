@@ -8,46 +8,46 @@
 # Originally by Rob McCool
 
 <IfModule mod_so.c>
-#LoadModule mmap_static_module modules/mod_mmap_static.so
-LoadModule env_module         modules/mod_env.so
-LoadModule config_log_module  modules/mod_log_config.so
-LoadModule agent_log_module   modules/mod_log_agent.so
-LoadModule referer_log_module modules/mod_log_referer.so
-#LoadModule mime_magic_module  modules/mod_mime_magic.so
-LoadModule mime_module        modules/mod_mime.so
-LoadModule negotiation_module modules/mod_negotiation.so
-LoadModule status_module      modules/mod_status.so
-LoadModule info_module        modules/mod_info.so
-LoadModule includes_module    modules/mod_include.so
-LoadModule autoindex_module   modules/mod_autoindex.so
-LoadModule dir_module         modules/mod_dir.so
-LoadModule cgi_module         modules/mod_cgi.so
-LoadModule asis_module        modules/mod_asis.so
-LoadModule imap_module        modules/mod_imap.so
-LoadModule action_module      modules/mod_actions.so
-#LoadModule speling_module     modules/mod_speling.so
-LoadModule userdir_module     modules/mod_userdir.so
-LoadModule proxy_module       modules/libproxy.so
-LoadModule alias_module       modules/mod_alias.so
-LoadModule rewrite_module     modules/mod_rewrite.so
-LoadModule access_module      modules/mod_access.so
-LoadModule auth_module        modules/mod_auth.so
-LoadModule anon_auth_module   modules/mod_auth_anon.so
-#LoadModule dbm_auth_module    modules/mod_auth_dbm.so
-LoadModule db_auth_module     modules/mod_auth_db.so
-LoadModule digest_module      modules/mod_digest.so
-#LoadModule cern_meta_module   modules/mod_cern_meta.so
-LoadModule expires_module     modules/mod_expires.so
-LoadModule headers_module     modules/mod_headers.so
-LoadModule usertrack_module   modules/mod_usertrack.so
-#LoadModule example_module     modules/mod_example.so
-#LoadModule unique_id_module   modules/mod_unique_id.so
-LoadModule setenvif_module    modules/mod_setenvif.so
+#LoadModule mmap_static_module _MODULES_/mod_mmap_static.so
+LoadModule env_module         _MODULES_/mod_env.so
+LoadModule config_log_module  _MODULES_/mod_log_config.so
+LoadModule agent_log_module   _MODULES_/mod_log_agent.so
+LoadModule referer_log_module _MODULES_/mod_log_referer.so
+#LoadModule mime_magic_module  _MODULES_/mod_mime_magic.so
+LoadModule mime_module        _MODULES_/mod_mime.so
+LoadModule negotiation_module _MODULES_/mod_negotiation.so
+LoadModule status_module      _MODULES_/mod_status.so
+LoadModule info_module        _MODULES_/mod_info.so
+LoadModule includes_module    _MODULES_/mod_include.so
+LoadModule autoindex_module   _MODULES_/mod_autoindex.so
+LoadModule dir_module         _MODULES_/mod_dir.so
+LoadModule cgi_module         _MODULES_/mod_cgi.so
+LoadModule asis_module        _MODULES_/mod_asis.so
+LoadModule imap_module        _MODULES_/mod_imap.so
+LoadModule action_module      _MODULES_/mod_actions.so
+#LoadModule speling_module     _MODULES_/mod_speling.so
+LoadModule userdir_module     _MODULES_/mod_userdir.so
+LoadModule proxy_module       _MODULES_/libproxy.so
+LoadModule alias_module       _MODULES_/mod_alias.so
+LoadModule rewrite_module     _MODULES_/mod_rewrite.so
+LoadModule access_module      _MODULES_/mod_access.so
+LoadModule auth_module        _MODULES_/mod_auth.so
+LoadModule anon_auth_module   _MODULES_/mod_auth_anon.so
+#LoadModule dbm_auth_module    _MODULES_/mod_auth_dbm.so
+LoadModule db_auth_module     _MODULES_/mod_auth_db.so
+LoadModule digest_module      _MODULES_/mod_digest.so
+#LoadModule cern_meta_module   _MODULES_/mod_cern_meta.so
+LoadModule expires_module     _MODULES_/mod_expires.so
+LoadModule headers_module     _MODULES_/mod_headers.so
+LoadModule usertrack_module   _MODULES_/mod_usertrack.so
+#LoadModule example_module     _MODULES_/mod_example.so
+#LoadModule unique_id_module   _MODULES_/mod_unique_id.so
+LoadModule setenvif_module    _MODULES_/mod_setenvif.so
 
 # Extra Modules
-#LoadModule php_module         modules/mod_php.so
-#LoadModule php3_module        modules/libphp3.so
-#LoadModule perl_module        modules/libperl.so
+#LoadModule php_module         _MODULES_/mod_php.so
+#LoadModule php3_module        _MODULES_/libphp3.so
+#LoadModule perl_module        _MODULES_/libperl.so
 
 #  Reconstruction of the complete module list from all available modules
 #  (static and shared ones) to achieve correct module execution order.
