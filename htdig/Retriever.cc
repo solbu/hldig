@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.58 1999/08/27 15:49:15 ghutchis Exp $
+// $Id: Retriever.cc,v 1.59 1999/08/28 21:10:48 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -335,7 +335,7 @@ Retriever::parse_url(URLRef &urlRef)
     DocumentRef        *ref;
     int			old_document;
     time_t		date;
-    static int	index = 0;
+    static int	index = 1;
 
     url.parse(urlRef.GetURL().get());
 	
