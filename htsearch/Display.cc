@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.89 1999/08/10 22:31:02 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.90 1999/08/11 01:16:08 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -897,7 +897,7 @@ Display::outputVariable(char *var)
     // We have a complete variable name in var. Look it up and
     // see if we can find a good replacement for it, either in our
     // vars dictionary or in the environment variables.
-    name = *var;
+    name = var;
     while (*name == '&' || *name == '%')
 	name++;
     temp = (String *) vars[name];
