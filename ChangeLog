@@ -1,6 +1,8 @@
-Tue Aug 17 16:23:49 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Aug 17 16:26:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
-	* htlib/HtHeap.h, htlib/HtHeap.cc(Index): various bounds overrun
+	* htlib/HtHeap.cc(Remove): apply Geoff's patch to fix Remove.
+
+	* htlib/HtVector.h, htlib/HtVector.cc(Index): various bounds overrun
 	bug fixes and checking in Last(), Nth() & Index().
 
 Mon Aug 16 13:55:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>

@@ -17,7 +17,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: HtHeap.cc,v 1.2 1999/03/14 03:26:21 ghutchis Exp $";
+static char	RCSid[] = "$Id: HtHeap.cc,v 1.3 1999/08/17 21:29:25 grdetil Exp $";
 #endif
 
 #include "HtHeap.h"
@@ -92,7 +92,7 @@ Object *HtHeap::Remove()
 {
   Object *min = Peek();
 
-  data->RemoveFrom(data->Count() - 1);
+  data->RemoveFrom(0);
   
   if (data->Count() > 1)
     pushDownRoot(0);
