@@ -1,7 +1,7 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b3: Released: (late September?) Unfrozen Tree.
+   3.2.0b3: Released: Unfrozen Tree.
    3.2.0b2: Released:  11 Apr 2000.
    3.2.0b1: Released:   4 Feb 2000.
 
@@ -53,7 +53,6 @@ TESTING:
 
 DOCUMENTATION:
 * List of supported platforms/compilers is ancient.
-* Need a list of available mirrors and mirroring instructions.
 * Need a list of "related projects" inc. mifluz, ht://Check, ConfigDig, etc.
    (should this include projects like KDevelop and WWWWoffle that use internally?)
 * Update cf_* pages to mention new config parser (i.e. URL-dependent config)
