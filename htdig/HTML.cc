@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62.2.4 2000/02/02 19:28:13 grdetil Exp $
+// $Id: HTML.cc,v 1.62.2.5 2000/02/10 06:26:18 ghutchis Exp $
 //
 
 #include "htdig.h"
@@ -68,7 +68,7 @@ HTML::HTML()
     // the attrs Match object is used to match names of tag parameters.
     //
     tags.IgnoreCase();
-    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object|link|style|/style");
+    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object|link|style|/style|script|/script");
 
     // These tags don't cause a word break.  They may also be in "tags" above,
     // except for the "a" tag, which must be handled as a special case.
@@ -578,12 +578,14 @@ HTML::do_tag(Retriever &retriever, String &tag)
 
 	case 16:	// "noindex"
 	case 27:	// "style"
+        case 29:        // "script"
 	    doindex = 0;
 	    dofollow = 0;
 	    break;
 
 	case 17:	// "/noindex"
 	case 28:	// "/style"
+        case 30:	// "/script"
 	    doindex = 1;
 	    dofollow = 1;
 	    break;

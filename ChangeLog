@@ -1,3 +1,8 @@
+Thu Feb 10 00:21:58 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HTML.cc (do_tag): Treat <script></script> tags as noindex
+	tags, much like <style></style> as suggested by Torsten.
+
 Thu Feb 10 00:02:41 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* .version: Bump for 3.2.0b2.
