@@ -18,6 +18,7 @@ dbbench_LDADD = $(HTLIBS)
 
 clean-local:
 	rm -fr gmon.out test test_weakcmpr logs var
+	cd conf ; $(MAKE) clean
 
 distclean-local:
 	rm -fr words.all words.uniq

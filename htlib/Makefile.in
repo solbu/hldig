@@ -116,7 +116,7 @@ libht_la_SOURCES = Configuration.cc Connection.cc Database.cc Dictionary.cc 	DB2
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS = BTree.h 	Configuration.h 	Connection.h 	DB2_db.h 	DB2_hash.h 	Database.h 	Dictionary.h 	GDBM_db.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtSGMLCodec.h 	HtURLCodec.h 	HtVector.h 	HtWordCodec.h 	HtWordType.h 	HtZlibCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	URL.h 	cgi.h 	good_strtok.h 	htString.h 	io.h 	lib.h 	langinfo.h 	regex.h
+noinst_HEADERS =  	Configuration.h 	Connection.h 	DB2_db.h 	DB2_hash.h 	Database.h 	Dictionary.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtSGMLCodec.h 	HtURLCodec.h 	HtVector.h 	HtWordCodec.h 	HtWordType.h 	HtZlibCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	URL.h 	cgi.h 	good_strtok.h 	htString.h 	io.h 	lib.h 	langinfo.h 	regex.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -171,7 +171,7 @@ all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .cc .lo .o .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.config
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu htlib/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign htlib/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -280,7 +280,7 @@ distdir: $(DISTFILES)
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu htlib/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign htlib/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
