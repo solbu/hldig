@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.29  1999/01/12 18:09:24  ghutchis
+// Added config options use_document_compression and compression_factor for
+// zlib support.
+//
 // Revision 1.28  1999/01/07 19:56:01  ghutchis
 // Use the no_page_list_header stuff.
 //
@@ -95,7 +99,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.28 1999/01/07 19:56:01 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.29 1999/01/12 18:09:24 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -127,6 +131,7 @@ ConfigDefaults	defaults[] =
     {"case_sensitive"                   "true"},
     {"create_image_list",		"false"},
     {"create_url_list",			"false"},
+    {"compression_factor",              "9"},
     {"date_factor",                     "0"},
     {"database_base",			"${database_dir}/db"},
     {"description_factor",              "150"},
@@ -214,6 +219,7 @@ ConfigDefaults	defaults[] =
     {"timeout",				"30"},
     {"title_factor",			"100"},
     {"url_list",			"${database_base}.urls"},
+    {"use_document_compression",        "false"}
     {"use_star_image",			"true"},
     {"use_meta_description",            "false"},
     {"user_agent",			"htdig"},
