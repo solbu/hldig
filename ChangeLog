@@ -1,4 +1,7 @@
-Tue Nov 23 20:23:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Nov 23 20:25:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html: removed vestigial references to MAX_MATCHES
+	template variables in search_results_{header,footer}.
 
 	* htdoc/hts_form.html: add disclaimer about keywords parameter not
 	being limited to meta keywords.
