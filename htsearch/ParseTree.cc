@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ParseTree.cc,v 1.1.2.2 2000/08/01 16:51:51 ghutchis Exp $
+// $Id: ParseTree.cc,v 1.1.2.3 2000/08/24 04:42:41 ghutchis Exp $
 //
 
 #include "ParseTree.h"
@@ -20,7 +20,7 @@
 #include "AndParseTree.h"
 #include "OrParseTree.h"
 #include "ExactParseTree.h"
-#include "HtWordType.h"
+#include "WordType.h"
 
 //*********************************************************************
 // ParseTree::ParseTree()
@@ -82,13 +82,12 @@ void ParseTree::Destroy()
 int ParseTree::Parse(String query)
 {
   String	phrase;
-  char		*token, *unparsed;
-  int		inPhrase;
+  String	token;
+  int		currentToken, inPhrase;
   ParseTree	*currentOp, *word;
   Stack		operators;	// a stack of ParseTree objects for parens
 
   initialQuery = query;
-  unparsed = query.get();
   children = new List; // This will actually be *our* child but we need to build
 
   // We will build the ParseTree essentially through a bottom-up parse
@@ -99,18 +98,20 @@ int ParseTree::Parse(String query)
   // for syntaxes like +word and title:word and * for all matches...
 
   inPhrase = 0;
+  currentToken = 0;
   currentOp = NULL;
   word = NULL;
-  token = HtWordToken(unparsed);
-  while ( token != NULL )
+  token = WordToken(query, currentToken);
+  while ( token.length() != 0 )
     {
       // We switch between currentOp and word to indicate the state
       // i.e. have we just parsed an operator or a word
       // There's probably a better way to do this, but this seems easy
       //   (plus it makes it a bit more readable)
 
-      if (mystrcasecmp(token, "(") == 0 && !inPhrase)
+      if (mystrcasecmp(token.get(), "(") == 0 && !inPhrase)
 	{
+	  
 	  if (currentOp != NULL && word == NULL)
 	    {
 	      operators.push(currentOp);
@@ -122,14 +123,16 @@ int ParseTree::Parse(String query)
 	    return NOTOK; // We have a right parens in the wrong spot
 	}
 
-      else if (mystrcasecmp(token, ")") == 0 && !inPhrase)
+      else if (mystrcasecmp(token.get(), ")") == 0 && !inPhrase)
 	{
+
 	  if (operators.Size() == 0)
 	    return NOTOK; // Ooops, too many left parens!
 	  if (currentOp == NULL && word != NULL && operators.peek() != NULL)
 	    {
 	      ((ParseTree *) operators.peek())->Adopt(word);
-	      word = (ParseTree *) operators.pop();
+	      word = new ParseTree;
+	      word->Adopt((ParseTree *) operators.pop());
 	    }
 	  else if (operators.peek() == NULL) // Pushed when we hadn't seen anything
 	    operators.pop();
@@ -141,7 +144,7 @@ int ParseTree::Parse(String query)
 	    return NOTOK;
 	}
 
-      else if (mystrcasecmp(token, "\"") == 0)
+      else if (mystrcasecmp(token.get(), "\"") == 0)
 	{
 	  inPhrase = !inPhrase;
 	  if (!inPhrase) // We just finished one...
@@ -156,7 +159,7 @@ int ParseTree::Parse(String query)
 	    return NOTOK;
 	}
 
-      else if (mystrcasecmp(token,"and") == 0 && !inPhrase) // boolean_keywords[0]
+      else if (mystrcasecmp(token.get(),"and") == 0 && !inPhrase) // boolean_keywords[0]
 	{
 	  if (currentOp != NULL)
 	    return NOTOK;
@@ -170,7 +173,7 @@ int ParseTree::Parse(String query)
 	    return NOTOK; // This is infix notation, so we need a first argument
 	}
 
-      else if (mystrcasecmp(token, "or") == 0 && !inPhrase) // boolean_keywords[1]
+      else if (mystrcasecmp(token.get(), "or") == 0 && !inPhrase) // boolean_keywords[1]
 	{
 	  if (currentOp != NULL)
 	    return NOTOK;
@@ -207,7 +210,7 @@ int ParseTree::Parse(String query)
 	    word = new ParseTree(token);
 	}
       
-      token = HtWordToken(NULL);
+      token = WordToken(query, currentToken);
     } // end while
 
   if (inPhrase)		// Mismatched "" marks
@@ -329,4 +332,41 @@ String	ParseTree::GetLogicalWords()
   logicalWords << ")";
 
   return logicalWords;
+}
+
+
+//*********************************************************************
+// String	ParseTree::WordToken(String, int)
+//
+// Non-destructive tokenizer using external int as pointer into String
+//  does word separation by our rules (so it can be subclassed too)
+//
+String
+ParseTree::WordToken(const String tokens, int &current)
+{
+    unsigned char	text = tokens[current];
+    String		ret;
+
+    while (text && !WordType::Instance()->IsStrictChar(text))
+      {
+	if (text == '(' || text == ')' || text == '\"')
+	  {
+	    ret << text;
+	    current++;
+	    return ret;
+	  }
+
+	text = tokens[++current];
+      }
+	
+
+    if (text)
+    {
+	while (text && WordType::Instance()->IsChar(text))
+	  {
+	    ret << text;
+	    text = tokens[++current];
+	  }
+    }
+    return ret;
 }

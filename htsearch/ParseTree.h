@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ParseTree.h,v 1.1.2.1 2000/06/30 01:56:30 ghutchis Exp $
+// $Id: ParseTree.h,v 1.1.2.2 2000/08/24 04:42:41 ghutchis Exp $
 //
 
 #ifndef _ParseTree_h_
@@ -74,6 +74,8 @@ protected:
 
     WeightWord		data;
     ResultList		results;
+
+    String		WordToken(const String s, int &pointer);
 
 };
 
