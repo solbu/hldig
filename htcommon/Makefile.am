@@ -17,7 +17,7 @@ libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc \
 	HtWordReference.cc HtWordList.cc defaults.cc \
 	HtURLCodec.cc URL.cc URLTrans.cc \
 	HtZlibCodec.cc cgi.cc HtSGMLCodec.cc \
-	HtConfiguration.cc \
+	HtConfiguration.cc HtURLRewriter.cc \
 	conf_lexer.lxx conf_parser.yxx 
 
 libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
@@ -33,6 +33,7 @@ noinst_HEADERS = DocumentDB.h \
 	HtZlibCodec.h \
 	defaults.h \
 	HtConfiguration.h \
+	HtURLRewriter.h \
 	conf_parser.h
 
 LOCAL_DEFINES=	-DBIN_DIR=\"$(bindir)\" \

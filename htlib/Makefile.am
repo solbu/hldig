@@ -12,6 +12,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	HtCodec.cc HtWordCodec.cc \
 	HtVector.cc HtHeap.cc \
 	HtPack.cc HtDateTime.cc HtRegex.cc \
+	HtRegexReplace.cc HtRegexReplaceList.cc \
 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc
 
 libht_la_LIBADD=@LTLIBOBJS@
@@ -29,6 +30,8 @@ pkginclude_HEADERS = \
 	HtHeap.h \
 	HtPack.h \
 	HtRegex.h \
+	HtRegexReplace.cc \
+	HtRegexReplaceList.cc \
 	HtVector.h \
 	HtWordCodec.h \
 	IntObject.h \

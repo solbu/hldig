@@ -133,12 +133,12 @@ EXTRA_DIST = conf_lexer.cxx conf_parser.cxx
 
 pkglib_LTLIBRARIES = libcommon.la
 
-libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc 	HtWordReference.cc HtWordList.cc defaults.cc 	HtURLCodec.cc URL.cc URLTrans.cc 	HtZlibCodec.cc cgi.cc HtSGMLCodec.cc 	HtConfiguration.cc 	conf_lexer.lxx conf_parser.yxx 
+libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc 	HtWordReference.cc HtWordList.cc defaults.cc 	HtURLCodec.cc URL.cc URLTrans.cc 	HtZlibCodec.cc cgi.cc HtSGMLCodec.cc 	HtConfiguration.cc HtURLRewriter.cc 	conf_lexer.lxx conf_parser.yxx 
 
 
 libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS = DocumentDB.h 	DocumentRef.h 	HtWordReference.h 	HtWordList.h 	HtURLCodec.h 	HtSGMLCodec.h 	URL.h 	cgi.h 	HtZlibCodec.h 	defaults.h 	HtConfiguration.h 	conf_parser.h
+noinst_HEADERS = DocumentDB.h 	DocumentRef.h 	HtWordReference.h 	HtWordList.h 	HtURLCodec.h 	HtSGMLCodec.h 	URL.h 	cgi.h 	HtZlibCodec.h 	defaults.h 	HtConfiguration.h 	HtURLRewriter.h 	conf_parser.h
 
 
 LOCAL_DEFINES = -DBIN_DIR=\"$(bindir)\" 		-DCOMMON_DIR=\"$(COMMON_DIR)\" 		-DCONFIG_DIR=\"$(CONFIG_DIR)\" 		-DDATABASE_DIR=\"$(DATABASE_DIR)\" 		-DIMAGE_URL_PREFIX=\"$(IMAGE_URL_PREFIX)\" 
@@ -155,8 +155,8 @@ LIBS = @LIBS@
 libcommon_la_LIBADD = 
 libcommon_la_OBJECTS =  DocumentDB.lo DocumentRef.lo HtWordReference.lo \
 HtWordList.lo defaults.lo HtURLCodec.lo URL.lo URLTrans.lo \
-HtZlibCodec.lo cgi.lo HtSGMLCodec.lo HtConfiguration.lo conf_lexer.lo \
-conf_parser.lo
+HtZlibCodec.lo cgi.lo HtSGMLCodec.lo HtConfiguration.lo \
+HtURLRewriter.lo conf_lexer.lo conf_parser.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -178,9 +178,9 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 GZIP_ENV = --best
 DEP_FILES =  .deps/DocumentDB.P .deps/DocumentRef.P \
 .deps/HtConfiguration.P .deps/HtSGMLCodec.P .deps/HtURLCodec.P \
-.deps/HtWordList.P .deps/HtWordReference.P .deps/HtZlibCodec.P \
-.deps/URL.P .deps/URLTrans.P .deps/cgi.P .deps/conf_lexer.P \
-.deps/conf_parser.P .deps/defaults.P
+.deps/HtURLRewriter.P .deps/HtWordList.P .deps/HtWordReference.P \
+.deps/HtZlibCodec.P .deps/URL.P .deps/URLTrans.P .deps/cgi.P \
+.deps/conf_lexer.P .deps/conf_parser.P .deps/defaults.P
 SOURCES = $(libcommon_la_SOURCES)
 OBJECTS = $(libcommon_la_OBJECTS)
 
