@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.3 1999/03/23 23:22:54 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.4 1999/03/31 23:35:33 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -636,20 +636,23 @@ Retriever::IsValidURL(char *u)
     // If the URL contains any of the patterns in the exclude list,
     // mark it as invalid
     //
-    int retValue;     // Returned value of findFirst
-    int myWhich = 0;    // Item # that matched [0 .. n]
-    int myLength = 0;   // Length of the matching value
-    retValue = excludes.FindFirst(url, myWhich, myLength);
-    if (retValue >= 0)
+    if (excludes.hasPattern()) // Make sure there's an exclude list!
       {
-      if (debug > 2)
-	{
-	  myWhich++;         // [0 .. n] --> [1 .. n+1]
-	  cout << endl <<"   Rejected: Item in the exclude list: item # ";
-	  cout << myWhich << " length: " << myLength << endl;
+	int retValue;     // Returned value of findFirst
+	int myWhich = 0;    // Item # that matched [0 .. n]
+	int myLength = 0;   // Length of the matching value
+	retValue = excludes.FindFirst(url, myWhich, myLength);
+	if (retValue >= 0)
+	  {
+	    if (debug > 2)
+	      {
+		myWhich++;         // [0 .. n] --> [1 .. n+1]
+		cout << endl <<"  Rejected: Item in the exclude list: item # ";
+		cout << myWhich << " length: " << myLength << endl;
+	      }
+	    return FALSE;
+	  }
       }
-      return FALSE;
-    }
 
     //
     // See if the path extension is in the list of invalid ones

@@ -190,11 +190,7 @@ main(int ac, char **av)
     //
     // Patterns to exclude from urls...
     //
-    if (strlen(config["exclude_urls"]) != 0)
-      l.Create(config["exclude_urls"], " \t");
-    else // Make sure we have *something*
-      l.Create("!~-no-urls-~!", " \t");
-
+    l.Create(config["exclude_urls"], " \t");
     excludes.IgnoreCase();
     excludes.Pattern(l.Join('|'));
     l.Release();

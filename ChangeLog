@@ -1,3 +1,11 @@
+Wed Mar 31 18:21:21 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/htdig.cc: Undo March 30 change.
+
+	* htdig/Retriever.cc: Use excludes.hasPattern before using the
+	exclude list. (More elegant solution to problem, as pointed out by
+	Gilles.) 
+
 Wed Mar 31 15:16:36 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htfuzzy/Synonym.cc: Fix previous fix of minor memory leak.
