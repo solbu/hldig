@@ -6,7 +6,7 @@ RELEASES:
    3.2.0b1: Released: 4 Feb 2000.
 
 SHOWSTOPPERS:
-* Geoff's copy on LinuxPPC is broken after Loic's mifluz merge. Still unkown cause.
+* weakcmpr database needs to be writeable by server process.
 
 KNOWN BUGS:
 * URL.cc tries to parse malformed URLs (which causes further problems)
@@ -18,8 +18,7 @@ KNOWN BUGS:
    we fix this?)
 * Odd behavior with $(MODIFIED) and scores not working with
    wordlist_compress set but work fine without wordlist_compress.
-* Modified database can cause problems with systems using the Berkeley db for 
-   other tasks (e.g. networking)
+   (Is this now fixed with Loic's merge?)
 
 PENDING FEATURES:
 * Forward-Porting of NNTP code.
@@ -48,10 +47,11 @@ DOCUMENTATION:
    requirements of 3.2.x (e.g. phrase searching, regex matching,
    external parsers and transport methods, database compression.)
 * TODO.html has not been updated for current TODO list and completions.
+* Update documentation to be *very* explicit about the new
+   htmerge/htpurge distrinction.
 
 OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
+   (Does this work with Loic's new database code?)
 * Error messages should be more informative if no URLs are indexed by htdig
    PR#672. In short, programs should do a little more checking.
-* Should htmerge only merge databases and become part of the httools
-   directory? (The clean-up duties have now been implemented into htpurge.)
