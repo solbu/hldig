@@ -817,6 +817,12 @@ following line would do it:<br>
 	  set, you can set
 	  max_meta_description_length to 0!).</p>
 	  
+	  <p>If you are running 3.2.0b6 or higher, you can turn off
+	  <a href="attrs.html#store_phrases">store_phrases</a>.  This cuts the
+	  database size by about 60%, at the expense of severely limiting
+	  the effectiveness of phrase searches.  It also reduces digging time
+	  slightly.</p>
+
 	  <p>Other techniques include removing the db.wordlist file and adding
 	  more words to the <a href="attrs.html#bad_words">bad_words</a>
 	  file.</p>
@@ -1979,6 +1985,9 @@ require group foo
 	  large as possible provides considerable performance
 	  improvement. Development is in progress to improve cache
 	  performance.
+	  For 3.2.0b6 and higher, see also the
+	  <a href="attrs.html#store_phrases">store_phrases</a> attribute,
+	  which can turn off support for phrase searches, improving the speed.
 	  </p>
 
 	  <strong>5.21. <a name="q5.21">Why does htsearch use ";" instead of
@@ -2481,7 +2490,7 @@ find /path/to/your/document/root -type f -name \*.html -print | \
 	  <br>
 
 	  <hr noshade size=4>
-	  	Last modified: $Date: 2003/11/08 05:59:52 $
+	  	Last modified: $Date: 2004/04/25 13:07:08 $
 <br> 
     <a href="http://sourceforge.net/"> 
           <img src="http://sourceforge.net/sflogo.php?group_id=4593&amp;type=1" width="88" height="31" border="0" alt="SourceForge Logo"></a>

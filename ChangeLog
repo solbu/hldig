@@ -1,9 +1,18 @@
 Sun 25 Apr 2004 Lachlan Andrew <lha at users.sourceforge.net>
 
+    * htdig/HTML.cc: Handle empty  noindex_start/noindex_end  lists.
+    * htlib/StringList.{cc,h}: const-correctness of Add/Insert/Assign(char*)
+
+    * redo mistakenly backed out patch...
+
+Sun 25 Apr 2004 Lachlan Andrew <lha at users.sourceforge.net>
+
     * htsearch/parser.cc:  Address (but not fix) bug #934739
     If collection->getDocumentRef() on line 889 returns NULL, don't crash.
     I'm still trying to work out why it does return NULL -- I don't think
     it ever should.
+
+    * mistakenly back out previous patch :(
 
 Sun 25 Apr 2004 Lachlan Andrew <lha at users.sourceforge.net>
 

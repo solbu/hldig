@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.h,v 1.26 2003/10/23 02:13:42 angusgb Exp $
+// $Id: Retriever.h,v 1.27 2004/04/25 13:07:08 lha Exp $
 //
 
 #ifndef _Retriever_h_
@@ -47,6 +47,16 @@ enum  RetrieverLog {
     Retriever_noLog,
     Retriever_logUrl,
     Retriever_Restart
+};
+
+struct word_entry : public Object
+{
+    		word_entry (int loc, int fl, HtWordReference& ref) :
+		    	location (loc), flags (fl), context (ref)
+			{};
+    int		location;
+    int		flags;
+    HtWordReference context;
 };
 
 class Retriever
@@ -119,6 +129,8 @@ private:
     String		credentials;
     HtWordReference	word_context;
     HtWordList		words;
+
+    Dictionary		words_to_add;
 	
     int			check_unique_md5;
     int			check_unique_date;

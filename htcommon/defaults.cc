@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.106 2004/02/19 10:43:04 lha Exp $
+// $Id: defaults.cc,v 1.107 2004/04/25 13:07:07 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -2395,6 +2395,14 @@ http://www.htdig.org/", " \
 	and relative months can span several years. A startday of \
 	-90 will select matching documents modified within \
 	the last 90 days. \
+" }, \
+{ "store_phrases", "true",  \
+	"boolean", "htdig", "", "3.2.0b5", "Indexing:How", "startyear: false", " \
+	Causes htdig to record all occurrences of each word in a document, \
+	to allow accurate phrase searches.  If this is false, only the first \
+	occurrence of each word will be stored, causing many phrases to be \
+	missed. Setting this false increases indexing speed by about 20%, \
+	and reduces disk requirements by about 60%.\
 " }, \
 { "substring_max_words", "25",  \
 	"integer", "htsearch", "", "3.0.8b1", "Searching:Method", "substring_max_words: 100", " \

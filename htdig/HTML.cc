@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HTML.cc,v 1.72 2003/10/24 17:51:38 grdetil Exp $
+// $Id: HTML.cc,v 1.73 2004/04/25 13:07:08 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -123,51 +123,55 @@ HTML::HTML() :
     // syntax.
     if (skip_start.Count() > 1 || skip_end.Count() > 1)
     {
-	// check for old-style start/end which allowed unquoted spaces
-	// (Check noindex_start/end for exactly one "<" or/followed-by
-	// exactly one ">", and no leading quotes.)
-	// Can someone think of a better (or simpler) check??
-	String noindex_end (config->Find ("noindex_end"));
-	char *first_left = strchr (noindex_end.get(), '<');
-	char *secnd_left = first_left ? strchr (first_left +1, '<') : (char*)0;
-	char *first_right= strchr (noindex_end.get(), '>');
-	char *secnd_right= first_right? strchr (first_right+1, '>') : (char*)0;
-	String noindex_start (config->Find ("noindex_start"));
-	char *first_lft = strchr (noindex_start.get(), '<');
-	char *secnd_lft = first_left ? strchr (first_lft +1, '<') : (char*)0;
-	char *first_rght= strchr (noindex_start.get(), '>');
-	char *secnd_rght= first_right? strchr (first_rght+1, '>') : (char*)0;
+	if (skip_start.Count() != 0 && skip_end.Count() != 0)
+	{
+	    // check for old-style start/end which allowed unquoted spaces
+	    // (Check noindex_start/end for exactly one "<" or/followed-by
+	    // exactly one ">", and no leading quotes.)
+	    // Can someone think of a better (or simpler) check??
+	    String noindex_end (config->Find ("noindex_end"));
+	    char *first_left = strchr (noindex_end.get(), '<');
+	    char *secnd_left = first_left ? strchr(first_left+1,'<') : (char*)0;
+	    char *first_right= strchr (noindex_end.get(), '>');
+	    char *secnd_right= first_right? strchr(first_right+1,'>'): (char*)0;
+	    String noindex_start (config->Find ("noindex_start"));
+	    char *first_lft = strchr (noindex_start.get(), '<');
+	    char *secnd_lft = first_left ? strchr (first_lft +1,'<') : (char*)0;
+	    char *first_rght= strchr (noindex_start.get(), '>');
+	    char *secnd_rght= first_right? strchr (first_rght+1,'>') : (char*)0;
 
-	if (((first_right && !secnd_right && first_right < first_left) ||
-	     (first_left  && !secnd_left  && !first_right) ||
-	     (first_rght && !secnd_rght && first_rght < first_lft) ||
-	     (first_lft  && !secnd_lft  && !first_rght)) &&
-	    noindex_end[0] != '\"' && noindex_start[0] != '\"')
-	{
-	    cout << "\nWarning: To allow multiple  noindex_start/end  patterns, patterns containing\nspaces should now be in quotation marks.  (If the entries are indended to be\nmultiple patterns, this warning can be suppressed by placing the first pattern\nin quotes.)\n\n";
-	    // Should we treat the patterns as if they had been quoted
-	    // (as we assume was intended)?
-	}
-
-	// check each start has an end
-	if (skip_start.Count() < skip_end.Count())
-	{
-	    cout << "Warning:  " << skip_end.Count()
-		 << "  noindex_end  patterns, but only " << skip_start.Count()
-		 << "  noindex_start  patterns.\n";
-	} else
-	{
-	    while (skip_start.Count () > skip_end.Count())
+	    if (((first_right && !secnd_right && first_right < first_left) ||
+		 (first_left  && !secnd_left  && !first_right) ||
+		 (first_rght && !secnd_rght && first_rght < first_lft) ||
+		 (first_lft  && !secnd_lft  && !first_rght)) &&
+		noindex_end[0] != '\"' && noindex_start[0] != '\"')
 	    {
-		int missing = skip_end.Count() - 1;
-		cout << "Warning: Copying " << skip_end [missing]
-		     << " as  noindex_end  match for " << skip_start [missing+1]
-		     << endl;
-		skip_end.Add (skip_end [missing]);
+		cout << "\nWarning: To allow multiple  noindex_start/end  patterns, patterns containing\nspaces should now be in quotation marks.  (If the entries are indended to be\nmultiple patterns, this warning can be suppressed by placing the first pattern\nin quotes.)\n\n";
+		// Should we treat the patterns as if they had been quoted
+		// (as we assume was intended)?
 	    }
 	}
     }
-    
+
+    // check each start has an end
+    if (skip_start.Count() < skip_end.Count())
+    {
+	cout << "Warning:  " << skip_end.Count()
+	     << "  noindex_end  patterns, but only  " << skip_start.Count()
+	     << "  noindex_start  patterns.\n";
+    } else
+    {
+	while (skip_start.Count () > skip_end.Count())
+	{
+	    int missing = skip_end.Count() - 1;
+	    skip_end.Add ((missing >= 0) ? skip_end [missing]
+					 : "<!--/htdig_noindex-->");
+	    cout << "Warning: Copying " << skip_end [missing+1]
+		 << " as  noindex_end  match for " << skip_start [missing+1]
+		 << endl;
+	}
+    }
+
     word = 0;
     href = 0;
     title = 0;

@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.92 2004/04/25 08:45:31 lha Exp $
+// $Id: Retriever.cc,v 1.93 2004/04/25 13:07:08 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -50,18 +50,24 @@
 
 static int noSignal;
 
+// no_store_phrases:
+// If true, only store first occurrence of each word in a document
+static bool no_store_phrases;
 
 //*****************************************************************************
 // Retriever::Retriever()
 //
 Retriever::Retriever(RetrieverLog flags):
-words(*(HtConfiguration::config()))
+words(*(HtConfiguration::config())),
+words_to_add (100, 0.75)
 {
 	HtConfiguration *config = HtConfiguration::config();
 	FILE *urls_parsed;
 
 	currenthopcount = 0;
 	max_hop_count = config->Value("max_hop_count", 999999);
+
+	no_store_phrases = !config->Boolean("store_phrases");
 
 	//
 	// Initialize the flags for the various HTML factors
@@ -910,6 +916,28 @@ void Retriever::RetrievedDocument(Document & doc, const String & url, DocumentRe
 		return;
 	}
 
+	// If just storing the first occurrence of each word in a document,
+	// we must now flush the words we saw in that document
+	if (no_store_phrases)
+	{
+	    DictionaryCursor cursor;
+	    char *key;
+	    HtWordReference wordRef;
+	    for (words_to_add.Start_Get (cursor);
+		    (key = words_to_add.Get_Next(cursor)); )
+	    {
+		word_entry *entry = (word_entry*) (words_to_add [key]);
+
+		wordRef.Location(entry->location);
+		wordRef.Flags(entry->flags);
+		wordRef.Word(key);
+		words.Replace(WordReference::Merge(wordRef, entry->context));
+		// How do I clean up properly?
+		delete entry;
+	    }
+	    words_to_add.Release ();
+	}
+
 	//
 	// We don't need to dispose of the parsable object since it will
 	// automatically be reused.
@@ -1412,10 +1440,25 @@ void Retriever::got_word(const char *word, int location, int heading)
 		String w = word;
 		HtWordReference wordRef;
 
-		wordRef.Location(location);
-		wordRef.Flags(factor[heading]);
-		wordRef.Word(w);
-		words.Replace(WordReference::Merge(wordRef, word_context));
+		if (no_store_phrases)
+		{
+		    // Add new word, or mark existing word as also being at
+		    // this heading level
+		    word_entry *entry;
+		    if ((entry = (word_entry*)words_to_add.Find (w)) == NULL)
+		    {
+			words_to_add.Add(w, new word_entry (location, factor[heading], word_context));
+		    } else
+		    {
+			entry->flags |= factor[heading];
+		    }
+		} else
+		{
+		    wordRef.Location(location);
+		    wordRef.Flags(factor[heading]);
+		    wordRef.Word(w);
+		    words.Replace(WordReference::Merge(wordRef, word_context));
+		}
 
 		// Check for compound words...
 		String parts = word;
@@ -1453,8 +1496,23 @@ void Retriever::got_word(const char *word, int location, int heading)
 					HtStripPunctuation(w);
 					if (w.length() >= minimumWordLength)
 					{
-						wordRef.Word(w);
-						words.Replace(WordReference::Merge(wordRef, word_context));
+					        if (no_store_phrases)
+						{
+						    // Add new word, or mark existing word as also being at
+						    // this heading level
+						    word_entry *entry;
+						    if ((entry = (word_entry*)words_to_add.Find (w)) == NULL)
+						    {
+							words_to_add.Add(w, new word_entry (location, factor[heading], word_context));
+						    } else
+						    {
+							entry->flags |= factor[heading];
+						    }
+						} else
+						{
+						    wordRef.Word(w);
+						    words.Replace(WordReference::Merge(wordRef, word_context));
+						}
 						if (debug > 3)
 							cout << "word part: " << start << '@' << location << endl;
 					}

@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: StringList.h,v 1.10 2003/06/24 20:05:45 nealr Exp $
+// $Id: StringList.h,v 1.11 2004/04/25 13:07:09 lha Exp $
 //
 
 #ifndef _StringList_h_
@@ -44,11 +44,11 @@ public:
     //
     // Standard List operations...
     //
-    void		Add(char *);
+    void		Add(const char *);
     void		Add(String *obj) { List::Add(obj); }
-    void		Insert(char *, int pos);
+    void		Insert(const char *, int pos);
     void		Insert(String *obj, int pos) { List::Insert(obj, pos); }
-    void		Assign(char *, int pos);
+    void		Assign(const char *, int pos);
     void		Assign(String *obj, int pos) { List::Assign(obj, pos); }
 
     //

@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: StringList.cc,v 1.12 2003/06/24 20:05:45 nealr Exp $
+// $Id: StringList.cc,v 1.13 2004/04/25 13:07:08 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -106,30 +106,33 @@ char *StringList::operator [] (int n)
 
 
 //*****************************************************************************
-// void StringList::Add(char *str)
+// void StringList::Add(const char *str)
 //
-void StringList::Add(char *str)
+void StringList::Add(const char *str)
 {
     List::Add(new String(str));
 }
 
 
 //*****************************************************************************
-// void StringList::Assign(char *str, int pos)
+// void StringList::Assign(const char *str, int pos)
 //
-void StringList::Assign(char *str, int pos)
+void StringList::Assign(const char *str, int pos)
 {
     List::Assign(new String(str), pos);
 }
 
 //*****************************************************************************
-// void StringList::Insert(char *str, int pos)
+// void StringList::Insert(const char *str, int pos)
 //
-void StringList::Insert(char *str, int pos)
+void StringList::Insert(const char *str, int pos)
 {
     List::Insert(new String(str), pos);
 }
 
+//*****************************************************************************
+// static int StringCompare(const void *a, const void *b)
+//
 static int StringCompare(const void *a, const void *b)
 {
     String	*sa, *sb;
@@ -171,6 +174,9 @@ void StringList::Sort(int)
     delete array;
 }
 
+//*****************************************************************************
+// String StringList::Join(char sep) const
+//
 String StringList::Join(char sep) const
 {
   String str;
