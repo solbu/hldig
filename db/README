@@ -1,10 +1,9 @@
-# @(#)README	10.72 (Sleepycat) 1/3/99
+Berkeley DB-3.0.55 in a single directory
 
-This is version 2.7.7 (08/20/99) of Sleepycat Software's Berkeley DB
-product.  To view the documentation for this release, point your web
-browser at the distribution file db-2.7.7/docs/index.html.
+Contains a patch to compress pages on the fly.
 
-Sleepycat Software	db@sleepycat.com
-394 E. Riding Dr.	+1-510-526-3972
-Carlisle, MA 01741	+1-877-SLEEPYCAT (+1-877-753-3792, toll-free, USA only)
-USA
+The prefix-symbols.sh script was run to prefix all external 
+symbols with CDB_ so that no conflict with an original library
+can occur.
+
+Tested on RedHat-6.2 and Solaris-2.6

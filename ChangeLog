@@ -1,3 +1,9 @@
+Fri May  5 08:33:59 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* db/*: Merge in changes from Loic's mifluz tree. This will break
+	everything, but Loic promises he'll fix it ASAP after I make this
+	change.
+
 Mon Apr 24 21:58:22 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/htdig.cc (main): Make the -l stop & restart mode the
