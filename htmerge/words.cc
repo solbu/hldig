@@ -4,6 +4,9 @@
 // Implementation of htmerge
 //
 // $Log: words.cc,v $
+// Revision 1.10.2.1  1999/03/22 20:24:55  grdetil
+// fix htmerge bug which clobbered anchor numbers
+//
 // Revision 1.10  1999/01/25 04:55:54  ghutchis
 // Ignore word count by compile-time option NO_WORD_COUNT.
 //
@@ -39,7 +42,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.10 1999/01/25 04:55:54 ghutchis Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.10.2.1 1999/03/22 20:24:55 grdetil Exp $";
 #endif
 
 #include "htmerge.h"
@@ -208,7 +211,8 @@ mergeWords(char *wordtmp, char *wordfile)
 		last_wr.weight += wr.weight;
 		if (wr.location < last_wr.location)
 		  last_wr.location = wr.location;
-		if (wr.anchor < last_wr.anchor)
+		if (wr.anchor > 0 && wr.anchor < last_wr.anchor
+		    || last_wr.anchor == 0)
 		  last_wr.anchor = wr.anchor;
 		continue;
 	      }
