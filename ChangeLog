@@ -1,3 +1,11 @@
+Tue Dec  7 10:26:58 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc (setVariables): Fix a compilation error by
+	making a statment with '?' an explicit if-else statment.
+
+	* htdoc/RELEASE.html: Change case_sensitive fix to a bug-fix,
+	update release date for 12/9/99. (We certainly didn't release yesterday!)
+
 Mon Dec  6 22:17:21 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(Display): Add missing call to setupTemplates(),
