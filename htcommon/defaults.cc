@@ -10,14 +10,13 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.25 2000/01/29 01:38:34 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.26 2000/01/30 03:37:31 ghutchis Exp $
 //
 
 #include "HtConfiguration.h"
 
 ConfigDefaults	defaults[] =
 {
-
 
 { "add_anchors_to_excerpt", "true", 
 	"boolean", "htsearch", "3.1.0", "", "add_anchors_to_excerpt: no", "
@@ -101,7 +100,7 @@ ConfigDefaults	defaults[] =
 	See also <a href=\"#valid_extensions\">valid_extensions</a>.
 " },
 { "bad_querystr", "", 
-	"string list", "htdig", "3.1.0", "", "bad_querystr: forum=private section=topsecret&amp;passwd=required", "
+	"pattern list", "htdig", "3.1.0", "", "bad_querystr: forum=private section=topsecret&amp;passwd=required", "
 	This is a list of CGI query strings to be excluded from
 	indexing. This can be used in conjunction with CGI-generated
 	portions of a website to control which pages are
@@ -250,15 +249,13 @@ http://www.htdig.org/", "
 " },
 { "date_factor", "0", 
 	"number", "htsearch", "3.1.0", "", "date_factor: 0.35", "
-	This factor, like <a
-	href=\"#backlink_factor\">backlink_factor</a> can be
-	changed without modifing the database. It gives higher
+	This factor, gives higher
 	rankings to newer documents and lower rankings to older
 	documents. Before setting this factor, it's advised to
 	make sure your servers are returning accurate dates
 	(check the dates returned in the long format).
 	Additionally, setting this to a nonzero value incurs a
-	performance hit on searching.
+	small performance hit on searching.
 " },
 { "date_format", "", 
 	"string", "htsearch", "3.1.2", "", "date_format: %Y-%m-%d", "
@@ -401,7 +398,7 @@ http://www.htdig.org/", "
 	the document that actually contains one of the words.
 " },
 { "exclude_urls", "/cgi-bin/ .cgi", 
-	"string list", "htdig", "all", "", "exclude_urls: students.html cgi-bin", "
+	"pattern list", "htdig", "all", "", "exclude_urls: students.html cgi-bin", "
 	If a URL contains any of the space separated patterns,
 	it will be rejected. This is used to exclude such
 	common things such as an infinite virtual web-tree
@@ -757,7 +754,6 @@ http://www.htdig.org/", "
 	is normally used to configure which characters
 	constitute letter characters.
 " },
-
 { "head_before_get", "false", 
 	"boolean", "htdig", "3.2.0b1", "", "head_before_get: true", "
         This option works only if we take advantage of persistent connections (see
@@ -766,7 +762,6 @@ http://www.htdig.org/", "
         If the status code and the content-type returned let the document be parsable,
         then a following 'GET' call is made.
 " },
-
 { "heading_factor", "5", 
 	"number", "htsearch", "3.2.0b1", "", "heading_factor: 20", "
 			This is a factor which will be used to multiply the
@@ -779,7 +774,6 @@ http://www.htdig.org/", "
 			<a href=\"#title_factor\">title_factor</a> and
 			<a href=\"#text_factor\">text_factor</a> attributes.
 " },
-
 { "htnotify_sender", "webmaster@www", 
 	"string", "htnotify", "all", "", "htnotify_sender: bigboss@yourcompany.com", "
 	This specifies the email address that htnotify email
@@ -797,7 +791,7 @@ http://www.htdig.org/", "
 	of the indexing process.
 " },
 { "http_proxy_exclude", "", 
-	"string list", "htdig", "3.1.0b3", "", "http_proxy_exclude: http://intranet.foo.com/", "
+	"pattern list", "htdig", "3.1.0b3", "", "http_proxy_exclude: http://intranet.foo.com/", "
 	When this is set, URLs matching this will not use the
 	proxy. This is useful when you have a mixture of sites
 	near to the digging server and far away.
@@ -827,7 +821,11 @@ http://www.htdig.org/", "
 " },
 { "img_alt_factor", "3", 
 	"number", "htsearch", "3.2.0b1", "", "image_alt_factor: 10.1", "
-
+	This is a factor which will be used to multiply the
+	weight of words in the ALT portions of &lt;img&gt; tags
+	The number may be a floating point number. See also the
+	<a href=\"#keywords_factor\">keywords_factor</a> and
+	<a href=\"#text_factor\">text_factor</a>attributes.
 " },
 { "include", "",
         "string", "htdig htnotify htfuzzy htmerge htsearch", "3.1.0", "", "include: ${config_dir}/htdig.conf", "
@@ -876,7 +874,7 @@ http://www.htdig.org/", "
 </tt>
 " },
 { "limit_normalized", "", 
-	"string list", "htdig", "3.1.0b2", "", "limit_normalized: http://www.mydomain.com", "
+	"pattern list", "htdig", "3.1.0b2", "", "limit_normalized: http://www.mydomain.com", "
 	This specifies a set of patterns that all URLs have to
 	match against in order for them to be included in the
 	search. Unlike the limit_urls_to directive, this is done
@@ -887,14 +885,15 @@ http://www.htdig.org/", "
 	href=\"#limit_urls_to\">limit_urls_to</a> directive.
 " },
 { "limit_urls_to", "${start_url}", 
-	"string list", "htdig", "all", "", "limit_urls_to: .sdsu.edu kpbs", "
+	"pattern list", "htdig", "all", "", "limit_urls_to: .sdsu.edu kpbs [.*\.html]", "
 	This specifies a set of patterns that all URLs have to
 	match against in order for them to be included in the
 	search. Any number of strings can be specified,
 	separated by spaces. If multiple patterns are given, at
 	least one of the patterns has to match the URL.<br>
-	Matching is a case-insensitive string match on the URL
-	to be used. The match will be performed <em>after</em>
+	Matching, by default, is a case-insensitive string match on the URL
+	to be used, unless the <a href=\"attrs.html#case_sensitive\">case_sensitive</a> 
+        attribute is set. The match will be performed <em>after</em>
 	the relative references have been converted to a valid
 	URL. This means that the URL will <em>always</em> start
 	with <tt>http://</tt>.<br>
@@ -922,7 +921,7 @@ http://www.htdig.org/", "
 	"boolean", "htdig", "3.1.4", "", "local_urls_only: true", "
 	Set this to tell ht://Dig to only access files through the 
 	local filesystem using the local_urls attribute. If it cannot 
-	find the file, it will give up rather than trying HTTP or other protocol.
+	find the file, it will give up rather than trying HTTP or another protocol.
 " },
 { "local_user_urls", "", 
 	"string list", "htdig", "3.0.8b2", "", "local_user_urls: http://www.my.org/=/home/,/www/", "
@@ -930,7 +929,7 @@ http://www.htdig.org/", "
 	filesystem. If you leave the \"path\" portion out, it will
 	look up the user's home directory in /etc/password (or NIS
 	or whatever). As with local_urls, if the files are not
-	found, ht://Dig will try with HTTP. Again, note the
+	found, ht://Dig will try with HTTP or the appropriate protocol. Again, note the
 	example's format. To map http://www.my.org/~joe/foo/bar.html
 	to /home/joe/www/foo/bar.html, try the example below.
 " },
@@ -996,7 +995,6 @@ http://www.htdig.org/", "
 	If this is set to a relatively small number, the
 	matches will be shown in pages instead of all at once.
 " },
-
 { "max_connection_requests", "-1",
 	"integer", "htdig", "3.2.0b1", "", "max_connection_requests: 100", "
 	This attribute tells htdig to limit the number of requests it will
@@ -1008,7 +1006,6 @@ http://www.htdig.org/", "
 	Requests in the queue for a server will be combined until either
 	the limit is reached, or the queue is empty.
 " },
-
 { "max_description_length", "60", 
 	"number", "htdig", "all", "", "max_description_length: 40", "
 	While gathering descriptions of URLs,
@@ -1051,11 +1048,9 @@ http://www.htdig.org/", "
 	Instead of limiting the indexing process by URL
 	pattern, it can also be limited by the number of hops
 	or clicks a document is removed from the starting URL.
-	Unfortunately, this only works reliably when a complete
-	index is created, not an update.<br>
-	The starting page will have hop count 0.
+        <br>
+	The starting page or pages will have hop count 0.
 " },
-
 { "max_meta_description_length", "512", 
 	"number", "htdig", "3.1.0b1", "", "max_meta_description_length: 1000", "
 	While gathering descriptions from meta description tags,
@@ -1070,13 +1065,11 @@ http://www.htdig.org/", "
 	that this does not limit the number of documents that
 	are matched in any way.
 " },
-
 { "max_retries", "3", 
 	"number", "htdig", "3.2.0b1", "", "max_retries: 6", "
          This option set the maximum number of retries when retrieving a document
          fails (mainly for reasons of connection).
 " },
-
 { "max_stars", "4", 
 	"number", "htsearch", "all", "", "max_stars: 6", "
 	When stars are used to display the score of a match,
@@ -1341,7 +1334,6 @@ http://www.htdig.org/", "
 	executable.
 	</p>
 " },
-
 { "persistent_connections", "true", 
 	"boolean", "htdig", "3.2.0b1", "", "persistent_connections: false", "
 	If set to true, when servers make it possible, htdig can take advantage
@@ -1349,7 +1341,6 @@ http://www.htdig.org/", "
         to reduce the number of open/close operations of connections, when retrieving
         a document with HTTP.
 " },
-
 { "prefix_match_character", "*", 
 	"string", "htsearch", "3.1.0b1", "", "prefix_match_character: ing", "
 	A null prefix character means that prefix matching should be
@@ -1395,6 +1386,15 @@ http://www.htdig.org/", "
 	recognize as default documents for directory URLs, as defined
 	by the DirectoryIndex setting in Apache's srm.conf, for example.
 " },
+{ "remove_unretrieved_urls", "false", 
+	"boolean", "htmerge", "3.2.0b1", "", "remove_bad_urls: true", "
+	If TRUE, htmerge will remove any URLs which were discovered
+	and included as stubs in the database but not yet retrieved. If FALSE, it
+	will not do this. When htdig is run in initial mode with no restrictions 
+        on hopcount or maximum documents, these should probably be removed and set
+        to true. However, if you are hoping to index a small set of documents and 
+        eventually get to the rest, you should probably leave this as false.
+" },
 { "robotstxt_name", "htdig", 
 	"string", "htdig", "3.0.7", "", "robotstxt_name: myhtdig", "
 	Sets the name that htdig will look for when parsing
@@ -1427,8 +1427,9 @@ http://www.htdig.org/", "
 			when searching. Each entry in the list consists of the
 			algorithm name, followed by a colon (:) followed by a
 			weight multiplier. The multiplier is a floating point
-			number between 0 and 1. Current algorithms supported
-			are:
+			number between 0 and 1. If the exact method is not listed, the 
+                        search may not work since the original terms will not be used. 
+                        Current algorithms supported are:
 			<dl>
 			  <dt>
 				exact
@@ -1495,6 +1496,24 @@ http://www.htdig.org/", "
 			  matching on \"abc\" since * is the default
 			  prefix_match_character.
 			</dd>
+			<dt>
+			regex
+			</dt>
+			<dd>
+			  Matches all words that match the patterns given as regular 
+                          expressions. Since this requires checking every word in
+			  the database, this can really slow down searches
+			  considerably.
+			<dd>
+			<dt>
+			speling
+			</dt>
+			<dd>
+			  A simple fuzzy algorithm that tries to find one-off spelling 
+			  mistakes, such as transposition of two letters or an extra character.
+			  Since this usually generates just a few possibilities, it is 
+			  relatively quick.
+			<dd>
 			</dl>
 " },
 { "search_results_footer", "${common_dir}/footer.html", 
@@ -1979,10 +1998,6 @@ http://www.htdig.org/", "
 	If a <em>to</em>-string in url_part_aliases can
 	occur in normal URLs, this option should be set to
 	<b>false</b> to eliminate surprises.<br>
-" },
-{ "url_factor", "2", 
-	"number", "htsearch", "3.2.0b1", "", "url_factor: 0.0", "
-
 " },
 { "url_list", "${database_base}.urls", 
 	"string", "htdig", "all", "", "url_list: /tmp/urls", "
