@@ -4,6 +4,9 @@
 // Implementation of cgi
 //
 // $Log: cgi.cc,v $
+// Revision 1.6  1999/06/16 13:48:12  grdetil
+// Allow a query string to be passed as an argument.
+//
 // Revision 1.5  1999/01/20 18:08:30  ghutchis
 // Call good_strtok with appropriate parameters (explicitly include NULL first
 // parameter, second param is char, not char *).
@@ -23,7 +26,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: cgi.cc,v 1.5 1999/01/20 18:08:30 ghutchis Exp $";
+static char RCSid[] = "$Id: cgi.cc,v 1.6 1999/06/16 13:48:12 grdetil Exp $";
 #endif
 
 #include "cgi.h"
@@ -42,12 +45,31 @@ static char RCSid[] = "$Id: cgi.cc,v 1.5 1999/01/20 18:08:30 ghutchis Exp $";
 //
 cgi::cgi()
 {
+	init("");
+}
+
+
+//*****************************************************************************
+// cgi::cgi(char *s)
+//
+cgi::cgi(char *s)
+{
+	init(s);
+}
+
+
+//*****************************************************************************
+// void cgi::init(char *s)
+//
+void
+cgi::init(char *s)
+{
 	pairs = new Dictionary;
 
 	int i;
 	String	method(getenv("REQUEST_METHOD"));
 
-	if (method.length() == 0)
+	if ((!s || !*s) && method.length() == 0)
 	{
 		//
 		// Interactive mode
@@ -58,7 +80,11 @@ cgi::cgi()
 	query = 0;
 	String	results;
 
-	if (strcmp(method, "GET") == 0)
+	if (s && *s && method.length() == 0)
+	{
+		results = s;
+	}
+	else if (strcmp(method, "GET") == 0)
 	{
 		results = getenv("QUERY_STRING");
 	}

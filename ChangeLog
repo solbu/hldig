@@ -1,3 +1,8 @@
+Wed Jun 16 09:32:06 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/cgi.h, htlib/cgi.cc(cgi & init), htsearch/htsearch.cc
+	(main & usage): allow a query string to be passed as an argument.
+
 Wed Jun 16 08:43:09 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/Makefile.in, htdig/Makefile.in, htfuzzy/Makefile.in,
