@@ -1,3 +1,18 @@
+Sun Jan 17 21:48:05 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/(attrs.html, cf_byname.html, cf_byprog.html, config.html,
+	hts_form.html, hts_templates.html): Add documentation for "sort"
+	config and form input.
+
+	* htcommon/defaults.cc: Added options "sort" and "sort_names" to
+	pick result sorting order and text names for sort options.
+
+	* htsearch/Display.cc: Added variable SORT to render a form menu
+	for sort options, based on "sort" and "sort_names" options.
+
+	* installdir/(wrapper.html, header.html, nomatch.html,
+	footer.html, search.html, syntax.html): Add in sort option to form.
+
 Sun Jan 17 14:03:54 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/TemplateList.h
