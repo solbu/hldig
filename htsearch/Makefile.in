@@ -110,6 +110,18 @@ TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
 YACC = @YACC@
+db_align_t_decl = @db_align_t_decl@
+db_alignp_t_decl = @db_alignp_t_decl@
+int16_decl = @int16_decl@
+int32_decl = @int32_decl@
+ssize_t_decl = @ssize_t_decl@
+u_char_decl = @u_char_decl@
+u_int16_decl = @u_int16_decl@
+u_int32_decl = @u_int32_decl@
+u_int8_decl = @u_int8_decl@
+u_int_decl = @u_int_decl@
+u_long_decl = @u_long_decl@
+u_short_decl = @u_short_decl@
 
 AUTOMAKE_OPTIONS = foreign
 
