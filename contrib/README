@@ -8,17 +8,24 @@ will be severely broken!  Do not expect them to work; use them only as
 examples of the types of things you can do with the ht://Dig
 databases.
 
+More contributed work is available on the ht://Dig website:
+<http://www.htdig.org/contrib/>
+
 What's here:
 
 autorun		An example of automating the database building
 changehost	A script to change hostnames of URLs in the databases
+conv_doc.pl	A sample script to use the conversion features of external_parsers
 doclist		List the information in the doc db (or after a certain date)
 ewswrap		Two sample htsearch wrappers to emulate Excite for Web
 		Servers (EWS) and to simplify queries
-htparsedoc	Two sample external parsers (shell and perl) to index
-		Word documents.
+handler.pl	A sample external_protocols script to handle HTTP/HTTPS using curl
+htparsedoc	A sample shell script to parse Word documents
 multidig	A set of scripts to simplify updating multiple databases
+parse_doc.pl	A general external parser script that handles MS Word documents
+		(among others)
 run-robot.sh	Another example of automating the database building
+scriptname	An example of using htsearch within dynamic SSI pages
 status.pl	Build a status page of last 5 runs and top 10
 		servers (by # URLs)
 urlindex	Build an index of all the URLs in the database
