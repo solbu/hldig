@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.43 1999/05/04 03:38:29 ghutchis Exp $
+// $Id: Retriever.cc,v 1.44 1999/05/04 19:45:08 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -613,12 +613,16 @@ Retriever::IsValidURL(char *u)
     {
 	// A list of bad extensions, separated by spaces or tabs
 	String	t = config["bad_extensions"];
+	String lowerp;
 	char	*p = strtok(t, " \t");
 	invalids = new Dictionary;
 	while (p)
 	{
-	    invalids->Add(p, 0);
-	    p = strtok(0, " \t");
+	  // Extensions are case insensitive
+	  lowerp = p;
+	  lowerp.lowercase();
+	  invalids->Add(lowerp, 0);
+	  p = strtok(0, " \t");
 	}
     }
 
@@ -670,7 +674,9 @@ Retriever::IsValidURL(char *u)
     // See if the path extension is in the list of invalid ones
     //
     char	*ext = strrchr(url, '.');
-    if (ext && invalids->Exists(ext))
+    String	lowerext = ext;
+    lowerext.lowercase();
+    if (ext && invalids->Exists(lowerext))
       {
 	if (debug > 2)
 	  cout << endl <<"   Rejected: Extension is invalid!";
