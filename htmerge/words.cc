@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: words.cc,v 1.22.2.6 2000/02/24 17:17:04 loic Exp $
+// $Id: words.cc,v 1.22.2.7 2000/05/06 00:36:12 loic Exp $
 //
 
 #include "htmerge.h"
@@ -44,14 +44,14 @@ static int delete_word(WordList *words, WordDBCursor& cursor, const WordReferenc
 
   if(d.discard.Exists(docIDStr)) {
     if(words->Delete(cursor) != 1) {
-      cerr << "htmerge: deletion of " << *word << " failed " << strerror(errno) << "\n";
+      cerr << "htmerge: deletion of " << (char*)word->Get() << " failed " << strerror(errno) << "\n";
       return NOTOK;
     }
     if (verbose)
       {
 	cout << "htmerge: Discarding ";
 	if(verbose > 2)
-	  cout << *word;
+	  cout << (char*)word->Get();
 	else 
 	  cout << word->Word();
 	cout << "\n";
@@ -74,9 +74,9 @@ void mergeWords()
   DeleteWordData	data(discard_list); 
 
   words.Open(config["word_db"], O_RDWR);
-  WordSearchDescription search(delete_word, &data);
-  words.Walk(search);
-  
+  WordCursor* search = words.Cursor(delete_word, &data);
+  search->Walk();
+  delete search;
   words.Close();
 
   if (verbose)

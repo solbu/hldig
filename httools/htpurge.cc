@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htpurge.cc,v 1.1.2.4 2000/04/09 15:22:46 ghutchis Exp $
+// $Id: htpurge.cc,v 1.1.2.5 2000/05/06 00:36:12 loic Exp $
 //
 
 #include "WordContext.h"
@@ -293,14 +293,14 @@ static int delete_word(WordList *words, WordDBCursor& cursor, const WordReferenc
 
   if(d.discard.Exists(docIDStr)) {
     if(words->Delete(cursor) != 1) {
-      cerr << "htpurge: deletion of " << *word << " failed " << strerror(errno) << "\n";
+      cerr << "htpurge: deletion of " << (char*)word->Get() << " failed " << strerror(errno) << "\n";
       return NOTOK;
     }
     if (verbose)
       {
 	cout << "htpurge: Discarding ";
 	if(verbose > 2)
-	  cout << *word;
+	  cout << (char*)word->Get();
 	else 
 	  cout << word->Word();
 	cout << "\n";
@@ -323,8 +323,9 @@ void purgeWords(Dictionary discard_list)
   DeleteWordData	data(discard_list); 
 
   words.Open(config["word_db"], O_RDWR);
-  WordSearchDescription search(delete_word, &data);
-  words.Walk(search);
+  WordCursor* search = words.Cursor(delete_word, &data);
+  search->Walk();
+  delete search;
   
   words.Close();
 

@@ -1,3 +1,11 @@
+Sat May 06 04:46:03 2000  Loic Dachary  <loic@senga.org>
+
+	* htmerge/words.cc (mergeWords): WordSearchDescription becomes
+	  WordCursor.
+
+	* httools/htpurge.cc (purgeWords): WordSearchDescription becomes
+	  WordCursor.
+
 Sat May 06 02:01:40 2000  Loic Dachary  <loic@senga.org>
 
 	* htdb/*: upgrade to Berkeley DB 3.0.55. Very different.
