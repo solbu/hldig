@@ -1,3 +1,8 @@
+Thu Feb 22 16:43:18 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/ChangeLog, htdig/RELEASE.html, README: Update to roll the
+	release of 3.2.0b3.
+
 Thu Feb 22 16:22:05 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/htsearch.cc (main), htsearch/Display.cc (setVariables,

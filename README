@@ -31,9 +31,9 @@ as well. (libstdc++ has superceded the older libg++ package.)
 To build, first read the htdoc/install.html document
 
 Questions and discussion should be directed to the ht://Dig mailing list 
-  at htdig@htdig.org
+  at htdig-general@lists.sourceforge.net
 Find subscription instructions at http://www.htdig.org/mailing.html
-Suggestions and bug reports should be sent to bugs@htdig.org
+Suggestions and bug reports should be sent to htdig-bugs@lists.sourceforge.net
 
 For the most up-to-date documentation, use http://www.htdig.org/
 

@@ -1,12 +1,12 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b3: Released:  14 Feb 2001.
+   3.2.0b4: In progress
+   3.2.0b3: Released:  22 Feb 2001.
    3.2.0b2: Released:  11 Apr 2000.
    3.2.0b1: Released:   4 Feb 2000.
 
 SHOWSTOPPERS:
-(Hopefully none--need to clean up htdocs/ for website changes, etc.)
 
 KNOWN BUGS:
 * Odd behavior with $(MODIFIED) and scores not working with
@@ -24,7 +24,6 @@ KNOWN BUGS:
 
 PENDING PATCHES (available but need work):
 * Additional support for Win32.
-* Date-restricted searching (maybe 1/2 done).
 * Memory improvements to htmerge. (Backed out b/c htword API changed.)
 * MySQL patches to 3.1.x to be forward-ported and cleaned up.
   (Should really only attempt to use SQL for doc_db and related, not word_db)

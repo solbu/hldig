@@ -1,3 +1,1181 @@
+Thu Feb 22 16:43:18 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/ChangeLog, htdig/RELEASE.html, README: Update to roll the
+	release of 3.2.0b3.
+
+Thu Feb 22 16:22:05 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc (main), htsearch/Display.cc (setVariables,
+	createURL, buildMatchList), htdoc/hts_form.html,
+	htdoc/hts_templates.html: Add Mike Grommet's date range search
+	feature.
+
+Mon Feb 19 18:24:42 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htfuzzy/Synonym.cc (createDB): Create database in a temporary
+	directory before we move it into place, much like the endings
+	code. This should prevent problems when we just append to the DB
+	instead of making a new one.
+
+	* htdig/htdig.cc (main): Fix bug discovered by Gilles--htword
+	should be initialized *after* we are finished modifying config
+	attributes based on flags and unlink with -i.
+
+	* installdir/rundig: Fix bug with calling htpurge with -s option.
+
+Thu Feb 15 11:03:42 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/*.html: Update with 2001 copyrights and various changes
+	with the website move for the pending 3.2.0b3 release.
+
+Thu Feb 15 10:41:47 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtRegexList.cc (match): Fix thinko with logic for matching
+	and add code to rearrange matching nodes for hopefully better
+	performance.
+
+Sun Feb 11 16:42:11 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtRegexList.h, htlib/HtRegexList.cc (class HtRegexList):
+	Simple List(HtRegex) object with similar calling conventions to
+	HtRegex class. This version is not as sophisticated as it could
+	be, but it's not likely to drop objects when reorganizing.
+
+	* htlib/Makefile.[in,am]: Add HtRegexList files to list for
+	compilation.
+
+	* htdig/htdig.h, htdig/htdig.cc, htdig/Retriever.cc: Use
+	HtRegexList instead of HtRegex for setting escaped values--should
+	never fail (since each String item is short).
+	
+	* htlib/HtDateTime.cc: Put back timezone specs into the output
+	formats so we give everything even if we ignore it when reading
+	input.
+
+Mon Feb  5 11:47:07 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtDateTime.cc: Remove the timezone specs in the date
+	formats--these are not required in the RFCs because many dates are
+	in GMT anyway.
+
+Wed Jan 17 08:48:30 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalTransport.cc (Request): Oops, fixed a holdover from
+	code borrowed from ExternalParser.cc's fork handling.
+
+Mon Jan 15 23:09:37 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htnet/Connection.cc: Back out previous change--this should not
+	in any way be needed since the configure script should set
+	FD_SET_T.
+
+	* configure.in, configure: Add more lenient prototyping for
+	select() test--now allows "const struct timeval" for compilation
+	on BSDI.
+
+	* htdoc/RELEASE.html: Update with Gilles's changes.
+
+	* htdoc/cf_blocks.html: New file describing <server ...></server>
+	and <url ...></url> blocks.
+
+	* htdoc/cf_general.html, htdoc/confmenu.html: Refer to the above.
+	
+Mon Jan 15 17:46:07 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/TemplateList.cc (createFromString), htcommon/defaults.cc:
+	Treat template_map as a _quoted_ string list.
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
+Mon Jan 15 17:40:45 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/hts_templates.html: Add METADESCRIPTION variable.
+
+	* htsearch/Display.cc (displayMatch): Add METADESCRIPTION variable.
+
+	* htdig/ExternalParser.cc (parse): Fix up handling of arguments.
+
+	* htdig/ExternalTransport.cc (Request): Fix up handling of fork/exec
+	and command arguments, add wait() call.
+
+Wed Jan 10 19:23:36 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/rundig: Fix -a handling to move db.words.db.work_weakcmpr
+	into place if it exists
+
+Sat Jan  6 21:50:58 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in: Add checks for <sys/wait.h> and <wait.h> for
+	ExternalParser.
+
+	* include/htconfig.h.in: Regenerate using autoheader.
+
+	* configure: Regenerate using configure.
+	
+	* htnet/Connection.cc: Add definition for FD_SET_T to fix problems
+	compiling on BSDI mentioned by Joe.
+
+	* htdig/ExternalParser.cc: Use <sys/wait.h> or <wait.h> as
+	appropriate. Should fix problems with compiliation mentioned by
+	Jesse on HP/UX.
+
+	* README, htdoc/RELEASE.html: Adjust dates for the new year.
+
+	* htdoc/upgrade.html: A few "remaining features" have been implemented.
+	
+Sun Dec 06 19:46:15 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htnet/HtHTTP.cc: Fixed bug for Read_Line function call in
+	ReadChunkedBody method. Many thanks to Robert LaFerla. ;-)
+
+Tue Dec 12 13:24:49 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Fixed to properly handle binary
+	output from an external converter.  Fixed some compilation errors.
+
+Tue Dec 12 12:52:14 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Handle parser command string
+	as a string list again to allow arguments, build up argv and
+	use execv instead of execl.
+
+Tue Dec 12 12:25:04 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Add call to wait for child process,
+	to avoid zombie buildup.
+
+Mon Dec 11 23:57:43 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Fix up handling of fds in child
+	process, more fault-tolerant handling of pipe or fork errors.
+
+Mon Dec 11 23:30:55 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Fix up handling of creation
+	of temporary file, check for proper return code, give error if
+	appropriate.
+
+Mon Dec 11 23:19:28 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Lowercase content-types and
+	strip off any trailing semicolons, at one last spot.  This reinserts
+	code added Sep 11, which was dropped Oct 9, probably inadvertantly
+	during mifluz back-out.
+
+Sun Dec 10 15:28:44 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/ExternalTransport.cc: Use fork/exec instead of calling
+	popen, which bypasses any shell escape problems.
+
+	* htdig/ExternalParser.cc: Ditto, plus use of mkstemp where
+	available to pick the filename.
+
+	* configure, configure.in: Check for mkstemp where available.
+
+	* include/htconfig.h.in: Define it as above.
+
+	* htlib/Makefile.am: Omit regex.c from SOURCES--this is included
+	when necessary by the configure script. Otherwise this produces
+	duplicate declarations, etc.
+
+	* htlib/Makefile.in: Regenerate using automake --foreign.
+
+	* htcommon/URL.cc: Fix bug with ports of 0 showing up in URLs like
+	mailto: or other less-common protocols.
+
+Fri Dec  1 14:45:33 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.2.0.spec: Updated to 3.2.0b3.
+
+Fri Dec  1 13:59:09 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Makefile.am: Fix pkginclude_HEADERS to list missing headers
+	ber.h, libdefs.h, myqsort.h, mhash_md5.h, omit unneeded langinfo.h;
+	fix libht_la_SOURCES to list missing sources regex.c, myqsort.c.
+
+	* htlib/Makefile.in: Regenerate using automake --foreign
+
+	* htlib/langinfo.h, htlib/nl_types.h: Removed as they're now unused.
+
+Fri Dec  1 13:22:47 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/strptime.cc (mystrptime): make ptr const and use cast on
+	return value to avoid warnings.
+
+	* htlib/Makefile.am: Fix pkginclude_HEADERS to list HtRegexReplace*.h
+	rather than .cc.
+
+	* htlib/Makefile.in: Regenerate using automake --foreign
+
+Fri Dec  1 11:58:21 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* Makefile.in, [hit]*/Makefile.in: Regenerate using automake --foreign
+	after fixing bug with cp -pr in automake.
+
+Thu Nov 30 14:41:58 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/Makefile.am: Removed howitworks.html from EXTRA_DIST.
+
+	* Makefile.in (distdir): Added missing variable name 'd' to cp -pr.
+
+Thu Nov 30 14:01:48 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/strptime.cc, htlib/lib.h: make first 2 args to strptime
+	const to avoid warnings, use cast in asizeof to avoid warnings.
+
+	* htsearch/qtest.cc: Change include from iostream to iostream.h
+
+	* htsearch/DocMatch.cc: Change include from iostream to iostream.h
+
+	* htsearch/Display.cc (createURL, buildMatchList, excerpt, hilight):
+	Clean up code to get rid of warnings, especially resulting from
+	NULLs in ternary operators.
+
+Thu Nov 30 10:55:09 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/String_fmt.cc (form, vform): Use vsnprintf rather than
+	vsprintf, for buffer overflow prevention if vsnprintf available.
+
+	* htdig/Retriever.cc: Remove unused strptime declaration.
+
+	* htlib/HtDateTime.cc: Use mystrptime if HAVE_STRPTIME not set.
+
+Wed Nov 29 23:31:10 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdb/htdb_stat.cc, htdb_load.cc, htdb_dump.cc: Make sure we
+	include htconfig.h to include proper declarations.
+
+	* htlib/strptime.cc: Change to strptime.cc, from htdig-3.1 series
+	hopefully more portable until I can find a more suitable
+	replacement.
+
+	* htlib/Makefile.am, htlib/Makefile.in: As above.
+
+	* htlib/clib.h, htlib/lib.h: Ditto.
+
+	* htdoc/all.html: Add a first draft of program summaries.
+
+Wed Nov 29 18:00:15 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc (parse_url): Remove undeclared "dup" variable,
+	add missing calls to words.Skip().
+
+Wed Nov 29 17:44:56 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/htdig.html: Add description of -v output.
+
+Mon Nov 27 12:03:34 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/md5.cc: Added missing include of time.h
+
+Fri Nov 24 00:56:01 2000  Toivo Pedaste <toivo@ucs.uwa.edu.au>
+
+	* htsearch/Display.cc: Some extra debugging for scoring
+
+Sun Nov 19 00:56:01 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htnet/HtFile.cc (Request): Use opendir/readdir instead of
+	scandir for generating directory listings on-the-fly.
+
+	* htdoc/RELEASE.html: Write up release notes for 3.2.0b3.
+
+	* htdoc/THANKS.html: Update list of contributors for 3.2.0b3 as
+	current.
+
+Fri Nov 17 14:52:37 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/acroconv.pl: Added external converter script to convert
+	PDFs with acroread.
+
+Mon Nov  6 12:13:13 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc (GetLocal, GetLocalUser): move String definition
+	out of while statement for AIX xlC compiler.
+
+Mon Oct 30 21:50:02 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Server.h, htdig/Server.cc (push): Add newDoc paramter that
+	will allow redirects (old docs) to be followed and not count
+	against the maxDoc restrictions.
+
+	* htdig/Retriever.cc (got_redirect): Use new parameter so we don't
+	count against a server's max documents since it's a redirect.
+
+	* htlib/nl_types.h: Add for systems missing this header file.
+
+Sun Oct 29 21:36:51 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Updated per-server and per-URL fields to
+	match code. I still have a "wish list" of additional attributes
+	that should work this way eventually.
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
+Sun Oct 22 17:13:08 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/HtWordList.h: Add missing include for stdlib.h needed for
+	abort().
+
+	* htsearch/BooleanQueryParser.cc (ParseAnd): Fix problems with RH7
+	compiler -- shouldn't use "not" as a variable name!
+
+Thu Oct 19 22:19:16 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* ltmain.sh, ltconfig: Update with versions from libtool
+	1.3.5. which may fix some problems building libraries.
+
+Mon Oct  9 21:59:11 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* */* [many, many files]: Backed out mifluz merge by going back on
+	modified files to 091000 snapshot.
+
+	* configure: Regenerated from configure.in.
+
+	* */Makefile.in: Regenerated using automake.
+
+Fri Oct  6 11:03:14 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (do_tag): Parse <object> tags properly, looking
+	for data= attribute rather than src=.
+
+	* htcommon/defaults.cc (server_aliases): Additional clarification
+	to server_aliases description of port numbers.
+
+Wed Oct  4 12:12:31 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc (limit_normalized, server_aliases,
+	server_max_docs, server_wait_time): Added clarification
+	to server_aliases description. Changed word "directive" to
+	"attribute" where appropriate. Added cross-link to server_aliases
+	from limit_normalized.
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
+Wed Sep 27 00:05:41 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdb/mifluz[dict, dump, load].cc, htdb/util_sig.h,
+	htdb/util_sig.cc: New files from mifluz merge. (Whoops, missed a
+	directory).
+
+	* htdb/*.cc: Change config.h references to htconfig.h.
+
+	* htlib/myqsort.c: Ditto.
+
+	* htcommon/HtWordReference.h, htcommon/HtWordReference.cc: Ensure
+	we keep the WordContext object around--unfortunately this also
+	requires that callers initialize us with a WordContext (e.g. from
+	the HtWordList class).
+	
+	* htlib/StringMatch.h, htlib/StringMatch.cc: Changes to use
+	WordType directly instead of HtWordType.
+
+	* htfuzzy/*: Ditto. Additionally make sure HtWordReference objects
+	are intstantiated properly.
+
+	* htcommon/DocumentRef.cc, htcommon/HtWordList.cc: As above.
+
+	* htdig/*: As above.
+
+	* htsearch/*: As above.
+	
+	* httools/*: Don't bother initializing WordContext--this is done
+	in the HtWordList class now.
+
+	* htdig/htdig.cc: Ditto.
+
+	* htsearch/htsearch.cc, htsearch/qtest.cc: Ditto.
+
+	* htfuzzy/htfuzzy.cc: Ditto.
+
+	* db/Makefile.am, db/Makefile.in: Update to build libhtdb instead
+	of libdb to prevent conflicts.
+
+Sun Sep 24 22:50:22 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htword/HtWordList.h, htword/HtWordList.cc: Keep a WordContext
+	object private that is associated with this word database and
+	provide accessor.
+
+	* htword/WordType.h, htword/WordType.cc: Add WordToken function,
+	migrated from HtWordType class.
+
+	* htcommon/HtWordType.cc: WordType class no longer has Instance()
+	method, so just pass along the calls.
+	
+	* htlib/DB2_db.cc (db_init): Remove unnecessary NULL parameter.
+
+	* htlib/Makefile.am, htlib/Makefile.in: Remove HtVectorGeneric and
+	derived files as well as HtWordType as these are depreciated.
+
+Wed Sep 20 22:47:01 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* aclocal.m4: Add in missing autoconf macros that somehow didn't
+	make the merge before. (No idea why I didn't catch this earlier.)
+
+	* acinclude.m4: Use newer CHECK_ZLIB macro.
+	
+	* */Makefile.in: Updated with automake for new build changes.
+
+	* configure, include/htconfig.h.in: Updated using autoconf.
+	
+	* test/dbbench.cc, test/word.cc, test/search.cc: Fix #include to
+	point to htconfig.h not non-existant config.h.
+
+	* htlib/Configuration.h: Fix copy ctor, removing code in header file.
+	
+	* htword/*.cc: Ditto.
+
+	* htword/Makefile.am: Update from mifluz version.
+
+	* htlib/myqsort.h, htlib/myqsort.c: Additional system library
+	replacement code.
+
+Sat Sep 16 20:14:32 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in, configure, acinclude.m4, aclocal.m4, acconfig.h,
+	include/htconfig.h.in: Merged with mifluz versions. Main
+	difference is that top-level configure script now also configures
+	db/ directory as well.
+
+	* Makefile.am, */Makefile.in: Updated with automake for new build
+	environment (with db/ run through top-level configure).
+
+	* db/*.c: Updated to use htconfig.h instead of config.h.
+
+Wed Sep 13 22:05:33 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* Merged in mifluz-0.19 branch. Everything will break
+	temporarily. Loic and I will clean up tomorrow.
+
+	* htdoc/RELEASE.html, htdoc/THANKS.html, htdoc/TODO.html: Get a
+	start on updting these files for the next release.
+
+	* htdoc/cf_generate.pl: Revert change of Sep. 9 to ignore links to
+	all.html in cf_byprog.html file.
+
+	* htdoc/all.html: New file, moved from howitworks.html and not
+	updated yet.
+
+	* htdoc/contents.html: Change link from howitworks.html to all.html
+
+Tue Sep 12 17:00:00 CEST 2000 Quim Sanmarti <qss@gtd.es>
+
+	* htsearch: added AndQuery.cc BooleanLexer.cc BooleanQueryParser.cc
+	ExactWordQuery.cc GParser.cc NearQuery.cc NotQuery.cc
+	OperatorQuery.cc OrFuzzyExpander.cc OrQuery.cc
+	PhraseQuery.cc Query.cc QueryLexer.cc QueryParser.cc
+	SimpleQueryParser.cc VolatileCache.cc WordSearcher.cc
+	qtest.cc WordSearcher.h AndQuery.h AndQueryParser.h
+	BooleanLexer.h BooleanQueryParser.h ExactWordQuery.h
+	FuzzyExpander.h GParser.h NearQuery.h NotQuery.h
+	OperatorQuery.h OrFuzzyExpander.h OrQuery.h OrQueryParser.h
+	PhraseQuery.h Query.h QueryCache.h QueryLexer.h
+	QueryParser.h SimpleLexer.h SimpleQueryParser.h VolatileCache.h.
+	This is the new query parsing/evaluation framework.
+
+	* Modified DocMatch.{cc,h} and ResultList.{cc,h} for compatibility.
+
+	* Removed the previous {And,Or,Exact,}ParseTree.{cc,h} files.
+
+	* Modified Makefile.{am,in} consequently.
+
+Mon Sep 11 11:56:44 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Lowercase content-types and
+	strip off any trailing semicolons, at one last spot which Geoff missed. 
+
+Sat Sep  9 21:28:29 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Document.cc (getParsable): Fix a bug with earlier
+	change--if no parser is found and the MIME type is not text/* then
+	return a NULL parser.
+
+	* htdig/Retriever.cc (RetrievedDocument): If a NULL parser is
+	returned, mark the document as noindex and move on.
+
+	* configure.in, configure (enable-tests): Fix bug that would run 
+	the 'yes' program inside the configure script if --enable-tests 
+	was set.
+
+Sat Sep  9 17:50:11 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Add "all" program listing for common
+	attributes--seems more logical esp. now with many httool programs.
+
+	* htdoc/cf_generate.pl (cf_byprog): Do not output a link when
+	'prog' is 'all.'
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
+Sat Sep  9 11:44:47 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* aclocal.m4 (AM_CHECK_YACC): New macro to check for bison/yacc
+	and use "missing yacc" if not found.
+
+	* configure.in (enable_tests): Fix buglet where --enable-tests=no
+	or --disable-tests would not work and set the default to enabled
+	tests. Since the tests do not build unless the user does a "make
+	check" this should not be confusing and should help debugging.
+	Also use AM_CHECK_YACC instead of AC_CHECK_YACC.
+
+	* configure: Regenerate using autoconf.
+
+Sat Sep  9 11:01:03 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/ExternalParser.cc (canParse): Lowercase content-types and
+	strip off any trailing semicolons. Should prevent problems with
+	combined content-type; charset values.
+	(ctor): As above.
+
+	* htdig/Document.cc (getParsable): Only assume plain text if MIME
+	code starts with text/. Should prevent problems with retrieving
+	things like image/png or application/postscript as text.
+
+Fri Sep  8 22:59:10 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Add new attributes htnotify_replyto,
+	htnotify_webmaster, htnotify_prefix_file, htnotify_suffix_file.
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
+	* httools/htnotify.cc: Added in code from Richard Beton
+	<richard.beton@roke.co.uk> to collect multiple URLs per e-mail
+	address and allow customization of notification messages by
+	reading in header/footer text as designated by the new attributes
+	above.
+
+Fri Sep  8 15:15:00 2000  Quim Sanmarti <qss@gtd.es>
+
+	* htsearch/Display.cc: Fixed tiny date_format bug;
+	added url-decoding template variable expansion.
+
+Thu Sep  7 23:45:25 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc (Retriever): Only open up md5 database if
+	check_unique_md5 attribute is set.
+
+Thu Sep  7 22:56:19 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/URL.cc (DefaultPort): Add file default port of 0.
+
+	* htnet/HtFile.cc (Request): Handle directory listings by using
+	scandir and generating minimal HTML file with appropriate noindex listing.
+
+Wed Sep 06 10:00:50 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htlib/URL.h, htlib/URL.cc: Restored corrected versions of URL.*
+	* htnet/HtNNTP.h: Removed the error in the NNTP class declaration
+
+Mon Sep 04 13:43:40 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htnet/HtHTTP.cc: Restored previous version of HtHTTP. I removed
+	an initialization in the constructor (_modification_time). Sorry.
+
+Sun Sep  3 16:51:24 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc, htdig/Server.cc: Fix compiler warnings about
+	String conversions.
+
+	* configure, configure.in, db/configure, db/configure.in,
+	db/acinclude.m4, db/aclocal.m4: Ensure --enable-bigfile is handled
+	correctly by the configure scripts as pointed out by Jesse.
+
+Fri Sep 01 23:28:43 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* URL.cc: added DefaultPort() method and changed NNTP default port
+	from 523 to 119.
+	* Document.cc: management of NNTP documents retrieval.
+
+Fri Sep 01 19:05:02 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htnet/HtNNTP.* : just created them ...
+	* htnet/HtHTTP.cc : removed modification_time deletion in the
+	class destructor.
+
+Thu Sep 01 12:00:00 2000  Toivo Pedaste <toivo@ucs.uwa.edu.au>
+
+	* htdig/Retriever.cc: Allow for modify time being set to
+	current time if not available.
+
+Thu Aug 31 13:21:12 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc (allow_in_form, build_select_lists):
+	Add clearer instructions to allow_in_form description, add
+	cross-links between these two sections.
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
+Wed Aug 30 10:01:59 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* substition of char * returned types to const String & in URL and
+	Server classes. This change made me do lots of changes in other files:
+	HtFile.cc, HtHTTP.cc, HtConfiguration.*, Document.*, ExternalParser.*,
+	Retriever.*.
+
+Tue Aug 30 12:00:00 2000  Toivo Pedaste <toivo@ucs.uwa.edu.au>
+
+	* htlibs/md5.cc, htlibs/md5.h: Generate md5 hash of
+	a page and also optionally the modify date.
+
+	* htlibs/mhash_md5.h, htlibs/mhash_md5.c, htlibs/libdefs.h:
+	Md5 hash code from libmhash
+
+	* htdig/Retriever.cc: Allow storing m5 hashes of pages
+	in order to reject aliases.
+
+	* htcommon/defaults.cc: Options "check_unique_md5" and
+	"check_unique_date"
+	
+Tue Aug 29 08:51:39 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/upgrade.html: Add description of the difference between
+	htmerge and htpurge. Mention other httools.
+
+	* htsearch/parser.cc, htsearch/parser.h: Merge in patch by Quim
+	Sanmarti <qss@gtd.es> to fix problems with phrase searching and
+	AND searches and improve performance.
+
+Sun Aug 27 22:41:10 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/AndParseTree.cc, htsearch/OrParseTree.cc (Parse):
+	Rewrote using new WordToken inherited method. Fixes a bug where
+	user input two phrases next to each other.
+
+	* htsearch/ParseTree.cc (Parse): Fix bug where phrases would
+	"adsorb" prior query words. Also fix bug where operators were
+	incorrectly popped off the stack. Should (hopefully) solve all
+	parsing problems.
+
+	* htsearch/*ParseTree.cc (GetLogicalWords): Test for empty list of
+	children to prevent potential segfault.
+
+Sat Aug 26 18:40:50 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* installdir/{syntax, header, footer, wrapper, nomatch}.html: 
+	Add DTD tags, ALT attributes and remove bogus </select> tags to
+	fix invalid HTML pointed out in PR#901.
+
+Wed Aug 23 23:39:18 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/ParseTree.cc (Parse): Get rid of compiler warnings, use
+	new private tokenizer to ensure parens and quote aren't
+	removed. Also, when popping an operator off the parens stack, make
+	sure it's adopted by a new ParseTree object so we get the parens
+	back in the tree heirarchy.
+
+Wed Aug 23 23:34:44 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/AndParseTree.cc (Parse): Fix nasty infinite loop when
+	phrases hit in AND searches.
+
+	* htsearch/OrParseTree.cc (Parse): Ditto.
+
+Wed Aug 23 13:24:31 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htnet/HtHTTP.*, htnet/Transport.h: all 'char *', when possibile,
+	have been changed into 'const String &' types.
+
+Sun Aug 20 23:25:01 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* httools/htpurge.cc (purgeDocs): Add error message when document
+	database is completely empty. Should take care of PR#672 (and others).
+
+Sun Aug 20 20:37:53 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtRegex.h, htlib/HtRegex.cc: Made destructor virtual,
+	added lastError() and associated support. Changed return type of
+	set*() to int. They now return the value of |compiled|.
+
+	* htcommon/defaults.cc (url_rewrite_rules): Add new attribute to
+	support patch by Andy Armstrong <andy@tagish.com> for permanent
+	URL rewriting.
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
+	* htlib/HtRegexReplace.cc, htlib/HtRegexReplaceList.cc,
+	htlib/HtRegexReplace.h, htlib/HtRegexReplaceList.h, 
+	htcommon/HtURLRewriter.cc, htcommon/HtURLRewriter.h: New classes.
+
+	* htcommon/Makefile.am, htcommon/Makefile.in: Add compilation for
+	HtURLRewriter.
+
+	* htlib/Makefile.am, htcommon/Makefile.in: Ditto for
+	HtRegexReplace*
+
+	* htcommon/URL.h, htcommon/URL.cc (rewrite): New method for
+	transforming URLs based on HtURLRewriter.
+
+	* htdig/Retriever.cc (got_href): Rewrite the URL before we do
+	anything with it.
+
+	* htdig/htdig.cc: Include HtURLRewriter headers and check rewrite
+	rules for errors.
+
+Sat Aug 19 17:01:36 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/conf_lexer.lxx: Patched to fix the bug with relative
+	filename includes. Keeps a separate stack with the filenames and
+	adjusts accordingly.
+
+	* htcommon/conf_lexer.cxx: Updated using flex 2.5.4.
+
+Thu Aug 17 23:59:26 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/conf_lexer.lxx: Patched to fix a bug reported by Abel
+	Deuring -- config filename stack was decremented too many times.
+
+	* htcommon/conf_lexer.cxx: Updated using flex 2.5.4.
+	
+Thu Aug 17 23:40:08 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htword/WordType.h (WordToken): Add non-destructive version of
+	HtWordToken using a passed int as a pointer into the
+	string. Add virtual destructor so class can be sub-classed.
+
+	* htword/WordType.cc (WordToken): Implement it.
+
+	* httools/htmerge.cc (mergeDB): Back out change of Aug. 9th --
+	WordSearchDescription has disappeared from htword
+	interfaces. Should be restored when Loic comes back and can
+	suggest an alternative.
+
+Thu Aug 17 16:59:05 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (createURL): Get rid of extra "config="
+	parameter that was inserted before collections stuff.
+
+Thu Aug 17 15:47:58 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htnet/HtHTTP.cc: ask again for a document after a <NoHeader>
+	response is given by the HTTPRequest() method.
+
+Thu Aug 17 12:25:33 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htnet/HtHTTP.*, htnet/Transport.* : fixed bug with HTTP/1.1 management.
+	Now the "Connection: close" directive is handled and force the connection
+	to be closed. So the bug has now been fixed. Fixed other minor bugs and
+	strings initializations.
+     
+Tue Aug 15 00:24:33 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* contrib/multidig/Makefile, gen-collect, db.conf, multidig.conf:
+	Add missing trailing newlines as pointed out by Doug Moran
+	<dmoran@dougmoran.com>.
+
+	* contrib/multidig/Makefile (install): Make sure scripts have a+x
+	permissions. Pointed out by Doug Moran.
+
+	* contrib/multidig/new-collect: Fix typo to ensure MULTIDIG_CONF
+	is set correctly.
+
+Sun Aug 13 23:17:30 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Server.h, htdig/Server.cc (Server): Add support for
+	per-server user_agent configuration.
+
+	* htdig/Document.cc (Retrieve): Ditto.
+	
+	* httools/htpurge.cc (purgeDocs): Set remove_* attributes on a
+	per-server basis.
+
+	* htcommon/defaults.cc: Fix remove_bad_urls and
+	remove_unretrieved_urls to point to htpurge and not htmerge.
+
+Sat Aug 12 23:03:32 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/cf_generate.pl (html_escape): Fix mindless thinko with
+	perl stringwise-equal operator. Documentation is now generated
+	with block: portion appropriate to defaults.cc.
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
+Fri Aug 11 16:03:18 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (parse): fix problem with &amp; not being translated.
+
+Fri Aug 11 10:48:54 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (setVariables), htcommon/defaults.cc: Added
+	maximum_page_buttons attribute, to limit buttons to less than
+	maximum_pages.  Fixes PR#731 & PR#781.
+	* htdoc/attrs.html, cf_by{name,prog}.html: reran cf_generate.pl
+
+Wed Aug  9 23:04:39 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* httools/htmerge.cc (mergeDB): Add fix to prevent duplicate
+	documents when you merge a database with a copy of itself
+	contributed by Lorenzo.
+
+Wed Aug  9 22:58:39 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/parser.cc (score): Merged in patch contributed by
+	Lorenzo Campedelli <lorenzo.campedelli@libero.it> and Arthur
+	Prokosch <prokosch@aptima.com> to fix problems with AND operators
+	and phrase matches.
+
+Wed Aug  2 11:44:11 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (setVariables), htcommon/defaults.cc: Enhanced
+	build_select_lists attribute, to generate not only single-choice
+	select lists, but also select multiple lists, radio button lists
+	and checkbox lists. Added explanation and examples in documentation.
+	* htdoc/hts_selectors.html: Added detailed explanation of new feature.
+	* htdoc/attrs.html, cf_by{name,prog}.html: reran cf_generate.pl
+
+Tue Aug  1 21:50:22 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/ParseTree.cc (Parse): Fix problems with token
+	comparisons and fix thinko with HtWordToken parsing--previously
+	didn't advance the parse step at all.
+
+	* htsearch/*ParseTree.cc (Parse): Fix thinko with HtWordToken as
+	above--here it acted as an infinite loop.
+
+	* htdig/ExternalParser.cc (parse): Add shell quoting around
+	content-type. Hard to exploit, but a server could potentially
+	return a strange value that could then be exectuted locally.
+
+Thu Jun 29 23:33:51 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/ParseTree.h, htsearch/ParseTree.cc: New parent class
+	for the new htsearch framework. Still needs work.
+
+	* htsearch/*ParseTree.*: Derived classes appropriate to the method
+	indicated.
+
+	* htsearch/parsetest.cc: New program to alllow initial
+	command-line testing of ParseTree classes.
+
+	* htsearch/Makefile.am, htsearch/Makefile.in: Build parsetest in
+	addition to htsearch. Eventually, parsetest is probably best
+	modified slightly and moved into the tests directory.
+
+Tue Jun 20 22:29:57 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* httools/htmerge.cc (mergeDB): Merge in patch contributed by
+	Lorenzo Campedelli <lorenzo.campedelli@libero.it> to greatly
+	reduce memory usage.
+
+Sun Jun 18 13:15:43 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/Object.h (class Object): Fix problems with retrieval order
+	by insuring the compare() method is declared const.
+
+Tue Jun 13 22:57:10 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc (GetLocal): Fix bug that would cause a
+	coredump when local_urls was used and local_default_docs was
+	needed. The list of default filenames was freed before it should
+	have been.
+
+Tue Jun 13 19:30:28 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/HtWordReference.h, htcommon/HtWordReference.cc (Load,
+	LoadHeaders): New methods to check the header of an ASCII
+	representation and read it in.
+
+	* htcommon/HtWordList.h, htcommon/HtWordList.cc (Load): Add load
+	method to read in data. Calls the new methods above.
+
+	* httools/htload.cc: Open word databases read-write and call
+	HtWordList::Load().
+
+Sun Jun 11 14:39:28 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc (generateStars): Fix problem when maxScore
+	== minScore as reported by Rajendra. Fixed problem PR#858.
+	(displayMatch): Ditto.
+
+	* htsearch/htsearch.cc: Fix memory corruption problem in reporting
+	syntax errors pointed out by Rajendra. Fixes PR#860.
+
+Thu Jun  8 09:31:15 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Accents.h, htfuzzy/Accents.cc: Apply Robert Marchand's
+	  patch to his algorithm.  Gets rid of writeDB function (falls back
+	  on default one in Fuzzy.cc), changes addWord, and adds a new
+	  getWords function to override default.  These avoid overhead of
+	  unaccented forms of words in accents database, but ensure that
+	  unaccented form of search word is always searched.
+
+Thu Jun  8 09:00:02 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/DocumentRef.h(DocScore, docScore),
+	  htsearch/ResultMatch.cc(ScoreMatch::compare),
+	  htsearch/ResultMatch.h(setScore, getScore, score),
+	  htsearch/Display.cc(displayMatch, generateStars, buildMatchList):
+	  Apply Terry Luedtke's patch for score calculations, to calculate
+	  min & max from log(score).
+
+Thu Jun  8 08:47:03 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/doc2html/doc2html.pl: Apply David Adams' fix for missing
+	  quote.
+
+Wed Jun 07 10:53:53 2000  Loic Dachary  <loic@senga.org>
+
+	* db/db.c (CDB___db_dbenv_setup): open mode is 0666 instead
+	  of 0 otherwise the weakcmpr file is not open with the proper
+	  mode.
+
+Tue Jun  6 23:48:48 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* httools/htpurge.cc: Fix coredump problems by passing
+	dictionaries as pointers rather than full objects (this is
+	preferred anyway).
+
+Sun Jun  4 22:17:14 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* test/t_htdig_local: Added test for local filesystem support.
+
+	* test/config/htdig.conf2.in: Change to be a config file for
+	local_urls testing.
+
+	* test/Makefile.am: Add t_htdig_local to list.
+
+Tue May 30 23:52:45 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* httools/htmerge.cc: Move to httools directory, remove "cleanup"
+	functionality now in htpurge and merge in htmerge.h and db.cc files.
+	
+	* httools/Makefile.am: Add htmerge now moved to this directory.
+
+	* */Makefile.in: Update with automake.
+
+	* Makefile.am (SUBDIRS): Remove htmerge, now found in httools.
+
+	* configure.in: Ditto.
+
+	* configure: Update with autoconf.
+
+	* test/test_functions.in: Add paths for htpurge, htstat, htload,
+	htdump and update path for htmerge.
+
+	* test/t_htdig: Change htmerge to htpurge to clean out incorrect URLs.
+
+	* installdir/rundig: Change htmerge to htpurge. This needs serious
+	additional cleanup for use in 3.2 since many conventions have changed!
+
+Tue May 23 22:21:14 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* README: Fix for 3.2.0b3 and clean up organization a bit for new
+	directory structure.
+
+Wed May 17 23:22:31 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HTML.cc (do_tag): Add support for TITLE attributes in
+	anchor and related tags.
+
+Fri May 12 17:54:09 2000  Loic Dachary  <loic@senga.org>
+
+	* db/acinclude.m4: bigfile support is disabled by default.
+
+	* db/mp_region.c (CDB___memp_close): clear weakcmpr pointer
+	  when closing region so that memory pool files are not 
+	  released twice.
+
+Wed May 10 22:26:21 2000  Loic Dachary  <loic@senga.org>
+
+	* */*.cc: all include htconfig.h
+
+	* htlib/HtTime.h: remove htconfig.h inclusion (never in headers)
+
+	* htlib/*.h,*.cc: Fix copyright GNU Public -> Gnu General Public
+	  and 1999, 2000 instead of 1999.
+
+Tue May 09 16:38:07 2000  Loic Dachary  <loic@senga.org>
+
+	* htsearch/Collection.cc (Collection): set searchWords and 
+	  searchWordsPattern to null in constructor. Delete in destructor.
+	  Also delete matches in destructor.
+
+	* test/word.cc (doskip_harness): free cursor after use.
+
+	* test/word.cc (doskip_overflow): free cursor after use.
+
+	* test/dbbench.cc (find): free cursor after use.
+
+	* htsearch/htsearch.cc (main): free searchWords and searchWordsPattern
+	  after usage.
+
+	* htdb/htdb_{load,dump,stat}.cc (main): call WordContext::Finish
+	  to free global context for inverted index.
+
+	* htdb/htdb_stat.cc (btree_stats): free stat structure.
+
+	* htlib/List.h (class List): Add Shift/Unshift/Push/Pop methods.
+
+	* htlib/List.h (class List): Add Remove(int position) method.
+
+Tue May 09 00:22:33 2000  Loic Dachary  <loic@senga.org>
+
+	* htsearch/htsearch.cc (main): kill useless call to 
+	  StringList::Release
+
+	* htsearch/HtURLSeedScore.cc (ScoreAdjustItem): remove useless
+	  call to StringList::Destroy.
+	
+	* htlib/HtWordCodec.cc (HtWordCodec): Fix usage of StringList
+	  that was inserting pointers to volatile strings instead of
+	  permanent copies. I suspect that the tweak on StringList was
+	  primarily done to satisfy this piece of code. After reviewing
+	  all the usage of StringList, it's the only one to use it in this
+	  fashion.
+
+	* htlib/QuotedStringList.h (class QuotedStringList): remove
+	  noop destructor to enable Destroy of the underlying StringList
+	  when deleted.
+
+Mon May 08 18:17:02 2000  Loic Dachary  <loic@senga.org>
+
+	* htlib/StringList.h (class StringList): change methods 
+	  Add/Insert/Assign that were copying the String* given in argument.
+	  This behaviour is confusing since it has a different semantic
+	  than the base class List.
+
+Mon May 08 17:16:00 2000  Loic Dachary  <loic@senga.org>
+
+	* htdig/Retriever.cc (GetLocal): fix leaked defaultdocs
+
+Mon May 08 04:27:47 2000  Loic Dachary  <loic@senga.org>
+
+	* htlib/StringList.cc (Create): remove SRelease. Deleting
+	  the strings is taken care of by the destructor thru 
+	  Destroy. If destruction of the Strings is not desirable
+	  Release should be used. SRelease was added apparently after
+	  a virtual constructor doing nothing was added to hide the
+	  default call to Destroy therefore leaking memory. 
+
+Mon May 08 01:28:25 2000  Loic Dachary  <loic@senga.org>
+
+	* test/txt2mifluz.cc,word.cc,search.cc: fix minor memory leaks.
+
+Sun May 07 19:24:12 2000  Loic Dachary  <loic@senga.org>
+
+	* Makefile.config (HTLIBS): add libht at end because htdb
+	  now depends on htlib.
+
+	* configure.in,htlib/Makefile.am: use LTLIBOBJS as suggested
+	  by the libtool documentation.
+
+Sun May 07 17:09:22 2000  Loic Dachary  <loic@senga.org>
+
+	* test/Makefile.am (clean-local): clean conf to prevent
+	  inconsistencies when re-configuring in a directory that
+	  is not the source directory.
+
+Sun May 07 05:07:23 2000  Loic Dachary  <loic@senga.org>
+
+	* db/mkinstalldir,test/benchmark: Add for installation purpose
+
+Sun May 07 02:17:03 2000  Loic Dachary  <loic@senga.org>
+
+	* Makefile.am (distclean-local): Xtest instead of test 
+	  that confuse some shells.
+
+Sun May 07 02:02:46 2000  Loic Dachary  <loic@senga.org>
+
+	* htword/WordDB.cc: Move Open to WordDB.cc.
+
+Sun May 07 01:32:47 2000  Loic Dachary  <loic@senga.org>
+
+	* test/t_*: check/fix scripts. All regression tests pass
+	  on RedHat-6.2.
+
+Sun May 07 00:54:30 2000  Loic Dachary  <loic@senga.org>
+
+	* */*.cc: fix warnings and large file support inclusion
+	  files on Solaris.
+
+Sat May 06 21:55:58 2000  Loic Dachary  <loic@senga.org>
+
+	* test/: import regression tests from mifluz
+	
+	* htlib/DB2_db.cc (db_init): fix flags used when creating the
+	  environment to include a memory pool.
+
+	* htcommon/defaults.cc: change wordkey_description format.
+	  update all wordlist_* attributes
+
+Sat May 06 04:46:03 2000  Loic Dachary  <loic@senga.org>
+
+	* htmerge/words.cc (mergeWords): WordSearchDescription becomes
+	  WordCursor.
+
+	* httools/htpurge.cc (purgeWords): WordSearchDescription becomes
+	  WordCursor.
+
+Sat May 06 02:01:40 2000  Loic Dachary  <loic@senga.org>
+
+	* htdb/*: upgrade to Berkeley DB 3.0.55. Very different.
+
+	* htlib/getcwd.c,memcmp.c,memcpy.c,memmove.c,raise.c,snprintf.c,
+	strerror.c,vsnprintf.c,clib.h: Add compatibility support
+
+	* htcommon/DocumentDB.cc (LoadDB): remove unused variable
+
+	* htlib/DB2_db.cc: adapt to Berkeley DB 3.0.55 syntax.
+
+	* htlib/Database.h (class Database): remove DB_INFO, does
+	  not exist in Berkeley DB 3.0.55
+
+	* htlib/*: run ../db/prefix-symbols.sh
+
+	* Makefile.config (INCLUDES): fix db include dirs
+
+	* acconfig.h: Big file support + replacement functions 
+
+	* acinclude.m4,configure.in : db instead of db/dist + bug fixes
+
+Fri May  5 08:33:59 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* db/*: Merge in changes from Loic's mifluz tree. This will break
+	everything, but Loic promises he'll fix it ASAP after I make this
+	change.
+
+Mon Apr 24 21:58:22 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/htdig.cc (main): Make the -l stop & restart mode the
+	default. This will catch signals and quit gracefully. The
+	command-line parser will still accept -l, it will just ignore it.
+	(usage): Remove -l portion.
+	(main): Fix -m option to read in a file as it's
+	supposed to do! Also set max_hops correctly so really only indexes
+	the URLs in that file.
+	
+	* htdoc/htdig.html: Remove -l from documentation since it's now
+	the default.
+
+Mon Apr 24 21:22:53 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Server.cc (push): Fix bug where changes in the robots.txt
+	would be ignored. If a URL was indexed and later the robots.txt
+	changed to forbid it, the URL would still be updated.
+
+Wed Apr 19 22:13:02 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* Merging in changes from mifluz 0.14 from Loic.
+
+	* htlib/Configuration.cc (Read): Removed dependency on fstream.h,
+	use fopen, fprintf, fgets, fclose instead of iostream.
+
+	* htlib/HtPack.cc, htlib/HtVectorGeneric.h, htlib/Object.h,
+	htlib/ParsedString.cc, htlib/String.cc: Remove use of cerr,
+	instead use fprintf(stderr ...).
+
+	* htlib/Dictionary.cc, htlib/HtVectorGeneric.cc, htlib/List.cc,
+	htlib/Object.cc, htlib/StringList.cc, htlib/htString.h,
+	htlib/strcasecmp.cc: Add #ifdef blocks for htconfig.h
+
+Wed Apr 12 19:09:40 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* .version: Bump to 3.2.0b3.
+
+	* htdoc/htload.html, htdoc/htpurge.html, htdoc/htstat.html: Fix
+	typos in headers.
+
+	* htdoc/main.html: Fix link to download to actually point to 3.2.0b2.
+
 Tue Apr 11 00:21:48 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc (setupWords): Does not apply fuzzy
