@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.h,v 1.6.2.4 1999/12/09 11:07:02 bosc Exp $
+// $Id: Configuration.h,v 1.6.2.5 1999/12/09 15:14:40 loic Exp $
 //
 
 #ifndef	_Configuration_h_
@@ -43,7 +43,7 @@ public:
     // Construction/Destruction
     //
     Configuration();
-#ifdef SWIG
+#ifndef SWIG
     Configuration(const Configuration& config) :
 	dcGlobalVars(config.dcGlobalVars),
 	separators(config.separators)
