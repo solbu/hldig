@@ -16,6 +16,25 @@ dbbench_LDADD = $(HTLIBS)
 clean-local:
 	rm -f gmon.out test test_weakcmpr
 
+dobench: dbbench
+	$(MAKE) bench
+	$(MAKE) CMPR='' bench
+
+BASE = test
+CACHESIZE = -C `expr 64 \* 1024 \* 1024`
+PAGESIZE = -S 8192
+CMPR = -z
+WORDS = -w words.all
+LOOP = -l 3
+NWORDS = 
+
+bench:
+	rm -f $(BASE) $(BASE)_weakcmpr
+	$(top_builddir)/test/dbbench $(CACHESIZE) $(PAGESIZE) $(CMPR) $(WORDS) $(LOOP) -B $(BASE) $(NWORDS)
+	ls -l $(BASE)
+	if [ -f $(BASE)_weakcmpr ] ; then $(top_builddir)/db/dist/db_dump -p $(BASE)_weakcmpr ; fi
+	$(top_builddir)/db/dist/db_stat $(CMPR) -d $(BASE)
+
 words:
 	find /usr/info -name '*.gz' -print | xargs zcat | perl -n -e 'print join("\n", map { lc } grep(length() > 2 && length() < 32, m/[a-z]+/ig)) . "\n"' | grep -v '^$$' > words.all
 	find /usr/man -type f -print | perl -n -e 'print join("\n", map { lc } grep(length() > 2 && length() < 32, m/[a-z]+/ig)) . "\n"' | grep -v '^$$' >> words.all

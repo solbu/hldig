@@ -119,6 +119,14 @@ dbbench_SOURCES = dbbench.cc
 dbbench_DEPENDENCIES = $(HTLIBS)
 dbbench_LDFLAGS = $(PROFILING)
 dbbench_LDADD = $(HTLIBS)
+
+BASE = test
+CACHESIZE = -C `expr 64 \* 1024 \* 1024`
+PAGESIZE = -S 8192
+CMPR = -z
+WORDS = -w words.all
+LOOP = -l 3
+NWORDS = 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
 CONFIG_CLEAN_FILES = 
@@ -382,6 +390,17 @@ mostlyclean distclean maintainer-clean
 
 clean-local:
 	rm -f gmon.out test test_weakcmpr
+
+dobench: dbbench
+	$(MAKE) bench
+	$(MAKE) CMPR='' bench
+
+bench:
+	rm -f $(BASE) $(BASE)_weakcmpr
+	$(top_builddir)/test/dbbench $(CACHESIZE) $(PAGESIZE) $(CMPR) $(WORDS) $(LOOP) -B $(BASE) $(NWORDS)
+	ls -l $(BASE)
+	if [ -f $(BASE)_weakcmpr ] ; then $(top_builddir)/db/dist/db_dump -p $(BASE)_weakcmpr ; fi
+	$(top_builddir)/db/dist/db_stat $(CMPR) -d $(BASE)
 
 words:
 	find /usr/info -name '*.gz' -print | xargs zcat | perl -n -e 'print join("\n", map { lc } grep(length() > 2 && length() < 32, m/[a-z]+/ig)) . "\n"' | grep -v '^$$' > words.all

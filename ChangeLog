@@ -1,3 +1,9 @@
+Thu Aug 05 12:27:15 1999    <loic@yoda.ceic.com>
+
+	* test/dbbench.cc: invert -z and -Z for consistency
+
+	* test/Makefile.am: add dbbench call examples
+
 Thu Aug 05 11:38:58 1999  Loic Dachary  <loic@ceic.com>
 
 	* test/Makefile.am: all .html go in distribution, compile dbbench
