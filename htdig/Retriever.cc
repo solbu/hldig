@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.13 1999/11/30 21:28:16 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.14 1999/12/01 23:15:48 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -768,7 +768,7 @@ Retriever::GetLocal(char *url)
     if (strchr(url, '~'))
     {
 	String *local = GetLocalUser(url);
-	if (*local)
+	if (local)
 	    return local;
     }
 

@@ -1,5 +1,7 @@
-Wed Dec  1 16:21:40 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Dec  1 16:56:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	* htdig/Retriever.cc(GetLocal): Fix error in GetLocalUser() return
+	value check, as suggested by Vadim.
 	* contrib/conv_doc.pl: Added a sample external converter script.
 	* htdoc/THANKS.html: A couple more additions.
 	* htdoc/ChangeLog: Update with latest version.
