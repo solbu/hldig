@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.36 2000/02/23 23:01:11 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.37 2000/02/24 15:32:37 grdetil Exp $
 //
 
 #include "HtConfiguration.h"
@@ -406,190 +406,6 @@ http://www.htdig.org/", "
 	common things such as an infinite virtual web-tree
 	which start with cgi-bin.
 " },
-{ "external_protocols", "",
-	"quoted string list", "htdig", "3.2.0b1", "External:Protocols", "external_protocols: https /usr/local/bin/handler.pl \\<br>
-        ftp /usr/local/bin/ftp-handler.pl", "
-        This attribute is a bit like <a href=\"#external_parsers\">external_parsers</a>
-	since it specifies a list of protocols/handlers that are used to download documents
-	that cannot be retrieved using the internal methods. This enables htdig to index
-	documents with URL schemes it does not understand, or to use more advanced authentication
-	for the documents it is retrieving. This list is checked before HTTP or other methods,
-	so this can override the internal behavior without writing additional code for htdig.<br>
-	  The external protocols are specified as pairs of strings, the first being the URL scheme that
-	the script can handle while the second is the path to the script itself. If the second is
-	quoted, then additional command-line arguments may be given.<br>
-	  The program takes three command-line parameters, not counting any parameters already given 
-	in the command string:<br>
-	<em>protocol URL configuration-file</em><br>
-	<table border=\"1\">
-	  <tr>
-		<th>
-		  Parameter
-		</th>
-		<th>
-		  Description
-		</th>
-		<th>
-		  Example
-		</th>
-	  </tr>
-	  <tr>
-		<td valign=\"top\">
-		  protocol
-		</td>
-		<td>
-		  The URL scheme to be used.
-		</td>
-		<td>
-		  https
-		</td>
-	  </tr>
-	  <tr>
-		<td valign=\"top\">
-		  URL
-		</td>
-		<td>
-		  The URL to be retrieved.
-		</td>
-		<td>
-		  https://www.htdig.org:8008/attrs.html
-		</td>
-	  </tr>
-	  <tr>
-		<td valign=\"top\">
-		  configuration-file
-		</td>
-		<td>
-		  The configuration-file in effect.
-		</td>
-		<td>
-		  /etc/htdig/htdig.conf
-		</td>
-	  </tr>
-	</table><p>
-	The external protocol script is to write information for htdig on the 
-	standard output. The output must follow the form described here. The output 
-	consists of a header followed by a blank line, followed by the contents of 
-	the document. Each record in the header is terminated with a newline. 
-	Each record is a series of (unless expressively allowed to be empty) non-empty 
-	tab-separated fields. The first field is a single character that specifies the 
-	record type. The rest of the fields are determined by the record type.
-	<table border=\"1\">
-	  <tr>
-		<th>
-		  Record type
-		</th>
-		<th>
-		  Fields
-		</th>
-		<th>
-		  Description
-		</th>
-	  </tr>
-	  <tr>
-		<th rowspan=\"3\" valign=\"top\">
-		  s
-		</th>
-		<td valign=\"top\">
-		  status code
-		</td>
-		<td>
-		  An HTTP-style status code, e.g. 200, 404. Typical codes include:
-		    <dl compact>
-			<dt>
-			  200
-			</dt>
-			<dd>
-			  Successful retrieval
-			</dd>
-			<dt>
-			  304
-			</dt>
-			<dd>
-			  Not modified (for example, if the document hasn\'t changed)
-			</dd>
-			<dt>
-			  301
-			</dt>
-			<dd>
-			  Redirect (to another URL)
-			</dd>
-			<dt>
-			  401
-			</dt>
-			<dd>
-			  Not authorized
-			</dd>
-			<dt>
-			  404
-			</dt>
-			<dd>
-			  Not found
-			</dd>
-		</td>
-	  </tr>
-	  <tr>
-		<th rowspan=\"3\" valign=\"top\">
-		  r
-		</th>
-		<td valign=\"top\">
-		  reason
-		</td>
-		<td>
-		  A text string describing the status code, e.g \"Redirect\" or \"Not Found.\"
-		</td>
-	  </tr>
-	  <tr>
-		<th rowspan=\"3\" valign=\"top\">
-		  m
-		</th>
-		<td valign=\"top\">
-		  status code
-		</td>
-		<td>
-		  The modification time of this document. While the code is fairly flexible
-		  about the time/date formats it accepts, it is recommended to use something
-		  standard, like RFC1123: Sun, 06 Nov 1994 08:49:37 GMT, or ISO-8601: 
-		  1994-11-06 08:49:37 GMT.
-		</td>
-	  </tr>
-	  <tr>
-		<th rowspan=\"3\" valign=\"top\">
-		  t
-		</th>
-		<td valign=\"top\">
-		  content-type
-		</td>
-		<td>
-		  A valid MIME type for the document, like text/html or text/plain.
-		</td>
-	  </tr>
-	  <tr>
-		<th rowspan=\"3\" valign=\"top\">
-		  l
-		</th>
-		<td valign=\"top\">
-		  content-length
-		</td>
-		<td>
-		  The length of the document on the server, which may not necessarily
-		  be the length of the buffer returned.
-		</td>
-	  </tr>
-	  <tr>
-		<th rowspan=\"3\" valign=\"top\">
-		  u
-		</th>
-		<td valign=\"top\">
-		  url
-		</td>
-		<td>
-		  The URL of the document, or in the case of a redirect, the URL
-		  that should be indexed as a result of the redirect.
-		</td>
-	  </tr>
-      </table>	  
-" },
 { "external_parsers", "", 
 	"quoted string list", "htdig", "3.0.7", "External:Parsers", "external_parsers: text/html /usr/local/bin/htmlparser \\<br>
 	application/pdf /usr/local/bin/parse_doc.pl \\<br>
@@ -926,6 +742,190 @@ http://www.htdig.org/", "
 	href=\"FAQ.html#q4.8\">4.8</a> and <a
 	href=\"FAQ.html#q4.9\">4.9</a> for more
 	examples.</em></p>
+" },
+{ "external_protocols", "",
+	"quoted string list", "htdig", "3.2.0b1", "External:Protocols", "external_protocols: https /usr/local/bin/handler.pl \\<br>
+        ftp /usr/local/bin/ftp-handler.pl", "
+        This attribute is a bit like <a href=\"#external_parsers\">external_parsers</a>
+	since it specifies a list of protocols/handlers that are used to download documents
+	that cannot be retrieved using the internal methods. This enables htdig to index
+	documents with URL schemes it does not understand, or to use more advanced authentication
+	for the documents it is retrieving. This list is checked before HTTP or other methods,
+	so this can override the internal behavior without writing additional code for htdig.<br>
+	  The external protocols are specified as pairs of strings, the first being the URL scheme that
+	the script can handle while the second is the path to the script itself. If the second is
+	quoted, then additional command-line arguments may be given.<br>
+	  The program takes three command-line parameters, not counting any parameters already given 
+	in the command string:<br>
+	<em>protocol URL configuration-file</em><br>
+	<table border=\"1\">
+	  <tr>
+		<th>
+		  Parameter
+		</th>
+		<th>
+		  Description
+		</th>
+		<th>
+		  Example
+		</th>
+	  </tr>
+	  <tr>
+		<td valign=\"top\">
+		  protocol
+		</td>
+		<td>
+		  The URL scheme to be used.
+		</td>
+		<td>
+		  https
+		</td>
+	  </tr>
+	  <tr>
+		<td valign=\"top\">
+		  URL
+		</td>
+		<td>
+		  The URL to be retrieved.
+		</td>
+		<td>
+		  https://www.htdig.org:8008/attrs.html
+		</td>
+	  </tr>
+	  <tr>
+		<td valign=\"top\">
+		  configuration-file
+		</td>
+		<td>
+		  The configuration-file in effect.
+		</td>
+		<td>
+		  /etc/htdig/htdig.conf
+		</td>
+	  </tr>
+	</table><p>
+	The external protocol script is to write information for htdig on the 
+	standard output. The output must follow the form described here. The output 
+	consists of a header followed by a blank line, followed by the contents of 
+	the document. Each record in the header is terminated with a newline. 
+	Each record is a series of (unless expressively allowed to be empty) non-empty 
+	tab-separated fields. The first field is a single character that specifies the 
+	record type. The rest of the fields are determined by the record type.
+	<table border=\"1\">
+	  <tr>
+		<th>
+		  Record type
+		</th>
+		<th>
+		  Fields
+		</th>
+		<th>
+		  Description
+		</th>
+	  </tr>
+	  <tr>
+		<th rowspan=\"3\" valign=\"top\">
+		  s
+		</th>
+		<td valign=\"top\">
+		  status code
+		</td>
+		<td>
+		  An HTTP-style status code, e.g. 200, 404. Typical codes include:
+		    <dl compact>
+			<dt>
+			  200
+			</dt>
+			<dd>
+			  Successful retrieval
+			</dd>
+			<dt>
+			  304
+			</dt>
+			<dd>
+			  Not modified (for example, if the document hasn\'t changed)
+			</dd>
+			<dt>
+			  301
+			</dt>
+			<dd>
+			  Redirect (to another URL)
+			</dd>
+			<dt>
+			  401
+			</dt>
+			<dd>
+			  Not authorized
+			</dd>
+			<dt>
+			  404
+			</dt>
+			<dd>
+			  Not found
+			</dd>
+		</td>
+	  </tr>
+	  <tr>
+		<th rowspan=\"3\" valign=\"top\">
+		  r
+		</th>
+		<td valign=\"top\">
+		  reason
+		</td>
+		<td>
+		  A text string describing the status code, e.g \"Redirect\" or \"Not Found.\"
+		</td>
+	  </tr>
+	  <tr>
+		<th rowspan=\"3\" valign=\"top\">
+		  m
+		</th>
+		<td valign=\"top\">
+		  status code
+		</td>
+		<td>
+		  The modification time of this document. While the code is fairly flexible
+		  about the time/date formats it accepts, it is recommended to use something
+		  standard, like RFC1123: Sun, 06 Nov 1994 08:49:37 GMT, or ISO-8601: 
+		  1994-11-06 08:49:37 GMT.
+		</td>
+	  </tr>
+	  <tr>
+		<th rowspan=\"3\" valign=\"top\">
+		  t
+		</th>
+		<td valign=\"top\">
+		  content-type
+		</td>
+		<td>
+		  A valid MIME type for the document, like text/html or text/plain.
+		</td>
+	  </tr>
+	  <tr>
+		<th rowspan=\"3\" valign=\"top\">
+		  l
+		</th>
+		<td valign=\"top\">
+		  content-length
+		</td>
+		<td>
+		  The length of the document on the server, which may not necessarily
+		  be the length of the buffer returned.
+		</td>
+	  </tr>
+	  <tr>
+		<th rowspan=\"3\" valign=\"top\">
+		  u
+		</th>
+		<td valign=\"top\">
+		  url
+		</td>
+		<td>
+		  The URL of the document, or in the case of a redirect, the URL
+		  that should be indexed as a result of the redirect.
+		</td>
+	  </tr>
+      </table>	  
 " },
 { "extra_word_characters", "", 
 	"string", "htdig htsearch", "3.1.2", "Indexing:What", "extra_word_characters: _", "

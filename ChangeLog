@@ -1,3 +1,10 @@
+Thu Feb 24 09:26:36 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc (external_protocols, external_parser):
+	Swapped these two entries to put them in alphabetical order.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerate using cf_generate.pl.
+
 Wed Feb 23 16:53:40 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc (backlink_factor, external_parser,
