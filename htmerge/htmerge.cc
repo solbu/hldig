@@ -4,6 +4,9 @@
 // Implementation of htmerge
 //
 // $Log: htmerge.cc,v $
+// Revision 1.3  1998/01/05 05:43:24  turtle
+// format changes
+//
 // Revision 1.2  1997/06/23 02:24:49  turtle
 // Added version info to usage message
 //
@@ -11,9 +14,6 @@
 // Initial CVS
 //
 //
-#if RELEASE
-static char RCSid[] = "$Id: htmerge.cc,v 1.2 1997/06/23 02:24:49 turtle Exp $";
-#endif
 
 #include "htmerge.h"
 
@@ -25,8 +25,8 @@ static char RCSid[] = "$Id: htmerge.cc,v 1.2 1997/06/23 02:24:49 turtle Exp $";
 //
 Dictionary	discard_list;
 
-int			verbose = 0;
-int			stats = 0;
+int		verbose = 0;
+int		stats = 0;
 
 void usage();
 void reportError(char *msg);

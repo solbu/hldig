@@ -4,6 +4,9 @@
 // Implementation of newclass
 //
 // $Log: docs.cc,v $
+// Revision 1.3  1998/01/05 05:43:23  turtle
+// format changes
+//
 // Revision 1.2  1998/01/05 05:24:19  turtle
 // Fixed memory leak
 //
@@ -11,9 +14,6 @@
 // Initial CVS
 //
 //
-#if RELEASE
-static char RCSid[] = "$Id: docs.cc,v 1.2 1998/01/05 05:24:19 turtle Exp $";
-#endif
 
 #include "htmerge.h"
 
@@ -74,8 +74,8 @@ convertDocs(char *doc_db, char *doc_index)
 		cout.flush();
 	    }
 	}
+        delete ref;
     }
-    delete ref;
     if (verbose)
 	cout << "\n";
     if (stats)
