@@ -1,3 +1,8 @@
+Wed May 17 23:22:31 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HTML.cc (do_tag): Add support for TITLE attributes in
+	anchor and related tags.
+
 Fri May 12 17:54:09 2000  Loic Dachary  <loic@senga.org>
 
 	* db/acinclude.m4: bigfile support is disabled by default.

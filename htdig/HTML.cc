@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62.2.11 2000/05/10 18:23:43 loic Exp $
+// $Id: HTML.cc,v 1.62.2.12 2000/05/24 01:08:37 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -516,7 +516,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			 << " which didn't have a closing </a> tag."
 			 << endl;
 		  if (dofollow)
-		    retriever.got_href(*href, (char*)description);
+		      retriever.got_href(*href, (char*)description);
 		  in_ref = 0;
 		}
 	      if (href)
@@ -527,6 +527,14 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	      break;
 	    }
 	  
+	  if (!attrs["title"].empty() && !attrs["href"].empty())
+	    {
+	      //
+	      // a title seen for href
+	      //
+	      retriever.got_href(*href, transSGML(attrs["title"]));
+	    }
+
 	  if (!attrs["name"].empty())
 	    {
 	      //
@@ -802,7 +810,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    delete href;
 		  href = new URL(transSGML(attrs["src"]), *base);
 		  // Frames have the same hopcount as the parent.
-		  retriever.got_href(*href, 0, 0);
+		  retriever.got_href(*href, transSGML(attrs["title"]), 0);
 		  in_ref = 0;
 		}
 	    }
@@ -821,7 +829,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    delete href;
 		  href = new URL(transSGML(attrs["href"]), *base);
 		  // area & link are like anchor tags -- one hopcount!
-		  retriever.got_href(*href, "", 1);
+		  retriever.got_href(*href, transSGML(attrs["title"]), 1);
 		  in_ref = 0;
 		}
 	    }
