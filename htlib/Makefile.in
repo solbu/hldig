@@ -16,15 +16,19 @@ OBJS=	Configuration.o Connection.o Database.o \
 		URL.o URLTrans.o cgi.o \
 		good_strtok.o io.o strcasecmp.o \
 		HtCodec.o HtWordCodec.o \
-		HtURLCodec.o regex.o HtWordType.o \
+		HtURLCodec.o HtWordType.o \
 		HtRegex.o HtRegexReplace.o HtRegexReplaceList.o \
 		HtURLRewriter.o
+
+# Used if we should build various replacements to system-library code
+# e.g. regex.o
+LIBOBJS=	@LIBOBJS@
 
 TARGET=		libht.a
 
 all:		$(TARGET)
 
-$(TARGET):	$(OBJS)
+$(TARGET):	$(OBJS) $(LIBOBJS)
 	$(AR) rcv $(TARGET) $?
 	$(RANLIB) $(TARGET)
 
@@ -32,7 +36,7 @@ install:	$(TARGET)
 	@echo "Nothing to install"
 
 clean:
-	rm -f $(OBJS) $(TARGET) *~ *.bak *% core a.out *.orig
+	rm -f $(OBJS) $(LIBOBJS) $(TARGET) *~ *.bak *% core a.out *.orig
 
 mostlyclean:
 	rm -f *~ *.bak *% core a.out *.orig

@@ -125,8 +125,11 @@ AC_CHECK_FUNCS(localtime_r)
 dnl Check for timegm
 AC_CHECK_FUNCS(timegm mkstemp)
 
+dnl Replacements for the library functions (i.e. regex)
 dnl Regex is compiled by the C compiler so we need to do it before we switch
-AC_MSG_CHECKING(if we should use the included regex?)
+AC_ARG_WITH(rx, [  --with-rx  with system rx instead of regex [default=no]],
+ AC_DEFINE(USE_RX), 
+[AC_MSG_CHECKING(if we should use the included regex?)
 AC_TRY_RUN([	#include "${srcdir}/htlib/regex.c"
 		int main() {
 		   regex_t re;
@@ -136,7 +139,9 @@ AC_TRY_RUN([	#include "${srcdir}/htlib/regex.c"
   [AC_MSG_RESULT(yes);LIBOBJS="$LIBOBJS regex.${ac_objext}"],
   [AC_MSG_RESULT(no);AC_DEFINE(HAVE_BROKEN_REGEX)],
   [AC_MSG_RESULT(unknown);AC_DEFINE(HAVE_BROKEN_REGEX)]
+)]
 )
+AC_SUBST(LIBOBJS)
 
 dnl These tests need to be run through the c++ compiler
 AC_LANG_CPLUSPLUS

@@ -1,3 +1,17 @@
+Thu Jan 24 15:32:59 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure, configure.in: Add --with-rx option to switch to
+	system rx code (e.g. on BSDI). Needs some touchups still,
+	including checking that rxposix.h exists and if --without-rx was
+	supplied for some reason.
+
+	* htlib/HtRegex.h: Add conditional <rxposix.h> header for systems
+	where rx is better than regex.
+
+	* htlib/Makefile.in: Make sure regex.o is only compiled if it
+	works on a given system via LIBOBJS as supplied by the configure
+	script.
+
 Mon Jan 21 22:33:30 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/RELEASE.html: Add first shot at the release notes for
