@@ -8,7 +8,7 @@ top_builddir= ..
 @make_include_left@$(top_builddir)/Makefile.config@make_include_right@
 
 OBJS=	Configuration.o Connection.o Database.o \
-		Dictionary.o DB2_db.o \
+		Dictionary.o DB2_db.o DB2_hash.o \
 		IntObject.o List.o Object.o \
 		ParsedString.o Queue.o QuotedStringList.o \
 		Stack.o String.o \
