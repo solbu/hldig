@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordReference.h,v 1.1.2.3 2000/06/13 22:59:27 ghutchis Exp $
+// $Id: HtWordReference.h,v 1.1.2.4 2000/09/27 05:29:02 ghutchis Exp $
 //
 #ifndef _HtWordReference_h_
 #define _HtWordReference_h_
@@ -38,26 +38,33 @@ public:
 	//
 	// Construction/Destruction
 	//
-        HtWordReference()	{}
-        HtWordReference(const String& key, const String& record) :
-	  WordReference(key, record) { }
-        HtWordReference(const String& word) :
-	  WordReference(word) {	}
-        HtWordReference(String word, unsigned int docid, unsigned int flags, unsigned int location, unsigned int anchor) {
-	  Word(word);
-	  DocID(docid);
-	  Location(location);
-	  Anchor(anchor);
-	  Flags(flags);
-	}
+        HtWordReference(WordContext* context) :
+	  WordReference(context) { myContext = context; }
+        HtWordReference(WordContext* context, 
+			const String& key, const String& record) :
+	  WordReference(context, key, record) { myContext = context; }
+        HtWordReference(WordContext* context, const String& word) :
+	  WordReference(context, word) { myContext = context; }
+        HtWordReference(WordContext* context, String word, 
+			unsigned int docid, unsigned int flags, 
+			unsigned int location, unsigned int anchor):
+	  WordReference(context) 
+	  {
+	    myContext = context;
+	    Word(word);
+	    DocID(docid);
+	    Location(location);
+	    Anchor(anchor);
+	    Flags(flags);
+	  }
 
 	~HtWordReference()	{}
 
 	//
 	// Accessors
 	//
-	String			Word() const { return key.GetWord(); }
-	void			Word(const String& arg) { key.SetWord(arg); }
+	String			Word() const { return key.Get(); }
+	void			Word(const String& arg) { key.Set(arg); }
 	unsigned int		DocID() const { return key.Get( 1 ); }
 	void			DocID(const unsigned int arg) { key.Set( 1, arg); }
 	unsigned int		Flags() const { return key.Get( 2 ); }
@@ -74,6 +81,9 @@ public:
 	static int		DumpHeader(FILE *fl);
 	int			Load(const String& s);
 	static int		LoadHeader(FILE *fl);
+
+ private:
+	WordContext		*myContext;
 };
 
 
