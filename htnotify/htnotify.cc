@@ -6,6 +6,9 @@
 // has "expired"
 //
 // $Log: htnotify.cc,v $
+// Revision 1.14  1999/01/14 03:00:40  ghutchis
+// Bring latest security patch from 3.1.0b4 onto the mainline source.
+//
 // Revision 1.13  1998/12/27 14:22:58  bergolth
 // Fixed memory leaks and local_default_doc bug.
 //
@@ -52,7 +55,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.13 1998/12/27 14:22:58 bergolth Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.14 1999/01/14 03:00:40 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -218,35 +221,41 @@ void htnotify(DocumentRef &ref)
 //
 void send_notification(char *date, char *email, char *url, char *subject)
 {
-  /* Currently unused    int		fildes[2]; */
+    String	command = SENDMAIL;
+    command << " -t -F \"ht://Dig Notification Service\" -f \"";
+    command << config["htnotify_sender"] << '"';
 
-  // Before we do anything with the email address, we need to sanitize it.
-    static char ok_chars[] = "abcdefghijklmnopqrstuvwxyz\
-ABCDEFGHIJKLMNOPQRSTUVWXYZ\
-1234567890_-.@";
-    char *cursor;          // cursor into email address //
-
-    for (cursor = email; *(cursor += strspn(cursor, ok_chars));)
-      *cursor = '_'; // Set it to something harmless
-
-    String	to = email;
-    String command = SENDMAIL;
-
-    char *token = strtok(to, " ,\t\r\n");
+    String	em = email;
+    String	to = "";
+    char	*token = strtok(em.get(), " ,\t\r\n");
     while (token)
     {
-      command << " " << token;
-      token = strtok(0, " ,\t\r\n");
+	if (*token)
+	{
+	    if (to.length())
+		to << ", ";
+	    to << token;
+	}
+	token = strtok(0, " ,\t\r\n");
     }
+
+    // Before we use the email address string, we may want to sanitize it.
+//    static char ok_chars[] = "abcdefghijklmnopqrstuvwxyz\
+//ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+//1234567890_-.@/=+:%!, ";
+//    char *cursor;          // cursor into email address 
+
+//    for (cursor = to.get(); *(cursor += strspn(cursor, ok_chars));)
+//      *cursor = '_'; // Set it to something harmless
     
-    command << " -t";
     FILE *fileptr;
-    if( (fileptr = popen(command.get(), "w")) != NULL ) {
+    if ( (fileptr = popen(command.get(), "w")) != NULL ) {
 
       if (!subject || !*subject)
-        subject = "page expired";
-      String    out;
-      out << "From: ht://Dig Notification Service" << "\n";
+	subject = "page expired";
+      String	out;
+      out << "From: ht://Dig Notification Service <"
+	  << config["htnotify_sender"] << ">\n";
       out << "Subject: WWW notification: " << subject << '\n';
       out << "To: " << to.get() << '\n';
       out << "Reply-To: " << config["htnotify_sender"] << "\n";
