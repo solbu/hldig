@@ -1,3 +1,9 @@
+Sun Nov 21 17:06:50 EET 1999  Vadim Chekan  <vadim@etc.lviv.ua>
+
+	* New config parser commited. htlib/(Makefile.am,Makefile.in),
+	htlib/Configuration.cc, htlib/Configuration.h
+	htlib/(conf.y, conf.l) added.
+
 Fri Nov 12 14:17:37 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/cgi.cc(init): Fix bug in reading long queries via POST
