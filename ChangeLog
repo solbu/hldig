@@ -1,3 +1,12 @@
+Wed Jan  6 00:28:19 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* cf_byname.html: Fixed html syntax "<br" and "/a>".
+
+Tue Jan  5 22:40:58 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc: Check if we need to do backlink and date
+	factoring (e.g. we don't if they're zero!), from a patch by Gilles.
+
 Tue Jan  5 20:57:02 1999  Alexander Bergolth  <bergolth@ariel.wu-wien.ac.at>
 
 	* configure.in, htlib/Connection.cc: Check for strings.h for those
