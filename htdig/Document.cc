@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.39 1999/04/27 21:53:38 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.40 1999/05/15 15:25:33 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -97,10 +97,7 @@ Document::Reset()
       delete url;
     url = 0;
     referer = 0;
-    if(config.Boolean("modification_time_is_now"))
-       modtime = time(NULL);
-    else
-       modtime = 0;
+    modtime = 0;
 
     contents = 0;
     document_length = 0;
