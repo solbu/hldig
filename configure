@@ -28072,25 +28072,33 @@ echo configuring ht://Dig version $VERSION
 subdirs="$subdirs db"
 
 
-# expand variables which appear in  attrs.html
-#while echo $bindir | grep '\$' >/dev/null ; do
-  #eval "bindir=$bindir"
-#done
-#while echo $COMMON_DIR | grep '\$' >/dev/null ; do
-  #eval "COMMON_DIR=$COMMON_DIR"
-#done
-#while echo $CONFIG_DIR | grep '\$' >/dev/null ; do
-  #eval "CONFIG_DIR=$CONFIG_DIR"
-#done
-#while echo $DATABASE_DIR | grep '\$' >/dev/null ; do
-  #eval "DATABASE_DIR=$DATABASE_DIR"
-#done
-#while echo $IMAGE_URL_PREFIX | grep '\$' >/dev/null ; do
-  #eval "IMAGE_URL_PREFIX=$IMAGE_URL_PREFIX"
-#done
-#while echo $VERSION | grep '\$' >/dev/null ; do
-  #eval "VERSION=$VERSION"
-#done
+### HACK: copied from  autoconf  output, to ensure the expansion below works
+test "x$prefix" = xNONE && prefix=$ac_default_prefix
+# Let make expand exec_prefix.
+test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
+
+# expand variables which appear in  attrs.html  and the man pages
+while echo $bindir | grep '\$' >/dev/null ; do
+  eval "bindir=$bindir"
+done
+while echo $COMMON_DIR | grep '\$' >/dev/null ; do
+  eval "COMMON_DIR=$COMMON_DIR"
+done
+while echo $CONFIG_DIR | grep '\$' >/dev/null ; do
+  eval "CONFIG_DIR=$CONFIG_DIR"
+done
+while echo $DEFAULT_CONFIG_FILE | grep '\$' >/dev/null ; do
+  eval "DEFAULT_CONFIG_FILE=$DEFAULT_CONFIG_FILE"
+done
+while echo $DATABASE_DIR | grep '\$' >/dev/null ; do
+  eval "DATABASE_DIR=$DATABASE_DIR"
+done
+while echo $IMAGE_URL_PREFIX | grep '\$' >/dev/null ; do
+  eval "IMAGE_URL_PREFIX=$IMAGE_URL_PREFIX"
+done
+while echo $VERSION | grep '\$' >/dev/null ; do
+  eval "VERSION=$VERSION"
+done
 
                                                                                                                                                                                                                                                                                         ac_config_files="$ac_config_files Makefile htcommon/Makefile htdb/Makefile htdig/Makefile htdoc/Makefile htdoc/attrs.html installdir/htdig.1 installdir/htdig-pdfparser.1 installdir/htfuzzy.1 installdir/htmerge.1 installdir/htpurge.1 installdir/htstat.1 installdir/htdigconfig.8 installdir/htdump.1 installdir/htload.1 installdir/htnotify.1 installdir/htsearch.1 installdir/rundig.1 htfuzzy/Makefile htlib/Makefile htnet/Makefile htsearch/Makefile httools/Makefile htword/Makefile include/Makefile installdir/Makefile test/Makefile test/test_functions"
 

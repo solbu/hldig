@@ -317,25 +317,33 @@ echo configuring ht://Dig version $VERSION
 
 AC_CONFIG_SUBDIRS(db)
 
-# expand variables which appear in  attrs.html
-#while echo $bindir | grep '\$' >/dev/null ; do
-  #eval "bindir=$bindir"
-#done
-#while echo $COMMON_DIR | grep '\$' >/dev/null ; do
-  #eval "COMMON_DIR=$COMMON_DIR"
-#done
-#while echo $CONFIG_DIR | grep '\$' >/dev/null ; do
-  #eval "CONFIG_DIR=$CONFIG_DIR"
-#done
-#while echo $DATABASE_DIR | grep '\$' >/dev/null ; do
-  #eval "DATABASE_DIR=$DATABASE_DIR"
-#done
-#while echo $IMAGE_URL_PREFIX | grep '\$' >/dev/null ; do
-  #eval "IMAGE_URL_PREFIX=$IMAGE_URL_PREFIX"
-#done
-#while echo $VERSION | grep '\$' >/dev/null ; do
-  #eval "VERSION=$VERSION"
-#done
+### HACK: copied from  autoconf  output, to ensure the expansion below works
+test "x$prefix" = xNONE && prefix=$ac_default_prefix
+# Let make expand exec_prefix.
+test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
+
+# expand variables which appear in  attrs.html  and the man pages
+while echo $bindir | grep '\$' >/dev/null ; do
+  eval "bindir=$bindir"
+done
+while echo $COMMON_DIR | grep '\$' >/dev/null ; do
+  eval "COMMON_DIR=$COMMON_DIR"
+done
+while echo $CONFIG_DIR | grep '\$' >/dev/null ; do
+  eval "CONFIG_DIR=$CONFIG_DIR"
+done
+while echo $DEFAULT_CONFIG_FILE | grep '\$' >/dev/null ; do
+  eval "DEFAULT_CONFIG_FILE=$DEFAULT_CONFIG_FILE"
+done
+while echo $DATABASE_DIR | grep '\$' >/dev/null ; do
+  eval "DATABASE_DIR=$DATABASE_DIR"
+done
+while echo $IMAGE_URL_PREFIX | grep '\$' >/dev/null ; do
+  eval "IMAGE_URL_PREFIX=$IMAGE_URL_PREFIX"
+done
+while echo $VERSION | grep '\$' >/dev/null ; do
+  eval "VERSION=$VERSION"
+done
 
 AC_CONFIG_FILES([Makefile
                  htcommon/Makefile
