@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30 1999/01/28 05:20:19 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.31 1999/02/21 19:54:44 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -709,11 +709,44 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    // Now check for <meta name=...  content=...> tags that
 	    // fly with any reasonable DTD out there
 	    //
+
 	    if (conf["name"] && conf["content"])
 	    {
 		char	*cache = conf["name"];
 
-		which = -1;
+		which = -1; // What does it do?
+
+		  // First of all, check for META description
+
+		  if (mystrcasecmp(cache, "description") == 0 
+			 && strlen(conf["content"]) != 0)
+		  {
+		    //
+		    // We need to do two things. First grab the description
+		    //
+		    meta_dsc = conf["content"];
+		   if (meta_dsc.length() > max_meta_description_length)
+		     meta_dsc = meta_dsc.sub(0, max_meta_description_length).get();
+		   if (debug > 1)
+		     cout << "META Description: " << conf["content"] << endl;
+		   retriever.got_meta_dsc(meta_dsc);
+
+
+		   //
+		   // Now add the words to the word list
+		   // (slot 11 is the new slot for this)
+		   //
+
+		   char        *w = strtok(conf["content"], " \t\r\n");
+                   while (w)
+		     {
+			if (strlen(w) >= minimumWordLength)
+			  retriever.got_word(w, 1, 11);
+			w = strtok(0, " \t\r\n");
+		     }
+		 w = '\0';
+		}
+
 		if (keywordsMatch.CompareWord(cache))
 		{
 		    char	*w = strtok(conf["content"], " ,\t\r\n");
@@ -761,32 +794,6 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			dofollow = 0;
 			retriever.got_noindex();
 		      }
-		  }
-		else if (mystrcasecmp(cache, "description") == 0 
-			 && strlen(conf["content"]) != 0)
-		  {
-		    //
-		    // We need to do two things. First grab the description
-		    //
-		    meta_dsc = conf["content"];
-		    if (meta_dsc.length() > max_meta_description_length)
-		      meta_dsc = meta_dsc.sub(0, max_meta_description_length).get();
-		    if (debug > 1)
-		      cout << "META Description: " << conf["content"] << endl;
-		    retriever.got_meta_dsc(meta_dsc);
-
-		    //
-		    // Now add the words to the word list
-		    // (slot 11 is the new slot for this)
-		    //
-		    char        *w = strtok(conf["content"], " \t\r\n");
-                    while (w)
-		      {
-			if (strlen(w) >= minimumWordLength)
-			  retriever.got_word(w, 1, 11);
-			w = strtok(0, " \t\r\n");
-		      }
-		    w = '\0';
 		  }
 	    }
 	    else if (conf["name"] &&
