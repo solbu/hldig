@@ -1,3 +1,8 @@
+Wed Apr 28 10:46:31 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htmerge/db.cc(mergeDB): fix a few errors in how the merge index
+	name is obtained.
+
 Tue Apr 27 23:00:39 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* Makefile.config.in: Remove now-useless LIBDIRS variable.

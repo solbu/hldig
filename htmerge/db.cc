@@ -40,10 +40,10 @@ mergeDB()
     merge_db.
       SetCompatibility(merge_config.Boolean("uncoded_db_compatible", 1));
 
-    merge_doc_index = config["doc_index"];    
+    merge_doc_index = merge_config["doc_index"];    
     if (access(merge_doc_index, R_OK) < 0)
     {
-	reportError(form("Unable to open document index '%s'", doc_index));
+	reportError(form("Unable to open document index '%s'", merge_doc_index));
     }
     merge_doc_db = merge_config["doc_db"];
     if (merge_db.Open(merge_doc_db, merge_doc_index) < 0)
