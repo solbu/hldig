@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.81 1999/06/13 02:16:02 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.82 1999/06/14 18:10:49 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -43,6 +43,7 @@ Display::Display(char *docFile, char *indexFile, char *excerptFile)
     maxStars = config.Value("max_stars");
     maxScore = 100;
     setupImages();
+    setupTemplates();
 
     if (!templates.createFromString(config["template_map"]))
       {
@@ -360,7 +361,15 @@ Display::displayMatch(DocumentRef *ref, int current)
         vars.Add("DESCRIPTION", description);
     }
 
-    expandVariables(currentTemplate->getMatchTemplate());
+    int		index = 0;
+    int		length = 0;
+    int		status = -1;
+    if (URLtemplate.hasPattern())
+	status = URLtemplate.FindFirst(ref->DocURL(), index, length);
+    if (status >= 0 && index >= 0)
+	displayParsedFile( ((String*) URLtemplateList[index])->get() );
+    else
+	expandVariables(currentTemplate->getMatchTemplate());
 }
 
 //*****************************************************************************
@@ -621,6 +630,46 @@ Display::displayParsedFile(char *filename)
     }
     if (fl)
 	fclose(fl);
+}
+
+//*****************************************************************************
+// If the result templates need to depend on the URL of the match, we need
+// an efficient way to determine which template file to use.  To do this, we
+// will build a StringMatch object with all the URL patterns and also
+// a List parallel to that pattern that contains the actual template file
+// names to use for each URL.
+//
+void
+Display::setupTemplates()
+{
+    char	*templatePatterns = config["template_patterns"];
+    if (templatePatterns && *templatePatterns)
+    {
+	//
+	// The templatePatterns string will have pairs of values.  The first
+	// value of a pair will be a pattern, the second value will be a
+	// result template file name.
+	//
+	char	*token = strtok(templatePatterns, " \t\r\n");
+	String	pattern;
+	while (token)
+	{
+	    //
+	    // First token is a pattern...
+	    //
+	    pattern << token << '|';
+
+	    //
+	    // Second token is an URL
+	    //
+	    token = strtok(0, " \t\r\n");
+	    URLtemplateList.Add(new String(token));
+	    if (token)
+	        token = strtok(0, " \t\r\n");
+	}
+	pattern.chop(1);
+	URLtemplate.Pattern(pattern);
+    }
 }
 
 //*****************************************************************************

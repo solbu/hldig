@@ -5075,7 +5075,7 @@
 			This specifies the URL to use to display a blank of the
 			same size as the star defined in the
 			<a href="#image_star">image_star</a> attribute or in the
-			<a href="#image_patterns">image_patterns</a> attribute.
+			<a href="#star_patterns">star_patterns</a> attribute.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -5592,6 +5592,67 @@
 		  </dt>
 		  <dd>
 			template_name: long
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="template_patterns">template_patterns</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This attribute allows the results template to be changed
+			depending on the URL or the match it is used for. This
+			is mainly to make a visual distinction between matches
+			on different web sites. The results for each site could
+			thus be shown in a style matching that site.<br>
+			to.<br>
+			 The format is simply a list of pairs. The first
+			element of each pair is a pattern, the second element
+			is the name of the template file for that pattern.<br>
+			 More information about templates can be found in the
+			<a href="htsearch.html" target="_top">htsearch</a>
+			documentation.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  template_patterns:
+				</td>
+				<td nowrap>
+				  http://www.sdsu.edu ${common_dir}/sdsu.html \<br>
+				  http://www.ucsd.edu ${common_dir}/ucsd.html
+				</td>
+			  </tr>
+			</table>
 		  </dd>
 		</dl>
 	  </dd>

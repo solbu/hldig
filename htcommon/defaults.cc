@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.51 1999/06/13 19:56:44 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.52 1999/06/14 18:10:44 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -135,6 +135,7 @@ ConfigDefaults	defaults[] =
     {"syntax_error_file",		"${common_dir}/syntax.html"},
     {"template_map",			"Long builtin-long builtin-long Short builtin-short builtin-short"},
     {"template_name",			"builtin-long"},
+    {"template_patterns",		""},
     {"text_factor",			"1"},
     {"timeout",				"30"},
     {"title_factor",			"100"},

@@ -1,3 +1,10 @@
+Mon Jun 14 13:52:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc, htsearch/Display.h, htsearch/Display.cc,
+	htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htdoc/hts_templates.html: add template_patterns attribute, to select
+	result templates based on URL patterns.
+
 Sun Jun 13 16:29:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc (IsValidURL): Add valid_extension list, as

@@ -1,7 +1,7 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.16 1999/06/13 02:16:02 ghutchis Exp $
+// $Id: Display.h,v 1.17 1999/06/14 18:10:50 grdetil Exp $
 //
 //
 
@@ -97,6 +97,13 @@ protected:
     int                 templateError;
 
     //
+    // To allow the result templates to be dependant on the match URL, we need
+    // the following:
+    //
+    StringMatch		URLtemplate;
+    List		URLtemplateList;
+
+    //
     // To allow the star images to be dependant on the match URL, we need
     // the following:
     //
@@ -141,6 +148,7 @@ protected:
     String		*excerpt(DocumentRef *ref, String urlanchor,
 				 int fanchor, int &first);
     char		*hilight(char *str, String urlanchor, int fanchor);
+    void		setupTemplates();
     void		setupImages();
     String		*generateStars(DocumentRef *, int);
     void		displayParsedFile(char *);
