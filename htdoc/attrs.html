@@ -8020,8 +8020,10 @@
 			If set to false, the entity &amp;amp; (or &amp;#38;) will not be
 			translated into its ASCII equivalent &amp;. If translation were taking
 			place, an excerpt containing a &amp; might be misinterpreted by the browser
-			and look unrecognizable to the user. For this reason, not translating this
-			entity is the default behavior.
+			and look unrecognizable to the user. This isn't a problem with versions
+			3.1.5 and later of htsearch, which convert the translated character
+			back into the &amp;amp; entity. For this reason, translating this
+			entity is now the default behavior.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -8112,7 +8114,9 @@
 			(or &amp;#62;) will not be translated into their ASCII equivalents &lt; and
 			&gt;. If translation were taking place, an excerpt containing &lt; and
 			&gt; might be misinterpreted by the browser and look unrecognizable to the
-			user. For this reason, not translating these entities is the default
+			user. This isn't a problem with versions
+			3.1.5 and later of htsearch, which convert the translated characters
+			back into the proper entities. For this reason, translating these entities is now the default
 			behavior.
 		  </dd>
 		  <dt>
@@ -8156,8 +8160,10 @@
 			If set to false, the entity &amp;quot; (or &amp;#34;) will not be
 			translated into its ASCII equivalent &quot;. If translation were taking
 			place, an excerpt containing a &quot; might be misinterpreted by the browser
-			and look unrecognizable to the user. For this reason, not translating this
-			entity is the default behavior.
+			and look unrecognizable to the user. This isn't a problem with versions
+			3.1.5 and later of htsearch, which convert the translated character
+			back into the &amp;quot; entity. For this reason, translating this
+			entity is now the default behavior.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -8910,7 +8916,7 @@
 	</dl>
 	<hr size="4" noshade>
 <!-- hhmts start -->
-Last modified: $Date: 2002/01/11 23:51:38 $
+Last modified: $Date: 2002/01/12 03:01:12 $
 <!-- hhmts end -->
   </body>
 </html>
