@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.49 1999/06/13 19:56:45 ghutchis Exp $
+// $Id: Retriever.cc,v 1.50 1999/06/16 20:17:34 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -719,10 +719,10 @@ Retriever::IsValidURL(char *u)
     //
     // Or NOT in the list of valid ones
     //
-    if (ext && !valids->Exists(lowerext))
+    if (ext && valids->Count() > 0 && !valids->Exists(lowerext))
       {
 	if (debug > 2)
-	  cout << endl <<"   Rejected: Extension is invalid!";
+	  cout << endl <<"   Rejected: Extension is not valid!";
 	return FALSE;
       }
 

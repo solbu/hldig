@@ -1,3 +1,8 @@
+Wed Jun 16 16:01:07 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc(IsValidURL): change handling of valids to only
+	reject if list is not empty, give different error message.
+
 Wed Jun 16 14:40:56 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/htsearch.cc(main): pass StringList args to setEscaped()
