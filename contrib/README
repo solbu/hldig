@@ -1,9 +1,26 @@
-ht://Dig contributed stuff.
+ht://Dig contributed scripts
 
-This directory tree contains mostly perl programs that attempt to
+This directory tree contains perl and shell programs that attempt to
 do things with the generated databases.  Most of these were written
-for a very specific purpose for the version of ht://Dig that was current
-at the time of writing.  This means that some of these programs will
-be severely broken!  Do not expect them to work; use them only as
-examples of the types of things you can do with the ht://Dig databases.
+for a very specific purpose for the specific version of ht://Dig that
+was current at that point.  This means that some of these programs
+will be severely broken!  Do not expect them to work; use them only as
+examples of the types of things you can do with the ht://Dig
+databases.
 
+What's here:
+
+autorun		An example of automating the database building
+changehost	A script to change hostnames of URLs in the databases
+doclist		List the information in the doc db (or after a certain date)
+ewswrap		Two sample htsearch wrappers to emulate Excite for Web
+		Servers (EWS) and to simplify queries
+htparsedoc	Two sample external parsers (shell and perl) to index
+		Word documents.
+multidig	A set of scripts to simplify updating multiple databases
+run-robot.sh	Another example of automating the database building
+status.pl	Build a status page of last 5 runs and top 10
+		servers (by # URLs)
+urlindex	Build an index of all the URLs in the database
+whatsnew	Build a "what's new" page with custom header and footer
+wordfreq	Build a list of words and frequency in the database
