@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htdig.cc,v 1.37 2003/10/23 02:16:12 angusgb Exp $
+// $Id: htdig.cc,v 1.38 2003/10/28 01:02:28 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -234,6 +234,7 @@ int main(int ac, char **av)
 	cout << "Importing Cookies input file "
 	    << CookiesInputFile << endl;
 	int result;
+	HtCookieJar::SetDebugLevel(debug); // Set the debug level
 	HtCookieInFileJar* cookie_file = new HtCookieInFileJar(CookiesInputFile, result);
 	if (cookie_file)
 	{

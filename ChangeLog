@@ -1,3 +1,8 @@
+Tue Oct 28 11:58:06 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * htdig/htdig.cc: set the debug level when we are importing a cookie file.
+    Fix bug #831478.
+
 Mon Oct 27 17:13:02 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
     * htdig/Server.cc: Fix bug #831407.  Make sure time properly reset after
