@@ -4,6 +4,9 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.34  1999/01/20 05:40:55  ghutchis
+// Fix typo causing compile problems.
+//
 // Revision 1.33  1999/01/18 23:14:28  ghutchis
 // Use no_title_text to set the title  appropriately, as contributed by
 // Marjolein. Ensure PERCENT is at least 1.
@@ -119,7 +122,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.33 1999/01/18 23:14:28 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.34 1999/01/20 05:40:55 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -392,6 +395,7 @@ Display::displayMatch(ResultMatch *match, int current)
 	if (percent == 0)
 	  percent = 1;
 	vars.Add("PERCENT", new String(form("%d", percent)));
+      }
     else
 	vars.Add("PERCENT", new String("100"));
     
