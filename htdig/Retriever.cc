@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.46 1999/05/15 17:08:51 ghutchis Exp $
+// $Id: Retriever.cc,v 1.47 1999/05/16 21:20:33 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -677,7 +677,7 @@ Retriever::IsValidURL(char *u)
     if (excludes.match(url, 0, 0) != 0)
       {
                 if (debug >= 2)
-		  cout << endl << "   Rejected: intem in exclude list ";
+		  cout << endl << "   Rejected: item in exclude list ";
                 return(FALSE);
       }
 
@@ -694,13 +694,12 @@ Retriever::IsValidURL(char *u)
       }
 
     ext = strrchr(url, '?');
-    if (ext && badquerystr.hasPattern() &&
-       (badquerystr.FindFirst(ext) >= 0))
-    {
-      if (debug > 2)
-	  cout << endl <<"   Rejected: Invalid Querystring!";
-       return FALSE;
-    }
+    if (ext && badquerystr.match(url, 0, 0) != 0)
+      {
+                if (debug >= 2)
+		  cout << endl << "   Rejected: item in bad query list ";
+                return(FALSE);
+      }
 
     //
     // If any of the limits are met, we allow the URL
