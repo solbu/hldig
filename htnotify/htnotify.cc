@@ -4,12 +4,15 @@
 // Implementation of htnotify
 //
 // $Log: htnotify.cc,v $
-// Revision 1.1  1997/02/03 17:11:11  turtle
-// Initial revision
+// Revision 1.2  1997/03/13 18:37:50  turtle
+// Changes
+//
+// Revision 1.1.1.1  1997/02/03 17:11:11  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.1 1997/02/03 17:11:11 turtle Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.2 1997/03/13 18:37:50 turtle Exp $";
 #endif
 
 #include <Configuration.h>
@@ -44,63 +47,63 @@ struct tm	*today;
 //
 int main(int ac, char **av)
 {
-	int			c;
-	extern char	*optarg;
-	String		base;
-	String		configFile = DEFAULT_CONFIG_FILE;
+    int			c;
+    extern char	*optarg;
+    String		base;
+    String		configFile = DEFAULT_CONFIG_FILE;
 
-	while ((c = getopt(ac, av, "vb:c:")) != -1)
+    while ((c = getopt(ac, av, "vb:c:")) != -1)
+    {
+	switch (c)
 	{
-		switch (c)
-		{
-			case 'b':
-				base = optarg;
-				break;
-			case 'c':
-				configFile = optarg;
-				break;
-			case 'v':
-				verbose++;
-				break;
-			case '?':
-				usage();
-				break;
-		}
+	case 'b':
+	    base = optarg;
+	    break;
+	case 'c':
+	    configFile = optarg;
+	    break;
+	case 'v':
+	    verbose++;
+	    break;
+	case '?':
+	    usage();
+	    break;
 	}
+    }
 
-	config.Defaults(&defaults[0]);
-	config.Read(configFile);
+    config.Defaults(&defaults[0]);
+    config.Read(configFile);
 
-	if (base.length())
-	{
-		config.Add("database_base", base);
-	}
+    if (base.length())
+    {
+	config.Add("database_base", base);
+    }
 
-	String	doc_db = config["doc_db"];
-	DocumentDB	docdb;
-	docdb.Read(doc_db);
-	List	*docs = docdb.URLs();
+    String	doc_db = config["doc_db"];
+    DocumentDB	docdb;
+    docdb.Read(doc_db);
+    List	*docs = docdb.URLs();
 
-	//
-	// Compute today's date
-	//
-	time_t	now = time(0);
-	today = localtime(&now);
+    //
+    // Compute today's date
+    //
+    time_t	now = time(0);
+    today = localtime(&now);
 
-	//
-	// Traverse all the known documents to check for notification requirements
-	//
-	DocumentRef	*ref;
-	String		*str;
-	docs->Start_Get();
-	while (str = (String *) docs->Get_Next())
-	{
-		ref = docdb[str->get()];
-		htnotify(*ref);
-	}
-	delete docs;
-	docdb.Close();
-	return 0;
+    //
+    // Traverse all the known documents to check for notification requirements
+    //
+    DocumentRef	*ref;
+    String		*str;
+    docs->Start_Get();
+    while (str = (String *) docs->Get_Next())
+    {
+	ref = docdb[str->get()];
+	htnotify(*ref);
+    }
+    delete docs;
+    docdb.Close();
+    return 0;
 }
 
 
@@ -109,51 +112,52 @@ int main(int ac, char **av)
 //
 void htnotify(DocumentRef &ref)
 {
-	char	*date = ref.DocNotification();
-	char	*email = ref.DocEmail();
+    char	*date = ref.DocNotification();
+    char	*email = ref.DocEmail();
 
-	if (date && *date && email && *email)
+    if (date && *date && email && *email)
+    {
+	if (verbose > 1)
 	{
-		if (verbose > 1)
-		{
-			cout << "Saw a date:" << endl;
-			cout << "Date:    " << date << endl;
-			cout << "URL:     " << ref.DocURL() << endl;
-			cout << "Subject: " << ref.DocSubject() << endl;
-			cout << "Email:   " << email << endl;
-			cout << endl;
-		}
-
-		int		month, day, year;
-		sscanf(date, "%d/%d/%d", &month, &day, &year);
-
-		if (year > 1900)
-			year -= 1900;
-		month--;
-
-		//
-		// Compare this date with today's date
-		//
-		if (year <= today->tm_year &&
-			month <= today->tm_mon &&
-			day <= today->tm_mday)
-		{
-			//
-			// It seems that this date is either today or before today.
-			// Send a notification
-			//
-			send_notification(date, email, ref.DocURL(), ref.DocSubject());
-			if (verbose)
-			{
-				cout << "Message sent." << endl;
-				cout << "Date:    " << date << endl;
-				cout << "URL:     " << ref.DocURL() << endl;
-				cout << "Subject: " << ref.DocSubject() << endl;
-				cout << "Email:   " << email << endl;
-				cout << endl;
-			}
-		}
+	    cout << "Saw a date:" << endl;
+	    cout << "Date:    " << date << endl;
+	    cout << "URL:     " << ref.DocURL() << endl;
+	    cout << "Subject: " << ref.DocSubject() << endl;
+	    cout << "Email:   " << email << endl;
+	    cout << endl;
 	}
+
+	int		month, day, year;
+	sscanf(date, "%d/%d/%d", &month, &day, &year);
+
+	if (year > 1900)
+	    year -= 1900;
+	month--;
+
+	//
+	// Compare this date with today's date
+	//
+	if (year < today->tm_year ||
+	    (year == today->tm_year && month < today->tm_mon) ||
+	    (year == today->tm_year && month == today->tm_mon &&
+	     day < today->tm_mday))
+	{
+	    //
+	    // It seems that this date is either today or before
+	    // today.  Send a notification
+	    //
+	    send_notification(date, email, ref.DocURL(), ref.DocSubject());
+	    if (verbose)
+	    {
+		cout << "Message sent." << endl;
+		cout << "Date:    " << date << endl;
+		cout << "URL:     " << ref.DocURL() << endl;
+		cout << "Subject: " << ref.DocSubject() << endl;
+		cout << "Email:   " << email << endl;
+		cout << endl;
+	    }
+	}
+    }
 }
 
 
@@ -162,67 +166,67 @@ void htnotify(DocumentRef &ref)
 //
 void send_notification(char *date, char *email, char *url, char *subject)
 {
-	int		fildes[2];
-	String	to = email;
+    int		fildes[2];
+    String	to = email;
 
-	pipe(fildes);
-	switch (fork())
+    pipe(fildes);
+    switch (fork())
+    {
+    case 0:		// child
+    {
+	char	*token = strtok(to, " ,\t\r\n");
+	char	*argv[100];
+	argv[0] = "sendmail";
+	argv[1] = "-F";
+	argv[2] = "HTDig notification service";
+	argv[3] = "-f";
+	argv[4] = config["notify_sender"];
+	int		n = 5;
+	while (token)
 	{
-		case 0:		// child
-		{
-			char	*token = strtok(to, " ,\t\r\n");
-			char	*argv[100];
-			argv[0] = "sendmail";
-			argv[1] = "-F";
-			argv[2] = "HTDig notification service";
-			argv[3] = "-f";
-			argv[4] = config["notify_sender"];
-			int		n = 5;
-			while (token)
-			{
-				argv[n++] = token;
-				token = strtok(0, " ,\t\r\n");
-			}
-			argv[n++] = 0;
-			close(fildes[1]);
-			dup2(fildes[0], 0);			
-			
-			execv("/usr/lib/sendmail", argv);
-			exit(1);			
-			break;
-		}
-		case -1:	// error!
-			perror("fork");
-			return;
-		default:	// parent
-			close(fildes[0]);
-			break;
+	    argv[n++] = token;
+	    token = strtok(0, " ,\t\r\n");
 	}
-
-	if (!subject || !*subject)
-		subject = "notification";
-	String	out;
-	out << "From: " << config["htnotify_sender"] << "\n";
-	out << "Subject: WWW notification: " << subject << '\n';
-	out << "To: " << to.get() << '\n';
-	out << "Reply-To: " << config["htnotify_sender"] << "\n";
-	out << "\n";
-	out << "The following page was tagged to notify you after " << date
-		<< '\n';
-	out << "\n";
-	out << "URL:     " << url << '\n';
-	out << "Date:    " << date << '\n';
-	out << "Subject: " << subject << '\n';
-	out << "Email:   " << email << '\n';
-	out << "\n";
-	out << "Note: This message will be sent again if you do not change or\n";
-	out << "take away the notification of the above mentioned HTML page.\n";
-	out << "\n";
-	out << "Find out more about the notification service at\n\n";
-	out << "    http://htdig.sdsu.edu/meta.html\n\n";
-	out << "Cheers!\n\nHTDig Notification Service\n";
-	write(fildes[1], out.get(), out.length());
+	argv[n++] = 0;
 	close(fildes[1]);
+	dup2(fildes[0], 0);			
+			
+	execv("/usr/lib/sendmail", argv);
+	exit(1);			
+	break;
+    }
+    case -1:	// error!
+	perror("fork");
+	return;
+    default:	// parent
+	close(fildes[0]);
+	break;
+    }
+
+    if (!subject || !*subject)
+	subject = "notification";
+    String	out;
+    out << "From: " << config["htnotify_sender"] << "\n";
+    out << "Subject: WWW notification: " << subject << '\n';
+    out << "To: " << to.get() << '\n';
+    out << "Reply-To: " << config["htnotify_sender"] << "\n";
+    out << "\n";
+    out << "The following page was tagged to notify you after " << date
+	<< '\n';
+    out << "\n";
+    out << "URL:     " << url << '\n';
+    out << "Date:    " << date << '\n';
+    out << "Subject: " << subject << '\n';
+    out << "Email:   " << email << '\n';
+    out << "\n";
+    out << "Note: This message will be sent again if you do not change or\n";
+    out << "take away the notification of the above mentioned HTML page.\n";
+    out << "\n";
+    out << "Find out more about the notification service at\n\n";
+    out << "    http://htdig.sdsu.edu/meta.html\n\n";
+    out << "Cheers!\n\nHTDig Notification Service\n";
+    write(fildes[1], out.get(), out.length());
+    close(fildes[1]);
 }
 
 
@@ -231,16 +235,16 @@ void send_notification(char *date, char *email, char *url, char *subject)
 //
 void usage()
 {
-	cout << "usage: htnotify [-c configfile][-b db_base]\n";
-	cout << "There can be any number or words.\n";
-	cout << "Options:\n";
-	cout << "\t-c configfile\n";
-	cout << "\t\tUse the specified configuration file instead of the default.\n\n";
-	cout << "\t-b db_base\n";
-	cout << "\t\tSet the base path of the document database.\n";
-	cout << "\t-v\n";
-	cout << "\t\tIncrease the verbose level by one.\n";
-	exit(0);
+    cout << "usage: htnotify [-c configfile][-b db_base]\n";
+    cout << "There can be any number or words.\n";
+    cout << "Options:\n";
+    cout << "\t-c configfile\n";
+    cout << "\t\tUse the specified configuration file instead of the default.\n\n";
+    cout << "\t-b db_base\n";
+    cout << "\t\tSet the base path of the document database.\n";
+    cout << "\t-v\n";
+    cout << "\t\tIncrease the verbose level by one.\n";
+    exit(0);
 }
 
 

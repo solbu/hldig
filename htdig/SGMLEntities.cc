@@ -4,6 +4,9 @@
 // Implementation of SGMLEntities
 //
 // $Log: SGMLEntities.cc,v $
+// Revision 1.3  1997/03/13 18:37:49  turtle
+// Changes
+//
 // Revision 1.2  1997/02/24 17:52:51  turtle
 // Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
 // ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
@@ -13,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: SGMLEntities.cc,v 1.2 1997/02/24 17:52:51 turtle Exp $";
+static char RCSid[] = "$Id: SGMLEntities.cc,v 1.3 1997/03/13 18:37:49 turtle Exp $";
 #endif
 
 #include "SGMLEntities.h"
@@ -33,6 +36,7 @@ static struct
       "gt",	      '>',
       "amp",	      '&',
       "quot",	      '"',
+      "trade",	      153, /* trade mark */
       "nbsp",         160, /* non breaking space */
       "iexcl",        161, /* inverted exclamation mark */
       "cent",         162, /* cent sign */
