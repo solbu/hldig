@@ -4,6 +4,10 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.16  1999/01/14 03:06:26  ghutchis
+// Update from Randy Winch to eliminate use_document_compression and fix
+// compilation problems noted by Hans-Peter.
+//
 // Revision 1.15  1999/01/12 18:08:57  ghutchis
 // Added support for compressing data using zlib if available, contributed by
 // Randy Winch <gumby@cafes.net>.
@@ -206,7 +210,8 @@ void DocumentRef::Serialize(String &s)
     addstring(DOC_NOTIFICATION, s, docNotification);
     addstring(DOC_SUBJECT, s, docSubject);
 #ifdef HAVE_LIBZ
-    if (config.Boolean("use_document_compression",0)) {
+    int cf=config.Value("compression_level",0);    
+    if (cf) {
       //
       // Now compress s into c_s
       //
@@ -216,7 +221,6 @@ void DocumentRef::Serialize(String &s)
       c_stream.zfree=(free_func)0;
       c_stream.opaque=(voidpf)0;
       // Get compression factor, default to best
-      int cf=config.Value("compression_factor",9);
       if (cf<-1) cf=-1; else if (cf>9) cf=9;
       int err=deflateInit(&c_stream,cf);
       if (err!=Z_OK) return;
@@ -254,11 +258,11 @@ void DocumentRef::Serialize(String &s)
 void DocumentRef::Deserialize(String &stream)
 {
     Clear();
+#ifdef HAVE_LIBZ
     char	*s;
     char	*end;
     String c_s;
-#ifdef HAVE_LIBZ
-    if (config.Boolean("use_document_compression",0)) {
+    if (config.Boolean("compression_level",0)) {
       // Decompress stream
       z_stream d_stream; /* decompression stream */
 
@@ -289,9 +293,10 @@ void DocumentRef::Deserialize(String &stream)
       s = stream.get();
       end = s + stream.length();
     }
+#else
+    char	*s = stream.get();
+    char	*end = s + stream.length();
 #endif
-    //char	*s = c_s.get();
-    //char	*end = s + c_s.length();
     int		length;
     int		count;
     int		i;
