@@ -4,6 +4,11 @@
 // Implementation of DB2_db
 //
 // $Log: DB2_db.cc,v $
+// Revision 1.7.2.1  2000/03/01 06:05:52  ghutchis
+// * htlib/DB2_db.cc (Error): Simply fprint the error message on
+// stderr. This is not a method since the db.h interface expects a C function.
+// (db_init): Don't set db_errfile, instead set errcall to point to the new Error function.
+//
 // Revision 1.7  1999/01/23 01:25:02  hp
 // Fixed _some_ missing const qualifiers on common methods (requiring temps)
 //
@@ -37,7 +42,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: DB2_db.cc,v 1.7 1999/01/23 01:25:02 hp Exp $";
+static char RCSid[] = "$Id: DB2_db.cc,v 1.7.2.1 2000/03/01 06:05:52 ghutchis Exp $";
 #endif
 
 #include "DB2_db.h"
@@ -385,6 +390,15 @@ DB2_db::getDatabaseInstance()
     return new DB2_db();
 }
 
+//*****************************************************************************
+// void Error(const char *error_prefix, char *message);
+//
+void Error(const char *error_prefix, char *message)
+{
+  // We don't do anything here, it's mostly a stub so we can set a breakpoint
+  // for debugging purposes
+  fprintf(stderr, "%s: %s\n", error_prefix, message);
+}
 
 //******************************************************************************
 
@@ -406,8 +420,9 @@ DB2_db::db_init(char *home)
 	fprintf(stderr, "%s: %s\n", progname, strerror(ENOMEM));
 	exit (1);
     }
-    dbenv->db_errfile = stderr;
+    // dbenv->db_errfile = stderr;
     dbenv->db_errpfx = progname;
+    dbenv->db_errcall = &Error;
 
     if ((errno = db_appinit(home, NULL, dbenv, DB_CREATE)) != 0)
     {
