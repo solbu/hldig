@@ -1,3 +1,17 @@
+Sat Jan  9 20:52:49 1999  didier Gautheron <dgautheron@magic.fr>
+
+	* htcommon/WordList.cc(valid_word): Break out of looping once
+	we're sure the word is invalid.
+
+	* htlib/Dictionary.cc(Remove, Exists): Remember special case of an
+	empty dictionary.
+
+Sat Jan  9 20:16:25 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HTML.cc(parse): Don't capitalize headers--this creates
+	problems with non-ASCII values, since String::uppercase doesn't
+	know how to capitalize them.
+
 Sat Jan  9 14:47:17 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Document.cc(getdate): Strip off weekday before calling
