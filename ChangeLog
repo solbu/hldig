@@ -1,4 +1,7 @@
-Wed Sep  1 15:03:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:06:17 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc(HTML, do_tag): Added support for <embed>, <object>
+	and <link> tags.
 
 	* htdig/htdig.cc(main): Applied Geoff's patch to hide the
 	username/password in the command line arguments.

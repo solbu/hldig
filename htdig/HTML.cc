@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.7 1999/03/23 23:22:53 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.8 1999/09/01 20:10:41 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -63,7 +63,7 @@ HTML::HTML()
     // the attrs Match object is used to match names of tag parameters.
     //
     tags.IgnoreCase();
-    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base");
+    tags.Pattern("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object|link");
 
     attrs.IgnoreCase();
     attrs.Pattern("src|href|name");
@@ -894,6 +894,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	}
 
 	case 21:	// frame
+	case 24:	// embed
+	case 25:	// object
 	{
 	    which = -1;
 	    int pos = srcMatch.FindFirstWord(position, which, length);
@@ -963,6 +965,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	}
 	
 	case 22:	// area
+	case 26:	// link
 	{
 	    which = -1;
 	    int pos = hrefMatch.FindFirstWord(position, which, length);
@@ -972,7 +975,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		case 0:		// "href"
 		{
 		    //
-		    // src seen
+		    // href seen
 		    //
 		    while (*position && *position != '=')
 			position++;
