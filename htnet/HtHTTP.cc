@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.3 1999/10/15 10:46:55 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.4 1999/11/08 14:43:55 toivo Exp $ 
 //
 
 #include "lib.h"
@@ -969,10 +969,13 @@ int HtHTTP::ReadChunkedBody()
    // Chunked Transfer decoding
    // as shown in the RFC2616 (HTTP/1.1) - 19.4.6
     
+#define  BSIZE  8192
+
    int            length = 0;  // initialize the length
    unsigned int   chunk_size;
    String         ChunkHeader = 0;
-   char           buffer[8192];
+   char           buffer[BSIZE+1];
+   int		  chunk, rsize;
    
    _response._contents.trunc();	// Initialize the string
 
@@ -985,17 +988,35 @@ int HtHTTP::ReadChunkedBody()
 
    while (chunk_size > 0)
    {
-      // Read Chunk data
-      if (_connection.read(buffer, chunk_size) == -1)
-         return -1;
+      chunk = chunk_size;
+
+      do {
+	if (chunk > BSIZE) {
+	  rsize = BSIZE;
+	  if (debug>4)
+	    cout << "Read chunk partial: left=" <<  chunk << endl;
+	} else {
+	  rsize = chunk;
+	}
+	chunk -= rsize;
+
+	// Read Chunk data
+	if (_connection.read(buffer, rsize) == -1)
+	  return -1;
+
+	// Append the chunk-data to the contents of the response
+	buffer[rsize] = 0;
+	_response._contents << buffer;
+                  
+	length+=rsize;
+
+      } while (chunk);
+
+     //     if (_connection.read(buffer, chunk_size) == -1)
+     //       return -1;
 
       // Read CRLF - to be ignored
       _connection.read_line(ChunkHeader);
-
-      // Append the chunk-data to the contents of the response
-      _response._contents << buffer;
-                  
-      length+=chunk_size;
 
       // Read chunk-size and CRLF
       _connection.read_line(ChunkHeader);
