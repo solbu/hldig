@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.h,v 1.24.2.1 2000/01/20 03:53:45 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.24.2.2 2000/03/28 01:45:51 ghutchis Exp $
 //
 
 #ifndef _DocumentRef_h_
@@ -63,7 +63,6 @@ class DocumentRef : public Object
     List		*Descriptions()			{return &descriptions;}
     ReferenceState	DocState()			{return docState;}
     int			DocSize()			{return docSize;}
-    int			DocImageSize()			{return docImageSize;}
     List		*DocAnchors()			{return &docAnchors;}
     int			DocScore()			{return docScore;}
     int                 DocSig()                        {return docSig;}
@@ -86,7 +85,6 @@ class DocumentRef : public Object
     void		AddDescription(const char *d, HtWordList &words);
     void		DocState(ReferenceState s)	{docState = s;}
     void		DocSize(int s)			{docSize = s;}
-    void		DocImageSize(int s)		{docImageSize = s;}
     void                DocSig(int s)                   {docSig = s;}
     void		DocAnchors(List &l)		{docAnchors = l;}
     void		AddAnchor(const char *a);
@@ -133,8 +131,6 @@ class DocumentRef : public Object
     int			docLinks;
     // This is a count of the links to the document (incoming links).
     int                 docBackLinks;
-    // This is the size of the document when including images.
-    int			docImageSize;
     // This is a list of the anchors in the document (i.e. <A NAME=...)
     List		docAnchors;
     // This is a count of the number of hops from start_urls to here.

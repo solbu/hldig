@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.28.2.4 2000/03/21 04:26:00 ghutchis Exp $
+// $Id: DocumentDB.cc,v 1.28.2.5 2000/03/28 01:45:51 ghutchis Exp $
 //
 
 #include "DocumentDB.h"
@@ -395,7 +395,6 @@ int DocumentDB::DumpDB(const String& filename)
 	    fprintf(fl, "\th:%s", ref->DocMetaDsc());
 	    fprintf(fl, "\tl:%d", (int) ref->DocAccessed());
 	    fprintf(fl, "\tL:%d", ref->DocLinks());
-	    fprintf(fl, "\tI:%d", ref->DocImageSize());
 	    fprintf(fl, "\td:");
 	    descriptions = ref->Descriptions();
 	    String	*description;

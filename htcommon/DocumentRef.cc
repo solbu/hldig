@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.cc,v 1.47.2.1 1999/12/07 19:54:09 bosc Exp $
+// $Id: DocumentRef.cc,v 1.47.2.2 2000/03/28 01:45:51 ghutchis Exp $
 //
 
 #include "DocumentRef.h"
@@ -62,7 +62,6 @@ void DocumentRef::Clear()
   docSize = 0;
   docLinks = 0;
   docBackLinks = 0;
-  docImageSize = 0;
   docAnchors.Destroy();
   docHopCount = 0;
   docSig = 0;
@@ -82,7 +81,7 @@ enum
     DOC_STATE,				// 3
     DOC_SIZE,				// 4
     DOC_LINKS,				// 5
-    DOC_IMAGESIZE,			// 6
+    DOC_IMAGESIZE,			// 6 -- No longer used
     DOC_HOPCOUNT,			// 7
     DOC_URL,				// 8
     DOC_HEAD,				// 9
@@ -229,7 +228,6 @@ void DocumentRef::Serialize(String &s)
     addnum(DOC_SIZE, s, docSize);
     addnum(DOC_LINKS, s, docLinks);
     addnum(DOC_BACKLINKS, s, docBackLinks);
-    addnum(DOC_IMAGESIZE, s, docImageSize);
     addnum(DOC_HOPCOUNT, s, docHopCount);
     addnum(DOC_SIG, s, docSig);
 
@@ -371,9 +369,6 @@ void DocumentRef::Deserialize(String &stream)
             break;
         case DOC_LINKS:
             getnum(x, s, docLinks);
-            break;
-        case DOC_IMAGESIZE:
-            getnum(x, s, docImageSize);
             break;
         case DOC_HOPCOUNT:
             getnum(x, s, docHopCount);
