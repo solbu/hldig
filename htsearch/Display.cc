@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.35  1999/01/20 19:18:54  ghutchis
+// Revised setting ANCHOR variable: it will be empty if there is no excerpt
+// which matches the search formula. Fixes problems with META descriptions. Based on a patch contributed by Marjolein.
+//
 // Revision 1.34  1999/01/20 05:40:55  ghutchis
 // Fix typo causing compile problems.
 //
@@ -122,7 +126,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.34 1999/01/20 05:40:55 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.35 1999/01/20 19:18:54 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -148,7 +152,7 @@ Display::Display(char *indexFile, char *docFile)
 
     limitTo = 0;
     excludeFrom = 0;
-    needExcerpt = 0;
+    //    needExcerpt = 0;
     templateError = 0;
 
     maxStars = config.Value("max_stars");
@@ -185,8 +189,8 @@ Display::Display(char *indexFile, char *docFile)
         //
 	templateError = 1;
       }
-    if (mystrcasestr(currentTemplate->getMatchTemplate(), "excerpt"))
-	needExcerpt = 1;
+    //    if (mystrcasestr(currentTemplate->getMatchTemplate(), "excerpt"))
+    //	needExcerpt = 1;
 }
 
 //*****************************************************************************
@@ -337,29 +341,42 @@ Display::displayMatch(ResultMatch *match, int current)
 
     char    *url = match->getURL();
     vars.Add("URL", new String(url));
-
-    int      iA = ref->DocAnchor();
-    List    *anchors = ref->DocAnchors();
-    int      n = anchors->Count();
-    int      fanchor = 0;
+    
+    int     iA = ref->DocAnchor();
+    
+    int             fanchor = 0;
     String  *anchor = new String();
-    if (n > 1)
+    if (iA > 0)             // if an anchor was found
       {
-	fanchor = 1;
-	// go to anchor -before- the match, if possible
-	if (iA > 0)
-	  iA--;
-	*anchor << "#" << ((String*) (*anchors)[iA])->get();
+	List    *anchors = ref->DocAnchors();
+	if (anchors->Count() > 0)
+	  {
+	    fanchor = 1;
+	    *anchor << "#" << ((String*) (*anchors)[iA-1])->get();
+	    vars.Add("ANCHOR", anchor);
+	  }
       }
-    vars.Add("ANCHOR", anchor);
-
-    if (needExcerpt)
+    
+    //
+    // no condition for determining excerpt any more:
+    // we need it anyway to see if an anchor is relevant
+    //
+    int first = -1;
+    String urlanchor = url;
+    String *txtexcerpt;
+    urlanchor << anchor;
+    *txtexcerpt << excerpt(ref, urlanchor, fanchor, first);
+    vars.Add("EXCERPT", txtexcerpt);
+    //
+    // anchor only relevant if an excerpt was found, i.e.,
+    // the search expression matches the body of the document
+    // instead of only META keywords.
+    //
+    if (first < 0)
       {
-	String urlanchor = new String(url);
-	urlanchor << anchor;
-	vars.Add("EXCERPT", excerpt(ref, urlanchor, fanchor));
+	vars.Remove("ANCHOR");
       }
-
+    
     vars.Add("SCORE", new String(form("%d", match->getScore())));
     vars.Add("CURRENT", new String(form("%d", current)));
     char	*title = ref->DocTitle();
@@ -1035,17 +1052,18 @@ Display::buildMatchList()
 
 //*****************************************************************************
 String *
-Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor)
+Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first)
 {
     char	*head = ref->DocHead();
     if (config.Boolean("use_meta_description",0) 
 	&& strlen(ref->DocMetaDsc()) != 0)
 	head = ref->DocMetaDsc();
     int		which, length;
-    int		first = allWordsPattern->FindFirstWord(head, which, length);
     char	*temp = head;
     String	part;
     String	*text = new String();
+
+    first = allWordsPattern->FindFirstWord(head, which, length);
 
     if (config.Boolean("excerpt_show_top", 0))
 	first = 0;

@@ -1,9 +1,13 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.7 1999/01/14 03:09:19 ghutchis Exp $
+// $Id: Display.h,v 1.8 1999/01/20 19:18:54 ghutchis Exp $
 //
 // $Log: Display.h,v $
+// Revision 1.8  1999/01/20 19:18:54  ghutchis
+// Revised setting ANCHOR variable: it will be empty if there is no excerpt
+// which matches the search formula. Fixes problems with META descriptions. Based on a patch contributed by Marjolein.
+//
 // Revision 1.7  1999/01/14 03:09:19  ghutchis
 // Added support for sorting and reverse sorting by date, time, and score.
 //
@@ -174,7 +178,7 @@ protected:
     String		*readFile(char *);
     void		expandVariables(char *);
     void		outputVariable(char *);
-    String		*excerpt(DocumentRef *ref, String urlanchor, int fanchor);
+    String		*excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first);
     char		*hilight(char *str, String urlanchor, int fanchor);
     void		setupImages();
     String		*generateStars(DocumentRef *, int);

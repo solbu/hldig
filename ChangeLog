@@ -11,6 +11,11 @@ Wed Jan 20 11:52:18 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htcommon/WordList.cc(Word): Added check for adding words with
 	weight zero.
 
+	* htsearch/Display.h, htsearch/Display.cc: Revised setting ANCHOR
+	variable: it will be empty if there is no excerpt which matches
+	the search formula. Fixes problems with META descriptions. Based
+	on a patch contributed by Marjolein.
+	
 Wed Jan 20 00:30:12 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/SGMLEntities.cc: Declare extern config, since we now use
