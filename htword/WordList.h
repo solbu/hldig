@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.20 2000/01/20 15:55:22 loic Exp $
+// $Id: WordList.h,v 1.5.2.21 2000/01/25 10:20:59 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -317,6 +317,11 @@ public:
     //
     int                 WalkInit(WordSearchDescription& search);
     //
+    // Move to the first matching entry.
+    // Returns OK if successfull, NOTOK if it fails.
+    //
+    int                 WalkRewind(WordSearchDescription& search);
+    //
     // Move to the next match
     // Returns OK if successfull, NOTOK if it fails.
     //
@@ -324,7 +329,7 @@ public:
     //
     // Advance the cursor one step, be it a match or not
     // Returns OK if successfull, NOTOK if it fails.
-    // If NOTOK and WORD_WALK_NOMATCH_FAILED, it's safe to
+    // If NOTOK and WORD_WALK_NOMATCH_FAILED is in status, it's safe to
     // call WalkNextStep again.
     //
     int                 WalkNextStep(WordSearchDescription& search);

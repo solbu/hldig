@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.32 2000/01/25 10:09:06 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.33 2000/01/25 10:20:59 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -256,15 +256,10 @@ WordList::Walk(WordSearchDescription &search)
 int 
 WordList::WalkInit(WordSearchDescription &search)
 {
-    const WordReference&	last                    = WordStat::Last();
     int                         lverbose   = (search.shutup ? 0 : verbose);
 
     WordDBCursor&		cursor                  = search.cursor;
     const WordKey&              searchKey               = search.searchKey;
-    WordKey&			prefixKey               = search.prefixKey;
-    String&                     key                     = search.key;
-    int&			cursor_get_flags        = search.cursor_get_flags;
-    int&                        searchKeyIsSameAsPrefix = search.searchKeyIsSameAsPrefix;
 
     search.ClearResult();
     search.ClearInternal();
@@ -280,11 +275,26 @@ WordList::WalkInit(WordSearchDescription &search)
 		     << ": SuffixDeffined:" << searchKey.IsDefinedWordSuffix() << "\n";}
 
     search.first_skip_field=searchKey.FirstSkipField();
-    if(lverbose){cdebug << "WordList::Walk: check skip speedup first field first_skip_field:" << search.first_skip_field << endl;}
+    if(lverbose){cdebug << "WordList::WalkInit: check skip speedup first field first_skip_field:" << search.first_skip_field << endl;}
 
     if(search.action & HTDIG_WORDLIST_COLLECTOR) {
 	search.collectRes = new List;
     }
+
+    return WalkRewind(search);
+}
+
+int 
+WordList::WalkRewind(WordSearchDescription &search)
+{
+    const WordReference&	last                    = WordStat::Last();
+    int                         lverbose   = (search.shutup ? 0 : verbose);
+
+    const WordKey&              searchKey               = search.searchKey;
+    WordKey&			prefixKey               = search.prefixKey;
+    String&                     key                     = search.key;
+    int&			cursor_get_flags        = search.cursor_get_flags;
+    int&                        searchKeyIsSameAsPrefix = search.searchKeyIsSameAsPrefix;
 
     //
     // Move the cursor to start walking and do some sanity checks.
@@ -294,21 +304,21 @@ WordList::WalkInit(WordSearchDescription &search)
       //
       // Move past the stat data
       //
-	if(lverbose>1){cdebug << "WordList::Walk: WORDLIST -> starting from begining" <<endl;}
+	if(lverbose>1){cdebug << "WordList::WalkInit: WORDLIST -> starting from begining" <<endl;}
 	last.KeyPack(key);
 
     } else 
     {
 	prefixKey = searchKey;
 	//
-	// If the key is not a prefix, the start key is
+	// If the key is a prefix, the start key is
 	// the longest possible prefix contained in the key. If the
 	// key does not contain any prefix, start from the beginning
 	// of the file.
 	//
     	if(prefixKey.PrefixOnly() == NOTOK) 
 	{
-	    if(lverbose>1){cdebug << "WordList::Walk: couldnt get prefix -> starting from begining" <<endl;}
+	    if(lverbose>1){cdebug << "WordList::WalkInit: couldnt get prefix -> starting from begining" <<endl;}
 	    prefixKey.Clear();
 	    //
 	    // Move past the stat data
@@ -317,11 +327,12 @@ WordList::WalkInit(WordSearchDescription &search)
 	}
 	else 
 	{
-	    if(lverbose){cdebug << "WordList::Walk: actualy using prefix KEY!: " << prefixKey<< endl;} 
+	    if(lverbose){cdebug << "WordList::WalkInit: actualy using prefix KEY!: " << prefixKey<< endl;} 
 	    prefixKey.Pack(key);
 	}
     }
 
+    search.status = WORD_WALK_OK;
     searchKeyIsSameAsPrefix = searchKey.ExactEqual(prefixKey);
     cursor_get_flags = DB_SET_RANGE;
 
@@ -378,11 +389,11 @@ WordList::WalkNextStep(WordSearchDescription &search)
 
   if(search.traceRes)
     {
-      if(lverbose>1)cdebug << "WordList::Walk: adding to trace:" << found << endl;
+      if(lverbose>1)cdebug << "WordList::WalkNextStep: adding to trace:" << found << endl;
       search.traceRes->Add(new WordReference(found));
     }
 
-  if(lverbose>1){cdebug << "WordList::Walk: *:  found:" <<  found << endl;}
+  if(lverbose>1){cdebug << "WordList::WalkNextStep: *:  found:" <<  found << endl;}
   //
   // Don't bother to compare keys if we want to walk all the entries
   //
@@ -401,7 +412,7 @@ WordList::WalkNextStep(WordSearchDescription &search)
       if(!prefixKey.Empty() &&
 	 !prefixKey.Equal(found.Key()))
 	{
-	  if(verbose){cdebug << "WordList::Walk: finished loop: no more possible matches:" << found  << endl;}
+	  if(verbose){cdebug << "WordList::WalkNextStep: finished loop: no more possible matches:" << found  << endl;}
 	  search.status = WORD_WALK_ATEND;
 	  return NOTOK;
 	}
@@ -421,21 +432,21 @@ WordList::WalkNextStep(WordSearchDescription &search)
 
   if(search.collectRes) 
     {
-      if(lverbose>1){cdebug << "WordList::Walk: collecting:" <<  found << endl;}
+      if(lverbose>1){cdebug << "WordList::WalkNextStep: collecting:" <<  found << endl;}
       search.collectRes->Add(new WordReference(found));
     }
   else if(search.callback)
     {
-      if(lverbose>1){cdebug << "WordList::Walk: calling callback:" <<  found << endl;}
+      if(lverbose>1){cdebug << "WordList::WalkNextStep: calling callback:" <<  found << endl;}
       int ret = (*search.callback)(this, cursor, &found, *(search.callback_data) );
-      if(lverbose>1){cdebug << "WordList::Walk:  callback returned:" <<  ret << endl;}
+      if(lverbose>1){cdebug << "WordList::WalkNextStep:  callback returned:" <<  ret << endl;}
       //
       // The callback function tells us that something went wrong, might
       // as well stop walking.
       //
       if(ret == NOTOK)
 	{
-	  if(verbose){cdebug << "WordList::Walk: finished loop: callback returned NOTOK:" << endl;}
+	  if(verbose){cdebug << "WordList::WalkNextStep: finished loop: callback returned NOTOK:" << endl;}
 	  search.status = WORD_WALK_CALLBACK_FAILED|WORD_WALK_ATEND;
 	  return NOTOK;
 	}
@@ -818,7 +829,6 @@ WordSearchDescription::Clear()
   action = 0;
   callback = 0;
   callback_data = 0;
-  collectRes = 0;
   ClearResult();
   ClearInternal();
 
@@ -850,6 +860,7 @@ WordSearchDescription::ClearInternal()
 void
 WordSearchDescription::ClearResult()
 {
+  collectRes = 0;
   found.Clear();
   status = WORD_WALK_OK;
 }

@@ -42,6 +42,14 @@ Fri Jan 21 18:57:58 EET 2000  Vadim Chekan  <vadim@etc.lviv.ua>
 	* htcommon/conf_lexer.lxx: fixed handling "include: ${var}file.inc" 
 	bug.
 
+Fri Jan 21 17:04:28 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordList.cc (WalkFinish,WalkInit,WalkNextStep): fix typos in error messages
+	  and misleading comment.
+
+	* htword/WordList.h,WordList.cc: move part of WalkInit in WalkRewind so that
+	  we have a function to go back to the beginning of possible matches.
+
 Wed Jan 19 21:49:57 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.cc (do_tag): Only add words for META descriptions,
