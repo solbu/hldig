@@ -1,11 +1,11 @@
 //
 // io.h
 //
-// $Id: io.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: io.h,v 1.1.1.1 1997/02/03 17:11:04 turtle Exp $
 //
 // $Log: io.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #ifndef _io_h_

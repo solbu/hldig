@@ -5,11 +5,11 @@
 // This database is only used while digging.  An extract of this database is used
 // for searching.  This is because digging requires a different index than searching.
 //
-// $Id: DocumentDB.h,v 1.1 1997/02/03 17:11:07 turtle Exp $
+// $Id: DocumentDB.h,v 1.1.1.1 1997/02/03 17:11:07 turtle Exp $
 //
 // $Log: DocumentDB.h,v $
-// Revision 1.1  1997/02/03 17:11:07  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
+// Initial CVS
 //
 //
 #ifndef _DocumentDB_h_

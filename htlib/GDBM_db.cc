@@ -4,12 +4,12 @@
 // Implementation of GDBM_db
 //
 // $Log: GDBM_db.cc,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: GDBM_db.cc,v 1.1 1997/02/03 17:11:05 turtle Exp $";
+static char RCSid[] = "$Id: GDBM_db.cc,v 1.1.1.1 1997/02/03 17:11:05 turtle Exp $";
 #endif
 
 #include "GDBM_db.h"

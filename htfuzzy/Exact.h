@@ -1,11 +1,11 @@
 //
 // Exact.h
 //
-// $Id: Exact.h,v 1.1 1997/02/03 17:11:12 turtle Exp $
+// $Id: Exact.h,v 1.1.1.1 1997/02/03 17:11:12 turtle Exp $
 //
 // $Log: Exact.h,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
+// Initial CVS
 //
 //
 #ifndef _Exact_h_

@@ -1,11 +1,11 @@
 //
 // WeightWord.h
 //
-// $Id: WeightWord.h,v 1.1 1997/02/03 17:11:05 turtle Exp $
+// $Id: WeightWord.h,v 1.1.1.1 1997/02/03 17:11:05 turtle Exp $
 //
 // $Log: WeightWord.h,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 // Revision 1.1  1996/01/03 19:02:00  turtle
 // Before rewrite

@@ -1,5 +1,5 @@
 #
-# $Id: english.aff,v 1.1 1997/02/03 17:11:11 turtle Exp $
+# $Id: english.aff,v 1.1.1.1 1997/02/03 17:11:11 turtle Exp $
 #
 # Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
 # All rights reserved.
@@ -40,8 +40,8 @@
 #	Affix table for English
 #
 # $Log: english.aff,v $
-# Revision 1.1  1997/02/03 17:11:11  turtle
-# Initial revision
+# Revision 1.1.1.1  1997/02/03 17:11:11  turtle
+# Initial CVS
 #
 # Revision 1.16  1995/01/08  23:23:59  geoff
 # Add a NeXT to the defstringtype statement so that nextispell can

@@ -1,11 +1,11 @@
 	//
 // WordRecord.h
 //
-// $Id: WordRecord.h,v 1.1 1997/02/03 17:11:07 turtle Exp $
+// $Id: WordRecord.h,v 1.1.1.1 1997/02/03 17:11:07 turtle Exp $
 //
 // $Log: WordRecord.h,v $
-// Revision 1.1  1997/02/03 17:11:07  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
+// Initial CVS
 //
 //
 #ifndef _WordRecord_h_

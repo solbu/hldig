@@ -1,11 +1,11 @@
 //
 // Parsable.h
 //
-// $Id: Parsable.h,v 1.1 1997/02/03 17:11:06 turtle Exp $
+// $Id: Parsable.h,v 1.1.1.1 1997/02/03 17:11:06 turtle Exp $
 //
 // $Log: Parsable.h,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 //
 #ifndef _Parsable_h_

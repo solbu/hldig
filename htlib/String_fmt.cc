@@ -4,12 +4,12 @@
 // Formatting code for the String class
 //
 // $Log: String_fmt.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: String_fmt.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
+static char RCSid[] = "$Id: String_fmt.cc,v 1.1.1.1 1997/02/03 17:11:04 turtle Exp $";
 #endif
 
 #include "String.h"

@@ -4,8 +4,8 @@
 // Routines to display the search results
 //
 // $Log: display.cc,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 // Revision 1.2  1996/01/03 19:01:10  turtle
 // Before rewrite
@@ -15,7 +15,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: display.cc,v 1.1 1997/02/03 17:11:05 turtle Exp $";
+static char RCSid[] = "$Id: display.cc,v 1.1.1.1 1997/02/03 17:11:05 turtle Exp $";
 #endif
 
 #include "htsearch.h"

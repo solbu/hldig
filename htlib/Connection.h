@@ -8,11 +8,11 @@
 // All the calls are basically the same, but the parameters do not have any
 // stray _addr or _in mixed in...
 //
-// $Id: Connection.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: Connection.h,v 1.1.1.1 1997/02/03 17:11:04 turtle Exp $
 //
 // $Log: Connection.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 

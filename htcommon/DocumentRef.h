@@ -1,11 +1,11 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.1 1997/02/03 17:11:07 turtle Exp $
+// $Id: DocumentRef.h,v 1.1.1.1 1997/02/03 17:11:07 turtle Exp $
 //
 // $Log: DocumentRef.h,v $
-// Revision 1.1  1997/02/03 17:11:07  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
+// Initial CVS
 //
 // Revision 1.1  1995/07/06 23:44:00  turtle
 // *** empty log message ***

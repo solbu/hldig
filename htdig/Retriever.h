@@ -1,11 +1,11 @@
 //
 // Retriever.h
 //
-// $Id: Retriever.h,v 1.1 1997/02/03 17:11:06 turtle Exp $
+// $Id: Retriever.h,v 1.1.1.1 1997/02/03 17:11:06 turtle Exp $
 //
 // $Log: Retriever.h,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 // Revision 1.1  1995/12/11 22:47:02  turtle
 // This uses the backwards model of only parsing HTML

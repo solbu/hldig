@@ -5,11 +5,11 @@
 // is indexed with a string.  The objects can be returned by mentioning their
 // string index.
 //
-// $Id: Configuration.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: Configuration.h,v 1.1.1.1 1997/02/03 17:11:04 turtle Exp $
 //
 // $Log: Configuration.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #ifndef	_Configuration_h_

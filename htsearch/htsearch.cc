@@ -4,15 +4,15 @@
 // Implementation of htsearch
 //
 // $Log: htsearch.cc,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 // Revision 1.1  1996/01/03 18:59:56  turtle
 // Before rewrite
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.1 1997/02/03 17:11:05 turtle Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.1.1.1 1997/02/03 17:11:05 turtle Exp $";
 #endif
 
 #include "htsearch.h"

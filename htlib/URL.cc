@@ -4,15 +4,15 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 // Revision 1.0  1995/08/22 17:07:43  turtle
 // Support for HTTP only
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.1.1.1 1997/02/03 17:11:04 turtle Exp $";
 #endif
 
 #include "URL.h"

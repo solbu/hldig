@@ -4,12 +4,12 @@
 // Implementation of ResultList
 //
 // $Log: ResultList.cc,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: ResultList.cc,v 1.1 1997/02/03 17:11:05 turtle Exp $";
+static char RCSid[] = "$Id: ResultList.cc,v 1.1.1.1 1997/02/03 17:11:05 turtle Exp $";
 #endif
 
 #include "ResultList.h"

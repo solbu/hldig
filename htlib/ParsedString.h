@@ -1,11 +1,11 @@
 //
 // ParsedString.h
 //
-// $Id: ParsedString.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: ParsedString.h,v 1.1.1.1 1997/02/03 17:11:04 turtle Exp $
 //
 // $Log: ParsedString.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #ifndef _ParsedString_h_

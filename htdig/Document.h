@@ -9,11 +9,11 @@
 // link is followed, but this process is done only once (to prevent loops.)
 // If the redirect didn't work, Document_not_found is returned.
 //
-// $Id: Document.h,v 1.1 1997/02/03 17:11:06 turtle Exp $
+// $Id: Document.h,v 1.1.1.1 1997/02/03 17:11:06 turtle Exp $
 //
 // $Log: Document.h,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 //
 #ifndef _Document_h_

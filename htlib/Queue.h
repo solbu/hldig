@@ -7,11 +7,11 @@
 // This class implements a linked list of objects.  It itself is also an
 // object
 //
-// $Id: Queue.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: Queue.h,v 1.1.1.1 1997/02/03 17:11:04 turtle Exp $
 //
 // $Log: Queue.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #ifndef	_Queue_h_

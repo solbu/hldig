@@ -25,11 +25,11 @@
 // function can be called to provide a custom table.  This table needs
 // to be 256 characters.
 // 
-// $Id: StringMatch.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: StringMatch.h,v 1.1.1.1 1997/02/03 17:11:04 turtle Exp $
 //
 // $Log: StringMatch.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #ifndef _StringMatch_h_

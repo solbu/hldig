@@ -1,11 +1,11 @@
 //
 // WordReference.h
 //
-// $Id: WordReference.h,v 1.1 1997/02/03 17:11:07 turtle Exp $
+// $Id: WordReference.h,v 1.1.1.1 1997/02/03 17:11:07 turtle Exp $
 //
 // $Log: WordReference.h,v $
-// Revision 1.1  1997/02/03 17:11:07  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
+// Initial CVS
 //
 //
 #ifndef _WordReference_h_

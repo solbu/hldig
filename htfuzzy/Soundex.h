@@ -1,11 +1,11 @@
 //
 // Soundex.h
 //
-// $Id: Soundex.h,v 1.1 1997/02/03 17:11:12 turtle Exp $
+// $Id: Soundex.h,v 1.1.1.1 1997/02/03 17:11:12 turtle Exp $
 //
 // $Log: Soundex.h,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
+// Initial CVS
 //
 //
 #ifndef _Soundex_h_

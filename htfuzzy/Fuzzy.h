@@ -8,11 +8,11 @@
 //    1) Creation of a fuzzy index
 //    2) Searching for a word using the fuzzy index
 //
-// $Id: Fuzzy.h,v 1.1 1997/02/03 17:11:12 turtle Exp $
+// $Id: Fuzzy.h,v 1.1.1.1 1997/02/03 17:11:12 turtle Exp $
 //
 // $Log: Fuzzy.h,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
+// Initial CVS
 //
 //
 #ifndef _Fuzzy_h_

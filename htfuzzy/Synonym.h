@@ -1,11 +1,11 @@
 //
 // Synonym.h
 //
-// $Id: Synonym.h,v 1.1 1997/02/03 17:11:12 turtle Exp $
+// $Id: Synonym.h,v 1.1.1.1 1997/02/03 17:11:12 turtle Exp $
 //
 // $Log: Synonym.h,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
+// Initial CVS
 //
 //
 #ifndef _Synonym_h_

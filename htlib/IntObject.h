@@ -1,11 +1,11 @@
 //
 // IntObject.h
 //
-// $Id: IntObject.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: IntObject.h,v 1.1.1.1 1997/02/03 17:11:04 turtle Exp $
 //
 // $Log: IntObject.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #ifndef _IntObject_h_

@@ -4,15 +4,15 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
-// Revision 1.1  1997/02/03 17:11:07  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
+// Initial CVS
 //
 // Revision 1.1  1995/07/06 23:43:12  turtle
 // *** empty log message ***
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: DocumentRef.cc,v 1.1 1997/02/03 17:11:07 turtle Exp $";
+static char RCSid[] = "$Id: DocumentRef.cc,v 1.1.1.1 1997/02/03 17:11:07 turtle Exp $";
 #endif
 
 #include "DocumentRef.h"

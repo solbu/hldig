@@ -4,12 +4,12 @@
 // Implementation of SuffixEntry
 //
 // $Log: SuffixEntry.cc,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: SuffixEntry.cc,v 1.1 1997/02/03 17:11:12 turtle Exp $";
+static char RCSid[] = "$Id: SuffixEntry.cc,v 1.1.1.1 1997/02/03 17:11:12 turtle Exp $";
 #endif
 
 #include "SuffixEntry.h"

@@ -4,12 +4,12 @@
 // Implementation of DocumentDB
 //
 // $Log: DocumentDB.cc,v $
-// Revision 1.1  1997/02/03 17:11:07  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: DocumentDB.cc,v 1.1 1997/02/03 17:11:07 turtle Exp $";
+static char RCSid[] = "$Id: DocumentDB.cc,v 1.1.1.1 1997/02/03 17:11:07 turtle Exp $";
 #endif
 
 #include "DocumentDB.h"

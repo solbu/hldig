@@ -1,11 +1,11 @@
 //
 // URLRef.h
 //
-// $Id: URLRef.h,v 1.1 1997/02/03 17:11:06 turtle Exp $
+// $Id: URLRef.h,v 1.1.1.1 1997/02/03 17:11:06 turtle Exp $
 //
 // $Log: URLRef.h,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 //
 #ifndef _URLRef_h_

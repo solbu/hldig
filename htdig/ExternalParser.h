@@ -1,11 +1,11 @@
 //
 // ExternalParser.h
 //
-// $Id: ExternalParser.h,v 1.1 1997/02/03 17:11:06 turtle Exp $
+// $Id: ExternalParser.h,v 1.1.1.1 1997/02/03 17:11:06 turtle Exp $
 //
 // $Log: ExternalParser.h,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 //
 #ifndef _ExternalParser_h_

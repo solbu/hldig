@@ -1,11 +1,11 @@
 //
 // Template.h
 //
-// $Id: Template.h,v 1.1 1997/02/03 17:11:05 turtle Exp $
+// $Id: Template.h,v 1.1.1.1 1997/02/03 17:11:05 turtle Exp $
 //
 // $Log: Template.h,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 //
 #ifndef _Template_h_

@@ -3,11 +3,11 @@
 //
 // This is a class which defines the interface to a generic, simple database.
 //
-// $Id: Database.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: Database.h,v 1.1.1.1 1997/02/03 17:11:04 turtle Exp $
 //
 // $Log: Database.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #ifndef _Database_h_

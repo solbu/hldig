@@ -4,12 +4,12 @@
 // Implementation of Fuzzy
 //
 // $Log: Fuzzy.cc,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.1 1997/02/03 17:11:12 turtle Exp $";
+static char RCSid[] = "$Id: Fuzzy.cc,v 1.1.1.1 1997/02/03 17:11:12 turtle Exp $";
 #endif
 
 #include "Fuzzy.h"

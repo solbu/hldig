@@ -1,11 +1,11 @@
 //
 // Substring.h
 //
-// $Id: Substring.h,v 1.1 1997/02/03 17:11:12 turtle Exp $
+// $Id: Substring.h,v 1.1.1.1 1997/02/03 17:11:12 turtle Exp $
 //
 // $Log: Substring.h,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
+// Initial CVS
 //
 //
 #ifndef _Substring_h_
