@@ -1,3 +1,8 @@
+Thu Nov 28 09:02:46 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/english.0: Removed S flag from birth, because it doesn't
+	do what we want (birthes, not births).
+
 Tue Nov 26 23:16:08 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/hts_form.html: Fixed typo in link & description for restrict.
