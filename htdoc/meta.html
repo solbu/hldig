@@ -10,7 +10,7 @@
 	  Recognized META information in HTML documents
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
+	  ht://Dig Copyright &copy; 1995-2003 <a href="THANKS.html">The ht://Dig Group</a><br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -111,6 +111,9 @@
 	  </li>
 	  <li>
 		description
+	  </li>
+	  <li>
+		author
 	  </li>
 	</ul>
 	<p>
@@ -244,10 +247,23 @@
 	  <a href="attrs.html#meta_description_factor">
 	  meta_description_factor</a> attribute in your configuration.
 	  </dd>
+	  <dt>
+		<strong>author</strong>
+	  </dt>
+	  <dd>
+	  The value specifies the name, email address and/or affiliation
+	  of the creator or authoriser of a page.
+	  The weight that words in the content string will have in
+	  search results is controlled by the
+	  <a href="attrs.html#author_factor">author_factor</a>
+	  attribute in your configuration.
+	  A search for "author:<em>name</em>" will
+	  look only in these fields for the word <em>name</em>.
+	  </dd>
 	</dl>
 	<hr size="4" noshade>
 
-	Last modified: $Date: 2002/02/01 22:49:32 $
+	Last modified: $Date: 2003/04/19 15:23:49 $
 
   </body>
 </html>

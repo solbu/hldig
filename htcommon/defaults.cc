@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.79 2003/02/23 09:24:30 angusgb Exp $
+// $Id: defaults.cc,v 1.80 2003/04/19 15:23:48 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -2691,15 +2691,16 @@ form during indexing and translated for results. \
 " }, \
 { "valid_punctuation", ".-_/!#$%^&'",  \
 	"string", "htdig htsearch", "", "all", "Indexing:What", "valid_punctuation: -'", " \
-	This is the set of characters which will be deleted \
+	This is the set of characters which may be deleted \
 	from the document before determining what a word is. \
 	This means that if a document contains something like \
-	<code>Andrew's</code> the digger will see this as <code> \
-	Andrews</code>.<br> \
-	The same transformation is performed on the keywords \
-	the search engine gets.<br> \
-	See also the <a \
-	href=\"#extra_word_characters\">extra_word_characters</a> \
+	<code>half-hearted</code> the digger will see this as the three \
+	words <code> half</code>, <code>hearted</code> and \
+	<code>halfhearted</code>.<br> \
+	These characters are also removed before keywords are passed to the \
+	search engine, so a search for \"half-hearted\" works as expected.<br> \
+	See also the \
+	<a href=\"#extra_word_characters\">extra_word_characters</a> \
 	attribute. \
 " }, \
 { "version", VERSION,  \
@@ -2760,7 +2761,8 @@ form during indexing and translated for results. \
 " }, 
 { "wordlist_page_size", "0",  \
 	"integer", "all", "", "3.2.0b1", "Indexing:How", "wordlist_page_size: 8192", " \
-	Size of pages used by Berkeley DB (DB used by the indexer) \
+	Size of pages used by Berkeley DB (DB used by the indexer). \
+	Must be a power of two. \
 " }, \
 { "wordlist_verbose", "",  \
 	"integer", "", "", "", "", "wordlist_verbose: true", " \

@@ -1,3 +1,7 @@
+Sun APR 20 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* htdig/htdig.cc:  delete  db.words.db_weakcmpr  if  -i  specified.
+
 Wed Feb 26 22:10:40 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* htnet/HtHTTP.cc: fixed colon (':') problem with HTTP header parsing,

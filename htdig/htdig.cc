@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.29 2003/02/23 09:24:30 angusgb Exp $
+// $Id: htdig.cc,v 1.30 2003/04/19 15:23:49 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -306,7 +306,10 @@ int main(int ac, char **av)
 
     const String		word_filename = config->Find("word_db");
     if (initial)
+    {
        unlink(word_filename);
+       unlink(word_filename + "_weakcmpr");
+    }
 
     // Initialize htword
     WordContext::Initialize(*config);
