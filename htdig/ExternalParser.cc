@@ -7,7 +7,7 @@
 // The format is documented in http://www.htdig.org/attrs.html#external_parser
 //
 #if RELEASE
-static char RCSid[] = "$Id: ExternalParser.cc,v 1.11 1999/03/28 22:11:31 hp Exp $";
+static char RCSid[] = "$Id: ExternalParser.cc,v 1.12 1999/06/12 17:24:02 ghutchis Exp $";
 #endif
 
 #include "ExternalParser.h"
@@ -133,8 +133,8 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     // Now start the external parser.
     //
     String	command = currentParser;
-    command << ' ' << path << ' ' << contentType << ' ' << base.get() <<
-	' ' << configFile;
+    command << ' ' << path << ' ' << contentType << " \"" << base.get() <<
+	"\" " << configFile;
 
     FILE	*input = popen(command, "r");
     if (!input)
