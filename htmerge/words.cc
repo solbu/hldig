@@ -4,19 +4,22 @@
 // Implementation of htmerge
 //
 // $Log: words.cc,v $
+// Revision 1.4  1998/12/06 18:43:31  ghutchis
+// Check for word entries that are duplicates and compact them.
+//
 // Revision 1.3  1998/12/05 00:53:24  ghutchis
 // Don't store c:1 and a:0 entries in db.wordlist to save space.
 //
 // Revision 1.2  1998/11/15 22:24:19  ghutchis
 //
-// Change \r to \n as noted by Andrew Bishoip.
+// Change \r to \n as noted by Andrew Bishop.
 //
 // Revision 1.1.1.1  1997/02/03 17:11:06  turtle
 // Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.3 1998/12/05 00:53:24 ghutchis Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.4 1998/12/06 18:43:31 ghutchis Exp $";
 #endif
 
 #include "htmerge.h"
@@ -33,10 +36,12 @@ mergeWords(char *wordtmp, char *wordfile)
     String	out;
     String	currentWord;
     char	buffer[1000];
-    char	*word, *sid;
+    char	*word = 0;
+    char        *sid;
     char	*name, *value, *pair;
     int		word_count = 0;
-    WordRecord	wr;
+    WordRecord	wr, last_wr;
+    char        *last_word = 0;
 
     //
     // Check for file access errors
@@ -113,10 +118,7 @@ mergeWords(char *wordtmp, char *wordfile)
 	    //
 	    word = good_strtok(buffer, "\t");
 	    pair = good_strtok("\t");
-	    wr.Clear();
-            // better place for next two lines in wr.Clear ?
-            wr.count = 1;
-            wr.anchor = 0;
+	    wr.Clear();   // Reset count to 1, anchor to 0, and all that
 	    sid = "-";
 	    while (pair && *pair)
 	    {
@@ -162,22 +164,45 @@ mergeWords(char *wordtmp, char *wordfile)
 		continue;
 	    }
 
+	    // Are we on the first word?
+	    // If so, last_word == NULL and we don't want to add that!
+	    if (last_word == 0)
+	      {
+		last_word = word;
+		last_wr = wr;
+		continue;
+	      }
+
+	    // OK... Now that we have our new WordRecord parsed
+	    // Do we (by horrible chance) duplicate the last entry?
+	    // If we do, update last_word and keep going
+	    if ((last_wr.id == wr.id)
+		&& (strcmp(last_word, word) == 0))
+	      {
+		last_wr.count += wr.count;
+		last_wr.weight += wr.weight;
+		if (wr.location < last_wr.location)
+		  last_wr.location = wr.location;
+		if (wr.anchor < last_wr.anchor)
+		  last_wr.anchor = wr.anchor;
+		continue;
+	      }
+
 	    //
 	    // Record the word in the new wordlist file
 	    //
-            // Hopes it's not position dependant!
-	    fprintf(wordlist, "%s",word);
-            if (1 != wr.count)
+	    fprintf(wordlist, "%s",last_word);
+            if (last_wr.count != 1)
             {
-               	fprintf(wordlist, "\tc:%d",wr.count);
+               	fprintf(wordlist, "\tc:%d", last_wr.count);
             }
             fprintf(wordlist, "\tl:%d\ti:%d\tw:%d",
-		    wr.location,
-		    wr.id,
-		    wr.weight);
-	    if (0 != wr.anchor)
+		    last_wr.location,
+		    last_wr.id,
+		    last_wr.weight);
+	    if (last_wr.anchor != 0)
             {
-               	fprintf(wordlist, "\ta:%d",wr.anchor);
+               	fprintf(wordlist, "\ta:%d",last_wr.anchor);
             }
             putc('\n', wordlist);
 	    
@@ -193,15 +218,15 @@ mergeWords(char *wordtmp, char *wordfile)
 		// First word.  Special case.
 		//
 		out = 0;
-		out.append((char *) &wr, sizeof(wr));
-		currentWord = word;
+		out.append((char *) &last_wr, sizeof(last_wr));
+		currentWord = last_word;
 	    }
-	    else if (strcmp(word, currentWord) == 0)
+	    else if (strcmp(last_word, currentWord) == 0)
 	    {
 		//
 		// Add to current record
 		//
-		out.append((char *) &wr, sizeof(wr));
+		out.append((char *) &last_wr, sizeof(last_wr));
 	    }
 	    else
 	    {
@@ -210,10 +235,10 @@ mergeWords(char *wordtmp, char *wordfile)
 		//
 		dbf->Put(currentWord, out.get(), out.length());
 
-		currentWord = word;
+		currentWord = last_word;
 
 		out = 0;
-		out.append((char *) &wr, sizeof(wr));
+		out.append((char *) &last_wr, sizeof(last_wr));
 		word_count++;
 		if (verbose && word_count == 1)
 		{
@@ -226,6 +251,10 @@ mergeWords(char *wordtmp, char *wordfile)
 		    cout.flush();
 		}
 	    }
+	    
+	    // Save the new word for comparison with the next ones
+	    last_wr = wr;
+	    last_word = word;
 	}
     }
 
@@ -238,6 +267,64 @@ mergeWords(char *wordtmp, char *wordfile)
 	reportError("Word sort failed");
 	exit(1);
     }
+
+    // We still have to add the last word
+    // This could be cleaned up by putting this code and that from the loop
+    // above into a separate function. It's not pretty, but it works correctly.
+    fprintf(wordlist, "%s",last_word);
+    if (last_wr.count != 1)
+      {
+	fprintf(wordlist, "\tc:%d", last_wr.count);
+      }
+    fprintf(wordlist, "\tl:%d\ti:%d\tw:%d",
+	    last_wr.location,
+	    last_wr.id,
+	    last_wr.weight);
+    if (last_wr.anchor != 0)
+      {
+	fprintf(wordlist, "\ta:%d",last_wr.anchor);
+      }
+    putc('\n', wordlist);
+	    
+    if (currentWord.length() == 0)
+      {
+	//
+	// First word.  Special case.
+	//
+	out = 0;
+	out.append((char *) &last_wr, sizeof(last_wr));
+	currentWord = last_word;
+      }
+    else if (strcmp(last_word, currentWord) == 0)
+      {
+	//
+	// Add to current record
+	//
+	out.append((char *) &last_wr, sizeof(last_wr));
+      }
+    else
+      {
+	//
+	// New word.  Terminate the previous one
+	//
+	dbf->Put(currentWord, out.get(), out.length());
+	
+	currentWord = last_word;
+	
+	out = 0;
+	out.append((char *) &last_wr, sizeof(last_wr));
+	word_count++;
+	if (verbose && word_count == 1)
+	  {
+	    cout << "htmerge: Merging..." << endl;
+	  }
+	if (verbose && word_count % 100 == 0)
+	  {
+	    cout << "htmerge: " << word_count << ':' << word
+		 << "              \n";
+	    cout.flush();
+	  }
+      }
     
     dbf->Put(currentWord, out.get(), out.length());
     dbf->Close();
