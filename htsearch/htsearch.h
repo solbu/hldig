@@ -1,17 +1,23 @@
+/***************************************************************************
+                          new_htsearch.h  -  description
+                             -------------------
+    begin                : Fri Oct 8 1999
+    copyright            : (C) 1999 by 
+    email                : 
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 //
 // htsearch.h
 //
-// htsearch: The main search CGI. Parses the CGI input, reads the config files
-//           and calls the necessary code to put together the result lists
-//           and the final display.
-//
-// Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
-// For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
-// <http://www.gnu.org/copyleft/gpl.html>
-//
-// $Id: htsearch.h,v 1.7 1999/10/01 15:19:29 loic Exp $
+// $Id: htsearch.h,v 1.8 1999/10/15 03:33:50 jtillman Exp $
 //
 
 #ifndef _htsearch_h_
@@ -21,6 +27,10 @@
 #include "StringList.h"
 #include "Dictionary.h"
 #include "DocumentRef.h"
+#include <stdio.h>
+#include <fstream.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include "Database.h"
 #include "good_strtok.h"
 #include "DocumentDB.h"
@@ -31,11 +41,6 @@
 #include "HtWordReference.h"
 #include "StringMatch.h"
 #include "defaults.h"
-
-#include <stdio.h>
-#include <fstream.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 extern int		n_matches;
 extern int		do_and;
@@ -50,7 +55,10 @@ extern String		logicalWords;
 extern String		originalWords;
 extern int              debug;
 
-
 #endif
+
+
+
+
 
 
