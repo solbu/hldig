@@ -1,3 +1,8 @@
+Tue Oct 27 22:53:03 1998  Andrew Scherpbier  <andrew@contigo.com>
+
+	* */Makefile.in (depend): Fixed so that 'make depend' works
+	again.  (Not sure exactly how long it was broken!)
+
 Tue Oct 27 20:00:16 1998  Geoff Hutchison  <ghutchis@ethel.williams.edu>
 
 	* Makefile.in: Fix buglet with distclean target
