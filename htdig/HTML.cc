@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62.2.5 2000/02/10 06:26:18 ghutchis Exp $
+// $Id: HTML.cc,v 1.62.2.6 2000/02/22 23:15:49 grdetil Exp $
 //
 
 #include "htdig.h"
@@ -635,13 +635,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		if (doindex)
 		  {
 		    String tmp = transSGML(keywords);
-		    char	*w = strtok(tmp, " ,\t\r\n");
+		    char	*w = HtWordToken(tmp);
 		    while (w)
 		      {
 			if (strlen(w) >= minimumWordLength
 				&& ++keywordsCount <= max_keywords)
 			  retriever.got_word(w, wordindex++, 9);
-			w = strtok(0, " ,\t\r\n");
+			w = HtWordToken(0);
 		      }
 		    w = '\0';
 		  }
@@ -708,12 +708,12 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		   if (doindex)
 		     {
 		       String tmp = transSGML(attrs["content"]);
-		       char        *w = strtok(tmp, " \t\r\n");
+		       char        *w = HtWordToken(tmp);
 		       while (w)
 			 {
 			   if (strlen(w) >= minimumWordLength)
 			     retriever.got_word(w, wordindex++,10);
-			   w = strtok(0, " \t\r\n");
+			   w = HtWordToken(0);
 			 }
 		       w = '\0';
 		     }
@@ -722,13 +722,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		if (keywordsMatch.CompareWord(cache) && doindex)
 		{
 		    String tmp = transSGML(attrs["content"]);
-		    char	*w = strtok(tmp, " ,\t\r\n");
+		    char	*w = HtWordToken(tmp);
 		    while (w)
 		    {
 			if (strlen(w) >= minimumWordLength
 				&& ++keywordsCount <= max_keywords)
 			  retriever.got_word(w, wordindex++, 9);
-			w = strtok(0, " ,\t\r\n");
+			w = HtWordToken(0);
 		    }
 		    w = '\0';
 		}
@@ -843,12 +843,12 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		 if (!attrs["alt"].empty() && doindex)
 		   {
 		     String tmp = transSGML(attrs["alt"]);
-		     char *w = strtok(tmp, " ,\t\r\n");
+		     char *w = HtWordToken(tmp);
 		     while (w)
 		       {
 			 if (strlen(w) >= minimumWordLength)
 			   retriever.got_word(w, wordindex++, 8); // slot for img_alt
-			 w = strtok(0, " ,\t\r\n");
+			 w = HtWordToken(0);
 		       }
 		     w = '\0';
 		   }

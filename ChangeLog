@@ -1,3 +1,10 @@
+Tue Feb 22 17:09:10 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc(parse, do_tag): Fix handling of <img alt=...> text
+	and parsing of words in meta tags, to to proper word separation.
+	* htlib/HtWordType.h, htlib/HtWordType.cc: Add HtWordToken() function,
+	to replace strtok() in HTML parser.
+
 Tue Feb 22 16:21:25 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/URL.cc (ctor, normalizePath): Fix PR#779, to handle relative

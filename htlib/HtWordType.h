@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordType.h,v 1.8.2.2 2000/01/13 14:47:09 loic Exp $
+// $Id: HtWordType.h,v 1.8.2.3 2000/02/22 23:15:49 grdetil Exp $
 //
 #ifndef _HtWordType_h
 #define _HtWordType_h
@@ -20,5 +20,8 @@ extern int HtIsWordChar(char c);
 extern int HtIsStrictWordChar(char c);
 extern int HtWordNormalize(String &w);
 extern int HtStripPunctuation(String &w);
+
+// Like strtok(), but using our rules for word separation.
+extern char *HtWordToken(char *s);
 
 #endif /* _HtWordType_h */
