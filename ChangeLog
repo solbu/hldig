@@ -4,9 +4,11 @@ Tue Aug  4 11:34:46 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	<prochat@lbdsun.epfl.ch> to remove whitespace after config
 	options.
 
+	* htdig/HTML.cc, htdig/HTML.h: Added support for META robots tags.
+	
 Mon Aug  3 16:50:46 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
-       * htsearch/ResultList.cc, htnotify/htnotify.cc,
+        * htsearch/ResultList.cc, htnotify/htnotify.cc,
         htmerge/htmerge.cc, htmerge/docs.cc, htlib/String.cc,
         htlib/ParsedString.cc, htfuzzy/Substring.cc,
         htfuzzy/Prefix.cc, htfuzzy/Exact.cc,

@@ -4,9 +4,9 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
-// Revision 1.5  1998/08/03 16:50:32  ghutchis
+// Revision 1.6  1998/08/04 15:39:26  ghutchis
 //
-// Fixed compiler warnings under -Wall
+// Added support for META robots tags.
 //
 // Revision 1.4  1998/07/09 09:32:03  ghutchis
 // *** empty log message ***
@@ -24,7 +24,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.5 1998/08/03 16:50:32 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.6 1998/08/04 15:39:26 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -81,6 +81,7 @@ HTML::HTML()
     in_heading = 0;
     base = 0;
     doindex = 1;
+    dofollow = 1;
     dohead = 1;
     minimumWordLength = config.Value("minimum_word_length", 3);
 }
@@ -121,6 +122,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     head = 0;
     dohead = 1;
     doindex = 1;
+    dofollow = 1;
     in_heading = 0;
     in_title = 0;
     in_ref = 0;
@@ -457,7 +459,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	}
 
 	case 3:		// "/a"
-	    if (doindex && in_ref)
+	    if (dofollow && in_ref)
 	    {
 		retriever.got_href(*href, description);
 		in_ref = 0;
@@ -499,10 +501,12 @@ HTML::do_tag(Retriever &retriever, String &tag)
 
 	case 16:	// "noindex"
 	    doindex = 0;
+	    dofollow = 0;
 	    break;
 
 	case 17:	// "/noindex"
 	    doindex = 1;
+	    dofollow = 1;
 	    break;
 
 	case 18:	// "img"
@@ -553,9 +557,15 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    // reasonable DTD...)
 	    //
 	    if (conf["htdig-noindex"])
+	      {
 		doindex = 0;
+		dofollow = 0;
+	      }
 	    if (conf["htdig-index"])
+	      {
 		doindex = 1;
+		dofollow = 1;
+	      }
 	    if (conf["htdig-email"])
 	    {
 		retriever.got_meta_email(conf["htdig-email"]);
@@ -620,9 +630,25 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    retriever.got_meta_subject(conf["content"]);
 		}
 		else if (mystrcasecmp(cache, "htdig-noindex") == 0)
-		{
+		  {
 		    doindex = 0;
-		}
+		    dofollow = 0;
+		  }
+		else if (mystrcasecmp(cache, "robots") == 0
+			 && strlen(conf["content"]) !=0)
+		  {
+		    String   content_cache = conf["content"];
+
+		    if (content_cache.indexOf("noindex") != 0)
+		      doindex = 0;
+		    else if (content_cache.indexOf("nofollow") != 0)
+		      dofollow = 0;
+		    else if (content_cache.indexOf("none") != 0)
+		      {
+			doindex = 0;
+			dofollow = 0;
+		      }
+		  }
 		else if (mystrcasecmp(cache, "description") == 0 
 			 && config.Boolean("use_meta_description")
 			 && strlen(conf["content"]) != 0)
@@ -640,6 +666,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		     mystrcasecmp(conf["name"], "htdig-noindex") == 0)
 	    {
 		doindex = 0;
+		dofollow = 0;
 	    }
 	    break;
 	}
@@ -683,7 +710,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    *q = '\0';
 		    delete href;
 		    href = new URL(position, *base);
-		    if (doindex)
+		    if (dofollow)
 		    {
 			description = 0;
 			retriever.got_href(*href, description);
@@ -735,7 +762,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    *q = '\0';
 		    delete href;
 		    href = new URL(position, *base);
-		    if (doindex)
+		    if (dofollow)
 		    {
 			description = 0;
 			retriever.got_href(*href, description);

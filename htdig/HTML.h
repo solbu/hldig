@@ -1,9 +1,13 @@
 //
 // HTML.h
 //
-// $Id: HTML.h,v 1.2 1998/07/09 09:32:04 ghutchis Exp $
+// $Id: HTML.h,v 1.3 1998/08/04 15:39:28 ghutchis Exp $
 //
 // $Log: HTML.h,v $
+// Revision 1.3  1998/08/04 15:39:28  ghutchis
+//
+// Added support for META robots tags.
+//
 // Revision 1.2  1998/07/09 09:32:04  ghutchis
 //
 //
@@ -51,6 +55,7 @@ private:
     int			in_ref;
     int			in_heading;
     int			doindex;
+    int                 dofollow;
     int                 dohead;
     int			minimumWordLength;
     URL			*base;
