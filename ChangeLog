@@ -1,3 +1,7 @@
+Sat Nov 1 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htsearch/parser.cc: Fix bug #806419. Ignore bad words at start of phrase.
+
 Tue Oct 28 11:58:06 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htdig/htdig.cc: set the debug level when we are importing a cookie file.

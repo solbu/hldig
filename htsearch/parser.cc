@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: parser.cc,v 1.30 2003/10/22 13:26:59 lha Exp $
+// $Id: parser.cc,v 1.31 2003/11/01 11:11:45 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -401,7 +401,7 @@ Parser::perform_phrase(List * &oldWords)
     HtWordReference *oldWord, *newWord;
 
     // how many words ignored since last checked word?
-    static int	ignoredWords;
+    static int	ignoredWords = 0;
 
     // if the query is empty, no further effort is needed
     if(oldWords && oldWords->Count() == 0)
@@ -416,7 +416,7 @@ Parser::perform_phrase(List * &oldWords)
 	//
 	// This word needs to be ignored.  Make it so.
 	//
-	if (temp.length() >= config->Value ("minimum_word_length"))
+	if (temp.length() >= config->Value ("minimum_word_length") && oldWords)
 	    ignoredWords++;
 	if(debug) cerr << "ignoring: " << temp << endl;
 	return;
