@@ -1,3 +1,7 @@
+Fri Oct 15 12:11:23 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* Added README to htword
+
 Tue Oct 12 10:12:10 1999  Loic Dachary  <loic@ceic.com>
 
 	* install headers and libraries so that htdig libraries may be used by external programs
