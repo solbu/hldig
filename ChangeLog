@@ -1,3 +1,9 @@
+Tue Apr 13 13:01:04 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(generateStars): Set status to -1 if
+	URLimage.hasPattern() fails, to avoid empty URLimageList.
+	(Fix to Mar 31 change.)
+
 Tue Apr 13 11:27:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.h(class Display): move enum SortType up to public

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.8 1999/04/01 18:11:05 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.9 1999/04/13 18:17:37 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -692,7 +692,7 @@ Display::generateStars(DocumentRef *ref, int right)
     if (URLimage.hasPattern())
       status = URLimage.FindFirst(ref->DocURL(), match, length);
     else
-      status = 0;
+      status = -1;
 
     if (status >= 0 && match >= 0)
     {
