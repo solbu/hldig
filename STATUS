@@ -5,9 +5,10 @@ RELEASES:
 
 
 SHOWSTOPPERS:
-* Serious problems reported with synonym fuzzy.
+* htfuzzy will not generate a synonym fuzzy: 
+   <http://www.htdig.org/htdig3-dev/1999/11/0097.html>
 * Retriever/Server classes still need a cleanup.
-   (Geoff has outline, needs to implement.)
+   (Geoff is working on this currently.)
 * Changes in 3-1-x tree must be merged into current tree.
 
 KNOWN BUGS:
@@ -21,6 +22,8 @@ KNOWN BUGS:
 * Not all htsearch input parameters are handled properly: PR#648.
 * If exact isn't specified in the search_algorithms, $(WORDS) is not set 
    correctly: PR#650.
+* htfuzzy endings: use of unlink fails if TMPDIR is not on the same 
+  volume.
 
 PENDING FEATURES:
 * Vadim's config parser: in place, but currently only set for one attribute.
