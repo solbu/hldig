@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.21 1999/04/30 17:06:21 bergolth Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.22 1999/05/15 17:05:09 ghutchis Exp $";
 #endif
 
 #include "URL.h"
@@ -338,6 +338,7 @@ void URL::normalizePath()
     // We will rewrite the path to be the minimal.
     //
     int	i, limit;
+    String	newPath;
     int	pathend = _path.indexOf('?');	// Don't mess up query strings.
     if (pathend < 0)
         pathend = _path.length();
@@ -345,7 +346,6 @@ void URL::normalizePath()
     {
         if ((limit = _path.lastIndexOf('/', i - 1)) >= 0)
         {
-            String	newPath;
             newPath << _path.sub(0, limit).get();
             newPath << _path.sub(i + 3).get();
             _path = newPath;
@@ -365,7 +365,6 @@ void URL::normalizePath()
     //
     while ((i = _path.indexOf("/./")) >= 0 && i < pathend)
     {
-        String	newPath;
         newPath << _path.sub(0, i).get();
         newPath << _path.sub(i + 2).get();
         _path = newPath;
@@ -379,7 +378,6 @@ void URL::normalizePath()
     //
     while ((i = _path.indexOf("//")) >= 0 && i < pathend)
     {
-        String  newPath;
         newPath << _path.sub(0, i).get();
         newPath << _path.sub(i + 1).get();
         _path = newPath;
@@ -391,7 +389,6 @@ void URL::normalizePath()
     // Finally change all "%7E" to "~" for sanity
     while ((i = _path.indexOf("%7E")) >= 0 && i < pathend)
       {
-        String  newPath;
         newPath << _path.sub(0, i).get();
 	newPath << "~";
         newPath << _path.sub(i + 3).get();
