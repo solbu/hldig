@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24 1999/02/04 07:23:46 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.25 1999/02/21 19:52:49 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -126,8 +126,10 @@ main(int ac, char **av)
     // got from the HTML form.
     //
     config.Defaults(&defaults[0]);
+    // To allow . in filename while still being 'secure',
+    // e.g. htdig-f.q.d.n.conf
     if (!override_config && input.exists("config") 
-	&& !strchr(input["config"], '.'))
+	&& (strstr(input["config"], "./") == NULL))
     {
 	char	*configDir = getenv("CONFIG_DIR");
 	if (configDir)
