@@ -4,6 +4,9 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.13  1998/12/05 00:51:36  ghutchis
+// Allow server_alias to work under virtual hosts.
+//
 // Revision 1.12  1998/11/27 18:36:47  ghutchis
 //
 // Considers URLs with "%7E" to be equivalent to "~"
@@ -50,7 +53,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.12 1998/11/27 18:36:47 ghutchis Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.13 1998/12/05 00:51:36 ghutchis Exp $";
 #endif
 
 #include "URL.h"
@@ -515,8 +518,8 @@ void URL::normalize()
 	    _host = realname->get();
 	else
 	    machines.Add(key, new String(_host));
-	ServerAlias();
     }
+    ServerAlias();
     
     //
     // Reconstruct the url
