@@ -1,3 +1,8 @@
+Fri Jun 11 11:48:40 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
+
+    * htsearch/parser.cc (phrase): Applied Lachlan's patch to prevent endless
+      loop when boolean keywords appear in a phrase in boolean match method.
+
 Fri Jun 11 11:26:56 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 
     * db/hash.c (CDB___ham_open): Applied Red Hat's h_hash patch, to ensure

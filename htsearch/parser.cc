@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: parser.cc,v 1.35 2004/06/11 15:52:19 grdetil Exp $
+// $Id: parser.cc,v 1.36 2004/06/11 16:50:33 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -256,7 +256,14 @@ Parser::phrase(int output)
 	     setError(boolean_syntax_errors[QUOTE]);
 	     break;
            }
-
+	  else
+	   {
+	     // skip '&' '|' and '!' in the phrase
+	     current->isIgnore = 1;
+	     if (output)
+		perform_phrase(wordList);
+	     lookahead = lexan ();
+	   }
 	} // end while
 	if(wordList) delete wordList;
 }
