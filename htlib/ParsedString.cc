@@ -4,6 +4,10 @@
 // Implementation of ParsedString
 //
 // $Log: ParsedString.cc,v $
+// Revision 1.3  1998/08/03 16:50:40  ghutchis
+//
+// Fixed compiler warnings under -Wall
+//
 // Revision 1.2  1998/05/26 03:58:08  turtle
 // Got rid of compiler warnings.
 //
@@ -12,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: ParsedString.cc,v 1.2 1998/05/26 03:58:08 turtle Exp $";
+static char RCSid[] = "$Id: ParsedString.cc,v 1.3 1998/08/03 16:50:40 ghutchis Exp $";
 #endif
 
 #include "ParsedString.h"
@@ -74,7 +78,7 @@ ParsedString::get(Dictionary &dict)
     String		variable("");
     ParsedString	*temp;
     char		*str = value.get();
-    char		delim;
+    char		delim = ' ';
     int		need_delim = 0;
 
     parsed = 0;

@@ -4,6 +4,10 @@
 // Implementation of Substring
 //
 // $Log: Substring.cc,v $
+// Revision 1.3  1998/08/03 16:50:39  ghutchis
+//
+// Fixed compiler warnings under -Wall
+//
 // Revision 1.2  1997/03/24 04:33:18  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -12,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Substring.cc,v 1.2 1997/03/24 04:33:18 turtle Exp $";
+static char RCSid[] = "$Id: Substring.cc,v 1.3 1998/08/03 16:50:39 ghutchis Exp $";
 #endif
 
 #include "Substring.h"
@@ -79,6 +83,7 @@ Substring::getWords(char *w, List &words)
 int
 Substring::openIndex(Configuration &)
 {
+  return 0;
 }
 
 

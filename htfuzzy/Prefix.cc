@@ -4,6 +4,10 @@
 // Implementation of Prefix
 //
 // $Log: Prefix.cc,v $
+// Revision 1.2  1998/08/03 16:50:38  ghutchis
+//
+// Fixed compiler warnings under -Wall
+//
 // Revision 1.1  1998/06/21 23:20:04  turtle
 // patches by Esa and Jesse to add BerkeleyDB and Prefix searching
 //
@@ -15,7 +19,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Prefix.cc,v 1.1 1998/06/21 23:20:04 turtle Exp $";
+static char RCSid[] = "$Id: Prefix.cc,v 1.2 1998/08/03 16:50:38 ghutchis Exp $";
 #endif
 
 #include "Prefix.h"
@@ -106,6 +110,7 @@ Prefix::getWords(char *w, List &words)
 int
 Prefix::openIndex(Configuration &)
 {
+  return 0;
 }
 
 

@@ -4,6 +4,10 @@
 // Implementation of htnotify
 //
 // $Log: htnotify.cc,v $
+// Revision 1.5  1998/08/03 16:50:44  ghutchis
+//
+// Fixed compiler warnings under -Wall
+//
 // Revision 1.4  1998/07/22 10:04:28  ghutchis
 //
 // Added patches from Sylvain Wallez <s.wallez.alcatel@e-mail.com> to
@@ -21,7 +25,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.4 1998/07/22 10:04:28 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.5 1998/08/03 16:50:44 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -105,7 +109,7 @@ int main(int ac, char **av)
     DocumentRef	*ref;
     String		*str;
     docs->Start_Get();
-    while (str = (String *) docs->Get_Next())
+    while ((str = (String *) docs->Get_Next()))
     {
 	ref = docdb[str->get()];
 	htnotify(*ref);
@@ -175,7 +179,7 @@ void htnotify(DocumentRef &ref)
 //
 void send_notification(char *date, char *email, char *url, char *subject)
 {
-    int		fildes[2];
+  /* Currently unused    int		fildes[2]; */
     String	to = email;
 
     String command;

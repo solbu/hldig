@@ -322,7 +322,7 @@ void PDF::parseTextLine(String &line)
     {
 	// Parameter is an array of strings and integers
 	// Parse all strings found in the line
-	while (position = strchr(position, '('))
+	while ((position = strchr(position, '(')))
 	{
 	    position++;
 	    position = addToString(position);
@@ -448,7 +448,7 @@ void PDF::parseString()
 	return;
 
     char	*position = _parsedString.get();
-    char	*start = position;
+    /* Currently unused    char	*start = position; */
     int		in_space = 0;
     String	word;
 

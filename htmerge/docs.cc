@@ -4,6 +4,10 @@
 // Implementation of newclass
 //
 // $Log: docs.cc,v $
+// Revision 1.5  1998/08/03 16:50:42  ghutchis
+//
+// Fixed compiler warnings under -Wall
+//
 // Revision 1.4  1998/06/21 23:20:09  turtle
 // patches by Esa and Jesse to add BerkeleyDB and Prefix searching
 //
@@ -52,7 +56,7 @@ convertDocs(char *doc_db, char *doc_index)
     urls->Start_Get();
     String		*url;
     String		id;
-    while (url = (String *) urls->Get_Next())
+    while ((url = (String *) urls->Get_Next()))
     {
 	DocumentRef	*ref = db[url->get()];
 	// moet eigenlijk wat tussen, maar heb ik niet gedaan....

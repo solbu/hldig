@@ -4,6 +4,10 @@
 // Implementation of Exact
 //
 // $Log: Exact.cc,v $
+// Revision 1.3  1998/08/03 16:50:37  ghutchis
+//
+// Fixed compiler warnings under -Wall
+//
 // Revision 1.2  1997/03/24 04:33:18  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -12,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Exact.cc,v 1.2 1997/03/24 04:33:18 turtle Exp $";
+static char RCSid[] = "$Id: Exact.cc,v 1.3 1998/08/03 16:50:37 ghutchis Exp $";
 #endif
 
 #include "Exact.h"
@@ -48,6 +52,7 @@ Exact::getWords(char *w, List &words)
 int
 Exact::openIndex(Configuration &)
 {
+  return 0;
 }
 
 

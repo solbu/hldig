@@ -4,8 +4,12 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.5  1998/08/03 16:50:32  ghutchis
+//
+// Fixed compiler warnings under -Wall
+//
 // Revision 1.4  1998/07/09 09:32:03  ghutchis
-// Added initial support for META Description tags
+// *** empty log message ***
 //
 // Revision 1.3  1998/06/22 04:38:27  turtle
 // Applied patch that prevented SGML entities that translate to
@@ -20,7 +24,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.4 1998/07/09 09:32:03 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.5 1998/08/03 16:50:32 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -108,7 +112,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     // are looking for
     //
     int			offset = 0;
-    int			in_space;
+    int			in_space = 0;
     unsigned char	*q, *start;
     unsigned char	*position = (unsigned char *) contents->get();
 

@@ -6,6 +6,10 @@
 // AWS	10/13/93	Fixed the constructors and operator = routines so that a NULL can be passed
 //
 // $Log: String.cc,v $
+// Revision 1.7  1998/08/03 16:50:41  ghutchis
+//
+// Fixed compiler warnings under -Wall
+//
 // Revision 1.6  1998/07/16 15:15:26  ghutchis
 //
 // Added patch from Stephan Muehlstrasser <smuehlst@Rational.Com> to fix
@@ -29,7 +33,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.6 1998/07/16 15:15:26 ghutchis Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.7 1998/08/03 16:50:41 ghutchis Exp $";
 #endif
 
 
@@ -557,7 +561,7 @@ void String::reallocate_space(int len)
     if (len + 1 > Allocated)
     {
 	char	*old_data = 0;
-	int		old_data_len;
+	int		old_data_len = 0;
 
 	if (Data)
 	{

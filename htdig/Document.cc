@@ -4,6 +4,10 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.13  1998/08/03 16:50:31  ghutchis
+//
+// Fixed compiler warnings under -Wall
+//
 // Revision 1.12  1998/07/23 16:18:52  ghutchis
 //
 // Added files (and patch) from Sylvain Wallez for PDF
@@ -50,7 +54,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.12 1998/07/23 16:18:52 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.13 1998/08/03 16:50:31 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -409,7 +413,7 @@ Document::RetrieveHTTP(time_t date)
     int		timeout_interval = config.Value("timeout");
     alarm(timeout_interval);
 
-    DocStatus   returnStatus;
+    DocStatus   returnStatus = Document_ok;;
     switch (readHeader(c))
     {
 	case Header_ok:

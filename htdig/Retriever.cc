@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.4  1998/08/03 16:50:34  ghutchis
+//
+// Fixed compiler warnings under -Wall
+//
 // Revision 1.3  1998/07/09 09:38:59  ghutchis
 //
 //
@@ -386,6 +390,16 @@ Retriever::parse_url(URLRef &urlRef)
 	    words.MarkGone();
 	    got_redirect(doc->Redirected(), ref);
 	    break;
+	    
+       case Document::Document_not_authorized:
+	    if (debug)
+	      cout << " not authorized" << endl;
+	    break;
+
+      case Document::Document_not_local:
+	   if (debug)
+	     cout << " not local" << endl;
+	   break;
     }
     docs.Add(*ref);
     delete ref;
@@ -553,7 +567,7 @@ Retriever::IsLocal(char *url)
     String *prefix, *path;
     prefixes->Start_Get();
     paths->Start_Get();
-    while (prefix = (String*) prefixes->Get_Next())
+    while ((prefix = (String*) prefixes->Get_Next()))
     {
 	path = (String*) paths->Get_Next();
         if (strncasecmp(*prefix, url, prefix->length()) == 0)
@@ -628,7 +642,7 @@ Retriever::IsLocalUser(char *url)
     paths->Start_Get();
     dirs->Start_Get();
     String *prefix, *path, *dir;
-    while (prefix = (String*) prefixes->Get_Next())
+    while ((prefix = (String*) prefixes->Get_Next()))
     {
         path = (String*) paths->Get_Next();
 	dir = (String*) dirs->Get_Next();

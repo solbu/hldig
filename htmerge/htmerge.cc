@@ -4,6 +4,10 @@
 // Implementation of htmerge
 //
 // $Log: htmerge.cc,v $
+// Revision 1.4  1998/08/03 16:50:43  ghutchis
+//
+// Fixed compiler warnings under -Wall
+//
 // Revision 1.3  1998/01/05 05:43:24  turtle
 // format changes
 //
@@ -42,7 +46,7 @@ int main(int ac, char **av)
     int			alt_work_area = 0;
     String		configfile = DEFAULT_CONFIG_FILE;
     int			c;
-    extern int		optind;
+    /* Currently unused    extern int		optind; */
     extern char		*optarg;
 
     while ((c = getopt(ac, av, "svc:dwa")) != -1)
