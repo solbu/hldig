@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.9  1998/08/06 14:18:30  ghutchis
+// Added config option "local_dir_doc" for default filename in a local
+// directory. Fixed spelling mistake in "elipses" attributes.
+//
 // Revision 1.8  1998/07/23 16:18:51  ghutchis
 //
 // Added files (and patch) from Sylvain Wallez for PDF
@@ -38,7 +42,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.8 1998/07/23 16:18:51 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.9 1998/08/06 14:18:30 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -68,7 +72,7 @@ ConfigDefaults	defaults[] =
     {"doc_db",				"${database_base}.docdb"},
     {"doc_index",			"${database_base}.docs.index"},
     {"doc_list",			"${database_base}.docs"},
-    {"end_elipses",			"<b><tt> ...</tt></b>"},
+    {"end_ellipses",			"<b><tt> ...</tt></b>"},
     {"endings_affix_file",		"${common_dir}/english.aff"},
     {"endings_dictionary",		"${common_dir}/english.0"},
     {"endings_root2word_db",		"${common_dir}/root2word.db"},
@@ -76,6 +80,7 @@ ConfigDefaults	defaults[] =
     {"excerpt_length",			"300"},
     {"local_urls",			""},
     {"local_user_urls",			""},
+    {"local_dir_doc",                   "index.html"},
     {"excerpt_show_top",		"false"},
     {"exclude_urls",			"/cgi-bin/ .cgi"},
     {"external_parsers",		""},
@@ -124,7 +129,7 @@ ConfigDefaults	defaults[] =
     {"star_image",			"${image_url_prefix}/star.gif"},
     {"star_blank",			"${image_url_prefix}/star_blank.gif"},
     {"star_patterns",			""},
-    {"start_elipses",			"<b><tt>... </tt></b>"},
+    {"start_ellipses",			"<b><tt>... </tt></b>"},
     {"start_url",			"http://htdig.sdsu.edu/"},
     {"substring_max_words",		"25"},
     {"synonym_dictionary",		"${common_dir}/synonyms"},

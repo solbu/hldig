@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.5  1998/08/06 14:18:32  ghutchis
+// Added config option "local_dir_doc" for default filename in a local
+// directory. Fixed spelling mistake in "elipses" attributes.
+//
 // Revision 1.4  1998/08/03 16:50:34  ghutchis
 //
 // Fixed compiler warnings under -Wall
@@ -575,6 +579,8 @@ Retriever::IsLocal(char *url)
 	    int l = strlen(url)-prefix->length()+path->length()+4;
 	    String *local = new String(*path, l);
 	    *local += &url[prefix->length()];
+	    if (local->last() == '/' && config["local_dir_doc"] != "")
+	      *local += config["local_dir_doc"];
 	    return local;
 	}	
     }

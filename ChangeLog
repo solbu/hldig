@@ -1,3 +1,11 @@
+Thu Aug  6 10:15:22 1998  Geoff Hutchison  <ghutchis@ethel>
+
+	* htdig/Retriever.cc: Added "local_dir_doc" config option,
+	the default filename in a directory.
+
+	* htcommon/defaults.cc: Fixed "elipses" spelling mistake,
+	local_dir_doc as above
+	
 Tue Aug  4 11:34:46 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/Configuration.cc: Added fix by Philippe Rochat
@@ -52,9 +60,10 @@ Thu Jul  9 09:39:01 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Server.cc, htdig/Retriever.h, htdig/Retriever.cc,
 	htdig/Document.h, htdig/Document.cc, htcommon/defaults.cc: Added
-	support for local file digging using patches by Pasi. Patches
-	include support for local user (~username) digging.
-
+	support for local file digging using patches by Pasi Eronen
+	<pe@iki.fi>. Patches include support for local user (~username)
+	digging.
+	
 	* htdig/HTML.h, htdig/HTML.cc, htcommon/defaults.cc:
 	Added support for META name=description tags. Uses new config-file
 	option "use_meta_description" which is off by default.
