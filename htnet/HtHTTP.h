@@ -30,7 +30,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.10 2002/02/01 22:49:35 ghutchis Exp $ 
+// $Id: HtHTTP.h,v 1.11 2002/08/06 07:32:29 angusgb Exp $ 
 //
 
 #ifndef _HTHTTP_H
@@ -176,9 +176,11 @@ public:
    static void SetRequestUserAgent (const String &s) { _user_agent=s; }
    static const String &GetRequestUserAgent() { return _user_agent; }
 
-
    // Set (Basic) Authentication Credentials
-   void SetCredentials (const String& s);
+   virtual void SetCredentials (const String& s);
+
+   // Set (Basic) Authentication Credentials for the HTTP Proxy
+   virtual void SetProxyCredentials (const String& s);
 
  ///////
     //    Interface for the HTTP Response
@@ -287,9 +289,6 @@ public:
 
    static void SetParsingController (int (*f)(char*)) { CanBeParsed = f; }
 
-   // Proxy settings
-	void SetProxy(int aUse) { _useproxy=aUse; }
-
 protected:
 
 ///////
@@ -305,8 +304,7 @@ protected:
    int      	_bytes_read;        // Bytes read
    URL		_url;               // URL to retrieve
    URL		_referer;	    // Referring URL
-   int		_useproxy;	    // if true, GET should include full url,
-				    // not path only
+
    String      _accept_language;    // accept-language directive
    
    ///////

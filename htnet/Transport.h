@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.8 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: Transport.h,v 1.9 2002/08/06 07:32:29 angusgb Exp $
 //
 //
 
@@ -176,13 +176,23 @@ class Transport : public Object
    // Get the Connection Host
    const String &GetHost() { return _host; }
 
-   // Get the Connection Host
+   // Get the Connection IP Address
+   const String &GetHostIPAddress() { return _ip_address; }
+
+   // Get the Connection Port
    int GetPort() { return _port; }
    
    // Set and get the credentials
    // Likely to vary based on transport protocol
    virtual void SetCredentials (const String& s) { _credentials = s;}
    virtual String GetCredentials () { return _credentials;}
+
+   // Proxy settings
+   virtual void SetProxy(int aUse) { _useproxy=aUse; }
+
+   // Proxy credentials
+   virtual void SetProxyCredentials (const String& s) { _proxy_credentials = s;}
+   virtual String GetProxyCredentials () { return _proxy_credentials;}
 
    // Set the modification date and time for If-Modified-Since   
    void SetRequestModificationTime (HtDateTime *p) { _modification_time=p; }
@@ -209,7 +219,6 @@ class Transport : public Object
    // a connection that's got a public access
 
    virtual bool isConnected(){ return _connection?_connection->IsConnected():0; }
-
 
 // Set the default parser string for the content-type
    static void SetDefaultParserContentType (const String &ct)
@@ -298,6 +307,7 @@ protected:
    Connection	*_connection;	       // Connection object
 
    String       _host;                 // TCP Connection host
+   String       _ip_address;           // TCP Connection host (IP Address)
    int          _port;                 // TCP Connection port
    
    int		_timeout;              // Connection timeout
@@ -308,6 +318,10 @@ protected:
    int		_max_document_size;    // Max document size to retrieve
 
    String	_credentials;	       // Credentials for this connection
+
+   int		_useproxy;	    // if true, GET should include full url,
+				    // not path only
+   String	_proxy_credentials; // Credentials for this proxy connection
 
    HtDateTime  _start_time;         // Start time of the request
    HtDateTime  _end_time;           // end time of the request
@@ -334,6 +348,10 @@ protected:
    static int  _tot_open;  	 // Number of connections opened
    static int  _tot_close;  	 // Number of connections closed
    static int  _tot_changes;  	 // Number of server changes
+
+   // Use the HTTP Basic Digest Access Authentication method to write a String
+   // to be used for credentials (both HTTP and HTTP PROXY authentication)
+   static void SetHTTPBasicAccessAuthorizationString(String &dest, const String& s);
 
 };
 

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.7 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: Transport.cc,v 1.8 2002/08/06 07:32:29 angusgb Exp $
 //
 //
 
@@ -155,10 +155,10 @@ void Transport_Response::Reset()
 
 Transport::Transport(Connection* connection)
 : _connection(connection),
-   _host(0), _port(-1), _timeout(DEFAULT_CONNECTION_TIMEOUT),
+   _host(0), _ip_address(0), _port(-1), _timeout(DEFAULT_CONNECTION_TIMEOUT),
    _retries(1), _wait_time(5),
    _modification_time(0), _max_document_size(0),
-   _credentials(0)
+   _credentials(0), _useproxy(0), _proxy_credentials(0)
 {
 }
 
@@ -237,6 +237,8 @@ int Transport::AssignConnectionServer()
      }
       
    if (_connection->Assign_Server(_host) == NOTOK) return 0;
+
+   _ip_address = _connection->Get_Server_IPAddress();
    
    return 1;
 }
@@ -438,6 +440,65 @@ Transport::DateFormat Transport::RecognizeDateFormat (const char *datestring)
    
    return DateFormat_NotRecognized;
    
+}
+
+
+// This method is used to write into 'dest' the credentials contained in 's'
+// according to the HTTP Basic access authorization [RFC2617]
+// It is written in this abstract class because it is used also
+// when dealing with HTTP proxies, no matter what protocol we are
+// using (HTTP now, but FTP in the future).
+
+void Transport::SetHTTPBasicAccessAuthorizationString(String &dest, const String& s)
+{
+    static char	tbl[64] =
+    {
+	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+	'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+	'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+	'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+	'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+	'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+	'w', 'x', 'y', 'z', '0', '1', '2', '3',
+	'4', '5', '6', '7', '8', '9', '+', '/'
+    };
+    dest.trunc();
+    const char	*p;
+    int		n = s.length();
+    int		ch;
+
+    for (p = s.get(); n > 2; n -= 3, p += 3)
+    {
+	ch = *p >> 2;
+	dest << tbl[ch & 077];
+	ch = ((*p << 4) & 060) | ((p[1] >> 4) & 017);
+	dest << tbl[ch & 077];
+	ch = ((p[1] << 2) & 074) | ((p[2] >> 6) & 03);
+	dest << tbl[ch & 077];
+	ch = p[2] & 077;
+	dest << tbl[ch & 077];
+    }
+
+    if (n != 0)
+    {
+	char c1 = *p;
+	char c2 = n == 1 ? 0 : p[1];
+
+	ch = c1 >> 2;
+	dest << tbl[ch & 077];
+
+	ch = ((c1 << 4) & 060) | ((c2 >> 4) & 017);
+	dest << tbl[ch & 077];
+
+	if (n == 1)
+	    dest << '=';
+	else
+        {
+	    ch = (c2 << 2) & 074;
+	    dest << tbl[ch & 077];
+        }
+	dest << '=';
+    }
 }
 
 // End of Transport.cc (it's a virtual class anyway!)

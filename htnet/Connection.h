@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.h,v 1.4 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: Connection.h,v 1.5 2002/08/06 07:32:29 angusgb Exp $
 //
 
 #ifndef _Connection_h_
@@ -46,7 +46,7 @@ public:
 
    // Port stuff
    int Assign_Port(int port = 0);
-   int Assign_Port(char *service);
+   int Assign_Port(const String& service);
    int Get_Port();
    inline int Is_Privileged();
 
@@ -54,6 +54,7 @@ public:
    int Assign_Server(const String& name);
    int Assign_Server(unsigned int addr = INADDR_ANY);
    const String &Get_Server() const { return server_name; }
+   const String &Get_Server_IPAddress() const { return server_ip_address; }
 
    // Connection establishment
    virtual int Connect();
@@ -107,6 +108,7 @@ protected:
    int            connected;
    String         peer;
    String         server_name;
+   String         server_ip_address;
    int            need_io_stop;
    int            timeout_value;
    int            retry_value;

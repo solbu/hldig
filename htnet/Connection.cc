@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.4 2002/02/01 22:49:34 ghutchis Exp $
+// $Id: Connection.cc,v 1.5 2002/08/06 07:32:29 angusgb Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>	// For inet_ntoa
 #include <netinet/in.h>
 #include <sys/ioctl.h>
 #include <sys/uio.h>
@@ -43,6 +44,7 @@
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
+
 
 typedef void (*SIGNAL_HANDLER) (...);
 
@@ -68,7 +70,7 @@ List	all_connections;
 //*************************************************************************
 Connection::Connection(int socket)
 : pos(0), pos_max(0),
-   sock(socket), connected(0), peer(""), server_name(""),
+   sock(socket), connected(0), peer(""), server_name(""), server_ip_address(""),
    need_io_stop(0), timeout_value(0), retry_value(1),
    wait_time(5) // wait 5 seconds after a failed connection attempt
 {
@@ -86,7 +88,7 @@ Connection::Connection(int socket)
 Connection::Connection(const Connection& rhs)
 : pos(rhs.pos), pos_max(rhs.pos_max),
    sock(rhs.sock), connected(rhs.connected),
-   peer(rhs.peer), server_name(rhs.server_name),
+   peer(rhs.peer), server_name(rhs.server_name), server_ip_address(rhs.server_ip_address),
    need_io_stop(rhs.need_io_stop), timeout_value(rhs.timeout_value),
    retry_value(rhs.retry_value),
    wait_time(rhs.wait_time) // wait 5 seconds after a failed connection attempt
@@ -196,7 +198,7 @@ int Connection::Assign_Port(int port)
 //*****************************************************************************
 // int Connection::Assign_Port(char *service)
 //
-int Connection::Assign_Port(char *service)
+int Connection::Assign_Port(const String &service)
 {
     struct servent		*sp;
 
@@ -218,14 +220,14 @@ int Connection::Assign_Server(unsigned int addr)
     return OK;
 }
 
-extern "C" unsigned int   inet_addr(char *);
 
 //*****************************************************************************
 //
 int Connection::Assign_Server(const String& name)
 {
-    struct hostent	       *hp;
-    unsigned int		addr;
+    struct hostent *hp;
+    char **alias_list;
+    unsigned int addr;
 
     //
     // inet_addr arg IS const char even though prototype says otherwise
@@ -233,19 +235,22 @@ int Connection::Assign_Server(const String& name)
     addr = inet_addr((char*)name.get());
     if (addr == (unsigned int)~0)
     {
-	hp = gethostbyname(name);
-	if (hp == 0)
-	{
-	    return NOTOK;
-	}
-	memcpy((char *)&server.sin_addr, (char *)hp->h_addr, hp->h_length);
+        // Gets the host given a string
+        hp = gethostbyname(name);
+
+        if (hp == 0)
+           return NOTOK;
+
+        alias_list = hp->h_aliases;
+        memcpy((char *)&server.sin_addr, (char *)hp->h_addr, hp->h_length);
     }
     else
     {
-	memcpy((char *)&server.sin_addr, (char *)&addr, sizeof(addr));
+        memcpy((char *)&server.sin_addr, (char *)&addr, sizeof(addr));
     }
 
     server_name = name.get();
+    server_ip_address = inet_ntoa(server.sin_addr);
 
     return OK;
 }

@@ -8,12 +8,12 @@
 // 	 -  Response message class
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2002 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.18 2002/02/07 17:35:42 ghutchis Exp $ 
+// $Id: HtHTTP.cc,v 1.19 2002/08/06 07:32:29 angusgb Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -113,7 +113,6 @@ HtHTTP::HtHTTP(Connection& connection)
 : Transport(&connection),
    _Method(Method_GET), // Default Method Request
    _bytes_read(0),
-   _useproxy(0),
    _accept_language(0),
    _persistent_connection_allowed(true),
    _persistent_connection_possible(false),
@@ -590,6 +589,10 @@ void HtHTTP::SetRequestCommand(String &cmd)
    if (_credentials.length())
      cmd << "Authorization: Basic " << _credentials << "\r\n";
 
+   // Proxy Authentication
+   if (_useproxy && _proxy_credentials.length())
+     cmd << "Proxy-Authorization: Basic " << _proxy_credentials << "\r\n";
+
    // A date has been passed to check if the server one is newer than
    // the one we already own.
 
@@ -915,60 +918,16 @@ HtHTTP::DocStatus HtHTTP::GetDocumentStatus(HtHTTP_Response &r)
 	    
 }
 
-
 void HtHTTP::SetCredentials (const String& s)
 {
-  // Overload default Transport method to take care of Basic HTTP auth.
-    static char	tbl[64] =
-    {
-	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-	'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-	'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-	'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
-	'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-	'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-	'w', 'x', 'y', 'z', '0', '1', '2', '3',
-	'4', '5', '6', '7', '8', '9', '+', '/'
-    };
-    _credentials = 0;
-    const char	*p;
-    int		n = s.length();
-    int		ch;
-
-    for (p = s.get(); n > 2; n -= 3, p += 3)
-    {
-	ch = *p >> 2;
-	_credentials << tbl[ch & 077];
-	ch = ((*p << 4) & 060) | ((p[1] >> 4) & 017);
-	_credentials << tbl[ch & 077];
-	ch = ((p[1] << 2) & 074) | ((p[2] >> 6) & 03);
-	_credentials << tbl[ch & 077];
-	ch = p[2] & 077;
-	_credentials << tbl[ch & 077];
-    }
-
-    if (n != 0)
-    {
-	char c1 = *p;
-	char c2 = n == 1 ? 0 : p[1];
-
-	ch = c1 >> 2;
-	_credentials << tbl[ch & 077];
-
-	ch = ((c1 << 4) & 060) | ((c2 >> 4) & 017);
-	_credentials << tbl[ch & 077];
-
-	if (n == 1)
-	    _credentials << '=';
-	else
-        {
-	    ch = (c2 << 2) & 074;
-	    _credentials << tbl[ch & 077];
-        }
-	_credentials << '=';
-    }
+   Transport::SetHTTPBasicAccessAuthorizationString(_credentials, s);
 }
 
+
+void HtHTTP::SetProxyCredentials (const String& s)
+{
+   Transport::SetHTTPBasicAccessAuthorizationString(_proxy_credentials, s);
+}
 
 int HtHTTP::ReadBody()
 {
@@ -1022,7 +981,7 @@ int HtHTTP::ReadChunkedBody()
 
    // Read chunk-size and CRLF
    if (!_connection->Read_Line(ChunkHeader, "\r\n"))
-     return -1;
+      return -1;
 
    sscanf ((char *)ChunkHeader, "%x", &chunk_size);
 
@@ -1063,11 +1022,11 @@ int HtHTTP::ReadChunkedBody()
 
       // Read CRLF - to be ignored
       if (!_connection->Read_Line(ChunkHeader, "\r\n"))
-	return -1;
+         return -1;
 
       // Read chunk-size and CRLF
       if (!_connection->Read_Line(ChunkHeader, "\r\n"))
-	return -1;
+         return -1;
 
       sscanf ((char *)ChunkHeader, "%x", &chunk_size);
 

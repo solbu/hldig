@@ -1,3 +1,19 @@
+Tue Aug 6 09:28:39 CEST 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htnet/Connection.[h,cc]: IP address storing as string (sync with ht://Check)
+
+	* htnet/Transport.[h,cc]: HTTP Proxy and Basic credentials handling moved here (ditto)
+	through the use of a protected static method
+
+	* htnet/HtHTTP.h: SetCredentials declared to be virtual (unnecessary because inherited,
+	but gives better understanding); new method SetProxyCredentials for
+	proxy authorization.
+
+	* htnet/HtHTTP.cc: HTTP header Proxy-Authorization is now handled. The
+	SetCredentials and SetProxyCredentials methods now make use of the
+	Transport::SetHTTPBasicAccessAuthorizationString method, in order to
+	write the string for negotiating the access.
+
 Fri Aug  2 15:40:18 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Document.cc (Retrieve): Allow redirects from HTTPSConnect.
