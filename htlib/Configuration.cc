@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: Configuration.cc,v 1.9.2.1 1999/03/22 20:41:53 grdetil Exp $";
+static char	RCSid[] = "$Id: Configuration.cc,v 1.9.2.2 1999/03/22 21:22:49 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -155,6 +155,7 @@ void Configuration::Add(char *name, char *value)
     {
         String *str = new String(setlocale(LC_ALL, value));
         ps->set(str->get());
+        delete str;
 
         //
         // Set time format to standard to avoid sending If-Modified-Since

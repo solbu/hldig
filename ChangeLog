@@ -1,3 +1,11 @@
+Mon Mar 22 15:13:33 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc, htdoc/attrs.html: Change default locale
+	to "C", as H-P Nielsen recommended.
+
+	* htlib/Configuration.cc(Add): Fix small memory leak in locale code,
+	as Geoff discovered.
+
 Mon Mar 22 15:03:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/parse_doc.pl: uses pdftotext to handle PDF files,
