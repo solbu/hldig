@@ -11,6 +11,12 @@
 //
 int mystrcasecmp(char *str1, const char *str2)
 {
+    if (!str1 && !str2)
+	return 0;
+    if (!str1)
+	return 1;
+    if (!str2)
+	return -1;
     while (*str1 &&
 	   *str2 &&
 	   tolower((unsigned char)*str1) == tolower((unsigned char)*str2))
@@ -29,6 +35,14 @@ int mystrcasecmp(char *str1, const char *str2)
 //
 int mystrncasecmp(char *str1, const char *str2, int n)
 {
+    if (!str1 && !str2)
+	return 0;
+    if (!str1)
+	return 1;
+    if (!str2)
+	return -1;
+    if (n < 0)
+	return 0;
     while (n &&
 	   *str1 &&
 	   *str2 &&
