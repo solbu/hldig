@@ -1,10 +1,12 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b2: Release date 3 Apr 2000.
+   3.2.0b2: Release date X Apr 2000.
    3.2.0b1: Released: 4 Feb 2000.
 
 SHOWSTOPPERS:
+* build_select_lists parses incorrectly.
+* collection_names doesn't seem to work in recent snapshots.
 
 KNOWN BUGS:
 * URL.cc tries to parse malformed URLs (which causes further problems)
@@ -23,6 +25,7 @@ PENDING FEATURES:
 * Additional support for Win32.
 * Make URL and Server blocks match documentation--i.e. change config
    lookups in htdig to work as suggested.
+* Merge in mifluz-0.14
 
 TESTING:
 * ExternalTransport with non 'http' URLs.
