@@ -4,6 +4,11 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.8  1998/07/23 16:18:51  ghutchis
+//
+// Added files (and patch) from Sylvain Wallez for PDF
+// parsing. Incorporates fix for non-Adobe PDFs.
+//
 // Revision 1.7  1998/07/09 09:38:56  ghutchis
 //
 //
@@ -33,7 +38,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.7 1998/07/09 09:38:56 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.8 1998/07/23 16:18:51 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -55,7 +60,7 @@ ConfigDefaults	defaults[] =
     {"add_anchors_to_excerpt",		"true"},
     {"allow_numbers",			"false"},
     {"allow_virtual_hosts",		"true"},
-    {"bad_extensions",			".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .pdf .class .map .ram"},
+    {"bad_extensions",			".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram"},
     {"bad_word_list",			"${common_dir}/bad_words"},
     {"create_image_list",		"false"},
     {"create_url_list",			"false"},

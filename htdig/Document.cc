@@ -4,6 +4,11 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.12  1998/07/23 16:18:52  ghutchis
+//
+// Added files (and patch) from Sylvain Wallez for PDF
+// parsing. Incorporates fix for non-Adobe PDFs.
+//
 // Revision 1.11  1998/07/09 09:38:57  ghutchis
 //
 //
@@ -45,7 +50,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.11 1998/07/09 09:38:57 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.12 1998/07/23 16:18:52 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -58,6 +63,7 @@ static char RCSid[] = "$Id: Document.cc,v 1.11 1998/07/09 09:38:57 ghutchis Exp 
 #include "Plaintext.h"
 #include "Postscript.h"
 #include "ExternalParser.h"
+#include "PDF.h"
 
 #if 1
 typedef void (*SIGNAL_HANDLER) (...);
@@ -524,7 +530,8 @@ Document::readHeader(Connection &c)
 		char	*token = strtok(0, "\n\t");
 				
 		if (mystrncasecmp("text/", token, 5) != 0 &&
-		    mystrncasecmp("application/postscript", token, 22) != 0)
+		    mystrncasecmp("application/postscript", token, 22) != 0 &&
+		    mystrncasecmp("application/pdf", token, 15) != 0)
 		    return Header_not_text;
 		contentType = token;
 	    }
@@ -613,6 +620,7 @@ Document::getParsable()
     static Plaintext		*plaintext = 0;
     static Postscript		*postscript = 0;
     static ExternalParser	*externalParser = 0;
+    static PDF			*pdf = 0;
     
     Parsable	*parsable = 0;
 
@@ -642,6 +650,12 @@ Document::getParsable()
 	if (!postscript)
 	    postscript = new Postscript();
 	parsable = postscript;
+    }
+    else if (mystrncasecmp(contentType, "application/pdf", 15) == 0)
+    {
+	if (!pdf)
+	    pdf = new PDF();
+	parsable = pdf;
     }
     else
     {

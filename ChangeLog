@@ -1,3 +1,25 @@
+Thu Jul 23 12:14:34 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/PDF.cc, htdig/PDF.h, htdig/Document.cc: Added files (and
+	patch) from Sylvain Wallez for PDF parsing. Incorporates fix for
+	non-Adobe PDFs.
+
+	* htcommon/defaults.cc: Removed .pdf extension from bad_extensions.
+
+Wed Jul 22 10:04:31 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc: Added patch from Sylvain Wallez
+	<s.wallez.alcatel@e-mail.com> to use the filename if no title is found.
+
+	* htnotify/htnotify.cc: Added patch from Chris Jason
+	Richards <richards@cs.tamu.edu> to fix problems with sendmail.
+
+Tue Jul 21 09:56:58 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc:	Added patch by Rob Stone
+	<rob@psych.york.ac.uk> to create new environment variables to
+	htsearch: SELECTED_FORMAT and SELECTED_METHOD.
+
 Sun Jul 19 09:51:47 1998  Andrew Scherpbier  <andrew@contigo.com>
 
 	* configure.in (berkeley db stuff): Added the berkeley db .tar.gz
