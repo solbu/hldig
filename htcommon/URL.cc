@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.3.2.9 2000/05/06 20:46:37 loic Exp $
+// $Id: URL.cc,v 1.3.2.10 2000/08/21 02:32:33 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -23,6 +23,7 @@
 #include "HtConfiguration.h"
 #include "StringMatch.h"
 #include "StringList.h"
+#include "HtURLRewriter.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -237,6 +238,16 @@ URL::URL(const char *url, URL &parent)
 	//
 	constructURL();
     }
+}
+
+
+//*****************************************************************************
+// void URL::rewrite()
+//
+void URL::rewrite()
+{
+	if (HtURLRewriter::instance()->replace(_url) > 0)
+		parse(_url.get());
 }
 
 

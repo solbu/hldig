@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.h,v 1.1.2.1 2000/02/23 19:45:47 grdetil Exp $
+// $Id: URL.h,v 1.1.2.2 2000/08/21 02:32:33 ghutchis Exp $
 //
 
 #ifndef _URL_h_
@@ -45,6 +45,7 @@ public:
     char		*get()			{return _url;}
     void		dump();
     void		normalize();
+    void		rewrite();
     char		*signature();
 
 private:
