@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.54.2.7 2000/03/17 21:20:36 grdetil Exp $
+// $Id: htsearch.cc,v 1.54.2.8 2000/04/11 03:13:57 ghutchis Exp $
 //
 
 #include "htsearch.h"
@@ -454,7 +454,6 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
     unsigned char	*pos = (unsigned char*) allWords;
     unsigned char	t;
     String		word;
-    // Why use a char type if String is the new char type!!!
     const String	prefix_suffix = config["prefix_match_character"];
     while (*pos)
     {
@@ -586,10 +585,11 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
     //
     // For each of the words, apply all the algorithms.
     //
+    int in_phrase = 0; // If we get into a phrase, we don't want to fuzz.
     for (i = 0; i < tempWords.Count(); i++)
     {
 	WeightWord	*ww = (WeightWord *) tempWords[i];
-	if (ww->weight > 0 && !ww->isIgnore)
+	if (ww->weight > 0 && !ww->isIgnore && !in_phrase)
 	{
 	    //
 	    // Apply all the algorithms to the word.
@@ -599,6 +599,13 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 	    doFuzzy(ww, searchWords, algorithms);
 	    delete ww;
 	}
+	else if (ww->word.length() == 1 && ww->word[0] == '"')
+	  {
+	    in_phrase = !in_phrase;
+	    if (debug)
+		cerr << "Add: " << ww->word << endl;
+	    searchWords.Add(ww);
+	  }
 	else
 	{
 	    //
