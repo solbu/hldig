@@ -1,7 +1,7 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.17 1999/06/13 02:25:27 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.18 1999/06/18 14:20:41 grdetil Exp $
 //
 //
 #ifndef _DocumentRef_h_
@@ -42,6 +42,7 @@ class DocumentRef : public Object
     time_t		DocTime()			{return docTime;}
     char		*DocTitle()			{return docTitle;}
     char		*DocHead()			{return docHead;}
+    int			DocHeadIsSet()			{return docHeadIsSet;}
     char                *DocMetaDsc()                   {return docMetaDsc;}
     time_t		DocAccessed()			{return docAccessed;}
     int			DocLinks()			{return docLinks;}
@@ -63,7 +64,7 @@ class DocumentRef : public Object
     void		DocURL(char *u)			{docURL = u;}
     void		DocTime(time_t t)		{docTime = t;}
     void		DocTitle(char *t)		{docTitle = t;}
-    void		DocHead(char *h)		{docHead = h;}
+    void		DocHead(char *h)		{docHeadIsSet = 1; docHead = h;}
     void                DocMetaDsc(char *md)            {docMetaDsc = md;}
     void		DocAccessed(time_t t)		{docAccessed = t;}
     void		DocLinks(int l)			{docLinks = l;}
@@ -101,6 +102,8 @@ class DocumentRef : public Object
     time_t		docAccessed;
     // This is the stored excerpt of the document, just text.
     String		docHead;
+    // This indicates if the stored excerpt of the document has been set.
+    int			docHeadIsSet;
     // This is the document-specified description.
     // For HTML, that's the META description tag.
     String              docMetaDsc;

@@ -49,6 +49,7 @@ void DocumentRef::Clear()
     docSize = 0;
     docImageSize = 0;
     docHead = 0;
+    docHeadIsSet = 0;
     docMetaDsc = 0;
     docAccessed = 0;
     docLinks = 0;
@@ -380,7 +381,7 @@ void DocumentRef::Deserialize(String &stream)
 	    }
 	    break;
         case DOC_HEAD:
-            getstring(x, s, docHead);
+            getstring(x, s, docHead); docHeadIsSet = 1;
             break;
 	case DOC_METADSC:
 	    getstring(x, s, docMetaDsc);

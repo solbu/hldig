@@ -3,7 +3,7 @@
 //
 // Do sanity checking in "doc_db", remove insane documents.
 //
-// $Id: docs.cc,v 1.18 1999/06/12 18:39:39 ghutchis Exp $
+// $Id: docs.cc,v 1.19 1999/06/18 14:20:41 grdetil Exp $
 //
 //
 
@@ -72,7 +72,7 @@ convertDocs(char *doc_db, char *doc_index, char *doc_excerpt)
               cout << "Deleted, no excerpt: " << id.get() << "/"
                    << url->get() << endl;
 	  }
-	if ((ref->DocState()) == Reference_noindex)
+	else if ((ref->DocState()) == Reference_noindex)
 	  {
 	    // This document has been marked with a noindex tag. Remove it
 	    db.Delete(ref->DocID());

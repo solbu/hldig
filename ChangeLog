@@ -1,3 +1,13 @@
+Fri Jun 18 09:53:30 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc(Clear, Deserialize):
+	add docHeadIsSet field, code for setting and getting it.
+	* htcommon/DocumentDB.cc(Add): only put out excerpt record if DocHead
+	is really set.
+	* htmerge/doc.cc(convertDocs): add missing else after code to delete
+	documents with no excerpts.
+	(All these changes fix the disappearing excerpts problem in 3.2.)
+
 Wed Jun 16 23:04:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Document.cc (UseProxy): Change http_proxy_exclude to an

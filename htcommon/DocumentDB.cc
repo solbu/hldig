@@ -188,8 +188,8 @@ int DocumentDB::Add(DocumentRef &doc)
 	// We'll eventually need to deal with compression *FIX*
 	temp = doc.DocHead();
 
-	String key((char *) &docID, sizeof docID);
-	h_dbf->Put(key, temp);
+	if (doc.DocHeadIsSet())
+	    h_dbf->Put(key, temp);
       }
     else
       // If there was no excerpt index when we write, something is wrong.
@@ -197,9 +197,8 @@ int DocumentDB::Add(DocumentRef &doc)
 
     if (i_dbf)
     {
-	String url(doc.DocURL());
 	temp = doc.DocURL();
-	i_dbf->Put(HtURLCodec::instance()->encode(url), key);
+	i_dbf->Put(HtURLCodec::instance()->encode(temp), key);
 	return OK;
     }
     else
