@@ -1,3 +1,32 @@
+Sat Mar 13 21:29:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/DocumentDB.cc(Open, Read): Switch to DB_HASH for faster
+	access. Most important for very quick URL lookups!
+
+	* htcommon/DocumentRef.cc(AddDescription): Check to see that
+	description isn't a null string or contains only whitespace before
+	doing anything.
+
+	* htlib/HtSGMLCodec.h, htlib/HtSGMLCodec.cc: Add new class to
+	convert between SGML entities and high-bit characters.
+
+	* htdig/HTML.cc(parse): Use it instead of SGMLEntities.
+
+	* htsearch/Display.cc(excerpt): Use HtSGMLCodec to covert *back*
+	to SGML entities before displaying.
+
+	* htlib/HtHeap.cc: Cleaned up comments, use more efficient
+	procedure to build from a vector.
+	
+	* htlib/HtWordCodec.cc(HtWordCodec): Fix bug with constructing from
+	uninitialized variables!
+
+	* htlib/URL.h, htlib/URL.cc: Initial support for multiple schemes and
+	user@host URLs.
+
+	* htlib/List.cc(Nth): Check for out-of-bounds requests before
+	doing anything.
+
 Fri Mar 12 00:31:03 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
 	* htlib/mktime.c (__mon_yday): Correct size to number of
