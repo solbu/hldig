@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: SSLConnection.h,v 1.2 2002/02/02 18:18:13 ghutchis Exp $
+// $Id: SSLConnection.h,v 1.3 2003/06/20 11:46:58 lha Exp $
 //
 
 #ifndef _SSLConnection_h_
@@ -45,4 +45,4 @@ class SSLConnection : public Connection
 };
 #endif
 
-#endif;
+#endif

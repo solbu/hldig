@@ -1,5 +1,9 @@
 Fri Jun 20 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
+	* configure,aclocal.m4,acinclude.m4: --with-ssl set CPPFLAGS, not CFLAGS
+
+Fri Jun 20 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
 	* db/configure: Hack which should allow  select  to be detected on HP/UX
 
 	* db/db.c: Replace  HAVE_ZLIB  with  HAVE_LIBZ  (as set by configure)

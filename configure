@@ -10280,12 +10280,12 @@ echo "${ECHO_T}yes" >&6
         ssldir="$dir"
         if test -f "$dir/include/openssl/ssl.h"; then
             found_ssl="yes";
-            CFLAGS="$CFLAGS -I$ssldir/include/openssl -DHAVE_SSL";
+            CPPFLAGS="$CPPFLAGS -I$ssldir/include/openssl -DHAVE_SSL";
             break;
         fi
         if test -f "$dir/include/ssl.h"; then
             found_ssl="yes";
-            CFLAGS="$CFLAGS -I$ssldir/include/ -DHAVE_SSL";
+            CPPFLAGS="$CPPFLAGS -I$ssldir/include/ -DHAVE_SSL";
             break
         fi
     done
