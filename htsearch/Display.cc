@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.16 2000/03/17 21:47:11 grdetil Exp $
+// $Id: Display.cc,v 1.100.2.17 2000/03/28 02:01:59 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -27,6 +27,8 @@
 #include "HtURLCodec.h"
 #include "WordType.h"
 #include "Collection.h"
+#include "HtURLSeedScore.h"
+#include "SplitMatches.h"
 
 #include <fstream.h>
 #include <stdio.h>
@@ -46,7 +48,8 @@ Display::Display(Dictionary *collections)
     templateError = 0;
 
     maxStars = config.Value("max_stars");
-    maxScore = 100;
+    maxScore = -DBL_MAX;
+    minScore = DBL_MAX;
     setupImages();
     setupTemplates();
 
@@ -319,7 +322,8 @@ Display::displayMatch(ResultMatch *match, DocumentRef *ref, int current)
 
     if (maxScore != 0)
       {
-	int percent = (int)(ref->DocScore() * 100 / (double)maxScore);
+	int percent = (int)((ref->DocScore() - minScore) * 100 /
+			    (maxScore - minScore));
 	if (percent <= 0)
 	  percent = 1;
 	vars.Add("PERCENT", new String(form("%d", percent)));
@@ -854,7 +858,7 @@ Display::generateStars(DocumentRef *ref, int right)
 
     if (maxScore != 0)
     {
-	score = ref->DocScore() / (double)maxScore;
+	score = (ref->DocScore() - minScore) / (maxScore - minScore);
     }
     else
     {
@@ -1043,10 +1047,15 @@ Display::buildMatchList()
     char	*cpid;
     String	url;
     ResultMatch	*thisMatch;
-    List	*matches = new List();
+    SplitMatches matches(config);
     double      backlink_factor = config.Double("backlink_factor");
     double      date_factor = config.Double("date_factor");
-	
+
+    URLSeedScore adjustments(config);
+ 
+    // If we knew where to pass it, this would be a good place to pass
+    // on errors from adjustments.ErrMsg().
+
 // Deal with all collections
 //
   selected_collections->Start_Get();
@@ -1126,6 +1135,8 @@ Display::buildMatchList()
 	thisMatch->setTime(thisRef->DocTime());   
 	thisMatch->setTitle(thisRef->DocTitle());   
 
+	score = adjustments.adjust_score(score, thisRef->DocURL());
+
 	// Get rid of it to free the memory!
 	delete thisRef;
 
@@ -1135,19 +1146,26 @@ Display::buildMatchList()
 	//
 	// Append this match to our list of matches.
 	//
-	matches->Add(thisMatch);
-	if (matches->Count() == 1 || maxScore < (int)score)
-	    maxScore = (int)score;
+ 	matches.Add(thisMatch, url.get());
+ 
+ 	if (maxScore < score)
+ 	    maxScore = score;
+ 	if (minScore > score)
+ 	    minScore = score;
     }
   }
 
-    //
-    // The matches need to be ordered by relevance level.
-    // Sort it.
-    //
-    sort(matches);
-
-    return matches;
+  //
+  // Each sub-area is then sorted by relevance level.
+  //
+  List *matches_part;  // Outside of loop to keep for-scope warnings away.
+  for (matches_part = matches.Get_First();
+       matches_part != 0;
+       matches_part = matches.Get_Next())
+    sort(matches_part);
+  
+  // Then all sub-lists are concatenated and put in a new list.
+  return matches.JoinedLists();
 }
 
 //*****************************************************************************
