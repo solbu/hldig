@@ -7,17 +7,14 @@ INSTALL_PROGRAM=	@INSTALL_PROGRAM@
 top_builddir= ..
 @make_include_left@$(top_builddir)/Makefile.config@make_include_right@
 
-OBJS=	Configuration.o Connection.o Database.o \
-		Dictionary.o DB2_db.o DB2_hash.o \
-		IntObject.o List.o Object.o \
-		ParsedString.o Queue.o QuotedStringList.o \
-		Stack.o String.o \
-		StringList.o StringMatch.o String_fmt.o \
-		URL.o URLTrans.o cgi.o \
-		good_strtok.o io.o strcasecmp.o mktime.o \
-		strptime.o timegm.o HtCodec.o HtWordCodec.o \
-		HtURLCodec.o HtVector.o HtHeap.o \
-		regex.o HtSGMLCodec.o HtWordType.o HtPack.o
+OBJS=	Configuration.o Connection.o Database.o Dictionary.o \
+	DB2_db.o DB2_hash.o IntObject.o List.o Object.o \
+	ParsedString.o Queue.o QuotedStringList.o Stack.o \
+	String.o StringList.o StringMatch.o String_fmt.o \
+	URL.o URLTrans.o cgi.o good_strtok.o io.o strcasecmp.o \
+	mktime.o strptime.o timegm.o HtCodec.o HtWordCodec.o \
+	HtURLCodec.o HtVector.o HtHeap.o regex.o HtSGMLCodec.o \
+	HtWordType.o HtPack.o HtDateTime.o
 
 TARGET=		libht.a
 
