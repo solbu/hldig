@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.18 2000/02/02 19:01:03 grdetil Exp $
+// $Id: Retriever.cc,v 1.72.2.19 2000/02/02 19:57:47 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -865,6 +865,9 @@ Retriever::IsValidURL(char *u)
     if(ext)
     {
       lowerext.set(ext);
+      int parm = lowerext.indexOf('?');	// chop off URL parameter
+      if (parm >= 0)
+	lowerext.chop(lowerext.length() - parm);
       lowerext.lowercase();
       if (invalids.Exists(lowerext))
 	{

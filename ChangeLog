@@ -1,3 +1,8 @@
+Wed Feb  2 13:53:27 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc (IsValidURL): fix problem with valid_extensions
+	matching failure when URL parameters follow extension.
+
 Wed Feb  2 13:29:48 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/QuotedStringList.cc (Create): fix PR#743, where quoted string
