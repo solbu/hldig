@@ -70,9 +70,6 @@ AC_CHECK_FUNC(timegm,
 HTDIG_TOP=`pwd`
 AC_SUBST(HTDIG_TOP)
 
-GDBM_DIR=`echo gdbm*`
-AC_SUBST(GDBM_DIR)
-
 DB_DIR=`echo db-*/build.unix`
 AC_SUBST(DB_DIR)
 
@@ -95,12 +92,6 @@ extern "C" int gethostname(char *, int);],
   [gethostname("sdsu.edu", (int) 8);],
   [AC_MSG_RESULT(no)],
   [AC_MSG_RESULT(yes);AC_DEFINE(NEED_PROTO_GETHOSTNAME)])
-
-echo ""
-echo "Configuring GNU GDBM"
-(cd gdbm*; ./configure)
-echo "GDBM Configuration complete"
-echo ""
 
 echo ""
 echo "Configuring Berkeley DBM"
