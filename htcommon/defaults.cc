@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.61 2000/10/04 17:25:15 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.62 2000/10/06 15:59:21 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -2014,7 +2014,9 @@ http://www.htdig.org/", "
 	only once on a given machine, despite the alias used in a URL.
 	As shown in the example, the mapping goes from left to right,
 	so the server name on the right hand side is the one that is
-	used. As of version 3.1.3, the port number is optional.
+	used. As of version 3.1.3, the port number is optional, and is
+	assumed to be 80 if omitted. There is no easy way to map all
+	ports from one alias to another without listing them all.
 " },
 { "server_max_docs", "-1", 
 	"integer", "htdig", "Server", "3.1.0b3", "Indexing:Where", "server_max_docs: 50", "
