@@ -28,7 +28,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.8.2.5 2000/08/17 00:29:21 angus Exp $ 
+// $Id: HtHTTP.h,v 1.8.2.6 2000/08/23 11:28:52 angus Exp $ 
 //
 
 #ifndef _HTHTTP_H
@@ -67,16 +67,17 @@ class HtHTTP_Response : public Transport_Response
 	 void Reset();
 	 
 	 // Get the HTTP version
-   	 char *GetVersion() { return _version; }
+   	 const String &GetVersion() const { return _version; }
 
 	 // Get the Transfer-encoding
-   	 char *GetTransferEncoding() { return _transfer_encoding; }
+   	 const String &GetTransferEncoding() const
+            { return _transfer_encoding; }
 
 	 // Get server info
-   	 char *GetServer() { return _server; }
+   	 const String &GetServer() const { return _server; }
 
 	 // Get Connection info
-   	 char *GetConnectionInfo() { return _hdrconnection; }
+   	 const String &GetConnectionInfo() const { return _hdrconnection; }
 
 
    protected:
@@ -155,8 +156,8 @@ public:
 
    // Info for multiple requests (static)
    // Get the User agent string
-   static void SetRequestUserAgent (String s) { _user_agent=s; }
-   static char *GetRequestUserAgent() { return _user_agent; }
+   static void SetRequestUserAgent (const String &s) { _user_agent=s; }
+   static const String &GetRequestUserAgent() { return _user_agent; }
 
 
    // Set (Basic) Authentication Credentials

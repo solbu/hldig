@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.17 2000/08/17 04:09:14 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.18 2000/08/23 11:28:52 angus Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -846,7 +846,7 @@ HtHTTP::DocStatus HtHTTP::GetDocumentStatus(HtHTTP_Response &r)
 
    	    // Is it parsable?
 	    
-   	    if (! isParsable ((char*)r.GetContentType()) )
+   	    if (! isParsable ((const char*)r.GetContentType()) )
    	 	    returnStatus=Document_not_parsable;
    }
    else if(statuscode > 200 && statuscode < 300)

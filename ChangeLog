@@ -1,3 +1,8 @@
+Wed Aug 23 13:24:31 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htnet/HtHTTP.*, htnet/Transport.h: all 'char *', when possibile,
+	have been changed into 'const String &' types.
+
 Sun Aug 20 23:25:01 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* httools/htpurge.cc (purgeDocs): Add error message when document

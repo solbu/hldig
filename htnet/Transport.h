@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.6.2.6 2000/03/02 17:58:48 angus Exp $
+// $Id: Transport.h,v 1.6.2.7 2000/08/23 11:28:53 angus Exp $
 //
 //
 
@@ -46,7 +46,7 @@ class Transport_Response : public Object
    virtual void Reset();  // This function must be defined
 
    // Get the contents
-   virtual String GetContents() { return _contents; }
+   virtual const String &GetContents() { return _contents; }
 	 
    // Get the modification time object pointer
    virtual HtDateTime *GetModificationTime() const { return _modification_time; }
@@ -55,7 +55,7 @@ class Transport_Response : public Object
    virtual HtDateTime *GetAccessTime() const { return _access_time; }
 
    // Get the Content type
-   virtual String GetContentType() { return _content_type; }
+   virtual const String &GetContentType() const { return _content_type; }
 
    // Get the Content length
    virtual int GetContentLength() const { return _content_length; }
@@ -67,10 +67,10 @@ class Transport_Response : public Object
    virtual int GetStatusCode() const { return _status_code; }
 
    // Get the Status Code reason phrase
-   char *GetReasonPhrase() { return _reason_phrase; }
+   virtual const String &GetReasonPhrase() { return _reason_phrase; }
 
    // Get the location (redirect)
-   char *GetLocation() { return _location; }
+   virtual const String &GetLocation() { return _location; }
 
    
    protected:
