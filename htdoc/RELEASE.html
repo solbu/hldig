@@ -20,6 +20,72 @@
       is also a <a href="ChangeLog">ChangeLog</a> file which has
       more details on the code changes.
     </p>
+    <strong>Release notes for htdig-3.1.0b3</strong>12 Dec 1998<br>
+    This version adds only a few features and a significant number of
+    bug fixes. This version has been pretty thoroughly tested. Though
+    there are a few remaining issues, it is hoped that this will be
+    near the end of the beta releases before version 3.1.0. Note that
+    it's recommended to update your databases to eliminate the
+    possibility of subtle changes in the database format.
+    <ul>
+        <li>Fixed a bug which would ignore the proxy settings,
+	introduced in version 3.1.0b2.</li>
+	<li>Fixed a bug where words would remain from deleted
+	documents.</li>
+	<li>Fixed a bug where SGML &lt; was considered part of a tag
+	in the HTML parser, introduced in verison 3.1.0b2.</li>
+	<li>Fixed a bug where empty boolean searches would dump
+	core.</li>
+	<li>Fixed a bug where boolean "and," "or," and "not" would be
+	removed from a search string, causing a sytnax error.</li>
+	<li>Fixed a bug which wouldn't keep track of the hopcounts
+	correctly.</li>
+	<li>Added support for META refresh tags, contributed by Aidas
+	Kasparas</li>
+	<li>Added support for using CGI <a
+	href="http://hoohoo.ncsa.uiuc.edu/cgi/">environment
+	variables</a> in the search templates, contributed by Gilles
+	Detillieux.</li>
+	<li>Improved memory requirements <b>slightly</b> through
+	fixing a memory leak in htdig and a general system-wide
+	adjustment.</li>
+	<li>Improved support for multiple exclude and restrict items
+	through htsearch, contributed by William Rhee and Gilles.</li>
+	<li>Improved support to compile under CygWinB20, contributed
+	by Klaus Mueller.</li>
+	<li>Upgraded to the latest version (2.5.9) of the Berkeley DB</a>
+	<li>Added a new option <a
+	href="attrs.html#server_wait_time">server_wait_time</a> to
+	give a delay between connections to a server. Currently this
+	can also affect local filesystem digging if set.</li>
+	<li>Added a new option <a
+	href="attrs.html#server_max_docs">server_max_docs</a> to limit
+	the number of documents pulled down from a server in one dig.</li>
+	<li>Added a new option <a
+	href="attrs.html#http_proxy_exclude">http_proxy_exclude</a>
+	to ignore the proxy setting on certain URLs.</li>
+	<li>Added a new option <a
+	href="attrs.html#no_excerpt_show_top">no_excerpt_show_top</a>to
+	show the top of a document when there is no excerpt.</li>
+	<li>Added new options <a
+	href="attrs.html#date_factor">date_factor</a>, <a
+	href="attrs.html#backlink_factor">backlink_factor</a>, and <a
+	href="attrs.html#description_factor">description_factor</a> to
+	improve search rankings. Respectively, they can give higher
+	rankings to more recent documents, documents with a high
+	number of links pointing to them, and documents with relevant
+	URL descriptions pointing to them. See the documentation for
+	more information.</li>
+	<li>Added a set of contributed scripts called multidig to help
+	work with multiple sets of URLs and databases.</li>
+	<li>Fixed many compilation problems under AIX, thanks to
+	Alexander Bergolth!</li>
+	<li>
+	Many other bugs were fixed, so a big thanks to everyone
+	who submitted a bug report, patch or gave other feedback! See the <a
+	href="ChangeLog">ChangeLog</a> for more details.
+	</li>
+    </ul>
     <strong>Release notes for htdig-3.1.0b2</strong> 1 Nov 1998<br>
     This version adds a few minor features as well as many
     bugfixes. It is still considered beta as some bug reports have not
@@ -678,7 +744,7 @@
           &lt;andrew@contigo.com&gt;</a>
         </address>
         <!-- hhmts start -->
-Last modified: Mon Nov 23 00:55:56 EST 1998
+Last modified: Sat Dec 12 23:50:39 EST 1998
 <!-- hhmts end -->
       </li>
     </ul>
