@@ -1,13 +1,20 @@
 //
 // Just Another String class.
 //
-// $Id: htString.h,v 1.5 1999/02/01 04:02:25 hp Exp $
+// $Id: htString.h,v 1.5.2.1 2001/06/07 20:23:59 grdetil Exp $
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1995-2001 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
 #ifndef __String_h
 #define __String_h
 
 #include "Object.h"
 #include <stdarg.h>
+#include <stdio.h>
 
 class ostream;
 
@@ -138,6 +145,8 @@ public:
     friend int		operator >= (String &a, String &b);
 
     friend ostream	&operator << (ostream &o, String &s);
+
+    int			readLine(FILE *in);
 
     void		lowercase();
     void		uppercase();

@@ -10,7 +10,7 @@
 	  htdig
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -89,6 +89,14 @@
 			 progress out if interrupted by a signal.
 		  </dd>
 		  <dt>
+			-m [url_file]
+		  </dt>
+		  <dd>
+			Minimal. Only index the URLs in the file provided and
+			no others. The url_file can be a "-", causing htdig
+			to read the URLs from the STDIN.
+		  </dd>
+		  <dt>
 			-s
 		  </dt>
 		  <dd>
@@ -103,6 +111,42 @@
 			information can be extracted from it for purposes other
 			than searching. One could gather some interesting
 			statistics from this database.
+			<p>Each line in the file starts with the document id 
+			followed by a list of
+			<strong>\t<em>fieldname</em>:<em>value</em></strong>.
+			The fields always appear in the order listed below:
+			</p>
+			<table border=0>
+			<tr> <th>fieldname</th><th>value</th></tr>
+			<tr> <td>u</td><td>URL</td></tr>
+			<tr> <td>t</td><td>Title</td></tr>
+			<tr> <td>a</td><td>State (0 = normal, 1 = not found, 2
+			= not indexed, 3 = obsolete)</td></tr>
+			<tr> <td>m</td><td>Last modification time as reported
+			by the server</td></tr> 
+			<tr> <td>s</td><td>Size in bytes</td></tr>
+			<tr> <td>H</td><td>Excerpt</td></tr>
+			<tr> <td>h</td><td>Meta description</td></tr>
+			<tr> <td>l</td><td>Time of last retrieval</td></tr>
+			<tr> <td>L</td><td>Count of the links in the document
+			(outgoing links)</td></tr>
+			<tr> <td>b</td><td>Count of the links to the document
+			(incoming links or backlinks)</td></tr>
+			<tr> <td>c</td><td>HopCount of this document</td></tr>
+			<tr> <td>g</td><td>Signature of the document used for
+			duplicate-detection</td></tr>
+			<tr> <td>e</td><td>E-mail address to use for a
+			notification message from htnotify</td></tr>
+			<tr> <td>n</td><td>Date to send out a notification
+			e-mail message</td></tr>
+			<tr> <td>S</td><td>Subject for a notification e-mail
+			message</td></tr>
+			<tr> <td>d</td><td>The text of links pointing to this
+			document. (e.g. &lt;a
+			href=&quot;docURL&quot;&gt;description&lt;/a&gt;)</td></tr>
+			<tr> <td>A</td><td>Anchors in the document (i.e. &lt;A
+			NAME=...)</td></tr>
+			</table>
 		  </dd>
 		  <dt>
 			-u <em>username:password</em>
@@ -122,7 +166,35 @@
 			program. Using more than 2 is probably only useful for
 			debugging purposes. The default verbose mode (using
 			only one -v) gives a nice progress report while
-			digging.
+			digging. This progress report can be a bit
+			cryptic, so here is a brief explanation. A line
+			is shown for each URL, with 3 numbers before the
+			URL and some symbols after the URL. The first
+			number is the number of documents parsed so
+			far, the second is the DocID for this document,
+			and the third is the hop count of the document
+			(number of hops from one of the start_url
+			documents). After the URL, it shows a "*" for
+			a link in the document that it already visited,
+			a "+" for a new link it just queued, and a "-"
+			for a link it rejected for any of a number of
+			reasons. To find out what those reasons are,
+			you need to run htdig with at least 3 -v options,
+			i.e. -vvv. If there are no "*", "+" or "-" symbols
+			after the URL, it doesn't mean the document was
+			not parsed or was empty, but only that no links
+			to other documents were found within it. With
+			more verbose output, these symbols will get
+			interspersed in several lines of debugging output.
+		  </dd>
+		  <dt>
+			url_file (at end of arguments, after options)
+		  </dt>
+		  <dd>
+			Get the list URLs to start indexing from the file
+			provided. This will override the default start_url.
+			The url_file can be a "-", causing htdig to read
+			the URLs from the STDIN.
 		  </dd>
 		</dl>
 	  </dd>
@@ -159,11 +231,8 @@
 	  </dd>
 	</dl>
 	<hr size="4" noshade>
-	<address>
-	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
-	</address>
 
-Last modified: $Date: 2000/02/17 22:05:21 $
+	Last modified: $Date: 2001/06/07 20:23:59 $
 
   </body>
 </html>

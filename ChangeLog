@@ -1,3 +1,16 @@
+Thu Jun  7 15:10:14 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/DocumentDB.{h,cc}: Replace CreateSearchDB() with DumpDB(),
+	add LoadDB(), both backported from 3.2.0b3.
+	* htdig/htdig.cc (main, usage), htdig/Makefile.in, htdoc/htdig.html:
+	Add handling of -m (minimal) option, file input for URLs, and arg 0
+	handling for htdump & htload.
+	* htdig/HTML.cc (do_tag): Change all white space to blanks in meta
+	description tag, for proper ASCII record dumps by htdump, and to fix
+	bug #405771.
+	* htlib/String.cc (= operator), htlib/htString.cc: change handling
+	of 0 length strings.  Add readLine() for htload support.
+
 Thu Jun  7 14:41:42 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc (got_href): Fix hop count mishandling.

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.15 2001/06/06 22:15:09 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.16 2001/06/07 20:23:59 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -849,9 +849,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		  {
 		    //
 		    // We need to do two things. First grab the description
+		    // and clean it up
 		    //
 		    meta_dsc = transSGML(conf["content"]);
-		   if (meta_dsc.length() > max_meta_description_length)
+		    meta_dsc.replace('\n', ' ');
+		    meta_dsc.replace('\r', ' ');
+		    meta_dsc.replace('\t', ' ');
+		    if (meta_dsc.length() > max_meta_description_length)
 		     meta_dsc = meta_dsc.sub(0, max_meta_description_length).get();
 		   if (debug > 1)
 		     cout << "META Description: " << conf["content"] << endl;

@@ -1,10 +1,16 @@
 //
 // Implementation of String class
 //
-// $Id: String.cc,v 1.16.2.3 1999/11/26 21:59:26 grdetil Exp $
+// $Id: String.cc,v 1.16.2.4 2001/06/07 20:23:59 grdetil Exp $
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1995-2001 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.16.2.3 1999/11/26 21:59:26 grdetil Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.16.2.4 2001/06/07 20:23:59 grdetil Exp $";
 #endif
 
 
@@ -91,9 +97,16 @@ String::~String()
 
 void String::operator = (const String &s)
 {
-    allocate_space(s.length());
-    Length = s.length();
-    copy_data_from(s.Data, Length);
+    if (s.length() > 0) 
+    {
+	allocate_space(s.length());
+	Length = s.length();
+	copy_data_from(s.Data, Length);
+    }
+    else
+    {
+	Length = 0;
+    }
 }
 
 void String::operator = (char *s)
@@ -622,3 +635,38 @@ void String::debug(ostream &o)
 }
 
 
+int String::readLine(FILE *in)
+{
+    Length = 0;
+    allocate_fix_space(2048);
+
+    while (fgets(Data + Length, Allocated - Length, in))
+    {
+	Length += strlen(Data + Length);
+	if (Length == 0)
+	    continue;
+	if (Data[Length - 1] == '\n')
+	{
+	    //
+	    // A full line has been read.  Return it.
+	    //
+	    chop('\n');
+	    return 1;
+	}
+	if (Allocated > Length + 1)
+	{
+	    //
+	    // Not all available space filled. Probably EOF?
+	    //
+	    continue;
+	}
+	//
+	// Only a partial line was read. Increase available space in 
+	// string and read some more.
+	//
+	reallocate_space(Allocated << 1);
+    }
+    chop('\n');
+
+    return Length > 0;
+}

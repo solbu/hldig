@@ -3,7 +3,13 @@
 //
 // Implementation of DocumentDB
 //
+// $Id: DocumentDB.cc,v 1.11.2.1 2001/06/07 20:23:59 grdetil Exp $
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1995-2001 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
 
 #include "DocumentDB.h"
@@ -183,35 +189,25 @@ int DocumentDB::Delete(char *u)
 
 
 //*****************************************************************************
-// int DocumentDB::CreateSearchDB(char *filename)
-//   Create an extract from our database which can be used by the
-//   search engine.  The extract will consist of lines with fields
-//   separated by tabs.  The fields are:
-//        docID
-//        docURL
-//        docTime
-//        docHead
-//        docMetaDsc
-//        descriptions (separated by tabs)
+// int DocumentDB::DumpDB(char *filename, int verbose)
+//   Create an extract from our database which can be used by an
+//   external application. The extract will consist of lines with fields
+//   separated by tabs. 
 //
-//   The extract will be sorted by docID.
+//   The extract will likely not be sorted by anything in particular
 //
-int DocumentDB::CreateSearchDB(char *filename)
+int DocumentDB::DumpDB(char *filename, int verbose)
 {
     DocumentRef	        *ref;
     List		*descriptions, *anchors;
     char		*key;
     String		data;
     FILE		*fl;
-    String		command = SORT_PROG;
-    String		tmpdir = getenv("TMPDIR");
 
-    command << " -n -o" << filename;
-    if (tmpdir.length())
-    {
-	command << " -T " << tmpdir;
+    if((fl = fopen(filename, "w")) == 0) {
+      perror(form("DocumentDB::DumpDB: opening %s for writing", filename));
+      return NOTOK;
     }
-    fl = popen(command, "w");
 
     dbf->Start_Get();
     while ((key = dbf->Get_Next()))
@@ -227,11 +223,16 @@ int DocumentDB::CreateSearchDB(char *filename)
 	    fprintf(fl, "\ta:%d", ref->DocState());
 	    fprintf(fl, "\tm:%d", (int) ref->DocTime());
 	    fprintf(fl, "\ts:%d", ref->DocSize());
-	    fprintf(fl, "\th:%s", ref->DocHead());
+	    fprintf(fl, "\tH:%s", ref->DocHead());
 	    fprintf(fl, "\th:%s", ref->DocMetaDsc());
 	    fprintf(fl, "\tl:%d", (int) ref->DocAccessed());
 	    fprintf(fl, "\tL:%d", ref->DocLinks());
-	    fprintf(fl, "\tI:%d", ref->DocImageSize());
+	    fprintf(fl, "\tb:%d", ref->DocBackLinks());
+	    fprintf(fl, "\tc:%d", ref->DocHopCount());
+	    fprintf(fl, "\tg:%d", ref->DocSig());
+	    fprintf(fl, "\te:%s", ref->DocEmail());
+	    fprintf(fl, "\tn:%s", ref->DocNotification());
+	    fprintf(fl, "\tS:%s", ref->DocSubject());
 	    fprintf(fl, "\td:");
 	    descriptions = ref->Descriptions();
 	    String	*description;
@@ -261,13 +262,129 @@ int DocumentDB::CreateSearchDB(char *filename)
 	}
     }
 
-    int	sortRC = pclose(fl);
-    if (sortRC)
-    {
-	cerr << "Document sort failed\n\n";
-	exit(1);
+    fclose(fl);
+
+    return OK;
+}
+
+//*****************************************************************************
+// int DocumentDB::LoadDB(char *filename, int verbose)
+//   Load an extract to our database from an ASCII file
+//   The extract will consist of lines with fields separated by tabs. 
+//   The lines need not be sorted in any fashion.
+//
+int DocumentDB::LoadDB(char *filename, int verbose)
+{
+    FILE	*input;
+    DocumentRef ref;
+    StringList	descriptions, anchors;
+    char	*token, field;
+    String	data;
+
+    if((input = fopen(filename, "r")) == 0) {
+      perror(form("DocumentDB::LoadDB: opening %s for reading", filename));
+      return NOTOK;
     }
-    return 0;
+
+    while (data.readLine(input))
+    {
+	token = strtok(data, "\t");
+	if (token == NULL)
+	  continue;
+
+	ref.DocID(atoi(token));
+	
+	if (verbose)
+	  cout << "\t loading document ID: " << ref.DocID() << endl;
+
+	while ( (token = strtok(0, "\t")) )
+	  {
+	    field = *token;
+	    token += 2;
+
+	    if (verbose > 2)
+		cout << "\t field: " << field;
+
+	    switch(field)
+	      {
+	        case 'u': // URL
+		  ref.DocURL(token);
+		  break;
+	        case 't': // Title
+		  ref.DocTitle(token);
+		  break;
+	        case 'a': // State
+		  ref.DocState((ReferenceState)atoi(token));
+		  break;
+	        case 'm': // Modified
+		  ref.DocTime(atoi(token));
+		  break;
+	        case 's': // Size
+		  ref.DocSize(atoi(token));
+		  break;
+	        case 'H': // Head
+		  ref.DocHead(token);
+		  break;
+	        case 'h': // Meta Description
+		  ref.DocMetaDsc(token);
+		  break;
+	        case 'l': // Accessed
+		  ref.DocAccessed(atoi(token));
+		  break;
+	        case 'L': // Links
+		  ref.DocLinks(atoi(token));
+		  break;
+	        case 'b': // BackLinks
+		  ref.DocBackLinks(atoi(token));
+		  break;
+	        case 'c': // HopCount
+		  ref.DocHopCount(atoi(token));
+		  break;
+	        case 'g': // Signature
+		  ref.DocSig(atoi(token));
+		  break;
+	        case 'e': // E-mail
+		  ref.DocEmail(token);
+		  break;
+	        case 'n': // Notification
+		  ref.DocNotification(token);
+		  break;
+	        case 'S': // Subject
+		  ref.DocSubject(token);
+		  break;
+	        case 'd': // Descriptions
+		  descriptions.Create(token, '\001');
+		  ref.Descriptions(descriptions);
+		  break;
+	        case 'A': // Anchors
+		  anchors.Create(token, '\001');
+		  ref.DocAnchors(anchors);
+		  break;
+	        default:
+		  break;
+	      }
+
+	  }
+	
+
+	// We must be careful if the document already exists
+	// So we'll delete the old document and add the new one
+	if (Exists(ref.DocURL()))
+	  {
+	    Delete(ref.DocURL());
+	  }
+	Add(ref);
+
+	// If we add a record with an ID past nextDocID, update it
+	if (ref.DocID() > nextDocID)
+	  nextDocID = ref.DocID() + 1;
+
+	descriptions.Destroy();
+	anchors.Destroy();
+    }
+
+    fclose(input);
+    return OK;
 }
 
 

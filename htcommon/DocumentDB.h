@@ -6,33 +6,20 @@
 // database is used for searching.  This is because digging requires a
 // different index than searching.
 //
-// $Id: DocumentDB.h,v 1.5 1999/01/25 01:53:42 hp Exp $
+// $Id: DocumentDB.h,v 1.5.2.1 2001/06/07 20:23:59 grdetil Exp $
 //
-// $Log: DocumentDB.h,v $
-// Revision 1.5  1999/01/25 01:53:42  hp
-// Provide a clean upgrade from old databses without "url_part_aliases" and
-// "common_url_parts" through the new option "uncoded_db_compatible".
-//
-// Revision 1.4  1999/01/14 01:09:11  ghutchis
-// Small speed improvements based on gprof.
-//
-// Revision 1.3  1999/01/14 00:30:10  ghutchis
-// Added IncNextDocID to allow big changes in NextDocID, such as when merging
-// databases.
-//
-// Revision 1.2  1998/01/05 00:47:27  turtle
-// reformatting
-//
-// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
-// Initial CVS
-//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1995-2001 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
 #ifndef _DocumentDB_h_
 #define _DocumentDB_h_
 
 #include "DocumentRef.h"
-#include <List.h>
-#include <Database.h>
+#include "List.h"
+#include "Database.h"
 
 
 class DocumentDB
@@ -43,11 +30,6 @@ public:
     //
     DocumentDB();
     ~DocumentDB();
-
-    //
-    // The database used for searching is generated from our internal database:
-    //
-    int			CreateSearchDB(char *filename);
 
     //
     // Standard database operations
@@ -75,6 +57,13 @@ public:
     // We will need to be able to iterate over the complete database.
     //
     List		*URLs();	// This returns a list of all the URLs
+
+    // Dump the database out to an ASCII text file
+    int			DumpDB(char *filename, int verbose = 0);
+
+    // Read in the database from an ASCII text file
+    // (created by DumpDB)
+    int			LoadDB(char *filename, int verbose = 0);
 
     //
     // Set compatibility mode (try to support when database
