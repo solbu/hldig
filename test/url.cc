@@ -6,12 +6,12 @@
 //	<http://www.faqs.org/rfcs/rfc2396.html>
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2000 The ht://Dig Group
+// Copyright (c) 1995-2003 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
-// <http://www.gnu.org/copyleft/gpl.html>
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: url.cc,v 1.4 2002/10/27 15:15:59 ghutchis Exp $
+// $Id: url.cc,v 1.5 2003/06/24 19:57:28 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H

@@ -26,12 +26,12 @@
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Part of the ht://Check package   <http://htcheck.sourceforge.net/>
-// Copyright (c) 2001 The ht://Dig Group
+// Copyright (c) 2001-2003 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
-// <http://www.gnu.org/copyleft/gpl.html>
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtCookie.cc,v 1.10 2003/06/20 07:49:54 lha Exp $
+// $Id: HtCookie.cc,v 1.11 2003/06/24 19:58:06 nealr Exp $
 //
 
 #include "HtCookie.h"

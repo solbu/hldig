@@ -14,12 +14,12 @@
 //           wordlist_verbose 3 walk logic lots of details
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999, 2000 The ht://Dig Group
+// Copyright (c) 1999-2003 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU General Public License version 2 or later
-// <http://www.gnu.org/copyleft/gpl.html>
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: WordList.cc,v 1.10 2002/10/27 15:47:57 ghutchis Exp $
+// $Id: WordList.cc,v 1.11 2003/06/24 19:57:27 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H

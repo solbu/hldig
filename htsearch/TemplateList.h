@@ -6,12 +6,12 @@
 //               the relevant template for display.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2000 The ht://Dig Group
+// Copyright (c) 1995-2003 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
-// <http://www.gnu.org/copyleft/gpl.html>
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: TemplateList.h,v 1.6 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: TemplateList.h,v 1.7 2003/06/24 19:58:07 nealr Exp $
 //
 
 #ifndef _TemplateList_h_

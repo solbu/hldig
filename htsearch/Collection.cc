@@ -4,12 +4,12 @@
 // Collection: Specifies a list of databases to use in the search
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2000 The ht://Dig Group
+// Copyright (c) 1995-2003 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
-// <http://www.gnu.org/copyleft/gpl.html>
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Collection.cc,v 1.3 2003/06/23 21:42:03 nealr Exp $
+// $Id: Collection.cc,v 1.4 2003/06/24 19:58:07 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H

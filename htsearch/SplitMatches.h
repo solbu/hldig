@@ -9,13 +9,13 @@
 // Method Joined returns a new list with all the sub-lists
 // concatenated.
 //
-// $Id: SplitMatches.h,v 1.2 2002/02/02 18:18:13 ghutchis Exp $
+// $Id: SplitMatches.h,v 1.3 2003/06/24 19:58:07 nealr Exp $
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 2000 The ht://Dig Group
+// Copyright (c) 2000-2003 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
-// <http://www.gnu.org/copyleft/gpl.html>
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
 //
 #ifndef _splitmatches_h
 #define _splitmatches_h
