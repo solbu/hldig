@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtNNTP.cc,v 1.3 2003/06/24 19:58:07 nealr Exp $
+// $Id: HtNNTP.cc,v 1.4 2003/07/21 08:16:11 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -31,7 +31,16 @@
 #include <sys/types.h>
 #include <ctype.h>
 #include <stdio.h>      // for sscanf
-#include <iomanip.h>    // for setw()
+
+// for setw()
+#ifdef HAVE_STD
+#include <iomanip>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
+#include <iomanip.h>
+#endif /* HAVE_STD */
 
 #if 1
 typedef void (*SIGNAL_HANDLER) (...);

@@ -35,7 +35,8 @@ dnl if they load the C library before the appropriate threads library, e.g.,
 dnl tclsh using dlopen to load the DB library.  Anyway, by using LWP threads
 dnl we avoid answering lots of user questions, not to mention the bugs.
 if test "$db_cv_mutex" = no; then
-AC_TRY_RUN([
+
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <synch.h>
 main(){
 	static lwp_mutex_t mi = SHAREDMUTEX;
@@ -44,8 +45,10 @@ main(){
 	lwp_cond_t cond = ci;
 	exit (
 	_lwp_mutex_lock(&mutex) ||
-	_lwp_mutex_unlock(&mutex));
-}], [db_cv_mutex="Solaris/lwp"], [:])
+	_lwp_mutex_unlock(&mutex));}
+]])],
+[db_cv_mutex="Solaris/lwp"], [:])
+
 fi
 
 dnl UI threads: thr_XXX
@@ -53,7 +56,7 @@ dnl
 dnl Try with and without the -lthread library.
 if test "$db_cv_mutex" = no; then
 LIBS="-lthread $LIBS"
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <thread.h>
 #include <synch.h>
 main(){
@@ -65,11 +68,11 @@ main(){
 	cond_init(&cond, type, NULL) || 
 	mutex_lock(&mutex) ||
 	mutex_unlock(&mutex));
-}], [db_cv_mutex="UI/threads/library"], [:])
+}]])], [db_cv_mutex="UI/threads/library"], [:])
 LIBS="$orig_libs"
 fi
 if test "$db_cv_mutex" = no; then
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <thread.h>
 #include <synch.h>
 main(){
@@ -81,14 +84,14 @@ main(){
 	cond_init(&cond, type, NULL) || 
 	mutex_lock(&mutex) ||
 	mutex_unlock(&mutex));
-}], [db_cv_mutex="UI/threads"], [:])
+}]])], [db_cv_mutex="UI/threads"], [:])
 fi
 
 dnl POSIX.1 pthreads: pthread_XXX
 dnl
 dnl Try with and without the -lpthread library.
 if test "$db_cv_mutex" = no; then
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <pthread.h>
 main(){
 	pthread_cond_t cond;
@@ -108,11 +111,11 @@ main(){
 	pthread_cond_destroy(&cond) ||
 	pthread_condattr_destroy(&condattr) ||
 	pthread_mutexattr_destroy(&mutexattr));
-}], [db_cv_mutex="POSIX/pthreads"], [:])
+}]])], [db_cv_mutex="POSIX/pthreads"], [:])
 fi
 if test "$db_cv_mutex" = no; then
 LIBS="-lpthread $LIBS"
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <pthread.h>
 main(){
 	pthread_cond_t cond;
@@ -132,14 +135,14 @@ main(){
 	pthread_cond_destroy(&cond) ||
 	pthread_condattr_destroy(&condattr) ||
 	pthread_mutexattr_destroy(&mutexattr));
-}], [db_cv_mutex="POSIX/pthreads/library"], [:])
+}]])], [db_cv_mutex="POSIX/pthreads/library"], [:])
 LIBS="$orig_libs"
 fi
 
 dnl msemaphore: HPPA only
 dnl Try HPPA before general msem test, it needs special alignment.
 if test "$db_cv_mutex" = no; then
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <sys/mman.h>
 main(){
 #if defined(__hppa)
@@ -152,12 +155,12 @@ main(){
 #else
 	exit(1);
 #endif
-}], [db_cv_mutex="HP/msem_init"], [:])
+}]])], [db_cv_mutex="HP/msem_init"], [:])
 fi
 
 dnl msemaphore: OSF/1
 if test "$db_cv_mutex" = no; then
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <sys/types.h>
 #include <sys/mman.h>;
 main(){
@@ -167,7 +170,7 @@ main(){
 	msem_lock(&x, 0);
 	msem_unlock(&x, 0);
 	exit(0);
-}], [db_cv_mutex="UNIX/msem_init"], [:])
+}]])], [db_cv_mutex="UNIX/msem_init"], [:])
 fi
 
 dnl ReliantUNIX
@@ -182,13 +185,13 @@ fi
 
 dnl SCO: UnixWare has threads in libthread, but OpenServer doesn't.
 if test "$db_cv_mutex" = no; then
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
 main(){
 #if defined(__USLC__)
 	exit(0);
 #endif
 	exit(1);
-}], [db_cv_mutex="SCO/x86/cc-assembly"], [:])
+}]])], [db_cv_mutex="SCO/x86/cc-assembly"], [:])
 fi
 
 dnl abilock_t: SGI
@@ -229,25 +232,27 @@ fi
 
 dnl Alpha/gcc: OSF/1
 if test "$db_cv_mutex" = no; then
-AC_TRY_RUN([main(){
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+main(){
 #if defined(__alpha)
 #if defined(__GNUC__)
 exit(0);
 #endif
 #endif
-exit(1);}],
+exit(1);}]])],
 [db_cv_mutex="ALPHA/gcc-assembly"], [:], [:])
 fi
 
 dnl PaRisc/gcc: HP/UX
 if test "$db_cv_mutex" = no; then
-AC_TRY_RUN([main(){
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+main(){
 #if defined(__hppa)
 #if defined(__GNUC__)
 exit(0);
 #endif
 #endif
-exit(1);}],
+exit(1);}]])],
 [db_cv_mutex="HPPA/gcc-assembly"], [:], [:])
 fi
 
@@ -255,101 +260,105 @@ dnl Sparc/gcc: SunOS, Solaris
 dnl The sparc/gcc code doesn't always work, specifically, I've seen assembler
 dnl failures from the stbar instruction on SunOS 4.1.4/sun4c and gcc 2.7.2.2.
 if test "$db_cv_mutex" = DOESNT_WORK; then
-AC_TRY_RUN([main(){
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+main(){
 #if defined(__sparc__)
 #if defined(__GNUC__)
 	exit(0);
 #endif
 #endif
 	exit(1);
-}], [db_cv_mutex="Sparc/gcc-assembly"], [:], [:])
+}]])], [db_cv_mutex="Sparc/gcc-assembly"], [:], [:])
 fi
 
 dnl 68K/gcc: SunOS
 if test "$db_cv_mutex" = no; then
-AC_TRY_RUN([main(){
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+main(){
 #if (defined(mc68020) || defined(sun3))
 #if defined(__GNUC__)
 	exit(0);
 #endif
 #endif
 	exit(1);
-}], [db_cv_mutex="68K/gcc-assembly"], [:], [:])
+}]])], [db_cv_mutex="68K/gcc-assembly"], [:], [:])
 fi
 
 dnl x86/gcc: FreeBSD, NetBSD, BSD/OS, Linux
 if test "$db_cv_mutex" = no; then
-AC_TRY_RUN([main(){
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+main(){
 #if defined(i386)
 #if defined(__GNUC__)
 	exit(0);
 #endif
 #endif
 	exit(1);
-}], [db_cv_mutex="x86/gcc-assembly"], [:], [:])
+}]])], [db_cv_mutex="x86/gcc-assembly"], [:], [:])
 fi
 
 dnl: uts/cc: UTS
 if test "$db_cv_mutex" = no; then
-AC_TRY_RUN([main(){
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+main(){
 #if defined(_UTS)
 	exit(0);
 #endif
 	exit(1);
-}], [db_cv_mutex="UTS/cc-assembly"], [:], [:])
+}]])], [db_cv_mutex="UTS/cc-assembly"], [:], [:])
 fi
 ])
 
 if test "$db_cv_mutex" = no; then
 	AC_MSG_WARN(
 	    [THREAD MUTEXES NOT AVAILABLE FOR THIS COMPILER/ARCHITECTURE.])
-	AC_DEFINE(HAVE_MUTEX_FCNTL)
+	AC_DEFINE(HAVE_MUTEX_FCNTL,,[Mutex FCNTL])
 else
-	AC_DEFINE(HAVE_MUTEX_THREADS)
+	AC_DEFINE(HAVE_MUTEX_THREADS,,[Mutex Threads])
 fi
 
 case "$db_cv_mutex" in
-68K/gcc-assembly)	AC_DEFINE(HAVE_MUTEX_TAS)
-			AC_DEFINE(HAVE_MUTEX_68K_GCC_ASSEMBLY);;
-AIX/_check_lock)	AC_DEFINE(HAVE_MUTEX_TAS)
-			AC_DEFINE(HAVE_MUTEX_AIX_CHECK_LOCK);;
-ALPHA/gcc-assembly)	AC_DEFINE(HAVE_MUTEX_TAS)
-			AC_DEFINE(HAVE_MUTEX_ALPHA_GCC_ASSEMBLY);;
-HP/msem_init)		AC_DEFINE(HAVE_MUTEX_TAS)
-			AC_DEFINE(HAVE_MUTEX_HPPA_MSEM_INIT);;
-HPPA/gcc-assembly)	AC_DEFINE(HAVE_MUTEX_TAS)
-			AC_DEFINE(HAVE_MUTEX_HPPA_GCC_ASSEMBLY);;
-POSIX/pthreads)		AC_DEFINE(HAVE_MUTEX_PTHREAD)
-			AC_DEFINE(HAVE_MUTEX_PTHREADS);;
+68K/gcc-assembly)	AC_DEFINE(HAVE_MUTEX_TAS,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_68K_GCC_ASSEMBLY,,[Mutex]);;
+AIX/_check_lock)	AC_DEFINE(HAVE_MUTEX_TAS,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_AIX_CHECK_LOCK,,[Mutex]);;
+ALPHA/gcc-assembly)	AC_DEFINE(HAVE_MUTEX_TAS,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_ALPHA_GCC_ASSEMBLY,,[Mutex]);;
+HP/msem_init)		AC_DEFINE(HAVE_MUTEX_TAS,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_HPPA_MSEM_INIT,,[Mutex]);;
+HPPA/gcc-assembly)	AC_DEFINE(HAVE_MUTEX_TAS,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_HPPA_GCC_ASSEMBLY,,[Mutex]);;
+POSIX/pthreads)		AC_DEFINE(HAVE_MUTEX_PTHREAD,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_PTHREADS,,[Mutex]);;
 POSIX/pthreads/library)	LIBS="-lpthread $LIBS"
-			AC_DEFINE(HAVE_MUTEX_PTHREAD)
-			AC_DEFINE(HAVE_MUTEX_PTHREADS);;
+			AC_DEFINE(HAVE_MUTEX_PTHREAD,,[Mutex pthreads])
+			AC_DEFINE(HAVE_MUTEX_PTHREADS,,[Mutex pthreads]);;
 ReliantUNIX/initspin)	LIBS="$LIBS -lmproc"
-			AC_DEFINE(HAVE_MUTEX_TAS)
-			AC_DEFINE(HAVE_MUTEX_RELIANTUNIX_INITSPIN);;
-SCO/x86/cc-assembly)	AC_DEFINE(HAVE_MUTEX_TAS)
-			AC_DEFINE(HAVE_MUTEX_SCO_X86_CC_ASSEMBLY);;
-SGI/init_lock)		AC_DEFINE(HAVE_MUTEX_TAS)
-			AC_DEFINE(HAVE_MUTEX_SGI_INIT_LOCK);;
-Solaris/_lock_try)	AC_DEFINE(HAVE_MUTEX_TAS)
-			AC_DEFINE(HAVE_MUTEX_SOLARIS_LOCK_TRY);;
-Solaris/lwp)		AC_DEFINE(HAVE_MUTEX_PTHREAD)
-			AC_DEFINE(HAVE_MUTEX_SOLARIS_LWP);;
-Sparc/gcc-assembly)	AC_DEFINE(HAVE_MUTEX_TAS)
-			AC_DEFINE(HAVE_MUTEX_SPARC_GCC_ASSEMBLY);;
-UI/threads)		AC_DEFINE(HAVE_MUTEX_PTHREAD)
-			AC_DEFINE(HAVE_MUTEX_UI_THREADS);;
+			AC_DEFINE(HAVE_MUTEX_TAS,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_RELIANTUNIX_INITSPIN,,[Mutex]);;
+SCO/x86/cc-assembly)	AC_DEFINE(HAVE_MUTEX_TAS,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_SCO_X86_CC_ASSEMBLY,,[Mutex]);;
+SGI/init_lock)		AC_DEFINE(HAVE_MUTEX_TAS,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_SGI_INIT_LOCK,,[Mutex]);;
+Solaris/_lock_try)	AC_DEFINE(HAVE_MUTEX_TAS,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_SOLARIS_LOCK_TRY,,[Mutex]);;
+Solaris/lwp)		AC_DEFINE(HAVE_MUTEX_PTHREAD,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_SOLARIS_LWP,,[Mutex]);;
+Sparc/gcc-assembly)	AC_DEFINE(HAVE_MUTEX_TAS,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_SPARC_GCC_ASSEMBLY,,[Mutex]);;
+UI/threads)		AC_DEFINE(HAVE_MUTEX_PTHREAD,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_UI_THREADS,,[Mutex]);;
 UI/threads/library)	LIBS="-lthread $LIBS"
-			AC_DEFINE(HAVE_MUTEX_PTHREAD)
-			AC_DEFINE(HAVE_MUTEX_UI_THREADS);;
-UNIX/msem_init)		AC_DEFINE(HAVE_MUTEX_TAS)
-			AC_DEFINE(HAVE_MUTEX_MSEM_INIT);;
-UNIX/sema_init)		AC_DEFINE(HAVE_MUTEX_TAS)
-			AC_DEFINE(HAVE_MUTEX_SEMA_INIT);;
+			AC_DEFINE(HAVE_MUTEX_PTHREAD,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_UI_THREADS,,[Mutex]);;
+UNIX/msem_init)		AC_DEFINE(HAVE_MUTEX_TAS,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_MSEM_INIT,,[Mutex]);;
+UNIX/sema_init)		AC_DEFINE(HAVE_MUTEX_TAS,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_SEMA_INIT,,[Mutex]);;
 UTS/cc-assembly)	ADDITIONAL_OBJS="$ADDITIONAL_OBJS uts4.cc${o}"
-			AC_DEFINE(HAVE_MUTEX_UTS_CC_ASSEMBLY);;
-x86/gcc-assembly)	AC_DEFINE(HAVE_MUTEX_TAS)
-			AC_DEFINE(HAVE_MUTEX_X86_GCC_ASSEMBLY);;
+			AC_DEFINE(HAVE_MUTEX_UTS_CC_ASSEMBLY,,[Mutex]);;
+x86/gcc-assembly)	AC_DEFINE(HAVE_MUTEX_TAS,,[Mutex])
+			AC_DEFINE(HAVE_MUTEX_X86_GCC_ASSEMBLY,,[Mutex]);;
 esac
 ])dnl
 dnl @(#)options.m4	11.5 (Sleepycat) 10/15/99
@@ -530,7 +539,7 @@ AC_SUBST(u_int8_decl)
 AC_CACHE_CHECK([for u_int8_t], db_cv_uint8, [dnl
 AC_TRY_COMPILE([#include <sys/types.h>], u_int8_t foo;,
 	[db_cv_uint8=yes],
-	AC_TRY_RUN([main(){exit(sizeof(unsigned char) != 1);}],
+    AC_RUN_IFELSE([AC_LANG_SOURCE([[main(){exit(sizeof(unsigned char) != 1);}]])],
 	    [db_cv_uint8="unsigned char"], [db_cv_uint8=no], [:]))])
 if test "$db_cv_uint8" = no; then
 	AC_MSG_ERROR(No unsigned 8-bit integral type.)
@@ -543,9 +552,9 @@ AC_SUBST(u_int16_decl)
 AC_CACHE_CHECK([for u_int16_t], db_cv_uint16, [dnl
 AC_TRY_COMPILE([#include <sys/types.h>], u_int16_t foo;,
 	[db_cv_uint16=yes],
-AC_TRY_RUN([main(){exit(sizeof(unsigned short) != 2);}],
+AC_RUN_IFELSE([AC_LANG_SOURCE([[main(){exit(sizeof(unsigned short) != 2);}]])],
 	[db_cv_uint16="unsigned short"],
-AC_TRY_RUN([main(){exit(sizeof(unsigned int) != 2);}],
+AC_RUN_IFELSE([AC_LANG_SOURCE([[main(){exit(sizeof(unsigned int) != 2);}]])],
 	[db_cv_uint16="unsigned int"], [db_cv_uint16=no], [:])))], [:])
 if test "$db_cv_uint16" = no; then
 	AC_MSG_ERROR([No unsigned 16-bit integral type.])
@@ -558,9 +567,9 @@ AC_SUBST(int16_decl)
 AC_CACHE_CHECK([for int16_t], db_cv_int16, [dnl
 AC_TRY_COMPILE([#include <sys/types.h>], int16_t foo;,
 	[db_cv_int16=yes],
-AC_TRY_RUN([main(){exit(sizeof(short) != 2);}],
+AC_RUN_IFELSE([AC_LANG_SOURCE([[main(){exit(sizeof(short) != 2);}]])],
 	[db_cv_int16="short"],
-AC_TRY_RUN([main(){exit(sizeof(int) != 2);}],
+AC_RUN_IFELSE([AC_LANG_SOURCE([[main(){exit(sizeof(int) != 2);}]])],
 	[db_cv_int16="int"], [db_cv_int16=no], [:])))], [:])
 if test "$db_cv_int16" = no; then
 	AC_MSG_ERROR([No signed 16-bit integral type.])
@@ -619,7 +628,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: acinclude.m4,v 1.4 2003/05/27 14:45:53 lha Exp $
+dnl @version $Id: acinclude.m4,v 1.5 2003/07/21 08:16:09 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 AC_DEFUN(CHECK_ZLIB,
@@ -677,7 +686,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: acinclude.m4,v 1.4 2003/05/27 14:45:53 lha Exp $
+dnl @version $Id: acinclude.m4,v 1.5 2003/07/21 08:16:09 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 

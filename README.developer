@@ -29,7 +29,7 @@ their "*.in" variants.  These include:
     db/configure
     db/db_config.h
     db/stamp-h
-    include/htconfig.h
+    include/config.h
     include/stamp.h
     test/test_functions
     test/conf/access.conf

@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtDateTime.h,v 1.16 2003/06/24 20:05:44 nealr Exp $
+// $Id: HtDateTime.h,v 1.17 2003/07/21 08:16:10 angusgb Exp $
 
 ///////
    //   Class for Date and Time
@@ -188,7 +188,7 @@ public:
    void SetDateTime(const time_t *t) { Ht_t = *t; } 	        // by pointer
 
    // Set object time_t value from a struct tm
-   inline void SetDateTime(struct tm *);  	   	       	// by pointer
+   void SetDateTime(struct tm *);  	   	       	// by pointer
    inline void SetDateTime(struct tm &t) { SetDateTime(&t);}    // by reference
 
    // Set GM Time from single values input

@@ -29,7 +29,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: StringMatch.cc,v 1.16 2003/06/24 20:05:45 nealr Exp $
+// $Id: StringMatch.cc,v 1.17 2003/07/21 08:16:11 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -40,7 +40,15 @@
 
 #include <string.h>
 #include <ctype.h>
+
+#ifdef HAVE_STD
+#include <fstream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <fstream.h>
+#endif /* HAVE_STD */
 
 //
 // Entries in the state table can either be normal or final.

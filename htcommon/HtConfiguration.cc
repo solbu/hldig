@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtConfiguration.cc,v 1.7 2003/06/24 20:05:44 nealr Exp $
+// $Id: HtConfiguration.cc,v 1.8 2003/07/21 08:16:10 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -19,9 +19,18 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <stdio.h>
-#include"HtConfiguration.h"
+#include "HtConfiguration.h"
 #include <stdlib.h>
+
+#ifdef HAVE_STD
+#include <fstream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <fstream.h>
+#endif /* HAVE_STD */
+
 #include <stdlib.h>
 #include <ctype.h>
 #include <locale.h>

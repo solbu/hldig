@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.cc,v 1.50 2003/06/24 20:05:44 nealr Exp $
+// $Id: DocumentRef.cc,v 1.51 2003/07/21 08:16:10 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -27,7 +27,15 @@
 #include "HtWordReference.h"
 #include <stdlib.h>
 #include <ctype.h>
+
+#ifdef HAVE_STD
+#include <fstream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <fstream.h>
+#endif /* HAVE_STD */
 
 extern HtConfiguration config;
 

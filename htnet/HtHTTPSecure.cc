@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtHTTPSecure.cc,v 1.3 2003/06/24 19:58:07 nealr Exp $ 
+// $Id: HtHTTPSecure.cc,v 1.4 2003/07/21 08:16:11 angusgb Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -20,7 +20,15 @@
 #ifdef HAVE_SSL_H
 
 #include "HtHTTPSecure.h"
+
+#ifdef HAVE_STD
+#include <iostream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <iostream.h>
+#endif /* HAVE_STD */
 
 // HtHTTPSecure constructor
 //

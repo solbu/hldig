@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Connection.cc,v 1.7 2003/06/24 19:58:06 nealr Exp $
+// $Id: Connection.cc,v 1.8 2003/07/21 08:16:11 angusgb Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -63,8 +63,6 @@
 #endif
 
 typedef void (*SIGNAL_HANDLER) (...);
-
-#include "htconfig.h"
 
 #ifndef _MSC_VER //_WIN32
 extern "C" {

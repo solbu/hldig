@@ -11,11 +11,15 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htsearch.h,v 1.3 2003/06/24 19:56:52 nealr Exp $
+// $Id: htsearch.h,v 1.4 2003/07/21 08:16:11 angusgb Exp $
 //
 
 #ifndef _htsearch_h_
 #define _htsearch_h_
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif
 
 #include "List.h"
 #include "StringList.h"
@@ -33,8 +37,16 @@
 #include "defaults.h"
 
 #include <stdio.h>
-#include <fstream.h>
 #include <stdlib.h>
+
+#ifdef HAVE_STD
+#include <fstream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
+#include <fstream.h>
+#endif /* HAVE_STD */
 
 #ifndef _WIN32
 #include <unistd.h>

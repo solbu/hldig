@@ -11,19 +11,31 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Transport.h,v 1.10 2003/06/24 19:58:07 nealr Exp $
+// $Id: Transport.h,v 1.11 2003/07/21 08:16:11 angusgb Exp $
 //
 //
 
 #ifndef _Transport_H
 #define _Transport_H
 
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif
+
 #include "Object.h"
 #include "HtDateTime.h"
 #include "htString.h"
 #include "URL.h"
 #include "Connection.h"
+
+#ifdef HAVE_STD
+#include <iostream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <iostream.h>
+#endif /* HAVE_STD */
 
 // Declare in advance
 class Transport;

@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: cgi.cc,v 1.6 2003/06/24 20:05:44 nealr Exp $
+// $Id: cgi.cc,v 1.7 2003/07/21 08:16:10 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -33,8 +33,14 @@
 #include <unistd.h>
 #endif
 
+#ifdef HAVE_STD
+#include <fstream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <fstream.h>
-
+#endif /* HAVE_STD */
 
 //*****************************************************************************
 // cgi::cgi()

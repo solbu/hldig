@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htString.h,v 1.22 2003/06/24 20:05:45 nealr Exp $
+// $Id: htString.h,v 1.23 2003/07/21 08:16:11 angusgb Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -18,9 +18,15 @@
 
 #include <stdarg.h>
 #include <stdio.h>
-#ifndef NOSTREAM
+
+#ifdef HAVE_STD
+#include <iostream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <iostream.h>
-#endif /* NOSTREAM */
+#endif /* HAVE_STD */
 
 class String : public Object
 {

@@ -24,16 +24,28 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtCookieMemJar.cc,v 1.7 2003/06/24 19:58:06 nealr Exp $ 
+// $Id: HtCookieMemJar.cc,v 1.8 2003/07/21 08:16:11 angusgb Exp $ 
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif
 
 #include "HtCookieMemJar.h"
 #include "HtCookie.h"
 #include "List.h"
 #include "Dictionary.h"
-#include <iostream.h>
 #include <stdlib.h>
 #include <ctype.h>
+
+#ifdef HAVE_STD
+#include <iostream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
+#include <iostream.h>
+#endif /* HAVE_STD */
 
 // Constructor
 HtCookieMemJar::HtCookieMemJar()

@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: conf_parser.yxx,v 1.4 2003/06/24 20:05:44 nealr Exp $
+// $Id: conf_parser.yxx,v 1.5 2003/07/21 08:16:10 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -25,7 +25,16 @@
 */
 #include <stdio.h> /* for debug */
 #include <stdlib.h>
+
+#ifdef HAVE_STD
+#include <iostream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <iostream.h>
+#endif /* HAVE_STD */
+
 #include "HtConfiguration.h"
 #include "htString.h"
 /*#define YYDEBUG 1*/

@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtFile.cc,v 1.10 2003/06/24 19:58:07 nealr Exp $ 
+// $Id: HtFile.cc,v 1.11 2003/07/21 08:16:11 angusgb Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -29,15 +29,24 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <ctype.h>
+
+#ifdef HAVE_STD
+#include <iostream>
+#include <fstream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <iostream.h>
+#include <fstream.h>
+#endif /* HAVE_STD */
+
 #include <stdio.h> // for sscanf
 #include <sys/stat.h>
 
 #ifndef _MSC_VER //_WIN32
 #include <unistd.h>
 #endif
-
-#include <fstream.h>
 
 #ifdef _MSC_VER //_WIN32
 #include "dirent_local.h"

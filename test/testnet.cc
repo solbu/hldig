@@ -1,4 +1,4 @@
-// $Id: testnet.cc,v 1.10 2002/02/01 22:49:37 ghutchis Exp $
+// $Id: testnet.cc,v 1.11 2003/07/21 08:16:12 angusgb Exp $
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
 #endif /* HAVE_CONFIG_H */
@@ -8,8 +8,18 @@
 #include "HtHTTPBasic.h"
 #include "HtDateTime.h"
 #include <URL.h>
+
+#ifdef HAVE_STD
+#include <iostream>
+#include <iomanip>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <iostream.h>
 #include <iomanip.h>
+#endif /* HAVE_STD */
+
 #include <errno.h>
 #include <string.h>
 

@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Display.cc,v 1.114 2003/06/24 19:58:07 nealr Exp $
+// $Id: Display.cc,v 1.115 2003/07/21 08:16:11 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -32,7 +32,15 @@
 //#include "HtURLRewriter.h"
 #include "SplitMatches.h"
 
+#ifdef HAVE_STD
+#include <fstream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <fstream.h>
+#endif /* HAVE_STD */
+
 #include <stdio.h>
 #include <ctype.h>
 

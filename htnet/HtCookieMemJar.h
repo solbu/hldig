@@ -24,7 +24,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtCookieMemJar.h,v 1.6 2003/06/24 19:58:06 nealr Exp $ 
+// $Id: HtCookieMemJar.h,v 1.7 2003/07/21 08:16:11 angusgb Exp $ 
 //
 
 #ifndef _HTCOOKIE_MEM_JAR_H
@@ -39,7 +39,16 @@
 #include "Dictionary.h"
 #include "List.h"
 #include "HtCookieJar.h"
-#include <iostream.h>   // for ShowSummary()
+
+// for ShowSummary()
+#ifdef HAVE_STD
+#include <iostream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
+#include <iostream.h>
+#endif /* HAVE_STD */
 
 class HtCookieMemJar : public HtCookieJar
 {

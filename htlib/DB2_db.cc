@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DB2_db.cc,v 1.21 2003/06/24 20:05:44 nealr Exp $
+// $Id: DB2_db.cc,v 1.22 2003/07/21 08:16:10 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -20,7 +20,15 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <stdlib.h>
+
+#ifdef HAVE_STD
+#include <fstream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <fstream.h>
+#endif /* HAVE_STD */
 
 #ifndef _MSC_VER //_WIN32
 #include <unistd.h>

@@ -13,7 +13,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: ExternalParser.cc,v 1.26 2003/06/24 20:05:23 nealr Exp $
+// $Id: ExternalParser.cc,v 1.27 2003/07/21 08:16:10 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -305,7 +305,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	{
 	    line.chop('\r');
 	    if (line.length() == 0)
-		get_hdr = FALSE;
+		get_hdr = false;
 	    else if (mystrncasecmp((char*)line, "content-type:", 13) == 0)
 	    {
 		token1 = line.get() + 13;

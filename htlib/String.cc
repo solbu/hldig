@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: String.cc,v 1.37 2003/06/24 20:05:45 nealr Exp $
+// $Id: String.cc,v 1.38 2003/07/21 08:16:11 angusgb Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -25,7 +25,15 @@
 #include <io.h>
 #endif
 
+#ifdef HAVE_STD
+#include <iostream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <iostream.h>
+#endif /* HAVE_STD */
+
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>

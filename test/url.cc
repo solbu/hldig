@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: url.cc,v 1.5 2003/06/24 19:57:28 nealr Exp $
+// $Id: url.cc,v 1.6 2003/07/21 08:16:12 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -20,8 +20,16 @@
 
 #include <unistd.h>
 #include <stdlib.h>
-#include <iostream.h>
 #include <stdio.h>
+
+#ifdef HAVE_STD
+#include <iostream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
+#include <iostream.h>
+#endif /* HAVE_STD */
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H

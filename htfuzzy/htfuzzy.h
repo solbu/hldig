@@ -18,7 +18,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htfuzzy.h,v 1.9 2003/06/24 20:06:19 nealr Exp $
+// $Id: htfuzzy.h,v 1.10 2003/07/21 08:16:10 angusgb Exp $
 //
 
 #ifndef _htfuzzy_h_
@@ -34,7 +34,15 @@
 #include <unistd.h>
 #endif
 
+#ifdef HAVE_STD
+#include <fstream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <fstream.h>
+#endif /* HAVE_STD */
+
 #include <stdio.h>
 
 extern int		debug;

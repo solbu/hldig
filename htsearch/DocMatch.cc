@@ -10,15 +10,25 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocMatch.cc,v 1.6 2003/06/24 19:58:07 nealr Exp $
+// $Id: DocMatch.cc,v 1.7 2003/07/21 08:16:11 angusgb Exp $
 //
 
-#include <iostream.h>
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "DocMatch.h"
 #include "HtConfiguration.h"
 #include "HtWordReference.h"
 
+#ifdef HAVE_STD
+#include <iostream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
+#include <iostream.h>
+#endif /* HAVE_STD */
 
 //*******************************************************************************
 // DocMatch::DocMatch()

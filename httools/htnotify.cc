@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htnotify.cc,v 1.5 2003/06/24 20:05:23 nealr Exp $
+// $Id: htnotify.cc,v 1.6 2003/07/21 08:16:11 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -31,7 +31,16 @@
 #include <unistd.h>
 #endif
 #include <errno.h>
+
+#ifdef HAVE_STD
+#include <fstream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <fstream.h>
+#endif /* HAVE_STD */
+
 #include <time.h>
 #include <stdio.h>
 #include <ctype.h>

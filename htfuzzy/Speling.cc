@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Speling.cc,v 1.9 2003/06/24 20:06:19 nealr Exp $
+// $Id: Speling.cc,v 1.10 2003/07/21 08:16:10 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -24,7 +24,15 @@
 #include "StringMatch.h"
 #include "HtConfiguration.h"
 
+#ifdef HAVE_STD
+#include <fstream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <fstream.h>
+#endif /* HAVE_STD */
+
 #include <stdio.h>
 
 //*****************************************************************************

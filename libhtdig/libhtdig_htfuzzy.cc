@@ -25,9 +25,13 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htfuzzy.cc,v 1.3 2003/06/24 19:56:52 nealr Exp $
+// $Id: libhtdig_htfuzzy.cc,v 1.4 2003/07/21 08:16:11 angusgb Exp $
 //
 //----------------------------------------------------------------
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 extern "C"
 {
@@ -36,10 +40,6 @@ extern "C"
 
 #include "libhtdig_log.h"
 
-
-#ifdef HAVE_CONFIG_H
-#include "htconfig.h"
-#endif                      /* HAVE_CONFIG_H */
 
 //#include "htfuzzy.h"  //NOT USED
 
@@ -61,7 +61,6 @@ extern "C"
 #include <getopt.h>
 #endif
 
-#include "htconfig.h"
 #include "HtConfiguration.h"
 #include "HtWordList.h"
 
@@ -71,7 +70,15 @@ extern "C"
 #include <unistd.h>
 #endif
 
+#ifdef HAVE_STD
+#include <fstream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
 #include <fstream.h>
+#endif /* HAVE_STD */
+
 #include <stdio.h>
 
 

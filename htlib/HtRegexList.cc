@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtRegexList.cc,v 1.3 2003/06/24 20:05:44 nealr Exp $
+// $Id: HtRegexList.cc,v 1.4 2003/07/21 08:16:11 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -46,8 +46,8 @@ HtRegexList::setEscaped(StringList &list, int case_sensitive)
 {
   if (list.Count() == 0)
     {
-      compiled = FALSE;
-      return TRUE;
+      compiled = false;
+      return true;
     }
 
   String  *str;
@@ -80,7 +80,7 @@ HtRegexList::setEscaped(StringList &list, int case_sensitive)
 	    {
 	      	lastErrorMessage = limit->lastError();
 		compiled = 0;
-		return FALSE;
+		return false;
 	    }
 	  limit->set(prevPattern.get(), case_sensitive); // Go back a step
 	  Add(limit);
@@ -90,7 +90,7 @@ HtRegexList::setEscaped(StringList &list, int case_sensitive)
 	    {
 	      	lastErrorMessage = limit->lastError();
 		compiled = 0;
-		return FALSE;
+		return false;
 	    }
 	}
       prevPattern = currentPattern;
@@ -98,7 +98,7 @@ HtRegexList::setEscaped(StringList &list, int case_sensitive)
   Add(limit); // OK, we're done so just add the last compiled pattern
   
   compiled = 1;
-  return TRUE;
+  return true;
 }
 
 int
