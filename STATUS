@@ -1,7 +1,7 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b2: Release date 10 Apr 2000.
+   3.2.0b2: Release date 11 Apr 2000.
    3.2.0b1: Released: 4 Feb 2000.
 
 SHOWSTOPPERS:
@@ -34,6 +34,7 @@ TESTING:
   (htload a test file, check a few characteristics, htdump and compare)
 * Turn on URL parser test as part of test suite.
 * htsearch phrase support tests
+* hopcount testing: are the pages actually indexed in the right order?
 
 DOCUMENTATION:
 * Update cf_* pages to mention new config parser (i.e. URL-dependent config)

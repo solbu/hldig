@@ -1,3 +1,23 @@
+Tue Apr 11 00:21:48 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/htsearch.cc (setupWords): Does not apply fuzzy
+	algorithms to phrase queries. This helps prevent the infinite
+	loops described on the mailing list.
+
+	* htcommon/conf_parser.yxx (list): Add conditions for lists
+	starting with string-number, number-string, and number-number.
+
+	* htcommon/conf_parser.cxx: Regenerate using bison.
+	
+	* htdoc/RELEASE.html: Update release notes for recent bug fixes
+	and likely release date for 3.2.0b2.
+
+	* htdoc/main.html: Add a blurb about the 3.2.0b2 release.
+
+	* htdoc/*.html: Remove author notes in the footer as requested by
+	Andrew. To balance it out, the copyright notice at the top links
+	to THANKS.html.
+
 Sun Apr  9 15:21:12 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/conf_parser.yxx (list): Fix problem with
