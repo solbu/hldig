@@ -89,10 +89,6 @@ AC_MSG_RESULT($db_cv_cxx)
 if test "$db_cv_cxx" = "yes"; then
 	AC_PROG_CXX
 
-	if test "$GXX" = "yes"; then
-		CXXFLAGS="-fhandle-exceptions $CXXFLAGS"
-	fi
-
 	LIBOBJS="$LIBOBJS \$(COBJS)"
 fi
 
@@ -654,6 +650,30 @@ if test "$db_cv_test" = yes; then
 	if test "$db_cv_path_tr" = missing_tr; then
 		AC_MSG_ERROR([No tr utility found.])
 	fi
+fi
+
+CHECK_ZLIB
+
+AC_MSG_CHECKING(shared lib)
+case "$host_os" in
+linux*)	LIBDBSHARED=libdb.so ;;
+esac
+
+if test -n "$LIBDBSHARED"
+then
+	AC_SUBST(LIBDBSHARED)
+	LIBDBSHAREDDEPS="-lstdc++"
+	#
+	# If zlib is included, resolve shared dependencies
+	#
+	if test "$ac_cv_lib_z_inflateEnd" = "yes"
+	then
+		LIBDBSHAREDDEPS="-lz $LIBDBSHAREDDEPS"
+	fi
+	AC_SUBST(LIBDBSHAREDDEPS)
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
 fi
 
 AC_OUTPUT(Makefile include.tcl:../test/include.tcl \

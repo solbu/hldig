@@ -44,7 +44,16 @@ LOBJS=	@LIBOBJS@
 POBJS=	err.o getlong.o
 
 libdb=	libdb.a
-all: $(libdb) $(PROGS)
+
+libdbshared= @LIBDBSHARED@
+
+all: $(libdb) $(libdbshared) $(PROGS)
+
+libdb.so: $(libdb)
+	rm -fr tmp
+	mkdir tmp
+	cd tmp ; ar x ../$(libdb) ; $(CC) -shared @LIBDBSHAREDDEPS@ -o ../libdb.so *.o
+	rm -fr tmp
 
 $(libdb): db.h $(OBJS) $(LOBJS)
 	$(rm) -f $@
@@ -170,6 +179,11 @@ install: all
 	@cd $(libdir) && $(rm) -f $(libdb)
 	@$(cp) -p $(libdb) $(libdir)
 	@cd $(libdir) && $(chmod) $(fmode) $(libdb)
+	@if test -f $(libdbshared) ; then \
+	   ( cd $(libdir) && $(rm) -f $(libdbshared)* ) ; \
+	   $(cp) -p $(libdbshared) $(libdir) ; \
+	   ( cd $(libdir) && ln -s $(libdbshared) $(libdbshared).3 ) ; \
+	fi
 	@echo "Installing DB utilities: $(bindir) ..."
 	@test -d $(bindir) || \
 	    ($(mkdir) -p $(bindir) && $(chmod) $(dmode) $(bindir))

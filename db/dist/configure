@@ -4449,6 +4449,29 @@ fi
 
 
 
+echo $ac_n "checking shared lib""... $ac_c" 1>&6
+echo "configure:4454: checking shared lib" >&5
+case "$host_os" in
+linux*)	LIBDBSHARED=libdb.so ;;
+esac
+
+if test -n "$LIBDBSHARED"
+then
+	
+	LIBDBSHAREDDEPS="-lstdc++"
+	#
+	# If zlib is included, resolve shared dependencies
+	#
+	if test "$ac_cv_lib_z_inflateEnd" = "yes"
+	then
+		LIBDBSHAREDDEPS="-lz $LIBDBSHAREDDEPS"
+	fi
+	
+	echo "$ac_t""yes" 1>&6
+else
+	echo "$ac_t""no" 1>&6
+fi
+
 trap '' 1 2 15
 cat > confcache <<\EOF
 # This file is a shell script that caches the results of configure
@@ -4627,6 +4650,8 @@ s%@db_cv_path_sed@%$db_cv_path_sed%g
 s%@db_cv_path_sleep@%$db_cv_path_sleep%g
 s%@db_cv_path_sort@%$db_cv_path_sort%g
 s%@db_cv_path_tr@%$db_cv_path_tr%g
+s%@LIBDBSHARED@%$LIBDBSHARED%g
+s%@LIBDBSHAREDDEPS@%$LIBDBSHAREDDEPS%g
 
 CEOF
 EOF

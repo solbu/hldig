@@ -1,3 +1,8 @@
+Thu Dec 09 16:47:54 1999  Loic Dachary  <loic@ceic.com>
+
+	* db/dist/configure.in,Makefile.in: Added shared lib support
+	  for linux only. Not enabled if not on linux.
+
 Thu Dec 09 15:07:11 1999  Loic Dachary  <loic@ceic.com>
 
 	* acinclude.m4,db/dist/acinclude.mr: CHECK_ZLIB now fails if either
