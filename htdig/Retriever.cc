@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.79 2003/02/11 09:49:37 lha Exp $
+// $Id: Retriever.cc,v 1.80 2003/04/18 00:08:34 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -963,19 +963,6 @@ Retriever::IsValidURL(const String &u)
       }
 
     //
-    // After that gauntlet, check to see if the server allows it
-    // (robots.txt)
-    //
-    URL	testURL((char*)url);
-    Server *server = (Server *) servers[testURL.signature()];
-    if (server && server->IsDisallowed(url) != 0)
-      {
-	if (debug > 2)
-	  cout << endl << "   Rejected: forbidden by server robots.txt!";
-	return FALSE;
-      }
-
-    //
     // If any of the limits are met, we allow the URL
     //
     if (limits.match(url, 1, 0) == 0) {
@@ -995,6 +982,20 @@ Retriever::IsValidURL(const String &u)
        cout<<endl<<"   Rejected: not in \"limit_normalized\" list!";
        return(FALSE);
     }  
+    
+    //
+    // After that gauntlet, check to see if the server allows it
+    // (robots.txt)
+    //
+    URL	testURL((char*)url);
+    Server *server = (Server *) servers[testURL.signature()];
+    if (server && server->IsDisallowed(url) != 0)
+      {
+	if (debug > 2)
+	  cout << endl << "   Rejected: forbidden by server robots.txt!";
+	return FALSE;
+      }
+
 
   return TRUE;
 }
