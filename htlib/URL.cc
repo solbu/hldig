@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.18.2.8 2001/08/31 21:07:33 grdetil Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.18.2.9 2001/09/27 22:02:11 grdetil Exp $";
 #endif
 
 #include "URL.h"
@@ -13,6 +13,7 @@ static char RCSid[] = "$Id: URL.cc,v 1.18.2.8 2001/08/31 21:07:33 grdetil Exp $"
 #include "Configuration.h"
 #include "StringMatch.h"
 #include "StringList.h"
+#include "HtURLRewriter.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -222,6 +223,13 @@ URL::URL(char *ref, URL &parent)
     _url << _path;
 }
 
+void URL::rewrite()
+{
+      String _old = _url.get();
+      HtURLRewriter::instance()->Replace(_url);
+      if (strcmp(_old.get(), _url.get()) != 0)
+              parse(_url.get());
+}
 
 //*****************************************************************************
 // void URL::parse(char *u)

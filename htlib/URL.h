@@ -1,9 +1,24 @@
 //
 // URL.h
 //
-// $Id: URL.h,v 1.4.2.1 2000/02/16 21:14:59 grdetil Exp $
+// $Id: URL.h,v 1.4.2.2 2001/09/27 22:02:11 grdetil Exp $
 //
 // $Log: URL.h,v $
+// Revision 1.4.2.2  2001/09/27 22:02:11  grdetil
+// * htlib/Makefile.in, htlib/HtRegex.cc, htlib/HtRegex.h,
+//   htlib/HtRegexReplace.cc, htlib/HtRegexReplace.h,
+//   htlib/HtRegexReplaceList.cc, htlib/HtRegexReplaceList.h,
+//   htlib/HtURLRewriter.cc, htlib/HtURLRewriter.h: Added new classes to
+//   support regular expressions and implement url_rewrite_rules attribute,
+//   using Geoff's variation of Andy Armstrong's implementation of this.
+// * htlib/URL.h, htlib/URL.cc: Added URL::rewrite() method.
+// * htlib/htString.h: Added Nth() method for HtRegex class.
+// * htdig/Retriever.cc (got_href, got_redirect): Added calls to
+//   url.rewrite(), and debugging output for this.
+// * htdig/htdig.cc: Added calls to make instance of HtURLRewriter class.
+// * htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
+//   htcommon/defaults.cc: Added url_rewrite_rules attribute.
+//
 // Revision 1.4.2.1  2000/02/16 21:14:59  grdetil
 // htlib/URL.h (encodeURL): Change list of valid characters to include only
 // 	unreserved ones.
@@ -58,6 +73,7 @@ public:
     char		*get()			{return _url;}
     void		dump();
     void		normalize();
+    void		rewrite();
     char		*signature();
 
 private:

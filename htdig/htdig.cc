@@ -4,7 +4,7 @@
 // Indexes the web sites specified in the config file
 // generating several databases to be used by htmerge
 //
-// $Id: htdig.cc,v 1.3.2.8 2001/07/25 22:49:34 ghutchis Exp $
+// $Id: htdig.cc,v 1.3.2.9 2001/09/27 22:02:10 grdetil Exp $
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2001 The ht://Dig Group
@@ -19,6 +19,7 @@
 #include "htdig.h"
 #include "defaults.h"
 #include "HtURLCodec.h"
+#include "HtURLRewriter.h"
 #include "HtWordType.h"
 
 // If we have this, we probably want it.
@@ -161,6 +162,15 @@ main(int ac, char **av)
     if (url_part_errors.length() != 0)
       reportError(form("Invalid url_part_aliases or common_url_parts: %s",
                        url_part_errors.get()));
+
+    //
+    // Check url_rewrite_rules for errors.
+    String url_rewrite_rules = HtURLRewriter::instance()->ErrMsg();
+
+    if (url_rewrite_rules.length() != 0)
+      reportError(form("Invalid url_rewrite_rules: %s",
+                       url_rewrite_rules.get()));
+
 
     //
     // If indicated, change the database file names to have the .work

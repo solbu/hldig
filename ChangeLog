@@ -1,3 +1,24 @@
+Thu Sep 27 16:34:51 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Makefile.in, htlib/HtRegex.cc, htlib/HtRegex.h,
+	htlib/HtRegexReplace.cc, htlib/HtRegexReplace.h,
+	htlib/HtRegexReplaceList.cc, htlib/HtRegexReplaceList.h,
+	htlib/HtURLRewriter.cc, htlib/HtURLRewriter.h: Added new classes to
+	support regular expressions and implement url_rewrite_rules attribute,
+	using Geoff's variation of Andy Armstrong's implementation of this.
+
+	* htlib/URL.h, htlib/URL.cc: Added URL::rewrite() method.
+
+	* htlib/htString.h: Added Nth() method for HtRegex class.
+
+	* htdig/Retriever.cc (got_href, got_redirect): Added calls to
+	url.rewrite(), and debugging output for this.
+
+	* htdig/htdig.cc: Added calls to make instance of HtURLRewriter class.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htcommon/defaults.cc: Added url_rewrite_rules attribute.
+
 Mon Sep 17 16:52:07 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/running.html: New documentation on how to run after configuring.

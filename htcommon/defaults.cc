@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.27 2001/07/26 20:08:50 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.28 2001/09/27 22:02:10 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -165,10 +165,11 @@ ConfigDefaults	defaults[] =
     {"translate_amp",                   "true"},
     {"translate_lt_gt",                 "true"},
     {"translate_quot",                  "true"},
-    {"url_list",			"${database_base}.urls"},
-    {"url_part_aliases",                ""},
-    {"url_log",				"${database_base}.log"},
     {"uncoded_db_compatible",		"true"},
+    {"url_list",			"${database_base}.urls"},
+    {"url_log",				"${database_base}.log"},
+    {"url_part_aliases",		""},
+    {"url_rewrite_rules",		""},
     {"use_doc_date",			"false"},
     {"use_star_image",			"true"},
     {"use_meta_description",            "false"},

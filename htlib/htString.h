@@ -1,7 +1,7 @@
 //
 // Just Another String class.
 //
-// $Id: htString.h,v 1.5.2.1 2001/06/07 20:23:59 grdetil Exp $
+// $Id: htString.h,v 1.5.2.2 2001/09/27 22:02:11 grdetil Exp $
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2001 The ht://Dig Group
@@ -79,6 +79,7 @@ public:
     // Access to specific characters
     //
     char		&operator [] (int n);
+    char		Nth(int n) {return (*this)[n];}
     char		last();
 
     //

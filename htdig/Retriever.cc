@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.24 2001/06/29 16:57:34 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.25 2001/09/27 22:02:10 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -1192,6 +1192,7 @@ Retriever::got_href(URL &url, char *description)
     //
     if (IsValidURL(url.get()))
     {
+	String	oldurl;
 	//
 	// It is valid.  Normalize it (resolve cnames for the server)
 	// and check again...
@@ -1200,9 +1201,16 @@ Retriever::got_href(URL &url, char *description)
 	{
 	    cout << "resolving '" << url.get() << "'\n";
 	    cout.flush();
+	    oldurl = url.get();
 	}
 
 	url.normalize();
+	url.rewrite();
+	if (debug > 2 && strcmp(oldurl.get(), url.get()) != 0)
+	{
+	    cout << "normalized/rewritten as '" << url.get() << "'\n";
+	    cout.flush();
+	}
 
 	// If it is a backlink from the current document,
 	// just update that field.  Writing to the database
@@ -1341,6 +1349,7 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
     //
     if (IsValidURL(url.get()))
     {
+	String	oldurl;
 	//
 	// It is valid.  Normalize it (resolve cnames for the server)
 	// and check again...
@@ -1349,9 +1358,17 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 	{
 	    cout << "resolving '" << url.get() << "'\n";
 	    cout.flush();
+	    oldurl = url.get();
 	}
 
 	url.normalize();
+	url.rewrite();
+	if (debug > 2 && strcmp(oldurl.get(), url.get()) != 0)
+	{
+	    cout << "normalized/rewritten as '" << url.get() << "'\n";
+	    cout.flush();
+	}
+
 	if (limitsn.FindFirst(url.get()) >= 0)
 	{
 	    //
