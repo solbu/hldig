@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62.2.3 2000/01/20 03:52:01 ghutchis Exp $
+// $Id: HTML.cc,v 1.62.2.4 2000/02/02 19:28:13 grdetil Exp $
 //
 
 #include "htdig.h"
@@ -30,6 +30,8 @@ static StringMatch	nobreaktags;
 static StringMatch	spacebeforetags;
 static StringMatch	spaceaftertags;
 static StringMatch	keywordsMatch;
+static int		keywordsCount;
+static int		max_keywords;
 
 
 //*****************************************************************************
@@ -85,6 +87,9 @@ HTML::HTML()
     keywordsMatch.IgnoreCase();
     keywordsMatch.Pattern(keywordNames.Join('|'));
     keywordNames.Release();
+    max_keywords = config.Value("max_keywords", -1);
+    if (max_keywords < 0)
+	max_keywords = (int) ((unsigned int) ~1 >> 1);
     
     word = 0;
     href = 0;
@@ -139,6 +144,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     const String	skip_start = config["noindex_start"];
     const String	skip_end = config["noindex_end"];
 
+    keywordsCount = 0;
     title = 0;
     head = 0;
     meta_dsc = 0;
@@ -630,7 +636,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    char	*w = strtok(tmp, " ,\t\r\n");
 		    while (w)
 		      {
-			if (strlen(w) >= minimumWordLength)
+			if (strlen(w) >= minimumWordLength
+				&& ++keywordsCount <= max_keywords)
 			  retriever.got_word(w, wordindex++, 9);
 			w = strtok(0, " ,\t\r\n");
 		      }
@@ -716,7 +723,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    char	*w = strtok(tmp, " ,\t\r\n");
 		    while (w)
 		    {
-			if (strlen(w) >= minimumWordLength)
+			if (strlen(w) >= minimumWordLength
+				&& ++keywordsCount <= max_keywords)
 			  retriever.got_word(w, wordindex++, 9);
 			w = strtok(0, " ,\t\r\n");
 		    }

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.28 2000/02/02 19:01:03 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.29 2000/02/02 19:28:13 grdetil Exp $
 //
 
 #include "HtConfiguration.h"
@@ -1233,6 +1233,16 @@ http://www.htdig.org/", "
 	or clicks a document is removed from the starting URL.
         <br>
 	The starting page or pages will have hop count 0.
+" },
+{ "max_keywords", "-1", 
+	"number", "htdig", "3.2.0b1", "", "max_keywords: 10", "
+	This attribute can be used to limit the number of keywords
+	per document that htdig will accept from meta keywords tags.
+	A value of -1 or less means no limit. This can help combat meta
+	keyword spamming, by limiting the amount of keywords that will be
+	indexed, but it will not completely prevent irrelevant matches
+	in a search if the first few keywords in an offending document
+	are not relevant to its contents.
 " },
 { "max_meta_description_length", "512", 
 	"number", "htdig", "3.1.0b1", "", "max_meta_description_length: 1000", "

@@ -4759,6 +4759,68 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="max_keywords">
+		max_keywords</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			-1
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b1 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	This attribute can be used to limit the number of keywords
+	per document that htdig will accept from meta keywords tags.
+	A value of -1 or less means no limit. This can help combat meta
+	keyword spamming, by limiting the amount of keywords that will be
+	indexed, but it will not completely prevent irrelevant matches
+	in a search if the first few keywords in an offending document
+	are not relevant to its contents.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  max_keywords:
+				</td>
+				<td nowrap>
+				     10
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="max_meta_description_length">
 		max_meta_description_length</a></strong>
 	  </dt>
@@ -10664,6 +10726,6 @@ http://www.htdig.org/
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
-Last modified: Wed Feb  2 12:57:17 CST 2000
+Last modified: Wed Feb  2 13:23:07 CST 2000
   </body>
 </html>
