@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htnotify.cc,v 1.3 2002/08/09 18:04:11 grdetil Exp $
+// $Id: htnotify.cc,v 1.4 2003/06/23 22:25:12 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -26,7 +26,10 @@
 #include "HtURLCodec.h"
 
 #include <stdlib.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
 #include <errno.h>
 #include <fstream.h>
 #include <time.h>
@@ -36,6 +39,8 @@
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
+#elif HAVE_GETOPT_LOCAL
+#include <getopt_local.h>
 #endif
 
 // Declare a record for storing email/URL data for later retrieval
