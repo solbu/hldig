@@ -1,3 +1,12 @@
+Thu Aug 28 15:11:21 MDT 2003 Neal Richter <nealr@rightnow.com>
+
+    * Changed db/LICENSE file to new LGPL compatible license from Sleepycat
+      Software -- Thanks Sleepycat!
+
+    * Reverted to Revision 1.2 or db/mp_alloc.c  The recent changed cuased
+      large DB growth.  Strangely the files contained no 'new' data, they were
+      just much larger.  Looks like the pages were being flushed too often????
+
 Thu Aug 28 12:41:22 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * global: updated with 'autoreconf -if' (autoconf 2.57, libtool 1.5.0a and
