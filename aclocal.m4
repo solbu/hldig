@@ -66,6 +66,25 @@ AC_MSG_RESULT($TIMEV)
 AC_SUBST(TIMEV)
 ])
 
+# 
+#...
+#
+#extern "C" {
+#extern char *strptime(const char *__s, const char *__fmt, struct tm *__tp);
+#}
+
+AC_DEFUN(AC_FUNC_STRPTIME, [
+AC_CHECK_FUNCS(strptime)
+AC_MSG_CHECKING(for strptime declaration in time.h)
+AC_EGREP_HEADER(strptime, time.h, [
+ AC_DEFINE(HAVE_STRPTIME_DECL)
+ AC_MSG_RESULT(yes)
+], [
+ AC_MSG_RESULT(no)
+])
+
+])
+
 # Do all the work for Automake.  This macro actually does too much --
 # some checks are only needed if your package does certain things.
 # But this isn't really a big deal.

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.49 1999/08/09 21:20:06 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.50 1999/08/12 09:26:24 loic Exp $";
 #endif
 
 #include <signal.h>
@@ -22,6 +22,12 @@ static char RCSid[] = "$Id: Document.cc,v 1.49 1999/08/09 21:20:06 grdetil Exp $
 #include "PDF.h"
 #include "ExternalParser.h"
 #include "lib.h"
+
+#ifndef HAVE_STRPTIME_DECL
+extern "C" {
+extern char *strptime(const char *__s, const char *__fmt, struct tm *__tp);
+}
+#endif /* HAVE_STRPTIME_DECL */
 
 #if 1
 typedef void (*SIGNAL_HANDLER) (...);
@@ -209,8 +215,8 @@ Document::getdate(char *datestring)
         s = datestring;
     while (isspace(*s))
         s++;
-    if (strchr(s, '-') && Htstrptime(s, "%d-%b-%y %T", &tm) ||
-            Htstrptime(s, "%d %b %Y %T", &tm))
+    if (strchr(s, '-') && strptime(s, "%d-%b-%y %T", &tm) ||
+            strptime(s, "%d %b %Y %T", &tm))
       {
 	// correct for mystrptime, if %Y format saw only a 2 digit year
 	if (tm.tm_year < 0)

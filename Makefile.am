@@ -13,7 +13,7 @@ EXTRA_DIST = .version Makefile.config ChangeLog.0
 #
 distclean-local:
 	if echo "@HTDIGDIRS@" | grep 'test ' > /dev/null ; \
-	then : \
+	then : ; \
 	else \
 		rm -f test/Makefile ; \
 	fi

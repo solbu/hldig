@@ -27,6 +27,8 @@
 # include <config.h>
 #endif
 
+#ifndef HAVE_STRPTIME
+
 #include <ctype.h>
 #include <langinfo.h>
 #include <limits.h>
@@ -813,7 +815,7 @@ strptime_internal (buf, format, tm, decided)
 
 
 char *
-Htstrptime (buf, format, tm)
+strptime (buf, format, tm)
      const char *buf;
      const char *format;
      struct tm *tm;
@@ -826,3 +828,4 @@ Htstrptime (buf, format, tm)
 #endif
   return strptime_internal (buf, format, tm, &decided);
 }
+#endif /* HAVE_STRPTIME */

@@ -3,6 +3,11 @@
 #include <string.h>
 #include <iostream.h>
 
+#ifndef HAVE_STRPTIME_DECL
+extern "C" {
+extern char *strptime(const char *__s, const char *__fmt, struct tm *__tp);
+}
+#endif /* HAVE_STRPTIME_DECL */
 
 ///////
    //    Static local variable : Visible only here !!!
@@ -58,7 +63,7 @@ char *HtDateTime::SetFTime(char *buf, const char *format)
 
    ToGMTime();    // This must be set cos strptime always stores in GM 
 
-   p = (char *) Htstrptime (buf, (char *) format, & Ht_tm);
+   p = (char *) strptime (buf, (char *) format, & Ht_tm);
 
 #ifdef TEST_HTDATETIME
 //   ViewStructTM(& Ht_tm);
@@ -760,16 +765,6 @@ int HtDateTime::DateTimeCompare(const struct tm *tm1, const struct tm *tm2)
    // Equal
    return 0;
 }
-
-char * HtDateTime::Htstrptime (  char *buf,
-   	       	   	       	   char *format,
-   	       	   	       	   struct tm *tm)
-{
-
-   return (char *) ::Htstrptime (buf, format, tm); // Has it to be changed ?
-   
-}
-
 
 time_t HtDateTime::Httimegm (struct tm *tm)
 {

@@ -1,3 +1,10 @@
+Thu Aug 12 11:21:12 1999  Loic Dachary  <loic@ceic.com>
+
+	* strptime fixes : AC_FUNC_STRPTIME defined in acinclude.m4 and used in configure.in,
+	  conditional compilation of strptime.c (only if HAVE_STRPTIME not defined),
+	  removed Htstrptime (strptime.c now defines strptime), changed all calls to Htstrptime
+	  to calls to strptime.
+
 Wed Aug 11 16:59:41 1999  Loic Dachary  <loic@ceic.com>
 
 	* */Makefile.am: use -release instead of -version-info because nobody

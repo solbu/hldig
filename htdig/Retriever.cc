@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.55 1999/08/10 01:20:28 ghutchis Exp $
+// $Id: Retriever.cc,v 1.56 1999/08/12 09:26:24 loic Exp $
 //
 
 #include "Retriever.h"
@@ -21,6 +21,12 @@
 #include <assert.h>
 #include <stdio.h>
 #include <sys/stat.h>
+
+#ifndef HAVE_STRPTIME_DECL
+extern "C" {
+extern char *strptime(const char *__s, const char *__fmt, struct tm *__tp);
+}
+#endif /* HAVE_STRPTIME_DECL */
 
 static WordList	words;
 static int noSignal;
@@ -969,7 +975,7 @@ Retriever::got_time(char *time)
     // In the future, we'll need to deal with the scheme portion
     //  in case someone picks a different format.
     //
-    if (Htstrptime(time, "%Y-%m-%d", &tm))
+    if (strptime(time, "%Y-%m-%d", &tm))
       {
 #if HAVE_TIMEGM
         new_time = timegm(&tm);

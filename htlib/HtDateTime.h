@@ -427,9 +427,6 @@ protected: 		// to permit inheritance
    //   Interface for system functions
 ///////
 
-   // Interface for strptime
-   static char * Htstrptime (char *buf, char *format,
-   	       	   	       	struct tm *tm);
    // Interface for timegm
    static time_t Httimegm (struct tm*);
    

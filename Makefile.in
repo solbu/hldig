@@ -406,7 +406,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 #
 distclean-local:
 	if echo "@HTDIGDIRS@" | grep 'test ' > /dev/null ; \
-	then : \
+	then : ; \
 	else \
 		rm -f test/Makefile ; \
 	fi

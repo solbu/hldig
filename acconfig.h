@@ -41,3 +41,5 @@ typedef char bool;
 /* Define if you need a prototype for gethostname() */
 #undef NEED_PROTO_GETHOSTNAME
 
+/* Define if the function strptime is declared in <time.h> */
+#undef HAVE_STRPTIME_DECL
