@@ -1,64 +1,42 @@
 //
 // htnotify.cc
 //
-// Implementation of htnotify
+// htnotify: Check through databases and look for notify META information
+//           Send e-mail to addresses mentioned in documents if the doc
+//           has "expired"
 //
-// $Log: htnotify.cc,v $
-// Revision 1.9  1998/11/06 23:41:38  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Fixed buglet with -F flag to sendmail.
+// $Id: htnotify.cc,v 1.23.2.1 1999/11/24 01:42:38 grdetil Exp $
 //
-// Revision 1.8  1998/11/02 20:36:30  ghutchis
-//
-// Changed HTDig to ht://Dig.
-//
-// Revision 1.7  1998/10/02 17:07:32  ghutchis
-//
-// More configure changes
-//
-// Revision 1.6  1998/09/23 14:58:22  ghutchis
-//
-// Many, many bug fixes
-//
-// Revision 1.5  1998/08/03 16:50:44  ghutchis
-//
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.4  1998/07/22 10:04:28  ghutchis
-//
-// Added patches from Sylvain Wallez <s.wallez.alcatel@e-mail.com> to
-// Display.cc to use the filename if no title is found and Chris Jason
-// Richards <richards@cs.tamu.edu> to htnotify.cc to fix problems with sendmail.
-//
-// Revision 1.3  1997/06/23 02:27:24  turtle
-// Added version info to the usage output
-//
-// Revision 1.2  1997/03/13 18:37:50  turtle
-// Changes
-//
-// Revision 1.1.1.1  1997/02/03 17:11:11  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.9 1998/11/06 23:41:38 ghutchis Exp $";
-#endif
 
-#include <Configuration.h>
-#include <DocumentDB.h>
-#include <DocumentRef.h>
-#include <defaults.h>
+#include "Configuration.h"
+#include "DocumentDB.h"
+#include "DocumentRef.h"
+#include "defaults.h"
+#include "HtURLCodec.h"
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 #include <fstream.h>
 #include <time.h>
 #include <stdio.h>
+#include <ctype.h>
 
+// If we have this, we probably want it.
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
+#endif
 
 void htnotify(DocumentRef &);
 void usage();
 void send_notification(char *date, char *email, char *url, char *subject);
+int parse_date(char *date, int &year, int &month, int &day);
 
 
 int	verbose = 0;
@@ -77,7 +55,7 @@ struct tm	*today;
 int main(int ac, char **av)
 {
     int			c;
-    extern char	*optarg;
+    extern char		*optarg;
     String		base;
     String		configFile = DEFAULT_CONFIG_FILE;
 
@@ -103,6 +81,18 @@ int main(int ac, char **av)
     config.Defaults(&defaults[0]);
     config.Read(configFile);
 
+    //
+    // Check url_part_aliases and common_url_parts for
+    // errors.
+    String url_part_errors = HtURLCodec::instance()->ErrMsg();
+
+    if (url_part_errors.length() != 0)
+    {
+      cerr << form("htnotify: Invalid url_part_aliases or common_url_parts: %s",
+                   url_part_errors.get()) << endl;
+      exit (1);
+    }
+
     if (base.length())
     {
 	config.Add("database_base", base);
@@ -110,8 +100,13 @@ int main(int ac, char **av)
 
     String	doc_db = config["doc_db"];
     DocumentDB	docdb;
+
+    // Check "uncompressed"/"uncoded" urls at the price of time
+    // (extra DB probes).
+    docdb.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
+
     docdb.Read(doc_db);
-    List	*docs = docdb.URLs();
+    List	*docs = docdb.DocIDs();
 
     //
     // Compute today's date
@@ -123,12 +118,14 @@ int main(int ac, char **av)
     // Traverse all the known documents to check for notification requirements
     //
     DocumentRef	*ref;
-    String		*str;
+    IntObject		*id;
     docs->Start_Get();
-    while ((str = (String *) docs->Get_Next()))
+    while ((id = (IntObject *) docs->Get_Next()))
     {
-	ref = docdb[str->get()];
-	htnotify(*ref);
+	ref = docdb[id->Value()];
+	if (ref)
+	    htnotify(*ref);
+	delete ref;
     }
     delete docs;
     docdb.Close();
@@ -157,17 +154,29 @@ void htnotify(DocumentRef &ref)
 	}
 
 	int		month, day, year;
-	if (config.Boolean("iso_8601"))
-	  {
-	    sscanf(date, "%d-%d-%d", &year, &month, &day);
-	  }
-	else
-	  {
-	    sscanf(date, "%d/%d/%d", &month, &day, &year);
-	  }
+	if (!parse_date(date, year, month, day))
+	{
+	    // Parsing Failed
+	    if (verbose > 1)
+	    {
+		cout << "Malformed date: " << date << endl;
+	    }
 
-	if (year > 1900)
-	    year -= 1900;
+	    send_notification(date, email, ref.DocURL(), "Malformed Date");
+
+	    if (verbose)
+	    {
+		cout << "Message sent." << endl;
+		cout << "Date:    " << date << endl;
+		cout << "URL:     " << ref.DocURL() << endl;
+		cout << "Subject: Malformed Date" << endl;
+		cout << "Email:   " << email << endl;
+		cout << endl;
+	    }
+	    return;
+	}
+
+	year -= 1900;
 	month--;
 
 	//
@@ -193,6 +202,16 @@ void htnotify(DocumentRef &ref)
 		cout << endl;
 	    }
 	}
+	else
+	{
+	    // Page not yet expired
+	    if (verbose)
+	    {
+		cout << "htnotify: URL " << ref.DocURL()
+		     << " (" << year+1900 << "-" << month+1
+		     << "-" << day << ")" << endl;
+	    }
+	}
     }
 }
 
@@ -202,27 +221,40 @@ void htnotify(DocumentRef &ref)
 //
 void send_notification(char *date, char *email, char *url, char *subject)
 {
-  /* Currently unused    int		fildes[2]; */
-    String	to = email;
+    String	command = SENDMAIL;
+    command << " -t -F '\"ht://Dig Notification Service\"' -f \"";
+    command << config["htnotify_sender"] << '"';
 
-    String command = SENDMAIL;
-    command << " -F \"ht://Dig Notification Service\" -f ";
-    command << config["htnotify_sender"];
-
-    char *token = strtok(to, " ,\t\r\n");
+    String	em = email;
+    String	to = "";
+    char	*token = strtok(em.get(), " ,\t\r\n");
     while (token)
     {
-      command << " " << token;
-      token = strtok(0, " ,\t\r\n");
+	if (*token)
+	{
+	    if (to.length())
+		to << ", ";
+	    to << token;
+	}
+	token = strtok(0, " ,\t\r\n");
     }
+
+// Before we use the email address string, we may want to sanitize it.
+//    static char ok_chars[] = "abcdefghijklmnopqrstuvwxyz
+//    ABCDEFGHIJKLMNOPQRSTUVWXYZ
+//    1234567890_-.@/=+:%!, ";
+//    char *cursor;          // cursor into email address 
+//    for (cursor = to.get(); *(cursor += strspn(cursor, ok_chars));)
+//      *cursor = '_'; // Set it to something harmless
     
     FILE *fileptr;
-    if( (fileptr = popen(command.get(), "w")) != NULL ) {
+    if ( (fileptr = popen(command.get(), "w")) != NULL ) {
 
       if (!subject || !*subject)
-	subject = "notification";
+	subject = "page expired";
       String	out;
-      out << "From: " << config["htnotify_sender"] << "\n";
+      out << "From: \"ht://Dig Notification Service\" <"
+	  << config["htnotify_sender"] << ">\n";
       out << "Subject: WWW notification: " << subject << '\n';
       out << "To: " << to.get() << '\n';
       out << "Reply-To: " << config["htnotify_sender"] << "\n";
@@ -252,7 +284,7 @@ void send_notification(char *date, char *email, char *url, char *subject)
 
 
 //*****************************************************************************
-// Display usage information for the htdig program
+// Display usage information for the htnotify program
 //
 void usage()
 {
@@ -270,3 +302,64 @@ void usage()
 }
 
 
+//*****************************************************************************
+// Parse the notification date string from the user's document
+//
+int parse_date(char *date, int &year, int &month, int &day)
+{
+    int		mm = -1, dd = -1, yy = -1, t;
+    String	scandate = date;
+
+    for (char *s = scandate.get(); *s; s++)
+	if (ispunct(*s))
+	    *s = ' ';
+
+    if (config.Boolean("iso_8601"))
+    {
+	// conf file specified ISO standard, so expect [yy]yy mm dd.
+	sscanf(scandate.get(), "%d%d%d", &yy, &mm, &dd);
+    }
+    else
+    {
+	// Default to American standard when not specified in conf,
+	// so expect mm dd [yy]yy.
+	sscanf(scandate.get(), "%d%d%d", &mm, &dd, &yy);
+	if (mm > 31 && dd <= 12 && yy <= 31)
+	{
+	    // probably got yyyy-mm-dd instead of mm/dd/yy
+	    t = mm; mm = dd; dd = yy; yy = t;
+	}
+    }
+
+    // OK, we took our best guess at the order the y, m & d should be.
+    // Now let's see if we guessed wrong, and fix it.  This won't work
+    // for ambiguous dates (e.g. 01/02/03), which must be given in the
+    // expected format.
+    if (dd > 31 && yy <= 31)
+    {
+	t = yy; yy = dd; dd = t;
+    }
+    if (mm > 31 && yy <= 31)
+    {
+	t = yy; yy = mm; mm = t;
+    }
+    if (mm > 12 && dd <= 12)
+    {
+	t = dd; dd = mm; mm = t;
+    }
+    if (yy < 0 || mm < 1 || mm > 12 || dd < 1 || dd > 31)
+	return 0;		// Invalid date
+
+    if (yy < 70)		// before UNIX Epoch
+	yy += 2000;
+    else if (yy < 1900)		// before computer age
+	yy += 1900;
+    if (verbose > 1)
+	cout << "Date used (y-m-d): " << yy << '-' << mm << '-' << dd << endl;
+
+    year = yy;
+    month = mm;
+    day = dd;
+
+    return 1;
+}

@@ -1,3 +1,8 @@
+Tue Nov 23 19:29:37 CST 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htnotify/htnotify.cc(send_notification): apply Jason Haar's fix
+	to quote the sender name "ht://Dig Notification Service".
+
 Tue Nov 23 19:46:00 EET 1999  Vadim Chekan  <vadim@etc.lviv.ua>
 
 	* conf.tab.cc.h conf.l.cc conf.tab.cc
