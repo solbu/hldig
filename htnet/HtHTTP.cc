@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.13 1999/10/08 09:49:20 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.14 1999/10/08 11:51:21 angus Exp $ 
 //
 
 #include "lib.h"
@@ -182,6 +182,9 @@ Transport::DocStatus HtHTTP::HTTPRequest()
 
    ConnectionStatus result;
 
+   // Assign the timeout
+   AssignConnectionTimeOut();
+
    // Start the timer
    _start_time.SettoNow();
    
@@ -276,9 +279,6 @@ Transport::DocStatus HtHTTP::HTTPRequest()
 
    // Writes the command
    ConnectionWrite(command);
-
-   // Assign the timeout
-   AssignConnectionTimeOut();
 
    // Parse the header
    if (ParseHeader() == -1) // Connection down
@@ -632,8 +632,13 @@ int HtHTTP::ParseHeader()
 
     if (_response._modification_time == NULL && modification_time_is_now)
     {
+      if (debug > 3)
+         cout << "No modification time returned: assuming now" << endl;
+         
          //Set the modification time
 	_response._modification_time = new HtDateTime;
+        _response._modification_time->ToGMTime(); // Set to GM time
+
     }
     
     return 1;
@@ -950,10 +955,6 @@ int HtHTTP::ReadChunkedBody()
    
    // Ignoring next part of the body - the TRAILER
    // (it contains further headers - not implemented)
-
-   // I think we must add some code because it doesn't recognize the end
-   // of stream or something similar. It waits for the timeout and the connection
-   // falls down ...
 
    _response._content_length = length;
 

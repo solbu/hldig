@@ -1,3 +1,8 @@
+Fri Oct 08 13:44:32 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* HtHTTP.cc: fixed a little bug in setting the modification time
+	  if not returned by the server.
+
 Fri Oct 08 11:30:53 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* HtHTTP.cc: better management of connection failures return values.
