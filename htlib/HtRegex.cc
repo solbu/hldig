@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.cc,v 1.2 1999/05/05 00:41:53 ghutchis Exp $
+// $Id: HtRegex.cc,v 1.3 1999/05/15 17:11:03 ghutchis Exp $
 //
 //
 #include "HtRegex.h"
@@ -39,6 +39,39 @@ HtRegex::set(char * str)
 	if (strlen(str) <= 0) return;
 	if (regcomp(&re, str, REG_EXTENDED|REG_ICASE) == 0)
 		compiled = 1;
+}
+
+void
+HtRegex::setEscaped(StringList &list)
+{
+    String *str;
+    String transformedLimits;
+    list.Start_Get();
+    while ((str = (String *) list.Get_Next()))
+      {
+	if (str->indexOf('[') == 0 && str->lastIndexOf(']') == str->length()-1)
+	  {
+	    transformedLimits += str->sub(1,str->length()-2);
+	  }
+	else 	// Backquote any regex special characters
+	  {
+	    for (int pos = 0; pos <= str->length(); pos++)
+	      {  // These look a bit weird because of compiler escaping
+		//  (is that escaping escaping to do escaping ? :-)
+		if ( str->Nth(pos) == '.' )
+		  transformedLimits << '\\' << '.';
+		else if ( str->Nth(pos) == '?' )
+		  transformedLimits << '\\' << '?';
+		else if ( str->Nth(pos) == '+' )
+		  transformedLimits << '\\' << '+';
+		else
+		  transformedLimits << str->Nth(pos);
+	      }
+	  }
+	transformedLimits += "|";
+      }
+    transformedLimits.chop(1);
+    set(transformedLimits);
 }
 
 int
