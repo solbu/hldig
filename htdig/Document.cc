@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.4 1999/11/08 15:16:40 toivo Exp $
+// $Id: Document.cc,v 1.55.2.5 1999/11/21 16:37:01 vadim Exp $
 //
 
 #include <signal.h>
@@ -60,7 +60,7 @@ Document::Document(char *u, int max_size)
     if (max_size > 0)
 	max_doc_size = max_size;
     else
-	max_doc_size = config.Value("max_doc_size");
+	max_doc_size = config.Value("url",u,"max_doc_size");
 
    if (config.Value("max_retries") > 0)
       num_retries = config.Value("max_retries");
@@ -297,7 +297,7 @@ Document::Retrieve(HtDateTime date)
       transportConnect->SetTimeOut(config.Value("timeout"));
       
       // OK. Let's set the maximum size of a document to be retrieved
-      transportConnect->SetRequestMaxDocumentSize(config.Value("max_doc_size"));
+      transportConnect->SetRequestMaxDocumentSize(config.Value(url,"max_doc_size"));
       
       // Let's set the credentials
       if (authorization.length())
