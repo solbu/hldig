@@ -4,6 +4,9 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.10  1999/01/05 19:33:01  ghutchis
+// Support restriction of max_descriptions.
+//
 // Revision 1.9  1998/12/08 02:52:50  ghutchis
 // Fix typo that added description text that contained punctuation or was too
 // short.
@@ -303,42 +306,52 @@ void DocumentRef::AddDescription(char *d)
     String	desc = d;
     desc.chop(" \t");
 
-    descriptions.Start_Get();
-    String	*description;
-    while ((description = (String *) descriptions.Get_Next()))
-    {
-        if (mystrcasecmp(description->get(), desc) == 0)
-            return;
-    }
-    descriptions.Add(new String(desc));
-
     // Add the description text to the word database with proper factor
+    // Do this first because we may have reached the max_description limit
+    // This also ensures we keep the proper weight on descriptions 
+    // that occur many times
 
-    static WordList words;
-    words.WordTempFile(config["word_list"]);
-    words.BadWordFile(config["bad_word_list"]);
+    static WordList *words = 0;
+    
+    if (!words) // Hey... We only want to do this once, right?
+    {
+	words = new WordList();
+	words.WordTempFile(config["word_list"]);
+	words.BadWordFile(config["bad_word_list"]);
+    }
+
     words.DocumentID(docID);
     
-    char       *valid_punctuation = config["valid_punctuation"];
-    int         minimumWordLength = config.Value("minimum_word_length", 3);
-    double      desc_factor = config.Double("description_factor");
-
     char    *w = strtok(desc, " ,\t\r\n");
     while (w)
       {
-	if (strlen(w) >= minimumWordLength)
+	if (strlen(w) >= config.Value("minimum_word_length", 3))
 	  {
 	    String word = w;
 	    word.lowercase();
-	    word.remove(valid_punctuation);
-	    if (word.length() >= minimumWordLength)
-	      words.Word(word, 0, 0, desc_factor);
+	    word.remove(config["valid_punctuation"]);
+	    if (word.length() >= config.Value("minimum_word_length", 3))
+	      words.Word(word, 0, 0, config.Double("description_factor"));
 	  }
 	w = strtok(0, " ,\t\r\n");
       }
     w = '\0';
     // And let's flush the words!
     words.Flush();
+    
+    // Now are we at the max_description limit?
+    if (descriptions.Count() >= config.Value("max_descriptions", 5);
+  	return;
+  	
+    descriptions.Start_Get();
+    String	*description;
+    while ((description = (String *) descriptions.Get_Next()))
+    {
+        if (mystrcasecmp(description->get(), desc) == 0)
+            return;
+	delete description;
+    }
+    descriptions.Add(new String(desc));
 }
 
 
@@ -347,7 +360,8 @@ void DocumentRef::AddDescription(char *d)
 //
 void DocumentRef::AddAnchor(char *a)
 {
-    docAnchors.Add(new String(a));
+    if (a)
+    	docAnchors.Add(new String(a));
 }
 
 
