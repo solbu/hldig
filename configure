@@ -2415,19 +2415,20 @@ cross_compiling=$ac_cv_prog_cc_cross
 
 echo $ac_n "checking how to call getpeername?""... $ac_c" 1>&6
 echo "configure:2418: checking how to call getpeername?" >&5
+for sock_t in 'struct sockaddr' 'void'; do
 for getpeername_length_t in 'size_t' 'int' 'unsigned int'; do
 cat > conftest.$ac_ext <<EOF
-#line 2421 "configure"
+#line 2422 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #include <sys/socket.h>
 int main() {
-extern getpeername(int, struct sockaddr *, $getpeername_length_t *)
+extern getpeername(int, $sock_t *, $getpeername_length_t *)
 ; return 0; }
 EOF
-if { (eval echo configure:2429: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2430: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
-  ac_found=yes ; break 1
+  ac_found=yes ; break 2
 else
   echo "configure: failed program was:" >&5
   cat conftest.$ac_ext >&5
@@ -2435,6 +2436,7 @@ else
   ac_found=no
 fi
 rm -f conftest*
+done
 done
   if test "$ac_found" = no; then
     { echo "configure: error: can't determine argument type" 1>&2; exit 1; }
@@ -2455,7 +2457,7 @@ cross_compiling=$ac_cv_prog_cc_cross
 # Extract the first word of "tsort", so it can be a program name with args.
 set dummy tsort; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:2459: checking for $ac_word" >&5
+echo "configure:2461: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_TSORT'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
