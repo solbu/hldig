@@ -3,7 +3,7 @@
   <head>
 	<title>
 	  ht://Dig: How it works
-	</title> 
+	</title>
         <link rel="stylesheet" href="htdig.css">
   </head>
   <body bgcolor="#eef7ff">
@@ -12,15 +12,15 @@
 	</h1>
 	<p>
 	  ht://Dig Copyright &copy; 1995-2002 <a href="THANKS.html">The ht://Dig Group</a><br>
-	  Please see the file <a href="../COPYING">COPYING</a> for
+	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
 	<hr size="4" noshade>
-	<p>
+	<p class="main">
 	  The system performs three major tasks that should be
 	  performed in the following order:
 	</p>
-	<h3>
+	<h3>1. &nbsp;
 	  <a href="#Digging">Digging</a>
 	</h3>
 	<dl>
@@ -29,29 +29,33 @@
 		need to be searched has to be created.
 	  </dd>
 	</dl>
-	<h3>
+	<h3>2. &nbsp;
 	  <a href="#Merging">Merging</a>
 	</h3>
 	<dl>
 	  <dd>
-		Once the document database has been created, it has to be
-		converted to something that can be searched quickly. Also,
-		if you want to only update changed documents, these changes
-		have to be merged into the searchable database.<br>
+	        Merging consists of two processes:
+		<ol>
+		<li>Converting the databases of all documents to
+		specialized databases for simple, fast searching.</li>
+		<li>Merging changed information into previously
+		existing databases.</li>
+		</ol>
 		 Even though this task could be performed at the same time
 		as the Digging, it is a separate process for efficiency
-		reasons. It also gives more flexibility to what actually
-		happens at merge time.
+		reasons. This also allows for more control over the
+		processes implemented when merging.
 	  </dd>
 	</dl>
-	<h3>
+	<h3>3. &nbsp;
 	  <a href="#Searching">Searching</a>
 	</h3>
 	<dl>
 	  <dd>
 		Finally, the databases that were created in the previous
-		steps can be used to perform actual searches. Normally,
-		searches will be invoked by a CGI program which gets its
+		steps can be used for actual searches. Normally,
+		searches will be invoked by a CGI (Common Gateway
+		Interface; a program running on the webserver) which gets
 		input from the user through an HTML form.
 	  </dd>
 	</dl>
@@ -59,7 +63,7 @@
 	<h3>
 	  <a name="Digging">Digging</a>
 	</h3>
-	<p>
+	<p class="main">
 	  Digging is the first step in creating a search database. This
 	  system uses the word <i>digging</i> while other systems call
 	  it <i>harvesting</i> or <i>gathering</i>. In the ht://Dig
@@ -69,33 +73,45 @@
 	  <em>all</em> hyperlinks that it comes across. (Actually, it
 	  will not follow all of them, just those that are within the
 	  domain it needs to gather information on...)<br>
-	   Each document it goes to is examined and all the unique
-	  words in this document are extracted and stored.
+	   Each document it visits is examined and all the unique
+	  words in this document are extracted and stored, excepting
+	  those specified as <a href="attrs.html#minimum_word_length">
+	  too short</a>, <a href="attrs.html#maximum_word_length">too
+	  long</a>, or <a href="attrs.html#bad_words_list">to be
+	  excluded</a> by the configuration.
 	</p>
-	<p>
+	<p class="main">
 	  The digging process will create at least two files. The first
 	  one is the list of all the words and the second one is a
-	  database of URLs and information about the URLs.
+	  database of URLs and information about the URLs. Other files
+	  may be created for a list of all <a
+	  href="attrs.html#create_url_list">URLs seen</a>, <a
+	  href="attrs.html#create_image_list">all images seen</a>, <a
+	  href="attrs.html#doc_list">ASCII versions</a> of the
+	  databases, etc.
 	</p>
 	<hr noshade>
 	<h3>
 	  <a name="Merging">Merging</a>
 	</h3>
-	<p>
-	  Once the digging process has completed, it needs to be
+	<p class="main">
+	  Once the digging process is complete, the data must be
 	  converted into something the search engine can actually use.
-	  The <a href="htmerge.html">htmerge</a> program will use the
-	  information from previous digs to create a database that the
-	  search engine can use. It uses the term 'merge' because it
-	  will take data from several databases and merges them into
-	  several other databases. The source databases include the
-	  databases created by the Digging process but also a previous
-	  merged databases. These old databases are used if the Digging
-	  process produced information only for documents which have
-	  changed.
+	  The <a href="htmerge.html">htmerge</a> program does this.
 	</p>
-	<p>
-	  There are several optional tasks which also fit into the
+	  The term &quot;merge&quot; is used
+	  because data from several databases is gathered together and
+	  merged into several other databases. The source databases
+	  include the databases created by the latest &quot;dig&quot; but also
+	  any previous merged databases. The latest dig will produce a
+	  database that provides information on new pages and
+	  information on changes to previously existing pages; the
+	  information on the new pages, and the new information on
+	  changes to old pages is merged with the unchanged
+	  information to create up-to-date databases.
+	</p>
+	<p class="main">
+	  There are other, optional, tasks which are categorized under the
 	  merge phase:
 	</p>
 	<dl>
@@ -103,22 +119,21 @@
 		Expiration notification:
 	  </dt>
 	  <dd>
-		The ht://Dig system includes a handy reminder service which
+		The ht://Dig system includes a handy reminder service,
+		&quot;<a href="htnotify.html">htnotify</a>.&quot; This
 		allows HTML authors to add some ht://Dig specific meta
 		information in HTML documents. This meta information is
 		used to email authors after a specified date. Very useful
 		to maintain lists that contain those annoying 'new'
 		graphics with new items. (Hint: things really aren't all
 		that 'new' anymore after 6 months!)<br>
-		 The <a href="htnotify.html">htnotify</a> program performs
-		this task.
 	  </dd>
 	  <dt>
 		Fuzzy word index creation:
 	  </dt>
 	  <dd>
-		To allow the searches to use "fuzzy" algorithms to match
-		words, the <a href="htfuzzy.html">htfuzzy</a> program can
+		Allows searches using &quot;fuzzy&quot; algorithms to match
+		words. The <a href="htfuzzy.html">htfuzzy</a> program can
 		create indexes for several different algorithms.
 	  </dd>
 	</dl>
@@ -126,17 +141,17 @@
 	<h3>
 	  <a name="Searching">Searching</a>
 	</h3>
-	<p>
-	  Searching is where the users actually get to use all the
-	  information that was gathered during the dig and merge
-	  stages. The <a href="htsearch.html" target="_top">
-	  htsearch</a> program performs the actual searches. It
-	  produces <tt>HTML</tt> output which will be seen by the
-	  users.
+	<p class="main">
+	  Searching is where all the information gathered and
+	  organized during the dig and merge stages gets put to use.
+	  The <a href="htsearch.html" target="_top">
+	  htsearch</a> program performs the actual searches. The CGI
+	  program, using the HTML &quot;search form&quot; on the
+	  website as input performs the search and produces the HTML
+	  output (or, the &quot;failed search&quot;) which is seen by users.
 	</p>
 	<hr size="4" noshade>
 
-Last modified: $Date: 2002/01/27 05:33:20 $
-
+	Last modified: $Date: 2002/01/28 03:56:10 $
   </body>
 </html>

@@ -1,5 +1,10 @@
 #!/usr/local/bin/perl
 
+# Use the environment-determined locale for word parsing, etc.
+# Note that it's much easier to do all of this as an external converter
+# and let htdig worry about the locale, etc.
+use locale;
+
 # 1998/12/10
 # Added:        push @allwords, $fields[$x];   <carl@dpiwe.tas.gov.au>
 # Replaced:     matching patterns. they match words starting or ending with ()[]'`;:?.,! now, not when in between!

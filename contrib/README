@@ -16,14 +16,18 @@ What's here:
 acroconv.pl	An external converter script that uses acroread to parse PDFs
 autorun		An example of automating the database building
 changehost	A script to change hostnames of URLs in the databases
-conv_doc.pl	A sample script to use the conversion features of external_parsers
+conv_doc.pl	A sample script to use the conversion features of 
+		external_parsers 
 doclist		List the information in the doc db (or after a certain date)
+doc2html	A sample script to use the conversion features of 
+		external_parsers
 ewswrap		Two sample htsearch wrappers to emulate Excite for Web
 		Servers (EWS) and to simplify queries
 htparsedoc	A sample shell script to parse Word documents
 multidig	A set of scripts to simplify updating multiple databases
 parse_doc.pl	A general external parser script that handles MS Word documents
-		(among others)
+		among others (depreciated in favor of external converters like
+		conv_doc.pl)
 run-robot.sh	Another example of automating the database building
 scriptname	An example of using htsearch within dynamic SSI pages
 status.pl	Build a status page of last 5 runs and top 10
