@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.8 2002/12/30 12:42:58 lha Exp $
+// $Id: URL.cc,v 1.9 2003/06/23 21:05:41 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -31,10 +31,13 @@
 #include <stdio.h>
 #include <fstream.h>
 #include <sys/types.h>
+#include <ctype.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
-#include <ctype.h>
+#endif
 
 #define NNTP_DEFAULT_PORT 119
 

@@ -16,7 +16,12 @@ static const char sccsid[] = "@(#)os_seek.c	11.3 (Sleepycat) 10/29/99";
 
 #include <errno.h>
 #include <stdlib.h>
+
+#ifdef _MSC_VER //_WIN32
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #endif
 
 #include "db_int.h"

@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.29 2002/02/01 22:49:28 ghutchis Exp $
+// $Id: DocumentDB.cc,v 1.30 2003/06/23 21:05:41 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -29,7 +29,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
+
 #include <iostream.h>
 #include <fstream.h>
 #include <errno.h>

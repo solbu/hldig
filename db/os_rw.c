@@ -14,7 +14,9 @@ static const char sccsid[] = "@(#)os_rw.c	11.2 (Sleepycat) 9/20/99";
 #ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
 
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
 #endif
 
 #include "db_int.h"
@@ -34,6 +36,20 @@ CDB___os_io(db_iop, op, niop)
 {
 	int ret;
 
+    /* HACK to debug where the O_BINARY mode of the file gets fouled up */
+    /*
+    printf("\n[CDB___os_io]");
+    printf("DB_IO_READ:[%d], DB_IO_WRITE:[%d]\n", (DB_IO_READ==op?1:0), (DB_IO_WRITE==op?1:0));
+    printf("[CDB___os_io]");
+#ifdef HAVE_PREAD
+    printf("using pread/pwrite\n");
+#else
+    printf("using CDB___os_read & CDB___os_write\n");
+#endif
+    printf("[CDB___os_io]");
+    printf("FD=[%d], BYTES=[%d], PAGESIZE=[%d]\n", db_iop->fhp->fd, db_iop->bytes,db_iop->pagesize);
+    */
+    
 #ifdef HAVE_PREAD
 	switch (op) {
 	case DB_IO_READ:
@@ -92,6 +108,16 @@ CDB___os_read(fhp, addr, len, nrp)
 	ssize_t nr;
 	u_int8_t *taddr;
 
+
+    /* HACK to debug where the O_BINARY mode of the file gets fouled up */
+    /*
+	printf("\n[CDB___os_read] fhp->fd=[%d], len=[%d]\n", fhp->fd, len);
+	printf("[CDB___os_read] CDB___db_jump.j_read==NULL ?[%d]\n",
+			( CDB___db_jump.j_read == NULL ?1:0) );	
+	printf("[CDB___os_read] lseek(fhp->fd, 0, SEEK_CUR)=[%d]\n", lseek(fhp->fd, 0, SEEK_CUR));
+	printf("[CDB___os_read] current mode=[%#x]\n", setmode(fhp->fd, 0x8000));
+    */
+	
 	for (taddr = addr,
 	    offset = 0; offset < len; taddr += nr, offset += nr) {
 		if ((nr = CDB___db_jump.j_read != NULL ?
@@ -122,12 +148,30 @@ CDB___os_write(fhp, addr, len, nwp)
 	ssize_t nw;
 	u_int8_t *taddr;
 
+    /* HACK to debug where the O_BINARY mode of the file gets fouled up */
+    /*
+	printf("\n[CDB___os_write] fhp->fd=[%d], len=[%d]\n", fhp->fd, len);
+	printf("[CDB___os_write] CDB___db_jump.j_write==NULL ?[%d]\n",
+			( CDB___db_jump.j_write == NULL ?1:0) );	
+	printf("[CDB___os_write] lseek(fhp->fd, 0, SEEK_CUR)=[%d]\n", lseek(fhp->fd, 0, SEEK_CUR));
+	printf("[CDB___os_write] current mode=[%#x]\n", setmode(fhp->fd, 0x8000));
+    */
+    
 	for (taddr = addr,
-	    offset = 0; offset < len; taddr += nw, offset += nw)
+	    offset = 0; offset < len; taddr += nw, offset += nw) 
+    {
 		if ((nw = CDB___db_jump.j_write != NULL ?
 		    CDB___db_jump.j_write(fhp->fd, taddr, len - offset) :
 		    write(fhp->fd, taddr, len - offset)) < 0)
 			return (CDB___os_get_errno());
+
+        /* HACK to debug where the O_BINARY mode of the file gets fouled up */
+        //printf("** %d bytes written, wanted to write %d\n", nw, len-offset);
+    }
 	*nwp = len;
-	return (0);
+    
+    /* HACK to debug where the O_BINARY mode of the file gets fouled up */
+	//printf("[AFTER CDB___os_write] lseek(fhp->fd, 0, SEEK_CUR)=[%d]\n", lseek(fhp->fd, 0, SEEK_CUR));
+	
+    return (0);
 }

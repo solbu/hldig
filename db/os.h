@@ -7,11 +7,15 @@
  *	@(#)os.h	11.1 (Sleepycat) 7/25/99
  */
 
+#if defined(_MSC_VER)
+#include <windows.h>
+#endif
+
 /*
  * Filehandle.
  */
 struct __fh_t {
-#if defined(_WIN32)
+#if defined(_MSC_VER) //_WIN32
 	HANDLE	  handle;		/* Windows/32 file handle. */
 #endif
 	int	  fd;			/* POSIX file descriptor. */

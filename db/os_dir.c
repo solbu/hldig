@@ -33,6 +33,10 @@ static const char sccsid[] = "@(#)os_dir.c	11.1 (Sleepycat) 7/25/99";
 
 #endif
 
+#ifdef _MSC_VER //_WIN32
+#include "dirent_local.h"
+#endif
+
 #include "db_int.h"
 #include "os_jump.h"
 

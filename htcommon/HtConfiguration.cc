@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtConfiguration.cc,v 1.5 2003/01/11 02:33:27 lha Exp $
+// $Id: HtConfiguration.cc,v 1.6 2003/06/23 21:05:41 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -111,7 +111,7 @@ const String HtConfiguration::Find(URL *aUrl, const char *value) const
     tmpPtr->Start_Get();
     // Try to find best matched URL
     //
-    struct {
+    struct candidate {
       Object		*obj;
       unsigned int	len;
       String		value;

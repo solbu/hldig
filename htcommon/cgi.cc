@@ -9,12 +9,16 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: cgi.cc,v 1.4 2002/02/01 22:49:28 ghutchis Exp $
+// $Id: cgi.cc,v 1.5 2003/06/23 21:05:41 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
+
+#ifdef _MSC_VER //_WIN32
+#include <io.h>
+#endif
 
 #include "cgi.h"
 #include "htString.h"
@@ -24,7 +28,11 @@
 #include "URL.h"
 
 #include <stdlib.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
+
 #include <fstream.h>
 
 

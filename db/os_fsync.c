@@ -15,11 +15,19 @@ static const char sccsid[] = "@(#)os_fsync.c	11.2 (Sleepycat) 9/22/99";
 #include <sys/types.h>
 
 #include <fcntl.h>			/* XXX: Required by __hp3000s900 */
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
 #endif
 
 #include "db_int.h"
 #include "os_jump.h"
+
+#ifdef _MSC_VER //_WIN32
+#include <io.h>
+#define fsync(fd)     _commit(fd);
+#endif
 
 #ifdef __hp3000s900
 int

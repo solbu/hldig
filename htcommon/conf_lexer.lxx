@@ -15,7 +15,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: conf_lexer.lxx,v 1.5 2003/06/02 13:54:56 lha Exp $
+// $Id: conf_lexer.lxx,v 1.6 2003/06/23 21:08:52 nealr Exp $
 //
 */
 %{
@@ -89,7 +89,7 @@ include[ \t]*:		BEGIN(incl);
 			//yylval.str = (char *)malloc(yyleng+1-2);
                         yylval.str = new char[yyleng+1-2];
                         //strcpy(yylval.str,yytext);
-                        bcopy(yytext,yylval.str,yyleng-2); //TODO NR use memcopy instead
+                        memcpy(yylval.str,yytext,yyleng-2);
                         yylval.str[yyleng-2]='\0';
 			return(T_STRING);  
 			}

@@ -17,7 +17,11 @@ static const char sccsid[] = "@(#)os_handle.c	11.2 (Sleepycat) 11/12/99";
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
+
 #endif
 
 #include "db_int.h"
@@ -49,6 +53,12 @@ CDB___os_openhandle(name, flags, mode, fhp)
 		 * able to open files that mmap() has previously opened, e.g.,
 		 * when we're joining already existing DB regions.
 		 */
+
+#ifdef _MSC_VER //_WIN32
+        //THIS IS A HACK TO REINSTATE BINARY MODE!  FIX ME.. FIND THE PROBLEM
+        mode |= _O_BINARY;
+#endif
+        
 		fhp->fd = CDB___db_jump.j_open != NULL ?
 		    CDB___db_jump.j_open(name, flags, mode) :
 #ifdef __VMS
@@ -57,6 +67,9 @@ CDB___os_openhandle(name, flags, mode, fhp)
 		    open(name, flags, mode);
 #endif
 
+        //DEBUGGING   
+ 		//printf("\n[CDB___os_openhandle] name=[%s] mode=[%#x] fhp->fd=[%d]\n", name, mode, fhp->fd);
+		    
 		if (fhp->fd == -1) {
 			/*
 			 * If it's a "temporary" error, we retry up to 3 times,

@@ -60,24 +60,7 @@ CDB___db_omode(perm)
 {
 	int mode;
 
-#ifndef	S_IRUSR
-#if defined(_WIN32) || defined(WIN16)
-#define	S_IRUSR	S_IREAD		/* R for owner */
-#define	S_IWUSR	S_IWRITE	/* W for owner */
-#define	S_IRGRP	0		/* R for group */
-#define	S_IWGRP	0		/* W for group */
-#define	S_IROTH	0		/* R for other */
-#define	S_IWOTH	0		/* W for other */
-#else
-#define	S_IRUSR	0000400		/* R for owner */
-#define	S_IWUSR	0000200		/* W for owner */
-#define	S_IRGRP	0000040		/* R for group */
-#define	S_IWGRP	0000020		/* W for group */
-#define	S_IROTH	0000004		/* R for other */
-#define	S_IWOTH	0000002		/* W for other */
-#endif /* _WIN32 || WIN16 */
-#endif
-	mode = 0;
+    mode = 0;
 	if (perm[0] == 'r')
 		mode |= S_IRUSR;
 	if (perm[1] == 'w')
