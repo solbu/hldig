@@ -4,15 +4,18 @@
 // Implementation of htsearch
 //
 // $Log: htsearch.cc,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.2  1997/02/11 00:38:48  turtle
+// Renamed the very bad wordlist variable to badWords
+//
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 // Revision 1.1  1996/01/03 18:59:56  turtle
 // Before rewrite
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.1 1997/02/03 17:11:05 turtle Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.2 1997/02/11 00:38:48 turtle Exp $";
 #endif
 
 #include "htsearch.h"
@@ -282,8 +285,8 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
     // will be put in the searchWords list and at the same time in the
     // String pattern separated with '|'.
     //
-    WordList	wordlist;		// Just used to check for valid words.
-    wordlist.BadWordFile(config["bad_word_list"]);
+    WordList	badWords;		// Just used to check for valid words.
+    badWords.BadWordFile(config["bad_word_list"]);
 
     //
     // Create a string with the original search words minus any attributes
@@ -305,7 +308,8 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
 	    i++;
 	    continue;
 	}
-	parsedWords << p << ' ';
+	if (badWords.IsValid(p))
+	    parsedWords << p << ' ';
     }
 
     parsedWords.chop(' ');
@@ -357,7 +361,7 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
 		else
 		{
 		    WeightWord	*ww = new WeightWord(word, 1.0);
-		    if (!wordlist.IsValid(word))
+		    if (!badWords.IsValid(word))
 		    {
 			ww->isIgnore = 1;
 			tempWords.Add(ww);
