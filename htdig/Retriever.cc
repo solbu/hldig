@@ -4,6 +4,9 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.29  1999/01/05 19:12:59  bergolth
+// fixed bug in bad_querystring detection
+//
 // Revision 1.28  1998/12/19 18:09:03  bergolth
 // Added bad_querystr option.
 //
@@ -629,7 +632,7 @@ Retriever::IsValidURL(char *u)
       }
 
     ext = strrchr(url, '?');
-    if (badquerystr.hasPattern() &&
+    if (ext && badquerystr.hasPattern() &&
        (badquerystr.FindFirst(ext) >= 0))
     {
       if (debug > 2)
