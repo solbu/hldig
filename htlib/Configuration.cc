@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: Configuration.cc,v 1.11 1999/03/23 18:29:11 grdetil Exp $";
+static char	RCSid[] = "$Id: Configuration.cc,v 1.12 1999/06/24 01:24:44 ghutchis Exp $";
 #endif
 
 #include "Configuration.h"
@@ -124,6 +124,22 @@ void Configuration::Add(char *str)
             }
             Add(name, value);
             if (*str == '"')
+                str++;
+            continue;
+        }
+	else if (*str == '\'')
+        {
+            //
+            // Ah!  A quoted value.  This should be easy to deal with...
+            // (Just kidding!)
+            //
+            str++;
+            while (*str && *str != '\'')
+            {
+                value << *str++;
+            }
+            Add(name, value);
+            if (*str == '\'')
                 str++;
             continue;
         }
