@@ -19,19 +19,25 @@ mergeDB()
     Dictionary  merge_dup_ids, db_dup_ids; // Lists of DocIds to ignore
     char        *doc_db, *merge_doc_db;
     char        *doc_index, *merge_doc_index;
+    char	*doc_excerpt, *merge_doc_excerpt;
     int         docIDOffset;
 
     // Check "uncompressed"/"uncoded" urls at the price of time
     // (extra DB probes).
     db.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
 
-    doc_index = config["doc_index"];    
+    doc_index = config["doc_index"];
     if (access(doc_index, R_OK) < 0)
     {
 	reportError(form("Unable to open document index '%s'", doc_index));
     }
+    doc_excerpt = config["doc_excerpt"];
+    if (access(doc_excerpt, R_OK) < 0)
+    {
+	reportError(form("Unable to open document excerpts '%s'", doc_excerpt));
+    }
     doc_db = config["doc_db"];    
-    if (db.Open(doc_db, doc_index) < 0)
+    if (db.Open(doc_db, doc_index, doc_excerpt) < 0)
     {
 	reportError(form("Unable to open/create document database '%s'",
 			 doc_db));
@@ -45,8 +51,13 @@ mergeDB()
     {
 	reportError(form("Unable to open document index '%s'", merge_doc_index));
     }
+    merge_doc_excerpt = merge_config["doc_excerpt"];    
+    if (access(merge_doc_excerpt, R_OK) < 0)
+    {
+	reportError(form("Unable to open document excerpts '%s'", merge_doc_excerpt));
+    }
     merge_doc_db = merge_config["doc_db"];
-    if (merge_db.Open(merge_doc_db, merge_doc_index) < 0)
+    if (merge_db.Open(merge_doc_db, merge_doc_index, merge_doc_excerpt) < 0)
     {
 	reportError(form("Unable to open document database '%s'",
 			 merge_doc_db));
