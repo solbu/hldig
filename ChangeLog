@@ -1,5 +1,9 @@
 Sat Jan 11 2003  Lachlan Andrew  <lha@users.sourceforge.net>
 
+	* htsearch/Display.cc (buildMatchList): Hide matches with score of 0.
+
+Sat Jan 11 2003  Lachlan Andrew  <lha@users.sourceforge.net>
+
 	* htnet/HtFile.cc (Request), htdig/Document.cc (RetrieveLocal),
 	htcommon/URL.h htcommon/URLTrans.cc:
 	Decode URL paths before use as local filenames (file:/// & local_urls).

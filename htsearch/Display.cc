@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.106 2002/12/30 12:42:59 lha Exp $
+// $Id: Display.cc,v 1.107 2003/01/11 03:53:59 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1544,7 +1544,8 @@ Display::buildMatchList()
 	//
 	// Append this match to our list of matches.
 	//
- 	matches.Add(thisMatch, thisRef->DocURL());
+	if (score > 0.0)
+	    matches.Add(thisMatch, thisRef->DocURL());
 
 	// Get rid of it to free the memory!
 	delete thisRef;
@@ -1559,7 +1560,7 @@ Display::buildMatchList()
 	  {if(debug) cerr << "Set maxScore = score" <<endl;
            maxScore = score;
           }
- 	if (minScore > score)
+ 	if (minScore > score && score > 0.0)
 	  {if(debug) cerr << "Set minScore = score" <<endl;
  	    minScore = score;
           }
