@@ -1,3 +1,11 @@
+Fri Mar  5 08:09:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrig/parse_doc.pl: uses pdftotext to handle PDF files,
+	generates a head record with punctuation intact, extra checks
+	for file "wrappers" & check for MS Word signature (no longer
+	defaults to catdoc), strip extra punct. from start & end of words,
+	rehyphenate text from PDFs
+
 Tue Mar  2 23:18:20 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/htdig.cc: Renamed main.cc for consistency with other programs.
