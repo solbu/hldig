@@ -5,9 +5,28 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_htdig,v 1.3 1999/09/27 13:55:48 loic Exp $
+# $Id: t_htdig,v 1.4 1999/09/28 10:32:18 loic Exp $
 #
 
 . test_functions
 
 $htdig "$@" -t -i -c $testdir/conf/htdig.conf
+$htmerge -c $testdir/conf/htdig.conf
+
+expected='http://localhost:7400/set1/
+http://localhost:7400/set1/script.html
+http://localhost:7400/set1/site1.html
+http://localhost:7400/set1/site2.html
+http://localhost:7400/set1/site3.html
+http://localhost:7400/set1/site4.html
+http://localhost:7400/set1/title.html'
+
+got=`./document -c $testdir/conf/htdig.conf -u | sort`
+
+if [ "$expected" != "$got" ]
+then
+	echo "running htdig: expected 
+$expected but got
+$got"
+	exit 1
+fi

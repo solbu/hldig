@@ -18,7 +18,7 @@ EXTRA_DIST = htdocs
 
 LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include $(PROFILING)
 
-noinst_PROGRAMS = dbbench word testnet
+noinst_PROGRAMS = dbbench word testnet document
 
 dbbench_SOURCES = dbbench.cc
 dbbench_DEPENDENCIES = $(HTLIBS)
@@ -35,8 +35,13 @@ testnet_DEPENDENCIES = $(HTLIBS)
 testnet_LDFLAGS = $(PROFILING)
 testnet_LDADD = $(HTLIBS)
 
+document_SOURCES = document.cc
+document_DEPENDENCIES = $(HTLIBS)
+document_LDFLAGS = $(PROFILING)
+document_LDADD = $(HTLIBS)
+
 clean-local:
-	rm -fr gmon.out test test_weakcmpr logs var
+	rm -fr gmon.out test test_weakcmpr logs var htdocs/tmp
 	cd conf ; $(MAKE) clean
 
 distclean-local:

@@ -7,6 +7,8 @@ Makefile
 .libs
 test_functions
 dbbench
+testnet
+document
 word
 logs
 var

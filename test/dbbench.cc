@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: dbbench.cc,v 1.5 1999/09/27 13:55:48 loic Exp $
+// $Id: dbbench.cc,v 1.6 1999/09/28 10:32:18 loic Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
@@ -55,6 +55,7 @@ typedef struct {
   char* find;
   int nwords;
   int loop;
+  enum DBTYPE type;
   int page_size;
   int cache_size;
   int multiply_keys;
@@ -86,6 +87,7 @@ int main(int ac, char **av)
   params.dbfile = strdup("test");
   params.nwords = -1;
   params.loop = 1;
+  params.type = DB_BTREE;
   params.page_size = 4096;
   params.cache_size = 0;
   params.multiply_keys = 1;
@@ -97,7 +99,7 @@ int main(int ac, char **av)
   params.remove = 0;
   params.count = 0;
 
-  while ((c = getopt(ac, av, "vB:C:S:MZf:l:w:k:n:zp:ur:c:")) != -1)
+  while ((c = getopt(ac, av, "vB:T:C:S:MZf:l:w:k:n:zp:ur:c:")) != -1)
     {
       switch (c)
 	{
@@ -107,6 +109,13 @@ int main(int ac, char **av)
 	case 'B':
 	  free(params.dbfile);
 	  params.dbfile = strdup(optarg);
+	  break;
+	case 'T':
+	  if(!strcmp(optarg, "hash")) {
+	    params.type = DB_HASH;
+	  } else {
+	    params.type = DB_BTREE;
+	  }
 	  break;
 	case 'C':
 	  params.cache_size = atoi(optarg);
@@ -202,6 +211,7 @@ void usage()
     cout << "Options:\n";
     cout << "\t-v\t\tIncreases the verbosity\n";
     cout << "\t-B dbfile\tuse <dbfile> as a db file name (default test).\n";
+    cout << "\t-T {hash|btree}\tfile structure (default btree).\n";
     cout << "\t-C <size>\tset cache size to <size>.\n";
     cout << "\t-S <size>\tset page size to <size>.\n";
     cout << "\t-M\t\tuse shared memory pool (default do not use).\n";
@@ -317,12 +327,21 @@ static void find(DB* db, params_t* params)
   }
 
   do {
-    if(verbose) {
+    if(verbose == 1) {
       int docid;
       memcpy(&docid, key.data, sizeof(int));
       String word(((char*)key.data) + sizeof(int), key.size - sizeof(int));
 
       cout << "key: docid = " << docid << " word = " << word.get() << "\n";
+    }
+    //
+    // Straight dump of the entry
+    //
+    if(verbose > 1) {
+      String k((const char*)key.data, (int)key.size);
+      String d((const char*)data.data, (int)data.size);
+
+      cout << "key: " << k << " data: " << d << "\n";
     }
 
     key.flags = 0;
@@ -376,7 +395,7 @@ static void remove(DB* db, params_t* params)
 static DB_ENV* db_init(params_t* params)
 {
   DB_ENV *dbenv;
-  char *progname = "benchit problem...";
+  char *progname = "dbbench problem...";
 
   //
   // Rely on calloc to initialize the structure.
@@ -404,6 +423,8 @@ static DB_ENV* db_init(params_t* params)
 
 static void dobench(params_t* params)
 {
+  char *progname = "dbbench problem...";
+
   DB_ENV* dbenv = db_init(params);
   DB_INFO dbinfo;
   DB* db;
@@ -412,7 +433,7 @@ static void dobench(params_t* params)
 
   // Note that prefix is disabled because bt_compare is set and
   // bt_prefix is not.
-  dbinfo.bt_compare = int_cmp;
+  if(params->type == DB_BTREE) dbinfo.bt_compare = int_cmp;
 
   if(params->page_size) dbinfo.db_pagesize = params->page_size;
   if(!params->pool && params->cache_size) dbinfo.db_cachesize = params->cache_size;
@@ -420,8 +441,10 @@ static void dobench(params_t* params)
   int flags = DB_CREATE | DB_NOMMAP;
   if(params->compress) flags |= DB_COMPRESS;
 
-  if(db_open(params->dbfile, DB_BTREE, flags, 0664, dbenv, &dbinfo, &db))
-    abort();
+  if(db_open(params->dbfile, params->type, flags, 0666, dbenv, &dbinfo, &db)) {
+    fprintf(stderr, "%s: db_open %s: %s\n", progname, params->dbfile, strerror(errno));
+    exit(1);
+  }
 
   if(params->find) {
     find(db, params);
@@ -434,6 +457,7 @@ static void dobench(params_t* params)
   (void)(db->close)(db, 0);
   (void)db_appexit(dbenv);
 
+  free(dbenv);
 }
 
 /*

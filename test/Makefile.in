@@ -128,7 +128,7 @@ EXTRA_DIST = htdocs
 
 LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include $(PROFILING)
 
-noinst_PROGRAMS = dbbench word testnet
+noinst_PROGRAMS = dbbench word testnet document
 
 dbbench_SOURCES = dbbench.cc
 dbbench_DEPENDENCIES = $(HTLIBS)
@@ -144,6 +144,11 @@ testnet_SOURCES = testnet.cc
 testnet_DEPENDENCIES = $(HTLIBS)
 testnet_LDFLAGS = $(PROFILING)
 testnet_LDADD = $(HTLIBS)
+
+document_SOURCES = document.cc
+document_DEPENDENCIES = $(HTLIBS)
+document_LDFLAGS = $(PROFILING)
+document_LDADD = $(HTLIBS)
 
 BASE = test
 CACHESIZE = -C `expr 64 \* 1024 \* 1024`
@@ -164,6 +169,7 @@ LIBS = @LIBS@
 dbbench_OBJECTS =  dbbench.o
 word_OBJECTS =  word.o
 testnet_OBJECTS =  testnet.o
+document_OBJECTS =  document.o
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -174,9 +180,10 @@ DIST_COMMON =  Makefile.am Makefile.in test_functions.in
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/dbbench.P .deps/testnet.P .deps/word.P
-SOURCES = $(dbbench_SOURCES) $(word_SOURCES) $(testnet_SOURCES)
-OBJECTS = $(dbbench_OBJECTS) $(word_OBJECTS) $(testnet_OBJECTS)
+DEP_FILES =  .deps/dbbench.P .deps/document.P .deps/testnet.P \
+.deps/word.P
+SOURCES = $(dbbench_SOURCES) $(word_SOURCES) $(testnet_SOURCES) $(document_SOURCES)
+OBJECTS = $(dbbench_OBJECTS) $(word_OBJECTS) $(testnet_OBJECTS) $(document_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -243,6 +250,10 @@ word: $(word_OBJECTS) $(word_DEPENDENCIES)
 testnet: $(testnet_OBJECTS) $(testnet_DEPENDENCIES)
 	@rm -f testnet
 	$(CXXLINK) $(testnet_LDFLAGS) $(testnet_OBJECTS) $(testnet_LDADD) $(LIBS)
+
+document: $(document_OBJECTS) $(document_DEPENDENCIES)
+	@rm -f document
+	$(CXXLINK) $(document_LDFLAGS) $(document_OBJECTS) $(document_LDADD) $(LIBS)
 .cc.o:
 	$(CXXCOMPILE) -c $<
 .cc.lo:
@@ -452,7 +463,7 @@ mostlyclean distclean maintainer-clean
 
 
 clean-local:
-	rm -fr gmon.out test test_weakcmpr logs var
+	rm -fr gmon.out test test_weakcmpr logs var htdocs/tmp
 	cd conf ; $(MAKE) clean
 
 distclean-local:
