@@ -1,0 +1,34 @@
+
+TARGET1  = $(LIBDIR)/libfuzzy$(LIBSFX)
+TARGET2 = $(BINDIR)/htfuzzy$(EXESFX)
+
+# ----------------------------------------------------------------------------
+# add new library members to this list
+
+# ----------------------------------------------------------------------------
+
+include ../Makedefs.win32
+
+CXXSRC = Endings.cc EndingsDB.cc Exact.cc Fuzzy.cc Metaphone.cc \
+    Soundex.cc Accents.cc SuffixEntry.cc Synonym.cc \
+    Substring.cc Prefix.cc Regexp.cc Speling.cc
+
+CPPFLAGS += -DHAVE_CONFIG_H -I. -I../htlib -I../db -I../htcommon -I../htword
+
+OBJS2 = win32/htfuzzy.obj 
+
+LDLIBS = ../lib/$(ARCH)/libhtnet.lib ../lib/$(ARCH)/libcommon.lib ../lib/$(ARCH)/libhtword.lib ../lib/$(ARCH)/libht.lib ../lib/$(ARCH)/libcommon.lib ../lib/$(ARCH)/libhtword.lib ../lib/$(ARCH)/libht.lib ../lib/$(ARCH)/libfuzzy.lib ../lib/$(ARCH)/libhtdb.lib 
+OTHERLIBS = ws2_32.lib  L:/win32/lib/zlib114/zlib.lib
+
+
+all: $(TARGET1) $(TARGET2)
+
+$(TARGET1): $(OBJDIRDEP) $(LIBDIRDEP) $(OBJS)
+	$(AR) $(ARFLAGS) $(OBJS)
+
+$(TARGET2): $(OBJDIRDEP) $(BINDIRDEP) $(OBJS2) $(DEPLIBS)
+	$(EXELD) $(LDFLAGS) $(OBJS2) $(LDLIBS) $(OTHERLIBS)
+
+
+include ../Makerules.win32
+

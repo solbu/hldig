@@ -1,0 +1,52 @@
+#
+# Makefile - makefile for Win32 Native HtDig
+#
+# TODO:  Clean up remove references to RNT & OLPP
+#
+
+RNTBASE = .
+
+LIBDIRS = db htlib htcommon htnet htword htfuzzy
+EXEDIRS = htdig htsearch httools
+
+MAKE += -f Makefile.win32
+
+all: $(addsuffix .build, $(OLPPDIR) $(LIBDIRS) $(EXEDIRS) $(MODDIRS))
+
+%.build:
+	$(MAKE) -C $*
+
+
+clean: $(addsuffix .clean, $(OLPPDIR) $(LIBDIRS) $(EXEDIRS) $(MODDIRS))
+	$(RM) -r bin/$(BUILDTARGET)
+	$(RM) -r lib/$(BUILDTARGET)
+
+%.clean:
+	$(MAKE) -C $* clean
+
+ctags:
+	-rm -f tags
+	-(find `abspath $(LIBDIRS) $(EXEDIRS) $(INCLDIRS)` -name '*.[chly]' -o -name '*.cpp' | grep -v ' ' | xargs $@ -a; sort -o tags tags)
+
+etags:
+	-rm -f TAGS
+	-(find ../ -name "*.[ch]"  | xargs $@ -a)
+	-(find ../ -name "*.cpp" | xargs $@ -a)
+	-(find ../ -name "*.php" | xargs $@ -a)
+	-(find ../ -name "*.phph" | xargs $@ -a)
+
+cxref: $(CXREFDIRDEP) $(addsuffix .cxref, $(EXEDIRS) $(LIBDIRS))
+	@echo Indexing
+	@(cxref -index-all -O$(CXREFDIR) -Nrnw -html)
+
+%.cxref:
+	$(MAKE) -C $* cxref
+
+lint: $(addsuffix .lint, $(LIBDIRS) $(EXEDIRS))
+
+%.lint:
+	$(MAKE) -C $* lint
+
+depend:
+	-(find $(RNTBASE) -name "*.d" -exec rm {} \;)
+

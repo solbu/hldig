@@ -1,0 +1,34 @@
+
+TARGET = $(LIBDIR)/libht$(LIBSFX)
+
+# ----------------------------------------------------------------------------
+# add new library members to this list
+
+# ----------------------------------------------------------------------------
+
+include ../Makedefs.win32
+
+CXXSRC = Configuration.cc Database.cc Dictionary.cc DB2_db.cc  \
+    IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc  \
+    QuotedStringList.cc Stack.cc String.cc StringList.cc  \
+    StringMatch.cc String_fmt.cc good_strtok.cc strcasecmp.cc  \
+    strptime.cc HtCodec.cc HtWordCodec.cc HtVector.cc HtHeap.cc \
+    HtPack.cc HtDateTime.cc HtRegex.cc HtRegexList.cc \
+    HtRegexReplace.cc HtRegexReplaceList.cc HtVectorGeneric.cc \
+    HtMaxMin.cc HtWordType.cc md5.cc 
+
+SRC = mktime.c mhash_md5.c timegm.c getcwd.c memcmp.c memcpy.c \
+    memmove.c raise.c strerror.c myqsort.c  
+ifdef WINDIR
+SRC += regex_win32.c getopt_local.c
+CXXSRC += filecopy.cc
+endif
+
+CPPFLAGS += -DHAVE_CONFIG_H -I../db -I. -I../htword
+
+$(TARGET): $(OBJDIRDEP) $(LIBDIRDEP) $(OBJS)
+	$(AR) $(ARFLAGS) $(OBJS)
+
+include ../Makerules.win32
+
+

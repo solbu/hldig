@@ -1,0 +1,462 @@
+# ----------------------------------------------------------------------------
+# RightNow Technologies
+#
+
+ifeq ($(PRODUCT),htdig)
+BUILD_VER  = 3.2.1
+BUILD_NUM = b5
+endif
+
+#CMN_BUILD_VER = 3.2.0.0
+
+#ifeq ($(RNT_PRODUCT),common)
+#BUILD_VER  = $(CMN_BUILD_VER)
+#BUILD_NUM  = 2
+#endif
+
+#BUILD_CE_VER = 0
+
+BUILD_DATE =`date "+%m/%d/%Y"`
+BUILD_TIME =`date "+%H:%M"`
+
+# ----------------------------------------------------------------------------
+
+ifndef RNTBASE
+RNTBASE   = ..
+endif
+
+
+# ----------------------------------------------------------------------------
+# Need to set arch based upon host system
+
+ifdef WINDIR  # Win32 (includes Win2000) ---------------------------------
+
+ARCH        = win32
+
+DLLSFX      = .$(BUILD_VER).dll
+CDLLSFX     = .$(CMN_BUILD_VER).dll
+EXESFX      = .exe
+LIBSFX      = .lib
+OBJSFX      = .obj
+ROSFX       = .xxx
+
+CC          = cl
+CXX         = cl
+EXELD       = link
+DLLLD       = link
+LD          = lib
+
+CCDEBUG     = -Yd -ZI -FD -D_DEBUG -Fd"./"
+LDDEBUG     = -debug /pdbtype:sept 
+
+YACC        = bison -y
+LEX         = flex
+
+CFLAGS      = -nologo -W3 -DZLIB_DLL
+CXXFLAGS    = -GX 
+
+ifdef DEBUG
+  CFLAGS   += -MDd     # The MDd is to link with the debug multithread dynamic library
+  LDDEBUG  += /NODEFAULTLIB:LIBCMD
+else
+ifdef RNM
+  CFLAGS   += -MT      # The MT is to link with the multithread library
+else
+  CFLAGS   += -MD      # The MD is to link with the multithread dynamic library
+endif
+endif
+
+AR          = lib
+ARFLAGS     = /nologo /out:$@
+
+CCDLLFLAGS	= -DCOMPILE_DL=1
+LDFLAGS     = -nologo /out:$@
+LDLLFLAGS   = -dll -machine:x86 -subsystem:windows
+LDROFLAGS   = $(ARFLAGS)
+
+OTHERLIBS   = ws2_32.lib advapi32.lib
+
+else          # Unix -----------------------------------------------------
+
+DLLSFX  = .so
+CDLLSFX = .so
+EXESFX  =
+LIBSFX  = .a
+OBJSFX  = .o
+ROSFX   = .o
+
+SYS     = $(shell uname -s)
+
+CC      = gcc
+CXX     = g++
+EXELD   = gcc
+DLLLD   = gcc
+LD      = ld
+
+CCDLLFLAGS = -DCOMPILE_DL=1
+LDLLFLAGS  = -Xlinker -h -Xlinker $(notdir $(TARGET)).$(BUILD_VER)
+LDROFLAGS  = -r
+
+CCDEBUG = -g
+LDDEBUG = -g
+
+YACC    = bison -y
+LEX     = flex
+
+AR      = ar
+ARFLAGS = rcs $@
+
+COPY    = cp -f
+RM      = rm -f
+
+CCVERS = $(shell $(CC) -v 2>&1 | sed -e '/^R.*$$/d' -e 's/gcc version [a-zA-Z-]*\([0-9\.]*\).*$$/\1/)
+
+# begin platform dependent settings ---------------------------
+
+ifeq ($(SYS), Linux)
+	ARCH        = linux
+
+	CCOPT       = -O2
+	CCDLLFLAGS += -fPIC
+	CDEFS      += -DLINUX -DUNIX
+
+    LDLLFLAGS  += -shared
+
+    OTHERLIBS  += -lstdc++ -lm -ldl
+
+	ifeq ($(findstring $(DLLSFX), $(TARGET)),)
+		OTHERLIBS += -lpthread
+	endif
+
+	# newer versions have the resolver in libc
+	ifeq ($(shell ls /usr/lib/libresolv.a > /dev/null 2>&1 && echo y), y)
+		OTHERLIBS += -lresolv
+	else
+		OTHERLIBS += -lfl
+	endif
+
+    ifdef INSURE
+        CC  = insure gcc
+        CXX = insure g++
+        EXELD = insure gcc
+        DLLLD = insure gcc
+        DEBUG = y
+    endif
+
+    BASIS_LIB_VERS = RH62-gcc-$(CCVERS)
+endif
+
+ifeq ($(SYS), SunOS)
+	ARCH        =  sunos
+
+	ifeq ($(shell uname -n), boulder)
+		ifneq ($(TARGET), $(BINDIR)/olpp$(EXESFX))
+			ifeq ($(findstring $(DLLSFX), $(TARGET)),)
+  				PURIFY = purify -log-file=/home/httpd/cgi-bin/$(LOGNAME).cfg/purify -chain-length=14 -thread-report-at-exit=no -windows=no -fds-inuse-at-exit=no
+				#PURIFY = quantify -record-system-calls=yes
+			endif
+		endif
+	endif
+
+	ifdef DEBUG
+		EXELD = $(PURIFY) gcc
+	endif
+
+	CCOPT       = -O2
+	CCDLLFLAGS += -fPIC
+	CDEFS      += -DSOLARIS -DUNIX
+
+    LDLLFLAGS  += -G
+
+    OTHERLIBS   = -lsocket -lnsl -lstdc++ -ldl
+
+	ifeq ($(findstring $(DLLSFX), $(TARGET)),)
+		OTHERLIBS += -lpthread
+	endif
+
+    # newer versions have the resolver in libc
+    ifeq ($(shell ls /usr/lib/libresolv.*[oa] > /dev/null 2>&1 && echo y), y)
+        OTHERLIBS += -lresolv -lm
+    endif
+
+    BASIS_LIB_VERS = sol-gcc-$(CCVERS)
+endif
+
+LDFLAGS  = -o $@
+
+endif  # Unix
+
+# end of platform specific settings -------------------------------
+
+ifneq ($(findstring $(DLLSFX),$(TARGET)),)
+    CFLAGS  += $(CCDLLFLAGS)
+    LDFLAGS += $(LDLLFLAGS)
+endif
+
+ifneq ($(findstring $(ROSFX),$(TARGET)),)
+    CFLAGS  += $(CCDLLFLAGS)
+    LDFLAGS += $(LDROFLAGS)
+	ifeq ($(SYS), SunOS)
+		LDDEBUG =
+	endif
+endif
+
+# ----------------------------------------------------------------------------
+
+ifeq ($(CC), gcc)
+	CFLAGS += -Wall -Wmissing-prototypes -Wmissing-declarations
+    ifndef NOWERROR
+        CFLAGS += -Werror
+    endif                                                                                                                              
+endif
+
+
+# compile with ElectricFence malloc debugging library (man efence)
+
+ifdef EFENCE
+	OTHERLIBS += -lefence
+	DEBUG      = 1
+endif
+
+ifdef DEBUG
+	CFLAGS  += $(CCDEBUG)
+	LDFLAGS += $(LDDEBUG)
+else
+	CFLAGS  += $(CCOPT)
+endif
+
+# ----------------------------------------------------------------------------
+# Set appropriate database defines
+
+ifndef RNTDB
+	ifdef WINDIR
+		RNTDB = 
+	else
+		RNTDB = mysql
+	endif
+endif
+
+ifeq ($(RNTDB),mysql) # ----------------------------------------------
+	ifndef MYSQLLIB
+		MYSQLLIB  = /home/mysql/current/lib
+	endif
+
+	ifndef MYSQLINC
+		MYSQLINC  = /home/mysql/current/include
+	endif
+
+	CDEFS    += -DMY_SQL
+	CPPFLAGS += -I$(MYSQLINC)
+	LIBS      = $(RNTLIBS)
+	DBLIBS    = $(MYSQLLIB)/libmysqlclient.a
+#	DBLIBS    = -L$(MYSQLLIB) -lmysqlclient
+endif
+
+ifeq ($(RNTDB),ib) # InterBase --------------------------------------
+	ifndef 	INTERBASE_LIB
+		INTERBASE_LIB  = /home/interbase/lib
+	endif
+
+	ifndef 	INTERBASE_INC
+        	INTERBASE_INC  = /home/interbase/include
+	endif
+
+	CDEFS    += -DINTERBASE
+	CPPFLAGS += -I$(INTERBASE_INC)
+	LIBS      = $(RNTLIBS)
+	DBLIBS    = -L$(INTERBASE_LIB) -lgds -ldl -lcrypt
+
+endif
+
+ifeq ($(RNTDB),odbc) # -----------------------------------------------
+	CDEFS  += -DODBC
+	LIBS    = $(RNTLIBS)
+	DBLIBS  = odbc32.lib
+endif
+
+ifneq ($(findstring $(RNTDB),oci oracle),) # -------------------------
+    RNTDB = oci
+
+	ifdef WINDIR
+		ifndef ORACLE_HOME
+			ORACLE_HOME = l:/oracle/win32ora816
+		endif
+#        LDFLAGS += /LIBPATH:/rnt/oraclent/lib
+		DBLIBS   = $(ORACLE_HOME)/lib/oci.lib
+		CPPFLAGS += -I $(ORACLE_HOME)/include
+	else
+		ifndef ORACLE_HOME
+			ORACLE_HOME = /home/oracle
+		endif
+		LDFLAGS  += -L$(ORACLE_HOME)/lib -L$(ORACLE_HOME)/rdbms/lib \
+					-L$(ORACLE_HOME)/network/lib
+		CPPFLAGS += -I$(ORACLE_HOME)/rdbms/demo \
+					-I$(ORACLE_HOME)/rdbms/public \
+					-I$(ORACLE_HOME)/plsql/public \
+					-I$(ORACLE_HOME)/network/public
+    endif
+
+    ifeq ($(ARCH),sunos)
+		DBLIBS = -lclntsh -lpsa -lcore4 -lnlsrtl3 -lclntsh 
+    endif
+
+    # 8.1.5
+    ifeq ($(shell ls $(ORACLE_HOME)/lib/libsql8.a > /dev/null 2>&1 && echo y), y)
+		DBLIBS = -lclntsh 
+	endif
+
+	ifndef DBLIBS
+		DBLIBS = -lclntsh -lpsa -lcore4 -lnlsrtl3 -lclntsh 
+    endif
+
+	CDEFS   += -DORACLE
+	LIBS     = $(RNTLIBS)
+endif
+
+# ----------------------------------------------------------------------------
+# PHP specific
+
+ifdef WINDIR
+      ifndef PHP_INCLUDE
+              PHP_INCLUDE = L:/win32/include/php-4.1.2
+      endif
+
+      ifndef PHP_LIBPATH
+              PHP_LIBPATH = L:/win32/lib
+      endif
+      PHP_LIB = $(PHP_LIBPATH)/php-4.1.2ts.lib
+
+else # Unix
+	ifndef PHP_INCLUDE
+		PHP_INCLUDE = $(NFSDIR)/$(ARCH)/include/php-4.1.2
+	endif
+endif
+
+
+# ----------------------------------------------------------------------------
+# check whether we are building for a hosted environment or not.
+
+ifdef HOSTED
+	CDEFS += -DHOSTED
+endif
+
+# ----------------------------------------------------------------------------
+# check whether we are building for a Metrics environment or not.
+
+ifdef RNM
+	CDEFS += -DRNM
+endif
+
+# ---------------------------------------------------------------------------
+# check whether we are building for production environment or not.
+
+ifdef PRODUCT
+	CDEFS += -DPRODUCT
+endif
+
+# ----------------------------------------------------------------------------
+# compile eval version
+
+BUILDTARGET = $(ARCH)
+
+ifdef EVAL
+	CDEFS      += -DEVAL
+	BUILDTARGET = $(ARCH)_$(RNTDB)_eval
+endif
+
+# ----------------------------------------------------------------------------
+
+ifdef WINDIR
+ROOTDIR   = $(RNTBASE)
+else
+ROOTDIR   = $(shell cd $(RNTBASE); pwd)
+endif
+BINDIR    = $(ROOTDIR)/bin/$(BUILDTARGET)
+LIBDIR    = $(ROOTDIR)/lib/$(BUILDTARGET)
+OBJDIR    = $(BUILDTARGET)
+DEPDIR   := makefiles/$(BUILDTARGET)
+CXREFDIR  = $(RNTBASE)/cxrefs
+
+ifndef WINDIR
+	export LD_LIBRARY_PATH = $(LIBDIR)
+endif
+
+.PRECIOUS: $(DEPDIR)/.CREATED 
+
+%/.CREATED:
+	@echo Creating directory $(@D)...
+	@mkdir -p $(@D)
+	@touch $@
+
+OBJDIRDEP   = $(OBJDIR)/.CREATED
+BINDIRDEP   = $(BINDIR)/.CREATED
+LIBDIRDEP   = $(LIBDIR)/.CREATED
+DEPDIRDEP   = $(DEPDIR)/.CREATED
+CXREFDIRDEP = $(CXREFDIR)/.CREATED
+
+# ----------------------------------------------------------------------------
+
+OBJS    = $(addprefix $(OBJDIR)/, $(notdir $(patsubst %.c,%$(OBJSFX), $(SRC)) \
+                                  $(patsubst %.cc,%$(OBJSFX), $(CXXSRC)) \
+                                  $(patsubst %.yxx,%$(OBJSFX), $(YXXSRC)) \
+                                  $(patsubst %.lxx,%$(OBJSFX), $(LXXSRC)) \
+                                  $(patsubst %.y,%$(OBJSFX), $(YSRC)) \
+                                  $(patsubst %.l,%$(OBJSFX), $(LSRC))))
+
+DEPLIBS = $(addprefix $(LIBDIR)/lib, $(addsuffix $(LIBSFX), $(LIBS)) \
+			$(addsuffix $(DLLSFX), $(RNWDLLS)) \
+			$(addsuffix $(CDLLSFX), $(CMNDLLS)))
+
+ifeq ($(findstring $(DLLSFX), $(TARGET)),)
+	LDLIBS  = $(OBJDIR)/cmdline$(OBJSFX)
+endif
+
+ifdef WINDIR
+LDLIBS  += /LIBPATH:$(LIBDIR) $(subst dll,lib,$(addprefix lib, $(addsuffix $(LIBSFX), $(LIBS)) $(addsuffix $(CDLLSFX), $(CMNDLLS)) $(addsuffix $(DLLSFX), $(RNWDLLS))))
+else
+LDLIBS  += -L$(LIBDIR) $(addprefix -l, $(LIBS)) $(addprefix -l, $(RNWDLLS) $(CMNDLLS))
+endif
+
+# ----------------------------------------------------------------------------
+
+ifndef BASIS_INSTALL
+    ifdef WINDIR
+        BASIS_INSTALL=L:/win32/basis/version_4
+    else
+        BASIS_INSTALL=/nfs/local/$(ARCH)/basis/version_4
+    endif
+endif
+#ROSETTE_VER = 3.0.7
+ROSETTE_LIBS = -L $(BASIS_INSTALL)/rosette/lib/$(BASIS_LIB_VERS) -lbtunicode
+
+#    CPPFLAGS += -I$(BASIS_INSTALL)/rosette/include \
+#                -I$(BASIS_INSTALL)/euclid/include
+ 
+#ifdef WINDIR
+#    LDLIBS += $(BASIS_INSTALL)/jma/lib/w32-msvc-60/btjma.lib
+#    LDLIBS += $(BASIS_INSTALL)/xma/lib/w32-msvc-60/btxma.lib
+#    LDLIBS += $(BASIS_INSTALL)/utilities/lib/w32-msvc-60/bttrie.lib
+#    LDLIBS += $(BASIS_INSTALL)/utilities/lib/w32-msvc-60/btutilities.lib
+#    LDLIBS += $(BASIS_INSTALL)/utilities/lib/w32-msvc-60/btopts.lib
+#    LDLIBS += $(BASIS_INSTALL)/euclid/bin/w32-msvc-60/bteuclid.lib
+#    LDLIBS += $(BASIS_INSTALL)/rosette/bin/w32-msvc-60/btuc.lib
+#else
+#    LDFLAGS += -L$(BASIS_INSTALL)/rosette/lib \
+#               -L$(BASIS_INSTALL)/euclid/lib
+ 
+#    LDLIBS += -lbtunicode -lpthread -ldl
+#endif
+
+CFLAGS += -I../include -DDBUG_OFF -D_WIN32 -DWIN32 -D__WIN32__ 
+
+# ZLIB
+CFLAGS += -IL:/win32/include/zlib
+
+#HtDig default defines
+CFLAGS += -DDEFAULT_CONFIG_FILE=\"c:\htdig\demo.conf\" -DCOMMON_DIR=\"c:\htdig\demo.db\templates\" -DBIN_DIR=\"c:\htdig\demo.db\bin\" -DCONFIG_DIR=\"c:\htdig\"  -DIMAGE_URL_PREFIX=\"/rnt/rnm/img\" -DDATABASE_DIR=\"c:\htdig\demo.db\"
+
+
+ifdef TARGET
+all: $(TARGET)
+endif
+

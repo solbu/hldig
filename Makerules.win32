@@ -1,0 +1,127 @@
+# ----------------------------------------------------------------------------
+# Rules to create object
+
+ifdef HOSTED
+VER_DEFS = -DBUILD_VER=\"$(BUILD_VER)\" -DBUILD_NUM=\"$(BUILD_NUM)h\" -DBUILD_DATE=\"$(BUILD_DATE)\" -DBUILD_TIME=\"$(BUILD_TIME)\"
+else
+VER_DEFS = -DBUILD_VER=\"$(BUILD_VER)\" -DBUILD_NUM=\"$(BUILD_NUM)\" -DBUILD_DATE=\"$(BUILD_DATE)\" -DBUILD_TIME=\"$(BUILD_TIME)\"
+endif
+
+ifneq ($(BUILD_CE_VER), 0)
+    VER_DEFS += -DBUILD_CE_VER=\"$(BUILD_CE_VER)\"
+endif
+
+
+ # New (non-beta) version of cygwin requires extra quotes (like unix)
+ # New version of cygwin is 2.04 so check bash -version
+ ifneq (,$(findstring 2.04,$(shell bash -version)))
+   VER_DEFS += -DAPP_NAME="\"$(APP_NAME)\""
+   ifdef EXTRA_INFO
+     VER_DEFS += -DEXTRA_INFO="\"$(EXTRA_INFO)\""
+   endif
+ else
+   VER_DEFS += -DAPP_NAME=\"$(APP_NAME)\"
+   ifdef EXTRA_INFO
+     VER_DEFS += -DEXTRA_INFO=\"$(EXTRA_INFO)\"
+   endif
+ endif
+
+VER_BUILD_CMD = $(CC) $(CPPFLAGS) $(CFLAGS) $(CDEFS) $(VER_DEFS) -c $(RNTBASE)/common/libutil/cmdline.c -Fo$(OBJDIR)/cmdline$(OBJSFX)
+
+CXX_BUILD_CMD =	$(strip $(CXX) $(CPPFLAGS) $(CFLAGS) $(CXXFLAGS) $(CDEFS) -Fo$(OBJDIR)/$(@F) -c /Tp $<)
+
+SAFE_CXX_BUILD_CMD = $(strip $(CXX) $(CPPFLAGS) $(CFLAGS) $(CXXFLAGS) $(CDEFS) -Fo$(OBJDIR)/$(@F) -c $<)
+
+$(OBJDIR)/%$(OBJSFX): %.cc
+	$(CXX_BUILD_CMD)
+
+C_BUILD_CMD = $(strip $(CC) $(CPPFLAGS) $(CFLAGS) $(CDEFS) -Fo$(OBJDIR)/$(@F) -c $<)
+
+SAFE_C_BUILD_CMD = $(strip $(CC) $(CPPFLAGS) $(CFLAGS) $(CDEFS) -Fo$(OBJDIR)/$(@F) -c $<)
+ 
+$(OBJDIR)/%$(OBJSFX): %.c
+	$(C_BUILD_CMD)
+#	echo $< NEAL $(OBJS)
+#	echo $< NEAL $(DBSRC)
+
+
+.INTERMEDIATE: $(OBJDIR)/temp.cpp $(OBJDIR)/temp.c
+
+# ----------------------------------------------------------------------------
+# Source processing rules
+
+# lint rule ----------------------------------------------------------
+
+ifndef WINDIR
+lint:
+	$(LINT) $(CPPFLAGS) $(CDEFS) +posixlib $(SRC)
+endif
+
+# Replace default lex rule to elimnate warnings caused by flex -------
+
+ifdef WINDIR
+
+%.c: %.l
+	$(LEX) -t $< | sed -e 's/register char \*yy_cp, \*yy_bp;/register char *yy_cp = NULL, *yy_bp = NULL;/' | sed -e 's/#include <unistd.h>//g' > $@
+
+%.cc: %.lxx
+	$(LEX) -t $< | sed -e 's/register char \*yy_cp, \*yy_bp;/register char *yy_cp = NULL, *yy_bp = NULL;/'| sed -e 's/#include <unistd.h>//g' > $@
+
+else
+
+%.c: %.l
+	$(LEX) -t $< | sed -e 's/register char \*yy_cp, \*yy_bp;/register char *yy_cp = NULL, *yy_bp = NULL;/' > $@
+
+%.cc: %.lxx
+	$(LEX) -t $< | sed -e 's/register char \*yy_cp, \*yy_bp;/register char *yy_cp = NULL, *yy_bp = NULL;/' > $@
+
+endif
+
+
+%.cc: %.yxx
+	$(YACC) -o $@ $< 
+
+# ----------------------------------------------------------------------------
+
+clean:
+	- $(RM) -r $(OBJDIR)
+	$(RM) $(TARGET)
+
+# ----------------------------------------------------------------------------
+# cxref
+
+cxref: $(CXREFDIRDEP) $(addprefix $(CXREFDIR)/, $(addsuffix .html, $(SRC)))
+
+$(CXREFDIR)/%.c.html: %.c 
+	@echo Cross referencing $?
+	cxref -xref -O$(CXREFDIR) -Nrnw $(CPPFLAGS) $(CDEFS) $?
+	@echo Documenting $?
+	cxref -warn-xref -xref -O$(CXREFDIR) -Nrnw -html $(CPPFLAGS) $(CDEFS) $?
+
+# ----------------------------------------------------------------------------
+# Makefile dependencies
+
+depend:
+	-(find . -name "*.d" -exec rm {} \;)
+
+ifndef WINDIR
+
+D_BUILD_CMD = @$(SHELL) -ec '$(CC) -MM $(CPPFLAGS) $(CDEFS) $< \
+                | sed -e "s!$*\\.o!$(BUILDTARGET)/& $@!g" > $@'
+
+$(DEPDIR)/%.d: %.c $(DEPDIRDEP)
+	$(D_BUILD_CMD)
+
+ifndef RNT_INCLUDE
+ifdef SRC
+-include $(addprefix $(DEPDIR)/, $(notdir $(SRC:.c=.d) $(CXXSRC:.cpp=.d)))
+endif
+endif
+
+endif
+
+
+
+
+
+

@@ -1,0 +1,25 @@
+
+TARGET = $(LIBDIR)/libcommon$(LIBSFX)
+
+# ----------------------------------------------------------------------------
+# add new library members to this list
+
+# ----------------------------------------------------------------------------
+
+include ../Makedefs.win32
+
+CXXSRC = DocumentDB.cc DocumentRef.cc HtWordReference.cc \
+    HtWordList.cc defaults.cc HtURLCodec.cc URL.cc URLTrans.cc \
+	HtZlibCodec.cc cgi.cc HtSGMLCodec.cc HtConfiguration.cc \
+    HtURLRewriter.cc 
+
+LXXSRC = conf_lexer.lxx
+YXXSRC = conf_parser.yxx
+
+CPPFLAGS += -DYY_NEVER_INTERACTIVE -DHAVE_CONFIG_H -I../db -I../htlib -I../htword
+
+$(TARGET): $(OBJDIRDEP) $(LIBDIRDEP) $(OBJS)
+	$(AR) $(ARFLAGS) $(OBJS)
+
+include ../Makerules.win32
+
