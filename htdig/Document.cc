@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34.2.13 2000/02/15 20:28:22 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34.2.14 2000/02/15 22:42:20 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -574,19 +574,32 @@ Document::readHeader(Connection &c)
 
 
 //*****************************************************************************
-// DocStatus Document::RetrieveLocal(time_t date, char *filename)
+// DocStatus Document::RetrieveLocal(time_t date, StringList *filenames)
 //   Attempt to retrieve the document pointed to by our internal URL
-//   using a local filename given. Returns Document_ok,
+//   using a list of potential local filenames given. Returns Document_ok,
 //   Document_not_changed or Document_not_local (in which case the
 //   retriever tries it again using HTTP).
 //
 Document::DocStatus
-Document::RetrieveLocal(time_t date, char *filename)
+Document::RetrieveLocal(time_t date, StringList *filenames)
 {
     struct stat stat_buf;
-    // Check that it exists, and is a regular file. 
-    if ((stat(filename, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode))
-	return Document_not_local;
+    String *filename;
+
+    filenames->Start_Get();
+
+    // Loop through list of potential filenames until the list is exhausted
+    // or a suitable file is found.
+    while ((filename = (String *)filenames->Get_Next()) &&
+	   ((stat(*filename, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode)))
+        if (debug > 1)
+	    cout << "  tried local file " << *filename << endl;
+    
+    if (!filename)
+        return Document_not_local;
+
+    if (debug > 1)
+        cout << "  found existing file " << *filename << endl;
 
     modtime = stat_buf.st_mtime;
     if (modtime <= date)
@@ -595,7 +608,7 @@ Document::RetrieveLocal(time_t date, char *filename)
     // Process only HTML files (this could be changed if we read
     // the server's mime.types file).
     // (...and handle a select few other types for now...)
-    char *ext = strrchr(filename, '.');
+    char *ext = strrchr(*filename, '.');
     if (ext == NULL)
       	return Document_not_local;
     if ((mystrcasecmp(ext, ".html") == 0) || (mystrcasecmp(ext, ".htm") == 0))
@@ -610,7 +623,7 @@ Document::RetrieveLocal(time_t date, char *filename)
   	return Document_not_local;
 
     // Open it
-    FILE *f = fopen(filename, "r");
+    FILE *f = fopen(*filename, "r");
     if (f == NULL)
  	return Document_not_local;
 

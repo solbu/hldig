@@ -1,7 +1,7 @@
 //
 // Retriever.h
 //
-// $Id: Retriever.h,v 1.8.2.2 1999/11/30 02:52:36 grdetil Exp $
+// $Id: Retriever.h,v 1.8.2.3 2000/02/15 22:42:20 grdetil Exp $
 //
 
 #ifndef _Retriever_h_
@@ -12,6 +12,7 @@
 #include "Dictionary.h"
 #include "Queue.h"
 #include "List.h"
+#include "StringList.h"
 
 class URL;
 class Document;
@@ -68,8 +69,8 @@ public:
     //
     // Routines for dealing with local filesystem access
     //
-    String *            GetLocal(char *url);
-    String *            GetLocalUser(char *url);
+    StringList *            GetLocal(char *url);
+    StringList *            GetLocalUser(char *url, StringList *defaultdocs);
     int			IsLocalURL(char *url);
 	
 private:

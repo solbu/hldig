@@ -1,4 +1,11 @@
-Tue Feb 15 16:14:23 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Feb 15 16:37:28 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc (RetrieveLocal), htdig/Document.h,
+	htdig/Retriever.cc(Initial, parse_url, GetLocal, GetLocalUser,
+	IsLocalURL, got_href, got_redirect), htdig/Retriever.h,
+	htdig/Server.cc(Server), htdig/Server.h: Apply Paul B. Henson's
+	enhancements to local_urls, local_default_urls & local_default_doc.
+	* htdoc/attrs.html: Document these.
 
 	* htsearch/htsearch.cc (setupWords): Fix problem reported by
 	D.J. Adams, in which bad_words removal failed on upper-case

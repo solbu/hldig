@@ -2827,7 +2827,7 @@
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			string
+			string list
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -2845,10 +2845,19 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-			Set this to the default document in a directory used by the
+			Set this to the default documents in a directory used by the
 			server. This is used for local filesystem access to
 			translate URLs like http://foo.com/ into something like
-			/home/foo.com/index.html
+			/home/foo.com/index.html<br>
+			The list should only contain names that the
+			local server recognizes as default documents for
+			directory URLs, as defined by the DirectoryIndex
+			setting in Apache's srm.conf, for example.
+			As of 3.1.5, this can be a string list rather
+			than a single name, and htdig will use the first
+			name that works. Since this requires a loop,
+			setting the most common name first will improve
+			performance.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -2907,6 +2916,9 @@
 			.asc, .ps, .eps and .pdf. For anything else, htdig
 			must ask the HTTP server for the file, so it can
 			determine the MIME content-type of it.
+			As of 3.1.5, you can provide multiple mappings
+			of a given URL to different directories, and
+			htdig will use the first mapping that works.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -3018,6 +3030,9 @@
 			<br>The fallback to HTTP can be disabled by setting the
 			<a href="#local_urls_only">local_urls_only</a>
 			attribute to true.
+			As of 3.1.5, you can provide multiple mappings
+			of a given URL to different directories, and
+			htdig will use the first mapping that works.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7391,7 +7406,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Tue Feb 15 15:59:20 CST 2000
+Last modified: $Date: 2000/02/15 22:42:20 $
 <!-- hhmts end -->
   </body>
 </html>

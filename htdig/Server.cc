@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.8.2.3 1999/12/03 18:11:02 grdetil Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.8.2.4 2000/02/15 22:42:20 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -20,9 +20,9 @@ static char RCSid[] = "$Id: Server.cc,v 1.8.2.3 1999/12/03 18:11:02 grdetil Exp 
 
 
 //*****************************************************************************
-// Server::Server(char *host, int port, String *local_robots_file)
+// Server::Server(char *host, int port, StringList *local_robots_files)
 //
-Server::Server(char *host, int port, String *local_robots_file)
+Server::Server(char *host, int port, StringList *local_robots_files)
 {
     if (debug > 0)
 	cout << endl << "New server: " << host << ", " << port << endl;
@@ -47,11 +47,11 @@ Server::Server(char *host, int port, String *local_robots_file)
     static int		local_urls_only = config.Boolean("local_urls_only");
     time_t		timeZero = 0;
     Document::DocStatus	status;
-    if (local_robots_file)
+    if (local_robots_files)
     {  
         if (debug > 1)
-	    cout << "Trying local file " << *local_robots_file << endl;
-        status = doc.RetrieveLocal(timeZero, *local_robots_file);
+	    cout << "Trying local files " << endl;
+        status = doc.RetrieveLocal(timeZero, local_robots_files);
         if (status == Document::Document_not_local)
         {
 	    if (local_urls_only)

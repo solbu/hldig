@@ -3,7 +3,7 @@
 //
 // A class to keep track of server specific information.
 //
-// $Id: Server.h,v 1.3.2.3 1999/12/03 18:11:02 grdetil Exp $
+// $Id: Server.h,v 1.3.2.4 2000/02/15 22:42:20 grdetil Exp $
 //
 //
 #ifndef _Server_h_
@@ -11,6 +11,7 @@
 
 #include "Object.h"
 #include "htString.h"
+#include "StringList.h"
 #include "Stack.h"
 #include "Queue.h"
 #include "StringMatch.h"
@@ -25,7 +26,7 @@ public:
 	//
 	// Construction/Destruction
 	//
-	Server(char *host, int port, String *local_robots_file = NULL);
+	Server(char *host, int port, StringList *local_robots_files = NULL);
 	~Server();
 
 	//

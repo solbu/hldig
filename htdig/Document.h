@@ -9,7 +9,7 @@
 // link is followed, but this process is done only once (to prevent loops.)
 // If the redirect didn't work, Document_not_found is returned.
 //
-// $Id: Document.h,v 1.6 1999/01/27 00:27:21 ghutchis Exp $
+// $Id: Document.h,v 1.6.2.1 2000/02/15 22:42:20 grdetil Exp $
 //
 //
 #ifndef _Document_h_
@@ -19,6 +19,7 @@
 #include "Object.h"
 #include "URL.h"
 #include "htString.h"
+#include "StringList.h"
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <time.h>
@@ -79,7 +80,7 @@ public:
 	Document_not_local
     };
     DocStatus			RetrieveHTTP(time_t date);
-    DocStatus			RetrieveLocal(time_t date, char *filename);
+    DocStatus			RetrieveLocal(time_t date, StringList *filenames);
 
     //
     // Return an appropriate parsable object for the document type.
