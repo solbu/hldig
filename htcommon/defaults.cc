@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.26  1999/01/05 19:30:16  ghutchis
+// Added new option max_descriptions for limit on the number of descriptions to
+// store (default 5, matches behavior pre 3.1.0b3).
+//
 // Revision 1.25  1998/12/19 18:59:19  bergolth
 // Added defaults.
 //
@@ -85,7 +89,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.25 1998/12/19 18:59:19 bergolth Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.26 1999/01/05 19:30:16 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -101,6 +105,7 @@ ConfigDefaults	defaults[] =
     {"bin_dir",				BIN_DIR},
     {"image_url_prefix",		IMAGE_URL_PREFIX},
     {"pdf_parser",                      PDF_PARSER},
+    {"version",				VERSION},
 
     //
     // General defaults
@@ -155,6 +160,7 @@ ConfigDefaults	defaults[] =
     {"match_method",			"and"},
     {"matches_per_page",		"10"},
     {"max_description_length",		"60"},
+    {"max_descriptions",                "5"},
     {"max_doc_size",			"100000"},
     {"max_head_length",			"512"},
     {"max_hop_count",			"999999"},
@@ -205,7 +211,6 @@ ConfigDefaults	defaults[] =
     {"use_meta_description",            "false"},
     {"user_agent",			"htdig"},
     {"valid_punctuation",		".-_/!#$%^&'"},
-    {"version",				VERSION},
     {"word_db",				"${database_base}.words.db"},
     {"word_list",			"${database_base}.wordlist"},
     {0,					0},
