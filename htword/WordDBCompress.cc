@@ -551,7 +551,7 @@ WordDBPage::TestCompress(int debuglevel)
 	    pageu2.Uncompress(res2,2);
 	    pageu2.show();
 	    if(cmp){errr("Compare failed");}
-
+	    delete res2;
 	}
 	delete [] pageu.pg;
 	delete res;
@@ -1208,12 +1208,15 @@ WordDBPage::Compare(WordDBPage &other)
 	    }	    
 	}
     }
-    int smallestoffset=min_v(pg->inp,pg->entries);
-    int other_smallestoffset=min_v(other.pg->inp,other.pg->entries);
-    if(smallestoffset!=other_smallestoffset)
+    if(pg->entries>0)
     {
-	printf("compare fail:smallestoffset:%d other_smallestoffset:%d\n",smallestoffset,other_smallestoffset);
-	res++;
+	int smallestoffset=min_v(pg->inp,pg->entries);
+	int other_smallestoffset=min_v(other.pg->inp,other.pg->entries);
+	if(smallestoffset!=other_smallestoffset)
+	{
+	    printf("compare fail:smallestoffset:%d other_smallestoffset:%d\n",smallestoffset,other_smallestoffset);
+	    res++;
+	}
     }
 
     return(res);
