@@ -1,6 +1,13 @@
+Tue Feb 15 14:03:11 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (HTML, parse, do_tag), htcommon/defaults.cc,
+	htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Add max_keywords attribute to limit meta keyword spamming.
+
 Wed Dec  8 18:19:32 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/FAQ.html, htdoc/bugs.html: Update to refer to latest versions.
+	(Update for 3.1.4 release.)
 
 Wed Dec  8 18:10:27 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 

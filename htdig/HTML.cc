@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.13 1999/12/03 17:15:28 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.14 2000/02/15 20:11:29 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -27,6 +27,8 @@ static StringMatch	attrs;
 static StringMatch	srcMatch;
 static StringMatch	hrefMatch;
 static StringMatch	keywordsMatch;
+static int		keywordsCount;
+static int		max_keywords;
 static int		offset;
 static int		totlength;
 
@@ -98,6 +100,9 @@ HTML::HTML()
     keywordsMatch.IgnoreCase();
     keywordsMatch.Pattern(keywordNames.Join('|'));
     keywordNames.Release();
+    max_keywords = config.Value("max_keywords", -1);
+    if (max_keywords < 0)
+	max_keywords = (int) ((unsigned int) ~1 >> 1);
     
     word = 0;
     href = 0;
@@ -150,6 +155,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     static char         *skip_start = config["noindex_start"];
     static char         *skip_end = config["noindex_end"];
 
+    keywordsCount = 0;
     offset = 0;
     title = 0;
     head = 0;
@@ -792,7 +798,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		char	*w = HtWordToken(transSGML(keywords));
 		while (w && doindex)
 		{
-		    if (strlen(w) >= minimumWordLength)
+		    if (strlen(w) >= minimumWordLength
+				&& ++keywordsCount <= max_keywords)
 		      retriever.got_word(w, 1, 10);
 		    w = HtWordToken(0);
 		}
@@ -875,7 +882,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    char	*w = HtWordToken(transSGML(conf["content"]));
 		    while (w && doindex)
 		    {
-			if (strlen(w) >= minimumWordLength)
+			if (strlen(w) >= minimumWordLength
+				&& ++keywordsCount <= max_keywords)
 			  retriever.got_word(w, 1, 10);
 			w = HtWordToken(0);
 		    }

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.12 1999/12/06 22:26:46 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.13 2000/02/15 20:11:29 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -88,6 +88,7 @@ ConfigDefaults	defaults[] =
     {"max_doc_size",			"100000"},
     {"max_head_length",			"512"},
     {"max_hop_count",			"999999"},
+    {"max_keywords",			"-1"},
     {"max_meta_description_length",     "512"},
     {"max_prefix_matches",		"1000"},
     {"max_stars",			"4"},

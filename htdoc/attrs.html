@@ -6,7 +6,7 @@
   <body bgcolor="#eef7ff">
 	<h1>Configuration file format -- Attributes</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-1999 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -3360,6 +3360,54 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="max_keywords">max_keywords</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			-1 <em>(no limit)</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This attribute can be used to limit the number
+			of keywords per document that htdig will accept
+			from meta keywords tags.  A value of -1 or less
+			means no limit. This can help combat meta keyword
+			spamming, by limiting the amount of keywords
+			that will be indexed, but it will not completely
+			prevent irrelevant matches in a search if the
+			first few keywords in an offending document are
+			not relevant to its contents.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			max_keywords: 10
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="max_meta_description_length">
 		max_meta_description_length</a></strong>
 	  </dt>
@@ -5371,7 +5419,7 @@
 		</dl>
 	  </dd>
 	</dl>
-		<hr>
+	<hr>
 	<dl>
 	  <dt>
 		<strong><a name="server_max_docs">server_max_docs</a></strong>
@@ -5419,7 +5467,7 @@
 		</dl>
 	  </dd>
 	</dl>
-		<hr>
+	<hr>
 	<dl>
 	  <dt>
 		<strong><a name="server_wait_time">server_wait_time</a></strong>
@@ -7191,7 +7239,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Mon Dec  6 22:36:43 EST 1999
+Last modified: Tue Feb 15 13:54:40 CST 2000
 <!-- hhmts end -->
   </body>
 </html>
