@@ -1,7 +1,7 @@
 //
 // Retriever.h
 //
-// $Id: Retriever.h,v 1.8.2.1 1999/03/23 23:22:54 grdetil Exp $
+// $Id: Retriever.h,v 1.8.2.2 1999/11/30 02:52:36 grdetil Exp $
 //
 
 #ifndef _Retriever_h_
@@ -64,6 +64,13 @@ public:
     // username/password
     //
 	void		setUsernamePassword(char *credentials);
+
+    //
+    // Routines for dealing with local filesystem access
+    //
+    String *            GetLocal(char *url);
+    String *            GetLocalUser(char *url);
+    int			IsLocalURL(char *url);
 	
 private:
     //
@@ -118,8 +125,6 @@ private:
     int			Need2Get(char *url);
     DocumentRef	*	GetRef(char *url);
     int			IsValidURL(char *url);
-    String *            IsLocal(char *url);
-    String *            IsLocalUser(char *url);
     void		RetrievedDocument(Document &, char *url, DocumentRef *ref);
     void		parse_url(URLRef &urlRef);
     void		got_redirect(char *, DocumentRef *);

@@ -3,46 +3,16 @@
 //
 // Implementation of Server
 //
-// $Log: Server.cc,v $
-// Revision 1.8  1999/01/20 18:08:30  ghutchis
-// Call good_strtok with appropriate parameters (explicitly include NULL first
-// parameter, second param is char, not char *).
-//
-// Revision 1.7  1999/01/18 22:57:28  ghutchis
-// Use max_doc_size when retrieving robots.txt files instead of a hard-coded
-// 10k limit.
-//
-// Revision 1.6  1998/12/11 02:54:07  ghutchis
-// Changed support for server_wait_time to use delay() method in Server. Delay
-// is from beginning of last connection to this one.
-//
-// Revision 1.5  1998/11/30 01:53:10  ghutchis
-// Fixed bug with robots.txt files containing tabs, based on patch from
-// Christian Schneider <cschneid@relog.ch>.
-//
-// Revision 1.4  1998/09/30 17:31:51  ghutchis
-// Changes for 3.1.0b2
-//
-// Revision 1.3  1998/07/09 09:39:01  ghutchis
-// Added support for local file digging using patches by Pasi. Patches
-// include support for local user (~username) digging.
-//
-// Revision 1.2  1997/03/24 04:33:17  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.8 1999/01/20 18:08:30 ghutchis Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.8.2.1 1999/11/30 02:52:36 grdetil Exp $";
 #endif
 
 #include "htdig.h"
 #include "Server.h"
-#include <good_strtok.h>
-#include <htString.h>
-#include <URL.h>
+#include "good_strtok.h"
+#include "htString.h"
+#include "URL.h"
 #include <ctype.h>
 #include "htdig.h"
 #include "Document.h"
@@ -229,11 +199,11 @@ void Server::robotstxt(Document &doc)
 
 
 //*****************************************************************************
-// void Server::push(char *path, int hopcount, char *referer)
+// void Server::push(char *path, int hopcount, char *referer, int local)
 //
-void Server::push(char *path, int hopcount, char *referer)
+void Server::push(char *path, int hopcount, char *referer, int local)
 {
-    if (_bad_server)
+    if (_bad_server && !local)
 	return;
 
     //

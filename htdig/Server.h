@@ -3,28 +3,17 @@
 //
 // A class to keep track of server specific information.
 //
-// $Id: Server.h,v 1.3 1998/12/11 02:54:07 ghutchis Exp $
-//
-// $Log: Server.h,v $
-// Revision 1.3  1998/12/11 02:54:07  ghutchis
-// Changed support for server_wait_time to use delay() method in Server. Delay
-// is from beginning of last connection to this one.
-//
-// Revision 1.2  1997/03/24 04:33:17  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
+// $Id: Server.h,v 1.3.2.1 1999/11/30 02:52:36 grdetil Exp $
 //
 //
 #ifndef _Server_h_
 #define _Server_h_
 
-#include <Object.h>
-#include <htString.h>
-#include <Stack.h>
-#include <Queue.h>
-#include <StringMatch.h>
+#include "Object.h"
+#include "htString.h"
+#include "Stack.h"
+#include "Queue.h"
+#include "StringMatch.h"
 #include <time.h>
 #include "URLRef.h"
 
@@ -56,7 +45,7 @@ public:
 	// see if the path in the path is allowed.  If it isn't allowed,
 	// it simply won't be added.
 	//
-	void			push(char *path, int hopcount, char *referer);
+	void			push(char *path, int hopcount, char *referer, int local = 0);
 
 	//
 	// Return the next URL from the queue for this server.

@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.9 1999/11/30 01:35:17 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.10 1999/11/30 02:52:36 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -150,7 +150,7 @@ Retriever::Initial(char *list, int from)
         {
 	    if (debug > 2)
                 cout << " pushed";
-     	server->push(u.get(), 0, 0);
+	    server->push(u.get(), 0, 0, IsLocalURL(url.get()));
         }
 	if (debug > 2)
            cout << endl;
@@ -395,9 +395,7 @@ Retriever::parse_url(URLRef &urlRef)
 
     // Retrive document, first trying local file access if possible.
     Document::DocStatus status;
-    String *local_filename = IsLocalUser(url.get());
-    if (!local_filename)
-        local_filename = IsLocal(url.get());
+    String *local_filename = GetLocal(url.get());
     if (local_filename)
     {  
         if (debug > 1)
@@ -688,13 +686,13 @@ Retriever::IsValidURL(char *u)
 
 
 //*****************************************************************************
-// String* Retriever::IsLocal(char *url)
+// String* Retriever::GetLocal(char *url)
 //   Returns a string containing the (possible) local filename
 //   of the given url, or 0 if it's definitely not local.
 //   THE CALLER MUST FREE THE STRING AFTER USE!
 //
 String*
-Retriever::IsLocal(char *url)
+Retriever::GetLocal(char *url)
 {
     static StringList *prefixes = 0;
     static StringList *paths = 0;
@@ -725,6 +723,14 @@ Retriever::IsLocal(char *url)
 	}
     }
 
+    // Check first for local user...
+    if (strchr(url, '~'))
+    {
+	String *local = GetLocalUser(url);
+	if (*local)
+	    return local;
+    }
+
     // This shouldn't happen, but check anyway...
     if (strstr(url, ".."))
         return 0;
@@ -750,14 +756,14 @@ Retriever::IsLocal(char *url)
 
 
 //*****************************************************************************
-// String* Retriever::IsLocalUser(char *url)
+// String* Retriever::GetLocalUser(char *url)
 //   If the URL has ~user part, returns a string containing the
 //   (possible) local filename of the given url, or 0 if it's
 //   definitely not local.
 //   THE CALLER MUST FREE THE STRING AFTER USE!
 //
 String*
-Retriever::IsLocalUser(char *url)
+Retriever::GetLocalUser(char *url)
 {
     static StringList *prefixes = 0, *paths = 0, *dirs = 0;
     static Dictionary home_cache;
@@ -853,6 +859,24 @@ Retriever::IsLocalUser(char *url)
 	return local;
     }
     return 0;
+}
+
+
+//*****************************************************************************
+// int Retriever::IsLocalURL(char *url)
+//   Returns 1 if the given url has a (possible) local filename
+//   or 0 if it's definitely not local.
+//
+int
+Retriever::IsLocalURL(char *url)
+{
+    int ret;
+
+    String *local_filename = GetLocal(url);
+    ret = (local_filename != 0);
+    delete local_filename;
+
+    return ret;
 }
 
  
@@ -1100,7 +1124,8 @@ Retriever::got_href(URL &url, char *description)
 		// Let's just be sure we're not pushing an empty URL
 		//
 		if (strlen(caseurl))
-		  server->push(caseurl, ref->DocHopCount(), base->get());
+		  server->push(caseurl, ref->DocHopCount(), base->get(),
+				IsLocalURL(url.get()));
 
 		String	temp = caseurl;
 		visited.Add(temp, 0);
@@ -1230,7 +1255,8 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 		    server = new Server(url.host(), url.port());
 		    servers.Add(url.signature(), server);
 		}
-		server->push(caseurl, ref->DocHopCount(), base->get());
+		server->push(caseurl, ref->DocHopCount(), base->get(),
+				IsLocalURL(url.get()));
 
 		String	temp = caseurl;
 		visited.Add(temp, 0);

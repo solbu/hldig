@@ -1,3 +1,11 @@
+Mon Nov 29 20:25:01 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc, htdig/Retriever.h, htdig/Server.cc(push),
+	htdig/Server.h: added Alexis's patch for persistent local digging
+	even if HTTP server is down. Also made new GetLocal() method
+	call GetLocalUser() itself, to simplify its use, and made it
+	non-private, for eventual use by Server code.
+
 Mon Nov 29 19:18:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc(got_href & got_redirect): corrections to case
