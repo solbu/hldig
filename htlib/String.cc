@@ -1,10 +1,10 @@
 //
 // Implementation of String class
 //
-// $Id: String.cc,v 1.21 1999/08/02 09:04:10 angus Exp $
+// $Id: String.cc,v 1.22 1999/09/05 18:25:06 ghutchis Exp $
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.21 1999/08/02 09:04:10 angus Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.22 1999/09/05 18:25:06 ghutchis Exp $";
 #endif
 
 
@@ -189,6 +189,16 @@ int String::compare(Object *obj)
     // The result depends upon the length difference.
     //
     return result;
+}
+
+int String::nocase_compare(String &s)
+{
+    int	len;
+    int	result;
+    char	*p1 = Data;
+    char	*p2 = s.Data;
+
+    return mystrcasecmp(p1, p2);
 }
 
 int String::write(int fd) const
