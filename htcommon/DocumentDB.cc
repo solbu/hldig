@@ -238,7 +238,7 @@ int DocumentDB::Delete(int docID)
     String key((char*) &docID, sizeof docID);
     String data;
   
-    if (i_dbf == 0 || dbf->Get(docID, data) == NOTOK)
+    if (i_dbf == 0 || dbf->Get(key, data) == NOTOK)
       return NOTOK;
   
     DocumentRef		*ref = new DocumentRef;

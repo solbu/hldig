@@ -1,3 +1,8 @@
+Tue Mar 16 03:06:06 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* htcommon/DocumentDB.cc (Delete): Fix bad parameter to Get: use
+	key, not DocID.
+
 Tue Mar 16 01:50:16 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
 	* htlib/HtWordType.h (class HtWordType): New.
