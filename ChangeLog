@@ -1,3 +1,8 @@
+Tue Jun 15 14:31:50 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/PDF.cc(parseNonTextLine): move line that clears _parsedString,
+	so title cleared even if rejected.
+
 Tue Jun 15 14:25:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(buildMatchList & sort): move maxScore calculation

@@ -4,7 +4,7 @@
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
 #if RELEASE
-static char RCSid[] = "$Id: PDF.cc,v 1.11 1999/03/23 20:26:18 grdetil Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.12 1999/06/15 18:48:42 grdetil Exp $";
 #endif
 
 #include <sys/types.h>
@@ -290,8 +290,8 @@ void PDF::parseNonTextLine(String &line)
 			_parsedString.get());
 
 		_retriever->got_title(_parsedString);
-		_parsedString = 0;
 	    }
+	    _parsedString = 0;
 	}
 	
    }
