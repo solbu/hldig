@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: SplitMatches.cc,v 1.4 2003/06/24 19:58:07 nealr Exp $
+// $Id: SplitMatches.cc,v 1.5 2003/12/21 10:45:38 lha Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -41,8 +41,9 @@ public:
     ~MatchArea();
 
     // Does this item match?
+    // Fail if template is empty, since explicit "*" maps to empty template
     inline bool Match(char *s)
-    { return match.match(s, 1, 0) != 0; }
+    { return match.match(s, 0, 0) != 0; }
 
     // Return the contained list.
     List *MatchList() { return &myList; }
@@ -65,7 +66,7 @@ MatchArea::MatchArea(const String &url_regex)
     // pattern; it must always return false for the "Match" operator.
     if (strcmp("*", url_regex.get()) != 0)
       {
-	StringList l(url_regex.get());
+	StringList l(url_regex.get(),'|');
 	match.setEscaped(l);
       }
 }

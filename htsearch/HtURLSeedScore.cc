@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtURLSeedScore.cc,v 1.4 2003/06/24 19:58:07 nealr Exp $
+// $Id: HtURLSeedScore.cc,v 1.5 2003/12/21 10:45:38 lha Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -74,7 +74,7 @@ ScoreAdjustItem::ScoreAdjustItem(String &url_regex, String &formula)
     bool factor_found = false;
     bool constant_found = false;
     int chars_so_far;
-    StringList l(url_regex.get());
+    StringList l(url_regex.get(), '|');
     match.setEscaped(l);
 
     // FIXME: Missing method to check if the regex was in error.
