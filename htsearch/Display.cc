@@ -4,6 +4,11 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.30  1999/01/14 03:10:53  ghutchis
+// Added support for using the wrapper instead of header and footer if
+// search_results_wrapper is set. Added support for sorting and reverse sorting
+// by date, time, and score.
+//
 // Revision 1.29  1999/01/08 05:02:24  ghutchis
 // Implement add_anchors_to_excerpt option and new variable ANCHOR as
 // contributed by Marjolein.
@@ -101,7 +106,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.29 1999/01/08 05:02:24 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.30 1999/01/14 03:10:53 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -194,10 +199,42 @@ Display::display(int pageNumber)
 	displayNomatch();
 	return;
     }
-    maxScore = match->getScore();
+    // maxScore = match->getScore();	// now done in buildMatchList()
     	
     cout << "Content-type: text/html\r\n\r\n";
-    displayHeader();
+    String	wrap_file = config["search_results_wrapper"];
+    String	*wrapper = 0;
+    char	*header = 0, *footer = 0;
+    if (wrap_file.length())
+    {
+	wrapper = readFile(wrap_file.get());
+	if (wrapper && wrapper->length())
+	{
+	    char	wrap_sepr[] = "HTSEARCH_RESULTS";
+	    char	*h = wrapper->get();
+	    char	*p = strstr(h, wrap_sepr);
+	    if (p)
+	    {
+		if (p > h && p[-1] == '$')
+		{
+		    footer = p + strlen(wrap_sepr);
+		    header = h;
+		    p[-1] = '\0';
+		}
+		else if (p > h+1 && p[-1] == '(' && p[-2] == '$' &&
+			 p[strlen(wrap_sepr)] == ')')
+		{
+		    footer = p + strlen(wrap_sepr) + 1;
+		    header = h;
+		    p[-2] = '\0';
+		}
+	    }
+	}
+    }
+    if (header)
+	expandVariables(header);
+    else
+	displayHeader();
 
     //
     // Display the window of matches requested.
@@ -229,8 +266,13 @@ Display::display(int pageNumber)
     {
 	expandVariables(currentTemplate->getEndTemplate());
     }
-    displayFooter();
+    if (footer)
+	expandVariables(footer);
+    else
+	displayFooter();
 
+    if (wrapper)
+	delete wrapper;
     delete matches;
 }
 
@@ -379,6 +421,7 @@ Display::setVariables(int pageNumber, List *matches)
     vars.Add("VERSION", new String(config["version"]));
     vars.Add("RESTRICT", new String(config["restrict"]));
     vars.Add("EXCLUDE", new String(config["exclude"]));
+    vars.Add("SORT", new String(config["sort"]));
     if (mystrcasecmp(config["match_method"], "and") == 0)
 	vars.Add("MATCH_MESSAGE", new String("all"));
     else if (mystrcasecmp(config["match_method"], "or") == 0)
@@ -528,6 +571,8 @@ Display::createURL(String &url, int pageNumber)
 	s << "method=" << input->get("method") << '&';
     if (input->exists("format"))
 	s << "format=" << input->get("format") << '&';
+    if (input->exists("sort"))
+	s << "sort=" << input->get("sort") << '&';
     if (input->exists("matchesperpage"))
 	s << "matchesperpage=" << input->get("matchesperpage") << '&';
     if (input->exists("words"))
@@ -842,6 +887,7 @@ Display::buildMatchList()
     List	*matches = new List();
     double      backlink_factor = config.Double("backlink_factor");
     double      date_factor = config.Double("date_factor");
+    SortType	typ = sortType();
 	
     results->Start_Get();
     while ((id = results->Get_Next()))
@@ -884,9 +930,9 @@ Display::buildMatchList()
 	// We want older docs to have smaller values and the
 	// ultimate values to be a reasonable size (max about 100)
 
-	if (date_factor != 0.0 || backlink_factor != 0.0)
+	if (date_factor != 0.0 || backlink_factor != 0.0 || typ != SortByScore)
 	  {
-	    DocumentRef*thisRef = docDB[thisMatch->getURL()];
+	    DocumentRef *thisRef = docDB[thisMatch->getURL()];
 	    if (thisRef)   // We better hope it's not null!
 	      {
 		score += date_factor * 
@@ -896,6 +942,14 @@ Display::buildMatchList()
 		  links = 1; // It's a hack, but it helps...
 		score += backlink_factor
 		  * (thisRef->DocBackLinks() / (double)links);
+		if (typ != SortByScore)
+		  {
+		    DocumentRef *sortRef = new DocumentRef();
+		    sortRef->DocTime(thisRef->DocTime());
+		    if (typ == SortByTitle)
+			sortRef->DocTitle(thisRef->DocTitle());
+		    thisMatch->setRef(sortRef);
+		  }
 	      }
 	    // Get rid of it to free the memory!
 	    delete thisRef;
@@ -1035,15 +1089,27 @@ Display::sort(List *matches)
     for (i = 0; i < numberOfMatches; i++)
     {
 	array[i] = (ResultMatch *)(*matches)[i];
+	if (i == 0 || maxScore < array[i]->getScore())
+	    maxScore = array[i]->getScore();
     }
     matches->Release();
 
+    SortType	typ = sortType();
     qsort((char *) array, numberOfMatches, sizeof(ResultMatch *),
+	  (typ == SortByTitle) ? Display::compareTitle :
+	  (typ == SortByTime) ? Display::compareTime :
 	  Display::compare);
 
-    for (i = 0; i < numberOfMatches; i++)
+    char	*st = config["sort"];
+    if (st && *st && mystrncasecmp("rev", st, 3) == 0)
     {
-	matches->Add(array[i]);
+	for (i = numberOfMatches; --i >= 0; )
+	    matches->Add(array[i]);
+    }
+    else
+    {
+	for (i = 0; i < numberOfMatches; i++)
+	    matches->Add(array[i]);
     }
     delete [] array;
 }
@@ -1058,7 +1124,64 @@ Display::compare(const void *a1, const void *a2)
     return m2->getScore() - m1->getScore();
 }
 
+//*****************************************************************************
+int
+Display::compareTime(const void *a1, const void *a2)
+{
+    ResultMatch	*m1 = *((ResultMatch **) a1);
+    ResultMatch *m2 = *((ResultMatch **) a2);
+    time_t	t1 = (m1->getRef()) ? m1->getRef()->DocTime() : 0;
+    time_t	t2 = (m2->getRef()) ? m2->getRef()->DocTime() : 0;
 
+    return (int) (t2 - t1);
+}
+
+//*****************************************************************************
+int
+Display::compareTitle(const void *a1, const void *a2)
+{
+    ResultMatch	*m1 = *((ResultMatch **) a1);
+    ResultMatch *m2 = *((ResultMatch **) a2);
+    char	*t1 = (m1->getRef()) ? m1->getRef()->DocTitle() : "";
+    char	*t2 = (m2->getRef()) ? m2->getRef()->DocTitle() : "";
+
+    if (!t1) t1 = "";
+    if (!t2) t2 = "";
+    return mystrcasecmp(t1, t2);
+}
+
+//*****************************************************************************
+Display::SortType
+Display::sortType()
+{
+    static struct
+    {
+	char		*typest;
+	SortType	type;
+    }
+    sorttypes[] =
+    {
+	{"score", SortByScore},
+	{"date", SortByTime},
+	{"time", SortByTime},
+	{"title", SortByTitle}
+    };
+    int		i = 0;
+    char	*st = config["sort"];
+    if (st && *st)
+    {
+	if (mystrncasecmp("rev", st, 3) == 0)
+	    st += 3;
+	for (i = sizeof(sorttypes)/sizeof(sorttypes[0]); --i > 0; )
+	{
+	    if (mystrcasecmp(sorttypes[i].typest, st) == 0)
+		break;
+	}
+    }
+    return sorttypes[i].type;
+}
+
+//*****************************************************************************
 void
 Display::logSearch(int page, List *matches)
 {
