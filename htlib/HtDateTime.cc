@@ -573,6 +573,15 @@ HtDateTime &HtDateTime::operator=(const HtDateTime &right)
 }
 
 
+HtDateTime &HtDateTime::operator=(const int right)
+{
+	Ht_t=(time_t)right;   // Copy the int as a time_t value
+	ToLocalTime();
+	
+	return *this;
+}
+
+
 ///////
    //   Comparison methods
 ///////

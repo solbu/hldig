@@ -146,6 +146,9 @@ public:
    HtDateTime(struct tm &t) {SetDateTime(t); ToLocalTime();}
    HtDateTime(struct tm *t) {SetDateTime(t); ToLocalTime();}
 
+   // From an unsigned int
+   HtDateTime(int t) {SetDateTime (t); ToLocalTime();}
+   
 
 ///////
    //   Interface methods
@@ -165,12 +168,16 @@ public:
 ///////
 
    // Setting from a time_t value
-   void SetDateTime(const time_t &t) { Ht_t =  t; }      	   // by reference
+   void SetDateTime(const time_t &t) { Ht_t =  t; }      	// by reference
    void SetDateTime(const time_t *t) { Ht_t = *t; } 	        // by pointer
 
    // Set object time_t value from a struct tm
-   inline void SetDateTime(struct tm *);  	   	       	   // by pointer
-   inline void SetDateTime(struct tm &t) { SetDateTime(&t);}   // by reference
+   inline void SetDateTime(struct tm *);  	   	       	// by pointer
+   inline void SetDateTime(struct tm &t) { SetDateTime(&t);}    // by reference
+
+   // Setting from an int
+   void SetDateTime(const int t) { Ht_t =  (time_t) t; }      	// with an int
+   
    
    // Set GM Time from single values input
    // Return true if it all went good, false else
@@ -296,7 +303,7 @@ public:
    //   Operator overloading
 ///////
 
-   // For comparisons
+   // For comparisons - between objects of the same class
 
    inline bool operator==(const HtDateTime &right) const;
    inline bool operator<(const HtDateTime &right) const;
@@ -314,9 +321,31 @@ public:
       	 {return right < *this; }
 
 
+   // For comparisons - between HtDateTime objects and int
+
+   bool operator==(const int right) const   // with an int
+      	 {return ( Ht_t == (time_t) right );}
+
+   bool operator<(const int right) const    // with an int
+      	 {return ( Ht_t < (time_t) right );}
+
+   bool operator!=(const int right) const // with an int
+      	 {return !( *this == right );}
+
+   bool operator>=(const int right) const // with an int
+      	 {return !( *this < right);}
+
+   bool operator<=(const int right) const // with an int
+      	 {return !( *this > right);}
+
+   bool operator>(const int right) const  // with an int
+      	 {return (Ht_t > (time_t) right); }
+
+
    // For Copy
 
    inline HtDateTime &operator=(const HtDateTime &right);
+   inline HtDateTime &operator=(const int right);
 
 
 
