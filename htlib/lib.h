@@ -1,7 +1,10 @@
 //
-// $Id: lib.h,v 1.2 1998/01/05 05:22:38 turtle Exp $
+// $Id: lib.h,v 1.3 1998/10/28 06:51:37 turtle Exp $
 //
 // $Log: lib.h,v $
+// Revision 1.3  1998/10/28 06:51:37  turtle
+// *  added extern "C" to mytimegm declaration.  still doesn't seem to help...
+//
 // Revision 1.2  1998/01/05 05:22:38  turtle
 // Added own replacement of timegm()
 //
@@ -61,6 +64,6 @@ char *mystrptime(char *buf, char *fmt, struct tm *tm);
 //
 // timegm() is quite rare, so provide our own.
 //
-time_t mytimegm(struct tm *tm);
+extern "C" time_t mytimegm(struct tm *tm);
 
 #endif
