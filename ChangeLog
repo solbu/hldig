@@ -1,3 +1,15 @@
+Thu Aug 17 15:47:58 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htnet/HtHTTP.cc: ask again for a document after a <NoHeader>
+	response is given by the HTTPRequest() method.
+
+Thu Aug 17 12:25:33 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htnet/HtHTTP.*, htnet/Transport.* : fixed bug with HTTP/1.1 management.
+	Now the "Connection: close" directive is handled and force the connection
+	to be closed. So the bug has now been fixed. Fixed other minor bugs and
+	strings initializations.
+     
 Tue Aug 15 00:24:33 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* contrib/multidig/Makefile, gen-collect, db.conf, multidig.conf:
