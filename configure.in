@@ -141,9 +141,9 @@ AC_CHECK_SIZEOF(unsigned char, 1)
 
 # Checks for library functions.
 AC_FUNC_CLOSEDIR_VOID
-AC_FUNC_ERROR_AT_LINE
-AC_FUNC_LSTAT
-AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
+#AC_FUNC_ERROR_AT_LINE
+#AC_FUNC_LSTAT
+#AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 AC_FUNC_MALLOC
 AC_FUNC_MBRTOWC
 AC_FUNC_MEMCMP
@@ -151,7 +151,7 @@ AC_FUNC_MMAP
 AC_FUNC_REALLOC
 AC_FUNC_SELECT_ARGTYPES
 AC_TYPE_SIGNAL
-AC_FUNC_STAT
+#AC_FUNC_STAT
 AC_FUNC_STRFTIME
 AC_FUNC_STRPTIME
 AC_FUNC_VPRINTF
@@ -265,6 +265,15 @@ if test "$db_cv_bigfile" = yes; then
 	esac
 fi
 
+# Add the -mimpure-text option on Solaris with GCC and libstc++ that is not shared
+if test "$GXX" = "yes"
+then
+  case "$host" in
+    *-sun-solaris* ) extra_ldflags="-mimpure-text";;
+  esac
+fi
+
+AC_SUBST(extra_ldflags)
 # Define to the syslog level for htsearch logging
 AC_DEFINE([LOG_LEVEL],[LOG_INFO],[Define to the syslog level for htsearch logging])
 

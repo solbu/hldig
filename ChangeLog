@@ -1,3 +1,10 @@
+Thu Aug 28 11:25:07 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * configure.in: removed portability checks for error, stat and lstat that
+     caused a compile errors on Solaris. Added the '-mimpure-text'
+     extra ld flag for GCC on solaris systems (a linkage error occurs
+     when libstdc++ is not shared)
+
 Thu Aug 28 11:22:57 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * include/Makefile.am: changed htconfig.h.in into config.h.in
