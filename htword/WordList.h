@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.3 1999/10/01 15:19:30 loic Exp $
+// $Id: WordList.h,v 1.4 1999/10/01 16:45:51 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -24,11 +24,11 @@
 
 #include "Dictionary.h"
 #include "List.h"
-#include "db_cxx.h"
 #include "htString.h"
 #include "WordRecord.h"
 #include "WordReference.h"
 #include "WordType.h"
+#include "WordDB.h"
 #include "Configuration.h"
 
 class WordList;
@@ -78,8 +78,8 @@ public:
     // Delete permanently
     //
     int                 WalkDelete(const WordReference& wordRef);
-    int                 Delete(const WordReference& wordRef);
-    int                 Delete(WordCursor& cursor);
+    int                 Delete(const WordReference& wordRef) { return db.Del(wordRef); }
+    int                 Delete(WordCursor& cursor) { return cursor.Del() == OK ? 1 : 0; }
 
     //
     // Open underlying db file
@@ -108,7 +108,7 @@ public:
     //
     // Check for existence
     //
-    int                 Exists(const WordReference& wordRef);
+    int                 Exists(const WordReference& wordRef) { return db.Exists(wordRef); }
     int                 Exists(const String& word) { return Exists(WordReference(word)); }
 
 
@@ -137,16 +137,12 @@ protected:
     const WordType		wtype;
     const Configuration&	config;
 
-    int                 	isopen;
-    int                 	isread;
-
+    int				isopen;
+    int				isread;
+    
 private:
 
-    Db		            	*db;
-    DbEnv	            	dbenv;
-    DbInfo	            	dbinfo;
+    WordDB	            	db;
 };
 
 #endif
-
-

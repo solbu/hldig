@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.3 1999/10/01 15:19:30 loic Exp $
+// $Id: WordList.cc,v 1.4 1999/10/01 16:45:51 loic Exp $
 //
 
 #include "WordList.h"
@@ -23,7 +23,6 @@
 #include "WordType.h"
 #include "Configuration.h"
 #include "htString.h"
-#include "db_cxx.h"
 #include "HtPack.h"
 
 #include <stdio.h>
@@ -32,99 +31,6 @@
 #include <iostream.h>
 #include <fstream.h>
 #include <errno.h>
-
-static inline const char* dberror(int errval) {
-#define DB_MAX_ERROR	(-DB_TXN_CKP + 1)
-  static const char* dbstr[DB_MAX_ERROR] = {
-    "",
-    "DB_INCOMPLETE",
-    "DB_KEYEMPTY",
-    "DB_KEYEXISTS",
-    "DB_LOCK_DEADLOCK",
-    "DB_LOCK_NOTGRANTED",
-    "DB_LOCK_NOTHELD",
-    "DB_NOTFOUND",
-    "DB_RUNRECOVERY",
-    "DB_DELETED",
-    "DB_NEEDSPLIT",
-    "DB_SWAPBYTES",
-    "DB_TXN_CKP",
-  };
-  if(errval < 0 && -errval < DB_MAX_ERROR)
-    return dbstr[-errval];
-  else
-    return strerror(errval);
-}
-
-//
-// Interface to Dbc that uses String instead of Dbt
-// Methods report errors on cerr and return OK/NOTOK status.
-//
-class WordCursor {
-public:
-  WordCursor() { cursor = 0; }
-  ~WordCursor() {
-    Close();
-  }
-
-  int Open(Db* db) {
-    Close();
-    if((errno = db->cursor(0, &cursor, 0)) != 0) {
-      cerr << "WordCursor::Open failed " << dberror(errno) << "\n";
-      return NOTOK;
-    }
-    return OK;
-  }
-
-  int Close() {
-    if(cursor) cursor->close();
-    cursor = 0;
-    return OK;
-  }
-
-  int Get(String& key, String& data, int flags) {
-    Dbt rkey;
-    Dbt rdata;
-    switch(flags & DB_OPFLAGS_MASK) {
-    case DB_SET_RANGE:
-    case DB_SET:
-    case DB_GET_BOTH:
-      rkey.set_data((void*)key.get());
-      rkey.set_size((u_int32_t)key.length());
-      break;
-    }
-    if((errno = cursor->get(&rkey, &rdata, (u_int32_t)flags)) != 0) {
-      if(errno != DB_NOTFOUND) {
-	cerr << "WordCursor::Get(" << flags << ") failed " << dberror(errno) << "\n";
-      }
-      return NOTOK;
-    }
-    key.set((const char*)rkey.get_data(), (int)rkey.get_size());
-    data.set((const char*)rdata.get_data(), (int)rdata.get_size());
-    return OK;
-  }
-
-  int Put(const String& key, const String& data, int flags) {
-    Dbt rkey((void*)key.get(), (size_t)key.length());
-    Dbt rdata((void*)data.get(), (size_t)data.length());
-    if((errno = cursor->put(&rkey, &rdata, (u_int32_t)flags)) != 0) {
-      cerr << "WordCursor::Put(" << key << ", " << data << ", " << flags << ") failed " << dberror(errno) << "\n";
-      return NOTOK;
-    }
-    return OK;
-  }
-
-  int Del() {
-    if((errno = cursor->del((u_int32_t)0)) != 0) {
-      cerr << "WordCursor::Del() failed " << dberror(errno) << "\n";
-      return NOTOK;
-    }
-    return OK;
-  }
-  
-private:
-    Dbc* cursor;
-};
 
 //*****************************************************************************
 // WordList::~WordList()
@@ -141,7 +47,6 @@ WordList::WordList(const Configuration& config_arg) :
   config(config_arg)
 {
     // The database itself hasn't been opened yet
-    db = 0;
     isopen = 0;
     isread = 0;
 }
@@ -150,43 +55,17 @@ WordList::WordList(const Configuration& config_arg) :
 //
 int WordList::Open(const String& filename, int mode)
 {
-  Close();
-
-  const char* progname = "WordList";
-
-  //
-  // Environment initialization
-  //
-  // Output errors to the application's log.
-  //
-  dbenv.set_error_stream(&cerr);
-  dbenv.set_errpfx(progname);
-  //
-  // Do not trust C++ portability of exception handling. I may be
-  // wrong about that but have no proof. 
-  //
-  dbenv.set_error_model(DbEnv::ErrorReturn);
-
-  if ((errno = dbenv.appinit(0, 0, DB_CREATE)) != 0) {
-    cerr << progname << ": DbEnv::appinit: " << dberror(errno) << "\n";
-    return NOTOK;
-  }
   //
   // Info initialization
   //
-  dbinfo.set_bt_compare(word_db_cmp);
+  db.dbinfo.set_bt_compare(word_db_cmp);
+
+  int ret = db.Open(filename, mode == O_RDONLY ? DB_RDONLY : DB_CREATE);
 
   isread = mode & O_RDONLY;
-  mode = isread ? DB_RDONLY : DB_CREATE;
-
-  if ((errno = Db::open(filename, DB_BTREE, (u_int32_t)mode, 0666, &dbenv, &dbinfo, &db)) != 0) {
-    cerr << progname << ": Db::open: " << dberror(errno) << "\n";
-    return NOTOK;
-  }
-
   isopen = 1;
 
-  return OK;
+  return ret;
 }
 
 
@@ -196,8 +75,7 @@ int WordList::Open(const String& filename, int mode)
 int WordList::Close()
 {
   if(isopen) {
-    db->close(0);
-    db = 0;
+    db.Close();
     isopen = 0;
     isread = 0;
   }
@@ -218,21 +96,7 @@ int WordList::Put(const WordReference& arg, int flags)
     return NOTOK;
   wordRef.Key().SetWord(word);
 
-  int ret;
-
-  String	key;
-  String	record;
-
-  if((ret = wordRef.Pack(key, record)) == OK) {
-    Dbt rkey(key.get(), key.length());
-    Dbt rrecord(record.get(), record.length());
-    if((errno = db->put(0, &rkey, &rrecord, flags)) != 0) {
-      cerr << "WordList::Put(" << wordRef << ") failed " << dberror(errno) << "\n";
-      return NOTOK;
-    }
-  }
-
-  return ret;
+  return db.Put(wordRef, flags);
 }
 
 
@@ -306,7 +170,7 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
     WordKey		prefixKey;
     WordCursor		cursor;
     
-    if(cursor.Open(db) == NOTOK) return 0;
+    if(cursor.Open(db.db) == NOTOK) return 0;
     
     String key;
     String data;
@@ -391,26 +255,6 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
     return list;
 }
 
-//*****************************************************************************
-//
-int WordList::Exists(const WordReference& wordRef)
-{
-  String key;
-
-  wordRef.Key().Pack(key);
-
-  Dbt rkey((void*)key.get(), (u_int32_t)key.length());
-  Dbt rdata;
-
-  if((errno = db->get(0, &rkey, &rdata, 0)) != 0) {
-    if(errno != DB_NOTFOUND)
-      cerr << "WordList::Exists(" << wordRef << ") failed " << dberror(errno) << "\n";
-    return NOTOK;
-  }
-  
-  return OK;
-}
-
 //
 // Callback data dedicated to Dump and dump_word communication
 //
@@ -449,39 +293,6 @@ int WordList::WalkDelete(const WordReference& wordRef)
 }
 
 //*****************************************************************************
-// 
-// Delete record matching wordRef exactly.
-//
-int WordList::Delete(const WordReference& wordRef)
-{
-  String key;
-
-  wordRef.Key().Pack(key);
-
-  Dbt rkey((void*)key.get(), (u_int32_t)key.length());
-  Dbt rdata;
-
-  if((errno = db->del(0, &rkey, 0)) != 0) {
-    if(errno != DB_NOTFOUND) {
-      cerr << "WordList::Delete(" << wordRef << ") failed " << dberror(errno) << "\n";
-      return -1;
-    }
-    return 0;
-  }
-  
-  return 1;
-}
-
-//*****************************************************************************
-// 
-// Delete record at cursor position
-//
-int WordList::Delete(WordCursor& cursor)
-{
-  return cursor.Del() == OK ? 1 : 0;
-}
-
-//*****************************************************************************
 // List *WordList::Words()
 //
 //
@@ -493,7 +304,7 @@ List *WordList::Words()
     WordReference	lastWord;
     WordCursor		cursor;
 
-    if(cursor.Open(db) != OK) return 0;
+    if(cursor.Open(db.db) != OK) return 0;
 
     while (cursor.Get(key, record, DB_NEXT) == OK)
       {
