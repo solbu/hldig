@@ -1,4 +1,13 @@
-Tue Feb 15 15:39:28 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Feb 15 16:03:53 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(setVariables), htcommon/defaults.cc: Added
+	build_select_lists attribute, to generate selector menus in forms.
+	* htdoc/hts_selectors.html: Added this page to explain this new
+	feature, plus other details on select lists in general.
+	* htdoc/hts_templates.html: Added relevant links to related attributes
+	and selectors documentation.
+	* htdoc/attrs.html, cf_by{name,prog}.html: Added relevant explanations
+	and links to selectors documentation.
 
 	* htlib/QuotedStringList.cc (Create): fix PR#743, where quoted string
 	lists didn't allow embedded quotes of opposite sort in strings

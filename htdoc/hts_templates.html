@@ -10,7 +10,7 @@
 	  htsearch
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-1999 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -103,7 +103,10 @@
 	  all of them will be substituted for every file. In addition, all
 	  of the standard CGI environment variables are available, and
 	  listed in the <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">cgi
-	  specification</a>. The variables are:
+	  specification</a>. Variables will be substituted normally
+	  with the format $(VAR), escaped for use in a URL with the
+	  format $%(VAR) and HTML-escaped with the format $&(VAR). The
+	  variables are:
 	</p>
 	<dl>
 	  <dt>
@@ -168,6 +171,11 @@
 	  <dd>
 		Expands to an HTML menu of all the available formats. The
 		current format will be the default one.
+		The menu is composed of choices itemized in the
+		<a href="attrs.html#template_map">template_map</a>
+		attribute. The expansion of this template variable is
+		described in more detail in the
+		<a href="hts_selectors.html">select list documentation</a>.
 	  </dd>
 	  <dt>
 		<b>HOPCOUNT</b>
@@ -228,6 +236,11 @@
 	  <dd>
 		Expands to an HTML menu of all the available matching
 		methods. The current method will be the default one.
+		The menu is composed of choices itemized in the
+		<a href="attrs.html#method_names">method_names</a>
+		attribute. The expansion of this template variable is
+		described in more detail in the
+		<a href="hts_selectors.html">select list documentation</a>.
 	  </dd>
 	  <dt>
 		<b>MODIFIED</b>
@@ -239,9 +252,10 @@
 		<b>NEXTPAGE</b>
 	  </dt>
 	  <dd>
-		This expands to the value of the <tt>next_page_text</tt> or
-		<tt>no_next_page_text</tt> attributes depending on whether
-		there is a next page or not.
+		This expands to the value of the
+		<a href="attrs.html#next_page_text">next_page_text</a> or
+		<a href="attrs.html#no_next_page_text">no_next_page_text</a>
+		attributes depending on whether there is a next page or not.
 	  </dd>
 	  <dt>
 		<b>PAGE</b>
@@ -253,16 +267,18 @@
 		<b>PAGEHEADER</b>
 	  </dt>
 	  <dd>
-		This expands to either the value of the <tt>
-		page_list_header</tt> or <tt>no_page_list_header</tt>
+		This expands to either the value of the
+		<a href="attrs.html#page_list_header">page_list_header</a> or
+		<a href="attrs.html#no_page_list_header">no_page_list_header</a>
 		attributes depending on how many pages there are.
 	  </dd>
 	  <dt>
 		<b>PAGELIST</b>
 	  </dt>
 	  <dd>
-		This expands to a list of hyperlinks using the <tt>
-		page_number_text</tt> and <tt>no_page_number_text</tt>
+		This expands to a list of hyperlinks using the
+		<a href="attrs.html#page_number_text">page_number_text</a> and
+		<a href="attrs.html#no_page_number_text">no_page_number_text</a>
 		attributes.
 	  </dd>
 	  <dt>
@@ -291,9 +307,10 @@
 		<b>PREVPAGE</b>
 	  </dt>
 	  <dd>
-		This expands to the value of the <tt>prev_page_text</tt> or
-		<tt>no_prev_page_text</tt> attributes depending on whether
-		there is a previous page or not.
+		This expands to the value of the
+		<a href="attrs.html#prev_page_text">prev_page_text</a> or
+		<a href="attrs.html#no_prev_page_text">no_prev_page_text</a>
+		attributes depending on whether there is a previous page or not.
 	  </dd>
 	  <dt>
 		<b>SCORE</b>
@@ -337,6 +354,11 @@
 	  <dd>
 		Expands to an HTML menu of all the available sorting
 		methods. The current method will be the default one.
+		The menu is composed of choices itemized in the
+		<a href="attrs.html#sort_names">sort_names</a>
+		attribute. The expansion of this template variable is
+		described in more detail in the
+		<a href="hts_selectors.html">select list documentation</a>.
 	  </dd>
 	  <dt>
 		<b>STARSLEFT</b>
@@ -387,8 +409,8 @@
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
-<!-- hhmts start -->
-Last modified: Tue Nov 23 22:19:33 EST 1999
-<!-- hhmts end -->
+
+Last modified: $Date: 2000/02/15 22:08:36 $
+
   </body>
 </html>

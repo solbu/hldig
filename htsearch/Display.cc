@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.23 2000/02/15 20:50:18 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.24 2000/02/15 22:08:36 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -480,6 +480,47 @@ Display::setVariables(int pageNumber, List *matches)
     *str << "</select>\n";
     vars.Add("SORT", str);
     vars.Add("SELECTED_SORT", new String(st));
+
+    // Handle user-defined select lists.
+    // Uses octuples containing these values:
+    // <tempvar> <inparm> <namelistattr> <ntuple> <ivalue> <ilabel> 
+    //					<defattr> <deflabel>
+    // e.g.:
+    // METHOD_LIST method method_names 2 1 2 match_method ""
+    // FORMAT_LIST format template_map 3 2 1 template_name ""
+    // EXCLUDE_LIST exclude exclude_names 2 1 2 exclude ""
+    // MATCH_LIST matchesperpage matches_per_page_list 1 1 1
+    //					matches_per_page "Previous Amount"
+    QuotedStringList	builds(config["build_select_lists"], " \t\r\n");
+    for (int b = 0; b <= builds.Count()-8; b += 8)
+    {
+	int	ntuple = atoi(builds[b+3]);
+	int	ivalue = atoi(builds[b+4]);
+	int	ilabel = atoi(builds[b+5]);
+	int	nsel = 0;
+	QuotedStringList	namelist(config[builds[b+2]], " \t\r\n");
+	if (ntuple > 0 && ivalue > 0 && ivalue <= ntuple
+	  && ilabel > 0 && ilabel <= ntuple && namelist.Count() % ntuple == 0)
+	{
+	    str = new String();
+	    *str << "<select name="<<builds[b+1]<<">\n";
+	    for (i = 0; i < namelist.Count(); i += ntuple)
+	    {
+		*str << "<option value=\"" << namelist[i+ivalue-1] << '"';
+		if (mystrcasecmp(namelist[i+ivalue-1],config[builds[b+6]]) == 0)
+		{
+		    *str << " selected";
+		    ++nsel;
+		}
+		*str << '>' << namelist[i+ilabel-1] << '\n';
+	    }
+	    if (!nsel && builds[b+7][0] && input->exists(builds[b+1]))
+		*str << "<option value=\"" << input->get(builds[b+1])
+		     << "\" selected>" << builds[b+7] << '\n';
+	    *str << "</select>\n";
+	    vars.Add(builds[b], str);
+	}
+    }
 	
     //
     // If a paged output is required, set the appropriate variables

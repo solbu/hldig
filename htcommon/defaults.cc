@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.14 2000/02/15 20:50:15 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.15 2000/02/15 22:08:34 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -36,6 +36,7 @@ ConfigDefaults	defaults[] =
     {"bad_extensions",			".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram .tgz .bin .rpm .mpg .mov .avi"},
     {"bad_querystr",                    ""},
     {"bad_word_list",			"${common_dir}/bad_words"},
+    {"build_select_lists",		""},
     {"case_sensitive",                  "true"},
     {"common_url_parts",                "http:// http://www. ftp:// ftp://ftp. /pub/ .html .htm .gif .jpg .jpeg /index.html /index.htm .com/ .com mailto:"},
     {"create_image_list",		"false"},
