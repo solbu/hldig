@@ -133,7 +133,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 SUBDIRS = @HTDIGDIRS@
 
-EXTRA_DIST = .version acconfig.h Makefile.config ChangeLog.0
+EXTRA_DIST = .version acconfig.h Makefile.config ChangeLog.0 contrib
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ./include/htconfig.h
@@ -315,6 +315,7 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
 info-am:
 info: info-recursive
 dvi-am:
@@ -388,6 +389,9 @@ uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+dist-hook:
+	find $(distdir) -depth -name CVS -print | xargs rm -fr 
 
 #
 # If --enable-tests is not specified, should remove
