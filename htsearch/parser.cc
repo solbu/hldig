@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: parser.cc,v 1.28 2003/06/24 19:58:07 nealr Exp $
+// $Id: parser.cc,v 1.29 2003/07/08 21:31:37 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -56,6 +56,7 @@ Parser::checkSyntax(List *tokenList)
     // Expected "a search word" "at the end" "instead of" "end of expression"
     // 5
     // "a closing quote"
+    boolean_syntax_errors.Destroy();
     boolean_syntax_errors.Create(config->Find("boolean_syntax_errors"), "| \t\r\n\001");
     if (boolean_syntax_errors.Count() == 5)
     {	// for backward compatibility

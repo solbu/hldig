@@ -1,3 +1,8 @@
+Tue Jul  8 16:29:44 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/parser.cc (checkSyntax): Fixed boolean_syntax_errors
+	  handling to work over multiple config files.
+
 Sat Jul 5 2003 Lachlan Andrew <lha@users.sourceforge.net>
 	
 	* test/test_functions.in: Fix bugs starting/killing apache
