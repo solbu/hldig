@@ -1,3 +1,17 @@
+Sat Dec 12 23:17:56 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/cf_byname.html, htdoc/cf_byprog.html, htdoc/attrs.html:
+	Added docs for new options since version 3.1.0b2.
+
+	* htdoc/RELEASE.html: Added notes on changes since 3.1.0b2 (we
+	should keep this up rather than all-at-once).
+
+	* htdoc/hts_templates: Include documentation on using CGI
+	environment variables in templates with this version.
+
+	* htdig/Retriever.cc(got_href): Added check to prevent
+	currenthopcount from becoming -1.
+	
 Sat Dec 12 12:01:55 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* Makefile.in, Makefile.config.in, */Makefile.in: Added target
@@ -164,7 +178,7 @@ Thu Dec  3 23:03:15 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	htnotify/htnotify.cc, htsearch/htsearch.cc: Use configure check to
 	only include getopt.h when it exists.
 
-	* htcommon/defaults.cc: Add new option "http_proxy_exclude" for
+	* htcommon/defaults.cc: Add new option http_proxy_exclude for
 	servers that shouldn't use the proxy, from a patch by Gilles
 	Detillieux.
 
