@@ -1,4 +1,8 @@
-Wed Sep  1 15:20:35 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:21:50 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc(do_tag): Fix <meta> robots parsing to allow
+	multiple directives to work correctly. Fixes PR#578, as provided
+	by Chris Liddiard <c.h.liddiard@qmw.ac.uk>.
 
 	* htsearch/htsearch.cc(main): Allow multiple keywords input
 	parameters in search forms.
