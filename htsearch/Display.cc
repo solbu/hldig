@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.19  1998/11/15 22:29:27  ghutchis
+//
+// Implement docBackLinks backlink count.
+//
 // Revision 1.18  1998/11/15 02:44:52  ghutchis
 //
 // Reformatting.
@@ -80,7 +84,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.18 1998/11/15 02:44:52 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.19 1998/11/15 22:29:27 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -300,6 +304,7 @@ Display::displayMatch(ResultMatch *match, int current)
 	
     vars.Add("HOPCOUNT", new String(form("%d", ref->DocHopCount())));
     vars.Add("DOCID", new String(form("%d", ref->DocID())));
+    vars.Add("BACKLINKS", new String(form("%d", ref->DocBackLinks())));
 	
     {
 	str = new String();

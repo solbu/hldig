@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.16  1998/11/15 22:29:27  ghutchis
+//
+// Implement docBackLinks backlink count.
+//
 // Revision 1.15  1998/11/01 00:00:40  ghutchis
 //
 // Replaced system calls with htlib/my* functions.
@@ -48,7 +52,6 @@
 // Fixed compiler warnings under -Wall
 //
 // Revision 1.3  1998/07/09 09:38:59  ghutchis
-//
 //
 // Added support for local file digging using patches by Pasi. Patches
 // include support for local user (~username) digging.
@@ -136,7 +139,7 @@ Retriever::setUsernamePassword(char *credentials)
 
 //*****************************************************************************
 // void Retriever::Initial(char *list)
-//   Add a signel URL to the list of URLs to visit.
+//   Add a single URL to the list of URLs to visit.
 //   Since URLs are stored on a per server basis, we first need to find the
 //   the correct server to add the URL's path to.
 //
@@ -268,9 +271,12 @@ Retriever::parse_url(URLRef &urlRef)
 	current_id = ref->DocID();
 	date = ref->DocTime();
 	if (ref->DocAccessed())
+	  {
 	    old_document = 1;
-	else
-	    old_document = 0;
+	    ref->DocBackLinks(ref->DocBackLinks() + 1); // we had a new link
+	  }
+	else // we haven't retrieved it yet, so we only have the first link
+	  old_document = 0;
 	ref->DocAccessed(time(0));
 	ref->DocState(Reference_normal);
         currenthopcount=ref->DocHopCount();
@@ -289,6 +295,7 @@ Retriever::parse_url(URLRef &urlRef)
 	ref->DocState(Reference_normal);
 	ref->DocAccessed(time(0));
         ref->DocHopCount(currenthopcount);
+	ref->DocBackLinks(1); // We had to have a link to get here!
 	old_document = 0;
     }
 
@@ -335,24 +342,6 @@ Retriever::parse_url(URLRef &urlRef)
     else
         status = doc->RetrieveHTTP(date);
 
-    // This shouldn't be neccessary since the server should
-    // return a redirect if we need to add a '/'
-    //
-    //    if (status == Document::Document_not_found)
-    //    {
-    //
-    // Maybe the URL we gave was incomplete.  See if adding a '/'
-    // will help.
-    //
-    //	String tempurl = doc->Url()->get();
-    //	if (tempurl.last() != '/')
-    //	{
-    //	    tempurl << '/';
-    //	    doc->Url(tempurl);
-    //	    base = doc->Url();
-    //	    status = doc->RetrieveHTTP(date);
-    //	}
-    //    }
     current_ref = ref;
 	
     //
@@ -373,6 +362,7 @@ Retriever::parse_url(URLRef &urlRef)
 		// the old one as obsolete.
 		//
 		words.MarkModified();
+	        int backlinks = ref->DocBackLinks();
 		delete ref;
 		current_id = docs.NextDocID();
 		words.DocumentID(current_id);
@@ -382,6 +372,7 @@ Retriever::parse_url(URLRef &urlRef)
 		ref->DocState(Reference_normal);
 		ref->DocAccessed(time(0));
 		ref->DocHopCount(currenthopcount);
+		ref->DocBackLinks(backlinks);
 		if (debug)
 		    cout << " (changed) ";
 	    }
@@ -870,6 +861,7 @@ Retriever::got_href(URL &url, char *description)
 		ref = new DocumentRef;
 		ref->DocID(docs.NextDocID());
 		ref->DocHopCount(currenthopcount + 1);
+		ref->DocBackLinks(1); // This one!
 	    }
 	    ref->DocURL(url.get());
 	    ref->AddDescription(description);
@@ -998,6 +990,9 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 	    }
 	    if (ref->DocHopCount() > old_ref->DocHopCount())
 		ref->DocHopCount(old_ref->DocHopCount());
+
+	    // Copy the number of backlinks
+	    ref->DocBackLinks(old_ref->DocBackLinks());
 
 	    docs.Add(*ref);
 

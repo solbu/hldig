@@ -2,6 +2,16 @@ Sun Nov 15 17:04:34 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.cc(do_tag): Fix for refresh tags w/o URLs.
 
+	* htmerge/docs.cc, htmerge/words.cc: Change \r to \n, as mentioned
+	by Andrew Bishop.
+
+        * htcommon/DocumentRef.h, htcommon/DocumentRef.cc: Define new fields
+        docBackLinks (backlink count) and docSig (document signature).
+	
+	* htdig/Retriever.cc: Keep track of docBackLinks.
+	
+	* htsearch/Display.cc: Add variable BACKLINKS to display the count.
+
 Sat Nov 14 20:30:18 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.cc(parse, do_tag): Ensure links respect META robot

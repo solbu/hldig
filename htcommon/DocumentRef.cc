@@ -4,6 +4,10 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.6  1998/11/15 22:29:27  ghutchis
+//
+// Implement docBackLinks backlink count.
+//
 // Revision 1.5  1998/10/18 20:37:41  ghutchis
 //
 // Fixed database corruption bug and other misc. cleanups.
@@ -70,6 +74,7 @@ void DocumentRef::Clear()
     descriptions.Destroy();
     docAnchors.Destroy();
     docHopCount = -1;
+    docBackLinks = 0;
 }
 
 
@@ -93,6 +98,8 @@ enum
     DOC_SUBJECT,			// 15
     DOC_STRING,                         // 16
     DOC_METADSC,                        // 17
+    DOC_BACKLINKS,                      // 18
+    DOC_SIG,                            // 19
 };
 
 
@@ -144,8 +151,10 @@ void DocumentRef::Serialize(String &s)
     addnum(DOC_STATE, s, docState);
     addnum(DOC_SIZE, s, docSize);
     addnum(DOC_LINKS, s, docLinks);
+    addnum(DOC_BACKLINKS, s, docBackLinks);
     addnum(DOC_IMAGESIZE, s, docImageSize);
     addnum(DOC_HOPCOUNT, s, docHopCount);
+    addnum(DOC_SIG, s, docSig);
 
     addstring(DOC_URL, s, docURL);
     addstring(DOC_HEAD, s, docHead);
@@ -224,6 +233,12 @@ void DocumentRef::Deserialize(String &stream)
         case DOC_HOPCOUNT:
             getnum(s, docHopCount);
             break;
+	case DOC_BACKLINKS:
+	    getnum(s, docBackLinks);
+	    break;
+	case DOC_SIG:
+	    getnum(s, docSig);
+	    break;
         case DOC_URL:
             getstring(s, docURL);
             break;

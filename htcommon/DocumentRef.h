@@ -1,9 +1,13 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.7 1998/09/10 04:16:25 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.8 1998/11/15 22:29:27 ghutchis Exp $
 //
 // $Log: DocumentRef.h,v $
+// Revision 1.8  1998/11/15 22:29:27  ghutchis
+//
+// Implement docBackLinks backlink count.
+//
 // Revision 1.7  1998/09/10 04:16:25  ghutchis
 //
 // More bug fixes.
@@ -74,12 +78,14 @@ class DocumentRef : public Object
     char                *DocMetaDsc()                   {return docMetaDsc;}
     time_t		DocAccessed()			{return docAccessed;}
     int			DocLinks()			{return docLinks;}
+    int                 DocBackLinks()                  {return docBackLinks;}
     List		*Descriptions()			{return &descriptions;}
     ReferenceState	DocState()			{return docState;}
     int			DocSize()			{return docSize;}
     int			DocImageSize()			{return docImageSize;}
     List		*DocAnchors()			{return &docAnchors;}
     int			DocScore()			{return docScore;}
+    int                 DocSig()                        {return docSig;}
     int			DocAnchor()			{return docAnchor;}
     int			DocHopCount()			{return docHopCount;}
     char		*DocEmail()			{return docEmail;}
@@ -94,11 +100,13 @@ class DocumentRef : public Object
     void                DocMetaDsc(char *md)            {docMetaDsc = md;}
     void		DocAccessed(time_t t)		{docAccessed = t;}
     void		DocLinks(int l)		{docLinks = l;}
+    void                DocBackLinks(int l)             {docBackLinks = l;}
     void		Descriptions(List &l)		{descriptions = l;}
     void		AddDescription(char *d);
     void		DocState(ReferenceState s)	{docState = s;}
     void		DocSize(int s)			{docSize = s;}
     void		DocImageSize(int s)		{docImageSize = s;}
+    void                DocSig(int s)                   {docSig = s;}
     void		DocAnchors(List &l)		{docAnchors = l;}
     void		AddAnchor(char *a);
     void		DocScore(int s)		{docScore = s;}
@@ -125,9 +133,11 @@ class DocumentRef : public Object
     ReferenceState	docState;
     int			docSize;
     int			docLinks;
+    int                 docBackLinks;
     int			docImageSize;
     List		docAnchors;
     int			docHopCount;
+    long int                 docSig;
 	
     //
     // The following values are for the email notification of expiration
