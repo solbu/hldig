@@ -1,3 +1,8 @@
+Wed Jul 25 23:39:00 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htnotify/htnotify.cc: Changed calls to EmailNotification class
+	to avoid compiler warnings.
+
 Wed Jul 25 23:15:24 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc, htsearch/htsearch.cc, htdoc/attrs.html,

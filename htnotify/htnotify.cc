@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.19.2.3 2001/07/26 03:12:42 grdetil Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.19.2.4 2001/07/26 04:41:08 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -387,10 +387,10 @@ void send_notification(char* email, List * notifList)
     notifList->Start_Get();
     while ((notif = (EmailNotification*) notifList->Get_Next()))
     {
-        listText << notif->getUrl() << '\n';
-        listText << "  expired " << notif->getDate() << "\n";
+        listText << notif->getUrl().get() << '\n';
+        listText << "  expired " << notif->getDate().get() << "\n";
         if (! singleSubject)
-        { listText << "  " << notif->getSubject() << '\n'; }
+        { listText << "  " << notif->getSubject().get() << '\n'; }
     }
 
     if (sendEmail)
@@ -442,11 +442,11 @@ void send_email (List * notifList, String& command,
 
         if (singleSubject)
         {
-            out << "Subject: " << notif->getSubject() << '\n';
+            out << "Subject: " << notif->getSubject().get() << '\n';
         }
         else
         {
-            out << "Subject: Web page expiry (" << notif->getSubject() << ", inter alia)\n";
+            out << "Subject: Web page expiry (" << notif->getSubject().get() << ", inter alia)\n";
         }
 
         out << '\n'; // this is the important header/body separator
