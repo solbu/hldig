@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.22 2000/01/14 00:57:14 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.23 2000/01/24 18:51:02 grdetil Exp $
 //
 
 #include "HtConfiguration.h"
@@ -128,6 +128,41 @@ ConfigDefaults	defaults[] =
 	The default value of this attribute is determined at
 	compile time.
 	</p>
+" },
+{ "build_select_lists", "", 
+	"quoted string list", "htsearch", "build_select_lists:
+		MATCH_LIST matchesperpage matches_per_page_list \\<br>
+				1 1 1 matches_per_page \"Previous Amount\" \\<br>
+		RESTRICT_LIST restrict restrict_names 2 1 2 restrict \"\" \\<br>
+		FORMAT_LIST format template_map 3 2 1 template_name \"\"", "
+	This list allows you to define any htsearch input parameter as
+	a select list for use in templates, provided you also define
+	the corresponding name list attribute which enumerates all the
+	choices to put in the list. It can be used for existing input
+	parameters, as well as any you define using the allow_in_form
+	attribute. The entries in this list each consist of an octuple,
+	a set of eight strings defining the variables and how they are to
+	be used to build a select list. The attribute can contain many
+	of these octuples. The strings in the string list are merely
+	taken eight at a time. For each octuple of strings specified in
+	build_select_lists, the elements have the following meaning: 
+	<ol>
+	   <li>the name of the template variable to be defined as a list 
+	   <li>the input parameter name that the select list will set 
+	   <li>the name of the user-defined attribute containing the
+	   name list
+	   <li>the tuple size used in the name list above 
+	   <li>the index into a name list tuple for the value 
+	   <li>the index for the corresponding label on the selector
+	   <li>the configuration attribute where the default value for
+	   this input parameter is defined
+	   <li>the default label, if not an empty string, which will be
+	   used as the label for an additional list item for the current
+	   input parameter value if it doesn't match any value in the
+	   given list
+	</ol>
+	See the <a href=\"hts_selectors.html\">select list documentation</a>
+	for more information on this attribute.
 " },
 { "case_sensitive", "true", 
 	"boolean", "htdig", "case_sensitive: false", "
@@ -1073,6 +1108,8 @@ http://www.htdig.org/", "
 	second element is the text that will be shown in the
 	menu for that method. This text needs to be quoted if
 	it contains spaces.
+	See the <a href=\"hts_selectors.html\">select list documentation</a>
+	for more information on how this attribute is used.
 " },
 { "minimum_prefix_length", "1", 
 	"number", "htsearch", "minimum_prefix_length: 2", "
@@ -1714,6 +1751,8 @@ http://www.htdig.org/", "
 	second element is the text that will be shown in the
 	menu for that sort method. This text needs to be quoted if
 	it contains spaces.
+	See the <a href=\"hts_selectors.html\">select list documentation</a>
+	for more information on how this attribute is used.
 " },
 { "soundex_db", "${database_base}.soundex.db", 
 	"string", "htfuzzy htsearch", "soundex_db: ${database_base}.snd.db", "
@@ -1848,13 +1887,20 @@ http://www.htdig.org/", "
 	is mainly to make a visual distinction between matches
 	on different web sites. The results for each site could
 	thus be shown in a style matching that site.<br>
-	to.<br>
 	The format is simply a list of pairs. The first
 	element of each pair is a pattern, the second element
 	is the name of the template file for that pattern.<br>
 	More information about templates can be found in the
 	<a href=\"htsearch.html\" target=\"_top\">htsearch</a>
-	documentation.
+	documentation.<br>
+	Normally, when using this template selection method, you
+	would disable user selection of templates via the <b>format</b>
+	input parameter in search forms, as the two methods were not
+	really designed to interact. Templates selected by URL patterns
+	would override any user selection made in the form. If you want
+	to use the two methods together, see the notes on
+	<a href=\"hts_selectors.html#template_patterns\">combining</a>
+	them for an example of how to do this.
 " },
 { "text_factor", "1", 
 	"number", "htsearch", "text_factor: 0", "

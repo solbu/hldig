@@ -1,3 +1,14 @@
+Mon Jan 24 12:37:22 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(setVariables), htcommon/defaults.cc: Added
+	build_select_lists attribute, to generate selector menus in forms.
+	Added relevant explanations and links to selectors documentation.
+	* htdoc/hts_selectors.html: Added this page to explain this new
+	feature, plus other details on select lists in general.
+	* htdoc/hts_templates.html: Added relevant links to related attributes
+	and selectors documentation.
+	* htdoc/attrs.html, cf_by{name,prog}.html: reran cf_generate.pl
+
 Fri Jan 21 18:57:58 EET 2000  Vadim Chekan  <vadim@etc.lviv.ua>
 
 	* htcommon/HtConfiguration.cc: added HtConfiguration::ParseString(char*)

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.6 2000/01/20 03:54:26 ghutchis Exp $
+// $Id: Display.cc,v 1.100.2.7 2000/01/24 18:51:04 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -493,6 +493,47 @@ Display::setVariables(int pageNumber, List *matches)
     *str << "</select>\n";
     vars.Add("SORT", str);
     vars.Add("SELECTED_SORT", new String(st));
+
+    // Handle user-defined select lists.
+    // Uses octuples containing these values:
+    // <tempvar> <inparm> <namelistattr> <ntuple> <ivalue> <ilabel> 
+    //					<defattr> <deflabel>
+    // e.g.:
+    // METHOD_LIST method method_names 2 1 2 match_method ""
+    // FORMAT_LIST format template_map 3 2 1 template_name ""
+    // EXCLUDE_LIST exclude exclude_names 2 1 2 exclude ""
+    // MATCH_LIST matchesperpage matches_per_page_list 1 1 1 \
+    //					matches_per_page "Previous Amount"
+    QuotedStringList	builds(config["build_select_lists"], " \t\r\n");
+    for (int b = 0; b <= builds.Count()-8; b += 8)
+    {
+	int	ntuple = atoi(builds[b+3]);
+	int	ivalue = atoi(builds[b+4]);
+	int	ilabel = atoi(builds[b+5]);
+	int	nsel = 0;
+	QuotedStringList	namelist(config[builds[b+2]], " \t\r\n");
+	if (ntuple > 0 && ivalue > 0 && ivalue <= ntuple
+	  && ilabel > 0 && ilabel <= ntuple && namelist.Count() % ntuple == 0)
+	{
+	    str = new String();
+	    *str << "<select name="<<builds[b+1]<<">\n";
+	    for (i = 0; i < namelist.Count(); i += ntuple)
+	    {
+		*str << "<option value=\"" << namelist[i+ivalue-1] << '"';
+		if (mystrcasecmp(namelist[i+ivalue-1],config[builds[b+6]]) == 0)
+		{
+		    *str << " selected";
+		    ++nsel;
+		}
+		*str << '>' << namelist[i+ilabel-1] << '\n';
+	    }
+	    if (!nsel && builds[b+7][0] && input->exists(builds[b+1]))
+		*str << "<option value=" << input->get(builds[b+1])
+		     << " selected>" << builds[b+7] << '\n';
+	    *str << "</select>\n";
+	    vars.Add(builds[b], str);
+	}
+    }
 	
     //
     // If a paged output is required, set the appropriate variables
