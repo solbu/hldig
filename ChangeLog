@@ -1,3 +1,24 @@
+Wed Sep 23 14:58:22 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc: re-fixed bug noted by Alexander Bergolth
+
+        * htlib/Attic/timegm.cc, htlib/Makefile.in, htlib/mktime.c,
+	htlib/mytimegm.cc, htlib/timegm.c: Switched to using glibc timegm
+	replacement.
+
+	* configure, configure.in, Makefile.config.in: Add configure
+	searches for acroread and sendmail programs.
+
+	* htnotify/Makefile.in, htnotify/htnotify.cc,
+	htcommon/Makefile.in, htcommon/defaults.cc: Use them.
+
+	* htdig/HTML.cc: Fix thinko in META robots tag.
+
+	* htcommon/defaults.cc: Define iso_8601 date formatting option
+
+	* htsearch/Display.cc, htnotify/htnotify.cc: Use it as suggested
+	by Knut A. Syed <Knut.Syed@nhh.no>
+
 Fri Sep 18 14:35:02 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.cc: Fixed bug noted by Alexander Bergolth 
