@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.42 1999/04/30 23:48:06 ghutchis Exp $
+// $Id: Retriever.cc,v 1.43 1999/05/04 03:38:29 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -691,7 +691,7 @@ Retriever::IsValidURL(char *u)
     //
 #ifdef  REGEX
     if (limits.match(url, 1, 0) != 0) return(TRUE);
-#elseif
+#else
     if (limits.FindFirst(url) >= 0)
 	return TRUE;
 #endif
