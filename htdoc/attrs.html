@@ -157,6 +157,53 @@
     <hr>
     <dl>
       <dt>
+        <strong><a name="backlink_factor">
+        backlink_factor</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+	      number
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+	      1000
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+	      This is a weight of "how important" a page is, based on
+	      the number of URLs pointing to it. It's actually
+	      multiplied by the ratio of the incoming URLs (backlinks)
+	      and outgoing URLs, to balance out pages with lots of
+	      links to pages that link back to them. This factor can
+	      be changed without changing the database in any way.
+	      The default may be a bit high.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+	      backlink_factor: 501.1
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
         <strong><a name="bad_extensions">
         bad_extensions</a></strong>
       </dt>
@@ -527,6 +574,98 @@
     <hr>
     <dl>
       <dt>
+        <strong><a name="date_factor">date_factor</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+	      number
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+	      0
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+	      This factor, like <a
+	      href="#backlink_factor">backlink_factor</a> can be
+	      changed without modifing the database. It gives higher
+	      rankings to newer documents and lower rankings to older
+	      documents. Before setting this factor, it's advised to
+	      make sure your servers are returning accurate dates
+	      (check the dates returned in the long format).
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+	      date_factor: 0.35
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
+        <strong><a name="description_factor">description_factor</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            number
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+	      150
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+	      Plain old "descriptions" are the text of a link pointing
+	      to a document. This factor gives weight to the words of
+	      these descriptions of the document. Not surprisingly,
+	      these can be pretty accurate summaries of a document's
+	      content. See also <a href="#title_factor">title_factor</a> or <a
+	      href="#text_factor">text_factor</a>. Changing this
+	      factor will require updating your database.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+	      description_factor: 350
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
         <strong><a name="doc_db">doc_db</a></strong>
       </dt>
       <dd>
@@ -555,7 +694,7 @@
             <em>description:</em>
           </dt>
           <dd>
-            This file will contain a GDBM database of documents
+            This file will contain a Berkeley database of documents
             indexed by URL. It contains all the information
             gathered for each document, so this file can become
             rather large if <a href="#max_head_length"><em>
@@ -565,7 +704,7 @@
             <em>example:</em>
           </dt>
           <dd>
-            doc_db: ${database_base}documents.gdbm
+            doc_db: ${database_base}documents.db
           </dd>
         </dl>
       </dd>
@@ -600,7 +739,7 @@
             <em>description:</em>
           </dt>
           <dd>
-            This file will contain a GDBM database which maps
+            This file will contain a Berkeley database which maps
             document numbers to document URLs. It is basically an
             intermediate database from the word database to the
             document database.
@@ -609,7 +748,7 @@
             <em>example:</em>
           </dt>
           <dd>
-            doc_index: documents.index.gdbm
+            doc_index: documents.index.db
           </dd>
         </dl>
       </dd>
@@ -817,7 +956,7 @@
             <em>default:</em>
           </dt>
           <dd>
-            ${common_dir}/root2word.gdbm
+            ${common_dir}/root2word.db
           </dd>
           <dt>
             <em>description:</em>
@@ -839,7 +978,7 @@
             <em>example:</em>
           </dt>
           <dd>
-            endings_root2word_db: /var/htdig/r2t.gdbm
+            endings_root2word_db: /var/htdig/r2t.db
           </dd>
         </dl>
       </dd>
@@ -1418,6 +1557,48 @@
           </dt>
           <dd>
             http_proxy: http://proxy.bigbucks.com:3128
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
+        <strong><a name="http_proxy_exclude">http_proxy_exclude</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            string list
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            <em>&lt;empty&gt;</em>
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+	      When this is set, URLs matching this will not use the
+	      proxy. This is useful when you have a mixture of sites
+	      near to the digging server and far away.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            http_proxy_exclude: http://intranet.foo.com/
           </dd>
         </dl>
       </dd>
@@ -2363,7 +2544,7 @@
             <em>default:</em>
           </dt>
           <dd>
-            10
+            50
           </dd>
           <dt>
             <em>description:</em>
@@ -2649,6 +2830,50 @@
           </dt>
           <dd>
             next_page_text: &lt;img src="/htdig/buttonr.gif"&gt;
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
+        <strong><a name="no_excerpt_show_top">
+        no_excerpt_show_top</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            boolean
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+	      false
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+	      If no excerpt is available, this option will act the
+	      same as <a
+	      href="#excerpt_show_top">excerpt_show_top</a>, that is,
+	      it will show the top of the document.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            no_excerpt_show_top: yes
           </dd>
         </dl>
       </dd>
@@ -3396,6 +3621,101 @@
           <dd>
             server_aliases: foo.mydomain.com:80=www.mydomain.com:80 \ <br>
 	    bar.mydomain.com:80=www.mydomain.com:80
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+        <hr>
+    <dl>
+      <dt>
+        <strong><a name="server_max_docs">server_max_docs</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+	      integer
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+	      -1 (no limit)
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+	      This directive tells htdig to limit the dig to retrieve a maximum
+	      number of documents from each server. This can cause
+	      unusual behavior on update digs since the old URLs are
+	      stored alphabetically. Therefore, update digs will add
+	      additional URLs in pseudo-alphabetical order, up to the
+	      limit of the directive. However, it is most useful to
+	      partially index a server as the URLs of additional
+	      documents are entered into the database, marked as never
+	      retrieved.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+	      server_max_docs: 50
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+        <hr>
+    <dl>
+      <dt>
+        <strong><a name="server_wait_time">server_wait_time</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            integer
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+	      0
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+	      This directive tells htdig to ensure a server has had a
+	      delay (in seconds) from the beginning of the last
+	      connection. This can be used to prevent "server abuse"
+	      by digging without delay. It's recommended to set this
+	      to 10-30 (seconds) when indexing servers that you don't
+	      monitor yourself. Additionally, this directive can slow
+	      down local indexing if set, which may or may not be what
+	      you intended.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+	      server_wait_time: 20
           </dd>
         </dl>
       </dd>
