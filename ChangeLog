@@ -1,3 +1,8 @@
+Thu Jan 31 10:14:23 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/parse_doc.pl: Added comments explaining why you should
+	not be using this script.
+
 Wed Jan 30 17:20:51 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/FAQ.html: Updated to mention 3.1.6 as the newest version

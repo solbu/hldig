@@ -1,12 +1,37 @@
 #!/usr/local/bin/perl
 
+#
+# Sample external parser for htdig 3.1.3 or earlier.
+# Usage: (in htdig.conf)
+#
+# external_parsers: application/msword /usr/local/bin/parse_doc.pl \
+#               application/postscript /usr/local/bin/parse_doc.pl \
+#               application/pdf /usr/local/bin/parse_doc.pl
+#
+# This is a general external parser script that handles MS Word documents
+# among others (deprecated in favor of external converters like conv_doc.pl).
+# For older versions of htdig which don't support external converters, if
+# you're really stuck using one of them, this script will do an OK job of
+# parsing out these documents.  For versions 3.1.4 or later, you're much
+# better off using an external converter.  This sample script is still
+# included with later versions, because it gives a working example of an
+# external parser, so you can use this as a framework for when you REALLY
+# NEED an external parser and a simple converter just won't do.
+#
+# Written by Jesse op den Brouw <MSQL_User@st.hhs.nl>, and enhanced by a
+# cast of characters, none of which claim to be Perl experts.  It's pretty
+# widely acknowledged that this script is somewhat of a hack.  Did we
+# mention that you're better off running doc2html.pl or conv_doc.pl if
+# you can?
+#
+
 # Use the environment-determined locale for word parsing, etc.
 # Note that it's much easier to do all of this as an external converter
 # and let htdig worry about the locale, etc.
 use locale;
 
 # 1998/12/10
-# Added:        push @allwords, $fields[$x];   <carl@dpiwe.tas.gov.au>
+# Added:        push @allwords, $fields[$x];         <carl@dpiwe.tas.gov.au>
 # Replaced:     matching patterns. they match words starting or ending with ()[]'`;:?.,! now, not when in between!
 # Gone:         the variable $line is gone (using $_ now)
 #
@@ -46,6 +71,8 @@ use locale;
 # 2001/07/12
 # Changed:      fix "last" handling in dehyphenation <grdetil@scrc.umanitoba.ca>
 # Added:        handle %xx codes in title from URL   <grdetil@scrc.umanitoba.ca>
+# 2002/01/28
+# Added:        use "locale" for better word parsing <ghutchis@wso.williams.edu>
 #########################################
 #
 # set this to your MS Word to text converter
@@ -183,11 +210,11 @@ while (<CAT>) {
 #               }
 #       }
 
-	# Delete valid punctuation.  These are the default values
-	# for valid_punctuation, and should be changed other values
-	# are specified in the config file.
-	tr{-\255._/!#$%^&'}{}d;
-	push @allwords, grep { length >= $minimum_word_length } split /\W+/;
+        # Delete valid punctuation.  These are the default values
+        # for valid_punctuation, and should be changed other values
+        # are specified in the config file.
+        tr{-\255._/!#$%^&'}{}d;
+        push @allwords, grep { length >= $minimum_word_length } split /\W+/;
 }
 
 close CAT;
