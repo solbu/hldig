@@ -15,7 +15,6 @@ AC_SUBST(MICRO_VERSION)
 AM_INIT_AUTOMAKE(htdig_db, $VERSION,nosubst)
 AC_CONFIG_SRCDIR([db_byteorder.c])
 AM_CONFIG_HEADER([db_config.h])
-AC_CONFIG_AUX_DIR(../)
 AC_CANONICAL_HOST
 
 # Initialize maintainer mode
@@ -24,8 +23,8 @@ AM_MAINTAINER_MODE
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
-AC_PROG_INSTALL()
 AC_PROG_LIBTOOL
+AC_PROG_INSTALL
 
 # Checks for libraries.
 CHECK_ZLIB
