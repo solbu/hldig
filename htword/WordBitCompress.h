@@ -3,12 +3,12 @@
 
 #define TMax(a,b) (((a)>(b)) ? (a) : (b))
 #define TMin(a,b) (((a)<(b)) ? (a) : (b))
-
 #include<stdio.h>
 #include<stdlib.h>
 #include"HtVector_int.h"
 #define fatal fflush(stdout);fprintf(stderr,"FATAL ERROR at file:%s line:%d !!!\n",__FILE__,__LINE__);fflush(stderr);(*(int *)NULL)=1
 #define errr(s) {fprintf(stderr,"FATAL ERROR:%s\n",s);fatal;}
+#define CHECK_MEM(p) if(!p) errr("mifluz: Out of memory!");
 
 typedef unsigned char byte;
 // ******** HtVector_byte (header)
@@ -145,6 +145,7 @@ public:
     byte *get_data()
     {
 	byte *res=(byte *)malloc(buff.size());
+	CHECK_MEM(res);
 	for(int i=0;i<buff.size();i++){res[i]=buff[i];}
 	return(res);
     }

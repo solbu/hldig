@@ -90,6 +90,7 @@ unsigned int *
 duplicate(unsigned int *v,int n)
 {
     unsigned int *res=new (unsigned int)[n];
+    CHECK_MEM(res);
     memcpy((void *)res,(void *)v,n*sizeof(unsigned int));
     return(res);
 }
@@ -173,6 +174,7 @@ public:
 	nintervals=pow2(nlev);
 
 	intervals=new int [nintervals];
+	CHECK_MEM(intervals);
 
 	for(i=0;i<nintervals;i++)
         {
@@ -219,6 +221,8 @@ public:
 	nintervals=pow2(nlev);
 	int i;
 	intervals=new int [nintervals];
+	CHECK_MEM(intervals);
+
 	// find split boundaires
 	if(TMPDISPLAY)printf("nbits:%d nlev:%d nintervals:%d \n",nbits,nlev,nintervals);
 	unsigned int lboundary=0;
@@ -376,6 +380,7 @@ Compressor::get_vals(unsigned int **pres,char *tag="BADTAG!")
     if(TMPDISPLAY)printf("get_vals n:%d\n",n);
     if(!n){*pres=NULL;return 0;}
     unsigned int *res=new unsigned int[n];
+    CHECK_MEM(res);
 
 
     int comptype=get(2,"put_valsCompType");
@@ -456,6 +461,7 @@ Compressor::get_fixedbitl(byte **pres,char *tag/*="BADTAG!"*/)
 //	printf("get_fixedbitl(byte):n%3d nbits:%2d\n",n,nbits);
     int i;
     byte *res=new byte[n];
+    CHECK_MEM(res);
     for(i=0;i<n;i++)
     {
 	res[i]=get(nbits);

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.5 1999/12/09 11:31:27 bosc Exp $
+// $Id: WordList.h,v 1.5.2.6 1999/12/10 17:20:26 bosc Exp $
 //
 
 #ifndef _WordList_h_
@@ -81,7 +81,6 @@ class WordList;
 
 class WordSearchDescription
 {
-public:
     friend WordList;
 // search key
 // prefix key
@@ -100,56 +99,37 @@ public:
 //    list.Walk(wordKey)
 //    list.Walk()
 
-    wordlist_walk_callback_t callback;
-    Object *callback_data;
-    WordKey searchKey;
-    int action;
 
+ protected:
+    // internal information
     int first_skip_field;
     int setup_ok;
-    int noskip;
-    int shutup;
 
-    List *traceRes;
-    WordBenchmarking *benchmarking;
 
+    void Clear();
+    int  setup();
+ public:
+    //  search description
+    WordKey searchKey;
+
+    // what do do when something is found
+    wordlist_walk_callback_t callback;
+    Object *callback_data;
+    int action;
     List *collectRes;
 
-    void Clear()
-    {
-	first_skip_field=-3;
-	callback=NULL;
-	callback_data=NULL;
-	traceRes=NULL;
-	action=0;
-	setup_ok=0;
-	collectRes=NULL;
-	benchmarking=NULL;
-	noskip=0;
-	shutup=0;
-    }
-    int setup()
-    {
-	if(setup_ok){return NOTOK;}
-	setup_ok=1;
-	return OK;
-    }
-public:
-    WordSearchDescription(const WordReference& wordRef, int naction, wordlist_walk_callback_t ncallback, Object &ncallback_data)
-    {
-	Clear();
-	searchKey=wordRef.Key();
-	action=naction;
-	callback=ncallback;
-	callback_data=&ncallback_data;
-    }
+    // user set flags
+    int noskip;// debuging : don't use skip
+    int shutup;// debuging : don't verbose, even if WordList  verbose set
 
-    WordSearchDescription(const WordKey &nsearchKey)
-    {
-	Clear();
-	searchKey=nsearchKey;
-	action=HTDIG_WORDLIST_COLLECTOR;
-    }
+    // tracing/benchmarking (debuging)
+    List *traceRes; // trace what's going on in Walk (intended for debuging only)
+    WordBenchmarking *benchmarking;
+
+public:
+    WordSearchDescription(const WordReference& wordRef, int naction, wordlist_walk_callback_t ncallback, Object *ncallback_data);
+    WordSearchDescription(const WordKey &nsearchKey);
+    WordSearchDescription(const WordKey &nsearchKey,wordlist_walk_callback_t ncallback,Object * ncallback_data);
 };
 #endif /* SWIG */
 
@@ -167,6 +147,9 @@ public:
     WordList(const Configuration& config_arg);
     virtual ~WordList();
     
+
+    // WordList specific debuging flag
+    int                         verbose;
 
     //
     // Insert
@@ -246,16 +229,12 @@ public:
     // Backend of Collect, Dump, Delete...
     //
 #ifndef SWIG
-    List 		*Walk (const WordReference& word, int action, wordlist_walk_callback_t callback, Object &callback_data);
+//      List 		*Walk (const WordReference& word, int action, wordlist_walk_callback_t callback, Object &callback_data);
     int Walk(WordSearchDescription &SearchDescription);
+    List *Walk(const WordSearchDescription &SearchDescription);
     int SkipUselessSequentialWalking(const WordSearchDescription &search,WordKey &foundKey,String &key,int &cursor_get_flags);
 
 
-    // trace what's going on in Walk (intended for debuging only)
-    void BeginTrace(){traceOn=1;traceRes=new List;}
-    List *EndTrace(){traceOn=0;return(traceRes);}
-    void CleanupTrace(){if(traceRes){delete traceRes;traceRes=NULL;}traceOn=0;}
-    List *GetTraceResult(){return(traceRes);}
 #endif /* SWIG */
 
     //
@@ -294,10 +273,6 @@ protected:
     //
     int				extended;
 
-    // WordList specific debuging flag
-    int                         verbose;
-    int traceOn;
-    List *traceRes;
 
     friend ostream &operator << (ostream &o, WordList &list); 
     friend istream &operator >> (istream &o, WordList &list); 

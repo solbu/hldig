@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.7 1999/12/09 11:46:39 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.8 1999/12/10 17:20:26 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -46,7 +46,7 @@
 //
 WordList::~WordList()
 {
-    CleanupTrace();
+//      CleanupTrace();
     Close();
 }
 
@@ -61,8 +61,6 @@ WordList::WordList(const Configuration& config_arg) :
     isread = 0;
     extended = config.Boolean("wordlist_extend");
     verbose =  config.Value("wordlist_verbose",0);
-    traceOn=0;
-    traceRes=NULL;
 }
 
 //*****************************************************************************
@@ -74,9 +72,9 @@ int WordList::Open(const String& filename, int mode)
   //
     int usecompress=0;
   db.dbinfo.set_bt_compare(word_db_cmp);
-  if(config["wordlist_page_size" ].length()) {db.dbinfo.set_pagesize(config.Value("wordlist_page_size" ,0));}
-  if(config["wordlist_cache_size"].length()) {db.dbinfo.set_cachesize(config.Value("wordlist_cache_size",0));}
-  if(config.Value("wordlist_compress",0) == 1)
+  if(config.Value("wordlist_page_size" ,0 )) {db.dbinfo.set_pagesize(config.Value("wordlist_page_size" ,0));}
+  if(config.Value("wordlist_cache_size",0)) {db.dbinfo.set_cachesize(config.Value("wordlist_cache_size",0));}
+  if(config.Boolean("wordlist_compress",0) == 1)
   {
       usecompress=DB_COMPRESS;
       DB_CMPR_INFO *cmpr_info=new DB_CMPR_INFO;
@@ -170,7 +168,9 @@ List *WordList::WordRefs()
 List *WordList::Collect (const WordReference& wordRef)
 {
   Object o;
-  return Walk(wordRef, HTDIG_WORDLIST_COLLECTOR, (wordlist_walk_callback_t)0, o);
+  WordSearchDescription search(wordRef.Key());
+  Walk(search);
+  return search.collectRes;
 }
 
 //*****************************************************************************
@@ -203,16 +203,24 @@ List *WordList::Collect (const WordReference& wordRef)
 // contain a prefix word if HTDIG_WORDLIST_PREFIX is set. These are two unrelated things, 
 // although similar in concept.
 //
+//  List *
+//  WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_callback_t callback, Object &callback_data)
+//  {
+//      WordSearchDescription searchD(wordRef,action,callback,callback_data);
+//      if(verbose){cdebug << "WordList::Walk(original fct) beg:" << searchD.searchKey;}
+//      Walk(searchD);
+//      if(verbose && searchD.collectRes){cdebug << "WordList::Walk(original fct) Walk collect result: count:" << searchD.collectRes->Count() << endl;}
+//      if(verbose){cdebug << "WordList::Walk(original fct) end:" << searchD.searchKey;}
+//      return searchD.collectRes;
+//  }
 List *
-WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_callback_t callback, Object &callback_data)
+WordList::Walk(const WordSearchDescription &csearch)
 {
-    WordSearchDescription searchD(wordRef,action,callback,callback_data);
-    if(verbose){cdebug << "WordList::Walk(original fct) beg:" << searchD.searchKey;}
-    Walk(searchD);
-    if(verbose && searchD.collectRes){cdebug << "WordList::Walk(original fct) Walk collect result: count:" << searchD.collectRes->Count() << endl;}
-    if(verbose){cdebug << "WordList::Walk(original fct) end:" << searchD.searchKey;}
-    return searchD.collectRes;
+    WordSearchDescription search=csearch;
+    Walk(search);
+    return(search.collectRes);
 }
+
 int 
 WordList::Walk(WordSearchDescription &search)
 {
@@ -292,10 +300,10 @@ WordList::Walk(WordSearchDescription &search)
 	WordReference found(key, data);
 	cursor_get_flags= DB_NEXT;
 
-	if(traceOn)
+	if(search.traceRes)
 	{
 	    if(lverbose>1)cdebug << "WordList::Walk: adding to trace:" << found << endl;
-	    traceRes->Add(new WordReference(found));
+	    search.traceRes->Add(new WordReference(found));
 	}
 
 	if(lverbose>1){cdebug << "WordList::Walk: *:  found:" <<  found << endl;}
@@ -463,7 +471,7 @@ static int delete_word(WordList *words, WordCursor &cursor, const WordReference 
 int WordList::WalkDelete(const WordReference& wordRef)
 {
   DeleteWordData data;
-  (void)Walk(wordRef, HTDIG_WORDLIST_WALKER, delete_word, data);
+  Walk(WordSearchDescription(wordRef.Key(),delete_word, &data));
   return data.count;
 }
 
@@ -589,9 +597,9 @@ ostream &
 operator << (ostream &o,  WordList &list)
 {
 
-    WordReference empty;
+    WordKey empty;
     StreamOutData data(o);
-    list.Walk(empty,HTDIG_WORDLIST_WALKER, wordlist_walk_callback_stream_out, (Object &)data);  
+    list.Walk(WordSearchDescription(empty,wordlist_walk_callback_stream_out, (Object *)&data));
     return o;
 }
 
@@ -622,3 +630,51 @@ operator >> (istream &is,  WordList &list)
 
 
 
+// **************************************************
+// *************** WordSearchDescription  ***********
+// **************************************************
+
+void 
+WordSearchDescription::Clear()
+{
+    first_skip_field=-3;
+    callback=NULL;
+    callback_data=NULL;
+    traceRes=NULL;
+    action=0;
+    setup_ok=0;
+    collectRes=NULL;
+    benchmarking=NULL;
+    noskip=0;
+    shutup=0;
+}
+int 
+WordSearchDescription::setup()
+{
+    if(setup_ok){return NOTOK;}
+    setup_ok=1;
+    return OK;
+}
+WordSearchDescription::WordSearchDescription(const WordReference& wordRef, int naction, wordlist_walk_callback_t ncallback, Object *ncallback_data)
+{
+    Clear();
+    searchKey=wordRef.Key();
+    action=naction;
+    callback=ncallback;
+    callback_data=ncallback_data;
+}
+
+WordSearchDescription::WordSearchDescription(const WordKey &nsearchKey)
+{
+    Clear();
+    searchKey=nsearchKey;
+    action=HTDIG_WORDLIST_COLLECTOR;
+}
+WordSearchDescription::WordSearchDescription(const WordKey &nsearchKey,wordlist_walk_callback_t ncallback,Object * ncallback_data)
+{
+    Clear();
+    searchKey=nsearchKey;
+    action=HTDIG_WORDLIST_WALKER;
+    callback=ncallback;
+    callback_data=ncallback_data;
+}

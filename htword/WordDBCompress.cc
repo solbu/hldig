@@ -283,6 +283,7 @@ class WordDBPage
 	    if(len)
 	    {
 		byte *gotdata=new byte[len];
+		CHECK_MEM(gotdata);
 		in.get_zone(gotdata,8*len,label_str("seperatekey_btidata",i));
 		res=WordDBKey(gotdata,len);
 		delete [] gotdata;
@@ -292,6 +293,7 @@ class WordDBPage
 	else
 	{
 	    byte *gotdata=new byte[len];
+	    CHECK_MEM(gotdata);
 	    in.get_zone(gotdata,8*len,label_str("seperatekey_data",i));
 	    res=WordDBKey(gotdata,len);
 	    insert_key(res);
@@ -305,6 +307,7 @@ class WordDBPage
 	int len=in.get(NBITS_DATALEN,label_str("seperatedata_len",i));
 	if(verbose)printf("uncompressdata:len:%d\n",len);
 	byte *gotdata=new byte[len];
+	CHECK_MEM(gotdata);
 	in.get_zone(gotdata,8*len,label_str("seperatedata_data",i));
 	res=WordDBRecord(gotdata,len,rectyp);
 	insert_data(res);
@@ -383,6 +386,7 @@ class WordDBPage
 	init0();
 	pgsz=npgsz;
 	pg=(PAGE *)(new byte[pgsz]);
+	CHECK_MEM(pg);
 	decmpr_pos=pgsz;
 	decmpr_indx=0;
     }
@@ -606,7 +610,9 @@ WordDBPage::Uncompress_main(Compressor *pin)
     if(debug>0){in.set_use_tags();}
     int i,j;
     unsigned int **rnums=new (unsigned int *)[nnums];
+    CHECK_MEM(rnums);
     int *rnum_sizes=new int[nnums];
+    CHECK_MEM(rnum_sizes);
     byte *rworddiffs=NULL;
     int nrworddiffs;
 
@@ -681,6 +687,8 @@ WordDBPage::Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_siz
     int irwordiffs=0;
     int nfields=word_key_info.nfields;
     int *rnum_pos=new int[   nnums];// current index count
+    CHECK_MEM(rnum_pos);
+
     int ii,j;
     for(j=0;j<nnums;j++){rnum_pos[j]=0;}
 
@@ -723,6 +731,7 @@ WordDBPage::Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_siz
 		int difflen=rnums[CNWORDDIFFLEN][rnum_pos[CNWORDDIFFLEN]++];
 		int wlen=diffpos+difflen;
 		char *str=new char [wlen+1];
+		CHECK_MEM(str);
 		if(diffpos)strncpy(str,(char *)pkey.GetWord(),diffpos);
 		strncpy(str+diffpos,(char *)rworddiffs+irwordiffs,difflen);
 		str[wlen]=0;
@@ -807,6 +816,7 @@ WordDBPage::Compress(int ndebug)
     if(debug>1){verbose=1;}
 
     Compressor *res=(Compressor *)new Compressor(pgsz);
+    CHECK_MEM(res);
     if(debug>0){res->set_use_tags();}
     res->put(0,2,"CMPRTYPE");
 //      printf("WordDBPage::Compress: trying normal copress\n");
@@ -818,6 +828,7 @@ WordDBPage::Compress(int ndebug)
   	show();
 	if(res){delete res;}
 	res=new Compressor;
+	CHECK_MEM(res);
 	if(debug>0){res->set_use_tags();}
 	res->put(1,2,"CMPRTYPE");
 	res->put_zone((byte *)pg,pgsz*8,"INITIALBUFFER");
@@ -846,7 +857,9 @@ WordDBPage::Compress_main(Compressor &out)
     // 1..n -> numerical fields delta :  ?bits (depending on field)
     // n+1 -> word changed size       :  1
     int *nums    =new int[nk*nnums];
+    CHECK_MEM(nums);
     int *nums_pos=new int[   nnums];
+    CHECK_MEM(nums_pos);
 //      int *cnsizes =new int[   nnums];
     for(j=0;j<nnums;j++){nums_pos[j]=0;}
 //      for(j=1;j<nfields;j++)  {cnsizes[j]=word_key_info.sort[j].bits;}
@@ -1023,6 +1036,7 @@ WordDBPage::Compress_show_extracted(int *nums,int *nums_pos,int nnums,HtVector_b
 {
     int i,j;
     int *cnindexe2=new int[   nnums];
+    CHECK_MEM(cnindexe2);
     for(j=0;j<nnums;j++){cnindexe2[j]=0;}
     int w=0;
     for(i=0;i<nk;i++)
