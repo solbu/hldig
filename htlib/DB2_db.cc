@@ -3,45 +3,8 @@
 //
 // Implementation of DB2_db
 //
-// $Log: DB2_db.cc,v $
-// Revision 1.8  1999/03/08 00:48:26  hp
-// Removed errno; it should never be defined by a user program.
-// (If it fails, the wrong library or header file is used.)
-//
-// Revision 1.7  1999/01/23 01:25:02  hp
-// Fixed _some_ missing const qualifiers on common methods (requiring temps)
-//
-// Revision 1.6  1999/01/07 04:05:59  ghutchis
-// Changed allocation of database cursors to match new API in version 2.6.4.
-//
-// Revision 1.5  1998/12/02 02:45:33  ghutchis
-//
-// Added fix from Alexander Bergolth for Berkeley DB under AIX.
-//
-// Revision 1.4  1998/10/12 02:50:15  ghutchis
-//
-// Added fix suggested by Domotor Akos <dome@impulzus.sch.bme.hu> with (char
-// *)NULL cast.
-//
-// Revision 1.3  1998/10/12 02:04:00  ghutchis
-//
-// Updated Makefiles and configure variables.
-//
-// Revision 1.2  1998/06/22 04:33:21  turtle
-// New Berkeley database stuff
-//
-// Revision 1.1  1998/06/21 23:20:06  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
-//
-// Revision 1.1  1997/11/26  22:18:46  jesse
-// Initial revision
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-//
 #if RELEASE
-static char RCSid[] = "$Id: DB2_db.cc,v 1.8 1999/03/08 00:48:26 hp Exp $";
+static char RCSid[] = "$Id: DB2_db.cc,v 1.9 1999/03/08 00:55:14 hp Exp $";
 #endif
 
 #include "DB2_db.h"
