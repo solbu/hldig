@@ -53,7 +53,7 @@ distclean:
 		(cd $$i; $(MAKE) $(MFLAGS) distclean) \
 		|| case "$(MFLAGS)" in *k*) fail=yes;; *) exit 1;; esac; \
 	done && test -z "$$fail"
-	rm -f Makefile Makefile.config
+	rm -f Makefile Makefile.config stamp-h
 
 install:	all
 	@echo "Installing ht://Dig"
@@ -111,7 +111,7 @@ depend:
 	done;
 
 dist:
-	rm -r $(DISTDIR)
+	rm -rf $(DISTDIR)
 	mkdir $(DISTDIR)
 	$(TAR) cf - . | (cd $(DISTDIR); $(TAR) xf -)
 	(cd $(DISTDIR); $(MAKE) distclean)
