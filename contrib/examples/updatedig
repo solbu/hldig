@@ -1,0 +1,53 @@
+#! /bin/sh
+
+#
+# updatedig
+#
+# This is a script to update the search database for ht://Dig.
+# Copyright (c) 1998 David Robley webmaster@www.nisu.flinders.edu.au
+#
+if [ "$1" = "-v" ]; then
+    verbose=-v
+fi
+
+# -a: run using alternate work files so search can still be done during index run
+# -t: create an ASCII version of document database in doc_list as specified 
+#			in the config file
+# -s: print stats after completion
+/web/webdocs/htdig/bin/htdig -a -t $verbose -s
+/web/webdocs/htdig/bin/htmerge -a $verbose -s
+/web/webdocs/htdig/bin/htnotify $verbose
+
+# Because the -a switch creates alternate work files, but doesn't seem to move
+# them into the correct place, we will do it here.
+mv /web/webdocs/htdig/db/db.docdb /web/webdocs/htdig/db/db.docdb.old
+mv /web/webdocs/htdig/db/db.docdb.work /web/webdocs/htdig/db/db.docdb
+
+mv /web/webdocs/htdig/db/db.docs.index /web/webdocs/htdig/db/db.docs.index.old
+mv /web/webdocs/htdig/db/db.docs.index.work /web/webdocs/htdig/db/db.docs.index
+
+mv /web/webdocs/htdig/db/db.wordlist /web/webdocs/htdig/db/db.wordlist.old
+mv /web/webdocs/htdig/db/db.wordlist.work /web/webdocs/htdig/db/db.wordlist
+
+mv /web/webdocs/htdig/db/db.words.gdbm /web/webdocs/htdig/db/db.words.gdbm.old
+mv /web/webdocs/htdig/db/db.words.gdbm.work /web/webdocs/htdig/db/db.words.gdbm
+
+#
+# Only create the endings database if it doesn't already exist.
+# This database is static, so even if pages change, this database will not
+# need to be rebuilt.
+#
+if [ ! -f /web/webdocs/htdig/common/word2root.gdbm ]
+then
+    /web/webdocs/htdig/bin/htfuzzy $verbose endings
+fi
+
+# This next needs to be run if synonyms are added/modified/removed
+# Guess the best way would be to delete synonyms.gdbm before
+# running this script??
+
+if [ ! -f /web/webdocs/htdig/common/synonyms.gdbm ]
+then
+    /web/webdocs/htdig/bin/htfuzzy $verbose synonyms
+fi
+# end updatedig
