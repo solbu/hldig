@@ -1,3 +1,45 @@
+Sun Jan 17 14:03:54 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/TemplateList.h
+	htsearch/TemplateList.cc(createFromString): Ensure
+	template_map config has three members for each template we add,
+	contributed by <tlm@mbox.comune.prato.it>.
+
+	* htsearch/Display.cc(Display): Take advantage of createFromString
+	returning an error value to bail out of poorly-constructed
+	template_maps, based on code contributed by <tlm@mbox.comune.prato.it>.
+
+	* htdig/PDF.cc: Add debugging output of URLs causing
+	problems. Also, switch system call to make it easier to call xpdf
+	instead of acroread.
+
+	* htcommon/defaults.cc: Change default pdf_parser attribute to
+	include acrobat-specific flags.
+
+	* contrib/examples/updatedig: Added contributed rundig-type script
+	from David Robley <webmaster@www.nisu.flinders.edu.au>.
+	
+Sun Jan 17 13:42:43 1999  didier Gautheron <dgautheron@magic.fr>
+
+	* htcommon/defaults.cc: add url_log parameter for save and restart
+	function.
+
+	* htdig/Retriever.cc, htdig/Retriever.h: Add save and restart 
+	function.
+
+	* htdig/main.cc: Add option  -l for save and restart 
+	function.
+
+	* htdig/PDF.cc: Check to see if we have acroread before copying
+	the pdf into TMPDIR!
+	
+Fri Jan 15 07:23:30 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htcommon/DocumentRef.cc(Serialize): Save
+	space when lengths can fit in an unsigned char or unsigned short.
+
+	* htcommon/DocumentRef.cc(Deserialize): Handle expansion.
+
 Thu Jan 14 23:37:29 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/defaults.cc: Added options noindex_start and
