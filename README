@@ -1,0 +1,34 @@
+HTDig 3.0.7 README
+Copyright (C) 1995, 1996, 1997 Andrew Scherpbier <andrew@sdsu.edu>
+
+HTDig is a world-wide-web search system for an intranet or small internet.
+
+See the COPYING file for license information.
+See the htdoc/install.html file for compilation and installation instructions.
+
+This distribution includes:
+
+    * htdig     - A www information gathering and indexing system
+
+    * htmerge   - A htdig database merging program
+
+    * htfuzzy   - A fuzzy search database creation program
+
+    * htsearch  - A search engine.
+
+    * htlib     - A small general purpose C++ class library
+
+    * htcommon  - HTDig specific classes
+
+    * htdoc     - HTDig documentation in HTML
+
+HTDig has been tested extensively under Solaris 2.5
+using g++ 2.7.2.
+If you use g++, make absolutely sure you have libg++ installed
+as well.
+
+To build, first read the htdoc/install.html document
+
+Questions/suggestions should be directed at htdig@sdsu.edu
+
+For the most up-to-date documentation, use http://htdig.sdsu.edu/

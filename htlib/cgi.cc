@@ -1,0 +1,166 @@
+//
+// cgi.cc
+//
+// Implementation of cgi
+//
+// $Log: cgi.cc,v $
+// Revision 1.1  1997/02/03 17:11:04  turtle
+// Initial revision
+//
+//
+#if RELEASE
+static char RCSid[] = "$Id: cgi.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
+#endif
+
+#include "cgi.h"
+#include <Dictionary.h>
+#include <good_strtok.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fstream.h>
+#include <String.h>
+#include <StringList.h>
+#include <URL.h>
+
+
+//*****************************************************************************
+// cgi::cgi()
+//
+cgi::cgi()
+{
+	pairs = new Dictionary;
+
+	String	method = getenv("REQUEST_METHOD");
+
+	if (method.length() == 0)
+	{
+		//
+		// Interactive mode
+		//
+		query = 1;
+		return;
+	}
+	query = 0;
+	String	results;
+
+	if (strcmp(method, "GET") == 0)
+	{
+		results = getenv("QUERY_STRING");
+	}
+	else
+	{
+		int		n;
+		char	*buf;
+		
+		n = atoi(getenv("CONTENT_LENGTH"));
+		buf = new char[n + 1];
+		read(0, buf, n);
+		buf[n] = '\0';
+		results = buf;
+		delete buf;
+	}
+
+	//
+	// Now we need to split the line up into name/value pairs
+	//
+	StringList	list(results, '&');
+	
+	//
+	// Each name/value pair now needs to be added to the dictionary
+	//
+	for (int i = 0; i < list.Count(); i++)
+	{
+		char	*name = good_strtok(list[i], "=");
+		String	value = good_strtok("\n");
+		value.replace('+', ' ');
+		decodeURL(value);
+		String	*str = (String *) pairs->Find(name);
+		if (str)
+		{
+			//
+			// Entry was already there.  Append it to the string.
+			//
+			str->append('\001');
+			str->append(value);
+		}
+		else
+		{
+			//
+			// New entry.  Add a new string
+			//
+			pairs->Add(name, new String(value));
+		}
+	}
+}
+
+
+//*****************************************************************************
+// cgi::~cgi()
+//
+cgi::~cgi()
+{
+	delete pairs;
+}
+
+
+//*****************************************************************************
+// char *cgi::operator [] (char *name)
+//
+char *cgi::operator [] (char *name)
+{
+	return get(name);
+}
+
+
+//*****************************************************************************
+// char *cgi::get(char *name)
+//
+char *cgi::get(char *name)
+{
+	String	*str = (String *) (*pairs)[name];
+	if (str)
+		return str->get();
+	else
+	{
+		if (query)
+		{
+			char	buffer[1000];
+			cerr << "Enter value for " << name << ": ";
+			cin.getline(buffer, sizeof(buffer));
+			pairs->Add(name, new String(buffer));
+			str = (String *) (*pairs)[name];
+			return str->get();
+		}
+		return 0;
+	}
+}
+
+
+//*****************************************************************************
+// int cgi::exists(char *name)
+//
+int
+cgi::exists(char *name)
+{
+	return pairs->Exists(name);
+}
+
+//*****************************************************************************
+// char *cgi::path()
+//
+char *cgi::path()
+{
+	static char	buffer[1000] = "";
+
+	if (query)
+	{
+		if (*buffer)
+			return buffer;
+		cerr << "Enter PATH_INFO: ";
+		cin.getline(buffer, sizeof(buffer));
+		return buffer;
+	}
+	return getenv("PATH_INFO");
+}
+
+

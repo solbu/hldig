@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>ht://Dig: htsearch</title>
+  </head>
+
+  <body bgcolor="#eef7ff">
+      <h1>htsearch</h1>
+      <p>
+	ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier <a
+	  href="mailto:andrew@contigo.com">andrew@contigo.com</a><br> Please
+	see the file <a href=../COPYING>COPYING</a> for license
+	information.
+      <hr noshade size=4>
+
+      <h2>Search Method Used</h2>
+      The way htsearch performs it search and applies its ranking
+      rules are fairly complicated.  This is an attempt at explaining
+      in global terms what goes on when htsearch searches.
+      <p>
+	htsearch gets a list of words from the HTML form that invoked
+	it.  If htsearch was invoked with boolean expression parsing
+	enabled, it will do a quick syntax check on the input words.
+	If there are syntax errors, it will display the syntax error
+	file that is specified with the
+	<a href="attrs.html#syntax_error_file">syntax_error_file</a>
+	attribute.
+      <p>
+	If the boolean parser was not enabled, the list of words is
+	converted into a boolean expression by putting either "and"s or
+	"or"s between the words.  (This depends on the search type.)
+      <p>
+	In both cases, each of the words in the list is now expanded
+	using the search algorithms that were specified in the 
+	<a href="attrs.html#search_algorithm">search_algorithm</a>
+	attribute.  For example, the endings algorithm will convert a
+	word like "person" into "person or persons".  In this fashion,
+	all the specified algorithms are used on each of the words and
+	the result is a new boolean expression.
+      <p>
+	The next step is to perform database lookups on the words in
+	the expression.  The result of these lookups are then passed
+	to the boolean expression parser.
+      <p>
+	The boolean expression parser is a simple recursive descent
+	parser with an operand stack.  It knows how to deal with
+	"and", "or" and parenthesis.  The result of the parser will be
+	one set of matches.
+      <p>
+	At this point, the matches are ranked.  The rank of a match is
+	determined by the weight of the words that caused the match
+	and the weight of the algorithm that generated the word.
+	Word weights are generally determined by the importance of the
+	word in a document.  For example, words in the title of a
+	document have a much higher weight than words at the bottom of
+	the document.
+      <p>
+	Finally, when the document ranks have been determined and the
+	documents sorted, the resulting matches are displayed.  If
+	paged output is required, only a subset of all the matches
+	will be displayed.
+
+      <hr noshade size=4>
+      <address><a href="http://www.sdsu.edu/~turtle/">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a></address>
+      <!-- hhmts start -->
+Last modified: Wed Jan  1 20:39:21 PST 
+<!-- hhmts end -->
+  </body>
+</html>

@@ -1,0 +1,25 @@
+include @HTDIG_TOP@/Makefile.config
+include .sniffdir/ofiles.incl
+
+OBJS=		$(OFILES)
+
+TARGET=		htdig
+
+all:	$(TARGET)
+
+$(TARGET):		$(OBJS)
+	$(CXX) -o $(TARGET) $(LDFLAGS) $(OBJS) $(LIBS)
+
+install:	$(TARGET)
+	$(INSTALL) $(TARGET) $(BIN_DIR)
+
+clean:
+	$(RM) $(TARGET) $(OBJS) *~ *.bak *% a.out *.orig core
+
+distclean:	clean
+	$(RM) Makefile *.proj
+
+depend:
+	$(MAKEDEPEND) @CPPFLAGS@ $(CXXFLAGS) -- $(OBJS)
+
+main.o:	@HTDIG_TOP@/CONFIG

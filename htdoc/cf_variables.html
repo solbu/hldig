@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <title>ht://Dig: Configuration file format -- Variable Expansion</title>
+  </head>
+  <body bgcolor="#eef7ff">
+      <h1>Configuration file format -- Variable Expansion</h1>
+      <p>ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier
+	<a href="mailto:andrew@contigo.com">&lt;andrew@contigo.com&gt;</a>
+	<br>
+	Please see the file <a href="COPYING">COPYING</a> for license
+	information.</p>
+      <hr size="4" noshade="noshade">
+	Attribute values can contain references to other attributes.
+	This is done similarly to how Perl, bourne shell, and
+	Makefiles use variables.  The variables that are referenced
+	will be expanded when the variable is used, not when it is
+	defined.  This means that attributes don't have to be defined
+	in the order that they are used.
+      <p>
+	Example attribute reference in an attribute value:
+      <blockquote>database_base: ${database_dir}/htdig</blockquote>
+      or
+      <blockquote>database_base: $database_dir/htdig</blockquote>
+      <p>
+	Many default values use the attribute expansion mechanism to
+	make configuration easier and more generic.
+      </p>
+      <p>
+	In addition to variable expansion, it is also possible to
+	include the contents of a file as the value of an attribute.
+	This is done by putting the filename in backquotes (`).
+	Within the backquotes, variable expansion will still work so
+	that files can be specified relative to some path.  The
+	backquotes and the filename will be replaced by the contents
+	of the file if it exists.  All whitespace (spaces, tabs,
+	newlines, etc) in the file are condensed to one space before
+	the substitution takes place.
+	The following are some examples of the use of the backquoting
+	scheme:
+      <blockquote>
+	  start_url: `${common_dir}/starting_points`<br>
+	  limit_urls_to: `${common_dir}/limit_list`
+      </blockquote>
+      <hr noshade size=4>
+      <p><!-- hhmts start -->
+Last modified: Sun Dec 15 12:11:37 PST 
+<!-- hhmts end -->
+	<br><a href="mailto:andrew@contigo.com">andrew@contigo.com</a></p>
+  </body>
+</html>
+
+

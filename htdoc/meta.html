@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>ht://Dig: Recognized META information in HTML documents</title>
+  </head>
+  <body bgcolor="#eef7ff">
+      <h1>Recognized META information in HTML documents</h1>
+      <p>
+	ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier &lt;<a
+	href="mailto:andrew@contigo.com">andrew@contigo.com</a>&gt;<br>
+	Please see the file <a href="COPYING">COPYING</a> for license
+	information.</p>
+      <hr noshade size=4>
+      <h2>Introduction</h2>
+      <p>
+	As the <a href="index.html">ht://Dig</a> system will index all
+	HTML pages on a system, individual authors of pages may want
+	to control some of the aspects of the indexing operation.  To
+	this end, ht://Dig will recognize some special &lt;META&gt;
+	tag attributes.  The following things can be controlled in
+	this manner:
+      </p>
+      <menu>
+	<li>Do not index the document</li>
+	<li>Notify a user that the document has expired</li>
+	<li>Set keywords for the document</li>
+      </menu>
+      <hr>
+      <h2>General &lt;META&gt; tag use</h2>
+      <p>In HTML, any number of &lt;META&gt; tags can be used between the
+	&lt;HEAD&gt; and &lt;/HEAD&gt; tags of a document.  There are three
+	possible attributes in this tag, two of which are recognized by
+	ht://Dig:</p>
+      <dl>
+	<dt>NAME</dt>
+	<dd>Used to name a specific property.</dd>
+	<dt>CONTENT</dt>
+	<dd>Used to supply the value for a named property.</dd>
+      </dl>
+      <p>A document could start with something like the following:
+      </p>
+      <blockquote>
+	  &lt;HTML&gt;&lt;HEAD&gt;<br>
+	  &lt;META NAME="htdig-keywords" CONTENT="phone telephone online
+	  electronic directory"&gt;<br>
+	  &lt;META NAME="htdig-email" CONTENT="pat.user@nowhere.net"&gt;<br>
+	  &lt;TITLE&gt;Some document title&lt;/TITLE&gt;<br>
+	  &lt;/HEAD&gt;<br>
+	  &lt;BODY&gt;
+	  <blockquote>
+	      <em>Body of document</em>
+	  </blockquote>
+	  &lt;/BODY&gt;&lt;/HTML&gt;
+      </blockquote>
+      <hr>
+      <h2>Recognized properties</h2>
+      <p>The following properties are recognized by ht://Dig:
+      </p>
+      <menu>
+	<li>htdig-keywords</li>
+	<li>htdig-noindex</li>
+	<li>htdig-email</li>
+	<li>htdig-notification-date</li>
+	<li>htdig-email-subject</li>
+      </menu>
+      <p>Detailed information about the <em>htdig-email</em>,
+	<em>htdig-notification-date</em>, and <em>htdig-email-subject</em>
+	properties can be found in the <a href="notification.html">Email
+	  notification service</a> document.
+      </p>
+      <p>Descriptions of the properties and their values:
+      </p>
+      <dl>
+	<dt><strong>htdig-keywords</strong></dt>
+	<dd>
+	  The value of this property should be a blank separated list of
+	  keywords which will get a very high weight when searching.  This
+	  can be used to get around some problems with common synonyms for
+	  words in the document.  For example, if a document is a
+	  telephone directory, possible keywords could be "telephone phone
+	  directory book list".  Now, regardless of what text is actually
+	  in the document, it can be found if these keywords are used in
+	  the search.
+	</dd>
+	<dt><strong>htdig-noindex</strong></dt>
+	<dd>
+	  This property has no value associated with it.  If it is used,
+	  the document will NOT be included in any searches.
+	  Example uses of this could be:
+	  <menu>
+	    <li>A document which is dynamic.  ie: the contents change
+	      continually.</li>
+	    <li>Temporary document, not officially available, yet.</li>
+	    <li>A document you just don't want to be found.</li>
+	  </menu>
+	</dd>
+	<dt><strong>htdig-email</strong></dt>
+	<dd>
+	  The value is the email address a notification message should be sent to.
+	  Multiple email addresses can be given by separating them by commas.
+	  If no email address is given, no notification will be sent.<br>
+	  (Please check the <a href="notification.html">Email notification
+	    service</a> documentation for more details on this.)
+	</dd>
+	<dt><strong>htdig-notification-date</strong></dt>
+	<dd>
+	  The value is the date on or after which the notification should be sent.
+	  The format is simply <em>month / day / year</em>.  Make sure that
+	  the year has the century with it as well.  This means that you should
+	  use <em>1995</em> instead of <em>95</em>.<br>
+	  If no date is given, no notification will be sent.
+	  (Please check the <a href="notification.html">Email notification
+	    service</a> documentation for more details on this.)
+	</dd>
+	<dt><strong>htdig-email-subject</strong></dt>
+	<dd>
+	  The value specifies the subject the notification message.
+	  This is an optional property.
+	  (Please check the <a href="notification.html">Email notification
+	    service</a> documentation for more details on this.)
+	</dd>
+      </dl>
+      <hr noshade size=4>
+      <address><a href="http://www.sdsu.edu/~turtle/">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a></address>
+      <!-- hhmts start -->
+Last modified: Sat Dec 14 19:06:18 PST 
+<!-- hhmts end -->
+  </body>
+</html>

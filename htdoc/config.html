@@ -1,0 +1,380 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>ht://Dig: Configuration</title>
+  </head>
+
+  <body bgcolor="#eef7ff">
+      <h1>Configuration</h1>
+      <p>ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier &lt;
+	<a href="mailto:andrew@contigo.com">andrew@contigo.com</a>&gt;<br>
+	Please see the file <a href=../COPYING>COPYING</a> for license
+	information.</p>
+      <hr noshade size=4>
+      <p>ht://Dig requires a configuration file and several HTML files
+	to operate correctly.
+	Fortunately, when ht://Dig is installed, a very reasonable
+	configuration is created and in most cases only minor
+	modifications to the files are necessary.
+      </p>
+      Below, we will use the variables that were set in CONFIG to
+      designate specific paths.
+      <p>
+	Standard files:
+      <ul>
+	<li><a href="#htdig.conf">${CONFIG_DIR}/htdig.conf</a>
+	<li><a href="#search.html">${SEARCH_DIR}/search.html</a>
+	<li><a href="#header.html">${COMMON_DIR}/header.html</a>
+	<li><a href="#footer.html">${COMMON_DIR}/footer.html</a>
+	<li><a href="#nomatch.html">${COMMON_DIR}/nomatch.html</a>
+	<li><a href="#syntax.html">${COMMON_DIR}/syntax.html</a>
+      </ul>
+      
+      <hr noshade>
+      <h2><a name="#htdig.conf">${CONFIG_DIR}/htdig.conf</a></h2>
+      This is the main runtime configuration file for all programs
+      that make up ht://Dig.  The file is fully described in the <a
+	href="confindex.html" target="_top">Configuration file
+	manual</a>.
+      <p>
+	When ht://Dig is installed, several attributes will be
+	customized to your particular environment, but for reference,
+	here is a sample copy of what it can look like:
+<font size="-1">
+<pre>
+#
+# Example config file for ht://Dig.
+# Last modified 2-Sep-1996 by Andrew Scherpbier
+#
+# This configuration file is used by all the programs that make up ht://Dig.
+# Please refer to the attribute reference manual for more details on what
+# can be put into this file.  (http://htdig.sdsu.edu/configfile.html)
+# Note that most attributes have very reasonable default values so you
+# really only have to add attributes here if you want to change the defaults.
+#
+# What follows are some of the common attributes you might want to change.
+#
+
+#
+# Specify where the database files need to go.  Make sure that there is
+# plenty of free disk space available for the databases.  They can get
+# pretty big.
+#
+database_dir:		/opt/www/htdig/db
+
+#
+# This specifies the URL where the robot (htdig) will start.  You can specify
+# multiple URLs here.  Just separate them by some whitespace.
+# The example here will cause the ht://Dig homepage and related pages to be
+# indexed.
+#
+start_url:		http://htdig.sdsu.edu/
+
+#
+# This attribute limits the scope of the indexing process.  The default is to
+# set it to the same as the start_url above.  This way only pages that are on
+# the sites specified in the start_url attribute will be indexed and it will
+# reject any URLs that go outside of those sites.
+#
+# Keep in mind that the value for this attribute is just a list of string
+# patterns. As long as URLs contain at least one of the patterns it will be
+# seen as part of the scope of the index.
+#
+limit_urls_to:		${start_url}
+
+#
+# If there are particular pages that you definately do NOT want to index, you
+# can use the exclude_urls attribute.  The value is a list of string patterns.
+# If a URL matches any of the patterns, it will NOT be indexed.  This is
+# useful to exclude things like virtual web trees or database accesses.  By
+# default, all CGI URLs will be excluded.  (Note that the /cgi-bin/ convention
+# may not work on your web server.  Check the  path prefix used on your web
+# server.)
+#
+exclude_urls:		/cgi-bin/ .cgi
+
+#
+# The excerpts that are displayed in long results rely on stored information
+# in the index databases.  The compiled default only stores 512 characters of
+# text from each document (this excludes any HTML markup...)  If you plan on
+# using the excerpts you probably want to make this larger.  The only concern
+# here is that more disk space is going to be needed to store the additional
+# information.  Since disk space is cheap (! :-)) you might want to set this
+# to a value so that a large percentage of the documents that you are going
+# to be indexing are stored completely in the database.  At SDSU we found
+# that by setting this value to about 50k the index would get 97% of all
+# documents completely and only 3% was cut off at 50k.  You probably want to
+# experiment with this value.
+# Note that if you want to set this value low, you probably want to set the
+# excerpt_show_top attribute to false so that the top excerpt_length characters
+# of the document are always shown.
+#
+max_head_length:	10000
+
+#
+# Depending on your needs, you might want to enable some of the fuzzy search
+# algorithms.  There are several to choose from and you can use them in any
+# combination you feel comfortable with.  Each algorithm will get a weight
+# assigned to it so that in combinations of algorithms, certain algorithms get
+# preference over others.  Note that the weights only affect the ranking of
+# the results, not the actual searching.
+# The available algorithms are:
+#	exact
+#	endings
+#	synonyms
+#	soundex
+#	metaphone
+# By default only the "exact" algorithm is used with weight 1.
+# Note that if you are going to use any of the algorithms other than "exact",
+# you need to use the htfuzzy program to generate the databases that each
+# algorithm requires.
+#
+search_algorithm:	exact:1 synonyms:0.5 endings:0.1
+
+#
+# The following are used to change the text for the page index.
+# The defaults are just boring text numbers.  These images spice
+# up the result pages quite a bit.  (Feel free to do whatever, though)
+#
+next_page_text:		&lt;img src=/htdig/buttonr.gif border=0 align=middle width=30 height=30 alt=next&gt;
+no_next_page_text:
+prev_page_text:		&lt;img src=/htdig/buttonl.gif border=0 align=middle width=30 height=30 alt=prev&gt;
+no_prev_page_text:
+page_number_text:	"&lt;img src=/htdig/button1.gif border=0 align=middle width=30 height=30 alt=1&gt;" \
+			"&lt;img src=/htdig/button2.gif border=0 align=middle width=30 height=30 alt=2&gt;" \
+			"&lt;img src=/htdig/button3.gif border=0 align=middle width=30 height=30 alt=3&gt;" \
+			"&lt;img src=/htdig/button4.gif border=0 align=middle width=30 height=30 alt=4&gt;" \
+			"&lt;img src=/htdig/button5.gif border=0 align=middle width=30 height=30 alt=5&gt;" \
+			"&lt;img src=/htdig/button6.gif border=0 align=middle width=30 height=30 alt=6&gt;" \
+			"&lt;img src=/htdig/button7.gif border=0 align=middle width=30 height=30 alt=7&gt;" \
+			"&lt;img src=/htdig/button8.gif border=0 align=middle width=30 height=30 alt=8&gt;" \
+			"&lt;img src=/htdig/button9.gif border=0 align=middle width=30 height=30 alt=9&gt;" \
+			"&lt;img src=/htdig/button10.gif border=0 align=middle width=30 height=30 alt=10&gt;"
+#
+# To make the current page stand out, we will put a border arround the
+# image for that page.
+#
+no_page_number_text:	"&lt;img src=/htdig/button1.gif border=2 align=middle width=30 height=30 alt=1&gt;" \
+			"&lt;img src=/htdig/button2.gif border=2 align=middle width=30 height=30 alt=2&gt;" \
+			"&lt;img src=/htdig/button3.gif border=2 align=middle width=30 height=30 alt=3&gt;" \
+			"&lt;img src=/htdig/button4.gif border=2 align=middle width=30 height=30 alt=4&gt;" \
+			"&lt;img src=/htdig/button5.gif border=2 align=middle width=30 height=30 alt=5&gt;" \
+			"&lt;img src=/htdig/button6.gif border=2 align=middle width=30 height=30 alt=6&gt;" \
+			"&lt;img src=/htdig/button7.gif border=2 align=middle width=30 height=30 alt=7&gt;" \
+			"&lt;img src=/htdig/button8.gif border=2 align=middle width=30 height=30 alt=8&gt;" \
+			"&lt;img src=/htdig/button9.gif border=2 align=middle width=30 height=30 alt=9&gt;" \
+			"&lt;img src=/htdig/button10.gif border=2 align=middle width=30 height=30 alt=10&gt;"
+</pre>
+</font>
+
+      <hr noshade>
+      <h2><a name="search.html">${SEARCH_DIR}/search.html</a></h2>
+      This is the default search form.  It is an example interface to
+      the search engine, htsearch.  The file contains a form with as
+      its action a call to htsearch.  There are several form variables
+      which htsearch will use.  More about those can be found in the
+      <a href="htsearch.html" target="_top">htsearch documentation</a>.
+      <p>
+	An example file can be as follows:
+<font size="-1">
+<pre>
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;ht://Dig WWW Search&lt;/title&gt;
+&lt;/head&gt;
+&lt;body bgcolor="#eef7ff"&gt;
+&lt;h1&gt;
+&lt;a href="http://htdig.sdsu.edu"&gt;&lt;IMG SRC="@IMAGEDIR@/htdig.gif" align=bottom alt="ht://Dig" border=0&gt;&lt;/a&gt;
+WWW Site Search&lt;/H1&gt;
+&lt;hr noshade size=4&gt;
+This search will allow you to search the contents of
+all the publicly available WWW documents at this site.
+&lt;br&gt;
+&lt;p&gt;
+&lt;form method="post" action="/cgi-bin/htsearch"&gt;
+&lt;font size=-1&gt;
+Match: &lt;select name=method&gt;
+&lt;option value=and&gt;All
+&lt;option value=or&gt;Any
+&lt;/select&gt;
+Format: &lt;select name=format&gt;
+&lt;option value=builtin-long&gt;Long
+&lt;option value=builtin-short&gt;Short
+&lt;/select&gt;
+&lt;/font&gt;
+&lt;input type=hidden name=config value=htdig&gt;
+&lt;input type=hidden name=restrict value=""&gt;
+&lt;input type=hidden name=exclude value=""&gt;
+&lt;br&gt;
+Search:
+&lt;input type="text" size="30" name="words" value=""&gt;
+&lt;input type="submit" value="Search"&gt;
+&lt;/form&gt;
+&lt;hr noshade size=4&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+</font>
+
+      <hr noshade>
+      <h2><a name="header.html">${COMMON_DIR}/header.html</a></h2>
+      This file is the file that is output before any of the search
+      results are produced in a search.  This file can be customized
+      to reflect your particular web look-and-feel, for example.  Take
+      note that this file is only the top part of the full HTML
+      document that is produced when search results are displayed.
+      This means that it should start with the proper HTML
+      introductory tags and title.
+      <p>
+	This file will not just simply be copied.  Instead, the search
+	engine will look for special variables inside the file.  These
+	variables will be replaced with the appropriate values for the
+	particular search it is used for.  For more details of the use
+	of these variables, consult the <a
+	  href="hts_templates.html">htsearch templates</a> documentation.
+      <p>
+	Below is the default header.html file that gets installed.
+	Note that it contains a form to allow the user to refine the
+	search.
+<font size="-1">
+<pre>
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Search results for '$(WORDS)'&lt;/title&gt;&lt;/head&gt;
+&lt;body bgcolor="#eef7ff"&gt;
+&lt;h2&gt;&lt;img src="/htdig/htdig.gif"&gt;
+Search results for '$(LOGICAL_WORDS)'&lt;/h2&gt;
+&lt;hr noshade size=4&gt;
+&lt;form method="get" action="$(CGI)"&gt;
+&lt;font size=-1&gt;
+&lt;input type=hidden name=config value=$(CONFIG)&gt;
+&lt;input type=hidden name=restrict value="$(RESTRICT)"&gt;
+&lt;input type=hidden name=exclude value="$(EXCLUDE)"&gt;
+Match: $(METHOD)
+Format: $(FORMAT)
+&lt;br&gt;
+Refine search:
+&lt;input type="text" size="30" name="words" value="$(WORDS)"&gt;
+&lt;input type="submit" value="Search"&gt;
+&lt;/select&gt;
+&lt;/font&gt;
+&lt;/form&gt;
+&lt;hr noshade size=1&gt;
+&lt;b&gt;Documents $(FIRSTDISPLAYED) - $(LASTDISPLAYED) of $(MATCHES) matches.
+More &lt;img src="/htdig/star.gif" alt="*"&gt;'s indicate a better match.
+&lt;/b&gt;
+&lt;hr noshade size=1&gt;
+
+</pre>
+</font>
+<hr noshade>
+
+      <h2><a name="footer.html">${COMMON_DIR}/footer.html</a></h2>
+      This file is output after all the search results have been
+      displayed.  All the same header.html rules apply to this file,
+      except that it is supposed to contain all the ending HTML tags.
+      <p>
+	Below is the default footer.html file that gets installed.
+	Note that it contains the page navigation stuff.
+<font size="-1">
+<pre>
+&lt;hr noshade&gt;
+Pages:&lt;br&gt;
+$(PREVPAGE) $(PAGELIST) $(NEXTPAGE)
+&lt;hr noshade size=4&gt;
+&lt;a href="http://htdig.sdsu.edu"&gt;
+&lt;img src=".htdig/htdig.gif" border=0&gt;ht://Dig 3.0&lt;/a&gt;
+&lt;/body&gt;&lt;/html&gt;
+</pre>
+</font>
+
+      <hr noshade>
+      <h2><a name="nomatch.html">${COMMON_DIR}/nomatch.html</a></h2>
+      If a search produces no matches, this file is displayed.  All
+      the relevant variables will be replaced as in the header.html
+      and footer.html files.  The default nomatch.html is little more
+      than header.html and footer.html appended:
+<font size="-1">
+<pre>
+&lt;html&gt;&lt;head&gt;&lt;title&gt;No match for '$(LOGICAL_WORDS)'&lt;/title&gt;&lt;/head&gt;
+&lt;body bgcolor="#eef7ff"&gt;
+&lt;h1&gt;&lt;img src="/htdig/htdig.gif"&gt;
+Search results&lt;/h1&gt;
+&lt;hr noshade size=4&gt;
+&lt;h2&gt;No matches were found for '$(LOGICAL_WORDS)'&lt;/h2&gt;
+&lt;p&gt;
+Check the spelling of the search word(s) you used.
+If the spelling is correct and you only used one word,
+try using one or more similar search words with "&lt;b&gt;Any&lt;/b&gt;."
+&lt;/p&gt;&lt;p&gt;
+If the spelling is correct and you used more than one
+word with "&lt;b&gt;Any&lt;/b&gt;," try using one or more similar search
+words with "&lt;b&gt;Any&lt;/b&gt;."&lt;/p&gt;&lt;p&gt;
+If the spelling is correct and you used more than one
+word with "&lt;b&gt;All&lt;/b&gt;", try using one or more of the same words
+with "&lt;b&gt;Any&lt;/b&gt;."&lt;/p&gt;
+&lt;hr noshade size=4&gt;
+&lt;form method="get" action="$(CGI)"&gt;
+&lt;font size=-1&gt;
+&lt;input type=hidden name=config value=$(CONFIG)&gt;
+&lt;input type=hidden name=restrict value="$(RESTRICT)"&gt;
+&lt;input type=hidden name=exclude value="$(EXCLUDE)"&gt;
+Match: $(METHOD)
+Format: $(FORMAT)
+&lt;br&gt;
+Refine search:
+&lt;input type="text" size="30" name="words" value="$(WORDS)"&gt;
+&lt;input type="submit" value="Search"&gt;
+&lt;/select&gt;
+&lt;/font&gt;
+&lt;/form&gt;
+&lt;hr noshade size=4&gt;
+&lt;a href="http://htdig.sdsu.edu"&gt;
+&lt;img src="/htdig/htdig.gif" border=0&gt;ht://Dig 3.0&lt;/a&gt;
+&lt;/body&gt;&lt;/html&gt;
+</pre>
+</font>
+
+      <hr noshade>
+      <h2><a name="syntax.html">${COMMON_DIR}/syntax.html</a></h2>
+      If a boolean expression search causes a syntax error, this file
+      will be displayed.
+<font size="-1">
+<pre>
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Error in Boolean search for '$(WORDS)'&lt;/title&gt;&lt;/head&gt;
+&lt;body bgcolor="#eef7ff"&gt;
+&lt;h1&gt;&lt;img src="/htdig/htdig.gif"&gt;
+Error in Boolean search for '$(LOGICAL_WORDS)'&lt;/h1&gt;
+&lt;hr noshade size=4&gt;
+Boolean expressions need to be 'correct' in order for the search
+system to use them.
+The expression you entered has errors in it.&lt;br&gt;
+&lt;blockquote&gt;&lt;b&gt;
+$(SYNTAXERROR)
+&lt;/b&gt;&lt;/blockquote&gt;
+&lt;hr noshade size=4&gt;
+&lt;form method="get" action="$(CGI)"&gt;
+&lt;font size=-1&gt;
+&lt;input type=hidden name=config value=$(CONFIG)&gt;
+&lt;input type=hidden name=restrict value="$(RESTRICT)"&gt;
+&lt;input type=hidden name=exclude value="$(EXCLUDE)"&gt;
+Match: $(METHOD)
+Format: $(FORMAT)
+&lt;br&gt;
+Refine search:
+&lt;input type="text" size="30" name="words" value="$(WORDS)"&gt;
+&lt;input type="submit" value="Search"&gt;
+&lt;/select&gt;
+&lt;/font&gt;
+&lt;/form&gt;
+&lt;hr noshade size=4&gt;
+&lt;a href="http://htdig.sdsu.edu"&gt;
+&lt;img src="/htdig/htdig.gif" border=0&gt;ht://Dig 3.0&lt;/a&gt;
+&lt;/body&gt;&lt;/html&gt;
+</pre>
+</font>
+      <hr noshade size=4>
+      <address><a href="http://www.sdsu.edu/~turtle/">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a></address>
+<!-- hhmts start -->
+Last modified: Sun Jan 12 22:19:44 PST 
+<!-- hhmts end -->
+</body> </html>

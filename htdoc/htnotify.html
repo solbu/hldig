@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>ht://Dig: htnotify</title>
+  </head>
+
+  <body bgcolor="#eef7ff">
+      <h1>htnotify</h1>
+      <p>ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier <a href="mailto:andrew@contigo.com">andrew@contigo.com</a><br>
+	Please see the file <a href=../COPYING>COPYING</a> for license information.</p>
+      <hr noshade size=4>
+
+      <dl>
+	<dt><h2>Synopsis</h2></dt>
+      <dd>htnotify [-b <em>database</em>][-c <em>configfile</em>][-v]
+      </dd>
+    </dl>
+      <dl>
+	<dt><h2>Description</h2></dt>
+      <dd>
+	Htnotify scans the document database created by
+	<a href="htmerge.html">htmerge</a> and sends an email message
+	for every page that is out of date.  Look in the
+	<a href="notification.html">notification</a> manual for
+	instructions to set up this service.
+      </dd>
+    </dl>
+      <dl>
+	<dt><h2>Options</h2></dt>
+      <dd>
+	<dl compact>
+	  <dt>-b <em>database</em></dt>
+	  <dd>Specifies an alternative database than what is specified
+	    in the configuration file.</dd>
+	  <dt>-c <em>configfile</em></dt>
+	  <dd>Use the specified configuration file instead of the
+	    default.</dd>
+	  <dt>-v</dt>
+	  <dd>Verbose mode.  This increases the verbosity of the
+	    program.  Used once will display a log of what email
+	    messages were sent.  Used more than once will display
+	    information about each document that has email
+	    notification set.
+	  </dd>
+	</dl>
+      </dd>
+    </dl>
+      <dl>
+	<dt><h2>Files</h2></dt>
+      <dd>
+	<dl>
+	  <dt>/usr/local/etc/htdig.conf</dt>
+	  <dd>The default configuration file.</dd>
+	</dl>
+      </dd>
+    </dl>
+      <dl>
+	<dt><h2>See Also</h2></dt>
+      <dd><a href="htdig.html">htdig</a>,
+	<a href="htmerge.html">htmerge</a>,
+	<a href="notification.html">Email notification service</a>
+	<a href="attrs.html">Configuration file format</a>.</dd>
+    </dl>
+      <hr noshade size=4>
+      <address><a href="http://www.sdsu.edu/~turtle/">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a></address>
+      <!-- hhmts start -->
+Last modified: Sun Dec 15 12:44:50 PST 
+<!-- hhmts end -->
+  </body>
+</html>

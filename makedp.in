@@ -1,0 +1,38 @@
+#!/bin/sh
+
+##
+## convert the object file names to source file names
+##
+objs=0
+for i
+do
+	if [ "x$i" = "x--" ]; then
+		objs=1
+	elif [ $objs = 1 ]; then
+		source=`basename $i .o`.cc
+		if [ -f $source ]; then
+			FILES="$FILES $source"
+		fi
+	else
+		flags="$flags $i"
+	fi
+done
+
+##
+## Remove everything after the special comment from the Makefile
+##
+cp Makefile Makefile.bak
+echo "#DO NOT EDIT BELOW" >> Makefile
+ed Makefile <<EOC >/dev/null 2>&1
+/#DO NOT EDIT BELOW/
+.,\$d
+w
+q
+EOC
+
+##
+## Add the special comment and all the dependencies using the -M flag
+## to the compiler
+##
+echo "#DO NOT EDIT BELOW" >> Makefile
+@CXX@ -M $flags $FILES >> Makefile

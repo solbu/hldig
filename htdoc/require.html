@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>ht://Dig: System requirements</title>
+  </head>
+
+  <body bgcolor="#eef7ff">
+      <h1>System requirements</h1>
+      <p>
+	ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier
+	&lt;<a href="mailto:andrew@contigo.com">andrew@contigo.com</a>&gt;
+	<br>
+	Please see the file <a href=../COPYING>COPYING</a> for license
+	information.
+      <hr noshade size=4>
+      <h1>Requirements to build ht://Dig</h1>
+      <p>
+	ht://Dig was developed under Unix using C++.
+      <p>
+	For this reason, you will need a Unix machine, a C compiler
+	and a C++ compiler. (The C compiler is needed to compile some
+	of the GNU libraries)
+      <p>
+	Unfortunately, I only have access to a couple of different
+	Unix machines.  ht://Dig has been tested on these machines:
+      <ul>
+	<li>Sun Solaris 2.5 SPARC (using gcc/g++ 2.7.2)</li>
+	<li>Sun SunOS 4.1.4 SPARC (using gcc/gcc 2.7.0)</li>
+	<li>HP/UX A.09.01 (using gcc/g++ 2.6.0)</li>
+	<li>IRIX 5.3 (SGI C++ compiler.  Don't know the version)</li>
+      </ul>
+      Other people have compiled it under Linux as well.
+      <h3>libg++</h3>
+	If you plan on using g++ to compile ht://Dig, you have to make
+	sure that libg++ has been installed.  Unfortunately, libg++ is
+	a separate package from gcc/g++.  You can get libg++ from the
+	<a href="ftp://prep.ai.mit.edu/pub/gnu/">GNU software
+	  archive</a>.
+      <h3>Berkeley 'make'</h3>
+	The building relies heavily on the make program.  The problem
+	with this is that not all make programs are the same.  The
+	requirement for the make program is that it understands the
+	'include' statement as in <blockquote><tt>include
+	somefile</tt></blockquote> The Berkeley 4.4 make program
+	doesn't use this syntax, instead it wants
+	<blockquote><tt>.include "somefile"</tt></blockquote> and
+	hence it cannot be used to build ht://Dig.
+      <p>
+	If your make program doesn't understand the right 'include'
+	syntax, it is best if you get and install <a
+	href="ftp://prep.ai.mit.edu/pub/gnu/">gnumake</a> before you
+	try to compile everything.  The alternative is to change all
+	the Makefiles.
+      <hr noshade>
+      <h1>Disk space requirements</h1>
+      <p>
+	The search engine will require lots of disk space to store its
+	databases. Unfortunately, there is no exact formula to compute
+	the space requirements.  It depends on the number of documents
+	you are going to index but also on the various options you
+	use.  To give you an idea of the space requirements, here is
+	what I have deduced from our own database size at San Diego
+	State University.
+      <p>
+	If you keep around the wordlist database (for update digging
+	instead of initial digging) I found that multiplying the
+	number of documents covered by 12,000 will come pretty close
+	to the space required.
+      <p>
+	We have about 13,000 documents:<pre>
+         13,000
+         12,000 x
+    -----------
+    156,000,000
+</pre>
+      or about 150 MB.
+      <p>
+	Without the wordlist database, the factor drops down to about
+	7500:<pre>
+         13,000
+          7,500 x
+     ----------
+     97,500,000
+</pre>
+or about 93 MB.
+      <p>
+	Keep in mind that we keep at most 50,000 bytes of each
+	document.  This may seen a lot, but most documents aren't very
+	big and it gives us a big enough chunk to almost always show
+	an excerpt of the matches.
+      </p>
+      <hr noshade size=4>
+      <address><a href="http://www.sdsu.edu/~turtle/">Andrew Scherpbier
+	  &lt;andrew@contigo.com&gt;</a></address>
+      <!-- hhmts start -->
+Last modified: Sat Dec 14 18:37:40 PST 
+<!-- hhmts end -->
+  </body>
+</html>

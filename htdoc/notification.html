@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>ht://Dig: Email notification service</title>
+  </head>
+  <body bgcolor="#eef7ff">
+      <h1><img alt="ht://Dig" src="htdig.gif" align="absmiddle">
+	Email notification service</h1>
+      <p>ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier &lt;<a href="mailto:andrew@contigo.com">andrew@contigo.com</a>&gt;<br>
+	Please see the file <a href="COPYING">COPYING</a> for license information.</p>
+      <hr noshade size=4>
+      <h2>Introduction</h2>
+      <p>
+	As any HTML author knows, information is only useful if it is
+	valid.  Unfortunately, a lot of information has an inherent
+	expiration date.  Things like meeting schedules, announcements
+	of upcoming events, and pages with those annoying yellow 'NEW'
+	images by certain links.
+      </p>
+      <p>
+	<a href="index.html">ht://Dig</a> is a WWW index/search system
+	developed at <a href="http://www.sdsu.edu/">San Diego State
+	University</a>.  Since this index system already scans all
+	HTML documents, it was the logical choice to incorporate a
+	reminder service into it.
+      </p>
+      <p>
+	ht://Dig can be told to remind you about an HTML page sometime
+	in the future.  The reminder/notification will come by email
+	and will contain the URL to the page plus some other
+	information.
+      </p>
+      <hr>
+      <h2>Use</h2>
+      <p>ht://Dig detects special use of the &lt;META&gt; tag in HTML
+	documents.
+	The &lt;META&gt; tags should go between &lt;HEAD&gt; and &lt;/HEAD&gt;
+	of an HTML document.
+      </p>
+      <p>Example:
+      </p>
+      <blockquote>
+	  &lt;HTML&gt;&lt;HEAD&gt;<br>
+	  &lt;META NAME="htdig-email" CONTENT="pat.user@nowhere.net"&gt;<br>
+	  &lt;META NAME="htdig-email-subject" CONTENT="Reminder to update a page"&gt;<br>
+	  &lt;META NAME="htdig-notification-date" CONTENT="8/28/1995"&gt;<br>
+
+	  &lt;TITLE&gt;Someone's homepage.&lt;/TITLE&gt;<br>
+	  &lt;/HEAD&gt;<br>
+	  &lt;BODY&gt;<br>
+	  <blockquote><i>Body of document</i></blockquote>
+	  &lt;/BODY&gt;&lt;/HTML&gt;
+      </blockquote>
+      <p>
+	After 8/28/1995 pat.user@nowhere.net will get a mail message
+	which will look something like this:
+      </p>
+      <blockquote>
+	  <strong>From:</strong> ht://Dig email notification
+	  service<br> <strong>Subject:</strong> WWW notification:
+	  Reminder to update a page<br> <strong>To:</strong>
+	  pat.user@nowhere.net<br>
+	  <br>
+	  The following page was tagged to notify you after 8/28/1995.<br>
+	  <br>
+	  URL: http://www.sdsu.edu/~turtle/index.html<br>
+	  Date: 8/28/1995<br>
+	  Subject: Reminder to update a page<br>
+      </blockquote>
+      <hr>
+      <h2>Attributes</h2>
+      <p>The special ht://Dig &lt;META&gt; tag attributes related to notification are:
+      </p>
+      <ul>
+	<li>NAME="htdig-email" CONTENT="<i>email address [, email address] ...</i>"</li>
+	<li>NAME="htdig-notification-date" CONTENT="<i>earliest notification date</i>"</li>
+	<li>NAME="htdig-email-subject" CONTENT="<i>notification message subject</i>"</li>
+      </ul><p>Descriptions of the values for the attributes:
+      </p>
+      <dl>
+	<dt><strong>htdig-email</strong></dt>
+	<dd>
+	  This is the email address the notification message should be sent to.
+	  Multiple email addresses can be given by separating them by commas.
+	  If no email address is given, no notification will be sent.
+	</dd>
+	<dt><strong>htdig-notification-date</strong></dt>
+	<dd>
+	  This is the date on or after which the notification should be sent.
+	  The format is simply <em>month / day / year</em>.  Make sure that
+	  the year has the century with it as well.  This means that you should
+	  use <em>1995</em> instead of <em>95</em>.<br>
+	  If no date is given, no notification will be sent.
+	</dd>
+	<dt><strong>htdig-email-subject</strong></dt>
+	<dd>
+	  This specifies the subject the notification message.
+	  This is an optional attribute.  Note that if you want to put spaces
+	  in the subject, you <strong>have</strong> to put double quotes
+	  (&quot;) around it.
+	</dd>
+      </dl>
+      <p>There are a couple of other META attributes which are recognized.
+	These can be found in the more general <a href="meta.html">ht://Dig META tag documentation</a>.
+      </p>
+      <hr>
+      <h2>Disclaimer</h2>
+      <p>This service is a free service for all HTML maintainers whose documents
+	are covered by the ht://Dig search system.
+	If any of the attributes are improperly formatted, no notifications will
+	be mailed.
+	Email notification
+	may not always occur on the date that you specified.  We can only
+	guarantee a notification of at most once a week.
+      </p>
+      <hr noshade size=4>
+      <address><a href="http://www.sdsu.edu/~turtle/">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a></address>
+      <!-- hhmts start -->
+Last modified: Tue Oct 22 08:59:49 PDT 
+<!-- hhmts end -->
+  </body>
+</html>

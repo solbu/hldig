@@ -1,0 +1,46 @@
+#!/bin/sh
+
+##
+## Configurable variables
+##
+
+
+##
+## Specify the location of the htdig and htmerge binaries
+##
+htbin=/opt/www/bin
+
+##
+## Specify the configuration file to use for digging and merging
+##
+conffile=/opt/www/htdig/sdsu.conf
+
+##
+## Specify the location where the temporary database is
+##
+source=/tmp
+
+##
+## Specify the location of the target search database
+##
+target=/gopher/www/htdig
+
+##
+## Specify the host of the target search database
+##
+search_host=athena
+
+##
+## Specify how to copy the new database to the location
+## where the search engine can get at it.
+##
+docopy() {
+	rcp $source/*.docdb $source/*.docs.index $source/*.words.gdbm ${search_host}:$target
+}
+
+
+$htbin/htdig -i -c $conffile
+$htbin/htmerge -c $conffile
+$htbin/htnotify -vv -c $conffile
+
+docopy

@@ -1,0 +1,83 @@
+##
+## CONFIG
+##
+## This file is part of ht://Dig
+##
+
+#
+# Please modify the variables below to reflect your preferences.
+#
+
+#
+# DEST
+#
+# This specifies the root of the directory tree to be used by ht://Dig
+#
+DEST=                  /opt/www/htdig
+
+#
+# BIN_DIR
+# Set this macro to where you want the binaries to be installed.
+#
+BIN_DIR=               $(DEST)/bin
+
+#
+# CONFIG_DIR
+# This is the directory that contains ht://Dig configuration files
+#
+CONFIG_DIR=            $(DEST)/conf
+
+#
+# COMMON_DIR
+# This is the directory for files that can be shared between different
+# databases.
+#
+COMMON_DIR=            $(DEST)/common
+
+#
+# DATABASE_DIR
+# The default directory where the search databases will reside.
+#
+DATABASE_DIR=          $(DEST)/db
+
+#
+# DEFAULT_CONFIG_FILE
+# This macro defines where the various programs will look for a configuration
+# file.
+#
+DEFAULT_CONFIG_FILE=   $(CONFIG_DIR)/htdig.conf
+
+#
+# CGIBIN_DIR
+# The directory where your HTTP server looks for CGI programs.  This is where
+# htsearch will get installed.
+#
+CGIBIN_DIR=             /opt/www/cgi-bin
+
+#
+# IMAGE_DIR
+# Define this to be a place that can be accessed by your web server.  This is
+# where a couple of images will be placed.
+#
+IMAGE_DIR=              /home/turtle/public_html/htdig
+
+#
+# IMAGE_URL_PREFIX
+# This is the URL to prefix the images placed in IMAGE_DIR.
+#
+IMAGE_URL_PREFIX=        /htdig
+
+#
+# SEARCH_DIR
+# Set this to the absolute path where you want the sample search form to
+# be installed.
+#
+SEARCH_DIR=		/home/turtle/public_html/htdig
+
+#
+# SEARCH_FORM
+# Set this to the name you want to give to the search form.  This form
+# will be located in the SEARCH_DIR directory.
+#
+SEARCH_FORM=            search.html
+

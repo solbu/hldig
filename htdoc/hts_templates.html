@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>ht://Dig: htsearch</title>
+  </head>
+
+  <body bgcolor="#eef7ff">
+      <h1>htsearch</h1>
+      <p>
+	ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier <a
+	  href="mailto:andrew@contigo.com">andrew@contigo.com</a><br> Please
+	see the file <a href=../COPYING>COPYING</a> for license
+	information.
+      <hr noshade size=4>
+
+      <h2>Output Templates</h2>
+      The htsearch program will normally produce HTML output.  In
+      this process it makes extensive use of template in
+      which variables will be substituted.  The templates are
+      specified in the configuration file.  The configuration file
+      attributes defining these templates are:<p>
+      <ul>
+	<li><a href="attrs.html#search_results_header">search_results_header</a>
+	<li><a href="attrs.html#search_results_footer">search_results_footer</a>
+	<li><a href="attrs.html#nothing_found_file">nothing_found_file</a>
+	<li><a href="attrs.html#syntax_error_file">syntax_error_file</a>
+      </ul>
+      <p>
+	In addition to these files, the search results are also
+	produced with the use of templates.  The result templates are
+	a bit more complicated because they can be specified at
+	runtime using an HTML menu.  They are specified using the <a
+	href="attrs.html#template_map">template_map</a> configuration
+	file attribute.  This attribute contains a list of strings
+	triplets.  For each triplet of strings, the elements have the
+	following meaning:
+      <ol>
+	<li>the name that will appear in the FORMAT menu (see below)
+	<li>the internal name used by htsearch for this result template
+	<li>the base filename for the template.
+      </ol>
+      <p>
+	There are two predefined templates that are used by default.
+	They have the internal names <i>builtin-long</i> and
+	<i>builtin-short</i>.  As such, the default value for the
+	<i>template_map</i> attribute is as follows:
+      <blockquote>
+	  Long builtin-long builtin-long \
+	  Short builtin-short builtin-short
+      </blockquote>
+      Which means that there will be two ways to display the search
+      results: a "Long" and a "Short" way.  The first template listed
+      will always be the default one for the first search.
+      Thereafter, the default will be whatever was selected for the
+      previous search.
+      <h4>Result template files</h4>
+	When a custom template is required, one or more template files
+	need to be created and referenced in the <i>template_map</i>
+	attribute.
+      <p>
+	There are many variables that can be substituted into these
+	templates.  Not all of them make sense for each file, so not
+	all of them will be substituted for every file.  The variables
+	are:
+      <p>
+      <dl>
+	<dt><b>CGI</b>
+	<dd>This expands to whatever the SCRIP_NAME environment
+	  variable is.
+	<dt><b>DESCRIPTIONS</b>
+	<dd>A list of descriptions for the matched document.  The
+	  entries in the list are separated by &lt;br&gt;.
+	<dt><b>DOCID</b>
+	<dd>The internal ID for the document for the current match.
+	<dt><b>EXCERPT</b>
+	<dd>The relevant excerpt for the current match
+	<dt><b>FIRSTDISPLAYED</b>
+	<dd>The index of the first match on this page.
+	<dt><b>FORMAT</b>
+	<dd>Expands to an HTML menu of all the available formats.
+	  The current format will be the default one.
+	<dt><b>HOPCOUNT</b>
+	<dd>The distance of this match away from the starting document(s).
+	<dt><b>LASTDISPLAYED</b>
+	<dd>The index of the last match on this page.
+	<dt><b>LOGICAL_WORDS</b>
+	<dd>A string of the search words with either "and" or "or" between the
+	  words, depending on the type of search.
+	<dt><b>MATCH_MESSAGE</b>
+	<dd>This is either <tt>all</tt> or <tt>some</tt> depending
+	  on the match method used.
+	<dt><b>MATCHES</b>
+	<dd>The total number of matches that were found.
+	<dt><b>MATCHES_PER_PAGE</b>
+	<dd>The configured maximum number of matches on this page
+	<dt><b>MAX_STARS</b>
+	<dd>The configured maximum number of stars to display in matches.
+	<dt><b>METHOD</b>
+	<dd>Expands to an HTML menu of all the available matching
+	  methods. The current method will be the default one.
+	<dt><b>MODIFIED</b>
+	<dd>The date and time the document was last modified
+	<dt><b>NEXTPAGE</b>
+	<dd>This expands to the value of the <tt>next_page_text</tt>
+	  or <tt>no_next_page_text</tt> attributes depending on
+	  whether there is a next page or not.
+	<dt><b>PAGE</b>
+	<dd>The current page number.
+	<dt><b>PAGEHEADER</b>
+	<dd>This expands to either the value of the
+	  <tt>page_list_header</tt> or <tt>no_page_list_header</tt>
+	  attributes depending on how many pages there are.
+	<dt><b>PAGELIST</b>
+	<dd>This expands to a list of hyperlinks using the
+	  <tt>page_number_text</tt> and <tt>no_page_number_text</tt>
+	  attributes.
+	<dt><b>PAGES</b>
+	<dd>The total number of pages.
+	<dt><b>PLURAL_MATCHES</b>
+	<dd>If the <b>MATCHES</b> variable is other than 1, this
+	  will be a single 's'.
+	<dt><b>PREVPAGE</b>
+	<dd>This expands to the value of the <tt>prev_page_text</tt>
+	  or <tt>no_prev_page_text</tt> attributes depending on
+	  whether there is a previous page or not.
+	<dt><b>SCORE</b>
+	<dd>The score of the current match
+	<dt><b>SIZE</b>
+	<dd>The size of the document for the current match
+	<dt><b>SIZEK</b>
+	<dd>The size in kilobytes of the document for the current match
+	<dt><b>STARSLEFT</b>
+	<dd>A set of HTML &lt;img&gt; tags with the stars aligned on
+	  the left.
+	<dt><b>STARSRIGHT</b>
+	<dd>A set of HTML &lt;img&gt; tags with the stars aligned on
+	  the right.
+	<dt><b>SYNTAXERROR</b>
+	<dd>Is the text of the boolean expression syntax error.
+	<dt><b>TITLE</b>
+	<dd>The title of the document for the current match
+	<dt><b>URL</b>
+	<dd>The URL to the document for the current match
+	<dt><b>WORDS</b>
+	<dd>A string of the search words with spaces in between.
+      </dl>
+      <p>
+      <hr noshade size=4>
+      <address><a href="http://www.sdsu.edu/~turtle/">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a></address>
+      <!-- hhmts start -->
+Last modified: Thu Jan  2 00:04:45 PST 
+<!-- hhmts end -->
+  </body>
+</html>

@@ -1,0 +1,16 @@
+README for autorun.
+
+The autorun program is an attempt at automatic the steps
+needed to build a complete search database.
+
+If the search domain is not too big, this can be run on a
+daily (nightly) basis.
+
+
+Usage:
+	autorun
+
+Configuration:
+	Edit the autorun script and change things to your
+	liking...
+

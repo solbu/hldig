@@ -1,0 +1,268 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>ht://Dig: Installation</title>
+  </head>
+
+  <body bgcolor="#eef7ff">
+      <h1>Installation</h1>
+      <p>
+	ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier &lt;<a href="mailto:andrew@contigo.com">andrew@contigo.com</a>&gt;<br>
+	Please see the file <a href=../COPYING>COPYING</a> for license information.</p>
+      <hr noshade size=4>
+      <p>
+	This document will attempt to show the steps needed to build and
+	install the ht://Dig system.<br>
+	The main sections are:
+      <ul>
+	<li><a href="where.html">Getting the software</a></li>
+	<li><a href="#extract">Extracting the software</a></li>
+	<li><a href="#configure">Configure</a></li>
+	<li><a href="#compile">Compile</a></li>
+	<li><a href="#install">Install</a></li>
+      </ul>
+
+      <hr noshade>
+      <h2><a name="extract">Extracting the software</a></h2>
+      The distribution of ht://Dig is in the form of a gzipped tar file.
+      The name of the file will be something like
+      <tt>htdig-3.0b5.tar.gz</tt>.
+      To extract, you can use either the GNU tar command as follows:
+      <blockquote>% <b>tar xzf <em>tarfile.tar.gz</em></b></blockquote>
+      If you do not have GNU tar, you can do the following:
+      <blockquote>% <b>gunzip -c <em>tarfile.tar.gz</em> | tar xf -</b></blockquote>
+      In either case, a new directory will be created under which the
+      distribution will be extracted.  The directory it creates will be
+      <tt>htdig-</tt> followed by the version number.
+      <hr noshade>
+      <h2><a name="configure">Configure</a></h2>
+      <p>
+	Once the distribution has been extracted, change to the newly created
+	directory.<br> 
+	In this directory you will need to edit the file
+	<tt>CONFIG</tt>.  There are several values which you need to change in
+	this file.
+      <dl>
+	<dt><tt>DEST</tt></dt>
+	<dd>This is where all of the ht://Dig parts will be installed.
+	  Various other variables will use this value as their base.
+	</dd>
+	<dt><tt>BIN_DIR</tt></dt>
+	<dd>
+	  All the ht://Dig executable programs will go here.
+	</dd>
+	<dt><tt>CONFIG_DIR</tt></dt>
+	<dd>
+	  Configuration files will be placed here.
+	</dd>
+	<dt><tt>COMMON_DIR</tt></dt>
+	<dd>
+	  This directory is for files which can be shared between
+	  different search databases.
+	</dd>
+	  <dt><tt>DATABASE_DIR</tt></dt>
+	<dd>
+	  Set this to the directory where the search databases are
+	  going to be.  (Make sure there is plenty of space on the
+	  partition you put this on!)
+	</dd>
+	<dt><tt>DEFAULT_CONFIG_FILE</tt></dt>
+	<dd>
+	  Point this to where all the tools will look for the
+	  configuration file.  You can define this in terms of
+	  <tt>CONFIG_DIR</tt> if you'd like.
+	</dd>
+	<dt><tt>CGIBIN_DIR</tt></dt>
+	<dd>
+	  The directory where your HTTP server looks for CGI programs.
+	  This is where htsearch will get installed.
+	</dd>
+	<dt><tt>IMAGE_DIR</tt></dt>
+	<dd>
+	  Define this to be a place that can be accessed by your web
+	  server.  This is where a couple of images will be installed.
+	</dd>
+	<dt><tt>IMAGE_URL_PREFIX</tt></dt>
+	<dd>
+	  This is the URL which points to the directory specified by
+	  the <tt>IMAGE_DIR</tt> variable above.
+	</dd>
+	<dt><tt>SEARCH_FORM</tt></dt>
+	<dd>
+	  The name of the file in which the sample search form will be
+	  installed.
+	</dd>
+      </dl>
+      After this, execute the <tt>configure</tt> program:
+      <blockquote>% <b>./configure</b></blockquote> This program will
+      attempt to determine what your particular system can and can't
+      do.
+      <p>
+	The <b>configure</b> program will produce some warnings about
+	libguile and guile.  Ignore those warnings since they do not
+	affect the ht://Dig program at all.
+      </p>
+
+      <hr noshade>
+      <h2><a name="compile">Compile</a></h2>
+      <p>
+	The configure program will have created Makefiles in all the
+	important directories.  It is important to note that the Makefiles
+	created assume that you use a <tt>make</tt> program that knows how to
+	deal with
+      <blockquote>
+	  include <em>filename</em>
+      </blockquote>
+      Some make programs do not allow this or have a different syntax for
+      including.  In this case, you should probably obtain
+      <a href="ftp://prep.ai.mit.edu/pub/gnu">GNU make</a>.
+      <p>
+	At this point you can optionally add dependency information to all the
+	make files with the command
+      <blockquote>% <b>make depend</b></blockquote>
+      this only needs to be done if you are going to change any of the
+      sources to ht://Dig.
+      <p>
+	Now build the complete system with
+      <blockquote>% <b>make</b></blockquote>
+      (Sit back and relax for a while...)
+      <p>
+	If the compilation failed with the error that it cannot find
+	libht.a, the most likely problem is that your system does not
+	have libg++ installed.  Please check the 
+	<a href="require.html">system requirements</a> for details on
+	this.
+      <hr noshade>
+      <h2><a name="install">Install</a></h2>
+      <p>
+	Everything should have built at this point.  To install the
+	software, you need to execute
+      <blockquote>% <b>make install</b></blockquote>
+      This will perform several tasks.  It will first attempt to create the
+      directories that you specified in the CONFIG file.  It will then copy
+      the following programs to the <tt>BIN_DIR</tt> directory you specified
+      in the CONFIG file:
+      <menu>
+	<li>htdig</li>
+	<li>htmerge</li>
+	<li>htfuzzy</li>
+	<li>htnotify</li>
+      </menu>
+      It will also copy the htsearch program to your CGIBIN_DIR directory.
+      <p>
+	After this, several files will be customized and installed.
+	Here is a list of the files that get installed:
+      <menu>
+	<li>
+	  <dl>
+	    <dt><em>CONFIG_DIR</em>/htdig.conf</dt>
+	    <dd>A minimal config file which can be used to create a search
+	      database for http://htdig.sdsu.edu
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><em>SEARCH_FORM</em></dt>
+	    <dd>A sample HTML document that contains a search form.</dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><em>COMMON_DIR</em>/footer.html</dt>
+	    <dd>A sample HTML document that can be used as the search
+	      results footer.</dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><em>COMMON_DIR</em>/header.html</dt>
+	    <dd>A sample HTML document that can be used as the search
+	      results header.</dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><em>COMMON_DIR</em>/nomatch.html</dt>
+	    <dd>A sample HTML document that can be used if nothing was
+	      found.</dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><em>COMMON_DIR</em>/syntax.html</dt>
+	    <dd>
+	      A sample HTML document that will be displayed if the
+	      user entered an illegal boolean expression.  found.
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><em>COMMON_DIR</em>/english.0</dt>
+	    <dd>Default list of words with affixes that is used by
+	      htfuzzy.</dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><em>COMMON_DIR</em>/english.aff</dt>
+	    <dd>Default affix rule database that is used by htfuzzy.</dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><em>IMAGE_DIR</em>/star.gif</dt>
+	    <dd>The default star image that is used to rank matches.</dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><em>IMAGE_DIR</em>/star_blank.gif</dt>
+	    <dd>The default placeholder image that is the same size as the
+	      star, but is blank.  This is used to align the results in the
+	      short listing.</dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><em>IMAGE_DIR</em>/htdig.gif</dt>
+	    <dd>The nifty ht://Dig logo.</dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><em>IMAGE_DIR</em>/button*.gif</dt>
+	    <dd>Sample images used to show the search result pages.</dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><em>BIN_DIR</em>/rundig</dt>
+	    <dd>A sample shell script which will create a database.</dd>
+	  </dl></li>
+      </menu>
+      Note that these files will <em>never</em> replace any existing files
+      that may already be installed.
+      <p>
+	It is also important to note that these files are mostly examples.
+	As they stand, they will work, but you probably want to modify them to
+	reflect your needs.
+      <p>
+	After the installation, your will be ready to test out everything.
+	You can use the <tt>rundig</tt> script to make a test database of the
+	online documentation at http://htdig.sdsu.edu.  
+      <p>
+	The only thing left to do is to modify the <tt>htdig.conf</tt>
+	config file which was placed in	<em>CONFIG_DIR</em>/htdig.conf.
+	The <a href="attrs.html">Configuration</a> manual has the
+	details on how what attributes are needed.
+
+      <hr noshade size=4>
+      <address><a href="http://www.sdsu.edu/~turtle/">Andrew Scherpbier
+	  &lt;andrew@contigo.com&gt;</a></address>
+      <!-- hhmts start -->
+Last modified: Sun Dec 15 12:44:47 PST 
+<!-- hhmts end -->
+  </body>
+</html>

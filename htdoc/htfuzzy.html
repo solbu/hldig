@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>ht://Dig: htfuzzy</title>
+  </head>
+
+  <body bgcolor="#eef7ff">
+      <h1>htfuzzy</h1>
+      <p>ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier <a href="mailto:andrew@contigo.com">andrew@contigo.com</a><br>
+	Please see the file <a href=../COPYING>COPYING</a> for license information.</p>
+      <hr noshade size=4>
+
+      <dl>
+	<dt><h2>Synopsis</h2></dt>
+      <dd>htfuzzy [-c <em>configfile</em>][-v] <em>algorithm</em> ...
+      </dd>
+    </dl>
+      <dl>
+	<dt><h2>Description</h2></dt>
+      <dd>
+	Htfuzzy creates indexes for different ``fuzzy'' search
+	algorithms.  These indexes can then be used by the
+	<a href="htsearch.html" target="_top">htsearch</a> program.
+      </dd>
+    </dl>
+      <dl>
+	<dt><h2>Options</h2></dt>
+      <dd>
+	<dl compact>
+	  <dt>-c <em>configfile</em></dt>
+	  <dd>Use the specified configuration file instead of the
+	    default.</dd>
+	  <dt>-v</dt>
+	  <dd>Verbose mode. Used once will provide progress feedback,
+	    used more than once will overflow even the biggest
+	    buffers. :-)</dd>
+	</dl>
+      </dd>
+    </dl>
+      <dl>
+	<dt><h2>Algorithms</h2></dt>
+      <dd>
+	Indexes for the following search algorithms can currently be
+	created:
+	<dl>
+	  <dt><strong>soundex</strong></dt>
+	  <dd>
+	    Creates a slightly modified soundex key database.
+	    Differences with the standard soundex algorithm are:
+	    <ul>
+	      <li>Keys are 6 digits.</li>
+	      <li>The first letter is also encoded.</li>
+	    </ul>
+	  </dd>
+	  <dt><strong>metaphone</strong></dt>
+	  <dd>
+	    Creates a metaphone key database.  This algorithm is more
+	    specific to English, but will get fewer "weird" matches
+	    than the soundex algorithm.
+	  </dd>
+	  <dt><strong>endings</strong></dt>
+	  <dd>
+	    Creates two databases which can be used to match common
+	    word endings.  The creation of these databases requires a
+	    list of affix rules and a dictionary which uses those
+	    affix rules.  The format of the affix rules and dictionary
+	    files are the ones used by the
+	    <a href="http://fmg-www.cs.ucla.edu/fmg-members/geoff/ispell.html">ispell</a>
+	    program.  Included
+	    with the distribution are the affix rules for English and
+	    a fairly small English dictionary.  Other languages can be
+	    supported by getting the appropriate affix rules and
+	    dictionaries.  These are available for many languages;
+	    check the ispell distribution for more details.
+	  </dd>
+	  <dt><strong>synonyms</strong></dt>
+	  <dd>
+	    Creates a database of synonyms for words.  It reads a text
+	    database of synonyms and creates a database that htsearch
+	    can then use.  Each line of the text database consists of
+	    words where the first word will have the other words on
+	    that line as synonyms.
+	  </dd>
+	</dl>
+      </dd>
+    </dl>
+      <dl>
+	<dt><h2>Files</h2></dt>
+      <dd>
+	<dl>
+	  <dt>CONFIG_DIR/htdig.conf</dt>
+	  <dd>The default configuration file.</dd>
+	</dl>
+      </dd>
+    </dl>
+      <dl>
+	<dt><h2>See Also</h2></dt>
+      <dd>
+	<a href="htdig.html">htdig</a>,
+	<a href="htmerge.html">htmerge</a>,
+	<a href="htsearch.html" target="_top">htsearch</a>,
+	<a href="attrs.html">Configuration file format</a>,
+	<a href="http://fmg-www.cs.ucla.edu/fmg-members/geoff/ispell.html">ispell</a>.
+      </dd>
+    </dl>
+      <hr noshade size=4>
+      <address><a href="http://www.sdsu.edu/~turtle/">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a></address>
+      <!-- hhmts start -->
+Last modified: Wed Jan  1 20:46:31 PST 
+<!-- hhmts end -->
+  </body>
+</html>

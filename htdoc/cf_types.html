@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <title>ht://Dig: Configuration file format -- Attribute Types</title>
+  </head>
+  <body bgcolor="#eef7ff">
+      <h1>Configuration file format -- Attribute Types</h1>
+      <p>ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier
+	<a href="mailto:andrew@contigo.com">&lt;andrew@contigo.com&gt;</a>
+	<br>
+	Please see the file <a href="COPYING">COPYING</a> for license
+	information.</p>
+      <hr size="4" noshade="noshade">
+      The meaning of the attribute value depends on the attribute
+      itself.  In general, the values can be of several types:
+      <dl>
+	<dt><b>String</b></dt>
+	<dd>
+	  Any string of characters except newline.
+	</dd>
+	<dt><b>String List</b></dt>
+	<dd>
+	  A sequence of string separated by whitespace.  Individual
+	  strings within the list may be quoted using double quotes.
+	  The quotes are needed when the individual strings contain
+	  whitespace.
+	</dd>
+	<dt><b>Number</b></dt>
+	<dd>
+	  A string that represents a number.  The attribute determines
+	  if the number has to be a pure integer or if it can be a
+	  floating point number.
+	</dd>
+	<dt><b>Boolean</b></dt>
+	<dd>
+	  A string that represents a thruth value.  Acceptable truth
+	  values are given below.<br>
+	  For <i>true</i>:
+	  <ul>
+	    <li>yes
+	    <li>true
+	    <li>1
+	  </ul>
+	  For <i>false</i>:
+	  <ul>
+	    <li>no
+	    <li>false
+	    <li>0
+	  </ul>
+	</dd>
+      </dl>
+      <hr noshade size=4>
+      <p><!-- hhmts start -->
+Last modified: Sun Dec 15 12:05:44 PST 
+<!-- hhmts end -->
+	<br><a href="mailto:andrew@contigo.com">andrew@contigo.com</a></p>
+  </body>
+</html>
+
+

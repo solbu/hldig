@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <title>ht://Dig: Configuration file format -- General</title>
+  </head>
+  <body bgcolor="#eef7ff">
+      <h1>Configuration file format -- General</h1>
+      <p>ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier
+	<a href="mailto:andrew@contigo.com">&lt;andrew@contigo.com&gt;</a>
+	<br>
+	Please see the file <a href="COPYING">COPYING</a> for license
+	information.</p>
+      <hr size="4" noshade="noshade">
+      <p>All programs in the ht://Dig system (<a href="htdig.html">htdig</a>,
+	<a href="htmerge.html">htmerge</a>,
+	<a href="htsearch.html" target="_top">htsearch</a>,
+	<a href="htfuzzy.html">hyfuzzy</a>, and
+	<a href="htnotify.html">htnotify</a>
+	) use a flexible configuration file.
+	This configuration file is a plain ASCII text file.
+	Each line in the file is either a comment or contains an
+	attribute.
+	Comment lines are blank lines or lines that start with a '#'.
+	Attributes consist of a variable name and an associated value:</p>
+      <dl compact="compact"><dt></dt><dd>
+	  <tt>&lt;name&gt;:&lt;whitespace&gt;&lt;value&gt;&lt;newline&gt;</tt>
+      </dl>
+      The &lt;name&gt; contains any alphanumeric character or underline (_)
+      The &lt;value&gt; can include any character except newline.  It also
+      cannot start with spaces or tabs since those are considered part of
+      the whitespace after the colon.  It is important to keep in mind that
+      any trailing spaces or tabs will be included.
+      <p>
+	It is possible to split the &lt;value&gt; across several lines
+	of the configuration file by ending each line with a backslash
+	(\).  The effect on the value is that a space is added where
+	the line split occurs.
+      <p>
+	Each program only extract the attributes it needs and hence it
+	is most convenient to use the same configuration file with all
+	ht://Dig programs.  If an attribute is specified more than
+	once in the file, only the last one will be used.
+      </p>
+      <p>
+	If a program needs a particular attribute and it is not in the
+	configuration file, it will use the default value which is
+	defined in <tt>htcommon/defaults.cc</tt>.
+      </p>
+      <hr noshade size=4>
+      <p><!-- hhmts start -->
+Last modified: Wed Jan  1 20:46:34 PST 
+<!-- hhmts end -->
+	<br><a href="mailto:andrew@contigo.com">andrew@contigo.com</a></p>
+  </body>
+</html>
+
+

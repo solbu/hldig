@@ -1,0 +1,41 @@
+##
+## Makefile.config
+##
+## This file is part of HTDig
+##
+include @HTDIG_TOP@/CONFIG
+
+#
+# You should not have to modify anything below this point.
+#
+DEFINES=	-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\"
+SHELL=		/bin/sh
+CXX=		@CXX@
+CC=		@CC@
+RANLIB=		@RANLIB@
+MAKEDEPEND=	@HTDIG_TOP@/makedp
+RM=		rm -f
+AR=		@AR@
+SED=		@SED@
+INSTALL=	@HTDIG_TOP@/install-sh -c
+TAR=		@TAR@
+
+CCC=		$(CXX)
+LIBDIRS=	-L../htlib -L../htcommon -L../@GDBM_DIR@ -L../@RX_DIR@/rx
+INCS=		-I../htlib -I../htcommon -I../include -I../@RX_DIR@/rx
+LIBS=		-lcommon -lht -lgdbm -lrx @LIBS@
+
+DIST=		htdig-@HTDIG_VERSION@
+DISTDIR=	@HTDIG_TOP@/../$(DIST)
+
+CPPFLAGS=	$(CC_OPTIONS) @CXXFLAGS@ @DEFS@ $(INCS)
+CXXFLAGS=	@CXXFLAGS@ $(LOCAL_DEFINES) $(DEFINES) $(INCS)
+LDFLAGS=	$(LIBDIRS)
+
+.SUFFIXES: .cc
+.cc.o:
+	$(CXX) -c $(CXXFLAGS) $<
+
+.c.o:
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) $<
+

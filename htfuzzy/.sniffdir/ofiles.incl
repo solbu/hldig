@@ -1,0 +1,5 @@
+OFILES = Endings.o EndingsDB.o Exact.o \
+		Fuzzy.o Metaphone.o Soundex.o \
+		SuffixEntry.o Synonym.o htfuzzy.o \
+		Substring.o
+

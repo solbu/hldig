@@ -1,0 +1,9 @@
+ht://Dig contributed stuff.
+
+This directory tree contains mostly perl programs that attempt to
+do things with the generated databases.  Most of these were written
+for a very specific purpose for the version of ht://Dig that was current
+at the time of writing.  This means that some of these programs will
+be severely broken!  Do not expect them to work; use them only as
+examples of the types of things you can do with the ht://Dig databases.
+

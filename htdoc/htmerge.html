@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>ht://Dig: htmerge</title>
+  </head>
+
+  <body bgcolor="#eef7ff">
+      <h1>htmerge</h1>
+      <p>ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier <a href="mailto:andrew@contigo.com">andrew@contigo.com</a>
+	<br>
+	Please see the file <a href=COPYING>COPYING</a> for license information.</p>
+      <hr noshade size=4>
+
+      <dl>
+	<dt><h2>Synopsis</h2></dt>
+      <dd>
+	htmerge [<em>options</em>]
+      </dd>
+    </dl>
+      <dl>
+	<dt><h2>Description</h2></dt>
+      <dd>
+	Htmerge is used to create a document index and word database
+	from the files that were created by <a
+	href="htdig.html">htdig</a>.  These databases are then used by
+	<a href="htsearch.html" target="_top">htsearch</a> to perform
+	the actual searched.
+      </dd>
+    </dl>
+      <dl>
+	<dt><h2>Options</h2></dt>
+      <dd>
+	<dl compact>
+	  <dt>-a</dt>
+	  <dd>
+	    Use alternate work files.  Tells htdig to append
+	    <i>.work</i> to database files, causing a second copy of
+	    the database to be built.  This allows the original files
+	    to be used by htsearch during the indexing run.
+	  <dt>-c <em>configfile</em></dt>
+	  <dd>Use the specified configuration file instead of the
+	    detault.</dd>
+	  <dt>-d</dt>
+	  <dd>Prevent the document index from being created.</dd>
+	  <dt>-s</dt>
+	  <dd>Print statistics about the document and word databases
+	    after htmerge has finished.</dd>
+	  <dt>-v</dt>
+	  <dd>Run in verbose mode.  This will provide some hints as to
+	    the progress of the merge.  This can be useful when
+	    running htmerge interactively since some parts (especially
+	    the word database creation) can take a very long time.</dd>
+	  <dt>-w</dt>
+	  <dd>Prevent the word database from being created.</dd>
+	</dl>
+	In addition to the command line options, the environment
+	variable <b>TMPDIR</b> will be used to designate the directory
+	where intermediate files are stored during the sorting process.
+      </dd>
+    </dl>
+      <dl>
+	<dt><h2>Files</h2></dt>
+      <dd>
+	<dl>
+	  <dt>/usr/local/etc/htdig.conf</dt>
+	  <dd>The detaul configuration file.</dd>
+	</dl>
+      </dd>
+    </dl>
+      <dl>
+	<dt><h2>See Also</h2></dt>
+      <dd>
+	<a href="htdig.html">htdig</a>,
+	<a href="htsearch.html" target="_top">htsearch</a>,
+	<a href="attrs.html">Configuration file format</a>.
+      </dd>
+    </dl>
+      <hr noshade size=4>
+      <address><a href="http://www.sdsu.edu/~turtle/">Andrew Scherpbier
+	  &lt;andrew@contigo.com&gt;</a></address>
+      <!-- hhmts start -->
+Last modified: Wed Jan  1 20:46:31 PST 
+<!-- hhmts end -->
+  </body>
+</html>

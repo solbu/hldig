@@ -1,0 +1,234 @@
+<html>
+  <head>
+    <title>ht://Dig: Overview</title>
+  </head>
+  <body bgcolor="#eef7ff">
+      <h1 align=center>
+	<img align="absmiddle" src="htdig_big.gif" alt="ht://Dig">
+	<br>
+	WWW Search Engine Software</h1>
+      <p>
+	ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier
+	&lt;<a href="mailto:andrew@contigo.com">andrew@contigo.com</a>&gt;
+	<br>
+	Please see the file <a href=../COPYING>COPYING</a> for license
+	information.
+      <hr noshade size=4>
+      <h2>Introduction</h2>
+      <p>
+	The ht://Dig system is a complete world wide web indexing and
+	searching system for a small domain or intranet. This system
+	is <strong>not</strong> meant to replace the need for powerful
+	internet-wide search systems like Lycos, Infoseek, Webcrawler
+	and AltaVista.  Instead it is meant to cover the search needs
+	for a single company, campus, or even a particular sub section
+	of a web site.
+	<br>
+	As opposed to some WAIS-based or web-server based search
+	engines, ht://Dig can span several web servers at a site.  The
+	type of these different web servers doesn't matter as long as
+	they understand the HTTP 1.0 protocol.
+      <p>
+	ht://Dig was developed at <a href="http://www.sdsu.edu/">San
+	Diego State University</a> as a way to search the various web
+	servers on the campus network.  Here are some examples of the
+	application of ht://Dig on the SDSU network:
+      <ul>
+	<li>
+	  <a href="http://www.sdsu.edu/">A "Quick" search on the main
+	    campus home page</a>
+	</li>
+	<li>
+	  <a href="http://www.sdsu.edu/search/">A more comprehensive
+	    interface to the same</a>
+	</li>
+	<li>
+	  <a href="http://libweb.sdsu.edu/catalog/Search.html">A search of
+	    the online SDSU General Catalog</a>
+	</li>
+	<li>
+	  <a href="http://www.sdsu.edu/doc/">Searches through various
+	    online documentation</a>
+	</li>
+      </ul>
+      <form action="http://htdig.sdsu.edu/cgi-bin/htsearch" method="post">
+	<p>You can search this documentation as well:<br>
+	  <input type="HIDDEN" name="method" value="and">
+	  <input type="TEXT" name="words" size="40">
+	  <input type="SUBMIT" value="Search">
+      </form>
+      <p>
+	Many different types of searches can be set up using only a
+	single search database.  For example, the the online
+	documentation search above uses the same database as the
+	campus main search.  The difference between the searches is
+	that the documentation search will only show results related
+	to the online documentation.
+      </p>
+      <hr noshade>
+      <h2>Features</h2>
+      <p>
+	Here are some of the major features of ht://Dig.  They are in
+	no particular order.
+      </p>
+      <ul>
+	<li>
+	  <dl>
+	    <dt><strong>Intranet searching</strong></dt>
+	    <dd>
+	      ht://Dig has the ability to search through many servers on
+	      a network by acting as a WWW browser.
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><strong>It is free</strong></dt>
+	    <dd>
+	      The whole system is released under the
+	      <a href="COPYING">GNU General Public License</a>
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><strong>Robot exclusion is supported</strong></dt>
+	    <dd>
+	      The
+	      <a href="http://info.webcrawler.com/mak/projects/robots/norobots.html">
+		Standard for Robot Exclusion</a> is supported by
+		ht://Dig.
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><strong>Boolean expression searching</strong></dt>
+	    <dd>
+	      Searches can be arbitrarily complex using boolean
+	      expressions.
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><strong>Configurable search results</strong></dt>
+	    <dd>
+	      The output of a search can easily be tailored to your
+	      needs by means of providing HTML templates.
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><strong>Fuzzy searching</strong></dt>
+	    <dd>
+	      Searches can be performed using various configurable
+	      algorithms.  Currently the following algorithms are
+	      supported (in any combination):
+	      <ul>
+		<li>exact</li>
+		<li>soundex</li>
+		<li>metaphone</li>
+		<li>common word endings</li>
+		<li>synonyms</li>
+	      </ul>
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><strong>Searching of HTML and text files</strong></dt>
+	    <dd>
+	      Both HTML documents and plain text files can be
+	      searched.  Searching of other file types will be
+	      supported in future versions.
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><strong>Keywords can be added to HTML documents</strong></dt>
+	    <dd>
+	      Any number of keywords can be added to HTML documents
+	      which will not show up when the document is viewed.
+	      This is used to make a document more like to be found
+	      and also to make it appear higher in the list of
+	      matches.
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><strong>Email notification of expired documents</strong></dt>
+	    <dd>
+	      Special meta information can be added to HTML documents
+	      which can be used to notify the maintainer of those
+	      documents at a certain time.  It is handy to get
+	      reminded when to remove the "New" images from a certain
+	      page, for example.
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><strong>A Protected server can be indexed</strong></dt>
+	    <dd>
+	      ht://Dig can be told to use a specific username and
+	      password when it retrieves documents.  This can be used
+	      to index a server or parts of a server that are
+	      protected by a username and password.
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><strong>Searches on subsections of the database</strong></dt>
+	    <dd>
+	      It is easy to set up a search which only returns documents
+	      whose URL matches a certain pattern.  This becomes very
+	      useful for people who want to make their own data
+	      searchable without having to use a separate search engine
+	      or database.
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><strong>Full source code included</strong></dt>
+	    <dd>
+	      The search engine comes with full source code.  The whole
+	      system is released under the terms and conditions of the
+	      <a href="COPYING">GNU Public License version 2.0</a>
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><strong>The depth of the search can be limited</strong></dt>
+	    <dd>
+	      Instead of limiting the search to a set of machines, it
+	      can also be restricted to documents that are a certain
+	      number of "mouse-clicks" away from the start document.
+	    </dd>
+	  </dl>
+	</li>
+	<li>
+	  <dl>
+	    <dt><strong>Full support for the ISO-Latin-1 character
+	    set</strong></dt>
+	    <dd>
+	      Both SGML entities like '&amp;agrave;' and ISO-Latin-1
+	      characters can be indexed and searched.
+	    </dd>
+	  </dl>
+	</li>
+      </ul>
+      <hr noshade size=4>
+      <p>
+	<!-- hhmts start -->
+Last modified: Sat Dec 14 18:36:21 PST 
+<!-- hhmts end -->
+	<br><a href="mailto:andrew@contigo.com">andrew@contigo.com</a>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+//
+// GDBM_db.h
+//
+// $Id: GDBM_db.h,v 1.1 1997/02/03 17:11:05 turtle Exp $
+//
+// $Log: GDBM_db.h,v $
+// Revision 1.1  1997/02/03 17:11:05  turtle
+// Initial revision
+//
+//
+#ifndef _GDBM_db_h_
+#define _GDBM_db_h_
+
+#include <Database.h>
+#include <gdbm.h>
+
+class GDBM_db : public Database
+{
+    //
+    // Construction/Destruction
+    //
+protected:
+    GDBM_db();
+public:
+    ~GDBM_db();
+
+    static GDBM_db	*getDatabaseInstance();
+	
+    virtual int		OpenReadWrite(char *filename, int mode);
+    virtual int		OpenRead(char *filename);
+    virtual int		Close();
+    virtual int		Delete(String &);
+	
+    virtual void	Start_Get();
+    virtual char	*Get_Next();
+	
+private:
+    int			isOpen;
+    GDBM_FILE		dbf;
+    datum		skey;
+    String		lkey;
+
+    virtual int		Get(String &, String &);
+    virtual int		Put(String &, String &);
+    virtual int		Exists(String &);
+};
+
+#endif
+
+

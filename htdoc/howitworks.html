@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>ht://Dig: How it works</title>
+  </head>
+
+  <body bgcolor="#eef7ff">
+      <h1>
+	How it works
+      </h1>
+      <p>
+	ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier &lt;<a
+	  href="mailto:andrew@contigo.com">andrew@contigo.com</a>&gt;<br>
+	Please see the file <a href="../COPYING">COPYING</a> for license
+	information.
+      </p>
+      <hr noshade size=4>
+
+      <p>
+	The system performs three major tasks that should be performed
+	in the following order:
+      </p>
+      <h3><a href="#Digging">Digging</a></h3>
+      <dl>
+	<dd>
+	  Before you can search, a database of all the documents that
+	  need to be searched has to be created.
+      </dl>
+      <h3><a href="#Merging">Merging</a></h3>
+      <dl>
+	<dd>
+	  Once the document database has been created, it has to be
+	  converted to something that can be searched quickly.  Also,
+	  if you want to only update changed documents, these changes
+	  have to be merged into the searchable database.<br> Even
+	  though this task could be performed at the same time as the
+	  Digging, it is a separate process for efficiency reasons.
+	  It also gives more flexibility to what actually happens at
+	  merge time.
+      </dl>
+      <h3><a href="#Searching">Searching</a></h3>
+      <dl>
+	<dd>
+	  Finally, the databases that were created in the previous
+	  steps can be used to perform actual searches.  Normally,
+	  searches will be invoked by a CGI program which gets its
+	  input from the user through an HTML form.
+      </dl>
+
+      <hr noshade>
+      <h3><a name="Digging">Digging</a></h3>
+      <p>
+	Digging is the first step in creating a search database.  This
+	system uses the word <i>digging</i> while other systems call
+	it <i>harvesting</i> or <i>gathering</i>.  In the ht://Dig
+	system, the program <a href="htdig.html">htdig</a> performs
+	the information gathering stage.  In this process, the program
+	will act as a regular web user, except that it will follow
+	<em>all</em> hyperlinks that it comes across. (Actually, it
+	will not follow all of them, just those that are within the
+	domain it needs to gather information on...)
+	<br>
+	Each document it goes to is examined and all the unique words
+	in this document are extracted and stored.
+      <p>
+	The digging process will create at least two files.  The first
+	one is the list of all the words and the second one is a
+	database of URLs and information about the URLs.
+      </p>
+
+
+      <hr noshade>
+      <h3><a name="Merging">Merging</a></h3>
+      <p>
+	Once the digging process has completed, it needs to be
+	converted into something the search engine can actually use.
+	The <a href="htmerge.html">htmerge</a> program will use the
+	information from previous digs to create a database that the
+	search engine can use.  It uses the term 'merge' because it
+	will take data from several databases and merges them into
+	several other databases.  The source databases include the
+	databases created by the Digging process but also an previous
+	merged databases.  These old databases are used if the Digging
+	process produced information only for documents which have
+	changed.</p>
+      <p>
+	There are several optional tasks which also fit into the merge phase:
+      </p>
+      <dl>
+	<dt>Expiration notification:</dt>
+	<dd>
+	  The ht://Dig system includes a handy reminder service which
+	  allows HTML authors to add some ht://Dig specific meta
+	  information in HTML documents.  This meta information is
+	  used to email authors after a specified date.  Very useful
+	  to maintain lists that contain those annoying 'new' graphics
+	  with new items.  (Hint: things really aren't all that 'new'
+	  anymore after 6 months!)<br> The <a
+	    href="htnotify.html">htnotify</a> program performs this
+	  task.
+	</dd>
+	<dt>Fuzzy word index creation:</dt>
+	<dd>
+	  To allow the searches to use ``fuzzy'' algorithms to match
+	  words, the <a href="htfuzzy.html">htfuzzy</a> program can create
+	  indexes for several different algorithms.
+	</dd>
+      </dl>
+
+      <hr noshade>
+      <h3><a name="Searching">Searching</a></h3>
+      <p>
+	Searching is where the users actually get to use all the
+	information that was gathered during the dig and merge stages.
+	The <a href="htsearch.html" target="_top">htsearch</a> program
+	performs the actual searches.  It produces <tt>HTML</tt>
+	output which will be seen by the users.
+      </p>
+
+      </p><hr noshade size=4>
+      <p>
+
+      <address><a href="http://www.sdsu.edu/~turtle/">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a></address>
+      <!-- hhmts start -->
+Last modified: Wed Jan  1 20:46:33 PST 
+<!-- hhmts end -->
+  </body>
+</html>

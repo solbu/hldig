@@ -1,0 +1,174 @@
+#if 0
+----------------------------------------------------------------------
+> Class:
+  | Document
+  $ class Document
+> Purpose:
+  | This class holds everything there is to know about a document.  The actual contents of the document may or may not be present at all times for memory conservation reasons.
+  | The document can be told to retrieve its contents.  This is done with the _Retrieve_ call.  In case the retrieval causes a redirect, the link is followed, but this process is done only once (to prevent loops.) If the redirect didn't work, Document_not_found is returned.
+> Instantiation:
+  | Allocate on the heap or the stack.
+> Base Classes:
+  | public Object
+> Important Members:
+  = 1. Document ()
+  = 2. Document (char*)
+  = 3. Document (char*, URL&)
+  = ~Document ()
+  = int Length ()
+  = URL& Url ()
+  = DocStatus Retrieve (char*)
+  = unnamed_enum DocStatus
+  = URL url
+  = String contents
+  = int document_length
+  = enum unnamed_enum {Document_ok, Document_not_found, Document_not_changed, Document_redirect}
+  = No typedefs defined...
+> Deriving Classes:
+  | No obvious derivation is forseen
+> Resource Use:
+  | This class uses the Connection class to interface.
+> Other Considerations:
+  | OTHER
+----------------------------------------------------------------------
+#endif
+#if 0
+----------------------------------------------------------------------
+> DataMember Item: Document::url ;
+  $ URL url
+> Purpose:
+  | 
+> Other Considerations:
+  | OTHER
+----------------------------------------------------------------------
+#endif
+#if 0
+----------------------------------------------------------------------
+> DataMember Item: Document::contents ;
+  $ String contents
+> Purpose:
+  | 
+> Other Considerations:
+  | OTHER
+----------------------------------------------------------------------
+#endif
+#if 0
+----------------------------------------------------------------------
+> DataMember Item: Document::document_length ;
+  $ int document_length
+> Purpose:
+  | 
+> Other Considerations:
+  | OTHER
+----------------------------------------------------------------------
+#endif
+#if 0
+----------------------------------------------------------------------
+> Member Function: Document::Document ;
+  $ 1. Document ()           
+  $ 2. Document (char*)           
+  $ 3. Document (char*, URL&)
+> Purpose:
+  | Constructor for the Document class.
+> Calling Context:
+  | 
+> Return Value:
+  | No return value...
+> Parameters:
+  = 1. No parameters...		- Default
+  = 2. char* url			- Nothing fancy; specifies the URL to use
+  = 3. char* partial_url
+  = URL& base_url		- Specifies a relative URL and a base (parent) URL.
+> Other Considerations:
+  | OTHER
+----------------------------------------------------------------------
+#endif
+#if 0
+----------------------------------------------------------------------
+> Member Function: Document::~Document ;
+  $ ~Document ()
+> Purpose:
+  | Destructor
+> Calling Context:
+  | 
+> Return Value:
+  | No return value...
+> Parameters:
+  = No parameters...
+> Other Considerations:
+  | OTHER
+----------------------------------------------------------------------
+#endif
+#if 0
+----------------------------------------------------------------------
+> Member Function: Document::Length ;
+  $ int Length ()
+> Purpose:
+  | Returns the length of the document.  This is only valid if the contents of the document are actually available.  If they are not available, the length returned will be 0.
+> Calling Context:
+  | 
+> Return Value:
+  | int
+> Parameters:
+  = No parameters...
+> Other Considerations:  | 
+----------------------------------------------------------------------
+#endif
+#if 0
+----------------------------------------------------------------------
+> Member Function: Document::Url ;
+  $ URL& Url ()
+> Purpose:
+  | Returns the URL of the document.  This url may be different than the one that was originally given to this document because of redirects.
+> Calling Context:
+  | 
+> Return Value:
+  | URL&
+> Parameters:
+  = No parameters...
+> Other Considerations:
+  | OTHER
+----------------------------------------------------------------------
+#endif
+#if 0
+----------------------------------------------------------------------
+> Member Function: Document::Retrieve ;
+  $ DocStatus Retrieve (char*)
+> Purpose:
+  | Attempt to retrieve the document specified by the URL the document already has.  This will take care of redirects returned by the server.
+  | Only if the document retrieved is newer than the given date string will the document actually be retrieved.
+> Calling Context:
+  | 
+> Return Value:
+  | DocStatus
+> Parameters:
+  = char* date - If not NULL, specifies a date string in the format that URCs use.
+> Other Considerations:
+  | OTHER
+----------------------------------------------------------------------
+#endif
+#if 0
+----------------------------------------------------------------------
+Document::DocStatus
+  $ enum DocStatus {Document_ok, Document_not_found, Document_not_changed, Document_redirect}
+> Purpose:
+  = Return type for the _Retrieve()_ member function.
+> Tags:
+  = Document_ok
+  = Document_not_found
+  = Document_not_changed
+  = Document_redirect
+> Other Considerations:
+  | OTHER
+----------------------------------------------------------------------
+#endif
+#if 0
+----------------------------------------------------------------------
+> Macro: _Document_h_
+  $ #define _Document_h_
+> Purpose:
+  | 
+> Other Considerations:
+  | OTHER
+----------------------------------------------------------------------
+#endif

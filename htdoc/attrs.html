@@ -1,0 +1,2207 @@
+<html>
+  <head>
+    <title>ht://Dig: Configuration file attributes</title>
+  </head>
+  <body bgcolor="#eef7ff">
+      <h1>Configuration file format -- Attributes</h1>
+      <p>ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier
+	<a href="mailto:andrew@contigo.com">&lt;andrew@contigo.com&gt;</a>
+	<br>
+	Please see the file <a href="COPYING">COPYING</a> for license
+	information.</p>
+      <hr size="4" noshade="noshade">
+      <h2>Alphabetical list of attributes</h2>
+      <hr><dl>
+	<dt><strong><a name="add_anchors_to_excerpt">add_anchors_to_excerpt</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>boolean</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htsearch.html" target="_top">htsearch</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>true</dd>
+	    <dt><em>description:</em></dt>
+	    <dd>If set to true, the first occurence of each matched word
+	      in the excerpt
+	      will be linked to the closest anchor in the document.
+	      This only has effect if the <em>excerpt</em> value is used
+	      in the excerpt is actually going to be displayed.</dd>
+	    <dt><em>example:</em></dt>
+	    <dd>add_anchors_to_excerpt: no</dd>
+	  </dl></dd>
+      </dl><hr><dl>
+	<dt><strong><a name="allow_numbers">allow_numbers</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>boolean</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htdig.html">htdig</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>false</dd>
+	    <dt><em>description:</em></dt>
+	    <dd>If set to true, numbers are considered words.  This means
+	      that searches can be done on number as well as regular
+	      words.  All the same rules apply to numbers as to words.
+	      See the description of
+	      <a href="#valid_punctuation">valid_punctuation</a>
+	      for the rules used to determine what a word is.</dd>
+	    <dt><em>example:</em></dt>
+	    <dd>allow_numbers: true</dd>
+	  </dl></dd>
+      </dl><hr><dl>
+	<dt><strong><a name="bad_extensions">bad_extensions</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>string list</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htdig.html">htdig</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>.wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg
+	      .jpeg .aiff</dd>
+	    <dt><em>description:</em></dt>
+	    <dd>This is a list of extensions on URLs which are considered
+	      non-parsable.  This list is used mainly to supplement the
+	      MIME-types that the HTTP server provides with documents.
+	      Some HTTP servers do not have a correct list of MIME-types
+	      and so can advertise certain documents as text while they
+	      are some binary format.</dd>
+	    <dt><em>example:</em></dt>
+	    <dd>bad_extensions: .foo .bar .bad</dd>
+	  </dl></dd>
+      </dl><hr><dl>
+	<dt><strong><a name="bad_word_list">bad_word_list</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>string</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htdig.html">htdig</a> and
+	      <a href="htsearch.html" target="_top">htsearch</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>${common_dir}/bad_words</dd>
+	    <dt><em>descriptions:</em></dt>
+	    <dd>This specifies a file which contains words which should be
+	      excluded when digging or searching.  This list should include
+	      the most common words or other words that you don't want
+	      to be able to search on (things like <i>sex</i> or
+	      <i>smut</i> are examples of these.)<br>
+	      The file should contain one word per line.  A sample bad
+	      words file is located in the <tt>examples</tt> directory.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>bad_word_list: ${common_dir}/badwords.txt</dd>
+	  </dl></dd>
+      </dl><hr><dl>
+	<dt><strong><a name="common_dir">common_dir</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>,
+	      <a href="htnotify.html">htnotify</a>,
+	      <a href="htfuzzy.html">htfuzzy</a>,
+	      <a href="htmerge.html">htmerge</a> and
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      COMMON_DIR
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      Specifies the directory for files that will or can be
+	      shared among different search databases.  The default
+	      value for this attribute is defined at compile time.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      common_dir: /tmp
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="create_image_list">create_image_list</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      boolean
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      false
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      If set to true, a file with all the image
+	      URLs that were seen will be created, one URL
+	      per line. This list will not be in any order
+	      and there will be lots of duplicates, so
+	      after htdig has completed, it should be
+	      piped through <tt>sort -u</tt> to get a
+	      unique list.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      create_image_list: yes
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="create_url_list">create_url_list</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      boolean
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      false
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      If set to true, a file with all the URLs
+	      that were seen will be created, one URL per
+	      line. This list will not be in any order and
+	      there will be lots of duplicates, so after
+	      htdig has completed, it should be piped
+	      through <tt>sort -u</tt> to get a unique list.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      create_url_list: yes
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="database_base">database_base</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>,
+	      <a href="htnotify.html">htnotify</a>,
+	      <a href="htfuzzy.html">htfuzzy</a>,
+	      <a href="htmerge.html">htmerge</a> and
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${database_dir}/db
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This is the common prefix for files that are specific to a
+	      search database.  Many different attributes use this
+	      prefix to specify filenames.  Several search databases can
+	      share the same directory by just changing this value for
+	      each of the databases.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      database_base: ${database_dir}/sales
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="database_dir">database_dir</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>,
+	      <a href="htnotify.html">htnotify</a>,
+	      <a href="htfuzzy.html">htfuzzy</a>,
+	      <a href="htmerge.html">htmerge</a> and
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      DATABASE_DIR
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This is the directory which contains all database and
+	      other files related to ht://Dig.  It is never used directly
+	      by any of the programs, but other attributes are defined
+	      in terms of this one.
+	      <p>
+		The default value of this attribute is determined at
+		compile time.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      database_dir: /var/htdig
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="doc_db">doc_db</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>,
+	      <a href="htmerge.html">htmerge</a> and
+	      <a href="htsearch.html" target="_top">htsearch</a>,
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${database_base}.docdb
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This file will contain a GDBM database of documents
+	      indexed by URL. It contains all the information gathered
+	      for each document, so this file can become rather large if
+	      <a href="#max_head_length"><em>max_head_length</em></a>
+	      is set to a large value.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      doc_db: ${database_base}documents.gdbm
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="doc_index">doc_index</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htmerge.html">htmerge</a> and
+	      <a href="htsearch.html" target="_top">htsearch</a>,
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${database_base}.docs.index
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This file will contain a GDBM database which
+	      maps document numbers to document URLs. It
+	      is basically an intermediate database from
+	      the word database to the document database.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      doc_index: documents.index.gdbm
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="doc_list">doc_list</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${database_base}.docs
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This file is basically a text version of the
+	      file specified in <em><a href="#doc_db">doc_db</a></em>.
+	      Its only use is to have a human readable
+	      database of all documents. The file is easy
+	      to parse with tools like perl or tcl.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      doc_list: /tmp/documents.text
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="end_elipses">end_elipses</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      &lt;b&gt;&lt;tt&gt; ...&lt;/tt&gt;&lt;/b&gt;
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      When excerpts are displayed in the search
+	      output, this string will be appended to the
+	      excerpt if there is text following the text
+	      displayed. This is just a visual reminder to
+	      the user that the excerpt is only part of
+	      the complete document.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      end_elipses: ...
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="endings_affix_file">endings_affix_file</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htfuzzy.html">htfuzzy</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${common_dir}/english.aff
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      Specifies the location of the file which contains the
+	      affix rules used to create the endings search algorithm
+	      databases. Consult the documentation on
+	      <a href="htfuzzy.html">htfuzzy</a> for more information on
+	      the format of this file.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      endings_affix_file: /var/htdig/affix_rules
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="endings_dictionary">endings_dictionary</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htfuzzy.html">htfuzzy</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${common_dir}/english.0
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      Specifies the location of the file which contains the
+	      dictionary used to create the endings search algorithm
+	      databases. Consult the documentation on
+	      <a href="htfuzzy.html">htfuzzy</a> for more information on
+	      the format of this file.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      endings_dictionary: /var/htdig/dictionary
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="endings_root2word_db">endings_root2word_db</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htfuzzy.html">htfuzzy</a> and
+	      <a href="htsearch.html" target="_top"></a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${common_dir}/root2word.gdbm
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This attributes specifies the database filename to be used in
+	      the 'endings' fuzzy search algorithm.  The database maps
+	      word roots to all legal words with that root.  For more
+	      information about this and other fuzzy search algorithms,
+	      consult the <a href="htfuzzy.html">htfuzzy</a>
+	      documentation.
+	      <br>
+	      Note that the default value uses the <a
+		href="#common_dir">common_dir</a> attribute instead of
+	      the <a href="#database_dir">database_dir</a> attribute.
+	      This is because this database can be shared with different
+	      search databases.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      endings_root2word_db: /var/htdig/r2t.gdbm
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="endings_word2root_db">endings_word2root_db</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htfuzzy.html">htfuzzy</a> and
+	      <a href="htsearch.html" target="_top"></a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${common_dir}/word2root.gdbm
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This attributes specifies the database filename to be used in
+	      the 'endings' fuzzy search algorithm.  The database maps
+	      words to their root.  For more information about this and
+	      other fuzzy search algorithms, consult the <a
+		href="htfuzzy.html">htfuzzy</a> documentation.
+	      <br>
+	      Note that the default value uses the <a
+		href="#common_dir">common_dir</a> attribute instead of
+	      the <a href="#database_dir">database_dir</a> attribute.
+	      This is because this database can be shared with different
+	      search databases.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      endings_root2word_db: /var/htdig/r2t.gdbm
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="excerpt_length">excerpt_length</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      number
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      300
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This is the maximum number of characters the
+	      displayed excerpt will be limited to. The
+	      first matched word will be bolded in the
+	      middle of the excerpt so that there is some
+	      surrounding context.<br>
+	      The <em><a href="#start_elipses">start_elipses</a></em> and
+	      <em><a href="#end_elipses">end_elipses</a>
+	      </em> are used to indicate
+	      that the document contains text before and
+	      after the displayed excerpt respectively.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      excerpt_length: 500
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="excerpt_show_top">excerpt_show_top</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      boolean
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      false
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      If set to true, the excerpt of a match will always show
+	      the top of the matching document.  If it is false (the
+	      default), the excerpt will attempt to show the part of the
+	      document that actually contains one of the words.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      excerpt_show_top: yes
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="exclude_urls">exclude_urls</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string list
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      cgi-bin
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      If a URL contains any of the space separated
+	      patterns, it will be rejected. This is used
+	      to exclude such common things such as an infinite virtual
+	      web-tree which start with cgi-bin.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      exclude_urls: students.html cgi-bin
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="heading_factor">heading_factor_1 -
+	      heading_factor_6</a>
+	  </strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      number
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      heading_factor_1: 5<br>
+	      heading_factor_2: 4<br>
+	      heading_factor_3: 3<br>
+	      heading_factor_4: 1<br>
+	      heading_factor_5: 1<br>
+	      heading_factor_6: 0<br>
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This is a factor which will be used to
+	      multiply the weight of words between &lt;h1&gt; and
+	      &lt;/h1&gt; tags. It is used to assign the level of
+	      importance to certain headers.  Setting a factor to 0 will
+	      cause words in this heading to be ignored. The number may
+	      be a floating point number.  See also the <a
+		href="#title_factor">title_factor</a> and <a
+		href="#text_factor">text_factor</a> attributes.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      heading_factor_1: 7.75<br>
+	      heading_factor_2: 5.3<br>
+	      heading_factor_3: 2<br>
+	      heading_factor_4: 0<br>
+	      heading_factor_5: 0<br>
+	      heading_factor_6: 0<br>
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="htnotify_sender">htnotify_sender</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htnotify.html">htnotify</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      webmaster@www
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This specifies the email address that htnotify email
+	      messages get sent out from.  The address is forged using
+	      /usr/lib/sendmail.  Check htnotify/htnotify.cc for
+	      detail on how this is done.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>htnotify_sender: bigboss@yourcompany.com</dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="http_proxy">http_proxy</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      <em>&lt;empty&gt;</em>
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      When this attribute is set, all HTTP document retrievals
+	      will be done using the HTTP-PROXY protocol.  The URL
+	      specified in this attribute points to the host and port
+	      where the proxy server resides.
+	      <br>
+	      The use of a proxy server greatly improves performance
+	      of the indexing process.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>http_proxy: http://proxy.bigbucks.com:3128</dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="image_list">image_list</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${database_base}.images
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This is the file that a list of image URLs gets written to
+	      by <a href="htdig.html">htdig</a> when the <a
+		href="#create_image_list">create_image_list</a> is set to
+	      true.  As image URLs are seen, they are just appended to
+	      this file, so after htdig finishes it is probably a good
+	      idea to run <tt>sort -u</tt> on the file to eliminate
+	      duplicates from the file.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>image_list: allimages</dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="keyword_factor">keyword_factor</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      number
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      100
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This is a factor which will be used to
+	      multiply the weight of words in the list of keywords of a document.
+	      The number may
+	      be a floating point number.  See also the <a
+		href="#title_factor">title_factor</a> and <a
+		href="#text_factor">text_factor</a>attributes.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      keyword_factor: 12
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="keywords_meta_tag_names">keywords_meta_tag_names</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      list
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      keywords htdig-keywords
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      The words in this list are used to search for keywords in HTML
+	      <i>META</i> tags.  This list can contain any number of strings
+	      that each will be seen as the name for whatever keyword convention
+	      is used.
+	      <p>
+		The <i>META</i> tags have the following format:
+		<blockquote>
+		  &lt;META name="<i>somename</i>" value="<i>somevalue</i>"&lt;
+		</blockquote>
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      keywords_meta_tag_names: keywords description
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="limit_urls_to">limit_urls_to</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string list
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      .sdsu.edu/
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This specifies a set of patterns that all
+	      URLs have to match against in order for them
+	      to be included in the search.
+	      Any number of strings can be specified,
+	      separated by spaces. If multiple patterns
+	      are given, at least one of the patterns has
+	      to match the URL.
+	      <br>
+	      Matching is a case-insensitive string match
+	      on the URL to be used. The match will be performed
+	      <em>after</em> the relative references have been converted
+	      to a valid URL.  This means that the URL will
+	      <em>always</em> start with <tt>http://</tt>.<br>
+	      Granted, this is not the
+	      perfect way of doing this, but it is simple
+	      enough and it covers most cases.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      limit_urls_to: .sdsu.edu kpbs
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="locale">locale</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      iso_8859_1
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      Set this to whatever locale you want your search
+	      database cover.  It affects the way international
+	      characters are dealt with.
+	      On most systems a list of legal locales can be found in
+	      /usr/lib/locale.  Also check the
+	      <strong>setlocale(3C)</strong> man page.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      locale: en_US
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="maintainer">maintainer</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      badguy@localhost
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This should be the email address of the
+	      person in charge of the digging operation.
+	      This string is added to the user-agent:
+	      field when the digger sends a request to a
+	      server.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      maintainer: ben.dover@uptight.com
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="match_method">match_method</a>
+	  </strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      or
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This is the default method for matching that htsearch
+	      uses.  The valid choices are:
+	      <ul>
+		<li>or
+		<li>and
+		<li>boolean
+	      </ul>
+	      This attribute will only be used if the HTML form that
+	      calls htsearch didn't have the <strong>method</strong>
+	      value set.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      match_method: boolean
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="matches_per_page">matches_per_page</a>
+	  </strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      number
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      10
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      If this is set to a relatively small number, the matches
+	      will be shown in pages instead of all at once.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      matches_per_page: 999
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="max_description_length">max_description_length</a>
+	  </strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      number
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      60
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      While gathering descriptions of URLs, <a
+		href="htdig.html">htdig</a> will only record
+	      those descriptions which are shorter than
+	      this length. This is used mostly to deal
+	      with broken HTML. (If a hyperlink is not
+	      terminated with a &lt;/a&gt; the description
+	      will go on until the end of the document.)
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      max_description_length: 40
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="max_doc_size">max_doc_size</a>
+	  </strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      number
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      100000
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This is the upper limit to the amount of data retrieved
+	      for documents.  This is mainly used to prevent
+	      unreasonable memory consumption since each document will
+	      be read into memory by <a href="htdig.html">htdig</a>.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      max_doc_size: 5000000
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="max_head_length">max_head_length</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      number
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      512
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      For each document retrieved, the top of the
+	      document is stored. This attribute
+	      determines the size of this block. The text
+	      that will be stored is only the text; no
+	      markup is stored.<br>
+	      We found that storing 50,000 bytes will
+	      store about 95% of all the documents
+	      completely. This really depends on how much
+	      storage is available and how much you want
+	      to show.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      max_head_length: 50000
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="max_hop_count">max_hop_count</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      number
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      999999
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      Instead of limiting the indexing process by URL pattern,
+	      it can also be limited by the number of hops or
+	      clicks a document is removed from the starting URL.
+	      Unfortunately, this only works reliably when a complete
+	      index is created, not an update.<br>
+	      The starting page will have hop count 0.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      max_hop_count: 4
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="max_stars">max_stars</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      number
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      4
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      When stars are used to display the score of
+	      a match, this value determines the maximum
+	      number of stars that can be displayed.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      max_stars: 6
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="metaphone_db">metaphone_db</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htfuzzy.html">htfuzzy</a> and
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${database_base}.metaphone.gdbm
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      The database file used for the fuzzy "metaphone" search
+	      algorithm.  This database is created by <a
+		href="htfuzzy.html">htfuzzy</a> and used by <a
+		href="htsearch.html" target="_top">htsearch</a>. 
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      metaphone_db: ${database_base}.mp.db
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="method_names">method_names</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>string list</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htsearch.html" target="_top">htsearch</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      and All or Any boolean Boolean
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>These values are used to create the
+	      <strong>method</strong> menu.  It consists of pairs.
+	      The first element of each pair is one of the known
+	      methods, the second element is the text that will be
+	      shown in the menu for that method.  This text needs to
+	      be quoted if it contains spaces.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>method_names: or Or and And</dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="minimum_word_length">minimum_word_length</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>number</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htdig.html">htdig</a> and
+	      <a href="htsearch.html" target="_top">htsearch</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      3
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>This sets the minimum length of words that will be
+	      indexed.  Words shorter than this value will be silently
+	      ignored but still put into the excerpt.<br>
+	      Note that by making this value less than 3, a lot more
+	      words that are very frequent will be indexed.  It might
+	      be advisable to add some of these to the bad_words list.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>minimum_word_length: 2</dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="next_page_text">next_page_text</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>string</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htsearch.html" target="_top">htsearch</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>[next]</dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      The text displayed in the hyperlink to go to the next
+	      page of matches.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>next_page_text: &lt;img
+	      src=&quot;/htdig/buttonr.gif&quot;&gt;</dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="no_excerpt_text">no_excerpt_text</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>string</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htsearch.html" target="_top">htsearch</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>&lt;em&gt;(None of the search words were found in the top
+	      of this docuemnt.)&lt;/em&gt;</dd>
+	    <dt><em>description:</em></dt>
+	    <dd>This text will be displayed in place of the excerpt if
+	      there is no excerpt available.  If this attribute is set
+	      to nothing (blank), the excerpt label will not be
+	      displayed in this case.</dd>
+	    <dt><em>example:</em></dt>
+	    <dd>no_excerpt_text: </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="no_next_page_text">no_next_page_text</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>string</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htsearch.html" target="_top">htsearch</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>[next]</dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      The text displayed where there would normally be a
+	      hyperlink to go to the next page of matches.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>no_next_page_text:</dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="no_prev_page_text">no_prev_page_text</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>string</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htsearch.html" target="_top">htsearch</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>[prev]</dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      The text displayed where there would normally be a
+	      hyperlink to go to the previous page of matches.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>no_prev_page_text:</dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="nothing_found_file">nothing_found_file</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${common_dir}/nothing_found.html
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This specifies the file which contains the <tt>HTML</tt>
+	      text to display when no matches were found.
+	      The file should contain a complete <tt>HTML</tt>
+	      document.<br>
+	      Note that this attribute could also be defined in terms of
+	      <a href="#database_base">database_base</a> to make is
+	      specific to the current search database.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      nothing_found_file: /www/searching/nothing.html
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="prev_page_text">prev_page_text</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>string</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htsearch.html" target="_top">htsearch</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>[prev]</dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      The text displayed in the hyperlink to go to the previous
+	      page of matches.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>prev_page_text: &lt;img
+	      src=&quot;/htdig/buttonl.gif&quot;&gt;</dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="remove_bad_urls">remove_bad_urls</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>boolean</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htmerge.html">htmerge</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>false</dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      If TRUE, htmerge will remove any URLs which were marked as
+	      unreachable by htdig from the database.  If FALSE, it will
+	      not do this.  When htdig is run in initial mode, documents
+	      which were referred to but could not be accessed should
+	      probably be removed, and hence this option should then be
+	      set to TRUE, however, if htdig is run to update the
+	      database, this may cause documents on a server which is
+	      temporarily unavailable to be removed.  This is probably
+	      NOT what was intended, so hence this option should be set
+	      to FALSE in that case.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>remove_bad_urls: true</dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="robotstxt_name">robotstxt_name</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>string</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htdig.html">htdig</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>htdig</dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      Sets the name that htdig will look for when parsing
+	      robots.txt files.  This can be used to make htdig appear
+	      as a different spider than ht://Dig.  Useful to
+	      distinguish between a private and a global index.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>robotstxt_name: myhtdig</dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="search_algorithm">search_algorithm</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>string list</dd>
+	    <dt><em>used by:</em></dt>
+	    <dd><a href="htsearch.html" target="_top">htsearch</a></dd>
+	    <dt><em>default:</em></dt>
+	    <dd>exact:1</dd>
+	    <dt><em>description:</em></dt>
+	    <dd>Specifies the search algorithms and their weight to use
+	      when searching.
+	      Each entry in the list consists of the algorithm name,
+	      followed by a colon (:) followed by a weight multiplier.
+	      The multiplier is a floating point number between 0 and 1.
+	      Current algorithms supported are:
+	      <dl>
+		<dt>exact</dt>
+		<dd>
+		  The default exact word matching algorithm.  This
+		  will find only exacly matched words.</dd>
+		<dt>soundex</dt>
+		<dd>
+		  Uses a slighly modified soundex algorithm to match
+		  words.  This requires that the soundex database be
+		  present.  It is generated with the
+		  <a href="htfuzzy.html">htfuzzy</a> program.
+		</dd>
+		<dt>metaphone</dt>
+		<dd>
+		  Uses the metaphone algorithm for matching words.
+		  This algorithm is more specific to the english
+		  language than soundex.  It is generated with the
+		  <a href="htfuzzy.html">htfuzzy</a> program.
+		</dd>
+		<dt>endings</dt>
+		<dd>
+		  This algorithm uses language specific word endings
+		  to find matches.  Each word is first reduced to its
+		  word root and then all known legal endings are used
+		  for the matching.  This algorithm uses two databases
+		  which are generated with
+		  <a href="htfuzzy.html">htfuzzy</a>.
+		</dd>
+		<dt>synonyms</dt>
+		<dd>
+		  Performs a dictionary lookup on all the words.
+		  This algorithm uses a database generated with the <a
+		    href="htfuzzy.html">htfuzzy</a> program.
+		</dd>
+	      </dl>
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>search_algorithm: exact:1 soundex:0.3</dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="search_results_footer">search_results_footer</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${common_dir}/footer.html
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This specifies a filename to be output at the end of
+	      search results.  While outputing the footer, some
+	      variables will be expanded.  Variables use the same syntax
+	      as the bourne shell.  If there is a variable VAR, the
+	      following will all be recognized:
+	      <ul>
+		<li>$VAR</li>
+		<li>$(VAR)</li>
+		<li>${VAR}</li>
+	      </ul>The following variables are available:
+	      <dl>
+		<dt>MATCHES</dt>
+		<dd>
+		  The number of documents that were matched.
+		</dd>
+		<dt>PLURAL_MATCHES</dt>
+		<dd>
+		  If MATCHES is not 1, this will be the string "s",
+		  else it is an empty string.  This can be used to say
+		  something like "$(MATCHES) document$(PLURAL_MATCHES)
+		  were found"
+		</dd>
+		<dt>MAX_MATCHES</dt>
+		<dd>
+		  The number of maximum displayed matches.
+		</dd>
+		<dt>MAX_STARS</dt>
+		<dd>
+		  The value of the <a href="#max_stars">max_stars</a>
+		  attribute.
+		</dd>
+		<dt>LOGICAL_WORDS</dt>
+		<dd>
+		  A string of the search words with either "and" or
+		  "or" between the words, depending on the type of
+		  search.
+		</dd>
+		<dt>WORDS</dt>
+		<dd>
+		  A string of the search words with spaces in between.
+		</dd>
+	      </dl>Note that this file will <strong>NOT</strong>be
+	      output if no matches were found.  In this case the <a
+		href="#nothing_found_file">nothing_found_file</a>
+	      attribute is used in stead.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      search_results_footer: /usr/local/etc/ht/end-stuff.html
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="search_results_header">search_results_header</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${common_dir}/header.html
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This specifies a filename to be output at the start of
+	      search results.  While outputing the header, some
+	      variables will be expanded.  Variables use the same syntax
+	      as the bourne shell.  If there is a variable VAR, the
+	      following will all be recognized:
+	      <ul>
+		<li>$VAR</li>
+		<li>$(VAR)</li>
+		<li>${VAR}</li>
+	      </ul>The following variables are available:
+	      <dl>
+		<dt>MATCHES</dt>
+		<dd>The number of documents that were matched.</dd>
+		<dt>PLURAL_MATCHES</dt>
+		<dd>If MATCHES is not 1, this will be the string "s",
+		  else it is an empty string.  This can be used to say
+		  something like "$(MATCHES) document$(PLURAL_MATCHES)
+		  were found"</dd>
+		<dt>MAX_MATCHES</dt>
+		<dd>The number of maximum displayed matches.</dd>
+		<dt>MAX_STARS</dt>
+		<dd>The value of the <a href="#max_stars">max_stars</a> attribute.</dd>
+		<dt>LOGICAL_WORDS</dt>
+		<dd>A string of the search words with either "and" or
+		  "or" between the words, depending on the type of search.</dd>
+		<dt>WORDS</dt>
+		<dd>A string of the search words with spaces in between.</dd>
+	      </dl>Note that this file will <strong>NOT</strong>be
+	      output if no matches were found.  In this case the <a
+		href="#nothing_found_file">nothing_found_file</a>
+	      attribute is used in stead.</dd>
+	    <dt><em>example:</em></dt>
+	    <dd>search_results_header: /usr/local/etc/ht/start-stuff.html</dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="soundex_db">soundex_db</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htfuzzy.html">htfuzzy</a> and
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${database_base}.soundex.gdbm
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      The database file used for the fuzzy "soundex" search
+	      algorithm.  This database is created by <a
+		href="htfuzzy.html">htfuzzy</a> and used by <a
+		href="htsearch.html" target="_top">htsearch</a>.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      soundex_db: ${database_base}.snd.gdbm
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="star_blank">star_blank</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${image_url_prefix}/star_blank.gif
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This specifies the URL to use to display a blank of the
+	      same size as the star defined in the <a
+		href="#image_star">image_star</a> attribute or in the
+	      <a href="#image_patterns">image_patterns</a> attribute.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      star_blank: http://www.somewhere.org/icons/elephant.gif
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="star_image">star_image</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${image_url_prefix}/star.gif
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This specifies the URL to use to display a
+	      star. This allows you to use some other icon
+	      instead of a star.  (We like the star...)<br>
+	      The display of stars can be turned on or off
+	      with the <em><a href="#use_star_image">use_star_image</a>
+	      </em> attribute
+	      and the maximum number of stars that can be
+	      displayed is determined by the
+	      <em><a href="#max_stars">max_stars</a></em> attribute.<br>
+	      Eventhough the image can be changed, the ALT
+	      value for the image will always be a '*'.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      star_image: http://www.somewhere.org/icons/elephant.gif
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="star_patterns">star_patterns</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string list
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This attribute allows the star image to be changed
+	      depending on the URL or the match it is used for.  This
+	      is mainly to make a visual distinction between matches
+	      on different web sites.  The star image could be
+	      replaced with the logo of the company the match refers to.<br>
+	      It is advisable to keep all the images the same size in
+	      order to line things up properly in a short result listing.<br>
+	      The format is simple.  It is a list of pairs.  The first
+	      element of each pair is a pattern, the second element is
+	      a URL to the image for that pattern.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd><table border=0><tr><td>
+	      star_patterns:</td><td>http://www.sdsu.edu</td><td>/sdsu.gif \</td></tr>
+	      <tr><td></td><td>http://www.ucsd.edu</td><td>/ucsd.gif</td></tr></table>
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="start_elipses">start_elipses</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      &lt;b&gt;&lt;tt&gt;... &lt;/tt&gt;&lt;/b&gt;
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      When excerpts are displayed in the search
+	      output, this string will be prepended to the
+	      excerpt if there is text before the text
+	      displayed. This is just a visual reminder to
+	      the user that the excerpt is only part of
+	      the complete document.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      start_elipses: ...
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="start_url">start_url</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string list
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      http://www/
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This is the list of URLs that will be used to start a dig
+	      when there was no existing database.  Note that multiple
+	      URLs can be given here.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      start_url: http://www.somewhere.org/alldata/index.html
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="substring_max_words">substring_max_words</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      integer
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      25
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      The Sbustring fuzzy algorithm could potentially match a
+	      very large number of words.  This value limits the
+	      number of words each substring pattern can match.  Note
+	      that this does not limit the number of documents that
+	      are matched in any way.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      substring_max_words:  100
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="synonym_dictionary">synonym_dictionary</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htfuzzy.html">htfuzzy</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${common_dir}/synonyms
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This points to a text file containing the synonym
+	      dictionary used for the synonyms search algorithm.<br>
+	      Each line of this file has at least two words.  The
+	      first word is the word to replace, the rest of the words
+	      are synonyms for that word.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      synonym_dictionary: /usr/dict/synonyms
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="synonym_db">synonym_db</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a> and
+	      <a href="htfuzzy.html">htfuzzy</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${common_dir}/synonyms.gdbm
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      Points to the database that <a
+		href="htfuzzy.html">htfuzzy</a> creates when the
+	      <strong>synonyms</strong> algorithm is used.<br>
+	      <a href="htsearch.html" target="_top">htsearch</a> uses this to
+	      perform synonym dictionary lookups.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      synonym_db: ${database_base}.syn.gdbm
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="syntax_error_file">syntax_error_file</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${common_dir}/syntax.html
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This points to the file which will be displayed if a
+	      boolean expression syntax error was found.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      syntax_error_file:  ${common_dir}/synerror.html
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="template_map">template_map</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string list
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      Long builtin-long builtin-long Short builtin-short builtin-short
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This maps match template names to internal names and
+	      template file names.  It is a list of triplets.  The
+	      first element in each triplet is the name that will be
+	      displayed in the FORMAT menu.  The second element is the
+	      name used internally and the third element is a filename
+	      of the template to use.<br>
+	      There are two predefined templates, namely
+	      <strong>builtin-long</strong> and
+	      <strong>builtin-short</strong>.  If the filename is one
+	      of those, they will be used instead.<br>
+	      More information about templates can be found in the <a
+		href="htsearch.html" target="_top">htsearch</a> documentation.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd><table border=0><tr>
+	      <td>template_map:</td><td>Short short ${common_dir}/short.html \<br>
+	      Normal normal builtin-long \<br>
+	      Detailed detail ${common_dir}/detail.html</td></tr></table>
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="template_name">template_name</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      builtin-long
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      Specifies the default template if none is given by the
+	      search form.  This needs to map to the <a
+		href="#template_map">template_map</a>.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      template_name: long
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="text_factor">text_factor</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      number
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      1
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This is a factor which will be used to
+	      multiply the weight of words that are not in any special
+	      part of a document.
+	      Setting a factor to 0 will
+	      cause normal words to be ignored. The number may
+	      be a floating point number.  See also the <a
+		href="#heading_factor">heading_factor_[1-6]</a>, <a
+		href="#title_factor">title_factor</a>, and <a
+		href="#keyword_factor">keyword_factor</a> attributes.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      text_factor: 0
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="timeout">timeout</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      number
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      30
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      Specifies the time the digger will wait to
+	      complete a network read. This is just a
+	      safeguard against unforseen things like the
+	      all too common transformation from a network
+	      to a notwork.<br>
+	      The timeout is specified in seconds.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      timeout: 42
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="title_factor">title_factor</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      number
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      100
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This is a factor which will be used to
+	      multiply the weight of words in the title of a document.
+	      Setting a factor to 0 will
+	      cause words in the title to be ignored. The number may
+	      be a floating point number.  See also the <a
+		href="#heading_factor">heading_factor_[1-6]</a> attribute.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      title_factor: 12
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="url_list">url_list</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${database_base}.urls
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This file is only created if
+	      <em><a href="#create_url_list">create_url_list</a></em> is
+	      set to true.  It will contain a list of all URLs that were
+	      seen.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      url_list: /tmp/urls
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="use_star_image">use_star_image</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      boolean
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      true
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      If set to true, the <em><a href="#star_image">star_image</a></em>
+	      attribute is used to display upto
+	      <em><a href="#max_stars">max_stars</a></em> images for each match.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      use_star_image: no
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="valid_punctuation">valid_punctuation</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a> and
+	      <a href="htsearch.html" target="_top">htsearch</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      .-_/!#$%^&amp;*'
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This is the set of characters which will be
+	      deleted from the document before determining
+	      what a word is. This means that if a
+	      document contains something like
+	      <tt>Andrew's</tt> the digger will see
+	      this as <tt>Andrews</tt>.<br>
+	      The same transformation is performed on the
+	      keywords the search engine gets.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      valid_punctuation: -'
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="word_db">word_db</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>,
+	      <a href="htmerge.html">htmerge</a> and
+	      <a href="htsearch.html" target="_top">htsearch</a>,
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${database_base}.words.gdbm
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This is the main word database. It is an
+	      index of all the words to a list of
+	      documents that contain the words. This
+	      database can grow large pretty quickly.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      word_db: ${database_base}.allwords.gdbm
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
+	<dt><strong><a name="word_list">word_list</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      string
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a> and
+	      <a href="htmerge.html">htmerge</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	      ${database_base}.wordlist
+	    </dd>
+	    <dt><em>description:</em></dt>
+	    <dd>
+	      This is the input file that <a href="htmerge.html">htmerge</a>
+	      uses to create
+	      the main words database specified by
+	      <em><a href="#word_db">word_db</a></em>.
+	      This file gets about as large as the main
+	      words database. If this file exists when
+	      htdig is running, it will append data to
+	      this file. htmerge will then use the
+	      existing data and the appended data to
+	      create a completely new main word database.
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	      word_list: ${database_base}.allwords.text
+	    </dd>
+	  </dl>
+	</dd>
+      </dl>
+      <hr noshade size=4>
+      <p><!-- hhmts start -->
+Last modified: Wed Jan  1 20:43:52 PST 
+<!-- hhmts end -->
+	<br><a href="mailto:andrew@contigo.com">andrew@contigo.com</a></p>
+  </body>
+</html>
+
+

@@ -1,0 +1,33 @@
+# Generated automatically from Makefile.in by configure.
+include /home/turtle/src/ht/Makefile.config
+include .sniffdir/ofiles.incl
+
+OBJS=		$(OFILES)
+LIBOBJS=	Endings.o Exact.o Fuzzy.o Metaphone.o \
+		Soundex.o Synonym.o EndingsDB.o SuffixEntry.o Substring.o
+
+TARGET=		htfuzzy
+LIBTARGET=	libfuzzy.a
+
+all:	$(TARGET) $(LIBTARGET)
+
+$(TARGET):		$(OBJS)
+	$(CXX) -o $(TARGET) $(LDFLAGS) $(OBJS) $(LIBS)
+
+$(LIBTARGET):		$(LIBOBJS)
+	$(AR) rcv $(LIBTARGET) $?
+	$(RANLIB) $(LIBTARGET)
+
+install:	$(TARGET)
+	$(INSTALL) $(TARGET) $(BIN_DIR)
+
+clean:
+	$(RM) $(TARGET) $(LIBTARGET) $(OBJS) *~ *.bak *% a.out *.orig core
+
+distclean:	clean
+	$(RM) Makefile *.proj
+
+depend:
+	$(MAKEDEPEND)  $(CXXFLAGS) -- $(OBJS)
+
+htfuzzy.o:	/home/turtle/src/ht/CONFIG

@@ -1,0 +1,30 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+c++ -o conftest -g -O conftest.C -lsocket
+configure: In function `int t()':
+configure:903: warning: implicit declaration of function `int socket(...)'
+c++ -o conftest -g -O conftest.C -lnsl -lsocket
+configure: In function `int t()':
+configure:937: warning: implicit declaration of function `int t_accept(...)'
+c++ -E
+c++ -E
+c++ -E
+c++ -E
+c++ -E
+c++ -E
+c++ -E
+c++ -c -g -O conftest.C
+c++ -c -g -O conftest.C
+configure: In function `int t()':
+configure:1072: `struct tm' has no member named `tm_gmtoff'
+c++ -c -g -O conftest.C
+c++ -o conftest -g -O conftest.C -lsocket -lnsl
+c++ -o conftest -g -O conftest.C -lsocket -lnsl
+Undefined			first referenced
+ symbol  			    in file
+timelocal                           /var/tmp/cca006t21.o
+ld: fatal: Symbol referencing errors. No output written to conftest
+c++ -o conftest -g -O conftest.C -lsocket -lnsl
+c++ -o conftest -g -O conftest.C -lsocket -lnsl
+c++ -c -g -O conftest.C

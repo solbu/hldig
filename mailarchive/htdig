@@ -1,0 +1,4353 @@
+From POPmail Thu Aug  8 19:14:25 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA02240 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:12:39 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17511 for andrew; Thu, 8 Aug 1996 19:12:36 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id UAA08769 for <turtle@ender.sdsu.edu>; Fri, 19 Jul 1996 20:56:34 -0700 (PDT)
+Received: from noble.Regiononline.COM (noble.Regiononline.COM [206.154.80.3]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id UAA02992 for <andrew@sdsu.edu>; Fri, 19 Jul 1996 20:56:34 -0700 (PDT)
+Received: from creator (creator.Regiononline.COM [206.154.80.2])
+          by noble.Regiononline.COM (post.office MTA v1.9.3 ID# 0-12733)
+          with SMTP id AAA2740 for <andrew@sdsu.edu>;
+          Fri, 19 Jul 1996 23:51:59 -0400
+X-UIDL: 839556859.006
+Message-ID: <31F058C9.2D6D@regiononline.com>
+Date: Fri, 19 Jul 1996 23:55:53 -0400
+From: Timothy Lindgren <tim@regiononline.com>
+Organization: Regional Network Communications, Inc.
+X-Mailer: Mozilla 3.0b5aGold (X11; I; SunOS 5.5 sun4u)
+MIME-Version: 1.0
+To: andrew@sdsu.edu
+Subject: Bug?
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:   694
+Status: RO
+
+Andrew,
+
+I recently D/L's and complied HTDig ver 3. I love the software, but
+there seems to be a slight problem with larger digs.
+
+After about 7-800 domains (We are an ISP) the program seems to hang.
+
+Also, when HTDIG is complete, and htmerge is running, it merges about
+6500 words, and stops cold.  
+
+
+Since we are an ISP, and have about 2000 domains, I was curious is
+htdig.conf supported #INCLUDE files for LIMIT_URL syntax. 
+
+This way it wont dig out into the Internet and remain local.
+
+Any suggestions?
+
+Timothy Lindgren
+Regional network Communications, inc.
+
+:INFO:
+On a Sun Ultrasparc-170e with 256meg ram, 10 gig avail. HD, Solaris 2.5.
+Complied with GCC 2.7.2 with G++Lib installed.
+
+From turtle Fri Aug 16 15:47:34 1996
+Subject: ht://Dig 3.0.1 available
+To: htdig@sdsu.edu
+Date: Fri, 16 Aug 1996 15:47:34 -0700 (PDT)
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:   957
+Status: RO
+
+Version 3.0.1 of the ht://Dig search system is available.
+This release is a maintenance release with only bug fixes, no
+new features.
+
+The documentation now has a new home as well, although the URL
+is still the same: http://htdig.sdsu.edu
+
+Look at the release notes (http://htdig.sdsu.edu/RELEASE.html)
+for a list of things that were fixed/changed.
+For the actual gory details look in the ChangeLog file
+(http://htdig.sdsu.edu/ChangeLog)
+
+Since I no longer have access to the FTP server at SDSU, the software
+can only be downloaded through http.  I hope this is not too much of
+a problem.  If it is, let me know and we'll figure something else out.
+
+Enjoy.
+
+P.S.: You might have heard about the tragic shooting of 3 professors
+at SDSU.  I didn't know any of them personally, but I do know other
+member of the engineering faculty.  For more information about this
+look at the SDSU homepage: http://www.sdsu.edu/
+
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+
+From POPmail Sun Aug 18 07:00:04 1996
+Return-Path: karthik@media-one.com
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id XAA05673 for <andrews@pacbell.net>; Sat, 17 Aug 1996 23:57:14 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id XAA06899 for <turtle@ender.sdsu.edu>; Sat, 17 Aug 1996 23:57:11 -0700 (PDT)
+Received: from ms1.media-one.com (root@[205.164.150.4]) by sdsu.edu (8.7.5/8.6.9) with SMTP id XAA07300 for <andrew@sdsu.edu>; Sat, 17 Aug 1996 23:57:08 -0700 (PDT)
+Received: from pc.media-one.com (pc.media-one.com [205.164.150.3]) by ms1.media-one.com (8.6.12/8.6.11) with SMTPid DAA31434 for <andrew@sdsu.edu>; Sun, 18 Aug 1996 03:28:03 -0400
+Message-ID: <3216BE94.2766@media-one.com>
+Date: Sun, 18 Aug 1996 02:56:20 -0400
+From: "Karthik K. Sridharan" <karthik@media-one.com>
+Organization: Electronic Commerce & Media Inc.
+X-Mailer: Mozilla 2.02Gold (Win95; I)
+MIME-Version: 1.0
+To: andrew@sdsu.edu
+Subject: Problems building htdig
+X-URL: http://htdig.sdsu.edu/
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-UIDL: 0204029ab52b6d2ca328220364738058
+Status: ROr
+
+Hello, I pulled down a copy of htdig 3.0 and tried to build it, but am getting stuck. I followed the HTML instructions accordingly; I'm trying 
+to build it on a Linux with the following,
+
+kernel 1.3.66,
+gcc 2.7.2,
+gnu make 3.7.4
+
+You mentioned that others have gotten it to run under Linux, any contacts, ideas, usenet info, FAQs I may be overlooking?
+
+Any help is most appreciated.
+
+Karthik
+
+FYI, I am getting the following messages during the make, the previous stages were successful:
+
+web:/htdig-3.0# make
+make[1]: Entering directory `/htdig-3.0/gdbm-1.7.3'
+make[1]: Nothing to be done for `all'.
+make[1]: Leaving directory `/htdig-3.0/gdbm-1.7.3'
+make[1]: Entering directory `/htdig-3.0/rx-1.0'
+make[2]: Entering directory `/htdig-3.0/rx-1.0/rx'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory `/htdig-3.0/rx-1.0/rx'
+make[1]: Leaving directory `/htdig-3.0/rx-1.0'
+make[1]: Entering directory `/htdig-3.0/htlib'
+c++ -c -g  -DDEFAULT_CONFIG_FILE=\"/htdig-3.0/conf/htdig.conf\" -I../htlib -I../
+htcommon -I../include -I../rx-1.0/rx Connection.cc
+Connection.cc:445: declaration of C function `int gethostname(char *, int)' conf
+licts with
+/usr/include/unistd.h:519: previous declaration `int gethostname(char *, unsigne
+d int)' here
+make[1]: *** [Connection.o] Error 1
+make[1]: Leaving directory `/htdig-3.0/htlib'
+make[1]: Entering directory `/htdig-3.0/htcommon'
+make[1]: Nothing to be done for `all'.
+make[1]: Leaving directory `/htdig-3.0/htcommon'                  
+make[1]: Entering directory `/htdig-3.0/htfuzzy'
+c++ -o htfuzzy -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx Endings.o
+ EndingsDB.o Exact.o Fuzzy.o Metaphone.o Soundex.o SuffixEntry.o Synonym.o htfuz
+zy.o  -lcommon -lht -lgdbm -lrx
+ld: cannot open -lht: No such file or directory
+make[1]: *** [htfuzzy] Error 1
+make[1]: Leaving directory `/htdig-3.0/htfuzzy'
+make[1]: Entering directory `/htdig-3.0/htdig'
+c++ -o htdig -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx Document.o
+HTML.o Images.o Parsable.o Plaintext.o Postscript.o Retriever.o SGMLEntities.o S
+erver.o URLRef.o main.o  -lcommon -lht -lgdbm -lrx
+ld: cannot open -lht: No such file or directory
+make[1]: *** [htdig] Error 1
+make[1]: Leaving directory `/htdig-3.0/htdig'
+make[1]: Entering directory `/htdig-3.0/htsearch'
+c++ -o htsearch -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx Display.
+o DocMatch.o ResultList.o ResultMatch.o Template.o TemplateList.o WeightWord.o h
+tsearch.o parser.o  ../htfuzzy/libfuzzy.a -lcommon -lht -lgdbm -lrx  -lgdbm
+gcc: ../htfuzzy/libfuzzy.a: No such file or directory
+make[1]: *** [htsearch] Error 1
+make[1]: Leaving directory `/htdig-3.0/htsearch'
+make[1]: Entering directory `/htdig-3.0/htmerge'                               
+c++ -o htmerge -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx docs.o ht
+merge.o words.o  -lcommon -lht -lgdbm -lrx
+ld: cannot open -lht: No such file or directory
+make[1]: *** [htmerge] Error 1
+make[1]: Leaving directory `/htdig-3.0/htmerge'
+make[1]: Entering directory `/htdig-3.0/htnotify'
+c++ -o htnotify -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx htnotify
+.o  -lcommon -lht -lgdbm -lrx
+ld: cannot open -lht: No such file or directory
+make[1]: *** [htnotify] Error 1
+make[1]: Leaving directory `/htdig-3.0/htnotify'
+make: *** [all] Error 2
+web:/htdig-3.0#
+
+
+From POPmail Sun Aug 18 19:00:05 1996
+Return-Path: mc@webmac.demon.co.uk
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id SAA09755 for <andrews@pacbell.net>; Sun, 18 Aug 1996 18:38:22 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id SAA07445 for <turtle@ender.sdsu.edu>; Sun, 18 Aug 1996 18:38:20 -0700 (PDT)
+Received: from localhost (root@webmac.demon.co.uk [194.222.8.36]) by sdsu.edu (8.7.5/8.6.9) with SMTP id SAA08815 for <andrew@sdsu.edu>; Sun, 18 Aug 1996 18:38:09 -0700 (PDT)
+Received: from localhost (root@localhost [127.0.0.1]) by localhost (8.6.12/8.6.6) with SMTP id FAA04521 for <andrew@sdsu.edu>; Mon, 19 Aug 1996 05:16:49 +0200
+Sender: root@sdsu.edu
+Message-ID: <3217DC9F.1ED1DFDF@webmac.demon.co.uk>
+Date: Mon, 19 Aug 1996 03:16:47 +0000
+From: "C.Mac donald" <mc@webmac.demon.co.uk>
+X-Mailer: Mozilla 3.0b5aGold (X11; I; Linux 1.2.13 i486)
+MIME-Version: 1.0
+To: andrew@sdsu.edu
+Subject: htdig
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-UIDL: f2632862caa9bd1e18b8fcb8502d177e
+Status: ROr
+
+HEllO Andrew
+
+
+I am trying to install htdig on Linux-FT 1.2.13. I keep getting a 
+"Error 1" mesage when using make.
+
+I am using GUN make ver 3.74.
+
+Can you help or point me in the right direction.
+
+
+From POPmail Mon Aug 19 09:30:04 1996
+Return-Path: lawst@discoveryweb.com
+Received: from www.discoveryweb.com ([207.81.230.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id JAA10129 for <andrews@pacbell.net>; Mon, 19 Aug 1996 09:23:36 -0700 (PDT)
+Received: from steve.discoveryweb.com ([207.81.230.14])
+          by www.discoveryweb.com (post.office MTA v1.9.3b
+          **** trial license expired ****) with ESMTP id AAA29621
+          for <andrews@pacbell.net>; Mon, 19 Aug 1996 10:23:47 -0600
+From: lawst@discoveryweb.com (Steve Lawrence)
+To: "Andrew Scherpbier" <andrews@pacbell.net>
+Subject: Re: htdig: ht://Dig 3.0.1 available
+Date: Mon, 19 Aug 1996 09:55:03 -0600
+X-MSMail-Priority: Normal
+X-Priority: 3
+X-Mailer: Microsoft Internet Mail 4.70.1155
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Message-ID: <19960819162347.AAA29621@steve.discoveryweb.com>
+X-UIDL: 116541de6dffa5271c9902e94c896985
+Status: ROr
+
+Downloaded and installed the new HT-Dig. So far so good! Also seems a
+little faster... Is that possible? Anyways, I am happy so far!
+
+Keep up the good work!
+
+----------
+> From: Andrew Scherpbier <andrews@pacbell.net>
+> To: htdig@sdsu.edu
+> Subject: htdig: ht://Dig 3.0.1 available
+> Date: Friday, August 16, 1996 4:47 PM
+> 
+> Version 3.0.1 of the ht://Dig search system is available.
+> This release is a maintenance release with only bug fixes, no
+> new features.
+> 
+> The documentation now has a new home as well, although the URL
+> is still the same: http://htdig.sdsu.edu
+> 
+> Look at the release notes (http://htdig.sdsu.edu/RELEASE.html)
+> for a list of things that were fixed/changed.
+> For the actual gory details look in the ChangeLog file
+> (http://htdig.sdsu.edu/ChangeLog)
+> 
+> Since I no longer have access to the FTP server at SDSU, the software
+> can only be downloaded through http.  I hope this is not too much of
+> a problem.  If it is, let me know and we'll figure something else out.
+> 
+> Enjoy.
+> 
+> P.S.: You might have heard about the tragic shooting of 3 professors
+> at SDSU.  I didn't know any of them personally, but I do know other
+> member of the engineering faculty.  For more information about this
+> look at the SDSU homepage: http://www.sdsu.edu/
+> 
+> -- 
+> Andrew Scherpbier <andrews@pacbell.net>
+> ----------------------------------------------------------------------
+> To unsubscribe from the htdig mailing list, send a message to
+> htdig-request@sdsu.edu containing the single word "unsubscribe" in
+> the body of the message.
+
+
+From POPmail Mon Aug 19 10:30:05 1996
+Return-Path: lawst@discoveryweb.com
+Received: from www.discoveryweb.com ([207.81.230.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id KAA25800 for <andrews@pacbell.net>; Mon, 19 Aug 1996 10:05:20 -0700 (PDT)
+Received: from steve.discoveryweb.com ([207.81.230.14])
+          by www.discoveryweb.com (post.office MTA v1.9.3b
+          **** trial license expired ****) with ESMTP id AAA29670
+          for <andrews@pacbell.net>; Mon, 19 Aug 1996 11:05:42 -0600
+From: lawst@discoveryweb.com (Steve Lawrence)
+To: "Andrew Scherpbier" <andrews@pacbell.net>
+Subject: Re: htdig: ht://Dig 3.0.1 available
+Date: Mon, 19 Aug 1996 10:36:58 -0600
+X-MSMail-Priority: Normal
+X-Priority: 3
+X-Mailer: Microsoft Internet Mail 4.70.1155
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Message-ID: <19960819170542.AAA29670@steve.discoveryweb.com>
+X-UIDL: ab9d21a421195f7a9f142bdbf3ecc624
+Status: ROr
+
+> Steve Lawrence wrote:
+> [Charset ISO-8859-1 unsupported, filtering to ASCII...]
+> > Downloaded and installed the new HT-Dig. So far so good! Also seems a
+> > little faster... Is that possible? Anyways, I am happy so far!
+> 
+> I have not personally noticed a speedup, but I did change some code
+> that makes the htdig program more efficient.  (I probably haven't seen
+> an improvement since when I run htdig, I go over a PPP connection...)
+I access over ethernet to my server, and search times are nearly zero (or
+so it seems to me) You can try it out at www.discoveryweb.com/htdig. Search
+for the word websmith (my employer) it comes up with 251 matches and it
+does it very quickly.
+
+
+> 
+> > Keep up the good work!
+> 
+> Thanks.
+> 
+> What hardware/OS are you using?
+> 
+I am using a Sparc Server 20, 64meg ram, 100hz ross cpu, 2Gig fast and wide
+scsi, solaris 2.5, apache web server 1.1.1, gnu g++ ver 2.7.2. This machine
+is a dedicated web server, with usually no gui running. 
+
+
+> -- 
+> Andrew Scherpbier <andrews@pacbell.net>
+
+
+From POPmail Mon Aug 19 21:51:17 1996
+Return-Path: awesley@rubens.anu.edu.au
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id RAA21350 for <andrews@pacbell.net>; Mon, 19 Aug 1996 17:37:52 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id RAA08688 for <turtle@ender.sdsu.edu>; Mon, 19 Aug 1996 17:37:50 -0700 (PDT)
+Received: from anugpo.anu.edu.au (anugpo.anu.edu.au [150.203.2.6]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id RAA14944 for <andrew@sdsu.edu>; Mon, 19 Aug 1996 17:37:46 -0700 (PDT)
+Received: from rubens.anu.edu.au (awesley@rubens.anu.edu.au [150.203.31.9]) by anugpo.anu.edu.au (8.7.5/8.6.12) with ESMTP id KAA21369 for <andrew@sdsu.edu>; Tue, 20 Aug 1996 10:37:35 +1000 (EST)
+Received: (from awesley@localhost) by rubens.anu.edu.au (8.6.12/8.6.9) id KAA02424; Tue, 20 Aug 1996 10:37:31 +1000
+Date: Tue, 20 Aug 1996 10:37:31 +1000 (EST)
+From: Anthony Wesley <awesley@rubens.anu.edu.au>
+To: andrew@sdsu.edu
+Subject: htDig for Linux ?
+Message-ID: <Pine.LNX.3.91.960820103026.2412A-100000@rubens.anu.edu.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-UIDL: bf993731125e7ebaf1e0c30546564a42
+Status: ROr
+
+
+Hi Andrew.
+
+I have tried to compile htDig 3.0.1 for our Web server (Department of Art 
+History, Australian National University http://rubens.anu.edu.au) which 
+runs on a Linux machine, but I have had some problems.
+
+The whole system compiles ok, and (as far as I can tell) builds the 
+various databases ok, but I get a Seg fault in htsearch when I try a 
+query. I had a look at it with gdb, but the fault is happening in an odd 
+place (apparently inside one of the system libraries) which wasn't 
+compiled for gdb. :-(
+
+Do you know of any problems getting the system to work under Linux? I 
+have generally had little problem in compiling and running most large 
+packages, so I have reasonable confidence that this system is set up ok.
+
+I'll subscribe onto the mailing list as well. Thanks for your time.
+
+Cheers, Anthony 
+
+Anthony.Wesley@anu.edu.au
+
+
+From POPmail Mon Aug 19 21:51:19 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id SAA00427 for <andrews@pacbell.net>; Mon, 19 Aug 1996 18:00:01 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id RAA15028 for htdig-out; Mon, 19 Aug 1996 17:47:55 -0700 (PDT)
+Received: from anugpo.anu.edu.au (anugpo.anu.edu.au [150.203.2.6]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id RAA15023 for <htdig@sdsu.edu>; Mon, 19 Aug 1996 17:47:47 -0700 (PDT)
+Received: from rubens.anu.edu.au (awesley@rubens.anu.edu.au [150.203.31.9]) by anugpo.anu.edu.au (8.7.5/8.6.12) with ESMTP id KAA22811 for <htdig@sdsu.edu>; Tue, 20 Aug 1996 10:47:42 +1000 (EST)
+Received: (from awesley@localhost) by rubens.anu.edu.au (8.6.12/8.6.9) id KAA02481; Tue, 20 Aug 1996 10:47:38 +1000
+Date: Tue, 20 Aug 1996 10:47:38 +1000 (EST)
+From: Anthony Wesley <awesley@rubens.anu.edu.au>
+To: htdig@sdsu.edu
+Subject: htdig: Problems running under Linux 1.3.97
+Message-ID: <Pine.LNX.3.91.960820104218.2474A-100000@rubens.anu.edu.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: Anthony Wesley <awesley@rubens.anu.edu.au>
+X-UIDL: ba9ce5e683cbf13f4d98daa8dcb5e904
+Status: RO
+
+
+I have compiled and installed htdig ok and as far as I can tell it built 
+the databases ok, but when I run htsearch I get a segmentation fault just 
+after it has displayed the first entry in the <dl>...</dl> list.
+
+Using gdb the crash apparently happens somewhere inside the system 
+libraries (not compiled for gdb :-() when the program tries to call:
+
+	delete (Object *) data;
+
+I'm not particularly fluent in C++, but this doesn't look like a simple 
+to find problem to me. Has anyone out there successfully compiled and run 
+this system under Linux?
+
+I am using:
+
+Linux 1.3.97
+gcc 2.7.2
+libg++ 2.7.1.4
+libstdc++ 2.6.2.5
+
+Thanks in advance for your time...
+
+Regards, Anthony 
+
+Anthony.Wesley@anu.edu.au
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+
+
+From turtle Tue Aug 20 10:57:08 1996
+Subject: Desperate plee for help on Linux and Alpha htsearch problem
+To: htdig@sdsu.edu
+Date: Tue, 20 Aug 1996 10:57:08 -0700 (PDT)
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:   911
+Status: RO
+
+Folks:
+I have gotten many messages complaining about htsearch seg faulting after
+it displays the first result when running on a Linux box or a DEC Alpha.
+I don't have access to either of those platforms and hence it is next to
+impossible to determine what's going on.  As far as I can tell from reports
+it is a memory allocation problem since it seems to segfault in a 'delete'.
+I have not seen this problem under SPARC Solaris 2.5.
+Could this be a byte order problem?  (Does the Alpha use little Endian
+byte order?)
+Anyway, I would really appreciate any help that anyone can give in finding
+the problem on those platforms.
+
+On a different note:  I really must apologize for not being very responsive
+to messages related to ht://Dig.  The strain of starting a new company is
+severely limiting my ``free'' time that I can use to work on ht://Dig...
+
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From POPmail Tue Aug 20 10:30:03 1996
+Return-Path: terryt@cs.athabascau.ca
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id KAA28255 for <andrews@pacbell.net>; Tue, 20 Aug 1996 10:13:52 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id KAA09145 for <turtle@ender.sdsu.edu>; Tue, 20 Aug 1996 10:13:50 -0700 (PDT)
+Received: from aupair.cs.athabascau.ca (root@aupair.cs.athabascau.ca [131.232.10.8]) by sdsu.edu (8.7.5/8.6.9) with SMTP id KAA18075 for <andrew@sdsu.edu>; Tue, 20 Aug 1996 10:13:49 -0700 (PDT)
+Received: from cygnus.pc.athabascau.ca by aupair.cs.athabascau.ca with smtp
+	(Smail3.1.28.1 #8) id m0usuN7-0018P0C; Tue, 20 Aug 96 11:13 MDT
+Message-ID: <321A014F.584B@cs.athabascau.ca>
+Date: Tue, 20 Aug 1996 11:17:51 -0700
+From: Terry Tanski <terryt@cs.athabascau.ca>
+Reply-To: terryt@cs.athabascau.ca
+Organization: Athabasca University
+X-Mailer: Mozilla 3.0 (Win16; I)
+MIME-Version: 1.0
+To: andrew@sdsu.edu
+Subject: HTDig 3.0 and Linux
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-UIDL: 22fc86e0c5b6ec726c3dd4763196d3f7
+Status: ROr
+
+Hi Andrew,
+
+Sorry to bother you but I am having trouble compiling HTDig 3.0 under
+Linux. Do you know of anyone who has done this successfully? Can you
+pass their names on to me?
+
+BTW, the configure.in file has an error in it when attempting to
+determine if the PROTO for gethostname is required. The include
+statement for unistd.h should not end with a ; ... it is invalid C ;-)
+
+Thanks,
+
+Terry
+
+-- 
+
+      *********   Terry Tanski, B.Sc.
+     **********
+    .      ****   Educational Technology  Phone: (403) 675-6339
+   ..      ****   Athabasca University      FAX: (403) 675-6338
+  ....     ****   Box 10,000              Email: terryt@cs.athabascau.ca
+ ..........****   Athabasca, AB  CANADA     Web:
+http://www.athabascau.ca
+
+
+From POPmail Tue Aug 20 16:00:45 1996
+Return-Path: mc@webmac.demon.co.uk
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id OAA10529 for <andrews@pacbell.net>; Tue, 20 Aug 1996 14:57:38 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id OAA09271 for <turtle@ender.sdsu.edu>; Tue, 20 Aug 1996 14:57:36 -0700 (PDT)
+Received: from localhost (root@webmac.demon.co.uk [194.222.8.36]) by sdsu.edu (8.7.5/8.6.9) with SMTP id OAA20555 for <andrew@sdsu.edu>; Tue, 20 Aug 1996 14:55:48 -0700 (PDT)
+Received: from localhost (root@localhost [127.0.0.1]) by localhost (8.6.12/8.6.6) with SMTP id BAA02872 for <andrew@sdsu.edu>; Wed, 21 Aug 1996 01:34:45 +0200
+Sender: root@sdsu.edu
+Message-ID: <321A4B94.2E6C918C@webmac.demon.co.uk>
+Date: Tue, 20 Aug 1996 23:34:44 +0000
+From: "C.Mac donald" <mc@webmac.demon.co.uk>
+X-Mailer: Mozilla 3.0b5aGold (X11; I; Linux 1.2.13 i486)
+MIME-Version: 1.0
+To: andrew@sdsu.edu
+Subject: htdig
+Content-Type: multipart/mixed; boundary="------------6E99C419164C72427BE94B1"
+X-UIDL: d4c6cffc8cbd019ef7a92e95b4c80a5a
+Status: ROr
+
+This is a multi-part message in MIME format.
+
+--------------6E99C419164C72427BE94B1
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Hello Andrew 
+
+I am still having problems with "make" I made the change
+to NEED_PROTO_GETHOSTNAME from 1 to 0.
+
+I will include the output of ./configure (confout.txt) , Make
+"makeout.txt" and make install "makeinsout.txt".
+
+
+c++ -v outputs gcc version 2.7.2. The Documentation says that i have
+lib++-2.7.0.1 and libg++-2.7.1.3 instaled in /usr/bin.
+
+
+My O/S is Linux-FT 1.2 with Kernel 1.2.13
+
+I Have noticed another Error in opening /usr/486-unknown-linux. this
+directory does exist.
+
+
+
+
+ Mac
+
+--------------6E99C419164C72427BE94B1
+Content-Type: text/plain; charset=us-ascii; name="confout.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="confout.txt"
+
+creating cache ./config.cache
+configuring HTDig version 3.0.1
+checking for c++... c++
+checking whether we are using GNU C++... yes
+checking whether c++ accepts -g... yes
+checking for gcc... gcc
+checking whether we are using GNU C... yes
+checking whether gcc accepts -g... yes
+checking for ranlib... ranlib
+checking for ar... /usr/bin/ar
+checking for sh... /bin/sh
+checking for sed... /bin/sed
+checking for sort... /bin/sort
+checking for tar... tar
+checking for -lsocket... no
+checking for -lnsl... no
+checking how to run the C++ preprocessor... c++ -E
+checking for sys/time.h... yes
+checking for fcntl.h... yes
+checking for limits.h... yes
+checking for sys/file.h... yes
+checking for sys/ioctl.h... yes
+checking for unistd.h... yes
+checking whether time.h and sys/time.h may both be included... yes
+checking for tm.tm_gmtoff... no
+checking need strptime() prototype?... no
+checking whether struct tm is in sys/time.h or time.h... time.h
+checking for mktime... yes
+checking for timegm... yes
+checking for strptime... yes
+checking need gethostname() prototype?... yes
+
+Configuring GNU GDBM
+checking for gcc
+checking how to run the C preprocessor
+checking for install
+checking for ranlib
+checking integer size
+checking for 64-bit long ints
+checking byte ordering
+checking for lack of working const
+checking for stdlib.h
+checking for string.h
+checking for sys/file.h
+checking for unistd.h
+checking for fcntl.h
+checking for sys/types.h
+checking for memory.h
+checking for -ldbm
+checking for -lndbm
+checking for rename
+checking for ftruncate
+checking for flock
+checking for bcopy
+checking for fsync
+checking for getopt
+checking for working alloca.h
+checking for alloca
+checking for off_t in sys/types.h
+checking for st_blksize in struct stat
+creating config.status
+creating Makefile
+creating autoconf.h
+GDBM Configuration complete
+
+Configuring GNU rx
+Please ignore the warnings that may be displayed during this part
+creating cache ./config.cache
+xxxxxxxxxxxxxxxx		Rx/diSpencer
+ xxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxx		POSIX regexp functions.
+  xxxxx       xxx
+  xxxxx       xxx		
+  xxxxx       xxx		Let it fly in the breeze
+  xxxxxxxxxxxxxxx		and get caught in the trees
+  xxxxxxxxxxxxxx		make a home for the fleas in my Hair.
+  xxxxxxxxx			A home for fleas [oh yeah!];
+  xxxxx xxxx			A hive for bees [good god!];
+  xxxxx  xxxx			A nest for birds;
+  xxxxx   xxxx    rrr  		There ain't no words
+  xxxxx    xxxx  rrr   		for the beauty                                           
+  xxxxx     xxxxrrr   		the splender                                             
+xxxxxxx      rxrxr   		the wonder                                               
+            rrrxrx   		of my Hair!                                              
+           rrr rxxx		                                                         
+          rrr   xxxx		Blow it.  Show it.  Looongest I can grow it, my Hair.    
+         rrr     xxxx xx	
+        rrr       xxxxxx	
+*****
+*===*
+*=*=* WARNING: Missing suggested package: libguile
+*===*
+*****
+*****
+*===*
+*=*=* WARNING: Missing suggested package: guile
+*===*
+*****
+updating cache ./config.cache
+creating ./config.status
+creating Makefile
+configuring in rx
+running /bin/sh ./configure  --cache-file=.././config.cache --srcdir=.
+loading cache .././config.cache
+checking for gcc... gcc
+checking whether we are using GNU C... yes
+checking whether gcc accepts -g... yes
+checking how to run the C preprocessor... gcc -E
+checking for ranlib... ranlib
+checking for a BSD compatible install... /bin/install -c
+checking whether cross-compiling... no
+checking for ANSI C header files... yes
+updating cache .././config.cache
+creating ./config.status
+creating Makefile
+GNU rx Configuration complete
+
+updating cache ./config.cache
+creating ./config.status
+creating makedp
+creating htlib/Makefile
+creating htmerge/Makefile
+creating htcommon/Makefile
+creating htdig/Makefile
+creating Makefile.config
+creating Makefile
+creating htsearch/Makefile
+creating htnotify/Makefile
+creating htfuzzy/Makefile
+creating include/htconfig.h
+
+
+Now you must run 'make' followed by 'make install'
+
+
+--------------6E99C419164C72427BE94B1
+Content-Type: text/plain; charset=us-ascii; name="makeout.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="makeout.txt"
+
+make[1]: Entering directory `/usr/local/htdig-3.0.1/gdbm-1.7.3'
+gcc -c   -I. -I. -O dbminit.c
+gcc -c   -I. -I. -O delete.c
+gcc -c   -I. -I. -O fetch.c
+gcc -c   -I. -I. -O store.c
+gcc -c   -I. -I. -O seq.c
+gcc -c   -I. -I. -O close.c
+gcc -c   -I. -I. -O dbmopen.c
+gcc -c   -I. -I. -O dbmdelete.c
+gcc -c   -I. -I. -O dbmfetch.c
+gcc -c   -I. -I. -O dbmstore.c
+gcc -c   -I. -I. -O dbmseq.c
+gcc -c   -I. -I. -O dbmclose.c
+gcc -c   -I. -I. -O dbmdirfno.c
+gcc -c   -I. -I. -O dbmpagfno.c
+gcc -c   -I. -I. -O dbmrdonly.c
+gcc -c   -I. -I. -O gdbmopen.c
+gcc -c   -I. -I. -O gdbmdelete.c
+gcc -c   -I. -I. -O gdbmfetch.c
+gcc -c   -I. -I. -O gdbmstore.c
+gcc -c   -I. -I. -O gdbmclose.c
+gcc -c   -I. -I. -O gdbmreorg.c
+gcc -c   -I. -I. -O gdbmseq.c
+gcc -c   -I. -I. -O gdbmsync.c
+gcc -c   -I. -I. -O gdbmerrno.c
+gcc -c   -I. -I. -O gdbmexists.c
+gcc -c   -I. -I. -O gdbmsetopt.c
+gcc -c   -I. -I. -O bucket.c
+gcc -c   -I. -I. -O falloc.c
+gcc -c   -I. -I. -O findkey.c
+gcc -c   -I. -I. -O global.c
+gcc -c   -I. -I. -O hash.c
+gcc -c   -I. -I. -O update.c
+gcc -c   -I. -I. -O version.c
+rm -f gdbm.h
+cp ./gdbm.proto gdbm.h
+chmod +w gdbm.h
+grep _ ./gdbmerrno.h >> gdbm.h
+cat ./gdbm.proto2 >> gdbm.h
+chmod -w gdbm.h
+rm -f libgdbm.a
+ar q libgdbm.a dbminit.o delete.o fetch.o store.o seq.o close.o dbmopen.o dbmdelete.o dbmfetch.o dbmstore.o dbmseq.o dbmclose.o dbmdirfno.o dbmpagfno.o dbmrdonly.o gdbmopen.o gdbmdelete.o gdbmfetch.o  gdbmstore.o gdbmclose.o gdbmreorg.o gdbmseq.o gdbmsync.o gdbmerrno.o gdbmexists.o gdbmsetopt.o bucket.o falloc.o findkey.o global.o hash.o update.o version.o 
+ranlib libgdbm.a
+make[1]: Leaving directory `/usr/local/htdig-3.0.1/gdbm-1.7.3'
+make[1]: Entering directory `/usr/local/htdig-3.0.1/rx-1.0'
+make[2]: Entering directory `/usr/local/htdig-3.0.1/rx-1.0/rx'
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. hashrexp.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rx.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxanal.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxbasic.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxbitset.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxcset.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxdbug.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxgnucomp.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxhash.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxnfa.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxnode.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxposix.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxsimp.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxspencer.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxstr.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxsuper.c
+gcc -c -g  -I. -I. -DSTDC_HEADERS=1  -I. rxunfa.c
+rm -f librx.a
+ar rc librx.a hashrexp.o rx.o rxanal.o rxbasic.o rxbitset.o rxcset.o rxdbug.o rxgnucomp.o rxhash.o rxnfa.o rxnode.o rxposix.o rxsimp.o rxspencer.o rxstr.o rxsuper.o rxunfa.o
+ranlib librx.a
+make[2]: Leaving directory `/usr/local/htdig-3.0.1/rx-1.0/rx'
+make[1]: Leaving directory `/usr/local/htdig-3.0.1/rx-1.0'
+make[1]: Entering directory `/usr/local/htdig-3.0.1/htlib'
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Configuration.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Connection.cc
+make[1]: Leaving directory `/usr/local/htdig-3.0.1/htlib'
+make[1]: Entering directory `/usr/local/htdig-3.0.1/htcommon'
+c++ -c -g -O -DBIN_DIR=\"/usr/local/htdig/bin\" -DCOMMON_DIR=\"/usr/local/htdig/common\" -DCONFIG_DIR=\"/usr/local/htdig/conf\" -DDATABASE_DIR=\"/usr/local/htdig/db\" -DIMAGE_URL_PREFIX=\"/htdig\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx DocumentDB.cc
+c++ -c -g -O -DBIN_DIR=\"/usr/local/htdig/bin\" -DCOMMON_DIR=\"/usr/local/htdig/common\" -DCONFIG_DIR=\"/usr/local/htdig/conf\" -DDATABASE_DIR=\"/usr/local/htdig/db\" -DIMAGE_URL_PREFIX=\"/htdig\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx DocumentRef.cc
+c++ -c -g -O -DBIN_DIR=\"/usr/local/htdig/bin\" -DCOMMON_DIR=\"/usr/local/htdig/common\" -DCONFIG_DIR=\"/usr/local/htdig/conf\" -DDATABASE_DIR=\"/usr/local/htdig/db\" -DIMAGE_URL_PREFIX=\"/htdig\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx WordList.cc
+c++ -c -g -O -DBIN_DIR=\"/usr/local/htdig/bin\" -DCOMMON_DIR=\"/usr/local/htdig/common\" -DCONFIG_DIR=\"/usr/local/htdig/conf\" -DDATABASE_DIR=\"/usr/local/htdig/db\" -DIMAGE_URL_PREFIX=\"/htdig\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx defaults.cc
+/usr/bin/ar rcv libcommon.a DocumentDB.o DocumentRef.o WordList.o defaults.o
+a - DocumentDB.o
+a - DocumentRef.o
+a - WordList.o
+a - defaults.o
+ranlib libcommon.a
+make[1]: Leaving directory `/usr/local/htdig-3.0.1/htcommon'
+make[1]: Entering directory `/usr/local/htdig-3.0.1/htfuzzy'
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Endings.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx EndingsDB.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Exact.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Fuzzy.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Metaphone.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Soundex.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx SuffixEntry.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Synonym.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx htfuzzy.cc
+c++ -o htfuzzy -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx Endings.o EndingsDB.o Exact.o Fuzzy.o Metaphone.o Soundex.o SuffixEntry.o Synonym.o htfuzzy.o  -lcommon -lht -lgdbm -lrx 
+make[1]: Leaving directory `/usr/local/htdig-3.0.1/htfuzzy'
+make[1]: Entering directory `/usr/local/htdig-3.0.1/htdig'
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Document.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx HTML.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Images.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Parsable.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Plaintext.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Postscript.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Retriever.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx SGMLEntities.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Server.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx URLRef.cc
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx main.cc
+c++ -o htdig -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx Document.o HTML.o Images.o Parsable.o Plaintext.o Postscript.o Retriever.o SGMLEntities.o Server.o URLRef.o main.o  -lcommon -lht -lgdbm -lrx 
+make[1]: Leaving directory `/usr/local/htdig-3.0.1/htdig'
+make[1]: Entering directory `/usr/local/htdig-3.0.1/htsearch'
+c++ -c -g -O -DCONFIG_DIR=\"/usr/local/htdig/conf\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Display.cc
+c++ -c -g -O -DCONFIG_DIR=\"/usr/local/htdig/conf\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx DocMatch.cc
+c++ -c -g -O -DCONFIG_DIR=\"/usr/local/htdig/conf\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx ResultList.cc
+c++ -c -g -O -DCONFIG_DIR=\"/usr/local/htdig/conf\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx ResultMatch.cc
+c++ -c -g -O -DCONFIG_DIR=\"/usr/local/htdig/conf\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx Template.cc
+c++ -c -g -O -DCONFIG_DIR=\"/usr/local/htdig/conf\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx TemplateList.cc
+c++ -c -g -O -DCONFIG_DIR=\"/usr/local/htdig/conf\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx WeightWord.cc
+c++ -c -g -O -DCONFIG_DIR=\"/usr/local/htdig/conf\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx htsearch.cc
+c++ -c -g -O -DCONFIG_DIR=\"/usr/local/htdig/conf\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx parser.cc
+c++ -o htsearch -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx Display.o DocMatch.o ResultList.o ResultMatch.o Template.o TemplateList.o WeightWord.o htsearch.o parser.o  ../htfuzzy/libfuzzy.a -lcommon -lht -lgdbm -lrx  -lgdbm
+make[1]: Leaving directory `/usr/local/htdig-3.0.1/htsearch'
+make[1]: Entering directory `/usr/local/htdig-3.0.1/htmerge'
+c++ -c -g -O -DSORT_PROG=\"/bin/sort\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx docs.cc
+c++ -c -g -O -DSORT_PROG=\"/bin/sort\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx htmerge.cc
+c++ -c -g -O -DSORT_PROG=\"/bin/sort\" -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx words.cc
+c++ -o htmerge -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx docs.o htmerge.o words.o  -lcommon -lht -lgdbm -lrx 
+make[1]: Leaving directory `/usr/local/htdig-3.0.1/htmerge'
+make[1]: Entering directory `/usr/local/htdig-3.0.1/htnotify'
+c++ -c -g -O  -DDEFAULT_CONFIG_FILE=\"/usr/local/htdig/conf/htdig.conf\" -I../htlib -I../htcommon -I../include -I../rx-1.0/rx htnotify.cc
+c++ -o htnotify -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx htnotify.o  -lcommon -lht -lgdbm -lrx 
+make[1]: Leaving directory `/usr/local/htdig-3.0.1/htnotify'
+
+--------------6E99C419164C72427BE94B1
+Content-Type: text/plain; charset=us-ascii; name="makeinsout.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="makeinsout.txt"
+
+Installing ht://Dig
+
+Creating directories (if needed)...
+  /usr/local/htdig/bin
+  /usr/local/htdig/conf
+  /usr/local/htdig/common
+  /usr/local/htdig/db
+  /home/turtle/public_html/htdig
+  /usr/local/etc/httpd/cgi-bin
+  /home/turtle/public_html/htdig
+
+Installing individual programs...
+make[1]: Entering directory `/usr/local/htdig-3.0.1/htfuzzy'
+c++ -o htfuzzy -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx Endings.o EndingsDB.o Exact.o Fuzzy.o Metaphone.o Soundex.o SuffixEntry.o Synonym.o htfuzzy.o  -lcommon -lht -lgdbm -lrx 
+make[1]: Leaving directory `/usr/local/htdig-3.0.1/htfuzzy'
+make[1]: Entering directory `/usr/local/htdig-3.0.1/htdig'
+c++ -o htdig -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx Document.o HTML.o Images.o Parsable.o Plaintext.o Postscript.o Retriever.o SGMLEntities.o Server.o URLRef.o main.o  -lcommon -lht -lgdbm -lrx 
+make[1]: Leaving directory `/usr/local/htdig-3.0.1/htdig'
+make[1]: Entering directory `/usr/local/htdig-3.0.1/htsearch'
+c++ -o htsearch -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx Display.o DocMatch.o ResultList.o ResultMatch.o Template.o TemplateList.o WeightWord.o htsearch.o parser.o  ../htfuzzy/libfuzzy.a -lcommon -lht -lgdbm -lrx  -lgdbm
+make[1]: Leaving directory `/usr/local/htdig-3.0.1/htsearch'
+make[1]: Entering directory `/usr/local/htdig-3.0.1/htmerge'
+c++ -o htmerge -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx docs.o htmerge.o words.o  -lcommon -lht -lgdbm -lrx 
+make[1]: Leaving directory `/usr/local/htdig-3.0.1/htmerge'
+make[1]: Entering directory `/usr/local/htdig-3.0.1/htnotify'
+c++ -o htnotify -L../htlib -L../htcommon -L../gdbm-1.7.3 -L../rx-1.0/rx htnotify.o  -lcommon -lht -lgdbm -lrx 
+make[1]: Leaving directory `/usr/local/htdig-3.0.1/htnotify'
+
+--------------6E99C419164C72427BE94B1--
+
+
+From POPmail Thu Aug 22 07:00:21 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id GAA22038 for <andrews@pacbell.net>; Thu, 22 Aug 1996 06:34:34 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id GAA01290 for htdig-out; Thu, 22 Aug 1996 06:18:55 -0700 (PDT)
+Received: from atlantis.erlm.siemens.de (atlantis.erlm.siemens.de [194.174.230.11]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id GAA01285 for <htdig@sdsu.edu>; Thu, 22 Aug 1996 06:18:48 -0700 (PDT)
+Received: from tcenter.erlm.siemens.de (tcenter.erlm.siemens.de [193.25.63.21]) by atlantis.erlm.siemens.de (8.7.5/8.7.3) with ESMTP id PAA19352 for <htdig@sdsu.edu>; Thu, 22 Aug 1996 15:14:24 +0200 (MET DST)
+Received: from ivanova.anl.siemens.de (ivanova.anl.siemens.de [140.13.74.3]) by tcenter.erlm.siemens.de (8.7.5/8.7.3) with SMTP id PAA05804 for <htdig@sdsu.edu>; Thu, 22 Aug 1996 15:16:02 +0200 (MET DST)
+Received: by ivanova.anl.siemens.de (5.x/SMI-SVR4)
+	id AA27088; Thu, 22 Aug 1996 15:14:30 +0200
+From: hakan@ivanova (Hakan Tandogan)
+Message-Id: <9608221314.AA27088@ivanova.anl.siemens.de>
+Subject: htdig: relative paths in URL's
+To: htdig@sdsu.edu
+Date: Thu, 22 Aug 1996 15:14:28 +0200 (MET DST)
+X-Mailer: ELM [version 2.4 PL25]
+Content-Type: text
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: hakan@ivanova (Hakan Tandogan)
+X-UIDL: af904ea2bc085dee0598a251c967243a
+Status: ROr
+
+
+	And my last problem for today ;-)
+
+
+	My users love using relative URL's in their documents, thus
+generating documents that htdig refers to as
+
+	"http://my.server.com/foo/bar/../stuff/smurf.html", 
+
+	which should be identical to 
+
+	"http://my.server.com/foo/stuff/smurf.html".
+
+	However, when I let htdig dump the URL list, those two crop up
+as distinct URLs. Would it be sensible to "normalize" the URL before
+processing it further? If nobody sees a serious problem, I'll try my
+hand at URL::normalize.
+
+
+	Hakan
+
+
+
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+
+
+From turtle Thu Aug 22 09:29:13 1996
+Subject: Re: htdig: Another LowerCase/UpperCase Problem
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Thu, 22 Aug 1996 09:29:13 -0700 (PDT)
+In-Reply-To: <321C7705.7717@telrad.co.il> from Anat Rozenzon at "Aug 22, 96 06:04:37 pm"
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:  1486
+Status: RO
+
+Anat Rozenzon wrote:
+> Hi!
+> 
+> I have another problem with LowerCase and UperCase names.
+> I'm trying to index files of mine that are placed at
+> 
+> http://www.my.site/Data_base_and_PLS/*
+> 
+> when I first activated htdig with initializing (-i) it works fine.
+> Then I changed some files and was trying to activate htdig without the
+> -i,
+> I got this result:
+> 
+> New server: www.my.site, 80
+> 0:0:0:http://www.my.site/Data_base_and_PLS/: . (changed)
+> ++++-+-- size = 1751
+> 1:89:0:http://www.my.site/data_base_and_pls/wwwteam/wais/passwd.bak:
+> not found
+> 2:1:0:http://www.my.site/data_base_and_pls/pls.html:  not found
+> 3:81:0:http://www.my.site/data_base_and_pls/wwwteam/wais/group:
+> not found
+> 4:72:0:http://www.my.site/data_base_and_pls/wwwteam/wais/fwsf_2.html:
+> not found
+> 5:55:0:http://www.my.site/data_base_and_pls/wwwteam/goodies/makepage.html:
+> not found
+> ...
+> 
+> Somehow the directory name 'Data_base_and_PLS' was converted to
+> 'data_base_and_pls' where these files doesn't exist, and they're all
+> tagged as 'not found'.
+> 
+> Can I get around it as was suggested (with alliasing in the Appache
+> configuration)?
+> Or is there an easier way?
+> 
+> Thanks
+
+Actually, this sounds like a problem with htdig.  Even though it does
+case insensitive compares of URLs, it really should keep the case when
+storing them.
+
+I had a report about this before as well.  Haven't had a chance to look
+at it, though.
+
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From POPmail Thu Aug 22 08:31:06 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id IAA20242 for <andrews@pacbell.net>; Thu, 22 Aug 1996 08:16:08 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id IAA02494 for htdig-out; Thu, 22 Aug 1996 08:06:23 -0700 (PDT)
+Received: from mail.netvision.net.il (mail.NetVision.net.il [194.90.1.6]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id IAA02489 for <htdig@sdsu.edu>; Thu, 22 Aug 1996 08:06:19 -0700 (PDT)
+Received: from telgate.telrad.co.il (telgate.telrad.co.il [194.90.21.130]) by mail.netvision.net.il (8.7.5/8.7.3) with SMTP id SAA27928 for <htdig@sdsu.edu>; Thu, 22 Aug 1996 18:05:12 +0300 (IDT)
+Received: from elex.co.il (tlhuph12.elex.co.il) by telgate.telrad.co.il (4.1/SMI-4.1)
+	id AA00146; Thu, 22 Aug 96 18:03:38 IDT
+Received: from sysdep.elex.co.il (tlrhp01.elex.co.il) by elex.co.il with ESMTP
+	(1.37.109.16/16.2) id AA126196238; Thu, 22 Aug 1996 18:03:58 +0300
+Received: from tlhuph04.elex.co.il (tlhuph04) by sysdep.elex.co.il with ESMTP
+	(1.37.109.16/16.2) id AA214586279; Thu, 22 Aug 1996 18:04:40 +0300
+Received: from tlhuph04 (localhost) by tlhuph04.elex.co.il with SMTP
+	(1.37.109.16/15.6) id AA157116277; Thu, 22 Aug 1996 18:04:37 +0300
+Message-Id: <321C7705.7717@telrad.co.il>
+Date: Thu, 22 Aug 1996 18:04:37 +0300
+From: Anat Rozenzon <Anat.Rozenzon@telrad.co.il>
+Organization: Telrad Ltd.
+X-Mailer: Mozilla 2.0 (X11; I; HP-UX A.09.03 9000/712)
+Mime-Version: 1.0
+To: "ht://Dig mailing list" <htdig@sdsu.edu>
+Subject: htdig: Another LowerCase/UpperCase Problem
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: Anat Rozenzon <Anat.Rozenzon@telrad.co.il>
+X-UIDL: 007bc4b80d3a4089c318d4e240f451f4
+Status: ROr
+
+Hi!
+
+I have another problem with LowerCase and UperCase names.
+I'm trying to index files of mine that are placed at
+
+http://www.my.site/Data_base_and_PLS/*
+
+when I first activated htdig with initializing (-i) it works fine.
+Then I changed some files and was trying to activate htdig without the
+-i,
+I got this result:
+
+New server: www.my.site, 80
+0:0:0:http://www.my.site/Data_base_and_PLS/: . (changed)
+++++-+-- size = 1751
+1:89:0:http://www.my.site/data_base_and_pls/wwwteam/wais/passwd.bak:
+not found
+2:1:0:http://www.my.site/data_base_and_pls/pls.html:  not found
+3:81:0:http://www.my.site/data_base_and_pls/wwwteam/wais/group:
+not found
+4:72:0:http://www.my.site/data_base_and_pls/wwwteam/wais/fwsf_2.html:
+not found
+5:55:0:http://www.my.site/data_base_and_pls/wwwteam/goodies/makepage.html:
+not found
+...
+
+Somehow the directory name 'Data_base_and_PLS' was converted to
+'data_base_and_pls' where these files doesn't exist, and they're all
+tagged as 'not found'.
+
+Can I get around it as was suggested (with alliasing in the Appache
+configuration)?
+Or is there an easier way?
+
+Thanks
+
+ 
+
+-- 
+	Anat Rozenzon
+ 
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+WWW team  - Support Dept.         Telrad Phone: 5251
+Telrad Ltd.
+Israel 
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+
+
+From turtle Thu Aug 22 09:36:39 1996
+Subject: Re: htdig: relative paths in URL's
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Thu, 22 Aug 1996 09:36:39 -0700 (PDT)
+In-Reply-To: <9608221546.AA27875@ivanova.anl.siemens.de> from Hakan Tandogan at "Aug 22, 96 05:46:45 pm"
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:   737
+Status: RO
+
+Hakan Tandogan wrote:
+> 
+> 	Well, at least the .. and . part of the URI is solved. RFC
+> 1630 (URIs in WWW) says:
+> 
+> "  The rules for the use of a partial name relative to the URI of the
+>    context are:
+>  
+> [ ... ]
+> 
+>       Within the result, all occurrences of "xxx/../" or "/." are
+>       recursively removed, where xxx, ".." and "." are complete path
+>       elements.
+> 
+> "
+
+Thanks for looking that up.  I don't know why I didn't do that before.
+Maybe I was thinking about Gopher paths...  (I wrote a gopher server
+and xview gopher client when gopher was still used...)
+
+> 
+> 	I'll go ahead and kill those ..'s ;-)
+> 
+
+What?  You're not done, yet!  Geez!  :-)
+
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From POPmail Thu Aug  8 19:20:12 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA03152 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:15:46 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17534 for andrew; Thu, 8 Aug 1996 19:15:44 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id IAA10499 for <turtle@ender.sdsu.edu>; Mon, 22 Jul 1996 08:10:00 -0700 (PDT)
+Received: from post.QueensU.CA (root@knot.QueensU.CA [130.15.126.54]) by sdsu.edu (8.7.5/8.6.9) with SMTP id IAA08512 for <andrew@sdsu.edu>; Mon, 22 Jul 1996 08:09:59 -0700 (PDT)
+Received: from bitsy.ccs.queensu.ca (bitsy.CCS.QueensU.CA [130.15.48.20]) by post.QueensU.CA (8.6.12/8.6.10+ASH) with ESMTP id LAA25632 for <andrew@sdsu.edu>; Mon, 22 Jul 1996 11:09:35 -0400
+X-UIDL: 839557204.004
+Message-Id: <199607221509.LAA25632@post.QueensU.CA>
+To: Andrew Scherpbier <andrew@sdsu.edu>
+Subject: Re: htdig: htsearch problems in 3.0b5 on SunOS 4.1.3 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 22 Jul 1996 11:09:34 -0400
+From: Andy Hooper <hooper@knot.queensu.ca>
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:  4137
+Status: ROr
+
+Hi, your new 3.0 version has been working better for me than b5 did. Thank
+you! I have noticed however that when htdig is doing an index update (i.e.
+without -i) it is trying to access documents with the URL file name translated
+to lower case. When this is done against Unix-based http servers it results in
+the documents not being found.
+
+I also had a problem with htmerge. When it ran the sort it ran out of disk
+space. Unfortunately htmerge did not check to see if sort completed
+successfully and it went ahead to delete files, resulting in an empty index.
+I patched in a check, and also added the possibility to use the TMPDIR
+environment variable to place the sort work files in a different place.
+A patch is attached below if you'd like to use it. This got me looking at
+the other sort call too, and I patched it similarly. I also added declarations
+of the socket functions to eliminate some warnings from gcc.
+
+Andy Hooper, Queen's University
+
+*** ./htmerge/words.cc.orig     Wed Jul 10 13:21:47 1996
+--- ./htmerge/words.cc  Fri Jul 19 08:20:14 1996
+***************
+*** 53,59 ****
+        if (verbose)
+                cout << "Sorting..." << endl;
+  
+!       FILE    *sorted = popen(form("%s %s", SORT_PROG, wordtmp), "r");
+        if (!sorted)
+        {
+                reportError("Unable to sort");
+--- 53,66 ----
+        if (verbose)
+                cout << "Sorting..." << endl;
+  
+!       String          command = SORT_PROG;
+!       String          tmpdir = getenv("TMPDIR");
+!       if (tmpdir)
+!       {
+!               command << " -T " << tmpdir;
+!       }
+!       command << " " << wordtmp;
+!       FILE    *sorted = popen(command, "r");
+        if (!sorted)
+        {
+                reportError("Unable to sort");
+***************
+*** 199,204 ****
+--- 206,222 ----
+                        }
+                }
+        }
++ 
++       //
++       // Check for successful completion of sort
++       //
++       int     sortRC = pclose(sorted);
++       if (sortRC)
++       {
++               reportError("Word sort failed");
++               exit(1);
++       }
++ 
+        dbf->Put(currentWord, out.get(), out.length());
+        dbf->Close();
+
+*** ./htcommon/DocumentDB.cc.orig       Thu Mar 21 14:21:19 1996
+--- ./htcommon/DocumentDB.cc    Fri Jul 19 08:11:43 1996
+***************
+*** 14,19 ****
+--- 14,20 ----
+  #include <stdlib.h>
+  #include <ctype.h>
+  #include <unistd.h>
++ #include <iostream.h>
+  #include <Database.h>
+  
+  
+***************
+*** 184,192 ****
+        char            *key;
+        String          data;
+        FILE            *fl;
+!       String          command = "/bin/sort -T /tmp -n -o ";
+  
+        command << filename;
+        fl = popen(command, "w");
+  
+        dbf->Start_Get();
+--- 185,198 ----
+        char            *key;
+        String          data;
+        FILE            *fl;
+!       String          command = "/bin/sort -n -o ";
+!       String          tmpdir = getenv("TMPDIR");
+  
+        command << filename;
++       if (tmpdir)
++       {
++               command << " -T " << tmpdir;
++       }
+        fl = popen(command, "w");
+  
+        dbf->Start_Get();
+***************
+*** 233,239 ****
+                        fprintf(fl, "\n");
+                }
+        }
+!       pclose(fl);
+        return 0;
+  }
+  
+--- 239,250 ----
+                        fprintf(fl, "\n");
+                }
+        }
+!       int     sortRC = pclose(fl);
+!       if (sortRC)
+!       {
+!               cerr << "Document sort failed\n\n";
+!               exit(1);
+!       }
+        return 0;
+  }
+  
+*** ./htlib/Connection.cc.orig  Fri Feb 16 18:31:16 1996
+--- ./htlib/Connection.cc       Fri Jul 19 07:44:13 1996
+***************
+*** 33,38 ****
+--- 33,47 ----
+  
+  extern "C" {
+  int rresvport(int *);
++ int getpeername(int, struct sockaddr *, int *);
++ int socket(int, int, int);
++ int getsockopt(int, int, int, char *, int *);
++ int setsockopt(int, int, int, char *, int);
++ int connect(int, struct sockaddr *, int);
++ int bind(int, struct sockaddr *, int);
++ int getsockname(int, struct sockaddr *, int *);
++ int listen(int, int);
++ int accept(int, struct sockaddr *, int *);
+  }
+  
+  List  all_connections;
+
+From POPmail Thu Aug  8 19:20:15 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA03429 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:16:37 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17542 for andrew; Thu, 8 Aug 1996 19:16:35 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id PAA00266 for <turtle@ender.sdsu.edu>; Mon, 22 Jul 1996 15:29:09 -0700 (PDT)
+Received: from gw3.pacbell.com (gw3.PacBell.COM [129.245.2.24]) by sdsu.edu (8.7.5/8.6.9) with SMTP id PAA12274 for <andrew@sdsu.edu>; Mon, 22 Jul 1996 15:29:09 -0700 (PDT)
+Received: from srv.PacBell.COM (mother.srv.PacBell.COM) by gw3.pacbell.com (5.x/PacBell-10/18/95)
+	id AA25788; Mon, 22 Jul 1996 15:28:20 -0700
+Received: from zeus.srv.PacBell.COM by srv.PacBell.COM (4.1/Mother-7/26/95)
+	id AA08813; Mon, 22 Jul 96 15:28:19 PDT
+Received: from mindsword.srv.PacBell.COM by zeus.srv.PacBell.COM (4.1/SMI-4.1)
+	id AA09263; Mon, 22 Jul 96 15:28:19 PDT
+X-UIDL: 839557204.006
+Date: Mon, 22 Jul 1996 15:27:29 -0700 (PDT)
+From: Joseph Woodard <jhwood1@srv.PacBell.COM>
+To: andrew@sdsu.edu
+Cc: Joseph Woodard <jhwood1@PacBell.COM>
+Subject: HTDig not used after all in AND search
+Message-Id: <Pine.SUN.3.91.960722152311.22091L-100000@mindsword.srv.PacBell.COM>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:   541
+Status: ROr
+
+Sorry to bother you Andrew. It seems no HTDig software was used after all
+in the search solution I'ld like to create, a search for all documents,
+each containing all words in a list, a boolean AND search. However, I would
+like to use HTDig since the code is elegantly written and documentation
+contientiously done. Does the AND search work in some way I am not using?
+
+Joseph Woodard; Senior Systems Analyst, PacBell, SRV, 1S100H
+work phone (510)355-4165     pager (510)904-7938
+jhwood1@PacBell.COM  jhwoodar@well.com  jwoodard@igc.apc.org
+
+From POPmail Thu Aug 22 15:30:05 1996
+Return-Path: jhwood1@srv.PacBell.COM
+Received: from gw3.pacbell.com (gw3.PacBell.COM [129.245.2.24]) by PACBELL.net (8.7.5/8.7.1) with SMTP id OAA04983 for <andrews@pacbell.net>; Thu, 22 Aug 1996 14:34:15 -0700 (PDT)
+Received: from srv.PacBell.COM (mother.srv.PacBell.COM) by gw3.pacbell.com (5.x/PacBell-10/18/95)
+	id AA13469; Thu, 22 Aug 1996 14:33:44 -0700
+Received: from zeus.srv.PacBell.COM by srv.PacBell.COM (4.1/Mother-7/26/95)
+	id AA15381; Thu, 22 Aug 96 14:33:43 PDT
+Received: from mindsword.srv.PacBell.COM by zeus.srv.PacBell.COM (4.1/SMI-4.1)
+	id AA05783; Thu, 22 Aug 96 14:33:42 PDT
+Date: Thu, 22 Aug 1996 14:32:30 -0700 (PDT)
+From: Joseph Woodard <jhwood1@srv.PacBell.COM>
+To: Andrew Scherpbier <andrews@pacbell.net>
+Subject: Re: HTDig not used after all in AND search
+In-Reply-To: <199608222123.OAA24813@kiwi.pacbell.net>
+Message-Id: <Pine.SUN.3.91.960822143100.18556J-100000@mindsword.srv.PacBell.COM>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-UIDL: b917b3374fd4ec62e5f5c64f317e8fbb
+Status: ROr
+
+Thanks Andrew;
+
+In fact I've installed and I'm testing HTDig 3.0. Boolean works fine.
+A wildcard search (like WAIS) would make a great addition, but in any 
+case, my compliments on elegantly coded work. The program source is
+a treat to read!
+
+Joe W.
+
+On Thu, 22 Aug 1996, Andrew Scherpbier wrote:
+
+> Joseph Woodard wrote:
+> > Sorry to bother you Andrew. It seems no HTDig software was used after all
+> > in the search solution I'ld like to create, a search for all documents,
+> > each containing all words in a list, a boolean AND search. However, I would
+> > like to use HTDig since the code is elegantly written and documentation
+> > contientiously done. Does the AND search work in some way I am not using?
+> > 
+> 
+> ht://Dig 3.0 changed the way boolean searches are done.
+> To perform an 'and' search, you need to add a form item (a select or hidden input)
+> that sets "method" to "and".  Look at the sample HTML search form that is created
+> when ht://Dig is installed.  It uses a <select> with three options: 'or', 'and', and 'boolean'.
+> 
+> I hope this information is not too late for you.
+> 
+> -- 
+> Andrew Scherpbier <andrews@pacbell.net>
+> Contigo Software
+> 
+
+Joseph Woodard; Senior Systems Analyst, PacBell, SRV, 1S100H
+work phone (510)355-4165     pager (510)904-7938
+jhwood1@PacBell.COM  jhwoodar@well.com  jwoodard@igc.apc.org
+
+
+From POPmail Thu Aug 22 17:00:44 1996
+Return-Path: mc@webmac.demon.co.uk
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id QAA15814 for <andrews@pacbell.net>; Thu, 22 Aug 1996 16:27:47 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id QAA10703 for <turtle@ender.sdsu.edu>; Thu, 22 Aug 1996 16:27:35 -0700 (PDT)
+Received: from localhost (root@webmac.demon.co.uk [194.222.8.36]) by sdsu.edu (8.7.5/8.6.9) with SMTP id QAA06737 for <andrew@sdsu.edu>; Thu, 22 Aug 1996 16:27:28 -0700 (PDT)
+Received: from localhost (root@localhost [127.0.0.1]) by localhost (8.6.12/8.6.6) with SMTP id DAA00551 for <andrew@sdsu.edu>; Fri, 23 Aug 1996 03:06:28 +0200
+Sender: root@sdsu.edu
+Message-ID: <321D0412.71D8892B@webmac.demon.co.uk>
+Date: Fri, 23 Aug 1996 01:06:27 +0000
+From: "C.Mac donald" <mc@webmac.demon.co.uk>
+X-Mailer: Mozilla 3.0b5aGold (X11; I; Linux 1.2.13 i486)
+MIME-Version: 1.0
+To: andrew@sdsu.edu
+Subject: htdig
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-UIDL: 9193b5bb4cf8bd10a996f111b9a4b601
+Status: ROr
+
+hi Andrew
+
+
+I am still trying to get Htdig to compile on linux-ft.
+
+the configure output script gives an error saying it cannot find 
+"lsocket". Could you tell me what this means.
+
+ Also on inspection of the configure script  it points to  a directory 
+"#! /bin/sh ". if I cd /bin/sh, 
+i get an error message saying no such directory.
+
+If I use the command "which c++" the output tells me that the c++
+is in /usr/bin/c++. the above is also true for g++.
+
+I have now changed the configure Script too "#! /usr/bin. When i run
+configure with the command ./configure I get a error Message Permision
+denied.
+
+I hvae changed the file configure's  Group and Owner Permissions  to
+root however I still get the error permision denied.
+
+the /usr/bin directorys both have read ,excute and write permission for
+root.
+
+
+Have i done the right thing here. ???
+
+can you help
+
+ps I am new to linux/unix and still learnig !! 
+
+
+
+
+mac
+
+
+From turtle Thu Aug 22 17:16:26 1996
+Subject: wildcard searching with ht://Dig...
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Thu, 22 Aug 1996 17:16:26 -0700 (PDT)
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:   689
+Status: RO
+
+Folks:
+I am willing to work on a wildcard search for ht://Dig.
+However, I need your input on how to do it.
+
+The simplest way I can think of is to have htfuzzy build a sorted list
+of words that htsearch can look through.
+The fastest type of wildcard search would be to search for words that start
+with a sequence of chars.  That way, the sorted list of words can be used
+to do a binary search.  Once a list of words has been found, they are
+substituted, just like the Endings fuzzy algorithm.
+
+Would this be enough for most people's needs?
+
+Since I really don't have the time to write this, can someone else work on this?  :-)
+
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From POPmail Thu Aug 22 22:00:05 1996
+Return-Path: dhiltgen@toocool.itslab.calpoly.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id VAA11587 for <andrews@pacbell.net>; Thu, 22 Aug 1996 21:35:30 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id VAA10835 for <turtle@ender.sdsu.edu>; Thu, 22 Aug 1996 21:35:26 -0700 (PDT)
+Received: from toocool.itslab.calpoly.edu (dhiltgen@toocool.itslab.calpoly.edu [129.65.175.63]) by sdsu.edu (8.7.5/8.6.9) with SMTP id VAA07858 for <andrew@sdsu.edu>; Thu, 22 Aug 1996 21:35:26 -0700 (PDT)
+Received: (from dhiltgen@localhost) by toocool.itslab.calpoly.edu (8.6.12/8.6.9) id VAA28857 for andrew@sdsu.edu; Thu, 22 Aug 1996 21:34:59 -0700
+From: Daniel Hiltgen <dhiltgen@toocool.itslab.calpoly.edu>
+Message-Id: <199608230434.VAA28857@toocool.itslab.calpoly.edu>
+Subject: ht://Dig problem (bug possibly?)
+To: andrew@sdsu.edu
+Date: Thu, 22 Aug 1996 21:34:59 -0700 (PDT)
+X-Mailer: ELM [version 2.4 PL24]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-UIDL: 58f48d33f6331ac0258e56d6ddc25320
+Status: ROr
+
+I just installed ht://dig on a linux server here at Poly, and everything
+goes fine, until you make a query.  If there are no results, or very
+few, the cgi returns the results fine.  If there are many (not sure the
+breaking point) matches, it seg faults.  I have tried gdb'ing it, but I
+can't really tell where in the code it's dying.  When I run the search
+engine on the command line, the seg fault comes after the second
+result.  It spits out a </dd></dl> followed by the S.F..
+
+I have tried building it on a different machine running Solaris and
+built the exact same database, and the cgi works fine on that platform,
+so I guess it is a linux specific thing.  (Unfortunately, I can't use the
+Solaris machine for the search engine, otherwise this would be an easy
+fix!) 
+
+Are you familiar with this problem or is it a new development?
+
+If possible, I'd be more than happy to attempt some sort of fix if you
+have any recommendations where I should look in the code.
+(Unfortunately, I don't have the time to learn the whole system ;)
+
+FYI: the linux machine is Slackware 3.0 ELF, with Kernel 2.0.7 and gcc
+2.7.2
+
+Any help would be greatly appreciated. :)
+
+Daniel
+
+--
+Daniel Kerry Hiltgen:   Info. Tech. Services  System Administrator
+dhiltgen@( drseuss.acs | galaxy.csc | toocool.itslab ).calpoly.edu 
+http://www.itslab.calpoly.edu/~dhiltgen/
+Cal Poly, San Luis Obispo, CA  
+
+
+From POPmail Thu Aug 22 20:00:44 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA29497 for <andrews@pacbell.net>; Thu, 22 Aug 1996 19:42:07 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id TAA07516 for htdig-out; Thu, 22 Aug 1996 19:30:03 -0700 (PDT)
+Received: from dns2.sourcedigital.com (dns2.sourcedigital.com [207.19.105.3]) by sdsu.edu (8.7.5/8.6.9) with SMTP id TAA07511 for <htdig@sdsu.edu>; Thu, 22 Aug 1996 19:30:00 -0700 (PDT)
+Received: from dwf.webthreads.com (root@dwf.webthreads.com [205.252.250.66]) by dns2.sourcedigital.com (8.6.12/8.6.11) with ESMTP id WAA17409 for <htdig@sdsu.edu>; Thu, 22 Aug 1996 22:29:56 -0400
+Received: from dwf (root@localhost [127.0.0.1]) by dwf.webthreads.com (8.7.5/8.6.9) with SMTP id WAA16570 for <htdig@sdsu.edu>; Thu, 22 Aug 1996 22:29:54 -0400
+Message-ID: <321D1740.1D30ECC6@webthreads.com>
+Date: Thu, 22 Aug 1996 22:29:54 -0400
+From: David Filiatrault <dwf@webthreads.com>
+Organization: WebThreads L.L.C.
+X-Mailer: Mozilla 3.0 (X11; U; Linux 2.0.10 i586)
+MIME-Version: 1.0
+To: htdig@sdsu.edu
+Subject: htdig: htdig SIGSEGV's
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: David Filiatrault <dwf@webthreads.com>
+X-UIDL: fbadd3605331f4a392c37af81637e097
+Status: ROr
+
+On my Linux 2.0.10 box with gcc 2.7.2 with htdig-3.0.1:
+
+1.
+Had to add 
+-I/usr/lib/g++-include
+to Makefile.in to get it to find fstream.h which was required to
+compile.
+
+2.
+Also, 
+#NEED_PROTO_GETHOSTNAME 1 
+should have been 0, as it is located in unistd.h
+
+3. htdig immediatly SIGSEGV's.  Have you received reports of anyone
+using this version under Linux?
+
+-David
+
+
+-- 
+
+-----------------------------------------------------------------------
+David Filiatrault     http://www.WebThreads.Com      dwf@WebThreads.Com
+
+        Web Site User Tracking and Revolutionary Interactivity.
+                Fearless Unix and Internet Wizardry.
+                   Opinions expressed are my own.
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+
+
+From turtle Fri Aug 23 01:00:37 1996
+Subject: htdig-3.0.2 available
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Fri, 23 Aug 1996 01:00:37 -0700 (PDT)
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:   479
+Status: RO
+
+I just uploaded version 3.0.2 of ht://Dig.
+Check the release notes http://htdig.sdsu.edu/RELEASE.html for more
+info on what has changed since the previous version.
+
+I have also included a context diff from the 3.0.1 source tree to
+the 3.0.2 source tree.  It should be possible to patch your existing
+3.0.1 tree with it.  (If you know what a context diff is, you most
+likely will also know how to apply them...  :-))
+
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From turtle Sat Aug 24 08:48:13 1996
+Subject: Re: htdig: Htsearch bug in linux
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Sat, 24 Aug 1996 08:48:13 -0700 (PDT)
+In-Reply-To: <199608232319.QAA02069@toocool.itslab.calpoly.edu> from Daniel Hiltgen at "Aug 23, 96 04:19:50 pm"
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:  3589
+Status: RO
+
+Daniel Hiltgen wrote:
+> Well, I've been told that this is a known error.  It seg-faults
+> on the second or third match in a search. 
+> 
+> I've managed to locate the exact line where is dies:
+> In htlib/Dictionary.cc...
+> void Dictionary::Delete_Data(void *data)
+> {
+>     delete (Object *) data;
+> }
+> 
+> The delete line does it.  I'll bet a large sum of money, that "data" is
+> not of type (Object *) when this in fact happens, but when I tried to
+> trace backwards to figure out where data was coming from I got lost real
+> quick. :)  Does anyone know _why_ void * was used?  Isn't that
+> sacrilegious in OO?  Without totally diving into the code, it appears to
+> me that this Object type is just a generic "thing" that is used
+> polymorphically by the database.  Why then shouldn't the above code be
+> Object * instead of void *?  I tried changing void to Object, but that
+> mushroomed in my face real quick so I gave up on that route.  I also
+> tried changing the destructor line to just "delete data;" but that only
+> prolonged the crash for a few lines of code. (I'm not sure exactly where
+> it dies when you do this, but it still dies so I didn't waste my time
+> trying to figure that one out)
+
+The reason it uses void* for the key and data is because the Dictionary
+class is derived from the much more generic HastTable class.  This class
+doesn't know about Object at all (other than that it subclasses it...)
+A class that derives from HashTable has to supply some routines which
+the HastTable class will call.  One of those is the method in question
+here.
+I actually did not write the HastTable class myself.  I got it from a friend
+of mine.  We have been using it for years without any problems.  I really
+doubt that the problem lies in either the Dictionary or HashTable classes.
+
+> 
+> If anyone can offer some ideas on where I should head from here that
+> would be great.  
+> 
+> BTW: The function stack right before the seg-fault looks something like
+> this... (Line numbers are off due to excessive additions of cout calls :)
+> 
+> #0  Dictionary::Delete_Data (this=0xbfffe83c, data=0x80d9b50) at Dictionary.cc:156
+> #1  0x80531c7 in HashTable::Remove (this=0xbfffe83c, key=0x807cee0) at HashTable.cc:212
+> #2  0x8056657 in Dictionary::Replace (this=0xbfffe83c, name=0x806c793 "EXCERPT", obj=0x80d9980)
+>     at Dictionary.cc:92
+> #3  0x804a5e9 in Display::displayMatch (this=0xbfffe810, match=0x80a2b40) at Display.cc:151
+> #4  0x804a4d4 in Display::display (this=0xbfffe810, pageNumber=1) at Display.cc:107
+> #5  0x804d3de in main (ac=1, av=0xbffff9c8) at htsearch.cc:177
+> #6  0x804a18b in ___crt_dummy__ ()
+> 
+
+I have seen this stack dump before.  I went over the uses of the Dictionary
+in htsearch/Display.cc and all Objects are freshly allocated.  The variable
+in question is 'vars', I believe.  It is used to set the variables to be
+substituted in the result templates.
+
+> 
+> I'd really like to get this solved so that I can get a search engine up
+> and running on this server and I'm willing to help in the solution if
+> someone can point me in a direction.
+
+I hope the background info above helps a little.
+
+> 
+> Oh, as a side note, I tried this on a FreeBSD box that I have access to,
+> and it did NOT seg-fault.  Looks like this is probably a bug in Linux
+> that is provoked by something in the code above.  (But I hear that this
+> happens on other platforms as well, so maybe it's a larger bug than
+> that....) 
+
+Well...  There goes my theory about byte order...
+I really have no idea what's going on.
+
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From turtle  Fri Aug 23 19:30:46 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from hupa (hupa.snfc21.pbi.net [206.13.28.16]) by PACBELL.net (8.7.5/8.7.1) with SMTP id SAA01056 for <andrews@pacbell.net>; Fri, 23 Aug 1996 18:35:38 -0700 (PDT)
+Received: from sdsu.edu by hupa (SMI-8.6/SMI-SVR4)
+	id QAA23945; Fri, 23 Aug 1996 16:40:29 -0700
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id QAA13981 for htdig-out; Fri, 23 Aug 1996 16:20:22 -0700 (PDT)
+Received: from toocool.itslab.calpoly.edu (dhiltgen@toocool.itslab.calpoly.edu [129.65.175.63]) by sdsu.edu (8.7.5/8.6.9) with SMTP id QAA13976 for <htdig@sdsu.edu>; Fri, 23 Aug 1996 16:20:20 -0700 (PDT)
+Received: (from dhiltgen@localhost) by toocool.itslab.calpoly.edu (8.6.12/8.6.9) id QAA02069 for htdig@sdsu.edu; Fri, 23 Aug 1996 16:19:51 -0700
+From: Daniel Hiltgen <dhiltgen@toocool.itslab.calpoly.edu>
+Message-Id: <199608232319.QAA02069@toocool.itslab.calpoly.edu>
+Subject: htdig: Htsearch bug in linux
+To: htdig@sdsu.edu
+Date: Fri, 23 Aug 1996 16:19:50 -0700 (PDT)
+X-Mailer: ELM [version 2.4 PL24]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: Daniel Hiltgen <dhiltgen@toocool.itslab.calpoly.edu>
+X-UIDL: 365285b458c24c28656a8fe39a62df66
+Status: ROr
+
+Well, I've been told that this is a known error.  It seg-faults
+on the second or third match in a search. 
+
+I've managed to locate the exact line where is dies:
+In htlib/Dictionary.cc...
+void Dictionary::Delete_Data(void *data)
+{
+    delete (Object *) data;
+}
+
+The delete line does it.  I'll bet a large sum of money, that "data" is
+not of type (Object *) when this in fact happens, but when I tried to
+trace backwards to figure out where data was coming from I got lost real
+quick. :)  Does anyone know _why_ void * was used?  Isn't that
+sacrilegious in OO?  Without totally diving into the code, it appears to
+me that this Object type is just a generic "thing" that is used
+polymorphically by the database.  Why then shouldn't the above code be
+Object * instead of void *?  I tried changing void to Object, but that
+mushroomed in my face real quick so I gave up on that route.  I also
+tried changing the destructor line to just "delete data;" but that only
+prolonged the crash for a few lines of code. (I'm not sure exactly where
+it dies when you do this, but it still dies so I didn't waste my time
+trying to figure that one out)
+
+If anyone can offer some ideas on where I should head from here that
+would be great.  
+
+BTW: The function stack right before the seg-fault looks something like
+this... (Line numbers are off due to excessive additions of cout calls :)
+
+#0  Dictionary::Delete_Data (this=0xbfffe83c, data=0x80d9b50) at Dictionary.cc:156
+#1  0x80531c7 in HashTable::Remove (this=0xbfffe83c, key=0x807cee0) at HashTable.cc:212
+#2  0x8056657 in Dictionary::Replace (this=0xbfffe83c, name=0x806c793 "EXCERPT", obj=0x80d9980)
+    at Dictionary.cc:92
+#3  0x804a5e9 in Display::displayMatch (this=0xbfffe810, match=0x80a2b40) at Display.cc:151
+#4  0x804a4d4 in Display::display (this=0xbfffe810, pageNumber=1) at Display.cc:107
+#5  0x804d3de in main (ac=1, av=0xbffff9c8) at htsearch.cc:177
+#6  0x804a18b in ___crt_dummy__ ()
+
+
+I'd really like to get this solved so that I can get a search engine up
+and running on this server and I'm willing to help in the solution if
+someone can point me in a direction.
+
+Oh, as a side note, I tried this on a FreeBSD box that I have access to,
+and it did NOT seg-fault.  Looks like this is probably a bug in Linux
+that is provoked by something in the code above.  (But I hear that this
+happens on other platforms as well, so maybe it's a larger bug than
+that....) 
+
+Daniel
+
+--
+Daniel Kerry Hiltgen:   Info. Tech. Services  System Administrator
+dhiltgen@( drseuss.acs | galaxy.csc | toocool.itslab ).calpoly.edu 
+http://www.itslab.calpoly.edu/~dhiltgen/
+Cal Poly, San Luis Obispo, CA  
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+
+From turtle  Fri Aug 23 19:30:40 1996
+Return-Path: inglem@fancy.std.teradyne.com
+Received: from hupa (hupa.snfc21.pbi.net [206.13.28.16]) by PACBELL.net (8.7.5/8.7.1) with SMTP id SAA21698 for <andrews@pacbell.net>; Fri, 23 Aug 1996 18:08:57 -0700 (PDT)
+Received: from steadfast.teradyne.com by hupa (SMI-8.6/SMI-SVR4)
+	id QAA25422; Fri, 23 Aug 1996 16:51:43 -0700
+Received: from fancy.std.teradyne.com (fancy.std.teradyne.com [131.101.208.250]) by steadfast.teradyne.com (8.7.1/8.7.1) with ESMTP id TAA02301 for <andrews@pacbell.net>; Fri, 23 Aug 1996 19:50:30 -0400 (EDT)
+Received: from wintermute.Tera_std (wintermute [131.101.208.10]) by fancy.std.teradyne.com (8.7.1/8.7.1) with SMTP id QAA00488 for <andrews@pacbell.net>; Fri, 23 Aug 1996 16:47:27 -0700 (PDT)
+Received: by wintermute.Tera_std (SMI-8.6/SMI-SVR4)
+	id QAA02195; Fri, 23 Aug 1996 16:47:56 -0700
+Date: Fri, 23 Aug 1996 16:47:56 -0700
+From: inglem@std.teradyne.com (Michael Ingle)
+Message-Id: <199608232347.QAA02195@wintermute.Tera_std>
+To: andrews@pacbell.net
+Subject: Re: htmerge with NFS hangs
+X-Sun-Charset: US-ASCII
+X-UIDL: d4218454d3b68504c5317c5792f1d2c4
+Status: ROr
+
+> Michael Ingle wrote:
+> > I am using htdig 3.0.1 with Solaris 2.5 and have tried both gcc and acc.
+> > There are a couple of bugs in the build process (rx directory does not get
+> > configured properly), but I was able to compile it.
+> 
+> Really?  My development platform is SPARC Solaris 2.5 with gcc 2.7.2
+> I have no problems at all configuring and compiling any part of ht://Dig.
+> Can you give me some details on what exactly went wrong?  Thanks.
+
+Well, after doing a configure and make, in rx-10 the subdirs= line does not
+say rx, and the configure in rx is not executable and hasn't been run.
+If you add rx to subdirs=, chmod +x configure and run it, then redo the
+make in the main directory, it works.
+ 
+> > If I run it with the db directory on a Network Appliance server via NFS,
+> > htmerge hangs partway through. If I run with the db directory on a local
+> > disk (sparc 20) it completes.
+> 
+> I would advise against running ANY of the ht://Dig programs against databases on
+> a network drive.  Due to bugs in gdbm, I can't enable the full memory caching
+> and hence the disk is hit *all* the time when databases are being used.
+> I would actually advise to run htdig and htmerge against databases that are
+> in a memory mapped filesystem.  After completion, they can then be moved to
+> the real location on disk for htsearch.
+> You may have to add swap to your system to do this, but the factor 5 or so
+> speedup seems worth it.  (Having lots of memory also helps...)
+
+Well, the databases seem to be of manageable size on a 2GB drive, so I will
+probably keep them local for now. The link to the netapp server is 100Mb,
+and the netapp memory caches, so network performance would probably be ok
+but still not as fast.
+
+> > Does your program or gdb do anything non-NFS-friendly?
+> 
+> Other than pounding on the filesystem, not that I'm aware of.
+> As a matter of fact, I used to run all the ht://Dig programs against
+> NFS databases when I still worked at SDSU.  (For development purposes only...)
+
+Hmpfff. It could be the network appliance server. If it becomes a problem
+on the local drive, I will experiment with NFS from a Sun.
+
+> > It looks like a nice search engine, and I am in the process of bringing it
+> > up here. We may have to use local disk for the database.
+> 
+> I think you will find a tremendous speedup in htsearch if you search on
+> a local disk.  It is even better if you use a fast/wide SCSI disk.
+> Something running at 7,200 RPM will help in large database lookups that
+> htsearch typically does.  A Barracuda will perform quite nicely.
+
+Ok, I will leave it local. It is a sparc 20 with the default internal 2GB
+disk. There is an ultra 1 here with a barracuda, but I can't use that for
+the search engine right now :-(
+
+I got it to scan and index one server, but in attempting to scan an entire
+intranet it is getting tricky. People write CGI scripts that return unique
+numbers every time you hit them, and it gets stuck. Twice it got stuck and
+the last time it dumped a rather impressive 20MB core file. I think it will
+work once I get all these CGI scripts banned from the search.
+
+Eventually I want to do a weekly rebuild and then rename the database, so
+the old db is replaced with the new when it is ready.
+
+What are the options in boolean mode, just 'and' and 'or'? I am curious
+because I once wrote a file search system for a client that works like that.
+It takes existing hits and 'and' 'or' or 'not' compares then with a
+secondary key. For this I used a tree of text files as the index. This
+approach works surprisingly well.
+
+							Mike
+
+From turtle  Fri Aug 23 15:00:50 1996
+Return-Path: dwf@webthreads.com
+Received: from dns2.sourcedigital.com (dns2.sourcedigital.com [207.19.105.3]) by PACBELL.net (8.7.5/8.7.1) with SMTP id OAA15634 for <andrews@pacbell.net>; Fri, 23 Aug 1996 14:18:57 -0700 (PDT)
+Received: from dwf.webthreads.com (root@dwf.webthreads.com [205.252.250.66]) by dns2.sourcedigital.com (8.6.12/8.6.11) with ESMTP id RAA22148 for <andrews@pacbell.net>; Fri, 23 Aug 1996 17:18:38 -0400
+Received: from dwf (root@localhost [127.0.0.1]) by dwf.webthreads.com (8.7.5/8.6.9) with SMTP id RAA20094 for <andrews@pacbell.net>; Fri, 23 Aug 1996 17:18:22 -0400
+Sender: root@dwf.webthreads.com
+Message-ID: <321E201D.6FF51D44@webthreads.com>
+Date: Fri, 23 Aug 1996 17:18:21 -0400
+From: David Filiatrault <dwf@webthreads.com>
+Organization: WebThreads L.L.C.
+X-Mailer: Mozilla 3.0 (X11; U; Linux 2.0.10 i586)
+MIME-Version: 1.0
+To: Andrew Scherpbier <andrews@pacbell.net>
+Subject: Re: htdig: htdig SIGSEGV's
+References: <199608230513.WAA26418@kiwi.pacbell.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-UIDL: 334ccc8204a87dd12a7d1e5b29f7d4a1
+Status: ROr
+
+Andrew Scherpbier wrote:
+> 
+> David Filiatrault wrote:
+> > On my Linux 2.0.10 box with gcc 2.7.2 with htdig-3.0.1:
+> >
+> > 1.
+> > Had to add
+> > -I/usr/lib/g++-include
+> > to Makefile.in to get it to find fstream.h which was required to
+> > compile.
+> 
+> That's strange.  Your installation of libg++ must not have been in the same
+> location as g++.  I have not seen this problem before.
+> 
+
+I investigated further and found out that when I upgraded GCC to 2.7.2,
+I did not upgrade libg++ at the same time (you's is the first package
+I'd used which needs it).  The latest linux binary release of libg++
+seems to have things in the right places.
+
+> > 2.
+> > Also,
+> > #NEED_PROTO_GETHOSTNAME 1
+> > should have been 0, as it is located in unistd.h
+> 
+> Yes.  That's caused by a bug in configure.in of all places!  It's fixed in my
+> tree...
+> 
+> > 3. htdig immediatly SIGSEGV's.  Have you received reports of anyone
+> > using this version under Linux?
+> 
+> Yup.  Lots.  LOTS!  You're not alone.  Several people are working on this problem.
+> Personally I have no idea why it happens, but I do not have access to any of the
+> platforms that do the segfaulting in htsearch.
+> 
+> Keep your eyes open for any announcements on the htdig mailing list on this matter.
+
+I compiled and ran 3.0.2 and htdig ran!  I'm still checking the results.
+
+One thing I noticed is that htdig is trying to follow links in between
+<xmp> and </xmp>, which according to
+http://www.sandia.gov/sci_compute/elements.html#XMP, should not happen. 
+This is not a big issue to me.
+
+> 
+> --
+> Andrew Scherpbier <andrews@pacbell.net>
+> Contigo Software
+
+I would like to thank you for all your work, this will be a very usefull
+tool.  My interest in it is both to use it on our web site, and to make
+our cgi-bin software is compatible with yours, so I'll be doing very
+intense testing.  Please don't take any of my comments as negitive
+critisism, see them as interest in creating a better program.  
+
+When you get a moment to surf, check us out at
+http://www.webthreads.com, if you're interested in running our software
+and have any problems, let me know, I'll be happy to assist.
+
+-David
+
+-- 
+
+-----------------------------------------------------------------------
+David Filiatrault     http://www.WebThreads.Com      dwf@WebThreads.Com
+
+        Web Site User Tracking and Revolutionary Interactivity.
+                Fearless Unix and Internet Wizardry.
+                   Opinions expressed are my own.
+
+From turtle  Sun Aug 25 18:30:44 1996
+Return-Path: gerald@osiris.cs.CSUFresno.EDU
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id SAA25022 for <andrews@pacbell.net>; Sun, 25 Aug 1996 18:19:48 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id SAA12586 for <turtle@ender.sdsu.edu>; Sun, 25 Aug 1996 18:19:46 -0700 (PDT)
+Received: from osiris.cs.CSUFresno.EDU (osiris.cs.CSUFresno.EDU [129.8.2.103]) by sdsu.edu (8.7.5/8.6.9) with SMTP id SAA19145 for <andrew@sdsu.edu>; Sun, 25 Aug 1996 18:19:44 -0700 (PDT)
+Received: by osiris.cs.CSUFresno.EDU (4.1/SMI-4.1)
+	id AA20154; Sun, 25 Aug 96 18:24:02 PDT
+Date: Sun, 25 Aug 1996 17:25:54 -0700 (PDT)
+From: Gerald Simonian <gerald@osiris>
+Subject: A ht://dig question
+To: andrew@sdsu.edu
+Message-Id: <Pine.3.05.9608251754.A19730-b100000@osiris>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-UIDL: d905a95a154d555181c96782bb55e2a6
+Status: ROr
+
+
+Dear Mr. Scherpbier:
+
+ First of all let me say that ht://dig is a really great work.
+
+ I'm installing ht://dig for a department's website here at CSUF. 
+There are two main questions that I can't definetly resolve on my own.
+
+1) Where do I set the attibutes used by htdig, htmerge, htfuzzy,
+htsearch?  Should I set the attributes for all within the file
+~/htdig-3.0.2/conf/htdig.conf ?  OR  can?/does? each program of
+the ht://dig suite have its own configuration file to reference?
+
+2) It seems (from looking over source code) that the programs first look
+to find attibutes from compiled defaults, then from the config file(s),
+then from HTML form input through environmental variables. 
+I garner that from a HTML form, (for htsearch specifically) that
+attibutes can be set in <input type=hidden ... ... >  statements.  
+My question is, can one execute htsearch, or any of the other programs, 
+directly from the command line WITH a string of attribute-value 
+specifcations? and if so what would the format be for the command line string?
+
+
+Thank You,   --Jerry Simonian  (not a computer hack)
+
+
+From turtle Mon Aug 26 07:34:40 1996
+Subject: Re: htdig: BAD TAG IN SERIALIZED DATA?
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Mon, 26 Aug 1996 07:34:40 -0700 (PDT)
+In-Reply-To: <9608261347.AA25021@ivanova.anl.siemens.de> from Hakan Tandogan at "Aug 26, 96 03:47:19 pm"
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:   534
+Status: RO
+
+Hakan Tandogan wrote:
+> 
+> 	What could be the cause of the warning "BAD TAG IN SERIALIZED
+> DATA: xxx"?
+> 
+> 	htsearch gives those warnings on nearly every search
+> request. I realize that those warnings are emitted by
+> htcommon/DocumentRef.cc, but haven't dug in deep enough into htdig to
+> see how they could get into my database in the first place.
+
+That points at a coccupted database.  The only solution is to run
+htdig with -i.  (Followed by htmerge, ofcourse...)
+
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From turtle  Mon Aug 26 07:30:03 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id HAA23858 for <andrews@pacbell.net>; Mon, 26 Aug 1996 07:03:26 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id GAA20561 for htdig-out; Mon, 26 Aug 1996 06:51:47 -0700 (PDT)
+Received: from atlantis.erlm.siemens.de (atlantis.erlm.siemens.de [194.174.230.11]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id GAA20555 for <htdig@sdsu.edu>; Mon, 26 Aug 1996 06:51:43 -0700 (PDT)
+Received: from tcenter.erlm.siemens.de (tcenter.erlm.siemens.de [193.25.63.21]) by atlantis.erlm.siemens.de (8.7.5/8.7.3) with ESMTP id PAA23845 for <htdig@sdsu.edu>; Mon, 26 Aug 1996 15:47:15 +0200 (MET DST)
+Received: from ivanova.anl.siemens.de (ivanova.anl.siemens.de [140.13.74.3]) by tcenter.erlm.siemens.de (8.7.5/8.7.3) with SMTP id PAA16540 for <htdig@sdsu.edu>; Mon, 26 Aug 1996 15:48:50 +0200 (MET DST)
+Received: by ivanova.anl.siemens.de (5.x/SMI-SVR4)
+	id AA25021; Mon, 26 Aug 1996 15:47:20 +0200
+From: hakan@ivanova (Hakan Tandogan)
+Message-Id: <9608261347.AA25021@ivanova.anl.siemens.de>
+Subject: htdig: BAD TAG IN SERIALIZED DATA?
+To: htdig@sdsu.edu
+Date: Mon, 26 Aug 1996 15:47:19 +0200 (MET DST)
+X-Mailer: ELM [version 2.4 PL25]
+Content-Type: text
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: hakan@ivanova (Hakan Tandogan)
+X-UIDL: 068275b73eeb09db1c1664fe2edcc6c6
+Status: ROr
+
+
+	What could be the cause of the warning "BAD TAG IN SERIALIZED
+DATA: xxx"?
+
+	htsearch gives those warnings on nearly every search
+request. I realize that those warnings are emitted by
+htcommon/DocumentRef.cc, but haven't dug in deep enough into htdig to
+see how they could get into my database in the first place.
+
+
+	Hakan
+
+
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+
+From POPmail Thu Aug  8 19:20:19 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA03571 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:17:00 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17558 for andrew; Thu, 8 Aug 1996 19:16:58 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id GAA02965 for <turtle@ender.sdsu.edu>; Thu, 25 Jul 1996 06:12:57 -0700 (PDT)
+Received: from atlantis.erlm.siemens.de (atlantis.erlm.siemens.de [194.174.230.11]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id GAA27480 for <andrew@sdsu.edu>; Thu, 25 Jul 1996 06:12:52 -0700 (PDT)
+Received: from tcenter.erlm.siemens.de (tcenter.erlm.siemens.de [193.25.63.21]) by atlantis.erlm.siemens.de (8.7.5/8.7.3) with ESMTP id NAA04633 for <andrew@sdsu.edu>; Thu, 25 Jul 1996 13:44:34 +0200 (MET DST)
+Received: from ivanova.anl.siemens.de (ivanova.anl.siemens.de [140.13.74.3]) by tcenter.erlm.siemens.de (8.7.5/8.7.3) with SMTP id NAA06604 for <andrew@sdsu.edu>; Thu, 25 Jul 1996 13:40:35 +0200 (MET DST)
+Received: by ivanova.anl.siemens.de (5.x/SMI-SVR4)
+	id AA04707; Thu, 25 Jul 1996 13:44:39 +0200
+X-UIDL: 839557204.010
+From: hakan@ivanova (Hakan Tandogan)
+Message-Id: <9607251144.AA04707@ivanova.anl.siemens.de>
+Subject: inner workings of htdig
+To: andrew@sdsu.edu
+Date: Thu, 25 Jul 1996 13:44:37 +0200 (MET DST)
+Reply-To: Hakan.Tandogan@anl.siemens.de
+X-Mailer: ELM [version 2.4 PL25]
+Content-Type: text
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:  1165
+Status: RO
+
+
+	Hi Andrew,
+
+
+	First, I wish to express my thanks for contributing your
+digger to the public.
+
+	I must admit that I don't fully understand how the digger
+works. As far as I could understand from the source and your
+documents, you start with an URL (start_url in the configfile) and
+work your way through the web depth-first, pruning the search space
+with limit_urls_to.
+
+	I tried running htdig on my web with about 3500 interlinked
+html documents. I *know* that they are interlinked beacuse my users
+are simply too stup^H^H^H^Hinexperienced to find non-linked HTML
+files. Nevertheless, htdig stops after processing ~700 documents,
+never touching a set of files that definitely *are* reachable from my
+starting URL. At the end of the run, I get my "htdig: Run complete",
+this means that the htdig doesn't die somewhere in the run. Do you
+know of any options I could use to debug my problem further?
+
+	I could supply you with my config file, but the web itself is
+a company-internal web behind a firewall, so you won't be able to
+reach the server. Oh, by the way: I'm running htdig on a Sparc2 with
+Solaris 2.4, if that's of any importance.
+
+
+	Regards,
+		Hakan
+
+
+
+
+
+From POPmail Thu Aug  8 19:14:24 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA02196 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:12:31 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17507 for andrew; Thu, 8 Aug 1996 19:12:29 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id RAA08697 for <turtle@ender.sdsu.edu>; Fri, 19 Jul 1996 17:12:52 -0700 (PDT)
+Received: from merlin.ecsnet.com (merlin.ecsnet.com [206.160.160.65]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id RAA02441 for <andrew@sdsu.edu>; Fri, 19 Jul 1996 17:12:50 -0700 (PDT)
+Received: from warp.ecsnet.com (warp.ecsnet.com [206.160.160.66]) by merlin.ecsnet.com (8.7.4/8.6.9) with ESMTP id TAA15253 for <andrew@sdsu.edu>; Fri, 19 Jul 1996 19:12:29 -0500
+Received: from warp.ecsnet.com by warp.ecsnet.com (8.7.4) id TAA03415; Fri, 19 Jul 1996 19:12:28 -0500
+X-UIDL: 839556859.005
+Message-ID: <31F0246B.7FF9327B@ecsnet.com>
+Date: Fri, 19 Jul 1996 19:12:27 -0500
+From: "Mark R. Evans" <mevans@ecsnet.com>
+Organization: The ECS Group
+X-Mailer: Mozilla 3.0b4 (X11; I; Linux 2.0.4 i586)
+MIME-Version: 1.0
+To: andrew@sdsu.edu
+Subject: htdig 3.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:   761
+Status: RO
+
+Hi Andrew,
+
+I hate to bother you, but I've been trying to get htdig-3.0 to work on a
+Linux 2.0.7 system using Apache 1.1.  All modules compile and link fine,
+the rundig script ran without errors, but when I try a search, either
+thru the WWW server or from the command line using ./htsearch.  It will
+start building the HTML output file and segmentation fault after the
+first entry.  If no matches are found, it will run fine.  
+
+I'm using a stock config file, basically, just did a make install then
+ran rundig and htsearch.  I've scanned the docs but have not found much
+of a clue to this problem.  Any ideas?
+
+I do appreciate your time and attention to this request.  Thanks!
+
+--
+Mark Evans			Linux 2.0 Upgrade Page
+mevans@ecsnet.com			http://www.ecsnet.com
+
+From POPmail Thu Aug  8 19:20:07 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA03001 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:15:13 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17522 for andrew; Thu, 8 Aug 1996 19:15:11 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id KAA09833 for <turtle@ender.sdsu.edu>; Sun, 21 Jul 1996 10:57:30 -0700 (PDT)
+Received: from eagle.cc.ukans.edu (root@kiwi.cc.ukans.edu [129.237.17.47]) by sdsu.edu (8.7.5/8.6.9) with SMTP id KAA06379 for <andrew@sdsu.edu>; Sun, 21 Jul 1996 10:57:23 -0700 (PDT)
+Received: from kiwi (loopback [127.0.0.1]) by eagle.cc.ukans.edu (8.6.11/8.6.9) with SMTP id LAA22312 for <andrew@sdsu.edu>; Sun, 21 Jul 1996 11:53:13 -0500
+X-UIDL: 839557204.001
+Message-ID: <31F26078.467DAA6D@ukans.edu>
+Date: Sun, 21 Jul 1996 11:53:12 -0500
+From: Brian Olson <b-olson@ukans.edu>
+Organization: University of Kansas
+X-Mailer: Mozilla 3.0b5a (X11; I; Linux 1.2.13 i486)
+MIME-Version: 1.0
+To: andrew@sdsu.edu
+Subject: htsearch problem on Digital Unix
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:  1557
+Status: RO
+
+If you are not the appropriate person, could you please forward this to
+the right person.  We have successfully run htdig and htmerge here at
+the University of Kansas.  Unfortunately, our Alpha running Digital Unix
+(OSF/1) produces a core dump when htsearch is run.  There are two
+compiler warnings given during the compilation of htsearch that I
+believe are key to the problem.
+Here they are:
+
+/usr/bin/ld:
+Warning: Linking some objects which contain exception information
+sections
+and some which do not. This may cause fatal runtime exception handling
+problems (last obj encountered without exceptions was
+/usr/local/lib/libstdc++.a).
+Warning: clog defined as GLOBAL DATA but is defined in a shared lib as a
+GLOBAL FUNC
+/usr/bin/ld:
+Warning: Linking some objects which contain exception information
+sections
+and some which do not. This may cause fatal runtime exception handling
+problems (last obj encountered without exceptions was
+/usr/local/lib/libstdc++.a).  Warning: clog defined as GLOBAL DATA but
+is defined in a shared lib as a GLOBAL FUNC
+
+
+Do you have any idea what the problem may be or how we could fix it?
+
+
+-Brian Olson
+
+P.S. We are running Digital's C++ compiler.
+
+-- 
++----------------------------------------+------------------------------+
+| Brian Olson, University of Kansas      | "Two wrongs don't make a    
+|
+| E-mail: b-olson@ukans.edu              |  right, but three lefts do."
+|
+| URL: http://www.ukans.edu/home/b-olson |                             
+|
++----------------------------------------+------------------------------+
+
+From POPmail Thu Aug  8 19:20:10 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA03115 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:15:39 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17530 for andrew; Thu, 8 Aug 1996 19:15:37 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id CAA10364 for <turtle@ender.sdsu.edu>; Mon, 22 Jul 1996 02:13:29 -0700 (PDT)
+Received: from datacore.compuvar.com (DATACORE.COMPUVAR.COM [204.216.21.135]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id CAA07886 for <andrew@sdsu.edu>; Mon, 22 Jul 1996 02:13:28 -0700 (PDT)
+Received: from shredlink (sdx-ca9-17.ix.netcom.com [204.30.72.113]) by datacore.compuvar.com (8.7.4/8.7.3) with SMTP id CAA04850 for <andrew@sdsu.edu>; Mon, 22 Jul 1996 02:14:38 -0700
+X-UIDL: 839557204.003
+Message-Id: <1.5.4.32.19960722091138.00667964@datacore.compuvar.com>
+X-Sender: jalonz@datacore.compuvar.com
+X-Mailer: Windows Eudora Light Version 1.5.4 (32)
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Date: Mon, 22 Jul 1996 02:11:38 -0700
+To: andrew@sdsu.edu
+From: "Jalon Q. Zimmerman" <jalonz@datacore.compuvar.com>
+Subject: linux and htdig
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:  1706
+Status: RO
+
+I have just spent over 10 hours trying to track down a problem with linux
+and the htdig-3.0 package. I'm running a very recent and stable RedHat linux
+and htdig-3.0.
+
+One thing is that the autoconf utility does not recognize that the
+"gethostname" function is available. This leads to a complete crash in
+compiling htlib. A quit tweak in the include file (cant remember the exact
+name ht*) to turn off the define fixes that.
+
+Then everything compiles very clean and runs like a charm.
+
+The problem is when I get a search result which contains more than 1
+document hit. Immediately after sending the first document hit, htsearch
+pauses about 2 seconds and does a core dump.
+
+No hits and one hit work perfectly.
+
+I tried getting rid of and redefining the templates, but the problem seems
+to not be related to them. It seems more to be related to the looping around
+to the second hit.
+
+Anyway, I'm at the absolute limit of my programming knowledge. If you know
+of a fix or of anyone who has successfully compiled this release under
+Linux, please let me know.
+
+I tried this and got the exact same results with 3.0b6pre, 3.0b5.
+
+Someone released a binary package which is incredibly incomplete and messy
+named "htdig3.0b5-2.i386.rpm" to the ftp.redhat.com archive. It is so
+incomplete it's barely useable, but it does run.
+
+By the way, www.redhat.com is using htdig as their search engine.
+
+I want to congratulate you on a superior application. It really fills a need
+out there and if it compiles cleanly under Linux, there is a huge need for
+it with the Apache/Linux crowd.
+
+Sincerely,
+
+Jalon Q. Zimmerman
+
+Executive Director - DataCore
+619.299.5867
+jalonz@datacore.compuvar.com
+http://datacore.compuvar.com/
+
+From POPmail Thu Aug  8 19:20:14 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA03358 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:16:24 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17538 for andrew; Thu, 8 Aug 1996 19:16:22 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id NAA10690 for <turtle@ender.sdsu.edu>; Mon, 22 Jul 1996 13:33:21 -0700 (PDT)
+Received: from gw3.pacbell.com (gw3.PacBell.COM [129.245.2.24]) by sdsu.edu (8.7.5/8.6.9) with SMTP id NAA11057 for <andrew@sdsu.edu>; Mon, 22 Jul 1996 13:33:20 -0700 (PDT)
+Received: from srv.PacBell.COM (mother.srv.PacBell.COM) by gw3.pacbell.com (5.x/PacBell-10/18/95)
+	id AA24305; Mon, 22 Jul 1996 13:32:31 -0700
+Received: from zeus.srv.PacBell.COM by srv.PacBell.COM (4.1/Mother-7/26/95)
+	id AA05300; Mon, 22 Jul 96 13:32:29 PDT
+Received: from mindsword.srv.PacBell.COM by zeus.srv.PacBell.COM (4.1/SMI-4.1)
+	id AA01160; Mon, 22 Jul 96 13:32:29 PDT
+X-UIDL: 839557204.005
+Date: Mon, 22 Jul 1996 13:31:38 -0700 (PDT)
+From: Joseph Woodard <jhwood1@srv.PacBell.COM>
+To: andrew@sdsu.edu
+Cc: Joseph Woodard <jhwood1@PacBell.COM>, Jodi Reed <jreed@mail.sdsu.edu>
+Subject: ?? AND HTDig searching at SDSU
+Message-Id: <Pine.SUN.3.91.960722132635.22091D-100000@mindsword.srv.PacBell.COM>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:   811
+Status: RO
+
+Andrew;
+
+It seems the -a option in htsearch does not work quite right as an AND
+search of the user's word list. However, three Pacific Bell fellows at
+SDSU are using an adaptation of HTDig to accomplish a correct AND search.
+They are Tom March, Lynda Hyman, and Josi Reed. Some program they use
+creates a database (called records.txt) which they can search using a perl
+script to produce a correct list of all HTML documents contain all words
+in a list. That database creating program doesn't seem to be part of the
+freeware distribution of HTDig. Is it something customized, or is it the
+result of some use of htdig I don't understand? 
+
+Joseph Woodard; Senior Systems Analyst, PacBell, SRV, 1S100H
+work phone (510)355-4165     pager (510)904-7938
+jhwood1@PacBell.COM  jhwoodar@well.com  jwoodard@igc.apc.org
+
+From POPmail Thu Aug  8 19:20:16 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA03454 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:16:41 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17546 for andrew; Thu, 8 Aug 1996 19:16:38 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id GAA01059 for <turtle@ender.sdsu.edu>; Tue, 23 Jul 1996 06:30:44 -0700 (PDT)
+X-UIDL: 839557204.007
+From: DOWNS@titan.ksc.nasa.gov
+Received: from titan.ksc.nasa.gov (titan01.ksc.nasa.gov [163.205.195.1]) by sdsu.edu (8.7.5/8.6.9) with SMTP id GAA14552 for <andrew@sdsu.edu>; Tue, 23 Jul 1996 06:30:37 -0700 (PDT)
+Date: Tue, 23 Jul 1996 9:30:04 -0400 (EDT)
+To: andrew@sdsu.edu
+Message-Id: <960723093004.79f@titan.ksc.nasa.gov>
+Subject: HtDig on DEC ALpha (Digital Unix 4.0)
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:   657
+Status: ROr
+
+Andrew,
+My name is Mike Downs and I work at the Kennedy Space Center. I am trying
+to get Htdig to work on our DEC Alpha's running Digital Unix 4.0. After
+some tweaking I was able to get it compiled (some functions in strptime.h
+didn't match up). 
+
+Anyway, I have a index, but whenever I run htsearch, I get a returned
+html page that looks ok to start with, but after it prints out the first
+match, it core dumps. I was wondering if you had seen anything like
+this before or could at least point me in the right direction as to
+where to look to start debugging this stuff. Any help would be greatly
+appreciated.
+
+THanks,
+Mike Downs
+downs@titan.ksc.nasa.gov
+
+From POPmail Thu Aug  8 19:20:17 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA03470 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:16:43 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17550 for andrew; Thu, 8 Aug 1996 19:16:41 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id IAA01106 for <turtle@ender.sdsu.edu>; Tue, 23 Jul 1996 08:21:24 -0700 (PDT)
+X-UIDL: 839557204.008
+From: DOWNS@titan.ksc.nasa.gov
+Received: from titan.ksc.nasa.gov (titan01.ksc.nasa.gov [163.205.195.1]) by sdsu.edu (8.7.5/8.6.9) with SMTP id IAA15112 for <andrew@sdsu.edu>; Tue, 23 Jul 1996 08:21:22 -0700 (PDT)
+Date: Tue, 23 Jul 1996 11:20:41 -0400 (EDT)
+To: andrew@sdsu.edu
+Message-Id: <960723112041.45b@titan.ksc.nasa.gov>
+Subject: More info on htsearch problems
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:   270
+Status: RO
+
+Andrew,
+A little more info that might help. I started debugging and found out where
+the fault is happening. It is at:
+signal Segmentation fault at  [Delete_Data__10DictionaryPv:5 +0x3b0,0x1200231e0]       //
+
+Ever seen this before?
+
+Mike Downs
+downs@titan.ksc.nasa.gov
+
+From POPmail Thu Aug  8 19:20:18 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA03492 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:16:46 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17554 for andrew; Thu, 8 Aug 1996 19:16:44 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id DAA01995 for <turtle@ender.sdsu.edu>; Wed, 24 Jul 1996 03:05:27 -0700 (PDT)
+Received: from saturn.hrz.tu-chemnitz.de (saturn.hrz.tu-chemnitz.de [134.109.132.51]) by sdsu.edu (8.7.5/8.6.9) with SMTP id DAA20625 for <andrew@sdsu.edu>; Wed, 24 Jul 1996 03:05:01 -0700 (PDT)
+Received: from mailbox.hrz.tu-chemnitz.de by saturn.hrz.tu-chemnitz.de 
+          with Local SMTP (PP) id <10550-0@saturn.hrz.tu-chemnitz.de>;
+          Wed, 24 Jul 1996 12:04:28 +0200
+Received: from rem.hrz.tu-chemnitz.de (rem.hrz.tu-chemnitz.de [134.109.132.26]) 
+          by mailbox.hrz.tu-chemnitz.de (8.7.5/8.7.3) with SMTP id MAA14089 
+          for <andrew@sdsu.edu>; Wed, 24 Jul 1996 12:04:26 +0200 (MET DST)
+X-UIDL: 839557204.009
+Date: Wed, 24 Jul 1996 12:04:26 +0200 (MET DST)
+From: Frank Richter <Frank.Richter@hrz.tu-chemnitz.de>
+To: andrew@sdsu.edu
+Subject: htsearch on Apache httpd
+Message-ID: <Pine.GSO.3.95.960724115653.3135K-100000@rem.hrz.tu-chemnitz.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:   656
+Status: ROr
+
+Andrew,
+I just installed ht://Dig 3.0 at our site (very easy - very nice) and run
+htdig/merge etc (about 6000 documents).
+
+Unfortunatly /cgi-bin/htsearch doesn't work with our Apache 1.1.1 httpd,
+it claimes in error_log:
+[Wed Jul 24 11:49:15 1996] access to
+/afs/tucz/www/root/cgi-bin/htsearch failed for rem.hrz.tu-chemnitz.de,
+reason: Premature end of script headers
+
+But it works with another WWW server (phttpd), so it is probably an apache
+problem. Did you hear this from other people?
+
+Regards,  Frank
+
+Email: Frank.Richter@hrz.tu-chemnitz.de  http://www.tu-chemnitz.de/~fri/
+Work:  Computing Services, Technical University, 09107 Chemnitz, Germany
+
+From POPmail Thu Aug  8 19:20:20 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA03628 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:17:11 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17562 for andrew; Thu, 8 Aug 1996 19:17:09 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id GAA02986 for <turtle@ender.sdsu.edu>; Thu, 25 Jul 1996 06:43:08 -0700 (PDT)
+Received: from saturn.hrz.tu-chemnitz.de (saturn.hrz.tu-chemnitz.de [134.109.132.51]) by sdsu.edu (8.7.5/8.6.9) with SMTP id GAA27686 for <andrew@sdsu.edu>; Thu, 25 Jul 1996 06:42:48 -0700 (PDT)
+Received: from mailbox.hrz.tu-chemnitz.de by saturn.hrz.tu-chemnitz.de 
+          with Local SMTP (PP) id <25330-0@saturn.hrz.tu-chemnitz.de>;
+          Thu, 25 Jul 1996 14:19:51 +0200
+Received: from rem.hrz.tu-chemnitz.de (rem.hrz.tu-chemnitz.de [134.109.132.26]) 
+          by mailbox.hrz.tu-chemnitz.de (8.7.5/8.7.3) with SMTP id OAA09491 
+          for <andrew@sdsu.edu>; Thu, 25 Jul 1996 14:20:06 +0200 (MET DST)
+X-UIDL: 839557204.011
+Date: Thu, 25 Jul 1996 14:20:04 +0200 (MET DST)
+From: Frank Richter <Frank.Richter@hrz.tu-chemnitz.de>
+To: andrew@sdsu.edu
+Subject: ht://Dig: my apache problem solved
+Message-ID: <Pine.GSO.3.95.960725135614.3135W-100000@rem.hrz.tu-chemnitz.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:  1487
+Status: RO
+
+Hi Andrew,
+I wrote you yesterday about my problem with htsearch on Apache httpd,
+I solved it. The db/ dir on our site is in AFS, I gave the rights for
+lookup and read but not for locking. So htsearch died:
+
+truss htsearch:
+...
+access("/afs/tu-chemnitz.de/www/server/htdig-3.0/db/db.words.gdbm", 4) = 0
+open("/afs/tu-chemnitz.de/www/server/htdig-3.0/db/db.words.gdbm",
+O_RDONLY) = 3
+fstat(3, 0xEFFFE710)                            = 0
+fcntl(3, F_SETLK, 0xEFFFE6E8)                   Err#13 EACCES
+close(3)                                        = 0
+    Incurred fault #6, FLTBOUNDS  %pc = 0x0002B130
+      siginfo: SIGSEGV SEGV_MAPERR addr=0x00000014
+    Received signal #11, SIGSEGV [default]
+      siginfo: SIGSEGV SEGV_MAPERR addr=0x00000014
+        *** process killed ***
+
+So maybe you could check the return value of fctnl...
+
+Another comment: there is an error parsing the Umlaut-entities (&auml;
+etc.) - the trailing ';' is included in the text. Also if the search
+string contains an umlaut (ISO-8859-1) the result is a bit confusing.
+
+But, anyway, I'm trying different search tools for our server at
+www.tu-chemnitz.de - Harvest, WebGlimpse, Excite Architext.
+I found your ht://Dig the most usefull tool!!! I'll look further into it,
+so maybe I've further comments or questions...
+
+Thanks for your great work,....             Frank
+
+Email: Frank.Richter@hrz.tu-chemnitz.de  http://www.tu-chemnitz.de/~fri/
+Work:  Computing Services, Technical University, 09107 Chemnitz, Germany
+
+From POPmail Thu Aug  8 19:20:21 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA03742 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:17:34 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17570 for andrew; Thu, 8 Aug 1996 19:17:31 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id IAA03086 for <turtle@ender.sdsu.edu>; Thu, 25 Jul 1996 08:24:42 -0700 (PDT)
+Received: from balstrode.natinst.com (balstrode.natinst.com [130.164.12.2]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id IAA28250 for <andrew@sdsu.edu>; Thu, 25 Jul 1996 08:24:40 -0700 (PDT)
+Received: (from brian@localhost) by balstrode.natinst.com (8.7.5/8.7.3) id KAA04206 for andrew@sdsu.edu; Thu, 25 Jul 1996 10:23:49 -0500 (CDT)
+X-UIDL: 839557204.012
+Date: Thu, 25 Jul 96 10:23:45 CDT
+From: "Brian H. Powell" <brian@balstrode.natinst.com>
+To: andrew@sdsu.edu
+Subject: htdig 3.0 bug
+Message-ID: <CMM.0.90.4.838308225.brian@balstrode.natinst.com>
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:   806
+Status: RO
+
+     In the following function, the pointer "base" can go stale if you have a
+URL to a directory that doesn't end in "/".  The "doc->Url(tempurl)" will
+delete the url that "base" refers to and allocate a new one.
+     My fix is to refresh "base" after the retry with the trailing "/".
+
+Brian
+
+void
+Retriever::parse_url(URLRef &urlRef)
+...
+    doc->Url(url.get());
+	doc->Referer(urlRef.Referer());
+
+    base = doc->Url();
+
+    Document::DocStatus	status = doc->Retrieve(date);
+    if (status == Document::Document_not_found)
+    {
+		//
+		// Maybe the URL we gave was incomplete.  See if adding a '/'
+		// will help.
+		//
+		String tempurl = doc->Url()->get();
+		if (tempurl.last() != '/')
+		{
+			tempurl << '/';
+			doc->Url(tempurl);
+NEW ---->		base = doc->Url();
+			status = doc->Retrieve(date);
+		}
+    }
+
+From POPmail Thu Aug  8 19:20:26 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA03861 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:17:53 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17582 for andrew; Thu, 8 Aug 1996 19:17:51 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id JAA06160 for <turtle@ender.sdsu.edu>; Mon, 29 Jul 1996 09:01:34 -0700 (PDT)
+Received: from gw3.pacbell.com (gw3.PacBell.COM [129.245.2.24]) by sdsu.edu (8.7.5/8.6.9) with SMTP id JAA14797 for <andrew@sdsu.edu>; Mon, 29 Jul 1996 09:01:33 -0700 (PDT)
+Received: from srv.PacBell.COM (mother.srv.PacBell.COM) by gw3.pacbell.com (5.x/PacBell-10/18/95)
+	id AA03879; Mon, 29 Jul 1996 09:00:44 -0700
+Received: from zeus.srv.PacBell.COM by srv.PacBell.COM (4.1/Mother-7/26/95)
+	id AA14265; Mon, 29 Jul 96 09:00:41 PDT
+Received: from mindsword.srv.PacBell.COM by zeus.srv.PacBell.COM (4.1/SMI-4.1)
+	id AA15123; Mon, 29 Jul 96 09:00:40 PDT
+X-UIDL: 839557204.016
+Date: Mon, 29 Jul 1996 08:59:05 -0700 (PDT)
+From: Joseph Woodard <jhwood1@srv.PacBell.COM>
+To: Andrew Scherpbier <andrew@sdsu.edu>
+Cc: Joseph Woodard <jhwood1@PacBell.COM>
+Subject: Re: htdig: HTDig AND not working. Why?
+In-Reply-To: <x6log3dtdf.fsf@sdsu.edu>
+Message-Id: <Pine.SUN.3.91.960729085718.7779A-100000@mindsword.srv.PacBell.COM>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:  1600
+Status: RO
+
+Thanks Andrew. I'll get 3.0 immediately. In the meantime I've written
+a Korn shell script that performs an AND search and ranks the results,
+using the allwords.text and db.docs files. If it's of any value, let
+me know and I'll send it to you. I'm also nearly finished writing a
+Korn shell script that converts entries in the db.docs files for HTML
+display.
+
+Joe W.
+
+On 29 Jul 1996, Andrew Scherpbier wrote:
+
+> Joseph Woodard <jhwood1@srv.PacBell.COM> writes:
+> 
+> > 
+> > I've just installed htdig-3.0b5. I can't get the AND search capability
+> > to work. 
+> > 
+> > In my configuration file match_method is boolean now (I've tried 'or'
+> > as well as 'and'). I've set method in the htwrapper to 'and', 'or', and 
+> > it's now 'boolean'. I've made sure by turning on 'debug' so that I can 
+> > see the argument string passed to htsearch that the -a option is sent.
+> 
+> Ah.  The problem here is that you are using version 3.0b5 software and
+> 3.0 documentation.  The boolean stuff works differently (and was somewhat
+> broken) in version 3.0b5.
+> Solution: get 3.0
+> 
+> -- 
+> Andrew Scherpbier <andrew@sdsu.edu>
+> CDRG, San Diego State University, San Diego, CA
+> http://www.sdsu.edu/~turtle/
+> ----------------------------------------------------------------------
+> To unsubscribe from the htdig mailing list, send a message to
+> htdig-request@sdsu.edu containing the single word "unsubscribe" in
+> the body of the message.
+> 
+
+Joseph Woodard; Senior Systems Analyst, PacBell, SRV, 1S100H
+work phone (510)355-4165     pager (510)904-7938
+jhwood1@PacBell.COM  jhwoodar@well.com  jwoodard@igc.apc.org
+
+From POPmail Thu Aug  8 19:30:05 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA04523 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:20:09 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17597 for andrew; Thu, 8 Aug 1996 19:20:07 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id RAA06597 for <turtle@ender.sdsu.edu>; Mon, 29 Jul 1996 17:05:35 -0700 (PDT)
+Received: from uu11.psi.com (uu11.psi.com [38.8.24.2]) by sdsu.edu (8.7.5/8.6.9) with SMTP id RAA19065 for <andrew@sdsu.edu>; Mon, 29 Jul 1996 17:05:33 -0700 (PDT)
+Received: from andor.com by uu11.psi.com (5.65b/4.0.940727-PSI/PSINet) via UUCP;
+        id AA17331 for ; Mon, 29 Jul 96 19:53:07 -0400
+X-UIDL: 839557804.000
+From: Alain_Avakian@andor.com (Alain Avakian)
+Reply-To: Alain_Avakian@andor.com
+To: andrew@sdsu.edu
+Subject: Re: Re: Feature of htDig
+Date: 30 Jul 1996 00:43:52 GMT
+Message-Id: <3490447326.523653589@andor.com>
+Organization: AND Interactive Communications
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:  1714
+Status: RO
+
+Andrew Scherpbier,andrew@sdsu.edu,Internet writes:
+I am still in San Diego.  (BTW, San Diego *is* in California!)
+
+***Duuuh...I meant to say L.A. instead of CA.... : ) ***
+
+I left SDSU to create a new company.  We are currently developing out first
+software product which we will release in January 97.
+
+Cool. Is it a Web search engine?
+
+What does AND Interactive do?
+
+Check out www.andnet.com. It is a very simplistic web site right now. We
+create Multimedia products and Web sites as well. We are involved with @home
+for an implementation of broadband cable modems. Sites we have done include
+www.candidate96.com, www.rockthevote.com for MTV, etc... etc...
+
+The cool thing about working here is that we get all kinds of projects that
+require different skill sets, so I get to learn different things. I am
+currently profficient at: C++(Unix/Mac/x86), Java, Director
+(Shockwave),ISAPI, ActiveX etc... etc...
+
+Currently I am working on yet another Search Engine. I am using your htDigger
+for parts of it. Basically, I have a database of "reviewed" sites with a Star
+Ranking for the reviews, and I spit those out first, then I make a socket
+connection to AltaVista and spit out their results as well.
+
+One other modification I might attempt on htDig is to make it a Server API
+code (NSAPI maybe). I think that would speed things up tremandously.
+
+Unfortunately, I won't have time to do any sort of development on it for a
+while...
+(Always looking for good programmers who don't mind hacking my code :-))
+
+That's too bad.
+
+PS: Why did you label htDig as being an Intranet search Engine and not an
+Internet search Engine?  I have written a 'bot to stress test it, and it is
+fine for use as an internet search engine.
+
+From POPmail Thu Aug  8 19:30:08 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA04586 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:20:24 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17601 for andrew; Thu, 8 Aug 1996 19:20:21 -0700 (PDT)
+Received: from sciences.sdsu.edu (root@sciences.sdsu.edu [130.191.224.2]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id JAA07471 for <turtle@ender.sdsu.edu>; Tue, 30 Jul 1996 09:21:27 -0700 (PDT)
+Received: from knights.cc.ucf.edu ([132.170.246.40]) by sciences.sdsu.edu (8.7.5/8.6.10) with SMTP id JAA27040 for <turtle@sciences.sdsu.edu>; Tue, 30 Jul 1996 09:21:24 -0700 (PDT)
+Received: from Pegasus.cc.ucf.edu by knights.cc.ucf.edu with smtp RFC1413_id mtd77433 
+	(Smail3.1.29.1 #53) id m0ulHSD-0007CqC; Tue, 30 Jul 96 12:15 EDT
+X-UIDL: 839557804.001
+Date: Tue, 30 Jul 1996 12:18:13 -0400 (EDT)
+From: Michael T Downs <mtd77433@pegasus.cc.ucf.edu>
+X-Sender: mtd77433@Pegasus
+To: turtle@sciences.sdsu.edu
+Subject: htdig
+Message-ID: <Pine.SOL.3.93.960730121106.25565A-100000@Pegasus>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:   900
+Status: ROr
+
+Hi,
+I sent you email awhile back about some problems I was having porting
+htdig to a DEC Alpha running Digital Unix. I finally have everything
+working, but in order to get a binary of htsearch that works, I had to
+comment out the function void Dictionary::Delete_Data(void *data).
+
+Anyway, now I am working on getting some databases set up and haven't had
+much luck with the weighting of keywords. I am trying to implement htdig
+as the main search engine for the Kennedy Space Center and want to see
+what it can do indexing about 35 different servers we have out there.
+Anyway, looking for info on whether or not the keyword stuff is actually
+working for you, and also where I can see exactly what all of the
+fields are in the database.   Any info would be greatly appreciated as
+well as when we might see another release.
+
+THanks,
+Mike Downs
+
+mtd77433@pegasus.cc.ucf.edu
+downs@titan.ksc.nasa.gov
+
+
+
+From POPmail Thu Aug  8 19:30:13 1996
+Return-Path: andrew@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id TAA05913 for <andrews@pacbell.net>; Thu, 8 Aug 1996 19:24:45 -0700 (PDT)
+Received: (from turtle@localhost) by ender.sdsu.edu (8.7.4/8.7.3) id TAA17641 for andrew; Thu, 8 Aug 1996 19:24:43 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id GAA16874 for <turtle@ender.sdsu.edu>; Thu, 8 Aug 1996 06:20:12 -0700 (PDT)
+Received: from awu.id.ethz.ch (wig-rz.ethz.ch [129.132.1.42]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id GAA11034 for <andrew@sdsu.edu>; Thu, 8 Aug 1996 06:20:08 -0700 (PDT)
+Received: from [129.132.34.38] (bs-id-mac-8.ethz.ch [129.132.34.38]) by awu.id.ethz.ch (8.7.4/8.7.3) with SMTP id PAA02782 for <andrew@sdsu.edu>; Thu, 8 Aug 1996 15:18:58 +0200 (MET DST)
+X-UIDL: 839557804.003
+X-Sender: wolfgang@wig.ethz.ch
+Message-Id: <v0213050bae2f9323c380@[129.132.34.38]>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Date: Thu, 8 Aug 1996 15:14:45 +0100
+To: andrew@sdsu.edu
+From: korosec@awu.id.ethz.ch (Wolfgang Korosec)
+Subject: htdig3.0 problems with german "umlaute"
+Sender: andrew@sdsu.edu
+X-Status: 
+Content-Length:  1501
+Status: RO
+
+Hello Andrew
+I just installed your official version of htdig on my solaris box without
+problems (solaris X86, 2.5, gcg version 2.7.2).
+The installation went perfect and searching in HTL pages written in english
+works great.
+
+But there are problems if you want to search for words with german umlaute
+- you know - the letters "a" "o" "u" with the two funny dots.. (&aauml;
+&ouml; &uuml;)
+
+The letter umlaut "a" is parsed correctly, "u" and "o" are not accepted (by
+htsearch).
+Another problem seems to be the conversion of these characters by htdig -
+the character ";" is stored in every word with a german umlaut. Obviously
+the "&" is cut off and the character is converted but ";" is written to the
+database.
+
+Many thanks in advance and best regards from Switzerland
+
+
+Wolfgang
+
+
+
+
+Wolfgang Korosec        korosec@awu.id.ethz.ch
+
+ETH Zuerich             http://www.awu.id.ethz.ch/~wolfgang
+Informatikdienste       Tel.: +41-1-632 5838
+Anwenderunterstuetzung        +41-1-632 5764
+Clausiusstrasse 59      FAX : +41-1-632 1312
+
+CH - 8092 Zuerich
+Switzerland
+
++++ NEUE E-MAIL ADRESSE +++ NEW E-MAIL ADRESS +++ NEUE E-MAIL ADRESSE
+
+
+    _/_/_/_/_/_/_/_/_/    _/  Eidgenoessische Technische Hochschule Zuerich
+   _/        _/    _/    _/ Swiss Federal Institute of Technology Zurich
+  _/_/_/    _/    _/_/_/_/ Ecole polytechnique federale de Zurich
+ _/        _/    _/    _/ Politecnico federale di Zurigo
+_/_/_/_/  _/    _/    _/
+
+
++++ NEUE E-MAIL ADRESSE +++ NEW E-MAIL ADRESS +++ NEUE E-MAIL ADRESSE
+
+
+
+From turtle Mon Aug 26 22:28:59 1996
+Subject: Re: htdig: htfuzzy synonyms won't work
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Mon, 26 Aug 1996 22:28:59 -0700 (PDT)
+In-Reply-To: <320DA4F8.6827@telrad.co.il> from Anat Rozenzon at "Aug 11, 96 12:16:40 pm"
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:   416
+Status: RO
+
+Anat Rozenzon wrote:
+> Hi!
+> 
+> I'm trying to use synonyms algorithm. When doing:
+> /www/local/htdig/bin/htfuzzy -v -c /www/local/htdig/conf/data_bases.conf
+> synonym
+> 
+> I get this error:
+> htfuzzy: synonym
+> gdbm fatal: malloc error.
+> 
+> Can someone help?
+
+Looks like you may not have enough virtual memory.
+How many synonyms are you trying to use?
+
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From POPmail Mon Aug 12 11:00:38 1996
+Return-Path: jweaver@interwork.sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id KAA23396 for <andrews@pacbell.net>; Mon, 12 Aug 1996 10:59:59 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id KAA00793 for <turtle@ender.sdsu.edu>; Mon, 12 Aug 1996 10:59:57 -0700 (PDT)
+Received: from interwork.sdsu.edu (jweaver@interwork.sdsu.edu [130.191.182.120]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id KAA04915 for <andrew@sdsu.edu>; Mon, 12 Aug 1996 10:59:57 -0700 (PDT)
+Received: (jweaver@localhost) by interwork.sdsu.edu (8.7.4/8.7.0) id KAA01563; Mon, 12 Aug 1996 10:59:54 -0700 (PDT)
+X-UIDL: 839872811.001
+Date: Mon, 12 Aug 1996 10:59:54 -0700 (PDT)
+From: John Weaver <jweaver@interwork.sdsu.edu>
+Subject: htdig config question
+To: andrew@sdsu.edu
+Message-ID: <Pine.3.89.9608121047.A1496-0100000@interwork>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Status: ROr
+
+Hi,
+
+	I am at a loss for finding out how ht://dig excludes files based 
+on a pattern; ie. *.gif, *.jpg, *.bak. I have looked through all the 
+config files and still am unable to locate this option. Thanks for any 
+help that you can provide.
+
+
+john weaver  --  jweaver@sdsu.edu
+
+
+From POPmail Wed Aug 14 08:48:01 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id HAA20978 for <andrews@pacbell.net>; Wed, 14 Aug 1996 07:04:24 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id HAA01930 for <turtle@ender.sdsu.edu>; Wed, 14 Aug 1996 07:04:22 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id HAA17590 for htdig-out; Wed, 14 Aug 1996 07:04:12 -0700 (PDT)
+Received: from natinst.com (natinst.com [130.164.12.164]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id HAA17585 for <htdig@sdsu.edu>; Wed, 14 Aug 1996 07:04:10 -0700 (PDT)
+Received: from parpignol.natinst.com (parpignol.natinst.com [130.164.12.200]) by natinst.com (8.7.5/8.7.3) with SMTP id JAA10372; Wed, 14 Aug 1996 09:03:06 -0500 (CDT)
+X-UIDL: 840037672.004
+Message-Id: <2.2.32.19960814140209.006bd4f0@balstrode.natinst.com>
+X-Sender: brian@balstrode.natinst.com
+X-Mailer: Windows Eudora Pro Version 2.2 (32)
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Date: Wed, 14 Aug 1996 09:02:09 -0500
+To: Marlys.A.Nelson@uwrf.edu, htdig@sdsu.edu
+From: "Brian H. Powell" <brian@natinst.com>
+Subject: Re: htdig: htdig & htsearch problems (on linux)
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: "Brian H. Powell" <brian@natinst.com>
+Status: RO
+
+     I don't know if this is your problem, but there is a known infinite
+loop bug in htdig-3.0.  (I've reported this directly to Andrew, but it's
+never been discussed on this list.)
+     The single-line patch is below.  It's a stale pointer.  In my case (on
+a Sun), htdig would occasionally just sit in an infinite loop doing nothing,
+but since "base" can point to just about anything, the problem can probably
+manifest itself in a variety of ways.
+     Maybe this will help.
+
+Brian
+
+*** htdig-3.0/htdig/Retriever.cc        Fri Jun 28 15:55:04 1996
+--- ../htdig-3.0/htdig/Retriever.cc     Thu Jul 25 10:17:31 1996
+***************
+*** 269,274 ****
+--- 269,275 ----
+                {
+                        tempurl << '/';
+                        doc->Url(tempurl);
++                       base = doc->Url();
+                        status = doc->Retrieve(date);
+                }
+      }
+
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+
+
+From POPmail Thu Aug 15 07:26:50 1996
+Return-Path: jalonz@morava.com
+Received: from morava.com (DATACORE.COMPUVAR.COM [204.216.21.135]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id QAA24076 for <andrews@pacbell.net>; Wed, 14 Aug 1996 16:37:03 -0700 (PDT)
+Received: from shredlink (sdx-ca10-17.ix.netcom.com [204.30.72.145]) by morava.com (8.7.4/8.7.3) with SMTP id QAA24667 for <andrews@pacbell.net>; Wed, 14 Aug 1996 16:40:41 -0700
+Message-Id: <1.5.4.32.19960814233435.0067eb74@morava.com>
+X-Sender: jalonz@morava.com
+X-Mailer: Windows Eudora Light Version 1.5.4 (32)
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Date: Wed, 14 Aug 1996 16:34:35 -0700
+To: andrews@pacbell.net
+From: "Jalon Q. Zimmerman" <jalonz@morava.com>
+Subject: web site
+X-UIDL: a7a8566296df85477df31fd852319d42
+Status: ROr
+
+Andrew,
+
+I want to congratulate you on a great product. I have been following the
+htdig development for some time now and would like to let you know that if
+there is any way we can help you by providing some resources, please let me
+know. Currently, I can make available web, ftp and mailing list service for
+you to base the htdig development off of, if you want it. We could set you
+up on our server as "htdig.morava.com".
+
+DataCore is a local San Diego corporate website design company, and I am
+trying to get involved in supporting some of the local developers, etc.
+
+If you are interested, please let me know.
+
+
+Sincerely,
+
+Jalon Q. Zimmerman
+
+Executive Director - DataCore
+619.299.5867
+jalonz@morava.com
+http://www.morava.com/
+
+
+From POPmail Fri Aug 16 10:50:04 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id KAA24080 for <andrews@pacbell.net>; Fri, 16 Aug 1996 10:46:59 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id KAA01212 for htdig-out; Fri, 16 Aug 1996 10:07:21 -0700 (PDT)
+Received: from mail-1.mail.demon.net (mail-1.mail.demon.net [158.152.1.211]) by sdsu.edu (8.7.5/8.6.9) with SMTP id KAA01207 for <htdig@sdsu.edu>; Fri, 16 Aug 1996 10:07:10 -0700 (PDT)
+Received: from post.demon.co.uk ([158.152.1.72]) by mail-1.mail.demon.net
+           id aa16258; 16 Aug 96 16:36 BST
+Received: from ilpltd.demon.co.uk ([158.152.89.191]) by relay-3.mail.demon.net
+          id aa03926; 16 Aug 96 15:39 +0100
+Received: from bukowsky (bukowsky [1.1.128.51]) by catflap.ilp.com (8.6.12/8.6.10) with SMTP id PAA08886 for <htdig@sdsu.edu>; Fri, 16 Aug 1996 15:42:37 +0100
+Received: by bukowsky with Microsoft Mail
+	id <32148B18@bukowsky>; Fri, 16 Aug 96 15:52:08 BST
+From: Charles Gay-Jones <Charles.Gay-Jones@ilp.com>
+To: "'htdig@sdsu.edu'" <htdig@sdsu.edu>
+Subject: htdig: htdig 3.0 teething problems
+Date: Fri, 16 Aug 96 15:37:00 BST
+Message-ID: <32148B18@bukowsky>
+Encoding: 28 TEXT
+X-Mailer: Microsoft Mail V3.0
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: Charles Gay-Jones <Charles.Gay-Jones@ilp.com>
+X-UIDL: 0bace01e63828681925aa7730409a0f6
+Status: RO
+
+
+Hi,
+
+I've been setting up htdig to index our company's internal web server and   
+have run into a problem.  I have successfully compiled and installed   
+htdig 3.0, edited htdig.conf and built the index databases, but cannot   
+get htsearch to work.
+
+As far as I can determine, htsearch is running correctly when the   
+requested search results in no hits or a single hit.  However if there   
+are 2 or more hits the program falls over with a segmentation fault just   
+after outputting details of the first match.  This happens if the program   
+is run directly from the command line or called as a CGI.
+
+The machine running htdig (and the web server) is a Linux box running a   
+2.0.0 kernel and g++ 2.7.2.
+
+Do you know of anybody else who has had this problem and of any possible   
+solutions?  I'm eager to crack the problem and get htdig up and running   
+because it looks absolutely ideal for indexing our internal knowledge   
+base.
+
+Many thanks,
+
+Charlie
+ --
+Charlie Gay-Jones | Interactive Learning Productions | Tel:
+charlie@ilp.com   | http://www.ilp.com/              | +44 (0)191 2611255  
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+
+
+From turtle Tue Aug 27 01:13:19 1996
+Subject: Re: htdig: htfuzzy synonyms won't work
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Tue, 27 Aug 1996 01:13:19 -0700 (PDT)
+In-Reply-To: <32229031.2253@telrad.co.il> from Anat Rozenzon at "Aug 27, 96 09:05:37 am"
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:  1506
+Status: RO
+
+Anat Rozenzon wrote:
+> Maybe I got it all wrong.
+> What does the htfuzzy sepose to do? 
+
+htfuzzy is the program that builds databases for any of the "fuzzy"
+search algorithms.  The synonym search is also a fuzzy search, hence
+htfuzzy needs to be used to build a database for it.
+
+The commands you were using are basically correct.  All htfuzzy needs
+to do is take the list of synonyms which you have put in a file
+and create a GDBM database for it for fast searching.
+
+Once the synonym database has been created, you need to change your
+search_algorythm attribute in your configuration file to include
+the synonym search.  You can do something like this:
+
+search_algorithm: exact:1 synonym:0.5
+
+which means that synonym word matches only could half of what exact
+word matches count.
+
+> Assuming I have a database of files which I would like to search over in
+> a way that when I search for 'xxx' I'll get also files containing 'yyy'
+> (sepose 'xxx' and 'yyy' are synonyms). 
+> 
+> Can I do it with htfuzzy? (and if yes how?)
+
+Yes.  Set the 'synonym_dictionary' attribute to point to your list
+of synonyms.  (By default it will look in COMMON_DIR/synonyms)
+This file should contain lines like this:
+
+xxx yyy
+aaa bbb ccc ddd
+
+Where 'yyy' is a synonym for 'xxx' and 'bbb', 'ccc', and 'ddd' are
+synonyms for 'aaa'.
+
+In the next release I'll try to include some examples of this stuff.
+(Anyone have any general list of synonyms?)
+
+I hope this helps.
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From turtle  Mon Aug 26 23:30:07 1996
+Return-Path: Anat.Rozenzon@telrad.co.il
+Received: from mail.netvision.net.il (mail.NetVision.net.il [194.90.1.6]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id XAA06462 for <andrews@pacbell.net>; Mon, 26 Aug 1996 23:08:10 -0700 (PDT)
+Received: from telgate.telrad.co.il (telgate.telrad.co.il [194.90.21.130]) by mail.netvision.net.il (8.7.5/8.7.3) with SMTP id JAA27329 for <andrews@pacbell.net>; Tue, 27 Aug 1996 09:07:07 +0300 (IDT)
+Received: from elex.co.il (tlhuph12.elex.co.il) by telgate.telrad.co.il (4.1/SMI-4.1)
+	id AB21251; Tue, 27 Aug 96 09:05:23 IDT
+Received: from sysdep.elex.co.il (tlrhp01.elex.co.il) by elex.co.il with ESMTP
+	(1.37.109.16/16.2) id AA087835946; Tue, 27 Aug 1996 09:05:47 +0300
+Received: from tlhuph04.elex.co.il (tlhuph04) by sysdep.elex.co.il with ESMTP
+	(1.37.109.16/16.2) id AA054515989; Tue, 27 Aug 1996 09:06:30 +0300
+Received: from tlhuph04 (localhost) by tlhuph04.elex.co.il with SMTP
+	(1.37.109.16/15.6) id AA160415937; Tue, 27 Aug 1996 09:05:37 +0300
+Sender: anatr@telrad.co.il
+Message-Id: <32229031.2253@telrad.co.il>
+Date: Tue, 27 Aug 1996 09:05:37 +0300
+From: Anat Rozenzon <Anat.Rozenzon@telrad.co.il>
+Organization: Telrad Ltd.
+X-Mailer: Mozilla 2.0 (X11; I; HP-UX A.09.03 9000/712)
+Mime-Version: 1.0
+To: Andrew Scherpbier <andrews@pacbell.net>
+Subject: Re: htdig: htfuzzy synonyms won't work
+References: <199608270530.WAA01662@kiwi.pacbell.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-UIDL: c4224cd56e116e4fe4122836af6f3535
+Status: ROr
+
+Andrew Scherpbier wrote:
+> 
+> Anat Rozenzon wrote:
+> > Hi!
+> >
+> > I'm trying to use synonyms algorithm. When doing:
+> > /www/local/htdig/bin/htfuzzy -v -c /www/local/htdig/conf/data_bases.conf
+> > synonym
+> >
+> > I get this error:
+> > htfuzzy: synonym
+> > gdbm fatal: malloc error.
+> >
+> > Can someone help?
+> 
+> Looks like you may not have enough virtual memory.
+> How many synonyms are you trying to use?
+> 
+> --
+> Andrew Scherpbier <andrews@pacbell.net>
+> Contigo Software
+> ----------------------------------------------------------------------
+> To unsubscribe from the htdig mailing list, send a message to
+> htdig-request@sdsu.edu containing the single word "unsubscribe" in
+> the body of the message.
+Maybe I got it all wrong.
+What does the htfuzzy sepose to do? 
+Assuming I have a database of files which I would like to search over in
+a way that when I search for 'xxx' I'll get also files containing 'yyy'
+(sepose 'xxx' and 'yyy' are synonyms). 
+
+Can I do it with htfuzzy? (and if yes how?)
+Thanks
+-- 
+	Anat Rozenzon
+ 
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+WWW team  - Support Dept.         Telrad Phone: 5251
+Telrad Ltd.
+Israel 
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+From turtle  Tue Aug 27 07:00:56 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id FAA02374 for <andrews@pacbell.net>; Tue, 27 Aug 1996 05:44:22 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id FAA28168 for htdig-out; Tue, 27 Aug 1996 05:33:07 -0700 (PDT)
+Received: from gate.aix.can.ibm.com (gate.aix.can.ibm.com [204.138.188.66]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id FAA28163 for <htdig@sdsu.edu>; Tue, 27 Aug 1996 05:33:04 -0700 (PDT)
+Received: from Mailhub by gate.aix.can.ibm.com id IAA17055; Tue, 27 Aug 1996 08:28:29 -0400
+Received: from MailClients by Mailhub id IAA26514; Tue, 27 Aug 1996 08:30:16 -0400
+Received: by vader.toraix.can.ibm.com (AIX 4.1/UCB 5.64/4.03)
+          id AA116912; Tue, 27 Aug 1996 08:32:38 -0400
+Date: Tue, 27 Aug 1996 08:32:37 -0400 (EDT)
+From: Craig Malton <craig@aix.can.ibm.com>
+X-Sender: craig@vader.toraix.can.ibm.com
+To: htdig@sdsu.edu
+Subject: htdig: What does the key Exceprt mean?
+Message-Id: <Pine.A32.3.91.960827083219.115688G-100000@vader.toraix.can.ibm.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: Craig Malton <craig@aix.can.ibm.com>
+X-UIDL: 65558bd876f332b2343a516a678572a2
+Status: ROr
+
+What does the key EXCERPT mean?  The htsearch program core dumps when it 
+finds more than one answer for a given search argument.  The program 
+seems to be dumping in the Delete_Data method of the Dictionary class.  
+At this point both hn->Key() and key are equal to EXCERPT.  What does 
+EXCERPT mean?  Not knowing how this method works I am not sure what is 
+going on, but it seems to be dying right at the delete (Object *) data 
+part.  I've placed cout statements in most of the destructors for the 
+classes in the htlib directory and none of them seem to be called.
+
+Any clues or suggestions would greatly help my chances of getting this 
+working.
+
+Thanks
+
+Craig
+craig@aix.can.ibm.com
+
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+
+From turtle  Tue Aug 27 07:00:46 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id CAA16762 for <andrews@pacbell.net>; Tue, 27 Aug 1996 02:55:20 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id CAA27893 for htdig-out; Tue, 27 Aug 1996 02:35:00 -0700 (PDT)
+Received: from mail.netvision.net.il (mail.NetVision.net.il [194.90.1.6]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id CAA27888 for <htdig@sdsu.edu>; Tue, 27 Aug 1996 02:34:55 -0700 (PDT)
+Received: from telgate.telrad.co.il (telgate.telrad.co.il [194.90.21.130]) by mail.netvision.net.il (8.7.5/8.7.3) with SMTP id MAA01708 for <htdig@sdsu.edu>; Tue, 27 Aug 1996 12:33:50 +0300 (IDT)
+Received: from elex.co.il (tlhuph12.elex.co.il) by telgate.telrad.co.il (4.1/SMI-4.1)
+	id AA23392; Tue, 27 Aug 96 12:32:07 IDT
+Received: from sysdep.elex.co.il (tlrhp01.elex.co.il) by elex.co.il with ESMTP
+	(1.37.109.16/16.2) id AA166688349; Tue, 27 Aug 1996 12:32:30 +0300
+Received: from tlhuph04.elex.co.il (tlhuph04) by sysdep.elex.co.il with ESMTP
+	(1.37.109.16/16.2) id AA086038392; Tue, 27 Aug 1996 12:33:13 +0300
+Received: from tlhuph04 (localhost) by tlhuph04.elex.co.il with SMTP
+	(1.37.109.16/15.6) id AA186088341; Tue, 27 Aug 1996 12:32:21 +0300
+Message-Id: <3222C0A4.307@telrad.co.il>
+Date: Tue, 27 Aug 1996 12:32:20 +0300
+From: Anat Rozenzon <Anat.Rozenzon@telrad.co.il>
+Organization: Telrad Ltd.
+X-Mailer: Mozilla 2.0 (X11; I; HP-UX A.09.03 9000/712)
+Mime-Version: 1.0
+To: htdig@sdsu.edu
+Subject: Re: htdig: htfuzzy synonyms won't work
+References: <199608270814.BAA01850@kiwi.pacbell.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: Anat Rozenzon <Anat.Rozenzon@telrad.co.il>
+X-UIDL: c92bdbbac8f21892fc0ab523e4e7f76a
+Status: ROr
+
+Andrew Scherpbier wrote:
+> 
+> The commands you were using are basically correct.  All htfuzzy needs
+> to do is take the list of synonyms which you have put in a file
+> and create a GDBM database for it for fast searching.
+> 
+>From what you've said I understand htfuzzy should take a text file (with
+synonyms in it) as an argument but it doesn't. Instead it takes a config
+file(???).
+I'm sorry but I still don't understand how this should ne done.
+
+-- 
+	Anat Rozenzon
+ 
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+WWW team  - Support Dept.         Telrad Phone: 5251
+Telrad Ltd.
+Israel 
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+
+From turtle  Tue Aug 27 07:00:54 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id FAA28609 for <andrews@pacbell.net>; Tue, 27 Aug 1996 05:08:47 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id EAA28108 for htdig-out; Tue, 27 Aug 1996 04:54:48 -0700 (PDT)
+Received: from mail.netvision.net.il (mail.NetVision.net.il [194.90.1.6]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id EAA28103 for <htdig@sdsu.edu>; Tue, 27 Aug 1996 04:54:42 -0700 (PDT)
+Received: from telgate.telrad.co.il (telgate.telrad.co.il [194.90.21.130]) by mail.netvision.net.il (8.7.5/8.7.3) with SMTP id OAA24022 for <htdig@sdsu.edu>; Tue, 27 Aug 1996 14:53:35 +0300 (IDT)
+Received: from elex.co.il (tlhuph12.elex.co.il) by telgate.telrad.co.il (4.1/SMI-4.1)
+	id AA25184; Tue, 27 Aug 96 14:51:49 IDT
+Received: from sysdep.elex.co.il (tlrhp01.elex.co.il) by elex.co.il with ESMTP
+	(1.37.109.16/16.2) id AA228286732; Tue, 27 Aug 1996 14:52:13 +0300
+Received: from tlhuph04.elex.co.il (tlhuph04) by sysdep.elex.co.il with ESMTP
+	(1.37.109.16/16.2) id AA107386776; Tue, 27 Aug 1996 14:52:56 +0300
+Received: from tlhuph04 (localhost) by tlhuph04.elex.co.il with SMTP
+	(1.37.109.16/15.6) id AA198406724; Tue, 27 Aug 1996 14:52:04 +0300
+Message-Id: <3222E164.2899@telrad.co.il>
+Date: Tue, 27 Aug 1996 14:52:04 +0300
+From: Anat Rozenzon <Anat.Rozenzon@telrad.co.il>
+Organization: Telrad Ltd.
+X-Mailer: Mozilla 2.0 (X11; I; HP-UX A.09.03 9000/712)
+Mime-Version: 1.0
+To: "ht://Dig mailing list" <htdig@sdsu.edu>
+Subject: htdig: why redirect?
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: Anat Rozenzon <Anat.Rozenzon@telrad.co.il>
+X-UIDL: 873f1895101867d6760cda05c3c70c94
+Status: ROr
+
+Hi,
+I'm trying to use htdig over some files of mine.
+I get this output:
+
+New server: my.site, 80
+0:0:0:http://my.site/top_dir/: .++-- size = 1705
+1:1:1:http://my.site/top_dir/whosupwhat.html: .+*************+*+*+*+--
+size = 5251
+2:2:1:http://my.site/top_dir/people.html: .*----- size = 2648
+3:3:2:http://my.site/top_dir:  redirect
+.4:4:2:http://my.site/top_dir/pls.html: . size = 1061
+5:5:2:http://my.site/top_dir/Ingres.html: .+++- size = 1980
+6:6:2:http://my.site/top_dir/ClearCase.html: .+- size = 410
+7:7:2:http://my.site/top_dir/wwwteam:  redirect
+.8:8:3:http://my.site/top_dir/ingresteam/databases.html: .+++- size =
+894
+9:9:3:http://my.site/top_dir/ingresteam/sw_tools.html: .--- size = 667
+10:10:3:http://my.site/top_dir/ingresteam/ingres_stuff.html: .---- size
+= 2027
+11:11:3:http://my.site/top_dir/cc_group/cc_pc.html: . size = 1006
+12:12:4:http://my.site/top_dir/ingresteam/ingres_db.html: .---------
+size = 2461
+13:13:4:http://my.site/top_dir/ingresteam/prostar.html: .* size = 836
+14:14:4:http://my.site/top_dir/ingresteam/PTS.html: . size = 723
+htdig: Run complete
+htdig: 1 server seen:
+htdig:     my.site/top_dir:80 15 documents
+
+Errors to take note of:
+Sorting...
+Removing doc #3
+Removing doc #7
+Merging...
+200:sense                    
+htmerge: Total word count: 281
+10
+htmerge: Total documents: 13
+
+
+>From item numbered 3 I understand that redirect means that that
+directory was already seen (identical to item num 0) and thus ignored. 
+My problem is with item number 7.
+somehow this directory is too ignored although it was never seen before.
+All the links in it are therefor ignored too and I loose an importanat
+part of my pages.
+
+Any ideas why this happens?
+TIA
+-- 
+	Anat Rozenzon
+ 
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+WWW team  - Support Dept.         Telrad Phone: 5251
+Telrad Ltd.
+Israel 
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+
+From turtle  Mon Aug 26 18:30:09 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id SAA07670 for <andrews@pacbell.net>; Mon, 26 Aug 1996 18:16:11 -0700 (PDT)
+From: owner-htdig@sdsu.edu
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id SAA13095 for <turtle@ender.sdsu.edu>; Mon, 26 Aug 1996 18:16:04 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id SAA26506; Mon, 26 Aug 1996 18:16:03 -0700 (PDT)
+Date: Mon, 26 Aug 1996 18:16:03 -0700 (PDT)
+Message-Id: <199608270116.SAA26506@sdsu.edu>
+To: owner-htdig@sdsu.edu
+Subject: BOUNCE htdig: Admin request
+X-UIDL: c8e95e2160c2b01206199a5dbdbfd528
+Status: RO
+
+>From ?gandrew Mon Aug 26 18:16:00 1996
+Received: from tor-srs1.netcom.ca (tor-srs1.netcom.ca [207.93.1.148]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id SAA26501 for <htdig@sdsu.edu>; Mon, 26 Aug 1996 18:15:59 -0700 (PDT)
+Received: from craig.netcom.ca by tor-srs1.netcom.ca (8.7.5/SMI-4.1/Netcom)
+	id VAA06230; Mon, 26 Aug 1996 21:15:23 -0400 (EDT)
+Date: Mon, 26 Aug 1996 21:15:23 -0400 (EDT)
+Message-Id: <199608270115.VAA06230@tor-srs1.netcom.ca>
+X-Sender: craig@aix.can.ibm.com (Unverified)
+X-Mailer: Windows Eudora Light Version 1.5.2
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+To: htdig@sdsu.edu
+From: Craig Malton <craig@aix.can.ibm.com>
+Subject: Help with Core Dump needed Desperately.
+
+Hi,
+        I have been trying to get htdig running on both a linux PC running
+2.0.10 and on an RS6000 running AIX 4.1.4.  I've managed to get both to
+compile and have built the databases.  The trouble is that the htsearch
+program core dumps if the search returns more than one result.  It prints
+the first one and then core dumps on the second.  I am not an expert in C++
+but I think I have traced it down to the Delete_Data method in the
+Dictionary class.  It calls 
+delete (Object *) data;  The problem is I'm not sure what happens after
+that...what destructor is called, where does the program go from there?
+Anyone encountered this problem before, no of a work around?
+
+Thanks
+
+Craig Malton
+craig@aix.can.ibm.com
+Craig Malton
+cmalton@netcom.ca
+
+From turtle  Tue Aug 27 12:00:12 1996
+Return-Path: craig@aix.can.ibm.com
+Received: from gate.aix.can.ibm.com (gate.aix.can.ibm.com [204.138.188.66]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id LAA09984 for <andrews@pacbell.net>; Tue, 27 Aug 1996 11:54:25 -0700 (PDT)
+Received: from Mailhub by gate.aix.can.ibm.com id OAA20377; Tue, 27 Aug 1996 14:49:50 -0400
+Received: from MailClients by Mailhub id OAA08448; Tue, 27 Aug 1996 14:51:37 -0400
+Received: by vader.toraix.can.ibm.com (AIX 4.1/UCB 5.64/4.03)
+          id AA105534; Tue, 27 Aug 1996 14:53:58 -0400
+Date: Tue, 27 Aug 1996 14:53:57 -0400 (EDT)
+From: Craig Malton <craig@aix.can.ibm.com>
+X-Sender: craig@vader.toraix.can.ibm.com
+To: Andrew Scherpbier <andrews@pacbell.net>
+Subject: Re: htdig: What does the key Exceprt mean?
+In-Reply-To: <199608271600.JAA02111@kiwi.pacbell.net>
+Message-Id: <Pine.A32.3.91.960827145132.151288B-100000@vader.toraix.can.ibm.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-UIDL: a574a79df587e785d094f8acc88f0c3e
+Status: ROr
+
+Hello,
+	In case you didn't receive my message, I was able to get the 
+htsearch program working with the htdig v 3.0b5 on the 
+ftp.sdsu.edu/pub/htdig site.  Problem is I thought this was the latest 
+version, it's not.  I can't do multiple start urls with this version and 
+I can't seem to get boolean searches to work.  So now I am back to where 
+I started. *sigh*
+
+I will try your suggestion of the vars thing that you sent me, thanks for 
+all your help.
+
+Craig
+
+
+From turtle  Tue Aug 27 22:10:08 1996
+Return-Path: pjh@tecoma.mccc.edu
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id RAA05896 for <andrews@pacbell.net>; Tue, 27 Aug 1996 17:57:03 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id RAA13694 for <turtle@ender.sdsu.edu>; Tue, 27 Aug 1996 17:57:00 -0700 (PDT)
+Received: from tecoma.mccc.edu (super@tecoma.mccc.edu [198.133.170.1]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id RAA03331 for <andrew@sdsu.edu>; Tue, 27 Aug 1996 17:56:59 -0700 (PDT)
+Received: (from super@localhost) by tecoma.mccc.edu (8.7.5/8.7.3) id UAA29720 for andrew@sdsu.edu; Tue, 27 Aug 1996 20:56:56 -0400 (EDT)
+From: Pete Holsberg <pjh@mccc.edu>
+Message-Id: <199608280056.UAA29720@tecoma.mccc.edu>
+Subject: HTDIG (2)
+To: andrew@sdsu.edu
+Date: Tue, 27 Aug 1996 20:56:56 -0400 (EDT)
+Reply-To: pjh@mccc.edu
+X-Mailer: ELM [version 2.4 PL25]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-UIDL: 2b38535de5ef119b7dc69dc1084e0bcb
+Status: ROr
+
+Andrew,
+
+<blush> I found the answer to my previous question, but I
+have another.
+
+Is there any way that htdig can be made to show the word or
+phrase it's seeking when it finds it? As I understand it,
+htdig will present a link to the doc that contains the
+search object, but then the user has to use the browser's
+"find" to get the actual item.
+
+Thanks,
+Pete
+-- 
+Prof. Peter J. Holsberg      Mercer County Community College
+Voice: 609-586-4800          Technology Services Division
+FAX: 609-586-2318            1200 Old Trenton Road, Trenton, NJ 08690
+
+From turtle  Thu Aug 29 14:00:03 1996
+Return-Path: dane@sonic.net
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id NAA12809 for <andrews@pacbell.net>; Thu, 29 Aug 1996 13:31:14 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id NAA14805 for <turtle@ender.sdsu.edu>; Thu, 29 Aug 1996 13:31:12 -0700 (PDT)
+Received: from sub.sonic.net (root@sub.sonic.net [199.4.118.8]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id NAA16264 for <andrew@sdsu.edu>; Thu, 29 Aug 1996 13:31:12 -0700 (PDT)
+Received: from tails.sonic.net (tails [199.4.118.9]) by sub.sonic.net (8.7.5/8.7.3) with SMTP id NAA04690 for <andrew@sdsu.edu>; Thu, 29 Aug 1996 13:31:04 -0700
+Sender: root@sub.sonic.net
+Message-ID: <3225FE43.26E0BFB5@sonic.net>
+Date: Thu, 29 Aug 1996 13:32:03 -0700
+From: Dane Jasper <dane@sonic.net>
+Organization: Sonoma Interconnect
+X-Mailer: Mozilla 3.0b7 (X11; I; Linux 2.0.15 i586)
+MIME-Version: 1.0
+To: andrew@sdsu.edu
+Subject: Malformed header/segfault
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-UIDL: 74c682b6a7e36cf18ab72da3fd3ee598
+Status: ROr
+
+Andrew, I'm very excited about the ht://Dig tool, and have been working
+on installation on our server.  However, we're running Linux, and are
+having problems with browsers returning a 'malformed header' response,
+and the htsearch tool segfaults consistantly.  Do you have any
+suggestions?
+
+Dane Jasper
+Sonoma Interconnect
+
+From turtle Sun Sep  1 00:41:17 1996
+Subject: htsearch problem fixed? maybe!
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Sun, 1 Sep 1996 00:41:17 -0700 (PDT)
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:   561
+Status: RO
+
+I need some help from someone who is having problems with htsearch
+crashing.
+I want to see if the crashing goes away if you remove line 82 from
+htlib/Dictionary.cc
+This line reads:  delete Hashtable::Find((void *) name);
+
+I believe this is causing a double delete of the same object.
+
+I am currently in the process of completely rewriting the Dictionary
+class and while reimplementing its functionality, I came across that
+curious piece of code.
+
+Please let me know if this fix works ASAP.
+
+Cheers!
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From turtle Mon Sep  2 16:10:39 1996
+Subject: ht://Dig 3.0.3
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Mon, 2 Sep 1996 16:10:39 -0700 (PDT)
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:  1295
+Status: RO
+
+Version 3.0.3 of ht://Dig is available at the normal location.
+(http://htdig.sdsu.edu)
+
+The major thing in this release is that I fixed the problem with htsearch
+segfaulting under Linux, AIX, and various other platforms.
+
+In addition to this, I made changes to the default htdig.conf and
+rundig script.  This means that if you want the new versions of these
+installed on your system, you'll have to rename or remove the old ones
+*before* you run 'make install'.
+More info on this in the release notes (http://htdig.sdsu.edu/RELEASE.html)
+
+There are plenty of other changes as well, but no new features.  Check
+the ChangeLog for the gory details (http://htdig.sdsu.edu/ChangeLog)
+
+Even though I may not have responded to your suggestion, please keep
+them coming.
+
+
+Now some interesting news about ht://Dig and its future...
+A major software company has informed me that they will write a PDF
+parser for ht://Dig and port ht://Dig to WindowsNT.  All changes they
+make to ht://Dig will be donated back to me so they can be incorporated
+into the released version of ht://Dig.
+
+For now I'll have to keep you guessing as to what company it is.  Rest
+assured that I am NOT selling out on anything and that it is NOT Micro$oft. :-)
+
+Cheers!
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From turtle  Mon Sep  2 17:30:31 1996
+Return-Path: awesley@rubens.anu.edu.au
+Received: from anugpo.anu.edu.au (anugpo.anu.edu.au [150.203.2.6]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id RAA10680 for <andrews@pacbell.net>; Mon, 2 Sep 1996 17:24:31 -0700 (PDT)
+Received: from rubens.anu.edu.au (awesley@rubens.anu.edu.au [150.203.31.9]) by anugpo.anu.edu.au (8.7.5/8.6.12) with ESMTP id KAA22584 for <andrews@pacbell.net>; Tue, 3 Sep 1996 10:24:14 +1000 (EST)
+Received: (from awesley@localhost) by rubens.anu.edu.au (8.6.12/8.6.9) id KAA13435; Tue, 3 Sep 1996 10:24:05 +1000
+Date: Tue, 3 Sep 1996 10:24:05 +1000 (EST)
+From: Anthony Wesley <awesley@rubens.anu.edu.au>
+To: Andrew Scherpbier <andrews@pacbell.net>
+Subject: bug report - correction
+Message-ID: <Pine.LNX.3.91.960903101732.13329A-100000@rubens.anu.edu.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-UIDL: ff90d6f532a412d86df452af42db8931
+Status: ROr
+
+
+Sorry about my hasty email reporting "timelocal()" as a potential bug. 
+Please disregard that message.
+
+The actual problem was that configure incorrectly set HAVE_TIMEGM for me
+(Linux 1.3.97, libg++ 2.6.2.5 - pretty much up to date setup).
+
+The problem shows up in htdig/Document.cc line 196. My system does not 
+have timelocal() but it does have mktime().
+
+This problem did not occur when I installed 3.0.1, so I guess it may be 
+something you should know about...
+
+Cheers, Anthony
+
+From turtle  Mon Sep  2 19:00:03 1996
+Return-Path: awesley@rubens.anu.edu.au
+Received: from anugpo.anu.edu.au (anugpo.anu.edu.au [150.203.2.6]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id SAA03183 for <andrews@pacbell.net>; Mon, 2 Sep 1996 18:40:47 -0700 (PDT)
+Received: from rubens.anu.edu.au (awesley@rubens.anu.edu.au [150.203.31.9]) by anugpo.anu.edu.au (8.7.5/8.6.12) with ESMTP id LAA03293 for <andrews@pacbell.net>; Tue, 3 Sep 1996 11:40:42 +1000 (EST)
+Received: (from awesley@localhost) by rubens.anu.edu.au (8.6.12/8.6.9) id LAA20614; Tue, 3 Sep 1996 11:40:31 +1000
+Date: Tue, 3 Sep 1996 11:40:31 +1000 (EST)
+From: Anthony Wesley <awesley@rubens.anu.edu.au>
+To: Andrew Scherpbier <andrews@pacbell.net>
+Subject: max_doc_size fixed it!
+Message-ID: <Pine.LNX.3.91.960903113741.20561A-100000@rubens.anu.edu.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-UIDL: 2ee3319b0e270fc23f7e1b566fae173b
+Status: ROr
+
+
+I reported that htdig crashed with a SEG fault on large documents. I have 
+increased max_doc_size and this has apparently fixed the problem.
+
+What should htdig do with documents larger than max_doc_size? I guess it 
+should either skip them completely or read up to max_doc_size bytes and 
+then skip the rest.
+
+I would guess that its current behaviour is a bug....
+
+Cheers, Anthony
+
+From turtle  Mon Sep  2 18:00:03 1996
+Return-Path: awesley@rubens.anu.edu.au
+Received: from anugpo.anu.edu.au (anugpo.anu.edu.au [150.203.2.6]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id RAA19226 for <andrews@pacbell.net>; Mon, 2 Sep 1996 17:52:33 -0700 (PDT)
+Received: from rubens.anu.edu.au (awesley@rubens.anu.edu.au [150.203.31.9]) by anugpo.anu.edu.au (8.7.5/8.6.12) with ESMTP id KAA26440 for <andrews@pacbell.net>; Tue, 3 Sep 1996 10:52:30 +1000 (EST)
+Received: (from awesley@localhost) by rubens.anu.edu.au (8.6.12/8.6.9) id KAA13866; Tue, 3 Sep 1996 10:52:21 +1000
+Date: Tue, 3 Sep 1996 10:52:21 +1000 (EST)
+From: Anthony Wesley <awesley@rubens.anu.edu.au>
+To: Andrew Scherpbier <andrews@pacbell.net>
+Subject: bugs, bugs... :-)
+Message-ID: <Pine.LNX.3.91.960903104745.13800A-100000@rubens.anu.edu.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-UIDL: 7fba4a23c736269fb95ec8f19cf9923d
+Status: RO
+
+
+I have a fairly large html file in the root directory on our server 
+(nearly 200k in size) and it causes htdig to seg fault.
+
+I removed this file (it was statistics and stuff) and tried again. This time
+I got quite a bit further, but then htdig seg faulted again - on another 
+large file (180k).
+
+We have a few of these monsters lying about - htdig 3.0.1 swallowed them 
+without complaint, but 3.0.3 seems a bit more sensitive.
+
+Cheers, Anthony
+
+Linux 1.3.97 (pentium) (Slackware) with recent libraries, compilers etc.
+
+From turtle  Mon Sep  2 21:00:19 1996
+Return-Path: awesley@rubens.anu.edu.au
+Received: from anugpo.anu.edu.au (anugpo.anu.edu.au [150.203.2.6]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id UAA13420 for <andrews@pacbell.net>; Mon, 2 Sep 1996 20:44:32 -0700 (PDT)
+Received: from rubens.anu.edu.au (awesley@rubens.anu.edu.au [150.203.31.9]) by anugpo.anu.edu.au (8.7.5/8.6.12) with ESMTP id NAA21854 for <andrews@pacbell.net>; Tue, 3 Sep 1996 13:44:12 +1000 (EST)
+Received: (from awesley@localhost) by rubens.anu.edu.au (8.6.12/8.6.9) id NAA23794; Tue, 3 Sep 1996 13:44:03 +1000
+Date: Tue, 3 Sep 1996 13:44:03 +1000 (EST)
+From: Anthony Wesley <awesley@rubens.anu.edu.au>
+To: Andrew Scherpbier <andrews@pacbell.net>
+Subject: Re: max_doc_size fixed it!
+In-Reply-To: <199609030321.UAA11555@kiwi.pacbell.net>
+Message-ID: <Pine.LNX.3.91.960903132749.23444A-100000@rubens.anu.edu.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-UIDL: af6a53bb698db81de66d2a072f71a32f
+Status: ROr
+
+On Mon, 2 Sep 1996, Andrew Scherpbier wrote:
+
+> Anthony Wesley wrote:
+> > 
+> > I reported that htdig crashed with a SEG fault on large documents. I have 
+> > increased max_doc_size and this has apparently fixed the problem.
+> > 
+> > What should htdig do with documents larger than max_doc_size? I guess it 
+> > should either skip them completely or read up to max_doc_size bytes and 
+> > then skip the rest.
+> > 
+> > I would guess that its current behaviour is a bug....
+> > 
+> > Cheers, Anthony
+> > 
+> 
+> I am not sure how increasing max_doc_size can solve the problem.  Can you give
+> me a stack trace of where it dies and maybe a "info locals" in gdb?
+> 
+
+Htdig crashes on processing files which are larger than the maximum size 
+allocated in max_doc_size. This was originally set to 100000, and then 
+choked on several files in our tree which are larger than 100000 bytes. I 
+increased this by one order of magnitude (to 1,000,000) and then htdig 
+successfully ran through without crashing.
+
+My cut-and-paste isn't working properly (bloody 2-button mice!), so I'll
+give you the expurgated version of the output of gdb:
+
+#0 HTML::parse(...) in HTML.CC: 167
+#1 Retriever::RetrievedDocument(...) at Retriever.cc:384
+#2 Retriever::parse_url(...) at Retriever.cc:304
+#3 Retriever::Start(...) at Retriever.cc:182
+#4 main(...) at main.cc:182
+
+The arguments passed to these functions look plausible enough. Doesn't 
+look like a NULL pointer is being passed in anywhere.
+
+"info locals" gives:
+
+offset=106494
+in_space=0
+q = 0x3e7 <Address 0x3e7 out of bounds>
+start = ( ... lots of stuff. Looks like the start of the document )
+position = 0x40134000 <Address 0x40134000 out of bounds>
+
+Cheers, Anthony
+
+From turtle Mon Sep  2 22:43:41 1996
+Subject: ht://Dig version 3.0.4
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Mon, 2 Sep 1996 22:43:42 -0700 (PDT)
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:   517
+Status: RO
+
+Well, wouldn't you know it!
+The previous version, version 3.0.3 had a couple of problems that caused
+the build of htdig to fail.
+Hopefully 3.0.4 fixes these problems.
+
+Make sure you read the release notes for 3.0.3 carefully, however.
+They still apply to this version as well.
+
+Oh, one more thing.  The documentation lies when it says there is no
+context diff.  Look in http://htdig.sdsu.edu/files for the diff file
+that goes from 3.0.3 to 3.0.4
+
+Cheers!
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From turtle  Mon Sep  2 22:00:03 1996
+Return-Path: awesley@rubens.anu.edu.au
+Received: from anugpo.anu.edu.au (anugpo.anu.edu.au [150.203.2.6]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id VAA28722 for <andrews@pacbell.net>; Mon, 2 Sep 1996 21:30:28 -0700 (PDT)
+Received: from rubens.anu.edu.au (awesley@rubens.anu.edu.au [150.203.31.9]) by anugpo.anu.edu.au (8.7.5/8.6.12) with ESMTP id OAA28155 for <andrews@pacbell.net>; Tue, 3 Sep 1996 14:30:24 +1000 (EST)
+Received: (from awesley@localhost) by rubens.anu.edu.au (8.6.12/8.6.9) id OAA24583; Tue, 3 Sep 1996 14:30:14 +1000
+Date: Tue, 3 Sep 1996 14:30:14 +1000 (EST)
+From: Anthony Wesley <awesley@rubens.anu.edu.au>
+To: Andrew Scherpbier <andrews@pacbell.net>
+Subject: Re: max_doc_size fixed it!
+In-Reply-To: <199609030414.VAA12054@kiwi.pacbell.net>
+Message-ID: <Pine.LNX.3.91.960903142938.24388A-100000@rubens.anu.edu.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-UIDL: 7292b0108966c9096ea0f684b0d8907e
+Status: RO
+
+On Mon, 2 Sep 1996, Andrew Scherpbier wrote:
+
+> Anthony Wesley wrote:
+> > > 
+> > > I am not sure how increasing max_doc_size can solve the problem.  Can you give
+> > > me a stack trace of where it dies and maybe a "info locals" in gdb?
+> > > 
+> > allocated in max_doc_size. This was originally set to 100000, and then 
+> > choked on several files in our tree which are larger than 100000 bytes. I 
+> > increased this by one order of magnitude (to 1,000,000) and then htdig 
+> > successfully ran through without crashing.
+> 
+> Hmm...
+> Can you change the while loop that starts on line 357 of Document.cc to the following
+> and see if it still crashes with a small max_doc_size?
+> 
+>     while ((bytesRead = c.read(docBuffer, sizeof(docBuffer))) > 0)
+>     {
+> 	if (debug > 2)
+> 	    cout << "Read " << bytesRead << " from document\n";
+> 	if (contents.length() + bytesRead > max_doc_size)
+> 	    break;
+> 	contents.append(docBuffer, bytesRead);
+> 	if (debug < 2)
+> 	    alarm(timeout_interval);
+>     }
+
+This fixed it. Thanks!!
+
+Anthony
+
+From POPmail Fri Aug  9 15:30:05 1996
+Return-Path: wdnuucp!eric.engelmann@news.cais.com
+Received: from hupa (hupa.snfc21.pbi.net [206.13.28.16]) by PACBELL.net (8.7.5/8.7.1) with SMTP id PAA10688 for <andrews@pacbell.net>; Fri, 9 Aug 1996 15:20:14 -0700 (PDT)
+Received: from news.cais.com by hupa (SMI-8.6/SMI-SVR4)
+	id PAA20492; Fri, 9 Aug 1996 15:20:13 -0700
+Received: from wdnuucp.UUCP (wdnuucp@localhost) by news.cais.com (8.6.5/8.6.5) with UUCP id RAA00733 for andrews@pacbell.net; Fri, 9 Aug 1996 17:59:58 -0400
+X-UIDL: 839629803.000
+To: andrews@pacbell.net
+Subject: Re: HTDIG for NT?
+From: eric.engelmann@wdn.com (ERIC ENGELMANN)
+Message-ID: <8C61435.06A40497AA.uuout@wdn.com>
+Date: Fri, 09 Aug 96 17:57:00 -0500
+Organization: World Data Network BBS.  Since 1984.  Telnet wdn.com.
+Reply-To: eric.engelmann@wdn.com (ERIC ENGELMANN)
+References: <199608092043.NAA08392@kiwi.pacbell.net>
+X-Mailreader: PCBoard Version 15.22
+X-Mailer: PCBoard/UUOUT Version 1.20
+Status: ROr
+
+-> > What would it cost to have you port HTDIG to NT? How long would it
+-> take? > If you can't do it, could you recommend someone who could?
+-> >
+->
+-> I don't want to port ht://Dig to NT...  I feel that that would be the
+-> wrong approach to the problem.  A much better solution would be to
+-> rewrite all of ht://Dig in Java so that it is inherently cross
+-> platform.
+-> I have been toying with the idea, but unfortunately don't have the
+-> time to do it.
+Too bad. There's NO price you'd do it for?
+
+->
+-> Sorry, I can't give you any better news.  Maybe you should use
+-> Excite for Webmasters instead.  It runs under NT.
+It doesn't do campus-wide indexes, unless I'm mistaken.
+
+-> Another alternative is to put Linux on a P90
+and run Apache on it.
+-> ht://Dig will work under Linux.  That solution would only be the cost
+-> of the PC.  Linux and all other required software are free.
+-> You can still have your web server on an NT box, just have the
+-> unix box do the searching.
+That's one solution, but I think the NT one could be SOLD, and probably
+easily for $500 a copy, perhaps 1000 copies is the market. A crippled
+(free) version that does 10,000 links, a $500 version that does
+unlimited. MS apparently isn't interested, and Netscape's catalog server
+is some way off and expensive. If you could port ASAP, the market is
+open.
+
+I can handle all sales and fulfillment through my company. You'd get
+half of sales indefinitely. Likely it could be sold within weeks to a
+bigger fish for a nice sum. STILL not interested?
+
+Eric Engelmann, Owner/Technical Director
+EMS Professional Software/Consulting
+4505 Buckhurst Ct.
+Olney MD 20832-1830
+Voice:+1(301)924-3594     Fax:+1(301)963-2708
+BBS/Fax:+1(301)774-1486   EMail:ems@wdn.com
+http://www.wdn.com/ems
+
+
+From turtle  Tue Sep  3 08:30:03 1996
+Return-Path: japs@garm.adm.ku.dk
+Received: from ender.sdsu.edu (ender.sdsu.edu [130.191.13.2]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id IAA23739 for <andrews@pacbell.net>; Tue, 3 Sep 1996 08:07:12 -0700 (PDT)
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by ender.sdsu.edu (8.7.4/8.7.3) with ESMTP id IAA17644 for <turtle@ender.sdsu.edu>; Tue, 3 Sep 1996 08:07:10 -0700 (PDT)
+Received: from vale.adm.ku.dk (vale.adm.ku.dk [130.225.127.35]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id IAA08271 for <andrew@sdsu.edu>; Tue, 3 Sep 1996 08:07:09 -0700 (PDT)
+Received: from garm.adm.ku.dk (garm.adm.ku.dk [130.225.127.34]) by vale.adm.ku.dk (8.7.5/8.7) with SMTP id PAA07264 for <andrew@sdsu.edu>; Tue, 3 Sep 1996 15:42:33 +0200 (METDST)
+Received: from localhost (japs@localhost) by garm.adm.ku.dk (8.7.5/8.7.2) with SMTP id PAA22037 for <andrew@sdsu.edu>; Tue, 3 Sep 1996 15:42:32 +0200 (METDST)
+Date: Tue, 3 Sep 1996 15:42:31 +0200 (METDST)
+From: "Jan P. Sorensen" <japs@garm.adm.ku.dk>
+To: Andrew Scherpbier <andrew@sdsu.edu>
+Subject: Re: htdig and character set
+In-Reply-To: <Pine.HPP.3.94.960702221652.1514A-100000@garm.adm.ku.dk>
+Message-ID: <Pine.HPP.3.95.960903153544.21884A-100000@garm.adm.ku.dk>
+X-UIDL: 3046efa9f1812395608217315b1f20b2
+Status: ROr
+
+
+I have installed the final version 3.0 and have found a couple of
+corrections to be made in order to run htdig under HP_UX 10.01. The errors
+are related to the ISO-8859-1 character set and &xxx;
+
+In addition the compilation must be done with option -funsigned-char
+
+Med venlig hilsen Jan P. Sorensen
+
+
+
+*** ./htdig-3.0/htsearch/htsearch.cc.orig	Tir Jul 16 20:30:15 1996
+--- ./htdig-3.0/htsearch/htsearch.cc	Son Sep  1 20:50:23 1996
+***************
+*** 281,287 ****
+  	// characters '(' and ')' will be put into their own WeightWord objects.
+  	//
+  	char	*pos = allWords;
+! 	int		t;
+  	String	word;
+  	while (*pos)
+  	{
+--- 281,287 ----
+  	// characters '(' and ')' will be put into their own WeightWord objects.
+  	//
+  	char	*pos = allWords;
+! 	unsigned char		t;
+  	String	word;
+  	while (*pos)
+  	{
+*** ./htdig-3.0/htdig/HTML.cc.orig	Tir Jul  2 23:14:15 1996
+--- ./htdig-3.0/htdig/HTML.cc	Tir Sep  3 09:38:46 1996
+***************
+*** 114,152 ****
+  			do_tag(retriever, tag);
+  			position = q;
+  		}
+- 		else if (*position == '&')
+- 		{
+- 			//
+- 			// HTML uses "&<string>;" as a way to put special characters in a
+- 			// document.  We'll just skip these...
+- 			//
+- 			unsigned char	*orig = position++;
+- 			if (!isalnum(*position))
+- 			{
+- 				//
+- 				// This is an illegal escape.  We need to assume the
+- 				// author just wants to use a '&'.
+- 				//
+- 				position = orig;
+- 			}
+- 			else
+- 			{
+- 				while (isalnum(*position))
+- 					position++;
+- 				if (*position != ';')
+- 				{
+- 					//
+- 					// Broken escape.  Didn't end with a ';'.  Assume literal
+- 					//
+- 					position = orig;
+- 				}
+- 				else
+- 				{
+- 					position++;
+- 					continue;
+- 				}
+- 			}
+- 		}
+  
+  		word = 0;
+  		if (*position > 0 && (isalnum(*position) || *position >= 160 ||
+--- 114,119 ----
+***************
+*** 181,186 ****
+--- 148,154 ----
+  						unsigned char	c = SGMLEntities::translate(entity);
+  						if (c != 0)
+  							word << (char) c;
++ 						position++;
+  					}
+  				}
+  				
+*** ./htdig-3.0/htlib/Connection.cc.orig	Lor Feb 17 00:31:16 1996
+--- ./htdig-3.0/htlib/Connection.cc	Son Sep  1 20:31:41 1996
+***************
+*** 442,448 ****
+  }
+  
+  #if NEED_PROTO_GETHOSTNAME
+! extern "C" int gethostname(char *name, int namelen);
+  #endif
+  
+  //*************************************************************************
+--- 442,448 ----
+  }
+  
+  #if NEED_PROTO_GETHOSTNAME
+! extern "C" int gethostname(char *name, unsigned int namelen);
+  #endif
+  
+  //*************************************************************************
+
+
+
+
+
+From turtle  Tue Sep  3 15:00:27 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id OAA03571 for <andrews@pacbell.net>; Tue, 3 Sep 1996 14:42:01 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id OAA12103 for htdig-out; Tue, 3 Sep 1996 14:26:15 -0700 (PDT)
+Received: from ceres.promus.com ([198.79.121.202]) by sdsu.edu (8.7.5/8.6.9) with SMTP id OAA12097 for <htdig@sdsu.edu>; Tue, 3 Sep 1996 14:26:12 -0700 (PDT)
+Received: by ceres.promus.com with Microsoft Exchange (IMC 4.0.838.14)
+	id <01BB99B4.9516E810@ceres.promus.com>; Tue, 3 Sep 1996 16:25:55 -0500
+Message-ID: <c=US%a=_%p=PROMUS%l=PROMUS/CORP/0003248E@ceres.promus.com>
+From: Bryan Cromartie <bcromartie@promus.com>
+To: "'htdig@sdsu.edu'" <htdig@sdsu.edu>
+Subject: htdig: Question: How do I index words with less than 3 letters?
+Date: Tue, 3 Sep 1996 16:25:34 -0500
+X-Mailer:  Microsoft Exchange Server Internet Mail Connector Version 4.0.838.14
+Encoding: 15 TEXT
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: Bryan Cromartie <bcromartie@promus.com>
+X-UIDL: 9a82bbf7d98e0a90e110d35329ad29af
+Status: ROr
+
+Hi,
+
+  I'd like to include state abbreviations as acceptable search words
+within an index, but Dig's minimum acceptable characters per "word"
+appears to be three. Since state abbreviations are two letters, Dig
+doesn't seem to catch them.
+  First, am I indeed correct that Dig requires indexable words to be a
+minimum of 3 characters? ie, am I doing something wrong in a
+configuration or run script perhaps? If Dig does default to a minimum of
+3 characters per word when creating an index, how can I change it to 2,
+so state abbreviations are included?
+  Thanks in advance for any assistance.
+
+Respectfully,
+Bryan Cromartie
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+
+From turtle Tue Sep  3 16:45:40 1996
+Subject: Re: htdig: RE: Indexing words with less than 3 letters?
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Tue, 3 Sep 1996 16:45:40 -0700 (PDT)
+In-Reply-To: <c=US%a=_%p=PROMUS%l=PROMUS/CORP/00032583@ceres.promus.com> from Bryan Cromartie at "Sep 3, 96 06:02:46 pm"
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:  2597
+Status: RO
+
+Bryan Cromartie wrote:
+> >> You are absolutely right in your assesment of the 3 character minimum
+> >>limit.
+> >> I did this mainly to get rid of lots of two letter words that occur
+> >>too frequently
+> >> anyway.  I'll look into changing this limit to a configurable item.
+> 
+> Cool =)
+
+I already made the change.  (I needed a break from my real work!  :-))
+The minimum is now determined by an attribute: minimum_word_length
+which is set to 3 by default (to emulate previous behaviour)
+
+> >> If the minimum word length is set to 2, then the stop-words list needs
+> >>to be
+> >> quite a bit bigger.  Does anyone have a good list of these to put into the
+> >> default bad_words file?
+> 
+>   Why does the bad_words file need to be enlarged when we decrease the
+> minimum length setting? If it's a matter of impermissible vulgar words,
+> I really can't think of any 2 letter curses. <G>
+
+:-)  I guess I should not have called that file "bad_words"...  It really
+should be "stop_words" or "words_that_are_too_common_to_index"
+
+If you can't wait for the next version, you can just change the number 2
+on line 240 and 236 of htdig/HTML.cc to a 1.
+
+>   If it's a memory issue, then could we approach the problem from
+> another angle, perhaps by using a special_words list of some sort. In
+> the case of 2 letter state abbreviations, this would be a list of only
+> 50 to check when we ran across a 2 letter word. When such a word was
+> found, instead of excluding it, we could include it. I'm not sure how
+> greatly this would affect merge speed, since it would involve another
+> check against a separate file. However, in its favor, the file would
+> remain relatively small at most times, since there aren't that many
+> exceptions to the already broad range of allowable words.
+
+Hmmm...  That's kinda a fudge.  We could do something like that with
+the synonyms fuzzy algorithm...
+
+>   Finally, if it turns out that moving the limit to 2 characters is
+> inefficient, is there a way to currently "trick" Dig into indexing a 2
+> letter word by adding a character it would later strip out? For
+> instance, if I pre- or appended an underscore or plus symbol to all my 2
+> letter state abbreviations, would Dig treat that as a 3 character word,
+> and then immediately strip the symbol, leaving me with a searchable 2
+> letter state name?
+
+You can almost do that currently since the characters in the
+valid_punctuation attribute are removed from words when they are indexed.
+The problem is that the code does the length check after that removal...
+
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From turtle  Tue Sep  3 16:30:23 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id QAA06942 for <andrews@pacbell.net>; Tue, 3 Sep 1996 16:13:51 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id QAA13008 for htdig-out; Tue, 3 Sep 1996 16:02:57 -0700 (PDT)
+Received: from ceres.promus.com ([198.79.121.202]) by sdsu.edu (8.7.5/8.6.9) with SMTP id QAA13003 for <htdig@sdsu.edu>; Tue, 3 Sep 1996 16:02:54 -0700 (PDT)
+Received: by ceres.promus.com with Microsoft Exchange (IMC 4.0.838.14)
+	id <01BB99C2.20DD74B0@ceres.promus.com>; Tue, 3 Sep 1996 18:02:53 -0500
+Message-ID: <c=US%a=_%p=PROMUS%l=PROMUS/CORP/00032583@ceres.promus.com>
+From: Bryan Cromartie <bcromartie@promus.com>
+To: "'htdig@sdsu.edu'" <htdig@sdsu.edu>
+Subject: htdig: RE: Indexing words with less than 3 letters?
+Date: Tue, 3 Sep 1996 18:02:46 -0500
+X-Mailer:  Microsoft Exchange Server Internet Mail Connector Version 4.0.838.14
+Encoding: 35 TEXT
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: Bryan Cromartie <bcromartie@promus.com>
+X-UIDL: 07a934b89321b221078b00900dbae82d
+Status: ROr
+
+>> You are absolutely right in your assesment of the 3 character minimum
+>>limit.
+>> I did this mainly to get rid of lots of two letter words that occur
+>>too frequently
+>> anyway.  I'll look into changing this limit to a configurable item.
+
+Cool =)
+>
+>> If the minimum word length is set to 2, then the stop-words list needs
+>>to be
+>> quite a bit bigger.  Does anyone have a good list of these to put into the
+>> default bad_words file?
+
+  Why does the bad_words file need to be enlarged when we decrease the
+minimum length setting? If it's a matter of impermissible vulgar words,
+I really can't think of any 2 letter curses. <G>
+  If it's a memory issue, then could we approach the problem from
+another angle, perhaps by using a special_words list of some sort. In
+the case of 2 letter state abbreviations, this would be a list of only
+50 to check when we ran across a 2 letter word. When such a word was
+found, instead of excluding it, we could include it. I'm not sure how
+greatly this would affect merge speed, since it would involve another
+check against a separate file. However, in its favor, the file would
+remain relatively small at most times, since there aren't that many
+exceptions to the already broad range of allowable words.
+  Finally, if it turns out that moving the limit to 2 characters is
+inefficient, is there a way to currently "trick" Dig into indexing a 2
+letter word by adding a character it would later strip out? For
+instance, if I pre- or appended an underscore or plus symbol to all my 2
+letter state abbreviations, would Dig treat that as a 3 character word,
+and then immediately strip the symbol, leaving me with a searchable 2
+letter state name?
+
+Respectfully,
+Bryan Cromartie
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+
+From turtle Wed Sep  4 15:15:33 1996
+Subject: Re: htdig: htsearch 500 server error and command line segmentation fault
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Wed, 4 Sep 1996 15:15:33 -0700 (PDT)
+In-Reply-To: <01BB9A8A.557F6FC0@lhc.nlm.nih.gov> from Lew Berman at "Sep 4, 96 05:56:00 pm"
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:  1314
+Status: RO
+
+Lew Berman wrote:
+> I'm running htsearch under solaris 2.5 on a sun sparc 20 and am getting
+> a "500 Server Error...Error: HTTPd: malformed header from script ...".
+> Has anyone run into this problem?  Any suggestions?  I've also tried
+> running htsearch from the command line and get a segmentation fault when replying 
+> to the first prompt.  Does anyone know where the manual on how to use htsearch
+> from the command line is?
+
+There is no manual for it... :-(  I only added that feature for
+debugging purposes.
+Anyway, by default htsearch will prompt for two values:
+"words" and "format".
+The "words" value is the list of words to search for.
+The "format" value should probably be "builtin-short" for interactive
+output unless you are prepared to scroll back a LOT.  :-)
+If htsearch does not give any errors, the problem is probably with the
+HTML form that calls htsearch.
+
+If the problem you are having still persists, try running htsearch
+from within gdb or other debugger and see where it is crashing. 
+
+The development platform for ht://Dig is also Solaris 2.5 on Sparc, but
+I don't have any problems with htsearch.
+I am using gcc 2.7.2 and libg++ 2.7.1
+
+Did you try running the "rundig" script with a "-v" to see if anything
+else went wrong?
+
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From turtle Thu Sep  5 07:17:15 1996
+Subject: Re: htdig: htdig questions (timestamp and running while updating)
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Thu, 5 Sep 1996 07:17:15 -0700 (PDT)
+In-Reply-To: <9609051304.AA10055@toledo.ih.lucent.com> from "ghs1@marconi.ih.lucent.com" at "Sep 5, 96 08:04:44 am"
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:  1381
+Status: RO
+
+ghs1@marconi.ih.lucent.com wrote:
+> Andrew and others,
+> 
+> I recently started using htdig to index our internal Lab Web site and
+> have two questions.  I am currently running htdig-3.0.
+> 
+> The timestamps when searches are done report 12/31/69 as the date and
+> never anything else.  Our Web site doesn't go back that far.  In
+> fact UNIX starts the day after at Jan 1, 1970, so something isn't working
+> correctly.  Any ideas.  We are running the Web server on a Solaris 2.5
+> system and the date command does work:-)
+
+The date problem was fixed in a more recent version of ht://Dig.
+(I don't recall offhand which version... Check the release notes at
+http://htdig.sdsu.edu/RELEASE.html)
+
+> When an update of the database is done, all searches fail with an 
+> error 500.  Is there a way to do an update without having searches
+> fail until the update is done?
+
+Hmm.  I don't think there is a solution to this other than to use a temporary
+database.  GDBM locks the database when writing to it, so while updating
+htsearch doesn't have access to it.
+You can copy the databases to a temporary location and run the update on
+the copy.  When done, you can copy the new databases back to the location
+htsearch expects them to be in.
+I know it's not a very clean solution.  If anyone has suggestions on this,
+let me know.
+
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From turtle  Thu Sep  5 07:00:33 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id GAA08580 for <andrews@pacbell.net>; Thu, 5 Sep 1996 06:17:25 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id GAA27241 for htdig-out; Thu, 5 Sep 1996 06:09:09 -0700 (PDT)
+Received: from cbgw2.att.com (cbgw2.att.com [192.20.239.134]) by sdsu.edu (8.7.5/8.6.9) with SMTP id GAA27236 for <htdig@sdsu.edu>; Thu, 5 Sep 1996 06:09:06 -0700 (PDT)
+From: ghs1@marconi.ih.lucent.com
+Received: from marconi.ih.lucent.com by cbig2.att.att.com (SMI-8.6/EMS-1.2 sol2)
+	id JAA09078; Thu, 5 Sep 1996 09:07:29 -0400
+Received: by marconi.ih.lucent.com (SMI-8.6/EMS-L sol2)
+	id IAA12555; Thu, 5 Sep 1996 08:04:46 -0500
+Original-From: ghs1@lucent.com
+Received: from toledo.ih.lucent.com by marconi.ih.lucent.com (SMI-8.6/EMS-L sol2)
+	id IAA12551; Thu, 5 Sep 1996 08:04:45 -0500
+Received: by toledo.ih.lucent.com (5.x/EMS-L sol2)
+	id AA10055; Thu, 5 Sep 1996 08:04:44 -0500
+Date: Thu, 5 Sep 1996 08:04:44 -0500
+Original-From: ghs1@marconi.ih.lucent.com
+Message-Id: <9609051304.AA10055@toledo.ih.lucent.com>
+To: htdig@sdsu.edu
+Subject: htdig: htdig questions (timestamp and running while updating)
+X-Sun-Charset: US-ASCII
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: ghs1@marconi.ih.lucent.com
+X-UIDL: 78f2c292cd5ec05bbb194570d39aaa28
+Status: ROr
+
+Andrew and others,
+
+I recently started using htdig to index our internal Lab Web site and
+have two questions.  I am currently running htdig-3.0.
+
+The timestamps when searches are done report 12/31/69 as the date and
+never anything else.  Our Web site doesn't go back that far.  In
+fact UNIX starts the day after at Jan 1, 1970, so something isn't working
+correctly.  Any ideas.  We are running the Web server on a Solaris 2.5
+system and the date command does work:-)
+
+When an update of the database is done, all searches fail with an 
+error 500.  Is there a way to do an update without having searches
+fail until the update is done?
+
+Gary Sitzmann
+Lucent Technologies -- Bell Labs Innovations
+ghs1@lucent.com
+
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+
+From turtle Thu Sep  5 08:11:16 1996
+Subject: Re: htdig: htdig newbie-type questions.
+To: htdig@sdsu.edu (ht://Dig mailing list)
+Date: Thu, 5 Sep 1996 08:11:16 -0700 (PDT)
+In-Reply-To: <199609051434.QAA09587@mesquite.ein.cz> from "James E Jurach Jr." at "Sep 5, 96 04:34:12 pm"
+X-Mailer: ELM [version 2.4ME+ PL17 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length:  1798
+Status: RO
+
+James E Jurach Jr. wrote:
+> Heya guys,
+> 
+> 1) Is there a faq or a mailing list archive I can access to answer my own 
+> questions?
+
+I have been thinking about doing an FAQ but I'm in bit of a time crunch with
+my "paying" job...  :-)
+Unfortunately, I have no longer any control over the htdig mailing list other
+than subscribe and unsubscribe privileges so I cannot setup an official
+majordomo list archive.  However, I have personally saved most of the messages
+to the list so I guess I could make those available somewhere.  I'll see what
+I can do there.
+
+> 2) I'm working with Linux, and haven't had any initial success.  Is anyone 
+> working with Linux at all, or is there a present condition for which I should 
+> just give up immediately?  (see below for the problem I'm having..)
+
+Don't give up.  See below.
+
+> 3) I think this project is great (if i can get it to work that is), and I'd be 
+> willing to help out any way I can.  Thanks for all your work.
+
+I like your attitude!  Help is *always* appreciated!
+
+> Here's the problem:
+> 
+> I just downloaded htdig-3.0b6pre, built and installed it, formed a database on 
+> a small portion of my pages, and when i run htsearch, i get a SIGSEGV at 
+> ./htcommon/DocumentRef.h:77, called from ./htsearch/Display.cc:95, because 
+> apparently match->ref is NULL..
+
+OUCH!  The version you got is WAY out of date!
+ht://Dig has been out of beta since 17-Jul-1996...  The most recent version is
+3.0.4 which you can get from http://htdig.sdsu.edu/files/
+
+> It's taking me a while to get through the learning curve of how all these 
+> components work together, and frankly, I was sorta hoping to avoid it.  Any 
+> pointers or clues?
+
+Get the newest version and see if you still have problems.
+
+-- 
+Andrew Scherpbier <andrews@pacbell.net>
+Contigo Software
+
+From turtle  Thu Sep  5 08:00:08 1996
+Return-Path: owner-htdig@sdsu.edu
+Received: from sdsu.edu (sdsu.edu [130.191.229.14]) by PACBELL.net (8.7.5/8.7.1) with ESMTP id HAA26880 for <andrews@pacbell.net>; Thu, 5 Sep 1996 07:45:22 -0700 (PDT)
+Received: (from daemon@localhost) by sdsu.edu (8.7.5/8.6.9) id HAA27741 for htdig-out; Thu, 5 Sep 1996 07:37:24 -0700 (PDT)
+Received: from mesquite.ein.cz (root@mesquite.ein.cz [193.179.133.1]) by sdsu.edu (8.7.5/8.6.9) with ESMTP id HAA27735 for <htdig@sdsu.edu>; Thu, 5 Sep 1996 07:37:19 -0700 (PDT)
+Received: from mesquite.ein.cz (muaddib@localhost [127.0.0.1]) by mesquite.ein.cz (8.7.5/8.6.9) with ESMTP id QAA09587; Thu, 5 Sep 1996 16:34:13 +0200
+Message-Id: <199609051434.QAA09587@mesquite.ein.cz>
+X-Mailer: exmh version 1.6.9 8/22/96
+X-face: ".Wu3#`DIb#m8{wW_JqO=./?dI."2K:2R*CJn^is4b(ol'c@j{Xi58zJ,5b(r~I,:=
+	7&m324`e2@LTd)bBg4}F}4uCB^@`ne;O?l<k[f}`c7b_FL4B'lPYc$_{7AqP[3<IVPvvo-wnc
+	(#y>(r<_g,1fY<j|pJUxx*]L0l'i4bkoM,Mek5kZ5ONrzS]I:Qn/{Y4x4(F2pr%H+A!
+To: htdig@sdsu.edu
+cc: Myself <muaddib@ein.cz>
+Subject: htdig: htdig newbie-type questions.
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 05 Sep 1996 16:34:12 +0200
+From: "James E Jurach Jr." <muaddib@ein.cz>
+Sender: owner-htdig@sdsu.edu
+Precedence: bulk
+Reply-To: "James E Jurach Jr." <muaddib@ein.cz>
+X-UIDL: b5693eb87665efa73a9451a3e91d1d5c
+Status: ROr
+
+Heya guys,
+
+1) Is there a faq or a mailing list archive I can access to answer my own 
+questions?
+
+2) I'm working with Linux, and haven't had any initial success.  Is anyone 
+working with Linux at all, or is there a present condition for which I should 
+just give up immediately?  (see below for the problem I'm having..)
+
+3) I think this project is great (if i can get it to work that is), and I'd be 
+willing to help out any way I can.  Thanks for all your work.
+
+Here's the problem:
+
+I just downloaded htdig-3.0b6pre, built and installed it, formed a database on 
+a small portion of my pages, and when i run htsearch, i get a SIGSEGV at 
+./htcommon/DocumentRef.h:77, called from ./htsearch/Display.cc:95, because 
+apparently match->ref is NULL..
+
+It's taking me a while to get through the learning curve of how all these 
+components work together, and frankly, I was sorta hoping to avoid it.  Any 
+pointers or clues?
+
+james
+---
+-=-=-=- james e. jurach jr. -=-=-=- EIN -=-=-=- prague, czech republic -=-=-=-
++ The average, healthy, well-adjusted adult gets up at seven-thirty in       +
++ the morning feeling just terrible.                                         +
++                 -- Jean Kerr                                               +
+-=-=-=-=- http://www.ceo.cz -=-=-=-=-=-=-=-=-=-=- james@ein.cz -=-=-=-=-=-=-=-
+
+
+----------------------------------------------------------------------
+To unsubscribe from the htdig mailing list, send a message to
+htdig-request@sdsu.edu containing the single word "unsubscribe" in
+the body of the message.
+

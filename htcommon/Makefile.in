@@ -1,0 +1,31 @@
+include @HTDIG_TOP@/Makefile.config
+include .sniffdir/ofiles.incl
+
+OBJS=	$(OFILES)
+
+TARGET=		libcommon.a
+LOCAL_DEFINES=	-DBIN_DIR=\"$(BIN_DIR)\" \
+		-DCOMMON_DIR=\"$(COMMON_DIR)\" \
+		-DCONFIG_DIR=\"$(CONFIG_DIR)\" \
+		-DDATABASE_DIR=\"$(DATABASE_DIR)\" \
+		-DIMAGE_URL_PREFIX=\"$(IMAGE_URL_PREFIX)\"
+
+all:		$(TARGET)
+
+$(TARGET):	$(OBJS)
+	$(AR) rcv $(TARGET) $?
+	$(RANLIB) $(TARGET)
+
+install:	$(TARGET)
+	@echo "Nothing to install"
+
+clean:
+	$(RM) $(OBJS) $(TARGET) *~ *.bak *% a.out core *.orig
+
+distclean:	clean
+	$(RM) Makefile *.proj
+
+depend:
+	$(MAKEDEPEND) $(CXXFLAGS) @CPPFLAGS@ -- $(OBJS)
+
+defaults.o:		@HTDIG_TOP@/CONFIG

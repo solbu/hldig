@@ -1,0 +1,29 @@
+#! /bin/sh
+
+#
+# rundig
+#
+# This is a sample script to create a search database for ht://Dig.
+#
+if [ "$1" = "-v" ]; then
+    verbose=-v
+fi
+
+@BIN_DIR@/htdig -i $verbose -s
+@BIN_DIR@/htmerge $verbose -s
+@BIN_DIR@/htnotify $verbose
+
+#
+# Only create the endings database if it doesn't already exist.
+# This database is static, so even if pages change, this database will not
+# need to be rebuilt.
+#
+if [ ! -f @COMMON_DIR@/word2root.gdbm ]
+then
+    @BIN_DIR@/htfuzzy $verbose endings
+fi
+
+if [ ! -f @COMMON_DIR@/synonyms.gdbm ]
+then
+    @BIN_DIR@/htfuzzy $verbose synonyms
+fi
