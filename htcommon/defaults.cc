@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.38 2000/02/24 16:49:10 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.39 2000/02/24 17:22:54 grdetil Exp $
 //
 
 #include "HtConfiguration.h"
@@ -2250,7 +2250,7 @@ url_part_aliases:
 	attribute.
 " },
 { "version", VERSION, 
-	"string", "htsearch", "version: 3.2.0", "all", "Presentation:Text", "
+	"string", "htsearch", "all", "Presentation:Text", "version: 3.2.0", "
 	This specifies the value of the VERSION
 	variable which can be used in search templates.
 	The default value of this attribute is determined
@@ -2344,7 +2344,7 @@ url_part_aliases:
 	"string", "htdig htmerge htsearch htfuzzy", "3.2.0b1", "Extra Output", "wordlist_monitor_output: file:/home/bosc/trash/wlmonout", "
 	Specifies word monitor output. Currently file or stdout
 " },
-{0, 0, 0, 0, 0},
+{0, 0, 0, 0, 0, 0, 0, 0}
 };
 
 HtConfiguration	config;

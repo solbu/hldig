@@ -1,3 +1,10 @@
+Thu Feb 24 11:16:37 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc (version): Moved example over to correct field.
+	(defaults[] terminator): Padded zeros to new number of fields.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerate using cf_generate.pl.
+
 Thu Feb 24 19:08:41 2000  Loic Dachary  <loic@ceic.com>
 
 	* htmerge/words.cc: only display Word in verbose message instead
