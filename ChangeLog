@@ -1,3 +1,8 @@
+Mon Jun 14 15:01:07 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc(RetrieveHTTP): Show "Unknown host" message if
+	Connection::assign_server() fails (due to gethostbyname() failure).
+
 Mon Jun 14 13:52:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc, htsearch/Display.h, htsearch/Display.cc,
