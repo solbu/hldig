@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htpurge.cc,v 1.1.2.10 2000/08/14 17:42:34 toivo Exp $
+// $Id: htpurge.cc,v 1.1.2.11 2000/08/21 04:43:20 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -181,7 +181,10 @@ Dictionary *purgeDocs(Dictionary *purgeURLs)
       return discard_list; // It's empty right now
     
     IDs = db.DocIDs();
-	
+
+    if (IDs->Count() == 0)
+      reportError("Database is empty!");
+
     IDs->Start_Get();
     IntObject		*id;
     String		idStr;

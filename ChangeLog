@@ -1,3 +1,8 @@
+Sun Aug 20 23:25:01 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* httools/htpurge.cc (purgeDocs): Add error message when document
+	database is completely empty. Should take care of PR#672 (and others).
+
 Sun Aug 20 20:37:53 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtRegex.h, htlib/HtRegex.cc: Made destructor virtual,
@@ -12,7 +17,7 @@ Sun Aug 20 20:37:53 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtRegexReplace.cc, htlib/HtRegexReplaceList.cc,
 	htlib/HtRegexReplace.h, htlib/HtRegexReplaceList.h, 
-	htcommon/HtURLRewriter.cc, htcommon/HtURLRewriter.h: New classes
+	htcommon/HtURLRewriter.cc, htcommon/HtURLRewriter.h: New classes.
 
 	* htcommon/Makefile.am, htcommon/Makefile.in: Add compilation for
 	HtURLRewriter.
