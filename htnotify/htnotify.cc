@@ -6,6 +6,9 @@
 // has "expired"
 //
 // $Log: htnotify.cc,v $
+// Revision 1.12  1998/12/19 16:27:07  ghutchis
+// Fix nasty security hole found by Werner Hett <hett@isbiel.ch>.
+//
 // Revision 1.11  1998/12/04 04:13:52  ghutchis
 // Use configure check to only include getopt.h when it exists.
 //
@@ -46,7 +49,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.11 1998/12/04 04:13:52 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.12 1998/12/19 16:27:07 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -212,11 +215,18 @@ void htnotify(DocumentRef &ref)
 void send_notification(char *date, char *email, char *url, char *subject)
 {
   /* Currently unused    int		fildes[2]; */
-    String	to = email;
 
+  // Before we do anything with the email address, we need to sanitize it.
+    static char ok_chars[] = "abcdefghijklmnopqrstuvwxyz\
+ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+1234567890_-.@";
+    char *cursor;          // cursor into email address //
+
+    for (cursor = email; *(cursor += strspn(cursor, ok_chars));)
+      *cursor = '_'; // Set it to something harmless
+
+    String	to = email;
     String command = SENDMAIL;
-    command << " -F \"ht://Dig Notification Service\" -f ";
-    command << config["htnotify_sender"];
 
     char *token = strtok(to, " ,\t\r\n");
     while (token)
@@ -225,13 +235,14 @@ void send_notification(char *date, char *email, char *url, char *subject)
       token = strtok(0, " ,\t\r\n");
     }
     
+    command << " -t";
     FILE *fileptr;
     if( (fileptr = popen(command.get(), "w")) != NULL ) {
 
       if (!subject || !*subject)
-	subject = "notification";
-      String	out;
-      out << "From: " << config["htnotify_sender"] << "\n";
+        subject = "page expired";
+      String    out;
+      out << "From: ht://Dig Notification Service" << "\n";
       out << "Subject: WWW notification: " << subject << '\n';
       out << "To: " << to.get() << '\n';
       out << "Reply-To: " << config["htnotify_sender"] << "\n";
