@@ -12,7 +12,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.49 1999/07/16 17:23:08 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.50 1999/07/19 01:57:24 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -431,7 +431,6 @@ HTML::do_tag(Retriever &retriever, String &tag)
 {
     char		*position = tag.get();
     int			which, length;
-    int			imgflag = 0;
 
     while (isspace(*position))
 	position++;
@@ -603,7 +602,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		while (w)
 		{
 		    if (strlen(w) >= minimumWordLength)
-		      retriever.got_word(w, 1, 10);
+		      retriever.got_word(w, 1, 9);
 		    w = strtok(0, " ,\t\r\n");
 		}
 		w = '\0';
@@ -664,14 +663,14 @@ HTML::do_tag(Retriever &retriever, String &tag)
 
 		   //
 		   // Now add the words to the word list
-		   // (slot 11 is the new slot for this)
+		   // Slot 10 is the current slot for this
 		   //
 
 		   char        *w = strtok(attrs["content"], " \t\r\n");
                    while (w)
 		     {
 			if (strlen(w) >= minimumWordLength)
-			  retriever.got_word(w, 1, 11);
+			  retriever.got_word(w, 1,10);
 			w = strtok(0, " \t\r\n");
 		     }
 		 w = '\0';
@@ -683,7 +682,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    while (w)
 		    {
 			if (strlen(w) >= minimumWordLength)
-			  retriever.got_word(w, 1, 10);
+			  retriever.got_word(w, 1, 9);
 			w = strtok(0, " ,\t\r\n");
 		    }
 		    w = '\0';
