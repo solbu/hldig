@@ -4,6 +4,9 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.20  1999/01/21 13:40:40  ghutchis
+// Use HtURLCodec; ::encode() and ::decode() the URL used as a key.
+//
 // Revision 1.19  1999/01/20 04:58:02  ghutchis
 // New macros for assigning portably to some possibly-enum numeric type.
 // (getnum): Use them.
@@ -79,6 +82,7 @@
 #include <fstream.h>
 #include "WordList.h"
 #include <Configuration.h>
+#include <HtURLCodec.h>
 
 #ifdef HAVE_LIBZ
 #include <zlib.h>
@@ -289,7 +293,10 @@ void DocumentRef::Serialize(String &s)
     addnum(DOC_HOPCOUNT, s, docHopCount);
     addnum(DOC_SIG, s, docSig);
 
-    addstring(DOC_URL, s, docURL);
+    // Use a temporary since the addstring macro will evaluate
+    // this multiple times.
+    String tmps = HtURLCodec::instance()->encode(docURL);
+    addstring(DOC_URL, s, tmps);
     addstring(DOC_HEAD, s, docHead);
     addstring(DOC_METADSC, s, docMetaDsc);
     addstring(DOC_TITLE, s, docTitle);
@@ -509,8 +516,18 @@ void DocumentRef::Deserialize(String &stream)
 	    getnum(x, s, docSig);
 	    break;
         case DOC_URL:
-            getstring(x, s, docURL);
-            break;
+	    {
+	      // Use a temporary since the addstring macro will evaluate
+	      // this multiple times.
+	      String tmps;
+	      getstring(x, s, tmps);
+
+              // String cannot copy from "const String &", so we
+              // have to construct a new one.
+              String tmpurl = HtURLCodec::instance()->decode(tmps);
+	      docURL = tmpurl;
+	    }
+	    break;
         case DOC_HEAD:
             getstring(x, s, docHead);
             break;

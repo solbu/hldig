@@ -4,6 +4,9 @@
 // Implementation of DocumentDB
 //
 // $Log: DocumentDB.cc,v $
+// Revision 1.8  1999/01/21 13:40:13  ghutchis
+// Use HtURLCodec; ::encode() and ::decode() the URL used as a key.
+//
 // Revision 1.7  1999/01/14 01:09:11  ghutchis
 // Small speed improvements based on gprof.
 //
@@ -38,6 +41,7 @@
 #include <unistd.h>
 #include <fstream.h>
 #include <Database.h>
+#include <HtURLCodec.h>
 
 
 //*****************************************************************************
@@ -140,7 +144,10 @@ int DocumentDB::Add(DocumentRef &doc)
     url.lowercase();
     temp = 0;
     doc.Serialize(temp);
-    dbf->Put(url, temp);
+
+    // We need a named temporary since String can't copy from "const String &".
+    String coded_url = HtURLCodec::instance()->encode(url);
+    dbf->Put(coded_url, temp);
     return OK;
 }
 
@@ -154,7 +161,9 @@ DocumentRef *DocumentDB::operator [] (char *u)
     String			url = u;
     url.lowercase();
 
-    if (dbf->Get(url, data) == NOTOK)
+    // We need a named temporary since String can't copy from "const String &".
+    String coded_url = HtURLCodec::instance()->encode(url);
+    if (dbf->Get(coded_url, data) == NOTOK)
 	return 0;
 
     DocumentRef		*ref = new DocumentRef;
@@ -171,7 +180,10 @@ int DocumentDB::Exists(char *u)
     String			url = u;
     url.lowercase();
 
-    return dbf->Exists(url);
+    // We need a named temporary since String can't copy from "const String &".
+    String coded_url = HtURLCodec::instance()->encode(url);
+
+    return dbf->Exists(coded_url);
 }
 
 
@@ -183,7 +195,10 @@ int DocumentDB::Delete(char *u)
     String			url = u;
     url.lowercase();
 
-    return dbf->Delete(url);
+    // We need a named temporary since String can't copy from "const String &".
+    String coded_url = HtURLCodec::instance()->encode(url);
+
+    return dbf->Delete(coded_url);
 }
 
 
@@ -222,7 +237,7 @@ int DocumentDB::CreateSearchDB(char *filename)
     while ((key = dbf->Get_Next()))
     {
 	dbf->Get(key, data);
-	if (strncmp(key, "http:", 5) == 0)
+	if (strncmp(HtURLCodec::instance()->decode(key), "http:", 5) == 0)
 	{
 	    ref = new DocumentRef;
 	    ref->Deserialize(data);
@@ -283,11 +298,12 @@ int DocumentDB::CreateSearchDB(char *filename)
 List *DocumentDB::URLs()
 {
     List	*list = new List;
-    char	*key;
+    char	*coded_key;
 
     dbf->Start_Get();
-    while ((key = dbf->Get_Next()))
+    while ((coded_key = dbf->Get_Next()))
     {
+	String key = HtURLCodec::instance()->decode(coded_key);
 	if (mystrncasecmp(key, "http:", 5) == 0)
 	{
 	    DocumentRef	*ref = (*this)[key];
