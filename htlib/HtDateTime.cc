@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.cc,v 1.14 2002/02/01 22:49:33 ghutchis Exp $
+// $Id: HtDateTime.cc,v 1.15 2002/03/13 00:24:14 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -21,6 +21,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <iostream.h>
 
 #ifndef HAVE_STRPTIME
@@ -82,6 +83,239 @@ const int HtDateTime::days[] = {	31, 28, 31, 30, 31, 30,
 ///////   //   Input Formats   //   ///////
 
 ///////
+   //   Generalized date/time parser for "LOOSE" formats
+   //   - converts LOOSE RFC850 or RFC1123 date string into a time value
+   //   - converts SHORT ISO8601 date string into a time value
+   //   - autodetects which of these formats is used
+   //   - assumes midnight if time portion omitted
+   //   We've had problems using strptime() and timegm() on a few platforms
+   //   while parsing these formats, so this is an attempt to sidestep them.
+   //
+   //	Returns 0 if parsing failed, or returns number of characters parsed
+   //	in date string otherwise, and sets Ht_t field to time_t value.
+///////
+#define EPOCH	1970
+
+int HtDateTime::Parse(const char *date)
+{
+    register const char *s;
+    register const char *t;
+    int		day, month, year, hour, minute, second;
+
+    //
+    // Three possible time designations:
+    //      Tuesday, 01-Jul-97 16:48:02 GMT     (RFC850)
+    // or
+    //      Thu, 01 May 1997 00:40:42 GMT       (RFC1123)
+    // or
+    //      1997-05-01 00:40:42 GMT             (ISO8601)
+    //
+    // We strip off the weekday because we don't need it, and
+    // because some servers send invalid weekdays!
+    // (Some don't even send a weekday, but we'll be flexible...)
+
+    s = date;
+    while (*s && *s != ',')
+	s++;
+    if (*s)
+	s++;
+    else
+	s = date;
+    while (isspace(*s))
+	s++;
+
+    // check for ISO8601 format
+    month = 0;
+    t = s;
+    while (isdigit(*t))
+	t++;
+    if (t > s && *t == '-' && isdigit(t[1]))
+	day = -1;
+    else {
+	// not ISO8601, so try RFC850 or RFC1123
+	// get day...
+	if (!isdigit(*s))
+	    return 0;
+	day = 0;
+	while (isdigit(*s))
+	    day = day * 10 + (*s++ - '0');
+	if (day > 31)
+	    return 0;
+	while (*s == '-' || isspace(*s))
+	    s++;
+
+	// get month...
+	// (it's ugly, but it works)
+	switch (*s++) {
+	    case 'J': case 'j':
+		switch (*s++) {
+		case 'A': case 'a':
+		    month = 1;
+		    s++;
+		    break;
+		case 'U': case 'u':
+		    switch (*s++) {
+		    case 'N': case 'n':
+			month = 6;
+			break;
+		    case 'L': case 'l':
+			month = 7;
+			break;
+		    default:
+			return 0;
+		    }
+		    break;
+		default:
+		    return 0;
+		}
+		break;
+	    case 'F': case 'f':
+		month = 2;
+		s += 2;
+		break;
+	    case 'M': case 'm':
+		switch (*s++) {
+		case 'A': case 'a':
+		    switch (*s++) {
+		    case 'R': case 'r':
+			month = 3;
+			break;
+		    case 'Y': case 'y':
+			month = 5;
+			break;
+		    default:
+			return 0;
+		    }
+		    break;
+		default:
+		    return 0;
+		}
+		break;
+	    case 'A': case 'a':
+		switch (*s++) {
+		case 'P': case 'p':
+		    month = 4;
+		    s++;
+		    break;
+		case 'U': case 'u':
+		    month = 8;
+		    s++;
+		    break;
+		default:
+		    return 0;
+		}
+		break;
+	    case 'S': case 's':
+		month = 9;
+		s += 2;
+		break;
+	    case 'O': case 'o':
+		month = 10;
+		s += 2;
+		break;
+	    case 'N': case 'n':
+		month = 11;
+		s += 2;
+		break;
+	    case 'D': case 'd':
+		month = 12;
+		s += 2;
+		break;
+	    default:
+		return 0;
+	}
+	while (*s == '-' || isspace(*s))
+	    s++;
+    }
+
+    // get year...
+    if (!isdigit(*s))
+	return 0;
+    year = 0;
+    while (isdigit(*s))
+	year = year * 10 + (*s++ - '0');
+    if (year < 69)
+	year += 2000;
+    else if (year < 1900)
+	year += 1900;
+    else if (year >= 19100)	// seen some programs do it, why not check?
+	year -= (19100-2000);
+    while (*s == '-' || isspace(*s))
+	s++;
+
+    if (day < 0) {		// still don't have day, so it's ISO8601 format
+	// get month...
+	if (!isdigit(*s))
+	    return 0;
+	month = 0;
+	while (isdigit(*s))
+	    month = month * 10 + (*s++ - '0');
+	if (month < 1 || month > 12)
+	    return 0;
+	while (*s == '-' || isspace(*s))
+	    s++;
+
+	// get day...
+	if (!isdigit(*s))
+	    return 0;
+	day = 0;
+	while (isdigit(*s))
+	    day = day * 10 + (*s++ - '0');
+	if (day < 1 || day > 31)
+	    return 0;
+	while (*s == '-' || isspace(*s))
+	    s++;
+    }
+
+    // optionally get hour...
+    hour = 0;
+    while (isdigit(*s))
+	hour = hour * 10 + (*s++ - '0');
+    if (hour > 23)
+	return 0;
+    while (*s == ':' || isspace(*s))
+	s++;
+
+    // optionally get minute...
+    minute = 0;
+    while (isdigit(*s))
+	minute = minute * 10 + (*s++ - '0');
+    if (minute > 59)
+	return 0;
+    while (*s == ':' || isspace(*s))
+	s++;
+
+    // optionally get second...
+    second = 0;
+    while (isdigit(*s))
+	second = second * 10 + (*s++ - '0');
+    if (second > 59)
+	return 0;
+    while (*s == ':' || isspace(*s))
+	s++;
+
+    // Assign the new value to time_t field
+    //
+    // Calculate date as seconds since 01 Jan 1970 00:00:00 GMT
+    // This is based somewhat on the date calculation code in NetBSD's
+    // cd9660_node.c code, for which I was unable to find a reference.
+    // It works, though!
+    //
+    Ht_t = (time_t) (((((367L*year - 7L*(year+(month+9)/12)/4
+				   - 3L*(((year)+((month)+9)/12-1)/100+1)/4
+				   + 275L*(month)/9 + day) -
+			(367L*EPOCH - 7L*(EPOCH+(1+9)/12)/4
+				   - 3L*((EPOCH+(1+9)/12-1)/100+1)/4
+				   + 275L*1/9 + 1))
+		       * 24 + hour) * 60 + minute) * 60 + second);
+
+    // cerr << "Date string '" << date << "' converted to time_t "
+    //      << (int)Ht_t << ", used " << (s-date) << " characters\n";
+
+    return s-date;
+}
+
+///////
    //   Personalized format such as C strftime function
   //     Overloaded version 1
    //    It ignores, for now, Time Zone values
@@ -91,10 +325,23 @@ char *HtDateTime::SetFTime(const char *buf, const char *format)
 {
 
    register char *p;
+   register int r;
 
    ToGMTime();    // This must be set cos strptime always stores in GM 
 
-   p = (char *) strptime (buf, (char *) format, & Ht_tm);
+   p = (char *) buf;
+   if (*format == '%')		// skip any unexpected white space
+      while (isspace(*p))
+	 p++;
+
+   // Special handling for LOOSE/SHORT formats...
+   if ((strcmp((char *) format, LOOSE_RFC850_FORMAT) == 0 ||
+	strcmp((char *) format, LOOSE_RFC1123_FORMAT) == 0 ||
+	strcmp((char *) format, ISO8601_SHORT_FORMAT) == 0)  &&
+       (r = Parse(p)) > 0)
+	    return p+r;
+
+   p = (char *) strptime (p, (char *) format, & Ht_tm);
 
 #ifdef TEST_HTDATETIME
 //   ViewStructTM(& Ht_tm);

@@ -1,3 +1,10 @@
+Tue Mar 12 18:19:49 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/HtDateTime.cc (Parse, SetFTime): Added Parse method for
+	more flexible parsing of LOOSE/SHORT formats, use it in SetFTime.
+	Also skip unexpected leading spaces in SetFTime, as these frequently
+	cause problems with some strptime() implementations.
+
 Mon Feb 11 23:28:37 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.h (got_redirect): Add referer to properly handle
