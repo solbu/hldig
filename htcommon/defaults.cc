@@ -4,6 +4,12 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.21  1998/11/27 18:31:45  ghutchis
+//
+// Changed backlink_factor to 1000, description_factor to 150, match_method to
+// and, and meta_description factor to 50. Should produce more accurate search
+// results.
+//
 // Revision 1.20  1998/11/22 19:13:38  ghutchis
 //
 // New config options "description_factor" and "no_excerpt_show_top"
@@ -77,7 +83,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.20 1998/11/22 19:13:38 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.21 1998/11/27 18:31:45 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -100,7 +106,7 @@ ConfigDefaults	defaults[] =
     {"add_anchors_to_excerpt",		"true"},
     {"allow_numbers",			"false"},
     {"allow_virtual_hosts",		"true"},
-    {"backlink_factor",                 "0"},
+    {"backlink_factor",                 "1000"},
     {"bad_extensions",			".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram"},
     {"bad_word_list",			"${common_dir}/bad_words"},
     {"case_sensitive"                   "true"},
@@ -108,7 +114,7 @@ ConfigDefaults	defaults[] =
     {"create_url_list",			"false"},
     {"date_factor",                     "0"},
     {"database_base",			"${database_dir}/db"},
-    {"description_factor",              "0"},
+    {"description_factor",              "150"},
     {"doc_db",				"${database_base}.docdb"},
     {"doc_index",			"${database_base}.docs.index"},
     {"doc_list",			"${database_base}.docs"},
@@ -141,7 +147,7 @@ ConfigDefaults	defaults[] =
     {"local_user_urls",			""},
     {"logging",                         "false"},
     {"maintainer",			"bogus@unconfigured.htdig.user"},
-    {"match_method",			"or"},
+    {"match_method",			"and"},
     {"matches_per_page",		"10"},
     {"max_description_length",		"60"},
     {"max_doc_size",			"100000"},
@@ -152,7 +158,7 @@ ConfigDefaults	defaults[] =
     {"max_stars",			"4"},
     {"maximum_pages",			"10"},
     {"metaphone_db",			"${database_base}.metaphone.db"},
-    {"meta_description_factor",		"10"},
+    {"meta_description_factor",		"50"},
     {"method_names",			"and All or Any boolean Boolean"},
     {"minimum_word_length",		"3"},
     {"minimum_prefix_length",		"1"},
