@@ -1,8 +1,8 @@
-ht://Dig 3.1.5 README
-Copyright (c) 1995-2000 The ht://Dig Group
+ht://Dig 3.1.6 README
+Copyright (c) 1995-2001 The ht://Dig Group
 Contributions from many, see htdoc/THANKS.html
 
-ht://Dig is distributed under the GNU Public License (GPL).
+ht://Dig is distributed under the GNU General Public License (GPL).
 See the COPYING file for license information.
 
 ht://Dig is a world-wide-web search system for an intranet or small internet.
@@ -27,15 +27,17 @@ This distribution includes:
 
     * db        - The latest Berkeley DB package from Sleepycat Software
 
-ht://Dig has been tested extensively under Linux 2.X using g++
+ht://Dig has been tested extensively under Linux using gcc/g++
 If you use g++, make absolutely sure you have libstdc++ installed
 as well. (libstdc++ has superceded the older libg++ package.)
 
 To build, first read the htdoc/install.html document
 
-Questions and discussion should be directed to the ht://Dig mailing list.  
+Questions and discussion should be directed to the ht://Dig mailing list
+  at htdig-general@lists.sourceforge.net  
 Find subscription instructions at http://www.htdig.org/mailing.html
-Suggestions and bug reports should be sent to htdig3-bugs@htdig.org
+Suggestions and bug reports can be made on our bug tracking database
+  (see http://www.htdig.org/bugs.html)
 
 For the most up-to-date documentation, use http://www.htdig.org/
 

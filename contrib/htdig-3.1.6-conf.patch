@@ -1,5 +1,5 @@
---- htdig-3.1.5/CONFIG.in.unconfig	Thu Feb  4 21:47:22 1999
-+++ htdig-3.1.5/CONFIG.in	Wed Feb 16 16:24:01 2000
+--- htdig-3.1.6/CONFIG.in.unconfig	Thu Feb  4 21:47:22 1999
++++ htdig-3.1.6/CONFIG.in	Wed Feb 16 16:24:01 2000
 @@ -23,19 +23,19 @@
  #
  # This specifies the root of the directory tree to be used by ht://Dig

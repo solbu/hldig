@@ -1,3 +1,8 @@
+Thu Jun  7 13:27:35 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.1.6.spec, contrib/htdig-3.1.6-conf.patch,
+	htdoc/where.html, .version, README: Bump to version 3.1.6.
+
 Thu Jun  7 11:58:28 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/multidig/*: Backport from 3.2.0b3, including fixes below.
