@@ -14,10 +14,11 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	HtPack.cc HtDateTime.cc HtRegex.cc \
 	HtRegexReplace.cc HtRegexReplaceList.cc \
 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc \
-	regex.c myqsort.c \
+	myqsort.c \
 	md5.cc mhash_md5.c
 
 libht_la_LIBADD=@LTLIBOBJS@
+# this includes regex.c
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
