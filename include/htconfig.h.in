@@ -74,17 +74,14 @@
 /* Define if you have the gdbm library (-lgdbm).  */
 #define HAVE_LIBGDBM	0
 
-/* Define if you have the common library (-lcommon).  */
-#undef HAVE_LIBCOMMON
-
 /* Define if you have the db library (-ldb).  */
 #undef HAVE_LIBDB
 
-/* Define if you have the ht library (-lht).  */
-#undef HAVE_LIBHT
-
 /* Define if you have the rx library (-lrx).  */
 #undef HAVE_LIBRX
+
+/* Define if you have the z library (-lz). */
+#undef HAVE_LIBZ
 
 /* Define to the syslog level for htsearch logging. */
 #define LOG_LEVEL LOG_INFO
