@@ -4,12 +4,16 @@
 // Implementation of htmerge
 //
 // $Log: words.cc,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.2  1998/11/15 22:24:19  ghutchis
+//
+// Change \r to \n as noted by Andrew Bishoip.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.1 1997/02/03 17:11:06 turtle Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.2 1998/11/15 22:24:19 ghutchis Exp $";
 #endif
 
 #include "htmerge.h"
@@ -86,14 +90,14 @@ mergeWords(char *wordtmp, char *wordfile)
 	{
 	    if (config.Boolean("remove_bad_urls"))
 	    {
-		discard_list.Add(strtok(buffer + 1, "\r\n"), 0);
+		discard_list.Add(strtok(buffer + 1, "\n"), 0);
 		if (verbose)
 		    cout << "htmerge: Removing doc #" << buffer + 1 << endl;
 	    }
 	}
 	else if (*buffer == '!')
 	{
-	    discard_list.Add(strtok(buffer + 1, "\r\n"), 0);
+	    discard_list.Add(strtok(buffer + 1, "\n"), 0);
 	    if (verbose)
 		cout << "htmerge: doc #" << buffer + 1 <<
 		    " has been superceeded." << endl;
@@ -146,7 +150,7 @@ mergeWords(char *wordtmp, char *wordfile)
 		if (verbose > 1)
 		{
 		    cout << "htmerge: Discarding " << word << " in doc #"
-			 << sid << "     \r";
+			 << sid << "     \n";
 		    cout.flush();
 		}
 		continue;
@@ -204,7 +208,7 @@ mergeWords(char *wordtmp, char *wordfile)
 		if (verbose && word_count % 100 == 0)
 		{
 		    cout << "htmerge: " << word_count << ':' << word
-			 << "              \r";
+			 << "              \n";
 		    cout.flush();
 		}
 	    }

@@ -4,6 +4,10 @@
 // Implementation of newclass
 //
 // $Log: docs.cc,v $
+// Revision 1.8  1998/11/15 22:24:19  ghutchis
+//
+// Change \r to \n as noted by Andrew Bishoip.
+//
 // Revision 1.7  1998/09/07 04:37:16  ghutchis
 //
 // Added DocState for documents marked as "noindex".
@@ -97,7 +101,7 @@ convertDocs(char *doc_db, char *doc_index)
 	    docdb_size += ref->DocSize();
 	    if (verbose && document_count % 10 == 0)
 	    {
-		cout << "htmerge: " << document_count << '\r';
+		cout << "htmerge: " << document_count << '\n';
 		cout.flush();
 	    }
 	}
