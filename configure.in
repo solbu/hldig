@@ -79,6 +79,23 @@ if test "$htdig_cv_tests" = yes; then
 	TESTDIR=test
 fi
 
+AC_CACHE_CHECK([KEY], htdig_cv_key,
+AC_ARG_WITH(key,
+    [  --with-key=<path> set key description filename],
+    [
+      KEYDESC=$with_key
+      if test ! -r $KEYDESC
+      then
+	AC_MSG_ERROR("$KEYDESC is not a readable file")
+      fi
+      rm -f htword/WordKey.h
+    ],
+    [KEYDESC='${top_srcdir}/htword/word.desc'])
+htdig_cv_key=$KEYDESC
+)
+KEYDESC=$htdig_cv_key
+AC_SUBST(KEYDESC)
+
 dnl While we're at it, let's work out the program transformations
 AC_ARG_PROGRAM
 
@@ -212,7 +229,7 @@ ac_configure_args="$ac_configure_args --enable-cxx"
 
 AC_CONFIG_SUBDIRS(db/dist)
 
-HTDIGDIRS="db htlib htcommon htword htnet htfuzzy htdig htsearch htmerge htnotify installdir include htdoc $TESTDIR ."
+HTDIGDIRS="db htlib htword htcommon htnet htfuzzy htdig htsearch htmerge htnotify installdir include htdoc $TESTDIR ."
 AC_SUBST(HTDIGDIRS)
 
 AC_OUTPUT(Makefile db/Makefile htcommon/Makefile htword/Makefile htnet/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile test/test_functions)

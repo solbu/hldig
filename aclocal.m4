@@ -31,7 +31,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.2 1999/10/18 10:04:15 bosc Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.3 1999/10/19 09:04:19 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -49,7 +49,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.2 1999/10/18 10:04:15 bosc Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.3 1999/10/19 09:04:19 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -97,7 +97,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.2 1999/10/18 10:04:15 bosc Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.3 1999/10/19 09:04:19 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -156,7 +156,7 @@ dnl Files using apache should do the following:
 dnl
 dnl   @APACHE@ -d /etc/httpd
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.2 1999/10/18 10:04:15 bosc Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.3 1999/10/19 09:04:19 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
