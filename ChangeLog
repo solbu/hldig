@@ -8,6 +8,13 @@ Mon Jan 15 23:09:37 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	select() test--now allows "const struct timeval" for compilation
 	on BSDI.
 
+	* htdoc/RELEASE.html: Update with Gilles's changes.
+
+	* htdoc/cf_blocks.html: New file describing <server ...></server>
+	and <url ...></url> blocks.
+
+	* htdoc/cf_general.html, htdoc/confmenu.html: Refer to the above.
+	
 Mon Jan 15 17:46:07 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/TemplateList.cc (createFromString), htcommon/defaults.cc:

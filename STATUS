@@ -6,12 +6,12 @@ RELEASES:
    3.2.0b1: Released:   4 Feb 2000.
 
 SHOWSTOPPERS:
-* I don't know, the HtRegex bug below seems serious enough...
+* HtRegex seems to bail out with patterns that are too long, at least
+   on some platforms. Errors are reported, though the calling code must be
+   careful to check for them.
+  Some workaround (e.g. HtRegexList ?) is desirable.
 
 KNOWN BUGS:
-* HtRegex seems to bail out with patterns that are too long, at least
-   on some platforms. Better error reporting is definitely needed 
-   and some workaround (e.g. HtRegexList ?) is desirable.
 * Odd behavior with $(MODIFIED) and scores not working with
    wordlist_compress set but work fine without wordlist_compress.
    (the date is definitely stored correctly, even with compression on
@@ -34,7 +34,7 @@ PENDING PATCHES (available but need work):
 
 NEEDED FEATURES:
 * Field-restricted searching.
-* Return all results.
+* Return all URLs.
 * Handle noindex_start & noindex_end as string lists.
 * Handle local_urls through file:// handler, for mime.types support.
 * Handle directory redirects in RetrieveLocal.
@@ -53,7 +53,6 @@ TESTING:
 
 DOCUMENTATION:
 * List of supported platforms/compilers is ancient.
-* Update cf_* pages to mention new config parser (i.e. URL-dependent config)
 * Add thorough documentation on htsearch restrict/exclude behavior
    (including '|' and regex).
 * Need a list of "related projects" inc. mifluz, ht://Check, ConfigDig, etc.
