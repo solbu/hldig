@@ -75,8 +75,8 @@
 		  <dd>
 		        Merge the databases specified by merge_configfile
 		        into the databases specified by -c or the default.
-		        To use multiple databases, you will need a config
-			file for each database. Then each file will set the
+			You will need a separate config file for each of
+			the two databases. Then each file will set the
 			<a href="attrs.html#database_dir">database_dir</a> or
 			<a href="attrs.html#database_base">database_base</a>
 			attribute to change the name of the databases, so
@@ -87,6 +87,11 @@
 			together with this option. This is because merging
 			the two wordlists together requires wordlists that
 			have already been cleaned up by htmerge.
+			Because the -m option allows you to specify only
+			one database to be merged into the other, and only
+			one -m option may be specified, if you need to merge
+			three or more databases together you must run htmerge
+			multiple times with the -m option.
 		  </dd>
 		  <dt>
 			-s
@@ -149,7 +154,7 @@
 	</dl>
 	<hr size="4" noshade>
 
-	Last modified: $Date: 2003/06/24 21:07:01 $
+	Last modified: $Date: 2003/10/24 22:11:13 $
 
   </body>
 </html>
