@@ -15,6 +15,7 @@ dnl Local autoconf definitions. Try to follow the guidelines of the autoconf
 dnl macro repository so that integration in the repository is easy.
 dnl To submit a macro to the repository send the macro (one macro per mail)
 dnl to Peter Simons <simons@cys.de>.
+dnl The repository itself is at http://peti.cys.de/autoconf-archive/
 dnl
 
 dnl @synopsis CHECK_USER()
@@ -30,7 +31,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.15 1999/09/29 10:10:06 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.16 1999/09/29 13:07:17 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -39,6 +40,43 @@ AC_DEFUN(CHECK_USER,
 test -n "$LOGNAME" && USER=$LOGNAME
 AC_SUBST(USER)
 AC_MSG_RESULT($USER)
+])
+
+dnl @synopsis AC_COMPILE_WARNINGS
+dnl
+dnl Set the maximum warning verbosity according to compiler used.
+dnl Currently supports g++ and gcc.
+dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
+dnl configure.in
+dnl
+dnl @version $Id: aclocal.m4,v 1.16 1999/09/29 13:07:17 loic Exp $
+dnl @author Loic Dachary <loic@senga.org>
+dnl
+
+AC_DEFUN(AC_COMPILE_WARNINGS,
+[AC_MSG_CHECKING(maximum warning verbosity option)
+if test -n "$CXX"
+then
+  if test "$GXX" = "yes"
+  then
+    ac_compile_warnings_opt='-Wall'
+  fi
+  CXXFLAGS="$CXXFLAGS $ac_compile_warnings_opt"
+  ac_compile_warnings_msg="$ac_compile_warnings_opt for C++"
+fi
+
+if test -n "$CC"
+then
+  if test "$GCC" = "yes"
+  then
+    ac_compile_warnings_opt='-Wall'
+  fi
+  CFLAGS="$CFLAGS $ac_compile_warnings_opt"
+  ac_compile_warnings_msg="$ac_compile_warnings_msg $ac_compile_warnings_opt for C"
+fi
+AC_MSG_RESULT($ac_compile_warnings_msg)
+unset ac_compile_warnings_msg
+unset ac_compile_warnings_opt
 ])
 
 dnl @synopsis CHECK_ZLIB()
@@ -59,7 +97,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.15 1999/09/29 10:10:06 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.16 1999/09/29 13:07:17 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -117,7 +155,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.15 1999/09/29 10:10:06 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.16 1999/09/29 13:07:17 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 

@@ -20,7 +20,7 @@ AM_MAKEFLAGS = MAKE="$(MAKE)"
 
 #PROFILING = -p
 
-EXTRA_DIST = htdocs
+EXTRA_DIST = htdocs conf $(TESTS) word.try1 word.try2 word.try3 word.try4 word.try5
 
 LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include $(PROFILING)
 

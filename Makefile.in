@@ -107,7 +107,7 @@ TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
 
-INCLUDES = -Wall 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)
 
 
 HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/db/dist/libdb.a
@@ -115,7 +115,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 SUBDIRS = @HTDIGDIRS@
 
-EXTRA_DIST = .version Makefile.config ChangeLog.0
+EXTRA_DIST = .version acconfig.h Makefile.config ChangeLog.0
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ./include/htconfig.h

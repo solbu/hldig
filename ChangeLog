@@ -1,3 +1,11 @@
+Wed Sep 29 16:51:58 1999  Loic Dachary  <loic@yoda.ceic.com>
+
+	* acinclude.m4,configure.in,Makefile.config: remove -Wall from
+	  Makefile.conf, add the AC_COMPILE_WARNINGS macro in acinclude.m4
+	  and use it in configure.in.
+
+	* htdoc/default_check.pl: remove, unused
+
 Wed Sep 29 13:07:58 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* htnet/Transport: fixed some bugs on construction and destruction

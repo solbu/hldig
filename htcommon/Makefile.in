@@ -104,11 +104,13 @@ TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
 
-INCLUDES = -Wall 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)
 
 
 HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/db/dist/libdb.a
 
+
+EXTRA_DIST = word.desc word_builder.pl WordKey.h.tmpl
 
 lib_LTLIBRARIES = libcommon.la
 
@@ -404,8 +406,8 @@ mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
-WordKey.h: WordKey.h.tmpl word.desc word_builder.pl
-	@PERL@ word_builder.pl word.desc
+WordKey.h: $(top_srcdir)/htcommon/WordKey.h.tmpl $(top_srcdir)/htcommon/word.desc $(top_srcdir)/htcommon/word_builder.pl
+	@PERL@ $(top_srcdir)/htcommon/word_builder.pl $(top_srcdir)/htcommon/word.desc
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

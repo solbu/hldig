@@ -46,7 +46,8 @@ EXTRA_DIST = COPYING  \
 	triangle.gif \
 	up.gif \
 	uses.html \
-	where.html
+	where.html \
+	cf_generate.pl
 
 attrs.html: attrs_head.html attrs_tail.html ../htcommon/defaults.cc cf_generate.pl
 	@PERL@ cf_generate.pl

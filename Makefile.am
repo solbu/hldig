@@ -5,7 +5,7 @@ include $(top_srcdir)/Makefile.config
 
 SUBDIRS=        @HTDIGDIRS@
 
-EXTRA_DIST = .version Makefile.config ChangeLog.0
+EXTRA_DIST = .version acconfig.h Makefile.config ChangeLog.0
 
 #
 # If --enable-tests is not specified, should remove
