@@ -1,3 +1,26 @@
+Thu Dec  3 23:03:15 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in: Check for getopt.h for those platforms that don't
+	have it. Fix checks for db and rx dirs since these names won't
+	change.
+
+	* include/htconfig.h.in: Define HAVE_GETOPT_H.
+	
+	* configure: Generate from configure.in with latest autoconf
+	(2.12.2).
+
+	* htdig/Plaintext.cc: Removed compiler warnings.
+
+	* htdig/main.cc, htfuzzy/htfuzzy.cc, htmerge/htmerge.cc,
+	htnotify/htnotify.cc, htsearch/htsearch.cc: Use configure check to
+	only include getopt.h when it exists.
+
+	* htcommon/defaults.cc: Add new option "http_proxy_exclude" for
+	servers that shouldn't use the proxy, from a patch by Gilles
+	Detillieux.
+
+	* htdig/Document.h, htdig/Document.cc: Use it, from a patch by Gilles.
+
 Tue Dec  1 21:36:37 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* Makefile.in: Fixed bug with "make depend," noted by Morgan Davis
