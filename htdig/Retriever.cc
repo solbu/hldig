@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.13 2000/01/05 11:40:31 loic Exp $
+// $Id: Retriever.cc,v 1.72.2.14 2000/01/14 17:32:59 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -770,7 +770,10 @@ Retriever::IsValidURL(char *u)
     //
     ext = strrchr((char*)url, '.');
     String	lowerext;
-    if(ext) {
+    if (ext && strchr(ext,'/'))		// Ignore a dot if it's not in the
+      ext = NULL;			// final component of the path.
+    if(ext)
+    {
       lowerext.set(ext);
       lowerext.lowercase();
       if (invalids.Exists(lowerext))

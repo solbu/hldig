@@ -1,3 +1,8 @@
+Fri Jan 14 11:30:41 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriver.cc(IsValidURL): Fix problem with valid_extensions,
+	which got lost in the shuffle yesterday.
+
 Fri Jan 14 15:56:49 2000  Loic Dachary  <loic@ceic.com>
 
 	* htword/WordType.cc,WordRecord.cc,WordKeyInfo.cc (Initialize): change
