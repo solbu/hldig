@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.35 1999/02/17 21:01:07 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.36 1999/02/19 01:42:41 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -212,8 +212,8 @@ Document::getdate(char *datestring)
         s = datestring;
     while (isspace(*s))
         s++;
-    if (strchr(s, '-') && mystrptime(s, "%d-%b-%y %T", &tm) ||
-            mystrptime(s, "%d %b %Y %T", &tm))
+    if (strchr(s, '-') && Htstrptime(s, "%d-%b-%y %T", &tm) ||
+            Htstrptime(s, "%d %b %Y %T", &tm))
       {
 	// correct for mystrptime, if %Y format saw only a 2 digit year
 	if (tm.tm_year < 0)

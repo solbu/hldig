@@ -4,6 +4,15 @@ Thu Feb 18 20:19:30 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/Makefile.in: Compile it.
 
+	* htlib/strptime.c: Add new version from glibc-2.1, replacing
+	strptime.cc.
+
+	* htdig/Document.cc: Use it.
+
+	* htlib/regex.h, htlib/regex.c: Add new files from glibc-2.1.
+
+	* htlib/mktime.c: Update from glibc-2.1.
+	
 Wed Feb 17 23:44:59 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure.in, configure, aclocal.m4: Add autoconf macro to

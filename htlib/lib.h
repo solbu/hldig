@@ -1,26 +1,12 @@
 //
-// $Id: lib.h,v 1.4 1998/11/02 20:31:07 ghutchis Exp $
-//
-// $Log: lib.h,v $
-// Revision 1.4  1998/11/02 20:31:07  ghutchis
-//
-// Call mytimegm.cc instead of timegm.c.
-//
-// Revision 1.3  1998/10/28 06:51:37  turtle
-// *  added extern "C" to mytimegm declaration.  still doesn't seem to help...
-//
-// Revision 1.2  1998/01/05 05:22:38  turtle
-// Added own replacement of timegm()
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
+// $Id: lib.h,v 1.5 1999/02/19 01:42:41 ghutchis Exp $
 //
 //
 #ifndef _lib_h
 #define _lib_h
 
 #include <string.h>
-#include <htconfig.h>
+#include "htconfig.h"
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <time.h>
@@ -36,7 +22,7 @@
 // Other defines used throughout the library
 //
 #define	OK		0
-#define	NOTOK	(-1)
+#define	NOTOK		(-1)
 
 //
 // To get rid of inconsistencies between different machines we will ALWAYS
@@ -63,7 +49,7 @@ char *mystrcasestr(char *s, char *pattern);
 // Too many problems with system strptime() functions...  Just use our own
 // version of it.
 //
-char *mystrptime(char *buf, char *fmt, struct tm *tm);
+extern "C" char *Htstrptime(char *buf, char *fmt, struct tm *tm);
 
 //
 // timegm() is quite rare, so provide our own.
