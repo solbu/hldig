@@ -1,3 +1,8 @@
+Thu Aug 17 16:59:05 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (createURL): Get rid of extra "config="
+	parameter that was inserted before collections stuff.
+
 Thu Aug 17 15:47:58 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
 
 	* htnet/HtHTTP.cc: ask again for a document after a <NoHeader>

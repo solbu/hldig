@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.24 2000/08/13 23:05:26 toivo Exp $
+// $Id: Display.cc,v 1.100.2.25 2000/08/17 22:01:21 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -743,8 +743,9 @@ Display::createURL(String &url, int pageNumber)
 	url << "restrict=" << encodeInput("restrict") << ';';
     if (input->exists("exclude"))
 	url << "exclude=" << encodeInput("exclude") << ';';
-    if (input->exists("config"))
-	url << "config=" << encodeInput("config") << ';';
+    // Not needed: The next loop below handles this output
+    //if (input->exists("config"))
+    //	url << "config=" << encodeInput("config") << ';';
 
     // Put out all specified collections. If none selected, resort to
     // default behaviour.
