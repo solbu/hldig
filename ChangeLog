@@ -1,3 +1,8 @@
+Mon Jul  5 16:53:23 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/htdig.cc (main): Insert '*' instead of username/password
+	combination to hide credentials in process accounting.
+
 Sat Jul  3 17:35:52 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Transport.h(ConnectionWrite): Return value from
