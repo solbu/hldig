@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Prefix.cc,v 1.13.2.2 1999/12/28 17:31:48 vadim Exp $
+// $Id: Prefix.cc,v 1.13.2.3 2000/03/25 22:26:53 ghutchis Exp $
 //
 
 #include "Prefix.h"
@@ -19,6 +19,7 @@
 #include "List.h"
 #include "StringMatch.h"
 #include "HtConfiguration.h"
+
 
 //*****************************************************************************
 // Prefix::Prefix(const HtConfiguration& config_arg)
@@ -88,15 +89,24 @@ Prefix::getWords(char *w, List &words)
     w2[strlen(w2) - prefix_suffix_length] = '\0';
     String w3(w2);
     w3.lowercase();
-    List	*wordList = wordDB.Prefix(w3.get());
-    WordReference *word_ref;
+    List		*wordList = wordDB.Prefix(w3.get());
+    WordReference	*word_ref;
+    String		last_word;
 
     wordList->Start_Get();
     while (wordCount < maximumWords && (word_ref = (WordReference *) wordList->Get_Next() ))
     {
 	s = word_ref->Key().GetWord();
+
+	// If we're somehow past the original word, we're done
 	if (mystrncasecmp(s.get(), w, len))
 	    break;
+
+	// If this is a duplicate word, ignore it
+	if (last_word.length() != 0 && last_word == s)
+	    continue;
+
+	last_word = s;
 	words.Add(new String(s));
 	wordCount++;
     }
