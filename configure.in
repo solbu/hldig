@@ -1,5 +1,6 @@
 # Configuration for ht://Dig 3.x
 # Copyright (c) 1995-1998 Andrew Scherpbier
+# Modifications Copyright (c) 1998-9 Geoffrey R. Hutchison
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +20,7 @@
 AC_INIT(htcommon/DocumentDB.cc)
 VERSION=`cat ${srcdir}/.version`
 AM_INIT_AUTOMAKE([htdig], $VERSION)
-AC_PREREQ(2.12)
+AC_PREREQ(2.13)
 
 AC_CONFIG_HEADER(include/htconfig.h)
 AC_PREFIX_DEFAULT(/opt/www/htdig)

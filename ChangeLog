@@ -1,3 +1,10 @@
+Wed Jan  6 14:37:06 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in: Changed to require Autoconf 2.13 to eliminate bugs
+	obeserved by users with older autoconf versions.
+
+	* configure: Regenerated using Autoconf 2.13.
+
 Wed Jan  6 13:08:26 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/DocumentRef.cc: Applied fix from Dave Alden
