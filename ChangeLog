@@ -1,4 +1,41 @@
-Fri Sep  8 15:15:00 CEST 2000  Quim Sanmarti <qss@gtd.es>
+Sat Sep  9 11:44:47 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* aclocal.m4 (AM_CHECK_YACC): New macro to check for bison/yacc
+	and use "missing yacc" if not found.
+
+	* configure.in (enable_tests): Fix buglet where --enable-tests=no
+	or --disable-tests would not work and set the default to enabled
+	tests. Since the tests do not build unless the user does a "make
+	check" this should not be confusing and should help debugging.
+	Also use AM_CHECK_YACC instead of AC_CHECK_YACC.
+
+	* configure: Regenerate using autoconf.
+
+Sat Sep  9 11:01:03 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/ExternalParser.cc (canParse): Lowercase content-types and
+	strip off any trailing semicolons. Should prevent problems with
+	combined content-type; charset values.
+	(ctor): As above.
+
+	* htdig/Document.cc (getParsable): Only assume plain text if MIME
+	code starts with text/. Should prevent problems with retrieving
+	things like image/png or application/postscript as text.
+
+Fri Sep  8 22:59:10 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Add new attributes htnotify_replyto,
+	htnotify_webmaster, htnotify_prefix_file, htnotify_suffix_file.
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
+	* httools/htnotify.cc: Added in code from Richard Beton
+	<richard.beton@roke.co.uk> to collect multiple URLs per e-mail
+	address and allow customization of notification messages by
+	reading in header/footer text as designated by the new attributes
+	above.
+
+Fri Sep  8 15:15:00 2000  Quim Sanmarti <qss@gtd.es>
 
 	* htsearch/Display.cc: Fixed tiny date_format bug;
 	added url-decoding template variable expansion.

@@ -37,7 +37,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.23 2000/05/12 14:19:46 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.24 2000/09/09 18:21:51 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -97,7 +97,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.23 2000/05/12 14:19:46 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.24 2000/09/09 18:21:51 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -147,7 +147,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.23 2000/05/12 14:19:46 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.24 2000/09/09 18:21:51 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -242,7 +242,7 @@ dnl LoadModule env_module         @APACHE_MODULES@/mod_env.so
 dnl LoadModule config_log_module  @APACHE_MODULES@/mod_log_config.so
 dnl ...
 dnl
-dnl @version $Id: aclocal.m4,v 1.22.2.23 2000/05/12 14:19:46 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.22.2.24 2000/09/09 18:21:51 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -954,8 +954,17 @@ fi])
 dnl AM_PROG_LEX
 dnl Look for flex, lex or missing, then run AC_PROG_LEX and AC_DECL_YYTEXT
 AC_DEFUN(AM_PROG_LEX,
-[missing_dir=ifelse([$1],,`cd $ac_aux_dir && pwd`,$1)
-AC_CHECK_PROGS(LEX, flex lex, "$missing_dir/missing flex")
+[missing_dir=ifelse([$1],,$srcdir,$1)
+AC_CHECK_PROGS(LEX, flex lex "$missing_dir/missing flex")
 AC_PROG_LEX
 AC_DECL_YYTEXT])
+
+
+dnl AM_PROG_YACC
+dnl Look for bison, yacc or missing, then run AC_PROG_YACC
+AC_DEFUN(AM_PROG_YACC,
+[missing_dir=ifelse([$1],,$srcdir,$1)
+AC_CHECK_PROGS(YACC, "bison -y" yacc "$missing_dir/missing yacc")
+AC_PROG_YACC])
+
 
