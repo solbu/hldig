@@ -1,3 +1,8 @@
+Mon Oct 27 17:13:02 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+    * htdig/Server.cc: Fix bug #831407.  Make sure time properly reset after
+      delay completed, so that it doesn't allow 2 connections per delay.
+
 Mon Oct 27 15:57:38 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
     * htdoc/THANKS.html: Added Lachlan, Jim and Neal to the active developers

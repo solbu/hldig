@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Server.cc,v 1.26 2003/10/25 03:52:41 lha Exp $
+// $Id: Server.cc,v 1.27 2003/10/27 23:28:52 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -409,10 +409,11 @@ void Server::delay()
 
   int time_taken = HtDateTime::GetDiff(now, _last_connection);  // arg1-arg2 > 0
 
-  _last_connection = now;  // Reset the clock for the next delay!
-
   if (time_taken < _connection_space)
     sleep(_connection_space - time_taken);
+
+  now.SettoNow();
+  _last_connection = now;  // Reset the clock for the next delay!
 
   return;
 }
