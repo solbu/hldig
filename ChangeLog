@@ -1,4 +1,7 @@
-Wed Sep  1 15:14:47 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:18:27 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc(Reset, readHeader): Fix the bug in the handling
+	of modification_time_is_now.
 
 	* htfuzzy/Fuzzy.cc(getWords), htfuzzy/Metaphone.cc(vscode,generateKey):
 	Should fix PR#514 in the bug database.  It's Geoff's first patch,

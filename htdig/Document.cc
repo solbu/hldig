@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34.2.6 1999/09/01 20:05:59 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34.2.7 1999/09/01 20:22:54 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -96,10 +96,7 @@ Document::Reset()
       delete url;
     url = 0;
     referer = 0;
-    if(config.Boolean("modification_time_is_now"))
-       modtime = time(NULL);
-    else
-       modtime = 0;
+    modtime = 0;
 
     contents = 0;
     document_length = 0;
@@ -465,10 +462,7 @@ Document::readHeader(Connection &c)
     int		inHeader = 1;
     int		returnStatus = Header_not_found;
 
-    if (config.Boolean("modification_time_is_now"))
-       modtime = time(NULL);
-    else
-       modtime = 0;
+    modtime = 0;
 
     while (inHeader)
     {
@@ -544,6 +538,11 @@ Document::readHeader(Connection &c)
 	    }
 	}
     }
+    static int	modification_time_is_now =
+			config.Boolean("modification_time_is_now");
+    if (modtime == 0 && modification_time_is_now)
+	modtime = time(NULL);
+
     if (debug > 2)
 	cout << "returnStatus = " << returnStatus << endl;
     return returnStatus;
