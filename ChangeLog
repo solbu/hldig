@@ -1,3 +1,9 @@
+Thu Jul 26 14:25:01 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc, htsearch/parser.cc, htdoc/attrs.html,
+	htdoc/cf_by{name,prog}.html: Added new attribute boolean_syntax_errors
+	and used it to generate syntax error messages for boolean method.
+
 Wed Jul 25 23:39:00 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htnotify/htnotify.cc: Changed calls to EmailNotification class

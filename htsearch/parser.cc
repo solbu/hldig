@@ -5,13 +5,17 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.6.2.3 1999/09/01 20:16:36 grdetil Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.6.2.4 2001/07/26 19:28:06 grdetil Exp $";
 #endif
 
 #include "parser.h"
+#include "QuotedStringList.h"
 
 #define	WORD	1000
 #define	DONE	1001
+
+extern StringList	boolean_keywords;
+QuotedStringList	boolean_syntax_errors;
 
 
 //*****************************************************************************
@@ -33,6 +37,14 @@ Parser::Parser()
 int
 Parser::checkSyntax(List *tokenList)
 {
+    void	reportError(char *);
+    // Load boolean_syntax_errors from configuration
+    // they should be placed in this order:
+    // 0        1               2            3            4
+    // Expected "a search word" "at the end" "instead of" "end of expression"
+    boolean_syntax_errors.Create(config["boolean_syntax_errors"], "| \t\r\n\001");
+    if (boolean_syntax_errors.Count() != 5)
+	reportError("boolean_syntax_errors attribute is not correctly specified");
     tokens = tokenList;
     valid = 1;
     fullexpr(0);
@@ -48,7 +60,7 @@ Parser::fullexpr(int output)
     expr(output);
     if (valid && lookahead != DONE)
     {
-	setError("end of expression");
+	setError(boolean_syntax_errors[4]);
     }
 }
 
@@ -100,7 +112,10 @@ Parser::expr(int output)
     }
     if (valid && lookahead == WORD)
     {
-	setError("'AND' or 'OR'");
+	String	expected = "'";
+	expected << boolean_keywords[0] << "' " << boolean_keywords[1] << " '"
+		 << boolean_keywords[1] << "'";
+	setError(expected.get());
     }
 }
 
@@ -152,7 +167,7 @@ Parser::factor(int output)
     }
     else
     {
-	setError("a search word");
+	setError(boolean_syntax_errors[1]);
     }
 }
 
@@ -177,20 +192,26 @@ Parser::setError(char *expected)
     {
 	valid = 0;
 	error = 0;
-	error << "Expected " << expected;
+	error << boolean_syntax_errors[0] << ' ' << expected;
 	if (lookahead == DONE || !current)
 	{
-	    error << " at the end";
+	    error << ' ' << boolean_syntax_errors[2];
 	}
 	else
 	{
-	    error << " instead of '" << current->word.get();
-	    error << '\'';
+	    error << ' ' << boolean_syntax_errors[3] << " '"
+		  << current->word.get() << "'";
 	    switch (lookahead)
 	    {
-	    case '&':	error << " or 'AND'";	break;
-	    case '|':	error << " or 'OR'";	break;
-	    case '!':	error << " or 'NOT'";	break;
+	    case '&':	error << ' ' << boolean_keywords[1] << " '"
+			      << boolean_keywords[0] << "'";
+			break;
+	    case '|':	error << ' ' << boolean_keywords[1] << " '"
+			      << boolean_keywords[1] << "'";
+			break;
+	    case '!':	error << ' ' << boolean_keywords[1] << " '"
+			      << boolean_keywords[2] << "'";
+			break;
 	    }
 	}
     }
@@ -407,9 +428,11 @@ Parser::parse(List *tokenList, ResultList &resultMatches)
     ResultList	*result = (ResultList *) stack.pop();
     if (!result)  // Ouch!
       {
+	if (!valid)
+	    return;
 	valid = 0;
 	error = 0;
-	error << "Expected to have something to parse!";
+	error << boolean_syntax_errors[0] << ' ' << boolean_syntax_errors[1];
 	return;
       }
     List		*elements = result->elements();

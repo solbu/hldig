@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.25 2001/07/26 04:18:10 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.26 2001/07/26 19:28:05 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -39,6 +39,7 @@ ConfigDefaults	defaults[] =
     {"bad_querystr",                    ""},
     {"bad_word_list",			"${common_dir}/bad_words"},
     {"boolean_keywords",		"and or not"},
+    {"boolean_syntax_errors",		"Expected 'a search word' 'at the end' 'instead of' 'end of expression'"},
     {"build_select_lists",		""},
     {"case_sensitive",                  "true"},
     {"common_url_parts",                "http:// http://www. ftp:// ftp://ftp. /pub/ .html .htm .gif .jpg .jpeg /index.html /index.htm .com/ .com mailto:"},

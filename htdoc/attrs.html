@@ -644,9 +644,9 @@
 		  <dd>
 			These 3 strings are used as the keywords used in
 			constructing the LOGICAL_WORDS template variable,
-			and in parsing the words input parameter when the
-			<strong>method</strong> parameter or
-			<a href="#match_method">match_method</a> attribute
+			and in parsing the <strong>words</strong> input
+			parameter when the <strong>method</strong> parameter
+			or <a href="#match_method">match_method</a> attribute
 			is set to boolean.
 		  </dd>
 		  <dt>
@@ -654,6 +654,59 @@
 		  </dt>
 		  <dd>
 			boolean_keywords: et ou non
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="boolean_syntax_errors">boolean_syntax_errors</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			quoted string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			Expected 'a search word' 'at the end' 'instead of' 'end of expression'
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			These 5 strings are used to construct various syntax
+			error messages for errors encountered in parsing
+			the <strong>words</strong> input parameter, when the
+			<strong>method</strong> parameter or
+			<a href="#match_method">match_method</a> attribute
+			is set to boolean. They are used in conjunction with
+			the words in the
+			<a href="#boolean_keywords">boolean_keywords</a>
+			attribute, and comprise all the English-specific
+			parts of these error messages. The order in which
+			the strings are put together may not be ideal, or
+			even gramatically correct, for all languages, but they
+			can be used to make fairly intelligible messages in
+			many languages.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			boolean_syntax_errors: Attendait "un mot" "&agrave; la fin" "au lieu de" "fin d'expression"
 		  </dd>
 		</dl>
 	  </dd>
@@ -8091,7 +8144,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: $Date: 2001/07/26 04:18:10 $
+Last modified: $Date: 2001/07/26 19:28:05 $
 <!-- hhmts end -->
   </body>
 </html>
