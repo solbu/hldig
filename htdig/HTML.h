@@ -1,9 +1,12 @@
 //
 // HTML.h
 //
-// $Id: HTML.h,v 1.5 1998/10/09 04:34:06 ghutchis Exp $
+// $Id: HTML.h,v 1.5.2.1 1999/09/01 20:40:01 grdetil Exp $
 //
 // $Log: HTML.h,v $
+// Revision 1.5.2.1  1999/09/01 20:40:01  grdetil
+// Fix the HTML parser to decode SGML entities within tag attributes.
+//
 // Revision 1.5  1998/10/09 04:34:06  ghutchis
 //
 // Fixed typos
@@ -72,6 +75,7 @@ private:
     // Helper functions
     //
     void		do_tag(Retriever &, String &);
+    char		*transSGML(char *);
 };
 
 #endif

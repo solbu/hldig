@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.9 1999/09/01 20:25:27 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.10 1999/09/01 20:40:01 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -544,7 +544,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			    in_ref = 0;
 			}
 			delete href;
-			href = new URL(position, *base);
+			href = new URL(transSGML(position), *base);
 			in_ref = 1;
 			description = 0;
 			position = q + 1;
@@ -595,7 +595,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 				q++;
 			*q = '\0';
 			}
-			retriever.got_anchor(position);
+			retriever.got_anchor(transSGML(position));
 			position = q + 1;
 			break;
 		    }
@@ -704,7 +704,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    q++;
 	    *q = '\0';
 	    }
-	    retriever.got_image(position);
+	    retriever.got_image(transSGML(position));
 	    break;
 	}
 
@@ -736,15 +736,15 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	      }
 	    if (conf["htdig-email"])
 	    {
-		retriever.got_meta_email(conf["htdig-email"]);
+		retriever.got_meta_email(transSGML(conf["htdig-email"]));
 	    }
 	    if (conf["htdig-notification-date"])
 	    {
-		retriever.got_meta_notification(conf["htdig-notification-date"]);
+		retriever.got_meta_notification(transSGML(conf["htdig-notification-date"]));
 	    }
 	    if (conf["htdig-email-subject"])
 	    {
-		retriever.got_meta_subject(conf["htdig-email-subject"]);
+		retriever.got_meta_subject(transSGML(conf["htdig-email-subject"]));
 	    }
 	    if (conf["htdig-keywords"] || conf["keywords"])
 	    {
@@ -757,7 +757,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		char	*keywords = conf["htdig-keywords"];
 		if (!keywords)
 		    keywords = conf["keywords"];
-		char	*w = strtok(keywords, " ,\t\r\n");
+		char	*w = strtok(transSGML(keywords), " ,\t\r\n");
 		while (w)
 		{
 		    if (strlen(w) >= minimumWordLength)
@@ -783,7 +783,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			while (*qq && (*qq != ';') && (*qq != '"') &&
 			       !isspace(*qq))qq++;
 			*qq = 0;
-			URL *href = new URL(q, *base);
+			URL *href = new URL(transSGML(q), *base);
 			// I don't know why anyone would do this, but hey...
 			if (dofollow)
 			  retriever.got_href(*href, "");
@@ -811,7 +811,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    //
 		    // We need to do two things. First grab the description
 		    //
-		    meta_dsc = conf["content"];
+		    meta_dsc = transSGML(conf["content"]);
 		   if (meta_dsc.length() > max_meta_description_length)
 		     meta_dsc = meta_dsc.sub(0, max_meta_description_length).get();
 		   if (debug > 1)
@@ -824,7 +824,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		   // (slot 11 is the new slot for this)
 		   //
 
-		   char        *w = strtok(conf["content"], " \t\r\n");
+		   char        *w = strtok(transSGML(conf["content"]), " \t\r\n");
                    while (w)
 		     {
 			if (strlen(w) >= minimumWordLength)
@@ -836,7 +836,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 
 		if (keywordsMatch.CompareWord(cache))
 		{
-		    char	*w = strtok(conf["content"], " ,\t\r\n");
+		    char	*w = strtok(transSGML(conf["content"]), " ,\t\r\n");
 		    while (w)
 		    {
 			if (strlen(w) >= minimumWordLength)
@@ -847,15 +847,15 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		}
 		else if (mystrcasecmp(cache, "htdig-email") == 0)
 		{
-		    retriever.got_meta_email(conf["content"]);
+		    retriever.got_meta_email(transSGML(conf["content"]));
 		}
 		else if (mystrcasecmp(cache, "htdig-notification-date") == 0)
 		{
-		    retriever.got_meta_notification(conf["content"]);
+		    retriever.got_meta_notification(transSGML(conf["content"]));
 		}
 		else if (mystrcasecmp(cache, "htdig-email-subject") == 0)
 		{
-		    retriever.got_meta_subject(conf["content"]);
+		    retriever.got_meta_subject(transSGML(conf["content"]));
 		}
 		else if (mystrcasecmp(cache, "htdig-noindex") == 0)
 		  {
@@ -950,7 +950,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			*q = '\0';
 		    }
 		    delete href;
-		    href = new URL(position, *base);
+		    href = new URL(transSGML(position), *base);
 		    if (dofollow)
 		    {
 			description = 0;
@@ -1019,7 +1019,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			*q = '\0';
 		    }
 		    delete href;
-		    href = new URL(position, *base);
+		    href = new URL(transSGML(position), *base);
 		    if (dofollow)
 		    {
 			description = 0;
@@ -1088,7 +1088,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			    q++;
 		    *q = '\0';
 		    }
-		    URL tempBase(position, *base);
+		    URL tempBase(transSGML(position), *base);
 		    *base = tempBase;
 		}
 	    }
@@ -1098,4 +1098,25 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	default:
 	    return;						// Nothing...
     }
+}
+
+
+//*****************************************************************************
+// char * HTML::transSGML(char *text)
+//
+char *
+HTML::transSGML(char *str)
+{
+    static String	convert;
+    unsigned char	*text = (unsigned char *)str;
+
+    convert = 0;
+    while (*text)
+    {
+	if (*text == '&')
+	    convert << SGMLEntities::translateAndUpdate(text);
+	else
+	    convert << *text++;
+    }
+    return convert.get();
 }

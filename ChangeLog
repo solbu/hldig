@@ -1,4 +1,7 @@
-Wed Sep  1 15:32:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:34:18 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.h, htdig/HTML.cc(do_tag, transSGML): Fix the HTML parser
+	to decode SGML entities within tag attributes.
 
 	* htlib/URL.cc(ServerAlias): Fix server_alias entries so port defaults
 	to 80 if omitted.
