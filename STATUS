@@ -1,18 +1,17 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b3: Released: Date TBA       Cleanups in progress
+   3.2.0b3: Released:     Jan 2001. (?)
    3.2.0b2: Released:  11 Apr 2000.
    3.2.0b1: Released:   4 Feb 2000.
 
 SHOWSTOPPERS:
-* all.html file needs significant work.
-* List of supported platforms/compilers is ancient.
-* Update cf_* pages to mention new config parser (i.e. URL-dependent config)
-* Add thorough documentation on htsearch restrict/exclude behavior
-   (including '|' and regex).
+* ExternalTransport needs checking similar to ExternalParser.
 
 KNOWN BUGS:
+* HtRegex seems to bail out with patterns that are too long, at least
+   on some platforms. Better error reporting is definitely needed 
+   and some workaround (e.g. HtRegexList ?) is desirable.
 * Odd behavior with $(MODIFIED) and scores not working with
    wordlist_compress set but work fine without wordlist_compress.
    (the date is definitely stored correctly, even with compression on
@@ -52,6 +51,10 @@ TESTING:
   external converter.
 
 DOCUMENTATION:
+* List of supported platforms/compilers is ancient.
+* Update cf_* pages to mention new config parser (i.e. URL-dependent config)
+* Add thorough documentation on htsearch restrict/exclude behavior
+   (including '|' and regex).
 * Need a list of "related projects" inc. mifluz, ht://Check, ConfigDig, etc.
    (should this include projects like KDevelop and WWWWoffle that use internally?)
 * Document all of htsearch's mappings of input parameters to config attributes
