@@ -1,3 +1,9 @@
+Fri Jan 11 16:41:29 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/examples/xmlsearch/*: Added files contributed by Nathan Hand
+	and me to implement XML output from htsearch, including DTD, templates
+	and config file.
+
 Wed Jan  9 22:08:21 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* CONFIG.in: Fixed to allow setting BIN_DIR by configure option.
