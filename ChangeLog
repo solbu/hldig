@@ -1,3 +1,9 @@
+Thu Jan 13 19:52:27 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriver.cc: Fix problem with valid_extensions when an
+	"extension" would include part of a directory path or server
+	name, as contributed by Warren Jones.
+
 Thu Jan 13 19:22:25 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htnet/Makefile.am, htnet/Makefile.in: Add HtFile to the build process.
