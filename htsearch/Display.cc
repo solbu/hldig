@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.28 2001/06/07 15:44:23 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.29 2001/06/07 18:53:04 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -498,27 +498,96 @@ Display::setVariables(int pageNumber, List *matches)
 	int	ivalue = atoi(builds[b+4]);
 	int	ilabel = atoi(builds[b+5]);
 	int	nsel = 0;
+	int	mult = 0, asinput = 0;
+	char	*cp;
+	char	sepc = '\001';
+	String	currval;
+	String	pre, post;
+	QuotedStringList	nameopt(builds[b], ",", 1);
 	QuotedStringList	namelist(config[builds[b+2]], " \t\r\n");
 	if (ntuple > 0 && ivalue > 0 && ivalue <= ntuple
-	  && ilabel > 0 && ilabel <= ntuple && namelist.Count() % ntuple == 0)
+	  && ilabel > 0 && ilabel <= ntuple && namelist.Count() % ntuple == 0
+	  && nameopt.Count() > 0)
 	{
+	    if (strcmp(builds[b+1], "restrict") == 0
+		|| strcmp(builds[b+1], "exclude") == 0)
+		    sepc = '|';
+	    if (nameopt.Count() == 1)
+		;		// default is single select
+	    else if (mystrcasecmp(nameopt[1], "multiple") == 0)
+		mult = 1;
+	    else if (mystrcasecmp(nameopt[1], "radio") == 0)
+		asinput = 1;
+	    else if (mystrcasecmp(nameopt[1], "checkbox") == 0)
+	    {
+		mult = 1;
+		asinput = 1;
+	    }
+	    if (nameopt.Count() > 2)
+		pre = nameopt[2];
+	    else
+		pre = "";
+	    if (nameopt.Count() > 3)
+		post = nameopt[3];
+	    else
+		post = "";
+
 	    str = new String();
-	    *str << "<select name=\"" << builds[b+1] << "\">\n";
+	    if (!asinput)
+	    {
+		*str << "<select ";
+		if (mult)
+		    *str << "multiple ";
+		*str << "name=\"" << builds[b+1] << "\">\n";
+	    }
 	    for (i = 0; i < namelist.Count(); i += ntuple)
 	    {
-		*str << "<option value=\"" << namelist[i+ivalue-1] << '"';
-		if (mystrcasecmp(namelist[i+ivalue-1],config[builds[b+6]]) == 0)
+		if (*builds[b+6])
+		    currval = config[builds[b+6]];
+		else if (input->exists(builds[b+1]))
+		    currval = input->get(builds[b+1]);
+		else
+		    currval = 0;
+		if (!asinput)
+		    *str << pre << "<option value=\"" << namelist[i+ivalue-1] << '"';
+		else if (mult)
+		    *str << pre << "<input type=\"checkbox\" name=\"" << builds[b+1]
+			 << "\" value=\"" << namelist[i+ivalue-1] << '"';
+		else
+		    *str << pre << "<input type=\"radio\" name=\"" << builds[b+1]
+			 << "\" value=\"" << namelist[i+ivalue-1] << '"';
+		if (!mult && mystrcasecmp(namelist[i+ivalue-1], currval) == 0
+		    || mult &&
+		     (cp = mystrcasestr(currval, namelist[i+ivalue-1])) != NULL
+			&& (cp == currval.get() || cp[-1] == sepc)
+			&& (*(cp += strlen(namelist[i+ivalue-1])) == '\0'
+				|| *cp == sepc))
 		{
-		    *str << " selected";
+		    if (!asinput)
+			*str << " selected";
+		    else
+			*str << " checked";
 		    ++nsel;
 		}
-		*str << '>' << namelist[i+ilabel-1] << '\n';
+		*str << '>' << namelist[i+ilabel-1] << post << '\n';
 	    }
 	    if (!nsel && builds[b+7][0] && input->exists(builds[b+1]))
-		*str << "<option value=\"" << input->get(builds[b+1])
-		     << "\" selected>" << builds[b+7] << '\n';
-	    *str << "</select>\n";
-	    vars.Add(builds[b], str);
+	    {
+		if (!asinput)
+		    *str << pre << "<option value=\"" << input->get(builds[b+1])
+		         << "\" selected>" << builds[b+7] << post << '\n';
+		else if (mult)
+		    *str << pre << "<input type=\"checkbox\" name=\"" << builds[b+1]
+			 << "\" value=\"" << input->get(builds[b+1])
+			 << "\" checked>" << builds[b+7] << post << '\n';
+		else
+		    *str << pre << "<input type=\"radio\" name=\"" << builds[b+1]
+			 << "\" value=\"" << input->get(builds[b+1])
+			 << "\" checked>" << builds[b+7] << post << '\n';
+	    }
+	    if (!asinput)
+		*str << "</select>\n";
+	    vars.Add(nameopt[0], str);
 	}
     }
 	

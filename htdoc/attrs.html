@@ -564,7 +564,8 @@
 			the elements have the following meaning:
 			<ol>
 			   <li>the name of the template variable to be
-			   defined as a list
+			   defined as a list, optionally followed by a
+			   comma and the type of list
 			   <li>the input parameter name that the select
 			   list will set
 			   <li>the name of the user-defined attribute
@@ -599,8 +600,8 @@
 				<td nowrap>
 		MATCH_LIST matchesperpage matches_per_page_list \<br>
 				1 1 1 matches_per_page "Previous Amount" \<br>
-		RESTRICT_LIST restrict restrict_names 2 1 2 restrict "" \<br>
-		FORMAT_LIST format template_map 3 2 1 template_name ""
+		RESTRICT_LIST,multiple restrict restrict_names 2 1 2 restrict "" \<br>
+		FORMAT_LIST,radio format template_map 3 2 1 template_name ""
 				</td>
 			  </tr>
 			</table>
@@ -7536,7 +7537,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: $Date: 2001/05/31 07:19:20 $
+Last modified: $Date: 2001/06/07 18:53:03 $
 <!-- hhmts end -->
   </body>
 </html>

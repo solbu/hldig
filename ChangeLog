@@ -1,3 +1,10 @@
+Thu Jun  7 13:52:20 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (setVariables): Extend the handling of
+	build_select_lists to handle select multiple, radio buttons and
+	checkboxes.
+	* htdoc/attrs.html, htdoc/hts_selectors.html: Describe this.
+
 Thu Jun  7 13:40:13 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htfuzzy/Exact.cc (Exact), htfuzzy/Prefix.cc (Prefix): Set the

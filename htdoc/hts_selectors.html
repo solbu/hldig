@@ -133,7 +133,9 @@
 	</p>
 	<ol>
 	  <li>
-		the name of the template variable to be defined as a list
+		the name of the template variable to be defined as a list,
+		optionally followed by a comma and the type of list, and
+		optional formatting codes
 	  </li>
 	  <li>
 		the input parameter name that the select list will set
@@ -167,6 +169,28 @@
 	  </li>
 	</ol>
 	<p>
+	  The first element in an entry is actually a comma separated
+	  list. The first item within this list is the name of the
+	  template variable to be created. The next item, if specified,
+	  is the type of select list or input list to be created in this
+	  template variable. Choices are <strong>select</strong>,
+	  <strong>multiple</strong>, <strong>radio</strong>,
+	  and <strong>checkbox</strong>, with the default being
+	  <strong>select</strong>. The word <strong>multiple</strong>
+	  refers to a &lt;select multiple&gt; type of select list,
+	  where more than one option can be selected. The choices
+	  <strong>radio</strong> and <strong>checkbox</strong> will build
+	  lists of &lt;input&gt; tags of these types, rather than a select
+	  list with &lt;option&gt; tags. The optional third and fourth
+	  items in this comma separated list are text or formatting tags
+	  that will be prepended and appended, respectively, to each item
+	  in the built list, before the &lt;option&gt; or &lt;input&gt;
+	  tag and after the label for that tag. This first element is
+	  parsed as a quoted string list within a quoted string list,
+	  so you can embed quotes and commas within elements of this
+	  inner list if you use correct quoting. See examples below.
+	</p>
+	<p>
 	  The name list that you define will most commonly consist
 	  of pairs of values, and therefore you'd use a tuple size of
 	  2. The method_names and sort_names attributes are samples of
@@ -184,7 +208,7 @@
 	<p>
 	  Any of the strings in an octuple may be quoted, and should be if
 	  you want to include spaces or define an empty string.  If the
-	  the default label, the eight element in an entry, is an empty
+	  default label, the eight element in an entry, is an empty
 	  string, the select list will not have a <i>selected</i> item
 	  if the current input parameter value doesn't match any value
 	  in the name list. If a default label is given, an additional
@@ -192,13 +216,22 @@
 	  current input parameter value doesn't match.
 	</p>
 	<p>
+	  If the seventh element, the configuration attribute name, is
+	  an empty string, the default value will be taken from from
+	  the input parameter, the second element, instead. This is
+	  especially useful for input parameters that don't get mapped
+	  to a configuration attribute, or for checkboxes or multiple
+	  selects, where the separation between individual choices may
+	  get lost when the input parameter is mapped to an attribute.
+	</p>
+	<p>
 	  Here is an example of its usage, which illustrates different
 	  tuple sizes and orders:
 	</p>
 	<pre>
-build_select_lists:     MATCH_LIST matchesperpage matches_per_page_list \
+build_select_lists:     MATCH_LIST,radio matchesperpage matches_per_page_list \
                                 1 1 1 matches_per_page "Previous Amount" \
-                RESTRICT_LIST restrict restrict_names 2 1 2 restrict "" \
+                RESTRICT_LIST,multiple restrict restrict_names 2 1 2 restrict "" \
                 FORMAT_LIST format template_map 3 2 1 template_name ""
 
 matches_per_page_list:  1 5 10 20 100 500
@@ -213,6 +246,27 @@ restrict_names: "http://www.myschool.edu/Admin/" "Admin Web Pages" \
 	  template variable, which is already set by htsearch.  It is included as
 	  an additional example of how to specify the tuple size and indices of
 	  values and labels in a tuple.
+	</p>
+	<p>
+	  Here is an example which illustrates additional formatting tags,
+	  and the quoting that may be required:
+	</p>
+	<pre>
+build_select_lists:     "RESTRICT_LIST,checkbox,'&lt;font face=\\"Arial,Helvetica\\" size=\\"+2\\"&gt;',&lt;/font&gt;&lt;br&gt;" restrict restrict_names 2 1 2 restrict ""
+	</pre>
+	<p>
+	  In this example, the font tag will be inserted before each
+	  checkbox input tag, and the closing font tag and line break will
+	  be appended after each label that follows the input tag. Because
+	  the font tag has an embeded comma, which is also the separator
+	  for the list in the first element, the whole tag (i.e. the whole
+	  third item in the comma separated list) is quoted, and it's
+	  quoted with single quotes so as not to conflict with the double
+	  quotes enclosing the whole element. Finally, to embed a double
+	  quote in the font tag, it must be escaped with two backslashes -
+	  the first of these is absorbed by the variable expansion phase
+	  that all attribute values go through, and the second is used
+	  to embed the double quote within a double quoted string.
 	</p>
 	<h3>
 	  <a name="template_patterns"></a>
@@ -266,7 +320,7 @@ template_patterns: .pdf ${common_dir}/${template_name}-pdffile.html \
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 
-Last modified: $Date: 2000/02/15 22:08:36 $
+Last modified: $Date: 2001/06/07 18:53:04 $
 
   </body>
 </html>
