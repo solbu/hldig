@@ -1,3 +1,11 @@
+Sun Aug 24 12:39:34 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+   * configure.in: moved AC_PROG_LEX to AM_PROG_LEX
+   * db/configure.in: enabled AM_MAINTAINER_MODE which prevented users without
+     autotools to configure and compile the program (relatively to the db
+     directory)
+   * include/htconfig.h: previously excluded from the branch (severe error!)
+
 Mon Jul 21 20:54:47 CEST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
    * htlib/(malloc|error|lstat|stat|realloc).c: added for cross-compiling

@@ -18,6 +18,9 @@ AM_CONFIG_HEADER([db_config.h])
 AC_CONFIG_AUX_DIR(../)
 AC_CANONICAL_HOST
 
+# Initialize maintainer mode
+AM_MAINTAINER_MODE
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
