@@ -1,3 +1,28 @@
+Sat Nov 27 20:23:14 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/ExternalTransport.h, htdig/ExternalTransport.cc: New class
+	to allow external scripts to handle transport methods.
+
+	* contrib/handler.pl: Example handler using the program 'curl' to
+	handle HTTP or HTTPS transactions.
+
+	* htcommon/defaults.cc: Add new configuration option
+	'external_protocols' as a list of protocols and scripts to handle
+	them. Documentation currently needs to be written.
+
+	* htdig/Document.h, htdig/Document.cc(Retrieve): Call
+	ExternalTransport::canHandle to establish which protocols are
+	supported by handler scripts and then create an appropriate
+	transport object.
+
+	* Makefile.in, htdig/Makefile.am, htdig/Makefile.in: Add
+	dependencies for ExternalTransport class.
+
+	* htnet/HtHTTP.h, htnet/HtHTTP.cc, htnet/Transport.h,
+	htnet/Transport.cc: Move _location field from HtHTTP_Response to
+	Transport_Response to allow other subclasses to use it. Similarly,
+	move NewDate and RecognizeDateFormat to Transport.
+
 Fri Nov 26 17:07:52 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc(HTML & do_tag): add code to turn off indexing between
