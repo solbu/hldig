@@ -1,3 +1,17 @@
+Wed May 30 11:30:43 CEST 2001 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htsearch/htsearch.cc: two new attributes, used by htsearch, have
+        been added: restrict and exclude. They can now give more control
+        to template customisation through configuration files, allowing
+        to restrict or exclude URLs from search without passing
+        any CGI variables (although this specification overrides the
+        configuration one).
+	* htcommon/defaults.cc: ditto
+	* htdoc/attrs.html: ditto
+	* htdoc/cf_byname.html: ditto
+	* htdoc/cf_byprog.html: ditto
+	* htdoc/hts_form.html: ditto
+
 Sat May  5 21:43:32 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure.in, configure: Add tests for wait.h, sys/wait.h,

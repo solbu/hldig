@@ -49,9 +49,13 @@
 		<b>exclude</b>
 	  </dt>
 	  <dd>
-		This value is a pattern that all URLs of the search results
-		cannot match.<br>
-		 The default is blank.
+                This value is a pattern that specifies which URLs are to be
+                excluded from the search results. If a URL matches one of
+                these patterns it is discarded. Multiple patterns can be
+                given, separated by a bar ("|"), or multiple definitions
+                of the exclude input parameter can be given.<br>
+                 The default is specified by the <i>exclude</i>
+                attribute in the configuration file.
 	  </dd>
 	  <dt>
 		<b>format</b>
@@ -118,11 +122,18 @@
 		<b>restrict</b>
 	  </dt>
 	  <dd>
-		This value is a pattern that all URLs of the search results
-		will have to match. This can be used to restrict the search
-		to a particular subtree or subsection of a bigger
-		database.<br>
-		 The default is blank.
+                This value is a pattern that all URLs of the search results
+                will have to match. This can be used to restrict the search
+                to a particular subtree or subsection of a bigger database.
+                Multiple patterns can be given, separated by a bar ("|"), or
+                multiple definitions of the restrict input parameter can be
+                given. Any URL in the search results will have to match at
+                least one of these patterns.<br>
+                Note that the restrict list does not take precedence over the
+                exclude list - if a URL matches patterns in both lists it is
+                still excluded from the search results.<br>
+                The default is specified by the <i>restrict</i>
+                attribute in the configuration file.
 	  </dd>
 	  <dt>
 		<b>sort</b>
@@ -149,7 +160,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 
-Last modified: $Date: 2000/02/17 22:05:21 $
+Last modified: $Date: 2001/05/31 07:19:21 $
 
   </body>
 </html>

@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.9 2000/02/15 22:20:02 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.10 2001/05/31 07:19:21 angusgb Exp $";
 #endif
 
 #include "htsearch.h"
@@ -104,24 +104,6 @@ main(int ac, char **av)
     cgi		input(optind < ac ? av[optind] : none);
 
     //
-    // Compile the URL limit pattern.
-    //
-    if (input.exists("restrict"))
-      {
-	char *sep = input["restrict"];
-	while ((sep = strchr(sep, '\001')) != NULL)
-	  *sep++ = '|';
-	limit_to.Pattern(input["restrict"]);
-    }
-    if (input.exists("exclude"))
-    {
-       char *sep = input["exclude"];
-       while ((sep = strchr(sep, '\001')) != NULL)
-       	 *sep++ = '|';
-       exclude_these.Pattern(input["exclude"]);
-    }
-
-    //
     // Setup the configuration database.  First we read the compiled defaults.
     // Then we override those with defaults read in from the configuration
     // file, and finally we override some attributes with information we
@@ -189,6 +171,35 @@ main(int ac, char **av)
 	config.Add(form_vars[i], input[form_vars[i]]);
     }
  
+    //
+    // Compile the URL limit pattern.
+    //
+
+    StringList urllist;
+    String urlpat;
+
+    if (strlen(config["restrict"]))
+    {
+        // Create a temporary list from either the configuration
+        // file or the input parameter
+        urllist.Create(config["restrict"], "| \t\r\n\001");
+        urlpat = urllist.Join('|');
+        urllist.Release();  // release the temporary list of URLs
+        config.Add("restrict", urlpat);  // re-create the config attribute
+	limit_to.Pattern(urlpat);  // Set the new limit pattern
+    }
+
+    if (strlen(config["exclude"]))
+    {
+        // Create a temporary list from either the configuration
+        // file or the input parameter
+        urllist.Create(config["exclude"], "| \t\r\n\001");
+        urlpat = urllist.Join('|');
+        urllist.Release();  // release the temporary list of URLs
+        config.Add("exclude", urlpat);  // re-create the config attribute
+        exclude_these.Pattern(urlpat);
+    }
+
     // Ctype-like functions for what constitutes a word.
     HtWordType::Initialize(config);
 

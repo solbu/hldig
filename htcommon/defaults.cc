@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.15 2000/02/15 22:08:34 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.16 2001/05/31 07:19:20 angusgb Exp $";
 #endif
 
 #include "Configuration.h"
@@ -57,6 +57,7 @@ ConfigDefaults	defaults[] =
     {"endings_word2root_db",		"${common_dir}/word2root.db"},
     {"excerpt_length",			"300"},
     {"excerpt_show_top",		"false"},
+    {"exclude",			        ""},
     {"exclude_urls",			"/cgi-bin/ .cgi"},
     {"external_parsers",		""},
     {"extra_word_characters",		""},
@@ -120,6 +121,7 @@ ConfigDefaults	defaults[] =
     {"prev_page_text",			"[prev]"},
     {"remove_bad_urls",			"true"},
     {"remove_default_doc",              "index.html"},
+    {"restrict",                        ""},
     {"robotstxt_name",			"htdig"},
     {"script_name",                     ""},
     {"search_algorithm",		"exact:1"},

@@ -1741,6 +1741,51 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="exclude">exclude</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			If a URL contains any of the space separated patterns,
+			it will be discarded in the searching phase. This is
+                        used to exclude certain URLs from search results.
+                        The list can be specified from within the configuration
+                        file, and can be overridden with the "exclude" input
+                        parameter in the search form.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			exclude: cgi-bin
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="exclude_urls">exclude_urls</a></strong>
 	  </dt>
 	  <dd>
@@ -5037,6 +5082,57 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="restrict">restrict</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+                        This specifies a set of patterns that all URLs have to
+                        match against in order for them to be included in the
+                        search results. Any number of strings can be specified,
+                        separated by spaces. If multiple patterns are given, at
+                        least one of the patterns has to match the URL.
+                        The list can be specified from within the configuration
+                        file, and can be overridden with the "restrict" input
+                        parameter in the search form. Note that the restrict
+                        list does not take precedence over the
+                        <a href="#exclude">exclude</a> list - if a URL matches
+                        patterns in both lists it is still excluded from the
+                        search results.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			restrict: http://www.vh1.com/
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="robotstxt_name">
 		robotstxt_name</a></strong>
 	  </dt>
@@ -7440,7 +7536,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: $Date: 2000/02/25 16:22:22 $
+Last modified: $Date: 2001/05/31 07:19:20 $
 <!-- hhmts end -->
   </body>
 </html>
