@@ -115,7 +115,7 @@ if ($magic =~ /%!|^\033%-12345/) {      # it's PostScript (or HP print job)
         $type = "Word";
         $dehyphenate = 0;               # Word documents not likely hyphenated
 } else {
-        die "Can't determine type of file $ARGV[0]\n";
+        die "Can't determine type of file $ARGV[0]; content-type: $ARGV[1]; URL: $ARGV[2]\n";
 }
 # print STDERR "$ARGV[0]: $type $parsecmd\n";
 die "Hmm. $parser is absent or unwilling to execute.\n" unless -x $parser;
