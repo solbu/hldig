@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.58 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: htsearch.cc,v 1.59 2002/10/27 15:21:22 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -708,6 +708,10 @@ doFuzzy(WeightWord *ww, List &searchWords, List &algorithms)
 	}
 	if (weightWords.Count() > 1)
 	    searchWords.Add(new WeightWord(")", -1.0));
+    }
+    else	// if no fuzzy matches, add exact word, but give it tiny weight
+    {
+	searchWords.Add(new WeightWord(word->get(), 0.000001));
     }
     weightWords.Release();
 }
