@@ -21,7 +21,7 @@
 // or the GNU Library Public License version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: BasicDocument.h,v 1.1 2003/04/09 00:51:55 nealr Exp $
+// $Id: BasicDocument.h,v 1.2 2003/06/23 22:28:16 nealr Exp $
 //
 //--------------------------------------------------------------------
 

@@ -14,7 +14,7 @@
 // or the GNU Library Public License version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_api.h,v 1.1 2003/04/09 00:49:34 nealr Exp $
+// $Id: libhtdig_api.h,v 1.2 2003/06/23 22:28:17 nealr Exp $
 //
 //----------------------------------------------------------------
 
@@ -123,7 +123,7 @@
 #define  HTDIG_ERROR_TESTURL_SRCH_RESTRICT     -115
 #define  HTDIG_ERROR_TESTURL_SRCH_EXCLUDE      -116
 #define  HTDIG_ERROR_TESTURL_REWRITE_EMPTY     -117
-
+#define  HTDIG_ERROR_TESTURL_ROBOT_FORBID      -118
 
 #define  HTSEARCH_ERROR_NO_MATCH               -201
 #define  HTSEARCH_ERROR_BAD_MATCH_INDEX        -202
@@ -230,6 +230,7 @@
 typedef struct htdig_parameters_struct {
 
   char configFile[HTDIG_MAX_FILENAME_PATH_L];
+  char DBpath[HTDIG_MAX_FILENAME_PATH_L];
   char credentials[HTDIG_MAX_FILENAME_PATH_L];
   char max_hops[10];    //9 digit limit
   char minimalFile[HTDIG_MAX_FILENAME_PATH_L];
@@ -468,10 +469,19 @@ int htfuzzy_index(htfuzzy_parameters_struct *);
 typedef struct htsearch_parameters_struct {
 
   char configFile[HTDIG_MAX_FILENAME_PATH_L];
+  char DBpath[HTDIG_MAX_FILENAME_PATH_L];
+  char locale[16];
 
   //debugging & logfile
   char logFile[HTDIG_MAX_FILENAME_PATH_L];   //location of log file
   int debug;            //0, 1 ,2, 3, 4, 5
+ 
+  //filters
+  char search_restrict[HTDIG_MAX_FILENAME_PATH_L];
+  char search_exclude[HTDIG_MAX_FILENAME_PATH_L];
+  char title_factor[16];
+  char text_factor[16];
+  char meta_description_factor[16];
   
 } htsearch_parameters_struct;
 

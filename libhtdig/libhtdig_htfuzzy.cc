@@ -25,7 +25,7 @@
 // or the GNU Library Public License version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htfuzzy.cc,v 1.1 2003/04/09 00:50:36 nealr Exp $
+// $Id: libhtdig_htfuzzy.cc,v 1.2 2003/06/23 22:28:17 nealr Exp $
 //
 //----------------------------------------------------------------
 
@@ -66,7 +66,11 @@ extern "C"
 #include "HtWordList.h"
 
 #include <stdlib.h>
+
+#ifndef _WIN32
 #include <unistd.h>
+#endif
+
 #include <fstream.h>
 #include <stdio.h>
 

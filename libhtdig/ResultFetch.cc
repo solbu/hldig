@@ -16,7 +16,7 @@
 // or the GNU Library Public License version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: ResultFetch.cc,v 1.1 2003/04/09 00:51:55 nealr Exp $
+// $Id: ResultFetch.cc,v 1.2 2003/06/23 22:28:17 nealr Exp $
 //
 //--------------------------------------------------------------------
 
@@ -45,7 +45,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+
+#ifndef _WIN32
 #include <syslog.h>
+#endif
+
 #include <locale.h>
 #include <math.h>
 #include <float.h>
@@ -1689,6 +1693,11 @@ ResultFetch::sort(List * matches)
 void
 ResultFetch::logSearch(int page, List * matches)
 {
+//Note: This is Posix and dependent on a running syslogd..
+//does not work for Win32
+//TODO: Look into using native windows system logs instead
+#ifndef _WIN32
+
     HtConfiguration *config = HtConfiguration::config();
     // Currently unused    time_t  t;
     int nMatches = 0;
@@ -1714,4 +1723,5 @@ ResultFetch::logSearch(int page, List * matches)
           input->exists("config") ? input->get("config") : "default",
           (const char *) config->Find("match_method"), input->get("words"), logicalWords.get(),
           nMatches, (const char *) config->Find("matches_per_page"), page, ref);
+#endif
 }

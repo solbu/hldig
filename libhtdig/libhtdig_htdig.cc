@@ -17,7 +17,7 @@
 // or the GNU Library Public License version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htdig.cc,v 1.1 2003/04/09 00:50:36 nealr Exp $
+// $Id: libhtdig_htdig.cc,v 1.2 2003/06/23 22:28:17 nealr Exp $
 //
 //-------------------------------------------------------------
 
@@ -138,7 +138,9 @@ int htdig_index_open(htdig_parameters_struct * htdig_parms)
         configFile = htdig_parms->configFile;
     
     if (htdig_parms->URL[0] != 0)
+    {
         myURL = strdup(htdig_parms->URL);
+    }
     
     debug = htdig_parms->debug;
     if(debug != 0)
@@ -152,7 +154,7 @@ int htdig_index_open(htdig_parameters_struct * htdig_parms)
             return(HTDIG_ERROR_LOGFILE_OPEN);
         }
     }
-    
+
     initial = htdig_parms->initial;
     create_text_database  =  htdig_parms->create_text_database;
     //max_hops  =  strdup(htdig_parms->max_hops);
@@ -187,7 +189,14 @@ int htdig_index_open(htdig_parameters_struct * htdig_parms)
     }
     config->Read (configFile);
 
-    //------- override config settings with ------------
+    //------- Now override config settings ------------
+
+    //------- override database path ------------
+    if(strlen(htdig_parms->DBpath) > 0)
+    {
+        config->Add("database_dir", htdig_parms->DBpath);
+    }
+
     //------- custom filters from htdig_parms ----------
 
     if(strlen(htdig_parms->locale) > 0)
@@ -246,6 +255,13 @@ int htdig_index_open(htdig_parameters_struct * htdig_parms)
     if(strlen(htdig_parms->text_factor) > 0)
     {
         config->Add("text_factor", htdig_parms->text_factor);
+    }
+    
+    if(strlen(htdig_parms->URL) > 0)
+    {
+        config->Add("start_url", htdig_parms->URL);
+        free(myURL);
+        myURL=NULL;
     }
     
     //------- end custom filters from htdig_parms ----------
@@ -555,8 +571,6 @@ int htdig_index_urls(void)
     //
     // Cleanup
     //
-    if (urls_seen)
-        fclose (urls_seen);
     if (images_seen)
         fclose (images_seen);
 
@@ -628,6 +642,9 @@ int htdig_index_close(void)
 
         if (wc)
             delete wc;
+    
+        if (urls_seen)
+            fclose (urls_seen);
 
         htdig_index_open_flag = FALSE;
     }
@@ -744,7 +761,14 @@ int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
     }
     config->Read (configFile);
     
-    //--------------- override config settings with -------------------
+    //---------- Now override config settings -----------------
+    
+    //------- override database path ------------
+    if(strlen(htdig_parms->DBpath) > 0)
+    {
+        config->Add("database_dir", htdig_parms->DBpath);
+    }
+
     //------- custom filters from htdig_parms ----------
 
     if(strlen(htdig_parms->locale) > 0)

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.h,v 1.1 2003/04/09 00:51:55 nealr Exp $
+// $Id: htsearch.h,v 1.2 2003/06/23 22:28:17 nealr Exp $
 //
 
 #ifndef _htsearch_h_
@@ -35,7 +35,10 @@
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>
+
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 
 extern int		n_matches;
 extern int		do_and;

@@ -1,6 +1,6 @@
 #libhtdig.so makefile for Unix systems
 
-LIBHTDIG_BUILD_VER = 3.2.0b4
+LIBHTDIG_BUILD_VER = 3.2.1
 
 
 #Berkeley DB Specific defines 
@@ -13,6 +13,7 @@ INC_DIRS= -I. -I../htdig -I../include -I../db -I../htlib -I../htnet -I../htcommo
 
 #define your own defaults here!
 DEFAULT_CONFIG_FILE=\"/etc/htdig/htdig.conf\"
+DEFAULT_DB_PATH=\"/etc/htdig/\"
 BIN_DIR=\"/usr/local/bin\"
 COMMON_DIR=\"/usr/local/share/htdig\"
 CONFIG_DIR=\"/etc/htdig\"
@@ -89,7 +90,7 @@ HTWORD_CXX_OBJS += WordBitCompress.o WordContext.o WordCursor.o WordDB.o WordDBC
 HTCOMMON_CXX_OBJS += DocumentDB.o DocumentRef.o HtWordReference.o HtWordList.o defaults.o HtURLCodec.o URL.o URLTrans.o HtZlibCodec.o cgi.o HtSGMLCodec.o HtConfiguration.o HtURLRewriter.o
 
 #htnet c++ files
-HTNET_CXX_OBJS += Connection.o Transport.o HtHTTP.o HtFile.o HtNNTP.o HtCookie.o HtCookieJar.o HtCookieMemJar.o HtHTTPBasic.o HtHTTPSecure.o SSLConnection.o HtFTP.o
+HTNET_CXX_OBJS += Connection.o Transport.o HtHTTP.o HtFile.o HtNNTP.o HtCookie.o HtCookieJar.o HtCookieMemJar.o HtHTTPBasic.o HtHTTPSecure.o SSLConnection.o HtFTP.o HtCookieInFileJar.o
 
 #htdig c++ files
 HTDIG_CXX_OBJS += Document.o ExternalTransport.o Parsable.o Retriever.o URLRef.o ExternalParser.o HTML.o Plaintext.o Server.o
@@ -120,7 +121,7 @@ OBJS += $(HTCOMMON_CXX_OBJS) $(HTNET_CXX_OBJS) $(HTDIG_CXX_OBJS)
 OBJS += $(HTFUZZY_CXX_OBJS) $(HTFUZZY_C_OBJS) $(HTSEARCH_CXX_OBJS) $(LIBHTDIG_CXX_OBJS) $(LIBHTDIG_C_OBJS)
 
 
-libhtdig.so: $(OBJS) $(LXX_TARGETS) $(YXX_TARGETS)
+libhtdig-3.2.0.so: $(OBJS) $(LXX_TARGETS) $(YXX_TARGETS)
 	$(CC) -shared $(LIB_DIRS) $(OTHER_OBJS) $(OBJS) -L/usr/local/lib $(LIBZ) $(LFLAGS) -Xlinker -h -Xlinker libhtdig.so.$(LIBHTDIG_BUILD_VER) -o libhtdig.so.$(LIBHTDIG_BUILD_VER)
 
 
@@ -175,7 +176,7 @@ $(YXX_TARGETS): %.cc: ../htcommon/%.yxx
 
 
 clean:
-	rm -f *.o *~ *.bak *.lo *.a* *.so* core $(LXX_TARGETS) $(YXX_TARGETS) libhtdig.so.$(LIBHTDIG_BUILD_VER)
+	rm -f *.o *~ *.bak *.lo *.a* *.so* core $(LXX_TARGETS) $(YXX_TARGETS)
 
 
 
