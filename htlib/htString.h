@@ -1,7 +1,7 @@
 //
 // Just Another String class.
 //
-// $Id: htString.h,v 1.6 1999/02/23 03:16:07 ghutchis Exp $
+// $Id: htString.h,v 1.7 1999/05/15 17:05:46 ghutchis Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -72,6 +72,7 @@ public:
     // Access to specific characters
     //
     char		&operator [] (int n);
+    char		Nth (int n);
     char		last();
 
     //

@@ -1,10 +1,10 @@
 //
 // Implementation of String class
 //
-// $Id: String.cc,v 1.19 1999/02/25 02:19:51 ghutchis Exp $
+// $Id: String.cc,v 1.20 1999/05/15 17:05:46 ghutchis Exp $
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.19 1999/02/25 02:19:51 ghutchis Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.20 1999/05/15 17:05:46 ghutchis Exp $";
 #endif
 
 
@@ -374,6 +374,17 @@ char String::last()
 
 
 char	&String::operator [] (int n)
+{
+    static char	null = 0;
+    if (n >= Length)
+	return null;
+    else if (n < 0)
+	return (*this)[Length + n];
+    else
+	return Data[n];
+}
+
+char	String::Nth (int n)
 {
     static char	null = 0;
     if (n >= Length)
