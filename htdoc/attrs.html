@@ -1232,6 +1232,53 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="end_highlight">
+		end_highlight</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			&lt;/strong&gt;
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			When excerpts are displayed in the search output,
+			matched words will be highlighted using
+			<a href="#start_highlight">start_highlight</a>
+			and this string. You should ensure that
+			highlighting tags are balanced, that is, this
+			string should close any formatting tag opened
+			by start_highlight.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			end_highlight: &lt;/font&gt;
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="endings_affix_file">
 		endings_affix_file</a></strong>
 	  </dt>
@@ -1479,13 +1526,17 @@
 		  <dd>
 			This is the maximum number of characters the displayed
 			excerpt will be limited to. The first matched word will
-			be bolded in the middle of the excerpt so that there is
+			be highlighted in the middle of the excerpt so that there is
 			some surrounding context.<br>
 			 The <em><a href="#start_ellipses">
 			start_ellipses</a></em> and
 			<em><a href="#end_ellipses">end_ellipses</a></em> are used to
 			indicate that the document contains text before and
 			after the displayed excerpt respectively.
+			The <em><a href="#start_highlight">start_highlight</a></em>
+			and <em><a href="#end_highlight">end_highlight</a></em>
+			are used to specify what formatting tags are used to
+			highlight matched words.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -4206,6 +4257,65 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="page_number_separator">
+		page_number_separator</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			quoted string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			" "
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			The text strings in this list will be
+			used when putting together the PAGELIST
+			variable, for use in templates or the
+			<a href="#search_results_footer">
+			search_results_footer</a> file, when search
+			results fit on more than page. The PAGELIST
+			is the list of links at the bottom of the
+			search results page. The strings in the
+			list will be used in rotation, and will
+			separate individual entries taken from
+			<a href="#page_number_text">page_number_text</a> and
+			<a href="#no_page_number_text">no_page_number_text</a>.
+			There can be as many or as few strings in the
+			list as you like.  If there are not enough for
+			the number of pages listed, it goes back to
+			the start of the list. If the list is empty,
+			a space is used. The text strings can contain
+			HTML tags. The strings need to be quoted if they
+			contain spaces, or to specify an empty string.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			page_number_separator: "&lt;/td&gt; &lt;td&gt;"
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="page_number_text">
 		page_number_text</a></strong>
 	  </dt>
@@ -5559,6 +5669,53 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="start_highlight">
+		start_highlight</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			&lt;strong&gt;
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			When excerpts are displayed in the search
+			output, matched words will be highlighted using
+			this string and <a href="#end_highlight">
+			end_highlight</a>. You should ensure that
+			highlighting tags are balanced, that is, any
+			formatting tags that this string opens should
+			be closed by end_highlight.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			start_highlight: &lt;font color="#FF0000"&gt;
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="start_url">start_url</a></strong>
 	  </dt>
 	  <dd>
@@ -6732,7 +6889,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Fri Aug  6 15:00:15 EDT 1999
+Last modified: Tue Nov 23 21:04:26 EST 1999
 <!-- hhmts end -->
   </body>
 </html>

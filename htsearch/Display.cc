@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.12 1999/09/01 20:44:48 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.13 1999/11/24 02:29:09 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -498,6 +498,7 @@ Display::setVariables(int pageNumber, List *matches)
 	char	*p;
 	QuotedStringList	pnt(config["page_number_text"], " \t\r\n");
 	QuotedStringList	npnt(config["no_page_number_text"], " \t\r\n");
+	QuotedStringList	sep(config["page_number_separator"], " \t\r\n");
 	if (nPages > config.Value("maximum_pages", 10))
 	    nPages = config.Value("maximum_pages");
 	for (i = 1; i <= nPages; i++)
@@ -507,7 +508,7 @@ Display::setVariables(int pageNumber, List *matches)
 		p = npnt[i - 1];
 		if (!p)
 		    p = form("%d", i);
-		*str << p << ' ';
+		*str << p;
 	    }
 	    else
 	    {
@@ -517,8 +518,10 @@ Display::setVariables(int pageNumber, List *matches)
 		*str << "<a href=\"";
 		tmp = 0;
 		createURL(tmp, i);
-		*str << tmp << "\">" << p << "</a> ";
+		*str << tmp << "\">" << p << "</a>";
 	    }
+	    if (i != nPages)
+		*str << ((sep.Count() > 0) ? sep[(i-1)%sep.Count()] : " ");
 	}
 	vars.Add("PAGELIST", str);
     }
@@ -1058,6 +1061,8 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 char *
 Display::hilight(char *str, String urlanchor, int fanchor)
 {
+    static char		*start_highlight = config["start_highlight"];
+    static char		*end_highlight = config["end_highlight"];
     static String	result;
     int			pos;
     int			which, length;
@@ -1069,13 +1074,13 @@ Display::hilight(char *str, String urlanchor, int fanchor)
     {
 	result.append(str, pos);
 	ww = (WeightWord *) (*searchWords)[which];
-	result << "<strong>";
+	result << start_highlight;
 	if (first && fanchor)
 	    result << "<a href=\"" << urlanchor << "\">";
 	result.append(str + pos, length);
 	if (first && fanchor)
 	    result << "</a>";
-	result << "</strong>";
+	result << end_highlight;
 	str += pos + length;
 	first = 0;
     }

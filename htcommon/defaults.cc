@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.5 1999/09/01 20:53:00 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.6 1999/11/24 02:29:08 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -48,6 +48,7 @@ ConfigDefaults	defaults[] =
     {"doc_index",			"${database_base}.docs.index"},
     {"doc_list",			"${database_base}.docs"},
     {"end_ellipses",			"<b><tt> ...</tt></b>"},
+    {"end_highlight",			"</strong>"},
     {"endings_affix_file",		"${common_dir}/english.aff"},
     {"endings_dictionary",		"${common_dir}/english.0"},
     {"endings_root2word_db",		"${common_dir}/root2word.db"},
@@ -107,6 +108,7 @@ ConfigDefaults	defaults[] =
     {"no_title_text",                   "filename"},
     {"nothing_found_file",		"${common_dir}/nomatch.html"},
     {"page_list_header",		"<hr noshade size=2>Pages:<br>"},
+    {"page_number_separator",		"\" \""},
     {"prefix_match_character",		"*"},
     {"prev_page_text",			"[prev]"},
     {"remove_bad_urls",			"true"},
@@ -126,6 +128,7 @@ ConfigDefaults	defaults[] =
     {"star_image",			"${image_url_prefix}/star.gif"},
     {"star_patterns",			""},
     {"start_ellipses",			"<b><tt>... </tt></b>"},
+    {"start_highlight",			"<strong>"},
     {"start_url",			"http://www.htdig.org/"},
     {"substring_max_words",		"25"},
     {"synonym_db",			"${common_dir}/synonyms.db"},
