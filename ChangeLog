@@ -1,3 +1,8 @@
+Tue Mar 19 08:40:54 CET 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+   * htnet/HtCookie.cc: enhanced controls regarding the expires setting when no
+     expires is returned. Prevents NULL pointer exceptions to be arisen.
+
 Mon Mar 18 11:28:02 CET 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htlib/HtDateTime.h: added the copy constructor

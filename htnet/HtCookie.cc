@@ -24,7 +24,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookie.cc,v 1.3 2002/03/18 10:30:20 angusgb Exp $ 
+// $Id: HtCookie.cc,v 1.4 2002/03/19 07:42:40 angusgb Exp $ 
 //
 
 #include "HtCookie.h"
@@ -114,23 +114,22 @@ HtCookie::HtCookie(const String &setCookieLine, const String& aURL)
       else
       {
       	 if (mystrcasecmp(token, "expires") == 0)
-	 {
+	     {
       	    // Let's grab the expiration date
       	    HtDateTime dt;
 	
       	    ctoken = strtok(NULL, ";");
 
-      	    if (SetDate(ctoken, dt))
+      	    if (ctoken && SetDate(ctoken, dt))
       	       SetExpires(&dt);
-            else SetExpires(0);
+            else
+               SetExpires(0);
             
       	 }
       	 else
       	 {
       	    if (mystrcasecmp(token, "secure") == 0)
-	    {
       	       SetIsSecure(true);
-      	    }
       	    else
             {
       	       if (mystrcasecmp(token, "domain") == 0)
@@ -288,6 +287,9 @@ void HtCookie::printDebug()
 //
 int HtCookie::SetDate(const char *datestring, HtDateTime &dt)
 {
+   if (!datestring) // for any reason we don't have a string for the date
+      return 0;     // and we exit
+
    DateFormat df;
 
    while (*datestring && isspace(*datestring))
