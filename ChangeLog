@@ -1,3 +1,7 @@
+Tue Nov 26 23:16:08 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/hts_form.html: Fixed typo in link & description for restrict.
+
 Tue Nov 26 22:30:06 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* installdir/english.0: Patched with Lachlan Andrew's changes, fixing
