@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.43 2000/11/19 07:07:28 ghutchis Exp $
+// $Id: Retriever.cc,v 1.72.2.44 2000/11/30 00:10:48 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -606,6 +606,7 @@ Retriever::parse_url(URLRef &urlRef)
 		  if (debug) {
 		    cout << "DUP\n";
 		  }
+		  words.Skip();
 		  break;            // Duplicate - don't index
 		} else {
 		   d_md5->Put(shash,"x");
@@ -620,6 +621,7 @@ Retriever::parse_url(URLRef &urlRef)
 		{
 		  if (debug)
 		    cout << " retrieved but not changed" << endl;
+		  words.Skip();
 		  break;
 		}
 		//
@@ -650,7 +652,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    RetrievedDocument(*doc, url.get(), ref);
 	    // Hey! If this document is marked noindex, don't even bother
 	    // adding new words. Mark this as gone and get rid of it!
-	    if (ref->DocState() == Reference_noindex || dup) {
+	    if (ref->DocState() == Reference_noindex) {
 	      if(debug > 1)
 		cout << " ( " << ref->DocURL() << " ignored)";
 	      words.Skip();
@@ -723,30 +725,35 @@ Retriever::parse_url(URLRef &urlRef)
 	    ref->DocState(Reference_not_found);
 	    if (debug)
 	      cout << " not authorized" << endl;
+	    words.Skip();
 	    break;
 
       case Transport::Document_not_local:
 	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " not local" << endl;
+	   words.Skip();
 	   break;
 
       case Transport::Document_no_header:
 	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " no header" << endl;
+	   words.Skip();
 	   break;
 
       case Transport::Document_connection_down:
 	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " connection down" << endl;
+	   words.Skip();
 	   break;
 
       case Transport::Document_no_connection:
 	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " no connection" << endl;
+	   words.Skip();
 	   break;
 
       case Transport::Document_not_recognized_service:
@@ -757,12 +764,14 @@ Retriever::parse_url(URLRef &urlRef)
 	    // Mark the server as being down
 	    if (server)
 	      server->IsDead(1);
+	    words.Skip();
 	   break;
 
       case Transport::Document_other_error:
 	   ref->DocState(Reference_not_found);
 	   if (debug)
 	     cout << " other error" << endl;
+	   words.Skip();
 	   break;
     }
     docs.Add(*ref);
