@@ -41,7 +41,7 @@ extern struct tm *__gmtime_r __P ((const time_t *__timer, \
                struct tm *__tp));
 #endif
 
-time_t mytimegm(tmp)
+time_t Httimegm(tmp)
 struct tm *tmp;
 {
   static time_t gmtime_offset;
