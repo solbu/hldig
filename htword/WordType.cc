@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.cc,v 1.3.2.8 2000/01/14 14:58:50 loic Exp $
+// $Id: WordType.cc,v 1.3.2.9 2000/02/03 20:41:51 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -157,6 +157,12 @@ WordType::Normalize(String& word) const
   // Reject if contains no alpha characters (according to configuration)
   //
   if(!alpha) return status | WORD_NORMALIZE_NOALPHA;
+
+  //
+  // Reject if listed in config[bad_word_list]
+  //
+  if(badwords.Exists(word))
+    return status | WORD_NORMALIZE_BAD;
 
   //
   // Accept and report the transformations that occured
