@@ -4,6 +4,12 @@
 // Implementation of Server
 //
 // $Log: Server.cc,v $
+// Revision 1.3  1998/07/09 09:39:01  ghutchis
+//
+//
+// Added support for local file digging using patches by Pasi. Patches
+// include support for local user (~username) digging.
+//
 // Revision 1.2  1997/03/24 04:33:17  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -12,7 +18,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.2 1997/03/24 04:33:17 turtle Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.3 1998/07/09 09:39:01 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -45,7 +51,7 @@ Server::Server(char *host, int port)
     String	url = "http://";
     url << host << ':' << port << "/robots.txt";
     Document	doc(url, 10000);
-    switch (doc.Retrieve(0))
+    switch (doc.RetrieveHTTP(0))
     {
 	case Document::Document_ok:
 	    //

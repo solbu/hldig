@@ -4,6 +4,12 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.11  1998/07/09 09:38:57  ghutchis
+//
+//
+// Added support for local file digging using patches by Pasi. Patches
+// include support for local user (~username) digging.
+//
 // Revision 1.10  1998/01/05 05:42:57  turtle
 // Changed tm from pointer to real structure
 //
@@ -39,10 +45,11 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.10 1998/01/05 05:42:57 turtle Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.11 1998/07/09 09:38:57 ghutchis Exp $";
 #endif
 
 #include <signal.h>
+#include <sys/stat.h>
 #include <ctype.h>
 #include "Document.h"
 #include "Connection.h"
@@ -275,11 +282,11 @@ timeout()
 
 
 //*****************************************************************************
-// DocStatus Document::Retrieve(time_t date)
+// DocStatus Document::RetrieveHTTP(time_t date)
 //   Attempt to retrieve the document pointed to by our internal URL
 //
 Document::DocStatus
-Document::Retrieve(time_t date)
+Document::RetrieveHTTP(time_t date)
 {
     Connection	c;
     if (c.open() == NOTOK)
@@ -531,6 +538,64 @@ Document::readHeader(Connection &c)
     if (debug > 2)
 	cout << "returnStatus = " << returnStatus << endl;
     return returnStatus;
+}
+
+
+//*****************************************************************************
+// DocStatus Document::RetrieveLocal(time_t date, char *filename)
+//   Attempt to retrieve the document pointed to by our internal URL
+//   using a local filename given. Returns Document_ok,
+//   Document_not_changed or Document_not_local (in which case the
+//   retriever tries it again using HTTP).
+//
+Document::DocStatus
+Document::RetrieveLocal(time_t date, char *filename)
+{
+    struct stat stat_buf;
+    // Check that it exists, and is a regular file. 
+    if ((stat(filename, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode))
+	return Document_not_local;
+
+    modtime = stat_buf.st_mtime;
+    if (modtime <= date)
+        return Document_not_changed;
+
+    // Process only HTML files (this could be changed if we read
+    // the server's mime.types file).
+    const char *ext = strrchr(filename, '.');
+    if (ext == NULL)
+      	return Document_not_local;
+    if ((strcasecmp(ext, ".html") == 0) || (strcasecmp(ext, ".htm") == 0))
+        contentType = "text/html";
+    else 
+  	return Document_not_local;
+
+    // Open it
+    FILE *f = fopen(filename, "r");
+    if (f == NULL)
+ 	return Document_not_local;
+
+    //
+    // Read in the document itself
+    //
+    contents = 0;
+    char	docBuffer[8192];
+    int		bytesRead;
+
+    while ((bytesRead = fread(docBuffer, 1, sizeof(docBuffer), f)) > 0)
+    {
+	if (debug > 2)
+	    cout << "Read " << bytesRead << " from document\n";
+	if (contents.length() + bytesRead > max_doc_size)
+	    break;
+	contents.append(docBuffer, bytesRead);
+    }
+    fclose(f);
+    document_length = contents.length();
+
+    if (debug > 2)
+	cout << "Read a total of " << document_length << " bytes\n";
+    return Document_ok;
 }
 
 

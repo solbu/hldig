@@ -4,6 +4,12 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.3  1998/07/09 09:38:59  ghutchis
+//
+//
+// Added support for local file digging using patches by Pasi. Patches
+// include support for local user (~username) digging.
+//
 // Revision 1.2  1998/01/05 05:14:16  turtle
 // fixed memory leak
 //
@@ -26,6 +32,7 @@
 #include "Parsable.h"
 #include "Document.h"
 #include <StringList.h>
+#include <pwd.h>
 
 static WordList	words;
 
@@ -258,7 +265,27 @@ Retriever::parse_url(URLRef &urlRef)
 
     base = doc->Url();
 
-    Document::DocStatus	status = doc->Retrieve(date);
+    // Retrive document, first trying local file access if possible.
+    Document::DocStatus status;
+    String *local_filename = IsLocalUser(url.get());
+    if (!local_filename)
+        local_filename = IsLocal(url.get());
+    if (local_filename)
+    {  
+        if (debug > 1)
+	    cout << "Trying local file " << *local_filename << endl;
+        status = doc->RetrieveLocal(date, *local_filename);
+        if (status == Document::Document_not_local)
+        {
+            if (debug > 1)
+   	        cout << "Local retrieval failed, trying HTTP" << endl;
+            status = doc->RetrieveHTTP(date);
+        }
+        delete local_filename;
+    }
+    else
+        status = doc->RetrieveHTTP(date);
+
     if (status == Document::Document_not_found)
     {
 	//
@@ -271,7 +298,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    tempurl << '/';
 	    doc->Url(tempurl);
 	    base = doc->Url();
-	    status = doc->Retrieve(date);
+	    status = doc->RetrieveHTTP(date);
 	}
     }
     current_ref = ref;
@@ -484,6 +511,162 @@ Retriever::IsValidURL(char *u)
 }
 
 
+//*****************************************************************************
+// String* Retriever::IsLocal(char *url)
+//   Returns a string containing the (possible) local filename
+//   of the given url, or 0 if it's definitely not local.
+//   THE CALLER MUST FREE THE STRING AFTER USE!
+//
+String*
+Retriever::IsLocal(char *url)
+{
+    static StringList *prefixes = 0;
+    static StringList *paths = 0;
+
+    //
+    // Initialize prefix/path list if this is the first time.
+    // The list is given in format "prefix1=path1 prefix2=path2 ..."
+    //
+    if (!prefixes)
+    {
+    	prefixes = new StringList();
+	paths = new StringList();
+
+	String t = config["local_urls"];
+	char *p = strtok(t, " \t");
+	while (p)	
+	{
+   	    char *path = strchr(p, '=');
+   	    if (!path)
+   		continue;
+   	    *path++ = '\0';
+            prefixes->Add(p);
+            paths->Add(path);
+	    p = strtok(0, " \t");
+	}
+    }
+
+    // This shouldn't happen, but check anyway...
+    if (strstr(url, ".."))
+        return 0;
+    
+    String *prefix, *path;
+    prefixes->Start_Get();
+    paths->Start_Get();
+    while (prefix = (String*) prefixes->Get_Next())
+    {
+	path = (String*) paths->Get_Next();
+        if (strncasecmp(*prefix, url, prefix->length()) == 0)
+	{
+	    int l = strlen(url)-prefix->length()+path->length()+4;
+	    String *local = new String(*path, l);
+	    *local += &url[prefix->length()];
+	    return local;
+	}	
+    }
+    return 0;
+}
+
+
+//*****************************************************************************
+// String* Retriever::IsLocalUser(char *url)
+//   If the URL has ~user part, returns a string containing the
+//   (possible) local filename of the given url, or 0 if it's
+//   definitely not local.
+//   THE CALLER MUST FREE THE STRING AFTER USE!
+//
+String*
+Retriever::IsLocalUser(char *url)
+{
+    static StringList *prefixes = 0, *paths = 0, *dirs = 0;
+    static Dictionary home_cache;
+
+    //
+    // Initialize prefix/path list if this is the first time.
+    // The list is given in format "prefix1=path1,dir1 ..."
+    // If path is zero-length, user's home directory is looked up. 
+    //
+    if (!prefixes)
+    {
+        prefixes = new StringList();
+	paths = new StringList();
+	dirs = new StringList();
+	String t = config["local_user_urls"];
+	char *p = strtok(t, " \t");
+	while (p)
+	{
+	    char *path = strchr(p, '=');
+	    if (!path)
+	        continue;
+	    *path++ = '\0';
+	    char *dir = strchr(path, ',');
+	    if (!dir)
+	        continue;
+	    *dir++ = '\0';
+	    prefixes->Add(p);
+	    paths->Add(path);
+	    dirs->Add(dir);
+	    p = strtok(0, " \t");
+	}
+    }
+
+    // Can we do anything about this?
+    if (!strchr(url, '~') || !prefixes->Count() || strstr(url, ".."))
+        return 0;
+
+    // Split the URL to components
+    String tmp = url;
+    char *name = strchr(tmp, '~');
+    *name++ = '\0';
+    char *rest = strchr(name, '/');
+    if (!rest || (rest-name <= 1) || (rest-name > 32))
+        return 0;
+    *rest++ = '\0';
+
+    // Look it up in the prefix/path/dir table
+    prefixes->Start_Get();
+    paths->Start_Get();
+    dirs->Start_Get();
+    String *prefix, *path, *dir;
+    while (prefix = (String*) prefixes->Get_Next())
+    {
+        path = (String*) paths->Get_Next();
+	dir = (String*) dirs->Get_Next();
+        if (strcasecmp(*prefix, tmp) != 0)
+  	    continue;
+
+	String *local = new String;
+	// No path, look up home directory
+	if (path->length() == 0)
+	{
+	    String *home = (String*) home_cache[name];
+	    if (!home)
+	    {
+	        struct passwd *passwd = getpwnam(name);
+		if (passwd)
+		{
+		    home = new String(passwd->pw_dir);
+		    home_cache.Add(name, home);
+		}
+	    }
+	    if (home)
+	        *local += *home;
+	    else
+	        return 0;
+	}
+	else
+	{
+	    *local += *path;
+	    *local += name;
+	}
+	*local += *dir;
+	*local += rest;
+	return local;
+    }
+    return 0;
+}
+
+ 
 //*****************************************************************************
 // DocumentRef *Retriever::GetRef(char *u)
 //   Extract the date field from the given url.  This will require a

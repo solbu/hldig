@@ -9,9 +9,15 @@
 // link is followed, but this process is done only once (to prevent loops.)
 // If the redirect didn't work, Document_not_found is returned.
 //
-// $Id: Document.h,v 1.3 1997/03/24 04:33:15 turtle Exp $
+// $Id: Document.h,v 1.4 1998/07/09 09:38:58 ghutchis Exp $
 //
 // $Log: Document.h,v $
+// Revision 1.4  1998/07/09 09:38:58  ghutchis
+//
+//
+// Added support for local file digging using patches by Pasi. Patches
+// include support for local user (~username) digging.
+//
 // Revision 1.3  1997/03/24 04:33:15  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -86,9 +92,11 @@ public:
 	Document_redirect,
 	Document_no_server,
 	Document_no_host,
-      Document_not_authorized
+	Document_not_authorized,
+	Document_not_local
     };
-    DocStatus			Retrieve(time_t date);
+    DocStatus			RetrieveHTTP(time_t date);
+    DocStatus			RetrieveLocal(time_t date, char *filename);
 
     //
     // Return an appropriate parsable object for the document type.
@@ -108,7 +116,7 @@ private:
 	Header_not_changed,
 	Header_redirect,
 	Header_not_text,
-      Header_not_authorized
+	Header_not_authorized
     };
 
     URL				*url;

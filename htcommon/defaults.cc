@@ -4,6 +4,12 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.7  1998/07/09 09:38:56  ghutchis
+//
+//
+// Added support for local file digging using patches by Pasi. Patches
+// include support for local user (~username) digging.
+//
 // Revision 1.6  1998/07/09 09:32:02  ghutchis
 //
 //
@@ -27,7 +33,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.6 1998/07/09 09:32:02 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.7 1998/07/09 09:38:56 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -63,6 +69,8 @@ ConfigDefaults	defaults[] =
     {"endings_root2word_db",		"${common_dir}/root2word.db"},
     {"endings_word2root_db",		"${common_dir}/word2root.db"},
     {"excerpt_length",			"300"},
+    {"local_urls",			""},
+    {"local_user_urls",			""},
     {"excerpt_show_top",		"false"},
     {"exclude_urls",			"/cgi-bin/ .cgi"},
     {"external_parsers",		""},

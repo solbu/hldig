@@ -1,11 +1,17 @@
 //
 // Retriever.h
 //
-// $Id: Retriever.h,v 1.1 1997/02/03 17:11:06 turtle Exp $
+// $Id: Retriever.h,v 1.2 1998/07/09 09:39:00 ghutchis Exp $
 //
 // $Log: Retriever.h,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.2  1998/07/09 09:39:00  ghutchis
+//
+//
+// Added support for local file digging using patches by Pasi. Patches
+// include support for local user (~username) digging.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 // Revision 1.1  1995/12/11 22:47:02  turtle
 // This uses the backwards model of only parsing HTML
@@ -115,6 +121,8 @@ private:
     int			Need2Get(char *url);
     DocumentRef	*	GetRef(char *url);
     int			IsValidURL(char *url);
+    String *            IsLocal(char *url);
+    String *            IsLocalUser(char *url);
     void		RetrievedDocument(Document &, char *url, DocumentRef *ref);
     void		parse_url(URLRef &urlRef);
     void		got_redirect(char *, DocumentRef *);
