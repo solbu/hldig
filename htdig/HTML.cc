@@ -4,6 +4,9 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.27  1999/01/14 03:24:12  ghutchis
+// Added slight fixes to the comment parsing code, contributed by Marjolein.
+//
 // Revision 1.26  1999/01/14 00:27:12  ghutchis
 // Fixed small memory leak with bogus HTML and small speedups.
 //
@@ -84,7 +87,7 @@
 // Initial CVS
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.26 1999/01/14 00:27:12 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.27 1999/01/14 03:24:12 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -217,7 +220,10 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		  position += 2;
 		  q = (unsigned char*)strstr((char *)position, "--");
 		  if (!q)
-		    break;	// Rest of document seems to be a comment...
+		    {
+		      *position = '\0';
+		      break;	// Rest of document seems to be a comment...
+		    }
 		  position = q + 2;
 		}
 	      else
@@ -232,7 +238,10 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		      // End of (whatever) declaration
 		    }
 		  else
-		    return;         // Rest of document is DTD?
+		    {
+		      *position = '\0'; // Rest of document is DTD?
+		      break;
+		    }
 		  
 		}
 	      

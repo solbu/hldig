@@ -9,6 +9,9 @@ Wed Jan 13 21:31:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* contrib/examples/badwords: Added example bad_words file by Marjolein.
 
 	* .version: Bump to 3.1.0dev.
+
+	* htdig/HTML.cc(parse): Added slight fixes to the comment parsing
+	code, contributed by Marjolein.
 	
 Wed Jan 13 20:11:26 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
