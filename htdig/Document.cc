@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.24 2000/09/01 21:32:31 angus Exp $
+// $Id: Document.cc,v 1.55.2.25 2000/09/09 18:20:02 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -578,7 +578,7 @@ Document::getParsable()
 	    plaintext = new Plaintext();
 	parsable = plaintext;
     }
-    else
+    else if (mystrncasecmp((char *)contentType, "text/", 5) == 0)
     {
 	if (!plaintext)
 	    plaintext = new Plaintext();
@@ -586,7 +586,7 @@ Document::getParsable()
 	if (debug)
 	{
 	    cout << '"' << contentType <<
-		"\" not a recognized type.  Assuming text\n";
+		"\" not a recognized type.  Assuming text/plain\n";
 	}
     }
 
