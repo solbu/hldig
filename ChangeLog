@@ -1,3 +1,10 @@
+Fri Jan 14 15:56:49 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordType.cc,WordRecord.cc,WordKeyInfo.cc (Initialize): change
+	  inverted test on instance (== instead of !=).
+
+	* htword/WordRecord.cc (WordRecordInfo): change inverted test on compare
+
 Fri Jan 14 14:24:39 2000  Loic Dachary  <loic@ceic.com>
 
         * htdig/htdig.cc,htmerge/htmerge.cc,htsearch/htsearch.cc: Use Initialize(defaults)

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.cc,v 1.3.2.7 2000/01/14 11:36:04 bosc Exp $
+// $Id: WordType.cc,v 1.3.2.8 2000/01/14 14:58:50 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -32,7 +32,7 @@ WordType* WordType::instance = 0;
 void 
 WordType::Initialize(const Configuration &config_arg)
 {
-  if(instance == 0)
+  if(instance != 0)
     delete instance;
   instance = new WordType(config_arg);
 }

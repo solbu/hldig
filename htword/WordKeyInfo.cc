@@ -115,7 +115,7 @@ WordKeyInfo::WordKeyInfo(const Configuration& config)
 void 
 WordKeyInfo::Initialize(const Configuration &config_arg)
 {
-  if(instance == 0)
+  if(instance != 0)
     delete instance;
   instance = new WordKeyInfo(config_arg);
 }
