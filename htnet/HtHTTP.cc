@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.6 1999/12/04 13:59:50 vadim Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.7 2000/01/29 01:35:36 ghutchis Exp $ 
 //
 
 #include "lib.h"
@@ -32,8 +32,6 @@ typedef void (*SIGNAL_HANDLER) (...);
 typedef SIG_PF SIGNAL_HANDLER;
 #endif
 
-   // Modification Time is now attribute
-         int HtHTTP::modification_time_is_now = 0;
    // User Agent
    	 String HtHTTP::_user_agent = 0;
 
@@ -688,7 +686,7 @@ int HtHTTP::ParseHeader()
       }
     }
 
-    if (_response._modification_time == NULL && modification_time_is_now)
+    if (_response._modification_time == NULL)
     {
       if (debug > 3)
          cout << "No modification time returned: assuming now" << endl;

@@ -28,7 +28,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.8.2.3 1999/12/04 13:59:50 vadim Exp $ 
+// $Id: HtHTTP.h,v 1.8.2.4 2000/01/29 01:35:37 ghutchis Exp $ 
 //
 
 #ifndef _HTHTTP_H
@@ -228,9 +228,6 @@ public:
 
 
 
-// Set the modification_time_is_now static attribute
-   static void SetModificationTimeIsNow (int d) { modification_time_is_now=d;}   
-
 ///////
    //    Set the _head_before_get option 
    //    make a request to be made up of a HEAD call and then,
@@ -263,12 +260,6 @@ protected:
 
    Request_Method    _Method;
    
-   ///////
-      //    Modification Time is Now config attribute
-   ///////
-
-   static int modification_time_is_now;
-
    ///////
       //    Http single Request information (Member attributes)
    ///////

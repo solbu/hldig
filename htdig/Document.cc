@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.10 2000/01/14 01:23:43 ghutchis Exp $
+// $Id: Document.cc,v 1.55.2.11 2000/01/29 01:35:35 ghutchis Exp $
 //
 
 #include <signal.h>
@@ -74,12 +74,9 @@ Document::Document(char *u, int max_size)
    Transport::SetDebugLevel(debug);
 
    // Initialize some static variables of Transport
-
-   // Setting the 'modification_time_is_now' attribute
    // and the User Agent for every HtHTTP objects
 
    HtHTTP::SetRequestUserAgent(config["user_agent"]);
-   HtHTTP::SetModificationTimeIsNow(config.Boolean("modification_time_is_now"));
    HtHTTP::SetParsingController(ExternalParser::canParse);
 
     contents.allocate(max_doc_size + 100);
