@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: docs.cc,v 1.27.2.1 2000/01/20 04:00:01 ghutchis Exp $
+// $Id: docs.cc,v 1.27.2.2 2000/02/14 06:05:23 ghutchis Exp $
 //
 
 #include "htmerge.h"
@@ -30,10 +30,6 @@ convertDocs()
     List		*IDs;
     int			document_count = 0;
     unsigned long	docdb_size = 0;
-
-    // Check "uncompressed"/"uncoded" urls at the price of time
-    // (extra DB probes).
-    db.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
 
     //
     // Start the conversion by going through all the URLs that are in

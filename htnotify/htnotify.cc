@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htnotify.cc,v 1.23.2.2 1999/12/07 19:54:12 bosc Exp $
+// $Id: htnotify.cc,v 1.23.2.3 2000/02/14 06:05:23 ghutchis Exp $
 //
 
 #include "HtConfiguration.h"
@@ -100,10 +100,6 @@ int main(int ac, char **av)
 
     String	doc_db = config["doc_db"];
     DocumentDB	docdb;
-
-    // Check "uncompressed"/"uncoded" urls at the price of time
-    // (extra DB probes).
-    docdb.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
 
     docdb.Read(doc_db);
     List	*docs = docdb.DocIDs();

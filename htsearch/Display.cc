@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.10 2000/02/10 06:38:43 ghutchis Exp $
+// $Id: Display.cc,v 1.100.2.11 2000/02/14 06:05:23 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -38,10 +38,7 @@
 //
 Display::Display(const String& docFile, const String& indexFile, const String& excerptFile)
 {
-    // Check "uncompressed"/"uncoded" urls at the price of time
-    // (extra DB probes).
-    docDB.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
-
+  // Set up the document database so we can read the records
     docDB.Read(docFile, indexFile, excerptFile);
 
     limitTo = 0;

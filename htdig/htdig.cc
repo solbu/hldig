@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.8 2000/01/13 14:47:08 loic Exp $
+// $Id: htdig.cc,v 1.26.2.9 2000/02/14 06:05:23 ghutchis Exp $
 //
 
 #include "Document.h"
@@ -225,12 +225,6 @@ int main(int ac, char **av)
     l.Create(config["limit_normalized"], " \t");
     limitsn.setEscaped(l);
     l.Destroy();
-
-    // Check "uncompressed"/"uncoded" urls at the price of time
-    // (extra DB probes).
-    docs.
-      SetCompatibility(config.
-                       Boolean("uncoded_db_compatible", TRUE));
 
     //
     // Open the document database
