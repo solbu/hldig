@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.8 1999/12/04 14:11:12 vadim Exp $
+// $Id: Document.cc,v 1.55.2.9 1999/12/06 19:53:30 vadim Exp $
 //
 
 #include <signal.h>
@@ -133,17 +133,13 @@ Document::Reset()
       delete referer;
 
     referer = 0;
-    if (proxy) {
-      delete proxy;
-      proxy=0;
-    }
 
+    proxy=0;
+    authorization=0;
     contents = 0;
     document_length = 0;
     redirected_to = 0;
 
-    // Don't reset the authorization since it's a pain to set up again.
-    // Don't reset the proxy since it's a pain to set up too.
 }
 
 
@@ -164,6 +160,10 @@ Document::Url(char *u)
 	proxy = new URL(proxyURL);
 	proxy->normalize();
     }
+
+    const String credentials = config.Find(url,"authorization");
+    if (credentials[0] )
+	setUsernamePassword(credentials);
 }
 
 
