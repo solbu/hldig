@@ -1,3 +1,16 @@
+Sun Aug 13 23:17:30 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Server.h, htdig/Server.cc (Server): Add support for
+	per-server user_agent configuration.
+
+	* htdig/Document.cc (Retrieve): Ditto.
+	
+	* httools/htpurge.cc (purgeDocs): Set remove_* attributes on a
+	per-server basis.
+
+	* htcommon/defaults.cc: Fix remove_bad_urls and
+	remove_unretrieved_urls to point to htpurge and not htmerge.
+
 Sat Aug 12 23:03:32 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/cf_generate.pl (html_escape): Fix mindless thinko with
