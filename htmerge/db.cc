@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: db.cc,v 1.19 1999/09/24 10:29:04 loic Exp $
+// $Id: db.cc,v 1.20 1999/09/27 16:06:09 loic Exp $
 //
 
 #include "htmerge.h"
@@ -180,7 +180,7 @@ mergeDB()
       word->DocID(word->DocID() + docIDOffset);
       wordDB.Add(*word);
     }
-    words->Destroy();
+    delete words;
 
     words = wordDB.WordRefs();
     words->Start_Get();
@@ -190,8 +190,6 @@ mergeDB()
       if (db_dup_ids.Exists(docIDKey))
 	wordDB.Delete(*word);
     }
-    words->Destroy();
-
     delete words;
     
     // Cleanup--just close the two word databases

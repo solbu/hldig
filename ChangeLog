@@ -1,3 +1,8 @@
+Mon Sep 27 10:52:51 1999  Loic Dachary  <loic@ceic.com>
+
+	* htmerge/db.cc (mergeDB): delete words instead of words->Destroy()
+	  because the words object itself was not freed.
+
 Mon Sep 27 10:38:37 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* Created 'htnet' library
