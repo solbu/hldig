@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.21 2000/01/25 10:20:59 loic Exp $
+// $Id: WordList.h,v 1.5.2.22 2000/01/28 22:59:14 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -30,6 +30,7 @@
 #include "WordReference.h"
 #include "WordType.h"
 #include "WordDB.h"
+#include "WordDBCompress.h"
 #include "Configuration.h"
 #endif /* SWIG */
 
@@ -49,26 +50,6 @@ class WordMonitor;
 // Type of the callback argument in WordSearchDescription
 //
 typedef int (*wordlist_walk_callback_t)(WordList *, WordDBCursor& , const WordReference *, Object &);
-
-//
-// Benchmarking helper
-//
-class WordBenchmarking
-{
-public:
-    WordBenchmarking()
-    {
-	nDB_NEXT=0;
-	nDB_SET_RANGE=0;
-	nSkip=0;
-    }
-
-    void Show(){cout << "benchmarking: nDB_SET_RANGE:" << nDB_SET_RANGE << " nDB_NEXT:" << nDB_NEXT <<  " nSkip:" << nSkip << endl;}
-
-    int nDB_NEXT;
-    int nDB_SET_RANGE;
-    int nSkip;
-};
 
 //
 // Possible values of the status member
@@ -175,17 +156,9 @@ class WordSearchDescription
     //
     int noskip;
     //
-    // Don't be verbose, even if WordList verbose set
-    //
-    int shutup;
-    //
     // Collect everything found while searching (not necessarily matching)
     //
     List *traceRes;
-    //
-    // Statistics collection for benchmarking
-    //
-    WordBenchmarking *benchmarking;
 
  private:
     //
@@ -376,6 +349,11 @@ public:
     // Returns NOTOK if not skipping, OK if skipping.
     // 
     int SkipUselessSequentialWalking(WordSearchDescription &search);
+    //
+    // Compressor object accessors
+    //
+    WordDBCompress *GetCompressor() { return compressor; }
+    void SetCompressor(WordDBCompress* compressor_arg) { compressor = compressor_arg; }
 
     const WordType		wtype;
     const Configuration&	config;
@@ -393,20 +371,13 @@ public:
  private:
 
     WordDB	            	db;
-
+    WordDBCompress	       *compressor;
     int                         verbose;
 
  protected:
     //
     // Debugging section. Do not use unless you know exactly what you do.
     //
-    //
-    // compressor keeps it's own benchmarking info
-    //
-    DB_CMPR_INFO* cmprInfo;
-    inline void WalkBenchmark_Get(WordSearchDescription &search, int cursor_get_flags);
-    inline WordDBCompress *GetCompressor()
-	{return(cmprInfo ?  (WordDBCompress *)cmprInfo->user_data : (WordDBCompress *)NULL);}
  public:
     int    bm_put_count;
     double bm_put_time;

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.h,v 1.1.2.6 2000/01/20 11:31:56 bosc Exp $
+// $Id: WordDBCompress.h,v 1.1.2.7 2000/01/28 22:59:14 loic Exp $
 //
 
 #ifndef _WordDBCompress_h_
@@ -92,10 +92,13 @@ class WordDBCompress
     int Compress(const  u_int8_t* inbuff, int inbuff_length, u_int8_t** outbuffp, int* outbuff_lengthp);
     int Uncompress(const  u_int8_t* inbuff, int inbuff_length, u_int8_t* outbuff, int outbuff_length);
     WordDBCompress();
-
+    
+    //
+    // Return a new DB_CMPR_INFO initialized with characteristics of the
+    // current object and suitable as WordDB::CmprInfo argument.
+    //
+    DB_CMPR_INFO *CmprInfo();
     DB_CMPR_INFO *cmprInfo;
-
-
 
 // DEBUGING / BENCHMARKING
     int debug;
@@ -103,7 +106,7 @@ class WordDBCompress
 // 1 : TestCompress before each compression (but no debug within Compress Uncompress)
 // 2 : use_tags (BitStream) within TestCompress ->  Compress Uncompress
 // 3 : verbose
-    int TestCompress(const  u_int8_t* pagebuff, int pagebuffsize,int debuglevel);
+    int TestCompress(const  u_int8_t* pagebuff, int pagebuffsize);
     WordMonitor *monitor;
     void SetMonitor(WordMonitor *nmonitor){monitor=nmonitor;}
 
@@ -115,7 +118,6 @@ class WordDBCompress
     int    bm_nonleave_count;
     double bm_cmpr_ratio;
     int    bm_cmpr_overflow;
-
 };
 
 

@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordMonitor.h,v 1.1.2.3 2000/01/11 18:37:35 bosc Exp $
+// $Id: WordMonitor.h,v 1.1.2.4 2000/01/28 22:59:14 loic Exp $
 //
 #ifndef _WordMonitor_h_
 #define _WordMonitor_h_
@@ -105,7 +105,5 @@ class WordMonitor : public CommandProcessor
     virtual ~WordMonitor(){;}
     WordMonitor(const Configuration &config,WordDBCompress *ncmpr,WordList *nwlist);
 };
-
-
 
 #endif

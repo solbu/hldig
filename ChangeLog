@@ -1,3 +1,40 @@
+Thu Jan 27 12:22:57 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordList.cc: cdebug replaced by cerr. replace lverbose
+	  by verbose > 2. Remove shutup. 
+	  (WordList): monitor = 0
+	  (Open): create monitor only if wordlist_monitor = true
+	  (Close): delete monitor if set, delete compressor if set
+
+	* htword/WordDBCompress.cc,WordList.cc: only activate monitoring code
+	  if monitor is set. No interaction with the monitor is therefore possible
+	  if wordlist_monitor is false.
+
+	* htword/WordMonitor.cc: remove useless test of wordlist_monitor (done by
+	  WordList now).
+
+	* htword/WordDBCompress.cc (TestCompress): remove redundant debuglevel argument.
+
+	* htword/WordDBCompress.cc (WordDBCompress): init cmprInfo to 0
+
+	* db/include/db_cxx.h: Add get_mp_cmpr_info method
+
+	* htword/WordDBCompress.cc (WordDBCompress): set default debug level to 0
+
+	* htword/WordDB.h: CmprInfo returns current CmprInfo and non static,
+	  overload to set CmprInfo if argument given.
+
+	* htword/WordDBCompress.h: new CmprInfo() method returns DB_CMPR_INFO object
+	  for Berkeley DB database.
+
+	* htword/WordList.h: add compressor member, kill cmprInfo member.
+
+	* htword/WordList.cc: 
+
+Wed Jan 26 20:05:33 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordList.cc,htword/WordList.h: get rid of obsolete WordBenchmarking
+
 Wed Jan 26 9:14:32 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
         * htcommon/defaults.cc: added "max_connection_requests".

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.cc,v 1.1.2.16 2000/01/14 14:41:05 loic Exp $
+// $Id: WordDBCompress.cc,v 1.1.2.17 2000/01/28 22:59:14 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -40,16 +40,34 @@
 
 WordDBCompress::WordDBCompress()
 {
-    debug=1;
-    monitor = 0;
-    bm_cmpr_count=0;
-    bm_cmpr_time=0;
-    bm_ucmpr_count=0;
-    bm_ucmpr_time=0;
-    bm_mxtreelevel=0;
-    bm_nonleave_count=0;
-    bm_cmpr_ratio=0;
-    bm_cmpr_overflow=0;
+  cmprInfo = 0;
+
+  //
+  // DEBUGING / BENCHMARKING
+  //
+  debug=0;
+  monitor = 0;
+  bm_cmpr_count=0;
+  bm_cmpr_time=0;
+  bm_ucmpr_count=0;
+  bm_ucmpr_time=0;
+  bm_mxtreelevel=0;
+  bm_nonleave_count=0;
+  bm_cmpr_ratio=0;
+  bm_cmpr_overflow=0;
+}
+
+DB_CMPR_INFO* WordDBCompress::CmprInfo()
+{
+  DB_CMPR_INFO *cmpr_info=new DB_CMPR_INFO;
+
+  cmprInfo=cmpr_info;
+  cmpr_info->user_data=(void *)this;
+  cmpr_info->compress  =WordDBCompress_compress_c;
+  cmpr_info->uncompress=WordDBCompress_uncompress_c;
+  cmpr_info->coefficient=3;
+  cmpr_info->max_npages=9;
+  return cmpr_info;
 }
 
 extern "C"
@@ -81,7 +99,8 @@ int
 WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **outbuffp, int *outbuff_lengthp)
 {
 //bmt_START;
-    double start_time=HtTime::DTime();
+    double start_time = 0.0;
+    if(monitor) start_time = HtTime::DTime();
     // create a page from inbuff
     WordDBPage pg(inbuff,inbuff_length);
 //bmt_END;
@@ -94,10 +113,9 @@ WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **
 	printf("~~~~~~~~~~~~~\n");
     }
 
-
 //      pg.show();
     // DEBUG: check if decompressed compresed page is equivalent to original
-    if(debug)TestCompress(inbuff,inbuff_length,debug);
+    if(debug) TestCompress(inbuff,inbuff_length);
 
 //bmt_END;
 //bmt_START;
@@ -111,7 +129,6 @@ WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **
     (*outbuff_lengthp)=res->buffsize();
 //bmt_END;
 
-
     if(debug>2)
     {
 	res->show();
@@ -123,7 +140,7 @@ WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **
     if(debug>2){printf("WordDBCompress::Compress: final output size:%6d (inputsize:%6d)\n",(*outbuff_lengthp),inbuff_length);}
 
     // DEBUGING / BENCHMARKING
-    {
+    if(monitor) {
 	bm_cmpr_ratio+=(*outbuff_lengthp)/(double)inbuff_length;
 	if( (*outbuff_lengthp) > inbuff_length/(1<<(cmprInfo->coefficient)) )
 	{bm_cmpr_overflow++;}
@@ -131,7 +148,7 @@ WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **
 	if(pg.type!=5){bm_nonleave_count++;}
 	bm_mxtreelevel=HtMAX(pg.pg->level,bm_mxtreelevel);
 	bm_cmpr_time+=HtTime::DTime(start_time);
-	if(monitor) (*monitor)();
+	(*monitor)();
     }
 
     // cleanup
@@ -144,7 +161,8 @@ WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **
 int 
 WordDBCompress::Uncompress(const u_int8_t *inbuff, int inbuff_length, u_int8_t *outbuff,int outbuff_length)
 {
-    double start_time=HtTime::DTime();
+    double start_time = 0.0;
+    if(monitor) start_time = HtTime::DTime();
 
     if(debug>2){printf("WordDBCompress::Uncompress::  %5d -> %5d\n",inbuff_length,outbuff_length);}
     // create a page for decompressing into it
@@ -164,14 +182,13 @@ WordDBCompress::Uncompress(const u_int8_t *inbuff, int inbuff_length, u_int8_t *
 
     if(debug>2){printf("------------------------  WordDBCompress::Uncompress: END %d\n",word_debug_cmprcount);}
 
-
     // DEBUGING / BENCHMARKING
-    {
+    if(monitor) {
 	bm_ucmpr_count++;
 	if(pg.type!=5){bm_nonleave_count++;}
 	bm_mxtreelevel=HtMAX(pg.pg->level, bm_mxtreelevel);
 	bm_ucmpr_time+=HtTime::DTime(start_time);
-	if(monitor) (*monitor)();
+	(*monitor)();
     }
 
     pg.delete_page();
@@ -180,11 +197,10 @@ WordDBCompress::Uncompress(const u_int8_t *inbuff, int inbuff_length, u_int8_t *
 
 // checks if compression/decompression sequence is harmless
 int
-WordDBCompress::TestCompress(const  u_int8_t* pagebuff, int pagebuffsize,int debuglevel)
+WordDBCompress::TestCompress(const  u_int8_t* pagebuff, int pagebuffsize)
 {
     WordDBPage pg(pagebuff,pagebuffsize);
-    pg.TestCompress(debuglevel);
+    pg.TestCompress(debug);
     pg.unset_page();
     return 0;
 }
-

@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordMonitor.cc,v 1.1.2.6 2000/01/11 18:48:47 bosc Exp $
+// $Id: WordMonitor.cc,v 1.1.2.7 2000/01/28 22:59:14 loic Exp $
 //
 #include<stdlib.h>
 
@@ -141,8 +141,6 @@ WordMonitor::WordMonitor(const Configuration &config,WordDBCompress *ncmpr,WordL
 {
     cmpr=ncmpr;
     wlist=nwlist;
-    nomonitor=0;
-    if(!config.Boolean("wordlist_monitor")){nomonitor=1;}
 
     input=NULL;
 
@@ -330,5 +328,3 @@ WordMonitorInput::ParseInput()
     fclose(fin);
     fin=NULL;
 }    
-
-

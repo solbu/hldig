@@ -19,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.h,v 1.3.2.8 2000/01/12 17:50:56 loic Exp $
+// $Id: WordDB.h,v 1.3.2.9 2000/01/28 22:59:14 loic Exp $
 //
 
 #ifndef _WordDB_h_
@@ -27,7 +27,6 @@
 
 #include "db_cxx.h"
 #include "WordReference.h"
-#include "WordDBCompress.h"
 #include "htString.h"
 
 #include <iostream.h>
@@ -267,24 +266,10 @@ class WordDB {
   }
 
   //
-  // Return object describing the compression scheme
+  // Accessors for description of the compression scheme
   //
-  static inline DB_CMPR_INFO* CmprInfo(int debug=1) 
-  {
-      DB_CMPR_INFO *cmpr_info=new DB_CMPR_INFO;
-
-      WordDBCompress *compressor=new WordDBCompress;
-      compressor->cmprInfo=cmpr_info;
-      cmpr_info->user_data=(void *)compressor;
-      cmpr_info->compress  =WordDBCompress_compress_c;
-      cmpr_info->uncompress=WordDBCompress_uncompress_c;
-        cmpr_info->coefficient=3;
-        cmpr_info->max_npages=9;
-//        cmpr_info->coefficient=4;
-//        cmpr_info->max_npages=17;
-      compressor->debug=debug;
-      return cmpr_info;
-  }
+  inline DB_CMPR_INFO* CmprInfo() { return dbenv.get_mp_cmpr_info(); }
+  inline void CmprInfo(DB_CMPR_INFO* info) { dbenv.set_mp_cmpr_info(info); }
 
   Db*			db;
   DbEnv	            	dbenv;
