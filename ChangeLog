@@ -1,3 +1,17 @@
+Tue Jan 12 12:56:26 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc(serialize,
+	deserialize): Added support for compressing data using zlib if
+	available, contributed by Randy Winch <gumby@cafes.net>.
+
+	* htcommon/defaults.cc: Added config options
+	use_document_compression and compression_factor for zlib support.
+
+	* configure.in, include/htconfig.h.in: Added autoconf check for
+	libz and deflate function.
+
+	* configure: Generated from above change.
+
 Mon Jan 11 22:48:17 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htmerge/db.cc: Fixed thinko with setting the docIDs of new words
