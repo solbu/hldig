@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.25  1998/12/11 02:54:07  ghutchis
+// Changed support for server_wait_time to use delay() method in Server. Delay
+// is from beginning of last connection to this one.
+//
 // Revision 1.24  1998/12/08 02:54:24  ghutchis
 // Use server_wait_time to call sleep() before requests. Should help prevent
 // server abuse. :-)
@@ -230,11 +234,7 @@ Retriever::Start()
     Server	*server;
     char	*server_sig;
     URLRef	*ref;
-    int         sleep_time = config.Value("server_wait_time", 0);
-    int         ever_sleep;
     
-    ever_sleep = (sleep != 0); // Do we ever need to sleep?
-
     while (more)
     {
 	more = 0;
@@ -251,10 +251,13 @@ Retriever::Start()
 		cout << "pick: " << server_sig << ", # servers = " <<
 		    servers.Count() << endl;
 	    server = (Server *) servers[server_sig];
+	    
 	    ref = server->pop();
 	    if (!ref)
 		continue;		      // Nothing on this server
-			
+	    // There may be no more documents, or the server
+	    // has passed the server_max_docs limit
+
 	    //
 	    // We have a URL to index, now.  We need to register the
 	    // fact that we are not done yet by setting the 'more'
@@ -263,17 +266,11 @@ Retriever::Start()
 	    more = 1;
 
 	    //
-	    // To prevent servers from overloading, we'll put in an option
-	    // to sleep for some time before getting the document.
-	    // It's not efficient, but it should help.
-	    //
-	    if (ever_sleep)
-	      sleep(sleep_time);
-	      
-
-	    //
 	    // Deal with the actual URL.
+	    // We'll check with the server to see if we need to sleep()
+	    // before parsing it.
 	    //
+	    server->delay();   // This will pause if needed and reset the time
 	    parse_url(*ref);
             delete ref;
 	}

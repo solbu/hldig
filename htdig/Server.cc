@@ -4,18 +4,18 @@
 // Implementation of Server
 //
 // $Log: Server.cc,v $
-// Revision 1.5  1998/11/30 01:53:10  ghutchis
+// Revision 1.6  1998/12/11 02:54:07  ghutchis
+// Changed support for server_wait_time to use delay() method in Server. Delay
+// is from beginning of last connection to this one.
 //
+// Revision 1.5  1998/11/30 01:53:10  ghutchis
 // Fixed bug with robots.txt files containing tabs, based on patch from
 // Christian Schneider <cschneid@relog.ch>.
 //
 // Revision 1.4  1998/09/30 17:31:51  ghutchis
-//
 // Changes for 3.1.0b2
 //
 // Revision 1.3  1998/07/09 09:39:01  ghutchis
-//
-//
 // Added support for local file digging using patches by Pasi. Patches
 // include support for local user (~username) digging.
 //
@@ -27,7 +27,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.5 1998/11/30 01:53:10 ghutchis Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.6 1998/12/11 02:54:07 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -55,6 +55,9 @@ Server::Server(char *host, int port)
     _documents = 0;
     if (!config.Boolean("case_sensitive"))
       _disallow.IgnoreCase();
+    _max_documents = config.Value("server_max_docs", -1);
+    _connection_space = config.Value("server_wait_time", 0);
+    _last_connection = time(0);  // For getting robots.txt
 
     //
     // Attempt to get a robots.txt file from the specified server
@@ -240,6 +243,10 @@ void Server::push(char *path, int hopcount, char *referer)
 	return;
     }
 
+    // We use -1 as no limit
+    if (_max_documents != -1 &&
+	_documents >= _max_documents)     // Hey! we only want to get max_docs
+      return;
     URLRef	*ref = new URLRef();
     ref->URL(path);
     ref->HopCount(hopcount);
@@ -265,11 +272,19 @@ URLRef *Server::pop()
 
 
 //*****************************************************************************
-// int Server::delay(time_t)
+// void Server::delay()
 //
-int Server::delay(time_t)
+// Keeps track of how long it's been since we've seen this server
+// and call sleep if necessary
+//
+void Server::delay()
 {
-    return 0;
+  time_t now = time(0);
+  time_t how_long = _connection_space + _last_connection - now;
+  _last_connection = now;  // Reset the clock for the next delay!
+  if (how_long > 0)
+    sleep(how_long);
+  return;
 }
 
 
