@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.36 1999/02/19 01:42:41 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.37 1999/03/03 04:21:36 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -22,6 +22,7 @@ static char RCSid[] = "$Id: Document.cc,v 1.36 1999/02/19 01:42:41 ghutchis Exp 
 #include "Postscript.h"
 #include "ExternalParser.h"
 #include "PDF.h"
+#include "lib.h"
 
 #if 1
 typedef void (*SIGNAL_HANDLER) (...);
@@ -231,7 +232,7 @@ Document::getdate(char *datestring)
 #if HAVE_TIMEGM
 	ret = timegm(&tm);
 #else
-	ret = mytimegm(&tm);
+	ret = Httimegm(&tm);
 #endif
       }
     else
