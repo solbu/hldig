@@ -1,3 +1,7 @@
+Thu Feb 24 09:35:55 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html (external_parsers): Add references to FAQ 4.8 & 4.9.
+
 Wed Feb 23 13:58:24 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/cgi.cc(init): Fixed bug: array must be free by
