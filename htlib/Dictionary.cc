@@ -4,16 +4,15 @@
 // Implementation of the Dictionary class
 //
 // $Log: Dictionary.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1998/01/05 05:20:43  turtle
+// Fixed memory leaks
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
-#if RELEASE
-static char	RCSid[] = "$Id: Dictionary.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
-#endif
 
 #include "Dictionary.h"
-
 #include <stdlib.h>
 
 class DictionaryEntry
@@ -30,14 +29,18 @@ public:
 
 DictionaryEntry::~DictionaryEntry()
 {
-    delete key;
+    delete [] key;
     delete value;
+    if (next)
+        delete next;
 }
 
 void
 DictionaryEntry::release()
 {
     value = NULL;		// Prevent the value from being deleted
+    if (next)
+        next->release();
 }
 
 
@@ -67,6 +70,7 @@ Dictionary::~Dictionary()
     {
 	delete table[i];
     }
+    delete [] table;
 }
 
 
@@ -213,6 +217,7 @@ Dictionary::Remove(char *name)
 		table[index] = e->next;
 	    }
 	    count--;
+            delete e;
 	    return 1;
 	}
     }
@@ -302,6 +307,7 @@ Dictionary::rehash()
 	    newTable[index] = e;
 	}
     }
+    delete [] oldTable;
 }
 
 
