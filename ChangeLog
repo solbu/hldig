@@ -14,11 +14,11 @@ Fri Aug 31 14:33:41 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	[ Backport some 3.2.0b4 HTML parser changes. ]
 	* htdig/HTML.cc (do_tag): Rewrite using Configuration class to
-	separate tag attributes.  Index IMG ALT text.  Parse <object>
-	tags properly, looking for data= attribute rather than src=.
-	Add support for TITLE attributes in anchor and related tags.
-	Treat <script></script> tags as noindex tags, much like
-	<style></style> as suggested by Torsten.
+	separate tag attributes.  Parse <object> tags properly, looking
+	for data= attribute rather than src=.  Add support for TITLE
+	attributes in anchor and related tags.	Treat <script></script>
+	tags as noindex tags, much like <style></style> as suggested
+	by Torsten.
 	* htdig/HTML.cc(parse): Fix to prevent closing ">" from being passed
 	to do_tag().
 
