@@ -3,7 +3,7 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)test019.tcl	10.6 (Sleepycat) 9/25/98
+#	@(#)test019.tcl	10.8 (Sleepycat) 12/5/98
 #
 # Test019 { access_method nentries }
 # Test the partial get functionality.
@@ -51,7 +51,7 @@ proc test019 { method {nentries 10000} args } {
 	}
 	close $did
 
-	puts "\tTest019.b partial get loop"
+	puts "\tTest019.b: partial get loop"
 	set did [open $dict]
 	for { set i 0 } {  [gets $did str] != -1 && $i < $nentries } \
 	    { incr i } {
@@ -73,4 +73,5 @@ proc test019 { method {nentries 10000} args } {
 		    [string range $realdata $beg [expr $beg + $len - 2]]
 	}
 	error_check_good db_close [$db close] 0
+	close $did
 }

@@ -5,7 +5,7 @@
  * Copyright (c) 1996, 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)db.h	10.159 (Sleepycat) 11/3/98
+ *	@(#)db.h	10.172 (Sleepycat) 12/16/98
  */
 
 #ifndef _DB_H_
@@ -74,19 +74,18 @@ typedef unsigned long u_long;
 #endif
 
 #define	DB_VERSION_MAJOR	2
-#define	DB_VERSION_MINOR	5
-#define	DB_VERSION_PATCH	7
-#define	DB_VERSION_STRING	"Sleepycat Software: Berkeley DB 2.5.7: (11/3/98)"
+#define	DB_VERSION_MINOR	6
+#define	DB_VERSION_PATCH	4
+#define	DB_VERSION_STRING	"Sleepycat Software: Berkeley DB 2.6.4: (12/16/98)"
 
 typedef	u_int32_t	db_pgno_t;	/* Page number type. */
 typedef	u_int16_t	db_indx_t;	/* Page offset type. */
 #define	DB_MAX_PAGES	0xffffffff	/* >= # of pages in a file */
 
 typedef	u_int32_t	db_recno_t;	/* Record number type. */
-typedef size_t		DB_LOCK;	/* Object returned by lock manager. */
 #define	DB_MAX_RECORDS	0xffffffff	/* >= # of records in a tree */
 
-#define	DB_FILE_ID_LEN		20	/* DB file ID length. */
+typedef size_t		DB_LOCK;	/* Object returned by lock manager. */
 
 /* Forward structure declarations, so applications get type checking. */
 struct __db;		typedef struct __db DB;
@@ -125,8 +124,7 @@ struct __db_dbt {
 	u_int32_t dlen;			/* RO: get/put record length. */
 	u_int32_t doff;			/* RO: get/put record offset. */
 
-#define	DB_DBT_INTERNAL	0x01		/* Perform any mallocs using regular
-					   malloc, not the user's malloc. */
+#define	DB_DBT_INTERNAL	0x01		/* Ignore user's malloc (internal). */
 #define	DB_DBT_MALLOC	0x02		/* Return in allocated memory. */
 #define	DB_DBT_PARTIAL	0x04		/* Partial put/get. */
 #define	DB_DBT_USERMEM	0x08		/* Return in user's memory. */
@@ -134,38 +132,36 @@ struct __db_dbt {
 };
 
 /*
- * DB internal configuration.
+ * DB run-time interface configuration.
  *
  * There are a set of functions that the application can replace with its
  * own versions, and some other knobs which can be turned at run-time.
  */
-#define	DB_FUNC_CALLOC	 1	/* DELETED: ANSI C calloc. */
-#define	DB_FUNC_CLOSE	 2		/* POSIX 1003.1 close. */
-#define	DB_FUNC_DIRFREE	 3		/* DB: free directory list. */
-#define	DB_FUNC_DIRLIST	 4		/* DB: create directory list. */
-#define	DB_FUNC_EXISTS	 5		/* DB: return if file exists. */
-#define	DB_FUNC_FREE	 6		/* ANSI C free. */
-#define	DB_FUNC_FSYNC	 7		/* POSIX 1003.1 fsync. */
-#define	DB_FUNC_IOINFO	 8		/* DB: return file I/O information. */
-#define	DB_FUNC_MALLOC	 9		/* ANSI C malloc. */
-#define	DB_FUNC_MAP	10		/* DB: map file into shared memory. */
-#define	DB_FUNC_OPEN	11		/* POSIX 1003.1 open. */
-#define	DB_FUNC_READ	12		/* POSIX 1003.1 read. */
-#define	DB_FUNC_REALLOC	13		/* ANSI C realloc. */
+#define	DB_FUNC_CLOSE	 1		/* POSIX 1003.1 close. */
+#define	DB_FUNC_DIRFREE	 2		/* DB: free directory list. */
+#define	DB_FUNC_DIRLIST	 3		/* DB: create directory list. */
+#define	DB_FUNC_EXISTS	 4		/* DB: return if file exists. */
+#define	DB_FUNC_FREE	 5		/* ANSI C free. */
+#define	DB_FUNC_FSYNC	 6		/* POSIX 1003.1 fsync. */
+#define	DB_FUNC_IOINFO	 7		/* DB: return file I/O information. */
+#define	DB_FUNC_MALLOC	 8		/* ANSI C malloc. */
+#define	DB_FUNC_MAP	 9		/* DB: map file into shared memory. */
+#define	DB_FUNC_OPEN	10		/* POSIX 1003.1 open. */
+#define	DB_FUNC_READ	11		/* POSIX 1003.1 read. */
+#define	DB_FUNC_REALLOC	12		/* ANSI C realloc. */
+#define	DB_FUNC_RUNLINK	13		/* DB: remove a shared region. */
 #define	DB_FUNC_SEEK	14		/* POSIX 1003.1 lseek. */
 #define	DB_FUNC_SLEEP	15		/* DB: sleep secs/usecs. */
-#define	DB_FUNC_STRDUP	16	/* DELETED: DB: strdup(3). */
-#define	DB_FUNC_UNLINK	17		/* POSIX 1003.1 unlink. */
-#define	DB_FUNC_UNMAP	18		/* DB: unmap shared memory file. */
-#define	DB_FUNC_WRITE	19		/* POSIX 1003.1 write. */
-#define	DB_FUNC_YIELD	20		/* DB: yield thread to scheduler. */
-#define	DB_TSL_SPINS	21		/* DB: initialize spin count. */
-#define	DB_FUNC_RUNLINK	22		/* DB: remove a shared region. */
-#define	DB_REGION_ANON	23		/* DB: anonymous, unnamed regions. */
-#define	DB_REGION_INIT	24		/* DB: page-fault regions in create. */
-#define	DB_REGION_NAME	25		/* DB: anonymous, named regions. */
-#define	DB_MUTEXLOCKS	26		/* DB: turn off all mutex locks. */
-#define	DB_PAGEYIELD	27		/* DB: yield the CPU on pool get. */
+#define	DB_FUNC_UNLINK	16		/* POSIX 1003.1 unlink. */
+#define	DB_FUNC_UNMAP	17		/* DB: unmap shared memory file. */
+#define	DB_FUNC_WRITE	18		/* POSIX 1003.1 write. */
+#define	DB_FUNC_YIELD	19		/* DB: yield thread to scheduler. */
+#define	DB_MUTEXLOCKS	20		/* DB: turn off all mutex locks. */
+#define	DB_PAGEYIELD	21		/* DB: yield the CPU on pool get. */
+#define	DB_REGION_ANON	22		/* DB: anonymous, unnamed regions. */
+#define	DB_REGION_INIT	23		/* DB: page-fault regions in create. */
+#define	DB_REGION_NAME	24		/* DB: anonymous, named regions. */
+#define	DB_TSL_SPINS	25		/* DB: initialize spin count. */
 
 /*
  * Database configuration and initialization.
@@ -181,27 +177,17 @@ struct __db_dbt {
  * Flags understood by db_appinit(3).
  */
 /*			      0x000007	   COMMON MASK. */
-#define	DB_INIT_LOCK	      0x000008	/* Initialize locking. */
-#define	DB_INIT_LOG	      0x000010	/* Initialize logging. */
-#define	DB_INIT_MPOOL	      0x000020	/* Initialize mpool. */
-#define	DB_INIT_TXN	      0x000040	/* Initialize transactions. */
-#define	DB_MPOOL_PRIVATE      0x000080	/* Mpool: private memory pool. */
-#define	DB_RECOVER	      0x000100	/* Run normal recovery. */
-#define	DB_RECOVER_FATAL      0x000200	/* Run catastrophic recovery. */
-#define	DB_TXN_NOSYNC	      0x000400	/* Do not sync log on commit. */
-#define	DB_USE_ENVIRON	      0x000800	/* Use the environment. */
-#define	DB_USE_ENVIRON_ROOT   0x001000	/* Use the environment if root. */
-
-/* CURRENTLY UNUSED LOCK FLAGS. */
-#define	DB_TXN_LOCK_2PL	      0x000000	/* Two-phase locking. */
-#define	DB_TXN_LOCK_OPTIMIST  0x000000	/* Optimistic locking. */
-#define	DB_TXN_LOCK_MASK      0x000000	/* Lock flags mask. */
-
-/* CURRENTLY UNUSED LOG FLAGS. */
-#define	DB_TXN_LOG_REDO	      0x000000	/* Redo-only logging. */
-#define	DB_TXN_LOG_UNDO	      0x000000	/* Undo-only logging. */
-#define	DB_TXN_LOG_UNDOREDO   0x000000	/* Undo/redo write-ahead logging. */
-#define	DB_TXN_LOG_MASK	      0x000000	/* Log flags mask. */
+#define	DB_INIT_CDB	      0x000008	/* Concurrent Access Methods. */
+#define	DB_INIT_LOCK	      0x000010	/* Initialize locking. */
+#define	DB_INIT_LOG	      0x000020	/* Initialize logging. */
+#define	DB_INIT_MPOOL	      0x000040	/* Initialize mpool. */
+#define	DB_INIT_TXN	      0x000080	/* Initialize transactions. */
+#define	DB_MPOOL_PRIVATE      0x000100	/* Mpool: private memory pool. */
+#define	DB_RECOVER	      0x000200	/* Run normal recovery. */
+#define	DB_RECOVER_FATAL      0x000400	/* Run catastrophic recovery. */
+#define	DB_TXN_NOSYNC	      0x000800	/* Do not sync log on commit. */
+#define	DB_USE_ENVIRON	      0x001000	/* Use the environment. */
+#define	DB_USE_ENVIRON_ROOT   0x002000	/* Use the environment if root. */
 
 /*
  * Flags understood by db_open(3).
@@ -211,21 +197,21 @@ struct __db_dbt {
  */
 /*			      0x000007	   COMMON MASK. */
 /*			      0x001fff	   ALREADY USED. */
-#define	DB_EXCL		      0x002000	/* O_EXCL: exclusive open. */
+#define	DB_EXCL		      0x002000	/* O_EXCL: exclusive open (internal). */
 #define	DB_RDONLY	      0x004000	/* O_RDONLY: read-only. */
-#define	DB_SEQUENTIAL	      0x008000	/* Indicate sequential access. */
-#define	DB_TEMPORARY	      0x010000	/* Remove on last close. */
+#define	DB_SEQUENTIAL	      0x008000	/* Sequential access (internal). */
+#define	DB_TEMPORARY	      0x010000	/* Remove on last close (internal). */
 #define	DB_TRUNCATE	      0x020000	/* O_TRUNCATE: replace existing DB. */
 
 /*
  * Deadlock detector modes; used in the DBENV structure to configure the
  * locking subsystem.
  */
-#define	DB_LOCK_NORUN		0x0
-#define	DB_LOCK_DEFAULT		0x1	/* Default policy. */
-#define	DB_LOCK_OLDEST		0x2	/* Abort oldest transaction. */
-#define	DB_LOCK_RANDOM		0x3	/* Abort random transaction. */
-#define	DB_LOCK_YOUNGEST	0x4	/* Abort youngest transaction. */
+#define	DB_LOCK_NORUN		0
+#define	DB_LOCK_DEFAULT		1	/* Default policy. */
+#define	DB_LOCK_OLDEST		2	/* Abort oldest transaction. */
+#define	DB_LOCK_RANDOM		3	/* Abort random transaction. */
+#define	DB_LOCK_YOUNGEST	4	/* Abort youngest transaction. */
 
 struct __db_env {
 	int		 db_lorder;	/* Byte order. */
@@ -249,7 +235,7 @@ struct __db_env {
 
 	/* Locking. */
 	DB_LOCKTAB	*lk_info;	/* Return from lock_open(). */
-	u_int8_t	*lk_conflicts;	/* Two dimensional conflict matrix. */
+	const u_int8_t	*lk_conflicts;	/* Two dimensional conflict matrix. */
 	u_int32_t	 lk_modes;	/* Number of lock modes in table. */
 	u_int32_t	 lk_max;	/* Maximum number of locks. */
 	u_int32_t	 lk_detect;	/* Deadlock detect on all conflicts. */
@@ -285,8 +271,9 @@ struct __db_env {
 	DB_TXN		*xa_txn;	/* XA Current transaction. */
 
 #define	DB_ENV_APPINIT		0x01	/* Paths initialized by db_appinit(). */
-#define	DB_ENV_STANDALONE	0x02	/* Test: freestanding environment. */
-#define	DB_ENV_THREAD		0x04	/* DB_ENV is multi-threaded. */
+#define	DB_ENV_CDB		0x02	/* Concurrent DB product. */
+#define	DB_ENV_STANDALONE	0x04	/* Test: freestanding environment. */
+#define	DB_ENV_THREAD		0x08	/* DB_ENV is multi-threaded. */
 	u_int32_t	 flags;		/* Flags. */
 };
 
@@ -294,7 +281,7 @@ struct __db_env {
  * Access methods.
  *******************************************************/
 /*
- * XXX
+ * !!!
  * Changes here must be reflected in java/src/com/sleepycat/db/Db.java.
  */
 typedef enum {
@@ -384,6 +371,7 @@ struct __db_info {
 #define	DB_SET		21		/* c_get(), log_get() */
 #define	DB_SET_RANGE	22		/* c_get() */
 #define	DB_SET_RECNO	23		/* get(), c_get() */
+#define	DB_WRITELOCK	24		/* cursor() (internal) */
 
 #define	DB_OPFLAGS_MASK	0x1f		/* Mask for operations flags. */
 #define	DB_RMW		0x80000000	/* Acquire write flag immediately. */
@@ -391,7 +379,7 @@ struct __db_info {
 /*
  * DB (user visible) error return codes.
  *
- * XXX
+ * !!!
  * Changes to any of the user visible error return codes must be reflected
  * in java/src/com/sleepycat/db/Db.java.
  */
@@ -411,11 +399,7 @@ struct __db_info {
 #define	DB_SWAPBYTES		(-11)	/* Database needs byte swapping. */
 #define	DB_TXN_CKP		(-12)	/* Encountered ckp record in log. */
 
-struct __db_ilock {			/* Internal DB access method lock. */
-	db_pgno_t	pgno;		/* Page being locked. */
-					/* File id. */
-	u_int8_t	fileid[DB_FILE_ID_LEN];
-};
+#define	DB_FILE_ID_LEN		20	/* DB file ID length. */
 
 /* DB access method description structure. */
 struct __db {
@@ -434,7 +418,7 @@ struct __db {
 	DB_MPOOLFILE	*mpf;		/* The access method's mpool file. */
 
 	/*
-	 * XXX
+	 * !!!
 	 * Explicit representations of structures in queue.h.
 	 *
 	 * TAILQ_HEAD(free_queue, __dbc);
@@ -464,7 +448,7 @@ struct __db {
 					/* Functions. */
 	int (*am_close)	__P((DB *));
 	int (*close)	__P((DB *, u_int32_t));
-	int (*cursor)	__P((DB *, DB_TXN *, DBC **));
+	int (*cursor)	__P((DB *, DB_TXN *, DBC **, u_int32_t));
 	int (*del)	__P((DB *, DB_TXN *, DBT *, u_int32_t));
 	int (*fd)	__P((DB *, int *));
 	int (*get)	__P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
@@ -473,23 +457,29 @@ struct __db {
 	int (*stat)	__P((DB *, void *, void *(*)(size_t), u_int32_t));
 	int (*sync)	__P((DB *, u_int32_t));
 
-#define	DB_AM_DUP	0x000001	/* DB_DUP (internal). */
-#define	DB_AM_INMEM	0x000002	/* In-memory; no sync on close. */
-#define	DB_AM_LOCKING	0x000004	/* Perform locking. */
-#define	DB_AM_LOGGING	0x000008	/* Perform logging. */
-#define	DB_AM_MLOCAL	0x000010	/* Database memory pool is local. */
-#define	DB_AM_PGDEF	0x000020	/* Page size was defaulted. */
-#define	DB_AM_RDONLY	0x000040	/* Database is readonly. */
-#define	DB_AM_SWAP	0x000080	/* Pages need to be byte-swapped. */
-#define	DB_AM_THREAD	0x000100	/* DB is multi-threaded. */
-#define	DB_BT_RECNUM	0x000200	/* DB_RECNUM (internal) */
-#define	DB_DBM_ERROR	0x000400	/* Error in DBM/NDBM database. */
-#define	DB_RE_DELIMITER	0x000800	/* DB_DELIMITER (internal). */
-#define	DB_RE_FIXEDLEN	0x001000	/* DB_FIXEDLEN (internal). */
-#define	DB_RE_PAD	0x002000	/* DB_PAD (internal). */
-#define	DB_RE_RENUMBER	0x004000	/* DB_RENUMBER (internal). */
-#define	DB_RE_SNAPSHOT	0x008000	/* DB_SNAPSHOT (internal). */
+#define	DB_AM_CDB	0x000001	/* Concurrent Access Methods. */
+#define	DB_AM_DUP	0x000002	/* DB_DUP (internal). */
+#define	DB_AM_INMEM	0x000004	/* In-memory; no sync on close. */
+#define	DB_AM_LOCKING	0x000008	/* Perform locking. */
+#define	DB_AM_LOGGING	0x000010	/* Perform logging. */
+#define	DB_AM_MLOCAL	0x000020	/* Database memory pool is local. */
+#define	DB_AM_PGDEF	0x000040	/* Page size was defaulted. */
+#define	DB_AM_RDONLY	0x000080	/* Database is readonly. */
+#define	DB_AM_SWAP	0x000100	/* Pages need to be byte-swapped. */
+#define	DB_AM_THREAD	0x000200	/* DB is multi-threaded. */
+#define	DB_BT_RECNUM	0x000400	/* DB_RECNUM (internal). */
+#define	DB_DBM_ERROR	0x000800	/* Error in DBM/NDBM database. */
+#define	DB_RE_DELIMITER	0x001000	/* DB_DELIMITER (internal). */
+#define	DB_RE_FIXEDLEN	0x002000	/* DB_FIXEDLEN (internal). */
+#define	DB_RE_PAD	0x004000	/* DB_PAD (internal). */
+#define	DB_RE_RENUMBER	0x008000	/* DB_RENUMBER (internal). */
+#define	DB_RE_SNAPSHOT	0x010000	/* DB_SNAPSHOT (internal). */
 	u_int32_t flags;
+};
+
+struct __db_ilock {			/* Internal DB access method lock. */
+	db_pgno_t pgno;			/* Page being locked. */
+	u_int8_t fileid[DB_FILE_ID_LEN];/* File id. */
 };
 
 /* Cursor description structure. */
@@ -511,7 +501,8 @@ struct __dbc {
 	u_int32_t lid;			/* Default process' locker id. */
 	u_int32_t locker;		/* Locker for this operation. */
 	DBT	  lock_dbt;		/* DBT referencing lock. */
-	DB_LOCK_ILOCK lock;		/* Lock. */
+	DB_LOCK_ILOCK lock;		/* Object to be locked. */
+	DB_LOCK	mylock;			/* Lock held on this cursor. */
 
 	DBT rkey;			/* Returned key. */
 	DBT rdata;			/* Returned data. */
@@ -529,7 +520,8 @@ struct __dbc {
 #define	DBC_KEYSET	0x002		/* Continue dup search: current item. */
 #define	DBC_RECOVER	0x004		/* In recovery (do not log or lock). */
 #define	DBC_RMW		0x008		/* Acquire write flag in read op. */
-	u_int32_t flags;		/* Flags. */
+#define	DBC_WRITER	0x010		/* Cursor immediately writing (CDB). */
+	u_int32_t flags;
 };
 
 /* Btree/recno statistics structure. */
@@ -597,8 +589,10 @@ char *db_version __P((int *, int *, int *));
 #define	DB_LOCKVERSION	1
 #define	DB_LOCKMAGIC	0x090193
 
-/* Flag values for lock_vec(). */
+/* Flag values for lock_vec(), lock_get(). */
 #define	DB_LOCK_NOWAIT		0x01	/* Don't wait on unavailable lock. */
+#define	DB_LOCK_UPGRADE		0x02	/* Upgrade an existing lock instead
+					   of granting a new one (internal). */
 
 /* Flag values for lock_detect(). */
 #define	DB_LOCK_CONFLICT	0x01	/* Run on any conflict. */
@@ -606,7 +600,7 @@ char *db_version __P((int *, int *, int *));
 /*
  * Request types.
  *
- * XXX
+ * !!!
  * Changes here must be reflected in java/src/com/sleepycat/db/Db.java.
  */
 typedef enum {
@@ -620,15 +614,20 @@ typedef enum {
 /*
  * Simple R/W lock modes and for multi-granularity intention locking.
  *
- * XXX
+ * !!!
+ * These values are NOT random, as they are used as an index into the lock
+ * conflicts arrays, i.e., DB_LOCK_IWRITE must be == 3, and DB_LOCK_IREAD
+ * must be == 4.
+ *
+ * !!!
  * Changes here must be reflected in java/src/com/sleepycat/db/Db.java.
  */
 typedef enum {
 	DB_LOCK_NG=0,			/* Not granted. */
 	DB_LOCK_READ,			/* Shared/read. */
 	DB_LOCK_WRITE,			/* Exclusive/write. */
-	DB_LOCK_IREAD,			/* Intent to share/read. */
 	DB_LOCK_IWRITE,			/* Intent exclusive/write. */
+	DB_LOCK_IREAD,			/* Intent to share/read. */
 	DB_LOCK_IWR			/* Intent to read and write. */
 } db_lockmode_t;
 

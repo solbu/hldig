@@ -4,7 +4,7 @@
  * Copyright (c) 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)ex_tpcb.c	10.25 (Sleepycat) 10/5/98
+ *	@(#)ex_tpcb.c	10.26 (Sleepycat) 11/22/98
  */
 
 #include "config.h"
@@ -698,9 +698,9 @@ tp_txn(txmgr, adb, bdb, tdb, hdb, anum, bnum, tnum)
 	if (txn_begin(txmgr, NULL, &t) != 0)
 		goto err;
 
-	if (adb->cursor(adb, t, &acurs) != 0 ||
-	    bdb->cursor(bdb, t, &bcurs) != 0 ||
-	    tdb->cursor(tdb, t, &tcurs) != 0)
+	if (adb->cursor(adb, t, &acurs, 0) != 0 ||
+	    bdb->cursor(bdb, t, &bcurs, 0) != 0 ||
+	    tdb->cursor(tdb, t, &tcurs, 0) != 0)
 		goto err;
 
 	/* Account record */

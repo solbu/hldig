@@ -47,7 +47,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)bt_put.c	10.52 (Sleepycat) 10/3/98";
+static const char sccsid[] = "@(#)bt_put.c	10.54 (Sleepycat) 12/6/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -439,10 +439,12 @@ __bam_ovput(dbc, h, indx, item)
 	BOVERFLOW bo;
 	int ret;
 
+	UMRW(bo.unused1);
 	B_TSET(bo.type, B_OVERFLOW, 0);
-	bo.tlen = item->size;
+	UMRW(bo.unused2);
 	if ((ret = __db_poff(dbc, item, &bo.pgno, __bam_new)) != 0)
 		return (ret);
+	bo.tlen = item->size;
 
 	OVPUT(h, indx, bo);
 
@@ -637,7 +639,9 @@ __bam_ndup(dbc, h, indx)
 	}
 
 	/* Put in a new data item that points to the duplicates page. */
+	UMRW(bo.unused1);
 	B_TSET(bo.type, B_DUPLICATE, 0);
+	UMRW(bo.unused2);
 	bo.pgno = cp->pgno;
 	bo.tlen = 0;
 

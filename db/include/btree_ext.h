@@ -9,13 +9,11 @@ int __bam_pgin __P((db_pgno_t, void *, DBT *));
 int __bam_pgout __P((db_pgno_t, void *, DBT *));
 int __bam_mswap __P((PAGE *));
 int __bam_cprint __P((DB *));
-int __bam_ca_delete __P((DB *, db_pgno_t, u_int32_t, CURSOR *));
+int __bam_ca_delete __P((DB *, db_pgno_t, u_int32_t, int));
 void __bam_ca_di __P((DB *, db_pgno_t, u_int32_t, int));
 void __bam_ca_dup __P((DB *,
    db_pgno_t, u_int32_t, u_int32_t, db_pgno_t, u_int32_t));
-void __bam_ca_move __P((DB *, db_pgno_t, db_pgno_t));
-void __bam_ca_replace
-   __P((DB *, db_pgno_t, u_int32_t, ca_replace_arg));
+void __bam_ca_rsplit __P((DB *, db_pgno_t, db_pgno_t));
 void __bam_ca_split __P((DB *,
    db_pgno_t, db_pgno_t, db_pgno_t, u_int32_t, int));
 int __bam_c_init __P((DBC *));

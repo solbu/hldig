@@ -4,7 +4,7 @@
  * Copyright (c) 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)TpcbExample.cpp	10.10 (Sleepycat) 11/2/98
+ *	@(#)TpcbExample.cpp	10.11 (Sleepycat) 12/7/98
  */
 
 #include "config.h"
@@ -586,10 +586,10 @@ TpcbExample::txn(DbTxnMgr *txmgr,
     if (txmgr->begin(NULL, &t) != 0)
         goto err;
 
-    if (adb->cursor(t, &acurs) != 0 ||
-        bdb->cursor(t, &bcurs) != 0 ||
-        tdb->cursor(t, &tcurs) != 0 ||
-        hdb->cursor(t, &hcurs) != 0)
+    if (adb->cursor(t, &acurs, 0) != 0 ||
+        bdb->cursor(t, &bcurs, 0) != 0 ||
+        tdb->cursor(t, &tcurs, 0) != 0 ||
+        hdb->cursor(t, &hcurs, 0) != 0)
         goto err;
 
     // Account record

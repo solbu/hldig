@@ -4,7 +4,7 @@
  * Copyright (c) 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)TpcbExample.java	10.6 (Sleepycat) 11/2/98
+ *	@(#)TpcbExample.java	10.7 (Sleepycat) 12/7/98
  */
 
 package com.sleepycat.examples;
@@ -414,10 +414,10 @@ class TpcbExample extends DbEnv
         try {
             t = txmgr.begin(null);
 
-            acurs = adb.cursor(t);
-            bcurs = bdb.cursor(t);
-            tcurs = tdb.cursor(t);
-            hcurs = hdb.cursor(t);
+            acurs = adb.cursor(t, 0);
+            bcurs = bdb.cursor(t, 0);
+            tcurs = tdb.cursor(t, 0);
+            hcurs = hdb.cursor(t, 0);
 
             // Account record
             k_dbt.set_recno_key_data(account);

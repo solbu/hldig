@@ -4,7 +4,7 @@
  * Copyright (c) 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)Db.java	10.12 (Sleepycat) 11/2/98
+ *	@(#)Db.java	10.15 (Sleepycat) 12/8/98
  */
 
 package com.sleepycat.db;
@@ -56,6 +56,7 @@ public class Db
     //
     // Flags used by DbEnv.appinit()
     //
+    public static final int DB_INIT_CDB;         // Concurrent Access Methods.
     public static final int DB_INIT_LOCK;        // Initialize locking.
     public static final int DB_INIT_LOG;         // Initialize logging.
     public static final int DB_INIT_MPOOL;       // Initialize mpool.
@@ -95,8 +96,8 @@ public class Db
     public static final int DB_LOCK_NG = 0;	// Not granted.
     public static final int DB_LOCK_READ = 1;	// Shared/read.
     public static final int DB_LOCK_WRITE = 2;	// Exclusive/write.
-    public static final int DB_LOCK_IREAD = 3;	// Intent to share/read.
-    public static final int DB_LOCK_IWRITE = 4;	// Intent exclusive/write.
+    public static final int DB_LOCK_IWRITE = 3;	// Intent exclusive/write.
+    public static final int DB_LOCK_IREAD = 4;	// Intent to share/read.
     public static final int DB_LOCK_IWR = 5;	// Intent to read and write.
 
     // Collectively, these constants are known by the name
@@ -109,7 +110,9 @@ public class Db
     public static final int DB_LOCK_PUT_OBJ = 4;// Release locker's locks on obj.
 
     // Flag values for DbLock.vec()
-    public static final int DB_LOCK_NOWAIT;  // Don't wait on unavailable lock.
+    public static final int DB_LOCK_NOWAIT; // Don't wait on unavailable lock.
+    public static final int DB_LOCK_UPGRADE;// Upgrade an existing lock instead
+                                            // of granting a new one.
 
     // Flag values for DbLock.detect()
     public static final int DB_LOCK_CONFLICT; // Run on any conflict.
@@ -181,7 +184,7 @@ public class Db
     public native void close(int flags)
          throws DbException;
 
-    public native Dbc cursor(DbTxn txnid)
+    public native Dbc cursor(DbTxn txnid, int flags)
          throws DbException;
 
     public native void del(DbTxn txnid, Dbt key, int flags)
@@ -286,6 +289,7 @@ public class Db
         check_constant(DB_LOCK_NOTHELD, DbConstants.DB_LOCK_NOTHELD);
         check_constant(DB_NOTFOUND, DbConstants.DB_NOTFOUND);
 
+        DB_INIT_CDB = DbConstants.DB_INIT_CDB;
         DB_INIT_LOCK = DbConstants.DB_INIT_LOCK;
         DB_INIT_LOG = DbConstants.DB_INIT_LOG;
         DB_INIT_MPOOL = DbConstants.DB_INIT_MPOOL;
@@ -313,6 +317,7 @@ public class Db
         DB_SNAPSHOT = DbConstants.DB_SNAPSHOT;
 
         DB_LOCK_NOWAIT = DbConstants.DB_LOCK_NOWAIT;
+        DB_LOCK_UPGRADE = DbConstants.DB_LOCK_UPGRADE;
         DB_LOCK_CONFLICT = DbConstants.DB_LOCK_CONFLICT;
 
         DB_LOCK_RW_N = DbConstants.DB_LOCK_RW_N;

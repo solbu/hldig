@@ -46,8 +46,7 @@ int __db_addrem_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_db_addrem;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -254,8 +253,7 @@ int __db_split_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_db_split;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -432,8 +430,7 @@ int __db_big_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_db_big;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -633,8 +630,7 @@ int __db_ovref_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_db_ovref;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -784,8 +780,7 @@ int __db_relink_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_db_relink;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -963,8 +958,7 @@ int __db_addpage_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_db_addpage;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -1121,8 +1115,7 @@ int __db_debug_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_db_debug;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;

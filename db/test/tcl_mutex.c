@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)tcl_mutex.c	10.16 (Sleepycat) 5/4/98";
+static const char sccsid[] = "@(#)tcl_mutex.c	10.19 (Sleepycat) 12/14/98";
 #endif /* not lint */
 
 /*
@@ -30,7 +30,6 @@ static const char sccsid[] = "@(#)tcl_mutex.c	10.16 (Sleepycat) 5/4/98";
 #include "dbtest.h"
 #include "common_ext.h"
 #include "test_ext.h"
-
 
 typedef struct _mutex_entry {
 	union {
@@ -143,7 +142,7 @@ mutex_cmd(notused, interp, argc, argv)
 	(void)__db_mutex_unlock(&region->hdr.lock, md->reginfo.fd);
 
 	/* Create new command name. */
-	sprintf(&mutname[0], "mutex%d", mut_number);
+	snprintf(mutname, sizeof(mutname), "mutex%d", mut_number);
 	mut_number++;
 
 	/* Create widget command. */
@@ -230,6 +229,9 @@ mutexwidget_cmd(cd_md, interp, argc, argv)
 	if (strcmp(argv[1], "close") == 0) {
 		USAGE(argc, 2, MUTEXCLOSE_USAGE, 0);
 		(void)__db_rdetach(&md->reginfo);
+		db_appexit(md->env);
+		free(md->env);
+		free(md);
 		Tcl_DeleteCommand(interp, argv[0]);
 		Tcl_SetResult(interp, "0", TCL_STATIC);
 		return (TCL_OK);
@@ -243,7 +245,7 @@ mutexwidget_cmd(cd_md, interp, argc, argv)
 	id = (u_int32_t)tclint;
 	if (id >= md->region->n_mutex) {
 		Tcl_SetResult(interp, "Invalid mutex id", TCL_STATIC);
-		sprintf(intbuf, "%d", id);
+		snprintf(intbuf, sizeof(intbuf), "%d", id);
 		Tcl_AppendResult(interp, intbuf, 0);
 		return (TCL_ERROR);
 	}
@@ -254,7 +256,7 @@ mutexwidget_cmd(cd_md, interp, argc, argv)
 	else if (strcmp(argv[1], "release") == 0)
 		ret = __db_mutex_unlock(&md->marray[id].m, md->reginfo.fd);
 	else if (strcmp(argv[1], "getval") == 0) {
-		sprintf(intbuf, "%d", md->marray[id].val);
+		snprintf(intbuf, sizeof(intbuf), "%d", md->marray[id].val);
 		Tcl_SetResult(interp, intbuf, TCL_VOLATILE);
 		return (TCL_OK);
 	} else if (strcmp(argv[1], "setval") == 0) {

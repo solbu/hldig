@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)utils.c	10.61 (Sleepycat) 10/29/98";
+static const char sccsid[] = "@(#)utils.c	10.69 (Sleepycat) 12/16/98";
 #endif /* not lint */
 
 /*
@@ -53,6 +53,19 @@ u_int8_t *list_to_numarray __P((Tcl_Interp *, char *));
 void set_get_result __P((Tcl_Interp *interp, DBT *dbt));
 
 /*
+ * XXX
+ * Freeing memory allocated by the TCL library currently fails on Win*,
+ * probably due to a mismatch of malloc/free implementations between
+ * the TCL library and this module.  Sidestep the issue for now by not
+ * freeing on Win* platforms.
+ */
+#ifdef _WIN32
+#define	FREE_TCL(x)
+#else
+#define	FREE_TCL(x)	free(x)
+#endif
+
+/*
  * dbopen_cmd --
  *	Implements dbopen for dbtest.  Dbopen creates a widget that
  * implements all the commands found off the DB structure.
@@ -68,8 +81,8 @@ dbopen_cmd(notused, interp, argc, argv)
 	char *argv[];
 {
 	static int db_number = 0;
-	static struct {
-		const char *str;
+	static const struct {
+		char *str;
 		DBTYPE type;
 	} list[] = {
 		{"DB_UNKNOWN",	DB_UNKNOWN},
@@ -153,7 +166,7 @@ usage:		Tcl_AppendResult(interp,
 
 	/* Create widget command. */
 	/* Create new command name. */
-	sprintf(&dbname[0], "db%d", db_number);
+	snprintf(dbname, sizeof(dbname), "db%d", db_number);
 	db_number++;
 
 	Tcl_CreateCommand(interp, dbname, dbwidget_cmd, (ClientData)dbp, NULL);
@@ -302,12 +315,14 @@ process_env_options(interp, argc, argv, envinfo)
 	u_int32_t flags;
 	int err, nconf, tclint;
 	char *option, *db_home, **config;
+	u_int8_t *conflicts;
 
 	COMPQUIET(option, NULL);
 	err = TCL_OK;
 	flags = 0;
 	db_home = Tcl_GetVar(interp, "testdir", 0);
 	config = NULL;
+	conflicts = NULL;
 
 	env = (DB_ENV *)calloc(sizeof(DB_ENV), 1);
 	while (argc > 1) {
@@ -375,9 +390,10 @@ process_env_options(interp, argc, argv, envinfo)
 				break;
 			env->lk_detect = (u_int32_t)tclint;
 		} else if (strcmp(option, "conflicts") == 0) {
-			env->lk_conflicts = list_to_numarray(interp, argv[1]);
-			if (env->lk_conflicts == NULL)
+			conflicts = list_to_numarray(interp, argv[1]);
+			if (conflicts == NULL)
 				break;
+			env->lk_conflicts = conflicts;
 		} else if (strcmp(option, "maxsize") == 0) {
 	/* Log flags */
 	    		if ((err =
@@ -457,8 +473,8 @@ process_env_options(interp, argc, argv, envinfo)
 	if (err != TCL_OK) {
 		Tcl_AppendResult(interp, "\nInvalid ", option, " value: ",
 		    argv[1], "\n", NULL);
-		if (env->lk_conflicts)
-			free(env->lk_conflicts);
+		if (conflicts != NULL)
+			free(conflicts);
 		free(env);
 		env = NULL;
 	}
@@ -466,7 +482,6 @@ process_env_options(interp, argc, argv, envinfo)
 	/*
 	 * Set up error stuff.
 	 */
-
 	if (env) {
 		env->db_errfile = stderr;
 		env->db_errpfx = "dbtest";
@@ -474,14 +489,13 @@ process_env_options(interp, argc, argv, envinfo)
 		env->db_verbose = 0;
 
 		if ((errno = db_appinit(db_home, config, env, flags)) != 0) {
-			if (config)
-				free(config);
-			if (env->lk_conflicts)
-				free(env->lk_conflicts);
 			free(env);
 			env = NULL;
 		}
 	}
+
+	if (config)
+		FREE_TCL(config);
 
 	*envinfo = env;
 	return (env ? 0 : 1);
@@ -495,7 +509,7 @@ process_env_options(interp, argc, argv, envinfo)
  */
 #define DBWIDGET_USAGE "dbN option ?arg arg ...?"
 #define DBCLOSE_USAGE "dbN close"
-#define DBCURS_USAGE "dbN cursor txn"
+#define DBCURS_USAGE "dbN cursor txn [flags]"
 #define DBFD_USAGE "dbN fd"
 #define DBSYNC_USAGE "dbN sync flags"
 #define	DBLOCKER_USAGE "dbN locker"
@@ -516,6 +530,7 @@ dbwidget_cmd(cd_dbp, interp, argc, argv)
 	u_int32_t flags;
 	int fd, ret, tclint;
 	char cursname[128];
+	u_int8_t *conflicts;
 
 	dbp = (DB *)cd_dbp;
 
@@ -534,8 +549,9 @@ dbwidget_cmd(cd_dbp, interp, argc, argv)
 		ret = dbp->close(dbp, 0);
 		if (env && !F_ISSET(env, DB_ENV_STANDALONE)) {
 			(void)db_appexit(env);
-			if (env->lk_conflicts)
-				free(env->lk_conflicts);
+			conflicts = (u_int8_t *)env->lk_conflicts;
+			if (conflicts != NULL)
+				free(conflicts);
 			free(env);
 		}
 		(void)Tcl_DeleteCommand(interp, argv[0]);
@@ -549,8 +565,9 @@ dbwidget_cmd(cd_dbp, interp, argc, argv)
 			Tcl_SetResult(interp, "0", TCL_STATIC);
 		return (TCL_OK);
 	} else if (strcmp(argv[1], "cursor") == 0) {
-		USAGE(argc, 3, DBCURS_USAGE, 0);
-		sprintf(&cursname[0], "%s.cursor%d", argv[0], curs_id);
+		USAGE_GE(argc, 3, DBCURS_USAGE, 0);
+		snprintf(cursname,
+		    sizeof(cursname), "%s.cursor%d", argv[0], curs_id);
 		curs_id++;
 		if (argv[2][0] == '0' && argv[2][1] == '\0')
 			txnid = NULL;
@@ -565,7 +582,13 @@ dbwidget_cmd(cd_dbp, interp, argc, argv)
 			txnid = (DB_TXN *)info.clientData;
 		}
 		debug_check();
-		if ((ret = dbp->cursor(dbp, txnid, &cursor)) == 0) {
+		if (argc == 4) {
+			if (Tcl_GetInt(interp, argv[3], &tclint) != TCL_OK)
+				return (TCL_ERROR);
+			flags = (u_int32_t)tclint;
+		} else
+			flags = 0;
+		if ((ret = dbp->cursor(dbp, txnid, &cursor, flags)) == 0) {
 			Tcl_CreateCommand(interp, cursname, dbcursor_cmd,
 			    (ClientData)cursor, NULL);
 			Tcl_SetResult(interp, cursname, TCL_VOLATILE);
@@ -582,6 +605,10 @@ dbwidget_cmd(cd_dbp, interp, argc, argv)
 		Tcl_ResetResult(interp);
 		debug_check();
 		(void)dbp->fd(dbp, &fd);
+		/*
+		 * !!!
+		 * Safe: interp->result is guaranteed to be at least 200 bytes.
+		 */
 		sprintf(interp->result, "%d", fd);
 		return (TCL_OK);
 	} else if (strcmp(argv[1], "get") == 0) {
@@ -748,7 +775,6 @@ db_get_cmd(interp, argc, argv, dbp)
 	db_recno_t ikey;
 	u_int32_t flags;
 	int arg_off, ret, tclint;
-
 
 	if (strcmp(argv[1], "bget") == 0) {
 		USAGE(argc, 6, DBBGET_USAGE, 0);
@@ -997,7 +1023,7 @@ db_put_cmd(interp, argc, argv, dbp)
 				return (TCL_ERROR);
 			}
 			memcpy(&ikey, key.data, sizeof(db_recno_t));
-			sprintf(numbuf, "%ld", (long)ikey);
+			snprintf(numbuf, sizeof(numbuf), "%ld", (long)ikey);
 			Tcl_SetResult(interp, numbuf, TCL_VOLATILE);
 		} else {
 			Tcl_SetResult(interp, "0", TCL_STATIC);
@@ -1223,7 +1249,7 @@ dbc_get_cmd(interp, argc, argv, dbc)
 				return (TCL_ERROR);
 			}
 			memcpy(&rkey, key.data, sizeof(db_recno_t));
-			sprintf(numbuf, "%ld", (long)rkey);
+			snprintf(numbuf, sizeof(numbuf), "%ld", (long)rkey);
 			Tcl_SetResult(interp, numbuf, TCL_VOLATILE);
 		} else
 			Tcl_SetResult(interp, key.data, TCL_VOLATILE);
@@ -1307,7 +1333,7 @@ dbc_getbin_cmd(interp, argc, argv, dbc)
 	} else if (dbc->dbp->type == DB_RECNO) {
 		dbt = &data;
 		memcpy(&rkey, key.data, sizeof(db_recno_t));
-		sprintf(nbuf, "%ld", (long)rkey);
+		snprintf(nbuf, sizeof(nbuf), "%ld", (long)rkey);
 		Tcl_SetResult(interp, nbuf, TCL_VOLATILE);
 	} else {
 		dbt = &data;
@@ -1401,15 +1427,7 @@ list_to_numarray(interp, str)
 		}
 		*np = (u_int8_t)tmp;		/* XXX: Possible overflow. */
 	}
-#ifndef _WIN32
-	/*
-	 * XXX
-	 * This currently traps on Windows/NT, probably due to a mismatch of
-	 * malloc/free implementations between the TCL library and this module.
-	 * Sidestep the issue for now.
-	 */
-	free(argv);
-#endif
+	FREE_TCL(argv);
 	return (nums);
 }
 
@@ -1433,7 +1451,7 @@ stamp_cmd(notused, interp, argc, argv)
 	if (now == (time_t)-1)
 		goto err;
 	if (argc > 1 && strcmp(argv[1], "-r") == 0) {
-		sprintf(buf, "%lu", (u_long)now);
+		snprintf(buf, sizeof(buf), "%lu", (u_long)now);
 		Tcl_SetResult(interp, buf, TCL_STATIC);
 		return (TCL_OK);
 	}
@@ -1443,7 +1461,7 @@ stamp_cmd(notused, interp, argc, argv)
 	if (start == 0)
 		start = now;
 	elapsed = now - start;
-	(void)sprintf(buf, "%02d:%02d:%02d (%02d:%02d:%02d)",
+	snprintf(buf, sizeof(buf), "%02d:%02d:%02d (%02d:%02d:%02d)",
 	    tp->tm_hour, tp->tm_min, tp->tm_sec, (int)(elapsed / 3600),
 	    (int)((elapsed % 3600) / 60), (int)(((elapsed % 3600) % 60)));
 	start = now;
@@ -1555,7 +1573,7 @@ set_get_result(interp, dbt)
 	Tcl_Interp *interp;
 	DBT *dbt;
 {
-	size_t i;
+	size_t i, len;
 	u_int8_t *p;
 	char numbuf[32], sprbuf[128], *outbuf;
 
@@ -1583,12 +1601,14 @@ set_get_result(interp, dbt)
 		if (outbuf != dbt->data)
 			free(outbuf);
 	} else {
-		sprintf(&numbuf[0], "%lu", (u_long)i);
-		sprintf(&sprbuf[0], " %%.%ds", dbt->size - i);
-		outbuf = (char *)malloc(dbt->size - i + 5);
-		sprintf(outbuf, sprbuf, p);
-		Tcl_AppendResult(interp, numbuf, outbuf, NULL);
-		free(outbuf);
+		snprintf(numbuf, sizeof(numbuf), "%lu", (u_long)i);
+		snprintf(sprbuf, sizeof(sprbuf), " %%.%ds", dbt->size - i);
+		len = dbt->size - i + 5;
+		if ((outbuf = (char *)malloc(len)) != NULL) {
+			snprintf(outbuf, len, sprbuf, p);
+			Tcl_AppendResult(interp, numbuf, outbuf, NULL);
+			free(outbuf);
+		}
 	}
 }
 
@@ -1626,7 +1646,7 @@ rand_cmd(notused, interp, argc, argv)
 	argv = NULL;
 	USAGE(argc, 1, RAND_USAGE, 0);
 
-	sprintf(retbuf, "%ld", (long)rand());
+	snprintf(retbuf, sizeof(retbuf), "%ld", (long)rand());
 	Tcl_SetResult(interp, retbuf, TCL_VOLATILE);
 	return (TCL_OK);
 }
@@ -1657,7 +1677,7 @@ randomint_cmd(notused, interp, argc, argv)
 		printf("Max random is higher than %ld\n", (long)RAND_MAX);
 	ret = (int)(((double)t / ((double)(RAND_MAX) + 1)) * (hi - lo + 1));
 	ret += lo;
-	sprintf(retbuf, "%d", ret);
+	snprintf(retbuf, sizeof(retbuf), "%d", ret);
 	Tcl_SetResult(interp, retbuf, TCL_VOLATILE);
 	return (TCL_OK);
 }
@@ -1716,7 +1736,7 @@ dbenv_cmd(notused, interp, argc, argv)
 	F_SET(env, DB_ENV_STANDALONE);
 
 	/* Create new command name. */
-	sprintf(&envname[0], "env%d", env_number);
+	snprintf(envname, sizeof(envname), "env%d", env_number);
 	env_number++;
 
 	Tcl_CreateCommand(interp, envname, envwidget_cmd, (ClientData)env,
@@ -1730,13 +1750,16 @@ envwidget_delcmd(cd)
 	ClientData cd;
 {
 	DB_ENV *env;
+	u_int8_t *conflicts;
 
 	debug_check();
 	env = (DB_ENV *)cd;
 
+	if (!F_ISSET(env, DB_ENV_CDB) && env->lk_conflicts != NULL) {
+		conflicts = (u_int8_t *)env->lk_conflicts;
+		free(conflicts);
+	}
 	(void)db_appexit(env);
-	if (env->lk_conflicts)
-		free(env->lk_conflicts);
 	free(env);
 }
 
@@ -1783,7 +1806,7 @@ envwidget_cmd(cd, interp, argc, argv)
 		newenv->tx_info = NULL;
 
 		/* Create new command name. */
-		sprintf(&nenvname[0], "nenv%d", nenv_number);
+		snprintf(nenvname, sizeof(nenvname), "nenv%d", nenv_number);
 		nenv_number++;
 
 		Tcl_CreateCommand(interp, nenvname, envwidget_cmd,
@@ -1883,7 +1906,7 @@ db_join_cmd(interp, argc, argv, dbp)
 	curs_array[i] = NULL;
 
 	if ((ret = dbp->join(dbp, curs_array, 0, &dbc)) == 0) {
-		sprintf(&cursname[0], "join.cursor%d", jcurs_id);
+		snprintf(cursname, sizeof(cursname), "join.cursor%d", jcurs_id);
 		jcurs_id++;
 		Tcl_CreateCommand(interp, cursname, dbcursor_cmd,
 		    (ClientData)dbc, NULL);
@@ -1893,16 +1916,8 @@ db_join_cmd(interp, argc, argv, dbp)
 		errno = ret;
 		Tcl_AppendResult(interp, Tcl_PosixError(interp), 0);
 	}
+
 end2:	free(curs_array);
-end1:	
-#ifndef _WIN32
-	/*
-	 * XXX
-	 * This currently traps on Windows/NT, probably due to a mismatch of
-	 * malloc/free implementations between the TCL library and this module.
-	 * Sidestep the issue for now.
-	 */
-	free(cursnames);
-#endif
+end1:	FREE_TCL(cursnames);
 	return (TCL_OK);
 }

@@ -1,14 +1,15 @@
-<! "@(#)errorret.so	10.12 (Sleepycat) 11/2/98">
+<! "@(#)errorret.so	10.13 (Sleepycat) 11/9/98">
+<!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
 <head>
-<title>Berkeley DB Programmer's Reference: Programmer Notes</title>
-<meta name="description" content="DB: A database programmatic toolkit.">
+<title>Berkeley DB Reference Guide: Programmer Notes</title>
+<meta name="description" content="Berkeley DB: An embedded database programmatic toolkit.">
 <meta name="keywords" content="embedded,database,programmatic,toolkit,b+tree,btr
 ee,hash,hashing,transaction,transactions,locking,logging,access method,access me
 thods,java,C,C++">
 </head>
-<h3>Berkeley DB Programmer's Reference: Programmer Notes</h3>
+<h3>Berkeley DB Reference Guide: Programmer Notes</h3>
 <p>
 <h1 align=center>Error returns to applications</h1>
 <p>
@@ -37,6 +38,21 @@ order to avoid conflict with possible values of
 <b>errno</b>.
 </dl>
 <p>
+While possible error returns are specified by each individual function's
+manual page, there are a few error returns that deserve special mention:
+<h1>EAGAIN</h1>
+When multiple processes or threads of control are modifying the database,
+there is normally the potential for deadlock. In Berkeley DB, deadlock is
+signified by an error return from the Berkeley DB function of the <b>errno</b>
+value EAGAIN.  Whenever a Berkeley DB function returns EAGAIN, the enclosing
+transaction should be aborted.
+<p>
+Any Berkeley DB function that attempts to acquire locks can potentially return
+EAGAIN.  Practically speaking, the safest way to deal with applications
+that can deadlock is to handle a potential EAGAIN return from any Berkeley DB
+Access Method call.
+<h1>DB_NOTFOUND and DB_KEYEMPTY</h1>
+<p>
 There are two special return values that are somewhat similar in meaning,
 are returned in similar situations,
 and therefore might be confused: DB_NOTFOUND and DB_KEYEMPTY.
@@ -52,6 +68,35 @@ circumstances, see
 for more information),
 or that the requested key/data pair was deleted and is currently in a deleted
 state.
+<h1>DB_RUNRECOVERY</h1>
+<p>
+There exists a class of errors that Berkeley DB considers fatal to an entire
+Berkeley DB environment.  An example of this type of error is a log write
+failure due to the disk being out of free space. The only way to recover
+from these failures is for the application to exit, run recovery of the
+Berkeley DB environment, and re-enter Berkeley DB. (It is not strictly necessary that
+the application exit, although that is the only way to recover system
+resources, e.g., file descriptors and memory, currently allocated by
+Berkeley DB.)
+<p>
+When this type of error is encountered, the error value
+DB_RUNRECOVERY is returned. This error can be returned by any
+Berkeley DB interface. If a fatal error occurs, DB_RUNRECOVERY will be
+returned from all subsequent Berkeley DB calls made by any threads or processes
+participating in the environment.
+<p>
+Optionally, applications may also specify a fatal-error callback function
+by setting the db_paniccall field of the DB_ENV structure before
+initializing the environment with <a href="../../api_c/DbEnv/appinit.html">db_appinit</a>.  This callback
+function will be called with two arguments: a reference to the DB_ENV
+structure associated with the environment, and the <b>errno</b> value
+associated with the underlying error that caused the problem.
+<p>
+Applications can handle such fatal errors in one of two ways: by checking
+for DB_RUNRECOVERY as part of their normal Berkeley DB error return
+checking, similarly to EAGAIN or any other error, or, in applications that
+have no cleanup processing of their own, by simply exiting the application
+when the callback function is called.
 <p>
 <a href="../../ref/program/appsignals.html"><img src="../../images/prev.gif"></a>
 <a href="../../ref/toc.html"><img src="../../images/toc.gif"></a>

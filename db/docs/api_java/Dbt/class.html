@@ -1,9 +1,10 @@
-<! "@(#)class.so	10.10 (Sleepycat) 10/27/98">
+<! "@(#)class.so	10.12 (Sleepycat) 11/21/98">
+<!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
 <head>
 <title>Berkeley DB: Dbt</title>
-<meta name="description" content="DB: A database programmatic toolkit.">
+<meta name="description" content="Berkeley DB: An embedded database programmatic toolkit.">
 <meta name="keywords" content="embedded,database,programmatic,toolkit,b+tree,btr
 ee,hash,hashing,transaction,transactions,locking,logging,access method,access me
 thods,java,C,C++">
@@ -55,9 +56,8 @@ key/data pairs.
 Both key and data items are represented by Dbt objects.
 <p>
 Key and data byte strings may reference strings of essentially unlimited
-length, although any two keys must fit into available memory at the same
-time so that they may be compared, and any one data item must fit into
-available memory so that it may be returned.
+length.  See <a href="../../ref/program/dbsizes.html">Database limits</a>
+for more information.
 <p>
 The Dbt class provides simple access to an underlying data structure,
 whose elements can be examined or changed using the <b>set_</b> or
@@ -102,7 +102,11 @@ one argument.
 <p><dt>int ulen;<dd>
 The size of the user's buffer (referenced by <b>data</b>), in bytes.
 This location is not written by the <a href="../../api_java/Db/class.html">Db</a> methods.
+<p>
+Note that applications can determine the length of a record by setting
+the <b>ulen</b> to 0 and checking the return value found in <b>size</b>.
 See the DB_DBT_USERMEM flag for more information.
+<p>
 This element is accessed using
 <a href="../../api_java/Dbt/class.html">Dbt.get_ulen</a> and <a href="../../api_java/Dbt/class.html">Dbt.set_ulen</a>.
 <p><dt>int dlen;<dd>

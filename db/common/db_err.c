@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db_err.c	10.41 (Sleepycat) 11/2/98";
+static const char sccsid[] = "@(#)db_err.c	10.42 (Sleepycat) 11/24/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -114,24 +114,30 @@ __db_err(dbenv, fmt, va_alist)
 	if (dbenv == NULL)
 		return;
 
-#ifdef __STDC__
-	va_start(ap, fmt);
-#else
-	va_start(ap);
-#endif
 	if (dbenv->db_errcall != NULL) {
+#ifdef __STDC__
+         	va_start(ap, fmt);
+#else
+	        va_start(ap);
+#endif
 		(void)vsnprintf(errbuf, sizeof(errbuf), fmt, ap);
 		dbenv->db_errcall(dbenv->db_errpfx, errbuf);
+		va_end(ap);
 	}
 	if (dbenv->db_errfile != NULL) {
 		if (dbenv->db_errpfx != NULL)
 			(void)fprintf(dbenv->db_errfile, "%s: ",
 			    dbenv->db_errpfx);
+#ifdef __STDC__
+         	va_start(ap, fmt);
+#else
+	        va_start(ap);
+#endif
 		(void)vfprintf(dbenv->db_errfile, fmt, ap);
 		(void)fprintf(dbenv->db_errfile, "\n");
 		(void)fflush(dbenv->db_errfile);
+		va_end(ap);
 	}
-	va_end(ap);
 }
 
 /*

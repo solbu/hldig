@@ -44,7 +44,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)bt_rsearch.c	10.20 (Sleepycat) 10/3/98";
+static const char sccsid[] = "@(#)bt_rsearch.c	10.21 (Sleepycat) 12/2/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -77,23 +77,19 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 	db_indx_t indx, top;
 	db_pgno_t pg;
 	db_recno_t i, recno, total;
-	int isappend, ret, stack;
+	int ret, stack;
 
 	dbp = dbc->dbp;
 	cp = dbc->internal;
 
-	/*
-	 * We test for groups of flags, S_APPEND is the only one that can be
-	 * OR'd into the set.  Clear it now so that the tests for equality
-	 * will work.
-	 */
-	if ((isappend = LF_ISSET(S_APPEND)) != 0)
-		LF_CLR(S_APPEND);
+	BT_STK_CLR(cp);
 
 	/*
 	 * There are several ways we search a btree tree.  The flags argument
 	 * specifies if we're acquiring read or write locks and if we are
-	 * locking pairs of pages.  See btree.h for more details.
+	 * locking pairs of pages.  In addition, if we're adding or deleting
+	 * an item, we have to lock the entire tree, regardless.  See btree.h
+	 * for more details.
 	 *
 	 * If write-locking pages, we need to know whether or not to acquire a
 	 * write lock on a page before getting it.  This depends on how deep it
@@ -104,15 +100,36 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 	 * Retrieve the root page.
 	 */
 	pg = PGNO_ROOT;
-	if ((ret = __bam_lget(dbc, 0, PGNO_ROOT,
-	    flags == S_INSERT || flags == S_DELETE ?
-	    DB_LOCK_WRITE : DB_LOCK_READ, &lock)) != 0)
+	stack = LF_ISSET(S_STACK);
+	if ((ret = __bam_lget(dbc,
+	    0, pg, stack ? DB_LOCK_WRITE : DB_LOCK_READ, &lock)) != 0)
 		return (ret);
 	if ((ret = memp_fget(dbp->mpf, &pg, 0, &h)) != 0) {
 		(void)__BT_LPUT(dbc, lock);
 		return (ret);
 	}
-	total = RE_NREC(h);
+
+	/*
+	 * Decide if we need to save this page; if we do, write lock it.
+	 * We deliberately don't lock-couple on this call.  If the tree
+	 * is tiny, i.e., one page, and two threads are busily updating
+	 * the root page, we're almost guaranteed deadlocks galore, as
+	 * each one gets a read lock and then blocks the other's attempt
+	 * for a write lock.
+	 */
+	if (!stack &&
+	    ((LF_ISSET(S_PARENT) && (u_int8_t)(stop + 1) >= h->level) ||
+	    (LF_ISSET(S_WRITE) && h->level == LEAFLEVEL))) {
+		(void)memp_fput(dbp->mpf, h, 0);
+		(void)__BT_LPUT(dbc, lock);
+		if ((ret = __bam_lget(dbc, 0, pg, DB_LOCK_WRITE, &lock)) != 0)
+			return (ret);
+		if ((ret = memp_fget(dbp->mpf, &pg, 0, &h)) != 0) {
+			(void)__BT_LPUT(dbc, lock);
+			return (ret);
+		}
+		stack = 1;
+	}
 
 	/*
 	 * If appending to the tree, set the record number now -- we have the
@@ -126,7 +143,8 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 	 * for the record immediately after the last record in the tree, so do
 	 * a fast check now.
 	 */
-	if (isappend) {
+	total = RE_NREC(h);
+	if (LF_ISSET(S_APPEND)) {
 		*exactp = 0;
 		*recnop = recno = total + 1;
 	} else {
@@ -135,31 +153,12 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 			*exactp = 1;
 		else {
 			*exactp = 0;
-			if (!PAST_END_OK(flags) || recno > total + 1) {
+			if (!LF_ISSET(S_PAST_EOF) || recno > total + 1) {
 				(void)memp_fput(dbp->mpf, h, 0);
 				(void)__BT_LPUT(dbc, lock);
 				return (DB_NOTFOUND);
 			}
 		}
-	}
-
-	/* Decide if we're building a stack based on the operation. */
-	BT_STK_CLR(cp);
-	stack = flags == S_DELETE || flags == S_INSERT;
-
-	/*
-	 * Decide if we need to save this page; if we do, write lock it, and
-	 * start to build a stack.
-	 */
-	if (LF_ISSET(S_PARENT) && (u_int8_t)(stop + 1) >= h->level) {
-		(void)memp_fput(dbp->mpf, h, 0);
-		if ((ret = __bam_lget(dbc, 1, pg, DB_LOCK_WRITE, &lock)) != 0)
-			return (ret);
-		if ((ret = memp_fget(dbp->mpf, &pg, 0, &h)) != 0) {
-			(void)__BT_LPUT(dbc, lock);
-			return (ret);
-		}
-		stack = 1;
 	}
 
 	/*
@@ -189,7 +188,7 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 				}
 			if (recno > (db_recno_t)NUM_ENT(h) / P_INDX) {
 				*exactp = 0;
-				if (!PAST_END_OK(flags) || recno >
+				if (!LF_ISSET(S_PAST_EOF) || recno >
 				    (db_recno_t)(NUM_ENT(h) / P_INDX + 1)) {
 					ret = DB_NOTFOUND;
 					goto err;
@@ -238,28 +237,28 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 				return (ret);
 			}
 			BT_STK_PUSH(cp, h, indx, lock, ret);
-			if (ret)
+			if (ret != 0)
 				goto err;
 
-			if ((ret = __bam_lget(dbc, 0, pg,
-			    LF_ISSET(S_WRITE) ? DB_LOCK_WRITE : DB_LOCK_READ,
-			    &lock)) != 0)
+			if ((ret =
+			    __bam_lget(dbc, 0, pg, DB_LOCK_WRITE, &lock)) != 0)
 				goto err;
 		} else {
-			(void)memp_fput(dbp->mpf, h, 0);
-
 			/*
 			 * Decide if we want to return a pointer to the next
 			 * page in the stack.  If we do, write lock it and
 			 * never unlock it.
 			 */
-			if (LF_ISSET(S_PARENT) &&
-			    (u_int8_t)(stop + 1) >= (u_int8_t)(h->level - 1))
+			if ((LF_ISSET(S_PARENT) &&
+			    (u_int8_t)(stop + 1) >= (u_int8_t)(h->level - 1)) ||
+			    (h->level - 1) == LEAFLEVEL)
 				stack = 1;
 
-			if ((ret = __bam_lget(dbc, 1, pg,
-			    LF_ISSET(S_WRITE) ? DB_LOCK_WRITE : DB_LOCK_READ,
-			    &lock)) != 0)
+			(void)memp_fput(dbp->mpf, h, 0);
+
+			if ((ret =
+			    __bam_lget(dbc, 1, pg, stack && LF_ISSET(S_WRITE) ?
+			    DB_LOCK_WRITE : DB_LOCK_READ, &lock)) != 0)
 				goto err;
 		}
 

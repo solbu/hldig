@@ -43,7 +43,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)btree.h	10.24 (Sleepycat) 10/3/98
+ *	@(#)btree.h	10.26 (Sleepycat) 12/16/98
  */
 
 /* Forward structure declarations. */
@@ -94,23 +94,19 @@ struct __recno;		typedef struct __recno RECNO;
 #define	S_EXACT		0x00400		/* Exact items only. */
 #define	S_PARENT	0x00800		/* Lock page pair. */
 #define	S_STACK		0x01000		/* Need a complete stack. */
+#define	S_PAST_EOF	0x02000		/* If doing insert search (or keyfirst
+					 * or keylast operations), or a split
+					 * on behalf of an insert, it's okay to
+					 * return an entry one past end-of-page.
+					 */
 
 #define	S_DELETE	(S_WRITE | S_DUPFIRST | S_DELNO | S_EXACT | S_STACK)
 #define	S_FIND		(S_READ | S_DUPFIRST | S_DELNO)
 #define	S_FIND_WR	(S_WRITE | S_DUPFIRST | S_DELNO)
-#define	S_INSERT	(S_WRITE | S_DUPLAST | S_STACK)
-#define	S_KEYFIRST	(S_WRITE | S_DUPFIRST | S_STACK)
-#define	S_KEYLAST	(S_WRITE | S_DUPLAST | S_STACK)
-#define	S_WRPAIR	(S_WRITE | S_DUPLAST | S_PARENT)
-
-/*
- * If doing insert search (including keyfirst or keylast operations) or a
- * split search on behalf of an insert, it's okay to return the entry one
- * past the end of the page.
- */
-#define	PAST_END_OK(f)							\
-	((f) == S_INSERT ||						\
-	(f) == S_KEYFIRST || (f) == S_KEYLAST || (f) == S_WRPAIR)
+#define	S_INSERT	(S_WRITE | S_DUPLAST | S_PAST_EOF | S_STACK)
+#define	S_KEYFIRST	(S_WRITE | S_DUPFIRST | S_PAST_EOF | S_STACK)
+#define	S_KEYLAST	(S_WRITE | S_DUPLAST | S_PAST_EOF | S_STACK)
+#define	S_WRPAIR	(S_WRITE | S_DUPLAST | S_PAST_EOF | S_PARENT)
 
 /*
  * Flags to __bam_iitem().
@@ -200,33 +196,17 @@ struct __cursor {
 	db_recno_t	 recno;		/* Current record number. */
 
 	/*
-	 * If a cursor record is deleted, the key/data pair has to remain on
-	 * the page so that subsequent inserts/deletes don't interrupt the
-	 * cursor progression through the file.  This results in interesting
-	 * cases when "standard" operations, e.g., DB->put() are done in the
-	 * context of "deleted" cursors.
+	 * Btree:
+	 * We set a flag in the cursor structure if the underlying object has
+	 * been deleted.  It's not strictly necessary, we could get the same
+	 * information by looking at the page itself.
 	 *
-	 * C_DELETED -- The item referenced by the cursor has been "deleted"
-	 *		but not physically removed from the page.
-	 * C_REPLACE -- The "deleted" item referenced by a cursor has been
-	 *		replaced by a dbp->put(), so the cursor is no longer
-	 *		responsible for physical removal from the page.
-	 * C_REPLACE_SETUP --
-	 *		We are about to overwrite a "deleted" item, flag any
-	 *		cursors referencing it for transition to C_REPLACE
-	 *		state.
+	 * Recno:
+	 * When renumbering recno databases during deletes, cursors referencing
+	 * "deleted" records end up positioned between two records, and so must
+	 * be specially adjusted on the next operation.
 	 */
-#define	C_DELETED	0x0001
-#define	C_REPLACE	0x0002
-#define	C_REPLACE_SETUP	0x0004
-
-	/*
-	 * Cursors referencing "deleted" records are positioned between
-	 * two records, and so must be specially adjusted until they are
-	 * moved.
-	 */
-#define	CR_DELETED	0x0008		/* Record deleted. */
-
+#define	C_DELETED	0x0001		/* Record was deleted. */
 	u_int32_t	 flags;
 };
 

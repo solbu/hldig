@@ -3,7 +3,7 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)testutils.tcl	10.15 (Sleepycat) 9/26/98
+#	@(#)testutils.tcl	10.16 (Sleepycat) 12/15/98
 #
 # Test system utilities
 
@@ -474,8 +474,11 @@ global nkeys
 }
 
 proc record { args } {
-	puts $args
-	flush stdout
+# Recording every operation makes tests ridiculously slow on
+# NT, so we are commenting this out; for debugging purposes,
+# it will undoubtedly be useful to uncomment this.
+#	puts $args
+#	flush stdout
 	return [eval $args]
 }
 

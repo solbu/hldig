@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)tcl_log.c	10.13 (Sleepycat) 4/10/98";
+static const char sccsid[] = "@(#)tcl_log.c	10.18 (Sleepycat) 12/14/98";
 #endif /* not lint */
 
 /*
@@ -67,6 +67,7 @@ log_cmd(notused, interp, argc, argv)
 	u_int32_t flags;
 	int mode, tclint;
 	char logname[50];
+	u_int8_t *conflicts;
 
 	notused = NULL;
 
@@ -87,6 +88,7 @@ log_cmd(notused, interp, argc, argv)
 	if (F_ISSET(env, DB_ENV_STANDALONE))
 		lp = env->lg_info;
 	else if (log_open(argv[1], flags, mode, env, &lp) != 0) {
+		db_appexit(env);
 		Tcl_SetResult(interp, "NULL", TCL_STATIC);
 		return (TCL_OK);
 	} else
@@ -95,8 +97,9 @@ log_cmd(notused, interp, argc, argv)
 	if ((ld = (log_data *)malloc(sizeof(log_data))) == NULL) {
 		if (!F_ISSET(env, DB_ENV_STANDALONE)) {
 			(void)db_appexit(env);
-			if (env->lk_conflicts)
-				free(env->lk_conflicts);
+			conflicts = (u_int8_t *)env->lk_conflicts;
+			if (conflicts != NULL)
+				free(conflicts);
 			free(env);
 		}
 		Tcl_SetResult(interp, "lock_open: ", TCL_STATIC);
@@ -108,7 +111,7 @@ log_cmd(notused, interp, argc, argv)
 	ld->env = env;
 
 	/* Create new command name. */
-	sprintf(&logname[0], "log%d", log_number);
+	snprintf(logname, sizeof(logname), "log%d", log_number);
 	log_number++;
 
 	/* Create widget command. */
@@ -179,6 +182,7 @@ logwidget_cmd(cd_lp, interp, argc, argv)
 	DBT rec;
 	int id, ret;
 	char fstr[16], dstr[16];
+	u_int8_t *conflicts;
 
 	debug_check();
 
@@ -191,10 +195,12 @@ logwidget_cmd(cd_lp, interp, argc, argv)
 		env = ((log_data *)cd_lp)->env;
 		if (!F_ISSET(env, DB_ENV_STANDALONE)) {
 			(void)db_appexit(env);
-			if (env->lk_conflicts)
-				free(env->lk_conflicts);
+			conflicts = (u_int8_t *)env->lk_conflicts;
+			if (conflicts != NULL)
+				free(conflicts);
 			free(env);
 		}
+		free(cd_lp);
 		ret = Tcl_DeleteCommand(interp, argv[0]);
 	} else if (strcmp(argv[1], "flush") == 0) {
 		ret =  log_flush_cmd(lp, interp, argc, argv);
@@ -204,8 +210,8 @@ logwidget_cmd(cd_lp, interp, argc, argv)
 		memset(&rec, 0, sizeof(rec));
 		ret = log_get(lp, &lsn, &rec, DB_LAST);
 		if (ret == 0) {
-			sprintf(fstr, "%lu", (u_long)lsn.file);
-			sprintf(dstr, "%lu", (u_long)lsn.offset);
+			snprintf(fstr, sizeof(fstr), "%lu", (u_long)lsn.file);
+			snprintf(dstr, sizeof(dstr), "%lu", (u_long)lsn.offset);
 			Tcl_ResetResult(interp);
 			Tcl_AppendResult(interp, fstr, " ", dstr, 0);
 			return (TCL_OK);
@@ -256,7 +262,7 @@ log_compare_cmd(interp, argc, argv)
 		return (TCL_ERROR);
 
 	cmp = log_compare(&lsn1, &lsn2);
-	sprintf(resbuf, "%d", cmp);
+	snprintf(resbuf, sizeof(resbuf), "%d", cmp);
 	Tcl_SetResult(interp, resbuf, TCL_VOLATILE);
 	return (TCL_OK);
 }
@@ -372,7 +378,7 @@ log_put_cmd(lp, interp, argc, argv)
 		return (TCL_ERROR);
 	}
 
-	sprintf(resbuf, "%lu %lu", (unsigned long)lsn.offset,
+	snprintf(resbuf, sizeof(resbuf), "%lu %lu", (unsigned long)lsn.offset,
 	    (unsigned long)lsn.file);
 	Tcl_SetResult(interp, resbuf, TCL_VOLATILE);
 	return (TCL_OK);
@@ -407,6 +413,11 @@ log_reg_cmd(lp, interp, argc, argv)
 		Tcl_AppendResult(interp, Tcl_PosixError(interp), NULL);
 		return (TCL_ERROR);
 	}
+
+	/*
+	 * !!!
+	 * Safe: interp->result is guaranteed to be at least 200 bytes.
+	 */
 	sprintf(interp->result, "%lu", (unsigned long)regid);
 	return (TCL_OK);
 }
@@ -417,16 +428,22 @@ get_lsn(interp, str, lsnp)
 	char *str;
 	DB_LSN *lsnp;
 {
-	int largc, tclint;
+	int largc, ret, tclint;
 	char **largv;
 
 	if (Tcl_SplitList(interp, str, &largc, &largv) != TCL_OK || largc != 2)
 		return (TCL_ERROR);
 	if (Tcl_GetInt(interp, largv[0], &tclint) != TCL_OK)
-		return (TCL_ERROR);
+		goto err;
 	lsnp->offset = (u_int32_t)tclint;
 	if (Tcl_GetInt(interp, largv[1], &tclint) != TCL_OK)
-		return (TCL_ERROR);
+		goto err;
 	lsnp->file = (u_int32_t)tclint;
-	return (TCL_OK);
+	ret = TCL_OK;
+
+	if (0) {
+err:		ret = TCL_ERROR;
+	}
+	free(largv);
+	return (ret);
 }

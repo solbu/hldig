@@ -1,27 +1,29 @@
-<! "@(#)archival.so	10.13 (Sleepycat) 11/2/98">
+<! "@(#)archival.so	10.15 (Sleepycat) 11/10/98">
+<!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
 <head>
-<title>Berkeley DB Programmer's Reference: Recovery</title>
-<meta name="description" content="DB: A database programmatic toolkit.">
+<title>Berkeley DB Reference Guide: Transaction Protected Applications</title>
+<meta name="description" content="Berkeley DB: An embedded database programmatic toolkit.">
 <meta name="keywords" content="embedded,database,programmatic,toolkit,b+tree,btr
 ee,hash,hashing,transaction,transactions,locking,logging,access method,access me
 thods,java,C,C++">
 </head>
-<h3>Berkeley DB Programmer's Reference: Recovery</h3>
+<h3>Berkeley DB Reference Guide: Transaction Protected Applications</h3>
 <p>
 <h1 align=center>Archival procedures</h1>
 <p>
-The second part of building transaction protected applications is the
-administration of the database environment.
+The third component of the infrastructure, <i>archival procedures</i>,
+concerns the recoverability of the database and the disk consumption of
+the database log files.
 <p>
-There are two aspects to managing the recoverability and disk consumption
-of your Berkeley DB databases.  First, you may want to periodically create
-snapshots of your databases to make it possible to recover them from
-catastrophic failure.  Second, you'll want to periodically remove log
-files in order to conserve disk space.  The two procedures are distinct
-from each other, and you cannot remove the current log files simply
-because you have created a database snapshot.
+There are two separate aspects to these issues.  First, you may want to
+periodically create snapshots (i.e., backups)
+of your databases to make it possible to
+recover them from catastrophic failure.  Second, you'll want to
+periodically remove log files in order to conserve disk space.  The two
+procedures are distinct from each other, and you cannot remove the current
+log files simply because you have created a database snapshot.
 <p>
 To create a snapshot of your database that can be used to recover from
 catastrophic failure, the following steps should be taken:
@@ -39,7 +41,8 @@ to use a separate database file directory, archiving it instead of the
 files listed by <a href="../../utility/db_archive.html">db_archive</a>.
 <p><li>If your database is currently active, i.e., you are reading and writing
 to the database files while the snapshot is being taken, run
-<a href="../../utility/db_archive.html">db_archive</a> <b>-l</b> to identify the database log files, and
+<a href="../../utility/db_archive.html">db_archive</a> <b>-l</b> to identify the database log files that
+you must save, and
 copy them to a backup device, (e.g., tape).  If the database log files
 are stored in a separate directory from the other database files, it may
 be simpler to archive the directory itself instead of the individual
@@ -107,7 +110,7 @@ transaction).
 <p><li>Remove those log files from the system.
 </ol>
 <p>
-<a href="../../ref/transapp/apps.html"><img src="../../images/prev.gif"></a>
+<a href="../../ref/transapp/admin.html"><img src="../../images/prev.gif"></a>
 <a href="../../ref/toc.html"><img src="../../images/toc.gif"></a>
 <a href="../../ref/transapp/recovery.html"><img src="../../images/next.gif"></a>
 </tt>

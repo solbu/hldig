@@ -42,7 +42,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)hash_dup.c	10.25 (Sleepycat) 10/29/98";
+static const char sccsid[] = "@(#)hash_dup.c	10.27 (Sleepycat) 12/6/98";
 #endif /* not lint */
 
 /*
@@ -314,7 +314,9 @@ __ham_dup_convert(dbc)
 		/* Simple case, one key on page; move it to dup page. */
 		memcpy(&ho,
 		    P_ENTRY(hcp->pagep, H_DATAINDEX(hcp->bndx)), HOFFPAGE_SIZE);
+		UMRW(bo.unused1);
 		B_TSET(bo.type, ho.type, 0);
+		UMRW(bo.unused2);
 		bo.pgno = ho.pgno;
 		bo.tlen = ho.tlen;
 		dbt.size = BOVERFLOW_SIZE;
@@ -576,6 +578,9 @@ __ham_move_offpage(dbc, pagep, ndx, pgno)
 	dbp = dbc->dbp;
 	hcp = (HASH_CURSOR *)dbc->internal;
 	od.type = H_OFFDUP;
+	UMRW(od.unused[0]);
+	UMRW(od.unused[1]);
+	UMRW(od.unused[2]);
 	od.pgno = pgno;
 
 	if (DB_LOGGING(dbc)) {

@@ -1,14 +1,15 @@
-<! "@(#)apps.so	10.11 (Sleepycat) 11/1/98">
+<! "@(#)apps.so	10.14 (Sleepycat) 11/10/98">
+<!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
 <head>
-<title>Berkeley DB Programmer's Reference: Transactions</title>
-<meta name="description" content="DB: A database programmatic toolkit.">
+<title>Berkeley DB Reference Guide: Transaction Protected Applications</title>
+<meta name="description" content="Berkeley DB: An embedded database programmatic toolkit.">
 <meta name="keywords" content="embedded,database,programmatic,toolkit,b+tree,btr
 ee,hash,hashing,transaction,transactions,locking,logging,access method,access me
 thods,java,C,C++">
 </head>
-<h3>Berkeley DB Programmer's Reference: Transactions</h3>
+<h3>Berkeley DB Reference Guide: Transaction Protected Applications</h3>
 <p>
 <h1 align=center>Building transaction protected applications</h1>
 <p>
@@ -36,11 +37,14 @@ Berkeley DB files should be closed.  When the Berkeley DB database files have be
 closed, the environment should be closed by calling <a href="../../api_c/DbEnv/appexit.html">db_appexit</a>.
 <p>
 It is not necessary to transaction protect read-only transactions, unless
-those transactions require repeatable reads.
+those transactions require repeatable reads.  However, if there are update
+transactions present in the database, the reading transactions must still
+use locking, and should be prepared to repeat any operation (possibly
+closing and reopening a cursor) which fails with a return value of EAGAIN.
 <p>
 Consider an application suite where multiple processes (or, multiple
 threads of control in a single process, for that matter) are changing the
-values associated with key in one or more databases.  Specifically, they
+values associated with a key in one or more databases.  Specifically, they
 are taking the current value, incrementing it, and then storing it back
 into the database.  There are two reasons that such an application needs
 transactions (other than the obvious requirement of recoverability after
@@ -151,8 +155,8 @@ resources), and then the transaction is retried, from scratch.  There is
 no requirement that the transaction be attempted again, but that is the
 common thing for applications to do.
 <p>
-There is one additional error that applications need to handle, and which
-is not shown in the above example.
+There is one additional error that transaction protected applications
+need to handle, and which is not shown in the above example.
 <p>
 There exists a class of errors that Berkeley DB considers fatal to an entire
 Berkeley DB environment.  An example of this type of error is a log write
@@ -184,7 +188,7 @@ application when the callback function is called.
 <p>
 <a href="../../ref/transapp/intro.html"><img src="../../images/prev.gif"></a>
 <a href="../../ref/toc.html"><img src="../../images/toc.gif"></a>
-<a href="../../ref/transapp/archival.html"><img src="../../images/next.gif"></a>
+<a href="../../ref/transapp/admin.html"><img src="../../images/next.gif"></a>
 </tt>
 </body>
 </html>

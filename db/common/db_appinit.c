@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db_appinit.c	10.64 (Sleepycat) 10/17/98";
+static const char sccsid[] = "@(#)db_appinit.c	10.66 (Sleepycat) 12/7/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -34,6 +34,19 @@ static const char sccsid[] = "@(#)db_appinit.c	10.64 (Sleepycat) 10/17/98";
 static int __db_home __P((DB_ENV *, const char *, u_int32_t));
 static int __db_parse __P((DB_ENV *, char *));
 static int __db_tmp_open __P((DB_ENV *, u_int32_t, char *, int *));
+
+/*
+ * This conflict array is used for concurrent db access (cdb).  It
+ * uses the same locks as the db_rw_conflict array, but adds an IW
+ * mode to be used for write cursors.
+ */
+static u_int8_t const db_cdb_conflicts[] = {
+	/*		N   R   W  IW */
+	/*    N */	0,  0,  0,  0,
+	/*    R */	0,  0,  1,  0,
+	/*    W */	0,  1,  1,  1,
+	/*   IW */	0,  0,  1,  1
+};
 
 /*
  * db_version --
@@ -68,21 +81,24 @@ db_appinit(db_home, db_config, dbenv, flags)
 	char * const *p;
 	char *lp, buf[MAXPATHLEN * 2];
 
+	fp = NULL;
+
 	/* Validate arguments. */
 	if (dbenv == NULL)
 		return (EINVAL);
 
-
 #ifdef HAVE_SPINLOCKS
 #define	OKFLAGS								\
-   (DB_CREATE | DB_NOMMAP | DB_THREAD | DB_INIT_LOCK | DB_INIT_LOG |	\
-    DB_INIT_MPOOL | DB_INIT_TXN | DB_MPOOL_PRIVATE | DB_RECOVER |	\
-    DB_RECOVER_FATAL | DB_TXN_NOSYNC | DB_USE_ENVIRON | DB_USE_ENVIRON_ROOT)
+    (DB_CREATE | DB_INIT_CDB | DB_INIT_LOCK | DB_INIT_LOG |		\
+    DB_INIT_MPOOL | DB_INIT_TXN | DB_MPOOL_PRIVATE | DB_NOMMAP |	\
+    DB_RECOVER | DB_RECOVER_FATAL | DB_THREAD | DB_TXN_NOSYNC |		\
+    DB_USE_ENVIRON | DB_USE_ENVIRON_ROOT)
 #else
 #define	OKFLAGS								\
-   (DB_CREATE | DB_NOMMAP | DB_INIT_LOCK | DB_INIT_LOG |		\
-    DB_INIT_MPOOL | DB_INIT_TXN | DB_MPOOL_PRIVATE | DB_RECOVER |	\
-    DB_RECOVER_FATAL | DB_TXN_NOSYNC | DB_USE_ENVIRON | DB_USE_ENVIRON_ROOT)
+    (DB_CREATE | DB_INIT_CDB | DB_INIT_LOCK | DB_INIT_LOG |		\
+    DB_INIT_MPOOL | DB_INIT_TXN | DB_MPOOL_PRIVATE | DB_NOMMAP |	\
+    DB_RECOVER | DB_RECOVER_FATAL | DB_TXN_NOSYNC |			\
+    DB_USE_ENVIRON | DB_USE_ENVIRON_ROOT)
 #endif
 	if ((ret = __db_fchk(dbenv, "db_appinit", flags, OKFLAGS)) != 0)
 		return (ret);
@@ -94,8 +110,6 @@ db_appinit(db_home, db_config, dbenv, flags)
 	/* Convert the db_appinit(3) flags. */
 	if (LF_ISSET(DB_THREAD))
 		F_SET(dbenv, DB_ENV_THREAD);
-
-	fp = NULL;
 
 	/* Set the database home. */
 	if ((ret = __db_home(dbenv, db_home, flags)) != 0)
@@ -128,7 +142,8 @@ db_appinit(db_home, db_config, dbenv, flags)
 				if ((lp = strchr(buf, '\n')) == NULL) {
 					__db_err(dbenv,
 					    "%s: line too long", CONFIG_NAME);
-					return (EINVAL);
+					ret = EINVAL;
+					goto err;
 				}
 				*lp = '\0';
 				if (buf[0] == '\0' ||
@@ -175,6 +190,18 @@ db_appinit(db_home, db_config, dbenv, flags)
 	 * Default permissions are read-write for both owner and group.
 	 */
 	mode = __db_omode("rwrw--");
+	if (LF_ISSET(DB_INIT_CDB)) {
+		if (LF_ISSET(DB_INIT_LOCK | DB_INIT_LOG | DB_INIT_TXN)) {
+			ret = EINVAL;
+			goto err;
+		}
+		F_SET(dbenv, DB_ENV_CDB);
+		dbenv->lk_conflicts = db_cdb_conflicts;
+		dbenv->lk_modes = DB_LOCK_RW_N + 1;
+		if ((ret = lock_open(NULL, LF_ISSET(DB_CREATE | DB_THREAD),
+		    mode, dbenv, &dbenv->lk_info)) != 0)
+			goto err;
+	}
 	if (LF_ISSET(DB_INIT_LOCK) && (ret = lock_open(NULL,
 	    LF_ISSET(DB_CREATE | DB_THREAD),
 	    mode, dbenv, &dbenv->lk_info)) != 0)
@@ -463,6 +490,12 @@ done:	len =
 	DB_ADDSTR(file);
 	*p = '\0';
 
+	/* Discard any space allocated to find the temp directory. */
+	if (tmp_free) {
+		__os_freestr(etmp.db_tmp_dir);
+		tmp_free = 0;
+	}
+
 	/*
 	 * If we're opening a data file, see if it exists.  If it does,
 	 * return it, otherwise, try and find another one to open.
@@ -473,10 +506,6 @@ done:	len =
 		goto retry;
 	}
 
-	/* Discard any space allocated to find the temp directory. */
-	if (tmp_free)
-		__os_freestr(etmp.db_tmp_dir);
-
 	/* Create the file if so requested. */
 	if (tmp_create &&
 	    (ret = __db_tmp_open(dbenv, tmp_oflags, start, fdp)) != 0) {
@@ -484,7 +513,9 @@ done:	len =
 		return (ret);
 	}
 
-	if (namep != NULL)
+	if (namep == NULL)
+		__os_freestr(start);
+	else
 		*namep = start;
 	return (0);
 }

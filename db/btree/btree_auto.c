@@ -43,8 +43,7 @@ int __bam_pg_alloc_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_bam_pg_alloc;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -207,8 +206,7 @@ int __bam_pg_free_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_bam_pg_free;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -385,8 +383,7 @@ int __bam_split_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_bam_split;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -590,8 +587,7 @@ int __bam_rsplit_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_bam_rsplit;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -786,8 +782,7 @@ int __bam_adj_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_bam_adj;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -946,8 +941,7 @@ int __bam_cadjust_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_bam_cadjust;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -1103,8 +1097,7 @@ int __bam_cdel_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_bam_cdel;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -1257,8 +1250,7 @@ int __bam_repl_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_bam_repl;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;

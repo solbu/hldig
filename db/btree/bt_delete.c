@@ -47,7 +47,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)bt_delete.c	10.41 (Sleepycat) 10/4/98";
+static const char sccsid[] = "@(#)bt_delete.c	10.43 (Sleepycat) 12/7/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -89,7 +89,7 @@ __bam_delete(dbp, txn, key, flags)
 		return (ret);
 
 	/* Allocate a cursor. */
-	if ((ret = dbp->cursor(dbp, txn, &dbc)) != 0)
+	if ((ret = dbp->cursor(dbp, txn, &dbc, DB_WRITELOCK)) != 0)
 		return (ret);
 	DEBUG_LWRITE(dbc, txn, "bam_delete", key, NULL, flags);
 
@@ -114,7 +114,7 @@ __bam_delete(dbp, txn, key, flags)
 	 */
 	bo = GET_BOVERFLOW(h, indx + O_INDX);
 	if (B_TYPE(bo->type) == B_DUPLICATE &&
-	    __bam_ca_delete(dbp, h->pgno, indx, NULL) != 0) {
+	    __bam_ca_delete(dbp, h->pgno, indx, 1) != 0) {
 		/* Set the cursor to reference the first off-page duplicate. */
 		cp->pgno = h->pgno;
 		cp->indx = indx;
@@ -123,15 +123,15 @@ __bam_delete(dbp, txn, key, flags)
 
 		/*
 		 * We're going to walk a cursor through the duplicate chain,
-		 * deleting as we go.  Set DB_DBT_MALLOC, as this might be a
+		 * deleting as we go.  Set DB_DBT_USERMEM, as this might be a
 		 * threaded application and the flags checking will catch us.
 		 * We don't want the actual keys or data, so request a partial
 		 * of length 0.
 		 */
 		memset(&dkey, 0, sizeof(dkey));
-		F_SET(&dkey, DB_DBT_MALLOC | DB_DBT_PARTIAL);
+		F_SET(&dkey, DB_DBT_USERMEM | DB_DBT_PARTIAL);
 		memset(&ddata, 0, sizeof(ddata));
-		F_SET(&ddata, DB_DBT_MALLOC | DB_DBT_PARTIAL);
+		F_SET(&ddata, DB_DBT_USERMEM | DB_DBT_PARTIAL);
 
 		/* Delete duplicates... */
 		for (;;) {
@@ -626,7 +626,7 @@ release:	(void)__bam_stkrel(dbc, 0);
 		memp_fset(dbp->mpf, child, DB_MPOOL_DIRTY);
 
 		/* Adjust the cursors. */
-		__bam_ca_move(dbp, child->pgno, PGNO_ROOT);
+		__bam_ca_rsplit(dbp, child->pgno, PGNO_ROOT);
 
 		/*
 		 * Free the page copied onto the root page and discard its

@@ -5,7 +5,7 @@
  * Copyright (c) 1996, 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)db_int.h	10.74 (Sleepycat) 10/12/98
+ *	@(#)db_int.h	10.76 (Sleepycat) 12/2/98
  */
 
 #ifndef _DB_INTERNAL_H_
@@ -107,6 +107,12 @@ typedef struct __fn {
 
 /* Unused, or not-used-yet variable.  "Shut that bloody compiler up!" */
 #define	COMPQUIET(n, v)	(n) = (v)
+
+/*
+ * Purify and similar run-time tools complain about unitialized reads/writes
+ * for structure fields whose only purpose is padding.
+ */
+#define	UMRW(v)		(v) = 0
 
 /*
  * Win16 needs specific syntax on callback functions.  Nobody else cares.
@@ -226,9 +232,9 @@ typedef struct _rlayout {
  * we don't make the underlying VM unhappy.
  */
 #define	DB_VMPAGESIZE	(4 * 1024)
-#define	DB_ROUNDOFF(i) {						\
-	(i) += DB_VMPAGESIZE - 1;					\
-	(i) -= (i) % DB_VMPAGESIZE;					\
+#define	DB_ROUNDOFF(n, round) {						\
+	(n) += (round) - 1;						\
+	(n) -= (n) % (round);						\
 }
 
 /*

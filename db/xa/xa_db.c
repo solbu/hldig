@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)xa_db.c	10.4 (Sleepycat) 10/11/98";
+static const char sccsid[] = "@(#)xa_db.c	10.5 (Sleepycat) 11/22/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -32,7 +32,7 @@ static int __xa_c_del __P((DBC *, u_int32_t));
 static int __xa_c_get __P((DBC *, DBT *, DBT *, u_int32_t));
 static int __xa_c_put __P((DBC *, DBT *, DBT *, u_int32_t));
 static int __xa_close __P((DB *, u_int32_t));
-static int __xa_cursor __P((DB *, DB_TXN *, DBC **));
+static int __xa_cursor __P((DB *, DB_TXN *, DBC **, u_int32_t));
 static int __xa_del __P((DB *, DB_TXN *, DBT *, u_int32_t));
 static int __xa_fd __P((DB *, int *));
 static int __xa_get __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
@@ -116,10 +116,11 @@ __xa_close(dbp, flags)
 }
 
 static int
-__xa_cursor(dbp, txn, dbcp)
+__xa_cursor(dbp, txn, dbcp, flags)
 	DB *dbp;
 	DB_TXN *txn;
 	DBC **dbcp;
+	u_int32_t flags;
 {
 	DB *real_dbp;
 	DBC *real_dbc, *dbc;
@@ -128,7 +129,7 @@ __xa_cursor(dbp, txn, dbcp)
 	real_dbp = (DB *)dbp->internal;
 	txn = dbp->dbenv->xa_txn;
 
-	if ((ret = real_dbp->cursor(real_dbp, txn, &real_dbc)) != 0)
+	if ((ret = real_dbp->cursor(real_dbp, txn, &real_dbc, flags)) != 0)
 		return (ret);
 
 	/*

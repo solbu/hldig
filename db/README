@@ -1,8 +1,8 @@
-# @(#)README	10.65 (Sleepycat) 11/4/98
+# @(#)README	10.71 (Sleepycat) 12/16/98
 
-This is version 2.5.9 (11/4/98) of Sleepycat Software's Berkeley DB
+This is version 2.6.4 (12/16/98) of Sleepycat Software's Berkeley DB
 product.  To view the documentation for this release, point your
-web browser at the distribution file db-2.5.9/index.html.
+web browser at the distribution file db-2.6.4/docs/index.html.
 
 Sleepycat Software		db@sleepycat.com
 394 E. Riding Dr.		+1-877-SLEEPYCAT

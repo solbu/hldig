@@ -1,4 +1,4 @@
-# @(#)Makefile.unix	10.7 (Sleepycat) 10/24/98
+# @(#)Makefile.unix	10.8 (Sleepycat) 12/3/98
 
 # This path should be changed to point to the top level directory of your
 # java JDK tree (just above bin, include, ...).
@@ -13,7 +13,7 @@ LINK=		gcc
 LINKFLAGS=	-shared -g -o libdb_java.so
 CXX=		gcc
 INCFILES=	-I$(JAVAINSDIR)/include -I$(JAVAINSDIR)/include/solaris \
-		-I$(DBINSDIR)/include -I$(DBBUILDDIR)
+		-I$(DBBUILDDIR) -I$(DBINSDIR)/include
 CXXFLAGS=	-c -g $(INCFILES) -fpic -D_REENTRANT
 PERL=		perl
 LIBS=		$(DBBUILDDIR)/libdb.so

@@ -3,7 +3,7 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)mutex.tcl	10.5 (Sleepycat) 4/20/98
+#	@(#)mutex.tcl	10.6 (Sleepycat) 12/11/98
 #
 # Exercise mutex functionality.
 # Options are:
@@ -108,12 +108,14 @@ proc mutex002 { dir nlocks } {
 	puts "Mutex002: Basic synchronization"
 	mutex_cleanup $testdir/$dir
 
+	# Fork off child before we open any files.
+	set f1 [open |./dbtest r+]
+
 	# Now open the region we'll use for multiprocess testing.
 	set mr [mutex_init $dir $nlocks $DB_CREATE 0644]
 	error_check_bad mutex_init $mr NULL
 	error_check_good mutex_init [is_substr $mr mutex] 1
 
-	set f1 [open |./dbtest r+]
 	puts $f1 "set m \[mutex_init $dir $nlocks 0 0 \]"
 	puts $f1 "puts \$m"
 	puts $f1 "flush stdout"

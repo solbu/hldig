@@ -47,7 +47,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)dbm.c	10.22 (Sleepycat) 10/4/98";
+static const char sccsid[] = "@(#)dbm.c	10.23 (Sleepycat) 11/22/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -211,7 +211,7 @@ __db_ndbm_open(file, oflags, mode)
 	    DB_HASH, __db_oflags(oflags), mode, NULL, &dbinfo, &dbp)) != 0)
 		return (NULL);
 
-	if ((errno = dbp->cursor(dbp, NULL, &dbc)) != 0) {
+	if ((errno = dbp->cursor(dbp, NULL, &dbc, 0)) != 0) {
 		sv_errno = errno;
 		(void)dbp->close(dbp, 0);
 		errno = sv_errno;

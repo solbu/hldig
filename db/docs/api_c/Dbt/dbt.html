@@ -1,9 +1,10 @@
-<! "@(#)dbt.so	10.8 (Sleepycat) 10/5/98">
+<! "@(#)dbt.so	10.10 (Sleepycat) 11/21/98">
+<!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
 <head>
 <title>Berkeley DB: Dbt</title>
-<meta name="description" content="DB: A database programmatic toolkit.">
+<meta name="description" content="Berkeley DB: An embedded database programmatic toolkit.">
 <meta name="keywords" content="embedded,database,programmatic,toolkit,b+tree,btr
 ee,hash,hashing,transaction,transactions,locking,logging,access method,access me
 thods,java,C,C++">
@@ -29,11 +30,8 @@ u_int32_t flags;
 </pre></ul><p>} DBT;
 <p>
 Key and data byte strings may reference strings of essentially unlimited
-length,
-although any two keys must fit into available memory at the same time so
-that they may be compared,
-and any one data item must fit into available memory so that it may be
-returned.
+length.  See <a href="../../ref/program/dbsizes.html">Database limits</a>
+for more information.
 <p>
 In order to ensure compatibility with future releases of Berkeley DB,
 all fields of the DBT structure that are not explicitly set should be
@@ -59,7 +57,10 @@ The elements of the DBT structure are defined as follows:
 <a name="ulen">
 <p><dt>u_int32_t ulen;<dd>The size of the user's buffer (referenced by <b>data</b>), in bytes.
 This location is not written by the Berkeley DB functions.
-See the DB_DBT_USERMEM flag for more information.
+<p>
+Note that applications can determine the length of a record by setting
+the <b>ulen</b> field to 0 and checking the return value in the
+<b>size</b> field.  See the DB_DBT_USERMEM flag for more information.
 <a name="dlen">
 <p><dt>u_int32_t dlen;<dd>The length of the partial record being read or written by the application,
 in bytes.

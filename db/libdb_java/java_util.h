@@ -4,7 +4,7 @@
  * Copyright (c) 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)java_util.h	10.11 (Sleepycat) 10/24/98
+ *	@(#)java_util.h	10.12 (Sleepycat) 12/16/98
  */
 
 #ifndef _JAVA_UTIL_H_
@@ -374,7 +374,7 @@ extern "C" JNIEXPORT void JNICALL                                           \
 // initialized.  This is considered a configuration error (and thus
 // serious enough for an unconditional exception) because user changes
 // to the environment structure after appinit will have no effect.
-// 
+//
 #define JAVADB_WO_ACCESS_BEFORE_APPINIT(j_class, j_fieldtype,               \
                                         j_field, c_type, c_field)           \
 extern "C" JNIEXPORT void JNICALL                                           \

@@ -1,9 +1,10 @@
-<! "@(#)toc.so	10.34 (Sleepycat) 11/2/98">
+<! "@(#)toc.so	10.41 (Sleepycat) 12/16/98">
+<!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
 <head>
 <title>Berkeley DB: Reference Table of Contents</title>
-<meta name="description" content="DB: A database programmatic toolkit.">
+<meta name="description" content="Berkeley DB: An embedded database programmatic toolkit.">
 <meta name="keywords" content="embedded,database,programmatic,toolkit,b+tree,btr
 ee,hash,hashing,transaction,transactions,locking,logging,access method,access me
 thods,java,C,C++">
@@ -97,6 +98,7 @@ thods,java,C,C++">
         <ol>
         <li><a href="arch/progmodel.html">Programming model</a>
         <li><a href="arch/apis.html">Available APIs</a>
+        <li><a href="arch/script.html">Scripting languages</a>
         <li><a href="arch/extending.html">Extending Berkeley DB</a>
 	</ol>
     </ol>
@@ -108,13 +110,21 @@ thods,java,C,C++">
     <li><a href="env/security.html">Security</a>
     <li><a href="env/region.html">Shared memory regions</a>
     </ol>
-<a name="transapp"><font size=+1><li>Transaction Protected Applications</font>
+<a name="cam"><font size=+1><li>Berkeley DB Concurrent Access Methods Applications</font>
+    <ol>
+    <li><a href="cam/intro.html">Building concurrent access method applications</a>
+    </ol>
+<a name="transapp"><font size=+1><li>Berkeley DB Transactional Access Methods Applications</font>
     <ol>
     <li><a href="transapp/intro.html">Introduction</a>
     <li><a href="transapp/apps.html">Building transaction protected applications</a>
+    <li><a href="transapp/admin.html">Administration</a>
+    <li><a href="transapp/deadlock.html">Deadlock detection</a>
+    <li><a href="transapp/checkpoint.html">Performing checkpoints</a>
     <li><a href="transapp/archival.html">Archival procedures</a>
     <li><a href="transapp/recovery.html">Recovery procedures</a>
     <li><a href="transapp/filesys.html">Recovery and filesystem operations</a>
+    <li><a href="transapp/throughput.html">Transaction throughput</a>
     </ol>
 <a name="program"><font size=+1><li>Programmer Notes</font>
     <ol>
@@ -124,7 +134,7 @@ thods,java,C,C++">
     <li><a href="program/java.html">Java programming notes</a>
     <li><a href="program/environ.html">Environmental variables</a>
     <li><a href="program/version.html">Library version information</a>
-    <li><a href="program/dbsizes.html">Database and page sizes</a>
+    <li><a href="program/dbsizes.html">Database limits</a>
     <li><a href="program/byteorder.html">Byte ordering</a>
     <li><a href="program/compatible.html">Compatibility with historic interfaces</a>
     <li><a href="program/convert.html">Integrating version 1.85 applications</a>
@@ -137,17 +147,14 @@ thods,java,C,C++">
     <li>Transaction restrictions
     <li><a href="txn/stability.html">Cursor stability</a>
     <li><a href="txn/limits.html">Transaction limits</a>
-    <li><a href="txn/throughput.html">Transaction throughput</a>
     <li>Configuring transactions
     <li>Tuning transactions
     <li><a href="txn/other.html">Transactions and non-Berkeley DB applications</a>
     </ol>
 <a name="mpool"><font size=+1><li>The Memory Pool Subsystem</font>
     <ol>
-    <li>Berkeley DB and the memory pool
-    <li>Configuring the memory pool
-    <li>Tuning the memory pool
-    <li>The memory pool and non-Berkeley DB applications
+    <li><a href="mp/intro.html">Berkeley DB and the memory pool</a>
+    <li><a href="mp/config.html">Configuring the memory pool</a>
     </ol>
 <a name="lock"><font size=+1><li>The Locking Subsystem</font>
     <ol>
@@ -186,8 +193,12 @@ thods,java,C,C++">
     <ol>
     <li><a href="sendmail/intro.html">Using Berkeley DB with Sendmail</a>
     </ol>
-<li>Building client-server applications
-<li>Building Web applications
+<a name="install"><font size=+1><li>Installation Notes</font>
+    <ol>
+    <li><a href="install/file.html">File utility /etc/magic information</a>
+    </ol>
+<a name="client"><font size=+1><li>Building client-server applications</font>
+<a name="web"><font size=+1><li>Building Web applications</font>
 <a name="debug"><font size=+1><li>Debugging Applications</font>
     <ol>
     <li><a href="debug/runtime.html">Run-time error information.</a>

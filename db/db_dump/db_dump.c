@@ -11,7 +11,7 @@
 static const char copyright[] =
 "@(#) Copyright (c) 1996, 1997, 1998\n\
 	Sleepycat Software Inc.  All rights reserved.\n";
-static const char sccsid[] = "@(#)db_dump.c	10.23 (Sleepycat) 10/30/98";
+static const char sccsid[] = "@(#)db_dump.c	10.24 (Sleepycat) 11/22/98";
 #endif
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -104,7 +104,7 @@ main(argc, argv)
 	}
 
 	/* Get a cursor and step through the database. */
-	if ((errno = dbp->cursor(dbp, NULL, &dbcp)) != 0) {
+	if ((errno = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
 		(void)dbp->close(dbp, 0);
 		err(1, "cursor");
 	}
@@ -202,7 +202,7 @@ pheader(dbp, pflag)
 		break;
 	case DB_HASH:
 		printf("type=hash\n");
-		if ((ret = dbp->cursor(dbp, NULL, &dbc)) != 0)
+		if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
 			break;
 		hcp = (HASH_CURSOR *)dbc->internal;
 		GET_META(dbp, hcp, ret);

@@ -47,7 +47,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)hash_page.c	10.52 (Sleepycat) 10/4/98";
+static const char sccsid[] = "@(#)hash_page.c	10.54 (Sleepycat) 12/6/98";
 #endif /* not lint */
 
 /*
@@ -1303,10 +1303,13 @@ __ham_add_el(dbc, key, val, type)
 	hcp->bndx = H_NUMPAIRS(hcp->pagep);
 	F_CLR(hcp, H_DELETED);
 	if (is_keybig) {
+		koff.type = H_OFFPAGE;
+		UMRW(koff.unused[0]);
+		UMRW(koff.unused[1]);
+		UMRW(koff.unused[2]);
 		if ((ret = __db_poff(dbc,
 		    key, &koff.pgno, __ham_overflow_page)) != 0)
 			return (ret);
-		koff.type = H_OFFPAGE;
 		koff.tlen = key->size;
 		key_dbt.data = &koff;
 		key_dbt.size = sizeof(koff);
@@ -1318,10 +1321,13 @@ __ham_add_el(dbc, key, val, type)
 	}
 
 	if (is_databig) {
+		doff.type = H_OFFPAGE;
+		UMRW(doff.unused[0]);
+		UMRW(doff.unused[1]);
+		UMRW(doff.unused[2]);
 		if ((ret = __db_poff(dbc,
 		    val, &doff.pgno, __ham_overflow_page)) != 0)
 			return (ret);
-		doff.type = H_OFFPAGE;
 		doff.tlen = val->size;
 		data_dbt.data = &doff;
 		data_dbt.size = sizeof(doff);
@@ -1528,7 +1534,7 @@ __ham_del_page(dbc, pagep)
 		DB_LSN __lsn;
 		__pgno = pagep->pgno;
 		__lsn = pagep->lsn;
-		memset(pagep, 0xff, dbp->pgsize);
+		memset(pagep, 0xdb, dbp->pgsize);
 		pagep->pgno = __pgno;
 		pagep->lsn = __lsn;
 	}

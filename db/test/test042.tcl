@@ -3,16 +3,19 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)test042.tcl	10.11 (Sleepycat) 10/3/98
+#	@(#)test042.tcl	10.13 (Sleepycat) 11/25/98
 #
 # DB Test 42 {access method}
-# Multiprocess DB test; verify that locking is basically working.
+# Multiprocess DB test; verify that locking is basically working
+# for the concurrent access method product.
+#
 # Use the first "nentries" words from the dictionary.
 # Insert each with self as key and a fixed, medium length data string.
 # Then fire off multiple processes that bang on the database.  Each
-# one should trey to read and write random keys.  When they rewrite
-# They'll append their pid to the data string (sometimes doing a rewrite
-# sometimes doing a partial put).
+# one should try to read and write random keys.  When they rewrite,
+# they'll append their pid to the data string (sometimes doing a rewrite
+# sometimes doing a partial put).  Some will use cursors to traverse
+# through a few keys before finding one to write.
 
 set datastr abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz
 
@@ -21,14 +24,10 @@ global datastr
 source ./include.tcl
 
 	set method [convert_method $method]
-	if { [string compare $method DB_RECNO] == 0 } {
-		puts "Test$reopen skipping for method RECNO"
-		return
-	}
-	puts "Test042: multiprocess db $method $nentries items"
+	puts "Test042: CDB Test $method $nentries"
 
 	# Parse options
-	set iter 1000
+	set iter 10000
 	set procs 5
 	set seeds {}
 	set do_exit 0
@@ -68,7 +67,6 @@ source ./include.tcl
 	set count 0
 
 	# Here is the loop where we put each key/data pair
-
 	puts "\tTest042.a: put/get loop"
 	while { [gets $did str] != -1 && $count < $nentries } {
 		if { [string compare $method DB_RECNO] == 0 } {
@@ -85,47 +83,43 @@ source ./include.tcl
 	close $did
 	error_check_good close:$db [$db close] 0
 
-	# Database is created, now fork off the kids.
-	puts "\tTest042.b: forking off $procs children"
+	# Database is created, now set up environment
 
 	# Remove old mpools and Open/create the lock and mpool regions
-	# Test is done, blow away lock and mpool region
 	set ret [ lock_unlink $testdir 1 ]
 #	error_check_good lock_unlink $ret 0
 	set ret [ memp_unlink $testdir 1 ]
 #	error_check_good memp_unlink $ret 0
 
-	set lp [lock_open "" $DB_CREATE 0644]
-	error_check_bad lock_open $lp NULL
-	error_check_good lock_open [is_substr $lp lockmgr] 1
-	error_check_good lock_close [$lp close] 0
-
-	set mp [ memp $testdir 0644 $DB_CREATE]
-	error_check_bad memp $mp NULL
-	error_check_good memp [is_substr $mp mp] 1
-	error_check_good memp_close [$mp close] 0
+	set env \
+	    [dbenv -dbflags [expr $DB_CREATE | $DB_INIT_CDB | $DB_INIT_MPOOL]]
+	error_check_good dbenv [is_valid_widget $env env] TRUE
 
 	if { $do_exit == 1 } {
 		return
 	}
 
 	# Now spawn off processes
+	puts "\tTest042.b: forking off $procs children"
 	set pidlist {}
 	for { set i 0 } {$i < $procs} {incr i} {
 		set s -1
 		if { [llength $seeds] == $procs } {
 			set s [lindex $seeds $i]
 		}
-		puts "exec ./dbtest ../test/mdbscript.tcl $testdir $testfile \
-		    $nentries $iter $i $procs $s > $testdir/test042.$i.log &"
-		set p [exec ./dbtest ../test/mdbscript.tcl $testdir $testfile \
-		    $nentries $iter $i $procs $s > $testdir/test042.$i.log & ]
+		puts "exec ./dbtest ../test/mdbscript.tcl $method $testdir \
+		    $testfile $nentries $iter $i $procs $s > \
+		    $testdir/test042.$i.log &"
+		set p [exec ./dbtest ../test/mdbscript.tcl $method $testdir \
+		    $testfile $nentries $iter $i $procs $s > \
+		    $testdir/test042.$i.log & ]
 		lappend pidlist $p
 	}
 	puts "Test042: $procs independent processes now running"
 	watch_procs $pidlist
 
 	# Test is done, blow away lock and mpool region
+	reset_env $env
 	set ret [ lock_unlink $testdir 0 ]
 #	error_check_good lock_unlink $ret 0
 	set ret [ memp_unlink $testdir 0 ]

@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)tcl_txn.c	10.15 (Sleepycat) 5/31/98";
+static const char sccsid[] = "@(#)tcl_txn.c	10.20 (Sleepycat) 12/14/98";
 #endif /* not lint */
 
 /*
@@ -61,6 +61,7 @@ txnmgr_cmd(notused, interp, argc, argv)
 	int mode, tclint;
 	u_int32_t flags;
 	char mgrname[50];
+	u_int8_t *conflicts;
 
 	notused = NULL;
 	debug_check();
@@ -90,6 +91,7 @@ txnmgr_cmd(notused, interp, argc, argv)
 	if (F_ISSET(env, DB_ENV_STANDALONE))
 		mgrp = env->tx_info;
 	else if (txn_open(argv[1], flags, mode, env, &mgrp) != 0) {
+		db_appexit(env);
 		Tcl_SetResult(interp, "NULL", TCL_STATIC);
 		return (TCL_OK);
 	} else
@@ -99,8 +101,9 @@ txnmgr_cmd(notused, interp, argc, argv)
 	if (td == NULL) {
 		if (!F_ISSET(env, DB_ENV_STANDALONE)) {
 			(void)db_appexit(env);
-			if (env->lk_conflicts)
-				free(env->lk_conflicts);
+			conflicts = (u_int8_t *)env->lk_conflicts;
+			if (conflicts != NULL)
+				free(conflicts);
 			free(env);
 		}
 		Tcl_SetResult(interp, "txn_open: ", TCL_STATIC);
@@ -112,7 +115,7 @@ txnmgr_cmd(notused, interp, argc, argv)
 	td->env = env;
 
 	/* Create new command name. */
-	sprintf(&mgrname[0], "mgr%d", mgr_number);
+	snprintf(mgrname, sizeof(mgrname), "mgr%d", mgr_number);
 	mgr_number++;
 
 	/* Create widget command. */
@@ -179,6 +182,7 @@ txnwidget_cmd(cd_mgr, interp, argc, argv)
 	u_int32_t i, kbytes, minutes;
 	int ret, tclint;
 	char *p, *statbuf, txnname[128];
+	u_int8_t *conflicts;
 
 	debug_check();
 
@@ -191,11 +195,13 @@ txnwidget_cmd(cd_mgr, interp, argc, argv)
 		env = ((txn_data *)cd_mgr)->env;
 		if (!F_ISSET(env, DB_ENV_STANDALONE)) {
 			(void)db_appexit(env);
-			if (env->lk_conflicts)
-				free(env->lk_conflicts);
+			conflicts = (u_int8_t *)env->lk_conflicts;
+			if (conflicts != NULL)
+				free(conflicts);
 			free(env);
 		}
 		ret = Tcl_DeleteCommand(interp, argv[0]);
+		free(cd_mgr);
 		if (ret)
 			Tcl_SetResult(interp, "-1", TCL_STATIC);
 		else
@@ -222,7 +228,7 @@ txnwidget_cmd(cd_mgr, interp, argc, argv)
 			return (TCL_OK);
 		}
 
-		sprintf(&txnname[0], "%s.txn%d", argv[0], id);
+		snprintf(txnname, sizeof(txnname), "%s.txn%d", argv[0], id);
 		id++;
 
 		Tcl_CreateCommand(interp, txnname, txn_cmd, (int *)txn, NULL);
@@ -328,7 +334,7 @@ txn_cmd(cd_txn, interp, argc, argv)
 	} else if (strcmp(argv[1], "id") == 0) {
 		USAGE(argc, 2, TXNID_USAGE, 0);
 		ret = txn_id(txn);
-		sprintf(idbuf, "%d", ret);
+		snprintf(idbuf, sizeof(idbuf), "%d", ret);
 		Tcl_SetResult(interp, idbuf, TCL_VOLATILE);
 		return (TCL_OK);
 	} else if (strcmp(argv[1], "prepare") == 0) {

@@ -47,7 +47,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)hash.c	10.59 (Sleepycat) 10/29/98";
+static const char sccsid[] = "@(#)hash.c	10.63 (Sleepycat) 12/11/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -66,6 +66,9 @@ static const char sccsid[] = "@(#)hash.c	10.59 (Sleepycat) 10/29/98";
 #include "hash.h"
 #include "btree.h"
 #include "log.h"
+#include "db_shash.h"
+#include "lock.h"
+#include "lock_ext.h"
 
 static int  __ham_c_close __P((DBC *));
 static int  __ham_c_del __P((DBC *, u_int32_t));
@@ -114,7 +117,7 @@ __ham_open(dbp, dbinfo)
 	dbp->stat = __ham_stat;
 
 	/* Get a cursor we can use for the rest of this function. */
-	if ((ret = dbp->cursor(dbp, NULL, &dbc)) != 0)
+	if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
 		goto out;
 
 	hcp = (HASH_CURSOR *)dbc->internal;
@@ -247,7 +250,7 @@ __ham_delete(dbp, txn, key, flags)
 	    __db_delchk(dbp, key, flags, F_ISSET(dbp, DB_AM_RDONLY))) != 0)
 		return (ret);
 
-	if ((ret = dbp->cursor(dbp, txn, &dbc)) != 0)
+	if ((ret = dbp->cursor(dbp, txn, &dbc, DB_WRITELOCK)) != 0)
 		return (ret);
 
 	DEBUG_LWRITE(dbc, txn, "ham_delete", key, NULL, flags);
@@ -334,6 +337,8 @@ __ham_c_destroy(dbc)
 	HASH_CURSOR *hcp;
 
 	hcp = (HASH_CURSOR *)dbc->internal;
+	if (hcp->split_buf != NULL)
+		__os_free(hcp->split_buf, dbc->dbp->pgsize);
 	__os_free(hcp, sizeof(HASH_CURSOR));
 
 	return (0);
@@ -345,6 +350,7 @@ __ham_c_del(dbc, flags)
 	u_int32_t flags;
 {
 	DB *dbp;
+	DBT repldbt;
 	HASH_CURSOR *hcp;
 	HASH_CURSOR save_curs;
 	db_pgno_t ppgno, chg_pgno;
@@ -354,19 +360,39 @@ __ham_c_del(dbc, flags)
 	dbp = dbc->dbp;
 	DB_PANIC_CHECK(dbp);
 	hcp = (HASH_CURSOR *)dbc->internal;
-	SAVE_CURSOR(hcp, &save_curs);
 
 	if ((ret = __db_cdelchk(dbc->dbp, flags,
 	    F_ISSET(dbc->dbp, DB_AM_RDONLY), IS_VALID(hcp))) != 0)
 		return (ret);
+
 	if (F_ISSET(hcp, H_DELETED))
 		return (DB_NOTFOUND);
+
+	/*
+	 * If we are in the concurrent DB product and this cursor
+	 * is not a write cursor, then this request is invalid.
+	 * If it is a simple write cursor, then we need to upgrade its
+	 * lock.
+	 */
+	if (F_ISSET(dbp, DB_AM_CDB)) {
+		/* Make sure it's a valid update cursor. */
+		if (!F_ISSET(dbc, DBC_RMW | DBC_WRITER))
+			return (EINVAL);
+
+		if (F_ISSET(dbc, DBC_RMW) &&
+		    (ret = lock_get(dbp->dbenv->lk_info, dbc->locker,
+		    DB_LOCK_UPGRADE, &dbc->lock_dbt, DB_LOCK_WRITE,
+		    &dbc->mylock)) != 0)
+			return (EAGAIN);
+	}
 
 	GET_META(dbp, hcp, ret);
 	if (ret != 0)
 		return (ret);
 
+	SAVE_CURSOR(hcp, &save_curs);
 	hcp->stats.hash_deleted++;
+
 	if ((ret = __ham_get_cpage(dbc, DB_LOCK_WRITE)) != 0)
 		goto out;
 	if (F_ISSET(hcp, H_ISDUP) && hcp->dpgno != PGNO_INVALID) {
@@ -448,13 +474,13 @@ __ham_c_del(dbc, flags)
 		    LEN_HDATA(hcp->pagep, hcp->hdr->pagesize, hcp->bndx))
 			ret = __ham_del_pair(dbc, 1);
 		else {
-			DBT repldbt;
-
 			repldbt.flags = 0;
 			F_SET(&repldbt, DB_DBT_PARTIAL);
 			repldbt.doff = hcp->dup_off;
 			repldbt.dlen = DUP_SIZE(hcp->dup_len);
 			repldbt.size = 0;
+			repldbt.data =
+			    HKEYDATA_DATA(H_PAIRDATA(hcp->pagep, hcp->bndx));
 			ret = __ham_replpair(dbc, &repldbt, 0);
 			hcp->dup_tlen -= DUP_SIZE(hcp->dup_len);
 			F_SET(hcp, H_DELETED);
@@ -470,6 +496,9 @@ out:	if ((t_ret = __ham_item_done(dbc, ret == 0)) != 0 && ret == 0)
 		ret = t_ret;
 	RELEASE_META(dbp, hcp);
 	RESTORE_CURSOR(dbp, hcp, &save_curs, ret);
+	if (F_ISSET(dbp, DB_AM_CDB) && F_ISSET(dbc, DBC_RMW))
+		(void)__lock_downgrade(dbp->dbenv->lk_info, dbc->mylock,
+		    DB_LOCK_IWRITE, 0);
 	return (ret);
 }
 
@@ -646,18 +675,38 @@ __ham_c_put(dbc, key, data, flags)
 	    flags == DB_KEYFIRST || flags == DB_KEYLAST ? key : NULL,
 	    data, flags);
 	hcp = (HASH_CURSOR *)dbc->internal;
-	SAVE_CURSOR(hcp, &save_curs);
 
 	if ((ret = __db_cputchk(dbp, key, data, flags,
 	    F_ISSET(dbp, DB_AM_RDONLY), IS_VALID(hcp))) != 0)
 		return (ret);
+
 	if (F_ISSET(hcp, H_DELETED) &&
 	    flags != DB_KEYFIRST && flags != DB_KEYLAST)
 		return (DB_NOTFOUND);
 
+	/*
+	 * If we are in the concurrent DB product and this cursor
+	 * is not a write cursor, then this request is invalid.
+	 * If it is a simple write cursor, then we need to upgrade its
+	 * lock.
+	 */
+	if (F_ISSET(dbp, DB_AM_CDB)) {
+		/* Make sure it's a valid update cursor. */
+		if (!F_ISSET(dbc, DBC_RMW | DBC_WRITER))
+			return (EINVAL);
+
+		if (F_ISSET(dbc, DBC_RMW) &&
+		    (ret = lock_get(dbp->dbenv->lk_info, dbc->locker,
+		    DB_LOCK_UPGRADE, &dbc->lock_dbt, DB_LOCK_WRITE,
+		    &dbc->mylock)) != 0)
+			return (EAGAIN);
+	}
+
 	GET_META(dbp, hcp, ret);
 	if (ret != 0)
 		return (ret);
+
+	SAVE_CURSOR(hcp, &save_curs);
 	hcp->stats.hash_put++;
 
 	switch (flags) {
@@ -728,6 +777,9 @@ done:	if (ret == 0 && F_ISSET(hcp, H_EXPAND)) {
 
 out:	RELEASE_META(dbp, hcp);
 	RESTORE_CURSOR(dbp, hcp, &save_curs, ret);
+	if (F_ISSET(dbp, DB_AM_CDB) && F_ISSET(dbc, DBC_RMW))
+		(void)__lock_downgrade(dbp->dbenv->lk_info, dbc->mylock,
+		    DB_LOCK_IWRITE, 0);
 	return (ret);
 }
 

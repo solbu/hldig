@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)tcl_lock.c	10.14 (Sleepycat) 9/17/98";
+static const char sccsid[] = "@(#)tcl_lock.c	10.19 (Sleepycat) 12/14/98";
 #endif /* not lint */
 
 /*
@@ -71,6 +71,7 @@ lockmgr_cmd(notused, interp, argc, argv)
 	u_int32_t flags;
 	int mode, ret, tclint;
 	char mgrname[50];
+	u_int8_t *conflicts;
 
 	notused = NULL;
 
@@ -95,6 +96,7 @@ lockmgr_cmd(notused, interp, argc, argv)
 	if (F_ISSET(env, DB_ENV_STANDALONE))
 		mgrp = env->lk_info;
 	else if ((ret = lock_open(argv[1], flags, mode, env, &mgrp)) != 0) {
+		db_appexit(env);
 		errno = ret;
 		Tcl_PosixError(interp);
 		Tcl_SetResult(interp, "NULL", TCL_STATIC);
@@ -106,8 +108,9 @@ lockmgr_cmd(notused, interp, argc, argv)
 	if ((md = (mgr_data *)malloc(sizeof(mgr_data))) == NULL) {
 		if (!F_ISSET(env, DB_ENV_STANDALONE)) {
 			(void)db_appexit(env);
-			if (env->lk_conflicts)
-				free(env->lk_conflicts);
+			conflicts = (u_int8_t *)env->lk_conflicts;
+			if (conflicts != NULL)
+				free(conflicts);
 			free(env);
 		}
 		Tcl_SetResult(interp, "lock_open: ", TCL_STATIC);
@@ -117,7 +120,7 @@ lockmgr_cmd(notused, interp, argc, argv)
 	}
 	md->tabp = mgrp;
 	md->env = env;
-	sprintf(&mgrname[0], "lockmgr%d", mgr_number);
+	snprintf(mgrname, sizeof(mgrname), "lockmgr%d", mgr_number);
 	mgr_number++;
 
 	/* Create widget command. */
@@ -189,6 +192,7 @@ lockwidget_cmd(cd_mgr, interp, argc, argv)
 	u_int32_t locker, flags;
 	int ret, tclint;
 	char lockname[128];
+	u_int8_t *conflicts;
 
 	debug_check();
 
@@ -201,11 +205,13 @@ lockwidget_cmd(cd_mgr, interp, argc, argv)
 		env = ((mgr_data *)cd_mgr)->env;
 		if (!F_ISSET(env, DB_ENV_STANDALONE)) {
 			(void)db_appexit(env);
-			if (env->lk_conflicts)
-				free(env->lk_conflicts);
+			conflicts = (u_int8_t *)env->lk_conflicts;
+			if (conflicts != NULL)
+				free(conflicts);
 			free(env);
 		}
 		Tcl_DeleteCommand(interp, argv[0]);
+		free(cd_mgr);
 		Tcl_SetResult(interp, "0", TCL_STATIC);
 		return (TCL_OK);
 	} else if (strcmp(argv[1], "get") == 0) {
@@ -228,7 +234,8 @@ lockwidget_cmd(cd_mgr, interp, argc, argv)
 
 		switch (ret) {
 		case 0:	/* Success */
-			sprintf(&lockname[0], "%s.lock%d", argv[0], id);
+			snprintf(lockname,
+			    sizeof(lockname), "%s.lock%d", argv[0], id);
 			id++;
 			if ((ld =
 			    (lock_data *)malloc(sizeof(lock_data))) == NULL) {

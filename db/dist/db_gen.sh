@@ -5,7 +5,7 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)db_gen.sh	10.19 (Sleepycat) 9/17/98
+#	@(#)db_gen.sh	10.20 (Sleepycat) 12/7/98
 #
 
 # This script generates all the log, print, and read routines for the db
@@ -191,7 +191,7 @@ awk  '
 	printf("\trectype = DB_%s;\n", funcname) >> CFILE;
 	printf("\ttxn_num = txnid == NULL ? 0 : txnid->txnid;\n") >> CFILE;
 	printf("\tif (txnid == NULL) {\n") >> CFILE;
-	printf("\t\tnull_lsn.file = 0;\n\t\tnull_lsn.offset = 0;\n") >> CFILE;
+	printf("\t\tZERO_LSN(null_lsn);\n") >> CFILE;
 	printf("\t\tlsnp = &null_lsn;\n") >> CFILE;
 	printf("\t} else\n\t\tlsnp = &txnid->last_lsn;\n") >> CFILE;
 

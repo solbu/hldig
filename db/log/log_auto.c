@@ -43,8 +43,7 @@ int __log_register_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_log_register;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;

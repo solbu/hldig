@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db_pr.c	10.39 (Sleepycat) 10/9/98";
+static const char sccsid[] = "@(#)db_pr.c	10.40 (Sleepycat) 11/22/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -194,7 +194,7 @@ __db_prbtree(dbp)
 
 	t = dbp->internal;
 	fp = __db_prinit(NULL);
-	if ((ret = dbp->cursor(dbp, NULL, &dbc)) != 0)
+	if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
 		return (ret);
 
 	(void)fprintf(fp, "%s\nOn-page metadata:\n", DB_LINE);
@@ -272,7 +272,7 @@ __db_prhash(dbp)
 	db_pgno_t pgno;
 
 	fp = __db_prinit(NULL);
-	if ((ret = dbp->cursor(dbp, NULL, &dbc)) != 0)
+	if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
 		return (ret);
 	hcp = (HASH_CURSOR *)dbc->internal;
 

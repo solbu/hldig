@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)cxx_table.cpp	10.17 (Sleepycat) 10/29/98";
+static const char sccsid[] = "@(#)cxx_table.cpp	10.18 (Sleepycat) 11/22/98";
 #endif /* not lint */
 
 #include "db_cxx.h"
@@ -52,7 +52,7 @@ int Db::close(u_int32_t flags)
     return 0;
 }
 
-int Db::cursor(DbTxn *txnid, Dbc **cursorp)
+int Db::cursor(DbTxn *txnid, Dbc **cursorp, u_int32_t flags)
 {
     DB *db = unwrap(this);
     int err;
@@ -62,7 +62,7 @@ int Db::cursor(DbTxn *txnid, Dbc **cursorp)
         return EINVAL;
     }
     DBC *dbc = 0;
-    if ((err = db->cursor(db, unwrap(txnid), &dbc)) != 0) {
+    if ((err = db->cursor(db, unwrap(txnid), &dbc, flags)) != 0) {
         DB_ERROR("Db::cursor", err);
         return err;
     }

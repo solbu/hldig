@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)mutex.c	10.51 (Sleepycat) 9/16/98";
+static const char sccsid[] = "@(#)mutex.c	10.52 (Sleepycat) 11/8/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -195,7 +195,7 @@ __db_mutex_lock(mp, fd)
 #ifdef HAVE_SPINLOCKS
 	COMPQUIET(fd, 0);
 
-	for (usecs = MS(10);;) {
+	for (usecs = MS(1);;) {
 		/* Try and acquire the uncontested resource lock for N spins. */
 		for (nspins = mp->spins; nspins > 0; --nspins)
 			if (TSL_SET(&mp->tsl_resource)) {
@@ -207,14 +207,14 @@ __db_mutex_lock(mp, fd)
 				}
 				mp->pid = getpid();
 #endif
-				if (usecs == MS(10))
+				if (usecs == MS(1))
 					++mp->mutex_set_nowait;
 				else
 					++mp->mutex_set_wait;
 				return (0);
 			}
 
-		/* Yield the processor; wait 10ms initially, up to 1 second. */
+		/* Yield the processor; wait 1ms initially, up to 1 second. */
 		__os_yield(usecs);
 		if ((usecs <<= 1) > SECOND)
 			usecs = SECOND;
@@ -230,10 +230,10 @@ __db_mutex_lock(mp, fd)
 
 	for (locked = 0, mypid = getpid();;) {
 		/*
-		 * Wait for the lock to become available; wait 10ms initially,
+		 * Wait for the lock to become available; wait 1ms initially,
 		 * up to 1 second.
 		 */
-		for (usecs = MS(10); mp->pid != 0;) {
+		for (usecs = MS(1); mp->pid != 0;) {
 			__os_yield(usecs);
 			if ((usecs <<= 1) > SECOND)
 				usecs = SECOND;

@@ -4,7 +4,7 @@
  * Copyright (c) 1996, 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)db_page.h	10.17 (Sleepycat) 10/3/98
+ *	@(#)db_page.h	10.18 (Sleepycat) 12/2/98
  */
 
 #ifndef _DB_PAGE_H_
@@ -335,10 +335,6 @@ typedef struct _hkeydata {
 
 /*
  * The third type is the H_OFFPAGE, represented by the HOFFPAGE structure:
- *
- *	+-----------------------------------+
- *	|   type    |  pgno_t   | total len |
- *	+-----------------------------------+
  */
 typedef struct _hoffpage {
 	u_int8_t  type;		/*    00: Page type and delete flag. */
@@ -359,10 +355,6 @@ typedef struct _hoffpage {
 
 /*
  * The fourth type is H_OFFDUP represented by the HOFFDUP structure:
- *
- *	+-----------------------+
- *	|   type    |  pgno_t   |
- *	+-----------------------+
  */
 typedef struct _hoffdup {
 	u_int8_t  type;		/*    00: Page type and delete flag. */
@@ -407,10 +399,6 @@ typedef struct _hoffdup {
 
 /*
  * The first type is B_KEYDATA, represented by the BKEYDATA structure:
- *
- *	+-----------------------------------+
- *	|   length  |    type   | key/data  |
- *	+-----------------------------------+
  */
 typedef struct _bkeydata {
 	db_indx_t len;		/* 00-01: Key/data item length. */
@@ -433,13 +421,7 @@ typedef struct _bkeydata {
 
 /*
  * The second and third types are B_DUPLICATE and B_OVERFLOW, represented
- * by the BOVERFLOW structure:
- *
- *	+-----------------------------------+
- *	| total len |    type   |   unused  |
- *	+-----------------------------------+
- *	| nxt: page |  nxt: off | nxt: len  |
- *	+-----------------------------------+
+ * by the BOVERFLOW structure.
  */
 typedef struct _boverflow {
 	db_indx_t unused1;	/* 00-01: Padding, unused. */
@@ -477,10 +459,6 @@ typedef struct _boverflow {
 
 /*
  * Btree internal entry.
- *
- *	+-----------------------------------+
- *	| leaf pgno |   type    | data ...  |
- *	+-----------------------------------+
  */
 typedef struct _binternal {
 	db_indx_t  len;		/* 00-01: Key/data item length. */
@@ -511,12 +489,8 @@ typedef struct _binternal {
 /*
  * The recno internal entry.
  *
- *	+-----------------------+
- *	| leaf pgno | # of recs |
- *	+-----------------------+
- *
  * XXX
- * Why not fold this into the db_indx_t structure, it's fixed length.
+ * Why not fold this into the db_indx_t structure, it's fixed length?
  */
 typedef struct _rinternal {
 	db_pgno_t  pgno;	/* 00-03: Page number of referenced page. */

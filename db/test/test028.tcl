@@ -3,7 +3,7 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)test028.tcl	8.7 (Sleepycat) 6/2/98
+#	@(#)test028.tcl	8.8 (Sleepycat) 12/5/98
 #
 # Put after cursor delete test.
 proc test028 { method args } {
@@ -19,7 +19,7 @@ proc test028 { method args } {
 	source ./include.tcl
 
 	if { [is_rbtree $omethod] == 1 } {
-		puts "Test0028 skipping for method $omethod"
+		puts "Test028 skipping for method $omethod"
 		return
 	}
 	if { [string compare $method DB_RECNO] == 0 } {

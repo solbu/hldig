@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)err.c	10.4 (Sleepycat) 4/10/98";
+static const char sccsid[] = "@(#)err.c	10.5 (Sleepycat) 11/24/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -66,6 +66,8 @@ err(eval, fmt, va_alist)
 	}
 	(void)fprintf(stderr, "%s\n", strerror(sverrno));
 
+	va_end(ap);
+
 	exit(eval);
 }
 
@@ -97,6 +99,8 @@ errx(eval, fmt, va_alist)
 	if (fmt != NULL)
 		(void)vfprintf(stderr, fmt, ap);
 	(void)fprintf(stderr, "\n");
+
+	va_end(ap);
 
 	exit(eval);
 }

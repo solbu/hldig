@@ -1,14 +1,15 @@
-<! "@(#)select.so	10.9 (Sleepycat) 10/27/98">
+<! "@(#)select.so	10.10 (Sleepycat) 12/16/98">
+<!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
 <head>
-<title>Berkeley DB Programmer's Reference: Access Methods</title>
-<meta name="description" content="DB: A database programmatic toolkit.">
+<title>Berkeley DB Reference Guide: Access Methods</title>
+<meta name="description" content="Berkeley DB: An embedded database programmatic toolkit.">
 <meta name="keywords" content="embedded,database,programmatic,toolkit,b+tree,btr
 ee,hash,hashing,transaction,transactions,locking,logging,access method,access me
 thods,java,C,C++">
 </head>
-<h3>Berkeley DB Programmer's Reference: Access Methods</h3>
+<h3>Berkeley DB Reference Guide: Access Methods</h3>
 <p>
 <h1 align=center>Selecting an access method</h1>
 <p>
@@ -19,9 +20,9 @@ the Btree access method should be used when there is a locality of
 reference between keys.  Locality of reference means that accessing one
 particular key in the Btree means that the application is more likely to
 want to access keys that are somehow related to the key being accessed.
-For example, if keys are timestamps, and it's a request for a 8AM
-timestamp will likely be followed by a request for a 9AM timestamp, the
-Btree access method is generally the right choice.  Or, for example, the
+For example, if keys are timestamps, and it's likely that a request for an 8AM
+timestamp will be followed by a request for a 9AM timestamp, the
+Btree access method is generally the right choice.  Or, for example, if the
 keys are individual surnames, and the application will want to review all
 individuals with the same last name, the Btree access method is again
 the right choice.
@@ -33,7 +34,8 @@ The Recno access method should be used when it is desirable to store
 and retrieve records based on logical record numbers.
 <p>
 It is possible to store and retrieve records based on logical record
-numbers in the Btree access method, however, those record numbers are
+numbers in the Btree access method.
+However, those record numbers are
 always mutable, i.e., as records are deleted or inserted, the logical
 record number for other records in the database can change.  The Recno
 access method can be configured to run in either mutable or fixed mode:

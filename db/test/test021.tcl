@@ -3,7 +3,7 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)test021.tcl	8.8 (Sleepycat) 4/26/98
+#	@(#)test021.tcl	8.9 (Sleepycat) 12/5/98
 #
 # DB Test 21 {access method}
 # Use the first 10,000 entries from the dictionary.
@@ -102,6 +102,7 @@ proc test021 { method {nentries 10000} args } {
 		incr i
 	}
 	error_check_good db_close [$db close] 0
+	close $did
 
 }
 

@@ -47,7 +47,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)bt_search.c	10.23 (Sleepycat) 10/9/98";
+static const char sccsid[] = "@(#)bt_search.c	10.25 (Sleepycat) 12/16/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -97,9 +97,9 @@ __bam_search(dbc, key, flags, stop, recnop, exactp)
 	 * There are several ways we search a btree tree.  The flags argument
 	 * specifies if we're acquiring read or write locks, if we position
 	 * to the first or last item in a set of duplicates, if we return
-	 * deleted items, and if we are locking pairs of pages.  See btree.h
-	 * for more details.  In addition, if we're doing record numbers, we
-	 * have to lock the entire tree regardless.
+	 * deleted items, and if we are locking pairs of pages.  In addition,
+	 * if we're modifying record numbers, we have to lock the entire tree
+	 * regardless.  See btree.h for more details.
 	 *
 	 * If write-locking pages, we need to know whether or not to acquire a
 	 * write lock on a page before getting it.  This depends on how deep it
@@ -138,7 +138,6 @@ __bam_search(dbc, key, flags, stop, recnop, exactp)
 			(void)__BT_LPUT(dbc, lock);
 			return (ret);
 		}
-
 		stack = 1;
 	}
 
@@ -222,17 +221,17 @@ next:		pg = GET_BINTERNAL(h, indx)->pgno;
 			    __bam_lget(dbc, 0, pg, DB_LOCK_WRITE, &lock)) != 0)
 				goto err;
 		} else {
-			(void)memp_fput(dbp->mpf, h, 0);
-
 			/*
-			 * Decide if we want to return a pointer to the next
-			 * page in the stack.  If we do, write lock it and
-			 * never unlock it.
+			 * Decide if we want to return a reference to the next
+			 * page in the return stack.  If so, lock it and never
+			 * unlock it.
 			 */
 			if ((LF_ISSET(S_PARENT) &&
 			    (u_int8_t)(stop + 1) >= (u_int8_t)(h->level - 1)) ||
 			    (h->level - 1) == LEAFLEVEL)
 				stack = 1;
+
+			(void)memp_fput(dbp->mpf, h, 0);
 
 			if ((ret =
 			    __bam_lget(dbc, 1, pg, stack && LF_ISSET(S_WRITE) ?
@@ -242,8 +241,8 @@ next:		pg = GET_BINTERNAL(h, indx)->pgno;
 		if ((ret = memp_fget(dbp->mpf, &pg, 0, &h)) != 0)
 			goto err;
 	}
-
 	/* NOTREACHED */
+
 match:	*exactp = 1;
 
 	/*

@@ -7,7 +7,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)mp_sync.c	10.29 (Sleepycat) 9/27/98";
+static const char sccsid[] = "@(#)mp_sync.c	10.31 (Sleepycat) 12/11/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -39,11 +39,12 @@ memp_sync(dbmp, lsnp)
 	DB_ENV *dbenv;
 	MPOOL *mp;
 	MPOOLFILE *mfp;
-	int ar_cnt, cnt, nalloc, next, ret, wrote;
+	int ar_cnt, nalloc, next, ret, wrote;
 
 	MP_PANIC_CHECK(dbmp);
 
 	dbenv = dbmp->dbenv;
+	mp = dbmp->mp;
 
 	if (dbenv->lg_info == NULL) {
 		__db_err(dbenv, "memp_sync: requires logging");
@@ -51,14 +52,17 @@ memp_sync(dbmp, lsnp)
 	}
 
 	/*
-	 * We try and write the buffers in page order so that the underlying
-	 * filesystem doesn't have to seek and can write contiguous blocks,
-	 * plus, we don't want to hold the region lock while we write the
-	 * buffers.  Get memory to hold the buffer pointers.  Get a good-size
-	 * block, too, because we realloc while holding the region lock if we
-	 * run out.
+	 * We try and write the buffers in page order: it should reduce seeks
+	 * by the underlying filesystem and possibly reduce the actual number
+	 * of writes.  We don't want to hold the region lock while we write
+	 * the buffers, so only hold it lock while we create a list.  Get a
+	 * good-size block of memory to hold buffer pointers, we don't want
+	 * to run out.
 	 */
-	nalloc = 1024;
+	LOCKREGION(dbmp);
+	nalloc = mp->stat.st_page_dirty + mp->stat.st_page_dirty / 2 + 10;
+	UNLOCKREGION(dbmp);
+
 	if ((ret = __os_malloc(nalloc * sizeof(BH *), NULL, &bharray)) != 0)
 		return (ret);
 
@@ -72,7 +76,6 @@ memp_sync(dbmp, lsnp)
 	 * we've already handled or are currently handling, then we return a
 	 * result based on the count for the larger LSN.
 	 */
-	mp = dbmp->mp;
 	if (!F_ISSET(mp, MP_LSN_RETRY) && log_compare(lsnp, &mp->lsn) <= 0) {
 		if (mp->lsn_cnt == 0) {
 			*lsnp = mp->lsn;
@@ -132,16 +135,23 @@ memp_sync(dbmp, lsnp)
 
 			/*
 			 * If the buffer isn't in use, we should be able to
-			 * write it immediately, so save a reference to it.
+			 * write it immediately, so increment the reference
+			 * count to lock it and its contents down, and then
+			 * save a reference to it.
+			 *
+			 * If we've run out space to store buffer references,
+			 * we're screwed.  We don't want to realloc the array
+			 * while holding a region lock, so we set the flag to
+			 * force the checkpoint to be done again, from scratch,
+			 * later.
 			 */
 			if (bhp->ref == 0) {
-				if (ar_cnt == nalloc) {
-					nalloc *= 2;
-					if ((ret = __os_realloc(&bharray,
-					    nalloc * sizeof(BH *))) != 0)
-						goto err;
+				++bhp->ref;
+				bharray[ar_cnt] = bhp;
+				if (++ar_cnt >= nalloc) {
+					F_SET(mp, MP_LSN_RETRY);
+					break;
 				}
-				bharray[ar_cnt++] = bhp;
 			}
 		} else
 			if (F_ISSET(bhp, BH_WRITE))
@@ -152,10 +162,6 @@ memp_sync(dbmp, lsnp)
 		ret = mp->lsn_cnt ? DB_INCOMPLETE : 0;
 		goto done;
 	}
-
-	/* Lock down the buffers and their contents. */
-	for (cnt = 0; cnt < ar_cnt; ++cnt)
-		++bharray[cnt]->ref;
 
 	UNLOCKREGION(dbmp);
 
@@ -204,7 +210,8 @@ memp_sync(dbmp, lsnp)
 			goto err;
 		}
 	}
-	ret = mp->lsn_cnt ? DB_INCOMPLETE : 0;
+	ret = mp->lsn_cnt != 0 ||
+	    F_ISSET(mp, MP_LSN_RETRY) ? DB_INCOMPLETE : 0;
 
 done:
 	if (0) {
@@ -301,22 +308,27 @@ __memp_fsync(dbmfp)
 {
 	BH *bhp, **bharray;
 	DB_MPOOL *dbmp;
+	MPOOL *mp;
 	size_t mf_offset;
-	int ar_cnt, cnt, nalloc, next, pincnt, ret, wrote;
+	int ar_cnt, incomplete, nalloc, next, ret, wrote;
 
 	ret = 0;
 	dbmp = dbmfp->dbmp;
+	mp = dbmp->mp;
 	mf_offset = R_OFFSET(dbmp, dbmfp->mfp);
 
 	/*
-	 * We try and write the buffers in page order so that the underlying
-	 * filesystem doesn't have to seek and can write contiguous blocks,
-	 * plus, we don't want to hold the region lock while we write the
-	 * buffers.  Get memory to hold the buffer pointers.  Get a good-size
-	 * block, too, because we realloc while holding the region lock if we
-	 * run out.
+	 * We try and write the buffers in page order: it should reduce seeks
+	 * by the underlying filesystem and possibly reduce the actual number
+	 * of writes.  We don't want to hold the region lock while we write
+	 * the buffers, so only hold it lock while we create a list.  Get a
+	 * good-size block of memory to hold buffer pointers, we don't want
+	 * to run out.
 	 */
-	nalloc = 1024;
+	LOCKREGION(dbmp);
+	nalloc = mp->stat.st_page_dirty + mp->stat.st_page_dirty / 2 + 10;
+	UNLOCKREGION(dbmp);
+
 	if ((ret = __os_malloc(nalloc * sizeof(BH *), NULL, &bharray)) != 0)
 		return (ret);
 
@@ -326,34 +338,37 @@ __memp_fsync(dbmfp)
 	 * Walk the LRU list of buffer headers, and get a list of buffers to
 	 * write for this MPOOLFILE.
 	 */
-	ar_cnt = pincnt = 0;
-	for (bhp = SH_TAILQ_FIRST(&dbmp->mp->bhq, __bh);
+	ar_cnt = incomplete = 0;
+	for (bhp = SH_TAILQ_FIRST(&mp->bhq, __bh);
 	    bhp != NULL; bhp = SH_TAILQ_NEXT(bhp, q, __bh)) {
 		if (!F_ISSET(bhp, BH_DIRTY) || bhp->mf_offset != mf_offset)
 			continue;
 		if (bhp->ref != 0 || F_ISSET(bhp, BH_LOCKED)) {
-			++pincnt;
+			incomplete = 1;
 			continue;
 		}
 
-		if (ar_cnt == nalloc) {
-			nalloc *= 2;
-			if ((ret =
-			    __os_realloc(&bharray, nalloc * sizeof(BH *))) != 0)
-				goto err;
+		++bhp->ref;
+		bharray[ar_cnt] = bhp;
+
+		/*
+		 * If we've run out space to store buffer references, we're
+		 * screwed, as we don't want to realloc the array holding a
+		 * region lock.  Set the incomplete flag -- the only way we
+		 * can get here is if the file is active in the buffer cache,
+		 * which is the same thing as finding pinned buffers.
+		 */
+		if (++ar_cnt >= nalloc) {
+			incomplete = 1;
+			break;
 		}
-
-		bharray[ar_cnt++] = bhp;
 	}
-
-	/* Lock down the buffers and their contents. */
-	for (cnt = 0; cnt < ar_cnt; ++cnt)
-		++bharray[cnt]->ref;
 
 	UNLOCKREGION(dbmp);
 
 	/* Sort the buffers we're going to write. */
-	qsort(bharray, ar_cnt, sizeof(BH *), __bhcmp);
+	if (ar_cnt != 0)
+		qsort(bharray, ar_cnt, sizeof(BH *), __bhcmp);
 
 	LOCKREGION(dbmp);
 
@@ -363,11 +378,10 @@ __memp_fsync(dbmfp)
 		 * It's possible for a thread to have gotten the buffer since
 		 * we listed it for writing.  If the reference count is still
 		 * 1, we're the only ones using the buffer, go ahead and write.
-		 * If it's >1, then skip the buffer and assume that it will be
-		 * written when it's returned to the cache.
+		 * If it's >1, then skip the buffer.
 		 */
 		if (bharray[next]->ref > 1) {
-			++pincnt;
+			incomplete = 1;
 
 			--bharray[next]->ref;
 			continue;
@@ -385,8 +399,13 @@ __memp_fsync(dbmfp)
 				--bharray[next]->ref;
 			goto err;
 		}
+
+		/*
+		 * If we didn't write the buffer for some reason, don't return
+		 * success.
+		 */
 		if (!wrote)
-			++pincnt;
+			incomplete = 1;
 	}
 
 err:	UNLOCKREGION(dbmp);
@@ -402,7 +421,7 @@ err:	UNLOCKREGION(dbmp);
 	 * issues.
 	 */
 	if (ret == 0)
-		return (pincnt == 0 ? __os_fsync(dbmfp->fd) : DB_INCOMPLETE);
+		return (incomplete ? DB_INCOMPLETE : __os_fsync(dbmfp->fd));
 	return (ret);
 }
 
@@ -508,6 +527,14 @@ __bhcmp(p1, p2)
 	if (bhp1->mf_offset > bhp2->mf_offset)
 		return (1);
 
-	/* Sort by page in file. */
-	return (bhp1->pgno < bhp2->pgno ? -1 : 1);
+	/*
+	 * !!!
+	 * Defend against badly written quicksort code calling the comparison
+	 * function with two identical pointers (e.g., WATCOM C++ (Power++)).
+	 */
+	if (bhp1->pgno < bhp2->pgno)
+		return (-1);
+	if (bhp1->pgno > bhp2->pgno)
+		return (1);
+	return (0);
 }

@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)bt_cursor.c	10.74 (Sleepycat) 10/29/98";
+static const char sccsid[] = "@(#)bt_cursor.c	10.81 (Sleepycat) 12/16/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -22,6 +22,10 @@ static const char sccsid[] = "@(#)bt_cursor.c	10.74 (Sleepycat) 10/29/98";
 #include "db_int.h"
 #include "db_page.h"
 #include "btree.h"
+#include "shqueue.h"
+#include "db_shash.h"
+#include "lock.h"
+#include "lock_ext.h"
 
 static int __bam_c_close __P((DBC *));
 static int __bam_c_del __P((DBC *, u_int32_t));
@@ -62,17 +66,22 @@ static int __bam_dupnodel __P((DBC *, CURSOR *, u_int32_t));
 	B_DISSET(GET_BKEYDATA((cp)->page, (indx))->type)))
 
 /*
- * Test to see if two cursors could point to duplicates of the same key.
- * The main page must be the same for both on-page and off-page duplicate
- * sets.  The main indx must be the same for off-page duplicate sets, and
- * the key offset must be the same for on-page duplicate sets.
+ * Test to see if two cursors could point to duplicates of the same key,
+ * whether on-page or off-page.  The leaf page numbers must be the same
+ * in both cases.  In the case of off-page duplicates, the key indices
+ * on the leaf page will be the same.  In the case of on-page duplicates,
+ * the duplicate page number must not be set, and the key index offsets
+ * must be the same.  For the last test, as the saved copy of the cursor
+ * will not have a valid page pointer, we use the cursor's.
  */
 #undef	POSSIBLE_DUPLICATE
-#define	POSSIBLE_DUPLICATE(c1, c2)					\
-	((c1)->pgno == (c2)->pgno &&					\
-	((c1)->indx == (c2)->indx ||					\
-	(PGNO((c1)->page) == PGNO((c2)->page) &&			\
-	(c1)->page->inp[(c1)->indx] == (c2)->page->inp[(c2)->indx])))
+#define	POSSIBLE_DUPLICATE(cursor, saved_copy)				\
+	((cursor)->pgno == (saved_copy).pgno &&				\
+	((cursor)->indx == (saved_copy).indx ||				\
+	((cursor)->dpgno == PGNO_INVALID &&				\
+	    (saved_copy).dpgno == PGNO_INVALID &&			\
+	    (cursor)->page->inp[(cursor)->indx] ==			\
+	    (cursor)->page->inp[(saved_copy).indx])))
 
 /*
  * __bam_c_reset --
@@ -167,8 +176,11 @@ __bam_c_close(dbc)
 	cp = dbc->internal;
 	ret = 0;
 
-	/* If a cursor key was deleted, perform the actual deletion.  */
-	if (F_ISSET(cp, C_DELETED))
+	/*
+	 * If a cursor deleted a btree key, perform the actual deletion.
+	 * (Recno keys are either deleted immediately or never deleted.)
+	 */
+	if (dbp->type == DB_BTREE && F_ISSET(cp, C_DELETED))
 		ret = __bam_c_physdel(dbc, cp, NULL);
 
 	/* Discard any locks not acquired inside of a transaction. */
@@ -180,8 +192,7 @@ __bam_c_close(dbc)
 	/* Sanity checks. */
 #ifdef DIAGNOSTIC
 	if (cp->csp != cp->stack)
-		__db_err(dbp->dbenv,
-		    "btree cursor close: stack not empty");
+		__db_err(dbp->dbenv, "btree cursor close: stack not empty");
 #endif
 
 	/* Initialize dynamic information. */
@@ -232,10 +243,18 @@ __bam_c_del(dbc, flags)
 	    F_ISSET(dbp, DB_AM_RDONLY), cp->pgno != PGNO_INVALID)) != 0)
 		return (ret);
 
+	/*
+	 * If we are running CDB, this had better be either a write
+	 * cursor or an immediate writer.
+	 */
+	if (F_ISSET(dbp, DB_AM_CDB))
+		if (!F_ISSET(dbc, DBC_RMW | DBC_WRITER))
+			return (EINVAL);
+
 	DEBUG_LWRITE(dbc, dbc->txn, "bam_c_del", NULL, NULL, flags);
 
 	/* If already deleted, return failure. */
-	if (F_ISSET(cp, C_DELETED | C_REPLACE))
+	if (F_ISSET(cp, C_DELETED))
 		return (DB_KEYEMPTY);
 
 	/*
@@ -284,7 +303,7 @@ __bam_c_del(dbc, flags)
 		B_DSET(GET_BKEYDATA(h, indx + O_INDX)->type);
 	else
 		B_DSET(GET_BKEYDATA(h, indx)->type);
-	(void)__bam_ca_delete(dbp, pgno, indx, NULL);
+	(void)__bam_ca_delete(dbp, pgno, indx, 1);
 
 	ret = memp_fput(dbp->mpf, h, DB_MPOOL_DIRTY);
 	h = NULL;
@@ -292,7 +311,7 @@ __bam_c_del(dbc, flags)
 	/*
 	 * If the tree has record numbers, we have to adjust the counts.
 	 *
-	 * XXX
+	 * !!!
 	 * This test is right -- we don't yet support duplicates and record
 	 * numbers in the same tree, so ignore duplicates if DB_BT_RECNUM
 	 * set.
@@ -320,10 +339,10 @@ __bam_c_get(dbc, key, data, flags)
 	DBT *key, *data;
 	u_int32_t flags;
 {
-	CURSOR *cp, copy, cur;
+	CURSOR *cp, copy, start;
 	DB *dbp;
 	PAGE *h;
-	int exact, ret;
+	int exact, ret, tmp_rmw;
 
 	dbp = dbc->dbp;
 	cp = dbc->internal;
@@ -336,8 +355,12 @@ __bam_c_get(dbc, key, data, flags)
 		return (ret);
 
 	/* Clear OR'd in additional bits so we can check for flag equality. */
+	tmp_rmw = 0;
 	if (LF_ISSET(DB_RMW)) {
-		F_SET(dbc, DBC_RMW);
+		if (!F_ISSET(dbp, DB_AM_CDB)) {
+			tmp_rmw = 1;
+			F_SET(dbc, DBC_RMW);
+		}
 		LF_CLR(DB_RMW);
 	}
 
@@ -345,34 +368,32 @@ __bam_c_get(dbc, key, data, flags)
 	    flags == DB_SET || flags == DB_SET_RANGE ? key : NULL, NULL, flags);
 
 	/*
-	 * Break out the code to return a cursor's record number.  It
-	 * has nothing to do with the cursor get code except that it's
-	 * been rammed into the interface.
+	 * Return a cursor's record number.  It has nothing to do with the
+	 * cursor get code except that it's been rammed into the interface.
 	 */
-	if (flags == DB_GET_RECNO)
-		return (__bam_c_rget(dbc, data, flags));
+	if (flags == DB_GET_RECNO) {
+		ret = __bam_c_rget(dbc, data, flags);
+		if (tmp_rmw)
+			F_CLR(dbc, DBC_RMW);
+		return (ret);
+	}
 
-	/* Initialize the cursor for a new retrieval. */
-	copy = *cp;
+	/*
+	 * Initialize the cursor for a new retrieval.  Clear the cursor's
+	 * page pointer, it was set before this operation, and no longer
+	 * has any meaning.
+	 */
 	cp->page = NULL;
+	copy = *cp;
 	cp->lock = LOCK_INVALID;
 
 	switch (flags) {
 	case DB_CURRENT:
-		/*
-		 * It's not possible to return a deleted record.
-		 *
-		 * !!!
-		 * Don't go to the err label in this case -- we don't want
-		 * to release the lock because it's the original one.
-		 *
-		 * XXX
-		 * THIS IS A BUG -- WE NEED TO COPY THE LOCK INTO THE CURSOR
-		 * WITH A FLAG NOT TO RELEASE IT.  IF THE memp_fget() CALL
-		 * IMMEDIATELY AFTER THIS FAILS, WE WILL RELEASE THE WRONG LOCK.
-		 */
-		if (F_ISSET(cp, C_DELETED | C_REPLACE))
-			return (DB_KEYEMPTY);
+		/* It's not possible to return a deleted record. */
+		if (F_ISSET(cp, C_DELETED)) {
+			ret = DB_KEYEMPTY;
+			goto err;
+		}
 
 		/* Get the page with the current item on it. */
 		if ((ret = memp_fget(dbp->mpf,
@@ -389,7 +410,7 @@ __bam_c_get(dbc, key, data, flags)
 			goto err;
 
 		/* Make sure we didn't go past the end of the duplicates. */
-		if (!POSSIBLE_DUPLICATE(cp, &copy)) {
+		if (!POSSIBLE_DUPLICATE(cp, copy)) {
 			ret = DB_NOTFOUND;
 			goto err;
 		}
@@ -425,10 +446,10 @@ __bam_c_get(dbc, key, data, flags)
 		 * non-deleted record.  Check to make sure that we're didn't
 		 * switch records because there were no non-deleted entries.
 		 */
-		cur = *cp;
+		start = *cp;
 		if ((ret = __bam_dupnodel(dbc, cp, cp->indx)) != 0)
 			goto err;
-		if (!POSSIBLE_DUPLICATE(cp, &cur)) {
+		if (!POSSIBLE_DUPLICATE(cp, start)) {
 			ret = DB_NOTFOUND;
 			goto err;
 		}
@@ -516,20 +537,28 @@ __bam_c_get(dbc, key, data, flags)
 		goto err;
 
 	/*
-	 * If the previous cursor record has been deleted, delete it.  The
-	 * returned key isn't a deleted key, so clear the flag.
+	 * If the previous cursor record has been deleted, physically delete
+	 * the entry from the page.  We clear the deleted flag before we call
+	 * the underlying delete routine so that, if an error occurs, and we
+	 * restore the cursor, the deleted flag is cleared.  This is because,
+	 * if we manage to physically modify the page, and then restore the
+	 * cursor, we might try to repeat the page modification when closing
+	 * the cursor.
 	 */
-	if (F_ISSET(&copy, C_DELETED) &&
-	    (ret = __bam_c_physdel(dbc, &copy, cp->page)) != 0)
-		goto err;
-	F_CLR(cp, C_DELETED | C_REPLACE);
+	if (F_ISSET(&copy, C_DELETED)) {
+		F_CLR(&copy, C_DELETED);
+		if ((ret = __bam_c_physdel(dbc, &copy, cp->page)) != 0)
+			goto err;
+	}
+	F_CLR(cp, C_DELETED);
 
-	/* Release the previous lock, if any. */
+	/* Release the previous lock, if any; the current lock is retained. */
 	if (copy.lock != LOCK_INVALID)
 		(void)__BT_TLPUT(dbc, copy.lock);
 
-	/* Release the pinned page. */
-	ret = memp_fput(dbp->mpf, cp->page, 0);
+	/* Release the current page. */
+	if ((ret = memp_fput(dbp->mpf, cp->page, 0)) != 0)
+		goto err;
 
 	if (0) {
 err:		if (cp->page != NULL)
@@ -538,6 +567,10 @@ err:		if (cp->page != NULL)
 			(void)__BT_TLPUT(dbc, cp->lock);
 		*cp = copy;
 	}
+
+	/* Release temporary lock upgrade. */
+	if (tmp_rmw)
+		F_CLR(dbc, DBC_RMW);
 
 	return (ret);
 }
@@ -624,7 +657,7 @@ __bam_dsearch(dbc, cp, data, iflagp)
 		 * Make sure we didn't go past the end of the duplicates.  The
 		 * error conditions are the same as above.
 		 */
-		if (!POSSIBLE_DUPLICATE(cp, &copy)) {
+		if (!POSSIBLE_DUPLICATE(cp, copy)) {
 			if (iflagp == NULL)
 				 return (DB_NOTFOUND);
 use_last:		*cp = last;
@@ -666,7 +699,9 @@ __bam_c_rget(dbc, data, flags)
 		goto err;
 
 	exact = 1;
-	if ((ret = __bam_search(dbc, &dbt, S_FIND, 1, &recno, &exact)) != 0)
+	if ((ret = __bam_search(dbc, &dbt,
+	    F_ISSET(dbc, DBC_RMW) ? S_FIND_WR : S_FIND,
+	    1, &recno, &exact)) != 0)
 		goto err;
 
 	ret = __db_retcopy(data, &recno, sizeof(recno),
@@ -695,7 +730,7 @@ __bam_c_put(dbc, key, data, flags)
 	DBT dbt;
 	db_indx_t indx;
 	db_pgno_t pgno;
-	u_int32_t iiflags;
+	u_int32_t iiflags, iiop;
 	int exact, needkey, ret, stack;
 	void *arg;
 
@@ -712,10 +747,22 @@ __bam_c_put(dbc, key, data, flags)
 	    F_ISSET(dbp, DB_AM_RDONLY), cp->pgno != PGNO_INVALID)) != 0)
 		return (ret);
 
-	/* Initialize the cursor for a new retrieval. */
-	copy = *cp;
-	cp->page = NULL;
-	cp->lock = LOCK_INVALID;
+	/*
+	 * If we are running CDB, this had better be either a write
+	 * cursor or an immediate writer.  If it's a regular writer,
+	 * that means we have an IWRITE lock and we need to upgrade
+	 * it to a write lock.
+	 */
+	if (F_ISSET(dbp, DB_AM_CDB)) {
+		if (!F_ISSET(dbc, DBC_RMW | DBC_WRITER))
+			return (EINVAL);
+
+		if (F_ISSET(dbc, DBC_RMW) &&
+		    (ret = lock_get(dbp->dbenv->lk_info, dbc->locker,
+		    DB_LOCK_UPGRADE, &dbc->lock_dbt, DB_LOCK_WRITE,
+		    &dbc->mylock)) != 0)
+			return (EAGAIN);
+	}
 
 	if (0) {
 split:		/*
@@ -736,23 +783,39 @@ split:		/*
 		/*
 		 * Discard any locks and pinned pages (the locks are discarded
 		 * even if we're running with transactions, as they lock pages
-		 * that we're sorry we ever locked).  If stack is set and the
+		 * that we're sorry we ever acquired).  If stack is set and the
 		 * cursor entries are valid, they point to the same entries as
 		 * the stack, don't free them twice.
 		 */
 		if (stack) {
 			(void)__bam_stkrel(dbc, 1);
 			stack = 0;
-			cp->page = NULL;
-			cp->lock = LOCK_INVALID;
 		} else
 			DISCARD(dbc, cp);
+
+		/*
+		 * Restore the cursor to its original value.  This is necessary
+		 * for two reasons.  First, we are about to copy it in case of
+		 * error, again.  Second, we adjust cursors during the split,
+		 * and we have to ensure this cursor is adjusted appropriately,
+		 * along with all the other cursors.
+		 */
+		*cp = copy;
 
 		if ((ret = __bam_split(dbc, arg)) != 0)
 			goto err;
 	}
 
-	needkey = ret = stack = 0;
+	/*
+	 * Initialize the cursor for a new retrieval.  Clear the cursor's
+	 * page pointer, it was set before this operation, and no longer
+	 * has any meaning.
+	 */
+	cp->page = NULL;
+	copy = *cp;
+	cp->lock = LOCK_INVALID;
+
+	iiflags = needkey = ret = stack = 0;
 	switch (flags) {
 	case DB_AFTER:
 	case DB_BEFORE:
@@ -767,7 +830,7 @@ split:		/*
 		}
 
 		/*
-		 * XXX
+		 * !!!
 		 * This test is right -- we don't yet support duplicates and
 		 * record numbers in the same tree, so ignore duplicates if
 		 * DB_BT_RECNUM set.
@@ -805,8 +868,7 @@ split:		/*
 				goto err;
 			}
 
-		ret = __bam_iitem(dbc,
-		    &cp->page, &indx, key, data, flags, iiflags);
+		iiop = flags;
 		break;
 	case DB_KEYFIRST:
 	case DB_KEYLAST:
@@ -825,6 +887,9 @@ split:		/*
 
 		/*
 		 * If an exact match:
+		 *	If duplicates aren't supported, replace the current
+		 *	item.  (When implementing the DB->put function, our
+		 *	caller has already checked the DB_NOOVERWRITE flag.)
 		 *
 		 *	If there's a duplicate comparison function, find the
 		 *	correct slot for this duplicate item.
@@ -836,13 +901,7 @@ split:		/*
 		 * smallest slot greater than the key, use it.
 		 */
 		if (exact) {
-			/*
-			 * If duplicates aren't supported, replace the current
-			 * item.
-			 */
-			if (!F_ISSET(dbp, DB_AM_DUP))
-				iiflags = DB_CURRENT;
-			else {
+			if (F_ISSET(dbp, DB_AM_DUP)) {
 				/*
 				 * If at off-page duplicate page, move to the
 				 * first or last entry -- if a comparison
@@ -861,26 +920,54 @@ split:		/*
 				 * flag based on the argment flag.
 				 */
 				if (dbp->dup_compare == NULL)
-					iiflags = flags == DB_KEYFIRST ?
+					iiop = flags == DB_KEYFIRST ?
 					    DB_BEFORE : DB_AFTER;
 				else
 					if ((ret = __bam_dsearch(dbc,
-					    cp, data, &iiflags)) != 0)
+					    cp, data, &iiop)) != 0)
 						goto err;
-			}
-		} else
-			iiflags = DB_BEFORE;
+			} else
+				iiop = DB_CURRENT;
+			iiflags = 0;
+		} else {
+			iiop = DB_BEFORE;
+			iiflags = BI_NEWKEY;
+		}
 
-		indx = cp->dpgno == PGNO_INVALID ? cp->indx : cp->dindx;
-		ret = __bam_iitem(dbc, &cp->page,
-		    &indx, key, data, iiflags, exact ? 0 : BI_NEWKEY);
+		if (cp->dpgno == PGNO_INVALID) {
+			pgno = cp->pgno;
+			indx = cp->indx;
+		} else {
+			pgno = cp->dpgno;
+			indx = cp->dindx;
+		}
 		break;
 	}
+
+	ret = __bam_iitem(dbc, &cp->page, &indx, key, data, iiop, iiflags);
 
 	if (ret == DB_NEEDSPLIT)
 		goto split;
 	if (ret != 0)
 		goto err;
+
+	/*
+	 * Reset any cursors referencing this item that might have the item
+	 * marked for deletion.
+	 */
+	if (iiop == DB_CURRENT) {
+		(void)__bam_ca_delete(dbp, pgno, indx, 0);
+
+		/*
+		 * It's also possible that we are the cursor that had the
+		 * item marked for deletion, in which case we want to make
+		 * sure that we don't delete it because we had the delete
+		 * flag set already.
+		 */
+		if (cp->pgno == copy.pgno && cp->indx == copy.indx &&
+		    cp->dpgno == copy.dpgno && cp->dindx == copy.dindx)
+			F_CLR(&copy, C_DELETED);
+	}
 
 	/*
 	 * Update the cursor to point to the new entry.  The new entry was
@@ -893,15 +980,22 @@ split:		/*
 		cp->dindx = indx;
 
 	/*
-	 * If the previous cursor record has been deleted, delete it.  The
-	 * returned key isn't a deleted key, so clear the flag.
+	 * If the previous cursor record has been deleted, physically delete
+	 * the entry from the page.  We clear the deleted flag before we call
+	 * the underlying delete routine so that, if an error occurs, and we
+	 * restore the cursor, the deleted flag is cleared.  This is because,
+	 * if we manage to physically modify the page, and then restore the
+	 * cursor, we might try to repeat the page modification when closing
+	 * the cursor.
 	 */
-	if (F_ISSET(&copy, C_DELETED) &&
-	    (ret = __bam_c_physdel(dbc, &copy, cp->page)) != 0)
-		goto err;
-	F_CLR(cp, C_DELETED | C_REPLACE);
+	if (F_ISSET(&copy, C_DELETED)) {
+		F_CLR(&copy, C_DELETED);
+		if ((ret = __bam_c_physdel(dbc, &copy, cp->page)) != 0)
+			goto err;
+	}
+	F_CLR(cp, C_DELETED);
 
-	/* Release the previous lock, if any. */
+	/* Release the previous lock, if any; the current lock is retained. */
 	if (copy.lock != LOCK_INVALID)
 		(void)__BT_TLPUT(dbc, copy.lock);
 
@@ -916,6 +1010,7 @@ split:		/*
 	if (stack && BT_STK_POP(cp) != NULL)
 		(void)__bam_stkrel(dbc, 0);
 
+	/* Release the current page. */
 	if ((ret = memp_fput(dbp->mpf, cp->page, 0)) != 0)
 		goto err;
 
@@ -927,6 +1022,10 @@ err:		/* Discard any pinned pages. */
 			DISCARD(dbc, cp);
 		*cp = copy;
 	}
+
+	if (F_ISSET(dbc, DBC_RMW))
+		(void)__lock_downgrade(dbp->dbenv->lk_info, dbc->mylock,
+		    DB_LOCK_IWRITE, 0);
 
 	return (ret);
 }
@@ -1551,11 +1650,27 @@ __bam_c_physdel(dbc, cp, h)
 	}
 
 	/*
-	 * If the item is referenced by another cursor, leave it up to that
-	 * cursor to do the delete.
+	 * If the item is referenced by another cursor, set that cursor's
+	 * delete flag and leave it up to it to do the delete.
+	 *
+	 * !!!
+	 * This test for > 0 is a tricky.  There are two ways that we can
+	 * be called here.  Either we are closing the cursor or we've moved
+	 * off the page with the deleted entry.  In the first case, we've
+	 * already removed the cursor from the active queue, so we won't see
+	 * it in __bam_ca_delete. In the second case, it will be on a different
+	 * item, so we won't bother with it in __bam_ca_delete.
 	 */
-	if (__bam_ca_delete(dbp, pgno, indx, cp) != 0)
+	if (__bam_ca_delete(dbp, pgno, indx, 1) > 0)
 		return (0);
+
+	/*
+	 * If this is concurrent DB, upgrade the lock if necessary.
+	 */
+	if (F_ISSET(dbc, DBC_RMW) && (ret = lock_get(dbp->dbenv->lk_info,
+	    dbc->locker, DB_LOCK_UPGRADE, &dbc->lock_dbt, DB_LOCK_WRITE,
+	    &dbc->mylock)) != 0)
+		return (EAGAIN);
 
 	/*
 	 * If we don't already have the page locked, get it and delete the
@@ -1690,7 +1805,7 @@ btd:	/*
 	 * set them is because we're (potentially) about to do a reverse split,
 	 * which would make our saved page information useless.
 	 *
-	 * XXX
+	 * !!!
 	 * The following operations to delete a page might deadlock.  I think
 	 * that's OK.  The problem is if we're deleting an item because we're
 	 * closing cursors because we've already deadlocked and want to call
@@ -1709,7 +1824,7 @@ btd:	/*
 	/*
 	 * Do a normal btree delete.
 	 *
-	 * XXX
+	 * !!!
 	 * Delete the key item first, otherwise the duplicate checks in
 	 * __bam_ditem() won't work!
 	 */
@@ -1734,9 +1849,18 @@ done:	if (delete_page)
 		__os_free(dbt.data, dbt.size);
 
 	if (local_page) {
-		(void)memp_fput(dbp->mpf, h, 0);
+		/*
+		 * It's possible for h to be NULL, as __db_drem may have
+		 * been relinking pages by the time that it deadlocked.
+		 */
+		if (h != NULL)
+			(void)memp_fput(dbp->mpf, h, 0);
 		(void)__BT_TLPUT(dbc, lock);
 	}
+
+	if (F_ISSET(dbp, DB_AM_CDB) && F_ISSET(dbc, DBC_RMW))
+		(void)__lock_downgrade(dbp->dbenv->lk_info, dbc->mylock,
+		    DB_LOCK_IWRITE, 0);
 
 	return (ret);
 }

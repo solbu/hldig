@@ -1,3 +1,7 @@
+/*
+ *	@(#)acconfig.h	8.31 (Sleepycat) 12/14/98
+ */
+
 /* Define to `int' if <sys/types.h> doesn't define.  */
 #undef ssize_t
 
@@ -10,16 +14,8 @@
 /* Define if you have sigfillset (and sigprocmask). */
 #undef HAVE_SIGFILLSET
 
-/*
- * Define if building on AIX, HP, Solaris to get big-file environment.
- *
- * XXX: _LARGE_FILES is for AIX.
- */
-#undef	HAVE_FILE_OFFSET_BITS
-#ifdef	HAVE_FILE_OFFSET_BITS
-#define	_LARGE_FILES
-#define	_FILE_OFFSET_BITS	64
-#endif
+/* Define if building big-file environment (e.g., Solaris, HP/UX). */
+#undef HAVE_FILE_OFFSET_BITS
 
 /* Define if you have spinlocks. */
 #undef HAVE_SPINLOCKS
@@ -57,8 +53,27 @@
 /* Define if you have the Solaris mutex_t spinlocks. */
 #undef HAVE_FUNC_SOLARIS
 
-/* Define if you have to initialize the entire shared region. */
-#undef REGION_INIT_NEEDED
-
 /* Define if your sprintf returns a pointer, not a length. */
 #undef SPRINTF_RET_CHARPNT
+
+@BOTTOM@
+
+/*
+ * Don't step on the namespace.  Also, other libraries have real snprintf(3)
+ * implementations, don't want to override them just because they're loaded
+ * after us.
+ */
+#ifndef HAVE_SNPRINTF
+#define	snprintf	__db_snprintf
+#endif
+#ifndef HAVE_VSNPRINTF
+#define	vsnprintf	__db_vsnprintf
+#endif
+
+/*
+ * Big-file configuration.
+ */
+#ifdef	HAVE_FILE_OFFSET_BITS
+#define	_LARGE_FILES				/* AIX specific. */
+#define	_FILE_OFFSET_BITS	64
+#endif

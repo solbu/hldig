@@ -4,7 +4,7 @@
  * Copyright (c) 1996, 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)db_am.h	10.14 (Sleepycat) 9/25/98
+ *	@(#)db_am.h	10.15 (Sleepycat) 11/22/98
  */
 #ifndef _DB_AM_H
 #define _DB_AM_H
@@ -43,7 +43,7 @@
 	}								\
 	if (file_dbp == NULL)						\
 		goto out;						\
-	if ((ret = file_dbp->cursor(file_dbp, NULL, &dbc)) != 0)	\
+	if ((ret = file_dbp->cursor(file_dbp, NULL, &dbc, 0)) != 0)	\
 		goto out;						\
 	F_SET(dbc, DBC_RECOVER);					\
 	mpf = file_dbp->mpf;						\

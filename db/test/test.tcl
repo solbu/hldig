@@ -3,7 +3,7 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)test.tcl	10.39 (Sleepycat) 11/4/98
+#	@(#)test.tcl	10.41 (Sleepycat) 12/11/98
 
 source ./include.tcl
 source ../test/testutils.tcl
@@ -57,6 +57,8 @@ set parms(test038) 10000
 set parms(test039) 10000
 set parms(test040) 10000
 set parms(test041) 100
+set parms(test042) 1000
+set parms(test043) 10000
 
 set dict ../test/wordlist
 set alphabet "abcdefghijklmnopqrstuvwxyz"
@@ -64,8 +66,8 @@ set alphabet "abcdefghijklmnopqrstuvwxyz"
 set recd_debug	0
 set recd_prefix	"db_recover: Finding last valid log LSN"
 
-set loadtests 45
-set runtests 41
+set loadtests 46
+set runtests 43
 set recdtests 5
 set deadtests 2
 set bugtests 7

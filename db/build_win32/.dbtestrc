@@ -4,7 +4,7 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)test.tcl	10.38 (Sleepycat) 10/9/98
+#	@(#)test.tcl	10.41 (Sleepycat) 12/11/98
 
 source ./include.tcl
 source ../test/testutils.tcl
@@ -58,6 +58,8 @@ set parms(test038) 10000
 set parms(test039) 10000
 set parms(test040) 10000
 set parms(test041) 100
+set parms(test042) 1000
+set parms(test043) 10000
 
 set dict ../test/wordlist
 set alphabet "abcdefghijklmnopqrstuvwxyz"
@@ -65,8 +67,8 @@ set alphabet "abcdefghijklmnopqrstuvwxyz"
 set recd_debug	0
 set recd_prefix	"db_recover: Finding last valid log LSN"
 
-set loadtests 45
-set runtests 41
+set loadtests 46
+set runtests 43
 set recdtests 5
 set deadtests 2
 set bugtests 7
@@ -151,11 +153,9 @@ source ./include.tcl
 			eval dead001 [lrange $args 1 end]
 			eval dead002 [lrange $args 1 end]
 		}
-		join {
-			eval jointest
-			eval jointest 512
-			eval jointest 8192 $DB_JOIN_ITEM
-		}
+		join1 { eval jointest }
+		join2 { eval jointest 512 }
+		join3 {	eval jointest 8192 $DB_JOIN_ITEM }
 		hsearch { eval htest }
 		lock { eval locktest [lrange $args 1 end] }
 		log { eval logtest [lrange $args 1 end] }
@@ -226,10 +226,12 @@ global recdtests
 	}
 
 	# Run join test
-	if [catch {exec ./dbtest << "r join" >>& ALL.OUT } res] {
-		set o [open ALL.OUT a]
-		puts $o "FAIL: $i test"
-		close $o
+	foreach i "join1 join2 join3" {
+		if [catch {exec ./dbtest << "r $i" >>& ALL.OUT } res] {
+			set o [open ALL.OUT a]
+			puts $o "FAIL: $i test"
+			close $o
+		}
 	}
 
 	# Run recovery tests

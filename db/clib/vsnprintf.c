@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)vsnprintf.c	10.3 (Sleepycat) 9/20/98";
+static const char sccsid[] = "@(#)vsnprintf.c	10.5 (Sleepycat) 12/14/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -21,6 +21,8 @@ static const char sccsid[] = "@(#)vsnprintf.c	10.3 (Sleepycat) 9/20/98";
 #include <varargs.h>
 #endif
 #endif
+
+#include "db_int.h"
 
 /*
  * vsnprintf --
@@ -38,6 +40,8 @@ vsnprintf(str, n, fmt, ap)
 	const char *fmt;
 	va_list ap;
 {
+	COMPQUIET(n, 0);
+
 #ifdef SPRINTF_RET_CHARPNT
 	(void)vsprintf(str, fmt, ap);
 	return (strlen(str));

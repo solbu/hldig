@@ -1,14 +1,15 @@
-<! "@(#)logrec.so	10.8 (Sleepycat) 10/27/98">
+<! "@(#)logrec.so	10.9 (Sleepycat) 12/10/98">
+<!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
 <head>
-<title>Berkeley DB Programmer's Reference: Access Methods</title>
-<meta name="description" content="DB: A database programmatic toolkit.">
+<title>Berkeley DB Reference Guide: Access Methods</title>
+<meta name="description" content="Berkeley DB: An embedded database programmatic toolkit.">
 <meta name="keywords" content="embedded,database,programmatic,toolkit,b+tree,btr
 ee,hash,hashing,transaction,transactions,locking,logging,access method,access me
 thods,java,C,C++">
 </head>
-<h3>Berkeley DB Programmer's Reference: Access Methods</h3>
+<h3>Berkeley DB Reference Guide: Access Methods</h3>
 <p>
 <h1 align=center>Logical record numbers</h1>
 <p>
@@ -32,7 +33,9 @@ are deleted or inserted, the logical record number for other records in
 the database can change.  The Recno access method can be configured to
 run in either mutable or fixed mode: mutable, where logical record numbers
 change as records are deleted or inserted, and fixed, where record numbers
-never change regardless of the database operation.
+never change regardless of the database operation.  (See
+<a href="../../ref/am/renumber.html">Logically renumbering records (DB_RENUMBER)</a>
+for more information.
 <p>
 Configuring Btree databases to support record numbers can severely limit
 the throughput of applications with multiple concurrent threads writing

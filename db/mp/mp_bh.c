@@ -7,7 +7,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)mp_bh.c	10.43 (Sleepycat) 10/3/98";
+static const char sccsid[] = "@(#)mp_bh.c	10.45 (Sleepycat) 11/25/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -195,7 +195,7 @@ __memp_pgread(dbmfp, bhp, can_create)
 		else {
 			/* If we had a short read, ret may be 0. */
 			if (ret == 0)
-				ret = EINVAL;
+				ret = EIO;
 			__db_err(dbmp->dbenv,
 			    "%s: page %lu doesn't exist, create flag not set",
 			    __memp_fn(dbmfp), (u_long)bhp->pgno);
@@ -215,7 +215,7 @@ __memp_pgread(dbmfp, bhp, can_create)
 		if (nr > (ssize_t)len)
 			len = nr;
 		if (len < pagesize)
-			memset(bhp->buf + len, 0xff, pagesize - len);
+			memset(bhp->buf + len, 0xdb, pagesize - len);
 #endif
 	}
 

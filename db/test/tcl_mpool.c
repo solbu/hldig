@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)tcl_mpool.c	10.15 (Sleepycat) 5/4/98";
+static const char sccsid[] = "@(#)tcl_mpool.c	10.20 (Sleepycat) 12/14/98";
 #endif /* not lint */
 
 /*
@@ -71,6 +71,7 @@ memp_cmd(notused, interp, argc, argv)
 	u_int32_t flags;
 	int mode, tclint;
 	char mpname[50];
+	u_int8_t *conflicts;
 
 	notused = NULL;
 	debug_check();
@@ -97,6 +98,7 @@ memp_cmd(notused, interp, argc, argv)
 	if (F_ISSET(env, DB_ENV_STANDALONE))
 		mp = env->mp_info;
 	else if (memp_open(argv[1], flags, mode, env, &mp) != 0) {
+		db_appexit(env);
 		Tcl_SetResult(interp, "NULL", TCL_STATIC);
 		return (TCL_OK);
 	} else
@@ -106,8 +108,9 @@ memp_cmd(notused, interp, argc, argv)
 	if (md == NULL) {
 		if (!F_ISSET(env, DB_ENV_STANDALONE)) {
 			(void)db_appexit(env);
-			if (env->lk_conflicts)
-				free(env->lk_conflicts);
+			conflicts = (u_int8_t *)env->lk_conflicts;
+			if (conflicts != NULL)
+				free(conflicts);
 			free(env);
 		}
 		Tcl_SetResult(interp, "mp_open: ", TCL_STATIC);
@@ -118,7 +121,7 @@ memp_cmd(notused, interp, argc, argv)
 	md->mp = mp;
 	md->env = env;
 	/* Create new command name. */
-	sprintf(&mpname[0], "mp%d", mp_number);
+	snprintf(mpname, sizeof(mpname), "mp%d", mp_number);
 	mp_number++;
 
 	/* Create widget command. */
@@ -188,6 +191,7 @@ mpwidget_cmd(cd_mp, interp, argc, argv)
 	u_int32_t flags;
 	int mode, ret, tclint;
 	char mpfname[128];
+	u_int8_t *conflicts;
 
 	debug_check();
 
@@ -200,11 +204,13 @@ mpwidget_cmd(cd_mp, interp, argc, argv)
 		env = ((mp_data *)cd_mp)->env;
 		if (!F_ISSET(env, DB_ENV_STANDALONE)) {
 			(void)db_appexit(env);
-			if (env->lk_conflicts)
-				free(env->lk_conflicts);
+			conflicts = (u_int8_t *)env->lk_conflicts;
+			if (conflicts != NULL)
+				free(conflicts);
 			free(env);
 		}
 		ret = Tcl_DeleteCommand(interp, argv[0]);
+		free(cd_mp);
 		if (ret)
 			Tcl_SetResult(interp, "-1", TCL_STATIC);
 		else
@@ -229,7 +235,7 @@ mpwidget_cmd(cd_mp, interp, argc, argv)
 			    Tcl_PosixError(interp), TCL_STATIC);
 		}
 
-		sprintf(&mpfname[0], "%s.mpf%d", argv[0], mpf_id);
+		snprintf(mpfname, sizeof(mpfname), "%s.mpf%d", argv[0], mpf_id);
 		if ((mfi = (mpfinfo *)malloc(sizeof(mpfinfo))) == NULL) {
 			Tcl_SetResult(interp, "mp open: ", TCL_STATIC);
 			errno = ENOMEM;
@@ -314,7 +320,7 @@ mpf_cmd(cd_mfi, interp, argc, argv)
 		pinfo->pgno = pgno;
 		pinfo->pgsize = ((mpfinfo *)cd_mfi)->pgsize;
 		pinfo->mpf = ((mpfinfo *)cd_mfi)->mpf;
-		sprintf(&pgname[0], "page%d", pg_id);
+		snprintf(pgname, sizeof(pgname), "page%d", pg_id);
 		pg_id++;
 		Tcl_CreateCommand(interp, pgname, pgwidget_cmd, (int *)pinfo,
 		    NULL);
@@ -418,7 +424,8 @@ pgwidget_cmd(cd_page, interp, argc, argv)
 		return (TCL_OK);
 	} else if (strcmp(argv[1], "get") == 0) {
 		USAGE(argc, 2, PAGEGET_USAGE, 0);
-		sprintf(intbuf, "%lu", (unsigned long)pinfo->pgno);
+		snprintf(intbuf,
+		    sizeof(intbuf), "%lu", (unsigned long)pinfo->pgno);
 		Tcl_SetResult(interp, intbuf, TCL_VOLATILE);
 		return (TCL_OK);
 	} else {

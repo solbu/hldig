@@ -44,7 +44,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db.c	10.73 (Sleepycat) 10/29/98";
+static const char sccsid[] = "@(#)db.c	10.75 (Sleepycat) 12/3/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -194,7 +194,10 @@ db_open(fname, type, flags, mode, dbenv, dbinfo, dbpp)
 	 */
 	if (dbenv != NULL) {
 		if (dbenv->lk_info != NULL)
-			F_SET(dbp, DB_AM_LOCKING);
+			if (F_ISSET(dbenv, DB_ENV_CDB))
+				F_SET(dbp, DB_AM_CDB);
+			else
+				F_SET(dbp, DB_AM_LOCKING);
 		if (fname != NULL && dbenv->lg_info != NULL)
 			F_SET(dbp, DB_AM_LOGGING);
 	}
@@ -205,6 +208,15 @@ db_open(fname, type, flags, mode, dbenv, dbinfo, dbpp)
 		dbp->db_malloc = NULL;
 		dbp->dup_compare = NULL;
 	} else {
+		/*
+		 * We don't want anything that's not a power-of-2, as we rely
+		 * on that for alignment of various types on the pages.
+		 */
+		if ((dbp->pgsize = dbinfo->db_pagesize) != 0 &&
+		    (u_int32_t)1 << __db_log2(dbp->pgsize) != dbp->pgsize) {
+			__db_err(dbenv, "page sizes must be a power-of-2");
+			goto einval;
+		}
 		dbp->pgsize = dbinfo->db_pagesize;
 		dbp->db_malloc = dbinfo->db_malloc;
 		if (F_ISSET(dbinfo, DB_DUPSORT)) {
@@ -298,6 +310,14 @@ open_retry:	if (LF_ISSET(DB_CREATE)) {
 				iopsize = 512;
 			if (iopsize > 16 * 1024)
 				iopsize = 16 * 1024;
+
+			/*
+			 * Sheer paranoia, but we don't want anything that's
+			 * not a power-of-2, as we rely on that for alignment
+			 * of various types on the pages.
+			 */
+			DB_ROUNDOFF(iopsize, 512);
+
 			dbp->pgsize = iopsize;
 			F_SET(dbp, DB_AM_PGDEF);
 		}

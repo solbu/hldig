@@ -4,7 +4,7 @@
  * Copyright (c) 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)db_cxx.h	10.29 (Sleepycat) 11/2/98
+ *	@(#)db_cxx.h	10.30 (Sleepycat) 11/22/98
  */
 
 #ifndef _DB_CXX_H_
@@ -752,7 +752,7 @@ class _exported Db
 
 public:
     int close(u_int32_t flags);
-    int cursor(DbTxn *txnid, Dbc **cursorp);
+    int cursor(DbTxn *txnid, Dbc **cursorp, u_int32_t flags);
     int del(DbTxn *txnid, Dbt *key, u_int32_t flags);
     int fd(int *fdp);
     int get(DbTxn *txnid, Dbt *key, Dbt *data, u_int32_t flags);

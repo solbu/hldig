@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db_iface.c	10.38 (Sleepycat) 10/29/98";
+static const char sccsid[] = "@(#)db_iface.c	10.39 (Sleepycat) 11/25/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -178,7 +178,7 @@ err:		return (__db_ferr(dbp->dbenv, "DBcursor->c_put", 0));
 	}
 
 	/* Check for invalid key/data flags. */
-	if ((ret = __dbt_ferr(dbp, "key", key, 0)) != 0)
+	if (key_flags && (ret = __dbt_ferr(dbp, "key", key, 0)) != 0)
 		return (ret);
 	if ((ret = __dbt_ferr(dbp, "data", data, 0)) != 0)
 		return (ret);

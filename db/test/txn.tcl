@@ -3,7 +3,7 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)txn.tcl	10.11 (Sleepycat) 6/12/98
+#	@(#)txn.tcl	10.12 (Sleepycat) 12/11/98
 #
 # Options are:
 # -dir <directory in which to store memp>
@@ -159,11 +159,8 @@ source ./include.tcl
 	}
 
 	# Close and unlink the file
-	if { $e == "NULL" } {
-		error_check_good txn_close:$tp [$tp close] 0
-	} else {
-		rename $e ""
-	}
+	error_check_good txn_close:$tp [$tp close] 0
+	reset_env $e
 	error_check_good txn_unlink:$dir [txn_unlink $testdir 0] 0
 }
 

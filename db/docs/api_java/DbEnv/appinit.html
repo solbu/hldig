@@ -1,9 +1,10 @@
-<! "@(#)appinit.so	10.14 (Sleepycat) 11/1/98">
+<! "@(#)appinit.so	10.15 (Sleepycat) 11/21/98">
+<!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
 <head>
 <title>Berkeley DB: DbEnv.appinit</title>
-<meta name="description" content="DB: A database programmatic toolkit.">
+<meta name="description" content="Berkeley DB: An embedded database programmatic toolkit.">
 <meta name="keywords" content="embedded,database,programmatic,toolkit,b+tree,btr
 ee,hash,hashing,transaction,transactions,locking,logging,access method,access me
 thods,java,C,C++">
@@ -39,6 +40,15 @@ following values:
 <dl compact>
 <a name="DB_CREATE">
 <p><dt>Db.DB_CREATE<dd>Cause subsystems to create any underlying files, as necessary.
+<a name="DB_INIT_CDB">
+<p><dt>Db.DB_INIT_CDB<dd>Initialize locking for the Berkeley DB Concurrent Access Methods product.  In this mode, Berkeley DB provides
+multiple reader/single writer access.  No other locking should be
+specified (e.g., do not set <a href="../../api_java/DbEnv/appinit.html#DB_INIT_LOCK">Db.DB_INIT_LOCK</a>).  Access method calls
+are largely unchanged when using the <a href="../../api_java/DbEnv/appinit.html#DB_INIT_CDB">Db.DB_INIT_CDB</a> flag, although
+any cursors through which update operations (e.g., <a href="../../api_java/Dbc/put.html">Dbc.put</a>,
+<a href="../../api_java/Dbc/del.html">Dbc.del</a>) will be made, must have the <a href="../../api_java/Dbc/get.html#DB_RMW">Db.DB_RMW</a> value set in
+the flags parameter to the cursor call that creates the cursor.  See
+<a href="../../api_java/Db/cursor.html">Db.cursor</a> for more information.
 <a name="DB_INIT_LOCK">
 <p><dt>Db.DB_INIT_LOCK<dd>Initialize the lock subsystem; see
 <a href="../../api_java/DbLock/class.html">DbLock</a>.

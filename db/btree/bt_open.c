@@ -47,7 +47,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)bt_open.c	10.38 (Sleepycat) 10/9/98";
+static const char sccsid[] = "@(#)bt_open.c	10.39 (Sleepycat) 11/21/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -213,23 +213,24 @@ __bam_read_root(dbp)
 	DB_LOCK metalock, rootlock;
 	PAGE *root;
 	db_pgno_t pgno;
-	int ret;
+	int ret, t_ret;
 
+	ret = 0;
 	t = dbp->internal;
 
 	/* Get a cursor. */
-	if ((ret = dbp->cursor(dbp, NULL, &dbc)) != 0)
+	if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
 		return (ret);
 
 	/* Get, and optionally create the metadata page. */
 	pgno = PGNO_METADATA;
 	if ((ret =
 	    __bam_lget(dbc, 0, PGNO_METADATA, DB_LOCK_WRITE, &metalock)) != 0)
-		return (ret);
+		goto err;
 	if ((ret =
 	    memp_fget(dbp->mpf, &pgno, DB_MPOOL_CREATE, (PAGE **)&meta)) != 0) {
 		(void)__BT_LPUT(dbc, metalock);
-		return (ret);
+		goto err;
 	}
 
 	/*
@@ -243,7 +244,7 @@ __bam_read_root(dbp)
 
 		(void)memp_fput(dbp->mpf, (PAGE *)meta, 0);
 		(void)__BT_LPUT(dbc, metalock);
-		return (0);
+		goto done;
 	}
 
 	/* Initialize the tree structure metadata information. */
@@ -272,10 +273,10 @@ __bam_read_root(dbp)
 	pgno = PGNO_ROOT;
 	if ((ret =
 	    __bam_lget(dbc, 0, PGNO_ROOT, DB_LOCK_WRITE, &rootlock)) != 0)
-		return (ret);
+		goto err;
 	if ((ret = memp_fget(dbp->mpf, &pgno, DB_MPOOL_CREATE, &root)) != 0) {
 		(void)__BT_LPUT(dbc, rootlock);
-		return (ret);
+		goto err;
 	}
 	P_INIT(root, dbp->pgsize, PGNO_ROOT, PGNO_INVALID,
 	    PGNO_INVALID, 1, dbp->type == DB_RECNO ? P_LRECNO : P_LBTREE);
@@ -283,9 +284,9 @@ __bam_read_root(dbp)
 
 	/* Release the metadata and root pages. */
 	if ((ret = memp_fput(dbp->mpf, (PAGE *)meta, DB_MPOOL_DIRTY)) != 0)
-		return (ret);
+		goto err;
 	if ((ret = memp_fput(dbp->mpf, root, DB_MPOOL_DIRTY)) != 0)
-		return (ret);
+		goto err;
 
 	/*
 	 * Flush the metadata and root pages to disk -- since the user can't
@@ -302,5 +303,8 @@ __bam_read_root(dbp)
 	(void)__BT_LPUT(dbc, metalock);
 	(void)__BT_LPUT(dbc, rootlock);
 
-	return (dbc->c_close(dbc));
+err:
+done:	if ((t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
+		ret = t_ret;
+	return (ret);
 }

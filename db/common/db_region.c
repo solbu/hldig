@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db_region.c	10.52 (Sleepycat) 9/27/98";
+static const char sccsid[] = "@(#)db_region.c	10.53 (Sleepycat) 11/10/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -46,7 +46,7 @@ __db_rattach(infop)
 	ret = retry_cnt = 0;
 
 	/* Round off the requested size to the next page boundary. */
-	DB_ROUNDOFF(infop->size);
+	DB_ROUNDOFF(infop->size, DB_VMPAGESIZE);
 
 	/* Some architectures have hard limits on the maximum region size. */
 #ifdef DB_REGIONSIZE_MAX
@@ -727,7 +727,7 @@ __db_rgrow(infop, new_size)
 	 * determine the additional space required.
 	 */
 	rlp = (RLAYOUT *)infop->addr;
-	DB_ROUNDOFF(new_size);
+	DB_ROUNDOFF(new_size, DB_VMPAGESIZE);
 	increment = new_size - rlp->size;
 
 	if ((ret = __db_growregion(infop, increment)) != 0)

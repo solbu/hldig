@@ -3,7 +3,7 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)test011.tcl	10.7 (Sleepycat) 4/26/98
+#	@(#)test011.tcl	10.8 (Sleepycat) 12/5/98
 #
 # DB Test 11 {access method}
 # Use the first 10,000 entries from the dictionary.
@@ -211,7 +211,7 @@ global dlist
 
 	# Open a cursor
 	set dbc [$db cursor $txn]
-	puts "Test0$tnum.a: put and get entries"
+	puts "\tTest0$tnum.a: put and get entries"
 	while { [gets $did str] != -1 && $count < $nentries } {
 		# Pick a random key
 		set key [random_int 1 $count]

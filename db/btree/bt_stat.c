@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)bt_stat.c	10.26 (Sleepycat) 10/4/98";
+static const char sccsid[] = "@(#)bt_stat.c	10.27 (Sleepycat) 11/25/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -50,7 +50,7 @@ __bam_stat(dbp, spp, db_malloc, flags)
 	if ((ret = __db_statchk(dbp, flags)) != 0)
 		return (ret);
 
-	if ((ret = dbp->cursor(dbp, NULL, &dbc)) != 0)
+	if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
 		return (ret);
 
 	DEBUG_LWRITE(dbc, NULL, "bam_stat", NULL, NULL, flags);

@@ -1,4 +1,4 @@
-# @(#)Makefile.in	10.59 (Sleepycat) 10/15/98
+# @(#)Makefile.in	10.62 (Sleepycat) 12/7/98
 
 srcdir=	@srcdir@/..
 CPPFLAGS=-I. -I$(srcdir)/include @CPPFLAGS@
@@ -140,12 +140,12 @@ realclean distclean: clean
 	$(rm) -f Makefile config.cache config.h config.log config.status
 	$(rm) -f confdefs.h db.h db_int.h db_185.h include.tcl
 
-prefix=	@prefix@/BerkeleyDB
-bindir=	$(prefix)/bin
-datadir=$(prefix)/share
-includedir=$(prefix)/include
-libdir=	$(prefix)/lib
-mandir=	$(prefix)
+prefix=	@prefix@
+bindir=	$(prefix)/BerkeleyDB/bin
+datadir=$(prefix)/BerkeleyDB/share
+includedir=$(prefix)/BerkeleyDB/include
+libdir=	$(prefix)/BerkeleyDB/lib
+mandir=	$(prefix)/BerkeleyDB/docs
 
 dmode=	755
 emode=	555
@@ -158,32 +158,29 @@ install: all
 	@test -f $(cp) || (echo 'cp not found.'; exit 1)
 	@test -f $(mkdir) || (echo 'mkdir not found.'; exit 1)
 	@test -f $(rm) || (echo 'rm not found.'; exit 1)
-	@test -d $(prefix) || \
-	    ($(mkdir) $(prefix) && $(chmod) $(dmode) $(prefix))
 	@echo "Installing DB include files: $(includedir) ..."
 	@test -d $(includedir) || \
-	    ($(mkdir) $(includedir) && $(chmod) $(dmode) $(includedir))
+	    ($(mkdir) -p $(includedir) && $(chmod) $(dmode) $(includedir))
 	@cd $(includedir) && $(rm) -f db.h db_185.h db_cxx.h
 	@$(cp) -p db.h db_185.h $(srcdir)/include/db_cxx.h $(includedir)
 	@cd $(includedir) && $(chmod) $(fmode) db.h db_185.h db_cxx.h
 	@echo "Installing DB library: $(libdir) ..."
 	@test -d $(libdir) || \
-	    ($(mkdir) $(libdir) && $(chmod) $(dmode) $(libdir))
+	    ($(mkdir) -p $(libdir) && $(chmod) $(dmode) $(libdir))
 	@cd $(libdir) && $(rm) -f $(libdb)
 	@$(cp) -p $(libdb) $(libdir)
 	@cd $(libdir) && $(chmod) $(fmode) $(libdb)
 	@echo "Installing DB utilities: $(bindir) ..."
 	@test -d $(bindir) || \
-	    ($(mkdir) $(bindir) && $(chmod) $(dmode) $(bindir))
+	    ($(mkdir) -p $(bindir) && $(chmod) $(dmode) $(bindir))
 	@cd $(bindir) && $(rm) -f $(PROGS)
 	@$(cp) -p $(PROGS) $(bindir)
 	@cd $(bindir) && (test ! -f $(strip) || $(strip) $(PROGS))
 	@cd $(bindir) && $(chmod) $(emode) $(PROGS)
-	@echo "Installing documentation: $(mandir)/docs ..."
+	@echo "Installing documentation: $(mandir) ..."
 	@test -d $(mandir) || \
-	    ($(mkdir) $(mandir)/docs && $(chmod) $(dmode) $(mandir)/docs)
-	@cd $(mandir) && $(rm) -rf docs
-	@cd $(srcdir) && $(cp) -pr docs $(mandir)/
+	    ($(mkdir) -p $(mandir) && $(chmod) $(dmode) $(mandir))
+	@cd $(srcdir)/docs && $(cp) -pr * $(mandir)/
 
 uninstall:
 	-cd $(bindir) && $(rm) -f $(PROGS)
@@ -496,7 +493,7 @@ getopt.o: $(srcdir)/clib/getopt.c
 memcmp.o: $(srcdir)/clib/memcmp.c
 	$(CC) $(CFLAGS) $?
 memcpy.o: $(srcdir)/clib/memmove.c
-	$(CC) -DMEMCOPY $(CFLAGS) $?
+	$(CC) -DMEMCOPY $(CFLAGS) $? -o $@
 memmove.o: $(srcdir)/clib/memmove.c
 	$(CC) -DMEMMOVE $(CFLAGS) $?
 raise.o: $(srcdir)/clib/raise.c

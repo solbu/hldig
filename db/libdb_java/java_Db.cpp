@@ -7,7 +7,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)java_Db.cpp	10.10 (Sleepycat) 10/24/98";
+static const char sccsid[] = "@(#)java_Db.cpp	10.11 (Sleepycat) 12/7/98";
 #endif /* not lint */
 
 #include <jni.h>
@@ -35,7 +35,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Db_close
 }
 
 JNIEXPORT jobject JNICALL Java_com_sleepycat_db_Db_cursor
-  (JNIEnv *jnienv, /*Db*/ jobject jthis, /*DbTxn*/ jobject txnid)
+  (JNIEnv *jnienv, /*Db*/ jobject jthis, /*DbTxn*/ jobject txnid, jint flags)
 {
     int err;
     DB *db = get_DB(jnienv, jthis);
@@ -44,7 +44,7 @@ JNIEXPORT jobject JNICALL Java_com_sleepycat_db_Db_cursor
     if (!verify_non_null(jnienv, db))
         return NULL;
     DBC *dbc;
-    err = db->cursor(db, dbtxnid, &dbc);
+    err = db->cursor(db, dbtxnid, &dbc, flags);
     verify_return(jnienv, err);
     return get_Dbc(jnienv, dbc);
 }

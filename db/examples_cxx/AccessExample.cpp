@@ -4,7 +4,7 @@
  * Copyright (c) 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)AccessExample.cpp	10.6 (Sleepycat) 4/10/98
+ *	@(#)AccessExample.cpp	10.7 (Sleepycat) 12/7/98
  */
 
 #include "config.h"
@@ -132,7 +132,7 @@ void AccessExample::run()
 
     // Acquire an iterator for the table.
     Dbc *iterator;
-    table->cursor(NULL, &iterator);
+    table->cursor(NULL, &iterator, 0);
 
     // Walk through the table, printing the key/data pairs.
     Dbt key;

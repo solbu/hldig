@@ -4,7 +4,7 @@
  * Copyright (c) 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)AccessExample.java	10.5 (Sleepycat) 4/10/98
+ *	@(#)AccessExample.java	10.6 (Sleepycat) 12/7/98
  */
 
 package com.sleepycat.examples;
@@ -148,7 +148,7 @@ class AccessExample extends DbEnv
 
         // Acquire an iterator for the table.
         Dbc iterator;
-        iterator = table.cursor(null);
+        iterator = table.cursor(null, 0);
 
         // Walk through the table, printing the key/data pairs.
         // We use the DB_DBT_MALLOC flag to ask DB to allocate

@@ -1,9 +1,10 @@
-<! "@(#)cursor.so	10.9 (Sleepycat) 9/29/98">
+<! "@(#)cursor.so	10.10 (Sleepycat) 11/21/98">
+<!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
 <head>
 <title>Berkeley DB: Db::cursor</title>
-<meta name="description" content="DB: A database programmatic toolkit.">
+<meta name="description" content="Berkeley DB: An embedded database programmatic toolkit.">
 <meta name="keywords" content="embedded,database,programmatic,toolkit,b+tree,btr
 ee,hash,hashing,transaction,transactions,locking,logging,access method,access me
 thods,java,C,C++">
@@ -16,7 +17,7 @@ thods,java,C,C++">
 #include &lt;db_cxx.h&gt;
 <p>
 int
-Db::cursor(DbTxn *txnid, Dbc **cursorp);
+Db::cursor(DbTxn *txnid, Dbc **cursorp, u_int32_t flags);
 </pre>
 </h3>
 <h1>Description</h1>
@@ -35,6 +36,16 @@ the <b>txnid</b> parameter is a transaction ID returned from
 If transaction protection is enabled, cursors must be opened and closed
 within the context of a transaction, and the <b>txnid</b> parameter
 specifies the transaction context in which the cursor may be used.
+<p>
+The <b>flags</b> parameter must be set to 0.
+<p>
+In addition, the following value may be set by logically <b>OR</b>'ing it into the
+<b>flags</b> parameter:
+<dl compact>
+<p><dt>DB_RMW<dd>Specify that the cursor will be used to update the database.  This
+flag should <b>only</b> be set when the <a href="../../api_cxx/DbEnv/appinit.html#DB_INIT_CDB">DB_INIT_CDB</a> flag
+was specified to <a href="../../api_cxx/DbEnv/appinit.html">DbEnv::appinit</a>.
+</dl>
 <p>
 The Db::cursor
 method either returns <b>errno</b> or throws an exception that

@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)bt_recno.c	10.49 (Sleepycat) 10/25/98";
+static const char sccsid[] = "@(#)bt_recno.c	10.53 (Sleepycat) 12/11/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -23,6 +23,10 @@ static const char sccsid[] = "@(#)bt_recno.c	10.49 (Sleepycat) 10/25/98";
 #include "db_page.h"
 #include "btree.h"
 #include "db_ext.h"
+#include "shqueue.h"
+#include "db_shash.h"
+#include "lock.h"
+#include "lock_ext.h"
 
 static int __ram_add __P((DBC *, db_recno_t *, DBT *, u_int32_t, u_int32_t));
 static int __ram_delete __P((DB *, DB_TXN *, DBT *, u_int32_t));
@@ -36,21 +40,32 @@ static int __ram_vmap __P((DBC *, db_recno_t));
 static int __ram_writeback __P((DBC *));
 
 /*
- * If we're renumbering records, then we have to detect in the cursor that a
- * record was deleted, and adjust the cursor as necessary.  If not renumbering
- * records, then we can detect this by looking at the actual record, so we
- * ignore the cursor delete flag.
+ * In recno, there are two meanings to the on-page "deleted" flag.  If we're
+ * re-numbering records, it means the record was implicitly created.  We skip
+ * over implicitly created records if doing a cursor "next" or "prev", and
+ * return DB_KEYEMPTY if they're explicitly requested..  If not re-numbering
+ * records, it means that the record was implicitly created, or was deleted.
+ * We skip over implicitly created or deleted records if doing a cursor "next"
+ * or "prev", and return DB_KEYEMPTY if they're explicitly requested.
+ *
+ * If we're re-numbering records, then we have to detect in the cursor that
+ * a record was deleted, and adjust the cursor as necessary on the next get.
+ * If we're not re-numbering records, then we can detect that a record has
+ * been deleted by looking at the actual on-page record, so we completely
+ * ignore the cursor's delete flag.  This is different from the B+tree code.
+ * It also maintains whether the cursor references a deleted record in the
+ * cursor, and it doesn't always check the on-page value.
  */
 #define	CD_SET(dbp, cp) {						\
 	if (F_ISSET(dbp, DB_RE_RENUMBER))				\
-		F_SET(cp, CR_DELETED);					\
+		F_SET(cp, C_DELETED);					\
 }
 #define	CD_CLR(dbp, cp) {						\
 	if (F_ISSET(dbp, DB_RE_RENUMBER))				\
-		F_CLR(cp, CR_DELETED);					\
+		F_CLR(cp, C_DELETED);					\
 }
 #define	CD_ISSET(dbp, cp)						\
-	(F_ISSET(dbp, DB_RE_RENUMBER) && F_ISSET(cp, CR_DELETED))
+	(F_ISSET(dbp, DB_RE_RENUMBER) && F_ISSET(cp, C_DELETED))
 
 /*
  * __ram_open --
@@ -140,7 +155,7 @@ __ram_open(dbp, dbinfo)
 	/* If we're snapshotting an underlying source file, do it now. */
 	if (dbinfo != NULL && F_ISSET(dbinfo, DB_SNAPSHOT)) {
 		/* Allocate a cursor. */
-		if ((ret = dbp->cursor(dbp, NULL, &dbc)) != 0)
+		if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
 			goto err;
 
 		/* Do the snapshot. */
@@ -197,7 +212,7 @@ __ram_delete(dbp, txn, key, flags)
 		return (ret);
 
 	/* Acquire a cursor. */
-	if ((ret = dbp->cursor(dbp, txn, &dbc)) != 0)
+	if ((ret = dbp->cursor(dbp, txn, &dbc, DB_WRITELOCK)) != 0)
 		return (ret);
 
 	DEBUG_LWRITE(dbc, txn, "ram_delete", key, NULL, flags);
@@ -241,6 +256,23 @@ __ram_i_delete(dbc)
 	t = dbp->internal;
 	stack = 0;
 
+	/*
+	 * If this is CDB and this isn't a write cursor, then it's an error.
+	 * If it is a write cursor, but we don't yet hold the write lock, then
+	 * we need to upgrade to the write lock.
+	 */
+	if (F_ISSET(dbp, DB_AM_CDB)) {
+		/* Make sure it's a valid update cursor. */
+		if (!F_ISSET(dbc, DBC_RMW | DBC_WRITER))
+			return (EINVAL);
+
+		if (F_ISSET(dbc, DBC_RMW) &&
+		    (ret = lock_get(dbp->dbenv->lk_info, dbc->locker,
+		    DB_LOCK_UPGRADE, &dbc->lock_dbt, DB_LOCK_WRITE,
+		    &dbc->mylock)) != 0)
+			return (EAGAIN);
+	}
+
 	/* Search the tree for the key; delete only deletes exact matches. */
 	if ((ret = __bam_rsearch(dbc, &cp->recno, S_DELETE, 1, &exact)) != 0)
 		goto err;
@@ -253,7 +285,17 @@ __ram_i_delete(dbc)
 	h = cp->csp->page;
 	indx = cp->csp->indx;
 
-	/* If the record has already been deleted, we couldn't have found it. */
+	/*
+	 * If re-numbering records, the on-page deleted flag can only mean
+	 * that this record was implicitly created.  Applications aren't
+	 * permitted to delete records they never created, return an error.
+	 *
+	 * If not re-numbering records, the on-page deleted flag means that
+	 * this record was implicitly created, or, was deleted at some time.
+	 * The former is an error because applications aren't permitted to
+	 * delete records they never created, the latter is an error because
+	 * if the record was "deleted", we could never have found it.
+	 */
 	if (B_DISSET(GET_BKEYDATA(h, indx)->type)) {
 		ret = DB_KEYEMPTY;
 		goto err;
@@ -275,10 +317,7 @@ __ram_i_delete(dbc)
 			ret = __bam_dpages(dbc);
 		}
 	} else {
-		/*
-		 * If we're not renumbering records, replace the record with
-		 * a marker.
-		 */
+		/* Use a delete/put pair to replace the record with a marker. */
 		if ((ret = __bam_ditem(dbc, h, indx)) != 0)
 			goto err;
 
@@ -299,6 +338,10 @@ __ram_i_delete(dbc)
 err:	if (stack)
 		__bam_stkrel(dbc, 0);
 
+	/* If we upgraded the CDB lock upon entry; downgrade it now. */
+	if (F_ISSET(dbp, DB_AM_CDB) && F_ISSET(dbc, DBC_RMW))
+		(void)__lock_downgrade(dbp->dbenv->lk_info, dbc->mylock,
+		    DB_LOCK_IWRITE, 0);
 	return (ret);
 }
 
@@ -325,7 +368,7 @@ __ram_put(dbp, txn, key, data, flags)
 		return (ret);
 
 	/* Allocate a cursor. */
-	if ((ret = dbp->cursor(dbp, txn, &dbc)) != 0)
+	if ((ret = dbp->cursor(dbp, txn, &dbc, DB_WRITELOCK)) != 0)
 		return (ret);
 
 	DEBUG_LWRITE(dbc, txn, "ram_put", key, data, flags);
@@ -377,7 +420,7 @@ __ram_sync(dbp, flags)
 		return (ret);
 
 	/* Allocate a cursor. */
-	if ((ret = dbp->cursor(dbp, NULL, &dbc)) != 0)
+	if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
 		return (ret);
 
 	DEBUG_LWRITE(dbc, NULL, "ram_sync", NULL, NULL, flags);
@@ -453,10 +496,26 @@ __ram_c_del(dbc, flags)
 
 	DEBUG_LWRITE(dbc, dbc->txn, "ram_c_del", NULL, NULL, flags);
 
-	/* If already deleted, return failure. */
-	if (CD_ISSET(dbp, cp))
-		return (DB_KEYEMPTY);
+	/*
+	 * If we are running CDB, this had better be either a write
+	 * cursor or an immediate writer.
+	 */
+	if (F_ISSET(dbp, DB_AM_CDB))
+		if (!F_ISSET(dbc, DBC_RMW | DBC_WRITER))
+			return (EINVAL);
 
+	/*
+	 * The semantics of cursors during delete are as follows: if record
+	 * numbers are mutable (DB_RE_RENUMBER is set), deleting a record
+	 * causes the cursor to automatically point to the record immediately
+	 * following.  In this case it is possible to use a single cursor for
+	 * repeated delete operations, without intervening operations.
+	 *
+	 * If record numbers are not mutable, then records are replaced with
+	 * a marker containing a delete flag.  If the record referenced by
+	 * this cursor has already been deleted, we will detect that as part
+	 * of the delete operation, and fail.
+	 */
 	return (__ram_i_delete(dbc));
 }
 
@@ -476,7 +535,7 @@ __ram_c_get(dbc, key, data, flags)
 	DB *dbp;
 	PAGE *h;
 	db_indx_t indx;
-	int exact, ret, stack;
+	int exact, ret, stack, tmp_rmw;
 
 	dbp = dbc->dbp;
 	cp = dbc->internal;
@@ -488,6 +547,16 @@ __ram_c_get(dbc, key, data, flags)
 	    key, data, flags, cp->recno != RECNO_OOB)) != 0)
 		return (ret);
 
+	/* Clear OR'd in additional bits so we can check for flag equality. */
+	tmp_rmw = 0;
+	if (LF_ISSET(DB_RMW)) {
+		if (!F_ISSET(dbp, DB_AM_CDB)) {
+			tmp_rmw = 1;
+			F_SET(dbc, DBC_RMW);
+		}
+		LF_CLR(DB_RMW);
+	}
+
 	DEBUG_LREAD(dbc, dbc->txn, "ram_c_get",
 	    flags == DB_SET || flags == DB_SET_RANGE ? key : NULL, NULL, flags);
 
@@ -498,14 +567,21 @@ retry:	/* Update the record number. */
 	stack = 0;
 	switch (flags) {
 	case DB_CURRENT:
-		if (CD_ISSET(dbp, cp)) {
-			ret = DB_KEYEMPTY;
-			goto err;
-		}
+		/*
+		 * If record numbers are mutable: if we just deleted a record,
+		 * there is no action necessary, we return the record following
+		 * the deleted item by virtue of renumbering the tree.
+		 */
 		break;
 	case DB_NEXT:
+		/*
+		 * If record numbers are mutable: if we just deleted a record,
+		 * we have to avoid incrementing the record number so that we
+		 * return the right record by virtue of renumbering the tree.
+		 */
 		if (CD_ISSET(dbp, cp))
 			break;
+
 		if (cp->recno != RECNO_OOB) {
 			++cp->recno;
 			break;
@@ -551,7 +627,8 @@ retry:	/* Update the record number. */
 		goto err;
 
 	/* Search the tree for the record. */
-	if ((ret = __bam_rsearch(dbc, &cp->recno, S_FIND, 1, &exact)) != 0)
+	if ((ret = __bam_rsearch(dbc, &cp->recno,
+	    F_ISSET(dbc, DBC_RMW) ? S_FIND_WR : S_FIND, 1, &exact)) != 0)
 		goto err;
 	stack = 1;
 	if (!exact) {
@@ -561,7 +638,14 @@ retry:	/* Update the record number. */
 	h = cp->csp->page;
 	indx = cp->csp->indx;
 
-	/* If the record has already been deleted, we couldn't have found it. */
+	/*
+	 * If re-numbering records, the on-page deleted flag means this record
+	 * was implicitly created.  If not re-numbering records, the on-page
+	 * deleted flag means this record was implicitly created, or, it was
+	 * deleted at some time.  Regardless, we skip such records if doing
+	 * cursor next/prev operations, and fail if the application requested
+	 * them explicitly.
+	 */
 	if (B_DISSET(GET_BKEYDATA(h, indx)->type)) {
 		if (flags == DB_NEXT || flags == DB_PREV) {
 			(void)__bam_stkrel(dbc, 0);
@@ -572,16 +656,22 @@ retry:	/* Update the record number. */
 	}
 
 	/* Return the data item. */
-	ret = __db_ret(dbp, h, indx, data, &dbc->rdata.data, &dbc->rdata.ulen);
+	if ((ret = __db_ret(dbp,
+	    h, indx, data, &dbc->rdata.data, &dbc->rdata.ulen)) != 0)
+		goto err;
 
-	/* The cursor was reset, so no delete adjustment is necessary. */
+	/* The cursor was reset, no further delete adjustment is necessary. */
 	CD_CLR(dbp, cp);
 
-	if (0) {
-err:		*cp = copy;
-	}
-	if (stack)
+err:	if (stack)
 		(void)__bam_stkrel(dbc, 0);
+
+	/* Release temporary lock upgrade. */
+	if (tmp_rmw)
+		F_CLR(dbc, DBC_RMW);
+
+	if (ret != 0)
+		*cp = copy;
 
 	return (ret);
 }
@@ -613,6 +703,23 @@ __ram_c_put(dbc, key, data, flags)
 		return (ret);
 
 	DEBUG_LWRITE(dbc, dbc->txn, "ram_c_put", NULL, data, flags);
+
+	/*
+	 * If we are running CDB, this had better be either a write
+	 * cursor or an immediate writer.  If it's a regular writer,
+	 * that means we have an IWRITE lock and we need to upgrade
+	 * it to a write lock.
+	 */
+	if (F_ISSET(dbp, DB_AM_CDB)) {
+		if (!F_ISSET(dbc, DBC_RMW | DBC_WRITER))
+			return (EINVAL);
+
+		if (F_ISSET(dbc, DBC_RMW) &&
+		    (ret = lock_get(dbp->dbenv->lk_info, dbc->locker,
+		    DB_LOCK_UPGRADE, &dbc->lock_dbt, DB_LOCK_WRITE,
+		    &dbc->mylock)) != 0)
+			return (EAGAIN);
+	}
 
 	/* Initialize the cursor for a new retrieval. */
 	copy = *cp;
@@ -661,10 +768,14 @@ split:		arg = &cp->recno;
 		break;
 	}
 
-	/* The cursor was reset, so no delete adjustment is necessary. */
+	/* The cursor was reset, no further delete adjustment is necessary. */
 	CD_CLR(dbp, cp);
 
-err:	if (ret != 0)
+err:	if (F_ISSET(dbc, DBC_RMW))
+		(void)__lock_downgrade(dbp->dbenv->lk_info, dbc->mylock,
+		    DB_LOCK_IWRITE, 0);
+
+	if (ret != 0)
 		*cp = copy;
 
 	return (ret);
@@ -908,7 +1019,7 @@ __ram_writeback(dbc)
 	/*
 	 * Read any remaining records into the tree.
 	 *
-	 * XXX
+	 * !!!
 	 * This is why we can't support transactions when applications specify
 	 * backing (re_source) files.  At this point we have to read in the
 	 * rest of the records from the file so that we can write all of the
@@ -1176,16 +1287,21 @@ retry:	/* Find the slot for insertion. */
 	stack = 1;
 
 	/*
+	 * If re-numbering records, the on-page deleted flag means this record
+	 * was implicitly created.  If not re-numbering records, the on-page
+	 * deleted flag means this record was implicitly created, or, it was
+	 * deleted at some time.
+	 *
 	 * If DB_NOOVERWRITE is set and the item already exists in the tree,
-	 * return an error unless the item has been marked for deletion.
+	 * return an error unless the item was either marked for deletion or
+	 * only implicitly created.
 	 */
 	isdeleted = 0;
 	if (exact) {
 		bk = GET_BKEYDATA(h, indx);
-		if (B_DISSET(bk->type)) {
+		if (B_DISSET(bk->type))
 			isdeleted = 1;
-			__bam_ca_replace(dbp, h->pgno, indx, REPLACE_SETUP);
-		} else
+		else
 			if (flags == DB_NOOVERWRITE) {
 				ret = DB_KEYEXIST;
 				goto err;
@@ -1203,33 +1319,35 @@ retry:	/* Find the slot for insertion. */
 	    &h, &indx, NULL, data, exact ? DB_CURRENT : DB_BEFORE, bi_flags)) {
 	case 0:
 		/*
-		 * Done.  Clean up the cursor and adjust the internal page
-		 * counts.
+		 * Don't adjust anything.
+		 *
+		 * If we inserted a record, no cursors need adjusting because
+		 * the only new record it's possible to insert is at the very
+		 * end of the tree.  The necessary adjustments to the internal
+		 * page counts were made by __bam_iitem().
+		 *
+		 * If we overwrote a record, no cursors need adjusting because
+		 * future DBcursor->get calls will simply return the underlying
+		 * record (there's no adjustment made for the DB_CURRENT flag
+		 * when a cursor get operation immediately follows a cursor
+		 * delete operation, and the normal adjustment for the DB_NEXT
+		 * flag is still correct).
 		 */
-		if (isdeleted)
-			__bam_ca_replace(dbp, h->pgno, indx, REPLACE_SUCCESS);
 		break;
 	case DB_NEEDSPLIT:
-		/*
-		 * We have to split the page.  Back out the cursor setup,
-		 * discard the stack of pages, and do the split.
-		 */
-		if (isdeleted)
-			__bam_ca_replace(dbp, h->pgno, indx, REPLACE_FAILED);
-
+		/* Discard the stack of pages and split the page. */
 		(void)__bam_stkrel(dbc, 0);
 		stack = 0;
 
 		if ((ret = __bam_split(dbc, recnop)) != 0)
-			break;
+			goto err;
 
 		goto retry;
 		/* NOTREACHED */
 	default:
-		if (isdeleted)
-			__bam_ca_replace(dbp, h->pgno, indx, REPLACE_FAILED);
-		break;
+		goto err;
 	}
+
 
 err:	if (stack)
 		__bam_stkrel(dbc, 0);

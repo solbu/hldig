@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db_dup.c	10.34 (Sleepycat) 10/29/98";
+static const char sccsid[] = "@(#)db_dup.c	10.35 (Sleepycat) 12/2/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -57,7 +57,9 @@ __db_dput(dbc, dbt, pp, indxp, newfunc)
 	if (dbt->size > 0.25 * dbc->dbp->pgsize) {
 		if ((ret = __db_poff(dbc, dbt, &pgno, newfunc)) != 0)
 			return (ret);
+		UMRW(bo.unused1);
 		B_TSET(bo.type, B_OVERFLOW, 0);
+		UMRW(bo.unused2);
 		bo.tlen = dbt->size;
 		bo.pgno = pgno;
 		hdr_dbt.data = &bo;
@@ -298,7 +300,7 @@ __db_dsplit(dbc, hp, indxp, size, newfunc)
 	 *
 	 * i is the index of the first element to move onto the new page.
 	 */
-	if (dbp->type == DB_BTREE || dbp->type == DB_RECNO)
+	if (dbp->type == DB_BTREE)
 		__bam_ca_split(dbp, PGNO(h), PGNO(h), PGNO(np), i, 0);
 
 	for (nindex = 0, oindex = i; oindex < NUM_ENT(h); oindex++) {
@@ -440,7 +442,7 @@ __db_ditem(dbc, pagep, indx, nbytes)
 		    sizeof(db_indx_t) * (NUM_ENT(pagep) - indx));
 
 	/* If it's a btree, adjust the cursors. */
-	if (dbp->type == DB_BTREE || dbp->type == DB_RECNO)
+	if (dbp->type == DB_BTREE)
 		__bam_ca_di(dbp, PGNO(pagep), indx, -1);
 
 	return (0);
@@ -514,7 +516,7 @@ __db_pitem(dbc, pagep, indx, nbytes, hdr, data)
 		memcpy(p + hdr->size, data->data, data->size);
 
 	/* If it's a btree, adjust the cursors. */
-	if (dbp->type == DB_BTREE || dbp->type == DB_RECNO)
+	if (dbp->type == DB_BTREE)
 		__bam_ca_di(dbp, PGNO(pagep), indx, 1);
 
 	return (0);

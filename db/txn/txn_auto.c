@@ -37,8 +37,7 @@ int __txn_regop_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_txn_regop;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -163,8 +162,7 @@ int __txn_xa_regop_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_txn_xa_regop;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -326,8 +324,7 @@ int __txn_ckp_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_txn_ckp;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;

@@ -4,7 +4,7 @@
  * Copyright (c) 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)ex_btrec.c	10.11 (Sleepycat) 9/12/98
+ *	@(#)ex_btrec.c	10.12 (Sleepycat) 11/22/98
  */
 
 #include "config.h"
@@ -136,7 +136,7 @@ main(argc, argv)
 	free(statp);
 
 	/* Acquire a cursor for the database. */
-	if ((errno = dbp->cursor(dbp, NULL, &dbcp)) != 0) {
+	if ((errno = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
 		fprintf(stderr, "%s: cursor: %s\n", progname, strerror(errno));
 		exit (1);
 	}

@@ -3,12 +3,14 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)test037.tcl	8.3 (Sleepycat) 10/4/98
+#	@(#)test037.tcl	8.4 (Sleepycat) 11/25/98
 #
 # Test037: RMW functionality.
 proc test037 { method {nentries 100} } {
 source ./include.tcl
 	puts "Test037: RMW $method"
+	set method [convert_method $method]
+
 	# Create the database
 	cleanup $testdir
 	set testfile test037.db
@@ -63,6 +65,7 @@ source ./include.tcl
 	# Open databases and dictionary
 	puts "\tTest037.c: Opening databases"
 	set did [open $dict]
+	set rkey 0
 
 	set db [dbopen $testfile 0 0 $method -dbenv $e]
 	error_check_good dbopen [is_valid_db $db] TRUE
@@ -81,11 +84,16 @@ source ./include.tcl
 
 	# Now, get a key and try to "get" it from both DBs.
 	error_check_bad "gets on new open" [gets $did str] -1
-
-	set rec [$db get $t $str 0]
+	incr rkey
+	if { [string compare $method DB_RECNO] == 0 } {
+		set key $rkey
+	} else {
+		set key $str
+	}
+	set rec [$db get $t $key 0]
 	error_check_good local_get $rec $str
 
-	set r [send_timed_cmd $f1 0 "$rdb get $remote_t $str 0"]
+	set r [send_timed_cmd $f1 0 "$rdb get $remote_t $key 0"]
 	error_check_good remote_send $r 0
 
 	# Now sleep before releasing local record lock
@@ -112,11 +120,17 @@ source ./include.tcl
 
 	# Now, get a key and try to "get" it from both DBs.
 	error_check_bad "gets on new open" [gets $did str] -1
+	incr rkey
+	if { [string compare $method DB_RECNO] == 0 } {
+		set key $rkey
+	} else {
+		set key $str
+	}
 
-	set rec [$db get $t $str $DB_RMW]
+	set rec [$db get $t $key $DB_RMW]
 	error_check_good local_get $rec $str
 
-	set r [send_timed_cmd $f1 0 "$rdb get $remote_t $str 0"]
+	set r [send_timed_cmd $f1 0 "$rdb get $remote_t $key 0"]
 	error_check_good remote_send $r 0
 
 	# Now sleep before releasing local record lock
@@ -153,7 +167,6 @@ source ./include.tcl
 	puts $fd "puts \$v"
 	puts $fd "flush stdout"
 	flush $fd
-
 	debug_check
 	exec $SLEEP 2
 

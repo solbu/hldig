@@ -11,7 +11,7 @@
 static const char copyright[] =
 "@(#) Copyright (c) 1996, 1997, 1998\n\
 	Sleepycat Software Inc.  All rights reserved.\n";
-static const char sccsid[] = "@(#)db185.c	8.20 (Sleepycat) 9/17/98";
+static const char sccsid[] = "@(#)db185.c	8.21 (Sleepycat) 11/22/98";
 #endif
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -209,7 +209,7 @@ dbopen(file, oflags, mode, type, openinfo)
 	}
 
 	/* Create the cursor used for sequential ops. */
-	if ((errno = dbp->cursor(dbp, NULL, &((DB185 *)db185p)->dbc)) != 0) {
+	if ((errno = dbp->cursor(dbp, NULL, &((DB185 *)db185p)->dbc, 0)) != 0) {
 		s_errno = errno;
 		(void)dbp->close(dbp, 0);
 		__os_free(db185p, sizeof(DB185));
@@ -356,7 +356,7 @@ db185_put(db185p, key185, data185, flags)
 		if (dbp->type != DB_RECNO)
 			goto einval;
 
-		if ((errno = dbp->cursor(dbp, NULL, &dbcp_put)) != 0)
+		if ((errno = dbp->cursor(dbp, NULL, &dbcp_put, 0)) != 0)
 			return (-1);
 		if ((errno =
 		    dbcp_put->c_get(dbcp_put, &key, &data, DB_SET)) != 0) {

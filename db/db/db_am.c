@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db_am.c	10.12 (Sleepycat) 10/5/98";
+static const char sccsid[] = "@(#)db_am.c	10.13 (Sleepycat) 12/3/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -30,7 +30,7 @@ static const char sccsid[] = "@(#)db_am.c	10.12 (Sleepycat) 10/5/98";
 #include "db_ext.h"
 
 static int __db_c_close __P((DBC *));
-static int __db_cursor __P((DB *, DB_TXN *, DBC **));
+static int __db_cursor __P((DB *, DB_TXN *, DBC **, u_int32_t));
 static int __db_fd __P((DB *, int *));
 static int __db_get __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
 static int __db_put __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
@@ -63,13 +63,16 @@ __db_init_wrapper(dbp)
  *	Allocate and return a cursor.
  */
 static int
-__db_cursor(dbp, txn, dbcp)
+__db_cursor(dbp, txn, dbcp, flags)
 	DB *dbp;
 	DB_TXN *txn;
 	DBC **dbcp;
+	u_int32_t flags;
 {
 	DBC *dbc;
 	int ret;
+	db_lockmode_t mode;
+	u_int32_t op;
 
 	DB_PANIC_CHECK(dbp);
 
@@ -87,13 +90,18 @@ __db_cursor(dbp, txn, dbcp)
 		dbc->c_close = __db_c_close;
 
 		/* Set up locking information. */
-		if (F_ISSET(dbp, DB_AM_LOCKING)) {
+		if (F_ISSET(dbp, DB_AM_LOCKING | DB_AM_CDB)) {
 			if ((ret =
 			    lock_id(dbp->dbenv->lk_info, &dbc->lid)) != 0)
 				goto err;
 			memcpy(dbc->lock.fileid, dbp->fileid, DB_FILE_ID_LEN);
-			dbc->lock_dbt.size = sizeof(dbc->lock);
-			dbc->lock_dbt.data = &dbc->lock;
+			if (F_ISSET(dbp, DB_AM_CDB)) {
+				dbc->lock_dbt.size = DB_FILE_ID_LEN;
+				dbc->lock_dbt.data = dbc->lock.fileid;
+			} else {
+				dbc->lock_dbt.size = sizeof(dbc->lock);
+				dbc->lock_dbt.data = &dbc->lock;
+			}
 		}
 
 		switch (dbp->type) {
@@ -122,6 +130,25 @@ __db_cursor(dbp, txn, dbcp)
 	TAILQ_INSERT_TAIL(&dbp->active_queue, dbc, links);
 	DB_THREAD_UNLOCK(dbp);
 
+	/*
+	 * If this is the concurrent DB product, then we do all locking
+	 * in the interface, which is right here.
+	 */
+	if (F_ISSET(dbp, DB_AM_CDB)) {
+		op = LF_ISSET(DB_OPFLAGS_MASK);
+		mode = (op == DB_WRITELOCK) ? DB_LOCK_WRITE :
+		    (LF_ISSET(DB_RMW) ? DB_LOCK_IWRITE : DB_LOCK_READ);
+		if ((ret = lock_get(dbp->dbenv->lk_info, dbc->locker, 0,
+		    &dbc->lock_dbt, mode, &dbc->mylock)) != 0) {
+			(void)__db_c_close(dbc);
+			return (EAGAIN);
+		}
+		if (LF_ISSET(DB_RMW))
+			F_SET(dbc, DBC_RMW);
+		if (op == DB_WRITELOCK)
+			F_SET(dbc, DBC_WRITER);
+	}
+
 	*dbcp = dbc;
 	return (0);
 
@@ -144,12 +171,18 @@ __db_c_close(dbc)
 
 	DB_PANIC_CHECK(dbp);
 
+	ret = 0;
+
+	/* Release the lock. */
+	if (F_ISSET(dbc->dbp, DB_AM_CDB) && dbc->mylock != LOCK_INVALID) {
+		ret = lock_put(dbc->dbp->dbenv->lk_info, dbc->mylock);
+		dbc->mylock = LOCK_INVALID;
+	}
+
 	/* Remove the cursor from the active queue. */
 	DB_THREAD_LOCK(dbp);
 	TAILQ_REMOVE(&dbp->active_queue, dbc, links);
 	DB_THREAD_UNLOCK(dbp);
-
-	ret = 0;
 
 	/* Call the access specific cursor close routine. */
 	if ((t_ret = dbc->c_am_close(dbc)) != 0 && ret == 0)
@@ -288,7 +321,7 @@ __db_get(dbp, txn, key, data, flags)
 	if ((ret = __db_getchk(dbp, key, data, flags)) != 0)
 		return (ret);
 
-	if ((ret = dbp->cursor(dbp, txn, &dbc)) != 0)
+	if ((ret = dbp->cursor(dbp, txn, &dbc, 0)) != 0)
 		return (ret);
 
 	DEBUG_LREAD(dbc, txn, "__db_get", key, NULL, flags);
@@ -322,7 +355,7 @@ __db_put(dbp, txn, key, data, flags)
 	    flags, F_ISSET(dbp, DB_AM_RDONLY), F_ISSET(dbp, DB_AM_DUP))) != 0)
 		return (ret);
 
-	if ((ret = dbp->cursor(dbp, txn, &dbc)) != 0)
+	if ((ret = dbp->cursor(dbp, txn, &dbc, DB_WRITELOCK)) != 0)
 		return (ret);
 
 	DEBUG_LWRITE(dbc, txn, "__db_put", key, data, flags);

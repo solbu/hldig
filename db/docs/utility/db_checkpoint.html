@@ -1,9 +1,10 @@
-<! "@(#)db_checkpoint.so	10.10 (Sleepycat) 9/29/98">
+<! "@(#)db_checkpoint.so	10.11 (Sleepycat) 12/11/98">
+<!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
 <head>
 <title>Berkeley DB: db_checkpoint</title>
-<meta name="description" content="DB: A database programmatic toolkit.">
+<meta name="description" content="Berkeley DB: An embedded database programmatic toolkit.">
 <meta name="keywords" content="embedded,database,programmatic,toolkit,b+tree,btr
 ee,hash,hashing,transaction,transactions,locking,logging,access method,access me
 thods,java,C,C++">
@@ -45,6 +46,11 @@ The db_checkpoint utility attaches to one or more of the Berkeley DB shared memo
 regions.  In order to avoid region corruption, it should always be given
 the chance to detach and exit gracefully.  To cause db_checkpoint to clean up
 after itself and exit, send it an interrupt signal (SIGINT).
+<p>
+The db_checkpoint utility does not attempt to create the Berkeley DB
+shared memory regions if they do not already exist.  The application
+which creates the region should be started first, and then, once the
+region is created, the db_checkpoint utility should be started.
 <p>
 The <a href="../api_c/DbTxnMgr/checkpoint.html">txn_checkpoint</a> function is the underlying function used by the db_checkpoint utility.
 See the db_checkpoint utility source code for an example of using <a href="../api_c/DbTxnMgr/checkpoint.html">txn_checkpoint</a>

@@ -46,8 +46,7 @@ int __ham_insdel_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_ham_insdel;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -251,8 +250,7 @@ int __ham_newpage_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_ham_newpage;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -430,8 +428,7 @@ int __ham_splitmeta_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_ham_splitmeta;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -584,8 +581,7 @@ int __ham_splitdata_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_ham_splitdata;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -760,8 +756,7 @@ int __ham_replace_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_ham_replace;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -973,8 +968,7 @@ int __ham_newpgno_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_ham_newpgno;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -1155,8 +1149,7 @@ int __ham_ovfl_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_ham_ovfl;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;
@@ -1319,8 +1312,7 @@ int __ham_copypage_log(logp, txnid, ret_lsnp, flags,
 	rectype = DB_ham_copypage;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
-		null_lsn.file = 0;
-		null_lsn.offset = 0;
+		ZERO_LSN(null_lsn);
 		lsnp = &null_lsn;
 	} else
 		lsnp = &txnid->last_lsn;

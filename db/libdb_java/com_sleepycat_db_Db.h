@@ -54,6 +54,7 @@ extern "C" {
 /* Inaccessible static: DB_LOCK_YOUNGEST */
 /* Inaccessible static: DB_DELIMITER */
 /* Inaccessible static: DB_DUP */
+/* Inaccessible static: DB_DUPSORT */
 /* Inaccessible static: DB_FIXEDLEN */
 /* Inaccessible static: DB_PAD */
 /* Inaccessible static: DB_RECNUM */
@@ -65,10 +66,10 @@ extern "C" {
 #define com_sleepycat_db_Db_DB_LOCK_READ 1L
 #undef com_sleepycat_db_Db_DB_LOCK_WRITE
 #define com_sleepycat_db_Db_DB_LOCK_WRITE 2L
-#undef com_sleepycat_db_Db_DB_LOCK_IREAD
-#define com_sleepycat_db_Db_DB_LOCK_IREAD 3L
 #undef com_sleepycat_db_Db_DB_LOCK_IWRITE
-#define com_sleepycat_db_Db_DB_LOCK_IWRITE 4L
+#define com_sleepycat_db_Db_DB_LOCK_IWRITE 3L
+#undef com_sleepycat_db_Db_DB_LOCK_IREAD
+#define com_sleepycat_db_Db_DB_LOCK_IREAD 4L
 #undef com_sleepycat_db_Db_DB_LOCK_IWR
 #define com_sleepycat_db_Db_DB_LOCK_IWR 5L
 #undef com_sleepycat_db_Db_DB_LOCK_DUMP
@@ -91,14 +92,18 @@ extern "C" {
 /* Inaccessible static: DB_APPEND */
 /* Inaccessible static: DB_BEFORE */
 /* Inaccessible static: DB_CHECKPOINT */
+/* Inaccessible static: DB_CURLSN */
 /* Inaccessible static: DB_CURRENT */
 /* Inaccessible static: DB_FIRST */
 /* Inaccessible static: DB_FLUSH */
+/* Inaccessible static: DB_GET_BOTH */
 /* Inaccessible static: DB_GET_RECNO */
+/* Inaccessible static: DB_JOIN_ITEM */
 /* Inaccessible static: DB_KEYFIRST */
 /* Inaccessible static: DB_KEYLAST */
 /* Inaccessible static: DB_LAST */
 /* Inaccessible static: DB_NEXT */
+/* Inaccessible static: DB_NEXT_DUP */
 /* Inaccessible static: DB_NOOVERWRITE */
 /* Inaccessible static: DB_NOSYNC */
 /* Inaccessible static: DB_PREV */
@@ -106,9 +111,6 @@ extern "C" {
 /* Inaccessible static: DB_SET */
 /* Inaccessible static: DB_SET_RANGE */
 /* Inaccessible static: DB_SET_RECNO */
-/* Inaccessible static: DB_CURLSN */
-/* Inaccessible static: DB_NEXT_DUP */
-/* Inaccessible static: DB_GET_BOTH */
 /* Inaccessible static: DB_RMW */
 /* Inaccessible static: DB_DBT_INTERNAL */
 /* Inaccessible static: DB_DBT_MALLOC */
@@ -126,10 +128,10 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Db_close
 /*
  * Class:     com_sleepycat_db_Db
  * Method:    cursor
- * Signature: (Lcom/sleepycat/db/DbTxn;)Lcom/sleepycat/db/Dbc;
+ * Signature: (Lcom/sleepycat/db/DbTxn;I)Lcom/sleepycat/db/Dbc;
  */
 JNIEXPORT jobject JNICALL Java_com_sleepycat_db_Db_cursor
-  (JNIEnv *, jobject, jobject);
+  (JNIEnv *, jobject, jobject, jint);
 
 /*
  * Class:     com_sleepycat_db_Db
