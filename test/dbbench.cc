@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: dbbench.cc,v 1.7.2.1 1999/12/09 13:07:54 loic Exp $
+// $Id: dbbench.cc,v 1.7.2.2 1999/12/16 11:10:58 loic Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
@@ -197,12 +197,12 @@ void dbput(DB* db, params_t*, const String& key, const String& data)
     memset(&d, 0, sizeof(DBT));
 
     char* key_string = (char*)alloca(key.length());
-    strcpy(key_string, key.get());
+    memcpy(key_string, key.get(),key.length());
     k.data = key_string;
     k.size = key.length();
 
     char* data_string = (char*)alloca(data.length());
-    strcpy(data_string, data.get());
+    memcpy(data_string, data.get(),data.length());
     d.data = data_string;
     d.size = data.length();
 
