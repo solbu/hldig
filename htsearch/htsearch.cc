@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.52 1999/10/01 15:19:29 loic Exp $
+// $Id: htsearch.cc,v 1.53 1999/10/08 12:05:21 loic Exp $
 //
 
 #include "htsearch.h"
@@ -151,7 +151,7 @@ main(int ac, char **av)
 	else
 	  configFile << '/' << input["config"] << ".conf";
     }
-    if (access(configFile, R_OK) < 0)
+    if (access((char*)configFile, R_OK) < 0)
     {
 	reportError(form("Unable to read configuration file '%s'",
 			 configFile.get()));
@@ -248,7 +248,7 @@ main(int ac, char **av)
     // The Dictionary it returns is then passed on to the Display object to
     // actually render the results in HTML.
     //
-    String	word_db = config["word_db"];
+    const String	word_db = config["word_db"];
     if (access(word_db, R_OK) < 0)
     {
 	reportError(form("Unable to read word database file '%s'\nDid you run htmerge?",
@@ -256,14 +256,14 @@ main(int ac, char **av)
     }
     ResultList	*results = htsearch(word_db, searchWords, parser);
 
-    String	doc_db = config["doc_db"];
+    const String	doc_db = config["doc_db"];
     if (access(doc_db, R_OK) < 0)
     {
 	reportError(form("Unable to read document database file '%s'\nDid you run htmerge?",
 			 doc_db.get()));
     }
 
-    String	doc_excerpt = config ["doc_excerpt"];
+    const String	doc_excerpt = config ["doc_excerpt"];
     if (access(doc_excerpt, R_OK) < 0)
     {
 	reportError(form("Unable to read document excerpts '%s'\nDid you run htmerge?",
@@ -309,13 +309,13 @@ createLogicalWords(List &searchWords, String &logicalWords, String &wm)
 	WeightWord	*ww = (WeightWord *) searchWords[i];
 	if (!ww->isHidden)
 	{
-	    if (strcmp(ww->word, "&") == 0 && wasHidden == 0)
+	    if (strcmp((char*)ww->word, "&") == 0 && wasHidden == 0)
 		logicalWords << " and ";
-	    else if (strcmp(ww->word, "|") == 0 && wasHidden == 0)
+	    else if (strcmp((char*)ww->word, "|") == 0 && wasHidden == 0)
 		logicalWords << " or ";
-	    else if (strcmp(ww->word, "!") == 0 && wasHidden == 0)
+	    else if (strcmp((char*)ww->word, "!") == 0 && wasHidden == 0)
 		logicalWords << " not ";
-	    else if (strcmp(ww->word, "\"") == 0 && wasHidden == 0)
+	    else if (strcmp((char*)ww->word, "\"") == 0 && wasHidden == 0)
 	      {
 		if (inPhrase)
 		  logicalWords.chop(' ');
@@ -507,7 +507,7 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 	    name = "exact";
 	if (weight.length() == 0)
 	    weight = "1";
-	fweight = atof(weight);
+	fweight = atof((char*)weight);
 
 	fuzzy = Fuzzy::getFuzzyByName(name, config);
 	if (fuzzy)

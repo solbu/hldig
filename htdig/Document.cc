@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.53 1999/09/24 10:28:56 loic Exp $
+// $Id: Document.cc,v 1.54 1999/10/08 12:05:20 loic Exp $
 //
 
 #include "Document.h"
@@ -64,7 +64,7 @@ Document::Document(char *u, int max_size)
     else
 	max_doc_size = config.Value("max_doc_size");
 	
-    String proxyURL = config["http_proxy"];
+    const String proxyURL = config["http_proxy"];
     if (proxyURL[0])
     {
 	proxy = new URL(proxyURL);
@@ -502,7 +502,7 @@ Document::readHeader(Connection &c)
 		token++;
 	    while (*token && isspace(*token))
 		token++;
-	    if (strncmp(line, "HTTP/", 5) == 0)
+	    if (strncmp((char*)line, "HTTP/", 5) == 0)
 	    {
 		//
 		// Found the status line.  This will determine if we
@@ -532,20 +532,20 @@ Document::readHeader(Connection &c)
 		}
 	    }
 	    else if (modtime == 0 && *token
-		     && mystrncasecmp(line, "last-modified:", 14) == 0)
+		     && mystrncasecmp((char*)line, "last-modified:", 14) == 0)
 	    {
                 token = strtok(token, "\n\t");
 		if (token && *token)
 		  modtime = getdate(token);
 	    }
 	    else if (contentLength == -1 && *token
-		     && mystrncasecmp(line, "content-length:", 15) == 0)
+		     && mystrncasecmp((char*)line, "content-length:", 15) == 0)
 	    {
                 token = strtok(token, "\n\t");
 		if (token && *token)
 		  contentLength = atoi(token);
 	    }
-	    else if (*token && mystrncasecmp(line, "content-type:", 13) == 0)
+	    else if (*token && mystrncasecmp((char*)line, "content-type:", 13) == 0)
 	    {
                 token = strtok(token, "\n\t");
 		if (!token || !*token)
@@ -558,7 +558,7 @@ Document::readHeader(Connection &c)
 		    return Header_not_text;
 		contentType = token;
 	    }
-	    else if (*token && mystrncasecmp(line, "location:", 9) == 0)
+	    else if (*token && mystrncasecmp((char*)line, "location:", 9) == 0)
 	    {
                 token = strtok(token, "\n\t");
 		if (token && *token)
@@ -666,19 +666,19 @@ Document::getParsable()
 	externalParser = new ExternalParser(contentType);
 	parsable = externalParser;
     }
-    else if (mystrncasecmp(contentType, "text/html", 9) == 0)
+    else if (mystrncasecmp((char*)contentType, "text/html", 9) == 0)
     {
 	if (!html)
 	    html = new HTML();
 	parsable = html;
     }
-    else if (mystrncasecmp(contentType, "application/pdf", 15) == 0)
+    else if (mystrncasecmp((char*)contentType, "application/pdf", 15) == 0)
     {
         if (!pdf)
 	    pdf = new PDF();
 	parsable = pdf;
     }
-    else if (mystrncasecmp(contentType, "text/plain", 10) == 0)
+    else if (mystrncasecmp((char*)contentType, "text/plain", 10) == 0)
     {
 	if (!plaintext)
 	    plaintext = new Plaintext();

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.15 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: Server.cc,v 1.16 1999/10/08 12:05:20 loic Exp $
 //
 
 #include "htdig.h"
@@ -156,7 +156,7 @@ void Server::robotstxt(Document &doc)
 		//
 		pay_attention = 1;
 	    }
-	    else if (mystrncasecmp(rest, myname, myname.length()) == 0)
+	    else if (mystrncasecmp(rest, (char*)myname, myname.length()) == 0)
 	    {
 		//
 		// This is for us!  This will override any previous patterns

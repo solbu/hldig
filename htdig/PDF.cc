@@ -23,7 +23,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: PDF.cc,v 1.21 1999/09/30 15:56:42 loic Exp $
+// $Id: PDF.cc,v 1.22 1999/10/08 12:05:20 loic Exp $
 //
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
@@ -130,7 +130,7 @@ PDF::parse(Retriever &retriever, URL &url)
     static int notfound = 0;
     if (notfound)	// we only need to complain once
 	return;
-    String arg0 = acroread;
+    const String arg0 = acroread;
     char *endarg = strchr(arg0.get(), ' ');
     if (endarg)
 	*endarg = '\0';
@@ -150,10 +150,10 @@ PDF::parse(Retriever &retriever, URL &url)
     _tempFileBase << getpid();
 
 
-    String tmpdir = getenv("TMPDIR");
+    const String tmpdir = getenv("TMPDIR");
     if (tmpdir.length() == 0)
       tmpdir = "/tmp";
-    String pdfName = tmpdir;
+    const String pdfName = tmpdir;
     pdfName << "/" << _tempFileBase;
     String psName = pdfName;
     pdfName << ".pdf";
@@ -174,7 +174,7 @@ PDF::parse(Retriever &retriever, URL &url)
     // Now generalized to allow xpdf as a parser, or other compatible parsers
     // (It was claimed it works with most recent xpdf, but it doesn't!)
     //    acroread << " -toPostScript " << pdfName << " " << tmpdir << " 2>&1";
-    String dest = psName;
+    const String dest = psName;
     if (strstr(acroread.get(), "acroread"))
     {
 	// special-case tests only for acroread (what else you gonna use?)
@@ -222,7 +222,7 @@ PDF::parse(Retriever &retriever, URL &url)
     if (debug > 3)
 	printf("PDF::parse: head = \"%s\"\n", _head.get());
 
-    _retriever->got_head(_head);
+    _retriever->got_head((char*)_head);
 
     fclose(psFile);
     unlink(pdfName);
@@ -323,14 +323,14 @@ void PDF::parseNonTextLine(String &line)
 
 	    addToString(position);
 
-	    if (strncmp(_tempFileBase, _parsedString, _tempFileBase.length()))
+	    if (strncmp((char*)_tempFileBase, (char*)_parsedString, _tempFileBase.length()))
 	    {
 		// PDF file really has a title
 		if (debug > 3)
 		    printf("PDF::parseNonTextLine: title is \"%s\"\n",
 			_parsedString.get());
 
-		_retriever->got_title(_parsedString);
+		_retriever->got_title((char*)_parsedString);
 	    }
 	    _parsedString = 0;
 	}
@@ -548,7 +548,7 @@ void PDF::parseString()
 
 	    if (word.length() >= minimumWordLength)
 	    {
-		_retriever->got_word(word, wordIndex++, 0);
+		_retriever->got_word((char*)word, wordIndex++, 0);
 		if (debug > 3)
 		    printf("PDF::parseString: got word %s\n", word.get());
 	    }

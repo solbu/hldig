@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ParsedString.h,v 1.5 1999/09/24 10:29:03 loic Exp $
+// $Id: ParsedString.h,v 1.6 1999/10/08 12:05:20 loic Exp $
 
 #ifndef _ParsedString_h_
 #define _ParsedString_h_
@@ -27,7 +27,7 @@ public:
 	// Construction/Destruction
 	//
 					ParsedString();
-					ParsedString(const char *s);
+					ParsedString(const String& s);
 					~ParsedString();
 
 	void			set(const String& s);

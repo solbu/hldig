@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ParsedString.cc,v 1.5 1999/09/24 10:29:03 loic Exp $
+// $Id: ParsedString.cc,v 1.6 1999/10/08 12:05:20 loic Exp $
 //
 
 #include "ParsedString.h"
@@ -31,7 +31,7 @@ ParsedString::ParsedString()
 
 //*****************************************************************************
 //
-ParsedString::ParsedString(const char *s)
+ParsedString::ParsedString(const String& s)
 {
     value = s;
 }
@@ -68,8 +68,8 @@ ParsedString::set(const String& str)
 const String
 ParsedString::get(const Dictionary &dict) const
 {
-  String		variable("");
-  String		parsed = 0;
+  String		variable;
+  String		parsed;
   ParsedString	*temp;
   const char		*str = value.get();
   char		delim = ' ';
@@ -92,7 +92,7 @@ ParsedString::get(const Dictionary &dict) const
 	    need_delim = 0;
 	  if (need_delim)
 	    str++;
-	  variable = 0;
+	  variable.trunc();
 	  while (isalpha(*str) || *str == '_' || *str == '-')
             {
 	      variable << *str++;
@@ -146,7 +146,7 @@ ParsedString::get(const Dictionary &dict) const
 	  // Back-quote delimits a filename which we need to insert
 	  //
 	  str++;
-	  variable = 0;
+	  variable.trunc();
 	  while (*str && *str != '`')
             {
 	      variable << *str++;
@@ -154,7 +154,7 @@ ParsedString::get(const Dictionary &dict) const
 	  if (*str == '`')
 	    str++;
 	  ParsedString	filename(variable);
-	  variable = 0;
+	  variable.trunc();
 	  getFileContents(variable, filename.get(dict));
 	  parsed << variable;
         }

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.cc,v 1.21 1999/10/01 15:19:29 loic Exp $
+// $Id: parser.cc,v 1.22 1999/10/08 12:05:21 loic Exp $
 //
 
 #include "parser.h"
@@ -65,17 +65,17 @@ Parser::lexan()
     current = (WeightWord *) tokens->Get_Next();
     if (!current)
 	return DONE;
-    else if (mystrcasecmp(current->word, "&") == 0)
+    else if (mystrcasecmp((char*)current->word, "&") == 0)
 	return '&';
-    else if (mystrcasecmp(current->word, "|") == 0)
+    else if (mystrcasecmp((char*)current->word, "|") == 0)
 	return '|';
-    else if (mystrcasecmp(current->word, "!") == 0)
+    else if (mystrcasecmp((char*)current->word, "!") == 0)
 	return '!';
-    else if (mystrcasecmp(current->word, "(") == 0)
+    else if (mystrcasecmp((char*)current->word, "(") == 0)
 	return '(';
-    else if (mystrcasecmp(current->word, ")") == 0)
+    else if (mystrcasecmp((char*)current->word, ")") == 0)
 	return ')';
-    else if (mystrcasecmp(current->word, "\"") == 0)
+    else if (mystrcasecmp((char*)current->word, "\"") == 0)
       return '"';
     else
 	return WORD;

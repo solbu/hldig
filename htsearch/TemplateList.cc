@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: TemplateList.cc,v 1.7 1999/09/24 10:29:05 loic Exp $
+// $Id: TemplateList.cc,v 1.8 1999/10/08 12:05:21 loic Exp $
 //
 
 #include "TemplateList.h"
@@ -76,7 +76,7 @@ TemplateList::createFromString(const String& str)
 
 	t = new Template();
 		
-	if (mystrcasecmp(internal, "builtin-long") == 0)
+	if (mystrcasecmp((char*)internal, "builtin-long") == 0)
 	{
 	    String	s;
 	    s << "<dl><dt><strong><a href=\"$(URL)\">$(TITLE)</a></strong>";
@@ -85,15 +85,15 @@ TemplateList::createFromString(const String& str)
 	    s << "<i><a href=\"$(URL)\">$(URL)</a></i>\n";
 	    s << " <font size=-1>$(MODIFIED), $(SIZE) bytes</font>\n";
 	    s << "</dd></dl>\n";
-	    t->setMatchTemplate(s);
+	    t->setMatchTemplate((char*)s);
 	}
-	else if (mystrcasecmp(internal, "builtin-short") == 0)
+	else if (mystrcasecmp((char*)internal, "builtin-short") == 0)
 	{
 	    t->setMatchTemplate("$(STARSRIGHT) <strong><a href=\"$(URL)\">$(TITLE)</a></strong><br>\n");
 	}
 	else
 	{
-	    t->createFromFile(file);
+	    t->createFromFile((char*)file);
 	}
 	templates.Add(t);
     }

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Template.cc,v 1.4 1999/09/24 10:29:05 loic Exp $
+// $Id: Template.cc,v 1.5 1999/10/08 12:05:21 loic Exp $
 //
 
 #include "Template.h"
@@ -44,11 +44,11 @@ Template::createFromFile(const char *filename)
 
     realFile = filename;
     realFile << ".start";
-    readFile(startTemplate, realFile);
+    readFile(startTemplate, (char*)realFile);
 
     realFile = filename;
     realFile << ".end";
-    readFile(endTemplate, realFile);
+    readFile(endTemplate, (char*)realFile);
 
     readFile(matchTemplate, filename);
 }

@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.18 1999/10/07 04:43:27 ghutchis Exp $
+// $Id: ExternalParser.cc,v 1.19 1999/10/08 12:05:20 loic Exp $
 //
 
 #include "ExternalParser.h"
@@ -127,7 +127,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
       path = "/tmp";
     path << "/htdext." << getpid();
 
-    FILE	*fl = fopen(path, "w");
+    FILE	*fl = fopen((char*)path, "w");
     if (!fl)
     {
 	return;
@@ -143,10 +143,10 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     command << ' ' << path << ' ' << contentType << " \"" << base.get() <<
 	"\" " << configFile;
 
-    FILE	*input = popen(command, "r");
+    FILE	*input = popen((char*)command, "r");
     if (!input)
     {
-	unlink(path);
+	unlink((char*)path);
 	return;
     }
 
@@ -320,7 +320,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 			meta_dsc = meta_dsc.sub(0, max_meta_description_length).get();
 		      if (debug > 1)
 			cout << "META Description: " << content << endl;
-		      retriever.got_meta_dsc(meta_dsc);
+		      retriever.got_meta_dsc((char*)meta_dsc);
 
 		      //
 		      // Now add the words to the word list
@@ -347,7 +347,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	}
     }
     pclose(input);
-    unlink(path);
+    unlink((char*)path);
 }
 
 

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.69 1999/10/08 11:54:59 loic Exp $
+// $Id: Retriever.cc,v 1.70 1999/10/08 12:05:20 loic Exp $
 //
 
 #include "Retriever.h"
@@ -85,7 +85,7 @@ Retriever::Retriever(RetrieverLog flags) :
     char buffer[1000];	// FIXME
     int  l;
 
-	urls_parsed = fopen(filelog,   "r" );
+	urls_parsed = fopen((char*)filelog,   "r" );
 	if (0 != urls_parsed)
         {
   	    // read all url discovered but not fetched before 
@@ -98,7 +98,7 @@ Retriever::Retriever(RetrieverLog flags) :
             }
             fclose(urls_parsed);
 	}
-        unlink(filelog);
+        unlink((char*)filelog);
     }
 }
 
@@ -311,7 +311,7 @@ Retriever::Start()
         FILE	*urls_parsed;
 	String	filelog = config["url_log"];
         // save url seen but not fetched
-	urls_parsed = fopen(filelog,   "w" );
+	urls_parsed = fopen((char*)filelog,   "w" );
 	if (0 == urls_parsed)
 	{
 	    reportError(form("Unable to create URL log file '%s'",
@@ -581,13 +581,13 @@ Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
     //
     // Update the document reference
     //
-    ref->DocHead(current_head);
-    ref->DocMetaDsc(current_meta_dsc);
+    ref->DocHead((char*)current_head);
+    ref->DocMetaDsc((char*)current_meta_dsc);
     if (current_time == 0)
       ref->DocTime(doc.ModTime());
     else
       ref->DocTime(current_time);
-    ref->DocTitle(current_title);
+    ref->DocTitle((char*)current_title);
     ref->DocSize(doc.Length());
     ref->DocAccessed(time(0));
     ref->DocLinks(n_links);
@@ -686,7 +686,7 @@ Retriever::IsValidURL(char *u)
     // If the URL has a query string and it is in the bad query list
     // mark it as invalid
     //
-    char *ext = strrchr(url, '?');
+    char *ext = strrchr((char*)url, '?');
     if (ext && badquerystr.match(url, 0, 0) != 0)
       {
                 if (debug >= 2)
@@ -776,7 +776,7 @@ Retriever::IsLocal(char *url)
     while ((prefix = (String*) prefixes->Get_Next()))
     {
 	path = (String*) paths->Get_Next();
-        if (mystrncasecmp(*prefix, url, prefix->length()) == 0)
+        if (mystrncasecmp(*prefix, (char*)url, prefix->length()) == 0)
 	{
 	    int l = strlen(url)-prefix->length()+path->length()+4;
 	    String *local = new String(*path, l);
@@ -838,7 +838,7 @@ Retriever::IsLocalUser(char *url)
 
     // Split the URL to components
     String tmp = url;
-    char *name = strchr(tmp, '~');
+    char *name = strchr((char*)tmp, '~');
     *name++ = '\0';
     char *rest = strchr(name, '/');
     if (!rest || (rest-name <= 1) || (rest-name > 32))
@@ -854,7 +854,7 @@ Retriever::IsLocalUser(char *url)
     {
         path = (String*) paths->Get_Next();
 	dir = (String*) dirs->Get_Next();
-        if (mystrcasecmp(*prefix, tmp) != 0)
+        if (mystrcasecmp(*prefix, (char*)tmp) != 0)
   	    continue;
 
 	String *local = new String;

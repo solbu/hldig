@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.61 1999/10/01 12:53:51 loic Exp $
+// $Id: HTML.cc,v 1.62 1999/10/08 12:05:20 loic Exp $
 //
 
 #include "htdig.h"
@@ -375,7 +375,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		{
 		    description << " ...";
 		    if (dofollow)
-		      retriever.got_href(*href, description);
+		      retriever.got_href(*href, (char*)description);
 		    in_ref = 0;
 		    description = 0;
 		}
@@ -399,7 +399,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 
 	    if (word.length() >= (int)minimumWordLength && doindex)
 	    {
-	      retriever.got_word(word, wordindex++, in_heading);
+	      retriever.got_word((char*)word, wordindex++, in_heading);
 	    }
 	}
 	else
@@ -440,7 +440,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    position++;
 	}
     }
-    retriever.got_head(head);
+    retriever.got_head((char*)head);
 
     delete [] text;
 }
@@ -490,7 +490,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		break;
 	    in_title = 0;
 	    in_heading = 0;
-	    retriever.got_title(title);
+	    retriever.got_title((char*)title);
 	    break;
 			
 	case 2:		// "a"
@@ -507,7 +507,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			 << " which didn't have a closing </a> tag."
 			 << endl;
 		  if (dofollow)
-		    retriever.got_href(*href, description);
+		    retriever.got_href(*href, (char*)description);
 		  in_ref = 0;
 		}
 	      if (href)
@@ -532,7 +532,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    if (in_ref)
 	    {
 	      if (dofollow)
-		retriever.got_href(*href, description);
+		retriever.got_href(*href, (char*)description);
 	      in_ref = 0;
 	    }
 	    break;
@@ -641,7 +641,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    && !attrs["content"].empty())
 		  {
 		    String content = attrs["content"];
-		    char *q = (char*)mystrcasestr(content, "url=");
+		    char *q = (char*)mystrcasestr((char*)content, "url=");
 		    if (q && *q)
 		      {
 			q += 4; // skiping "URL="
@@ -683,7 +683,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		     meta_dsc = meta_dsc.sub(0, max_meta_description_length).get();
 		   if (debug > 1)
 		     cout << "META Description: " << attrs["content"] << endl;
-		   retriever.got_meta_dsc(meta_dsc);
+		   retriever.got_meta_dsc((char*)meta_dsc);
 
 
 		   //

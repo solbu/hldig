@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Plaintext.cc,v 1.16 1999/09/30 15:56:42 loic Exp $
+// $Id: Plaintext.cc,v 1.17 1999/10/08 12:05:20 loic Exp $
 //
 
 #include "Plaintext.h"
@@ -75,7 +75,7 @@ Plaintext::parse(Retriever &retriever, URL &)
 
 	    if (word.length() >= minimumWordLength)
 	    {
-		retriever.got_word(word, wordIndex++, 0);
+		retriever.got_word((char*)word, wordIndex++, 0);
 	    }
 	}
 		
@@ -123,7 +123,7 @@ Plaintext::parse(Retriever &retriever, URL &)
 	if (*position)
 	    position++;
     }
-    retriever.got_head(head);
+    retriever.got_head((char*)head);
 }
 
 

@@ -12,13 +12,14 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Dictionary.h,v 1.6 1999/09/24 10:29:03 loic Exp $
+// $Id: Dictionary.h,v 1.7 1999/10/08 12:05:20 loic Exp $
 //
 
 #ifndef	_Dictionary_h_
 #define	_Dictionary_h_
 
 #include "Object.h"
+#include "htString.h"
 #include "List.h"
 
 class Dictionary;
@@ -48,16 +49,16 @@ public:
     //
     // Adding and deleting items to and from the dictionary
     //
-    void		Add(const char *name, Object *obj);
-    int			Remove(const char *name);
+    void		Add(const String& name, Object *obj);
+    int			Remove(const String& name);
 
     //
     // Searching can be done with the Find() member of the array indexing
     // operator
     //
-    Object		*Find(const char *name) const;
-    Object		*operator[](const char *name) const;
-    int			Exists(const char *name) const;
+    Object		*Find(const String& name) const;
+    Object		*operator[](const String& name) const;
+    int			Exists(const String& name) const;
 
     //
     // We want to be able to go through all the entries in the

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Dictionary.cc,v 1.9 1999/09/24 14:30:11 loic Exp $
+// $Id: Dictionary.cc,v 1.10 1999/10/08 12:05:20 loic Exp $
 //
 
 #include "Dictionary.h"
@@ -70,7 +70,7 @@ Dictionary::Dictionary(const Dictionary& other)
     init(other.initialCapacity, other.loadFactor);
 
     DictionaryCursor cursor;
-    char* key;
+    const char* key;
     for(other.Start_Get(cursor); (key = other.Get_Next(cursor));) {
       Add(key, other[key]);
     }
@@ -178,7 +178,7 @@ Dictionary::hashCode(const char *key) const
 //   method for that function.
 //
 void
-Dictionary::Add(const char *name, Object *obj)
+Dictionary::Add(const String& name, Object *obj)
 {
     unsigned int	hash = hashCode(name);
     int			index = hash % tableLength;
@@ -215,7 +215,7 @@ Dictionary::Add(const char *name, Object *obj)
 //   Remove an entry from the hash table.
 //
 int
-Dictionary::Remove(const char *name)
+Dictionary::Remove(const String& name)
 {
     if (!count)
       return 0;
@@ -247,7 +247,7 @@ Dictionary::Remove(const char *name)
 
 //*********************************************************************
 //
-Object *Dictionary::Find(const char *name) const
+Object *Dictionary::Find(const String& name) const
 {
     if (!count)
 	return NULL;
@@ -269,7 +269,7 @@ Object *Dictionary::Find(const char *name) const
 
 //*********************************************************************
 //
-Object *Dictionary::operator[](const char *name) const
+Object *Dictionary::operator[](const String& name) const
 {
     return Find(name);
 }
@@ -277,7 +277,7 @@ Object *Dictionary::operator[](const char *name) const
 
 //*********************************************************************
 //
-int Dictionary::Exists(const char *name) const
+int Dictionary::Exists(const String& name) const
 {
     if (!count)
       return 0;

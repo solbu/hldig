@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)cxx_app.cpp	10.22 (Sleepycat) 11/2/98";
+static const char sccsid[] = "@(#)cxx_app.cpp	10.23 (Sleepycat) 12/16/98";
 #endif /* not lint */
 
 #include "db_cxx.h"
@@ -108,15 +108,17 @@ void DbEnv::set_error_model(ErrorModel model)
     error_model_ = model;
 }
 
-int DbEnv::runtime_error(const char *caller, int err,
-                         int in_destructor, int force_throw)
+int DbEnv::runtime_error(const char *, int err,
+                         int, int)
 {
+#ifdef USETHROW
     int throwit = (!currentApp ||
                    (currentApp && currentApp->error_model_ == Exception));
 
     if ((throwit && !in_destructor) || force_throw) {
         throw DbException(caller, err);
     }
+#endif /* USETHROW */
     return err;
 }
 
@@ -158,7 +160,7 @@ void DbEnv::set_paniccall(DbEnv::db_paniccall_fcn fcn)
 // initialized.  This is considered a configuration error (and thus
 // serious enough for an unconditional exception) because user changes
 // to the environment structure after appinit will have no effect.
-// 
+//
 #define DB_WO_ACCESS_BEFORE_APPINIT(_class, _type, _cxx_name, _field) \
                                                                \
 void _class::set_##_cxx_name(_type value)                      \

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.97 1999/10/05 16:48:02 loic Exp $
+// $Id: Display.cc,v 1.98 1999/10/08 12:05:20 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -333,8 +333,8 @@ Display::displayMatch(DocumentRef *ref, int current)
 	if (t)
 	{
 	    struct tm	*tm = localtime(&t);
-	    String datefmt = config["date_format"];
-	    String locale  = config["locale"];
+	    const String datefmt = config["date_format"];
+	    const String locale  = config["locale"];
 	    if (!datefmt.empty())
 	      {
 		if (config.Boolean("iso_8601"))

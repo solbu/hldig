@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.h,v 1.5 1999/09/24 10:29:03 loic Exp $
+// $Id: Configuration.h,v 1.6 1999/10/08 12:05:20 loic Exp $
 //
 
 #ifndef	_Configuration_h_
@@ -52,14 +52,14 @@ public:
     //
     // Adding and deleting items to and from the Configuration
     //
-    void		Add(const char *name, const char *value);
-    void		Add(const char *str);
-    int			Remove(const char *name);
+    void		Add(const String& name, const String& value);
+    void		Add(const String& str);
+    int			Remove(const String& name);
 
     //
     // Let the Configuration know how to parse name value pairs
     //
-    void		NameValueSeparators(const char *s);
+    void		NameValueSeparators(const String& s);
 	
     //
     // We need some way of reading in the database from a configuration file
@@ -70,11 +70,11 @@ public:
     // Searching can be done with the Find() member or the array indexing
     // operator
     //
-    const String	Find(const char *name) const;
-    const String	operator[](const char *name) const;
-    int			Value(const char *name, int default_value = 0) const;
-    double		Double(const char *name, double default_value = 0) const;
-    int			Boolean(const char *name, int default_value = 0) const;
+    const String	Find(const String& name) const;
+    const String	operator[](const String& name) const;
+    int			Value(const String& name, int default_value = 0) const;
+    double		Double(const String& name, double default_value = 0) const;
+    int			Boolean(const String& name, int default_value = 0) const;
 
     //
     // Read defaults from an array

@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.cc,v 1.14 1999/09/24 10:29:02 loic Exp $
+// $Id: Configuration.cc,v 1.15 1999/10/08 12:05:20 loic Exp $
 //
 
 #include "Configuration.h"
@@ -39,18 +39,18 @@ Configuration::Configuration()
 //*********************************************************************
 // void Configuration::NameValueSeparators(char *s)
 //
-void Configuration::NameValueSeparators(const char *s)
+void Configuration::NameValueSeparators(const String& s)
 {
-    separators = 0;
-    separators.append(s);
+    separators = s;
 }
 
 
 //*********************************************************************
 //   Add an entry to the configuration table.
 //
-void Configuration::Add(const char *str)
+void Configuration::Add(const String& str_arg)
 {
+    const char* str = str_arg;
     String	name, value;
 	
     while (str && *str)
@@ -84,7 +84,7 @@ void Configuration::Add(const char *str)
             return;
         }
 
-        if (!strchr(separators, *str))
+        if (!strchr((char*)separators, *str))
         {
             //
             // We are now at a new name.  The previous one needs to be set
@@ -161,7 +161,7 @@ void Configuration::Add(const char *str)
 //*********************************************************************
 //   Add an entry to the configuration table.
 //
-void Configuration::Add(const char *name, const char *value)
+void Configuration::Add(const String& name, const String& value)
 {
     ParsedString	*ps = new ParsedString(value);
     if (mystrcasecmp(name, "locale") == 0)
@@ -183,7 +183,7 @@ void Configuration::Add(const char *name, const char *value)
 //*********************************************************************
 //   Remove an entry from both the hash table and from the list of keys.
 //
-int Configuration::Remove(const char *name)
+int Configuration::Remove(const String& name)
 {
     return dict.Remove(name);
 }
@@ -194,7 +194,7 @@ int Configuration::Remove(const char *name)
 //   Retrieve a variable from the configuration database.  This variable
 //   will be parsed and a new String object will be returned.
 //
-const String Configuration::Find(const char *name) const
+const String Configuration::Find(const String& name) const
 {
     ParsedString	*ps = (ParsedString *) dict[name];
     if (ps)
@@ -213,7 +213,7 @@ const String Configuration::Find(const char *name) const
 
 //*********************************************************************
 //
-int Configuration::Value(const char *name, int default_value) const
+int Configuration::Value(const String& name, int default_value) const
 {
     return Find(name).as_integer(default_value);
 }
@@ -221,7 +221,7 @@ int Configuration::Value(const char *name, int default_value) const
 
 //*********************************************************************
 //
-double Configuration::Double(const char *name, double default_value) const
+double Configuration::Double(const String& name, double default_value) const
 {
     return Find(name).as_double(default_value);
 }
@@ -230,7 +230,7 @@ double Configuration::Double(const char *name, double default_value) const
 //*********************************************************************
 // int Configuration::Boolean(char *name, int default_value)
 //
-int Configuration::Boolean(const char *name, int default_value) const
+int Configuration::Boolean(const String& name, int default_value) const
 {
     int		value = default_value;
     const String s = Find(name);
@@ -252,7 +252,7 @@ int Configuration::Boolean(const char *name, int default_value) const
 
 //*********************************************************************
 //
-const String Configuration::operator[](const char *name) const
+const String Configuration::operator[](const String& name) const
 {
     return Find(name);
 }
@@ -317,7 +317,7 @@ int Configuration::Read(const String& filename)
 	    len--;
 	  }
 
-	if (mystrcasecmp(name, "include") == 0)
+	if (mystrcasecmp((char*)name, "include") == 0)
 	{
 	    ParsedString	ps(value);
 	    String		str(ps.get(dict));

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.24 1999/10/01 12:53:53 loic Exp $
+// $Id: htdig.cc,v 1.25 1999/10/08 12:05:20 loic Exp $
 //
 
 #include "Document.h"
@@ -51,7 +51,7 @@ void reportError(char *msg);
 //
 // Start of the program.
 //
-main(int ac, char **av)
+int main(int ac, char **av)
 {
     int			c;
     extern char		*optarg;
@@ -117,7 +117,7 @@ main(int ac, char **av)
     // file to override the defaults.
     //
     config.Defaults(&defaults[0]);
-    if (access(configFile, R_OK) < 0)
+    if (access((char*)configFile, R_OK) < 0)
     {
 	reportError(form("Unable to find configuration file '%s'",
 			 configFile.get()));
@@ -185,7 +185,7 @@ main(int ac, char **av)
     //
     if (config.Boolean("create_url_list"))
     {
-	String	filename = config["url_list"];
+	const String	filename = config["url_list"];
 	urls_seen = fopen(filename, initial ? "w" : "a");
 	if (urls_seen == 0)
 	{
@@ -199,7 +199,7 @@ main(int ac, char **av)
     //
     if (config.Boolean("create_image_list"))
     {
-	String	filename = config["image_list"];
+	const String	filename = config["image_list"];
 	images_seen = fopen(filename, initial ? "w" : "a");
 	if (images_seen == 0)
 	{
@@ -239,15 +239,15 @@ main(int ac, char **av)
     //
     // Open the document database
     //
-    String		filename = config["doc_db"];
+    const String		filename = config["doc_db"];
     if (initial)
 	unlink(filename);
 
-    String		index_filename = config["doc_index"];
+    const String		index_filename = config["doc_index"];
     if (initial)
 	unlink(index_filename);
 
-    String		head_filename = config["doc_excerpt"];
+    const String		head_filename = config["doc_excerpt"];
     if (initial)
         unlink(head_filename);
 
@@ -257,7 +257,7 @@ main(int ac, char **av)
 			 filename.get()));
     }
 
-    String		word_filename = config["word_db"];
+    const String		word_filename = config["word_db"];
     if (initial)
        unlink(word_filename);
 
@@ -276,7 +276,7 @@ main(int ac, char **av)
 
     // Set up credentials for this run
     if (credentials.length())
-	retriever.setUsernamePassword(credentials);
+	retriever.setUsernamePassword((char*)credentials);
 
     // Add start_url to the initial list of the retriever.
     // Don't check a URL twice!
@@ -299,7 +299,7 @@ main(int ac, char **av)
 
     if (create_text_database)
     {
-	String filename = config["doc_list"];
+	const String filename = config["doc_list"];
 	if (initial)
 	    unlink(filename);
 	docs.CreateSearchDB(filename);
