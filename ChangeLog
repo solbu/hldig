@@ -1,3 +1,8 @@
+Fri Mar 19 16:37:08 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/parser.h, htsearch/parser.cc: Clean up patch made for
+	error messages, made on Feb 16.
+
 Tue Feb 16 23:48:09 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure.in, configure: Default to 'int' when we cannot

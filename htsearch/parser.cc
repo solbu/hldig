@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.6.2.1 1999/02/17 05:03:05 ghutchis Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.6.2.2 1999/03/19 22:44:07 grdetil Exp $";
 #endif
 
 #include "parser.h"
@@ -34,8 +34,6 @@ int
 Parser::checkSyntax(List *tokenList)
 {
     tokens = tokenList;
-    tokens->Start_Get();
-    lookahead = lexan();
     valid = 1;
     fullexpr(0);
     return valid;
@@ -45,19 +43,12 @@ Parser::checkSyntax(List *tokenList)
 void
 Parser::fullexpr(int output)
 {
+    tokens->Start_Get();
+    lookahead = lexan();
     expr(output);
-    if (lookahead != DONE)
+    if (valid && lookahead != DONE)
     {
-	valid = 0;
-	error = 0;
-	error << "Expected end of expression instead of '";
-	error << current->word.get() << '\'';
-	switch (lookahead)
-	{
-	case '&':	error << " or 'AND'";	break;
-	case '|':	error << " or 'OR'";	break;
-	case '!':	error << " or 'NOT'";	break;
-	}
+	setError("end of expression");
     }
 }
 
@@ -107,12 +98,9 @@ Parser::expr(int output)
 	else
 	    break;
     }
-    if (lookahead == WORD)
+    if (valid && lookahead == WORD)
     {
-	valid = 0;
-	error = 0;
-	error << "Expected 'AND' or 'OR' instead of '" << current->word.get();
-	error << '\'';
+	setError("'AND' or 'OR'");
     }
 }
 
@@ -151,9 +139,7 @@ Parser::factor(int output)
 	}
 	else
 	{
-	    valid = 0;
-	    error = 0;
-	    error << "Expected ')'";
+	    setError("')'");
 	}
     }
     else if (lookahead == WORD)
@@ -166,13 +152,32 @@ Parser::factor(int output)
     }
     else
     {
+	setError("a search word");
+    }
+}
+
+//*****************************************************************************
+int
+Parser::match(int t)
+{
+    if (lookahead == t)
+    {
+	lookahead = lexan();
+	return 1;
+    }
+    else
+	return 0;
+}
+
+//*****************************************************************************
+void
+Parser::setError(char *expected)
+{
+    if (valid)
+    {
 	valid = 0;
 	error = 0;
-	error << "Expected a search word";
-    }
-
-    if (!valid)
-    {
+	error << "Expected " << expected;
 	if (lookahead == DONE || !current)
 	{
 	    error << " at the end";
@@ -189,19 +194,6 @@ Parser::factor(int output)
 	    }
 	}
     }
-}
-
-//*****************************************************************************
-int
-Parser::match(int t)
-{
-    if (lookahead == t)
-    {
-	lookahead = lexan();
-	return 1;
-    }
-    else
-	return 0;
 }
 
 //*****************************************************************************
@@ -409,8 +401,6 @@ void
 Parser::parse(List *tokenList, ResultList &resultMatches)
 {
     tokens = tokenList;
-    tokens->Start_Get();
-    lookahead = lexan();
     fullexpr(1);
 
     ResultList	*result = (ResultList *) stack.pop();

@@ -1,7 +1,7 @@
 //
 // parser.h
 //
-// $Id: parser.h,v 1.3.2.1 1999/02/17 05:03:05 ghutchis Exp $
+// $Id: parser.h,v 1.3.2.2 1999/03/19 22:44:07 grdetil Exp $
 //
 #ifndef _parser_h_
 #define _parser_h_
@@ -34,6 +34,7 @@ protected:
     void		term(int);
     void		factor(int);
     int			match(int);
+    void		setError(char *);
     void		perform_push();
     void		perform_and(int);
     void		perform_or();
