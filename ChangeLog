@@ -1,3 +1,8 @@
+Fri Nov 26 15:42:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(setVariables): added Alexis Mikhailov's fix
+	to check the number of pages against maximum_pages at the right time.
+
 Wed Nov 24 20:33:13 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* installdir/htdig.conf: Add bad_extensions to make it

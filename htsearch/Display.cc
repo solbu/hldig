@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.17 1999/11/24 05:12:39 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.18 1999/11/26 21:56:33 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -385,6 +385,8 @@ Display::setVariables(int pageNumber, List *matches)
 
     if (nPages < 1)
 	nPages = 1;			// We always have at least one page...
+    if (nPages > config.Value("maximum_pages", 10))
+	nPages = config.Value("maximum_pages");
     vars.Add("MATCHES_PER_PAGE", new String(config["matches_per_page"]));
     vars.Add("MAX_STARS", new String(config["max_stars"]));
     vars.Add("CONFIG", new String(config["config"]));
@@ -512,8 +514,6 @@ Display::setVariables(int pageNumber, List *matches)
 	QuotedStringList	pnt(config["page_number_text"], " \t\r\n");
 	QuotedStringList	npnt(config["no_page_number_text"], " \t\r\n");
 	QuotedStringList	sep(config["page_number_separator"], " \t\r\n");
-	if (nPages > config.Value("maximum_pages", 10))
-	    nPages = config.Value("maximum_pages");
 	for (i = 1; i <= nPages; i++)
 	{
 	    if (i == pageNumber)
