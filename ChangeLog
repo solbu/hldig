@@ -1,3 +1,13 @@
+Tue Apr 20 10:54:59 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/RELEASE.html: Add notes on changes in the 3.1.2 release.
+
+	* htdoc/contents.html, htdoc/mailarchive.html, htdoc/where.html,
+	htdoc/uses.html: Update with versions from maindocs.
+
+	* installdir/htdig.conf: Add example max_doc_size attribute to cut
+	down on FAQ, also add comment on including a file for start_url.
+
 Mon Apr 19 15:40:24 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/WordList.cc(valid_word): fixed to avoid having the new

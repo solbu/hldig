@@ -20,7 +20,45 @@
 	  is also a <a href="ChangeLog">ChangeLog</a> file which has
 	  more details on the code changes.
 	</p>
-
+	<p>
+	<strong>Release notes for htdig-3.1.2</strong> 21 Apr 1999<br>
+	This version fixes a number of bugs in the 3.1.1 release and
+	is the latest stable release of ht://Dig. It is highly
+	recommended for production servers.	
+	</p>
+	<ul>
+	<li>Fixed a bug that ignored META description tags when they
+	  were also added to the meta_keywords attribute.</li>
+	<li>Fixed the HTML comment parsing to be more lenient about
+	  non-standard comments.</li>
+	<li>Fixed problems in the date-parsing code that made it Y2K
+	  incompatible. In particular, it forgot that 2000 is a leap
+	  year and wouldn't correctly parse dates after 29 Feb
+	  2000.</li>
+	<li>Fixed a variety of bugs in the HTML parser.</li>
+	<li>Fixed a old bug that would exclude <b>all</b> URLs if
+	  the exclude_urls attribute left empty.</li>
+	<li>Fixed display of META description tags. Now it always
+	  shows the top of a description. If no description exists, it
+	  looks for the search terms in the excerpt as usual.</li>
+	<li>Fixed some small memory leaks.</li>
+	<li>Changed the htfuzzy endings algorithm to use a more
+	  efficient regex system. Speed improvements on non-English
+	  languages are noted, now taking minutes for generation that
+	  would take minutes!</li>
+	<li>Changed the noindex_start and noindex_end attributes to
+	  allow case-insensitive matching.</li>
+	<li>Added on-disk versions of the builtin templates to make it
+	  more obvious how to change the results templates.</li>
+	<li>Added <a href="attrs.html#date_format">date_format</a> 
+	attribute to change the format of dates output in search results.</li>
+	<li>Added <a href="attrs.html#extra_word_chars">extra_word_chars</a>
+	   attribute that defines extra characters that should be
+	  considered part of a word, rather than punctuation.</li>
+	<li>Several other, relatively minor bugs were also
+	  fixed. Many thanks to those who sent in bug reports and to
+	  Gilles Detillieux for coordinating this release.</li>
+	</ul>
 	<p>
 	 <strong>Release notes for htdig-3.1.1</strong> 17 Feb 1999<br>
 	 This version cleans up some remaining bugs in the 3.1.0
