@@ -1,3 +1,8 @@
+Wed Dec 15 14:24:03 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/htString.h, htlib/String.cc: Added Alexis Mikhailov's String
+	input methods, readLine() and >> operator.
+
 Wed Dec 15 13:59:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc: remove include of sys/stat.h, which is no

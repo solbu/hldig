@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.30.2.1 1999/11/26 22:06:40 grdetil Exp $
+// $Id: String.cc,v 1.30.2.2 1999/12/15 21:04:25 grdetil Exp $
 //
 
 
@@ -631,4 +631,75 @@ void String::debug(ostream &o)
 	" Data: " << ((void*) Data) << " '" << *this << "'\n";
 }
 
+
+int String::readLine(FILE *in)
+{
+    Length = 0;
+    allocate_fix_space(2048);
+
+    while (fgets(Data + Length, Allocated - Length, in))
+    {
+	Length += strlen(Data + Length);
+	if (Length == 0)
+	    continue;
+	if (Data[Length - 1] == '\n')
+	{
+	    //
+	    // A full line has been read.  Return it.
+	    //
+	    chop('\n');
+	    return 1;
+	}
+	if (Allocated > Length + 1)
+	{
+	    //
+	    // Not all available space filled. Probably EOF?
+	    //
+	    continue;
+	}
+	//
+	// Only a partial line was read. Increase available space in 
+	// string and read some more.
+	//
+	reallocate_space(Allocated << 1);
+    }
+    chop('\n');
+
+    return Length > 0;
+}
+
+istream &operator >> (istream &in, String &line)
+{
+    line.Length = 0;
+    line.allocate_fix_space(2048);
+
+    while (in.get(line.Data + line.Length, line.Allocated - line.Length))
+    {
+	line.Length += strlen(line.Data + line.Length);
+	int c = in.get();
+	if (c == '\n' || c == EOF)
+	{
+	    //
+	    // A full line has been read.  Return it.
+	    //
+	    break;
+	}
+	if (line.Allocated > line.Length + 2)
+	{
+	    //
+	    // Not all available space filled.
+	    //
+	    line.Data[line.Length++] = char(c);
+	    continue;
+	}
+	//
+	// Only a partial line was read. Increase available space in 
+	// string and read some more.
+	//
+	line.reallocate_space(line.Allocated << 1);
+	line.Data[line.Length++] = char(c);
+    }
+
+    return in;
+}
 
