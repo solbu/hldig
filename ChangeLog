@@ -1,3 +1,9 @@
+Mon Mar 22 19:26:56 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/DocumentRef.cc(AddDescription): Check to see that
+	description isn't a null string or contains only whitespace before
+	doing anything.
+
 Mon Mar 22 19:21:16 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc: Fix #ifdef

@@ -536,11 +536,14 @@ void DocumentRef::Deserialize(String &stream)
 //
 void DocumentRef::AddDescription(char *d)
 {
-    if (!d)
+    if (!d || !*d)
         return;
 
     while (isspace(*d))
         d++;
+
+    if (!d || !*d)
+        return;
 
     String	desc = d;
     desc.chop(" \t");
