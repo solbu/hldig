@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.h,v 1.6.2.2 1999/12/07 19:54:12 bosc Exp $
+// $Id: Configuration.h,v 1.6.2.3 1999/12/09 10:34:21 bosc Exp $
 //
 
 #ifndef	_Configuration_h_
@@ -68,7 +68,7 @@ public:
     //
     // We need some way of reading in the database from a configuration file
     //
-    int			Read(const String& filename);
+    virtual int         Read(const String& filename);
 
     //
     // Searching can be done with the Find() member or the array indexing

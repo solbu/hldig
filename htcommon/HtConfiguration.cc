@@ -1,7 +1,12 @@
 
+#include <stdio.h>
 #include"HtConfiguration.h"
 #include "ParsedString.h"
 #include <stdlib.h>
+#include <fstream.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <locale.h>
 
 
 //********************************************************************
@@ -142,6 +147,7 @@ String tmpStr=Find(blockName,name,value);
  }
 return retValue;
 }
+
 //*********************************************************************
 double HtConfiguration::Double(char *blockName,char *name,char *value,
 				double default_value = 0) {
@@ -152,6 +158,7 @@ String tmpStr=Find(blockName,name,value);
  }
 return retValue;
 }
+
 //*********************************************************************
 int HtConfiguration::Boolean(char *blockName,char *name,char *value,
 				 int default_value = 0) {
@@ -170,6 +177,7 @@ String tmpStr=Find(blockName,name,value);
  }
 return retValue;
 }
+
 //*********************************************************************
 //*********************************************************************
 int HtConfiguration::Value(URL *aUrl,char *value,
@@ -181,6 +189,7 @@ String tmpStr=Find(aUrl,value);
  }
 return retValue;
 }
+
 //*********************************************************************
 double HtConfiguration::Double(URL *aUrl,char *value,
 				double default_value = 0) {
@@ -191,6 +200,7 @@ String tmpStr=Find(aUrl,value);
  }
 return retValue;
 }
+
 //*********************************************************************
 int HtConfiguration::Boolean(URL *aUrl,char *value,
 				 int default_value = 0) {
@@ -208,4 +218,19 @@ String tmpStr=Find(aUrl,value);
 
  }
 return retValue;
+}
+
+//*********************************************************************
+//
+int 
+HtConfiguration::Read(const String& filename)
+{
+extern FILE* yyin;
+extern int yyparse(void*);
+if ((yyin=fopen(filename,"r"))==NULL) 
+	return NOTOK;
+
+yyparse(this);
+fclose(yyin);
+return OK;
 }

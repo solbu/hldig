@@ -1,3 +1,8 @@
+Thu Dec 09 11:15:30 1999    <bosc@ceic.com>
+
+	* htlib/Configuration.cc (Read): Read is now a virtual function: the old one 
+	for Configuration the new one (Vadim's ... with the parser) in HtConfiguration
+	
 Thu Dec 09 11:01:22 1999  Loic Dachary  <loic@ceic.com>
 
 	* acinclude.m4: upgrade AC_PROG_APACHE macro for 

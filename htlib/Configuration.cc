@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.cc,v 1.15.2.2 1999/12/07 19:54:12 bosc Exp $
+// $Id: Configuration.cc,v 1.15.2.3 1999/12/09 10:34:21 bosc Exp $
 //
 
 #include <stdio.h>
@@ -268,14 +268,85 @@ const String Configuration::operator[](const String& name) const
 //
 int Configuration::Read(const String& filename)
 {
-extern FILE* yyin;
-extern int yyparse(void*);
-if ((yyin=fopen(filename,"r"))==NULL) 
-	return NOTOK;
-
-yyparse(this);
-fclose(yyin);
-return OK;
+    ifstream	in((const char*)filename);
+ 
+     if (in.bad() || in.eof())
+         return NOTOK;
+ 
+     //
+     // Make the line buffer large so that we can read long lists of start
+     // URLs.
+     //
+     char	buffer[50000];
+     char	*current;
+     String	line;
+     String	name;
+     char	*value;
+     int         len;
+     while (!in.bad())
+     {
+         in.getline(buffer, sizeof(buffer));
+         if (in.eof())
+             break;
+         line << buffer;
+         line.chop("\r\n");
+         if (line.last() == '\\')
+         {
+             line.chop(1);
+             continue;			// Append the next line to this one
+         }
+ 
+         current = line.get();
+         if (*current == '#' || *current == '\0')
+         {
+             line = 0;
+             continue;			// Comments and blank lines are skipped
+         }
+ 
+         name = strtok(current, ": =\t");
+         value = strtok(0, "\r\n");
+         if (!value)
+             value = "";			// Blank value
+ 
+         //
+         // Skip any whitespace before the actual text
+         //
+         while (*value == ' ' || *value == '\t')
+             value++;
+ 	len = strlen(value) - 1;
+ 	//
+ 	// Skip any whitespace after the actual text
+ 	//
+ 	while (value[len] == ' ' || value[len] == '\t')
+ 	  {
+ 	    value[len] = '\0';
+ 	    len--;
+ 	  }
+ 
+ 	if (mystrcasecmp((char*)name, "include") == 0)
+ 	{
+ 	    ParsedString	ps(value);
+ 	    String		str(ps.get(dcGlobalVars));
+ 	    if (str[0] != '/')		// Given file name not fully qualified
+ 	    {
+ 		str = filename;		// so strip dir. name from current one
+ 		len = str.lastIndexOf('/') + 1;
+ 		if (len > 0)
+ 		    str.chop(str.length() - len);
+ 		else
+ 		    str = "";		// No slash in current filename
+ 		str << ps.get(dcGlobalVars);
+ 	    }
+ 	    Read(str);
+ 	    line = 0;
+ 	    continue;
+ 	}
+ 
+         Add(name, value);
+         line = 0;
+     }
+     in.close();
+     return OK;
 }
 
 
