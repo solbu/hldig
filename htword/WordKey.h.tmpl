@@ -366,6 +366,10 @@ sub {
 	    $fieldnames .= "\#define\t$define\t" . ($types{$type} + 0) . "\n";
 
 	    #
+	    # Serial position of field
+	    #
+	    $serials .= "\#define\t${define}_POSITION\t $spec->{'position'}\n";
+	    #
 	    # Integer that have a bit set for the field
 	    #
 	    $serials .= "\#define\t$undef\t (1 << $spec->{'position'})\n";
