@@ -8946,7 +8946,10 @@ http://www.htdig.org/
 		  </dt>
 		  <dd>
 	Size of memory cache used by Berkeley DB (DB used by the indexer)
-
+	IMPORTANT: It  makes a *huge* difference. The rule 
+	is that the cache size should be at least 2% of the expected index size. The
+	Berkeley DB file has 1% of internal pages that *must* be cached for good
+	performances. Giving an additional 1% leaves room for caching leaf pages.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -9021,7 +9024,7 @@ http://www.htdig.org/
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Thu Dec  9 19:23:53 CET 1999
+Last modified: Fri Dec 10 18:45:43 CET 1999
 <!-- hhmts end -->
   </body>
 </html>
