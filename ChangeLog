@@ -1,8 +1,15 @@
-Wed Sep  1 15:46:23 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:48:13 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/PDF.cc(parse), htcommon/defaults.cc, htdoc/attrs.html:
+	Fix PDF.cc to handle acroread in Acrobat 4, which has a bug with
+	the -pairs option.  It turns out that even without the -pairs
+	option, acroread 4 is still prone to segmentation violations when
+	generating PostScript, so acroread 3 is a better choice anyway.
 
 	* htdoc/FAQ.html: Added the past few month's updates to the FAQ.
 
-	* contrib/parse_doc.pl: Updated to latest version.
+	* contrib/parse_doc.pl: Updated to latest version, adapted for
+	xpdf 0.90.
 
 Wed Sep  1 15:39:41 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 

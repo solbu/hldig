@@ -4,7 +4,7 @@
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
 #if RELEASE
-static char RCSid[] = "$Id: PDF.cc,v 1.9.2.3 1999/09/01 20:33:36 grdetil Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.9.2.4 1999/09/01 20:53:00 grdetil Exp $";
 #endif
 
 #include <sys/types.h>
@@ -104,13 +104,22 @@ PDF::parse(Retriever &retriever, URL &url)
         acroread = "acroread";
 
     // Check for existance of acroread program! (if not, return)
-    //struct stat stat_buf;
-    // Check that it exists, and is a regular file. 
-    //if ((stat(acroread, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode))
-    //  {
-    //	printf("PDF::parse: cannot find acroread\n");
-    //	return;
-    //  }
+    struct stat stat_buf;
+    static int notfound = 0;
+    if (notfound)	// we only need to complain once
+	return;
+    String arg0 = acroread;
+    char *endarg = strchr(arg0.get(), ' ');
+    if (endarg)
+	*endarg = '\0';
+    // If first arg is a path, check that it exists, and is a regular file. 
+    if (strchr(arg0.get(), '/') &&
+	((stat(arg0.get(), &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode)))
+    {
+	printf("PDF::parse: cannot find pdf parser %s\n", arg0.get());
+	notfound = 1;
+	return;
+    }
 
     // Write the pdf contents in a temp file to give it to acroread
 
@@ -140,9 +149,19 @@ PDF::parse(Retriever &retriever, URL &url)
 
 
     // Use acroread as a filter to convert to PostScript.
-    // Now generalized to allow xpdf as a parser (works with most recent xpdf)
+    // Now generalized to allow xpdf as a parser, or other compatible parsers
+    // (It was claimed it works with most recent xpdf, but it doesn't!)
     //    acroread << " -toPostScript " << pdfName << " " << tmpdir << " 2>&1";
-    acroread << " " << pdfName << " " << psName << " 2>&1";
+    String dest = psName;
+    if (strstr(acroread.get(), "acroread"))
+    {
+	// special-case tests only for acroread (what else you gonna use?)
+	if (!strstr(acroread.get(), "-toPostScript"))
+	    acroread << " -toPostScript ";	// add missing option
+	if (!strstr(acroread.get(), "-pairs"))	// don't use -pairs with 4.0
+	    dest = tmpdir;
+    }
+    acroread << " " << pdfName << " " << dest << " 2>&1";
 
     if (system(acroread))
     {

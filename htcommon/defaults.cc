@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.4 1999/09/01 20:16:35 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.5 1999/09/01 20:53:00 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -21,7 +21,7 @@ ConfigDefaults	defaults[] =
     {"database_dir",			DATABASE_DIR},
     {"bin_dir",				BIN_DIR},
     {"image_url_prefix",		IMAGE_URL_PREFIX},
-    {"pdf_parser",                      PDF_PARSER " -toPostScript -pairs"},
+    {"pdf_parser",                      PDF_PARSER " -toPostScript"},
     {"version",				VERSION},
 
     //
