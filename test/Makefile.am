@@ -9,6 +9,12 @@ include $(top_srcdir)/Makefile.config
 # To turn on verbosity us (for instance):
 # MAKE=make t_htdig -vv
 #
+# To purify objects use:
+# ( cd ../test ; rm -f word ; make CXXLD='purify g++' word )
+# ( cd ../htmerge ; rm -f htmerge ; make CXXLD='purify g++' htmerge )
+# ( cd ../htsearch ; rm -f htsearch ; make CXXLD='purify g++' htsearch )
+# ( cd ../htdig ; rm -f htdig ; make CXXLD='purify g++' htdig )
+#
 TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist # t_htnet
 AM_MAKEFLAGS = MAKE="$(MAKE)"
 

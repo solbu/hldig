@@ -107,7 +107,7 @@ VERSION = @VERSION@
 INCLUDES = -Wall 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)
 
 
-HTLIBS = $(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/db/dist/libdb.a
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/db/dist/libdb.a
 
 
 #
@@ -118,6 +118,12 @@ HTLIBS = $(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 
 #
 # To turn on verbosity us (for instance):
 # MAKE=make t_htdig -vv
+#
+# To purify objects use:
+# ( cd ../test ; rm -f word ; make CXXLD='purify g++' word )
+# ( cd ../htmerge ; rm -f htmerge ; make CXXLD='purify g++' htmerge )
+# ( cd ../htsearch ; rm -f htsearch ; make CXXLD='purify g++' htsearch )
+# ( cd ../htdig ; rm -f htdig ; make CXXLD='purify g++' htdig )
 #
 TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist # t_htnet
 AM_MAKEFLAGS = MAKE="$(MAKE)"

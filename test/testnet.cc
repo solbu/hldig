@@ -1,4 +1,4 @@
-// $Id: testnet.cc,v 1.1 1999/09/27 16:18:58 angus Exp $
+// $Id: testnet.cc,v 1.2 1999/09/28 17:36:55 loic Exp $
 
 #include "Transport.h"
 #include "HtHTTP.h"
@@ -14,7 +14,7 @@
 #endif
 
 int debug = 0;
-int times = 1;
+int timesvar = 1;
 int persistent = 1;
 
 URL *url;
@@ -32,7 +32,6 @@ int Parser(char *ct);
 
 int main(int ac, char **av)
 {
-
 ///////
    //	Local variables
 ///////
@@ -59,7 +58,7 @@ int main(int ac, char **av)
             URL_To_Retrieve=optarg;
             break;
          case 't':
-            times=atoi(optarg);
+            timesvar=atoi(optarg);
             break;
          case 'n':
             persistent = 0;
@@ -85,7 +84,7 @@ int main(int ac, char **av)
    HtHTTP::SetParsingController(Parser);
    int i;
    
-   for (i=0; i < times; i++)
+   for (i=0; i < timesvar; i++)
    {
       if (debug>0)
          cout << i << ". " << endl;

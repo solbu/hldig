@@ -1,3 +1,14 @@
+Tue Sep 28 18:56:36 1999  Loic Dachary  <loic@ceic.com>
+
+	* Makefile.config (HTLIBS): libhtnet at the beginning of the list. It
+	  matters on Solaris-2.6 for instance.
+
+	* test/testnet.cc: change times to timesvar to avoid conflict with
+	  function (was warning only on Solaris-2.6).
+	
+	* htdig,htsearch,htmerge,test/word are purify clean when running
+	  make check.
+
 Tue Sep 28 18:23:49 1999  Loic Dachary  <loic@ceic.com>
 
 	* htmerge/words.cc (mergeWords): use WordList::Walk to avoid loading ALL 

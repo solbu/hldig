@@ -107,7 +107,7 @@ VERSION = @VERSION@
 INCLUDES = -Wall 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)
 
 
-HTLIBS = $(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/db/dist/libdb.a
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/db/dist/libdb.a
 
 
 IMAGES = button1.gif button2.gif button3.gif button4.gif button5.gif 		button6.gif button7.gif button8.gif button9.gif buttonl.gif 		buttonr.gif button10.gif htdig.gif star.gif star_blank.gif 		button1.png button2.png button3.png button4.png button5.png                 button6.png button7.png button8.png button9.png buttonl.png                 buttonr.png button10.png htdig.png star.png star_blank.png
