@@ -1,3 +1,22 @@
+Fri Jan  1 2003  Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* htnet/HtFile.cc(Ext2Mime,Request), htdig/Document.cc(RetrieveLocal):
+	Determine local files' MIME types from mime.types, not hard-coded.
+	URLs matching attribute "bad_local_extensions" must use their true
+	transport protocol (HTTP for http://, filesystem for file:///).
+
+	* htnet/HtFile.cc (File2Mime, Request): For  file:///  URLs only,
+	files without (or with unrecognised) extensions are checked by
+	the program specfied by the "content_classifier" attribute.
+
+	* htnet/htFile.cc (Request): Symbolic links are treated as
+	redirects, to avoid problems with relative references.
+
+	* htcommon/defaults.cc: Documented the above (and added crossrefs).
+
+	* test/t_ht{dig,dig_local,search}, test/htdocs/set1/*,
+	test/conf/htdig.conf2.in: Add tests for bad_local_extensions.
+
 Mon Dec 31 2002  Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* configure.in,htfuzzy/EndingsDB.cc,htlib/{HtR,r}egex.h,Makefile.am:

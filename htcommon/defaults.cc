@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.73 2002/12/31 07:59:03 lha Exp $
+// $Id: defaults.cc,v 1.74 2003/01/03 13:26:17 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -193,6 +193,14 @@ ConfigDefaults	defaults[] =
 	provided they pass other criteria for acceptance or rejection. \
 	See also <a href=\"#valid_extensions\">valid_extensions</a>. \
 " }, \
+{ "bad_local_extensions", ".php .shtml .cgi",  \
+	"string list", "htdig", "URL", "all", "Indexing:Where", "bad_extensions: .foo .bar .bad", " \
+	This is a list of extensions on URLs which must be retrieved \
+	using the URL's true transport mechanism (such as HTTP). \
+	If <a href=\"#local_urls\">local_urls</a> is specified, URLs not \
+	ending with these extensions may instead be retrieved through \
+	the local filesystem for efficiency. \
+" },
 { "bad_querystr", "",  \
 	"pattern list", "htdig", "URL", "3.1.0", "Indexing:Where", "bad_querystr: forum=private section=topsecret&amp;passwd=required", " \
 	This is a list of CGI query strings to be excluded from \
@@ -374,9 +382,9 @@ http://www.htdig.org/", " \
 	compile time. \
 	</p> \
 " },
-{ "content_classifier", "${bin_dir}/HtContent.sh",  \
-	"string", "htdig", "", "3.2.0b4", "Indexing:What", "content_classifier: file -i -k", " \
-	When ht://Dig can't determine the type of a local file or a file:// \
+{ "content_classifier", "${bin_dir}/HtFileType",  \
+	"string", "htdig", "", "3.2.0b4", "Indexing:What", "content_classifier: file -i -b", " \
+	When ht://Dig can't determine the type of a <code>file://</code> \
 	URL from its extension, this program is used to determine the type. \
 	The program is called with one argument, the name of (possibly a \
 	temporary copy of) the file. \
@@ -1379,10 +1387,12 @@ http://www.htdig.org/", " \
 { "local_default_doc", "index.html",  \
 	"string list", "htdig", "Server", "3.0.8b2", "Indexing:Where", "local_default_doc: default.html default.htm index.html index.htm", " \
 	Set this to the default documents in a directory used by the \
-	server. This is used for local filesystem access to \
+	server. This is used for local filesystem access, \
+	using <a href=\"#local_urls\">local_urls</a>, to \
 	translate URLs like http://foo.com/ into something like \
-	/home/foo.com/index.html<br> \
-	The list should only contain names that the local server \
+	/home/foo.com/index.html \
+	(see also <a href=\"#remove_default_doc\">remove_default_doc</a>). \
+	<br>The list should only contain names that the local server \
 	recognizes as default documents for directory URLs, as defined \
 	by the DirectoryIndex setting in Apache's srm.conf, for example. \
 	As of version 3.1.5, this can be a string list rather than a single name, \
@@ -1403,16 +1413,18 @@ http://www.htdig.org/", " \
 	<br>The fallback to HTTP can be disabled by setting the \
 	<a href=\"#local_urls_only\">local_urls_only</a> attribute to true. \
 	To access user directory URLs through the local filesystem, \
-	set <a href=\"#local_user_urls\">local_user_urls</a>.  The only \
-	file name extensions currently recognized for local filesystem \
-	access are .html, .htm, .txt, .asc, .ps, .eps and .pdf. For \
-	anything else, htdig must ask the HTTP server for the file, \
-	so it can determine the MIME content-type of it. \
+	set <a href=\"#local_user_urls\">local_user_urls</a>.  \
+	File types which need processing by the HTTP server may be \
+	specified by the \
+	<a href=\"#bad_local_extensions\">bad_local_extensions</a> \
+	attribute. \
 	As of version 3.1.5, you can provide multiple mappings of a given \
 	URL to different directories, and htdig will use the first \
 	mapping that works. \
 	Special characters can be embedded in these names using %xx hex encoding. \
 	For example, you can use %3D to embed an \"=\" sign in an URL pattern. \
+	<br> \
+	See also <a href=\"#local_user_urls\">local_user_urls</a>. \
 " }, \
 { "local_urls_only", "false",  \
 	"boolean", "htdig", "", "3.1.4", "Indexing:Where", "local_urls_only: true", " \
@@ -1937,6 +1949,7 @@ http://www.htdig.org/", " \
 	recognize as default documents for directory URLs, as defined \
 	by the DirectoryIndex setting in Apache's srm.conf, for example. \
 	This does not apply to  file:///  or  ftp://  URLS. \
+	<br>See also <a href=\"#local_default_doc\">local_default_doc</a>. \
 " }, \
 { "remove_unretrieved_urls", "false",  \
 	"boolean", "htpurge", "Server", "3.2.0b1", "Indexing:How", "remove_unretrieved_urls: true", " \

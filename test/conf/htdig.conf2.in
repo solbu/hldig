@@ -32,6 +32,7 @@ database_dir:		_TESTDIR_/var/htdig2
 #
 start_url:		http://localhost:_PORT_/set1/
 local_urls:		http://localhost:_PORT_/=_TESTDIR_/htdocs/
+bad_local_extensions:	.php .shtml .htm
 
 #
 # This attribute limits the scope of the indexing process.  The default is to

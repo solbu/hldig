@@ -11,7 +11,7 @@ COMMONHTML=	header.html footer.html wrapper.html nomatch.html syntax.html \
 		long.html short.html
 COMMONDICT=	bad_words english.0 english.aff synonyms
 
-EXTRA_DIST = $(IMAGES) $(COMMONHTML) $(COMMONDICT) rundig htdig.conf mime.types search.html
+EXTRA_DIST = $(IMAGES) $(COMMONHTML) $(COMMONDICT) rundig htdig.conf mime.types search.html HtFileType HtFileType-magic.mime
 
 install-data-local:	all
 	$(mkinstalldirs) $(DESTDIR)$(DATABASE_DIR)
@@ -19,6 +19,7 @@ install-data-local:	all
 	$(mkinstalldirs) $(DESTDIR)$(CONFIG_DIR)
 	@if [ ! -f $(DESTDIR)$(CONFIG_DIR)/htdig.conf ]; then sed -e s%@\DATABASE_DIR@%$(DATABASE_DIR)% -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/htdig.conf >$(DESTDIR)$(CONFIG_DIR)/htdig.conf; echo $(DESTDIR)$(CONFIG_DIR)/htdig.conf;fi
 	@if [ ! -f $(DESTDIR)$(CONFIG_DIR)/mime.types ]; then cp $(top_srcdir)/installdir/mime.types $(DESTDIR)$(CONFIG_DIR)/mime.types; echo $(DESTDIR)$(CONFIG_DIR)/mime.types;fi
+	@if [ ! -f $(DESTDIR)$(CONFIG_DIR)/HtFileType-magic.mime ]; then cp $(top_srcdir)/installdir/HtFileType-magic.mime $(DESTDIR)$(CONFIG_DIR)/HtFileType-magic.mime; echo $(DESTDIR)$(CONFIG_DIR)/HtFileType-magic.mime;fi
 	$(mkinstalldirs) $(DESTDIR)$(SEARCH_DIR)
 	@if [ ! -f $(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM) ]; then sed -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/search.html >$(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM); echo $(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM);fi
 	$(mkinstalldirs) $(DESTDIR)$(COMMON_DIR)
@@ -38,4 +39,10 @@ install-data-local:	all
 	@if [ ! -f $(DESTDIR)$(bindir)/rundig ]; then \
 		sed -e s%@\BIN_DIR@%$(bindir)% -e s%@\COMMON_DIR@%$(COMMON_DIR)% -e s%@\DATABASE_DIR@%$(DATABASE_DIR)% $(top_srcdir)/installdir/rundig >$(DESTDIR)$(bindir)/rundig; \
 		chmod 755 $(DESTDIR)$(bindir)/rundig; \
+	fi
+	@echo "Installing file-type identification script..."
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@if [ ! -f $(DESTDIR)$(bindir)/HtFileType ]; then \
+		sed -es%@\CONFIG_DIR@%$(DESTDIR)$(CONFIG_DIR)% $(top_srcdir)/installdir/HtFileType >$(DESTDIR)$(bindir)/HtFileType; \
+		chmod 755 $(DESTDIR)$(bindir)/HtFileType; \
 	fi

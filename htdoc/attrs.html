@@ -931,6 +931,65 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="bad_local_extensions">
+		bad_local_extensions</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			.php .shtml .cgi
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			URL
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      all
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	This is a list of extensions on URLs which must be retrieved
+	using the URL's true transport mechanism (such as HTTP).
+	If <a href="#local_urls">local_urls</a> is specified, URLs not
+	ending with these extensions may instead be retrieved through
+	the local filesystem for efficiency.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr> <td valign="top"><em>No example provided</em></td> </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="bad_querystr">
 		bad_querystr</a></strong>
 	  </dt>
@@ -2054,7 +2113,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${bin_dir}/HtContent.sh
+			${bin_dir}/HtFileType
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -2072,7 +2131,7 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	When ht://Dig can't determine the type of a local file or a file://
+	When ht://Dig can't determine the type of a <code>file://</code>
 	URL from its extension, this program is used to determine the type.
 	The program is called with one argument, the name of (possibly a
 	temporary copy of) the file.
@@ -2090,7 +2149,7 @@ http://www.htdig.org/
 				  content_classifier:
 				</td>
 				<td nowrap>
-				     file -i -k
+				     file -i -b
 				</td>
 			  </tr>
 			</table>
@@ -6039,10 +6098,12 @@ http://www.htdig.org/
 		  </dt>
 		  <dd>
 	Set this to the default documents in a directory used by the
-	server. This is used for local filesystem access to
+	server. This is used for local filesystem access,
+	using <a href="#local_urls">local_urls</a>, to
 	translate URLs like http://foo.com/ into something like
-	/home/foo.com/index.html<br>
-	The list should only contain names that the local server
+	/home/foo.com/index.html
+	(see also <a href="#remove_default_doc">remove_default_doc</a>).
+	<br>The list should only contain names that the local server
 	recognizes as default documents for directory URLs, as defined
 	by the DirectoryIndex setting in Apache's srm.conf, for example.
 	As of version 3.1.5, this can be a string list rather than a single name,
@@ -6121,16 +6182,18 @@ http://www.htdig.org/
 	<br>The fallback to HTTP can be disabled by setting the
 	<a href="#local_urls_only">local_urls_only</a> attribute to true.
 	To access user directory URLs through the local filesystem,
-	set <a href="#local_user_urls">local_user_urls</a>.  The only
-	file name extensions currently recognized for local filesystem
-	access are .html, .htm, .txt, .asc, .ps, .eps and .pdf. For
-	anything else, htdig must ask the HTTP server for the file,
-	so it can determine the MIME content-type of it.
+	set <a href="#local_user_urls">local_user_urls</a>.
+	File types which need processing by the HTTP server may be
+	specified by the
+	<a href="#bad_local_extensions">bad_local_extensions</a>
+	attribute.
 	As of version 3.1.5, you can provide multiple mappings of a given
 	URL to different directories, and htdig will use the first
 	mapping that works.
 	Special characters can be embedded in these names using %xx hex encoding.
 	For example, you can use %3D to embed an "=" sign in an URL pattern.
+	<br>
+	See also <a href="#local_user_urls">local_user_urls</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -9705,6 +9768,7 @@ http://www.htdig.org/
 	recognize as default documents for directory URLs, as defined
 	by the DirectoryIndex setting in Apache's srm.conf, for example.
 	This does not apply to  file:///  or  ftp://  URLS.
+	<br>See also <a href="#local_default_doc">local_default_doc</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -14323,6 +14387,6 @@ form during indexing and translated for results.
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: Tue Dec 31 17:09:27 EST 2002
+		Last modified: Fri Jan  3 23:39:02 EST 2003
   </body>
 </html>

@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.62 2002/08/29 21:16:05 svc Exp $
+// $Id: Document.cc,v 1.63 2003/01/03 13:26:17 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -606,7 +606,7 @@ Document::Retrieve(Server *server, HtDateTime date)
 Transport::DocStatus
 Document::RetrieveLocal(HtDateTime date, StringList *filenames)
 {
-	HtConfiguration* config= HtConfiguration::config();
+    HtConfiguration* config= HtConfiguration::config();
     struct stat stat_buf;
     String *filename;
 
@@ -629,24 +629,36 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
     if (modtime <= date)
       return Transport::Document_not_changed;
 
-    // Process only HTML files (this could be changed if we read
-    // the server's mime.types file).
-    // (...and handle a select few other types for now...  this should
-    //  eventually be handled by the "file://..." handler, which uses
-    //  mime.types to determine the file type.) -- FIXME!!
     char *ext = strrchr((char*)*filename, '.');
     if (ext == NULL)
       return Transport::Document_not_local;
-    if ((mystrcasecmp(ext, ".html") == 0) || (mystrcasecmp(ext, ".htm") == 0))
-        contentType = "text/html";
-    else if ((mystrcasecmp(ext, ".txt") == 0) || (mystrcasecmp(ext, ".asc") == 0))
-        contentType = "text/plain";
-    else if ((mystrcasecmp(ext, ".pdf") == 0))
-        contentType = "application/pdf";
-    else if ((mystrcasecmp(ext, ".ps") == 0) || (mystrcasecmp(ext, ".eps") == 0))
-        contentType = "application/postscript";
-    else 
+    const String *type = HtFile::Ext2Mime (ext + 1);
+
+    static Dictionary *bad_local_ext = 0;
+    if (!bad_local_ext)
+    {
+	// A list of bad extensions, separated by spaces or tabs
+	bad_local_ext = new Dictionary;
+	String	t = config->Find("bad_local_extensions");
+	String lowerp;
+	char	*p = strtok(t, " \t");
+	while (p)
+	{
+	  // Extensions are case insensitive
+	  lowerp = p;
+	  lowerp.lowercase();
+	  bad_local_ext->Add(lowerp, 0);
+	  p = strtok(0, " \t");
+	}
+    }
+    if (type == NULL || bad_local_ext->Exists(ext))
+    {
+      if (debug > 1 && type != NULL)
+	cout << "\nBad local extension: " << *filename << endl;
       return Transport::Document_not_local;
+    }
+    else 
+      contentType = *type;
 
     // Open it
     FILE *f = fopen((char*)*filename, "r");

@@ -5,7 +5,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_htsearch,v 1.6 2002/12/30 12:42:59 lha Exp $
+# $Id: t_htsearch,v 1.7 2003/01/03 13:26:19 lha Exp $
 #
 
 . $srcdir/t_htdig
@@ -34,7 +34,7 @@ try() {
 
 try "Simple search for 'also'" \
     "words=also" \
-    '3 matches' 'site2.html' 'script.html' 'site4.html'
+    '4 matches' 'bad_local.htm' 'site2.html' 'script.html' 'site4.html'
 
 try "Implicit and search with two words 'also movies'" \
     "method=and&words=also+movies" \
@@ -46,15 +46,15 @@ try "Explicit and search with two words 'also movies'" \
 
 try "Implicit or search for 'also distribution'" \
     "method=or&words=also+distribution" \
-    '4 matches' 'site2.html' 'script.html' 'site4.html' 'site1.html'
+    '5 matches' 'bad_local.htm' 'site2.html' 'script.html' 'site4.html' 'site1.html'
 
 try "Explicit or search for 'also distribution'" \
     "method=boolean&words=also+or+distribution" \
-    '4 matches' 'site2.html' 'script.html' 'site4.html' 'site1.html'
+    '5 matches' 'bad_local.htm' 'site2.html' 'script.html' 'site4.html' 'site1.html'
 
 try "Boolean and/or mixed 'also or distribution and ltd'" \
     "method=boolean&words=also+or+distribution+and+ltd" \
-    '4 matches' 'site2.html' 'script.html' 'site4.html' 'site1.html'
+    '5 matches' 'bad_local.htm' 'site2.html' 'script.html' 'site4.html' 'site1.html'
 
 try "Boolean explicit priority '(also or distribution) and ltd'" \
     "method=boolean&words=(also+or+distribution)+and+ltd" \
@@ -62,7 +62,7 @@ try "Boolean explicit priority '(also or distribution) and ltd'" \
 
 try "Wildcard search for '*'" \
     "method=and&words=*" \
-    '7 matches' 'set1/title.html' 'set1/site2.html' 'set1/script.html' 'set1/"' 'set1/site3.html' 'set1/site4.html' 'set1/site1.html'
+    '8 matches' 'set1/bad_local.htm' 'set1/title.html' 'set1/site2.html' 'set1/script.html' 'set1/"' 'set1/site3.html' 'set1/site4.html' 'set1/site1.html'
 
 try "Phrase search for '\"who offer\" and \"loans to graduate\"'" \
     "method=boolean&words=%22who+offer%22+and+%22loans+to+graduate%22" \
@@ -110,7 +110,7 @@ config=$testdir/conf/htdig.conf3
 
 try "Testing boolean_keywords and search_rewrite_urls" \
     "method=boolean&words=also+ou+distribution+et+ltd" \
-    '4 matches' 'place2.html' 'script.html' 'place4.html' 'place1.html'
+    '5 matches' 'bad_local.htm' 'place2.html' 'script.html' 'place4.html' 'place1.html'
 
 try "Testing boolean_syntax_errors" \
     "method=boolean&words=ou+distribution" \

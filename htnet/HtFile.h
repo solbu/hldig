@@ -19,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFile.h,v 1.3 2002/02/01 22:49:35 ghutchis Exp $ 
+// $Id: HtFile.h,v 1.4 2003/01/03 13:26:19 lha Exp $ 
 //
 
 #ifndef _HTFILE_H
@@ -63,6 +63,16 @@ public:
 
    // manages a Transport request (method inherited from Transport class)
    virtual DocStatus Request ();
+
+   // Determine Mime type of file from its extension
+   static const String *Ext2Mime (const char *);
+
+   // Determine Mime type of file from its contents
+   static String File2Mime (const char *);
+
+ ///////
+    //    Interface for resource retrieving
+ ///////
    
  ///////
     //    Interface for resource retrieving
