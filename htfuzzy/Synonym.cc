@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Synonym.cc,v 1.3.2.1 1999/03/23 00:56:08 grdetil Exp $";
+static char RCSid[] = "$Id: Synonym.cc,v 1.3.2.2 1999/03/31 21:25:12 grdetil Exp $";
 #endif
 
 #include "Synonym.h"
@@ -22,16 +22,18 @@ static char RCSid[] = "$Id: Synonym.cc,v 1.3.2.1 1999/03/23 00:56:08 grdetil Exp
 Synonym::Synonym()
 {
     name = "synonyms";
+    db = 0;
 }
 
 
 //*****************************************************************************
 Synonym::~Synonym()
 {
-  if (db)
+    if (db)
     {
-      db->Close();
-      delete db;
+        db->Close();
+        delete db;
+        db = 0;
     }
 }
 
@@ -110,6 +112,12 @@ Synonym::openIndex(Configuration &)
 {
     char	*dbFile = config["synonym_db"];
 	
+    if (db)
+    {
+        db->Close();
+        delete db;
+        db = 0;
+    }
     db = Database::getDatabaseInstance();
     if (db->OpenRead(dbFile) == NOTOK)
     {

@@ -1,3 +1,8 @@
+Wed Mar 31 15:16:36 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Synonym.cc: Fix previous fix of minor memory leak.
+	(db pointer wasn't properly set)
+
 Tue Mar 30 20:08:18 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/htdig.cc: If exclude_urls attribute is set to empty, set
