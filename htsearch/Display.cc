@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.53 1999/02/04 00:13:00 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54 1999/02/05 03:51:38 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -370,7 +370,7 @@ Display::setVariables(int pageNumber, List *matches)
     else if (mystrcasecmp(config["match_method"], "or") == 0)
 	vars.Add("MATCH_MESSAGE", new String("some"));
     vars.Add("MATCHES", new String(form("%d", nMatches)));
-    vars.Add("PLURAL_MATCHES", new String(nMatches == 0 ? "" : "s"));
+    vars.Add("PLURAL_MATCHES", new String(nMatches == 1 ? (char *)"" : (char *)"s"));
     vars.Add("PAGE", new String(form("%d", pageNumber)));
     vars.Add("PAGES", new String(form("%d", nPages)));
     vars.Add("FIRSTDISPLAYED",
@@ -1116,8 +1116,8 @@ Display::compareTitle(const void *a1, const void *a2)
 {
     ResultMatch	*m1 = *((ResultMatch **) a1);
     ResultMatch *m2 = *((ResultMatch **) a2);
-    char	*t1 = (m1->getRef()) ? m1->getRef()->DocTitle() : "";
-    char	*t2 = (m2->getRef()) ? m2->getRef()->DocTitle() : "";
+    char	*t1 = (m1->getRef()) ? m1->getRef()->DocTitle() : (char *)"";
+    char	*t2 = (m2->getRef()) ? m2->getRef()->DocTitle() : (char *)"";
 
     if (!t1) t1 = "";
     if (!t2) t2 = "";
