@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.13 1999/11/24 02:29:09 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.14 1999/11/24 02:47:48 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -383,6 +383,7 @@ Display::setVariables(int pageNumber, List *matches)
     vars.Add("VERSION", new String(config["version"]));
     vars.Add("RESTRICT", new String(config["restrict"]));
     vars.Add("EXCLUDE", new String(config["exclude"]));
+    vars.Add("KEYWORDS", new String(config["keywords"]));
     if (mystrcasecmp(config["match_method"], "and") == 0)
 	vars.Add("MATCH_MESSAGE", new String("all"));
     else if (mystrcasecmp(config["match_method"], "or") == 0)
@@ -560,6 +561,8 @@ Display::createURL(String &url, int pageNumber)
 	s << "sort=" << input->get("sort") << '&';
     if (input->exists("matchesperpage"))
 	s << "matchesperpage=" << input->get("matchesperpage") << '&';
+    if (input->exists("keywords"))
+	s << "keywords=" << input->get("keywords") << '&';
     if (input->exists("words"))
 	s << "words=" << input->get("words") << '&';
     StringList form_vars(config["allow_in_form"], " \t\r\n");

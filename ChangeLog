@@ -1,3 +1,9 @@
+Tue Nov 23 20:35:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(setVariables & createURL),
+	htsearch/htsearch.cc(main), htdoc/hts_templates.html: handle keywords
+	input parameter like others, and make it propagate to followups.
+
 Tue Nov 23 20:25:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html: removed vestigial references to MAX_MATCHES
