@@ -21,6 +21,8 @@ CPPFLAGS += -I. -I../include -I../htlib -I../htcommon -I../htword -I../db -I../h
 LDLIBS = ../lib/$(ARCH)/libhtnet.lib ../lib/$(ARCH)/libcommon.lib ../lib/$(ARCH)/libhtword.lib ../lib/$(ARCH)/libht.lib ../lib/$(ARCH)/libcommon.lib ../lib/$(ARCH)/libhtword.lib ../lib/$(ARCH)/libht.lib ../lib/$(ARCH)/libhtdb.lib 
 OTHERLIBS = ws2_32.lib L:/win32/lib/zlib114/zlib.lib
 
+DEPLIBS += $(LDLIBS)
+
 $(TARGET): $(OBJDIRDEP) $(BINDIRDEP) $(OBJS) $(DEPLIBS)
 	$(EXELD) $(LDFLAGS) $(OBJS) $(LDLIBS) $(OTHERLIBS)
 

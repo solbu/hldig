@@ -20,6 +20,7 @@ OBJS2 = win32/htfuzzy.obj
 LDLIBS = ../lib/$(ARCH)/libhtnet.lib ../lib/$(ARCH)/libcommon.lib ../lib/$(ARCH)/libhtword.lib ../lib/$(ARCH)/libht.lib ../lib/$(ARCH)/libcommon.lib ../lib/$(ARCH)/libhtword.lib ../lib/$(ARCH)/libht.lib ../lib/$(ARCH)/libfuzzy.lib ../lib/$(ARCH)/libhtdb.lib 
 OTHERLIBS = ws2_32.lib  L:/win32/lib/zlib114/zlib.lib
 
+DEPLIBS += $(LDLIBS)
 
 all: $(TARGET1) $(TARGET2)
 
