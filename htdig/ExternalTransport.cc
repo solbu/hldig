@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalTransport.cc,v 1.4 2002/04/05 20:16:13 grdetil Exp $
+// $Id: ExternalTransport.cc,v 1.5 2002/10/27 15:19:26 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -93,6 +93,12 @@ ExternalTransport::canHandle(const String &protocol)
 		to = from.sub(sep+2).get();
 		from = from.sub(0, sep).get();
 	    }
+
+	    // Recognise service specified as "https://" rather than "https"
+	    sep = from.indexOf(":");
+	    if (sep != -1)
+		from = from.sub(0, sep).get();
+
 	    handlers->Add(from, new String(qsl[i + 1]));
 	    toTypes->Add(from, new String(to));
 	}
