@@ -12,7 +12,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.46 1999/07/09 00:45:17 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.47 1999/07/13 01:39:30 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -741,6 +741,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	}
 
 	case 21:	// frame
+        case 24:	// embed
+        case 25:	// object
 	{
 	  if (attrs["src"])
 	    {
@@ -757,10 +759,11 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		  in_ref = 0;
 		}
 	    }
-	      break;
+	  break;
 	}
 	  
 	case 22:	// area
+        case 26:	// link
 	{
 	  if (attrs["src"])
 	    {
@@ -783,64 +786,30 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	      URL tempBase(attrs["href"]);
 	      *base = tempBase;
 	    }
+	  break;
 	}
 	
-      case 18: // img
-	imgflag = 1;
+         case 18: // img
+	   {
+	     if (attrs["src"])
+	       {
+		 retriever.got_image(position);
+		 if (attrs["alt"])
+		   {
+		     char *w = strtok(attrs["alt"], " ,\t\r\n");
+		     while (w)
+		       {
+			 if (strlen(w) >= minimumWordLength)
+			   retriever.got_word(w, 1, 8); // slot for img_alt
+			 w = strtok(0, " ,\t\r\n");
+		       }
+		     w = '\0';
+		   }
+	       }
+	     break;
+	   }
 
-      case 24: // embed
-      case 25: // object
-      {
-	if (attrs["src"])
-	  {
-	    if (imgflag) // img
-	     {
-                retriever.got_image(position);
-		if (attrs["alt"])
-		  {
-                    char *w = strtok(attrs["alt"], " ,\t\r\n");
-                    while (w)
-		      {
-                        if (strlen(w) >= minimumWordLength)
-                          retriever.got_word(w, 1, 8); // slot for img_alt
-                        w = strtok(0, " ,\t\r\n");
-		      }
-                    w = '\0';
-		  }
-	     }
-            else if (dofollow) // embed and object
-	      {
-		if (href)
-		  delete href;
-		href = new URL(attrs["src"], *base);
-		// Embedded objects have the same hopcount as the parent
-                retriever.got_href(*href, "", 0);
-	      }
-	    break;
-	}
-      }
-
-    case 26: // link
-      {
-	  if (attrs["href"])
-	    {
-	      //
-	      // src seen
-	      //
-	      if (dofollow)
-		{
-		  if (href)
-		    delete href;
-		  href = new URL(attrs["href"], *base);
-		  // Links are like anchor tags -- one hopcount!
-		  retriever.got_href(*href, 0, 1);
-		  in_ref = 0;
-		}
-	    }
-	  break;
-      }
-
-	default:
-	  return;						// Nothing...
+         default:
+	   return;	// Nothing...
     }
 }
