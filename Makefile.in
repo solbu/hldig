@@ -36,7 +36,7 @@ HTDIRS=		htlib htcommon htfuzzy htdig \
 CREATEDIRS=	$(BIN_DIR) $(CONFIG_DIR) $(COMMON_DIR) $(DATABASE_DIR) \
 		$(IMAGE_DIR) $(CGIBIN_DIR) $(SEARCH_DIR)
 NO_DIST=	BETA.DIST htdig/*.conf htmerge/*.conf htsearch/*.conf \
-		htfuzzy/*.conf *.gz */*.gz *~ */*~ mailarchive \
+		htfuzzy/*.conf *.gz */*.gz *~ */*~ \
 		.\#* */.\#* */*/.\#* \
 		CVS */CVS */*/CVS */*/*/CVS
 IMAGES=		button1.gif button2.gif button3.gif button4.gif button5.gif \

@@ -1,3 +1,20 @@
+Wed Apr 28 19:57:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtDateTime.h, htlib/HtDateTime.cc: New class, contributed
+	by Gabriele.
+
+	* htlib/Makefile.in: Compile it.
+
+	* README: Update message from 3.1.0 (oops!) to 3.2.0, remove rx
+	directory.
+
+	* installdir/htdig.conf: Add example of no_excerpt_show_top
+	attribute in line with most user's expectations.
+
+	* contrib/README: Mention contributed section of the website.
+
+	* Makefile.in: Ignore mailarchive directory--now removed from CVS.
+
 Wed Apr 28 10:46:31 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htmerge/db.cc(mergeDB): fix a few errors in how the merge index

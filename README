@@ -1,4 +1,4 @@
-ht://Dig 3.1.0 README
+ht://Dig 3.2.0 README
 Copyright (c) 1995-1999 The ht://Dig Group
 Contributions from many, see htdoc/THANKS.html
 
@@ -24,8 +24,6 @@ This distribution includes:
     * htcommon  - ht://Dig specific classes
 
     * htdoc     - ht://Dig documentation in HTML
-
-    * rx        - The GNU rx-1.5 package for regular expressions
 
     * db        - The latest Berkeley DB package from Sleepycat Software
 
