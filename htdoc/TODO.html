@@ -29,59 +29,28 @@
       href="mailto:htdig3-bugs@htdig.org">&lt;htdig3-bugs@htdig.org&gt;</a>
     </p>
     <ul>
-      <li type="disk">
-        Start htdig with multiple start documents.
-      </li>
-      <li type="disk">
-        Allow attribute references in the values of other
-        attributes
-      </li>
-      <li type="disk">
-        Abstract the database so that other database backends can
-        be used. Currently only GDBM can be used. 
-        <ul>
-          <li type="disk">
-            Create a database class that uses GDBM
-          </li>
-          <li type="disk">
-            Add support for Berkeley DB
-          </li>
-          <li type="square">
-            Add support for Oracle
-          </li>
-	  <li type="square">
-	    Add support for SQL
-	  </li>
-        </ul>
-      </li>
       <li type="square">
-        Merge multiple htdig databases together
+      Redesign the database backend to support additional enhancements:
+      <ul>
+	<li type="square">
+	Phrase searching
+	</li>
+	<li type="square">
+	Field-based searching>
+	</li>
+	<li type="square">
+	"Collections" of multiple databases
+	</li>
+	<li type="square">
+	Continual indexing
+	</li>
+	<li type="square">
+        Parallel indexing and searching
+      </li>
+      </ul>
       </li>
       <li type="square">
         Add support for BSDI make program
-      </li>
-      <li type="square">
-        Better examples of configuration stuff
-      </li>
-      <li type="disk">
-        Complete automatic installation
-      </li>
-      <li type="square">
-        Rewrite everything in Java
-      </li>
-      <li type="disk">
-        Add more document parsers 
-        <ul>
-          <li type="disk">
-            External document parser support
-          </li>
-          <li type="disk">
-            PostScript
-          </li>
-          <li type="disk">
-            PDF
-          </li>
-        </ul>
       </li>
       <li type="square">
         Add support for different transport protocols 
@@ -107,31 +76,32 @@
         </ul>
       </li>
       <li type="square">
-        Parallel indexing
-      </li>
-      <li type="disk">
-        Allow for external document parsing programs
-      </li>
-      <li type="disk">
-        Add logging to htsearch
-      </li>
-      <li type="disk">
-        Add support for non ASCII characters (translate them)
-      </li>
-      <li type="circle">
-        Add a web-based (CGI) URL/server registration system
+        Better Internationalization
+	<ul>
+	  <li type="square">
+	  Support for UTF-8
+	  </li>
+	  <li type="square">
+	  Allow character translation (e.g. remove accents)
+	  </li>
+	</ul>
       </li>
       <li type="square">
-        Include several examples of result templates
-      </li>
-      <li type="circle">
-        Binary release
+        Better examples of configuration and result templates
       </li>
       <li type="square">
       Eliminate or detect duplicate documents
       </li>
       <li type="square">
       Send one e-mail per author using htnotify
+      </li>
+      <li type="square">
+      Allow "external decoders," programs to perform some action on
+      files before parsing.
+      <ul>
+      <li type="square">Compress, gzip, bzip2, zlib decoders</li>
+      <li type="square">DVI, TeX -> PS decoders</li>
+      </ul>
       </li>
       <li type="square">
       Allow XSSI or similar expansion in search templates
@@ -171,7 +141,7 @@
       &lt;andrew@contigo.com&gt;</a>
     </address>
     <!-- hhmts start -->
-Last modified: Mon Nov 23 13:17:41 EST 1998
+Last modified: Wed Feb  3 10:25:52 EST 1999
 <!-- hhmts end -->  
   </body>
 </html>
