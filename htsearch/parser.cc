@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.12 1999/08/09 22:11:48 grdetil Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.13 1999/08/28 21:17:44 ghutchis Exp $";
 #endif
 
 #include "parser.h"
@@ -21,13 +21,12 @@ Parser::Parser()
     tokens = 0;
     result = 0;
     current = 0;
-    dbf = 0;
     valid = 1;
 }
 
 
 //*****************************************************************************
-// int Parser::checkSyntax(List *tokenList, Database *dbf)
+// int Parser::checkSyntax(List *tokenList)
 //   As the name of the function implies, we will only perform a syntax check
 //   on the list of tokens.
 //
@@ -209,7 +208,6 @@ Parser::perform_push()
     String	decompressed;
     char	*p;
     ResultList	*list = new ResultList;
-    WordRecord	wr;
     DocMatch	*dm;
 
     stack.push(list);
@@ -225,47 +223,62 @@ Parser::perform_push()
     p = temp.get();
     if (temp.length() > maximum_word_length)
 	p[maximum_word_length] = '\0';
-    if (dbf->Get(p, data) == OK)
-    {
-	p = data.get();
-	char *p_end = p + data.length();
-	while (p < p_end)
-	{
-	  decompressed = htUnpack(WORD_RECORD_COMPRESSED_FORMAT, p);
 
-	  if (decompressed.length() != sizeof (WordRecord))
+    List		*wordList;
+    WordReference	*wr = 0;
+
+    wordList = words[p];
+
+    wordList->Start_Get();
+    while ((wr = (WordReference *) wordList->Get_Next()))
+      {
+	dm = list->find(wr->DocumentID);
+	if (dm)
 	  {
-            if (debug > 0)
-              cerr << "Decode mismatch";
+	    int prevAnchor;
+	    double prevScore;
+	    prevScore = dm->score;
+	    prevAnchor = dm->anchor;
+	    // We wish to *update* this, not add a duplicate
+	    list->remove(wr->DocumentID);
 
-            // We'd better leave now, before we do something worse.
-            return;
+	    dm = new DocMatch;
+
+	    dm->score = (wr->Flags & FLAG_TEXT) * config.Value("text_factor", 1);
+	    dm->score += (wr->Flags & FLAG_CAPITAL) * config.Value("caps_factor", 1);
+	    dm->score += (wr->Flags & FLAG_TITLE) * config.Value("title_factor", 1);
+	    dm->score += (wr->Flags & FLAG_HEADING) * config.Value("heading_factor", 1);
+	    dm->score += (wr->Flags & FLAG_KEYWORDS) * config.Value("keywords_factor", 1);
+	    dm->score += (wr->Flags & FLAG_DESCRIPTION) * config.Value("meta_description_factor", 1);
+	    dm->score += (wr->Flags & FLAG_AUTHOR) * config.Value("author_factor", 1);
+	    dm->score += (wr->Flags & FLAG_LINK_TEXT) * config.Value("description_factor", 1);
+	    dm->score = current->weight * dm->score + prevScore;
+	    if (prevAnchor > wr->Anchor)
+	      dm->anchor = wr->Anchor;
+	    else
+	      dm->anchor = prevAnchor;
+	    
 	  }
-
-	  memcpy((char *) &wr, decompressed.get(), sizeof(WordRecord));
-
-	  //
-	  // *******  Compute the score for the document
-	  //
-	  dm = new DocMatch;
-	  dm->score = (wr.flags & FLAG_TEXT) * config.Value("text_factor", 1);
-	  dm->score += (wr.flags & FLAG_CAPITAL) * config.Value("caps_factor", 1);
-	  dm->score += (wr.flags & FLAG_TITLE) * config.Value("title_factor", 1);
-	  dm->score += (wr.flags & FLAG_HEADING) * config.Value("heading1_factor", 1);
-	  dm->score += (wr.flags & FLAG_KEYWORDS) * config.Value("keywords_factor", 1);
-	  dm->score += (wr.flags & FLAG_DESCRIPTION) * config.Value("meta_description_factor", 1);
-	  dm->score += (wr.flags & FLAG_AUTHOR) * config.Value("author_factor", 1);
-	  dm->score += (wr.flags & FLAG_LINK_TEXT) * config.Value("description_factor", 1);
-	  dm->score *= current->weight;
-	  dm->id = wr.id;
-	  dm->anchor = wr.anchor;
-	  list->add(dm);
-	}
-
-	if (p != p_end && debug > 0)
-	  cerr << "Decompression out of sync: " << (unsigned int) p
-	       << " != " << (unsigned int) p_end << endl;
-    }
+	else
+	  {
+	    //
+	    // *******  Compute the score for the document
+	    //
+	    dm = new DocMatch;
+	    dm->score = (wr->Flags & FLAG_TEXT) * config.Value("text_factor", 1);
+	    dm->score += (wr->Flags & FLAG_CAPITAL) * config.Value("caps_factor", 1);
+	    dm->score += (wr->Flags & FLAG_TITLE) * config.Value("title_factor", 1);
+	    dm->score += (wr->Flags & FLAG_HEADING) * config.Value("heading_factor", 1);
+	    dm->score += (wr->Flags & FLAG_KEYWORDS) * config.Value("keywords_factor", 1);
+	    dm->score += (wr->Flags & FLAG_DESCRIPTION) * config.Value("meta_description_factor", 1);
+	    dm->score += (wr->Flags & FLAG_AUTHOR) * config.Value("author_factor", 1);
+	    dm->score += (wr->Flags & FLAG_LINK_TEXT) * config.Value("description_factor", 1);
+	    dm->score *= current->weight;
+	    dm->id = wr->DocumentID;
+	    dm->anchor = wr->Anchor;
+	  }
+	list->add(dm);
+      }
 }
 
 //*****************************************************************************
