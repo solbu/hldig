@@ -1,29 +1,28 @@
-/* mktime: convert a `struct tm' to a time_t value
-   Copyright (C) 1993-1997, 1998 Free Software Foundation, Inc.
+/* Convert a `struct tm' to a time_t value.
+   Copyright (C) 1993, 94, 95, 96, 97, 98, 99 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
    Contributed by Paul Eggert (eggert@twinsun.com).
 
-   NOTE: The canonical source of this file is maintained with the GNU C Library.
-   Bugs can be reported to bug-glibc@prep.ai.mit.edu.
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Library General Public License as
+   published by the Free Software Foundation; either version 2 of the
+   License, or (at your option) any later version.
 
-   This program is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by the
-   Free Software Foundation; either version 2, or (at your option) any
-   later version.
-
-   This program is distributed in the hope that it will be useful,
+   The GNU C Library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Library General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-   USA.  */
+   You should have received a copy of the GNU Library General Public
+   License along with the GNU C Library; see the file COPYING.LIB.  If not,
+   write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.  */
 
 /* Define this to have a standalone program to test this implementation of
    mktime.  */
 /* #define DEBUG 1 */
 
+#include "htconfig.h"
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -57,7 +56,7 @@
 #endif /* DEBUG */
 
 #ifndef __P
-# if defined (__GNUC__) || (defined (__STDC__) && __STDC__)
+# if defined __GNUC__ || (defined __STDC__ && __STDC__)
 #  define __P(args) args
 # else
 #  define __P(args) ()
@@ -109,14 +108,6 @@ const unsigned short int __mon_yday[2][13] =
     { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 }
   };
 
-static struct tm *ranged_convert __P ((struct tm *(*) __P ((const time_t *,
-							    struct tm *)),
-				       time_t *, struct tm *));
-static time_t ydhms_tm_diff __P ((int, int, int, int, int, const struct tm *));
-time_t __mktime_internal __P ((struct tm *,
-			       struct tm *(*) (const time_t *, struct tm *),
-			       time_t *));
-
 
 #ifdef _LIBC
 # define my_mktime_localtime_r __localtime_r
@@ -124,11 +115,8 @@ time_t __mktime_internal __P ((struct tm *,
 /* If we're a mktime substitute in a GNU program, then prefer
    localtime to localtime_r, since many localtime_r implementations
    are buggy.  */
-static struct tm *my_mktime_localtime_r __P ((const time_t *, struct tm *));
 static struct tm *
-my_mktime_localtime_r (t, tp)
-     const time_t *t;
-     struct tm *tp;
+my_mktime_localtime_r (const time_t *t, struct tm *tp)
 {
   struct tm *l = localtime (t);
   if (! l)
@@ -146,9 +134,8 @@ my_mktime_localtime_r (t, tp)
    If TP is null, return a nonzero value.
    If overflow occurs, yield the low order bits of the correct answer.  */
 static time_t
-ydhms_tm_diff (year, yday, hour, min, sec, tp)
-     int year, yday, hour, min, sec;
-     const struct tm *tp;
+ydhms_tm_diff (int year, int yday, int hour, int min, int sec,
+	       const struct tm *tp)
 {
   if (!tp)
     return 1;
@@ -175,32 +162,12 @@ ydhms_tm_diff (year, yday, hour, min, sec, tp)
     }
 }
 
-
-static time_t localtime_offset;
-
-/* Convert *TP to a time_t value.  */
-time_t
-mktime (tp)
-     struct tm *tp;
-{
-#ifdef _LIBC
-  /* POSIX.1 8.1.1 requires that whenever mktime() is called, the
-     time zone names contained in the external variable `tzname' shall
-     be set as if the tzset() function had been called.  */
-  __tzset ();
-#endif
-
-  return __mktime_internal (tp, my_mktime_localtime_r, &localtime_offset);
-}
-
 /* Use CONVERT to convert *T to a broken down time in *TP.
    If *T is out of range for conversion, adjust it so that
    it is the nearest in-range value and then convert that.  */
 static struct tm *
-ranged_convert (convert, t, tp)
-     struct tm *(*convert) __P ((const time_t *, struct tm *));
-     time_t *t;
-     struct tm *tp;
+ranged_convert (struct tm *(*convert) (const time_t *, struct tm *),
+		time_t *t, struct tm *tp)
 {
   struct tm *r;
 
@@ -247,10 +214,9 @@ ranged_convert (convert, t, tp)
    compared to what the result would be for UTC without leap seconds.
    If *OFFSET's guess is correct, only one CONVERT call is needed.  */
 time_t
-__mktime_internal (tp, convert, offset)
-     struct tm *tp;
-     struct tm *(*convert) __P ((const time_t *, struct tm *));
-     time_t *offset;
+__mktime_internal (struct tm *tp,
+		   struct tm *(*convert) (const time_t *, struct tm *),
+		   time_t *offset)
 {
   time_t t, dt, t0, t1, t2;
   struct tm tm;
@@ -325,28 +291,32 @@ __mktime_internal (tp, convert, offset)
 
   /* If we have a match, check whether tm.tm_isdst has the requested
      value, if any.  */
-  if (dt == 0 && 0 <= isdst && 0 <= tm.tm_isdst)
+  if (dt == 0 && isdst != tm.tm_isdst && 0 <= isdst && 0 <= tm.tm_isdst)
     {
-      int dst_diff = (isdst != 0) - (tm.tm_isdst != 0);
-      if (dst_diff)
+      /* tm.tm_isdst has the wrong value.  Look for a neighboring
+	 time with the right value, and use its UTC offset.
+	 Heuristic: probe the previous three calendar quarters (approximately),
+	 looking for the desired isdst.  This isn't perfect,
+	 but it's good enough in practice.  */
+      int quarter = 7889238; /* seconds per average 1/4 Gregorian year */
+      int i;
+
+      /* If we're too close to the time_t limit, look in future quarters.  */
+      if (t < TIME_T_MIN + 3 * quarter)
+	quarter = -quarter;
+
+      for (i = 1; i <= 3; i++)
 	{
-	  /* Move two hours in the direction indicated by the disagreement,
-	     probe some more, and switch to a new time if found.
-	     The largest known fallback due to daylight savings is two hours:
-	     once, in Newfoundland, 1988-10-30 02:00 -> 00:00.  */
-	  time_t ot = t - 2 * 60 * 60 * dst_diff;
-	  while (--remaining_probes != 0)
+	  time_t ot = t - i * quarter;
+	  struct tm otm;
+	  ranged_convert (convert, &ot, &otm);
+	  if (otm.tm_isdst == isdst)
 	    {
-	      struct tm otm;
-	      if (! (dt = ydhms_tm_diff (year, yday, hour, min, sec,
-					 ranged_convert (convert, &ot, &otm))))
-		{
-		  t = ot;
-		  tm = otm;
-		  break;
-		}
-	      if ((ot += dt) == t)
-		break;  /* Avoid a redundant probe.  */
+	      /* We found the desired tm_isdst.
+		 Extrapolate back to the desired time.  */
+	      t = ot + ydhms_tm_diff (year, yday, hour, min, sec, &otm);
+	      ranged_convert (convert, &t, &tm);
+	      break;
 	    }
 	}
     }
@@ -390,6 +360,24 @@ __mktime_internal (tp, convert, offset)
 
   *tp = tm;
   return t;
+}
+
+
+static time_t localtime_offset;
+
+/* Convert *TP to a time_t value.  */
+time_t
+mktime (tp)
+     struct tm *tp;
+{
+#ifdef _LIBC
+  /* POSIX.1 8.1.1 requires that whenever mktime() is called, the
+     time zone names contained in the external variable `tzname' shall
+     be set as if the tzset() function had been called.  */
+  __tzset ();
+#endif
+
+  return __mktime_internal (tp, my_mktime_localtime_r, &localtime_offset);
 }
 
 #ifdef weak_alias
