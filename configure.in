@@ -100,8 +100,8 @@ if test ! -d $DB_DIR; then
 fi
 AC_SUBST(DB_DIR)
 
-AC_CONFIG_SUBDIRS(db-*/dist)
-dnl (cd db-*/build.unix; ../dist/configure)
+dnl AC_CONFIG_SUBDIRS($DB_DIST)
+(cd db-*/build.unix; ../dist/configure)
 echo "Berkeley DBM Configuration complete"
 echo ""
 
