@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.11 2000/03/03 10:42:05 angus Exp $
+// $Id: Server.cc,v 1.17.2.12 2000/04/25 18:54:38 ghutchis Exp $
 //
 
 #include "htdig.h"
@@ -295,6 +295,14 @@ void Server::push(char *path, int hopcount, char *referer, int local)
 {
     if (_bad_server && !local)
 	return;
+
+    if (IsDisallowed(path) != 0)
+      {
+	if (debug > 2)
+	  cout << endl << "   Rejected: forbidden by server robots.txt!";
+
+	return;
+      }
 
     // We use -1 as no limit
     if (_max_documents != -1 &&
