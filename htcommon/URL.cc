@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.3.2.13 2000/09/06 09:02:07 angus Exp $
+// $Id: URL.cc,v 1.3.2.14 2000/09/08 04:25:35 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -728,6 +728,8 @@ int URL::DefaultPort()
       return 21;
    else if (strcmp((char*)_service, "gopher") == 0)
       return 70;
+   else if (strcmp((char*)_service, "file") == 0)
+      return 0;
    else if (strcmp((char*)_service, "news") == 0)
       return NNTP_DEFAULT_PORT;
    else return 80;
