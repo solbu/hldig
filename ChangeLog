@@ -1,9 +1,10 @@
-Fri Nov 26 15:46:12 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Fri Nov 26 15:59:02 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/String.cc(write): added Alexis Mikhailov's fix to bump up
 	pointer after writing a block.
 	* htsearch/Display.cc(setVariables): added Alexis Mikhailov's fix
 	to check the number of pages against maximum_pages at the right time.
+	(Put it even earlier, to make sure nPages is at least 1.)
 
 Wed Nov 24 20:33:13 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
