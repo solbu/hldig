@@ -17,7 +17,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: HtHeap.cc,v 1.1 1999/02/21 21:16:29 ghutchis Exp $";
+static char	RCSid[] = "$Id: HtHeap.cc,v 1.2 1999/03/14 03:26:21 ghutchis Exp $";
 #endif
 
 #include "HtHeap.h"
@@ -41,11 +41,13 @@ HtHeap::HtHeap()
 HtHeap::HtHeap(HtVector vector)
 {
   int size = vector.Count();
-  data = new HtVector(size);
+  data = vector.Copy();
 
-  // Now we have to copy the items into the heap... aka "heapify"
-  for (int i = 0; i < size; i++)
-    Add(vector[i]);
+  // Now we have to "heapify" -- start at the first interior node
+  // And push each node down into its subtree
+  // (This is O(n)!)
+  for (int i = parentOf(size); i >= 0; i--)
+    pushDownRoot(i);
 }
 
 
@@ -121,7 +123,11 @@ HtHeap &HtHeap::operator=(HtHeap &heap)
     return *this;
 }
 
-
+//*********************************************************************
+// voide HtHeap::percolateUp(int leaf)
+// Pushes the node pointed to by leaf upwards
+// it will travel as far as possible upwards to ensure the data is a heap
+//
 void HtHeap:: percolateUp(int leaf)
 {
   int parent = parentOf(leaf);
@@ -136,7 +142,11 @@ void HtHeap:: percolateUp(int leaf)
   data->Assign(value, leaf);
 }
 
-
+//*********************************************************************
+// void HtHeap::pushDownRoot(int root)
+// Pushes the node pointed to by root into the heap
+// it will go down as far as necessary to ensure the data is a heap
+//
 void HtHeap::pushDownRoot(int root)
 {
   int size = data->Count();
