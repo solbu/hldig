@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.10 2000/03/20 19:15:03 ghutchis Exp $
+// $Id: htdig.cc,v 1.26.2.11 2000/04/25 18:51:16 ghutchis Exp $
 //
 
 #include "Document.h"
@@ -60,7 +60,6 @@ int main(int ac, char **av)
     int			alt_work_area = 0;
     int			create_text_database = 0;
     char		*max_hops = 0;
-    RetrieverLog	flag  = Retriever_noLog;
 
 //extern int yydebug;
 //yydebug=1;
@@ -99,15 +98,14 @@ int main(int ac, char **av)
 	    case 'a':
 		alt_work_area++;
 		break;
-	    case 'l':
-		flag = Retriever_logUrl;
-		break;
 	    case 'm':
 	        minimalFile = optarg;
-		max_hops = 0;
+		max_hops = "0";
 	        break;
 	    case '?':
 		usage();
+	    default:
+	        break;
 	}
     }
 
@@ -256,32 +254,49 @@ int main(int ac, char **av)
     // In case this is just an update dig, we will add all existing
     // URLs?
     //
-    Retriever	retriever(flag);
+    Retriever	retriever(Retriever_logUrl);
     if (minimalFile.length() == 0)
       {
 	List	*list = docs.URLs();
 	retriever.Initial(*list);
 	delete list;
-      }
 
-    // Add start_url to the initial list of the retriever.
-    // Don't check a URL twice!
-    // Beware order is important, if this bugs you could change 
-    // previous line retriever.Initial(*list, 0) to Initial(*list,1)
-    retriever.Initial(config["start_url"], 1);
+	// Add start_url to the initial list of the retriever.
+	// Don't check a URL twice!
+	// Beware order is important, if this bugs you could change 
+	// previous line retriever.Initial(*list, 0) to Initial(*list,1)
+	retriever.Initial(config["start_url"], 1);
+      }
 
     // Handle list of URLs given on stdin, if optional "-" argument given.
     if (optind < ac && strcmp(av[optind], "-") == 0)
-    {
+      {
 	String str;
 	while (!cin.eof())
-	{
+	  {
 	    cin >> str;
 	    str.chop("\r\n");
 	    if (str.length() > 0)
-		retriever.Initial(str, 1);
-	}
-    }
+	        retriever.Initial(str, 1);
+	  }
+      }
+    else if (minimalFile.length() != 0)
+      {
+	    FILE	*input = fopen(minimalFile.get(), "r");
+	    char	buffer[1000];
+
+	    if (input)
+	      {
+		while (fgets(buffer, sizeof(buffer), input))
+		  {
+		    String	str(buffer);
+		    str.chop("\r\n\t ");
+		    if (str.length() > 0)
+		      retriever.Initial(str, 1);
+		  }
+		fclose(input);
+	      }
+      }
 
     //
     // Go do it!
@@ -341,7 +356,7 @@ int main(int ac, char **av)
 //
 void usage()
 {
-    cout << "usage: htdig [-l][-v][-i][-c configfile][-t]\n";
+    cout << "usage: htdig [-v][-i][-c configfile][-t]\n";
     cout << "This program is part of ht://Dig " << VERSION << "\n\n";
     cout << "Options:\n";
 
@@ -380,11 +395,6 @@ void usage()
     cout << "\t\tthe original files to be used by htsearch during the\n";
     cout << "\t\tindexing run.\n\n";
 	
-    cout << "\t-l\tStop and restart.\n";
-    cout << "\t\tReads in the progress of any previous interrupted digs\n";
-    cout << "\t\tfrom the log file and write the progress out if\n";
-    cout << "\t\tinterrupted by a signal.\n\n";
-
     exit(0);
 }
 
