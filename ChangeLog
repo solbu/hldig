@@ -14,8 +14,11 @@ Sun Jan 17 14:03:54 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	instead of acroread.
 
 	* htcommon/defaults.cc: Change default pdf_parser attribute to
-	include acrobat-specific flags.
+	include acrobat-specific flags. Fix mismatched naming of
+	compression_level (was compression_factor).
 
+	* htdig/Retriever.cc: Fix compiler warnings.
+	
 	* contrib/examples/updatedig: Added contributed rundig-type script
 	from David Robley <webmaster@www.nisu.flinders.edu.au>.
 	
