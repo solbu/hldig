@@ -1903,7 +1903,7 @@ echo "configure:1903: checking if --enable-bigfile option specified" >&5
 # Check whether --enable-bigfile or --disable-bigfile was given.
 if test "${enable_bigfile+set}" = set; then
   enableval="$enable_bigfile"
-  db_cv_bigfile="no"
+  db_cv_bigfile="$enable_bigfile"
 else
   db_cv_bigfile="yes"
 fi
@@ -2418,7 +2418,7 @@ else
 int main() {
 
 /* Ultrix mips cc rejects this.  */
-typedef int charset[2]; const charset x;
+typedef int charset[2]; const charset x={0,0};
 /* SunOS 4.1.1 cc rejects this.  */
 char const *const *ccp;
 char **p;
@@ -4638,7 +4638,7 @@ EOF
 
 fi
 
-if test "$db_cv_bigfile" = no; then
+if test "$db_cv_bigfile" = yes; then
 	case "$host_os" in
 	bsdi*|aix*|hpux*|solaris*)	cat >> confdefs.h <<\EOF
 #define HAVE_FILE_OFFSET_BITS 1

@@ -172,7 +172,7 @@ fi
 dnl Vendors are doing 64-bit lseek in different ways.
 dnl Linux, AIX, HP/UX and Solaris all use _FILE_OFFSET_BITS to specify a "big-file"
 dnl environment.
-if test "$db_cv_bigfile" = no; then
+if test "$db_cv_bigfile" = yes; then
 	case "$host_os" in
 	bsdi*|aix*|hpux*|solaris*)	AC_DEFINE(HAVE_FILE_OFFSET_BITS);;
 	linux*)	AC_DEFINE(HAVE_FILE_OFFSET_BITS)

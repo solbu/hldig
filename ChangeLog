@@ -1,3 +1,12 @@
+Sun Sep  3 16:51:24 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc, htdig/Server.cc: Fix compiler warnings about
+	String conversions.
+
+	* configure, configure.in, db/configure, db/configure.in,
+	db/acinclude.m4, db/aclocal.m4: Ensure --enable-bigfile is handled
+	correctly by the configure scripts as pointed out by Jesse.
+
 Fri Sep 01 23:28:43 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
 
 	* URL.cc: added DefaultPort() method and changed NNTP default port

@@ -372,7 +372,7 @@ AC_DEFUN(AM_OPTIONS_SET, [
 AC_MSG_CHECKING(if --enable-bigfile option specified)
 AC_ARG_ENABLE(bigfile,
 	[  --enable-bigfile       Enable Linux, AIX, HP/UX, Solaris big files.],
-	[db_cv_bigfile="no"], [db_cv_bigfile="yes"])
+	[db_cv_bigfile="$enable_bigfile"], [db_cv_bigfile="yes"])
 AC_MSG_RESULT($db_cv_bigfile)
 
 AC_MSG_CHECKING(if --enable-debug option specified)
@@ -631,7 +631,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.1.2.3 2000/05/12 14:19:49 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.1.2.4 2000/09/03 21:57:17 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -700,7 +700,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.1.2.3 2000/05/12 14:19:49 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.1.2.4 2000/09/03 21:57:17 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 

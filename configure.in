@@ -164,13 +164,13 @@ AC_SUBST(LTLIBOBJS)
 AC_MSG_CHECKING(if --enable-bigfile option specified)
 AC_ARG_ENABLE(bigfile,
 	[  --enable-bigfile       Enable Linux, AIX, HP/UX, Solaris big files.],
-	[db_cv_bigfile="no"], [db_cv_bigfile="yes"])
+	[db_cv_bigfile="$enable_bigfile"], [db_cv_bigfile="yes"])
 AC_MSG_RESULT($db_cv_bigfile)
 
 dnl Vendors are doing 64-bit lseek in different ways.
 dnl Linux, AIX, HP/UX and Solaris all use _FILE_OFFSET_BITS to specify a "big-file"
 dnl environment.
-if test "$db_cv_bigfile" = no; then
+if test "$db_cv_bigfile" = yes; then
 	case "$host_os" in
 	bsdi*|aix*|hpux*|solaris*)	AC_DEFINE(HAVE_FILE_OFFSET_BITS);;
 	linux*)	AC_DEFINE(HAVE_FILE_OFFSET_BITS)

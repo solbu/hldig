@@ -4183,14 +4183,14 @@ echo "configure:4183: checking if --enable-bigfile option specified" >&5
 # Check whether --enable-bigfile or --disable-bigfile was given.
 if test "${enable_bigfile+set}" = set; then
   enableval="$enable_bigfile"
-  db_cv_bigfile="no"
+  db_cv_bigfile="$enable_bigfile"
 else
   db_cv_bigfile="yes"
 fi
 
 echo "$ac_t""$db_cv_bigfile" 1>&6
 
-if test "$db_cv_bigfile" = no; then
+if test "$db_cv_bigfile" = yes; then
 	case "$host_os" in
 	bsdi*|aix*|hpux*|solaris*)	cat >> confdefs.h <<\EOF
 #define HAVE_FILE_OFFSET_BITS 1
