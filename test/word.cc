@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.2 1999/12/07 19:54:14 bosc Exp $
+// $Id: word.cc,v 1.14.2.3 1999/12/09 12:40:42 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -29,26 +29,39 @@
 #include "WordKey.h"
 #include "WordList.h"
 #include "WordType.h"
-#include "HtConfiguration.h"
+#include "Configuration.h"
 
 static ConfigDefaults defaults[] = {
   { "word_db", "var/htdig/db.words.db", 0 },
   { "wordlist_extend", "true", 0 },
+  { "minimum_word_length", "1", 0},
+  { 0 }
+};
+static ConfigDefaults compress_defaults[] = {
+  { "word_db", "var/htdig/db.words.db", 0 },
+  { "wordlist_extend", "true", 0 },
+  { "minimum_word_length", "1", 0},
+  { "wordlist_compress", "1", 0},
+  { "wordlist_compress_debug", "2", 0},
   { 0 }
 };
 
-static HtConfiguration	config;
+static Configuration	config;
 
-typedef struct {
-  char* word_desc;
-  int key;
-  int list;
+typedef struct 
+{
+    char* word_desc;
+    int key;
+    int list;
+    int skip;
+    int compress;
 } params_t;
 
 static void usage();
 static void doword(params_t* params);
 static void dolist(params_t* params);
 static void dokey(params_t* params);
+static void doskip(params_t* params);
 static void pack_show(const WordReference& wordRef);
 
 static int verbose = 0;
@@ -65,8 +78,10 @@ int main(int ac, char **av)
   params.word_desc = strdup("???");
   params.key = 0;
   params.list = 0;
+  params.skip = 0;
+  params.compress = 0;
 
-  while ((c = getopt(ac, av, "vklw:c:")) != -1)
+  while ((c = getopt(ac, av, "vklszw:")) != -1)
     {
       switch (c)
 	{
@@ -82,6 +97,12 @@ int main(int ac, char **av)
 	  break;
 	case 'l':
 	  params.list = 1;
+	  break;
+	case 's':
+	  params.skip = 1;
+	  break;
+	case 'z':
+	  params.compress = 1;
 	  break;
 	case '?':
 	  usage();
@@ -102,13 +123,28 @@ static void doword(params_t* params)
     if(verbose) cerr << "Test WordKey class with " << params->word_desc << "\n";
     dokey(params);
   }
-  if(params->list) {
-    if(verbose) cerr << "Test WordList class\n";
-    config.Defaults(defaults);
+  if(params->list || params->skip) 
+  {
+      if(params->compress) 
+      {
+	  config.Defaults(compress_defaults);
+      }
+      else{config.Defaults(defaults);}
     // Ctype-like functions for what constitutes a word.
     WordType::Initialize(config);
     unlink(config["word_db"]);
+  }
+
+
+  if(params->list)
+  {
+    if(verbose) cerr << "Test WordList class\n";
     dolist(params);
+  }
+  if(params->skip) 
+  {
+      if(verbose) cerr << "Test SkipUselessSequentialWalking in WordList class "  << "\n";
+      doskip(params);
   }
 }
 
@@ -277,7 +313,7 @@ static void dolist(params_t*)
     words.Open(config["word_db"], O_RDWR);
 
     WordReference wordRef("the");
-
+    if(verbose){cerr << "**** Delete test:" << words  <<endl;cerr << "**** Delete test:" << endl;}
     int count;
     if((count = words.WalkDelete(wordRef)) != 2) {
       fprintf(stderr, "dolist: delete occurences of 'the', got %d deletion instead of 2\n", count);
@@ -526,6 +562,145 @@ static void pack_show(const WordReference& wordRef)
   fprintf(stderr, "\n");
 }
 
+
+
+//*****************************************************************************
+// void doskip()
+//   Test SkipUselessSequentialWalking in WordList class
+//
+#include<ctype.h>
+#include<fstream.h>
+int 
+get_int_array(char *s,int **plist,int &n)
+{
+    int i=0;
+    for(n=0;s[i];n++)
+    {	
+	for(;s[i] && !isalnum(s[i]);i++);
+	if(!s[i]){break;}
+	for(;s[i] && isalnum(s[i]);i++);
+    }
+    if(!n){*plist=NULL;return(NOTOK);}
+    int *list=new int[n];
+    *plist=list;
+    int j;
+    i=0;
+    for(j=0;s[i];j++)
+    {	
+	for(;s[i] && !isalnum(s[i]);i++);
+	if(!s[i]){break;}
+	list[j]=atoi(s+i);
+//  	cout << "adding number:" << s+i << "=" << atoi(s+i) << endl;
+	for(;s[i] && isalnum(s[i]);i++);
+    }
+//      cout << "get_int_array: input:" << s << ":" << endl;
+//      cout << "result: n:" << n << ":";
+//      for(i=0;i<n;i++){cout << (*plist)[i] << " " ;}
+//      cout << endl;
+    return(OK);
+}
+class SkipTestEntry
+{
+public:
+    char *searchkey;
+    char *goodorder;
+    void GetSearchKey(WordKey &searchKey)
+    {
+	FILE *F;
+	if(!(F=fopen("tmpfile","w"))){cerr << "couldnt open tmp file" << endl;exit(1);}
+	fprintf(F,"%s\n",searchkey);
+	fclose(F);
+	ifstream ins("tmpfile");
+	ins >> searchKey;
+	if(verbose) cout << "GetSearchKey: string:" << searchkey << "got:" << searchKey << endl;
+    }
+    int Check(WordList &WList)
+    {
+	WordReference emptyword;
+	WordReference srchwrd;
+	GetSearchKey(srchwrd.Key());
+	Object o;
+	if(verbose) cout << "checking SkipUselessSequentialWalking on:" << srchwrd << endl;
+	if(verbose) cout << "walking all:" << endl;
+	List *all=WList.Walk(emptyword,HTDIG_WORDLIST_COLLECTOR, (wordlist_walk_callback_t)0, o);
+	if(verbose) cout << "walking search: searching for:" << srchwrd <<endl;
+	WList.BeginTrace();
+	List *wresw=WList.Walk(srchwrd,HTDIG_WORDLIST_COLLECTOR, (wordlist_walk_callback_t)0, o);
+	List *wres=WList.EndTrace();
+	wresw->Start_Get();
+	wres->Start_Get();
+	WordReference *found;
+	WordReference *correct;
+	int i;
+	int ngoodorder;
+	int *goodorder_a;
+	get_int_array(goodorder,&goodorder_a,ngoodorder);
+	for(i=0;(found = (WordReference*)wres->Get_Next());i++) 
+	{
+  	    if(i>=ngoodorder){cerr << "SkipUselessSequentialWalking test failed! i>=ngoodorder" << endl;exit(1);}
+	    if(verbose) cout << "Check actual  " << i              << "'th  walked:" << *found   << endl;
+	    correct = (WordReference*)all->Nth(goodorder_a[i]);
+	    if(verbose) cout << "Check correct " << goodorder_a[i] << "           :" << *correct << endl;    
+	    if(!correct->Key().Equal(found->Key()))
+	    {cout << "SkipUselessSequentialWalking test failed! at position:" << i << endl;exit(1);}
+	}
+	if(i<ngoodorder){cerr << "SkipUselessSequentialWalking test failed! n<ngoodorder" << endl;exit(1);}
+	
+	WList.CleanupTrace();
+	delete [] goodorder_a;
+	delete wresw;
+	return OK;
+    }
+};
+SkipTestEntry SkipTestEntries[]=
+{
+     {
+ 	"et      <UNDEF>       0       10    ",
+ 	"3 4 5 9 10 12 13 14"
+     },
+     {
+ 	"et<UNDEF>      20       0       <UNDEF>    ",
+ 	"3 4 5 6 7 8 9 14 15 16 17",
+     },
+//      {
+//    	"<UNDEF>      20      0       10    ",
+//    	"4 9 13",
+//      },
+};
+    
+
+
+
+
+static void 
+doskip(params_t*)
+{
+    if(verbose > 0) cerr << "doing SkipUselessSequentialWalking test" << endl;
+    // read db into WList from file: skiptest_db.txt
+    if(verbose){cout<< "WList config:minimum_word_length:" << config.Value("minimum_word_length")<< endl;}
+    WordList WList(config);
+    WList.Open(config["word_db"], O_RDWR);
+    ifstream ins("skiptest_db.txt");
+    if(!ins.good())
+    {
+	cerr << "SkipUselessSequentialWalking test failed : read db file:skiptest_db.txt failed" << endl;
+	exit(1);
+    }
+    ins >> WList;
+    if(verbose){cout << "WList read:" << endl << WList << endl;}
+    // now check walk order for a few search terms
+    int i;
+    if(verbose) cout << "number of entries:"<< sizeof(SkipTestEntries)/sizeof(SkipTestEntry) << endl;
+    for(i=0;i<(int)(sizeof(SkipTestEntries)/sizeof(SkipTestEntry));i++)
+    {
+	if(SkipTestEntries[i].Check(WList) == NOTOK)
+	{
+	    cerr << "SkipUselessSequentialWalking test failed on SkipTestEntry number:" << i <<endl;
+	    exit(1);
+	}
+    }
+
+}
 //*****************************************************************************
 // void usage()
 //   Display program usage information
@@ -538,6 +713,8 @@ static void usage()
     cout << "\t-w file\tname of the word description file used to generate sources\n";
     cout << "\t-k\t\tTest WordKey\n";
     cout << "\t-l\t\tTest WordList\n";
+    cout << "\t-z\t\tActivate compression test\n";
+    cout << "\t-s\t\tTest Skip\n";
     exit(0);
 }
 

@@ -1,3 +1,8 @@
+Thu Dec 09 13:25:45 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* test/Word.cc,t_wordlist,Makefile.am: upgraded tests
+	* htcommon/HtWordList.h: fixed Configuration/HtConfiguration problem 
+
 Thu Dec 09 12:10:32 1999  Marcel Bosc  <bosc@ceic.com>
 
         * htword: Added the compression code:
