@@ -1,3 +1,8 @@
+Thu Dec  2 11:02:07 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.cc(ServerAlias): Fix server_aliases processing to prevent
+	infinite loop (as for local_urls in PR#688).
+
 Wed Dec  1 17:23:24 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc(parse_url), htdig/Server.h: add IsDead() methods

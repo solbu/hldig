@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.18.2.5 1999/11/30 15:18:20 grdetil Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.18.2.6 1999/12/02 17:20:26 grdetil Exp $";
 #endif
 
 #include "URL.h"
@@ -568,7 +568,10 @@ void URL::ServerAlias()
 	{
 	  salias = strchr(p, '=');
 	  if (! salias)
-	    continue;
+	    {
+	      p = strtok(0, " \t");
+	      continue;
+	    }
 	  *salias++= '\0';
 	  from = p;
 	  if (from.indexOf(':') == -1)
