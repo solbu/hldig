@@ -4,6 +4,10 @@
 // Implementation of Exact
 //
 // $Log: Exact.cc,v $
+// Revision 1.3.2.1  2001/06/07 18:42:22  grdetil
+// * htfuzzy/Exact.cc (Exact), htfuzzy/Prefix.cc (Prefix): Set the
+//   name field to the class name, as suggested by Jesse.
+//
 // Revision 1.3  1998/08/03 16:50:37  ghutchis
 //
 // Fixed compiler warnings under -Wall
@@ -16,7 +20,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Exact.cc,v 1.3 1998/08/03 16:50:37 ghutchis Exp $";
+static char RCSid[] = "$Id: Exact.cc,v 1.3.2.1 2001/06/07 18:42:22 grdetil Exp $";
 #endif
 
 #include "Exact.h"
@@ -29,6 +33,7 @@ static char RCSid[] = "$Id: Exact.cc,v 1.3 1998/08/03 16:50:37 ghutchis Exp $";
 //
 Exact::Exact()
 {
+	name = "exact";
 }
 
 

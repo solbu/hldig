@@ -1,3 +1,8 @@
+Thu Jun  7 13:40:13 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Exact.cc (Exact), htfuzzy/Prefix.cc (Prefix): Set the
+	name field to the class name, as suggested by Jesse.
+
 Thu Jun  7 13:27:35 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/htdig-3.1.6.spec, contrib/htdig-3.1.6-conf.patch,
