@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.3.2.7 2000/02/23 19:28:37 grdetil Exp $
+// $Id: URL.cc,v 1.3.2.8 2000/03/31 04:31:33 ghutchis Exp $
 //
 
 #include "URL.h"
@@ -419,17 +419,9 @@ void URL::normalizePath()
         if (pathend < 0)
             pathend = _path.length();
     }
-    while (--leadingdotdot >= 0)
-    {
-        // RFC 2396 says if there are more .. segments than hierarchical levels,
-        // we should keep the extra .. segments.  For the code above to work,
-        // we have to strip off the leading .. segments to handle later ones,
-        // so we'll just add them back here...
-        newPath = "/..";
-        newPath << _path;
-        _path = newPath;
-        pathend += 3;
-    }
+    // The RFC gives us a choice of what to do when we have .. left and
+    // we're at the top level. By principle of least surprise, we'll just
+    // toss any "leftovers" Otherwise, we'd have a loop here to add them.
 
     //
     // Also get rid of redundant "/./".  This could cause infinite

@@ -1,3 +1,24 @@
+Thu Mar 30 22:41:38 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/URL.cc (normalizePath): Remove Gilles's loop to add
+	back ../ components to a path that would go above the top
+	level. Now we simply discard them. Both are allowed under the RFC,
+	but this should have fewer "surprises."
+
+Tue Mar 28 21:57:49 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htnet/Connection.cc (Read_Partial): Fix bug reported by Valdas
+	where a zero value returned by select would result in an infinite
+	loop.
+
+	* htcommon/defaults.cc: Add new attribute plural_suffix to set the
+	language-dependent suffix for PLURAL_MATCHES contributed by Jesse.
+
+	* htsearch/Display.cc (setVariables): Use it.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerate using cf_generate.pl.
+
 Mon Mar 27 22:28:20 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/DocumentRef.cc (Deserialize): Add back stub for
