@@ -1,3 +1,33 @@
+Mon May 31 15:08:30 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/DocumentDB.h: Add new method ReadExcerpt to read the
+	excerpt from the separate (new) excerpt database. Change Open()
+	and Read() methods to account for this new database.
+
+	* htcommon/DocumentDB.cc (Open): Open the excerpt database too.
+	(Read): Ditto.
+	(Close): Close it if it exists.
+	(ReadExcerpt): Explicitly read the DocHead of this DocumentRef.
+	(Add): Make sure DocHeads go into the excerpt database.
+	(Delete): Make sure we delete the associated excerpt too.
+	(CreateSearchDB): Make sure we grab the excerpt from the database.
+
+	* htcommon/DocumentRef.cc(Serialize): Don't serialize the DocHead
+	field, this is done in the DocumentDB code.
+
+	* htcommon/defaults.cc(modification_time_is_now): Set to true to
+	avoid problems with not setting dates when no Last-Modified:
+	header appears.
+	(doc_excerpt): Add new attribute for the filename of the excerpt
+	database.
+
+	* htdig/HtHTTP.h: Remove incorrect virtual declarations from
+	Request and EstablishConnection methods. Assign void return value
+	to ResetStatistics since it doesn't return a value.
+
+	* htdig/htdig.cc (main): Add new "minimal" flag '-m' to only index
+	the URLs in the supplied file. Sets hopcount to ignore links.
+
 Sun May 30 19:36:15 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
 	* htlib/URL.cc (normalizePath): Fix bug that caused endless loops
