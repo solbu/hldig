@@ -1,8 +1,8 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b1: Tentative Release: 4 Feb 2000, Code Freeze
-	Pre-release snapshot 2 Feb 2000
+   3.2.0b2: Release date ?, Unfrozen
+   3.2.0b1: Released: 4 Feb 2000.
 
 
 SHOWSTOPPERS:
@@ -20,7 +20,8 @@ KNOWN BUGS:
    we fix this?)
 
 PENDING FEATURES:
-* (Is there anything approved and not in the current CVS tree?)
+* Hans-Peter's sort-by-url patch for htsearch
+* Creating 'httools' directory and creating a few simple tools.
 
 TESTING:
 * ExternalTransport with non 'http' URLs.
@@ -39,11 +40,9 @@ OTHER ISSUES:
    (e.g. PR#473, PR#476)
 * Is the HTML output of htsearch HTML 4.0 strictly compliant?
 * Do IP addresses for start_urls cause problems?: PR#634.
-* Does Document::Retrieve or Transport close the connection properly?
-  (it didn't in 3.1.x): PR#670.
 * Error messages should be more informative if no URLs are indexed by htdig 
   or htmerge. PR#672.
 * Should the various translate_* attributes be retired?
-* Should we generate documentation for attributes that have been removed?
+* Should we generate documentation for attributes that are defunct?
   (e.g. word_list, modification_time_is_now, etc.)
 
