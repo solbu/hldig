@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.3 1999/12/11 16:19:47 vadim Exp $
+// $Id: htdig.cc,v 1.26.2.4 1999/12/15 21:26:02 grdetil Exp $
 //
 
 #include "Document.h"
@@ -26,6 +26,8 @@
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
 #endif
+
+#include <stream.h>
 
 //
 // Global variables
@@ -273,6 +275,19 @@ int main(int ac, char **av)
     // Beware order is important, if this bugs you could change 
     // previous line retriever.Initial(*list, 0) to Initial(*list,1)
     retriever.Initial(config["start_url"], 1);
+
+    // Handle list of URLs given on stdin, if optional "-" argument given.
+    if (optind < ac && strcmp(av[optind], "-") == 0)
+    {
+	String str;
+	while (!cin.eof())
+	{
+	    cin >> str;
+	    str.chop('\r\n');
+	    if (str.length() > 0)
+		retriever.Initial(str, 1);
+	}
+    }
 
     //
     // Go do it!

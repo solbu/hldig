@@ -1,4 +1,7 @@
-Wed Dec 15 14:24:03 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Dec 15 15:04:39 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/htdig.cc(main): Handle list of URLs given on stdin, if
+	optional "-" argument given. (Uses >> operator below.)
 
 	* htlib/htString.h, htlib/String.cc: Added Alexis Mikhailov's String
 	input methods, readLine() and >> operator.
