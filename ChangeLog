@@ -1,4 +1,6 @@
-Mon Jan 15 17:27:17 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Jan 15 17:36:09 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (displayMatch): Add METADESCRIPTION variable.
 
 	* htdig/ExternalParser.cc (parse): Fix up handling of arguments.
 

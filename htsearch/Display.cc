@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.30 2000/11/30 19:53:11 grdetil Exp $
+// $Id: Display.cc,v 1.100.2.31 2001/01/15 23:49:38 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -293,6 +293,7 @@ Display::displayMatch(ResultMatch *match, DocumentRef *ref, int current)
 	vars.Remove("ANCHOR");
       }
     
+    vars.Add("METADESCRIPTION", new String(ref->DocMetaDsc()));
     vars.Add("SCORE", new String(form("%f", ref->DocScore())));
     vars.Add("CURRENT", new String(form("%d", current)));
     char	*title = ref->DocTitle();
