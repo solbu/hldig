@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Soundex.cc,v 1.3 1999/02/05 03:19:31 ghutchis Exp $";
+static char RCSid[] = "$Id: Soundex.cc,v 1.4 1999/02/06 01:19:12 ghutchis Exp $";
 #endif
 
 #include "Soundex.h"
@@ -46,7 +46,7 @@ Soundex::generateKey(char *word, String &key)
 	return;
       }
 
-    while (!isalpha(word))
+    while (!isalpha(*word))
       word++;
 
     if (word)
