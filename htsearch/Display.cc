@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.20 1999/11/26 22:44:47 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.21 1999/12/07 04:33:10 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -45,6 +45,7 @@ Display::Display(char *indexFile, char *docFile)
     maxStars = config.Value("max_stars");
     maxScore = 100;
     setupImages();
+    setupTemplates();
 
     if (!templates.createFromString(config["template_map"]))
       {

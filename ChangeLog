@@ -1,6 +1,9 @@
-Mon Dec  6 22:14:21 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Dec  6 22:17:21 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
-	* htdoc/attrs.html: fixed a couple typos in new attributes.
+	* htsearch/Display.cc(Display): Add missing call to setupTemplates(),
+	for handling template_patterns. Oops!
+	* htdoc/attrs.html: Fixed a couple typos in new attributes.
+	* htdoc/ChangeLog: Update to latest version.
 
 Mon Dec  6 16:41:04 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
@@ -11,7 +14,6 @@ Mon Dec  6 16:41:04 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	htdig -u.  Also fixes PR#490, by setting authentication before
 	robots.txt fetched.
 	* htdoc/RELEASE.html: Update with latest fix.
-	* htdoc/ChangeLog: Update to latest version.
 
 Fri Dec  3 17:31:47 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
