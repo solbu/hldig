@@ -159,12 +159,14 @@ CDB___memp_cmpr(dbmfp, bhp, db_io, flag, niop)
   db_io->pagesize = CMPR_DIVIDE(db_io->pagesize);
   db_io->bytes = CMPR_DIVIDE(db_io->bytes);
 
+#ifdef HAVE_LIBZ
   if(memp_cmpr_zlib_level == -1)
   {
         memp_cmpr_zlib_level = cmpr_info->zlib_flags;
         if(memp_cmpr_zlib_level == -1)
             memp_cmpr_zlib_level = Z_DEFAULT_COMPRESSION;
   }
+#endif
   
   /*
    * Page 0 is a special case. It contains the metadata information (at most 512 bytes)

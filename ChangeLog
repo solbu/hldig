@@ -1,3 +1,7 @@
+Fri 13 Feb 2004 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * db/mp_cmpr.c: Fix bug with  --without-zlib
+
 Sun 8 Feb 2004 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htcommon/URL.cc: Make server_alias case insensitive.
