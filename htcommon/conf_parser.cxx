@@ -1,7 +1,6 @@
 
 /*  A Bison parser, made from conf_parser.yxx
- by  GNU Bison version 1.27
-  */
+    by GNU Bison version 1.28  */
 
 #define YYBISON 1  /* Identify Bison output.  */
 
@@ -25,7 +24,7 @@
 #include <stdio.h> /* for debug */
 #include <stdlib.h>
 #include <iostream.h>
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "htString.h"
 /*#define YYDEBUG 1*/
 #define YYPARSE_PARAM aConf
@@ -40,7 +39,7 @@ int sn_debug=3;
 typedef union {
 	char *str;
 	ConfigDefaults	*ConfLine;
-	Configuration	*ConfLines;
+	HtConfiguration	*ConfLines;
 } YYSTYPE;
 #include <stdio.h>
 
@@ -171,7 +170,7 @@ static const short yycheck[] = {     0,
 };
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
 #line 3 "/usr/lib/bison.simple"
-/* This file comes from bison-1.27.  */
+/* This file comes from bison-1.28.  */
 
 /* Skeleton output parser for bison,
    Copyright (C) 1984, 1989, 1990 Free Software Foundation, Inc.
@@ -384,7 +383,7 @@ __yy_memcpy (char *to, char *from, unsigned int count)
 #endif
 #endif
 
-#line 216 "/usr/lib/bison.simple"
+#line 217 "/usr/lib/bison.simple"
 
 /* The user can define YYPARSE_PARAM as the name of an argument to be passed
    into yyparse.  The argument should have type void *.
@@ -720,7 +719,7 @@ case 3:
 #line 41 "conf_parser.yxx"
 {   
   // name: value
-               ((Configuration *)aConf)->Add(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
+               ((HtConfiguration *)aConf)->Add(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
 	       #ifdef DEBUG
 	       if (sn_debug>=2) {
 		 cout<<"Added to conf: "<<yyvsp[0].ConfLine->name<<":"<<yyvsp[0].ConfLine->value<<endl;
@@ -795,7 +794,7 @@ case 10:
 			exit(1);
 		      }
 		      // Oll right. Append set of parameters to object($2)
-		      ((Configuration *)aConf)->Add(yyvsp[-10].str,yyvsp[-8].str,yyvsp[-5].ConfLines);
+		      ((HtConfiguration *)aConf)->Add(yyvsp[-10].str,yyvsp[-8].str,yyvsp[-5].ConfLines);
 		      #ifdef DEBUG
 		      if (sn_debug >= 2) {
 			cout<<"Added to conf: "<<yyvsp[-10].str<<":"<<yyvsp[-8].str<<":"<<yyvsp[-5].ConfLines<<endl;
@@ -813,7 +812,7 @@ case 11:
   // ...
   //
   // First entry. We need to create conf to store it.
-  Configuration *expressionList=new Configuration();
+  HtConfiguration *expressionList=new HtConfiguration();
   expressionList->Add(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
   yyval.ConfLines=expressionList;
   #ifdef DEBUG
@@ -872,7 +871,7 @@ case 14:
     break;}
 }
    /* the action file gets copied in in place of this dollarsign */
-#line 542 "/usr/lib/bison.simple"
+#line 543 "/usr/lib/bison.simple"
 
   yyvsp -= yylen;
   yyssp -= yylen;

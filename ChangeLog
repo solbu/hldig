@@ -1,4 +1,4 @@
-Thu Dec 09 11:15:30 1999    <bosc@ceic.com>
+Thu Dec 09 11:15:30 1999  Marcel Bosc  <bosc@ceic.com>
 
 	* htlib/Configuration.cc (Read): Read is now a virtual function: the old one 
 	for Configuration the new one (Vadim's ... with the parser) in HtConfiguration
