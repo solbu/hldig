@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62.2.8 2000/03/17 15:54:26 grdetil Exp $
+// $Id: HTML.cc,v 1.62.2.9 2000/03/17 15:59:57 grdetil Exp $
 //
 
 #include "htdig.h"
@@ -759,7 +759,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			 && !attrs["content"].empty())
 		  {
 		    String   content_cache = attrs["content"];
-		    content_cache.lowercase("noindex");
+		    content_cache.lowercase();
 		    if (content_cache.indexOf("noindex") != -1)
 		      {
 			doindex = 0;
