@@ -1,7 +1,7 @@
 //
 // parser.h
 //
-// $Id: parser.h,v 1.6 1999/08/28 21:14:28 ghutchis Exp $
+// $Id: parser.h,v 1.7 1999/08/29 05:46:49 ghutchis Exp $
 //
 #ifndef _parser_h_
 #define _parser_h_
@@ -31,6 +31,7 @@ public:
 protected:
     void		fullexpr(int);
     int			lexan();
+    void		phrase(int);
     void		expr(int);
     void		term(int);
     void		factor(int);
@@ -39,6 +40,7 @@ protected:
     void		perform_push();
     void		perform_and(int);
     void		perform_or();
+    void		perform_phrase();
 
     List		*tokens;
     List		*result;
