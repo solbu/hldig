@@ -24,7 +24,7 @@ SRC += regex_win32.c getopt_local.c
 CXXSRC += filecopy.cc
 endif
 
-CPPFLAGS += -DHAVE_CONFIG_H -I../db -I. -I../htword
+CPPFLAGS += -DHAVE_CONFIG_H -I../db -I. -I../htword -I../htcommon
 
 $(TARGET): $(OBJDIRDEP) $(LIBDIRDEP) $(OBJS)
 	$(AR) $(ARFLAGS) $(OBJS)
