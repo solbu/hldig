@@ -5,7 +5,7 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_factors,v 1.6 2004/05/28 13:15:30 lha Exp $
+# $Id: t_factors,v 1.7 2004/06/05 06:26:22 lha Exp $
 #
 
 # Tests (or should eventually test) the following config attributes:
@@ -40,7 +40,7 @@ try_order() {
 	array="$array; array[i++] = "\"$pattern\"
     done
     miss=`$awk "BEGIN {$array; line = 0; } \
-	    "'$0'" ~ array[line] { line++ } \
+	    "'$0'" ~ \".*\"array[line] { line++ } \
 	    END { print array[line] } " < $tmp `
     if [ "$miss" != "" ]
     then

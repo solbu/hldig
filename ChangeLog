@@ -1,5 +1,9 @@
 Sat 5 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
 
+    * test/t_htdig, test/t_factors: fix tests for non-gnu/linux systems.
+
+Sat 5 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
+
     * htdoc/cf_generate.pl: Hyperlink to simplify finding the defaults of
       attributes defined in terms of others (e.g.,
       accents_db->database_base->database_dir).
