@@ -1,4 +1,10 @@
-Wed Sep  1 15:25:16 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:28:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/PDF.cc(parseNonTextLine): Fixed a bug in the PDF parser:
+	when the Title header was just the temporary file name, it
+	wouldn't be used, but it also wouldn't be cleared from the
+	_parsedString variable, so it ended up polluting the document
+	excerpt.
 
 	* htdig/Document.cc(RetrieveHTTP): Added error messages for unknown
 	hosts.
