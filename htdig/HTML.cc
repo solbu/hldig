@@ -12,7 +12,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.51 1999/08/10 16:54:32 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.52 1999/08/23 15:18:48 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -247,7 +247,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	else if (*position == '&')
 	  {
 	    q = (unsigned char*)strchr((char *)position, ';');
-	    if (q <= position+10)
+	    if (q && q <= position+10)
 	      {	// got ending, looks like valid SGML entity
 		scratch = 0;
 		scratch.append((char*)position, q+1 - position);
