@@ -123,7 +123,7 @@ Thu Aug 26 11:18:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 Wed Aug 25 16:50:16 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc(got_word): add code to check for compound words
-	and add their component parts to the word dictionary.
+	and add their component parts to the word database.
 	* htdig/PDF.cc(parseString), htdig/Plaintext.cc(parse): Don't strip
 	punctuation or lowercase the word before calling got_word.  That
 	should be left up to got_word & Word methods.
