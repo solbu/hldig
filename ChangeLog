@@ -1,4 +1,7 @@
-Fri Oct 24 17:09:46 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Fri Oct 24 17:17:15 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+    * htdoc/htdig.html, htdoc/meta.html, htdoc/require.html: Update URL for
+      the Standard for Robot Exclusion.
 
     * htdoc/htmerge.html: Added two clarifications to -m option description.
 
