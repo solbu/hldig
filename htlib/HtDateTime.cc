@@ -762,12 +762,7 @@ time_t HtDateTime::Httimegm (struct tm *tm)
 #if HAVE_TIMEGM
    return ::timegm (tm);
 #else
-   // return ::Httimegm (tm); // To be changed if managed here
-   static time_t gmtime_offset;
-   tm->tm_isdst = 0;
-   return __mktime_internal (tm, gmtime, &gmtime_offset);
-}
-
+   return ::Httimegm (tm); // To be changed if managed here
 #endif
    
 }
