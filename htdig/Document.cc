@@ -4,6 +4,9 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.31  1999/01/14 03:00:22  ghutchis
+// Use new StringList::Join function for http_proxy_exclude.
+//
 // Revision 1.30  1999/01/14 00:27:38  ghutchis
 // Small speed improvements.
 //
@@ -102,7 +105,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.30 1999/01/14 00:27:38 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.31 1999/01/14 03:00:22 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -111,6 +114,7 @@ static char RCSid[] = "$Id: Document.cc,v 1.30 1999/01/14 00:27:38 ghutchis Exp 
 #include <ctype.h>
 #include "Document.h"
 #include "Connection.h"
+#include "StringList.h"
 #include "htdig.h"
 #include "HTML.h"
 #include "Plaintext.h"
@@ -353,19 +357,10 @@ Document::UseProxy()
     if (!excludeproxy)
     {
     	excludeproxy = new StringMatch();
-
-	String t = config["http_proxy_exclude"];
-	String pattern;
-	char *p = strtok(t, " \t");
-	while (p)	
-	{
-	    if (pattern.length())
-		pattern << '|';
-	    pattern << p;
-	    p = strtok(0, " \t");
-	}
+	StringList l(config["http_proxy_exclude"], " \t");
 	excludeproxy->IgnoreCase();
-	excludeproxy->Pattern(pattern);
+	excludeproxy->Pattern(l.Join('|'));
+	l.Release();
     }
 
     if ((proxy) && (!excludeproxy->hasPattern() ||
