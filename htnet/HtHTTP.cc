@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.20 2000/09/01 17:19:30 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.21 2000/09/04 11:46:33 angus Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -109,6 +109,7 @@ void HtHTTP_Response::Reset()
 
 HtHTTP::HtHTTP()
 {
+   _modification_time = 0;
    _persistent_connection_possible = false;
    _persistent_connection_allowed = true; // by default
 
