@@ -14,7 +14,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.24 1999/09/05 06:46:09 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.25 1999/09/08 04:53:53 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -65,18 +65,20 @@ WordList::~WordList()
 //
 void WordList::Word (String word, unsigned int location, 
 		     unsigned int anchor_number,
-		     unsigned long int flags)
+		     unsigned int flags)
 {
     // Why should we add empty words?
     if (word.length() == 0)
       return;
 
-    // Let's start to clean it up
+    // Let's clean it up--lowercase it, check for caps, and strip punctuation
     String 	orig = word;
     word.lowercase();
     
     if (word != orig)
       flags |= FLAG_CAPITAL;
+
+    HtStripPunctuation(word);
 
     if (!valid_word(word))
 	return;
@@ -153,7 +155,7 @@ void WordList::Flush()
     // Provided for backwards compatibility
     if (!isopen)
       Open(config["word_db"]);
-    
+
     words->Start_Get();
     while ((wordRef = (WordReference *) words->Get_Next()))
       {
@@ -169,32 +171,11 @@ void WordList::Flush()
 
 
 //*****************************************************************************
-// void WordList::MarkScanned()
-//   The current document hasn't changed.  No need to redo the words.
-//
-void WordList::MarkScanned()
-{
-    words->Destroy();
-}
-
-
-//*****************************************************************************
 // void WordList::MarkGone()
-//   The current document has disappeared.  The merger can take out
-//   all references to the current doc.
+//   The current document has disappeared or been modified. 
+//   We do not need to store these words.
 //
 void WordList::MarkGone()
-{
-    words->Destroy();
-}
-
-
-//*****************************************************************************
-// void WordList::MarkModified()
-//   The current document has disappeared.  The merger can take out
-//   all references to the current doc.
-//
-void WordList::MarkModified()
 {
     words->Destroy();
 }
@@ -376,6 +357,57 @@ List *WordList::operator [] (String word)
 
 
 //*****************************************************************************
+// List *WordList::Prefix (String prefix)
+//
+List *WordList::Prefix (String prefix)
+{
+    int		prefixLength = prefix.length();
+    List        *list = new List;
+    char        *key;
+    String	wordKey;
+    String	data;
+    String      decompressed;
+    WordRecord  *wr = new WordRecord;
+
+    dbf->Start_Seq(prefix.get());
+    while ((key = dbf->Get_Next(data)))
+      {
+
+        // Break off the \001 and the docID
+        wordKey = strtok(key, "\001");
+        if (prefix != wordKey.sub(0,prefixLength))
+            break;
+
+        if (data.length())
+          {
+	    char	*unpack = data.get();
+	    decompressed = htUnpack(WORD_RECORD_COMPRESSED_FORMAT,
+			  unpack);
+
+            if (decompressed.length() != sizeof (WordRecord))
+	      {
+		cout << "Decoding mismatch" << endl;
+		continue;
+	      }
+
+            memcpy((char *) wr, decompressed.get(), sizeof(WordRecord));
+
+            WordReference *wordRef = new WordReference;
+            wordRef->Word = wordKey;
+            wordRef->DocumentID = wr->id;
+            wordRef->Flags = wr->flags;
+            wordRef->Anchor = wr->anchor;
+            wordRef->Location = wr->location;
+
+            list->Add(wordRef);
+          }
+      }
+
+    return list;
+}
+
+
+//*****************************************************************************
 // int WordList::Exists(WordReference wordRef)
 //
 int WordList::Exists(WordReference wordRef)
@@ -388,6 +420,16 @@ int WordList::Exists(WordReference wordRef)
     key << "\001" << wordRef.DocumentID;
 
     return dbf->Exists(key);
+}
+
+//*****************************************************************************
+// int WordList::Exists(String word)
+//
+int WordList::Exists(String word)
+{
+    // Attempt to retrieve the word, but see if we actually get anything back
+    dbf->Start_Seq(word.get());
+    return (dbf->Get_Next() != 0);
 }
 
 

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.4 1999/08/27 15:46:19 ghutchis Exp $
+// $Id: WordList.h,v 1.5 1999/09/08 04:53:53 ghutchis Exp $
 //
 //
 #ifndef _WordList_h_
@@ -45,14 +45,12 @@ public:
     //
     void		Word(String word, unsigned int location, 
 			     unsigned int anchor_number, 
-			     unsigned long int flags);
+			     unsigned int flags);
 
     //
     // Mark a document as already scanned for words or mark it as disappeared
     //
-    void		MarkScanned();
     void		MarkGone();
-    void		MarkModified();
 
     //
     // Dump the words to the database
@@ -77,8 +75,11 @@ public:
 
     // This returns a list of all the WordReference * for this word
     List		*operator [] (String word);
+    // This returns a list of all the WordReference * matching the prefix
+    List		*Prefix (String prefix);
 
     int                 Exists(WordReference wordRef);
+    int                 Exists(String word);
     int                 Delete(WordReference wordRef);
 
 
