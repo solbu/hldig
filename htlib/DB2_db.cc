@@ -1,13 +1,20 @@
 //
 // DB2_db.cc
 //
-// Implementation of DB2_db
+// DB2_db: Implements the Berkeley B-Tree database as a Database object
+//        (including duplicate values to allow duplicate word entries)
 //
-#if RELEASE
-static char RCSid[] = "$Id: DB2_db.cc,v 1.12 1999/08/28 21:12:27 ghutchis Exp $";
-#endif
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: DB2_db.cc,v 1.13 1999/09/11 05:03:51 ghutchis Exp $
+//
 
 #include "DB2_db.h"
+
 #include <errno.h>
 #include <stdlib.h>
 #include <fstream.h>

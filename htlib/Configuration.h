@@ -3,26 +3,24 @@
 //
 // Configuration: This class provides an object lookup table.  Each object 
 //                in the Configuration is indexed with a string.  The objects 
-//                can be returned by mentioning their string index.
+//                can be returned by mentioning their string index. Values may
+//                include files with `/path/to/file` or other configuration
+//                variables with ${variable}
 //
-// $Id: Configuration.h,v 1.3 1999/09/08 14:42:29 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Configuration.h,v $
-// Revision 1.3  1999/09/08 14:42:29  loic
-// update comments
+// $Id: Configuration.h,v 1.4 1999/09/11 05:03:51 ghutchis Exp $
 //
-// Revision 1.2  1997/07/03 17:44:38  turtle
-// Added support for virtual hosts
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-//
+
 #ifndef	_Configuration_h_
 #define	_Configuration_h_
 
 #include "Dictionary.h"
-#include <htconfig.h>
+#include "htconfig.h"
 
 class String;
 

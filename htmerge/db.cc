@@ -6,6 +6,14 @@
 //     assumes mergeWords and convertDocs are performed to ensure 
 //     database integrity.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: db.cc,v 1.17 1999/09/11 05:03:53 ghutchis Exp $
+//
 
 #include "htmerge.h"
 #include "good_strtok.h"

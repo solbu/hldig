@@ -4,20 +4,19 @@
 // Images: Issue an HTTP request to retrieve the size of an image from
 //         the content-length field.
 //
-// $Id: Images.h,v 1.2 1999/09/08 17:11:16 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Images.h,v $
-// Revision 1.2  1999/09/08 17:11:16  loic
-// update comments
+// $Id: Images.h,v 1.3 1999/09/11 05:03:50 ghutchis Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-//
+
 #ifndef _Images_h_
 #define _Images_h_
 
-#include <Dictionary.h>
+#include "Dictionary.h"
 
 class Images
 {
@@ -25,10 +24,10 @@ public:
 	//
 	// Construction/Destruction
 	//
-					Images();
-					~Images();
+	Images();
+	~Images();
 
-	int				Sizeof(char *url);
+	int	Sizeof(char *url);
 
 private:
 	Dictionary		images;

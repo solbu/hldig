@@ -3,12 +3,19 @@
 //
 // htString: (implementation in String.cc) Just Another String class.
 //
-// $Id: htString.h,v 1.9 1999/09/08 14:42:29 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: htString.h,v 1.10 1999/09/11 05:03:52 ghutchis Exp $
 //
 #ifndef __String_h
 #define __String_h
 
 #include "Object.h"
+
 #include <stdarg.h>
 
 class ostream;

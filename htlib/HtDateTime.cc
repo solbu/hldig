@@ -10,9 +10,12 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: HtDateTime.cc,v 1.11 1999/09/11 05:03:51 ghutchis Exp $
 //
+
+#include "HtDateTime.h"
+
 #include <stdlib.h>
-#include <HtDateTime.h>
 #include <string.h>
 #include <iostream.h>
 

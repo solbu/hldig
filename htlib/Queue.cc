@@ -1,22 +1,17 @@
 //
 // Queue.cc
 //
-// (c) Copyright 1993, San Diego State University -- College of Sciences
-//       (See the COPYRIGHT file for more Copyright information)
+// Queue: This class implements a linked list of objects.  It itself is also an
+//        object
 //
-// Queue: Implementation of the Queue class
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Queue.cc,v $
-// Revision 1.2  1999/09/08 14:42:29  loic
-// update comments
+// $Id: Queue.cc,v 1.3 1999/09/11 05:03:52 ghutchis Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char	RCSid[] = "$Id: Queue.cc,v 1.2 1999/09/08 14:42:29 loic Exp $";
-#endif
 
 #include "Queue.h"
 

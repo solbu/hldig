@@ -1,11 +1,22 @@
 //
 // Dictionary.cc
 //
-// Implementation of the Dictionary class
+// Dictionary: This class provides an object lookup table.  
+//             Each object in the dictionary is indexed with a string.  
+//             The objects can be returned by mentioning their
+//             string index.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: Dictionary.cc,v 1.7 1999/09/11 05:03:51 ghutchis Exp $
 //
 
 #include "Dictionary.h"
+
 #include <stdlib.h>
 
 class DictionaryEntry

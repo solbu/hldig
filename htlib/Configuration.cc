@@ -1,17 +1,25 @@
 //
 // Configuration.cc
 //
-// Implementation of the Configuration class
-// Standard class for storing all user options (and defaults)
+// Configuration: This class provides an object lookup table.  Each object 
+//                in the Configuration is indexed with a string.  The objects 
+//                can be returned by mentioning their string index. Values may
+//                include files with `/path/to/file` or other configuration
+//                variables with ${variable}
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char	RCSid[] = "$Id: Configuration.cc,v 1.12 1999/06/24 01:24:44 ghutchis Exp $";
-#endif
+// $Id: Configuration.cc,v 1.13 1999/09/11 05:03:51 ghutchis Exp $
+//
 
 #include "Configuration.h"
 #include "htString.h"
 #include "ParsedString.h"
+
 #include <fstream.h>
 #include <stdlib.h>
 #include <ctype.h>

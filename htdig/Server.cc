@@ -9,12 +9,9 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: Server.cc,v 1.15 1999/09/11 05:03:50 ghutchis Exp $
 //
-#if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.14 1999/09/08 17:11:16 loic Exp $";
-#endif
 
-#include <ctype.h>
 #include "htdig.h"
 #include "Server.h"
 #include "good_strtok.h"
@@ -23,6 +20,8 @@ static char RCSid[] = "$Id: Server.cc,v 1.14 1999/09/08 17:11:16 loic Exp $";
 #include "htdig.h"
 #include "Document.h"
 #include "URLRef.h"
+
+#include <ctype.h>
 
 
 //*****************************************************************************

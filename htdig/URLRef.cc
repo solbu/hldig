@@ -9,10 +9,8 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: URLRef.cc,v 1.5 1999/09/11 05:03:50 ghutchis Exp $
 //
-#if RELEASE
-static char RCSid[] = "$Id: URLRef.cc,v 1.4 1999/09/08 17:11:16 loic Exp $";
-#endif
 
 #include "URLRef.h"
 

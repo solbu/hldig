@@ -1,14 +1,19 @@
 //
 // DB2_hash.cc
 //
-// Implementation of DB2_hash
+// DB2_hash: Implements the Berkeley Hash database as a Database object
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char RCSid[] = "$Id: DB2_hash.cc,v 1.4 1999/08/28 21:12:27 ghutchis Exp $";
-#endif
+// $Id: DB2_hash.cc,v 1.5 1999/09/11 05:03:51 ghutchis Exp $
+//
 
 #include "DB2_hash.h"
+
 #include <errno.h>
 #include <stdlib.h>
 #include <fstream.h>

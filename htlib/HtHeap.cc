@@ -15,13 +15,11 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: HtHeap.cc,v 1.7 1999/09/11 05:03:52 ghutchis Exp $
 //
-#if RELEASE
-static char	RCSid[] = "$Id: HtHeap.cc,v 1.6 1999/09/08 14:42:29 loic Exp $";
-#endif
 
 #include "HtHeap.h"
-#include "fstream.h"
+#include <fstream.h>
 
 //*********************************************************************
 // void HtHeap::HtHeap()

@@ -5,12 +5,17 @@
 //             are also used in other files, they are not purely internal
 //             to the String class.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char RCSid[] = "$Id: String_fmt.cc,v 1.4 1999/09/10 11:45:30 loic Exp $";
-#endif
+// $Id: String_fmt.cc,v 1.5 1999/09/11 05:03:52 ghutchis Exp $
+//
 
 #include "htString.h"
+
 #include <stdarg.h>
 #include <stdio.h>
 

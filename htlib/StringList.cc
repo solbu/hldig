@@ -1,34 +1,22 @@
 //
 // StringList.cc
 //
-// Implementation of StringList
+// StringList: Specialized List containing String objects. 
 //
-// $Log: StringList.cc,v $
-// Revision 1.5  1999/01/06 16:21:20  bergolth
-// fixed bug in StringList::Join
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.4  1998/12/19 14:39:41  bergolth
-// Added StringList::Join and fixed URL::removeIndex.
+// $Id: StringList.cc,v 1.6 1999/09/11 05:03:52 ghutchis Exp $
 //
-// Revision 1.3  1998/10/02 15:35:04  ghutchis
-//
-// Fixed bug with multiple delimeters
-//
-// Revision 1.2  1997/03/24 04:33:22  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char	RCSid[] = "$Id: StringList.cc,v 1.5 1999/01/06 16:21:20 bergolth Exp $";
-#endif
 
-#include <stdlib.h>
 #include "StringList.h"
 #include "htString.h"
 #include "List.h"
+
+#include <stdlib.h>
 
 
 //*****************************************************************************

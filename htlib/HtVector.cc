@@ -11,10 +11,8 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: HtVector.cc,v 1.6 1999/09/11 05:03:52 ghutchis Exp $
 //
-#if RELEASE
-static char	RCSid[] = "$Id: HtVector.cc,v 1.5 1999/09/08 14:42:29 loic Exp $";
-#endif
 
 #include "HtVector.h"
 

@@ -13,8 +13,9 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.h,v 1.9 1999/09/08 17:10:40 loic Exp $
+// $Id: DocumentDB.h,v 1.10 1999/09/11 05:03:50 ghutchis Exp $
 //
+
 #ifndef _DocumentDB_h_
 #define _DocumentDB_h_
 

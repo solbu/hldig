@@ -1,23 +1,26 @@
 //
 // String.cc
 //
-// Implementation of String class
+// String: (interface in htString.h) Just Another String class.
 //
-// $Id: String.cc,v 1.23 1999/09/08 14:42:29 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.23 1999/09/08 14:42:29 loic Exp $";
-#endif
+// $Id: String.cc,v 1.24 1999/09/11 05:03:52 ghutchis Exp $
+//
 
 
 #include "htString.h"
+#include "Object.h"
 
 #include <unistd.h>
 #include <stream.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "Object.h"
 
 
 const int MinimumAllocationSize = 4;	// Should be power of two.

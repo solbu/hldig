@@ -1,20 +1,19 @@
 //
 // good_strtok.cc
 //
-// $Log: good_strtok.cc,v $
-// Revision 1.3  1999/09/08 14:42:29  loic
-// update comments
+// good_strtok: The good_strtok() function is very similar to the 
+//              standard strtok() library function, except that good_strtok() 
+//		will only skip over 1 separator if it finds one.  This is
+//              needed when parsing strings with empty fields.
 //
-// Revision 1.2  1999/01/20 18:06:21  ghutchis
-// Added fixes and speed improvements contributed by Andrew Bishop.
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
+// $Id: good_strtok.cc,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
 //
-//
-#if RELEASE
-static char	RCSid[] = "$Id: good_strtok.cc,v 1.3 1999/09/08 14:42:29 loic Exp $";
-#endif
 
 #include "lib.h"
 

@@ -1,25 +1,21 @@
 //
 // ParsedString.cc
 //
-// Implementation of ParsedString
+// ParsedString: Contains a string. The string my contain $var, ${var}, $(var)
+//               `filename`. The get method will expand those using the
+//               dictionary given in argument.
+// 
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: ParsedString.cc,v $
-// Revision 1.3  1998/08/03 16:50:40  ghutchis
+// $Id: ParsedString.cc,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
 //
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.2  1998/05/26 03:58:08  turtle
-// Got rid of compiler warnings.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: ParsedString.cc,v 1.3 1998/08/03 16:50:40 ghutchis Exp $";
-#endif
 
 #include "ParsedString.h"
+
 #include <fstream.h>
 #include <ctype.h>
 #include <stdio.h>

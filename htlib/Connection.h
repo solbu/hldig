@@ -1,36 +1,22 @@
 //
 // Connection.h
 //
-// (c) Copyright 1993, San Diego State University -- College of Sciences
-//       (See the COPYRIGHT file for more Copyright information)
-//
 // Connection: This class forms a easy to use interface to the berkeley
 //             tcp socket library. All the calls are basically the same, 
 //             but the parameters do not have any stray _addr or _in
 //             mixed in...
 //
-// $Id: Connection.h,v 1.4 1999/09/08 14:42:29 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Connection.h,v $
-// Revision 1.4  1999/09/08 14:42:29  loic
-// update comments
-//
-// Revision 1.3  1998/10/18 21:22:16  ghutchis
-//
-// Revised connection timeout methods.
-//
-// Revision 1.2  1998/10/17 14:29:18  ghutchis
-//
-// Included fixes sent by Paul J. Meyer <pmeyer@rimeice.msfc.nasa.gov> to fix
-// connections on Dec Alpha environments.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
+// $Id: Connection.h,v 1.5 1999/09/11 05:03:51 ghutchis Exp $
 //
 
-#if !defined(_Connection_h_)
-# define	_Connection_h_
+#ifndef _Connection_h_
+#define	_Connection_h_
 
 #include "io.h"
 

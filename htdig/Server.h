@@ -9,19 +9,20 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.h,v 1.8 1999/09/08 17:11:16 loic Exp $
+// $Id: Server.h,v 1.9 1999/09/11 05:03:50 ghutchis Exp $
 //
-//
+
 #ifndef _Server_h_
 #define _Server_h_
 
-#include <time.h>
 #include "Object.h"
 #include "htString.h"
 #include "Stack.h"
 #include "HtHeap.h"
 #include "StringMatch.h"
 #include "URLRef.h"
+
+#include <time.h>
 
 class Document;
 

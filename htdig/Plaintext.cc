@@ -1,7 +1,6 @@
 //
 // Plaintext.cc
 //
-//
 // Plaintext: Parses plaintext files. Not much to do, really.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
@@ -10,14 +9,14 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char RCSid[] = "$Id: Plaintext.cc,v 1.13 1999/09/08 17:11:16 loic Exp $";
-#endif
+// $Id: Plaintext.cc,v 1.14 1999/09/11 05:03:50 ghutchis Exp $
+//
 
 #include "Plaintext.h"
 #include "htdig.h"
 #include "htString.h"
 #include "HtWordType.h"
+
 #include <ctype.h>
 
 

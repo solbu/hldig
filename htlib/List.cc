@@ -1,12 +1,16 @@
 //
 // List.cc
 //
-// Implementation of the List class
+// List: A List class which holds objects of type Object.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char	RCSid[] = "$Id: List.cc,v 1.3 1999/04/25 01:40:37 ghutchis Exp $";
-#endif
+// $Id: List.cc,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
+//
 
 #include "List.h"
 

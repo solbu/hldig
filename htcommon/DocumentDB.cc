@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.23 1999/09/10 11:45:29 loic Exp $
+// $Id: DocumentDB.cc,v 1.24 1999/09/11 05:03:50 ghutchis Exp $
 //
 
 #include "DocumentDB.h"
@@ -21,6 +21,7 @@
 #include "HtURLCodec.h"
 #include "IntObject.h"
 #include "HtZlibCodec.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>

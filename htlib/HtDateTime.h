@@ -1,6 +1,17 @@
 //
 // HtDateTime.h
 //
+// HtDateTime: Parse, split, compare and format dates and times.
+//  	       Uses locale.
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: HtDateTime.h,v 1.9 1999/09/11 05:03:51 ghutchis Exp $
+
 ///////
    //   Class for Date and Time
   //    Gabriele Bartolini - Prato - Italia
@@ -10,8 +21,6 @@
 // Version: 1.0
 // Release date: 07.05.1999
 
-// HtDateTime: Parse, split, compare and format dates and times.
-//  	       Uses locale.
 //
 // General purpose of HtDateTime
 // 	 The general purpose of this class, is to provide an interface for
@@ -112,7 +121,7 @@
 #define _HTDATETIME_H
 
 #ifdef HAVE_CONFIG_H
-# include <htconfig.h>
+# include "htconfig.h"
 #endif
 
 #if TIME_WITH_SYS_TIME
@@ -126,7 +135,7 @@
 # endif
 #endif
 
-#include <htString.h>
+#include "htString.h"
 
 // If you wanna do some tests
 #define TEST_HTDATETIME

@@ -11,11 +11,8 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: HtZlibCodec.cc,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
 //
-#if RELEASE
-static char     RCSid[] = "$Id: HtVector.cc,v 1.3 1999/02/22 13:57:55 ghutchis 
-Exp $";
-#endif
 
 #include "HtZlibCodec.h"
 #include "defaults.h" // For "config"

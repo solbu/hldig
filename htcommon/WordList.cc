@@ -14,10 +14,8 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: WordList.cc,v 1.30 1999/09/11 05:03:50 ghutchis Exp $
 //
-#if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.29 1999/09/10 14:55:44 loic Exp $";
-#endif
 
 #include "WordList.h"
 #include "WordReference.h"
@@ -27,6 +25,7 @@ static char RCSid[] = "$Id: WordList.cc,v 1.29 1999/09/10 14:55:44 loic Exp $";
 #include "htString.h"
 #include "DB2_db.h"
 #include "HtPack.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>

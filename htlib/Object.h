@@ -1,25 +1,18 @@
 //
 // Object.h
 //
-// (c) Copyright 1993, San Diego State University -- College of Sciences
-//       (See the COPYRIGHT file for more Copyright information)
-//
 // Object: This baseclass defines how an object should behave.
 //         This includes the ability to be put into a list
 //
-// $Id: Object.h,v 1.3 1999/09/08 14:42:29 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Object.h,v $
-// Revision 1.3  1999/09/08 14:42:29  loic
-// update comments
+// $Id: Object.h,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
 //
-// Revision 1.2  1999/01/14 01:09:13  ghutchis
-// Small speed improvements based on gprof.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-//
+
 #ifndef	_Object_h_
 #define	_Object_h_
 
@@ -33,14 +26,14 @@ public:
 	//
 	// Constructor/Destructor
 	//
-	inline				Object();
-	virtual			~Object()	{}
+	inline		Object();
+	virtual		~Object()	{}
 
 	//
 	// To ensure a consistent comparison interface and to allow comparison
 	// of all kinds of different objects, we will define a comparison functions.
 	//
-	virtual int		compare(Object *)	{ return 0;}
+	virtual int	compare(Object *)	{ return 0;}
 
 	//
 	// To allow a deep copy of data structures we will define a standard interface...

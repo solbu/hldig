@@ -1,22 +1,20 @@
 //
 // io.cc
 //
-// Implementation of io
+// io: Perform low level I/O. The Connection class is derived from io.
 //
-// $Log: io.cc,v $
-// Revision 1.2  1997/03/24 04:33:23  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
+// $Id: io.cc,v 1.3 1999/09/11 05:03:52 ghutchis Exp $
 //
-//
-#if RELEASE
-static char RCSid[] = "$Id: io.cc,v 1.2 1997/03/24 04:33:23 turtle Exp $";
-#endif
 
 #include "io.h"
 #include "htString.h"
+
 #include <errno.h>
 
 #undef MIN

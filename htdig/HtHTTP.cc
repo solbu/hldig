@@ -7,12 +7,20 @@
 // 	 -  Generic class
 // 	 -  Response message class
 //
-
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: 
+//
 
 #include "lib.h"
 #include "Transport.h"
 #include "HtHTTP.h"
 #include "ExternalParser.h"
+
 #include <signal.h>
 #include <sys/types.h>
 #include <ctype.h>

@@ -1,18 +1,24 @@
 //
 // Document.cc
 //
-// Document: Implementation of Document
+// Document: This class holds everything there is to know about a document.
+//           The actual contents of the document may or may not be present at
+//           all times for memory conservation reasons.
+//           The document can be told to retrieve its contents.  This is done
+//           with the Retrieve call.  In case the retrieval causes a 
+//           redirect, the link is followed, but this process is done 
+//           only once (to prevent loops.) If the redirect didn't 
+//           work, Document_not_found is returned.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: Document.cc,v 1.52 1999/09/11 05:03:50 ghutchis Exp $
 //
-#if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.51 1999/09/08 17:11:16 loic Exp $";
-#endif
 
-#include <signal.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <ctype.h>
 #include "Document.h"
 #include "Connection.h"
 #include "StringList.h"
@@ -22,6 +28,11 @@ static char RCSid[] = "$Id: Document.cc,v 1.51 1999/09/08 17:11:16 loic Exp $";
 #include "PDF.h"
 #include "ExternalParser.h"
 #include "lib.h"
+
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <ctype.h>
 
 #ifndef HAVE_STRPTIME_DECL
 extern "C" {

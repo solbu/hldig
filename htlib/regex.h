@@ -1,5 +1,5 @@
 //
-// regex.c
+// regex.h
 //
 // regex: replacement of the regex function for architectures that do
 //         not have them.

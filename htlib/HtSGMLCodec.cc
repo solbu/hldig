@@ -10,10 +10,8 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: HtSGMLCodec.cc,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
 //
-#if RELEASE
-static char	RCSid[] = "$Id: HtSGMLCodec.cc,v 1.3 1999/09/08 14:42:29 loic Exp $";
-#endif
 
 #include "HtSGMLCodec.h"
 #include "defaults.h" // For "config"

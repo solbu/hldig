@@ -4,6 +4,15 @@
 // strcasecmp: replacement of the strcasecmp functions for architectures that do
 //             not have it.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: strcasecmp.cc,v 1.6 1999/09/11 05:03:52 ghutchis Exp $
+//
+
 #include "lib.h"
 #include <ctype.h>
 

@@ -14,9 +14,9 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.8 1999/09/10 14:55:44 loic Exp $
+// $Id: WordList.h,v 1.9 1999/09/11 05:03:50 ghutchis Exp $
 //
-//
+
 #ifndef _WordList_h_
 #define _WordList_h_
 

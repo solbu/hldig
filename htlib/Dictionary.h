@@ -6,10 +6,15 @@
 //             The objects can be returned by mentioning their
 //             string index.
 //
-// $Id: Dictionary.h,v 1.4 1999/09/08 14:42:29 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: Dictionary.h,v 1.5 1999/09/11 05:03:51 ghutchis Exp $
 //
-//
+
 #ifndef	_Dictionary_h_
 #define	_Dictionary_h_
 

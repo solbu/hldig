@@ -9,10 +9,8 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: defaults.cc,v 1.62 1999/09/11 05:03:50 ghutchis Exp $
 //
-#if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.61 1999/09/10 11:45:29 loic Exp $";
-#endif
 
 #include "Configuration.h"
 

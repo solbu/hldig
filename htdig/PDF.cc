@@ -1,24 +1,44 @@
 //
 // PDF.cc 
 //
-// PDF: Implementation of class PDF
+// PDF: This class parses PDF (acrobat) files.
+//      Parsing is done on PostScript translation of the PDF file 
+//      by Acrobat Reader (acroread). It is freely available for 
+//      most platform at www.adobe.com
+//
+//     Using acroread as a translator avoids writing a complicated PDF
+//     parser that can handle the various compression mechanisms available 
+//     in PDF. It allows also to keep this parser up to date when Adobe 
+//     issues a new release of the PDF specification (PDF spec is available at 
+//     www.adobe.com)
+//
+//     However, there are still 2 problems :
+//     - you need acroread on your system
+//     - PDF 1.2 files can contain hrefs, and they are not included in PS 
+//       conversion, preventing htDig to follow these links
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: PDF.cc,v 1.19 1999/09/11 05:03:50 ghutchis Exp $
 //
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
-#if RELEASE
-static char RCSid[] = "$Id: PDF.cc,v 1.18 1999/09/08 17:11:16 loic Exp $";
-#endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include "PDF.h"
 #include "URL.h"
 #include "htdig.h"
 #include "htString.h"
 #include "StringList.h"
+#include "HtWordType.h"
+
 #include <stdlib.h>
 #include <ctype.h>
-#include "HtWordType.h"
+#include <sys/types.h>
+#include <sys/stat.h>
 
 
 //*****************************************************************************

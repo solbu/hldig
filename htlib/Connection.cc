@@ -1,11 +1,18 @@
 //
 // Connection.cc
 //
-// (c) Copyright 1993, San Diego State University -- College of Sciences
-//       (See the COPYRIGHT file for more Copyright information)
+// Connection: This class forms a easy to use interface to the berkeley
+//             tcp socket library. All the calls are basically the same, 
+//             but the parameters do not have any stray _addr or _in
+//             mixed in...
 //
-// Implementation of the Connection class
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: Connection.cc,v 1.14 1999/09/11 05:03:51 ghutchis Exp $
 //
 
 #include "Connection.h"
@@ -29,7 +36,8 @@
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
-#include <htconfig.h>
+
+#include "htconfig.h"
 
 extern "C" {
     int rresvport(int *);

@@ -5,8 +5,15 @@
 //      laid out in RFC2396 (e.g. http://www.faqs.org/rfcs/rfc2396.html)
 //      including support for multiple schemes.
 //
-// $Id: URL.h,v 1.6 1999/09/08 14:42:29 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: URL.h,v 1.7 1999/09/11 05:03:52 ghutchis Exp $
+//
+
 #ifndef _URL_h_
 #define _URL_h_
 

@@ -1,12 +1,16 @@
 //
 // words.cc
 //
-// words: Implementation of htmerge
+// words: Remove words from documents that have been purged by the docs code.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.15 1999/09/08 17:19:39 loic Exp $";
-#endif
+// $Id: words.cc,v 1.16 1999/09/11 05:03:53 ghutchis Exp $
+//
 
 #include "htmerge.h"
 #include "HtPack.h"

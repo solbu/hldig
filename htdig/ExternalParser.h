@@ -12,13 +12,15 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.h,v 1.4 1999/09/08 17:11:16 loic Exp $
+// $Id: ExternalParser.h,v 1.5 1999/09/11 05:03:50 ghutchis Exp $
 //
+
 #ifndef _ExternalParser_h_
 #define _ExternalParser_h_
 
 #include "Parsable.h"
 #include "htString.h"
+
 #include <stdio.h>
 
 class URL;

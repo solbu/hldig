@@ -13,9 +13,8 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char RCSid[] = "$Id: ExternalParser.cc,v 1.14 1999/09/08 17:11:16 loic Exp $";
-#endif
+// $Id: ExternalParser.cc,v 1.15 1999/09/11 05:03:50 ghutchis Exp $
+//
 
 #include "ExternalParser.h"
 #include "htdig.h"
@@ -23,6 +22,7 @@ static char RCSid[] = "$Id: ExternalParser.cc,v 1.14 1999/09/08 17:11:16 loic Ex
 #include "QuotedStringList.h"
 #include "URL.h"
 #include "Dictionary.h"
+
 #include <ctype.h>
 #include <stdio.h>
 #include "good_strtok.h"

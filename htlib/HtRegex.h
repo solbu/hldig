@@ -9,14 +9,15 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.h,v 1.3 1999/09/08 14:42:29 loic Exp $
+// $Id: HtRegex.h,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
 //
-//
+
 #ifndef	_HtRegex_h_
 #define	_HtRegex_h_
 
 #include "Object.h"
 #include "StringList.h"
+
 #include <sys/types.h>
 #include <regex.h>
 #include <fstream.h>

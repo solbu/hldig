@@ -11,15 +11,16 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.h,v 1.21 1999/09/08 17:10:40 loic Exp $
+// $Id: DocumentRef.h,v 1.22 1999/09/11 05:03:50 ghutchis Exp $
 //
-//
+
 #ifndef _DocumentRef_h_
 #define _DocumentRef_h_
 
 #include "htString.h"
 #include "List.h"
 #include "WordList.h"
+
 #include <time.h>
 
 enum ReferenceState

@@ -5,13 +5,20 @@
 //	   The structure must have the layout defined in the ABI;
 //	   the layout the compiler generates.
 //
-// $Id: HtPack.cc,v 1.3 1999/09/08 14:42:29 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: HtPack.cc,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
+//
+
+#include "HtPack.h"
 
 #include <iostream.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include "HtPack.h"
 
 // For the moment, these formats are accepted:
 // "i" native int, with most compressed value 0

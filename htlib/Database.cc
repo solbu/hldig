@@ -1,12 +1,17 @@
 //
 // Database.cc
 //
-// Implementation of Database
+// Database: Class which defines the interface to a generic, 
+//           simple database.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char RCSid[] = "$Id: Database.cc,v 1.5 1999/03/03 04:48:37 ghutchis Exp $";
-#endif
+// $Id: Database.cc,v 1.6 1999/09/11 05:03:51 ghutchis Exp $
+//
 
 #include "Database.h"
 #include "DB2_db.h"

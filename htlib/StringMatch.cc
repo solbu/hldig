@@ -1,20 +1,43 @@
 //
 // StringMatch.cc
 //
-// (c) 1995 Andrew Scherpbier <andrew@sdsu.edu>
+// StringMatch: This class provides an interface to a fairly specialized string
+//              lookup facility.  It is intended to be used as a replace for any
+//              regualr expression matching when the pattern string is in the form:
 //
-// Implementation of StringMatch
+//                 <string1>|<string2>|<string3>|...
 //
+//              Just like regular expression routines, the pattern needs to be
+//              compiled before it can be used.  This is done using the Pattern()
+//              member function.  Once the pattern has been compiled, the member
+//              function Find() can be used to search for the pattern in a string.
+//              If a string has been found, the "which" and "length" parameters
+//              will be set to the string index and string length respectively.
+//              (The string index is counted starting from 0) The return value of
+//              Find() is the position at which the string was found or -1 if no
+//              strings could be found.  If a case insensitive match needs to be
+//              performed, call the IgnoreCase() member function before calling
+//              Pattern().  This function will setup a character translation table
+//              which will convert all uppercase characters to lowercase.  If some
+//              other translation is required, the TranslationTable() member
+//              function can be called to provide a custom table.  This table needs
+//              to be 256 characters.
 //
-#if RELEASE
-static char RCSid[] = "$Id: StringMatch.cc,v 1.10 1999/08/25 21:50:17 grdetil Exp $";
-#endif
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: StringMatch.cc,v 1.11 1999/09/11 05:03:52 ghutchis Exp $
+//
 
 #include "StringMatch.h"
+#include "HtWordType.h"
+
 #include <string.h>
 #include <ctype.h>
 #include <fstream.h>
-#include "HtWordType.h"
 
 //
 // Entries in the state table can either be normal or final.

@@ -5,16 +5,21 @@
 //      laid out in RFC2396 (e.g. http://www.faqs.org/rfcs/rfc2396.html)
 //      including support for multiple services. (schemes in the RFC)
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-#if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.30 1999/09/08 14:42:29 loic Exp $";
-#endif
+// $Id: URL.cc,v 1.31 1999/09/11 05:03:52 ghutchis Exp $
+//
 
 #include "URL.h"
 #include "Dictionary.h"
 #include "Configuration.h"
 #include "StringMatch.h"
 #include "StringList.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>

@@ -1,24 +1,20 @@
 //
 // Object.cc
 //
-// (c) Copyright 1993, San Diego State University -- College of Sciences
-//       (See the COPYRIGHT file for more Copyright information)
+// Object: This baseclass defines how an object should behave.
+//         This includes the ability to be put into a list
 //
-// Implementation of the Object class
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Object.cc,v $
-// Revision 1.2  1999/01/14 01:09:13  ghutchis
-// Small speed improvements based on gprof.
+// $Id: Object.cc,v 1.3 1999/09/11 05:03:52 ghutchis Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char	RCSid[] = "$Id: Object.cc,v 1.2 1999/01/14 01:09:13 ghutchis Exp $";
-#endif
 
 #include "Object.h"
+
 #include <stdio.h>
 
 

@@ -3,22 +3,15 @@
 //
 // StringList: Specialized List containing String objects. 
 //
-// $Id: StringList.h,v 1.4 1999/09/08 14:42:29 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: StringList.h,v $
-// Revision 1.4  1999/09/08 14:42:29  loic
-// update comments
+// $Id: StringList.h,v 1.5 1999/09/11 05:03:52 ghutchis Exp $
 //
-// Revision 1.3  1998/12/19 14:39:41  bergolth
-// Added StringList::Join and fixed URL::removeIndex.
-//
-// Revision 1.2  1997/03/24 04:33:22  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-//
+
 #ifndef _StringList_h_
 #define _StringList_h_
 

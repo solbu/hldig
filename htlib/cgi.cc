@@ -1,46 +1,27 @@
 //
 // cgi.cc
 //
-// Implementation of cgi
+// cgi: Parse cgi arguments and put them in a dictionary.
 //
-// $Log: cgi.cc,v $
-// Revision 1.7  1999/08/09 22:21:08  grdetil
-// PR#572 fixed - htsearch won't crash if CONTENT_LENGTH not set
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.6  1999/06/16 13:48:12  grdetil
-// Allow a query string to be passed as an argument.
+// $Id: cgi.cc,v 1.8 1999/09/11 05:03:52 ghutchis Exp $
 //
-// Revision 1.5  1999/01/20 18:08:30  ghutchis
-// Call good_strtok with appropriate parameters (explicitly include NULL first
-// parameter, second param is char, not char *).
-//
-// Revision 1.4  1998/11/15 02:44:23  ghutchis
-//
-// Declared loop int variable. (to simplify frost.com merge)
-//
-// Revision 1.3  1998/05/26 03:58:11  turtle
-// Got rid of compiler warnings.
-//
-// Revision 1.2  1997/03/24 04:33:23  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: cgi.cc,v 1.7 1999/08/09 22:21:08 grdetil Exp $";
-#endif
 
 #include "cgi.h"
 #include "htString.h"
-#include <Dictionary.h>
-#include <good_strtok.h>
+#include "Dictionary.h"
+#include "good_strtok.h"
+#include "StringList.h"
+#include "URL.h"
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <fstream.h>
-#include <StringList.h>
-#include <URL.h>
 
 
 //*****************************************************************************

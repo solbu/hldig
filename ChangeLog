@@ -1,3 +1,7 @@
+Fri Sep 10 23:07:43 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htmerge/*, htcommon/*, htdig/*, htlib/*: Add copyright information.
+
 Fri Sep 10 11:33:50 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
  	* htnotify/htnotify.cc: Add copyright information.

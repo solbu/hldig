@@ -4,15 +4,21 @@
 // Database: Class which defines the interface to a generic, 
 //           simple database.
 //
-// $Id: Database.h,v 1.9 1999/09/08 14:42:29 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: Database.h,v 1.10 1999/09/11 05:03:51 ghutchis Exp $
 //
-//
+
 #ifndef _Database_h_
 #define _Database_h_
 
 #include "Object.h"
 #include "htString.h"
+
 #include <db.h>
 
 // Database Types

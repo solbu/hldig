@@ -1,8 +1,6 @@
 //
 // StringMatch.h
 //
-// (c) 1995 Andrew Scherpbier <andrew@sdsu.edu>
-//
 // StringMatch: This class provides an interface to a fairly specialized string
 //              lookup facility.  It is intended to be used as a replace for any
 //              regualr expression matching when the pattern string is in the form:
@@ -24,29 +22,17 @@
 //              other translation is required, the TranslationTable() member
 //              function can be called to provide a custom table.  This table needs
 //              to be 256 characters.
-// 
-// $Id: StringMatch.h,v 1.4 1999/09/08 14:42:29 loic Exp $
 //
-// $Log: StringMatch.h,v $
-// Revision 1.4  1999/09/08 14:42:29  loic
-// update comments
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.3  1999/08/25 21:50:17  grdetil
-// Add an IgnorePunct() method, use it to highlight matching words in excerpts
-// regardless of punctuation, and don't add short or bad words to pattern.
+// $Id: StringMatch.h,v 1.5 1999/09/11 05:03:52 ghutchis Exp $
 //
-// Revision 1.2  1999/01/21 03:41:09  ghutchis
-// Add default parameter sep = '|'.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-//
-#ifndef _StringMatch_h_
-#define _StringMatch_h_
 
-#include <Object.h>
-
+#include "Object.h"
 
 class StringMatch : public Object
 {

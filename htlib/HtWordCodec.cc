@@ -1,10 +1,20 @@
 //
 // HtWordCodec.cc
 //
-// Translation methods for HtWordCodec
+// HtWordCodec: Given two lists of pair of "words" 'from' and 'to';
+//              simple one-to-one translations, use those lists to translate.
+//              Only restriction are that no null (0) characters must be
+//              used in "words", and that there is a character "joiner" that
+//              does not appear in any word.  One-to-one consistency may be
+//              checked at construction.
 //
-// $Id: HtWordCodec.cc,v 1.4 1999/09/08 14:42:29 loic Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: HtWordCodec.cc,v 1.5 1999/09/11 05:03:52 ghutchis Exp $
 //
 
 #include "HtWordCodec.h"

@@ -4,7 +4,13 @@
 // htdig: Indexes the web sites specified in the config file
 //        generating several databases to be used by htmerge
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: htdig.cc,v 1.17 1999/09/11 05:03:51 ghutchis Exp $
 //
 
 #include "Document.h"
@@ -283,7 +289,6 @@ main(int ac, char **av)
     //
     // Go do it!
     //
-    retriever.Start();
     retriever.Start();
 
     //

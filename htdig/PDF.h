@@ -19,12 +19,20 @@
 //     - PDF 1.2 files can contain hrefs, and they are not included in PS 
 //       conversion, preventing htDig to follow these links
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: PDF.h,v 1.4 1999/09/11 05:03:50 ghutchis Exp $
 //
 
 #ifndef _PDF_h
 #define _PDF_h_
 
 #include "Parsable.h"
+
 #include <stdio.h>
 
 class StringList;

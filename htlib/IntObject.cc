@@ -1,16 +1,16 @@
 //
 // IntObject.cc
 //
-// Implementation of IntObject
+// IntObject: int variable encapsulated in Object derived class
 //
-// $Log: IntObject.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: IntObject.cc,v 1.2 1999/09/11 05:03:52 ghutchis Exp $
 //
-#if RELEASE
-static char RCSid[] = "$Id: IntObject.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
-#endif
 
 #include "IntObject.h"
 
