@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.8 2000/01/24 19:00:29 grdetil Exp $
+// $Id: Display.cc,v 1.100.2.9 2000/01/25 10:43:26 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -502,7 +502,7 @@ Display::setVariables(int pageNumber, List *matches)
     // METHOD_LIST method method_names 2 1 2 match_method ""
     // FORMAT_LIST format template_map 3 2 1 template_name ""
     // EXCLUDE_LIST exclude exclude_names 2 1 2 exclude ""
-    // MATCH_LIST matchesperpage matches_per_page_list 1 1 1 \
+    // MATCH_LIST matchesperpage matches_per_page_list 1 1 1
     //					matches_per_page "Previous Amount"
     QuotedStringList	builds(config["build_select_lists"], " \t\r\n");
     for (int b = 0; b <= builds.Count()-8; b += 8)

@@ -1,3 +1,8 @@
+Tue Jan 25 12:59:01 2000  Loic Dachary  <loic@ceic.com>
+
+	* htsearch/Display.cc (setVariables): fixed 
+	  Display.cc:505: warning: multiline `//' comment
+
 Tue Jan 25 8:37:15 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* htdig/Document.h: Added the "HtHTTP *GetHTTPHandler()" method, in
