@@ -1,3 +1,19 @@
+Sun Jan 31 23:15:36 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/WeightWord.cc(set): Ensure word is lowercased for
+	accurate fuzzy comparisons.
+
+	* htfuzzy/Fuzzy.cc(openIndex): Destroy the database reference if
+	we cannot open the database. Fixes a coredump in classes that
+	inherit this method.
+
+	* Makefile.config.in: Remove bogus definitions of INSTALL.
+
+	* Makefile.in: Define INSTALL, INSTALL_PROGRAM, INSTALL_SCRIPT,
+	and INSSTALL_DATA as defined by configure. Use them.
+
+	* htdoc/RELEASE.html: Started release notes for version 3.1.0.
+	
 Mon Feb  1 04:36:29 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htsearch/Display.cc (displayMatch): Fix leaking user of
@@ -11,7 +27,8 @@ Mon Feb  1 04:36:29 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 Sun Jan 31 21:46:52 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
-	* htlib/Connection.cc: Include sys/time.h needed by select.
+	* htlib/Connection.cc: Include sys/time.h needed by select, fixes
+	PR #322.
 
 Sun Jan 31 20:50:38 1999  Hans-Peter Nilsson  <hp@axis.se>
 

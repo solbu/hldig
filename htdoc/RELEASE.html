@@ -20,6 +20,59 @@
       is also a <a href="ChangeLog">ChangeLog</a> file which has
       more details on the code changes.
     </p>
+    <strong>Release notes for htdig-3.1.0</strong> XX Feb 1999<br>
+    <p>This version marks the "full release" of version
+    3.1.0. Naturally, this version fixes a large number of remaining
+    bugs as well as adding a variety of new
+    features. <strong>NOTE:</strong> You <emph>must</emph> rebuild
+    your databases from scratch after updating to this
+    version. Several database-related bugs were fixed and will remain
+    unless you rebuild from scratch.
+    </p>
+    <ul>
+      <li>Fixed a variety of small memory leaks</li>
+      <li>New option allow_in_form</li>
+      <li>New option bad_querystr</li>
+      <li>Warning message if the locale: option is set
+      incorrectly</li>
+      <li>Speedups in htsearch if backlink factor, date_factor</li>
+      <li>Sort (and reverse sorting) results by date, size of
+      document, title and score</li>
+      <li>Compressed document databases</li>
+      <li>Uses latest (2.6.4) version of the Berkeley database</li>
+      <li>Added support for anchors in excerpts</li>
+      <li>Parsing comments, skipping sections of a document</li>
+      <li>Merge multiple databases</li>
+      <li>Performance improvements</li>
+      <li>Duplicate URL in doc db bug</li>
+      <li>Wrapper</li>
+      <li>Save and restart</li>
+      <li>Change PDF parsing to support programs beyond acroread</li>
+      <li>Coredump with templates</li>
+      <li>Excerpts and punctuation</li>
+      <li>Coredump or invalid dates (1/1/70) with poorly-formatted
+      dates from servers</li>
+      <li>Use max_doc_size to allow for large robots.txt files to be
+      parsed</li>
+      <li>No_title_text to configure what to do if no title is
+      found</li>
+      <li>Variety of string matching bugs</li>
+      <li>Fixed bug where "deleted" documents were not actually
+      removed.</li>
+      <li>Fixed bug with search logging that could dump core if CGI
+      environment variables were not set.</li>
+      <li>Url_part_aliases, common_url_parts</li>
+      <li>Allow "include" keyword in config file</li>
+      <li>Cleaned up many compilation warnings and errors.</li>
+      <li>Speed up updates when a server ignores the If-Modified-Since
+      header</li>
+      <li>Remove_default_doc</li>
+      <li>Enhanced rundig with a portable test for age of
+      databases</li>
+      <li>Of course there are many other bug-fixes and small
+      enhancements. Many thanks to everyone who reported a bug or
+      contributed code for this release!</li>
+    </ul>
     <strong>Release notes for htdig-3.1.0b4</strong> 22 Dec 1998<br>
     This version fixes a security hole in htnotify. The hole has been
     present in previous versions but was inadevertently made worse in
@@ -755,7 +808,7 @@
           &lt;andrew@contigo.com&gt;</a>
         </address>
         <!-- hhmts start -->
-Last modified: Tue Dec 22 21:07:11 EST 1998
+Last modified: Fri Jan 29 14:51:24 EST 1999
 <!-- hhmts end -->
       </li>
     </ul>
