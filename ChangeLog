@@ -1,3 +1,8 @@
+Wed Oct 31 13:31:18 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/english.0: Changed lots of dubious uses of suffixes to
+	get more appropriate and correct fuzzy endings expansions.
+
 Tue Oct 23 14:06:37 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc (RetrievedDocument): Fixed handling of null
