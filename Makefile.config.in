@@ -23,7 +23,7 @@ TAR=		@TAR@
 
 CCC=		$(CXX)
 LIBDIRS=	-L../htlib -L../htcommon -L../@GDBM_DIR@ -L../@RX_DIR@/rx
-INCS=		-I../htlib -I../htcommon -I../include -I../@RX_DIR@/rx
+INCS=		-I../htlib -I../htcommon -I../include -I../@GDBM_DIR@ -I../@RX_DIR@/rx
 LIBS=		-lcommon -lht -lgdbm -lrx @LIBS@
 
 DIST=		htdig-@HTDIG_VERSION@
