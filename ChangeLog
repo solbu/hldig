@@ -1,3 +1,8 @@
+Fri Apr  9 15:17:53 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/FAQ.html: Added changes in maindocs from Mar 18, a few
+	clarifications, and four new questions.
+
 Wed Apr  7 19:41:12 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc (usage): Remove bogus -w flag.
