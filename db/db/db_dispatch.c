@@ -117,7 +117,8 @@ __db_dispatch(logp, db, lsnp, redo, info)
 		 * in "abort mode".
 		 */
 		if (rectype == DB_log_register || rectype == DB_txn_ckp ||
-		    __db_txnlist_find(info, txnid) == DB_NOTFOUND)
+		    (__db_txnlist_find(info, txnid) == DB_NOTFOUND &&
+		    txnid != 0))
 			return ((dispatch_table[rectype])(logp,
 			    db, lsnp, TXN_UNDO, info));
 		break;

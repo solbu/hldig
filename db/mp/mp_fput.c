@@ -119,6 +119,13 @@ memp_fput(dbmfp, pgaddr, flags)
 		return (0);
 	}
 
+	/* Move the buffer to the head/tail of the LRU chain. */
+	SH_TAILQ_REMOVE(&mp->bhq, bhp, q, __bh);
+	if (F_ISSET(bhp, BH_DISCARD))
+		SH_TAILQ_INSERT_HEAD(&mp->bhq, bhp, q, __bh);
+	else
+		SH_TAILQ_INSERT_TAIL(&mp->bhq, bhp, q);
+
 	/*
 	 * If this buffer is scheduled for writing because of a checkpoint, we
 	 * need to write it (if we marked it dirty), or update the checkpoint
@@ -138,14 +145,6 @@ memp_fput(dbmfp, pgaddr, flags)
 			--dbmfp->mfp->lsn_cnt;
 			--mp->lsn_cnt;
 		}
-
-	/* Move the buffer to the head/tail of the LRU chain. */
-	SH_TAILQ_REMOVE(&mp->bhq, bhp, q, __bh);
-	if (F_ISSET(bhp, BH_DISCARD))
-		SH_TAILQ_INSERT_HEAD(&mp->bhq, bhp, q, __bh);
-	else
-		SH_TAILQ_INSERT_TAIL(&mp->bhq, bhp, q);
-
 
 	UNLOCKREGION(dbmp);
 	return (0);

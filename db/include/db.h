@@ -72,8 +72,8 @@
 
 #define	DB_VERSION_MAJOR	2
 #define	DB_VERSION_MINOR	7
-#define	DB_VERSION_PATCH	5
-#define	DB_VERSION_STRING	"Sleepycat Software: Berkeley DB 2.7.5: (04/18/99)"
+#define	DB_VERSION_PATCH	7
+#define	DB_VERSION_STRING	"Sleepycat Software: Berkeley DB 2.7.7: (08/20/99)"
 
 typedef	u_int32_t	db_pgno_t;	/* Page number type. */
 typedef	u_int16_t	db_indx_t;	/* Page offset type. */
@@ -199,6 +199,7 @@ struct __db_dbt {
 #define	DB_SEQUENTIAL	      0x008000	/* Sequential access (internal). */
 #define	DB_TEMPORARY	      0x010000	/* Remove on last close (internal). */
 #define	DB_TRUNCATE	      0x020000	/* O_TRUNCATE: replace existing DB. */
+#define	DB_FCNTL_LOCKING      0x040000	/* Undocumented: fcntl(2) locking. */
 
 /*
  * Deadlock detector modes; used in the DBENV structure to configure the
@@ -405,6 +406,7 @@ struct __db {
 					/* Documented, returned information. */
 	DBTYPE	 type;			/* DB access method. */
 	int	 byteswapped;		/* Database byte order is swapped. */
+	int	 saved_open_fd;		/* For fcntl lock preservation. */
 
 	DB_ENV	*dbenv;			/* DB_ENV structure. */
 	DB_ENV	*mp_dbenv;		/* DB_ENV for local mpool creation. */

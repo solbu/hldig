@@ -446,6 +446,7 @@ memp_trickle(dbmp, pct, nwrotep)
 	BH *bhp;
 	MPOOL *mp;
 	MPOOLFILE *mfp;
+	db_pgno_t pgno;
 	u_long total;
 	int ret, wrote;
 
@@ -493,6 +494,7 @@ loop:	total = mp->stat.st_page_clean + mp->stat.st_page_dirty;
 		if (F_ISSET(mfp, MP_TEMP))
 			continue;
 
+		pgno = bhp->pgno;
 		if ((ret = __memp_bhwrite(dbmp, mfp, bhp, NULL, &wrote)) != 0)
 			goto err;
 
@@ -503,7 +505,7 @@ loop:	total = mp->stat.st_page_clean + mp->stat.st_page_dirty;
 		 */
 		if (!wrote) {
 			__db_err(dbmp->dbenv, "%s: unable to flush page: %lu",
-			    __memp_fns(dbmp, mfp), (u_long)bhp->pgno);
+			    __memp_fns(dbmp, mfp), (u_long)pgno);
 			ret = EPERM;
 			goto err;
 		}

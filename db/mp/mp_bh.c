@@ -267,7 +267,7 @@ __memp_pgwrite(dbmfp, bhp, restartp, wrotep)
 	MPOOL *mp;
 	MPOOLFILE *mfp;
 	ssize_t nw;
-	int callpgin, ret, syncfail;
+	int callpgin, dosync, ret, syncfail;
 	const char *fail;
 
 	dbmp = dbmfp->dbmp;
@@ -386,40 +386,16 @@ __memp_pgwrite(dbmfp, bhp, restartp, wrotep)
 	/*
 	 * If we write a buffer for which a checkpoint is waiting, update
 	 * the count of pending buffers (both in the mpool as a whole and
-	 * for this file).  If the count for this file goes to zero, flush
-	 * the writes.
-	 *
-	 * XXX:
-	 * Don't lock the region around the sync, fsync(2) has no atomicity
-	 * issues.
-	 *
-	 * XXX:
-	 * We ignore errors from the sync -- it makes no sense to return an
-	 * error to the calling process, so set a flag causing the checkpoint
-	 * to be retried later.
+	 * for this file).  If the count for this file goes to zero, set a
+	 * flag so we flush the writes.
 	 */
 	if (F_ISSET(bhp, BH_WRITE)) {
-		if (mfp->lsn_cnt == 1) {
-			UNLOCKREGION(dbmp);
-			syncfail = __os_fsync(dbmfp->fd) != 0;
-			LOCKREGION(dbmp);
-			if (syncfail)
-				F_SET(mp, MP_LSN_RETRY);
-
-		}
-
 		F_CLR(bhp, BH_WRITE);
 
-		/*
-		 * If the buffer just written has a larger LSN than the current
-		 * max LSN written for this checkpoint, update the saved value.
-		 */
-		if (log_compare(&lsn, &mp->lsn) > 0)
-			mp->lsn = lsn;
-
 		--mp->lsn_cnt;
-		--mfp->lsn_cnt;
-	}
+		dosync = --mfp->lsn_cnt == 0 ? 1 : 0;
+	} else
+		dosync = 0;
 
 	/* Update the page clean/dirty statistics. */
 	++mp->stat.st_page_clean;
@@ -428,6 +404,29 @@ __memp_pgwrite(dbmfp, bhp, restartp, wrotep)
 	/* Update I/O statistics. */
 	++mp->stat.st_page_out;
 	++mfp->stat.st_page_out;
+
+	/*
+	 * Do the sync after everything else has been updated, so any incoming
+	 * checkpoint doesn't see inconsistent information.
+	 *
+	 * XXX:
+	 * Don't lock the region around the sync, fsync(2) has no atomicity
+	 * issues.
+	 *
+	 * XXX:
+	 * We ignore errors from the sync -- it makes no sense to return an
+	 * error to the calling process, so set a flag causing the checkpoint
+	 * to be retried later.  There is a possibility, of course, that a
+	 * subsequent checkpoint was started and that we're going to force it
+	 * to fail.  That should be unlikely, and fixing it would be difficult.
+	 */
+	if (dosync) {
+		UNLOCKREGION(dbmp);
+		syncfail = __os_fsync(dbmfp->fd) != 0;
+		LOCKREGION(dbmp);
+		if (syncfail)
+			F_SET(mp, MP_LSN_RETRY);
+	}
 
 	return (0);
 

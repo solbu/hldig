@@ -51,6 +51,7 @@ struct __log_persist;	typedef struct __log_persist LOGP;
  */
 typedef	struct __db_entry {
 	DB	 *dbp;			/* Associated DB structure. */
+	char 	 *name;			/* File name. */
 	u_int32_t refcount;		/* Reference counted. */
 	int	  deleted;		/* File was not found during open. */
 } DB_ENTRY;

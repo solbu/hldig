@@ -300,7 +300,7 @@ private:
 
     // no copying
     DbLog(const DbLog &);
-    operator = (const DbLog &);
+    DbLog &operator = (const DbLog &);
 
     DEFINE_DB_CLASS(DbLog);
 };
@@ -345,7 +345,7 @@ protected:
 private:
     // no copying
     DbMpoolFile(const DbMpoolFile &);
-    operator = (const DbMpoolFile &);
+    DbMpoolFile &operator = (const DbMpoolFile &);
 
     DEFINE_DB_CLASS(DbMpoolFile);
 };
@@ -432,7 +432,7 @@ private:
 
     // no copying
     DbTxnMgr(const DbTxnMgr &);
-    operator = (const DbTxnMgr &);
+    DbTxnMgr &operator = (const DbTxnMgr &);
 
     DEFINE_DB_CLASS(DbTxnMgr);
 };
@@ -461,7 +461,7 @@ private:
 
     // no copying
     DbTxn(const DbTxn &);
-    operator = (const DbTxn &);
+    DbTxn &operator = (const DbTxn &);
 
     DEFINE_DB_CLASS(DbTxn);
 };
@@ -730,7 +730,7 @@ private:
 
     // no copying
     DbEnv(const DbEnv &);
-    operator = (const DbEnv &);
+    DbEnv &operator = (const DbEnv &);
 
     ErrorModel error_model_;
     static void stream_error_function(const char *, char *);

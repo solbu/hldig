@@ -113,9 +113,9 @@ db_open(fname, type, flags, mode, dbenv, dbinfo, dbpp)
 
 	/* Validate arguments. */
 #ifdef HAVE_SPINLOCKS
-#define	OKFLAGS	(DB_CREATE | DB_NOMMAP | DB_RDONLY | DB_THREAD | DB_TRUNCATE)
+#define	OKFLAGS	(DB_CREATE | DB_FCNTL_LOCKING | DB_NOMMAP | DB_RDONLY | DB_THREAD | DB_TRUNCATE)
 #else
-#define	OKFLAGS	(DB_CREATE | DB_NOMMAP | DB_RDONLY | DB_TRUNCATE)
+#define	OKFLAGS	(DB_CREATE | DB_FCNTL_LOCKING | DB_NOMMAP | DB_RDONLY | DB_TRUNCATE)
 #endif
 	if ((ret = __db_fchk(dbenv, "db_open", flags, OKFLAGS)) != 0)
 		return (ret);
@@ -143,15 +143,15 @@ db_open(fname, type, flags, mode, dbenv, dbinfo, dbpp)
 		}
 	}
 
-	/* Initialize for error return. */
-	fd = -1;
-	need_fileid = 1;
-	real_name = NULL;
-
 	/* Allocate the DB structure, reference the DB_ENV structure. */
 	if ((ret = __os_calloc(1, sizeof(DB), &dbp)) != 0)
 		return (ret);
 	dbp->dbenv = dbenv;
+
+	/* Initialize for error return. */
+	dbp->saved_open_fd = fd = -1;
+	need_fileid = 1;
+	real_name = NULL;
 
 	/* Random initialization. */
 	TAILQ_INIT(&dbp->free_queue);
@@ -330,8 +330,10 @@ open_retry:	if (LF_ISSET(DB_CREATE)) {
 		if ((ret = __os_read(fd, mbuf, sizeof(mbuf), &nr)) != 0)
 			goto err;
 
-		/* The fd is no longer needed. */
-		(void)__os_close(fd);
+		if (LF_ISSET(DB_FCNTL_LOCKING))
+			dbp->saved_open_fd = fd;
+		else
+			(void)__os_close(fd);
 		fd = -1;
 
 		if (nr != sizeof(mbuf)) {
@@ -762,6 +764,11 @@ __db_close(dbp, flags)
 	if (F_ISSET(dbp, DB_AM_MLOCAL) &&
 	    (t_ret = memp_close(dbp->mp)) != 0 && ret == 0)
 		ret = t_ret;
+
+	if (dbp->saved_open_fd != -1) {
+		(void)__os_close(dbp->saved_open_fd);
+		dbp->saved_open_fd = -1;
+	}
 
 	/* Discard the log file id. */
 	if (F_ISSET(dbp, DB_AM_LOGGING))

@@ -137,9 +137,11 @@ retry:	/* Find a buffer we can flush; pure LRU. */
 		 * the buffer list.
 		 */
 		if (F_ISSET(bhp, BH_DIRTY)) {
+			++bhp->ref;
 			if ((ret = __memp_bhwrite(dbmp,
 			    mfp, bhp, &restart, &wrote)) != 0)
 				return (ret);
+			--bhp->ref;
 
 			/*
 			 * It's possible that another process wants this buffer

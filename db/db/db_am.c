@@ -388,7 +388,7 @@ __db_put(dbp, txn, key, data, flags)
 		F_SET(&tdata, DB_DBT_USERMEM | DB_DBT_PARTIAL);
 		if ((ret = dbc->c_get(dbc, key, &tdata, DB_SET | DB_RMW)) == 0)
 			ret = DB_KEYEXIST;
-		else
+		else if (ret == DB_NOTFOUND)
 			ret = 0;
 	}
 	if (ret == 0)

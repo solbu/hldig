@@ -19,7 +19,7 @@ int __log_put __P((DB_LOG *, DB_LSN *, const DBT *, u_int32_t));
 int __log_name __P((DB_LOG *, u_int32_t, char **, int *, u_int32_t));
 int __log_register_recover
     __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
-int __log_add_logid __P((DB_LOG *, DB *, u_int32_t));
+int __log_add_logid __P((DB_LOG *, DB *, const char *, u_int32_t));
 int __db_fileid_to_db __P((DB_LOG *, DB **, u_int32_t));
 void __log_close_files __P((DB_LOG *));
 void __log_rem_logid __P((DB_LOG *, u_int32_t));

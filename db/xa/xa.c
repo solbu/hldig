@@ -195,7 +195,7 @@ __db_xa_start(xid, rmid, flags)
 	 */
 	if (is_known) {
 		td = (TXN_DETAIL *)((u_int8_t *)env->tx_info->region + off);
-		if (td->xa_status == TXN_XA_SUSPENDED && !LF_SET(TMRESUME))
+		if (td->xa_status == TXN_XA_SUSPENDED && !LF_ISSET(TMRESUME))
 			return (XAER_PROTO);
 		if (td->xa_status == TXN_XA_DEADLOCKED)
 			return (XA_RBDEADLOCK);
@@ -361,11 +361,11 @@ __db_xa_commit(xid, rmid, flags)
 	if (td->xa_status == TXN_XA_ABORTED)
 		return (XA_RBOTHER);
 
-	if (LF_SET(TMONEPHASE) &&
+	if (LF_ISSET(TMONEPHASE) &&
 	    td->xa_status != TXN_XA_ENDED && td->xa_status != TXN_XA_SUSPENDED)
 		return (XAER_PROTO);
 
-	if (!LF_SET(TMONEPHASE) && td->xa_status != TXN_XA_PREPARED)
+	if (!LF_ISSET(TMONEPHASE) && td->xa_status != TXN_XA_PREPARED)
 		return (XAER_PROTO);
 
 	/* Now, fill in the global transaction structure. */
@@ -572,11 +572,8 @@ __db_xa_rollback(xid, rmid, flags)
 	if (td->xa_status == TXN_XA_ABORTED)
 		return (XA_RBOTHER);
 
-	if (LF_SET(TMONEPHASE) &&
+	if (LF_ISSET(TMONEPHASE) &&
 	    td->xa_status != TXN_XA_ENDED && td->xa_status != TXN_XA_SUSPENDED)
-		return (XAER_PROTO);
-
-	if (!LF_SET(TMONEPHASE) && td->xa_status != TXN_XA_PREPARED)
 		return (XAER_PROTO);
 
 	/* Now, fill in the global transaction structure. */
