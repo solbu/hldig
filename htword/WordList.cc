@@ -14,8 +14,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.5 1999/10/05 16:03:31 loic Exp $
+// $Id: WordList.cc,v 1.6 1999/10/05 16:48:03 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "WordList.h"
 #include "WordReference.h"

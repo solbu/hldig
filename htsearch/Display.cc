@@ -10,8 +10,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.96 1999/10/01 12:53:54 loic Exp $
+// $Id: Display.cc,v 1.97 1999/10/05 16:48:02 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "htsearch.h"
 #include "Display.h"

@@ -1,3 +1,7 @@
+Tue Oct 05 18:53:13 1999  Loic Dachary  <loic@ceic.com>
+
+	* htdig/Display.cc, htword/*.cc: add inclusion of htconfig.h
+
 Tue Oct 05 14:54:17 1999  Loic Dachary  <loic@ceic.com>
 
 	* htlib/htString.h (class String): add set(char*)

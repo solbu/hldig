@@ -7,8 +7,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.cc,v 1.3 1999/10/05 16:03:31 loic Exp $
+// $Id: WordReference.cc,v 1.4 1999/10/05 16:48:03 loic Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include <iostream.h>
 
