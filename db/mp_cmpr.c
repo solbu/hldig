@@ -28,7 +28,7 @@
  * 
  */
 
-#include "config.h"
+#include "htconfig.h"
 
 #ifndef lint
 static const char sccsid[] = "@(#)mp_cmpr.c	1.1 (Senga) 01/08/99";

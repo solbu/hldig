@@ -1,5 +1,5 @@
 /* Do not edit: automatically built by gen_rec.awk. */
-#include "config.h"
+#include "htconfig.h"
 
 #ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>

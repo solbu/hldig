@@ -5,10 +5,10 @@
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "config.h"
+#include "htconfig.h"
 
 #ifndef lint
-static const char revid[] = "$Id: qam_stat.c,v 1.1.2.2 2000/09/14 03:13:23 ghutchis Exp $";
+static const char revid[] = "$Id: qam_stat.c,v 1.1.2.3 2000/09/17 01:35:08 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES

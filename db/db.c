@@ -37,10 +37,10 @@
  * SUCH DAMAGE.
  */
 
-#include "config.h"
+#include "htconfig.h"
 
 #ifndef lint
-static const char revid[] = "$Id: db.c,v 1.1.2.3 2000/09/14 03:13:18 ghutchis Exp $";
+static const char revid[] = "$Id: db.c,v 1.1.2.4 2000/09/17 01:35:04 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES

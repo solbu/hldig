@@ -4,13 +4,13 @@
  * Copyright (c) 2000
  *	Sleepycat Software.  All rights reserved.
  *
- * $Id: db_vrfyutil.c,v 1.1.2.1 2000/09/14 03:13:20 ghutchis Exp $
+ * $Id: db_vrfyutil.c,v 1.1.2.2 2000/09/17 01:35:05 ghutchis Exp $
  */
 
-#include "config.h"
+#include "htconfig.h"
 
 #ifndef lint
-static const char revid[] = "$Id: db_vrfyutil.c,v 1.1.2.1 2000/09/14 03:13:20 ghutchis Exp $";
+static const char revid[] = "$Id: db_vrfyutil.c,v 1.1.2.2 2000/09/17 01:35:05 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES

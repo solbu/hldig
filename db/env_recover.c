@@ -5,13 +5,13 @@
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "config.h"
+#include "htconfig.h"
 
 #ifndef lint
 static const char copyright[] =
     "Copyright (c) 1996-2000\nSleepycat Software Inc.  All rights reserved.\n";
 static const char revid[] =
-    "$Id: env_recover.c,v 1.1.2.2 2000/09/14 03:13:20 ghutchis Exp $";
+    "$Id: env_recover.c,v 1.1.2.3 2000/09/17 01:35:05 ghutchis Exp $";
 #endif
 
 #ifndef NO_SYSTEM_INCLUDES
