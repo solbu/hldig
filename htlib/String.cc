@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.27 1999/09/27 08:47:27 angus Exp $
+// $Id: String.cc,v 1.28 1999/09/27 08:57:04 loic Exp $
 //
 
 
@@ -28,8 +28,7 @@ const int MinimumAllocationSize = 4;	// Should be power of two.
 #ifdef NOINLINE
 String::String()
 {
-    Length = 0;
-    Allocated = 0;
+    Length = Allocated = 0;
     Data = 0;
 }
 #endif
@@ -43,8 +42,8 @@ String::String(int init)
 
 String::String(const char *s)
 {
-    Allocated = 0;
-    Length = 0;
+    Allocated = Length = 0;
+    Data = 0;
 
     int	len;
     if (s)
@@ -56,8 +55,8 @@ String::String(const char *s)
 
 String::String(const char *s, int len)
 {
-    Allocated = 0;
-    Length = 0;
+    Allocated = Length = 0;
+    Data = 0;
     if (s && len != 0)
 	copy(s, len, len);
 }
@@ -66,7 +65,7 @@ String::String(const String &s)
 {
     Allocated = Length = 0;
     Data = 0;
-    
+
     if (s.length() != 0)
       copy(s.Data, s.length(), s.length());
 }

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.cc,v 1.19 1999/09/27 08:32:02 loic Exp $
+// $Id: parser.cc,v 1.20 1999/09/27 08:57:05 loic Exp $
 //
 
 #include "parser.h"
@@ -369,6 +369,7 @@ Parser::score(List *wordList, double weight)
 	    dm->score += (wr->Flags() & FLAG_DESCRIPTION) * config.Value("meta_description_factor", 1);
 	    dm->score += (wr->Flags() & FLAG_AUTHOR) * config.Value("author_factor", 1);
 	    dm->score += (wr->Flags() & FLAG_LINK_TEXT) * config.Value("description_factor", 1);
+	    dm->id = wr->DocID();
 	    dm->score = weight * dm->score + prevScore;
 	    if (prevAnchor > wr->Anchor())
 	      dm->anchor = wr->Anchor();

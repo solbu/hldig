@@ -2,9 +2,15 @@ Mon Sep 27 10:38:37 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* htlib/String.cc: removed compiler warnings
 
-	* htdig/HtHTTP.h: corrected $Id: ChangeLog,v 1.421 1999/09/27 08:47:25 angus Exp $ property
+	* htdig/HtHTTP.h: corrected $Id: ChangeLog,v 1.422 1999/09/27 08:57:04 loic Exp $ property
 
-Mon Sep 27 10:18:12 1999  Ecila 4.10  <ecila40@newsun>
+Mon Sep 27 10:29:58 1999  Loic Dachary  <loic@ceic.com>
+
+	* htlib/String.cc (String): make sure *all* constructors set the Data
+	  member to 0.
+
+	* htsearch/parser.cc (score): add missing dm->id = wr->DocID();
+	  strange it did not make search fail horribly. 
 
 Mon Sep 27 09:46:34 1999  Loic Dachary  <loic@ceic.com>
 
