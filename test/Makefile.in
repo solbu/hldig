@@ -119,7 +119,7 @@ EXTRA_DIST = htdocs
 
 LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include $(PROFILING)
 
-noinst_PROGRAMS = dbbench word testnet
+noinst_PROGRAMS = dbbench word # testnet
 
 dbbench_SOURCES = dbbench.cc
 dbbench_DEPENDENCIES = $(HTLIBS)
@@ -130,11 +130,6 @@ word_SOURCES = word.cc
 word_DEPENDENCIES = $(HTLIBS)
 word_LDFLAGS = $(PROFILING)
 word_LDADD = $(HTLIBS)
-
-testnet_SOURCES = testnet.cc
-testnet_DEPENDENCIES = $(HTLIBS)
-testnet_LDFLAGS = $(PROFILING)
-testnet_LDADD = $(HTLIBS)
 
 BASE = test
 CACHESIZE = -C `expr 64 \* 1024 \* 1024`
@@ -154,7 +149,6 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 dbbench_OBJECTS =  dbbench.o
 word_OBJECTS =  word.o
-testnet_OBJECTS =  testnet.o
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -165,9 +159,9 @@ DIST_COMMON =  Makefile.am Makefile.in test_functions.in
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/dbbench.P .deps/testnet.P .deps/word.P
-SOURCES = $(dbbench_SOURCES) $(word_SOURCES) $(testnet_SOURCES)
-OBJECTS = $(dbbench_OBJECTS) $(word_OBJECTS) $(testnet_OBJECTS)
+DEP_FILES =  .deps/dbbench.P .deps/word.P
+SOURCES = $(dbbench_SOURCES) $(word_SOURCES)
+OBJECTS = $(dbbench_OBJECTS) $(word_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -230,10 +224,6 @@ dbbench: $(dbbench_OBJECTS) $(dbbench_DEPENDENCIES)
 word: $(word_OBJECTS) $(word_DEPENDENCIES)
 	@rm -f word
 	$(CXXLINK) $(word_LDFLAGS) $(word_OBJECTS) $(word_LDADD) $(LIBS)
-
-testnet: $(testnet_OBJECTS) $(testnet_DEPENDENCIES)
-	@rm -f testnet
-	$(CXXLINK) $(testnet_LDFLAGS) $(testnet_OBJECTS) $(testnet_LDADD) $(LIBS)
 .cc.o:
 	$(CXXCOMPILE) -c $<
 .cc.lo:
@@ -441,6 +431,11 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
+
+#testnet_SOURCES = testnet.cc
+#testnet_DEPENDENCIES = $(HTLIBS)
+#testnet_LDFLAGS = $(PROFILING)
+#testnet_LDADD = $(HTLIBS)
 
 clean-local:
 	rm -fr gmon.out test test_weakcmpr logs var
