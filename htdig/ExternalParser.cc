@@ -7,7 +7,7 @@
 // The format is documented in http://www.htdig.org/attrs.html#external_parser
 //
 #if RELEASE
-static char RCSid[] = "$Id: ExternalParser.cc,v 1.7 1999/01/28 05:20:19 ghutchis Exp $";
+static char RCSid[] = "$Id: ExternalParser.cc,v 1.8 1999/02/01 19:46:23 ghutchis Exp $";
 #endif
 
 #include "ExternalParser.h"
@@ -151,13 +151,19 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     while (readLine(input, line))
     {
 	token1 = strtok(line, "\t");
+	if (token1 == NULL)
+	    token1 = "";
+	token2 = NULL;
+	token3 = NULL;
 	switch (*token1)
 	{
 	    case 'w':	// word
 		token1 = strtok(0, "\t");
-		token2 = strtok(0, "\t");
-		token3 = strtok(0, "\t");
-		if ( token1!=NULL & token2!=NULL & token3!=NULL )
+		if (token1 != NULL)
+		  token2 = strtok(0, "\t");
+		if (token2 != NULL)
+		  token3 = strtok(0, "\t");
+		if (token1 != NULL && token2 != NULL && token3 != NULL)
 		  retriever.got_word(token1, atoi(token2), atoi(token3));
 		else
 		  cerr<< "External parser error in line:"<<line<<"\n";
@@ -165,17 +171,20 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		
 	    case 'u':	// href
 		token1 = strtok(0, "\t");
-		token2 = strtok(0, "\t");
-		url.parse(token1);
-		if (token1 != NULL & token2 != NULL )
+		if (token1 != NULL)
+		  token2 = strtok(0, "\t");
+		if (token1 != NULL && token2 != NULL)
+		{
+		  url.parse(token1);
 		  retriever.got_href(url, token2);
+		}
 		else
 		  cerr<< "External parser error in line:"<<line<<"\n";
 		break;
 		
 	    case 't':	// title
 		token1 = strtok(0, "\t");
-		if (token1 != NULL )
+		if (token1 != NULL)
 		  retriever.got_title(token1);
 		else
 		  cerr<< "External parser error in line:"<<line<<"\n";
@@ -183,7 +192,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		
 	    case 'h':	// head
 		token1 = strtok(0, "\t");
-		if (token1 != NULL )
+		if (token1 != NULL)
 		  retriever.got_head(token1);
 		else
 		  cerr<< "External parser error in line:"<<line<<"\n";
@@ -204,7 +213,9 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		else
 		  cerr<< "External parser error in line:"<<line<<"\n";
 		break;
+
 	    case 'm':	// meta
+	      {
 		// Using good_strtok means we can accept empty
 		// fields.
 		char *httpEquiv = good_strtok(token1+2, '\t');
@@ -315,6 +326,11 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		}
 		else
 		  cerr<< "External parser error in line:"<<line<<"\n";
+		break;
+	      }
+
+	    default:
+		cerr<< "External parser error in line:"<<line<<"\n";
 		break;
 	}
     }
