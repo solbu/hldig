@@ -3,38 +3,17 @@
 //
 // Implementation of Prefix
 //
-// $Log: Prefix.cc,v $
-// Revision 1.5  1998/11/01 00:00:40  ghutchis
-//
-// Replaced system calls with htlib/my* functions.
-//
-// Revision 1.4  1998/10/12 02:04:00  ghutchis
-//
-// Updated Makefiles and configure variables.
-//
-// Revision 1.2  1998/08/03 16:50:38  ghutchis
-//
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.1  1998/06/21 23:20:04  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
-//
-// Revision 1.2  1997/03/24 04:33:18  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
+// $Id: Prefix.cc,v 1.6 1999/02/01 04:02:25 hp Exp $
 //
 #if RELEASE
-static char RCSid[] = "$Id: Prefix.cc,v 1.5 1998/11/01 00:00:40 ghutchis Exp $";
+static char RCSid[] = "$Id: Prefix.cc,v 1.6 1999/02/01 04:02:25 hp Exp $";
 #endif
 
 #include "Prefix.h"
-#include <htString.h>
-#include <List.h>
-#include <StringMatch.h>
-#include <Configuration.h>
+#include "htString.h"
+#include "List.h"
+#include "StringMatch.h"
+#include "Configuration.h"
 
 extern Configuration	config;
 
@@ -100,7 +79,7 @@ Prefix::getWords(char *w, List &words)
     strncpy(w2, w, sizeof(w2) - 1);
     w2[sizeof(w2) - 1] = '\0';
     w2[strlen(w2) - prefix_suffix_length] = '\0';
-    String w3 = new String(w2);
+    String w3(w2);
     w3.lowercase();
     dbf->Start_Seq(w3.get());
 

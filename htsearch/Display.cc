@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.47 1999/01/29 18:55:08 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.48 1999/02/01 04:02:25 hp Exp $";
 #endif
 
 #include "htsearch.h"
@@ -249,11 +249,9 @@ Display::displayMatch(ResultMatch *match, int current)
     // we need it anyway to see if an anchor is relevant
     //
     int first = -1;
-    String urlanchor = new String(url);
-    String *txtexcerpt = new String;
+    String urlanchor(url);
     urlanchor << anchor;
-    *txtexcerpt = excerpt(ref, urlanchor, fanchor, first);
-    vars.Add("EXCERPT", txtexcerpt);
+    vars.Add("EXCERPT", excerpt(ref, urlanchor, fanchor, first));
     //
     // anchor only relevant if an excerpt was found, i.e.,
     // the search expression matches the body of the document

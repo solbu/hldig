@@ -1,66 +1,10 @@
 //
-// Change history.
+// Implementation of String class
 //
-// Who	When		What
-// ---	----		----
-// AWS	10/13/93	Fixed the constructors and operator = routines so that a NULL can be passed
-//
-// $Log: String.cc,v $
-// Revision 1.15  1999/01/25 04:09:12  ghutchis
-// Use autoconf check for strstr, fix compiler warnings.
-//
-// Revision 1.14  1999/01/23 01:25:03  hp
-// Fixed _some_ missing const qualifiers on common methods (requiring temps)
-//
-// Revision 1.13  1999/01/14 01:09:13  ghutchis
-// Small speed improvements based on gprof.
-//
-// Revision 1.12  1999/01/06 15:31:25  ghutchis
-// Add missing [] to delete.
-//
-// Revision 1.11  1998/12/19 14:39:41  bergolth
-// Added StringList::Join and fixed URL::removeIndex.
-//
-// Revision 1.10  1998/11/27 18:35:58  ghutchis
-//
-// Changed MinimumAllocationSize to cut down on memory usage on small strings.
-//
-// Revision 1.9  1998/09/10 04:16:26  ghutchis
-//
-// More bug fixes.
-//
-// Revision 1.8  1998/09/06 03:22:38  ghutchis
-//
-// Bug fixes
-//
-// Revision 1.7  1998/08/03 16:50:41  ghutchis
-//
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.6  1998/07/16 15:15:26  ghutchis
-//
-// Added patch from Stephan Muehlstrasser <smuehlst@Rational.Com> to fix
-// delete syntax and a memory leak.
-//
-// Revision 1.5  1998/06/22 04:33:24  turtle
-// New Berkeley database stuff
-//
-// Revision 1.4  1998/05/26 03:58:09  turtle
-// Got rid of compiler warnings.
-//
-// Revision 1.3  1997/03/24 04:33:21  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.2  1997/02/24 17:52:52  turtle
-// Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
-// ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
+// $Id: String.cc,v 1.16 1999/02/01 04:02:25 hp Exp $
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.15 1999/01/25 04:09:12 ghutchis Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.16 1999/02/01 04:02:25 hp Exp $";
 #endif
 
 
@@ -71,7 +15,7 @@ static char	RCSid[] = "$Id: String.cc,v 1.15 1999/01/25 04:09:12 ghutchis Exp $"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <Object.h>
+#include "Object.h"
 #include <assert.h>
 
 const int MinimumAllocationSize = 4;	// Should be power of two.
@@ -113,13 +57,9 @@ String::String(char *s, int len)
     copy(s, len, len);
 }
 
-String::String(String *s)
+String::String(const String &s)
 {
-    Length = 0;
-    Allocated = 0;
-
-    if (s)
-	copy(s->Data, s->length(), s->length());
+    copy(s.Data, s.length(), s.length());
 }
 
 //
@@ -488,7 +428,7 @@ void String::remove(char *chars)
 
 Object *String::Copy()
 {
-    return new String(this);
+    return new String(*this);
 }
 
 

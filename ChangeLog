@@ -1,3 +1,14 @@
+Mon Feb  1 04:36:29 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htsearch/Display.cc (displayMatch): Fix leaking user of
+	String(String *).
+	* htfuzzy/Prefix.cc (getWords): Ditto.
+
+	* htlib/htString.h, htlib/String.cc (String(const String &)): New.
+	* htlib/htString.h, htlib/String.cc (String(const String &, int)):
+	No default argument.
+	* htlib/htString.cc, htlib/String.cc (String(String *)): Removed.
+
 Sun Jan 31 21:46:52 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
 	* htlib/Connection.cc: Include sys/time.h needed by select.

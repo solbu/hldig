@@ -1,22 +1,7 @@
 //
-// $Id: htString.h,v 1.4 1999/01/23 01:25:03 hp Exp $
+// Just Another String class.
 //
-// $Log: htString.h,v $
-// Revision 1.4  1999/01/23 01:25:03  hp
-// Fixed _some_ missing const qualifiers on common methods (requiring temps)
-//
-// Revision 1.3  1999/01/14 01:09:13  ghutchis
-// Small speed improvements based on gprof.
-//
-// Revision 1.2  1998/05/26 03:58:12  turtle
-// Got rid of compiler warnings.
-//
-// Revision 1.1  1997/03/24 04:33:23  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
+// $Id: htString.h,v 1.5 1999/02/01 04:02:25 hp Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -33,13 +18,13 @@ public:
     String(int init);			// initial allocated length
     String(char *s);			// from null terminated s
     String(char *s, int len);		// from s with length len
-    String(String *s);			// Copy constructor
+    String(const String &s);            // Copy constructor
 
     //
     // This can be used for performance reasons if it is known the
     // String will need to grow.
     //
-    String(const String &s, int allocation_hint = 0);
+    String(const String &s, int allocation_hint);
 	
     ~String();
 
