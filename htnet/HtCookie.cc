@@ -24,7 +24,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookie.cc,v 1.4 2002/03/19 07:42:40 angusgb Exp $ 
+// $Id: HtCookie.cc,v 1.5 2002/04/09 10:53:38 angusgb Exp $ 
 //
 
 #include "HtCookie.h"
@@ -355,7 +355,7 @@ HtCookie::DateFormat HtCookie::RecognizeDateFormat(const char *datestring)
 
    register char *s;
 
-   if (!datestring)
+   if (datestring)
    {
 
       if ((s=strchr(datestring, ',')))
