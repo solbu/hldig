@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.4 1999/09/29 11:17:03 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.5 1999/10/04 10:57:54 angus Exp $ 
 //
 
 #include "lib.h"
@@ -308,7 +308,6 @@ Transport::DocStatus HtHTTP::Request()
    // For now a chunked response MUST BE retrieved   
    if (strcmp (_response._transfer_encoding, "chunked") == 0)
    {
-      cout << "CHUNKED !!!" << endl;
       ShouldTheBodyBeRead=true;
       // Change the controller of the body reading
       SetBodyReadingController(&ReadChunkedBody);
@@ -865,7 +864,6 @@ int HtHTTP::ReadChunkedBody()
    unsigned int   chunk_size;
    String         ChunkHeader = 0;
    char           buffer[8192];
-   char           c;
    
    _response._contents = 0;	// Initialize the string
 
@@ -901,11 +899,8 @@ int HtHTTP::ReadChunkedBody()
    // Ignoring next part of the body - the TRAILER
    // (it contains further headers - not implemented)
 
-   while ((c = _connection.read_char()) > 0)
-   {
-      ChunkHeader << c;
-   }
-
+   _connection.flush();
+   
    // I think we must add some code because it doesn't recognize the end
    // of stream or something similar. It waits for the timeout and the connection
    // falls down ...

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: io.h,v 1.3 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: io.h,v 1.4 1999/10/04 10:57:54 angus Exp $
 //
 
 #ifndef _io_h_
@@ -46,6 +46,9 @@ public:
     virtual int		read_partial(char *buffer, int maxlength) = 0;
     virtual int		write_partial(char *buffer, int maxlength) = 0;
     virtual int		close() = 0;
+
+    // A method for re-initialize the buffer
+    virtual void        flush();
 
 private:
     //
