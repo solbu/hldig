@@ -38,20 +38,22 @@
 	htpurge instead of htmerge after htdig as noted below.
 	</p>
 	<ul>
+	 <li>Fixed several non-exploitable bugs in handling external
+	 parsers or transport agents.</li>
 	 <li>Fix bug where changes in the robots.txt would be
 	 ignored. If a URL was indexed and later the robots.txt
 	 changed to forbid it, the URL would be checked anyway.</li>
 	 <li>Fixed scoring bugs introduced in 3.2.0b2.</li>
 	 <li>Fixed a non-exploitable security issue where content-type
-	 headers were passed incorrectly to ExternalParsers.</li>
+	 headers were passed incorrectly to external parsers or converters.</li>
 	 <li>Fixed bugs in the accents fuzzy algorithm, cutting down
 	 on the size of the accent database.</li>
-	 <li>Fixed a bug where duplicate files would be generated when
+	 <li>Fixed a bug where duplicate documents would be generated when
 	 merging a database with itself.</li>
 	 <li>Fixed minor bugs with the HTTP/1.1 implementation.</li>
 	 <li>Fix a bug where an extra config= portion of a URL would
 	 be output when using collections.</li>
-	 <li>Fixed a bug with content-type declarations in ExternalParser
+	 <li>Fixed a bug with content-type declarations in external parsers
 	 with combined content-type; charset declarations.</li>
 	 <li>Fixed a bug in the config parser that did not correctly
 	 handle relative config <a
@@ -78,6 +80,11 @@
 	 <li>Added support for controlling the number of Page buttons
 	 in htsearch with <a
 	 href="attrs.html#maximum_page_buttons">maximum_page_buttons</a>.</li>
+	 <li>Added the METADESCRIPTION htsearch template variable for
+	 displaying the &lt;META&gt; description field in output along
+	 with the normal description, instead of using the <a
+	 href="attrs.html#use_meta_description">use_meta_description</a>
+	 attribute.</li>
 	 <li>Added support for permanent URL rewriting with the <a
 	 href="attrs.html#url_rewrite_rules">url_rewrite_rules</a>
 	 attribute. (As opposed to the <a
@@ -90,7 +97,9 @@
 	 href="attrs.html#md5_db">md5_db</a>.</li>
 	 <li>The documentation has been revised to include a block:
 	 portion to note if attributes can be included in URL or
-	 Server blocks.</li>
+	 Server blocks. See the <a href="confindex.html"
+	 target="_top">configuration</a> documentation for more
+	 information.</li>
 	 <li>More attributes are set on a per-server or per-URL basis.</li>
 	 <li>New support for nttp:// protocol.</li>
 	 <li>Added support for auto-generating directory listings for
@@ -1414,6 +1423,6 @@
 	</ul>
 
 	<hr size="4" noshade>
-		Last modified: $Date: 2001/01/07 04:16:22 $
+		Last modified: $Date: 2001/01/16 05:58:14 $
   </body>
 </html>
