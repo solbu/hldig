@@ -14,7 +14,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.22 1999/08/28 21:21:42 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.23 1999/08/31 07:25:01 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -178,9 +178,9 @@ void WordList::Flush()
       wordRec->location = wordRef->Location;
 
       // We need to compress the WordRecord and convert it into a binary form
-      compressedData = 0;
-      compressedData.append((char *) wordRec, sizeof(WordRecord));
-
+      compressedData = htPack(WORD_RECORD_COMPRESSED_FORMAT,
+			      (char *) wordRec);
+  
       dbf->Put(wordRef->Word, compressedData.get(), compressedData.length());
     }
 
@@ -369,7 +369,9 @@ List *WordList::operator [] (String word)
 
         if (data.length())
           {
-            decompressed = data;
+	    decompressed = htUnpack(WORD_RECORD_COMPRESSED_FORMAT,
+			  data.get());
+
             if (decompressed.length() != sizeof (WordRecord))
 	      {
 		cout << "Decoding mismatch" << endl;
@@ -471,7 +473,9 @@ List *WordList::WordRefs()
 
         if (data.length())
           {
-            decompressed = data;
+	    decompressed = htUnpack(WORD_RECORD_COMPRESSED_FORMAT,
+			  data.get());
+
             if (decompressed.length() != sizeof (WordRecord))
 	      {
 		cout << "Decoding mismatch" << endl;

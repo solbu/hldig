@@ -1,3 +1,13 @@
+Tue Aug 31 02:17:04 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/WordRecord.h: Change back to struct to ensure integrity
+	when compressed and stored in the word database.
+
+	* htcommon/WordList.cc (Flush): Use HtPack to compress the
+	WordRecord before storage.
+	([], WordRefs): Use HtUnpack to decompress the WordRecord after
+	storage.
+
 Sun Aug 29 00:42:07 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc (convertToBoolean): Remove debugging
@@ -17,10 +27,10 @@ Sun Aug 29 00:42:07 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 Sun Aug 29 00:33:17 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
-	* htsearch/htsearch.cc(createLogicalWords): Hack to produce correct output
-	with phrase searching (e.g. anything in quotes is essentially left
-	alone). Ensure the StringMatch pattern includes the phrase with
-	correct spacing as well.
+	* htsearch/htsearch.cc(createLogicalWords): Hack to produce
+	correct output with phrase searching (e.g. anything in quotes is
+	essentially left alone). Ensure the StringMatch pattern includes
+	the phrase with correct spacing as well.
 	(setupWords): Add a " token whenever it occurs in the query.
 	(convertToBoolean): Make sure booleans are not inserted into
 	phrases.
