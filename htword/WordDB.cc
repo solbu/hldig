@@ -7,7 +7,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: WordDB.cc,v 1.8 2003/08/29 15:39:15 nealr Exp $
+// $Id: WordDB.cc,v 1.9 2003/08/29 16:25:13 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -59,12 +59,7 @@ int WordDB::Open(const String& filename, DBTYPE type, int flags, int mode) {
     //
     db->set_errfile(db, stderr);
     db->set_errpfx(db, progname);
-
-    // specify how dirty database cache is allowed to become
-    // Useful values are from 1 (at most half dirty) to about 3000 (never
-    // flush cache unnecessarily).
-    HtConfiguration *config = HtConfiguration::config();
-    
+ 
   }
 
   int error = db->open(db, filename, NULL, type, (u_int32_t)flags, mode);

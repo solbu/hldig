@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DB2_db.cc,v 1.23 2003/08/29 15:39:15 nealr Exp $
+// $Id: DB2_db.cc,v 1.24 2003/08/29 16:25:13 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -77,11 +77,6 @@ DB2_db::Open(const char *filename, int flags, int mode)
 
   if(_compare) dbp->set_bt_compare(dbp, _compare);
   if(_prefix) dbp->set_bt_prefix(dbp, _prefix);
-
-    // specify how dirty database cache is allowed to become
-    // Useful values are from 1 (at most half dirty) to about 3000 (never
-    // flush cache unnecessarily).
-    HtConfiguration *config = HtConfiguration::config();
 
     //
     // Open the database.
@@ -373,11 +368,6 @@ DB2_db::db_init(char *home)
 
     dbenv->set_errpfx(dbenv, progname);
     dbenv->set_errcall(dbenv, &Error);
-
-    // specify how dirty database cache is allowed to become
-    // Useful values are from 1 (at most half dirty) to about 3000 (never
-    // flush cache unnecessarily).
-    HtConfiguration *config = HtConfiguration::config();
 
     if((error = dbenv->open(dbenv, (const char*)home, NULL, DB_CREATE | DB_PRIVATE | DB_INIT_LOCK | DB_INIT_MPOOL, 0666)) != 0) {
       dbenv->err(dbenv, error, "open %s", (home ? home : ""));
