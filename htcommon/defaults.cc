@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.26 2001/07/26 19:28:05 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.27 2001/07/26 20:08:50 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -112,6 +112,7 @@ ConfigDefaults	defaults[] =
     {"minimum_word_length",		"3"},
     {"minimum_prefix_length",		"1"},
     {"modification_time_is_now",        "true"},
+    {"multimatch_factor",		"1"},
     {"next_page_text",			"[next]"},
     {"no_excerpt_text",			"<em>(None of the search words were found in the top of this document.)</em>"},
     {"no_excerpt_show_top",             "false"},

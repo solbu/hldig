@@ -1,3 +1,10 @@
+Thu Jul 26 15:05:29 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc, htsearch/parser.cc (perform_or),
+	htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Added new attribute
+	multimatch_method and used it to boost score on 'or' method with
+	multiple matches.
+
 Thu Jul 26 14:25:01 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc, htsearch/parser.cc, htdoc/attrs.html,

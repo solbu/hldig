@@ -4598,6 +4598,52 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="multimatch_factor">multimatch_factor</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			1
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This factor, like <a
+			href="#backlink_factor">backlink_factor</a> can be
+			changed without modifing the database. It gives higher
+			rankings to documents that have more than one matching
+			search word when the <strong>or</strong> method is used.
+			The matching words' combined scores are multiplied by
+			this factor for each additional matching word.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			multimatch_factor: 1000
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="next_page_text">
 		next_page_text</a></strong>
 	  </dt>
@@ -8144,7 +8190,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: $Date: 2001/07/26 19:28:05 $
+Last modified: $Date: 2001/07/26 20:08:50 $
 <!-- hhmts end -->
   </body>
 </html>

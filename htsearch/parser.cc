@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.6.2.4 2001/07/26 19:28:06 grdetil Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.6.2.5 2001/07/26 20:08:51 grdetil Exp $";
 #endif
 
 #include "parser.h"
@@ -346,6 +346,7 @@ Parser::perform_and(int isand)
 void
 Parser::perform_or()
 {
+    static int	multimatch_factor = config.Value("multimatch_factor", 1);
     ResultList		*l1 = (ResultList *) stack.pop();
     ResultList		*result = (ResultList *) stack.peek();
     int			i;
@@ -399,6 +400,8 @@ Parser::perform_or()
 	    // Duplicate document.  We just need to add the scores together
 	    //
 	    dm2->score += dm->score;
+	    // Boost matches that contain more than one word...
+	    dm2->score *= multimatch_factor;
 	    if (dm->anchor < dm2->anchor)
 		dm2->anchor = dm->anchor;
 	}
