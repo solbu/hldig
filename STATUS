@@ -1,8 +1,9 @@
 STATUS of ht://Dig branch 3-2-x
 
 CHECKLIST FOR 3.2.0b5:
-* Latin-encodings (Gilles)
 * Apply memory leak patches (Neal)
+* Check bugs listed in bug-tracker...
+* Polish release docs (Geoff)
 * Must be able to
 	(a) make check  and
 	(b) index  www.htdig.org  using  "robotstxt_name: master-htdig"
@@ -31,8 +32,6 @@ CHECKLIST FOR 3.2.0b5:
   Known to have problems:
     - SGI/Irix 6.5.3 using SGI compilers
       <http://www.geocrawler.com/mail/msg.php3?msg_id=8025827&list=8825>
-* Check bugs listed in bug-tracker...
-* Polish release docs (Geoff)
 
 
 

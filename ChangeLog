@@ -1,3 +1,15 @@
+Sun Jun 14 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* htcommon/defaults.cc:
+	  Set wordlist_cache_dirty_level to 1 (it most conservative value).
+	  Miscellaneous reformatting.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	  Regenerated using cf_generate.pl.
+
+	* htdoc/{require.html,meta.html,all.html,meta.html}:
+	  Update disk usage for phrase searching.
+	  Updated list of supported platforms.  More hyperlinks.
+
 Fri Jun 13 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* htsearch/Display.cc (setVariables), htdocs/hts_template.html:

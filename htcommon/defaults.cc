@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.86 2003/06/12 19:14:29 grdetil Exp $
+// $Id: defaults.cc,v 1.87 2003/06/15 01:39:53 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -861,14 +861,18 @@ http://www.htdig.org/", " \
 { "external_protocols", "", \
 	"quoted string list", "htdig", "", "3.2.0b1", "External:Protocols", "external_protocols: https /usr/local/bin/handler.pl \\<br> \
 	ftp /usr/local/bin/ftp-handler.pl", " \
-	This attribute is a bit like <a href=\"#external_parsers\">external_parsers</a> \
-	since it specifies a list of protocols/handlers that are used to download documents \
-	that cannot be retrieved using the internal methods. This enables htdig to index \
-	documents with URL schemes it does not understand, or to use more advanced authentication \
-	for the documents it is retrieving. This list is checked before HTTP or other methods, \
-	so this can override the internal behavior without writing additional code for htdig.<br> \
-	  The external protocols are specified as pairs of strings, the first being the URL scheme that \
-	the script can handle while the second is the path to the script itself. If the second is \
+	This attribute is a bit like \
+	<a href=\"#external_parsers\">external_parsers</a> since it specifies \
+	a list of protocols/handlers that are used to download documents \
+	that cannot be retrieved using the internal methods. This enables \
+	htdig to index documents with URL schemes it does not understand, \
+	or to use more advanced authentication for the documents it is \
+	retrieving. This list is checked before HTTP or other methods, \
+	so this can override the internal behavior without writing additional \
+	code for htdig.<br> \
+	  The external protocols are specified as pairs of strings, the first \
+	being the URL scheme that the script can handle while the second \
+	is the path to the script itself. If the second is \
 	quoted, then additional command-line arguments may be given.<br> \
 	If the external protocol does not contain a colon (:), it is assumed \
 	to have the standard format \
@@ -876,180 +880,107 @@ http://www.htdig.org/", " \
 	If it ends with a colon, then it is assumed to have the simpler format \
 	\"protocol:path\". If it ends with \"://\" then the standard form is \
 	again assumed. <br> \
-	If the external protocol does not contain a colon (:), it is assumed \
-	to have the standard format \
-	\"protocol://[usr[:password]@]address[:port]/path\". \
-	If it ends with a colon, then it is assumed to have the simpler format \
-	\"protocol:path\". If it ends with \"://\" then the standard form is \
-	again assumed. <br> \
-	  The program takes three command-line parameters, not counting any parameters already given  \
-	in the command string:<br> \
+	  The program takes three command-line parameters, not counting any \
+	parameters already given in the command string:<br> \
 	<em>protocol URL configuration-file</em><br> \
 	<table border=\"1\"> \
 	  <tr> \
-		<th> \
-		  Parameter \
-		</th> \
-		<th> \
-		  Description \
-		</th> \
-		<th> \
-		  Example \
-		</th> \
+		<th> Parameter </th> \
+		<th> Description </th> \
+		<th> Example </th> \
 	  </tr> \
 	  <tr> \
-		<td valign=\"top\"> \
-		  protocol \
-		</td> \
-		<td> \
-		  The URL scheme to be used. \
-		</td> \
-		<td> \
-		  https \
-		</td> \
+		<td valign=\"top\"> protocol </td> \
+		<td> The URL scheme to be used.  </td> \
+		<td> https </td> \
 	  </tr> \
 	  <tr> \
-		<td valign=\"top\"> \
-		  URL \
-		</td> \
-		<td> \
-		  The URL to be retrieved. \
-		</td> \
-		<td> \
-		  https://www.htdig.org:8008/attrs.html \
-		</td> \
+		<td valign=\"top\"> URL </td> \
+		<td> The URL to be retrieved.  </td> \
+		<td> https://www.htdig.org:8008/attrs.html </td> \
 	  </tr> \
 	  <tr> \
-		<td valign=\"top\"> \
-		  configuration-file \
-		</td> \
-		<td> \
-		  The configuration-file in effect. \
-		</td> \
-		<td> \
-		  /etc/htdig/htdig.conf \
-		</td> \
+		<td valign=\"top\"> configuration-file </td> \
+		<td> The configuration-file in effect.  </td> \
+		<td> /etc/htdig/htdig.conf </td> \
 	  </tr> \
 	</table><p> \
 	The external protocol script is to write information for htdig on the  \
-	standard output. The output must follow the form described here. The output  \
-	consists of a header followed by a blank line, followed by the contents of  \
-	the document. Each record in the header is terminated with a newline.  \
-	Each record is a series of (unless expressively allowed to be empty) non-empty  \
-	tab-separated fields. The first field is a single character that specifies the  \
-	record type. The rest of the fields are determined by the record type. \
+	standard output. The output must follow the form described here. The \
+	output consists of a header followed by a blank line, followed by \
+	the contents of the document. Each record in the header is terminated \
+	with a newline.  Each record is a series of (unless expressively \
+	allowed to be empty) non-empty tab-separated fields. The first field \
+	is a single character that specifies the record type. The rest of \
+	the fields are determined by the record type. \
 	<table border=\"1\"> \
 	  <tr> \
-		<th> \
-		  Record type \
-		</th> \
-		<th> \
-		  Fields \
-		</th> \
-		<th> \
-		  Description \
-		</th> \
+		<th> Record type </th> \
+		<th> Fields </th> \
+		<th> Description </th> \
 	  </tr> \
 	  <tr> \
-		<th valign=\"top\"> \
-		  s \
-		</th> \
-		<td valign=\"top\"> \
-		  status code \
-		</td> \
+		<th valign=\"top\"> s </th> \
+		<td valign=\"top\"> status code </td> \
 		<td> \
 		  An HTTP-style status code, e.g. 200, 404. Typical codes include: \
 		    <dl compact> \
-			<dt> \
-			  200 \
-			</dt> \
+			<dt> 200 </dt> \
+			    <dd> Successful retrieval </dd> \
+			<dt> 304 </dt> \
 			<dd> \
-			  Successful retrieval \
+			  Not modified (for example, if the document hasn\'t \
+			  changed since the last dig) \
 			</dd> \
-			<dt> \
-			  304 \
-			</dt> \
-			<dd> \
-			  Not modified (for example, if the document hasn\'t changed) \
-			</dd> \
-			<dt> \
-			  301 \
-			</dt> \
-			<dd> \
-			  Redirect (to another URL) \
-			</dd> \
-			<dt> \
-			  401 \
-			</dt> \
-			<dd> \
-			  Not authorized \
-			</dd> \
-			<dt> \
-			  404 \
-			</dt> \
-			<dd> \
-			  Not found \
-			</dd> \
+			<dt> 301 </dt> \
+			    <dd> Redirect (to another URL) </dd> \
+			<dt> 401 </dt> \
+			    <dd> Not authorized </dd> \
+			<dt> 404 </dt> \
+			    <dd> Not found </dd> \
+		    </dl> \
 		</td> \
 	  </tr> \
 	  <tr> \
-		<th valign=\"top\"> \
-		  r \
-		</th> \
-		<td valign=\"top\"> \
-		  reason \
-		</td> \
+		<th valign=\"top\"> r </th> \
+		<td valign=\"top\"> reason </td> \
 		<td> \
-		  A text string describing the status code, e.g \"Redirect\" or \"Not Found.\" \
+		  A text string describing the status code, \
+		  e.g \"Redirect\" or \"Not Found.\" \
 		</td> \
 	  </tr> \
 	  <tr> \
-		<th valign=\"top\"> \
-		  m \
-		</th> \
-		<td valign=\"top\"> \
-		  status code \
-		</td> \
+		<th valign=\"top\"> m </th> \
+		<td valign=\"top\"> status code </td> \
 		<td> \
-		  The modification time of this document. While the code is fairly flexible \
-		  about the time/date formats it accepts, it is recommended to use something \
-		  standard, like RFC1123: Sun, 06 Nov 1994 08:49:37 GMT, or ISO-8601:  \
-		  1994-11-06 08:49:37 GMT. \
+		  The modification time of this document. While the code is \
+		  fairly flexible about the time/date formats it accepts, it \
+		  is recommended to use something standard, like \
+		  RFC1123: Sun, 06 Nov 1994 08:49:37 GMT, or \
+		  ISO-8601:  1994-11-06 08:49:37 GMT. \
 		</td> \
 	  </tr> \
 	  <tr> \
-		<th valign=\"top\"> \
-		  t \
-		</th> \
-		<td valign=\"top\"> \
-		  content-type \
-		</td> \
+		<th valign=\"top\"> t </th> \
+		<td valign=\"top\"> content-type </td> \
 		<td> \
 		  A valid MIME type for the document, like text/html or text/plain. \
 		</td> \
 	  </tr> \
 	  <tr> \
-		<th valign=\"top\"> \
-		  l \
-		</th> \
-		<td valign=\"top\"> \
-		  content-length \
-		</td> \
+		<th valign=\"top\"> l </th> \
+		<td valign=\"top\"> content-length </td> \
 		<td> \
-		  The length of the document on the server, which may not necessarily \
-		  be the length of the buffer returned. \
+		  The length of the document on the server, which may not \
+		  necessarily be the length of the buffer returned. \
 		</td> \
 	  </tr> \
 	  <tr> \
-		<th valign=\"top\"> \
-		  u \
-		</th> \
-		<td valign=\"top\"> \
-		  url \
-		</td> \
+		<th valign=\"top\"> u </th> \
+		<td valign=\"top\"> url </td> \
 		<td> \
-		  The URL of the document, or in the case of a redirect, the URL \
-		  that should be indexed as a result of the redirect. \
+		  The URL of the document, or in the case of a redirect, the \
+		  URL that should be indexed as a result of the redirect. \
 		</td> \
 	  </tr> \
       </table>	   \
@@ -1119,8 +1050,8 @@ http://www.htdig.org/", " \
 " }, \
 { "htnotify_webmaster",	 "ht://Dig Notification Service", \
     "string", "htnotify", "", "3.2.0b3", "Extra Output", "htnotify_webmaster: Notification Service", " \
-	This provides a name for the From field, in addition to the email address \
-	for the email messages sent out by htnotify. \
+	This provides a name for the From field, in addition to the email \
+	address for the email messages sent out by htnotify. \
 " }, \
 { "http_proxy", "",  \
 	"string", "htdig", "URL", "3.0", "Indexing:Connection", "http_proxy: http://proxy.bigbucks.com:3128", " \
@@ -1261,7 +1192,7 @@ http://www.htdig.org/", " \
 	separated by spaces. If multiple patterns are given, at \
 	least one of the patterns has to match the URL.<br> \
 	Matching, by default, is a case-insensitive string match on the URL \
-	to be used, unless the <a href=\"#case_sensitive\">case_sensitive</a>  \
+	to be used, unless the <a href=\"#case_sensitive\">case_sensitive</a> \
 	attribute is set. The match will be performed <em>after</em> \
 	the relative references have been converted to a valid \
 	URL. This means that the URL will <em>always</em> start \
@@ -1283,10 +1214,11 @@ http://www.htdig.org/", " \
 	<br>The list should only contain names that the local server \
 	recognizes as default documents for directory URLs, as defined \
 	by the DirectoryIndex setting in Apache's srm.conf, for example. \
-	As of version 3.1.5, this can be a string list rather than a single name, \
-	and htdig will use the first name that works. Since this requires a \
-	loop, setting the most common name first will improve performance. \
-	Special characters can be embedded in these names using %xx hex encoding. \
+	As of version 3.1.5, this can be a string list rather than a single \
+	name, and htdig will use the first name that works. Since this \
+	requires a loop, setting the most common name first will improve \
+	performance.  Special characters can be embedded in these names \
+	using %xx hex encoding. \
 " }, \
 { "local_urls", "",  \
 	"string list", "htdig", "", "3.0.8b2", "Indexing:Where", "local_urls: http://www.foo.com/=/usr/www/htdocs/", " \
@@ -1319,8 +1251,9 @@ http://www.htdig.org/", " \
 	Set this to tell ht://Dig to access files only through the  \
 	local filesystem, for URLs matching the patterns in the \
 	<a href=\"#local_urls\">local_urls</a> or \
-	<a href=\"#local_user_urls\">local_user_urls</a> attribute. If it cannot  \
-	find the file, it will give up rather than trying HTTP or another protocol. \
+	<a href=\"#local_user_urls\">local_user_urls</a> attribute. If it \
+	cannot find the file, it will give up rather than trying HTTP or \
+	another protocol. \
 " }, \
 { "local_user_urls", "",  \
 	"string list", "htdig", "", "3.0.8b2", "Indexing:Where", "local_user_urls: http://www.my.org/=/home/,/www/", " \
@@ -1394,8 +1327,8 @@ http://www.htdig.org/", " \
 	  <li> boolean </li> \
 	</ul> \
 	This attribute will only be used if the HTML form that \
-	calls htsearch didn't have the <a href=\"hts_form.html#method\">method</a> \
-	value set. \
+	calls htsearch didn't have the \
+	<a href=\"hts_form.html#method\">method</a> value set. \
 " }, \
 { "matches_per_page", "10",  \
 	"integer", "htsearch", "", "3.0", "Searching:Method", "matches_per_page: 999", " \
@@ -2745,7 +2678,7 @@ form during indexing and translated for results. \
 	words. The file is easy to parse with tools like \
 	perl or tcl. \
 " }, \
-{ "wordlist_cache_dirty_level", "4",  \
+{ "wordlist_cache_dirty_level", "1",  \
 	"integer", "htdig", "", "3.2.0b4", "Indexing:How", "wordlist_cache_dirty_level: 2", " \
 	Maximum ratio of dirty pages to clean pages in the cache.  If fewer \
 	are clean, then all pages are written out (but kept in the cache). \
