@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parsetest.cc,v 1.1.2.1 2000/06/30 01:56:30 ghutchis Exp $
+// $Id: parsetest.cc,v 1.1.2.2 2000/06/30 02:03:51 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -24,6 +24,9 @@
 #include "cgi.h"
 #include "defaults.h"
 #include "ParseTree.h"
+#include "AndParseTree.h"
+#include "OrParseTree.h"
+#include "ExactParseTree.h"
 #include "WordContext.h"
 
 // If we have this, we probably want it.
@@ -48,7 +51,6 @@ main(int ac, char **av)
     List		*searchWords = NULL;
     String		configFile = DEFAULT_CONFIG_FILE;
     String		logicalWords;
-    ParseTree		booleanParse;
 
      //
      // Parse command line arguments
@@ -96,10 +98,51 @@ main(int ac, char **av)
     // Initialize htword library (key description + wordtype...)
     WordContext::Initialize(config);    
 
-    booleanParse.Parse(originalWords);
+    ParseTree		*testParse;
 
-    cout << "Initial Query:" << booleanParse.GetQuery() << endl;
-    cout << "Logical Words:" << booleanParse.GetLogicalWords() << endl;
+    testParse = new ParseTree;
+    if ( testParse->Parse(originalWords) != NOTOK)
+      {
+	cout << "Parsing as a boolean query... " << endl;
+	cout << "Initial Query:" << testParse->GetQuery() << endl;
+	cout << "Logical Words:" << testParse->GetLogicalWords() << endl;
+      }
+    else
+      cout << "Parsing as a boolean query FAILED" << endl;
+    delete testParse;
+
+    testParse = new AndParseTree;
+    if ( testParse->Parse(originalWords) != NOTOK)
+      {
+	cout << "Parsing as an AND query... " << endl;
+	cout << "Initial Query:" << testParse->GetQuery() << endl;
+	cout << "Logical Words:" << testParse->GetLogicalWords() << endl;
+      }
+    else
+      cout << "Parsing as an AND query FAILED" << endl;
+    delete testParse;
+
+    testParse = new OrParseTree;
+    if ( testParse->Parse(originalWords) != NOTOK)
+      {
+	cout << "Parsing as an OR query... " << endl;
+	cout << "Initial Query:" << testParse->GetQuery() << endl;
+	cout << "Logical Words:" << testParse->GetLogicalWords() << endl;
+      }
+    else
+      cout << "Parsing as an OR query FAILED" << endl;
+    delete testParse;
+
+    testParse = new ExactParseTree;
+    if ( testParse->Parse(originalWords) != NOTOK)
+      {
+	cout << "Parsing as an EXACT query... " << endl;
+	cout << "Initial Query:" << testParse->GetQuery() << endl;
+	cout << "Logical Words:" << testParse->GetLogicalWords() << endl;
+      }
+    else
+      cout << "Parsing as an EXACT query FAILED" << endl;
+    delete testParse;
 
 }
 
