@@ -1,3 +1,16 @@
+Tue Apr 13 23:50:28 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Add new config option use_doc_date to use
+	document meta information for the DocTime() field.
+
+	* htdig/HTML.cc(do_tag): Call Retriever::got_time if use_doc_date
+	is set and we run across a META date tag.
+
+	* htdig/Retriever.h, htdig/Retriver.cc: Add new got_date
+	function. When called, sets the DocTime field of the DocumentRef
+	after parsing is completed. Currently assumes ISO 8601 format for
+	the date tag.
+
 Sun Apr 11 12:51:39 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
 	* htsearch/Display.cc (buildMatchList): Delete thisRef if excluded

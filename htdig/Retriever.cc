@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.39 1999/03/16 02:04:28 hp Exp $
+// $Id: Retriever.cc,v 1.40 1999/04/14 04:14:31 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -543,6 +543,7 @@ Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
     current_ref = ref;
     current_anchor_number = 0;
     current_title = 0;
+    current_time = 0;
     current_head = 0;
     current_meta_dsc = 0;
 
@@ -565,7 +566,10 @@ Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
     //
     ref->DocHead(current_head);
     ref->DocMetaDsc(current_meta_dsc);
-    ref->DocTime(doc.ModTime());
+    if (current_time == 0)
+      ref->DocTime(doc.ModTime());
+    else
+      ref->DocTime(current_time);
     ref->DocTitle(current_title);
     ref->DocSize(doc.Length());
     ref->DocAccessed(time(0));
@@ -891,6 +895,44 @@ Retriever::got_title(char *title)
     current_title = title;
 }
 
+//*****************************************************************************
+// void Retriever::got_time(char *time)
+//
+void
+Retriever::got_time(char *time)
+{
+    time_t   new_time;
+    struct tm   tm;
+
+    //	Initialize the tm construct to ensure correct results
+    tm.tm_hour = 0;
+    tm.tm_min = 0;
+    tm.tm_sec = 0;
+    tm.tm_mon = 0;
+    tm.tm_mday = 1;
+    tm.tm_year = 0;
+
+    if (debug > 1)
+      cout << "\ntime: " << time << endl;
+
+    //
+    // As defined by the Dublin Core, this should be YYYY-MM-DD
+    // In the future, we'll need to deal with the scheme portion
+    //  in case someone picks a different format.
+    //
+    if (Htstrptime(time, "%Y-%m-%d", &tm))
+      {
+#if HAVE_TIMEGM
+        new_time = timegm(&tm);
+#else
+        new_time = Httimegm(&tm);
+#endif
+	current_time = new_time;
+      }
+
+    // If we can't convert it, current_time stays the same and we get
+    // the default--the date returned by the server...
+}
 
 //*****************************************************************************
 // void Retriever::got_anchor(char *anchor)

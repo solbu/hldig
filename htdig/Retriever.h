@@ -1,7 +1,7 @@
 //
 // Retriever.h
 //
-// $Id: Retriever.h,v 1.9 1999/03/16 02:04:29 hp Exp $
+// $Id: Retriever.h,v 1.10 1999/04/14 04:14:32 ghutchis Exp $
 //
 
 #ifndef _Retriever_h_
@@ -50,6 +50,7 @@ public:
     void		got_word(char *word, int location, int heading);
     void		got_href(URL &url, char *description);
     void		got_title(char *title);
+    void		got_time(char *time);
     void		got_head(char *head);
     void		got_meta_dsc(char *md);
     void		got_anchor(char *anchor);
@@ -75,6 +76,7 @@ private:
     String		current_title;
     String		current_head;
     String		current_meta_dsc;
+    time_t		current_time;
     int			current_id;
     DocumentRef		*current_ref;
     int			current_anchor_number;

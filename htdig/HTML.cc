@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.39 1999/03/23 20:09:22 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.40 1999/04/14 04:14:31 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -841,6 +841,11 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		{
 		    retriever.got_meta_email(conf["content"]);
 		}
+		else if (mystrcasecmp(cache, "date") == 0 && 
+			 config.Boolean("use_doc_date",0))
+		  {
+		    retriever.got_time(conf["content"]);
+		  }
 		else if (mystrcasecmp(cache, "htdig-notification-date") == 0)
 		{
 		    retriever.got_meta_notification(conf["content"]);
