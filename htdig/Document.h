@@ -9,37 +9,16 @@
 // link is followed, but this process is done only once (to prevent loops.)
 // If the redirect didn't work, Document_not_found is returned.
 //
-// $Id: Document.h,v 1.5 1998/12/04 04:14:50 ghutchis Exp $
-//
-// $Log: Document.h,v $
-// Revision 1.5  1998/12/04 04:14:50  ghutchis
-//
-// Use new option "http_proxy_exclude" to decide whether to use the proxy.
-//
-// Revision 1.4  1998/07/09 09:38:58  ghutchis
-//
-//
-// Added support for local file digging using patches by Pasi. Patches
-// include support for local user (~username) digging.
-//
-// Revision 1.3  1997/03/24 04:33:15  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.2  1997/02/10 17:32:38  turtle
-// Applied AIX specific patches supplied by Lars-Owe Ivarsson
-// <lars-owe.ivarsson@its.uu.se>
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
+// $Id: Document.h,v 1.6 1999/01/27 00:27:21 ghutchis Exp $
 //
 //
 #ifndef _Document_h_
 #define _Document_h_
 
 #include "Parsable.h"
-#include <Object.h>
-#include <URL.h>
-#include <htString.h>
+#include "Object.h"
+#include "URL.h"
+#include "htString.h"
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <time.h>
@@ -130,6 +109,7 @@ private:
     String			contentType;
     String			authorization;
     String			referer;
+    int				contentLength;
     int				document_length;
     time_t			modtime;
     int				max_doc_size;

@@ -3,113 +3,10 @@
 //
 // Implementation of Document
 //
-// $Log: Document.cc,v $
-// Revision 1.32  1999/01/18 22:58:35  ghutchis
-// When reading chunks of document, if a chunk puts us over the max_doc_size
-// limit, take everything up to that limit (rather than discarding the entire chunk).
-//
-// Revision 1.31  1999/01/14 03:00:22  ghutchis
-// Use new StringList::Join function for http_proxy_exclude.
-//
-// Revision 1.30  1999/01/14 00:27:38  ghutchis
-// Small speed improvements.
-//
-// Revision 1.29  1999/01/10 05:16:28  ghutchis
-// Added check for header status when considering content-types.
-//
-// Revision 1.28  1999/01/09 19:58:36  ghutchis
-// Strip off weekday before calling strptime since some servers return invalid
-// weekdays.
-//
-// Revision 1.27  1998/12/12 01:46:48  ghutchis
-// Check http_proxy_exclude to see if it's empty. If so, use the proxy always.
-//
-// Revision 1.26  1998/12/04 04:14:50  ghutchis
-// Use new option "http_proxy_exclude" to decide whether to use the proxy.
-//
-// Revision 1.25  1998/11/30 02:28:50  ghutchis
-// Fix mistake in last update so the code compiles.
-//
-// Revision 1.24  1998/11/30 01:55:00  ghutchis
-// Fixed problems under FreeBSD where <sys/types.h> needed to be before
-// <sys/stat.h>, noted by Gilles. Fixed core dumps caused by mystrptime
-// returning NULL. Instead, we'll use the time(0).
-//
-// Revision 1.23  1998/11/18 05:16:02  ghutchis
-// Fixed memory leak as a result of a thinko.
-//
-// Revision 1.22  1998/11/09 19:35:09  ghutchis
-// Changed reset to keep proxy settings--fixes bug noted by Didier Gautheron
-// <dgautheron@magic.fr>.
-//
-// Revision 1.21  1998/11/02 20:30:35  ghutchis
-// Remove const from *ext to fix compiler warning.
-//
-// Revision 1.20  1998/11/01 00:00:40  ghutchis
-// Replaced system calls with htlib/my* functions.
-//
-// Revision 1.19  1998/10/26 20:43:31  ghutchis
-// Fixed bug introduced by Oct 18 change. Authorization will not be cleared.
-//
-// Revision 1.18  1998/10/18 21:22:16  ghutchis
-// Revised connection timeout methods.
-//
-// Revision 1.17  1998/10/12 02:04:00  ghutchis
-// Updated Makefiles and configure variables.
-//
-// Revision 1.15  1998/09/08 03:29:09  ghutchis
-// Clean up for 3.1.0b1.
-//
-// Revision 1.14  1998/09/06 03:22:37  ghutchis
-// Bug fixes
-//
-// Revision 1.13  1998/08/03 16:50:31  ghutchis
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.12  1998/07/23 16:18:52  ghutchis
-// Added files (and patch) from Sylvain Wallez for PDF
-// parsing. Incorporates fix for non-Adobe PDFs.
-//
-// Revision 1.11  1998/07/09 09:38:57  ghutchis
-// Added support for local file digging using patches by Pasi. Patches
-// include support for local user (~username) digging.
-//
-// Revision 1.10  1998/01/05 05:42:57  turtle
-// Changed tm from pointer to real structure
-//
-// Revision 1.9  1998/01/05 00:59:40  turtle
-// *  Alarm was not cancelled if readHeader returned anything but OK
-// *  Use our own timegm() replacement if necessary
-//
-// Revision 1.8  1997/12/16 15:57:22  turtle
-// Added little patch by Tobias Oetiker <oetiker@ee.ethz.ch> that should
-// fix problems with timeouts.
-//
-// Revision 1.7  1997/07/07 22:15:45  turtle
-// Removed old getdate() code that replaced '-' with ' '.
-//
-// Revision 1.6  1997/07/07 21:22:14  turtle
-// Added better date parsing.  Now also supports the old RFC 850 format
-//
-// Revision 1.5  1997/07/03 17:44:37  turtle
-// Added support for virtual hosts
-//
-// Revision 1.4  1997/06/14 18:52:42  turtle
-// Made redirect detection code more general
-//
-// Revision 1.3  1997/04/20 15:25:17  turtle
-// Added include for ctype.h
-//
-// Revision 1.2  1997/02/10 17:32:37  turtle
-// Applied AIX specific patches supplied by Lars-Owe Ivarsson
-// <lars-owe.ivarsson@its.uu.se>
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.32 1999/01/18 22:58:35 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.33 1999/01/27 00:27:21 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -159,6 +56,7 @@ Document::Document(char *u, int max_size)
 
     contents.allocate(max_doc_size + 100);
     contentType = "";
+    contentLength = -1;
     if (u)
     {
 	Url(u);
@@ -193,6 +91,7 @@ void
 Document::Reset()
 {
     contentType = 0;
+    contentLength = -1;
     if (url)
       delete url;
     url = 0;
@@ -515,16 +414,20 @@ Document::RetrieveHTTP(time_t date)
     contents = 0;
     char	docBuffer[8192];
     int		bytesRead;
+    int		bytesToGo = contentLength;
 
-    while ((bytesRead = c.read(docBuffer, sizeof(docBuffer))) > 0)
+    if (bytesToGo < 0 || bytesToGo > max_doc_size)
+        bytesToGo = max_doc_size;
+    while (bytesToGo > 0)
     {
+        int len = bytesToGo<sizeof(docBuffer) ? bytesToGo : sizeof(docBuffer);
+        bytesRead = c.read(docBuffer, len);
+        if (bytesRead <= 0)
+            break;
 	if (debug > 2)
 	    cout << "Read " << bytesRead << " from document\n";
-	if (contents.length() + bytesRead > max_doc_size)
-	    bytesRead = max_doc_size - contents.length();
 	contents.append(docBuffer, bytesRead);
-	if (contents.length() >= max_doc_size)
-	    break;
+	bytesToGo -= bytesRead;
     }
     c.close();
     document_length = contents.length();
@@ -596,6 +499,12 @@ Document::readHeader(Connection &c)
 	    {
 		strtok(line, " \t");
 		modtime = getdate(strtok(0, "\n\t"));
+	    }
+	    else if (contentLength == -1 
+		     && mystrncasecmp(line, "content-length:", 15) == 0)
+	    {
+		strtok(line, " \t");
+		contentLength = atoi(strtok(0, "\n\t"));
 	    }
 	    else if (mystrncasecmp(line, "content-type:", 13) == 0)
 	    {
@@ -676,6 +585,7 @@ Document::RetrieveLocal(time_t date, char *filename)
     }
     fclose(f);
     document_length = contents.length();
+    contentLength = document_length;
 
     if (debug > 2)
 	cout << "Read a total of " << document_length << " bytes\n";
