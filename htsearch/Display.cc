@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.32  1999/01/18 03:07:51  ghutchis
+// Added variable SORT to render a form menu for sort options, based on "sort"
+// and "sort_names" options.
+//
 // Revision 1.31  1999/01/17 20:30:35  ghutchis
 // Take advantage of createFromString returning an error value to bail out of
 // poorly-constructed template_maps, based on code contributed by <tlm@mbox.comune.prato.it>.
@@ -110,13 +114,14 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.31 1999/01/17 20:30:35 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.32 1999/01/18 03:07:51 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
 #include "Display.h"
 #include "ResultMatch.h"
 #include "WeightWord.h"
+#include <StringMatch.h>
 #include <QuotedStringList.h>
 #include <URL.h>
 #include <fstream.h>
@@ -439,7 +444,6 @@ Display::setVariables(int pageNumber, List *matches)
     vars.Add("VERSION", new String(config["version"]));
     vars.Add("RESTRICT", new String(config["restrict"]));
     vars.Add("EXCLUDE", new String(config["exclude"]));
-    vars.Add("SORT", new String(config["sort"]));
     if (mystrcasecmp(config["match_method"], "and") == 0)
 	vars.Add("MATCH_MESSAGE", new String("all"));
     else if (mystrcasecmp(config["match_method"], "or") == 0)
@@ -498,6 +502,27 @@ Display::setVariables(int pageNumber, List *matches)
     vars.Add("METHOD", str);
 
     vars.Add("SELECTED_METHOD", new String(config["match_method"]));
+
+    str = new String();
+    QuotedStringList	sl(config["sort_names"], " \t\r\n");
+    char		*st = config["sort"];
+    StringMatch		datetime;
+    datetime.IgnoreCase();
+    datetime.Pattern("date|time");
+    *str << "<select name=sort>\n";
+    for (i = 0; i < sl.Count(); i += 2)
+    {
+	*str << "<option value=" << sl[i];
+	if (mystrcasecmp(sl[i], st) == 0 ||
+		datetime.Compare(sl[i]) && datetime.Compare(st) ||
+		mystrncasecmp(sl[i], st, 3) == 0 &&
+		    datetime.Compare(sl[i]+3) && datetime.Compare(st+3))
+	    *str << " selected";
+	*str << '>' << sl[i + 1] << '\n';
+    }
+    *str << "</select>\n";
+    vars.Add("SORT", str);
+    vars.Add("SELECTED_SORT", new String(st));
 	
     //
     // If a paged output is required, set the appropriate variables
