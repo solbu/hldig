@@ -4,6 +4,9 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.6  1997/12/11 00:28:58  turtle
+// Added double slash removal code.  These were causing loops.
+//
 // Revision 1.5  1997/07/07 21:23:43  turtle
 // Sequences of "/./" are now replaced with "/" to reduce the chance of
 // infinite loops
@@ -25,7 +28,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.5 1997/07/07 21:23:43 turtle Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.6 1997/12/11 00:28:58 turtle Exp $";
 #endif
 
 #include "URL.h"
@@ -214,37 +217,11 @@ URL::URL(char *ref, URL &parent)
 		    //
 		}
 	    }
-	    //
-	    // We now need to take care of situations where the URL contains
-	    // relative parts ("/../")
-	    // We will rewrite the path to be the minimal.
-	    //
-	    int	i, limit;
-	    while ((i = _path.indexOf("/../")) >= 0)
-	    {
-		if ((limit = _path.lastIndexOf('/', i - 1)) >= 0)
-		{
-		    String	newPath;
-		    newPath << _path.sub(0, limit).get();
-		    newPath << _path.sub(i + 3).get();
-		    _path = newPath;
-		}
-		else
-		{
-		    _path = _path.sub(i + 3).get();
-		}
-	    }
-	    //
-	    // Also get rid of redundent "/./".  This could cause infinite
-	    // loops.
-	    //
-	    while ((i = _path.indexOf("/./")) >= 0)
-	    {
-		String	newPath;
-		newPath << _path.sub(0, i).get();
-		newPath << _path.sub(i + 2).get();
-		_path = newPath;
-	    }
+
+            //
+            // Get rid of loop-causing constructs in the path
+            //
+            normalizePath();
 	}
     }
 	
@@ -334,7 +311,12 @@ void URL::parse(char *u)
     //
     _path = "/";
     _path << strtok(0, "\n");
-	
+
+    //
+    // Get rid of loop-causing constructs in the path
+    //
+    normalizePath();
+
     //
     // Build the url.  (Note, the host name has NOT been normalized!)
     //
@@ -345,6 +327,56 @@ void URL::parse(char *u)
     _url << _path;
 }
 
+
+//*****************************************************************************
+// void URL::normalizePath()
+//
+void URL::normalizePath()
+{
+    //
+    // We now need to take care of situations where the URL contains
+    // relative parts ("/../")
+    // We will rewrite the path to be the minimal.
+    //
+    int	i, limit;
+    while ((i = _path.indexOf("/../")) >= 0)
+    {
+        if ((limit = _path.lastIndexOf('/', i - 1)) >= 0)
+        {
+            String	newPath;
+            newPath << _path.sub(0, limit).get();
+            newPath << _path.sub(i + 3).get();
+            _path = newPath;
+        }
+        else
+        {
+            _path = _path.sub(i + 3).get();
+        }
+    }
+
+    //
+    // Also get rid of redundent "/./".  This could cause infinite
+    // loops.
+    //
+    while ((i = _path.indexOf("/./")) >= 0)
+    {
+        String	newPath;
+        newPath << _path.sub(0, i).get();
+        newPath << _path.sub(i + 2).get();
+        _path = newPath;
+    }
+
+    //
+    // Furthermore, get rid of "//".  This could also cause loops
+    //
+    while ((i = _path.indexOf("//")) >= 0)
+    {
+        String  newPath;
+        newPath << _path.sub(0, i).get();
+        newPath << _path.sub(i + 1).get();
+        _path = newPath;
+    }
+}
 
 //*****************************************************************************
 // void URL::dump()

@@ -1,9 +1,12 @@
 //
 // URL.h
 //
-// $Id: URL.h,v 1.2 1997/03/24 04:33:22 turtle Exp $
+// $Id: URL.h,v 1.3 1997/12/11 00:28:59 turtle Exp $
 //
 // $Log: URL.h,v $
+// Revision 1.3  1997/12/11 00:28:59  turtle
+// Added double slash removal code.  These were causing loops.
+//
 // Revision 1.2  1997/03/24 04:33:22  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -57,6 +60,7 @@ private:
     String		_signature;
 
     void		removeIndex(String &);
+    void                normalizePath();
 };
 
 
