@@ -3646,8 +3646,6 @@ fi
 fi
 
 
-	MAKE=${MAKE-make}
-	
 fi
 
 subdirs="db/dist"
@@ -3846,7 +3844,6 @@ s%@CPP@%$CPP%g
 s%@CXXCPP@%$CXXCPP%g
 s%@USER@%$USER%g
 s%@APACHE@%$APACHE%g
-s%@MAKE@%$MAKE%g
 s%@subdirs@%$subdirs%g
 s%@HTDIGDIRS@%$HTDIGDIRS%g
 

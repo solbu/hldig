@@ -1,6 +1,7 @@
 include $(top_srcdir)/Makefile.config
 
 TESTS = t_htdig t_htsearch
+AM_MAKEFLAGS = MAKE="$(MAKE)"
 
 #PROFILING = -p
 

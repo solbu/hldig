@@ -18,7 +18,9 @@
 
 testdir=`pwd`
 
-if test -z "@MAKE@"
+@SET_MAKE@
+
+if test -z "$MAKE"
 then
 	echo "no make command found"
 	exit 77
@@ -29,7 +31,7 @@ fi
 #
 (
     cd conf
-    @MAKE@ user="@USER@" testdir=$testdir all > /dev/null
+    $MAKE user="@USER@" testdir=$testdir all > /dev/null
 )
 
 httpd=@APACHE@

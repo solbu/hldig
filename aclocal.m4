@@ -30,7 +30,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.10 1999/09/01 13:32:28 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.11 1999/09/02 07:25:48 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -59,7 +59,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.10 1999/09/01 13:32:28 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.11 1999/09/02 07:25:48 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -100,9 +100,10 @@ fi
 
 dnl @synopsis AC_PROG_APACHE()
 dnl
-dnl This macro searches for an installed zlib library. If nothing
-dnl was specified when calling configure, it searches first in /usr/local
-dnl and then in /usr. If the --with-zlib=DIR is specified, it will try
+dnl This macro searches for an installed apache server. If nothing
+dnl was specified when calling configure, it searches in 
+dnl /usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin.
+dnl If the --with-zlib=DIR is specified, it will try
 dnl to find it in DIR/include/zlib.h and DIR/lib/libz.a. If --without-zlib
 dnl is specified, the library is not searched at all.
 dnl
@@ -116,7 +117,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.10 1999/09/01 13:32:28 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.11 1999/09/02 07:25:48 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 

@@ -86,7 +86,6 @@ LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
-MAKE = @MAKE@
 MAKEINFO = @MAKEINFO@
 NM = @NM@
 OBJDUMP = @OBJDUMP@
@@ -112,6 +111,7 @@ HTLIBS = $(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 
 
 
 TESTS = t_htdig t_htsearch
+AM_MAKEFLAGS = MAKE="$(MAKE)"
 
 #PROFILING = -p
 

@@ -196,8 +196,6 @@ if test -n "$TESTDIR"
 then
 	CHECK_USER
 	AC_PROG_APACHE
-	MAKE=${MAKE-make}
-	AC_SUBST(MAKE)
 fi
 
 AC_CONFIG_SUBDIRS(db/dist)
