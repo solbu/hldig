@@ -10,13 +10,14 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.h,v 1.2.2.7 2000/10/20 03:40:55 ghutchis Exp $
+// $Id: HtWordList.h,v 1.2.2.8 2000/10/21 22:19:56 ghutchis Exp $
 //
 
 #ifndef _HtWordList_h_
 #define _HtWordList_h_
 
 #include <fcntl.h>
+#include <stdlib.h>
 
 #include"HtConfiguration.h"
 #include "WordList.h"
