@@ -1,50 +1,23 @@
 //
 // TemplateList.cc
 //
-// Implementation of TemplateList
+// TemplateList: As it sounds--a list of search result templates. Reads the 
+//               configuration and any template files from disk, then retrieves
+//               the relevant template for display.
 //
-// $Log: TemplateList.cc,v $
-// Revision 1.4.2.3  2000/02/17 20:46:13  grdetil
-// * installdir/htdig.conf: quote all HTML tag parameters.
-// * htsearch/TemplateList.cc (createFromString), installdir/long.html,
-// installdir/short.html: Use $&(URL) in templates.
-//
-// Revision 1.4.2.2  2000/02/17 16:49:48  grdetil
-// silly little typo.
-//
-// Revision 1.4.2.1  2000/02/17 16:46:26  grdetil
-// [ Improve htsearch's HTML 4.0 compliance ]
-// * htsearch/TemplateList.cc (createFromString): Use file name rather
-// than internal name to select builtin-* templates, use $&(TITLE) in
-// templates and quote HTML tag parameters.
-// * installdir/long.html, installdir/short.html: Use $&(TITLE) in
-// templates and quote HTML tag parameters.
-// * htsearch/Display.cc (setVariables): quote all HTML tag parameters
-// in generated select lists.
-// * installdir/footer.html, installdir/header.html,
-// installdir/nomatch.html, installdir/search.html,
-// installdir/syntax.html, installdir/wrapper.html:
-// Use $&(var) where appropriate, and quote HTML tag parameters.
-//
-// Revision 1.4  1999/01/17 20:29:37  ghutchis
-// Ensure template_map config has three members for each template we add,
-// contributed by <tlm@mbox.comune.prato.it>.
-//
-// Revision 1.3  1998/09/10 04:16:26  ghutchis
-//
-// More bug fixes.
-//
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
-//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1995-2001 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char RCSid[] = "$Id: TemplateList.cc,v 1.4.2.3 2000/02/17 20:46:13 grdetil Exp $";
+static char RCSid[] = "$Id: TemplateList.cc,v 1.4.2.4 2001/11/21 17:33:21 grdetil Exp $";
 #endif
 
 #include "TemplateList.h"
-#include <URL.h>
-#include <StringList.h>
+#include "URL.h"
+#include "QuotedStringList.h"
 
 //*****************************************************************************
 TemplateList::TemplateList()
@@ -86,7 +59,7 @@ TemplateList::get(char *internalName)
 int
 TemplateList::createFromString(char *str)
 {
-    StringList	sl(str, "\t \r\n");
+    QuotedStringList	sl(str, "\t \r\n");
     String		display, internal, file;
     Template	*t;
 
