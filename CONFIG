@@ -59,7 +59,7 @@ CGIBIN_DIR=             /opt/www/cgi-bin
 # Define this to be a place that can be accessed by your web server.  This is
 # where a couple of images will be placed.
 #
-IMAGE_DIR=              /home/turtle/public_html/htdig
+IMAGE_DIR=              /opt/www/htdocs/htdig
 
 #
 # IMAGE_URL_PREFIX
@@ -72,7 +72,7 @@ IMAGE_URL_PREFIX=        /htdig
 # Set this to the absolute path where you want the sample search form to
 # be installed.
 #
-SEARCH_DIR=		/home/turtle/public_html/htdig
+SEARCH_DIR=		/opt/www/htdocs/htdig
 
 #
 # SEARCH_FORM
