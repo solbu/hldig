@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.h,v 1.14 2002/04/09 14:43:57 angusgb Exp $
+// $Id: HtDateTime.h,v 1.15 2003/01/28 11:09:49 angusgb Exp $
 
 ///////
    //   Class for Date and Time
@@ -151,6 +151,9 @@ public:
 
    // Default: now and local
    HtDateTime() {SettoNow(); ToLocalTime();}
+
+   // From an integer (seconds from epoc)
+   HtDateTime(const int i) {SetDateTime((time_t)i); ToLocalTime();}
 
    // From a time_t value and pointer
    HtDateTime(time_t &t) {SetDateTime(t); ToLocalTime();}

@@ -1,3 +1,7 @@
+Tue Jan 28 12:08:20 CET 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htlib/HtDateTime.h: added the constructor HtDateTime(const int)
+
 Sat Jan 25 2003  Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* htsearch/Display.cc:  Convert "<br>\n" in $(DESCRIPTION) to "<br>"
