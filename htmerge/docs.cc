@@ -4,6 +4,10 @@
 // Implementation of newclass
 //
 // $Log: docs.cc,v $
+// Revision 1.10  1999/01/20 22:34:34  ghutchis
+// Fix logic to remove documents--missing else statements allow some "deleted"
+// documents to not be removed.
+//
 // Revision 1.9  1999/01/07 03:13:50  ghutchis
 // Fix minor memory leaks.
 //
@@ -80,15 +84,16 @@ convertDocs(char *doc_db, char *doc_index)
 	if (strlen(ref->DocHead()) == 0)
 	  {
 	    // For some reason, this document doesn't have an excerpt
-	    // (probably because of a noindex directive) Remove it
+	    // (probably because of a noindex directive, or disallowed
+	    // by robots.txt or server_max_docs). Remove it
 	    db.Delete(url->get());
 	  }
-	if ((ref->DocState()) == Reference_noindex)
+	else if ((ref->DocState()) == Reference_noindex)
 	  {
 	    // This document has been marked with a noindex tag. Remove it
 	    db.Delete(url->get());
 	  }
-	if (remove_unused && discard_list.Exists(id))
+	else if (remove_unused && discard_list.Exists(id))
 	  {
 	    // This document is not valid anymore.  Remove it
 	    db.Delete(url->get());
@@ -104,7 +109,7 @@ convertDocs(char *doc_db, char *doc_index)
 		cout << "htmerge: " << document_count << '\n';
 		cout.flush();
 	    }
-	}
+	  }
         delete ref;
     }
     if (verbose)
