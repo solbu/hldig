@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.3.2.1 1999/11/30 05:08:20 ghutchis Exp $
+// $Id: URL.cc,v 1.3.2.2 1999/12/02 02:42:14 ghutchis Exp $
 //
 
 #include "URL.h"
@@ -574,6 +574,7 @@ void URL::normalize()
 //   Return a string which uniquely identifies the server the current
 //   URL is refering to.
 //   This is the first portion of a url: service://user@host:port/
+//   (in short this is the URL pointing to the root of this server)
 //
 char *URL::signature()
 {
@@ -587,7 +588,7 @@ char *URL::signature()
     if (_user.length())
       _signature << _user << '@';
     _signature << _host;
-    _signature << ':' << _port;
+    _signature << ':' << _port << '/';
     return _signature;
 }
 
