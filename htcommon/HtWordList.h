@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.h,v 1.2.2.2 1999/12/09 12:18:08 bosc Exp $
+// $Id: HtWordList.h,v 1.2.2.3 2000/01/20 03:55:05 ghutchis Exp $
 //
 
 #ifndef _HtWordList_h_
@@ -42,9 +42,10 @@ public:
     void		Replace(const WordReference& wordRef);
 
     //
-    // Mark a document as already scanned for words or mark it as disappeared
+    // Skip this document -- ignore all words stored in the object
+    //  from this document
     //
-    void		MarkGone();
+    void		Skip();
 
     //
     // Flush the words stored in the object to the database

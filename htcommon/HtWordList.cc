@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.cc,v 1.2.2.5 2000/01/12 18:12:48 loic Exp $
+// $Id: HtWordList.cc,v 1.2.2.6 2000/01/20 03:55:05 ghutchis Exp $
 //
 
 #include "HtWordList.h"
@@ -83,11 +83,11 @@ void HtWordList::Flush()
 }
 
 //*****************************************************************************
-// void HtWordList::MarkGone()
+// void HtWordList::Skip()
 //   The current document has disappeared or been modified. 
 //   We do not need to store these words.
 //
-void HtWordList::MarkGone()
+void HtWordList::Skip()
 {
   words->Destroy();
 }
