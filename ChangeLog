@@ -1,3 +1,13 @@
+Mon Feb 28 13:10:34 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordKey.h (class WordKey): nfields data member caches
+	  result of NFields() method.
+
+	* htword/WordDBPage.h (class WordDBPage): nfields data member caches
+	  result of WordKey::NFields() method.
+
+	* acinclude.m4 (APACHE): check in lib/apache for modules
+
 Sat Feb 26 22:05:03 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Collection.h, htsearch/Collection.cc: New files

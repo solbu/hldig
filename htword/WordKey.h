@@ -142,8 +142,8 @@ class WordKey
 	  cerr << "WordKey::WordKey used before word_key_info set" << endl;
 	  word_errr("WordKey::initialize");
 	}
-      
-      numerical_fields = new WordKeyNum[NFields()-1]; 
+      nfields = WordKey::Info()->nfields;
+      numerical_fields = new WordKeyNum[nfields-1]; 
       Clear();
     }
  public:
@@ -162,7 +162,7 @@ class WordKey
   void CopyFrom(const WordKey &other)
     {
       if(other.IsDefined(0)) { SetWord(other.GetWord()); }
-      for(int i=1;i<NFields();i++)
+      for(int i=1;i<nfields;i++)
 	{
 	  if(other.IsDefined(i))
 	    {
@@ -178,7 +178,7 @@ class WordKey
   { 
       setbits = 0;
       kword.trunc();
-      for(int i=0;i<NFields()-1;i++)
+      for(int i=0;i<nfields-1;i++)
       {
 	  numerical_fields[i] = 0;
       }
@@ -223,7 +223,7 @@ class WordKey
   //
   inline WordKeyNum Get(int position) const 
   {
-    // if(position<1 || position>=NFields()){errr("Get: out of bounds");}
+    // if(position<1 || position>=nfields){errr("Get: out of bounds");}
     return(numerical_fields[position-1]);
   }
 #ifndef SWIG
@@ -236,7 +236,7 @@ class WordKey
 #endif /* SWIG */
   inline void Set(int position, WordKeyNum val)
   {
-    // if(position<1 || position>=NFields()){errr("Set: out of bounds");}
+    // if(position<1 || position>=nfields){errr("Set: out of bounds");}
       SetDefined(position);
       numerical_fields[position-1] = val;
   }
@@ -338,7 +338,7 @@ class WordKey
   //
   // Return true if all the fields are defined, false otherwise
   //
-  int		Filled() const { return setbits == (unsigned int) (((1 << NFields()) - 1) | WORD_KEY_WORDSUFFIX_DEFINED); }
+  int		Filled() const { return setbits == (unsigned int) (((1 << nfields) - 1) | WORD_KEY_WORDSUFFIX_DEFINED); }
   //
   // Return true if no fields are defined, false otherwise
   //
@@ -455,6 +455,7 @@ private:
   // Holds the numerical values of the key fields
   //
   WordKeyNum   *numerical_fields;
+  int		nfields;
   //
   // Holds the word key field
   //

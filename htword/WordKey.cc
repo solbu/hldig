@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3.2.16 2000/02/05 15:50:07 loic Exp $
+// $Id: WordKey.cc,v 1.3.2.17 2000/02/28 13:21:49 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -198,7 +198,6 @@ int WordKey::Diff(const WordKey& other, int& position, int& lower)
   }
 
   if(position < 0) {
-    int nfields=WordKey::NFields();
 
     int i;
     for(i = 1; i < nfields; i++) {
@@ -260,9 +259,9 @@ WordKey::PackEqual(const WordKey& other) const
 int WordKey::SetToFollowing(int position /* = WORD_FOLLOWING_MAX */)
 {
   if(position == WORD_FOLLOWING_MAX)
-    position = NFields() - 1;
+    position = nfields - 1;
   
-  if(position < 0 || position >= NFields()) {
+  if(position < 0 || position >= nfields) {
     cerr << "WordKey::SetToFollowing invalid position = " << position << endl;
     return NOTOK;
   }
@@ -286,7 +285,7 @@ int WordKey::SetToFollowing(int position /* = WORD_FOLLOWING_MAX */)
   } else
     Get(i)++;
 
-  for(i = position + 1; i < NFields(); i++)
+  for(i = position + 1; i < nfields; i++)
     if(IsDefined(i)) Set(i,0);
 
   return OK;
@@ -345,7 +344,7 @@ WordKey::FirstSkipField() const
 {
   int first_skip_field=-2;
 
-  for(int i = 0; i < NFields(); i++)
+  for(int i = 0; i < nfields; i++)
     {
       if(first_skip_field==-2 && !IsDefined(i)){first_skip_field=-1;}
       else
@@ -353,7 +352,7 @@ WordKey::FirstSkipField() const
 	else
 	  if(first_skip_field==-1 &&  IsDefined(i)){first_skip_field=i;break;}
     }
-  if(first_skip_field<0){first_skip_field=NFields();}
+  if(first_skip_field<0){first_skip_field=nfields;}
   return(first_skip_field);
 }
 
@@ -676,7 +675,7 @@ void
 WordKey::SetRandom()
 {
     int j;
-    for(j=1;j<NFields();j++)
+    for(j=1;j<nfields;j++)
     {
 	int nbits=WordKey::Info()->sort[j].bits;
 	WordKeyNum max=(1<<(nbits));

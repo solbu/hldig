@@ -19,7 +19,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: acinclude.m4,v 1.7.2.3 1999/12/09 13:07:52 loic Exp $
+dnl @version $Id: acinclude.m4,v 1.7.2.4 2000/02/28 13:21:46 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -37,7 +37,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: acinclude.m4,v 1.7.2.3 1999/12/09 13:07:52 loic Exp $
+dnl @version $Id: acinclude.m4,v 1.7.2.4 2000/02/28 13:21:46 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -87,7 +87,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: acinclude.m4,v 1.7.2.3 1999/12/09 13:07:52 loic Exp $
+dnl @version $Id: acinclude.m4,v 1.7.2.4 2000/02/28 13:21:46 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -182,7 +182,7 @@ dnl LoadModule env_module         @APACHE_MODULES@/mod_env.so
 dnl LoadModule config_log_module  @APACHE_MODULES@/mod_log_config.so
 dnl ...
 dnl
-dnl @version $Id: acinclude.m4,v 1.7.2.3 1999/12/09 13:07:52 loic Exp $
+dnl @version $Id: acinclude.m4,v 1.7.2.4 2000/02/28 13:21:46 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -265,7 +265,7 @@ AC_DEFUN(AC_PROG_APACHE,
     #
     HTTP_ROOT=`$APACHE -V | grep HTTPD_ROOT | sed -e 's/.*"\(.*\)"/\1/'`
     AC_MSG_CHECKING(apache modules)
-    for dir in libexec modules
+    for dir in libexec modules lib/apache
     do
       if test -f $HTTP_ROOT/$dir/mod_env.*
       then

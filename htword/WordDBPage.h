@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.h,v 1.1.2.5 2000/01/14 11:27:41 bosc Exp $
+// $Id: WordDBPage.h,v 1.1.2.6 2000/02/28 13:21:49 loic Exp $
 //
 //
 // Access to Berkeley DB internal
@@ -140,6 +140,9 @@ class WordDBPage
     int nk;  // number of keys
     int type; // for now 3(btreeinternal) && 5(leave:normal case) are allowed
     int pgsz;
+    int nfields;
+    
+    int NFields() { return nfields ? nfields : ( nfields = WordKey::NFields() ); }
 
     PAGE *pg;         // pointer to BerkeleyDB BTREE page structure
 
@@ -491,6 +494,7 @@ class WordDBPage
 	CHECK_MEM(pg);
 	insert_pos=pgsz;
 	insert_indx=0;
+	nfields = 0;
     }
     WordDBPage(const u_int8_t* buff,int buff_length)
     {
@@ -499,6 +503,7 @@ class WordDBPage
 	pgsz=buff_length;
 	insert_pos=pgsz;
 	insert_indx=0;
+	nfields = 0;
 	init();
     }
 };
