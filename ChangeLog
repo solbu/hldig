@@ -1,3 +1,8 @@
+Wed Oct 14 03:43:22 1998  turtle  <turtle@kiwi>
+
+	* installdir/htdig.conf: fixed broken link pointed out by
+	chris@impulsedata.net, moved maintainer stuff up in the file
+
 Sun Oct 11 22:16:27 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/DB2_db.cc: Added fix suggested by Domotor Akos

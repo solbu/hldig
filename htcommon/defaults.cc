@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.17  1998/10/17 14:06:08  ghutchis
+//
+// Changed htdig.sdsu.edu to www.htdig.org in start_urls
+//
 // Revision 1.16  1998/10/12 02:09:28  ghutchis
 //
 // Added htsearch logging patch from Alexander Bergolth.
@@ -62,7 +66,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.16 1998/10/12 02:09:28 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.17 1998/10/17 14:06:08 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -156,7 +160,7 @@ ConfigDefaults	defaults[] =
     {"star_image",			"${image_url_prefix}/star.gif"},
     {"star_patterns",			""},
     {"start_ellipses",			"<b><tt>... </tt></b>"},
-    {"start_url",			"http://htdig.sdsu.edu/"},
+    {"start_url",			"http://www.htdig.org/"},
     {"substring_max_words",		"25"},
     {"synonym_db",			"${common_dir}/synonyms.db"},
     {"synonym_dictionary",		"${common_dir}/synonyms"},
