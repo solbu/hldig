@@ -1,5 +1,7 @@
-Fri Mar 17 10:30:39 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Fri Mar 17 10:56:17 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	* htdig/HTML.cc (do_tag): Use case insensitive parsing of META
+	robots tag content.
 	* htlib/String.cc (uppercase): Fix misplaced cast for islower().
 
 Mon Mar  6 17:31:37 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62.2.7 2000/02/24 17:47:08 grdetil Exp $
+// $Id: HTML.cc,v 1.62.2.8 2000/03/17 15:54:26 grdetil Exp $
 //
 
 #include "htdig.h"
@@ -758,8 +758,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		else if (mystrcasecmp(cache, "robots") == 0
 			 && !attrs["content"].empty())
 		  {
-		    const String   content_cache = attrs["content"];
-
+		    String   content_cache = attrs["content"];
+		    content_cache.lowercase("noindex");
 		    if (content_cache.indexOf("noindex") != -1)
 		      {
 			doindex = 0;
