@@ -12,6 +12,7 @@ echo configuring HTDig version $HTDIG_VERSION
 AC_SUBST(HTDIG_VERSION)
 AC_DEFINE_UNQUOTED(HTDIG_VERSION, "$HTDIG_VERSION")
 
+AC_PROG_CC
 AC_PROG_CXX
 
 if test "x$CXX" = "xgcc" -o -z "$CXX" ; then
@@ -21,11 +22,21 @@ if test "x$CXX" = "xgcc" -o -z "$CXX" ; then
 	exit 1
 fi
 
-AC_PROG_CC
 AC_LANG_CPLUSPLUS
 
 AC_SUBST(CXXFLAGS)dnl
 AC_SUBST(LDFLAGS)dnl
+
+dnl
+dnl Make sure that we can have a C++ library available
+dnl
+AC_CHECK_HEADER(fstream.h,nofstream=0,nofstream=1)
+if test "x$nofstream" = "x1" ; then
+	echo ""
+	echo "To compile ht://Dig you will need to have a C++ library installed."
+	echo "If you are using gcc, you need to get and install libg++."
+	exit 1
+fi
 
 dnl Checks for programs.
 AC_PROG_RANLIB
@@ -44,16 +55,17 @@ dnl Checks for header files.
 AC_CHECK_HEADERS(sys/time.h fcntl.h limits.h sys/file.h sys/ioctl.h unistd.h)
 AC_HEADER_TIME
 
-AC_MSG_CHECKING(for tm.tm_gmtoff)
-AC_TRY_COMPILE([#include <time.h>], [struct tm t;t.tm_gmtoff = 0;],
-  [AC_MSG_RESULT(yes);AC_DEFINE(HAVE_TM_GMTOFF)],
-  [AC_MSG_RESULT(no)])
-
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_STRUCT_TM
 
-dnl Checks for library functions.
-AC_CHECK_FUNCS(mktime timelocal localtime gmtime)
+dnl Check for timegm
+AC_CHECK_FUNC(timegm,
+  AC_DEFINE(HAVE_TIMEGM),
+  AC_MSG_CHECKING(if our timegm replacement works);
+  AC_TRY_RUN([
+#define TEST_TIMEGM 1
+#include "$srcdir/htlib/timegm.cc"
+], AC_MSG_RESULT(yes), AC_MSG_ERROR([no!]), AC_MSG_RESULT([I hope so])))
 
 HTDIG_TOP=`pwd`
 AC_SUBST(HTDIG_TOP)
@@ -86,6 +98,12 @@ echo "Configuring GNU GDBM"
 (cd gdbm*; ./configure)
 echo "GDBM Configuration complete"
 echo ""
+
+AC_PATH_PROG(TSORT, tsort)
+if test -z "$TSORT"; then
+  AC_MSG_ERROR([GNU rx configuration needs tsort in path!])
+fi
+
 echo "Configuring GNU rx"
 echo "Please ignore the warnings that may be displayed during this part"
 (cd rx*; ./configure)
