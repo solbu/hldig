@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.9 2000/02/14 06:05:23 ghutchis Exp $
+// $Id: htdig.cc,v 1.26.2.10 2000/03/20 19:15:03 ghutchis Exp $
 //
 
 #include "Document.h"
@@ -301,7 +301,7 @@ int main(int ac, char **av)
 	const String doc_list = config["doc_list"];
 	if (initial)
 	    unlink(doc_list);
-	docs.CreateSearchDB(doc_list);
+	docs.DumpDB(doc_list);
 	const String word_dump = config["word_dump"];
 	if (initial)
 	    unlink(word_dump);
