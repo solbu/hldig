@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.55 1999/02/25 02:20:41 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.56 1999/02/25 02:29:31 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -241,6 +241,7 @@ Display::displayMatch(ResultMatch *match, int current)
 	List    *anchors = ref->DocAnchors();
 	if (anchors->Count() > 0)
 	  {
+	    anchor = new String();
 	    fanchor = 1;
 	    *anchor << "#" << ((String*) (*anchors)[iA-1])->get();
 	    vars.Add("ANCHOR", anchor);
