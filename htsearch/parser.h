@@ -1,7 +1,7 @@
 //
 // parser.h
 //
-// $Id: parser.h,v 1.7 1999/08/29 05:46:49 ghutchis Exp $
+// $Id: parser.h,v 1.8 1999/08/29 09:04:02 ghutchis Exp $
 //
 #ifndef _parser_h_
 #define _parser_h_
@@ -40,7 +40,9 @@ protected:
     void		perform_push();
     void		perform_and(int);
     void		perform_or();
-    void		perform_phrase();
+    void		perform_phrase(List &);
+
+    void		score(List *, double weight);
 
     List		*tokens;
     List		*result;
