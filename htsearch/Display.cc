@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.27  1999/01/06 03:47:00  ghutchis
+// Check if we need to do backlink and date factoring (e.g. we don't if they're
+// zero!), from a patch by Gilles.
+//
 // Revision 1.26  1998/12/27 14:22:58  bergolth
 // Fixed memory leaks and local_default_doc bug.
 //
@@ -18,54 +22,42 @@
 // Added a patch from Gilles allowing CGI environment variables in templates.
 //
 // Revision 1.22  1998/11/22 19:16:13  ghutchis
-//
 // Adjust date_factor and backlink_factor rankings to produce better results,
 // Use "no_excerpt_show_top."
 //
 // Revision 1.20  1998/11/17 04:06:14  ghutchis
-//
 // Add new ranking factors backlink_factor and date_factor
 //
 // Revision 1.19  1998/11/15 22:29:27  ghutchis
-//
 // Implement docBackLinks backlink count.
 //
 // Revision 1.18  1998/11/15 02:44:52  ghutchis
-//
 // Reformatting.
 //
 // Revision 1.17  1998/11/01 00:17:08  ghutchis
-//
 // Added template var DESCRIPTION as first item in DESCRIPTIONS, as requested
 // by Ryan Scott <test@netcreations.com>.
 //
 // Revision 1.16  1998/10/17 14:15:57  ghutchis
-//
 // Added variable CURRENT as the number of the current match, adapted from a
 // patch by Reni Seindal <seindal@webadm.kb.dk>
 //
 // Revision 1.15  1998/10/12 02:09:28  ghutchis
-//
 // Added htsearch logging patch from Alexander Bergolth.
 //
 // Revision 1.14  1998/09/23 14:58:22  ghutchis
-//
 // Many, many bug fixes
 //
 // Revision 1.13  1998/09/18 18:45:55  ghutchis
-//
 // YABF (Yet another bug fix)
 //
 // Revision 1.12  1998/09/10 04:16:26  ghutchis
-//
 // More bug fixes.
 //
 // Revision 1.11  1998/09/07 04:45:26  ghutchis
-//
 // Add builtin-long as a default-template to use in case of errors.
 //
 // Revision 1.10  1998/09/04 00:56:23  ghutchis
-//
 // Various bug fixes.
 //
 // Revision 1.9  1998/08/11 08:58:34  ghutchis
@@ -73,22 +65,17 @@
 // desc., space in word DB w/ proper factor.
 //
 // Revision 1.8  1998/08/03 09:57:20  ghutchis
-//
 // Fixed spelling mistake for "ellipses"
 //
 // Revision 1.7  1998/07/22 10:04:31  ghutchis
-//
 // Added patches from Sylvain Wallez <s.wallez.alcatel@e-mail.com> to
-// Display.cc to use the filename if no title is found and Chris Jason
-// Richards <richards@cs.tamu.edu> to htnotify.cc to fix problems with sendmail.
+// Display.cc to use the filename if no title is found
 //
 // Revision 1.6  1998/07/21 09:56:58  ghutchis
-//
 // Added patch by Rob Stone <rob@psych.york.ac.uk> to create new
 // environment variables to htsearch: SELECTED_FORMAT and SELECTED_METHOD.
 //
 // Revision 1.5  1998/07/16 15:15:28  ghutchis
-//
 // Added patch from Stephan Muehlstrasser <smuehlst@Rational.Com> to fix
 // delete syntax and a memory leak.
 //
@@ -106,7 +93,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.26 1998/12/27 14:22:58 bergolth Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.27 1999/01/06 03:47:00 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -826,6 +813,8 @@ Display::buildMatchList()
     String	url;
     ResultMatch	*thisMatch;
     List	*matches = new List();
+    double      backlink_factor = config.Double("backlink_factor");
+    double      date_factor = config.Double("date_factor");
 	
     results->Start_Get();
     while ((id = results->Get_Next()))
@@ -859,7 +848,6 @@ Display::buildMatchList()
 	//
 	DocMatch	*dm = results->find(id);
 	double           score = dm->score;
-	DocumentRef     *thisRef = docDB[thisMatch->getURL()];
 
 	// We need to scale based on date relevance and backlinks
 	// Other changes to the score can happen now
@@ -869,15 +857,20 @@ Display::buildMatchList()
 	// We want older docs to have smaller values and the
 	// ultimate values to be a reasonable size (max about 100)
 
-	if (thisRef)   // We better hope it's not null!
+	if (date_factor != 0.0 || backlink_factor != 0.0)
 	  {
-	    score += config.Double("date_factor") * 
-	      ((thisRef->DocTime() * 1000 / (double)time(0)) - 900);
-	    int links = thisRef->DocLinks();
-	    if (links == 0)
-	      links = 1; // It's a hack, but it helps...
-	    score += config.Double("backlink_factor") 
-	      * (thisRef->DocBackLinks() / (double)links);
+	    DocumentRef*thisRef = docDB[thisMatch->getURL()];
+	    if (thisRef)   // We better hope it's not null!
+	      {
+		score += date_factor * 
+		  ((thisRef->DocTime() * 1000 / (double)time(0)) - 900);
+		int links = thisRef->DocLinks();
+		if (links == 0)
+		  links = 1; // It's a hack, but it helps...
+		score += backlink_factor
+		  * (thisRef->DocBackLinks() / (double)links);
+	      }
+	    // Get rid of it to free the memory!
 	    delete thisRef;
 	  }
 
