@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: TemplateList.cc,v 1.8.2.4 2000/10/20 03:40:59 ghutchis Exp $
+// $Id: TemplateList.cc,v 1.8.2.5 2001/01/15 23:59:55 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -21,7 +21,7 @@
 
 #include "TemplateList.h"
 #include "URL.h"
-#include "StringList.h"
+#include "QuotedStringList.h"
 
 //*****************************************************************************
 TemplateList::TemplateList()
@@ -63,7 +63,7 @@ TemplateList::get(const String& internalName)
 int
 TemplateList::createFromString(const String& str)
 {
-    StringList	sl(str, "\t \r\n");
+    QuotedStringList	sl(str, "\t \r\n");
     String		display, internal, file;
     Template	*t;
 

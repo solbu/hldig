@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.63 2000/10/30 03:53:59 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.64 2001/01/15 23:59:52 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -2211,7 +2211,7 @@ http://www.htdig.org/", "
          <A href=\"#timeout\">timeout</A> is raised.
 " },
 { "template_map", "Long builtin-long builtin-long Short builtin-short builtin-short", 
-	"string list", "htsearch", "", "3.0", "Presentation:Files,Searching:UI", "template_map:
+	"quoted string list", "htsearch", "", "3.0", "Presentation:Files,Searching:UI", "template_map:
 				  Short short ${common_dir}/short.html \\<br>
 				  Normal normal builtin-long \\<br>
 				  Detailed detail ${common_dir}/detail.html
