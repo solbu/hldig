@@ -1,4 +1,7 @@
-Mon Aug  9 17:13:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Aug  9 17:18:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/cgi.cc(init): Fix PR#572, where htsearch crashed if
+	CONTENT_LENGTH was not set but REQUEST_METHOD was.
 
 	* htfuzzy/Fuzzy.cc(getWords), htfuzzy/Metaphone.cc(vscode):
 	Fix Geoff's change of May 15 to Fuzzy.cc, add test to vscode macro

@@ -4,6 +4,9 @@
 // Implementation of cgi
 //
 // $Log: cgi.cc,v $
+// Revision 1.7  1999/08/09 22:21:08  grdetil
+// PR#572 fixed - htsearch won't crash if CONTENT_LENGTH not set
+//
 // Revision 1.6  1999/06/16 13:48:12  grdetil
 // Allow a query string to be passed as an argument.
 //
@@ -26,7 +29,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: cgi.cc,v 1.6 1999/06/16 13:48:12 grdetil Exp $";
+static char RCSid[] = "$Id: cgi.cc,v 1.7 1999/08/09 22:21:08 grdetil Exp $";
 #endif
 
 #include "cgi.h"
@@ -93,7 +96,9 @@ cgi::init(char *s)
 		int		n;
 		char	*buf;
 		
-		n = atoi(getenv("CONTENT_LENGTH"));
+		buf = getenv("CONTENT_LENGTH");
+		if (!buf || !*buf || (n = atoi(buf)) <= 0)
+			return;		// null query
 		buf = new char[n + 1];
 		read(0, buf, n);
 		buf[n] = '\0';
