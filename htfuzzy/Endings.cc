@@ -4,6 +4,10 @@
 // Implementation of Endings
 //
 // $Log: Endings.cc,v $
+// Revision 1.2.2.1  1999/09/01 19:50:59  grdetil
+// Suffix-handling improvement (PR#560), to prevent inappropriate suffix
+// stripping in endings fuzzy matches.
+//
 // Revision 1.2  1998/10/12 02:04:00  ghutchis
 //
 // Updated Makefiles and configure variables.
@@ -13,7 +17,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Endings.cc,v 1.2 1998/10/12 02:04:00 ghutchis Exp $";
+static char RCSid[] = "$Id: Endings.cc,v 1.2.2.1 1999/09/01 19:50:59 grdetil Exp $";
 #endif
 
 #include "Endings.h"
@@ -68,22 +72,6 @@ Endings::getWords(char *w, List &words)
     String	word = w;
     word.lowercase();
 	
-    if (word2root->Get(word, data) == OK)
-    {
-	//
-	// Found the root of the word.  We'll add it to the list already
-	//
-	word = data;
-	words.Add(new String(word));
-    }
-    else
-    {
-	//
-	// The root wasn't found.  This could mean that the word
-	// is already the root.
-	//
-    }
-
     if (root2word->Get(word, data) == OK)
     {
 	//
@@ -97,6 +85,40 @@ Endings::getWords(char *w, List &words)
 		words.Add(new String(token));
 	    }
 	    token = strtok(0, " ");
+	}
+    }
+    else
+    {
+	if (word2root->Get(word, data) == OK)
+	{
+	    //
+	    // Found the root of the word.  We'll add it to the list already
+	    //
+	    word = data;
+	    words.Add(new String(word));
+	}
+	else
+	{
+	    //
+	    // The root wasn't found.  This could mean that the word
+	    // is already the root.
+	    //
+	}
+
+	if (root2word->Get(word, data) == OK)
+	{
+	    //
+	    // Found the root's permutations
+	    //
+	    char	*token = strtok(data.get(), " ");
+	    while (token)
+	    {
+		if (mystrcasecmp(token, w) != 0)
+		{
+		    words.Add(new String(token));
+		}
+		token = strtok(0, " ");
+	    }
 	}
     }
 }

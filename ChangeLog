@@ -1,3 +1,8 @@
+Wed Sep  1 14:46:26 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Endings.cc(getWords): Suffix-handling improvement (PR#560),
+	to prevent inappropriate suffix stripping in endings fuzzy matches.
+
 Wed Sep  1 14:43:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/URLTrans.cc(encodeURL): Fix encoding so all non-ascii
