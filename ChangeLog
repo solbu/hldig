@@ -1,3 +1,13 @@
+Fri Dec  1 13:59:09 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Makefile.am: Fix pkginclude_HEADERS to list missing headers
+	ber.h, libdefs.h, myqsort.h, mhash_md5.h, omit unneeded langinfo.h;
+	fix libht_la_SOURCES to list missing sources regex.c, myqsort.c.
+
+	* htlib/Makefile.in: Regenerate using automake --foreign
+
+	* htlib/langinfo.h, htlib/nl_types.h: Removed as they're now unused.
+
 Fri Dec  1 13:22:47 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/strptime.cc (mystrptime): make ptr const and use cast on
