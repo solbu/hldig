@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.2 1999/10/25 13:11:21 bosc Exp $
+// $Id: WordList.h,v 1.5.2.3 1999/11/02 11:40:43 bosc Exp $
 //
 
 #ifndef _WordList_h_
@@ -38,17 +38,8 @@ class WordCursor;
 // Possible values of the action argument of WordList::Walk
 // check walk function in WordList.cc for info on these:
 //
-#define HTDIG_WORDLIST			0x0001
-#define HTDIG_WORDLIST_WORD		0x0002
-#define HTDIG_WORDLIST_COLLECTOR	0x0004
-#define HTDIG_WORDLIST_WALKER		0x0008
-// 
-// Shorthands
-//
-#define HTDIG_WORDLIST_COLLECT		(HTDIG_WORDLIST|HTDIG_WORDLIST_COLLECTOR)
-#define HTDIG_WORDLIST_COLLECT_WORD	(HTDIG_WORDLIST_WORD|HTDIG_WORDLIST_COLLECTOR)
-#define HTDIG_WORDLIST_WALK		(HTDIG_WORDLIST|HTDIG_WORDLIST_WALKER)
-#define HTDIG_WORDLIST_WALK_WORD	(HTDIG_WORDLIST_WORD|HTDIG_WORDLIST_WALKER)
+#define HTDIG_WORDLIST_COLLECTOR	0x0001
+#define HTDIG_WORDLIST_WALKER		0x0002
 
 //
 // Type of the callback argument of WordList::Walk
@@ -156,7 +147,7 @@ protected:
     // Retrieve WordReferences from the database. 
     // Backend of WordRefs, operator[], Prefix...
     //
-    List		*WordList::Collect (const WordReference& word, int action);
+    List		*WordList::Collect (const WordReference& word);
 
     const WordType		wtype;
     const Configuration&	config;

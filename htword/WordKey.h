@@ -280,7 +280,7 @@ public:
     inline void	          UndefinedWord() { pool_String[WORD_KEY_WORD].trunc(); set &=  ~WORD_KEY_WORDFULLY_DEFINED; } 
     inline void		  UndefinedWordSuffix() {set &= ~WORD_KEY_WORDSUFFIX_DEFINED;}
     inline void		  SetDefinedWordSuffix() {set |= WORD_KEY_WORDSUFFIX_DEFINED;}
-    inline int            IsDefinedWordSuffix() const {return( set & WORD_KEY_WORDFULLY_DEFINED);}
+    inline int            IsDefinedWordSuffix() const {return( (set & WORD_KEY_WORDSUFFIX_DEFINED) == WORD_KEY_WORDSUFFIX_DEFINED);}
 	inline TypeA   GetLocation() const { return pool_TypeA[WORD_KEY_LOCATION]; }
 	inline TypeA&  GetLocation() { return pool_TypeA[WORD_KEY_LOCATION]; }
 	inline void	SetLocation(TypeA arg) { pool_TypeA[WORD_KEY_LOCATION] = arg; set |= WORD_KEY_LOCATION_DEFINED; } 
@@ -349,11 +349,13 @@ public:
   //
   // Predicates
   //
-  int		Filled() const { return set == (unsigned int)(1 << word_key_info.nfields) - 1; }
+  int		Filled() const { return set == (unsigned int) (((1 << word_key_info.nfields) - 1) | WORD_KEY_WORDSUFFIX_DEFINED); }
   int		Empty() const { return set == 0; }
   int 		Equal(const WordKey& other) const;
+  int 		ExactEqual(const WordKey& other) const {return(Equal(other) && other.set == set);}
   int 		PackEqual(const WordKey& other) const;
   int		Prefix() const;
+  int           FirstSkipField() const;
   static int 	Compare(const String& a, const String& b);
   static int 	Compare(const char *a, int a_length, const char *b, int b_length);
 

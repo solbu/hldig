@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3.2.1 1999/10/25 13:11:21 bosc Exp $
+// $Id: WordKey.cc,v 1.3.2.2 1999/11/02 11:40:43 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -25,7 +25,7 @@
 #include <iostream.h>
 
 #include "WordKey.h"
-
+#include <ctype.h>
 
 //
 // C comparison function interface for Berkeley DB (bt_compare)
@@ -59,19 +59,19 @@ int WordKey::Equal(const WordKey& other) const
   // Walk the fields in sorting order. As soon as one of them
   // does not compare equal, return.
   //
-  for(int j = 0; j < info.nfields; j++) {
-    int i = info.sort[j].encoding_position;
+  for(int j = 0; j < info.nfields; j++) 
+  {
     //
     // Only compare fields that are set in both key
     //
-    if(!IsDefined(i) || !other.IsDefined(i)) continue;
+    if(!IsDefinedInSortOrder(j) || !other.IsDefinedInSortOrder(j)) continue;
 
-    int k = info.fields[i].index;
+    int k = info.sort[j].index;
 
-    switch(info.fields[i].type) {
+    switch(info.sort[j].type) {
     case WORD_ISA_String:
       if(!IsDefinedWordSuffix()) {
-	  cout << "COMPARING UNCOMPLETE WORDS IN WORDKEY" << endl;
+//  	  cout << "COMPARING UNCOMPLETE WORDS IN WORDKEY" << endl;
 	if(pool_String[k] != other.pool_String[k].sub(0, pool_String[k].length()))
 	  return 0;
       } else {
@@ -116,25 +116,26 @@ int WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
   // Walk the fields in sorting order. As soon as one of them
   // does not compare equal, return.
   //
-  for(int j = 0; j < info.nfields; j++) {
-    int i = info.sort[j].encoding_position;
+  for(int j = 0; j < info.nfields; j++) 
+  {
     //
     // To sort in inverted order, just swap parameters.
     //
-    if(info.sort[j].direction == WORD_SORT_DESCENDING) {
+    if(info.sort[j].direction == WORD_SORT_DESCENDING) 
+    {
       const char* tmp = a;
       int tmp_length = a_length;
       a = b; a_length = b_length; b = tmp; b_length = tmp_length;
     }
-    switch(info.fields[i].type) {
+    switch(info.sort[j].type) {
     case WORD_ISA_String:
       {
-	const char* p1 = a + info.fields[i].bytes_offset;
-	int p1_length = a_length - info.fields[i].bytes_offset;
-	const char* p2 = b + info.fields[i].bytes_offset;
-	int p2_length = b_length - info.fields[i].bytes_offset;
+	const char* p1 = a + info.sort[j].bytes_offset;
+	int p1_length = a_length - info.sort[j].bytes_offset;
+	const char* p2 = b + info.sort[j].bytes_offset;
+	int p2_length = b_length - info.sort[j].bytes_offset;
 	int len = p1_length > p2_length ? p2_length : p1_length;
-	for (p1 = a + info.fields[i].bytes_offset, p2 = b + info.fields[i].bytes_offset; len--; ++p1, ++p2)
+	for (p1 = a + info.sort[j].bytes_offset, p2 = b + info.sort[j].bytes_offset; len--; ++p1, ++p2)
 	  if (*p1 != *p2)
 	    return ((int)*p1 - (int)*p2);
 	if(p1_length != p2_length)
@@ -153,23 +154,23 @@ int WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
       {
 	unsigned int p1;
 	unsigned int p2;
-	WordKey::UnpackNumber(&a[info.fields[i].bytes_offset],
-			      info.fields[i].bytesize,
+	WordKey::UnpackNumber(&a[info.sort[j].bytes_offset],
+			      info.sort[j].bytesize,
 			      &p1,
-			      info.fields[i].lowbits,
-			      info.fields[i].bits);
+			      info.sort[j].lowbits,
+			      info.sort[j].bits);
 	
-	WordKey::UnpackNumber(&b[info.fields[i].bytes_offset],
-			      info.fields[i].bytesize,
+	WordKey::UnpackNumber(&b[info.sort[j].bytes_offset],
+			      info.sort[j].bytesize,
 			      &p2,
-			      info.fields[i].lowbits,
-			      info.fields[i].bits);
+			      info.sort[j].lowbits,
+			      info.sort[j].bits);
 	if(p1 != p2)
 	  return p1 - p2;
       }
       break;
     default:
-      cerr << "WordKey::Compare: invalid type " << info.fields[i].type << " for field " << i << "\n";
+      cerr << "WordKey::Compare: invalid type " << info.sort[j].type << " for field (in sort order)" << j << "\n";
       break;
     }
     if(info.sort[j].direction == WORD_SORT_DESCENDING) {
@@ -214,8 +215,7 @@ WordKey::SetToFollowingInSortOrder(int position)
     
     if(position>1)
     {// increment if numerical field
-	i = info.sort[position].encoding_position;
-	int bits=info.fields[i].bits;
+	int bits=info.sort[position].bits;
 	int f=GetInSortOrder(position-1);
 	// check which direction we're going
 	if(info.sort[position].direction == WORD_SORT_ASCENDING)
@@ -267,13 +267,12 @@ int WordKey::Prefix() const
   //
   // Walk the fields in sorting order. 
   //
-  for(int j = 1; j < info.nfields; j++) {
-    int i = info.sort[j].encoding_position;
-
+  for(int j = 1; j < info.nfields; j++) 
+  {
     //
     // Fields set, then fields unset then field set -> not a prefix
     //
-    if(IsDefined(i))
+    if(IsDefinedInSortOrder(j))
       if(found_unset) return NOTOK;
     else
       //
@@ -284,6 +283,23 @@ int WordKey::Prefix() const
   }
 
   return OK;
+}
+// find first field that must be checked for skip
+int 
+WordKey::FirstSkipField() const
+{
+    int first_skip_field=-2;
+
+    for(int i=0;i<word_key_info.nfields;i++)
+    {
+	if(first_skip_field==-2 && !IsDefinedInSortOrder(i)){first_skip_field=-1;}
+	else
+	if(first_skip_field==-2 && i==0 && !IsDefinedWordSuffix()){first_skip_field=-1;}
+	else
+	if(first_skip_field==-1 &&  IsDefinedInSortOrder(i)){first_skip_field=i;break;}
+    }
+    if(first_skip_field<0){first_skip_field=word_key_info.nfields;}
+    return(first_skip_field);
 }
 
 //
@@ -297,13 +313,17 @@ int WordKey::PrefixOnly()
   //
   // If all fields are set, the whole key is the prefix.
   //
-  if(Filled()) return info.nfields;
+  if(Filled()) return OK;
   //
   // If the first field is not set there is no possible prefix
   //
-  if(!IsDefinedInSortOrder(0)) return 0;
+//    cerr << "prefix only: input key:" << *this <<endl;
+  if(!IsDefinedInSortOrder(0)) 
+  {
+//        cerr << "prefix only: word not defined " <<endl;
+      return NOTOK;
+  }
   
-  int field_count = 0;
   int found_unset = 0;
   //
   // Walk the fields in sorting order. 
@@ -317,14 +337,12 @@ int WordKey::PrefixOnly()
     //
     if(IsDefinedInSortOrder(j)) 
     {
-      if(found_unset) UndefinedInSortOrder(j);
-      else
-	field_count++;
-    } else
-      found_unset++;
+	if(found_unset) {SetInSortOrder(j,0);UndefinedInSortOrder(j);}
+    } 
+    else {found_unset=1;}
   }
 
-  return field_count;
+  return OK;
 }
 
 //
@@ -349,6 +367,7 @@ int WordKey::Unpack(const String& data)
     case WORD_ISA_String:
       pool_String[info.fields[i].index].set(&string[info.fields[i].bytes_offset], length - info.minimum_length);
       SetDefined(i);
+      SetDefinedWordSuffix();
       break;
 
 #define STATEMENT(type) \
@@ -451,27 +470,29 @@ ostream &operator << (ostream &o, const WordKey &key)
   // Walk the fields in sorting order. As soon as one of them
   // does not compare equal, return.
   //
-  for(int j = 0; j < info.nfields; j++) {
-    int i = info.sort[j].encoding_position;
-    int index = info.fields[i].index;
-    if(!key.IsDefinedInSortOrder(j)){o << "<UNDEF>\t" ;continue;}
-
-    switch(info.fields[i].type) {
-    case WORD_ISA_String:
-      o << key.pool_String[index] << "\t";
-      break;
-#define STATEMENT(type) \
-    case WORD_ISA_##type: \
-      o << key.pool_##type[index] << "\t"; \
-      break;
-
+//    if(!key.IsDefinedWordSuffix()){cerr << "word suffix undefined for word:" << key.GetWord()<<endl;}
+  for(int j = 0; j < info.nfields; j++) 
+  {
+      int index = info.sort[j].index;
+      if(!key.IsDefinedInSortOrder(j)){o << "<UNDEF>";}
+      else
+      {
+	  switch(info.sort[j].type) 
+	  {
+	                 case WORD_ISA_String:  o << key.pool_String[index];  break;
+#define STATEMENT(type)  case WORD_ISA_##type:  o << key.pool_##type[index];  break;
 #include"WordCaseIsAStatements.h"
-    default:
-      cerr << "WordKey::operator <<: invalid type " << info.fields[i].type << " for field " << i << "\n";
-      break;
-    }
+	  default:
+	      cerr << "WordKey::operator <<: invalid type " << info.sort[j].type << " for field (in sort order) " << j << "\n";
+	      break;
+	  }
+      }
+      if(j==0 && key.IsDefinedInSortOrder(j) && !key.IsDefinedWordSuffix())
+      {
+	  o << "<UNDEF>";
+      }
+      o << "\t";
   }
-
   return o;
 }
 
@@ -480,11 +501,33 @@ ostream &operator << (ostream &o, const WordKey &key)
 istream &
 operator >> (istream &is,  WordKey &key)
 {
-    char tmp[1000];
+    const int max_tmp=1024;
+    char tmp[max_tmp];
     key.Clear();
     for(int j=0;j<word_key_info.nfields;j++)
     {
-	is >> tmp;
+	// get a string (but check if not too long)
+	//  	replaces: is >> tmp; !!
+	char c;
+	for(;;)
+	{
+	    c=is.get();
+	    if(is.eof()){break;}
+	    if(!isspace(c)){is.putback(c);break;}
+	}
+	int i;
+	for(i=0;;i++)
+	{
+	    c=is.get();
+	    if(is.eof()){break;}
+	    if(isspace(c)){is.putback(c);break;}
+	    if(i>=max_tmp-1)
+	    {cerr << "WordKey operator>>: field :" <<j <<" too long!" <<endl;break;}
+	    tmp[i]=c;
+	}
+	tmp[i]='\0';
+	///
+
 	if(!is.good())
 	{
 //  	    cerr << "WordKey input from stream failed" << "nfields:" << word_key_info.nfields << endl;
@@ -493,10 +536,23 @@ operator >> (istream &is,  WordKey &key)
 	if(!strcmp(tmp,"<UNDEF>")){key.UndefinedInSortOrder(j);}
 	else
 	{
-	    if(j==0){key.SetWord(tmp);}
+	    if(j==0)
+	    {// this is the WORD
+		// check for undefined suffix
+		if(strlen(tmp)>=strlen("<UNDEF>") && 
+		   !strcmp(tmp+strlen(tmp)-strlen("<UNDEF>"),"<UNDEF>"))
+		{		    
+		    // strip <UNDEF> suffix from word
+		    tmp[strlen(tmp)-strlen("<UNDEF>")]='\0';
+		    key.SetWord(tmp);
+		    key.UndefinedWordSuffix();
+		}
+		else
+		{key.SetWord(tmp);}// normal Word
+
+	    }
 	    else{key.SetInSortOrder(j,atoi(tmp));}
 	}
     }
     return is;
 }
-

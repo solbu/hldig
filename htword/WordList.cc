@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.3 1999/10/25 13:11:21 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.4 1999/11/02 11:40:43 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -121,7 +121,7 @@ int WordList::Put(const WordReference& arg, int flags)
 //
 List *WordList::operator [] (const WordReference& wordRef)
 {
-  return Collect(wordRef, HTDIG_WORDLIST_COLLECT_WORD);
+  return Collect(wordRef);
 }
 
 
@@ -131,22 +131,22 @@ List *WordList::Prefix (const WordReference& prefix)
 {
     WordReference prefix2(prefix);
     prefix2.Key().UndefinedWordSuffix();
-    return Collect(prefix2, HTDIG_WORDLIST_COLLECT);
+    return Collect(prefix2);
 }
 
 //*****************************************************************************
 //
 List *WordList::WordRefs()
 {
-  return Collect(WordReference(), HTDIG_WORDLIST_COLLECT);
+  return Collect(WordReference());
 }
 
 //*****************************************************************************
 //
-List *WordList::Collect (const WordReference& wordRef, int action)
+List *WordList::Collect (const WordReference& wordRef)
 {
   Object o;
-  return Walk(wordRef, action, (wordlist_walk_callback_t)0, o);
+  return Walk(wordRef, HTDIG_WORDLIST_COLLECTOR, (wordlist_walk_callback_t)0, o);
 }
 
 //*****************************************************************************
@@ -186,61 +186,56 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
     WordKey			prefixKey;
     WordCursor			cursor;
     const WordReference&	last = WordStat::Last();
-    
+    const WordKey &searchKey=wordRef.Key();
+
     if(cursor.Open(db.db) == NOTOK) return 0;
     
     String key;
     String data;
 
-    if(verbose){cout << "Walk begin:action:" << action << ":SearchKey:"<< wordRef.Key()
-		     << ": SuffixDeffined:" << wordRef.Key().IsDefinedWordSuffix() << "\n";}
-    int nfields=word_key_info.nfields;
+    if(verbose){cout << "Walk begin:action:" << action << ":SearchKey:"<< searchKey
+		     << ": SuffixDeffined:" << searchKey.IsDefinedWordSuffix() << "\n";}
 
-    // find first field that must be checked
-    int first_skip_field=-2;
-    for(int i=0;i<nfields;i++)
-    {
-	if(first_skip_field==-2 && !wordRef.Key().IsDefinedInSortOrder(i)){first_skip_field=-1;}
-	if(first_skip_field==-1 &&  wordRef.Key().IsDefinedInSortOrder(i)){first_skip_field=i;break;}
-    }
-    if(first_skip_field<0){first_skip_field=nfields;}
-
+    int first_skip_field=searchKey.FirstSkipField();
     if(verbose){cout << "check skip speedup first field first_skip_field:" << first_skip_field << endl;}
 
     if(action & HTDIG_WORDLIST_COLLECTOR) {
       list = new List;
     }
 
+
     //
     // Move the cursor to start walking and do some sanity checks.
     //
-    if(action & HTDIG_WORDLIST) {
+    if(searchKey.Empty()) 
+    {
       //
       // Move past the stat data
       //
 	if(verbose>1){cout << "WORDLIST -> starting from begining" <<endl;}
-      last.KeyPack(key);
+	last.KeyPack(key);
 
     } else 
     {
-	const WordKey& wordKey = wordRef.Key();
-
-	prefixKey = wordKey;
+	prefixKey = searchKey;
 	//
 	// If the key is not a prefix, the start key is
 	// the longest possible prefix contained in the key. If the
 	// key does not contain any prefix, start from the beginning
 	// of the file.
 	//
-    	if(!prefixKey.PrefixOnly()) 
+    	if(prefixKey.PrefixOnly() == NOTOK) 
 	{
+	    if(verbose>1){cout << "couldnt get prefix -> starting from begining" <<endl;}
 	    prefixKey.Clear();
-	    //
 	    // Move past the stat data
-	    //
 	    last.KeyPack(key);
 	}
-	else {prefixKey.Pack(key);}
+	else 
+	{
+	    if(verbose){cout << "actualy using prefix KEY!: " << prefixKey<< endl;} 
+	    prefixKey.Pack(key);
+	}
     }
     if(cursor.Get(key, data, DB_SET_RANGE) != 0)
 	return list;
@@ -248,7 +243,7 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
 
     // **** Walk main loop
     int cursor_get_flags= DB_NEXT;
-
+    int searchKeyIsSameAsPrefix = searchKey.ExactEqual(prefixKey);
     do 
     {
 	WordReference found(key, data);
@@ -264,23 +259,28 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
 	//
 	// Don't bother to compare keys if we want to walk all the entries
 	//
-	if(!(action & HTDIG_WORDLIST)) 
+	if(!(searchKey.Empty())) 
 	{
+// exmaples
+// searchKey:   aabc 1 ? ? ?
+// prefixKey: aabc 1 ? ? ?
+
 	    //
 	    // Stop loop if we reach a record whose key does not
 	    // match prefix key requirement, provided we have a valid
 	    // prefix key.
-	    //
+	    // (ie. stop loop if we're past last possible match...)
 	    if(!prefixKey.Empty() &&
 	       !prefixKey.Equal(found.Key()))
 		break;
 
 	    //
 	    // Skip entries that do not exactly match the specified key.
-	    //
-	    if(!wordRef.Key().Equal(found.Key()))
+	    // (ie. 
+	    if(!searchKeyIsSameAsPrefix && 
+	       !searchKey.Equal(found.Key()))
 	    {
-		SkipUselessSequentialWalking(wordRef.Key(),first_skip_field,found.Key(),key,cursor_get_flags);
+		SkipUselessSequentialWalking(searchKey,first_skip_field,found.Key(),key,cursor_get_flags);
 		continue;
 	    }
 	}
@@ -395,7 +395,7 @@ static int delete_word(WordList *words, WordCursor &cursor, const WordReference 
 int WordList::WalkDelete(const WordReference& wordRef)
 {
   DeleteWordData data;
-  (void)Walk(wordRef, HTDIG_WORDLIST_WALK_WORD, delete_word, data);
+  (void)Walk(wordRef, HTDIG_WORDLIST_WALKER, delete_word, data);
   return data.count;
 }
 
@@ -521,7 +521,7 @@ operator << (ostream &o,  WordList &list)
 
     WordReference empty;
     StreamOutData data(o);
-    list.Walk(empty,HTDIG_WORDLIST_WALK, wordlist_walk_callback_stream_out, (Object &)data);  
+    list.Walk(empty,HTDIG_WORDLIST_WALKER, wordlist_walk_callback_stream_out, (Object &)data);  
     return o;
 }
 
@@ -548,5 +548,4 @@ operator >> (istream &is,  WordList &list)
   }
   return is;
 }
-
 
