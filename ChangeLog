@@ -1,6 +1,38 @@
+Wed Jan 13 21:31:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* Makefile.in(install): Add wrapper.html to the common directory
+	when installing.
+
+	* contrib/examples: Added directory for example common files
+	(e.g. badwords, dictionaries, templates, etc.)
+
+	* contrib/examples/badwords: Added example bad_words file by Marjolein.
+
+	* .version: Bump to 3.1.0dev.
+	
 Wed Jan 13 20:11:26 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html: Fix typo with META example.
+
+	* htdig/Document.cc: Use new StringList::Join function for
+	http_proxy_exclude.
+
+	* htnotify/htnotify.cc: Bring latest security patch from 3.1.0b4
+	onto the mainline source.
+
+	* installdir/wrapper.html: New file to merge header and footer files.
+
+	* htcommon/defaults.cc: Added search_results_wrapper for the
+	location of the wrapper file, if used. (The default is empty,
+	which uses header.html and footer.html)
+	
+	* htsearch/Display.cc: Added support for using the wrapper instead
+	of header and footer if search_results_wrapper is set.
+
+	* htsearch/htsearch.cc: Added check for sort config.
+
+	* htsearch/Display.cc, htsearch/Display.h: Added support for
+	sorting and reverse sorting by date, time, and score.
 
 Wed Jan 13 18:45:17 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
@@ -9,12 +41,18 @@ Wed Jan 13 18:45:17 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	compression_factor to 0 is the equivalent of turning off
 	use_document_compression.
 
+	* htcommon/DocumentRef.cc(Serialize, Deserialize): Update from
+	Randy Winch to eliminate use_document_compression and fix
+	compilation problems noted by Hans-Peter.
+	
 	* htmerge/db.cc: Fixed problem with db.NextDocID() being set
 	incorrectly, reported by Roman Dimov <roman@mark-itt.ru>.
 
 	* htcommon/DocumentDB.h: Added IncNextDocID to allow big changes
 	in db.NextDocID(), such as those above.
-	
+
+	* htdoc/THANKS.html: Added Akos Domotor.
+
 Tue Jan 12 09:16:49 1999 didier Gautheron <dgautheron@magic.fr>
 
 	* htcommon/WordList.cc, htmerge/words.cc: Changed field order 
