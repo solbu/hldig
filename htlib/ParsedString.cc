@@ -4,6 +4,11 @@
 // Implementation of ParsedString
 //
 // $Log: ParsedString.cc,v $
+// Revision 1.3.2.1  2001/06/07 15:44:23  grdetil
+// * htlib/ParsedString.cc (get), htsearch/Display.cc (expandVariables):
+//   Use isalnum() instead of isalpha() to allow digits in attribute and
+//   variable names, allow '-' in variable names too for consistency.
+//
 // Revision 1.3  1998/08/03 16:50:40  ghutchis
 //
 // Fixed compiler warnings under -Wall
@@ -16,7 +21,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: ParsedString.cc,v 1.3 1998/08/03 16:50:40 ghutchis Exp $";
+static char RCSid[] = "$Id: ParsedString.cc,v 1.3.2.1 2001/06/07 15:44:23 grdetil Exp $";
 #endif
 
 #include "ParsedString.h"
@@ -100,7 +105,7 @@ ParsedString::get(Dictionary &dict)
             if (need_delim)
                 str++;
             variable = 0;
-            while (isalpha(*str) || *str == '_' || *str == '-')
+            while (isalnum(*str) || *str == '_' || *str == '-')
             {
                 variable << *str++;
             }

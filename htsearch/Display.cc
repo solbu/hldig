@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.27 2000/02/17 16:46:25 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.28 2001/06/07 15:44:23 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -915,7 +915,7 @@ Display::expandVariables(char *str)
 		}
 		else if (*str == '(' || *str == '{')
 		    state = StVarClose;
-		else if (isalpha(*str) || *str == '_')
+		else if (isalnum(*str) || *str == '_' || *str == '-')
 		{
 		    var << *str;
 		    state = StVarPlain;
@@ -926,13 +926,13 @@ Display::expandVariables(char *str)
 	    case StVarClose:
 		if (*str == ')' || *str == '}')
 		    state = StGotVar;
-		else if (isalpha(*str) || *str == '_')
+		else if (isalnum(*str) || *str == '_' || *str == '-')
 		    var << *str;
 		else
 		    state = StStart;
 		break;
 	    case StVarPlain:
-		if (isalpha(*str) || *str == '_')
+		if (isalnum(*str) || *str == '_' || *str == '-')
 		    var << *str;
 		else
 		{
