@@ -59,5 +59,10 @@ then
   mkdir -p var/htdig
 fi
 
+fail() {
+   echo $1
+   exit 1
+}
+
 htdig=../htdig/htdig
 htsearch=../htsearch/htsearch
