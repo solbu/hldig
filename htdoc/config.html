@@ -222,6 +222,14 @@ Format: &lt;select name=format&gt;
 &lt;option value=builtin-long&gt;Long
 &lt;option value=builtin-short&gt;Short
 &lt;/select&gt;
+Sort: &lt;select name=sort&gt;
+&lt;option value=score&gt;Score
+&lt;option value=time&gt;Time
+&lt;option value=title&gt;Title
+&lt;option value=revscore&gt;Reverse Score
+&lt;option value=revtime&gt;Reverse Time
+&lt;option value=revtitle&gt;Reverse Title
+&lt;/select&gt;
 &lt;/font&gt;
 &lt;input type=hidden name=config value=htdig&gt;
 &lt;input type=hidden name=restrict value=""&gt;
@@ -275,6 +283,7 @@ Search results for '$(LOGICAL_WORDS)'&lt;/h2&gt;
 &lt;input type=hidden name=exclude value="$(EXCLUDE)"&gt;
 Match: $(METHOD)
 Format: $(FORMAT)
+Sort: $(SORT)
 &lt;br&gt;
 Refine search:
 &lt;input type="text" size="30" name="words" value="$(WORDS)"&gt;
@@ -347,6 +356,7 @@ with "&lt;b&gt;Any&lt;/b&gt;."&lt;/p&gt;
 &lt;input type=hidden name=exclude value="$(EXCLUDE)"&gt;
 Match: $(METHOD)
 Format: $(FORMAT)
+Sort: $(SORT)
 &lt;br&gt;
 Refine search:
 &lt;input type="text" size="30" name="words" value="$(WORDS)"&gt;
@@ -387,6 +397,7 @@ $(SYNTAXERROR)
 &lt;input type=hidden name=exclude value="$(EXCLUDE)"&gt;
 Match: $(METHOD)
 Format: $(FORMAT)
+Sort: $(SORT)
 &lt;br&gt;
 Refine search:
 &lt;input type="text" size="30" name="words" value="$(WORDS)"&gt;

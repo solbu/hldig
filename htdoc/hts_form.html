@@ -120,6 +120,25 @@
         database.<br>
          The default is blank.
       </dd>
+      <dt>
+        <b>sort</b>
+      </dt>
+      <dd>
+        This can be one of <i>score</i>, <i>time</i>, <i>date</i>,
+        <i>title</i>, <i>revscore</i>, <i>revtime</i>, <i>revdate</i>,
+        or <i>revtitle</i>. It determines what type of sort will be
+        performed on the search results. The types <i>time</i> and
+        <i>date</i> are synonymous, as are <i>revtime</i> and
+        <i>revdate</i>, as all four sort on the time that the
+        documents were last modified, if this information is given
+        by the server.
+        The sort methods that begin with <i>rev</i> simply reverse
+        the order of the sort.<br>
+         The default is specified by the <i>sort</i>
+        attribute in the configuration file. It is quite useful to
+        make this item a drop down menu so the user can select the
+        type of sort at search time.
+      </dd>
     </dl>
     <hr noshade size="4">
     <address>

@@ -69,8 +69,8 @@
       template_map</i> attribute is as follows:
     </p>
     <blockquote>
-      Long builtin-long builtin-long \ Short builtin-short
-      builtin-short
+      Long builtin-long builtin-long \<br>
+      Short builtin-short builtin-short
     </blockquote>
     Which means that there will be two ways to display the search
     results: a "Long" and a "Short" way. The first template listed
@@ -277,7 +277,13 @@
         <b>SELECTED_METHOD</b>
       </dt>
       <dd>
-        The currently selected method.
+        The currently selected matching method.
+      </dd>
+      <dt>
+        <b>SELECTED_SORT</b>
+      </dt>
+      <dd>
+        The currently selected sorting method.
       </dd>
       <dt>
         <b>SIZE</b>
@@ -290,6 +296,13 @@
       </dt>
       <dd>
         The size in kilobytes of the document for the current match
+      </dd>
+      <dt>
+        <b>SORT</b>
+      </dt>
+      <dd>
+        Expands to an HTML menu of all the available sorting
+        methods. The current method will be the default one.
       </dd>
       <dt>
         <b>STARSLEFT</b>

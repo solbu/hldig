@@ -3987,8 +3987,17 @@
             <em>example:</em>
           </dt>
           <dd>
-            server_aliases: foo.mydomain.com:80=www.mydomain.com:80 \ <br>
-	    bar.mydomain.com:80=www.mydomain.com:80
+            <table border="0">
+              <tr>
+                <td valign="top">
+                  server_aliases:
+                </td>
+                <td>
+                  foo.mydomain.com:80=www.mydomain.com:80 \<br>
+                  bar.mydomain.com:80=www.mydomain.com:80
+                </td>
+              </tr>
+            </table>
           </dd>
         </dl>
       </dd>
@@ -4084,6 +4093,131 @@
           </dt>
           <dd>
 	      server_wait_time: 20
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
+        <strong><a name="sort">sort</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            string
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            score
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            This is the default sorting method that htsearch
+            uses to determine the order in which matches are displayed.
+            The valid choices are: 
+            <table border="0">
+              <tr>
+                <td>
+                  <ul>
+                    <li>
+                      score
+                    </li>
+                    <li>
+                      time
+                    </li>
+                    <li>
+                      title
+                    </li>
+                  </ul>
+                </td>
+                <td>
+                  <ul>
+                    <li>
+                      revscore
+                    </li>
+                    <li>
+                      revtime
+                    </li>
+                    <li>
+                      revtitle
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </table>
+            This attribute will only be used if the HTML form that
+            calls htsearch didn't have the <strong>sort</strong>
+            value set. The words date and revdate can be used instead
+            of time and revtime, as both will sort by the time that
+            the document was last modified, if this information is
+            given by the server. The default is to sort by the score,
+            which ranks documents by best match. The sort methods that
+            begin with "rev" simply reverse the order of the sort.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            sort: score
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
+        <strong><a name="sort_names">sort_names</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            string list
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            score Score time Time title Title revscore 'Reverse Score' revtime 'Reverse Time' revtitle 'Reverse Title'
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            These values are used to create the <strong>
+            sort</strong> menu. It consists of pairs. The first
+            element of each pair is one of the known sort methods, the
+            second element is the text that will be shown in the
+            menu for that sort method. This text needs to be quoted if
+            it contains spaces.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            sort_names: score 'Best Match' time Newest title A-Z revscore 'Worst Match' revtime Oldest revtitle Z-A
           </dd>
         </dl>
       </dd>
@@ -4611,7 +4745,7 @@
           <dd>
             <table border="0">
               <tr>
-                <td>
+                <td valign="top">
                   template_map:
                 </td>
                 <td>
