@@ -8,6 +8,17 @@ Sat Jan  2 16:39:34 1999  Alexander Bergolth  <leo@strike.wu-wien.ac.at>
 	* {.,htcommon,htdig,htfuzzy,htlib,htmerge,htnotify,htsearch}/
 	Makefile.in, Makefile.config.in, configure.in: Changed to allow
 	compiling in seperate build directories.
+
+Fri Jan  1 05:49:19 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htdoc/attrs.html: Describe more thoroughly how "pdf_parser"
+	is used.
+
+	* htdoc/attrs.html: Fix typo for anchor/attribute
+	"allow_virtual_hosts".
+
+	* htdoc/attrs.html: Correct and add more verbose description of
+	external parser program parameters and fields.
 	
 Sun Dec 27 14:52:45 1998  Alexander Bergolth  <leo@strike.wu-wien.ac.at>
 
