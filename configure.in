@@ -104,16 +104,14 @@ extern "C" int gethostname(char *, int);],
   [AC_MSG_RESULT(no)],
   [AC_MSG_RESULT(yes);AC_DEFINE(NEED_PROTO_GETHOSTNAME)])
 
-echo ""
-echo "Configuring Berkeley DBM"
-DB_DIR=`echo db-*/build.unix`
+DB_DIR=`echo db-*/dist`
 if test ! -d $DB_DIR; then
   echo "Extracting files..."
   tarfile=`echo db-*.tar.gz`
   $GUNZIP < $tarfile | $TAR xf -
 fi
 
-DB_DIR=`echo db-*/build.unix`
+DB_DIR=`echo db-*/dist`
 AC_SUBST(DB_DIR)
 if test ! -d $DB_DIR; then
   AC_MSG_ERROR([Please extract the Berkeley DB library])
@@ -127,7 +125,7 @@ fi
 RX_DIR=`echo rx*`
 AC_SUBST(RX_DIR)
 
-AC_CONFIG_SUBDIRS($DB_DIR/../dist)
+AC_CONFIG_SUBDIRS($DB_DIR)
 AC_CONFIG_SUBDIRS($RX_DIR)
 
 AC_OUTPUT(CONFIG Makefile Makefile.config htcommon/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile makedp, chmod +x makedp, echo timestamp > stamp-h)
