@@ -1,3 +1,9 @@
+Fri Oct 15 12:45:42 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* defaults.cc: added the configuration attributes 'persistent_connections',
+	  'max_retries' and 'head_before_get'. Their default values are
+	  respectively true, 3, false.
+
 Fri Oct 15 12:35:51 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* HtHTTP.cc: managing of uncompleted stream reading with persistent
