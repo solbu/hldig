@@ -11803,6 +11803,65 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="store_phrases">
+		store_phrases</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			true
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b5 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Causes htdig to record all occurrences of each word in a document,
+	to allow accurate phrase searches.  If this is false, only the first
+	occurrence of each word will be stored, causing many phrases to be
+	missed. Setting this false increases indexing speed by about 20%,
+	and reduces disk requirements by about 60%.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr> <td valign="top"><em>No example provided</em></td> </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="substring_max_words">
 		substring_max_words</a></strong>
 	  </dt>
@@ -14471,6 +14530,6 @@ form during indexing and translated for results.
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: Sun Feb 15 16:24:06 EST 2004
+		Last modified: Sun May 23 17:25:45 EST 2004
   </body>
 </html>
