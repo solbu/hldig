@@ -5,7 +5,7 @@
 // Updates databases to remove old documents and 
 // ensures the databases are consistent.
 //
-// $Id: htmerge.cc,v 1.13 1999/03/12 00:46:57 hp Exp $
+// $Id: htmerge.cc,v 1.14 1999/06/01 01:55:58 ghutchis Exp $
 //
 
 #include "htmerge.h"
@@ -137,6 +137,13 @@ int main(int ac, char **av)
 	    configValue << ".work";
 	    config.Add("doc_index", configValue);
 	}
+
+	configValue = config["doc_excerpt"];
+	if (configValue.length() != 0)
+	{
+	    configValue << ".work";
+	    config.Add("doc_excerpt", configValue);
+	}
     }
     
     if (merge_configfile.length())
@@ -162,9 +169,8 @@ int main(int ac, char **av)
     }
     if (do_docs)
     {
-	file1 = config["doc_db"];
-	file2 = config["doc_index"];
-	convertDocs(file1, file2);
+	convertDocs(config["doc_db"], config["doc_index"], 
+		    config["doc_excerpt"]);
     }
     return 0;
 }
