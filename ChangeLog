@@ -1,3 +1,9 @@
+Wed Jan  6 10:34:45 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/DocumentRef.cc(AddDescription): Remove delete
+	instruction that fouls up everything (it was removing descriptions
+	as we add them!).
+
 Wed Jan  6 14:52:11 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htlib/String.cc (allocate_space): Add missing [] to delete.

@@ -4,6 +4,10 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.13  1999/01/06 15:39:47  ghutchis
+// Remove delete instruction that fouls up everything (it was removing
+// descriptions as we add them!).
+//
 // Revision 1.12  1999/01/06 05:42:12  ghutchis
 // Do not add non-word characters to the wordlist.
 //
@@ -368,7 +372,6 @@ void DocumentRef::AddDescription(char *d)
     {
         if (mystrcasecmp(description->get(), desc) == 0)
             return;
-	delete description;
     }
     descriptions.Add(new String(desc));
 }
