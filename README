@@ -1,7 +1,7 @@
-HTDig 3.1.0b1 README
+ht://Dig 3.1.0b2 README
 Copyright (C) 1995-1998 Andrew Scherpbier <andrew@contigo.com>
 
-HTDig is a world-wide-web search system for an intranet or small internet.
+ht://Dig is a world-wide-web search system for an intranet or small internet.
 
 See the COPYING file for license information.
 See the htdoc/install.html file for compilation and installation instructions.
@@ -22,13 +22,13 @@ This distribution includes:
 
     * htdoc     - HTDig documentation in HTML
 
-HTDig has been tested extensively under Linux 2.0 using g++
-If you use g++, make absolutely sure you have libg++ installed
-as well.
+ht://Dig has been tested extensively under Linux 2.0 using g++
+If you use g++, make absolutely sure you have libstdc++ installed
+as well. (libstdc++ has superceded the older libg++ package.)
 
 To build, first read the htdoc/install.html document
 
 Questions/suggestions should be directed to the ht://Dig mailing list.  Find
-subscription instructions at http://www.htdig.org/
+subscription instructions at http://www.htdig.org/mailing.html
 
 For the most up-to-date documentation, use http://www.htdig.org/

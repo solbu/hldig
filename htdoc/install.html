@@ -62,9 +62,23 @@
     <p>
       Once the distribution has been extracted, change to the newly
       created directory.<br>
-       In this directory you will need to edit the file <tt>
+       In this directory you will need execute the <tt>configure</tt> program: 
+    <blockquote>
+      % <b>./configure</b>
+    </blockquote>
+    This program will attempt to determine what your particular
+    system can and can't do. 
+    <p>
+      The <b>configure</b> program may produce some warnings about
+      libguile and guile. Ignore those warnings since they do not
+      affect the ht://Dig program at all.
+    </p>
+    After this, you will need to edit the file <tt>
       CONFIG</tt>. There are several values which you need to
-      change in this file.
+      change in this file. Note that more recent versions of ht://Dig
+      (after 3.1.0b2) will allow you to use <pre>./configure
+      --prefix=</pre> and <pre>--exec-prefix=</pre> to set the DEST
+      and BIN_DIR variables automatically.
     </p>
     <dl>
       <dt>
@@ -138,17 +152,6 @@
         be installed.
       </dd>
     </dl>
-    After this, execute the <tt>configure</tt> program: 
-    <blockquote>
-      % <b>./configure</b>
-    </blockquote>
-    This program will attempt to determine what your particular
-    system can and can't do. 
-    <p>
-      The <b>configure</b> program will produce some warnings about
-      libguile and guile. Ignore those warnings since they do not
-      affect the ht://Dig program at all.
-    </p>
     <hr noshade>
     <h2>
       <a name="compile">Compile</a>

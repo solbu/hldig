@@ -1,3 +1,13 @@
+Mon Oct 26 15:27:28 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* Makefile.config.in, configure.in, configure: Fixed problem with
+	-ldb, -lrx, etc. not being declared in $LIBS
+
+	* htdoc/install.html: Added remarks about using ./configure
+	--prefix=
+
+	* README: Cleaned up for new URLs, version numbers, etc.
+
 Wed Oct 21 13:30:05 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/timegm.c: Corrected Oct 17 change. Should now work. :-)
