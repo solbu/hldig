@@ -1,4 +1,4 @@
-ht://Dig 3.1.0b2 README
+ht://Dig 3.1.0b3 README
 Copyright (C) 1995-1998 Andrew Scherpbier <andrew@contigo.com>
 
 ht://Dig is a world-wide-web search system for an intranet or small internet.
@@ -29,8 +29,9 @@ as well. (libstdc++ has superceded the older libg++ package.)
 
 To build, first read the htdoc/install.html document
 
-Questions/suggestions should be directed to the ht://Dig mailing list.  Find
-subscription instructions at http://www.htdig.org/mailing.html
+Questions and discussion should be directed to the ht://Dig mailing list.  
+Find subscription instructions at http://www.htdig.org/mailing.html
+Suggestions and bug reports should be sent to htdig3-bugs@htdig.org
 
 For the most up-to-date documentation, use http://www.htdig.org/
 
