@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.1 1999/10/13 11:55:21 angus Exp $
+// $Id: Retriever.cc,v 1.72.2.2 1999/11/09 15:43:12 toivo Exp $
 //
 
 #include "Retriever.h"
@@ -217,6 +217,9 @@ static void sigexit(int)
  noSignal=0;
 }
 
+static void sigpipe(int)
+{
+}                                                                                                                     
 //*****************************************************************************
 // static void sig_handlers
 //	initialise signal handlers
@@ -240,6 +243,18 @@ struct sigaction action;
 	reportError("Cannot install SIGHUP handler\n");
 }
 
+
+static void
+sig_phandler(void)
+{
+  struct sigaction action;
+ 
+  sigemptyset(&action.sa_mask);
+  action.sa_handler = sigpipe;
+  action.sa_flags = SA_RESTART;
+  if(sigaction(SIGPIPE, &action, NULL) != 0)
+    reportError("Cannot install SIGPIPE handler\n");
+}
 
 //*****************************************************************************
 // void Retriever::Start()
@@ -267,6 +282,7 @@ Retriever::Start()
     {
 	sig_handlers();
     }
+    sig_phandler();
     noSignal = 1;
 
     while (more && noSignal)
