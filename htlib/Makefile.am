@@ -14,6 +14,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	HtVectorGeneric.cc 
 
 
+
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
 include_HEADERS = \
@@ -43,7 +44,8 @@ include_HEADERS = \
 	langinfo.h \
 	regex.h  \
 	HtVectorGeneric.h   \
-	HtVectorGenericCode.h
+	HtVectorGenericCode.h \
+	HtVector_int.h
 
 
 
