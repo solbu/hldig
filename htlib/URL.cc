@@ -4,6 +4,9 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.3  1997/04/27 14:43:30  turtle
+// changes
+//
 // Revision 1.2  1997/02/07 18:04:13  turtle
 // Fixed problem with anchors without a URL
 //
@@ -15,7 +18,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.2 1997/02/07 18:04:13 turtle Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.3 1997/04/27 14:43:30 turtle Exp $";
 #endif
 
 #include "URL.h"
@@ -290,7 +293,9 @@ void URL::parse(char *u)
     // p now points to the host
     //
     char	*q = strchr(p, ':');
-    if (q)
+    char	*slash = strchr(p, '/');
+    
+    if (q && ((slash && slash > q) || !slash))
     {
 	_host = strtok(p, ":");
 	p = strtok(0, "/");

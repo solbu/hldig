@@ -4,12 +4,15 @@
 // Implementation of parser
 //
 // $Log: parser.cc,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.2  1997/04/27 14:43:31  turtle
+// changes
+//
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.1 1997/02/03 17:11:05 turtle Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.2 1997/04/27 14:43:31 turtle Exp $";
 #endif
 
 #include "parser.h"
@@ -58,6 +61,8 @@ Parser::lexan()
 //		return '&';
     else if (mystrcasecmp(current->word, "|") == 0)
 	return '|';
+    else if (mystrcasecmp(current->word, "!") == 0)
+	return '!';
 //	else if (mystrcasecmp(current->word, "or") == 0)
 //		return '|';
     else if (mystrcasecmp(current->word, "(") == 0)
@@ -102,15 +107,17 @@ Parser::expr(int output)
 void
 Parser::term(int output)
 {
+    int	isand;
+    
     factor(output);
     while (1)
     {
-	if (match('&'))
+	if ((isand = match('&')) || match('!'))
 	{
 	    factor(output);
 	    if (output)
 	    {
-		perform_and();
+		perform_and(isand);
 	    }
 	}
 	else
@@ -211,7 +218,7 @@ Parser::perform_push()
 // The top two entries in the stack need to be ANDed together.
 //
 void
-Parser::perform_and()
+Parser::perform_and(int isand)
 {
     ResultList		*l1 = (ResultList *) stack.pop();
     ResultList		*l2 = (ResultList *) stack.pop();
@@ -252,27 +259,27 @@ Parser::perform_and()
     }
     else if (l2->isIgnore)
     {
-	stack.push(l1);
+	stack.push(isand ? l1 : result);
 	delete l2;
 	return;
     }
     
     stack.push(result);
-    elements = l1->elements();
+    elements = l2->elements();
     for (i = 0; i < elements->Count(); i++)
     {
 	dm = (DocMatch *) (*elements)[i];
-	dm2 = l2->find(dm->id);
-	if (dm2)
+	dm2 = l1->find(dm->id);
+	if (dm2 ? isand : (isand == 0))
 	{
 	    //
 	    // Duplicate document.  We just need to add the scored together.
 	    //
 	    dm3 = new DocMatch;
-	    dm3->score = dm->score + dm2->score;
+	    dm3->score = dm->score + (dm2 ? dm2->score : 0);
 	    dm3->id = dm->id;
 	    dm3->anchor = dm->anchor;
-	    if (dm2->anchor < dm3->anchor)
+	    if (dm2 && dm2->anchor < dm3->anchor)
 		dm3->anchor = dm2->anchor;
 	    result->add(dm3);
 	}

@@ -1,3 +1,13 @@
+Sun Apr 13 18:13:28 1997  Andrew Scherpbier  <turtle@kiwi>
+
+	* htlib/strcasecmp.cc (mystrncasecmp): Fixed it.  Only one string
+	was converted to lower case.
+
+	* htlib/URL.cc (parse): Added extra check so that a colon is only
+	recognized if it comes right after the machine name.  It used to
+	just look for a colon anywhere in the path.  This broke some bogus
+	URLs.
+
 Wed Jan 15 21:42:36 1997  Andrew Scherpbier  <turtle@kiwi>
 
 	* htdig/HTML.cc (do_tag): Applied patch by William Miller that

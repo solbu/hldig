@@ -4,6 +4,9 @@
 // Implementation of htsearch
 //
 // $Log: htsearch.cc,v $
+// Revision 1.5  1997/04/27 14:43:30  turtle
+// changes
+//
 // Revision 1.4  1997/04/21 15:44:39  turtle
 // Added code to check the search words against the minimum_word_length attribute
 //
@@ -22,7 +25,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.4 1997/04/21 15:44:39 turtle Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.5 1997/04/27 14:43:30 turtle Exp $";
 #endif
 
 #include "htsearch.h"
@@ -230,6 +233,8 @@ createLogicalWords(List &searchWords, String &logicalWords, StringMatch &wm)
 		logicalWords << " and ";
 	    else if (strcmp(ww->word, "|") == 0 && wasHidden == 0)
 		logicalWords << " or ";
+	    else if (strcmp(ww->word, "!") == 0 && wasHidden == 0)
+		logicalWords << " not ";
 	    else if (wasHidden == 0)
 	    {
 		logicalWords << ww->word;
@@ -367,6 +372,10 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
 		else if (boolean && mystrcasecmp(word.get(), "or") == 0)
 		{
 		    tempWords.Add(new WeightWord("|", -1.0));
+		}
+		else if (boolean && mystrcasecmp(word.get(), "not") == 0)
+		{
+		    tempWords.Add(new WeightWord("!", -1.0));
 		}
 		else
 		{

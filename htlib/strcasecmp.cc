@@ -11,15 +11,15 @@
 //
 int mystrcasecmp(char *str1, const char *str2)
 {
-	while (*str1 &&
-	       *str2 &&
-	       tolower((unsigned char)*str1) == tolower((unsigned char)*str2))
-	{
-		str1++;
-		str2++;
-	}
+    while (*str1 &&
+	   *str2 &&
+	   tolower((unsigned char)*str1) == tolower((unsigned char)*str2))
+    {
+	str1++;
+	str2++;
+    }
 
-	return tolower((unsigned char)*str1) - tolower((unsigned char)*str2);
+    return tolower((unsigned char)*str1) - tolower((unsigned char)*str2);
 }
 
 
@@ -29,14 +29,18 @@ int mystrcasecmp(char *str1, const char *str2)
 //
 int mystrncasecmp(char *str1, const char *str2, int n)
 {
-	while (n && *str1 && *str2 && tolower((unsigned char)*str1) == *str2)
-	{
-		str1++;
-		str2++;
-		n--;
-	}
+    while (n &&
+	   *str1 &&
+	   *str2 &&
+	   tolower((unsigned char)*str1) == tolower((unsigned char)*str2))
+    {
+	str1++;
+	str2++;
+	n--;
+    }
 
-	return n == 0 ? 0 : tolower((unsigned char)*str1) - *str2;
+    return n == 0 ? 0 :
+	tolower((unsigned char)*str1) - tolower((unsigned char)*str2);
 }
 
 
@@ -45,9 +49,9 @@ int mystrncasecmp(char *str1, const char *str2, int n)
 //
 char *strdup(char *str)
 {
-	char	*p = new char[strlen(str) + 1];
-	strcpy(p, str);
-	return p;
+    char	*p = new char[strlen(str) + 1];
+    strcpy(p, str);
+    return p;
 }
 
 
@@ -57,15 +61,15 @@ char *strdup(char *str)
 char *
 mystrcasestr(char *s, char *pattern)
 {
-	int		length = strlen(pattern);
+    int		length = strlen(pattern);
 
-	while (*s)
-	{
-		if (mystrncasecmp(s, pattern, length) == 0)
-			return s;
-		s++;
-	}
-	return 0;
+    while (*s)
+    {
+	if (mystrncasecmp(s, pattern, length) == 0)
+	    return s;
+	s++;
+    }
+    return 0;
 }
 
 

@@ -2,7 +2,7 @@
 #ifndef _config_h_
 #define	_config_h_
 
-#define	HTDIG_VERSION	"3.0.8"
+#define	HTDIG_VERSION	"3.0.8b1"
 #define	MAX_WORD_LENGTH	12
 
 /* Define if you can safely include both <sys/time.h> and <time.h>.  */
