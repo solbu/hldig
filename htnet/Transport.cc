@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.5.2.1 1999/10/14 11:17:00 angus Exp $
+// $Id: Transport.cc,v 1.5.2.2 1999/10/14 14:28:45 angus Exp $
 //
 //
 
@@ -136,7 +136,8 @@ void Transport_Response::Reset()
 
 Transport::Transport()
 {
-  _port = 0;
+  _port = -1;     // Initialize port
+  _host = 0;      // Initialize the host
   _max_document_size = 0;
   _timeout = DEFAULT_CONNECTION_TIMEOUT;
 }
@@ -271,28 +272,34 @@ int Transport::CloseConnection()
 void Transport::SetConnection (char *host, int port)
 {
 
-   bool ischanged = false;
-
-   // Checking the connection server   
-   if( strcmp ( (char *) _host, host ))   	 // server is gonna change
-     ischanged=true;
-
-   // Checking the connection port
-   if( _port != port )  	 // the port is gonna change
-     ischanged=true;
-
-   if (ischanged)
+   if (_port != -1)
    {
-     // Let's close any pendant connection with the old
-     // server / port pair
+      // Already initialized
+      // Let's check if the server or the port are changed
+      
+      bool ischanged = false;
 
-      _tot_changes ++;
+      // Checking the connection server   
+      if( strcmp ( (char *) _host, host ))   	 // server is gonna change
+        ischanged=true;
+
+      // Checking the connection port
+      if( _port != port )  	 // the port is gonna change
+        ischanged=true;
+
+      if (ischanged)
+      {
+        // Let's close any pendant connection with the old
+        // server / port pair
+
+         _tot_changes ++;
       
-      if ( debug > 4 )
-         cout  << setw(5) << GetTotOpen() << " - "
-            << "Change of server. Previous connection closed." << endl;
+         if ( debug > 4 )
+            cout  << setw(5) << GetTotOpen() << " - "
+               << "Change of server. Previous connection closed." << endl;
       
-     CloseConnection();
+        CloseConnection();
+      }
    }
 
    // Copy the host and port information to the object

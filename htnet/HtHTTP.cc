@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.1 1999/10/14 11:16:59 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.2 1999/10/14 14:28:44 angus Exp $ 
 //
 
 #include "lib.h"
@@ -915,6 +915,22 @@ int HtHTTP::ReadBody()
     // Set document length
     _response._document_length = _response._contents.length();
 
+   if (_response._document_length != _response._content_length)
+   {
+      if ( debug > 4 )
+         cout << "Max document size (" << GetRequestMaxDocumentSize()
+            << ") reached";
+      if (isPersistentConnectionUp())
+      {
+         if ( debug > 4 )
+            cout << " - connection flushed";
+            
+         FlushConnection();
+      }
+      
+      if ( debug > 4 )
+            cout << endl;
+   }
    return bytesRead;
    
 }
