@@ -4,15 +4,18 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1997/02/07 18:04:13  turtle
+// Fixed problem with anchors without a URL
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 // Revision 1.0  1995/08/22 17:07:43  turtle
 // Support for HTTP only
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.2 1997/02/07 18:04:13 turtle Exp $";
 #endif
 
 #include "URL.h"
@@ -110,6 +113,23 @@ URL::URL(char *ref, URL &parent)
 		*params++ = '\0';
 	    }
 	}
+    }
+
+    //
+    // If, after the removal of a possible '#' we have nothing left,
+    // we just want to use the base URL.
+    //
+    if (!*ref)
+    {
+	_service = parent._service;
+	_host = parent._host;
+	_port = parent._port;
+	_url = parent._url;
+	_path = parent._path;
+	_normal = parent._normal;
+	_signature = parent._signature;
+	_hopcount = parent._hopcount;
+	return;
     }
 
     char	*p = ref;
