@@ -1,3 +1,10 @@
+Thu Oct 07 16:34:21 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* HtHTTP.cc: call FinishRequest everytime in HTTPRequest() a value is
+	  returned.
+	* testnet.cc: improved with more statistics and connections timeouts
+	  control.
+
 Thu Oct 07 12:53:12 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* configure.in: modified getpeername() test function with

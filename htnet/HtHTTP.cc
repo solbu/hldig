@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.10 1999/10/07 10:01:52 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.11 1999/10/07 14:40:06 angus Exp $ 
 //
 
 #include "lib.h"
@@ -280,7 +280,7 @@ Transport::DocStatus HtHTTP::HTTPRequest()
 	    CloseConnection();	// Let's close the connection which is down now
 	    
 	    // Return that the connection has fallen down during the request
-	    return Document_connection_down;
+	    return FinishRequest(Document_connection_down);
    }   
 
 
@@ -291,7 +291,7 @@ Transport::DocStatus HtHTTP::HTTPRequest()
    	 if ( debug > 4 )
 	    cout << "Unable to retrieve or parse the status line" << endl;
 	 
-   	 return Document_no_header;
+   	 return FinishRequest(Document_no_header);
    }   
       
 
@@ -361,7 +361,7 @@ Transport::DocStatus HtHTTP::HTTPRequest()
          CloseConnection();	// Let's close the connection which is down now
 	    
          // Return that the connection has fallen down during the request
-         return Document_connection_down;
+         return FinishRequest(Document_connection_down);
       }
 
       if ( debug > 6 )
@@ -755,7 +755,7 @@ HtHTTP::DocStatus HtHTTP::FinishRequest (HtHTTP::DocStatus ds)
    
    // Set the finish time
    _end_time.SettoNow();
-
+   
    // Let's add the number of seconds needed by the request
    seconds=HtDateTime::GetDiff(_end_time, _start_time);
    

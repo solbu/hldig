@@ -1,4 +1,4 @@
-// $Id: testnet.cc,v 1.5 1999/10/06 12:08:13 angus Exp $
+// $Id: testnet.cc,v 1.6 1999/10/07 14:40:06 angus Exp $
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
 #endif /* HAVE_CONFIG_H */
@@ -8,6 +8,7 @@
 #include "HtDateTime.h"
 #include <URL.h>
 #include <iostream.h>
+#include <iomanip.h>
 #include <errno.h>
 #include <string.h>
 
@@ -21,6 +22,8 @@
 int debug = 0;
 int timesvar = 1;
 int persistent = 1;
+int timeout = 10;
+int head_before_get = 1;
 
 URL *url;
 Transport *transportConnect = NULL;
@@ -47,12 +50,20 @@ int main(int ac, char **av)
    // Character for get_opt function
    int c;
    
+   // Transport return Status 
+   Transport::DocStatus _return_status;
+
+   // Variable storing the number of timed out requests
+   int _timed_out = 0;
+
+   // Flag variable for errors
+   int _errors = 0;
 
 ///////
    //	Retrieving options from command line with getopt
 ///////
 
-   while((c = getopt(ac, av, "vU:t:ng")) != -1)
+   while((c = getopt(ac, av, "vU:T:t:ng")) != -1)
    {
       switch (c)
       {
@@ -62,13 +73,17 @@ int main(int ac, char **av)
          case 'U':
             URL_To_Retrieve=optarg;
             break;
-         case 't':
+         case 'T':
             timesvar=atoi(optarg);
+            break;
+         case 't':
+            timeout=atoi(optarg);
             break;
          case 'n':
             persistent = 0;
             break;
          case 'g':
+            head_before_get = 0;
             HtHTTP::DisableHeadBeforeGet();
             break;
          case '?':
@@ -86,27 +101,116 @@ int main(int ac, char **av)
 
 
    if (debug>0)
-      cout << "Testing the net for " << url->get() << " - " << url->service() << endl;
+      cout << "Testing the net for " << url->get()
+         << " - Service requested: " << url->service() << endl << endl;
 
    Transport::SetDebugLevel(debug);
    HtHTTP::SetParsingController(Parser);
    int i;
-   
+
+   HtDateTime StartTime;
+      
    for (i=0; i < timesvar; i++)
    {
-      Retrieve();
       if (debug>0)
-         cout << i << ". " << endl;
+         cout << setw(5) << i+1 << "/" << timesvar;
+
+      _return_status = Retrieve();
+      
+      if (debug>0)
+      {
+         cout << " | Start time: " << transportConnect->GetStartTime()->GetISO8601();
+            
+         cout << " | End time: " << transportConnect->GetEndTime()->GetISO8601()
+            << " | ";
+      }
+
+         
+      switch(_return_status)
+      {
+         case Transport::Document_ok:
+            if(debug>0) cout << "OK ("
+               << transportConnect->GetResponse()->GetStatusCode() << ")";
+            break;
+         case Transport::Document_not_changed:
+            if(debug>0) cout << "Not changed ("
+               << transportConnect->GetResponse()->GetStatusCode() << ")";
+            break;
+         case Transport::Document_not_found:
+            if(debug>0) cout << "Not found ("
+               << transportConnect->GetResponse()->GetStatusCode() << ")";
+            break;
+         case Transport::Document_not_parsable:
+            if(debug>0) cout << "Not parsable ("
+               << transportConnect->GetResponse()->GetContentType() << ")";
+            break;
+         case Transport::Document_redirect:
+            if(debug>0) cout << "Redirected ("
+               << transportConnect->GetResponse()->GetStatusCode() << ")";
+            break;
+         case Transport::Document_not_authorized:
+            if(debug>0) cout << "Not authorized";
+            break;
+         case Transport::Document_connection_down:
+            if(debug>0) cout << "Connection down";
+            _timed_out++;
+            break;
+         case Transport::Document_no_header:
+            if(debug>0) cout << "No header";
+            break;
+         case Transport::Document_no_host:
+            if(debug>0) cout << "No host";
+            break;
+         case Transport::Document_not_local:
+            if(debug>0) cout << "Not local";
+            break;
+         case Transport::Document_not_recognized_service:
+            if(debug>0) cout << "Service not recognized";
+            break;
+         case Transport::Document_other_error:
+            if(debug>0) cout << "Other error";
+            _errors++;
+            break;
+      }
+
+      
+      if (debug>0)
+         cout << endl;
    }
+
+   HtDateTime EndTime;
    
    if(debug>0)
    {
-      cout << "HTTP Requests             : " << HtHTTP::GetTotRequests() << endl;
-      cout << "HTTP KBytes requested     : " << (double)HtHTTP::GetTotBytes()/1024 << endl;
-      cout << "HTTP Average request time : " << HtHTTP::GetAverageRequestTime()
-         << " secs" << endl;
+      cout << endl;
+      cout << "HTTP Info" << endl;
+      cout << "=========" << endl;
+
+      if (persistent)
+      {
+         cout << " Persistent connections: On" << endl;
+         if (head_before_get)
+            cout << " HTTP/1.1 HEAD method call before GET: On" << endl;
+         else
+            cout << " HTTP/1.1 HEAD method call before GET: Off" << endl;
+      }
+      else
+         cout << " Persistent connections: Off" << endl;
+
+      
+      cout << " Timeout value        : " << timeout << endl;
+      cout << " Requests             : " << HtHTTP::GetTotRequests() << endl;
+      cout << " Timed out            : " << _timed_out << endl;
+      cout << " Unknown errors       : " << _errors << endl;
+      cout << " Elapsed time         : approximately "
+         << HtDateTime::GetDiff(EndTime, StartTime) << " secs" << endl;
+      cout << " Connection time      : approximately "
+         << HtHTTP::GetTotRequests() << " secs" << endl;
+      cout << " KBytes requested     : " << (double)HtHTTP::GetTotBytes()/1024 << endl;
+      cout << " Average request time : approximately "
+      << HtHTTP::GetAverageRequestTime() << " secs" << endl;
          
-      cout << "HTTP Average speed        : " << HtHTTP::GetAverageSpeed()/1024
+      cout << " Average speed        : " << HtHTTP::GetAverageSpeed()/1024
          << " KBytes/secs" << endl;
    }
          
@@ -114,13 +218,14 @@ int main(int ac, char **av)
    // Memory freeing
 
    if (HTTPConnect)
-   {
-      /// HERE DUMPS THE CORE
      delete HTTPConnect;
-   }
    
    if (url) delete url;
 
+   if (_errors) return -1;
+   
+   if (_timed_out) return 1;
+   
    return 0;
 
 }
@@ -138,8 +243,11 @@ void usage()
 	cout << "\t-U URL" << endl;
 	cout << "\t\tURL to be retrieved" << endl << endl;
 
-	cout << "\t-t times" << endl;
+	cout << "\t-T times" << endl;
 	cout << "\t\tTimes to retrieve it" << endl << endl;
+
+	cout << "\t-t timeout" << endl;
+	cout << "\t\tTimeout value" << endl << endl;
 
 	cout << "\t-n\tNormal connection (disable persistent)" << endl << endl;
 
@@ -214,6 +322,10 @@ Transport::DocStatus Retrieve()
         }
         
 	transportConnect = HTTPConnect;
+
+        transportConnect->SetRequestMaxDocumentSize(DEFAULT_MAX_DOCUMENT_SIZE);
+        transportConnect->SetTimeOut(timeout);
+
     }
     else
     {
