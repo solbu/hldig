@@ -24,4 +24,4 @@ install-data-hook:
 	@echo ""
 	@echo "Before you can start searching, you will need to create a"
 	@echo "search database.  A sample script to do this has been"
-	@echo "installed as " $(INSTALL_ROOT)$(bindir)/rundig
+	@echo "installed as " $(DESTDIR)$(bindir)/rundig

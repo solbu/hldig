@@ -17,24 +17,24 @@ install-data-local:	all
 	$(mkinstalldirs) $(DESTDIR)$(DATABASE_DIR)
 	@echo "Installing default configuration files..."
 	$(mkinstalldirs) $(DESTDIR)$(CONFIG_DIR)
-	@if [ ! -f $(INSTALL_ROOT)$(CONFIG_DIR)/htdig.conf ]; then sed -e s%@\DATABASE_DIR@%$(DATABASE_DIR)% -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/htdig.conf >$(INSTALL_ROOT)$(CONFIG_DIR)/htdig.conf; echo $(INSTALL_ROOT)$(CONFIG_DIR)/htdig.conf;fi
+	@if [ ! -f $(DESTDIR)$(CONFIG_DIR)/htdig.conf ]; then sed -e s%@\DATABASE_DIR@%$(DATABASE_DIR)% -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/htdig.conf >$(DESTDIR)$(CONFIG_DIR)/htdig.conf; echo $(DESTDIR)$(CONFIG_DIR)/htdig.conf;fi
 	$(mkinstalldirs) $(DESTDIR)$(SEARCH_DIR)
-	@if [ ! -f $(INSTALL_ROOT)$(SEARCH_DIR)/$(SEARCH_FORM) ]; then sed -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/search.html >$(INSTALL_ROOT)$(SEARCH_DIR)/$(SEARCH_FORM); echo $(INSTALL_ROOT)$(SEARCH_DIR)/$(SEARCH_FORM);fi
+	@if [ ! -f $(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM) ]; then sed -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/search.html >$(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM); echo $(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM);fi
 	$(mkinstalldirs) $(DESTDIR)$(COMMON_DIR)
 	@for i in $(COMMONHTML); do \
-		if [ ! -f $(INSTALL_ROOT)$(COMMON_DIR)/$$i ]; then sed -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/$$i >$(INSTALL_ROOT)$(COMMON_DIR)/$$i; echo $(INSTALL_ROOT)$(COMMON_DIR)/$$i;fi; \
+		if [ ! -f $(DESTDIR)$(COMMON_DIR)/$$i ]; then sed -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/$$i >$(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i;fi; \
 	done && test -z "$$fail"
 	@for i in $(COMMONDICT); do \
-		if [ ! -f $(INSTALL_ROOT)$(COMMON_DIR)/$$i ]; then $(INSTALL_DATA) $(top_srcdir)/installdir/$$i $(INSTALL_ROOT)$(COMMON_DIR)/$$i; echo $(INSTALL_ROOT)$(COMMON_DIR)/$$i; fi; \
+		if [ ! -f $(DESTDIR)$(COMMON_DIR)/$$i ]; then $(INSTALL_DATA) $(top_srcdir)/installdir/$$i $(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i; fi; \
 	done && test -z "$$fail"
 	@echo "Installing images..."
 	$(mkinstalldirs) $(DESTDIR)$(IMAGE_DIR)
 	@for i in $(IMAGES); do \
-		if [ ! -f $(INSTALL_ROOT)$(IMAGE_DIR)/$$i ]; then $(INSTALL_DATA) $(top_srcdir)/installdir/$$i $(INSTALL_ROOT)$(IMAGE_DIR)/$$i; echo $(INSTALL_ROOT)$(IMAGE_DIR)/$$i;fi; \
+		if [ ! -f $(DESTDIR)$(IMAGE_DIR)/$$i ]; then $(INSTALL_DATA) $(top_srcdir)/installdir/$$i $(DESTDIR)$(IMAGE_DIR)/$$i; echo $(DESTDIR)$(IMAGE_DIR)/$$i;fi; \
 	done && test -z "$$fail"
 	@echo "Creating rundig script..."
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@if [ ! -f $(INSTALL_ROOT)$(bindir)/rundig ]; then \
-		sed -e s%@\BIN_DIR@%$(bindir)% -e s%@\COMMON_DIR@%$(COMMON_DIR)% -e s%@\DATABASE_DIR@%$(DATABASE_DIR)% $(top_srcdir)/installdir/rundig >$(INSTALL_ROOT)$(bindir)/rundig; \
-		chmod 755 $(INSTALL_ROOT)$(bindir)/rundig; \
+	@if [ ! -f $(DESTDIR)$(bindir)/rundig ]; then \
+		sed -e s%@\BIN_DIR@%$(bindir)% -e s%@\COMMON_DIR@%$(COMMON_DIR)% -e s%@\DATABASE_DIR@%$(DATABASE_DIR)% $(top_srcdir)/installdir/rundig >$(DESTDIR)$(bindir)/rundig; \
+		chmod 755 $(DESTDIR)$(bindir)/rundig; \
 	fi
