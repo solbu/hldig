@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.54 1999/07/19 01:58:47 ghutchis Exp $
+// $Id: Retriever.cc,v 1.55 1999/08/10 01:20:28 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -1095,7 +1095,7 @@ Retriever::got_href(URL &url, char *description, int hops)
 		return;
 	    }
 
-	    if (ref->DocHopCount() != -1 &&
+	    if (ref->DocHopCount() != 0 &&
 		ref->DocHopCount() < currenthopcount + hops)
 	       // If we had taken the path through this ref
 	       // We'd be here faster than currenthopcount
