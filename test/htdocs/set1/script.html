@@ -73,7 +73,18 @@ function toggle2(an_image, on_off)
                         document [an_image].src=eval(an_image + "off.src");                                             
                 }
         }
+<!--htdig_noindex-->
 </SCRIPT></head>
+
+This should be considered, as htdig_noindex flag within SCRIPT.
+<!--/htdig_noindex-->
+
+<!--htdig_noindex-->
+<SCRIPT> </SCRIPT>
+This should be neglected, as inside its own  htdig_noindex, despite
+&lt;/SCRIPT&gt; being listed in noindex_end.
+<!--/htdig_noindex-->
+
 
 <body bgcolor="#000000" text="#6C6C6C" link="blue" vlink="blue">
 

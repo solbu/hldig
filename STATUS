@@ -8,7 +8,7 @@ RELEASES:
    3.2.0b1: Released:   4 Feb 2000.
 
 (Please note that everything added here should have a tracker PR# so
-we can be sure they're fixed. Geoff is currently trying add PR#s for
+we can be sure they're fixed. Geoff is currently trying to add PR#s for
 what's currently here.)
 
 SHOWSTOPPERS:
@@ -30,7 +30,6 @@ PENDING PATCHES (available but need work):
 
 NEEDED FEATURES:
 * Field-restricted searching. (e.g. PR#460833)
-* Handle noindex_start & noindex_end as string lists.
 * Quim's new htsearch/qtest query parser framework.
 * File/Database locking. PR#405764.
 

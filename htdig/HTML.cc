@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.66 2002/12/30 12:42:58 lha Exp $
+// $Id: HTML.cc,v 1.67 2003/01/20 22:40:13 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -23,6 +23,7 @@
 #include "HtConfiguration.h"
 #include "StringMatch.h"
 #include "StringList.h"
+#include "QuotedStringList.h"
 #include "URL.h"
 #include "WordType.h"
 
@@ -74,7 +75,9 @@ static int		max_keywords;
 //*****************************************************************************
 // HTML::HTML()
 //
-HTML::HTML()
+HTML::HTML() :
+	    skip_start (HtConfiguration::config()->Find("noindex_start")," \t"),
+	    skip_end   (HtConfiguration::config()->Find("noindex_end"),  " \t")
 {
 	HtConfiguration *config= HtConfiguration::config();
     //
@@ -113,6 +116,56 @@ HTML::HTML()
     max_keywords = config->Value("max_keywords", -1);
     if (max_keywords < 0)
 	max_keywords = (int) ((unsigned int) ~1 >> 1);
+
+    // skip_start/end mark sections of text to be ignored by ht://Dig
+    // Make sure there are equal numbers of each, and warn of deprecated
+    // syntax.
+    if (skip_start.Count() > 1 || skip_end.Count() > 1)
+    {
+	// check for old-style start/end which allowed unquoted spaces
+	// (Check noindex_start/end for exactly one "<" or/followed-by
+	// exactly one ">", and no leading quotes.)
+	// Can someone think of a better (or simpler) check??
+	String noindex_end (config->Find ("noindex_end"));
+	char *first_left = strchr (noindex_end.get(), '<');
+	char *secnd_left = first_left ? strchr (first_left +1, '<') : (char*)0;
+	char *first_right= strchr (noindex_end.get(), '>');
+	char *secnd_right= first_right? strchr (first_right+1, '>') : (char*)0;
+	String noindex_start (config->Find ("noindex_start"));
+	char *first_lft = strchr (noindex_start.get(), '<');
+	char *secnd_lft = first_left ? strchr (first_lft +1, '<') : (char*)0;
+	char *first_rght= strchr (noindex_start.get(), '>');
+	char *secnd_rght= first_right? strchr (first_rght+1, '>') : (char*)0;
+
+	if (((first_right && !secnd_right && first_right > first_left) ||
+	     (first_left  && !secnd_left  && !first_right) ||
+	     (first_rght && !secnd_rght && first_rght > first_lft) ||
+	     (first_lft  && !secnd_lft  && !first_rght)) &&
+	    noindex_end[0] != '\"' && noindex_start[0] != '\"')
+	{
+	    cout << "\nWarning: To allow multiple  noindex_start/end  patterns, patterns containing\nspaces should now be in quotation marks.  (If the entries are indended to be\nmultiple patterns, this warning can be suppressed by placing the first pattern\nin quotes.)\n\n";
+	    // Should we treat the patterns as if they had been quoted
+	    // (as we assume was intended)?
+	}
+
+	// check each start has an end
+	if (skip_start.Count() < skip_end.Count())
+	{
+	    cout << "Warning:  " << skip_end.Count()
+		 << "  noindex_end  patterns, but only " << skip_start.Count()
+		 << "  noindex_start  patterns.\n";
+	} else
+	{
+	    while (skip_start.Count () > skip_end.Count())
+	    {
+		int missing = skip_end.Count() - 1;
+		cout << "Warning: Copying " << skip_end [missing]
+		     << " as  noindex_end  match for " << skip_start [missing+1]
+		     << endl;
+		skip_end.Add (skip_end [missing]);
+	    }
+	}
+    }
     
     word = 0;
     href = 0;
@@ -150,7 +203,6 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     if (contents == 0 || contents->length() == 0)
 	return;
 
-	HtConfiguration* config= HtConfiguration::config();
     base = &baseURL;
     
     //
@@ -163,10 +215,8 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     String		scratch, textified;
     unsigned char	*q, *start;
     unsigned char	*position = (unsigned char *) contents->get();
-    unsigned char       *text = (unsigned char *) new char[contents->length()+1];
+    unsigned char       *text = (unsigned char *)new char[contents->length()+1];
     unsigned char       *ptext = text;
-    const String	skip_start = config->Find("noindex_start");
-    const String	skip_end = config->Find("noindex_end");
 
     keywordsCount = 0;
     title = 0;
@@ -186,16 +236,27 @@ HTML::parse(Retriever &retriever, URL &baseURL)
       //
       // Filter out section marked to be ignored for indexing. 
       // This can contain any HTML. 
+      // On finding a  noindex_start,  skip to first occurrence of matching
+      // noindex_end.  Any  noindex_start  within will be ignored.
       //
-      if (mystrncasecmp((char *)position, skip_start, skip_start.length()) == 0)
+      int i;
+      for (i = 0; i < skip_start.Count(); i++)
+      {
+        if (mystrncasecmp((char *)position, skip_start[i],
+				  ((String*)skip_start.Nth(i))->length()) == 0)
+	  break;		// break from this loop for "continue" below...
+      }
+      if (i < skip_start.Count())	// found a match;
 	{
-	  q = (unsigned char*)mystrcasestr((char *)position, skip_end);
+	  q = (unsigned char*)mystrcasestr((char *)position, skip_end[i]);
 	  if (!q)
 	    *position = '\0';       // Rest of document will be skipped...
 	  else
-	    position = q + skip_end.length();
+	    position = q + ((String*)skip_end.Nth(i))->length();
 	  continue;
 	}
+      // end of  noindex_start/end  code
+
 
       if (strncmp((char *)position, "<!", 2) == 0)
 	{

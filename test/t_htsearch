@@ -5,7 +5,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_htsearch,v 1.8 2003/01/11 02:33:28 lha Exp $
+# $Id: t_htsearch,v 1.9 2003/01/20 22:40:18 lha Exp $
 #
 
 . $srcdir/t_htdig
@@ -115,6 +115,14 @@ try "Testing boolean_keywords and search_rewrite_urls" \
 try "Testing boolean_syntax_errors" \
     "method=boolean&words=ou+distribution" \
     "Attendait un mot au lieu de '|' ou 'ou'"
+
+try "Testing htdig's noindex_start/end overlapping" \
+    "words=considered" \
+    '1 match' 'script.html'
+
+try "Testing htdig's noindex_start/end nested" \
+    "words=neglected" \
+    'No match'
 
 rm -f $tmp
 

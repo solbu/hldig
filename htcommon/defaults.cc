@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.74 2003/01/03 13:26:17 lha Exp $
+// $Id: defaults.cc,v 1.75 2003/01/20 22:40:08 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1783,33 +1783,30 @@ http://www.htdig.org/", " \
 	filename, htsearch will use the name of the file itself, \
 	enclosed in brackets (e.g. [index.html]). \
 " }, \
-{ "noindex_end", "<!--/htdig_noindex-->",  \
-	"string", "htdig", "", "3.1.0", "Indexing:What", "noindex_end: &lt;/SCRIPT&gt;", " \
+{ "noindex_end", "<!--/htdig_noindex--> </SCRIPT>",  \
+	"quoted string list", "htdig", "", "3.1.0", "Indexing:What", "noindex_end: &lt;/SCRIPT&gt;", " \
 	This string marks the end of a section of an HTML file that should be \
-	completely ignored when indexing. It works together with \
+	completely ignored when indexing. See also \
 	<a href=\"#noindex_start\">noindex_start</a>. \
-	As in the defaults, this can be SGML comment  \
-	declarations that can be inserted anywhere in the documents to exclude  \
-	different sections from being indexed. However, existing tags can also be  \
-	used; this is especially useful to exclude some sections from being indexed  \
-	where the files to be indexed can not be edited. The example shows how \
-	SCRIPT sections in 'uneditable' documents can be skipped. \
-	Note that the match for this string is case insensitive. \
 " }, \
-{ "noindex_start", "<!--htdig_noindex-->",  \
-	"string", "htdig", "", "3.1.0", "Indexing:What", "noindex_start: &lt;SCRIPT", " \
-	This string marks the start of a section of an HTML file that should be \
-	completely ignored when indexing. It works together with \
-	<a href=\"#noindex_end\">noindex_end</a>. \
-	As in the defaults, this can be SGML comment \
+{ "noindex_start", "<!--htdig_noindex--> <SCRIPT",  \
+	"quoted string list", "htdig", "", "3.1.0", "Indexing:What", "noindex_start: &lt;SCRIPT", " \
+	These strings mark the start of a section of an HTML file that should \
+	be completely ignored when indexing. They work together with \
+	<a href=\"#noindex_end\">noindex_end</a>.  Once a string in \
+	noindex_start is found, text is ignored until the string at the \
+	<em>same position</em> within <a href=\"#noindex_end\">noindex_end</a> \
+	is encountered.  The sections marked off this way cannot overlap. \
+	As in the first default pattern, this can be SGML comment \
 	declarations that can be inserted anywhere in the documents to exclude \
-	different sections from being indexed. However, existing tags can also be \
-	used; this is especially useful to exclude some sections from being indexed \
-	where the files to be indexed can not be edited. The example shows how \
-	SCRIPT sections in 'uneditable' documents can be skipped; note how \
-	noindex_start does not contain an ending &gt;: this allows for all SCRIPT \
-	tags to be matched regardless of attributes defined (different types or \
-	languages). Note that the match for this string is case insensitive. \
+	different sections from being indexed. However, existing tags can also \
+	be used; this is especially useful to exclude some sections from being \
+	indexed where the files to be indexed can not be edited. The second \
+	default pattern shows how SCRIPT sections in 'uneditable' documents \
+	can be skipped; note how noindex_start does not contain an ending \
+	&gt;: this allows for all SCRIPT tags to be matched regardless of \
+	attributes defined (different types or languages). \
+	Note that the match for this string is case insensitive. \
 " }, \
 { "nothing_found_file", "${common_dir}/nomatch.html",  \
 	"string", "htsearch", "", "all", "Presentation:Files", "nothing_found_file: /www/searching/nothing.html", " \
@@ -2499,7 +2496,6 @@ http://www.htdig.org/", " \
 	rather than a site or subdirectory URL, you may need \
 	to set limit_urls_to to something less restrictive \
 	so htdig doesn't reject links in the documents. \
-
 " }, \
 { "startyear", "1970",  \
 	"integer", "htsearch", "", "3.1.6", "Searching:Method", "startyear: 2001", " \
@@ -2586,7 +2582,7 @@ http://www.htdig.org/", " \
 " }, \
 { "template_name", "builtin-long",  \
 	"string", "htsearch", "", "3.0", "Searching:UI,Presentation:How", "template_name: long", " \
-	Specifies the default template if no
+	Specifies the default template if no \
 	<a href=\"hts_form.html#format\">format</a> field is given by the \
 	search form. This needs to map to the \
 	<a href=\"#template_map\">template_map</a>. \

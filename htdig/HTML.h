@@ -10,12 +10,13 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.h,v 1.10 2002/02/01 22:49:29 ghutchis Exp $
+// $Id: HTML.h,v 1.11 2003/01/20 22:40:14 lha Exp $
 //
 #ifndef _HTML_h_
 #define _HTML_h_
 
 #include "Parsable.h"
+#include "QuotedStringList.h"
 
 class Retriever;
 class URL;
@@ -53,7 +54,9 @@ private:
     int                 nofollow;
     unsigned int	minimumWordLength;
     URL			*base;
-    
+    QuotedStringList	skip_start;
+    QuotedStringList	skip_end;
+
     //
     // Helper functions
     //

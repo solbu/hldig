@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFile.cc,v 1.5 2003/01/11 02:33:28 lha Exp $ 
+// $Id: HtFile.cc,v 1.6 2003/01/20 22:40:16 lha Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -145,7 +145,7 @@ String HtFile::File2Mime (const char *fname)
     String cmd = config->Find ("content_classifier");
     if (cmd && *cmd)
     {
-	cmd << " " << fname;
+	cmd << " \"" << fname << '\"';	// allow file names to have spaces
 	FILE *fileptr;
 	if ( (fileptr = popen (cmd.get(), "r")) != NULL )
 	{

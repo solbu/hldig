@@ -1,6 +1,18 @@
-Sat Jan 11 2003  Lachlan Andrew  <lha@users.sourceforge.net>
+Tue Jan 21 2003  Lachlan Andrew  <lha@users.sourceforge.net>
 
-	* htsearch/Display.cc (buildMatchList): Hide matches with score of 0.
+	* HTML.cc (HTML, parse): Handle noindex_start/end as string lists.
+
+	* test/{t_htsearch,htdocs/set1/script}: Test the above
+
+	* htcomon/defaults.cc:
+	Add "<SCRIPT" to default noindex_start/end (feature request #586359).
+
+
+	* htlib/String.cc (operator>> (istream&,String&) ):
+	Exit loop when getline fails for reasons other than a full buffer.
+
+	* htnet/HtFile.cc (File2Mime), installdir/HtFileType:
+	Allow file names containing spaces.
 
 Sat Jan 11 2003  Lachlan Andrew  <lha@users.sourceforge.net>
 

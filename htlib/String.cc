@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.34 2003/01/10 10:57:49 lha Exp $
+// $Id: String.cc,v 1.35 2003/01/20 22:40:15 lha Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -697,7 +697,8 @@ istream &operator >> (istream &in, String &line)
 	in.clear();
 	in.getline(line.Data + line.Length, line.Allocated - line.Length);
 	line.Length += strlen(line.Data + line.Length);
-	if (!in.fail() || in.eof())
+	// if read whole line, or eof, or read fewer chars than the max...
+	if (!in.fail() || in.eof() || line.Length + 1 < line.Allocated)
 	    break;
 	//
 	// Only a partial line was read. Increase available space in 
