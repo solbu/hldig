@@ -1,4 +1,6 @@
-Fri Jun 22 15:55:24 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Fri Jun 22 16:25:21 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/THANKS.html: Credit Marc Pohl and Robert Marchand.
 
 	* htsearch/Display.cc (buildMatchList): Fix date_factor calculation
 	to avoid 32-bit int overflow after multiplication by 1000, and avoid
@@ -1379,7 +1381,7 @@ Sat Feb  6 23:24:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	entries for url_log, compression_level, noindex_start, noindex_end,
 	allow_in_form, bad_querystr, no_title_text.
 
-	* htdoc/THANKS.cc: Added Gabriele Bartolini.
+	* htdoc/THANKS.html: Added Gabriele Bartolini.
 
 	* htdoc/uses.html, htdoc/FAQ.html, htdoc/bugs.html: Synch with the
 	latest versions from the website tree.
