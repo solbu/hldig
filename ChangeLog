@@ -1,3 +1,10 @@
+Fri Oct  4 17:05:06 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.xml: Added first-draft XML version of defaults
+	file. This will eventually be used to generate defaults.cc and
+	documentation automatically. (As pointed out by Brian White, this
+	will make the binaries smaller.)
+
 Wed Sep 25 13:56:31 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc (parse): Fixed handling of JavaScript skipping so it
