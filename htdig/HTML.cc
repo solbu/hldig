@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.40 1999/04/14 04:14:31 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.41 1999/05/16 21:20:57 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -142,9 +142,9 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     int			offset = 0;
     int			in_space;
     int			in_punct;
+    String		scratch, textified;
     unsigned char	*q, *start;
-    String		textified_contents(HtSGMLCodec::instance()->encode(*contents));
-    unsigned char	*position = (unsigned char *) textified_contents.get();
+    unsigned char	*position = (unsigned char *) contents->get();
     unsigned char       *text = (unsigned char *) new char[contents->length()+1];
     unsigned char       *ptext = text;
     static char         *skip_start = config["noindex_start"];
@@ -254,6 +254,14 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		  *ptext++ = *position++;
 	      }
 	}
+	else if (*position == '&')
+	  {
+	    scratch = (char *)position;
+	    textified = HtSGMLCodec::instance()->encode(scratch);
+	    *ptext = textified[0];
+	    ptext++;
+	    position++;
+	  }
         else
         {
            *ptext++ = *position++;
