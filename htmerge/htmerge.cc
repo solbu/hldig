@@ -1,44 +1,42 @@
 //
 // htmerge.cc
 //
-// Implementation of htmerge
+// htmerge: Merges two databases and/or updates databases to remove 
+//          old documents and ensures the databases are consistent.
+//          Calls db.cc, docs.cc, and/or words.cc as necessary
 //
-// $Log: htmerge.cc,v $
-// Revision 1.5  1998/10/02 17:07:32  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// More configure changes
-//
-// Revision 1.4  1998/08/03 16:50:43  ghutchis
-//
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.3  1998/01/05 05:43:24  turtle
-// format changes
-//
-// Revision 1.2  1997/06/23 02:24:49  turtle
-// Added version info to usage message
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
+// $Id: htmerge.cc,v 1.17.2.1 1999/12/07 19:54:12 bosc Exp $
 //
 
 #include "htmerge.h"
 
+// If we have this, we probably want it.
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
+#endif
 
 //
 // This hash is used to keep track of all the document IDs which have to be
 // discarded.
-// The wordlist file contains the information on which docs need to go.
+// This is generated from the doc database and is used to prune words
+// from the word db
 //
 Dictionary	discard_list;
+
+// This config is used for merging multiple databses
+HtConfiguration    merge_config;
 
 int		verbose = 0;
 int		stats = 0;
 
 void usage();
 void reportError(char *msg);
-
 
 //*****************************************************************************
 // int main(int ac, char **av)
@@ -49,11 +47,11 @@ int main(int ac, char **av)
     int			do_docs = 1;
     int			alt_work_area = 0;
     String		configfile = DEFAULT_CONFIG_FILE;
+    String              merge_configfile = 0;
     int			c;
-    /* Currently unused    extern int		optind; */
     extern char		*optarg;
 
-    while ((c = getopt(ac, av, "svc:dwa")) != -1)
+    while ((c = getopt(ac, av, "svm:c:dwa")) != -1)
     {
 	switch (c)
 	{
@@ -66,6 +64,9 @@ int main(int ac, char **av)
 	    case 'c':
 		configfile = optarg;
 		break;
+	    case 'm':
+	      	merge_configfile = optarg;
+	      	break;
 	    case 'v':
 		verbose++;
 		break;
@@ -83,24 +84,37 @@ int main(int ac, char **av)
 
     config.Defaults(&defaults[0]);
 
-    if (access(configfile, R_OK) < 0)
+    if (access((char*)configfile, R_OK) < 0)
     {
 	reportError(form("Unable to find configuration file '%s'",
 			 configfile.get()));
     }
 	
     config.Read(configfile);
+    
+    //
+    // Check url_part_aliases and common_url_parts for
+    // errors.
+    String url_part_errors = HtURLCodec::instance()->ErrMsg();
+
+    if (url_part_errors.length() != 0)
+      reportError(form("Invalid url_part_aliases or common_url_parts: %s",
+                       url_part_errors.get()));
+
+    if (merge_configfile.length())
+    {
+    	merge_config.Defaults(&defaults[0]);
+	if (access((char*)merge_configfile, R_OK) < 0)
+    	{
+	reportError(form("Unable to find configuration file '%s'",
+			 merge_configfile.get()));
+    	}
+	merge_config.Read(merge_configfile);
+    }
 
     if (alt_work_area != 0)
     {
 	String	configValue;
-
-	configValue = config["word_list"];
-	if (configValue.length() != 0)
-	{
-	    configValue << ".work";
-	    config.Add("word_list", configValue);
-	}
 
 	configValue = config["word_db"];
 	if (configValue.length() != 0)
@@ -122,20 +136,34 @@ int main(int ac, char **av)
 	    configValue << ".work";
 	    config.Add("doc_index", configValue);
 	}
+
+	configValue = config["doc_excerpt"];
+	if (configValue.length() != 0)
+	{
+	    configValue << ".work";
+	    config.Add("doc_excerpt", configValue);
+	}
     }
     
-    String	file1, file2;
-    if (do_words)
+    if (merge_configfile.length())
     {
-	file1 = config["word_list"];
-	file2 = config["word_db"];
-	mergeWords(file1, file2);
+	// Merge the databases specified in merge_configfile into the current
+	// databases. Do this first then update the other databases as usual
+	// Note: We don't have to specify anything, it's all in the config vars
+
+	mergeDB();
     }
     if (do_docs)
     {
-	file1 = config["doc_db"];
-	file2 = config["doc_index"];
-	convertDocs(file1, file2);
+        // Update the document database, removing broken URLs, documents
+        // with no stored information, etc.
+	convertDocs();
+    }
+    if (do_words)
+    {
+        // Now that we have a list of deleted documents, remove the words
+        // that were indexed from those documents
+	mergeWords();
     }
     return 0;
 }
@@ -147,7 +175,7 @@ int main(int ac, char **av)
 //
 void usage()
 {
-    cout << "usage: htmerge [-v][-d][-w][-c configfile]\n";
+    cout << "usage: htmerge [-v][-d][-w][-c configfile][-m merge_configfile]\n";
     cout << "This program is part of ht://Dig " << VERSION << "\n\n";
     cout << "Options:\n";
     cout << "\t-v\tVerbose mode.  This increases the verbosity of the\n";
@@ -156,6 +184,9 @@ void usage()
     cout << "\t\tgives a progress on what it is doing and where it is.\n\n";
     cout << "\t-d\tDo NOT merge the document database.\n\n";
     cout << "\t-w\tDo NOT merge the word database.\n\n";
+    cout << "\t-m merge_configfile\n";
+    cout << "\t\tMerge the databases specified into the databases specified\n";
+    cout << "\t\tby -c or the default.\n\n";
     cout << "\t-c configfile\n";
     cout << "\t\tUse the specified configuration file instead on the\n";
     cout << "\t\tdefault.\n\n";

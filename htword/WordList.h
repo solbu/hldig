@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.3 1999/11/02 11:40:43 bosc Exp $
+// $Id: WordList.h,v 1.5.2.4 1999/12/07 19:54:13 bosc Exp $
 //
 
 #ifndef _WordList_h_
@@ -29,7 +29,7 @@
 #include "WordReference.h"
 #include "WordType.h"
 #include "WordDB.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 
 class WordList;
 class WordCursor;
@@ -52,7 +52,7 @@ public:
     //
     // Construction/Destruction
     //
-    WordList(const Configuration& config_arg);
+    WordList(const HtConfiguration& config_arg);
     virtual ~WordList();
     
 
@@ -140,7 +140,7 @@ public:
     // Accessors
     //
     const WordType&      GetWordType() const { return wtype; }
-    const Configuration& GetConfiguration() const { return config; }
+    const HtConfiguration& GetHtConfiguration() const { return config; }
 
 protected:
     //
@@ -150,7 +150,7 @@ protected:
     List		*WordList::Collect (const WordReference& word);
 
     const WordType		wtype;
-    const Configuration&	config;
+    const HtConfiguration&	config;
 
     int				isopen;
     int				isread;

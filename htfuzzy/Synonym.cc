@@ -10,14 +10,14 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Synonym.cc,v 1.8.2.1 1999/12/05 06:06:52 ghutchis Exp $
+// $Id: Synonym.cc,v 1.8.2.2 1999/12/07 19:54:11 bosc Exp $
 //
 
 #include "Synonym.h"
 #include "htfuzzy.h"
 #include "List.h"
 #include "StringList.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 
 #include <stdio.h>
 #include <fstream.h>
@@ -25,7 +25,7 @@
 
 
 //*****************************************************************************
-Synonym::Synonym(const Configuration& config_arg) :
+Synonym::Synonym(const HtConfiguration& config_arg) :
   Fuzzy(config_arg)
 {
     name = "synonyms";
@@ -47,7 +47,7 @@ Synonym::~Synonym()
 
 //*****************************************************************************
 int
-Synonym::createDB(const Configuration &config)
+Synonym::createDB(const HtConfiguration &config)
 {
     char	input[1000];
     FILE	*fl;

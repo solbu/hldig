@@ -2,7 +2,7 @@
 // defaults.cc
 //
 // defaults: default values for the ht programs through the
-//           Configuration class
+//           HtConfiguration class
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -10,10 +10,10 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.14 1999/12/06 22:48:47 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.15 1999/12/07 19:54:09 bosc Exp $
 //
 
-#include "Configuration.h"
+#include "HtConfiguration.h"
 
 ConfigDefaults	defaults[] =
 {
@@ -2079,4 +2079,4 @@ url_part_aliases:
 {0, 0, 0, 0, 0},
 };
 
-Configuration	config;
+HtConfiguration	config;

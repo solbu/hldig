@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: url.cc,v 1.1.2.1 1999/11/30 05:06:14 ghutchis Exp $
+// $Id: url.cc,v 1.1.2.2 1999/12/07 19:54:14 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -28,7 +28,7 @@
 #include <getopt.h>
 #endif
 
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "URL.h"
 
 
@@ -48,7 +48,7 @@ typedef struct {
   int test_children;
 } params_t;
 
-static Configuration	config;
+static HtConfiguration	config;
 
 static void usage();
 static void dourl(params_t* params);

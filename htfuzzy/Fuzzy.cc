@@ -1,33 +1,27 @@
 //
 // Fuzzy.cc
 //
-// Implementation of Fuzzy
+// Fuzzy: This is the base class for all the different types of fuzzy searches.
+//        We only define the interface.
 //
-// $Log: Fuzzy.cc,v $
-// Revision 1.4  1998/10/12 02:04:00  ghutchis
+// There are two main uses of classes derived from this class:
+//    1) Creation of a fuzzy index
+//    2) Searching for a word using the fuzzy index
 //
-// Updated Makefiles and configure variables.
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.3  1998/09/18 02:38:08  ghutchis
+// $Id: Fuzzy.cc,v 1.16.2.1 1999/12/07 19:54:11 bosc Exp $
 //
-// Bug fixes for 3.1.0b2
-//
-// Revision 1.2  1998/06/21 23:20:02  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.4 1998/10/12 02:04:00 ghutchis Exp $";
-#endif
 
 #include "Fuzzy.h"
 #include "htfuzzy.h"
-#include <Configuration.h>
-#include <List.h>
-#include <StringList.h>
+#include "HtConfiguration.h"
+#include "List.h"
+#include "StringList.h"
 #include "Endings.h"
 #include "Exact.h"
 #include "Metaphone.h"
@@ -35,12 +29,14 @@ static char RCSid[] = "$Id: Fuzzy.cc,v 1.4 1998/10/12 02:04:00 ghutchis Exp $";
 #include "Synonym.h"
 #include "Substring.h"
 #include "Prefix.h"
-
+#include "Regex.h"
+#include "Speling.h"
 
 //*****************************************************************************
-// Fuzzy::Fuzzy()
+// Fuzzy::Fuzzy(const HtConfiguration& config)
 //
-Fuzzy::Fuzzy()
+Fuzzy::Fuzzy(const HtConfiguration& config_arg) :
+  config(config_arg)
 {
     dict = 0;
     index = 0;
@@ -70,13 +66,19 @@ Fuzzy::getWords(char *word, List &words)
 {
     if (!index)
 	return;
+    if (!word || !*word)
+      return;
 
     //
     // Convert the word to a fuzzy key
     //
     String	fuzzyKey;
     String	data;
-    generateKey(word, fuzzyKey);
+    String	stripped = word;
+    HtStripPunctuation(stripped);
+    generateKey(stripped, fuzzyKey);
+    if (debug > 2)
+      cout << "\n\tkey: " << fuzzyKey << endl;
 
     words.Destroy();
 	
@@ -105,31 +107,38 @@ Fuzzy::getWords(char *word, List &words)
 
 
 //*****************************************************************************
-// int Fuzzy::openIndex(Configuration &config)
+// int Fuzzy::openIndex(const HtConfiguration &config)
 //
 int
-Fuzzy::openIndex(Configuration &config)
+Fuzzy::openIndex()
 {
     String	var = name;
     var << "_db";
-    String	filename = config[var];
+    const String	filename = config[var];
 
-    index = Database::getDatabaseInstance();
-    return index->OpenRead(filename);
+    index = Database::getDatabaseInstance(DB_HASH);
+    if (index->OpenRead(filename) == NOTOK)
+      {
+	delete index;
+	index = 0;
+        return NOTOK;
+      }
+
+    return OK;
 }
 
 
 //*****************************************************************************
-// int Fuzzy::writeDB(Configuration &config)
+// int Fuzzy::writeDB(HtConfiguration &config)
 //
 int
-Fuzzy::writeDB(Configuration &config)
+Fuzzy::writeDB()
 {
     String	var = name;
     var << "_db";
-    String	filename = config[var];
+    const String	filename = config[var];
 
-    index = Database::getDatabaseInstance();
+    index = Database::getDatabaseInstance(DB_HASH);
     if (index->OpenReadWrite(filename, 0664) == NOTOK)
 	return NOTOK;
 
@@ -167,29 +176,33 @@ Fuzzy::writeDB(Configuration &config)
 // Fuzzy algorithm factory.
 //
 Fuzzy *
-Fuzzy::getFuzzyByName(char *name)
+Fuzzy::getFuzzyByName(char *name, const HtConfiguration& config)
 {
     if (mystrcasecmp(name, "exact") == 0)
-	return new Exact();
+	return new Exact(config);
     else if (mystrcasecmp(name, "soundex") == 0)
-	return new Soundex();
+	return new Soundex(config);
     else if (mystrcasecmp(name, "metaphone") == 0)
-	return new Metaphone();
+	return new Metaphone(config);
     else if (mystrcasecmp(name, "endings") == 0)
-	return new Endings();
+	return new Endings(config);
     else if (mystrcasecmp(name, "synonyms") == 0)
-	return new Synonym();
+	return new Synonym(config);
     else if (mystrcasecmp(name, "substring") == 0)
-	return new Substring();
+	return new Substring(config);
     else if (mystrcasecmp(name, "prefix") == 0)
-	return new Prefix();
+	return new Prefix(config);
+    else if (mystrcasecmp(name, "regex") == 0)
+	return new Regex(config);
+    else if (mystrcasecmp(name, "speling") == 0)
+	return new Speling(config);
     else
 	return 0;
 }
 
 //*****************************************************************************
 int
-Fuzzy::createDB(Configuration &)
+Fuzzy::createDB(const HtConfiguration &)
 {
     return OK;
 }

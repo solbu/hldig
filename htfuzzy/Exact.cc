@@ -1,34 +1,29 @@
 //
 // Exact.cc
 //
-// Implementation of Exact
+// Exact: The exact-match "fuzzy" matching. Simply returns the word (minus punctuation)
+//           
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Exact.cc,v $
-// Revision 1.3  1998/08/03 16:50:37  ghutchis
+// $Id: Exact.cc,v 1.7.2.1 1999/12/07 19:54:11 bosc Exp $
 //
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.2  1997/03/24 04:33:18  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: Exact.cc,v 1.3 1998/08/03 16:50:37 ghutchis Exp $";
-#endif
 
 #include "Exact.h"
-#include <htString.h>
-#include <List.h>
+#include "htString.h"
+#include "List.h"
 
 
 //*****************************************************************************
 // Exact::Exact()
 //
-Exact::Exact()
+Exact::Exact(const HtConfiguration& config_arg) :
+  Fuzzy(config_arg)
 {
+  name = "exact";
 }
 
 
@@ -44,13 +39,16 @@ Exact::~Exact()
 void
 Exact::getWords(char *w, List &words)
 {
-    words.Add(new String(w));
+    String	stripped = w;
+    HtStripPunctuation(stripped);
+
+    words.Add(new String(stripped));
 }
 
 
 //*****************************************************************************
 int
-Exact::openIndex(Configuration &)
+Exact::openIndex()
 {
   return 0;
 }

@@ -1,7 +1,7 @@
 typedef union {
 	char *str;
 	ConfigDefaults	*ConfLine;
-	Configuration	*ConfLines;
+	HtConfiguration	*ConfLines;
 } YYSTYPE;
 #define	NUM	257
 #define	T_DELIMITER	258

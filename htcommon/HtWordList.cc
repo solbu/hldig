@@ -10,14 +10,14 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.cc,v 1.2.2.1 1999/11/02 12:58:37 bosc Exp $
+// $Id: HtWordList.cc,v 1.2.2.2 1999/12/07 19:54:09 bosc Exp $
 //
 
 #include "HtWordList.h"
 #include "HtWordReference.h"
 #include "WordRecord.h"
 #include "WordType.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "htString.h"
 
 #include <stdio.h>
@@ -37,7 +37,7 @@ HtWordList::~HtWordList()
 
 //*****************************************************************************
 //
-HtWordList::HtWordList(const Configuration& config_arg) :
+HtWordList::HtWordList(const HtConfiguration& config_arg) :
   WordList(config_arg)
 {
     words = new List;

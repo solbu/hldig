@@ -1,13 +1,19 @@
 //
 // Soundex.h
 //
-// $Id: Soundex.h,v 1.1 1997/02/03 17:11:12 turtle Exp $
+// Soundex: A fuzzy matching algorithm on the principal of the 
+//          Soundex method for last names used by the U.S. INS
+//          and described by Knuth and others.
 //
-// $Log: Soundex.h,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: Soundex.h,v 1.3.2.1 1999/12/07 19:54:11 bosc Exp $
 //
+
 #ifndef _Soundex_h_
 #define _Soundex_h_
 
@@ -19,7 +25,7 @@ public:
 	//
 	// Construction/Destruction
 	//
-					Soundex();
+        Soundex(const HtConfiguration& config_arg);
 	virtual			~Soundex();
 
 	virtual void	generateKey(char *word, String &key);

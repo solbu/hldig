@@ -1,46 +1,31 @@
 //
 // DocumentRef.cc
 //
-// Implementation of DocumentRef
+// DocumentRef: Reference to an indexed document. Keeps track of all
+//              information stored on the document, either by the dig 
+//              or temporary search information.
 //
-// $Log: DocumentRef.cc,v $
-// Revision 1.7  1998/11/18 05:16:28  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Remove limit on link descriptions.
-//
-// Revision 1.6  1998/11/15 22:29:27  ghutchis
-//
-// Implement docBackLinks backlink count.
-//
-// Revision 1.5  1998/10/18 20:37:41  ghutchis
-//
-// Fixed database corruption bug and other misc. cleanups.
-//
-// Revision 1.4  1998/08/11 08:58:24  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.3  1998/01/05 00:49:16  turtle
-// format changes
-//
-// Revision 1.2  1997/02/10 17:30:58  turtle
-// Applied AIX specific patches supplied by Lars-Owe Ivarsson
-// <lars-owe.ivarsson@its.uu.se>
-//
-// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
-// Initial CVS
-//
-// Revision 1.1  1995/07/06 23:43:12  turtle
-// *** empty log message ***
-//
+// $Id: DocumentRef.cc,v 1.47.2.1 1999/12/07 19:54:09 bosc Exp $
 //
 
 #include "DocumentRef.h"
-#include <good_strtok.h>
+#include "good_strtok.h"
+#include "WordRecord.h"
+#include "HtConfiguration.h"
+#include "HtURLCodec.h"
+#include "WordType.h"
+#include "HtWordReference.h"
 #include <stdlib.h>
 #include <ctype.h>
 #include <fstream.h>
 
+extern HtConfiguration config;
 
 //*****************************************************************************
 // DocumentRef::DocumentRef()
@@ -64,21 +49,28 @@ DocumentRef::~DocumentRef()
 //
 void DocumentRef::Clear()
 {
-    docID = 0;
-    docURL = 0;
-    docTitle = 0;
-    docState = Reference_normal;
-    docTime = 0;
-    docSize = 0;
-    docImageSize = 0;
-    docHead = 0;
-    docMetaDsc = 0;
-    docAccessed = 0;
-    docLinks = 0;
-    descriptions.Destroy();
-    docAnchors.Destroy();
-    docHopCount = -1;
-    docBackLinks = 0;
+  docID = 0;
+  docURL = 0;
+  docTime = 0;
+  docAccessed = 0;
+  docHead = 0;
+  docHeadIsSet = 0;
+  docMetaDsc = 0;
+  docTitle = 0;
+  descriptions.Destroy();
+  docState = Reference_normal;
+  docSize = 0;
+  docLinks = 0;
+  docBackLinks = 0;
+  docImageSize = 0;
+  docAnchors.Destroy();
+  docHopCount = 0;
+  docSig = 0;
+  docEmail = 0;
+  docNotification = 0;
+  docSubject = 0;
+  docScore = 0;
+  docAnchor = 0;
 }
 
 
@@ -103,9 +95,12 @@ enum
     DOC_STRING,                         // 16
     DOC_METADSC,                        // 17
     DOC_BACKLINKS,                      // 18
-    DOC_SIG,                            // 19
+    DOC_SIG                             // 19
 };
 
+// Must be powers of two never reached by the DOC_... enums.
+#define CHARSIZE_MARKER_BIT 64
+#define SHORTSIZE_MARKER_BIT 128
 
 //*****************************************************************************
 // void DocumentRef::Serialize(String &s)
@@ -123,31 +118,109 @@ void DocumentRef::Serialize(String &s)
 // value for this class, it it NOT serialized.  This means that
 // storage will be saved...
 //
-#define addnum(id, out, var)	if (var != 0)										\
-    {													\
-                                                                                                            out << (char) id;								\
-    out.append((char *) &var, sizeof(var));			\
-    }
-#define	addstring(id, out, str)	if (str.length())									\
-    {													\
-                                                                                                            length = str.length();							\
-    out << (char) id;								\
-    out.append((char *) &length, sizeof(length));	\
-    out.append(str);								\
-    }
-#define	addlist(id, out, list)	if (list.Count())									\
-    {													\
-                                                                                                            length = list.Count();							\
-    out << (char) id;								\
-    out.append((char *) &length, sizeof(length));	\
-    list.Start_Get();								\
-    while ((str = (String *) list.Get_Next()))		\
-        {												\
-                                                                                                            length = str->length();						\
-        out.append((char*) &length, sizeof(length));\
-        out.append(*str);							\
-        }												\
-    }
+#define addnum(id, out, var) \
+ if (var != 0)                                                        \
+ {                                                                    \
+   if (var <= (unsigned char) ~1)                                     \
+   {                                                                  \
+     unsigned char _tmp = var;                                        \
+     out << (char) (id | CHARSIZE_MARKER_BIT);                        \
+     out.append((char *) &_tmp, sizeof(_tmp));                        \
+   }                                                                  \
+   else if (var <= (unsigned short int) ~1)                           \
+   {                                                                  \
+     unsigned short int _tmp = var;                                   \
+     out << (char) (id | SHORTSIZE_MARKER_BIT);                       \
+     out.append((char *) &_tmp, sizeof(_tmp));                        \
+   }                                                                  \
+   else                                                               \
+   {                                                                  \
+     out << (char) id;                                                \
+     out.append((char *) &var, sizeof(var));                          \
+   }                                                                  \
+ }
+
+#define	addstring(id, out, str)	\
+ if (str.length())                                                    \
+ {                                                                    \
+   length = str.length();                                             \
+   if (length <= (unsigned char) ~1)                                  \
+   {                                                                  \
+     unsigned char _tmp = length;                                     \
+     out << (char) (id | CHARSIZE_MARKER_BIT);                        \
+     out.append((char *) &_tmp, sizeof(_tmp));                        \
+   }                                                                  \
+   else if (length <= (unsigned short int) ~1)                        \
+   {                                                                  \
+     unsigned short int _tmp = length;                                \
+     out << (char) (id | SHORTSIZE_MARKER_BIT);                       \
+     out.append((char *) &_tmp, sizeof(_tmp));                        \
+   }                                                                  \
+   else                                                               \
+   {                                                                  \
+     out << (char) id;                                                \
+     out.append((char *) &length, sizeof(length));                    \
+   }                                                                  \
+   out.append(str);                                                   \
+ }
+
+// To keep compatibility with old databases, don't bother
+// with long lists at all.  Bloat the size for long strings with
+// one char to just keep a ~1 marker since we don't know the
+// endianness; we don't know where to put a endian-safe
+// size-marker, and we probably rather want the full char to
+// keep the length.  Only strings shorter than (unsigned char) ~1 
+// will be "optimized"; trying to optimize strings that fit in
+// (unsigned short) does not seem to give anything substantial.
+#define	addlist(id, out, list) \
+ if (list.Count())                                                    \
+ {                                                                    \
+   length = list.Count();                                             \
+   if (length <= (unsigned short int) ~1)                             \
+   {                                                                  \
+     if (length <= (unsigned char) ~1)                                \
+     {                                                                \
+       unsigned char _tmp = length;                                   \
+       out << (char) (id | CHARSIZE_MARKER_BIT);                      \
+       out.append((char *) &_tmp, sizeof(_tmp));                      \
+     }                                                                \
+     else                                                             \
+     {                                                                \
+       unsigned short int _tmp = length;                              \
+       out << (char) (id | SHORTSIZE_MARKER_BIT);                     \
+       out.append((char *) &_tmp, sizeof(_tmp));                      \
+     }                                                                \
+     list.Start_Get();                                                \
+     while ((str = (String *) list.Get_Next()))		              \
+     {                                                                \
+       length = str->length();                                        \
+       if (length < (unsigned char) ~1)                               \
+       {                                                              \
+         unsigned char _tmp = length;                                 \
+         out.append((char*) &_tmp, sizeof(_tmp));                     \
+       }                                                              \
+       else                                                           \
+       {                                                              \
+         unsigned char _tmp = ~1;                                     \
+         out.append((char*) &_tmp, sizeof(_tmp));                     \
+         out.append((char*) &length, sizeof(length));                 \
+       }                                                              \
+       out.append(*str);                                              \
+     }                                                                \
+   }                                                                  \
+   else                                                               \
+   {                                                                  \
+     out << (char) id;                                                \
+     out.append((char *) &length, sizeof(length));                    \
+     list.Start_Get();                                                \
+     while ((str = (String *) list.Get_Next()))                       \
+     {                                                                \
+       length = str->length();                                        \
+       out.append((char*) &length, sizeof(length));                   \
+       out.append(*str);                                              \
+     }                                                                \
+   }                                                                  \
+ }
 
     addnum(DOC_ID, s, docID);
     addnum(DOC_TIME, s, docTime);
@@ -160,8 +233,12 @@ void DocumentRef::Serialize(String &s)
     addnum(DOC_HOPCOUNT, s, docHopCount);
     addnum(DOC_SIG, s, docSig);
 
-    addstring(DOC_URL, s, docURL);
-    addstring(DOC_HEAD, s, docHead);
+    // Use a temporary since the addstring macro will evaluate
+    // this multiple times.
+    String tmps = HtURLCodec::instance()->encode(docURL);
+    addstring(DOC_URL, s, tmps);
+    // This is done in the DocumentDB code through the excerpt database
+    //    addstring(DOC_HEAD, s, docHead);
     addstring(DOC_METADSC, s, docMetaDsc);
     addstring(DOC_TITLE, s, docTitle);
 
@@ -182,6 +259,7 @@ void DocumentRef::Serialize(String &s)
 //
 void DocumentRef::Deserialize(String &stream)
 {
+    Clear();
     char	*s = stream.get();
     char	*end = s + stream.length();
     int		length;
@@ -190,85 +268,155 @@ void DocumentRef::Deserialize(String &stream)
     int		x;
     String	*str;
 
-    Clear();
+// There is a problem with getting a numeric value into a
+// numeric unknown type that may be an enum (the other way
+// around is simply by casting (int)).
+//  Supposedly the enum incarnates as a simple type, so we can
+// just check the size and copy the bits.
+#define MEMCPY_ASSIGN(to, from, type) \
+ do {                                                                 \
+   type _tmp = (type) (from);                                         \
+   memcpy((char *) &(to), (char *) &_tmp, sizeof(to));                \
+ } while (0)
 
-#define	getnum(in, var)			memcpy((char *) &var, in, sizeof(var));			\
-    in += sizeof(var)
-#define	getstring(in, str)		getnum(in, length);								\
-        str = 0;										\
-    str.append(in, length);							\
-    in += length
-#define	getlist(in, list)		getnum(in, count);								\
-                                                                                    for (i = 0; i < count; i++)						\
-        {												\
-                                                                                                            getnum(in, length);							\
-        str = new String;							\
-        str->append(in, length);					\
-        list.Add(str);								\
-        in += length;								\
-        }
+#define NUM_ASSIGN(to, from) \
+ do {                                                                 \
+   if (sizeof(to) == sizeof(unsigned long int))                       \
+     MEMCPY_ASSIGN(to, from, unsigned long int);                      \
+   else if (sizeof(to) == sizeof(unsigned int))                       \
+     MEMCPY_ASSIGN(to, from, unsigned int);                           \
+   else if (sizeof(to) == sizeof(unsigned short int))                 \
+     MEMCPY_ASSIGN(to, from, unsigned short int);                     \
+   else if (sizeof(to) == sizeof(unsigned char))                      \
+     MEMCPY_ASSIGN(to, from, unsigned char);                          \
+   /* else fatal error here? */                                       \
+ } while (0)
+
+#define	getnum(type, in, var) \
+ if (type & CHARSIZE_MARKER_BIT)                                      \
+ {                                                                    \
+   NUM_ASSIGN(var, *(unsigned char *) in);                            \
+   in += sizeof(unsigned char);                                       \
+ }                                                                    \
+ else if (type & SHORTSIZE_MARKER_BIT)                                \
+ {                                                                    \
+   unsigned short int _tmp0;                                          \
+   memcpy((char *) &_tmp0, (char *) (in), sizeof(unsigned short));    \
+   NUM_ASSIGN(var, _tmp0);                                            \
+   in += sizeof(unsigned short int);                                  \
+ }                                                                    \
+ else                                                                 \
+ {                                                                    \
+   memcpy((char *) &var, in, sizeof(var));                            \
+   in += sizeof(var);                                                 \
+ }
+
+#define	getstring(type, in, str) \
+ getnum(type, in, length);                                            \
+ str = 0;                                                             \
+ str.append(in, length);                                              \
+ in += length
+
+#define	getlist(type, in, list) \
+ getnum(type, in, count);                                             \
+ if (type & (CHARSIZE_MARKER_BIT | SHORTSIZE_MARKER_BIT))             \
+ {                                                                    \
+   for (i = 0; i < count; i++)                                        \
+   {                                                                  \
+     unsigned char _tmp = *(unsigned char *) in;                      \
+     in += sizeof(_tmp);                                              \
+     if (_tmp < (unsigned char) ~1)                                   \
+       length = _tmp;                                                 \
+     else                                                             \
+       getnum(~(CHARSIZE_MARKER_BIT | SHORTSIZE_MARKER_BIT), in,      \
+              length);                                                \
+     str = new String;                                                \
+     str->append(in, length);                                         \
+     list.Add(str);                                                   \
+     in += length;                                                    \
+   }                                                                  \
+ }                                                                    \
+ else                                                                 \
+ {                                                                    \
+   for (i = 0; i < count; i++)                                        \
+   {                                                                  \
+     getnum(~(CHARSIZE_MARKER_BIT | SHORTSIZE_MARKER_BIT), in,        \
+            length);                                                  \
+     str = new String;                                                \
+     str->append(in, length);                                         \
+     list.Add(str);                                                   \
+     in += length;                                                    \
+   }                                                                  \
+ }
 
     while (s < end)
     {
-        x = *s++;
-        switch (x)
+        x = (unsigned char) *s++;
+        switch (x & ~(CHARSIZE_MARKER_BIT | SHORTSIZE_MARKER_BIT))
         {
         case DOC_ID:
-            getnum(s, docID);
+            getnum(x, s, docID);
             break;
         case DOC_TIME:
-            getnum(s, docTime);
+            getnum(x, s, docTime);
             break;
         case DOC_ACCESSED:
-            getnum(s, docAccessed);
+            getnum(x, s, docAccessed);
             break;
         case DOC_STATE:
-            getnum(s, docState);
+            getnum(x, s, docState);
             break;
         case DOC_SIZE:
-            getnum(s, docSize);
+            getnum(x, s, docSize);
             break;
         case DOC_LINKS:
-            getnum(s, docLinks);
+            getnum(x, s, docLinks);
             break;
         case DOC_IMAGESIZE:
-            getnum(s, docImageSize);
+            getnum(x, s, docImageSize);
             break;
         case DOC_HOPCOUNT:
-            getnum(s, docHopCount);
+            getnum(x, s, docHopCount);
             break;
 	case DOC_BACKLINKS:
-	    getnum(s, docBackLinks);
+	    getnum(x, s, docBackLinks);
 	    break;
 	case DOC_SIG:
-	    getnum(s, docSig);
+	    getnum(x, s, docSig);
 	    break;
         case DOC_URL:
-            getstring(s, docURL);
-            break;
+	    {
+	      // Use a temporary since the addstring macro will evaluate
+	      // this multiple times.
+	      String tmps;
+	      getstring(x, s, tmps);
+
+	      docURL = HtURLCodec::instance()->decode(tmps);
+	    }
+	    break;
         case DOC_HEAD:
-            getstring(s, docHead);
+            getstring(x, s, docHead); docHeadIsSet = 1;
             break;
 	case DOC_METADSC:
-	    getstring(s, docMetaDsc);
+	    getstring(x, s, docMetaDsc);
 	    break;
         case DOC_TITLE:
-            getstring(s, docTitle);
+            getstring(x, s, docTitle);
             break;
         case DOC_DESCRIPTIONS:
-            getlist(s, descriptions);
+            getlist(x, s, descriptions);
             break;
         case DOC_ANCHORS:
-            getlist(s, docAnchors);
+            getlist(x, s, docAnchors);
             break;
         case DOC_EMAIL:
-            getstring(s, docEmail);
+            getstring(x, s, docEmail);
             break;
         case DOC_NOTIFICATION:
-            getstring(s, docNotification);
+            getstring(x, s, docNotification);
             break;
         case DOC_SUBJECT:
-            getstring(s, docSubject);
+            getstring(x, s, docSubject);
             break;
 	case DOC_STRING:
 	  // This is just a debugging string. Ignore it.
@@ -282,24 +430,70 @@ void DocumentRef::Deserialize(String &stream)
 
 
 //*****************************************************************************
-// void DocumentRef::AddDescription(char *d)
+// void DocumentRef::AddDescription(char *d, HtWordList &words)
 //
-void DocumentRef::AddDescription(char *d)
+void DocumentRef::AddDescription(const char *d, HtWordList &words)
 {
-    if (!d)
+    if (!d || !*d)
         return;
 
     while (isspace(*d))
         d++;
+   
+   if (!d || !*d)
+     return;
 
     String	desc = d;
     desc.chop(" \t");
 
+    // Add the description text to the word database with proper factor
+    // Do this first because we may have reached the max_description limit
+    // This also ensures we keep the proper weight on descriptions 
+    // that occur many times
+
+    // Parse words.
+    char         *p                   = desc;
+    static int    minimum_word_length = config.Value("minimum_word_length", 3);
+    static int    max_descriptions    = config.Value("max_descriptions", 5);
+
+    String word;
+    HtWordReference wordRef;
+    wordRef.Flags(FLAG_LINK_TEXT);
+    wordRef.DocID(docID);
+
+    while (*p)
+    {
+      // Reset contents before adding chars each round.
+      word = 0;
+
+      while (*p && HtIsWordChar(*p))
+        word << *p++;
+
+      HtStripPunctuation(word);
+
+      if (word.length() >= minimum_word_length) {
+        // The wordlist takes care of lowercasing; just add it.
+	wordRef.Location((p - (char*)desc) - word.length());
+	wordRef.Word(word);
+        words.Replace(wordRef);
+      }
+
+      while (*p && !HtIsStrictWordChar(*p))
+        p++;
+    }
+
+    // And let's flush the words! (nice comment hu :-)
+    words.Flush();
+    
+    // Now are we at the max_description limit?
+    if (descriptions.Count() >= max_descriptions)
+  	return;
+  	
     descriptions.Start_Get();
     String	*description;
     while ((description = (String *) descriptions.Get_Next()))
     {
-        if (mystrcasecmp(description->get(), desc) == 0)
+        if (mystrcasecmp(description->get(), (char*)desc) == 0)
             return;
     }
     descriptions.Add(new String(desc));
@@ -309,9 +503,10 @@ void DocumentRef::AddDescription(char *d)
 //*****************************************************************************
 // void DocumentRef::AddAnchor(char *a)
 //
-void DocumentRef::AddAnchor(char *a)
+void DocumentRef::AddAnchor(const char *a)
 {
-    docAnchors.Add(new String(a));
+    if (a)
+    	docAnchors.Add(new String(a));
 }
 
 

@@ -1,3 +1,10 @@
+Tue Dec 07 20:32:34 1999  Marcel Bosc   <bosc@ceic.com>
+
+	* htdig: Split the Configuration class into Configuration
+	and HtConfiguration. All the HtConfiguration and the 
+	configuration parsing (lex..)  was woved to htcommon.
+	Configuration was replaced by HtConfiguration as needed
+
 Tue Dec 07 16:21:13 1999  Loic Dachary  <loic@ceic.com>
 
 	* configure.in: added AM_PROG_LEX and AC_PROG_YACC 
@@ -24,6 +31,18 @@ Mon Dec  6 21:34:29 EET 1999  Vadim Chekan  <vadim@etc.lviv.ua>
 	in config is added and is new config compatible.
 	New code has'n got PR#490 bug (don't authentificate robot.txt)
 
+Mon Dec 06 11:58:56 1999   Marcel Bosc <bosc@ceic.com>
+
+	* HtVectorGeneric.h: generic vectors, stl-free: this was originally a copy of
+	HtVector.h with Object * replaced by GType and some small changes.
+	It has been modified and checked to see if it all works ok.
+	You can build vectors of any type that has an empty constructor.
+	* HtVectorGenericCode.h: generic vectors, stl-free: implementation
+	(modified "copy" of HtVector.cc)
+	* HtVectorGeneric.cc: generic vectors: implementation for common types
+	* HtVector_int.h: generic vectors: declaration for the most common type
+	(and example of howto use)
+	
 Sat Dec  4 23:49:18 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htfuzzy/Synonym.cc (createDB): Change declaration to match
@@ -42,6 +61,23 @@ Sat Dec  4 15:38:34 EET 1999  Vadim Chekan  <vadim@etc.lviv.ua>
 
 	* htdig/Document.cc: make "http_proxy" parameter
 	url-depended for new configuration.
+
+Fri Dec 03 14:57:13 1999  Marcel Bosc <bosc@ceic.com>
+
+	* BerkelyDB: Compression code: added possibility to use 
+	user-defined compression routines (the goal is to enable 
+	the mifluz-specific DB page compression that obtains 
+	higher compression ratios than generic zlib compression)
+	this envolves the following changes in BerkeleyDB:
+	* BerkelyDB/CompressionEnvironment: Adding a structure db_cmpr_info
+	in db_env that permits db user to specify the external compression
+	routines and other information related to compression
+	* BerkelyDB/CompressionEnvironment: Adding a cmpr_context structure
+	to DB_MPOOLFILE that stores information that compression needs
+	 (the _weacmpr DB and the db_cmpr_info)
+	* BerkelyDB/Compression: Needed to modify the compression
+	system (that is implemented in the BerkelyDB  memory pool) to permit
+	higher compression ratios and to use the compression environment
 
 Thu Dec  2 16:47:30 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 

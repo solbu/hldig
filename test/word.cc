@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.1 1999/10/19 09:12:40 loic Exp $
+// $Id: word.cc,v 1.14.2.2 1999/12/07 19:54:14 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -29,7 +29,7 @@
 #include "WordKey.h"
 #include "WordList.h"
 #include "WordType.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 
 static ConfigDefaults defaults[] = {
   { "word_db", "var/htdig/db.words.db", 0 },
@@ -37,7 +37,7 @@ static ConfigDefaults defaults[] = {
   { 0 }
 };
 
-static Configuration	config;
+static HtConfiguration	config;
 
 typedef struct {
   char* word_desc;

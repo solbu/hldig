@@ -1,30 +1,28 @@
 //
 // Endings.cc
 //
-// Implementation of Endings
+// Endings: A fuzzy matching algorithm to match the grammatical endings rules
+//          used by the ispell dictionary files.
+//           
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Endings.cc,v $
-// Revision 1.2  1998/10/12 02:04:00  ghutchis
+// $Id: Endings.cc,v 1.8.2.1 1999/12/07 19:54:11 bosc Exp $
 //
-// Updated Makefiles and configure variables.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: Endings.cc,v 1.2 1998/10/12 02:04:00 ghutchis Exp $";
-#endif
 
 #include "Endings.h"
 #include "htfuzzy.h"
-#include <Configuration.h>
+#include "HtConfiguration.h"
 
 
 //*****************************************************************************
 // Endings::Endings()
 //
-Endings::Endings()
+Endings::Endings(const HtConfiguration& config_arg) :
+  Fuzzy(config_arg)
 {
     root2word = 0;
     word2root = 0;
@@ -67,38 +65,57 @@ Endings::getWords(char *w, List &words)
 
     String	word = w;
     word.lowercase();
-	
-    if (word2root->Get(word, data) == OK)
-    {
-	//
-	// Found the root of the word.  We'll add it to the list already
-	//
-	word = data;
-	words.Add(new String(word));
-    }
-    else
-    {
-	//
-	// The root wasn't found.  This could mean that the word
-	// is already the root.
-	//
-    }
+    HtStripPunctuation(word);
 
     if (root2word->Get(word, data) == OK)
-    {
-	//
-	// Found the root's permutations
-	//
-	char	*token = strtok(data.get(), " ");
-	while (token)
-	{
-	    if (mystrcasecmp(token, w) != 0)
-	    {
-		words.Add(new String(token));
-	    }
-	    token = strtok(0, " ");
-	}
-    }
+      {
+        //
+        // Found the root's permutations
+        //
+        char    *token = strtok(data.get(), " ");
+        while (token)
+	  {
+            if (mystrcasecmp(token, w) != 0)
+	      {
+                words.Add(new String(token));
+	      }
+            token = strtok(0, " ");
+	  }
+      }
+    else
+      {
+	if (word2root->Get(word, data) == OK)
+	  {
+	    //
+	    // Found the root of the word.  We'll add it to the list already
+	    //
+	    word = data;
+	    words.Add(new String(word));
+	  }
+	else
+	  {
+	    //
+	    // The root wasn't found.  This could mean that the word
+	    // is already the root.
+	    //
+	  }
+
+	if (root2word->Get(word, data) == OK)
+	  {
+	    //
+	    // Found the root's permutations
+	    //
+	    char	*token = strtok(data.get(), " ");
+	    while (token)
+	      {
+		if (mystrcasecmp(token, w) != 0)
+		  {
+		    words.Add(new String(token));
+		  }
+		token = strtok(0, " ");
+	      }
+	  }
+      }
 }
 
 
@@ -121,21 +138,20 @@ Endings::addWord(char *)
 
 
 //*****************************************************************************
-// int Endings::openIndex(Configuration &)
+// int Endings::openIndex()
 //   Dummy method.  Just makde sure we don't actually create a database.
 //
 int
-Endings::openIndex(Configuration &)
+Endings::openIndex()
 {
-    String	filename;
-    filename = config["endings_word2root_db"];
-    word2root = Database::getDatabaseInstance();
-    if (word2root->OpenRead(filename) == NOTOK)
+    String	filename = config["endings_word2root_db"];
+    word2root = Database::getDatabaseInstance(DB_BTREE);
+    if (word2root->OpenRead((char*)filename) == NOTOK)
 	return NOTOK;
 
     filename = config["endings_root2word_db"];
-    root2word = Database::getDatabaseInstance();
-    if (root2word->OpenRead(filename) == NOTOK)
+    root2word = Database::getDatabaseInstance(DB_BTREE);
+    if (root2word->OpenRead((char*)filename) == NOTOK)
 	return NOTOK;
 
     return OK;
@@ -143,11 +159,11 @@ Endings::openIndex(Configuration &)
 
 
 //*****************************************************************************
-// int Endings::writeDB(Configuration &)
+// int Endings::writeDB()
 //   Dummy method.  Just making sure we don't actually write anything.
 //
 int
-Endings::writeDB(Configuration &)
+Endings::writeDB()
 {
     return OK;
 }

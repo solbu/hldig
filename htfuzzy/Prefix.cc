@@ -1,49 +1,32 @@
 //
 // Prefix.cc
 //
-// Implementation of Prefix
+// Prefix: The prefix fuzzy algorithm. Performs a O(log n) search on for words
+//         matching the *prefix* specified--thus significantly faster than a full
+//         substring search.
 //
-// $Log: Prefix.cc,v $
-// Revision 1.5  1998/11/01 00:00:40  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Replaced system calls with htlib/my* functions.
+// $Id: Prefix.cc,v 1.13.2.1 1999/12/07 19:54:11 bosc Exp $
 //
-// Revision 1.4  1998/10/12 02:04:00  ghutchis
-//
-// Updated Makefiles and configure variables.
-//
-// Revision 1.2  1998/08/03 16:50:38  ghutchis
-//
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.1  1998/06/21 23:20:04  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
-//
-// Revision 1.2  1997/03/24 04:33:18  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: Prefix.cc,v 1.5 1998/11/01 00:00:40 ghutchis Exp $";
-#endif
 
 #include "Prefix.h"
-#include <htString.h>
-#include <List.h>
-#include <StringMatch.h>
-#include <Configuration.h>
-
-extern Configuration	config;
-
+#include "htString.h"
+#include "List.h"
+#include "StringMatch.h"
+#include "HtConfiguration.h"
 
 //*****************************************************************************
-// Prefix::Prefix()
+// Prefix::Prefix(const HtConfiguration& config_arg)
 //
-Prefix::Prefix()
+Prefix::Prefix(const HtConfiguration& config_arg) :
+  Fuzzy(config_arg)
 {
+    name = "prefix";
 }
 
 
@@ -62,21 +45,23 @@ Prefix::~Prefix()
 void
 Prefix::getWords(char *w, List &words)
 {
-
     if (w == NULL || w[0] == '\0')
 	return;
 
-    char 	*prefix_suffix = config["prefix_match_character"];
-    int 	prefix_suffix_length = prefix_suffix == NULL 
-					? 0 : strlen(prefix_suffix);
-    int 	minimum_prefix_length = config.Value("minimum_prefix_length");
+    String	stripped = w;
+    HtStripPunctuation(stripped);
+    w = stripped.get();
+
+    const String	prefix_suffix = config["prefix_match_character"];
+    int 		prefix_suffix_length = prefix_suffix.length();
+    int 		minimum_prefix_length = config.Value("minimum_prefix_length");
 
     if (debug)
          cerr << " word=" << w << " prefix_suffix=" << prefix_suffix 
 		<< " prefix_suffix_length=" << prefix_suffix_length
 		<< " minimum_prefix_length=" << minimum_prefix_length << "\n";
 
-    if (strlen(w) < minimum_prefix_length + prefix_suffix_length)
+    if ((int)strlen(w) < minimum_prefix_length + prefix_suffix_length)
 	return;
 
     //  A null prefix character means that prefix matching should be 
@@ -87,12 +72,13 @@ Prefix::getWords(char *w, List &words)
 	    && strcmp(prefix_suffix, w+strlen(w)-prefix_suffix_length)) 
 	return;
 
-    Database	*dbf = Database::getDatabaseInstance();
-    dbf->OpenRead(config["word_db"]);
+    HtWordList	wordDB(config);
+    if (wordDB.Open(config["word_db"], O_RDONLY) == NOTOK)
+      return;
 
     int		wordCount = 0;
     int		maximumWords = config.Value("max_prefix_matches", 1000);
-    char	*s;
+    String	*s;
     int		len = strlen(w) - prefix_suffix_length;
     
     // Strip the prefix character(s)
@@ -100,25 +86,28 @@ Prefix::getWords(char *w, List &words)
     strncpy(w2, w, sizeof(w2) - 1);
     w2[sizeof(w2) - 1] = '\0';
     w2[strlen(w2) - prefix_suffix_length] = '\0';
-    String w3 = new String(w2);
+    String w3(w2);
     w3.lowercase();
-    dbf->Start_Seq(w3.get());
+    List	*wordList = wordDB[w3.get()];
 
-    while (wordCount < maximumWords && (s = dbf->Get_Next_Seq()))
+    while (wordCount < maximumWords && (s = (String *) wordList->Get_Next()))
     {
-	if (mystrncasecmp(s, w, len))
+	if (mystrncasecmp(s->get(), w, len))
 	    break;
-	words.Add(new String(s));
+	words.Add(new String(*s));
 	wordCount++;
     }
-    dbf->Close();
-    delete dbf;
+    if (wordList) {
+      wordList->Destroy();
+      delete wordList;
+    }
+    wordDB.Close();
 }
 
 
 //*****************************************************************************
 int
-Prefix::openIndex(Configuration &)
+Prefix::openIndex()
 {
   return 0;
 }

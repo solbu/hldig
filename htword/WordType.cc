@@ -4,7 +4,7 @@
 // WordType:  Wrap some attributes to make is...() type
 //            functions and other common functions without having to manage
 //            the attributes or the exact attribute combination semantics.
-//	      Configuration parameter used:
+//	      HtConfiguration parameter used:
 //            valid_punctuation,extra_word_characters,minimum_word_length,
 //            maximum_word_length,allow_numbers,bad_word_list
 //
@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.cc,v 1.3.2.1 1999/10/15 16:07:41 loic Exp $
+// $Id: WordType.cc,v 1.3.2.2 1999/12/07 19:54:13 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -31,14 +31,14 @@ WordType* word_type_default = 0;
 
 // Must only be called once (no tests, though).
 void 
-WordType::Initialize(const Configuration &config_arg)
+WordType::Initialize(const HtConfiguration &config_arg)
 {
   if(word_type_default == 0) {
     word_type_default = new WordType(config_arg);
   }
 }
 
-WordType::WordType(const Configuration &config)
+WordType::WordType(const HtConfiguration &config)
 {
   const String valid_punct = config["valid_punctuation"];
   const String extra_word_chars = config["extra_word_characters"];

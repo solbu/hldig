@@ -1,46 +1,51 @@
 //
 // EndingsDB.cc
 //
-// Implementation of Endings class DB related methods
+// EndingsDB: Implementation of the private endings database
+//           
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: EndingsDB.cc,v $
-// Revision 1.2  1998/09/18 02:38:08  ghutchis
+// $Id: EndingsDB.cc,v 1.9.2.1 1999/12/07 19:54:11 bosc Exp $
 //
-// Bug fixes for 3.1.0b2
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: EndingsDB.cc,v 1.2 1998/09/18 02:38:08 ghutchis Exp $";
-#endif
 
 #include "Endings.h"
 #include "htfuzzy.h"
 #include "SuffixEntry.h"
-extern "C"
-{
-# include <rxposix.h>
-}
-#include <Dictionary.h>
-#include <List.h>
-#include <Configuration.h>
+#include "Dictionary.h"
+#include "List.h"
+#include "HtConfiguration.h"
+
+#include <regex.h>
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>
 
 
-#define	TMP_WORD2ROOT		"/tmp/word2root.gdbm"
-#define	TMP_ROOT2WORD		"/tmp/root2word.gdbm"
-
-
 //*****************************************************************************
 //
 int
-Endings::createDB(Configuration &config)
+Endings::createDB(const HtConfiguration &config)
 {
     Dictionary	rules;
+    String      tmpdir = getenv("TMPDIR");
+    String      word2root, root2word;
+    if (tmpdir.length())
+      {
+	word2root = tmpdir;
+	root2word = tmpdir;
+      }
+    else
+      {
+	word2root = "/tmp";
+	root2word = "/tmp";
+      }
+
+    word2root << "/word2root.db";
+    root2word << "/root2word.db";
 
     if (debug)
 	cout << "htfuzzy/endings: Reading rules\n";
@@ -51,25 +56,28 @@ Endings::createDB(Configuration &config)
     if (debug)
 	cout << "htfuzzy/endings: Creating databases\n";
 	
-    if (createRoot(rules, TMP_WORD2ROOT, TMP_ROOT2WORD,
+    if (createRoot(rules, word2root, root2word,
 		   config["endings_dictionary"]) == NOTOK)
 	return NOTOK;
 
     //
-    // Since we used files in /tmp for our temporary databases, we need
+    // Since we used files in TMPDIR for our temporary databases, we need
     // to now move them to the correct location as defined in the config
     // database.
     //
-    system(form("/bin/mv %s %s;/bin/mv %s %s",
-		TMP_ROOT2WORD, config["endings_root2word_db"],
-		TMP_WORD2ROOT, config["endings_word2root_db"]));
+
+    link(root2word.get(), config["endings_root2word_db"]);
+    unlink(root2word.get());
+    link(word2root.get(), config["endings_word2root_db"]);
+    unlink(word2root.get());
+
     return OK;
 }
 
 
 //*****************************************************************************
 int
-Endings::readRules(Dictionary &rules, char *rulesFile)
+Endings::readRules(Dictionary &rules, const String& rulesFile)
 {
     FILE	*fl = fopen(rulesFile, "r");
 
@@ -138,14 +146,14 @@ Endings::readRules(Dictionary &rules, char *rulesFile)
 
 //*****************************************************************************
 int
-Endings::createRoot(Dictionary &rules, char *word2root, char *root2word, char *dictFile)
+Endings::createRoot(Dictionary &rules, char *word2root, char *root2word, const String& dictFile)
 {
     FILE	*fl = fopen(dictFile, "r");
     if (fl == NULL)
 	return NOTOK;
 
-    Database	*w2r = Database::getDatabaseInstance();
-    Database	*r2w = Database::getDatabaseInstance();
+    Database	*w2r = Database::getDatabaseInstance(DB_BTREE);
+    Database	*r2w = Database::getDatabaseInstance(DB_BTREE);
 
     w2r->OpenReadWrite(word2root, 0664);
     r2w->OpenReadWrite(root2word, 0664);
@@ -189,7 +197,7 @@ Endings::createRoot(Dictionary &rules, char *word2root, char *root2word, char *d
 	//
 	for (int i = 0; i < wordList.Count(); i++)
 	{
-	    w2r->Put(((String *)wordList[i])->get(), word, strlen(input));
+	    w2r->Put(*(String *)wordList[i], String(word, strlen(input)));
 	}
     }
 
@@ -309,11 +317,11 @@ Endings::expandWord(String &words, List &wordList,
 	    root = word;
 	    regex_t	reg;
 	    rule = entry->rule;
-	    if (strchr(rule, '\''))
+	    if (strchr((char*)rule, '\''))
 		continue;
 	    if (debug > 2)
 		cout << "Applying regex '" << entry->expression << "' to " << word << endl;
-	    regcomp(&reg, entry->expression, REG_ICASE | REG_NOSUB | REG_EXTENDED);
+	    regcomp(&reg, (char*)entry->expression, REG_ICASE | REG_NOSUB | REG_EXTENDED);
 	    if (regexec(&reg, word, 0, NULL, 0) == 0)
 	    {
 		//
@@ -324,7 +332,7 @@ Endings::expandWord(String &words, List &wordList,
 		    //
 		    // We need to remove something...
 		    //
-		    p = strchr(rule, ',');
+		    p = strchr((char*)rule, ',');
 		    if (p)
 		    {
 			*p++ = '\0';

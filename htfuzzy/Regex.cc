@@ -1,9 +1,8 @@
 //
-// Substring.cc
+// Regex.cc
 //
-// Substring: The substring fuzzy algorithm. Currently a rather slow, naive approach
-//            that checks the substring against every word in the word db.
-//            It does not generate a separate database.
+// Regex: A fuzzy to match input regex against the word database.
+//        Based on the substring fuzzy
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -11,71 +10,71 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Substring.cc,v 1.11.2.1 1999/12/07 19:54:11 bosc Exp $
+// $Id: Regex.cc,v 1.7.2.1 1999/12/07 19:54:11 bosc Exp $
 //
 
-#include "Substring.h"
+#include "Regex.h"
 #include "htString.h"
 #include "List.h"
 #include "StringMatch.h"
 #include "HtConfiguration.h"
 
 //*****************************************************************************
-// Substring::Substring(const HtConfiguration& config_arg)
+// Regex::Regex(const HtConfiguration& config_arg)
 //
-Substring::Substring(const HtConfiguration& config_arg) :
+Regex::Regex(const HtConfiguration& config_arg) :
   Fuzzy(config_arg)
 {
-    name = "substring";
+    name = "regex";
 }
 
 
 //*****************************************************************************
-// Substring::~Substring()
+// Regex::~Regex()
 //
-Substring::~Substring()
+Regex::~Regex()
 {
 }
 
 
 //*****************************************************************************
-// A very simplistic and inefficient substring search.  For every word
+// A very simplistic and inefficient regex search.  For every word
 // that is looked for we do a complete linear search through the word
 // database.
 // Maybe a better method of doing this would be to mmap a list of words
-// to memory and then run the StringMatch on it.  It would still be a
+// to memory and then run the regex on it.  It would still be a
 // linear search, but with much less overhead.
 //
 void
-Substring::getWords(char *w, List &words)
+Regex::getWords(char *, List &words)
 {
-    // First strip the punctuation
-    String	stripped = w;
-    HtStripPunctuation(stripped);
+    HtRegex	regexMatch;
+    String	stripped;
 
-    // Now set up the StringMatch object
-    StringMatch	match;
-    match.Pattern(stripped);
+    // First we have to strip the necessary punctuation
+    stripped.remove("^.[]$()|*+?{},-\\");
 
-    // And get the list of all possible words
-    HtWordList	wordDB(config);
-    List	*wordList;
+    // Anchor the string to be matched
+    regexMatch.set(String("^") + stripped);
+
+    HtWordList    wordDB(config);
+    List        *wordList;
     String	*key;
     wordDB.Open(config["word_db"], O_RDONLY);
     wordList = wordDB.Words();
 
-    int		wordCount = 0;
-    int		maximumWords = config.Value("substring_max_words", 25);
+    int         wordCount = 0;
+    int         maximumWords = config.Value("regex_max_words", 25);
 
     wordList->Start_Get();
     while (wordCount < maximumWords && (key = (String *) wordList->Get_Next()))
-    {
-	if (match.FindFirst((char*)*key) >= 0)
-	{
-	    words.Add(new String(*key));
-	    wordCount++;
-	}
-    }
+      {
+        if (regexMatch.match(*key, 0, 0) != 0)
+	  {
+            words.Add(new String(*key));
+            wordCount++;
+	  }
+      }
     if (wordList) {
       wordList->Destroy();
       delete wordList;
@@ -86,7 +85,7 @@ Substring::getWords(char *w, List &words)
 
 //*****************************************************************************
 int
-Substring::openIndex()
+Regex::openIndex()
 {
   return 0;
 }
@@ -94,14 +93,14 @@ Substring::openIndex()
 
 //*****************************************************************************
 void
-Substring::generateKey(char *, String &)
+Regex::generateKey(char *, String &)
 {
 }
 
 
 //*****************************************************************************
 void
-Substring::addWord(char *)
+Regex::addWord(char *)
 {
 }
 

@@ -1,25 +1,29 @@
 //
 // Soundex.cc
 //
-// Implementation of Soundex
+// Soundex: A fuzzy matching algorithm on the principal of the 
+//          Soundex method for last names used by the U.S. INS
+//          and described by Knuth and others.
 //
-// $Log: Soundex.cc,v $
-// Revision 1.1  1997/02/03 17:11:12  turtle
-// Initial revision
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: Soundex.cc,v 1.6.2.1 1999/12/07 19:54:11 bosc Exp $
 //
-#if RELEASE
-static char RCSid[] = "$Id: Soundex.cc,v 1.1 1997/02/03 17:11:12 turtle Exp $";
-#endif
 
 #include "Soundex.h"
-#include <Dictionary.h>
+#include "Dictionary.h"
 
+#include <ctype.h>
 
 //*****************************************************************************
-// Soundex::Soundex()
+// Soundex::Soundex(const HtConfiguration& config_arg)
 //
-Soundex::Soundex()
+Soundex::Soundex(const HtConfiguration& config_arg) :
+  Fuzzy(config_arg)
 {
     name = "soundex";
 }
@@ -39,16 +43,29 @@ Soundex::~Soundex()
 void
 Soundex::generateKey(char *word, String &key)
 {
+    int code = 0;
+    int lastcode = 0;
+
     key = 0;
+    if (!word)
+      {
+	key = '0';
+	return;
+      }
+
+    while (!isalpha(*word))
+      word++;
+
     if (word)
     {
 	key << *word++;
     }
     else
     {
-	key = "0";
-	return;
+      key = '0';
+      return;
     }
+
 
     while (key.length() < 6)
     {
@@ -58,7 +75,7 @@ Soundex::generateKey(char *word, String &key)
 	    case 'p':
 	    case 'f':
 	    case 'v':
-		key << '1';
+		code = 1;
 		break;
 
 	    case 'c':
@@ -69,25 +86,25 @@ Soundex::generateKey(char *word, String &key)
 	    case 'q':
 	    case 'x':
 	    case 'z':
-		key << '2';
+		code = 2;
 		break;
 
 	    case 'd':
 	    case 't':
-		key << '3';
+		code = 3;
 		break;
 
 	    case 'l':
-		key << '4';
+		code = 4;
 		break;
 
 	    case 'm':
 	    case 'n':
-		key << '5';
+		code = 5;
 		break;
 
 	    case 'r':
-		key << '6';
+		code = 6;
 		break;
 
 	    case 'a':
@@ -98,8 +115,17 @@ Soundex::generateKey(char *word, String &key)
 	    case 'y':
 	    case 'w':
 	    case 'h':
+	        code = 0;
 		break;
+
+	    default:
+	        break;
 	}
+	if (code && code != lastcode)
+	  {
+	    key << code;
+	    lastcode = code;
+	  }
 	if (*word)
 	    word++;
 	else
@@ -125,8 +151,8 @@ Soundex::addWord(char *word)
     String	*s = (String *) dict->Find(key);
     if (s)
     {
-	if (mystrcasestr(s->get(), word) != 0)
-	    (*s) << ' ' << word;
+      //	if (mystrcasestr(s->get(), word) != 0)
+      (*s) << ' ' << word;
     }
     else
     {

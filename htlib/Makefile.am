@@ -1,8 +1,6 @@
 CFLAGS=-g
 include $(top_srcdir)/Makefile.config
 
-EXTRA_DIST=conf_lexer.cxx conf_parser.cxx
-
 lib_LTLIBRARIES = libht.la
 
 libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
@@ -12,8 +10,8 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	good_strtok.cc strcasecmp.cc \
 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc \
 	HtVector.cc HtHeap.cc regex.c \
-	HtPack.cc HtDateTime.cc HtRegex.cc \
-	conf_lexer.lxx conf_parser.yxx
+	HtPack.cc HtDateTime.cc HtRegex.cc 
+
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
@@ -42,4 +40,5 @@ include_HEADERS = \
 	htString.h \
 	lib.h \
 	langinfo.h \
-	regex.h
+	regex.h 
+

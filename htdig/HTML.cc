@@ -10,13 +10,13 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62.2.1 1999/11/26 23:21:59 grdetil Exp $
+// $Id: HTML.cc,v 1.62.2.2 1999/12/07 19:54:09 bosc Exp $
 //
 
 #include "htdig.h"
 #include "HTML.h"
 #include "HtSGMLCodec.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "StringMatch.h"
 #include "StringList.h"
 #include "URL.h"
@@ -464,7 +464,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	return; // Nothing matched.
 
     // Use the configuration code to match attributes as key-value pairs
-    Configuration	attrs;
+    HtConfiguration	attrs;
     attrs.NameValueSeparators("=");
     attrs.Add(position);
 

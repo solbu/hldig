@@ -1,31 +1,37 @@
 //
 // Fuzzy.h
 //
-// This is the base class for all the different types of fuzzy searches.
-// We only define the interface.
+// Fuzzy: This is the base class for all the different types of fuzzy searches.
+//        We only define the interface.
 //
 // There are two main uses of classes derived from this class:
 //    1) Creation of a fuzzy index
 //    2) Searching for a word using the fuzzy index
 //
-// $Id: Fuzzy.h,v 1.2 1997/03/24 04:33:18 turtle Exp $
+// The Fuzzy classes take the raw words from the user's query and generate
+// a list of words to be looked up in the database. These words are created
+// using the getWords call and can either be picked off from a separate fuzzy
+// database specific to the method, or by generating words on the fly.
 //
-// $Log: Fuzzy.h,v $
-// Revision 1.2  1997/03/24 04:33:18  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
+// $Id: Fuzzy.h,v 1.8.2.1 1999/12/07 19:54:11 bosc Exp $
 //
-//
+
 #ifndef _Fuzzy_h_
 #define _Fuzzy_h_
 
-#include <Object.h>
-#include <htString.h>
-#include <Database.h>
+#include "Object.h"
+#include "htString.h"
+#include "Database.h"
+#include "WordType.h"
+#include "HtWordList.h"
 
-class Configuration;
+class HtConfiguration;
 class Dictionary;
 class List;
 
@@ -36,7 +42,7 @@ public:
     //
     // Construction/Destruction
     //
-    Fuzzy();
+    Fuzzy(const HtConfiguration& config);
     virtual		~Fuzzy();
 
     //
@@ -48,7 +54,7 @@ public:
     //
     // For the current algorithm, open the key database
     //
-    virtual int		openIndex(Configuration &config);
+    virtual int		openIndex();
 
     //
     // For searching, we will need to keep track of the weight associated
@@ -62,14 +68,14 @@ public:
     //
     // For the current algorithm, write the database to disk.
     //
-    virtual int		writeDB(Configuration &config);
+    virtual int		writeDB();
 
     //
     // For the current algorithm, create the database.
     // This is for those algoritms that don't need a list of words
     // to work.
     //
-    virtual int		createDB(Configuration &config);
+    virtual int		createDB(const HtConfiguration &config);
 	
     //
     // Given a word from the htdig word database, create the appropriate
@@ -86,7 +92,7 @@ public:
     // Fuzzy algorithm factory.  This returns a new Fuzzy algorithm
     // object that belongs to the given name.
     //
-    static Fuzzy	*getFuzzyByName(char *name);
+    static Fuzzy	*getFuzzyByName(char *name, const HtConfiguration& config);
 	
 protected:
     //
@@ -94,10 +100,11 @@ protected:
     //
     virtual void	generateKey(char *word, String &key);
 
-    char		*name;
-    Database		*index;
-    Dictionary		*dict;
-    double		weight;
+    char			*name;
+    Database			*index;
+    Dictionary			*dict;
+    double			weight;
+    const HtConfiguration&	config;
 };
 
 #endif

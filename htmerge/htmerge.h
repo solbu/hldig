@@ -1,42 +1,53 @@
 //
 // htmerge.h
 //
-// $Id: htmerge.h,v 1.2 1997/03/24 04:33:23 turtle Exp $
+// htmerge: The interface to the htmerge program
+//          Defines the calling conventions for
+//            mergeDB -> db.cc (merging two databases)
+//            mergeWords -> words.cc (updating the word db)
+//            convertDocs -> docs.cc (updating the doc db)
+//            reportError -> htmerge.cc (reporting errors)
+//    
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: htmerge.h,v $
-// Revision 1.2  1997/03/24 04:33:23  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
+// $Id: htmerge.h,v 1.10.2.1 1999/12/07 19:54:12 bosc Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
-//
+
 #ifndef _htmerge_h_
 #define _htmerge_h_
 
-#include <defaults.h>
-#include <WordRecord.h>
-#include <DocumentDB.h>
-#include <htString.h>
-#include <good_strtok.h>
+#include "defaults.h"
+#include "DocumentDB.h"
+#include "HtURLCodec.h"
+#include "HtWordList.h"
+#include "HtWordReference.h"
+#include "htString.h"
+
 #include <fstream.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <Database.h>
 #include <ctype.h>
 #include <string.h>
 
 
-extern char			**array;
-extern int			n_array_elements;
+// Globals shared by one or more components of htmerge
 extern Dictionary	discard_list;
-extern int			verbose;
-extern int			stats;
+extern int		verbose;
+extern int		stats;
+extern HtConfiguration	merge_config;
 
-void mergeWords(char *wordtmp, char *wordfile);
-void convertDocs(char *docs, char *docgdbm);
-void sort(char *);
+
+// Component procedures
+void mergeDB();
+void mergeWords();
+void convertDocs();
+
+// Of course reporting errors too
 void reportError(char *msg);
 
 #endif

@@ -1,4 +1,4 @@
-/* Configuration reader for ht://Dig  */
+/* HtConfiguration reader for ht://Dig  */
 
 %option yylineno noyywrap nounput
 %x t_right
@@ -8,7 +8,7 @@
 
 %{
 //#include <string.h>
-#include "Configuration.h"
+#include "HtConfiguration.h"
 //#include "Dictionary.h"
 #include "conf.tab.cc.h"
 #define MAX_INCLUDE_DEPTH 10

@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.h,v 1.6.2.1 1999/11/21 15:24:52 vadim Exp $
+// $Id: Configuration.h,v 1.6.2.2 1999/12/07 19:54:12 bosc Exp $
 //
 
 #ifndef	_Configuration_h_
@@ -22,7 +22,6 @@
 #include "Dictionary.h"
 #include "htconfig.h"
 #include "htString.h"
-#include "URL.h"
 
 
 
@@ -46,10 +45,8 @@ public:
     Configuration();
 
     Configuration(const Configuration& config) :
-      dcGlobalVars(config.dcGlobalVars),
-      dcServers(config.dcServers),
-      dcUrls(config.dcUrls),
-      separators(config.separators)
+	dcGlobalVars(config.dcGlobalVars),
+	separators(config.separators)
       {
         allow_multiple = config.allow_multiple;
       }
@@ -59,9 +56,8 @@ public:
     //
     // Adding and deleting items to and from the Configuration
     //
-    void		Add(const String& name, const String& value);
     void		Add(const String& str);
-    void		Add(char *name, char *value, Configuration *aList);
+    void		Add(const String& name, const String& value);
     int			Remove(const String& name);
 
     //
@@ -79,18 +75,10 @@ public:
     // operator
     //
     const String	Find(const String& name) const;
-    const String	Find(const char *blockName, const char *name, const char *value) const;
-    const String	Find(URL *aUrl, const char *value) const;
     const String	operator[](const String& name) const;
     int		Value(const String& name, int default_value = 0) const;
     double	Double(const String& name, double default_value = 0) const;
     int		Boolean(const String& name, int default_value = 0) const;
-    int		Value(char *blockName,char *name,char *value,int default_value = 0);
-    double	Double(char *blockName,char *name,char *value,double default_value = 0);
-    int		Boolean(char *blockName,char *name,char *value,int default_value = 0);
-    int		Value(URL *aUrl,char *value,int default_value = 0);
-    double	Double(URL *aUrl,char *value,double default_value = 0);
-    int		Boolean(URL *aUrl,char *value,int default_value = 0);
     Object     *Get_Object(char *name);
 
     //
@@ -100,8 +88,6 @@ public:
 
 protected:
     Dictionary		dcGlobalVars;
-    Dictionary          dcServers;
-    Dictionary          dcUrls;
     String		separators;
     int			allow_multiple;
 };

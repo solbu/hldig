@@ -7,7 +7,7 @@
 //           NOTE: Some code previously attempted to directly read from 
 //           the word db. This will no longer work, so it's preferred to 
 //           use the access methods here.
-//	     Configuration parameter used:
+//	     HtConfiguration parameter used:
 //           wordlist_extend
 //           wordlist_verbose
 //
@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.4 1999/11/02 11:40:43 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.5 1999/12/07 19:54:13 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -29,7 +29,7 @@
 #include "WordRecord.h"
 #include "WordType.h"
 #include "WordStat.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "htString.h"
 #include "HtPack.h"
 
@@ -50,7 +50,7 @@ WordList::~WordList()
 
 //*****************************************************************************
 //
-WordList::WordList(const Configuration& config_arg) :
+WordList::WordList(const HtConfiguration& config_arg) :
   wtype(config_arg),
   config(config_arg)
 {

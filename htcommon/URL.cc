@@ -11,12 +11,12 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.3.2.2 1999/12/02 02:42:14 ghutchis Exp $
+// $Id: URL.cc,v 1.3.2.3 1999/12/07 19:54:09 bosc Exp $
 //
 
 #include "URL.h"
 #include "Dictionary.h"
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "StringMatch.h"
 #include "StringList.h"
 
@@ -30,7 +30,7 @@
 #include <arpa/inet.h>
 #include <ctype.h>
 
-extern Configuration	config;
+extern HtConfiguration	config;
 
 //*****************************************************************************
 // URL::URL()

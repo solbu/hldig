@@ -1,9 +1,8 @@
 //
-// Substring.h
+// Regex.h
 //
-// Substring: The substring fuzzy algorithm. Currently a rather slow, naive approach
-//            that checks the substring against every word in the word db.
-//            It does not generate a separate database.
+// Regex: A fuzzy to match input regex against the word database.
+//        Based on the substring fuzzy
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -11,27 +10,28 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Substring.h,v 1.3.2.1 1999/12/07 19:54:11 bosc Exp $
+// $Id: Regex.h,v 1.3.2.1 1999/12/07 19:54:11 bosc Exp $
 //
 
-#ifndef _Substring_h_
-#define _Substring_h_
+#ifndef _Regex_h_
+#define _Regex_h_
 
 #include "Fuzzy.h"
+#include "HtRegex.h"
 
 class Dictionary;
 class String;
 class List;
 
 
-class Substring : public Fuzzy
+class Regex : public Fuzzy
 {
 public:
     //
     // Construction/Destruction
     //
-    Substring(const HtConfiguration& config_arg);
-    virtual		~Substring();
+    Regex(const HtConfiguration& config_arg);
+    virtual		~Regex();
 
     virtual void	getWords(char *word, List &words);
     virtual int		openIndex();

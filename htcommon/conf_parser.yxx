@@ -7,7 +7,7 @@
 #include <stdio.h> /* for debug */
 #include <stdlib.h>
 #include <iostream.h>
-#include "Configuration.h"
+#include "HtConfiguration.h"
 #include "htString.h"
 /*#define YYDEBUG 1*/
 #define YYPARSE_PARAM aConf
@@ -22,7 +22,7 @@ int sn_debug=3;
 %union {
 	char *str;
 	ConfigDefaults	*ConfLine;
-	Configuration	*ConfLines;
+	HtConfiguration	*ConfLines;
 }
 
 %token NUM T_DELIMITER T_NEWLINE T_RIGHT_BR T_LEFT_BR T_SLASH
@@ -40,7 +40,7 @@ input:
 
 block:        simple_expression		{   
   // name: value
-               ((Configuration *)aConf)->Add($1->name,$1->value);
+               ((HtConfiguration *)aConf)->Add($1->name,$1->value);
 	       #ifdef DEBUG
 	       if (sn_debug>=2) {
 		 cout<<"Added to conf: "<<$1->name<<":"<<$1->value<<endl;
@@ -99,7 +99,7 @@ complex_expression:	T_LEFT_BR T_KEYWORD T_DELIMITER T_STRING T_RIGHT_BR T_NEWLIN
 			exit(1);
 		      }
 		      // Oll right. Append set of parameters to object($2)
-		      ((Configuration *)aConf)->Add($2,$4,$7);
+		      ((HtConfiguration *)aConf)->Add($2,$4,$7);
 		      #ifdef DEBUG
 		      if (sn_debug >= 2) {
 			cout<<"Added to conf: "<<$2<<":"<<$4<<":"<<$7<<endl;
@@ -116,7 +116,7 @@ simple_expression_list:   simple_expression	{
   // ...
   //
   // First entry. We need to create conf to store it.
-  Configuration *expressionList=new Configuration();
+  HtConfiguration *expressionList=new HtConfiguration();
   expressionList->Add($1->name,$1->value);
   $$=expressionList;
   #ifdef DEBUG

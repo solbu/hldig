@@ -115,14 +115,16 @@ INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/in
 HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libdb.a
 
 
+EXTRA_DIST = conf_lexer.cxx conf_parser.cxx
+
 lib_LTLIBRARIES = libcommon.la
 
-libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc 	HtWordReference.cc HtWordList.cc defaults.cc 	HtURLCodec.cc URL.cc URLTrans.cc 	HtZlibCodec.cc cgi.cc HtSGMLCodec.cc
+libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc 	HtWordReference.cc HtWordList.cc defaults.cc 	HtURLCodec.cc URL.cc URLTrans.cc 	HtZlibCodec.cc cgi.cc HtSGMLCodec.cc 	HtConfiguration.cc 	conf_lexer.lxx conf_parser.yxx 
 
 
 libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS = DocumentDB.h 	DocumentRef.h 	HtWordReference.h 	HtWordList.h 	HtURLCodec.h 	HtSGMLCodec.h 	URL.h 	cgi.h 	HtZlibCodec.h 	defaults.h
+noinst_HEADERS = DocumentDB.h 	DocumentRef.h 	HtWordReference.h 	HtWordList.h 	HtURLCodec.h 	HtSGMLCodec.h 	URL.h 	cgi.h 	HtZlibCodec.h 	defaults.h 	HtConfiguration.h 	conf.tab.cc.h
 
 
 LOCAL_DEFINES = -DBIN_DIR=\"$(bindir)\" 		-DCOMMON_DIR=\"$(COMMON_DIR)\" 		-DCONFIG_DIR=\"$(CONFIG_DIR)\" 		-DDATABASE_DIR=\"$(DATABASE_DIR)\" 		-DIMAGE_URL_PREFIX=\"$(IMAGE_URL_PREFIX)\" 		-DPDF_PARSER=\"$(PDF_PARSER)\"
@@ -139,29 +141,38 @@ LIBS = @LIBS@
 libcommon_la_LIBADD = 
 libcommon_la_OBJECTS =  DocumentDB.lo DocumentRef.lo HtWordReference.lo \
 HtWordList.lo defaults.lo HtURLCodec.lo URL.lo URLTrans.lo \
-HtZlibCodec.lo cgi.lo HtSGMLCodec.lo
+HtZlibCodec.lo cgi.lo HtSGMLCodec.lo HtConfiguration.lo conf_lexer.lo \
+conf_parser.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
+LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
+LEXLIB = @LEXLIB@
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(noinst_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  Makefile.am Makefile.in conf_lexer.cxx conf_parser.cxx
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/DocumentDB.P .deps/DocumentRef.P .deps/HtSGMLCodec.P \
-.deps/HtURLCodec.P .deps/HtWordList.P .deps/HtWordReference.P \
-.deps/HtZlibCodec.P .deps/URL.P .deps/URLTrans.P .deps/cgi.P \
-.deps/defaults.P
+DEP_FILES =  .deps/DocumentDB.P .deps/DocumentRef.P \
+.deps/HtConfiguration.P .deps/HtSGMLCodec.P .deps/HtURLCodec.P \
+.deps/HtWordList.P .deps/HtWordReference.P .deps/HtZlibCodec.P \
+.deps/URL.P .deps/URLTrans.P .deps/cgi.P .deps/conf_lexer.P \
+.deps/conf_parser.P .deps/defaults.P
 SOURCES = $(libcommon_la_SOURCES)
 OBJECTS = $(libcommon_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .cc .lo .o .s
+.SUFFIXES: .S .c .cc .cxx .lo .lxx .o .s .yxx
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.config
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign htcommon/Makefile
 
@@ -233,6 +244,19 @@ libcommon.la: $(libcommon_la_OBJECTS) $(libcommon_la_DEPENDENCIES)
 	$(CXXCOMPILE) -c $<
 .cc.lo:
 	$(LTCXXCOMPILE) -c $<
+.cxx.o:
+	$(CXXCOMPILE) -c $<
+.cxx.lo:
+	$(LTCXXCOMPILE) -c $<
+.lxx.cxx:
+	$(LEX) $(AM_LFLAGS) $(LFLAGS) $< && mv $(LEX_OUTPUT_ROOT).c $@
+.yxx.cxx:
+	$(YACC) $(AM_YFLAGS) $(YFLAGS) $< && mv y.tab.c $*.cxx
+	if test -f y.tab.h; then \
+	if cmp -s y.tab.h $*.h; then rm -f y.tab.h; else mv y.tab.h $*.h; fi; \
+	else :; fi
+conf_parser.hxx: conf_parser.cxx
+
 
 tags: TAGS
 
@@ -334,6 +358,25 @@ maintainer-clean-depend:
 	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
 	    >> .deps/$(*F).P; \
 	rm -f .deps/$(*F).pp
+
+%.o: %.cxx
+	@echo '$(CXXCOMPILE) -c $<'; \
+	$(CXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
+
+%.lo: %.cxx
+	@echo '$(LTCXXCOMPILE) -c $<'; \
+	$(LTCXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
 info-am:
 info: info-am
 dvi-am:
@@ -370,6 +413,7 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
+	-test -z "conf_lexerlxxconf_parserhxxconf_parsercxx" || rm -f conf_lexerlxx conf_parserhxx conf_parsercxx
 mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic

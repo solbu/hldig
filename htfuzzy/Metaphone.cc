@@ -1,26 +1,30 @@
 //
 // Metaphone.cc
 //
-// Implementation of Metaphone
+// Metaphone: A fuzzy matching algorithm used to match words that
+//            sound alike in the English language. Probably not so 
+//            good for foreign languages.
 //
-// $Log: Metaphone.cc,v $
-// Revision 1.2  1998/01/05 05:16:39  turtle
-// formatting changes
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
+// $Id: Metaphone.cc,v 1.8.2.1 1999/12/07 19:54:11 bosc Exp $
 //
 
 #include "Metaphone.h"
+#include "Dictionary.h"
+
 #include <ctype.h>
-#include <Dictionary.h>
 
 
 //*****************************************************************************
-// Metaphone::Metaphone()
+// Metaphone::Metaphone(const HtConfiguration& config_arg)
 //
-Metaphone::Metaphone()
+Metaphone::Metaphone(const HtConfiguration& config_arg) :
+  Fuzzy(config_arg)
 {
 	name = "metaphone";
 }
@@ -39,6 +43,8 @@ Metaphone::~Metaphone()
 //
 /*
  * This code was copied from the slapd package developed at umich.
+ * it was debugged and cleaned up in February 1999 by Geoffrey Hutchison
+ * for the ht://Dig Project.
  */
 /*
  * Metaphone copied from C Gazette, June/July 1991, pp 56-57,
@@ -55,17 +61,21 @@ static char     vsvfn[26] = {
         /* N  O  P  Q  R  S  T  U  V  W  X  Y  Z  */
 
 /* Macros to access character coding array */
-#define vowel(x)        ((x) != '\0' && vsvfn[(x) - 'A'] & 1)   /* AEIOU */
-#define same(x)         ((x) != '\0' && vsvfn[(x) - 'A'] & 2)   /* FJLMNR */
-#define varson(x)       ((x) != '\0' && vsvfn[(x) - 'A'] & 4)   /* CGPST */
-#define frontv(x)       ((x) != '\0' && vsvfn[(x) - 'A'] & 8)   /* EIY */
-#define noghf(x)        ((x) != '\0' && vsvfn[(x) - 'A'] & 16)  /* BDH */
+#define vscode(x)  ((x) >= 'A' && (x) <= 'Z' ? vsvfn[(x) - 'A'] : 0)
+#define vowel(x)   ((x) != '\0' && vscode(x) & 1)   /* AEIOU */
+#define same(x)    ((x) != '\0' && vscode(x) & 2)   /* FJLMNR */
+#define varson(x)  ((x) != '\0' && vscode(x) & 4)   /* CGPST */
+#define frontv(x)  ((x) != '\0' && vscode(x) & 8)   /* EIY */
+#define noghf(x)   ((x) != '\0' && vscode(x) & 16)  /* BDH */
 
 #define	MAXPHONEMELEN	6
 
 void
 Metaphone::generateKey(char *word, String &key)
 {
+    if (!word || !*word)
+      return;
+
     char			*n;
     String			ntrans;
 	
@@ -90,9 +100,6 @@ Metaphone::generateKey(char *word, String &key)
     *n++ = 0;
     *n = 0;                 /* Pad with nulls */
     n = ntrans.get() + 4;   /* Assign pointer to start */
-    ntrans << '\0';
-    ntrans << '\0';
-    ntrans << '\0';
 
     /* Check for PN, KN, GN, AE, WR, WH, and X at start */
     switch (*n)
@@ -110,7 +117,7 @@ Metaphone::generateKey(char *word, String &key)
             *n++ = 0;
         break;
     case 'W':
-        /* 'WR' becomes 'R', and 'WH' to 'H' */
+        /* 'WR' becomes 'R', and 'WH' to 'W' */
         if (*(n + 1) == 'R')
             *n++ = 0;
         else if (*(n + 1) == 'H') {
@@ -133,16 +140,15 @@ Metaphone::generateKey(char *word, String &key)
     {
         /* Drop duplicates except for CC */
         if (*(n - 1) == *n && *n != 'C')
-            continue;
-        /* Check for F J L M N R or first letter vowel */
-        if (same(*n) || (*(n - 1) == '\0' && vowel(*n)))
-            key << *n;
+	  continue;
+	/* Check for F J L M N R or first letter vowel */
+	if (same(*n) || *(n - 1) == '\0' && vowel(*n))
+	  key << *n;
         else
         {
             switch (*n)
             {
             case 'B':
-
                 /*
                  * B unless in -MB
                  */
@@ -150,7 +156,6 @@ Metaphone::generateKey(char *word, String &key)
                     key << *n;
                 break;
             case 'C':
-
                 /*
                  * X if in -CIA-, -CH- else S if in
                  * -CI-, -CE-, -CY- else dropped if
@@ -165,13 +170,12 @@ Metaphone::generateKey(char *word, String &key)
                     else if (*(n + 1) == 'H')
                         key << (((*(n - 1) == '\0' && !vowel(*(n + 2)))
                                  || *(n - 1) == 'S')
-                                ? (char) 'K' : (char) 'X');
+                                ? 'K' : 'X');
                     else
                         key << 'K';
                 }
                 break;
             case 'D':
-
                 /*
                  * J if in DGE or DGI or DGY else T
                  */
@@ -179,27 +183,28 @@ Metaphone::generateKey(char *word, String &key)
                         ? (char) 'J' : (char) 'T');
                 break;
             case 'G':
-
                 /*
                  * F if in -GH and not B--GH, D--GH,
                  * -H--GH, -H---GH else dropped if
                  * -GNED, -GN, -DGE-, -DGI-, -DGY-
                  * else J if in -GE-, -GI-, -GY- and
                  * not GG else K
-                 */
-                if ((*(n + 1) != 'J' || vowel(*(n + 2))) &&
-                    (*(n + 1) != 'N' || (*(n + 1) &&
-                                         (*(n + 2) != 'E' ||
-                                          *(n + 3) != 'D'))) &&
-                    (*(n - 1) != 'D' || !frontv(*(n + 1))))
-                    key << (frontv(*(n + 1)) &&
-                            *(n + 2) != 'G') ? (char) 'G' : (char) 'K';
-                else if (*(n + 1) == 'H' && !noghf(*(n - 3)) &&
-                         *(n - 4) != 'H')
-                    key << 'F';
-                break;
+                 *
+                  */
+	      if ((*(n + 1) != 'G' || vowel(*(n + 2))) &&
+		  (*(n + 1) != 'N' || (*(n + 1) &&
+				       (*(n + 2) != 'E' ||
+					*(n + 3) != 'D'))) &&
+		  (*(n - 1) != 'D' || !frontv(*(n + 1))))
+		if (frontv(*(n + 1)) && *(n + 2) != 'G')
+		  key << 'J';
+	        else
+		  key << 'K';
+	      else if (*(n + 1) == 'H' && !noghf(*(n - 3)) &&
+		       *(n - 4) != 'H')
+		       key << 'F';
+	      break;
             case 'H':
-
                 /*
                  * H if before a vowel and not after
                  * C, G, P, S, T else dropped
@@ -210,7 +215,6 @@ Metaphone::generateKey(char *word, String &key)
                     key << 'H';
                 break;
             case 'K':
-
                 /*
                  * dropped if after C else K
                  */
@@ -218,7 +222,6 @@ Metaphone::generateKey(char *word, String &key)
                     key << 'K';
                 break;
             case 'P':
-
                 /*
                  * F if before H, else P
                  */
@@ -226,14 +229,12 @@ Metaphone::generateKey(char *word, String &key)
                         (char) 'F' : (char) 'P');
                 break;
             case 'Q':
-
                 /*
                  * K
                  */
                 key << 'K';
                 break;
             case 'S':
-
                 /*
                  * X in -SH-, -SIO- or -SIA- else S
                  */
@@ -243,7 +244,6 @@ Metaphone::generateKey(char *word, String &key)
                         ? (char) 'X' : (char) 'S');
                 break;
             case 'T':
-
                 /*
                  * X in -TIA- or -TIO- else 0 (zero)
                  * before H else dropped if in -TCH-
@@ -258,19 +258,16 @@ Metaphone::generateKey(char *word, String &key)
                     key << 'T';
                 break;
             case 'V':
-
                 /*
                  * F
                  */
                 key << 'F';
                 break;
             case 'W':
-
                 /*
                  * W after a vowel, else dropped
                  */
             case 'Y':
-
                 /*
                  * Y unless followed by a vowel
                  */
@@ -278,7 +275,6 @@ Metaphone::generateKey(char *word, String &key)
                     key << *n;
                 break;
             case 'X':
-
                 /*
                  * KS
                  */
@@ -288,7 +284,6 @@ Metaphone::generateKey(char *word, String &key)
                     key << "KS";        /* Insert K, then S */
                 break;
             case 'Z':
-
                 /*
                  * S
                  */
@@ -319,7 +314,7 @@ Metaphone::addWord(char *word)
     String	*s = (String *) dict->Find(key);
     if (s)
     {
-        if (mystrcasestr(s->get(), word) != 0)
+      //        if (mystrcasestr(s->get(), word) != 0)
             (*s) << ' ' << word;
     }
     else

@@ -9,16 +9,16 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.h,v 1.3.2.1 1999/10/15 10:50:40 angus Exp $
+// $Id: defaults.h,v 1.3.2.2 1999/12/07 19:54:09 bosc Exp $
 //
 #ifndef _defaults_h_
 #define _defaults_h_
 
-#include "Configuration.h"
+#include "HtConfiguration.h"
 
 
 extern ConfigDefaults	defaults[];
-extern Configuration	config;
+extern HtConfiguration	config;
 
 
 #endif
