@@ -1,3 +1,9 @@
+Fri Jan 18 15:56:11 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc (setupWords), htsearch/parser.cc (perform_push):
+	Added support for a wildcard word of "*" (or prefix_match_character
+	if set and not empty) which returns all documents.
+
 Wed Jan 16 17:21:26 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html, htdoc/hts_form.html: Described how to use

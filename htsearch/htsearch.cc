@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.17 2001/11/01 20:45:07 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.18 2002/01/18 21:59:47 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -444,6 +444,9 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
     String		word;
     // Why use a char type if String is the new char type!!!
     char		*prefix_suffix = config["prefix_match_character"];
+    char		*wildcard = prefix_suffix;
+    if (*wildcard == '\0')
+	wildcard = "*";
     while (*pos)
     {
 	while (1)
@@ -461,12 +464,12 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		tempWords.Add(new WeightWord(s, -1.0));
 		break;
 	    }
-	    else if (HtIsWordChar(t) || t == ':' ||
+	    else if (HtIsWordChar(t) || t == ':' || t == *wildcard ||
 			 (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255))
 	    {
 		word = 0;
-		while (t && (HtIsWordChar(t) ||
-			     t == ':' || (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255)))
+		while (t && (HtIsWordChar(t) || t == ':' || t == *wildcard ||
+			     (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255)))
 		{
 		    word << (char) t;
 		    t = *pos++;
@@ -485,6 +488,10 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		else if (boolean && mystrcasecmp(word.get(), boolean_keywords[2]) == 0)
 		{
 		    tempWords.Add(new WeightWord("!", -1.0));
+		}
+		else if (strcmp(word.get(), wildcard) == 0)
+		{
+		    tempWords.Add(new WeightWord(wildcard, 1.0));
 		}
 		else
 		{

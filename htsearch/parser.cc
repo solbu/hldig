@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.6.2.5 2001/07/26 20:08:51 grdetil Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.6.2.6 2002/01/18 21:59:47 grdetil Exp $";
 #endif
 
 #include "parser.h"
@@ -238,6 +238,24 @@ Parser::perform_push()
 	// This word needs to be ignored.  Make it so.
 	//
 	list->isIgnore = 1;
+	return;
+    }
+    static char	*wildcard = config["prefix_match_character"];
+    if (*wildcard == '\0')
+	wildcard = "*";
+    if (strcmp(temp.get(), wildcard) == 0) {
+	Database	*docIndex = Database::getDatabaseInstance();
+	docIndex->OpenRead(config["doc_index"]);
+	docIndex->Start_Get();
+	while ((p = docIndex->Get_Next()))
+	{
+	    dm = new DocMatch;
+	    dm->score = current->weight;
+	    dm->id = atoi(p);
+	    dm->anchor = 0;
+	    list->add(dm);
+	}
+	delete docIndex;
 	return;
     }
     temp.lowercase();
