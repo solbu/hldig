@@ -1,8 +1,12 @@
-Thu Jun 10 16:49:52 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Fri Jun 11 10:30:59 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
+
+    * installdir/Makefile.{am,in}: Don't stick $(DESTDIR) in HtFileType.
+
+Thu Jun 10 16:49:52 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
    * Tagged release htdig-3-2-0b6
 
-Thu Jun 10 16:39:36 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Thu Jun 10 16:39:36 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
     * htcommon/conf_(lexer.lxx,parser.yxx): applied Gilles' patch (April 22)
       which features:

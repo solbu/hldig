@@ -48,6 +48,6 @@ install-data-local:	all
 	@echo "Installing file-type identification script..."
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@if [ ! -f $(DESTDIR)$(bindir)/HtFileType ]; then \
-		sed -es%@\CONFIG_DIR@%$(DESTDIR)$(CONFIG_DIR)% $(top_srcdir)/installdir/HtFileType >$(DESTDIR)$(bindir)/HtFileType; \
+		sed -es%@\CONFIG_DIR@%$(CONFIG_DIR)% $(top_srcdir)/installdir/HtFileType >$(DESTDIR)$(bindir)/HtFileType; \
 		chmod 755 $(DESTDIR)$(bindir)/HtFileType; \
 	fi
