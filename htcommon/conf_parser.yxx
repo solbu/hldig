@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: conf_parser.yxx,v 1.1.2.6 2000/04/09 18:17:23 ghutchis Exp $
+// $Id: conf_parser.yxx,v 1.1.2.7 2000/04/11 03:14:34 ghutchis Exp $
 //
 
 /* Bison version > 1.25 needed */
@@ -160,7 +160,46 @@ simple_expression_list:   simple_expression	{
                       ;
 
 list:	  T_STRING T_STRING			{ 
-	// Paste 2 strings. Reallocate memory for 2 str.
+	// Paste 2 components. Reallocate memory for 2 components.
+	if (($$=new char[strlen($1)+strlen($2)+1+1])==NULL) {
+		fprintf(stderr,"Can't allocate memory\n");
+		exit(1);
+	}
+	strcpy($$,$1);
+	strcat($$," ");		// Delimiter in list
+	strcat($$,$2);
+	delete [] $1; 
+	delete [] $2;
+	}
+
+	|  T_NUMBER T_STRING			{ 
+	// Paste 2 components. Reallocate memory for 2 components.
+	if (($$=new char[strlen($1)+strlen($2)+1+1])==NULL) {
+		fprintf(stderr,"Can't allocate memory\n");
+		exit(1);
+	}
+	strcpy($$,$1);
+	strcat($$," ");		// Delimiter in list
+	strcat($$,$2);
+	delete [] $1; 
+	delete [] $2;
+	}
+
+	 | T_STRING T_NUMBER			{ 
+	// Paste 2 components. Reallocate memory for 2 components.
+	if (($$=new char[strlen($1)+strlen($2)+1+1])==NULL) {
+		fprintf(stderr,"Can't allocate memory\n");
+		exit(1);
+	}
+	strcpy($$,$1);
+	strcat($$," ");		// Delimiter in list
+	strcat($$,$2);
+	delete [] $1; 
+	delete [] $2;
+	}
+
+	 | T_NUMBER T_NUMBER			{ 
+	// Paste 2 components. Reallocate memory for 2 components.
 	if (($$=new char[strlen($1)+strlen($2)+1+1])==NULL) {
 		fprintf(stderr,"Can't allocate memory\n");
 		exit(1);

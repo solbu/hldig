@@ -27,7 +27,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: conf_parser.cxx,v 1.1.2.7 2000/04/09 18:17:23 ghutchis Exp $
+// $Id: conf_parser.cxx,v 1.1.2.8 2000/04/11 03:14:34 ghutchis Exp $
 //
 
 /* Bison version > 1.25 needed */
@@ -64,7 +64,7 @@ typedef union {
 
 
 
-#define	YYFINAL		33
+#define	YYFINAL		36
 #define	YYFLAG		-32768
 #define	YYNTBASE	12
 
@@ -103,7 +103,7 @@ static const char yytranslate[] = {     0,
 #if YYDEBUG != 0
 static const short yyprhs[] = {     0,
      0,     1,     4,     6,     8,    13,    18,    23,    27,    29,
-    42,    44,    47,    50,    53
+    42,    44,    47,    50,    53,    56,    59,    62
 };
 
 static const short yyrhs[] = {    -1,
@@ -111,8 +111,9 @@ static const short yyrhs[] = {    -1,
      5,     0,    10,     4,    11,     5,     0,    10,     4,    17,
      5,     0,    10,     4,     5,     0,     5,     0,     7,    10,
      4,     9,     6,     5,    16,     7,     8,    10,     6,     5,
-     0,    14,     0,    16,    14,     0,     9,     9,     0,    17,
-     9,     0,    17,    11,     0
+     0,    14,     0,    16,    14,     0,     9,     9,     0,    11,
+     9,     0,     9,    11,     0,    11,    11,     0,    17,     9,
+     0,    17,    11,     0
 };
 
 #endif
@@ -120,7 +121,7 @@ static const short yyrhs[] = {    -1,
 #if YYDEBUG != 0
 static const short yyrline[] = { 0,
     52,    53,    56,    68,    76,    86,    92,    98,   106,   109,
-   130,   148,   162,   175,   187
+   130,   148,   162,   175,   188,   201,   214,   226
 };
 #endif
 
@@ -136,50 +137,52 @@ static const char * const yytname[] = {   "$","error","$undefined.","NUM","T_DEL
 
 static const short yyr1[] = {     0,
     12,    12,    13,    13,    14,    14,    14,    14,    14,    15,
-    16,    16,    17,    17,    17
+    16,    16,    17,    17,    17,    17,    17,    17
 };
 
 static const short yyr2[] = {     0,
      0,     2,     1,     1,     4,     4,     4,     3,     1,    12,
-     1,     2,     2,     2,     2
+     1,     2,     2,     2,     2,     2,     2,     2
 };
 
 static const short yydefact[] = {     1,
      0,     9,     0,     0,     2,     3,     4,     0,     0,     0,
-     8,     0,     0,     0,     0,     5,    13,     6,     7,    14,
-    15,     0,     0,    11,     0,     0,    12,     0,     0,     0,
-    10,     0,     0
+     8,     0,     0,     0,     0,     5,    13,    15,     6,    14,
+    16,     7,    17,    18,     0,     0,    11,     0,     0,    12,
+     0,     0,     0,    10,     0,     0
 };
 
 static const short yydefgoto[] = {     1,
-     5,     6,     7,    25,    14
+     5,     6,     7,    28,    14
 };
 
 static const short yypact[] = {-32768,
-     0,-32768,    -6,    15,-32768,-32768,-32768,    16,    -3,    12,
--32768,    13,    18,     4,    19,-32768,-32768,-32768,-32768,-32768,
--32768,    21,     6,-32768,     7,    20,-32768,    14,    23,    22,
--32768,    30,-32768
+     0,-32768,    -6,    20,-32768,-32768,-32768,    22,    -3,     2,
+-32768,     4,     7,    12,    21,-32768,-32768,-32768,-32768,-32768,
+-32768,-32768,-32768,-32768,    23,     9,-32768,    15,    24,-32768,
+    19,    25,    28,-32768,    30,-32768
 };
 
 static const short yypgoto[] = {-32768,
--32768,   -22,-32768,-32768,-32768
+-32768,   -25,-32768,-32768,-32768
 };
 
 
-#define	YYLAST		30
+#define	YYLAST		33
 
 
-static const short yytable[] = {    32,
-    24,    11,    27,     8,     2,    12,     3,    13,    19,     4,
-     2,     2,    20,    26,    21,     4,     4,    16,     9,    10,
-    15,    17,    18,    29,    22,    23,    31,    28,    30,    33
+static const short yytable[] = {    35,
+    27,    11,    30,     8,     2,    12,     3,    13,    16,     4,
+    15,    19,    17,     2,    18,    20,    22,    21,     4,     2,
+    23,    29,    24,     9,     4,    10,    25,    26,    32,    36,
+    33,    31,    34
 };
 
 static const short yycheck[] = {     0,
-    23,     5,    25,    10,     5,     9,     7,    11,     5,    10,
-     5,     5,     9,     7,    11,    10,    10,     5,     4,     4,
-     9,     9,     5,    10,     6,     5,     5,     8,     6,     0
+    26,     5,    28,    10,     5,     9,     7,    11,     5,    10,
+     9,     5,     9,     5,    11,     9,     5,    11,    10,     5,
+     9,     7,    11,     4,    10,     4,     6,     5,    10,     0,
+     6,     8,     5
 };
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
 
@@ -846,7 +849,7 @@ case 12:
     break;}
 case 13:
 { 
-	// Paste 2 strings. Reallocate memory for 2 str.
+	// Paste 2 components. Reallocate memory for 2 components.
 	if ((yyval.str=new char[strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
 		fprintf(stderr,"Can't allocate memory\n");
 		exit(1);
@@ -860,6 +863,48 @@ case 13:
     break;}
 case 14:
 { 
+	// Paste 2 components. Reallocate memory for 2 components.
+	if ((yyval.str=new char[strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
+		fprintf(stderr,"Can't allocate memory\n");
+		exit(1);
+	}
+	strcpy(yyval.str,yyvsp[-1].str);
+	strcat(yyval.str," ");		// Delimiter in list
+	strcat(yyval.str,yyvsp[0].str);
+	delete [] yyvsp[-1].str; 
+	delete [] yyvsp[0].str;
+	;
+    break;}
+case 15:
+{ 
+	// Paste 2 components. Reallocate memory for 2 components.
+	if ((yyval.str=new char[strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
+		fprintf(stderr,"Can't allocate memory\n");
+		exit(1);
+	}
+	strcpy(yyval.str,yyvsp[-1].str);
+	strcat(yyval.str," ");		// Delimiter in list
+	strcat(yyval.str,yyvsp[0].str);
+	delete [] yyvsp[-1].str; 
+	delete [] yyvsp[0].str;
+	;
+    break;}
+case 16:
+{ 
+	// Paste 2 components. Reallocate memory for 2 components.
+	if ((yyval.str=new char[strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
+		fprintf(stderr,"Can't allocate memory\n");
+		exit(1);
+	}
+	strcpy(yyval.str,yyvsp[-1].str);
+	strcat(yyval.str," ");		// Delimiter in list
+	strcat(yyval.str,yyvsp[0].str);
+	delete [] yyvsp[-1].str; 
+	delete [] yyvsp[0].str;
+	;
+    break;}
+case 17:
+{ 
 		char *old=yyval.str;
 		if ((yyval.str=new char [strlen(yyval.str)+strlen(yyvsp[0].str)+1+1])==NULL) {
 		  fprintf(stderr,"Can't reallocate memory\n");
@@ -872,7 +917,7 @@ case 14:
 		delete [] yyvsp[0].str;
 	;
     break;}
-case 15:
+case 18:
 {
 		char *old=yyval.str;
 		if ((yyval.str=new char [strlen(yyval.str)+strlen(yyvsp[0].str)+1+1])==NULL) {
