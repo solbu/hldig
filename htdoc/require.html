@@ -11,7 +11,7 @@
 	  Features and System requirements
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
+	  ht://Dig Copyright &copy; 1995-2002 <a href="THANKS.html">The ht://Dig Group</a><br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -79,7 +79,7 @@
 			metaphone
 		  </li>
 		  <li>
-			common word endings
+			common word endings (stemming)
 		  </li>
 		  <li>
 			synonyms
@@ -182,39 +182,48 @@
 	  of the GNU libraries)
 	</p>
 	<p>
-	  Unfortunately, I only have access to a couple of different
-	  Unix machines. ht://Dig has been tested on these machines:
+	  Unfortunately the developers only have access to a couple of
+	  different Unix machines. Most development is done on Linux
+	  systems with gcc/g++, but ht://Dig has been tested on these
+	  machines (and compilers):
 	</p>
 	<ul>
 	  <li>
-		Sun Solaris 2.5 SPARC (using gcc/g++ 2.7.2)
+		Sun Solaris SPARC 2.X (using gcc/g++)
 	  </li>
 	  <li>
-		Sun SunOS 4.1.4 SPARC (using gcc/gcc 2.7.0)
+		Sun SunOS 4.1.4 SPARC (using gcc/g++ 2.7.0)
 	  </li>
 	  <li>
-		HP/UX A.09.01 (using gcc/g++ 2.6.0)
+		HP/UX 10.X (using gcc/g++)
 	  </li>
 	  <li>
-		IRIX 5.3 (SGI C++ compiler. Don't know the version)
+		IRIX 5.3 and 6.X (SGI C++ compiler.)
 	  </li>
 	  <li>
-		Debian Linux 2.0 (using egcs 1.1b)
+		Most Linux Distributions (using gcc/g++)
 	  </li>
+	  <li>
+	        Most BSD platforms, including BSDI and Mac OS X (using gcc/g++)
+          </li>
 	</ul>
-	There are reports of ht://Dig working on a number of other platforms.
+	There are reports of ht://Dig working on a number of other
+	platforms. If you've compiled ht://Dig on a platform that is
+	not listed here, please let the developers know via the <a
+	href="mailto:htdig-dev@lists.sourceforge.net">htdig-dev</a>
+	mailing list.
 	<h3>
 	  libstdc++
 	</h3>
 	<p>
 	  If you plan on using g++ to compile ht://Dig, you have to make
-	  sure that libstdc++ has been installed. Unfortunately, libstdc++ is a
+	  sure that libstdc++ has been installed. For older versions
+	  of gcc/g++ (2.8.X and prior), libstdc++ is a
 	  separate package from gcc/g++. You can get libstdc++ from the
 	  <a href="ftp://ftp.gnu.org/pub/gnu/">GNU software archive</a>.
 	</p>
-
 	<h3>
-	  Berkeley 'make'
+	  GNU-style (Berkeley) 'make'
 	</h3>
 	<p>
 	  The building relies heavily on the make program. The problem
@@ -226,14 +235,16 @@
 	  <code>include somefile</code>
 	</blockquote>
 	<p>
-	  The Berkeley 4.4 make program doesn't use this syntax, instead
+	  The Berkeley 4.4 make program supplied in many BSD-style
+	  systems doesn't use this syntax, instead
 	  it wants
 	</p>
 	<blockquote>
 	  <code>.include "somefile"</code>
 	</blockquote>
 	<p>
-	  and hence it cannot be used to build ht://Dig.
+	  and hence it cannot be used to build ht://Dig. Many systems
+	  include a &quot;gmake&quot; command that will work instead.
 	</p>
 	<p>
 	  If your make program doesn't understand the right 'include'
@@ -299,7 +310,7 @@
 	</p>
 	<hr size="4" noshade>
 
-	Last modified: $Date: 2002/01/22 04:35:11 $
+	Last modified: $Date: 2002/01/27 05:33:20 $
 
   </body>
 </html>

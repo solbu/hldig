@@ -1,3 +1,8 @@
+Sat Jan 26 23:28:25 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/*: More documentation updates from merging with the
+	current maindocs CVS.
+
 Fri Jan 25 21:36:21 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* acconfig.h, include/htconfig.h.in: Add USE_RX to potential
