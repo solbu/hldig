@@ -1,3 +1,13 @@
+Sat 17 Jan 2004 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htcommon/DocumentRef.cc:
+      Fix old-style use of HtConfiguration, so defaults are read correctly.
+      Causes  max_descriptions  to be treated correctly.
+
+    * htcommon/default.cc, htdoc/{hts_temlates,attrs,cf_byname,cf_byprog}.html:
+      Explain that max_description{s,_length} don't affect indexing -- only
+      text used to fill in template variables.
+
 Mon 12 Jan 2004 Lachlan Andrew <lha@users.sourceforge.net>
 
     * Very many files:

@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.cc,v 1.51 2003/07/21 08:16:10 angusgb Exp $
+// $Id: DocumentRef.cc,v 1.52 2004/01/17 05:17:49 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -37,7 +37,7 @@ using namespace std;
 #include <fstream.h>
 #endif /* HAVE_STD */
 
-extern HtConfiguration config;
+// extern HtConfiguration config;
 
 //*****************************************************************************
 // DocumentRef::DocumentRef()
@@ -487,8 +487,9 @@ void DocumentRef::AddDescription(const char *d, HtWordList &words)
 
     // Parse words.
     char         *p                   = desc;
-    static int    minimum_word_length = config.Value("minimum_word_length", 3);
-    static int    max_descriptions    = config.Value("max_descriptions", 5);
+    HtConfiguration* config= HtConfiguration::config();
+    static int    minimum_word_length = config->Value("minimum_word_length", 3);
+    static int    max_descriptions    = config->Value("max_descriptions", 5);
 
     String word;
     HtWordReference wordRef;

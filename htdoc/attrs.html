@@ -817,7 +817,7 @@
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			1000
+			0.1
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -1432,6 +1432,69 @@
 				1 1 1 matches_per_page "Previous Amount" \<br>
 		RESTRICT_LIST,multiple restrict restrict_names 2 1 2 restrict "" \<br>
 		FORMAT_LIST,radio format template_map 3 2 1 template_name ""
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="caps_factor">
+		caps_factor</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			1
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      ??
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	TO BE COMPLETED<br>
+	See also <a href="#heading_factor">heading_factor</a>.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  caps_factor:
+				</td>
+				<td nowrap>
+				     1
 				</td>
 			  </tr>
 			</table>
@@ -2663,7 +2726,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href="htsearch.html" target="_top">htsearch</a>
+			<a href="htdig.html">htdig</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -2692,8 +2755,9 @@ http://www.htdig.org/
 	that each will be seen as the name for whatever description
 	convention is used. While words in any of the specified
 	description contents will be indexed, only the last meta tag
-	containing a description will be kept as the meta description
-	field for the document, for use in search results. The order in
+	containing a description will be kept for the
+	<a href="hts_templates.html#METADESCRIPTION"METADESCRIPTION</a>
+	variable in search results. The order in
 	which the names are specified in this configuration attribute
 	is irrelevant, as it is the order in which the tags appear in
 	the documents that matters.<br> The <em>META</em> tags have the
@@ -4589,12 +4653,14 @@ http://www.htdig.org/
 	floating point number. See also
 	<a href="#author_factor">author_factor</a>
 	<a href="#backlink_factor">backlink_factor</a>
+	<a href="#caps_factor">caps_factor</a>
 	<a href="#date_factor">date_factor</a>
 	<a href="#description_factor">description_factor</a>
 	<a href="#keywords_factor">keywords_factor</a>
 	<a href="#meta_description_factor">meta_description_factor</a>
 	<a href="#text_factor">text_factor</a>
 	<a href="#title_factor">title_factor</a>
+	<a href="#url_text_factor">url_text_factor</a>
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -6665,9 +6731,10 @@ http://www.htdig.org/
 		  </dt>
 		  <dd>
 	While gathering descriptions of URLs,
-	<a href="htdig.html">htdig</a> will only record those
-	descriptions which are shorter than this length (in bytes). This
-	is used mostly to deal with broken HTML. (If a
+	<a href="htdig.html">htdig</a> will only record
+	up to this many bytes of hyperlink descriptions for use in the
+	<a href="hts_templates.html#DESCRIPTION">DESCRIPTION</a> template
+	variable.  This is used mostly to deal with broken HTML. (If a
 	hyperlink is not terminated with a &lt;/a&gt; the
 	description will go on until the end of the document.)
 		  </dd>
@@ -6731,12 +6798,15 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	While gathering descriptions of URLs,
-	<a href="htdig.html">htdig</a> will only record up to this
+	While gathering <a href="#description_factor">descriptions</a> of
+	URLs for the
+	<a href="hts_templates.html#DESCRIPTIONS">DESCRIPTIONS</a> template
+	variable, <a href="htdig.html">htdig</a> will only record up to this
 	number of descriptions, in the order in which it encounters
 	them. This is used to prevent the database entry for a document
 	from growing out of control if the document has a huge number
-	of links to it.
+	of links to it. <br>
+	Note that all descriptions are used for indexing.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -6748,7 +6818,7 @@ http://www.htdig.org/
 				  max_descriptions:
 				</td>
 				<td nowrap>
-				     15
+				     1
 				</td>
 			  </tr>
 			</table>
@@ -6840,7 +6910,7 @@ http://www.htdig.org/
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href="htsearch.html">htsearch</a>
+			<a href="htsearch.html" target="_top">htsearch</a>
 		  </dd>
 		  <dt>
 			<em>default:</em>
@@ -7133,7 +7203,10 @@ http://www.htdig.org/
 		  <dd>
 	While gathering descriptions from meta description tags,
 	<a href="htdig.html">htdig</a> will only store up to
-	this much of the text (in bytes) for each document.
+	this much of the text (in bytes) for each document to fill the
+	<a href="hts_templates.html#METADESCRIPTION"METADESCRIPTION</a>
+	template variable.  All words in the meta description are still
+	used for indexing.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -13031,6 +13104,69 @@ form during indexing and translated for results.
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="url_text_factor">
+		url_text_factor</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			1
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      ??
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	TO BE COMPLETED<br>
+	See also <a href="#heading_factor">heading_factor</a>.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  url_text_factor:
+				</td>
+				<td nowrap>
+				     1
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="use_doc_date">
 		use_doc_date</a></strong>
 	  </dt>
@@ -14323,6 +14459,6 @@ form during indexing and translated for results.
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: Sun Oct 26 19:55:00 EST 2003
+		Last modified: Sat Jan 17 15:04:44 EST 2004
   </body>
 </html>

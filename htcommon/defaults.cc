@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.102 2004/01/12 10:32:59 lha Exp $
+// $Id: defaults.cc,v 1.103 2004/01/17 05:17:49 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1382,20 +1382,24 @@ http://www.htdig.org/", " \
 { "max_description_length", "60",  \
 	"integer", "htdig", "", "all", "Indexing:What", "max_description_length: 40", " \
 	While gathering descriptions of URLs, \
-	<a href=\"htdig.html\">htdig</a> will only record those \
-	descriptions which are shorter than this length (in bytes). This \
-	is used mostly to deal with broken HTML. (If a \
+	<a href=\"htdig.html\">htdig</a> will only record \
+	up to this many bytes of hyperlink descriptions for use in the \
+	<a href=\"hts_templates.html#DESCRIPTION\">DESCRIPTION</a> template \
+	variable.  This is used mostly to deal with broken HTML. (If a \
 	hyperlink is not terminated with a &lt;/a&gt; the \
 	description will go on until the end of the document.) \
 " }, \
 { "max_descriptions", "5",  \
-	"integer", "htdig", "", "all", "Indexing:What", "max_descriptions: 15", " \
+	"integer", "htdig", "", "all", "Indexing:What", "max_descriptions: 1", " \
 	While gathering <a href=\"#description_factor\">descriptions</a> of \
-	URLs, <a href=\"htdig.html\">htdig</a> will only record up to this \
+	URLs for the \
+	<a href=\"hts_templates.html#DESCRIPTIONS\">DESCRIPTIONS</a> template \
+	variable, <a href=\"htdig.html\">htdig</a> will only record up to this \
 	number of descriptions, in the order in which it encounters \
 	them. This is used to prevent the database entry for a document \
 	from growing out of control if the document has a huge number \
-	of links to it. \
+	of links to it. <br> \
+	Note that all descriptions are used for indexing. \
 " }, \
 { "max_doc_size", "100000",  \
 	"integer", "htdig", "URL", "3.0", "Indexing:What", "max_doc_size: 5000000", " \
