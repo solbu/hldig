@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.64.2.7 1999/10/27 21:37:57 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.64.2.8 1999/10/28 18:03:22 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -223,14 +223,13 @@ http://www.htdig.org/", "
 	to modify the appearance of the date.
 " },
 { "description_factor", "150", 
-	"number", "htdig", "description_factor: 350", "
+	"number", "htsearch", "description_factor: 350", "
 	Plain old \"descriptions\" are the text of a link pointing
 	to a document. This factor gives weight to the words of
 	these descriptions of the document. Not surprisingly,
 	these can be pretty accurate summaries of a document's
 	content. See also <a href=\"#title_factor\">title_factor</a> or <a
-	href=\"#text_factor\">text_factor</a>. Changing this
-	factor will require updating your database.
+	href=\"#text_factor\">text_factor</a>.
 " },
 { "doc_db", "${database_base}.docdb", 
 	"string", "htdig htmerge htsearch", "doc_db: ${database_base}documents.db", "
@@ -765,7 +764,7 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	in a <strong>htdig-notification-date</strong> field.
 " },
 { "keywords_factor", "100", 
-	"number", "htdig", "keywords_factor: 12", "
+	"number", "htsearch", "keywords_factor: 12", "
 	This is a factor which will be used to multiply the
 	weight of words in the list of keywords of a document.
 	The number may be a floating point number. See also the
@@ -987,7 +986,7 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	index.
 " },
 { "meta_description_factor", "50", 
-	"number", "htdig", "meta_description_factor: 20", "
+	"number", "htsearch", "meta_description_factor: 20", "
 	This is a factor which will be used to multiply the
 	weight of words in any META description tags in a document.
 	The number may be a floating point number. See also the
@@ -1779,7 +1778,7 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	documentation.
 " },
 { "text_factor", "1", 
-	"number", "htdig", "text_factor: 0", "
+	"number", "htsearch", "text_factor: 0", "
 	This is a factor which will be used to multiply the
 	weight of words that are not in any special part of a
 	document. Setting a factor to 0 will cause normal words
@@ -1798,7 +1797,7 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	The timeout is specified in seconds.
 " },
 { "title_factor", "100", 
-	"number", "htdig", "title_factor: 12", "
+	"number", "htsearch", "title_factor: 12", "
 	This is a factor which will be used to multiply the
 	weight of words in the title of a document. Setting a
 	factor to 0 will cause words in the title to be
@@ -1807,29 +1806,35 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	heading_factor</a> attribute.
 " },
 { "translate_amp", "false", 
-	"boolean", "htdig", "translate_amp: true", "
+	"boolean", "htdig htsearch", "translate_amp: true", "
 	If set to false, the entity &amp;amp; (or &amp;#38;) will not be
 	translated into its ASCII equivalent &amp;. If translation were taking
 	place, an excerpt containing a &amp; might be misinterpreted by the browser
 	and look unrecognizable to the user. For this reason, not translating this
 	entity is the default behavior.
+	This should be fixed in 3.2.0, as htsearch does the reverse translation
+	in excerpts.
 " },
 { "translate_lt_gt", "false", 
-	"boolean", "htdig", "translate_lt_gt: true", "
+	"boolean", "htdig htsearch", "translate_lt_gt: true", "
 	If set to false, the entities &amp;lt; (or &amp;#60;) and &amp;gt;
 	(or &amp;#62;) will not be translated into their ASCII equivalents &lt; and
 	&gt;. If translation were taking place, an excerpt containing &lt; and
 	&gt; might be misinterpreted by the browser and look unrecognizable to the
 	user. For this reason, not translating these entities is the default
 	behavior.
+	This should be fixed in 3.2.0, as htsearch does the reverse translation
+	in excerpts.
 " },
 { "translate_quot", "false", 
-	"boolean", "htdig", "translate_quot: true", "
+	"boolean", "htdig htsearch", "translate_quot: true", "
 	If set to false, the entity &amp;quot; (or &amp;#34;) will not be
 	translated into its ASCII equivalent &quot;. If translation were taking
 	place, an excerpt containing a &quot; might be misinterpreted by the browser
 	and look unrecognizable to the user. For this reason, not translating this
 	entity is the default behavior.
+	This should be fixed in 3.2.0, as htsearch does the reverse translation
+	in excerpts.
 " },
 { "uncoded_db_compatible", "true", 
 	"boolean", "htdig htnotify htmerge htsearch", "uncoded_db_compatible: false<p>", "

@@ -1,3 +1,10 @@
+Thu Oct 28 12:52:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: Updated programs lists for *_factor, so they
+	all refer to htsearch and not htdig. Added htsearch to programs lists
+	for translate_*. img_alt_factor & url_factor not defined yet because
+	they're still not used in htdig/htsearch.
+
 Wed Oct 27 15:53:36 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc: added descriptions & examples for
