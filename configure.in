@@ -67,6 +67,8 @@ AC_ARG_WITH(search-form, [  --with-search-form=FILE   the name for the sample se
  SEARCH_FORM="$withval", SEARCH_FORM='search.html')
 AC_SUBST(SEARCH_FORM)
 
+AC_ARG_WITH(rx, [  --with-rx  with system rx instead of regex [default=no]],
+ WITH_RX="$withval", WITH_RX='no')
 
 dnl While we're at it, let's work out the program transformations
 AC_ARG_PROGRAM
@@ -127,9 +129,13 @@ AC_CHECK_FUNCS(timegm mkstemp)
 
 dnl Replacements for the library functions (i.e. regex)
 dnl Regex is compiled by the C compiler so we need to do it before we switch
-AC_ARG_WITH(rx, [  --with-rx  with system rx instead of regex [default=no]],
- AC_DEFINE(USE_RX), 
-[AC_MSG_CHECKING(if we should use the included regex?)
+if test $WITH_RX = yes; then
+ AC_CHECK_HEADER(rxposix.h, AC_DEFINE(USE_RX), WITH_RX='no')
+fi
+if test $WITH_RX = no; then
+AC_MSG_CHECKING(if we should use the included regex?)
+OLD_CFLAGS=$CFLAGS
+CFLAGS="$CFLAGS -I${srcdir}/htlib"
 AC_TRY_RUN([	#include "${srcdir}/htlib/regex.c"
 		int main() {
 		   regex_t re;
@@ -139,8 +145,9 @@ AC_TRY_RUN([	#include "${srcdir}/htlib/regex.c"
   [AC_MSG_RESULT(yes);LIBOBJS="$LIBOBJS regex.${ac_objext}"],
   [AC_MSG_RESULT(no);AC_DEFINE(HAVE_BROKEN_REGEX)],
   [AC_MSG_RESULT(unknown);AC_DEFINE(HAVE_BROKEN_REGEX)]
-)]
 )
+CFLAGS=$OLDCFLAGS
+fi
 AC_SUBST(LIBOBJS)
 
 dnl These tests need to be run through the c++ compiler

@@ -1,3 +1,23 @@
+Fri Jan 25 21:36:21 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* acconfig.h, include/htconfig.h.in: Add USE_RX to potential
+	configure #include macros.
+
+	* htlib/gregex.h: Rename regex.h to prevent conflicts with system
+	version.
+	
+	* htlib/regex.c, htlib/HtRegex.h: Ditto.
+
+	* htfuzzy/EndingsDB.cc: Use same tests as HtRegex.h for rxposix.h,
+	gregex.h or regex.h depending on configure results.
+	
+	* configure.in: Implement more flexible test for rx/regex, which
+	will check for rxposix.h if --with-rx is supplied, will "fall
+	back" to regex test if rxposix.h isn't available and will only use
+	the htlib/ code and header for regex compile.
+
+	* configure: Update using autoconf.
+
 Fri Jan 25 12:14:26 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/whatsnew/README, contrib/whatsnew/whatsnew.html: Added

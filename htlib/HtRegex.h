@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.h,v 1.6.2.2 2002/01/24 21:38:40 ghutchis Exp $
+// $Id: HtRegex.h,v 1.6.2.3 2002/01/26 03:43:38 ghutchis Exp $
 //
 //
 
@@ -26,8 +26,8 @@
 #else // Use regex
 #ifdef HAVE_BROKEN_REGEX
 #include <regex.h>
-#else
-#include "regex.h"
+#else // included regex code and header
+#include "gregex.h"
 #endif
 #endif
 

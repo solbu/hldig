@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: EndingsDB.cc,v 1.3.2.2 2001/06/15 21:38:39 grdetil Exp $";
+static char RCSid[] = "$Id: EndingsDB.cc,v 1.3.2.3 2002/01/26 03:43:38 ghutchis Exp $";
 #endif
 
 #include "Endings.h"
@@ -17,7 +17,18 @@ static char RCSid[] = "$Id: EndingsDB.cc,v 1.3.2.2 2001/06/15 21:38:39 grdetil E
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>
+
+// This is an attempt to get around compatibility problems
+// with the included regex
+#ifdef USE_RX
+#include <rxposix.h>
+#else // Use regex
+#ifdef HAVE_BROKEN_REGEX
 #include <regex.h>
+#else // included regex code and header
+#include "gregex.h"
+#endif
+#endif
 
 
 //*****************************************************************************

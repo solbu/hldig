@@ -25,6 +25,9 @@
 /* Define if the included regex doesn't work */
 #undef HAVE_BROKEN_REGEX
 
+/* Define if we should use rxposix.h instead of regex.h */
+#undef USE_RX
+
 @BOTTOM@
 
 /* Define to the syslog level for htsearch logging. */
