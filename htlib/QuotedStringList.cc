@@ -4,12 +4,15 @@
 // Implementation of QuotedStringList
 //
 // $Log: QuotedStringList.cc,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.1.1.1.2.1  1999/12/09 00:27:36  ghutchis
+// (Create): Make sure an empty token isn't ignored.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: QuotedStringList.cc,v 1.1 1997/02/03 17:11:05 turtle Exp $";
+static char RCSid[] = "$Id: QuotedStringList.cc,v 1.1.1.1.2.1 1999/12/09 00:27:36 ghutchis Exp $";
 #endif
 
 #include "QuotedStringList.h"
@@ -76,6 +79,7 @@ int
 QuotedStringList::Create(char *str, char *sep, int single)
 {
     char	quote = 0;
+    int	quoted = 0;
     String	word;
 
     while (str && *str)
@@ -91,11 +95,13 @@ QuotedStringList::Create(char *str, char *sep, int single)
 	else if (*str == '"' || *str == '\'')
 	{
 	    quote = *str;
+	    quoted++;
 	}
 	else if (quote == 0 && strchr(sep, *str))
 	{
 	    List::Add(new String(word));
 	    word = 0;
+	    quoted = 0;
 	    if (!single)
 	    {
 		while (strchr(sep, *str))
@@ -111,7 +117,7 @@ QuotedStringList::Create(char *str, char *sep, int single)
     //
     // Add the last word to the list
     //
-    if (word.length())
+    if (word.length() || quoted)
 	List::Add(new String(word));
     return Count();
 }

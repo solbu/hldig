@@ -1,3 +1,8 @@
+Wed Dec  8 18:10:27 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/QuotedStringList.cc (Create): Make sure that an empty
+	token isn't ignored.
+
 Tue Dec  7 10:26:58 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.cc (setVariables): Fix a compilation error by
