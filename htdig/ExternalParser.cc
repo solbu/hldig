@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.18 2000/12/12 19:29:47 grdetil Exp $
+// $Id: ExternalParser.cc,v 1.19.2.19 2000/12/12 19:35:42 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <wait.h>
 
 static Dictionary	*parsers = 0;
 static Dictionary	*toTypes = 0;
@@ -208,10 +209,10 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     String	newcontent;
 
     StringList	cpargs(currentParser);
-    char   **parsargs = new char * [cpargs.Count() + 5];
+    const char   **parsargs = new const char * [cpargs.Count() + 5];
     int    argi;
     for (argi = 0; argi < cpargs.Count(); argi++)
-	parsargs[argi] = cpargs[i].get();
+	parsargs[argi] = cpargs[argi].get();
     parsargs[argi++] = path.get();
     parsargs[argi++] = contentType.get();
     parsargs[argi++] = base.get().get();

@@ -1,7 +1,7 @@
-Tue Dec 12 13:18:25 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Dec 12 13:24:49 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/ExternalParser.cc (parse): Fixed to properly handle binary
-	output from an external converter.
+	output from an external converter.  Fixed some compilation errors.
 
 Tue Dec 12 12:52:14 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
