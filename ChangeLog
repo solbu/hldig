@@ -1,5 +1,13 @@
 Fri Oct 01 14:55:56 1999  Loic Dachary  <loic@ceic.com>
 
+	* htword/WordRecord: mutable, can also contain uniq word statistics.
+
+	* htword/WordReference: remove all dependencies related to the actual
+	  structure of the key.
+	
+	* htcommon/HtWordReference: derived from WordReference, explicit
+	  accessors.
+	
 	* htcommon/HtWordList: derived from WordList, only handles the
 	  word cache (Flush, MarkGone).
 	

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.cc,v 1.20 1999/09/27 08:57:05 loic Exp $
+// $Id: parser.cc,v 1.21 1999/10/01 15:19:29 loic Exp $
 //
 
 #include "parser.h"
@@ -269,7 +269,7 @@ Parser::perform_phrase(List &oldWords)
     String	temp = current->word.get();
     char	*p;
     List	*newWords = 0;
-    WordReference *oldWord, *newWord;
+    HtWordReference *oldWord, *newWord;
 
     if (current->isIgnore)
     {
@@ -290,7 +290,7 @@ Parser::perform_phrase(List &oldWords)
     if (oldWords.Count() == 0)
       {
 	newWords->Start_Get();
-	while ((newWord = (WordReference *) newWords->Get_Next()))
+	while ((newWord = (HtWordReference *) newWords->Get_Next()))
 	  oldWords.Add(newWord);
 	return;
       }
@@ -299,15 +299,15 @@ Parser::perform_phrase(List &oldWords)
     List	*results = new List;
 
     oldWords.Start_Get();
-    while ((oldWord = (WordReference *) oldWords.Get_Next()))
+    while ((oldWord = (HtWordReference *) oldWords.Get_Next()))
       {
 	newWords->Start_Get();
-	while ((newWord = (WordReference *) newWords->Get_Next()))
+	while ((newWord = (HtWordReference *) newWords->Get_Next()))
 	  {
 	    if (oldWord->DocID() == newWord->DocID())
 	      if ((oldWord->Location() + 1) == newWord->Location())
 		{
-		  WordReference *result = new WordReference(*oldWord);
+		  HtWordReference *result = new HtWordReference(*oldWord);
 
 		  result->Flags(oldWord->Flags() & newWord->Flags());
 		  result->Location(newWord->Location());
@@ -319,7 +319,7 @@ Parser::perform_phrase(List &oldWords)
 
     oldWords.Destroy();
     results->Start_Get();
-    while ((newWord = (WordReference *) results->Get_Next()))
+    while ((newWord = (HtWordReference *) results->Get_Next()))
       oldWords.Add(newWord);
     results->Release();
     delete results;
@@ -334,7 +334,7 @@ Parser::score(List *wordList, double weight)
 {
     ResultList	*list = new ResultList;
     DocMatch	*dm;
-    WordReference *wr;
+    HtWordReference *wr;
 
     stack.push(list);
 
@@ -346,7 +346,7 @@ Parser::score(List *wordList, double weight)
       }
 
     wordList->Start_Get();
-    while ((wr = (WordReference *) wordList->Get_Next()))
+    while ((wr = (HtWordReference *) wordList->Get_Next()))
       {
 	dm = list->find(wr->DocID());
 	if (dm)

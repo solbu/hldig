@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.cc,v 1.45 1999/10/01 12:53:51 loic Exp $
+// $Id: DocumentRef.cc,v 1.46 1999/10/01 15:19:28 loic Exp $
 //
 
 #include "DocumentRef.h"
@@ -20,6 +20,7 @@
 #include "Configuration.h"
 #include "HtURLCodec.h"
 #include "WordType.h"
+#include "HtWordReference.h"
 #include <stdlib.h>
 #include <ctype.h>
 #include <fstream.h>
@@ -456,7 +457,7 @@ void DocumentRef::AddDescription(const char *d, HtWordList &words)
     static int    max_descriptions    = config.Value("max_descriptions", 5);
 
     String word;
-    WordReference wordRef;
+    HtWordReference wordRef;
     wordRef.Flags(FLAG_LINK_TEXT);
     wordRef.DocID(docID);
 

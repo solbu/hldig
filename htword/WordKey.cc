@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.1 1999/09/30 15:56:45 loic Exp $
+// $Id: WordKey.cc,v 1.2 1999/10/01 15:19:30 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -486,3 +486,46 @@ WORD_MERGER(String, String)
 
   return OK;
 }
+
+ostream &operator << (ostream &o, const WordKey &key)
+{
+  const struct WordKeyInfo& info = word_key_info;
+
+  //
+  // Walk the fields in sorting order. As soon as one of them
+  // does not compare equal, return.
+  //
+  for(int j = 0; j < info.nfields; j++) {
+    int i = info.sort[j].field_number;
+    int index = info.fields[i].index;
+
+    switch(info.fields[i].type) {
+#ifdef WORD_HAVE_pool_String
+    case WORD_ISA_pool_String:
+      o << key.pool_String[index] << "\t";
+      break;
+#endif /* WORD_HAVE_pool_String */
+#ifdef WORD_HAVE_pool_unsigned_int
+    case WORD_ISA_pool_unsigned_int:
+      o << key.pool_unsigned_int[index] << "\t";
+      break;
+#endif /* WORD_HAVE_pool_unsigned_int */
+#ifdef WORD_HAVE_pool_unsigned_short
+    case WORD_ISA_pool_unsigned_short:
+      o << key.pool_unsigned_short[index] << "\t";
+      break;
+#endif /* WORD_HAVE_pool_unsigned_short */
+#ifdef WORD_HAVE_pool_unsigned_char
+    case WORD_ISA_pool_unsigned_char:
+      o << key.pool_unsigned_char[index] << "\t";
+      break;
+#endif /* WORD_HAVE_pool_unsigned_char */
+    default:
+      cerr << "WordKey::operator <<: invalid type " << info.fields[i].type << " for field " << i << "\n";
+      break;
+    }
+  }
+
+  return o;
+}
+

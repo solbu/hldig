@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.17 1999/10/01 12:53:53 loic Exp $
+// $Id: Retriever.h,v 1.18 1999/10/01 15:19:29 loic Exp $
 //
 
 #ifndef _Retriever_h_
@@ -22,6 +22,7 @@
 #include "Images.h"
 #include "Dictionary.h"
 #include "Queue.h"
+#include "HtWordReference.h"
 #include "List.h"
 
 class URL;
@@ -96,7 +97,7 @@ private:
     int			n_links;
     Images		images;
     String		credentials;
-    WordReference	word_context;
+    HtWordReference	word_context;
     HtWordList		words;
 	
     RetrieverLog log;

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.2 1999/10/01 12:53:55 loic Exp $
+// $Id: WordList.h,v 1.3 1999/10/01 15:19:30 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -120,8 +120,6 @@ public:
     List                *Words();
     // This returns a list of all the Words, as WordReference *
     List		*WordRefs();
-    // Write an ascii version of the word database in <filename>
-    int			Dump(const String& filename);
 
     //
     // Walk and collect data from the word database.

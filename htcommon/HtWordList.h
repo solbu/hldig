@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.h,v 1.1 1999/10/01 12:53:51 loic Exp $
+// $Id: HtWordList.h,v 1.2 1999/10/01 15:19:28 loic Exp $
 //
 
 #ifndef _HtWordList_h_
@@ -45,6 +45,8 @@ public:
     //
     void		Flush();
 
+    // Write an ascii version of the word database in <filename>
+    int			Dump(const String& filename);
 
 private:
 

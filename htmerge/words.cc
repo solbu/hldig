@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: words.cc,v 1.21 1999/10/01 12:53:53 loic Exp $
+// $Id: words.cc,v 1.22 1999/10/01 15:19:29 loic Exp $
 //
 
 #include "htmerge.h"
@@ -33,8 +33,9 @@ public:
 //*****************************************************************************
 //
 //
-static int delete_word(WordList *words, WordCursor& cursor, const WordReference *word, Object &data)
+static int delete_word(WordList *words, WordCursor& cursor, const WordReference *word_arg, Object &data)
 {
+  const HtWordReference *word = (const HtWordReference *)word_arg;
   DeleteWordData& d = (DeleteWordData&)data;
   static String docIDStr;
 

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.2 1999/10/01 12:53:54 loic Exp $
+// $Id: WordList.cc,v 1.3 1999/10/01 15:19:30 loic Exp $
 //
 
 #include "WordList.h"
@@ -209,14 +209,14 @@ int WordList::Close()
 //
 int WordList::Put(const WordReference& arg, int flags)
 {
-  if (arg.Word().length() == 0)
+  if (arg.Key().GetWord().length() == 0)
     return NOTOK;
 
   WordReference	wordRef(arg);
-  String 	word = wordRef.Word();
+  String 	word = wordRef.Key().GetWord();
   if(wtype.Normalize(word) & WORD_NORMALIZE_NOTOK)
     return NOTOK;
-  wordRef.Word(word);
+  wordRef.Key().SetWord(word);
 
   int ret;
 
@@ -261,59 +261,6 @@ List *WordList::WordRefs()
   return Collect(WordReference(), HTDIG_WORDLIST_COLLECT);
 }
 
-//
-// Callback data dedicated to Dump and dump_word communication
-//
-class DumpWordData : public Object
-{
-public:
-  DumpWordData(FILE* fl_arg) { fl = fl_arg; }
-
-  FILE* fl;
-};
-
-//*****************************************************************************
-//
-// Write the ascii representation of a word occurence. Helper
-// of WordList::Dump
-//
-static int dump_word(WordList *, WordCursor &, const WordReference *word, Object &data)
-{
-  DumpWordData &info = (DumpWordData &)data;
-
-  word->Dump(info.fl);
-
-  return OK;
-}
-
-//*****************************************************************************
-// int WordList::Dump(char* filename)
-//
-// Write an ascii version of the word database in <filename>
-//
-int WordList::Dump(const String& filename)
-{
-  FILE		*fl;
-
-  if (!isopen) {
-    cerr << "WordList::Dump: database must be opened first\n";
-    return NOTOK;
-  }
-
-  if((fl = fopen(filename, "w")) == 0) {
-    perror(form("WordList::Dump: opening %s for writing", (const char*)filename));
-    return NOTOK;
-  }
-
-  WordReference::DumpHeader(fl);
-  DumpWordData data(fl);
-  (void)Walk(WordReference(), HTDIG_WORDLIST_WALK, dump_word, data);
-  
-  fclose(fl);
-
-  return OK;
-}
-
 //*****************************************************************************
 //
 List *WordList::Collect (const WordReference& wordRef, int action)
@@ -355,7 +302,7 @@ List *WordList::Collect (const WordReference& wordRef, int action)
 List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_callback_t callback, Object &callback_data)
 {
     List        	*list = 0;
-    int			prefixLength = wordRef.Word().length();
+    int			prefixLength = wordRef.Key().GetWord().length();
     WordKey		prefixKey;
     WordCursor		cursor;
     
@@ -552,9 +499,9 @@ List *WordList::Words()
       {
 	WordReference	wordRef(key, record);
 
-	if ( (lastWord.Word() == String("")) || (wordRef.Word() != lastWord.Word()) )
+	if ( (lastWord.Key().GetWord() == String("")) || (wordRef.Key().GetWord() != lastWord.Key().GetWord()) )
 	  {
-            list->Add(new String(wordRef.Word()));
+            list->Add(new String(wordRef.Key().GetWord()));
 	    lastWord = wordRef;
 	  }
       }

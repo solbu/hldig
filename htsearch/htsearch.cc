@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.51 1999/10/01 12:53:54 loic Exp $
+// $Id: htsearch.cc,v 1.52 1999/10/01 15:19:29 loic Exp $
 //
 
 #include "htsearch.h"
@@ -650,7 +650,7 @@ convertToBoolean(List &words)
 //*****************************************************************************
 // Dictionary *htsearch(char *wordfile, List &searchWords, Parser *parser)
 //   This returns a dictionary indexed by document ID and containing a
-//   List of WordReference objects.
+//   List of HtWordReference objects.
 //
 ResultList *
 htsearch(char *wordfile, List &searchWords, Parser *parser)

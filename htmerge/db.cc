@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: db.cc,v 1.21 1999/10/01 12:53:53 loic Exp $
+// $Id: db.cc,v 1.22 1999/10/01 15:19:29 loic Exp $
 //
 
 #include "htmerge.h"
@@ -170,8 +170,8 @@ mergeDB()
     words = mergeWordDB.WordRefs();
 
     words->Start_Get();
-    WordReference	*word;
-    while ((word = (WordReference *) words->Get_Next()))
+    HtWordReference	*word;
+    while ((word = (HtWordReference *) words->Get_Next()))
     {
       docIDKey = word->DocID();
       if (merge_dup_ids.Exists(docIDKey))
@@ -184,7 +184,7 @@ mergeDB()
 
     words = wordDB.WordRefs();
     words->Start_Get();
-    while ((word = (WordReference *) words->Get_Next()))
+    while ((word = (HtWordReference *) words->Get_Next()))
     {
       docIDKey = word->DocID();
       if (db_dup_ids.Exists(docIDKey))

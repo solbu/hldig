@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.10 1999/10/01 12:53:55 loic Exp $
+// $Id: word.cc,v 1.11 1999/10/01 15:19:30 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -136,19 +136,19 @@ static void dolist(params_t*)
     words.Open(config["word_db"], O_RDWR);
 
     WordReference wordRef;
-    wordRef.Flags(FLAG_TEXT);
+    wordRef.Key().SetFlags(67);
     unsigned int location = 0;
     unsigned int anchor = 0;
     unsigned int docid = 1;
     if(verbose) fprintf(stderr, "Inserting\n");
 
     for(char** p = word_list; *p; p++) {
-      wordRef.Word(*p);
-      wordRef.DocID(docid);
-      wordRef.Location(location);
-      wordRef.Anchor(anchor);
+      wordRef.Key().SetWord(*p);
+      wordRef.Key().SetDocID(docid);
+      wordRef.Key().SetLocation(location);
+      wordRef.Record().info.data = anchor;
       if(verbose > 2) pack_show(wordRef);
-      if(verbose > 1) wordRef.Dump(stderr);
+      if(verbose > 1) cerr << wordRef << "\n";
       words.Insert(wordRef);
       location += strlen(*p);
       anchor++;
@@ -163,10 +163,10 @@ static void dolist(params_t*)
 
     words.Open(config["word_db"], O_RDONLY);
     for(char** p = word_list; *p; p++) {
-      wordRef.Word(*p);
-      wordRef.Location(location);
-      wordRef.Anchor(anchor);
-      wordRef.DocID(docid);
+      wordRef.Key().SetWord(*p);
+      wordRef.Key().SetLocation(location);
+      wordRef.Record().info.data = anchor;
+      wordRef.Key().SetDocID(docid);
 
       location += strlen(*p);
       anchor++;
@@ -179,20 +179,20 @@ static void dolist(params_t*)
 
       if(verbose) fprintf(stderr, "%s ... ", *p);
       if(verbose > 2) pack_show(wordRef);
-      if(verbose > 1) wordRef.Dump(stderr);
+      if(verbose > 1) cerr << wordRef << "\n";
       List *result = words[wordRef];
       result->Start_Get();
       int count = 0;
       WordReference* found;
       while((found = (WordReference*)result->Get_Next())) {
-	if(wordRef.Word() != found->Word()) {
-	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (const char*)wordRef.Word(), (const char*)found->Word());
+	if(wordRef.Key().GetWord() != found->Key().GetWord()) {
+	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (const char*)wordRef.Key().GetWord(), (const char*)found->Key().GetWord());
 	  exit(1);
 	}
 	count++;
       }
       if(count != 1) {
-	fprintf(stderr, "dolist: simple: searching %s, got %d matches instead of 1\n", (const char*)wordRef.Word(), count);
+	fprintf(stderr, "dolist: simple: searching %s, got %d matches instead of 1\n", (const char*)wordRef.Key().GetWord(), count);
 	exit(1);
       }
       if(verbose) fprintf(stderr, "done\n");
@@ -209,22 +209,22 @@ static void dolist(params_t*)
     words.Open(config["word_db"], O_RDWR);
 
     WordReference wordRef;
-    wordRef.Word("the");
+    wordRef.Key().SetWord("the");
 
     List *result = words[wordRef];
     result->Start_Get();
     int count = 0;
     WordReference* found;
     while((found = (WordReference*)result->Get_Next())) {
-	if(wordRef.Word() != found->Word()) {
-	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (const char*)wordRef.Word(), (const char*)found->Word());
+	if(wordRef.Key().GetWord() != found->Key().GetWord()) {
+	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (const char*)wordRef.Key().GetWord(), (const char*)found->Key().GetWord());
 	  exit(1);
 	}
-	if(verbose) found->Dump(stderr);
+	if(verbose) cerr << found << "\n";
 	count++;
     }
     if(count != 2) {
-      fprintf(stderr, "dolist: searching occurences of '%s', got %d matches instead of 2\n", (const char*)wordRef.Word(), count);
+      fprintf(stderr, "dolist: searching occurences of '%s', got %d matches instead of 2\n", (const char*)wordRef.Key().GetWord(), count);
       exit(1);
     }
 
@@ -260,7 +260,7 @@ static void dolist(params_t*)
     words.Open(config["word_db"], O_RDWR);
 
     WordReference wordRef;
-    wordRef.DocID(5);
+    wordRef.Key().SetDocID(5);
     int count;
     if((count = words.WalkDelete(wordRef)) != 1) {
       fprintf(stderr, "dolist: delete occurences in DocID 5, %d deletion instead of 1\n", count);
@@ -268,7 +268,7 @@ static void dolist(params_t*)
     }
 
     wordRef.Clear();
-    wordRef.Word("jumps");
+    wordRef.Key().SetWord("jumps");
     List* result = words[wordRef];
     if(result->Count() != 0) {
       fprintf(stderr, "dolist: unexpectedly found 'jumps' \n");

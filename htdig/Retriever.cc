@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.67 1999/10/01 12:53:52 loic Exp $
+// $Id: Retriever.cc,v 1.68 1999/10/01 15:19:29 loic Exp $
 //
 
 #include "Retriever.h"
@@ -918,7 +918,7 @@ Retriever::got_word(const char *word, int location, int heading)
     if (trackWords)
     {
       String w = word;
-      WordReference wordRef;
+      HtWordReference wordRef;
 
       wordRef.Location(location);
       wordRef.Flags(factor[heading]);

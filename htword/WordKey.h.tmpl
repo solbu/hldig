@@ -177,6 +177,8 @@ WORD_ACCESSOR(String, String)
   static int 	Compare(const String& a, const String& b);
   static int 	Compare(const char *a, int a_length, const char *b, int b_length);
 
+  friend ostream &operator << (ostream &o, const WordKey &key);
+
 private:
 
   //

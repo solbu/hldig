@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.h,v 1.6 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: htsearch.h,v 1.7 1999/10/01 15:19:29 loic Exp $
 //
 
 #ifndef _htsearch_h_
@@ -28,7 +28,7 @@
 #include "Configuration.h"
 #include "ResultMatch.h"
 #include "ResultList.h"
-#include "WordReference.h"
+#include "HtWordReference.h"
 #include "StringMatch.h"
 #include "defaults.h"
 

@@ -10,11 +10,11 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.cc,v 1.1 1999/10/01 12:53:51 loic Exp $
+// $Id: HtWordList.cc,v 1.2 1999/10/01 15:19:28 loic Exp $
 //
 
 #include "HtWordList.h"
-#include "WordReference.h"
+#include "HtWordReference.h"
 #include "WordRecord.h"
 #include "WordType.h"
 #include "Configuration.h"
@@ -61,14 +61,14 @@ void HtWordList::Replace(const WordReference& arg)
 //   
 void HtWordList::Flush()
 {
-  WordReference	*wordRef;
+  HtWordReference	*wordRef;
 
     // Provided for backwards compatibility
   if (!isopen)
     Open(config["word_db"], O_RDWR);
 
   words->Start_Get();
-  while ((wordRef = (WordReference *) words->Get_Next()))
+  while ((wordRef = (HtWordReference *) words->Get_Next()))
     {
       if (wordRef->Word().length() == 0) {
 	cerr << "HtWordList::Flush: unexpected empty word\n";
@@ -91,3 +91,59 @@ void HtWordList::MarkGone()
 {
   words->Destroy();
 }
+
+//
+// Callback data dedicated to Dump and dump_word communication
+//
+class DumpWordData : public Object
+{
+public:
+  DumpWordData(FILE* fl_arg) { fl = fl_arg; }
+
+  FILE* fl;
+};
+
+//*****************************************************************************
+//
+// Write the ascii representation of a word occurence. Helper
+// of WordList::Dump
+//
+static int dump_word(WordList *, WordCursor &, const WordReference *word, Object &data)
+{
+  const HtWordReference *word_tmp = (const HtWordReference *)word;
+
+  DumpWordData &info = (DumpWordData &)data;
+
+  word_tmp->Dump(info.fl);
+
+  return OK;
+}
+
+//*****************************************************************************
+// int HtWordList::Dump(char* filename)
+//
+// Write an ascii version of the word database in <filename>
+//
+int HtWordList::Dump(const String& filename)
+{
+  FILE		*fl;
+
+  if (!isopen) {
+    cerr << "WordList::Dump: database must be opened first\n";
+    return NOTOK;
+  }
+
+  if((fl = fopen(filename, "w")) == 0) {
+    perror(form("WordList::Dump: opening %s for writing", (const char*)filename));
+    return NOTOK;
+  }
+
+  HtWordReference::DumpHeader(fl);
+  DumpWordData data(fl);
+  (void)Walk(WordReference(), HTDIG_WORDLIST_WALK, dump_word, data);
+  
+  fclose(fl);
+
+  return OK;
+}
+

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htmerge.h,v 1.9 1999/10/01 12:53:53 loic Exp $
+// $Id: htmerge.h,v 1.10 1999/10/01 15:19:29 loic Exp $
 //
 
 #ifndef _htmerge_h_
@@ -24,7 +24,7 @@
 #include "DocumentDB.h"
 #include "HtURLCodec.h"
 #include "HtWordList.h"
-#include "WordRecord.h"
+#include "HtWordReference.h"
 #include "htString.h"
 
 #include <fstream.h>
