@@ -2,66 +2,18 @@
 // WordList.cc
 //
 // Implementation of WordList
-//
-// $Log: WordList.cc,v $
-// Revision 1.15  1999/01/21 01:59:12  ghutchis
-// Words cannot be valid if they're shorter than minimum_word_length!
-//
-// Revision 1.14  1999/01/20 18:03:44  ghutchis
-// Added check for adding words with weight zero.
-//
-// Revision 1.13  1999/01/14 01:09:11  ghutchis
-// Small speed improvements based on gprof.
-//
-// Revision 1.12  1999/01/14 00:28:14  ghutchis
-// Changed field order in db.wordlist. With the old order, words from HTML body
-// and words from links to that url weren't merged sometimes.
-//
-// Revision 1.11  1999/01/10 02:00:17  ghutchis
-// Break out of looping once we're sure the word is invalid.
-//
-// Revision 1.10  1998/12/13 06:13:13  ghutchis
-// Change undefined minimumWordLength to config("minimum_word_length").
-//
-// Revision 1.9  1998/12/13 00:15:35  ghutchis
-// Added additional cleanups for words in the bad word list. Check to make sure
-// they don't have punctuation, etc.
-//
-// Revision 1.8  1998/12/08 02:52:19  ghutchis
-// Remove unnecessary code.
-//
-// Revision 1.7  1998/12/06 18:45:57  ghutchis
-// Ensure duplicate words have minimum location and anchor attributes.
-//
-// Revision 1.6  1998/12/05 00:53:23  ghutchis
-// Don't store c:1 and a:0 entries in db.wordlist to save space.
-//
-// Revision 1.5  1998/11/27 18:30:20  ghutchis
-// Fixed bug with bad_words and MAX_WORD_LENGTH, noted by Jeff Breidenbach
-// <jeff@alum.mit.edu>.
-//
-// Revision 1.4  1998/09/04 00:56:22  ghutchis
-// Various bug fixes.
-//
-// Revision 1.3  1997/03/24 04:33:15  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.2  1997/02/24 17:52:39  turtle
-// Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
-// ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
-// Initial CVS
+// Keeps track of the words in each document, spilling out to disk
+// when the document is fully parsed
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.15 1999/01/21 01:59:12 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.16 1999/01/28 05:20:21 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
-#include <WordReference.h>
-#include <Configuration.h>
-#include <htString.h>
+#include "WordReference.h"
+#include "Configuration.h"
+#include "htString.h"
 #include <stdio.h>
 #include <ctype.h>
 
@@ -144,11 +96,12 @@ int WordList::valid_word(char *word)
     int		control = 0;
     int		alpha = 0;
     static int	allow_numbers = config.Boolean("allow_numbers", 0);
+    static int	minimum_word_length = config.Value("minimum_word_length", 3);
 
     if (badwords.Exists(word))
 	return 0;
 
-    if (strlen(word) < config.Value("minimum_word_length"))
+    if (strlen(word) < minimum_word_length)
       return 0;
 
     while (word && *word)
@@ -266,6 +219,7 @@ void WordList::BadWordFile(char *filename)
     char	*word;
     String      new_word;
     char        *valid_punctuation = config["valid_punctuation"];
+    int	        minimum_word_length = config.Value("minimum_word_length", 3);
 
     while (fl && fgets(buffer, sizeof(buffer), fl))
     {
@@ -277,7 +231,7 @@ void WordList::BadWordFile(char *filename)
 	    new_word = word;  // We need to clean it up before we add it
 	    new_word.lowercase();  // Just in case someone enters an odd one
 	    new_word.remove(valid_punctuation);
-	    if (new_word.length() >= config.Value("minimum_word_length", 3))
+	    if (new_word.length() >= minimum_word_length)
 	      badwords.Add(new_word, 0);
 	  }
     }

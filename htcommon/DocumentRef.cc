@@ -2,90 +2,19 @@
 // DocumentRef.cc
 //
 // Implementation of DocumentRef
-//
-// $Log: DocumentRef.cc,v $
-// Revision 1.21  1999/01/23 01:25:00  hp
-// Fixed _some_ missing const qualifiers on common methods (requiring temps)
-//
-// Revision 1.20  1999/01/21 13:40:40  ghutchis
-// Use HtURLCodec; ::encode() and ::decode() the URL used as a key.
-//
-// Revision 1.19  1999/01/20 04:58:02  ghutchis
-// New macros for assigning portably to some possibly-enum numeric type.
-// (getnum): Use them.
-//
-// Revision 1.18  1999/01/18 23:15:36  ghutchis
-// Fix thinko with compression_level.
-//
-// Revision 1.17  1999/01/17 20:28:37  ghutchis
-// Save space when lengths can fit in an unsigned char or unsigned short.
-//
-// Revision 1.16  1999/01/14 03:06:26  ghutchis
-// Update from Randy Winch to eliminate use_document_compression and fix
-// compilation problems noted by Hans-Peter.
-//
-// Revision 1.15  1999/01/12 18:08:57  ghutchis
-// Added support for compressing data using zlib if available, contributed by
-// Randy Winch <gumby@cafes.net>.
-//
-// Revision 1.14  1999/01/06 18:21:16  ghutchis
-// Applied fix from Dave Alden <alden@math.ohio-state.edu> to compile under
-// SunPRO compilers by eliminating trailing comma in enum.
-//
-// Revision 1.13  1999/01/06 15:39:47  ghutchis
-// Remove delete instruction that fouls up everything (it was removing
-// descriptions as we add them!).
-//
-// Revision 1.12  1999/01/06 05:42:12  ghutchis
-// Do not add non-word characters to the wordlist.
-//
-// Revision 1.11  1999/01/05 19:35:42  ghutchis
-// Fix dereferencing mistake in last version.
-//
-// Revision 1.9  1998/12/08 02:52:50  ghutchis
-// Fix typo that added description text that contained punctuation or was too
-// short.
-//
-// Revision 1.8  1998/12/06 18:44:43  ghutchis
-// Add the text of descriptions to the word database with weight
-// description_factor.
-//
-// Revision 1.7  1998/11/18 05:16:28  ghutchis
-// Remove limit on link descriptions.
-//
-// Revision 1.6  1998/11/15 22:29:27  ghutchis
-// Implement docBackLinks backlink count.
-//
-// Revision 1.5  1998/10/18 20:37:41  ghutchis
-// Fixed database corruption bug and other misc. cleanups.
-//
-// Revision 1.4  1998/08/11 08:58:24  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.3  1998/01/05 00:49:16  turtle
-// format changes
-//
-// Revision 1.2  1997/02/10 17:30:58  turtle
-// Applied AIX specific patches supplied by Lars-Owe Ivarsson
-// <lars-owe.ivarsson@its.uu.se>
-//
-// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
-// Initial CVS
-//
-// Revision 1.1  1995/07/06 23:43:12  turtle
-// *** empty log message ***
+// Reference to an indexed document. Keeps track of all information stored
+// on the document, either by the dig or temporary search information.
 //
 //
 
 #include "DocumentRef.h"
-#include <good_strtok.h>
+#include "good_strtok.h"
 #include <stdlib.h>
 #include <ctype.h>
 #include <fstream.h>
 #include "WordList.h"
-#include <Configuration.h>
-#include <HtURLCodec.h>
+#include "Configuration.h"
+#include "HtURLCodec.h"
 
 #ifdef HAVE_LIBZ
 #include <zlib.h>
@@ -95,7 +24,7 @@ extern Configuration config;
 
 // Static member variable so we get only a single copy
 // Used to buffer the zlib compression
-unsigned char DocumentRef::c_buffer[60000];
+static unsigned char DocumentRef::c_buffer[60000];
 
 //*****************************************************************************
 // DocumentRef::DocumentRef()
@@ -311,7 +240,7 @@ void DocumentRef::Serialize(String &s)
     addstring(DOC_NOTIFICATION, s, docNotification);
     addstring(DOC_SUBJECT, s, docSubject);
 #ifdef HAVE_LIBZ
-    int cf=config.Value("compression_level",0);    
+    static int cf=config.Value("compression_level",0);    
     if (cf) {
       //
       // Now compress s into c_s
@@ -363,7 +292,8 @@ void DocumentRef::Deserialize(String &stream)
     char	*s;
     char	*end;
     String c_s;
-    if (config.Value("compression_level",0)) {
+    static int cf=config.Value("compression_level",0);    
+    if (cf) {
       // Decompress stream
       z_stream d_stream; /* decompression stream */
 
@@ -594,9 +524,11 @@ void DocumentRef::AddDescription(char *d)
     words->DocumentID(docID);
     
     // Parse words, taking care of valid_punctuation.
-    char *p                   = desc;
-    char *valid_punctuation   = config["valid_punctuation"];
-    int   minimum_word_length = config.Value("minimum_word_length", 3);
+    char         *p                   = desc;
+    static char  *valid_punctuation   = config["valid_punctuation"];
+    static int    minimum_word_length = config.Value("minimum_word_length", 3);
+    static double description_factor  = config.Double("description_factor");
+    static int    max_descriptions    = config.Value("max_descriptions", 5);
 
     // Not restricted to this size, just used as a hint.
     String word(MAX_WORD_LENGTH);
@@ -616,7 +548,7 @@ void DocumentRef::AddDescription(char *d)
 
       if (word.length() >= minimum_word_length)
         // The wordlist takes care of lowercasing; just add it.
-        words->Word(word, 0, 0, config.Double("description_factor"));
+        words->Word(word, 0, 0, description_factor);
 
       // No need to count in valid_punctuation for the beginning-char.
       while (*p && !isalnum(*p))
@@ -627,7 +559,7 @@ void DocumentRef::AddDescription(char *d)
     words->Flush();
     
     // Now are we at the max_description limit?
-    if (descriptions.Count() >= config.Value("max_descriptions", 5))
+    if (descriptions.Count() >= max_descriptions)
   	return;
   	
     descriptions.Start_Get();

@@ -2,42 +2,23 @@
 // ExternalParser.cc
 //
 // Implementation of ExternalParser
-//
-// $Log: ExternalParser.cc,v $
-// Revision 1.6  1999/01/20 18:08:29  ghutchis
-// Call good_strtok with appropriate parameters (explicitly include NULL first
-// parameter, second param is char, not char *).
-//
-// Revision 1.5  1999/01/14 03:28:07  ghutchis
-// Added support for 'm': meta element.
-//
-// Revision 1.4  1998/12/06 18:46:59  ghutchis
-// Ensure temporary files are placed in TMPDIR if it's set.
-//
-// Revision 1.3  1998/11/16 15:47:19  ghutchis
-//
-// Add checks for null tokens, adapted from patch by Vadim Checkan.
-//
-// Revision 1.2  1997/03/24 04:33:16  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
+// Allows external programs to parse unknown document formats.
+// The parser is expected to return the document in a specific format.
+// The format is documented in http://www.htdig.org/attrs.html#external_parser
 //
 #if RELEASE
-static char RCSid[] = "$Id: ExternalParser.cc,v 1.6 1999/01/20 18:08:29 ghutchis Exp $";
+static char RCSid[] = "$Id: ExternalParser.cc,v 1.7 1999/01/28 05:20:19 ghutchis Exp $";
 #endif
 
 #include "ExternalParser.h"
 #include "htdig.h"
-#include <htString.h>
-#include <QuotedStringList.h>
-#include <URL.h>
-#include <Dictionary.h>
+#include "htString.h"
+#include "QuotedStringList.h"
+#include "URL.h"
+#include "Dictionary.h"
 #include <ctype.h>
 #include <stdio.h>
-#include <good_strtok.h>
+#include "good_strtok.h"
 
 static Dictionary	*parsers = 0;
 extern String		configFile;
@@ -239,13 +220,15 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		  // (or class).  Which should not stop anybody from
 		  // finding a better solution.
 		  // For now, there is duplicated code.
-		  StringMatch	keywordsMatch;
-		  String	keywordNames = config["keywords_meta_tag_names"];
-
-		  keywordNames.replace(' ', '|');
-		  keywordNames.remove(",\t\r\n");
-		  keywordsMatch.IgnoreCase();
-		  keywordsMatch.Pattern(keywordNames);
+		  static StringMatch *keywordsMatch = 0;
+		  if (!keywordsMatch)
+		  {
+			StringList kn(config["keywords_meta_tag_names"], " \t");
+			keywordsMatch = new StringMatch();
+			keywordsMatch->IgnoreCase();
+			keywordsMatch->Pattern(kn.Join('|'));
+			kn.Release();
+		  }
     
 		  // <URL:http://www.w3.org/MarkUp/html-spec/html-spec_5.html#SEC5.2.5> 
 		  // says that the "name" attribute defaults to
@@ -280,7 +263,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		  //
 		  if (*name != '\0' && *content != '\0')
 		  {
-		    if (keywordsMatch.CompareWord(name))
+		    if (keywordsMatch->CompareWord(name))
 		    {
 		      char	*w = strtok(content, " ,\t\r");
 		      while (w)

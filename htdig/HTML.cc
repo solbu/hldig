@@ -2,109 +2,21 @@
 // HTML.cc
 //
 // Implementation of HTML
+// Class to parse HTML documents and return useful information to the Retriever
 //
-// $Log: HTML.cc,v $
-// Revision 1.29  1999/01/25 04:30:48  ghutchis
-// Move declarations out of the loop. Don't add non-word characters to the
-// excerpt if they're in the title. Fixes PR #80.
-//
-// Revision 1.28  1999/01/15 04:52:19  ghutchis
-// Added options noindex_start and noindex_end to enable NOT indexing some
-// sections of HTML.
-//
-// Revision 1.27  1999/01/14 03:24:12  ghutchis
-// Added slight fixes to the comment parsing code, contributed by Marjolein.
-//
-// Revision 1.26  1999/01/14 00:27:12  ghutchis
-// Fixed small memory leak with bogus HTML and small speedups.
-//
-// Revision 1.25  1999/01/10 01:59:29  ghutchis
-// Don't capitalize headers--this creates problems with non-ASCII values, since
-// String::uppercase doesn't know how to capitalize them.
-//
-// Revision 1.24  1999/01/08 04:57:02  ghutchis
-// Corrected problems with parsing comments, as contributed by Marjolein Katsma
-// <webmaster@javawoman.com> and Gilles.
-//
-// Revision 1.23  1998/12/12 01:48:52  ghutchis
-// Fix coredump when META refresh tags don't have content (e.g. no URL).
-//
-// Revision 1.22  1998/12/05 01:50:48  ghutchis
-// Fix mistake in last update--file was included twice.
-//
-// Revision 1.21  1998/12/05 00:50:04  ghutchis
-// Fix parser bug with &lt; becoming a tag.
-//
-// Revision 1.20  1998/12/02 02:49:37  ghutchis
-// Regenerated log messages.
-//
-// Revision 1.18  1998/11/15 22:06:27  ghutchis
-// Fix for refresh tags w/o URLs.
-//
-// Revision 1.17  1998/11/15 04:07:14  turtle
-// fixed bug which assumed that all http-equiv=refresh attributes also have
-// url=something.  The url=something is optional
-//
-// Revision 1.16  1998/11/15 02:47:46  ghutchis
-// Fixed bugs with META robots, URL parsing, and added support for META refresh
-// tags.
-//
-// Revision 1.15  1998/10/21 17:35:17  ghutchis
-// Cleaned up HTML parsing based on patch by Reni Seindal.
-//
-// Revision 1.14  1998/09/30 17:31:50  ghutchis
-// Changes for 3.1.0b2
-//
-// Revision 1.13  1998/09/23 14:58:21  ghutchis
-// Many, many bug fixes
-//
-// Revision 1.12  1998/09/18 18:45:55  ghutchis
-// YABF (Yet another bug fix)
-//
-// Revision 1.11  1998/09/18 02:38:08  ghutchis
-// Bug fixes for 3.1.0b2
-//
-// Revision 1.10  1998/09/10 04:16:25  ghutchis
-// More bug fixes.
-//
-// Revision 1.9  1998/09/08 03:29:09  ghutchis
-// Clean up for 3.1.0b1.
-//
-// Revision 1.8  1998/09/07 04:37:16  ghutchis
-// Added DocState for documents marked as "noindex".
-//
-// Revision 1.7  1998/08/11 08:58:27  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.6  1998/08/04 15:39:26  ghutchis
-// Added support for META robots tags.
-//
-// Revision 1.4  1998/07/09 09:32:03  ghutchis
-// *** empty log message ***
-//
-// Revision 1.3  1998/06/22 04:38:27  turtle
-// Applied patch that prevented SGML entities that translate to
-// valid_punctuation characters from becoming part of words
-//
-// Revision 1.2  1998/06/15 18:15:50  turtle
-// Added suggestion by Chris Liddiard to add ',' to the list of separator
-// characters for meta keyword parsing
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.29 1999/01/25 04:30:48 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30 1999/01/28 05:20:19 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
 #include "HTML.h"
 #include "SGMLEntities.h"
-#include <Configuration.h>
+#include "Configuration.h"
 #include <ctype.h>
-#include <StringMatch.h>
-#include <URL.h>
+#include "StringMatch.h"
+#include "StringList.h"
+#include "URL.h"
 
 static StringMatch	tags;
 static StringMatch	attrs;
@@ -135,11 +47,15 @@ HTML::HTML()
     hrefMatch.IgnoreCase();
     hrefMatch.Pattern("href");
 
-    String	keywordNames = config["keywords_meta_tag_names"];
-    keywordNames.replace(' ', '|');
-    keywordNames.remove(",\t\r\n");
+    //String	keywordNames = config["keywords_meta_tag_names"];
+    //keywordNames.replace(' ', '|');
+    //keywordNames.remove(",\t\r\n");
+    //keywordsMatch.IgnoreCase();
+    //keywordsMatch.Pattern(keywordNames);
+    StringList keywordNames(config["keywords_meta_tag_names"], " \t");
     keywordsMatch.IgnoreCase();
-    keywordsMatch.Pattern(keywordNames);
+    keywordsMatch.Pattern(keywordNames.Join('|'));
+    keywordNames.Release();
     
     word = 0;
     href = 0;
@@ -189,8 +105,8 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     unsigned char	*position = (unsigned char *) contents->get();
     unsigned char       *text = (unsigned char *) new char[contents->length()+1];
     unsigned char       *ptext = text;
-    char                *skip_start = config["noindex_start"];
-    char                *skip_end = config["noindex_end"];
+    static char         *skip_start = config["noindex_start"];
+    static char         *skip_end = config["noindex_end"];
 
     title = 0;
     head = 0;

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: SGMLEntities.cc,v 1.9 1999/01/27 18:09:23 ghutchis Exp $";
+static char RCSid[] = "$Id: SGMLEntities.cc,v 1.10 1999/01/28 05:20:19 ghutchis Exp $";
 #endif
 
 #include "SGMLEntities.h"
@@ -190,6 +190,9 @@ SGMLEntities::translateAndUpdate(unsigned char *&entityStart)
 {
     String		entity;
     unsigned char	*orig = entityStart;
+    static int		translate_quot = config.Boolean("translate_quot");
+    static int		translate_amp = config.Boolean("translate_amp");
+    static int		translate_lt_gt = config.Boolean("translate_lt_gt");
     
     if (*entityStart == '&')
 	entityStart++;		// Don't need the '&' that starts the entity
@@ -200,7 +203,7 @@ SGMLEntities::translateAndUpdate(unsigned char *&entityStart)
 	entity << *entityStart++;
       }
 
-    if ( !config.Boolean("translate_quot") )
+    if ( !translate_quot )
       {
 	//
 	// Do NOT translate entities for '"' (quote).
@@ -221,7 +224,7 @@ SGMLEntities::translateAndUpdate(unsigned char *&entityStart)
 	  }
       }
 
-    if ( !config.Boolean("translate_amp") )
+    if ( !translate_amp )
       {
 	//
 	// Do NOT translate entities for '&' since they can
@@ -243,7 +246,7 @@ SGMLEntities::translateAndUpdate(unsigned char *&entityStart)
 	  }
       }
 
-    if ( !config.Boolean("translate_lt_gt") )
+    if ( !translate_lt_gt )
       {
 	//
 	// Do NOT translate entities for '<' and '>' since they can
