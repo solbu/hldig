@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.cc,v 1.11 1999/09/11 05:03:51 ghutchis Exp $
+// $Id: HtDateTime.cc,v 1.12 1999/10/08 14:50:24 ghutchis Exp $
 //
 
 #include "HtDateTime.h"
@@ -72,7 +72,7 @@ const int HtDateTime::days[] = {	31, 28, 31, 30, 31, 30,
    //    It ignores, for now, Time Zone values
 ///////
 
-char *HtDateTime::SetFTime(char *buf, const char *format)
+char *HtDateTime::SetFTime(const char *buf, const char *format)
 {
 
    register char *p;

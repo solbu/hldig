@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.h,v 1.9 1999/09/11 05:03:51 ghutchis Exp $
+// $Id: HtDateTime.h,v 1.10 1999/10/08 14:50:24 ghutchis Exp $
 
 ///////
    //   Class for Date and Time
@@ -203,7 +203,7 @@ public:
 
    // Parsing various input string format 
    // It ignores time Zone value - always stores as GM
-   char *SetFTime(char *, const char *); // as strptime
+   char *SetFTime(const char *, const char *); // as strptime
 
    void SetAscTime(char *);	   	 // Sun Nov  6 08:49:37 1994
    void SetRFC1123(char *);	   	 // Sun, 06 Nov 1994 08:49:37 GMT
