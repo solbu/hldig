@@ -14,7 +14,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: cf_generate.pl,v 1.1.2.5 1999/12/06 22:48:50 grdetil Exp $
+# $Id: cf_generate.pl,v 1.1.2.6 2000/01/29 01:38:36 ghutchis Exp $
 #
 use strict;
 
@@ -99,7 +99,7 @@ close(FILE);
 my($letter) = '';
 my($record);
 foreach $record (@$config) {
-    my($name, $default, $type, $programs, $example, $description) = @$record;
+    my($name, $default, $type, $programs, $version, $category, $example, $description) = @$record;
 
     if($letter ne uc(substr($name, 0, 1))) {
 	print BYNAME "\t</font> <br>\n" if($letter);
@@ -115,6 +115,10 @@ foreach $record (@$config) {
 			    "<a href=\"$_.html\"$top>$_</a>";
 			}
 			split(' ', $programs));
+
+    if($version != 'all') {
+	$version = "$version or later";
+    }
 
     if(!($example =~ /^$name:/)) {
 	$example = "\t\t\t  <tr> <td valign=\"top\"><i>No example provided</i></td> </tr>\n";
@@ -170,6 +174,12 @@ EOF
 		  </dt>
 		  <dd>
 			$default
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      $version
 		  </dd>
 		  <dt>
 			<em>description:</em>

@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.h,v 1.6.2.6 1999/12/09 18:20:13 loic Exp $
+// $Id: Configuration.h,v 1.6.2.7 2000/01/29 01:38:36 ghutchis Exp $
 //
 
 #ifndef	_Configuration_h_
@@ -31,6 +31,8 @@ struct ConfigDefaults
   char	*value;			// Default value
   char	*type;			// Type of the value (string, integer, boolean)
   char	*programs;		// White separated list of programs/modules using this attribute
+  char	*version;		// Version that introduced the attribute
+  char	*category;		// Attribute category (to split documentation)
   char	*example;		// Example usage of the attribute (HTML)
   char	*description;		// Long description of the attribute (HTML)
 };
