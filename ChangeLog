@@ -1,3 +1,7 @@
+Mon Mar 22 16:06:15 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc: Check for presence of more than one <title> tag.
+
 Mon Mar 22 15:32:15 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/parse_doc.pl: Fix handling of minimum word length.
