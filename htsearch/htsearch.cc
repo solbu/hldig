@@ -4,6 +4,10 @@
 // Implementation of htsearch
 //
 // $Log: htsearch.cc,v $
+// Revision 1.3  1997/02/24 17:52:55  turtle
+// Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
+// ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
+//
 // Revision 1.2  1997/02/11 00:38:48  turtle
 // Renamed the very bad wordlist variable to badWords
 //
@@ -15,7 +19,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.2 1997/02/11 00:38:48 turtle Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.3 1997/02/24 17:52:55 turtle Exp $";
 #endif
 
 #include "htsearch.h"
@@ -319,7 +323,7 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
     // characters '(' and ')' will be put into their own WeightWord objects.
     //
     unsigned char	*pos = (unsigned char*) allWords;
-    int			t;
+    unsigned char	t;
     String		word;
     while (*pos)
     {

@@ -6,12 +6,16 @@
 // AWS	10/13/93	Fixed the constructors and operator = routines so that a NULL can be passed
 //
 // $Log: String.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1997/02/24 17:52:52  turtle
+// Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
+// ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.2 1997/02/24 17:52:52 turtle Exp $";
 #endif
 
 
@@ -352,7 +356,7 @@ void String::lowercase()
     for (int i = 0; i < Length; i++)
     {
 //		if (isupper(Data[i]))
-	Data[i] = tolower(Data[i]);
+	Data[i] = tolower((unsigned char)Data[i]);
     }
 }
 
@@ -362,7 +366,7 @@ void String::uppercase()
     for (int i = 0; i < Length; i++)
     {
 	if (islower(Data[i]))
-	    Data[i] = toupper(Data[i]);
+	    Data[i] = toupper((unsigned char)Data[i]);
     }
 }
 

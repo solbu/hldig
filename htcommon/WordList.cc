@@ -4,12 +4,16 @@
 // Implementation of WordList
 //
 // $Log: WordList.cc,v $
-// Revision 1.1  1997/02/03 17:11:07  turtle
-// Initial revision
+// Revision 1.2  1997/02/24 17:52:39  turtle
+// Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
+// ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.1 1997/02/03 17:11:07 turtle Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.2 1997/02/24 17:52:39 turtle Exp $";
 #endif
 
 #include "WordList.h"
@@ -103,7 +107,7 @@ int WordList::valid_word(char *word)
 
     while (word && *word)
     {
-	if (isalpha(*word))
+	if (isalpha((unsigned char)*word))
 	    alpha = 1;
 	if (allow_numbers && isdigit(*word))
 	    alpha = 1;

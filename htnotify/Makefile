@@ -24,3 +24,27 @@ depend:
 	$(MAKEDEPEND)  $(CXXFLAGS) -- $(OBJS)
 
 htnotify.o:		/home/turtle/src/ht/CONFIG
+#DO NOT EDIT BELOW
+htnotify.o: htnotify.cc ../htlib/Configuration.h ../htlib/Dictionary.h \
+ ../htlib/Object.h ../htlib/lib.h /opt/lib/g++-include/string.h \
+ /opt/lib/g++-include/cstring /opt/lib/g++-include/std/cstring.h \
+ /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/string.h \
+ /usr/include/sys/feature_tests.h ../include/htconfig.h \
+ /usr/include/sys/time.h \
+ /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/sys/types.h \
+ /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/sys/isa_defs.h \
+ /usr/include/sys/machtypes.h /usr/include/sys/select.h \
+ /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/time.h \
+ /usr/include/sys/siginfo.h /usr/include/sys/machsig.h ../htlib/List.h \
+ ../htcommon/DocumentDB.h ../htcommon/DocumentRef.h ../htlib/String.h \
+ /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdarg.h \
+ /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/va-sparc.h \
+ ../htlib/Database.h ../htcommon/defaults.h \
+ /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdlib.h \
+ /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/unistd.h \
+ /usr/include/sys/unistd.h \
+ /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/errno.h \
+ /usr/include/sys/errno.h /opt/lib/g++-include/fstream.h \
+ /opt/lib/g++-include/iostream.h /opt/lib/g++-include/streambuf.h \
+ /opt/lib/g++-include/libio.h /opt/lib/g++-include/_G_config.h \
+ /opt/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/include/stdio.h

@@ -11,30 +11,32 @@
 //
 int mystrcasecmp(char *str1, const char *str2)
 {
-	while (*str1 && *str2 && tolower(*str1) == tolower(*str2))
+	while (*str1 &&
+	       *str2 &&
+	       tolower((unsigned char)*str1) == tolower((unsigned char)*str2))
 	{
 		str1++;
 		str2++;
 	}
 
-	return tolower(*str1) - tolower(*str2);
+	return tolower((unsigned char)*str1) - tolower((unsigned char)*str2);
 }
 
 
-#define tolower(ch)	(isupper(ch) ? (ch) + 'a' - 'A' : (ch))
+//#define tolower(ch)	(isupper(ch) ? (ch) + 'a' - 'A' : (ch))
 //*****************************************************************************
 // int mystrncasecmp(char *str1, const char *str2, int n)
 //
 int mystrncasecmp(char *str1, const char *str2, int n)
 {
-	while (n && *str1 && *str2 && tolower(*str1) == *str2)
+	while (n && *str1 && *str2 && tolower((unsigned char)*str1) == *str2)
 	{
 		str1++;
 		str2++;
 		n--;
 	}
 
-	return n == 0 ? 0 : tolower(*str1) - *str2;
+	return n == 0 ? 0 : tolower((unsigned char)*str1) - *str2;
 }
 
 

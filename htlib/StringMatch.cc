@@ -6,12 +6,16 @@
 // Implementation of StringMatch
 //
 // $Log: StringMatch.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1997/02/24 17:52:52  turtle
+// Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
+// ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: StringMatch.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
+static char RCSid[] = "$Id: StringMatch.cc,v 1.2 1997/02/24 17:52:52 turtle Exp $";
 #endif
 
 #include "StringMatch.h"
@@ -81,7 +85,7 @@ StringMatch::Pattern(char *pattern)
     for (i = 0; i < 256; i++)
     {
 	table[i] = new int[n];
-	memset((char *) table[i], 0, n * sizeof(int));
+	memset((unsigned char *) table[i], 0, n * sizeof(int));
     }
 
     //
@@ -92,7 +96,7 @@ StringMatch::Pattern(char *pattern)
 	trans = new unsigned char[256];
 	for (i = 0; i < 256; i++)
 	{
-	    trans[i] = i;
+	    trans[i] = (unsigned char)i;
 	}
 	local_alloc = 1;
     }
@@ -100,16 +104,17 @@ StringMatch::Pattern(char *pattern)
     //
     // Go though each of the patterns and build entries in the table.
     //
-    int		state = 0;
-    int		totalStates = 0;
-    char	previous = 0;
-    int		previousState = 0;
-    int		previousValue = 0;
-    int		index = 1;
-    char	chr;
-    while (*pattern)
+    int			state = 0;
+    int			totalStates = 0;
+    unsigned char	previous = 0;
+    int			previousState = 0;
+    int			previousValue = 0;
+    int			index = 1;
+    unsigned char	chr;
+    
+    while ((unsigned char)*pattern)
     {
-	chr = trans[*pattern];
+	chr = trans[(unsigned char)*pattern];
 	if (chr == '|')
 	{
 	    //
@@ -175,9 +180,9 @@ int StringMatch::FindFirst(char *string, int &which, int &length)
     int		pos = 0;
     int		start_pos = 0;
 
-    while (string[pos])
+    while ((unsigned char)string[pos])
     {
-	new_state = table[trans[string[pos] & 0xff]][state];
+	new_state = table[trans[(unsigned char)string[pos] & 0xff]][state];
 	if (new_state)
 	{
 	    if (state == 0)
@@ -238,7 +243,7 @@ int StringMatch::Compare(char *string, int &which, int &length)
     //
     // Skip to at least the start of a word.
     //
-    while (string[pos])
+    while ((unsigned char)string[pos])
     {
 	new_state = table[trans[string[pos]]][state];
 	if (new_state)
@@ -305,9 +310,9 @@ int StringMatch::FindFirstWord(char *string, int &which, int &length)
     //
     // Skip to at least the start of a word.
     //
-    while (string[pos])
+    while ((unsigned char)string[pos])
     {
-	new_state = table[trans[string[pos]]][state];
+	new_state = table[trans[(unsigned char)string[pos]]][state];
 	if (new_state)
 	{
 	    if (state == 0)
@@ -339,10 +344,10 @@ int StringMatch::FindFirstWord(char *string, int &which, int &length)
 	    is_word = 1;
 	    if (start_pos != 0)
 	    {
-		if (isalnum(string[start_pos - 1]))
+		if (isalnum((unsigned char)string[start_pos - 1]))
 		    is_word = 0;
 	    }
-	    if (isalnum(string[pos + 1]))
+	    if (isalnum((unsigned char)string[pos + 1]))
 		is_word = 0;
 	    if (is_word)
 	    {
@@ -392,9 +397,9 @@ int StringMatch::CompareWord(char *string, int &which, int &length)
     //
     // Skip to at least the start of a word.
     //
-    while (string[position])
+    while ((unsigned char)string[position])
     {
-	state = table[trans[string[position]]][state];
+	state = table[trans[(unsigned char)string[position]]][state];
 	if (state == 0)
 	{
 	    return 0;
@@ -407,9 +412,9 @@ int StringMatch::CompareWord(char *string, int &which, int &length)
 	    //
 	    int	isWord = 1;
 
-	    if (string[position + 1])
+	    if ((unsigned char)string[position + 1])
 	    {
-		if (isalnum(string[position + 1]))
+		if (isalnum((unsigned char)string[position + 1]))
 		    isWord = 0;
 	    }
 
@@ -460,7 +465,7 @@ void StringMatch::IgnoreCase()
 {
     trans = new unsigned char[256];
     for (int i = 0; i < 256; i++)
-	trans[i] = isupper(i) ? i + 'a' - 'A' : i;
+	trans[i] = tolower((unsigned char)i);
     local_alloc = 1;
 }
 

@@ -4,17 +4,22 @@
 // Implementation of SGMLEntities
 //
 // $Log: SGMLEntities.cc,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.2  1997/02/24 17:52:51  turtle
+// Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
+// ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: SGMLEntities.cc,v 1.1 1997/02/03 17:11:06 turtle Exp $";
+static char RCSid[] = "$Id: SGMLEntities.cc,v 1.2 1997/02/24 17:52:51 turtle Exp $";
 #endif
 
 #include "SGMLEntities.h"
 #include <String.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 static SGMLEntities	junk;
 
@@ -64,8 +69,8 @@ static struct
       "Aacute",       193, /* capital A, acute accent */ 
       "Acirc",        194, /* capital A, circumflex accent */ 
       "Atilde",       195, /* capital A, tilde */ 
-      "Aring",        196, /* capital A, ring */ 
-      "Auml",         197, /* capital A, dieresis or umlaut mark */ 
+      "Auml",         196, /* capital A, dieresis or umlaut mark */ 
+      "Aring",        197, /* capital A, ring */ 
       "AElig",        198, /* capital AE diphthong (ligature) */ 
       "Ccedil",       199, /* capital C, cedilla */ 
       "Egrave",       200, /* capital E, grave accent */ 
@@ -152,6 +157,13 @@ SGMLEntities::translate(char *entity)
     {
 	return (unsigned char) ((int) (*junk.trans)[entity]);
     }
+    else if (*entity == '#' && isdigit(entity[1]))
+    {
+	//
+	// This looks like a numeric entity.  That's fine.
+	//
+	return atoi(entity + 1);
+    }
     else
     {
 	return ' ';	// Unrecognized entity.  Change it into a space...
@@ -182,8 +194,9 @@ SGMLEntities::translateAndUpdate(unsigned char *&entityStart)
     
     if (*entityStart == '&')
 	entityStart++;		// Don't need the '&' that starts the entity
-    while ((isalpha(*entityStart) || *entityStart == '.' ||
-	    *entityStart == '-') && entity.length() < 10)
+    while ((isalnum(*entityStart) || *entityStart == '.' ||
+	    *entityStart == '-' || *entityStart == '#') &&
+	   entity.length() < 10)
     {
 	entity << *entityStart++;
     }
