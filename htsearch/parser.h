@@ -1,18 +1,7 @@
 //
 // parser.h
 //
-// $Id: parser.h,v 1.3 1997/04/27 14:43:31 turtle Exp $
-//
-// $Log: parser.h,v $
-// Revision 1.3  1997/04/27 14:43:31  turtle
-// changes
-//
-// Revision 1.2  1997/03/24 04:33:25  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
+// $Id: parser.h,v 1.3.2.1 1999/02/17 05:03:05 ghutchis Exp $
 //
 #ifndef _parser_h_
 #define _parser_h_
@@ -21,9 +10,9 @@
 #include "WeightWord.h"
 #include "ResultList.h"
 #include "DocMatch.h"
-#include <Database.h>
-#include <htString.h>
-#include <Stack.h>
+#include "Database.h"
+#include "htString.h"
+#include "Stack.h"
 #include <ctype.h>
 
 class Parser
@@ -39,6 +28,7 @@ public:
     int			hadError()			{return valid == 0;}
 	
 protected:
+    void		fullexpr(int);
     int			lexan();
     void		expr(int);
     void		term(int);
