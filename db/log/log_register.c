@@ -36,17 +36,16 @@ log_register(dblp, dbp, name, type, idp)
 {
 	DBT fid_dbt, r_name;
 	DB_LSN r_unused;
-	FNAME *fnp;
+	FNAME *fnp, *reuse_fnp;
 	size_t len;
-	u_int32_t fid;
+	u_int32_t maxid;
 	int inserted, ret;
 	char *fullname;
 	void *namep;
 
-	fid = 0;
 	inserted = 0;
 	fullname = NULL;
-	fnp = namep = NULL;
+	fnp = namep = reuse_fnp = NULL;
 
 	LOG_PANIC_CHECK(dblp);
 
@@ -65,24 +64,35 @@ log_register(dblp, dbp, name, type, idp)
 
 	/*
 	 * See if we've already got this file in the log, finding the
-	 * next-to-lowest file id currently in use as we do it.
+	 * (maximum+1) in-use file id and some available file id (if we
+	 * find an available fid, we'll use it, else we'll have to allocate
+	 * one after the maximum that we found).
 	 */
-	for (fid = 1, fnp = SH_TAILQ_FIRST(&dblp->lp->fq, __fname);
+	for (maxid = 0, fnp = SH_TAILQ_FIRST(&dblp->lp->fq, __fname);
 	    fnp != NULL; fnp = SH_TAILQ_NEXT(fnp, q, __fname)) {
-		if (fid <= fnp->id)
-			fid = fnp->id + 1;
+		if (fnp->ref == 0 && reuse_fnp == NULL) {
+			/* Entry is not in use. */
+			reuse_fnp = fnp;
+			continue;
+		}
 		if (!memcmp(dbp->fileid, fnp->ufid, DB_FILE_ID_LEN)) {
 			++fnp->ref;
-			fid = fnp->id;
 			goto found;
 		}
+		if (maxid <= fnp->id)
+			maxid = fnp->id + 1;
 	}
 
-	/* Allocate a new file name structure. */
-	if ((ret = __db_shalloc(dblp->addr, sizeof(FNAME), 0, &fnp)) != 0)
+	/* Fill in fnp structure. */
+
+	if (reuse_fnp != NULL)		/* Reuse existing one. */
+		fnp = reuse_fnp;
+	else if ((ret = __db_shalloc(dblp->addr, sizeof(FNAME), 0, &fnp)) != 0)
 		goto err;
+	else				/* Allocate a new one. */
+		fnp->id = maxid;
+
 	fnp->ref = 1;
-	fnp->id = fid;
 	fnp->s_type = type;
 	memcpy(fnp->ufid, dbp->fileid, DB_FILE_ID_LEN);
 
@@ -92,7 +102,9 @@ log_register(dblp, dbp, name, type, idp)
 	fnp->name_off = R_OFFSET(dblp, namep);
 	memcpy(namep, name, len);
 
-	SH_TAILQ_INSERT_HEAD(&dblp->lp->fq, fnp, q, __fname);
+	/* Only do the insert if we allocated a new fnp. */
+	if (reuse_fnp == NULL)
+		SH_TAILQ_INSERT_HEAD(&dblp->lp->fq, fnp, q, __fname);
 	inserted = 1;
 
 found:	/* Log the registry. */
@@ -103,9 +115,9 @@ found:	/* Log the registry. */
 		fid_dbt.data = dbp->fileid;
 		fid_dbt.size = DB_FILE_ID_LEN;
 		if ((ret = __log_register_log(dblp, NULL, &r_unused,
-		    0, LOG_OPEN, &r_name, &fid_dbt, fid, type)) != 0)
+		    0, LOG_OPEN, &r_name, &fid_dbt, fnp->id, type)) != 0)
 			goto err;
-		if ((ret = __log_add_logid(dblp, dbp, fid)) != 0)
+		if ((ret = __log_add_logid(dblp, dbp, fnp->id)) != 0)
 			goto err;
 	}
 
@@ -122,13 +134,13 @@ err:		/*
 			__db_shalloc_free(dblp->addr, fnp);
 	}
 
+	if (idp != NULL)
+		*idp = fnp->id;
 	UNLOCK_LOGREGION(dblp);
 
 	if (fullname != NULL)
 		__os_freestr(fullname);
 
-	if (idp != NULL)
-		*idp = fid;
 	return (ret);
 }
 
@@ -177,15 +189,11 @@ log_unregister(dblp, fid)
 
 	/*
 	 * If more than 1 reference, just decrement the reference and return.
-	 * Otherwise, free the unique file information, name and structure.
+	 * Otherwise, free the name.
 	 */
-	if (fnp->ref > 1)
-		--fnp->ref;
-	else {
+	--fnp->ref;
+	if (fnp->ref == 0)
 		__db_shalloc_free(dblp->addr, R_ADDR(dblp, fnp->name_off));
-		SH_TAILQ_REMOVE(&dblp->lp->fq, fnp, q, __fname);
-		__db_shalloc_free(dblp->addr, fnp);
-	}
 
 	/*
 	 * Remove from the process local table.  If this operation is taking

@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)tcl_lock.c	10.19 (Sleepycat) 12/14/98";
+static const char sccsid[] = "@(#)tcl_lock.c	10.20 (Sleepycat) 12/17/98";
 #endif /* not lint */
 
 /*
@@ -366,7 +366,7 @@ do_lockvec(interp, mgr, argc, argv)
 		reqlist[i].obj->size = strlen(tuplist[0]);
 		reqlist[i].mode = mode;
 
-		free(tuplist);
+		FREE_TCL(tuplist);
 	}
 
 	if (tuplist == NULL || i != nreqs)

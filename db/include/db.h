@@ -4,7 +4,7 @@
  * Copyright (c) 1996, 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)db.h	10.172 (Sleepycat) 12/16/98
+ *	@(#)db.h	10.174 (Sleepycat) 1/3/99
  */
 
 #ifndef _DB_H_
@@ -71,9 +71,9 @@
 @u_long_decl@
 
 #define	DB_VERSION_MAJOR	2
-#define	DB_VERSION_MINOR	6
-#define	DB_VERSION_PATCH	4
-#define	DB_VERSION_STRING	"Sleepycat Software: Berkeley DB 2.6.4: (12/16/98)"
+#define	DB_VERSION_MINOR	7
+#define	DB_VERSION_PATCH	3
+#define	DB_VERSION_STRING	"Sleepycat Software: Berkeley DB 2.7.3: (02/04/99)"
 
 typedef	u_int32_t	db_pgno_t;	/* Page number type. */
 typedef	u_int16_t	db_indx_t;	/* Page offset type. */
@@ -576,6 +576,8 @@ int   db_open __P((const char *,
 	  DBTYPE, u_int32_t, int, DB_ENV *, DB_INFO *, DB **));
 int   db_value_set __P((int, int));
 char *db_version __P((int *, int *, int *));
+int   db_xa_open __P((const char *,
+	  DBTYPE, u_int32_t, int, DB_INFO *, DB **));
 #if defined(__cplusplus)
 }
 #endif
@@ -603,6 +605,7 @@ char *db_version __P((int *, int *, int *));
 typedef enum {
 	DB_LOCK_DUMP=0,			/* Display held locks. */
 	DB_LOCK_GET,			/* Get the lock. */
+	DB_LOCK_INHERIT,		/* Pass locks to parent. */
 	DB_LOCK_PUT,			/* Release the lock. */
 	DB_LOCK_PUT_ALL,		/* Release locker's locks. */
 	DB_LOCK_PUT_OBJ			/* Release locker's locks on obj. */
@@ -692,10 +695,14 @@ int	  lock_id __P((DB_LOCKTAB *, u_int32_t *));
 int	  lock_open __P((const char *,
 	    u_int32_t, int, DB_ENV *, DB_LOCKTAB **));
 int	  lock_put __P((DB_LOCKTAB *, DB_LOCK));
+int	  lock_tget __P((DB_LOCKTAB *,
+	    DB_TXN *, u_int32_t, const DBT *, db_lockmode_t, DB_LOCK *));
 int	  lock_stat __P((DB_LOCKTAB *, DB_LOCK_STAT **, void *(*)(size_t)));
 int	  lock_unlink __P((const char *, int, DB_ENV *));
 int	  lock_vec __P((DB_LOCKTAB *,
 	    u_int32_t, u_int32_t, DB_LOCKREQ *, int, DB_LOCKREQ **));
+int	  lock_tvec __P((DB_LOCKTAB *,
+	    DB_TXN *, u_int32_t, DB_LOCKREQ *, int, DB_LOCKREQ **));
 #if defined(__cplusplus)
 }
 #endif

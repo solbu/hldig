@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)tcl_log.c	10.18 (Sleepycat) 12/14/98";
+static const char sccsid[] = "@(#)tcl_log.c	10.19 (Sleepycat) 12/17/98";
 #endif /* not lint */
 
 /*
@@ -444,6 +444,6 @@ get_lsn(interp, str, lsnp)
 	if (0) {
 err:		ret = TCL_ERROR;
 	}
-	free(largv);
+	FREE_TCL(largv);
 	return (ret);
 }

@@ -36,4 +36,15 @@ typedef struct _txn_ckp_args {
 	DB_LSN 	last_ckp;
 } __txn_ckp_args;
 
+
+#define	DB_txn_child	(DB_txn_BEGIN + 4)
+
+typedef struct _txn_child_args {
+	u_int32_t type;
+	DB_TXN *txnid;
+	DB_LSN prev_lsn;
+	u_int32_t	opcode;
+	u_int32_t	parent;
+} __txn_child_args;
+
 #endif

@@ -27,7 +27,8 @@ DB_GLOBALS __db_global_values = {
 	0,				/* DB_PAGEYIELD */
 	0,				/* DB_REGION_ANON, DB_REGION_NAME */
 	0,				/* DB_REGION_INIT */
-	0				/* DB_TSL_SPINS */
+	0,				/* DB_TSL_SPINS */
+        {NULL, &__db_global_values.db_envq.tqh_first}   /* Environemnt queue */
 };
 
 /*

@@ -4,7 +4,7 @@
  * Copyright (c) 1996, 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	"@(#)test_ext.h	8.26 (Sleepycat) 10/5/98"
+ *	"@(#)test_ext.h	8.27 (Sleepycat) 12/17/98"
  */
 
 /* Macros for error handling. */
@@ -44,6 +44,19 @@ if (AC < RL || AC > RH) {					\
 #define E_ERROR(S)                                                           \
 	 return (Tcl_AppendResult(interp, (S), ": ", Tcl_PosixError(interp), \
              NULL), TCL_ERROR)
+
+/*
+ * XXX
+ * Freeing memory allocated by the TCL library currently fails on Win*,
+ * probably due to a mismatch of malloc/free implementations between
+ * the TCL library and this module.  Sidestep the issue for now by not
+ * freeing on Win* platforms.
+ */
+#ifdef _WIN32
+#define	FREE_TCL(x)
+#else
+#define	FREE_TCL(x)	free(x)
+#endif
 
 /*
  * XXX

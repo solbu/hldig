@@ -1,4 +1,4 @@
-<! "@(#)db_register.so	10.9 (Sleepycat) 10/2/98">
+<! "@(#)db_register.so	10.11 (Sleepycat) 12/18/98">
 <!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
@@ -24,8 +24,6 @@ public int db_register(Db dbp, String name, int dbtype)
 <p>
 The DbLog.db_register method registers a file name with the log manager and
 returns a file identification number.
-copies a file identification number into the memory location referenced by
-<b>fidp</b>.
 <p>
 This file identification number should be used in all subsequent log
 messages that refer to operations on the file.  The log manager records
@@ -35,7 +33,7 @@ log refers.
 <p>
 The DbLog.db_register method is called when an access method registers the
 open of a file.  The <b>dbp</b> parameter should be a
-pointer to the <a href="../../api_java/Db/class.html">Db</a>object
+<a href="../../api_java/Db/class.html">Db</a> object
 which is being returned by the access method.
 <p>
 The <b>type</b> parameter should be one of the types of databases

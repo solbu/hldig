@@ -1,4 +1,4 @@
-<! "@(#)begin.so	10.10 (Sleepycat) 10/6/98">
+<! "@(#)begin.so	10.11 (Sleepycat) 1/3/99">
 <!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
@@ -17,15 +17,19 @@ thods,java,C,C++">
 #include &lt;db.h&gt;
 <p>
 int
-txn_begin(DB_TXNMGR *txnp, DB_TXN *pid, DB_TXN **tid);
+txn_begin(DB_TXNMGR *txnp, DB_TXN *parent, DB_TXN **tid);
 </pre>
 </h3>
 <h1>Description</h1>
 <p>
 The txn_begin method creates a new transaction in the
 transaction manager,
-copying a pointer to a DB_TXN that uniquely identifies it into the memory
-referenced by <b>tid</b>.
+copying a pointer to a DB_TXN that uniquely identifies it into
+the memory referenced by <b>tid</b>.
+<p>
+If the <b>parent</b> argument is non-NULL, the new transaction will be
+a nested transaction, with the transaction indicated by <b>parent</b> as
+its parent.  Transactions may be nested to any level.
 <p>
 <b>Note:</b> transactions may not span threads, i.e., each transaction
 must begin and end in the same thread, and each transaction may only be
@@ -33,11 +37,6 @@ used by a single thread.
 <p>
 <b>Note:</b> transactions may not span cursors, i.e., each transaction
 may only be used by a single cursor.
-<p>
-<b>Note:</b> transactions may not currently be nested.  In a future
-revision of Berkeley DB, if the <b>pid</b> argument is non-NULL, the new
-transaction will be a nested transaction, with the transaction indicated
-by <b>pid</b> as its parent.
 <p>
 The txn_begin
 function returns the value of <b>errno</b> on failure, and 0 on success.

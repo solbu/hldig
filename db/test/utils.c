@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)utils.c	10.69 (Sleepycat) 12/16/98";
+static const char sccsid[] = "@(#)utils.c	10.70 (Sleepycat) 12/17/98";
 #endif /* not lint */
 
 /*
@@ -51,19 +51,6 @@ int dbt_from_file __P((Tcl_Interp *interp, char *file, DBT *dbt));
 int dbt_to_file __P((Tcl_Interp *interp, char *file, DBT *dbt));
 u_int8_t *list_to_numarray __P((Tcl_Interp *, char *));
 void set_get_result __P((Tcl_Interp *interp, DBT *dbt));
-
-/*
- * XXX
- * Freeing memory allocated by the TCL library currently fails on Win*,
- * probably due to a mismatch of malloc/free implementations between
- * the TCL library and this module.  Sidestep the issue for now by not
- * freeing on Win* platforms.
- */
-#ifdef _WIN32
-#define	FREE_TCL(x)
-#else
-#define	FREE_TCL(x)	free(x)
-#endif
 
 /*
  * dbopen_cmd --

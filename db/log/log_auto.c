@@ -10,7 +10,6 @@
 #endif
 
 #include "db_int.h"
-#include "shqueue.h"
 #include "db_page.h"
 #include "db_dispatch.h"
 #include "log.h"

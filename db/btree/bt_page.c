@@ -47,7 +47,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)bt_page.c	10.16 (Sleepycat) 10/25/98";
+static const char sccsid[] = "@(#)bt_page.c	10.17 (Sleepycat) 1/3/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -291,8 +291,12 @@ __bam_lget(dbc, do_couple, pgno, mode, lockp)
 		couple[1].op = DB_LOCK_PUT;
 		couple[1].lock = *lockp;
 
-		ret = lock_vec(dbp->dbenv->lk_info,
-		    dbc->locker, 0, couple, 2, NULL);
+		if (dbc->txn == NULL)
+			ret = lock_vec(dbp->dbenv->lk_info,
+			    dbc->locker, 0, couple, 2, NULL);
+		else
+			ret = lock_tvec(dbp->dbenv->lk_info,
+			    dbc->txn, 0, couple, 2, NULL);
 		if (ret != 0) {
 			/* If we fail, discard the lock we held. */
 			__BT_LPUT(dbc, *lockp);
@@ -301,8 +305,12 @@ __bam_lget(dbc, do_couple, pgno, mode, lockp)
 		}
 		*lockp = couple[0].lock;
 	} else {
-		 ret = lock_get(dbp->dbenv->lk_info,
-		     dbc->locker, 0, &dbc->lock_dbt, mode, lockp);
+		if (dbc->txn == NULL)
+			ret = lock_get(dbp->dbenv->lk_info,
+			    dbc->locker, 0, &dbc->lock_dbt, mode, lockp);
+		else
+			ret = lock_tget(dbp->dbenv->lk_info,
+			    dbc->txn, 0, &dbc->lock_dbt, mode, lockp);
 		 return (ret < 0 ? EAGAIN : ret);
 	}
 	return (0);

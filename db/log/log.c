@@ -436,6 +436,9 @@ log_close(dblp)
 
 	LOG_PANIC_CHECK(dblp);
 
+	/* We may have opened files as part of XA; if so, close them. */
+	__log_close_files(dblp);
+
 	/* Discard the per-thread pointer. */
 	if (dblp->mutexp != NULL) {
 		LOCK_LOGREGION(dblp);

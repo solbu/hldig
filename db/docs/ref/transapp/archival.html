@@ -1,4 +1,4 @@
-<! "@(#)archival.so	10.15 (Sleepycat) 11/10/98">
+<! "@(#)archival.so	10.17 (Sleepycat) 12/18/98">
 <!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
@@ -18,12 +18,13 @@ concerns the recoverability of the database and the disk consumption of
 the database log files.
 <p>
 There are two separate aspects to these issues.  First, you may want to
-periodically create snapshots (i.e., backups)
-of your databases to make it possible to
-recover them from catastrophic failure.  Second, you'll want to
-periodically remove log files in order to conserve disk space.  The two
-procedures are distinct from each other, and you cannot remove the current
-log files simply because you have created a database snapshot.
+periodically create snapshots (i.e., backups) of your databases to make
+it possible to recover them from catastrophic failure.  Second, you'll
+want to periodically remove log files in order to conserve disk space.
+The two procedures are distinct from each other, and you cannot remove
+the current log files simply because you have created a database snapshot.
+<p>
+<h1>Archival for recovery:</h1>
 <p>
 To create a snapshot of your database that can be used to recover from
 catastrophic failure, the following steps should be taken:
@@ -54,9 +55,9 @@ database files <b>must</b> be archived before the log files.
 <p>
 The Berkeley DB library supports on-line backups, and it is not necessary to
 stop reading or writing your databases during the time when you create
-this snapshot.  Note however, that the snapshot of an active database will
-be consistent as of some unspecified time between the start of the
-archival and when archival is completed.
+this snapshot.  It is important to note, however, that the snapshot of an
+active database will be consistent as of some unspecified time between
+the start of the archival and when archival is completed.
 <p>
 To create a snapshot as of a specific time, you must stop reading and
 writing your databases for the entire time of the archival, force a
@@ -98,6 +99,8 @@ version of that log file!)
 It is possible to recreate the database in a location different than the
 original, by specifying appropriate pathnames to the <b>-h</b> option
 of the <a href="../../utility/db_recover.html">db_recover</a> utility.
+<p>
+<h1>Archival to conserve log file space:</h1>
 <p>
 To remove log files, the following steps should be taken:
 <ol>

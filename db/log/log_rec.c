@@ -56,6 +56,9 @@ static const char sccsid[] = "@(#)log_rec.c	10.26 (Sleepycat) 10/21/98";
 #include "db_dispatch.h"
 #include "common_ext.h"
 
+static int __log_do_open __P((DB_LOG *,
+    u_int8_t *, char *, DBTYPE, u_int32_t));
+static int __log_lid_to_fname __P((DB_LOG *, u_int32_t, FNAME **));
 static int __log_open_file __P((DB_LOG *,
     u_int8_t *, char *, DBTYPE, u_int32_t));
 
@@ -163,9 +166,6 @@ __log_open_file(lp, uid, name, ftype, ndx)
 	DBTYPE ftype;
 	u_int32_t ndx;
 {
-	DB *dbp;
-	int ret;
-
 	LOCK_LOGTHREAD(lp);
 	if (ndx < lp->dbentry_cnt &&
 	    (lp->dbentry[ndx].deleted == 1 || lp->dbentry[ndx].dbp != NULL)) {
@@ -175,8 +175,26 @@ __log_open_file(lp, uid, name, ftype, ndx)
 		return (0);
 	}
 	UNLOCK_LOGTHREAD(lp);
+	return (__log_do_open(lp, uid, name, ftype, ndx));
+}
 
-	/* Need to open file. */
+/*
+ * __log_do_open --
+ * 	Open files referenced in the log.  This is the part of the open that
+ * is not protected by the thread mutex.
+ */
+
+static int
+__log_do_open(lp, uid, name, ftype, ndx)
+	DB_LOG *lp;
+	u_int8_t *uid;
+	char *name;
+	DBTYPE ftype;
+	u_int32_t ndx;
+{
+	DB *dbp;
+	int ret;
+
 	dbp = NULL;
 	if ((ret = db_open(name, ftype, 0, 0, lp->dbenv, NULL, &dbp)) == 0) {
 		/*
@@ -259,9 +277,45 @@ __db_fileid_to_db(logp, dbpp, ndx)
 	u_int32_t ndx;
 {
 	int ret;
+	char *name;
+	FNAME *fname;
 
 	ret = 0;
 	LOCK_LOGTHREAD(logp);
+
+	/*
+	 * Under XA, a process different than the one issuing DB
+	 * operations may abort a transaction.  In this case, 
+	 * recovery routines are run by a process that does not
+	 * necessarily have the file open.  In this case, we must
+	 * open the file explicitly.
+	 */
+	if (ndx >= logp->dbentry_cnt ||
+	    (!logp->dbentry[ndx].deleted && logp->dbentry[ndx].dbp == NULL)) {
+		if (__log_lid_to_fname(logp, ndx, &fname) != 0) {
+			/* Couldn't find entry; this is a fatal error. */
+			ret = EINVAL;
+			goto err;
+		}
+		name = R_ADDR(logp, fname->name_off);
+		/*
+		 * __log_do_open is called without protection of the
+		 * log thread lock.
+		 */
+		UNLOCK_LOGTHREAD(logp);
+		/*
+		 * At this point, we are not holding the thread lock, so
+		 * exit directly instead of going through the exit code
+		 * at the bottom.  If the __log_do_open succeeded, then
+		 * we don't need to do any of the remaining error checking
+		 * at the end of this routine.
+		 */
+		if ((ret = __log_do_open(logp,
+		    fname->ufid, name, fname->s_type, ndx)) != 0)
+			return (ret);
+		*dbpp = logp->dbentry[ndx].dbp;
+		return (0);
+	}
 
 	/*
 	 * Return DB_DELETED if the file has been deleted
@@ -315,4 +369,29 @@ __log_rem_logid(logp, ndx)
 		logp->dbentry[ndx].deleted = 0;
 	}
 	UNLOCK_LOGTHREAD(logp);
+}
+
+/*
+ * __log_lid_to_fname --
+ * 	Traverse the shared-memory region looking for the entry that
+ * matches the passed log fileid.  Returns 0 on success; -1 on error.
+ */
+static int
+__log_lid_to_fname(dblp, lid, fnamep)
+	DB_LOG *dblp;
+	u_int32_t lid;
+	FNAME **fnamep;
+{
+	FNAME *fnp;
+
+	for (fnp = SH_TAILQ_FIRST(&dblp->lp->fq, __fname);
+	    fnp != NULL; fnp = SH_TAILQ_NEXT(fnp, q, __fname)) {
+		if (fnp->ref == 0)	/* Entry not in use. */
+			continue;
+		if (fnp->id == lid) {
+			*fnamep = fnp;
+			return (0);
+		}
+	}
+	return (-1);
 }

@@ -7,7 +7,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)mp_fopen.c	10.59 (Sleepycat) 12/11/98";
+static const char sccsid[] = "@(#)mp_fopen.c	10.60 (Sleepycat) 1/1/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -177,6 +177,10 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 
 		last_pgno = mbytes * (MEGABYTE / pagesize);
 		last_pgno += bytes / pagesize;
+
+		/* Correction: page numbers are zero-based, not 1-based. */
+		if (last_pgno != 0)
+			--last_pgno;
 
 		/*
 		 * Get the file id if we weren't given one.  Generated file id's

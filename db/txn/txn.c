@@ -43,7 +43,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)txn.c	10.65 (Sleepycat) 10/17/98";
+static const char sccsid[] = "@(#)txn.c	10.66 (Sleepycat) 1/3/99";
 #endif /* not lint */
 
 
@@ -66,13 +66,14 @@ static const char sccsid[] = "@(#)txn.c	10.65 (Sleepycat) 10/17/98";
 #include "db_am.h"
 #include "common_ext.h"
 
-static int __txn_begin __P((DB_TXN *));
-static int __txn_check_running __P((const DB_TXN *, TXN_DETAIL **));
-static int __txn_end __P((DB_TXN *, int));
-static int __txn_grow_region __P((DB_TXNMGR *));
-static int __txn_init __P((DB_TXNREGION *));
-static int __txn_undo __P((DB_TXN *));
-static int __txn_validate_region __P((DB_TXNMGR *));
+static int  __txn_begin __P((DB_TXN *));
+static int  __txn_check_running __P((const DB_TXN *, TXN_DETAIL **));
+static int  __txn_end __P((DB_TXN *, int));
+static void __txn_freekids __P((DB_TXN *));
+static int  __txn_grow_region __P((DB_TXNMGR *));
+static int  __txn_init __P((DB_TXNREGION *));
+static int  __txn_undo __P((DB_TXN *));
+static int  __txn_validate_region __P((DB_TXNMGR *));
 
 /*
  * This file contains the top level routines of the transaction library.
@@ -252,12 +253,15 @@ txn_begin(tmgrp, parent, txnpp)
 		return (ret);
 
 	txn->parent = parent;
+	TAILQ_INIT(&txn->kids);
 	txn->mgrp = tmgrp;
 	txn->flags = TXN_MALLOC;
 	if ((ret = __txn_begin(txn)) != 0) {
 		__os_free(txn, sizeof(DB_TXN));
 		txn = NULL;
 	}
+	if (txn != NULL && parent != NULL)
+		TAILQ_INSERT_HEAD(&parent->kids, txn, klinks);
 	*txnpp = txn;
 	return (ret);
 }
@@ -340,6 +344,11 @@ __txn_begin(txn)
 	ZERO_LSN(td->last_lsn);
 	td->last_lock = 0;
 	td->status = TXN_RUNNING;
+	if (txn->parent != NULL)
+		td->parent = txn->parent->off;
+	else
+		td->parent = 0;
+
 	off = (u_int8_t *)td - (u_int8_t *)mgr->region;
 	UNLOCK_TXNREGION(mgr);
 
@@ -368,22 +377,43 @@ txn_commit(txnp)
 	DB_TXN *txnp;
 {
 	DB_LOG *logp;
+	DB_TXNMGR *mgr;
 	int ret;
 
-	TXN_PANIC_CHECK(txnp->mgrp);
+	mgr = txnp->mgrp;
+
+	TXN_PANIC_CHECK(mgr);
 	if ((ret = __txn_check_running(txnp, NULL)) != 0)
 		return (ret);
 
 	/*
 	 * If there are any log records, write a log record and sync
-	 * the log, else do no log writes.
+	 * the log, else do no log writes.  If the commit is for a child
+	 * transaction, we do not need to commit the child synchronously
+	 * since if its parent aborts, it will abort too and its parent
+	 * (or ultimate ancestor) will write synchronously.
 	 */
-	if ((logp = txnp->mgrp->dbenv->lg_info) != NULL &&
-	    !IS_ZERO_LSN(txnp->last_lsn) &&
-	    (ret = __txn_regop_log(logp, txnp, &txnp->last_lsn,
-	    F_ISSET(txnp->mgrp, DB_TXN_NOSYNC) ? 0 : DB_FLUSH,
-	    TXN_COMMIT)) != 0)
-		return (ret);
+	if ((logp = mgr->dbenv->lg_info) != NULL &&
+	    !IS_ZERO_LSN(txnp->last_lsn)) {
+		if (txnp->parent == NULL)
+	    		ret = __txn_regop_log(logp, txnp, &txnp->last_lsn,
+			    F_ISSET(mgr, DB_TXN_NOSYNC) ? 0 : DB_FLUSH,
+			    TXN_COMMIT);
+		else
+	    		ret = __txn_child_log(logp, txnp, &txnp->last_lsn, 0,
+			    TXN_COMMIT, txnp->parent->txnid);
+		if (ret != 0)
+			return (ret);
+	}
+
+	/*
+	 * If this is the senior ancestor (i.e., it has no children), then we
+	 * can release all the child transactions since everyone is committing.
+	 * Then we can release this transaction.  If this is not the ultimate
+	 * ancestor, then we can neither free it or its children.
+	 */
+	if (txnp->parent == NULL)
+		__txn_freekids(txnp);
 
 	return (__txn_end(txnp, 1));
 }
@@ -397,10 +427,16 @@ txn_abort(txnp)
 	DB_TXN *txnp;
 {
 	int ret;
+	DB_TXN *kids;
 
 	TXN_PANIC_CHECK(txnp->mgrp);
 	if ((ret = __txn_check_running(txnp, NULL)) != 0)
 		return (ret);
+
+	for (kids = TAILQ_FIRST(&txnp->kids);
+	    kids != NULL;
+	    kids = TAILQ_FIRST(&txnp->kids))
+		txn_abort(kids);
 
 	if ((ret = __txn_undo(txnp)) != 0) {
 		__db_err(txnp->mgrp->dbenv,
@@ -543,7 +579,11 @@ __txn_check_running(txnp, tdp)
 	tp = NULL;
 	if (txnp != NULL && txnp->mgrp != NULL && txnp->mgrp->region != NULL) {
 		tp = (TXN_DETAIL *)((u_int8_t *)txnp->mgrp->region + txnp->off);
-		if (tp->status != TXN_RUNNING && tp->status != TXN_PREPARED)
+		/*
+		 * Child transactions could be marked committed which is OK.
+		 */
+		if (tp->status != TXN_RUNNING &&
+		    tp->status != TXN_PREPARED && tp->status != TXN_COMMITTED)
 			tp = NULL;
 		if (tdp != NULL)
 			*tdp = tp;
@@ -567,11 +607,12 @@ __txn_end(txnp, is_commit)
 
 	/* Release the locks. */
 	locker = txnp->txnid;
-	request.op = DB_LOCK_PUT_ALL;
+	request.op = txnp->parent == NULL ||
+	    is_commit == 0 ? DB_LOCK_PUT_ALL : DB_LOCK_INHERIT;
 
 	if (mgr->dbenv->lk_info) {
-		ret = lock_vec(mgr->dbenv->lk_info, locker, 0,
-		    &request, 1, NULL);
+		ret =
+		    lock_tvec(mgr->dbenv->lk_info, txnp, 0, &request, 1, NULL);
 		if (ret != 0 && (ret != DB_LOCK_DEADLOCK || is_commit)) {
 			__db_err(mgr->dbenv, "%s: release locks failed %s",
 			    is_commit ? "txn_commit" : "txn_abort",
@@ -583,10 +624,19 @@ __txn_end(txnp, is_commit)
 	/* End the transaction. */
 	LOCK_TXNREGION(mgr);
 
+	/*
+	 * Child transactions that are committing cannot be released until
+	 * the parent commits, since the parent may abort, causing the child
+	 * to abort as well.
+	 */
 	tp = (TXN_DETAIL *)((u_int8_t *)mgr->region + txnp->off);
-	SH_TAILQ_REMOVE(&mgr->region->active_txn, tp, links, __txn_detail);
+	if (txnp->parent == NULL || !is_commit) {
+		SH_TAILQ_REMOVE(&mgr->region->active_txn,
+		    tp, links, __txn_detail);
 
-	__db_shalloc_free(mgr->mem, tp);
+		__db_shalloc_free(mgr->mem, tp);
+	} else
+		tp->status = is_commit ? TXN_COMMITTED : TXN_ABORTED;
 
 	if (is_commit)
 		mgr->region->ncommits++;
@@ -595,8 +645,16 @@ __txn_end(txnp, is_commit)
 
 	UNLOCK_TXNREGION(mgr);
 
+	/*
+	 * If the transaction aborted, we can remove it from its parent links.
+	 * If it committed, then we need to leave it on, since the parent can
+	 * still abort.
+	 */
+	if (txnp->parent != NULL && !is_commit)
+		TAILQ_REMOVE(&txnp->parent->kids, txnp, klinks);
+
 	/* Free the space. */
-	if (F_ISSET(txnp, TXN_MALLOC)) {
+	if (F_ISSET(txnp, TXN_MALLOC) && (txnp->parent == NULL || !is_commit)) {
 		LOCK_TXNTHREAD(mgr);
 		TAILQ_REMOVE(&mgr->txn_chain, txnp, links);
 		UNLOCK_TXNTHREAD(mgr);
@@ -674,7 +732,7 @@ txn_checkpoint(mgr, kbytes, minutes)
 	u_int32_t kbytes, minutes;
 {
 	DB_LOG *dblp;
-	DB_LSN ckp_lsn, last_ckp;
+	DB_LSN ckp_lsn, sync_lsn, last_ckp;
 	TXN_DETAIL *txnp;
 	time_t last_ckp_time, now;
 	u_int32_t kbytes_written;
@@ -750,8 +808,13 @@ do_ckp:
 	mgr->region->pending_ckp = ckp_lsn;
 	UNLOCK_TXNREGION(mgr);
 
+	/*
+	 * memp_sync may change the lsn you pass it, so don't pass it
+	 * the actual ckp_lsn, pass it a temp instead.
+	 */
+	sync_lsn = ckp_lsn;
 	if (mgr->dbenv->mp_info != NULL &&
-	    (ret = memp_sync(mgr->dbenv->mp_info, &ckp_lsn)) != 0) {
+	    (ret = memp_sync(mgr->dbenv->mp_info, &sync_lsn)) != 0) {
 		/*
 		 * ret == DB_INCOMPLETE means that there are still buffers to
 		 * flush, the checkpoint is not complete.  Wait and try again.
@@ -905,5 +968,70 @@ txn_stat(mgr, statp, db_malloc)
 
 	UNLOCK_TXNREGION(mgr);
 	*statp = stats;
+	return (0);
+}
+
+static void
+__txn_freekids(txnp)
+	DB_TXN *txnp;
+{
+	DB_TXNMGR *mgr;
+	TXN_DETAIL *tp;
+	DB_TXN *kids;
+
+	mgr = txnp->mgrp;
+
+	for (kids = TAILQ_FIRST(&txnp->kids);
+	    kids != NULL;
+	    kids = TAILQ_FIRST(&txnp->kids)) {
+		/* Free any children of this transaction. */
+		__txn_freekids(kids);
+
+		/* Free the transaction detail in the region. */
+		LOCK_TXNREGION(mgr);
+		tp = (TXN_DETAIL *)((u_int8_t *)mgr->region + kids->off);
+		SH_TAILQ_REMOVE(&mgr->region->active_txn,
+		    tp, links, __txn_detail);
+
+		__db_shalloc_free(mgr->mem, tp);
+		UNLOCK_TXNREGION(mgr);
+
+		/* Now remove from its parent. */
+		TAILQ_REMOVE(&txnp->kids, kids, klinks);
+		if (F_ISSET(txnp, TXN_MALLOC)) {
+			LOCK_TXNTHREAD(mgr);
+			TAILQ_REMOVE(&mgr->txn_chain, kids, links);
+			UNLOCK_TXNTHREAD(mgr);
+			__os_free(kids, sizeof(*kids));
+		}
+	}
+}
+
+/*
+ * __txn_is_ancestor --
+ * 	Determine if a transaction is an ancestor of another transaction.
+ * This is used during lock promotion when we do not have the per-process
+ * data structures that link parents together.  Instead, we'll have to
+ * follow the links in the transaction region.
+ *
+ * PUBLIC: int __txn_is_ancestor __P((DB_TXNMGR *, size_t, size_t));
+ */
+int
+__txn_is_ancestor(mgr, hold_off, req_off)
+	DB_TXNMGR *mgr;
+	size_t hold_off, req_off;
+{
+	TXN_DETAIL *hold_tp, *req_tp;
+
+	hold_tp = (TXN_DETAIL *)((u_int8_t *)mgr->region + hold_off);
+	req_tp = (TXN_DETAIL *)((u_int8_t *)mgr->region + req_off);
+
+	while (req_tp->parent != 0) {
+		req_tp =
+		    (TXN_DETAIL *)((u_int8_t *)mgr->region + req_tp->parent);
+		if (req_tp->txnid == hold_tp->txnid)
+			return (1);
+	}
+
 	return (0);
 }

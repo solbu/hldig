@@ -4,7 +4,7 @@
  * Copyright (c) 1996, 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)db_int.h	10.76 (Sleepycat) 12/2/98
+ *	@(#)db_int.h	10.77 (Sleepycat) 1/3/99
  */
 
 #ifndef _DB_INTERNAL_H_
@@ -12,6 +12,7 @@
 
 #include "db.h"				/* Standard DB include file. */
 #include "queue.h"
+#include "shqueue.h"
 
 /*******************************************************
  * General purpose constants and macros.
@@ -364,7 +365,9 @@ struct __db_txn {
 	DB_LSN		last_lsn;	/* Lsn of last log write. */
 	u_int32_t	txnid;		/* Unique transaction id. */
 	size_t		off;		/* Detail structure within region. */
-	TAILQ_ENTRY(__db_txn) links;
+	TAILQ_ENTRY(__db_txn) links;	/* Links transactions off manager. */
+	TAILQ_HEAD(__kids, __db_txn) kids; /* Child transactions. */
+	TAILQ_ENTRY(__db_txn) klinks;	/* Links child transactions. */
 
 #define	TXN_MALLOC	0x01		/* Structure allocated by TXN system. */
 	u_int32_t	flags;

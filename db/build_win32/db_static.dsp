@@ -470,5 +470,17 @@ SOURCE=..\txn\txn_auto.c
 
 SOURCE=..\txn\txn_rec.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\xa\xa.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\xa\xa_db.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\xa\xa_map.c
+# End Source File
 # End Target
 # End Project

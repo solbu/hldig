@@ -4,7 +4,7 @@
  * Copyright (c) 1996, 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)txn.src	10.5 (Sleepycat) 10/11/98
+ *	@(#)txn.src	10.6 (Sleepycat) 1/3/99
  */
 
 PREFIX	txn
@@ -43,4 +43,12 @@ END
 BEGIN	ckp
 POINTER	ckp_lsn		DB_LSN *	lu
 POINTER	last_ckp	DB_LSN *	lu
+END
+
+/*
+ * This is the log operation for a child commit.
+ */
+BEGIN	child
+ARG	opcode		u_int32_t	lu
+ARG	parent		u_int32_t	lu
 END

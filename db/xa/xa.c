@@ -16,6 +16,7 @@ static const char sccsid[] = "@(#)xa.c	10.4 (Sleepycat) 10/11/98";
 #include <sys/types.h>
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #endif
 
@@ -97,7 +98,6 @@ __db_xa_open(xa_info, rmid, flags)
 	/* Verify if we already have this environment open. */
 	if (__db_rmid_to_env(rmid, &env) == 0)
 		return (XA_OK);
-
 	if ((ret = __os_calloc(1, sizeof(DB_ENV), &env)) != 0)
 		return (XAER_RMERR);
 
@@ -198,7 +198,7 @@ __db_xa_start(xid, rmid, flags)
 	if (is_known && !LF_ISSET(TMRESUME) && !LF_ISSET(TMJOIN))
 		return (XAER_DUPID);
 
-	if (!is_known && LF_SET(TMRESUME | TMJOIN))
+	if (!is_known && LF_ISSET(TMRESUME | TMJOIN))
 		return (XAER_NOTA);
 
 	/*
@@ -244,7 +244,7 @@ __db_xa_end(xid, rmid, flags)
 	TXN_DETAIL *td;
 	size_t off;
 
-	if (!LF_ISSET(TMNOFLAGS | TMSUSPEND | TMSUCCESS | TMFAIL))
+	if (flags != TMNOFLAGS && !LF_ISSET(TMSUSPEND | TMSUCCESS | TMFAIL))
 		return (XAER_INVAL);
 
 	if (__db_rmid_to_env(rmid, &env) != 0)
@@ -266,6 +266,9 @@ __db_xa_end(xid, rmid, flags)
 
 	if (td->xa_status != TXN_XA_STARTED)
 		return (XAER_PROTO);
+
+	/* Update the shared memory last_lsn field */
+	td->last_lsn = txn->last_lsn;
 
 	/*
 	 * If we ever support XA migration, we cannot keep SUSPEND/END
@@ -530,7 +533,7 @@ __db_xa_rollback(xid, rmid, flags)
 
 	if (LF_ISSET(TMASYNC))
 		return (XAER_ASYNC);
-	if (!LF_ISSET(TMNOFLAGS))
+	if (flags != TMNOFLAGS)
 		return (XAER_INVAL);
 
 	if (__db_rmid_to_env(rmid, &env) != 0)
@@ -580,7 +583,7 @@ __db_xa_forget(xid, rmid, flags)
 
 	if (LF_ISSET(TMASYNC))
 		return (XAER_ASYNC);
-	if (!LF_ISSET(TMNOFLAGS))
+	if (flags != TMNOFLAGS)
 		return (XAER_INVAL);
 
 	if (__db_rmid_to_env(rmid, &env) != 0)

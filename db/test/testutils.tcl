@@ -3,7 +3,7 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)testutils.tcl	10.16 (Sleepycat) 12/15/98
+#	@(#)testutils.tcl	10.17 (Sleepycat) 1/3/99
 #
 # Test system utilities
 
@@ -739,7 +739,6 @@ global recd_prefix
 	set final_file $dir/t3
 
 	puts "\t$msg $op"
-
 	# Save the initial file and open the environment and the file
 	catch { exec $CP $dir/$dbfile $dir/$dbfile.init } res
 	set env [eval $env_cmd]
@@ -756,13 +755,20 @@ global recd_prefix
 	error_check_bad txn_begin $txn NULL
 	error_check_good txn_begin [is_substr $txn $tmgr] 1
 
-	# Now fill in the db and the txnid in the command
-	set i [lsearch $cmd TXNID]
+	# Now fill in the db, tmgr, and the txnid in the command
+	set i [lsearch $cmd TMGR]
 	if { $i != -1 } {
-		set exec_cmd [lreplace $cmd $i $i $txn]
+		set exec_cmd [lreplace $cmd $i $i $tmgr]
 	} else {
 		set exec_cmd $cmd
 	}
+
+	set i [lsearch $cmd TXNID]
+	if { $i != -1 } {
+		set exec_cmd [lreplace $exec_cmd $i $i $txn]
+	} else {
+		set exec_cmd $exec_cmd
+	txn}
 	set i [lsearch $exec_cmd DB]
 	if { $i != -1 } {
 		set exec_cmd [lreplace $exec_cmd $i $i $db]

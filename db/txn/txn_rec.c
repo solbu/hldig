@@ -40,7 +40,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)txn_rec.c	10.14 (Sleepycat) 10/11/98";
+static const char sccsid[] = "@(#)txn_rec.c	10.15 (Sleepycat) 1/3/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -168,4 +168,50 @@ __txn_ckp_recover(logp, dbtp, lsnp, redo, info)
 	*lsnp = argp->last_ckp;
 	__os_free(argp, 0);
 	return (DB_TXN_CKP);
+}
+
+/*
+ * __txn_child_recover
+ *	Recover a commit record for a child transaction.
+ *
+ * PUBLIC: int __txn_child_recover
+ * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
+ */
+int
+__txn_child_recover(logp, dbtp, lsnp, redo, info)
+	DB_LOG *logp;
+	DBT *dbtp;
+	DB_LSN *lsnp;
+	int redo;
+	void *info;
+{
+	__txn_child_args *argp;
+	int ret;
+
+#ifdef DEBUG_RECOVER
+	(void)__txn_child_print(logp, dbtp, lsnp, redo, info);
+#endif
+	COMPQUIET(redo, 0);
+	COMPQUIET(logp, NULL);
+
+	if ((ret = __txn_child_read(dbtp->data, &argp)) != 0)
+		return (ret);
+
+	/*
+	 * We count the child as committed only if its parent committed.
+	 * So, if we are not yet in the transaction list, but our parent
+	 * is, then we should go ahead and commit.
+	 */
+	if (argp->opcode != TXN_COMMIT)
+		ret = EINVAL;
+	else
+		if (__db_txnlist_find(info, argp->parent) == 0 &&
+		    __db_txnlist_find(info, argp->txnid->txnid) == DB_NOTFOUND)
+			ret = __db_txnlist_add(info, argp->txnid->txnid);
+
+	if (ret == 0)
+		*lsnp = argp->prev_lsn;
+	__os_free(argp, 0);
+
+	return (ret);
 }

@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db_am.c	10.13 (Sleepycat) 12/3/98";
+static const char sccsid[] = "@(#)db_am.c	10.15 (Sleepycat) 12/30/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -173,11 +173,11 @@ __db_c_close(dbc)
 
 	ret = 0;
 
-	/* Release the lock. */
-	if (F_ISSET(dbc->dbp, DB_AM_CDB) && dbc->mylock != LOCK_INVALID) {
-		ret = lock_put(dbc->dbp->dbenv->lk_info, dbc->mylock);
-		dbc->mylock = LOCK_INVALID;
-	}
+	/*
+	 * We cannot release the lock until after we've called the
+	 * access method specific routine, since btrees may have pending
+	 * deletes.
+	 */
 
 	/* Remove the cursor from the active queue. */
 	DB_THREAD_LOCK(dbp);
@@ -187,6 +187,12 @@ __db_c_close(dbc)
 	/* Call the access specific cursor close routine. */
 	if ((t_ret = dbc->c_am_close(dbc)) != 0 && ret == 0)
 		t_ret = ret;
+
+	/* Release the lock. */
+	if (F_ISSET(dbc->dbp, DB_AM_CDB) && dbc->mylock != LOCK_INVALID) {
+		ret = lock_put(dbc->dbp->dbenv->lk_info, dbc->mylock);
+		dbc->mylock = LOCK_INVALID;
+	}
 
 	/* Clean up the cursor. */
 	dbc->flags = 0;
@@ -347,6 +353,7 @@ __db_put(dbp, txn, key, data, flags)
 	u_int32_t flags;
 {
 	DBC *dbc;
+	DBT tdata;
 	int ret, t_ret;
 
 	DB_PANIC_CHECK(dbp);
@@ -360,10 +367,20 @@ __db_put(dbp, txn, key, data, flags)
 
 	DEBUG_LWRITE(dbc, txn, "__db_put", key, data, flags);
 
-	if (flags == DB_NOOVERWRITE &&
-	    (ret = dbc->c_get(dbc, key, data, DB_SET | DB_RMW)) == 0)
-		ret = DB_KEYEXIST;
-	else
+	if (flags == DB_NOOVERWRITE) {
+		/*
+		 * Set DB_DBT_USERMEM, this might be a threaded application and
+		 * the flags checking will catch us.  We don't want the actual
+		 * data, so request a partial of length 0.
+		 */
+		memset(&tdata, 0, sizeof(tdata));
+		F_SET(&tdata, DB_DBT_USERMEM | DB_DBT_PARTIAL);
+		if ((ret = dbc->c_get(dbc, key, &tdata, DB_SET | DB_RMW)) == 0)
+			ret = DB_KEYEXIST;
+		else
+			ret = 0;
+	}
+	if (ret == 0)
 		ret = dbc->c_put(dbc, key, data, DB_KEYLAST);
 
 	if ((t_ret = __db_c_close(dbc)) != 0 && ret == 0)

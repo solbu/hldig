@@ -1,4 +1,4 @@
-<! "@(#)db_register.so	10.9 (Sleepycat) 10/2/98">
+<! "@(#)db_register.so	10.11 (Sleepycat) 12/18/98">
 <!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
@@ -24,6 +24,8 @@ log_register(DB_LOG *logp, const DB *dbp,
 <h1>Description</h1>
 <p>
 The log_register function registers a file name with the log manager and
+copies a file identification number into the memory location referenced by
+<b>fidp</b>.
 <p>
 This file identification number should be used in all subsequent log
 messages that refer to operations on the file.  The log manager records
@@ -34,8 +36,6 @@ log refers.
 The log_register function is called when an access method registers the
 open of a file.  The <b>dbp</b> parameter should be a
 pointer to the DB structure
-pointer to the DBobject
-DB object
 which is being returned by the access method.
 <p>
 The <b>type</b> parameter should be one of the types of databases

@@ -167,6 +167,23 @@ int Db::open(const char *fname, DBTYPE type, u_int32_t flags,
     return 0;
 }
 
+// static method
+int Db::xa_open(const char *fname, DBTYPE type, u_int32_t flags,
+             int mode, DbInfo *info, Db **table_returned)
+{
+    *table_returned = 0;
+    DB *newtable;
+    int err;
+    if ((err = db_xa_open(fname, type, flags, mode,
+                       info, &newtable)) != 0) {
+        DB_ERROR("Db::open", err);
+        return err;
+    }
+    *table_returned = new Db();
+    (*table_returned)->imp_ = wrap(newtable);
+    return 0;
+}
+
 int Db::put(DbTxn *txnid, Dbt *key, Dbt *value, u_int32_t flags)
 {
     DB *db = unwrap(this);

@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)xa_db.c	10.5 (Sleepycat) 11/22/98";
+static const char sccsid[] = "@(#)xa_db.c	10.6 (Sleepycat) 12/19/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -162,7 +162,7 @@ __xa_fd(dbp, fdp)
 	COMPQUIET(fdp, NULL);
 
 	real_dbp = (DB *)dbp->internal;
-	return (__db_eopnotsup(real_dbp));
+	return (__db_eopnotsup(real_dbp->dbenv));
 }
 
 static int

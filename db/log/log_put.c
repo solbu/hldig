@@ -157,6 +157,8 @@ __log_put(dblp, lsn, dbt, flags)
 
 		for (fnp = SH_TAILQ_FIRST(&dblp->lp->fq, __fname);
 		    fnp != NULL; fnp = SH_TAILQ_NEXT(fnp, q, __fname)) {
+			if (fnp->ref == 0)	/* Entry not in use. */
+				continue;
 			memset(&t, 0, sizeof(t));
 			t.data = R_ADDR(dblp, fnp->name_off);
 			t.size = strlen(t.data) + 1;

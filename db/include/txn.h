@@ -4,7 +4,7 @@
  * Copyright (c) 1996, 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)txn.h	10.17 (Sleepycat) 10/11/98
+ *	@(#)txn.h	10.18 (Sleepycat) 1/3/99
  */
 #ifndef	_TXN_H_
 #define	_TXN_H_
@@ -36,10 +36,12 @@ typedef struct __txn_detail {
 	DB_LSN	begin_lsn;		/* lsn of begin record */
 	size_t	last_lock;		/* offset in lock region of last lock
 					   for this transaction. */
+	size_t	parent;			/* Offset of transaction's parent. */
 #define	TXN_UNALLOC	0
 #define	TXN_RUNNING	1
 #define	TXN_ABORTED	2
 #define	TXN_PREPARED	3
+#define	TXN_COMMITTED	4
 	u_int32_t status;		/* status of the transaction */
 	SH_TAILQ_ENTRY	links;		/* free/active list */
 

@@ -4,7 +4,7 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)test.tcl	10.41 (Sleepycat) 12/11/98
+#	@(#)test.tcl	10.42 (Sleepycat) 1/2/99
 
 source ./include.tcl
 source ../test/testutils.tcl
@@ -69,7 +69,7 @@ set recd_prefix	"db_recover: Finding last valid log LSN"
 
 set loadtests 46
 set runtests 43
-set recdtests 5
+set recdtests 6
 set deadtests 2
 set bugtests 7
 set rsrctests 1

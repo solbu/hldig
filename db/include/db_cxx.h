@@ -767,6 +767,8 @@ public:
     static int open(const char *fname, DBTYPE type, u_int32_t flags,
                     int mode, DbEnv *dbenv, DbInfo *info, Db **dbpp);
 
+    static int xa_open(const char *fname, DBTYPE type, u_int32_t flags,
+                    int mode, DbInfo *info, Db **dbpp);
 private:
     // We can add data to this class if needed
     // since it is implemented via a pointer.

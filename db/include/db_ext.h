@@ -92,7 +92,7 @@ int __db_putchk
    __P((const DB *, DBT *, const DBT *, u_int32_t, int, int));
 int __db_statchk __P((const DB *, u_int32_t));
 int __db_syncchk __P((const DB *, u_int32_t));
-int __db_eopnotsup __P((DB *));
+int __db_eopnotsup __P((const DB_ENV *));
 int __db_join __P((DB *, DBC **, u_int32_t, DBC **));
 int __db_goff __P((DB *, DBT *,
     u_int32_t, db_pgno_t, void **, u_int32_t *));

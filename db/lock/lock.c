@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)lock.c	10.60 (Sleepycat) 12/16/98";
+static const char sccsid[] = "@(#)lock.c	10.61 (Sleepycat) 1/3/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -23,17 +23,22 @@ static const char sccsid[] = "@(#)lock.c	10.60 (Sleepycat) 12/16/98";
 #include "db_page.h"
 #include "db_shash.h"
 #include "lock.h"
-#include "common_ext.h"
 #include "db_am.h"
+#include "txn_auto.h"
+#include "txn_ext.h"
+#include "common_ext.h"
 
 static void __lock_checklocker __P((DB_LOCKTAB *, struct __db_lock *, int));
 static void __lock_freeobj __P((DB_LOCKTAB *, DB_LOCKOBJ *));
-static int  __lock_get_internal __P((DB_LOCKTAB *, u_int32_t, u_int32_t,
-    const DBT *, db_lockmode_t, struct __db_lock **));
+static int  __lock_get_internal __P((DB_LOCKTAB *, u_int32_t, DB_TXN *,
+    u_int32_t, const DBT *, db_lockmode_t, struct __db_lock **));
+static int  __lock_is_parent __P((u_int32_t, DB_TXN *));
 static int  __lock_promote __P((DB_LOCKTAB *, DB_LOCKOBJ *));
 static int  __lock_put_internal __P((DB_LOCKTAB *, struct __db_lock *, int));
 static void __lock_remove_waiter
     __P((DB_LOCKTAB *, DB_LOCKOBJ *, struct __db_lock *, db_status_t));
+static int  __lock_vec_internal __P((DB_LOCKTAB *, u_int32_t, DB_TXN *,
+	    u_int32_t, DB_LOCKREQ *, int, DB_LOCKREQ **elistp));
 
 int
 lock_id(lt, idp)
@@ -61,8 +66,33 @@ lock_vec(lt, locker, flags, list, nlist, elistp)
 	int nlist;
 	DB_LOCKREQ *list, **elistp;
 {
+	return (__lock_vec_internal(lt,
+	    locker, NULL, flags, list, nlist, elistp));
+}
+
+int
+lock_tvec(lt, txn, flags, list, nlist, elistp)
+	DB_LOCKTAB *lt;
+	DB_TXN *txn;
+	u_int32_t flags;
+	int nlist;
+	DB_LOCKREQ *list, **elistp;
+{
+	return (__lock_vec_internal(lt,
+	    txn->txnid, txn, flags, list, nlist, elistp));
+}
+
+static int
+__lock_vec_internal(lt, locker, txn, flags, list, nlist, elistp)
+	DB_LOCKTAB *lt;
+	u_int32_t locker;
+	DB_TXN *txn;
+	u_int32_t flags;
+	int nlist;
+	DB_LOCKREQ *list, **elistp;
+{
 	struct __db_lock *lp;
-	DB_LOCKOBJ *sh_obj, *sh_locker;
+	DB_LOCKOBJ *sh_obj, *sh_locker, *sh_parent;
 	int i, ret, run_dd;
 
 	LOCK_PANIC_CHECK(lt);
@@ -83,12 +113,42 @@ lock_vec(lt, locker, flags, list, nlist, elistp)
 	for (i = 0; i < nlist && ret == 0; i++) {
 		switch (list[i].op) {
 		case DB_LOCK_GET:
-			ret = __lock_get_internal(lt, locker, flags,
+			ret = __lock_get_internal(lt, locker, txn, flags,
 			    list[i].obj, list[i].mode, &lp);
 			if (ret == 0) {
 				list[i].lock = LOCK_TO_OFFSET(lt, lp);
 				lt->region->nrequests++;
 			}
+			break;
+		case DB_LOCK_INHERIT:
+			/* Find the locker. */
+			if ((ret = __lock_getobj(lt, locker,
+			    NULL, DB_LOCK_LOCKER, &sh_locker)) != 0)
+				break;
+			if (txn == NULL || txn->parent == NULL) {
+				ret = EINVAL;
+				break;
+			}
+
+			if ((ret = __lock_getobj(lt, txn->parent->txnid,
+			    NULL, DB_LOCK_LOCKER, &sh_parent)) != 0)
+				break;
+
+			/*
+			 * Traverse all the locks held by this locker.  Remove
+			 * the locks from the locker's list and put them on the
+			 * parent's list.
+			 */
+			for (lp = SH_LIST_FIRST(&sh_locker->heldby, __db_lock);
+			    lp != NULL;
+			    lp = SH_LIST_FIRST(&sh_locker->heldby, __db_lock)) {
+				SH_LIST_REMOVE(lp, locker_links, __db_lock);
+				SH_LIST_INSERT_HEAD(&sh_parent->heldby, lp,
+				    locker_links, __db_lock);
+				lp->holder = txn->parent->txnid;
+			}
+			__lock_freeobj(lt, sh_locker);
+			lt->region->nlockers--;
 			break;
 		case DB_LOCK_PUT:
 			lp = OFFSET_TO_LOCK(lt, list[i].lock);
@@ -222,7 +282,7 @@ lock_get(lt, locker, flags, obj, lock_mode, lock)
 			lockp = OFFSET_TO_LOCK(lt, *lock);
 
 		if ((ret = __lock_get_internal(lt,
-		    locker, flags, obj, lock_mode, &lockp)) == 0) {
+		    locker, NULL, flags, obj, lock_mode, &lockp)) == 0) {
 			if (!LF_ISSET(DB_LOCK_UPGRADE))
 				*lock = LOCK_TO_OFFSET(lt, lockp);
 			lt->region->nrequests++;
@@ -233,6 +293,42 @@ lock_get(lt, locker, flags, obj, lock_mode, lock)
 	return (ret);
 }
 
+int
+lock_tget(lt, txn, flags, obj, lock_mode, lock)
+	DB_LOCKTAB *lt;
+	DB_TXN *txn;
+	u_int32_t flags;
+	const DBT *obj;
+	db_lockmode_t lock_mode;
+	DB_LOCK *lock;
+{
+	struct __db_lock *lockp;
+	int ret;
+
+	LOCK_PANIC_CHECK(lt);
+
+	/* Validate arguments. */
+	if ((ret = __db_fchk(lt->dbenv,
+	    "lock_get", flags, DB_LOCK_NOWAIT | DB_LOCK_UPGRADE)) != 0)
+		return (ret);
+
+	LOCK_LOCKREGION(lt);
+
+	if ((ret = __lock_validate_region(lt)) == 0) {
+		if (LF_ISSET(DB_LOCK_UPGRADE))
+			lockp = OFFSET_TO_LOCK(lt, *lock);
+
+		if ((ret = __lock_get_internal(lt,
+		    txn->txnid, txn, flags, obj, lock_mode, &lockp)) == 0) {
+			if (!LF_ISSET(DB_LOCK_UPGRADE))
+				*lock = LOCK_TO_OFFSET(lt, lockp);
+			lt->region->nrequests++;
+		}
+	}
+
+	UNLOCK_LOCKREGION(lt);
+	return (ret);
+}
 int
 lock_put(lt, lock)
 	DB_LOCKTAB *lt;
@@ -334,9 +430,10 @@ __lock_put_internal(lt, lockp, do_all)
 }
 
 static int
-__lock_get_internal(lt, locker, flags, obj, lock_mode, lockp)
+__lock_get_internal(lt, locker, txn, flags, obj, lock_mode, lockp)
 	DB_LOCKTAB *lt;
 	u_int32_t locker, flags;
+	DB_TXN *txn;
 	const DBT *obj;
 	db_lockmode_t lock_mode;
 	struct __db_lock **lockp;
@@ -410,7 +507,8 @@ __lock_get_internal(lt, locker, flags, obj, lock_mode, lockp)
 	for (lp = SH_TAILQ_FIRST(&sh_obj->holders, __db_lock);
 	    lp != NULL;
 	    lp = SH_TAILQ_NEXT(lp, links, __db_lock)) {
-		if (locker == lp->holder) {
+		if (locker == lp->holder ||
+		    __lock_is_parent(lp->holder, txn)) {
 			if (lp->mode == lock_mode &&
 			    lp->status == DB_LSTAT_HELD) {
 				if (LF_ISSET(DB_LOCK_UPGRADE))
@@ -511,6 +609,12 @@ wait:		(void)__db_mutex_init(&newl->mutex,
 
 		LOCK_LOCKREGION(lt);
 		if (newl->status != DB_LSTAT_PENDING) {
+			/*
+			 * If this lock errored due to a deadlock, then
+			 * we have waiters that require promotion.
+			 */
+			if (newl->status == DB_LSTAT_ABORTED)
+				(void)__lock_promote(lt, sh_obj);
 			/* Return to free list. */
 			__lock_checklocker(lt, newl, 0);
 			SH_TAILQ_INSERT_HEAD(&lrp->free_locks, newl, links,
@@ -864,7 +968,7 @@ __lock_promote(lt, obj)
 	DB_LOCKOBJ *obj;
 {
 	struct __db_lock *lp_w, *lp_h, *next_waiter;
-	int state_changed;
+	int state_changed, waiter_is_txn;
 
 	/*
 	 * We need to do lock promotion.  We also need to determine if
@@ -882,12 +986,17 @@ __lock_promote(lt, obj)
 	    state_changed = lp_w == NULL;
 	    lp_w != NULL;
 	    lp_w = next_waiter) {
+		waiter_is_txn = TXN_IS_HOLDING(lp_w);
 		next_waiter = SH_TAILQ_NEXT(lp_w, links, __db_lock);
 		for (lp_h = SH_TAILQ_FIRST(&obj->holders, __db_lock);
 		    lp_h != NULL;
 		    lp_h = SH_TAILQ_NEXT(lp_h, links, __db_lock)) {
 			if (CONFLICTS(lt, lp_h->mode, lp_w->mode) &&
-			    lp_h->holder != lp_w->holder)
+			    lp_h->holder != lp_w->holder &&
+			    !(waiter_is_txn &&
+			    TXN_IS_HOLDING(lp_h) &&
+			    __txn_is_ancestor(lt->dbenv->tx_info,
+			        lp_h->txnoff, lp_w->txnoff)))
 				break;
 		}
 		if (lp_h != NULL)	/* Found a conflict. */
@@ -904,4 +1013,21 @@ __lock_promote(lt, obj)
 	}
 
 	return (state_changed);
+}
+
+static int
+__lock_is_parent(locker, txn)
+	u_int32_t locker;
+	DB_TXN *txn;
+{
+	DB_TXN *t;
+
+	if (txn == NULL)
+		return (0);
+
+	for (t = txn->parent; t != NULL; t = t->parent)
+		if (t->txnid == locker)
+			return (1);
+
+	return (0);
 }

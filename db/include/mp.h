@@ -4,7 +4,7 @@
  * Copyright (c) 1996, 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)mp.h	10.36 (Sleepycat) 10/3/98
+ *	@(#)mp.h	10.37 (Sleepycat) 1/1/99
  */
 
 struct __bh;		typedef struct __bh BH;
@@ -16,11 +16,11 @@ struct __mpoolfile;	typedef struct __mpoolfile MPOOLFILE;
 #define	DB_DEFAULT_MPOOL_FILE	"__db_mpool.share"
 
 /*
- * We default to 128K (16 8K pages) if the user doesn't specify, and
+ * We default to 256K (32 8K pages) if the user doesn't specify, and
  * require a minimum of 20K.
  */
 #ifndef	DB_CACHESIZE_DEF
-#define	DB_CACHESIZE_DEF	(128 * 1024)
+#define	DB_CACHESIZE_DEF	(256 * 1024)
 #endif
 #define	DB_CACHESIZE_MIN	( 20 * 1024)
 

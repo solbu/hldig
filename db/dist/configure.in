@@ -404,9 +404,9 @@ fi
 dnl Some architectures require DB to be compiled with special flags and/or
 dnl libraries for threaded applications
 case "$host_os" in
-freebsd*) CPPFLAGS="-D_THREAD_SAFE $CPPFLAGS"
-	  LIBS="-lc_r";;
-irix*)    CPPFLAGS="-D_SGI_MP_SOURCE $CPPFLAGS";;
+freebsd*) CPPFLAGS="-D_THREAD_SAFE -pthread $CPPFLAGS";;
+irix*)	  CPPFLAGS="-D_SGI_MP_SOURCE $CPPFLAGS";;
+linux*)	  CPPFLAGS="-D_REENTRANT $CPPFLAGS";;
 osf*)	  CPPFLAGS="-D_REENTRANT $CPPFLAGS";;
 solaris*) CPPFLAGS="-D_REENTRANT $CPPFLAGS"
 	  LIBS="-lthread $LIBS";;

@@ -15,6 +15,7 @@ static const char sccsid[] = "@(#)xa_map.c	10.4 (Sleepycat) 10/20/98";
 #include <sys/types.h>
 
 #include <errno.h>
+#include <stdio.h>
 #include <string.h>
 #endif
 
@@ -41,7 +42,7 @@ __db_rmid_to_env(rmid, envp)
 	DB_ENV *env;
 
 	env = TAILQ_FIRST(&DB_GLOBAL(db_envq));
-	if (env->xa_rmid == rmid) {
+	if (env != NULL && env->xa_rmid == rmid) {
 		*envp = env;
 		return (0);
 	}

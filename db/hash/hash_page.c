@@ -47,7 +47,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)hash_page.c	10.54 (Sleepycat) 12/6/98";
+static const char sccsid[] = "@(#)hash_page.c	10.55 (Sleepycat) 1/3/99";
 #endif /* not lint */
 
 /*
@@ -1862,8 +1862,12 @@ __ham_lock_bucket(dbc, mode)
 
 	hcp = (HASH_CURSOR *)dbc->internal;
 	dbc->lock.pgno = (db_pgno_t)(hcp->bucket);
-	ret = lock_get(dbc->dbp->dbenv->lk_info, dbc->locker, 0,
-	    &dbc->lock_dbt, mode, &hcp->lock);
+	if (dbc->txn == NULL)
+		ret = lock_get(dbc->dbp->dbenv->lk_info, dbc->locker, 0,
+		    &dbc->lock_dbt, mode, &hcp->lock);
+	else
+		ret = lock_tget(dbc->dbp->dbenv->lk_info, dbc->txn, 0,
+		    &dbc->lock_dbt, mode, &hcp->lock);
 
 	return (ret < 0 ? EAGAIN : ret);
 }

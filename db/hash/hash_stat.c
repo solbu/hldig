@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)hash_stat.c	10.11 (Sleepycat) 9/27/98";
+static const char sccsid[] = "@(#)hash_stat.c	10.12 (Sleepycat) 12/19/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -40,5 +40,5 @@ __ham_stat(dbp, spp, db_malloc, flags)
 
 	DB_PANIC_CHECK(dbp);
 
-	return (__db_eopnotsup(dbp));
+	return (__db_eopnotsup(dbp->dbenv));
 }

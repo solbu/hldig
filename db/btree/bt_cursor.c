@@ -58,6 +58,15 @@ static int __bam_dupnodel __P((DBC *, CURSOR *, u_int32_t));
 }
 
 /* If the cursor references a deleted record. */
+#undef	IS_CUR_DELETED
+#define	IS_CUR_DELETED(cp)						\
+	(((cp)->dpgno == PGNO_INVALID &&				\
+	B_DISSET(GET_BKEYDATA((cp)->page,				\
+	(cp)->indx + O_INDX)->type)) ||					\
+	((cp)->dpgno != PGNO_INVALID &&					\
+	B_DISSET(GET_BKEYDATA((cp)->page, (cp)->dindx)->type)))
+
+/* If the cursor and index combination references a deleted record. */
 #undef	IS_DELETED
 #define	IS_DELETED(cp, indx)						\
 	(((cp)->dpgno == PGNO_INVALID &&				\
@@ -395,10 +404,13 @@ __bam_c_get(dbc, key, data, flags)
 			goto err;
 		}
 
-		/* Get the page with the current item on it. */
-		if ((ret = memp_fget(dbp->mpf,
-		    cp->dpgno == PGNO_INVALID ? &cp->pgno : &cp->dpgno,
-		    0, &cp->page)) != 0)
+		/* Acquire the current page. */
+		if ((ret = __bam_lget(dbc,
+		    0, cp->pgno, DB_LOCK_READ, &cp->lock)) == 0)
+			ret = memp_fget(dbp->mpf,
+			    cp->dpgno == PGNO_INVALID ? &cp->pgno : &cp->dpgno,
+			    0, &cp->page);
+		if (ret != 0)
 			goto err;
 		break;
 	case DB_NEXT_DUP:
@@ -486,6 +498,12 @@ __bam_c_get(dbc, key, data, flags)
 		/* Search for a matching entry. */
 		if ((ret = __bam_dsearch(dbc, cp, data, NULL)) != 0)
 			goto err;
+
+		/* Ignore deleted entries. */
+		if (IS_CUR_DELETED(cp)) {
+			ret = DB_NOTFOUND;
+			goto err;
+		}
 		break;
 	case DB_SET_RANGE:
 		if ((ret = __bam_c_search(dbc, cp, key, flags, &exact)) != 0)
@@ -641,15 +659,15 @@ __bam_dsearch(dbc, cp, data, iflagp)
 		}
 
 		/*
-		 * Move to the next item.  If __bam_c_next returns DB_NOTFOUND
-		 * and we're doing an insert, reset the cursor back to the last
-		 * item and set the referenced memory location so callers know
-		 * to insert after the item, instead of before it.  If not doing
-		 * an insert, return DB_NOTFOUND.
+		 * Move to the next item.  If we reach the end of the page and
+		 * we're doing an insert, set the cursor to the last item and
+		 * set the referenced memory location so callers know to insert
+		 * after the item, instead of before it.  If not inserting, we
+		 * return DB_NOTFOUND.
 		 */
-		if ((ret = __bam_c_next(dbc, cp, 1)) != 0) {
-			if (ret != DB_NOTFOUND || iflagp == NULL)
-				return (ret);
+		if ((cp->indx += P_INDX) >= NUM_ENT(cp->page)) {
+			if (iflagp == NULL)
+				return (DB_NOTFOUND);
 			goto use_last;
 		}
 
@@ -1070,7 +1088,7 @@ __bam_c_first(dbc, cp)
 		return (ret);
 
 	/* If on an empty page or a deleted record, move to the next one. */
-	if (NUM_ENT(cp->page) == 0 || IS_DELETED(cp, cp->indx))
+	if (NUM_ENT(cp->page) == 0 || IS_CUR_DELETED(cp))
 		if ((ret = __bam_c_next(dbc, cp, 0)) != 0)
 			return (ret);
 
@@ -1118,7 +1136,7 @@ __bam_c_last(dbc, cp)
 		return (ret);
 
 	/* If on an empty page or a deleted record, move to the next one. */
-	if (NUM_ENT(cp->page) == 0 || IS_DELETED(cp, cp->indx))
+	if (NUM_ENT(cp->page) == 0 || IS_CUR_DELETED(cp))
 		if ((ret = __bam_c_prev(dbc, cp)) != 0)
 			return (ret);
 
@@ -1556,7 +1574,7 @@ __bam_dupnodel(dbc, cp, indx)
 		return (0);
 
 	/* If it's a deleted record, go to the next valid record. */
-	while (IS_DELETED(cp, cp->dindx))
+	if (IS_CUR_DELETED(cp))
 		if ((ret = __bam_c_next(dbc, cp, 0)) != 0)
 			return (ret);
 	return (0);

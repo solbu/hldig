@@ -5,8 +5,8 @@ package com.sleepycat.db;
 public class DbConstants
 {
 	public static final int DB_VERSION_MAJOR = 2;
-	public static final int DB_VERSION_MINOR = 6;
-	public static final int DB_VERSION_PATCH = 4;
+	public static final int DB_VERSION_MINOR = 7;
+	public static final int DB_VERSION_PATCH = 3;
 	public static final int DB_MAX_PAGES = 0xffffffff;
 	public static final int DB_MAX_RECORDS = 0xffffffff;
 	public static final int DB_DBT_INTERNAL = 0x01;

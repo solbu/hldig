@@ -5,7 +5,7 @@
 # Copyright (c) 1996, 1997, 1998
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)db_gen.sh	10.20 (Sleepycat) 12/7/98
+#	@(#)db_gen.sh	10.21 (Sleepycat) 1/3/99
 #
 
 # This script generates all the log, print, and read routines for the db
@@ -54,7 +54,6 @@ awk  '
 	printf("#include <string.h>\n") >> CFILE
 	printf("#endif\n\n") >> CFILE
 	printf("#include \"db_int.h\"\n") >> CFILE
-	printf("#include \"shqueue.h\"\n") >> CFILE
 	printf("#include \"db_page.h\"\n") >> CFILE
 	printf("#include \"db_dispatch.h\"\n") >> CFILE
 	if (prefix != "db")

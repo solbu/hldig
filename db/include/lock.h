@@ -4,7 +4,7 @@
  * Copyright (c) 1996, 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)lock.h	10.16 (Sleepycat) 9/27/98
+ *	@(#)lock.h	10.17 (Sleepycat) 1/3/99
  */
 
 typedef struct __db_lockobj	DB_LOCKOBJ;
@@ -141,8 +141,22 @@ struct __db_lock {
 	u_int32_t	refcount;	/* Reference count the lock. */
 	db_lockmode_t	mode;		/* What sort of lock. */
 	ssize_t		obj;		/* Relative offset of object struct. */
+	size_t		txnoff;		/* Offset of holding transaction. */
 	db_status_t	status;		/* Status of this lock. */
 };
+
+/*
+ * This is a serious layering violation.  To support nested transactions, we
+ * need to be able to tell that a lock is held by a transaction (as opposed to
+ * some other locker) and to be able to traverse the parent/descendent chain.
+ * In order to do this, each lock held by a transaction maintains a reference
+ * to the shared memory transaction structure so it can be accessed during lock
+ * promotion.  As the structure is in shared memory, we cannot store a pointer
+ * to it, so we use the offset within the region.  As nothing lives at region
+ * offset 0, we use that to indicate that there is no transaction associated
+ * with the current lock.
+ */
+#define TXN_IS_HOLDING(L)	((L)->txnoff != 0 /* INVALID_REG_OFFSET */)
 
 /*
  * We cannot return pointers to the user (else we cannot easily grow regions),

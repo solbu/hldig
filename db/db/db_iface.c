@@ -8,7 +8,7 @@
 #include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db_iface.c	10.39 (Sleepycat) 11/25/98";
+static const char sccsid[] = "@(#)db_iface.c	10.40 (Sleepycat) 12/19/98";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -448,13 +448,13 @@ __dbt_ferr(dbp, name, dbt, check_thread)
  * __db_eopnotsup --
  *	Common operation not supported message.
  *
- * PUBLIC: int __db_eopnotsup __P((DB *));
+ * PUBLIC: int __db_eopnotsup __P((const DB_ENV *));
  */
 int
-__db_eopnotsup(dbp)
-	DB *dbp;
+__db_eopnotsup(dbenv)
+	const DB_ENV *dbenv;
 {
-	__db_err(dbp->dbenv, "operation not supported");
+	__db_err(dbenv, "operation not supported");
 #ifdef EOPNOTSUPP
 	return (EOPNOTSUPP);
 #else

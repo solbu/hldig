@@ -1,4 +1,4 @@
-<! "@(#)intro.so	10.1 (Sleepycat) 11/30/98">
+<! "@(#)intro.so	10.2 (Sleepycat) 12/18/98">
 <!Copyright 1997, 1998 by Sleepycat Software, Inc.  All rights reserved.>
 <html>
 <body bgcolor=white>
@@ -25,7 +25,7 @@ it should be closed, using the <a href="../../api_c/DbMpool/close.html">memp_clo
 The <a href="../../api_c/DbMpoolFile/open.html">memp_fopen</a> interface opens an underlying file within the
 memory pool.  When that file is no longer in use, it should be closed,
 using the <a href="../../api_c/DbMpoolFile/close.html">memp_fclose</a> interface.  The <a href="../../api_c/DbMpoolFile/get.html">memp_fget</a> interface
-is used to retrieved pages from files in the pool.  All retrieved pages
+is used to retrieve pages from files in the pool.  All retrieved pages
 must be subsequently returned using the <a href="../../api_c/DbMpoolFile/put.html">memp_fput</a> interface.  At
 the time that pages are returned, they may be marked <b>dirty</b>, which
 causes them to be written to the backing disk file before being discarded

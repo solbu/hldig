@@ -1027,14 +1027,34 @@ __ham_dup_return(dbc, val, flags)
 			ndx = hcp->dndx;
 		} else {
 			/*
-			 * Copy the DBT in case we are retrieving into
-			 * user memory and we need the parameters for
-			 * it.
+			 * Copy the DBT in case we are retrieving into user
+			 * memory and we need the parameters for it.  If the
+			 * user requested a partial, then we need to adjust
+			 * the user's parameters to get the partial of the
+			 * duplicate which is itself a partial.
 			 */
 			memcpy(&tmp_val, val, sizeof(*val));
-			F_SET(&tmp_val, DB_DBT_PARTIAL);
-			tmp_val.dlen = hcp->dup_len;
-			tmp_val.doff = hcp->dup_off + sizeof(db_indx_t);
+			if (F_ISSET(&tmp_val, DB_DBT_PARTIAL)) {
+				/*
+				 * Take the user's length unless it would go
+				 * beyond the end of the duplicate.
+				 */
+				if (tmp_val.doff + hcp->dup_off > hcp->dup_len)
+					tmp_val.dlen = 0;
+				else if (tmp_val.dlen + tmp_val.doff >
+				    hcp->dup_len)
+					tmp_val.dlen =
+					    hcp->dup_len - tmp_val.doff;
+				
+				/*
+				 * Calculate the new offset.
+				 */
+				tmp_val.doff += hcp->dup_off;
+			} else {
+				F_SET(&tmp_val, DB_DBT_PARTIAL);
+				tmp_val.dlen = hcp->dup_len;
+				tmp_val.doff = hcp->dup_off + sizeof(db_indx_t);
+			}
 			myval = &tmp_val;
 		}
 
