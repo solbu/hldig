@@ -583,10 +583,10 @@ int HtHTTP::ParseHeader()
 	    
 	    if(!strncmp(line, "HTTP/", 5))
          {
-	       	// Here the status-line is
-			
-			_response._version = strtok(line, " ");  // store the HTTP version
-			   	       	   	       	   	    // returned by the server
+	       	// Here is the status-line
+
+	        // store the HTTP version returned by the server
+	        _response._version = strtok(line, " ");
 
    	       	// Store the status code
 	       	_response._status_code = atoi(strtok(0, " "));
@@ -605,7 +605,8 @@ int HtHTTP::ParseHeader()
 		    token++; // Strip off any whitespace...
 		  
 		  // Set the response modification time
-		  _response._modification_time = NewDate(token);
+		  if (token)
+		    _response._modification_time = NewDate(token);
 
    	    }
 	    else if( ! mystrncasecmp(line, "date:", 5))
@@ -618,7 +619,8 @@ int HtHTTP::ParseHeader()
 		    token++; // Strip off any whitespace...
 		  
 		  // Set the response access time
-		  _response._access_time = NewDate(token);
+		  if (token)
+		    _response._access_time = NewDate(token);
 
    	    }
 	    else if( ! mystrncasecmp(line, "content-type:", 13))
@@ -630,7 +632,8 @@ int HtHTTP::ParseHeader()
 		  while (*token == ' ' || *token == '\t')
 		    token++; // Strip off any whitespace...
 
-		  _response._content_type = token;
+		  if (token)
+		    _response._content_type = token;
 
    	    }
 	    else if( ! mystrncasecmp(line, "content-length:", 15))
@@ -642,7 +645,8 @@ int HtHTTP::ParseHeader()
 		  while (*token == ' ' || *token == '\t')
 		    token++; // Strip off any whitespace...
 
-		  _response._content_length = atoi(token);
+		  if (token)
+		    _response._content_length = atoi(token);
 
    	    }
 	    else if( ! mystrncasecmp(line, "location:", 9))
@@ -654,7 +658,8 @@ int HtHTTP::ParseHeader()
 		  while (*token == ' ' || *token == '\t')
 		    token++; // Strip off any whitespace...
 
-		  _response._location = token;
+		  if (token)
+		    _response._location = token;
 
    	    }
 	    else
