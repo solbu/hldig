@@ -14,7 +14,7 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: cf_generate.pl,v 1.4 2003/06/24 21:12:05 nealr Exp $
+# $Id: cf_generate.pl,v 1.5 2003/08/28 00:45:32 angusgb Exp $
 #
 use strict;
 
@@ -40,8 +40,17 @@ sub html_escape {
 #
 # Read and parse attributes descriptions found in defaults.cc
 #
+
+my($dir);
+if (scalar(@ARGV) == 0) {
+    $dir = '..';
+}
+else {
+    $dir = @ARGV[0];
+}
+
 local($/) = undef;
-my($file) = "../htcommon/defaults.cc";
+my($file) = $dir . "/htcommon/defaults.cc";
 my($content);
 open(FILE, "<$file") or die "cannot open $file for reading : $!";
 $content = <FILE>;

@@ -1,3 +1,13 @@
+Thu Aug 28 10:40:58 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * htdoc/cf_generate.pl: accept an optional parameter (top source directory)
+    * htcommon/defaults.cc: fixed some broken lines which prevented
+     cf_generate.pl from correctly working
+    * htdoc/Makefile.am: modified the automake file for passing the top
+     source directory to cf_generate.pl
+    * htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+     Regenerated using cf_generate.pl.
+
 Tue Aug 26 12:25:40 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
    * configure.in: removed AC_FUNC_MKTIME because it may not work properly

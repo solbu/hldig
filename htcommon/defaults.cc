@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.90 2003/07/05 12:48:04 lha Exp $
+// $Id: defaults.cc,v 1.91 2003/08/28 00:45:31 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -694,8 +694,8 @@ http://www.htdig.org/", " \
 	to perform external preprocessing on documents of \
 	this type before internal parsing. \
 	There are two internal parsers, for text/html and \
-	text/plain.<p> "
-	" The parser program takes four command-line \
+	text/plain.<p> \
+	The parser program takes four command-line \
 	parameters, not counting any parameters already \
 	given in the command string:<br> \
 	<em>infile content-type URL configuration-file</em><br> \
@@ -759,8 +759,8 @@ http://www.htdig.org/", " \
 	  </tr> \
 	  <tr> \
 		<td valign=\"top\"> heading level </td> \
-		<td> "
-		"  A heading level that is used to compute the \
+		<td> \
+		  A heading level that is used to compute the \
 		  weight of the word depending on its context in \
 		  the document itself. The level is in the range of \
 		  0-11 and are defined as follows: \
@@ -826,8 +826,8 @@ http://www.htdig.org/", " \
 		<td valign=\"top\"> image URL </td> \
 		<td> \
 		  An URL that points at an image that is part of \
-		  the document. "
-      " </td> \
+		  the document. \
+        </td> \
 	  </tr> \
 	  <tr> \
 		<th rowspan=\"3\" valign=\"top\"> m </th> \
@@ -904,8 +904,8 @@ http://www.htdig.org/", " \
 		<td> The configuration-file in effect.  </td> \
 		<td> /etc/htdig/htdig.conf </td> \
 	  </tr> \
-	</table><p> "
-	"The external protocol script is to write information for htdig on the  \
+	</table><p> \
+	The external protocol script is to write information for htdig on the  \
 	standard output. The output must follow the form described here. The \
 	output consists of a header followed by a blank line, followed by \
 	the contents of the document. Each record in the header is terminated \
@@ -970,8 +970,8 @@ http://www.htdig.org/", " \
 	  <tr> \
 		<th valign=\"top\"> l </th> \
 		<td valign=\"top\"> content-length </td> \
-		<td> "
-		"  The length of the document on the server, which may not \
+		<td> \
+		  The length of the document on the server, which may not \
 		  necessarily be the length of the buffer returned. \
 		</td> \
 	  </tr> \
@@ -1875,8 +1875,8 @@ http://www.htdig.org/", " \
 			  <dt> \
 				endings \
 			  </dt> \
-			  <dd> "
-				"This algorithm uses language specific word endings \
+			  <dd> \
+				This algorithm uses language specific word endings \
 				to find matches. Each word is first reduced to its \
 				word root and then all known legal endings are used \
 				for the matching. This algorithm uses two databases \
@@ -2527,8 +2527,8 @@ url_part_aliases: \
 	<em>to</em>-strings is pretty arbitrary, as they \
 	just provide a temporary, internal encoding in the \
 	databases, and none of the characters in these \
-	strings have any special meaning.<br> "
-	"Note that when this attribute is changed, the \
+	strings have any special meaning.<br> \
+	Note that when this attribute is changed, the \
 	database should be rebuilt, unless the effect of \
 	\"moving\" the affected URLs in the database is \
 	wanted, as described above.<br> \
