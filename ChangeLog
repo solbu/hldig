@@ -1,3 +1,10 @@
+Tue Nov 23 19:58:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc: added support for external converters
+	as extension to external_parsers attribute.
+	* htdoc/attrs.html: Updated external_parsers with new description
+	and examples of external converters.
+
 Tue Nov 23 19:52:27 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc(transSGML), htdig/SGMLEntities.cc(translateAndUpdate):
