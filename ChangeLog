@@ -1,7 +1,12 @@
+Thu Oct  8 09:05:41 1998  Geoff Hutchison  <ghutchis@ethel.williams.edu>
+
+	* installdir/syntax.html: Improved Boolean search description.
+
 Mon Oct  5 11:30:16 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
-	* contrib/ewswrap/ewswrap.cgi, contrib/ewswrap/htwrap.cgi: New
-	scripts, contributed by John Grohol PsyD <johngr@cmhcsys.com>.
+	* contrib/ewswrap/ewswrap.cgi, contrib/ewswrap/htwrap.cgi,
+	contrib/ewswrap/README: New scripts, contributed by John Grohol
+	PsyD <johngr@cmhcsys.com>.
 
 Fri Oct  2 13:11:24 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
