@@ -105,6 +105,10 @@
 #ifndef _HTDATETIME_H
 #define _HTDATETIME_H
 
+#ifdef HAVE_CONFIG_H
+# include <htconfig.h>
+#endif
+
 #if TIME_WITH_SYS_TIME
 #include <sys/time.h>
 #include <time.h>
@@ -117,11 +121,6 @@
 #endif
 
 #include <htString.h>
-
-#ifdef HAVE_CONFIG
-# include <htconfig.h>
-#endif
-
 
 // If you wanna do some tests
 #define TEST_HTDATETIME

@@ -140,7 +140,7 @@ dnl AC_CHECK_SIZEOF(int *) => SIZEOF_INT_P
 dnl Checks for library functions.
 AC_CHECK_FUNCS(strdup strerror strstr)
 AC_FUNC_STRFTIME
-AC_CHECK_FUNCS(localtime_r timegm strptime)
+AC_CHECK_FUNCS(localtime_r timegm)
 
 dnl These tests need to be run through the c++ compiler
 AC_LANG_CPLUSPLUS

@@ -766,11 +766,7 @@ char * HtDateTime::Htstrptime (  char *buf,
    	       	   	       	   struct tm *tm)
 {
 
-#if HAVE_STRPTIME
-   return (char *) ::strptime (buf, format, tm);
-#else
    return (char *) ::Htstrptime (buf, format, tm); // Has it to be changed ?
-#endif
    
 }
 

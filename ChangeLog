@@ -1,3 +1,13 @@
+Sat Aug 07 13:40:17 1999  Loic Dachary  <loic@ceic.com>
+
+	* configure.in: remove test for strptime. Run autoconf + autoheader.
+
+	* htlib/HtDateTime.cc: always use htdig strptime, do not try to use
+	  existing function in libc.
+
+	* htlib/HtDateTime.h: move inclusion of htconfig.h on top of file,
+	  change #ifdef HAVE_CONFIG to HAVE_CONFIG_H
+
 Fri Aug  6 16:37:33 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Document.cc (UseProxy): fix call to match() and test of
