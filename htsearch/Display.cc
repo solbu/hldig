@@ -4,13 +4,18 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.33  1999/01/18 23:14:28  ghutchis
+// Use no_title_text to set the title  appropriately, as contributed by
+// Marjolein. Ensure PERCENT is at least 1.
+//
 // Revision 1.32  1999/01/18 03:07:51  ghutchis
 // Added variable SORT to render a form menu for sort options, based on "sort"
 // and "sort_names" options.
 //
 // Revision 1.31  1999/01/17 20:30:35  ghutchis
 // Take advantage of createFromString returning an error value to bail out of
-// poorly-constructed template_maps, based on code contributed by <tlm@mbox.comune.prato.it>.
+// poorly-constructed template_maps, based on code contributed by 
+// <tlm@mbox.comune.prato.it>.
 //
 // Revision 1.30  1999/01/14 03:10:53  ghutchis
 // Added support for using the wrapper instead of header and footer if
@@ -114,7 +119,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.32 1999/01/18 03:07:51 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.33 1999/01/18 23:14:28 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -357,15 +362,20 @@ Display::displayMatch(ResultMatch *match, int current)
     char	*title = ref->DocTitle();
     if (!title || !*title)
       {
-	title = strrchr(url, '/');
-	if (title)
+	if ( strcmp(config["no_title_text"], "filename") == 0 )
 	  {
-	    title++; // Skip slash
-	    str = new String(form("[%s]", title));
+	    // use actual file name
+	    title = strrchr(url, '/');
+	    if (title)
+	      {
+		title++; // Skip slash
+		str = new String(form("[%s]", title));
+		// URL without '/' ??
+	      }
 	  }
 	else
-	  // URL without '/' ??
-	  str = new String("[No title]");
+	  // use configure 'no title' text
+	  str = new String(config["no_title_text"]);
       }
     else
       str = new String(title);
@@ -377,8 +387,11 @@ Display::displayMatch(ResultMatch *match, int current)
 					  (ref->DocSize() + 1023) / 1024)));
 
     if (maxScore != 0)
-	vars.Add("PERCENT", new String(form("%d", (int)(ref->DocScore() * 100 /
-							(double)maxScore))));
+      {
+	int percent = (int)(ref->DocScore() * 100 / (double)maxScore);
+	if (percent == 0)
+	  percent = 1;
+	vars.Add("PERCENT", new String(form("%d", percent)));
     else
 	vars.Add("PERCENT", new String("100"));
     
