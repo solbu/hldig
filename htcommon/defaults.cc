@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.28 2001/09/27 22:02:10 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.29 2001/09/28 19:33:43 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -140,6 +140,7 @@ ConfigDefaults	defaults[] =
     {"search_results_footer",		"${common_dir}/footer.html"},
     {"search_results_header",		"${common_dir}/header.html"},
     {"search_results_wrapper",		""},
+    {"search_rewrite_rules",		""},
     {"server_aliases",                  ""},
     {"server_wait_time",                "0"},
     {"server_max_docs",                 "-1"},

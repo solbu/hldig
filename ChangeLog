@@ -1,3 +1,12 @@
+Fri Sep 28 14:25:29 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (buildMatchList, displayMatch),
+	htsearch/htsearch.cc (main): Added calls to pass search_rewrite_rules
+	to HtURLRewriter class and use it to rewrite URLs in results.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htcommon/defaults.cc: Added search_rewrite_rules attribute.
+
 Thu Sep 27 16:34:51 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/Makefile.in, htlib/HtRegex.cc, htlib/HtRegex.h,
@@ -14,7 +23,8 @@ Thu Sep 27 16:34:51 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	* htdig/Retriever.cc (got_href, got_redirect): Added calls to
 	url.rewrite(), and debugging output for this.
 
-	* htdig/htdig.cc: Added calls to make instance of HtURLRewriter class.
+	* htdig/htdig.cc (main): Added calls to make instance of
+	HtURLRewriter class.
 
 	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
 	htcommon/defaults.cc: Added url_rewrite_rules attribute.

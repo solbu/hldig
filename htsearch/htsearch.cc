@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.15 2001/09/09 03:12:41 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.16 2001/09/28 19:33:44 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -25,6 +25,7 @@ static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.15 2001/09/09 03:12:41 ghutchis
 #include <ctype.h>
 #include <signal.h>
 #include "HtURLCodec.h"
+#include "HtURLRewriter.h"
 #include "HtWordType.h"
 
 // If we have this, we probably want it.
@@ -241,6 +242,13 @@ main(int ac, char **av)
 
     if (url_part_errors.length() != 0)
       reportError(form("Invalid url_part_aliases or common_url_parts: %s",
+                       url_part_errors.get()));
+
+    // for htsearch, we use search_rewrite_rules attribute for HtURLRewriter.
+    config.AddParsed("url_rewrite_rules", "${search_rewrite_rules}");
+    url_part_errors = HtURLRewriter::instance()->ErrMsg();
+    if (url_part_errors.length() != 0)
+      reportError(form("Invalid url_rewrite_rules: %s",
                        url_part_errors.get()));
 
     // Load boolean_keywords from configuration

@@ -952,7 +952,7 @@
 			Note that when this attribute is changed, the
 			database should be rebuilt, unless the effect of
 			"changing" the affected URLs in the database is
-			wanted.<br>
+			wanted.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -966,7 +966,7 @@
 				<td nowrap>
 				  http://www.htdig.org/ml/ \<br>
 				  .html \<br>
-				  http://www.htdig.org/<br>
+				  http://www.htdig.org/
 				</td>
 			  </tr>
 			</table>
@@ -6279,6 +6279,77 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="search_rewrite_rules">
+		search_rewrite_rules</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This is a list of pairs, <em>regex</em>
+			<em>replacement</em> used to rewrite URLs in
+			the search results. The left hand string is
+			a regex; the right hand string is a literal
+			string with embedded placeholders for fragments
+			that matched inside brackets in the regex. \0
+			is the whole matched string, \1 to \9 are
+			bracketted substrings. The backslash must be
+			doubled-up in the attribute setting to get past
+			the variable expansion parsing. Rewrite rules
+			are applied sequentially to each URL before it
+			is displayed or checked against the
+                        <a href="#restrict">restrict</a> or
+			<a href="#exclude">exclude</a> lists. Rewriting
+			does not stop once a match has been made, so
+			multiple rules may affect a given URL. See also
+			<a href="#url_part_aliases">url_part_aliases</a>
+			which allows URLs to be of one form during
+			indexing and translated for results, and
+			<a href="#url_rewrite_rules">url_rewrite_rules</a>
+			which allows URLs to be rewritten while indexing.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  search_rewrite_rules:
+				</td>
+				<td nowrap>
+				  http://(.*)\\.mydomain\\.org/([^/]*)  http://\\2.\\1.com \<br>
+				  http://www\\.myschool\\.edu/myorgs/([^/]*)  http://\\1.org
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="server_aliases">server_aliases</a></strong>
 	  </dt>
 	  <dd>
@@ -7842,7 +7913,9 @@
 			rules may affect a given URL. See also
 			<a href="#url_part_aliases">url_part_aliases</a>
 			which allows URLs to be of one form during
-			indexing and translated for results.
+			indexing and translated for results, and
+			<a href="#search_rewrite_rules">search_rewrite_rules</a>
+			which allows URLs to be rewritten in search results.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7854,9 +7927,9 @@
 				  url_rewrite_rules:
 				</td>
 				<td nowrap>
-				  (.*)\\?JServSessionIdroot=.*		\\1 \<br>
-				  (.*)\\&amp;JServSessionIdroot=.*		\\1 \<br>
-				  (.*)&amp;context=.*				\\1<br>
+				  (.*)\\?JServSessionIdroot=.*  \\1 \<br>
+				  (.*)\\&amp;JServSessionIdroot=.*  \\1 \<br>
+				  (.*)&amp;context=.*  \\1
 				</td>
 			  </tr>
 			</table>
@@ -8285,7 +8358,7 @@
 	</dl>
 	<hr size="4" noshade>
 <!-- hhmts start -->
-Last modified: $Date: 2001/09/27 22:02:10 $
+Last modified: $Date: 2001/09/28 19:33:43 $
 <!-- hhmts end -->
   </body>
 </html>

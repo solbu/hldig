@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.42 2001/07/24 21:01:02 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.43 2001/09/28 19:33:44 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -22,6 +22,7 @@ static char RCSid[] = "$Id: Display.cc,v 1.54.2.42 2001/07/24 21:01:02 grdetil E
 #include <syslog.h>
 #include <locale.h>
 #include "HtURLCodec.h"
+#include "HtURLRewriter.h"
 #include "HtWordType.h"
 
 extern int		debug;
@@ -239,6 +240,7 @@ Display::displayMatch(ResultMatch *match, int current)
 
     char    *coded_url = match->getURL();
     String url = HtURLCodec::instance()->decode(coded_url);
+    HtURLRewriter::instance()->Replace(url);
     vars.Add("URL", new String(url.get()));
     
     int     iA = ref->DocAnchor();
@@ -1297,6 +1299,7 @@ Display::buildMatchList()
 	// No special precations re: the option
 	// "uncoded_db_compatible" needs to be taken.
 	url = HtURLCodec::instance()->decode(coded_url);
+	HtURLRewriter::instance()->Replace(url);
 	if (!includeURL(url.get()))
 	{
 	    continue;
