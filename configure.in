@@ -71,6 +71,9 @@ HTDIG_TOP=`pwd`
 AC_SUBST(HTDIG_TOP)
 
 DB_DIR=`echo db-*/build.unix`
+if test ! -d $DB_DIR; then
+  AC_MSG_ERROR([Please extract the Berkeley DB library])
+fi
 AC_SUBST(DB_DIR)
 
 RX_DIR=`echo rx*`
