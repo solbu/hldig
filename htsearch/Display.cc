@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.66 1999/03/29 15:39:38 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.67 1999/04/01 18:13:38 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -93,6 +93,8 @@ Display::display(int pageNumber)
     int			numberDisplayed = 0;
     ResultMatch		*match = 0;
     int			number = config.Value("matches_per_page");
+    if (number <= 0)
+	number = 10;
     int			startAt = (pageNumber - 1) * number;
 
     if (config.Boolean("logging"))
@@ -361,6 +363,8 @@ Display::setVariables(int pageNumber, List *matches)
 	nMatches = matches->Count();
 	
     int		matchesPerPage = config.Value("matches_per_page");
+    if (matchesPerPage <= 0)
+	matchesPerPage = 10;
     int		nPages = (nMatches + matchesPerPage - 1) / matchesPerPage;
 
     if (nPages < 1)
@@ -454,7 +458,7 @@ Display::setVariables(int pageNumber, List *matches)
     //
     // If a paged output is required, set the appropriate variables
     //
-    if (nMatches > config.Value("matches_per_page"))
+    if (nPages > 1)
     {
 	if (pageNumber > 1)
 	{

@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.29 1999/03/16 02:04:39 hp Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.30 1999/04/01 18:13:38 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -157,8 +157,14 @@ main(int ac, char **av)
 	config.Add("match_method", input["method"]);
     if (input.exists("format"))
 	config.Add("template_name", input["format"]);
+
     if (input.exists("matchesperpage"))
-	config.Add("matches_per_page", input["matchesperpage"]);
+    {
+	// minimum check for a valid int value of "matchesperpage" cgi variable
+	if (atoi(input["matchesperpage"]) > 0)
+	    config.Add("matches_per_page", input["matchesperpage"]);
+    }
+
     if (input.exists("page"))
 	pageNumber = atoi(input["page"]);
     if (input.exists("config"))
