@@ -1,3 +1,9 @@
+Thu Feb 18 20:19:30 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtVector.h, htlib/HtVector.cc: Added new Vector class.
+
+	* htlib/Makefile.in: Compile it.
+
 Wed Feb 17 23:44:59 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure.in, configure, aclocal.m4: Add autoconf macro to
