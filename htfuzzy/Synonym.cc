@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Synonym.cc,v 1.5 1999/03/31 21:26:24 grdetil Exp $";
+static char RCSid[] = "$Id: Synonym.cc,v 1.6 1999/07/10 02:10:57 ghutchis Exp $";
 #endif
 
 #include "Synonym.h"
@@ -134,8 +134,10 @@ void
 Synonym::getWords(char *originalWord, List &words)
 {
     String	data;
+    String	stripped = originalWord;
+    HtStripPunctuation(stripped);
 
-    if (db && db->Get(originalWord, data) == OK)
+    if (db && db->Get(stripped, data) == OK)
     {
 	char	*token = strtok(data.get(), " ");
 	while (token)

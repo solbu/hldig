@@ -8,22 +8,27 @@
 //    1) Creation of a fuzzy index
 //    2) Searching for a word using the fuzzy index
 //
-// $Id: Fuzzy.h,v 1.2 1997/03/24 04:33:18 turtle Exp $
+// The Fuzzy classes take the raw words from the user's query and generate
+// a list of words to be looked up in the database. These words are created
+// using the getWords call and can either be picked off from a separate fuzzy
+// database specific to the method, or by generating words on the fly.
 //
-// $Log: Fuzzy.h,v $
-// Revision 1.2  1997/03/24 04:33:18  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
+// $Id: Fuzzy.h,v 1.3 1999/07/10 02:10:57 ghutchis Exp $
 //
 //
 #ifndef _Fuzzy_h_
 #define _Fuzzy_h_
 
-#include <Object.h>
-#include <htString.h>
-#include <Database.h>
+#include "Object.h"
+#include "htString.h"
+#include "Database.h"
+#include "HtWordType.h"
 
 class Configuration;
 class Dictionary;

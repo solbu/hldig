@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Speling.cc,v 1.1 1999/05/15 15:38:47 ghutchis Exp $
+// $Id: Speling.cc,v 1.2 1999/07/10 02:10:57 ghutchis Exp $
 //
 //
 #include "Speling.h"
@@ -42,12 +42,9 @@ Speling::~Speling()
 
 
 //*****************************************************************************
-// A very simplistic and inefficient regex search.  For every word
-// that is looked for we do a complete linear search through the word
-// database.
-// Maybe a better method of doing this would be to mmap a list of words
-// to memory and then run the regex on it.  It would still be a
-// linear search, but with much less overhead.
+// A fairly efficient one-off spelling checker
+// This generates the small list of possibilities and
+// checks to see if they exist...
 //
 void
 Speling::getWords(char *w, List &words)
@@ -58,15 +55,17 @@ Speling::getWords(char *w, List &words)
     Database	*dbf = Database::getDatabaseInstance(DB_BTREE);
     dbf->OpenRead(config["word_db"]);
 
-    String	initial(w);
+    String	initial = w;
+    String	stripped = initial;
+    HtStripPunctuation(stripped);
     String	tail;
-    int		max_length = initial.length() - 1;
+    int		max_length = stripped.length() - 1;
 
     for (int pos = 0; pos < max_length; pos++)
     {
       // First transposes
       // (these are really common)
-      initial = w;
+      initial = stripped;
       char	temp = initial[pos];
       initial[pos] = initial[pos+1];
       initial[pos+1] = temp;
@@ -75,7 +74,7 @@ Speling::getWords(char *w, List &words)
 	words.Add(new String(initial));
 
       // Now let's do deletions
-      initial = w;
+      initial = stripped;
       tail = initial.sub(pos+1);
       if (pos > 0)
 	{
@@ -90,7 +89,7 @@ Speling::getWords(char *w, List &words)
     }
 
     // One last deletion -- check the last character!
-    initial = w;
+    initial = stripped;
     initial = initial.sub(0, initial.length() - 1);
     
     if (!dbf->Exists(initial))   // Seems weird, but this is correct

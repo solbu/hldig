@@ -3,7 +3,7 @@
 //
 // Implementation of Prefix
 //
-// $Id: Prefix.cc,v 1.8 1999/05/05 00:41:02 ghutchis Exp $
+// $Id: Prefix.cc,v 1.9 1999/07/10 02:10:57 ghutchis Exp $
 //
 
 #include "Prefix.h"
@@ -39,9 +39,12 @@ Prefix::~Prefix()
 void
 Prefix::getWords(char *w, List &words)
 {
-
     if (w == NULL || w[0] == '\0')
 	return;
+
+    String	stripped = w;
+    HtStripPunctuation(stripped);
+    w = stripped.get();
 
     char 	*prefix_suffix = config["prefix_match_character"];
     int 	prefix_suffix_length = prefix_suffix == NULL 

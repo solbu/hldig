@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Exact.cc,v 1.4 1999/05/05 00:41:02 ghutchis Exp $";
+static char RCSid[] = "$Id: Exact.cc,v 1.5 1999/07/10 02:10:57 ghutchis Exp $";
 #endif
 
 #include "Exact.h"
@@ -34,7 +34,10 @@ Exact::~Exact()
 void
 Exact::getWords(char *w, List &words)
 {
-    words.Add(new String(w));
+    String	stripped = w;
+    HtStripPunctuation(stripped);
+
+    words.Add(new String(stripped));
 }
 
 

@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Endings.cc,v 1.4 1999/06/13 02:14:18 ghutchis Exp $";
+static char RCSid[] = "$Id: Endings.cc,v 1.5 1999/07/10 02:10:57 ghutchis Exp $";
 #endif
 
 #include "Endings.h"
@@ -59,6 +59,7 @@ Endings::getWords(char *w, List &words)
 
     String	word = w;
     word.lowercase();
+    HtStripPunctuation(word);
 
     if (root2word->Get(word, data) == OK)
       {

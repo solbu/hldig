@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Substring.cc,v 1.5 1999/05/05 00:41:02 ghutchis Exp $";
+static char RCSid[] = "$Id: Substring.cc,v 1.6 1999/07/10 02:10:57 ghutchis Exp $";
 #endif
 
 #include "Substring.h"
@@ -46,8 +46,10 @@ void
 Substring::getWords(char *w, List &words)
 {
     StringMatch	match;
+    String	stripped = w;
+    HtStripPunctuation(stripped);
 
-    match.Pattern(w);
+    match.Pattern(stripped);
 
     Database	*dbf = Database::getDatabaseInstance(DB_BTREE);
     dbf->OpenRead(config["word_db"]);

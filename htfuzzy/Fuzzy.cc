@@ -1,11 +1,22 @@
 //
 // Fuzzy.cc
 //
-// Implementation of Fuzzy
+// This is the base class for all the different types of fuzzy searches.
+// We only define the interface.
+//
+// There are two main uses of classes derived from this class:
+//    1) Creation of a fuzzy index
+//    2) Searching for a word using the fuzzy index
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.10 1999/05/15 15:39:09 ghutchis Exp $";
+static char RCSid[] = "$Id: Fuzzy.cc,v 1.11 1999/07/10 02:10:57 ghutchis Exp $";
 #endif
 
 #include "Fuzzy.h"
@@ -64,7 +75,9 @@ Fuzzy::getWords(char *word, List &words)
     //
     String	fuzzyKey;
     String	data;
-    generateKey(word, fuzzyKey);
+    String	stripped = word;
+    HtStripPunctuation(stripped);
+    generateKey(stripped, fuzzyKey);
     if (debug > 2)
       cout << "\n\tkey: " << fuzzyKey << endl;
 

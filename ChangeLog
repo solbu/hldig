@@ -1,3 +1,20 @@
+Fri Jul  9 22:35:57 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc: Back out change of June 24.
+	
+	* htsearch/htsearch.cc: Ditto.
+	
+	* htsearch/htsearch.cc (setupWords): Remove HtStripPunctuation in
+	favor of requiring Fuzzy classes to strip whatever punctuation is
+	necessary.
+
+	* htfuzzy/Fuzzy.h: Add HtWordType.h to #includes and update comments.
+
+	* htfuzzy/Synonym.cc, htfuzzy/Substring.cc, htfuzzy/Speling.cc,
+	htfuzzy/Prefix.cc, htfuzzy/Exact.cc, htfuzzy/Endings.cc,
+	htfuzzy/Fuzzy.cc (getWords): Call HtStripPunctuation on input before
+	performing fuzzy matching.
+
 Thu Jul  8 21:28:44 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.cc (do_tag): Add support for parsing <LINK> tags.
