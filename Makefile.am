@@ -7,6 +7,17 @@ SUBDIRS=        @HTDIGDIRS@
 
 EXTRA_DIST = .version Makefile.config ChangeLog.0
 
+#
+# If --enable-tests is not specified, should remove
+# the test/Makefile anyway
+#
+distclean-local:
+	if echo "@HTDIGDIRS@" | grep 'test ' > /dev/null ; \
+	then : \
+	else \
+		rm -f test/Makefile ; \
+	fi
+
 install-data-hook:
 	@echo ""
 	@echo "Installation done."

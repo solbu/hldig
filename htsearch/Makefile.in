@@ -97,6 +97,8 @@ SENDMAIL = @SENDMAIL@
 SHELL = @SHELL@
 SORT = @SORT@
 TAR = @TAR@
+TIME = @TIME@
+TIMEV = @TIMEV@
 VERSION = @VERSION@
 
 INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include 		-I$(top_srcdir)/htlib -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)

@@ -14,7 +14,10 @@ dbbench_LDFLAGS = $(PROFILING)
 dbbench_LDADD = $(HTLIBS)
 
 clean-local:
-	rm -f gmon.out test test_weakcmpr
+	rm -f gmon.out test test_weakcmpr 
+
+distclean-local:
+	rm -f words.all words.uniq
 
 dobench: dbbench
 	$(MAKE) bench
@@ -30,17 +33,15 @@ NWORDS =
 
 bench:
 	rm -f $(BASE) $(BASE)_weakcmpr
-	time -v $(top_builddir)/test/dbbench $(CACHESIZE) $(PAGESIZE) $(CMPR) $(WORDS) $(LOOP) -B $(BASE) $(NWORDS)
+	$(TIMEV) $(top_builddir)/test/dbbench $(CACHESIZE) $(PAGESIZE) $(CMPR) $(WORDS) $(LOOP) -B $(BASE) $(NWORDS)
 	ls -l $(BASE)
 	if [ -f $(BASE)_weakcmpr ] ; then $(top_builddir)/db/dist/db_dump -p $(BASE)_weakcmpr ; fi
 	$(top_builddir)/db/dist/db_stat $(CMPR) -d $(BASE)
 
 words:
-	find /usr/info -name '*.gz' -print | xargs zcat | perl -n -e 'print join("\n", map { lc } grep(length() > 2 && length() < 32, m/[a-z]+/ig)) . "\n"' | grep -v '^$$' > words.all
-	find /usr/man -type f -print | perl -n -e 'print join("\n", map { lc } grep(length() > 2 && length() < 32, m/[a-z]+/ig)) . "\n"' | grep -v '^$$' >> words.all
+	if [ -d /usr/info ] ; then root=/usr ; else root=/usr/share ; fi ; \
+	find $$root/info -name '*.gz' -print | xargs zcat | perl -n -e 'print join("\n", map { lc } grep(length() > 2 && length() < 32, m/[a-z]+/ig)) . "\n"' | grep -v '^$$' > words.all ; \
+	find $$root/man -type f -print | perl -n -e 'print join("\n", map { lc } grep(length() > 2 && length() < 32, m/[a-z]+/ig)) . "\n"' | grep -v '^$$' >> words.all 
 	sort -u < words.all > words.uniq
-	find /usr/info -name '*.gz' -print | xargs zcat | dd of=/dev/null bs=1k
-	find /usr/man -type f -print | xargs cat | dd of=/dev/null bs=1k
-	find /usr/man /usr/info -type f -print | wc -l
 
 .PHONY: words

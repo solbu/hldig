@@ -1,3 +1,20 @@
+Wed Aug 11 15:00:07 1999  Loic Dachary  <loic@yoda.ceic.com>
+
+	* acconfig.h: removed MAX_WORD_LENGTH
+
+	* re-run auto* to make sure chain is consistent
+
+	* Makefile.am: improve distclean for tests
+
+Wed Aug 11 13:46:22 1999  Loic Dachary  <loic@yoda.ceic.com>
+
+	* configure.in: change --enable-test to --enable-tests so
+	  that Berkeley DB tests are not activated. Since they depend
+	  on tcl this can be a pain.
+
+	* acinclude.m4: AM_PROG_TIME locate time command + find out
+	  if verbose output is -l (freebsd) or -v (linux)
+
 Wed Aug 11 13:13:39 1999  Loic Dachary  <loic@yoda.ceic.com>
 
 	* acinclude.m4 : AM_WITH_ZLIB autoconf macro for zlib detection that

@@ -36,3 +36,26 @@ then
 fi
 
 ])
+
+## ----------------------------------------------- ##
+## Check time prog path library and options.       ##
+## ----------------------------------------------- ##
+
+AC_DEFUN(AM_PROG_TIME, [
+AC_PATH_PROG(TIME, time, time)
+#
+# Try various flags for verbose time information, 
+# if none works TIMEV is the same as TIME
+#
+AC_MSG_CHECKING(verbose time flag)
+for timev in "$TIME -v" "$TIME -l" $TIME
+do
+	if $timev >/dev/null 2>&1
+	then
+		TIMEV=$timev
+		break
+	fi
+done
+AC_MSG_RESULT($TIMEV)
+AC_SUBST(TIMEV)
+])

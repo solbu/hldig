@@ -8,7 +8,6 @@
 #endif
 
 #define	VERSION	1
-#define	MAX_WORD_LENGTH	12
 
 /* Define to the syslog level for htsearch logging. */
 #define LOG_LEVEL LOG_INFO
