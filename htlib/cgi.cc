@@ -4,6 +4,9 @@
 // Implementation of cgi
 //
 // $Log: cgi.cc,v $
+// Revision 1.5.2.1  1999/09/01 20:27:29  grdetil
+// Fix PR#572, where htsearch crashed if CONTENT_LENGTH was not set but REQUEST_METHOD was.
+//
 // Revision 1.5  1999/01/20 18:08:30  ghutchis
 // Call good_strtok with appropriate parameters (explicitly include NULL first
 // parameter, second param is char, not char *).
@@ -23,7 +26,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: cgi.cc,v 1.5 1999/01/20 18:08:30 ghutchis Exp $";
+static char RCSid[] = "$Id: cgi.cc,v 1.5.2.1 1999/09/01 20:27:29 grdetil Exp $";
 #endif
 
 #include "cgi.h"
@@ -67,7 +70,9 @@ cgi::cgi()
 		int		n;
 		char	*buf;
 		
-		n = atoi(getenv("CONTENT_LENGTH"));
+		buf = getenv("CONTENT_LENGTH");
+		if (!buf || !*buf || (n = atoi(buf)) <= 0)
+			return;		// null query
 		buf = new char[n + 1];
 		read(0, buf, n);
 		buf[n] = '\0';
