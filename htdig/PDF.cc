@@ -4,7 +4,7 @@
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
 #if RELEASE
-static char RCSid[] = "$Id: PDF.cc,v 1.8 1999/01/27 00:27:52 ghutchis Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.9 1999/02/02 22:29:31 ghutchis Exp $";
 #endif
 
 #include <sys/types.h>
@@ -12,8 +12,9 @@ static char RCSid[] = "$Id: PDF.cc,v 1.8 1999/01/27 00:27:52 ghutchis Exp $";
 #include "PDF.h"
 #include "URL.h"
 #include "htdig.h"
-#include <htString.h>
-#include <StringList.h>
+#include "htString.h"
+#include "StringList.h"
+#include <stdlib.h>
 #include <ctype.h>
 
 
@@ -24,6 +25,7 @@ PDF::PDF()
 {
     _data = 0;
     _dataLength = 0;
+    _bigSpacing = 0;
 
     initParser();
 }
@@ -361,9 +363,16 @@ void PDF::parseTextLine(String &line)
     else if (!strcmp(cmd, "Td") || !strcmp(cmd, "TD") ||
              !strcmp(cmd, "Tm") || !strcmp(cmd, "T*"))
     {
-	// Text positionning commands Td, TD, Tm and T* are condidered
+	// Text positioning commands Td, TD, Tm and T* are considered
 	// as a word break (see PDF 1.2 spec, chapter 8.7.3)
 	parseString();
+    }
+    else if (!strcmp(cmd, "Tc"))
+    {
+	// Text positioning command Tc, with operand of 3 or more, seems
+	// sometimes to act as a word break between or after characters in
+	// the following Tj command.  (E.g. PDFs generated from .cdr files.)
+	_bigSpacing = (atof(position) >= 3.0);
     }
     else
     {
@@ -415,6 +424,8 @@ char * PDF::addToString(char *position)
 			default:
 			    _parsedString << (char)val;
 		    }
+		    if (_bigSpacing)
+			_parsedString << ' ';
 
 		    // To do : handle more special characters
 		}
@@ -436,6 +447,8 @@ char * PDF::addToString(char *position)
 		    default :
 			// Add the escaped character
 			_parsedString << *pos;
+			if (_bigSpacing)
+			    _parsedString << ' ';
 			pos++;
 		}
 	    }
@@ -444,6 +457,8 @@ char * PDF::addToString(char *position)
 	{
 	    // Add character to the string
 	    _parsedString << *pos;
+	    if (_bigSpacing)
+		_parsedString << ' ';
 	    pos++;
 	}
     }
@@ -507,7 +522,7 @@ void PDF::parseString()
 	    //
 	    // Characters that are not part of a word
 	    //
-	    if (!*position && isspace(*position))
+	    if (*position && isspace(*position))
 	    {
 		//
 		// Reduce all multiple whitespace to a single space
@@ -555,5 +570,6 @@ void PDF::parseString()
 
     // Flush parsed string
     _parsedString = 0;
+    _bigSpacing = 0;
 }
 

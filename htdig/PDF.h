@@ -14,13 +14,9 @@
 //
 // However, there are still 2 problems :
 // - you need acroread on your system
-// - PDF 1.2 files can contain hrefs, and they are not included in PS conversion,
-//   preventing htDig to follow these links
+// - PDF 1.2 files can contain hrefs, and they are not included in PS 
+//  conversion, preventing htDig to follow these links
 //
-// Revision history
-// ----------------
-// Revision 1.0  1998/04/16
-// Initial revision
 //
 
 #ifndef _PDF_h
@@ -63,6 +59,13 @@ private:
     // and several TJ or Tj commands. When this variable is true, text is
     // appended to _parsedString instead of parsing it.
     int _continueString;
+
+    // Sometimes the character spacing, as set by the Tc command, is set
+    // to a very high value, and is used to treat the characters in the next
+    // Tj as separate words. When this variable is true, text is appended
+    // to _parsedString with a space after each character, instead of as
+    // a single word.
+    int _bigSpacing;
 
     // String beeing read
     String _parsedString;
