@@ -4,6 +4,9 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.42  1999/01/25 04:08:34  ghutchis
+// Added fix from Gilles in case REMOTE_ADDR is NULL as well.
+//
 // Revision 1.41  1999/01/25 01:53:50  hp
 // Provide a clean upgrade from old databses without "url_part_aliases" and
 // "common_url_parts" through the new option "uncoded_db_compatible".
@@ -148,7 +151,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.41 1999/01/25 01:53:50 hp Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.42 1999/01/25 04:08:34 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -1299,6 +1302,8 @@ Display::logSearch(int page, List *matches)
 
     if (host == NULL)
       host = getenv("REMOTE_ADDR");
+    if (host == NULL)
+      host = "-";
 
     if (ref == NULL)
       ref = "-";
