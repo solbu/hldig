@@ -1,6 +1,7 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4a from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000
+# Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -9,14 +10,6 @@
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
-
-
-#
-# To compile with profiling do the following:
-#
-# make CFLAGS=-g CXXFLAGS=-g PROFILING=-p all
-#
-
 
 SHELL = @SHELL@
 
@@ -39,8 +32,6 @@ mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
 
-DESTDIR =
-
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -53,9 +44,10 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -64,6 +56,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+
+@SET_MAKE@
 host_alias = @host_alias@
 host_triplet = @host@
 APACHE = @APACHE@
@@ -113,17 +107,50 @@ USER = @USER@
 VERSION = @VERSION@
 YACC = @YACC@
 
+
+#
+# To compile with profiling do the following:
+#
+# make CFLAGS=-g CXXFLAGS=-g PROFILING=-p all
+#
+
+
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db -I$(top_builddir)/db 		$(LOCAL_DEFINES) $(PROFILING)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
+		-I$(top_srcdir)/include -I$(top_srcdir)/htlib \
+		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
+		-I$(top_srcdir)/htword \
+		-I$(top_srcdir)/db -I$(top_builddir)/db \
+		$(LOCAL_DEFINES) $(PROFILING)
 
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/libhtdb.la 		$(top_builddir)/htlib/libht.la
+HTLIBS = $(top_builddir)/htnet/libhtnet.la \
+		$(top_builddir)/htcommon/libcommon.la \
+		$(top_builddir)/htword/libhtword.la \
+		$(top_builddir)/htlib/libht.la \
+		$(top_builddir)/htcommon/libcommon.la \
+		$(top_builddir)/htword/libhtword.la \
+		$(top_builddir)/db/libhtdb.la \
+		$(top_builddir)/htlib/libht.la
 
 
 pkglib_LTLIBRARIES = libht.la
 
-libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.cc timegm.c 	getcwd.c memcmp.c memcpy.c memmove.c raise.c strerror.c 	HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc 	HtPack.cc HtDateTime.cc HtRegex.cc 	HtRegexReplace.cc HtRegexReplaceList.cc 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc 	myqsort.c 	md5.cc mhash_md5.c
+libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
+	DB2_db.cc IntObject.cc List.cc Object.cc \
+	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc \
+	String.cc StringList.cc StringMatch.cc String_fmt.cc \
+	good_strtok.cc strcasecmp.cc \
+	mktime.c strptime.cc timegm.c \
+	getcwd.c memcmp.c memcpy.c memmove.c raise.c strerror.c \
+	HtCodec.cc HtWordCodec.cc \
+	HtVector.cc HtHeap.cc \
+	HtPack.cc HtDateTime.cc HtRegex.cc HtRegexList.cc \
+	HtRegexReplace.cc HtRegexReplaceList.cc \
+	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc \
+	myqsort.c \
+	md5.cc mhash_md5.c
 
 
 libht_la_LIBADD = @LTLIBOBJS@
@@ -131,8 +158,50 @@ libht_la_LIBADD = @LTLIBOBJS@
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-pkginclude_HEADERS =  	clib.h 	Configuration.h 	DB2_db.h 	Database.h 	Dictionary.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtRegexReplace.h 	HtRegexReplaceList.h 	HtVector.h 	HtWordCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	good_strtok.h 	htString.h 	lib.h 	regex.h  	HtVectorGeneric.h   	HtVectorGenericCode.h 	HtVector_int.h 	HtVector_String.h 	HtMaxMin.h 	HtTime.h 	HtWordType.h 	HtRandom.h 	ber.h 	libdefs.h 	myqsort.h 	mhash_md5.h 	md5.h
+pkginclude_HEADERS = \
+	clib.h \
+	Configuration.h \
+	DB2_db.h \
+	Database.h \
+	Dictionary.h \
+	HtCodec.h \
+	HtDateTime.h \
+	HtHeap.h \
+	HtPack.h \
+	HtRegex.h \
+	HtRegexList.h \
+	HtRegexReplace.h \
+	HtRegexReplaceList.h \
+	HtVector.h \
+	HtWordCodec.h \
+	IntObject.h \
+	List.h \
+	Object.h \
+	ParsedString.h \
+	Queue.h \
+	QuotedStringList.h \
+	Stack.h \
+	StringList.h \
+	StringMatch.h \
+	good_strtok.h \
+	htString.h \
+	lib.h \
+	regex.h  \
+	HtVectorGeneric.h   \
+	HtVectorGenericCode.h \
+	HtVector_int.h \
+	HtVector_String.h \
+	HtMaxMin.h \
+	HtTime.h \
+	HtWordType.h \
+	HtRandom.h \
+	ber.h \
+	libdefs.h \
+	myqsort.h \
+	mhash_md5.h \
+	md5.h
 
+subdir = htlib
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
 CONFIG_CLEAN_FILES = 
@@ -143,53 +212,63 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 libht_la_DEPENDENCIES =  @LTLIBOBJS@
-libht_la_OBJECTS =  Configuration.lo Database.lo Dictionary.lo DB2_db.lo \
-IntObject.lo List.lo Object.lo ParsedString.lo Queue.lo \
+am_libht_la_OBJECTS =  Configuration.lo Database.lo Dictionary.lo \
+DB2_db.lo IntObject.lo List.lo Object.lo ParsedString.lo Queue.lo \
 QuotedStringList.lo Stack.lo String.lo StringList.lo StringMatch.lo \
 String_fmt.lo good_strtok.lo strcasecmp.lo mktime.lo strptime.lo \
 timegm.lo getcwd.lo memcmp.lo memcpy.lo memmove.lo raise.lo strerror.lo \
 HtCodec.lo HtWordCodec.lo HtVector.lo HtHeap.lo HtPack.lo HtDateTime.lo \
-HtRegex.lo HtRegexReplace.lo HtRegexReplaceList.lo HtVectorGeneric.lo \
-HtMaxMin.lo HtWordType.lo myqsort.lo md5.lo mhash_md5.lo
+HtRegex.lo HtRegexList.lo HtRegexReplace.lo HtRegexReplaceList.lo \
+HtVectorGeneric.lo HtMaxMin.lo HtWordType.lo myqsort.lo md5.lo \
+mhash_md5.lo
+libht_la_OBJECTS =  $(am_libht_la_OBJECTS)
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CFLAGS = @CFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
-CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
-CFLAGS = @CFLAGS@
-COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 CCLD = $(CC)
-LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+DIST_SOURCES =  $(libht_la_SOURCES)
 HEADERS =  $(pkginclude_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in snprintf.c vsnprintf.c
+depcomp = $(SHELL) $(top_srcdir)/depcomp
+DEP_FILES =  @AMDEP@ $(DEPDIR)/Configuration.Plo $(DEPDIR)/DB2_db.Plo \
+$(DEPDIR)/Database.Plo $(DEPDIR)/Dictionary.Plo $(DEPDIR)/HtCodec.Plo \
+$(DEPDIR)/HtDateTime.Plo $(DEPDIR)/HtHeap.Plo $(DEPDIR)/HtMaxMin.Plo \
+$(DEPDIR)/HtPack.Plo $(DEPDIR)/HtRegex.Plo $(DEPDIR)/HtRegexList.Plo \
+$(DEPDIR)/HtRegexReplace.Plo $(DEPDIR)/HtRegexReplaceList.Plo \
+$(DEPDIR)/HtVector.Plo $(DEPDIR)/HtVectorGeneric.Plo \
+$(DEPDIR)/HtWordCodec.Plo $(DEPDIR)/HtWordType.Plo \
+$(DEPDIR)/IntObject.Plo $(DEPDIR)/List.Plo $(DEPDIR)/Object.Plo \
+$(DEPDIR)/ParsedString.Plo $(DEPDIR)/Queue.Plo \
+$(DEPDIR)/QuotedStringList.Plo $(DEPDIR)/Stack.Plo $(DEPDIR)/String.Plo \
+$(DEPDIR)/StringList.Plo $(DEPDIR)/StringMatch.Plo \
+$(DEPDIR)/String_fmt.Plo $(DEPDIR)/getcwd.Plo $(DEPDIR)/good_strtok.Plo \
+$(DEPDIR)/md5.Plo $(DEPDIR)/memcmp.Plo $(DEPDIR)/memcpy.Plo \
+$(DEPDIR)/memmove.Plo $(DEPDIR)/mhash_md5.Plo $(DEPDIR)/mktime.Plo \
+$(DEPDIR)/myqsort.Plo $(DEPDIR)/raise.Plo $(DEPDIR)/regex.Plo \
+$(DEPDIR)/snprintf.Plo $(DEPDIR)/strcasecmp.Plo $(DEPDIR)/strerror.Plo \
+$(DEPDIR)/strptime.Plo $(DEPDIR)/timegm.Plo $(DEPDIR)/vsnprintf.Plo
+DIST_COMMON =  $(pkginclude_HEADERS) Makefile.am Makefile.in regex.c \
+snprintf.c vsnprintf.c
 
 
-DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/Configuration.P .deps/DB2_db.P .deps/Database.P \
-.deps/Dictionary.P .deps/HtCodec.P .deps/HtDateTime.P .deps/HtHeap.P \
-.deps/HtMaxMin.P .deps/HtPack.P .deps/HtRegex.P .deps/HtRegexReplace.P \
-.deps/HtRegexReplaceList.P .deps/HtVector.P .deps/HtVectorGeneric.P \
-.deps/HtWordCodec.P .deps/HtWordType.P .deps/IntObject.P .deps/List.P \
-.deps/Object.P .deps/ParsedString.P .deps/Queue.P \
-.deps/QuotedStringList.P .deps/Stack.P .deps/String.P \
-.deps/StringList.P .deps/StringMatch.P .deps/String_fmt.P \
-.deps/getcwd.P .deps/good_strtok.P .deps/md5.P .deps/memcmp.P \
-.deps/memcpy.P .deps/memmove.P .deps/mhash_md5.P .deps/mktime.P \
-.deps/myqsort.P .deps/raise.P .deps/snprintf.P .deps/strcasecmp.P \
-.deps/strerror.P .deps/strptime.P .deps/timegm.P .deps/vsnprintf.P
 SOURCES = $(libht_la_SOURCES)
-OBJECTS = $(libht_la_OBJECTS)
+OBJECTS = $(am_libht_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .cc .lo .o .s
+.SUFFIXES: .c .cc .lo .o
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.config
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign htlib/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -208,22 +287,17 @@ install-pkglibLTLIBRARIES: $(pkglib_LTLIBRARIES)
 	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
 	@list='$(pkglib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(pkglibdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(pkglibdir)/$$p; \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(pkglibdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(pkglibdir)/$$p; \
 	  else :; fi; \
 	done
 
 uninstall-pkglibLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(pkglib_LTLIBRARIES)'; for p in $$list; do \
+	@list='$(pkglib_LTLIBRARIES)'; for p in $$list; do \
+	  echo " $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(pkglibdir)/$$p"; \
 	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(pkglibdir)/$$p; \
 	done
-
-.s.o:
-	$(COMPILE) -c $<
-
-.S.o:
-	$(COMPILE) -c $<
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
@@ -234,12 +308,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 maintainer-clean-compile:
-
-.s.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
-.S.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -253,45 +321,48 @@ maintainer-clean-libtool:
 
 libht.la: $(libht_la_OBJECTS) $(libht_la_DEPENDENCIES)
 	$(CXXLINK) -rpath $(pkglibdir) $(libht_la_LDFLAGS) $(libht_la_OBJECTS) $(libht_la_LIBADD) $(LIBS)
-.cc.o:
-	$(CXXCOMPILE) -c $<
-.cc.lo:
-	$(LTCXXCOMPILE) -c $<
 
 install-pkgincludeHEADERS: $(pkginclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(pkgincludedir)
 	@list='$(pkginclude_HEADERS)'; for p in $$list; do \
 	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgincludedir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgincludedir)/$$p; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgincludedir)/$$f"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgincludedir)/$$f; \
 	done
 
 uninstall-pkgincludeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	list='$(pkginclude_HEADERS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(pkgincludedir)/$$p; \
+	@list='$(pkginclude_HEADERS)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(pkgincludedir)/$$f"; \
+	  rm -f $(DESTDIR)$(pkgincludedir)/$$f; \
 	done
 
 tags: TAGS
 
-ID: $(HEADERS) $(SOURCES) $(LISP)
-	list='$(SOURCES) $(HEADERS)'; \
-	unique=`for i in $$list; do echo $$i; done | \
-	  awk '    { files[$$0] = 1; } \
+ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	here=`pwd` && cd $(srcdir) \
-	  && mkid -f$$here/ID $$unique $(LISP)
+	mkid -fID $$unique $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS)'; \
-	unique=`for i in $$list; do echo $$i; done | \
-	  awk '    { files[$$0] = 1; } \
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
 
 mostlyclean-tags:
 
@@ -302,77 +373,105 @@ distclean-tags:
 
 maintainer-clean-tags:
 
-distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
-
-subdir = htlib
-
-distdir: $(DISTFILES)
-	here=`cd $(top_builddir) && pwd`; \
-	top_distdir=`cd $(top_distdir) && pwd`; \
-	distdir=`cd $(distdir) && pwd`; \
-	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign htlib/Makefile
-	@for file in $(DISTFILES); do \
-	  d=$(srcdir); \
-	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
-	  else \
-	    test -f $(distdir)/$$file \
-	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
-	    || cp -p $$d/$$file $(distdir)/$$file || :; \
-	  fi; \
-	done
-
-DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
-
--include $(DEP_FILES)
+@AMDEP@include $(DEPDIR)/Configuration.Plo
+@AMDEP@include $(DEPDIR)/DB2_db.Plo
+@AMDEP@include $(DEPDIR)/Database.Plo
+@AMDEP@include $(DEPDIR)/Dictionary.Plo
+@AMDEP@include $(DEPDIR)/HtCodec.Plo
+@AMDEP@include $(DEPDIR)/HtDateTime.Plo
+@AMDEP@include $(DEPDIR)/HtHeap.Plo
+@AMDEP@include $(DEPDIR)/HtMaxMin.Plo
+@AMDEP@include $(DEPDIR)/HtPack.Plo
+@AMDEP@include $(DEPDIR)/HtRegex.Plo
+@AMDEP@include $(DEPDIR)/HtRegexList.Plo
+@AMDEP@include $(DEPDIR)/HtRegexReplace.Plo
+@AMDEP@include $(DEPDIR)/HtRegexReplaceList.Plo
+@AMDEP@include $(DEPDIR)/HtVector.Plo
+@AMDEP@include $(DEPDIR)/HtVectorGeneric.Plo
+@AMDEP@include $(DEPDIR)/HtWordCodec.Plo
+@AMDEP@include $(DEPDIR)/HtWordType.Plo
+@AMDEP@include $(DEPDIR)/IntObject.Plo
+@AMDEP@include $(DEPDIR)/List.Plo
+@AMDEP@include $(DEPDIR)/Object.Plo
+@AMDEP@include $(DEPDIR)/ParsedString.Plo
+@AMDEP@include $(DEPDIR)/Queue.Plo
+@AMDEP@include $(DEPDIR)/QuotedStringList.Plo
+@AMDEP@include $(DEPDIR)/Stack.Plo
+@AMDEP@include $(DEPDIR)/String.Plo
+@AMDEP@include $(DEPDIR)/StringList.Plo
+@AMDEP@include $(DEPDIR)/StringMatch.Plo
+@AMDEP@include $(DEPDIR)/String_fmt.Plo
+@AMDEP@include $(DEPDIR)/getcwd.Plo
+@AMDEP@include $(DEPDIR)/good_strtok.Plo
+@AMDEP@include $(DEPDIR)/md5.Plo
+@AMDEP@include $(DEPDIR)/memcmp.Plo
+@AMDEP@include $(DEPDIR)/memcpy.Plo
+@AMDEP@include $(DEPDIR)/memmove.Plo
+@AMDEP@include $(DEPDIR)/mhash_md5.Plo
+@AMDEP@include $(DEPDIR)/mktime.Plo
+@AMDEP@include $(DEPDIR)/myqsort.Plo
+@AMDEP@include $(DEPDIR)/raise.Plo
+@AMDEP@include $(DEPDIR)/regex.Plo
+@AMDEP@include $(DEPDIR)/snprintf.Plo
+@AMDEP@include $(DEPDIR)/strcasecmp.Plo
+@AMDEP@include $(DEPDIR)/strerror.Plo
+@AMDEP@include $(DEPDIR)/strptime.Plo
+@AMDEP@include $(DEPDIR)/timegm.Plo
+@AMDEP@include $(DEPDIR)/vsnprintf.Plo
 
 mostlyclean-depend:
 
 clean-depend:
 
 distclean-depend:
-	-rm -rf .deps
+	-rm -rf $(DEPDIR)
 
 maintainer-clean-depend:
 
-%.o: %.c
-	@echo '$(COMPILE) -c $<'; \
-	$(COMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
-	@-cp .deps/$(*F).pp .deps/$(*F).P; \
-	tr ' ' '\012' < .deps/$(*F).pp \
-	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
-	    >> .deps/$(*F).P; \
-	rm .deps/$(*F).pp
+@AMDEP@CCDEPMODE = @CCDEPMODE@
 
-%.lo: %.c
-	@echo '$(LTCOMPILE) -c $<'; \
-	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
-	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
-	  < .deps/$(*F).pp > .deps/$(*F).P; \
-	tr ' ' '\012' < .deps/$(*F).pp \
-	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
-	    >> .deps/$(*F).P; \
-	rm -f .deps/$(*F).pp
+.c.o:
+@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
 
-%.o: %.cc
-	@echo '$(CXXCOMPILE) -c $<'; \
-	$(CXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
-	@-cp .deps/$(*F).pp .deps/$(*F).P; \
-	tr ' ' '\012' < .deps/$(*F).pp \
-	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
-	    >> .deps/$(*F).P; \
-	rm .deps/$(*F).pp
+.c.lo:
+@AMDEP@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
+@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(LTCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
 
-%.lo: %.cc
-	@echo '$(LTCXXCOMPILE) -c $<'; \
-	$(LTCXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
-	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
-	  < .deps/$(*F).pp > .deps/$(*F).P; \
-	tr ' ' '\012' < .deps/$(*F).pp \
-	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
-	    >> .deps/$(*F).P; \
-	rm -f .deps/$(*F).pp
+
+@AMDEP@CXXDEPMODE = @CXXDEPMODE@
+
+.cc.o:
+@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXXCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+
+.cc.lo:
+@AMDEP@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
+@AMDEP@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(LTCXXCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pR $$d/$$file $(distdir) \
+	    || exit 1; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || cp -p $$d/$$file $(distdir)/$$file \
+	    || exit 1; \
+	  fi; \
+	done
 info-am:
 info: info-am
 dvi-am:
@@ -395,7 +494,7 @@ uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(pkglibdir) $(DESTDIR)$(pkgincludedir)
 
@@ -409,6 +508,7 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
+	-rm -f Makefile.in
 mostlyclean-am:  mostlyclean-pkglibLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic
@@ -443,12 +543,12 @@ mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool uninstall-pkgincludeHEADERS \
 install-pkgincludeHEADERS tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir mostlyclean-depend \
-distclean-depend clean-depend maintainer-clean-depend info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+clean-tags maintainer-clean-tags mostlyclean-depend distclean-depend \
+clean-depend maintainer-clean-depend distdir info-am info dvi-am dvi \
+check check-am installcheck-am installcheck install-exec-am \
 install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
+uninstall-am uninstall all-redirect all-am all install-strip \
+installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 

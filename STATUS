@@ -1,15 +1,12 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b3: Released:     Jan 2001. (?)
+   3.2.0b3: Released:  14 Feb 2001.
    3.2.0b2: Released:  11 Apr 2000.
    3.2.0b1: Released:   4 Feb 2000.
 
 SHOWSTOPPERS:
-* HtRegex seems to bail out with patterns that are too long, at least
-   on some platforms. Errors are reported, though the calling code must be
-   careful to check for them.
-  Some workaround (e.g. HtRegexList ?) is desirable.
+(Hopefully none--need to clean up htdocs/ for website changes, etc.)
 
 KNOWN BUGS:
 * Odd behavior with $(MODIFIED) and scores not working with

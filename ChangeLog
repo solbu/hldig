@@ -3,7 +3,7 @@ Sun Feb 11 16:42:11 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htlib/HtRegexList.h, htlib/HtRegexList.cc (class HtRegexList):
 	Simple List(HtRegex) object with similar calling conventions to
 	HtRegex class. This version is not as sophisticated as it could
-	be, but it's not likely to drop object when reorganizing.
+	be, but it's not likely to drop objects when reorganizing.
 
 	* htlib/Makefile.[in,am]: Add HtRegexList files to list for
 	compilation.
