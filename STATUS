@@ -1,17 +1,24 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b3: Released: Unfrozen Tree.
+   3.2.0b3: Released: Date TBA       Cleanups in progress
    3.2.0b2: Released:  11 Apr 2000.
    3.2.0b1: Released:   4 Feb 2000.
 
 SHOWSTOPPERS:
+* all.html file needs significant work.
+* New directory listing code prevents compilation on Solaris platforms
+	(code available to replace scandir() call)
+* List of supported platforms/compilers is ancient.
+* Update cf_* pages to mention new config parser (i.e. URL-dependent config)
+* Add thorough documentation on htsearch restrict/exclude behavior
+   (including '|' and regex).
+
+KNOWN BUGS:
 * Odd behavior with $(MODIFIED) and scores not working with
    wordlist_compress set but work fine without wordlist_compress.
    (the date is definitely stored correctly, even with compression on
     so this must be some sort of weird htsearch bug)
-
-KNOWN BUGS:
 * Not all htsearch input parameters are handled properly: PR#648. Use a
    consistant mapping of input -> config -> template for all inputs where
    it makes sense to do so (everything but "config" and "words"?).
@@ -47,12 +54,8 @@ TESTING:
 * Duplicate document detection while indexing
 
 DOCUMENTATION:
-* List of supported platforms/compilers is ancient.
 * Need a list of "related projects" inc. mifluz, ht://Check, ConfigDig, etc.
    (should this include projects like KDevelop and WWWWoffle that use internally?)
-* Update cf_* pages to mention new config parser (i.e. URL-dependent config)
-* Add thorough documentation on htsearch restrict/exclude behavior
-   (including '|' and regex).
 * Document all of htsearch's mappings of input parameters to config attributes
    to template variables. (Relates to PR#648.) Also make sure these config
    attributes are all documented in defaults.cc, even if they're only set by
@@ -62,7 +65,6 @@ DOCUMENTATION:
    requirements of 3.2.x (e.g. phrase searching, regex matching,
    external parsers and transport methods, database compression.)
 * TODO.html has not been updated for current TODO list and completions.
-* all.html file needs significant work.
 
 OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
