@@ -1,3 +1,8 @@
+Wed Jun  2 15:51:00 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URLTrans.cc(encodeURL): Fix to ensure that non-ASCII letters
+	get URL-encoded.
+
 Mon May 31 22:40:29 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/DocumentDB.cc(ReadExcerpt): Fix silly typos with methods,
