@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.14 1999/08/29 05:47:03 ghutchis Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.15 1999/08/29 09:04:21 ghutchis Exp $";
 #endif
 
 #include "parser.h"
@@ -150,44 +150,35 @@ Parser::factor(int output)
 	}
 	lookahead = lexan();
     }
-    else
-    {
-	setError("a search word");
-    }
+    //    else
+    //    {
+    //	setError("a search word");
+    //    }
 }
 
 //*****************************************************************************
 void
 Parser::phrase(int output)
 {
-  int isand = 0;
+  List *wordList = new List;
+  double weight = 1.0;
 
-    if (match('"'))
+  if (match('"'))
     {
-      cout << " *** Phrase \n";
-      lookahead = lexan();
       while (1)
 	{
-	  cout << " * loop \n";
 	  if (match('"'))
 	    {
-	      lookahead = lexan();
+	      if (output)
+		score(wordList, weight);
 	      break;
 	    }
 	  else if (lookahead == WORD)
 	    {
-	      // Push the first word onto the stack
-	      if (output && !isand)
-		{
-		  isand = 1;
-		  perform_push();
-		}
-	      // Push the next word and perform an "and"
-	      else if (output && isand)
-		{
-		  perform_push();
-		  perform_phrase();
-		}
+	      weight *= current->weight;
+	      if (output)
+		perform_phrase(*wordList);
+	      
 	      lookahead = lexan();
 	    }
 
@@ -243,30 +234,109 @@ Parser::perform_push()
 {
     static int	maximum_word_length = config.Value("maximum_word_length", 12);
     String	temp = current->word.get();
-    String	data;
-    String	decompressed;
     char	*p;
-    ResultList	*list = new ResultList;
-    DocMatch	*dm;
 
-    stack.push(list);
     if (current->isIgnore)
     {
 	//
 	// This word needs to be ignored.  Make it so.
 	//
-	list->isIgnore = 1;
 	return;
     }
+
     temp.lowercase();
     p = temp.get();
     if (temp.length() > maximum_word_length)
 	p[maximum_word_length] = '\0';
 
-    List		*wordList;
-    WordReference	*wr = 0;
+    score(words[p], current->weight);
+}
 
-    wordList = words[p];
+//*****************************************************************************
+void
+Parser::perform_phrase(List &oldWords)
+{
+    static int	maximum_word_length = config.Value("maximum_word_length", 12);
+    String	temp = current->word.get();
+    char	*p;
+    List	*newWords = 0;
+    WordReference *oldWord, *newWord;
+
+    if (current->isIgnore)
+    {
+	//
+	// This word needs to be ignored.  Make it so.
+	//
+	return;
+    }
+
+    temp.lowercase();
+    p = temp.get();
+    if (temp.length() > maximum_word_length)
+	p[maximum_word_length] = '\0';
+
+    newWords = words[p];
+
+    // If we don't have a prior list of words, we want this one...
+    if (oldWords.Count() == 0)
+      {
+	newWords->Start_Get();
+	while ((newWord = (WordReference *) newWords->Get_Next()))
+	  oldWords.Add(newWord);
+	return;
+      }
+
+    // OK, now we have a previous list in wordList and a new list
+    List	*results = new List;
+
+    oldWords.Start_Get();
+    while ((oldWord = (WordReference *) oldWords.Get_Next()))
+      {
+	newWords->Start_Get();
+	while ((newWord = (WordReference *) newWords->Get_Next()))
+	  {
+	    if (oldWord->DocumentID == newWord->DocumentID)
+	      if ((oldWord->Location + 1) == newWord->Location)
+		{
+		  WordReference *result = new WordReference;
+		  result->DocumentID = oldWord->DocumentID;
+		  result->Location = newWord->Location;	      
+		  
+		  result->Flags = oldWord->Flags & newWord->Flags;
+		  result->Anchor = oldWord->Anchor;
+		  
+		  results->Add(result);
+		}
+	  }
+      }
+
+    oldWords.Destroy();
+    results->Start_Get();
+    while ((newWord = (WordReference *) results->Get_Next()))
+      oldWords.Add(newWord);
+    results->Release();
+    delete results;
+
+    newWords->Destroy();
+    delete newWords;
+}
+
+//*****************************************************************************
+void
+Parser::score(List *wordList, double weight)
+{
+    ResultList	*list = new ResultList;
+    DocMatch	*dm;
+    WordReference *wr;
+
+    stack.push(list);
+
+    if (!wordList || wordList->Count() == 0)
+      {
+	// We can't score an empty list, so this should be ignored...
+	list->isIgnore = 1;
+	return;
+      }
 
     wordList->Start_Get();
     while ((wr = (WordReference *) wordList->Get_Next()))
@@ -274,6 +344,7 @@ Parser::perform_push()
 	dm = list->find(wr->DocumentID);
 	if (dm)
 	  {
+
 	    int prevAnchor;
 	    double prevScore;
 	    prevScore = dm->score;
@@ -291,7 +362,7 @@ Parser::perform_push()
 	    dm->score += (wr->Flags & FLAG_DESCRIPTION) * config.Value("meta_description_factor", 1);
 	    dm->score += (wr->Flags & FLAG_AUTHOR) * config.Value("author_factor", 1);
 	    dm->score += (wr->Flags & FLAG_LINK_TEXT) * config.Value("description_factor", 1);
-	    dm->score = current->weight * dm->score + prevScore;
+	    dm->score = weight * dm->score + prevScore;
 	    if (prevAnchor > wr->Anchor)
 	      dm->anchor = wr->Anchor;
 	    else
@@ -300,6 +371,7 @@ Parser::perform_push()
 	  }
 	else
 	  {
+
 	    //
 	    // *******  Compute the score for the document
 	    //
@@ -312,19 +384,12 @@ Parser::perform_push()
 	    dm->score += (wr->Flags & FLAG_DESCRIPTION) * config.Value("meta_description_factor", 1);
 	    dm->score += (wr->Flags & FLAG_AUTHOR) * config.Value("author_factor", 1);
 	    dm->score += (wr->Flags & FLAG_LINK_TEXT) * config.Value("description_factor", 1);
-	    dm->score *= current->weight;
+	    dm->score *= weight;
 	    dm->id = wr->DocumentID;
 	    dm->anchor = wr->Anchor;
 	  }
 	list->add(dm);
       }
-}
-
-//*****************************************************************************
-void
-Parser::perform_phrase()
-{
-  perform_and(1);
 }
 
 
@@ -497,7 +562,7 @@ Parser::parse(List *tokenList, ResultList &resultMatches)
 	error << "Expected to have something to parse!";
 	return;
       }
-    HtVector		*elements = result->elements();
+    HtVector	*elements = result->elements();
     DocMatch	*dm;
 
     for (int i = 0; i < elements->Count(); i++)
