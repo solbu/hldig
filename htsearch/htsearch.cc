@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.44 1999/08/29 05:45:57 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.45 1999/08/29 09:03:42 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -628,10 +628,7 @@ convertToBoolean(List &words)
 
     // We might start off with a phrase match
     if (((WeightWord *) words[0])->word == quote)
-      {
 	in_phrase = 1;
-	cout << " *** Found a phrase\n";
-      }
 
     for (i = 1; i < words.Count(); i++)
     {
@@ -641,10 +638,7 @@ convertToBoolean(List &words)
 	    list.Add(new WeightWord("|", -1.0));
 	
 	if (((WeightWord *) words[i])->word == quote)
-	  {
 	    in_phrase = !in_phrase;
-	    cout << " *** Found a phrase, now " << in_phrase << endl;
-	  }
   
 	list.Add(words[i]);
     }
