@@ -1,3 +1,11 @@
+Sun Feb 14 16:29:48 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Document.cc(retrieveHTTP, retrieveLocal): Fix document
+	size when the document is larger than max_doc_size. Size should be
+	that sent by the server or as given by stat().
+
+	* htdoc/*.html: More cleanups from Marjolein.
+
 Sat Feb 13 20:53:34 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc(got_word): Ensure heading is in a normal range.
