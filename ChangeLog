@@ -1,3 +1,10 @@
+Tue Jun 13 22:57:10 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc (GetLocal): Fix bug that would cause a
+	coredump when local_urls was used and local_default_docs was
+	needed. The list of default filenames was freed before it should
+	have been.
+
 Tue Jun 13 19:30:28 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/HtWordReference.h, htcommon/HtWordReference.cc (Load,

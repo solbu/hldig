@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.29 2000/05/10 18:23:43 loic Exp $
+// $Id: Retriever.cc,v 1.72.2.30 2000/06/14 01:49:53 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1004,7 +1004,6 @@ Retriever::GetLocal(char *url)
 	    return local;
 	}
     }
-    if(defaultdocs) delete defaultdocs;
 
     // This shouldn't happen, but check anyway...
     if (strstr(url, ".."))
@@ -1036,8 +1035,12 @@ Retriever::GetLocal(char *url)
 	}	
     }
     if (local_names->Count() > 0)
+      {
+	if(defaultdocs) delete defaultdocs;
         return local_names;
+      }
 
+    if(defaultdocs) delete defaultdocs;
     delete local_names;
     return 0;
 }
@@ -1183,7 +1186,8 @@ Retriever::IsLocalURL(char *url)
 
     StringList *local_filename = GetLocal(url);
     ret = (local_filename != 0);
-    delete local_filename;
+    if (local_filename)
+      delete local_filename;
 
     return ret;
 }
