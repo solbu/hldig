@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.13 2000/01/10 16:19:13 loic Exp $
+// $Id: WordList.h,v 1.5.2.14 2000/01/11 10:48:43 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -155,10 +155,12 @@ public:
     //
     int			Insert(const WordReference& wordRef) { return Put(wordRef, DB_NOOVERWRITE); }
     int			Override(const WordReference& wordRef) { return Put(wordRef, 0); }
+#ifndef SWIG
     int                 Put(const WordReference& wordRef, int flags);
+#endif /* SWIG */
 
     //
-    // Check for existence
+    // Check for existence. Returns OK if exists, NOTOK otherwise.
     //
     int                 Exists(const WordReference& wordRef) { return db.Exists(wordRef); }
 #ifndef SWIG
@@ -168,7 +170,13 @@ public:
     //
     // Delete permanently
     //
+    //
+    // Returns the number of entries successfully deleted.
+    //
     int                 WalkDelete(const WordReference& wordRef);
+    //
+    // Returns OK if deletion is successfull, NOTOK otherwise.
+    //
     int                 Delete(const WordReference& wordRef) {
       if(db.Del(wordRef) == 0)
 	return Unref(wordRef);
@@ -208,17 +216,14 @@ public:
     List		*Prefix (const WordReference& prefix);
 #ifndef SWIG
     List		*Prefix (const String& prefix) { return this->Prefix(WordReference(prefix)); }
-#endif /* SWIG */
 
     //
     // Iterate over the complete database.
     //
-#ifndef SWIG
     // This returns a list of all the Words, as String *
     List                *Words();
     // This returns a list of all the Words, as WordReference *
     List		*WordRefs();
-#endif /* SWIG */
 
     //
     // Walk and collect data from the word database.
@@ -226,9 +231,7 @@ public:
     //
     int   Walk(WordSearchDescription &SearchDescription);
     List *Search(const WordSearchDescription &SearchDescription);
-#ifndef SWIG
     int SkipUselessSequentialWalking(const WordSearchDescription &search,WordKey &foundKey,String &key,int &cursor_get_flags);
-#endif /* SWIG */
 
     //
     // Update/get global word statistics statistics
@@ -240,14 +243,16 @@ public:
     //
     // Accessors
     //
-#ifndef SWIG
     const WordType&      GetWordType() const { return wtype; }
-#endif /* SWIG */
     const Configuration& GetConfiguration() const { return config; }
     static void Initialize(const Configuration &config0);
-    
 
-#ifndef SWIG
+    //
+    // Input/Output
+    //
+    friend ostream &operator << (ostream &o, WordList &list); 
+    friend istream &operator >> (istream &o, WordList &list); 
+
  protected:
     //
     // Retrieve WordReferences from the database. 
@@ -267,10 +272,6 @@ public:
     // parameter.
     //
     int				extended;
-
-
-    friend ostream &operator << (ostream &o, WordList &list); 
-    friend istream &operator >> (istream &o, WordList &list); 
 
  private:
 
