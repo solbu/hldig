@@ -22,6 +22,44 @@
 	</p>
 
 	<p>
+	<strong>Release notes for htdig-3.2.0b3</strong>XX Sep 2000<br>
+	</p>
+	<ul>
+	    <li>Fix bug where changes in the robots.txt
+	 would be ignored. If a URL was indexed and later the robots.txt
+	 changed to forbid it, the URL would still be updated.</li>
+	 <li>Fixed scoring bugs.</li>
+	 <li>Fixed bugs in the accents fuzzy algorithm, cutting down on the size of the accent database..</li>
+	 <li>Fixed problems with retrieval order--this could potentially foul things up when limiting indexing by hopcount.</li>
+	 <li>Make the -l flag to htdig obsolete--this is now the default behavior.</li>
+	 <li>Updated database format from the mifluz/htword project.</li>
+	 <li>Changed syntax of htmerge.</li>
+	 <li>htload now properly loads ASCII word databases.</li>
+	 <li>Fixed a potential security hole where content-type headers returned by the server might execute ExternalParser code in improperly-configured systems.</li>
+	 <li>Enhanced build_select_lists attribute</li>
+	 <li>Fixed a bug where duplicate files would be generated when merging a database with itself.</li>
+	 maximum_page_buttons
+	 url_rewrite_rules
+	 check_unique_md5
+	 check_unique_date
+	 md5_db
+	 documentation now has block: portion to note if attributes can be included in URL or Server blocks.
+	 More attributes are set on a per-server or per-URL basis.
+	 Fixed minor bugs with the HTTP/1.1 implementation.
+	 Fix a bug where an extra config= portion of a URL would be output when using collections.
+	 Fixed a bug in the config parser that did not correctly handle relative config include statements.
+	 Fixed some problems with the HTML in the included sample files.
+	 New support for nttp:// protocol.
+	 Added support for auto-generating directory listings for fil:// URLs.
+	 Fixed problems with the configure script ignoring --enable-bigfile flags.
+	 Set the default compilation to enable tests.
+	 Fixed a bug with content-type declarations in ExternalParser with combined content-type; charset declarations.
+	 Greatly improved htnotify program:
+	 htnotify_webmaster
+	 htnotify_replyto
+	 htnotify_prefix_file
+	 htnotify_suffix_file
+	</ul>
 	<strong>Release notes for htdig-3.2.0b2</strong>11 Apr 2000<br>
 	This version is still marked beta because it has still only
 	received limited testing. However, it adds more functionality
@@ -1331,6 +1369,6 @@
 	</ul>
 
 	<hr size="4" noshade>
-		Last modified: $Date: 2000/04/11 20:37:54 $
+		Last modified: $Date: 2000/09/14 03:01:22 $
   </body>
 </html>
