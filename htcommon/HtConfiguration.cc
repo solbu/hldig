@@ -236,3 +236,10 @@ yyparse(this);
 fclose(yyin);
 return OK;
 }
+
+//********************************************************************
+//
+inline
+String HtConfiguration::ParseString(const char *str) const {
+ return ParsedString(str).get(dcGlobalVars);
+}

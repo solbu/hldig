@@ -23,6 +23,8 @@ class HtConfiguration : public Configuration
     int		Value(URL *aUrl,char *value,int default_value = 0);
     double	Double(URL *aUrl,char *value,double default_value = 0);
     int		Boolean(URL *aUrl,char *value,int default_value = 0);
+    inline
+    String	ParseString(const char*) const;   // parse ${var} string
 
     //
     // We need some way of reading in the database from a configuration file
