@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.58 2002/02/12 06:17:22 ghutchis Exp $
+// $Id: Document.cc,v 1.59 2002/08/02 20:42:31 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -512,7 +512,10 @@ Document::Retrieve(Server *server, HtDateTime date)
          ptrdatetime = response->GetModificationTime();
          document_length = response->GetDocumentLength();
 
-         if (transportConnect == HTTPConnect || transportConnect == externalConnect)
+         // This test is ugly!  Can whoever put it here explain why it's
+         // needed?  Why would GetLocation() ever return a non-empty string
+         // from a Transport subclass that's not supposed to redirect?
+         if (transportConnect == HTTPConnect || transportConnect == HTTPSConnect || transportConnect == externalConnect)
             redirected_to =  ((HtHTTP_Response *)response)->GetLocation();
 
          if (ptrdatetime)

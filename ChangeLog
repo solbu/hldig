@@ -1,3 +1,7 @@
+Fri Aug  2 15:40:18 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc (Retrieve): Allow redirects from HTTPSConnect.
+
 Tue Jul 30 12:46:56 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/md5.cc: Added missing include of stdlib.h, as Geoff suggested.
