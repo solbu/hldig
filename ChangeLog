@@ -1,3 +1,16 @@
+Mon Nov 29 22:35:06 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* test/url.cc: New test for URL class.
+
+	* test/url.parents: Base URLs for parsing.
+
+	* test/url.children: Derived relative URLs for testing.
+
+	* test/Makefile.am, test/Makefile.in: Add the above for building.
+
+	* htcommon/URL.cc: A variety of bug fixes (some hacks), especially
+	for file:// and user@host URLs.
+	
 Sun Nov 28 00:35:59 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* .version: Bump to 3.2.0b1-dev.
