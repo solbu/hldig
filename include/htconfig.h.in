@@ -109,6 +109,9 @@ typedef char bool;
 /* Define if you have the <zlib.h> header file.  */
 #undef HAVE_ZLIB_H
 
+/* Define if you have the <alloca.h> header file. */
+#undef HAVE_ALLOCA_H 
+
 /* Define if you have the nsl library (-lnsl).  */
 #undef HAVE_LIBNSL
 

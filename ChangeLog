@@ -1,3 +1,8 @@
+Mon Aug  9 15:35:50 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* configure.in, configure, include/htconfig.h.in, htlib/regex.c:
+	PR#545 fixed - configure tests for presence of alloca.h for regex.c
+
 Sat Aug 07 13:40:17 1999  Loic Dachary  <loic@ceic.com>
 
 	* configure.in: remove test for strptime. Run autoconf + autoheader.
