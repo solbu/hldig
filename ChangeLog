@@ -1,3 +1,15 @@
+Wed Sep 29 13:07:58 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* htnet/Transport: fixed some bugs on construction and destruction
+        
+        * htnet/HtHTTP: the most important add is the decoding of chunked
+          encoded responses, as reported on RFC2616 (HTTP/1.1). It needs
+          to be developed, because it timeouts at the end of the request.
+          Added a function pointer in order to dynamically handle the function
+          that reads the body of a response (for now, normal and chunked, but
+          other encoding ways exist, so ...). Fixed some bugs on construction
+          and added some features like Server and Transfer-encoding headers.
+
 Wed Sep 29 13:54:59 1999  Loic Dachary  <loic@yoda.ceic.com>
 
 	* fix all inline method declarations so that they are always declared

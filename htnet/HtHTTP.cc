@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.3 1999/09/28 09:40:02 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.4 1999/09/29 11:17:03 angus Exp $ 
 //
 
 #include "lib.h"
@@ -24,6 +24,7 @@
 #include <sys/types.h>
 #include <ctype.h>
 #include <iostream.h>
+#include <stdio.h> // for sscanf
 
 
 #if 1
@@ -57,19 +58,11 @@ typedef SIG_PF SIGNAL_HANDLER;
 
 HtHTTP_Response::HtHTTP_Response()
 {
-   // Initialize the pointers to the HtDateTime objs
-   _modification_time=NULL;
-   _access_time=NULL;
-
-   // Set the content length and the return status code to negative values
-   _content_length=-1;
-   _status_code=-1;
-   
-   // Also set the document length, but to zero instead of -1
-   _document_length=0;
-
-   // Zeroes the contents
-   _contents=0;
+   // Initialize the version, transfer-encoding, location and server strings
+   _version = 0;
+   _transfer_encoding = 0;
+   _location = 0;
+   _server = 0;
          
 }
 
@@ -94,15 +87,11 @@ void HtHTTP_Response::Reset()
 
    Transport_Response::Reset();
 
-
-   // Set the return status code to a negative value
-   _status_code=-1;
-   
-   // Zeroes the version, and the reason phrase of the s.c.
-   // Also the location string
-   _version=0;
-   _reason_phrase=0;
-   _location=0;
+   // Initialize the version, transfer-encoding, location and server strings
+   _version = 0;
+   _transfer_encoding = 0;
+   _location = 0;
+   _server = 0;
 
 }
 
@@ -146,7 +135,10 @@ HtHTTP::~HtHTTP()
 Transport::DocStatus HtHTTP::Request()
 {
 
+   static Transport::DocStatus DocumentStatus;
    bool ShouldTheBodyBeRead = true;
+
+   SetBodyReadingController(&ReadBody);
 
    // Reset the response
    _response.Reset();
@@ -235,10 +227,7 @@ Transport::DocStatus HtHTTP::Request()
       break;
    }
 
-
-   // Let's check if the host has been set before
-   // If not, we assume that the host oh the HTTP request
-   // is the same of the TCP connection (that is to say _url.host())
+   // Set the request command
    
    SetRequestCommand(command);
 
@@ -282,17 +271,22 @@ Transport::DocStatus HtHTTP::Request()
       cout << "Retrieving document " << _url.path() << " on host: "
          << _url.host() << ":" << _url.port() << endl;
 		  
-      cout << "Http version: " << _response._version << endl;
-      cout << "Status Code: " << _response._status_code << endl;
-      cout << "Reason: " << _response._reason_phrase << endl;
+      cout << "Http version      : " << _response._version << endl;
+      cout << "Server            : " << _response._version << endl;
+      cout << "Status Code       : " << _response._status_code << endl;
+      cout << "Reason            : " << _response._reason_phrase << endl;
 
-   	 if (_response.GetAccessTime())
-         cout << "Access Time: " << _response.GetAccessTime()->GetRFC1123() << endl;
+      if (_response.GetAccessTime())
+      cout << "Access Time       : " << _response.GetAccessTime()->GetRFC1123() << endl;
 
-   	 if (_response.GetModificationTime())
-         cout << "Modification Time: " << _response.GetModificationTime()->GetRFC1123() << endl;
+      if (_response.GetModificationTime())
+      cout << "Modification Time : " << _response.GetModificationTime()->GetRFC1123() << endl;
 
-      cout << "Content-type: " << _response.GetContentType() << endl;
+      cout << "Content-type      : " << _response.GetContentType() << endl;
+      
+      if (_response._transfer_encoding.length())
+      cout << "Transfer-encoding : " << _response._transfer_encoding << endl;
+      
    }   
 
    // Check if persistent connection are possible
@@ -303,21 +297,34 @@ Transport::DocStatus HtHTTP::Request()
 	    << (_persistent_connection_possible ? "would be accepted" : "not accepted")
 	    << endl;
 
+   DocumentStatus = GetDocumentStatus(_response);
 
    // We read the body only if the document has been found
-   if ( _response._status_code < 200 || _response._status_code >=300)
+   if (DocumentStatus != Transport::Document_ok)
+   {
       ShouldTheBodyBeRead=false;
+   }
+
+   // For now a chunked response MUST BE retrieved   
+   if (strcmp (_response._transfer_encoding, "chunked") == 0)
+   {
+      cout << "CHUNKED !!!" << endl;
+      ShouldTheBodyBeRead=true;
+      // Change the controller of the body reading
+      SetBodyReadingController(&ReadChunkedBody);
+   }
 
    // If "ShouldTheBodyBeRead" is set to true and	    
    // If the document is parsable, we can read the body
    // otherwise it is not worthwhile      
 
-   if (ShouldTheBodyBeRead && isParsable (_response.GetContentType()))
+   if (ShouldTheBodyBeRead)
    {
       if ( debug > 3 )
-         cout << "Read the body of the response" << endl;
+         cout << "Reading the body of the response" << endl;
 
-      if ( ReadBody() == -1 )
+      // We use a int (HtHTTP::*)() function pointer
+      if ( (this->*_readbody)() == -1 )
       {
          // The connection probably fell down !?!
          if ( debug > 3 )
@@ -334,7 +341,7 @@ Transport::DocStatus HtHTTP::Request()
 
    }
    else if ( debug > 3 )
-         cout << "Response document not parsable" << endl;
+         cout << "Not a parsable response" << endl;
 
 
    // Close the connection (if there's no persistent connection)
@@ -353,7 +360,7 @@ Transport::DocStatus HtHTTP::Request()
 
    // Check the doc_status and return a value
 
-   return FinishRequest(GetDocumentStatus(_response));
+   return FinishRequest(DocumentStatus);
    
 }
 
@@ -464,100 +471,119 @@ int HtHTTP::ParseHeader()
     while (inHeader)
     {
    
-   	 if(! _connection.read_line(line, "\n"))
-	    return -1;  // Connection down
+      if(! _connection.read_line(line, "\n"))
+         return -1;  // Connection down
 	 
-   	 _bytes_read+=line.length();
-   	 line.chop('\r');
-   	 if (line.length() == 0)
-   	    inHeader = 0;
-   	 else
+      _bytes_read+=line.length();
+      line.chop('\r');
+      
+      if (line.length() == 0)
+         inHeader = 0;
+      else
       {
-	    // Found a not-empty line
+         // Found a not-empty line
 	    
-   	    if (debug > 3)
-   	       cout << "Header line: " << line << endl;
+         if (debug > 3)
+            cout << "Header line: " << line << endl;
 	    
-	    // Status - Line check
-	    char	*token = line.get();
-	    while (*token && !isspace(*token))
-		 token++;
-	    while (*token && isspace(*token))
-		 token++;
+         // Status - Line check
+         char	*token = line.get();
+
+         while (*token && !isspace(*token))
+            token++;
+            
+         while (*token && isspace(*token))
+            token++;
 	    
-	    if(!strncmp(line, "HTTP/", 5))
+         if(!strncmp(line, "HTTP/", 5))
          {
-	       	// Here is the status-line
+            // Here is the status-line
 
-	        // store the HTTP version returned by the server
-	        _response._version = strtok(line, " ");
+            // store the HTTP version returned by the server
+            _response._version = strtok(line, " ");
 
-   	       	// Store the status code
-	       	_response._status_code = atoi(strtok(0, " "));
+            // Store the status code
+            _response._status_code = atoi(strtok(0, " "));
 			
-   	       	// Store the reason phrase
-	       	_response._reason_phrase = strtok(0, "\n");
+            // Store the reason phrase
+            _response._reason_phrase = strtok(0, "\n");
 
-   	    }
-	    else if( ! mystrncasecmp(line, "last-modified:", 14))
-   	    {
-	       // Modification date sent by the server
+         }
+         else if( ! mystrncasecmp(line, "last-modified:", 14))
+         {
+            // Modification date sent by the server
 		  
-		  // Set the response modification time
-		  token = strtok(token, "\n\t");
-		  if (token && *token)
-		    _response._modification_time = NewDate(token);
+            // Set the response modification time
+            token = strtok(token, "\n\t");
 
-   	    }
-	    else if( ! mystrncasecmp(line, "date:", 5))
-   	    {
-	       // Access date time sent by the server
+            if (token && *token)
+               _response._modification_time = NewDate(token);
+
+         }
+         else if( ! mystrncasecmp(line, "date:", 5))
+         {
+            // Access date time sent by the server
 		  
-		  // Set the response access time
-		  token = strtok(token, "\n\t");
-		  if (token && *token)
-		    _response._access_time = NewDate(token);
+            // Set the response access time
+            token = strtok(token, "\n\t");
 
-   	    }
-	    else if( ! mystrncasecmp(line, "content-type:", 13))
-   	    {
-	       // Content - type
+            if (token && *token)
+               _response._access_time = NewDate(token);
+
+         }
+         else if( ! mystrncasecmp(line, "content-type:", 13))
+         {
+            // Content - type
 		  
-		  token = strtok(token, "\n\t");
-		  if (token && *token)
-		    _response._content_type = token;
+            token = strtok(token, "\n\t");
 
-   	    }
-	    else if( ! mystrncasecmp(line, "content-length:", 15))
-   	    {
-	       // Content - length
+            if (token && *token)
+               _response._content_type = token;
+
+         }
+         else if( ! mystrncasecmp(line, "content-length:", 15))
+         {
+            // Content - length
 		  
-		  token = strtok(token, "\n\t");
-		  if (token && *token)
-		    _response._content_length = atoi(token);
+            token = strtok(token, "\n\t");
 
-   	    }
-	    else if( ! mystrncasecmp(line, "location:", 9))
-   	    {
-	       // Found a location directive - redirect in act
+            if (token && *token)
+               _response._content_length = atoi(token);
+
+         }
+         else if( ! mystrncasecmp(line, "transfer-encoding:", 18))
+         {
+            // Transfer-encoding
 		  
-		  token = strtok(token, "\n\t");
-		  if (token && *token)
-		    _response._location = token;
+            token = strtok(token, "\n\t");
 
-   	    }
-	    else
-   	    {
-	       	// Discarded
+            if (token && *token)
+               _response._transfer_encoding = token;
+
+         }
+         else if( ! mystrncasecmp(line, "location:", 9))
+         {
+            // Found a location directive - redirect in act
+		  
+            token = strtok(token, "\n\t");
+
+            if (token && *token)
+               _response._location = token;
+
+         }
+         else
+         {
+            // Discarded
 			
-			if (debug > 3)
-   	       	    cout << "Discarded header line: " << line << endl;
+            if (debug > 3)
+               cout << "Discarded header line: " << line << endl;
          }
       }
     }
 
     if (_response._modification_time == NULL && modification_time_is_now)
     {
+         //Set the modification time
 	_response._modification_time = new HtDateTime;
     }
     
@@ -565,41 +591,6 @@ int HtHTTP::ParseHeader()
    
 }
 
-
-
-int HtHTTP::ReadBody()
-{
-
-    _response._contents = 0;	// Initialize the string
-    
-    char	docBuffer[8192];
-    int		bytesRead = 0;
-    int		bytesToGo = _response._content_length;
-
-    if (bytesToGo < 0 || bytesToGo > _max_document_size)
-        bytesToGo = _max_document_size;
-
-    while (bytesToGo > 0)
-    {
-        int len = bytesToGo< (int)sizeof(docBuffer) ? bytesToGo : (int)sizeof(docBuffer);
-        bytesRead = _connection.read(docBuffer, len);
-        if (bytesRead <= 0)
-            break;
-
-	_response._contents.append(docBuffer, bytesRead);
-
-	bytesToGo -= bytesRead;
-	
-	_bytes_read+=bytesRead;
-
-    }
-
-    // Set document length
-    _response._document_length = _response._contents.length();
-
-   return bytesRead;
-   
-}
 
 
 // Create a new date time object containing the date specified in a string
@@ -827,3 +818,102 @@ void HtHTTP::SetCredentials (String s)
 	_credentials << '=';
     }
 }
+
+
+int HtHTTP::ReadBody()
+{
+
+    _response._contents = 0;	// Initialize the string
+    
+    char	docBuffer[8192];
+    int		bytesRead = 0;
+    int		bytesToGo = _response._content_length;
+
+    if (bytesToGo < 0 || bytesToGo > _max_document_size)
+        bytesToGo = _max_document_size;
+
+
+    while (bytesToGo > 0)
+    {
+        int len = bytesToGo< (int)sizeof(docBuffer) ? bytesToGo : (int)sizeof(docBuffer);
+        bytesRead = _connection.read(docBuffer, len);
+        if (bytesRead <= 0)
+            break;
+
+	_response._contents.append(docBuffer, bytesRead);
+
+	bytesToGo -= bytesRead;
+	
+	_bytes_read+=bytesRead;
+
+    }
+
+    // Set document length
+    _response._document_length = _response._contents.length();
+
+   return bytesRead;
+   
+}
+
+
+int HtHTTP::ReadChunkedBody()
+{
+   // Chunked Transfer decoding
+   // as shown in the RFC2616 (HTTP/1.1) - 19.4.6
+    
+   int            length = 0;  // initialize the length
+   unsigned int   chunk_size;
+   String         ChunkHeader = 0;
+   char           buffer[8192];
+   char           c;
+   
+   _response._contents = 0;	// Initialize the string
+
+   // Read chunk-size and CRLF
+   _connection.read_line(ChunkHeader);
+   sscanf ((char *)ChunkHeader, "%x", &chunk_size);
+
+      cout << "Initial chunk-size: " << chunk_size << endl;
+
+   while (chunk_size > 0)
+   {
+      // Read Chunk data
+      if (_connection.read(buffer, chunk_size) == -1)
+         return -1;
+
+      // Read CRLF - to be ignored
+      _connection.read_line(ChunkHeader);
+
+      // Append the chunk-data to the contents of the response
+      _response._contents << buffer;
+                  
+      length+=chunk_size;
+
+      // Read chunk-size and CRLF
+      _connection.read_line(ChunkHeader);
+      sscanf ((char *)ChunkHeader, "%x", &chunk_size);
+
+      cout << "Chunk-size: " << chunk_size << endl;
+   }
+   
+   ChunkHeader = 0;
+   
+   // Ignoring next part of the body - the TRAILER
+   // (it contains further headers - not implemented)
+
+   while ((c = _connection.read_char()) > 0)
+   {
+      ChunkHeader << c;
+   }
+
+   // I think we must add some code because it doesn't recognize the end
+   // of stream or something similar. It waits for the timeout and the connection
+   // falls down ...
+
+   _response._content_length = length;
+
+   return length;
+
+}
+
+

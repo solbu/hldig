@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.2 1999/09/28 09:40:02 angus Exp $
+// $Id: Transport.cc,v 1.3 1999/09/29 11:17:04 angus Exp $
 //
 //
 
@@ -40,14 +40,48 @@
     //    Empty constructor
  ///////
 
-Transport_Response::Transport_Response() { }
+Transport_Response::Transport_Response()
+{
+
+   // Initialize the pointers to the HtDateTime objs
+   _modification_time = NULL;
+   _access_time = NULL;
+
+   // Set the content length and the return status code to negative values
+   _content_length = -1;
+   _status_code = -1;
+   
+   // Also set the document length, but to zero instead of -1
+   _document_length = 0;
+
+   // Zeroes the contents
+   _contents = 0;
+
+}
 
 
  ///////
     //    Empty destructor
  ///////
 
-Transport_Response::~Transport_Response() { }
+Transport_Response::~Transport_Response()
+{
+
+   // Free memory correctly
+   
+   if(_modification_time)
+   {
+   	 delete _modification_time;
+      _modification_time=NULL;
+   }
+
+   if(_access_time)
+   {
+   	 delete _access_time;
+      _access_time=NULL;
+   }
+
+}
 
 
 
@@ -77,6 +111,12 @@ void Transport_Response::Reset()
    // Zeroes the contents and content type strings
    _contents=0;
    _content_type=0;
+
+   // Set the return status code to a negative value
+   _status_code=-1;
+
+   // Zeroes the reason phrase of the s.c.
+   _reason_phrase=0;
       
 }
 

@@ -28,7 +28,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.3 1999/09/28 09:40:02 angus Exp $ 
+// $Id: HtHTTP.h,v 1.4 1999/09/29 11:17:04 angus Exp $ 
 //
 
 #ifndef _HTHTTP_H
@@ -68,8 +68,14 @@ class HtHTTP_Response : public Transport_Response
 	 // Get the HTTP version
    	 char *GetVersion() { return _version; }
 
+	 // Get the Transfer-encoding
+   	 char *GetTransferEncoding() { return _transfer_encoding; }
+
 	 // Get the location (redirect)
    	 char *GetLocation() { return _location; }
+
+	 // Get server info
+   	 char *GetServer() { return _server; }
 
 
    protected:
@@ -80,7 +86,9 @@ class HtHTTP_Response : public Transport_Response
 
    // Other header information
    
-	 String      _location;	          // Location (in case of redirect)
+	 String    _transfer_encoding;    // Transfer-encoding
+	 String    _location;	          // Location (in case of redirect)
+   	 String	   _server;	          // Server string returned
 
 };
 
@@ -159,7 +167,15 @@ public:
     //    Interface for the HTTP Response
  ///////
 
-   Transport_Response *GetResponse() { return &_response; }
+   // We have a valid response only if the status code is not equal to
+   // initialization value
+   
+   Transport_Response *GetResponse()
+   {
+      if (_response._status_code != -1)
+         return &_response;
+      else return NULL;}
+
 
    // Get the document status 
    virtual DocStatus GetDocumentStatus()
@@ -197,6 +213,12 @@ public:
 
 // Manage statistics
    
+   static int GetTotSeconds () { return _tot_seconds; }   
+
+   static int GetTotRequests () { return _tot_requests; }   
+
+   static int GetTotBytes () { return _tot_bytes; }   
+
    static double GetAverageRequestTime ()
    	 { return _tot_seconds?( ((double) _tot_seconds) / _tot_requests) : 0; }   
 
@@ -205,6 +227,7 @@ public:
 
    static void ResetStatistics ()
    	 { _tot_seconds=0; _tot_requests=0; _tot_bytes=0;}   
+
 
 // Set the modification_time_is_now static attribute
    static void SetModificationTimeIsNow (int d) { modification_time_is_now=d;}   
@@ -235,14 +258,14 @@ protected:
       //    Http single Request information (Member attributes)
    ///////
 
-   HtDateTime  _start_time;	   	 // Start time of the request
-   HtDateTime  _end_time;	   	 // end time of the request
+   HtDateTime  _start_time;         // Start time of the request
+   HtDateTime  _end_time;           // end time of the request
 
-   int      	_bytes_read;	   	 // Bytes read
+   int      	_bytes_read;        // Bytes read
 
-   URL		_url;                  // URL to retrieve
+   URL		_url;               // URL to retrieve
 
-   URL		_referer;	       // Referring URL
+   URL		_referer;	    // Referring URL
    
    
    ///////
@@ -273,6 +296,13 @@ protected:
    ///////
 
    bool _persistent_connection_possible;
+
+
+///////
+   //    Manager of the body reading
+///////
+
+   int (HtHTTP::*_readbody) ();
 
 
 ///////
@@ -350,7 +380,9 @@ protected:
       //    Read the body returned by the server
    ///////
 
+   void SetBodyReadingController (int (HtHTTP::*f)()) { _readbody = f; }
    int ReadBody();
+   int ReadChunkedBody();  // Read the body of a chunked encoded-response
 
 
    // Finish the request and return a DocStatus value;
@@ -366,12 +398,6 @@ protected:
    static int  _tot_seconds;  	 // Requests last (in seconds)
    static int  _tot_requests; 	 // Number of requests
    static int  _tot_bytes;    	 // Number of bytes read
-
-   // Retrieve statistics
-   
-   static int GetTotSeconds () { return _tot_seconds; }   
-   static int GetTotRequests () { return _tot_requests; }   
-   static int GetTotBytes () { return _tot_bytes; }   
 
    // This is a pointer to function that check if a ContentType
    // is parsable or less.

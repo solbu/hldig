@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.2 1999/09/28 09:40:02 angus Exp $
+// $Id: Transport.h,v 1.3 1999/09/29 11:17:04 angus Exp $
 //
 //
 
