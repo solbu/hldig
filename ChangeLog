@@ -1,4 +1,7 @@
-Wed Sep  1 15:28:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:31:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.cc(removeIndex): Fix the infamous problem with files
+	like left_index.html not getting indexed.  PR#543 & PR#585.
 
 	* htdig/PDF.cc(parseNonTextLine): Fixed a bug in the PDF parser:
 	when the Title header was just the temporary file name, it
