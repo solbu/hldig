@@ -631,6 +631,120 @@
 	  </dl>
 	</dd>
       </dl><hr><dl>
+	<dt><strong><a name="external_parsers">external_parsers</a></strong></dt>
+	<dd>
+	  <dl>
+	    <dt><em>type:</em></dt>
+	    <dd>
+	      quoted string list
+	    </dd>
+	    <dt><em>used by:</em></dt>
+	    <dd>
+	      <a href="htdig.html">htdig</a>
+	    </dd>
+	    <dt><em>default:</em></dt>
+	    <dd>
+	    </dd>
+	    <dt><em>description:</em></dt>
+	  <dd>
+	    This attribute is used to specify a list of
+	    content-type/parsers that are to be used to parse
+	    documents that cannot by parsed by any of the internal
+	    parsers.  The list of external parsers is examined before
+	    the builtin parsers are checked, so this can be used to
+	    override the internal behaviour without recompiling htdig.
+	    <br>
+	    The external parsers are specified as pairs of strings.
+	    The first string of each pair is the content-type that the
+	    parser can handle while the second string each pair is the
+	    path to the external parsing program.  The parsing program
+	    will get the document to be parsed on its standard input
+	    and it is to write information for htdig on its standard
+	    output.
+	    <br>
+	    The output consists of records, each record terminated
+	    with a newline.  Each record is a series of tab separated
+	    fields.  The first field is a single character that
+	    specifies the record type.  The rest of the fields are
+	    determined by the record type.
+	    <table border=1>
+	      <tr>
+		<th>Record type</th><th>Fields</th><th>Description</th>
+	      </tr>
+	      <tr>
+		<th rowspan=3 valign=top>w</th>
+		<td valign=top>word</td><td>A word that was found in the
+		  document.</td>
+	      </tr>
+	      <tr>
+		<td valign=top>location</td><td>A number indicating the
+		  normalized location of the word within the
+		  document.  The number has to fall in the range
+		  0-1000 where 0 means the top of the document.</td>
+	      </tr>
+	      <tr>
+		<td valign=top>heading level</td><td>A heading level that
+		  is used to compute the weight of the word
+		  depending on its context in the document
+		  itself.  The level is in the range of 0-10 and
+		  are defined as follows:
+		  <dl compact>
+		    <dt>0</dt><dd>Normal text</dd>
+		    <dt>1</dt><dd>Title text</dd>
+		    <dt>2</dt><dd>Heading 1 text</dd>
+		    <dt>3</dt><dd>Heading 2 text</dd>
+		    <dt>4</dt><dd>Heading 3 text</dd>
+		    <dt>5</dt><dd>Heading 4 text</dd>
+		    <dt>6</dt><dd>Heading 5 text</dd>
+		    <dt>7</dt><dd>Heading 6 text</dd>
+		    <dt>8</dt><dd><i>unused</i></dd>
+		    <dt>9</dt><dd><i>unused</i></dd>
+		    <dt>10</dt><dd>Keywords</dd>
+		  </dl>
+		</td>
+	      </tr>
+	      <tr>
+		<th rowspan=2 valign=top>u</th>
+		<td valign=top>document URL</td><td>A hyperlink to another
+		  document that is referenced by the current
+		  document.</td>
+	      </tr>
+	      <tr>
+		<td valign=top>hyperlink description</td><td>For HTML
+		  documents, this would be the text between the
+		  &lt;a href...&gt; and &lt;/a&gt; tags.</td>
+	      </tr>
+	      <tr>
+		<th valign=top>t</th>
+		<td valign=top>title</td><td>The title of the document</td>
+	      </tr>
+	      <tr>
+		<th valign=top>h</th>
+		<td valign=top>head</td><td>The top of the document
+		  itself.  This is used to build the excerpt.
+		  This should only contain normal ASCII text</td>
+	      </tr>
+	      <tr>
+		<th valign=top>a</th>
+		<td valign=top>anchor</td><td>The label that identifies an
+		  anchor that can be used as a target in an URL.
+		  This really only makes sense for HTML documents.</td>
+	      </tr>
+	      <tr>
+		<th valign=top>i</th>
+		<td valign=top>image URL</td><td>An URL that points at an
+		  image that is part of the document.</td>
+	      </tr>
+	    </table>
+	    </dd>
+	    <dt><em>example:</em></dt>
+	    <dd>
+	    external_parsers:   text/html /usr/local/bin/htmlparser
+	    application/ms-word /usr/local/bin/mswordparser
+	    </dd>
+	  </dl>
+	</dd>
+      </dl><hr><dl>
 	<dt><strong><a name="heading_factor">heading_factor_1 -
 	      heading_factor_6</a>
 	  </strong></dt>
@@ -2218,7 +2332,7 @@
       </dl>
       <hr noshade size=4>
       <p><!-- hhmts start -->
-Last modified: Thu Jul  3 10:31:29 PDT 
+Last modified: Sun Oct 12 19:06:00 PDT 1997
 <!-- hhmts end -->
 	<br><a href="mailto:andrew@contigo.com">andrew@contigo.com</a></p>
   </body>
