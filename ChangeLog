@@ -1,3 +1,9 @@
+Thu Aug 28 10:46:35 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * htlib/malloc.c: modified according to autoconf specifications as far
+    as replacement functions are regarded
+    * htlib/[lstat, stat].c: removed for now
+
 Thu Aug 28 10:40:58 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htdoc/cf_generate.pl: accept an optional parameter (top source directory)
