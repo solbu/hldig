@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htnotify.cc,v 1.2 2002/02/02 18:18:13 ghutchis Exp $
+// $Id: htnotify.cc,v 1.3 2002/08/09 18:04:11 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -228,7 +228,7 @@ void readPreAndPostamble(void)
     // define default preamble text - blank string
     preambleText = "";
 
-    if (prefixfile != NULL)
+    if (prefixfile != NULL && *prefixfile)
     {
         ifstream    in(prefixfile);
         char        buffer[1024];
@@ -255,7 +255,7 @@ void readPreAndPostamble(void)
     postambleText << "    http://www.htdig.org/meta.html\n\n";
     postambleText << "Cheers!\n\nht://Dig Notification Service\n";
 
-    if (suffixfile != NULL)
+    if (suffixfile != NULL && *suffixfile)
     {
         ifstream    in(suffixfile);
         char        buffer[1024];

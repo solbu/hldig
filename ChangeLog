@@ -1,3 +1,8 @@
+Fri Aug  9 13:01:05 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* httools/htnotify.cc (readPreAndPostamble): Check for empty strings
+	in file names, not just NULL, as suggested by Martin Kraemer.
+
 Wed Aug  7 12:11:31 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/ExternalParser.cc (parse): Fixed to impose max_doc_size
