@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.11 2000/02/16 05:44:17 ghutchis Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.12 2000/02/19 05:02:45 ghutchis Exp $ 
 //
 
 #include "lib.h"
@@ -570,7 +570,7 @@ int HtHTTP::ParseHeader()
 
       line.trunc();
          
-      if(! _connection.read_line(line, "\n"))
+      if(! _connection.Read_Line(line, "\n"))
          return -1;  // Connection down
 	 
       _bytes_read+=line.length();
@@ -873,7 +873,7 @@ int HtHTTP::ReadBody()
     while (bytesToGo > 0)
     {
         int len = bytesToGo< (int)sizeof(docBuffer) ? bytesToGo : (int)sizeof(docBuffer);
-        bytesRead = _connection.read(docBuffer, len);
+        bytesRead = _connection.Read(docBuffer, len);
         if (bytesRead <= 0)
             break;
 
@@ -909,7 +909,7 @@ int HtHTTP::ReadChunkedBody()
    _response._contents.trunc();	// Initialize the string
 
    // Read chunk-size and CRLF
-   _connection.read_line(ChunkHeader);
+   _connection.Read_Line(ChunkHeader);
    sscanf ((char *)ChunkHeader, "%x", &chunk_size);
 
    if (debug>4)
@@ -930,7 +930,7 @@ int HtHTTP::ReadChunkedBody()
 	chunk -= rsize;
 
 	// Read Chunk data
-	if (_connection.read(buffer, rsize) == -1)
+	if (_connection.Read(buffer, rsize) == -1)
 	  return -1;
 
 	// Append the chunk-data to the contents of the response
@@ -941,14 +941,14 @@ int HtHTTP::ReadChunkedBody()
 
       } while (chunk);
 
-     //     if (_connection.read(buffer, chunk_size) == -1)
+     //     if (_connection.Read(buffer, chunk_size) == -1)
      //       return -1;
 
       // Read CRLF - to be ignored
-      _connection.read_line(ChunkHeader);
+      _connection.Read_Line(ChunkHeader);
 
       // Read chunk-size and CRLF
-      _connection.read_line(ChunkHeader);
+      _connection.Read_Line(ChunkHeader);
       sscanf ((char *)ChunkHeader, "%x", &chunk_size);
 
       if (debug>4)

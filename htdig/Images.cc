@@ -1,34 +1,31 @@
 //
 // Images.cc
 //
-// Implementation of Images
+// Images: Issue an HTTP request to retrieve the size of an image from
+//         the content-length field.
 //
-// $Log: Images.cc,v $
-// Revision 1.3  1998/10/12 02:04:00  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Updated Makefiles and configure variables.
+// $Id: Images.cc,v 1.5.2.1 2000/02/19 05:02:45 ghutchis Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: Images.cc,v 1.3 1998/10/12 02:04:00 ghutchis Exp $";
-#endif
 
 #include "Images.h"
 #include "htdig.h"
-#include <URL.h>
-#include <Connection.h>
+#include "URL.h"
+#include "Connection.h"
 
 
 class ImageSize : public Object
 {
 public:
-					ImageSize()				{}
-					~ImageSize();
+	ImageSize() {}
+	~ImageSize();
 
-	int				Size;
+	int	Size;
 };
 
 
@@ -75,14 +72,14 @@ Images::Sizeof(char *url)
 		is = new ImageSize;
 		is->Size = 0;
 		Connection	c;
-		if (c.open() == NOTOK)
+		if (c.Open() == NOTOK)
 			return 0;
-		if (c.assign_port(Url.port()) == NOTOK)
+		if (c.Assign_Port(Url.port()) == NOTOK)
 			return 0;
-		if (c.assign_server(Url.host()) == NOTOK)
+		if (c.Assign_Server(Url.host()) == NOTOK)
 			return 0;
 
-		if (c.connect(1) == NOTOK)
+		if (c.Connect(1) == NOTOK)
 		{
 			is->Size = 0;
 			images.Add(u, is);
@@ -95,12 +92,12 @@ Images::Sizeof(char *url)
 		command << VERSION << " (" << config["maintainer"] << ")\r\n";
 		command << "\r\n";
 
-		c.write(command);
+		c.Write(command);
 
 		String	line;
 		while (1)
 		{
-			c.read_line(line, "\n");
+			c.Read_Line(line, "\n");
 			line.chop('\r');
 			if (line.length() == 0)
 				break;
@@ -114,7 +111,7 @@ Images::Sizeof(char *url)
 				}
 			}
 		}
-		c.close();
+		c.Close();
 		images.Add(u, is);
 		return is->Size;
 	}

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.6.2.4 2000/02/10 06:04:13 ghutchis Exp $
+// $Id: Transport.h,v 1.6.2.5 2000/02/19 05:02:45 ghutchis Exp $
 //
 //
 
@@ -204,7 +204,7 @@ class Transport : public Object
    // This is the only part regarding
    // a connection that's got a public access
 
-   virtual bool isConnected(){ return _connection.isconnected(); }
+   virtual bool isConnected(){ return _connection.IsConnected(); }
 
 
 // Set the debug level   
@@ -232,18 +232,18 @@ protected:
    
    // Write a message
    inline int ConnectionWrite(char *cmd)
-      { return _connection.write(cmd); }
+      { return _connection.Write(cmd); }
 
 
    // Assign the timeout to the connection (returns the old value)
 
    inline int AssignConnectionTimeOut()
-      { return _connection.timeout(_timeout); }
+      { return _connection.Timeout(_timeout); }
 
    // Assign the retry number to the connection (returns the old value)
 
    inline int AssignConnectionRetries()
-      { return _connection.retries(_retries); }
+      { return _connection.Retries(_retries); }
 
    // Flush the connection
    void FlushConnection();

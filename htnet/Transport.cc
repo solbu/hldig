@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.5.2.4 1999/11/28 02:46:08 ghutchis Exp $
+// $Id: Transport.cc,v 1.5.2.5 2000/02/19 05:02:45 ghutchis Exp $
 //
 //
 
@@ -187,13 +187,13 @@ ostream &Transport::ShowStatistics (ostream &out)
 
 int Transport::OpenConnection()
 {
-   if(_connection.isopen() && _connection.isconnected())
+   if(_connection.IsOpen() && _connection.IsConnected())
       return -1; // Already open and connection is up
 
    // No open connection
    // Let's open a new one
    
-   if(_connection.open() == NOTOK) return 0; // failed
+   if(_connection.Open() == NOTOK) return 0; // failed
 
    _tot_open ++;
    return 1;
@@ -207,7 +207,7 @@ int Transport::AssignConnectionServer()
    if (debug > 5)
       cout << "\tAssigning the server (" << _host << ") to the TCP connection" << endl;
       
-   if (_connection.assign_server(_host) == NOTOK) return 0;
+   if (_connection.Assign_Server(_host) == NOTOK) return 0;
    
    return 1;
 }
@@ -220,7 +220,7 @@ int Transport::AssignConnectionPort()
    if (debug > 5)
       cout << "\tAssigning the port (" << _port << ") to the TCP connection" << endl;
       
-   if (_connection.assign_port(_port) == NOTOK) return 0;
+   if (_connection.Assign_Port(_port) == NOTOK) return 0;
    
    return 1;
 }
@@ -240,7 +240,7 @@ int Transport::Connect()
       cout << "\tConnecting via TCP to (" << _host << ":" << _port << ")" << endl;
 
    if (isConnected()) return -1; // Already connected
-   if ( _connection.connect(1) == NOTOK) return 0;  // Connection failed
+   if ( _connection.Connect(1) == NOTOK) return 0;  // Connection failed
    
    return 1;	// Connected
 }
@@ -250,7 +250,7 @@ int Transport::Connect()
    
 void Transport::FlushConnection()
 {
-   _connection.flush();
+   _connection.Flush();
 }
 
 
@@ -262,8 +262,8 @@ void Transport::FlushConnection()
 
 int Transport::CloseConnection()
 {
-   if(_connection.isopen())
-   	 _connection.close(); 	// Close the connection
+   if(_connection.IsOpen())
+   	 _connection.Close(); 	// Close the connection
    else return 0;
 
    _tot_close ++;
