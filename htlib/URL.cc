@@ -4,6 +4,10 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.17  1999/01/15 04:37:17  ghutchis
+// Fix looping in query string caused by slashes. Noted by Adam Coyne
+// <adam@criticalmass.com>.
+//
 // Revision 1.16  1999/01/08 19:39:19  bergolth
 // bugfixes in htdig/Plaintext.cc and htlib/URL.cc
 //
@@ -62,7 +66,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.16 1999/01/08 19:39:19 bergolth Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.17 1999/01/15 04:37:17 ghutchis Exp $";
 #endif
 
 #include "URL.h"
@@ -221,6 +225,11 @@ URL::URL(char *ref, URL &parent)
 	    // The reference is relative to the parent
 	    //
 	    _path = parent._path;
+	    int i = _path.indexOf('?');
+	    if (i >= 0)
+	    {
+		_path.chop(_path.length() - i);
+	    }
 	    if (_path.last() == '/')
 	    {
 		//
