@@ -1,3 +1,11 @@
+Mon Jan 11 00:23:58 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/attrs.html(search_algorithm): Added prefix and substring
+	matching--somehow slipped through the cracks!
+
+	* htdoc/THANKS.html: Update to be more accurate as far as recent
+	contributions.
+	
 Sun Jan 10 00:06:59 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Document.cc(readHeader): Added check for header status

@@ -3603,6 +3603,27 @@
                 algorithm uses a database generated with the <a
                 href="htfuzzy.html">htfuzzy</a> program.
               </dd>
+	      <dt>
+	        substring
+	      </dt>
+	      <dd>
+		Matches all words containing the queries as
+		substrings. Since this requires checking every word in
+		the database, this can really slow down searches
+		considerably.
+	      <dd>
+	      <dt>
+	        prefix
+	      </dt>
+	      <dd>
+	        Matches all words beginning with the query
+	        strings. Uses the option <a
+	        href="#prefix_match_character">prefix_match_character</a>
+	        to decide whether a query requires prefix
+	        matching. For example "abc*" would perform prefix
+	        matching on "abc" since * is the default
+	        prefix_match_character.
+	      </dd>
             </dl>
           </dd>
           <dt>
