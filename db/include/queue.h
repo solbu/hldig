@@ -1,4 +1,4 @@
-/*	BSDI $Id: queue.h,v 1.1 1998/11/27 19:09:33 ghutchis Exp $	*/
+/*	BSDI $Id: queue.h,v 1.1.1.1 1998/11/27 19:09:33 ghutchis Exp $	*/
 
 /*
  * Copyright (c) 1991, 1993
