@@ -1,3 +1,11 @@
+Thu Nov  1 10:19:27 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc, htsearch/Display.h: Added a localized
+	method for outputing HTTP headers, added support for a new
+	search_results_contenttype attribute to control that header.
+	* htcommon/defaults.cc: Added default for it.
+	* htdoc/attrs.html, cf_by{name,prog}.html: Documented it.
+
 Wed Oct 31 13:31:18 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* installdir/english.0: Changed lots of dubious uses of suffixes to
@@ -11,7 +19,7 @@ Tue Oct 23 14:06:37 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 Fri Oct 19 17:24:19 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
-	* htsearch/Display.cc(hilight): Added Stefan Nehlsen's idea for
+	* htsearch/Display.cc (hilight): Added Stefan Nehlsen's idea for
 	anchor_target attribute.
 	* htcommon/defaults.cc: Added default for it.
 	* htdoc/attrs.html, cf_by{name,prog}.html: Documented it.

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.46 2001/10/19 22:43:12 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.47 2001/11/01 16:23:32 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -109,6 +109,7 @@ Display::display(int pageNumber)
         logSearch(pageNumber, matches);
     }
 
+    displayHTTPheaders();
     setVariables(pageNumber, matches);
 	
     //
@@ -123,15 +124,11 @@ Display::display(int pageNumber)
 	// No matches.
 	//
         delete matches;
-	if (config.Boolean("nph")) cout << "HTTP/1.0 200 OK\r\n";
-	cout << "Content-type: text/html\r\n\r\n";
 	displayNomatch();
 	return;
     }
     // maxScore = match->getScore();	// now done in buildMatchList()
     	
-    if (config.Boolean("nph")) cout << "HTTP/1.0 200 OK\r\n";
-    cout << "Content-type: text/html\r\n\r\n";
     String	wrap_file = config["search_results_wrapper"];
     String	*wrapper = 0;
     char	*header = 0, *footer = 0;
@@ -743,6 +740,17 @@ Display::createURL(String &url, int pageNumber)
 
 //*****************************************************************************
 void
+Display::displayHTTPheaders()
+{
+    String  content_type = config["search_results_contenttype"];
+    if (config.Boolean("nph"))
+	cout << "HTTP/1.0 200 OK\r\n";
+    if (content_type.length())
+	cout << "Content-type: " << content_type << "\r\n\r\n";
+}
+
+//*****************************************************************************
+void
 Display::displayHeader()
 {
     displayParsedFile(config["search_results_header"]);
@@ -766,9 +774,7 @@ Display::displayNomatch()
 void
 Display::displaySyntaxError(char *message)
 {
-    if (config.Boolean("nph")) cout << "HTTP/1.0 200 OK\r\n";
-    cout << "Content-type: text/html\r\n\r\n";
-
+    displayHTTPheaders();
     setVariables(0, 0);
     vars.Add("SYNTAXERROR", new String(message));
     displayParsedFile(config["syntax_error_file"]);

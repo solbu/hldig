@@ -1,7 +1,7 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.8.2.5 2001/06/07 21:03:53 grdetil Exp $
+// $Id: Display.h,v 1.8.2.6 2001/11/01 16:23:32 grdetil Exp $
 //
 //
 //
@@ -43,6 +43,7 @@ public:
 	
     void		display(int pageNumber);
     void		displayMatch(ResultMatch *, int current);
+    void		displayHTTPheaders();
     void		displayHeader();
     void		displayFooter();
     void		displayNomatch();
