@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.99 1999/10/08 12:59:58 loic Exp $
+// $Id: Display.cc,v 1.100 1999/10/08 14:50:40 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -116,7 +116,8 @@ Display::display(int pageNumber)
     int			currentMatch = 0;
     int			numberDisplayed = 0;
     ResultMatch		*match = 0;
-    int			number = config.Value("matches_per_page");
+    int			number = 0;
+    number = config.Value("matches_per_page");
     if (number <= 0)
 	number = 10;
     int			startAt = (pageNumber - 1) * number;
@@ -1057,7 +1058,7 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
     int		which, length;
     char	*temp = head;
     String	part;
-    String	*text = new String();
+    String	*text = new String("");
 
     // htsearch displays the description when:
     // 1) a description has been found

@@ -3491,42 +3491,46 @@ cross_compiling=$ac_cv_prog_cxx_cross
 echo $ac_n "checking how to call getpeername?""... $ac_c" 1>&6
 echo "configure:3493: checking how to call getpeername?" >&5
 for sock_t in 'struct sockaddr' 'void'; do
-for getpeername_length_t in 'size_t' 'int' 'unsigned int' 'long unsigned int' 'socklen_t'; do
-cat > conftest.$ac_ext <<EOF
-#line 3497 "configure"
+  for getpeername_length_t in 'size_t' 'int' 'unsigned int' 'long unsigned int' 'socklen_t'
+  do
+    cat > conftest.$ac_ext <<EOF
+#line 3498 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #include <sys/socket.h>
  extern "C" int getpeername(int, $sock_t *, $getpeername_length_t *);
  $sock_t s;  $getpeername_length_t l; 
- getpeername(0, &s, &l); 
 int main() {
-ac_found=yes ; break 2
+ getpeername(0, &s, &l); 
 ; return 0; }
 EOF
 if { (eval echo configure:3508: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
-  ac_found=no
+  ac_found=yes ; break 2
 else
   echo "configure: failed program was:" >&5
   cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  ac_found=no
 fi
 rm -f conftest*
+  done
 done
-done
-  if test "$ac_found" = no; then
-    echo "configure: warning: can't determine argument type using int" 1>&2
-    cat >> confdefs.h <<EOF
+
+if test "$ac_found" = no
+then
+  echo "configure: warning: can't determine argument type using int" 1>&2
+  cat >> confdefs.h <<EOF
 #define GETPEERNAME_LENGTH_T int
 EOF
 
-  else
+else
   echo "$ac_t""$getpeername_length_t" 1>&6
   cat >> confdefs.h <<EOF
 #define GETPEERNAME_LENGTH_T $getpeername_length_t
 EOF
 
-  fi
+fi
 
 ac_ext=C
 # CXXFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
@@ -3536,16 +3540,16 @@ ac_link='${CXX-g++} -o conftest${ac_exeext} $CXXFLAGS $CPPFLAGS $LDFLAGS conftes
 cross_compiling=$ac_cv_prog_cxx_cross
 
 echo $ac_n "checking for bool data type?""... $ac_c" 1>&6
-echo "configure:3540: checking for bool data type?" >&5
+echo "configure:3544: checking for bool data type?" >&5
 cat > conftest.$ac_ext <<EOF
-#line 3542 "configure"
+#line 3546 "configure"
 #include "confdefs.h"
 
 int main() {
 bool i;
 ; return 0; }
 EOF
-if { (eval echo configure:3549: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:3553: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   echo "$ac_t""yes" 1>&6;cat >> confdefs.h <<\EOF
 #define HAVE_BOOL 1
@@ -3560,16 +3564,16 @@ fi
 rm -f conftest*
 
 echo $ac_n "checking for true and false?""... $ac_c" 1>&6
-echo "configure:3564: checking for true and false?" >&5
+echo "configure:3568: checking for true and false?" >&5
 cat > conftest.$ac_ext <<EOF
-#line 3566 "configure"
+#line 3570 "configure"
 #include "confdefs.h"
 
 int main() {
 int i, j; i= true; j= false;
 ; return 0; }
 EOF
-if { (eval echo configure:3573: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:3577: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   echo "$ac_t""yes" 1>&6
      cat >> confdefs.h <<\EOF
@@ -3602,7 +3606,7 @@ fi
 if test -n "$TESTDIR"
 then
 	echo $ac_n "checking user name""... $ac_c" 1>&6
-echo "configure:3606: checking user name" >&5
+echo "configure:3610: checking user name" >&5
 test -n "$LOGNAME" && USER=$LOGNAME
 
 echo "$ac_t""$USER" 1>&6
@@ -3611,7 +3615,7 @@ echo "$ac_t""$USER" 1>&6
 # Handle user hints
 #
 echo $ac_n "checking if apache is wanted""... $ac_c" 1>&6
-echo "configure:3615: checking if apache is wanted" >&5
+echo "configure:3619: checking if apache is wanted" >&5
 # Check whether --with-apache or --without-apache was given.
 if test "${with_apache+set}" = set; then
   withval="$with_apache"
@@ -3637,7 +3641,7 @@ then
 	# Extract the first word of "httpd", so it can be a program name with args.
 set dummy httpd; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:3641: checking for $ac_word" >&5
+echo "configure:3645: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_APACHE'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
