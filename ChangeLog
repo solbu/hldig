@@ -1,3 +1,19 @@
+Mon Dec  7 21:46:34 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/htsearch.cc: Fix thinko with multiple excludes and
+	restricts. Pointed out by Gilles.
+
+	* htcommon/defaults.cc: Add new option server_wait_time for the
+	number of seconds to wait between requests.
+
+	* htdig/Retriever.cc: Use server_wait_time to call sleep() before
+	requests. Should help prevent server abuse. :-)
+	
+	* htcommon/WordList.cc(valid_word): Remove unnecessary code.
+
+	* htcommon/DocumentRef.cc: Fix typo that added description text
+	that contained punctuation or was too short.
+
 Sun Dec  6 13:12:55 1998  Geoff Hutchison  <ghutchis@ethel.williams.edu>
 
 	* htsearch/parser.cc: Check for empty boolean searches and report
@@ -22,6 +38,14 @@ Sun Dec  6 13:12:55 1998  Geoff Hutchison  <ghutchis@ethel.williams.edu>
 
 	* htmerge/words.cc: Check for word entries that are essentially
 	duplicates and compact them.
+
+Sat Dec  5 01:10:46 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/THANKS.html: Updated for recent submissions.
+
+	* htdoc/FAQ.html: Cleaned up title.
+
+	* htdoc/uses.html: Added more sites and cleaned up the HTML.
 
 Fri Dec  4 20:15:41 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
@@ -62,6 +86,10 @@ Fri Dec  4 19:08:28 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc: Added usage message for the command line.
 
+Fri Dec  4 18:52:55 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/FAQ.html: Added question about phrase matching.
+	
 Fri Dec  4 21:21:00 1998  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
 	* configure.in: Check if the third argument of getpeername is a
@@ -113,6 +141,14 @@ Tue Dec  1 21:36:37 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/StringMatch.cc: Added fix from Christian Schneider
 	<cschneid@relog.ch>, discovered from behavior with limit_urls_to.
+
+Tue Dec  1 18:06:33 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/hts_form.html: Explained why config fields reject periods.
+
+	* htdoc/FAQ.html: Added information about Internal Server Errors.
+
+	* htdoc/uses.html: Updated with more sites, change e-mail to Geoff.
 
 Sun Nov 29 21:26:56 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
@@ -176,6 +212,13 @@ Tue Nov 24 15:57:28 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	local_user_urls from Gilles Detillieux
 	<grdetil@scrc.umanitoba.ca>.
 
+Mon Nov 23 18:57:16 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/RELEASE.html, htdoc/bugs.html, htdoc/contents.html,
+	htdoc/where.html: Updated for new bug reporting system.
+
+	* htdoc/TODO.html: Updated To Do w/ current status.
+	
 Sun Nov 22 14:03:06 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* installdir/rundig: Added checks for synonym databases older than
@@ -197,6 +240,19 @@ Sun Nov 22 14:03:06 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htsearch/htsearch.cc: Don't remove boolean operators from
 	boolean search strings!
 
+Thu Nov 19 01:31:37 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/FAQ.html: Update for -ldb problem on Digital UNIX.
+
+Wed Nov 18 05:14:53 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/FAQ.html: Update FAQ w/ new questions, better responses.
+
+	* htdoc/mailing.html: Mention additional archive at
+	www.mail-archive.com.
+
+	* htdoc/require.html: Update requirements (libstc++ instead of libg++).
+	
 Tue Nov 17 23:13:04 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* contrib/wordfreq/wordfreq.pl: Added changes by Isoif.
@@ -255,6 +311,17 @@ Sat Nov 14 20:30:18 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htdig/HTML.cc(do_tag): Add support for META refresh tags as
 	"redirects", submitted by Aidas Kasparas
 	<kaspar@dobilas.infosistema.lt>.
+
+Thu Nov 12 04:13:26 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/contents.html: Added link to jitterbug bug db.
+
+Sun Nov  8 21:10:19 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/ChangeLog, htdoc/RELEASE.html, htdoc/THANKS.html:
+	Correct spelling error with Rene' Seindal's name.
+
+	* htdoc/hts_templates.html: Update to improve clarity.
 	
 Sun Nov  8 20:33:22 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
@@ -279,6 +346,12 @@ Fri Nov  6 17:07:00 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* configure, configure.in: Added changes to support snapshots.
 
 	* .version: Resurrected to automate snapshot versions.
+
+Wed Nov  4 20:13:10 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/contents.html: Added "Contributors" for THANKS.html
+
+	* htdoc/THANKS.html: Added acknowledgement to contributors.
 	
 Wed Nov  4 15:02:43 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
