@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: cgi.cc,v 1.5.2.3 1999/11/24 03:09:17 grdetil Exp $
+// $Id: cgi.cc,v 1.5.2.4 2000/02/16 21:14:59 grdetil Exp $
 //
 
 #include "cgi.h"
@@ -92,7 +92,7 @@ cgi::init(char *s)
 	//
 	// Now we need to split the line up into name/value pairs
 	//
-	StringList	list(results, '&');
+	StringList	list(results, "&;");
 	
 	//
 	// Each name/value pair now needs to be added to the dictionary

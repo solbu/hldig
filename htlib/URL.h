@@ -1,9 +1,17 @@
 //
 // URL.h
 //
-// $Id: URL.h,v 1.4 1998/10/21 16:34:19 bergolth Exp $
+// $Id: URL.h,v 1.4.2.1 2000/02/16 21:14:59 grdetil Exp $
 //
 // $Log: URL.h,v $
+// Revision 1.4.2.1  2000/02/16 21:14:59  grdetil
+// htlib/URL.h (encodeURL): Change list of valid characters to include only
+// 	unreserved ones.
+// htlib/cgi.cc (init): Allow "&" and ";" as input parameter separators.
+// htsearch/Display.cc (createURL): Encode each parameter separately,
+// 	using new unreserved list, before piecing together query string, to
+// 	allow characters like "?=&" within parameters to be encoded.
+//
 // Revision 1.4  1998/10/21 16:34:19  bergolth
 // Added translation of server names. Additional limiting after normalization of the URL.
 //
@@ -68,7 +76,20 @@ private:
 };
 
 
-void encodeURL(String &, char *valid = "?_@.=&/:");
+// Unreserved punctuation allowed unencoded in URLs.  We use a more restricted
+// list of unreserved characters than allowed by RFC 2396 (which revises and
+// replaces RFC 1738), because it can't hurt to encode any of these
+// characters, and they can pose problems in some contexts.  RFC 2396 says
+// that only alphanumerics, the unreserved characters "-_.!~*'(),", and
+// reserved characters used for their reserved purposes may be used
+// unencoded within a URL.  We encode reserved characters because we now
+// encode URL parameter values individually before piecing together the whole
+// query string using reserved characters.
+
+#define UNRESERVED	"-_.!~*"
+
+//void encodeURL(String &, char *valid = "?_@.=&/:");
+void encodeURL(String &, char *valid = UNRESERVED);
 void decodeURL(String &);
 
 #endif
