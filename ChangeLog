@@ -1,3 +1,7 @@
+Tue Dec 14 17:46:33 1999  Loic Dachary  <loic@ceic.com>
+
+	* db/dist/Makefile.in (install): fix bugous test for libshared
+
 Tue Dec 14 14:10:28 1999  Loic Dachary  <loic@ceic.com>
 
 	* htword/{WordKey,WordReference,WordRecord}: rework

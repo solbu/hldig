@@ -179,7 +179,7 @@ install: all
 	@cd $(libdir) && $(rm) -f $(libdb)
 	@$(cp) -p $(libdb) $(libdir)
 	@cd $(libdir) && $(chmod) $(fmode) $(libdb)
-	@if test -f $(libdbshared) ; then \
+	@if test -f "$(libdbshared)" ; then \
 	   ( cd $(libdir) && $(rm) -f $(libdbshared)* ) ; \
 	   $(cp) -p $(libdbshared) $(libdir) ; \
 	   ( cd $(libdir) && ln -s $(libdbshared) $(libdbshared).3 ) ; \
