@@ -1,3 +1,11 @@
+Tue Nov 30 09:02:02 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc(got_href & got_redirect): remove all of Patrick's
+	case insensitive server code, to replace it with Geoff's fix to URL.cc
+	* htlib/URL.cc(normalizePath, path): If not case_sensitive,
+	lowercase the URL. Should ensure that all URLs are appropriately
+	lowercased, regardless of where they're generated.
+
 Mon Nov 29 20:25:01 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc, htdig/Retriever.h, htdig/Server.cc(push),

@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.18.2.4 1999/09/01 20:41:45 grdetil Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.18.2.5 1999/11/30 15:18:20 grdetil Exp $";
 #endif
 
 #include "URL.h"
@@ -387,6 +387,10 @@ void URL::normalizePath()
         if (pathend < 0)
             pathend = _path.length();
       }
+
+    // If the server *isn't* case sensitive, we want to lowercase the path
+    if (!config.Boolean("case_sensitive", 1))
+      _path.lowercase();
 }
 
 //*****************************************************************************
@@ -408,6 +412,8 @@ void URL::dump()
 void URL::path(char *newpath)
 {
     _path = newpath;
+    if (!config.Boolean("case_sensitive", 1))
+      _path.lowercase();
     _url = _service;
     _url << "://" << _host;
     if (_port != 80)
