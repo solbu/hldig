@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.26 2000/01/12 10:36:52 loic Exp $
+// $Id: WordList.cc,v 1.6.2.27 2000/01/12 17:50:56 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -78,7 +78,7 @@ WordList::WordList(const Configuration& config_arg) :
     }
     else
     {
-	if(!WordKeyInfo::Get())
+	if(!WordKey::Info())
 	{
 	    cerr << "WordList::WordList: didn't find key description " << endl;
 	    cerr <<"are you shure you called WordList::Initialize with a valid key description" << endl;
@@ -221,10 +221,19 @@ List *WordList::WordRefs()
 
 //*****************************************************************************
 //
-List *WordList::Collect (const WordReference& wordRef)
+List *
+WordList::Collect(const WordSearchDescription &csearch)
 {
-  Object o;
-  WordSearchDescription search(wordRef.Key());
+    WordSearchDescription search = csearch;
+    Walk(search);
+    return search.collectRes;
+}
+
+//*****************************************************************************
+//
+List *WordList::Collect(const WordReference& wordRef)
+{
+  WordSearchDescription search(wordRef.Key(), HTDIG_WORDLIST_COLLECTOR);
   Walk(search);
   return search.collectRes;
 }
@@ -248,16 +257,6 @@ WordList::WalkBenchmark_Get(WordSearchDescription &search, int cursor_get_flags)
 
 //*****************************************************************************
 //
-List *
-WordList::Search(const WordSearchDescription &csearch)
-{
-    WordSearchDescription search=csearch;
-    Walk(search);
-    return(search.collectRes);
-}
-
-//*****************************************************************************
-//
 // Walk and collect data from the word database.
 //
 // If action bit HTDIG_WORDLIST_COLLECTOR is set WordReferences are
@@ -276,19 +275,18 @@ WordList::Search(const WordSearchDescription &csearch)
 int 
 WordList::Walk(WordSearchDescription &search)
 {
-    double start_time=HtTime::DTime(); // BENCHMARKING
-    search.Setup();
-    int lverbose = (search.shutup ? 0 : verbose);
-    WordKey			prefixKey;
-    const WordReference&	last = WordStat::Last();
-    WordCursor&			cursor = search.cursor;
-    const WordKey&              searchKey = search.searchKey;
+    double                      start_time =HtTime::DTime(); // BENCHMARKING
+    int                         lverbose   = (search.shutup ? 0 : verbose);
+    const WordReference&	last       = WordStat::Last();
+    WordDBCursor&		cursor     = search.cursor;
+    const WordKey&              searchKey  = search.searchKey;
+    WordKey&			prefixKey  = search.prefixKey;
+    String&                     key        = search.key;
+    String&                     data       = search.data;
 
-    String key;
-    String data;
+    search.ClearInternal();
 
     WordReference wordRef;
-
 
     if(cursor.Open(db.db) == NOTOK) return 0;
 
@@ -301,7 +299,6 @@ WordList::Walk(WordSearchDescription &search)
     if(search.action & HTDIG_WORDLIST_COLLECTOR) {
 	search.collectRes = new List;
     }
-
 
     //
     // Move the cursor to start walking and do some sanity checks.
@@ -327,7 +324,9 @@ WordList::Walk(WordSearchDescription &search)
 	{
 	    if(lverbose>1){cdebug << "WordList::Walk: couldnt get prefix -> starting from begining" <<endl;}
 	    prefixKey.Clear();
+	    //
 	    // Move past the stat data
+	    //
 	    last.KeyPack(key);
 	}
 	else 
@@ -347,9 +346,8 @@ WordList::Walk(WordSearchDescription &search)
     // **** Walk main loop
     int cursor_get_flags= DB_NEXT;
     int searchKeyIsSameAsPrefix = searchKey.ExactEqual(prefixKey);
-    for(;;) 
-    {
-	int found_ok=1;
+    for(;;) {
+        int found_ok = 1;
 	WordReference found(key, data);
 	cursor_get_flags= DB_NEXT;
 
@@ -374,6 +372,7 @@ WordList::Walk(WordSearchDescription &search)
 	    // match prefix key requirement, provided we have a valid
 	    // prefix key.
 	    // (ie. stop loop if we're past last possible match...)
+	    //
 	    if(!prefixKey.Empty() &&
 	       !prefixKey.Equal(found.Key()))
 	    {
@@ -392,9 +391,10 @@ WordList::Walk(WordSearchDescription &search)
 	    }
 	}
 
-	
-	if(found_ok)
-	{// ok! We found a matching entry!
+	//
+	// 
+	//
+	if(found_ok) {
 
 	    if(search.collectRes) 
 	    {
@@ -444,32 +444,35 @@ WordList::Walk(WordSearchDescription &search)
 //
 // SKIP SPEEDUP
 // sequential searching can waste time by searching all keys, for example in:
-// searching for Key: "argh" (unspecified) 10     ... in database:
-// 1: "argh" 2 4
-// 2: "argh" 2 11
-// 3: "argh" 2 15
-// 4: "argh" 2 20
-// 5: "argh" 2 30
-// 6: "argh" 5 1
-// 7: "argh" 5 8
-// 8: "argh" 8 6
+// searching for Key: argh <DEF> <UNDEF> 10     ... in database:
+// 1: argh 2 4
+// 2: argh 2 11
+// 3: argh 2 15
+// 4: argh 2 20
+// 5: argh 2 30
+// 6: argh 5 1
+// 7: argh 5 8
+// 8: argh 8 6
 // when sequential search reaches line 2 it will continue 
 // searching lines 3 .. 5 when it could have skiped directly to line 6
+//
 int
 WordList::SkipUselessSequentialWalking(const WordSearchDescription &search,WordKey &foundKey,String &key,int &cursor_get_flags)
 {
     int nfields=WordKey::NFields();
     if(verbose>1){cdebug << "WordList::SkipUselessSequentialWalking: skipchk:" <<  foundKey << endl;}
     int i;
+    //
     // check if "found" key has a field that is bigger than 
     // the corresponding "wordRef" key field
-    for(i=search.first_skip_field;i<nfields;i++)// (field 0 is not set (...it's the word))
+    //
+    for(i = search.first_skip_field; i < nfields; i++)// (field 0 is not set (...it's the word))
     {
 	if(search.searchKey.IsDefined(i))
 	{
-	    if( (WordKeyInfo::Get()->sort[i].direction == WORD_SORT_ASCENDING
+	    if( (WordKey::Info()->sort[i].direction == WORD_SORT_ASCENDING
 		 && foundKey.Get(i) > search.searchKey.Get(i))   ||
-		(WordKeyInfo::Get()->sort[i].direction == WORD_SORT_DESCENDING
+		(WordKey::Info()->sort[i].direction == WORD_SORT_DESCENDING
 		 && foundKey.Get(i) < search.searchKey.Get(i))      )
 
 	    { //  field 'i' is bigger in "found" than in "wordRef", we can skip
@@ -506,7 +509,7 @@ public:
 //*****************************************************************************
 //
 //
-static int delete_word(WordList *words, WordCursor &cursor, const WordReference *word, Object &data)
+static int delete_word(WordList *words, WordDBCursor &cursor, const WordReference *word, Object &data)
 {
   if(words->Delete(cursor) == 1) {
     words->Unref(*word);
@@ -540,7 +543,7 @@ List *WordList::Words()
     String		key;
     String		record;
     WordReference	lastWord;
-    WordCursor		cursor;
+    WordDBCursor		cursor;
 
     if(cursor.Open(db.db) != OK) return 0;
 
@@ -648,7 +651,7 @@ public:
 //*****************************************************************************
 //
 int
-wordlist_walk_callback_stream_out(WordList *, WordCursor& , const WordReference *word, Object &data)
+wordlist_walk_callback_stream_out(WordList *, WordDBCursor& , const WordReference *word, Object &data)
 {
     ((StreamOutData&)data).o << *word <<endl;
     return OK;
@@ -755,46 +758,42 @@ operator >> (istream &in,  WordList &list)
 void 
 WordSearchDescription::Clear()
 {
-    first_skip_field=-3;
-    callback=NULL;
-    callback_data=NULL;
-    traceRes=NULL;
-    action=0;
-    setup_ok=0;
-    collectRes=NULL;
-    benchmarking=NULL;
-    noskip=0;
-    shutup=0;
+  searchKey.Clear();
+  action = 0;
+  callback = 0;
+  callback_data = 0;
+  collectRes = 0;
+  status = 0;
+  ClearInternal();
+
+  //
+  // Debugging section. 
+  //
+  noskip = 0;
+  shutup = 0;
+  traceRes = 0;
+  benchmarking = 0;
 }
 
 //*****************************************************************************
 //
-int 
-WordSearchDescription::Setup()
+void
+WordSearchDescription::ClearInternal()
 {
-    if(setup_ok){return NOTOK;}
-    setup_ok=1;
-    return OK;
+  cursor.Close();
+  key.trunc();
+  data.trunc();
+  prefixKey.Clear();
+  first_skip_field = -3;
 }
 
 //*****************************************************************************
 //
-WordSearchDescription::WordSearchDescription(const WordReference& wordRef, int naction, wordlist_walk_callback_t ncallback, Object *ncallback_data)
-{
-    Clear();
-    searchKey=wordRef.Key();
-    action=naction;
-    callback=ncallback;
-    callback_data=ncallback_data;
-}
-
-//*****************************************************************************
-//
-WordSearchDescription::WordSearchDescription(const WordKey &nsearchKey)
+WordSearchDescription::WordSearchDescription(const WordKey &nsearchKey, int naction /* = HTDIG_WORDLIST_WALKER */)
 {
     Clear();
-    searchKey=nsearchKey;
-    action=HTDIG_WORDLIST_COLLECTOR;
+    searchKey = nsearchKey;
+    action = naction;
 }
 
 //*****************************************************************************
@@ -802,8 +801,8 @@ WordSearchDescription::WordSearchDescription(const WordKey &nsearchKey)
 WordSearchDescription::WordSearchDescription(const WordKey &nsearchKey,wordlist_walk_callback_t ncallback,Object * ncallback_data)
 {
     Clear();
-    searchKey=nsearchKey;
-    action=HTDIG_WORDLIST_WALKER;
-    callback=ncallback;
-    callback_data=ncallback_data;
+    searchKey = nsearchKey;
+    action = HTDIG_WORDLIST_WALKER;
+    callback = ncallback;
+    callback_data = ncallback_data;
 }

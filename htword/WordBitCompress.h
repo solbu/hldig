@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.h,v 1.1.2.7 2000/01/06 11:31:18 bosc Exp $
+// $Id: WordBitCompress.h,v 1.1.2.8 2000/01/12 17:50:56 loic Exp $
 //
 
 #ifndef   _WordBitCompress_h
@@ -154,7 +154,7 @@ public:
 	if(!use_tags || !tag){return OK;}	
 	return(check_tag1(tag,pos));
     }
-    inline int  check_tag1(const char *tag,int pos);
+    int  check_tag1(const char *tag,int pos);
     void set_use_tags(){use_tags=1;}
     int  find_tag(const char *tag);
     int  find_tag(int pos,int posaftertag=1);

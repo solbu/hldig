@@ -50,6 +50,11 @@
 #define WORD_KEY_MAX_NFIELDS 20
 #define WORDKEYFIELD_BITS_MAX 1000
 
+//
+// Unknown field position
+//
+#define WORD_KEY_UNKNOWN_POSITION	-1
+
 #ifndef SWIG
 // C comparison function interface for Berkeley DB (bt_compare)
 //
@@ -282,12 +287,10 @@ class WordKey
   int		PrefixOnly();
 #ifndef SWIG
   //
-  //  Set this key to a key immediately larger than "other" 
-  //  if j!=-1, all fields >= j (in sort order) are
-  //  set to 0. This is used when searching, see WordList.
-  //  Return OK if successfull, NOTOK otherwise.
+  // Set this key to a key immediately greater.
+  // Return OK if successfull, NOTOK otherwise.
   //
-  int           SetToFollowing(int position=-1);
+  int           SetToFollowing(int position);
 #endif /* SWIG */
 
   //

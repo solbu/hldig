@@ -19,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.h,v 1.3.2.7 2000/01/06 14:42:30 loic Exp $
+// $Id: WordDB.h,v 1.3.2.8 2000/01/12 17:50:56 loic Exp $
 //
 
 #ifndef _WordDB_h_
@@ -50,7 +50,7 @@ extern const char* dberror(int errval);
 //
 // The error model is *not* to use exceptions. 
 //
-// To get a cursor use the Open method of WordCursor. I find this
+// To get a cursor use the Open method of WordDBCursor. I find this
 // more convinient than getting a cursor from WordDB.
 //
 // The WordDB has DbInfo and DbEnv members that can be set before
@@ -302,17 +302,17 @@ class WordDB {
 // Interface to Dbc that uses String instead of Dbt
 // Methods report errors on cerr and return OK/NOTOK status.
 //
-class WordCursor {
+class WordDBCursor {
  public:
-  inline WordCursor() { cursor = 0; }
-  inline ~WordCursor() {
+  inline WordDBCursor() { cursor = 0; }
+  inline ~WordDBCursor() {
     Close();
   }
 
   inline int Open(Db* db) {
     Close();
     if((errno = db->cursor(0, &cursor, 0)) != 0) {
-      cerr << "WordCursor::Open failed " << dberror(errno) << "\n";
+      cerr << "WordDBCursor::Open failed " << dberror(errno) << "\n";
       return NOTOK;
     }
     return OK;
@@ -340,7 +340,7 @@ class WordCursor {
     }
     if((errno = cursor->get(&rkey, &rdata, (u_int32_t)flags)) != 0) {
       if(errno != DB_NOTFOUND)
-	cerr << "WordCursor::Get(" << flags << ") failed " << dberror(errno) << "\n";
+	cerr << "WordDBCursor::Get(" << flags << ") failed " << dberror(errno) << "\n";
       return errno;
     }
     key.set((const char*)rkey.get_data(), (int)rkey.get_size());
@@ -352,7 +352,7 @@ class WordCursor {
     Dbt rkey((void*)key.get(), (size_t)key.length());
     Dbt rdata((void*)data.get(), (size_t)data.length());
     if((errno = cursor->put(&rkey, &rdata, (u_int32_t)flags)) != 0) {
-      cerr << "WordCursor::Put(" << key << ", " << data << ", " << flags << ") failed " << dberror(errno) << "\n";
+      cerr << "WordDBCursor::Put(" << key << ", " << data << ", " << flags << ") failed " << dberror(errno) << "\n";
       return NOTOK;
     }
     return OK;
@@ -360,7 +360,7 @@ class WordCursor {
 
   inline int Del() {
     if((errno = cursor->del((u_int32_t)0)) != 0) {
-      cerr << "WordCursor::Del() failed " << dberror(errno) << "\n";
+      cerr << "WordDBCursor::Del() failed " << dberror(errno) << "\n";
       return NOTOK;
     }
     return OK;

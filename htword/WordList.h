@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.16 2000/01/12 10:36:52 loic Exp $
+// $Id: WordList.h,v 1.5.2.17 2000/01/12 17:50:56 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -35,7 +35,7 @@
 
 class List;
 class WordList;
-class WordCursor;
+class WordDBCursor;
 class WordMonitor;
 //
 // Possible values of the action argument of WordList::Walk
@@ -48,7 +48,7 @@ class WordMonitor;
 //
 // Type of the callback argument in WordSearchDescription
 //
-typedef int (*wordlist_walk_callback_t)(WordList *, WordCursor& , const WordReference *, Object &);
+typedef int (*wordlist_walk_callback_t)(WordList *, WordDBCursor& , const WordReference *, Object &);
 
 //
 // Benchmarking helper
@@ -71,6 +71,26 @@ public:
 };
 
 //
+// Possible values of the status member
+//
+//
+// WalkNext reached the end of the matches
+//
+#define WORD_WALK_ATEND			0x0001
+//
+// Failed to acquire Berkeley DB cursor
+//
+#define WORD_WALK_CURSOR_FAILED		0x0002
+//
+// Berkeley DB Get operation failed
+//
+#define WORD_WALK_GET_FAILED		0x0004
+//
+// Callback function returned NOTOK
+//
+#define WORD_WALK_CALLBACK_FAILED	0x0008
+
+//
 // Wordlist::Walk uses WordSearchDescription for :
 // state information : cursor
 // search term description
@@ -81,12 +101,11 @@ class WordSearchDescription
 {
     friend WordList;
  public:
-    WordSearchDescription(const WordReference& wordRef, int naction, wordlist_walk_callback_t ncallback, Object *ncallback_data);
-    WordSearchDescription(const WordKey &nsearchKey);
+    WordSearchDescription(const WordKey &nsearchKey, int naction = HTDIG_WORDLIST_WALKER);
     WordSearchDescription(const WordKey &nsearchKey, wordlist_walk_callback_t ncallback, Object * ncallback_data);
 
     void Clear();
-    int  Setup();
+    void ClearInternal();
 
     //
     // Input parameters
@@ -118,15 +137,10 @@ class WordSearchDescription
     // List of WordReference found in the search
     //
     List *collectRes;
-
     //
-    // Internal state
+    // Description of the last NOTOK condition
     //
-    //
-    // A pointer to the current location of the search withing the index
-    // Allows to resume search if necessary.
-    //
-    WordCursor cursor;
+    int status;
 
     //
     // Debugging section. Do not use unless you know exactly what you do.
@@ -149,9 +163,25 @@ class WordSearchDescription
     WordBenchmarking *benchmarking;
 
  private:
-    // internal information
+    //
+    // Internal state
+    //
+    //
+    // A pointer to the current location of the search within the index
+    // Allows to resume search if necessary.
+    //
+    WordDBCursor cursor;
+    //
+    // The latest retrieved key and data
+    //
+    String key;
+    String data;
+    //
+    // The shorted prefix key computed from searchKey
+    //
+    WordKey prefixKey;
+
     int first_skip_field;
-    int setup_ok;
 };
 #endif /* SWIG */
 
@@ -203,7 +233,7 @@ public:
 #ifdef SWIG
 %name(DeleteCursor)
 #endif /* SWIG */
-    int                 Delete(WordCursor& cursor) { return cursor.Del() == OK ? 1 : 0; }
+    int                 Delete(WordDBCursor& cursor) { return cursor.Del() == OK ? 1 : 0; }
 
     //
     // Open underlying db file
@@ -246,9 +276,19 @@ public:
     // Walk and collect data from the word database.
     // Backend of Collect, Dump, Delete...
     //
-    int   Walk(WordSearchDescription &SearchDescription);
-    List *Search(const WordSearchDescription &SearchDescription);
-    int SkipUselessSequentialWalking(const WordSearchDescription &search,WordKey &foundKey,String &key,int &cursor_get_flags);
+    int                 Walk(WordSearchDescription &search);
+    //
+    // Fill internal state according to input parameters.
+    // Move to the first matching entry.
+    // Returns OK if successfull, NOTOK if it fails.
+    //
+    int                 WalkInit(WordSearchDescription& search);
+    //
+    // Move to the next
+    // Returns OK if successfull, NOTOK if it fails.
+    //
+    int                 WalkNext(WordSearchDescription& search);
+    List               *Collect(const WordSearchDescription &search);
 
     //
     // Update/get global word statistics statistics
@@ -276,6 +316,7 @@ public:
     // Backend of WordRefs, operator[], Prefix...
     //
     List		*Collect (const WordReference& word);
+    int SkipUselessSequentialWalking(const WordSearchDescription &search,WordKey &foundKey,String &key,int &cursor_get_flags);
 
     const WordType		wtype;
     const Configuration&	config;
@@ -295,6 +336,7 @@ public:
     WordDB	            	db;
 
     int                         verbose;
+
  protected:
     //
     // Debugging section. Do not use unless you know exactly what you do.
