@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.109 2003/02/09 11:53:48 lha Exp $
+// $Id: Display.cc,v 1.110 2003/06/09 08:41:39 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -29,7 +29,7 @@
 #include "WordType.h"
 #include "Collection.h"
 #include "HtURLSeedScore.h"
-#include "HtURLRewriter.h"
+//#include "HtURLRewriter.h"
 #include "SplitMatches.h"
 
 #include <fstream.h>
@@ -434,7 +434,12 @@ Display::setVariables(int pageNumber, List *matches)
 	nPages = 1;			// We always have at least one page...
     vars.Add("MATCHES_PER_PAGE", new String(config->Find("matches_per_page")));
     vars.Add("MAX_STARS", new String(config->Find("max_stars")));
-    vars.Add("CONFIG", new String(config->Find("config")));
+    // Remove components of config file name which are added back by htsearch
+    // Should check that they are there, but this will do for now...
+    i = strlen(CONFIG_DIR);
+    tmp = config->Find("config");
+    tmp = tmp.sub(i, tmp.length() - i - strlen (".conf"));
+    vars.Add("CONFIG",    new String(tmp));
     vars.Add("VERSION", new String(config->Find("version")));
     vars.Add("RESTRICT", new String(config->Find("restrict")));
     vars.Add("EXCLUDE", new String(config->Find("exclude")));

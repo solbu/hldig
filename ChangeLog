@@ -1,5 +1,10 @@
 Mon Jun 9 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 	
+	* htsearch/Display.cc: Set CONFIG template variable to the base name
+	  of the config file (no directory or .conf), as expected by  htsearch
+
+Mon Jun 9 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+	
 	* test/test_functions.in: avoid trying killing apache multiple times
 
 	* configure,configure.in: Reformat --help  output
