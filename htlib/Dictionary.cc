@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Dictionary.cc,v 1.10 1999/10/08 12:05:20 loic Exp $
+// $Id: Dictionary.cc,v 1.11 1999/11/08 11:51:27 toivo Exp $
 //
 
 #include "Dictionary.h"
@@ -35,16 +35,12 @@ DictionaryEntry::~DictionaryEntry()
 {
     free(key);
     delete value;
-    if (next)
-        delete next;
 }
 
 void
 DictionaryEntry::release()
 {
     value = NULL;		// Prevent the value from being deleted
-    if (next)
-        next->release();
 }
 
 
@@ -93,11 +89,17 @@ Dictionary::~Dictionary()
 void
 Dictionary::Destroy()
 {
+    DictionaryEntry *t, *n;
+
     for (int i = 0; i < tableLength; i++)
     {
 	if (table[i] != NULL)
-	{
-	    delete table[i];
+	{ 
+	    t = table[i];
+	    do {                  // clear out hash chain
+	      n = t->next;
+	      delete t;
+	    } while (n);
 	    table[i] = NULL;
 	}
     }
@@ -109,12 +111,18 @@ Dictionary::Destroy()
 void
 Dictionary::Release()
 {
+    DictionaryEntry *t, *n;
+
     for (int i = 0; i < tableLength; i++)
     {
 	if (table[i] != NULL)
 	{
-	    table[i]->release();
-	    delete table[i];
+	    t = table[i];
+	    do {                  // clear out hash chain
+	      n = t->next;
+	      t->release();
+	      delete t;
+	    } while (n);
 	    table[i] = NULL;
 	}
     }
