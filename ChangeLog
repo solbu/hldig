@@ -1,3 +1,10 @@
+Wed Jan 20 00:30:12 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/SGMLEntities.cc: Declare extern config, since we now use
+	config options.
+
+	* htsearch/Display.cc: Fix typo causing compile problems.
+
 Tue Jan 19 23:51:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/defaults.cc: Added options translate_amp, _lt_gt, _quot as
