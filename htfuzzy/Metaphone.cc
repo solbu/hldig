@@ -51,7 +51,7 @@ static char     vsvfn[26] = {
         /* N  O  P  Q  R  S  T  U  V  W  X  Y  Z  */
 
 /* Macros to access character coding array */
-#define vscode(x)  (vsvfn[(x) - 'A'])
+#define vscode(x)  ((x) >= 'A' && (x) <= 'Z' ? vsvfn[(x) - 'A'] : 0)
 #define vowel(x)   ((x) != '\0' && vscode(x) & 1)   /* AEIOU */
 #define same(x)    ((x) != '\0' && vscode(x) & 2)   /* FJLMNR */
 #define varson(x)  ((x) != '\0' && vscode(x) & 4)   /* CGPST */

@@ -1,3 +1,10 @@
+Mon Aug  9 17:13:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Fuzzy.cc(getWords), htfuzzy/Metaphone.cc(vscode):
+	Fix Geoff's change of May 15 to Fuzzy.cc, add test to vscode macro
+	to stay in array bounds, so non-ASCII letters to cause segfault.
+	Should fix PR#514.
+
 Mon Aug  9 17:03:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* include/htconfig.h.in, htcommon/WordList.cc(Word,Flush&BadWordFile),
