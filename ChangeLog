@@ -1,3 +1,11 @@
+Thu Apr  1 11:58:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc(main): Apply Gabriele's patch to avoid using an
+	invalid matchesperpage CGI input variable.
+
+	* htsearch/Display.cc(display) & (setVariables): Correct any invalid
+	values for matches_per_page attribute to avoid div. by 0 error.
+
 Wed Mar 31 18:21:21 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/htdig.cc: Undo March 30 change.
