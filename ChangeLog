@@ -1,5 +1,9 @@
 Sun Dec 14 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
+    * htsearch/Display.cc:  Apply Gilles's patch for ellipses bug #844828.
+
+Sun Dec 14 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
     * test/{t_validwords,t_templates,t_fuzzy,t_factors}
     * test/{set_attr,synonym_dict,dummy.stems,dummy.affixes,bad_word_list}
     * test/conf/main-template test/htdocs/set1/{site2.html,site4.html}:

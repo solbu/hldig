@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Display.cc,v 1.118 2003/10/25 04:03:26 lha Exp $
+// $Id: Display.cc,v 1.119 2003/12/14 02:14:43 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1776,7 +1776,7 @@ Display::buildExcerpts( StringMatch *allWordsPattern, ResultMatch* match, char *
     }
     else
     {
-      text << config->Value("start_ellipses");
+      text << config->Find("start_ellipses");
 
       while ( *start && HtIsStrictWordChar( *start ) )
       {
@@ -1806,7 +1806,7 @@ Display::buildExcerpts( StringMatch *allWordsPattern, ResultMatch* match, char *
       *end = '\0';
 
       text << hilight(match, start, urlanchor, fanchor);
-      text << config->Value("end_ellipses");
+      text << config->Find("end_ellipses");
 
       *end = endChar;
     }
