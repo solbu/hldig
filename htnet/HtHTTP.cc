@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.8 2000/02/07 13:12:07 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.9 2000/02/09 08:46:47 angus Exp $ 
 //
 
 #include "lib.h"
@@ -931,7 +931,7 @@ int HtHTTP::ReadChunkedBody()
 
 	// Append the chunk-data to the contents of the response
 	buffer[rsize] = 0;
-	_response._contents << buffer;
+	_response._contents.append(buffer, rsize);
                   
 	length+=rsize;
 

@@ -1,3 +1,8 @@
+Mon Feb 09 09:43:59 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+        * htnet/HtHTTP.cc: changed "<<" to append() for content_length
+          assignment in ReadChunkedBody() function (as Gilles suggested)
+
 Tue Feb 08 10:54:08 2000  Loic Dachary  <loic@ceic.com>
 
 	* db/dist/configure.in: Added AC_PREFIX_DEFAULT(/opt/www)
