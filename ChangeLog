@@ -1,3 +1,25 @@
+Sat May 15 11:18:27 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htfuzzy/Fuzzy.cc (getWords): Ensure word is not an empty or null
+	string.
+
+	* htfuzzy/Metaphone.cc (generateKey): Ditto. Should solve PR#514.
+
+	* htdig/Document.cc (Reset): Do not use modification_time_is_now
+	attribute. Simply reset modtime to 0, time is set elsewhere.
+
+	* Makefile.config.in: Add options from separate CONFIG files.
+
+	* configure.in, configure: Add configure-level switches for
+	--with-image-url-prefix= and --with-search-form=. Do not generate
+	CONFIG file (hopefully to be phased out soon).
+
+	* */Makefile.in: Make linking CONFIG-dependent files depend on
+	Makefile.config, not CONFIG.
+
+	* Makefile.in: Use standard $(bindir) variable instead of
+	$(BIN_DIR). Allows for standard configure flags to set this.
+	
 Tue May 11 11:15:08 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtDateTime.h, htlib/HtDateTime.cc: Updates from Gabriele,
