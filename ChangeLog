@@ -1,3 +1,52 @@
+Wed Dec 29 18:41:14 1999   Marcel Bosc <bosc@ceic.com>
+
+	* htlib/HtMaxMin:  added max/min  of  arrays,  added comments  to
+	HtMaxMin. Added HtMaxMin.cc all these are used in htword
+
+	* htlib/HtTime.h: added comments. included portable time.h
+
+	* htlib/HtVectorGeneric.cc: added HtVector_double, HtVector_String
+
+	* htlib/HtVectorGeneric.h: inlined several methods, disactivated CheckBounds
+
+	* htlib/StringMatch.cc: removed #include"WordType.h", this made htlib dependant
+	on htword, which is not acceptable for a library
+
+	* htlib/HtWordType.h: this replaces the macros used in StringMatch.cc 
+
+	* htlib/HtRandom.h: added tools for using random number
+	(this is used currently in tests)
+
+	* htword/WordBitCompress.cc: transfered max_v/min_v to htlib
+	
+	* htword/WordBitCompress.cc: optimized put/get for better performance
+
+	* htword/WordMonitor: system for detailed monitoring of operation
+	and performance within htword
+
+	* htword/WordDBCompress: fixed compression for case of empty WordRecord
+
+	* htword/WordDBCompress: cleaned up some code added some comments
+	
+	* htword/WordKeyInfo: split WordKey files into WordKey and WordKeyInfo files
+
+	* htword/WordContext: centralized global configuration into one class
+
+	* htword/WordKey: inserted randomized key/keydescription into WordKey classes
+	(this was previously used in several tests)
+	
+	* htword/WordKey: optimized Compare, UnpackNumber for speed (these are
+	really speed critical)
+
+	* htword/WordRecord: is now configurable, type can be configured to "DATA" (htdig)
+	or "NONE" (for other uses)
+
+	* htword/WordType: changed macros to global functions to make it compatible
+	with cleanup in StringMatch. Integrated WordType to WordContext 
+	configuration/Initialization
+
+	* htword/WordKeyInfo: fixed initialization from key descrition file 
+	
 Tue Dec 28 18:58:21 EET 1999  Vadim Chekan  <vadim@etc.lviv.ua>
 
 	* htlib/String.cc: String::lowercase(), String::uppercase()

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.19 1999/12/23 10:55:18 bosc Exp $
+// $Id: defaults.cc,v 1.64.2.20 2000/01/03 10:04:42 bosc Exp $
 //
 
 #include "HtConfiguration.h"
@@ -2103,9 +2103,14 @@ url_part_aliases:
 " },
 { "wordlist_wordkey_description", "nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0",
 	"string", "htdig htmerge htsearch htfuzzy", "**this should not be configured by user**", "
-	Debuging value for the  compression system for the indexer.
 	Internal key description: *not user configurable*
 " },
+{ "wordlist_wordrecord_description", "DATA",
+	"string", "htdig htmerge htsearch htfuzzy", "**this should not be configured by user**", "
+	Internal data description: *not user configurable*
+" },
+
+
 {0, 0, 0, 0, 0},
 };
 

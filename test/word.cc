@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.7 1999/12/23 10:55:19 bosc Exp $
+// $Id: word.cc,v 1.14.2.8 2000/01/03 10:04:48 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -33,6 +33,7 @@
 
 static ConfigDefaults defaults[] = {
   { "wordlist_wordkey_description", "nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0", 0 },
+  { "wordlist_wordrecord_description","DATA", 0 },
   { "word_db", "var/htdig/db.words.db", 0 },
   { "wordlist_extend", "true", 0 },
   { "minimum_word_length", "1", 0},
@@ -58,6 +59,7 @@ typedef struct
     int key;
     int list;
     int skip;
+    int bitstream;
     int compress;
 } params_t;
 
@@ -66,6 +68,7 @@ static void doword(params_t* params);
 static void dolist(params_t* params);
 static void dokey(params_t* params);
 static void doskip(params_t* params);
+static void dobitstream(params_t* params);
 static void pack_show(const WordReference& wordRef);
 
 static int verbose = 0;
@@ -84,9 +87,10 @@ int main(int ac, char **av)
   params.key = 0;
   params.list = 0;
   params.skip = 0;
+  params.bitstream = 0;
   params.compress = 0;
 
-  while ((c = getopt(ac, av, "vklszw:")) != -1)
+  while ((c = getopt(ac, av, "vklbszw:")) != -1)
     {
       switch (c)
 	{
@@ -105,6 +109,9 @@ int main(int ac, char **av)
 	  break;
 	case 's':
 	  params.skip = 1;
+	  break;
+	case 'b':
+	  params.bitstream = 1;
 	  break;
 	case 'z':
 	  params.compress = 1;
@@ -151,6 +158,14 @@ static void doword(params_t* params)
       if(verbose) cerr << "Test SkipUselessSequentialWalking in WordList class "  << "\n";
       doskip(params);
   }
+
+  if(params->bitstream) 
+  {
+      if(verbose) cerr << "Test BitStream class "  << "\n";
+      dobitstream(params);
+  }
+
+
 }
 
 static void dolist(params_t*)
@@ -176,7 +191,7 @@ static void dolist(params_t*)
 	
     // setup a new wordlist
     WordList words(config);
-    if(verbose)word_key_info->show();	
+    if(verbose)WordKeyInfo::Get()->show();	
     words.Open(config["word_db"], O_RDWR);
 
 
@@ -398,102 +413,7 @@ static void dolist(params_t*)
 // See WordKey.h
 // Tested: Pack, Unpack, Compare (both forms), accessors, meta information
 //
-static unsigned int
-myrnd(unsigned int v0,unsigned int v1)
-{
-    return(
-	(rand()%(v1-v0)) + v0 );
-}
-
-int *
-randomize_v(int *vals,int n)
-{
-    int i;
-    if(!vals)
-    {
-	vals=new int[n];
-	for(i=0;i<n;i++){vals[i]=i;}
-    }
-    for(i=0;i<2*n;i++)
-    {
-	int i0=myrnd(0,n);
-	int i1=myrnd(0,n);
-	int t=vals[i0];
-	vals[i0]=vals[i1];
-	vals[i1]=t;
-    }
-    return(vals);
-}
-static void
-SetRandomKeyDesc(int maxbitsize=100,int maxnnfields=10)
-{
-    int bitsize=myrnd(1,maxbitsize/8);
-    bitsize*=8;// byte aligned (for word)
-    int nfields=myrnd(2,bitsize > maxnnfields ? maxnnfields : bitsize);
-    int i;
-    char sdesc[10000];
-    char sfield[10000];
-    sdesc[0]=0;
-
-    // build sortorder
-    sprintf(sfield,"nfields: %d",nfields);
-    strcat(sdesc,sfield);
-
-    int *sort=randomize_v(NULL,nfields-1);
-
-    int bits;
-    int totbits=0;
-    // build fields
-    for(i=0;i<nfields-1;i++)
-    {
-	int maxf=(bitsize-totbits)-nfields+i+2;
-	if(maxf>32){maxf=32;}
-	bits=myrnd(1,maxf);
-	if(i==nfields-2)
-	{
-	    bits=maxf;
-	    if((totbits+bits)%8)
-	    {// argh really bad case :-(
-		SetRandomKeyDesc(maxbitsize,maxnnfields);
-		return;
-	    }
-	}
-	totbits+=bits;
-	sprintf(sfield,"/Field%d %d %d",i,bits,sort[i]+1);
-	strcat(sdesc,sfield);
-    }
-    sprintf(sfield,"/Word 0 0");
-    strcat(sdesc,sfield);
-
-    if(verbose)cout << "SetRandomKeyDesc:" << sdesc << endl;
-    WordKeyInfo::SetKeyDescriptionFromString(sdesc);
-
-}
-
-static void
-SetRandomKey(WordKey &key)
-{
-    int j;
-    for(j=1;j<key.nfields();j++)
-    {
-	int nbits=word_key_info->sort[j].bits;
-	WordKeyNum max=(1<<(nbits));
-	if(nbits==32){max=0xffffffff;}
-	WordKeyNum val=myrnd(0,max);
-//  	if(nbits==1)printf("field:%d :val:%d max:%d********************************\n",j,val,max);
-	key.SetInSortOrder(j,val);
-    }
-    int strl=myrnd(0,50);
-    int i;
-    String Word;
-    for(i=0;i<strl;i++)
-    {
-	char c;
-	c=myrnd('a','z');
-  	Word << c;
-    }
-    key.SetWord(Word);
-}
+#include"HtRandom.h"
 
 static void 
 dokey(params_t* params)
@@ -518,14 +438,14 @@ dokey(params_t* params)
 	else
 	{
 	// check random predefined keys structures afterwards
-	    SetRandomKeyDesc();
+	    WordKeyInfo::SetKeyDescriptionRandom();
 	}
 
-  	if(verbose)word_key_info->show();	
+  	if(verbose)WordKeyInfo::Get()->show();	
 	for(ikey=0;ikey<20;ikey++)
 	{
 	    WordKey word;
-	    SetRandomKey(word);
+	    word.SetRandom();
   	    if(verbose>1)cout << "WORD :" << word << endl;
 
 	    String packed;
@@ -548,7 +468,7 @@ dokey(params_t* params)
 	    if(failed)
 	    {
 		printf("DOKEY failed, original and packed/unpacked not equal\n");
-		word_key_info->show();	
+		WordKeyInfo::Get()->show();	
 		cout << "WORD :" << word << endl;
 		WordKey::show_packed(packed,1);
 		cout << "OTHER_WORD:" << other_word << endl;
@@ -789,6 +709,97 @@ doskip(params_t*)
     }
 
 }
+
+
+
+#include"WordBitCompress.h"
+
+void bitstream_int();
+void bitstream_bit();
+
+static void 
+dobitstream(params_t*)
+{
+    bitstream_int();
+    bitstream_bit();
+}
+void
+bitstream_int()
+{ 
+    BitStream bs;
+    bs.set_use_tags();
+    const int nnums=5000;
+    unsigned int nums[nnums];
+    unsigned int szs[nnums];
+    int i,sz;
+    char tag[1000];
+    printf("inserting (uint):\n");
+    for(i=0;i<nnums;i++)
+    {
+//  	printf("-----------%5d ------------\n",i);
+	sz=rand()%33;
+	szs[i]=sz;
+	if(sz==32){nums[i]=(rand())&(0xffffffff);}
+	else{nums[i]=(rand())&(pow2(sz)-1);}
+	sprintf(tag,"tag(i:%d,sz:%d,val:%x)",i,sz,nums[i]);
+	bs.put(nums[i],sz,tag);
+    }
+
+    printf("checking (uint):\n");
+//      bs.show();
+    bs.rewind();
+    for(i=0;i<nnums;i++)
+    {
+//    	printf("-----------%5d ------------\n",i);
+	unsigned int v;
+	sz=szs[i];
+	sprintf(tag,"tag(i:%d,sz:%d,val:%x)",i,sz,nums[i]);
+	v=bs.get(sz,tag);
+	if(v!=nums[i])
+	{
+	    cerr << "BitStream failed for pos:" << i << " size:" << sz << " found:" << v << " tag:" << tag << endl;
+	    exit(1);
+	}
+    }
+}
+
+void
+bitstream_bit()
+{ 
+    BitStream bs;
+    bs.set_use_tags();
+    const int nnums=1000;
+    unsigned int nums[nnums];
+    int i;
+    char tag[1000];
+    printf("inserting (bit):\n");
+    for(i=0;i<nnums;i++)
+    {
+//    	printf("-----------%5d ------------\n",i);
+	nums[i]=(rand()/100)%2;
+	sprintf(tag,"tag(i:%d,val:%x)",i,nums[i]);
+//  	printf("tag:%s\n",tag);
+	bs.put(nums[i],tag);
+    }
+
+    printf("checking (bit):\n");
+//       bs.show();
+    bs.rewind();
+    for(i=0;i<nnums;i++)
+    {
+	unsigned int v;
+	sprintf(tag,"tag(i:%d,val:%x)",i,nums[i]);
+	v=bs.get(tag);
+	if((v==0)!=(nums[i]==0))
+	{
+	    cerr << "BitStream failed for pos:" << i << " v:" << v << " should be:" << nums[i] << " tag:" << tag << endl;
+	    exit(1);
+	}
+    }
+}
+
+
+
 //*****************************************************************************
 // void usage()
 //   Display program usage information

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htmerge.cc,v 1.17.2.1 1999/12/07 19:54:12 bosc Exp $
+// $Id: htmerge.cc,v 1.17.2.2 2000/01/03 10:04:47 bosc Exp $
 //
 
 #include "htmerge.h"
@@ -145,6 +145,8 @@ int main(int ac, char **av)
 	}
     }
     
+    WordList::Initialize(config);
+
     if (merge_configfile.length())
     {
 	// Merge the databases specified in merge_configfile into the current

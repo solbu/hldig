@@ -1,6 +1,3 @@
-// WARNING : this file was generated from WordKey.h.tmpl
-// by word_builder.pl using instructions from word.desc
-//
 // WordKey.h
 //
 // WordKey: Describes the key used to store a word in the word database.
@@ -73,106 +70,8 @@ int word_db_cmp(const DBT *a, const DBT *b);
 
 
 #ifndef SWIG
-//
-// Describes the structure of the key, ie meta information
-// for the key. This includes the layout of the packed version
-// stored on disk.
-//
 
-typedef unsigned int WordKeyNum;
-
-class WordKeyField
-{
- public:
-    String name;				// Symbolic name of the field
-    int type;				// WORD_ISA_<type> of the field
-    int lowbits;			// Packed info (see word_builder.pl)
-    int lastbits;			// Packed info (see word_builder.pl)
-    int bytesize;			// Packed info (see word_builder.pl)
-    int bytes_offset;			// Packed info (see word_builder.pl)
-    int bits;				// Packed info (see word_builder.pl)
-//      int index;				// Index of the object in the pool_<type> array
-    int direction;			// Sorting direction
-    int encoding_position;              
-    int sort_position;
-    int bits_offset;
-
-
-//      inline WordKeyNum Unpack(const String &data)
-//      { 
-//  	WordKeyNum to;
-//  	WordKey::UnpackNumber(&data[bytes_offset], bytesize, &to, lowbits, bits);
-//  	return (to);
-//      }
-	
-    void nprint(char c,int n);
-    void show();
-    WordKeyField(WordKeyField *previous,char *nname,int nbits,int encoding_position, int sort_position );
-    WordKeyField(){;}
-};
-
-
-class WordKeyInfo;
-
-extern WordKeyInfo *word_key_info;
-
-class WordKeyInfo 
-{
-    friend WordKeyField;
-protected:
-    //
-    // Array describing the fields, in encoding order. 
-    //
-#define WORD_SORT_ASCENDING	1
-#define WORD_SORT_DESCENDING	2
-
-public:
-    //
-    // Array describing the fields, in sort order.
-    //
-    WordKeyField *sort;
-    //
-    // Array describing the fields, in encoding order.
-    //
-    WordKeyField *encode;
-    //
-    // Total number of fields
-    //
-    int nfields;
-    //
-    // Minimum length of key on disk
-    //
-    int minimum_length;
-
-//      inline WordKeyNum UnpackFieldInSortOrder( const String &data, int position ){return(sort[position].Unpack(data));}
-
-    WordKeyField *previous;
-    int encoding_position;
-
-    void        Initialize( int nnfields);
-    void        Initialize( String &line);
-    void        AddFieldInEncodingOrder(String &name,int bits, int sort_position);
-    void        AddFieldInEncodingOrder(const String &line);
-    void        SetDescriptionFromFile  (const String &filename);
-    static void SetKeyDescriptionFromFile  (const String &filename);
-    void        SetDescriptionFromString(const String &desc);
-    static void SetKeyDescriptionFromString(const String &desc);
-
-    void  show();
-
-
-    ~WordKeyInfo()
-    {
-	if(sort){delete [] sort;}
-	if(sort){delete [] encode;}
-    }
-    WordKeyInfo()
-    {
-	sort   = NULL;
-	nfields = -1;
-    }
-};
-
+#include"WordKeyInfo.h"
 
 #endif /* SWIG */
 
@@ -189,7 +88,7 @@ protected:
 
   void initialize()
   {
-      if(!word_key_info)
+      if(!info())
       {
 	  cerr << "WordKey::WordKey used before word_key_info set" << endl;
 	  errr("WordKey::initialize");
@@ -244,17 +143,20 @@ public:
   //
   void operator =(const WordKey &other)
   {
-      initialize();
+//      initialize();
+      Clear();
       copy_from(other);
   }
 
-    static inline const int        nfields() {return word_key_info->nfields;}
+    static inline const WordKeyInfo *info()  {return WordKeyInfo::Get();}
+    static inline const int        nfields() {return WordKeyInfo::Get()->nfields;}
 
 #ifndef SWIG
     inline const String&  GetWord() const { return kword; }
 #endif /* SWIG */
     inline String&	  GetWord() { return kword; }
     inline void	          SetWord(const String& arg) { kword = arg; setbits |= WORD_KEY_WORDFULLY_DEFINED;} 
+    inline void	          SetWord(const char *str,int len){ kword.set(str,len); setbits |= WORD_KEY_WORDFULLY_DEFINED;} 
     inline void	          UndefinedWord() { kword.trunc(); setbits &=  ~WORD_KEY_WORDFULLY_DEFINED; } 
     inline void		  UndefinedWordSuffix() {setbits &= ~WORD_KEY_WORDSUFFIX_DEFINED;}
     inline void		  SetDefinedWordSuffix() {setbits |= WORD_KEY_WORDSUFFIX_DEFINED;}
@@ -267,9 +169,9 @@ public:
   void	SetDefinedInSortOrder(int position) { setbits |= (1 << position); }
   void	UndefinedInSortOrder(int position) { setbits &= ~(1 << position); }
 
-  int	IsDefined(int position) const { return( IsDefined(word_key_info->encode[position].sort_position));}
-  void	SetDefined(int   position)    {        SetDefined(word_key_info->encode[position].sort_position); }
-  void	Undefined(int position)       {         Undefined(word_key_info->encode[position].sort_position); }
+//    int	IsDefined(int position) const { return( IsDefinedInSortOrder(word_key_info->encode[position].sort_position));}
+//    void	SetDefined(int   position)    {        SetDefinedInSortOrder(word_key_info->encode[position].sort_position); }
+//    void	Undefined(int position)       {         UndefinedInSortOrder(word_key_info->encode[position].sort_position); }
 
   int	IsFullyDefined() const 
   { 
@@ -308,7 +210,8 @@ public:
   //
   // Storage format conversion
   //
-  int 		Unpack(const String& data);
+  int 		Unpack(const char* string,int length);
+  inline int    Unpack(const String& data){return(Unpack(data,data.length()));}
   int 		Pack(String& data) const;
 
   //
@@ -327,9 +230,12 @@ public:
   int 		PackEqual(const WordKey& other) const;
   int		Prefix() const;
   int           FirstSkipField() const;
-  static int 	Compare(const String& a, const String& b);
+
+// Compare <a> and <b> in the Berkeley DB fashion. 
+// <a> and <b> are packed keys.
+    static int 	Compare(const String& a, const String& b);
 #ifndef SWIG
-  static int 	Compare(const char *a, int a_length, const char *b, int b_length);
+  static inline int 	Compare(const char *a, int a_length, const char *b, int b_length);
 #endif /* SWIG */
 
   int SetToFollowingInSortOrder(int position=-1);
@@ -344,7 +250,7 @@ private:
   //
   // Convert a single number from and to disk storage representation
   //
-  static int UnpackNumber(const char* from, int from_size, WordKeyNum* top, int lowbits, int bits);
+  static int UnpackNumber(const unsigned char* from, const int from_size, WordKeyNum &res, const int lowbits, const int bits);
   static int PackNumber(WordKeyNum from, char* to, int to_size, int lowbits, int lastbits);
 
   //
@@ -356,9 +262,9 @@ private:
 
 
  public:
-// ***** DEBUGINIG ****
+// ***** DEBUGINIG / BENCHMARKING ****
     static void show_packed(const String& key,int type=0);
-
+    void SetRandom();
 
 };
 
@@ -368,33 +274,66 @@ private:
 // 8 then all bits are 1.
 //
 #define WORD_BIT_MASK(b) ((b) == 0 ? 0xff : ((( 1 << (b)) - 1) & 0xff))
-
+#define WORD_BIT_MASK2(b) ((1<<(b)) -1)
 //
 // Decode integer found in <from> using <from_size> bytes. The integer starts at <lowbits> bit
 // in the first byte and occupies a total of <bits> bits. The resulting integer is stored in *<top>
 //
-inline int WordKey::UnpackNumber(const char* from, int from_size, WordKeyNum* top, int lowbits, int bits)
+inline int WordKey::UnpackNumber(const unsigned char* from, const int from_size, WordKeyNum &res, const int lowbits, const int bits)
 {
-  WordKeyNum to = 0;
+    // SPEED CRITICAL SECTION
 
-  to = ((from[0] & 0xff) >> lowbits);
-
-  if(lowbits) to &= WORD_BIT_MASK(8 - lowbits);
-
-  if(from_size == 1) 
-    to &= WORD_BIT_MASK(bits);
-  else {
-    for(int i = 1; i < from_size; i++) {
-      to |= (from[i] & 0xff) << ((i - 1) * 8 + (8 - lowbits));
+    if((lowbits+bits)<=8)
+    {
+	// simplest case (everything fits on first byte)
+	res = ((*from)>>lowbits) & WORD_BIT_MASK2(bits);
+	return OK;
     }
-  }
+    else
+    if(!lowbits && !(bits & 0x07))
+    {
+	// simple case everything is byte alligned
+	char *ctop=(char *)&res;
+	res=0;
+	for(int i=from_size;i;i--)
+	{
+	    *(ctop++)=*(from++);
+	}
+	return OK;
+    }
+    else
+    {
+	// general case
 
-  if(bits < (int)(sizeof(WordKeyNum) * 8))
-    to &= ( 1 << bits ) - 1;
+	// first byte
+	res = ((*(from++))>>lowbits) & 0xff;
+
+	const int ncentral=((lowbits + bits)>>3)-1;
+	const int nbitsinfirstbyte=8-lowbits;
+	const int nbitsremaining=bits-(  (ncentral<<3)+nbitsinfirstbyte );
+
+	// central bytes
+	if(ncentral)
+	{
+	    WordKeyNum v=0;
+	    unsigned char *cv=(unsigned char *)&v;
+	    for(int i=ncentral;i;i--)
+	    {
+		*(cv++)=*(from++);
+	    }
+	    res|=v<<nbitsinfirstbyte;
+	}
+    
+	// last byte
+	if(nbitsremaining)
+	{
+	    res|=((WordKeyNum)((*from) &  WORD_BIT_MASK2(nbitsremaining) )) << 
+		(nbitsinfirstbyte +(ncentral<<3));
+	}
   
-  *top = to;
 
-  return OK;
+	return OK;
+    }
 }
 
 //

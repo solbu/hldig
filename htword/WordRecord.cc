@@ -122,3 +122,24 @@ void WordRecord::Print() const
 {
   cout << *this;
 }
+
+void 
+WordRecordInfo::Initialize(const Configuration &config)
+{
+    const String &recorddesc = config["wordlist_wordrecord_description"];
+    WordContext::record_info=new WordRecordInfo;
+    if(recorddesc==(String)"DATA")
+    {
+	WordRecordInfo::Get()->default_type=WORD_RECORD_DATA;
+    }
+    else
+    if(recorddesc==(String)"NONE" || recorddesc.empty())
+    {
+	WordRecordInfo::Get()->default_type=WORD_RECORD_NONE;	
+    }
+    else
+    {
+	cerr << "WordRecordInfo::Initialize: invalid wordlist_wordrecord_description:" << recorddesc << endl;
+    }
+}
+

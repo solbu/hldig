@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.cc,v 1.1.2.6 1999/12/21 12:03:29 bosc Exp $
+// $Id: WordBitCompress.cc,v 1.1.2.7 2000/01/03 10:04:47 bosc Exp $
 //
 
 
@@ -34,8 +34,6 @@
 #define GType charptr
 #define HtVectorGType HtVector_charptr
 #include "HtVectorGenericCode.h"
-
-
 
 
 
@@ -74,55 +72,6 @@ show_bits(int v,int n/*=16*/)
     }
 }
 
-// Max/Min value of an array
-
-unsigned int
-max_v(unsigned int *vals,int n)
-{
-    unsigned int maxv=vals[0];
-    for(int i=1;i<n;i++)
-    {
-	unsigned int v=vals[i];
-	if(v>maxv){maxv=v;}
-    }
-    return(maxv);
-}
-
-unsigned short
-max_v(unsigned short *vals,int n)
-{
-    unsigned short maxv=vals[0];
-    for(int i=1;i<n;i++)
-    {
-	unsigned short v=vals[i];
-	if(v>maxv){maxv=v;}
-    }
-    return(maxv);
-}
-
-unsigned int
-min_v(unsigned int *vals,int n)
-{
-    unsigned int minv=vals[0];
-    for(int i=1;i<n;i++)
-    {
-	unsigned int v=vals[i];
-	if(v<minv){minv=v;}
-    }
-    return(minv);
-}
-
-unsigned short
-min_v(unsigned short *vals,int n)
-{
-    unsigned short minv=vals[0];
-    for(int i=1;i<n;i++)
-    {
-	unsigned short v=vals[i];
-	if(v<minv){minv=v;}
-    }
-    return(minv);
-}
 
 
 // duplicate an array of unsigned int's
@@ -186,124 +135,179 @@ class VlengthCoder
     int nintervals;// number of intervals
 
     int *intervals;
+    unsigned int *intervalsizes; // speedup
+    unsigned int *lboundaries; // speedup
     BitStream &bs;
+
+//      inline unsigned int intervalsize(int i)
+//  	{
+//  	    unsigned int res=((intervals[i] > 0 ? pow2(intervals[i]-1) : 0));
+//  	    if(intervalsizes[i]!=res){errr("intervalsizes");}
+//  	    return res;
+//  	}
+    inline unsigned int intervalsize0(int i){return((intervals[i] > 0 ? pow2(intervals[i]-1) : 0));}
+
 public:
     int verbose;
+
     // compress and insert a value into the bitstream
-    int code(unsigned int v)
+    inline int code(unsigned int v)
     {
-	int i;
-	unsigned int lboundary=0;
-	unsigned int sboundary=0;
+	// SPEED CRITICAL SECTION
+	register int i;
+	register unsigned int lboundary=0;
+	register unsigned int sboundary=0;
 	for(i=0;;i++)
 	{
-	    sboundary=lboundary+intervalsize(i);
+	    sboundary=lboundary+intervalsizes[i];
 	    if( (lboundary!=sboundary && v>=lboundary && v<sboundary) || 
 		(lboundary==sboundary && v==lboundary)                   ){break;}
 	    lboundary=sboundary;
 	}
 	// were in the i'th interval;
   	bs.put(i,nlev,"int");// store interval
-	int bitsremaining=(intervals[i]>0 ? intervals[i]-1 : 0);
-	if(verbose>1)printf("v:%6d interval:%2d (%5d - %5d) bitsremaining:%2d ",v,i,lboundary,sboundary,bitsremaining);
+	const int bitsremaining=(intervals[i]>0 ? intervals[i]-1 : 0);
+//  	if(verbose>1)printf("v:%6d interval:%2d (%5d - %5d) bitsremaining:%2d ",v,i,lboundary,sboundary,bitsremaining);
 	v-=lboundary;
-	if(verbose>1)printf("remain:%6d  totalbits:%2d\n",v,bitsremaining+nlev);
+//  	if(verbose>1)printf("remain:%6d  totalbits:%2d\n",v,bitsremaining+nlev);
     	bs.put(v,bitsremaining,"rem");
 	return(bitsremaining + nlev);
     }
-    //  insert the packed probability distrbution into the bitstream
-    void code_begin()
-    {
-	int i;
-	bs.add_tag("VlengthCoder:Header");
-	bs.put(nbits,5,"nbits");
-	bs.put(nlev,5,"nlev");
-	for(i=0;i<nintervals;i++)
-	{
-	    bs.put(intervals[i],5,label_str("interval",i));
-	}
-    }
-    //  get the packed probability distrbution from the bitstream
-    void get_begin()
-    {
-	int i;
-	nbits=bs.get(5,"nbits");
-	if(verbose>1)printf("get_begin nbits:%d\n",nbits);
-	nlev=bs.get(5,"nlev");
-	if(verbose>1)printf("get_begin nlev:%d\n",nlev);
-	nintervals=pow2(nlev);
-
-	intervals=new int [nintervals];
-	CHECK_MEM(intervals);
-
-	for(i=0;i<nintervals;i++)
-        {
-	    intervals[i]=bs.get(5,label_str("interval",i));
-	    if(verbose>1)printf("get_begin intervals:%2d:%2d\n",i,intervals[i]);
-	}
-    }
     // get and uncompress  a value from  the bitstream
-    unsigned int get()
+    inline unsigned int get()
     {
+	// SPEED CRITICAL SECTION
 	int i=bs.get(nlev,"int");// get interval
-	if(verbose>1)printf("get:interval:%2d ",i);
-	int bitsremaining=(intervals[i]>0 ? intervals[i]-1 : 0);
-	if(verbose>1)printf("bitsremain:%2d ",bitsremaining);
+//  	if(verbose>1)printf("get:interval:%2d ",i);
+	const int bitsremaining=(intervals[i]>0 ? intervals[i]-1 : 0);
+//  	if(verbose>1)printf("bitsremain:%2d ",bitsremaining);
 	unsigned int v=bs.get(bitsremaining,"rem");
-	if(verbose>1)printf("v0:%3d ",v);
-	unsigned int lboundary=0;
-	for(int j=0;j<i;j++){lboundary+=intervalsize(j);}
-	v+=lboundary;
-	if(verbose>1)printf("lboundary:%5d v:%5d \n",lboundary,v);
+//  	if(verbose>1)printf("v0:%3d ",v);
+//  	unsigned int lboundary=0;
+	v+=lboundaries[i];
+//	for(int j=0;j<i;j++){lboundary+=intervalsizes[j];}
+//  	v+=lboundary;
+//  	if(verbose>1)printf("lboundary:%5d v:%5d \n",lboundaries[i],v);
 	return(v);
     }
-    unsigned int intervalsize(int i){return((intervals[i] > 0 ? pow2(intervals[i]-1) : 0));}
 
-    VlengthCoder(BitStream &nbs,int nverbose=0):bs(nbs)
-    {
-	verbose=nverbose;
-	nbits=0;
-	nlev=0;
-	nintervals=0;
-	intervals=NULL;
-    }
+
+    //  insert the packed probability distrbution into the bitstream
+    void code_begin();
+    //  get the packed probability distrbution from the bitstream
+    void get_begin();
+
+    void make_lboundaries();
+
+    VlengthCoder(BitStream &nbs,int nverbose=0);
     
     ~VlengthCoder()
     {
 	delete [] intervals;
+	delete [] intervalsizes;
     }
 
     // create VlengthCoder and its probability distrbution from an array of values
-    VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose=0):bs(nbs)
-    {
-	verbose=nverbose;
-	unsigned int *sorted=duplicate(vals,n);
-	qsort_uint(sorted,n);
-
-	nbits=num_bits(max_v(vals,n));
-	nlev=5;
-	nintervals=pow2(nlev);
-	int i;
-	intervals=new int [nintervals];
-	CHECK_MEM(intervals);
-
-	// find split boundaires
-	if(verbose>1)printf("nbits:%d nlev:%d nintervals:%d \n",nbits,nlev,nintervals);
-	unsigned int lboundary=0;
-	for(i=0;i<nintervals-1;i++)
-	{
-	    unsigned int boundary=sorted[(n*(i+1))/nintervals];
-	    intervals[i]=1+log2(boundary-lboundary);
-	    if(verbose>1)printf("intnum%02d  begin:%5d end:%5d len:%5d (code:%2d)  real upper boundary: real:%5d\n",i,lboundary,intervalsize(i)+lboundary,intervalsize(i),intervals[i],boundary);
-	    lboundary+=intervalsize(i);
-	}
-	intervals[i]=1+log2(sorted[n-1]-lboundary)+1;
-	lboundary+=intervalsize(i);
-	if(verbose>1)printf("num%02d  interval len:%2d  %5d   boundary: real:%5d approx:%5d\n",i,intervals[i],intervalsize(i),sorted[n-1],lboundary);
-	if(verbose>1)printf("\n");
-	delete [] sorted;
-    }
+    VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose=0);
 };
+
+void 
+VlengthCoder::code_begin()
+{
+    int i;
+    bs.add_tag("VlengthCoder:Header");
+    bs.put(nbits,5,"nbits");
+    bs.put(nlev,5,"nlev");
+    for(i=0;i<nintervals;i++)
+    {
+	bs.put(intervals[i],5,label_str("interval",i));
+    }
+}
+void 
+VlengthCoder::get_begin()
+{
+    int i;
+    nbits=bs.get(5,"nbits");
+    if(verbose>1)printf("get_begin nbits:%d\n",nbits);
+    nlev=bs.get(5,"nlev");
+    if(verbose>1)printf("get_begin nlev:%d\n",nlev);
+    nintervals=pow2(nlev);
+
+    intervals=new int [nintervals];
+    CHECK_MEM(intervals);
+    intervalsizes=new unsigned int [nintervals];
+    CHECK_MEM(intervalsizes);
+    lboundaries=new unsigned int [nintervals+1];
+    CHECK_MEM(lboundaries);
+
+    for(i=0;i<nintervals;i++)
+    {
+	intervals[i]=bs.get(5,label_str("interval",i));
+	intervalsizes[i]=intervalsize0(i);
+	if(verbose>1)printf("get_begin intervals:%2d:%2d\n",i,intervals[i]);
+    }
+    make_lboundaries();
+}
+void 
+VlengthCoder::make_lboundaries()
+{
+    unsigned int lboundary=0;
+    for(int j=0;j<=nintervals;j++)
+    {
+	lboundaries[j]=lboundary;
+	if(j<nintervals){lboundary+=intervalsizes[j];}
+    }
+}
+
+VlengthCoder::VlengthCoder(BitStream &nbs,int nverbose=0):bs(nbs)
+{
+    verbose=nverbose;
+    nbits=0;
+    nlev=0;
+    nintervals=0;
+    intervals=NULL;
+}
+
+VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose=0):bs(nbs)
+{
+    verbose=nverbose;
+    unsigned int *sorted=duplicate(vals,n);
+    qsort_uint(sorted,n);
+
+    nbits=num_bits(HtMaxMin::max_v(vals,n));
+    nlev=5;
+    nintervals=pow2(nlev);
+    int i;
+
+    intervals=new int [nintervals];
+    CHECK_MEM(intervals);
+    intervalsizes=new unsigned int [nintervals];
+    CHECK_MEM(intervalsizes);
+    lboundaries=new unsigned int [nintervals+1];
+    CHECK_MEM(lboundaries);
+
+    // find split boundaires
+    if(verbose>1)printf("nbits:%d nlev:%d nintervals:%d \n",nbits,nlev,nintervals);
+
+    unsigned int lboundary=0;
+    for(i=0;i<nintervals-1;i++)
+    {
+	unsigned int boundary=sorted[(n*(i+1))/nintervals];
+	intervals[i]=1+log2(boundary-lboundary);
+	intervalsizes[i]=intervalsize0(i);
+	if(verbose>1)printf("intnum%02d  begin:%5d end:%5d len:%5d (code:%2d)  real upper boundary: real:%5d\n",i,lboundary,intervalsizes[i]+lboundary,intervalsizes[i],intervals[i],boundary);
+	lboundary+=intervalsizes[i];
+    }
+    intervals[i]=1+log2(sorted[n-1]-lboundary)+1;
+    intervalsizes[i]=intervalsize0(i);
+    lboundary+=intervalsizes[i];
+    if(verbose>1)printf("num%02d  interval len:%2d  %5d   boundary: real:%5d approx:%5d\n",i,intervals[i],intervalsizes[i],sorted[n-1],lboundary);
+    if(verbose>1)printf("\n");
+
+    make_lboundaries();
+
+    delete [] sorted;
+}
 
 
 // **************************************************
@@ -323,15 +327,141 @@ BitStream::get_zone(byte *vals,int n,char *tag)
     for(int i=0;i<(n+7)/8;i++){vals[i]=get(TMin(8,n-8*i));}
 }
 
-void BitStream::put(unsigned int v,int n,char *tag/*="NOTAG"*/)
+void 
+BitStream::put(unsigned int v,int n,char *tag/*="NOTAG"*/)
 {
-    int i;
+    // SPEED CRITICAL SECTION
+    if(freezeon){bitpos+=n;return;}
     add_tag(tag);
-    for(i=0;i<n;i++)
+    
+    if(!n){return;}
+
+    // 1)
+    int bpos0= bitpos & 0x07;
+//      printf("bpos0:%3d bitpos:%5d:%5d  n:%4d  val:%x\n",bpos0,bitpos,buff.size()*8,n,v);
+    if(bpos0 + n <8)
     {
-	put((v& pow2(i) ? 1:0));
+//    	printf("simple case:");
+//  	::show_bits(v,n);
+//  	printf("\n");
+	// simplest case it all fits
+	buff.back()|=v<<bpos0;
+	bitpos+=n;
+	if(! (bitpos & 0x07) )
+	{buff.push_back(0);}// new byte
+	return;
+    }
+    else
+    {
+	const int ncentral=((bpos0 + n)>>3)-1;
+	// put first
+	buff.back()|=((v & 0xff)<<bpos0) & 0xff;
+	const int nbitsinfirstbyte=8-bpos0;
+
+//  	printf("normal case :(%x:%x)",((v & 0xff)<<bpos0) & 0xff,buff.back());
+//  	::show_bits(((v & 0xff)<<bpos0) & 0xff,-8);
+//  	printf(" ");
+
+
+	v>>=nbitsinfirstbyte;
+//  	printf(" (v:%x)",v);
+	// put central
+	for(int i=ncentral;i;i--)
+	{
+	    buff.push_back(0);
+	    buff.back()= v & 0xff ;
+//  	    ::show_bits(v & 0xff,-8);
+//  	    printf(" ");
+	    v>>=8;	    
+	}
+	// put last
+	const int nbitsremaining=n-(  (ncentral<<3)+nbitsinfirstbyte );
+	if(nbitsremaining)
+	{
+	    buff.push_back(0);
+	    buff.back()=v &  (pow2(nbitsremaining+1)-1);
+
+//  	    printf(" (v:%x:%x)",v &  (pow2(nbitsremaining+1)-1),buff.back());
+//  	    ::show_bits(v &  (pow2(nbitsremaining+1)-1),-nbitsremaining);
+//  	    printf("\n");
+	}
+	if(!(nbitsremaining & 0x07)){buff.push_back(0);}
+	bitpos+=n;
+//  	printf("nbitsinfirstbyte:%d ncentral:%d  nbitsremaining:%d\n",nbitsinfirstbyte,ncentral,nbitsremaining);
+
+    }
+//      printf("cuurent put order:");
+//      for(i=0;i<n;i++)
+//      {
+//  	printf("%c",((v0& pow2(i) ? '1':'0')));
+//      }
+//      printf("\n");
+}
+
+
+
+
+unsigned int 
+BitStream::get(int n,char *tag/*=NULL*/)
+{
+    // SPEED CRITICAL SECTION
+    if(check_tag(tag)==NOTOK){errr("BitStream::get(int) check_tag failed");}    
+    if(!n){return 0;}
+
+    unsigned int res=0;
+
+    // 1)
+    int bpos0= bitpos & 0x07;
+//       printf("bpos0:%3d bitpos:%5d  n:%4d %s\n",bpos0,bitpos,n,tag);
+//       printf("input:\n");
+//       for(int j=0;j<1+(n+7)/8;j++){printf("%x",buff[(bitpos>>3)+j]);}
+//       printf("\n");
+    if(bpos0 + n <8)
+    {
+	// simplest case it all fits
+	res=(buff[bitpos>>3]>>bpos0) & (pow2(n)-1);
+	bitpos+=n;
+//      	printf("simple case:res:%x\n",res);
+	return res;
+    }
+    else
+    {
+	int bytepos=bitpos>>3;
+	const int ncentral=((bpos0 + n)>>3)-1;
+	// put first
+	res=(buff[bytepos]>>bpos0) & 0xff;
+//      	printf("normal case:res0:%x\n",res);
+
+	const int nbitsinfirstbyte=8-bpos0;
+
+	bytepos++;
+	// put central
+	if(ncentral)
+	{
+	    unsigned int v=0;
+	    for(int i=0;i<ncentral;i++)
+	    {
+		((byte *)&v)[i]=buff[bytepos++];
+//  		printf("       resC%d:v:%x\n",i,v);
+	    }
+	    res|=v<<nbitsinfirstbyte;
+//  	    printf("       :resC:%x\n",res);
+	}
+	// put last
+	const int nbitsremaining=n-(  (ncentral<<3)+nbitsinfirstbyte );
+	if(nbitsremaining)
+	{
+	    res|=((unsigned int)(buff[bytepos] &  (pow2(nbitsremaining)-1) )) << (nbitsinfirstbyte +((bytepos-(bitpos>>3)-1)<<3));
+//  	    printf("       :resR:%x  buff[%d]:%x  %d\n",res,bytepos,buff[bytepos],
+//  		   (nbitsinfirstbyte +((bytepos-(bitpos>>3)-1)<<3)));
+	}
+
+	bitpos+=n;
+//    	printf("nbitsinfirstbyte:%d ncentral:%d  nbitsremaining:%d\n",nbitsinfirstbyte,ncentral,nbitsremaining);
+	return res;
     }
 }
+#ifdef NOTDEF
 unsigned int 
 BitStream::get(int n,char *tag/*=NULL*/)
 {	
@@ -343,7 +473,7 @@ BitStream::get(int n,char *tag/*=NULL*/)
     }
     return(res);
 }
-
+#endif
 void 
 BitStream::freeze()
 {
@@ -361,7 +491,8 @@ BitStream::unfreeze()
     if(freeze_stack.size()==0){freezeon=0;}
     return(size);
 }
-void BitStream::add_tag(char *tag)
+void 
+BitStream::add_tag1(char *tag)
 {
     if(!use_tags){return;}
     if(freezeon){return;}
@@ -371,7 +502,7 @@ void BitStream::add_tag(char *tag)
 }
 
 int 
-BitStream::check_tag(char *tag,int pos/*=-1*/)
+BitStream::check_tag1(char *tag,int pos/*=-1*/)
 {
     if(!use_tags){return OK;}
     if(!tag){return OK;}
@@ -578,7 +709,7 @@ Compressor::put_fixedbitl(byte *vals,int n,char *tag)
 void
 Compressor::put_fixedbitl(unsigned int *vals,int n)
 {
-    int nbits=num_bits(max_v(vals,n));
+    int nbits=num_bits(HtMaxMin::max_v(vals,n));
 
     put(nbits,NBITS_NBITS_VAL,"nbits");
     add_tag("data");

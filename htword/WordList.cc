@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.18 1999/12/23 10:55:18 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.19 2000/01/03 10:04:48 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -32,6 +32,9 @@
 #include "Configuration.h"
 #include "htString.h"
 #include "HtPack.h"
+#include "HtTime.h"
+#include "WordMonitor.h"
+#include "WordDBCompress.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,25 +49,7 @@
 void
 WordList::Initialize(const Configuration &config0)
 {
-    WordType::Initialize(config0);
-
-    const String &keydescfile = config0["wordlist_wordkey_description_file"];
-    const String &keydesc     = config0["wordlist_wordkey_description"];
-
-    if(!keydesc.empty())
-    {
-	WordKeyInfo::SetKeyDescriptionFromString(keydesc);
-    }
-    else
-    if(!keydescfile.empty())
-    {
-	WordKeyInfo::SetKeyDescriptionFromFile(keydescfile);
-    }
-    else
-    {
-	cerr << "WordList::Initialize: didn't find key description file in config" << endl;
-    }
-    
+    WordContext::Initialize(config0);
 }
 
 //*****************************************************************************
@@ -101,12 +86,27 @@ WordList::WordList(const Configuration& config_arg) :
     }
     else
     {
-	if(!word_key_info)
+	if(!WordKeyInfo::Get())
 	{
-	    cerr << "WordList::WordList: didn't find key description (" << word_key_info << ")" << endl;
+#ifdef KEYDESC
+	    WordKeyInfo::SetKeyDescriptionFromFile(KEYDESC);	
+#else
+	    cerr << "WordList::WordList: didn't find key description " << endl;
 	    cerr <<"are you shure you called WordList::Initialize with a valid key description" << endl;
+#endif
 	}
     }
+
+
+  // DEBUGING / BENCHMARKING
+    cmprInfo = NULL; 
+    bm_put_count = 0;
+    bm_walk_count = 0;
+    bm_walk_count_DB_SET_RANGE = 0;
+    bm_walk_count_DB_NEXT = 0;
+    bm_walk_time=0;
+    bm_put_time=0;
+
 }
 
 //*****************************************************************************
@@ -116,10 +116,14 @@ int WordList::Open(const String& filename, int mode)
   //
   // Info initialization
   //
-    int usecompress=0;
+  int usecompress=0;
+
   db.dbinfo.set_bt_compare(word_db_cmp);
+
   if(config.Value("wordlist_page_size" ,0 )) {db.dbinfo.set_pagesize (config.Value("wordlist_page_size" ,0));}
-  if(config.Value("wordlist_cache_size",0))  {db.dbinfo.set_cachesize(config.Value("wordlist_cache_size",0));}
+
+  int cache_size=config.Value("wordlist_cache_size",10000000);
+  if(cache_size){db.dbinfo.set_cachesize(cache_size);}
   else
   {
       cout << "WordList::Open WARNING no cachesize:: performance might be slow"  << endl;
@@ -133,6 +137,10 @@ int WordList::Open(const String& filename, int mode)
   }
 
   db.dbinfo.set_bt_compare(word_db_cmp);
+
+  // BENCHMARKING
+  monitor = new WordMonitor(config,GetCompressor(),this);
+  if(GetCompressor()){GetCompressor()->SetMonitor(monitor);}
 
   int ret = db.Open(filename, DB_BTREE, (mode == O_RDONLY ? DB_RDONLY : DB_CREATE) | usecompress, 0666);
 
@@ -172,10 +180,17 @@ int WordList::Put(const WordReference& arg, int flags)
     return NOTOK;
   wordRef.Key().SetWord(word);
 
-//    cdebug << "****putting wordref" << endl;
+  double start_time=HtTime::DTime(); // DEBUGING / BENCHMARKING
+
   int ret = db.Put(wordRef, flags);
   if(ret == OK)
     ret = Ref(wordRef);
+
+  // DEBUGING / BENCHMARKING
+  bm_put_count++;
+  bm_put_time += HtTime::DTime(start_time);
+  (*monitor)();
+
   return ret;
 }
 
@@ -254,6 +269,22 @@ List *WordList::Collect (const WordReference& wordRef)
 //      if(verbose){cdebug << "WordList::Walk(original fct) end:" << searchD.searchKey;}
 //      return searchD.collectRes;
 //  }
+
+inline void 
+WordList::WalkBenchmark_Get(WordSearchDescription &search, int cursor_get_flags)
+{
+    if(cursor_get_flags==DB_SET_RANGE)
+    {
+	if(search.benchmarking){search.benchmarking->nDB_SET_RANGE++;}
+	bm_walk_count_DB_SET_RANGE++;
+    }
+    if(cursor_get_flags==DB_NEXT     )
+    {
+	if(search.benchmarking){search.benchmarking->nDB_NEXT++;}
+	bm_walk_count_DB_NEXT++;
+    }
+}
+
 List *
 WordList::Walk(const WordSearchDescription &csearch)
 {
@@ -265,6 +296,7 @@ WordList::Walk(const WordSearchDescription &csearch)
 int 
 WordList::Walk(WordSearchDescription &search)
 {
+    double start_time=HtTime::DTime(); // BENCHMARKING
     search.setup();
     int lverbose = (search.shutup ? 0 : verbose);
 //  lverbose=10;
@@ -281,7 +313,6 @@ WordList::Walk(WordSearchDescription &search)
 
 
     if(cursor.Open(db.db) == NOTOK) return 0;
-    
 
     if(lverbose){cdebug << "WordList::Walk: Walk begin:action:" << search.action << ":SearchKey:"<< searchKey
 		     << ": SuffixDeffined:" << searchKey.IsDefinedWordSuffix() << "\n";}
@@ -327,7 +358,11 @@ WordList::Walk(WordSearchDescription &search)
 	    prefixKey.Pack(key);
 	}
     }
+
+    // BENCHMARKING
     if(search.benchmarking){search.benchmarking->nDB_SET_RANGE++;}
+    bm_walk_count_DB_SET_RANGE++;
+
     if(cursor.Get(key, data, DB_SET_RANGE) != 0)
 	return NOTOK;
 
@@ -412,8 +447,7 @@ WordList::Walk(WordSearchDescription &search)
 	}
 	
 	// finsihed ... go to next entry (or skip further on)
-	if(search.benchmarking && cursor_get_flags==DB_SET_RANGE){search.benchmarking->nDB_SET_RANGE++;}
-	if(search.benchmarking && cursor_get_flags==DB_NEXT     ){search.benchmarking->nDB_NEXT++;}
+	WalkBenchmark_Get( search, cursor_get_flags );
 	if(cursor.Get(key, data, cursor_get_flags) != 0)
 	{
 	    if(lverbose>1){cdebug << "WordList::Walk: finished loop: past end:"  << endl;}
@@ -421,6 +455,11 @@ WordList::Walk(WordSearchDescription &search)
 	}
     } 
     if(lverbose>1){cdebug << "WordList::Walk: FINSISHED "  << endl;}
+
+    // BENCHMARKING
+    bm_walk_time += HtTime::DTime(start_time);
+    (*monitor)();
+
     return OK;
 }
 
@@ -441,7 +480,7 @@ WordList::Walk(WordSearchDescription &search)
 int
 WordList::SkipUselessSequentialWalking(const WordSearchDescription &search,WordKey &foundKey,String &key,int &cursor_get_flags)
 {
-    int nfields=word_key_info->nfields;
+    int nfields=WordKey::nfields();
     if(verbose>1){cdebug << "WordList::SkipUselessSequentialWalking: skipchk:" <<  foundKey << endl;}
     int i;
     // check if "found" key has a field that is bigger than 
@@ -450,9 +489,9 @@ WordList::SkipUselessSequentialWalking(const WordSearchDescription &search,WordK
     {
 	if(search.searchKey.IsDefinedInSortOrder(i))
 	{
-	    if( (word_key_info->sort[i].direction == WORD_SORT_ASCENDING
+	    if( (WordKeyInfo::Get()->sort[i].direction == WORD_SORT_ASCENDING
 		 && foundKey.GetInSortOrder(i) > search.searchKey.GetInSortOrder(i))   ||
-		(word_key_info->sort[i].direction == WORD_SORT_DESCENDING
+		(WordKeyInfo::Get()->sort[i].direction == WORD_SORT_DESCENDING
 		 && foundKey.GetInSortOrder(i) < search.searchKey.GetInSortOrder(i))      )
 
 	    { //  field 'i' is bigger in "found" than in "wordRef", we can skip

@@ -1,42 +1,42 @@
 //
 // StringMatch.h
 //
-// (c) 1995 Andrew Scherpbier <andrew@sdsu.edu>
+// StringMatch: This class provides an interface to a fairly specialized string
+//              lookup facility.  It is intended to be used as a replace for any
+//              regular expression matching when the pattern string is in the form:
 //
-// This class provides an interface to a fairly specialized string
-// lookup facility.  It is intended to be used as a replace for any
-// regualr expression matching when the pattern string is in the form:
+//                 <string1>|<string2>|<string3>|...
 //
-//    <string1>|<string2>|<string3>|...
+//              Just like regular expression routines, the pattern needs to be
+//              compiled before it can be used.  This is done using the Pattern()
+//              member function.  Once the pattern has been compiled, the member
+//              function Find() can be used to search for the pattern in a string.
+//              If a string has been found, the "which" and "length" parameters
+//              will be set to the string index and string length respectively.
+//              (The string index is counted starting from 0) The return value of
+//              Find() is the position at which the string was found or -1 if no
+//              strings could be found.  If a case insensitive match needs to be
+//              performed, call the IgnoreCase() member function before calling
+//              Pattern().  This function will setup a character translation table
+//              which will convert all uppercase characters to lowercase.  If some
+//              other translation is required, the TranslationTable() member
+//              function can be called to provide a custom table.  This table needs
+//              to be 256 characters.
 //
-// Just like regular expression routines, the pattern needs to be
-// compiled before it can be used.  This is done using the Pattern()
-// member function.  Once the pattern has been compiled, the member
-// function Find() can be used to search for the pattern in a string.
-// If a string has been found, the "which" and "length" parameters
-// will be set to the string index and string length respectively.
-// (The string index is counted starting from 0) The return value of
-// Find() is the position at which the string was found or -1 if no
-// strings could be found.  If a case insensitive match needs to be
-// performed, call the IgnoreCase() member function before calling
-// Pattern().  This function will setup a character translation table
-// which will convert all uppercase characters to lowercase.  If some
-// other translation is required, the TranslationTable() member
-// function can be called to provide a custom table.  This table needs
-// to be 256 characters.
-// 
-// $Id: StringMatch.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: StringMatch.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// $Id: StringMatch.h,v 1.8.2.1 2000/01/03 10:04:47 bosc Exp $
 //
-//
+
 #ifndef _StringMatch_h_
 #define _StringMatch_h_
 
-#include <Object.h>
-
+#include "Object.h"
+#include "HtWordType.h"
 
 class StringMatch : public Object
 {
@@ -52,7 +52,7 @@ public:
     // be in the form <string1>|<string2>|...  If in the form of a
     // List, it should be a list of String objects.
     //
-    void		Pattern(char *pattern);
+    void		Pattern(char *pattern, char sep = '|');
 
     //
     // Search for any of the strings in the pattern in the given
@@ -62,22 +62,22 @@ public:
     // length of that pattern string.  If none of the pattern strings
     // could be found, the return value will be -1
     //
-    int			FindFirst(char *string, int &which, int &length);
-    int			FindFirst(char *string);
+    int			FindFirst(const char *string, int &which, int &length);
+    int			FindFirst(const char *string);
 	
-    int			FindFirstWord(char *string, int &which, int &length);
-    int			FindFirstWord(char *string);
+    int			FindFirstWord(const char *string, int &which, int &length);
+    int			FindFirstWord(const char *string);
 	
     //
     // If you are interested in matching instead of searching, use
     // the following.  Same parameters except that the return value will
     // be 1 if there was a match, 0 if there was not.
     //
-    int			Compare(char *string, int &which, int &length);
-    int			Compare(char *string);
+    int			Compare(const char *string, int &which, int &length);
+    int			Compare(const char *string);
 
-    int			CompareWord(char *string, int &which, int &length);
-    int			CompareWord(char *string);
+    int			CompareWord(const char *string, int &which, int &length);
+    int			CompareWord(const char *string);
     
     //
     // Provide a character translation table which will be applied to
@@ -93,6 +93,12 @@ public:
     // characters to lowercase
     //
     void		IgnoreCase();
+
+    //
+    // Build a local translation table which ignores all given punctuation
+    // characters
+    //
+    void		IgnorePunct(char *punct = NULL);
 
     //
     // Determine if there is a pattern associated with this Match object.

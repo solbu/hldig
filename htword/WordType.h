@@ -11,23 +11,24 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.h,v 1.1.2.2 1999/12/09 11:31:27 bosc Exp $
+// $Id: WordType.h,v 1.1.2.3 2000/01/03 10:04:48 bosc Exp $
 //
 
-#ifndef __WordType_h
-#define __WordType_h
+#ifndef _WordType_h
+#define _WordType_h
 
 #include "htString.h"
 #include "Configuration.h"
-
+#include"WordContext.h"
 //
 // Compatibility functions
 //
-#define HtIsWordChar(c) (word_type_default->IsChar(c))
-#define HtIsStrictWordChar(c) (word_type_default->IsStrictChar(c))
-#define HtWordNormalize(w) (word_type_default->Normalize(w))
-#define HtStripPunctuation(c) (word_type_default->StripPunctuation(c))
-
+#ifdef OUTDATED
+#define HtIsWordChar(c)       (WordContext::word_type_default->IsChar(c))
+#define HtIsStrictWordChar(c) (WordContext::word_type_default->IsStrictChar(c))
+#define HtWordNormalize(w)    (WordContext::word_type_default->Normalize(w))
+#define HtStripPunctuation(c) (WordContext::word_type_default->StripPunctuation(c))
+#endif
 //
 // Return values of Normalize, to get them in string form use NormalizeStatus
 //
@@ -121,9 +122,5 @@ WordType::StripPunctuation(String &s) const
   return s.remove(valid_punctuation);
 }
 
-//
-// Default object for global configuration
-//
-extern WordType* word_type_default;
 
 #endif /* __WordType_h */

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.8 1999/12/21 17:31:48 bosc Exp $
+// $Id: WordList.h,v 1.5.2.9 2000/01/03 10:04:48 bosc Exp $
 //
 
 #ifndef _WordList_h_
@@ -36,7 +36,7 @@
 class List;
 class WordList;
 class WordCursor;
-
+class WordMonitor;
 //
 // Possible values of the action argument of WordList::Walk
 // check walk function in WordList.cc for info on these:
@@ -284,11 +284,23 @@ private:
     WordDB	            	db;
 #endif /* SWIG */
 
+
 // DEBUGING / BENCHMARKING
- private:
-    DB_CMPR_INFO* cmprInfo;
+ protected:
+    DB_CMPR_INFO* cmprInfo; // compressor keeps it's own benchmarking info
+    inline void WalkBenchmark_Get(WordSearchDescription &search, int cursor_get_flags);
  public:
-    WordDBCompress *GetCompressor(){return((WordDBCompress *)cmprInfo->user_data);}
+    int    bm_put_count;
+    double bm_put_time;
+    int    bm_walk_count;
+    double bm_walk_time;
+    int    bm_walk_count_DB_SET_RANGE;
+    int    bm_walk_count_DB_NEXT;
+
+    inline WordDBCompress *GetCompressor()
+	{return(cmprInfo ?  (WordDBCompress *)cmprInfo->user_data : (WordDBCompress *)NULL);}
+
+    WordMonitor *monitor;
 };
 
 #endif

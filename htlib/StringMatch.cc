@@ -1,29 +1,39 @@
 //
 // StringMatch.cc
 //
-// (c) 1995 Andrew Scherpbier <andrew@sdsu.edu>
+// StringMatch: This class provides an interface to a fairly specialized string
+//              lookup facility.  It is intended to be used as a replace for any
+//              regualr expression matching when the pattern string is in the form:
 //
-// Implementation of StringMatch
+//                 <string1>|<string2>|<string3>|...
 //
-// $Log: StringMatch.cc,v $
-// Revision 1.3  1998/07/16 15:15:27  ghutchis
+//              Just like regular expression routines, the pattern needs to be
+//              compiled before it can be used.  This is done using the Pattern()
+//              member function.  Once the pattern has been compiled, the member
+//              function Find() can be used to search for the pattern in a string.
+//              If a string has been found, the "which" and "length" parameters
+//              will be set to the string index and string length respectively.
+//              (The string index is counted starting from 0) The return value of
+//              Find() is the position at which the string was found or -1 if no
+//              strings could be found.  If a case insensitive match needs to be
+//              performed, call the IgnoreCase() member function before calling
+//              Pattern().  This function will setup a character translation table
+//              which will convert all uppercase characters to lowercase.  If some
+//              other translation is required, the TranslationTable() member
+//              function can be called to provide a custom table.  This table needs
+//              to be 256 characters.
 //
-// Added patch from Stephan Muehlstrasser <smuehlst@Rational.Com> to fix
-// delete syntax and a memory leak.
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.2  1997/02/24 17:52:52  turtle
-// Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
-// ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
+// $Id: StringMatch.cc,v 1.13.2.1 2000/01/03 10:04:47 bosc Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: StringMatch.cc,v 1.3 1998/07/16 15:15:27 ghutchis Exp $";
-#endif
 
 #include "StringMatch.h"
+
 #include <string.h>
 #include <ctype.h>
 #include <fstream.h>
@@ -33,8 +43,7 @@ static char RCSid[] = "$Id: StringMatch.cc,v 1.3 1998/07/16 15:15:27 ghutchis Ex
 // Final states have an match index encoded in them.  This number
 // is shifted left by INDEX_SHIFT bits.
 //
-#define	FINAL			0x80000000
-#define	MATCH_INDEX_MASK	0x7fff0000
+#define	MATCH_INDEX_MASK	0xffff0000
 #define	STATE_MASK		0x0000ffff
 #define	INDEX_SHIFT		16
 
@@ -70,7 +79,7 @@ StringMatch::~StringMatch()
 //   Compile the given pattern into a state transition table
 //
 void
-StringMatch::Pattern(char *pattern)
+StringMatch::Pattern(char *pattern, char sep)
 {
     if (!pattern || !*pattern)
     {
@@ -82,9 +91,20 @@ StringMatch::Pattern(char *pattern)
 
     //
     // Allocate enough space in the state table to hold the worst case
-    // patterns
+    // patterns...
     //
     int		n = strlen(pattern);
+
+    // ...but since the state table does not need an extra state
+    // for each string in the pattern, we can subtract the number
+    // of separators.  Wins for small but numerous strings in
+    // the pattern.
+    char *tmpstr;
+    for (tmpstr = pattern;
+         (tmpstr = strchr(tmpstr, sep)) != NULL;
+         tmpstr++)              // Pass the separator.
+      n--;
+
     int		i;
 
     for (i = 0; i < 256; i++)
@@ -92,6 +112,8 @@ StringMatch::Pattern(char *pattern)
 	table[i] = new int[n];
 	memset((unsigned char *) table[i], 0, n * sizeof(int));
     }
+    for (i = 0; i < n; i++)
+	table[0][i] = i;	// "no-op" states for null char, to be ignored
 
     //
     // Set up a standard case translation table if needed.
@@ -119,24 +141,39 @@ StringMatch::Pattern(char *pattern)
     
     while ((unsigned char)*pattern)
     {
+#if 0
+	if (totalStates > n)
+	{
+	  cerr << "Fatal!  Miscalculation of number of states"
+	       << endl;
+	  exit (2);
+	}
+#endif
+
 	chr = trans[(unsigned char)*pattern];
-	if (chr == '|')
+	if (chr == 0)
+	{
+	    pattern++;
+	    continue;
+	}
+	if (chr == sep)
 	{
 	    //
 	    // Next pattern
 	    //
 	    table[previous][previousState] =
-		previousValue | FINAL | (index << INDEX_SHIFT);
+		previousValue | (index << INDEX_SHIFT);
 	    index++;
 	    state = 0;
-	    totalStates--;
+	    //	    totalStates--;
 	}
 	else
 	{
 	    previousValue = table[chr][state];
+	    previousState = state;
 	    if (previousValue)
 	    {
-		if (previousValue & FINAL)
+		if (previousValue & MATCH_INDEX_MASK)
 		{
 		    if (previousValue & STATE_MASK)
 		    {
@@ -145,7 +182,6 @@ StringMatch::Pattern(char *pattern)
 		    else
 		    {
 			table[chr][state] |= ++totalStates;
-			previousState = state;
 			state = totalStates;
 		    }
 		}
@@ -157,7 +193,6 @@ StringMatch::Pattern(char *pattern)
 	    else
 	    {
 		table[chr][state] = ++totalStates;
-		previousState = state;
 		state = totalStates;
 	    }
 	}
@@ -165,15 +200,15 @@ StringMatch::Pattern(char *pattern)
 	pattern++;
     }
     table[previous][previousState] =
-	previousValue | FINAL | (index << INDEX_SHIFT);
+	previousValue | (index << INDEX_SHIFT);
 }
 
 
 //*****************************************************************************
-// int StringMatch::FindFirst(char *string, int &which, int &length)
+// int StringMatch::FindFirst(const char *string, int &which, int &length)
 //   Attempt to find the first occurance of the previous compiled patterns.
 //
-int StringMatch::FindFirst(char *string, int &which, int &length)
+int StringMatch::FindFirst(const char *string, int &which, int &length)
 {
     which = -1;
     length = -1;
@@ -206,6 +241,10 @@ int StringMatch::FindFirst(char *string, int &which, int &length)
 	    //
 	    if (state)
 	    {
+		// But we may already have a match, and are just being greedy.
+		if (which != -1)
+		    return start_pos;
+   
 		pos = start_pos + 1;
 	    }
 	    else
@@ -214,26 +253,36 @@ int StringMatch::FindFirst(char *string, int &which, int &length)
 	    continue;
 	}
 	state = new_state;
-	if (state & FINAL)
+	if (state & MATCH_INDEX_MASK)
 	{
 	    //
 	    // Matched one of the patterns.
 	    // Determine which and return.
 	    //
-	    which = ((state & MATCH_INDEX_MASK) >> INDEX_SHIFT) - 1;
+	    which = ((unsigned int) (state & MATCH_INDEX_MASK)
+		     >> INDEX_SHIFT) - 1;
 	    length = pos - start_pos + 1;
-	    return start_pos;
+	    state &= STATE_MASK;
+
+	    // Continue to find the longest, if there is one.
+	    if (state == 0)
+		return start_pos;
 	}
 	pos++;
     }
+
+    // Maybe we were too greedy.
+    if (which != -1)
+	return start_pos;
+
     return -1;
 }
 
 
 //*****************************************************************************
-// int StringMatch::Compare(char *string, int &which, int &length)
+// int StringMatch::Compare(const char *string, int &which, int &length)
 //
-int StringMatch::Compare(char *string, int &which, int &length)
+int StringMatch::Compare(const char *string, int &which, int &length)
 {
     which = -1;
     length = -1;
@@ -260,20 +309,34 @@ int StringMatch::Compare(char *string, int &which, int &length)
 	}
 	else
 	{
+	    // We may already have a match, and are just being greedy.
+	    if (which != -1)
+		return 1;
+   
 	    return 0;
 	}
 	state = new_state;
-	if (state & FINAL)
+	if (state & MATCH_INDEX_MASK)
 	{
 	    //
 	    // Matched one of the patterns.
 	    //
-	    which = ((state & MATCH_INDEX_MASK) >> INDEX_SHIFT) - 1;
+	    which = ((unsigned int) (state & MATCH_INDEX_MASK)
+		     >> INDEX_SHIFT) - 1;
 	    length = pos - start_pos + 1;
-	    return 1;
+
+	    // Continue to find the longest, if there is one.
+	    state &= STATE_MASK;
+	    if (state == 0)
+		return 1;
 	}
 	pos++;
     }
+
+    // Maybe we were too greedy.
+    if (which != -1)
+	return 1;
+
     return 0;
 }
 
@@ -281,7 +344,7 @@ int StringMatch::Compare(char *string, int &which, int &length)
 //*****************************************************************************
 // int StringMatch::FindFirstWord(char *string)
 //
-int StringMatch::FindFirstWord(char *string)
+int StringMatch::FindFirstWord(const char *string)
 {
     int	dummy;
     return FindFirstWord(string, dummy, dummy);
@@ -289,9 +352,9 @@ int StringMatch::FindFirstWord(char *string)
 
 
 //*****************************************************************************
-// int StringMatch::CompareWord(char *string)
+// int StringMatch::CompareWord(const char *string)
 //
-int StringMatch::CompareWord(char *string)
+int StringMatch::CompareWord(const char *string)
 {
     int	dummy;
     return CompareWord(string, dummy, dummy);
@@ -302,7 +365,7 @@ int StringMatch::CompareWord(char *string)
 // int StringMatch::FindFirstWord(char *string, int &which, int &length)
 //   Attempt to find the first occurance of the previous compiled patterns.
 //
-int StringMatch::FindFirstWord(char *string, int &which, int &length)
+int StringMatch::FindFirstWord(const char *string, int &which, int &length)
 {
     which = -1;
     length = -1;
@@ -341,7 +404,7 @@ int StringMatch::FindFirstWord(char *string, int &which, int &length)
 	}
 	state = new_state;
 
-	if (state & FINAL)
+	if (state & MATCH_INDEX_MASK)
 	{
 	    //
 	    // Matched one of the patterns.
@@ -349,17 +412,18 @@ int StringMatch::FindFirstWord(char *string, int &which, int &length)
 	    is_word = 1;
 	    if (start_pos != 0)
 	    {
-		if (isalnum((unsigned char)string[start_pos - 1]))
+		if (HtIsStrictWordChar((unsigned char)string[start_pos - 1]))
 		    is_word = 0;
 	    }
-	    if (isalnum((unsigned char)string[pos + 1]))
+	    if (HtIsStrictWordChar((unsigned char)string[pos + 1]))
 		is_word = 0;
 	    if (is_word)
 	    {
 		//
 		// Determine which and return.
 		//
-		which = ((state & MATCH_INDEX_MASK) >> INDEX_SHIFT) - 1;
+		which = ((unsigned int) (state & MATCH_INDEX_MASK)
+			 >> INDEX_SHIFT) - 1;
 		length = pos - start_pos + 1;
 		return start_pos;
 	    }
@@ -386,9 +450,9 @@ int StringMatch::FindFirstWord(char *string, int &which, int &length)
 
 
 //*****************************************************************************
-// int StringMatch::CompareWord(char *string, int &which, int &length)
+// int StringMatch::CompareWord(const char *string, int &which, int &length)
 //
-int StringMatch::CompareWord(char *string, int &which, int &length)
+int StringMatch::CompareWord(const char *string, int &which, int &length)
 {
     which = -1;
     length = -1;
@@ -410,7 +474,7 @@ int StringMatch::CompareWord(char *string, int &which, int &length)
 	    return 0;
 	}
 	
-	if (state & FINAL)
+	if (state & MATCH_INDEX_MASK)
 	{
 	    //
 	    // Matched one of the patterns.  See if it is a word.
@@ -419,13 +483,14 @@ int StringMatch::CompareWord(char *string, int &which, int &length)
 
 	    if ((unsigned char)string[position + 1])
 	    {
-		if (isalnum((unsigned char)string[position + 1]))
+		if (HtIsStrictWordChar((unsigned char)string[position + 1]))
 		    isWord = 0;
 	    }
 
 	    if (isWord)
 	    {
-		which = ((state & MATCH_INDEX_MASK) >> INDEX_SHIFT) - 1;
+		which = ((unsigned int) (state & MATCH_INDEX_MASK)
+			 >> INDEX_SHIFT) - 1;
 		length = position + 1;
 		return 1;
 	    }
@@ -468,17 +533,46 @@ void StringMatch::TranslationTable(char *table)
 //
 void StringMatch::IgnoreCase()
 {
-    trans = new unsigned char[256];
+    if (!local_alloc || !trans)
+    {
+	trans = new unsigned char[256];
+	for (int i = 0; i < 256; i++)
+	    trans[i] = (unsigned char)i;
+	local_alloc = 1;
+    }
     for (int i = 0; i < 256; i++)
-	trans[i] = tolower((unsigned char)i);
-    local_alloc = 1;
+	if (isupper((unsigned char)i))
+	    trans[i] = tolower((unsigned char)i);
 }
 
 
 //*****************************************************************************
-// int StringMatch::FindFirst(char *source)
+// void StringMatch::IgnorePunct(char *punct)
+//   Set up the character translation table to ignore punctuation
 //
-int StringMatch::FindFirst(char *source)
+void StringMatch::IgnorePunct(char *punct)
+{
+    if (!local_alloc || !trans)
+    {
+	trans = new unsigned char[256];
+	for (int i = 0; i < 256; i++)
+	    trans[i] = (unsigned char)i;
+	local_alloc = 1;
+    }
+    if (punct)
+	for (int i = 0; punct[i]; i++)
+	    trans[(unsigned char)punct[i]] = 0;
+    else
+	for (int i = 0; i < 256; i++)
+	    if (HtIsWordChar(i) && !HtIsStrictWordChar(i))
+		trans[i] = 0;
+}
+
+
+//*****************************************************************************
+// int StringMatch::FindFirst(const char *source)
+//
+int StringMatch::FindFirst(const char *source)
 {
     int		dummy;
     return FindFirst(source, dummy, dummy);
@@ -486,9 +580,9 @@ int StringMatch::FindFirst(char *source)
 
 
 //*****************************************************************************
-// int StringMatch::Compare(char *source)
+// int StringMatch::Compare(const char *source)
 //
-int StringMatch::Compare(char *source)
+int StringMatch::Compare(const char *source)
 {
     int		dummy;
     return Compare(source, dummy, dummy);

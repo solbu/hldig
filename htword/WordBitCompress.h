@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.h,v 1.1.2.4 1999/12/14 18:31:31 bosc Exp $
+// $Id: WordBitCompress.h,v 1.1.2.5 2000/01/03 10:04:47 bosc Exp $
 //
 
 #ifndef   _WordBitCompress_h
@@ -26,6 +26,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include"HtVector_int.h"
+#include"HtMaxMin.h"
 
 typedef unsigned char byte;
 // ******** HtVector_byte (header)
@@ -66,10 +67,11 @@ num_bits(unsigned int maxval )
 // function declarations
 char *label_str(char *s,int n);
 void  show_bits(int v,int n=16);
-unsigned short max_v(unsigned short *vals,int n);
-unsigned int   max_v(unsigned int   *vals,int n);
-unsigned short min_v(unsigned short *vals,int n);
-unsigned int   min_v(unsigned int   *vals,int n);
+
+//  unsigned short max_v(unsigned short *vals,int n);
+//  unsigned int   max_v(unsigned int   *vals,int n);
+//  unsigned short min_v(unsigned short *vals,int n);
+//  unsigned int   min_v(unsigned int   *vals,int n);
 
 
 
@@ -101,25 +103,32 @@ public:
     void freeze();
     int unfreeze();
 
-    // puts a bit into the bitstream : ** all puts go through this **
-    void put(unsigned int v,char *tag=NULL)
+    // puts a bit into the bitstream
+    inline void put(unsigned int v)
     {
+	// SPEED CRITICAL SECTION
 	if(freezeon){bitpos++;return;}
-	if(v){buff.back()|=pow2(bitpos%8);}
-	add_tag(tag);
+	if(v){buff.back()|=pow2(bitpos & 0x07);}
 	bitpos++;
-	if(!(bitpos%8))// new byte
+	if(!(bitpos & 0x07))// new byte
 	{
 	    buff.push_back(0);
 	}
     }	
-
-    // gets a bit from the bitstream : ** all gets go through this **
-    byte get(char *tag=NULL)
+    inline void put(unsigned int v,char *tag)
     {
+	if(!freezeon){add_tag(tag);}
+	put(v);
+    }
+
+    // gets a bit from the bitstream
+    inline byte get(char *tag=NULL)
+    {
+	// SPEED CRITICAL SECTION
 	if(check_tag(tag)==NOTOK){errr("BitStream::get() check_tag failed");}
-	if(bitpos>=8*buff.size()){errr("BitStream::get reading past end of BitStream!");}
-	byte res=buff[bitpos/8] & pow2(bitpos%8);
+	if(bitpos>=(buff.size()<<3)){errr("BitStream::get reading past end of BitStream!");}
+	byte res=buff[bitpos>>3] & pow2(bitpos & 0x07);
+//  	printf("get:res:%d bitpos:%5d/%d buff[%3d]=%x\n",res,bitpos,bitpos%8,bitpos/8,buff[bitpos/8]);
 	bitpos++;
 	return(res);
     }
@@ -133,8 +142,18 @@ public:
     void get_zone(byte *vals,int n,char *tag);
 
     // 
-    void add_tag(char *tag);
-    int  check_tag(char *tag,int pos=-1);
+    inline void add_tag(char *tag)
+    {
+	if(!use_tags || !tag || freezeon){return;}
+	add_tag1(tag);
+    }
+    void add_tag1(char *tag);
+    inline int  check_tag(char *tag,int pos=-1)
+    {
+	if(!use_tags || !tag){return OK;}	
+	return(check_tag1(tag,pos));
+    }
+    inline int  check_tag1(char *tag,int pos);
     void set_use_tags(){use_tags=1;}
     int  find_tag(char *tag);
     int  find_tag(int pos,int posaftertag=1);
@@ -162,6 +181,7 @@ public:
     }
     BitStream(int size)
     {
+	buff.reserve((size+7)/8);
 	init();
     }
     BitStream()

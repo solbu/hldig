@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.cc,v 1.1.2.11 1999/12/21 17:31:47 bosc Exp $
+// $Id: WordDBCompress.cc,v 1.1.2.12 2000/01/03 10:04:47 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -39,6 +39,7 @@ extern "C"
 
 #include "HtTime.h"
 #include "HtMaxMin.h"
+#include "WordMonitor.h"
 #include<ctype.h>
 
 // never change NBITS_COMPRESS_VERSION ! (otherwise version tracking will fail)
@@ -78,23 +79,22 @@ get_version_label(int v)
 class WordDBRecord : public WordRecord
 {
 public:
-    int set_decompress(unsigned int **data,int *indexes,int i,int pdata,int pstat0,int pstat1)
+    
+    // retreive WordRecord data/stats from coded numbers
+    void set_decompress(unsigned int **data,int *indexes,int i,int pdata,int pstat0,int pstat1)
     {
-	int datatype;
 	if(i>=indexes[pstat0])
-	{
-	    datatype=1;
-	    type=(datatype ? WORD_RECORD_DATA : WORD_RECORD_STATS);
-	    info.data=data[pdata][i-indexes[pstat0]];
+	{// were pas the end of coded stats, so this can't be a stat
+	    type=DefaultType();
+	    if(type==WORD_RECORD_DATA){info.data=data[pdata][i-indexes[pstat0]];}
+	    else{info.data=0;}
 	}
 	else
-	{
-	    datatype=0;
-	    type=(datatype ? WORD_RECORD_DATA : WORD_RECORD_STATS);
+	{// this is a stat
+	    type=WORD_RECORD_STATS;
 	    info.stats.noccurence=data[pstat0][i];
 	    info.stats.ndoc      =data[pstat1][i];
 	}
-	return(datatype);
     }
     WordDBRecord():WordRecord()
     {
@@ -102,12 +102,12 @@ public:
     }
     WordDBRecord(byte *dat,int len,int rectyp):WordRecord()
     {
-	type=(rectyp ? WORD_RECORD_DATA : WORD_RECORD_STATS);
+	type=(rectyp ? DefaultType() : WORD_RECORD_STATS);
 	Unpack(String((char *)dat,len));
     }
     WordDBRecord(BKEYDATA *ndata,int rectyp):WordRecord()
     {// typ: 0->stat 1->data
-	type=(rectyp ? WORD_RECORD_DATA : WORD_RECORD_STATS);
+	type=(rectyp ? DefaultType() : WORD_RECORD_STATS);
 	Unpack(String((char *)ndata->data,ndata->len));
     }
 };
@@ -184,9 +184,9 @@ class WordDBPage
     }
     WordDBKey get_WordDBKey(int i)
     {
-	if(type==5){return(WordDBKey(key(i)));}
+	if(type==P_LBTREE){return(WordDBKey(key(i)));}
 	else
-	if(type==3){return(WordDBKey(btikey(i)));}
+	if(type==P_IBTREE){return(WordDBKey(btikey(i)));}
 	else
 	{errr("WordDBPage:get_WordDBKey: bad page type");}
 	return WordDBKey();
@@ -281,16 +281,16 @@ class WordDBPage
     }
     int entry_struct_size()
     {
-	return(type==3 ? sizeof(BINTERNAL) : sizeof(BKEYDATA )   )-1; 
+	return(type==P_IBTREE ? sizeof(BINTERNAL) : sizeof(BKEYDATA )   )-1; 
     }
     int entry_size(int i)
     {
-	return entry_struct_size() + (type==3 ? btikey(i)->len : key(i)->len   ); 
+	return entry_struct_size() + (type==P_IBTREE ? btikey(i)->len : key(i)->len   ); 
     }
 
     void compress_key(Compressor &out,int i)
     {
-	if(type==3)
+	if(type==P_IBTREE)
 	{
 	    int len=btikey(i)->len;
 	    out.put(len,NBITS_KEYLEN,label_str("seperatekey_len",i));
@@ -322,7 +322,7 @@ class WordDBPage
 	int len=in.get(NBITS_KEYLEN,label_str("seperatekey_len",i));
 	if(verbose){printf("WordDBPage::uncompress_key: seperatekey:len:%d\n",len);}
 	
-	if(type==3)
+	if(type==P_IBTREE)
 	{
 	    if(len==0 && i!=0){errr("WordDBPage::uncompress_key: keylen=0 &&    i!=0");}
 	    BINTERNAL bti;
@@ -365,7 +365,9 @@ class WordDBPage
 	delete [] gotdata;
 	return res;
     }
+
     int pgsz;
+
     void show(int redo=0);
 
     int TestCompress(int debuglevel);
@@ -373,15 +375,16 @@ class WordDBPage
     
     int verbose;
     int debug;
+
     
     void Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int nnums,HtVector_byte &wordiffs);
     void Compress_show_extracted(int *nums,int *nums_pos,int nnums,HtVector_byte &wordiffs);
     void Compress_vals(Compressor &out,int *nums,int *nums_pos,int nnums);
     void Compress_header(Compressor &out);
     int  Compress_main(Compressor &out);
-    Compressor *Compress(int debug=0);
+    Compressor *Compress(int debug=0, DB_CMPR_INFO *cmprInfo=NULL);
 
-    int  Uncompress(Compressor *pin,int debug=0);
+    int  Uncompress(Compressor *pin,int debug=0, DB_CMPR_INFO *cmprInfo=NULL);
     int  Uncompress_main(Compressor *pin);
     int  Uncompress_header(Compressor &in);
     void Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_sizes,int nnums,byte *rworddiffs,int nrworddiffs);
@@ -392,7 +395,7 @@ class WordDBPage
     {
 	type=pg->type;
 	n=pg->entries;
-	nk=(type==5 ? n/2 : n);
+	nk=(type==P_LBTREE ? n/2 : n);
 	decmpr_pos=pgsz;
 	decmpr_indx=0;
     }
@@ -475,11 +478,14 @@ class WordDBPage
 WordDBCompress::WordDBCompress()
 {
     debug=1;
-    cmpr_count=0;
-    total_cmpr_time=0;
-    ucmpr_count=0;
-    total_ucmpr_time=0;
-    mxtreelevel=0;
+    bm_cmpr_count=0;
+    bm_cmpr_time=0;
+    bm_ucmpr_count=0;
+    bm_ucmpr_time=0;
+    bm_mxtreelevel=0;
+    bm_nonleave_count=0;
+    bm_cmpr_ratio=0;
+    bm_cmpr_overflow=0;
 }
 
 extern "C"
@@ -502,15 +508,20 @@ int WordDBCompress_uncompress_c(const u_int8_t* inbuff, int inbuff_length, u_int
 }
 }
 
+//  #include"bmt_Profiling.h"
+//  static bmt_Profiling bmt_Profiler(__FILE__);
+
 static int cmprcount=0;
 //  Compresses inbuff to outbuff
 int 
 WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **outbuffp, int *outbuff_lengthp)
 {
+//bmt_START;
     double start_time=HtTime::DTime();
     // create a page from inbuff
     WordDBPage pg(inbuff,inbuff_length);
-
+//bmt_END;
+//bmt_START;
 
     if(debug>2)
     {
@@ -524,12 +535,17 @@ WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **
     // DEBUG: check if decompressed compresed page is equivalent to original
     if(debug)TestCompress(inbuff,inbuff_length,debug);
 
+//bmt_END;
+//bmt_START;
     // do the real compression
-    Compressor *res=pg.Compress(0);
+    Compressor *res=pg.Compress(0, cmprInfo);
+//bmt_END;
 
+//bmt_START;
     // copy it to outbuff
     (*outbuffp)=res->get_data();
     (*outbuff_lengthp)=res->buffsize();
+//bmt_END;
 
 
     if(debug>2)
@@ -544,9 +560,14 @@ WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **
 
     // DEBUGING / BENCHMARKING
     {
-	cmpr_count++;
-	mxtreelevel=HtMAX(pg.pg->level,mxtreelevel);
-	total_cmpr_time+=HtTime::DTime(start_time);
+	bm_cmpr_ratio+=(*outbuff_lengthp)/(double)inbuff_length;
+	if( (*outbuff_lengthp) > inbuff_length/(1<<(cmprInfo->coefficient)) )
+	{bm_cmpr_overflow++;}
+	bm_cmpr_count++;
+	if(pg.type!=5){bm_nonleave_count++;}
+	bm_mxtreelevel=HtMAX(pg.pg->level,bm_mxtreelevel);
+	bm_cmpr_time+=HtTime::DTime(start_time);
+	(*monitor)();
     }
 
     // cleanup
@@ -582,9 +603,11 @@ WordDBCompress::Uncompress(const u_int8_t *inbuff, int inbuff_length, u_int8_t *
 
     // DEBUGING / BENCHMARKING
     {
-	ucmpr_count++;
-	mxtreelevel=HtMAX(pg.pg->level,mxtreelevel);
-	total_ucmpr_time+=HtTime::DTime(start_time);
+	bm_ucmpr_count++;
+	if(pg.type!=5){bm_nonleave_count++;}
+	bm_mxtreelevel=HtMAX(pg.pg->level, bm_mxtreelevel);
+	bm_ucmpr_time+=HtTime::DTime(start_time);
+	(*monitor)();
     }
 
     pg.delete_page();
@@ -675,7 +698,7 @@ static int first_diff(const String &s1,const String &s2)
 
 // ******* Uncompress Compressor into this page
 int 
-WordDBPage::Uncompress(Compressor *pin,int  ndebug)
+WordDBPage::Uncompress(Compressor *pin,int  ndebug, DB_CMPR_INFO *cmprInfo/*=NULL*/)
 {
 //      printf("WordDBPage::Uncompress:pin->size:%d pin->buffsize:%d\n",pin->size(),pin->buffsize());
 //      pin->show();
@@ -747,10 +770,10 @@ WordDBPage::Uncompress_main(Compressor *pin)
     if(nkeysleft>0)
     {
 	WordDBKey key0=uncompress_key(in,0);
-	if(type==5){uncompress_data(in,0,key0.RecType());}
+	if(type==P_LBTREE){uncompress_data(in,0,key0.RecType());}
 	nkeysleft--;
     }
-    if(nkeysleft>0 && type==3){uncompress_key(in,1);nkeysleft--;}
+    if(nkeysleft>0 && type==P_IBTREE){uncompress_key(in,1);nkeysleft--;}
 
     if(nkeysleft>0)
     {
@@ -759,7 +782,7 @@ WordDBPage::Uncompress_main(Compressor *pin)
 	{
 	    if(verbose)printf("field %2d : start position:%4d  \n",j,in.size());
 	    if(j==3 && verbose){in.verbose=2;}
-	    rnum_sizes[j]=in.get_vals(&(rnums[j]),label_str("NumField",j));//***
+	    rnum_sizes[j]=in.get_vals(&(rnums[j]),label_str("NumField",j));// ***
 	    if(j==3 && verbose){in.verbose=0;}
 	    if(verbose){printf("WordDBPage::Uncompress_main:got numfield:%2d:nvals:%4d\n",j,rnum_sizes[j]);}
 	}
@@ -801,15 +824,15 @@ WordDBPage::Uncompress_header(Compressor &in)
 	printf("********   WordDBPage::Uncompress: page header ***\n");
 	printf("************************************\n");
 	printf("page size:%d\n",(int)pgsz);
-	printf(" 00-07: Log sequence number.  file  : %d\n",                            pg->lsn.file            );      
-	printf(" 00-07: Log sequence number.  offset: %d\n",                            pg->lsn.offset            );      
-	printf(" 08-11: Current page number.  : %d\n",		               pg->pgno            );     
-	printf(" 12-15: Previous page number. : %d\n",		               pg->prev_pgno         );
-	printf(" 16-19: Next page number.     : %d\n",			       pg->next_pgno           );
-	printf(" 20-21: Number of item pairs on the page. : %d\n",	               pg->entries           );  
-	printf(" 22-23: High free byte page offset.       : %d\n",	               pg->hf_offset        );
-	printf("    24: Btree tree level.                 : %d\n",                pg->level             );	
-	printf("    25: Page type.                        : %d\n",                pg->type               );		
+	printf(" 00-07: Log sequence number.  file  : %d\n",           pg->lsn.file   );      
+	printf(" 00-07: Log sequence number.  offset: %d\n",           pg->lsn.offset );      
+	printf(" 08-11: Current page number.  : %d\n",		       pg->pgno       );     
+	printf(" 12-15: Previous page number. : %d\n",		       pg->prev_pgno  );
+	printf(" 16-19: Next page number.     : %d\n",		       pg->next_pgno  );
+	printf(" 20-21: Number of item pairs on the page. : %d\n",     pg->entries    );  
+	printf(" 22-23: High free byte page offset.       : %d\n",     pg->hf_offset  );
+	printf("    24: Btree tree level.                 : %d\n",     pg->level      );	
+	printf("    25: Page type.                        : %d\n",     pg->type       );		
     }
     return OK;
 }
@@ -825,17 +848,18 @@ WordDBPage::Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_siz
     for(j=0;j<nnums;j++){rnum_pos[j]=0;}
 
     int i0=0;
-    if(type==3){i0=1;}// internal pages have particular first key
+    if(type==P_IBTREE){i0=1;}// internal pages have particular first key
 
     WordDBKey pkey;
     WordDBKey akey=get_WordDBKey(i0);
 
+    // reconstruct each key using previous key and  coded differences 
     for(ii=i0;ii<nk;ii++)
     {
 	WordDBRecord arec;
 	BINTERNAL bti;
 
-	if(type==5)
+	if(type==P_LBTREE)
 	{
 	    // **** get the data fields
 	    arec.set_decompress(rnums,rnum_sizes,ii,CNDATADATA,CNDATASTATS0,CNDATASTATS1);
@@ -853,54 +877,67 @@ WordDBPage::Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_siz
 	{
 	    unsigned int flags=rnums[CNFLAGS][rnum_pos[CNFLAGS]++];
 	    int foundfchange=0;
-	    // **** get the word
-//  	int nrworddiffs=0;
-	    if(flags&pow2(nfields-1))
+	    // **** reconstruct the  word
+	    if(flags&pow2(nfields-1))// check flags to see if word has changed
 	    {
 		foundfchange=1;
 		if(rnum_pos[CNWORDDIFFLEN]>=rnum_sizes[CNWORDDIFFLEN]){errr("WordDBPage::Uncompress read wrong num worddiffs");}
+		// get position of first character that changes in this word
 		int diffpos=rnums[CNWORDDIFFPOS][rnum_pos[CNWORDDIFFPOS]++];
+		// get size of changed part of the word
 		int difflen=rnums[CNWORDDIFFLEN][rnum_pos[CNWORDDIFFLEN]++];
-		int wlen=diffpos+difflen;
-		char *str=new char [wlen+1];
+		int wordlen=diffpos+difflen;
+		char *str=new char [wordlen+1];
 		CHECK_MEM(str);
+		// copy the unchanged part into str from previos key's word
 		if(diffpos)strncpy(str,(char *)pkey.GetWord(),diffpos);
+		// copy the changed part from coded word differences
 		strncpy(str+diffpos,(char *)rworddiffs+irwordiffs,difflen);
-		str[wlen]=0;
+		str[wordlen]=0;
 		if(verbose)printf("key %3d word:\"%s\"\n",ii,str);
 		akey.SetWord(str);
 		irwordiffs+=difflen;
 		delete [] str;
+
 	    }else{akey.SetWord(pkey.GetWord());}
-	    // **** get the numerical key fields
+	    // **** reconstruct the numerical key fields
 	    for(j=1;j<nfields;j++)
 	    {
+		// check flags to see if this field has changed
 		int changed=flags&pow2(j-1);
 		if(changed)
 		{
+		    // this field's number 
 		    int k=CNFIELDS+j-1;
+		    // current position within coded differences of this field
 		    int indx=rnum_pos[k];
-		    if(indx>=rnum_sizes[k]){errr("WordDBPage::Uncompress read wrong num ogf changes in a field");}
+		    if(indx>=rnum_sizes[k]){errr("WordDBPage::Uncompress read wrong num of changes in a field");}
 		    if(!foundfchange)
 		    {
+			// this is the first field that changes in this key
+			// so difference is coded compared to value in pevious key
 			akey.SetInSortOrder(j,rnums[k][indx]+pkey.GetInSortOrder(j));
 		    }
 		    else
 		    {
+			// this is NOT the first field that changes in this key
+			// so difference is coded from 0
 			akey.SetInSortOrder(j,rnums[k][indx]);
 		    }
+                    // we read 1 element from coded differences in this field
 		    rnum_pos[k]++;
 		    foundfchange=1;
 		}
 		else
 		{
+		    // no changes found, just copy from previous key
 		    if(!foundfchange){akey.SetInSortOrder(j,pkey.GetInSortOrder(j));}
 		    else{akey.SetInSortOrder(j,0);}
 		}
 	    }
 	}
 	// now insert key/data into page
-	if(type==5)
+	if(type==P_LBTREE)
 	{
 	    if(ii>i0)insert_key(akey);
 	    if(ii>i0)insert_data(arec);
@@ -944,16 +981,20 @@ WordDBPage::Uncompress_show_rebuild(unsigned int **rnums,int *rnum_sizes,int nnu
 }
 
 Compressor *
-WordDBPage::Compress(int ndebug)
+WordDBPage::Compress(int ndebug, DB_CMPR_INFO *cmprInfo/*=NULL*/)
 {
     debug=ndebug;
     if(debug>1){verbose=1;}
 
-    Compressor *res=(Compressor *)new Compressor(pgsz);
+    Compressor *res=(Compressor *)new Compressor((cmprInfo ? 
+						  pgsz/(1<<(cmprInfo->coefficient)) :
+						  pgsz/4));
     CHECK_MEM(res);
     if(debug>0){res->set_use_tags();}
+
     res->put(COMPRESS_VERSION,NBITS_COMPRESS_VERSION,"COMPRESS_VERSION");
     res->put(CMPRTYPE_NORMALCOMRPESS,NBITS_CMPRTYPE,"CMPRTYPE");
+
     if(verbose){printf("WordDBPage::Compress: trying normal compress\n");}
     int cmpr_ok=Compress_main(*((Compressor *)res));
 
@@ -961,12 +1002,16 @@ WordDBPage::Compress(int ndebug)
     {
     	if(verbose){printf("WordDBCompress::Compress full compress failed ... not compressing at all\n");}
   	show();
+
 	if(res){delete res;}
 	res=new Compressor;
 	CHECK_MEM(res);
+
 	if(debug>0){res->set_use_tags();}
+
 	res->put(COMPRESS_VERSION,NBITS_COMPRESS_VERSION,"COMPRESS_VERSION");
 	res->put(CMPRTYPE_BADCOMPRESS,NBITS_CMPRTYPE,"CMPRTYPE");
+
 	res->put_zone((byte *)pg,pgsz*8,"INITIALBUFFER");
     }
 
@@ -985,7 +1030,7 @@ WordDBPage::Compress_main(Compressor &out)
     if(verbose){printf("WordDBPage::Compress_main: starting compression\n");}
     
     if(pg->type!=5 && pg->type!=3){    printf("pg->type:%3d\n",pg->type);return NOTOK;}
-//        if(pg->type==3){show();}
+//        if(pg->type==P_IBTREE){show();}
 
 
     // *************** initialize data structures **************
@@ -1006,6 +1051,7 @@ WordDBPage::Compress_main(Compressor &out)
     HtVector_byte worddiffs;
     
 
+//bmt_START;
     // *************** extract values and wordiffs **************
     if(nk>0)
     {
@@ -1015,6 +1061,7 @@ WordDBPage::Compress_main(Compressor &out)
 
     // *************** init compression **************
 
+//bmt_END;bmt_START;
     Compress_header(out);
 
     // *************** compress  values and wordiffs **************
@@ -1024,19 +1071,22 @@ WordDBPage::Compress_main(Compressor &out)
     if(nkeysleft>0)
     {
 	compress_key(out,0);
-	if(type==5){compress_data(out,0);}
+	if(type==P_LBTREE){compress_data(out,0);}
 	nkeysleft--;
     }
-    if(nkeysleft>0 && type==3){compress_key(out,1);nkeysleft--;}
+    if(nkeysleft>0 && type==P_IBTREE){compress_key(out,1);nkeysleft--;}
 
     if(nkeysleft>0)
     {
+//bmt_END;bmt_START;
 	// compress values
 	Compress_vals(out,nums,nums_pos,nnums);
+//bmt_END;bmt_START;
 
 	// compress worddiffs
 	int size=out.put_fixedbitl(worddiffs.begin(),worddiffs.size(),"WordDiffs");
 	if(verbose)printf("compressed wordiffs : %3d values: %4d bits %4f bytes\n",worddiffs.size(),size,size/8.0);
+//bmt_END;
     }
 
     // *************** cleanup **************
@@ -1053,15 +1103,14 @@ WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int nnums,HtV
 {
     WordDBKey pkey;
 
-
     int ii,j;
     int i0=0;
-    if(type==3){i0=1;}// internal pages have particular first key
+    if(type==P_IBTREE){i0=1;}// internal pages have particular first key
     for(ii=i0;ii<nk;ii++)
     {
 	WordDBKey akey=get_WordDBKey(ii);
 
-	if(type==5)
+	if(type==P_LBTREE)
 	{
             // ****** WordRecord (data/stats)
 	    // get word record
@@ -1072,7 +1121,8 @@ WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int nnums,HtV
 		nums[CNDATASTATS0*nk+nums_pos[CNDATASTATS0]++]=arec.info.stats.noccurence;
 		nums[CNDATASTATS1*nk+nums_pos[CNDATASTATS1]++]=arec.info.stats.ndoc;
 	    }
-	    else
+	    else 
+	    if(arec.type==WORD_RECORD_DATA)
 	    {
 		nums[CNDATADATA  *nk+nums_pos[CNDATADATA  ]++]=arec.info.data;
 	    }
@@ -1140,7 +1190,9 @@ WordDBPage::Compress_vals(Compressor &out,int *nums,int *nums_pos,int nnums)
 	if(j==3 && verbose){out.verbose=2;}
 	int dud;
 	for(int i=0;i<n;i++){dud=v[i]>1;}// make purify error if v unintialized
+//bmt_START;
 	int size=out.put_vals(v,n,label_str("NumField",j));
+//bmt_END;
 	if(j==3 && verbose){out.verbose=0;}
 	if(verbose)printf("compressed field %2d : %3d values: %4d bits %8f bytes  : ended bit field pos:%6d\n",j,n,size,size/8.0,out.size());
     }
@@ -1244,9 +1296,9 @@ WordDBPage::Compare(WordDBPage &other)
     }
 
     // compare each key/data pair
-    for(i=0;i<(type==5 ?  pg->entries/2 : pg->entries);i++)
+    for(i=0;i<(type==P_LBTREE ?  pg->entries/2 : pg->entries);i++)
     {
-	if(pg->type==5)
+	if(pg->type==P_LBTREE)
 	{
 	    // compare keys
 	    if(key(i)->len !=other.key(i)->len )
@@ -1341,8 +1393,8 @@ WordDBPage::Compare(WordDBPage &other)
     }
     if(pg->entries>0)
     {
-	int smallestoffset=min_v(pg->inp,pg->entries);
-	int other_smallestoffset=min_v(other.pg->inp,other.pg->entries);
+	int smallestoffset=HtMaxMin::min_v(pg->inp,pg->entries);
+	int other_smallestoffset=HtMaxMin::min_v(other.pg->inp,other.pg->entries);
 	if(smallestoffset!=other_smallestoffset)
 	{
 	    printf("compare fail:smallestoffset:%d other_smallestoffset:%d\n",smallestoffset,other_smallestoffset);
@@ -1437,7 +1489,7 @@ WordDBPage::show(int redo)
 	      int keycl=key.nfields();
 	      for(j=1;j<key.nfields();j++)
 	      {
-		  if(fieldchanged[j]){keycl+=word_key_info->sort[j].bits;}
+		  if(fieldchanged[j]){keycl+=WordKeyInfo::Get()->sort[j].bits;}
 	      }
 	      if(fieldchanged[0]){keycl+=3;keycl+=8*strlen(wordchange);}
 	      printf("  ::%2d  %f",keycl,keycl/8.0);
@@ -1487,3 +1539,5 @@ WordDBPage::show(int redo)
   }
 
 }
+
+

@@ -10,11 +10,13 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.h,v 1.1.2.4 1999/12/21 17:31:48 bosc Exp $
+// $Id: WordDBCompress.h,v 1.1.2.5 2000/01/03 10:04:47 bosc Exp $
 //
 
 #ifndef _WordDBCompress_h_
 #define _WordDBCompress_h_
+
+class WordMonitor;
 
 class WordDBCompress
 {
@@ -23,6 +25,10 @@ class WordDBCompress
     int Uncompress(const  u_int8_t* inbuff, int inbuff_length, u_int8_t* outbuff, int outbuff_length);
     WordDBCompress();
 
+    DB_CMPR_INFO *cmprInfo;
+
+
+
 // DEBUGING / BENCHMARKING
     int debug;
 // 0 : no debug no check
@@ -30,11 +36,18 @@ class WordDBCompress
 // 2 : use_tags (BitStream) within TestCompress ->  Compress Uncompress
 // 3 : verbose
     int TestCompress(const  u_int8_t* pagebuff, int pagebuffsize,int debuglevel);
-    int    cmpr_count;
-    double total_cmpr_time;
-    int    ucmpr_count;
-    double total_ucmpr_time;
-    int    mxtreelevel;
+    WordMonitor *monitor;
+    void SetMonitor(WordMonitor *nmonitor){monitor=nmonitor;}
+
+    int    bm_cmpr_count;
+    double bm_cmpr_time;
+    int    bm_ucmpr_count;
+    double bm_ucmpr_time;
+    int    bm_mxtreelevel;
+    int    bm_nonleave_count;
+    double bm_cmpr_ratio;
+    int    bm_cmpr_overflow;
+
 };
 
 

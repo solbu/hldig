@@ -19,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.h,v 1.3.2.5 1999/12/21 12:03:29 bosc Exp $
+// $Id: WordDB.h,v 1.3.2.6 2000/01/03 10:04:47 bosc Exp $
 //
 
 #ifndef _WordDB_h_
@@ -269,15 +269,19 @@ class WordDB {
   //
   // Return object describing the compression scheme
   //
-  static inline DB_CMPR_INFO* CmprInfo(int debug=1) {
+  static inline DB_CMPR_INFO* CmprInfo(int debug=1) 
+  {
       DB_CMPR_INFO *cmpr_info=new DB_CMPR_INFO;
 
       WordDBCompress *compressor=new WordDBCompress;
+      compressor->cmprInfo=cmpr_info;
       cmpr_info->user_data=(void *)compressor;
       cmpr_info->compress  =WordDBCompress_compress_c;
       cmpr_info->uncompress=WordDBCompress_uncompress_c;
-      cmpr_info->coefficient=3;
-      cmpr_info->max_npages=9;
+        cmpr_info->coefficient=3;
+        cmpr_info->max_npages=9;
+//        cmpr_info->coefficient=4;
+//        cmpr_info->max_npages=17;
       compressor->debug=debug;
       return cmpr_info;
   }

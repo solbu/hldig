@@ -11,7 +11,7 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc \
 	HtVector.cc HtHeap.cc regex.c \
 	HtPack.cc HtDateTime.cc HtRegex.cc \
-	HtVectorGeneric.cc 
+	HtVectorGeneric.cc HtMaxMin.cc
 
 
 
@@ -46,7 +46,10 @@ include_HEADERS = \
 	HtVectorGeneric.h   \
 	HtVectorGenericCode.h \
 	HtVector_int.h \
+	HtVector_String.h \
 	HtMaxMin.h \
-	HtTime.h
+	HtTime.h \
+	HtWordType.h \
+	HtRandom.h
 
 

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordRecord.h,v 1.6.2.4 1999/12/14 17:49:33 loic Exp $
+// $Id: WordRecord.h,v 1.6.2.5 2000/01/03 10:04:48 bosc Exp $
 //
 
 #ifndef _WordRecord_h_
@@ -19,6 +19,8 @@
 #ifndef SWIG
 #include "HtPack.h"
 #include "StringList.h"
+#include "WordContext.h"
+#include "Configuration.h"
 #endif /* SWIG */
 
 //
@@ -49,25 +51,23 @@ class WordRecordStat {
   unsigned int		ndoc;
 };
 
-class WordRecordInfo {
+class WordRecordStorage {
  public:
   unsigned int		data;
   WordRecordStat	stats;
 };
 
+class WordRecordInfo
+{
+ public:
+    int default_type;
+    static WordRecordInfo *Get(){return WordContext::record_info;}
+    static void Initialize(const Configuration& config);
+};
 class WordRecord
 {
-    int DefaultType()
-	{
-#ifdef WORD_RECORD_STATS_DEFAULT
-	    return(WORD_RECORD_STATS);
-#elif WORD_RECORD_NONE_DEFAULT
-	    return(WORD_RECORD_NONE);
-#else
-	    return(WORD_RECORD_DATA);
-#endif
-	}
  public:
+  inline int DefaultType(){return WordRecordInfo::Get()->default_type;}
   WordRecord() { memset((char*)&info, '\0', sizeof(info)); type =  DefaultType(); 
                  //    cout << "record default  type:" << (int)type << endl;
                }
@@ -154,7 +154,7 @@ class WordRecord
   
   unsigned char			type;
 
-  WordRecordInfo		info;
+  WordRecordStorage		info;
 };
 
 #endif

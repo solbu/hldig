@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVectorGeneric.h,v 1.1.2.1 1999/12/09 10:50:01 bosc Exp $
+// $Id: HtVectorGeneric.h,v 1.1.2.2 2000/01/03 10:04:46 bosc Exp $
 //
 //
 //  #ifndef	_HtVectorGeneric_h_
@@ -69,6 +69,16 @@ public:
     HtVectorGType(int capacity);
     ~HtVectorGType();
 
+protected:    
+    //
+    // Many functions used to check for NULL (Object *) pointers , this is no longer possible
+    // this error checking should be made optional!
+    // 
+//    inline void CheckBounds(const int n) const {if(n<0 || n>=element_count){cerr << "HtVectorGType::CheckBounds: out of bounds!!" << endl;}}
+// empty version
+    inline void CheckBounds(const int n) const {;}
+
+public:
     //
     // Add() will append an Object to the end of the vector
     //
@@ -116,16 +126,16 @@ public:
     // Direct access to vector items. To assign new objects, use
     // Insert() or Add() or Assign()
     //
-    GType &            Nth(int n)			{CheckBounds(n);return data[n];}
-    const GType &      Nth(int n) const			{CheckBounds(n);return data[n];}
-    GType &            operator[] (int n)		{return Nth(n);}
-    const GType &      operator[] (int n) const		{return Nth(n);}
+    inline GType &            Nth(int n)			{CheckBounds(n);return data[n];}
+    inline const GType &      Nth(int n) const			{CheckBounds(n);return data[n];}
+    inline GType &            operator[] (int n)		{return Nth(n);}
+    inline const GType &      operator[] (int n) const		{return Nth(n);}
 
     //
     // Access to the number of elements
     //
-    int			Count() const		{return element_count;}
-    int			IsEmpty()		{return element_count==0;}
+    inline int			Count() const		{return element_count;}
+    inline int			IsEmpty()		{return element_count==0;}
 
    
     //
@@ -163,11 +173,6 @@ public:
 
 protected:    
     //
-    // Many functions used to check for NULL (Object *) pointers , this is no longer possible
-    // this error checking should be made optional!
-    // 
-    void CheckBounds(const int n) const {if(n<0 || n>=element_count){cerr << "HtVectorGType::CheckBounds: out of bounds!!" << endl;}}
-    //
     // The actual internal data array
     GType              *data;
 
@@ -193,17 +198,19 @@ protected:
     // STL like accesors
     //
  public:
-    int          	size()  const             {return Count();}
-    void	        push_back(const GType &v) {Add( v);}
+    inline int                 size()  const             {return Count();}
+    inline void	               push_back(const GType &v) {Add( v);}
 
-    GType *             begin()                   {return(data);}
-    const GType *       begin() const             {return(data);}
-    GType *             end()                     {return(data+element_count);}
-    const GType *       end()   const             {return(data+element_count);}
+    inline GType *             begin()                   {return(data);}
+    inline const GType *       begin() const             {return(data);}
+    inline GType *             end()                     {return(data+element_count);}
+    inline const GType *       end()   const             {return(data+element_count);}
 
-    GType &             back()			  {return Nth(element_count-1);}
-    const GType &       back()	const		  {return Nth(element_count-1);}
-    void                pop_back()                {RemoveFrom(size()-1);}
+    inline GType &             back()			 {return Nth(element_count-1);}
+    inline const GType &       back()	const		 {return Nth(element_count-1);}
+    inline void                pop_back()                {RemoveFrom(size()-1);}
+
+    void                reserve (int n)           {Allocate(n);}
 
 // TODO: erase  clear resize insert(...) and many others
 

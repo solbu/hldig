@@ -1,8 +1,6 @@
 
 
-#define GType int
-#define HtVectorGType HtVector_int
-#include "HtVectorGeneric.h"
+#include "HtVector_int.h"
 #define GType int
 #define HtVectorGType HtVector_int
 #include "HtVectorGenericCode.h"
@@ -13,9 +11,24 @@
 #include "HtVectorGeneric.h"
 #define GType char
 #define HtVectorGType HtVector_char
+#include "HtVectorGenericCode.h"
+
+#include"HtVector_String.h"
+#define GType String
+#define HtVectorGType HtVector_String
+#include "HtVectorGenericCode.h"
+
+
+#define GType double
+#define HtVectorGType HtVector_double
+#include "HtVectorGeneric.h"
+#define GType double
+#define HtVectorGType HtVector_double
 #include "HtVectorGenericCode.h"
 
 #include<stdio.h>
+
+// this is just to  check if it compiles ok
 
 class ZOZO
 {
@@ -29,6 +42,8 @@ public:
 	c=3;
     }
 };
+
+
 #define HTVECTORGENERIC_NOTCOMPARABLE
 #define GType ZOZO
 #define HtVectorGType HtVector_ZOZO
@@ -38,7 +53,6 @@ public:
 #define HtVectorGType HtVector_ZOZO
 #include "HtVectorGenericCode.h"
 
-// just check if it compiles ok
 void
 test_HtVectorGeneric()
 {
