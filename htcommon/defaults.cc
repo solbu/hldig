@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.40 2000/02/25 17:26:22 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.41 2000/02/27 04:23:06 ghutchis Exp $
 //
 
 #include "HtConfiguration.h"
@@ -170,6 +170,14 @@ ConfigDefaults	defaults[] =
 	This specifies whether ht://Dig should consider URLs
 	case-sensitive or not. If your server is case-insensitive,
 	you should probably set this to false.
+" },
+{ "collection_names", "",
+        "string list", "htsearch", "3.2.0b2", "", "collection_names: htdig_docs htdig_bugs", "
+	This is a list of config file names that are used for searching multiple databases.
+	Simply put, htsearch will loop through the databases specified by each of these config
+	files and present the result of the search on all of the databases.
+	The corresponding config files are looked up in the <a href=\"#config_dir\">config_dir</a> directory.
+        Each listed config file <strong>must</strong> exist, as well as the corresponding databases.
 " },
 { "common_dir", COMMON_DIR, 
 	"string", "htdig htnotify htfuzzy htmerge htsearch", "all", "File Layout", "common_dir: /tmp", "

@@ -804,6 +804,66 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="collection_names">
+		collection_names</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<i>No default</i>
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b2 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	This is a list of config file names that are used for searching multiple databases.
+	Simply put, htsearch will loop through the databases specified by each of these config
+	files and present the result of the search on all of the databases.
+	The corresponding config files are looked up in the <a href="#config_dir">config_dir</a> directory.
+        Each listed config file <strong>must</strong> exist, as well as the corresponding databases.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  collection_names:
+				</td>
+				<td nowrap>
+				     htdig_docs htdig_bugs
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="common_dir">
 		common_dir</a></strong>
 	  </dt>
@@ -10397,6 +10457,6 @@ http://www.htdig.org/
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
-Last modified: Fri Feb 25 11:19:38 CST 2000
+Last modified: Sat Feb 26 22:17:51 CST 2000
   </body>
 </html>
