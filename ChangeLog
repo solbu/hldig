@@ -1,5 +1,18 @@
-Mon Jan 25 02:17:58 1999  Hans-Peter Nilsson  <hp@localhost.localdomain>
+Sun Jan 24 14:13:37 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
+	* htsearch/Display.cc(logSearch): Added fix from Gilles in case
+	REMOTE_ADDR is NULL as well.
+
+	* htnotify/htnotify.cc: Fix compiler warnings.
+
+	* htlib/String.cc(indexOf): Use autoconf check for strstr, fix
+	compiler warnings.
+
+	* htlib/Configuration.cc(Find): Complain when option is not in the
+	list.
+
+Mon Jan 25 02:17:58 1999  Hans-Peter Nilsson  <hp@axis.se>
+	
 	* htcommon/defaults.cc (defaults): New option
 	"uncoded_db_compatible", default true.
 
