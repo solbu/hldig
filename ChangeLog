@@ -1,3 +1,16 @@
+Wed Feb  3 19:24:36 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/htdig.html: Added documentation on the -l log and restart
+	feature.
+
+	* htdoc/htmerge.html: Added documentation on the -m merge database
+	feature.
+
+	* htdig/main.cc: Added documentation on the -l flag to the usage
+	message.
+
+	* .version: Bump to 3.1.0.
+
 Wed Feb  3 19:09:31 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc: Add check for URLs with no / in the
