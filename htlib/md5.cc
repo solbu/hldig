@@ -10,7 +10,7 @@ void md5(char *rhash, char *buf, int len, time_t *date, bool debug)
 
   int i;
   MD5_CTX *td;    
-  char *hash;  
+  unsigned char *hash;  
 
   td = (MD5_CTX *)malloc(sizeof(MD5_CTX));
   MD5Init( td);
@@ -23,7 +23,7 @@ void md5(char *rhash, char *buf, int len, time_t *date, bool debug)
     MD5Update(td,(unsigned char *)date, sizeof(*date));
   }
 
-  hash = (char *)MD5Final(td);
+  hash = (unsigned char *)MD5Final(td);
   //  hash = (char *)mhash_end(td);
 
   memcpy(rhash,hash,MD5_LENGTH);
