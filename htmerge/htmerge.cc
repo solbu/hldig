@@ -7,6 +7,10 @@
 //
 //
 // $Log: htmerge.cc,v $
+// Revision 1.11  1999/01/23 18:22:09  ghutchis
+// Unlink the db.docs.index file before we build it again. This ensures we have
+// a clean copy and don't duplicate URLs.
+//
 // Revision 1.10  1999/01/21 13:41:22  ghutchis
 // Check HtURLCodec for errors.
 //
@@ -185,6 +189,7 @@ int main(int ac, char **av)
 	file2 = config["word_db"];
 	// Before we start, get rid of the previous one
 	// it doesn't matter if it's .work or not.
+	// This ensures we generate it from scratch and prevents duplicates
 	unlink(file2);
 	mergeWords(file1, file2);
     }
@@ -192,6 +197,10 @@ int main(int ac, char **av)
     {
 	file1 = config["doc_db"];
 	file2 = config["doc_index"];
+	// Before we start, get rid of the previous one
+	// it doesn't matter if it's .work or not.
+	// This ensures we generate it from scratch and prevents duplicates
+	unlink(file2);
 	convertDocs(file1, file2);
     }
     return 0;
