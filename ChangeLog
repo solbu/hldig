@@ -1,3 +1,10 @@
+Wed Feb 16 16:26:05 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.1.5.spec, contrib/htdig-3.1.5-conf.patch,
+	htdoc/where.html, .version, README: Bump to version 3.1.5.
+	* htdoc/THANKS.html: Added new contributors.
+	* htdoc/FAQ.html, htdoc/main.html: Updated to versions from web site.
+
 Wed Feb 16 15:49:28 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/Configuration.h, htlib/Configuration.cc: split Add() method
@@ -42,7 +49,7 @@ Tue Feb 15 17:21:08 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	htdig/Retriever.cc(Initial, parse_url, GetLocal, GetLocalUser,
 	IsLocalURL, got_href, got_redirect), htdig/Retriever.h,
 	htdig/Server.cc(Server), htdig/Server.h: Apply Paul B. Henson's
-	enhancements to local_urls, local_default_urls & local_default_doc.
+	enhancements to local_urls, local_user_urls & local_default_doc.
 	* htdoc/attrs.html: Document these.
 
 	* htsearch/htsearch.cc (setupWords): Fix problem reported by

@@ -1,6 +1,6 @@
 Summary: A web indexing and searching system for a small domain or intranet
 Name: htdig
-Version: 3.1.4
+Version: 3.1.5
 Release: 0
 Copyright: GPL
 Group: Networking/Utilities
@@ -76,8 +76,8 @@ fi
 %doc CONFIG README htdoc/*
 
 %changelog
-* Tue Nov 30 1999 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
-  - updated to version 3.1.4
+* Wed Feb 16 2000 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+  - updated to version 3.1.5
 
 * Mon Jun  7 1999 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
   - fixed %post script to use only first ServerName directive in httpd.conf

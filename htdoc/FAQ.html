@@ -6,7 +6,7 @@
   <body bgcolor="#eef7ff">
 	<h1>Frequently Asked Questions</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-1999 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
 	  Please see the file <a href="../COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -57,6 +57,8 @@
 	  mesages about "unresolved" and "db_open."</a><br>
 	  3.4. <a href="#q3.4">I'm compiling on FreeBSD and I get lots
 	  of messages about '___error' being unresolved.</a><br>
+	  3.5. <a href="#q3.5">I'm compiling on HP/UX and I get a complaint about
+	  "Large Files not supported."</a><br>
 
 	  <hr noshade size=2>
 
@@ -85,6 +87,8 @@
 	  link, rather than from a search form?</a><br>
 	  4.14. <a href="#q4.14">How do I restrict a search to only meta
 	  keywords entries in documents?</a><br>
+	  4.15. <a href="#q4.15">Can I use meta tags to prevent htdig from
+	  indexing certain files?</a><br>
 	  <hr noshade size=2>
 
 	  <h3>5. Troubleshooting</h3>
@@ -114,53 +118,55 @@
 	  5.13. <a href="#q5.13">I get Premature End of Script Headers errors
 	  when running htsearch.</a><br>
 	  5.14. <a href="#q5.14">I get Segmentation faults when running
-	  htsearch or htfuzzy.</a><br>
+	  htdig, htsearch or htfuzzy.</a><br>
 	  5.15. <a href="#q5.15">Why does htdig 3.1.3 mangle URL parameters
 	  that contain bare "&amp;" characters?</a><br>
 	  5.16. <a href="#q5.16">When I run htmerge, it stops with an
 	  "Unable to open word list file '.../db.wordlist'" message.</a><br>
+	  5.17. <a href="#q5.17">When using Netscape, htsearch always returns the
+	  "No match" page.</a><br>
 
 	  <hr noshade size=4>
 	  <h2>Answers</h2>
 
 	  <h3>1. General</h3>
-	  1.1. <a name="q1.1">Can I search the internet with
-	  ht://Dig?</a><br>
+	  <strong>1.1. <a name="q1.1">Can I search the internet with
+	  ht://Dig?</a></strong><br>
 	  <p>No, ht://Dig is a system for indexing and searching a small
 	  set of sites or intranet. It is not meant to replace any of the
 	  many internet-wide search engines.</p>
 
-	  1.2. <a name="q1.2">Can I index the internet with
-	  ht://Dig?</a><br>
+	  <strong>1.2. <a name="q1.2">Can I index the internet with
+	  ht://Dig?</a></strong><br>
 	  <p>No, as above, ht://Dig is not meant as an
 	  internet-wide search engine. While there is
 	  <em>theoretically</em> nothing to stop you from indexing as
 	  much as you wish, practical considerations (e.g. time, disk
 	  space, memory, etc.) will limit this.</p>
 
-	  1.3. <a name="q1.3">What's the difference between htdig and
-	  ht://Dig?</a><br>
+	  <strong>1.3. <a name="q1.3">What's the difference between htdig and
+	  ht://Dig?</a></strong><br>
 	  <p>The complete ht://Dig package consists of several programs, one of
 	  which is called "htdig." This program performs the "digging" or
 	  indexing of the web pages. Of course an index doesn't do you much good
 	  without a program to sort it, search through it, etc.</p>
 
-	  1.4. <a name="q1.4">I sent mail to Andrew but I never got a
-	  response!</a><br>
+	  <strong>1.4. <a name="q1.4">I sent mail to Andrew but I never got a
+	  response!</a></strong><br>
 	  <p>Andrew no longer does much work on ht://Dig. He has started a
 	  company, called <a href="http://www.contigo.com/">Contigo
 	  Software</a> and is quite busy with that. To contact any of the
 	  current developers, send mail to &lt;<a
 	  href="mailto:htdig3-dev@htdig.org">htdig3-dev@htdig.org</a>&gt;</p>
 
-	  1.5. <a name="q1.5">I sent a question to the mailing list but I
-	  never got a response!</a><br>
+	  <strong>1.5. <a name="q1.5">I sent a question to the mailing list but I
+	  never got a response!</a></strong><br>
 	  <p>Development of ht://Dig is done by volunteers. Since we all
 	  have other jobs, it make take a while before someone gets back
 	  to you.</p>
 
-	  1.6. <a name="q1.6">I have a great idea/patch for
-	  ht://Dig!</a><br>
+	  <strong>1.6. <a name="q1.6">I have a great idea/patch for
+	  ht://Dig!</a></strong><br>
 	  <p>Great! Development of ht://Dig continues through suggestions
 	  and improvements from users. If you have an idea (or even better,
 	  a patch), please send it to the ht://Dig mailing list so others
@@ -172,17 +178,22 @@
 	  mail to
 	  &lt;<a href="mailto:bugs@htdig.org">bugs@htdig.org</a>&gt;</p>
 
-	  1.7. <a name="q1.7">Is ht://Dig Y2K compliant?</a><br>
+	  <strong>1.7. <a name="q1.7">Is ht://Dig Y2K compliant?</a></strong><br>
 	  <p>
 	  ht://Dig should be y2k compliant since it never <i>stores</i> dates as
 	  two-digit years. Under ht://Dig's copyright (GPL), there is no warranty
 	  whatsoever as permitted by law. If you would like an iron-clad,
 	  legally-binding guarantee, feel free to check the source code
-	  itself. If you discover something, please let us know!
+	  itself. Versions prior to 3.1.2 did have a problem with the parsing
+	  of the Last-Modified header returned by the HTTP server, which will
+	  cause incorrect dates to be stored for documents modified after
+	  February 28, 2000 (yes, it didn't recognize 2000 as a leap year).
+	  This is fixed in the current release.
+	  If you discover something else, please let us know!
 	  </p>
 
-	  1.8. <a name="q1.8">I think I found a bug. What should I
-	  do?</a><br>
+	  <strong>1.8. <a name="q1.8">I think I found a bug. What should I
+	  do?</a></strong><br>
 	  <p>Well, there are probably bugs out there. You have two options
 	  for bug-reporting. You can either mail the ht://Dig mailing list
 	  at &lt;<a href="mailto:htdig@htdig.org">htdig@htdig.org</a>&gt; or
@@ -204,8 +215,8 @@
 	  than by reporting them to the bug database.
 	  </p>
 
-	  1.9. <a name="q1.9">Does ht://Dig support phrase or near
-	  matching?</a><br>
+	  <strong>1.9. <a name="q1.9">Does ht://Dig support phrase or near
+	  matching?</a></strong><br>
 	  <p>Phrase searching has been added for the 3.2 release,
 	  which is currently in the development phase. Anyone who
 	  wishes to live on the bleeding edge (literally) to test out
@@ -213,8 +224,8 @@
 	  <a
 	  href="mailto:htdig3-dev@htdig.org">&lt;htdig3-dev@htdig.org&gt;</a>.</p>
 
-	  1.10. <a name="q1.10">What are the practical and/or theoretical
-	  limits of ht://Dig?</a><br>
+	  <strong>1.10. <a name="q1.10">What are the practical and/or theoretical
+	  limits of ht://Dig?</a></strong><br>
 	  <p>The code itself doesn't put any real limit on the number of
 	  pages. There are several sites in the hundreds of thousands
 	  of pages. As for practical limits, it depends a lot on how
@@ -230,22 +241,23 @@
 	  more memory at indexing larger sites. In a pinch, swap will
 	  work, but it obviously really slows things down.</p>
 
-	  1.11. <a name="q1.10">Do any ISPs offer ht://Dig as part of
-	  their web hosting services?</a><br>
+	  <strong>1.11. <a name="q1.10">Do any ISPs offer ht://Dig as part of
+	  their web hosting services?</a></strong><br>
 	  <p>Yes. A list of such ISPs is available at <a
 	  href="isp.html">http://www.htdig.org/isp.html</a>.
-	  </p
+	  </p>
 
 	  <hr noshade size=2>
 
 	  <h3>2. Getting ht://Dig</h3>
-	  2.1. <a name="q2.1">What's the latest version of ht://Dig?</a><br>
+	  <strong>2.1. <a name="q2.1">What's the latest version of ht://Dig?</a></strong><br>
 	  <p>The latest version is 3.1.4 as of this
-	  writing. Development on 3.2 and future releases is also well underway.
+	  writing. A beta version of the 3.2 code, 3.2.0b1 is also
+	  available, for those who wish to test it.
 	  </p>
 
-	  2.2. <a name="q2.2">Are there binary distributions of
-	  ht://Dig?</a><br>
+	  <strong>2.2. <a name="q2.2">Are there binary distributions of
+	  ht://Dig?</a></strong><br>
 	  <p>We're trying to get consistent binary distributions for
 	  popular platforms. Contributed binary releases will go in <a
 	  href="http://www.htdig.org/files/binaries/">
@@ -258,7 +270,7 @@
 	  distributions of ht://Dig at least should signup to the <a
 	  href="mailing.html">htdig3-announce mailing list</a>.</p>
 
-	  2.3. <a name="q2.3">Are there mirror sites for ht://Dig?</a><br>
+	  <strong>2.3. <a name="q2.3">Are there mirror sites for ht://Dig?</a></strong><br>
 	  <p>Not at the moment. Currently, there is only the main server at
 	  &lt;<a
 	  href="http://www.htdig.org/">www.htdig.org</a>&gt;. If you'd
@@ -267,14 +279,14 @@
 	  &lt;<a
 	  href="mailto:htdig3-dev@htdig.org">htdig3-dev@htdig.org</a>&gt;</p>
 
-	  2.4. <a name="q2.4">Is ht://Dig available by ftp?</a><br>
+	  <strong>2.4. <a name="q2.4">Is ht://Dig available by ftp?</a></strong><br>
 	  <p>Yes. You can find the current versions and several older
 	  versions at
 	  &lt;<a
 	  href="ftp://ftp.htdig.org/pub/htdig/">ftp.htdig.org</a>&gt;.</p>
 
-	  2.5. <a name="q2.5">Are patches around to upgrade between
-	  versions?</a><br>
+	  <strong>2.5. <a name="q2.5">Are patches around to upgrade between
+	  versions?</a></strong><br>
 	  <p>Most versions are also distributed as a patch to the previous
 	  version's source code. The most recent exception to this was
 	  version 3.1.0b1. Since this version switched from the GDBM
@@ -286,22 +298,22 @@
 	  <hr noshade size=2>
 
 	  <h3>3. Compiling</h3>
-	  3.1. <a name="q3.1">When I compile ht://Dig I get an error about
-	  libht.a</a><br>
+	  <strong>3.1. <a name="q3.1">When I compile ht://Dig I get an error about
+	  libht.a</a></strong><br>
 	  <p>This usually indicates that either libstdc++ is not installed or
 	  is installed incorrectly. To get libstdc++ or any other GNU too,
 	  check
 	  <a
 	  href="ftp://ftp.gnu.org/pub/gnu/">ftp://ftp.gnu.org/pub/gnu/</a></p>
 
-	  3.2. <a name="q3.2">I get an error about -lg</a><br>
+	  <strong>3.2. <a name="q3.2">I get an error about -lg</a></strong><br>
 	  <p>This is due to a bug in the Makefile.config.in of version
 	  3.1.0b1. Remove all flags "-ggdb" in Makefile.config.in. Then
 	  type "./config.status" to rebuild the Makefiles and
 	  recompile. This bug is fixed in version 3.1.0b2.</p>
 
-	  3.3. <a name="q3.3">I'm compiling on Digital Unix and I get
-	  mesages about "unresolved" and "db_open."</a><br>
+	  <strong>3.3. <a name="q3.3">I'm compiling on Digital Unix and I get
+	  mesages about "unresolved" and "db_open."</a></strong><br>
 	  <p>Answer contributed by George Adams
 	  &lt;learningapache@my-dejanews.com&gt;</p>
 
@@ -316,17 +328,25 @@
 	  "../db-2.4.14/dist/libdb.a" This problem has been resolved as of
 	  version 3.1.0.</p>
 
-	  3.4. <a name="q3.4">I'm compiling on FreeBSD and I get lots
-          of messages about '___error' being unresolved.</a><br>
+	  <strong>3.4. <a name="q3.4">I'm compiling on FreeBSD and I get lots
+          of messages about '___error' being unresolved.</a></strong><br>
 	  <p>Answer contributed by Laura Wingerd &lt;laura@perforce.com&gt;<br>
 	  I got a clean build of htdig-3.1.2 on FreeBSD 2.2.8 by taking
 	  -D_THREAD_SAFE out of CPPFLAGS, and setting LIBS to null, in
 	  db/dist/configure.</p>
 
+	  <strong>3.5. <a name="q3.5">I'm compiling on HP/UX and I get a complaint about
+	  "Large Files not supported."</a></strong><br>
+	  <p>The db/ pacakge, included with ht://Dig seems to be unable to complete
+	  on HP/UX 10.20 in particular. After running the top-level configure 
+	  script, cd into db/dist and type:</p>
+	  <pre>./configure --disable-bigfile</pre>
+	  <p>Then continue with the normal compilation.</p>
+	  
 	  <hr noshade size=2>
 
 	  <h3>4. Configuration</h3>
-	  4.1. <a name="q4.1">How come I can't index my site?</a><br>
+	  <strong>4.1. <a name="q4.1">How come I can't index my site?</a></strong><br>
 	  <p>There are a variety of reasons ht://Dig won't index a
 	  site. To get to the bottom of things, it's advisable to turn on
 	  some debugging output from the htdig program. When running from
@@ -334,7 +354,7 @@
 	  flags. This will add debugging output, including the responses
 	  from the server.</p>
 
-	  4.2. <a name="q4.2">How can I change the output format of htsearch?</a><br>
+	  <strong>4.2. <a name="q4.2">How can I change the output format of htsearch?</a></strong><br>
 <p>Answer contributed by: Malka Cymbalista &lt;vumalki@ultra1.weizmann.ac.il&gt;</p>
 
 <p>You can change the output format of htsearch by creating different
@@ -343,7 +363,7 @@ to look. You then create a configuration file that specifies which
 files to use. In the html document that links to the search, you
 specify which configuration file to use.</p>
 
-<p>So the configuration file would have the lines:<br>
+<p>So the configuration file would have the lines:
 <pre>
 search_results_header: ${common_dir}/ccheader.html
 search_results_footer: ${common_dir}/ccfooter.html
@@ -364,27 +384,27 @@ links to the search has to set the config parameter equal to cc. The
 following line would do it:<br>
 <pre>&lt;input type=hidden name=config value="cc"&gt;</pre></p>
 
-	  4.3. <a name="q4.3">How do I index pages that start with '~'?</a><br>
+	  <strong>4.3. <a name="q4.3">How do I index pages that start with '~'?</a></strong><br>
 	  <p>
 	  ht://Dig should index pages starting with '~' as if it was another
 	  web browser. If you are having problems with this, check your server
 	  log files to see what file the server is attempting to return.
 	  </p>
 
-	  4.4. <a name="q4.4">Can I use multiple databases?</a><br>
+	  <strong>4.4. <a name="q4.4">Can I use multiple databases?</a></strong><br>
 	  <p>Yes, though you may find it easier to have one larger
 	  database and use restrict or exclude fields on searches. To use
 	  multiple databases, you will need a config file for each
 	  database. Then each file will set the "database_base" option to
 	  change the name of the databases.</p>
 
-	  4.5. <a name="q4.5">OK, I can use multiple databases. Can I
-	  merge them into one?</a><br>
+	  <strong>4.5. <a name="q4.5">OK, I can use multiple databases. Can I
+	  merge them into one?</a></strong><br>
 	  <p>As of version 3.1.0, you can do this with the -m option to
 	  <a href="htmerge.html">htmerge</a>.</p>
 
-	  4.6. <a name="q4.6">Wow, ht://Dig eats up a lot of disk
-	  space. How can I cut down?</a><br>
+	  <strong>4.6. <a name="q4.6">Wow, ht://Dig eats up a lot of disk
+	  space. How can I cut down?</a></strong><br>
 	  <p>There are several ways to cut down on disk space. One is
 	  not to use the "-a" option, which creates work copies of the
 	  databases. Naturally this essentially doubles the disk
@@ -397,8 +417,8 @@ following line would do it:<br>
 	  removing the db.wordlist file and adding more words to the
 	  bad_words file.</p>
 
-	  4.7. <a name="q4.7">Can I use SSI or other CGIs in my
-	  htsearch results?</a><br>
+	  <strong>4.7. <a name="q4.7">Can I use SSI or other CGIs in my
+	  htsearch results?</a></strong><br>
 	  <p>Not really. Apache will not parse CGI output for SSI
 	  statements (See the <a
 	  href="http://www.apache.org/docs/misc/FAQ.html#ssi-part-iii">Apache
@@ -423,22 +443,33 @@ following line would do it:<br>
 	  For other alternatives, see question <a href="#q4.11">4.11</a>.
 	  </p>
 
-	  4.8. <a name="q4.8">How do I index Word or PostScript
-	  documents?</a><br>
-	  <p>This must be done with an external parser. A sample of
+	  <strong>4.8. <a name="q4.8">How do I index Word or PostScript
+	  documents?</a></strong><br>
+	  <p>This must be done with an external parser or converter. A sample of
 	  such a parser is the contrib/parse_doc.pl Perl script. It will
 	  parse Word, PostScript and PDF documents, when used with the
 	  appropriate document to text converters. It uses catdoc to parse
 	  Word documents, and ps2ascii to parse PostScript files. The
 	  comments in the Perl script indicate where you can obtain
-	  these converters.
-	  The most recent version of parse_doc.pl is available on our <a
-	  href="http://www.htdig.org/files/contrib/parsers/">web site</a>.<br>
-	   See below for an example.</p>
+	  these converters.</p>
 
-	  4.9. <a name="q4.9">How do I index PDF files without
-	  acroread?</a><br>
-	  <p>This too can be done with an external parser, in
+	  <p>As of htdig version 3.1.4, you can use an
+	  external converter, such as the contrib/conv_doc.pl Perl script,
+	  instead of an external parser. This script is simpler to write and
+	  maintain than a full external parser, as it just converts input
+	  documents to text/plain or text/html, and passes that back to
+	  htdig to be parsed. Parsing is more consistent across document
+	  types as a result.</p>
+
+	  <p>The most recent versions of parse_doc.pl and conv_doc.pl are
+	  available on our <a
+	  href="http://www.htdig.org/files/contrib/parsers/">web site</a>.<br>
+	   See below for an example of parse_doc.pl, or see the comments in
+	  conv_doc.pl for an example of its usage.</p>
+
+	  <strong>4.9. <a name="q4.9">How do I index PDF files without
+	  acroread?</a></strong><br>
+	  <p>This too can be done with an external parser or converter, in
 	  combination with the pdftotext program that is part of the <a
 	  href="http://www.foolabs.com/xpdf/">xpdf</a> 0.90 package. A
 	  sample of such a parser is the contrib/parse_doc.pl Perl
@@ -456,8 +487,17 @@ external_parsers: application/msword /usr/local/bin/parse_doc.pl \
 	  You would also need to configure the script to indicate where all
 	  of the document to text converters are installed.</p>
 
-	  <p>Whether you use this external parser, or acroread with the
-	  <a href="attrs.html#pdf_parser">pdf_parser</a> attribute,
+	  <p>As of htdig version 3.1.4, you can use an
+	  external converter, such as the contrib/conv_doc.pl Perl script,
+	  also available on our <a
+	  href="http://www.htdig.org/files/contrib/parsers/">web site</a>,
+	  instead of an external parser. This script is simpler, and offers
+	  more consistent parsing, because the final work is done by htdig's
+	  internal parsers. See the comments inside this script for an
+	  example of its usage.</p>
+
+	  <p>Whether you use this external parser or converter, or acroread
+	  with the <a href="attrs.html#pdf_parser">pdf_parser</a> attribute,
 	  to successfully index PDF files be sure to set the <a
 	  href="attrs.html#max_doc_size">max_doc_size</a> attribute to
 	  a value larger than the size of your largest PDF file. PDF
@@ -490,8 +530,8 @@ external_parsers: application/msword /usr/local/bin/parse_doc.pl \
 
 	  <p>See also question <a href="#q5.2">5.2</a> below.</p>
 
-	  4.10. <a name="q4.10">How do I index documents in other
-	  languages?</a><br>
+	  <strong>4.10. <a name="q4.10">How do I index documents in other
+	  languages?</a></strong><br>
 	  <p>The first and most important thing you must do,
 	  to allow ht://Dig to properly support international
 	  characters, is to define the correct locale for the
@@ -529,8 +569,8 @@ endings_word2root_db: ${lang_dir}/word2root.db
 	  characters, so languages such as Chinese and Japanese, which
 	  require 16-bit characters, are not currently supported.</p>
 
-	  4.11. <a name="q4.11">How do I get rotating banner ads in
-	  search results?</a><br>
+	  <strong>4.11. <a name="q4.11">How do I get rotating banner ads in
+	  search results?</a></strong><br>
 	  <p>While htsearch doesn't currently provide a means of doing
 	  SSI on its output, or calling other CGI scripts, it does have
 	  the capability of using environment variables in templates.</p>
@@ -561,7 +601,7 @@ endings_word2root_db: ${lang_dir}/word2root.db
 	  header.html or wrapper.html file. For other alternatives, see
 	  question <a href="#q4.7">4.7</a>.</p>
 
-	  4.12. <a name="q4.12">How do I index numbers in documents?</a><br>
+	  <strong>4.12. <a name="q4.12">How do I index numbers in documents?</a></strong><br>
 	  <p>By default, htdig doesn't treat numbers without letters
 	  as words, so it doesn't index them.
 	  To change this behavior, you must set the
@@ -570,8 +610,8 @@ endings_word2root_db: ${lang_dir}/word2root.db
 	  rundig or htdig with the -i option, so that bare numbers get
 	  added to the index.</p>
 
-	  4.13. <a name="q4.13">How can I call htsearch from a hypertext
-	  link, rather than from a search form?</a><br>
+	  <strong>4.13. <a name="q4.13">How can I call htsearch from a hypertext
+	  link, rather than from a search form?</a></strong><br>
 	  <p>If you change the search.html form to use the GET method
 	  rather than POST, you can see the URLs complete with all the
 	  arguments that htsearch needs for a query. Here is an example:<br>
@@ -591,8 +631,8 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  use in a search form can be added to the URL in this way.
 	  This can be embedded into an &lt;a href="..."&gt; tag.</p>
 
-	  4.14. <a name="q4.14">How do I restrict a search to only meta
-	  keywords entries in documents?</a><br>
+	  <strong>4.14. <a name="q4.14">How do I restrict a search to only meta
+	  keywords entries in documents?</a></strong><br>
 	  <p>First of all, you do <b>not</b> do this by using the
 	  "keywords" field in the search form. This seems to be a
 	  frequent cause of confusion.	The "keywords" input parameter
@@ -609,18 +649,40 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  must then reindex your documents.  In 3.2, you'll be able to
 	  change factors at search time without needing to reindex.</p>
 
+	  <strong>4.15. <a name="q4.15">Can I use meta tags to prevent htdig from
+	  indexing certain files?</a></strong><br>
+	  <p>Yes, in each HTML file you want to exclude, add the following
+	  between the &lt;HEAD&gt; and &lt;/HEAD&gt; tags:
+		<blockquote>
+		   &lt;META NAME="robots" CONTENT="noindex, follow"&gt;
+		</blockquote>
+	  Doing so will allow htdig to still follow links to other documents,
+	  but will prevent this document from being put into the index itself.
+	  You can also use "nofollow" to prevent following of links. See
+	  the section on <a href="meta.html">Recognized META information</a>
+	  for more details. For documents produced automatically by MhonArc,
+	  you can have that line inserted automatically by putting it in the
+	  MhonArc resource file, in the sections IDXPGBEGIN and TIDXPGBEGIN.</p>
+
+	  <p>You can also use the
+	  <a href="attrs.html#noindex_start">noindex_start</a> and
+	  <a href="attrs.html#noindex_end">noindex_end</a> attributes to
+	  define one set of tags which will mark sections to be stripped out
+	  of documents, so they don't get indexed, or you can mark sections
+	  with the non-DTD &lt;noindex&gt; and &lt;/noindex&gt; tags.</p>
+
 	  <hr noshade size=2>
 
 	  <h3>5. Troubleshooting</h3>
-	  5.1. <a name="q5.1">I can't seem to index more than X documents
-	  in a directory.</a><br>
+	  <strong>5.1. <a name="q5.1">I can't seem to index more than X documents
+	  in a directory.</a></strong><br>
 	  <p>This usually has to do with the default document size
 	  limit. If you set "max_doc_size" in your config file to
 	  something enough to read in the directory index (try 100000 for
 	  100K) this should fix this problem. Of course this will require
 	  more memory to read the larger file.</p>
 
-	  5.2. <a name="q5.2">I can't index PDF files.</a><br>
+	  <strong>5.2. <a name="q5.2">I can't index PDF files.</a></strong><br>
 	  <p>As above, this usually has to do with the default document
 	  size. What happens is ht://Dig will read in part of a PDF file
 	  and try to index it. This usually fails. Try setting
@@ -645,23 +707,23 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  package installed on your system, as described in question <a
 	  href="#q4.9">4.9</a> above.</p>
 
-	  5.3. <a name="q5.3">When I run "rundig," I get a message about
-	  "DATABASE_DIR" not being found.</a><br>
+	  <strong>5.3. <a name="q5.3">When I run "rundig," I get a message about
+	  "DATABASE_DIR" not being found.</a></strong><br>
 	  <p>This is due to a bug in the Makefile.in file in version
 	  3.1.0b1. The easiest fix is to edit the rundig file and change
 	  the line "TMPDIR=@DATABASE_DIR@" to set TMPDIR to a directory
 	  with a large amount of temporary disk space for htmerge. This
 	  bug is fixed in version 3.1.0b2.</p>
 
-	  5.4. <a name="q5.4">When I run htmerge, it stops with an "out
-	  of diskspace" message.</a><br>
+	  <strong>5.4. <a name="q5.4">When I run htmerge, it stops with an "out
+	  of diskspace" message.</a></strong><br>
 	  <p>This means that htmerge has run out of temporary disk space
 	  for sorting. Either in your "rundig" script (if you run htmerge
 	  through that) or before you run htmerge, set the variable TMPDIR
 	  to a temp directory with lots of space.</p>
 
-	  5.5. <a name="q5.5">I have problems running rundig from cron
-	  under Linux.</a><br>
+	  <strong>5.5. <a name="q5.5">I have problems running rundig from cron
+	  under Linux.</a></strong><br>
 	  <p>This problem commonly occurs on Red Hat Linux 5.0 and 5.1,
 	  because of a bug in vixie-cron. It causes htmerge to fail with a
 	  "Word sort failed" error. It's fixed in Red Hat 5.2.
@@ -671,15 +733,15 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  which will run the script through the ash shell, but this doesn't
 	  solve the underlying problem.</p>
 
-	  5.6. <a name="q5.6">When I run htmerge, it stops with an
-	  "Unexpected file type" message.</a><br>
+	  <strong>5.6. <a name="q5.6">When I run htmerge, it stops with an
+	  "Unexpected file type" message.</a></strong><br>
 	  <p>Often this is because the databases are corrupt. Try removing
 	  them and rebuilding. If this doesn't work, some have found that
 	  the solution for question <a href="#q3.2">3.2</a> works for this
 	  as well. This should be fixed in version 3.1.0b2.</p>
 
-	  5.7. <a name="q5.7">When I run htsearch, I get lots of Internal
-	  Server Errors (#500).</a><br>
+	  <strong>5.7. <a name="q5.7">When I run htsearch, I get lots of Internal
+	  Server Errors (#500).</a></strong><br>
 	  <p>Answer contributed by David R. Barstis &lt;dbarstis@nd.edu&gt;</p>
 	  <p>If you are running Apache under Solaris, try adding "PassEnv
 	  LD_LIBRARY_PATH" to Apache's httpd.conf file. Often these errors
@@ -688,8 +750,8 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  htsearch may run out of memory.
 	  <br>See also question <a href="#q5.13">5.13</a>.</p>
 
-	  5.8. <a name="q5.8">I'm having problems with indexing words
-	  with accented characters.</a><br>
+	  <strong>5.8. <a name="q5.8">I'm having problems with indexing words
+	  with accented characters.</a></strong><br>
 	  <p>
 	  Most of the time, this is caused by either not setting or
 	  incorrectly setting the <a
@@ -702,8 +764,8 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  environment variable. See also question <a href="#q4.10">4.10</a>.
 	  </p>
 
-	  5.9. <a name="q5.9">When I run htmerge, it stops with a
-	  "Word sort failed" message.</a><br>
+	  <strong>5.9. <a name="q5.9">When I run htmerge, it stops with a
+	  "Word sort failed" message.</a></strong><br>
 	  <p>There are three common causes of this. First of all, the sort
 	  program may be running out of temporary file space. Fix this
 	  by freeing up some space where sort puts its temporary files,
@@ -717,8 +779,8 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  -T option. A third cause is the cron program on Red Hat Linux
 	  5.0 or 5.1. (See question <a href="#q5.5">5.5</a> above.)</p>
 
-	  5.10. <a name="q5.10">When htsearch has a lot of matches, it runs
-	  extremely slowly.</a><br>
+	  <strong>5.10. <a name="q5.10">When htsearch has a lot of matches, it runs
+	  extremely slowly.</a></strong><br>
 	  <p>When you run htsearch with no customization, on a
 	  large database, and it gets a lot of hits, it tends to
 	  take a long time to process those hits. Some users with
@@ -734,8 +796,8 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  the databases will be structured differently, so it should
 	  perform searches more quickly.</p>
 
-	  5.11. <a name="q5.11">When I run htsearch, it gives me a count of
-	  matches, but doesn't list the matching documents.</a><br>
+	  <strong>5.11. <a name="q5.11">When I run htsearch, it gives me a count of
+	  matches, but doesn't list the matching documents.</a></strong><br>
 	  <p>This most commonly happens when you run htsearch while the
 	  database is currently being rebuilt or updated by htdig.
 	  If htdig and htmerge have run to completion, and the problem still
@@ -750,8 +812,8 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  ht://Dig were susceptible to database corruption of this
 	  sort. Versions 3.1.2 and later are much more stable.</p>
 
-	  5.12. <a name="q5.12">I can't seem to index documents with names
-	  like left_index.html with htdig.</a><br>
+	  <strong>5.12. <a name="q5.12">I can't seem to index documents with names
+	  like left_index.html with htdig.</a></strong><br>
 	  <p>There is a bug in the implementation of the <a
 	  href="attrs.html#remove_default_doc">remove_default_doc</a>
 	  attribute in htdig versions 3.1.0, 3.1.1 and 3.1.2, which causes
@@ -760,8 +822,8 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  with this string (rather than matches it entirely) will have
 	  the filename stripped off. This is fixed in version 3.1.3.</p>
 
-	  5.13. <a name="q5.13">I get Premature End of Script Headers errors
-	  when running htsearch.</a><br>
+	  <strong>5.13. <a name="q5.13">I get Premature End of Script Headers errors
+	  when running htsearch.</a></strong><br>
 	  <p>This happens when htsearch dies before putting out a
 	  "Content-Type" header. If you are running Apache under Solaris,
 	  first try the solution described in question <a href="#q5.7">5.7</a>.
@@ -772,8 +834,8 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  <br>See also questions <a href="#q5.7">5.7</a> and
 	  <a href="#q5.14">5.14</a>.</p>
 
-	  5.14. <a name="q5.14">I get Segmentation faults when running
-	  htsearch or htfuzzy.</a><br>
+	  <strong>5.14. <a name="q5.14">I get Segmentation faults when running
+	  htdig, htsearch or htfuzzy.</a></strong><br>
 	  <p>Despite a great deal of debugging of these programs, we haven't
 	  been able to completely eliminate all such problems on all platforms.
 	  If you're running htsearch or htfuzzy on a BSDI system, a common
@@ -795,6 +857,27 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  platforms. For instance, on libc5-based Linux systems, the bundled
 	  regex code works fine by default, but using libc5's regex code
 	  causes core dumps.</p>
+
+	  <p>Users of Cobalt Raq or Qube servers have complained of
+	  segmentation faults in htdig. Apparently this is due to problems
+	  in their C++ libraries, which are fixed in their experimental
+	  compiler and libraries. The following commands should install
+	  the packages you need:
+		<blockquote>
+		 rpm -Uvh ftp://ftp.cobaltnet.com/pub/experimental/binutils-2.8.1-3C1.mips.rpm<br>
+		 rpm -Uvh ftp://ftp.cobaltnet.com/pub/experimental/egcs-1.0.2-9.mips.rpm<br>
+		 rpm -Uvh ftp://ftp.cobaltnet.com/pub/experimental/egcs-c++-1.0.2-9.mips.rpm<br>
+		 rpm -Uvh ftp://ftp.cobaltnet.com/pub/experimental/egcs-g77-1.0.2-9.mips.rpm<br>
+		 rpm -Uvh ftp://ftp.cobaltnet.com/pub/experimental/egcs-objc-1.0.2-9.mips.rpm<br>
+		 rpm -Uvh ftp://ftp.cobaltnet.com/pub/experimental/libstdc++-2.8.0-9.mips.rpm<br>
+		 rpm -Uvh ftp://ftp.cobaltnet.com/pub/experimental/libstdc++-devel-2.8.0-9.mips.rpm<br>
+		 rpm -Uvh --force ftp://ftp.cobaltnet.com/pub/products/current/RPMS/gcc-2.7.2-C2.mips.rpm
+		</blockquote>
+	  You may have to remove the libg++ package, if you have it installed
+	  before installing libstdc++, because of conflicts in these packages.
+	  Be sure to do a "make clean" before a "make", to remove any object
+	  files compiled with the old compiler and headers.</p>
+
 	  <p>For other causes of segmentation faults, or in other programs,
 	  getting a stack backtrace after the fault can be useful in narrowing
 	  down the problem. E.g.: try "gdb /path/to/htsearch /path/to/core",
@@ -806,8 +889,8 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  to find and fix the problem yourself, or at least it may help others
 	  on the htdig mailing list to point out what to do next.</p>
 
-	  5.15. <a name="q5.15">Why does htdig 3.1.3 mangle URL parameters
-	  that contain bare "&amp;" characters?</a><br>
+	  <strong>5.15. <a name="q5.15">Why does htdig 3.1.3 mangle URL parameters
+	  that contain bare "&amp;" characters?</a></strong><br>
 	  <p>This is a known bug in 3.1.3, and is fixed with this
 	  <a href="http://www.htdig.org/files/contrib/other/htdig-3.1.3-urlparmbug.patch">
 	  patch</a>. You can apply the patch by entering into the main
@@ -815,23 +898,39 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  "patch -p1 < /path/to/htdig-3.1.3-urlparmbug.patch". This is
 	  also fixed as of version 3.1.4.</p>
 
-	  5.16. <a name="q5.16">When I run htmerge, it stops with an
-	  "Unable to open word list file '.../db.wordlist'" message.</a><br>
+	  <strong>5.16. <a name="q5.16">When I run htmerge, it stops with an
+	  "Unable to open word list file '.../db.wordlist'" message.</a></strong><br>
 	  <p>The most common cause of this error is that htdig did not
 	  manage to index any documents, and so it did not create a word
 	  list. You should repeat the htdig or rundig command with the
 	  -vvv option to see where and why it is failing.
 	  See question <a href="#q4.1">4.1</a>.</p>
 
+	  <strong>5.17. <a name="q5.17">When using Netscape, htsearch always returns the
+	  "No match" page.</a></strong><br>
+	  <p>Check your search form. Chances are there is a hidden input 
+	  field with no value defined. For example, one user had
+	  <pre>&lt;input type=hidden name=restrict&gt;</pre>
+
+	  in his search form, instead of
+
+         <pre>&lt;input type=hidden name=restrict value=""&gt;</pre>
+
+	 The problem is that Netscape sets the missing value to a default of "  "
+	 (two spaces), rather than an empty string. For the restrict parameter,
+	 this is a problem, because htsearch won't likely find any URLs with two
+	 spaces in them. Other input parameters may similarly pose a problem.
+	  </p>
+	  
 	  <p>
 
 	  <hr noshade size=4>
 	<address>
-	  <a href="THANKS.html">$Author: ghutchis $</a>
+	  <a href="THANKS.html">$Author: grdetil $</a>
 	</address>
 <!-- Created: Sun Jun 22 23:16:38 PDT 1997 -->
-<!-- hhmts start -->
-Last modified: Wed Dec  8 18:16:19 CST 1999
-<!-- hhmts end -->
+
+Last modified: $Date: 2000/02/16 22:34:06 $
+
   </body>
 </html>
