@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.h,v 1.22 1999/10/08 12:59:58 loic Exp $
+// $Id: Display.h,v 1.23 1999/10/15 03:35:17 jtillman Exp $
 //
 
 #ifndef _Display_h_
@@ -33,7 +33,8 @@ public:
     //
     // Construction/Destruction
     //
-    Display(const String& docFile, const String& indexFile, const String& excerptFile);
+//    Display(char *docFile, char *indexFile, char *excerptFile);
+		Display();
     ~Display();
 
     void		setStartTemplate(const String& templateName);
@@ -67,7 +68,7 @@ protected:
     //
     // The database that contains documents.
     //
-    DocumentDB		docDB;
+    //DocumentDB		docDB;
 
     //
     // A list of words that we are searching for
@@ -216,4 +217,7 @@ Display::setCGI(cgi *aCgi)
 }
 
 #endif
+
+
+
 
