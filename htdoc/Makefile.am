@@ -49,13 +49,10 @@ EXTRA_DIST = COPYING  \
 	cf_generate.pl
 
 attrs.html: attrs_head.html attrs_tail.html ../htcommon/defaults.cc cf_generate.pl
-    echo 'Temporarily disabled'
-	#@PERL@ ${srcdir}/cf_generate.pl
+	@PERL@ ${srcdir}/cf_generate.pl ${top_srcdir}
 
 cf_byname.html: cf_byname_head.html cf_byname_tail.html ../htcommon/defaults.cc cf_generate.pl
-    echo 'Temporarily disabled'
-	#@PERL@ ${srcdir}/cf_generate.pl
+	@PERL@ ${srcdir}/cf_generate.pl ${top_srcdir}
 
 cf_byprog.html: cf_byprog_head.html cf_byprog_tail.html ../htcommon/defaults.cc cf_generate.pl
-    echo 'Temporarily disabled'
-	#@PERL@ ${srcdir}/cf_generate.pl
+	@PERL@ ${srcdir}/cf_generate.pl ${top_srcdir}

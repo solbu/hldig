@@ -1,3 +1,9 @@
+Thu Aug 28 11:11:32 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * htdoc/cf_generate.pl: fixed an error when opening tail and head files
+    * Makefile.am: enabled rebuild from a different directory (it is used
+    my 'make dist')
+
 Thu Aug 28 10:46:35 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htlib/malloc.c: modified according to autoconf specifications as far

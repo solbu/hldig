@@ -14,7 +14,7 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: cf_generate.pl,v 1.5 2003/08/28 00:45:32 angusgb Exp $
+# $Id: cf_generate.pl,v 1.6 2003/08/28 01:13:12 angusgb Exp $
 #
 use strict;
 
@@ -88,7 +88,7 @@ my($file);
 $file = "attrs.html";
 open(ATTR, ">$file") or die "cannot open $file for writing : $!";
 
-$file = "attrs_head.html";
+$file = $dir . "/htdoc/attrs_head.html";
 open(FILE, "<$file") or die "cannot open $file for reading : $!";
 $content = <FILE>;
 print ATTR $content;
@@ -100,7 +100,7 @@ close(FILE);
 $file = "cf_byname.html";
 open(BYNAME, ">$file") or die "cannot open $file for writing : $!";
 
-$file = "cf_byname_head.html";
+$file = $dir . "/htdoc/cf_byname_head.html";
 open(FILE, "<$file") or die "cannot open $file for reading : $!";
 $content = <FILE>;
 print BYNAME $content;
@@ -225,14 +225,14 @@ $content = <FILE>;
 close(FILE);
 my($date) = $content;
 
-my($file) = "attrs_tail.html";
+my($file) = $dir . "/htdoc/attrs_tail.html";
 open(FILE, "<$file") or die "cannot open $file for reading : $!";
 $content = <FILE>;
 $content =~ s/Last modified: [^\n]*\n/Last modified: $date/;
 print ATTR $content;
 close(FILE);
 
-my($file) = "cf_byname_tail.html";
+my($file) = $dir . "/htdoc/cf_byname_tail.html";
 open(FILE, "<$file") or die "cannot open $file for reading : $!";
 $content = <FILE>;
 print BYNAME $content;
@@ -247,7 +247,7 @@ close(BYNAME);
 $file = "cf_byprog.html";
 open(BYPROG, ">$file") or die "cannot open $file for writing : $!";
 
-$file = "cf_byprog_head.html";
+$file = $dir . "/htdoc/cf_byprog_head.html";
 open(FILE, "<$file") or die "cannot open $file for reading : $!";
 $content = <FILE>;
 print BYPROG $content;
@@ -274,7 +274,7 @@ foreach $prog (sort(keys(%prog2attr))) {
     }
 }
 
-my($file) = "cf_byprog_tail.html";
+my($file) = $dir . "/htdoc/cf_byprog_tail.html";
 open(FILE, "<$file") or die "cannot open $file for reading : $!";
 $content = <FILE>;
 print BYPROG $content;
