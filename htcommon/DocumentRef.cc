@@ -4,6 +4,10 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.8  1998/12/06 18:44:43  ghutchis
+// Add the text of descriptions to the word database with weight
+// description_factor.
+//
 // Revision 1.7  1998/11/18 05:16:28  ghutchis
 //
 // Remove limit on link descriptions.
@@ -40,7 +44,10 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <fstream.h>
+#include "WordList.h"
+#include "Configuration.h"
 
+extern Configuration    config;
 
 //*****************************************************************************
 // DocumentRef::DocumentRef()
@@ -303,6 +310,34 @@ void DocumentRef::AddDescription(char *d)
             return;
     }
     descriptions.Add(new String(desc));
+
+    // Add the description text to the word database with proper factor
+
+    static WordList words;
+    words.WordTempFile(config["word_list"]);
+    words.BadWordFile(config["bad_word_list"]);
+    words.DocumentID(docID);
+    
+    char       *valid_punctuation = config["valid_punctuation"];
+    int         minimumWordLength = config.Value("minimum_word_length", 3);
+    double      desc_factor = config.Double("description_factor");
+
+    char    *w = strtok(desc, " ,\t\r\n");
+    while (w)
+      {
+	if (strlen(w) >= minimumWordLength)
+	  {
+	    String word = w;
+	    word.lowercase();
+	    word.remove(valid_punctuation);
+	    if (word.length() >= minimumWordLength)
+	      words.Word(w, 0, 0, desc_factor);
+	  }
+	w = strtok(0, " ,\t\r\n");
+      }
+    w = '\0';
+    // And let's flush the words!
+    words.Flush();
 }
 
 
