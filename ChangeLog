@@ -1,4 +1,7 @@
-Mon Aug  9 17:18:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Aug  9 17:23:15 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.cc(ServerAlias): fix small memory leak in new default
+	path code (don't need to allocate new from string each time).
 
 	* htlib/cgi.cc(init): Fix PR#572, where htsearch crashed if
 	CONTENT_LENGTH was not set but REQUEST_METHOD was.
