@@ -1,3 +1,8 @@
+Wed Jan 16 17:21:26 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html, htdoc/hts_form.html: Described how to use
+	relative dates for startyear et al.
+
 Wed Jan 16 16:58:05 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (buildMatchList): Fixed startday et al. to
