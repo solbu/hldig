@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.8.2.2 1999/12/02 20:18:17 grdetil Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.8.2.3 1999/12/03 18:11:02 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -20,9 +20,9 @@ static char RCSid[] = "$Id: Server.cc,v 1.8.2.2 1999/12/02 20:18:17 grdetil Exp 
 
 
 //*****************************************************************************
-// Server::Server(char *host, int port)
+// Server::Server(char *host, int port, String *local_robots_file)
 //
-Server::Server(char *host, int port)
+Server::Server(char *host, int port, String *local_robots_file)
 {
     if (debug > 0)
 	cout << endl << "New server: " << host << ", " << port << endl;
@@ -44,15 +44,14 @@ Server::Server(char *host, int port)
     url << host << ':' << port << "/robots.txt";
     Document	doc(url, 0);
 
-    static int		local_urls_only = config.Boolean("local_urls_only"));
+    static int		local_urls_only = config.Boolean("local_urls_only");
     time_t		timeZero = 0;
     Document::DocStatus	status;
-    String *local_filename = Retriever::GetLocal(url.get());
-    if (local_filename)
+    if (local_robots_file)
     {  
         if (debug > 1)
-	    cout << "Trying local file " << *local_filename << endl;
-        status = doc.RetrieveLocal(timeZero, *local_filename);
+	    cout << "Trying local file " << *local_robots_file << endl;
+        status = doc.RetrieveLocal(timeZero, *local_robots_file);
         if (status == Document::Document_not_local)
         {
 	    if (local_urls_only)
@@ -64,7 +63,6 @@ Server::Server(char *host, int port)
 		status = doc.RetrieveHTTP(timeZero);
 	    }
         }
-        delete local_filename;
     }
     else
         status = doc.RetrieveHTTP(timeZero);

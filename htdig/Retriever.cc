@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.16 1999/12/02 20:18:17 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.17 1999/12/03 18:11:02 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -137,8 +137,12 @@ Retriever::Initial(char *list, int from)
            cout << "\t" << from << ":" << (int) log << ":" << url;
 	if (!server)
 	{
-	    server = new Server(u.host(), u.port());
+	    String robotsURL = "http://";
+	    robotsURL << u.host() << "/robots.txt";
+	    String *localRobotsFile = GetLocal(robotsURL.get());
+	    server = new Server(u.host(), u.port(), localRobotsFile);
 	    servers.Add(u.signature(), server);
+	    delete localRobotsFile;
 	}
 	else if (from && visited.Exists(url)) 
 	{
@@ -329,7 +333,7 @@ Retriever::parse_url(URLRef &urlRef)
     time_t		date;
     static int	index = 0;
     Server		*server;
-    static int		local_urls_only = config.Boolean("local_urls_only"));
+    static int		local_urls_only = config.Boolean("local_urls_only");
 
 //	cout << "**** urlRef URL = '" << urlRef.URL() << "', referer = '" <<
 //		urlRef.Referer() << "'\n";
@@ -1168,8 +1172,12 @@ Retriever::got_href(URL &url, char *description)
 		    //
 		    // Hadn't seen this server, yet.  Register it
 		    //
-		    server = new Server(url.host(), url.port());
+		    String robotsURL = "http://";
+		    robotsURL << url.host() << "/robots.txt";
+		    String *localRobotsFile = GetLocal(robotsURL.get());
+		    server = new Server(url.host(), url.port(), localRobotsFile);
 		    servers.Add(url.signature(), server);
+		    delete localRobotsFile;
 		}
 		//
 		// Let's just be sure we're not pushing an empty URL
@@ -1297,8 +1305,12 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 		    //
 		    // Hadn't seen this server, yet.  Register it
 		    //
-		    server = new Server(url.host(), url.port());
+		    String robotsURL = "http://";
+		    robotsURL << url.host() << "/robots.txt";
+		    String *localRobotsFile = GetLocal(robotsURL.get());
+		    server = new Server(url.host(), url.port(), localRobotsFile);
 		    servers.Add(url.signature(), server);
+		    delete localRobotsFile;
 		}
 		server->push(url.get(), ref->DocHopCount(), base->get(),
 				IsLocalURL(url.get()));
