@@ -1,7 +1,11 @@
 //
-// $Id: lib.h,v 1.4 1998/11/02 20:31:07 ghutchis Exp $
+// $Id: lib.h,v 1.4.2.1 2002/01/03 23:12:25 grdetil Exp $
 //
 // $Log: lib.h,v $
+// Revision 1.4.2.1  2002/01/03 23:12:25  grdetil
+// * htlib/Makefile.in, htlib/lib.h: Removed references to timegm,
+//   mytimegm and strptime functions. Removed C source for these.
+//
 // Revision 1.4  1998/11/02 20:31:07  ghutchis
 //
 // Call mytimegm.cc instead of timegm.c.
@@ -58,16 +62,5 @@ char *strdup(char *);
 // searches.  This version will ignore case.
 //
 char *mystrcasestr(char *s, char *pattern);
-
-//
-// Too many problems with system strptime() functions...  Just use our own
-// version of it.
-//
-char *mystrptime(char *buf, char *fmt, struct tm *tm);
-
-//
-// timegm() is quite rare, so provide our own.
-//
-time_t mytimegm(struct tm *tm);
 
 #endif

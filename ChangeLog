@@ -1,3 +1,8 @@
+Thu Jan  3 17:10:50 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Makefile.in, htlib/lib.h: Removed references to timegm,
+	mytimegm and strptime functions. Removed C source for these.
+
 Thu Jan  3 16:43:31 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/htmerge.html: Added extra description for -m option to clear
