@@ -1,3 +1,8 @@
+Tue Apr 27 16:43:08 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc(RetrieveHTTP): Show "Unable to build connection"
+	message at lower debug level.
+
 Tue Apr 27 11:24:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.h: Remove sort, compare functions re-introduced
