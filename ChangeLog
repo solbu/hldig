@@ -1,5 +1,10 @@
 Tue Feb 11 2003  Lachlan Andrew  <lha@users.sourceforge.net>
 
+	* htcommon/defaults.cc:  Set default  compression_level  to 6,
+	  which enables Neal's  wordlist_compression_zlib  flag.
+
+Tue Feb 11 2003  Lachlan Andrew  <lha@users.sourceforge.net>
+
 	* htcommon/{DocumentRef.h, HtWordReference.h},
 	  htsearch/WeightWord.{cc,h},
 	  htsearch/parser.{cc,h}, htsearch/htsearch.cc:

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.77 2003/02/11 09:49:29 lha Exp $
+// $Id: defaults.cc,v 1.78 2003/02/11 10:14:16 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -353,14 +353,17 @@ http://www.htdig.org/", " \
 	\"changing\" the affected URLs in the database is \
 	wanted.<br> \
 " }, \
-{ "compression_level", "0",  \
-	"integer", "htdig", "", "3.1.0", "Indexing:How", "compression_level: 6", " \
-	If specified and the <a \
-	href=\"http://www.cdrom.com/pub/infozip/zlib/\">zlib</a> \
+{ "compression_level", "6",  \
+	"integer", "htdig", "", "3.1.0", "Indexing:How", "compression_level: 0", " \
+	If non-zero and the \
+	<a href=\"http://www.cdrom.com/pub/infozip/zlib/\">zlib</a> \
 	compression library was available when compiled, \
 	this attribute controls \
-	the amount of compression used in the <a \
-	href=\"#doc_excerpt\">doc_excerpt</a> file. \
+	the amount of compression used in the \
+	<a href=\"#doc_excerpt\">doc_excerpt</a> file. \
+	<br/>This must be non-zero when \
+	<a href=\"#wordlist_compress_zlib\">wordlist_compress_zlib</a> \
+	is used. \
 " }, \
 { "config", DEFAULT_CONFIG_FILE,  \
 	"string", "all", "", "??", "File Layout", "", " \
@@ -2727,7 +2730,9 @@ form during indexing and translated for results. \
 { "wordlist_compress_zlib", "true",  \
 	"boolean", "all", "", "3.2.0b4", "Indexing:How", "wordlist_compress_zlib: true", " \
 	Enables or disables the zlib compression system for the indexer. \
-	wordlist_compress must be true to use this option!\
+	Both <a href=\"#wordlist_compress\">wordlist_compress</a> and \
+	<a href=\"#compression_level\">compression_level</a> must be true \
+	(non-zero) to use this option!\
 " }, \
 { "wordlist_monitor", "false", \
 	"boolean", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor: true", " \
