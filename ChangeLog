@@ -1,3 +1,9 @@
+Wed Apr 21 22:45:16 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* .version: Bump for final 3.1.2 release.
+
+	* htdoc/where.html, htdoc/FAQ.html: Update to mention the new release.
+
 Tue Apr 20 13:34:22 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/RELEASE.html: Fixed a few typos, updated modification date.
