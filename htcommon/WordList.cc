@@ -14,7 +14,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.21 1999/08/27 15:46:19 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.22 1999/08/28 21:21:42 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -26,6 +26,7 @@ static char RCSid[] = "$Id: WordList.cc,v 1.21 1999/08/27 15:46:19 ghutchis Exp 
 #include "DB2_db.h"
 #include "HtPack.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <fstream.h>
 
@@ -177,8 +178,8 @@ void WordList::Flush()
       wordRec->location = wordRef->Location;
 
       // We need to compress the WordRecord and convert it into a binary form
-      compressedData = htPack(WORD_RECORD_COMPRESSED_FORMAT,
-			      (char *) wordRec);
+      compressedData = 0;
+      compressedData.append((char *) wordRec, sizeof(WordRecord));
 
       dbf->Put(wordRef->Word, compressedData.get(), compressedData.length());
     }
@@ -286,7 +287,7 @@ int WordList::Read(char *filename)
 {
     dbf = 0;
 
-    dbf = Database::getDatabaseInstance(DB_HASH);
+    dbf = Database::getDatabaseInstance(DB_BTREE);
 
     if (dbf->OpenRead(filename) != OK)
       return NOTOK;
@@ -352,25 +353,28 @@ List *WordList::operator [] (String word)
 {
     List        *list = new List;
     char        *key;
-    char        *wordKey;
-    char        *data;
+    String	wordKey;
+    String      data;
     String      decompressed;
     WordRecord  *wr = new WordRecord;
 
     dbf->Start_Seq(word.get());
-    while ((key = dbf->Get_Next()))
+    while ((key = dbf->Get_Next(data)))
       {
+
         // Break off the \001 and the docID
         wordKey = strtok(key, "\001");
         if (word != wordKey)
             break;
 
-        data = dbf->Get_Item();
-        if (data)
+        if (data.length())
           {
-            decompressed = htUnpack(WORD_RECORD_COMPRESSED_FORMAT, data);
+            decompressed = data;
             if (decompressed.length() != sizeof (WordRecord))
-              continue;
+	      {
+		cout << "Decoding mismatch" << endl;
+		continue;
+	      }
 
             memcpy((char *) wr, decompressed.get(), sizeof(WordRecord));
 
@@ -385,7 +389,6 @@ List *WordList::operator [] (String word)
           }
       }
 
-    delete wr;
     return list;
 }
 
@@ -456,37 +459,38 @@ List *WordList::WordRefs()
     List        *list = new List;
     char        *key;
     char	*word;
-    char	*data;
+    String	data;
     String	decompressed;
     WordRecord  *wr = new WordRecord;
 
     dbf->Start_Get();
-    while ((key = dbf->Get_Next()))
+    while ((key = dbf->Get_Next(data)))
       {
         // Break off the \001 and the docID
         word = strtok(key, "\001");
-	cout << " word " << word << endl;
 
-	data = dbf->Get_Item();
-	if (data)
-	  {
-	    decompressed = htUnpack(WORD_RECORD_COMPRESSED_FORMAT, data);
-	    if (decompressed.length() != sizeof (WordRecord))
-	      continue;
+        if (data.length())
+          {
+            decompressed = data;
+            if (decompressed.length() != sizeof (WordRecord))
+	      {
+		cout << "Decoding mismatch" << endl;
+		continue;
+	      }
 
-	    memcpy((char *) wr, decompressed.get(), sizeof(WordRecord));
+            memcpy((char *) wr, decompressed.get(), sizeof(WordRecord));
 
-	    WordReference *wordRef = new WordReference;
-	    wordRef->Word = word;
-	    wordRef->DocumentID = wr->id;
-	    wordRef->Flags = wr->flags;
-	    wordRef->Anchor = wr->anchor;
-	    wordRef->Location = wr->location;
-	    
+            WordReference *wordRef = new WordReference;
+            wordRef->Word = word;
+            wordRef->DocumentID = wr->id;
+            wordRef->Flags = wr->flags;
+            wordRef->Anchor = wr->anchor;
+            wordRef->Location = wr->location;
+
 	    list->Add(wordRef);
+
 	  }
       }
 
-    delete wr;
     return list;
 }
