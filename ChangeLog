@@ -1,3 +1,8 @@
+Sat Feb  9 18:06:29 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/DocMatch.[h,cc]: Add scoring code for the new htsearch
+	framework.
+
 Thu Feb  7 11:32:14 2002  Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* htnet/HtHTTP.cc (ReadChunkedBody): gets control of Read_Line

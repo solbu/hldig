@@ -6,12 +6,12 @@
 //           score of the document for this search.
 //           
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2000 The ht://Dig Group
+// Copyright (c) 1995-2002 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocMatch.h,v 1.5 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: DocMatch.h,v 1.6 2002/02/10 00:07:58 ghutchis Exp $
 //
 
 #ifndef _DocMatch_h_
@@ -50,7 +50,7 @@ public:
 	// default constructor
 	DocMatch() :
 		locations(new List),
-		score(0.0),
+		score(-1.0),
 		id(0),
 		anchor(0),
 		collection(0) {}
@@ -64,8 +64,8 @@ public:
 	// match join
 	void Merge(const DocMatch &);
 
-	// score accessor -- deprecated -- compatible with older versions
-	double GetScore() const;
+	// score accessor
+	double GetScore();
 	void SetScore(double);
 
 	// doc id accessors

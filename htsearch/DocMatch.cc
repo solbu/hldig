@@ -5,12 +5,12 @@
 //           score of the document for this search.
 //           
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2000 The ht://Dig Group
+// Copyright (c) 1995-2002 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocMatch.cc,v 1.4 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: DocMatch.cc,v 1.5 2002/02/10 00:07:58 ghutchis Exp $
 //
 
 #include <iostream.h>
@@ -170,7 +170,7 @@ DocMatch::Dump()
 }
 
 double
-DocMatch::GetScore() const
+DocMatch::GetScore()
 {
   HtConfiguration* config= HtConfiguration::config();
   static double text_factor = config->Double("text_factor", 1);
@@ -183,25 +183,30 @@ DocMatch::GetScore() const
   static double description_factor = config->Double("description_factor", 1);
   static double url_text_factor = config->Double("url_text_factor", 1);
 
-	double locresult, result = 0.0;
-	ListCursor c;
-	locations->Start_Get(c);
-	Location *loc = (Location *)locations->Get_Next(c);
-	while(loc)
-	{
-	        locresult = 0.0;
-	if (loc->flags == FLAG_TEXT)		locresult += text_factor;
-	if (loc->flags & FLAG_CAPITAL)		locresult += caps_factor;
-	if (loc->flags & FLAG_TITLE)		locresult += title_factor;
-	if (loc->flags & FLAG_HEADING)		locresult += heading_factor;
-	if (loc->flags & FLAG_KEYWORDS)		locresult += keywords_factor;
-	if (loc->flags & FLAG_DESCRIPTION)	locresult += meta_desc_factor;
-	if (loc->flags & FLAG_AUTHOR)		locresult += author_factor;
-	if (loc->flags & FLAG_LINK_TEXT)	locresult += description_factor;
-	if (loc->flags & FLAG_URL)		locresult += url_text_factor;
+  if (score == -1.0)
+    {
+      score = 0.0;
 
-		result += loc->weight * locresult;
-		loc = (Location *)locations->Get_Next(c);
+      double locresult = 0.0;
+      ListCursor c;
+      locations->Start_Get(c);
+      Location *loc = (Location *)locations->Get_Next(c);
+      while(loc)
+	{
+	  locresult = 0.0;
+	  if (loc->flags == FLAG_TEXT)		locresult += text_factor;
+	  if (loc->flags & FLAG_CAPITAL)		locresult += caps_factor;
+	  if (loc->flags & FLAG_TITLE)		locresult += title_factor;
+	  if (loc->flags & FLAG_HEADING)		locresult += heading_factor;
+	  if (loc->flags & FLAG_KEYWORDS)		locresult += keywords_factor;
+	  if (loc->flags & FLAG_DESCRIPTION)	locresult += meta_desc_factor;
+	  if (loc->flags & FLAG_AUTHOR)		locresult += author_factor;
+	  if (loc->flags & FLAG_LINK_TEXT)	locresult += description_factor;
+	  if (loc->flags & FLAG_URL)		locresult += url_text_factor;
+	  
+	  score += loc->weight * locresult;
+	  loc = (Location *)locations->Get_Next(c);
 	}
-	return result;
+    }
+  return score;
 }
