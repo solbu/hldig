@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.6 1999/11/28 02:45:09 ghutchis Exp $
+// $Id: Document.cc,v 1.55.2.7 1999/12/04 13:59:50 vadim Exp $
 //
 
 #include <signal.h>
@@ -280,7 +280,8 @@ Document::Retrieve(HtDateTime date)
             cout << endl;
          }
       }
-      
+
+      HTTPConnect->SetProxy(useproxy);
       transportConnect = HTTPConnect;
    }
    else

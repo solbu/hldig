@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.5 1999/11/28 02:46:08 ghutchis Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.6 1999/12/04 13:59:50 vadim Exp $ 
 //
 
 #include "lib.h"
@@ -113,6 +113,7 @@ HtHTTP::HtHTTP()
 
    // Default Method Request
    _Method = Method_GET;
+   _useproxy = 0;
 }
 
 // Destruction
@@ -507,6 +508,9 @@ void HtHTTP::SetRequestCommand(String &cmd)
 
    // Initialize it
 
+   if (_useproxy) {
+	cmd << _url.get() << " HTTP/1.1\r\n";
+   } else 
    cmd << _url.path() << " HTTP/1.1\r\n";
 
    // Insert the "virtual" host to which ask the document

@@ -28,7 +28,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.8.2.2 1999/11/28 02:46:08 ghutchis Exp $ 
+// $Id: HtHTTP.h,v 1.8.2.3 1999/12/04 13:59:50 vadim Exp $ 
 //
 
 #ifndef _HTHTTP_H
@@ -252,7 +252,9 @@ public:
 
    static void SetParsingController (int (*f)(char*)) { CanBeParsed = f; }
 
-	
+   // Proxy settings
+	void SetProxy(int aUse) { _useproxy=aUse; }
+
 protected:
 
 ///////
@@ -272,11 +274,10 @@ protected:
    ///////
 
    int      	_bytes_read;        // Bytes read
-
    URL		_url;               // URL to retrieve
-
    URL		_referer;	    // Referring URL
-   
+   int		_useproxy;	    // if true, GET should include full url,
+				    // not path only
    
    ///////
       //    Http multiple Request information
