@@ -127,10 +127,12 @@ AC_TRY_COMPILE([#include <sys/types.h>
 done
 done
   if test "$ac_found" = no; then
-    AC_MSG_ERROR([can't determine argument type])
-  fi
+    AC_MSG_WARN([can't determine argument type using int])
+    AC_DEFINE_UNQUOTED(GETPEERNAME_LENGTH_T, int)
+  else
   AC_MSG_RESULT($getpeername_length_t)
   AC_DEFINE_UNQUOTED(GETPEERNAME_LENGTH_T, $getpeername_length_t)
+  fi
 
 dnl Any final tests probably want the C compiler
 AC_LANG_C
