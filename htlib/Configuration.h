@@ -98,7 +98,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.h,v 1.6.2.11 2000/05/10 18:23:43 loic Exp $
+// $Id: Configuration.h,v 1.6.2.12 2000/09/21 04:42:01 ghutchis Exp $
 //
 
 #ifndef	_Configuration_h_
@@ -129,12 +129,7 @@ public:
     //
     Configuration();
 #ifndef SWIG
-    Configuration(const Configuration& config) :
-	dcGlobalVars(config.dcGlobalVars),
-	separators(config.separators)
-      {
-        allow_multiple = config.allow_multiple;
-      }
+    Configuration(const Configuration& config);
 #endif /* SWIG */
     //-
     // Destructor
