@@ -1,0 +1,32 @@
+#
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999, 2000 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU General Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
+#
+# $Id: t_rdonly,v 1.2 2002/02/02 18:18:13 ghutchis Exp $
+#
+
+. ./test_functions
+
+export MIFLUZ_CONFIG ; MIFLUZ_CONFIG=${srcdir}/mifluz-search.conf
+./txt2mifluz -z $VERBOSE < $srcdir/search.txt
+chmod a-w test test_weakcmpr
+a=`./dbbench -Wz -f world`
+b="world	<DEF>	0	0	5	2	
+world	<DEF>	0	0	5	4	
+world	<DEF>	0	0	11	1	
+world	<DEF>	0	0	20	5	
+world	<DEF>	0	0	21	2	
+world	<DEF>	0	0	51	2	
+world	<DEF>	0	0	71	2	
+world	<DEF>	0	0	81	2	"
+if [ "$a" != "$b" ]
+then
+	echo "expected
+$b
+but got
+$a" >&2
+	exit 1
+fi

@@ -1,0 +1,519 @@
+#
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999, 2000 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU General Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
+#
+# $Id: t_search,v 1.2 2002/02/02 18:18:13 ghutchis Exp $
+#
+
+. ./test_functions
+
+export MIFLUZ_CONFIG ; MIFLUZ_CONFIG=${srcdir}/mifluz-search.conf
+
+#
+# Test the query parser
+#
+
+#
+# Run $1 and expect $2 as a result
+#
+runparser() {
+  command="$1"
+  expected="$2"
+  out=`eval "$command"`
+  if [ "$expected" != "$out" ]
+  then
+    echo "running $command: expected 
+$expected
+but got
+$out"
+    exit 1
+  fi
+}
+
+#
+# Simple test
+#
+runparser "./search -n -f '( and scope1 the world )' $VERBOSE" \
+'( and "scope1" the world  )'
+
+#
+# All boolean constructions
+#
+runparser "./search -n -f '( and scope1 ( not scope2 the ) world ( or scope3 is coming to ( near scope4 an ( literal scope5 end ) ) ) )' $VERBOSE" \
+'( and "scope1" ( not "scope2" the  ) world ( or "scope3" is coming to ( near "scope4" an ( literal "scope5" end )  )  )  )'
+
+#
+# Mandatory and Forbiden nodes
+#
+runparser "./search -n -f '( or scope1 ( mandatory scope2 the ) world ( forbiden scope3 is ) )' $VERBOSE" \
+'( or "scope1" ( mandatory "scope2" the  ) world ( not "scope3" is  )  )'
+
+#
+# Test the WordExclude* classes
+#
+./search -e || exit 1
+
+#
+# Run queries with various operators on an index built from the content
+# of search.txt.
+#
+
+./txt2mifluz $VERBOSE < $srcdir/search.txt
+
+#
+# Run $1 and expect $2 as a result (all lines starting with match:)
+# Feed the context variable with output starting with context:, stripping
+# context: itself.
+#
+runsearch() {
+  command="$1"
+  expected="$2"
+  if [ "$VERBOSE" ]
+  then
+	echo "running $command" >&2 
+  fi
+  out=`eval "$command"`
+  match=`echo "$out" | grep '^match:'`
+  context=`echo "$out" | sed -n -e 's/^context: *//p'`
+#  echo "context: $context" >&2
+  if [ "$expected" != "$match" ]
+  then
+    echo "running $command: expected 
+$expected
+but got
+$match"
+    exit 1
+  fi
+}
+
+
+#
+# Test context restoration on WordTreeLiteral
+#
+runsearch "./search -c 1 -f 'lazy' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	1	11	<UNDEF>	'
+
+runsearch "./search -c 1 -C '$context' -f 'lazy' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	1	21	<UNDEF>	'
+
+#
+# Literal search using scope : only want documents with Flags set to 5
+# Be carefull to use tabulation in scope.
+#
+runsearch "./search -f '( literal \"<UNDEF>	<UNDEF>	<UNDEF>	5	<UNDEF>	<UNDEF>\" lazy )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	5	9	<UNDEF>	
+match: <UNDEF>	<DEF>	0	5	21	<UNDEF>	
+match: <UNDEF>	<DEF>	0	5	53	<UNDEF>	
+match: <UNDEF>	<DEF>	0	5	56	<UNDEF>	'
+
+#
+# And search using scope : only want documents with Flags set to 5
+# Be carefull to use tabulation in scope.
+#
+runsearch "./search -f '( and \"\" ( literal \"<UNDEF>	<UNDEF>	<UNDEF>	5	<UNDEF>	<UNDEF>\" lazy ) dog )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	5	21	<UNDEF>	(dog lazy )
+match: <UNDEF>	<DEF>	0	5	53	<UNDEF>	(dog lazy )
+match: <UNDEF>	<DEF>	0	5	56	<UNDEF>	(dog lazy )'
+
+#
+# And/Not : document 20 is excluded because it contains 'an'
+#
+runsearch "./search -f '( and \"\" world ( not \"\" an ) the )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	71	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	81	<UNDEF>	(world the )'
+
+#
+# Or/Not : document 20 is excluded because it contains 'an'
+#
+runsearch "./search -f '( or \"\" world ( not \"\" an ) the )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	3	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	11	<UNDEF>	(world )
+match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	71	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	81	<UNDEF>	(world the )'
+
+#
+# Or : each word matches only once in separate documents
+#
+runsearch "./search -c 2 -f '( or \"\" comes end )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	6	<UNDEF>	(comes )
+match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(end )'
+
+#
+# Or : each word matches only once in separate documents
+# docid 20 contains 'the' and 'end', therefore first
+# docid 6 contains 'comes', is second before any document
+#         containing 'the' alone because 'comes' is less frequent than 'the'
+# other docid only contain 'the'.
+#
+runsearch "./search -c 8 -f '( or \"\" the comes end )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	3	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	6	<UNDEF>	(comes )
+match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(the end )
+match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	71	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	81	<UNDEF>	(the )'
+
+#
+# Run the same search in 3 times using context to resume search
+#
+runsearch "./search -c 2 -f '( or \"\" the comes end )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	3	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(the )'
+
+runsearch "./search -c 2 -C '$context' -f '( or \"\" the comes end )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	6	<UNDEF>	(comes )
+match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(the end )'
+
+runsearch "./search -c 5 -C '$context' -f '( or \"\" the comes end )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	71	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	81	<UNDEF>	(the )'
+
+#
+# After a search that stopped because there was not matches left, there
+# must be no context for resuming.
+#
+if test "$context" != ""
+then
+	echo "Expected empty context after fulfilled search"
+	exit 1
+fi
+
+#
+# Or search with word not in database (klklk)
+#
+runsearch "./search -f '( or \"\" the klkl )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	3	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	71	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	81	<UNDEF>	(the )'
+
+#
+# Compound boolean query: nested 'and'
+#
+runsearch "./search -f '( and \"\" the ( and \"\" an end ) )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(an end  the )'
+
+#
+# Compound boolean query: nested 'and' that fails immediately
+# because 'foo' is not in the inverted index.
+#
+runsearch "./search -f '( and \"\" the ( and \"\" an foo ) )' $VERBOSE" \
+'match: none'
+
+#
+# Compound boolean query: 'or' & 'and' 
+#
+runsearch "./search -f '( and \"\" the ( or \"\" comes end ) )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(end  the )'
+
+runsearch "./search -f '( or \"\" comes ( and \"\" the world ) )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(world the  )
+match: <UNDEF>	<DEF>	0	0	6	<UNDEF>	(comes )
+match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(world the  )
+match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	(world the  )
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	(world the  )
+match: <UNDEF>	<DEF>	0	0	71	<UNDEF>	(world the  )
+match: <UNDEF>	<DEF>	0	0	81	<UNDEF>	(world the  )'
+
+runsearch "./search -P 1 -f '( or \"\" comes ( near \"\" lazy dog ) )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	6	<UNDEF>	(comes )
+match: <UNDEF>	<DEF>	0	1	11	<UNDEF>	(lazy dog proximity )
+match: <UNDEF>	<DEF>	0	1	21	<UNDEF>	(lazy dog proximity )
+match: <UNDEF>	<DEF>	0	5	21	<UNDEF>	(lazy dog proximity )
+match: <UNDEF>	<DEF>	0	5	56	<UNDEF>	(lazy dog proximity )'
+
+#
+# Compound boolean query: limit to 2 documents
+#
+runsearch "./search -f '( or \"\" comes ( or \"\" the world ) )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	3	<UNDEF>	(the  )
+match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(the world  )
+match: <UNDEF>	<DEF>	0	0	6	<UNDEF>	(comes )
+match: <UNDEF>	<DEF>	0	0	11	<UNDEF>	(world  )
+match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(the world  )
+match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	(the world  )
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	(the world  )
+match: <UNDEF>	<DEF>	0	0	71	<UNDEF>	(the world  )
+match: <UNDEF>	<DEF>	0	0	81	<UNDEF>	(the world  )'
+
+runsearch "./search -c 1 -f '( or \"\" comes ( or \"\" the world ) )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	3	<UNDEF>	(the  )'
+
+runsearch "./search -c 4 -C '$context' -f '( or \"\" comes ( or \"\" the world ) )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(the world  )
+match: <UNDEF>	<DEF>	0	0	6	<UNDEF>	(comes )
+match: <UNDEF>	<DEF>	0	0	11	<UNDEF>	(world  )
+match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(the world  )'
+
+
+#
+# Compound boolean query: nested 'optional'
+#
+runsearch "./search -f '( optional \"\" the ( optional \"\" world foo ) )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(world  the proximity)
+match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(world  the )
+match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	(world  the )
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	(world  the )
+match: <UNDEF>	<DEF>	0	0	71	<UNDEF>	(world  the )
+match: <UNDEF>	<DEF>	0	0	81	<UNDEF>	(world  the )
+match: <UNDEF>	<DEF>	0	0	11	<UNDEF>	(world  )
+match: <UNDEF>	<DEF>	0	0	3	<UNDEF>	(the )'
+
+#
+#
+# Most simple search : single word
+#
+runsearch "./search -f 'the' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	3	<UNDEF>	
+match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	
+match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	
+match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	
+match: <UNDEF>	<DEF>	0	0	71	<UNDEF>	
+match: <UNDEF>	<DEF>	0	0	81	<UNDEF>	'
+
+#
+# Get all we can
+#
+runsearch "./search -f '( and \"\" the world )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	71	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	81	<UNDEF>	(world the )'
+
+#
+# First two
+#
+runsearch "./search -c 2 -f '( and \"\" the world )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(world the )'
+
+#
+# The next two
+#
+runsearch "./search -b 2 -c 2 -f '( and \"\" the world )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	(world the )'
+
+#
+# First four
+#
+runsearch "./search -c 4 -f '( and \"\" the world )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	(world the )
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	(world the )'
+
+#
+# Next document, using last document returned
+#
+runsearch "./search -c 1 -C '$context' -f '( and \"\" the world )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	71	<UNDEF>	(world the )'
+
+#
+# Implicit or : each word matches only once in separate documents
+#
+runsearch "./search -c 2 -f '( optional \"\" comes end )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	6	<UNDEF>	(comes )
+match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(end )'
+
+#
+# Implicit or : each word matches only once in separate documents
+# docid 20 contains 'the' and 'end', therefore first
+# docid 6 contains 'comes', is second before any document
+#         containing 'the' alone because 'comes' is less frequent than 'the'
+# other docid only contain 'the'.
+#
+runsearch "./search -c 8 -f '( optional \"\" the comes end )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(end the proximity)
+match: <UNDEF>	<DEF>	0	0	6	<UNDEF>	(comes )
+match: <UNDEF>	<DEF>	0	0	3	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	71	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	81	<UNDEF>	(the )'
+
+#
+# Run the same search in 3 times using context to resume search
+#
+runsearch "./search -c 2 -f '( optional \"\" the comes end )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(end the proximity)
+match: <UNDEF>	<DEF>	0	0	6	<UNDEF>	(comes )'
+
+runsearch "./search -c 2 -C '$context' -f '( optional \"\" the comes end )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	3	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(the )'
+
+runsearch "./search -c 5 -C '$context' -f '( optional \"\" the comes end )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	71	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	81	<UNDEF>	(the )'
+
+#
+# After a search that stopped because there was not matches left, there
+# must be no context for resuming.
+#
+if test "$context" != ""
+then
+	echo "Expected empty context after fulfilled search"
+	exit 1
+fi
+
+#
+# Or search with word not in database (klklk)
+#
+runsearch "./search -f '( optional \"\" the klkl )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	0	3	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	5	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	20	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	21	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	51	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	71	<UNDEF>	(the )
+match: <UNDEF>	<DEF>	0	0	81	<UNDEF>	(the )'
+
+#
+# And search with word not in database (klklk)
+#
+runsearch "./search -c 1 -f '( and \"\" comes klkl )' $VERBOSE" \
+'match: none'
+
+#
+# From there we deal with more complex keys (TAG,SERVER,URL)
+# instead of URL alone above.
+#
+
+#
+# And search with 'dog lazy'
+#
+runsearch "./search -c 3 -f '( and \"\" dog lazy )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	1	11	<UNDEF>	(dog lazy )
+match: <UNDEF>	<DEF>	0	1	21	<UNDEF>	(dog lazy )
+match: <UNDEF>	<DEF>	0	5	21	<UNDEF>	(dog lazy )'
+
+#
+# And search with 'dog lazy' one URL per server only (-S)
+#
+runsearch "./search -S -f '( and \"\" dog lazy )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	1	11	<UNDEF>	(dog lazy )
+match: <UNDEF>	<DEF>	0	5	21	<UNDEF>	(dog lazy )
+match: <UNDEF>	<DEF>	0	6	1	<UNDEF>	(dog lazy )'
+
+#
+# Or search with 'dog lazy' one URL per server only (-S)
+#
+runsearch "./search -S -f '( optional \"\" dog lazy )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	1	11	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	5	21	<UNDEF>	(dog lazy )
+match: <UNDEF>	<DEF>	0	6	1	<UNDEF>	(dog lazy )
+match: <UNDEF>	<DEF>	0	5	9	<UNDEF>	(lazy )'
+
+#
+# Near search with 'lazy dog' 
+#
+runsearch "./search -f '( near \"\" lazy dog )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	1	11	<UNDEF>	(lazy dog proximity)
+match: <UNDEF>	<DEF>	0	1	21	<UNDEF>	(lazy dog proximity)
+match: <UNDEF>	<DEF>	0	5	21	<UNDEF>	(lazy dog proximity)
+match: <UNDEF>	<DEF>	0	5	56	<UNDEF>	(lazy dog proximity)'
+
+#
+# Near search with 'dog lazy' 
+#
+runsearch "./search -f '( near \"\" dog lazy )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	1	11	<UNDEF>	(dog lazy proximity)'
+
+#
+# Near search with 'dog lazy', order of term is not meaningfull
+# matching 'dog lazy' and 'lazy dog'
+#
+runsearch "./search -P -1 -f '( near \"\" dog lazy )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	1	11	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	1	21	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	5	21	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	5	56	<UNDEF>	(dog lazy proximity)'
+
+#
+# Near search with 'dog lazy', order of term is not meaningfull
+# tolerance is -2, adding match for 'dog ? lazy' and 'lazy ? dog'
+#
+runsearch "./search -P -2 -f '( near \"\" dog lazy )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	1	11	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	1	21	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	5	21	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	5	53	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	5	56	<UNDEF>	(dog lazy proximity)'
+
+#
+# Near search with 'dog lazy', order of term is meaningfull
+# tolerance is 3, adding match for 'dog ? lazy' and 'dog ? ? lazy'
+#
+runsearch "./search -P 3 -f '( near \"\" dog lazy )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	1	11	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	6	1	<UNDEF>	(dog lazy proximity)'
+
+#
+# Near search with 'lazy dog', only first 2
+#
+runsearch "./search -c 2 -f '( near \"\" lazy dog )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	1	11	<UNDEF>	(lazy dog proximity)
+match: <UNDEF>	<DEF>	0	1	21	<UNDEF>	(lazy dog proximity)'
+
+#
+# Near search with 'lazy dog', resume from previous search 
+# and get 2 more.
+#
+runsearch "./search -c 2 -C '$context' -f '( near \"\" lazy dog )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	5	21	<UNDEF>	(lazy dog proximity)
+match: <UNDEF>	<DEF>	0	5	56	<UNDEF>	(lazy dog proximity)'
+
+#
+# Near search with non existent word
+#
+runsearch "./search -f '( near \"\" lazy bar )' $VERBOSE" \
+'match: none'
+
+#
+# Or search using proximity  (document 0 5 53 contains lazy ? dog)
+# order of term is meaningfull.
+#
+runsearch "./search -P 2 -f '( optional \"\" lazy dog )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	1	11	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	1	21	<UNDEF>	(dog lazy )
+match: <UNDEF>	<DEF>	0	5	21	<UNDEF>	(dog lazy )
+match: <UNDEF>	<DEF>	0	5	53	<UNDEF>	(dog lazy )
+match: <UNDEF>	<DEF>	0	5	56	<UNDEF>	(dog lazy )
+match: <UNDEF>	<DEF>	0	6	1	<UNDEF>	(dog lazy )
+match: <UNDEF>	<DEF>	0	5	9	<UNDEF>	(lazy )'
+
+#
+# Or search using proximity  (document 0 5 53 contains lazy ? dog)
+# order of term is not meaningfull.
+#
+runsearch "./search -P -2 -f '( optional \"\" lazy dog )' $VERBOSE" \
+'match: <UNDEF>	<DEF>	0	1	11	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	1	21	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	5	21	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	5	53	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	5	56	<UNDEF>	(dog lazy proximity)
+match: <UNDEF>	<DEF>	0	6	1	<UNDEF>	(dog lazy )
+match: <UNDEF>	<DEF>	0	5	9	<UNDEF>	(lazy )'

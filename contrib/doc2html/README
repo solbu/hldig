@@ -1,0 +1,25 @@
+Readme for doc2html
+
+External converter scripts for ht://Dig (version 3.1.4 and later), that
+convert Microsoft Word, Excel and Powerpoint files, and PDF,
+PostScript, RTF, and WordPerfect files to text (in HTML form) so they
+can be indexed.  Uses a variety of conversion programs:
+
+	wp2html		- to convert Wordperfect and Word7 & 97 documents to HTML
+	catdoc		- to extract text from Word documents
+	catwpd		- to extract text from WordPerfect documents [alternative to wp2html]
+	rtf2html	- to convert RTF documents to HTML 
+	pdftotext	- to extract text from Adobe PDFs 
+	ps2ascii 	- to extract text from PostScript
+	pptHtml		- to convert Powerpoint files to HTML
+	xlHtml		- to convert Excel spreadsheets to HTML
+	xls2csv		- to extract data from Excel spreadsheets [alternative to xlHtml] 
+	swfparse	- to extract links from Shockwave flash files.
+
+The main script, doc2html.pl, is easily edited to include the available 
+utlitities, and new utilities are easily incorporated.
+
+Written by David Adams (University of Southampton), and based on the 
+conv_doc.pl script by Gilles Detillieux.
+
+For more information see the DETAILS file.

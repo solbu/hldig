@@ -1,0 +1,290 @@
+#
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999, 2000 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU General Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
+#
+#
+# Use the result from WordMonitor (--input=file) and generate a report in
+# benchmark/<--output=name>-YYYY-MM-DD/index.html.
+# If --comment='bla bla' is provided it is copied in the comment.txt file.
+#
+use strict;
+use Getopt::Long;
+use File::Path;
+use POSIX qw(strftime);
+
+my($report) = "unknown";
+my($verbose);
+my($comment) = "";
+my($dir);
+
+sub main {
+    my($file) = "monitor.out";
+
+    GetOptions("input=s" => \$file,
+	       "output=s" => \$report,
+	       "comment=s" => \$comment,
+	       "verbose=i" => \$verbose,
+	       );
+
+    my($timestamp) = strftime("%Y-%m-%d", localtime);
+    $dir = "benchmark/$report-$timestamp";
+    if(-d $dir) {
+	print STDERR "directory $dir exists, will not override: abort\n";
+	exit(1);
+    }
+    mkpath($dir, 0, 0777) or die "cannot mkdirp $dir : $!";
+    my($cmds) = "$dir/README";
+    open(CMDS, ">$cmds") or die "cannot open $cmds for writing : $!";
+    report(build($file));
+    close(CMDS);
+    my($file) = "$dir/monitor.rrd";
+    unlink($file) or die "cannot unlink $file : $!";
+}
+
+sub report {
+    my($started, $finished, @fields) = @_;
+    
+    my($file) = "$dir/config.html";
+    open(FILE, ">$file") or die "cannot open $file for writing : $!";
+    print FILE "<body bgcolor=#ffffff>\n<pre>";
+    close(FILE);
+    run("uname -a >> $file");
+    run("cat /proc/cpuinfo >> $file") if(-f "/proc/cpuinfo");
+    run("cat /proc/meminfo >> $file") if(-f "/proc/meminfo");
+
+    $file = "$dir/comment.html";
+    open(FILE, ">$file") or die "cannot open $file for writing : $!";
+    print FILE "<body bgcolor=#ffffff>\n<pre>";
+    if(!$comment) {
+	print FILE "No comment\n";
+    } else {
+	print FILE $comment;
+    }
+    close(FILE);
+
+    #
+    # Generate a graph for each value
+    #
+    my(%vlabel) = (
+		   'Write' => 'Pages',
+		   'Read' => 'Pages',
+		   'P_IBTREE' => 'Pages',
+		   'P_LBTREE' => 'Pages',
+		   'P_UNKNOWN' => 'Pages',
+		   'Put' => 'Put',
+		   'Get__0_' => 'Get',
+		   'Get__NEXT_' => 'Get',
+		   'Get__SET_RANGE_' => 'Get',
+		   'Get__Other_' => 'Get',
+		   'LEVEL' => 'Level',
+		   'PGNO' => 'Pages',
+		   'CMP' => 'Compare',
+		   );
+    my(%hlabel) = (
+		   'Write' => 'Write/second',
+		   'Read' => 'Read/second',
+		   'P_IBTREE' => 'Internal B-Tree nodes read + write / second',
+		   'P_LBTREE' => 'Leaf B-Tree nodes read + write / second',
+		   'P_UNKNOWN' => 'Unknown pages read + write / second',
+		   'Put' => 'Put / second',
+		   'Get__0_' => 'Get(0) / second',
+		   'Get__NEXT_' => 'Get(DB_NEXT) / second',
+		   'Get__SET_RANGE_' => 'Get(DB_SET_RANGE) / second',
+		   'Get__Other_' => 'Get(???) / second',
+		   'LEVEL' => 'Height of the B-Tree',
+		   'PGNO' => 'Size of the B-Tree in pages',
+		   'CMP' => 'Key compare / second',
+		   );
+	
+    my(@graphs);
+    my($field);
+    foreach $field (@fields) {
+	my($image) = "$dir/$field.gif";
+	my($hlabel) = exists($hlabel{$field}) ? "--title '$hlabel{$field}'" : "";
+	my($vlabel) = exists($vlabel{$field}) ? "--vertical-label '$vlabel{$field}'" : "";
+	run("rrdtool graph $image --start $started --end $finished $hlabel $vlabel DEF:in=$dir/monitor.rrd:$field:AVERAGE 'LINE2:in#FF0000' >/dev/null");
+    }
+
+    #
+    # Generate a cumulated graph for compression rates
+    #
+    my(%rate) = (
+		 'Compress_1_1' => 1,
+		 'Compress_1_2' => 2,
+		 'Compress_1_3' => 3,
+		 'Compress_1_4' => 4,
+		 'Compress_1_5' => 5,
+		 'Compress_1_6' => 6,
+		 'Compress_1_7' => 7,
+		 'Compress_1_8' => 8,
+		 'Compress_1_9' => 9,
+		 'Compress_1_10' => 10,
+		 'Compress_1__10' => 11,
+		 );
+    my(%color) = (
+		 'Compress_1_1' => "#ff0000",
+		 'Compress_1_2' => "#ee1100",
+		 'Compress_1_3' => "#dd2200",
+		 'Compress_1_4' => "#cc3300",
+		 'Compress_1_5' => "#bb4400",
+		 'Compress_1_6' => "#996600",
+		 'Compress_1_7' => "#778800",
+		 'Compress_1_8' => "#55aa00",
+		 'Compress_1_9' => "#33cc00",
+		 'Compress_1_10' => "#11ee00",
+		 'Compress_1__10' => "#00ff00",
+		 );
+    my($last_total);
+    my(@lines);
+    foreach $field (@fields) {
+	next if($field !~ /^Compress/);
+	my($cdef) = "";
+	my($total) = "cmpr$rate{$field}";
+	if($last_total) {
+	    $total = "total$rate{$field}";
+	    $cdef = "CDEF:$total=$last_total,cmpr$rate{$field},+";
+	}
+	$last_total = $total;
+	push(@lines, "DEF:cmpr$rate{$field}=$dir/monitor.rrd:$field:AVERAGE $cdef 'LINE1:$total$color{$field}:1/$rate{$field}'");
+    }
+    run("rrdtool graph $dir/compress.gif --start $started --end  $finished --title 'Compression rate comparison / second' --vertical-label 'Pages' @lines >/dev/null");
+
+    #
+    # Build home page
+    #
+    $file = "$dir/index.html";
+    open(FILE, ">$file") or die "cannot open $file for writing : $!";
+    print FILE <<EOF;
+<body bgcolor=#ffffff>
+<center>
+[<a href=config.html>Configuration</a> | <a href=comment.html>Comment</a> | <a href=monitor.out>Samples</a> | <a href=compress.html>Compression</a>]
+<p>
+EOF
+    print FILE <<EOF;
+<br>
+<img src="compress.gif">
+<br>
+In the graph above, the area under each line is the number of pages 
+compressed in the corresponding proportions. The bottom line is always 1/1 
+compression. For instance the area between the 1/11 line and the 1/10 line
+shows how many pages were compressed in a proportion equal or better than 1/11.
+In <a href=compress.html>the compression report</a> an individual graph is 
+shown for each line.
+<br>
+EOF
+    
+    foreach $field (@fields) {
+	next if($field =~ /^Compress/);
+	print FILE <<EOF;
+<br>
+<img src="$field.gif">
+<br>
+EOF
+    }
+    print FILE "</center>\n";
+    close(FILE);
+
+    #
+    # Build compression details page
+    #
+    $file = "$dir/compress.html";
+    open(FILE, ">$file") or die "cannot open $file for writing : $!";
+    print FILE <<EOF;
+<body bgcolor=#ffffff>
+<center>
+[<a href=index.html>Home page</a>]
+<p>
+EOF
+    print FILE <<EOF;
+<br>
+<img src="compress.gif">
+<br>
+EOF
+
+    foreach $field (@fields) {
+	next if($field !~ /^Compress/);
+	print FILE <<EOF;
+$field
+<br>
+<img src="$field.gif">
+<br>
+EOF
+    }
+    print FILE "</center>\n";
+    close(FILE);
+}
+
+sub run {
+    my($cmd) = @_;
+
+    system($cmd);
+    print STDERR "$cmd\n" if($verbose);
+    print CMDS "$cmd\n";
+}
+
+sub build {
+    my($file) = @_;
+
+    system("cp $file $dir");
+    my(@fields);
+    my($started);
+    my($step);
+    my($heartbeat);
+    my($finished);
+    my(@updates);
+    open(FILE, "<$file") or die "cannot open $file for reading : $!";
+    while(<FILE>) {
+	if(/WordMonitor starting/) {
+	    ($started) = <FILE> =~ /^Started:(\d+)/;
+	    ($step) = <FILE> =~ /^Period:(\d+)/;
+	    $heartbeat = $step * 2;
+	    my(@ds);
+	    @fields = split(':', scalar(<FILE>));
+	    shift(@fields); # get rid of Time field
+	    pop(@fields); # get rid of last empty field
+	    my($field);
+	    foreach $field (@fields) {
+		my($type) = $field =~ /^(.)\./;
+		$field =~ s/^..//;
+		$field =~ s/[^a-z0-9_]/_/gi;
+		if($type eq 'C') {
+		    push(@ds, "DS:$field:COUNTER:$heartbeat:U:U");
+		} elsif($type eq 'G') {
+		    push(@ds, "DS:$field:GAUGE:$heartbeat:0:U");
+		} else {
+		    print STDERR "Unknown type $type for field $field\n";
+		    exit(1);
+		}
+	    }
+	    my($ds) = join(' ', @ds);
+	    my($rra) = "RRA:AVERAGE:0.5:1:2000";
+	    my($cmd) = "rrdtool create $dir/monitor.rrd --step $step --start $started $ds $rra";
+	    run("rm -f $dir/monitor.rrd ; $cmd");
+	    next;
+	}
+	next if(/-------------/ || /^\s*$/);
+	chop; # remove new line
+	chop; # remove last :
+	($finished) = m/^(\d+):/;
+	print STDERR "$_\n" if($verbose);
+	push(@updates, $_);
+	if(@updates > 50) {
+	    run("rrdtool update $dir/monitor.rrd " . join(' ', @updates));
+	    @updates = ();
+	}
+    }
+    if(@updates) {
+	run("rrdtool update $dir/monitor.rrd " . join(' ', @updates));
+    }
+    close(FILE);
+
+    print STDERR "started = $started, finished = $finished\n" if($verbose);
+    return ($started, $finished, @fields);
+}
+
+main();
+
+

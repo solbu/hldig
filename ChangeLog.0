@@ -1,6 +1,1058 @@
+Thu Jan 31 17:32:33 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* Release of 3.1.6.
+	
+	* htdoc/confindex.html, htdoc/htsearch.html, htdoc/index.html,
+	htdoc/mailarchive.html: Remove CSS link, not needed in these
+	frameset pages.
+
+	* htdoc/howto-mirror.html: Update with Jesse's latest version.
+
+Thu Jan 31 15:13:07 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* Makefile.in: Fixed install-strip target to properly handle relative
+	paths in INSTALL_PROGRAM when passing it to subdirectories.
+
+Thu Jan 31 11:41:39 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/FAQ.html: Updated questions 4.8 & 4.9 to emphasize use of
+	doc2html over parse_doc.pl. Further clarified question 2.1.
+
+Thu Jan 31 10:14:23 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/parse_doc.pl: Added comments explaining why you should
+	not be using this script.
+
+Wed Jan 30 17:20:51 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/FAQ.html: Updated to mention 3.1.6 as the newest version
+	and --with-rx as a fix for regex problems on BSDI.
+
+Wed Jan 30 17:15:49 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/synonyms: Updated with the version contributed by
+	David Adams, with minor changes.  Kept old one as synonyms.original.
+
+	* installdir/english.0: Changed lots more dubious uses of suffixes to
+	get more appropriate and correct fuzzy endings expansions.
+
+Wed Jan 30 12:30:16 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/Connection.cc (connect): Fixed bug with allow_EINTR and
+	add support for looping when the connection returns EAGAIN (no
+	more free local ports). Thanks to Ahmon Dancy <dancy@franz.com>
+	for pointing out the EAGAIN issue.
+
+Tue Jan 29 09:59:58 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/FAQ.html: Updated with today's changes to maindocs FAQ.
+
+Mon Jan 28 16:54:15 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/README: Added mentions of examples & xmlsearch, fixed typo.
+
+Sun Jan 27 23:13:11 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/*.html: Final batch of documentation updates.
+
+Sat Jan 26 23:28:25 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/*: More documentation updates from merging with the
+	current maindocs CVS.
+
+Fri Jan 25 21:36:21 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* acconfig.h, include/htconfig.h.in: Add USE_RX to potential
+	configure #include macros.
+
+	* htlib/gregex.h: Rename regex.h to prevent conflicts with system
+	version.
+	
+	* htlib/regex.c, htlib/HtRegex.h: Ditto.
+
+	* htfuzzy/EndingsDB.cc: Use same tests as HtRegex.h for rxposix.h,
+	gregex.h or regex.h depending on configure results.
+	
+	* configure.in: Implement more flexible test for rx/regex, which
+	will check for rxposix.h if --with-rx is supplied, will "fall
+	back" to regex test if rxposix.h isn't available and will only use
+	the htlib/ code and header for regex compile.
+
+	* configure: Update using autoconf.
+
+Fri Jan 25 12:14:26 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/whatsnew/README, contrib/whatsnew/whatsnew.html: Added
+	an example of how to get a what's new listing from the new features
+	in htsearch.
+
+Thu Jan 24 22:43:28 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Add ignore_dead_servers attribute to
+	control whether indexing will continue to try to contact a dead
+	server.
+
+	* htdig/Retriever.cc: Only mark a server as dead if the
+	ignore_dead_servers attribute is set.
+
+	* htdoc/cf_byname.html, htdoc/cf_byprog.html, htdoc/attrs.html:
+	Documentation updates.
+
+Thu Jan 24 15:32:59 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure, configure.in: Add --with-rx option to switch to
+	system rx code (e.g. on BSDI). Needs some touchups still,
+	including checking that rxposix.h exists and if --without-rx was
+	supplied for some reason.
+
+	* htlib/HtRegex.h: Add conditional <rxposix.h> header for systems
+	where rx is better than regex.
+
+	* htlib/Makefile.in: Make sure regex.o is only compiled if it
+	works on a given system via LIBOBJS as supplied by the configure
+	script.
+
+Mon Jan 21 22:33:30 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/RELEASE.html: Add first shot at the release notes for
+	3.1.6. Still need to finish some of the htdoc/ merges, including
+	the SF icons and such.
+
+	* htdoc/*.html: First stab at many of the htdoc/merges including
+	the new Copyright line. (It is 2002, after all.)
+
+Fri Jan 18 18:17:34 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htmerge/docs.cc: Add a test if the DB database has no URLs
+	before proceeding.
+
+	* htmerge/words.cc: Add a slightly more user-friendly error
+	message if the word list file doesn't exist. Remove exit()
+	statements since reportError does this for us.
+
+Fri Jan 18 16:47:50 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html: Rewrote description of prefix_match_character
+	to make it more clear, with crosslinks to related attributes, and
+	described new wildcard matching feature. Added more explanations
+	for relative days & months in startday et al. to make it clearer.
+	Added more notes about to-strings in the url_part_aliases description
+	and explained the example even more, as well as adding crosslinks
+	to the new *_rewrite_rules.
+
+Fri Jan 18 15:56:11 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc (setupWords), htsearch/parser.cc (perform_push):
+	Added support for a wildcard word of "*" (or prefix_match_character
+	if set and not empty) which returns all documents.
+
+Wed Jan 16 17:21:26 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html, htdoc/hts_form.html: Described how to use
+	relative dates for startyear et al.
+
+Wed Jan 16 16:58:05 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (buildMatchList): Fixed startday et al. to
+	allow relative days, month & years if values are negative.
+
+Fri Jan 11 20:57:51 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html: Updated descriptions for translate_* attributes
+	to match the new default behavior.
+
+Fri Jan 11 17:48:54 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/SGMLEntities.cc (translateAndUpdate): Added support for
+	translate_latin1 attribute, to turn off ISO-8859-1-specific entities.
+	* htcommon/defaults.cc: Added translate_latin1 attribute.
+	* htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Documented it.
+
+Fri Jan 11 17:14:54 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/xmlsearch.{README,tar.gz}: Removed older xmlsearch package.
+
+Fri Jan 11 17:06:09 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/xmlsearch/*: Added files contributed by Nathan Hand and
+	me to implement XML output from htsearch, including DTD, templates
+	and config file.
+
+Wed Jan  9 22:08:21 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* CONFIG.in: Fixed to allow setting BIN_DIR by configure option.
+	* contrib/htdig-3.1.6.spec: Fixed to make use of new ./configure
+	options for pathnames, do away with patch file.  Used variables for
+	many pathnames to allow easy changes.
+
+Wed Jan  9 16:22:32 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Added support for max_keywords
+	attribute.
+
+Wed Jan  9 16:10:44 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (HTML, do_tag), htdig/ExternalParser.cc (parse):
+	Added support for description_meta_tag_names attribute.
+	Ensure external parser interface accepts META descriptions even if
+	'description' is added to the keyword list.
+	* htcommon/defaults.cc: Added description_meta_tag_names attribute.
+	* htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Documented it.
+
+Tue Jan  8 17:39:24 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Added support for use_doc_date
+	attribute.
+
+Thu Jan  3 17:10:50 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Makefile.in, htlib/lib.h: Removed references to timegm,
+	mytimegm and strptime functions. Removed C source for these.
+
+Thu Jan  3 16:43:31 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/htmerge.html: Added extra description for -m option to clear
+	up common points of confusion, added note about LC_COLLATE environment
+	variable.
+
+Fri Dec 21 18:52:32 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc: Added parsedcdate function, used by got_time,
+	to parse DC date meta tags without requiring strptime or timegm.
+
+Thu Dec 20 12:25:47 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc: Added parsedate function, used by getdate, to
+	parse date headers without requiring strptime or timegm, which have
+	caused problems on some systems.
+
+Thu Dec 20 11:51:26 CET 2001 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* configure.in: reviewed directory settings
+	* Makefile.in: ditto (for 'make install' of htdig.conf and rundig)
+
+Wed Dec 19 23:05:09 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in: Add tests for ostream.h and iostream.h.
+
+	* htlib/htString.h: Add HAVE_OSTREAM_H and HAVE_IOSTREAM_H
+	preprocessor statements to deal with portability issues around the
+	C++ header files.
+
+Wed Dec 19 13:33:55 2001 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* configure.in: fixed bug in customisation of configure paramters
+	* CONFIG.in: ditto
+	* configure: re-generated with autoconf
+
+Tue Dec 18 16:12:17 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (displayMatch): Fixed to clear out old values
+	of ANCHOR template variable for each result.
+
+Thu Dec  6 13:14:22 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/examples/rundig.sh: Fixed to make use of DBDIR variable.
+
+Wed Nov 21 12:54:42 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/rundig.html: Added note about effect of changing database_base.
+
+	* htmerge/docs.cc (convertDocs): Changed confusing message about
+	total doc db size in stats.
+
+Wed Nov 21 11:37:52 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/TemplateList.cc (createFromString), htdoc/attrs.html:
+	Treat template_map as a _quoted_ string list.  Change <i> tags to
+	the HTML-4.0 compliant <em> tags in builtin-long template.
+
+Tue Nov 20 17:13:27 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/String.cc (String, append, sub): Added checks for negative
+	lengths or start position to make code more fault-tolerant.
+
+Tue Nov 20 16:37:26 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Synonym.cc (createDB): Check for lines with less than
+	2 words, to avoid segfault caused by calling Database::Put() with
+	negative length for data field.
+
+Sat Nov  3 23:55:00 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/htString.h: Add #include for ostream.h to solve compile
+	problems with gcc3.
+
+	* htlib/Connection.h, htlib/Connection.cc: Backport Connection
+	class from 3.2 code--installs alarm() call to timeout connections
+	and will retry connections a few times before giving up.
+
+Fri Nov  2 12:28:35 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc, htdoc/attrs.html: Added support for dc.date,
+	dc.date.created and dc.date.modified to use_doc_date handling.
+
+Fri Nov  2 12:12:59 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/xmlsearch.README, contrib/xmlsearch.tar.gz: Added files
+	contributed by Nathan Hand and me to implement XML output from
+	htsearch, including DTD, templates and config file.
+
+Fri Nov  2 12:05:49 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (do_tag), htcommon/defaults.cc: Added ignore_alt_text
+	attribute to avoid indexing alt text in img tags.
+	* htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Documented it.
+
+Thu Nov  1 14:43:13 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc (main): Fixed to only show file names in
+	error messages when REQUEST_METHOD not set and -v option given,
+	for security.
+
+Thu Nov  1 10:19:27 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc, htsearch/Display.h: Added a localized
+	method for outputing HTTP headers, added support for a new
+	search_results_contenttype attribute to control that header.
+	* htcommon/defaults.cc: Added default for it.
+	* htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Documented it.
+
+Wed Oct 31 13:31:18 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/english.0: Changed lots of dubious uses of suffixes to
+	get more appropriate and correct fuzzy endings expansions.
+
+Tue Oct 23 14:06:37 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc (RetrievedDocument): Fixed handling of null
+	return from getParsable(), to avoid segfault problem introduced
+	by text/css conditional added Jul 25.
+
+Fri Oct 19 17:24:19 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (hilight): Added Stefan Nehlsen's idea for
+	anchor_target attribute.
+	* htcommon/defaults.cc: Added default for it.
+	* htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Documented it.
+
+Sun Oct 14 22:05:30 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html (external_parsers): Documented external converter
+	chaining to same content-type, e.g. text/html->text/html-internal.
+
+Sun Oct 14 21:54:24 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html, htdoc/cf_byprog.html, htdoc/cf_byname.html,
+	htcommon/defaults.cc: Documented and declared startyear, etc.
+	attributes used by htsearch.
+
+Sun Oct 14 21:16:19 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/htdump.html, htdoc/htload.html, htdoc/attrs.html,
+	htdoc/cf_byprog.html, htdoc/contents.html: Documented htdump and
+	htload, indicating which attributes are used by them.
+
+Fri Oct 12 14:58:15 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.cc (removeIndex): Fixed to make sure the matched file
+	name is at the end of the URL.
+
+Tue Oct  2 09:34:43 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html (start_url): Added a reference and link to
+	limit_urls_to, explaining how the two are tied together.
+
+Fri Sep 28 17:19:45 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.1.6.spec: Fixed %install to make symlinks for
+	htdump & htload, added these to %files list.
+
+Fri Sep 28 15:38:00 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (displayMatch): Save rewritten URL in DocumentRef
+	so it'll be used for star_patterns and template_patterns matching.
+
+Fri Sep 28 14:25:29 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (buildMatchList, displayMatch),
+	htsearch/htsearch.cc (main): Added calls to pass search_rewrite_rules
+	to HtURLRewriter class and use it to rewrite URLs in results.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htcommon/defaults.cc: Added search_rewrite_rules attribute.
+
+Thu Sep 27 16:34:51 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Makefile.in, htlib/HtRegex.cc, htlib/HtRegex.h,
+	htlib/HtRegexReplace.cc, htlib/HtRegexReplace.h,
+	htlib/HtRegexReplaceList.cc, htlib/HtRegexReplaceList.h,
+	htlib/HtURLRewriter.cc, htlib/HtURLRewriter.h: Added new classes to
+	support regular expressions and implement url_rewrite_rules attribute,
+	using Geoff's variation of Andy Armstrong's implementation of this.
+
+	* htlib/URL.h, htlib/URL.cc: Added URL::rewrite() method.
+
+	* htlib/htString.h: Added Nth() method for HtRegex class.
+
+	* htdig/Retriever.cc (got_href, got_redirect): Added calls to
+	url.rewrite(), and debugging output for this.
+
+	* htdig/htdig.cc (main): Added calls to make instance of
+	HtURLRewriter class.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htcommon/defaults.cc: Added url_rewrite_rules attribute.
+
+Mon Sep 17 16:52:07 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/running.html: New documentation on how to run after configuring.
+	* htdoc/rundig.html: New manual page for rundig script.
+	* htdoc/install.html: Added link to running.html.
+	* htdoc/contents.html: Added link to running.html, rundig.html, related
+	projects. Updated links to contrib and developer site. Got rid of
+	link to web site stats.
+
+Fri Sep 14 09:18:38 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc (RetrieveHTTP): Add port to Host: header when
+	port is not default, as per RFC2616(14.23). Fixes bug #459969.
+
+Sat Sep  8 22:04:47 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* acconfig.h, include/htconfig.h.in: Add undef for
+	ALLOW_INSECURE_CGI_CONFIG, which if defined does about what you'd
+	expect. (This is for any wrapper authors who don't want to rewrite
+	but are willing to run insecure.)
+
+	* htsearch/htsearch.cc: Only allow the -c flag to work when
+	REQUEST_METHOD is undefined. Fixes PR#458013.
+
+Fri Aug 31 16:00:37 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.cc (URL): Fixed to call normalizePath() even if URL
+	is relative but with absolute path. Should fix bug #408586.
+
+Fri Aug 31 15:21:49 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.h, htdig/HTML.cc (HTML, parse, do_tag): Fixed buggy
+	handling of nested tags that independently turn off indexing, so
+	</script> doesn't cancel <meta name=robots ...> tag. Add handling
+	of <noindex follow> tag.
+
+Fri Aug 31 14:33:41 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	[ Backport some 3.2.0b4 HTML parser changes. ]
+	* htdig/HTML.cc (do_tag): Rewrite using Configuration class to
+	separate tag attributes.  Parse <object> tags properly, looking
+	for data= attribute rather than src=.  Add support for TITLE
+	attributes in anchor and related tags.	Treat <script></script>
+	tags as noindex tags, much like <style></style> as suggested
+	by Torsten.
+	* htdig/HTML.cc(parse): Fix to prevent closing ">" from being passed
+	to do_tag().
+
+Wed Aug 29 10:20:55 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html (allow_in_form, build_select_lists,
+	limit_normalized, server_aliases, server_max_docs, server_wait_time,
+	url_part_aliases): Added clarifications to allow_in_form,
+	server_aliases and url_part_aliases descriptions. Changed word
+	"directive" to "attribute" where appropriate. Added cross-link to
+	server_aliases from limit_normalized, and to allow_in_form from
+	build_select_lists.
+
+Mon Aug 27 17:22:56 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (do_tag): Improve handling of whitespace in META
+	refresh handling. Fixes bug #406244.
+
+Mon Aug 27 16:38:43 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (parse): Fixed delete [] text (was missing []), added
+	simple optimizations for comment & noindex_start skipping, handle
+	decoded &lt; entity correctly.
+
+Mon Aug 27 15:31:01 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	[ Backport 3.2.0b4 config files. ]
+	* installdir/htdig.conf: Added .css to bad_extensions default,
+	added missing closing ">", added mentions of accents & substring,
+	fixed a couple typos in comments.
+	* installdir/search.html: Add DTD tag for HTML 4 compliance.
+	* installdir/{long, syntax, header, footer, wrapper, nomatch}.html: 
+	Add DTD tags, ALT attributes and remove bogus </select> tags to
+	fix invalid HTML pointed out in PR#901.  Change all <b> and <i> tags
+	to the HTML-4.0 compliant <strong> and <em> tags.
+	* htdoc/config.html: Updated with sample of latest htdig.conf and
+	installdir/*.html, added blurb on wrapper.html.
+
+Thu Jul 26 15:05:29 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc, htsearch/parser.cc (perform_or),
+	htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Added new attribute
+	multimatch_method and used it to boost score on 'or' method with
+	multiple matches.
+
+Thu Jul 26 14:25:01 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc, htsearch/parser.cc, htdoc/attrs.html,
+	htdoc/cf_by{name,prog}.html: Added new attribute boolean_syntax_errors
+	and used it to generate syntax error messages for boolean method.
+
+Wed Jul 25 23:39:00 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htnotify/htnotify.cc: Changed calls to EmailNotification class
+	to avoid compiler warnings.
+
+Wed Jul 25 23:15:24 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc, htsearch/htsearch.cc, htdoc/attrs.html,
+	htdoc/cf_by{name,prog}.html: Added new attribute boolean_keywords
+	and used it to make LOGICAL_WORDS and parse "words" using boolean
+	method.
+
+Wed Jul 25 22:31:19 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Dictionary.cc (Remove): Fixed so it doesn't clobber rest of
+	chain when removing an entry, as suggested by Yariv Tal.
+
+Wed Jul 25 22:06:08 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: Add new attributes htnotify_replyto,
+	htnotify_webmaster, htnotify_prefix_file, htnotify_suffix_file.
+
+	* htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Document them.
+
+	* htnotify/htnotify.cc, htnotify/EmailNotification.{h,cc},
+	htnotify/Makefile.in: Added in code from Richard Beton
+	<richard.beton@roke.co.uk> to collect multiple URLs per e-mail
+	address and allow customization of notification messages by
+	reading in header/footer text as designated by the new attributes
+	above.
+
+	* htdoc/THANKS.html: Credit where due.
+
+Wed Jul 25 21:38:21 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: Added .css to bad_extensions, for consistency
+	with 3.2.
+
+	* htdoc/attrs.html: Ditto for default value. Also set examples for
+	translate_* and modification_time_is_now to false so the example is
+	different than default.
+
+Wed Jul 25 17:26:07 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Document.cc (getParsable): Add conditional to catch
+	text/css files to prevent these from being parsed as Plaintext.
+
+	* htdig/htdig.cc: Quick fix to make the logging -l flag the
+	default behavior. (Set to Retriever_logUrl from the start.)
+
+	* htcommon/defaults.cc: Set modification_time_is_now to default to
+	true (now that it works correctly). Also set translate_*
+	attributes to true.
+
+	* htdoc/htdig.html: Remove documentation for -l flag--now no
+	longer used.
+
+	* htdoc/attrs.html: Correct new default values for
+	modification_time_is_now and translate_* attributes.
+
+Tue Jul 24 16:12:45 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html: Added reference to maximum_page_buttons in the
+	section on maximum_pages.
+
+Tue Jul 24 15:38:39 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (generateStars): Add NSTARS variable for
+	template output as suggested by Caleb Crome
+	<ccrome@users.sourceforge.net> (except here precision is 0). Fixes
+	feature request #405787.
+
+	* htdoc/hts_templates.html: Add description of NSTARS variable
+	above. (Actually copied hts_templates.html from 3.2.0b4.)
+
+Tue Jul 24 14:21:53 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (expandVariables, outputVariable),
+	htdoc/hts_templates.html: Add support for $=(var) template variable
+	references, as suggested by Quim Sanmarti.
+
+Tue Jul 24 14:12:06 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (readFile): Added missing fclose() call, and
+	debugging message for when file can't be opened.
+
+	* htsearch/Display.cc (displayParsedFile): Added debugging message
+	for when file can't be opened.
+
+Tue Jul 24 14:03:12 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (setVariables), htcommon/defaults.cc: Added
+	maximum_page_buttons attribute, to limit buttons to less than
+	maximum_pages.  Fixes PR#731 & PR#781.
+	* htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Documented it.
+
+Tue Jul 24 13:42:56 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/hts_templates.html, htsearch/Display.cc (displayMatch):
+	Add METADESCRIPTION variable.
+
+Tue Jul 24 13:20:24 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/DocumentDB.{h,cc}: Added FindCoded() method to lookup
+	docdb record with URL that's still encoded.
+
+	* htsearch/Display.cc (display, displayMatch, buildMatchList):
+	Use new method to avoid problems with URLs that are decoded and
+	reencoded with another, more ambiguous url_part_aliases setting.
+	Also fixed a problem with date range checking looking at ref before
+	checking if it's null.
+
+Thu Jul 12 11:45:05 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/conv_doc.pl, contrib/parse_doc.pl: Fixed EOF handling in
+	dehyphenation, fixed to handle %xx codes in title made from URL.
+
+	* contrib/doc2html/doc2html.pl, contrib/doc2html/pdf2html.pl,
+	contrib/doc2html/swf2html.pl: Fixed to handle %xx codes in URL title.
+
+Thu Jul  5 11:23:40 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* db/dist/config.guess: Update with more recent GNU version that
+	recognizes various flavors of Mac OS X automatically.
+
+	* htlib/DB2_db.cc: Only #include <malloc.h> if we have it. Fixes
+	compilation problems on Mac OS X.
+
+	* htlib/String.cc: Include <iostream.h> instead of depreciated
+	<stream.h>. Fixes compilation problems with Mac OS X.
+
+	* htlib/Configuration.cc: Make sure we never try to operate on
+	strings of no length--accessing string[-1] is a bug--exposed on
+	Mac OS X.
+
+Fri Jun 29 11:56:25 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc (got_redirect): Allow the redirect to accept
+	relative redirects instead of just full URLs.
+
+Fri Jun 22 16:25:21 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/THANKS.html: Credit Marc Pohl and Robert Marchand.
+
+	* htsearch/Display.cc (buildMatchList): Fix date_factor calculation
+	to avoid 32-bit int overflow after multiplication by 1000, and avoid
+	repetitive time(0) call, as contributed by Marc Pohl.  Also move the
+	localtime() call up before gmtime() call, to avoid clobbering gmtime's
+	returned static structure (my thinko).
+
+Tue Jun 19 17:07:01 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (setVariables): Fixed handling of
+	build_select_lists attribute, to deal with new restrict & exclude
+	attributes.
+
+Fri Jun 15 17:45:40 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/require.html: Added mentions of accents, prefix & substring,
+	taken from 3.2.0b4.
+	* htdoc/htfuzzy: Added blurb on accents algorithm, taken from 3.2.0b4.
+	* htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Added entry for
+	accents_db attribute for htfuzzy and htsearch. Mentioned accents
+	algorithm in description of search_algorithm. Noted effect of
+	locale setting on floating point numbers in search_algorithm
+	and locale descriptions.
+
+Fri Jun 15 16:47:09 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Accents.{h,cc}, htfuzzy/Fuzzy.c (getFuzzyByName),
+	htfuzzy/htfuzzy.cc (main, usage), htfuzzy/Makefile.in: Added
+	latest version of Robert Marchand's accents fuzzy match algorithm.
+	* htcommon/defaults.cc: Added accents_db attribute for this.
+	* htsearch/htsearch.cc: Fixed parsing of search_algorithm not to
+	use comma as separator, because it may be needed as decimal point
+	in some locales.
+
+Fri Jun 15 16:30:19 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Endings.cc (getWords): Undid change introduced in 3.1.3,
+	in part. It now gets permutations of word whether or not it has
+	a root, but it also gets permutations of one or more roots that
+	the word has, based on a suggestion by Alexander Lebedev.
+	* htfuzzy/EndingsDB.cc (createRoot): Fixed to handle words that have
+	more than one root.
+	* installdir/english.0: Removed P flag from wit, like and high, so
+	they're not treated as roots of witness, likeness and highness, which
+	are already in the dictionary.
+
+Thu Jun  7 17:09:46 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: Add new attribute use_doc_date to use
+	document meta information for the DocTime() field.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Document it.
+	* htdig/HTML.cc(do_tag): Call Retriever::got_time if use_doc_date
+	is set and we run across a META date tag.
+	* htdig/Retriever.h, htdig/Retriver.cc: Add new got_date
+	function. When called, sets the DocTime field of the DocumentRef
+	after parsing is completed. Currently assumes ISO 8601 format for
+	the date tag.
+
+Thu Jun  7 16:48:13 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: Add new attribute any_keywords to allow
+	ORing of keywords input parameter.
+	* htsearch/htsearch.cc (addRequiredWords): Use it.  Fix handling
+	of empty search word list.
+	* htsearch/Display.cc (excerpt, highlight): Fix handling of case
+	where "words" is empty but "keywords" isn't.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Document any_keywords.
+
+Thu Jun  7 16:34:41 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: Add new attribute plural_suffix to set the
+	language-dependent suffix for PLURAL_MATCHES contributed by Jesse.
+	* htsearch/Display.cc (setVariables): Use it.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Document it.
+
+Thu Jun  7 16:03:17 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.{h,cc}, htcommon/defaults.cc: Added multi-excerpt 
+	feature and max_excerpts attribute, as contributed by Jim Cole.
+	* htdoc/THANKS.html, htdoc/attrs.html, htdoc/cf_byname.html,
+	htdoc/cf_byprog.html: Credit where due, and document attribute.
+
+Thu Jun  7 15:27:33 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc: Backported from 3.2.0b3, fixing these
+	problems: no longer confused by "; charset=..." in Content-Type,
+	avoids security problems with popen() and shell parsing untrusted URL
+	(PR#542, PR#951), avoids predictable temporary file name if mkstemp()
+	exists, binary output from external converter no longer mangled,
+	less ambiguous error messages, opens temp. file in binary mode on
+	non-Unix systems.
+
+Thu Jun  7 15:10:14 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/DocumentDB.{h,cc}: Replace CreateSearchDB() with DumpDB(),
+	add LoadDB(), both backported from 3.2.0b3.
+	* htdig/htdig.cc (main, usage), htdig/Makefile.in, htdoc/htdig.html:
+	Add handling of -m (minimal) option, file input for URLs, and arg 0
+	handling for htdump & htload.
+	* htdig/HTML.cc (do_tag): Change all white space to blanks in meta
+	description tag, for proper ASCII record dumps by htdump, and to fix
+	bug #405771.
+	* htlib/String.cc (= operator), htlib/htString.cc: change handling
+	of 0 length strings.  Add readLine() for htload support.
+
+Thu Jun  7 14:41:42 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc (got_href): Fix hop count mishandling.
+
+Thu Jun  7 14:23:47 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htmerge/db.cc (mergeDB), htmerge/words.cc (mergeWords),
+	installdir/rundig: Fix various htmerge bugs.  Quotes the temp.
+	directory name and word_list name (PR#872).  Correctly handles
+	words beginning with +, - and ! when in extra_word_characters
+	(PR#952). Corrects problems with bad wordlists generated by
+	htmerge -m causing it to lose entries in words.db and problems
+	with the sort program using non-ASCII collating having a similar
+	effect.
+
+Thu Jun  7 14:13:56 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc (main), htsearch/Display.cc (setVariables,
+	createURL, buildMatchList), htdoc/THANKS.html, htdoc/hts_form.html,
+	htdoc/hts_templates.html: Add Mike Grommet's date range search
+	feature.
+
+Thu Jun  7 13:57:06 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc (GetLocal, GetLocalUser): Fix to allow compiling
+	on AIX & other non-GNU compilers.
+
+Thu Jun  7 13:52:20 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (setVariables): Extend the handling of
+	build_select_lists to handle select multiple, radio buttons and
+	checkboxes.
+	* htdoc/attrs.html, htdoc/hts_selectors.html: Describe this.
+
+Thu Jun  7 13:40:13 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Exact.cc (Exact), htfuzzy/Prefix.cc (Prefix): Set the
+	name field to the class name, as suggested by Jesse.
+
+Thu Jun  7 13:27:35 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.1.6.spec, contrib/htdig-3.1.6-conf.patch,
+	htdoc/where.html, .version, README: Bump to version 3.1.6.
+
+Thu Jun  7 11:58:28 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/multidig/*: Backport from 3.2.0b3, including fixes below.
+
+	* contrib/multidig/Makefile, gen-collect, db.conf, multidig.conf:
+	Add missing trailing newlines as pointed out by Doug Moran
+	<dmoran@dougmoran.com>.
+
+	* contrib/multidig/Makefile (install): Make sure scripts have a+x
+	permissions. Pointed out by Doug Moran.
+
+	* contrib/multidig/new-collect: Fix typo to ensure MULTIDIG_CONF
+	is set correctly.
+
+Thu Jun  7 11:37:52 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/README: Add in descriptions for web site contrib directory,
+	acroconv.pl & conv_doc.pl.
+	* contrib/examples/rundig.sh: Update to most recent version for 3.1.x.
+	* contrib/htparsedoc/htparsedoc: Add in contributed bug fixes from
+	Andrew Bishop to work on SunOS 4.x machines.
+	* contrib/acroconv.pl: Added external converter script to convert
+	PDFs with acroread.
+
+Thu Jun  7 10:41:05 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/ParsedString.cc (get), htsearch/Display.cc (expandVariables):
+	Use isalnum() instead of isalpha() to allow digits in attribute and
+	variable names, allow '-' in variable names too for consistency.
+
+Wed Jun  6 17:13:49 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (do_tag): Make parsing of meta robots tag case
+	insensitive.
+
+Wed Jun  6 15:31:00 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/doc2html/DETAILS, contrib/doc2html/README,
+	contrib/doc2html/doc2html.cfg, contrib/doc2html/doc2html.sty,
+	contrib/doc2html/doc2html.pl, contrib/doc2html/pdf2html.pl,
+	contrib/doc2html/swf2html.pl: Added version 3.0 of doc2html,
+	contributed by David Adams <D.J.Adams@soton.ac.uk>.
+
+Mon Jun 4 10:31:45 CEST 2001 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htdoc/cf_byname.html: I forgot to insert the 'restrict' attribute.
+
+Wed May 30 11:30:43 2001 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htsearch/htsearch.cc: two new attributes, used by htsearch, have
+        been added: restrict and exclude. They can now give more control
+        to template customisation through configuration files, allowing
+        to restrict or exclude URLs from search without passing
+        any CGI variables (although this specification overrides the
+        configuration one).
+	* htcommon/defaults.cc: ditto
+	* htdoc/attrs.html: ditto
+	* htdoc/cf_byname.html: ditto
+	* htdoc/cf_byprog.html: ditto
+	* htdoc/hts_form.html: ditto
+
+Sat May  5 21:43:32 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* configure.in, configure: Add tests for wait.h, sys/wait.h,
+	mkstemp() and malloc.h.
+
+	* acconfig.h, include/htconfig.h.in: Update with autoheader for
+	new tests.
+
+	* htlib/regex.[h,c]: Update with backports from 3.2.0b4 development.
+
+Tue Feb 29 23:04:04 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/DB2_db.cc (Error): Simply fprint the error message on
+	stderr. This is not a method since the db.h interface expects a C
+	function.
+	(db_init): Don't set db_errfile, instead set errcall to point to
+	the new Error function.
+
+Fri Feb 25 10:11:50 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html (maximum_pages): Describe new bahaviour (as of
+	3.1.4), where this limits total matches shown.
+
+Thu Feb 24 20:24:24 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/FAQ.html: Update to refer to 3.1.5 and edit comments about 3.2.
+
+Thu Feb 24 15:20:08 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/RELEASE.html, htdoc/main.html: Updated notes for 3.1.5 release.
+
+Thu Feb 24 10:37:45 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html (external_parsers): Add references to FAQ 4.8 & 4.9.
+	(local_default_doc): Give an expanded example.
+	(logging): Explain log entry format.
+	(star_blank): Fix some old typos (incorrect references to other attrs.)
+
+Wed Feb 23 13:58:24 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/cgi.cc(init): Fixed bug: array must be free by
+	delete [] buf, not just delete buf; (from Vadim).
+	* installdir/syntax.html: Fixed a $(WORDS) I'd missed earlier.
+
+Tue Feb 22 12:40:22 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/RELEASE.html, htdoc/main.html: Updated notes for 3.1.5 release.
+	* htlib/URL.cc (URL, normalizePath): Fix PR#779, to handle relative
+	URLs correctly when there's a trailing ".." or leading "//".
+
+Thu Feb 17 15:58:53 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/RELEASE.html, htdoc/main.html: Add notes for 3.1.5 release.
+	* htdoc/TODO.html, htdoc/author.html, htdoc/bugs.html,
+	htdoc/cf_general.html, htdoc/cf_types.html, htdoc/cf_variables.html,
+	htdoc/config.html, htdoc/howitworks.html, htdoc/htdig.html,
+	htdoc/htfuzzy.html, htdoc/htmerge.html, htdoc/htnotify.html,
+	htdoc/hts_form.html, htdoc/hts_general.html, htdoc/hts_method.html,
+	htdoc/install.html, htdoc/isp.html, htdoc/mailing.html,
+	htdoc/meta.html, htdoc/notification.html, htdoc/require.html,
+	htdoc/uses.html, htdoc/where.html: Update copyright date and fix
+	last modified date for automatic CVS update.
+
+Thu Feb 17 14:37:18 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/htdig.conf: quote all HTML tag parameters.
+	* htsearch/TemplateList.cc (createFromString), installdir/long.html,
+	installdir/short.html: Use $&(URL) in templates.
+
+Thu Feb 17 14:01:34 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.1.5.spec: Fix silly typos in %post script,
+	make cron script a %config file.
+
+Thu Feb 17 10:34:05 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	[ Improve htsearch's HTML 4.0 compliance ]
+	* htsearch/TemplateList.cc (createFromString): Use file name rather
+	than internal name to select builtin-* templates, use $&(TITLE) in
+	templates and quote HTML tag parameters.
+	* installdir/long.html, installdir/short.html: Use $&(TITLE) in
+	templates and quote HTML tag parameters.
+	* htsearch/Display.cc (setVariables): quote all HTML tag parameters
+	in generated select lists.
+	* installdir/footer.html, installdir/header.html,
+	installdir/nomatch.html, installdir/search.html,
+	installdir/syntax.html, installdir/wrapper.html:
+	Use $&(var) where appropriate, and quote HTML tag parameters.
+
+Thu Feb 17 10:00:26 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.1.5.spec: Fix %post script to add more descriptive
+	htdig.conf entries.
+
+Wed Feb 16 16:26:05 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.1.5.spec, contrib/htdig-3.1.5-conf.patch,
+	htdoc/where.html, .version, README: Bump to version 3.1.5.
+	* htdoc/THANKS.html: Added new contributors.
+	* htdoc/FAQ.html, htdoc/main.html: Updated to versions from web site.
+
+Wed Feb 16 15:49:28 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Configuration.h, htlib/Configuration.cc: split Add() method
+	into Add() and AddParsed(), so that only config attributes get parsed.
+	Use AddParsed() only in Read() and Defaults().
+
+Wed Feb 16 15:02:47 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.h (encodeURL): Change list of valid characters to
+	include only unreserved ones.
+	* htlib/cgi.cc (init): Allow "&" and ";" as input parameter separators.
+	* htsearch/Display.cc (createURL): Encode each parameter separately,
+	using new unreserved list, before piecing together query string, to
+	allow characters like "?=&" within parameters to be encoded.
+
+Wed Feb 16 14:42:02 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (encodeSGML, excerpt): Add encoding for
+	characters that could pose problems in HTML output.
+	* htsearch/Display.cc (expandVariables, outputVariables): Add support
+	for $&(var) and $%(var) template variable references.  This should
+	fix PR#750, once we use this in common/*.html.
+
+Tue Feb 15 17:21:08 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	[ Applied a whole collection of patches and fixes from the archives ]
+	* htdig/Server.cc (robotstxt): apply more rigorous parsing of
+	multiple user-agent fields, and use only the first one.
+
+	* htdig/Retriever.cc(GetLocal, GetLocalUser): Add URL-decoding
+	enhancements to local_urls, local_default_urls & local_default_doc,
+	to allow hex encoding of special characters.
+	* htdoc/attrs.html: Document these.
+
+	* htdig/Retriever.cc (IsValidURL): Fix problem with
+	valid_extensions when an "extension" would include part of a
+	directory path or server name, as contributed by Warren Jones.
+	Also fix problem with valid_extensions matching failure when URL
+	parameters follow extension, as reported by fxbois@cybercable.fr.
+
+	* htdig/Document.cc (RetrieveLocal), htdig/Document.h,
+	htdig/Retriever.cc(Initial, parse_url, GetLocal, GetLocalUser,
+	IsLocalURL, got_href, got_redirect), htdig/Retriever.h,
+	htdig/Server.cc(Server), htdig/Server.h: Apply Paul B. Henson's
+	enhancements to local_urls, local_user_urls & local_default_doc.
+	* htdoc/attrs.html: Document these.
+
+	* htsearch/htsearch.cc (setupWords): Fix problem reported by
+	D.J. Adams, in which bad_words removal failed on upper-case
+	search words.
+
+	* htsearch/Display.cc(setVariables), htcommon/defaults.cc: Added
+	build_select_lists attribute, to generate selector menus in forms.
+	* htdoc/hts_selectors.html: Added this page to explain this new
+	feature, plus other details on select lists in general.
+	* htdoc/hts_templates.html: Added relevant links to related attributes
+	and selectors documentation.
+	* htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Added relevant
+	explanations and links to selectors documentation.
+
+	* htlib/QuotedStringList.cc (Create): fix PR#743, where quoted string
+	lists didn't allow embedded quotes of opposite sort in strings
+	(e.g. "'" or '"'), and fix to avoid overrunning end of string
+	if it ends with backslash.
+
+	* htcommon/WordList.cc (valid_word): Applied Marc Pohl's fix to make
+	this 8-bit clean on Solaris.
+
+	* contrib/conv_doc.pl, contrib/parse_doc.pl: Applied Warren Jones's
+	changes to these scripts.
+
+	* htdig/PDF.cc (parseNonTextLine): Fix bogus escape sequences
+	around Title parsing.  (Fixes PR#740)
+
+	* htsearch/Display.cc (display, displaySyntaxError),
+	htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htcommon/defaults.cc: Add new attribute "nph" to send out
+	non-parsed headers for servers that do not supply HTTP headers on
+	CGI output (e.g. IIS).	If nph is set, send out HTTP OK header,
+	as suggested by Matthew Daniel <mdaniel@scdi.com> (PR#727)
+
+	* htdig/Document.cc (getdate): avoid strftime() altogether on
+	filled-in tm structure, to avoid recurring segfault problems. (PR#734)
+
+	* htlib/strptime.cc (mystrptime): Use Warren Jones's fix to deal
+	with a web server that returns dates with a two digit year field.
+	(Fixes PR#770)
+
+	* htdig/HTML.cc (HTML, parse, do_tag), htcommon/defaults.cc,
+	htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Add max_keywords attribute to limit meta keyword spamming.
+
 Wed Dec  8 18:19:32 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/FAQ.html, htdoc/bugs.html: Update to refer to latest versions.
+	(Update for 3.1.4 release.)
 
 Wed Dec  8 18:10:27 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
@@ -141,7 +1193,7 @@ Tue Nov 30 09:47:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	make it and bad_extensions case insensitive.
 	* htcommon/defaults.cc: Add config attribute valid_extensions,
 	with default as empty.
-	* htdoc/attrs.html, cf_by{name,prog}.html: Document valid_extensions.
+	* htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Document it.
 
 Tue Nov 30 09:02:02 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
@@ -266,7 +1318,7 @@ Tue Nov 23 20:07:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	* htsearch/Display.cc(setVariables & hilight): added Sergey's idea
 	for start_highlight, end_highlight & page_number_separator attributes.
 	* htcommon/defaults.cc: added defaults for these.
-	* htdoc/attrs.html, cf_by{name,prog}.html: documented them.
+	* htdoc/attrs.html, htdoc/cf_by{name,prog}.html: documented them.
 
 Tue Nov 23 19:58:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
@@ -971,7 +2023,7 @@ Sat Feb  6 23:24:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	entries for url_log, compression_level, noindex_start, noindex_end,
 	allow_in_form, bad_querystr, no_title_text.
 
-	* htdoc/THANKS.cc: Added Gabriele Bartolini.
+	* htdoc/THANKS.html: Added Gabriele Bartolini.
 
 	* htdoc/uses.html, htdoc/FAQ.html, htdoc/bugs.html: Synch with the
 	latest versions from the website tree.

@@ -1,0 +1,587 @@
+/*-
+ * See the file LICENSE for redistribution information.
+ *
+ * Copyright (c) 1996, 1997, 1998, 1999
+ *	Sleepycat Software.  All rights reserved.
+ */
+
+#include "db_config.h"
+
+#ifndef lint
+static const char sccsid[] = "@(#)db_iface.c	11.2 (Sleepycat) 8/14/99";
+#endif /* not lint */
+
+#ifndef NO_SYSTEM_INCLUDES
+#include <sys/types.h>
+
+#include <errno.h>
+#endif
+
+#include "db_int.h"
+#include "db_page.h"
+#include "db_am.h"
+#include "btree.h"
+
+static int CDB___db_keyempty __P((const DB_ENV *));
+static int CDB___db_rdonly __P((const DB_ENV *, const char *));
+static int CDB___dbt_ferr __P((const DB *, const char *, const DBT *, int));
+
+/*
+ * CDB___db_cursorchk --
+ *	Common cursor argument checking routine.
+ *
+ * PUBLIC: int CDB___db_cursorchk __P((const DB *, u_int32_t, int));
+ */
+int
+CDB___db_cursorchk(dbp, flags, isrdonly)
+	const DB *dbp;
+	u_int32_t flags;
+	int isrdonly;
+{
+	/* Check for invalid function flags. */
+	switch (flags) {
+	case 0:
+	case DB_DUPCURSOR:
+		break;
+	case DB_WRITECURSOR:
+		if (isrdonly)
+			return (CDB___db_rdonly(dbp->dbenv, "DB->cursor"));
+		if (!F_ISSET(dbp->dbenv, DB_ENV_CDB))
+			return (CDB___db_ferr(dbp->dbenv, "DB->cursor", 0));
+		break;
+	case DB_WRITELOCK:
+		if (isrdonly)
+			return (CDB___db_rdonly(dbp->dbenv, "DB->cursor"));
+		break;
+	default:
+		return (CDB___db_ferr(dbp->dbenv, "DB->cursor", 0));
+	}
+
+	return (0);
+}
+
+/*
+ * CDB___db_cdelchk --
+ *	Common cursor delete argument checking routine.
+ *
+ * PUBLIC: int CDB___db_cdelchk __P((const DB *, u_int32_t, int, int));
+ */
+int
+CDB___db_cdelchk(dbp, flags, isrdonly, isvalid)
+	const DB *dbp;
+	u_int32_t flags;
+	int isrdonly, isvalid;
+{
+	/* Check for changes to a read-only tree. */
+	if (isrdonly)
+		return (CDB___db_rdonly(dbp->dbenv, "c_del"));
+
+	/* Check for invalid function flags. */
+	switch (flags) {
+	case 0:
+		break;
+	default:
+		return (CDB___db_ferr(dbp->dbenv, "DBcursor->c_del", 0));
+	}
+
+	/*
+	 * The cursor must be initialized, return -1 for an invalid cursor,
+	 * otherwise 0.
+	 */
+	return (isvalid ? 0 : EINVAL);
+}
+
+/*
+ * CDB___db_cgetchk --
+ *	Common cursor get argument checking routine.
+ *
+ * PUBLIC: int CDB___db_cgetchk __P((const DB *, DBT *, DBT *, u_int32_t, int));
+ */
+int
+CDB___db_cgetchk(dbp, key, data, flags, isvalid)
+	const DB *dbp;
+	DBT *key, *data;
+	u_int32_t flags;
+	int isvalid;
+{
+	int key_einval, key_flags, ret;
+
+	key_einval = key_flags = 0;
+
+	/* Check for read-modify-write validity. */
+	if (LF_ISSET(DB_RMW)) {
+		if (!F_ISSET(dbp->dbenv, DB_ENV_LOCKING)) {
+			CDB___db_err(dbp->dbenv,
+			    "the DB_RMW flag requires locking");
+			return (EINVAL);
+		}
+		LF_CLR(DB_RMW);
+	}
+
+	/* Check for invalid function flags. */
+	switch (flags) {
+	case DB_NEXT_DUP:
+		if (dbp->type == DB_RECNO || dbp->type == DB_QUEUE)
+			goto err;
+		/* FALLTHROUGH */
+	case DB_CURRENT:
+	case DB_FIRST:
+	case DB_LAST:
+	case DB_NEXT:
+	case DB_PREV:
+		key_flags = 1;
+		break;
+	case DB_GET_BOTH:
+		if (dbp->type == DB_RECNO || dbp->type == DB_QUEUE)
+			goto err;
+		/* FALLTHROUGH */
+	case DB_SET_RANGE:
+		key_einval = key_flags = 1;
+		break;
+	case DB_SET:
+		key_einval = 1;
+		break;
+	case DB_GET_RECNO:
+		if (!F_ISSET(dbp, DB_BT_RECNUM))
+			goto err;
+		break;
+	case DB_SET_RECNO:
+		if (!F_ISSET(dbp, DB_BT_RECNUM))
+			goto err;
+		key_einval = key_flags = 1;
+		break;
+	case DB_CONSUME:
+		if (dbp->type == DB_QUEUE)
+			break;
+		/* FALL THROUGH */
+	default:
+err:		return (CDB___db_ferr(dbp->dbenv, "DBcursor->c_get", 0));
+	}
+
+	/* Check for invalid key/data flags. */
+	if ((ret = CDB___dbt_ferr(dbp, "key", key, 0)) != 0)
+		return (ret);
+	if ((ret = CDB___dbt_ferr(dbp, "data", data, 0)) != 0)
+		return (ret);
+
+	/* Check for missing keys. */
+	if (key_einval && (key->data == NULL || key->size == 0))
+		return (CDB___db_keyempty(dbp->dbenv));
+
+	/*
+	 * The cursor must be initialized for DB_CURRENT or DB_NEXT_DUP,
+	 * return -1 for an invalid cursor, otherwise 0.
+	 */
+	return (isvalid ||
+	    (flags != DB_CURRENT && flags != DB_NEXT_DUP) ? 0 : EINVAL);
+}
+
+/*
+ * CDB___db_cputchk --
+ *	Common cursor put argument checking routine.
+ *
+ * PUBLIC: int CDB___db_cputchk __P((const DB *,
+ * PUBLIC:    const DBT *, DBT *, u_int32_t, int, int));
+ */
+int
+CDB___db_cputchk(dbp, key, data, flags, isrdonly, isvalid)
+	const DB *dbp;
+	const DBT *key;
+	DBT *data;
+	u_int32_t flags;
+	int isrdonly, isvalid;
+{
+	int key_einval, key_flags, ret;
+
+	key_einval = key_flags = 0;
+
+	/* Check for changes to a read-only tree. */
+	if (isrdonly)
+		return (CDB___db_rdonly(dbp->dbenv, "c_put"));
+
+	/* Check for invalid function flags. */
+	switch (flags) {
+	case DB_AFTER:
+	case DB_BEFORE:
+		if (dbp->type == DB_QUEUE)
+			goto err;
+		if (dbp->dup_compare != NULL)
+			goto err;
+		if (dbp->type == DB_RECNO && !F_ISSET(dbp, DB_RE_RENUMBER))
+			goto err;
+		if (dbp->type != DB_RECNO && !F_ISSET(dbp, DB_AM_DUP))
+			goto err;
+		break;
+	case DB_CURRENT:
+		/*
+		 * If there is a comparison function, doing a DB_CURRENT
+		 * must not change the part of the data item that is used
+		 * for the comparison.
+		 */
+		break;
+	case DB_KEYFIRST:
+	case DB_KEYLAST:
+		if (dbp->type == DB_QUEUE)
+			goto err;
+		if (dbp->type == DB_RECNO)
+			goto err;
+		key_einval = key_flags = 1;
+		break;
+	default:
+err:		return (CDB___db_ferr(dbp->dbenv, "DBcursor->c_put", 0));
+	}
+
+	/* Check for invalid key/data flags. */
+	if (key_flags && (ret = CDB___dbt_ferr(dbp, "key", key, 0)) != 0)
+		return (ret);
+	if ((ret = CDB___dbt_ferr(dbp, "data", data, 0)) != 0)
+		return (ret);
+
+	/* Check for missing keys. */
+	if (key_einval && (key->data == NULL || key->size == 0))
+		return (CDB___db_keyempty(dbp->dbenv));
+
+	/*
+	 * The cursor must be initialized for anything other than DB_KEYFIRST
+	 * and DB_KEYLAST, return -1 for an invalid cursor, otherwise 0.
+	 */
+	return (isvalid ||
+	    flags == DB_KEYFIRST || flags == DB_KEYLAST ? 0 : EINVAL);
+}
+
+/*
+ * CDB___db_closechk --
+ *	DB->close flag check.
+ *
+ * PUBLIC: int CDB___db_closechk __P((const DB *, u_int32_t));
+ */
+int
+CDB___db_closechk(dbp, flags)
+	const DB *dbp;
+	u_int32_t flags;
+{
+	/* Check for invalid function flags. */
+	switch (flags) {
+	case 0:
+	case DB_NOSYNC:
+		break;
+	default:
+		return (CDB___db_ferr(dbp->dbenv, "DB->close", 0));
+	}
+
+	return (0);
+}
+
+/*
+ * CDB___db_delchk --
+ *	Common delete argument checking routine.
+ *
+ * PUBLIC: int CDB___db_delchk __P((const DB *, DBT *, u_int32_t, int));
+ */
+int
+CDB___db_delchk(dbp, key, flags, isrdonly)
+	const DB *dbp;
+	DBT *key;
+	u_int32_t flags;
+	int isrdonly;
+{
+	/* Check for changes to a read-only tree. */
+	if (isrdonly)
+		return (CDB___db_rdonly(dbp->dbenv, "delete"));
+
+	/* Check for invalid function flags. */
+	switch (flags) {
+	case 0:
+		break;
+	default:
+		return (CDB___db_ferr(dbp->dbenv, "DB->del", 0));
+	}
+
+	/* Check for missing keys. */
+	if (key->data == NULL || key->size == 0)
+		return (CDB___db_keyempty(dbp->dbenv));
+
+	return (0);
+}
+
+/*
+ * CDB___db_getchk --
+ *	Common get argument checking routine.
+ *
+ * PUBLIC: int CDB___db_getchk __P((const DB *, const DBT *, DBT *, u_int32_t));
+ */
+int
+CDB___db_getchk(dbp, key, data, flags)
+	const DB *dbp;
+	const DBT *key;
+	DBT *data;
+	u_int32_t flags;
+{
+	int ret;
+
+	/* Check for read-modify-write validity. */
+	if (LF_ISSET(DB_RMW)) {
+		if (!F_ISSET(dbp->dbenv, DB_ENV_LOCKING)) {
+			CDB___db_err(dbp->dbenv,
+			    "the DB_RMW flag requires locking");
+			return (EINVAL);
+		}
+		LF_CLR(DB_RMW);
+	}
+
+	/* Check for invalid function flags. */
+	switch (flags) {
+	case 0:
+	case DB_GET_BOTH:
+		break;
+	case DB_SET_RECNO:
+		if (!F_ISSET(dbp, DB_BT_RECNUM))
+			goto err;
+		break;
+	default:
+err:		return (CDB___db_ferr(dbp->dbenv, "DB->get", 0));
+	}
+
+	/* Check for invalid key/data flags. */
+	if ((ret = CDB___dbt_ferr(dbp, "key", key, flags == DB_SET_RECNO)) != 0)
+		return (ret);
+	if ((ret = CDB___dbt_ferr(dbp, "data", data, 1)) != 0)
+		return (ret);
+
+	/* Check for missing keys. */
+	if (key->data == NULL || key->size == 0)
+		return (CDB___db_keyempty(dbp->dbenv));
+
+	return (0);
+}
+
+/*
+ * CDB___db_joinchk --
+ *	Common join argument checking routine.
+ *
+ * PUBLIC: int CDB___db_joinchk __P((const DB *, u_int32_t));
+ */
+int
+CDB___db_joinchk(dbp, flags)
+	const DB *dbp;
+	u_int32_t flags;
+{
+	if (flags != 0)
+		return (CDB___db_ferr(dbp->dbenv, "DB->join", 0));
+
+	return (0);
+}
+
+/*
+ * CDB___db_putchk --
+ *	Common put argument checking routine.
+ *
+ * PUBLIC: int CDB___db_putchk
+ * PUBLIC:    __P((const DB *, DBT *, const DBT *, u_int32_t, int, int));
+ */
+int
+CDB___db_putchk(dbp, key, data, flags, isrdonly, isdup)
+	const DB *dbp;
+	DBT *key;
+	const DBT *data;
+	u_int32_t flags;
+	int isrdonly, isdup;
+{
+	int ret;
+
+	/* Check for changes to a read-only tree. */
+	if (isrdonly)
+		return (CDB___db_rdonly(dbp->dbenv, "put"));
+
+	/* Check for invalid function flags. */
+	switch (flags) {
+	case 0:
+	case DB_NOOVERWRITE:
+		break;
+	case DB_APPEND:
+		if (dbp->type != DB_RECNO && dbp->type != DB_QUEUE)
+			goto err;
+		break;
+	default:
+err:		return (CDB___db_ferr(dbp->dbenv, "DB->put", 0));
+	}
+
+	/* Check for invalid key/data flags. */
+	if ((ret = CDB___dbt_ferr(dbp, "key", key, 0)) != 0)
+		return (ret);
+	if ((ret = CDB___dbt_ferr(dbp, "data", data, 0)) != 0)
+		return (ret);
+
+	/* Check for missing keys. */
+	if (key->data == NULL || key->size == 0)
+		return (CDB___db_keyempty(dbp->dbenv));
+
+	/* Check for partial puts in the presence of duplicates. */
+	if (isdup && F_ISSET(data, DB_DBT_PARTIAL)) {
+		CDB___db_err(dbp->dbenv,
+"a partial put in the presence of duplicates requires a cursor operation");
+		return (EINVAL);
+	}
+
+	return (0);
+}
+
+/*
+ * CDB___db_statchk --
+ *	Common stat argument checking routine.
+ *
+ * PUBLIC: int CDB___db_statchk __P((const DB *, u_int32_t));
+ */
+int
+CDB___db_statchk(dbp, flags)
+	const DB *dbp;
+	u_int32_t flags;
+{
+	/* Check for invalid function flags. */
+	switch (flags) {
+	case 0:
+		break;
+	case DB_RECORDCOUNT:
+		if (dbp->type == DB_RECNO)
+			break;
+		if (dbp->type == DB_BTREE && F_ISSET(dbp, DB_BT_RECNUM))
+			break;
+		goto err;
+	default:
+err:		return (CDB___db_ferr(dbp->dbenv, "DB->stat", 0));
+	}
+
+	return (0);
+}
+
+/*
+ * CDB___db_syncchk --
+ *	Common sync argument checking routine.
+ *
+ * PUBLIC: int CDB___db_syncchk __P((const DB *, u_int32_t));
+ */
+int
+CDB___db_syncchk(dbp, flags)
+	const DB *dbp;
+	u_int32_t flags;
+{
+	/* Check for invalid function flags. */
+	switch (flags) {
+	case 0:
+		break;
+	default:
+		return (CDB___db_ferr(dbp->dbenv, "DB->sync", 0));
+	}
+
+	return (0);
+}
+
+/*
+ * CDB___dbt_ferr --
+ *	Check a DBT for flag errors.
+ */
+static int
+CDB___dbt_ferr(dbp, name, dbt, check_thread)
+	const DB *dbp;
+	const char *name;
+	const DBT *dbt;
+	int check_thread;
+{
+	DB_ENV *dbenv;
+	int ret;
+
+	dbenv = dbp->dbenv;
+
+	/*
+	 * Check for invalid DBT flags.  We allow any of the flags to be
+	 * specified to any DB or DBcursor call so that applications can
+	 * set DB_DBT_MALLOC when retrieving a data item from a secondary
+	 * database and then specify that same DBT as a key to a primary
+	 * database, without having to clear flags.
+	 */
+	if ((ret = CDB___db_fchk(dbenv, name, dbt->flags,
+	    DB_DBT_MALLOC |
+	    DB_DBT_REALLOC | DB_DBT_USERMEM | DB_DBT_PARTIAL)) != 0)
+		return (ret);
+	switch (F_ISSET(dbt, DB_DBT_MALLOC | DB_DBT_REALLOC | DB_DBT_USERMEM)) {
+	case 0:
+	case DB_DBT_MALLOC:
+	case DB_DBT_REALLOC:
+	case DB_DBT_USERMEM:
+		break;
+	default:
+		return (CDB___db_ferr(dbenv, name, 1));
+	}
+
+	if (check_thread && F_ISSET(dbenv, DB_ENV_THREAD) &&
+	    !F_ISSET(dbt, DB_DBT_MALLOC | DB_DBT_REALLOC | DB_DBT_USERMEM)) {
+		CDB___db_err(dbenv, "missing flag thread flag for %s DBT", name);
+		return (EINVAL);
+	}
+	return (0);
+}
+
+/*
+ * CDB___db_eopnotsup --
+ *	Common operation not supported message.
+ *
+ * PUBLIC: int CDB___db_eopnotsup __P((const DB_ENV *));
+ */
+int
+CDB___db_eopnotsup(dbenv)
+	const DB_ENV *dbenv;
+{
+	CDB___db_err(dbenv, "operation not supported");
+#ifdef EOPNOTSUPP
+	return (EOPNOTSUPP);
+#else
+	return (EINVAL);
+#endif
+}
+
+/*
+ * CDB___db_keyempty --
+ *	Common missing or empty key value message.
+ */
+static int
+CDB___db_keyempty(dbenv)
+	const DB_ENV *dbenv;
+{
+	CDB___db_err(dbenv, "missing or empty key value specified");
+	return (EINVAL);
+}
+
+/*
+ * CDB___db_rdonly --
+ *	Common readonly message.
+ */
+static int
+CDB___db_rdonly(dbenv, name)
+	const DB_ENV *dbenv;
+	const char *name;
+{
+	CDB___db_err(dbenv, "%s: attempt to modify a read-only tree", name);
+	return (EACCES);
+}
+
+/*
+ * CDB___db_removechk --
+ *	DB->remove flag check.
+ *
+ * PUBLIC: int CDB___db_removechk __P((const DB *, u_int32_t));
+ */
+int
+CDB___db_removechk(dbp, flags)
+	const DB *dbp;
+	u_int32_t flags;
+{
+	/* Check for invalid function flags. */
+	switch (flags) {
+	case 0:
+		break;
+	default:
+		return (CDB___db_ferr(dbp->dbenv, "DB->remove", 0));
+	}
+
+	return (0);
+}

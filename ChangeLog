@@ -1,3 +1,9 @@
+Fri Feb  1 17:12:31 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* Merged htdig-3-2-x branch back into CVS mainline.
+
+	* ChangeLog.0: Update with current 3.1.6 ChangeLog.
+
 Thu Jan 24 18:06:04 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure.in, aclocal.m4: Use new CHECK_SSL macro from the
