@@ -3,7 +3,50 @@
 ##
 ## This file is part of ht://Dig
 ##
-@make_include_left@$(top_builddir)/CONFIG@make_include_right@
+
+# These variables are set by configure, but you may wish to change them
+
+# This specifies the root of the directory tree to be used by ht://Dig
+prefix=			@prefix@
+# This specifies the root of the directory tree to be used for programs
+# installed by ht://Dig
+exec_prefix=		@exec_prefix@
+bindir=			@bindir@
+
+# This is the directory that contains ht://Dig configuration files
+CONFIG_DIR=		$(prefix)/conf
+
+# This is the directory for files that can be shared between different
+# databases.
+COMMON_DIR=		$(prefix)/common
+
+# The default directory where the search databases will reside.
+DATABASE_DIR=		$(prefix)/db
+
+# This macro defines where the various programs will look for a configuration
+# file. NOTE: This is used in the binaries and set at compile time!
+DEFAULT_CONFIG_FILE=	$(CONFIG_DIR)/htdig.conf
+
+# The directory where your HTTP server looks for CGI programs.  This is where
+# htsearch will get installed.
+CGIBIN_DIR=		@CGIBIN_DIR@
+
+# Define this to be a place that can be accessed by your web server.  This is
+# where a couple of images will be placed.
+IMAGE_DIR=		@IMAGE_DIR@
+
+# This is the URL to prefix the images placed in IMAGE_DIR.
+IMAGE_URL_PREFI=	@IMAGE_URL_PREFIX@
+
+# Set this to the absolute path where you want the sample search form to
+# be installed.
+SEARCH_DIR=		@SEARCH_DIR@
+
+# Set this to the name you want to give to the search form.  This form
+# will be located in the SEARCH_DIR directory.
+SEARCH_FORM=		search.html
+
+
 
 #
 # You should not have to modify anything below this point.
