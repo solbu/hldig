@@ -69,6 +69,8 @@
 	  documents?</a><br>
 	  4.9. <a href="#q4.9">How do I index PDF files without
 	  acroread?</a><br>
+	  4.10. <a href="#q4.10">How do I index documents in other
+	  languages?</a><br>
 	  <hr noshade size=2>
 
 	  <h3>5. Troubleshooting</h3>
@@ -363,6 +365,43 @@ external_parsers: application/msword /usr/local/bin/parse_doc.pl \
 	  You would also need to configure the script to indicate where all
 	  of the document to text converters are installed.</p>
 
+	  4.10. <a name="q4.10">How do I index documents in other
+	  languages?</a><br>
+	  <p>The first and most important thing you must do,
+	  to allow ht://Dig to properly support international
+	  characters, is to define the correct locale for the
+	  language and country you wish to support.  This is done
+	  by setting the <a href="attrs.html#locale">locale</a>
+	  attribute (see question <a href="#q5.8">5.8</a>. The
+	  next step is to configure ht://Dig to use dictionary and
+	  affix files for the language of your choice. These can
+	  be the same dictionary and affix files as are used by the
+	  ispell software.  A collection of these is available from
+	  Geoff Kuenning's
+	  <a href="http://fmg-www.cs.ucla.edu/geoff/ispell-dictionaries.html">
+	  International Ispell Dictionaries page</a>.</p>
+	  <p>For example, if you install German dictionaries in common/german,
+	  you could use these lines in your configuration file:<br>
+<pre>
+locale:               de_DE
+lang_dir:             ${common_dir}/german
+bad_word_list:        ${lang_dir}/bad_words
+endings_affix_file:   ${lang_dir}/german.aff
+endings_dictionary:   ${lang_dir}/german.0
+endings_root2word_db: ${lang_dir}/root2word.db
+endings_word2root_db: ${lang_dir}/word2root.db
+</pre>
+	  You can build the endings database with <tt>htfuzzy endings</tt>.
+	  (This command may actually take days to complete, for
+	  releases older than 3.1.2. Current releases use faster regular
+	  expression matching, which will speed this up by a few orders
+	  of magnitude.) You will also need to redefine the synonyms
+	  file if you wish to use the synonyms search algorithm. This
+	  file is not included with most of the dictionaries, nor is the
+	  bad_words file. Current versions of ht://Dig only support 8-bit
+	  characters, so languages such as Chinese and Japanese, which
+	  require 16-bit characters, are not currently supported.</p>
+
 	  <hr noshade size=2>
 
 	  <h3>5. Troubleshooting</h3>
@@ -443,7 +482,7 @@ external_parsers: application/msword /usr/local/bin/parse_doc.pl \
 	  something like <tt>locale: en_US</tt> or
 	  <tt>locale: fr_FR</tt>. Locale files are often found in
 	  <tt>/usr/share/locale</tt> or the <tt>$LANGUAGE</tt>
-	  environment variable.
+	  environment variable. See also question <a href="#q4.10">4.10</a>.
 	  </p>
 
 	  5.9. <a name="q5.9">When I run htmerge, it stops with a
