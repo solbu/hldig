@@ -24,7 +24,8 @@ KNOWN BUGS:
 * If exact isn't specified in the search_algorithms, $(WORDS) is not set 
    correctly: PR#650.
 * htfuzzy endings: use of unlink fails if TMPDIR is not on the same 
-  volume.
+   volume.
+* <META> keywords and descriptions are indexed regardless of doindex.
 
 PENDING FEATURES:
 * Vadim's config parser: in place, but currently only set for one attribute.
@@ -54,3 +55,7 @@ OTHER ISSUES:
   (it didn't in 3.1.x): PR#670.
 * Error messages should be more informative if no URLs are indexed by htdig 
   or htmerge. PR#672.
+* Reported problem where -h is ignored if modification_time_is_now set to 
+  false. (Should mod_time_is_now just be true and removed as an attribute?)
+* Are <meta> keywords and descriptions indexed with consecutive word #s to 
+  allow phrase searching?
