@@ -1,0 +1,39 @@
+#!@BASH@
+
+#
+# new-collect 1.1
+#
+# Copyright (c) 1998-2000 The ht://Dig Group
+# Distributed under the terms of the GNU General Public License (GPL)
+#   version 2 or later.
+# for the ht://Dig search system http://www.htdig.org/
+# and the multidig script system http://www.htdig.org/contrib/scripts/
+#
+# syntax:
+# new-collect <collection>
+#
+# Creates a new database directory and conf file with given name 
+# Updates the global collect.list file
+#
+
+# You may need to set the following:
+MULTIDIG_CONF=@CONFIG_DIR@/multidig.conf
+source $MULTIDIG_CONF
+
+# Catch people who don't supply an argument
+if [ "$1" = "" ]; then
+    echo Syntax: new-collect \<collection\>
+    exit
+fi
+
+# Add the new collection to the collect.list file
+echo ${1:?You need to specify a collection} >>$COLLECT_LIST
+
+# Now make the appropriate database directory
+mkdir $DB_BASE/$1
+
+# And make a copy of the default (db.conf) conf file for the DB
+# Use sed to replace @DATABASE@ with the name of the database
+sed -e s%@DATABASE@%$1% $DB_CONF >$CONFIG_DIR/$1.conf
+# And make a blank file for the ${start_urls} directive
+touch $DB_BASE/$1/$1.collect

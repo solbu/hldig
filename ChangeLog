@@ -1,3 +1,15 @@
+Tue Aug 15 00:24:33 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* contrib/multidig/Makefile, gen-collect, db.conf, multidig.conf:
+	Add missing trailing newlines as pointed out by Doug Moran
+	<dmoran@dougmoran.com>.
+
+	* contrib/multidig/Makefile (install): Make sure scripts have a+x
+	permissions. Pointed out by Doug Moran.
+
+	* contrib/multidig/new-collect: Fix typo to ensure MULTIDIG_CONF
+	is set correctly.
+
 Sun Aug 13 23:17:30 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Server.h, htdig/Server.cc (Server): Add support for
