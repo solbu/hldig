@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVector.h,v 1.3 1999/02/22 13:57:55 ghutchis Exp $
+// $Id: HtVector.h,v 1.4 1999/04/14 19:36:01 bergolth Exp $
 //
 //
 #ifndef	_HtVector_h_
@@ -92,7 +92,7 @@ public:
     // Access to the number of elements
     //
     int			Count() const		{return element_count;}
-    bool		IsEmpty()		{return element_count==0;}
+    int			IsEmpty()		{return element_count==0;}
 
     //
     // Get the index number of an object.  If the object is not found,

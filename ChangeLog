@@ -1,3 +1,13 @@
+Wed Apr 14 21:21:35 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
+
+	* htlib/regex.c: fixed compile problem with AIX xlc compiler
+	
+	* htlib/HtHeap.h: fixed compile problem with AIX xlc compiler (bool)
+
+	* htlib/HtVector.h: ditto
+
+	* htsearch/Display.cc: fixed typo
+
 Wed Apr 14 00:17:06 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.h: Add compareID for sorting results by DocID.

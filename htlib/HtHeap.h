@@ -15,7 +15,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHeap.h,v 1.1 1999/02/21 21:16:29 ghutchis Exp $
+// $Id: HtHeap.h,v 1.2 1999/04/14 19:36:01 bergolth Exp $
 //
 //
 #ifndef	_HtHeap_h_
@@ -59,7 +59,7 @@ public:
     // Access to the number of elements
     //
     int			Count() 		{return data->Count();}
-    bool		IsEmpty()		{return data->IsEmpty();}
+    int			IsEmpty()		{return data->IsEmpty();}
 
     //
     // Deep copy member function

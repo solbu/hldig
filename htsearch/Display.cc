@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.69 1999/04/14 04:25:22 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.70 1999/04/14 19:36:01 bergolth Exp $";
 #endif
 
 #include "htsearch.h"
@@ -1187,8 +1187,8 @@ Display::sortType()
 	{"score", SortByScore},
 	{"date", SortByTime},
 	{"time", SortByTime},
-!       {"title", SortByTitle},
-!       {"id", SortByID}
+        {"title", SortByTitle},
+        {"id", SortByID}
     };
     int		i = 0;
     char	*st = config["sort"];
