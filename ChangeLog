@@ -1,4 +1,7 @@
-Wed Sep  1 14:50:22 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 14:52:19 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.cc(parse): Fix PR#348, to make sure a missing
+	or invalid port number will get set correctly.
 
 	* htsearch/Display.h, htsearch/Display.cc(excerpt): Fix declaration
 	to refer to "first" as reference--ensures ANCHOR is properly set.
