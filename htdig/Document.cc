@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.5 1999/11/21 16:37:01 vadim Exp $
+// $Id: Document.cc,v 1.55.2.6 1999/11/28 02:45:09 ghutchis Exp $
 //
 
 #include <signal.h>
@@ -35,6 +35,7 @@
 
 #include "Transport.h"
 #include "HtHTTP.h"
+#include "ExternalTransport.h"
 
 #if 1
 typedef void (*SIGNAL_HANDLER) (...);
@@ -56,6 +57,7 @@ Document::Document(char *u, int max_size)
     contents = 0;
     transportConnect = 0;
     HTTPConnect = 0;
+    externalConnect = 0;
 
     if (max_size > 0)
 	max_doc_size = max_size;
@@ -221,7 +223,16 @@ Document::Retrieve(HtDateTime date)
   
    transportConnect = 0;
 
-   if (mystrncasecmp(url->service(), "http", 4) == 0)
+   if (ExternalTransport::canHandle(url->service()))
+     {
+       if (externalConnect)
+	 {
+	   delete externalConnect;
+        }	
+       externalConnect = new ExternalTransport(url->service());
+       transportConnect = externalConnect;
+     }
+   else if (mystrncasecmp(url->service(), "http", 4) == 0)
    {
       if (!HTTPConnect)
       {
