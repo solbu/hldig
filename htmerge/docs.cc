@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: docs.cc,v 1.24 1999/09/11 05:03:53 ghutchis Exp $
+// $Id: docs.cc,v 1.25 1999/09/14 06:21:30 ghutchis Exp $
 //
 
 #include "htmerge.h"
@@ -71,14 +71,15 @@ convertDocs()
 
 	db.ReadExcerpt(*ref);
 	url = ref->DocURL();
-	idStr = id->Value();
+	idStr = 0;
+	idStr << id->Value();
 
 	if (ref->DocState() == Reference_noindex)
 	  {
 	    // This document either wasn't found or shouldn't be indexed.
 	    db.Delete(ref->DocID());
             if (verbose)
-              cout << "Deleted, noindex: " << id->Value() << " URL: "
+              cout << "Deleted, noindex ID: " << idStr << " URL: "
                    << url << endl;
 	    discard_list.Add(idStr.get(), NULL);
 	  }
@@ -87,7 +88,7 @@ convertDocs()
 	    // This document wasn't actually found
 	    db.Delete(ref->DocID());
             if (verbose)
-              cout << "Deleted, not found: " << id->Value() << " URL: "
+              cout << "Deleted, not found ID: " << idStr << " URL: "
                    << url << endl;
 	    discard_list.Add(idStr.get(), NULL);
 	  }
@@ -98,7 +99,7 @@ convertDocs()
 	    // have an excerpt (probably because of a noindex directive)
 	    db.Delete(ref->DocID());
             if (verbose)
-              cout << "Deleted, no excerpt: " << id->Value() << " URL:  "
+              cout << "Deleted, no excerpt ID: " << idStr << " URL:  "
                    << url << endl;
 	    discard_list.Add(idStr.get(), NULL);
 	  }
@@ -107,7 +108,7 @@ convertDocs()
 	    // This document has not been retrieved
 	    db.Delete(ref->DocID());
             if (verbose)
-              cout << "Deleted, never retrieved: " << id->Value() << " URL:  "
+              cout << "Deleted, never retrieved ID: " << idStr << " URL:  "
                    << url << endl;
 	    discard_list.Add(idStr.get(), NULL);
 	  }
@@ -115,7 +116,7 @@ convertDocs()
 	  {
 	    // This is a valid document. Let's keep stats on it.
             if (verbose > 1)
-              cout << "" << id->Value() << "/" << url << endl;
+              cout << "ID: " << idStr << " URL: " << url << endl;
 
 	    document_count++;
 	    docdb_size += ref->DocSize();

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: words.cc,v 1.16 1999/09/11 05:03:53 ghutchis Exp $
+// $Id: words.cc,v 1.17 1999/09/14 06:21:30 ghutchis Exp $
 //
 
 #include "htmerge.h"
@@ -24,6 +24,7 @@ void mergeWords()
     WordList		 wordDB;
     List		*words;
     WordReference	*wordRef = 0;
+    String		docIDStr;
 
     wordDB.Open(config["word_db"]);
     words = wordDB.WordRefs();
@@ -35,9 +36,11 @@ void mergeWords()
 	// If the word is from a document we need to discard, we
 	// don't want to add it to the database
 	//
-	if (discard_list.Exists(wordRef->Word))
+	docIDStr = 0;
+	docIDStr << wordRef->DocumentID;
+	if (discard_list.Exists(docIDStr))
 	  {
-	    if (verbose > 1)
+	    if (verbose)
 	      {
 		cout << "htmerge: Discarding " << wordRef->Word
 		     << " in doc #" << wordRef->DocumentID << "     \n";
