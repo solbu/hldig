@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: EndingsDB.cc,v 1.3.2.1 1999/03/29 15:59:43 ghutchis Exp $";
+static char RCSid[] = "$Id: EndingsDB.cc,v 1.3.2.2 2001/06/15 21:38:39 grdetil Exp $";
 #endif
 
 #include "Endings.h"
@@ -189,7 +189,14 @@ Endings::createRoot(Dictionary &rules, char *word2root, char *root2word, char *d
 	//
 	for (int i = 0; i < wordList.Count(); i++)
 	{
-	    w2r->Put(((String *)wordList[i])->get(), word, strlen(input));
+	    //
+	    // Append to existing record if there is one.
+	    //
+	    data = "";
+	    if (w2r->Get(((String *)wordList[i])->get(), data) == OK)
+		data << ' ';
+	    data << word;
+	    w2r->Put(((String *)wordList[i])->get(), data);
 	}
     }
 

@@ -1,3 +1,15 @@
+Fri Jun 15 16:30:19 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Endings.cc (getWords): Undid change introduced in 3.1.3,
+	in part. It now gets permutations of word whether or not it has
+	a root, but it also gets permutations of one or more roots that
+	the word has, based on a suggestion by Alexander Lebedev.
+	* htfuzzy/EndingsDB.cc (createRoot): Fixed to handle words that have
+	more than one root.
+	* installdir/english.0: Removed P flag from wit, like and high, so
+	they're not treated as roots of witness, likeness and highness, which
+	are already in the dictionary.
+
 Thu Jun  7 17:09:46 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc: Add new attribute use_doc_date to use

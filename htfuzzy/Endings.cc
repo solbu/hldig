@@ -4,6 +4,17 @@
 // Implementation of Endings
 //
 // $Log: Endings.cc,v $
+// Revision 1.2.2.2  2001/06/15 21:38:39  grdetil
+// * htfuzzy/Endings.cc (getWords): Undid change introduced in 3.1.3,
+//   in part. It now gets permutations of word whether or not it has
+//   a root, but it also gets permutations of one or more roots that
+//   the word has, based on a suggestion by Alexander Lebedev.
+// * htfuzzy/EndingsDB.cc (createRoot): Fixed to handle words that have
+//   more than one root.
+// * installdir/english.0: Removed P flag from wit, like and high, so
+//   they're not treated as roots of witness, likeness and highness, which
+//   are already in the dictionary.
+//
 // Revision 1.2.2.1  1999/09/01 19:50:59  grdetil
 // Suffix-handling improvement (PR#560), to prevent inappropriate suffix
 // stripping in endings fuzzy matches.
@@ -17,9 +28,10 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Endings.cc,v 1.2.2.1 1999/09/01 19:50:59 grdetil Exp $";
+static char RCSid[] = "$Id: Endings.cc,v 1.2.2.2 2001/06/15 21:38:39 grdetil Exp $";
 #endif
 
+#include "StringList.h"
 #include "Endings.h"
 #include "htfuzzy.h"
 #include <Configuration.h>
@@ -72,53 +84,55 @@ Endings::getWords(char *w, List &words)
     String	word = w;
     word.lowercase();
 	
-    if (root2word->Get(word, data) == OK)
+    //
+    // Look for word's root(s).  Some words may have more than one root,
+    // so handle them all.  Whether or not a word has a root, it's assumed
+    // to be root in itself.
+    //
+    if (word2root->Get(word, data) == OK)
+    {
+	word << ' ' << data;
+    }
+    StringList	roots(word, " ");
+    Object	*root;
+    roots.Start_Get();
+    while ((root = roots.Get_Next()) != 0)
     {
 	//
-	// Found the root's permutations
+	// Found a root.  Look for new words that have this root.
 	//
-	char	*token = strtok(data.get(), " ");
+	word = ((String *)root)->get();
+	if (root2word->Get(word, data) == OK)
+	{
+	    word << ' ' << data;
+	}
+	//
+	// Iterate through the root's permutations
+	//
+	char	*token = strtok(word.get(), " ");
 	while (token)
 	{
 	    if (mystrcasecmp(token, w) != 0)
 	    {
-		words.Add(new String(token));
-	    }
-	    token = strtok(0, " ");
-	}
-    }
-    else
-    {
-	if (word2root->Get(word, data) == OK)
-	{
-	    //
-	    // Found the root of the word.  We'll add it to the list already
-	    //
-	    word = data;
-	    words.Add(new String(word));
-	}
-	else
-	{
-	    //
-	    // The root wasn't found.  This could mean that the word
-	    // is already the root.
-	    //
-	}
-
-	if (root2word->Get(word, data) == OK)
-	{
-	    //
-	    // Found the root's permutations
-	    //
-	    char	*token = strtok(data.get(), " ");
-	    while (token)
-	    {
-		if (mystrcasecmp(token, w) != 0)
+		//
+		// This permutation isn't the original word, so we add it
+		// to the list if it's not already there.
+		//
+		Object	*obj;
+		words.Start_Get();
+		while((obj = words.Get_Next()) != 0)
+		{
+		    if (mystrcasecmp(token, ((String *)obj)->get()) == 0)
+		    {
+			break;
+		    }
+		}
+		if (obj == 0)
 		{
 		    words.Add(new String(token));
 		}
-		token = strtok(0, " ");
 	    }
+	    token = strtok(0, " ");
 	}
     }
 }
