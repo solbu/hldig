@@ -16,11 +16,15 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.54 1999/10/08 12:05:20 loic Exp $
+// $Id: Document.cc,v 1.55 1999/10/08 14:52:12 ghutchis Exp $
 //
 
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <ctype.h>
+
 #include "Document.h"
-#include "Connection.h"
 #include "StringList.h"
 #include "htdig.h"
 #include "HTML.h"
@@ -29,16 +33,8 @@
 #include "ExternalParser.h"
 #include "lib.h"
 
-#include <signal.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <ctype.h>
-
-#ifndef HAVE_STRPTIME_DECL
-extern "C" {
-extern char *strptime(const char *__s, const char *__fmt, struct tm *__tp);
-}
-#endif /* HAVE_STRPTIME_DECL */
+#include "Transport.h"
+#include "HtHTTP.h"
 
 #if 1
 typedef void (*SIGNAL_HANDLER) (...);
@@ -58,11 +54,18 @@ Document::Document(char *u, int max_size)
     proxy = 0;
     referer = 0;
     contents = 0;
+    transportConnect = 0;
 
     if (max_size > 0)
 	max_doc_size = max_size;
     else
 	max_doc_size = config.Value("max_doc_size");
+
+    // Setting the 'modification_time_is_now' attribute
+    // and the User Agent for every HtHTTP objects
+
+    HtHTTP::SetRequestUserAgent(config["user_agent"]);
+    HtHTTP::SetModificationTimeIsNow(config.Boolean("modification_time_is_now"));
 	
     const String proxyURL = config["http_proxy"];
     if (proxyURL[0])
@@ -90,6 +93,10 @@ Document::~Document()
       delete url;
     if (proxy)
       delete proxy;
+    if (referer)
+      delete referer;
+    if (transportConnect)
+      delete transportConnect;
 #if MEM_DEBUG
     char *p = new char;
     cout << "==== Document deleted: " << this << " new at " <<
@@ -112,76 +119,16 @@ Document::Reset()
     if (url)
       delete url;
     url = 0;
+    if (referer)
+      delete referer;
     referer = 0;
-    modtime = 0;
 
     contents = 0;
     document_length = 0;
     redirected_to = 0;
 
     // Don't reset the authorization since it's a pain to set up again.
-    //    authorization = 0;
     // Don't reset the proxy since it's a pain to set up too.
-    //    if (proxy)
-    //      delete proxy;
-    //    proxy = 0;
-}
-
-
-//*****************************************************************************
-// void Document::setUsernamePassword(char *credentials)
-//
-void
-Document::setUsernamePassword(const char *credentials)
-{
-    static char	tbl[64] =
-    {
-	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-	'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-	'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-	'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
-	'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-	'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-	'w', 'x', 'y', 'z', '0', '1', '2', '3',
-	'4', '5', '6', '7', '8', '9', '+', '/'
-    };
-    authorization = 0;
-    const char	*p;
-    int		n = strlen(credentials);
-    int		ch;
-
-    for (p = credentials; n > 2; n -= 3, p += 3)
-    {
-	ch = *p >> 2;
-	authorization << tbl[ch & 077];
-	ch = ((*p << 4) & 060) | ((p[1] >> 4) & 017);
-	authorization << tbl[ch & 077];
-	ch = ((p[1] << 2) & 074) | ((p[2] >> 6) & 03);
-	authorization << tbl[ch & 077];
-	ch = p[2] & 077;
-	authorization << tbl[ch & 077];
-    }
-
-    if (n != 0)
-    {
-	char c1 = *p;
-	char c2 = n == 1 ? 0 : p[1];
-
-	ch = c1 >> 2;
-	authorization << tbl[ch & 077];
-
-	ch = ((c1 << 4) & 060) | ((c2 >> 4) & 017);
-	authorization << tbl[ch & 077];
-
-	if (n == 1)
-	    authorization << '=';
-	else
-        {
-	    ch = (c2 << 2) & 074;
-	    authorization << tbl[ch & 077];
-        }
-	authorization << '=';
-    }
 }
 
 
@@ -199,75 +146,15 @@ Document::Url(char *u)
 
 
 //*****************************************************************************
-// time_t Document::getdate(char *datestring)
-//   Convert a RFC850 date string into a time value
+// void Document::Referer(char *u)
+//   Set the Referring URL for this document
 //
-time_t
-Document::getdate(char *datestring)
+void
+Document::Referer(char *u)
 {
-    static struct tm   tm;	// static so it's cleared to zeros
-    time_t      ret;    
-    char        *s;    
-
-    //
-    // Two possible time designations:
-    //      Tuesday, 01-Jul-97 16:48:02 GMT
-    // or
-    //      Thu, 01 May 1997 00:40:42 GMT
-    //
-    // We strip off the weekday before sending to strptime
-    // because some servers send invalid weekdays!
-    // (Some don't even send a weekday, but we'll be flexible...)
- 
-    s = strchr(datestring, ',');
-    if (s)
-        s++;
-    else
-        s = datestring;
-    while (isspace(*s))
-        s++;
-    if (strchr(s, '-') && strptime(s, "%d-%b-%y %T", &tm) ||
-            strptime(s, "%d %b %Y %T", &tm))
-      {
-	// correct for mystrptime, if %Y format saw only a 2 digit year
-	if (tm.tm_year < 0)
-	  tm.tm_year += 1900;
-	// tm is static, so don't worry about tm_yday, tm_wday, tm_zone, etc.
-	// they'll be set to 0, to avoid problems in strftime().
-	
-	if (debug > 2)
-	  {
-	    cout << "Translated " << datestring << " to ";
-	    char	buffer[100];
-	    // Leave out %a for weekday, because we don't set it anymore...
-	    //strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", &tm);
-	    strftime(buffer, sizeof(buffer), "%d %b %Y %T", &tm);
-	    cout << buffer << " (" << tm.tm_year << ")" << endl;
-	  }
-#if HAVE_TIMEGM
-	ret = timegm(&tm);
-#else
-	ret = Httimegm(&tm);
-#endif
-      }
-    else
-      {
-	if (debug > 2)
-	  {
-	    cout << "Cannot translate " << datestring <<
-                    ", using current time" << endl;
-	  }
-	ret = time(0); // This isn't the best, but it works. *fix*
-      }
-    if (debug > 2)
-    {
-        cout << "And converted to ";
-        struct tm *tm2 = gmtime(&ret);
-        char    buffer[100];
-        strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", tm2);
-        cout << buffer << endl;
-    }
-    return ret;
+    if (referer)
+      delete referer;
+    referer = new URL(u);
 }
 
 
@@ -299,316 +186,166 @@ Document::UseProxy()
 
 
 //*****************************************************************************
-// DocStatus Document::RetrieveHTTP(time_t date)
+// DocStatus Document::Retrieve(HtDateTime date)
 //   Attempt to retrieve the document pointed to by our internal URL
 //
-Document::DocStatus
-Document::RetrieveHTTP(time_t date)
+Transport::DocStatus
+Document::Retrieve(HtDateTime date)
 {
-    Connection	c;
-    if (c.open() == NOTOK)
-	return Document_not_found;
+  // Right now we just handle http:// service
+  // Soon this will include file://
+  // as well as an ExternalTransport system
+  // eventually maybe ftp:// and a few others
+  static HtHTTP		*http = 0;
+  
+  Transport::DocStatus	status;
+  Transport_Response	*response = 0;
+  HtDateTime 		*ptrdatetime = 0;
+  int			useproxy = UseProxy();
+  
+  transportConnect = 0;
+  
+  if (mystrncasecmp(url->service(), "http", 4) == 0)
+    {
+      if (!http)
+	http = new HtHTTP();
+      
+      if (http)
+        {
+	  // Here we must set only thing for a HTTP request
+	  
+	  http->SetRequestURL(*url);
+	  
+	  // Set the referer
+	  if (referer)
+	    http->SetRefererURL(*referer);
+	  
+	  // We may issue a config paramater to enable/disable them
+	  http->AllowPersistentConnection();
+	  
+	  // http->SetRequestMethod(HtHTTP::Method_GET);
+	  if (debug > 2)
+            {
+	      cout << "Making HTTP request on " << url->get();
+	      
+	      if (useproxy)
+		cout << " via proxy (" << proxy->host() << ":" << proxy->port() << ")";
+	      
+	      cout << endl;
+            }
+        }
+      
+      transportConnect = http;
+    }
+  else
+    {
+      if (debug)
+	{
+	  cout << '"' << url->service() <<
+	    "\" not a recognized transport service. Ignoring\n";
+	}
+    }
+  
+  // Is a transport object pointer available?
+  
+  if (transportConnect)
+    {
+      // Set all the appropriate parameters
+      if (useproxy)
+	transportConnect->SetConnection(proxy);
+      else
+	transportConnect->SetConnection(url);
+      
+      // OK. Let's set the connection time out
+      transportConnect->SetTimeOut(config.Value("timeout"));
+      
+      // OK. Let's set the maximum size of a document to be retrieved
+      transportConnect->SetRequestMaxDocumentSize(config.Value("max_doc_size"));
+      
+      // Let's set the credentials
+      if (authorization.length())
+	transportConnect->SetCredentials(authorization);
+      
+      // Let's set the modification time (in order not to retrieve a
+      // document we already have)
+      transportConnect->SetRequestModificationTime(date);
+      
+      // And the debug level
+      transportConnect->SetDebugLevel(debug);
 
-    int		useproxy = UseProxy();
-    if (useproxy)
-    {
-	if (c.assign_port(proxy->port()) == NOTOK)
-	    return Document_not_found;
-	if (c.assign_server(proxy->host()) == NOTOK)
+      // Make the request
+      // Here is the main operation ... Let's make the request !!!
+      status = transportConnect->Request();
+      
+      // Let's get out the info we need
+      response = transportConnect->GetResponse();
+      
+      if (response)
 	{
-	    if (debug)
-		cout << "Unknown proxy host: " << proxy->host() << endl;
-	    return Document_no_host;
-	}
-    }
-    else
-    {
-	if (c.assign_port(url->port()) == NOTOK)
-	    return Document_not_found;
-	if (c.assign_server(url->host()) == NOTOK)
-	{
-	    if (debug)
-		cout << "Unknown host: " << url->host() << endl;
-	    return Document_no_host;
-	}
-    }
-	
-    if (c.connect(1) == NOTOK)
-    {
-	if (debug)
-	{
-	    cout << "Unable to build connection with " << url->host() << ':' << url->port() << endl;
-	    if (useproxy)
+	  // We got the response
+	  
+	  contents = response->GetContents();
+	  contentType = response->GetContentType();
+	  contentLength = response->GetContentLength();
+	  ptrdatetime = response->GetModificationTime();
+	  
+	  if (ptrdatetime)
 	    {
-		cout << "(Via proxy " << proxy->host() << ':' << proxy->port() << ')' << endl;
+	      // We got the modification date/time
+	      modtime = *ptrdatetime;
+	    }
+	  // How to manage it when there's no modification date/time?
+	  
+	  if (debug > 5)
+	    {
+              cout << "Contents:\n" << contents << endl;
+              cout << "Content Type: " << contentType << endl;
+              cout << "Content Length: " << contentLength << endl;
+              cout << "Modification Time: " << modtime.GetISO8601() << endl;
 	    }
 	}
-	return Document_no_server;
+      
+      return status;
+      
     }
-
-    //
-    // Construct and send the request to the server
-    //
-    String        command = "GET ";
-
-    if (useproxy)
-    {
-	command << url->get() << " HTTP/1.0\r\n";
-    }
-    else
-    {
-	command << url->path() << " HTTP/1.0\r\n";
-    }
-    command << "User-Agent: " << config["user_agent"] << "/" 
-	    << VERSION << " (" <<	config["maintainer"] << ")\r\n";
-
-    //
-    // If a referer was provided, we'll send that as well.
-    //
-    if (referer.length())
-    {
-	command << "Referer: " << referer << "\r\n";
-    }
-	
-    //
-    // If a date was provided, we'll use that in the special
-    // 'If-modified-since' URC header.
-    //
-    if (date > 0)
-    {
-	struct tm	*tm = gmtime(&date);
-	char		buffer[100];
-	strftime(buffer, sizeof(buffer), "%a, %d %h %Y %T GMT", tm);
-	command << "If-Modified-Since: " << buffer << "\r\n";
-    }
-
-    //
-    // If authorization was provided, send it.  This will happen regardless of
-    // whether the server needs it or not.  Oh well.
-    //
-    if (authorization.length())
-    {
-	command << "Authorization: Basic " << authorization << "\r\n";
-    }
-
-    //
-    // If we are allowed to index virtual hosts, we will send the special
-    // 'Host:' header that tells the server what virtual web site this
-    // request is for.
-    //
-    if (config.Boolean("allow_virtual_hosts", 1))
-    {
-	command << "Host: " << url->host() << "\r\n";
-    }
-    
-    //
-    // Finally we can commit the request by sending a blank line.
-    //
-    command << "\r\n";
-
-    if (debug > 2)
-	cout << "Retrieval command for " << url->get() << ": " << command;
-
-    c.write(command);
-
-    //
-    // Setup a timeout for the connection
-    //
-    c.timeout(config.Value("timeout"));
-
-    DocStatus   returnStatus = Document_ok;;
-    switch (readHeader(c))
-    {
-	case Header_ok:
-            returnStatus = Document_ok;
-	    break;
-	case Header_not_changed:
-	    returnStatus = Document_not_changed;
-            break;
-	case Header_not_found:
-	    returnStatus = Document_not_found;
-            break;
-	case Header_redirect:
-	    returnStatus = Document_redirect;
-            break;
-	case Header_not_text:
-	    returnStatus = Document_not_html;
-            break;
-	case Header_not_authorized:
-	    returnStatus = Document_not_authorized;
-            break;
-    }
-    if (returnStatus != Document_ok)
-        return returnStatus;
-
-    //
-    // Read in the document itself
-    //
-    contents = 0;
-    char	docBuffer[8192];
-    int		bytesRead;
-    int		bytesToGo = contentLength;
-
-    if (bytesToGo < 0 || bytesToGo > max_doc_size)
-        bytesToGo = max_doc_size;
-    while (bytesToGo > 0)
-    {
-        int len = bytesToGo<(int)sizeof(docBuffer) ? bytesToGo : (int)sizeof(docBuffer);
-        bytesRead = c.read(docBuffer, len);
-        if (bytesRead <= 0)
-            break;
-	if (debug > 2)
-	    cout << "Read " << bytesRead << " from document\n";
-	contents.append(docBuffer, bytesRead);
-	bytesToGo -= bytesRead;
-    }
-    c.close();
-    document_length = contents.length();
-
-    if (debug > 2)
-	cout << "Read a total of " << document_length << " bytes\n";
-
-    if (document_length < contentLength)
-      document_length = contentLength;
-    return Document_ok;
+  else
+    return Transport::Document_not_found;
+  
 }
-
-
+  
 //*****************************************************************************
-// int Document::readHeader(Connection &c)
-//   Read and interpret the header of the document
-//
-int
-Document::readHeader(Connection &c)
-{
-    String	line;
-    int		inHeader = 1;
-    int		returnStatus = Header_not_found;
-
-    modtime = 0;
-
-    while (inHeader)
-    {
-	c.read_line(line, "\n");
-	line.chop('\r');
-	if (debug > 2)
-	    cout << "Header line: " << line << endl;
-	if (line.length() == 0)
-	    inHeader = 0;
-	else
-	{
-	    char	*token = line.get();
-	    while (*token && !isspace(*token))
-		token++;
-	    while (*token && isspace(*token))
-		token++;
-	    if (strncmp((char*)line, "HTTP/", 5) == 0)
-	    {
-		//
-		// Found the status line.  This will determine if we
-		// continue or not
-		//
-		char	*status = strtok(token, " ");
-		if (status && strcmp(status, "200") == 0)
-		{
-		    returnStatus = Header_ok;
-		}
-		else if (status && strcmp(status, "304") == 0)
-		{
-		    returnStatus = Header_not_changed;
-		}
-		else if (status && strncmp(status, "30", 2) == 0)
-		{
-		    //
-		    // All 3xx codes other than 304 will be considered
-		    // HTTP redirects that need to look at the
-		    // Location header field.
-		    //
-		    returnStatus = Header_redirect;
-		}
-		else if (status && strcmp(status, "401") == 0)
-		{
-		    returnStatus = Header_not_authorized;
-		}
-	    }
-	    else if (modtime == 0 && *token
-		     && mystrncasecmp((char*)line, "last-modified:", 14) == 0)
-	    {
-                token = strtok(token, "\n\t");
-		if (token && *token)
-		  modtime = getdate(token);
-	    }
-	    else if (contentLength == -1 && *token
-		     && mystrncasecmp((char*)line, "content-length:", 15) == 0)
-	    {
-                token = strtok(token, "\n\t");
-		if (token && *token)
-		  contentLength = atoi(token);
-	    }
-	    else if (*token && mystrncasecmp((char*)line, "content-type:", 13) == 0)
-	    {
-                token = strtok(token, "\n\t");
-		if (!token || !*token)
-		    return Header_not_text;
-		if ((returnStatus == Header_not_found ||
-			returnStatus == Header_ok) &&
-		    !ExternalParser::canParse(token) &&
-		     mystrncasecmp("text/", token, 5) != 0 &&
-		     mystrncasecmp("application/pdf", token, 15) != 0)
-		    return Header_not_text;
-		contentType = token;
-	    }
-	    else if (*token && mystrncasecmp((char*)line, "location:", 9) == 0)
-	    {
-                token = strtok(token, "\n\t");
-		if (token && *token)
-		  redirected_to = token;
-	    }
-	}
-    }
-    static int	modification_time_is_now =
-			config.Boolean("modification_time_is_now");
-    if (modtime == 0 && modification_time_is_now)
-	modtime = time(NULL);
-    if (debug > 2)
-	cout << "returnStatus = " << returnStatus << endl;
-    return returnStatus;
-}
-
-
-//*****************************************************************************
-// DocStatus Document::RetrieveLocal(time_t date, char *filename)
+// DocStatus Document::RetrieveLocal(HtDateTime date, String filename)
 //   Attempt to retrieve the document pointed to by our internal URL
 //   using a local filename given. Returns Document_ok,
 //   Document_not_changed or Document_not_local (in which case the
-//   retriever tries it again using HTTP).
+//   retriever tries it again using the standard retrieve method).
 //
-Document::DocStatus
-Document::RetrieveLocal(time_t date, char *filename)
+Transport::DocStatus
+Document::RetrieveLocal(HtDateTime date, String filename)
 {
     struct stat stat_buf;
     // Check that it exists, and is a regular file. 
     if ((stat(filename, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode))
-	return Document_not_local;
+      return Transport::Document_not_local;
 
     modtime = stat_buf.st_mtime;
     if (modtime <= date)
-        return Document_not_changed;
+      return Transport::Document_not_changed;
 
     // Process only HTML files (this could be changed if we read
     // the server's mime.types file).
     char *ext = strrchr(filename, '.');
     if (ext == NULL)
-      	return Document_not_local;
+      return Transport::Document_not_local;
     if ((mystrcasecmp(ext, ".html") == 0) || (mystrcasecmp(ext, ".htm") == 0))
         contentType = "text/html";
     else 
-  	return Document_not_local;
+      return Transport::Document_not_local;
 
     // Open it
     FILE *f = fopen(filename, "r");
     if (f == NULL)
- 	return Document_not_local;
+      return Transport::Document_not_local;
 
     //
     // Read in the document itself
@@ -636,7 +373,7 @@ Document::RetrieveLocal(time_t date, char *filename)
 
     if (document_length < contentLength)
       document_length = contentLength;
-    return Document_ok;
+    return Transport::Document_ok;
 }
 
 
