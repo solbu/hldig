@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.45 1999/05/11 15:37:13 ghutchis Exp $
+// $Id: Retriever.cc,v 1.46 1999/05/15 17:08:51 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -674,33 +674,13 @@ Retriever::IsValidURL(char *u)
     // If the URL contains any of the patterns in the exclude list,
     // mark it as invalid
     //
-#ifdef  REGEX
     if (excludes.match(url, 0, 0) != 0)
       {
                 if (debug >= 2)
 		  cout << endl << "   Rejected: intem in exclude list ";
                 return(FALSE);
       }
-#else
-    if (excludes.hasPattern()) // Make sure there's an exclude list!
-      {
-	int retValue;     // Returned value of findFirst
-	int myWhich = 0;    // Item # that matched [0 .. n]
-	int myLength = 0;   // Length of the matching value
-	retValue = excludes.FindFirst(url, myWhich, myLength);
-	if (retValue >= 0)
-	  {
-	    if (debug > 2)
-	      {
-		myWhich++;         // [0 .. n] --> [1 .. n+1]
-		cout << endl <<"  Rejected: Item in the exclude list: item # ";
-		cout << myWhich << " length: " << myLength << endl;
-	      }
-	    return FALSE;
-	  }
-      }
-#endif
-    //
+
     // See if the path extension is in the list of invalid ones
     //
     char	*ext = strrchr(url, '.');
@@ -725,12 +705,7 @@ Retriever::IsValidURL(char *u)
     //
     // If any of the limits are met, we allow the URL
     //
-#ifdef  REGEX
     if (limits.match(url, 1, 0) != 0) return(TRUE);
-#else
-    if (limits.FindFirst(url) >= 0)
-	return TRUE;
-#endif
 
     if (debug > 2)
       cout << endl <<"   Rejected: URL not in the limits!";
@@ -1063,11 +1038,7 @@ Retriever::got_href(URL &url, char *description)
 	    current_ref->DocBackLinks(current_ref->DocBackLinks() + 1);
 	    current_ref->AddDescription(description);
 	}
-#ifdef  REGEX
         else if (limitsn.match(url.get(), 1, 0) != 0)
-#else
-	else if (limitsn.FindFirst(url.get()) >= 0)
-#endif
 	{
 	    //
 	    // First add it to the document database
@@ -1198,11 +1169,7 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 	}
 
 	url.normalize();
-#ifdef  REGEX
         if (limitsn.match(url.get(), 1, 0) != 0)
-#else
-	if (limitsn.FindFirst(url.get()) >= 0)
-#endif
 	{
 	    //
 	    // First add it to the document database

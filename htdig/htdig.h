@@ -2,7 +2,7 @@
 //
 // htdig.h
 //
-// $Id: htdig.h,v 1.6 1999/04/30 23:48:07 ghutchis Exp $
+// $Id: htdig.h,v 1.7 1999/05/15 17:08:23 ghutchis Exp $
 //
 //
 #ifndef _htdig_h_
@@ -22,16 +22,10 @@
 extern Configuration	config;
 extern int		debug;
 extern DocumentDB	docs;
-#ifdef REGEX
 extern HtRegex		limits;
 extern HtRegex		limitsn;
 extern HtRegex		excludes;
-#else
-extern StringMatch	limits;
-extern StringMatch	limitsn;
-extern StringMatch	excludes;
-#endif
-extern StringMatch      badquerystr;
+extern HtRegex		badquerystr;
 extern FILE		*urls_seen;
 extern FILE		*images_seen;
 
