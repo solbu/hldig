@@ -4,12 +4,15 @@
 // Implementation of newclass
 //
 // $Log: docs.cc,v $
-// Revision 1.1  1997/02/03 17:11:07  turtle
-// Initial revision
+// Revision 1.2  1998/01/05 05:24:19  turtle
+// Fixed memory leak
+//
+// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: docs.cc,v 1.1 1997/02/03 17:11:07 turtle Exp $";
+static char RCSid[] = "$Id: docs.cc,v 1.2 1998/01/05 05:24:19 turtle Exp $";
 #endif
 
 #include "htmerge.h"
@@ -22,10 +25,10 @@ void
 convertDocs(char *doc_db, char *doc_index)
 {
     Database	*index = Database::getDatabaseInstance();
-    int			document_count = 0;
-    int			remove_unused = config.Boolean("remove_bad_urls");
+    int		document_count = 0;
+    int		remove_unused = config.Boolean("remove_bad_urls");
     DocumentDB	db;
-    List		*urls;
+    List	*urls;
 
     if (index->OpenReadWrite(doc_index, 0664) == NOTOK)
     {
@@ -72,6 +75,7 @@ convertDocs(char *doc_db, char *doc_index)
 	    }
 	}
     }
+    delete ref;
     if (verbose)
 	cout << "\n";
     if (stats)
