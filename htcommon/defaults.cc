@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.49 1999/05/15 15:38:20 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.50 1999/05/31 18:34:10 ghutchis Exp $";
 #endif
 
 #include "Configuration.h"
@@ -45,6 +45,7 @@ ConfigDefaults	defaults[] =
     {"database_base",			"${database_dir}/db"},
     {"description_factor",              "150"},
     {"doc_db",				"${database_base}.docdb"},
+    {"doc_excerpt",			"${database_base}.excerpts"},
     {"doc_index",			"${database_base}.docs.index"},
     {"doc_list",			"${database_base}.docs"},
     {"end_ellipses",			"<b><tt> ...</tt></b>"},
@@ -95,7 +96,7 @@ ConfigDefaults	defaults[] =
     {"minimum_prefix_length",		"1"},
     {"minimum_speling_length",		"5"},
     {"minimum_word_length",		"3"},
-    {"modification_time_is_now",        "false"},
+    {"modification_time_is_now",        "true"},
     {"next_page_text",			"[next]"},
     {"no_excerpt_text",			"<em>(None of the search words were found in the top of this document.)</em>"},
     {"no_excerpt_show_top",             "false"},
