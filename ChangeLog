@@ -1,3 +1,16 @@
+Sat Jan 29 21:14:03 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/parser.cc (score): Change config.Value (which returns
+	int) to config.Double to preserve accuracy of attributes.
+
+	* htcommon/defaults.cc: Updated documentation for attributes now
+	allowing regex, search_algorithms (for new fuzzy) and added
+	documentation for the overlooked remove_unretrieved_urls.
+	
+	* htdoc/*.html: Updated copyright notice for 2000, changed footer
+	to use CVS's magic Date keyword. Regenerated documentation from
+	defaults changes.
+
 Sat Jan 29 16:32:08 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* contrib/htdig-3.1.4.spec, contrib/htdig-3.1.4-conf.patch: Remove

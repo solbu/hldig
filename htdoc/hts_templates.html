@@ -10,7 +10,7 @@
 	  htsearch
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-1999 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -103,7 +103,10 @@
 	  all of them will be substituted for every file. In addition, all
 	  of the standard CGI environment variables are available, and
 	  listed in the <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">cgi
-	  specification</a>. The variables are:
+	  specification</a>. Variables will be substituted normally
+	  with the format $(VAR), escaped for use in a URL with the
+	  format $%(VAR) and HTML-escaped with the format $&(VAR). The
+	  variables are:
 	</p>
 	<dl>
 	  <dt>
@@ -406,8 +409,8 @@
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
-<!-- hhmts start -->
-Last modified: Mon Jan 24 12:33:10 CST 2000
-<!-- hhmts end -->
+
+Last modified: $Date: 2000/01/30 03:38:26 $
+
   </body>
 </html>

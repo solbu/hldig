@@ -11,7 +11,7 @@
   <body bgcolor="#eef7ff">
 	<h1>Configuration file format -- Attributes</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-1999 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -476,7 +476,7 @@
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			string list
+			pattern list
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -1348,15 +1348,13 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	This factor, like <a
-	href="#backlink_factor">backlink_factor</a> can be
-	changed without modifing the database. It gives higher
+	This factor, gives higher
 	rankings to newer documents and lower rankings to older
 	documents. Before setting this factor, it's advised to
 	make sure your servers are returning accurate dates
 	(check the dates returned in the long format).
 	Additionally, setting this to a nonzero value incurs a
-	performance hit on searching.
+	small performance hit on searching.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -2263,7 +2261,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			string list
+			pattern list
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -3073,7 +3071,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			string list
+			pattern list
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -3282,7 +3280,11 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-
+	This is a factor which will be used to multiply the
+	weight of words in the ALT portions of &lt;img&gt; tags
+	The number may be a floating point number. See also the
+	<a href="#keywords_factor">keywords_factor</a> and
+	<a href="#text_factor">text_factor</a>attributes.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -3566,7 +3568,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			string list
+			pattern list
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -3629,7 +3631,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			string list
+			pattern list
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -3658,8 +3660,9 @@ http://www.htdig.org/
 	search. Any number of strings can be specified,
 	separated by spaces. If multiple patterns are given, at
 	least one of the patterns has to match the URL.<br>
-	Matching is a case-insensitive string match on the URL
-	to be used. The match will be performed <em>after</em>
+	Matching, by default, is a case-insensitive string match on the URL
+	to be used, unless the <a href="attrs.html#case_sensitive">case_sensitive</a> 
+        attribute is set. The match will be performed <em>after</em>
 	the relative references have been converted to a valid
 	URL. This means that the URL will <em>always</em> start
 	with <tt>http://</tt>.<br>
@@ -3676,7 +3679,7 @@ http://www.htdig.org/
 				  limit_urls_to:
 				</td>
 				<td nowrap>
-				     .sdsu.edu kpbs
+				     .sdsu.edu kpbs [.*.html]
 				</td>
 			  </tr>
 			</table>
@@ -3843,7 +3846,7 @@ http://www.htdig.org/
 		  <dd>
 	Set this to tell ht://Dig to only access files through the 
 	local filesystem using the local_urls attribute. If it cannot 
-	find the file, it will give up rather than trying HTTP or other protocol.
+	find the file, it will give up rather than trying HTTP or another protocol.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -3903,7 +3906,7 @@ http://www.htdig.org/
 	filesystem. If you leave the "path" portion out, it will
 	look up the user's home directory in /etc/password (or NIS
 	or whatever). As with local_urls, if the files are not
-	found, ht://Dig will try with HTTP. Again, note the
+	found, ht://Dig will try with HTTP or the appropriate protocol. Again, note the
 	example's format. To map http://www.my.org/~joe/foo/bar.html
 	to /home/joe/www/foo/bar.html, try the example below.
 		  </dd>
@@ -4594,9 +4597,8 @@ http://www.htdig.org/
 	Instead of limiting the indexing process by URL
 	pattern, it can also be limited by the number of hops
 	or clicks a document is removed from the starting URL.
-	Unfortunately, this only works reliably when a complete
-	index is created, not an update.<br>
-	The starting page will have hop count 0.
+        <br>
+	The starting page or pages will have hop count 0.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -6645,6 +6647,60 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="remove_unretrieved_urls">
+		remove_unretrieved_urls</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htmerge.html">htmerge</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			false
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b1 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	If TRUE, htmerge will remove any URLs which were discovered
+	and included as stubs in the database but not yet retrieved. If FALSE, it
+	will not do this. When htdig is run in initial mode with no restrictions 
+        on hopcount or maximum documents, these should probably be removed and set
+        to true. However, if you are hoping to index a small set of documents and 
+        eventually get to the rest, you should probably leave this as false.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="robotstxt_name">
 		robotstxt_name</a></strong>
 	  </dt>
@@ -6812,8 +6868,9 @@ http://www.htdig.org/
 			when searching. Each entry in the list consists of the
 			algorithm name, followed by a colon (:) followed by a
 			weight multiplier. The multiplier is a floating point
-			number between 0 and 1. Current algorithms supported
-			are:
+			number between 0 and 1. If the exact method is not listed, the 
+                        search may not work since the original terms will not be used. 
+                        Current algorithms supported are:
 			<dl>
 			  <dt>
 				exact
@@ -6880,6 +6937,24 @@ http://www.htdig.org/
 			  matching on "abc" since * is the default
 			  prefix_match_character.
 			</dd>
+			<dt>
+			regex
+			</dt>
+			<dd>
+			  Matches all words that match the patterns given as regular 
+                          expressions. Since this requires checking every word in
+			  the database, this can really slow down searches
+			  considerably.
+			<dd>
+			<dt>
+			speling
+			</dt>
+			<dd>
+			  A simple fuzzy algorithm that tries to find one-off spelling 
+			  mistakes, such as transposition of two letters or an extra character.
+			  Since this usually generates just a few possibilities, it is 
+			  relatively quick.
+			<dd>
 			</dl>
 		  </dd>
 		  <dt>
@@ -8902,62 +8977,6 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name="url_factor">
-		url_factor</a></strong>
-	  </dt>
-	  <dd>
-		<dl>
-		  <dt>
-			<em>type:</em>
-		  </dt>
-		  <dd>
-			number
-		  </dd>
-		  <dt>
-			<em>used by:</em>
-		  </dt>
-		  <dd>
-			<a href="htsearch.html" target="_top">htsearch</a>
-		  </dd>
-		  <dt>
-			<em>default:</em>
-		  </dt>
-		  <dd>
-			2
-		  </dd>
-		  <dt>
-		      <em>version:</em>
-		  </dt>
-		  <dd>
-		      3.2.0b1 or later
-		  </dd>
-		  <dt>
-			<em>description:</em>
-		  </dt>
-		  <dd>
-
-		  </dd>
-		  <dt>
-			<em>example:</em>
-		  </dt>
-		  <dd>
-			<table border="0">
-			  <tr>
-				<td valign="top">
-				  url_factor:
-				</td>
-				<td nowrap>
-				     0.0
-				</td>
-			  </tr>
-			</table>
-		  </dd>
-		</dl>
-	  </dd>
-	</dl>
-	<hr>
-	<dl>
-	  <dt>
 		<strong><a name="url_list">
 		url_list</a></strong>
 	  </dt>
@@ -10442,8 +10461,6 @@ http://www.htdig.org/
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
-<!-- hhmts start -->
-Last modified: Fri Jan 28 19:32:23 CST 2000
-<!-- hhmts end -->
+Last modified: Sat Jan 29 21:22:43 CST 2000
   </body>
 </html>

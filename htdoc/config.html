@@ -1,67 +1,72 @@
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html>
   <head>
-    <title>
-      ht://Dig: Configuration
-    </title>
+	<title>
+	  ht://Dig: Configuration
+	</title>
   </head>
   <body bgcolor="#eef7ff">
-    <h1>
-      Configuration
-    </h1>
-    <p>
-      ht://Dig &copy; 1995-1998 Andrew Scherpbier<br>
-       Please see the file <a href="COPYING">COPYING</a> for
-      license information.
-    </p>
-    <hr noshade size="4">
-    <p>
-      ht://Dig requires a configuration file and several HTML files
-      to operate correctly. Fortunately, when ht://Dig is
-      installed, a very reasonable configuration is created and in
-      most cases only minor modifications to the files are
-      necessary.
-    </p>
-    Below, we will use the variables that were set in CONFIG to
-    designate specific paths. 
-    <p>
-      Standard files:
-    </p>
-    <ul>
-      <li>
-        <a href="#htdig.conf">${CONFIG_DIR}/htdig.conf</a>
-      </li>
-      <li>
-        <a href="#search.html">${SEARCH_DIR}/search.html</a>
-      </li>
-      <li>
-        <a href="#header.html">${COMMON_DIR}/header.html</a>
-      </li>
-      <li>
-        <a href="#footer.html">${COMMON_DIR}/footer.html</a>
-      </li>
-      <li>
-        <a href="#nomatch.html">${COMMON_DIR}/nomatch.html</a>
-      </li>
-      <li>
-        <a href="#syntax.html">${COMMON_DIR}/syntax.html</a>
-      </li>
-    </ul>
-    <hr noshade>
-    <h2>
-      <a name="#htdig.conf">${CONFIG_DIR}/htdig.conf</a>
-    </h2>
-    This is the main runtime configuration file for all programs
-    that make up ht://Dig. The file is fully described in the <a
-    href="confindex.html" target="_top">Configuration file
-    manual</a>. 
-    <p>
-      When ht://Dig is installed, several attributes will be
-      customized to your particular environment, but for reference,
-      here is a sample copy of what it can look like:
-    </p>
+	<h1>
+	  Configuration
+	</h1>
+	<p>
+	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
+	  Please see the file <a href="COPYING">COPYING</a> for
+	  license information.
+	</p>
+	<hr size="4" noshade>
+	<p>
+	  ht://Dig requires a configuration file and several HTML files
+	  to operate correctly. Fortunately, when ht://Dig is
+	  installed, a very reasonable configuration is created and in
+	  most cases only minor modifications to the files are
+	  necessary.
+	</p>
+	<p>
+	  Below, we will use the variables that were set in CONFIG to
+	  designate specific paths.
+	</p>
+	<p>
+	  Standard files:
+	</p>
+	<ul>
+	  <li>
+		<a href="#htdig.conf">${CONFIG_DIR}/htdig.conf</a>
+	  </li>
+	  <li>
+		<a href="#search.html">${SEARCH_DIR}/search.html</a>
+	  </li>
+	  <li>
+		<a href="#header.html">${COMMON_DIR}/header.html</a>
+	  </li>
+	  <li>
+		<a href="#footer.html">${COMMON_DIR}/footer.html</a>
+	  </li>
+	  <li>
+		<a href="#nomatch.html">${COMMON_DIR}/nomatch.html</a>
+	  </li>
+	  <li>
+		<a href="#syntax.html">${COMMON_DIR}/syntax.html</a>
+	  </li>
+	</ul>
+	<hr noshade>
+	<h2>
+	  <a name="#htdig.conf">${CONFIG_DIR}/htdig.conf</a>
+	</h2>
+	<p>
+	  This is the main runtime configuration file for all programs
+	  that make up ht://Dig. The file is fully described in the
+	  <a href="confindex.html" target="_top">Configuration file
+	  manual</a>.
+	</p>
+	<p>
+	  When ht://Dig is installed, several attributes will be
+	  customized to your particular environment, but for reference,
+	  here is a sample copy of what it can look like:
+	</p>
 <pre>
-<font size="-1">#
+<font size="-1">
+#
 # Example config file for ht://Dig.
 # Last modified 2-Sep-1996 by Andrew Scherpbier
 #
@@ -160,46 +165,49 @@ no_next_page_text:
 prev_page_text:     &lt;img src=/htdig/buttonl.gif border=0 align=middle width=30 height=30 alt=prev&gt;
 no_prev_page_text:
 page_number_text:   "&lt;img src=/htdig/button1.gif border=0 align=middle width=30 height=30 alt=1&gt;" \
-            "&lt;img src=/htdig/button2.gif border=0 align=middle width=30 height=30 alt=2&gt;" \
-            "&lt;img src=/htdig/button3.gif border=0 align=middle width=30 height=30 alt=3&gt;" \
-            "&lt;img src=/htdig/button4.gif border=0 align=middle width=30 height=30 alt=4&gt;" \
-            "&lt;img src=/htdig/button5.gif border=0 align=middle width=30 height=30 alt=5&gt;" \
-            "&lt;img src=/htdig/button6.gif border=0 align=middle width=30 height=30 alt=6&gt;" \
-            "&lt;img src=/htdig/button7.gif border=0 align=middle width=30 height=30 alt=7&gt;" \
-            "&lt;img src=/htdig/button8.gif border=0 align=middle width=30 height=30 alt=8&gt;" \
-            "&lt;img src=/htdig/button9.gif border=0 align=middle width=30 height=30 alt=9&gt;" \
-            "&lt;img src=/htdig/button10.gif border=0 align=middle width=30 height=30 alt=10&gt;"
+			"&lt;img src=/htdig/button2.gif border=0 align=middle width=30 height=30 alt=2&gt;" \
+			"&lt;img src=/htdig/button3.gif border=0 align=middle width=30 height=30 alt=3&gt;" \
+			"&lt;img src=/htdig/button4.gif border=0 align=middle width=30 height=30 alt=4&gt;" \
+			"&lt;img src=/htdig/button5.gif border=0 align=middle width=30 height=30 alt=5&gt;" \
+			"&lt;img src=/htdig/button6.gif border=0 align=middle width=30 height=30 alt=6&gt;" \
+			"&lt;img src=/htdig/button7.gif border=0 align=middle width=30 height=30 alt=7&gt;" \
+			"&lt;img src=/htdig/button8.gif border=0 align=middle width=30 height=30 alt=8&gt;" \
+			"&lt;img src=/htdig/button9.gif border=0 align=middle width=30 height=30 alt=9&gt;" \
+			"&lt;img src=/htdig/button10.gif border=0 align=middle width=30 height=30 alt=10&gt;"
 #
 # To make the current page stand out, we will put a border around the
 # image for that page.
 #
 no_page_number_text:    "&lt;img src=/htdig/button1.gif border=2 align=middle width=30 height=30 alt=1&gt;" \
-            "&lt;img src=/htdig/button2.gif border=2 align=middle width=30 height=30 alt=2&gt;" \
-            "&lt;img src=/htdig/button3.gif border=2 align=middle width=30 height=30 alt=3&gt;" \
-            "&lt;img src=/htdig/button4.gif border=2 align=middle width=30 height=30 alt=4&gt;" \
-            "&lt;img src=/htdig/button5.gif border=2 align=middle width=30 height=30 alt=5&gt;" \
-            "&lt;img src=/htdig/button6.gif border=2 align=middle width=30 height=30 alt=6&gt;" \
-            "&lt;img src=/htdig/button7.gif border=2 align=middle width=30 height=30 alt=7&gt;" \
-            "&lt;img src=/htdig/button8.gif border=2 align=middle width=30 height=30 alt=8&gt;" \
-            "&lt;img src=/htdig/button9.gif border=2 align=middle width=30 height=30 alt=9&gt;" \
-            "&lt;img src=/htdig/button10.gif border=2 align=middle width=30 height=30 alt=10&gt;"
+			"&lt;img src=/htdig/button2.gif border=2 align=middle width=30 height=30 alt=2&gt;" \
+			"&lt;img src=/htdig/button3.gif border=2 align=middle width=30 height=30 alt=3&gt;" \
+			"&lt;img src=/htdig/button4.gif border=2 align=middle width=30 height=30 alt=4&gt;" \
+			"&lt;img src=/htdig/button5.gif border=2 align=middle width=30 height=30 alt=5&gt;" \
+			"&lt;img src=/htdig/button6.gif border=2 align=middle width=30 height=30 alt=6&gt;" \
+			"&lt;img src=/htdig/button7.gif border=2 align=middle width=30 height=30 alt=7&gt;" \
+			"&lt;img src=/htdig/button8.gif border=2 align=middle width=30 height=30 alt=8&gt;" \
+			"&lt;img src=/htdig/button9.gif border=2 align=middle width=30 height=30 alt=9&gt;" \
+			"&lt;img src=/htdig/button10.gif border=2 align=middle width=30 height=30 alt=10&gt;"
 </font>
 </pre>
-    <hr noshade>
-    <h2>
-      <a name="search.html">${SEARCH_DIR}/search.html</a>
-    </h2>
-    This is the default search form. It is an example interface to
-    the search engine, htsearch. The file contains a form with as
-    its action a call to htsearch. There are several form variables
-    which htsearch will use. More about those can be found in the
-    <a href="htsearch.html" target="_top">htsearch
-    documentation</a>. 
-    <p>
-      An example file can be as follows:
-    </p>
+	<hr noshade>
+	<h2>
+	  <a name="search.html">${SEARCH_DIR}/search.html</a>
+	</h2>
+	<p>
+	  This is the default search form. It is an example interface to
+	  the search engine, htsearch. The file contains a form with as
+	  its action a call to htsearch. There are several form variables
+	  which htsearch will use. More about those can be found in the
+	  <a href="htsearch.html" target="_top">htsearch
+	  documentation</a>.
+	</p>
+	<p>
+	  An example file can be as follows:
+	</p>
 <pre>
-<font size="-1">&lt;html&gt;
+<font size="-1">
+&lt;html&gt;
 &lt;head&gt;
 &lt;title&gt;ht://Dig WWW Search&lt;/title&gt;
 &lt;/head&gt;
@@ -222,6 +230,14 @@ Format: &lt;select name=format&gt;
 &lt;option value=builtin-long&gt;Long
 &lt;option value=builtin-short&gt;Short
 &lt;/select&gt;
+Sort by: &lt;select name=sort&gt;
+&lt;option value=score&gt;Score
+&lt;option value=time&gt;Time
+&lt;option value=title&gt;Title
+&lt;option value=revscore&gt;Reverse Score
+&lt;option value=revtime&gt;Reverse Time
+&lt;option value=revtitle&gt;Reverse Title
+&lt;/select&gt;
 &lt;/font&gt;
 &lt;input type=hidden name=config value=htdig&gt;
 &lt;input type=hidden name=restrict value=""&gt;
@@ -237,33 +253,35 @@ Search:
 
 </font>
 </pre>
-    <hr noshade>
-    <h2>
-      <a name="header.html">${COMMON_DIR}/header.html</a>
-    </h2>
-    This file is the file that is output before any of the search
-    results are produced in a search. This file can be customized
-    to reflect your particular web look-and-feel, for example. Take
-    note that this file is only the top part of the full HTML
-    document that is produced when search results are displayed.
-    This means that it should start with the proper HTML
-    introductory tags and title. 
-    <p>
-      This file will not just simply be copied. Instead, the search
-      engine will look for special variables inside the file. These
-      variables will be replaced with the appropriate values for
-      the particular search it is used for. For more details of the
-      use of these variables, consult the <a href=
-      "hts_templates.html">htsearch templates</a> documentation.
-    </p>
-    <p>
-      Below is the default header.html file that gets installed.
-      Note that it contains a form to allow the user to refine the
-      search.
-    </p>
+	<hr noshade>
+	<h2>
+	  <a name="header.html">${COMMON_DIR}/header.html</a>
+	</h2>
+	<p>
+	  This file is the file that is output before any of the search
+	  results are produced in a search. This file can be customized
+	  to reflect your particular web look-and-feel, for example. Take
+	  note that this file is only the top part of the full HTML
+	  document that is produced when search results are displayed.
+	  This means that it should start with the proper HTML
+	  introductory tags and title.
+	</p>
+	<p>
+	  This file will not just simply be copied. Instead, the search
+	  engine will look for special variables inside the file. These
+	  variables will be replaced with the appropriate values for
+	  the particular search it is used for. For more details of the
+	  use of these variables, consult the
+	  <a href="hts_templates.html">htsearch templates</a> documentation.
+	</p>
+	<p>
+	  Below is the default header.html file that gets installed.
+	  Note that it contains a form to allow the user to refine the
+	  search.
+	</p>
 <pre>
-<font size=
-"-1">&lt;html&gt;&lt;head&gt;&lt;title&gt;Search results for '$(WORDS)'&lt;/title&gt;&lt;/head&gt;
+<font size="-1">
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Search results for '$(WORDS)'&lt;/title&gt;&lt;/head&gt;
 &lt;body bgcolor="#eef7ff"&gt;
 &lt;h2&gt;&lt;img src="/htdig/htdig.gif"&gt;
 Search results for '$(LOGICAL_WORDS)'&lt;/h2&gt;
@@ -275,6 +293,7 @@ Search results for '$(LOGICAL_WORDS)'&lt;/h2&gt;
 &lt;input type=hidden name=exclude value="$(EXCLUDE)"&gt;
 Match: $(METHOD)
 Format: $(FORMAT)
+Sort by: $(SORT)
 &lt;br&gt;
 Refine search:
 &lt;input type="text" size="30" name="words" value="$(WORDS)"&gt;
@@ -287,23 +306,24 @@ Refine search:
 More &lt;img src="/htdig/star.gif" alt="*"&gt;'s indicate a better match.
 &lt;/b&gt;
 &lt;hr noshade size=1&gt;
-
 </font>
 </pre>
-    <hr noshade>
-    <h2>
-      <a name="footer.html">${COMMON_DIR}/footer.html</a>
-    </h2>
-    This file is output after all the search results have been
-    displayed. All the same header.html rules apply to this file,
-    except that it is supposed to contain all the ending HTML tags.
-    
-    <p>
-      Below is the default footer.html file that gets installed.
-      Note that it contains the page navigation stuff.
-    </p>
+	<hr noshade>
+	<h2>
+	  <a name="footer.html">${COMMON_DIR}/footer.html</a>
+	</h2>
+	<p>
+	  This file is output after all the search results have been
+	  displayed. All the same header.html rules apply to this file,
+	  except that it is supposed to contain all the ending HTML tags.
+	</p>
+	<p>
+	  Below is the default footer.html file that gets installed.
+	  Note that it contains the page navigation stuff.
+	</p>
 <pre>
-<font size="-1">&lt;hr noshade&gt;
+<font size="-1">
+&lt;hr noshade&gt;
 Pages:&lt;br&gt;
 $(PREVPAGE) $(PAGELIST) $(NEXTPAGE)
 &lt;hr noshade size=4&gt;
@@ -312,17 +332,19 @@ $(PREVPAGE) $(PAGELIST) $(NEXTPAGE)
 &lt;/body&gt;&lt;/html&gt;
 </font>
 </pre>
-    <hr noshade>
-    <h2>
-      <a name="nomatch.html">${COMMON_DIR}/nomatch.html</a>
-    </h2>
-    If a search produces no matches, this file is displayed. All
-    the relevant variables will be replaced as in the header.html
-    and footer.html files. The default nomatch.html is little more
-    than header.html and footer.html appended: 
+	<hr noshade>
+	<h2>
+	  <a name="nomatch.html">${COMMON_DIR}/nomatch.html</a>
+	</h2>
+	<p>
+	  If a search produces no matches, this file is displayed. All
+	  the relevant variables will be replaced as in the header.html
+	  and footer.html files. The default nomatch.html is little more
+	  than header.html and footer.html appended:
+	</p>
 <pre>
-<font size=
-"-1">&lt;html&gt;&lt;head&gt;&lt;title&gt;No match for '$(LOGICAL_WORDS)'&lt;/title&gt;&lt;/head&gt;
+<font size="-1">
+&lt;html&gt;&lt;head&gt;&lt;title&gt;No match for '$(LOGICAL_WORDS)'&lt;/title&gt;&lt;/head&gt;
 &lt;body bgcolor="#eef7ff"&gt;
 &lt;h1&gt;&lt;img src="/htdig/htdig.gif"&gt;
 Search results&lt;/h1&gt;
@@ -347,6 +369,7 @@ with "&lt;b&gt;Any&lt;/b&gt;."&lt;/p&gt;
 &lt;input type=hidden name=exclude value="$(EXCLUDE)"&gt;
 Match: $(METHOD)
 Format: $(FORMAT)
+Sort by: $(SORT)
 &lt;br&gt;
 Refine search:
 &lt;input type="text" size="30" name="words" value="$(WORDS)"&gt;
@@ -360,15 +383,17 @@ Refine search:
 &lt;/body&gt;&lt;/html&gt;
 </font>
 </pre>
-    <hr noshade>
-    <h2>
-      <a name="syntax.html">${COMMON_DIR}/syntax.html</a>
-    </h2>
-    If a boolean expression search causes a syntax error, this file
-    will be displayed. 
+	<hr noshade>
+	<h2>
+	  <a name="syntax.html">${COMMON_DIR}/syntax.html</a>
+	</h2>
+	<p>
+	  If a boolean expression search causes a syntax error, this file
+	  will be displayed.
+	</p>
 <pre>
-<font size=
-"-1">&lt;html&gt;&lt;head&gt;&lt;title&gt;Error in Boolean search for '$(WORDS)'&lt;/title&gt;&lt;/head&gt;
+<font size="-1">
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Error in Boolean search for '$(WORDS)'&lt;/title&gt;&lt;/head&gt;
 &lt;body bgcolor="#eef7ff"&gt;
 &lt;h1&gt;&lt;img src="/htdig/htdig.gif"&gt;
 Error in Boolean search for '$(LOGICAL_WORDS)'&lt;/h1&gt;
@@ -387,6 +412,7 @@ $(SYNTAXERROR)
 &lt;input type=hidden name=exclude value="$(EXCLUDE)"&gt;
 Match: $(METHOD)
 Format: $(FORMAT)
+Sort by: $(SORT)
 &lt;br&gt;
 Refine search:
 &lt;input type="text" size="30" name="words" value="$(WORDS)"&gt;
@@ -400,13 +426,12 @@ Refine search:
 &lt;/body&gt;&lt;/html&gt;
 </font>
 </pre>
-    <hr noshade size="4">
-    <address>
-      <a href="author.html">Andrew Scherpbier
-      &lt;andrew@contigo.com&gt;</a>
-    </address>
-    <!-- hhmts start -->Last modified: Sun Jan 12 22:19:44 PST 
-    <!-- hhmts end -->  
+	<hr size="4" noshade>
+	<address>
+	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
+	</address>
+
+Last modified: $Date: 2000/01/30 03:38:26 $
+
   </body>
 </html>
-
