@@ -12,6 +12,8 @@ Wed Sep 20 22:47:01 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* test/dbbench.cc, test/word.cc, test/search.cc: Fix #include to
 	point to htconfig.h not non-existant config.h.
 
+	* htlib/Configuration.h: Fix copy ctor, removing code in header file.
+	
 	* htword/*.cc: Ditto.
 
 	* htword/Makefile.am: Update from mifluz version.
