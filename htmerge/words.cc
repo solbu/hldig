@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.10.2.2 1999/03/22 23:20:34 grdetil Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.10.2.3 2001/06/07 19:33:56 grdetil Exp $";
 #endif
 
 #include "htmerge.h"
@@ -29,6 +29,7 @@ mergeWords(char *wordtmp, char *wordfile)
     int		word_count = 0;
     WordRecord	wr, last_wr;
     String      last_word;
+    String      high_word;
 
     //
     // Check for file access errors
@@ -59,9 +60,9 @@ mergeWords(char *wordtmp, char *wordfile)
     String	tmpdir = getenv("TMPDIR");
     if (tmpdir.length())
     {
-	command << " -T " << tmpdir;
+	command << " -T \"" << tmpdir << "\"";
     }
-    command << ' ' << wordtmp;
+    command << " \"" << wordtmp << "\"";
     FILE	*sorted = popen(command, "r");
     if (!sorted)
     {
@@ -74,37 +75,40 @@ mergeWords(char *wordtmp, char *wordfile)
     //
     while (fgets(buffer, sizeof(buffer), sorted))
     {
-	if (*buffer == '+')
+	//
+	// Split the line up into the word, count, location, and
+	// document id.
+	//
+	word = good_strtok(buffer, '\t');
+	pair = good_strtok(NULL, '\t');
+	if (!word.length() || !pair || !*pair)
 	{
+	  if (*buffer == '+')
+	  {
 	    //
 	    // This tells us that the document hasn't changed and we
 	    // are to reuse the old words
 	    //
-	}
-	else if (*buffer == '-')
-	{
+	  }
+	  else if (*buffer == '-')
+	  {
  	    if (removeBadUrls)
 	    {
 		discard_list.Add(strtok(buffer + 1, "\n"), 0);
 		if (verbose)
 		    cout << "htmerge: Removing doc #" << buffer + 1 << endl;
 	    }
-	}
-	else if (*buffer == '!')
-	{
+	  }
+	  else if (*buffer == '!')
+	  {
 	    discard_list.Add(strtok(buffer + 1, "\n"), 0);
 	    if (verbose)
 		cout << "htmerge: doc #" << buffer + 1 <<
 		    " has been superceeded." << endl;
+	  }
 	}
 	else
 	{
-	    //
-	    // Split the line up into the word, count, location, and
-	    // document id.
-	    //
-	    word = good_strtok(buffer, '\t');
-	    pair = good_strtok(NULL, '\t');
 	    wr.Clear();   // Reset count to 1, anchor to 0, and all that
 	    sid = "-";
 	    while (pair && *pair)
@@ -214,6 +218,7 @@ mergeWords(char *wordtmp, char *wordfile)
 		out = 0;
 		out.append((char *) &last_wr, sizeof(last_wr));
 		currentWord = last_word;
+		high_word = last_word;
 	    }
 	    else if (strcmp(last_word, currentWord) == 0)
 	    {
@@ -232,6 +237,13 @@ mergeWords(char *wordtmp, char *wordfile)
 		currentWord = last_word;
 
 		out = 0;
+		if (strcmp(last_word, high_word) > 0)
+		    high_word = last_word;
+		else
+		{
+		    // words in non-ASCII collating order, get earlier record
+		    dbf->Get(currentWord, out);
+		}
 		out.append((char *) &last_wr, sizeof(last_wr));
 		word_count++;
 		if (verbose && word_count == 1)
@@ -290,6 +302,7 @@ mergeWords(char *wordtmp, char *wordfile)
 	out = 0;
 	out.append((char *) &last_wr, sizeof(last_wr));
 	currentWord = last_word;
+	high_word = last_word;
       }
     else if (strcmp(last_word, currentWord) == 0)
       {
@@ -308,6 +321,13 @@ mergeWords(char *wordtmp, char *wordfile)
 	currentWord = last_word;
 	
 	out = 0;
+	if (strcmp(last_word, high_word) > 0)
+	    high_word = last_word;
+	else
+	{
+	    // words in non-ASCII collating order, get earlier record
+	    dbf->Get(currentWord, out);
+	}
 	out.append((char *) &last_wr, sizeof(last_wr));
 	word_count++;
 	if (verbose && word_count == 1)
