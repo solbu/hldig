@@ -11,9 +11,10 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdump.cc,v 1.1.2.1 2000/03/20 19:14:11 ghutchis Exp $
+// $Id: htdump.cc,v 1.1.2.2 2000/03/21 00:35:25 ghutchis Exp $
 //
 
+#include "WordContext.h"
 #include "HtURLCodec.h"
 #include "HtWordList.h"
 #include "HtConfiguration.h"
@@ -137,6 +138,10 @@ int main(int ac, char **av)
       }
     if (do_words)
       {
+
+	// Initialize htword
+	WordContext::Initialize(config);
+
 	const String word_dump = config["word_dump"];
 	unlink(word_dump);
 	HtWordList words(config);

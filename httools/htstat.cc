@@ -9,9 +9,10 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htstat.cc,v 1.1.2.1 2000/03/20 19:13:55 ghutchis Exp $
+// $Id: htstat.cc,v 1.1.2.2 2000/03/21 00:35:25 ghutchis Exp $
 //
 
+#include "WordContext.h"
 #include "HtURLCodec.h"
 #include "HtWordList.h"
 #include "HtConfiguration.h"
@@ -118,8 +119,11 @@ int main(int ac, char **av)
     if (docs.Read(config["doc_db"], config["doc_index"], 
 		  config["doc_excerpt"]) == OK)
       {
-	cout << "htstat: Total documents: " << docs.URLs()->Count() << endl;
+	cout << "htstat: Total documents: " << docs.DocIDs()->Count() << endl;
       }
+
+    // Initialize htword
+    WordContext::Initialize(config);
 
     HtWordList words(config);
     if(words.Open(config["word_db"], O_RDONLY) == OK)
