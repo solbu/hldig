@@ -1,3 +1,18 @@
+Mon Feb  8 20:28:07 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/ma_menu: Change relative URLs to absolute URLs to
+	www.htdig.org to reflect the changing mail archive.
+
+	* htdoc/install.html: Add notes on new configure flags to set
+	CONFIG variables.
+
+	* htdoc/*.html: Ensure Last Modifed date stamps are up-to-date.
+
+Mon Feb  8 20:26:40 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/meta.html, htdoc/notification.html: Add info on date
+	formats for the htnotify-date tag, esp. in relation to ISO 8601.
+
 Sat Feb  6 23:24:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/DocumentRef.cc: Fixed compile problem when zlib is disabled.

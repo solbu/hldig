@@ -126,11 +126,30 @@
       </dt>
       <dd>
         This is the date on or after which the notification should
-        be sent. The format is simply <em>month / day / year</em>.
+        be sent. The format is simply <em>month / day / year</em>,
+        or if the <a href="attrs.html#iso_8601">iso_8601</a>
+        attribute is set, <em>year - month - day</em>.
         Make sure that the year has the century with it as well.
         This means that you should use <em>1995</em> instead of
         <em>95</em>.<br>
-         If no date is given, no notification will be sent.
+         The format of dates is actually a little more flexible than
+        this. Any punctuation or white space can be used as separators,
+        and if the year, month and date do not appear as expected in the
+        order listed above, the notification service will try to make
+        sense of the order used, if the date can be resolved unambiguously
+        in another order. Using four-digit years avoids ambiguity between
+        the year and the month or day. The format <em>year - month -
+        day</em> is accepted without ambiguity when a four-digit year is
+        used, whether the iso_8601 attribute is set or not.  When the
+        year is given after the month and day, the format is either
+        <em>day - month - year</em>, if iso_8601 is true and the year
+        has four digits, or <em>month - day - year</em> otherwise.<br>
+         If no date is given, no notification will be sent. If a date is
+        given but is malformed, a notification of this error will be sent.
+        For correct dates, a notification will be sent every time the
+        system runs the notification service, on or after the date given.
+        To end the notifications, you must update or remove the
+        notification date in the document.
       </dd>
       <dt>
         <strong>htdig-email-subject</strong>
@@ -164,8 +183,9 @@
       <a href="author.html">Andrew Scherpbier
       &lt;andrew@contigo.com&gt;</a>
     </address>
-    <!-- hhmts start -->Last modified: Tue Oct 22 08:59:49 PDT 
-    <!-- hhmts end -->  
+    <!-- hhmts start -->
+Last modified: Mon Feb  8 20:38:23 EST 1999
+<!-- hhmts end -->  
   </body>
 </html>
 

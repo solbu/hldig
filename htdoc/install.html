@@ -43,7 +43,7 @@
     </h2>
     The distribution of ht://Dig is in the form of a gzipped tar
     file. The name of the file will be something like <tt>
-    htdig-3.0b5.tar.gz</tt>. To extract, you can use either the GNU
+    htdig-3.1.0.tar.gz</tt>. To extract, you can use either the GNU
     tar command as follows: 
     <blockquote>
       % <b>tar xzf <em>tarfile.tar.gz</em></b>
@@ -73,12 +73,15 @@
       libguile and guile. Ignore those warnings since they do not
       affect the ht://Dig program at all.
     </p>
-    After this, you will need to edit the file <tt>
+    After this, you may wish to edit the file <tt>
       CONFIG</tt>. There are several values which you need to
       change in this file. Note that more recent versions of ht://Dig
       (after 3.1.0b2) will allow you to use <pre>./configure
       --prefix=</pre> and <pre>--exec-prefix=</pre> to set the DEST
-      and BIN_DIR variables automatically.
+      and BIN_DIR variables automatically. As of the full 3.1.0
+      release, configure also supports setting the other directories
+      in CONFIG using the flags   --with-cgi-bin-dir=DIR,
+      --with-image-dir=DIR and --with-search-dir=DIR.
     </p>
     <dl>
       <dt>
@@ -187,7 +190,7 @@
     <p>
       If the compilation failed with the error that it cannot find
       libht.a, the most likely problem is that your system does not
-      have libg++ installed. Please check the <a href=
+      have libstdc++ installed. Please check the <a href=
       "require.html">system requirements</a> for details on this.
     </p>
     <hr noshade>
@@ -376,7 +379,7 @@
       After the installation, your will be ready to test out
       everything. You can use the <tt>rundig</tt> script to make a
       test database of the online documentation at
-      http://www.htdig.org
+      http://www.htdig.org/
     </p>
     <p>
       The only thing left to do is to modify the <tt>
@@ -390,8 +393,9 @@
       <a href="author.html">Andrew Scherpbier
       &lt;andrew@contigo.com&gt;</a>
     </address>
-    <!-- hhmts start -->Last modified: Sun Dec 15 12:44:47 PST 
-    <!-- hhmts end -->  
+    <!-- hhmts start -->
+Last modified: Mon Feb  8 20:37:02 EST 1999
+<!-- hhmts end -->  
   </body>
 </html>
 
