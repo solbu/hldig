@@ -4,6 +4,10 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.5  1997/07/07 21:23:43  turtle
+// Sequences of "/./" are now replaced with "/" to reduce the chance of
+// infinite loops
+//
 // Revision 1.4  1997/07/03 17:44:38  turtle
 // Added support for virtual hosts
 //
@@ -21,7 +25,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.4 1997/07/03 17:44:38 turtle Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.5 1997/07/07 21:23:43 turtle Exp $";
 #endif
 
 #include "URL.h"
@@ -229,6 +233,17 @@ URL::URL(char *ref, URL &parent)
 		{
 		    _path = _path.sub(i + 3).get();
 		}
+	    }
+	    //
+	    // Also get rid of redundent "/./".  This could cause infinite
+	    // loops.
+	    //
+	    while ((i = _path.indexOf("/./")) >= 0)
+	    {
+		String	newPath;
+		newPath << _path.sub(0, i).get();
+		newPath << _path.sub(i + 2).get();
+		_path = newPath;
 	    }
 	}
     }
