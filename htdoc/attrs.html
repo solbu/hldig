@@ -244,8 +244,10 @@
 			This is a weight of "how important" a page is, based on
 			the number of URLs pointing to it. It's actually
 			multiplied by the ratio of the incoming URLs (backlinks)
-			and outgoing URLs, to balance out pages with lots of
-			links to pages that link back to them. This factor can
+			to outgoing URLs (links on the page), to balance out
+			pages with lots of links to pages that link back to
+			them. The ratio gives a lower weight to "link farms",
+			which often have many links to them. This factor can
 			be changed without changing the database in any way.
 			However, setting this value to something other than 0
 			incurs a slowdown on search results.
