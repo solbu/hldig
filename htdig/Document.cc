@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.23 2000/08/30 08:10:21 angus Exp $
+// $Id: Document.cc,v 1.55.2.24 2000/09/01 21:32:31 angus Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -61,6 +61,7 @@ Document::Document(char *u, int max_size)
     transportConnect = 0;
     HTTPConnect = 0;
     FileConnect = 0;
+    NNTPConnect = 0;
     externalConnect = 0;
 
     // We probably need to move assignment of max_doc_size, according
@@ -105,6 +106,8 @@ Document::~Document()
       delete HTTPConnect;
     if (FileConnect)
       delete FileConnect;
+    if (NNTPConnect)
+      delete NNTPConnect;
     if (externalConnect)
       delete externalConnect;
       
@@ -305,28 +308,53 @@ Document::Retrieve(Server *server, HtDateTime date)
       {
          if (debug>4)
             cout << "Creating an HtFile object" << endl;
-      
+
          FileConnect = new HtFile();
 
          if (!FileConnect)
                return Transport::Document_other_error;
       }
-      
+
       if (FileConnect)
       {
          // Here we must set only thing for a file request
-	  
+	
          FileConnect->SetRequestURL(*url);
-	  
+	
          // Set the referer
          if (referer)
             FileConnect->SetRefererURL(*referer);
-	  
+	
          if (debug > 2)
             cout << "Making 'file' request on " << url->get() << endl;
       }
 
       transportConnect = FileConnect;
+   }
+   else if (mystrncasecmp(url->service(), "news", 4) == 0)
+   {
+      if (!NNTPConnect)
+      {
+         if (debug>4)
+            cout << "Creating an HtNNTP object" << endl;
+
+         NNTPConnect = new HtNNTP();
+
+         if (!NNTPConnect)
+               return Transport::Document_other_error;
+      }
+
+      if (NNTPConnect)
+      {
+         // Here we got an Usenet document request
+	
+         NNTPConnect->SetRequestURL(*url);
+	
+         if (debug > 2)
+            cout << "Making 'NNTP' request on " << url->get() << endl;
+      }
+
+      transportConnect = NNTPConnect;
    }
    else
    {
@@ -363,7 +391,7 @@ Document::Retrieve(Server *server, HtDateTime date)
       
       // Let's set the credentials
       if (authorization.length())
-	transportConnect->SetCredentials(authorization);
+      	transportConnect->SetCredentials(authorization);
       
       // Let's set the modification time (in order not to retrieve a
       // document we already have)
@@ -399,7 +427,9 @@ Document::Retrieve(Server *server, HtDateTime date)
          ptrdatetime = response->GetModificationTime();
          document_length = response->GetDocumentLength();
 
-         redirected_to =  ((HtHTTP_Response *)response)->GetLocation();                 
+         if (transportConnect == HTTPConnect)
+            redirected_to =  ((HtHTTP_Response *)response)->GetLocation();
+
          if (ptrdatetime)
          {
             // We got the modification date/time

@@ -1,3 +1,9 @@
+Fri Sep 01 23:28:43 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* URL.cc: added DefaultPort() method and changed NNTP default port
+	from 523 to 119.
+	* Document.cc: management of NNTP documents retrieval.
+
 Fri Sep 01 19:05:02 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
 
 	* htnet/HtNNTP.* : just created them ...

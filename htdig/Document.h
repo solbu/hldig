@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.h,v 1.10.2.9 2000/08/30 08:10:21 angus Exp $
+// $Id: Document.h,v 1.10.2.10 2000/09/01 21:32:31 angus Exp $
 //
 //
 #ifndef _Document_h_
@@ -30,6 +30,7 @@
 #include "Transport.h"
 #include "HtHTTP.h"
 #include "HtFile.h"
+#include "HtNNTP.h"
 #include "ExternalTransport.h"
 #include "Server.h"
 
@@ -109,6 +110,7 @@ private:
     Transport			*transportConnect;
     HtHTTP			*HTTPConnect;
     HtFile			*FileConnect;
+    HtNNTP			*NNTPConnect;
     ExternalTransport		*externalConnect;
     
 

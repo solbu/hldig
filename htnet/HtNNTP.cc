@@ -16,7 +16,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtNNTP.cc,v 1.1.2.1 2000/09/01 17:19:30 angus Exp $
+// $Id: HtNNTP.cc,v 1.1.2.2 2000/09/01 21:32:31 angus Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -110,8 +110,10 @@ Transport::DocStatus HtNNTP::Request()
 {
 
    DocStatus result = Document_ok;
+   _response.Reset();   // Reset the response
 
    return result;
+
 }
 
 
