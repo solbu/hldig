@@ -1,0 +1,3 @@
+ewswrap.cgi = Excite for Web Servers (EWS) to htsearch wrapper
+htwrap.cgi  = htsearch wrapper to do some basic
+              sanity checking on the query
