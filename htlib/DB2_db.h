@@ -5,12 +5,12 @@
 //        (including duplicate values to allow duplicate word entries)
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999-2003 The ht://Dig Group
+// Copyright (c) 1999-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DB2_db.h,v 1.10 2003/06/24 20:05:44 nealr Exp $
+// $Id: DB2_db.h,v 1.11 2004/05/28 13:15:20 lha Exp $
 //
 
 #ifndef _DB2_db_h_

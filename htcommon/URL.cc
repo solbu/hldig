@@ -6,12 +6,12 @@
 //      including support for multiple services. (schemes in the RFC)
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2003 The ht://Dig Group
+// Copyright (c) 1995-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: URL.cc,v 1.14 2004/02/08 10:19:32 lha Exp $
+// $Id: URL.cc,v 1.15 2004/05/28 13:15:12 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H

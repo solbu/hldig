@@ -1,11 +1,11 @@
 #!/bin/sh
 # Part of the ht://Dig package   <http://www.htdig.org/>
-# Copyright (c) 1999-2003 The ht://Dig Group
+# Copyright (c) 1999-2004 The ht://Dig Group
 # For copyright details, see the file COPYING in your distribution
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_validwords,v 1.1 2003/12/14 01:53:13 lha Exp $
+# $Id: t_validwords,v 1.2 2004/05/28 13:15:30 lha Exp $
 #
 
 try() {

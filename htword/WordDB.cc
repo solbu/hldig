@@ -2,12 +2,12 @@
 // WordDB.cc
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999-2003 The ht://Dig Group
+// Copyright (c) 1999-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: WordDB.cc,v 1.9 2003/08/29 16:25:13 nealr Exp $
+// $Id: WordDB.cc,v 1.10 2004/05/28 13:15:26 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H

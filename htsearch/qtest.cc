@@ -5,12 +5,12 @@
 //            parsing code
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999-2003 The ht://Dig Group
+// Copyright (c) 1999-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: qtest.cc,v 1.4 2003/07/21 08:16:11 angusgb Exp $
+// $Id: qtest.cc,v 1.5 2004/05/28 13:15:25 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H

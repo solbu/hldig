@@ -5,12 +5,12 @@
 //                 Berkeley DB pages containing WordReferences objects.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999-2003 The ht://Dig Group
+// Copyright (c) 1999-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: WordDBPage.h,v 1.7 2003/06/24 19:57:27 nealr Exp $
+// $Id: WordDBPage.h,v 1.8 2004/05/28 13:15:26 lha Exp $
 //
 //
 // Access to Berkeley DB internal

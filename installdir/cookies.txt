@@ -1,8 +1,8 @@
 #
 # Example of input file for cookies for ht://Dig and ht://Check
 #
-# Copyright (c) 1999-2003 Comune di Prato - Prato - Italy
-# Copyright (c) 1995-2003 The ht://Dig Group <www.htdig.org>
+# Copyright (c) 1999-2004 Comune di Prato - Prato - Italy
+# Copyright (c) 1995-2004 The ht://Dig Group <www.htdig.org>
 # Author: Gabriele Bartolini - Prato - Italy <angusgb@users.sourceforge.net>
 #
 # For copyright details, see the file COPYING in your distribution

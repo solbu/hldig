@@ -10,12 +10,12 @@
 //		removed, but they will reappear when  (f)lex  is re-run.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999-2003 The ht://Dig Group
+// Copyright (c) 1999-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: conf_lexer.lxx,v 1.10 2003/12/14 01:20:09 lha Exp $
+// $Id: conf_lexer.lxx,v 1.11 2004/05/28 13:15:12 lha Exp $
 //
 */
 %{

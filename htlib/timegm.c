@@ -6,12 +6,12 @@
            and a previous implementation for ht://Dig
   
    Part of the ht://Dig package   <http://www.htdig.org/>
-   Copyright (c) 1999-2003 The ht://Dig Group
+   Copyright (c) 1999-2004 The ht://Dig Group
    For copyright details, see the file COPYING in your distribution
    or the GNU Library General Public License (LGPL) version 2 or later 
    <http://www.gnu.org/copyleft/lgpl.html>
   
-   $Id: timegm.c,v 1.17 2003/06/24 20:05:45 nealr Exp $
+   $Id: timegm.c,v 1.18 2004/05/28 13:15:22 lha Exp $
 */
 
 /* Copyright (C) 1993, 1994, 1995, 1996, 1997 Free Software Foundation, Inc.

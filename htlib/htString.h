@@ -4,12 +4,12 @@
 // htString: (implementation in String.cc) Just Another String class.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999-2003 The ht://Dig Group
+// Copyright (c) 1999-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htString.h,v 1.23 2003/07/21 08:16:11 angusgb Exp $
+// $Id: htString.h,v 1.24 2004/05/28 13:15:21 lha Exp $
 //
 #ifndef __String_h
 #define __String_h

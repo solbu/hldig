@@ -6,12 +6,12 @@
 //              or temporary search information.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2003 The ht://Dig Group
+// Copyright (c) 1995-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.cc,v 1.52 2004/01/17 05:17:49 lha Exp $
+// $Id: DocumentRef.cc,v 1.53 2004/05/28 13:15:12 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H

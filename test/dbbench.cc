@@ -4,12 +4,12 @@
 // dbbench: stress test the Berkeley DB database and WordList interface.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999-2003 The ht://Dig Group
+// Copyright (c) 1999-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: dbbench.cc,v 1.12 2003/06/24 19:57:27 nealr Exp $
+// $Id: dbbench.cc,v 1.13 2004/05/28 13:15:29 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H

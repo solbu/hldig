@@ -13,7 +13,7 @@
 
 dnl
 dnl Part of the ht://Dig package   <http://www.htdig.org/>
-dnl Copyright (c) 1999-2003 The ht://Dig Group
+dnl Copyright (c) 1999-2004 The ht://Dig Group
 dnl For copyright details, see the file COPYING in your distribution
 dnl or the GNU Library General Public License (LGPL) version 2 or later
 dnl <http://www.gnu.org/copyleft/lgpl.html>
@@ -38,7 +38,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.37 2004/03/12 08:10:53 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.38 2004/05/28 13:15:11 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -98,7 +98,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: aclocal.m4,v 1.37 2004/03/12 08:10:53 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.38 2004/05/28 13:15:11 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -149,7 +149,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.37 2004/03/12 08:10:53 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.38 2004/05/28 13:15:11 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -236,7 +236,7 @@ dnl LoadModule env_module         @APACHE_MODULES@/mod_env.so
 dnl LoadModule config_log_module  @APACHE_MODULES@/mod_log_config.so
 dnl ...
 dnl
-dnl @version $Id: aclocal.m4,v 1.37 2004/03/12 08:10:53 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.38 2004/05/28 13:15:11 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -415,7 +415,7 @@ dnl      .if ${HAVE_SSL} == "yes"
 dnl      SRCS+= @srcdir@/my_file_that_needs_ssl.c
 dnl      .endif
 dnl
-dnl @version $Id: aclocal.m4,v 1.37 2004/03/12 08:10:53 angusgb Exp $
+dnl @version $Id: aclocal.m4,v 1.38 2004/05/28 13:15:11 lha Exp $
 dnl @author Mark Ethan Trostler <trostler@juniper.net>
 dnl
 AC_DEFUN([CHECK_SSL],

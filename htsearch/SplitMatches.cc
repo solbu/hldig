@@ -6,12 +6,12 @@
 //      search_results_order.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 2000-2003 The ht://Dig Group
+// Copyright (c) 2000-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: SplitMatches.cc,v 1.5 2003/12/21 10:45:38 lha Exp $
+// $Id: SplitMatches.cc,v 1.6 2004/05/28 13:15:24 lha Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"

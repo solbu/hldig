@@ -7,10 +7,10 @@
 // returns an adjusted score, given the original score, or returns the
 // original score if there was no adjustment to do.
 //
-// $Id: HtURLSeedScore.h,v 1.3 2003/06/24 19:58:07 nealr Exp $
+// $Id: HtURLSeedScore.h,v 1.4 2004/05/28 13:15:24 lha Exp $
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 2000-2003 The ht://Dig Group
+// Copyright (c) 2000-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>

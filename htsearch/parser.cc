@@ -5,12 +5,12 @@
 //         the resulting document list
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2003 The ht://Dig Group
+// Copyright (c) 1995-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: parser.cc,v 1.33 2004/04/25 11:14:23 lha Exp $
+// $Id: parser.cc,v 1.34 2004/05/28 13:15:25 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
