@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVector.h,v 1.4 1999/04/14 19:36:01 bergolth Exp $
+// $Id: HtVector.h,v 1.5 1999/08/17 21:27:03 grdetil Exp $
 //
 //
 #ifndef	_HtVector_h_
@@ -79,14 +79,14 @@ public:
     Object		*Get_First();
     Object		*Next(Object *current);
     Object		*Previous(Object *current);
-    Object		*Last()			{return data[element_count];}
+    Object		*Last()			{return element_count<=0?(Object *)NULL:data[element_count-1];}
 
     //
     // Direct access to vector items. To assign new objects, use
     // Insert() or Add() or Assign()
     //
-    Object		*operator[] (int n)		{return data[n];}
-    Object		*Nth(int n)			{return data[n];}
+    Object		*operator[] (int n)		{return (n<0||n>=element_count)?(Object *)NULL:data[n];}
+    Object		*Nth(int n)			{return (n<0||n>=element_count)?(Object *)NULL:data[n];}
 
     //
     // Access to the number of elements

@@ -13,7 +13,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: HtVector.cc,v 1.3 1999/02/22 13:57:55 ghutchis Exp $";
+static char	RCSid[] = "$Id: HtVector.cc,v 1.4 1999/08/17 21:27:03 grdetil Exp $";
 #endif
 
 #include "HtVector.h"
@@ -209,7 +209,7 @@ int HtVector::Index(Object *obj)
 {
     int			index = 0;
 
-    while (index <= element_count && data[index] != obj)
+    while (index < element_count && data[index] != obj)
     {
 	index++;
     }

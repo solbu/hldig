@@ -1,3 +1,8 @@
+Tue Aug 17 16:23:49 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/HtHeap.h, htlib/HtHeap.cc(Index): various bounds overrun
+	bug fixes and checking in Last(), Nth() & Index().
+
 Mon Aug 16 13:55:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(expandVariables): fix up test for &amp;
