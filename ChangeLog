@@ -1,3 +1,26 @@
+Tue May 30 23:52:45 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* httools/htmerge.cc: Move to httools directory, remove "cleanup"
+	functionality now in htpurge and merge in htmerge.h and db.cc files.
+	
+	* httools/Makefile.am: Add htmerge now moved to this directory.
+
+	* */Makefile.in: Update with automake.
+
+	* Makefile.am (SUBDIRS): Remove htmerge, now found in httools.
+
+	* configure.in: Ditto.
+
+	* configure: Update with autoconf.
+
+	* test/test_functions.in: Add paths for htpurge, htstat, htload,
+	htdump and update path for htmerge.
+
+	* test/t_htdig: Change htmerge to htpurge to clean out incorrect URLs.
+
+	* installdir/rundig: Change htmerge to htpurge. This needs serious
+	additional cleanup for use in 3.2 since many conventions have changed!
+
 Tue May 23 22:21:14 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* README: Fix for 3.2.0b3 and clean up organization a bit for new
