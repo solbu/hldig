@@ -1,11 +1,12 @@
 ht://Dig 3.1.0 README
-Copyright (C) 1995-1999 Andrew Scherpbier <andrews@contigo.com>
+Copyright (c) 1995-1999 The ht://Dig Group
 Contributions from many, see htdoc/THANKS.html
-
-ht://Dig is a world-wide-web search system for an intranet or small internet.
 
 ht://Dig is distributed under the GNU Public License (GPL).
 See the COPYING file for license information.
+
+ht://Dig is a world-wide-web search system for an intranet or small internet.
+
 See the htdoc/install.html file for compilation and installation instructions.
 
 This distribution includes:

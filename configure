@@ -2019,7 +2019,7 @@ nofstream=1
 fi
 
 if test "x$nofstream" = "x1" ; then
-{ echo "configure: error: To compile ht://Dig, you will need a C++ library. Try installing libg++." 1>&2; exit 1; }
+{ echo "configure: error: To compile ht://Dig, you will need a C++ library. Try installing libstdc++." 1>&2; exit 1; }
 fi
 
 ac_ext=c
