@@ -7,6 +7,10 @@
 // Implementation of the Connection class
 //
 // $Log: Connection.cc,v $
+// Revision 1.5  1998/01/05 05:18:18  turtle
+// Fix by Pontus Borg for AIX.  Changed 'size_t' to 'unsigned long' for
+// the length parameter for getpeername()
+//
 // Revision 1.4  1997/10/23 18:01:10  turtle
 // Fix by Pontus Borg for AIX.  Changed 'size_t' to 'unsigned long' for
 // the length parameter for getpeername()
@@ -22,10 +26,6 @@
 // Initial CVS
 //
 //
-#if RELEASE
-static char	RCSid[] = "$Id: Connection.cc,v 1.4 1997/10/23 18:01:10 turtle Exp $";
-#endif
-
 
 #include "Connection.h"
 #include "Object.h"
@@ -73,7 +73,7 @@ Connection::Connection(int socket)
     sock = socket;
     connected = 0;
 #ifdef _AIX
-    unsigned long length = sizeof(server);
+    size_t length = sizeof(server);
 #else
     int length = sizeof(server);
 #endif
