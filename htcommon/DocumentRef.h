@@ -1,7 +1,7 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.15 1999/03/08 02:40:36 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.16 1999/06/12 22:24:40 ghutchis Exp $
 //
 //
 #ifndef _DocumentRef_h_
@@ -10,22 +10,6 @@
 #include "htString.h"
 #include "List.h"
 #include <time.h>
-
-enum ReferenceState
-{
-    Reference_normal,
-    Reference_not_found,
-    Reference_noindex
-};
-
-#if defined(HAVE_LIBZ) && defined(HAVE_ZLIB_H)
-enum HeadState
-{
-    Empty,
-    Compressed,
-    Uncompressed
-};
-#endif
 
 class DocumentRef : public Object
 {
@@ -50,7 +34,7 @@ class DocumentRef : public Object
     char		*DocURL()			{return docURL;}
     time_t		DocTime()			{return docTime;}
     char		*DocTitle()			{return docTitle;}
-    char		*DocHead();
+    char		*DocHead();			{return docHead;}
     char                *DocMetaDsc()                   {return docMetaDsc;}
     time_t		DocAccessed()			{return docAccessed;}
     int			DocLinks()			{return docLinks;}
@@ -72,10 +56,10 @@ class DocumentRef : public Object
     void		DocURL(char *u)			{docURL = u;}
     void		DocTime(time_t t)		{docTime = t;}
     void		DocTitle(char *t)		{docTitle = t;}
-    void		DocHead(char *h);
+    void		DocHead(char *h);		{docHead = h;}
     void                DocMetaDsc(char *md)            {docMetaDsc = md;}
     void		DocAccessed(time_t t)		{docAccessed = t;}
-    void		DocLinks(int l)		{docLinks = l;}
+    void		DocLinks(int l)			{docLinks = l;}
     void                DocBackLinks(int l)             {docBackLinks = l;}
     void		Descriptions(List &l)		{descriptions = l;}
     void		AddDescription(char *d);
@@ -85,7 +69,7 @@ class DocumentRef : public Object
     void                DocSig(int s)                   {docSig = s;}
     void		DocAnchors(List &l)		{docAnchors = l;}
     void		AddAnchor(char *a);
-    void		DocScore(int s)		{docScore = s;}
+    void		DocScore(int s)			{docScore = s;}
     void		DocAnchor(int a)		{docAnchor = a;}
     void		DocHopCount(int h)		{docHopCount = h;}
     void		DocEmail(char *e)		{docEmail = e;}
@@ -155,15 +139,6 @@ class DocumentRef : public Object
     int			docScore;
     // This is the nearest anchor for the search word.
     int			docAnchor;
-#if defined(HAVE_LIBZ) && defined(HAVE_ZLIB_H)
-    //
-    // Compression functions
-    //
-    //static unsigned char c_buffer[32000];
-    int Compress(String& s);
-    int Decompress(String &s);
-    HeadState docHeadState;
-#endif
 };
 
 #endif

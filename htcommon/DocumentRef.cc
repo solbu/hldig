@@ -9,122 +9,15 @@
 
 #include "DocumentRef.h"
 #include "good_strtok.h"
-#include <stdlib.h>
-#include <ctype.h>
-#include <fstream.h>
 #include "WordList.h"
 #include "Configuration.h"
 #include "HtURLCodec.h"
 #include "HtWordType.h"
-
-#if defined(HAVE_LIBZ) && defined(HAVE_ZLIB_H)
-#include <zlib.h>
-#endif
+#include <stdlib.h>
+#include <ctype.h>
+#include <fstream.h>
 
 extern Configuration config;
-
-#if defined(HAVE_LIBZ) && defined(HAVE_ZLIB_H)
-//unsigned char DocumentRef::c_buffer[32000];
-//
-// Compress Function
-//
-int DocumentRef::Compress(String &s) {
-  static int cf=config.Value("compression_level",0);    
-  if (cf) {
-    //
-    // Now compress s into c_s
-    //
-    unsigned char c_buffer[16384];
-    String c_s;
-    z_stream c_stream; /* compression stream */
-    c_stream.zalloc=(alloc_func)0;
-    c_stream.zfree=(free_func)0;
-    c_stream.opaque=(voidpf)0;
-    // Get compression factor, default to best
-    if (cf<-1) cf=-1; else if (cf>9) cf=9;
-    int err=deflateInit(&c_stream,cf);
-    if (err!=Z_OK) return 0;
-    int len=s.length();
-    c_stream.next_in=(Bytef*)(char *)s;
-    c_stream.avail_in=len;
-    while (err==Z_OK && c_stream.total_in!=(uLong)len) {
-      c_stream.next_out=c_buffer;
-      c_stream.avail_out=sizeof(c_buffer);
-      err=deflate(&c_stream,Z_NO_FLUSH);
-      c_s.append((char *)c_buffer,c_stream.next_out-c_buffer);
-    }
-    // Finish the stream
-    for (;;) {
-      c_stream.next_out=c_buffer;
-      c_stream.avail_out=sizeof(c_buffer);
-      err=deflate(&c_stream,Z_FINISH);
-      c_s.append((char *)c_buffer,c_stream.next_out-c_buffer);
-      if (err==Z_STREAM_END) break;
-      //CHECK_ERR(err, "deflate");
-    }
-    err=deflateEnd(&c_stream); 
-    s=c_s;
-  }
-  return 1;
-}
-
-//
-// Decompress routine returns 0 if decompressed 1 if compressed
-//
-int DocumentRef::Decompress(String &s) {
-  static int cf=config.Value("compression_level",0);    
-  if (cf) {
-    String c_s;
-    // Decompress stream
-    unsigned char c_buffer[16384];
-    z_stream d_stream;
-    d_stream.zalloc=(alloc_func)0;
-    d_stream.zfree=(free_func)0;
-    d_stream.opaque=(voidpf)0;
-    
-    int len=s.length();
-    d_stream.next_in=(Bytef*)(char *)s;
-    d_stream.avail_in=len;
-    
-    int err=inflateInit(&d_stream);
-    if (err!=Z_OK) return 1;
-    
-    while (err==Z_OK && d_stream.total_in<len) {
-      d_stream.next_out=c_buffer;
-      d_stream.avail_out=sizeof(c_buffer);
-      err=inflate(&d_stream,Z_NO_FLUSH);
-      c_s.append((char *)c_buffer,d_stream.next_out-c_buffer);
-      if (err==Z_STREAM_END) break;
-    }
-    
-    err=inflateEnd(&d_stream);
-    s=c_s;
-  }
-  return 0;
-}
-
-char *DocumentRef::DocHead() {
-  if (docHeadState==Compressed) {
-    Decompress(docHead);
-    docHeadState=Uncompressed;
-  }
-  return docHead;
-}
-
-void DocumentRef::DocHead(char *h) {
-  docHead=h;
-  docHeadState=docHead.length()==0?Empty:Uncompressed;
-}
-#else
- 
-char *DocumentRef::DocHead() {
-  return docHead;
-}
-
-void DocumentRef::DocHead(char *h) {
-  docHead=h;
-}
-#endif
 
 //*****************************************************************************
 // DocumentRef::DocumentRef()
@@ -163,9 +56,6 @@ void DocumentRef::Clear()
     docAnchors.Destroy();
     docHopCount = -1;
     docBackLinks = 0;
-#if defined(HAVE_LIBZ) && defined(HAVE_ZLIB_H)
-    docHeadState=Empty;
-#endif
 }
 
 
@@ -207,12 +97,6 @@ void DocumentRef::Serialize(String &s)
     int		length;
     String	*str;
 
-#if defined(HAVE_LIBZ) && defined(HAVE_ZLIB_H)
-    if (docHeadState==Uncompressed) {
-      Compress(docHead);
-      docHeadState=Compressed;
-    }
-#endif
 //
 // The following macros make the serialization process a little easier
 // to follow.  Note that if an object to be serialized has the default
@@ -497,9 +381,6 @@ void DocumentRef::Deserialize(String &stream)
 	    break;
         case DOC_HEAD:
             getstring(x, s, docHead);
-#if defined(HAVE_LIBZ) && defined(HAVE_ZLIB_H)
-            docHeadState=docHead.length()==0?Empty:Compressed;
-#endif
             break;
 	case DOC_METADSC:
 	    getstring(x, s, docMetaDsc);

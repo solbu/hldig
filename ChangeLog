@@ -1,3 +1,18 @@
+Sat Jun 12 19:06:36 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtZlibCodec.h, htlib/HtZlibCodec.cc: New files. Provide
+	general access to zlib compression routines when available.
+
+	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc: Remove
+	compression access and restore DocHead access through default
+	methods. Compression of excerpts will occur through the
+	HtZlibCodec classes and through the DocumentDB excerpt access.
+	
+Sat Jun 12 15:25:08 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htmerge/docs.cc (convertDocs): Load excerpt from external
+	database before considering it empty.
+
 Sat Jun 12 14:41:54 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.cc (displayMatch): Added patch from Torsten
