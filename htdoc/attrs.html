@@ -1462,6 +1462,69 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="description_meta_tag_names">
+		description_meta_tag_names</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			description
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			The words in this list are used to search for
+			descriptions in HTML <em>META</em> tags. This list
+			can contain any number of strings that each will
+			be seen as the name for whatever description
+			convention is used. While words in any of the
+			specified description contents will be indexed,
+			only the last meta tag containing a description
+			will be kept as the meta description field for
+			the document, for use in search results. The
+			order in which the names are specified in this
+			configuration attribute is irrelevant, as it
+			is the order in which the tags appear in the
+			documents that matters.<br>
+			The <em>META</em> tags have the following format:<br>
+<tt>
+&nbsp;&nbsp;&lt;META name="<em>somename</em>" content="<em>somevalue</em>"&gt;
+</tt>
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table>
+			  <tr>
+				<td nowrap>
+				  description_meta_tag_names: htdig-description description
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="doc_db">doc_db</a></strong>
 	  </dt>
 	  <dd>
@@ -8800,7 +8863,7 @@
 	</dl>
 	<hr size="4" noshade>
 <!-- hhmts start -->
-Last modified: $Date: 2001/11/21 17:33:20 $
+Last modified: $Date: 2002/01/09 22:12:29 $
 <!-- hhmts end -->
   </body>
 </html>

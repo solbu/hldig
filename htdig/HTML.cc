@@ -11,7 +11,7 @@
 // <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.23 2001/11/02 18:29:55 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.24 2002/01/09 22:12:29 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -35,6 +35,7 @@ static StringMatch	nobreaktags;
 static StringMatch	spacebeforetags;
 static StringMatch	spaceaftertags;
 static StringMatch	metadatetags;
+static StringMatch	descriptionMatch;
 static StringMatch	keywordsMatch;
 static int		keywordsCount;
 static int		max_keywords;
@@ -94,11 +95,13 @@ HTML::HTML()
     metadatetags.IgnoreCase();
     metadatetags.Pattern("date|dc.date|dc.date.created|dc.data.modified");
 
-    //String	keywordNames = config["keywords_meta_tag_names"];
-    //keywordNames.replace(' ', '|');
-    //keywordNames.remove(",\t\r\n");
-    //keywordsMatch.IgnoreCase();
-    //keywordsMatch.Pattern(keywordNames);
+    // These are the name values of meta tags that carry descriptions.
+    StringList descrNames(config["description_meta_tag_names"], " \t");
+    descriptionMatch.IgnoreCase();
+    descriptionMatch.Pattern(descrNames.Join('|'));
+    descrNames.Release();
+
+    // These are the name values of meta tags that carry keywords.
     StringList keywordNames(config["keywords_meta_tag_names"], " \t");
     keywordsMatch.IgnoreCase();
     keywordsMatch.Pattern(keywordNames.Join('|'));
@@ -743,18 +746,18 @@ HTML::do_tag(Retriever &retriever, String &tag)
 
 		  // First of all, check for META description
 
-		  if (mystrcasecmp(cache, "description") == 0 
+		if (descriptionMatch.CompareWord(cache)
 			 && strlen(attrs["content"]) != 0)
-		  {
-		    //
-		    // We need to do two things. First grab the description
-		    // and clean it up
-		    //
-		    meta_dsc = transSGML(attrs["content"]);
-		    meta_dsc.replace('\n', ' ');
-		    meta_dsc.replace('\r', ' ');
-		    meta_dsc.replace('\t', ' ');
-		    if (meta_dsc.length() > max_meta_description_length)
+		{
+		   //
+		   // We need to do two things. First grab the description
+		   // and clean it up
+		   //
+		   meta_dsc = transSGML(attrs["content"]);
+		   meta_dsc.replace('\n', ' ');
+		   meta_dsc.replace('\r', ' ');
+		   meta_dsc.replace('\t', ' ');
+		   if (meta_dsc.length() > max_meta_description_length)
 		     meta_dsc = meta_dsc.sub(0, max_meta_description_length).get();
 		   if (debug > 1)
 		     cout << "META Description: " << attrs["content"] << endl;

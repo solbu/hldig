@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.9.2.5 2002/01/08 23:39:54 grdetil Exp $
+// $Id: ExternalParser.cc,v 1.9.2.6 2002/01/09 22:12:29 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -398,6 +398,15 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 			keywordsMatch->Pattern(kn.Join('|'));
 			kn.Release();
 		  }
+		  static StringMatch *descriptionMatch = 0;
+		  if (!descriptionMatch)
+		  {
+			StringList dn(config["description_meta_tag_names"], " \t");
+			descriptionMatch = new StringMatch();
+			descriptionMatch->IgnoreCase();
+			descriptionMatch->Pattern(dn.Join('|'));
+			dn.Release();
+		  }
 		  static StringMatch *metadatetags = 0;
 		  if (!metadatetags)
 		  {
@@ -439,35 +448,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		  //
 		  if (*name != '\0' && *content != '\0')
 		  {
-		    if (keywordsMatch->CompareWord(name))
-		    {
-		      char	*w = strtok(content, " ,\t\r");
-		      while (w)
-		      {
-			if (strlen(w) >= minimum_word_length)
-			  retriever.got_word(w, 1, 10);
-			w = strtok(0, " ,\t\r");
-		      }
-		    }
-		    else if (metadatetags->CompareWord(name) &&
-					config.Boolean("use_doc_date", 0))
-		    {
-		      retriever.got_time(content);
-		    }
-		    else if (mystrcasecmp(name, "htdig-email") == 0)
-		    {
-		      retriever.got_meta_email(content);
-		    }
-		    else if (mystrcasecmp(name, "htdig-notification-date") == 0)
-		    {
-		      retriever.got_meta_notification(content);
-		    }
-		    else if (mystrcasecmp(name, "htdig-email-subject") == 0)
-		    {
-		      retriever.got_meta_subject(content);
-		    }
-		    else if (mystrcasecmp(name, "description") == 0 
-			     && strlen(content) != 0)
+		    if (descriptionMatch->CompareWord(name))
 		    {
 		      //
 		      // We need to do two things. First grab the description
@@ -491,6 +472,33 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 			  retriever.got_word(w, 1, 11);
 			w = strtok(0, " \t\r");
 		      }
+		    }
+		    if (keywordsMatch->CompareWord(name))
+		    {
+		      char	*w = strtok(content, " ,\t\r");
+		      while (w)
+		      {
+			if (strlen(w) >= minimum_word_length)
+			  retriever.got_word(w, 1, 10);
+			w = strtok(0, " ,\t\r");
+		      }
+		    }
+		    if (metadatetags->CompareWord(name) &&
+					config.Boolean("use_doc_date", 0))
+		    {
+		      retriever.got_time(content);
+		    }
+		    else if (mystrcasecmp(name, "htdig-email") == 0)
+		    {
+		      retriever.got_meta_email(content);
+		    }
+		    else if (mystrcasecmp(name, "htdig-notification-date") == 0)
+		    {
+		      retriever.got_meta_notification(content);
+		    }
+		    else if (mystrcasecmp(name, "htdig-email-subject") == 0)
+		    {
+		      retriever.got_meta_subject(content);
 		    }
 		  }
 		}
