@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFile.cc,v 1.1.2.1 2000/01/14 01:23:02 ghutchis Exp $ 
+// $Id: HtFile.cc,v 1.1.2.2 2000/02/24 19:19:14 grdetil Exp $ 
 //
 
 #include "lib.h"
@@ -145,9 +145,16 @@ HtFile::DocStatus HtFile::Request()
 
    String tmp;
    while (in >> tmp)
-     _response._contents.append(tmp);
+     {
+       if (_response._contents.length()+tmp.length() > _max_document_size)
+         tmp.chop(tmp.length(_response._contents.length()+tmp.length()
+                             - _max_document_size));
+       _response._contents.append(tmp);
+       if (_response._contents.length() >= _max_document_size)
+         break;
+     }
 
-   _response._content_length = _response._contents.length();
+   _response._content_length = stat_buf.st_size;
    _response._document_length = _response._contents.length();
    _response._status_code = 0;
 

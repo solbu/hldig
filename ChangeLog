@@ -1,6 +1,9 @@
-Thu Feb 24 12:34:30 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Thu Feb 24 13:11:15 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
-	* htnet/HtHTTP.cc (HTTPRequest): Extra tests in case Content-type
+	* htnet/HtFile.cc (Request): Don't append more than _max_document_size
+	bytes to _contents string, set _content_length to size returned by
+	stat().
+	* htnet/HtHTTP.cc (HTTPRequest): Extra tests in case Content-Length
 	not given for non-chunked input, and not to close persistent
 	connection when chunked input exceeds _max_document_size.
 	(ReadChunkedBody): Don't append more than _max_document_size bytes
