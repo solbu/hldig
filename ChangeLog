@@ -1,7 +1,8 @@
 Sun Jan 24 23:55:57 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htmerge/db.cc, htmerge/docs.cc: Fix comiler errors.
-
+	* htnotify/htnotify.cc: Similar.
+	
 Sun Jan 24 14:13:37 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htcommon/WordRecord.h (struct WordRecord): Remove member count
