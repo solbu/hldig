@@ -1,3 +1,12 @@
+Sun May 16 17:27:51 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Document.cc (readHeader): Since multiple whitespace
+	characters are allowed after headers, don't use strtok.
+	(readHeader): We no longer pretend to parse Word, PostScript, or
+	PDF files internally.
+	(getParsable): Don't generate PostScript or PDF objects since we
+	no longer recommend using them.
+	
 Sun May 16 17:07:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtRegex.cc (setEscaped): Ensure escaping does not loop

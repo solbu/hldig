@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.40 1999/05/15 15:25:33 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.41 1999/05/16 21:43:03 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -87,6 +87,7 @@ Document::~Document()
 // void Document::Reset()
 //   Restore the Document object to an initial state.
 //   We will not reset the authorization information since it can be reused.
+//   We will also not reset the proxy since we will reuse this on every connect
 //
 void
 Document::Reset()
@@ -509,33 +510,34 @@ Document::readHeader(Connection &c)
 	    else if (modtime == 0 
 		     && mystrncasecmp(line, "last-modified:", 14) == 0)
 	    {
-		strtok(line, " \t");
+	        while (*line == ' ' || *line == '\t')
+		  line++; // Skip through any whitespace
 		modtime = getdate(strtok(0, "\n\t"));
 	    }
 	    else if (contentLength == -1 
 		     && mystrncasecmp(line, "content-length:", 15) == 0)
 	    {
-		strtok(line, " \t");
+	        while (*line == ' ' || *line == '\t')
+		  line++; // Skip through any whitespace
 		contentLength = atoi(strtok(0, "\n\t"));
 	    }
 	    else if (mystrncasecmp(line, "content-type:", 13) == 0)
 	    {
-		strtok(line, " \t");
+	        while (*line == ' ' || *line == '\t')
+		  line++; // Skip through any whitespace
 		char	*token = strtok(0, "\n\t");
 				
 		if ((returnStatus == Header_not_found ||
 			returnStatus == Header_ok) &&
 		    !ExternalParser::canParse(token) &&
-		    mystrncasecmp("text/", token, 5) != 0 &&
-		    mystrncasecmp("application/postscript", token, 22) != 0 &&
-		    mystrncasecmp("application/msword", token, 18) != 0 &&
-		    mystrncasecmp("application/pdf", token, 15) != 0)
+		    mystrncasecmp("text/", token, 5) != 0)
 		    return Header_not_text;
 		contentType = token;
 	    }
 	    else if (mystrncasecmp(line, "location:", 9) == 0)
 	    {
-		strtok(line, " \t");
+	        while (*line == ' ' || *line == '\t')
+		  line++; // Skip through any whitespace
 		redirected_to = strtok(0, "\r\n \t");
 	    }
 	}
@@ -622,9 +624,7 @@ Document::getParsable()
 {
     static HTML			*html = 0;
     static Plaintext		*plaintext = 0;
-    static Postscript		*postscript = 0;
     static ExternalParser	*externalParser = 0;
-    static PDF			*pdf = 0;
     
     Parsable	*parsable = 0;
 
@@ -648,18 +648,6 @@ Document::getParsable()
 	if (!plaintext)
 	    plaintext = new Plaintext();
 	parsable = plaintext;
-    }
-    else if (mystrncasecmp(contentType, "application/postscript", 22) == 0)
-    {
-	if (!postscript)
-	    postscript = new Postscript();
-	parsable = postscript;
-    }
-    else if (mystrncasecmp(contentType, "application/pdf", 15) == 0)
-    {
-	if (!pdf)
-	    pdf = new PDF();
-	parsable = pdf;
     }
     else
     {
