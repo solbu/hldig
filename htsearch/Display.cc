@@ -2,9 +2,11 @@
 // Display.cc
 //
 // Implementation of Display
+// Takes results of search and fills in the HTML templates
+//
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.44 1999/01/27 00:28:43 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.45 1999/01/28 05:20:46 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -640,6 +642,8 @@ Display::setupImages()
 	    //
 	    token = strtok(0, " \t\r\n");
 	    URLimageList.Add(new String(token));
+	    if (token)
+	        token = strtok(0, " \t\r\n");
 	}
 	pattern.chop(1);
 	URLimage.Pattern(pattern);
