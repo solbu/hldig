@@ -1,3 +1,9 @@
+Fri Mar  3 11:25:42 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* testnet.cc: added the -r and -w options in order to set how many
+	  times it retries to re-connect after a timeout occurs, and how long
+	  it should wait after it.
+
 Thu Mar  2 18:45:15 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* htnet/Connection.*: management of wait_time and number of retries

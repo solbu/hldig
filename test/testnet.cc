@@ -1,4 +1,4 @@
-// $Id: testnet.cc,v 1.8.2.3 1999/10/15 10:56:54 angus Exp $
+// $Id: testnet.cc,v 1.8.2.4 2000/03/03 10:34:32 angus Exp $
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
 #endif /* HAVE_CONFIG_H */
@@ -27,6 +27,8 @@ int persistent = 1;
 int timeout = 10;
 int head_before_get = 1;
 int max_doc = DEFAULT_MAX_DOCUMENT_SIZE;
+int retries = 1;
+int waittime = 5;
 
 
 URL *url;
@@ -66,7 +68,7 @@ int main(int ac, char **av)
    //	Retrieving options from command line with getopt
 ///////
 
-   while((c = getopt(ac, av, "vU:T:t:ngm:")) != -1)
+   while((c = getopt(ac, av, "vU:T:t:ngm:r:w:")) != -1)
    {
       switch (c)
       {
@@ -81,6 +83,12 @@ int main(int ac, char **av)
             break;
          case 't':
             timeout=atoi(optarg);
+            break;
+         case 'r':
+            retries=atoi(optarg);
+            break;
+         case 'w':
+            waittime=atoi(optarg);
             break;
          case 'm':
             max_doc=atoi(optarg);
@@ -227,6 +235,10 @@ int main(int ac, char **av)
 
       
       cout << " Timeout value             : " << timeout << endl;
+
+      cout << " Retries for timeout       : " << retries << endl;
+      
+      cout << " Sleep after timeout       : " << waittime << endl;
       
       cout << " Document requests         : " << timesvar << endl;
 
@@ -267,6 +279,12 @@ void usage()
 
 	cout << "\t-t timeout" << endl;
 	cout << "\t\tTimeout value" << endl << endl;
+
+	cout << "\t-r retries" << endl;
+	cout << "\t\tNumber of retries after a timeout" << endl << endl;
+
+	cout << "\t-w wait time" << endl;
+	cout << "\t\tWait time value after a timeout" << endl << endl;
 
 	cout << "\t-m maxdocsize" << endl;
 	cout << "\t\tMax Document size to be retrieved" << endl << endl;
@@ -345,6 +363,8 @@ Transport::DocStatus Retrieve()
 
         transportConnect->SetRequestMaxDocumentSize(max_doc);
         transportConnect->SetTimeOut(timeout);
+        transportConnect->SetRetry(retries);
+        transportConnect->SetWaitTime(waittime);
 
     }
     else
