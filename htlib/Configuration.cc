@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: Configuration.cc,v 1.9.2.4 1999/12/03 15:20:32 grdetil Exp $";
+static char	RCSid[] = "$Id: Configuration.cc,v 1.9.2.5 2000/02/16 21:55:13 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -159,14 +159,34 @@ void Configuration::Add(char *str)
 
 //*********************************************************************
 // void Configuration::Add(char *name, char *value)
-//   Add an entry to the configuration table.
+//   Add an entry to the configuration table, without allowing variable
+//   or file expansion of the value.
 //
 void Configuration::Add(char *name, char *value)
+{
+    String	escaped;
+    while (*value)
+    {
+        if (strchr("$`\\", *value))
+            escaped << '\\';
+        escaped << *value++;
+    }
+    ParsedString	*ps = new ParsedString(escaped.get());
+    dict.Add(name, ps);
+}
+
+
+//*********************************************************************
+// void Configuration::AddParsed(char *name, char *value)
+//   Add an entry to the configuration table, allowing parsing for variable
+//   or file expansion of the value.
+//
+void Configuration::AddParsed(char *name, char *value)
 {
     ParsedString	*ps = new ParsedString(value);
     if (mystrcasecmp(name, "locale") == 0)
     {
-        String *str = new String(setlocale(LC_ALL, value));
+        String *str = new String(setlocale(LC_ALL, ps->get(dict)));
         ps->set(str->get());
         delete str;
 
@@ -357,7 +377,7 @@ int Configuration::Read(char *filename)
 	    continue;
 	}
 
-        Add(name, value);
+        AddParsed(name, value);
         line = 0;
     }
     in.close();
@@ -372,7 +392,7 @@ void Configuration::Defaults(ConfigDefaults *array)
 {
     for (int i = 0; array[i].name; i++)
     {
-        Add(array[i].name, array[i].value);
+        AddParsed(array[i].name, array[i].value);
     }
 }
 

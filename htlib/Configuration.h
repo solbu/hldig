@@ -5,9 +5,14 @@
 // is indexed with a string.  The objects can be returned by mentioning their
 // string index.
 //
-// $Id: Configuration.h,v 1.2 1997/07/03 17:44:38 turtle Exp $
+// $Id: Configuration.h,v 1.2.2.1 2000/02/16 21:55:13 grdetil Exp $
 //
 // $Log: Configuration.h,v $
+// Revision 1.2.2.1  2000/02/16 21:55:13  grdetil
+// htlib/Configuration.h, htlib/Configuration.cc: split Add() method
+// into Add() and AddParsed(), so that only config attributes get parsed.
+// Use AddParsed() only in Read() and Defaults().
+//
 // Revision 1.2  1997/07/03 17:44:38  turtle
 // Added support for virtual hosts
 //
@@ -44,6 +49,7 @@ public:
     // Adding and deleting items to and from the Configuration
     //
     void		Add(char *name, char *value);
+    void		AddParsed(char *name, char *value);
     void		Add(char *str);
     int			Remove(char *name);
 

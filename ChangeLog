@@ -1,3 +1,9 @@
+Wed Feb 16 15:49:28 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Configuration.h, htlib/Configuration.cc: split Add() method
+	into Add() and AddParsed(), so that only config attributes get parsed.
+	Use AddParsed() only in Read() and Defaults().
+
 Wed Feb 16 15:02:47 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/URL.h (encodeURL): Change list of valid characters to
