@@ -1,7 +1,7 @@
 //
 // WordRecord.h
 //
-// $Id: WordRecord.h,v 1.7 1999/08/28 21:11:32 ghutchis Exp $
+// $Id: WordRecord.h,v 1.8 1999/08/31 07:24:28 ghutchis Exp $
 //
 
 #ifndef _WordRecord_h_
@@ -21,12 +21,8 @@
 #define FLAG_URL 128
 // The remainder are undefined
 
-class WordRecord : public Object
+struct WordRecord
 {
- public:
-    WordRecord() {}
-    ~WordRecord() {}
-
     int		id;
     int		flags;
     int		anchor;
@@ -36,7 +32,6 @@ class WordRecord : public Object
       {
 	id = flags = anchor = location = 0;
       }
- private:
 };
 
 /* And this is how we will compress this structure, for disk
