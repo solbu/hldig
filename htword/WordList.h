@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.22 2000/01/28 22:59:14 loic Exp $
+// $Id: WordList.h,v 1.5.2.23 2000/02/05 15:50:08 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -82,7 +82,7 @@ typedef int (*wordlist_walk_callback_t)(WordList *, WordDBCursor& , const WordRe
 //
 // WordSearchDescription contains undefined data
 //
-#define WORD_WALK_FAILED		0xffff
+#define WORD_WALK_FAILED		0xffffffff
 
 //
 // Wordlist::Walk uses WordSearchDescription for :
@@ -104,10 +104,16 @@ class WordSearchDescription
     void ClearResult();
 
     //
-    // Set the document number in key and prepare to
-    // move to this document, if any.
+    // Copy defined fields in patch into foundKey and 
+    // initialize internal state so that WalkNext jumps to
+    // this key next time it's called.
     //
     int ModifyKey(const WordKey& patch);
+
+    //
+    // Convert the whole structure to an ascii string description
+    //
+    int Get(String& bufferout) const;
 
     //
     // Input parameters
@@ -152,15 +158,10 @@ class WordSearchDescription
     // Debugging section. Do not use unless you know exactly what you do.
     //
     //
-    // Do not not skip entries
-    //
-    int noskip;
-    //
     // Collect everything found while searching (not necessarily matching)
     //
     List *traceRes;
 
- private:
     //
     // Internal state
     //
@@ -186,8 +187,6 @@ class WordSearchDescription
     // True if search key is a prefix key
     //
     int searchKeyIsSameAsPrefix;
-
-    int first_skip_field;
 };
 #endif /* SWIG */
 
@@ -332,7 +331,6 @@ public:
     friend ostream &operator << (ostream &o, WordList &list); 
     friend istream &operator >> (istream &o, WordList &list); 
 
- protected:
     //
     // Retrieve WordReferences from the database. 
     // Backend of WordRefs, operator[], Prefix...
@@ -346,7 +344,11 @@ public:
     //   search.key = calculated next possible key
     // Else
     //   do nothing
-    // Returns NOTOK if not skipping, OK if skipping.
+    // Returns NOTOK if not skipping, OK if skipping. If NOTOK is returned the search.status
+    // is set to :
+    // WORD_WALK_OK : it was not necessary to call SkipUselessSequentialWalking, nothing done
+    // WORD_WALK_ATEND : no more possible match, reached the maximum
+    // WORD_WALK_FAILED: failure without diagnostic information
     // 
     int SkipUselessSequentialWalking(WordSearchDescription &search);
     //
@@ -368,17 +370,14 @@ public:
     //
     int				extended;
 
- private:
 
     WordDB	            	db;
     WordDBCompress	       *compressor;
     int                         verbose;
 
- protected:
     //
     // Debugging section. Do not use unless you know exactly what you do.
     //
- public:
     int    bm_put_count;
     double bm_put_time;
     int    bm_walk_count;

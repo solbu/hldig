@@ -25,16 +25,33 @@
 #define WORD_ISA_STRING		2
 
 //
-// All numerical fields of the key are typed WordKeyNum
+// All numerical fields of the key are typed WordKeyNum.
+// Most of the code strongly assume that it is unsigned. 
+// Mainly provided to be replaced by unsigned longlong WordKeyNum
+// for 64 bits machines.
 //
 typedef unsigned int WordKeyNum;
+//
+// Maximum number of bits in a field
+//
+#define WORD_KEY_MAXBITS	((int)(sizeof(WordKeyNum) * 8))
+#define WORD_KEY_MAXVALUE	((WordKeyNum)~(WordKeyNum)0)
 
 class WordKeyField
 {
  public:
     WordKeyField(WordKeyField *previous, char *nname, int nbits, int encoding_position, int sort_position);
     WordKeyField() { }
+    //
+    // Maximum possible value for this field.
+    //
+    WordKeyNum MaxValue() const {
+      return bits >= WORD_KEY_MAXBITS ? WORD_KEY_MAXVALUE : ((1 << bits) - 1);
+    }
 
+    //
+    // Debugging and printing
+    //
     void Nprint(char c,int n);
     void Show();
 

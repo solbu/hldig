@@ -51,6 +51,23 @@
 #define WORDKEYFIELD_BITS_MAX 1000
 
 //
+// Possible return values of Outbound/Overflow/Underflow methods
+//
+#define WORD_INBOUND	0
+#define WORD_OVERFLOW	1
+#define WORD_UNDERFLOW	2
+
+//
+// Possible return values of SetToFollowing
+//
+#define WORD_FOLLOWING_ATEND	0x0001
+//
+// Default value for position argument of SetToFollowing
+// meaning NFields() - 1
+//
+#define WORD_FOLLOWING_MAX	-1
+
+//
 // Position of the first numerical field (just after the word)
 //
 #define WORD_FIRSTFIELD	1
@@ -174,6 +191,10 @@ class WordKey
   static inline const WordKeyInfo *Info()    { return WordKeyInfo::Instance(); }
 #endif /* SWIG */
   static inline int 	           NFields() { return Info()->nfields; }
+  //
+  // Maximum possible value for field at position.
+  //
+  static inline WordKeyNum         MaxValue(int position) { return Info()->sort[position].MaxValue(); }
 
   //
   // Accessors
@@ -296,10 +317,19 @@ class WordKey
   int		PrefixOnly();
 #ifndef SWIG
   //
-  // Set this key to a key immediately greater.
-  // Return OK if successfull, NOTOK otherwise.
+  // Implement ++ on a key.
   //
-  int           SetToFollowing(int position);
+  // It behaves like arithmetic but follows these rules:
+  // . Increment starts at field <position>
+  // . If a field value overflows, increment field <position> - 1
+  // . Undefined fields are ignored and their value untouched
+  // . Incrementing the word field is done by appending \001
+  // . When a field is incremented all fields to the left are set to 0
+  // If position is not specified it is equivalent to NFields() - 1.
+  // It returns OK if successfull, NOTOK if position out of range or
+  // WORD_FOLLOWING_ATEND if the maximum possible value was reached.
+  //
+  int           SetToFollowing(int position = WORD_FOLLOWING_MAX);
 #endif /* SWIG */
 
   //
@@ -331,6 +361,29 @@ class WordKey
   // defined field whose value is 0.
   //
   int 		PackEqual(const WordKey& other) const;
+  //
+  // Return true if adding increment in field at position makes it overflow
+  // or underflow, false if it fits.
+  //
+  int		Outbound(int position, int increment) {
+    if(increment < 0) return Underflow(position, increment);
+    else if(increment > 0) return Overflow(position, increment);
+    else return WORD_INBOUND;
+  }
+  //
+  // Return true if adding positive increment to field at position
+  // makes it overflow, false if it fits.
+  //
+  int		Overflow(int position, int increment) {
+    return MaxValue(position) - Get(position) < (WordKeyNum)increment ? WORD_OVERFLOW : WORD_INBOUND;
+  }
+  //
+  // Return true if substracting positive increment to field at position
+  // makes it underflow, false if it fits.
+  //
+  int		Underflow(int position, int increment) {
+    return Get(position) < (WordKeyNum)(-increment) ? WORD_UNDERFLOW : WORD_INBOUND;
+  }
 #endif /* SWIG */
   //
   // Return OK if the key may be used as a prefix for search.
@@ -356,7 +409,15 @@ class WordKey
   // returned int is as of strcmp.
   //
   static int 	    Compare(const String& a, const String& b);
-  static inline int Compare(const char *a, int a_length, const char *b, int b_length);
+  static int        Compare(const char *a, int a_length, const char *b, int b_length);
+  //
+  // Compare current key defined fields with other key defined fields only,
+  // ignore fields that are not defined in key or other. Return 1 if different
+  // 0 if equal. If different, position is set to the field number that differ,
+  // lower is set to 1 if Get(position) is lower than other.Get(position) otherwise
+  // lower is set to 0.
+  //
+  int               Diff(const WordKey& other, int& position, int& lower);
 
   //
   // Print, debug, benchmark

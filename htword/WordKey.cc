@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3.2.15 2000/01/12 17:50:56 loic Exp $
+// $Id: WordKey.cc,v 1.3.2.16 2000/02/05 15:50:07 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -174,6 +174,46 @@ word_db_cmp(const DBT *a, const DBT *b)
     return WordKey::Compare((char*)a->data, a->size, (char*)b->data, b->size);
 }
 
+//
+// Compare current key defined fields with other key defined fields only,
+// ignore fields that are not defined in key or other. Return 1 if different
+// 0 if equal. If different, position is set to the field number that differ,
+// lower is set to 1 if Get(position) is lower than other.Get(position) otherwise
+// lower is set to 0.
+//
+int WordKey::Diff(const WordKey& other, int& position, int& lower)
+{
+  position = -1;
+
+  if(IsDefined(0) && other.IsDefined(0)) {
+    int ret = 0;
+    if(other.IsDefinedWordSuffix())
+      ret = GetWord().compare(other.GetWord());
+    else
+      ret = strncmp((char*)GetWord(), (const char*)other.GetWord(), other.GetWord().length());
+    if(ret) {
+      position = 0;
+      lower = ret > 0;
+    }
+  }
+
+  if(position < 0) {
+    int nfields=WordKey::NFields();
+
+    int i;
+    for(i = 1; i < nfields; i++) {
+      if(IsDefined(i) && other.IsDefined(i) &&
+	 Get(i) != other.Get(i)) {
+	lower = Get(i) < other.Get(i);
+	break;
+      }
+    }
+    if(i < nfields)
+      position = i;
+  }
+
+  return position >= 0;
+}
 
 //
 // Compare object and <other> using comparison of their packed form
@@ -191,54 +231,65 @@ WordKey::PackEqual(const WordKey& other) const
 }
 
 //
-// Set this key to a key immediately greater.
-// The position argument is 
+// Implement ++ on a key.
 //
-int 
-WordKey::SetToFollowing(int position)
+// It behaves like arithmetic but follows these rules:
+// . Increment starts at field <position>
+// . If a field value overflows, increment field <position> - 1
+// . Undefined fields are ignored and their value untouched
+// . Incrementing the word field is done by appending \001
+// . When a field is incremented all fields to the left are set to 0
+// If position is not specified it is equivalent to NFields() - 1.
+// It returns OK if successfull, NOTOK if position out of range or
+// WORD_FOLLOWING_ATEND if the maximum possible value was reached.
+//
+// Examples assuming numerical fields are 8 bits wide:
+// 
+// 0                 1     2     3       OPERATION             RESULT
+// ---------------------------------------------------------------------------------------
+// foo     <DEF>     1     1     1 -> SetToFollowing(3) -> foo     <DEF>     1     1     2
+// foo     <DEF>     1     1     1 -> SetToFollowing(2) -> foo     <DEF>     1     2     0
+// foo     <DEF>     1     1   255 -> SetToFollowing(3) -> foo     <DEF>     1     2     0
+// foo     <DEF>   255   255   255 -> SetToFollowing(3) -> foo\001 <DEF>     0     0     0
+// foo     <DEF>   255     1     1 -> SetToFollowing(1) -> foo\001 <DEF>     0     0     0
+// <UNDEF><UNDEF>  255     1     1 -> SetToFollowing(1) -> WORD_FOLLOWING_ATEND
+// foo     <DEF>     1 <UNDEF> 255 -> SetToFollowing(3) -> foo     <DEF>     2 <UNDEF>   0
+// foo     <DEF><UNDEF><UNDEF> 255 -> SetToFollowing(3) -> foo\001 <DEF><UNDEF><UNDEF>   0
+//
+//
+int WordKey::SetToFollowing(int position /* = WORD_FOLLOWING_MAX */)
 {
-    const WordKeyInfo& info = *WordKey::Info();
-    int i;
+  if(position == WORD_FOLLOWING_MAX)
+    position = NFields() - 1;
+  
+  if(position < 0 || position >= NFields()) {
+    cerr << "WordKey::SetToFollowing invalid position = " << position << endl;
+    return NOTOK;
+  }
 
-    //
-    // position = -1 means 
-    //
-    if(position < 0) {
-      position = NFields();
+  int i = position;
+  while(i > 0) {
+    if(IsDefined(i)) {
+      if(Overflow(i, 1))
+	Set(i, 0);
+      else
+	break;
     }
+    i--;
+  }
 
-    if(position==0) {
-      cerr << "WordKey::SetToFollowing with position = 0" << endl;
-      return NOTOK;
-    }
-
-    // increment if numerical field    
-    if(position>1) {
-	int bits=info.sort[position].bits;
-	int f=Get(position-1);
-	// check which direction we're going
-	if(info.sort[position].direction == WORD_SORT_ASCENDING)
-	{
-	    if( bits < 32){if((f+1) >= 1<<bits){return NOTOK;}}// overflow
-            //TODO: add bits>=32 for overflow case....
-	    Set(position-1,f+1);
-	}
-	else
-	{
-	    if(f>0){Set(position-1,f-1);}
-	    else{return (NOTOK);}// underflow
-	}
-    }
+  if(i == 0) {
+    if(IsDefined(i))
+      GetWord() << '\001';
     else
-    {// if non numerical (field 0=word) add a (char)1 to string
-//	if(WLdebug>1){cout << "oops,  previous field is string!" << endl;}
-	GetWord() << (char) 1;
-    }
+      return WORD_FOLLOWING_ATEND;
+  } else
+    Get(i)++;
 
-    // zero fields >=position'th
-    for(i=position;i<NFields();i++){if(IsDefined(i)){Set(i,0);}}
+  for(i = position + 1; i < NFields(); i++)
+    if(IsDefined(i)) Set(i,0);
 
-    return(OK);
+  return OK;
 }
 
 //
@@ -286,6 +337,8 @@ WordKey::Prefix() const
 //
 // Find and return the position of the first field that must be checked for skip.
 // If no field is to be skipped, NFields() is returned.
+// I.e., search for the position of the first defined field following
+// at least one undefined field.
 //
 int 
 WordKey::FirstSkipField() const
@@ -430,6 +483,7 @@ int WordKey::Merge(const WordKey& other)
       {
       case WORD_ISA_STRING: 
 	  SetWord(other.GetWord());
+	  if(!other.IsDefinedWordSuffix()) UndefinedWordSuffix();
 	  break;
       default:
 	  Set(j,other.Get(j)); 
@@ -563,7 +617,7 @@ WordKey::Set(StringList& fields)
     if(field->nocase_compare("<undef>") == 0) {
       Undefined(j);
     } else {
-      unsigned int value = atoi(field->get());
+      WordKeyNum value = strtoul(field->get(), 0, 10);
       Set(j, value);
     }
 
@@ -583,7 +637,7 @@ ostream &operator << (ostream &o, const WordKey &key)
 
 void WordKey::Print() const
 {
-  cout << *this;
+  cerr << *this;
 }
 
 

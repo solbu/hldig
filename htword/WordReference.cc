@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.cc,v 1.4.2.3 1999/12/14 17:49:33 loic Exp $
+// $Id: WordReference.cc,v 1.4.2.4 2000/02/05 15:50:08 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -78,5 +78,5 @@ ostream &operator << (ostream &o, const WordReference &wordRef)
 
 void WordReference::Print() const
 {
-  cout << *this;
+  cerr << *this;
 }

@@ -156,5 +156,5 @@ ostream &operator << (ostream &o, const WordRecord &record)
 
 void WordRecord::Print() const
 {
-  cout << *this;
+  cerr << *this;
 }

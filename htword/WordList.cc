@@ -9,7 +9,9 @@
 //           use the access methods here.
 //	     Configuration parameter used:
 //           wordlist_extend
-//           wordlist_verbose
+//           wordlist_verbose 1 walk logic
+//           wordlist_verbose 2 walk logic details
+//           wordlist_verbose 3 walk logic lots of details
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -17,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.34 2000/01/28 22:59:14 loic Exp $
+// $Id: WordList.cc,v 1.6.2.35 2000/02/05 15:50:08 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -47,7 +49,7 @@
 //
 WordList::~WordList()
 {
-    Close();
+  Close();
 }
 
 // *****************************************************************************
@@ -56,20 +58,20 @@ WordList::WordList(const Configuration& config_arg) :
   wtype(config_arg),
   config(config_arg)
 {
-    // The database itself hasn't been opened yet
-    isopen = 0;
-    isread = 0;
-    extended = config.Boolean("wordlist_extend");
-    compressor = 0;
-    verbose =  config.Value("wordlist_verbose",0);
+  // The database itself hasn't been opened yet
+  isopen = 0;
+  isread = 0;
+  extended = config.Boolean("wordlist_extend");
+  verbose =  config.Value("wordlist_verbose");
+  compressor = 0;
 
-    bm_put_count = 0;
-    bm_put_time = 0;
-    bm_walk_count = 0;
-    bm_walk_time=0;
-    bm_walk_count_DB_SET_RANGE = 0;
-    bm_walk_count_DB_NEXT = 0;
-    monitor = 0;
+  bm_put_count = 0;
+  bm_put_time = 0;
+  bm_walk_count = 0;
+  bm_walk_time=0;
+  bm_walk_count_DB_SET_RANGE = 0;
+  bm_walk_count_DB_NEXT = 0;
+  monitor = 0;
 }
 
 // *****************************************************************************
@@ -188,9 +190,9 @@ List *WordList::operator [] (const WordReference& wordRef)
 //
 List *WordList::Prefix (const WordReference& prefix)
 {
-    WordReference prefix2(prefix);
-    prefix2.Key().UndefinedWordSuffix();
-    return Collect(prefix2);
+  WordReference prefix2(prefix);
+  prefix2.Key().UndefinedWordSuffix();
+  return Collect(prefix2);
 }
 
 // *****************************************************************************
@@ -205,9 +207,9 @@ List *WordList::WordRefs()
 List *
 WordList::Collect(const WordSearchDescription &csearch)
 {
-    WordSearchDescription search = csearch;
-    Walk(search);
-    return search.collectRes;
+  WordSearchDescription search = csearch;
+  Walk(search);
+  return search.collectRes;
 }
 
 // *****************************************************************************
@@ -239,110 +241,95 @@ List *WordList::Collect(const WordReference& wordRef)
 int 
 WordList::Walk(WordSearchDescription &search)
 {
-    // DEBUGING / BENCHMARKING
-    double start_time = 0.0;
-    if(monitor) start_time = HtTime::DTime();
+  // DEBUGING / BENCHMARKING
+  double start_time = 0.0;
+  if(monitor) start_time = HtTime::DTime();
 
-    for(WalkInit(search); WalkNext(search) == OK; )
-      ;
-    WalkFinish(search);
+  for(WalkInit(search); WalkNext(search) == OK; )
+    ;
+  WalkFinish(search);
 
-    if(verbose > 2) { cerr << "WordList::Walk: FINSISHED "  << endl; }
+  // DEBUGING / BENCHMARKING
+  if(monitor) {
+    bm_walk_time += HtTime::DTime(start_time);
+    (*monitor)();
+  }
 
-    // DEBUGING / BENCHMARKING
-    if(monitor) {
-      bm_walk_time += HtTime::DTime(start_time);
-      (*monitor)();
-    }
-
-    return search.status == WORD_WALK_ATEND ? OK : NOTOK;
+  return search.status == WORD_WALK_ATEND ? OK : NOTOK;
 }
 
 int 
 WordList::WalkInit(WordSearchDescription &search)
 {
-    WordDBCursor&		cursor                  = search.cursor;
-    const WordKey&              searchKey               = search.searchKey;
+  WordDBCursor&		cursor                  = search.cursor;
+  const WordKey&              searchKey               = search.searchKey;
 
-    search.ClearResult();
-    search.ClearInternal();
+  search.ClearResult();
+  search.ClearInternal();
 
-    WordReference wordRef;
+  WordReference wordRef;
 
-    if(cursor.Open(db.db) == NOTOK) {
-      search.status = WORD_WALK_CURSOR_FAILED;
-      return NOTOK;
-    }
+  if(cursor.Open(db.db) == NOTOK) {
+    search.status = WORD_WALK_CURSOR_FAILED;
+    return NOTOK;
+  }
 
-    if(verbose > 2) {
-      cerr << "WordList::WalkInit: Walk begin:action:" << search.action << ":SearchKey:"<< searchKey
-	   << ": SuffixDeffined:" << searchKey.IsDefinedWordSuffix() << "\n";
-    }
+  if(verbose) cerr << "WordList::WalkInit: action = " << search.action << ", SearchKey = " << searchKey << endl;
 
-    search.first_skip_field=searchKey.FirstSkipField();
-    if(verbose > 2) {
-      cerr << "WordList::WalkInit: check skip speedup first field first_skip_field:" << search.first_skip_field << endl;
-    }
+  if(search.action & HTDIG_WORDLIST_COLLECTOR) {
+    search.collectRes = new List;
+  }
 
-    if(search.action & HTDIG_WORDLIST_COLLECTOR) {
-	search.collectRes = new List;
-    }
-
-    return WalkRewind(search);
+  return WalkRewind(search);
 }
 
 int 
 WordList::WalkRewind(WordSearchDescription &search)
 {
-    const WordReference&	last                    = WordStat::Last();
+  const WordReference&  last                    = WordStat::Last();
 
-    const WordKey&              searchKey               = search.searchKey;
-    WordKey&			prefixKey               = search.prefixKey;
-    String&                     key                     = search.key;
-    int&			cursor_get_flags        = search.cursor_get_flags;
-    int&                        searchKeyIsSameAsPrefix = search.searchKeyIsSameAsPrefix;
+  const WordKey&        searchKey               = search.searchKey;
+  WordKey&              prefixKey               = search.prefixKey;
+  String&               key                     = search.key;
+  int&                  cursor_get_flags        = search.cursor_get_flags;
+  int&                  searchKeyIsSameAsPrefix = search.searchKeyIsSameAsPrefix;
 
+  //
+  // Move the cursor to start walking and do some sanity checks.
+  //
+  if(searchKey.Empty()) {
     //
-    // Move the cursor to start walking and do some sanity checks.
+    // Move past the stat data
     //
-    if(searchKey.Empty()) 
-    {
+    if(verbose) cerr << "WordList::WalkRewind: at start of keys because search key is empty" << endl;
+    last.KeyPack(key);
+
+  } else {
+    prefixKey = searchKey;
+    //
+    // If the key is a prefix, the start key is
+    // the longest possible prefix contained in the key. If the
+    // key does not contain any prefix, start from the beginning
+    // of the file.
+    //
+    if(prefixKey.PrefixOnly() == NOTOK) {
+      if(verbose) cerr << "WordList::WalkRewind: at start of keys because search key is not a prefix" << endl;
+      prefixKey.Clear();
       //
       // Move past the stat data
       //
-	if(verbose > 2) { cerr << "WordList::WalkInit: WORDLIST -> starting from begining" <<endl; }
-	last.KeyPack(key);
-
-    } else 
-    {
-	prefixKey = searchKey;
-	//
-	// If the key is a prefix, the start key is
-	// the longest possible prefix contained in the key. If the
-	// key does not contain any prefix, start from the beginning
-	// of the file.
-	//
-    	if(prefixKey.PrefixOnly() == NOTOK) 
-	{
-	    if(verbose > 2) { cerr << "WordList::WalkInit: couldnt get prefix -> starting from begining" <<endl; }
-	    prefixKey.Clear();
-	    //
-	    // Move past the stat data
-	    //
-	    last.KeyPack(key);
-	}
-	else 
-	{
-	    if(verbose > 2) { cerr << "WordList::WalkInit: actualy using prefix KEY!: " << prefixKey<< endl; }
-	    prefixKey.Pack(key);
-	}
+      last.KeyPack(key);
+    } else {
+      if(verbose) cerr << "WordList::WalkRewind: go to " << prefixKey << endl;
+      prefixKey.Pack(key);
     }
+  }
 
-    search.status = WORD_WALK_OK;
-    searchKeyIsSameAsPrefix = searchKey.ExactEqual(prefixKey);
-    cursor_get_flags = DB_SET_RANGE;
+  search.status = WORD_WALK_OK;
+  searchKeyIsSameAsPrefix = searchKey.ExactEqual(prefixKey);
+  cursor_get_flags = DB_SET_RANGE;
 
-    return OK;
+  return OK;
 }
 
 int 
@@ -352,8 +339,11 @@ WordList::WalkNext(WordSearchDescription &search)
 
   int ret;
   while((ret = WalkNextStep(search)) == NOTOK &&
-	(search.status & WORD_WALK_NOMATCH_FAILED))
+	(search.status & WORD_WALK_NOMATCH_FAILED)) {
     search.status = WORD_WALK_OK;
+    if(verbose > 1) cerr << "WordList::WalkNext: got false match, retry" << endl;
+  }
+
   return ret;
 }
 
@@ -376,6 +366,7 @@ WordList::WalkNextStep(WordSearchDescription &search)
     if((error = cursor.Get(key, data, cursor_get_flags)) != 0) {
       cursor.Close();
       search.status = error == DB_NOTFOUND ? WORD_WALK_ATEND : WORD_WALK_GET_FAILED;
+      if(verbose) cerr << "WordList::WalkNextStep: looking for " << searchKey << ", no more matches" << endl;
       return NOTOK;
     }
   }
@@ -387,70 +378,77 @@ WordList::WalkNextStep(WordSearchDescription &search)
 
   found.Unpack(key, data);
 
-  if(search.traceRes)
-    {
-      if(verbose > 2) cerr << "WordList::WalkNextStep: adding to trace:" << found << endl;
-      search.traceRes->Add(new WordReference(found));
-    }
+  if(search.traceRes) search.traceRes->Add(new WordReference(found));
 
-  if(verbose > 2) { cerr << "WordList::WalkNextStep: *:  found:" <<  found << endl; }
+  if(verbose > 1) cerr << "WordList::WalkNextStep: looking for " << searchKey << ", candidate is " << found << endl;
+
   //
   // Don't bother to compare keys if we want to walk all the entries
   //
-  if(!(searchKey.Empty())) 
-    {
-      // examples
-      // searchKey:   aabc 1 ? ? ?
-      // prefixKey: aabc 1 ? ? ?
+  if(!(searchKey.Empty()))     {
+    // examples
+    // searchKey: aabc 1 ? ? ?
+    // prefixKey: aabc 1 ? ? ?
 
-      //
-      // Stop loop if we reach a record whose key does not
-      // match prefix key requirement, provided we have a valid
-      // prefix key.
-      // (ie. stop loop if we're past last possible match...)
-      //
-      if(!prefixKey.Empty() &&
-	 !prefixKey.Equal(found.Key()))
-	{
-	  if(verbose) { cerr << "WordList::WalkNextStep: finished loop: no more possible matches:" << found  << endl; }
-	  search.status = WORD_WALK_ATEND;
-	  return NOTOK;
-	}
-
-      //
-      // Skip entries that do not exactly match the specified key.
-      // 
-      if(!searchKeyIsSameAsPrefix && 
-	 !searchKey.Equal(found.Key()))
-	{
-	  if(!search.noskip)
-	    SkipUselessSequentialWalking(search);
-	  search.status = WORD_WALK_NOMATCH_FAILED;
-	  return NOTOK;
-	}
+    //
+    // Stop loop if we reach a record whose key does not
+    // match prefix key requirement, provided we have a valid
+    // prefix key.
+    // (ie. stop loop if we're past last possible match...)
+    //
+    if(!prefixKey.Empty() &&
+       !prefixKey.Equal(found.Key()))	{
+      if(verbose) cerr << "WordList::WalkNextStep: looking for " << searchKey << ", no more matches because found a key that is greater than searchKey " << endl;
+      search.status = WORD_WALK_ATEND;
+      return NOTOK;
     }
 
-  if(search.collectRes) 
-    {
-      if(verbose > 2) { cerr << "WordList::WalkNextStep: collecting:" <<  found << endl; }
-      search.collectRes->Add(new WordReference(found));
-    }
-  else if(search.callback)
-    {
-      if(verbose > 2) { cerr << "WordList::WalkNextStep: calling callback:" <<  found << endl; }
-      int ret = (*search.callback)(this, cursor, &found, *(search.callback_data) );
-      if(verbose > 2) { cerr << "WordList::WalkNextStep:  callback returned:" <<  ret << endl; }
-      //
-      // The callback function tells us that something went wrong, might
-      // as well stop walking.
-      //
-      if(ret == NOTOK)
-	{
-	  if(verbose) { cerr << "WordList::WalkNextStep: finished loop: callback returned NOTOK:" << endl; }
-	  search.status = WORD_WALK_CALLBACK_FAILED|WORD_WALK_ATEND;
+    //
+    // Skip entries that do not exactly match the specified key.
+    // 
+    if(!searchKeyIsSameAsPrefix && 
+       !searchKey.Equal(found.Key()))	{
+      if(SkipUselessSequentialWalking(search) == NOTOK) {
+	switch(search.status) {
+	case WORD_WALK_OK:
+	  cerr << "WordList::WalkNextStep: useless call to SkipUselessSequentialWalking" << endl;
+	  break;
+	case WORD_WALK_ATEND:
+	  if(verbose) cerr << "WordList::WalkNextStep: looking for " << searchKey << ", no more matches according to SkipUselessSequentialWalking" << endl;
 	  return NOTOK;
+	  break;
+	case WORD_WALK_FAILED:
+	default:
+	  cerr << "WordList::WalkNextStep: SkipUselessSequentialWalking failed " << search.status << endl;
+	  return NOTOK;
+	  break;
 	}
+      } else {
+	if(verbose > 1) cerr << "WordList::WalkNextStep: looking for " << searchKey << ", false match jump to " << found << endl;
+	search.status = WORD_WALK_NOMATCH_FAILED;
+	return NOTOK;
+      }
     }
+  }
+
+  if(verbose) cerr << "WordList::WalkNextStep: looking for " << searchKey << ", found " << found << endl;
+
+  if(search.collectRes) {
+    if(verbose > 2) cerr << "WordList::WalkNextStep: collect" << endl;
+    search.collectRes->Add(new WordReference(found));
+  } else if(search.callback) {
+    if(verbose > 2) cerr << "WordList::WalkNextStep: calling callback" << endl;
+    int ret = (*search.callback)(this, cursor, &found, *(search.callback_data) );
+    //
+    // The callback function tells us that something went wrong, might
+    // as well stop walking.
+    //
+    if(ret == NOTOK) {
+      if(verbose) cerr << "WordList::WalkNextStep: callback returned NOTOK" << endl;
+      search.status = WORD_WALK_CALLBACK_FAILED|WORD_WALK_ATEND;
+      return NOTOK;
+    }
+  }
 
   return OK;
 }
@@ -458,9 +456,44 @@ WordList::WalkNextStep(WordSearchDescription &search)
 int 
 WordList::WalkFinish(WordSearchDescription &search)
 {
+  if(verbose) fprintf(stderr, "WordList::WalkFinish\n");
+
   WordDBCursor&		cursor                  = search.cursor;
 
   return cursor.Close();
+}
+
+// *****************************************************************************
+//
+// Helper for SkipUselessSequentialWalking. 
+// Undefine in foundKey all fields defined in searchKey
+// so that they are not considered by SetToFollowing.
+// It could become a method of WordKey but lacks generalisation and
+// from what I see it is a rather specific operation.
+//
+static inline void complement(WordKey& key, const WordKey& mask)
+{
+  int nfields = WordKey::NFields();
+  int i;
+  //
+  // Undefine in 'key' all fields defined in 'mask'
+  //
+  for(i = 0; i < nfields; i++) {
+    if(mask.IsDefined(i))
+      key.Undefined(i);
+    else
+      key.SetDefined(i);
+  }
+  //
+  // If searching for a prefix, we must allow the word in 
+  // key to increment.
+  //
+  if(mask.IsDefinedWordSuffix()) {
+    key.UndefinedWordSuffix();
+  } else {
+    key.SetDefinedWordSuffix();
+    key.SetDefined(0);
+  }
 }
 
 // *****************************************************************************
@@ -472,64 +505,117 @@ WordList::WalkFinish(WordSearchDescription &search)
 //   search.key = calculated next possible key
 // Else
 //   do nothing
-// Returns NOTOK if not skipping, OK if skipping.
+// Returns NOTOK if not skipping, OK if skipping. If NOTOK is returned the search.status
+// is set to :
+// WORD_WALK_OK : it was not necessary to call SkipUselessSequentialWalking, nothing done
+// WORD_WALK_ATEND : no more possible match, reached the maximum
+// WORD_WALK_FAILED: failure without diagnostic information
 // 
-// Sequential searching can waste time by searching all keys, for example in:
-// searching for Key: argh <DEF> <UNDEF> 10     ... in database:
-// 1: argh 2 4
-// 2: argh 2 11
-// 3: argh 2 15
-// 4: argh 2 20
+// Sequential searching can waste time by searching all keys, for example:
+// If searching for Key: argh <DEF> <UNDEF> 10
+// Under normal circonstances we would do the following
+// 
+//    DATA            STATUS   ACTION
+// 1: argh 1 10       match    DB_NEXT
+// 2: argh 2 11       nomatch  DB_NEXT
+// 3: argh 2 15       nomatch  DB_NEXT
+// 4: argh 2 20       nomatch  DB_NEXT
+// 5: argh 2 30       nomatch  DB_NEXT
+// 6: argh 5 1        nomatch  DB_NEXT
+// 7: argh 5 8        nomatch  DB_NEXT
+// 8: argh 8 6        nomatch  DB_NEXT
+//
+// But the optimal would be
+//
+//    DATA            STATUS   ACTION
+// 1: argh 1 10       match    DB_NEXT
+// 2: argh 2 11       nomatch  DB_SET_RANGE argh 3 10
+// 3: argh 2 15       
+// 4: argh 2 20       
 // 5: argh 2 30
-// 6: argh 5 1
+// 6: argh 5 1        nomatch  DB_SET_RANGE argh 6 10
 // 7: argh 5 8
-// 8: argh 8 6
-// when sequential search reaches line 2 it will continue 
-// searching lines 3 .. 5 when it could have skiped directly to line 6
+// 8: argh 8 6        nomatch  DB_SET_RANGE argh 9 10
+//
+// That saves a lot of unecessary hit. The underlying logic is a bit 
+// more complex but you have the idea.
 //
 int
 WordList::SkipUselessSequentialWalking(WordSearchDescription &search)
 {
   WordKey&      foundKey         = search.found.Key();
+  WordKey&      searchKey        = search.searchKey;
   String&       key              = search.key;
   int&          cursor_get_flags = search.cursor_get_flags;
 
-  int nfields=WordKey::NFields();
-  int status = NOTOK;
-  if(verbose > 1) { cerr << "WordList::SkipUselessSequentialWalking: skipchk:" <<  foundKey << endl; }
+  int nfields = WordKey::NFields();
   int i;
-  //
-  // check if "found" key has a field that is bigger than 
-  // the corresponding "wordRef" key field
-  //
-  for(i = search.first_skip_field; i < nfields; i++)// (field 0 is not set (...it's the word))
-    {
-      if(search.searchKey.IsDefined(i))
-	{
-	  if( (WordKey::Info()->sort[i].direction == WORD_SORT_ASCENDING
-	       && foundKey.Get(i) > search.searchKey.Get(i))   ||
-	      (WordKey::Info()->sort[i].direction == WORD_SORT_DESCENDING
-	       && foundKey.Get(i) < search.searchKey.Get(i))      )
 
-	    { //  field 'i' is bigger in "found" than in "wordRef", we can skip
-	      if(verbose > 1) {
-		cerr << "WordList::SkipUselessSequentialWalking: found field:" << i 
-		     << "is past wordref ... maybe we should skip" << endl;
-	      }
-				// now find a key that's immediately bigger than "found"
-	      if(foundKey.SetToFollowing(i) == OK)
-		{
-		  // ok!, we can setup for skip (instead of next) now
-		  foundKey.Pack(key);
-		  if(verbose > 1) { cerr << "WordList::SkipUselessSequentialWalking: SKIPING TO: " <<  foundKey << endl; }
-		  cursor_get_flags=DB_SET_RANGE;
-		  status = OK;
-		  break;
-		}
-	    }
-	}
-    }
-  return status;
+  //
+  // Find out how the searchKey and the foundKey differ.
+  //
+  int diff_field = 0;
+  int lower = 0;
+  if(!foundKey.Diff(searchKey, diff_field, lower)) {
+    //
+    // foundKey matches searchKey (no difference), don't
+    // skip, everything is fine. The caller of SkipUselessSequentialWalking
+    // is expected to avoid this case for efficiency.
+    //
+    search.status = WORD_WALK_OK;
+    return NOTOK;
+  }
+
+  if(verbose > 2) cerr << "WordList::SkipUselessSequentialWalking: looking for " << searchKey << ", candidate is " << foundKey << endl;
+
+  //
+  // Undefine in foundKey all fields defined in searchKey
+  // so that they are not considered by SetToFollowing.
+  //
+  complement(foundKey, searchKey);
+
+  //
+  // If the key found is lower than the searched key when
+  // considering only the fields defined in the search key,
+  // we only need to enforce the key to get the match.
+  // Otherwise we need to increment the found key to jump
+  // properly.
+  //
+  if(lower) {
+    if(verbose > 1) cerr << "WordList::SkipUselessSequentialWalking: enforcing the search constraint is enough to jump forward" << endl;
+    for(i = diff_field + 1; i < nfields; i++)
+      if(foundKey.IsDefined(i)) foundKey.Set(i, 0);
+  } else {
+    if(verbose > 1) cerr << "WordList::SkipUselessSequentialWalking: increment the key to jump forward" << endl;
+    //
+    // diff_field - 1 is not really necessary because diff_field is undefined
+    // in foundKey and would therefore be ignored by SetToFollowing. We write
+    // diff_field - 1 to clearly state that incrementing begins just before the
+    // field for which a difference was found.
+    //
+    if((search.status = foundKey.SetToFollowing(diff_field - 1)) != WORD_WALK_OK)
+      return NOTOK;
+  }
+
+  //
+  // Copy all fields defined in searchKey into foundKey. This will copy
+  // searchKey in foundKey because all these fields have been
+  // previously undefined in foundKey.
+  //
+  foundKey.Merge(searchKey);
+
+  if(verbose > 2) cerr << "WordList::SkipUselessSequentialWalking: looking for " << searchKey << ", jump to " << foundKey << endl;
+
+  //
+  // Instruct Next function to jump to the calculated key
+  //
+  if(foundKey.Pack(key) == NOTOK) {
+    search.status = WORD_WALK_FAILED;
+    return NOTOK;
+  }
+  cursor_get_flags = DB_SET_RANGE;
+
+  return OK;
 }
 
 // *****************************************************************************
@@ -577,33 +663,33 @@ int WordList::WalkDelete(const WordReference& wordRef)
 //
 List *WordList::Words()
 {
-    List		*list = 0;
-    String		key;
-    String		record;
-    WordReference	lastWord;
-    WordDBCursor		cursor;
+  List		*list = 0;
+  String		key;
+  String		record;
+  WordReference	lastWord;
+  WordDBCursor		cursor;
 
-    if(cursor.Open(db.db) != OK) return 0;
+  if(cursor.Open(db.db) != OK) return 0;
 
-    //
-    // Move past the first word count record
-    //
-    const WordReference& last = WordStat::Last();
-    last.Pack(key, record);
-    if(cursor.Get(key, record, DB_SET_RANGE) != 0)
-      return 0;
-    list = new List;
-    do {
-	WordReference	wordRef(key, record);
-	if(lastWord.Key().GetWord().empty() ||
-	   wordRef.Key().GetWord() != lastWord.Key().GetWord()) 
-	{
-	    list->Add(new String(wordRef.Key().GetWord()));
-	    lastWord = wordRef;
-	}
-    } while (cursor.Get(key, record, DB_NEXT) == 0);
+  //
+  // Move past the first word count record
+  //
+  const WordReference& last = WordStat::Last();
+  last.Pack(key, record);
+  if(cursor.Get(key, record, DB_SET_RANGE) != 0)
+    return 0;
+  list = new List;
+  do {
+    WordReference	wordRef(key, record);
+    if(lastWord.Key().GetWord().empty() ||
+       wordRef.Key().GetWord() != lastWord.Key().GetWord()) 
+      {
+	list->Add(new String(wordRef.Key().GetWord()));
+	lastWord = wordRef;
+      }
+  } while (cursor.Get(key, record, DB_NEXT) == 0);
     
-    return list;
+  return list;
 }
 
 // *****************************************************************************
@@ -680,7 +766,7 @@ class StreamOutData : public Object
 {
 public:
     ostream &o;
-    StreamOutData(ostream &no):o(no){;}
+    StreamOutData(ostream &no) : o(no) { }
 };
 
 // *****************************************************************************
@@ -697,7 +783,6 @@ wordlist_walk_callback_stream_out(WordList *, WordDBCursor& , const WordReferenc
 ostream &
 operator << (ostream &o,  WordList &list)
 {
-
     WordKey empty;
     StreamOutData data(o);
     WordSearchDescription description(empty,wordlist_walk_callback_stream_out, (Object *)&data);
@@ -762,11 +847,14 @@ operator >> (istream &in,  WordList &list)
 	    break;
 	  }
 
-	if(word.Set(line) != OK)
+	if(word.Set(line) != OK) {
 	  cerr << "WordList::operator >>: line " << line_number << " : " << line << endl
-	       << " failed (ignored)" << endl;
-	else
-	  list.Insert(word);
+	       << " cannot build WordReference (ignored)" << endl;
+	} else {
+	  if(list.Insert(word) != OK)
+	    cerr << "WordList::operator >>: line " << line_number << " : " << line << endl
+		 << " insert failed (ignored)" << endl;
+	}
       
 	if(in.eof()){break;}
 	if(!in.good())
@@ -775,7 +863,7 @@ operator >> (istream &in,  WordList &list)
 		 << " input from stream failed (B)" << endl;
 	    break;
 	  }
-	if(list.verbose > 1) { cerr << "WordList operator >> inserting word:" << word << endl; }
+	if(list.verbose) cerr << "WordList::operator >> inserting " << word << endl;
       }
 
       line.trunc();
@@ -833,7 +921,6 @@ WordSearchDescription::Clear()
   //
   // Debugging section. 
   //
-  noskip = 0;
   traceRes = 0;
 }
 
@@ -846,7 +933,6 @@ WordSearchDescription::ClearInternal()
   key.trunc();
   data.trunc();
   prefixKey.Clear();
-  first_skip_field = -3;
   cursor_get_flags = DB_SET_RANGE;
   searchKeyIsSameAsPrefix = 0;
 }
@@ -863,13 +949,13 @@ WordSearchDescription::ClearResult()
 
 // *****************************************************************************
 //
-// Intuitive meaning is : set the document number in key and prepare to
-// move to this document, if any.
+// Copy defined fields in patch into foundKey and 
+// initialize internal state so that WalkNext jumps to
+// this key next time it's called.
 //
-// Technical meaning is : Override latests key found (found field) with patch fields
-// values, starting from the first field set in patch up to the
-// last. 
-// Pack the result in the key field and set
+// Technically this means : Override latests key found (found field)
+// with patch fields values, starting from the first field set in
+// patch up to the last.  Pack the result in the key field and set
 // cursor_get_flags to DB_SET_RANGE.
 //
 int
@@ -912,5 +998,23 @@ WordSearchDescription::ModifyKey(const WordKey& patch)
   foundKey.Pack(key);
   cursor_get_flags = DB_SET_RANGE;
   
+  return OK;
+}
+
+//
+// Convert the whole structure to an ascii string description
+//
+int WordSearchDescription::Get(String& bufferout) const
+{
+  String tmp;
+  bufferout.trunc();
+
+  searchKey.Get(tmp);
+  bufferout << "Input: searchKey = " << tmp << ", action = " <<  action << "; Output: collectRes " << (collectRes ? "set" : "not set");
+  found.Get(tmp);
+  bufferout << ", found = " << tmp << ", status = " << status;
+  prefixKey.Get(tmp);
+  bufferout << "; Internal State: prefixKey = " << tmp << ", cursor_get_flags = " << cursor_get_flags;
+
   return OK;
 }
