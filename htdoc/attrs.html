@@ -9041,78 +9041,6 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name="uncoded_db_compatible">
-		uncoded_db_compatible</a></strong>
-	  </dt>
-	  <dd>
-		<dl>
-		  <dt>
-			<em>type:</em>
-		  </dt>
-		  <dd>
-			boolean
-		  </dd>
-		  <dt>
-			<em>used by:</em>
-		  </dt>
-		  <dd>
-			<a href="htdig.html">htdig</a>,
-			<a href="htnotify.html">htnotify</a>,
-			<a href="htmerge.html">htmerge</a>,
-			<a href="htsearch.html" target="_top">htsearch</a>
-		  </dd>
-		  <dt>
-			<em>default:</em>
-		  </dt>
-		  <dd>
-			true
-		  </dd>
-		  <dt>
-		      <em>version:</em>
-		  </dt>
-		  <dd>
-		      3.1.0 or later
-		  </dd>
-		  <dt>
-			<em>description:</em>
-		  </dt>
-		  <dd>
-	At the cost of time for extra database accesses and
-	not getting the full effect of the options
-	<a href="#common_url_parts">common_url_parts</a> and
-	<a href="#url_part_aliases">url_part_aliases</a>,
-	read databases where some or all URLs are not
-	encoded <b>at all</b> through these options.<br>
-	Note that the database still needs to be rebuilt
-	if either or both of common_url_parts and
-	url_part_aliases were non-empty when it was built or
-	modified, or if they were set to anything else than
-	the current values.<br>
-	If a <em>to</em>-string in url_part_aliases can
-	occur in normal URLs, this option should be set to
-	<b>false</b> to eliminate surprises.<br>
-		  </dd>
-		  <dt>
-			<em>example:</em>
-		  </dt>
-		  <dd>
-			<table border="0">
-			  <tr>
-				<td valign="top">
-				  uncoded_db_compatible:
-				</td>
-				<td nowrap>
-				     false<p>
-				</td>
-			  </tr>
-			</table>
-		  </dd>
-		</dl>
-	  </dd>
-	</dl>
-	<hr>
-	<dl>
-	  <dt>
 		<strong><a name="url_list">
 		url_list</a></strong>
 	  </dt>
@@ -10532,6 +10460,6 @@ http://www.htdig.org/
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
-Last modified: Sat Feb 12 21:34:27 CST 2000
+Last modified: Sun Feb 13 21:59:34 CST 2000
   </body>
 </html>
