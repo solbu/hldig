@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.45 1999/01/28 05:20:46 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.46 1999/01/29 02:53:15 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -877,6 +877,7 @@ Display::buildMatchList()
 		
 	thisMatch = new ResultMatch();
 	thisMatch->setURL(url);
+	thisMatch->setRef(NULL);
 
 	//
 	// Get the actual document record into the current ResultMatch
