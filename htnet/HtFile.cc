@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFile.cc,v 1.7 2003/05/22 14:43:57 lha Exp $ 
+// $Id: HtFile.cc,v 1.8 2003/05/22 15:31:13 lha Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -143,7 +143,7 @@ String HtFile::File2Mime (const char *fname)
     char content_type [100] = "application/x-unknown\n";
 
     String cmd = config->Find ("content_classifier");
-    if (cmd && cmd->get())
+    if (cmd.get() && *cmd)
     {
 	cmd << " \"" << fname << '\"';	// allow file names to have spaces
 	FILE *fileptr;
@@ -180,7 +180,7 @@ HtFile::DocStatus HtFile::Request()
    // Check that it exists, and is a regular file or directory
    // Don't allow symbolic links to directories; they mess up '../'.
    // Should we allow FIFO's?
-   if ( stat(path->get(), &stat_buf) != 0 || 
+   if ( stat(path.get(), &stat_buf) != 0 || 
 	!(S_ISREG(stat_buf.st_mode) || S_ISDIR(stat_buf.st_mode)) )
    {
      return Transport::Document_not_found;

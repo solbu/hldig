@@ -1,5 +1,9 @@
 Thu May 22 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
+	* htnet/HtFile.cc: Fix previous  .get()  patch...
+
+Thu May 22 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
 	* htlib/DB_2.cc: Set wordlist_cache_dirty_level before opening
 	  database, to avoid database memory allocation problem.
 
