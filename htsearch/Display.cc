@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.95 1999/09/30 15:56:45 loic Exp $
+// $Id: Display.cc,v 1.96 1999/10/01 12:53:54 loic Exp $
 //
 
 #include "htsearch.h"
@@ -95,7 +95,8 @@ Display::~Display()
 void
 Display::display(int pageNumber)
 {
-    int			good_sort = ResultMatch::setSortType(config["sort"]);
+    int good_sort = 0;
+    good_sort = ResultMatch::setSortType(config["sort"]);
     if (!good_sort)
     {
       // Must temporarily stash the message in a String, since

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Prefix.cc,v 1.12 1999/09/24 10:29:01 loic Exp $
+// $Id: Prefix.cc,v 1.13 1999/10/01 12:53:53 loic Exp $
 //
 
 #include "Prefix.h"
@@ -72,7 +72,7 @@ Prefix::getWords(char *w, List &words)
 	    && strcmp(prefix_suffix, w+strlen(w)-prefix_suffix_length)) 
 	return;
 
-    WordList	wordDB(config);
+    HtWordList	wordDB(config);
     if (wordDB.Open(config["word_db"], O_RDONLY) == NOTOK)
       return;
 

@@ -12,12 +12,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.66 1999/09/30 15:56:42 loic Exp $
+// $Id: Retriever.cc,v 1.67 1999/10/01 12:53:52 loic Exp $
 //
 
 #include "Retriever.h"
 #include "htdig.h"
-#include "WordList.h"
+#include "HtWordList.h"
 #include "WordRecord.h"
 #include "URLRef.h"
 #include "Server.h"

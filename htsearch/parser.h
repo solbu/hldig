@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.h,v 1.11 1999/09/24 10:29:05 loic Exp $
+// $Id: parser.h,v 1.12 1999/10/01 12:53:54 loic Exp $
 //
 
 #ifndef _parser_h_
@@ -23,7 +23,7 @@
 #include "Database.h"
 #include "htString.h"
 #include "Stack.h"
-#include "WordList.h"
+#include "HtWordList.h"
 #include <ctype.h>
 
 class Parser
@@ -62,7 +62,7 @@ protected:
     Stack		stack;
     String		error;
 
-    WordList		words;
+    HtWordList		words;
 };
 
 

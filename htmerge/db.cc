@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: db.cc,v 1.20 1999/09/27 16:06:09 loic Exp $
+// $Id: db.cc,v 1.21 1999/10/01 12:53:53 loic Exp $
 //
 
 #include "htmerge.h"
@@ -148,7 +148,7 @@ mergeDB()
 
     // OK, after merging the doc DBs, we do the same for the words
 
-    WordList	mergeWordDB(config), wordDB(config);
+    HtWordList	mergeWordDB(config), wordDB(config);
     List	*words;
     String	docIDKey;
 
@@ -178,7 +178,7 @@ mergeDB()
 	continue;
 
       word->DocID(word->DocID() + docIDOffset);
-      wordDB.Add(*word);
+      wordDB.Override(*word);
     }
     delete words;
 

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.1 1999/09/30 15:56:45 loic Exp $
+// $Id: WordList.cc,v 1.2 1999/10/01 12:53:54 loic Exp $
 //
 
 #include "WordList.h"
@@ -33,8 +33,32 @@
 #include <fstream.h>
 #include <errno.h>
 
+static inline const char* dberror(int errval) {
+#define DB_MAX_ERROR	(-DB_TXN_CKP + 1)
+  static const char* dbstr[DB_MAX_ERROR] = {
+    "",
+    "DB_INCOMPLETE",
+    "DB_KEYEMPTY",
+    "DB_KEYEXISTS",
+    "DB_LOCK_DEADLOCK",
+    "DB_LOCK_NOTGRANTED",
+    "DB_LOCK_NOTHELD",
+    "DB_NOTFOUND",
+    "DB_RUNRECOVERY",
+    "DB_DELETED",
+    "DB_NEEDSPLIT",
+    "DB_SWAPBYTES",
+    "DB_TXN_CKP",
+  };
+  if(errval < 0 && -errval < DB_MAX_ERROR)
+    return dbstr[-errval];
+  else
+    return strerror(errval);
+}
+
 //
 // Interface to Dbc that uses String instead of Dbt
+// Methods report errors on cerr and return OK/NOTOK status.
 //
 class WordCursor {
 public:
@@ -46,7 +70,7 @@ public:
   int Open(Db* db) {
     Close();
     if((errno = db->cursor(0, &cursor, 0)) != 0) {
-      cerr << "WordCursor::Open failed " << strerror(errno) << "\n";
+      cerr << "WordCursor::Open failed " << dberror(errno) << "\n";
       return NOTOK;
     }
     return OK;
@@ -71,7 +95,7 @@ public:
     }
     if((errno = cursor->get(&rkey, &rdata, (u_int32_t)flags)) != 0) {
       if(errno != DB_NOTFOUND) {
-	cerr << "WordCursor::Get(" << flags << ") failed " << strerror(errno) << "\n";
+	cerr << "WordCursor::Get(" << flags << ") failed " << dberror(errno) << "\n";
       }
       return NOTOK;
     }
@@ -84,7 +108,7 @@ public:
     Dbt rkey((void*)key.get(), (size_t)key.length());
     Dbt rdata((void*)data.get(), (size_t)data.length());
     if((errno = cursor->put(&rkey, &rdata, (u_int32_t)flags)) != 0) {
-      cerr << "WordCursor::Put(" << key << ", " << data << ", " << flags << ") failed " << strerror(errno) << "\n";
+      cerr << "WordCursor::Put(" << key << ", " << data << ", " << flags << ") failed " << dberror(errno) << "\n";
       return NOTOK;
     }
     return OK;
@@ -92,7 +116,7 @@ public:
 
   int Del() {
     if((errno = cursor->del((u_int32_t)0)) != 0) {
-      cerr << "WordCursor::Del() failed " << strerror(errno) << "\n";
+      cerr << "WordCursor::Del() failed " << dberror(errno) << "\n";
       return NOTOK;
     }
     return OK;
@@ -107,7 +131,6 @@ private:
 //
 WordList::~WordList()
 {
-    delete words;
     Close();
 }
 
@@ -117,67 +140,10 @@ WordList::WordList(const Configuration& config_arg) :
   wtype(config_arg),
   config(config_arg)
 {
-    words = new List;
-
     // The database itself hasn't been opened yet
     db = 0;
     isopen = 0;
     isread = 0;
-}
-
-//*****************************************************************************
-//
-void WordList::Replace(const WordReference& arg)
-{
-  WordReference	wordRef(arg);
-  String 	word = wordRef.Word();
-  if(wtype.Normalize(word) & WORD_NORMALIZE_NOTOK)
-    return;
-  wordRef.Word(word);
-
-  //
-  // New word.  Create a new reference for it and cache it in the object.
-  //
-  words->Add(new WordReference(wordRef));
-}
-
-//*****************************************************************************
-// void WordList::Flush()
-//   Dump the current list of words to the database.  After
-//   the words have been dumped, the list will be destroyed to make
-//   room for the words of the next document.
-//   
-void WordList::Flush()
-{
-  WordReference	*wordRef;
-
-    // Provided for backwards compatibility
-  if (!isopen)
-    Open(config["word_db"], O_RDWR);
-
-  words->Start_Get();
-  while ((wordRef = (WordReference *) words->Get_Next()))
-    {
-      if (wordRef->Word().length() == 0) {
-	cerr << "WordList::Flush: unexpected empty word\n";
-	continue;
-      }
-
-      Add(*wordRef);
-    }	
-    
-  // Cleanup
-  words->Destroy();
-}
-
-//*****************************************************************************
-// void WordList::MarkGone()
-//   The current document has disappeared or been modified. 
-//   We do not need to store these words.
-//
-void WordList::MarkGone()
-{
-  words->Destroy();
 }
 
 //*****************************************************************************
@@ -202,7 +168,7 @@ int WordList::Open(const String& filename, int mode)
   dbenv.set_error_model(DbEnv::ErrorReturn);
 
   if ((errno = dbenv.appinit(0, 0, DB_CREATE)) != 0) {
-    cerr << progname << ": DbEnv::appinit: " << strerror(errno) << "\n";
+    cerr << progname << ": DbEnv::appinit: " << dberror(errno) << "\n";
     return NOTOK;
   }
   //
@@ -214,7 +180,7 @@ int WordList::Open(const String& filename, int mode)
   mode = isread ? DB_RDONLY : DB_CREATE;
 
   if ((errno = Db::open(filename, DB_BTREE, (u_int32_t)mode, 0666, &dbenv, &dbinfo, &db)) != 0) {
-    cerr << progname << ": Db::open: " << strerror(errno) << "\n";
+    cerr << progname << ": Db::open: " << dberror(errno) << "\n";
     return NOTOK;
   }
 
@@ -241,10 +207,16 @@ int WordList::Close()
 
 //*****************************************************************************
 //
-int WordList::Add(const WordReference& wordRef)
+int WordList::Put(const WordReference& arg, int flags)
 {
-  if (wordRef.Word().length() == 0)
+  if (arg.Word().length() == 0)
     return NOTOK;
+
+  WordReference	wordRef(arg);
+  String 	word = wordRef.Word();
+  if(wtype.Normalize(word) & WORD_NORMALIZE_NOTOK)
+    return NOTOK;
+  wordRef.Word(word);
 
   int ret;
 
@@ -254,8 +226,8 @@ int WordList::Add(const WordReference& wordRef)
   if((ret = wordRef.Pack(key, record)) == OK) {
     Dbt rkey(key.get(), key.length());
     Dbt rrecord(record.get(), record.length());
-    if((errno = db->put(0, &rkey, &rrecord, 0)) != 0) {
-      cerr << "WordList::Add(" << wordRef << ") failed " << strerror(errno) << "\n";
+    if((errno = db->put(0, &rkey, &rrecord, flags)) != 0) {
+      cerr << "WordList::Put(" << wordRef << ") failed " << dberror(errno) << "\n";
       return NOTOK;
     }
   }
@@ -485,7 +457,7 @@ int WordList::Exists(const WordReference& wordRef)
 
   if((errno = db->get(0, &rkey, &rdata, 0)) != 0) {
     if(errno != DB_NOTFOUND)
-      cerr << "WordList::Exists(" << wordRef << ") failed " << strerror(errno) << "\n";
+      cerr << "WordList::Exists(" << wordRef << ") failed " << dberror(errno) << "\n";
     return NOTOK;
   }
   
@@ -512,7 +484,7 @@ static int delete_word(WordList *words, WordCursor &cursor, const WordReference 
     ((DeleteWordData&)data).count++;
     return OK;
   } else {
-    cerr << "WordList delete_word: deleting " << *word << " failed " << strerror(errno) << "\n";
+    cerr << "WordList delete_word: deleting " << *word << " failed \n";
     return NOTOK;
   }
 }
@@ -544,7 +516,7 @@ int WordList::Delete(const WordReference& wordRef)
 
   if((errno = db->del(0, &rkey, 0)) != 0) {
     if(errno != DB_NOTFOUND) {
-      cerr << "WordList::Delete(" << wordRef << ") failed " << strerror(errno) << "\n";
+      cerr << "WordList::Delete(" << wordRef << ") failed " << dberror(errno) << "\n";
       return -1;
     }
     return 0;

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.23 1999/09/30 15:56:42 loic Exp $
+// $Id: htdig.cc,v 1.24 1999/10/01 12:53:53 loic Exp $
 //
 
 #include "Document.h"
@@ -306,7 +306,7 @@ main(int ac, char **av)
 	filename = config["word_dump"];
 	if (initial)
 	    unlink(filename);
-	WordList words(config);
+	HtWordList words(config);
 	if(words.Open(config["word_db"], O_RDONLY) == OK) {
 	  words.Dump(filename);
 	}

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Regex.cc,v 1.6 1999/09/29 10:10:08 loic Exp $
+// $Id: Regex.cc,v 1.7 1999/10/01 12:53:53 loic Exp $
 //
 
 #include "Regex.h"
@@ -57,7 +57,7 @@ Regex::getWords(char *, List &words)
     // Anchor the string to be matched
     regexMatch.set(String("^") + stripped);
 
-    WordList    wordDB(config);
+    HtWordList    wordDB(config);
     List        *wordList;
     String	*key;
     wordDB.Open(config["word_db"], O_RDONLY);

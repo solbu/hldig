@@ -18,7 +18,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htfuzzy.cc,v 1.13 1999/09/24 10:29:02 loic Exp $
+// $Id: htfuzzy.cc,v 1.14 1999/10/01 12:53:53 loic Exp $
 //
 
 #include "htfuzzy.h"
@@ -31,7 +31,7 @@
 #include "List.h"
 #include "Dictionary.h"
 #include "defaults.h"
-#include "WordList.h"
+#include "HtWordList.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -126,7 +126,7 @@ main(int ac, char **av)
         //
         // Open the word database so that we can grab the words from it.
         //
-        WordList	worddb(config);
+        HtWordList	worddb(config);
 	if (worddb.Open(config["word_db"], O_RDONLY))
 	  {
 	    //

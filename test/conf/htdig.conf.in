@@ -88,6 +88,12 @@ max_head_length:	10000
 #
 max_doc_size:		200000
 
+# This sets the maximum length of words that will be
+# indexed. Words longer than this value will be silently
+# truncated when put into the index, or searched in the
+# index.
+maximum_word_length:	50
+
 #
 # Most people expect some sort of excerpt in results. By default, if the 
 # search words aren't found in context in the stored excerpt, htsearch shows 

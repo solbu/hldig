@@ -3,12 +3,13 @@ include $(top_srcdir)/Makefile.config
 
 lib_LTLIBRARIES = libcommon.la
 
-libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc defaults.cc 
+libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc HtWordList.cc defaults.cc 
 
 libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
 noinst_HEADERS = DocumentDB.h \
 	DocumentRef.h \
+	HtWordList.h \
 	defaults.h
 
 LOCAL_DEFINES=	-DBIN_DIR=\"$(bindir)\" \

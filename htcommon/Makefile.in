@@ -112,11 +112,11 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 lib_LTLIBRARIES = libcommon.la
 
-libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc defaults.cc 
+libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc HtWordList.cc defaults.cc 
 
 libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS = DocumentDB.h 	DocumentRef.h 	defaults.h
+noinst_HEADERS = DocumentDB.h 	DocumentRef.h 	HtWordList.h 	defaults.h
 
 
 LOCAL_DEFINES = -DBIN_DIR=\"$(bindir)\" 		-DCOMMON_DIR=\"$(COMMON_DIR)\" 		-DCONFIG_DIR=\"$(CONFIG_DIR)\" 		-DDATABASE_DIR=\"$(DATABASE_DIR)\" 		-DIMAGE_URL_PREFIX=\"$(IMAGE_URL_PREFIX)\" 		-DPDF_PARSER=\"$(PDF_PARSER)\"
@@ -131,7 +131,8 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 libcommon_la_LIBADD = 
-libcommon_la_OBJECTS =  DocumentDB.lo DocumentRef.lo defaults.lo
+libcommon_la_OBJECTS =  DocumentDB.lo DocumentRef.lo HtWordList.lo \
+defaults.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -144,7 +145,8 @@ DIST_COMMON =  Makefile.am Makefile.in
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/DocumentDB.P .deps/DocumentRef.P .deps/defaults.P
+DEP_FILES =  .deps/DocumentDB.P .deps/DocumentRef.P .deps/HtWordList.P \
+.deps/defaults.P
 SOURCES = $(libcommon_la_SOURCES)
 OBJECTS = $(libcommon_la_OBJECTS)
 

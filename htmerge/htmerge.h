@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htmerge.h,v 1.8 1999/09/11 05:03:53 ghutchis Exp $
+// $Id: htmerge.h,v 1.9 1999/10/01 12:53:53 loic Exp $
 //
 
 #ifndef _htmerge_h_
@@ -23,7 +23,7 @@
 #include "defaults.h"
 #include "DocumentDB.h"
 #include "HtURLCodec.h"
-#include "WordList.h"
+#include "HtWordList.h"
 #include "WordRecord.h"
 #include "htString.h"
 

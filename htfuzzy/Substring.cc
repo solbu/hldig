@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Substring.cc,v 1.9 1999/09/24 10:29:02 loic Exp $
+// $Id: Substring.cc,v 1.10 1999/10/01 12:53:53 loic Exp $
 //
 
 #include "Substring.h"
@@ -58,7 +58,7 @@ Substring::getWords(char *w, List &words)
     match.Pattern(stripped);
 
     // And get the list of all possible words
-    WordList	wordDB(config);
+    HtWordList	wordDB(config);
     List	*wordList;
     String	*key;
     wordDB.Open(config["word_db"], O_RDONLY);

@@ -18,7 +18,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htfuzzy.h,v 1.4 1999/09/24 10:29:02 loic Exp $
+// $Id: htfuzzy.h,v 1.5 1999/10/01 12:53:53 loic Exp $
 //
 
 #ifndef _htfuzzy_h_
@@ -26,7 +26,7 @@
 
 #include "htconfig.h"
 #include "Configuration.h"
-#include "WordList.h"
+#include "HtWordList.h"
 
 #include <stdlib.h>
 #include <unistd.h>

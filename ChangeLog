@@ -1,3 +1,18 @@
+Fri Oct 01 14:55:56 1999  Loic Dachary  <loic@ceic.com>
+
+	* htcommon/HtWordList: derived from WordList, only handles the
+	  word cache (Flush, MarkGone).
+	
+	* htdig/HTML.cc (do_tag): add wordindex to have location set in
+	  tags
+
+	* htcommon/DocumentRef.cc (AddDescription): add Location calculation
+
+	* htword/WordList.cc: add dberror to map Berkeley DB error codes
+
+	* htsearch/Display.cc (display): initialize good_sort to get rid
+	  of strange warning.
+
 Fri Oct 01 09:02:11 1999  Loic Dachary  <loic@ceic.com>
 
 	* Makefile.config: duplicate library lines to resolve 

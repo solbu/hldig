@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.1 1999/09/30 15:56:46 loic Exp $
+// $Id: WordList.h,v 1.2 1999/10/01 12:53:55 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -64,17 +64,15 @@ public:
     // Construction/Destruction
     //
     WordList(const Configuration& config_arg);
-    ~WordList();
+    virtual ~WordList();
     
+
     //
-    // Update/add a word, perform sanity checking and
-    // fill information.
+    // Insert
     //
-    void		Replace(const WordReference& wordRef);
-    //
-    // Update/add a word (backend of Replace)
-    //
-    int                 Add(const WordReference& wordRef);
+    int			Insert(const WordReference& wordRef) { return Put(wordRef, DB_NOOVERWRITE); }
+    int			Override(const WordReference& wordRef) { return Put(wordRef, 0); }
+    int                 Put(const WordReference& wordRef, int flags);
 
     //
     // Delete permanently
@@ -82,16 +80,6 @@ public:
     int                 WalkDelete(const WordReference& wordRef);
     int                 Delete(const WordReference& wordRef);
     int                 Delete(WordCursor& cursor);
-
-    //
-    // Mark a document as already scanned for words or mark it as disappeared
-    //
-    void		MarkGone();
-
-    //
-    // Flush the words stored in the object to the database
-    //
-    void		Flush();
 
     //
     // Open underlying db file
@@ -148,18 +136,17 @@ protected:
     //
     List		*WordList::Collect (const WordReference& word, int action);
 
-private:
+    const WordType		wtype;
+    const Configuration&	config;
 
-    List			*words;
+    int                 	isopen;
+    int                 	isread;
+
+private:
 
     Db		            	*db;
     DbEnv	            	dbenv;
     DbInfo	            	dbinfo;
-    int                 	isopen;
-    int                 	isread;
-
-    const WordType		wtype;
-    const Configuration&	config;
 };
 
 #endif

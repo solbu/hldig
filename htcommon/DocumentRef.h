@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.h,v 1.23 1999/09/24 10:28:56 loic Exp $
+// $Id: DocumentRef.h,v 1.24 1999/10/01 12:53:51 loic Exp $
 //
 
 #ifndef _DocumentRef_h_
@@ -19,7 +19,7 @@
 
 #include "htString.h"
 #include "List.h"
-#include "WordList.h"
+#include "HtWordList.h"
 
 #include <time.h>
 
@@ -82,7 +82,7 @@ class DocumentRef : public Object
     void		DocLinks(int l)			{docLinks = l;}
     void                DocBackLinks(int l)             {docBackLinks = l;}
     void		Descriptions(List &l)		{descriptions = l;}
-    void		AddDescription(const char *d, WordList &words);
+    void		AddDescription(const char *d, HtWordList &words);
     void		DocState(ReferenceState s)	{docState = s;}
     void		DocSize(int s)			{docSize = s;}
     void		DocImageSize(int s)		{docImageSize = s;}

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.60 1999/09/30 15:56:42 loic Exp $
+// $Id: HTML.cc,v 1.61 1999/10/01 12:53:51 loic Exp $
 //
 
 #include "htdig.h"
@@ -452,6 +452,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 void
 HTML::do_tag(Retriever &retriever, String &tag)
 {
+    int			wordindex = 1;
     char		*position = tag.get();
     int			which, length;
 
@@ -626,7 +627,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		while (w)
 		{
 		    if (strlen(w) >= minimumWordLength)
-		      retriever.got_word(w, 1, 9);
+		      retriever.got_word(w, wordindex++, 9);
 		    w = strtok(0, " ,\t\r\n");
 		}
 		w = '\0';
@@ -695,7 +696,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
                    while (w)
 		     {
 			if (strlen(w) >= minimumWordLength)
-			  retriever.got_word(w, 1,10);
+			  retriever.got_word(w, wordindex++,10);
 			w = strtok(0, " \t\r\n");
 		     }
 		 w = '\0';
@@ -708,7 +709,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    while (w)
 		    {
 			if (strlen(w) >= minimumWordLength)
-			  retriever.got_word(w, 1, 9);
+			  retriever.got_word(w, wordindex++, 9);
 			w = strtok(0, " ,\t\r\n");
 		    }
 		    w = '\0';
@@ -828,7 +829,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		     while (w)
 		       {
 			 if (strlen(w) >= minimumWordLength)
-			   retriever.got_word(w, 1, 8); // slot for img_alt
+			   retriever.got_word(w, wordindex++, 8); // slot for img_alt
 			 w = strtok(0, " ,\t\r\n");
 		       }
 		     w = '\0';

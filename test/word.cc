@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.9 1999/09/30 15:56:47 loic Exp $
+// $Id: word.cc,v 1.10 1999/10/01 12:53:55 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -149,12 +149,11 @@ static void dolist(params_t*)
       wordRef.Anchor(anchor);
       if(verbose > 2) pack_show(wordRef);
       if(verbose > 1) wordRef.Dump(stderr);
-      words.Replace(wordRef);
+      words.Insert(wordRef);
       location += strlen(*p);
       anchor++;
       docid++;
     }
-    words.Flush();
     words.Close();
 
     location = anchor = 0;
