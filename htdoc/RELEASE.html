@@ -22,53 +22,95 @@
     </p>
     <strong>Release notes for htdig-3.1.0</strong> XX Feb 1999<br>
     <p>This version marks the "full release" of version
-    3.1.0. Naturally, this version fixes a large number of remaining
-    bugs as well as adding a variety of new
-    features. <strong>NOTE:</strong> You <emph>must</emph> rebuild
-    your databases from scratch after updating to this
-    version. Several database-related bugs were fixed and will remain
-    unless you rebuild from scratch.
+    3.1.0. Naturally, this version adds a few new feature and fixes a
+    large number of remaining bugs. <strong>NOTE:</strong> You
+    <emph>must</emph> rebuild your databases from scratch after
+    updating to this version. Several database-related bugs were
+    fixed and will remain unless you rebuild from scratch.
     </p>
     <ul>
-      <li>Fixed a variety of small memory leaks</li>
-      <li>New option allow_in_form</li>
-      <li>New option bad_querystr</li>
-      <li>Warning message if the locale: option is set
-      incorrectly</li>
-      <li>Speedups in htsearch if backlink factor, date_factor</li>
-      <li>Sort (and reverse sorting) results by date, size of
-      document, title and score</li>
-      <li>Compressed document databases</li>
-      <li>Uses latest (2.6.4) version of the Berkeley database</li>
-      <li>Added support for anchors in excerpts</li>
-      <li>Parsing comments, skipping sections of a document</li>
-      <li>Merge multiple databases</li>
-      <li>Performance improvements</li>
-      <li>Duplicate URL in doc db bug</li>
-      <li>Wrapper</li>
-      <li>Save and restart</li>
-      <li>Change PDF parsing to support programs beyond acroread</li>
-      <li>Coredump with templates</li>
-      <li>Excerpts and punctuation</li>
-      <li>Coredump or invalid dates (1/1/70) with poorly-formatted
-      dates from servers</li>
-      <li>Use max_doc_size to allow for large robots.txt files to be
-      parsed</li>
-      <li>No_title_text to configure what to do if no title is
-      found</li>
-      <li>Variety of string matching bugs</li>
-      <li>Fixed bug where "deleted" documents were not actually
-      removed.</li>
-      <li>Fixed bug with search logging that could dump core if CGI
+      <li>Fixed a variety of small memory leaks.</li>
+      <li>Fixed a bug that could duplicate documents in the document
+      databases.</li>
+      <li>Fixed a bug that would not remove documents marked as deleted.</li>
+      <li>Fixed a bug that could dump core with incorrectly defined
+      template_map attributes.</li>
+      <li>Fixed a bug that could dump core or produce bogus dates when
+      a server returns the date in an incorrect format.</li>
+      <li>Fixed a variety of string-matching bugs that caused problems
+      with restricting indexing and searching.</li>
+      <li>Fixed a bug that could dump core if logging searches and CGI
       environment variables were not set.</li>
-      <li>Url_part_aliases, common_url_parts</li>
-      <li>Allow "include" keyword in config file</li>
-      <li>Cleaned up many compilation warnings and errors.</li>
-      <li>Speed up updates when a server ignores the If-Modified-Since
-      header</li>
-      <li>Remove_default_doc</li>
-      <li>Enhanced rundig with a portable test for age of
-      databases</li>
+      <li>Fixed a bug that would not hilight searches properly if they
+      contained punctuation.</li>
+      <li>Fixed PDF parsing to support programs beyond acroread.</li>
+      <li>Fixed a bug that caused problems with large robots.txt files.</li>
+      <li>Fixed a bug in the sample rundig script from a non-portable
+      test for the age of databases.</li>
+      <li>Fixed up many compilation warnings and errors.</li>
+      <li>Fixed a performance slowdown in htsearch when <a
+      href="attrs.html#backlink_factor">backlink_factor</a> and <a
+      href="attrs.html#date_factor">date_factor</a> are zero and can
+      be ignored.</li>
+      <li>Improved performance when a server ignores the
+      If-Modified-Since request during update digs.</li>
+      <li>Added a warning message if the locale: option is set
+      to a locale that is not present.</li>
+      <li>Some minor performance improvements.</li>
+      <li>Allow "include" keyword in <a href="cf_general.html">config
+      file</a> to include other config files.</li>
+      <li>Uses latest (2.6.4) version of the Berkeley database.</li>
+      <li>Two databases may be merged together using <a
+      href="htmerge.html">htmerge</a>.</li>
+      <li>The <a href="htdig.html">htdig</a> program can be safely
+      stopped and restarted in the middle of a dig. The dig will write
+      the progress to the file specified by the new <a
+      href="attrs.html#url_log">url_log</a> option.</li>
+      <li>Added support for anchors in excerpts with the <a
+      href="attrs.html#add_anchors_to_excerpt">add_anchors_to_excerpt</a>
+      option and the ANCHOR template variable.</li>
+      <li>Added support for sorting results in increasing or
+      decreasing order of document date, size, title and score using
+      the <a href="hts_form.html">search form</a>. Note that changing
+      sort from the default of score will result in a performance
+      decrease.</li>
+      <li>Added config options <a href="attrs.html#sort">sort</a> and
+      <a href="attrs.html#sort_names">sort_names</a> to change the
+      default sort and names used in the SORT template variable.
+      <li>Added the option <a
+      href="attrs.html#compression_level">compression_level</a> to
+      compress the document database if the zlib library is
+      present.</li>
+      <li>Added the options <a
+      href="attrs.html#noindex_start">noindex_start</a> and <a
+      href="attrs.html#noindex_end">noindex_end</a> to delimit
+      sections of HTML documents to be ignored.</li>
+      <li>Added the option <a
+      href="attrs.html#allow_in_form">allow_in_form</a> to allow
+      specific config options to be set in the search form.</li>
+      <li>Added the option <a
+      href="attrs.html#bad_querystr">bad_querystr</a> to ingore URLs
+      containing specified CGI queries.</li>
+      <li>Added the option <a
+      href="attrs.html#search_results_wrapper">search_results_wrapper</a>
+      to replace separate header and footer files. For mor
+      information, see the <a href="hts_general.html">general
+      htsearch</a> documentation.</li>
+      <li>Added option <a
+      href="attrs.html#no_title_text">no_title_text</a> to allow
+      configuration of the text used when no title is found.</li>
+      <li>Added option <a
+      href="attrs.html#url_part_aliases">url_part_aliases</a> to allow
+      rewriting portions of URLs.</li>
+      <li>Added option <a
+      href="attrs.html#common_url_parts">common_url_parts</a> to
+      compression common portions of URLs. Requires rebuilding
+      databases when changed.</li>
+      <li>Added option <a
+      href="attrs.html#remove_default_doc">remove_default_doc</a> to
+      control whether ht://Dig strips off the default document in a
+      folder. Set to empty will prevent problems with servers that
+      treat / and /index.html as different URLs.</li>
       <li>Of course there are many other bug-fixes and small
       enhancements. Many thanks to everyone who reported a bug or
       contributed code for this release!</li>
@@ -808,7 +850,7 @@
           &lt;andrew@contigo.com&gt;</a>
         </address>
         <!-- hhmts start -->
-Last modified: Fri Jan 29 14:51:24 EST 1999
+Last modified: Wed Feb  3 10:13:02 EST 1999
 <!-- hhmts end -->
       </li>
     </ul>
