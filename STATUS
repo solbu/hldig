@@ -24,14 +24,17 @@ KNOWN BUGS:
 
 PENDING PATCHES (available but need work):
 * htsearch rewrite from Quim.
+* Merge in mifluz changes.
 * Additional support for Win32.
 * Date-restricted searching (maybe 1/2 done).
-* Merge in mifluz-0.19 changes.
-* (My)SQL patches to 3.1.x to be forward-ported and cleaned up.
+* Memory improvements to htmerge. (Backed out b/c htword API changed.)
+* MySQL patches to 3.1.x to be forward-ported and cleaned up.
+  (Should really only attempt to use SQL for doc_db and related, not word_db)
 
 NEEDED FEATURES:
 * Make URL and Server blocks match documentation--i.e. change config
    lookups in htdig to work as suggested. Many already work this way.
+  (Probably best to keep a "wishlist" and set documentation to match code.)
 * Field-restricted searching.
 * Return all results.
 * Handle noindex_start & noindex_end as string lists.
@@ -43,9 +46,14 @@ TESTING:
   (htload a test file, check a few characteristics, htdump and compare)
 * Turn on URL parser test as part of test suite.
 * htsearch phrase support tests
+* Tests for new config file parser
 * Duplicate document detection while indexing
 
 DOCUMENTATION:
+* List of supported platforms/compilers is ancient.
+* Need a list of available mirrors and mirroring instructions.
+* Need a list of "related projects" inc. mifluz, ht://Check, ConfigDig, etc.
+   (should this include projects like KDevelop and WWWWoffle that use internally?)
 * Update cf_* pages to mention new config parser (i.e. URL-dependent config)
 * Add thorough documentation on htsearch restrict/exclude behavior
    (including '|' and regex).
