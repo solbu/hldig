@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.93 2003/10/17 11:10:54 lha Exp $
+// $Id: defaults.cc,v 1.94 2003/10/17 11:55:09 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -114,11 +114,16 @@ ConfigDefaults	defaults[] =
 { "allow_numbers", "false",  \
 	"boolean", "htdig htsearch", "", "all", "Indexing:What", "allow_numbers: true", " \
 	If set to true, numbers are considered words. This \
-	means that searches can be done on number as well as \
+	means that searches can be done on strings of digits as well as \
 	regular words. All the same rules apply to numbers as \
-	to words. See the description of \
-	<a href=\"#valid_punctuation\">valid_punctuation</a> for the \
-	rules used to determine what a word is. \
+	to words.  This does not cause numbers containing a decimal point or \
+	commas to be treated as a single entity. \
+	When allow_numbers is false, words are stil \
+	allowed to contain digits, but they must also contain at \
+	least one alphabetic character or \
+	<a href=\"#extra_word_characters\">extra word</a> character. \
+	To disallow digits in words, add the digits to \
+	<a href=\"#valid_punctuation\">valid_punctuation</a>. \
 " }, \
 { "allow_virtual_hosts", "true",  \
 	"boolean", "htdig", "", "3.0.8b2", "Indexing:Where", "allow_virtual_hosts: false", " \
@@ -991,7 +996,8 @@ http://www.htdig.org/", " \
 	In contrast to the characters in the \
 	<a href=\"#valid_punctuation\">valid_punctuation</a> \
 	attribute, they are treated just like letter \
-	characters.<br> \
+	characters.  See also the <a href=\"#allow_numbers\">allow_numbers</a>\
+	attribute.<br> \
 	Note that the <a href=\"#locale\">locale</a> attribute \
 	is normally used to configure which characters \
 	constitute letter characters.<br> \
@@ -2673,7 +2679,8 @@ form during indexing and translated for results. \
 	extra_word_characters or valid_punctuation.<br> \
 	See also the \
 	<a href=\"#extra_word_characters\">extra_word_characters</a> \
-	attribute.  \
+	and <a href=\"#allow_numbers\">allow_numbers</a> \
+	attributes.  \
 " }, \
 { "version", VERSION,  \
 	"string", "htsearch", "", "all", "Presentation:Text", "version: 3.2.0", " \

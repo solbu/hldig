@@ -14,7 +14,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: WordType.cc,v 1.7 2003/06/24 19:57:27 nealr Exp $
+// $Id: WordType.cc,v 1.8 2003/10/17 11:55:09 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -43,7 +43,7 @@ WordType::WordType(const Configuration &config)
 
   minimum_length = config.Value("minimum_word_length", 3);
   maximum_length = config.Value("maximum_word_length", 12);
-  allow_numbers = config.Value("allow_numbers", 0);
+  allow_numbers = config.Boolean("allow_numbers", 0);
 
   extra_word_characters = extra_word_chars;
   valid_punctuation = valid_punct;
@@ -147,7 +147,7 @@ WordType::Normalize(String& word) const
   //
   int alpha = 0;
   for(const unsigned char *p = (const unsigned char*)(const char*)(char *)word; *p; p++) {
-    if(IsStrictChar(*p) || (allow_numbers && IsDigit(*p))) {
+    if(IsStrictChar(*p) && (allow_numbers || !IsDigit(*p))) {
       alpha = 1;
     } else if(IsControl(*p)) {
       return status | WORD_NORMALIZE_CONTROL;

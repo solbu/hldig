@@ -1,5 +1,11 @@
 Fri Oct 17 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
+    * htword/WordType.cc, htcommon/defaults.cc:  Patched to fix bug #823083
+      Don't assume IsStrictChar returns false for digits.
+      Clarify behaviour of allow_numbers in the documentation.
+
+Fri Oct 17 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
     * htcommon/defaults.cc:  Patched to fix bug #823455
       Escaped "$" in valid_punctuation, and add warnings about $, \ and `.
 
