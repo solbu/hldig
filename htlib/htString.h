@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.14 1999/09/29 10:10:08 loic Exp $
+// $Id: htString.h,v 1.15 1999/09/29 10:17:08 loic Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -79,7 +79,7 @@ public:
     String		&operator << (int);
     String		&operator << (unsigned int);
     String		&operator << (long);
-    String		&operator << (short i)		{return *this<<(int)i;}
+    inline String	&operator << (short i)		{return *this<<(int)i;}
     String		&operator << (const String &);
     String		&operator << (const String *s)	{return *this << *s;}
 
@@ -88,8 +88,8 @@ public:
     //
     inline char		&operator [] (int n);
     inline char		operator [] (int n) const;
-    char		Nth (int n) { return (*this)[n]; }
-    char		last() { return Length > 0 ? Data[Length - 1] : '\0'; }
+    inline char		Nth (int n) { return (*this)[n]; }
+    inline char		last() { return Length > 0 ? Data[Length - 1] : '\0'; }
 
     //
     // Removing
