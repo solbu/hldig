@@ -1,11 +1,17 @@
 //
 // htmerge.cc
 //
-// Merge the databases into a form usable by htsearch
-// Updates databases to remove old documents and 
+// Merges two databases and/or updates databases to remove old documents and 
 // ensures the databases are consistent.
+//   Calls db.cc, docs.cc, and/or words.cc as necessary
 //
-// $Id: htmerge.cc,v 1.14 1999/06/01 01:55:58 ghutchis Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: htmerge.cc,v 1.15 1999/07/19 02:03:35 ghutchis Exp $
 //
 
 #include "htmerge.h"
@@ -18,7 +24,8 @@
 //
 // This hash is used to keep track of all the document IDs which have to be
 // discarded.
-// The wordlist file contains the information on which docs need to go.
+// This is generated from the doc database and is used to prune words
+// from the word db
 //
 Dictionary	discard_list;
 
@@ -42,7 +49,6 @@ int main(int ac, char **av)
     String		configfile = DEFAULT_CONFIG_FILE;
     String              merge_configfile = 0;
     int			c;
-    /* Currently unused    extern int		optind; */
     extern char		*optarg;
 
     while ((c = getopt(ac, av, "svm:c:dwa")) != -1)
@@ -110,13 +116,6 @@ int main(int ac, char **av)
     {
 	String	configValue;
 
-	configValue = config["word_list"];
-	if (configValue.length() != 0)
-	{
-	    configValue << ".work";
-	    config.Add("word_list", configValue);
-	}
-
 	configValue = config["word_db"];
 	if (configValue.length() != 0)
 	{
@@ -154,23 +153,17 @@ int main(int ac, char **av)
 
 	mergeDB();
     }
-    
-    
-    String	file1, file2;
-    if (do_words)
-    {
-	file1 = config["word_list"];
-	file2 = config["word_db"];
-	// Before we start, get rid of the previous one
-	// it doesn't matter if it's .work or not.
-	// This ensures we generate it from scratch and prevents duplicates
-	unlink(file2);
-	mergeWords(file1, file2);
-    }
     if (do_docs)
     {
-	convertDocs(config["doc_db"], config["doc_index"], 
-		    config["doc_excerpt"]);
+        // Update the document database, removing broken URLs, documents
+        // with no stored information, etc.
+	convertDocs();
+    }
+    if (do_words)
+    {
+        // Now that we have a list of deleted documents, remove the words
+        // that were indexed from those documents
+	mergeWords();
     }
     return 0;
 }
