@@ -1,3 +1,19 @@
+Mon Aug  9 21:13:50 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HtHTTP.h(SetRequestMethod): Fix declaration to be void.
+
+	* htdig/Transport.h(GetRequestMaxDocumentSize): Fix declaration to
+	return int.
+
+	* htdig/Retriever.cc(got_href): Fix mistake in hopcount
+	calculations. Now returns the correct hopcount even for pages
+	when a faster path is found. (Still need to change indexing to
+	sort on hopcount).
+
+	* htsearch/htsearch.cc(main): Fix compiler error in gcc-2.95 when
+	discarding const by using strcpy. It's a hack, hopefully there's a
+	better way.
+
 Mon Aug  9 17:23:15 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/URL.cc(ServerAlias): fix small memory leak in new default
