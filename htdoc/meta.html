@@ -107,6 +107,9 @@
 		robots
 	  </li>
 	  <li>
+		keywords
+	  </li>
+	  <li>
 		description
 	  </li>
 	</ul>
@@ -133,6 +136,10 @@
 		keywords could be "telephone phone directory book list".
 		Now, regardless of what text is actually in the document,
 		it can be found if these keywords are used in the search.
+		The weight that words in the content string will have in
+		search results is controlled by the
+		<a href="attrs.html#keywords_factor">
+		keywords_factor</a> attribute in your configuration.
 	  </dd>
 	  <dt>
 		<strong>htdig-noindex</strong>
@@ -207,14 +214,35 @@
 	  HTMLAuthor's Guide to the Robots META tag</a>.
 	  </dd>
 	  <dt>
+		<strong>keywords</strong>
+	  </dt>
+	  <dd>
+		The value of this property should be a blank separated list
+		of keywords, just as for the htdig-keywords property.
+		They are treated as equivalent by htdig. The reason for
+		two different properties is that the keywords property
+		is used by other search engines as well, while the
+		htdig-keywords property can be used for words you want
+		indexed only by htdig. You can get htdig to treat other
+		property names as equivalent to htdig-keywords, or disable
+		the htdig-keywords or keywords properties, by changing the
+		<a href="attrs.html#keywords_meta_tag_names">
+		keywords_meta_tag_names</a> attribute in your configuration.
+	  </dd>
+	  <dt>
 		<strong>description</strong>
 	  </dt>
 	  <dd>
 	  The value allows you to specify an alternate excerpt
-	  (description) of a page. If the config-file option
-	  "use_meta_descrption" is used, then any documents with
+	  (description) of a page. If the config-file attribute
+	  <a href="attrs.html#use_meta_description">
+	  use_meta_description</a> is used, then any documents with
 	  descriptions will use them instead of the automatically
 	  generated excerpts.
+	  The weight that words in the content string will have in
+	  search results is controlled by the
+	  <a href="attrs.html#meta_description_factor">
+	  meta_description_factor</a> attribute in your configuration.
 	  </dd>
 	</dl>
 	<hr size="4" noshade>
@@ -222,7 +250,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Mon Feb  8 20:38:16 EST 1999
+Last modified: Tue Nov 23 21:20:15 EST 1999
 <!-- hhmts end -->
   </body>
 </html>
