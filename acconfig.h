@@ -44,3 +44,6 @@ typedef char bool;
 
 /* Define if the function strptime is declared in <time.h> */
 #undef HAVE_STRPTIME_DECL
+
+/* Define if the included regex doesn't work */
+#undef HAVE_BROKEN_REGEX
