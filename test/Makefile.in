@@ -11,6 +11,18 @@
 # PARTICULAR PURPOSE.
 
 
+#
+# To compile with profiling do the following:
+#
+# make clean
+# ( cd db ; make all )
+# make CXXFLAGS=-g PROFILING=-p all
+#
+# Note that it's necessary to rebuild Berkeley DB without CXXFLAGS set because
+# it has undesirable effects. CXXFLAGS must be set to -g because it defaults
+# to -g -O2 when g++ is used and profiling is not done in a intuitive way.
+#
+
 
 SHELL = @SHELL@
 
@@ -110,7 +122,7 @@ YACC = @YACC@
 
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES) $(PROFILING)
 
 
 HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libdb.a
@@ -135,12 +147,10 @@ TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist t_wordskip t_htnet
 TESTS_ENVIRONMENT = $(top_srcdir)/test/test_prepare
 AM_MAKEFLAGS = MAKE="$(MAKE)"
 
-#PROFILING = -p
-
 EXTRA_DIST = test_functions.in test_prepare htdocs conf $(TESTS) 	word.try1 word.try2 word.try3 word.try4 word.try5         skiptest_db.txt         url.parents url.children
 
 
-LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include $(PROFILING)
+LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include
 
 noinst_PROGRAMS = dbbench word testnet document url
 

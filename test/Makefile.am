@@ -19,14 +19,12 @@ TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist t_wordskip t_htnet
 TESTS_ENVIRONMENT = $(top_srcdir)/test/test_prepare
 AM_MAKEFLAGS = MAKE="$(MAKE)"
 
-#PROFILING = -p
-
 EXTRA_DIST = test_functions.in test_prepare htdocs conf $(TESTS) \
 	word.try1 word.try2 word.try3 word.try4 word.try5 \
         skiptest_db.txt \
         url.parents url.children
 
-LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include $(PROFILING)
+LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include
 
 noinst_PROGRAMS = dbbench word testnet document url
 

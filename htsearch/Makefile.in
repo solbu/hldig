@@ -11,6 +11,18 @@
 # PARTICULAR PURPOSE.
 
 
+#
+# To compile with profiling do the following:
+#
+# make clean
+# ( cd db ; make all )
+# make CXXFLAGS=-g PROFILING=-p all
+#
+# Note that it's necessary to rebuild Berkeley DB without CXXFLAGS set because
+# it has undesirable effects. CXXFLAGS must be set to -g because it defaults
+# to -g -O2 when g++ is used and profiling is not done in a intuitive way.
+#
+
 
 SHELL = @SHELL@
 
@@ -108,7 +120,7 @@ YACC = @YACC@
 
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES) $(PROFILING)
 
 
 HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libdb.a
@@ -125,6 +137,7 @@ htsearch_SOURCES = Display.cc DocMatch.cc ResultList.cc ResultMatch.cc 		Templat
 noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h 	Template.h TemplateList.h WeightWord.h htsearch.h parser.h
 
 htsearch_DEPENDENCIES = ../htfuzzy/libfuzzy.la $(HTLIBS)
+htsearch_LDFLAGS = $(PROFILING)
 htsearch_LDADD = ../htfuzzy/libfuzzy.la $(HTLIBS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -137,7 +150,6 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 htsearch_OBJECTS =  Display.o DocMatch.o ResultList.o ResultMatch.o \
 Template.o TemplateList.o WeightWord.o htsearch.o parser.o
-htsearch_LDFLAGS = 
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)

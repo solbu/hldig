@@ -1,3 +1,11 @@
+Fri Dec 17 18:04:09 1999  Loic Dachary  <loic@ceic.com>
+
+	* Makefile.config: add PROFILING variable and document it. Designed
+	  to enable profiling of htdig easily. 
+
+	* */Makefile.am: add *_LDFLAGS = $(PROFILING) for every binary to
+	  enable profiling, if specified.
+
 Thu Dec 16 17:16:33 1999  Loic Dachary  <loic@ceic.com>
 
 	* htdb/*.cc: add -W option to activate htword specific compression. 
