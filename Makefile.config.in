@@ -24,7 +24,6 @@ PDF_PARSER=	@PDF_PARSER@
 SENDMAIL=	@SENDMAIL@
 
 DEFINES=	-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\"
-LIBDIRS=	-L../htlib -L../htcommon -L../db/dist -L/usr/lib
 INCS=		-I$(top_srcdir)/htlib -I$(top_srcdir)/htcommon \
 		-I../db/dist -I../include
 HTLIBS=		../htcommon/libcommon.a \
@@ -40,7 +39,7 @@ CPPFLAGS=	@CPPFLAGS@
 CXXFLAGS=	@CXXFLAGS@
 ALL_CFLAGS=	$(LOCAL_DEFINES) $(DEFINES) $(INCS) $(CFLAGS)
 ALL_CXXFLAGS=	$(LOCAL_DEFINES) $(DEFINES) $(INCS) $(CXXFLAGS)
-LDFLAGS=	@LDFLAGS@ $(LIBDIRS)
+LDFLAGS=	@LDFLAGS@
 
 .SUFFIXES: .cc
 .cc.o:
