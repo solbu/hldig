@@ -4,7 +4,7 @@
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
 #if RELEASE
-static char RCSid[] = "$Id: PDF.cc,v 1.15 1999/08/18 16:32:02 grdetil Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.16 1999/08/25 22:00:55 grdetil Exp $";
 #endif
 
 #include <sys/types.h>
@@ -525,16 +525,11 @@ void PDF::parseString()
 
 	    if (word.length() >= minimumWordLength)
 	    {
-		word.lowercase();
-		HtStripPunctuation(word);
-		if (word.length() >= minimumWordLength)
-		{
-		    _retriever->got_word(word,
-				       int(_curPage * 1000 / _pages),
-				       0);
-		    if (debug > 3)
-			printf("PDF::parseString: got word %s\n", word.get());
-		}
+		_retriever->got_word(word,
+				     int(_curPage * 1000 / _pages),
+				     0);
+		if (debug > 3)
+		    printf("PDF::parseString: got word %s\n", word.get());
 	    }
 	}
 		

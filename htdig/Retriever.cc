@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.56 1999/08/12 09:26:24 loic Exp $
+// $Id: Retriever.cc,v 1.57 1999/08/25 22:00:56 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -935,6 +935,56 @@ Retriever::got_word(char *word, int location, int heading)
       HtStripPunctuation(w);
       if (w.length() >= minimumWordLength)
 	words.Word(w, location, current_anchor_number, factor[heading]);
+      if (strcmp(word, w.get()) != 0)	// have punctuation that was stripped
+      {
+	// Check for compound words...
+	String parts = word;
+	int added;
+	int nparts = 1;
+	do
+	{
+	    added = 0;
+	    char *start = parts.get();
+	    char *punctp, *nextp, *p;
+	    char  punct;
+	    int   n;
+	    while (*start)
+	    {
+		p = start;
+		for (n = 0; n < nparts; n++)
+		{
+		    while (HtIsStrictWordChar((unsigned char)*p))
+			p++;
+		    punctp = p;
+		    if (!*punctp && n+1 < nparts)
+			break;
+		    while (*p && !HtIsStrictWordChar((unsigned char)*p))
+			p++;
+		    if (n == 0)
+			nextp = p;
+		}
+		if (n < nparts)
+		    break;
+		punct = *punctp;
+		*punctp = '\0';
+		if (*start && (*p || start > parts.get()))
+		{
+		    w = start;
+		    HtStripPunctuation(w);
+		    if (w.length() >= minimumWordLength)
+		    {
+			words.Word(w, location, current_anchor_number, factor[heading]);
+			if (debug > 3)
+			    cout << "word part: " << start << '@' << location << endl;
+		    }
+		    added++;
+		}
+		start = nextp;
+		*punctp = punct;
+	    }
+	    nparts++;
+	} while (added > 2);
+      }
     }
 }
 
