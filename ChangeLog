@@ -1,4 +1,6 @@
-Mon Jan 15 17:36:09 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Jan 15 17:40:45 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/hts_templates.html: Add METADESCRIPTION variable.
 
 	* htsearch/Display.cc (displayMatch): Add METADESCRIPTION variable.
 
