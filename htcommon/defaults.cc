@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.44 1999/02/17 11:40:59 hp Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.45 1999/03/16 02:04:26 hp Exp $";
 #endif
 
 #include "Configuration.h"
@@ -55,6 +55,7 @@ ConfigDefaults	defaults[] =
     {"excerpt_show_top",		"false"},
     {"exclude_urls",			"/cgi-bin/ .cgi"},
     {"external_parsers",		""},
+    {"extra_word_characters",		""},
     {"heading_factor_1",		"5"},
     {"heading_factor_2",		"4"},
     {"heading_factor_3",		"3"},

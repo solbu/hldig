@@ -13,6 +13,7 @@
 #include "htdig.h"
 #include "defaults.h"
 #include "HtURLCodec.h"
+#include "HtWordType.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -109,6 +110,9 @@ main(int ac, char **av)
     {
 	config.Add("max_hop_count", max_hops);
     }
+
+    // Ctype-like functions for what constitutes a word.
+    HtWordType::Initialize(config);
 
     //
     // Check url_part_aliases and common_url_parts for

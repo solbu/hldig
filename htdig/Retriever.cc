@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.38 1999/03/08 12:49:04 hp Exp $
+// $Id: Retriever.cc,v 1.39 1999/03/16 02:04:28 hp Exp $
 //
 
 #include "Retriever.h"
@@ -13,11 +13,12 @@
 #include "Server.h"
 #include "Parsable.h"
 #include "Document.h"
-#include <StringList.h>
+#include "StringList.h"
 #include <pwd.h>
 #include <signal.h>
 #include <assert.h>
 #include <stdio.h>
+#include "HtWordType.h"
 
 static WordList	words;
 static int noSignal;
@@ -28,7 +29,7 @@ static int noSignal;
 //
 Retriever::Retriever(RetrieverLog flags)
 {
-FILE	*urls_parsed;
+    FILE	*urls_parsed;
 
     currenthopcount = 0;
     max_hop_count = config.Value("max_hop_count", 999999);
@@ -58,7 +59,6 @@ FILE	*urls_parsed;
     words.BadWordFile(config["bad_word_list"]);
 
     doc = new Document();
-    valid_punctuation = config["valid_punctuation"];
     minimumWordLength = config.Value("minimum_word_length", 3);
 
     log = flags;
@@ -873,7 +873,7 @@ Retriever::got_word(char *word, int location, int heading)
     if (trackWords)
     {
       String w = word;
-      w.remove(valid_punctuation);
+      HtStripPunctuation(w);
       if (w.length() >= minimumWordLength)
 	words.Word(w, location, current_anchor_number, factor[heading]);
     }

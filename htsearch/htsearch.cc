@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.28 1999/03/12 00:46:57 hp Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.29 1999/03/16 02:04:39 hp Exp $";
 #endif
 
 #include "htsearch.h"
@@ -25,6 +25,7 @@ static char RCSid[] = "$Id: htsearch.cc,v 1.28 1999/03/12 00:46:57 hp Exp $";
 #include <ctype.h>
 #include <signal.h>
 #include "HtURLCodec.h"
+#include "HtWordType.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -180,6 +181,9 @@ main(int ac, char **av)
 	config.Add(form_vars[i], input[form_vars[i]]);
     }
  
+    // Ctype-like functions for what constitutes a word.
+    HtWordType::Initialize(config);
+
     //
     // Check url_part_aliases and common_url_parts for
     // errors.
@@ -339,14 +343,6 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 {
     List	tempWords;
     int		i;
-    char	*valid_punctuation = 0;
-	
-    //
-    // This is going to be used a lot.  We'll cache it.
-    //
-    valid_punctuation = config["valid_punctuation"];
-    if (!valid_punctuation)
-	valid_punctuation = "";
 
     //
     // Parse the words we need to search for.  It should be a list of words
@@ -383,11 +379,11 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		tempWords.Add(new WeightWord(s, -1.0));
 		break;
 	    }
-	    else if (isalnum(t) || strchr(valid_punctuation, t) || t == ':' ||
+	    else if (HtIsWordChar(t) || t == ':' ||
 			 (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255))
 	    {
 		word = 0;
-		while (t && (isalnum(t) || strchr(valid_punctuation, t) ||
+		while (t && (HtIsWordChar(t) ||
 			     t == ':' || (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255)))
 		{
 		    word << (char) t;
@@ -415,7 +411,7 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		{
 		    // Add word to excerpt matching list
 		    originalPattern << word << "|";
-	  	    word.remove(valid_punctuation);
+	  	    HtStripPunctuation(word);
 		    WeightWord	*ww = new WeightWord(word, 1.0);
 		    if (!badWords.IsValid(word) ||
 			word.length() < minimum_word_length)

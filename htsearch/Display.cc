@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.59 1999/03/14 03:16:37 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.60 1999/03/16 02:04:38 hp Exp $";
 #endif
 
 #include "htsearch.h"
@@ -22,6 +22,7 @@ static char RCSid[] = "$Id: Display.cc,v 1.59 1999/03/14 03:16:37 ghutchis Exp $
 #include <ctype.h>
 #include <syslog.h>
 #include "HtURLCodec.h"
+#include "HtWordType.h"
 
 //*****************************************************************************
 //
@@ -1000,7 +1001,7 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first)
 	else
 	{
 	    *text << config["start_ellipses"];
-	    while (*start && isalpha(*start))
+	    while (*start && HtIsStrictWordChar(*start))
 		start++;
 	}
 
@@ -1015,7 +1016,7 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first)
 	}
 	else
 	{
-	    while (*end && isalpha(*end))
+	    while (*end && HtIsStrictWordChar(*end))
 		end++;
 	    *end = '\0';
 	    *text << hilight(start, urlanchor, fanchor);

@@ -7,13 +7,14 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: StringMatch.cc,v 1.8 1999/01/29 18:46:34 ghutchis Exp $";
+static char RCSid[] = "$Id: StringMatch.cc,v 1.9 1999/03/16 02:04:36 hp Exp $";
 #endif
 
 #include "StringMatch.h"
 #include <string.h>
 #include <ctype.h>
 #include <fstream.h>
+#include "HtWordType.h"
 
 //
 // Entries in the state table can either be normal or final.
@@ -382,10 +383,10 @@ int StringMatch::FindFirstWord(char *string, int &which, int &length)
 	    is_word = 1;
 	    if (start_pos != 0)
 	    {
-		if (isalnum((unsigned char)string[start_pos - 1]))
+		if (HtIsStrictWordChar((unsigned char)string[start_pos - 1]))
 		    is_word = 0;
 	    }
-	    if (isalnum((unsigned char)string[pos + 1]))
+	    if (HtIsStrictWordChar((unsigned char)string[pos + 1]))
 		is_word = 0;
 	    if (is_word)
 	    {
@@ -453,7 +454,7 @@ int StringMatch::CompareWord(char *string, int &which, int &length)
 
 	    if ((unsigned char)string[position + 1])
 	    {
-		if (isalnum((unsigned char)string[position + 1]))
+		if (HtIsStrictWordChar((unsigned char)string[position + 1]))
 		    isWord = 0;
 	    }
 

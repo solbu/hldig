@@ -4,7 +4,7 @@
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
 #if RELEASE
-static char RCSid[] = "$Id: PDF.cc,v 1.9 1999/02/02 22:29:31 ghutchis Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.10 1999/03/16 02:04:27 hp Exp $";
 #endif
 
 #include <sys/types.h>
@@ -16,6 +16,7 @@ static char RCSid[] = "$Id: PDF.cc,v 1.9 1999/02/02 22:29:31 ghutchis Exp $";
 #include "StringList.h"
 #include <stdlib.h>
 #include <ctype.h>
+#include "HtWordType.h"
 
 
 //*****************************************************************************
@@ -485,13 +486,13 @@ void PDF::parseString()
     {
 	word = 0;
 
-	if (isalnum(*position))
+	if (HtIsStrictWordChar(*position))
 	{
 	    //
 	    // Start of a word.  Try to find the whole thing
 	    //
 	    in_space = 0;
-	    while (*position && (isalnum(*position) || strchr(valid_punctuation, *position)))
+	    while (*position && HtIsWordChar(*position))
 	    {
 		word << *position;
 		position++;
@@ -505,7 +506,7 @@ void PDF::parseString()
 	    if (word.length() > 2)
 	    {
 		word.lowercase();
-		word.remove(valid_punctuation);
+		HtStripPunctuation(word);
 		if (word.length() > 2)
 		{
 		    _retriever->got_word(word,

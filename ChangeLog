@@ -1,3 +1,57 @@
+Tue Mar 16 01:50:16 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* htlib/HtWordType.h (class HtWordType): New.
+	* htlib/HtWordType.cc: New.
+	* htlib/Makefile.in (OBJS): Add HtWordType.o
+
+	* htdoc/attrs.html: Document attribute extra_word_characters.
+	* htdoc/cf_byprog.html: Ditto.
+	* htdoc/cf_byname.html: Ditto.
+
+	* htcommon/defaults.cc (defaults): Add extra_word_characters.
+
+	* htsearch/htsearch.h: Lose spurious extern declaration of unused
+	variable valid_punctuation.
+	* htsearch/htsearch.cc (main): Call HtWordType::Initialize.
+	(setupWords): Use HtIsWordChar, HtIsStrictWordChar and
+	HtStripPunctuation.  Do not read valid_punctuation.
+
+	* htsearch/Display.cc (excerpt): Use HtIsStrictWordChar.
+
+	* htlib/StringMatch.cc (FindFirstWord): Ditto.
+	(CompareWord): Ditto.
+
+	* htdig/htdig.cc (main): Call HtWordType::Initialize.
+
+	* htdig/Retriever.h (class Retriever): Lose member
+	valid_punctuation.
+	* htdig/Retriever.cc (Retriever): Lose its initialization.
+
+	* htdig/Postscript.h (class Postscript): Lose member
+	valid_punctuation.
+	* htdig/Postscript.cc (Postscript): Lose its initialization.
+	(flush_word): Use HtStripPunctuation.
+	(parse_string): Use HtIsWordChar,
+	HtIsStrictWordChar and HtStripPunctuation.
+
+	* htdig/Parsable.h (class Parsable): Lose member
+	valid_punctuation.
+	* htdig/Parsable.cc (Parsable): Lose its initilization.
+
+	* htcommon/WordList.cc (valid_word): Use HtIsStrictWordChar.
+	(BadWordFile): Use HtStripPunctuation.  Do not read
+	valid_punctuation.
+
+	* htcommon/DocumentRef.cc (AddDescription): Use HtIsWordChar,
+	HtIsStrictWordChar and HtStripPunctuation.  Do not read
+	valid_punctuation.
+
+	* htdig/PDF.cc (parseString): Similar..
+
+	* htdig/HTML.cc (parse): Similar.
+
+	* htdig/Plaintext.cc (parse): Similar.
+
 Sun Mar 14 14:04:31 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/Makefile.in: Add HtSGMLEntites.o to OBJS.

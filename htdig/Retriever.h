@@ -1,7 +1,7 @@
 //
 // Retriever.h
 //
-// $Id: Retriever.h,v 1.8 1999/01/26 17:16:11 bergolth Exp $
+// $Id: Retriever.h,v 1.9 1999/03/16 02:04:29 hp Exp $
 //
 
 #ifndef _Retriever_h_
@@ -9,9 +9,9 @@
 
 #include "DocumentRef.h"
 #include "Images.h"
-#include <Dictionary.h>
-#include <Queue.h>
-#include <List.h>
+#include "Dictionary.h"
+#include "Queue.h"
+#include "List.h"
 
 class URL;
 class Document;
@@ -110,7 +110,6 @@ private:
     String		notFound;
 
     // Some useful constants
-    char             *valid_punctuation;
     int              minimumWordLength;
 
     //

@@ -17,7 +17,7 @@ OBJS=	Configuration.o Connection.o Database.o \
 		good_strtok.o io.o strcasecmp.o mktime.o \
 		strptime.o timegm.o HtCodec.o HtWordCodec.o \
 		HtURLCodec.o HtVector.o HtHeap.o \
-		regex.o HtSGMLCodec.o
+		regex.o HtSGMLCodec.o HtWordType.o
 
 TARGET=		libht.a
 
