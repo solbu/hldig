@@ -1,8 +1,12 @@
+Mon Sep 27 12:39:24 1999  Loic Dachary  <loic@ceic.com>
+
+	* test/word.cc (dolist): don't deal with upper case at present and prevent warning.
+
 Mon Sep 27 10:38:37 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* htlib/String.cc: removed compiler warnings
 
-	* htdig/HtHTTP.h: corrected $Id: ChangeLog,v 1.422 1999/09/27 08:57:04 loic Exp $ property
+	* htdig/HtHTTP.h: corrected $Id: ChangeLog,v 1.423 1999/09/27 10:32:11 loic Exp $ property
 
 Mon Sep 27 10:29:58 1999  Loic Dachary  <loic@ceic.com>
 

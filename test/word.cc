@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.2 1999/09/24 14:30:13 loic Exp $
+// $Id: word.cc,v 1.3 1999/09/27 10:32:13 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -144,7 +144,8 @@ static void dolist(params_t* params)
       wordRef.Word(*p);
       wordRef.Location(location);
       wordRef.Anchor(anchor);
-      if(verbose > 1) pack_show(wordRef);
+      if(verbose > 2) pack_show(wordRef);
+      if(verbose > 1) wordRef.Dump(stderr);
       words.Replace(wordRef);
       location += strlen(*p);
       anchor++;
@@ -163,8 +164,17 @@ static void dolist(params_t* params)
       wordRef.Location(location);
       wordRef.Anchor(anchor);
 
+      location += strlen(*p);
+      anchor++;
+
+      //
+      // Skip first word because we don't want to deal with upper/lower case at present.
+      //
+      if(p == word_list) continue;
+
       if(verbose) fprintf(stderr, "%s ... ", *p);
-      if(verbose > 1) pack_show(wordRef);
+      if(verbose > 2) pack_show(wordRef);
+      if(verbose > 1) wordRef.Dump(stderr);
       List *result = words[wordRef];
       result->Start_Get();
       int count = 0;
@@ -182,8 +192,6 @@ static void dolist(params_t* params)
 
       delete result;
 
-      location += strlen(*p);
-      anchor++;
     }
   }
   //
