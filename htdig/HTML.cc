@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.5 1999/03/19 23:18:31 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.6 1999/03/22 20:37:23 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -19,10 +19,36 @@ static char RCSid[] = "$Id: HTML.cc,v 1.30.2.5 1999/03/19 23:18:31 grdetil Exp $
 #include "URL.h"
 
 static StringMatch	tags;
+static StringMatch	nobreaktags;
+static StringMatch	spacebeforetags;
+static StringMatch	spaceaftertags;
 static StringMatch	attrs;
 static StringMatch	srcMatch;
 static StringMatch	hrefMatch;
 static StringMatch	keywordsMatch;
+
+
+//*****************************************************************************
+// ADDSPACE() macro, to insert space where needed in various strings
+// 		Reduces all multiple whitespace to a single space
+
+#define ADDSPACE(in_space)	\
+    if (!in_space)							\
+    {									\
+	if (in_title && doindex)					\
+	{								\
+	    title << ' ';						\
+	}								\
+	if (in_ref && description.length() < max_description_length)	\
+	{								\
+	    description << ' ';						\
+	}								\
+	if (head.length() < max_head_length && doindex && !in_title)	\
+	{								\
+	    head << ' ';						\
+	}								\
+	in_space = 1;							\
+    }
 
 
 //*****************************************************************************
@@ -46,6 +72,19 @@ HTML::HTML()
 
     hrefMatch.IgnoreCase();
     hrefMatch.Pattern("href");
+
+    // These tags don't cause a word break.  They may also be in "tags" above,
+    // except for the "a" tag, which must be handled as a special case.
+    // Note that <sup> & <sub> should cause a word break.
+    nobreaktags.IgnoreCase();
+    nobreaktags.Pattern("font|/font|em|/em|strong|/strong|i|/i|b|/b|u|/u|tt|/tt|abbr|/abbr|code|/code|q|/q|samp|/samp|kbd|/kbd|var|/var|dfn|/dfn|cite|/cite|blink|/blink|big|/big|small|/small|s|/s");
+
+    // These tags, which may also be in "tags" above, cause word breaks and
+    // therefore cause space to be inserted before (or after) do_tag() is done.
+    spacebeforetags.IgnoreCase();
+    spacebeforetags.Pattern("title|h1|h2|h3|h4|h5|h6|address|blockquote|noindex|img|li|th|td|dt|dd|p|br|hr|center|spacer");
+    spaceaftertags.IgnoreCase();
+    spaceaftertags.Pattern("/title|/h1|/h2|/h3|/h4|/h5|/h6|/address|/blockquote");
 
     //String	keywordNames = config["keywords_meta_tag_names"];
     //keywordNames.replace(' ', '|');
@@ -100,7 +139,8 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     // are looking for
     //
     int			offset = 0;
-    int			in_space = 0;
+    int			in_space;
+    int			in_punct;
     unsigned char	*q, *start;
     unsigned char	*position = (unsigned char *) contents->get();
     unsigned char       *text = (unsigned char *) new char[contents->length()+1];
@@ -117,6 +157,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     in_title = 0;
     in_ref = 0;
     in_space = 0;
+    in_punct = 0;
 	
     while (*position)
     {
@@ -246,7 +287,29 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	      break; // Syntax error in the doc.  Tag never ends.
 	    tag = 0;
 	    tag.append((char*)position, q - position + 1);
+	    position++;
+	    while (isspace(*position))
+		position++;
+	    if (!in_space && spacebeforetags.CompareWord((char *)position)
+		|| !in_space && !in_punct && *position != '/')
+	    {
+		// These opening tags cause a space to be inserted
+		// before anything they insert.
+		// Tags processed here (i.e. not in nobreaktags), like <a ...>
+		// tag, are a special case: they don't actually add space in
+		// formatted text, but because in our processing it causes
+		// a word break, we avoid word concatenation in "head" string.
+		ADDSPACE(in_space);
+		in_punct = 0;
+	    }
 	    do_tag(retriever, tag);
+	    if (!in_space && spaceaftertags.CompareWord((char *)position))
+	    {
+		// These closing tags cause a space to be inserted
+		// after anything they insert.
+		ADDSPACE(in_space);
+		in_punct = 0;
+	    }
 	    position = q+1;
 	  }
 	else if (*position > 0 && (isalnum(*position)))
@@ -256,13 +319,34 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    //
 	    word = 0;
 	    in_space = 0;
+	    in_punct = 0;
 	    while (*position &&
 		   (isalnum(*position) ||
                    strchr(valid_punctuation, *position)))
-	      {
-               word << (char)*position;
-               position++;
-	      }
+	    {
+		word << (char)*position;
+		position++;
+		if (*position == '<')
+		{
+		    q = position+1;
+		    while (isspace(*q))
+			q++;
+		    // Does this tag cause a word break?
+		    if (nobreaktags.CompareWord((char *)q))
+		    {
+			// These tags just change character formatting and
+			// don't break words.
+			q = (unsigned char*)strchr((char *)position, '>');
+			if (q)
+			{
+			    tag = 0;
+			    tag.append((char*)position, q - position + 1);
+			    do_tag(retriever, tag);
+			    position = q+1;
+			}
+		    }
+		}
+	    }
 
 	    if (in_title && doindex)
 	    {
@@ -271,8 +355,11 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 
 	    if (in_ref)
 	    {
-		description << word;
-		if (description.length() > max_description_length)
+		if (description.length() < max_description_length)
+		{
+		    description << word;
+		}
+		else
 		{
 		    description << " ...";
 		    if (dofollow)
@@ -311,51 +398,32 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    //
 	    // Characters that are not part of a word
 	    //
-	    if (doindex)
+	    if (isspace(*position))
 	    {
-		if (isspace(*position))
+		ADDSPACE(in_space);
+		in_punct = 0;
+	    }
+	    else
+	    {
+		//
+		// Not whitespace
+		//
+		if (head.length() < max_head_length && doindex && !in_title)
 		{
-		    //
-		    // Reduce all multiple whitespace to a single space
-		    //
-		    if (!in_space)
-		    {
-			if (head.length() < max_head_length)
-			{
-			    head << ' ';
-			}
-			if (in_ref)
-			{
-			    description << ' ';
-			}
-			if (in_title)
-			{
-			    title << ' ';
-			}
-		    }
-		    in_space = 1;
+		    // We don't want to add random chars to the 
+		    // excerpt if we're in the title.
+		    head << *position;
 		}
-		else
+		if (in_ref && description.length() < max_description_length)
 		{
-		    //
-		    // Not whitespace
-		    //
-		    if (head.length() < max_head_length && !in_title)
-		    {
-		        // We don't want to add random chars to the 
-		        // excerpt if we're in the title.
-		        head << *position;
-		    }
-		    if (in_ref)
-		    {
-			description << *position;
-		    }
-		    if (in_title)
-		    {
-			title << *position;
-		    }
-		    in_space = 0;
+		    description << *position;
 		}
+		if (in_title && doindex)
+		{
+		    title << *position;
+		}
+		in_space = 0;
+		in_punct = 1;
 	    }
 	    position++;
 	}
@@ -642,7 +710,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	}
 
 	case 19:	// "li"
-	    if (doindex && head.length() < max_head_length)
+	    if (doindex && !in_title && head.length() < max_head_length)
 		head << "* ";
 	    break;
 
@@ -1022,6 +1090,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    *base = tempBase;
 		}
 	    }
+	    break;
 	}
 	
 	default:
