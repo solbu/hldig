@@ -7,6 +7,11 @@ Fri Jun 4 10:23:53 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
    * htdoc/cf_byprog.html: ditto
    * htdoc/RELEASE.html: updated with info regarding this attribute
 
+Thu Jun  3 16:04:23 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
+
+    * htdig/HTML.cc (do_tag): Fixed meta date handling to avoid inadvertently
+      matching names like DC.Date.Review.
+
 Thu Jun 3 10:26:26 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
    * Tagged release htdig-3-2-0b6
