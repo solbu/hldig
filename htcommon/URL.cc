@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.6 2002/10/27 15:17:16 ghutchis Exp $
+// $Id: URL.cc,v 1.7 2002/11/04 10:00:17 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -94,6 +94,27 @@ URL::URL(const String &nurl)
     parse(nurl);
 }
 
+
+//*****************************************************************************
+// Assignment operator
+const URL &URL::operator = (const URL &rhs)
+{
+	if (this == &rhs)
+		return *this;
+
+	// Copy the attributes
+	_url = rhs._url;
+	_path = rhs._path;
+	_service = rhs._service;
+	_host = rhs._host;
+	_port = rhs._port;
+	_normal = rhs._normal;
+	_hopcount = rhs._hopcount;
+	_signature = rhs._signature;
+	_user = rhs._user;
+
+	return *this;
+}
 
 //*****************************************************************************
 // URL::URL(const String &url, const URL &parent)

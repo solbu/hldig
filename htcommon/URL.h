@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.h,v 1.3 2002/10/27 15:17:16 ghutchis Exp $
+// $Id: URL.h,v 1.4 2002/11/04 10:00:17 angusgb Exp $
 //
 
 #ifndef _URL_h_
@@ -53,6 +53,8 @@ public:
     void		normalize();
     void		rewrite();
     const String &signature();
+
+    const URL &operator = (const URL &rhs);
 
 private:
     String		_url;

@@ -1,3 +1,7 @@
+Mon Nov 4 10:44:35 CET 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* htcommon/URL.[h,cc]: added the assignment operator
+
 Sun Oct 27 09:29:02 2002  Geoffrey Hutchison  <ghutchis@localhost>
 
 	Merge in word DB zlib patch from Neal Richter.
