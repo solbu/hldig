@@ -1,3 +1,8 @@
+Thu Dec 09 17:07:47 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* htcommon/defaults.cc: added defaults for compression and DB configuration 
+	parameters
+
 Thu Dec 09 16:47:54 1999  Loic Dachary  <loic@ceic.com>
 
 	* db/dist/configure.in,Makefile.in: Added shared lib support

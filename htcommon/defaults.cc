@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.15 1999/12/07 19:54:09 bosc Exp $
+// $Id: defaults.cc,v 1.64.2.16 1999/12/09 16:44:31 bosc Exp $
 //
 
 #include "HtConfiguration.h"
@@ -2075,6 +2075,28 @@ url_part_aliases:
 	will append data to this file. htmerge will then use
 	the existing data and the appended data to create a
 	completely new main word database.
+" },
+{ "wordlist_compress", "false", 
+	"boolean", "htdig htmerge htsearch htfuzzy", "wordlist_compress: true", "
+	Enables or disables the default compression system for the indexer.
+	This currently compresses the index by a factor of 8.
+" },
+{ "wordlist_page_size", "0", 
+	"number", "htdig htmerge htsearch htfuzzy", "wordlist_page_size: 8192", "
+	Size of pages used by Berkeley DB (DB used by the indexer)
+" },
+{ "wordlist_cache_size", "0", 
+	"number", "htdig htmerge htsearch htfuzzy", "wordlist_cache_size: 40000000", "
+	Size of memory cache used by Berkeley DB (DB used by the indexer)
+
+" },
+{ "wordlist_compress_debug", "1", 
+	"number", "htdig htmerge htsearch htfuzzy", "wordlist_cache_size: 2", "
+	Debuging value for the  compression system for the indexer.
+	0 : none
+	1 : transparent autotest while compressing (small performance decrease)
+	2 : ------------------              big performance decrease
+	3 : verbose
 " },
 {0, 0, 0, 0, 0},
 };
