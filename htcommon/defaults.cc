@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.111 2004/06/05 04:30:47 lha Exp $
+// $Id: defaults.cc,v 1.112 2004/06/12 13:39:12 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -2561,8 +2561,8 @@ http://www.htdig.org/", " \
 " }, \
 { "url_log", "${database_base}.log",  \
 	"string", "htdig", "", "3.1.0", "Extra Output", "url_log: /tmp/htdig.progress", " \
-	If <a href=\"htdig.html\">htdig</a> is run with the -l option \
-	and interrupted, it will write out its progress to this \
+	If <a href=\"htdig.html\">htdig</a> is \
+	interrupted, it will write out its progress to this \
 	file. Note that if it has a large number of URLs to write, \
 	it may take some time to exit. This can especially happen \
 	when running update digs and the run is interrupted soon \

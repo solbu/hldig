@@ -6182,7 +6182,7 @@ http://www.htdig.org/
 	Special characters can be embedded in these names using %xx hex encoding.
 	For example, you can use %3D to embed an "=" sign in an URL pattern.
 	<br>
-	See also <a href="#local_user_urls">local_user_urls</a>.
+	See also <a href="#local_default_doc">local_default_doc</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7087,7 +7087,7 @@ http://www.htdig.org/
 	We found that storing 50,000 bytes will store about
 	95% of all the documents completely. This really
 	depends on how much storage is available and how much
-	you want to show.
+	you want to show.  Currently, this is must not be 0.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -12928,8 +12928,8 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	If <a href="htdig.html">htdig</a> is run with the -l option
-	and interrupted, it will write out its progress to this
+	If <a href="htdig.html">htdig</a> is
+	interrupted, it will write out its progress to this
 	file. Note that if it has a large number of URLs to write,
 	it may take some time to exit. This can especially happen
 	when running update digs and the run is interrupted soon
@@ -14601,6 +14601,6 @@ form during indexing and translated for results.
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: Sat Jun  5 14:16:34 EST 2004
+		Last modified: Sat Jun 12 23:26:34 EST 2004
   </body>
 </html>

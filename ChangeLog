@@ -1,3 +1,16 @@
+Sat 12 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
+
+    * htdoc/RELEASE.html: Separated bug fixes from new features
+
+    * htdoc/{htdig,htfuzzy}.html, installdir/{htdig,htfuzzy}.1.in:
+      Added list of database files used
+
+    * htdoc/{htdump,htmerge,htnotify,htpurge,hts_general,htstat,rundig}.html:
+      Hyperlinked COMMON_DIR, BIN_DIR, DATABASE_DIR to attrs.html.
+
+    * htcommon/defaults.cc, htdoc/attrs.html.in:
+      Remove reference to deprecated '-l' option (generate URL log) of htdig.
+
 Fri Jun 11 11:48:40 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 
     * htsearch/parser.cc (phrase): Applied Lachlan's patch to prevent endless

@@ -59,6 +59,20 @@ search stragegy you do not get the intended search results.
 .TP
 .B @DEFAULT_CONFIG_FILE@
 The default configuration file.
+.B @DATABASE_DIR@/db.accents.db
+(Output) Maps between characters with and without accents for accents fuzzy rule
+.B @DATABASE_DIR@/db.metaphone.db
+(Output) Database of similar-sounding words for metaphone fuzzy rule
+.B @DATABASE_DIR@/db.soundex.db
+(Output) Database of similar-sounding words for soundex fuzzy rule
+.B @COMMON_DIR@/english.0, @COMMON_DIR@/english.aff
+(Input) List of words and affix rules used to generate endings
+.B @COMMON_DIR@/root2word.db, @COMMON_DIR@/word2rood.db
+(Output) Database used for endings fuzzy rule
+.B @COMMON_DIR@/synonyms
+(Input) List of groups of words considered synonymous
+.B @COMMON_DIR@/synonyms.db
+(Output) Database used for synonyms fuzzy rule
 .SH "SEE ALSO"
 Please refer to the HTML pages (in the htdig-doc package)
 .B /usr/share/doc/htdig-doc/html/index.html

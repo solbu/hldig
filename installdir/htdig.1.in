@@ -99,6 +99,12 @@ If there are no "*", "+" or "-" symbols after the URL, it doesn't mean the docum
 .TP
 .B @DEFAULT_CONFIG_FILE@
 The default configuration file.
+.B @DATABASE_DIR@/db.docdb
+Stores data about each document (title, url, etc.).
+.B @DATABASE_DIR@/db.words.db, @DATABASE_DIR@/db.words.db_weakcmpr
+Record which documents each word occurs in.
+.B @DATABASE_DIR@/db.excerpts
+Stores start of each document to show context of matches.
 .SH "SEE ALSO"
 Please refer to the HTML pages (in the htdig-doc package)
 .B /usr/share/doc/htdig-doc/html/index.html

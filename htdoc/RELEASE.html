@@ -22,7 +22,7 @@
 	</p>
 
 	<p>
-	<strong>Release notes for htdig-3.2.0b6</strong> 02 Jun 2004<br>
+	<strong>Release notes for htdig-3.2.0b6</strong> 20 Jun 2004<br>
 	The next beta release of ht://Dig, 3.2.0b6, is now available.
 	It fixes several bugs from 3.2.0b5, and runs somewhat faster,
 	although still much slower than 3.1.6. (No significant speed
@@ -38,11 +38,31 @@
 	from a previous version, you should read the <a
 	href="upgrade.html">upgrade guide</a> first.
 	</p>
+	Bug fixes:
 	<ul>
-	    <li>fixed bug regarding compilation of regular expressions for
+	    <li>Correctly handle empty <code>disallow</code> entries in
+	        robots.txt</li>
+	    <li>No longer compile regular expressions for
 		every URL (improve performances)</li>
-	    <li>fixed bugs in phrase searching</li>
-	    <li>improved parsing of the configuration file</li>
+	    <li>Allow compressed databases on Cygwin</li>
+	    <li>Fixed bugs in phrase searching</li>
+	    <li>Improved parsing of the configuration file</li>
+	    <li>bin/rundig -a handles multiple database directories</li>
+	    <li>Ellipsis displayed correctly by htsearch</li>
+	    <li>Allow '-' argument to '-m' ('minimal') runtime option to
+	        htdig</li>
+	    <li>Check validity of first URL from each server</li>
+	    <li>No longer ignore empty configuration attributes</li>
+	    <li>fixed bug in handling 'http_proxy', 'http_proxy_authorization',
+		'authorization attributes'</li>
+	    <li>remove stale md5_db if '-i' specified</li>
+	    <li>Make 'server_alias' case insensitive</li>
+	    <li>fixed bugs with zlib</li>
+	    <li>Allow &amp;euro; HTML entity</li>
+	    <li>fixed other minor bugs</li>
+	</ul>
+	New features:
+	<ul>
 	    <li>added <a
          	href="attrs.html#allow_space_in_url">allow_space_in_url</a>
 		attribute: if set to true, htdig will handle URLs that
@@ -51,23 +71,10 @@
          	href="attrs.html#store_phrases">store_phrases</a> attribute:
 		if it is false, htdig only stores the first occurrence
 		of each word in a document</li>
-	    <li>fixed bug with empty disallow entries in robots.txt</li>
-	    <li>bin/rundig -a handles multiple database directories</li>
-	    <li>fixed ellipsis bug in searching</li>
-	    <li>fixed behaviour of '-m' runtime option</li>
-	    <li>fixed bug in which validity of first URL from each
-		server was not checked</li>
-	    <li>fixed bug with empty configuration attributes,
-		which were ignored</li>
-	    <li>fixed bug in handling 'http_proxy', 'http_proxy_authorization',
-		'authorization attributes'</li>
-	    <li>remove stale md5_db if '-i' specified</li>
-	    <li>fixed bug regarding case sensitivity of 'server_alias'</li>
-	    <li>fixed bugs with zlib</li>
-	    <li>fixed bug with &euro; HTML entity</li>
-	    <li>fixed other minor bugs</li>
 	    <li>added an improved version of RTF2HTML into the
 		contrib section</li>
+	    <li>added <a href="http://www.openoffice.org/">OpenOffice.org</a>
+	    	support to doc2html in contrib section</li>
 	    <li>improved date factor formula</li>
 	    <li>improved tests</li>
 	    <li>improved documentation</li>
@@ -1530,6 +1537,6 @@
 	</ul>
 
 	<hr size="4" noshade>
-		Last modified: $Date: 2004/06/10 14:56:31 $
+		Last modified: $Date: 2004/06/12 13:39:12 $
   </body>
 </html>
