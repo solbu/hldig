@@ -1,3 +1,12 @@
+Tue Nov 26 22:30:06 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/english.0: Patched with Lachlan Andrew's changes, fixing
+	lots of dubious uses of suffixes to get more appropriate and correct
+	fuzzy endings expansions.
+
+	* installdir/synonyms: Updated with the version contributed by
+	David Adams, with minor changes.  Kept old one as synonyms.original.
+
 Mon Nov 4 10:44:35 CET 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* htcommon/URL.[h,cc]: added the assignment operator
