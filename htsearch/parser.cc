@@ -1,63 +1,61 @@
 //
 // parser.cc
 //
-// Implementation of parser
+// parser: Parses a boolean expression tree, retrieving and scoring 
+//         the resulting document list
 //
-// $Log: parser.cc,v $
-// Revision 1.5  1998/11/27 18:37:33  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Removed bogus code with "%01" -> "|"
+// $Id: parser.cc,v 1.22.2.1 2000/01/30 03:34:07 ghutchis Exp $
 //
-// Revision 1.4  1998/10/12 02:09:28  ghutchis
-//
-// Added htsearch logging patch from Alexander Bergolth.
-//
-// Revision 1.3  1998/09/06 03:22:38  ghutchis
-//
-// Bug fixes
-//
-// Revision 1.2  1997/04/27 14:43:31  turtle
-// changes
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.5 1998/11/27 18:37:33 ghutchis Exp $";
-#endif
 
 #include "parser.h"
+#include "HtPack.h"
 
 #define	WORD	1000
 #define	DONE	1001
 
 
 //*****************************************************************************
-Parser::Parser()
+Parser::Parser() :
+  words(config)
 {
     tokens = 0;
     result = 0;
     current = 0;
-    dbf = 0;
     valid = 1;
 }
 
 
 //*****************************************************************************
-// int Parser::checkSyntax(List *tokenList, Database *dbf)
-//   As the name of the function implies, we will only perform a syntex check
+// int Parser::checkSyntax(List *tokenList)
+//   As the name of the function implies, we will only perform a syntax check
 //   on the list of tokens.
 //
 int
 Parser::checkSyntax(List *tokenList)
 {
     tokens = tokenList;
+    valid = 1;
+    fullexpr(0);
+    return valid;
+}
+
+//*****************************************************************************
+void
+Parser::fullexpr(int output)
+{
     tokens->Start_Get();
     lookahead = lexan();
-    valid = 1;
-    expr(0);
-    return valid;
+    expr(output);
+    if (valid && lookahead != DONE)
+    {
+	setError("end of expression");
+    }
 }
 
 //*****************************************************************************
@@ -67,20 +65,18 @@ Parser::lexan()
     current = (WeightWord *) tokens->Get_Next();
     if (!current)
 	return DONE;
-    else if (mystrcasecmp(current->word, "&") == 0)
+    else if (mystrcasecmp((char*)current->word, "&") == 0)
 	return '&';
-//	else if (mystrcasecmp(current->word, "and") == 0)
-//		return '&';
-    else if (mystrcasecmp(current->word, "|") == 0)
+    else if (mystrcasecmp((char*)current->word, "|") == 0)
 	return '|';
-    else if (mystrcasecmp(current->word, "!") == 0)
+    else if (mystrcasecmp((char*)current->word, "!") == 0)
 	return '!';
-//	else if (mystrcasecmp(current->word, "or") == 0)
-//		return '|';
-    else if (mystrcasecmp(current->word, "(") == 0)
+    else if (mystrcasecmp((char*)current->word, "(") == 0)
 	return '(';
-    else if (mystrcasecmp(current->word, ")") == 0)
+    else if (mystrcasecmp((char*)current->word, ")") == 0)
 	return ')';
+    else if (mystrcasecmp((char*)current->word, "\"") == 0)
+      return '"';
     else
 	return WORD;
 }
@@ -106,12 +102,9 @@ Parser::expr(int output)
 	else
 	    break;
     }
-    if (lookahead == WORD)
+    if (valid && lookahead == WORD)
     {
-	valid = 0;
-	error = 0;
-	error << "expected 'AND' or 'OR' instead of '" << current->word.get();
-	error << '\'';
+	setError("'AND' or 'OR'");
     }
 }
 
@@ -141,6 +134,8 @@ Parser::term(int output)
 void
 Parser::factor(int output)
 {
+    phrase(output);
+
     if (match('('))
     {
 	expr(output);
@@ -150,7 +145,7 @@ Parser::factor(int output)
 	}
 	else
 	{
-	    valid = 0;
+	    setError("')'");
 	}
     }
     else if (lookahead == WORD)
@@ -161,10 +156,41 @@ Parser::factor(int output)
 	}
 	lookahead = lexan();
     }
-    else
+    //    else
+    //    {
+    //	setError("a search word");
+    //    }
+}
+
+//*****************************************************************************
+void
+Parser::phrase(int output)
+{
+  if (match('"'))
     {
-	valid = 0;
-    }
+      List *wordList = new List;
+      double weight = 1.0;
+
+      while (1)
+	{
+	  if (match('"'))
+	    {
+	      if (output)
+		score(wordList, weight);
+	      break;
+	    }
+	  else if (lookahead == WORD)
+	    {
+	      weight *= current->weight;
+	      if (output)
+		perform_phrase(*wordList);
+	      
+	      lookahead = lexan();
+	    }
+
+	} // end while
+      delete wordList;
+    } // end if
 }
 
 //*****************************************************************************
@@ -181,50 +207,199 @@ Parser::match(int t)
 }
 
 //*****************************************************************************
+void
+Parser::setError(char *expected)
+{
+    if (valid)
+    {
+	valid = 0;
+	error = 0;
+	error << "Expected " << expected;
+	if (lookahead == DONE || !current)
+	{
+	    error << " at the end";
+	}
+	else
+	{
+	    error << " instead of '" << current->word.get();
+	    error << '\'';
+	    switch (lookahead)
+	    {
+	    case '&':	error << " or 'AND'";	break;
+	    case '|':	error << " or 'OR'";	break;
+	    case '!':	error << " or 'NOT'";	break;
+	    }
+	}
+    }
+}
+
+//*****************************************************************************
 // Perform a lookup of the current word and push the result onto the stack
 //
 void
 Parser::perform_push()
 {
+    static int	maximum_word_length = config.Value("maximum_word_length", 12);
     String	temp = current->word.get();
-    String	data;
     char	*p;
-    ResultList	*list = new ResultList;
-    WordRecord	wr;
-    DocMatch	*dm;
 
-    stack.push(list);
     if (current->isIgnore)
     {
 	//
 	// This word needs to be ignored.  Make it so.
 	//
-	list->isIgnore = 1;
 	return;
     }
+
     temp.lowercase();
     p = temp.get();
-    if (temp.length() > MAX_WORD_LENGTH)
-	p[MAX_WORD_LENGTH] = '\0';
-    if (dbf->Get(p, data) == OK)
+    if (temp.length() > maximum_word_length)
+	p[maximum_word_length] = '\0';
+
+    List* result = words[p];
+    score(result, current->weight);
+    delete result;
+}
+
+//*****************************************************************************
+void
+Parser::perform_phrase(List &oldWords)
+{
+    static int	maximum_word_length = config.Value("maximum_word_length", 12);
+    String	temp = current->word.get();
+    char	*p;
+    List	*newWords = 0;
+    HtWordReference *oldWord, *newWord;
+
+    if (current->isIgnore)
     {
-	p = data.get();
-	for (unsigned int i = 0; i < data.length() / sizeof(WordRecord); i++)
-	{
-	    p = data.get() + i * sizeof(WordRecord);
-	    memcpy((char *) &wr, p, sizeof(WordRecord));
+	//
+	// This word needs to be ignored.  Make it so.
+	//
+	return;
+    }
+
+    temp.lowercase();
+    p = temp.get();
+    if (temp.length() > maximum_word_length)
+	p[maximum_word_length] = '\0';
+
+    newWords = words[p];
+
+    // If we don't have a prior list of words, we want this one...
+    if (oldWords.Count() == 0)
+      {
+	newWords->Start_Get();
+	while ((newWord = (HtWordReference *) newWords->Get_Next()))
+	  oldWords.Add(newWord);
+	return;
+      }
+
+    // OK, now we have a previous list in wordList and a new list
+    List	*results = new List;
+
+    oldWords.Start_Get();
+    while ((oldWord = (HtWordReference *) oldWords.Get_Next()))
+      {
+	newWords->Start_Get();
+	while ((newWord = (HtWordReference *) newWords->Get_Next()))
+	  {
+	    if (oldWord->DocID() == newWord->DocID())
+	      if ((oldWord->Location() + 1) == newWord->Location())
+		{
+		  HtWordReference *result = new HtWordReference(*oldWord);
+
+		  result->Flags(oldWord->Flags() & newWord->Flags());
+		  result->Location(newWord->Location());
+		  
+		  results->Add(result);
+		}
+	  }
+      }
+
+    oldWords.Destroy();
+    results->Start_Get();
+    while ((newWord = (HtWordReference *) results->Get_Next()))
+      oldWords.Add(newWord);
+    results->Release();
+    delete results;
+
+    newWords->Destroy();
+    delete newWords;
+}
+
+//*****************************************************************************
+void
+Parser::score(List *wordList, double weight)
+{
+    ResultList	*list = new ResultList;
+    DocMatch	*dm;
+    HtWordReference *wr;
+
+    stack.push(list);
+
+    if (!wordList || wordList->Count() == 0)
+      {
+	// We can't score an empty list, so this should be ignored...
+	list->isIgnore = 1;
+	return;
+      }
+
+    wordList->Start_Get();
+    while ((wr = (HtWordReference *) wordList->Get_Next()))
+      {
+	dm = list->find(wr->DocID());
+	if (dm)
+	  {
+
+	    unsigned int prevAnchor;
+	    double prevScore;
+	    prevScore = dm->score;
+	    prevAnchor = dm->anchor;
+	    // We wish to *update* this, not add a duplicate
+	    list->remove(wr->DocID());
+
+	    dm = new DocMatch;
+
+	    dm->score = (wr->Flags() & FLAG_TEXT) * config.Double("text_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_CAPITAL) * config.Double("caps_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_TITLE) * config.Double("title_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_HEADING) * config.Double("heading_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_KEYWORDS) * config.Double("keywords_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_DESCRIPTION) * config.Double("meta_description_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_AUTHOR) * config.Double("author_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_LINK_TEXT) * config.Double("description_factor", 1);
+	    dm->id = wr->DocID();
+	    dm->score = weight * dm->score + prevScore;
+	    if (prevAnchor > wr->Anchor())
+	      dm->anchor = wr->Anchor();
+	    else
+	      dm->anchor = prevAnchor;
+	    
+	  }
+	else
+	  {
 
 	    //
 	    // *******  Compute the score for the document
 	    //
 	    dm = new DocMatch;
-	    dm->score = wr.weight * current->weight;
-	    dm->id = wr.id;
-	    dm->anchor = wr.anchor;
-	    list->add(dm);
-	}
-    }
+	    dm->score = (wr->Flags() & FLAG_TEXT) * config.Double("text_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_CAPITAL) * config.Double("caps_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_TITLE) * config.Double("title_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_HEADING) * config.Double("heading_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_KEYWORDS) * config.Double("keywords_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_DESCRIPTION) * config.Double("meta_description_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_AUTHOR) * config.Double("author_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_LINK_TEXT) * config.Double("description_factor", 1);
+	    dm->score *= weight;
+	    dm->id = wr->DocID();
+	    dm->anchor = wr->Anchor();
+	  }
+	list->add(dm);
+      }
 }
+
 
 //*****************************************************************************
 // The top two entries in the stack need to be ANDed together.
@@ -237,7 +412,7 @@ Parser::perform_and(int isand)
     ResultList		*result = new ResultList;
     int			i;
     DocMatch		*dm, *dm2, *dm3;
-    List		*elements;
+    HtVector		*elements;
 
     //
     // If either of the arguments is not present, we will use the other as
@@ -312,7 +487,7 @@ Parser::perform_or()
     ResultList		*result = (ResultList *) stack.peek();
     int			i;
     DocMatch		*dm, *dm2;
-    List		*elements;
+    HtVector		*elements;
 
     //
     // If either of the arguments is not present, we will use the other as
@@ -385,12 +560,17 @@ void
 Parser::parse(List *tokenList, ResultList &resultMatches)
 {
     tokens = tokenList;
-    tokens->Start_Get();
-    lookahead = lexan();
-    expr(1);
+    fullexpr(1);
 
     ResultList	*result = (ResultList *) stack.pop();
-    List		*elements = result->elements();
+    if (!result)  // Ouch!
+      {
+	valid = 0;
+	error = 0;
+	error << "Expected to have something to parse!";
+	return;
+      }
+    HtVector	*elements = result->elements();
     DocMatch	*dm;
 
     for (int i = 0; i < elements->Count(); i++)
