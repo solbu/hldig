@@ -1,8 +1,27 @@
+Thu Jan 28 21:36:03 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/*.html: Changed copyright information to mention the
+	ht://Dig group, removing Andrew's name.
+
+	* README, configure.in, Makefile.in: Ditto.
+
+	* configure: Change mention of libg++ -> libstdc++.
+	
 Thu Jan 28 12:53:40 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
-	Docuument new remove_default_doc attribute.
+	Document new remove_default_doc attribute.
 
+	* Makefile.in: Make sure we put the wrapper file in the right place.
+	Make sure dictionaries are installed with the correct permissions.
+
+	* installdir/rundig: Use a portable test for testing the endings
+	and synonym databases. Also enhanced support for flags (-a, -s,
+	-vvv, -c config).
+
+	* htsearch/Display.cc: Fix bug when sorting results would cause a
+	coredump.
+	
 Wed Jan 27 20:00:40 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc, htdig/SGMLEntities.cc, htdig/ExternalParser.cc,
