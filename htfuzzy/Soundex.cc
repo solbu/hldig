@@ -6,12 +6,12 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Soundex.cc,v 1.2 1999/02/04 07:24:32 ghutchis Exp $";
+static char RCSid[] = "$Id: Soundex.cc,v 1.3 1999/02/05 03:19:31 ghutchis Exp $";
 #endif
 
 #include "Soundex.h"
 #include "Dictionary.h"
-
+#include <ctype.h>
 
 //*****************************************************************************
 // Soundex::Soundex()
@@ -40,17 +40,27 @@ Soundex::generateKey(char *word, String &key)
     int lastcode = 0;
 
     key = 0;
+    if (!word)
+      {
+	key = '0';
+	return;
+      }
+
+    while (!isalpha(word))
+      word++;
+
     if (word)
     {
 	key << *word++;
     }
     else
     {
-	key = '0';
-	return;
+      key = '0';
+      return;
     }
 
-    while (key.length() < 4)
+
+    while (key.length() < 6)
     {
 	switch (*word)
 	{
@@ -100,6 +110,9 @@ Soundex::generateKey(char *word, String &key)
 	    case 'h':
 	        code = 0;
 		break;
+
+	    default:
+	        break;
 	}
 	if (code && code != lastcode)
 	  {
