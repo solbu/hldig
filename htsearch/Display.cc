@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.3 1999/11/10 21:57:00 grdetil Exp $
+// $Id: Display.cc,v 1.100.2.4 1999/11/26 22:09:49 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -399,6 +399,8 @@ Display::setVariables(int pageNumber, List *matches)
 	matchesPerPage = 10;
     int		nPages = (nMatches + matchesPerPage - 1) / matchesPerPage;
 
+    if (nPages > config.Value("maximum_pages", 10))
+	nPages = config.Value("maximum_pages", 10);
     if (nPages < 1)
 	nPages = 1;			// We always have at least one page...
     vars.Add("MATCHES_PER_PAGE", new String(config["matches_per_page"]));
@@ -528,8 +530,6 @@ Display::setVariables(int pageNumber, List *matches)
 	QuotedStringList	pnt(config["page_number_text"], " \t\r\n");
 	QuotedStringList	npnt(config["no_page_number_text"], " \t\r\n");
 	QuotedStringList	sep(config["page_number_separator"], " \t\r\n");
-	if (nPages > config.Value("maximum_pages", 10))
-	    nPages = config.Value("maximum_pages");
 	for (i = 1; i <= nPages; i++)
 	{
 	    if (i == pageNumber)
