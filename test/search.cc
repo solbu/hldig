@@ -42,7 +42,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: search.cc,v 1.1.2.6 2000/09/21 04:25:34 ghutchis Exp $
+// $Id: search.cc,v 1.1.2.7 2000/10/10 03:15:45 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -65,10 +65,7 @@
 #include <htString.h>
 #include <WordList.h>
 #include <WordContext.h>
-#include <WordCursorOne.h>
-#include <HtMaxMin.h>
-#include <WordListOne.h>
-#include <WordDict.h>
+#include <WordCursor.h>
 
 //
 // Verbosity level set with -v (++)
@@ -122,7 +119,7 @@ static int verbose = 0;
 //
 class WordKeySemantic {
 public:
-  WordKeySemantic(WordContext *ncontext);
+  WordKeySemantic();
   ~WordKeySemantic();
 
   //-
@@ -211,13 +208,11 @@ protected:
   int* document;
   int document_length;
   int location;
-  WordContext *context;
 };
 
-WordKeySemantic::WordKeySemantic(WordContext *ncontext)
+WordKeySemantic::WordKeySemantic()
 {
-  context = ncontext;
-  int nfields = context->GetKeyInfo().nfields;
+  int nfields = WordKey::NFields();
   document = new int[nfields];
   document_length = 0;
   location = -1;
@@ -659,21 +654,12 @@ public:
     return WordExclude::Initialize(maxi);
   }
 
-  virtual inline unsigned int Excluded(int position) const {
+  virtual inline unsigned int Excluded(int position) {
     position = WORD_EXCLUDE_POSITION2BIT(ignore_maxi, position);
     if(bit2bit[position] == WORD_EXCLUDE_IGNORED)
       return ignore_mask & (1 << position);
     else
       return WordExclude::Mask() & (1 << bit2bit[position]);
-  }
-
-  //-
-  // Return true if bit at <b>position</b> is ignored by permutations,
-  // i.e. has a fixed value.
-  //
-  inline int Ignored(int position) const {
-    position = WORD_EXCLUDE_POSITION2BIT(ignore_maxi, position);
-    return bit2bit[position] == WORD_EXCLUDE_IGNORED;
   }
 
   virtual inline int NotExcludedCount() const {
@@ -823,9 +809,6 @@ public:
   // WordExcludeMask and Proximity() always return true.
   //
   virtual inline int Initialize(unsigned int length, unsigned int ignore, unsigned int ignore_mask_arg, int nuse_proximity) {
-    if(WordExcludeMask::Initialize(length, ignore, ignore_mask_arg) != OK)
-      return NOTOK;
-
     use_proximity = nuse_proximity;
     switch(use_proximity) {
     case WORD_PERMUTE_PROXIMITY_NO:
@@ -836,16 +819,16 @@ public:
       // Don't bother to try proximity search if only one word
       // is involved.
       //
-      proximity = WordExclude::Maxi() > 1;
+      proximity = length > 1;
       break;
     case WORD_PERMUTE_PROXIMITY_ONLY:
       proximity = 1;
       break;
     default:
       fprintf(stderr, "WordPermute::Initialize: unexpected use_proximity = %d\n", use_proximity);
-      return NOTOK;
+      return 0;
     }
-    return OK;
+    return WordExcludeMask::Initialize(length, ignore, ignore_mask_arg);
   }
 
   //-
@@ -1044,12 +1027,9 @@ static char* operator_name[WORD_TREE_OP_SIZE] = {
   0
 };
 
-class WordTree : public WordCursorOne {
+class WordTree : public WordCursor {
 public:
-  WordTree(WordList* words) :
-    WordCursorOne(words),
-    key_semantic(words->GetContext())
-  {
+  WordTree() {
     proximity = 0;
     uniq = 0;
   }
@@ -1078,47 +1058,31 @@ public:
     uniq = nuniq;
     if((ret = key_semantic.Initialize(document, document_length, location)) != OK)
       return ret;
-    WordKey key(words->GetContext());
+    WordKey key;
     if(!scope.empty()) {
       if(key.Set(scope) != OK) {
 	fprintf(stderr, "WordTree::Prepare: setting scope %s failed\n", (char*)scope);
 	return NOTOK;
       }
     }
-    if(!search.empty()) {
-      unsigned int wordid = WORD_DICT_SERIAL_INVALID;
-      if(words->Dict()->SerialExists(search, wordid) != OK)
-	return NOTOK;
-      key.Set(WORD_KEY_WORD, wordid);
-    }
-    return WordCursorOne::Initialize(words, key, 0, 0, HTDIG_WORDLIST_WALKER);
+    key.SetWord(search);
+    return WordCursor::Initialize(words, key, 0, 0, HTDIG_WORDLIST_WALKER);
   }
-
-  //-
-  //
-  virtual int Bounds(const WordKey& bottom, const WordKey& top) = 0;
 
   //-
   // Return a copy of the last document found.
   //
   WordKey GetDocument() {
-    WordKey found(words->GetContext());
+    WordKey found;
     key_semantic.DocumentSet(GetFound().Key(), found);
     return found;
   }
 
   //-
-  // Returns estimate of the match count.
-  //
-  virtual int Count(unsigned int& count) const { return Noccurrence(count); }
-
-  virtual int Noccurrence(unsigned int& noccurrence) const { return words->Noccurrence(search, noccurrence); }
-
-  //-
   // Store in the <i>info</i> data member textual information about
   // the latest match found.
   //
-  virtual void SetInfo() { info = search; }
+  virtual void SetInfo() { info = GetFound().Key().GetWord(); }
 
   //-
   // Return a copy of the <i>info</i> data member. Should be 
@@ -1184,12 +1148,7 @@ public:
   // Constructor. The search criterion is <b>string</b> and the
   // scope is <b>nscope.</b>.
   //
-  WordTreeLiteral(WordList* words, const char* string, const char* nscope = "") :
-    WordTree(words),
-    current_document(words->GetContext()),
-    bottom_document(words->GetContext()),
-    top_document(words->GetContext())
-  {
+  WordTreeLiteral(const char* string, const char* nscope = "") {
     search.set((char*)string);
     scope.set((char*)nscope);
   }
@@ -1199,7 +1158,6 @@ public:
   //
   int IsA() const { return WORD_TREE_LITERAL; }
 
-  virtual int WalkInit();
   virtual int WalkRewind();
   //-
   // Only return a match for each distinct document.
@@ -1222,54 +1180,28 @@ public:
     return OK;
   }
  
-  virtual int Bounds(const WordKey& bottom, const WordKey& top) {
-    bottom_document = bottom;
-    top_document = top;
-    return OK;
-  }
-
 protected:
   WordKey current_document;
-  WordKey bottom_document;
-  WordKey top_document;
 };
-
-int WordTreeLiteral::WalkInit()
-{
-  if(WordCursorOne::WalkInit() != OK)
-    return NOTOK;
-  if(!bottom_document.Empty())
-    return Seek(bottom_document);
-  else
-    return OK;
-}
 
 int WordTreeLiteral::WalkRewind()
 {
   current_document.Clear();
-  if(WordCursorOne::WalkRewind() != OK) return NOTOK;
-  if(!bottom_document.Empty())
-    return Seek(bottom_document);
-  return OK;
+  return WordCursor::WalkRewind();
 }
 
 int WordTreeLiteral::WalkNext()
 {
   int ret;
   do {
-    ret = WordCursorOne::WalkNext();
+    ret = WordCursor::WalkNext();
     if(verbose > 3) fprintf(stderr, "WordTreeLiteral::WalkNext: reached %s\n", (char*)GetDocument().Get());
   } while(ret == OK &&
 	  key_semantic.DocumentCompare(current_document, GetDocument()) == 0);
 
-  if(ret == OK && !top_document.Empty()) {
-    if(key_semantic.DocumentCompare(top_document, GetDocument()) <= 0)
-      ret = WORD_WALK_ATEND;
-  }
-  
-  if(ret == OK) {
+  if(ret == OK)
     current_document = GetDocument();
-  } else
+  else
     current_document.Clear();
 
   return ret;
@@ -1278,7 +1210,7 @@ int WordTreeLiteral::WalkNext()
 int WordTreeLiteral::Seek(const WordKey& position)
 {
   current_document.Clear();
-  return WordCursorOne::Seek((bottom_document.Empty() || key_semantic.DocumentCompare(bottom_document, position) <= 0) ? position : bottom_document);
+  return WordCursor::Seek(position);
 }
 
 // ************************* WordTreeOperand implementation ****************
@@ -1341,10 +1273,7 @@ public:
   //-
   // Constructor. The scope is <b>nscope</b>.
   //
-  WordTreeOperand(WordList* words, const char* nscope) :
-    WordTree(words),
-    pos(words->GetContext())
-  {
+  WordTreeOperand(const char* nscope) {
     scope.set((char*)nscope);
   }
   //-
@@ -1356,7 +1285,7 @@ public:
   virtual void Clear() {
     cursors = 0;
     cursors_length = 0;
-    WordCursorOne::Clear();
+    WordCursor::Clear();
   }
 
   //-
@@ -1494,17 +1423,7 @@ public:
       if((ret = cursors[i]->Prepare(words, nuniq, nproximity, document, document_length, location)) != OK)
 	return ret;
     }
-    return Get(search);
-  }
-
-  virtual int Bounds(const WordKey& bottom, const WordKey& top) {
-    int ret;
-    unsigned int i;
-    for(i = 0; i < cursors_length; i++) {
-      if((ret = cursors[i]->Bounds(bottom, top)) != OK)
-	return ret;
-    }
-    return OK;
+    return Get(GetSearch().GetWord());
   }
 
   //-
@@ -1632,7 +1551,7 @@ WordTreeOperand::WalkFinish()
 int 
 WordTreeOperand::Seek(const WordKey& patch)
 {
-  pos = patch;
+  pos.CopyFrom(patch);
   cursor_get_flags = DB_SET_RANGE;
 
   unsigned int i;
@@ -1649,7 +1568,7 @@ WordTreeOperand::Seek(const WordKey& patch)
 
 class WordTreeOptional : public WordTreeOperand {
  public:
-  WordTreeOptional(WordList* words, const char* nscope) : WordTreeOperand(words, nscope) { }
+  WordTreeOptional(const char* nscope) : WordTreeOperand(nscope) { }
 
   //-
   // Return WORD_TREE_OPTIONAL
@@ -1690,8 +1609,6 @@ class WordTreeOptional : public WordTreeOperand {
   virtual int UseProximity() const { return WORD_PERMUTE_PROXIMITY_TOGGLE; }
 
   virtual int UsePermutation() const { return 1; }
-
-  virtual int Count(unsigned int& count) const;
 
   //-
   // Returns true if all cursors must have a frequency > 0, false otherwise.
@@ -1834,7 +1751,7 @@ int WordTreeOptional::ContextSaveList(StringList& list) const
    
   {
     String* buffer = new String();
-    if((ret = WordCursorOne::ContextSave(*buffer)) != OK)
+    if((ret = WordCursor::ContextSave(*buffer)) != OK)
       return ret;
 
     list.Add(buffer);
@@ -1859,7 +1776,7 @@ int WordTreeOptional::ContextRestoreList(StringList& list)
   {
     char* buffer = list[0];
     if(!buffer) return NOTOK;
-    WordKey key(words->GetContext(), buffer);
+    WordKey key(buffer);
     if((ret = Seek(key)) != OK)
       return ret;
     cursor_get_flags = DB_NEXT;
@@ -1901,7 +1818,7 @@ int WordTreeOptional::WalkNext()
       WordTree& cursor = *(cursors[i]);
       near = permutation.Proximity();
       int excluded = permutation.Excluded(i);
-      if(verbose) fprintf(stderr, "WordTreeOptional::WalkNext: %s excluded = %s, proximity = %s\n", (char*)cursor.search, (excluded ? "yes" : "no"), (near ? "yes" : "no" ));
+      if(verbose) fprintf(stderr, "WordTreeOptional::WalkNext: %s excluded = %s, proximity = %s\n", (char*)cursor.GetSearch().GetWord(), (excluded ? "yes" : "no"), (near ? "yes" : "no" ));
 
       int ret;
       if(excluded) {
@@ -1971,7 +1888,7 @@ int WordTreeOptional::WalkNext()
     for(unsigned int i = 0; i < cursors_length; i++) {
       WordTree& cursor = *(cursors[i]);
       if(!permutation.Excluded(i)) {
-	found.Key() = cursor.GetFound().Key();
+	found.Key().CopyFrom(cursor.GetFound().Key());
 	break;
       }
     }
@@ -2014,7 +1931,7 @@ int WordTreeOptional::WalkNext()
 
 int WordTreeOptional::Seek(const WordKey& position)
 {
-  pos = position;
+  pos.CopyFrom(position);
   cursor_get_flags = DB_SET_RANGE;
   status = OK;
 
@@ -2047,26 +1964,6 @@ void WordTreeOptional::SetInfo()
   }
 
   info << (permutation.Proximity() ? "proximity" : "");
-}
-
-int WordTreeOptional::Count(unsigned int& count) const
-{
-  unsigned int count_and = 0;
-
-  count = 0;
-  for(unsigned int i = 0; i < cursors_length; i++) {
-    unsigned int cursor_count;
-    cursors[i]->Count(cursor_count);
-    if(permutation.Ignored(i) && permutation.Excluded(i)) {
-      count_and = HtMIN(count_and, cursor_count);
-    } else {
-      count += cursor_count;
-    }
-  }
-
-  count += count_and;
-
-  return OK;
 }
 
 int WordTreeOptional::SearchCursorNear(WordTree& cursor, WordTree*& master, WordKey& constraint, int proximity)
@@ -2272,7 +2169,7 @@ int WordTreeOptional::CursorsObeyProximity(WordKey& document)
   //
   if(permutation.NotExcludedCount() <= 1) return OK;
 
-  WordKey location(words->GetContext());
+  WordKey location;
 
   //
   // The first non excluded cursor contains anchor location.
@@ -2410,7 +2307,7 @@ int WordTreeOptional::AscendingFrequency()
       delete [] tmp;
       return NOTOK;
     }
-    if(verbose > 2) fprintf(stderr, "WordTreeOptional::AscendingFrequency: %s occurs %d times\n", (char*)cursors[i]->search, frequency);
+    if(verbose > 2) fprintf(stderr, "WordTreeOptional::AscendingFrequency: %s occurs %d times\n", (char*)cursors[i]->GetSearch().Get(), frequency);
     tmp[i].frequency = frequency;
     tmp[i].cursor = cursors[i];
   }
@@ -2443,7 +2340,7 @@ int WordTreeOptional::StripNonExistent(unsigned int& stripped)
       return NOTOK;
     }
 
-    if(verbose > 2) fprintf(stderr, "WordTreeOptional::StripNonExistent: %s occurs %d times\n", (char*)cursors[from]->search, frequency);
+    if(verbose > 2) fprintf(stderr, "WordTreeOptional::StripNonExistent: %s occurs %d times\n", (char*)cursors[from]->GetSearch().Get(), frequency);
     if(frequency > 0) {
       tmp[to++] = cursors[from];
     } else {
@@ -2468,7 +2365,7 @@ int WordTreeOptional::StripNonExistent(unsigned int& stripped)
 
 class WordTreeOr : public WordTreeOperand {
  public:
-  WordTreeOr(WordList* words, const char* nscope) : WordTreeOperand(words, nscope) { }
+  WordTreeOr(const char* nscope) : WordTreeOperand(nscope) { }
 
   //-
   // Return WORD_TREE_OR
@@ -2521,7 +2418,7 @@ int WordTreeOr::ContextSaveList(StringList& list) const
    
   {
     String* buffer = new String();
-    if((ret = WordCursorOne::ContextSave(*buffer)) != OK)
+    if((ret = WordCursor::ContextSave(*buffer)) != OK)
       return ret;
 
     list.Add(buffer);
@@ -2546,7 +2443,7 @@ int WordTreeOr::ContextRestoreList(StringList& list)
   {
     char* buffer = list[0];
     if(!buffer) return NOTOK;
-    WordKey key(words->GetContext(), buffer);
+    WordKey key(buffer);
     if((ret = Seek(key)) != OK)
       return ret;
     cursor_get_flags = DB_NEXT;
@@ -2585,7 +2482,7 @@ int WordTreeOr::WalkNext()
   if(constraint.Empty())
     key_semantic.DocumentClear(constraint);
   
-  WordKey candidate(words->GetContext());
+  WordKey candidate;
   int match_ok;
   do {
       int ret;
@@ -2640,7 +2537,7 @@ int WordTreeOr::WalkNext()
       if(candidate.Empty())
 	  return WORD_WALK_ATEND;
 
-      found.Key() = candidate;
+      found.Key().CopyFrom(candidate);
 
       SetInfo();
 
@@ -2694,7 +2591,7 @@ int WordTreeOr::WalkNext()
 
 class WordTreeAnd : public WordTreeOptional {
  public:
-  WordTreeAnd(WordList* words, const char* nscope) : WordTreeOptional(words, nscope) { }
+  WordTreeAnd(const char* nscope) : WordTreeOptional(nscope) { }
 
   //-
   // Return WORD_TREE_AND
@@ -2712,7 +2609,7 @@ class WordTreeAnd : public WordTreeOptional {
 
 class WordTreeNear : public WordTreeOptional {
  public:
-  WordTreeNear(WordList* words, const char* nscope) : WordTreeOptional(words, nscope) { }
+  WordTreeNear(const char* nscope) : WordTreeOptional(nscope) { }
 
   //-
   // Return WORD_TREE_NEAR
@@ -2730,7 +2627,7 @@ class WordTreeNear : public WordTreeOptional {
 
 class WordTreeMandatory : public WordTreeOperand {
  public:
-  WordTreeMandatory(WordList* words, const char* nscope) : WordTreeOperand(words, nscope) { }
+  WordTreeMandatory(const char* nscope) : WordTreeOperand(nscope) { }
 
   //-
   // Return WORD_TREE_MANDATORY
@@ -2742,7 +2639,7 @@ class WordTreeMandatory : public WordTreeOperand {
 
 class WordTreeNot : public WordTreeOperand {
  public:
-  WordTreeNot(WordList* words, const char* nscope) : WordTreeOperand(words, nscope) { }
+  WordTreeNot(const char* nscope) : WordTreeOperand(nscope) { }
 
   //-
   // Return WORD_TREE_NOT
@@ -2758,7 +2655,6 @@ class WordTreeNot : public WordTreeOperand {
 //
 class WordMatch {
 public:
-  WordMatch(WordContext* context) : match(context) { }
 
   //-
   // Return a textual representation of the object.
@@ -2809,7 +2705,7 @@ String WordMatch::Get() const
 //
 class WordSearch {
 public:
-  WordSearch(WordList* words);
+  WordSearch();
 
   //-
   // Perform a search from the <b>expr</b> specifications.
@@ -2821,20 +2717,13 @@ public:
   // It is the responsibility of the caller to free the WordMatch
   // array. If no match are found a null pointer is returned.
   //
-  WordMatch **Search();
+  WordMatch *Search();
 
-  //-
+  //
   // Search backend, only run the WalkNext loop but does not
   // allocate/deallocate data.
   //
   int SearchLoop(WordTree *expr);
-  //-
-  // Search backend, only run the WalkNext loop but does not
-  // allocate/deallocate data. If limit_bottom is above all matches
-  // return the last valid limit_count range and reset limit_bottom 
-  // accordingly.
-  //
-  int SearchLoopBounded(WordTree *expr);
 
   //
   // Return a context description string to resume the
@@ -2843,91 +2732,31 @@ public:
   const String& Context() const { return context_out; }
 
   //
-  // Internal
-  //
-  WordList* words;
-
-  //
-  // Input/Output
-  //
-  //
-  // Input: Index of the first match to return, relative to context_in
-  //        position.
-  // Output: If bounded set to 1 contains the index of the effective
-  //         match range returned.
-  //
-  unsigned int limit_bottom;
-
-  //
   // Input
   //
-  //
-  // Maximum number of matches returned
-  //
+  unsigned int limit_bottom;
   unsigned int limit_count;
-  //
-  // Initial position in the index file. If the position contains a match
-  // it won't be returned. To be accurate we should say that context_in
-  // is used to move the cursor immediately after the specified position.
-  //
   String context_in;
-  //
-  // Query tree
-  //
   WordTree* expr;
-  //
-  // If limit_bottom is past the last matches, return the last valid
-  // range instead of nothing.
-  //
-  int bounded;
   
   //
   // Output
   //
-  //
-  // Array of at most limit_count matches. The number of valid elements in
-  // the array is matches_length;
-  //
-  WordMatch** matches;
-  //
-  // Effective allocated size of the array
-  //
+  WordMatch* matches;
   unsigned int matches_size;
-  //
-  // Number of valid elements in the matches array.
-  //
   unsigned int matches_length;
-  //
-  // Estimated number of matches.
-  //
-  unsigned int matches_total;
-  //
-  // String representation of the position in the index after retrieving
-  // the last match. May be stored in the context_in data member before
-  // searching to re-start at this position.
-  //
   String context_out;
 };
 
-WordSearch::WordSearch(WordList* nwords)
+WordSearch::WordSearch()
 {
-  //
-  // Internal
-  //
-  words = nwords;
-
-  //
-  // Input/Output
-  //
-  limit_bottom = 0;
-
   //
   // Input
   //
+  limit_bottom = 0;
   limit_count = 0;
   context_in.trunc();
   expr = 0;
-  bounded = 0;
 
   //
   // Output
@@ -2938,7 +2767,7 @@ WordSearch::WordSearch(WordList* nwords)
   context_out.trunc();
 }
 
-WordMatch **WordSearch::Search()
+WordMatch *WordSearch::Search()
 {
   int ret = 0;
 
@@ -2947,14 +2776,12 @@ WordMatch **WordSearch::Search()
     return 0;
   if(verbose) fprintf(stderr, "WordSearch::Search: optimized expression %s\n", (char*)expr->Get());
   
-  if(expr->Count(matches_total) != OK) return OK;
   
   //
   // Build space for results
   //
   matches_size = limit_count + 1;
-  matches = new WordMatch* [matches_size];
-  memset((char*)matches, '\0', sizeof(WordMatch*) * matches_size);
+  matches = new WordMatch[matches_size];
   matches_length = 0;
 
   //
@@ -2965,7 +2792,7 @@ WordMatch **WordSearch::Search()
 
   if(expr->ContextRestore(context_in) == NOTOK)
     goto end;
-  ret = bounded ? SearchLoopBounded(expr) : SearchLoop(expr);
+  ret = SearchLoop(expr);
   //
   // Don't bother saving the context if at end of 
   // search (WORD_WALK_ATEND) or error (NOTOK)
@@ -2977,9 +2804,6 @@ end:
   expr->WalkFinish();
 
   if(ret == NOTOK || matches_length <= 0) {
-    unsigned int i;
-    for(i = 0; i < matches_length; i++)
-      delete matches[i];
     delete [] matches;
     matches = 0;
   }
@@ -3007,50 +2831,16 @@ int WordSearch::SearchLoop(WordTree *expr)
     if((ret = expr->WalkNext()) != OK) {
       break;
     } else {
-      WordMatch* match = new WordMatch(words->GetContext());
-      match->match = expr->GetDocument();
+      matches[matches_length].match = expr->GetDocument();
       if(expr->IsA() != WORD_TREE_LITERAL)
-	match->info = ((WordTreeOperand*)expr)->GetInfo();
-      matches[matches_length] = match;
-      if(verbose) fprintf(stderr, "WordSearch::Search: match %s\n", (char*)matches[matches_length]->match.Get());
+	matches[matches_length].info = ((WordTreeOperand*)expr)->GetInfo();
+      if(verbose) fprintf(stderr, "WordSearch::Search: match %s\n", (char*)matches[matches_length].match.Get());
     }
   }
 
-  return ret;
-}
+  if(ret == WORD_WALK_ATEND)
+    matches[matches_length].match.Clear();
 
-int WordSearch::SearchLoopBounded(WordTree *expr)
-{
-  int ret = OK;
-  unsigned int i;
-  
-  for(i = 0; i < limit_count; i++) {
-    WordMatch* match = new WordMatch(words->GetContext());
-    matches[i] = match;
-  }
-  
-  //
-  // Get documents up to <limit_count> or exhaustion
-  //
-  for(i = 0; i < limit_bottom + limit_count; i++) {
-    if((ret = expr->WalkNext()) != OK) {
-      break;
-    } else {
-      WordMatch* match = matches[i % limit_count];
-      match->match = expr->GetDocument();
-      if(expr->IsA() != WORD_TREE_LITERAL)
-	match->info = ((WordTreeOperand*)expr)->GetInfo();
-    }
-  }
-
-  limit_bottom = i == 0 ? 0 : (((i - 1) / limit_count) * limit_count);
-  matches_length = i == 0 ? 0 : (((i - 1) % limit_count) + 1);
-
-  for(unsigned int invalid = matches_length; invalid < limit_count; invalid++) {
-    delete matches[invalid];
-    matches[invalid] = 0;
-  }
-  
   return ret;
 }
 
@@ -3131,8 +2921,6 @@ int WordSearch::SearchLoopBounded(WordTree *expr)
 
 class WordParser {
 public:
-  WordParser(WordList* nwords) { words = nwords; }
-
   WordTree *Parse(const String& expr);
   WordTree *ParseList(StringList& terms);
 
@@ -3145,9 +2933,6 @@ public:
 
   void Shift(StringList& terms);
   char *Term(StringList& terms);
-
-private:
-  WordList* words;
 };
 
 WordTree *WordParser::Parse(const String& expr)
@@ -3203,10 +2988,10 @@ WordTree *WordParser::ParseUnary(StringList& terms)
   WordTreeOperand *expr = 0;
   switch(op) {
   case WORD_TREE_MANDATORY:
-    expr = new WordTreeMandatory(words, scope);
+    expr = new WordTreeMandatory(scope);
     break;
   case WORD_TREE_NOT:
-    expr = new WordTreeNot(words, scope);
+    expr = new WordTreeNot(scope);
     break;
   default:
     fprintf(stderr, "WordParser::ParseUnary: unexpected operator %d\n", op);
@@ -3235,16 +3020,16 @@ WordTree *WordParser::ParseConj(StringList& terms)
   WordTreeOperand *expr = 0;
   switch(op) {
   case WORD_TREE_OR:
-    expr = new WordTreeOr(words, scope);
+    expr = new WordTreeOr(scope);
     break;
   case WORD_TREE_OPTIONAL:
-    expr = new WordTreeOptional(words, scope);
+    expr = new WordTreeOptional(scope);
     break;
   case WORD_TREE_AND:
-    expr = new WordTreeAnd(words, scope);
+    expr = new WordTreeAnd(scope);
     break;
   case WORD_TREE_NEAR:
-    expr = new WordTreeNear(words, scope);
+    expr = new WordTreeNear(scope);
     break;
   default:
     fprintf(stderr, "WordParser::ParseOrAnd: unexpected operator %d\n", op);
@@ -3303,7 +3088,7 @@ WordTree *WordParser::ParseLiteral(StringList& terms)
   } else {
     scope = strdup("");
   }
-  WordTreeLiteral *expr = new WordTreeLiteral(words, term, scope);
+  WordTreeLiteral *expr = new WordTreeLiteral(term, scope);
   Shift(terms);
   free(scope);
   free(term);
@@ -3364,10 +3149,6 @@ public:
   int proximity;
   int nop;
   int exclude;
-  char* low;
-  char* high;
-  char* occurrences;
-  int bounded;
 };
 
 //
@@ -3394,12 +3175,8 @@ int main(int ac, char **av)
   params.proximity = WORD_SEARCH_DEFAULT_PROXIMITY;
   params.nop = 0;
   params.exclude = 0;
-  params.low = strdup("");
-  params.high = strdup("");
-  params.occurrences = strdup("");
-  params.bounded = 0;
 
-  while ((c = getopt(ac, av, "vB:f:b:c:C:SP:nel:h:o:a")) != -1)
+  while ((c = getopt(ac, av, "vB:f:b:c:C:SP:ne")) != -1)
     {
       switch (c)
 	{
@@ -3434,21 +3211,6 @@ int main(int ac, char **av)
 	case 'e':
 	  params.exclude = 1;
 	  break;
-	case 'l':
-	  free(params.low);
-	  params.low = strdup(optarg);
-	  break;
-	case 'h':
-	  free(params.high);
-	  params.high = strdup(optarg);
-	  break;
-	case 'o':
-	  free(params.occurrences);
-	  params.occurrences = strdup(optarg);
-	  break;
-	case 'a':
-	  params.bounded = 1;
-	  break;
 	case '?':
 	  usage();
 	  break;
@@ -3460,10 +3222,12 @@ int main(int ac, char **av)
     exit(0);
   }
 
-  WordContext* context = new WordContext();
-  Configuration& config = context->GetConfiguration();
-  if(!context) {
-    fprintf(stderr, "search: cannot create context\n");
+  if(!params.find)
+    usage();
+
+  Configuration* config = WordContext::Initialize();
+  if(!config) {
+    fprintf(stderr, "search: no config file found\n");
     exit(1);
   }
 
@@ -3473,34 +3237,20 @@ int main(int ac, char **av)
   if(verbose > 1) {
     String tmp;
     tmp << (verbose - 1);
-    config.Add("wordlist_verbose", tmp);
-    context->ReInitialize();
+    config->Add("wordlist_verbose", tmp);
   }
 
   //
   // Prepare the index (-B).
   //
-  WordList *words = context->List();
-  words->Open(params.dbfile, O_RDONLY);
-
-  //
-  // Return the number of occurrences of a given word
-  //
-  if(params.occurrences[0]) {
-    unsigned int occurrences = 0;
-    words->Noccurrence(params.occurrences, occurrences);
-    printf("%s occurs %d times\n", params.occurrences, occurrences);
-    exit(0);
-  }
-
-  if(!params.find)
-    usage();
+  WordList words(*config);
+  words.Open(params.dbfile, O_RDONLY);
 
   //
   // Try the query parser alone
   //
   if(params.nop) {
-    WordTree* expr = WordParser(words).Parse(params.find);
+    WordTree* expr = WordParser().Parse(params.find);
     printf("%s\n", (char*)expr->Get());
     exit(0);
   }
@@ -3508,7 +3258,7 @@ int main(int ac, char **av)
   //
   // Build a syntax tree from the expression provided by user
   //
-  WordTree* expr = WordParser(words).Parse(params.find);
+  WordTree* expr = WordParser().Parse(params.find);
 
   //
   // Define the semantic of the key
@@ -3522,33 +3272,17 @@ int main(int ac, char **av)
     };
     int document_length = DOCUMENT_LENGTH;
     int location = LOCATION;
-    if(expr->Prepare(words, params.uniq_server, params.proximity, document, document_length, location) != OK)
+    if(expr->Prepare(&words, params.uniq_server, params.proximity, document, document_length, location) != OK)
       exit(1);
   }
 
-  //
-  // Set lower and higher bounds if appropriate
-  //
-  {
-    WordKey low(context);
-    WordKey high(context);
-    if(params.low[0])
-      low.Set(params.low);
-    if(params.high[0])
-      high.Set(params.high);
-    if(params.low[0] || params.high[0])
-      if(expr->Bounds(low, high) != OK)
-	exit(1);
-  }
-
-  WordSearch* search = new WordSearch(words);
+  WordSearch* search = new WordSearch();
 
   //
   // Forward query options to WordSearch object
   //
   search->limit_bottom = params.bottom;        // -b
   search->limit_count = params.count;          // -c
-  search->bounded = params.bounded;            // -a
   if(params.context)                           // -C
     search->context_in.set(params.context, strlen(params.context));
 
@@ -3556,23 +3290,18 @@ int main(int ac, char **av)
   // Perform the search (-f)
   //
   search->expr = expr;
-  WordMatch** matches = search->Search();
+  WordMatch* matches = search->Search();
 
   //
   // Display results, if any.
   //
   if(matches) {
     int i;
-    for(i = 0; matches[i]; i++) {
-      printf("match: %s\n", (char*)matches[i]->Get());
-      delete matches[i];
-    }
+    for(i = 0; !matches[i].match.Empty(); i++)
+      printf("match: %s\n", (char*)matches[i].Get());
     const String& context = search->Context();
     if(!context.empty())
       printf("context: %s\n", (const char*)context);
-    printf("count: %d\n", search->matches_total);
-    if(params.bottom != search->limit_bottom)
-      printf("bottom: %d\n", search->limit_bottom);
     delete [] matches;
   } else {
     printf("match: none\n");
@@ -3585,13 +3314,10 @@ int main(int ac, char **av)
   if(params.context) free(params.context);
   if(params.find) free(params.find);
   if(params.dbfile) free(params.dbfile);
-  free(params.low);
-  free(params.high);
-  free(params.occurrences);
   delete expr;
 
-  delete words;
-  delete context;
+  words.Close();
+  delete config;
 }
 
 static void exclude_test()
@@ -3797,13 +3523,11 @@ static void exclude_test()
 static void usage()
 {
     printf("usage:\tsearch -f words [options]\n");
-    printf("\tsearch -o word [options]\n");
     printf("\tsearch -e\n");
     printf("Options:\n");
     printf("\t-v\t\tIncreases the verbosity.\n");
     printf("\t-B dbfile\tUse <dbfile> as a db file name (default test).\n");
     printf("\t-f expr\t\tLisp like search expression.\n");
-    printf("\t-o <word>\treturn the number of occurrences of <word>\n");
     printf("\t\t\tSee WordParser comments in source for more information.\n");
     printf("\t-b number\tSkip number documents before retrieving.\n");
     printf("\t-c number\tRetrieve number documents at most.\n");
@@ -3813,9 +3537,6 @@ static void usage()
     printf("\t\t\t(default 1).\n");
     printf("\t-C context\tResume search at <context>.\n");
     printf("\t-S\t\tReturn at most one match per server.\n");
-    printf("\t-l <key>\tlow bound.\n");
-    printf("\t-h <key>\thigh bound.\n");
-    printf("\t-a\t\tAlways return a valid match interval.\n");
     printf("\n");
     printf("\t-e\t\tRun tests on WordExclude and WordExcludeMask.\n");
     exit(1);

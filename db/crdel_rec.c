@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: crdel_rec.c,v 1.1.2.3 2000/09/17 01:35:04 ghutchis Exp $";
+static const char sccsid[] = "@(#)crdel_rec.c	11.17 (Sleepycat) 11/15/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -30,20 +30,20 @@ static const char revid[] = "$Id: crdel_rec.c,v 1.1.2.3 2000/09/17 01:35:04 ghut
  *	Recovery function for fileopen.
  *
  * PUBLIC: int CDB___crdel_fileopen_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
  */
 int
-CDB___crdel_fileopen_recover(dbenv, dbtp, lsnp, op, info)
+CDB___crdel_fileopen_recover(dbenv, dbtp, lsnp, redo, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	db_recops op;
+	int redo;
 	void *info;
 {
 	__crdel_fileopen_args *argp;
 	DBMETA ondisk;
 	DB_FH fh;
-	size_t nr;
+	ssize_t nr;
 	int do_unlink, ret;
 	u_int32_t b, mb, io;
 	char *real_name;
@@ -53,7 +53,7 @@ CDB___crdel_fileopen_recover(dbenv, dbtp, lsnp, op, info)
 	real_name = NULL;
 	REC_PRINT(CDB___crdel_fileopen_print);
 
-	if ((ret = CDB___crdel_fileopen_read(dbenv, dbtp->data, &argp)) != 0)
+	if ((ret = CDB___crdel_fileopen_read(dbtp->data, &argp)) != 0)
 		goto out;
 	/*
 	 * If this is an in-memory database, then the name is going to
@@ -65,17 +65,17 @@ CDB___crdel_fileopen_recover(dbenv, dbtp, lsnp, op, info)
 	if ((ret = CDB___db_appname(dbenv, DB_APP_DATA,
 	    NULL, argp->name.data, 0, NULL, &real_name)) != 0)
 		goto out;
-	if (DB_REDO(op)) {
+	if (redo) {
 		/*
 		 * The create commited, so we need to make sure that the file
 		 * exists.  A simple open should suffice.
 		 */
-		if ((ret = CDB___os_open(dbenv, real_name,
+		if ((ret = CDB___os_open(real_name,
 		    DB_OSO_CREATE, argp->mode, &fh)) != 0)
 			goto out;
 		if ((ret = CDB___os_closehandle(&fh)) != 0)
 			goto out;
-	} else if (DB_UNDO(op)) {
+	} else if (!redo) {
 		/*
 		 * If the file is 0-length then it was in the process of being
 		 * created, so we should unlink it.  If it is non-0 length, then
@@ -90,18 +90,17 @@ CDB___crdel_fileopen_recover(dbenv, dbtp, lsnp, op, info)
 		if (CDB___os_exists(real_name, NULL) != 0)
 			goto done;
 
-		if ((ret = CDB___os_open(dbenv, real_name, 0, 0, &fh)) != 0)
+		if ((ret = CDB___os_open(real_name, 0, 0, &fh)) != 0)
 			goto out;
-		if ((ret = CDB___os_ioinfo(dbenv,
-		    real_name, &fh, &mb, &b, &io)) != 0)
+		if ((ret = CDB___os_ioinfo(real_name, &fh, &mb, &b, &io)) != 0)
 			goto out;
 		do_unlink = 0;
 		if (mb != 0 || b != 0) {
 			/*
-			 * We need to read the first page
-			 * to see if its got valid data on it.
+			 * We need to read the first page to see if its got
+			 * valid data on it.
 			 */
-			if ((ret = CDB___os_read(dbenv, &fh,
+			if ((ret = CDB___os_read(&fh,
 			    &ondisk, sizeof(ondisk), &nr)) != 0 ||
 			    nr != sizeof(ondisk))
 				goto out;
@@ -112,7 +111,7 @@ CDB___crdel_fileopen_recover(dbenv, dbtp, lsnp, op, info)
 			goto out;
 		/* Check for 0-length and if it is, delete it. */
 		if (do_unlink || (mb == 0 && b == 0))
-			if ((ret = CDB___os_unlink(dbenv, real_name)) != 0)
+			if ((ret = CDB___os_unlink(real_name)) != 0)
 				goto out;
 	}
 
@@ -131,14 +130,14 @@ out:	if (argp != NULL)
  *	Recovery function for metasub.
  *
  * PUBLIC: int CDB___crdel_metasub_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
  */
 int
-CDB___crdel_metasub_recover(dbenv, dbtp, lsnp, op, info)
+CDB___crdel_metasub_recover(dbenv, dbtp, lsnp, redo, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	db_recops op;
+	int redo;
 	void *info;
 {
 	__crdel_metasub_args *argp;
@@ -146,14 +145,14 @@ CDB___crdel_metasub_recover(dbenv, dbtp, lsnp, op, info)
 	DBC *dbc;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
-	int cmp_p, modified, ret;
+	int cmp_n, cmp_p, modified, ret;
 
 	COMPQUIET(info, NULL);
 	REC_PRINT(CDB___crdel_metasub_print);
 	REC_INTRO(CDB___crdel_metasub_read, 0);
 
 	if ((ret = CDB_memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0) {
-		if (DB_REDO(op)) {
+		if (redo) {
 			if ((ret = CDB_memp_fget(mpf,
 			    &argp->pgno, DB_MPOOL_CREATE, &pagep)) != 0)
 				goto out;
@@ -165,24 +164,20 @@ CDB___crdel_metasub_recover(dbenv, dbtp, lsnp, op, info)
 	}
 
 	modified = 0;
+	cmp_n = CDB_log_compare(lsnp, &LSN(pagep));
 	cmp_p = CDB_log_compare(&LSN(pagep), &argp->lsn);
-	CHECK_LSN(op, cmp_p, &LSN(pagep), &argp->lsn);
 
-	if (cmp_p == 0 && DB_REDO(op)) {
+	if (cmp_p == 0 && redo) {
 		memcpy(pagep, argp->page.data, argp->page.size);
 		LSN(pagep) = *lsnp;
 		modified = 1;
-	} else if (DB_UNDO(op)) {
+	} else if (cmp_n == 0 && !redo) {
 		/*
 		 * We want to undo this page creation.  The page creation
 		 * happened in two parts.  First, we called __bam_new which
 		 * was logged separately. Then we wrote the meta-data onto
 		 * the page.  So long as we restore the LSN, then the recovery
 		 * for __bam_new will do everything else.
-		 * Don't bother checking the lsn on the page.  If we
-		 * are rolling back the next thing is that this page
-		 * will get freed.  Opening the subdb will have reinitialized
-		 * the page, but not the lsn.
 		 */
 		LSN(pagep) = argp->lsn;
 		modified = 1;
@@ -201,21 +196,21 @@ out:	REC_CLOSE;
  *	Recovery function for metapage.
  *
  * PUBLIC: int CDB___crdel_metapage_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
  */
 int
-CDB___crdel_metapage_recover(dbenv, dbtp, lsnp, op, info)
+CDB___crdel_metapage_recover(dbenv, dbtp, lsnp, redo, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	db_recops op;
+	int redo;
 	void *info;
 {
 	__crdel_metapage_args *argp;
 	DB *dbp;
 	DBMETA *meta, ondisk;
 	DB_FH fh;
-	size_t nr;
+	ssize_t nr;
 	u_int32_t b, io, mb, pagesize;
 	int is_done, ret;
 	char *real_name;
@@ -226,7 +221,7 @@ CDB___crdel_metapage_recover(dbenv, dbtp, lsnp, op, info)
 	memset(&fh, 0, sizeof(fh));
 	REC_PRINT(CDB___crdel_metapage_print);
 
-	if ((ret = CDB___crdel_metapage_read(dbenv, dbtp->data, &argp)) != 0)
+	if ((ret = CDB___crdel_metapage_read(dbtp->data, &argp)) != 0)
 		goto out;
 
 	/*
@@ -242,22 +237,14 @@ CDB___crdel_metapage_recover(dbenv, dbtp, lsnp, op, info)
 	if ((ret = CDB___db_appname(dbenv, DB_APP_DATA,
 	    NULL, argp->name.data, 0, NULL, &real_name)) != 0)
 		goto out;
-	if (DB_REDO(op)) {
-		if ((ret = CDB___db_fileid_to_db(dbenv,
-		    &dbp, argp->fileid, 0)) != 0) {
-			if (ret == DB_DELETED)
-				goto done;
-			else
-				goto out;
-		}
-
+	if (redo) {
 		/*
 		 * We simply read the first page and if the LSN is 0, we
 		 * write the meta-data page.
 		 */
-		if ((ret = CDB___os_open(dbenv, real_name, 0, 0, &fh)) != 0)
+		if ((ret = CDB___os_open(real_name, 0, 0, &fh)) != 0)
 			goto out;
-		if ((ret = CDB___os_seek(dbenv, &fh,
+		if ((ret = CDB___os_seek(&fh,
 		    pagesize, argp->pgno, 0, 0, DB_OS_SEEK_SET)) != 0)
 			goto out;
 		/*
@@ -267,11 +254,11 @@ CDB___crdel_metapage_recover(dbenv, dbtp, lsnp, op, info)
 		 * files aren't allowed to have holes in them.  If the page
 		 * looks good then we're done.
 		 */
-		if ((ret = CDB___os_read(dbenv, &fh, &ondisk,
-		    sizeof(ondisk), &nr)) == 0 && nr == sizeof(ondisk)) {
+		if ((ret = CDB___os_read(&fh, &ondisk, sizeof(ondisk), &nr)) == 0 &&
+		    nr == sizeof(ondisk)) {
 			if (ondisk.magic != 0)
 				goto done;
-			if ((ret = CDB___os_seek(dbenv, &fh,
+			if ((ret = CDB___os_seek(&fh,
 			    pagesize, argp->pgno, 0, 0, DB_OS_SEEK_SET)) != 0)
 				goto out;
 		}
@@ -281,28 +268,16 @@ CDB___crdel_metapage_recover(dbenv, dbtp, lsnp, op, info)
 		 * (seek pointer shouldn't have moved)
 		 */
 		CDB___ua_memcpy(&meta->lsn, lsnp, sizeof(DB_LSN));
-		if ((ret = CDB___os_write(dbp->dbenv, &fh,
+		if ((ret = CDB___os_write(&fh,
 		    argp->page.data, argp->page.size, &nr)) != 0)
 			goto out;
-		if (nr != (size_t)argp->page.size) {
+		if (nr != (ssize_t)argp->page.size) {
 			CDB___db_err(dbenv, "Write failed during recovery");
 			ret = EIO;
 			goto out;
 		}
-
-		/*
-		 * We must close and reopen the file to be sure
-		 * that we have the proper meta information
-		 * in the in memory structures
-		 */
-
-		if ((ret = CDB___log_reopen_file(dbenv,
-		     argp->name.data, argp->fileid,
-		     meta->uid, argp->pgno)) != 0)
-			goto out;
-
 		/* Handle will be closed on exit. */
-	} else if (DB_UNDO(op)) {
+	} else if (!redo) {
 		is_done = 0;
 
 		/* If file does not exist, there is nothing to undo. */
@@ -314,7 +289,6 @@ CDB___crdel_metapage_recover(dbenv, dbtp, lsnp, op, info)
 		 * if there is a valid dbp for this, and if there is, we'd
 		 * better flush it.
 		 */
-		dbp = NULL;
 		if ((ret =
 		    CDB___db_fileid_to_db(dbenv, &dbp, argp->fileid, 0)) == 0)
 			(void)dbp->sync(dbp, 0);
@@ -326,17 +300,16 @@ CDB___crdel_metapage_recover(dbenv, dbtp, lsnp, op, info)
 		 * not 0-length, then we need to check the LSN and make
 		 * sure that it's the file we created.
 		 */
-		if ((ret = CDB___os_open(dbenv, real_name, 0, 0, &fh)) != 0)
+		if ((ret = CDB___os_open(real_name, 0, 0, &fh)) != 0)
 			goto out;
-		if ((ret = CDB___os_ioinfo(dbenv,
-		    real_name, &fh, &mb, &b, &io)) != 0)
+		if ((ret = CDB___os_ioinfo(real_name, &fh, &mb, &b, &io)) != 0)
 			goto out;
 		if (mb != 0 || b != 0) {
 			/* The file has something in it. */
-			if ((ret = CDB___os_seek(dbenv, &fh,
+			if ((ret = CDB___os_seek(&fh,
 			    pagesize, argp->pgno, 0, 0, DB_OS_SEEK_SET)) != 0)
 				goto out;
-			if ((ret = CDB___os_read(dbenv, &fh,
+			if ((ret = CDB___os_read(&fh,
 			    &ondisk, sizeof(ondisk), &nr)) != 0)
 				goto out;
 			if (CDB_log_compare(&ondisk.lsn, lsnp) != 0)
@@ -357,18 +330,18 @@ CDB___crdel_metapage_recover(dbenv, dbtp, lsnp, op, info)
 			 * don't try to close it again.  First, check for a
 			 * saved_open_fhp, then close down the mpool.
 			 */
-			if (dbp != NULL && dbp->saved_open_fhp != NULL &&
+			if (dbp->saved_open_fhp != NULL &&
 			    F_ISSET(dbp->saved_open_fhp, DB_FH_VALID) &&
 			    (ret = CDB___os_closehandle(dbp->saved_open_fhp)) != 0)
 				goto out;
-			if (dbp != NULL && dbp->mpf != NULL) {
+			if (dbp->mpf != NULL) {
 				(void)CDB___memp_fremove(dbp->mpf);
 				if ((ret = CDB_memp_fclose(dbp->mpf)) != 0)
 					goto out;
 				F_SET(dbp, DB_AM_DISCARD);
 				dbp->mpf = NULL;
 			}
-			if ((ret = CDB___os_unlink(dbenv, real_name)) != 0)
+			if ((ret = CDB___os_unlink(real_name)) != 0)
 				goto out;
 		}
 	}
@@ -390,17 +363,16 @@ out:	if (argp != NULL)
  *	Recovery function for delete.
  *
  * PUBLIC: int CDB___crdel_delete_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
  */
 int
-CDB___crdel_delete_recover(dbenv, dbtp, lsnp, op, info)
+CDB___crdel_delete_recover(dbenv, dbtp, lsnp, redo, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	db_recops op;
+	int redo;
 	void *info;
 {
-	DB *dbp;
 	__crdel_delete_args *argp;
 	int ret;
 	char *backup, *real_back, *real_name;
@@ -408,10 +380,10 @@ CDB___crdel_delete_recover(dbenv, dbtp, lsnp, op, info)
 	REC_PRINT(CDB___crdel_delete_print);
 
 	backup = real_back = real_name = NULL;
-	if ((ret = CDB___crdel_delete_read(dbenv, dbtp->data, &argp)) != 0)
+	if ((ret = CDB___crdel_delete_read(dbtp->data, &argp)) != 0)
 		goto out;
 
-	if (DB_REDO(op)) {
+	if (redo) {
 		/*
 		 * On a recovery, as we recreate what was going on, we
 		 * recreate the creation of the file.  And so, even though
@@ -421,46 +393,30 @@ CDB___crdel_delete_recover(dbenv, dbtp, lsnp, op, info)
 		if ((ret = CDB___db_appname(dbenv, DB_APP_DATA,
 		    NULL, argp->name.data, 0, NULL, &real_name)) != 0)
 			goto out;
-		if (CDB___os_exists(real_name, NULL) == 0) {
-			/*
-			 * On Windows, the underlying file must be
-			 * closed to perform a remove.
-			 */
-			if ((ret = CDB___db_fileid_to_db(
-			    dbenv, &dbp, argp->fileid, 0)) != 0)
-				goto out;
-			(void)CDB___memp_fremove(dbp->mpf);
-			if ((ret = CDB_memp_fclose(dbp->mpf)) != 0)
-				goto out;
-			dbp->mpf = NULL;
-			if ((ret = CDB___os_unlink(dbenv, real_name)) != 0)
-				goto out;
-		}
+		(void)CDB___os_unlink(real_name);
 		/*
 		 * The transaction committed, so the only thing that might
 		 * be true is that the backup file is still around.  Try
 		 * to delete it, but it's not an error if that delete fails.
 		 */
-		if ((ret =  CDB___db_backup_name(dbenv, argp->name.data,
+		if ((ret =  CDB___db_backup_name(argp->name.data,
 		    &backup, lsnp)) != 0)
 			goto out;
 		if ((ret = CDB___db_appname(dbenv,
 		    DB_APP_DATA, NULL, backup, 0, NULL, &real_back)) != 0)
 			goto out;
-		if (CDB___os_exists(real_back, NULL) == 0)
-			if ((ret = CDB___os_unlink(dbenv, real_back)) != 0)
-				goto out;
-		if ((ret = CDB___db_txnlist_delete(dbenv, info,
+		(void)CDB___os_unlink(real_back);
+		if ((ret = CDB___db_txnlist_delete(info,
 		    argp->name.data, TXNLIST_INVALID_ID, 1)) != 0)
 			goto out;
-	} else if (DB_UNDO(op)) {
+	} else if (!redo) {
 		/*
 		 * Trying to undo.  File may or may not have been deleted.
 		 * Try to move the backup to the original.  If the backup
 		 * exists, then this is right.  If it doesn't exist, then
 		 * nothing will happen and that's OK.
 		 */
-		if ((ret =  CDB___db_backup_name(dbenv, argp->name.data,
+		if ((ret =  CDB___db_backup_name(argp->name.data,
 		    &backup, lsnp)) != 0)
 			goto out;
 		if ((ret = CDB___db_appname(dbenv,
@@ -469,10 +425,7 @@ CDB___crdel_delete_recover(dbenv, dbtp, lsnp, op, info)
 		if ((ret = CDB___db_appname(dbenv, DB_APP_DATA,
 		    NULL, argp->name.data, 0, NULL, &real_name)) != 0)
 			goto out;
-		if (CDB___os_exists(real_back, NULL) == 0)
-			if ((ret =
-			     CDB___os_rename(dbenv, real_back, real_name)) != 0)
-				goto out;
+		(void)CDB___os_rename(real_back, real_name);
 	}
 
 	*lsnp = argp->prev_lsn;
@@ -486,109 +439,5 @@ out:	if (argp != NULL)
 		CDB___os_freestr(real_back);
 	if (real_name != NULL)
 		CDB___os_freestr(real_name);
-	return (ret);
-}
-/*
- * CDB___crdel_rename_recover --
- *	Recovery function for rename.
- *
- * PUBLIC: int CDB___crdel_rename_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
- */
-int
-CDB___crdel_rename_recover(dbenv, dbtp, lsnp, op, info)
-	DB_ENV *dbenv;
-	DBT *dbtp;
-	DB_LSN *lsnp;
-	db_recops op;
-	void *info;
-{
-	DB *dbp;
-	__crdel_rename_args *argp;
-	char *new_name, *real_name;
-	int ret, set;
-
-	COMPQUIET(info, NULL);
-
-	REC_PRINT(CDB___crdel_rename_print);
-	if ((ret = CDB___crdel_rename_read(dbenv, dbtp->data, &argp)) != 0)
-		goto out;
-
-	if ((ret = CDB___db_fileid_to_db(dbenv, &dbp, argp->fileid, 0)) != 0)
-		goto out;
-	if (DB_REDO(op)) {
-		/*
-		 * We don't use the dbp parameter to CDB___log_filelist_update
-		 * in the rename case, so passing NULL for it is OK.
-		 */
-		if ((ret = CDB___log_filelist_update(dbenv, NULL,
-		    argp->fileid, argp->newname.data, &set)) != 0)
-			goto out;
-		if (set != 0) {
-			if ((ret = CDB___db_appname(dbenv, DB_APP_DATA,
-			    NULL, argp->name.data, 0, NULL, &real_name)) != 0)
-				goto out;
-			if (CDB___os_exists(real_name, NULL) == 0) {
-				if ((ret = CDB___db_appname(dbenv,
-				    DB_APP_DATA, NULL, argp->newname.data,
-				    0, NULL, &new_name)) != 0)
-					goto out;
-				/*
-				 * On Windows, the underlying file
-				 * must be closed to perform a remove.
-				 * The db will be closed by a
-				 * CDB_log_register record.  Rename
-				 * has exclusive access to the db.
-				 */
-				(void)CDB___memp_fremove(dbp->mpf);
-				if ((ret = CDB_memp_fclose(dbp->mpf)) != 0)
-					goto out;
-				dbp->mpf = NULL;
-				if ((ret = CDB___os_rename(dbenv,
-				    real_name, new_name)) != 0)
-					goto out;
-			}
-		}
-	} else {
-		/*
-		 * We don't use the dbp parameter to CDB___log_filelist_update
-		 * in the rename case, so passing NULL for it is OK.
-		 */
-		if ((ret = CDB___log_filelist_update(dbenv, NULL,
-		    argp->fileid, argp->name.data, &set)) != 0)
-			goto out;
-		if (set != 0) {
-			if ((ret = CDB___db_appname(dbenv, DB_APP_DATA,
-			    NULL, argp->newname.data, 0, NULL, &new_name)) != 0)
-				goto out;
-			if (CDB___os_exists(new_name, NULL) == 0) {
-				if ((ret = CDB___db_appname(dbenv,
-				    DB_APP_DATA, NULL, argp->name.data,
-				    0, NULL, &real_name)) != 0)
-					goto out;
-				/*
-				 * On Windows, the underlying file
-				 * must be closed to perform a remove.
-				 * The file may have already been closed
-				 * if we are aborting the transaction.
-				 */
-				if (dbp->mpf != NULL) {
-					(void)CDB___memp_fremove(dbp->mpf);
-					if ((ret = CDB_memp_fclose(dbp->mpf)) != 0)
-						goto out;
-					dbp->mpf = NULL;
-				}
-				if ((ret = CDB___os_rename(dbenv,
-				    new_name, real_name)) != 0)
-					goto out;
-			}
-		}
-	}
-
-	*lsnp = argp->prev_lsn;
-	ret = 0;
-
-out:	if (argp != NULL)
-		CDB___os_free(argp, sizeof(*argp));
 	return (ret);
 }

@@ -1,20 +1,19 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998, 1999, 2000
+ * Copyright (c) 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: os_stat.c,v 1.1.2.3 2000/09/17 01:35:08 ghutchis Exp $";
+static const char sccsid[] = "@(#)os_stat.c	11.1 (Sleepycat) 7/25/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <string.h>
 #endif
 
 #include "db_int.h"
@@ -57,28 +56,23 @@ CDB___os_exists(path, isdirp)
  *	Return file size and I/O size; abstracted to make it easier
  *	to replace.
  *
- * PUBLIC: int CDB___os_ioinfo __P((DB_ENV *, const char *,
+ * PUBLIC: int CDB___os_ioinfo __P((const char *,
  * PUBLIC:    DB_FH *, u_int32_t *, u_int32_t *, u_int32_t *));
  */
 int
-CDB___os_ioinfo(dbenv, path, fhp, mbytesp, bytesp, iosizep)
-	DB_ENV *dbenv;
+CDB___os_ioinfo(path, fhp, mbytesp, bytesp, iosizep)
 	const char *path;
 	DB_FH *fhp;
 	u_int32_t *mbytesp, *bytesp, *iosizep;
 {
-	int ret;
 	struct stat sb;
 
 	if (CDB___db_jump.j_ioinfo != NULL)
 		return (CDB___db_jump.j_ioinfo(path,
 		    fhp->fd, mbytesp, bytesp, iosizep));
 
-	if (fstat(fhp->fd, &sb) == -1) {
-		ret = CDB___os_get_errno();
-		CDB___db_err(dbenv, "fstat: %s", strerror(ret));
-		return (ret);
-	}
+	if (fstat(fhp->fd, &sb) == -1)
+		return (CDB___os_get_errno());
 
 	/* Return the size of the file. */
 	if (mbytesp != NULL)

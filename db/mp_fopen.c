@@ -1,13 +1,13 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: mp_fopen.c,v 1.1.2.3 2000/09/17 01:35:07 ghutchis Exp $";
+static const char sccsid[] = "@(#)mp_fopen.c	11.7 (Sleepycat) 10/27/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -17,35 +17,13 @@ static const char revid[] = "$Id: mp_fopen.c,v 1.1.2.3 2000/09/17 01:35:07 ghutc
 #include <string.h>
 #endif
 
-#ifdef  HAVE_RPC
-#include "db_server.h"
-#endif
-
 #include "db_int.h"
 #include "db_shash.h"
-#include "db_page.h"
 #include "mp.h"
 
-#ifdef HAVE_RPC
-#include "gen_client_ext.h"
-#include "rpc_client_ext.h"
-#endif
-
-static int __memp_mf_open __P((DB_MPOOL *, const char *,
-    size_t, db_pgno_t, DB_MPOOL_FINFO *, u_int32_t, MPOOLFILE **));
-
-/*
- * MEMP_FREMOVE --
- *	Discard an MPOOLFILE and any buffers it references: update the flags
- *	so we never try to write buffers associated with the file, nor can we
- *	find it when looking for files to join.  In addition, clear the ftype
- *	field, there's no reason to post-process pages, they can be discarded
- *	by any thread.
- */
-#define	MEMP_FREMOVE(mfp) {						\
-	mfp->ftype = 0;							\
-	F_SET(mfp, MP_DEADFILE);					\
-}
+static int CDB___memp_mf_close __P((DB_MPOOL *, DB_MPOOLFILE *));
+static int CDB___memp_mf_open __P((DB_MPOOL *,
+    const char *, size_t, db_pgno_t, DB_MPOOL_FINFO *, MPOOLFILE **));
 
 /*
  * CDB_memp_fopen --
@@ -64,27 +42,22 @@ CDB_memp_fopen(dbenv, path, flags, mode, pagesize, finfop, retp)
 	DB_MPOOL *dbmp;
 	int ret;
 
-#ifdef HAVE_RPC
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
-		return (__dbcl_memp_fopen(dbenv, path, flags,
-		    mode, pagesize, finfop, retp));
-#endif
-
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->mp_handle, DB_INIT_MPOOL);
 
 	dbmp = dbenv->mp_handle;
 
 	/* Validate arguments. */
-	if ((ret = CDB___db_fchk(dbenv, "CDB_memp_fopen", flags,
-	    DB_CREATE | DB_COMPRESS |
-	    DB_NOMMAP | DB_ODDFILESIZE | DB_RDONLY | DB_TRUNCATE)) != 0)
+	if ((ret = CDB___db_fchk(dbenv,
+	    "CDB_memp_fopen", flags, DB_COMPRESS | DB_CREATE | DB_NOMMAP | DB_RDONLY)) != 0)
 		return (ret);
+
 	/*
 	 * Transparent I/O compression does not work on mmap'd files.
 	 */
 	if(LF_ISSET(DB_COMPRESS))
 	  LF_SET(DB_NOMMAP);
+
 
 	/* Require a non-zero pagesize. */
 	if (pagesize == 0) {
@@ -155,7 +128,7 @@ CDB___memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 	}
 
 	/* Allocate and initialize the per-process structure. */
-	if ((ret = CDB___os_calloc(dbenv, 1, sizeof(DB_MPOOLFILE), &dbmfp)) != 0)
+	if ((ret = CDB___os_calloc(1, sizeof(DB_MPOOLFILE), &dbmfp)) != 0)
 		return (ret);
 	dbmfp->dbmp = dbmp;
 	dbmfp->ref = 1;
@@ -177,7 +150,7 @@ CDB___memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 			ret = EINVAL;
 			goto err;
 		}
-		last_pgno = PGNO_BASE_MD;
+		last_pgno = 0;
 	} else {
 	       size_t disk_pagesize = F_ISSET(dbmfp, MP_CMPR) ? DB_CMPR_DIVIDE(dbenv, pagesize) : pagesize;
 		/* Get the real name for this file and open it. */
@@ -190,7 +163,7 @@ CDB___memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 		if (LF_ISSET(DB_RDONLY))
 			oflags |= DB_OSO_RDONLY;
 		if ((ret =
-		   CDB___os_open(dbenv, rpath, oflags, mode, &dbmfp->fh)) != 0) {
+		   CDB___os_open(rpath, oflags, mode, &dbmfp->fh)) != 0) {
 			CDB___db_err(dbenv, "%s: %s", rpath, CDB_db_strerror(ret));
 			goto err;
 		}
@@ -208,36 +181,19 @@ CDB___memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 		 * environments where an off_t is 32-bits, but still run where
 		 * offsets are 64-bits, and they pay us a lot of money.
 		 */
-		if ((ret = CDB___os_ioinfo(dbenv, rpath,
+		if ((ret = CDB___os_ioinfo(rpath,
 		    &dbmfp->fh, &mbytes, &bytes, NULL)) != 0) {
 			CDB___db_err(dbenv, "%s: %s", rpath, CDB_db_strerror(ret));
 			goto err;
 		}
 
-		/*
-		 * If we're doing a verify, we might have to cope with
-		 * a truncated file;  if the file size is not a multiple
-		 * of the page size, round down to a page--we'll
-		 * take care of the partial page outside the memp system.
-		 */
-
 		/* Page sizes have to be a power-of-two, ignore mbytes. */
 		if (bytes % disk_pagesize != 0) {
-			if (LF_ISSET(DB_ODDFILESIZE))
-				/*
-				 * If we're doing a verify, we might
-				 * have to cope with a truncated file;
-				 * round down, we'll worry about the partial
-				 * page outside the memp system.
-				 */
-				bytes -= (bytes % disk_pagesize);
-			else {
-				CDB___db_err(dbenv,
-		"%s: file size not a multiple of the pagesize",
-				    rpath);
-				ret = EINVAL;
-				goto err;
-			}
+			CDB___db_err(dbenv,
+			    "%s: file size not a multiple of the pagesize",
+			    rpath);
+			ret = EINVAL;
+			goto err;
 		}
 
 		last_pgno = mbytes * (MEGABYTE / disk_pagesize);
@@ -246,8 +202,6 @@ CDB___memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 		/* Correction: page numbers are zero-based, not 1-based. */
 		if (last_pgno != 0)
 			--last_pgno;
-		else
-		  last_pgno = PGNO_BASE_MD;
 
 		/*
 		 * Get the file id if we weren't given one.  Generated file id's
@@ -259,6 +213,10 @@ CDB___memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 				goto err;
 			finfop->fileid = idbuf;
 		}
+		if (LF_ISSET(DB_COMPRESS)) {
+		  if((ret = CDB___memp_cmpr_open(dbenv, path, flags, mode, &dbmfp->cmpr_context)) != 0)
+		    goto err;
+		}
 	}
 
 	/*
@@ -267,17 +225,17 @@ CDB___memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 	 * for the per-process thread lock.
 	 */
 	if (needlock)
-		R_LOCK(dbenv, dbmp->reginfo);
-	ret = mfp == NULL ? __memp_mf_open(
-	    dbmp, path, pagesize, last_pgno, finfop, flags, &mfp) : 0;
+		R_LOCK(dbenv, &dbmp->reginfo);
+	ret = mfp == NULL ? CDB___memp_mf_open(
+	    dbmp, path, pagesize, last_pgno, finfop, &mfp) : 0;
 	if (needlock)
-		R_UNLOCK(dbenv, dbmp->reginfo);
+		R_UNLOCK(dbenv, &dbmp->reginfo);
 	if (ret != 0)
 		goto err;
 
 	if (F_ISSET(dbenv, DB_ENV_THREAD)) {
 		if ((ret = CDB___db_mutex_alloc(
-		    dbenv, dbmp->reginfo, &dbmfp->mutexp)) != 0)
+		    dbenv, &dbmp->reginfo, &dbmfp->mutexp)) != 0)
 			goto err;
 		if ((ret = __db_mutex_init(
 		    dbenv, dbmfp->mutexp, 0, MUTEX_THREAD)) != 0)
@@ -343,7 +301,6 @@ CDB___memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 	MUTEX_THREAD_UNLOCK(dbmp->mutexp);
 
 	*retp = dbmfp;
-
 	return (0);
 
 err:	/*
@@ -358,20 +315,19 @@ err:	/*
 		CDB___os_free(dbmfp, sizeof(DB_MPOOLFILE));
 	return (ret);
 }
-static	MPOOL *mp;
+static	MPOOL *CDB_mp;
 
 /*
- * __memp_mf_open --
+ * CDB___memp_mf_open --
  *	Open an MPOOLFILE.
  */
 static int
-__memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, flags, retp)
+CDB___memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, retp)
 	DB_MPOOL *dbmp;
 	const char *path;
 	size_t pagesize;
 	db_pgno_t last_pgno;
 	DB_MPOOL_FINFO *finfop;
-	u_int32_t flags;
 	MPOOLFILE **retp;
 {
 	MPOOLFILE *mfp;
@@ -381,38 +337,17 @@ __memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, flags, retp)
 #define	ISTEMPORARY	(path == NULL)
 
 	/*
-	 * If not creating a temporary file, walk the list of MPOOLFILE's,
-	 * looking for a matching file.  Files backed by temporary files
-	 * or previously removed files can't match.
-	 *
-	 * DB_TRUNCATE support.
-	 *
-	 * The fileID is a filesystem unique number (e.g., a UNIX dev/inode
-	 * pair) plus a timestamp.  If files are removed and created in less
-	 * than a second, the fileID can be repeated.  The problem with
-	 * repetition happens when the file that previously had the fileID
-	 * value still has pages in the pool, since we don't want to use them
-	 * to satisfy requests for the new file.
-	 *
-	 * Because the DB_TRUNCATE flag reuses the dev/inode pair, repeated
-	 * opens with that flag set guarantees matching fileIDs when the
-	 * machine can open a file and then re-open with truncate within a
-	 * second.  For this reason, we pass that flag down, and, if we find
-	 * a matching entry, we ensure that it's never found again, and we
-	 * create a new entry for the current request.
+	 * Walk the list of MPOOLFILE's, looking for a matching file.
+	 * Temporary files can't match previous files.
 	 */
 	if (!ISTEMPORARY) {
-		mp = dbmp->reginfo[0].primary;
-		for (mfp = SH_TAILQ_FIRST(&mp->mpfq, __mpoolfile);
+		CDB_mp = dbmp->reginfo.primary;
+		for (mfp = SH_TAILQ_FIRST(&CDB_mp->mpfq, __mpoolfile);
 		    mfp != NULL; mfp = SH_TAILQ_NEXT(mfp, q, __mpoolfile)) {
-			if (F_ISSET(mfp, MP_DEADFILE | MP_TEMP))
+			if (F_ISSET(mfp, MP_TEMP))
 				continue;
-			if (memcmp(finfop->fileid, R_ADDR(dbmp->reginfo,
-			    mfp->fileid_off), DB_FILE_ID_LEN) == 0) {
-				if (LF_ISSET(DB_TRUNCATE)) {
-					MEMP_FREMOVE(mfp);
-					continue;
-				}
+			if (!memcmp(finfop->fileid, R_ADDR(&dbmp->reginfo,
+			    mfp->fileid_off), DB_FILE_ID_LEN)) {
 				if (finfop->clear_len != mfp->clear_len ||
 				    pagesize != mfp->stat.st_pagesize) {
 					CDB___db_err(dbmp->dbenv,
@@ -430,8 +365,7 @@ __memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, flags, retp)
 				if (finfop->ftype != 0)
 					mfp->ftype = finfop->ftype;
 
-				++mfp->ref_cnt;
-
+				/* Found it. */
 				*retp = mfp;
 				return (0);
 			}
@@ -440,17 +374,15 @@ __memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, flags, retp)
 
 	/* Allocate a new MPOOLFILE. */
 	if ((ret = CDB___memp_alloc(
-	    dbmp, dbmp->reginfo, NULL, sizeof(MPOOLFILE), NULL, &mfp)) != 0)
-		goto mem_err;
+	    dbmp, &dbmp->reginfo, NULL, sizeof(MPOOLFILE), NULL, &mfp)) != 0)
+		return (ret);
 	*retp = mfp;
 
 	/* Initialize the structure. */
 	memset(mfp, 0, sizeof(MPOOLFILE));
-	mfp->ref_cnt = 1;
 	mfp->ftype = finfop->ftype;
 	mfp->lsn_off = finfop->lsn_offset;
 	mfp->clear_len = finfop->clear_len;
-	mfp->cmpr_free = PGNO_INVALID;
 
 	/*
 	 * If the user specifies DB_MPOOL_LAST or DB_MPOOL_NEW on a CDB_memp_fget,
@@ -464,13 +396,13 @@ __memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, flags, retp)
 		F_SET(mfp, MP_TEMP);
 	else {
 		/* Copy the file path into shared memory. */
-		if ((ret = CDB___memp_alloc(dbmp, dbmp->reginfo,
+		if ((ret = CDB___memp_alloc(dbmp, &dbmp->reginfo,
 		    NULL, strlen(path) + 1, &mfp->path_off, &p)) != 0)
 			goto err;
 		memcpy(p, path, strlen(path) + 1);
 
 		/* Copy the file identification string into shared memory. */
-		if ((ret = CDB___memp_alloc(dbmp, dbmp->reginfo,
+		if ((ret = CDB___memp_alloc(dbmp, &dbmp->reginfo,
 		    NULL, DB_FILE_ID_LEN, &mfp->fileid_off, &p)) != 0)
 			goto err;
 		memcpy(p, finfop->fileid, DB_FILE_ID_LEN);
@@ -483,7 +415,7 @@ __memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, flags, retp)
 		mfp->pgcookie_len = 0;
 		mfp->pgcookie_off = 0;
 	} else {
-		if ((ret = CDB___memp_alloc(dbmp, dbmp->reginfo,
+		if ((ret = CDB___memp_alloc(dbmp, &dbmp->reginfo,
 		    NULL, finfop->pgcookie->size, &mfp->pgcookie_off, &p)) != 0)
 			goto err;
 		memcpy(p, finfop->pgcookie->data, finfop->pgcookie->size);
@@ -491,25 +423,21 @@ __memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, flags, retp)
 	}
 
 	/* Prepend the MPOOLFILE to the list of MPOOLFILE's. */
-	mp = dbmp->reginfo[0].primary;
-	SH_TAILQ_INSERT_HEAD(&mp->mpfq, mfp, q, __mpoolfile);
+	CDB_mp = dbmp->reginfo.primary;
+	SH_TAILQ_INSERT_HEAD(&CDB_mp->mpfq, mfp, q, __mpoolfile);
 
-	if((ret = CDB___memp_cmpr_open(dbmp->dbenv, mfp, path)) != 0)
-	  goto err;
-	
 	if (0) {
 err:		if (mfp->path_off != 0)
-			CDB___db_shalloc_free(dbmp->reginfo[0].addr,
-			    R_ADDR(dbmp->reginfo, mfp->path_off));
+			CDB___db_shalloc_free(dbmp->reginfo.addr,
+			    R_ADDR(&dbmp->reginfo, mfp->path_off));
 		if (mfp->fileid_off != 0)
-			CDB___db_shalloc_free(dbmp->reginfo[0].addr,
-			    R_ADDR(dbmp->reginfo, mfp->fileid_off));
+			CDB___db_shalloc_free(dbmp->reginfo.addr,
+			    R_ADDR(&dbmp->reginfo, mfp->fileid_off));
 		if (mfp != NULL)
-			CDB___db_shalloc_free(dbmp->reginfo[0].addr, mfp);
-mem_err:	CDB___db_err(dbmp->dbenv,
-		    "Unable to allocate memory for mpool file");
+			CDB___db_shalloc_free(dbmp->reginfo.addr, mfp);
+		mfp = NULL;
 	}
-	return (ret);
+	return (0);
 }
 
 /*
@@ -522,7 +450,6 @@ CDB_memp_fclose(dbmfp)
 {
 	DB_ENV *dbenv;
 	DB_MPOOL *dbmp;
-	MPOOLFILE *mfp;
 	int ret, t_ret;
 
 	dbmp = dbmfp->dbmp;
@@ -531,16 +458,6 @@ CDB_memp_fclose(dbmfp)
 
 	PANIC_CHECK(dbenv);
 
-#ifdef HAVE_RPC
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
-		return (__dbcl_memp_fclose(dbmfp));
-#endif
-
-	/*
-	 * Remove the DB_MPOOLFILE from the queue.  This has to happen before
-	 * we perform any action that can fail, otherwise CDB___memp_close may
-	 * loop infinitely when calling us to discard all of the DB_MPOOLFILEs.
-	 */
 	for (;;) {
 		MUTEX_THREAD_LOCK(dbmp->mutexp);
 
@@ -572,7 +489,7 @@ CDB_memp_fclose(dbmfp)
 		}
 		MUTEX_THREAD_UNLOCK(dbmp->mutexp);
 
-		(void)CDB___os_sleep(dbenv, 1, 0);
+		(void)CDB___os_sleep(1, 0);
 	}
 	MUTEX_THREAD_UNLOCK(dbmp->mutexp);
 
@@ -580,6 +497,9 @@ CDB_memp_fclose(dbmfp)
 	if (dbmfp->pinref != 0)
 		CDB___db_err(dbenv, "%s: close: %lu blocks left pinned",
 		    CDB___memp_fn(dbmfp), (u_long)dbmfp->pinref);
+
+	/* Close the underlying MPOOLFILE. */
+	(void)CDB___memp_mf_close(dbmp, dbmfp);
 
 	/* Discard any mmap information. */
 	if (dbmfp->addr != NULL &&
@@ -594,28 +514,16 @@ CDB_memp_fclose(dbmfp)
 			t_ret = ret;
 	}
 
+	if(F_ISSET(dbmfp, MP_CMPR)) {
+	  if((ret = CDB___memp_cmpr_close(&dbmfp->cmpr_context)) != 0)
+		CDB___db_err(dbmp->dbenv,
+			 "%s: %s", CDB___memp_fn(dbmfp), strerror(ret));
+	  F_CLR(dbmfp, MP_CMPR);
+	}
+	
 	/* Discard the thread mutex. */
 	if (dbmfp->mutexp != NULL)
-		CDB___db_mutex_free(dbenv, dbmp->reginfo, dbmfp->mutexp);
-
-	/*
-	 * Discard our reference on the the underlying MPOOLFILE, and close
-	 * it if it's no longer useful to anyone.
-	 *
-	 * If we're not discarding it, and it's a temp file, this means
-	 * all the outstanding references belong to unflushed buffers.
-	 * (A temp file can only be referenced by one DB_MPOOLFILE).
-	 * We don't care about preserving any of those buffers, so mark
-	 * the MPOOLFILE as dead so that when we try to flush them,
-	 * even the dirty ones just get discarded.
-	 */
-	R_LOCK(dbenv, dbmp->reginfo);
-	mfp = dbmfp->mfp;
-	if (--mfp->ref_cnt == 0)
-		CDB___memp_mf_discard(dbmp, mfp);
-	else if (F_ISSET(mfp, MP_TEMP))
-		MEMP_FREMOVE(mfp);
-	R_UNLOCK(dbenv, dbmp->reginfo);
+		CDB___db_mutex_free(dbenv, &dbmp->reginfo, dbmfp->mutexp);
 
 	/* Discard the DB_MPOOLFILE structure. */
 	CDB___os_free(dbmfp, sizeof(DB_MPOOLFILE));
@@ -624,34 +532,40 @@ CDB_memp_fclose(dbmfp)
 }
 
 /*
- * CDB___memp_mf_discard --
- *	Discard an MPOOLFILE.
- *
- * PUBLIC: void CDB___memp_mf_discard __P((DB_MPOOL *, MPOOLFILE *));
+ * CDB___memp_mf_close --
+ *	Close down an MPOOLFILE.
  */
-void
-CDB___memp_mf_discard(dbmp, mfp)
+static int
+CDB___memp_mf_close(dbmp, dbmfp)
 	DB_MPOOL *dbmp;
-	MPOOLFILE *mfp;
+	DB_MPOOLFILE *dbmfp;
 {
-	MPOOL *mp;
+	COMPQUIET(dbmp, NULL);
+	COMPQUIET(dbmfp, NULL);
 
-	mp = dbmp->reginfo[0].primary;
-
-	/* Delete from the list of MPOOLFILEs. */
-	SH_TAILQ_REMOVE(&mp->mpfq, mfp, q, __mpoolfile);
-
-	/* Free the space. */
-	if (mfp->path_off != 0)
-		CDB___db_shalloc_free(dbmp->reginfo[0].addr,
-		    R_ADDR(dbmp->reginfo, mfp->path_off));
-	if (mfp->fileid_off != 0)
-		CDB___db_shalloc_free(dbmp->reginfo[0].addr,
-		    R_ADDR(dbmp->reginfo, mfp->fileid_off));
-	if (mfp->pgcookie_off != 0)
-		CDB___db_shalloc_free(dbmp->reginfo[0].addr,
-		    R_ADDR(dbmp->reginfo, mfp->pgcookie_off));
-	CDB___db_shalloc_free(dbmp->reginfo[0].addr, mfp);
+	/*
+	 * We don't currently close the underlying MPOOLFILE.  The reason falls
+	 * out of the following:
+	 *
+	 * 1. The way we identify a buffer's underlying file is the MPOOLFILE
+	 *    offset in shared memory, bhp->mf_offset.  If buffers remained in
+	 *    the pool after removing the MPOOLFILE, they might accidentally
+	 *    be associated with a newly created MPOOLFILE that happened to be
+	 *    allocated at the same offset as the previous one.
+	 * 2. We can't simply remove all the buffers from the pool, because
+	 *    there may be dirty buffers associated with the MPOOLFILE that
+	 *    the process hasn't yet flushed to disk.  (Dirty buffers are a
+	 *    possibility -- if the application specified DB_NOSYNC when it
+	 *    closed the database, no dirty buffers have been flushed.)
+	 * 3. We can't simply flush all the buffers to disk, because writing
+	 *    and re-integrating the memory into the free list is expensive,
+	 *    and in many cases the process is simply discarding it's pool.
+	 *
+	 * We could walk the cache regions and discard the MPOOLFILE if all
+	 * the buffers are clean, but that's a pain, and probably not worth
+	 * the effort.
+	 */
+	 return (0);
 }
 
 /*
@@ -666,19 +580,22 @@ CDB___memp_fremove(dbmfp)
 {
 	DB_ENV *dbenv;
 	DB_MPOOL *dbmp;
-	MPOOLFILE *mfp;
 
 	dbmp = dbmfp->dbmp;
 	dbenv = dbmp->dbenv;
-	mfp = dbmfp->mfp;
 
 	PANIC_CHECK(dbenv);
 
-	R_LOCK(dbenv, dbmp->reginfo);
+	R_LOCK(dbenv, &dbmp->reginfo);
 
-	MEMP_FREMOVE(mfp);
+	/*
+	 * Flag that the underlying file has been removed, and remove any
+	 * necessity for post-processing pages, anybody can discard them.
+	 */
+	dbmfp->mfp->ftype = 0;
+	F_SET(dbmfp->mfp, MP_REMOVED);
 
-	R_UNLOCK(dbenv, dbmp->reginfo);
+	R_UNLOCK(dbenv, &dbmp->reginfo);
 
 	return (0);
 }
@@ -711,5 +628,5 @@ CDB___memp_fns(dbmp, mfp)
 	if (mfp->path_off == 0)
 		return ((char *)"temporary");
 
-	return ((char *)R_ADDR(dbmp->reginfo, mfp->path_off));
+	return ((char *)R_ADDR(&dbmp->reginfo, mfp->path_off));
 }

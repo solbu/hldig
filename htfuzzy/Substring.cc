@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Substring.cc,v 1.11.2.3 2000/09/27 05:17:55 ghutchis Exp $
+// $Id: Substring.cc,v 1.11.2.4 2000/10/10 03:15:39 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -57,8 +57,7 @@ Substring::getWords(char *w, List &words)
 {
     // First strip the punctuation
     String	stripped = w;
-    WordType	type(config);
-    type.StripPunctuation(stripped);
+    HtStripPunctuation(stripped);
 
     // Now set up the StringMatch object
     StringMatch	match;

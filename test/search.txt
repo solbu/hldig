@@ -1,35 +1,35 @@
-to                0   0  1       1
-the               0   0  3       1
-the               0   0  5       1
-world             0   0  5       2
-the               0   0  5       3
-world             0   0  5       4
-comes             0   0  6       1
-world             0   0  11      1
-the               0   0  20      1
-an                0   0  20      2
-end               0   0  20      3
-the               0   0  20      4
-world             0   0  20      5
-the               0   0  21      1
-world             0   0  21      2
-the               0   0  51      1
-world             0   0  51      2
-the               0   0  71      1
-world             0   0  71      2
-the               0   0  81      1
-world             0   0  81      2
-lazy              0   1  11      2
-dog               0   1  11      3
-lazy              0   1  11      4
-lazy              0   1  21      2
-dog               0   1  21      3
-lazy              0   5   9      1
-lazy              0   5  21      2
-dog               0   5  21      3
-lazy              0   5  53      2
-dog               0   5  53      4
-lazy              0   5  56      7
-dog               0   5  56      8
-dog               0   6   1      5
-lazy              0   6   1      8
+to                <DEF>   0   0  1       1
+the               <DEF>   0   0  3       1
+the               <DEF>   0   0  5       1
+world             <DEF>   0   0  5       2
+the               <DEF>   0   0  5       3
+world             <DEF>   0   0  5       4
+comes             <DEF>   0   0  6       1
+world             <DEF>   0   0  11      1
+the               <DEF>   0   0  20      1
+an                <DEF>   0   0  20      2
+end               <DEF>   0   0  20      3
+the               <DEF>   0   0  20      4
+world             <DEF>   0   0  20      5
+the               <DEF>   0   0  21      1
+world             <DEF>   0   0  21      2
+the               <DEF>   0   0  51      1
+world             <DEF>   0   0  51      2
+the               <DEF>   0   0  71      1
+world             <DEF>   0   0  71      2
+the               <DEF>   0   0  81      1
+world             <DEF>   0   0  81      2
+lazy              <DEF>   0   1  11      2
+dog               <DEF>   0   1  11      3
+lazy              <DEF>   0   1  11      4
+lazy              <DEF>   0   1  21      2
+dog               <DEF>   0   1  21      3
+lazy              <DEF>   0   5   9      1
+lazy              <DEF>   0   5  21      2
+dog               <DEF>   0   5  21      3
+lazy              <DEF>   0   5  53      2
+dog               <DEF>   0   5  53      4
+lazy              <DEF>   0   5  56      7
+dog               <DEF>   0   5  56      8
+dog               <DEF>   0   6   1      5
+lazy              <DEF>   0   6   1      8

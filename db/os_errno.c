@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1999, 2000
+ * Copyright (c) 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: os_errno.c,v 1.1.2.3 2000/09/17 01:35:07 ghutchis Exp $";
+static const char sccsid[] = "@(#)os_errno.c	11.1 (Sleepycat) 7/25/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES

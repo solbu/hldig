@@ -1,13 +1,13 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: log.c,v 1.1.2.3 2000/09/17 01:35:06 ghutchis Exp $";
+static const char sccsid[] = "@(#)log.c	11.8 (Sleepycat) 9/20/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -19,23 +19,14 @@ static const char revid[] = "$Id: log.c,v 1.1.2.3 2000/09/17 01:35:06 ghutchis E
 #include <unistd.h>
 #endif
 
-#ifdef  HAVE_RPC
-#include "db_server.h"
-#endif
-
 #include "db_int.h"
 #include "log.h"
 #include "db_dispatch.h"
 #include "txn.h"
 #include "txn_auto.h"
 
-#ifdef HAVE_RPC
-#include "gen_client_ext.h"
-#include "rpc_client_ext.h"
-#endif
-
-static int __log_init __P((DB_ENV *, DB_LOG *));
-static int __log_recover __P((DB_LOG *));
+static int CDB___log_init __P((DB_ENV *, DB_LOG *));
+static int CDB___log_recover __P((DB_LOG *));
 
 /*
  * CDB___log_open --
@@ -50,15 +41,10 @@ CDB___log_open(dbenv)
 	DB_LOG *dblp;
 	LOG *lp;
 	int ret;
-	u_int8_t *readbufp;
-
-	readbufp = NULL;
 
 	/* Create/initialize the DB_LOG structure. */
-	if ((ret = CDB___os_calloc(dbenv, 1, sizeof(DB_LOG), &dblp)) != 0)
+	if ((ret = CDB___os_calloc(1, sizeof(DB_LOG), &dblp)) != 0)
 		return (ret);
-	if ((ret = CDB___os_calloc(dbenv, 1, dbenv->lg_bsize, &readbufp)) != 0)
-		goto err;
 	ZERO_LSN(dblp->c_lsn);
 	dblp->dbenv = dbenv;
 
@@ -71,12 +57,10 @@ CDB___log_open(dbenv)
 	    dbenv, &dblp->reginfo, LG_BASE_REGION_SIZE + dbenv->lg_bsize)) != 0)
 		goto err;
 
-	dblp->readbufp = readbufp;
-
 	/* If we created the region, initialize it. */
-	if (F_ISSET(&dblp->reginfo, REGION_CREATE) &&
-	    (ret = __log_init(dbenv, dblp)) != 0)
-		goto err;
+	if (F_ISSET(&dblp->reginfo, REGION_CREATE))
+		if ((ret = CDB___log_init(dbenv, dblp)) != 0)
+			goto err;
 
 	/* Set the local addresses. */
 	lp = dblp->reginfo.primary =
@@ -98,9 +82,6 @@ CDB___log_open(dbenv)
 			goto detach;
 	}
 
-	dblp->r_file = 0;
-	dblp->r_off = 0;
-	dblp->r_size = 0;
 	dbenv->lg_handle = dblp;
 	return (0);
 
@@ -111,19 +92,16 @@ err:	if (dblp->reginfo.addr != NULL) {
 
 detach:		(void)CDB___db_r_detach(dbenv, &dblp->reginfo, 0);
 	}
-
-	if (readbufp != NULL)
-		CDB___os_free(readbufp, sizeof(dbenv->lg_bsize));
 	CDB___os_free(dblp, sizeof(*dblp));
 	return (ret);
 }
 
 /*
- * __log_init --
+ * CDB___log_init --
  *	Initialize a log region in shared memory.
  */
 static int
-__log_init(dbenv, dblp)
+CDB___log_init(dbenv, dblp)
 	DB_ENV *dbenv;
 	DB_LOG *dblp;
 {
@@ -133,7 +111,7 @@ __log_init(dbenv, dblp)
 
 	if ((ret = CDB___db_shalloc(dblp->reginfo.addr,
 	    sizeof(*region), 0, &dblp->reginfo.primary)) != 0)
-		goto mem_err;
+		return (ret);
 	dblp->reginfo.rp->primary =
 	    R_OFFSET(&dblp->reginfo, dblp->reginfo.primary);
 	region = dblp->reginfo.primary;
@@ -151,10 +129,8 @@ __log_init(dbenv, dblp)
 
 	/* Initialize the buffer. */
 	if ((ret =
-	    CDB___db_shalloc(dblp->reginfo.addr, dbenv->lg_bsize, 0, &p)) != 0) {
-mem_err:	CDB___db_err(dbenv, "Unable to allocate memory for the log buffer");
+	    CDB___db_shalloc(dblp->reginfo.addr, dbenv->lg_bsize, 0, &p)) != 0)
 		return (ret);
-	}
 	region->buffer_size = dbenv->lg_bsize;
 	region->buffer_off = R_OFFSET(&dblp->reginfo, p);
 
@@ -167,15 +143,15 @@ mem_err:	CDB___db_err(dbenv, "Unable to allocate memory for the log buffer");
 	dblp->lfh.log_size = dbenv->lg_max;
 
 	/* Try and recover any previous log files before releasing the lock. */
-	return (__log_recover(dblp));
+	return (CDB___log_recover(dblp));
 }
 
 /*
- * __log_recover --
+ * CDB___log_recover --
  *	Recover a log.
  */
 static int
-__log_recover(dblp)
+CDB___log_recover(dblp)
 	DB_LOG *dblp;
 {
 	DBT dbt;
@@ -197,8 +173,8 @@ __log_recover(dblp)
 
 	/*
 	 * We have the last useful log file and we've loaded any persistent
-	 * information.  Set the end point of the log past the end of the last
-	 * file. Read the last file, looking for the last checkpoint and
+	 * information.  Pretend that the log is larger than it can possibly
+	 * be, and read the last file, looking for the last checkpoint and
 	 * the log's end.
 	 */
 	lp->lsn.file = cnt + 1;
@@ -243,8 +219,8 @@ __log_recover(dblp)
 	 * It's possible that we didn't find a checkpoint because there wasn't
 	 * one in the last log file.  Start searching.
 	 */
-	if (!found_checkpoint && cnt > 1) {
-		lsn.file = cnt;
+	while (!found_checkpoint && cnt > 1) {
+		lsn.file = --cnt;
 		lsn.offset = 0;
 
 		/* Set the cursor.  Shouldn't fail, leave error messages on. */
@@ -256,14 +232,13 @@ __log_recover(dblp)
 		 * this can fail if there are no checkpoints in any log file,
 		 * so turn error messages off.
 		 */
-		while (CDB___log_get(dblp, &lsn, &dbt, DB_PREV, 1) == 0) {
+		while (CDB___log_get(dblp, &lsn, &dbt, DB_NEXT, 1) == 0) {
 			if (dbt.size < sizeof(u_int32_t))
 				continue;
 			memcpy(&chk, dbt.data, sizeof(u_int32_t));
 			if (chk == DB_txn_ckp) {
 				lp->chkpt_lsn = lsn;
 				found_checkpoint = 1;
-				break;
 			}
 		}
 	}
@@ -304,7 +279,6 @@ CDB___log_find(dblp, find_first, valp)
 	const char *dir;
 	char **names, *p, *q;
 
-	/* Return a value of 0 as the log file number on failure. */
 	*valp = 0;
 
 	/* Find the directory name. */
@@ -318,7 +292,7 @@ CDB___log_find(dblp, find_first, valp)
 	}
 
 	/* Get the list of file names. */
-	ret = CDB___os_dirlist(dblp->dbenv, dir, &names, &fcnt);
+	ret = CDB___os_dirlist(dir, &names, &fcnt);
 
 	/*
 	 * !!!
@@ -328,15 +302,16 @@ CDB___log_find(dblp, find_first, valp)
 	 */
 	if (q != NULL)
 		*q = 'a';
+	CDB___os_freestr(p);
 
 	if (ret != 0) {
 		CDB___db_err(dblp->dbenv, "%s: %s", dir, CDB_db_strerror(ret));
-		CDB___os_freestr(p);
 		return (ret);
 	}
 
 	/*
-	 * Search for a valid log file name.
+	 * Search for a valid log file name, return a value of 0 on
+	 * failure.
 	 *
 	 * XXX
 	 * Assumes that atoi(3) returns a 32-bit number.
@@ -359,8 +334,8 @@ CDB___log_find(dblp, find_first, valp)
 
 	*valp = logval;
 
+	/* Discard the list. */
 	CDB___os_dirfree(names, fcnt);
-	CDB___os_freestr(p);
 
 	return (0);
 }
@@ -380,7 +355,7 @@ CDB___log_valid(dblp, number, set_persist)
 	DB_FH fh;
 	LOG *region;
 	LOGP persist;
-	size_t nw;
+	ssize_t nw;
 	int ret;
 	char *fname;
 
@@ -392,11 +367,8 @@ CDB___log_valid(dblp, number, set_persist)
 	}
 
 	/* Try to read the header. */
-	if ((ret =
-	    CDB___os_seek(dblp->dbenv,
-	    &fh, 0, 0, sizeof(HDR), 0, DB_OS_SEEK_SET)) != 0 ||
-	    (ret =
-	    CDB___os_read(dblp->dbenv, &fh, &persist, sizeof(LOGP), &nw)) != 0 ||
+	if ((ret = CDB___os_seek(&fh, 0, 0, sizeof(HDR), 0, DB_OS_SEEK_SET)) != 0 ||
+	    (ret = CDB___os_read(&fh, &persist, sizeof(LOGP), &nw)) != 0 ||
 	    nw != sizeof(LOGP)) {
 		if (ret == 0)
 			ret = EIO;
@@ -442,7 +414,7 @@ err:	CDB___os_freestr(fname);
 
 /*
  * CDB___log_close --
- *	Internal version of log_close: only called from dbenv_refresh.
+ *	Internal version of log_close: only called from db_appinit.
  *
  * PUBLIC: int CDB___log_close __P((DB_ENV *));
  */
@@ -457,7 +429,6 @@ CDB___log_close(dbenv)
 	dblp = dbenv->lg_handle;
 
 	/* We may have opened files as part of XA; if so, close them. */
-	F_SET(dblp, DBLOG_RECOVER);
 	CDB___log_close_files(dbenv);
 
 	/* Discard the per-thread lock. */
@@ -479,12 +450,8 @@ CDB___log_close(dbenv)
 	if (dblp->dbentry != NULL)
 		CDB___os_free(dblp->dbentry,
 		    (dblp->dbentry_cnt * sizeof(DB_ENTRY)));
-	if (dblp->readbufp != NULL)
-		CDB___os_free(dblp->readbufp, dbenv->lg_bsize);
 
 	CDB___os_free(dblp, sizeof(*dblp));
-
-	dbenv->lg_handle = NULL;
 	return (ret);
 }
 
@@ -503,11 +470,6 @@ CDB_log_stat(dbenv, statp, db_malloc)
 	LOG *region;
 	int ret;
 
-#ifdef HAVE_RPC
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
-		return (__dbcl_log_stat(dbenv, statp, db_malloc));
-#endif
-
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->lg_handle, DB_INIT_LOG);
 
@@ -516,8 +478,7 @@ CDB_log_stat(dbenv, statp, db_malloc)
 	dblp = dbenv->lg_handle;
 	region = dblp->reginfo.primary;
 
-	if ((ret = CDB___os_malloc(dbenv,
-	    sizeof(DB_LOG_STAT), db_malloc, &stats)) != 0)
+	if ((ret = CDB___os_malloc(sizeof(DB_LOG_STAT), db_malloc, &stats)) != 0)
 		return (ret);
 
 	/* Copy out the global statistics. */

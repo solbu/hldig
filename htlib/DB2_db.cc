@@ -5,12 +5,12 @@
 //        (including duplicate values to allow duplicate word entries)
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2000 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DB2_db.cc,v 1.17.2.7 2000/09/25 03:57:16 ghutchis Exp $
+// $Id: DB2_db.cc,v 1.17.2.8 2000/10/10 03:15:40 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -357,7 +357,7 @@ DB2_db::db_init(char *home)
     dbenv->set_errpfx(dbenv, progname);
     dbenv->set_errcall(dbenv, &Error);
 
-    if((error = dbenv->open(dbenv, (const char*)home, DB_CREATE | DB_PRIVATE | DB_INIT_LOCK | DB_INIT_MPOOL, 0666)) != 0) {
+    if((error = dbenv->open(dbenv, (const char*)home, NULL, DB_CREATE | DB_PRIVATE | DB_INIT_LOCK | DB_INIT_MPOOL, 0666)) != 0) {
       dbenv->err(dbenv, error, "open %s", (home ? home : ""));
       return 0;
     }

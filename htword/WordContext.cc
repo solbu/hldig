@@ -12,7 +12,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordContext.cc,v 1.1.2.7 2000/09/21 04:25:35 ghutchis Exp $
+// $Id: WordContext.cc,v 1.1.2.8 2000/10/10 03:15:43 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -24,22 +24,23 @@
 #include <errno.h>
 
 #include "WordContext.h"
-#include "WordListOne.h"
+#include "WordType.h"
+#include "WordKeyInfo.h"
+#include "WordDBInfo.h"
+#include "WordRecord.h"
 #include "WordMonitor.h"
 
 void WordContext::Initialize(const Configuration &config)
 {
-  Finish();
-  configuration = new Configuration(config);
-  type = new WordType(*configuration);
-  key_info = new WordKeyInfo(*configuration);
-  record_info = new WordRecordInfo(*configuration);
-  db_info = new WordDBInfo(*configuration);
+  WordType::Initialize(config);
+  WordKeyInfo::Initialize(config);
+  WordRecordInfo::Initialize(config);
+  WordDBInfo::Initialize(config);
   if(config.Boolean("wordlist_monitor"))
-    monitor = new WordMonitor(*configuration);
+    WordMonitor::Initialize(config);
 }
 
-int WordContext::Initialize(const ConfigDefaults* config_defaults /* = 0 */)
+Configuration *WordContext::Initialize(const ConfigDefaults* config_defaults /* = 0 */)
 {
   Configuration *config = new Configuration();
 
@@ -57,7 +58,6 @@ int WordContext::Initialize(const ConfigDefaults* config_defaults /* = 0 */)
       if(errno != ENOENT) {
 	fprintf(stderr, "WordContext::Initialize: MIFLUZ_CONFIG could not stat %s\n", (char*)filename);
 	perror("");
-	return NOTOK;
       }
       filename.trunc();
     }
@@ -74,7 +74,6 @@ int WordContext::Initialize(const ConfigDefaults* config_defaults /* = 0 */)
 	if(errno != ENOENT) {
 	  fprintf(stderr, "WordContext::Initialize: could not stat %s\n", (char*)filename);
 	  perror("");
-	  return NOTOK;
 	}
 	filename.trunc();
       }
@@ -86,92 +85,19 @@ int WordContext::Initialize(const ConfigDefaults* config_defaults /* = 0 */)
 
   Initialize(*config);
 
-  delete config;
-
-  return OK;
-}
-
-int WordContext::ReInitialize()
-{
-  if(type) delete type;
-  type = 0;
-  if(key_info) delete key_info;
-  key_info = 0;
-  if(record_info) delete record_info;
-  record_info = 0;
-  if(db_info) delete db_info;
-  db_info = 0;
-  if(monitor) delete monitor;
-  monitor = 0;
-
-  Configuration& config = *configuration;
-
-  type = new WordType(config);
-  key_info = new WordKeyInfo(config);
-  record_info = new WordRecordInfo(config);
-  db_info = new WordDBInfo(config);
-  if(config.Boolean("wordlist_monitor")) {
-    monitor = new WordMonitor(config);
-    GetDBInfo().dbenv->mp_monitor = monitor;
+  if(filename.empty() && !config_defaults) {
+    delete config;
+    config = 0;
   }
 
-  return OK;
+  return config;
 }
 
 void WordContext::Finish()
 {
-  if(type) delete type;
-  type = 0;
-  if(key_info) delete key_info;
-  key_info = 0;
-  if(record_info) delete record_info;
-  record_info = 0;
-  if(db_info) delete db_info;
-  db_info = 0;
-  if(monitor) delete monitor;
-  monitor = 0;
-  if(configuration) delete configuration;
-  configuration = 0;
-}
-
-WordList* WordContext::List()
-{
-#if 0
-  if(configuration->Boolean("wordlist_multi"))
-    return new WordListMulti(this);
-  else
-#endif
-    return new WordListOne(this);
-}
-
-WordReference* WordContext::Word()
-{
-  return new WordReference(this);
-}
-WordReference* WordContext::Word(const String& key0, const String& record0)
-{
-  return new WordReference(this, key0, record0);
-}
-WordReference* WordContext::Word(const String& word)
-{
-  return new WordReference(this, word);
-}
-
-WordRecord* WordContext::Record()
-{
-  return new WordRecord(this);
-}
-
-WordKey* WordContext::Key()
-{
-  return new WordKey(this);
-}
-WordKey* WordContext::Key(const String& word)
-{
-  return new WordKey(this, word);
-}
-
-WordKey* WordContext::Key(const WordKey& other)
-{
-  return new WordKey(other);
+  delete WordType::Instance();
+  delete WordKeyInfo::Instance();
+  delete WordRecordInfo::Instance();
+  delete WordDBInfo::Instance();
+  if(WordMonitor::Instance()) delete WordMonitor::Instance();
 }

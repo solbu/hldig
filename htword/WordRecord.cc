@@ -36,8 +36,9 @@ WordRecord::Get(String& buffer) const
     buffer << info.data;
     break;
 
-  case WORD_RECORD_STR:
-    buffer << info.str;
+  case WORD_RECORD_STATS:
+    buffer << info.stats.noccurrence << "\t";
+    buffer << info.stats.ndoc;
     break;
 
   case WORD_RECORD_NONE:
@@ -87,16 +88,31 @@ WordRecord::SetList(StringList& fields)
 	  return NOTOK;
 	}
 	info.data = (unsigned int)atoi(field->get());
-	fields.Remove(0);
+	fields.Remove(field);
 	i++;
       }
       break;
 
-    case WORD_RECORD_STR:
+    case WORD_RECORD_STATS:
       {
 	String* field = (String*)fields.Get_First();
-	info.str = *field;
-	fields.Remove(0);
+
+	if(field == 0) {
+	  fprintf(stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
+	  return NOTOK;
+	}
+	info.stats.noccurrence = (unsigned int)atoi(field->get());
+	fields.Remove(field);
+	i++;
+
+	field = (String*)fields.Get_First();
+
+	if(field == 0) {
+	  fprintf(stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
+	  return NOTOK;
+	}
+	info.stats.ndoc = (unsigned int)atoi(field->get());
+	fields.Remove(field);
 	i++;
       }
       break;

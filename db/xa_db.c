@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1998, 1999, 2000
+ * Copyright (c) 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: xa_db.c,v 1.1.2.3 2000/09/17 01:35:08 ghutchis Exp $";
+static const char sccsid[] = "@(#)xa_db.c	11.4 (Sleepycat) 9/15/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -18,13 +18,12 @@ static const char revid[] = "$Id: xa_db.c,v 1.1.2.3 2000/09/17 01:35:08 ghutchis
 #include "db_int.h"
 #include "xa.h"
 #include "xa_ext.h"
-#include "txn.h"
 
-static int __xa_close __P((DB *, u_int32_t));
-static int __xa_cursor __P((DB *, DB_TXN *, DBC **, u_int32_t));
-static int __xa_del __P((DB *, DB_TXN *, DBT *, u_int32_t));
-static int __xa_get __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
-static int __xa_put __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+static int CDB___xa_close __P((DB *, u_int32_t));
+static int CDB___xa_cursor __P((DB *, DB_TXN *, DBC **, u_int32_t));
+static int CDB___xa_del __P((DB *, DB_TXN *, DBT *, u_int32_t));
+static int CDB___xa_get __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+static int CDB___xa_put __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
 
 typedef struct __xa_methods {
 	int (*close) __P((DB *, u_int32_t));
@@ -51,7 +50,7 @@ CDB___db_xa_create(dbp)
 	 * Interpose XA routines in front of any method that takes a TXN
 	 * ID as an argument.
 	 */
-	if ((ret = CDB___os_calloc(dbp->dbenv, 1, sizeof(XA_METHODS), &xam)) != 0)
+	if ((ret = CDB___os_calloc(1, sizeof(XA_METHODS), &xam)) != 0)
 		return (ret);
 
 	dbp->xa_internal = xam;
@@ -60,17 +59,17 @@ CDB___db_xa_create(dbp)
 	xam->del = dbp->del;
 	xam->get = dbp->get;
 	xam->put = dbp->put;
-	dbp->close = __xa_close;
-	dbp->cursor = __xa_cursor;
-	dbp->del = __xa_del;
-	dbp->get = __xa_get;
-	dbp->put = __xa_put;
+	dbp->close = CDB___xa_close;
+	dbp->cursor = CDB___xa_cursor;
+	dbp->del = CDB___xa_del;
+	dbp->get = CDB___xa_get;
+	dbp->put = CDB___xa_put;
 
 	return (0);
 }
 
 static int
-__xa_cursor(dbp, txn, dbcp, flags)
+CDB___xa_cursor(dbp, txn, dbcp, flags)
 	DB *dbp;
 	DB_TXN *txn;
 	DBC **dbcp;
@@ -79,14 +78,12 @@ __xa_cursor(dbp, txn, dbcp, flags)
 	DB_TXN *t;
 
 	t = txn != NULL && txn == dbp->open_txn ? txn : dbp->dbenv->xa_txn;
-	if (t->txnid == TXN_INVALID)
-		t = NULL;
 
 	return (((XA_METHODS *)dbp->xa_internal)->cursor (dbp, t, dbcp, flags));
 }
 
 static int
-__xa_del(dbp, txn, key, flags)
+CDB___xa_del(dbp, txn, key, flags)
 	DB *dbp;
 	DB_TXN *txn;
 	DBT *key;
@@ -95,14 +92,12 @@ __xa_del(dbp, txn, key, flags)
 	DB_TXN *t;
 
 	t = txn != NULL && txn == dbp->open_txn ? txn : dbp->dbenv->xa_txn;
-	if (t->txnid == TXN_INVALID)
-		t = NULL;
 
 	return (((XA_METHODS *)dbp->xa_internal)->del(dbp, t, key, flags));
 }
 
 static int
-__xa_close(dbp, flags)
+CDB___xa_close(dbp, flags)
 	DB *dbp;
 	u_int32_t flags;
 {
@@ -117,7 +112,7 @@ __xa_close(dbp, flags)
 }
 
 static int
-__xa_get(dbp, txn, key, data, flags)
+CDB___xa_get(dbp, txn, key, data, flags)
 	DB *dbp;
 	DB_TXN *txn;
 	DBT *key, *data;
@@ -126,15 +121,13 @@ __xa_get(dbp, txn, key, data, flags)
 	DB_TXN *t;
 
 	t = txn != NULL && txn == dbp->open_txn ? txn : dbp->dbenv->xa_txn;
-	if (t->txnid == TXN_INVALID)
-		t = NULL;
 
 	return (((XA_METHODS *)dbp->xa_internal)->get
 	    (dbp, t, key, data, flags));
 }
 
 static int
-__xa_put(dbp, txn, key, data, flags)
+CDB___xa_put(dbp, txn, key, data, flags)
 	DB *dbp;
 	DB_TXN *txn;
 	DBT *key, *data;
@@ -143,8 +136,6 @@ __xa_put(dbp, txn, key, data, flags)
 	DB_TXN *t;
 
 	t = txn != NULL && txn == dbp->open_txn ? txn : dbp->dbenv->xa_txn;
-	if (t->txnid == TXN_INVALID)
-		t = NULL;
 
 	return (((XA_METHODS *)dbp->xa_internal)->put
 	    (dbp, t, key, data, flags));

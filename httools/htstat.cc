@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htstat.cc,v 1.1.2.5 2000/09/27 05:13:28 ghutchis Exp $
+// $Id: htstat.cc,v 1.1.2.6 2000/10/10 03:15:42 ghutchis Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -146,7 +146,7 @@ int main(int ac, char **av)
       }
 
     // Initialize htword
-    // WordContext::Initialize(config);
+    WordContext::Initialize(config);
 
     HtWordList words(config);
     if(words.Open(config["word_db"], O_RDONLY) == OK)

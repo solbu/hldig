@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: env_region.c,v 1.1.2.3 2000/09/17 01:35:05 ghutchis Exp $";
+static const char sccsid[] = "@(#)env_region.c	11.7 (Sleepycat) 11/12/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -22,10 +22,10 @@ static const char revid[] = "$Id: env_region.c,v 1.1.2.3 2000/09/17 01:35:05 ghu
 
 #include "db_int.h"
 
-static int __db_des_destroy __P((DB_ENV *, REGION *));
-static int __db_des_get __P((DB_ENV *, REGINFO *, REGINFO *, REGION **));
-static int __db_e_remfile __P((DB_ENV *));
-static int __db_faultmem __P((void *, size_t, int));
+static int CDB___db_des_destroy __P((DB_ENV *, REGION *));
+static int CDB___db_des_get __P((DB_ENV *, REGINFO *, REGINFO *, REGION **));
+static int CDB___db_e_remfile __P((DB_ENV *));
+static int CDB___db_faultmem __P((void *, size_t, int));
 
 /*
  * CDB___db_e_attach
@@ -42,7 +42,7 @@ CDB___db_e_attach(dbenv)
 	REGINFO *infop;
 	REGION *rp, tregion;
 	size_t size;
-	size_t nrw;
+	ssize_t nrw;
 	u_int32_t mbytes, bytes;
 	int retry_cnt, ret, segid;
 	char buf[sizeof(DB_REGION_FMT) + 20];
@@ -80,7 +80,7 @@ CDB___db_e_attach(dbenv)
 loop:	renv = NULL;
 
 	/* Set up the DB_ENV's REG_INFO structure. */
-	if ((ret = CDB___os_calloc(dbenv, 1, sizeof(REGINFO), &infop)) != 0)
+	if ((ret = CDB___os_calloc(1, sizeof(REGINFO), &infop)) != 0)
 		return (ret);
 	infop->id = REG_ID_ENV;
 	infop->mode = dbenv->db_mode;
@@ -116,8 +116,7 @@ loop:	renv = NULL;
 	 * errno return value -- I sure hope they're right.
 	 */
 	if (F_ISSET(dbenv, DB_ENV_CREATE)) {
-		if ((ret = CDB___os_open(dbenv,
-		    infop->name, DB_OSO_CREATE | DB_OSO_EXCL,
+		if ((ret = CDB___os_open(infop->name, DB_OSO_CREATE | DB_OSO_EXCL,
 		    dbenv->db_mode, dbenv->lockfhp)) == 0)
 			goto creation;
 		if (ret != EEXIST) {
@@ -131,8 +130,8 @@ loop:	renv = NULL;
 	 * If we couldn't create the file, try and open it.  (If that fails,
 	 * we're done.)
 	 */
-	if ((ret = CDB___os_open(dbenv,
-		infop->name, 0, dbenv->db_mode, dbenv->lockfhp)) != 0)
+	if ((ret =
+	    CDB___os_open(infop->name, 0, dbenv->db_mode, dbenv->lockfhp)) != 0)
 		goto err;
 
 	/*
@@ -164,7 +163,7 @@ loop:	renv = NULL;
 	 * stupid and gross, and I've probably spent six months of my life,
 	 * now, trying to make different versions of it work.)
 	 */
-	if ((ret = CDB___os_ioinfo(dbenv, infop->name,
+	if ((ret = CDB___os_ioinfo(infop->name,
 	    dbenv->lockfhp, &mbytes, &bytes, NULL)) != 0) {
 		CDB___db_err(dbenv, "%s: %s", infop->name, CDB_db_strerror(ret));
 		goto err;
@@ -178,19 +177,20 @@ loop:	renv = NULL;
 	size = mbytes * MEGABYTE + bytes;
 
 	/*
-	 * If the size is less than the size of a REGENV_REF structure, the
-	 * region (or, possibly, the REGENV_REF structure) has not yet been
-	 * completely written.  Wait awhile and try again.
+	 * If the size is 0 or less than the size of a REGENV_REF structure,
+	 * the region (or, possibly, the REGENV_REF structure) has not been
+	 * fully written.  Wait awhile and try again.
 	 *
 	 * Otherwise, if the size is the size of a REGENV_REF structure,
 	 * read it into memory and use it as a reference to the real region.
 	 */
+	segid = INVALID_REGION_SEGID;
 	if (size <= sizeof(ref)) {
 		if (size != sizeof(ref))
 			goto retry;
 
-		if ((ret = CDB___os_read(dbenv, dbenv->lockfhp, &ref,
-		    sizeof(ref), &nrw)) != 0 || nrw < (size_t)sizeof(ref)) {
+		if ((ret = CDB___os_read(dbenv->lockfhp, &ref,
+		    sizeof(ref), &nrw)) != 0 || nrw < (ssize_t)sizeof(ref)) {
 			if (ret == 0)
 				ret = EIO;
 			CDB___db_err(dbenv,
@@ -202,14 +202,7 @@ loop:	renv = NULL;
 		segid = ref.segid;
 
 		F_SET(dbenv, DB_ENV_SYSTEM_MEM);
-	} else if (F_ISSET(dbenv, DB_ENV_SYSTEM_MEM)) {
-		ret = EINVAL;
-		CDB___db_err(dbenv,
-		    "%s: existing environment not created in system memory: %s",
-		    infop->name, CDB_db_strerror(ret));
-		goto err;
-	} else
-		segid = INVALID_REGION_SEGID;
+	}
 
 	/*
 	 * If not doing thread locking, we need to save the file handle for
@@ -276,10 +269,13 @@ loop:	renv = NULL;
 	 * Get a reference to the underlying REGION information for this
 	 * environment.
 	 */
-	if ((ret = __db_des_get(dbenv,
-	    infop, infop, &rp)) != 0 || rp == NULL) {
-		MUTEX_UNLOCK(&renv->mutex);
-		goto find_err;
+	if ((ret = CDB___db_des_get(dbenv, infop, infop, &rp)) != 0)
+		goto err_unlock;
+	if (rp == NULL) {
+		CDB___db_err(dbenv,
+		    "%s: unable to find environment REGION", infop->name);
+		ret = EINVAL;
+		goto err_unlock;
 	}
 	infop->rp = rp;
 
@@ -306,7 +302,7 @@ err_unlock:	MUTEX_UNLOCK(&renv->mutex);
 	 * Fault the pages into memory.  Note, do this AFTER releasing the
 	 * lock, because we're only reading the pages, not writing them.
 	 */
-	(void)__db_faultmem(infop->primary, rp->size, 0);
+	(void)CDB___db_faultmem(infop->primary, rp->size, 0);
 
 	/* Everything looks good, we're done. */
 	dbenv->reginfo = infop;
@@ -331,7 +327,7 @@ creation:
 	 * Fault the pages into memory.  Note, do this BEFORE we initialize
 	 * anything, because we're writing the pages, not just reading them.
 	 */
-	(void)__db_faultmem(infop->addr, tregion.size, 1);
+	(void)CDB___db_faultmem(infop->addr, tregion.size, 1);
 
 	/*
 	 * The first object in the region is the REGENV structure.  This is
@@ -394,13 +390,8 @@ creation:
 	 * structure, which is backwards from the normal procedure.  Update
 	 * the REGION structure.
 	 */
-	if ((ret = __db_des_get(dbenv, infop, infop, &rp)) != 0) {
-find_err:	CDB___db_err(dbenv,
-		    "%s: unable to find environment", infop->name);
-		if (ret == 0)
-			ret = EINVAL;
+	if ((ret = CDB___db_des_get(dbenv, infop, infop, &rp)) != 0)
 		goto err;
-	}
 	infop->rp = rp;
 	rp->size = tregion.size;
 	rp->segid = tregion.segid;
@@ -421,7 +412,7 @@ find_err:	CDB___db_err(dbenv,
 	if (tregion.segid != INVALID_REGION_SEGID) {
 		ref.size = tregion.size;
 		ref.segid = tregion.segid;
-		if ((ret = CDB___os_write(dbenv, dbenv->lockfhp,
+		if ((ret = CDB___os_write(dbenv->lockfhp,
 		    &ref, sizeof(ref), &nrw)) != 0 || nrw != sizeof(ref)) {
 			CDB___db_err(dbenv,
 			    "%s: unable to write out public environment ID: %s",
@@ -484,7 +475,7 @@ retry:	/* Close any open file handle. */
 			CDB___db_err(dbenv, "unable to join the environment");
 			ret = EAGAIN;
 		} else {
-			CDB___os_sleep(dbenv, retry_cnt * 3, 0);
+			CDB___os_sleep(retry_cnt * 3, 0);
 			goto loop;
 		}
 	}
@@ -656,7 +647,7 @@ restart:	for (rp = SH_LIST_FIRST(&renv->regionq, __db_region);
 		(void)CDB___db_e_detach(dbenv, 1);
 
 		/* Discard the physical files. */
-remfiles:	(void)__db_e_remfile(dbenv);
+remfiles:	(void)CDB___db_e_remfile(dbenv);
 	} else {
 		/* Unlock the environment. */
 		MUTEX_UNLOCK(&renv->mutex);
@@ -674,11 +665,11 @@ err:	if (force)
 }
 
 /*
- * __db_e_remfile --
+ * CDB___db_e_remfile --
  *	Discard any region files in the filesystem.
  */
 static int
-__db_e_remfile(dbenv)
+CDB___db_e_remfile(dbenv)
 	DB_ENV *dbenv;
 {
 	static char *old_region_names[] = {
@@ -713,7 +704,7 @@ __db_e_remfile(dbenv)
 	}
 
 	/* Get the list of file names. */
-	ret = CDB___os_dirlist(dbenv, dir, &names, &fcnt);
+	ret = CDB___os_dirlist(dir, &names, &fcnt);
 
 	/* Restore the path, and free it. */
 	*p = saved_byte;
@@ -744,7 +735,7 @@ __db_e_remfile(dbenv)
 
 		if (CDB___db_appname(dbenv,
 		    DB_APP_NONE, NULL, names[cnt], 0, NULL, &path) == 0) {
-			(void)CDB___os_unlink(dbenv, path);
+			(void)CDB___os_unlink(path);
 			CDB___os_freestr(path);
 		}
 	}
@@ -752,7 +743,7 @@ __db_e_remfile(dbenv)
 	if (lastrm != -1)
 		if (CDB___db_appname(dbenv,
 		    DB_APP_NONE, NULL, names[lastrm], 0, NULL, &path) == 0) {
-			(void)CDB___os_unlink(dbenv, path);
+			(void)CDB___os_unlink(path);
 			CDB___os_freestr(path);
 		}
 	CDB___os_dirfree(names, fcnt);
@@ -765,7 +756,7 @@ __db_e_remfile(dbenv)
 	for (names = (char **)old_region_names; *names != NULL; ++names)
 		if (CDB___db_appname(dbenv,
 		    DB_APP_NONE, NULL, *names, 0, NULL, &path) == 0) {
-			(void)CDB___os_unlink(dbenv, path);
+			(void)CDB___os_unlink(path);
 			CDB___os_freestr(path);
 		}
 
@@ -837,7 +828,7 @@ CDB___db_r_attach(dbenv, infop, size)
 	MUTEX_LOCK(&renv->mutex, dbenv->lockfhp);
 
 	/* Find or create a REGION structure for this region. */
-	if ((ret = __db_des_get(dbenv, dbenv->reginfo, infop, &rp)) != 0) {
+	if ((ret = CDB___db_des_get(dbenv, dbenv->reginfo, infop, &rp)) != 0) {
 		MUTEX_UNLOCK(&renv->mutex);
 		return (ret);
 	}
@@ -861,7 +852,7 @@ CDB___db_r_attach(dbenv, infop, size)
 	 * anything because we're writing pages in created regions, not just
 	 * reading them.
 	 */
-	(void)__db_faultmem(infop->addr,
+	(void)CDB___db_faultmem(infop->addr,
 	    rp->size, F_ISSET(infop, REGION_CREATE));
 
 	/*
@@ -898,7 +889,7 @@ err:	if (infop->addr != NULL)
 
 	/* Discard the REGION structure if we created it. */
 	if (F_ISSET(infop, REGION_CREATE))
-		(void)__db_des_destroy(dbenv, rp);
+		(void)CDB___db_des_destroy(dbenv, rp);
 
 	/* Release the environment lock. */
 	MUTEX_UNLOCK(&renv->mutex);
@@ -939,7 +930,7 @@ CDB___db_r_detach(dbenv, infop, destroy)
 
 	/* If we destroyed the region, discard the REGION structure. */
 	if (destroy &&
-	    ((t_ret = __db_des_destroy(dbenv, rp)) != 0) && ret == 0)
+	    ((t_ret = CDB___db_des_destroy(dbenv, rp)) != 0) && ret == 0)
 		ret = t_ret;
 
 	/* Release the environment lock. */
@@ -953,12 +944,12 @@ CDB___db_r_detach(dbenv, infop, destroy)
 }
 
 /*
- * __db_des_get --
+ * CDB___db_des_get --
  *	Return a reference to the shared information for a REGION,
  *	optionally creating a new entry.
  */
 static int
-__db_des_get(dbenv, env_infop, infop, rpp)
+CDB___db_des_get(dbenv, env_infop, infop, rpp)
 	DB_ENV *dbenv;
 	REGINFO *env_infop, *infop;
 	REGION **rpp;
@@ -985,8 +976,7 @@ __db_des_get(dbenv, env_infop, infop, rpp)
 
 	/*
 	 * If we didn't find a region, or we found one needing initialization,
-	 * and we can't create the region, fail.  The caller generates
-	 * an error message.
+	 * and we can't create the region, fail.
 	 */
 	if (!F_ISSET(infop, REGION_CREATE_OK) &&
 	    (rp == NULL || F_ISSET(rp, REG_DEAD)))
@@ -1036,11 +1026,11 @@ __db_des_get(dbenv, env_infop, infop, rpp)
 }
 
 /*
- * __db_des_destroy --
+ * CDB___db_des_destroy --
  *	Destroy a reference to a REGION.
  */
 static int
-__db_des_destroy(dbenv, rp)
+CDB___db_des_destroy(dbenv, rp)
 	DB_ENV *dbenv;
 	REGION *rp;
 {
@@ -1059,11 +1049,11 @@ __db_des_destroy(dbenv, rp)
 }
 
 /*
- * __db_faultmem --
+ * CDB___db_faultmem --
  *	Fault the region into memory.
  */
 static int
-__db_faultmem(addr, size, created)
+CDB___db_faultmem(addr, size, created)
 	void *addr;
 	size_t size;
 	int created;

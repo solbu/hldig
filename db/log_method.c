@@ -1,13 +1,13 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1999, 2000
+ * Copyright (c) 1999
  *	Sleepycat Software.  All rights reserved.
  */
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: log_method.c,v 1.1.2.3 2000/09/17 01:35:07 ghutchis Exp $";
+static const char sccsid[] = "@(#)log_method.c	11.3 (Sleepycat) 8/11/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -19,21 +19,11 @@ static const char revid[] = "$Id: log_method.c,v 1.1.2.3 2000/09/17 01:35:07 ghu
 #include <unistd.h>
 #endif
 
-#ifdef  HAVE_RPC
-#include "db_server.h"
-#endif
-
 #include "db_int.h"
 #include "log.h"
 
-#ifdef HAVE_RPC
-#include "gen_client_ext.h"
-#include "rpc_client_ext.h"
-#endif
-
-static int __log_set_lg_max __P((DB_ENV *, u_int32_t));
-static int __log_set_lg_bsize __P((DB_ENV *, u_int32_t));
-static int __log_set_lg_dir __P((DB_ENV *, const char *));
+static int CDB___log_set_lg_max __P((DB_ENV *, u_int32_t));
+static int CDB___log_set_lg_bsize __P((DB_ENV *, u_int32_t));
 
 /*
  * CDB___log_dbenv_create --
@@ -46,31 +36,18 @@ CDB___log_dbenv_create(dbenv)
 	DB_ENV *dbenv;
 {
 	dbenv->lg_bsize = LG_BSIZE_DEFAULT;
-	dbenv->set_lg_bsize = __log_set_lg_bsize;
+	dbenv->set_lg_bsize = CDB___log_set_lg_bsize;
 
 	dbenv->lg_max = LG_MAX_DEFAULT;
-	dbenv->set_lg_max = __log_set_lg_max;
-
-	dbenv->set_lg_dir = __log_set_lg_dir;
-#ifdef	HAVE_RPC
-	/*
-	 * If we have a client, overwrite what we just setup to
-	 * point to client functions.
-	 */
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT)) {
-		dbenv->set_lg_bsize = __dbcl_set_lg_bsize;
-		dbenv->set_lg_max = __dbcl_set_lg_max;
-		dbenv->set_lg_dir = __dbcl_set_lg_dir;
-	}
-#endif
+	dbenv->set_lg_max = CDB___log_set_lg_max;
 }
 
 /*
- * __log_set_lg_bsize --
+ * CDB___log_set_lg_bsize --
  *	Set the log buffer size.
  */
 static int
-__log_set_lg_bsize(dbenv, lg_bsize)
+CDB___log_set_lg_bsize(dbenv, lg_bsize)
 	DB_ENV *dbenv;
 	u_int32_t lg_bsize;
 {
@@ -87,11 +64,11 @@ __log_set_lg_bsize(dbenv, lg_bsize)
 }
 
 /*
- * __log_set_lg_max --
+ * CDB___log_set_lg_max --
  *	Set the maximum log file size.
  */
 static int
-__log_set_lg_max(dbenv, lg_max)
+CDB___log_set_lg_max(dbenv, lg_max)
 	DB_ENV *dbenv;
 	u_int32_t lg_max;
 {
@@ -105,18 +82,4 @@ __log_set_lg_max(dbenv, lg_max)
 
 	dbenv->lg_max = lg_max;
 	return (0);
-}
-
-/*
- * __log_set_lg_dir --
- *	Set the log file directory.
- */
-static int
-__log_set_lg_dir(dbenv, dir)
-	DB_ENV *dbenv;
-	const char *dir;
-{
-	if (dbenv->db_log_dir != NULL)
-		CDB___os_freestr(dbenv->db_log_dir);
-	return (CDB___os_strdup(dbenv, dir, &dbenv->db_log_dir));
 }

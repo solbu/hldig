@@ -1,9 +1,9 @@
 //
-// WordCursor.h
+// WordList.h
 //
 // NAME
 // 
-// abstract class to search and retrieve entries in a WordList object.
+// search specification and results for WordList.
 //
 // SYNOPSIS
 // 
@@ -18,20 +18,17 @@
 //
 // WordList *words = ...;
 //
-// WordCursor *search = words->Cursor(WordKey("word <UNDEF> <UNDEF>"), HTDIG_WORDLIST_COLLECTOR);
+// WordCursor *search = words->Cursor(callback, data);
+// WordCursor *search = words->Cursor(WordKey("word <DEF> <UNDEF> <UNDEF>"));
+// WordCursor *search = words->Cursor(WordKey("word <DEF> <UNDEF> <UNDEF>"), callback, data);
+//
+// ...
 //
 // if(search->Walk() == NOTOK) bark;
 // List* results = search->GetResults();
 //
-// WordCursor *search = words->Cursor(callback, data);
-// WordCursor *search = words->Cursor(WordKey("word <UNDEF> <UNDEF>"));
-// WordCursor *search = words->Cursor(WordKey("word <UNDEF> <UNDEF>"), callback, data);
-// WordCursor *search = words->Cursor(WordKey());
-//
-// search->WalkInit();
 // if(search->WalkNext() == OK)
 //   dosomething(search->GetFound());
-// search->WalkFinish();
 // 
 // DESCRIPTION
 // 
@@ -57,22 +54,24 @@
 // may be used as follows (assuming word is followed by DOCID and
 // LOCATION):
 // 
-// Ex1: <b>WordKey()</b> walk the entire list of occurences.
-//
-// Ex2: <b>WordKey("word <UNDEF> <UNDEF>")</b> find all occurrences
+// Ex1: <b>WordKey("word <DEF> <UNDEF> <UNDEF>")</b> find all occurrences
 // of <i>word</i>.
 //
-// Ex3: <b>WordKey("meet <UNDEF> 1")</b> find all occurrences of
+// Ex2: <b>WordKey("meet <UNDEF> <UNDEF> <UNDEF>")</b> find all occurrences
+// starting with <i>meet</i>, including <i>meeting</i> etc.
+//
+// Ex3: <b>WordKey("meet <DEF> <UNDEF> 1")</b> find all occurrences of
 // <i>meet</i> that occur at LOCATION 1 in any DOCID. This can
 // be inefficient since the search has to scan all occurrences
 // of <i>meet</i> to find the ones that occur at LOCATION 1.
 //
-// Ex4: <b>WordKey("meet 2 <UNDEF>")</b> find all occurrences of
+// Ex4: <b>WordKey("meet <DEF> 2 <UNDEF>")</b> find all occurrences of
 // <i>meet</i> that occur in DOCID 2, at any location.
 //
-// WordList is an abstract class and cannot be instanciated. 
-// See the WordCursorOne manual page for an actual implementation of
-// a WordCursor object.
+// Interface functions are virtual so that a derivation of the 
+// class is possible. Some functions are meant to be used by derived
+// classes such as the <b>Initialize</b> function. All data members
+// should be accessed using the corresponding accessor if possible.
 //
 // END
 //
@@ -82,7 +81,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordCursor.h,v 1.1.2.2 2000/09/14 03:13:26 ghutchis Exp $
+// $Id: WordCursor.h,v 1.1.2.3 2000/10/10 03:15:43 ghutchis Exp $
 //
 
 #ifndef _WordCursor_h_
@@ -95,6 +94,7 @@
 
 class WordList;
 class WordDBCursor;
+#endif /* SWIG */
 //
 // Possible values of the action argument of WordList::Walk
 // check walk function in WordList.cc for info on these:
@@ -102,6 +102,7 @@ class WordDBCursor;
 #define HTDIG_WORDLIST_COLLECTOR	0x0001
 #define HTDIG_WORDLIST_WALKER		0x0002
 
+#ifndef SWIG
 //
 // Type of the callback argument in WordCursor
 //
@@ -154,34 +155,54 @@ class WordCursor
 {
  public:
 #ifndef SWIG
-  WordCursor(WordContext *context) :
-    searchKey(context),
-    found(context) {}
-
-  virtual ~WordCursor() { }
+  //
+  // Private constructor. Creator of the object must then call Initialize()
+  // prior to using any other methods.
+  //
+  WordCursor() { Clear(); }
+  //-
+  // Private constructor. See WordList::Cursor method with same prototype for
+  // description.
+  //
+  WordCursor(WordList *words, wordlist_walk_callback_t callback, Object * callback_data) { Clear(); Initialize(words, WordKey(), callback, callback_data, HTDIG_WORDLIST_WALKER); }
+  //-
+  // Private constructor. See WordList::Cursor method with same prototype for
+  // description.
+  //
+  WordCursor(WordList *words, const WordKey &searchKey, int action = HTDIG_WORDLIST_WALKER) { Clear(); Initialize(words, searchKey, 0, 0, action); }
+  //-
+  // Private constructor. See WordList::Cursor method with same prototype for
+  // description.
+  //
+  WordCursor(WordList *words, const WordKey &searchKey, wordlist_walk_callback_t callback, Object * callback_data) { Clear(); Initialize(words, searchKey, callback, callback_data, HTDIG_WORDLIST_WALKER); }
 #endif /* SWIG */
+  virtual ~WordCursor() {}
   //-
   // Clear all data in object, set <b>GetResult()</b> data to NULL but
   // do not delete it (the application is responsible for that).
   //
-  virtual void Clear() = 0;
-#ifndef SWIG
-  virtual void ClearInternal() = 0;
-  virtual void ClearResult() = 0;
-#endif /* SWIG */
+  virtual void Clear();
+  virtual void ClearInternal();
+  virtual void ClearResult();
 
   //-
   // Returns the type of the object. May be overloaded by
   // derived classes to differentiate them at runtime.
   // Returns WORD_CURSOR.
   //
-  virtual inline int IsA() const { return WORD_CURSOR; }
+  virtual int IsA() const { return WORD_CURSOR; }
+
+  //-
+  // Returns true if WalkNext() step entries in strictly increasing 
+  // order, false if it step entries in random order.
+  //
+  virtual int Ordered() const { return 1; }
 
   //-
   // Optimize the cursor before starting a Walk.
   // Returns OK on success, NOTOK otherwise.
   //
-  virtual inline int Optimize() { return OK; }
+  virtual int Optimize() { return OK; }
 
   //-
   // Save in <b>buffer</b> all the information necessary to resume
@@ -189,7 +210,7 @@ class WordCursor
   // last key found (GetFound()) is written in <b>buffer</b> using the
   // WordKey::Get method.
   //
-  virtual int ContextSave(String& buffer) const = 0;
+  virtual int ContextSave(String& buffer) const { found.Get(buffer); return OK; }
   //-
   // Restore from buffer all the information necessary to 
   // resume the walk at the point it left. The <b>buffer</b> is expected
@@ -198,31 +219,33 @@ class WordCursor
   // to jump to the next occurrence when <b>WalkNext</b> is called (the
   // cursor_get_flags is set to <i>DB_NEXT.</i>
   //
-  virtual int ContextRestore(const String& buffer) = 0;
+  virtual int ContextRestore(const String& buffer);
 
+#ifndef SWIG
   //-
   // Walk and collect data from the index. 
   // Returns OK on success, NOTOK otherwise.
   //
-  virtual int Walk() = 0;
+  virtual int                 Walk();
+#endif /* SWIG */
   //-
   // Must be called before other Walk methods are used.
   // Fill internal state according to input parameters 
   // and move before the first matching entry.
   // Returns OK on success, NOTOK otherwise.
   //
-  virtual int WalkInit() = 0;
+  virtual int                 WalkInit();
   //-
   // Move before the first index matching entry.
   // Returns OK on success, NOTOK otherwise.
   //
-  virtual int WalkRewind() = 0;
+  virtual int                 WalkRewind();
   //-
   // Move to the next matching entry.
   // At end of list, WORD_WALK_ATEND is returned.
   // Returns OK on success, NOTOK otherwise.
   //
-  virtual int WalkNext() = 0;
+  virtual int                 WalkNext();
 #ifndef SWIG
   //-
   // Advance the cursor one step. The entry pointed to by the cursor may
@@ -232,13 +255,24 @@ class WordCursor
   // does not match requirements, it's safe to call WalkNextStep again
   // until either OK or NOTOK is returned.
   //
-  virtual int WalkNextStep() = 0;
+  virtual int                 WalkNextStep();
 #endif /* SWIG */
   //-
   // Terminate Walk, free allocated resources.
   // Returns OK on success, NOTOK otherwise.
   //
-  virtual int WalkFinish() = 0;
+  virtual int                 WalkFinish();
+  //
+  // Find out if cursor should better jump to the next possible key
+  // (DB_SET_RANGE) instead of sequential iterating (DB_NEXT).  If it
+  // is decided that jump is a better move : cursor_set_flags =
+  // DB_SET_RANGE key = calculated next possible key Else do nothing
+  // Return OK if skipping successfull.  Returns WORD_WALK_ATEND if no
+  // more possible match, reached the maximum. Returns
+  // WORD_WALK_FAILED on general failure, occurs if called and no
+  // skipping necessary.
+  // 
+  int SkipUselessSequentialWalking();
 
   //-
   // Move before the inverted index position specified in <b>patch.</b>
@@ -250,13 +284,13 @@ class WordCursor
   // this key next time it's called (cursor_get_flag set to DB_SET_RANGE).
   // Returns OK if successfull, NOTOK otherwise.
   //
-  virtual int Seek(const WordKey& patch) = 0;
+  virtual int Seek(const WordKey& patch);
 
   //-
   // Returns true if cursor is positioned after the last possible
   // match, false otherwise.
   //
-  virtual inline int IsAtEnd() const { return status == WORD_WALK_ATEND; }
+  virtual int IsAtEnd() const { return status == WORD_WALK_ATEND; }
 
   //
   // Accessors for input parameters
@@ -264,65 +298,56 @@ class WordCursor
   //-
   // Returns the search criterion.
   //
-  inline WordKey& GetSearch() { return searchKey; }
+  WordKey& GetSearch() { return searchKey; }
 #ifndef SWIG
-  inline const WordKey& GetSearch() const { return searchKey; }
+  const WordKey& GetSearch() const { return searchKey; }
 #endif /* SWIG */
   //-
   // Returns the type of action when a matching entry
   // is found.
   //
-  inline int GetAction() const { return action; }
+  int GetAction() const { return action; }
   //
   // Accessors for output parameters
   //
   //-
   // Returns the list of WordReference found. The application
-  // is responsible for deallocation of the list. If the <b>action</b>
-  // input flag bit HTDIG_WORDLIST_COLLECTOR is not set, return a NULL
-  // pointer.
+  // is responsible for deallocation of the list.
   //
-  inline List *GetResults() { return collectRes; }
-#ifndef SWIG
+  List *GetResults() { return collectRes; }
   //-
   // For debugging purposes. Returns the list of WordReference hit 
   // during the search
   // process. Some of them match the searched key, some don't.
   // The application is responsible for deallocation of the list.
   //
-  inline List *GetTraces() { return traceRes; }
+  List *GetTraces() { return traceRes; }
   //-
   // For debugging purposes. Set the list of WordReference hit
   // during the search process. 
   //
-  inline void SetTraces(List* traceRes_arg) { traceRes = traceRes_arg; }
-#endif /* SWIG */
+  void SetTraces(List* traceRes_arg) { traceRes = traceRes_arg; }
   //-
   // Returns the last entry hit by the search. Only contains
   // a valid value if the last <i>WalkNext</i> or <i>WalkNextStep</i>
   // call was successfull (i.e. returned OK).
   //
-  inline const WordReference& GetFound() { return found; }
+  const WordReference& GetFound() { return found; }
   //-
-  // Returns the status of the cursor which may be 
-  // OK or WORD_WALK_ATEND.
+  // Returns the number of occurrences of the searched word
+  // in the inverted index in the <b>noccurrence</b> parameter.
+  // Returns OK on success, NOTOK on failure.
   //
-  inline int GetStatus() const { return status; }
+  virtual int Noccurrence(unsigned int& noccurrence) const;
 
 #ifndef SWIG
-  //-
-  // Convert the whole structure to an ASCII string description.
-  // Returns OK if successfull, NOTOK otherwise.
-  //
-  virtual int Get(String& bufferout) const = 0;
-#endif /* SWIG */
   //-
   // Convert the whole structure to an ASCII string description
-  // and return it.
+  // Returns OK if successfull, NOTOK otherwise.
   //
-  inline String Get() const { String tmp; Get(tmp); return tmp; }
+  virtual int Get(String& bufferout) const;
+  String Get() const { String tmp; Get(tmp); return tmp; }
 
-#ifndef SWIG
  protected:
 
   //-
@@ -333,8 +358,7 @@ class WordCursor
   // DESCRIPTION section for the semantics of the arguments.
   // Return OK on success, NOTOK on error.
   //
-  virtual int Initialize(WordList *nwords, const WordKey &nsearchKey, wordlist_walk_callback_t ncallback, Object * ncallback_data, int naction) = 0;
-
+  int Initialize(WordList *nwords, const WordKey &nsearchKey, wordlist_walk_callback_t ncallback, Object * ncallback_data, int naction);
 
   //
   // Input parameters
@@ -390,6 +414,27 @@ class WordCursor
   //
   // Internal state
   //
+  //
+  // The actual Berkeley DB cursor.
+  //
+  WordDBCursor cursor;
+  //
+  // The latest retrieved key and data
+  //
+  String key;
+  String data;
+  //
+  // The shorted prefix key computed from searchKey
+  //
+  WordKey prefixKey;
+  //-
+  // WalkNext leap is either DB_NEXT or DB_SET_RANGE.
+  //
+  int cursor_get_flags;
+  //
+  // True if search key is a prefix key
+  //
+  int searchKeyIsSameAsPrefix;
   //-
   // The inverted index used by this cursor.
   //

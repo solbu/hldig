@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Exact.cc,v 1.7.2.3 2000/09/27 05:17:55 ghutchis Exp $
+// $Id: Exact.cc,v 1.7.2.4 2000/10/10 03:15:39 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -46,8 +46,7 @@ void
 Exact::getWords(char *w, List &words)
 {
     String	stripped = w;
-    WordType	type(config);
-    type.StripPunctuation(stripped);
+    HtStripPunctuation(stripped);
 
     words.Add(new String(stripped));
 }

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.18.2.8 2000/09/27 05:21:31 ghutchis Exp $
+// $Id: Retriever.h,v 1.18.2.9 2000/10/10 03:15:36 ghutchis Exp $
 //
 
 #ifndef _Retriever_h_
@@ -104,8 +104,8 @@ private:
     int			trackWords;
     int			n_links;
     String		credentials;
-    HtWordList		words;
     HtWordReference	word_context;
+    HtWordList		words;
 	
     int			check_unique_md5;
     int			check_unique_date;

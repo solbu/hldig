@@ -1,10 +1,10 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1998, 1999, 2000
+ * Copyright (c) 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  *
- * $Id: region.h,v 1.1.2.2 2000/09/14 03:13:23 ghutchis Exp $
+ *	@(#)region.h	11.2 (Sleepycat) 8/24/99
  */
 
 /*
@@ -52,7 +52,7 @@
  * seeing inconsistent data.  Once that region is created, we can use normal
  * shared locking procedures to do mutal exclusion for all other regions.
  *
- * One of the REGION structures in the CDB_main environment region describes the
+ * One of the REGION structures in the main environment region describes the
  * environment region itself.
  *
  * To lock a region, locate the REGION structure that describes it and acquire
@@ -69,12 +69,12 @@
  * that we need to access the region.
  *
  * The one remaining complication.  If the regions (including the environment
- * region) live in system memory, and the system memory isn't "named" somehow
- * in the filesystem name space, we need some way of finding it.  Do this by
- * by writing the REGENV_REF structure into the "__db.001" file.  When we find
- * a __db.001 file that is too small to be a real, on-disk environment, we use
- * the information it contains to redirect to the real "__db.001" file/memory.
- * This currently only happens when the REGENV file is in shared system memory.
+ * region) really live in system memory, we need some way of finding it.  We
+ * do this by writing the REGENV_REF structure into the "__db.001" file.  When
+ * we first open that file, and realize it holds a REGENV_REF instead of a
+ * REGENV structure, we simply use that information to redirect to the real
+ * "__db.001" file.  Currently, this only happens when the REGENV file is in
+ * shared system memory returned by the UNIX shmget(2) call.
  *
  * Although DB does not currently grow regions when they run out of memory, it
  * would be possible to do so.  To grow a region, allocate a new region of the
@@ -91,11 +91,6 @@
  *	msemaphore structure contains any value copied from an msemaphore
  *	structure at a different address, the result is undefined.
  */
-
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
 #define	DB_REGION_FMT	"__db.%03d"	/* Region file name format. */
 #define	DB_REGION_NAME_NUM	5	/* First digit offset in file names. */
 #define	DB_REGION_NAME_LENGTH	8	/* Length of file names. */
@@ -104,7 +99,7 @@ extern "C" {
 
 #define	INVALID_REGION_SEGID	-1	/* Segment IDs are either shmget(2) or
 					 * Win16 segment identifiers.  They are
-					 * both stored in a "long", and we need
+					 * both stored in an "int", and we need
 					 * an out-of-band value.
 					 */
 /*
@@ -125,7 +120,7 @@ typedef u_int32_t roff_t;
 /* Reference describing system memory version of REGENV. */
 typedef struct __db_reg_env_ref {
 	roff_t	   size;		/* Region size. */
-	long	   segid;		/* UNIX shmget(2) ID. */
+	int	   segid;		/* shmget(2) ID. */
 } REGENV_REF;
 
 /* Per-environment region information. */
@@ -204,7 +199,7 @@ typedef struct __db_region {
 
 	roff_t	   primary;		/* Primary data structure offset. */
 
-	long	   segid;		/* UNIX shmget(2), Win16 segment ID. */
+	int	   segid;		/* UNIX shmget(2), Win16 segment ID. */
 
 #define	REG_ID_INVALID	0		/* Invalid. */
 #define	REG_ID_ENV	1		/* Environment. */
@@ -280,7 +275,3 @@ struct __db_reginfo_t {		/* CDB___db_r_attach IN parameters. */
 }
 #define	OS_VMPAGESIZE		(8 * 1024)
 #define	OS_VMROUNDOFF(i)	OS_ROUNDOFF(i, OS_VMPAGESIZE)
-
-#if defined(__cplusplus)
-}
-#endif

@@ -1,150 +1,17 @@
-//
-// NAME
-// 
-// displays statistics for Berkeley DB environments.
-//
-// SYNOPSIS
-//
-// htdb_stat [-celmNtzW] [-C Acfhlmo] [-d file [-s file]] [-h home] [-M Ahlm]
-//
-// DESCRIPTION
-//
-// htdb_stat is a slightly modified version of the standard Berkeley
-// DB db_stat utility which displays statistics for Berkeley DB
-// environments.
-// 
-// OPTIONS
-// 
-// <dl>
-//
-// <dt><b>-W</b>
-// <dd>Initialize WordContext(3) before gathering statistics. With the <b>-z</b>
-// flag allows to gather statistics on inverted indexes generated
-// with the mifluz(3) specific
-// compression scheme. The MIFLUZ_CONFIG environment variable must be
-// set to a file containing the mifluz(3) configuration.
-//
-// <dt><b>-z</b>
-// <dd>The <b>file</b> is compressed. If <b>-W</b> is given the
-// mifluz(3) specific compression scheme is used. Otherwise the default
-// gzip compression scheme is used.
-//
-// <dt><b>-C</b>
-// <dd>Display internal information about the lock region.
-// (The output from this option is often both voluminous and meaningless,
-// and is intended only for debugging.)
-// <dl>
-// <dt><b>A</b>
-// <dd>Display all information.
-// <dt><b>c</b>
-// <dd>Display lock conflict matrix.
-// <dt><b>f</b>
-// <dd>Display lock and object free lists.
-// <dt><b>l</b>
-// <dd>Display lockers within hash chains.
-// <dt><b>m</b>
-// <dd>Display region memory information.
-// <dt><b>o</b>
-// <dd>Display objects within hash chains.
-// </dl>
-//
-// <dt><b>-c</b>
-// <dd>Display lock region statistics.
-//
-// <dt><b>-d</b>
-// <dd>Display database statistics for the specified database.
-// If the database contains subdatabases, the statistics
-// are for the database or subdatabase specified, and not for the database
-// as a whole.
-// 
-// <dt><b>-e</b>
-// <dd>Display current environment statistics.
-//
-// <dt><b>-h</b>
-// <dd>Specify a home directory for the database.
-// 
-// <dt><b>-l</b>
-// <dd>Display log region statistics.
-// 
-// <dt><b>-M</b>
-// <dd>Display internal information about the shared memory buffer pool.
-// (The output from this option is often both voluminous and meaningless,
-// and is intended only for debugging.)
-// <dl>
-// <dt><b>A</b>
-// <dd>Display all information.
-// <dt><b>h</b>
-// <dd>Display buffers within hash chains.
-// <dt><b>l</b>
-// <dd>Display buffers within LRU chains.
-// <dt><b>m</b>
-// <dd>Display region memory information.
-// </dl>
-//
-// <dt><b>-m</b>
-// <dd>Display shared memory buffer pool statistics.
-//
-// <dt><b>-N</b>
-// <dd>Do not acquire shared region locks while running.  Other problems such
-// as potentially fatal errors in Berkeley DB will be ignored as well.  This option
-// is intended only for debugging errors and should not be used under any
-// other circumstances.
-// 
-// <dt><b>-s</b>
-// <dd>Display database statistics for the specified subdatabase of the
-// database specified with the <b>-d</b> flag.
-//
-// <dt><b>-t</b><dd>Display transaction region statistics.
-// 
-// <dt><b>-V</b>
-// <dd>Write the version number to the standard output and exit.
-//
-// </dl>
-//
-// Only one set of statistics is displayed for each run, and the last option
-// specifying a set of statistics takes precedence.
-//
-// Values smaller than 10 million are generally displayed without any special
-// notation.  Values larger than 10 million are normally displayed as
-// <b>&lt;number&gt;M</b>.
-//
-// The htdb_stat utility attaches to one or more of the Berkeley DB shared memory
-// regions.  In order to avoid region corruption, it should always be given
-// the chance to detach and exit gracefully.  To cause htdb_stat to clean up
-// after itself and exit, send it an interrupt signal (SIGINT).
-//
-// ENVIRONMENT
-//
-// <b>DB_HOME</b>
-// If the <b>-h</b> option is not specified and the environment variable
-// DB_HOME is set, it is used as the path of the database home.
-// <br>
-// <b>MIFLUZ_CONFIG</b>
-// file name of configuration file read by WordContext(3). Defaults to
-// <b>~/.mifluz.</b> 
-//
-// AUTHORS
-//
-// Sleepycat Software http://www.sleepycat.com/
-//
-//
-// END
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "htconfig.h"
-#endif /* HAVE_CONFIG_H */
+#include "db_config.h"
 
 #ifndef lint
 static const char copyright[] =
-    "Copyright (c) 1996-2000\nSleepycat Software Inc.  All rights reserved.\n";
-static const char revid[] =
-    "$Id: htdb_stat.cc,v 1.1.2.4 2000/09/27 05:13:01 ghutchis Exp $";
+"@(#) Copyright (c) 1996, 1997, 1998, 1999\n\
+	Sleepycat Software Inc.  All rights reserved.\n";
+static const char sccsid[] = "@(#)db_stat.c	11.2 (Sleepycat) 9/14/99";
 #endif
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -162,7 +29,7 @@ static const char revid[] =
 #endif
 
 #include <ctype.h>
-#include <errno.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -175,8 +42,6 @@ extern "C" {
 #include "lock.h"
 #include "mp.h"
 }
-
-#include "util_sig.h"
 
 #include "WordDBInfo.h"
 #include "WordDBCompress.h"
@@ -201,13 +66,16 @@ int	 log_stats __P((DB_ENV *));
 int	 main __P((int, char *[]));
 int	 mpool_ok __P((char *));
 int	 mpool_stats __P((DB_ENV *));
+void	 onint __P((int));
 void	 prflags __P((u_int32_t, const FN *));
 int	 queue_stats __P((DB_ENV *, DB *));
+void	 siginit __P((void));
 int	 txn_compare __P((const void *, const void *));
 int	 txn_stats __P((DB_ENV *));
 void	 usage __P((void));
 
 DB_ENV	*dbenv;
+int	 interrupted;
 char	*internal;
 const char
 	*progname = "htdb_stat";				/* Program name. */
@@ -219,17 +87,17 @@ main(int argc, char *argv[])
 	extern int optind;
 	DB *dbp;
 	test_t ttype;
-	int ch, d_close, e_close, exitval, ret;
+	int ch, d_close, e_close, exitval, Nflag, ret;
 	char *db, *home, *subdb;
 	int compress = 0;
 	int wordlist = 0;
-	WordContext *context = 0;
+	Configuration *config = 0;
 
 	dbp = NULL;
 	ttype = T_NOTSET;
-	d_close = e_close = exitval = 0;
+	d_close = e_close = exitval = Nflag = 0;
 	db = home = subdb = NULL;
-	while ((ch = getopt(argc, argv, "C:cd:eh:lM:mNs:tVzW")) != EOF)
+	while ((ch = getopt(argc, argv, "C:cd:eh:lM:mNs:tzW")) != EOF)
 		switch (ch) {
 		case 'C':
 			ttype = T_LOCK;
@@ -261,18 +129,7 @@ main(int argc, char *argv[])
 			ttype = T_MPOOL;
 			break;
 		case 'N':
-			if ((ret = CDB_db_env_set_mutexlocks(0)) != 0) {
-				fprintf(stderr,
-				    "%s: db_env_set_mutexlocks: %s\n",
-				    progname, CDB_db_strerror(ret));
-				return (1);
-			}
-			if ((ret = CDB_db_env_set_panicstate(0)) != 0) {
-				fprintf(stderr,
-				    "%s: db_env_set_panicstate: %s\n",
-				    progname, CDB_db_strerror(ret));
-				return (1);
-			}
+			Nflag = 1;
 			break;
 		case 's':
 			subdb = optarg;
@@ -281,9 +138,6 @@ main(int argc, char *argv[])
 		case 't':
 			ttype = T_TXN;
 			break;
-		case 'V':
-			printf("%s\n", CDB_db_version(NULL, NULL, NULL));
-			exit(0);
 		case 'z':
 			compress = DB_COMPRESS;
 			break;
@@ -310,15 +164,15 @@ main(int argc, char *argv[])
 	}
 
 	/* Handle possible interruptions. */
-	__db_util_siginit();
+	siginit();
 
 	if(wordlist && compress) {
 	  static ConfigDefaults defaults[] = {
-	    { "wordlist_wordkey_description", "Word 24/DocID 32/Flag 8/Location 16"},
+	    { "wordlist_wordkey_description", "Word/DocID 32/Flag 8/Location 16"},
 	    { "wordlist_env_skip", "true"},
 	    { 0, 0, 0 }
 	  };
-	  context = new WordContext(defaults);
+	  config = WordContext::Initialize(defaults);
 	}
 
 	/*
@@ -328,17 +182,30 @@ main(int argc, char *argv[])
 	if ((ret = CDB_db_env_create(&dbenv, 0)) != 0) {
 	  fprintf(stderr,
 		  "%s: CDB_db_env_create: %s\n", progname, CDB_db_strerror(ret));
-	  goto shutdown;
+	  exit (1);
 	}
-	e_close = 1;
 
 	dbenv->set_errfile(dbenv, stderr);
 	dbenv->set_errpfx(dbenv, progname);
-	if(wordlist && compress) dbenv->mp_cmpr_info = (new WordDBCompress(context))->CmprInfo();
+	if(wordlist && compress) dbenv->mp_cmpr_info = (new WordDBCompress)->CmprInfo();
+
+	/* Optionally turn mutexes and the panic checks off. */
+	if (Nflag) {
+	  if ((ret = dbenv->set_mutexlocks(dbenv, 0)) != 0) {
+	    dbenv->err(dbenv, ret, "set_mutexlocks");
+	    goto shutdown;
+	  }
+	  if ((ret = dbenv->set_panic(dbenv, 0)) != 0) {
+	    dbenv->err(dbenv, ret, "set_panic");
+	    goto shutdown;
+	  }
+	}
 
 	/* Initialize the environment. */
 	if (db_init(home, ttype) != 0)
-		goto shutdown;
+	  goto shutdown;
+
+	e_close = 1;
 
 	switch (ttype) {
 	case T_DB:
@@ -347,15 +214,11 @@ main(int argc, char *argv[])
 			dbenv->err(dbenv, ret, "CDB_db_create");
 			goto shutdown;
 		}
-
 		if ((ret =
-		    dbp->open(dbp, db, subdb, DB_UNKNOWN, compress, 0)) != 0
-		    && (ret =
 		    dbp->open(dbp, db, subdb, DB_UNKNOWN, (DB_RDONLY | compress), 0)) != 0) {
 			dbp->err(dbp, ret, "open: %s", db);
 			goto shutdown;
 		}
-
 		d_close = 1;
 		switch (dbp->type) {
 		case DB_BTREE:
@@ -408,20 +271,22 @@ shutdown:	exitval = 1;
 		exitval = 1;
 		dbp->err(dbp, ret, "close");
 	}
-	if(wordlist && compress) {
-	  delete (WordDBCompress*)dbenv->mp_cmpr_info->user_data;
-	  delete dbenv->mp_cmpr_info;
-	}
 	if (e_close && (ret = dbenv->close(dbenv, 0)) != 0) {
 		exitval = 1;
 		fprintf(stderr,
 		    "%s: dbenv->close: %s\n", progname, CDB_db_strerror(ret));
 	}
 
-	if(context) delete context;
+	if (interrupted) {
+		(void)signal(interrupted, SIG_DFL);
+		(void)raise(interrupted);
+		/* NOTREACHED */
+	}
 
-	/* Resend any caught signal. */
-	__db_util_sigresend();
+	if(config) {
+	  WordContext::Finish();
+	  delete config;
+	}
 
 	return (exitval);
 }
@@ -481,8 +346,8 @@ env_stats(DB_ENV *dbenvp)
 			break;
 		}
 		printf("%s Region: %d.\n", lable, rp->id);
-		dl_bytes("Size", (u_long)0, (u_long)0, (u_long)rp->size);
-		printf("%ld\tSegment ID.\n", rp->segid);
+		dl_bytes("Size.\n", (u_long)0, (u_long)0, (u_long)rp->size);
+		printf("%d\tSegment ID.\n", rp->segid);
 		dl("Locks granted without waiting.\n",
 		    (u_long)rp->mutex.mutex_set_nowait);
 		dl("Locks granted after waiting.\n",
@@ -505,7 +370,7 @@ btree_stats(DB_ENV *dbenvp, DB *dbp)
 		{ BTM_RECNO,	"recno" },
 		{ BTM_RECNUM,	"record-numbers" },
 		{ BTM_RENUMBER,	"renumber" },
-		{ BTM_SUBDB,	"multiple-databases" },
+		{ BTM_SUBDB,	"subdatabases" },
 		{ 0,		NULL }
 	};
 	DB_BTREE_STAT *sp;
@@ -538,8 +403,7 @@ btree_stats(DB_ENV *dbenvp, DB *dbp)
 	}
 	dl("Underlying database page size.\n", (u_long)sp->bt_pagesize);
 	dl("Number of levels in the tree.\n", (u_long)sp->bt_levels);
-	dl("Number of unique keys in the tree.\n", (u_long)sp->bt_nkeys);
-	dl("Number of data items in the tree.\n", (u_long)sp->bt_ndata);
+	dl("Number of keys in the tree.\n", (u_long)sp->bt_nrecs);
 
 	dl("Number of tree internal pages.\n", (u_long)sp->bt_int_pg);
 	dl("Number of bytes free in tree internal pages",
@@ -581,7 +445,7 @@ hash_stats(DB_ENV *dbenvp, DB *dbp)
 {
 	static const FN fn[] = {
 		{ DB_HASH_DUP,	"duplicates" },
-		{ DB_HASH_SUBDB,"multiple-databases" },
+		{ DB_HASH_SUBDB,"subdatabases" },
 		{ 0,		NULL }
 	};
 	DB_HASH_STAT *sp;
@@ -598,8 +462,7 @@ hash_stats(DB_ENV *dbenvp, DB *dbp)
 	printf("%lu\tHash version number.\n", (u_long)sp->hash_version);
 	prflags(sp->hash_metaflags, fn);
 	dl("Underlying database page size.\n", (u_long)sp->hash_pagesize);
-	dl("Number of keys in the database.\n", (u_long)sp->hash_nkeys);
-	dl("Number of data items in the database.\n", (u_long)sp->hash_ndata);
+	dl("Number of keys in the database.\n", (u_long)sp->hash_nrecs);
 
 	dl("Number of hash buckets.\n", (u_long)sp->hash_buckets);
 	dl("Number of bytes free on bucket pages", (u_long)sp->hash_bfree);
@@ -654,7 +517,7 @@ queue_stats(DB_ENV *dbenvp, DB *dbp)
 	else
 		printf("0x%x\tFixed-length record pad.\n", (int)sp->qs_re_pad);
 	dl("Underlying tree page size.\n", (u_long)sp->qs_pagesize);
-	dl("Number of records in the database.\n", (u_long)sp->qs_nkeys);
+	dl("Number of records in the database.\n", (u_long)sp->qs_nrecs);
 	dl("Number of database pages.\n", (u_long)sp->qs_pages);
 	dl("Number of bytes free in database pages", (u_long)sp->qs_pgfree);
 	printf(" (%.0f%% ff).\n",
@@ -694,11 +557,9 @@ lock_stats(DB_ENV *dbenvp)
 	dl("Maximum current lockers.\n", (u_long)sp->st_nlockers);
 	dl("Number of lock requests.\n", (u_long)sp->st_nrequests);
 	dl("Number of lock releases.\n", (u_long)sp->st_nreleases);
-	dl("Number of lock requests that would have waited.\n",
-	    (u_long)sp->st_nnowaits);
 	dl("Number of lock conflicts.\n", (u_long)sp->st_nconflicts);
 	dl("Number of deadlocks.\n", (u_long)sp->st_ndeadlocks);
-	dl_bytes("Lock region size",
+	dl_bytes("Lock region size.\n",
 	    (u_long)0, (u_long)0, (u_long)sp->st_regsize);
 	dl("The number of region locks granted without waiting.\n",
 	    (u_long)sp->st_region_nowait);
@@ -725,9 +586,9 @@ log_stats(DB_ENV *dbenvp)
 
 	printf("%lx\tLog magic number.\n", (u_long)sp->st_magic);
 	printf("%lu\tLog version number.\n", (u_long)sp->st_version);
-	dl_bytes("Log region size",
+	dl_bytes("Log region size.\n",
 	    (u_long)0, (u_long)0, (u_long)sp->st_regsize);
-	dl_bytes("Log record cache size",
+	dl_bytes("Log record cache size.\n",
 	    (u_long)0, (u_long)0, (u_long)sp->st_lg_bsize);
 	printf("%#o\tLog file mode.\n", sp->st_mode);
 	if (sp->st_lg_max % MEGABYTE == 0)
@@ -737,9 +598,9 @@ log_stats(DB_ENV *dbenvp)
 		printf("%luKb\tLog file size.\n", (u_long)sp->st_lg_max / 1024);
 	else
 		printf("%lu\tLog file size.\n", (u_long)sp->st_lg_max);
-	dl_bytes("Log bytes written",
+	dl_bytes("Log bytes written.\n",
 	    (u_long)0, (u_long)sp->st_w_mbytes, (u_long)sp->st_w_bytes);
-	dl_bytes("Log bytes written since last checkpoint",
+	dl_bytes("Log bytes written since last checkpoint.\n",
 	    (u_long)0, (u_long)sp->st_wc_mbytes, (u_long)sp->st_wc_bytes);
 	dl("Total log file writes.\n", (u_long)sp->st_wcount);
 	dl("Total log file write due to overflow.\n",
@@ -776,10 +637,9 @@ mpool_stats(DB_ENV *dbenvp)
 		return (1);
 	}
 
-	dl_bytes("Total cache size",
+	dl("Pool region size.\n", (u_long)gsp->st_regsize);
+	dl_bytes("Cache size.\n",
 	    (u_long)gsp->st_gbytes, (u_long)0, (u_long)gsp->st_bytes);
-	dl("Number of caches.\n", (u_long)gsp->st_ncache);
-	dl("Pool individual cache size.\n", (u_long)gsp->st_regsize);
 	dl("Requested pages found in the cache", (u_long)gsp->st_cache_hit);
 	if (gsp->st_cache_hit + gsp->st_cache_miss != 0)
 		printf(" (%.0f%%)", ((double)gsp->st_cache_hit /
@@ -883,7 +743,7 @@ txn_stats(DB_ENV *dbenvp)
 	dl("Number of transactions begun.\n", (u_long)sp->st_nbegins);
 	dl("Number of transactions aborted.\n", (u_long)sp->st_naborts);
 	dl("Number of transactions committed.\n", (u_long)sp->st_ncommits);
-	dl_bytes("Transaction region size",
+	dl_bytes("Transaction region size.\n",
 	    (u_long)0, (u_long)0, (u_long)sp->st_regsize);
 	dl("The number of region locks granted without waiting.\n",
 	    (u_long)sp->st_region_nowait);
@@ -940,10 +800,7 @@ void
 dl_bytes(const char *msg, u_long gbytes, u_long mbytes, u_long bytes)
 {
 	const char *sep;
-	u_long sbytes;
-	int showbytes;
 
-	sbytes = bytes;
 	while (bytes > MEGABYTE) {
 		++mbytes;
 		bytes -= MEGABYTE;
@@ -954,29 +811,22 @@ dl_bytes(const char *msg, u_long gbytes, u_long mbytes, u_long bytes)
 	}
 
 	sep = "";
-	showbytes = 0;
 	if (gbytes > 0) {
 		printf("%luGB", gbytes);
 		sep = " ";
-		showbytes = 1;
 	}
 	if (mbytes > 0) {
-		printf("%s%luMB", sep, mbytes);
+		printf("%s%luMB", sep, bytes);
 		sep = " ";
-		showbytes = 1;
 	}
 	if (bytes > 1024) {
 		printf("%s%luKB", sep, bytes / 1024);
 		bytes %= 1024;
 		sep = " ";
-		showbytes = 1;
 	}
 	if (bytes > 0)
-		printf("%s%luB", sep, bytes);
+		printf("%s%lu", sep, bytes);
 	printf("\t%s", msg);
-	if (showbytes)
-		printf(" (%lu bytes)", sbytes);
-	printf(".\n");
 }
 
 /*
@@ -1013,7 +863,6 @@ db_init(char *home, test_t ttype)
 	 * on the DB databases, so our information is as up-to-date as possible,
 	 * even if the mpool cache hasn't been flushed.
 	 */
-	ret = 0;
 	flags = DB_USE_ENVIRON;
 	switch (ttype) {
 	case T_ENV:
@@ -1040,11 +889,9 @@ db_init(char *home, test_t ttype)
 	 * If that fails, and we're trying to look at a shared region, it's
 	 * a hard failure.
 	 */
-	if ((ret = dbenv->open(dbenv, home, flags, 0)) == 0)
+	if ((ret = dbenv->open(dbenv, home, NULL, flags, 0)) == 0)
 		return (0);
 	if (ttype != T_DB) {
-		if (ret == 0)
-			ret = EINVAL;
 		dbenv->err(dbenv, ret, "open");
 		return (1);
 	}
@@ -1063,7 +910,7 @@ db_init(char *home, test_t ttype)
 	 * no files are actually created.
 	 */
 	LF_SET(DB_CREATE | DB_PRIVATE);
-	if ((ret = dbenv->open(dbenv, home, flags, 0)) == 0)
+	if ((ret = dbenv->open(dbenv, home, NULL, flags, 0)) == 0)
 		return (0);
 
 	/* An environment is required. */
@@ -1084,10 +931,40 @@ argcheck(char *arg, const char *ok_args)
 	return (1);
 }
 
+/*
+ * siginit --
+ *	Initialize the set of signals for which we want to clean up.
+ *	Generally, we try not to leave the shared regions locked if
+ *	we can.
+ */
+void
+siginit()
+{
+#ifdef SIGHUP
+	(void)signal(SIGHUP, onint);
+#endif
+	(void)signal(SIGINT, onint);
+#ifdef SIGPIPE
+	(void)signal(SIGPIPE, onint);
+#endif
+	(void)signal(SIGTERM, onint);
+}
+
+/*
+ * onint --
+ *	Interrupt signal handler.
+ */
+void
+onint(int signo)
+{
+	if ((interrupted = signo) == 0)
+		interrupted = SIGINT;
+}
+
 void
 usage()
 {
-	fprintf(stderr, "usage: htdb_stat %s\n",
-	    "[-celmNtVzW] [-C Acflmo] [-d file [-s file]] [-h home] [-M Ahlm]");
+	fprintf(stderr,
+"usage: htdb_stat [-celmNtzW] [-C Acflmo] [-d file [-s file]] [-h home] [-M Ahlm]\n");
 	exit (1);
 }

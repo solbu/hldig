@@ -1,10 +1,10 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  *
- * $Id: txn.h,v 1.1.2.2 2000/09/14 03:13:23 ghutchis Exp $
+ *	@(#)txn.h	11.4 (Sleepycat) 10/12/99
  */
 
 #ifndef	_TXN_H_
@@ -109,7 +109,7 @@ struct __db_txnmgr {
 	REGINFO		 reginfo;	/* Region information. */
 
 	int (*recover)			/* Recovery dispatch routine */
-	    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	    __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
 };
 
 /*

@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: db_ret.c,v 1.1.2.3 2000/09/17 01:35:05 ghutchis Exp $";
+static const char sccsid[] = "@(#)db_ret.c	11.1 (Sleepycat) 7/24/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -57,8 +57,8 @@ CDB___db_ret(dbp, h, indx, dbt, memp, memsize)
 		len = LEN_HKEYDATA(h, dbp->pgsize, indx);
 		data = HKEYDATA_DATA(hk);
 		break;
+	case P_DUPLICATE:
 	case P_LBTREE:
-	case P_LDUP:
 	case P_LRECNO:
 		bk = GET_BKEYDATA(h, indx);
 		if (B_TYPE(bk->type) == B_OVERFLOW) {
@@ -73,7 +73,8 @@ CDB___db_ret(dbp, h, indx, dbt, memp, memsize)
 		return (CDB___db_pgfmt(dbp, h->pgno));
 	}
 
-	return (CDB___db_retcopy(dbp, dbt, data, len, memp, memsize));
+	return (CDB___db_retcopy(F_ISSET(dbt,
+	    DB_DBT_INTERNAL) ? NULL : dbp, dbt, data, len, memp, memsize));
 }
 
 /*
@@ -92,10 +93,7 @@ CDB___db_retcopy(dbp, dbt, data, len, memp, memsize)
 	void **memp;
 	u_int32_t *memsize;
 {
-	DB_ENV *dbenv;
 	int ret;
-
-	dbenv = dbp == NULL ? NULL : dbp->dbenv;
 
 	/* If returning a partial record, reset the length. */
 	if (F_ISSET(dbt, DB_DBT_PARTIAL)) {
@@ -132,11 +130,11 @@ CDB___db_retcopy(dbp, dbt, data, len, memp, memsize)
 	 * memory pointer is allowed to be NULL.
 	 */
 	if (F_ISSET(dbt, DB_DBT_MALLOC)) {
-		if ((ret = CDB___os_malloc(dbenv, len,
+		if ((ret = CDB___os_malloc(len,
 		    dbp == NULL ? NULL : dbp->db_malloc, &dbt->data)) != 0)
 			return (ret);
 	} else if (F_ISSET(dbt, DB_DBT_REALLOC)) {
-		if ((ret = CDB___os_realloc(dbenv, len,
+		if ((ret = CDB___os_realloc(len,
 		    dbp == NULL ? NULL : dbp->db_realloc, &dbt->data)) != 0)
 			return (ret);
 	} else if (F_ISSET(dbt, DB_DBT_USERMEM)) {
@@ -146,7 +144,7 @@ CDB___db_retcopy(dbp, dbt, data, len, memp, memsize)
 		return (EINVAL);
 	} else {
 		if (len != 0 && (*memsize == 0 || *memsize < len)) {
-			if ((ret = CDB___os_realloc(dbenv, len, NULL, memp)) != 0) {
+			if ((ret = CDB___os_realloc(len, NULL, memp)) != 0) {
 				*memsize = 0;
 				return (ret);
 			}

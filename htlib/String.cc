@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.30.2.11 2000/09/14 03:13:24 ghutchis Exp $
+// $Id: String.cc,v 1.30.2.12 2000/10/10 03:15:41 ghutchis Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -63,7 +63,7 @@ String::String(const char *s, int len)
 	copy(s, len, len);
 }
 
-String::String(const String &s) : Object()
+String::String(const String &s)
 {
     Allocated = Length = 0;
     Data = 0;

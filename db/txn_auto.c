@@ -1,11 +1,11 @@
 /* Do not edit: automatically built by gen_rec.awk. */
-#include "htconfig.h"
+#include <errno.h>
+#include "db_config.h"
 
 #ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
 
 #include <ctype.h>
-#include <errno.h>
 #include <string.h>
 #endif
 
@@ -15,75 +15,13 @@
 #include "db_am.h"
 #include "txn.h"
 
-int
-CDB___txn_old_regop_print(dbenv, dbtp, lsnp, notused2, notused3)
-	DB_ENV *dbenv;
-	DBT *dbtp;
-	DB_LSN *lsnp;
-	db_recops notused2;
-	void *notused3;
-{
-	__txn_old_regop_args *argp;
-	u_int32_t i;
-	u_int ch;
-	int ret;
-
-	i = 0;
-	ch = 0;
-	notused2 = 0;
-	notused3 = NULL;
-
-	if ((ret = CDB___txn_old_regop_read(dbenv, dbtp->data, &argp)) != 0)
-		return (ret);
-	printf("[%lu][%lu]txn_old_regop: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
-	    (u_long)lsnp->file,
-	    (u_long)lsnp->offset,
-	    (u_long)argp->type,
-	    (u_long)argp->txnid->txnid,
-	    (u_long)argp->prev_lsn.file,
-	    (u_long)argp->prev_lsn.offset);
-	printf("\topcode: %lu\n", (u_long)argp->opcode);
-	printf("\n");
-	CDB___os_free(argp, 0);
-	return (0);
-}
-
-int
-CDB___txn_old_regop_read(dbenv, recbuf, argpp)
-	DB_ENV *dbenv;
-	void *recbuf;
-	__txn_old_regop_args **argpp;
-{
-	__txn_old_regop_args *argp;
-	u_int8_t *bp;
-	int ret;
-
-	ret = CDB___os_malloc(dbenv, sizeof(__txn_old_regop_args) +
-	    sizeof(DB_TXN), NULL, &argp);
-	if (ret != 0)
-		return (ret);
-	argp->txnid = (DB_TXN *)&argp[1];
-	bp = recbuf;
-	memcpy(&argp->type, bp, sizeof(argp->type));
-	bp += sizeof(argp->type);
-	memcpy(&argp->txnid->txnid,  bp, sizeof(argp->txnid->txnid));
-	bp += sizeof(argp->txnid->txnid);
-	memcpy(&argp->prev_lsn, bp, sizeof(DB_LSN));
-	bp += sizeof(DB_LSN);
-	memcpy(&argp->opcode, bp, sizeof(argp->opcode));
-	bp += sizeof(argp->opcode);
-	*argpp = argp;
-	return (0);
-}
-
 int CDB___txn_regop_log(dbenv, txnid, ret_lsnp, flags,
-	opcode, timestamp)
+	opcode)
 	DB_ENV *dbenv;
 	DB_TXN *txnid;
 	DB_LSN *ret_lsnp;
 	u_int32_t flags;
 	u_int32_t opcode;
-	int32_t timestamp;
 {
 	DBT logrec;
 	DB_LSN *lsnp, null_lsn;
@@ -93,7 +31,7 @@ int CDB___txn_regop_log(dbenv, txnid, ret_lsnp, flags,
 
 	if (txnid != NULL &&
 	    TAILQ_FIRST(&txnid->kids) != NULL && CDB___txn_activekids(txnid) != 0)
-		return (CDB___db_child_active_err(dbenv));
+		return (EPERM);
 	rectype = DB_txn_regop;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
@@ -102,9 +40,8 @@ int CDB___txn_regop_log(dbenv, txnid, ret_lsnp, flags,
 	} else
 		lsnp = &txnid->last_lsn;
 	logrec.size = sizeof(rectype) + sizeof(txn_num) + sizeof(DB_LSN)
-	    + sizeof(opcode)
-	    + sizeof(timestamp);
-	if ((ret = CDB___os_malloc(dbenv, logrec.size, NULL, &logrec.data)) != 0)
+	    + sizeof(opcode);
+	if ((ret = CDB___os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -116,8 +53,6 @@ int CDB___txn_regop_log(dbenv, txnid, ret_lsnp, flags,
 	bp += sizeof(DB_LSN);
 	memcpy(bp, &opcode, sizeof(opcode));
 	bp += sizeof(opcode);
-	memcpy(bp, &timestamp, sizeof(timestamp));
-	bp += sizeof(timestamp);
 	DB_ASSERT((u_int32_t)(bp - (u_int8_t *)logrec.data) == logrec.size);
 	ret = CDB_log_put(dbenv, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
@@ -127,11 +62,11 @@ int CDB___txn_regop_log(dbenv, txnid, ret_lsnp, flags,
 }
 
 int
-CDB___txn_regop_print(dbenv, dbtp, lsnp, notused2, notused3)
-	DB_ENV *dbenv;
+CDB___txn_regop_print(notused1, dbtp, lsnp, notused2, notused3)
+	DB_ENV *notused1;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	db_recops notused2;
+	int notused2;
 	void *notused3;
 {
 	__txn_regop_args *argp;
@@ -141,10 +76,11 @@ CDB___txn_regop_print(dbenv, dbtp, lsnp, notused2, notused3)
 
 	i = 0;
 	ch = 0;
+	notused1 = NULL;
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = CDB___txn_regop_read(dbenv, dbtp->data, &argp)) != 0)
+	if ((ret = CDB___txn_regop_read(dbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]txn_regop: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -154,15 +90,13 @@ CDB___txn_regop_print(dbenv, dbtp, lsnp, notused2, notused3)
 	    (u_long)argp->prev_lsn.file,
 	    (u_long)argp->prev_lsn.offset);
 	printf("\topcode: %lu\n", (u_long)argp->opcode);
-	printf("\ttimestamp: %ld\n", (long)argp->timestamp);
 	printf("\n");
 	CDB___os_free(argp, 0);
 	return (0);
 }
 
 int
-CDB___txn_regop_read(dbenv, recbuf, argpp)
-	DB_ENV *dbenv;
+CDB___txn_regop_read(recbuf, argpp)
 	void *recbuf;
 	__txn_regop_args **argpp;
 {
@@ -170,7 +104,7 @@ CDB___txn_regop_read(dbenv, recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = CDB___os_malloc(dbenv, sizeof(__txn_regop_args) +
+	ret = CDB___os_malloc(sizeof(__txn_regop_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);
@@ -184,87 +118,18 @@ CDB___txn_regop_read(dbenv, recbuf, argpp)
 	bp += sizeof(DB_LSN);
 	memcpy(&argp->opcode, bp, sizeof(argp->opcode));
 	bp += sizeof(argp->opcode);
-	memcpy(&argp->timestamp, bp, sizeof(argp->timestamp));
-	bp += sizeof(argp->timestamp);
-	*argpp = argp;
-	return (0);
-}
-
-int
-CDB___txn_old_ckp_print(dbenv, dbtp, lsnp, notused2, notused3)
-	DB_ENV *dbenv;
-	DBT *dbtp;
-	DB_LSN *lsnp;
-	db_recops notused2;
-	void *notused3;
-{
-	__txn_old_ckp_args *argp;
-	u_int32_t i;
-	u_int ch;
-	int ret;
-
-	i = 0;
-	ch = 0;
-	notused2 = 0;
-	notused3 = NULL;
-
-	if ((ret = CDB___txn_old_ckp_read(dbenv, dbtp->data, &argp)) != 0)
-		return (ret);
-	printf("[%lu][%lu]txn_old_ckp: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
-	    (u_long)lsnp->file,
-	    (u_long)lsnp->offset,
-	    (u_long)argp->type,
-	    (u_long)argp->txnid->txnid,
-	    (u_long)argp->prev_lsn.file,
-	    (u_long)argp->prev_lsn.offset);
-	printf("\tckp_lsn: [%lu][%lu]\n",
-	    (u_long)argp->ckp_lsn.file, (u_long)argp->ckp_lsn.offset);
-	printf("\tlast_ckp: [%lu][%lu]\n",
-	    (u_long)argp->last_ckp.file, (u_long)argp->last_ckp.offset);
-	printf("\n");
-	CDB___os_free(argp, 0);
-	return (0);
-}
-
-int
-CDB___txn_old_ckp_read(dbenv, recbuf, argpp)
-	DB_ENV *dbenv;
-	void *recbuf;
-	__txn_old_ckp_args **argpp;
-{
-	__txn_old_ckp_args *argp;
-	u_int8_t *bp;
-	int ret;
-
-	ret = CDB___os_malloc(dbenv, sizeof(__txn_old_ckp_args) +
-	    sizeof(DB_TXN), NULL, &argp);
-	if (ret != 0)
-		return (ret);
-	argp->txnid = (DB_TXN *)&argp[1];
-	bp = recbuf;
-	memcpy(&argp->type, bp, sizeof(argp->type));
-	bp += sizeof(argp->type);
-	memcpy(&argp->txnid->txnid,  bp, sizeof(argp->txnid->txnid));
-	bp += sizeof(argp->txnid->txnid);
-	memcpy(&argp->prev_lsn, bp, sizeof(DB_LSN));
-	bp += sizeof(DB_LSN);
-	memcpy(&argp->ckp_lsn, bp,  sizeof(argp->ckp_lsn));
-	bp += sizeof(argp->ckp_lsn);
-	memcpy(&argp->last_ckp, bp,  sizeof(argp->last_ckp));
-	bp += sizeof(argp->last_ckp);
 	*argpp = argp;
 	return (0);
 }
 
 int CDB___txn_ckp_log(dbenv, txnid, ret_lsnp, flags,
-	ckp_lsn, last_ckp, timestamp)
+	ckp_lsn, last_ckp)
 	DB_ENV *dbenv;
 	DB_TXN *txnid;
 	DB_LSN *ret_lsnp;
 	u_int32_t flags;
 	DB_LSN * ckp_lsn;
 	DB_LSN * last_ckp;
-	int32_t timestamp;
 {
 	DBT logrec;
 	DB_LSN *lsnp, null_lsn;
@@ -274,7 +139,7 @@ int CDB___txn_ckp_log(dbenv, txnid, ret_lsnp, flags,
 
 	if (txnid != NULL &&
 	    TAILQ_FIRST(&txnid->kids) != NULL && CDB___txn_activekids(txnid) != 0)
-		return (CDB___db_child_active_err(dbenv));
+		return (EPERM);
 	rectype = DB_txn_ckp;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
@@ -284,9 +149,8 @@ int CDB___txn_ckp_log(dbenv, txnid, ret_lsnp, flags,
 		lsnp = &txnid->last_lsn;
 	logrec.size = sizeof(rectype) + sizeof(txn_num) + sizeof(DB_LSN)
 	    + sizeof(*ckp_lsn)
-	    + sizeof(*last_ckp)
-	    + sizeof(timestamp);
-	if ((ret = CDB___os_malloc(dbenv, logrec.size, NULL, &logrec.data)) != 0)
+	    + sizeof(*last_ckp);
+	if ((ret = CDB___os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -306,8 +170,6 @@ int CDB___txn_ckp_log(dbenv, txnid, ret_lsnp, flags,
 	else
 		memset(bp, 0, sizeof(*last_ckp));
 	bp += sizeof(*last_ckp);
-	memcpy(bp, &timestamp, sizeof(timestamp));
-	bp += sizeof(timestamp);
 	DB_ASSERT((u_int32_t)(bp - (u_int8_t *)logrec.data) == logrec.size);
 	ret = CDB_log_put(dbenv, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
@@ -317,11 +179,11 @@ int CDB___txn_ckp_log(dbenv, txnid, ret_lsnp, flags,
 }
 
 int
-CDB___txn_ckp_print(dbenv, dbtp, lsnp, notused2, notused3)
-	DB_ENV *dbenv;
+CDB___txn_ckp_print(notused1, dbtp, lsnp, notused2, notused3)
+	DB_ENV *notused1;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	db_recops notused2;
+	int notused2;
 	void *notused3;
 {
 	__txn_ckp_args *argp;
@@ -331,10 +193,11 @@ CDB___txn_ckp_print(dbenv, dbtp, lsnp, notused2, notused3)
 
 	i = 0;
 	ch = 0;
+	notused1 = NULL;
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = CDB___txn_ckp_read(dbenv, dbtp->data, &argp)) != 0)
+	if ((ret = CDB___txn_ckp_read(dbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]txn_ckp: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -347,15 +210,13 @@ CDB___txn_ckp_print(dbenv, dbtp, lsnp, notused2, notused3)
 	    (u_long)argp->ckp_lsn.file, (u_long)argp->ckp_lsn.offset);
 	printf("\tlast_ckp: [%lu][%lu]\n",
 	    (u_long)argp->last_ckp.file, (u_long)argp->last_ckp.offset);
-	printf("\ttimestamp: %ld\n", (long)argp->timestamp);
 	printf("\n");
 	CDB___os_free(argp, 0);
 	return (0);
 }
 
 int
-CDB___txn_ckp_read(dbenv, recbuf, argpp)
-	DB_ENV *dbenv;
+CDB___txn_ckp_read(recbuf, argpp)
 	void *recbuf;
 	__txn_ckp_args **argpp;
 {
@@ -363,7 +224,7 @@ CDB___txn_ckp_read(dbenv, recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = CDB___os_malloc(dbenv, sizeof(__txn_ckp_args) +
+	ret = CDB___os_malloc(sizeof(__txn_ckp_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);
@@ -379,8 +240,6 @@ CDB___txn_ckp_read(dbenv, recbuf, argpp)
 	bp += sizeof(argp->ckp_lsn);
 	memcpy(&argp->last_ckp, bp,  sizeof(argp->last_ckp));
 	bp += sizeof(argp->last_ckp);
-	memcpy(&argp->timestamp, bp, sizeof(argp->timestamp));
-	bp += sizeof(argp->timestamp);
 	*argpp = argp;
 	return (0);
 }
@@ -406,7 +265,7 @@ int CDB___txn_xa_regop_log(dbenv, txnid, ret_lsnp, flags,
 
 	if (txnid != NULL &&
 	    TAILQ_FIRST(&txnid->kids) != NULL && CDB___txn_activekids(txnid) != 0)
-		return (CDB___db_child_active_err(dbenv));
+		return (EPERM);
 	rectype = DB_txn_xa_regop;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
@@ -420,7 +279,7 @@ int CDB___txn_xa_regop_log(dbenv, txnid, ret_lsnp, flags,
 	    + sizeof(formatID)
 	    + sizeof(gtrid)
 	    + sizeof(bqual);
-	if ((ret = CDB___os_malloc(dbenv, logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = CDB___os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -457,11 +316,11 @@ int CDB___txn_xa_regop_log(dbenv, txnid, ret_lsnp, flags,
 }
 
 int
-CDB___txn_xa_regop_print(dbenv, dbtp, lsnp, notused2, notused3)
-	DB_ENV *dbenv;
+CDB___txn_xa_regop_print(notused1, dbtp, lsnp, notused2, notused3)
+	DB_ENV *notused1;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	db_recops notused2;
+	int notused2;
 	void *notused3;
 {
 	__txn_xa_regop_args *argp;
@@ -471,10 +330,11 @@ CDB___txn_xa_regop_print(dbenv, dbtp, lsnp, notused2, notused3)
 
 	i = 0;
 	ch = 0;
+	notused1 = NULL;
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = CDB___txn_xa_regop_read(dbenv, dbtp->data, &argp)) != 0)
+	if ((ret = CDB___txn_xa_regop_read(dbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]txn_xa_regop: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -502,8 +362,7 @@ CDB___txn_xa_regop_print(dbenv, dbtp, lsnp, notused2, notused3)
 }
 
 int
-CDB___txn_xa_regop_read(dbenv, recbuf, argpp)
-	DB_ENV *dbenv;
+CDB___txn_xa_regop_read(recbuf, argpp)
 	void *recbuf;
 	__txn_xa_regop_args **argpp;
 {
@@ -511,7 +370,7 @@ CDB___txn_xa_regop_read(dbenv, recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = CDB___os_malloc(dbenv, sizeof(__txn_xa_regop_args) +
+	ret = CDB___os_malloc(sizeof(__txn_xa_regop_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);
@@ -557,7 +416,7 @@ int CDB___txn_child_log(dbenv, txnid, ret_lsnp, flags,
 
 	if (txnid != NULL &&
 	    TAILQ_FIRST(&txnid->kids) != NULL && CDB___txn_activekids(txnid) != 0)
-		return (CDB___db_child_active_err(dbenv));
+		return (EPERM);
 	rectype = DB_txn_child;
 	txn_num = txnid == NULL ? 0 : txnid->txnid;
 	if (txnid == NULL) {
@@ -568,7 +427,7 @@ int CDB___txn_child_log(dbenv, txnid, ret_lsnp, flags,
 	logrec.size = sizeof(rectype) + sizeof(txn_num) + sizeof(DB_LSN)
 	    + sizeof(opcode)
 	    + sizeof(parent);
-	if ((ret = CDB___os_malloc(dbenv, logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = CDB___os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -591,11 +450,11 @@ int CDB___txn_child_log(dbenv, txnid, ret_lsnp, flags,
 }
 
 int
-CDB___txn_child_print(dbenv, dbtp, lsnp, notused2, notused3)
-	DB_ENV *dbenv;
+CDB___txn_child_print(notused1, dbtp, lsnp, notused2, notused3)
+	DB_ENV *notused1;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	db_recops notused2;
+	int notused2;
 	void *notused3;
 {
 	__txn_child_args *argp;
@@ -605,10 +464,11 @@ CDB___txn_child_print(dbenv, dbtp, lsnp, notused2, notused3)
 
 	i = 0;
 	ch = 0;
+	notused1 = NULL;
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = CDB___txn_child_read(dbenv, dbtp->data, &argp)) != 0)
+	if ((ret = CDB___txn_child_read(dbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]txn_child: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -625,8 +485,7 @@ CDB___txn_child_print(dbenv, dbtp, lsnp, notused2, notused3)
 }
 
 int
-CDB___txn_child_read(dbenv, recbuf, argpp)
-	DB_ENV *dbenv;
+CDB___txn_child_read(recbuf, argpp)
 	void *recbuf;
 	__txn_child_args **argpp;
 {
@@ -634,7 +493,7 @@ CDB___txn_child_read(dbenv, recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = CDB___os_malloc(dbenv, sizeof(__txn_child_args) +
+	ret = CDB___os_malloc(sizeof(__txn_child_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);
@@ -661,13 +520,7 @@ CDB___txn_init_print(dbenv)
 	int ret;
 
 	if ((ret = CDB___db_add_recovery(dbenv,
-	    CDB___txn_old_regop_print, DB_txn_old_regop)) != 0)
-		return (ret);
-	if ((ret = CDB___db_add_recovery(dbenv,
 	    CDB___txn_regop_print, DB_txn_regop)) != 0)
-		return (ret);
-	if ((ret = CDB___db_add_recovery(dbenv,
-	    CDB___txn_old_ckp_print, DB_txn_old_ckp)) != 0)
 		return (ret);
 	if ((ret = CDB___db_add_recovery(dbenv,
 	    CDB___txn_ckp_print, DB_txn_ckp)) != 0)
@@ -681,6 +534,9 @@ CDB___txn_init_print(dbenv)
 	return (0);
 }
 
+/*
+ * PUBLIC: int CDB___txn_init_recover __P((DB_ENV *));
+ */
 int
 CDB___txn_init_recover(dbenv)
 	DB_ENV *dbenv;
@@ -688,13 +544,7 @@ CDB___txn_init_recover(dbenv)
 	int ret;
 
 	if ((ret = CDB___db_add_recovery(dbenv,
-	    CDB___deprecated_recover, DB_txn_old_regop)) != 0)
-		return (ret);
-	if ((ret = CDB___db_add_recovery(dbenv,
 	    CDB___txn_regop_recover, DB_txn_regop)) != 0)
-		return (ret);
-	if ((ret = CDB___db_add_recovery(dbenv,
-	    CDB___deprecated_recover, DB_txn_old_ckp)) != 0)
 		return (ret);
 	if ((ret = CDB___db_add_recovery(dbenv,
 	    CDB___txn_ckp_recover, DB_txn_ckp)) != 0)

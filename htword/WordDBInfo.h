@@ -57,11 +57,26 @@ class WordDBInfo
  public:
     WordDBInfo(const Configuration& config);
     ~WordDBInfo();
+    //
+    // Unique instance handlers 
+    //
+    static void Initialize(const Configuration& config);
+
+    static WordDBInfo* Instance() {
+      if(instance) return instance;
+      fprintf(stderr, "WordDBInfo::Instance: no instance\n");
+      return 0;
+    }
 
     //
     // Berkeley DB environment
     //
     struct __db_env *dbenv;
+
+    //
+    // Unique instance pointer
+    //
+    static WordDBInfo* instance;
 };
 
 #endif

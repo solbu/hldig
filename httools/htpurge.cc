@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htpurge.cc,v 1.1.2.12 2000/09/27 05:13:28 ghutchis Exp $
+// $Id: htpurge.cc,v 1.1.2.13 2000/10/10 03:15:42 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -140,7 +140,7 @@ int main(int ac, char **av)
 	}
     }
 
-    // WordContext::Initialize(config);
+    WordContext::Initialize(config);
 
     // We pass in our list of URLs (which may be empty)
     // and we get back the list of IDs purged from the doc DB
@@ -313,7 +313,7 @@ static int delete_word(WordList *words, WordDBCursor& cursor, const WordReferenc
   docIDStr << word->DocID();
 
   if(d.discard.Exists(docIDStr)) {
-    if(words->Delete(*word) != 0) {
+    if(words->Delete(cursor) != 0) {
       cerr << "htpurge: deletion of " << (char*)word->Get() << " failed " << strerror(errno) << "\n";
       return NOTOK;
     }

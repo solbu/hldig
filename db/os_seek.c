@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998, 1999, 2000
+ * Copyright (c) 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: os_seek.c,v 1.1.2.3 2000/09/17 01:35:08 ghutchis Exp $";
+static const char sccsid[] = "@(#)os_seek.c	11.3 (Sleepycat) 10/29/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -16,7 +16,6 @@ static const char revid[] = "$Id: os_seek.c,v 1.1.2.3 2000/09/17 01:35:08 ghutch
 
 #include <errno.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 #endif
 
@@ -27,12 +26,11 @@ static const char revid[] = "$Id: os_seek.c,v 1.1.2.3 2000/09/17 01:35:08 ghutch
  * CDB___os_seek --
  *	Seek to a page/byte offset in the file.
  *
- * PUBLIC: int CDB___os_seek __P((DB_ENV *,
- * PUBLIC:      DB_FH *, size_t, db_pgno_t, u_int32_t, int, DB_OS_SEEK));
+ * PUBLIC: int CDB___os_seek
+ * PUBLIC:     __P((DB_FH *, size_t, db_pgno_t, u_int32_t, int, DB_OS_SEEK));
  */
 int
-CDB___os_seek(dbenv, fhp, pgsize, pageno, relative, isrewind, db_whence)
-	DB_ENV *dbenv;
+CDB___os_seek(fhp, pgsize, pageno, relative, isrewind, db_whence)
 	DB_FH *fhp;
 	size_t pgsize;
 	db_pgno_t pageno;
@@ -41,7 +39,7 @@ CDB___os_seek(dbenv, fhp, pgsize, pageno, relative, isrewind, db_whence)
 	DB_OS_SEEK db_whence;
 {
 	off_t offset;
-	int ret, whence;
+	int whence;
 
 	switch (db_whence) {
 	case DB_OS_SEEK_CUR:
@@ -58,20 +56,11 @@ CDB___os_seek(dbenv, fhp, pgsize, pageno, relative, isrewind, db_whence)
 	}
 
 	if (CDB___db_jump.j_seek != NULL)
-		ret = CDB___db_jump.j_seek(fhp->fd,
-		    pgsize, pageno, relative, isrewind, whence);
-	else {
-		offset = (off_t)pgsize * pageno + relative;
-		if (isrewind)
-			offset = -offset;
-		ret =
-		    lseek(fhp->fd, offset, whence) == -1 ? CDB___os_get_errno() : 0;
-	}
+		return (CDB___db_jump.j_seek(fhp->fd, pgsize, pageno,
+		    relative, isrewind, whence) == -1 ? CDB___os_get_errno() : 0);
 
-	if (ret != 0)
-		CDB___db_err(dbenv, "seek: %lu %d %d: %s",
-		    (u_long)pgsize * pageno + relative,
-		    isrewind, db_whence, strerror(ret));
-
-	return (ret);
+	offset = (off_t)pgsize * pageno + relative;
+	if (isrewind)
+		offset = -offset;
+	return (lseek(fhp->fd, offset, whence) == -1 ? CDB___os_get_errno() : 0);
 }

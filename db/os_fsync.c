@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998, 1999, 2000
+ * Copyright (c) 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: os_fsync.c,v 1.1.2.3 2000/09/17 01:35:07 ghutchis Exp $";
+static const char sccsid[] = "@(#)os_fsync.c	11.2 (Sleepycat) 9/22/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -16,37 +16,12 @@ static const char revid[] = "$Id: os_fsync.c,v 1.1.2.3 2000/09/17 01:35:07 ghutc
 
 #include <fcntl.h>			/* XXX: Required by __hp3000s900 */
 #include <unistd.h>
-#include <string.h>
 #endif
 
 #include "db_int.h"
 #include "os_jump.h"
 
-#ifdef	HAVE_VXWORKS
-#include "ioLib.h"
-
-#define	fsync(fd)	__vx_fsync(fd);
-
-int
-__vx_fsync(fd)
-	int fd;
-{
-	int ret;
-
-	/*
-	 * The results of ioctl are driver dependent.  Some will return the
-	 * number of bytes sync'ed.  Only if it returns 'ERROR' should we
-	 * flag it.
-	 */
-	if ((ret = ioctl(fd, FIOSYNC, 0)) != ERROR)
-		return (0);
-	return (ret);
-}
-#endif
-
 #ifdef __hp3000s900
-#define	fsync(fd)	__mpe_fsync(fd);
-
 int
 __mpe_fsync(fd)
 	int fd;
@@ -59,15 +34,18 @@ __mpe_fsync(fd)
 }
 #endif
 
+#ifdef __hp3000s900
+#define	fsync(fd)	__mpe_fsync(fd);
+#endif
+
 /*
  * CDB___os_fsync --
  *	Flush a file descriptor.
  *
- * PUBLIC: int CDB___os_fsync __P((DB_ENV *, DB_FH *));
+ * PUBLIC: int CDB___os_fsync __P((DB_FH *));
  */
 int
-CDB___os_fsync(dbenv, fhp)
-	DB_ENV *dbenv;
+CDB___os_fsync(fhp)
 	DB_FH *fhp;
 {
 	int ret;
@@ -82,9 +60,5 @@ CDB___os_fsync(dbenv, fhp)
 	ret = CDB___db_jump.j_fsync != NULL ?
 	    CDB___db_jump.j_fsync(fhp->fd) : fsync(fhp->fd);
 
-	if (ret != 0) {
-		ret = CDB___os_get_errno();
-		CDB___db_err(dbenv, "fsync %s", strerror(ret));
-	}
-	return (ret);
+	return (ret == 0 ? 0 : CDB___os_get_errno());
 }

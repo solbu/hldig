@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.39 2000/09/27 05:21:31 ghutchis Exp $
+// $Id: Retriever.cc,v 1.72.2.40 2000/10/10 03:15:36 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -51,7 +51,7 @@ static int noSignal;
 // Retriever::Retriever()
 //
 Retriever::Retriever(RetrieverLog flags) :
-  words(config), word_context(words.GetContext())
+  words(config)
 {
     FILE	*urls_parsed;
 
@@ -1266,7 +1266,7 @@ Retriever::got_word(const char *word, int location, int heading)
     if (trackWords)
     {
       String w = word;
-      HtWordReference wordRef(words.GetContext());
+      HtWordReference wordRef;
 
       wordRef.Location(location);
       wordRef.Flags(factor[heading]);
@@ -1278,7 +1278,6 @@ Retriever::got_word(const char *word, int location, int heading)
 
       // Check for compound words...
       String parts = word;
-      WordType	type(config);
       int added;
       int nparts = 1;
       do
@@ -1293,12 +1292,12 @@ Retriever::got_word(const char *word, int location, int heading)
 	      p = start;
 	      for (n = 0; n < nparts; n++)
 		{
-		  while (type.IsStrictChar((unsigned char)*p))
+		  while (HtIsStrictWordChar((unsigned char)*p))
 		    p++;
 		  punctp = p;
 		  if (!*punctp && n+1 < nparts)
 		    break;
-		  while (*p && !type.IsStrictChar((unsigned char)*p))
+		  while (*p && !HtIsStrictWordChar((unsigned char)*p))
 		    p++;
 		  if (n == 0)
 		    nextp = p;
@@ -1310,7 +1309,7 @@ Retriever::got_word(const char *word, int location, int heading)
 		if (*start && (*p || start > parts.get()))
 		  {
 		    w = start;
-		    type.StripPunctuation(w);
+		    HtStripPunctuation(w);
 		    if (w.length() >= minimumWordLength)
 		      {
 			wordRef.Word(w);

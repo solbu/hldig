@@ -2,19 +2,19 @@
 # cf_generate.pl
 #
 # cf_generate: Build the files cf_byprog.html, cf_byname.html and
-#              attrs.html from the informations found 
-#              in ../htcommon/defaults.cc. 
-#              attrs.html : attrs_head.html + generation + attrs_tail.html
-#              cf_byprog.html : cf_byprog_head.html + generation + cf_byprog_tail.html
-#              cf_byname.html : cf_byname_head.html + generation + cf_byname_tail.html
+#           attrs.html from the informations found 
+#           in ../htcommon/defaults.cc. 
+#           attrs.html : attrs_head.html + generation + attrs_tail.html
+#           cf_byprog.html : cf_byprog_head.html + generation + cf_byprog_tail.html
+#           cf_byname.html : cf_byname_head.html + generation + cf_byname_tail.html
 #              
-# Part of the ht:#Dig package   <http://www.htdig.org/>
-# Copyright (c) 1999 The ht://Dig Group
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999-2000 The ht://Dig Group
 # For copyright details, see the file COPYING in your distribution
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: cf_generate.pl,v 1.1.2.11 2000/09/14 03:02:53 ghutchis Exp $
+# $Id: cf_generate.pl,v 1.1.2.12 2000/10/10 03:15:39 ghutchis Exp $
 #
 use strict;
 

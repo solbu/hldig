@@ -1,34 +1,25 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: mp_method.c,v 1.1.2.3 2000/09/17 01:35:07 ghutchis Exp $";
+static const char sccsid[] = "@(#)mp_method.c	11.2 (Sleepycat) 10/6/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
 #endif
 
-#ifdef  HAVE_RPC
-#include "db_server.h"
-#endif
-
 #include "db_int.h"
 #include "db_shash.h"
 #include "mp.h"
 
-#ifdef HAVE_RPC
-#include "gen_client_ext.h"
-#include "rpc_client_ext.h"
-#endif
-
-static int __memp_set_cachesize __P((DB_ENV *, u_int32_t, u_int32_t, int));
-static int __memp_set_mp_mmapsize __P((DB_ENV *, size_t));
+static int CDB___memp_set_cachesize __P((DB_ENV *, u_int32_t, u_int32_t, int));
+static int CDB___memp_set_mp_mmapsize __P((DB_ENV *, size_t));
 
 /*
  * CDB___memp_dbenv_create --
@@ -50,28 +41,16 @@ CDB___memp_dbenv_create(dbenv)
 	dbenv->mp_bytes = 32 * ((8 * 1024) + sizeof(BH));
 	dbenv->mp_ncache = 1;
 
-	dbenv->set_mp_mmapsize = __memp_set_mp_mmapsize;
-	dbenv->set_cachesize = __memp_set_cachesize;
-
-#ifdef	HAVE_RPC
-	/*
-	 * If we have a client, overwrite what we just setup to
-	 * point to client functions.
-	 */
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT)) {
-		dbenv->set_cachesize = __dbcl_env_cachesize;
-		dbenv->set_mp_mmapsize = __dbcl_set_mp_mmapsize;
-	}
-#endif
-
+	dbenv->set_mp_mmapsize = CDB___memp_set_mp_mmapsize;
+	dbenv->set_cachesize = CDB___memp_set_cachesize;
 }
 
 /*
- * __memp_set_cachesize --
+ * CDB___memp_set_cachesize --
  *	Initialize the cache size.
  */
 static int
-__memp_set_cachesize(dbenv, gbytes, bytes, ncache)
+CDB___memp_set_cachesize(dbenv, gbytes, bytes, ncache)
 	DB_ENV *dbenv;
 	u_int32_t gbytes, bytes;
 	int ncache;
@@ -102,11 +81,11 @@ __memp_set_cachesize(dbenv, gbytes, bytes, ncache)
 }
 
 /*
- * __memp_set_mp_mmapsize --
+ * CDB___memp_set_mp_mmapsize --
  *	Set the maximum mapped file size.
  */
 static int
-__memp_set_mp_mmapsize(dbenv, mp_mmapsize )
+CDB___memp_set_mp_mmapsize(dbenv, mp_mmapsize )
 	DB_ENV *dbenv;
 	size_t mp_mmapsize;
 {

@@ -1,3 +1,12 @@
+Mon Oct  9 21:59:11 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* */* [many, many files]: Backed out mifluz merge by going back on
+	modified files to 091000 snapshot.
+
+	* configure: Regenerated from configure.in.
+
+	* */Makefile.in: Regenerated using automake.
+
 Fri Oct  6 11:03:14 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc (do_tag): Parse <object> tags properly, looking

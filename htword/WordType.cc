@@ -14,7 +14,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.cc,v 1.3.2.14 2000/09/25 03:58:20 ghutchis Exp $
+// $Id: WordType.cc,v 1.3.2.15 2000/10/10 03:15:44 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -25,6 +25,16 @@
 #include <stdio.h>
 
 #include "WordType.h"
+
+WordType* WordType::instance = 0;
+
+void 
+WordType::Initialize(const Configuration &config_arg)
+{
+  if(instance != 0)
+    delete instance;
+  instance = new WordType(config_arg);
+}
 
 WordType::WordType(const Configuration &config)
 {
@@ -82,6 +92,10 @@ WordType::WordType(const Configuration &config)
     if (fl)
 	fclose(fl);
   }
+}
+
+WordType::~WordType()
+{
 }
 
 //
@@ -157,31 +171,6 @@ WordType::Normalize(String& word) const
   return status;
 }
 
-//  much like strtok(), and destructive of the source string like strtok(),
-//  but does word separation by our rules.
-char *
-WordType::WordToken(char *str) const
-{
-    unsigned char		*text = (unsigned char *)str;
-    char			*ret = 0;
-    static unsigned char	*prev = 0;
-
-    if (!text)
-	text = prev;
-    while (text && *text && !IsStrictChar(*text))
-	text++;
-    if (text && *text)
-    {
-	ret = (char *)text;
-	while (*text && IsChar(*text))
-	    text++;
-	if (*text)
-	    *text++ = '\0';
-    }
-    prev = text;
-    return ret;
-}
-
 //
 // Convert the integer status into a readable string
 //
@@ -203,4 +192,28 @@ WordType::NormalizeStatus(int flags)
   if(tmp.empty()) tmp << "GOOD";
 
   return tmp;
+}
+
+//
+// Non-destructive tokenizer using external int as pointer into String
+//  does word separation by our rules (so it can be subclassed too)
+//
+String
+WordType::WordToken(const String tokens, int &current) const
+{
+    unsigned char	text = tokens[current];
+    String		ret;
+
+    while (text && !IsStrictChar(text))
+      text = tokens[++current];
+
+    if (text)
+    {
+	while (text && IsChar(text))
+	  {
+	    ret << text;
+	    text = tokens[++current];
+	  }
+    }
+    return ret;
 }

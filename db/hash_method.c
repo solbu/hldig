@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1999, 2000
+ * Copyright (c) 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: hash_method.c,v 1.1.2.3 2000/09/17 01:35:06 ghutchis Exp $";
+static const char sccsid[] = "@(#)hash_method.c	11.3 (Sleepycat) 9/29/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -19,9 +19,9 @@ static const char revid[] = "$Id: hash_method.c,v 1.1.2.3 2000/09/17 01:35:06 gh
 #include "db_page.h"
 #include "hash.h"
 
-static int __ham_set_h_ffactor __P((DB *, u_int32_t));
-static int __ham_set_h_hash __P((DB *, u_int32_t(*)(const void *, u_int32_t)));
-static int __ham_set_h_nelem __P((DB *, u_int32_t));
+static int CDB___ham_set_h_ffactor __P((DB *, u_int32_t));
+static int CDB___ham_set_h_hash __P((DB *, u_int32_t(*)(const void *, u_int32_t)));
+static int CDB___ham_set_h_nelem __P((DB *, u_int32_t));
 
 /*
  * CDB___ham_db_create --
@@ -36,8 +36,7 @@ CDB___ham_db_create(dbp)
 	HASH *hashp;
 	int ret;
 
-	if ((ret = CDB___os_malloc(dbp->dbenv,
-	    sizeof(HASH), NULL, &dbp->h_internal)) != 0)
+	if ((ret = CDB___os_malloc(sizeof(HASH), NULL, &dbp->h_internal)) != 0)
 		return (ret);
 
 	hashp = dbp->h_internal;
@@ -46,9 +45,9 @@ CDB___ham_db_create(dbp)
 	hashp->h_ffactor = 0;
 	hashp->h_hash = NULL;
 
-	dbp->set_h_ffactor = __ham_set_h_ffactor;
-	dbp->set_h_hash = __ham_set_h_hash;
-	dbp->set_h_nelem = __ham_set_h_nelem;
+	dbp->set_h_ffactor = CDB___ham_set_h_ffactor;
+	dbp->set_h_hash = CDB___ham_set_h_hash;
+	dbp->set_h_nelem = CDB___ham_set_h_nelem;
 
 	return (0);
 }
@@ -68,11 +67,11 @@ CDB___ham_db_close(dbp)
 }
 
 /*
- * __ham_set_h_ffactor --
+ * CDB___ham_set_h_ffactor --
  *	Set the fill factor.
  */
 static int
-__ham_set_h_ffactor(dbp, h_ffactor)
+CDB___ham_set_h_ffactor(dbp, h_ffactor)
 	DB *dbp;
 	u_int32_t h_ffactor;
 {
@@ -87,11 +86,11 @@ __ham_set_h_ffactor(dbp, h_ffactor)
 }
 
 /*
- * __ham_set_h_hash --
+ * CDB___ham_set_h_hash --
  *	Set the hash function.
  */
 static int
-__ham_set_h_hash(dbp, func)
+CDB___ham_set_h_hash(dbp, func)
 	DB *dbp;
 	u_int32_t (*func) __P((const void *, u_int32_t));
 {
@@ -106,11 +105,11 @@ __ham_set_h_hash(dbp, func)
 }
 
 /*
- * __ham_set_h_nelem --
+ * CDB___ham_set_h_nelem --
  *	Set the table size.
  */
 static int
-__ham_set_h_nelem(dbp, h_nelem)
+CDB___ham_set_h_nelem(dbp, h_nelem)
 	DB *dbp;
 	u_int32_t h_nelem;
 {

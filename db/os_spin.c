@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998, 1999, 2000
+ * Copyright (c) 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: os_spin.c,v 1.1.2.3 2000/09/17 01:35:08 ghutchis Exp $";
+static const char sccsid[] = "@(#)os_spin.c	11.2 (Sleepycat) 11/3/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -41,11 +41,11 @@ __os_pstat_getdynamic()
 
 #if defined(HAVE_SYSCONF) && defined(_SC_NPROCESSORS_ONLN)
 /*
- * __os_sysconf --
+ * CDB___os_sysconf --
  *	Solaris, Linux.
  */
 static int
-__os_sysconf()
+CDB___os_sysconf()
 {
 	int nproc;
 
@@ -79,7 +79,7 @@ CDB___os_spin()
 	DB_GLOBAL(db_tas_spins) = __os_pstat_getdynamic();
 #endif
 #if defined(HAVE_SYSCONF) && defined(_SC_NPROCESSORS_ONLN)
-	DB_GLOBAL(db_tas_spins) = __os_sysconf();
+	DB_GLOBAL(db_tas_spins) = CDB___os_sysconf();
 #endif
 
 	/*
@@ -96,14 +96,13 @@ CDB___os_spin()
  * CDB___os_yield --
  *	Yield the processor.
  *
- * PUBLIC: void CDB___os_yield __P((DB_ENV*, u_long));
+ * PUBLIC: void CDB___os_yield __P((u_long));
  */
 void
-CDB___os_yield(dbenv, usecs)
-	DB_ENV *dbenv;
+CDB___os_yield(usecs)
 	u_long usecs;
 {
 	if (CDB___db_jump.j_yield != NULL && CDB___db_jump.j_yield() == 0)
 		return;
-	CDB___os_sleep(dbenv, 0, usecs);
+	CDB___os_sleep(0, usecs);
 }

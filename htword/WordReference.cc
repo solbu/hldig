@@ -7,7 +7,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.cc,v 1.4.2.7 2000/09/21 04:25:36 ghutchis Exp $
+// $Id: WordReference.cc,v 1.4.2.8 2000/10/10 03:15:44 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -58,16 +58,7 @@ WordReference::Get(String& buffer) const
   buffer.trunc();
 
   if(key.Get(tmp) != OK) return NOTOK;
-  //
-  // If a readable word is available, print it instead of the numerical
-  // serial number.
-  //
-  if(word.empty()) {
-    buffer.append(tmp);
-  } else {
-    buffer.append(word);
-    buffer.append(tmp.sub(tmp.indexOf('\t')));
-  }
+  buffer.append(tmp);
 
   if(record.Get(tmp) != OK) return NOTOK;
   buffer.append(tmp);
@@ -79,14 +70,14 @@ String
 WordReference::Get() const
 {
   String tmp;
-  Get(tmp);
+  key.Get(tmp);
   return tmp;
 }
 
 int WordReference::Write(FILE* f) const
 {
   String tmp;
-  Get(tmp);
+  key.Get(tmp);
   fprintf(f, "%s", (char*)tmp);
   return 0;
 }

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Prefix.cc,v 1.13.2.5 2000/09/27 05:17:55 ghutchis Exp $
+// $Id: Prefix.cc,v 1.13.2.6 2000/10/10 03:15:39 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -56,8 +56,7 @@ Prefix::getWords(char *w, List &words)
 	return;
 
     String	stripped = w;
-    WordType	type(config);
-    type.StripPunctuation(stripped);
+    HtStripPunctuation(stripped);
     w = stripped.get();
 
     const String	prefix_suffix = config["prefix_match_character"];
@@ -103,7 +102,7 @@ Prefix::getWords(char *w, List &words)
     wordList->Start_Get();
     while (wordCount < maximumWords && (word_ref = (WordReference *) wordList->Get_Next() ))
     {
-	s = word_ref->Key().Get();
+	s = word_ref->Key().GetWord();
 
 	// If we're somehow past the original word, we're done
 	if (mystrncasecmp(s.get(), w, len))

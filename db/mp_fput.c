@@ -1,13 +1,13 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: mp_fput.c,v 1.1.2.3 2000/09/17 01:35:07 ghutchis Exp $";
+static const char sccsid[] = "@(#)mp_fput.c	11.3 (Sleepycat) 10/29/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -16,18 +16,9 @@ static const char revid[] = "$Id: mp_fput.c,v 1.1.2.3 2000/09/17 01:35:07 ghutch
 #include <errno.h>
 #endif
 
-#ifdef  HAVE_RPC
-#include "db_server.h"
-#endif
-
 #include "db_int.h"
 #include "db_shash.h"
 #include "mp.h"
-
-#ifdef HAVE_RPC
-#include "gen_client_ext.h"
-#include "rpc_client_ext.h"
-#endif
 
 /*
  * CDB_memp_fput --
@@ -42,17 +33,13 @@ CDB_memp_fput(dbmfp, pgaddr, flags)
 	BH *bhp;
 	DB_ENV *dbenv;
 	DB_MPOOL *dbmp;
-	MPOOL *c_mp, *mp;
+	MCACHE *mc;
+	MPOOL *mp;
 	int ret, wrote;
 
 	dbmp = dbmfp->dbmp;
 	dbenv = dbmp->dbenv;
-	mp = dbmp->reginfo[0].primary;
-
-#ifdef HAVE_RPC
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
-		return (__dbcl_memp_fput(dbmfp, pgaddr, flags));
-#endif
+	mp = dbmp->reginfo.primary;
 
 	PANIC_CHECK(dbenv);
 
@@ -73,15 +60,13 @@ CDB_memp_fput(dbmfp, pgaddr, flags)
 		}
 	}
 
-	R_LOCK(dbenv, dbmp->reginfo);
+	R_LOCK(dbenv, &dbmp->reginfo);
 
 	/* Decrement the pinned reference count. */
-	if (dbmfp->pinref == 0) {
-		CDB___db_err(dbenv,
-		    "%s: more pages returned than retrieved", CDB___memp_fn(dbmfp));
-		R_UNLOCK(dbenv, dbmp->reginfo);
-		return (EINVAL);
-	} else
+	if (dbmfp->pinref == 0)
+		CDB___db_err(dbenv, "%s: put: more blocks returned than retrieved",
+		    CDB___memp_fn(dbmfp));
+	else
 		--dbmfp->pinref;
 
 	/*
@@ -92,7 +77,7 @@ CDB_memp_fput(dbmfp, pgaddr, flags)
 	 */
 	if (dbmfp->addr != NULL && pgaddr >= dbmfp->addr &&
 	    (u_int8_t *)pgaddr <= (u_int8_t *)dbmfp->addr + dbmfp->len) {
-		R_UNLOCK(dbenv, dbmp->reginfo);
+		R_UNLOCK(dbenv, &dbmp->reginfo);
 		return (0);
 	}
 
@@ -100,19 +85,19 @@ CDB_memp_fput(dbmfp, pgaddr, flags)
 	bhp = (BH *)((u_int8_t *)pgaddr - SSZA(BH, buf));
 
 	/* Convert the buffer header to a cache. */
-	c_mp = BH_TO_CACHE(dbmp, bhp);
+	mc = BH_TO_CACHE(dbmp, bhp);
 
 /* UNLOCK THE REGION, LOCK THE CACHE. */
 
 	/* Set/clear the page bits. */
 	if (LF_ISSET(DB_MPOOL_CLEAN) && F_ISSET(bhp, BH_DIRTY)) {
-		++c_mp->stat.st_page_clean;
-		--c_mp->stat.st_page_dirty;
+		++mc->stat.st_page_clean;
+		--mc->stat.st_page_dirty;
 		F_CLR(bhp, BH_DIRTY);
 	}
 	if (LF_ISSET(DB_MPOOL_DIRTY) && !F_ISSET(bhp, BH_DIRTY)) {
-		--c_mp->stat.st_page_clean;
-		++c_mp->stat.st_page_dirty;
+		--mc->stat.st_page_clean;
+		++mc->stat.st_page_dirty;
 		F_SET(bhp, BH_DIRTY);
 	}
 	if (LF_ISSET(DB_MPOOL_DISCARD))
@@ -125,7 +110,7 @@ CDB_memp_fput(dbmfp, pgaddr, flags)
 	if (bhp->ref == 0) {
 		CDB___db_err(dbenv, "%s: page %lu: unpinned page returned",
 		    CDB___memp_fn(dbmfp), (u_long)bhp->pgno);
-		R_UNLOCK(dbenv, dbmp->reginfo);
+		R_UNLOCK(dbenv, &dbmp->reginfo);
 		return (EINVAL);
 	}
 
@@ -135,7 +120,7 @@ CDB_memp_fput(dbmfp, pgaddr, flags)
 	 * chain.  The rest gets done at last reference close.
 	 */
 	if (--bhp->ref > 0) {
-		R_UNLOCK(dbenv, dbmp->reginfo);
+		R_UNLOCK(dbenv, &dbmp->reginfo);
 		return (0);
 	}
 
@@ -146,11 +131,11 @@ CDB_memp_fput(dbmfp, pgaddr, flags)
 	 * buffer.  We could keep that from happening, but there seems no
 	 * reason to do so.
 	 */
-	SH_TAILQ_REMOVE(&c_mp->bhq, bhp, q, __bh);
+	SH_TAILQ_REMOVE(&mc->bhq, bhp, q, __bh);
 	if (F_ISSET(bhp, BH_DISCARD))
-		SH_TAILQ_INSERT_HEAD(&c_mp->bhq, bhp, q, __bh);
+		SH_TAILQ_INSERT_HEAD(&mc->bhq, bhp, q, __bh);
 	else
-		SH_TAILQ_INSERT_TAIL(&c_mp->bhq, bhp, q);
+		SH_TAILQ_INSERT_TAIL(&mc->bhq, bhp, q);
 
 	/*
 	 * If this buffer is scheduled for writing because of a checkpoint, we
@@ -175,6 +160,6 @@ CDB_memp_fput(dbmfp, pgaddr, flags)
 		}
 	}
 
-	R_UNLOCK(dbenv, dbmp->reginfo);
+	R_UNLOCK(dbenv, &dbmp->reginfo);
 	return (0);
 }

@@ -7,7 +7,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordMonitor.cc,v 1.1.2.11 2000/09/21 04:25:36 ghutchis Exp $
+// $Id: WordMonitor.cc,v 1.1.2.12 2000/10/10 03:15:44 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -23,6 +23,8 @@
 
 #define WORD_MONITOR_RRD	1
 #define WORD_MONITOR_READABLE	2
+
+WordMonitor* WordMonitor::instance = 0;
 
 char* WordMonitor::values_names[WORD_MONITOR_VALUES_SIZE] = {
   "",
@@ -84,15 +86,23 @@ WordMonitor::WordMonitor(const Configuration &config)
 	  output_style = WORD_MONITOR_READABLE;
       }
     }
-    Start();
+    TimerStart();
   }
 }
 
 WordMonitor::~WordMonitor()
 {
-  Stop();
+  TimerStop();
   if(output != stderr)
     fclose(output);
+}
+
+void 
+WordMonitor::Initialize(const Configuration &config_arg)
+{
+  if(instance != 0)
+    delete instance;
+  instance = new WordMonitor(config_arg);
 }
 
 const String
@@ -125,11 +135,39 @@ WordMonitor::Report() const
   return output;
 }
 
+static void handler_alarm(int signal)
+{
+  WordMonitor* monitor = WordMonitor::Instance();
+  if(!monitor) {
+    fprintf(stderr, "WordMonitor::handler_alarm: no instance\n");
+    return;
+  }
+  monitor->TimerClick(signal);
+}
+
 void 
-WordMonitor::Start()
+WordMonitor::TimerStart()
 {
   if(period < 5) {
-    fprintf(stderr, "WordMonitor::Start: wordlist_monitor_period must be > 5 (currently %d) otherwise monitoring is not accurate\n", period);
+    fprintf(stderr, "WordMonitor::TimerStart: wordlist_monitor_period must be > 5 (currently %d) otherwise monitoring is not accurate\n", period);
+    return;
+  }
+
+  struct sigaction action;
+  struct sigaction old_action;
+  memset((char*)&action, '\0', sizeof(struct sigaction));
+  memset((char*)&old_action, '\0', sizeof(struct sigaction));
+  action.sa_handler = handler_alarm;
+  if(sigaction(SIGALRM, &action, &old_action) != 0) {
+    fprintf(stderr, "WordMonitor::TimerStart: installing SIGALRM ");
+    perror("");
+  }
+  if(old_action.sa_handler != SIG_DFL) {
+    fprintf(stderr, "WordMonitor::TimerStart: found an installed action while installing SIGALRM, restoring old action\n");
+    if(sigaction(SIGALRM, &old_action, NULL) != 0) {
+      fprintf(stderr, "WordMonitor::TimerStart: installing old SIGALRM ");
+      perror("");
+    }
     return;
   }
 
@@ -147,25 +185,37 @@ WordMonitor::Start()
     fprintf(output, "\n");
   }
   fflush(output);
+  TimerClick(0);
 }
 
 void
-WordMonitor::Click()
+WordMonitor::TimerClick(int signal)
 {
-  //
-  // Do not report if less than <period> since last report.
-  //
-  if(time(0) - elapsed >= period) {
-    fprintf(output, "%s\n", (const char*)Report());
-    elapsed = time(0);
-    fflush(output);
+  if(signal) {
+    //
+    // Do not report if less than <period> since last report.
+    //
+    if(time(0) - elapsed >= period) {
+      fprintf(output, "%s\n", (const char*)Report());
+      elapsed = time(0);
+      fflush(output);
+    }
   }
+  alarm(period);
 }
 
 void
-WordMonitor::Stop()
+WordMonitor::TimerStop()
 {
   if(period > 0) {
+    alarm(0);
+    struct sigaction action;
+    memset((char*)&action, '\0', sizeof(struct sigaction));
+    action.sa_handler = SIG_DFL;
+    if(sigaction(SIGALRM, &action, NULL) != 0) {
+      fprintf(stderr, "WordMonitor::TimerStart: resetting SIGALRM to SIG_DFL ");
+      perror("");
+    }
     //
     // Make sure last report is at least one second older than the previous one.
     //
@@ -181,27 +231,27 @@ WordMonitor::Stop()
 //
 
 extern "C" {
-  void word_monitor_click(void *nmonitor)
+  void word_monitor_click()
   {
-    WordMonitor* monitor = (WordMonitor*)nmonitor;
+    WordMonitor* monitor = WordMonitor::Instance();
     if(monitor)
-      monitor->Click();
+      monitor->TimerClick(SIGALRM);
   }
-  void word_monitor_add(void *nmonitor, int index, unsigned int value) 
+  void word_monitor_add(int index, unsigned int value) 
   {
-    WordMonitor* monitor = (WordMonitor*)nmonitor;
+    WordMonitor* monitor = WordMonitor::Instance();
     if(monitor)
       monitor->Add(index, value);
   }
-  void word_monitor_set(void *nmonitor, int index, unsigned int value)
+  void word_monitor_set(int index, unsigned int value)
   {
-    WordMonitor* monitor = (WordMonitor*)nmonitor;
+    WordMonitor* monitor = WordMonitor::Instance();
     if(monitor)
       monitor->Set(index, value);
   }
-  unsigned int word_monitor_get(void *nmonitor, int index)
+  unsigned int word_monitor_get(int index)
   {
-    WordMonitor* monitor = (WordMonitor*)nmonitor;
+    WordMonitor* monitor = WordMonitor::Instance();
     if(monitor)
       return monitor->Get(index);
     else

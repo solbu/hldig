@@ -7,17 +7,16 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordReference.cc,v 1.2.2.3 2000/09/27 05:29:02 ghutchis Exp $
+// $Id: HtWordReference.cc,v 1.2.2.4 2000/10/10 03:15:30 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
+#include "HtWordReference.h"
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "HtWordReference.h"
 
 //
 // Explain the format of data output of the Dump function

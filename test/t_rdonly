@@ -5,23 +5,23 @@
 # or the GNU General Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_rdonly,v 1.1.2.2 2000/09/14 03:13:29 ghutchis Exp $
+# $Id: t_rdonly,v 1.1.2.3 2000/10/10 03:15:47 ghutchis Exp $
 #
 
 . ./test_functions
 
 export MIFLUZ_CONFIG ; MIFLUZ_CONFIG=${srcdir}/mifluz-search.conf
-../htdb/mifluzload -z $VERBOSE test < $srcdir/search.txt
-chmod a-w test
+./txt2mifluz -z $VERBOSE < $srcdir/search.txt
+chmod a-w test test_weakcmpr
 a=`./dbbench -Wz -f world`
-b="world	0	0	5	2	
-world	0	0	5	4	
-world	0	0	11	1	
-world	0	0	20	5	
-world	0	0	21	2	
-world	0	0	51	2	
-world	0	0	71	2	
-world	0	0	81	2	"
+b="world	<DEF>	0	0	5	2	
+world	<DEF>	0	0	5	4	
+world	<DEF>	0	0	11	1	
+world	<DEF>	0	0	20	5	
+world	<DEF>	0	0	21	2	
+world	<DEF>	0	0	51	2	
+world	<DEF>	0	0	71	2	
+world	<DEF>	0	0	81	2	"
 if [ "$a" != "$b" ]
 then
 	echo "expected

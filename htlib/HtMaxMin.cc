@@ -8,79 +8,59 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtMaxMin.cc,v 1.1.2.3 2000/09/14 03:13:24 ghutchis Exp $
+// $Id: HtMaxMin.cc,v 1.1.2.4 2000/10/10 03:15:40 ghutchis Exp $
 //
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include"HtMaxMin.h"
 
-unsigned int HtMaxMin::max_v(unsigned int *vals, int n)
+unsigned int
+HtMaxMin::max_v(unsigned int *vals,int n)
 {
-    unsigned int maxv = vals[0];
-    for (int i = 1; i < n; i++) {
-	unsigned int v = vals[i];
-	if (v > maxv) {
-	    maxv = v;
-	}
+    unsigned int maxv=vals[0];
+    for(int i=1;i<n;i++)
+    {
+	unsigned int v=vals[i];
+	if(v>maxv){maxv=v;}
     }
-    return (maxv);
+    return(maxv);
 }
 
-unsigned short HtMaxMin::max_v(unsigned short *vals, int n)
+unsigned short
+HtMaxMin::max_v(unsigned short *vals,int n)
 {
-    unsigned short maxv = vals[0];
-    for (int i = 1; i < n; i++) {
-	unsigned short v = vals[i];
-	if (v > maxv) {
-	    maxv = v;
-	}
+    unsigned short maxv=vals[0];
+    for(int i=1;i<n;i++)
+    {
+	unsigned short v=vals[i];
+	if(v>maxv){maxv=v;}
     }
-    return (maxv);
+    return(maxv);
 }
 
-unsigned char HtMaxMin::max_v(unsigned char *vals, int n)
+unsigned int
+HtMaxMin::min_v(unsigned int *vals,int n)
 {
-    unsigned char maxv = vals[0];
-    for (int i = 1; i < n; i++) {
-	unsigned char v = vals[i];
-	if (v > maxv) {
-	    maxv = v;
-	}
+    unsigned int minv=vals[0];
+    for(int i=1;i<n;i++)
+    {
+	unsigned int v=vals[i];
+	if(v<minv){minv=v;}
     }
-    return (maxv);
+    return(minv);
 }
 
-unsigned int HtMaxMin::min_v(unsigned int *vals, int n)
+unsigned short
+HtMaxMin::min_v(unsigned short *vals,int n)
 {
-    unsigned int minv = vals[0];
-    for (int i = 1; i < n; i++) {
-	unsigned int v = vals[i];
-	if (v < minv) {
-	    minv = v;
-	}
+    unsigned short minv=vals[0];
+    for(int i=1;i<n;i++)
+    {
+	unsigned short v=vals[i];
+	if(v<minv){minv=v;}
     }
-    return (minv);
-}
-
-unsigned short HtMaxMin::min_v(unsigned short *vals, int n)
-{
-    unsigned short minv = vals[0];
-    for (int i = 1; i < n; i++) {
-	unsigned short v = vals[i];
-	if (v < minv) {
-	    minv = v;
-	}
-    }
-    return (minv);
-}
-
-unsigned char HtMaxMin::min_v(unsigned char *vals, int n)
-{
-    unsigned char minv = vals[0];
-    for (int i = 1; i < n; i++) {
-	unsigned char v = vals[i];
-	if (v < minv) {
-	    minv = v;
-	}
-    }
-    return (minv);
+    return(minv);
 }

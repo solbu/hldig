@@ -1,13 +1,13 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: log_register.c,v 1.1.2.3 2000/09/17 01:35:07 ghutchis Exp $";
+static const char sccsid[] = "@(#)CDB_log_register.c	11.7 (Sleepycat) 9/30/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -17,42 +17,29 @@ static const char revid[] = "$Id: log_register.c,v 1.1.2.3 2000/09/17 01:35:07 g
 #include <string.h>
 #endif
 
-#ifdef  HAVE_RPC
-#include "db_server.h"
-#endif
-
 #include "db_int.h"
 #include "log.h"
-
-#ifdef HAVE_RPC
-#include "gen_client_ext.h"
-#include "rpc_client_ext.h"
-#endif
 
 /*
  * CDB_log_register --
  *	Register a file name.
  */
 int
-CDB_log_register(dbenv, dbp, name)
+CDB_log_register(dbenv, dbp, name, idp)
 	DB_ENV *dbenv;
 	DB *dbp;
 	const char *name;
+	int32_t *idp;
 {
 	DBT fid_dbt, r_name;
 	DB_LOG *dblp;
 	DB_LSN r_unused;
-	FNAME *found, *fnp, *recover_fnp, *reuse_fnp;
+	FNAME *fnp, *reuse_fnp;
 	LOG *lp;
 	size_t len;
 	int32_t maxid;
-	int inserted, ok, ret;
+	int inserted, ret;
 	void *namep;
-
-#ifdef HAVE_RPC
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
-		return (__dbcl_log_register(dbenv, dbp, name));
-#endif
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->lg_handle, DB_INIT_LOG);
@@ -78,103 +65,52 @@ CDB_log_register(dbenv, dbp, name)
 	 * find an available fid, we'll use it, else we'll have to allocate
 	 * one after the maximum that we found).
 	 */
-	ok = 0;
-	found = NULL;
-	recover_fnp = NULL;
 	for (maxid = 0, fnp = SH_TAILQ_FIRST(&lp->fq, __fname);
 	    fnp != NULL; fnp = SH_TAILQ_NEXT(fnp, q, __fname)) {
-		if (F_ISSET(dblp, DBLOG_RECOVER) && fnp->id == dbp->log_fileid)
-			recover_fnp = fnp;
 		if (fnp->ref == 0) {		/* Entry is not in use. */
 			if (reuse_fnp == NULL)
 				reuse_fnp = fnp;
 			continue;
 		}
-		if (memcmp(dbp->fileid, fnp->ufid, DB_FILE_ID_LEN) == 0) {
-			if (fnp->meta_pgno == 0) {
-				if (fnp->locked == 1) {
-					CDB___db_err(dbenv, "File is locked");
-					return (EINVAL);
-				}
-				if (found != NULL)
-					goto found;
-				ok = 1;
-			}
-			if (dbp->meta_pgno == fnp->meta_pgno) {
-				if (F_ISSET(dblp, DBLOG_RECOVER)) {
-					if (fnp->id != dbp->log_fileid) {
-						/*
-						 * If we are in recovery, there
-						 * is only one dbp on the list.
-						 * If the refcount goes to 0,
-						 * we will clear the list.  If
-						 * it doesn't, we want to leave
-						 * the dbp where it is, so
-						 * passing a NULL to rem_logid
-						 * is correct.
-						 */
-						CDB___log_rem_logid(dblp,
-						    NULL, fnp->id);
-						if (recover_fnp != NULL)
-							break;
-						continue;
-					}
-					fnp->ref = 1;
-					goto found;
-				}
-				++fnp->ref;
-				if (ok)
-					goto found;
-				found = fnp;
-			}
+		if (!memcmp(dbp->fileid, fnp->ufid, DB_FILE_ID_LEN)) {
+			++fnp->ref;
+			goto found;
 		}
 		if (maxid <= fnp->id)
 			maxid = fnp->id + 1;
 	}
-	if ((fnp = found) != NULL)
-		goto found;
 
 	/* Fill in fnp structure. */
-	if (recover_fnp != NULL)	/* This has the right number */
-		fnp = recover_fnp;
-	else if (reuse_fnp != NULL)	/* Reuse existing one. */
+	if (reuse_fnp != NULL)		/* Reuse existing one. */
 		fnp = reuse_fnp;
 	else {				/* Allocate a new one. */
 		if ((ret = CDB___db_shalloc(dblp->reginfo.addr,
 		    sizeof(FNAME), 0, &fnp)) != 0)
-			goto mem_err;
+			goto err;
 		fnp->id = maxid;
 	}
 
-	if (F_ISSET(dblp, DBLOG_RECOVER))
-		fnp->id = dbp->log_fileid;
-
 	fnp->ref = 1;
-	fnp->locked = 0;
 	fnp->s_type = dbp->type;
 	memcpy(fnp->ufid, dbp->fileid, DB_FILE_ID_LEN);
-	fnp->meta_pgno = dbp->meta_pgno;
 
 	if (name != NULL) {
 		len = strlen(name) + 1;
 		if ((ret =
-		    CDB___db_shalloc(dblp->reginfo.addr, len, 0, &namep)) != 0) {
-mem_err:		CDB___db_err(dbenv,
-			    "Unable to allocate memory to register %s", namep);
+		    CDB___db_shalloc(dblp->reginfo.addr, len, 0, &namep)) != 0)
 			goto err;
-	}
 		fnp->name_off = R_OFFSET(&dblp->reginfo, namep);
 		memcpy(namep, name, len);
 	} else
 		fnp->name_off = INVALID_ROFF;
 
 	/* Only do the insert if we allocated a new fnp. */
-	if (reuse_fnp == NULL && recover_fnp == NULL)
+	if (reuse_fnp == NULL)
 		SH_TAILQ_INSERT_HEAD(&lp->fq, fnp, q, __fname);
 	inserted = 1;
 
 	/* Log the registry. */
-	if (!F_ISSET(dblp, DBLOG_RECOVER)) {
+	if (!F_ISSET(dblp, DBC_RECOVER)) {
 		/*
 		 * We allow logging on in-memory databases, so the name here
 		 * could be NULL.
@@ -188,7 +124,7 @@ mem_err:		CDB___db_err(dbenv,
 		fid_dbt.size = DB_FILE_ID_LEN;
 		if ((ret = CDB___log_register_log(dbenv, NULL, &r_unused,
 		    0, LOG_OPEN, name == NULL ? NULL : &r_name,
-		    &fid_dbt, fnp->id, dbp->type, dbp->meta_pgno)) != 0)
+		    &fid_dbt, fnp->id, dbp->type)) != 0)
 			goto err;
 	}
 
@@ -197,12 +133,12 @@ found:	/*
 	 * already open, so there is no need to log the open.  We only
 	 * log the open and closes on the first open and last close.
 	 */
-	if (!F_ISSET(dblp, DBLOG_RECOVER) &&
-	    (ret = CDB___log_add_logid(dbenv, dblp, dbp, fnp->id)) != 0)
+	if (!F_ISSET(dblp, DBC_RECOVER) &&
+	    (ret = CDB___log_add_logid(dblp, dbp, fnp->id)) != 0)
 			goto err;
 
-	if (!F_ISSET(dblp, DBLOG_RECOVER))
-		dbp->log_fileid = fnp->id;
+	if (idp != NULL)
+		*idp = fnp->id;
 
 	if (0) {
 err:		if (inserted)
@@ -223,51 +159,19 @@ err:		if (inserted)
  *	Discard a registered file name.
  */
 int
-CDB_log_unregister(dbenv, dbp)
+CDB_log_unregister(dbenv, fid)
 	DB_ENV *dbenv;
-	DB *dbp;
-{
-	int ret;
-
-#ifdef HAVE_RPC
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
-		return (__dbcl_log_unregister(dbenv, dbp));
-#endif
-
-	PANIC_CHECK(dbenv);
-	ENV_REQUIRES_CONFIG(dbenv, dbenv->lg_handle, DB_INIT_LOG);
-
-	ret = CDB___log_filelist_update(dbenv, dbp, dbp->log_fileid, NULL, NULL);
-	dbp->log_fileid = DB_LOGFILEID_INVALID;
-	return (ret);
-}
-
-/*
- * PUBLIC: int CDB___log_filelist_update
- * PUBLIC:    __P((DB_ENV *, DB *, int32_t, const char *, int *));
- *
- *  Utility player for updating and logging the file list.  Called
- *	for 3 reasons:
- *		1) mark file closed: newname == NULL.
- *		2) change filename: newname != NULL.
- *		3) from recovery to verify and change filename if
- *			neessary, set != NULL.
- */
-int CDB___log_filelist_update(dbenv, dbp, fid, newname, set)
-	DB_ENV *dbenv;
-	DB *dbp;
 	int32_t fid;
-	const char *newname;
-	int *set;
 {
 	DBT fid_dbt, r_name;
 	DB_LOG *dblp;
 	DB_LSN r_unused;
 	FNAME *fnp;
 	LOG *lp;
-	u_int32_t len, newlen;
 	int ret;
-	void *namep;
+
+	PANIC_CHECK(dbenv);
+	ENV_REQUIRES_CONFIG(dbenv, dbenv->lg_handle, DB_INIT_LOG);
 
 	ret = 0;
 	dblp = dbenv->lg_handle;
@@ -288,21 +192,13 @@ int CDB___log_filelist_update(dbenv, dbp, fid, newname, set)
 
 	/*
 	 * Log the unregistry only if this is the last one and we are
-	 * really closing the file or if this is an abort of a created
-	 * file and we need to make sure that there is a record in the
-	 * log.
+	 * really closing the file.
 	 */
-	namep = NULL;
-	len = 0;
-	if (fnp->name_off != INVALID_ROFF) {
-		namep = R_ADDR(&dblp->reginfo, fnp->name_off);
-		len = strlen(namep) + 1;
-	}
-	if (!F_ISSET(dblp, DBLOG_RECOVER) && fnp->ref == 1) {
-		if (namep != NULL) {
+	if (!F_ISSET(dblp, DBC_RECOVER) && fnp->ref == 1) {
+		if (fnp->name_off != INVALID_ROFF) {
 			memset(&r_name, 0, sizeof(r_name));
-			r_name.data = namep;
-			r_name.size = len;
+			r_name.data = R_ADDR(&dblp->reginfo, fnp->name_off);
+			r_name.size = strlen(r_name.data) + 1;
 		}
 		memset(&fid_dbt, 0, sizeof(fid_dbt));
 		fid_dbt.data = fnp->ufid;
@@ -310,127 +206,27 @@ int CDB___log_filelist_update(dbenv, dbp, fid, newname, set)
 		if ((ret = CDB___log_register_log(dbenv, NULL, &r_unused,
 		    0, LOG_CLOSE,
 		    fnp->name_off == INVALID_ROFF ? NULL : &r_name,
-		    &fid_dbt, fid, fnp->s_type, fnp->meta_pgno))
-		    != 0)
+		    &fid_dbt, fid, fnp->s_type)) != 0)
 			goto ret1;
 	}
 
 	/*
-	 * If we are changing the name we must log this fact.
+	 * If more than 1 reference, just decrement the reference and return.
+	 * Otherwise, free the name if one exists.
 	 */
-	if (newname != NULL) {
-		DB_ASSERT(fnp->ref == 1);
-		newlen = strlen(newname) + 1;
-		if (!F_ISSET(dblp, DBLOG_RECOVER)) {
-			r_name.data = (void *) newname;
-			r_name.size = newlen;
-			if ((ret = CDB___log_register_log(dbenv,
-			    NULL, &r_unused, 0, LOG_OPEN, &r_name, &fid_dbt,
-			    fnp->id, fnp->s_type, fnp->meta_pgno)) != 0)
-				goto ret1;
-		}
+	--fnp->ref;
+	if (fnp->ref == 0 && fnp->name_off != INVALID_ROFF)
+		CDB___db_shalloc_free(dblp->reginfo.addr,
+		    R_ADDR(&dblp->reginfo, fnp->name_off));
 
-		/*
-		 * Check to see if the name is already correct.
-		 */
-		if (set != NULL) {
-			if (len != newlen || memcmp(namep, newname, len) != 0)
-				*set = 1;
-			else {
-				*set = 0;
-				goto ret1;
-			}
-		}
-
-		/*
-		 * Change the name, realloc memory if necessary
-		 */
-		if (len < newlen) {
-			CDB___db_shalloc_free(dblp->reginfo.addr,
-			    R_ADDR(&dblp->reginfo, fnp->name_off));
-			if ((ret = CDB___db_shalloc(
-			    dblp->reginfo.addr, newlen, 0, &namep)) != 0) {
-				CDB___db_err(dbenv,
-				    "Unable to allocate memory to register %s",
-				    namep);
-				goto ret1;
-			}
-			fnp->name_off = R_OFFSET(&dblp->reginfo, namep);
-		} else
-			namep = R_ADDR(&dblp->reginfo, fnp->name_off);
-		memcpy(namep, newname, newlen);
-	} else {
-
-		/*
-		 * If more than 1 reference, just decrement the reference
-		 * and return.  Otherwise, free the name if one exists.
-		 */
-		DB_ASSERT(fnp->ref >= 1);
-		--fnp->ref;
-		if (fnp->ref == 0) {
-			if (fnp->name_off != INVALID_ROFF)
-				CDB___db_shalloc_free(dblp->reginfo.addr,
-				    R_ADDR(&dblp->reginfo, fnp->name_off));
-			fnp->name_off = INVALID_ROFF;
-		}
-
-		/*
-		 * Remove from the process local table.  If this
-		 * operation is taking place during recovery, then
-		 * the logid was never added to the table, so do not remove it.
-		 */
-		if (!F_ISSET(dblp, DBLOG_RECOVER))
-			CDB___log_rem_logid(dblp, dbp, fid);
-	}
+	/*
+	 * Remove from the process local table.  If this operation is taking
+	 * place during recovery, then the logid was never added to the table,
+	 * so do not remove it.
+	 */
+	if (!F_ISSET(dblp, DBC_RECOVER))
+		CDB___log_rem_logid(dblp, fid);
 
 ret1:	R_UNLOCK(dbenv, &dblp->reginfo);
-	return (ret);
-}
-
-/*
- * CDB___log_file_lock -- lock a file for single access
- *	This only works if logging is on.
- *
- * PUBLIC: int CDB___log_file_lock __P((DB *));
- */
-int
-CDB___log_file_lock(dbp)
-	DB *dbp;
-{
-	DB_ENV *dbenv;
-	DB_LOG *dblp;
-	FNAME *found, *fnp;
-	LOG *lp;
-	int ret;
-
-	dbenv = dbp->dbenv;
-	dblp = dbenv->lg_handle;
-	lp = dblp->reginfo.primary;
-
-	found = NULL;
-	ret = 0;
-	R_LOCK(dbenv, &dblp->reginfo);
-
-	for (fnp = SH_TAILQ_FIRST(&lp->fq, __fname);
-	    fnp != NULL; fnp = SH_TAILQ_NEXT(fnp, q, __fname)) {
-		if (fnp->ref == 0)
-			continue;
-
-		if (!memcmp(dbp->fileid, fnp->ufid, DB_FILE_ID_LEN)) {
-			if (fnp->meta_pgno == 0) {
-				if (fnp->ref != 1)
-					goto err;
-
-				fnp->locked = 1;
-				found = fnp;
-			} else {
-err:				CDB___db_err(dbp->dbenv, "File is open");
-				ret = EINVAL;
-				goto done;
-			}
-
-		}
-	}
-done:	R_UNLOCK(dbenv, &dblp->reginfo);
 	return (ret);
 }

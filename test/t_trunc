@@ -5,17 +5,21 @@
 # or the GNU General Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_trunc,v 1.1.2.2 2000/09/14 03:13:29 ghutchis Exp $
+# $Id: t_trunc,v 1.1.2.3 2000/10/10 03:15:47 ghutchis Exp $
 #
 
 . ./test_functions
 
 export MIFLUZ_CONFIG ; MIFLUZ_CONFIG=${srcdir}/mifluz-search.conf
 
-count1=`head -1 $srcdir/search.txt | ../htdb/mifluzload -z $VERBOSE test`
-count2=`tail -1 $srcdir/search.txt | ../htdb/mifluzload -z $VERBOSE test`
-
-../htdb/htdb_stat -zW -d test -s index | grep '1	Number of unique keys in the tree' > /dev/null || { 
+count1=`head -1 $srcdir/search.txt | ./txt2mifluz -z -v $VERBOSE`
+count2=`tail -1 $srcdir/search.txt | ./txt2mifluz -z -v $VERBOSE`
+if [ "$count1" != "$count2" ]
+then
+	echo "inserted $count1 then $count2, expected same number" >&2
+	exit 1
+fi
+../htdb/htdb_stat -zW -d test | grep '2	Number of keys in the tree' > /dev/null || { 
 	fail "Wrong number of keys"
-	../htdb/htdb_stat -zW -d test -s index
+	../htdb/htdb_stat -zW -d test
 }

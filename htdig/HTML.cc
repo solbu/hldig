@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62.2.15 2000/10/06 16:08:57 grdetil Exp $
+// $Id: HTML.cc,v 1.62.2.16 2000/10/10 03:15:33 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -146,7 +146,6 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     unsigned char       *ptext = text;
     const String	skip_start = config["noindex_start"];
     const String	skip_end = config["noindex_end"];
-    WordType		type(config);
 
     keywordsCount = 0;
     title = 0;
@@ -332,7 +331,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    }
 	    position = q+1;
 	  }
-	else if (*position > 0 && type.IsStrictChar(*position))
+	else if (*position > 0 && HtIsStrictWordChar(*position))
 	{
 	    //
 	    // Start of a word.  Try to find the whole thing
@@ -340,7 +339,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    word = 0;
 	    in_space = 0;
 	    in_punct = 0;
-	    while (*position && type.IsChar(*position))
+	    while (*position && HtIsWordChar(*position))
 	    {
 		word << (char)*position;
 		// handle case where '<' is in extra_word_characters...
@@ -465,7 +464,6 @@ HTML::do_tag(Retriever &retriever, String &tag)
     int			wordindex = 1;
     char		*position = tag.get();
     int			which, length;
-    WordType		type(config);
 
     while (isspace(*position))
 	position++;
@@ -648,13 +646,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		if (doindex)
 		  {
 		    String tmp = transSGML(keywords);
-		    char	*w = type.WordToken(tmp);
+		    char	*w = HtWordToken(tmp);
 		    while (w)
 		      {
 			if (strlen(w) >= minimumWordLength
 				&& ++keywordsCount <= max_keywords)
 			  retriever.got_word(w, wordindex++, 9);
-			w = type.WordToken(0);
+			w = HtWordToken(0);
 		      }
 		    w = '\0';
 		  }
@@ -721,12 +719,12 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		   if (doindex)
 		     {
 		       String tmp = transSGML(attrs["content"]);
-		       char        *w = type.WordToken(tmp);
+		       char        *w = HtWordToken(tmp);
 		       while (w)
 			 {
 			   if (strlen(w) >= minimumWordLength)
 			     retriever.got_word(w, wordindex++,10);
-			   w = type.WordToken(0);
+			   w = HtWordToken(0);
 			 }
 		       w = '\0';
 		     }
@@ -735,13 +733,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		if (keywordsMatch.CompareWord(cache) && doindex)
 		{
 		    String tmp = transSGML(attrs["content"]);
-		    char	*w = type.WordToken(tmp);
+		    char	*w = HtWordToken(tmp);
 		    while (w)
 		    {
 			if (strlen(w) >= minimumWordLength
 				&& ++keywordsCount <= max_keywords)
 			  retriever.got_word(w, wordindex++, 9);
-			w = type.WordToken(0);
+			w = HtWordToken(0);
 		    }
 		    w = '\0';
 		}
@@ -878,12 +876,12 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    description << tmp << " ";
 		if (doindex && !in_title && head.length() < max_head_length)
 		    head << tmp << " ";
-		char *w = type.WordToken(tmp);
+		char *w = HtWordToken(tmp);
 		while (w && doindex)
 		  {
 		    if (strlen(w) >= minimumWordLength)
 		      retriever.got_word(w, wordindex++, 8); // slot for img_alt
-		    w = type.WordToken(0);
+		    w = HtWordToken(0);
 		  }
 		w = '\0';
 	      }

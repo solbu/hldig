@@ -112,18 +112,6 @@ TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
 YACC = @YACC@
-db_align_t_decl = @db_align_t_decl@
-db_alignp_t_decl = @db_alignp_t_decl@
-int16_decl = @int16_decl@
-int32_decl = @int32_decl@
-ssize_t_decl = @ssize_t_decl@
-u_char_decl = @u_char_decl@
-u_int16_decl = @u_int16_decl@
-u_int32_decl = @u_int32_decl@
-u_int8_decl = @u_int8_decl@
-u_int_decl = @u_int_decl@
-u_long_decl = @u_long_decl@
-u_short_decl = @u_short_decl@
 
 AUTOMAKE_OPTIONS = foreign
 
@@ -135,14 +123,14 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 pkglib_LTLIBRARIES = libht.la
 
-libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c myqsort.c 	getcwd.c memcmp.c memcpy.c memmove.c raise.c strerror.c 	HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc 	HtPack.cc HtDateTime.cc HtRegex.cc 	HtRegexReplace.cc HtRegexReplaceList.cc 	HtMaxMin.cc md5.cc  mhash_md5.c
+libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c 	getcwd.c memcmp.c memcpy.c memmove.c raise.c strerror.c 	HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc 	HtPack.cc HtDateTime.cc HtRegex.cc 	HtRegexReplace.cc HtRegexReplaceList.cc 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc md5.cc  mhash_md5.c
 
 
 libht_la_LIBADD = @LTLIBOBJS@
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-pkginclude_HEADERS =  	clib.h 	Configuration.h 	DB2_db.h 	Database.h 	Dictionary.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtRegexReplace.cc 	HtRegexReplaceList.cc 	HtVector.h 	HtWordCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	good_strtok.h 	htString.h 	lib.h 	langinfo.h 	regex.h  	HtMaxMin.h 	HtTime.h 	HtRandom.h 	md5.h 	myqsort.h
+pkginclude_HEADERS =  	clib.h 	Configuration.h 	DB2_db.h 	Database.h 	Dictionary.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtRegexReplace.cc 	HtRegexReplaceList.cc 	HtVector.h 	HtWordCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	good_strtok.h 	htString.h 	lib.h 	langinfo.h 	regex.h  	HtVectorGeneric.h   	HtVectorGenericCode.h 	HtVector_int.h 	HtVector_String.h 	HtMaxMin.h 	HtTime.h 	HtWordType.h 	HtRandom.h 	md5.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -158,10 +146,10 @@ libht_la_OBJECTS =  Configuration.lo Database.lo Dictionary.lo DB2_db.lo \
 IntObject.lo List.lo Object.lo ParsedString.lo Queue.lo \
 QuotedStringList.lo Stack.lo String.lo StringList.lo StringMatch.lo \
 String_fmt.lo good_strtok.lo strcasecmp.lo mktime.lo strptime.lo \
-timegm.lo myqsort.lo getcwd.lo memcmp.lo memcpy.lo memmove.lo raise.lo \
-strerror.lo HtCodec.lo HtWordCodec.lo HtVector.lo HtHeap.lo HtPack.lo \
-HtDateTime.lo HtRegex.lo HtRegexReplace.lo HtRegexReplaceList.lo \
-HtMaxMin.lo md5.lo mhash_md5.lo
+timegm.lo getcwd.lo memcmp.lo memcpy.lo memmove.lo raise.lo strerror.lo \
+HtCodec.lo HtWordCodec.lo HtVector.lo HtHeap.lo HtPack.lo HtDateTime.lo \
+HtRegex.lo HtRegexReplace.lo HtRegexReplaceList.lo HtVectorGeneric.lo \
+HtMaxMin.lo HtWordType.lo md5.lo mhash_md5.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -182,14 +170,15 @@ GZIP_ENV = --best
 DEP_FILES =  .deps/Configuration.P .deps/DB2_db.P .deps/Database.P \
 .deps/Dictionary.P .deps/HtCodec.P .deps/HtDateTime.P .deps/HtHeap.P \
 .deps/HtMaxMin.P .deps/HtPack.P .deps/HtRegex.P .deps/HtRegexReplace.P \
-.deps/HtRegexReplaceList.P .deps/HtVector.P .deps/HtWordCodec.P \
-.deps/IntObject.P .deps/List.P .deps/Object.P .deps/ParsedString.P \
-.deps/Queue.P .deps/QuotedStringList.P .deps/Stack.P .deps/String.P \
+.deps/HtRegexReplaceList.P .deps/HtVector.P .deps/HtVectorGeneric.P \
+.deps/HtWordCodec.P .deps/HtWordType.P .deps/IntObject.P .deps/List.P \
+.deps/Object.P .deps/ParsedString.P .deps/Queue.P \
+.deps/QuotedStringList.P .deps/Stack.P .deps/String.P \
 .deps/StringList.P .deps/StringMatch.P .deps/String_fmt.P \
 .deps/getcwd.P .deps/good_strtok.P .deps/md5.P .deps/memcmp.P \
 .deps/memcpy.P .deps/memmove.P .deps/mhash_md5.P .deps/mktime.P \
-.deps/myqsort.P .deps/raise.P .deps/snprintf.P .deps/strcasecmp.P \
-.deps/strerror.P .deps/strptime.P .deps/timegm.P .deps/vsnprintf.P
+.deps/raise.P .deps/snprintf.P .deps/strcasecmp.P .deps/strerror.P \
+.deps/strptime.P .deps/timegm.P .deps/vsnprintf.P
 SOURCES = $(libht_la_SOURCES)
 OBJECTS = $(libht_la_OBJECTS)
 

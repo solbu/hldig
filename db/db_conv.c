@@ -1,7 +1,7 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 /*
@@ -37,10 +37,10 @@
  * SUCH DAMAGE.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: db_conv.c,v 1.1.2.3 2000/09/17 01:35:04 ghutchis Exp $";
+static const char sccsid[] = "@(#)db_conv.c	11.4 (Sleepycat) 11/10/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -62,11 +62,10 @@ static const char revid[] = "$Id: db_conv.c,v 1.1.2.3 2000/09/17 01:35:04 ghutch
  * CDB___db_pgin --
  *	Primary page-swap routine.
  *
- * PUBLIC: int CDB___db_pgin __P((DB_ENV *, db_pgno_t, void *, DBT *));
+ * PUBLIC: int CDB___db_pgin __P((db_pgno_t, void *, DBT *));
  */
 int
-CDB___db_pgin(dbenv, pg, pp, cookie)
-	DB_ENV *dbenv;
+CDB___db_pgin(pg, pp, cookie)
 	db_pgno_t pg;
 	void *pp;
 	DBT *cookie;
@@ -75,37 +74,36 @@ CDB___db_pgin(dbenv, pg, pp, cookie)
 
 	pginfo = (DB_PGINFO *)cookie->data;
 
-	switch (TYPE(pp)) {
+	switch (((PAGE *)pp)->type) {
 	case P_HASH:
 	case P_HASHMETA:
 	case P_INVALID:
-		return (CDB___ham_pgin(dbenv, pg, pp, cookie));
+		return (CDB___ham_pgin(pg, pp, cookie));
 	case P_BTREEMETA:
 	case P_IBTREE:
 	case P_IRECNO:
 	case P_LBTREE:
-	case P_LDUP:
 	case P_LRECNO:
+	case P_DUPLICATE:
 	case P_OVERFLOW:
-		return (CDB___bam_pgin(dbenv, pg, pp, cookie));
+		return (CDB___bam_pgin(pg, pp, cookie));
 	case P_QAMMETA:
 	case P_QAMDATA:
-		return (CDB___qam_pgin_out(dbenv, pg, pp, cookie));
+		return (CDB___qam_pgin_out(pg, pp, cookie));
 	default:
 		break;
 	}
-	return (CDB___db_unknown_type(dbenv, "CDB___db_pgin", ((PAGE *)pp)->type));
+	return (EINVAL);
 }
 
 /*
  * CDB___db_pgout --
  *	Primary page-swap routine.
  *
- * PUBLIC: int CDB___db_pgout __P((DB_ENV *, db_pgno_t, void *, DBT *));
+ * PUBLIC: int CDB___db_pgout __P((db_pgno_t, void *, DBT *));
  */
 int
-CDB___db_pgout(dbenv, pg, pp, cookie)
-	DB_ENV *dbenv;
+CDB___db_pgout(pg, pp, cookie)
 	db_pgno_t pg;
 	void *pp;
 	DBT *cookie;
@@ -114,26 +112,26 @@ CDB___db_pgout(dbenv, pg, pp, cookie)
 
 	pginfo = (DB_PGINFO *)cookie->data;
 
-	switch (TYPE(pp)) {
+	switch (((PAGE *)pp)->type) {
 	case P_HASH:
 	case P_HASHMETA:
 	case P_INVALID:
-		return (CDB___ham_pgout(dbenv, pg, pp, cookie));
+		return (CDB___ham_pgout(pg, pp, cookie));
 	case P_BTREEMETA:
 	case P_IBTREE:
 	case P_IRECNO:
 	case P_LBTREE:
-	case P_LDUP:
 	case P_LRECNO:
+	case P_DUPLICATE:
 	case P_OVERFLOW:
-		return (CDB___bam_pgout(dbenv, pg, pp, cookie));
+		return (CDB___bam_pgout(pg, pp, cookie));
 	case P_QAMMETA:
 	case P_QAMDATA:
-		return (CDB___qam_pgin_out(dbenv, pg, pp, cookie));
+		return (CDB___qam_pgin_out(pg, pp, cookie));
 	default:
 		break;
 	}
-	return (CDB___db_unknown_type(dbenv, "CDB___db_pgout", ((PAGE *)pp)->type));
+	return (EINVAL);
 }
 
 /*
@@ -159,10 +157,6 @@ CDB___db_metaswap(pg)
 	SWAP32(p);	/* pagesize */
 	p += 4;		/* unused, page type, unused, unused */
 	SWAP32(p);	/* free */
-	SWAP32(p);	/* alloc_lsn part 1 */
-	SWAP32(p);	/* alloc_lsn part 2 */
-	SWAP32(p);	/* cached key count */
-	SWAP32(p);	/* cached record count */
 	SWAP32(p);	/* flags */
 }
 
@@ -170,11 +164,10 @@ CDB___db_metaswap(pg)
  * CDB___db_byteswap --
  *	Byteswap a page.
  *
- * PUBLIC: int CDB___db_byteswap __P((DB_ENV *, db_pgno_t, PAGE *, size_t, int));
+ * PUBLIC: int CDB___db_byteswap __P((db_pgno_t, PAGE *, size_t, int));
  */
 int
-CDB___db_byteswap(dbenv, pg, h, pagesize, pgin)
-	DB_ENV *dbenv;
+CDB___db_byteswap(pg, h, pagesize, pgin)
 	db_pgno_t pg;
 	PAGE *h;
 	size_t pagesize;
@@ -199,7 +192,7 @@ CDB___db_byteswap(dbenv, pg, h, pagesize, pgin)
 		M_16_SWAP(h->hf_offset);
 	}
 
-	switch (TYPE(h)) {
+	switch (h->type) {
 	case P_HASH:
 		for (i = 0; i < NUM_ENT(h); i++) {
 			if (pgin)
@@ -250,8 +243,8 @@ CDB___db_byteswap(dbenv, pg, h, pagesize, pgin)
 				M_16_SWAP(h->inp[i]);
 		break;
 	case P_LBTREE:
-	case P_LDUP:
 	case P_LRECNO:
+	case P_DUPLICATE:
 		for (i = 0; i < NUM_ENT(h); i++) {
 			if (pgin)
 				M_16_SWAP(h->inp[i]);
@@ -260,7 +253,7 @@ CDB___db_byteswap(dbenv, pg, h, pagesize, pgin)
 			 * In the case of on-page duplicates, key information
 			 * should only be swapped once.
 			 */
-			if (TYPE(h) == P_LBTREE && i > 1) {
+			if (h->type == P_LBTREE && i > 1) {
 				if (pgin) {
 					if (h->inp[i] == h->inp[i - 2])
 						continue;
@@ -332,7 +325,7 @@ CDB___db_byteswap(dbenv, pg, h, pagesize, pgin)
 		/* Nothing to do. */
 		break;
 	default:
-		return (CDB___db_unknown_type(dbenv, "CDB___db_byteswap", h->type));
+		return (EINVAL);
 	}
 
 	if (!pgin) {

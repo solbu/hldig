@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998, 1999, 2000
+ * Copyright (c) 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: os_oflags.c,v 1.1.2.3 2000/09/17 01:35:07 ghutchis Exp $";
+static const char sccsid[] = "@(#)os_oflags.c	11.1 (Sleepycat) 7/25/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -32,31 +32,19 @@ CDB___db_oflags(oflags)
 {
 	u_int32_t dbflags;
 
-	dbflags = 0;
-
-	if (oflags & O_CREAT)
-		dbflags |= DB_CREATE;
-
-	if (oflags & O_TRUNC)
-		dbflags |= DB_TRUNCATE;
-
 	/*
-	 * !!!
-	 * Convert POSIX 1003.1 open(2) mode flags to DB flags.  This isn't
-	 * an exact science as few POSIX implementations have a flag value
+	 * XXX
+	 * Convert POSIX 1003.1 open(2) flags to DB flags.  Not an exact
+	 * science as most POSIX implementations don't have a flag value
 	 * for O_RDONLY, it's simply the lack of a write flag.
 	 */
-#ifndef	O_ACCMODE
-#define	O_ACCMODE	(O_RDONLY | O_RDWR | O_WRONLY)
-#endif
-	switch (oflags & O_ACCMODE) {
-	case O_RDWR:
-	case O_WRONLY:
-		break;
-	default:
+	dbflags = 0;
+	if (oflags & O_CREAT)
+		dbflags |= DB_CREATE;
+	if (!(oflags & (O_RDWR | O_WRONLY)) || oflags & O_RDONLY)
 		dbflags |= DB_RDONLY;
-		break;
-	}
+	if (oflags & O_TRUNC)
+		dbflags |= DB_TRUNCATE;
 	return (dbflags);
 }
 

@@ -5,12 +5,12 @@
 //	       of words waiting to be inserted in the database.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999, 2000 The ht://Dig Group
+// Copyright (c) 1999 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.h,v 1.2.2.5 2000/09/25 03:58:47 ghutchis Exp $
+// $Id: HtWordList.h,v 1.2.2.6 2000/10/10 03:15:30 ghutchis Exp $
 //
 
 #ifndef _HtWordList_h_
@@ -27,7 +27,11 @@ public:
     //
     // Construction/Destruction
     //
-    HtWordList(const Configuration  & config_arg);
+    HtWordList(const Configuration  & config_arg) : WordList(config_arg) 
+	{
+	    cerr << "HtWordList::HtWordList(Configuration) is not valid" << endl; 
+	    abort();
+	}
     HtWordList(const HtConfiguration& config_arg);
     virtual ~HtWordList();
     
@@ -54,12 +58,8 @@ public:
     // Read in an ascii version of the word database in <filename>
     int			Load(const String& filename);
 
-    // Get the WordContext for this WordList (to be used for WordRefs, etc.)
-    WordContext		*GetWordContext() { return &context; }
-
 private:
 
-    WordContext			context;
     List			*words;
 };
 

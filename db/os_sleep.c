@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998, 1999, 2000
+ * Copyright (c) 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: os_sleep.c,v 1.1.2.3 2000/09/17 01:35:08 ghutchis Exp $";
+static const char sccsid[] = "@(#)os_sleep.c	11.1 (Sleepycat) 7/25/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -18,10 +18,6 @@ static const char revid[] = "$Id: os_sleep.c,v 1.1.2.3 2000/09/17 01:35:08 ghutc
 #include <sys/select.h>
 #endif
 
-#ifdef HAVE_VXWORKS
-#include <sys/times.h>
-#include <time.h>
-#else
 #if TIME_WITH_SYS_TIME
 #include <sys/time.h>
 #include <time.h>
@@ -30,11 +26,9 @@ static const char revid[] = "$Id: os_sleep.c,v 1.1.2.3 2000/09/17 01:35:08 ghutc
 #include <sys/time.h>
 #else
 #include <time.h>
-#endif /* HAVE_SYS_TIME_H */
-#endif /* TIME_WITH SYS_TIME */
-#endif /* HAVE_VXWORKS */
+#endif
+#endif
 
-#include <string.h>
 #include <unistd.h>
 #endif
 
@@ -45,15 +39,13 @@ static const char revid[] = "$Id: os_sleep.c,v 1.1.2.3 2000/09/17 01:35:08 ghutc
  * CDB___os_sleep --
  *	Yield the processor for a period of time.
  *
- * PUBLIC: int CDB___os_sleep __P((DB_ENV *, u_long, u_long));
+ * PUBLIC: int CDB___os_sleep __P((u_long, u_long));
  */
 int
-CDB___os_sleep(dbenv, secs, usecs)
-	DB_ENV *dbenv;
+CDB___os_sleep(secs, usecs)
 	u_long secs, usecs;		/* Seconds and microseconds. */
 {
 	struct timeval t;
-	int ret;
 
 	/* Don't require that the values be normalized. */
 	for (; usecs >= 1000000; usecs -= 1000000)
@@ -68,10 +60,5 @@ CDB___os_sleep(dbenv, secs, usecs)
 	 */
 	t.tv_sec = secs;
 	t.tv_usec = usecs;
-	ret =  select(0, NULL, NULL, NULL, &t) == -1 ? CDB___os_get_errno() : 0;
-
-	if (ret != 0)
-		CDB___db_err(dbenv, "select: %s", strerror(ret));
-
-	return (ret);
+	return (select(0, NULL, NULL, NULL, &t) == -1 ? CDB___os_get_errno() : 0);
 }

@@ -1,7 +1,7 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 /*
@@ -32,7 +32,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $Id: db_swap.h,v 1.1.2.2 2000/09/14 03:13:19 ghutchis Exp $
+ *	@(#)db_swap.h	11.2 (Sleepycat) 9/9/99
  */
 
 #ifndef _DB_SWAP_H_
@@ -98,18 +98,4 @@
 	P_16_SWAP(p);							\
 	(p) += sizeof(u_int16_t);					\
 }
-
-/*
- * DB has local versions of htonl() and ntohl() that only operate on pointers
- * to the right size memory locations, the portability magic for finding the
- * real ones isn't worth the effort.
- */
-#if defined(WORDS_BIGENDIAN)
-#define	DB_HTONL(p)
-#define	DB_NTOHL(p)
-#else
-#define	DB_HTONL(p)	P_32_SWAP(p)
-#define	DB_NTOHL(p)	P_32_SWAP(p)
-#endif
-
 #endif /* !_DB_SWAP_H_ */

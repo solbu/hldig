@@ -1,197 +1,17 @@
-//
-// NAME
-// 
-// displays statistics for Berkeley DB environments.
-//
-// SYNOPSIS
-//
-// htdb_load [-nTzW] [-c name=value] [-f file] [-h home] [-C cachesize] [-t btree | hash | recno] db_file
-//
-// DESCRIPTION
-//
-// The htdb_load utility reads from the standard input and loads it into
-// the database <b>db_file</b>.
-// The database <b>db_file</b> is created if it does not already exist.
-//
-// The input to htdb_load must be in the output format specified by the
-// htdb_dump utility, or as specified for the <b>-T</b> below.
-//
-// OPTIONS
-// 
-// <dl>
-//
-//
-// <dt><b>-W</b>
-// <dd>Initialize WordContext(3) before loading. With the <b>-z</b>
-// flag allows to load inverted indexes using the mifluz(3) specific
-// compression scheme. The MIFLUZ_CONFIG environment variable must be
-// set to a file containing the mifluz(3) configuration.
-//
-// <dt><b>-z</b>
-// <dd>The <b>db_file</b> is compressed. If <b>-W</b> is given the
-// mifluz(3) specific compression scheme is used. Otherwise the default
-// gzip compression scheme is used.
-//
-// <dt><b>-c</b>
-// <dd>Specify configuration options for the DB structure 
-// ignoring any value they may have based on the input.
-// The command-line format is <b>name=value</b>.
-// See <i>Supported Keywords</i> for
-// a list of supported words for the <b>-c</b> option.
-//
-// <dt><b>-f</b>
-// <dd>Read from the specified <b>input</b> file instead of from
-// the standard input.
-//
-// <dt><b>-h</b>
-// <dd>Specify a home directory for the database.
-// If a home directory is specified, the database environment is opened using
-// the <i>DB_INIT_LOCK</i>, <i>DB_INIT_LOG</i>, <i>DB_INIT_MPOOL</i>,
-// <i>DB_INIT_TXN</i> and <i>DB_USE_ENVIRON</i> flags to
-// DBENV-&gt;open. This means that htdb_load can be used to load
-// data into databases while they are in use by other processes. If the
-// DBENV-&gt;open call fails, or if no home directory is specified, the
-// database is still updated, but the environment is ignored, e.g., no
-// locking is done.
-//
-// <dt><b>-n</b>
-// <dd>Do not overwrite existing keys in the database when loading into an
-// already existing database.
-// If a key/data pair cannot be loaded into the database for this reason,
-// a warning message is displayed on the standard error output and the
-// key/data pair are skipped.
-// 
-// <dt><b>-T</b>
-// <dd>The <b>-T</b>
-// option allows non-Berkeley DB applications to easily load text files 
-// into databases.
-//
-// If the database to be created is of type Btree or Hash, or the keyword
-// <b>keys</b> is specified as set, the input must be paired lines of text,
-// where the first line of the pair is the key item, and the second line of
-// the pair is its corresponding data item.  If the database to be created
-// is of type Queue or Recno and the keywork <b>keys</b> is not set, the
-// input must be lines of text, where each line is a new data item for the
-// database.
-// 
-// A simple escape mechanism, where newline and backslash (\)
-// characters are special, is applied to the text input.
-// Newline characters are interpreted as record separators.
-// Backslash characters in the text will be interpreted in one of two ways:
-// if the backslash character precedes another backslash character, the pair
-// will be interpreted as a literal backslash.
-// If the backslash character precedes any other character, the two characters
-// following the backslash will be interpreted as hexadecimal specification of
-// a single character, e.g., \0a is a newline character in the ASCII
-// character set.
-// 
-// For this reason, any backslash or newline characters that naturally
-// occur in the text input must be escaped to avoid misinterpretation by
-// htdb_load
-// 
-// If the <b>-T</b> option is specified, the underlying access method type
-// must be specified using the <b>-t</b> option.
-//
-// <dt><b>-t</b>
-// <dd>Specify the underlying access method.
-// If no <b>-t</b> option is specified, the database will be loaded into a
-// database of the same type as was dumped, e.g., a Hash database will be
-// created if a Hash database was dumped.
-// 
-// Btree and Hash databases may be converted from one to the other.  Queue
-// and Recno databases may be converted from one to the other.  If the
-// <b>-k</b> option was specified on the call to htdb_dump then Queue
-// and Recno databases may be converted to Btree or Hash, with the key being
-// the integer record number.
-//
-// <dt><b>-V</b>
-// <dd>Write the version number to the standard output and exit.
-//
-// </dl>
-//
-// The htdb_load utility attaches to one or more of the Berkeley DB
-// shared memory regions.  In order to avoid region corruption, it 
-// should always be given
-// the chance to detach and exit gracefully.  To cause htdb_load to clean up
-// after itself and exit, send it an interrupt signal (SIGINT).
-//
-// The htdb_load utility exits 0 on success, 1 if one or more key/data
-// pairs were not loaded into the database because the key already existed,
-// and &gt;1 if an error occurs.
-// 
-// KEYWORDS
-//
-// The following keywords are supported for the <b>-c</b> command-line option
-// to the htdb_load utility. See DB-&gt;open for further discussion of
-// these keywords and what values should be specified.
-//
-// The parenthetical listing specifies how the value part of the
-// <b>name=value</b> pair is interpreted.
-// Items listed as (boolean) expect value to be <b>1</b> (set) or <b>0</b>
-// (unset).
-// Items listed as (number) convert value to a number.
-// Items listed as (string) use the string value without modification.
-//
-// <dl>
-// <dt>bt_minkey (number)
-// <dd>The minimum number of keys per page.
-// <dt>db_lorder (number)
-// <dd>The byte order for integers in the stored database metadata.
-// <dt>db_pagesize (number)
-// <dd>The size of pages used for nodes in the tree, in bytes.
-// <dt>duplicates (boolean)
-// <dd>The value of the DB_DUP flag.
-// <dt>h_ffactor (number)
-// <dd>The density within the Hash database.
-// <dt>h_nelem (number)
-// <dd>The size of the Hash database.
-// <dt>keys (boolean)
-// <dd>Specify if keys are present for Queue or Recno databases.
-// <dt>re_len (number)
-// <dd>Specify fixed-length records of the specified length.
-// <dt>re_pad (string)
-// <dd>Specify the fixed-length record pad character.
-// <dt>recnum (boolean)
-// <dd>The value of the DB_RECNUM flag.
-// <dt>renumber (boolean)
-// <dd>The value of the DB_RENUMBER flag.
-// <dt>subdatabase (string)
-// <dd>The subdatabase to load.
-// </dl>
-//
-// ENVIRONMENT
-//
-// <b>DB_HOME</b>
-// If the <b>-h</b> option is not specified and the environment variable
-// DB_HOME is set, it is used as the path of the database home.
-// <br>
-// <b>MIFLUZ_CONFIG</b>
-// file name of configuration file read by WordContext(3). Defaults to
-// <b>~/.mifluz.</b> 
-//
-// AUTHORS
-//
-// Sleepycat Software http://www.sleepycat.com/
-//
-//
-// END
-// 
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "htconfig.h"
-#endif /* HAVE_CONFIG_H */
+#include "db_config.h"
 
 #ifndef lint
 static const char copyright[] =
-    "Copyright (c) 1996-2000\nSleepycat Software Inc.  All rights reserved.\n";
-static const char revid[] =
-    "$Id: htdb_load.cc,v 1.1.2.4 2000/09/27 05:13:01 ghutchis Exp $";
+"@(#) Copyright (c) 1996, 1997, 1998, 1999\n\
+	Sleepycat Software Inc.  All rights reserved.\n";
+static const char sccsid[] = "@(#)db_load.c	11.6 (Sleepycat) 11/10/99";
 #endif
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -199,6 +19,7 @@ static const char revid[] =
 
 #include <errno.h>
 #include <limits.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -209,14 +30,12 @@ extern "C" {
 #include "db_int.h"
 #include "db_page.h"
 #include "db_am.h"
-#include "clib.h"
 }
-
-#include "util_sig.h"
 
 #include "WordDBCompress.h"
 #include "WordContext.h"
 #include "WordKey.h"
+
 
 void	badend __P((void));
 void	badnum __P((void));
@@ -226,9 +45,12 @@ int	dbt_rdump __P((DBT *));
 int	dbt_rprint __P((DBT *));
 int	dbt_rrecno __P((DBT *));
 int	digitize __P((int, int *));
-int	load __P((char *, DBTYPE, char **, int, u_int32_t, int, WordContext *));
+int	linetorn __P((char *, db_recno_t *));
+int	load __P((char *, DBTYPE, char **, int, u_int32_t, int, int));
 int	main __P((int, char *[]));
+void	onint __P((int));
 int	rheader __P((DB *, DBTYPE *, char **, int *, int*));
+void	siginit __P((void));
 void	usage __P((void));
 
 int	endodata;			/* Reached the end of a database. */
@@ -238,8 +60,9 @@ u_long	lineno;				/* Input file line number. */
 int	version = 1;			/* Input version. */
 
 DB_ENV	*dbenv;
+int	 interrupted;
 const char
-	*progname = "db_load";		/* Program name. */
+	*progname = "htdb_load";		/* Program name. */
 
 int
 main(int argc, char* argv[])
@@ -247,17 +70,17 @@ main(int argc, char* argv[])
 	extern char *optarg;
 	extern int optind;
 	DBTYPE dbtype;
-	u_int32_t db_nooverwrite;
-	int ch, exitval, no_header, ret;
-	char **clist, **clp, *home;
 	u_int32_t cachesize = 0;
+	u_int32_t db_nooverwrite;
+	int ch, e_close, exitval, no_header, ret;
+	char **clist, **clp, *home;
 	int compress = 0;
 	int wordlist = 0;
-	WordContext *context = 0;
+	Configuration *config = 0;
 
 	home = NULL;
 	db_nooverwrite = 0;
-	exitval = no_header = 0;
+	e_close = exitval = no_header = 0;
 	dbtype = DB_UNKNOWN;
 
 	/* Allocate enough room for configuration arguments. */
@@ -266,7 +89,7 @@ main(int argc, char* argv[])
 		exit(1);
 	}
 
-	while ((ch = getopt(argc, argv, "c:f:h:nTt:C:S:zWV")) != EOF)
+	while ((ch = getopt(argc, argv, "c:f:h:nTt:C:S:zW")) != EOF)
 		switch (ch) {
 		case 'c':
 			*clp++ = optarg;
@@ -306,9 +129,6 @@ main(int argc, char* argv[])
 			}
 			usage();
 			/* NOTREACHED */
-		case 'V':
-			printf("%s\n", CDB_db_version(NULL, NULL, NULL));
-			exit(0);
 		case 'C':
 			cachesize = atoi(optarg);
 			break;
@@ -330,45 +150,42 @@ main(int argc, char* argv[])
 		usage();
 
 	/* Handle possible interruptions. */
-	__db_util_siginit();
+	siginit();
 
 	if(wordlist) {
 	  static ConfigDefaults defaults[] = {
-	    { "wordlist_wordkey_description", "Word 24/DocID 32/Flag 8/Location 16"},
+	    { "wordlist_wordkey_description", "Word/DocID 32/Flag 8/Location 16"},
 	    { "wordlist_env_skip", "true"},
 	    { 0, 0, 0 }
 	  };
-	  context = new WordContext(defaults);
+	  config = WordContext::Initialize(defaults);
 	} 
 
 	/*
-	 * Create an environment object initialized for error reporting, and
-	 * then open it.
+	 * Create an environment object and initialize it for error
+	 * reporting.
 	 */
 	if ((ret = CDB_db_env_create(&dbenv, 0)) != 0) {
 	  fprintf(stderr,
 		  "%s: CDB_db_env_create: %s\n", progname, CDB_db_strerror(ret));
-	  goto shutdown;
+	  exit (1);
 	}
+
 	dbenv->set_errfile(dbenv, stderr);
 	dbenv->set_errpfx(dbenv, progname);
 	if(cachesize > 0) dbenv->set_cachesize(dbenv, 0, cachesize, 1);
-	if(compress && wordlist) dbenv->mp_cmpr_info = (new WordDBCompress(context))->CmprInfo();
+	if(compress && wordlist) dbenv->mp_cmpr_info = (new WordDBCompress)->CmprInfo();
 
 	if (db_init(home) != 0)
-		goto shutdown;
+	  goto shutdown;
 
 	while (!endofile)
 		if (load(argv[0],
-		    dbtype, clist, no_header, db_nooverwrite, compress, context) != 0)
+		    dbtype, clist, no_header, db_nooverwrite, compress, wordlist) != 0)
 			goto shutdown;
 
 	if (0) {
 shutdown:	exitval = 1;
-	}
-	if(wordlist && compress) {
-	  delete (WordDBCompress*)dbenv->mp_cmpr_info->user_data;
-	  delete dbenv->mp_cmpr_info;
 	}
 	if ((ret = dbenv->close(dbenv, 0)) != 0) {
 		exitval = 1;
@@ -376,10 +193,18 @@ shutdown:	exitval = 1;
 		    "%s: dbenv->close: %s\n", progname, CDB_db_strerror(ret));
 	}
 
-	if(context) delete context;
+	if (interrupted) {
+		(void)signal(interrupted, SIG_DFL);
+		(void)raise(interrupted);
+		/* NOTREACHED */
+	}
+
+	if(config) {
+	  WordContext::Finish();
+	  delete config;
+	}
+
 	free(clist);
-	/* Resend any caught signal. */
-	__db_util_sigresend();
 
 	/* Return 0 on success, 1 if keys existed already, and 2 on failure. */
 	return (exitval == 0 ? (existed == 0 ? 0 : 1) : 2);
@@ -390,7 +215,7 @@ shutdown:	exitval = 1;
  *	Load a database.
  */
 int
-load(char *name, DBTYPE argtype, char **clist, int no_header, u_int32_t db_nooverwrite, int compress, WordContext* context)
+load(char *name, DBTYPE argtype, char **clist, int no_header, u_int32_t db_nooverwrite, int compress, int wordlist)
 {
 	DB *dbp;
 	DBT key, rkey, data, *readp, *writep;
@@ -410,6 +235,8 @@ load(char *name, DBTYPE argtype, char **clist, int no_header, u_int32_t db_noove
 		dbenv->err(dbenv, ret, "CDB_db_create");
 		return (1);
 	}
+
+	if(wordlist) dbp->set_bt_compare(dbp, word_db_cmp);
 
 	dbtype = DB_UNKNOWN;
 	keys = -1;
@@ -432,10 +259,6 @@ load(char *name, DBTYPE argtype, char **clist, int no_header, u_int32_t db_noove
 	 */
 	if (configure(dbp, clist, &subdb, &keyflag))
 		goto err;
-
-#if 0
-	if(subdb && !strcmp(subdb, "index") && context) dbp->set_bt_compare(dbp, word_db_cmp);
-#endif
 
 	if (keys != 1) {
 		if (keyflag == 1) {
@@ -516,7 +339,7 @@ key_data:	if ((readp->data =
 	}
 
 	/* Get each key/data pair and add them to the database. */
-	for (recno = 1; !__db_util_interrupted(); ++recno) {
+	for (recno = 1; !interrupted; ++recno) {
 		if (!keyflag)
 			if (checkprint) {
 				if (dbt_rprint(&data))
@@ -567,8 +390,7 @@ fmt:					dbenv->errx(dbenv,
 			    name,
 			    !keyflag ? recno : recno * 2 - 1);
 
-			(void)CDB___db_prdbt(&key, checkprint, 0, stderr,
-			    CDB___db_verify_callback, 0, NULL);
+			(void)CDB___db_prdbt(&key, checkprint, 0, stderr, 0);
 			break;
 		default:
 			dbenv->err(dbenv, ret, NULL);
@@ -610,9 +432,8 @@ db_init(char *home)
 	/* We may be loading into a live environment.  Try and join. */
 	flags = DB_USE_ENVIRON |
 	    DB_INIT_LOCK | DB_INIT_LOG | DB_INIT_MPOOL | DB_INIT_TXN;
-	if (dbenv->open(dbenv, home, flags, 0) == 0)
+	if (dbenv->open(dbenv, home, NULL, flags, 0) == 0)
 		return (0);
-
 	/*
 	 * We're trying to load a database.
 	 *
@@ -625,9 +446,9 @@ db_init(char *home)
 	 * an mpool region exists).  Create one, but make it private so that
 	 * no files are actually created.
 	 */
-	LF_CLR(DB_INIT_LOCK | DB_INIT_LOG | DB_INIT_TXN);
+	LF_CLR(DB_INIT_LOG | DB_INIT_TXN);
 	LF_SET(DB_CREATE | DB_PRIVATE);
-	if ((ret = dbenv->open(dbenv, home, flags, 0)) == 0)
+	if ((ret = dbenv->open(dbenv, home, NULL, flags, 0)) == 0)
 		return (0);
 
 	/* An environment is required. */
@@ -689,8 +510,7 @@ configure(DB *dbp, char **clp, char **subdbp, int *keysp)
 		savech = *value;
 		*value++ = '\0';
 
-		if (strcmp(name, "database") == 0 ||
-		    strcmp(name, "subdatabase") == 0) {
+		if (strcmp(name, "subdatabase") == 0) {
 			if ((*subdbp = strdup(value)) == NULL) {
 				dbp->err(dbp, ENOMEM, NULL);
 				return (1);
@@ -716,7 +536,6 @@ configure(DB *dbp, char **clp, char **subdbp, int *keysp)
 		NUMBER(name, value, "db_lorder", set_lorder);
 		NUMBER(name, value, "db_pagesize", set_pagesize);
 		FLAG(name, value, "duplicates", DB_DUP);
-		FLAG(name, value, "dupsort", DB_DUPSORT);
 		NUMBER(name, value, "h_ffactor", set_h_ffactor);
 		NUMBER(name, value, "h_nelem", set_h_nelem);
 		NUMBER(name, value, "re_len", set_re_len);
@@ -816,8 +635,7 @@ rheader(DB *dbp, DBTYPE *dbtypep, char **subdbp, int *checkprintp, int *keysp)
 			dbp->errx(dbp, "line %lu: unknown type", lineno);
 			return (1);
 		}
-		if (strcmp(name, "database") == 0 ||
-		    strcmp(name, "subdatabase") == 0) {
+		if (strcmp(name, "subdatabase") == 0) {
 			if ((*subdbp = strdup(value)) == NULL) {
 				dbp->err(dbp, ENOMEM, NULL);
 				return (1);
@@ -843,7 +661,6 @@ rheader(DB *dbp, DBTYPE *dbtypep, char **subdbp, int *checkprintp, int *keysp)
 		NUMBER(name, value, "db_lorder", set_lorder);
 		NUMBER(name, value, "db_pagesize", set_pagesize);
 		FLAG(name, value, "duplicates", DB_DUP);
-		FLAG(name, value, "dupsort", DB_DUPSORT);
 		NUMBER(name, value, "h_ffactor", set_h_ffactor);
 		NUMBER(name, value, "h_nelem", set_h_nelem);
 		NUMBER(name, value, "re_len", set_re_len);
@@ -1027,14 +844,26 @@ dbt_rrecno(DBT *dbtp)
 		return (0);
 	}
 
-	if (buf[0] != ' ' || CDB___db_getulong(NULL,
-	    progname, buf + 1, 0, 0, (u_long *)dbtp->data)) {
+	if (buf[0] != ' ' || linetorn(buf + 1, (db_recno_t *)dbtp->data)) {
 		badend();
 		return (1);
 	}
 
 	dbtp->size = sizeof(db_recno_t);
 	return (0);
+}
+
+/*
+ * linetorn --
+ * 	Given a character string representing a recno in ASCII text,
+ * 	return the db_recno_t.
+ */
+int
+linetorn(char *buf, db_recno_t *recno)
+{
+	errno = 0;
+	*recno = strtoul(buf, NULL, 0);
+	return (errno ? 1 : 0);
 }
 
 /*
@@ -1091,6 +920,36 @@ badend()
 }
 
 /*
+ * siginit --
+ *	Initialize the set of signals for which we want to clean up.
+ *	Generally, we try not to leave the shared regions locked if
+ *	we can.
+ */
+void
+siginit()
+{
+#ifdef SIGHUP
+	(void)signal(SIGHUP, onint);
+#endif
+	(void)signal(SIGINT, onint);
+#ifdef SIGPIPE
+	(void)signal(SIGPIPE, onint);
+#endif
+	(void)signal(SIGTERM, onint);
+}
+
+/*
+ * onint --
+ *	Interrupt signal handler.
+ */
+void
+onint(int signo)
+{
+	if ((interrupted = signo) == 0)
+		interrupted = SIGINT;
+}
+
+/*
  * usage --
  *	Display the usage message.
  */
@@ -1098,7 +957,7 @@ void
 usage()
 {
 	(void)fprintf(stderr, "%s\n\t%s\n",
-	    "usage: db_load [-nTzWV]",
+	    "usage: htdb_load [-nTzW]",
     "[-c name=value] [-f file] [-h home] [-C cachesize] [-t btree | hash | recno] db_file");
 	exit(1);
 }

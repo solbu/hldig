@@ -8,25 +8,19 @@
 // 
 // #include <WordReference.h>
 //
-// WordContext* context;
-// WordReference* word = context->Word("word");
-// WordReference* word = context->Word();
-// WordReference* word = context->Word(WordKey("key 1 2"), WordRecord());
+// WordReference wordRef("word");
+// WordReference wordRef();
+// WordReference wordRef(WordKey("key <DEF> 1 2"), WordRecord());
 //
-// WordKey& key = word->Key();
-// WordKey& record = word->Record();
+// WordKey& key = wordRef.Key();
+// WordKey& record = wordRef.Record();
 // 
-// word->Clear();
-//
-// delete word;
+// wordRef.Clear();
 //
 // DESCRIPTION
 //
 // A <i>WordReference</i> object is an agregate of a <i>WordKey</i> object
 // and a <i>WordRecord</i> object.
-//
-// Although constructors may be used, the prefered way to create a 
-// WordReference object is by using the <b>WordContext::Word</b> method.
 // 
 // ASCII FORMAT
 //
@@ -44,14 +38,13 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.h,v 1.3.2.10 2000/09/14 03:13:28 ghutchis Exp $
+// $Id: WordReference.h,v 1.3.2.11 2000/10/10 03:15:44 ghutchis Exp $
 //
 #ifndef _WordReference_h_
 #define _WordReference_h_
 
 #ifndef SWIG
 #include "htString.h"
-#include "WordContext.h"
 #include "WordRecord.h"
 #include "WordKey.h"
 #endif /* SWIG */
@@ -66,79 +59,34 @@ class WordReference : public Object
   // Construction/Destruction
   //-
   // Constructor. Build an object with empty key and empty record.
-  // The <b>ncontext</b> argument must be a pointer to a valid
-  // WordContext object.
   // 
-  WordReference(WordContext* ncontext) :
-    key(ncontext),
-    record(ncontext)
-    { context = ncontext; }
+  WordReference()	{}
 #ifndef SWIG
   //-
   // Constructor. Build an object from disk representation of <b>key</b>
   // and <b>record</b>.
-  // The <b>ncontext</b> argument must be a pointer to a valid
-  // WordContext object.
   // 
-  WordReference(WordContext* ncontext, const String& key0, const String& record0) :
-    key(ncontext),
-    record(ncontext)
-    {
-      context = ncontext;
-      Unpack(key0, record0);
-    }
+  WordReference(const String& key0, const String& record0) {
+    Unpack(key0, record0);
+  }
   //-
   // Constructor. Build an object with key word set to <b>word</b>
   // and otherwise empty and empty record.
-  // The <b>ncontext</b> argument must be a pointer to a valid
-  // WordContext object.
   // 
-  WordReference(WordContext* ncontext, const String& word) :
-    key(ncontext),
-    record(ncontext)
-    {
-      context = ncontext;
-      Clear();
-      SetWord(word);
-    }
+  WordReference(const String& word) {
+    Clear();
+    key.SetWord(word);
+  }
 #endif /* SWIG */
   ~WordReference()	{}
 
   //-
   // Reset to empty key and record
   //
-  void			Clear() { key.Clear(); record.Clear(); word.trunc(); word_prefix = 0; }
+  void			Clear() { key.Clear(); record.Clear(); }
 
   //
   // Accessors
-  //
-  //-
-  // Return a pointer to the WordContext object used to create
-  // this instance.
-  //
-  inline WordContext* GetContext() { return context; }
-#ifndef SWIG
-  //-
-  // Return a pointer to the WordContext object used to create
-  // this instance as a const.
-  //
-  inline const WordContext* GetContext() const { return context; }
-#endif /* SWIG */
-  //-
-  // Return the <b>word</b> data member.
-  //
-  inline String& GetWord() { return word; }
-#ifndef SWIG
-  //-
-  // Return the <b>word</b> data member as a const.
-  //
-  inline const String& GetWord() const { return word; }
-#endif /* SWIG */
-  //-
-  // Set the <b>word</b> data member from the <b>nword</b> argument.
-  //
-  inline void SetWord(const String& nword) { word = nword; }
-
   //-
   // Return the key object.
   //
@@ -258,6 +206,10 @@ class WordReference : public Object
 #endif /* SWIG */
 
 #ifndef SWIG
+  int			compare(Object *to) { String word(((WordReference *) to)->key.GetWord()); return key.GetWord().nocase_compare(word); }
+#endif /* SWIG */
+
+#ifndef SWIG
   //
   // Set the whole structure from ASCII string description
   //
@@ -304,9 +256,6 @@ class WordReference : public Object
 #ifndef SWIG
   WordKey		key;
   WordRecord		record;
-  String		word;
-  int			word_prefix;
-  WordContext*		context;
 #endif /* SWIG */
 };
 

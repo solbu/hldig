@@ -1,15 +1,12 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998, 1999, 2000
+ * Copyright (c) 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  *
- * $Id: os.h,v 1.1.2.2 2000/09/14 03:13:22 ghutchis Exp $
+ *	@(#)os.h	11.1 (Sleepycat) 7/25/99
  */
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
 /*
  * Filehandle.
  */
@@ -40,7 +37,3 @@ typedef struct __io_t {
 	u_int8_t  *buf;			/* Buffer. */
 	size_t	   bytes;		/* Bytes read/written. */
 } DB_IO;
-
-#if defined(__cplusplus)
-}
-#endif

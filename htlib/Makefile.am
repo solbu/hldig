@@ -7,13 +7,13 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc \
 	String.cc StringList.cc StringMatch.cc String_fmt.cc \
 	good_strtok.cc strcasecmp.cc \
-	mktime.c strptime.c timegm.c myqsort.c \
+	mktime.c strptime.c timegm.c \
 	getcwd.c memcmp.c memcpy.c memmove.c raise.c strerror.c \
 	HtCodec.cc HtWordCodec.cc \
 	HtVector.cc HtHeap.cc \
 	HtPack.cc HtDateTime.cc HtRegex.cc \
 	HtRegexReplace.cc HtRegexReplaceList.cc \
-	HtMaxMin.cc md5.cc  mhash_md5.c
+	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc md5.cc  mhash_md5.c
 
 libht_la_LIBADD=@LTLIBOBJS@
 
@@ -48,10 +48,14 @@ pkginclude_HEADERS = \
 	lib.h \
 	langinfo.h \
 	regex.h  \
+	HtVectorGeneric.h   \
+	HtVectorGenericCode.h \
+	HtVector_int.h \
+	HtVector_String.h \
 	HtMaxMin.h \
 	HtTime.h \
+	HtWordType.h \
 	HtRandom.h \
-	md5.h \
-	myqsort.h
+	md5.h
 
 

@@ -1,21 +1,21 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998, 1999, 2000
+ * Copyright (c) 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: os_open.c,v 1.1.2.3 2000/09/17 01:35:07 ghutchis Exp $";
+static const char sccsid[] = "@(#)os_open.c	11.1 (Sleepycat) 7/25/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
 
 #include <fcntl.h>
-#include <string.h>
+#include <signal.h>
 #endif
 
 #include "db_int.h"
@@ -24,16 +24,18 @@ static const char revid[] = "$Id: os_open.c,v 1.1.2.3 2000/09/17 01:35:07 ghutch
  * CDB___os_open --
  *	Open a file.
  *
- * PUBLIC: int CDB___os_open __P((DB_ENV *, const char *, u_int32_t, int, DB_FH *));
+ * PUBLIC: int CDB___os_open __P((const char *, u_int32_t, int, DB_FH *));
  */
 int
-CDB___os_open(dbenv, name, flags, mode, fhp)
-	DB_ENV *dbenv;
+CDB___os_open(name, flags, mode, fhp)
 	const char *name;
 	u_int32_t flags;
 	int mode;
 	DB_FH *fhp;
 {
+#if defined(HAVE_SIGFILLSET)
+	sigset_t set, oset;
+#endif
 	int oflags, ret;
 
 	oflags = 0;
@@ -70,22 +72,38 @@ CDB___os_open(dbenv, name, flags, mode, fhp)
 	if (LF_ISSET(DB_OSO_TRUNC))
 		oflags |= O_TRUNC;
 
+#if defined(HAVE_SIGFILLSET)
+	/*
+	 * We block every signal we can get our hands on so that the temporary
+	 * file isn't left around if we're interrupted at the wrong time.  Of
+	 * course, if we drop core in-between the calls we'll hang forever, but
+	 * that's probably okay.  ;-)
+	 */
+	if (LF_ISSET(DB_OSO_TEMP)) {
+		(void)sigfillset(&set);
+		(void)sigprocmask(SIG_BLOCK, &set, &oset);
+	}
+#endif
+
 	/* Open the file. */
-	if ((ret = CDB___os_openhandle(dbenv, name, oflags, mode, fhp)) != 0)
+	if ((ret = CDB___os_openhandle(name, oflags, mode, fhp)) != 0)
 		return (ret);
 
-	/*
-	 * Delete any temporary file.
-	 *
-	 * !!!
-	 * There's a race here, where we've created a file and we crash before
-	 * we can unlink it.  Temporary files aren't common in DB, regardless,
-	 * it's not a security problem because the file is empty.  There's no
-	 * reasonable way to avoid the race (playing signal games isn't worth
-	 * the portability nightmare), so we just live with it.
-	 */
-	if (LF_ISSET(DB_OSO_TEMP))
-		(void)CDB___os_unlink(dbenv, name);
+	/* Delete any temporary file. */
+	if (LF_ISSET(DB_OSO_TEMP)) {
+		(void)CDB___os_unlink(name);
+#if defined(HAVE_SIGFILLSET)
+		(void)sigprocmask(SIG_SETMASK, &oset, NULL);
+#endif
+	}
 
+#if defined(HAVE_FCNTL_F_SETFD)
+	/* Deny file descriptor access to any child process. */
+	if (fcntl(fhp->fd, F_SETFD, 1) == -1) {
+		ret = CDB___os_get_errno();
+		(void)CDB___os_closehandle(fhp);
+		return (ret);
+	}
+#endif
 	return (0);
 }

@@ -5,60 +5,29 @@
 # or the GNU General Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_htdb,v 1.1.2.2 2000/09/14 03:13:29 ghutchis Exp $
+# $Id: t_htdb,v 1.1.2.3 2000/10/10 03:15:47 ghutchis Exp $
 #
 
 . ./test_functions
 
-#
-# load/dump/stat with and without compression, using
-# stock Berkeley DB functionalities.
-#
-for compress in "" # "-z"
+for compress in "" "-z"
 do
    rm -f test
    ../htdb/htdb_load -f $srcdir/t_htdb.dump  $compress test || exit 1
    ../htdb/htdb_dump -p  $compress test > t_htdb.d1 || exit 1
    cmp $srcdir/t_htdb.dump t_htdb.d1 || exit 1
-   ../htdb/htdb_stat  $compress -d test | grep '35	Number of unique keys in the tree' > /dev/null || exit 1
+   ../htdb/htdb_stat  $compress -d test | grep '11	Number of keys in the tree' > /dev/null || exit 1
 done
 
 export MIFLUZ_CONFIG ; MIFLUZ_CONFIG=${srcdir}/mifluz-search.conf
 
-#
-# load/dump/stat with and without compression, using
-# mifluz specific compression and sort functions.
-#
 for compress in "" "-z"
 do
-   rm -f test
-   ../htdb/mifluzload $compress $VERBOSE test < $srcdir/search.txt
+   rm -f test test_weakcmpr
+   ./txt2mifluz $compress $VERBOSE < $srcdir/search.txt
    ../htdb/htdb_dump -W -p  $compress test > t_htdb.d1 || exit 1   
-   rm -f test
+   rm -f test test_weakcmpr
    ../htdb/htdb_load -W -f t_htdb.d1  $compress test || exit 1
    ../htdb/htdb_dump -W -p  $compress test > t_htdb.d2 || exit 1   
    cmp t_htdb.d1 t_htdb.d2 || exit 1
 done
-
-#
-# mifluzdump/mifluzload
-#
-rm test
-../htdb/mifluzload test < $srcdir/search.txt || exit 1
-../htdb/mifluzdump test > search1.txt || exit 1
-../htdb/mifluzload test < search1.txt || exit 1
-../htdb/mifluzdump test > search2.txt || exit 1
-cmp search[12].txt
-rm -f search[12].txt
-
-a=`../htdb/htdb_dump -W -l test`
-if [ "$a" != "dead
-dict
-index
-meta
-tmp" ]
-then
-	echo htdb_dump -l failed
-	exit 1
-fi
-

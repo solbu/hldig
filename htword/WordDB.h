@@ -19,7 +19,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.h,v 1.3.2.14 2000/09/14 03:13:27 ghutchis Exp $
+// $Id: WordDB.h,v 1.3.2.15 2000/10/10 03:15:43 ghutchis Exp $
 //
 
 #ifndef _WordDB_h_
@@ -33,13 +33,9 @@
 #include "WordDBInfo.h"
 #include "htString.h"
 
-class WordDBCache;
-class WordDBCacheEntry;
-
 #define WORD_DBT_DCL(v) \
     DBT v; \
-    memset((char*)&(v), '\0', sizeof(DBT)); \
-    v.app_private = user_data
+    memset((char*)&(v), '\0', sizeof(DBT))
 
 #define WORD_DBT_SET(v,d,s) \
     v.data = (d); \
@@ -49,16 +45,8 @@ class WordDBCacheEntry;
     WORD_DBT_DCL(v); \
     WORD_DBT_SET(v,d,s)
 
-class WordDBCursor;
-class WordDBCache;
-
-#define WORD_DB_DICT	(1 << 4)
-#define WORD_DB_INDEX	(2 << 4)
-#define WORD_DB_DEAD	(3 << 4)
-#define WORD_DB_FILES	(4 << 4)
-
 //
-// Encapsulate the DB type
+// Encapsulate the Berkeley DB DB type
 //
 // Implements the same methods with String instead of Dbt.
 //
@@ -74,86 +62,175 @@ class WordDBCache;
 //
 class WordDB {
  public:
-  inline WordDB(WordDBInfo& ndb_info) :
-    db_info(ndb_info)
-    {
-      db = 0;
-      is_open = 0;
-      cache = 0;
-    }
-  inline ~WordDB() {
-    if(CacheP()) CacheOff();
-    Close();
+  inline WordDB() { Alloc(); }
+  inline ~WordDB() { Dealloc(); }
+
+  inline int Alloc() {
+    db = 0;
+    is_open = 0;
+    dbenv = WordDBInfo::Instance()->dbenv;
+    return CDB_db_create(&db, dbenv, 0);
   }
 
-  int Alloc();
+  inline int Dealloc() {
+    int error = 0;
+    is_open = 0;
+    if(db)
+      error = db->close(db, 0);
+    else
+      fprintf(stderr, "WordDB::Dealloc: null db\n");
+    dbenv = 0;
+    db = 0;
+    return error;
+  }
 
-  int Open(const String& filename, const String& subname, DBTYPE type, int flags, int mode, int tags);
-  int Remove(const String& filename, const String& subname);
-  int Close();
+  int Open(const String& filename, DBTYPE type, int flags, int mode);
 
-  int Fd(int *fdp);
-  int Stat(void *sp, void *(*db_malloc)(size_t), int flags);
-  int Sync(int flags);
-  int get_byteswapped() const;
-  DBTYPE get_type() const;
-  unsigned int Size() const;
-  void Tags(int tags) { db->tags = tags; }
-  int Tags() const { return db->tags; }
+  inline int Close() {
+    int error;
+    if((error = Dealloc()) != 0)
+      return error;
+    return Alloc();
+  }
+
+  inline int Fd(int *fdp) {
+    if(!is_open) return DB_UNKNOWN;
+    return db->fd(db, fdp);
+  }
+
+  inline int Stat(void *sp, void *(*db_malloc)(size_t), int flags) {
+    if(!is_open) return DB_UNKNOWN;
+    return db->stat(db, sp, db_malloc, (u_int32_t) flags);
+  }
+  
+  inline int Sync(int flags) {
+    if(!is_open) return DB_UNKNOWN;
+    return db->sync(db, (u_int32_t) flags);
+  }
+
+  inline int get_byteswapped() const {
+    if(!is_open) return DB_UNKNOWN;
+    return db->get_byteswapped(db);
+  }
+
+  inline DBTYPE get_type() const {
+    if(!is_open) return DB_UNKNOWN;
+    return db->get_type(db);
+  }
 
   //
   // String arguments
   //
-  int Put(DB_TXN *txn, const String& key, const String& data, int flags);
-  int Put(DB_TXN *txn, const String& key, const unsigned int& data, int flags);
-  int Get(DB_TXN *txn, String& key, String& data, int flags) const;
-  int Get(DB_TXN *txn, String& key, unsigned int& data, int flags) const;
-  int Del(DB_TXN *txn, const String& key);
+  inline int Put(DB_TXN *txn, const String& key, const String& data, int flags) {
+    WORD_DBT_INIT(rkey, (void*)key.get(), key.length());
+    WORD_DBT_INIT(rdata, (void*)data.get(), data.length());
+
+    return db->put(db, txn, &rkey, &rdata, flags);
+  }
+
+  inline int Get(DB_TXN *txn, String& key, String& data, int flags) const {
+    WORD_DBT_INIT(rkey, (void*)key.get(), (u_int32_t)key.length());
+    WORD_DBT_INIT(rdata, (void*)data.get(), (u_int32_t)data.length());
+
+    int error;
+    if((error = db->get(db, txn, &rkey, &rdata, 0)) != 0) {
+      if(error != DB_NOTFOUND)
+	fprintf(stderr, "WordDB::Get(%s,%s) using %d failed %s\n", (char*)key, (char*)data, flags, CDB_db_strerror(error));
+    } else {
+      //
+      // Only set arguments if found something.
+      //
+      key.set((const char*)rkey.data, (int)rkey.size);
+      data.set((const char*)rdata.data, (int)rdata.size);
+    }
+
+    return error;
+  }
+
+  inline int Del(DB_TXN *txn, const String& key) {
+    WORD_DBT_INIT(rkey, (void*)key.get(), (u_int32_t)key.length());
+
+    return db->del(db, txn, &rkey, 0);
+  }
 
   //
   // WordReference argument
   //
-  int Put(const WordReference& wordRef, int flags);
-  int Del(const WordReference& wordRef);
+  inline int Put(const WordReference& wordRef, int flags) {
+    if(!is_open) return DB_UNKNOWN;
+
+    int ret;
+    String key;
+    String record;
+
+    if((ret = wordRef.Pack(key, record)) != OK) return DB_RUNRECOVERY;
+
+    return Put(0, key, record, flags);
+  }
+
+  inline int Del(const WordReference& wordRef) {
+    String key;
+
+    wordRef.Key().Pack(key);
+
+    return Del(0, key);
+  }
 
   //
   // Search entry matching wkey exactly, return key and data
   // in wordRef.
   //
-  int Get(WordReference& wordRef) const;
+  inline int Get(WordReference& wordRef) const {
+    if(!is_open) return DB_UNKNOWN;
+
+    String data;
+    String key;
+
+    if(wordRef.Key().Pack(key) != OK) return DB_RUNRECOVERY;
+
+    int ret;
+    if((ret = Get(0, key, data, 0)) != 0)
+      return ret;
+
+    return wordRef.Unpack(key, data) == OK ? 0 : DB_RUNRECOVERY;
+  }
 
   //
   // Returns 0 of the key of wordRef matches an entry in the database.
   // Could be implemented with Get but is not because we don't
   // need to build a wordRef with the entry found in the base. 
   //
-  int Exists(const WordReference& wordRef) const;
+  inline int Exists(const WordReference& wordRef) const {
+    if(!is_open) return DB_UNKNOWN;
+
+    String key;
+    String data;
+
+    if(wordRef.Key().Pack(key) != OK) return DB_RUNRECOVERY;
+
+    return Get(0, key, data, 0);
+  }
 
   //
   // Accessors
   //
-  int set_bt_compare(int (*compare)(const DBT *, const DBT *), void *user_data);
-  int set_pagesize(u_int32_t pagesize);
+  inline int set_bt_compare(int (*compare)(const DBT *, const DBT *)) {
+    return db->set_bt_compare(db, compare);
+  }
+
+  inline int set_pagesize(u_int32_t pagesize) {
+    return db->set_pagesize(db, pagesize);
+  }
 
   //
-  // Cursor
+  // Accessors for description of the compression scheme
   //
-  WordDBCursor* Cursor();
+  inline DB_CMPR_INFO* CmprInfo() { return dbenv->mp_cmpr_info; }
+  inline void CmprInfo(DB_CMPR_INFO* info) { dbenv->mp_cmpr_info = info; }
 
-  //
-  // Cache management
-  //
-  int CacheOn(WordContext* context, int size_hint);
-  int CacheOff();
-  int CacheFlush();
-  int CacheCompare(int (*compare)(WordContext *, const WordDBCacheEntry *, const WordDBCacheEntry *));
-  int CacheP() const { return cache ? 1 : 0; }
-  
-  void*			user_data;
   int			is_open;
   DB*			db;
-  WordDBInfo&          	db_info;
-  WordDBCache*		cache;
+  DB_ENV*            	dbenv;
 };
 
 //
@@ -161,19 +238,14 @@ class WordDB {
 //
 class WordDBCursor {
  public:
-  inline WordDBCursor(WordDB* ndb) {
-    db = ndb;
-    user_data = db->user_data;
-    cursor = 0;
-    Open();
-  }
+  inline WordDBCursor() { cursor = 0; }
   inline ~WordDBCursor() {
     Close();
   }
 
-  inline int Open() {
+  inline int Open(DB* db) {
     Close();
-    return db->db->cursor(db->db, 0, &cursor, 0);
+    return db->cursor(db, 0, &cursor, 0);
   }
 
   inline int Close() {
@@ -182,36 +254,10 @@ class WordDBCursor {
     return 0;
   }
 
-  inline int Get(String& key, unsigned int& data, int flags) {
-    db->CacheFlush();
-    
-    WORD_DBT_DCL(rkey);
-    WORD_DBT_DCL(rdata);
-    switch(flags & DB_OPFLAGS_MASK) {
-    case DB_SET_RANGE:
-    case DB_SET:
-    case DB_GET_BOTH:
-      WORD_DBT_SET(rkey, (void*)key.get(), key.length());
-      break;
-    }
-    int error;
-    data = 0;
-    if((error = cursor->c_get(cursor, &rkey, &rdata, (u_int32_t)flags)) != 0) {
-      if(error != DB_NOTFOUND)
-	fprintf(stderr, "WordDBCursor::Get(%d) failed %s\n", flags, CDB_db_strerror(error));
-    } else {
-      key.set((const char*)rkey.data, (int)rkey.size);
-      memcpy((char*)&data, (char*)rdata.data, sizeof(unsigned int));
-    }
-    return error;
-  }
-  
   //
   // String arguments
   //
   inline int Get(String& key, String& data, int flags) {
-    db->CacheFlush();
-
     WORD_DBT_DCL(rkey);
     WORD_DBT_DCL(rdata);
     switch(flags & DB_OPFLAGS_MASK) {
@@ -242,8 +288,7 @@ class WordDBCursor {
     return cursor->c_del(cursor, (u_int32_t)0);
   }
 
-  void* user_data;
-  WordDB* db;
+private:
   DBC* cursor;
 };
 

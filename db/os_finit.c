@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1998, 1999, 2000
+ * Copyright (c) 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: os_finit.c,v 1.1.2.3 2000/09/17 01:35:07 ghutchis Exp $";
+static const char sccsid[] = "@(#)os_finit.c	11.3 (Sleepycat) 9/22/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,18 +24,17 @@ static const char revid[] = "$Id: os_finit.c,v 1.1.2.3 2000/09/17 01:35:07 ghutc
  * CDB___os_finit --
  *	Initialize a regular file, optionally zero-filling it as well.
  *
- * PUBLIC: int CDB___os_finit __P((DB_ENV *, DB_FH *, size_t, int));
+ * PUBLIC: int CDB___os_finit __P((DB_FH *, size_t, int));
  */
 int
-CDB___os_finit(dbenv, fhp, size, zerofill)
-	DB_ENV *dbenv;
+CDB___os_finit(fhp, size, zerofill)
 	DB_FH *fhp;
 	size_t size;
 	int zerofill;
 {
 	db_pgno_t pages;
 	size_t i;
-	size_t nw;
+	ssize_t nw;
 	u_int32_t relative;
 	int ret;
 	char buf[OS_VMPAGESIZE];
@@ -50,14 +49,14 @@ CDB___os_finit(dbenv, fhp, size, zerofill)
 	 * pages of 1MB each so that we don't overflow (2^20 + 2^32 is bigger
 	 * than any memory I expect to see for awhile).
 	 */
-	if ((ret = CDB___os_seek(dbenv, fhp, 0, 0, 0, 0, DB_OS_SEEK_END)) != 0)
+	if ((ret = CDB___os_seek(fhp, 0, 0, 0, 0, DB_OS_SEEK_END)) != 0)
 		return (ret);
 	pages = (size - OS_VMPAGESIZE) / MEGABYTE;
 	relative = (size - OS_VMPAGESIZE) % MEGABYTE;
-	if ((ret = CDB___os_seek(dbenv,
-	    fhp, MEGABYTE, pages, relative, 0, DB_OS_SEEK_CUR)) != 0)
+	if ((ret =
+	    CDB___os_seek(fhp, MEGABYTE, pages, relative, 0, DB_OS_SEEK_CUR)) != 0)
 		return (ret);
-	if ((ret = CDB___os_write(dbenv, fhp, buf, sizeof(buf), &nw)) != 0)
+	if ((ret = CDB___os_write(fhp, buf, sizeof(buf), &nw)) != 0)
 		return (ret);
 	if (nw != sizeof(buf))
 		return (EIO);
@@ -71,17 +70,17 @@ CDB___os_finit(dbenv, fhp, size, zerofill)
 	if (zerofill) {
 		pages = size / MEGABYTE;
 		relative = size % MEGABYTE;
-		if ((ret = CDB___os_seek(dbenv, fhp,
+		if ((ret = CDB___os_seek(fhp,
 		    MEGABYTE, pages, relative, 1, DB_OS_SEEK_END)) != 0)
 			return (ret);
 
 		/* Write a byte to each page. */
 		for (i = 0; i < size; i += OS_VMPAGESIZE) {
-			if ((ret = CDB___os_write(dbenv, fhp, buf, 1, &nw)) != 0)
+			if ((ret = CDB___os_write(fhp, buf, 1, &nw)) != 0)
 				return (ret);
 			if (nw != 1)
 				return (EIO);
-			if ((ret = CDB___os_seek(dbenv, fhp,
+			if ((ret = CDB___os_seek(fhp,
 			    0, 0, OS_VMPAGESIZE - 1, 0, DB_OS_SEEK_CUR)) != 0)
 				return (ret);
 		}
@@ -93,16 +92,14 @@ CDB___os_finit(dbenv, fhp, size, zerofill)
  * CDB___os_fpinit --
  *	Initialize a page in a regular file.
  *
- * PUBLIC: int CDB___os_fpinit __P((DB_ENV *, DB_FH *, db_pgno_t, int, int));
+ * PUBLIC: int CDB___os_fpinit __P((DB_FH *, db_pgno_t, int, int));
  */
 int
-CDB___os_fpinit(dbenv, fhp, pgno, pagecount, pagesize)
-	DB_ENV *dbenv;
+CDB___os_fpinit(fhp, pgno, pagecount, pagesize)
 	DB_FH *fhp;
 	db_pgno_t pgno;
 	int pagecount, pagesize;
 {
-	COMPQUIET(dbenv, NULL);
 	COMPQUIET(fhp, NULL);
 	COMPQUIET(pgno, 0);
 	COMPQUIET(pagecount, 0);

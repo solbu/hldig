@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1999, 2000
+ * Copyright (c) 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: hash_meta.c,v 1.1.2.3 2000/09/17 01:35:06 ghutchis Exp $";
+static const char sccsid[] = "@(#)hash_meta.c	11.3 (Sleepycat) 9/14/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -37,12 +37,12 @@ CDB___ham_get_meta(dbc)
 	DB *dbp;
 	int ret;
 
-	hcp = (HASH_CURSOR *)dbc->internal;
+	hcp = dbc->internal;
 	dbp = dbc->dbp;
 	hashp = dbp->h_internal;
 
-	if (dbp->dbenv != NULL &&
-	    STD_LOCKING(dbc) && !F_ISSET(dbc, DBC_RECOVER)) {
+	if (dbp->dbenv != NULL && F_ISSET(dbp->dbenv, DB_ENV_LOCKING) &&
+	    !F_ISSET(dbc, DBC_RECOVER)) {
 		dbc->lock.pgno = hashp->meta_pgno;
 		if ((ret = CDB_lock_get(dbp->dbenv, dbc->locker,
 		    DB_NONBLOCK(dbc) ? DB_LOCK_NOWAIT : 0,
@@ -71,7 +71,7 @@ CDB___ham_release_meta(dbc)
 {
 	HASH_CURSOR *hcp;
 
-	hcp = (HASH_CURSOR *)dbc->internal;
+	hcp = dbc->internal;
 
 	if (hcp->hdr)
 		(void)CDB___ham_put_page(dbc->dbp, (PAGE *)hcp->hdr,
@@ -103,10 +103,10 @@ CDB___ham_dirty_meta(dbc)
 
 	dbp = dbc->dbp;
 	hashp = dbp->h_internal;
-	hcp = (HASH_CURSOR *)dbc->internal;
+	hcp = dbc->internal;
 
 	ret = 0;
-	if (STD_LOCKING(dbc) && !F_ISSET(dbc, DBC_RECOVER)) {
+	if (F_ISSET(dbp->dbenv, DB_ENV_LOCKING) && !F_ISSET(dbc, DBC_RECOVER)) {
 		dbc->lock.pgno = hashp->meta_pgno;
 		if ((ret = CDB_lock_get(dbp->dbenv, dbc->locker,
 		    DB_NONBLOCK(dbc) ? DB_LOCK_NOWAIT : 0,

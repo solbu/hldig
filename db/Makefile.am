@@ -1,13 +1,13 @@
-include $(top_srcdir)/Makefile.config
+INCLUDES = -I$(top_srcdir)/../htlib
 
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = db.h.in \
+EXTRA_DIST = db_config.h.in db.h.in \
 	68K.gcc alpha.gcc sparc.gcc x86.gcc \
 	hash.src log.src qam.src txn.src prefix-symbols.sh \
 	LICENSE
 
-noinst_LTLIBRARIES = libhtdb.la
+pkglib_LTLIBRARIES = libhtdb.la
 
 libhtdb_la_SOURCES = \
 	bt_compare.c \
@@ -26,7 +26,6 @@ libhtdb_la_SOURCES = \
 	bt_split.c \
 	bt_stat.c \
 	bt_upgrade.c \
-	bt_verify.c \
 	btree_auto.c \
 	crdel_auto.c \
 	crdel_rec.c \
@@ -34,7 +33,6 @@ libhtdb_la_SOURCES = \
 	db_am.c \
 	db_auto.c \
 	db_byteorder.c \
-	db_cam.c \
 	db_conv.c \
 	db_dispatch.c \
 	db_dup.c \
@@ -52,10 +50,7 @@ libhtdb_la_SOURCES = \
 	db_ret.c \
 	db_salloc.c \
 	db_shash.c \
-	db_upg.c \
-	db_upg_opd.c \
-	db_vrfy.c \
-	db_vrfyutil.c \
+	db_upgrade.c \
 	env_method.c \
 	env_open.c \
 	env_recover.c \
@@ -72,7 +67,6 @@ libhtdb_la_SOURCES = \
 	hash_reclaim.c \
 	hash_stat.c \
 	hash_upgrade.c \
-	hash_verify.c \
 	lock.c \
 	lock_conflict.c \
 	lock_deadlock.c \
@@ -135,8 +129,6 @@ libhtdb_la_SOURCES = \
 	qam_open.c \
 	qam_rec.c \
 	qam_stat.c \
-	qam_upgrade.c \
-	qam_verify.c \
 	txn.c \
 	txn_auto.c \
 	txn_rec.c \
@@ -144,6 +136,8 @@ libhtdb_la_SOURCES = \
 	xa.c \
 	xa_db.c \
 	xa_map.c
+
+libhtdb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 
 pkginclude_HEADERS = \
 	btree.h \
@@ -154,6 +148,7 @@ pkginclude_HEADERS = \
 	db.h \
 	db_am.h \
 	db_auto.h \
+	db_config.h \
 	db_dispatch.h \
 	db_ext.h \
 	db_int.h \
@@ -161,8 +156,6 @@ pkginclude_HEADERS = \
 	db_page.h \
 	db_shash.h \
 	db_swap.h \
-	db_upgrade.h \
-	db_verify.h \
 	debug.h \
 	env_ext.h \
 	hash.h \
@@ -191,21 +184,3 @@ pkginclude_HEADERS = \
 	txn_ext.h \
 	xa.h \
 	xa_ext.h
-
-diff:
-	rm -fr 1.tmp ; mkdir 1.tmp
-	cp db.h.in *.[ch] 1.tmp
-	cd 1.tmp ; \
-	perl -pi -e 's/CDB_//g' *.[ch] ; \
-	for i in *.[ch] *.in ; do diff -c ../../../db-3.1.14/*/$$i $$i ; done ; \
-	diff -c db.h.in ../../../db-3.1.14/include/db.src
-
-polution:
-	nm .libs/libhtdb.al | perl -n -e 'print if(!/^$$/ && !/ [Urtdb] / && !/CDB_/)'
-
-polutionquiet:
-	nm .libs/libhtdb.al | perl -n -e 'print if(!/\.lo:/ && !/^$$/ && !/ [Urtdb] / && !/CDB_/)'
-
-substitutions:
-	nm .libs/libhtdb.al | perl -n -e 'chop; if(!/CDB_/ && s/\w+ [TDRC] //) { print "s/\\b$$_\\b/CDB_$$_/g;\n"; } '
-

@@ -1,7 +1,7 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 /*
@@ -36,10 +36,10 @@
  * SUCH DAMAGE.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: db_dispatch.c,v 1.1.2.3 2000/09/17 01:35:04 ghutchis Exp $";
+static const char sccsid[] = "@(#)db_dispatch.c	11.7 (Sleepycat) 9/9/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -69,14 +69,14 @@ static const char revid[] = "$Id: db_dispatch.c,v 1.1.2.3 2000/09/17 01:35:04 gh
  * scripts in the tools directory).  An application using a different
  * recovery paradigm will supply a different dispatch function to txn_open.
  *
- * PUBLIC: int CDB___db_dispatch __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC: int CDB___db_dispatch __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
  */
 int
 CDB___db_dispatch(dbenv, db, lsnp, redo, info)
 	DB_ENV *dbenv;		/* The environment. */
 	DBT *db;		/* The log record upon which to dispatch. */
 	DB_LSN *lsnp;		/* The lsn of the record being dispatched. */
-	db_recops redo;		/* Redo this op (or undo it). */
+	int redo;		/* Redo this op (or undo it). */
 	void *info;
 {
 	u_int32_t rectype, txnid;
@@ -85,14 +85,15 @@ CDB___db_dispatch(dbenv, db, lsnp, redo, info)
 	memcpy(&txnid, (u_int8_t *)db->data + sizeof(rectype), sizeof(txnid));
 
 	switch (redo) {
-	case DB_TXN_ABORT:
+	case TXN_REDO:
+	case TXN_UNDO:
 		return ((dbenv->dtab[rectype])(dbenv, db, lsnp, redo, info));
-	case DB_TXN_OPENFILES:
-		if (rectype == DB_log_register)
-			return (dbenv->dtab[rectype](dbenv,
+	case TXN_OPENFILES:
+		if (rectype < DB_txn_BEGIN )
+			return ((dbenv->dtab[rectype])(dbenv,
 			    db, lsnp, redo, info));
 		break;
-	case DB_TXN_BACKWARD_ROLL:
+	case TXN_BACKWARD_ROLL:
 		/*
 		 * Running full recovery in the backward pass.  If we've
 		 * seen this txnid before and added to it our commit list,
@@ -100,17 +101,17 @@ CDB___db_dispatch(dbenv, db, lsnp, redo, info)
 		 * seen it, then we call the appropriate recovery routine
 		 * in "abort mode".
 		 *
-		 * We need to always undo DB_db_noop records, so that we
-		 * properly handle any aborts before the file was closed.
-		 */
-		if (rectype == DB_log_register || rectype == DB_txn_ckp ||
+ 		 * We need to always undo DB_db_noop records, so that we
+ 		 * properly handle any aborts before the file was closed.
+  		 */
+  		if (rectype == DB_log_register || rectype == DB_txn_ckp ||
 		    rectype == DB_db_noop ||
 		    (CDB___db_txnlist_find(info, txnid) == DB_NOTFOUND &&
 		    txnid != 0))
-			return (dbenv->dtab[rectype](dbenv,
-			    db, lsnp, DB_TXN_BACKWARD_ROLL, info));
+			return ((dbenv->dtab[rectype])(dbenv,
+			    db, lsnp, TXN_UNDO, info));
 		break;
-	case DB_TXN_FORWARD_ROLL:
+	case TXN_FORWARD_ROLL:
 		/*
 		 * In the forward pass, if we haven't seen the transaction,
 		 * do nothing, else recovery it.
@@ -121,11 +122,11 @@ CDB___db_dispatch(dbenv, db, lsnp, redo, info)
 		if (rectype == DB_log_register || rectype == DB_txn_ckp ||
 		    rectype == DB_db_noop ||
 		    CDB___db_txnlist_find(info, txnid) != DB_NOTFOUND)
-			return (dbenv->dtab[rectype](dbenv,
-			    db, lsnp, DB_TXN_FORWARD_ROLL, info));
+			return ((dbenv->dtab[rectype])(dbenv,
+			    db, lsnp, TXN_REDO, info));
 		break;
 	default:
-		return (CDB___db_unknown_flag(dbenv, "CDB___db_dispatch", redo));
+		abort();
 	}
 	return (0);
 }
@@ -134,26 +135,27 @@ CDB___db_dispatch(dbenv, db, lsnp, redo, info)
  * CDB___db_add_recovery --
  *
  * PUBLIC: int CDB___db_add_recovery __P((DB_ENV *,
- * PUBLIC:    int (*)(DB_ENV *, DBT *, DB_LSN *, db_recops, void *), u_int32_t));
+ * PUBLIC:    int (*)(DB_ENV *, DBT *, DB_LSN *, int, void *), u_int32_t));
  */
 int
 CDB___db_add_recovery(dbenv, func, ndx)
 	DB_ENV *dbenv;
-	int (*func) __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	int (*func) __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
 	u_int32_t ndx;
 {
-	u_int32_t i, nsize;
+	u_int32_t i;
 	int ret;
 
 	/* Check if we have to grow the table. */
 	if (ndx >= dbenv->dtab_size) {
-		nsize = ndx + 40;
-		if ((ret = CDB___os_realloc(dbenv,
-		    nsize * sizeof(dbenv->dtab[0]), NULL, &dbenv->dtab)) != 0)
+		if ((ret = CDB___os_realloc(
+		    (DB_user_BEGIN + dbenv->dtab_size) * sizeof(dbenv->dtab[0]),
+		    NULL, &dbenv->dtab)) != 0)
 			return (ret);
-		for (i = dbenv->dtab_size; i < nsize; ++i)
+		for (i = dbenv->dtab_size,
+		    dbenv->dtab_size += DB_user_BEGIN;
+		    i < dbenv->dtab_size; ++i)
 			dbenv->dtab[i] = NULL;
-		dbenv->dtab_size = nsize;
 	}
 
 	dbenv->dtab[ndx] = func;
@@ -161,43 +163,19 @@ CDB___db_add_recovery(dbenv, func, ndx)
 }
 
 /*
- * CDB___deprecated_recover --
- *	Stub routine for deprecated recovery functions.
- *
- * PUBLIC: int CDB___deprecated_recover
- * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
- */
-int
-CDB___deprecated_recover(dbenv, dbtp, lsnp, op, info)
-	DB_ENV *dbenv;
-	DBT *dbtp;
-	DB_LSN *lsnp;
-	db_recops op;
-	void *info;
-{
-	COMPQUIET(dbenv, NULL);
-	COMPQUIET(dbtp, NULL);
-	COMPQUIET(lsnp, NULL);
-	COMPQUIET(op, 0);
-	COMPQUIET(info, NULL);
-	return (EINVAL);
-}
-
-/*
  * CDB___db_txnlist_init --
  *	Initialize transaction linked list.
  *
- * PUBLIC: int CDB___db_txnlist_init __P((DB_ENV *, void *));
+ * PUBLIC: int CDB___db_txnlist_init __P((void *));
  */
 int
-CDB___db_txnlist_init(dbenv, retp)
-	DB_ENV *dbenv;
+CDB___db_txnlist_init(retp)
 	void *retp;
 {
 	DB_TXNHEAD *headp;
 	int ret;
 
-	if ((ret = CDB___os_malloc(dbenv, sizeof(DB_TXNHEAD), NULL, &headp)) != 0)
+	if ((ret = CDB___os_malloc(sizeof(DB_TXNHEAD), NULL, &headp)) != 0)
 		return (ret);
 
 	LIST_INIT(&headp->head);
@@ -212,11 +190,10 @@ CDB___db_txnlist_init(dbenv, retp)
  * CDB___db_txnlist_add --
  *	Add an element to our transaction linked list.
  *
- * PUBLIC: int CDB___db_txnlist_add __P((DB_ENV *, void *, u_int32_t));
+ * PUBLIC: int CDB___db_txnlist_add __P((void *, u_int32_t));
  */
 int
-CDB___db_txnlist_add(dbenv, listp, txnid)
-	DB_ENV *dbenv;
+CDB___db_txnlist_add(listp, txnid)
 	void *listp;
 	u_int32_t txnid;
 {
@@ -224,7 +201,7 @@ CDB___db_txnlist_add(dbenv, listp, txnid)
 	DB_TXNLIST *elp;
 	int ret;
 
-	if ((ret = CDB___os_malloc(dbenv, sizeof(DB_TXNLIST), NULL, &elp)) != 0)
+	if ((ret = CDB___os_malloc(sizeof(DB_TXNLIST), NULL, &elp)) != 0)
 		return (ret);
 
 	hp = (DB_TXNHEAD *)listp;
@@ -241,25 +218,25 @@ CDB___db_txnlist_add(dbenv, listp, txnid)
 
 /* CDB___db_txnlist_close --
  *
- *	Call this when we close a file.  It allows us to reconcile whether
+ * 	Call this when we close a file.  It allows us to reconcile whether
  * we have done any operations on this file with whether the file appears
  * to have been deleted.  If you never do any operations on a file, then
  * we assume it's OK to appear deleted.
  *
- * PUBLIC: int CDB___db_txnlist_close __P((void *, int32_t, u_int32_t));
+ * PUBLIC: int CDB___db_txnlist_close __P((void *, u_int32_t, u_int32_t));
  */
 
 int
 CDB___db_txnlist_close(listp, lid, count)
 	void *listp;
-	int32_t lid;
+	u_int32_t lid;
 	u_int32_t count;
 {
 	DB_TXNHEAD *hp;
 	DB_TXNLIST *p;
 
 	hp = (DB_TXNHEAD *)listp;
-	for (p = LIST_FIRST(&hp->head); p != NULL; p = LIST_NEXT(p, links)) {
+	for (p = hp->head.lh_first; p != NULL; p = p->links.le_next) {
 		if (p->type == TXNLIST_DELETE)
 			if (lid == p->u.d.fileid &&
 			    !F_ISSET(&p->u.d, TXNLIST_FLAG_CLOSED)) {
@@ -279,12 +256,10 @@ CDB___db_txnlist_close(listp, lid, count)
  * just encountered a file that is missing.  The lid is the log fileid
  * and is only meaningful if deleted is not equal to 0.
  *
- * PUBLIC: int CDB___db_txnlist_delete __P((DB_ENV *,
- * PUBLIC:     void *, char *, u_int32_t, int));
+ * PUBLIC: int CDB___db_txnlist_delete __P((void *, char *, u_int32_t, int));
  */
 int
-CDB___db_txnlist_delete(dbenv, listp, name, lid, deleted)
-	DB_ENV *dbenv;
+CDB___db_txnlist_delete(listp, name, lid, deleted)
 	void *listp;
 	char *name;
 	u_int32_t lid;
@@ -295,7 +270,7 @@ CDB___db_txnlist_delete(dbenv, listp, name, lid, deleted)
 	int ret;
 
 	hp = (DB_TXNHEAD *)listp;
-	for (p = LIST_FIRST(&hp->head); p != NULL; p = LIST_NEXT(p, links)) {
+	for (p = hp->head.lh_first; p != NULL; p = p->links.le_next) {
 		if (p->type == TXNLIST_DELETE)
 			if (strcmp(name, p->u.d.fname) == 0) {
 				if (deleted)
@@ -307,7 +282,7 @@ CDB___db_txnlist_delete(dbenv, listp, name, lid, deleted)
 	}
 
 	/* Need to add it. */
-	if ((ret = CDB___os_malloc(dbenv, sizeof(DB_TXNLIST), NULL, &p)) != 0)
+	if ((ret = CDB___os_malloc(sizeof(DB_TXNLIST), NULL, &p)) != 0)
 		return (ret);
 	LIST_INSERT_HEAD(&hp->head, p, links);
 
@@ -317,7 +292,7 @@ CDB___db_txnlist_delete(dbenv, listp, name, lid, deleted)
 		F_SET(&p->u.d, TXNLIST_FLAG_DELETED);
 	p->u.d.fileid = lid;
 	p->u.d.count = 0;
-	ret = CDB___os_strdup(dbenv, name, &p->u.d.fname);
+	ret = CDB___os_strdup(name, &p->u.d.fname);
 
 	return (ret);
 }
@@ -353,7 +328,6 @@ CDB___db_txnlist_end(dbenv, listp)
 			if ((!F_ISSET(&p->u.d, TXNLIST_FLAG_DELETED) &&
 			    p->u.d.count != 0) ||
 			    (!F_ISSET(&p->u.d, TXNLIST_FLAG_CLOSED) &&
-			    p->u.d.fileid != (int32_t) TXNLIST_INVALID_ID &&
 			    p->u.d.fileid < lp->dbentry_cnt &&
 			    lp->dbentry[p->u.d.fileid].count != 0))
 				CDB___db_err(dbenv, "warning: %s: %s",
@@ -380,21 +354,15 @@ CDB___db_txnlist_find(listp, txnid)
 	DB_TXNHEAD *hp;
 	DB_TXNLIST *p;
 
-	if (txnid == 0 || (hp = (DB_TXNHEAD *)listp) == NULL)
+	if ((hp = (DB_TXNHEAD *)listp) == NULL)
 		return (DB_NOTFOUND);
 
-	for (p = LIST_FIRST(&hp->head); p != NULL; p = LIST_NEXT(p, links)) {
+	for (p = hp->head.lh_first; p != NULL; p = p->links.le_next) {
 		if (p->type != TXNLIST_TXNID)
 			continue;
 		if (p->u.t.txnid == txnid &&
-		    hp->generation == p->u.t.generation) {
-			/* Move it to head of list. */
-			if (p != LIST_FIRST(&hp->head)) {
-				LIST_REMOVE(p, links);
-				LIST_INSERT_HEAD(&hp->head, p, links);
-			}
+		    hp->generation == p->u.t.generation)
 			return (0);
-		}
 	}
 
 	return (DB_NOTFOUND);
@@ -443,7 +411,7 @@ CDB___db_txnlist_print(listp)
 
 	printf("Maxid: %lu Generation: %lu\n",
 	    (u_long)hp->maxid, (u_long)hp->generation);
-	for (p = LIST_FIRST(&hp->head); p != NULL; p = LIST_NEXT(p, links)) {
+	for (p = hp->head.lh_first; p != NULL; p = p->links.le_next) {
 		switch (p->type) {
 		case TXNLIST_TXNID:
 			printf("TXNID: %lu(%lu)\n",

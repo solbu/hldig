@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: txn_region.c,v 1.1.2.3 2000/09/17 01:35:08 ghutchis Exp $";
+static const char sccsid[] = "@(#)txn_region.c	11.4 (Sleepycat) 9/20/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -28,25 +28,15 @@ static const char revid[] = "$Id: txn_region.c,v 1.1.2.3 2000/09/17 01:35:08 ghu
 #include <string.h>
 #endif
 
-#ifdef  HAVE_RPC
-#include "db_server.h"
-#endif
-
 #include "db_int.h"
 #include "db_page.h"
 #include "txn.h"
 #include "db_am.h"
 
-#ifdef HAVE_RPC
-#include "gen_client_ext.h"
-#include "rpc_client_ext.h"
-#endif
-
-static int __txn_init __P((DB_ENV *, DB_TXNMGR *));
-static int __txn_set_tx_max __P((DB_ENV *, u_int32_t));
-static int __txn_set_tx_recover __P((DB_ENV *,
-	       int (*)(DB_ENV *, DBT *, DB_LSN *, db_recops, void *)));
-static int __txn_set_tx_timestamp __P((DB_ENV *, time_t *));
+static int CDB___txn_init __P((DB_ENV *, DB_TXNMGR *));
+static int CDB___txn_set_tx_max __P((DB_ENV *, u_int32_t));
+static int CDB___txn_set_tx_recover
+	       __P((DB_ENV *, int (*)(DB_ENV *, DBT *, DB_LSN *, int, void *)));
 
 /*
  * CDB___txn_dbenv_create --
@@ -60,29 +50,16 @@ CDB___txn_dbenv_create(dbenv)
 {
 	dbenv->tx_max = DEF_MAX_TXNS;
 
-	dbenv->set_tx_max = __txn_set_tx_max;
-	dbenv->set_tx_recover = __txn_set_tx_recover;
-	dbenv->set_tx_timestamp = __txn_set_tx_timestamp;
-
-#ifdef HAVE_RPC
-	/*
-	 * If we have a client, overwrite what we just setup to point to
-	 * client functions.
-	 */
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT)) {
-		dbenv->set_tx_max = __dbcl_set_tx_max;
-		dbenv->set_tx_recover = __dbcl_set_tx_recover;
-		dbenv->set_tx_timestamp = __dbcl_set_tx_timestamp;
-	}
-#endif
+	dbenv->set_tx_max = CDB___txn_set_tx_max;
+	dbenv->set_tx_recover = CDB___txn_set_tx_recover;
 }
 
 /*
- * __txn_set_tx_max --
+ * CDB___txn_set_tx_max --
  *	Set the size of the transaction table.
  */
 static int
-__txn_set_tx_max(dbenv, tx_max)
+CDB___txn_set_tx_max(dbenv, tx_max)
 	DB_ENV *dbenv;
 	u_int32_t tx_max;
 {
@@ -93,30 +70,15 @@ __txn_set_tx_max(dbenv, tx_max)
 }
 
 /*
- * __txn_set_tx_recover --
+ * CDB___txn_set_tx_recover --
  *	Set the transaction abort recover function.
  */
 static int
-__txn_set_tx_recover(dbenv, tx_recover)
+CDB___txn_set_tx_recover(dbenv, tx_recover)
 	DB_ENV *dbenv;
-	int (*tx_recover) __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	int (*tx_recover) __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
 {
 	dbenv->tx_recover = tx_recover;
-	return (0);
-}
-
-/*
- * __txn_set_tx_timestamp --
- *	Set the transaction recovery timestamp.
- */
-static int
-__txn_set_tx_timestamp(dbenv, timestamp)
-	DB_ENV *dbenv;
-	time_t *timestamp;
-{
-	ENV_ILLEGAL_AFTER_OPEN(dbenv, "set_tx_timestamp");
-
-	dbenv->tx_timestamp = *timestamp;
 	return (0);
 }
 
@@ -134,7 +96,7 @@ CDB___txn_open(dbenv)
 	int ret;
 
 	/* Create/initialize the transaction manager structure. */
-	if ((ret = CDB___os_calloc(dbenv, 1, sizeof(DB_TXNMGR), &tmgrp)) != 0)
+	if ((ret = CDB___os_calloc(1, sizeof(DB_TXNMGR), &tmgrp)) != 0)
 		return (ret);
 	TAILQ_INIT(&tmgrp->txn_chain);
 	tmgrp->dbenv = dbenv;
@@ -152,7 +114,7 @@ CDB___txn_open(dbenv)
 
 	/* If we created the region, initialize it. */
 	if (F_ISSET(&tmgrp->reginfo, REGION_CREATE))
-		if ((ret = __txn_init(dbenv, tmgrp)) != 0)
+		if ((ret = CDB___txn_init(dbenv, tmgrp)) != 0)
 			goto err;
 
 	/* Set the local addresses. */
@@ -186,11 +148,11 @@ detach:		(void)CDB___db_r_detach(dbenv, &tmgrp->reginfo, 0);
 }
 
 /*
- * __txn_init --
+ * CDB___txn_init --
  *	Initialize a transaction region in shared memory.
  */
 static int
-__txn_init(dbenv, tmgrp)
+CDB___txn_init(dbenv, tmgrp)
 	DB_ENV *dbenv;
 	DB_TXNMGR *tmgrp;
 {
@@ -198,11 +160,8 @@ __txn_init(dbenv, tmgrp)
 	int ret;
 
 	if ((ret = CDB___db_shalloc(tmgrp->reginfo.addr,
-	    sizeof(DB_TXNREGION), 0, &tmgrp->reginfo.primary)) != 0) {
-		CDB___db_err(dbenv,
-		    "Unable to allocate memory for the transaction region");
+	    sizeof(DB_TXNREGION), 0, &tmgrp->reginfo.primary)) != 0)
 		return (ret);
-	}
 	tmgrp->reginfo.rp->primary =
 	    R_OFFSET(&tmgrp->reginfo, tmgrp->reginfo.primary);
 	region = tmgrp->reginfo.primary;
@@ -271,7 +230,7 @@ CDB___txn_close(dbenv)
 		}
 
 	/* Flush the log. */
-	if (LOGGING_ON(dbenv) &&
+	if (F_ISSET(dbenv, DB_ENV_LOGGING) &&
 	    (t_ret = CDB_log_flush(dbenv, NULL)) != 0 && ret == 0)
 		ret = t_ret;
 
@@ -284,8 +243,6 @@ CDB___txn_close(dbenv)
 		ret = t_ret;
 
 	CDB___os_free(tmgrp, sizeof(*tmgrp));
-
-	dbenv->tx_handle = NULL;
 	return (ret);
 }
 
@@ -302,11 +259,6 @@ CDB_txn_stat(dbenv, statp, db_malloc)
 	size_t nbytes;
 	u_int32_t nactive, ndx;
 	int ret, slop;
-
-#ifdef HAVE_RPC
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
-		return (__dbcl_txn_stat(dbenv, statp, db_malloc));
-#endif
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->tx_handle, DB_INIT_TXN);
@@ -326,7 +278,7 @@ retry:	R_LOCK(dbenv, &mgr->reginfo);
 	 * are created while we have the region unlocked.
 	 */
 	nbytes = sizeof(DB_TXN_STAT) + sizeof(DB_TXN_ACTIVE) * (nactive + slop);
-	if ((ret = CDB___os_malloc(dbenv, nbytes, db_malloc, &stats)) != 0)
+	if ((ret = CDB___os_malloc(nbytes, db_malloc, &stats)) != 0)
 		return (ret);
 
 	R_LOCK(dbenv, &mgr->reginfo);

@@ -9,19 +9,18 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.18.2.8 2000/09/14 03:13:24 ghutchis Exp $
+// $Id: htString.h,v 1.18.2.9 2000/10/10 03:15:42 ghutchis Exp $
 //
 #ifndef __String_h
 #define __String_h
+
+#include "Object.h"
 
 #include <stdarg.h>
 #include <stdio.h>
 #ifndef NOSTREAM
 #include <iostream.h>
 #endif /* NOSTREAM */
-
-#include "Object.h"
-#include "ber.h"
 
 class String : public Object
 {
@@ -45,7 +44,6 @@ public:
     const char		*get() const;
     operator 		char*()	{ return get(); }
     operator 		const char*() const { return get(); }
-    operator 		const unsigned char*() const { return (const unsigned char*)get(); }
     operator 		int() const;
 
     //
@@ -88,18 +86,6 @@ public:
     inline String	&operator << (short i)		{return *this<<(int)i;}
     String		&operator << (const String &);
     String		&operator << (const String *s)	{return *this << *s;}
-    inline void		ber_push(int& offset, ber_t value) {
-      int new_len = offset + BER_MAX_BYTES;
-      int bytes = 0;
-
-      if(new_len + 1 >= Allocated) reallocate_space(new_len);
-      if((bytes = ber_value2buf((unsigned char*)(Data + offset), BER_MAX_BYTES, value)) < 1) {
-	fprintf(stderr, "String::ber_push: value2buf failed\n");
-      } else {
-	Length = offset + bytes;
-	offset = Length;
-      }
-    }
 
     //
     // Access to specific characters
@@ -113,16 +99,6 @@ public:
     // Removing
     //
     char		operator >> (char c);
-    inline void ber_shift(int& offset, ber_t& value) const {
-      if(offset >= Length) {
-	fprintf(stderr, "String::ber_shift: offset above available data\n");
-      }
-      int bytes = ber_buf2value((const unsigned char*)(Data + offset), Length - offset, value);
-      if(bytes < 1) {
-	fprintf(stderr, "String::ber_shift: ber_buf2value failed\n");
-      }
-      offset += bytes;
-    }
 									
     //
     // Comparison

@@ -36,7 +36,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordMonitor.h,v 1.1.2.6 2000/09/14 03:13:28 ghutchis Exp $
+// $Id: WordMonitor.h,v 1.1.2.7 2000/10/10 03:15:44 ghutchis Exp $
 //
 #ifndef _WordMonitor_h_
 #define _WordMonitor_h_
@@ -84,10 +84,10 @@
 extern "C" {
 #endif
 
-  void word_monitor_click(void *monitor);
-  void word_monitor_add(void *monitor, int index, unsigned int value);
-  void word_monitor_set(void *monitor, int index, unsigned int value);
-  unsigned int word_monitor_get(void *monitor, int index);
+  void word_monitor_click();
+  void word_monitor_add(int index, unsigned int value);
+  void word_monitor_set(int index, unsigned int value);
+  unsigned int word_monitor_get(int index);
 
 #ifdef __cplusplus
 }
@@ -103,15 +103,21 @@ class WordMonitor {
     WordMonitor(const Configuration &config);
     ~WordMonitor();
 
-    void Add(int index, unsigned int value) { values[index] += value; Click(); }
-    void Set(int index, unsigned int value) { values[index] = value; Click(); }
+    //
+    // Unique instance handlers 
+    //
+    static void Initialize(const Configuration& config);
+    static WordMonitor* Instance() { return instance; }
+
+    void Add(int index, unsigned int value) { values[index] += value; }
+    void Set(int index, unsigned int value) { values[index] = value; }
     unsigned int Get(int index) { return values[index]; }
 
     const String Report() const;
 
-    void Start();
-    void Click();
-    void Stop();
+    void TimerStart();
+    void TimerClick(int signal);
+    void TimerStop();
 
  private:
     unsigned int values[WORD_MONITOR_VALUES_SIZE];
@@ -122,6 +128,11 @@ class WordMonitor {
     FILE* output;
     int output_style;
     static char* values_names[WORD_MONITOR_VALUES_SIZE];
+
+    //
+    // Unique instance pointer
+    //
+    static WordMonitor* instance;
 };
 
 #endif /* __cplusplus */

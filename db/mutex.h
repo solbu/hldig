@@ -1,14 +1,11 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  *
- * $Id: mutex.h,v 1.1.2.2 2000/09/14 03:13:22 ghutchis Exp $
+ *	@(#)mutex.h	11.6 (Sleepycat) 10/15/99
  */
-
-#define	DB_BEGIN_SINGLE_THREAD
-#define	DB_END_SINGLE_THREAD
 
 /*********************************************************************
  * POSIX.1 pthreads interface.
@@ -39,12 +36,6 @@
  * into a call to pwrite and DB would drop core.
  *********************************************************************/
 #ifdef HAVE_MUTEX_SOLARIS_LWP
-/*
- * XXX
- * Don't change <synch.h> to <sys/lwp.h> -- although lwp.h is listed in the
- * Solaris manual page as the correct include to use, it causes the Solaris
- * compiler on SunOS 2.6 to fail.
- */
 #include <synch.h>
 
 #define	MUTEX_FIELDS							\
@@ -71,7 +62,6 @@
 #include <sys/atomic_op.h>
 typedef int tsl_t;
 
-#define	MUTEX_INIT(x)	0
 #define	MUTEX_ALIGN	sizeof(int)
 #define	MUTEX_SET(x)	(!_check_lock(x, 0, 1))
 #define	MUTEX_UNSET(x)	_clear_lock(x, 0)
@@ -105,7 +95,7 @@ typedef msemaphore tsl_t;
 #ifndef MUTEX_ALIGN
 #define	MUTEX_ALIGN	sizeof(int)
 #endif
-#define	MUTEX_INIT(x)	(msem_init(x, MSEM_UNLOCKED) <= (msemaphore *)0)
+#define	MUTEX_INIT(x)	(msem_init(x, MSEM_UNLOCKED) == NULL)
 #define	MUTEX_SET(x)	(!msem_lock(x, MSEM_IF_NOWAIT))
 #define	MUTEX_UNSET(x)	msem_unlock(x, 0)
 #endif
@@ -130,7 +120,7 @@ typedef unsigned char tsl_t;
 #include <ulocks.h>
 typedef spinlock_t tsl_t;
 
-#define	MUTEX_INIT(x)	(initspin(x, 1), 0)
+#define	MUTEX_INIT(x)	initspin(x, 1)
 #define	MUTEX_SET(x)	(cspinlock(x) == 0)
 #define	MUTEX_UNSET(x)	spinunlock(x)
 #endif
@@ -196,54 +186,8 @@ typedef unsigned char tsl_t;
 #else /* __VAX */
 #define	MUTEX_SET(tsl)		(!(int)_BBSSI(0, tsl))
 #endif
-#define	MUTEX_UNSET(tsl)	(*(tsl) = 0)
+#define	MUTEX_UNSET(tsl) 	(*(tsl) = 0)
 #define	MUTEX_INIT(tsl)		MUTEX_UNSET(tsl)
-#endif
-
-/*********************************************************************
- * VxWorks
- * Use basic binary semaphores in VxWorks, as we currently do not need
- * any special features.  We do need the ability to single-thread the
- * entire system, however, because VxWorks doesn't support the open(2)
- * flag O_EXCL, the mechanism we normally use to single thread access
- * when we're first looking for a DB environment.
- *********************************************************************/
-#ifdef HAVE_MUTEX_VXWORKS
-#include "semLib.h"
-typedef SEM_ID tsl_t;
-
-#define	MUTEX_ALIGN		sizeof(unsigned int)
-#define	MUTEX_SET(tsl)		(semTake((*tsl), WAIT_FOREVER) == OK)
-#define	MUTEX_UNSET(tsl)	(semGive((*tsl)) == OK)
-#define	MUTEX_INIT(tsl)							\
-	((*(tsl) = semBCreate(SEM_Q_FIFO, SEM_FULL)) == NULL)
-
-#undef	DB_BEGIN_SINGLE_THREAD
-/*
- * Use the taskLock() mutex to eliminate a race where two tasks are
- * trying to initialize the global lock at the same time.
- */
-#define	DB_BEGIN_SINGLE_THREAD						\
-do {									\
-	if (DB_GLOBAL(db_global_init))					\
-		(void)semTake(DB_GLOBAL(db_global_lock), WAIT_FOREVER);	\
-	else {								\
-		taskLock();						\
-		if (DB_GLOBAL(db_global_init)) {			\
-			taskUnlock();					\
-			(void)semTake(DB_GLOBAL(db_global_lock),	\
-			    WAIT_FOREVER);				\
-			continue;					\
-		}							\
-		DB_GLOBAL(db_global_lock) =				\
-		    semBCreate(SEM_Q_FIFO, SEM_EMPTY);			\
-		if (DB_GLOBAL(db_global_lock) != NULL)			\
-			DB_GLOBAL(db_global_init) = 1;			\
-		taskUnlock();						\
-	}								\
-} while (DB_GLOBAL(db_global_init) == 0)
-#undef	DB_END_SINGLE_THREAD
-#define	DB_END_SINGLE_THREAD	(void)semGive(DB_GLOBAL(db_global_lock))
 #endif
 
 /*********************************************************************
@@ -266,6 +210,9 @@ typedef unsigned int tsl_t;
 
 /*********************************************************************
  * Win32
+ *
+ * XXX
+ * DBDB this needs to be byte-aligned!!
  *********************************************************************/
 #ifdef HAVE_MUTEX_WIN32
 typedef unsigned int tsl_t;
@@ -299,13 +246,6 @@ typedef u_int32_t tsl_t;
 typedef u_int32_t tsl_t;
 
 #define	MUTEX_ALIGN	16
-#endif
-
-/*********************************************************************
- * IA64/gcc assembly.
- *********************************************************************/
-#ifdef HAVE_MUTEX_IA64_GCC_ASSEMBLY
-typedef unsigned char tsl_t;
 #endif
 
 /*********************************************************************
@@ -381,18 +321,18 @@ struct __mutex_t {
 /* Redirect calls to the correct functions. */
 #ifdef HAVE_MUTEX_THREADS
 #if defined(HAVE_MUTEX_PTHREADS) || defined(HAVE_MUTEX_SOLARIS_LWP) || defined(HAVE_MUTEX_UI_THREADS)
-#define	__db_mutex_init(a, b, c, d)	__db_pthread_mutex_init(a, b, d)
-#define	__db_mutex_lock(a, b)		__db_pthread_mutex_lock(a)
-#define	__db_mutex_unlock(a)		__db_pthread_mutex_unlock(a)
+#define	__db_mutex_init(a, b, c, d)	CDB___db_pthread_mutex_init(a, b, d)
+#define	__db_mutex_lock(a, b)		CDB___db_pthread_mutex_lock(a)
+#define	__db_mutex_unlock(a)		CDB___db_pthread_mutex_unlock(a)
 #else
 #define	__db_mutex_init(a, b, c, d)	CDB___db_tas_mutex_init(a, b, d)
 #define	__db_mutex_lock(a, b)		CDB___db_tas_mutex_lock(a)
 #define	__db_mutex_unlock(a)		CDB___db_tas_mutex_unlock(a)
 #endif
 #else
-#define	__db_mutex_init(a, b, c, d)	__db_fcntl_mutex_init(a, b, c)
-#define	__db_mutex_lock(a, b)		__db_fcntl_mutex_lock(a, b)
-#define	__db_mutex_unlock(a)		__db_fcntl_mutex_unlock(a)
+#define	__db_mutex_init(a, b, c, d)	CDB___db_fcntl_mutex_init(a, b, c)
+#define	__db_mutex_lock(a, b)		CDB___db_fcntl_mutex_lock(a, b)
+#define	__db_mutex_unlock(a)		CDB___db_fcntl_mutex_unlock(a)
 #endif
 
 /*
@@ -403,22 +343,9 @@ struct __mutex_t {
  * file handles aren't necessary, as threaded applications aren't supported by
  * fcntl(2) locking.
  */
-#ifdef DIAGNOSTIC
-	/*
-	 * XXX
-	 * We want to switch threads as often as possible.  Yield every time
-	 * we get a mutex to ensure contention.
-	 */
-#define	MUTEX_LOCK(mp, fh)						\
-	if (!F_ISSET((MUTEX *)(mp), MUTEX_IGNORE))			\
-		(void)__db_mutex_lock(mp, fh);				\
-	if (DB_GLOBAL(db_pageyield))					\
-		CDB___os_yield(NULL, 1);
-#else
 #define	MUTEX_LOCK(mp, fh)						\
 	if (!F_ISSET((MUTEX *)(mp), MUTEX_IGNORE))			\
 		(void)__db_mutex_lock(mp, fh);
-#endif
 #define	MUTEX_UNLOCK(mp)						\
 	if (!F_ISSET((MUTEX *)(mp), MUTEX_IGNORE))			\
 		(void)__db_mutex_unlock(mp);

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Plaintext.cc,v 1.17.2.3 2000/09/27 05:21:31 ghutchis Exp $
+// $Id: Plaintext.cc,v 1.17.2.4 2000/10/10 03:15:36 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -55,19 +55,18 @@ Plaintext::parse(Retriever &retriever, URL &)
     int		in_space = 0;
     String	word;
     String	head;
-    WordType	type(config);
 
     while (*position)
     {
 	word = 0;
 
-	if (type.IsStrictChar(*position))
+	if (HtIsStrictWordChar(*position))
 	{
 	    //
 	    // Start of a word.  Try to find the whole thing
 	    //
 	    in_space = 0;
-	    while (*position && type.IsChar(*position))
+	    while (*position && HtIsWordChar(*position))
 	    {
 		word << *position;
 		position++;

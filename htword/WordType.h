@@ -11,7 +11,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.h,v 1.1.2.9 2000/09/25 03:58:20 ghutchis Exp $
+// $Id: WordType.h,v 1.1.2.10 2000/10/10 03:15:44 ghutchis Exp $
 //
 
 #ifndef _WordType_h
@@ -19,7 +19,6 @@
 
 #include "htString.h"
 #include "Configuration.h"
-
 //
 // Return values of Normalize, to get them in string form use NormalizeStatus
 //
@@ -55,20 +54,38 @@ public:
   WordType(const Configuration& config);
 
   //
+  // Destructor
+  //
+  virtual	~WordType();
+
+  //
+  // Unique instance handlers 
+  //
+  static void Initialize(const Configuration& config);
+  static WordType* Instance() {
+    if(instance) return instance;
+    fprintf(stderr, "WordType::Instance: no instance\n");
+    return 0;
+  }
+  
+  //
   // Predicates
   // 
-  int IsChar(int c) const;
-  int IsStrictChar(int c) const;
-  int IsDigit(int c) const;
-  int IsControl(int c) const;
+  virtual int IsChar(int c) const;
+  virtual int IsStrictChar(int c) const;
+  virtual int IsDigit(int c) const;
+  virtual int IsControl(int c) const;
 
   //
   // Transformations
   //
-  int StripPunctuation(String &s) const;
-  int Normalize(String &s) const;
+  virtual int StripPunctuation(String &s) const;
+  virtual int Normalize(String &s) const;
 
-  char *WordToken(char *str) const;
+  //
+  // Splitting
+  //
+  virtual String WordToken(const String s, int &pointer) const;
 
   //
   // Error handling
@@ -86,6 +103,11 @@ private:
   int			maximum_length;		// Maximum word length
   int			allow_numbers;		// True if a word may contain numbers
   Dictionary		badwords;		// List of excluded words
+
+  //
+  // Unique instance pointer
+  //
+  static WordType* instance;
 };
 
 // Bits to set in chrtypes[]:

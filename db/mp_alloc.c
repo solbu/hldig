@@ -1,13 +1,13 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: mp_alloc.c,v 1.1.2.3 2000/09/17 01:35:07 ghutchis Exp $";
+static const char sccsid[] = "@(#)mp_alloc.c	11.3 (Sleepycat) 9/29/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -20,7 +20,7 @@ static const char revid[] = "$Id: mp_alloc.c,v 1.1.2.3 2000/09/17 01:35:07 ghutc
 
 /*
  * CDB___memp_alloc --
- *	Allocate some space from a cache region.
+ *	Allocate some space in the mpool region.
  *
  * PUBLIC: int CDB___memp_alloc __P((DB_MPOOL *,
  * PUBLIC:     REGINFO *, MPOOLFILE *, size_t, roff_t *, void *));
@@ -35,13 +35,15 @@ CDB___memp_alloc(dbmp, memreg, mfp, len, offsetp, retp)
 	void *retp;
 {
 	BH *bhp, *nbhp;
-	MPOOL *c_mp;
+	MCACHE *mc;
+	MPOOL *mp;
 	MPOOLFILE *bh_mfp;
 	size_t total;
 	int nomore, restart, ret, wrote;
 	void *p;
 
-	c_mp = memreg->primary;
+	mp = dbmp->reginfo.primary;
+	mc = memreg->primary;
 
 	/*
 	 * If we're allocating a buffer, and the one we're discarding is the
@@ -70,7 +72,7 @@ alloc:	if ((ret = CDB___db_shalloc(memreg->addr, len, MUTEX_ALIGN, &p)) == 0) {
 retry:	/* Find a buffer we can flush; pure LRU. */
 	restart = total = 0;
 	for (bhp =
-	    SH_TAILQ_FIRST(&c_mp->bhq, __bh); bhp != NULL; bhp = nbhp) {
+	    SH_TAILQ_FIRST(&mc->bhq, __bh); bhp != NULL; bhp = nbhp) {
 		nbhp = SH_TAILQ_NEXT(bhp, q, __bh);
 
 		/* Ignore pinned or locked (I/O in progress) buffers. */
@@ -78,7 +80,7 @@ retry:	/* Find a buffer we can flush; pure LRU. */
 			continue;
 
 		/* Find the associated MPOOLFILE. */
-		bh_mfp = R_ADDR(dbmp->reginfo, bhp->mf_offset);
+		bh_mfp = R_ADDR(&dbmp->reginfo, bhp->mf_offset);
 
 		/* Write the page if it's dirty. */
 		if (F_ISSET(bhp, BH_DIRTY)) {
@@ -108,14 +110,14 @@ retry:	/* Find a buffer we can flush; pure LRU. */
 			 * region lock, continue down the buffer list.
 			 */
 			if (wrote)
-				++c_mp->stat.st_rw_evict;
+				++mc->stat.st_rw_evict;
 			else {
 				if (restart)
 					goto retry;
 				continue;
 			}
 		} else
-			++c_mp->stat.st_ro_evict;
+			++mc->stat.st_ro_evict;
 
 		/*
 		 * Check to see if the buffer is the size we're looking for.

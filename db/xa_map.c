@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: xa_map.c,v 1.1.2.3 2000/09/17 01:35:08 ghutchis Exp $";
+static const char sccsid[] = "@(#)xa_map.c	11.1 (Sleepycat) 7/25/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -160,9 +160,6 @@ CDB___db_map_xid(env, xid, off)
 
 	R_LOCK(env, infop);
 	memcpy(td->xid, xid->data, XIDDATASIZE);
-	td->bqual = (u_int32_t)xid->bqual_length;
-	td->gtrid = (u_int32_t)xid->gtrid_length;
-	td->format = (int32_t)xid->formatID;
 	R_UNLOCK(env, infop);
 
 	return (0);

@@ -22,6 +22,8 @@
 // WordDBInfo implementation
 //
 
+WordDBInfo* WordDBInfo::instance = 0;
+
 //
 // Like standard function but allows easy breakpoint setting.
 //
@@ -76,7 +78,7 @@ WordDBInfo::WordDBInfo(const Configuration& config)
     flags |= DB_PRIVATE | DB_INIT_LOCK | DB_INIT_MPOOL;
   }
 
-  if((error = dbenv->open(dbenv, (const char*)dir, flags, 0666)) != 0)
+  if((error = dbenv->open(dbenv, (const char*)dir, NULL, flags, 0666)) != 0)
     dbenv->err(dbenv, error, "open %s", (dir ? dir : ""));
   if(dir) free(dir);
 }
@@ -84,4 +86,12 @@ WordDBInfo::WordDBInfo(const Configuration& config)
 WordDBInfo::~WordDBInfo()
 {
   if(dbenv) dbenv->close(dbenv, 0);
+}
+
+void 
+WordDBInfo::Initialize(const Configuration &config_arg)
+{
+  if(instance != 0)
+    delete instance;
+  instance = new WordDBInfo(config_arg);
 }

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.54.2.12 2000/09/27 05:17:29 ghutchis Exp $
+// $Id: htsearch.cc,v 1.54.2.13 2000/10/10 03:15:42 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -195,7 +195,7 @@ for (int cInd=0; errorMsg == NULL && cInd < collectionList.Count(); cInd++)
     config.Read(configFile);
 
     // Initialize htword library (key description + wordtype...)
-    // WordContext::Initialize(config);
+    WordContext::Initialize(config);
 
     if (input.exists("method"))
 	config.Add("match_method", input["method"]);
@@ -456,7 +456,6 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
     unsigned char	t;
     String		word;
     const String	prefix_suffix = config["prefix_match_character"];
-    WordType		type(config);
     while (*pos)
     {
 	while (1)
@@ -479,11 +478,11 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		tempWords.Add(new WeightWord(s, -1.0));
 		break;
 	    }
-	    else if (type.IsChar(t) || t == ':' ||
+	    else if (HtIsWordChar(t) || t == ':' ||
 			 (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255))
 	    {
 		word = 0;
-		while (t && (type.IsChar(t) ||
+		while (t && (HtIsWordChar(t) ||
 			     t == ':' || (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255)))
 		{
 		    word << (char) t;
@@ -512,7 +511,7 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		    // Add word to excerpt matching list
 		    originalPattern << word << "|";
 		    WeightWord	*ww = new WeightWord(word, 1.0);
-		    if(type.Normalize(word) & WORD_NORMALIZE_NOTOK)
+		    if(HtWordNormalize(word) & WORD_NORMALIZE_NOTOK)
 			ww->isIgnore = 1;
 		    tempWords.Add(ww);
 		}

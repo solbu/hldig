@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: os_region.c,v 1.1.2.3 2000/09/17 01:35:07 ghutchis Exp $";
+static const char sccsid[] = "@(#)os_region.c	11.2 (Sleepycat) 9/23/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -69,7 +69,7 @@ CDB___os_r_attach(dbenv, infop, rp)
 			return (EINVAL);
 		}
 #endif
-		return (CDB___os_malloc(dbenv, rp->size, NULL, &infop->addr));
+		return (CDB___os_malloc(rp->size, NULL, &infop->addr));
 	}
 
 	/* If the user replaced the map call, call through their interface. */

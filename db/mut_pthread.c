@@ -1,16 +1,16 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1999, 2000
+ * Copyright (c) 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifdef HAVE_MUTEX_PTHREAD
 
 #ifndef lint
-static const char revid[] = "$Id: mut_pthread.c,v 1.1.2.3 2000/09/17 01:35:07 ghutchis Exp $";
+static const char sccsid[] = "@(#)mut_pthread.c	11.15 (Sleepycat) 11/9/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -39,7 +39,6 @@ static const char revid[] = "$Id: mut_pthread.c,v 1.1.2.3 2000/09/17 01:35:07 gh
 #define	pthread_mutex_lock	_lwp_mutex_lock
 #define	pthread_mutex_trylock	_lwp_mutex_trylock
 #define	pthread_mutex_unlock	_lwp_mutex_unlock
-#define	pthread_self		_lwp_self
 #endif
 #ifdef HAVE_MUTEX_UI_THREADS
 #define	pthread_cond_signal	cond_signal
@@ -47,17 +46,16 @@ static const char revid[] = "$Id: mut_pthread.c,v 1.1.2.3 2000/09/17 01:35:07 gh
 #define	pthread_mutex_lock	mutex_lock
 #define	pthread_mutex_trylock	mutex_trylock
 #define	pthread_mutex_unlock	mutex_unlock
-#define	pthread_self		thr_self
 #endif
 
 /*
- * __db_pthread_mutex_init --
+ * CDB___db_pthread_mutex_init --
  *	Initialize a MUTEX.
  *
- * PUBLIC: int __db_pthread_mutex_init __P((DB_ENV *, MUTEX *, u_int32_t));
+ * PUBLIC: int CDB___db_pthread_mutex_init __P((DB_ENV *, MUTEX *, u_int32_t));
  */
 int
-__db_pthread_mutex_init(dbenv, mutexp, flags)
+CDB___db_pthread_mutex_init(dbenv, mutexp, flags)
 	DB_ENV *dbenv;
 	MUTEX *mutexp;
 	u_int32_t flags;
@@ -117,32 +115,32 @@ __db_pthread_mutex_init(dbenv, mutexp, flags)
 	}}
 #endif
 #ifdef HAVE_MUTEX_SOLARIS_LWP
-	/*
-	 * XXX
-	 * Gcc complains about missing braces in the static initializations of
-	 * lwp_cond_t and lwp_mutex_t structures because the structures contain
-	 * sub-structures/unions and the Solaris include file that defines the
-	 * initialization values doesn't have surrounding braces.  There's not
-	 * much we can do.
-	 */
 	if (F_ISSET(mutexp, MUTEX_THREAD)) {
 		static lwp_mutex_t mi = DEFAULTMUTEX;
 
-		mutexp->mutex = mi;
+		/*
+		 * !!!
+		 * Gcc attempts to use special Sparc instructions to do a fast
+		 * copy of the structures, but the structures aren't
+		 * necessarily appropriately aligned for the Sparc instructions
+		 * to work.  We don't use memcpy instead of structure assignment
+		 * because gcc figures that one out and drops core anyway.
+		 */
+		CDB___ua_memcpy(&mutexp->mutex, &mi, sizeof(mi));
 	} else {
 		static lwp_mutex_t mi = SHAREDMUTEX;
 
-		mutexp->mutex = mi;
+		CDB___ua_memcpy(&mutexp->mutex, &mi, sizeof(mi));
 	}
 	if (LF_ISSET(MUTEX_SELF_BLOCK)) {
 		if (F_ISSET(mutexp, MUTEX_THREAD)) {
 			static lwp_cond_t ci = DEFAULTCV;
 
-			mutexp->cond = ci;
+			CDB___ua_memcpy(&mutexp->cond, &ci, sizeof(ci));
 		} else {
 			static lwp_cond_t ci = SHAREDCV;
 
-			mutexp->cond = ci;
+			CDB___ua_memcpy(&mutexp->cond, &ci, sizeof(ci));
 		}
 		F_SET(mutexp, MUTEX_SELF_BLOCK);
 	}
@@ -167,13 +165,13 @@ __db_pthread_mutex_init(dbenv, mutexp, flags)
 }
 
 /*
- * __db_pthread_mutex_lock
+ * CDB___db_pthread_mutex_lock
  *	Lock on a mutex, logically blocking if necessary.
  *
- * PUBLIC: int __db_pthread_mutex_lock __P((MUTEX *));
+ * PUBLIC: int CDB___db_pthread_mutex_lock __P((MUTEX *));
  */
 int
-__db_pthread_mutex_lock(mutexp)
+CDB___db_pthread_mutex_lock(mutexp)
 	MUTEX *mutexp;
 {
 	u_int32_t nspins;
@@ -240,13 +238,13 @@ __db_pthread_mutex_lock(mutexp)
 }
 
 /*
- * __db_pthread_mutex_unlock --
+ * CDB___db_pthread_mutex_unlock --
  *	Release a lock.
  *
- * PUBLIC: int __db_pthread_mutex_unlock __P((MUTEX *));
+ * PUBLIC: int CDB___db_pthread_mutex_unlock __P((MUTEX *));
  */
 int
-__db_pthread_mutex_unlock(mutexp)
+CDB___db_pthread_mutex_unlock(mutexp)
 	MUTEX *mutexp;
 {
 	int ret;

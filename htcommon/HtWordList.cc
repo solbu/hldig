@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.cc,v 1.2.2.12 2000/09/27 05:29:30 ghutchis Exp $
+// $Id: HtWordList.cc,v 1.2.2.13 2000/10/10 03:15:30 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -41,17 +41,9 @@ HtWordList::~HtWordList()
 
 //*****************************************************************************
 //
-HtWordList::HtWordList(const Configuration& config_arg)
+HtWordList::HtWordList(const HtConfiguration& config_arg) :
+  WordList(config_arg)
 {
-    context = WordContext(config_arg);
-    words = new List;
-}
-
-//*****************************************************************************
-//
-HtWordList::HtWordList(const HtConfiguration& config_arg)
-{
-    context = WordContext(config_arg);
     words = new List;
 }
 
@@ -76,8 +68,8 @@ void HtWordList::Flush()
   HtWordReference	*wordRef;
 
     // Provided for backwards compatibility
-  // if (!isopen)
-  //    Open(config["word_db"], O_RDWR);
+  if (!isopen)
+    Open(config["word_db"], O_RDWR);
 
   words->Start_Get();
   while ((wordRef = (HtWordReference *) words->Get_Next()))
@@ -190,7 +182,7 @@ int HtWordList::Load(const String& filename)
 
   while (data.readLine(fl))
     {
-      next = new HtWordReference(&context);
+      next = new HtWordReference;
       if (next->Load(data) != OK)
 	{
 	  delete next;

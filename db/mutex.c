@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1999, 2000
+ * Copyright (c) 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: mutex.c,v 1.1.2.3 2000/09/17 01:35:07 ghutchis Exp $";
+static const char sccsid[] = "@(#)mutex.c	11.1 (Sleepycat) 7/25/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -32,8 +32,9 @@ CDB___db_mutex_alloc(dbenv, infop, storep)
 	int ret;
 
 	/*
-	 * If the architecture supports mutexes in heap memory, use that
-	 * memory.  If it doesn't, we have to allocate space in a region.
+	 * If the architecture supports mutex in heap memory, simply
+	 * use that memory.  If it doesn't, we have to allocate space
+	 * in the region.
 	 */
 #ifdef MUTEX_NO_MALLOC_LOCKS
 	R_LOCK(dbenv, infop);
@@ -42,10 +43,8 @@ CDB___db_mutex_alloc(dbenv, infop, storep)
 #else
 	COMPQUIET(dbenv, NULL);
 	COMPQUIET(infop, NULL);
-	ret = CDB___os_calloc(dbenv, 1, sizeof(MUTEX), storep);
+	ret = CDB___os_calloc(1, sizeof(MUTEX), storep);
 #endif
-	if (ret != 0)
-		CDB___db_err(dbenv, "Unable to allocate memory for mutex");
 	return (ret);
 }
 

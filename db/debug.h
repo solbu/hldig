@@ -1,15 +1,11 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1998, 1999, 2000
+ * Copyright (c) 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  *
- * $Id: debug.h,v 1.1.2.2 2000/09/14 03:13:20 ghutchis Exp $
+ *	@(#)debug.h	11.8 (Sleepycat) 11/8/99
  */
-
-#if defined(__cplusplus)
-extern "C" {
-#endif
 
 /*
  * When running with #DIAGNOSTIC defined, we smash memory and do memory
@@ -21,17 +17,11 @@ extern "C" {
 /*
  * DB assertions.
  */
-#if defined(DIAGNOSTIC) && defined(__STDC__)
+#ifdef DIAGNOSTIC
 #define	DB_ASSERT(e)	((e) ? (void)0 : __db_assert(#e, __FILE__, __LINE__))
 #else
 #define	DB_ASSERT(e)	((void)0)
 #endif
-
-/*
- * Purify and similar run-time tools complain about unitialized reads/writes
- * for structure fields whose only purpose is padding.
- */
-#define	UMRW(v)		(v) = 0
 
 /*
  * Debugging macro to log operations.
@@ -71,14 +61,13 @@ extern "C" {
  * Hook for testing recovery at various places in the create/delete paths.
  */
 #if CONFIG_TEST
-#define	DB_TEST_RECOVERY(dbp, val, ret, name)				\
+#define DB_TEST_RECOVERY(dbp, val, ret, name)				\
 do {									\
 	int __ret;							\
 	PANIC_CHECK((dbp)->dbenv);					\
 	if ((dbp)->dbenv->test_copy == (val)) {				\
 		/* COPY the FILE */					\
-		if (F_ISSET((dbp), DB_OPEN_CALLED) && (dbp)->mpf != NULL) \
-			(void)(dbp)->sync((dbp), 0);			\
+		(void)(dbp)->sync((dbp), 0);				\
 		if ((__ret = __db_testcopy((dbp), (name))) != 0)	\
 			(ret) = CDB___db_panic((dbp)->dbenv, __ret);	\
 	}								\
@@ -88,12 +77,8 @@ do {									\
 		goto db_tr_err;						\
 	}								\
 } while (0)
-#define	DB_TEST_RECOVERY_LABEL	db_tr_err:
+#define DB_TEST_RECOVERY_LABEL	db_tr_err:
 #else
-#define	DB_TEST_RECOVERY(dbp, val, ret, name)
-#define	DB_TEST_RECOVERY_LABEL
-#endif
-
-#if defined(__cplusplus)
-}
+#define DB_TEST_RECOVERY(dbp, val, ret, name)
+#define DB_TEST_RECOVERY_LABEL
 #endif

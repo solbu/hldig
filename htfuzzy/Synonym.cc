@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Synonym.cc,v 1.8.2.5 2000/09/27 05:17:55 ghutchis Exp $
+// $Id: Synonym.cc,v 1.8.2.6 2000/10/10 03:15:39 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -146,8 +146,7 @@ Synonym::getWords(char *originalWord, List &words)
 {
     String	data;
     String	stripped = originalWord;
-    WordType	type(config);
-    type.StripPunctuation(stripped);
+    HtStripPunctuation(stripped);
 
     if (db && db->Get(stripped, data) == OK)
     {

@@ -29,7 +29,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringMatch.cc,v 1.13.2.3 2000/09/27 05:14:17 ghutchis Exp $
+// $Id: StringMatch.cc,v 1.13.2.4 2000/10/10 03:15:41 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -37,8 +37,6 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "StringMatch.h"
-#include "Configuration.h"
-extern Configuration	config;
 
 #include <string.h>
 #include <ctype.h>
@@ -380,7 +378,6 @@ int StringMatch::FindFirstWord(const char *string, int &which, int &length)
     int		pos = 0;
     int		start_pos = 0;
     int		is_word = 1;
-    WordType	type(config);
 
     //
     // Skip to at least the start of a word.
@@ -419,10 +416,10 @@ int StringMatch::FindFirstWord(const char *string, int &which, int &length)
 	    is_word = 1;
 	    if (start_pos != 0)
 	    {
-		if (type.IsStrictChar((unsigned char)string[start_pos - 1]))
+		if (HtIsStrictWordChar((unsigned char)string[start_pos - 1]))
 		    is_word = 0;
 	    }
-	    if (type.IsStrictChar((unsigned char)string[pos + 1]))
+	    if (HtIsStrictWordChar((unsigned char)string[pos + 1]))
 		is_word = 0;
 	    if (is_word)
 	    {
@@ -461,8 +458,6 @@ int StringMatch::FindFirstWord(const char *string, int &which, int &length)
 //
 int StringMatch::CompareWord(const char *string, int &which, int &length)
 {
-    WordType	type(config);
-
     which = -1;
     length = -1;
 
@@ -492,7 +487,7 @@ int StringMatch::CompareWord(const char *string, int &which, int &length)
 
 	    if ((unsigned char)string[position + 1])
 	    {
-		if (type.IsStrictChar((unsigned char)string[position + 1]))
+		if (HtIsStrictWordChar((unsigned char)string[position + 1]))
 		    isWord = 0;
 	    }
 
@@ -561,7 +556,6 @@ void StringMatch::IgnoreCase()
 //
 void StringMatch::IgnorePunct(char *punct)
 {
-     WordType	type(config);
     if (!local_alloc || !trans)
     {
 	trans = new unsigned char[256];
@@ -574,7 +568,7 @@ void StringMatch::IgnorePunct(char *punct)
 	    trans[(unsigned char)punct[i]] = 0;
     else
 	for (int i = 0; i < 256; i++)
-	    if (type.IsChar(i) && !type.IsStrictChar(i))
+	    if (HtIsWordChar(i) && !HtIsStrictWordChar(i))
 		trans[i] = 0;
 }
 

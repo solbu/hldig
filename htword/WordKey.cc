@@ -14,7 +14,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3.2.20 2000/09/21 04:25:35 ghutchis Exp $
+// $Id: WordKey.cc,v 1.3.2.21 2000/10/10 03:15:44 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -24,10 +24,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "clib.h"
 #include "WordKey.h"
-#include "ber.h"
-#include "HtMaxMin.h"
 
 //
 // Returns OK if fields set in 'object' and 'other' are all equal.
@@ -45,7 +42,7 @@
 //
 int WordKey::Equal(const WordKey& other) const
 {
-  const WordKeyInfo& info = context->GetKeyInfo();
+  const WordKeyInfo& info = *WordKey::Info();
   //
   // Walk the fields in sorting order. As soon as one of them
   // does not compare equal, return.
@@ -57,7 +54,20 @@ int WordKey::Equal(const WordKey& other) const
     //
     if(!IsDefined(j) || !other.IsDefined(j)) continue;
 
-    if(Get(j) != other.Get(j)) return 0;
+    switch(info.sort[j].type) {
+    case WORD_ISA_STRING:
+      if(!IsDefinedWordSuffix()) {
+	if(kword != other.kword.sub(0, kword.length()))
+	  return 0;
+      } else {
+	if(kword != other.kword)
+	  return 0;
+      }
+      break;
+    default:
+      if(Get(j) != other.Get(j)) return 0;
+      break;
+    }
   }
   return 1;
 }
@@ -66,30 +76,60 @@ int WordKey::Equal(const WordKey& other) const
 // Compare <a> and <b> in the Berkeley DB fashion. 
 // <a> and <b> are packed keys.
 //
-int 
-WordKey::Compare(WordContext* context, const unsigned char *a, int a_length, const unsigned char *b, int b_length)
+inline int 
+WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
 {
-  const WordKeyInfo& info = context->GetKeyInfo();
-  int bytes;
-  ber_t a_value;
-  ber_t b_value;
+  const WordKeyInfo& info = *WordKey::Info();
 
-  for(int j = 0; j < info.nfields; j++) {
-    if((bytes = ber_buf2value(a, a_length, a_value)) < 1) {
-      fprintf(stderr, "WordKey::Compare: failed to retrieve field %d for a\n", j);
-      abort();
-    }
-    a += bytes;
-    a_length -= bytes;
-    if((bytes = ber_buf2value(b, b_length, b_value)) < 1) {
-      fprintf(stderr, "WordKey::Compare: failed to retrieve field %d for b\n", j);
-      abort();
-    }
-    b += bytes;
-    b_length -= bytes;
+  if(a_length < info.num_length || b_length < info.num_length) {
+      fprintf(stderr, "WordKey::Compare: key length for a or b < info.num_length\n");
+      return NOTOK;
+  }
 
-    if(a_value != b_value)
-      return a_value - b_value;
+  //
+  // Walk the fields, as soon as one of them does not compare equal,
+  // return.
+  //
+
+  //
+  //  first field: string
+  //
+  const int p1_length = a_length - info.num_length;
+  const int p2_length = b_length - info.num_length;
+  {
+      int len = p1_length > p2_length ? p2_length : p1_length;
+      const unsigned char* p1 = (unsigned char *)a;
+      const unsigned char* p2 = (unsigned char *)b;
+
+      for (;len--; ++p1, ++p2) {
+	  if (*p1 != *p2)
+	      return (int)*p1 - (int)*p2;
+      }
+      if(p1_length != p2_length)
+	  return p1_length - p2_length;
+  }
+  //
+  //  following fields: numerical
+  //
+  for(int j = 1; j < info.nfields; j++) 
+  {
+	WordKeyNum p1;
+	int a_index = info.sort[j].bytes_offset + p1_length;
+	WordKey::UnpackNumber((unsigned char *)&a[a_index],
+			      info.sort[j].bytesize,
+			      p1,
+			      info.sort[j].lowbits,
+			      info.sort[j].bits);
+	
+	WordKeyNum p2;
+	int b_index = info.sort[j].bytes_offset + p2_length;
+	WordKey::UnpackNumber((unsigned char *)&b[b_index],
+			      info.sort[j].bytesize,
+			      p2,
+			      info.sort[j].lowbits,
+			      info.sort[j].bits);
+	if(p1 != p2)
+	    return p1 - p2;
   }
 
   //
@@ -103,9 +143,9 @@ WordKey::Compare(WordContext* context, const unsigned char *a, int a_length, con
 // <a> and <b> are packed keys.
 //
 int 
-WordKey::Compare(WordContext* context, const String& a, const String& b)
+WordKey::Compare(const String& a, const String& b)
 {
-  return WordKey::Compare(context, (const unsigned char*)a, a.length(), (const unsigned char*)b, b.length());
+  return WordKey::Compare(a, a.length(), b, b.length());
 }
 
 //
@@ -117,8 +157,7 @@ WordKey::Compare(WordContext* context, const String& a, const String& b)
 int
 word_db_cmp(const DBT *a, const DBT *b)
 {
-  WordContext* context = (WordContext*)a->app_private;
-  return WordKey::Compare(context, (const unsigned char*)a->data, a->size, (const unsigned char*)b->data, b->size);
+  return WordKey::Compare((char*)a->data, a->size, (char*)b->data, b->size);
 }
 
 //
@@ -132,18 +171,32 @@ int WordKey::Diff(const WordKey& other, int& position, int& lower)
 {
   position = -1;
 
-  int nfields=WordKey::NFields();
-
-  int i;
-  for(i = 0; i < nfields; i++) {
-    if(IsDefined(i) && other.IsDefined(i) &&
-       Get(i) != other.Get(i)) {
-      lower = Get(i) < other.Get(i);
-      break;
+  if(IsDefined(0) && other.IsDefined(0)) {
+    int ret = 0;
+    if(other.IsDefinedWordSuffix())
+      ret = GetWord().compare(other.GetWord());
+    else
+      ret = strncmp((char*)GetWord(), (const char*)other.GetWord(), other.GetWord().length());
+    if(ret) {
+      position = 0;
+      lower = ret > 0;
     }
   }
-  if(i < nfields)
-    position = i;
+
+  if(position < 0) {
+    int nfields=WordKey::NFields();
+
+    int i;
+    for(i = 1; i < nfields; i++) {
+      if(IsDefined(i) && other.IsDefined(i) &&
+	 Get(i) != other.Get(i)) {
+	lower = Get(i) < other.Get(i);
+	break;
+      }
+    }
+    if(i < nfields)
+      position = i;
+  }
 
   return position >= 0;
 }
@@ -201,7 +254,7 @@ int WordKey::SetToFollowing(int position /* = WORD_FOLLOWING_MAX */)
   }
 
   int i = position;
-  while(i >= 0) {
+  while(i > 0) {
     if(IsDefined(i)) {
       if(Overflow(i, 1))
 	Set(i, 0);
@@ -211,12 +264,13 @@ int WordKey::SetToFollowing(int position /* = WORD_FOLLOWING_MAX */)
     i--;
   }
 
-  if(i < 0) {
-    fprintf(stderr, "WordKey::SetToFollowing cannot increment\n");
-    return NOTOK;
-  }
-  
-  Get(i)++;
+  if(i == 0) {
+    if(IsDefined(i))
+      GetWord() << '\001';
+    else
+      return WORD_FOLLOWING_ATEND;
+  } else
+    Get(i)++;
 
   for(i = position + 1; i < NFields(); i++)
     if(IsDefined(i)) Set(i,0);
@@ -224,10 +278,15 @@ int WordKey::SetToFollowing(int position /* = WORD_FOLLOWING_MAX */)
   return OK;
 }
 
+//
+// Return true if the key may be used as a prefix for search.
+// In other words return true if the fields set in the key
+// are all contiguous, starting from the first field in sort order.
+//
 int 
 WordKey::Prefix() const
 {
-  const WordKeyInfo& info = context->GetKeyInfo();
+  const WordKeyInfo& info = *WordKey::Info();
   //
   // If all fields are set, it can be considered as a prefix although
   // it really is a fully qualified key.
@@ -239,20 +298,23 @@ WordKey::Prefix() const
   if(!IsDefined(0)) return NOTOK;
   
   int found_unset = 0;
-
-  for(int j = 0; j < info.nfields; j++) {
+  if(!IsDefinedWordSuffix()) { found_unset = 1; }
+  //
+  // Walk the fields in sorting order. 
+  //
+  for(int j = WORD_FIRSTFIELD; j < info.nfields; j++) 
+  {
     //
     // Fields set, then fields unset then field set -> not a prefix
     //
-    if(IsDefined(j)) {
+    if(IsDefined(j))
       if(found_unset) return NOTOK;
-    } else {
+    else
       //
       // Found unset fields and this is fine as long as we do
       // not find a field set later on.
       //
       found_unset++;
-    }
   }
 
   return OK;
@@ -266,7 +328,7 @@ WordKey::Prefix() const
 int 
 WordKey::PrefixOnly()
 {
-  const WordKeyInfo& info = context->GetKeyInfo();
+  const WordKeyInfo& info = *WordKey::Info();
   //
   // If all fields are set, the whole key is the prefix.
   //
@@ -274,26 +336,27 @@ WordKey::PrefixOnly()
   //
   // If the first field is not set there is no possible prefix
   //
-  if(!IsDefined(0))
+  if(!IsDefined(0)) 
+  {
       return NOTOK;
+  }
   
   int found_unset = 0;
   //
   // Walk the fields in sorting order. 
   //
+  if(!IsDefinedWordSuffix()){found_unset=1;}
 
-  for(int j = 0; j < info.nfields; j++) {
+  for(int j = WORD_FIRSTFIELD; j < info.nfields; j++) 
+  {
     //
     // Unset all fields after the first unset field
     //
-    if(IsDefined(j)) {
-      if(found_unset) {
-	Set(j,0);
-	Undefined(j);
-      }
-    } else {
-      found_unset = 1;
-    }
+    if(IsDefined(j)) 
+    {
+	if(found_unset) {Set(j,0);Undefined(j);}
+    } 
+    else {found_unset=1;}
   }
 
   return OK;
@@ -303,27 +366,27 @@ WordKey::PrefixOnly()
 // Unpack from data and fill fields of object
 // 
 int 
-WordKey::Unpack(const char* string, int length)
+WordKey::Unpack(const char* string,int length)
 {
-  const WordKeyInfo& info = context->GetKeyInfo();
+  const WordKeyInfo& info = *WordKey::Info();
+  if(length < info.num_length) {
+    fprintf(stderr, "WordKey::Unpack: key record length < info.num_length\n");
+    return NOTOK;
+  }
 
-  const unsigned char* p = (const unsigned char*)string;
-  int p_length = length;
-  ber_t value;
+  int string_length = length - info.num_length;
+  SetWord(string, string_length);
 
-  for(int j = 0; j < info.nfields; j++) {
-    int bytes = ber_buf2value(p, p_length, value);
-    if(bytes < 1) {
-      fprintf(stderr, "WordKey::Unpack: ber_buf2value failed at %d\n", j);
-      return NOTOK;
-    }
-    p_length -= bytes;
-    if(p_length < 0) {
-      fprintf(stderr, "WordKey::Unpack: ber_buf2value overflow at %d\n", j);
-      return NOTOK;
-    }
-    p += bytes;
-    Set(j, value);
+  for(int j = WORD_FIRSTFIELD; j < info.nfields; j++) 
+  {
+      WordKeyNum value = 0; 
+      int index = string_length + info.sort[j].bytes_offset;
+      WordKey::UnpackNumber((unsigned char *)&string[index], 
+			    info.sort[j].bytesize, 
+			    value, 
+			    info.sort[j].lowbits, 
+			    info.sort[j].bits); 
+      Set(j,value);
   }
 
   return OK;
@@ -335,37 +398,30 @@ WordKey::Unpack(const char* string, int length)
 int 
 WordKey::Pack(String& packed) const
 {
-  const WordKeyInfo& info = context->GetKeyInfo();
+  const WordKeyInfo& info = *WordKey::Info();
 
-  unsigned char* string;
-  // 
-  // + 1 : storage for the string length 
-  //
-  int length = BER_MAX_BYTES * info.nfields;
+  char* string;
+  int length = info.num_length;
 
-  if((string = (unsigned char*)malloc(length)) == 0) {
+  length += kword.length();
+
+  if((string = (char*)malloc(length)) == 0) {
     fprintf(stderr, "WordKey::Pack: malloc returned 0\n");
     return NOTOK;
   }
+  memset(string, '\0', length);
 
-  unsigned char* p = string;
-  int p_length = length;
-
-  for(int i = 0; i < info.nfields; i++) {
-    int bytes = ber_value2buf(p, p_length, Get(i));
-    if(bytes < 1) {
-      fprintf(stderr, "WordKey::Pack: ber_value2buf failed at %d\n", i);
-      return NOTOK;
-    }
-    p_length -= bytes;
-    if(p_length < 0) {
-      fprintf(stderr, "WordKey::Pack: ber_value2buf overflow at %d\n", i);
-      return NOTOK;
-    }
-    p += bytes;
+  memcpy(string, kword.get(), kword.length());
+  for(int i = WORD_FIRSTFIELD; i < info.nfields; i++) {
+    int index = kword.length() + info.sort[i].bytes_offset;
+    WordKey::PackNumber(Get(i), 
+			&string[index], 
+			info.sort[i].bytesize, 
+			info.sort[i].lowbits, 
+			info.sort[i].lastbits); 
   }
-
-  packed.set((const char*)string, p - string);
+  
+  packed.set(string, length);
 
   free(string);
 
@@ -378,11 +434,20 @@ WordKey::Pack(String& packed) const
 //
 int WordKey::Merge(const WordKey& other)
 {
-  const WordKeyInfo& info = context->GetKeyInfo();
+  const WordKeyInfo& info = *WordKey::Info();
+
   
   for(int j = 0; j < info.nfields; j++) {
     if(!IsDefined(j) && other.IsDefined(j)) {
-      Set(j,other.Get(j)); 
+      switch(info.sort[j].type) {
+      case WORD_ISA_STRING: 
+	  SetWord(other.GetWord());
+	  if(!other.IsDefinedWordSuffix()) UndefinedWordSuffix();
+	  break;
+      default:
+	  Set(j,other.Get(j)); 
+	break;
+      }
     }
   }
 
@@ -396,7 +461,7 @@ int
 WordKey::Get(String& buffer) const
 {
   buffer.trunc();
-  const WordKeyInfo& info = context->GetKeyInfo();
+  const WordKeyInfo& info = *WordKey::Info();
 
   //
   // Walk the fields in sorting order. As soon as one of them
@@ -406,7 +471,27 @@ WordKey::Get(String& buffer) const
     if(!IsDefined(j)) {
       buffer << "<UNDEF>";
     } else {
-      buffer << Get(j);
+      switch(info.sort[j].type) {
+      case WORD_ISA_STRING:
+	buffer << GetWord();
+	break;
+      case WORD_ISA_NUMBER:
+	buffer << Get(j);
+	break;
+      default:
+	fprintf(stderr, "WordKey::Get: invalid type %d for field %d\n", info.sort[j].type, j);
+	return NOTOK;
+      }
+    }
+    //
+    // Output virtual word suffix field
+    //
+    if(j == 0) {
+      if(IsDefined(j) && !IsDefinedWordSuffix()) {
+	buffer << "\t<UNDEF>";
+      } else {
+	buffer << "\t<DEF>";
+      }
     }
     buffer << "\t";
   }
@@ -437,26 +522,63 @@ WordKey::Set(const String& buffer)
 int
 WordKey::SetList(StringList& fields)
 {
-  const WordKeyInfo& info = context->GetKeyInfo();
+  const WordKeyInfo& info = *WordKey::Info();
   int length = fields.Count();
 
-  if(length < info.nfields) {
-    fprintf(stderr, "WordKey::SetList: expected at least %d fields and found %d (ignored)\n", info.nfields, length);
+  //
+  // + 1 counts for the word suffix field
+  //
+  if(length < info.nfields + 1) {
+    fprintf(stderr, "WordKey::Set: expected at least %d fields and found %d (ignored)\n", info.nfields + 1, length);
     return NOTOK;
   }
-  if(length < 1) {
-    fprintf(stderr, "WordKey::SetList: expected at least one field in line\n");
+  if(length < 2) {
+    fprintf(stderr, "WordKey::Set: expected at least two fields in line\n");
     return NOTOK;
   }
 
   Clear();
 
+  fields.Start_Get();
+  //
+  // Handle word and its suffix
+  //
+  int i = 0;
+  {
+    //
+    // Get the word
+    //
+    String* word = (String*)fields.Get_Next();
+    if(word == 0) {
+      fprintf(stderr, "WordKey::Set: failed to get word\n");
+      return NOTOK;
+    }
+    if(word->nocase_compare("<undef>") == 0)
+      UndefinedWord();
+    else
+      SetWord(*word);
+    i++;
+
+    //
+    // Get the word suffix status
+    //
+    String* suffix = (String*)fields.Get_Next();
+    if(suffix == 0) {
+      fprintf(stderr, "WordKey::Set: failed to get word suffix %d\n", i);
+      return NOTOK;
+    }
+    if(suffix->nocase_compare("<undef>") == 0)
+      UndefinedWordSuffix();
+    else
+      SetDefinedWordSuffix();
+  }
+
   //
   // Handle numerical fields
   //
-  int i;
-  for(i = 0; i < info.nfields; i++) {
-    String* field = (String*)fields.Get_First();
+  int j;
+  for(j = WORD_FIRSTFIELD; i < info.nfields; i++, j++) {
+    String* field = (String*)fields.Get_Next();
 
     if(field == 0) {
       fprintf(stderr, "WordKey::Set: failed to retrieve field %d\n", i);
@@ -464,12 +586,11 @@ WordKey::SetList(StringList& fields)
     }
     
     if(field->nocase_compare("<undef>") == 0) {
-      Undefined(i);
+      Undefined(j);
     } else {
       WordKeyNum value = strtoul(field->get(), 0, 10);
-      Set(i, value);
+      Set(j, value);
     }
-    fields.Remove(0);
   }
 
   return OK;

@@ -1,7 +1,7 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 /*
@@ -36,10 +36,10 @@
  * SUCH DAMAGE.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: txn.c,v 1.1.2.3 2000/09/17 01:35:08 ghutchis Exp $";
+static const char sccsid[] = "@(#)txn.c	11.13 (Sleepycat) 11/10/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -60,10 +60,6 @@ static const char revid[] = "$Id: txn.c,v 1.1.2.3 2000/09/17 01:35:08 ghutchis E
 #include <string.h>
 #endif
 
-#ifdef  HAVE_RPC
-#include "db_server.h"
-#endif
-
 #include "db_int.h"
 #include "db_shash.h"
 #include "txn.h"
@@ -71,18 +67,13 @@ static const char revid[] = "$Id: txn.c,v 1.1.2.3 2000/09/17 01:35:08 ghutchis E
 #include "log.h"
 #include "db_dispatch.h"
 
-#ifdef HAVE_RPC
-#include "gen_client_ext.h"
-#include "rpc_client_ext.h"
-#endif
-
-static int  __txn_begin __P((DB_TXN *));
-static int  __txn_check_running __P((const DB_TXN *, TXN_DETAIL **));
-static int  __txn_count __P((DB_TXN *));
-static void __txn_freekids __P((DB_TXN *));
-static void __txn_lsn __P((DB_TXN *, DB_LSN **));
-static int  __txn_makefamily __P((DB_ENV *, DB_TXN *, int *, DB_LSN **));
-static int  __txn_undo __P((DB_TXN *));
+static int  CDB___txn_begin __P((DB_TXN *));
+static int  CDB___txn_check_running __P((const DB_TXN *, TXN_DETAIL **));
+static int  CDB___txn_count __P((DB_TXN *));
+static void CDB___txn_freekids __P((DB_TXN *));
+static void CDB___txn_lsn __P((DB_TXN *, DB_LSN **));
+static int  CDB___txn_makefamily __P((DB_TXN *, int *, DB_LSN **));
+static int  CDB___txn_undo __P((DB_TXN *));
 
 #define	TXN_BUBBLE(AP, MAX) {						\
 	int __j;							\
@@ -100,7 +91,7 @@ static int  __txn_undo __P((DB_TXN *));
  * CDB_txn_begin --
  *	This is a wrapper to the actual begin process.  Normal CDB_txn_begin()
  * allocates a DB_TXN structure for the caller, while txn_xa_begin() does
- * not.  Other than that, both call into the common __txn_begin code().
+ * not.  Other than that, both call into the common CDB___txn_begin code().
  *
  * Internally, we use TXN_DETAIL structures, but the DB_TXN structure
  * provides access to the transaction ID and the offset in the transaction
@@ -115,11 +106,6 @@ CDB_txn_begin(dbenv, parent, txnpp, flags)
 	DB_TXN *txn;
 	int ret;
 
-#ifdef HAVE_RPC
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
-		return (__dbcl_txn_begin(dbenv, parent, txnpp, flags));
-#endif
-
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->tx_handle, DB_INIT_TXN);
 
@@ -131,7 +117,7 @@ CDB_txn_begin(dbenv, parent, txnpp, flags)
 	    "CDB_txn_begin", flags, DB_TXN_NOSYNC, DB_TXN_SYNC)) != 0)
 		return (ret);
 
-	if ((ret = CDB___os_calloc(dbenv, 1, sizeof(DB_TXN), &txn)) != 0)
+	if ((ret = CDB___os_calloc(1, sizeof(DB_TXN), &txn)) != 0)
 		return (ret);
 
 	txn->mgrp = dbenv->tx_handle;
@@ -145,7 +131,7 @@ CDB_txn_begin(dbenv, parent, txnpp, flags)
 	if (LF_ISSET(DB_TXN_NOWAIT))
 		F_SET(txn, TXN_NOWAIT);
 
-	if ((ret = __txn_begin(txn)) != 0) {
+	if ((ret = CDB___txn_begin(txn)) != 0) {
 		CDB___os_free(txn, sizeof(DB_TXN));
 		txn = NULL;
 	}
@@ -174,15 +160,15 @@ CDB___txn_xa_begin(dbenv, txn)
 
 	txn->mgrp = dbenv->tx_handle;
 
-	return (__txn_begin(txn));
+	return (CDB___txn_begin(txn));
 }
 
 /*
- * __txn_begin --
+ * CDB___txn_begin --
  *	Normal DB version of CDB_txn_begin.
  */
 static int
-__txn_begin(txn)
+CDB___txn_begin(txn)
 	DB_TXN *txn;
 {
 	DB_ENV *dbenv;
@@ -204,8 +190,8 @@ __txn_begin(txn)
 	 * we do need to find the current LSN so that we can store it in the
 	 * transaction structure, so we can know where to take checkpoints.
 	 */
-	if (LOGGING_ON(dbenv) &&
-	    (ret = CDB_log_put(dbenv, &begin_lsn, NULL, DB_CURLSN)) != 0)
+	if (F_ISSET(dbenv, DB_ENV_LOGGING) && (ret =
+	    CDB_log_put(dbenv, &begin_lsn, NULL, DB_CURLSN)) != 0)
 		goto err2;
 
 	R_LOCK(dbenv, &mgr->reginfo);
@@ -221,11 +207,8 @@ __txn_begin(txn)
 
 	/* Allocate a new transaction detail structure. */
 	if ((ret =
-	    CDB___db_shalloc(mgr->reginfo.addr, sizeof(TXN_DETAIL), 0, &td)) != 0) {
-		CDB___db_err(dbenv,
-		     "Unable to allocate memory for transaction detail");
+	    CDB___db_shalloc(mgr->reginfo.addr, sizeof(TXN_DETAIL), 0, &td)) != 0)
 		goto err1;
-	}
 
 	/* Place transaction on active transaction list. */
 	SH_TAILQ_INSERT_HEAD(&region->active_txn, td, links, __txn_detail);
@@ -252,13 +235,17 @@ __txn_begin(txn)
 	txn->off = off;
 
 	/*
-	 * If this is a transaction family, we must link the child to the
-	 * maximal grandparent in the lock table for deadlock detection.
+	 * If this is a transaction family, we must
+	 * link the child to the maximal grandparent
+	 * in the lock table for deadlock detection.
 	 */
-	if (txn->parent != NULL && LOCKING_ON(dbenv))
+	if (txn->parent != NULL &&
+	    F_ISSET(dbenv, DB_ENV_LOCKING | DB_ENV_CDB)) {
 		if ((ret = CDB___lock_addfamilylocker(dbenv,
 		    txn->parent->txnid, txn->txnid)) != 0)
 			goto err2;
+	}
+
 
 	if (F_ISSET(txn, TXN_MALLOC)) {
 		MUTEX_THREAD_LOCK(mgr->mutexp);
@@ -290,11 +277,6 @@ CDB_txn_commit(txnp, flags)
 	mgr = txnp->mgrp;
 	dbenv = mgr->dbenv;
 
-#ifdef HAVE_RPC
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
-		return (__dbcl_txn_commit(txnp, flags));
-#endif
-
 	PANIC_CHECK(dbenv);
 	if ((ret = CDB___db_fchk(dbenv,
 	    "CDB_txn_commit", flags, DB_TXN_NOSYNC | DB_TXN_SYNC)) != 0)
@@ -304,7 +286,7 @@ CDB_txn_commit(txnp, flags)
 	    "CDB_txn_commit", flags, DB_TXN_NOSYNC, DB_TXN_SYNC)) != 0)
 		return (ret);
 
-	if ((ret = __txn_check_running(txnp, NULL)) != 0)
+	if ((ret = CDB___txn_check_running(txnp, NULL)) != 0)
 		return (ret);
 
 	if (LF_ISSET(DB_TXN_NOSYNC)) {
@@ -331,17 +313,17 @@ CDB_txn_commit(txnp, flags)
 	 * abort (if its parent aborts), and otherwise its parent or ultimate
 	 * ancestor will write synchronously.
 	 */
-	if (LOGGING_ON(dbenv) &&
+	if (F_ISSET(dbenv, DB_ENV_LOGGING) &&
 	    (F_ISSET(txnp, TXN_MUSTFLUSH) || !IS_ZERO_LSN(txnp->last_lsn))) {
 		if (txnp->parent == NULL)
-			ret = CDB___txn_regop_log(dbenv, txnp, &txnp->last_lsn,
+	    		ret = CDB___txn_regop_log(dbenv, txnp, &txnp->last_lsn,
 			    (F_ISSET(mgr->dbenv, DB_ENV_TXN_NOSYNC) &&
 			    !F_ISSET(txnp, TXN_SYNC)) ||
 			    F_ISSET(txnp, TXN_NOSYNC) ?  0 : DB_FLUSH,
-			    TXN_COMMIT, (int32_t)time(NULL));
+			    TXN_COMMIT);
 		else {
 			F_SET(txnp->parent, TXN_MUSTFLUSH);
-			ret = CDB___txn_child_log(dbenv, txnp, &txnp->last_lsn, 0,
+	    		ret = CDB___txn_child_log(dbenv, txnp, &txnp->last_lsn, 0,
 			    TXN_COMMIT, txnp->parent->txnid);
 		}
 		if (ret != 0)
@@ -355,7 +337,7 @@ CDB_txn_commit(txnp, flags)
 	 * ancestor, then we can neither free it or its children.
 	 */
 	if (txnp->parent == NULL)
-		__txn_freekids(txnp);
+		CDB___txn_freekids(txnp);
 
 	return (CDB___txn_end(txnp, 1));
 }
@@ -370,16 +352,13 @@ CDB_txn_abort(txnp)
 {
 	int ret;
 
-#ifdef HAVE_RPC
-	if (F_ISSET(txnp->mgrp->dbenv, DB_ENV_RPCCLIENT))
-		return (__dbcl_txn_abort(txnp));
-#endif
-
 	PANIC_CHECK(txnp->mgrp->dbenv);
-	if ((ret = __txn_check_running(txnp, NULL)) != 0)
+	if ((ret = CDB___txn_check_running(txnp, NULL)) != 0)
 		return (ret);
 
-	if ((ret = __txn_undo(txnp)) != 0) {
+	if ((ret = CDB___txn_undo(txnp)) != 0) {
+		CDB___db_err(txnp->mgrp->dbenv,
+		    "CDB_txn_abort: Log undo failed %s", CDB_db_strerror(ret));
 		return (ret);
 	}
 	return (CDB___txn_end(txnp, 0));
@@ -398,19 +377,14 @@ CDB_txn_prepare(txnp)
 	TXN_DETAIL *td;
 	int ret;
 
-	dbenv = txnp->mgrp->dbenv;
-#ifdef HAVE_RPC
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
-		return (__dbcl_txn_prepare(txnp));
-#endif
-
-	if ((ret = __txn_check_running(txnp, &td)) != 0)
+	if ((ret = CDB___txn_check_running(txnp, &td)) != 0)
 		return (ret);
 
+	dbenv = txnp->mgrp->dbenv;
 	memset(&xid, 0, sizeof(xid));
 	xid.data = td->xid;
 	xid.size = sizeof(td->xid);
-	if (LOGGING_ON(dbenv) &&
+	if (F_ISSET(dbenv, DB_ENV_LOGGING) &&
 	    (ret = CDB___txn_xa_regop_log(dbenv, txnp, &txnp->last_lsn,
 	    (F_ISSET(dbenv, DB_ENV_TXN_NOSYNC) &&
 	    !F_ISSET(txnp, TXN_SYNC)) ||
@@ -443,7 +417,7 @@ CDB_txn_id(txnp)
  * Return 0 if the txnp is reasonable, otherwise returns EINVAL.
  */
 static int
-__txn_check_running(txnp, tdp)
+CDB___txn_check_running(txnp, tdp)
 	const DB_TXN *txnp;
 	TXN_DETAIL **tdp;
 {
@@ -504,7 +478,7 @@ CDB___txn_end(txnp, is_commit)
 	request.op = txnp->parent == NULL ||
 	    is_commit == 0 ? DB_LOCK_PUT_ALL : DB_LOCK_INHERIT;
 
-	if (LOCKING_ON(dbenv)) {
+	if (F_ISSET(dbenv, DB_ENV_LOCKING)) {
 		ret = CDB_lock_vec(dbenv, txnp->txnid, 0, &request, 1, NULL);
 		if (ret != 0 && (ret != DB_LOCK_DEADLOCK || is_commit)) {
 			CDB___db_err(dbenv, "%s: release locks failed %s",
@@ -547,7 +521,7 @@ CDB___txn_end(txnp, is_commit)
 	 * The transaction cannot get more locks, remove its locker info.
 	 */
 	if (txnp->parent != NULL) {
-		if (LOCKING_ON(dbenv))
+		if (F_ISSET(dbenv, DB_ENV_LOCKING | DB_ENV_CDB))
 			CDB___lock_freefamilylocker(dbenv->lk_handle, txnp->txnid);
 		 if (!is_commit)
 			TAILQ_REMOVE(&txnp->parent->kids, txnp, klinks);
@@ -565,13 +539,14 @@ CDB___txn_end(txnp, is_commit)
 	return (0);
 }
 
+
 /*
- * __txn_undo --
+ * CDB___txn_undo --
  *	Undo the transaction with id txnid.  Returns 0 on success and
  *	errno on failure.
  */
 static int
-__txn_undo(txnp)
+CDB___txn_undo(txnp)
 	DB_TXN *txnp;
 {
 	DBT rdbt;
@@ -584,7 +559,7 @@ __txn_undo(txnp)
 	dbenv = mgr->dbenv;
 	lsn_array = NULL;
 
-	if (!LOGGING_ON(dbenv))
+	if (!F_ISSET(dbenv, DB_ENV_LOGGING))
 		return (0);
 
 	/*
@@ -600,8 +575,7 @@ __txn_undo(txnp)
 	key_lsnp = &txnp->last_lsn;
 
 	if (TAILQ_FIRST(&txnp->kids) != NULL) {
-		if ((ret = __txn_makefamily(dbenv,
-		     txnp, &ntxns, &lsn_array)) != 0)
+		if ((ret = CDB___txn_makefamily(txnp, &ntxns, &lsn_array)) != 0)
 			return (ret);
 		key_lsnp = &lsn_array[0];
 	}
@@ -613,7 +587,7 @@ __txn_undo(txnp)
 		 */
 		if ((ret = CDB_log_get(dbenv, key_lsnp, &rdbt, DB_SET)) == 0) {
 			ret = mgr->recover(dbenv,
-			    &rdbt, key_lsnp, DB_TXN_ABORT, NULL);
+			    &rdbt, key_lsnp, TXN_UNDO, NULL);
 			if (threaded && rdbt.data != NULL) {
 				CDB___os_free(rdbt.data, rdbt.size);
 				rdbt.data = NULL;
@@ -621,13 +595,8 @@ __txn_undo(txnp)
 			if (lsn_array != NULL)
 				TXN_BUBBLE(lsn_array, ntxns);
 		}
-		if (ret != 0) {
-			CDB___db_err(txnp->mgrp->dbenv,
-			    "CDB_txn_abort: Log undo failed for LSN: %lu %lu: %s",
-			    (u_long)key_lsnp->file, (u_long)key_lsnp->offset,
-			    CDB_db_strerror(ret));
+		if (ret != 0)
 			return (ret);
-		}
 	}
 
 	return (ret);
@@ -644,9 +613,9 @@ __txn_undo(txnp)
  * therefore need to be undone in the case of an abort.
  */
 int
-CDB_txn_checkpoint(dbenv, kbytes, minutes, flags)
+CDB_txn_checkpoint(dbenv, kbytes, minutes)
 	DB_ENV *dbenv;
-	u_int32_t kbytes, minutes, flags;
+	u_int32_t kbytes, minutes;
 {
 	DB_LOG *dblp;
 	DB_LSN ckp_lsn, sync_lsn, last_ckp;
@@ -655,13 +624,9 @@ CDB_txn_checkpoint(dbenv, kbytes, minutes, flags)
 	LOG *lp;
 	TXN_DETAIL *txnp;
 	time_t last_ckp_time, now;
-	u_int32_t bytes, mbytes;
+	u_int32_t kbytes_written;
 	int ret;
 
-#ifdef HAVE_RPC
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
-		return (__dbcl_txn_checkpoint(dbenv, kbytes, minutes));
-#endif
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->tx_handle, DB_INIT_TXN);
 
@@ -671,26 +636,9 @@ CDB_txn_checkpoint(dbenv, kbytes, minutes, flags)
 	lp = dblp->reginfo.primary;
 
 	/*
-	 * Check if we need to checkpoint.
+	 * Check if we need to run recovery.
 	 */
 	ZERO_LSN(ckp_lsn);
-
-	if (LF_ISSET(DB_FORCE))
-		goto do_ckp;
-
-	R_LOCK(dbenv, &dblp->reginfo);
-	mbytes = lp->stat.st_wc_mbytes;
-	bytes = lp->stat.st_wc_bytes;
-	ckp_lsn = lp->lsn;
-	R_UNLOCK(dbenv, &dblp->reginfo);
-
-	/* Don't checkpoint a quiescent database. */
-	if (bytes == 0 && mbytes == 0)
-		return (0);
-
-	if (kbytes != 0 && mbytes * 1024 + bytes / 1024 >= (u_int32_t)kbytes)
-		goto do_ckp;
-
 	if (minutes != 0) {
 		(void)time(&now);
 
@@ -699,6 +647,17 @@ CDB_txn_checkpoint(dbenv, kbytes, minutes, flags)
 		R_UNLOCK(dbenv, &mgr->reginfo);
 
 		if (now - last_ckp_time >= (time_t)(minutes * 60))
+			goto do_ckp;
+	}
+
+	if (kbytes != 0) {
+		R_LOCK(dbenv, &dblp->reginfo);
+		kbytes_written =
+		    lp->stat.st_wc_mbytes * 1024 +
+		    lp->stat.st_wc_bytes / 1024;
+		ckp_lsn = lp->lsn;
+		R_UNLOCK(dbenv, &dblp->reginfo);
+		if (kbytes_written >= (u_int32_t)kbytes)
 			goto do_ckp;
 	}
 
@@ -747,27 +706,27 @@ do_ckp:
 	 * the actual ckp_lsn, pass it a temp instead.
 	 */
 	sync_lsn = ckp_lsn;
-	if (MPOOL_ON(dbenv) && (ret = CDB_memp_sync(dbenv, &sync_lsn)) != 0) {
+	if (mgr->dbenv->mp_handle != NULL &&
+	    (ret = CDB_memp_sync(mgr->dbenv, &sync_lsn)) != 0) {
 		/*
 		 * ret == DB_INCOMPLETE means that there are still buffers to
 		 * flush, the checkpoint is not complete.  Wait and try again.
 		 */
 		if (ret > 0)
-			CDB___db_err(dbenv,
+			CDB___db_err(mgr->dbenv,
 			    "CDB_txn_checkpoint: system failure in CDB_memp_sync %s\n",
 			    CDB_db_strerror(ret));
 		return (ret);
 	}
-	if (LOGGING_ON(dbenv)) {
+	if (F_ISSET(mgr->dbenv, DB_ENV_LOGGING)) {
 		R_LOCK(dbenv, &mgr->reginfo);
 		last_ckp = region->last_ckp;
 		ZERO_LSN(region->pending_ckp);
 		R_UNLOCK(dbenv, &mgr->reginfo);
 
-		if ((ret = CDB___txn_ckp_log(dbenv,
-		    NULL, &ckp_lsn, DB_CHECKPOINT, &ckp_lsn,
-		    &last_ckp, (int32_t)time(NULL))) != 0) {
-			CDB___db_err(dbenv,
+		if ((ret = CDB___txn_ckp_log(mgr->dbenv,
+		   NULL, &ckp_lsn, DB_CHECKPOINT, &ckp_lsn, &last_ckp)) != 0) {
+			CDB___db_err(mgr->dbenv,
 			    "CDB_txn_checkpoint: log failed at LSN [%ld %ld] %s\n",
 			    (long)ckp_lsn.file, (long)ckp_lsn.offset,
 			    CDB_db_strerror(ret));
@@ -783,7 +742,7 @@ do_ckp:
 }
 
 static void
-__txn_freekids(txnp)
+CDB___txn_freekids(txnp)
 	DB_TXN *txnp;
 {
 	DB_ENV *dbenv;
@@ -800,7 +759,7 @@ __txn_freekids(txnp)
 	    kids != NULL;
 	    kids = TAILQ_FIRST(&txnp->kids)) {
 		/* Free any children of this transaction. */
-		__txn_freekids(kids);
+		CDB___txn_freekids(kids);
 
 		/* Free the transaction detail in the region. */
 		R_LOCK(dbenv, &mgr->reginfo);
@@ -822,14 +781,43 @@ __txn_freekids(txnp)
 }
 
 /*
- * __txn_makefamily --
+ * CDB___txn_is_ancestor --
+ * 	Determine if a transaction is an ancestor of another transaction.
+ * This is used during lock promotion when we do not have the per-process
+ * data structures that link parents together.  Instead, we'll have to
+ * follow the links in the transaction region.
+ *
+ * PUBLIC: int CDB___txn_is_ancestor __P((DB_ENV *, size_t, size_t));
+ */
+int
+CDB___txn_is_ancestor(dbenv, hold_off, req_off)
+	DB_ENV *dbenv;
+	size_t hold_off, req_off;
+{
+	DB_TXNMGR *mgr;
+	TXN_DETAIL *hold_tp, *req_tp;
+
+	mgr = dbenv->tx_handle;
+	hold_tp = (TXN_DETAIL *)R_ADDR(&mgr->reginfo, hold_off);
+	req_tp = (TXN_DETAIL *)R_ADDR(&mgr->reginfo, req_off);
+
+	while (req_tp->parent != INVALID_ROFF) {
+		req_tp = (TXN_DETAIL *)R_ADDR(&mgr->reginfo, req_tp->parent);
+		if (req_tp->txnid == hold_tp->txnid)
+			return (1);
+	}
+
+	return (0);
+}
+
+/*
+ * CDB___txn_makefamily --
  *	Create an array of DB_LSNs for every member of the family being
  * aborted so that we can undo the records in the appropriate order.  We
  * allocate memory here and expect our caller to free it when they're done.
  */
 static int
-__txn_makefamily(dbenv, txnp, np, arrayp)
-	DB_ENV *dbenv;
+CDB___txn_makefamily(txnp, np, arrayp)
 	DB_TXN *txnp;
 	int *np;
 	DB_LSN **arrayp;
@@ -838,15 +826,15 @@ __txn_makefamily(dbenv, txnp, np, arrayp)
 	int i, ret;
 
 	/* Figure out how many we have. */
-	*np = __txn_count(txnp);
+	*np = CDB___txn_count(txnp);
 
 	/* Malloc space. */
-	if ((ret = CDB___os_malloc(dbenv, *np * sizeof(DB_LSN), NULL, arrayp)) != 0)
+	if ((ret = CDB___os_malloc(*np * sizeof(DB_LSN), NULL, arrayp)) != 0)
 		return (ret);
 
 	/* Fill in the space. */
 	tmpp = *arrayp;
-	__txn_lsn(txnp, &tmpp);
+	CDB___txn_lsn(txnp, &tmpp);
 
 	/* Sort the LSNs. */
 	ap = *arrayp;
@@ -857,13 +845,13 @@ __txn_makefamily(dbenv, txnp, np, arrayp)
 }
 
 /*
- * __txn_count --
+ * CDB___txn_count --
  *	Routine to count the number of members in a transaction family.  We
  * include the incoming transaction in the count.  We assume that we never
  * call this routine with NULL.
  */
 static int
-__txn_count(txnp)
+CDB___txn_count(txnp)
 	DB_TXN *txnp;
 {
 	DB_TXN *kids;
@@ -873,19 +861,19 @@ __txn_count(txnp)
 	for (kids = TAILQ_FIRST(&txnp->kids);
 	    kids != NULL;
 	    kids = TAILQ_NEXT(kids, klinks))
-		n += __txn_count(kids);
+		n += CDB___txn_count(kids);
 
 	return (n);
 }
 
 /*
- * __txn_lsn ---
+ * CDB___txn_lsn ---
  *	Fill in the array with the last_lsn field of every transaction
  * in the family.  Array is an in/out parameter that leaves you pointing
  * to the next space in which to place an LSN.
  */
 static void
-__txn_lsn(txnp, array)
+CDB___txn_lsn(txnp, array)
 	DB_TXN *txnp;
 	DB_LSN **array;
 {
@@ -899,7 +887,7 @@ __txn_lsn(txnp, array)
 	for (kids = TAILQ_FIRST(&txnp->kids);
 	    kids != NULL;
 	    kids = TAILQ_NEXT(kids, klinks))
-		__txn_lsn(kids, array);
+		CDB___txn_lsn(kids, array);
 }
 
 /*

@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999, 2000
+ * Copyright (c) 1996, 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: lock_deadlock.c,v 1.1.2.3 2000/09/17 01:35:06 ghutchis Exp $";
+static const char sccsid[] = "@(#)lock_deadlock.c	11.7 (Sleepycat) 10/19/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -18,19 +18,10 @@ static const char revid[] = "$Id: lock_deadlock.c,v 1.1.2.3 2000/09/17 01:35:06 
 #include <string.h>
 #endif
 
-#ifdef	HAVE_RPC
-#include "db_server.h"
-#endif
-
 #include "db_int.h"
 #include "db_shash.h"
 #include "lock.h"
 #include "txn.h"
-
-#ifdef HAVE_RPC
-#include "gen_client_ext.h"
-#include "rpc_client_ext.h"
-#endif
 
 #define	ISSET_MAP(M, N)	((M)[(N) / 32] & (1 << (N) % 32))
 
@@ -58,11 +49,11 @@ typedef struct {
 	db_pgno_t	pgno;
 } locker_info;
 
-static int  __dd_abort __P((DB_ENV *, locker_info *));
-static int  __dd_build
+static int  CDB___dd_abort __P((DB_ENV *, locker_info *));
+static int  CDB___dd_build
 	__P((DB_ENV *, u_int32_t **, u_int32_t *, locker_info **));
-static int  __dd_find
-	__P((DB_ENV *,u_int32_t *, locker_info *, u_int32_t, u_int32_t ***));
+static int  CDB___dd_find
+	__P((u_int32_t *, locker_info *, u_int32_t, u_int32_t ***));
 
 #ifdef DIAGNOSTIC
 static void __dd_debug __P((DB_ENV *, locker_info *, u_int32_t *, u_int32_t));
@@ -80,11 +71,6 @@ CDB_lock_detect(dbenv, flags, atype, abortp)
 	u_int32_t *bitmap, **deadp, **free_me, i, killid, nentries, nlockers;
 	int do_pass, ret;
 
-#ifdef HAVE_RPC
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
-		return (__dbcl_lock_detect(dbenv, flags, atype, abortp));
-#endif
-
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->lk_handle, DB_INIT_LOCK);
 
@@ -101,8 +87,10 @@ CDB_lock_detect(dbenv, flags, atype, abortp)
 	LOCKREGION(dbenv, lt);
 	if (LF_ISSET(DB_LOCK_CONFLICT)) {
 		/* Make a pass every time a lock waits. */
+		MEMORY_LOCK(lt);
 		region = lt->reginfo.primary;
 		do_pass = region->need_dd != 0;
+		MEMORY_UNLOCK(lt);
 
 		if (!do_pass) {
 			UNLOCKREGION(dbenv, lt);
@@ -111,7 +99,7 @@ CDB_lock_detect(dbenv, flags, atype, abortp)
 	}
 
 	/* Build the waits-for bitmap. */
-	ret = __dd_build(dbenv, &bitmap, &nlockers, &idmap);
+	ret = CDB___dd_build(dbenv, &bitmap, &nlockers, &idmap);
 	UNLOCKREGION(dbenv, lt);
 	if (ret != 0)
 		return (ret);
@@ -123,7 +111,7 @@ CDB_lock_detect(dbenv, flags, atype, abortp)
 		__dd_debug(dbenv, idmap, bitmap, nlockers);
 #endif
 	/* Find a deadlock. */
-	if ((ret = __dd_find(dbenv, bitmap, idmap, nlockers, &deadp)) != 0)
+	if ((ret = CDB___dd_find(bitmap, idmap, nlockers, &deadp)) != 0)
 		return (ret);
 
 	nentries = ALIGN(nlockers, 32) / 32;
@@ -206,7 +194,7 @@ CDB_lock_detect(dbenv, flags, atype, abortp)
 			continue;
 
 		/* Kill the locker with lockid idmap[killid]. */
-		if ((ret = __dd_abort(dbenv, &idmap[killid])) != 0) {
+		if ((ret = CDB___dd_abort(dbenv, &idmap[killid])) != 0) {
 			/*
 			 * It's possible that the lock was already aborted;
 			 * this isn't necessarily a problem, so do not treat
@@ -237,7 +225,7 @@ CDB_lock_detect(dbenv, flags, atype, abortp)
 # define DD_INVALID_ID	((u_int32_t) -1)
 
 static int
-__dd_build(dbenv, bmp, nlockers, idmap)
+CDB___dd_build(dbenv, bmp, nlockers, idmap)
 	DB_ENV *dbenv;
 	u_int32_t **bmp, *nlockers;
 	locker_info **idmap;
@@ -261,8 +249,10 @@ __dd_build(dbenv, bmp, nlockers, idmap)
 	 * verify that we have enough room when we go back in and get the
 	 * mutex the second time.
 	 */
+	MEMORY_LOCK(lt);
 retry:	count = region->nlockers;
 	region->need_dd = 0;
+	MEMORY_UNLOCK(lt);
 
 	if (count == 0) {
 		*nlockers = 0;
@@ -282,18 +272,17 @@ retry:	count = region->nlockers;
 	 * We can probably save the malloc's between iterations just
 	 * reallocing if necessary because count grew by too much.
 	 */
-	if ((ret = CDB___os_calloc(dbenv, (size_t)count,
+	if ((ret = CDB___os_calloc((size_t)count,
 	    sizeof(u_int32_t) * nentries, &bitmap)) != 0)
 		return (ret);
 
-	if ((ret = CDB___os_calloc(dbenv,
-	    sizeof(u_int32_t), nentries, &tmpmap)) != 0) {
+	if ((ret = CDB___os_calloc(sizeof(u_int32_t), nentries, &tmpmap)) != 0) {
 		CDB___os_free(bitmap, sizeof(u_int32_t) * nentries);
 		return (ret);
 	}
 
-	if ((ret = CDB___os_calloc(dbenv,
-	    (size_t)count, sizeof(locker_info), &id_array)) != 0) {
+	if ((ret =
+	    CDB___os_calloc((size_t)count, sizeof(locker_info), &id_array)) != 0) {
 		CDB___os_free(bitmap, count * sizeof(u_int32_t) * nentries);
 		CDB___os_free(tmpmap, sizeof(u_int32_t) * nentries);
 		return (ret);
@@ -302,17 +291,20 @@ retry:	count = region->nlockers;
 	/*
 	 * Now go back in and actually fill in the matrix.
 	 */
+	MEMORY_LOCK(lt);
 	if (region->nlockers > count) {
 		CDB___os_free(bitmap, count * sizeof(u_int32_t) * nentries);
 		CDB___os_free(tmpmap, sizeof(u_int32_t) * nentries);
 		CDB___os_free(id_array, count * sizeof(locker_info));
 		goto retry;
 	}
+	MEMORY_UNLOCK(lt);
 
 	/*
 	 * First we go through and assign each locker a deadlock detector id.
 	 */
 	for (id = 0, i = 0; i < region->table_size; i++) {
+		LOCKER_LOCK_NDX(lt, i);
 		for (lip = SH_TAILQ_FIRST(&lt->locker_tab[i], __db_locker);
 		    lip != NULL; lip = SH_TAILQ_NEXT(lip, links, __db_locker))
 			if (lip->master_locker == INVALID_ROFF) {
@@ -320,99 +312,114 @@ retry:	count = region->nlockers;
 				id_array[lip->dd_id].id = lip->id;
 			} else
 				lip->dd_id = DD_INVALID_ID;
+		LOCKER_UNLOCK(lt, i);
 	}
 
 	/*
-	 * We only need consider objects that have waiters, so we use
-	 * the list of objects with waiters (dd_objs) instead of traversing
-	 * the entire hash table.  For each object, we traverse the waiters
-	 * list and add an entry in the waitsfor matrix for each waiter/holder
-	 * combination.
+	 * We go through the hash table and find each object.  For each object,
+	 * we traverse the waiters list and add an entry in the waitsfor matrix
+	 * for each waiter/holder combination.  We acquire the hash bucket
+	 * locks as we go and then release them all at the end.
 	 */
-	for (op = SH_TAILQ_FIRST(&region->dd_objs, __db_lockobj);
-	    op != NULL; op = SH_TAILQ_NEXT(op, dd_links, __db_lockobj)) {
-		CLEAR_MAP(tmpmap, nentries);
-
-		/*
-		 * First we go through and create a bit map that
-		 * represents all the holders of this object.
-		 */
-		for (lp = SH_TAILQ_FIRST(&op->holders, __db_lock);
-		    lp != NULL;
-		    lp = SH_TAILQ_NEXT(lp, links, __db_lock)) {
-			ndx = CDB___lock_locker_hash(lp->holder) %
-			    region->table_size;
-			if ((ret = CDB___lock_getlocker(lt,
-			    lp->holder, ndx, 0, &lockerp)) != 0)
-				continue;
-			if (lockerp->dd_id == DD_INVALID_ID)
-				dd = ((DB_LOCKER *)
-				     R_ADDR(&lt->reginfo,
-				     lockerp->master_locker))->dd_id;
-			else
-				dd = lockerp->dd_id;
-			id_array[dd].valid = 1;
+	for (i = 0; i < region->table_size; i++) {
+		OBJECT_LOCK_NDX(lt, i);
+		for (op = SH_TAILQ_FIRST(&lt->obj_tab[i], __db_lockobj);
+		    op != NULL; op = SH_TAILQ_NEXT(op, links, __db_lockobj)) {
+			CLEAR_MAP(tmpmap, nentries);
 
 			/*
-			 * If the holder has already been aborted, then
-			 * we should ignore it for now.
+			 * First we go through and create a bit map that
+			 * represents all the holders of this object.
 			 */
-			if (lp->status == DB_LSTAT_HELD)
-				SET_MAP(tmpmap, dd);
-		}
+			for (lp = SH_TAILQ_FIRST(&op->holders, __db_lock);
+			    lp != NULL;
+			    lp = SH_TAILQ_NEXT(lp, links, __db_lock)) {
+				LOCKER_LOCK(lt, region, lp->holder, ndx);
+				if ((ret = CDB___lock_getlocker(lt,
+				    lp->holder, ndx, 0, &lockerp)) != 0) {
+					LOCKER_UNLOCK(lt, ndx);
+					continue;
+				}
+				if (lockerp->dd_id == DD_INVALID_ID)
+					dd = ((DB_LOCKER *)
+					     R_ADDR(&lt->reginfo,
+					     lockerp->master_locker))->dd_id;
+				else
+					dd = lockerp->dd_id;
+				id_array[dd].valid = 1;
 
-		/*
-		 * Next, for each waiter, we set its row in the matrix
-		 * equal to the map of holders we set up above.
-		 */
-		for (is_first = 1,
-		    lp = SH_TAILQ_FIRST(&op->waiters, __db_lock);
-		    lp != NULL;
-		    is_first = 0,
-		    lp = SH_TAILQ_NEXT(lp, links, __db_lock)) {
-			ndx = CDB___lock_locker_hash(lp->holder) %
-			     region->table_size;
-			if ((ret = CDB___lock_getlocker(lt,
-			    lp->holder, ndx, 0, &lockerp)) != 0)
-				continue;
-			if (lockerp->dd_id == DD_INVALID_ID)
-				dd = ((DB_LOCKER *)
-				     R_ADDR(&lt->reginfo,
-				     lockerp->master_locker))->dd_id;
-			else
-				dd = lockerp->dd_id;
-			id_array[dd].valid = 1;
+				/*
+				 * If the holder has already been aborted, then
+				 * we should ignore it for now.
+				 */
+				if (lp->status == DB_LSTAT_HELD)
+					SET_MAP(tmpmap, dd);
+				LOCKER_UNLOCK(lt, ndx);
+			}
 
 			/*
-			 * If the transaction is pending abortion, then
-			 * ignore it on this iteration.
+			 * Next, for each waiter, we set its row in the matrix
+			 * equal to the map of holders we set up above.
 			 */
-			if (lp->status != DB_LSTAT_WAITING)
-				continue;
+			for (is_first = 1,
+			    lp = SH_TAILQ_FIRST(&op->waiters, __db_lock);
+			    lp != NULL;
+			    is_first = 0,
+			    lp = SH_TAILQ_NEXT(lp, links, __db_lock)) {
+				LOCKER_LOCK(lt, region, lp->holder, ndx);
+				if ((ret = CDB___lock_getlocker(lt,
+				    lp->holder, ndx, 0, &lockerp)) != 0) {
+					LOCKER_UNLOCK(lt, ndx);
+					continue;
+				}
+				if (lockerp->dd_id == DD_INVALID_ID)
+					dd = ((DB_LOCKER *)
+					     R_ADDR(&lt->reginfo,
+					     lockerp->master_locker))->dd_id;
+				else
+					dd = lockerp->dd_id;
+				id_array[dd].valid = 1;
+				LOCKER_UNLOCK(lt, ndx);
 
-			entryp = bitmap + (nentries * dd);
-			OR_MAP(entryp, tmpmap, nentries);
-			/*
-			 * If this is the first waiter on the queue,
-			 * then we remove the waitsfor relationship
-			 * with oneself.  However, if it's anywhere
-			 * else on the queue, then we have to keep
-			 * it and we have an automatic deadlock.
-			 */
-			if (is_first)
-				CLR_MAP(entryp, dd);
+				/*
+				 * If the transaction is pending abortion, then
+				 * ignore it on this iteration.
+				 */
+				if (lp->status != DB_LSTAT_WAITING)
+					continue;
+
+				entryp = bitmap + (nentries * dd);
+				OR_MAP(entryp, tmpmap, nentries);
+				/*
+				 * If this is the first waiter on the queue,
+				 * then we remove the waitsfor relationship
+				 * with oneself.  However, if it's anywhere
+				 * else on the queue, then we have to keep
+				 * it and we have an automatic deadlock.
+				 */
+				if (is_first)
+					CLR_MAP(entryp, dd);
+			}
 		}
 	}
+
+	/*
+	 * We now have a snapshot of the entire lock table. Release the
+	 * object mutexes.
+	 */
+	for (i = 0; i < region->table_size; i++)
+		OBJECT_UNLOCK(lt, i);
 
 	/* Now for each locker; record its last lock. */
 	for (id = 0; id < count; id++) {
 		if (!id_array[id].valid)
 			continue;
-		ndx = CDB___lock_locker_hash(id_array[id].id) % region->table_size;
+		LOCKER_LOCK(lt, region, id_array[id].id, ndx);
 		if ((ret = CDB___lock_getlocker(lt,
 		    id_array[id].id, ndx, 0, &lockerp)) != 0) {
 			CDB___db_err(dbenv,
 			    "No locks for locker %lu", (u_long)id_array[id].id);
+			LOCKER_UNLOCK(lt, ndx);
 			continue;
 		}
 
@@ -446,10 +453,13 @@ retry:	count = region->nlockers;
 			else
 				id_array[id].pgno = 0;
 		}
+		LOCKER_UNLOCK(lt, ndx);
 	}
 
 	/* Pass complete, reset the deadlock detector bit. */
+	MEMORY_LOCK(lt);
 	region->need_dd = 0;
+	MEMORY_UNLOCK(lt);
 
 	/*
 	 * Now we can release everything except the bitmap matrix that we
@@ -463,8 +473,7 @@ retry:	count = region->nlockers;
 }
 
 static int
-__dd_find(dbenv, bmp, idmap, nlockers, deadp)
-	DB_ENV *dbenv;
+CDB___dd_find(bmp, idmap, nlockers, deadp)
 	u_int32_t *bmp, nlockers;
 	locker_info *idmap;
 	u_int32_t ***deadp;
@@ -478,8 +487,8 @@ __dd_find(dbenv, bmp, idmap, nlockers, deadp)
 
 	ndeadalloc = INITIAL_DEAD_ALLOC;
 	ndead = 0;
-	if ((ret = CDB___os_malloc(dbenv,
-	    ndeadalloc * sizeof(u_int32_t *), NULL, &retp)) != 0)
+	if ((ret =
+	    CDB___os_malloc(ndeadalloc * sizeof(u_int32_t *), NULL, &retp)) != 0)
 		return (ret);
 
 	/*
@@ -507,8 +516,7 @@ __dd_find(dbenv, bmp, idmap, nlockers, deadp)
 				 * If the alloc fails, then simply return the
 				 * deadlocks that we already have.
 				 */
-				if (CDB___os_realloc(dbenv,
-				    ndeadalloc * sizeof(u_int32_t),
+				if (CDB___os_realloc(ndeadalloc * sizeof(u_int32_t),
 				    NULL, &retp) != 0) {
 					retp[ndead] = NULL;
 					*deadp = retp;
@@ -530,7 +538,7 @@ __dd_find(dbenv, bmp, idmap, nlockers, deadp)
 }
 
 static int
-__dd_abort(dbenv, info)
+CDB___dd_abort(dbenv, info)
 	DB_ENV *dbenv;
 	locker_info *info;
 {
@@ -547,7 +555,7 @@ __dd_abort(dbenv, info)
 
 	LOCKREGION(dbenv, lt);
 	/* Find the locker's last lock. */
-	ndx = CDB___lock_locker_hash(info->last_locker_id) % region->table_size;
+	LOCKER_LOCK(lt, region, info->last_locker_id, ndx);
 	if ((ret = CDB___lock_getlocker(lt,
 	    info->last_locker_id, ndx, 0, &lockerp)) != 0 || lockerp == NULL) {
 		if (ret == 0)
@@ -574,30 +582,26 @@ __dd_abort(dbenv, info)
 
 	sh_obj = (DB_LOCKOBJ *)((u_int8_t *)lockp + lockp->obj);
 	SH_LIST_REMOVE(lockp, locker_links, __db_lock);
+	LOCKER_UNLOCK(lt, ndx);
 
 	/* Abort lock, take it off list, and wake up this lock. */
 	SHOBJECT_LOCK(lt, region, sh_obj, ndx);
 	lockp->status = DB_LSTAT_ABORTED;
 	SH_TAILQ_REMOVE(&sh_obj->waiters, lockp, links, __db_lock);
+	ret = CDB___lock_promote(lt, sh_obj);
+	OBJECT_UNLOCK(lt, ndx);
 
-	/*
-	 * Either the waiters list is now empty, in which case we remove
-	 * it from dd_objs, or it is not empty, in which case we need to
-	 * do promotion.
-	 */
-	if (SH_TAILQ_FIRST(&sh_obj->waiters, __db_lock) == NULL)
-		SH_TAILQ_REMOVE(&region->dd_objs,
-		    sh_obj, dd_links, __db_lockobj);
-	else
-		ret = CDB___lock_promote(lt, sh_obj);
-	MUTEX_UNLOCK(&lockp->mutex);
+        MUTEX_UNLOCK(&lockp->mutex);
 
+	MEMORY_LOCK(lt);
 	region->ndeadlocks++;
+	MEMORY_UNLOCK(lt);
 	UNLOCKREGION(dbenv, lt);
 
 	return (0);
 
 out:	UNLOCKREGION(dbenv, lt);
+	LOCKER_UNLOCK(lt, ndx);
 	return (ret);
 }
 
@@ -617,7 +621,7 @@ __dd_debug(dbenv, idmap, bitmap, nlockers)
 	/* Allocate space to print 10 bytes per item waited on. */
 #undef	MSGBUF_LEN
 #define	MSGBUF_LEN ((nlockers + 1) * 10 + 64)
-	if ((ret = CDB___os_malloc(dbenv, MSGBUF_LEN, NULL, &msgbuf)) != 0)
+	if ((ret = CDB___os_malloc(MSGBUF_LEN, NULL, &msgbuf)) != 0)
 		return;
 
 	nentries = ALIGN(nlockers, 32) / 32;

@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998, 1999, 2000
+ * Copyright (c) 1997, 1998, 1999
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "htconfig.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id: log_archive.c,v 1.1.2.3 2000/09/17 01:35:06 ghutchis Exp $";
+static const char sccsid[] = "@(#)CDB_log_archive.c	11.2 (Sleepycat) 9/16/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -20,23 +20,14 @@ static const char revid[] = "$Id: log_archive.c,v 1.1.2.3 2000/09/17 01:35:06 gh
 #include <unistd.h>
 #endif
 
-#ifdef  HAVE_RPC
-#include "db_server.h"
-#endif
-
 #include "db_int.h"
 #include "db_dispatch.h"
 #include "log.h"
 
-#ifdef HAVE_RPC
-#include "gen_client_ext.h"
-#include "rpc_client_ext.h"
-#endif
-
-static int __absname __P((DB_ENV *, char *, char *, char **));
-static int __build_data __P((DB_ENV *, char *, char ***, void *(*)(size_t)));
-static int __cmpfunc __P((const void *, const void *));
-static int __usermem __P((DB_ENV *, char ***, void *(*)(size_t)));
+static int CDB___absname __P((char *, char *, char **));
+static int CDB___build_data __P((DB_ENV *, char *, char ***, void *(*)(size_t)));
+static int CDB___cmpfunc __P((const void *, const void *));
+static int CDB___usermem __P((char ***, void *(*)(size_t)));
 
 /*
  * CDB_log_archive --
@@ -56,11 +47,6 @@ CDB_log_archive(dbenv, listp, flags, db_malloc)
 	int array_size, n, ret;
 	char **array, **arrayp, *name, *p, *pref, buf[MAXPATHLEN];
 
-#ifdef HAVE_RPC
-	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
-		return (__dbcl_log_archive(dbenv, listp, flags, db_malloc));
-#endif
-
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->lg_handle, DB_INIT_LOG);
 
@@ -75,7 +61,7 @@ CDB_log_archive(dbenv, listp, flags, db_malloc)
 			return (ret);
 		if ((ret =
 		    CDB___db_fcchk(dbenv,
-			"CDB_log_archive", flags, DB_ARCH_DATA, DB_ARCH_LOG)) != 0)
+		        "CDB_log_archive", flags, DB_ARCH_DATA, DB_ARCH_LOG)) != 0)
 			return (ret);
 	}
 
@@ -100,7 +86,7 @@ CDB_log_archive(dbenv, listp, flags, db_malloc)
 
 	switch (LF_ISSET(~DB_ARCH_ABS)) {
 	case DB_ARCH_DATA:
-		return (__build_data(dbenv, pref, listp, db_malloc));
+		return (CDB___build_data(dbenv, pref, listp, db_malloc));
 	case DB_ARCH_LOG:
 		memset(&rec, 0, sizeof(rec));
 		if (F_ISSET(dbenv, DB_ENV_THREAD))
@@ -131,8 +117,7 @@ CDB_log_archive(dbenv, listp, flags, db_malloc)
 #define	LIST_INCREMENT	64
 	/* Get some initial space. */
 	array_size = 10;
-	if ((ret = CDB___os_malloc(dbenv,
-	    sizeof(char *) * array_size, NULL, &array)) != 0)
+	if ((ret = CDB___os_malloc(sizeof(char *) * array_size, NULL, &array)) != 0)
 		return (ret);
 	array[0] = NULL;
 
@@ -141,8 +126,6 @@ CDB_log_archive(dbenv, listp, flags, db_malloc)
 		if ((ret = CDB___log_name(dblp, fnum, &name, NULL, 0)) != 0)
 			goto err;
 		if (CDB___os_exists(name, NULL) != 0) {
-			if (LF_ISSET(DB_ARCH_LOG) && fnum == stable_lsn.file)
-				continue;
 			CDB___os_freestr(name);
 			name = NULL;
 			break;
@@ -150,18 +133,17 @@ CDB_log_archive(dbenv, listp, flags, db_malloc)
 
 		if (n >= array_size - 1) {
 			array_size += LIST_INCREMENT;
-			if ((ret = CDB___os_realloc(dbenv,
+			if ((ret = CDB___os_realloc(
 			    sizeof(char *) * array_size, NULL, &array)) != 0)
 				goto err;
 		}
 
 		if (LF_ISSET(DB_ARCH_ABS)) {
-			if ((ret = __absname(dbenv,
-			    pref, name, &array[n])) != 0)
+			if ((ret = CDB___absname(pref, name, &array[n])) != 0)
 				goto err;
 			CDB___os_freestr(name);
 		} else if ((p = CDB___db_rpath(name)) != NULL) {
-			if ((ret = CDB___os_strdup(dbenv, p + 1, &array[n])) != 0)
+			if ((ret = CDB___os_strdup(p + 1, &array[n])) != 0)
 				goto err;
 			CDB___os_freestr(name);
 		} else
@@ -179,10 +161,10 @@ CDB_log_archive(dbenv, listp, flags, db_malloc)
 	}
 
 	/* Sort the list. */
-	qsort(array, (size_t)n, sizeof(char *), __cmpfunc);
+	qsort(array, (size_t)n, sizeof(char *), CDB___cmpfunc);
 
 	/* Rework the memory. */
-	if ((ret = __usermem(dbenv, &array, db_malloc)) != 0)
+	if ((ret = CDB___usermem(&array, db_malloc)) != 0)
 		goto err;
 
 	*listp = array;
@@ -199,26 +181,28 @@ err:	if (array != NULL) {
 }
 
 /*
- * __build_data --
+ * CDB___build_data --
  *	Build a list of datafiles for return.
  */
 static int
-__build_data(dbenv, pref, listp, db_malloc)
+CDB___build_data(dbenv, pref, listp, db_malloc)
 	DB_ENV *dbenv;
 	char *pref, ***listp;
 	void *(*db_malloc) __P((size_t));
 {
 	DBT rec;
+	DB_LOG *dblp;
 	DB_LSN lsn;
 	__log_register_args *argp;
 	u_int32_t rectype;
 	int array_size, last, n, nxt, ret;
 	char **array, **arrayp, *p, *real_name;
 
+	dblp = dbenv->lg_handle;
+
 	/* Get some initial space. */
 	array_size = 10;
-	if ((ret = CDB___os_malloc(dbenv,
-	    sizeof(char *) * array_size, NULL, &array)) != 0)
+	if ((ret = CDB___os_malloc(sizeof(char *) * array_size, NULL, &array)) != 0)
 		return (ret);
 	array[0] = NULL;
 
@@ -241,7 +225,7 @@ __build_data(dbenv, pref, listp, db_malloc)
 			}
 			continue;
 		}
-		if ((ret = CDB___log_register_read(dbenv, rec.data, &argp)) != 0) {
+		if ((ret = CDB___log_register_read(rec.data, &argp)) != 0) {
 			ret = EINVAL;
 			CDB___db_err(dbenv,
 			    "CDB_log_archive: unable to read log record");
@@ -250,13 +234,12 @@ __build_data(dbenv, pref, listp, db_malloc)
 
 		if (n >= array_size - 1) {
 			array_size += LIST_INCREMENT;
-			if ((ret = CDB___os_realloc(dbenv,
-			    sizeof(char *) * array_size, NULL, &array)) != 0)
+			if ((ret = CDB___os_realloc(sizeof(char *) * array_size,
+			    NULL, &array)) != 0)
 				goto lg_free;
 		}
 
-		if ((ret = CDB___os_strdup(dbenv,
-		    argp->name.data, &array[n])) != 0) {
+		if ((ret = CDB___os_strdup(argp->name.data, &array[n])) != 0) {
 lg_free:		if (F_ISSET(&rec, DB_DBT_MALLOC) && rec.data != NULL)
 				CDB___os_free(rec.data, rec.size);
 			goto err1;
@@ -279,7 +262,7 @@ lg_free:		if (F_ISSET(&rec, DB_DBT_MALLOC) && rec.data != NULL)
 	}
 
 	/* Sort the list. */
-	qsort(array, (size_t)n, sizeof(char *), __cmpfunc);
+	qsort(array, (size_t)n, sizeof(char *), CDB___cmpfunc);
 
 	/*
 	 * Build the real pathnames, discarding nonexistent files and
@@ -318,12 +301,12 @@ lg_free:		if (F_ISSET(&rec, DB_DBT_MALLOC) && rec.data != NULL)
 		CDB___os_freestr(array[last]);
 		array[last] = NULL;
 		if (pref != NULL) {
-			ret = __absname(dbenv, pref, real_name, &array[last]);
+			ret = CDB___absname(pref, real_name, &array[last]);
 			CDB___os_freestr(real_name);
 			if (ret != 0)
 				goto err2;
 		} else if ((p = CDB___db_rpath(real_name)) != NULL) {
-			ret = CDB___os_strdup(dbenv, p + 1, &array[last]);
+			ret = CDB___os_strdup(p + 1, &array[last]);
 			CDB___os_freestr(real_name);
 			if (ret != 0)
 				goto err2;
@@ -336,7 +319,7 @@ lg_free:		if (F_ISSET(&rec, DB_DBT_MALLOC) && rec.data != NULL)
 	array[last] = NULL;
 
 	/* Rework the memory. */
-	if ((ret = __usermem(dbenv, &array, db_malloc)) != 0)
+	if ((ret = CDB___usermem(&array, db_malloc)) != 0)
 		goto err1;
 
 	*listp = array;
@@ -361,12 +344,11 @@ err1:	if (array != NULL) {
 }
 
 /*
- * __absname --
+ * CDB___absname --
  *	Return an absolute path name for the file.
  */
 static int
-__absname(dbenv, pref, name, newnamep)
-	DB_ENV *dbenv;
+CDB___absname(pref, name, newnamep)
 	char *pref, *name, **newnamep;
 {
 	size_t l_pref, l_name;
@@ -378,8 +360,7 @@ __absname(dbenv, pref, name, newnamep)
 	l_pref = isabspath ? 0 : strlen(pref);
 
 	/* Malloc space for concatenating the two. */
-	if ((ret = CDB___os_malloc(dbenv,
-	    l_pref + l_name + 2, NULL, &newname)) != 0)
+	if ((ret = CDB___os_malloc(l_pref + l_name + 2, NULL, &newname)) != 0)
 		return (ret);
 	*newnamep = newname;
 
@@ -395,13 +376,12 @@ __absname(dbenv, pref, name, newnamep)
 }
 
 /*
- * __usermem --
+ * CDB___usermem --
  *	Create a single chunk of memory that holds the returned information.
  *	If the user has their own malloc routine, use it.
  */
 static int
-__usermem(dbenv, listp, db_malloc)
-	DB_ENV *dbenv;
+CDB___usermem(listp, db_malloc)
 	char ***listp;
 	void *(*db_malloc) __P((size_t));
 {
@@ -415,7 +395,7 @@ __usermem(dbenv, listp, db_malloc)
 	len += sizeof(char *);
 
 	/* Allocate it and set up the pointers. */
-	if ((ret = CDB___os_malloc(dbenv, len, db_malloc, &array)) != 0)
+	if ((ret = CDB___os_malloc(len, db_malloc, &array)) != 0)
 		return (ret);
 
 	strp = (char *)(array + (orig - *listp) + 1);
@@ -440,7 +420,7 @@ __usermem(dbenv, listp, db_malloc)
 }
 
 static int
-__cmpfunc(p1, p2)
+CDB___cmpfunc(p1, p2)
 	const void *p1, *p2;
 {
 	return (strcmp(*((char * const *)p1), *((char * const *)p2)));

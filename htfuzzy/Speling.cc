@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Speling.cc,v 1.6.2.3 2000/09/27 05:17:55 ghutchis Exp $
+// $Id: Speling.cc,v 1.6.2.4 2000/10/10 03:15:39 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -62,8 +62,7 @@ Speling::getWords(char *w, List &words)
 
     String	initial = w;
     String	stripped = initial;
-    WordType	type(config);
-    type.StripPunctuation(stripped);
+    HtStripPunctuation(stripped);
     String	tail;
     int		max_length = stripped.length() - 1;
 

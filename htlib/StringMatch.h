@@ -29,14 +29,14 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringMatch.h,v 1.8.2.3 2000/09/27 05:14:17 ghutchis Exp $
+// $Id: StringMatch.h,v 1.8.2.4 2000/10/10 03:15:41 ghutchis Exp $
 //
 
 #ifndef _StringMatch_h_
 #define _StringMatch_h_
 
 #include "Object.h"
-#include "WordType.h"
+#include "HtWordType.h"
 
 class StringMatch : public Object
 {
