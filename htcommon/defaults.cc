@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.108 2004/05/28 13:15:13 lha Exp $
+// $Id: defaults.cc,v 1.109 2004/06/04 08:51:05 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -124,6 +124,19 @@ ConfigDefaults	defaults[] =
 	<a href=\"#extra_word_characters\">extra word</a> character. \
 	To disallow digits in words, add the digits to \
 	<a href=\"#valid_punctuation\">valid_punctuation</a>. \
+" }, \
+{ "allow_space_in_url", "false",  \
+	"boolean", "htdig", "", "3.2.0b6", "Indexing:Where", "allow_space_in_url: true", " \
+	If set to true, htdig will handle URLs that contain \
+	embedded spaces. Technically, this is a violation of \
+	RFC 2396, which says spaces should be stripped out \
+	(as htdig does by default).  However, many web browsers \
+	and HTML code generators violate this standard already, \
+	so enabling this attribute allows htdig to handle these \
+	non-compliant URLs.  Even with this attribute set, htdig \
+	still strips out all white space (leading, trailing and \
+	embedded), except that space characters embedded within \
+	the URL will be encoded as %20.
 " }, \
 { "allow_virtual_hosts", "true",  \
 	"boolean", "htdig", "", "3.0.8b2", "Indexing:Where", "allow_virtual_hosts: false", " \

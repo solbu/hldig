@@ -42,10 +42,14 @@
 	    <li>fixed bug regarding compilation of regular expressions for
 		every URL (improve performances)</li>
 	    <li>fixed bugs in phrase searching</li>
-	    <li>add <a
+	    <li>added <a
+         	href="attrs.html#allow_space_in_url">allow_space_in_url</a>
+		attribute: if set to true, htdig will handle URLs that
+		contain embedded spaces</li>
+	    <li>added <a
          	href="attrs.html#store_phrases">store_phrases</a> attribute:
 		if it is false, htdig only stores the first occurrence
-		of each word in a document.</li>
+		of each word in a document</li>
 	    <li>fixed bug with empty disallow entries in robots.txt</li>
 	    <li>bin/rundig -a handles multiple database directories</li>
 	    <li>fixed ellipsis bug in searching</li>
@@ -1525,6 +1529,6 @@
 	</ul>
 
 	<hr size="4" noshade>
-		Last modified: $Date: 2004/06/03 08:19:50 $
+		Last modified: $Date: 2004/06/04 08:51:06 $
   </body>
 </html>

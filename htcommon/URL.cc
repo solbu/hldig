@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: URL.cc,v 1.15 2004/05/28 13:15:12 lha Exp $
+// $Id: URL.cc,v 1.16 2004/06/04 08:51:01 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -144,8 +144,26 @@ URL::URL(const String &url, const URL &parent)
     _signature(parent._signature),
     _user(parent._user)
 {
-    String	temp(url);
-    temp.remove(" \r\n\t");
+	HtConfiguration* config= HtConfiguration::config();
+    int  allowspace = config->Boolean("allow_space_in_url", 0);
+    String      temp;
+    const char *urp = url.get();
+    while (*urp)
+    {
+	if (*urp == ' ' && temp.length() > 0 && allowspace)
+	{
+	    // Replace space character with %20 if there's more non-space
+	    // characters to come...
+	    const char *s = urp+1;
+	    while (*s && isspace(*s))
+		s++;
+	    if (*s)
+		temp << "%20";
+	}
+	else if (!isspace(*urp))
+	    temp << *urp;
+	urp++;
+    }
     char* ref = temp;
 
     //
@@ -314,8 +332,26 @@ void URL::rewrite()
 //
 void URL::parse(const String &u)
 {
-    String	temp(u);
-    temp.remove(" \t\r\n");
+	HtConfiguration* config= HtConfiguration::config();
+    int  allowspace = config->Boolean("allow_space_in_url", 0);
+    String	temp;
+    const char *urp = u.get();
+    while (*urp)
+    {
+	if (*urp == ' ' && temp.length() > 0 && allowspace)
+	{
+	    // Replace space character with %20 if there's more non-space
+	    // characters to come...
+	    const char *s = urp+1;
+	    while (*s && isspace(*s))
+		s++;
+	    if (*s)
+		temp << "%20";
+	}
+	else if (!isspace(*urp))
+	    temp << *urp;
+	urp++;
+    }
     char	*nurl = temp;
 
     //

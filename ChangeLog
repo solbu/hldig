@@ -1,3 +1,12 @@
+Fri Jun 4 10:23:53 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+   * htcommon/URL.cc: added "allow_space_in_url" (from fileSpace.1 patch)
+   * htcommon/defaults.[cc,xml]: added documentation of allow_space_in_url
+   * htdoc/attrs.html.in: regenerated using cf_generate.pl
+   * htdoc/cf_byname.html: ditto
+   * htdoc/cf_byprog.html: ditto
+   * htdoc/RELEASE.html: updated with info regarding this attribute
+
 Thu Jun 3 10:26:26 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
    * Tagged release htdig-3-2-0b6

@@ -121,6 +121,27 @@
      </description>
    </attribute>
 
+   <attribute name="allow_space_in_url" 
+              type="boolean" 
+              programs="htdig" 
+              version="3.2.0b6" 
+              category="Indexing:Where" >
+     <default>false</default>
+     <example>true</example>
+     <description> 
+	If set to true, htdig will handle URLs that contain
+	embedded spaces. Technically, this is a violation of
+	<em>RFC 2396</em>, which says spaces should be stripped out
+	(as htdig does by default).  However, many web browsers
+	and HTML code generators violate this standard already,
+	so enabling this attribute allows htdig to handle these
+	non-compliant URLs.  Even with this attribute set, htdig
+	still strips out all white space (leading, trailing and
+	embedded), except that space characters embedded within
+	the URL will be encoded as %20.
+     </description>
+   </attribute>
+
    <attribute name="allow_virtual_hosts" 
               type="boolean" 
               programs="htdig" 

@@ -457,6 +457,77 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="allow_space_in_url">
+		allow_space_in_url</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			false
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	If set to true, htdig will handle URLs that contain
+	embedded spaces. Technically, this is a violation of
+	RFC 2396, which says spaces should be stripped out
+	(as htdig does by default).  However, many web browsers
+	and HTML code generators violate this standard already,
+	so enabling this attribute allows htdig to handle these
+	non-compliant URLs.  Even with this attribute set, htdig
+	still strips out all white space (leading, trailing and
+	embedded), except that space characters embedded within
+	the URL will be encoded as %20.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  allow_space_in_url:
+				</td>
+				<td nowrap>
+				     true
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="allow_virtual_hosts">
 		allow_virtual_hosts</a></strong>
 	  </dt>
@@ -14530,6 +14601,6 @@ form during indexing and translated for results.
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: Sun May 23 17:25:45 EST 2004
+		Last modified: ven giu  4 10:14:28 CEST 2004
   </body>
 </html>
