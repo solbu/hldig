@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.16 2000/12/12 18:36:10 grdetil Exp $
+// $Id: ExternalParser.cc,v 1.19.2.17 2000/12/12 19:04:33 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -207,6 +207,17 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     int		get_file = (convertToType.length() != 0);
     String	newcontent;
 
+    StringList	cpargs(currentParser);
+    char   **parsargs = new char * [cpargs.Count() + 5];
+    int    argi;
+    for (argi = 0; argi < cpargs.Count(); argi++)
+	parsargs[argi] = cpargs[i].get();
+    parsargs[argi++] = path.get();
+    parsargs[argi++] = contentType.get();
+    parsargs[argi++] = base.get().get();
+    parsargs[argi++] = configFile.get();
+    parsargs[argi++] = 0;
+
     int    stdout_pipe[2];
     int	   fork_result = -1;
     int	   fork_try;
@@ -245,13 +256,13 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	open((char*)path, O_RDONLY);
 
 	// Call External Parser
-	execl(currentParser.get(), currentParser.get(), path.get(),
-		contentType.get(), base.get().get(), configFile.get(), 0);
+	execv(currentParser.get(), parsargs);
 
 	exit(EXIT_FAILURE);
     }
 
     // Parent Process
+    delete [] parsargs;
     close(stdout_pipe[1]); // Close STDOUT for writing
     FILE *input = fdopen(stdout_pipe[0], "r");
     if (input == NULL)
