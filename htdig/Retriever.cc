@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.21  1998/12/02 02:45:10  ghutchis
+//
+// Update hopcount correctly by taking the shortest paths to documents.
+//
 // Revision 1.20  1998/11/27 18:33:37  ghutchis
 //
 // Changed Retriever::got_word to check for small words, valid_punctuation to
@@ -915,7 +919,9 @@ Retriever::got_href(URL &url, char *description)
 	    current_anchor_number = old_anchor;
 
 	    if (ref->DocHopCount() < currenthopcount + 1)
-		ref->DocHopCount(currenthopcount + 1);
+	       // If we had taken the path through this ref
+	       // We'd be here faster than currenthopcount
+	       currenthopcount = ref->DocHopCount();  // So update it!
 
 	    docs.Add(*ref);
 
