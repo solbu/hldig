@@ -1,3 +1,22 @@
+Sat Jun 12 22:37:22 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HtHTTP.cc (ParseHeader): Fix parsing to take empty headers
+	into account. Fixes PR#557.
+
+	* htsearch/Display.h, htsearch/Display.cc (excerpt): Fix
+	declaration to refer to first as reference--ensures ANCHOR is
+	properly set. Fixes PR#541 as suggested by <pmb1@york.ac.uk>.
+
+	* htfuzzy/Endings.cc (getWords): Fixed PR#560 as suggested by
+	Steve Arlow <yorick@ClarkHill.com>. Solves problems with fuzzy
+	matching on words like -ness: witness, highness, likeness...
+
+	* installdir/search.html (Match): Add Boolean to default search
+	form, as suggested by PR#561.
+
+	* htlib/URL.cc (URL): Fix PR#566 by setting the correct length of
+	the string being matched. 'http://' is 7 characters...
+
 Sat Jun 12 19:06:36 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtZlibCodec.h, htlib/HtZlibCodec.cc: New files. Provide
