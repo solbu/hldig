@@ -1,3 +1,23 @@
+Sun Jul 11 19:32:38 1999  Hanno Mueller <kontakt@hanno.de>
+
+	* contrib/README: Add scriptname directory.
+
+	* contrib/scriptname/*: An example of using htsearch within
+	dynamic SSI pages
+
+	* htcommon/defaults.cc: Add script_name attribute to override
+	SCRIPT_NAME CGI environment variable.
+	
+	* htdoc/FAQ.html: Update question 4.7 based on including htsearch
+	as a CGI in SSI markup.
+	
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htdoc/hts_templates.html: Update based on behavior of script_name
+	attribute.
+
+	* htsearch/Display.cc: Set SCRIPT_NAME variable to attribute
+	script_name if set and CGI environment variable if undefined.
+
 Sat Jul 10 00:22:34 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htfuzzy/Regex.cc (getWords): Anchor the match to the beginning
