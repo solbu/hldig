@@ -59,7 +59,7 @@ AC_HEADER_TIME
 
 dnl More header checks--here use C++
 AC_LANG_CPLUSPLUS
-AC_CHECK_HEADERS(fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h)
+AC_CHECK_HEADERS(fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h getopt.h)
 AC_CHECK_HEADER(fstream.h,nofstream=0,nofstream=1)
 if test "x$nofstream" = "x1" ; then
 AC_MSG_ERROR([To compile ht://Dig, you will need a C++ library. Try installing libg++.])
@@ -101,25 +101,15 @@ extern "C" int gethostname(char *, int);],
   [AC_MSG_RESULT(no)],
   [AC_MSG_RESULT(yes);AC_DEFINE(NEED_PROTO_GETHOSTNAME)])
 
-DB_DIR=`echo db*/dist`
-if test ! -d $DB_DIR; then
-  echo "Extracting files..."
-  tarfile=`echo db*.tar.gz`
-  $GUNZIP < $tarfile | $TAR xf -
-fi
-
-DB_DIR=`echo db*/dist`
+DB_DIR="db/dist"
 AC_SUBST(DB_DIR)
-if test ! -d $DB_DIR; then
-  AC_MSG_ERROR([Please extract the Berkeley DB library])
-fi
 
 AC_PATH_PROG(TSORT, tsort)
 if test -z "$TSORT"; then
   AC_MSG_ERROR([GNU rx configuration needs tsort in path!])
 fi
 
-RX_DIR=`echo rx*`
+RX_DIR="rx"
 AC_SUBST(RX_DIR)
 
 AC_CONFIG_SUBDIRS($DB_DIR)
