@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htsearch.cc,v 1.72 2004/05/28 13:15:24 lha Exp $
+// $Id: htsearch.cc,v 1.73 2004/06/19 00:55:54 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -542,6 +542,7 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
     unsigned char	t;
     String		word;
     const String	prefix_suffix = config->Find("prefix_match_character");
+    bool		inPhrase = false;
 
     while (*pos)
     {
@@ -557,9 +558,10 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 	    else if (t == '"')
 	      {
 		tempWords.Add(new WeightWord("\"", -1.0));
+		inPhrase = !inPhrase;
 		break;
 	      }
-	    else if (boolean && (t == '(' || t == ')'))
+	    else if (boolean && !inPhrase && (t == '(' || t == ')'))
 	    {
 		char	s[2];
 		s[0] = t;
@@ -611,30 +613,34 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		if (!t && !word.length())	// query ended with junk chars
 		    break;
 
-		if (boolean && (mystrcasecmp(word.get(), "+") == 0
-		    || mystrcasecmp(word.get(), boolean_keywords[AND]) == 0))
+		if (boolean && !inPhrase)
 		{
-		    tempWords.Add(new WeightWord("&", -1.0));
+		    if (mystrcasecmp(word.get(), "+") == 0
+			|| mystrcasecmp(word.get(), boolean_keywords[AND]) == 0)
+		    {
+			tempWords.Add(new WeightWord("&", -1.0));
+			break;
+		    }
+		    if (mystrcasecmp(word.get(), boolean_keywords[OR]) == 0)
+		    {
+			tempWords.Add(new WeightWord("|", -1.0));
+			break;
+		    }
+		    if (mystrcasecmp(word.get(), "-") == 0
+			|| mystrcasecmp(word.get(), boolean_keywords[NOT]) == 0)
+		    {
+			tempWords.Add(new WeightWord("!", -1.0));
+			break;
+		    }
 		}
-		else if (boolean &&
-			mystrcasecmp(word.get(), boolean_keywords[OR]) == 0)
-		{
-		    tempWords.Add(new WeightWord("|", -1.0));
-		}
-		else if (boolean && (mystrcasecmp(word.get(), "-") == 0
-		    || mystrcasecmp(word.get(), boolean_keywords[NOT]) == 0))
-		{
-		    tempWords.Add(new WeightWord("!", -1.0));
-		}
-		else
-		{
-		    // Add word to excerpt matching list
-		    originalPattern << word << "|";
-		    WeightWord	*ww = new WeightWord(word, 1.0, fieldFlag);
-		    if(HtWordNormalize(word) & WORD_NORMALIZE_NOTOK)
-			ww->isIgnore = 1;
-		    tempWords.Add(ww);
-		}
+
+		// Add word to excerpt matching list
+		originalPattern << word << "|";
+		WeightWord	*ww = new WeightWord(word, 1.0, fieldFlag);
+		if(HtWordNormalize(word) & WORD_NORMALIZE_NOTOK)
+		    ww->isIgnore = 1;
+		tempWords.Add(ww);
+
 		break;
 	    }
 	}
