@@ -25,9 +25,13 @@
 // function can be called to provide a custom table.  This table needs
 // to be 256 characters.
 // 
-// $Id: StringMatch.h,v 1.2 1999/01/21 03:41:09 ghutchis Exp $
+// $Id: StringMatch.h,v 1.3 1999/08/25 21:50:17 grdetil Exp $
 //
 // $Log: StringMatch.h,v $
+// Revision 1.3  1999/08/25 21:50:17  grdetil
+// Add an IgnorePunct() method, use it to highlight matching words in excerpts
+// regardless of punctuation, and don't add short or bad words to pattern.
+//
 // Revision 1.2  1999/01/21 03:41:09  ghutchis
 // Add default parameter sep = '|'.
 //
@@ -96,6 +100,12 @@ public:
     // characters to lowercase
     //
     void		IgnoreCase();
+
+    //
+    // Build a local translation table which ignores all given punctuation
+    // characters
+    //
+    void		IgnorePunct(char *punct = NULL);
 
     //
     // Determine if there is a pattern associated with this Match object.
