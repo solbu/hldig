@@ -12,13 +12,14 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.3 1999/07/19 01:50:25 ghutchis Exp $
+// $Id: WordList.h,v 1.4 1999/08/27 15:46:19 ghutchis Exp $
 //
 //
 #ifndef _WordList_h_
 #define _WordList_h_
 
 #include "Dictionary.h"
+#include "List.h"
 #include "htString.h"
 #include "Database.h"
 #include "WordRecord.h"
@@ -93,7 +94,7 @@ public:
 private:
     int			docID;
     String		tempfile;
-    Dictionary		*words;
+    List		*words;
     Dictionary		badwords;
 
     Database            *dbf;

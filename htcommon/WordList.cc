@@ -14,7 +14,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.20 1999/08/09 22:11:47 grdetil Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.21 1999/08/27 15:46:19 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -36,7 +36,7 @@ extern Configuration	config;
 //
 WordList::WordList()
 {
-    words = new Dictionary(10271, 10.0);
+    words = new List;
 
     // The database itself hasn't been opened yet
     isopen = 0;
@@ -91,7 +91,7 @@ void WordList::Word (String word, unsigned int location,
     wordRef->Flags = flags;
     wordRef->Anchor = anchor_number;
     wordRef->Word = word;
-    words->Add(word, wordRef);
+    words->Add(wordRef);
 }
 
 
@@ -160,7 +160,7 @@ void WordList::Flush()
     }
 
     words->Start_Get();
-    while ((wordRef = (WordReference *) words->Get_NextElement()))
+    while ((wordRef = (WordReference *) words->Get_Next()))
     {
       if (wordRef->Word.length() == 0)
 	continue;

@@ -1,3 +1,8 @@
+Fri Aug 27 09:36:35 1999  Geoff Hutchison <ghutchis@wso.williams.edu>
+
+	* htcommon/WordList.h, htcommon/WordList.cc (WordList): Change
+	words to a list instead of a dictionary for minor speed improvement.
+
 Thu Aug 26 11:18:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc, htdoc/attrs.html: increase default
