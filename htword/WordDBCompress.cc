@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.cc,v 1.1.2.10 1999/12/21 12:03:29 bosc Exp $
+// $Id: WordDBCompress.cc,v 1.1.2.11 1999/12/21 17:31:47 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -37,6 +37,8 @@ extern "C"
 #include "WordRecord.h"
 #include "WordKey.h"
 
+#include "HtTime.h"
+#include "HtMaxMin.h"
 #include<ctype.h>
 
 // never change NBITS_COMPRESS_VERSION ! (otherwise version tracking will fail)
@@ -473,6 +475,11 @@ class WordDBPage
 WordDBCompress::WordDBCompress()
 {
     debug=1;
+    cmpr_count=0;
+    total_cmpr_time=0;
+    ucmpr_count=0;
+    total_ucmpr_time=0;
+    mxtreelevel=0;
 }
 
 extern "C"
@@ -500,8 +507,10 @@ static int cmprcount=0;
 int 
 WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **outbuffp, int *outbuff_lengthp)
 {
+    double start_time=HtTime::DTime();
     // create a page from inbuff
     WordDBPage pg(inbuff,inbuff_length);
+
 
     if(debug>2)
     {
@@ -523,9 +532,6 @@ WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **
     (*outbuff_lengthp)=res->buffsize();
 
 
-
-
-
     if(debug>2)
     {
 	res->show();
@@ -536,8 +542,16 @@ WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **
     delete res;
     if(debug>2){printf("WordDBCompress::Compress: final output size:%6d\n",(*outbuff_lengthp));}
 
+    // DEBUGING / BENCHMARKING
+    {
+	cmpr_count++;
+	mxtreelevel=HtMAX(pg.pg->level,mxtreelevel);
+	total_cmpr_time+=HtTime::DTime(start_time);
+    }
+
     // cleanup
     pg.unset_page();
+
     return(0);
 }
 
@@ -545,6 +559,8 @@ WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **
 int 
 WordDBCompress::Uncompress(const u_int8_t *inbuff, int inbuff_length, u_int8_t *outbuff,int outbuff_length)
 {
+    double start_time=HtTime::DTime();
+
     if(debug>2){printf("WordDBCompress::Uncompress::  %5d -> %5d\n",inbuff_length,outbuff_length);}
     // create a page for decompressing into it
     WordDBPage pg(outbuff_length);
@@ -561,8 +577,17 @@ WordDBCompress::Uncompress(const u_int8_t *inbuff, int inbuff_length, u_int8_t *
     // copy the result to outbuff
     memcpy((void *)outbuff,(void *)pg.pg,outbuff_length);
 
-    pg.delete_page();
     if(debug>2){printf("------------------------  WordDBCompress::Uncompress: END %d\n",cmprcount);}
+
+
+    // DEBUGING / BENCHMARKING
+    {
+	ucmpr_count++;
+	mxtreelevel=HtMAX(pg.pg->level,mxtreelevel);
+	total_ucmpr_time+=HtTime::DTime(start_time);
+    }
+
+    pg.delete_page();
     return(0);
 }
 

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.h,v 1.1.2.3 1999/12/15 17:26:35 loic Exp $
+// $Id: WordDBCompress.h,v 1.1.2.4 1999/12/21 17:31:48 bosc Exp $
 //
 
 #ifndef _WordDBCompress_h_
@@ -19,15 +19,22 @@
 class WordDBCompress
 {
  public:
+    int Compress(const  u_int8_t* inbuff, int inbuff_length, u_int8_t** outbuffp, int* outbuff_lengthp);
+    int Uncompress(const  u_int8_t* inbuff, int inbuff_length, u_int8_t* outbuff, int outbuff_length);
+    WordDBCompress();
+
+// DEBUGING / BENCHMARKING
     int debug;
 // 0 : no debug no check
 // 1 : TestCompress before each compression (but no debug within Compress Uncompress)
 // 2 : use_tags (BitStream) within TestCompress ->  Compress Uncompress
 // 3 : verbose
     int TestCompress(const  u_int8_t* pagebuff, int pagebuffsize,int debuglevel);
-    int Compress(const  u_int8_t* inbuff, int inbuff_length, u_int8_t** outbuffp, int* outbuff_lengthp);
-    int Uncompress(const  u_int8_t* inbuff, int inbuff_length, u_int8_t* outbuff, int outbuff_length);
-    WordDBCompress();
+    int    cmpr_count;
+    double total_cmpr_time;
+    int    ucmpr_count;
+    double total_ucmpr_time;
+    int    mxtreelevel;
 };
 
 

@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.15 1999/12/21 15:42:27 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.16 1999/12/21 17:31:48 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -118,12 +118,18 @@ int WordList::Open(const String& filename, int mode)
   //
     int usecompress=0;
   db.dbinfo.set_bt_compare(word_db_cmp);
-  if(config.Value("wordlist_page_size" ,0 )) {db.dbinfo.set_pagesize(config.Value("wordlist_page_size" ,0));}
-  if(config.Value("wordlist_cache_size",0)) {db.dbinfo.set_cachesize(config.Value("wordlist_cache_size",0));}
+  if(config.Value("wordlist_page_size" ,0 )) {db.dbinfo.set_pagesize (config.Value("wordlist_page_size" ,0));}
+  if(config.Value("wordlist_cache_size",0))  {db.dbinfo.set_cachesize(config.Value("wordlist_cache_size",0));}
+  else
+  {
+      cout << "************* WordList::Open WARNING no cachesize:: performance might be slow"  << endl;
+  }
+
   if(config.Boolean("wordlist_compress",0) == 1)
   {
       usecompress=DB_COMPRESS;
-      db.dbenv.set_mp_cmpr_info(WordDB::CmprInfo(config.Value("wordlist_compress_debug",1)));
+      cmprInfo = WordDB::CmprInfo(config.Value("wordlist_compress_debug",1));
+      db.dbenv.set_mp_cmpr_info(cmprInfo);
   }
 
   db.dbinfo.set_bt_compare(word_db_cmp);

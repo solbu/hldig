@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.7 1999/12/21 15:42:28 bosc Exp $
+// $Id: WordList.h,v 1.5.2.8 1999/12/21 17:31:48 bosc Exp $
 //
 
 #ifndef _WordList_h_
@@ -283,6 +283,12 @@ private:
 
     WordDB	            	db;
 #endif /* SWIG */
+
+// DEBUGING / BENCHMARKING
+ private:
+    DB_CMPR_INFO* cmprInfo;
+ public:
+    WordDBCompress *GetCompressor(){return((WordDBCompress *)cmprInfo->user_data);}
 };
 
 #endif
