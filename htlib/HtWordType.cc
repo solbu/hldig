@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordType.cc,v 1.7.2.4 2000/05/10 18:23:45 loic Exp $
+// $Id: HtWordType.cc,v 1.7.2.5 2000/09/25 03:57:58 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -19,10 +19,10 @@
 #include "HtWordType.h"
 #include "WordType.h"
 
-int HtIsWordChar(char c)          { return WordType::Instance()->IsChar(c); }
-int HtIsStrictWordChar(char c)	  { return WordType::Instance()->IsStrictChar(c); }
-int HtWordNormalize(String &w)	  { return WordType::Instance()->Normalize(w); }
-int HtStripPunctuation(String &w) { return WordType::Instance()->StripPunctuation(w); }
+int HtIsWordChar(char c)          { return WordType::IsChar(c); }
+int HtIsStrictWordChar(char c)	  { return WordType::IsStrictChar(c); }
+int HtWordNormalize(String &w)	  { return WordType::Normalize(w); }
+int HtStripPunctuation(String &w) { return WordType::StripPunctuation(w); }
 
 
 //  much like strtok(), and destructive of the source string like strtok(),
