@@ -3,35 +3,21 @@
 //
 // Implementation of Endings class DB related methods
 //
-// $Log: EndingsDB.cc,v $
-// Revision 1.3  1998/12/06 18:46:59  ghutchis
-// Ensure temporary files are placed in TMPDIR if it's set.
-//
-// Revision 1.2  1998/09/18 02:38:08  ghutchis
-//
-// Bug fixes for 3.1.0b2
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: EndingsDB.cc,v 1.3 1998/12/06 18:46:59 ghutchis Exp $";
+static char RCSid[] = "$Id: EndingsDB.cc,v 1.3.2.1 1999/03/29 15:59:43 ghutchis Exp $";
 #endif
 
 #include "Endings.h"
 #include "htfuzzy.h"
 #include "SuffixEntry.h"
-extern "C"
-{
-# include <rxposix.h>
-}
-#include <Dictionary.h>
-#include <List.h>
-#include <Configuration.h>
+#include "Dictionary.h"
+#include "List.h"
+#include "Configuration.h"
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>
+#include <regex.h>
 
 
 //*****************************************************************************

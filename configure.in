@@ -95,7 +95,7 @@ dnl Checks for library functions.
 AC_CHECK_FUNCS(strdup strerror strstr)
 AC_CHECK_FUNCS(localtime_r)
 dnl Check for timegm
-AC_CHECK_FUNC(timegm)
+AC_CHECK_FUNCS(timegm)
 
 dnl These tests need to be run through the c++ compiler
 AC_LANG_CPLUSPLUS
@@ -136,16 +136,11 @@ done
 
 dnl Any final tests probably want the C compiler
 AC_LANG_C
-AC_PATH_PROG(TSORT, tsort)
-if test -z "$TSORT"; then
-  AC_MSG_ERROR([GNU rx configuration needs tsort in path!])
-fi
 
 if test ! -d "./db"; then
   mkdir db
 fi
 AC_CONFIG_SUBDIRS(db/dist)
-AC_CONFIG_SUBDIRS(rx)
 
 AC_OUTPUT(CONFIG Makefile Makefile.config htcommon/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile makedp, chmod +x makedp, echo timestamp > stamp-h)
 

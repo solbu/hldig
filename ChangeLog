@@ -1,4 +1,4 @@
-Mon Mar 29 10:49:08 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+Mon Mar 29 10:51:54 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/regex.h, htlib/regex.c: Include glibc versions of the
 	regex functions to override possibly buggy system versions.
@@ -9,6 +9,10 @@ Mon Mar 29 10:49:08 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	for massive speedups on non-English affix files. 
 
 	* configure, configure.in: Use the system timegm function if present.
+	Don't configure rx since we don't use it any more. Don't worry
+	about tsort since that was only needed for rx.
+
+	* Makefile.in, Makefile.config.in: Ignore the rx directory if present.
 
 Thu Mar 25 12:24:18 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
