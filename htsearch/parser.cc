@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.13 1999/08/28 21:17:44 ghutchis Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.14 1999/08/29 05:47:03 ghutchis Exp $";
 #endif
 
 #include "parser.h"
@@ -61,18 +61,16 @@ Parser::lexan()
 	return DONE;
     else if (mystrcasecmp(current->word, "&") == 0)
 	return '&';
-//	else if (mystrcasecmp(current->word, "and") == 0)
-//		return '&';
     else if (mystrcasecmp(current->word, "|") == 0)
 	return '|';
     else if (mystrcasecmp(current->word, "!") == 0)
 	return '!';
-//	else if (mystrcasecmp(current->word, "or") == 0)
-//		return '|';
     else if (mystrcasecmp(current->word, "(") == 0)
 	return '(';
     else if (mystrcasecmp(current->word, ")") == 0)
 	return ')';
+    else if (mystrcasecmp(current->word, "\"") == 0)
+      return '"';
     else
 	return WORD;
 }
@@ -130,6 +128,8 @@ Parser::term(int output)
 void
 Parser::factor(int output)
 {
+    phrase(output);
+
     if (match('('))
     {
 	expr(output);
@@ -154,6 +154,45 @@ Parser::factor(int output)
     {
 	setError("a search word");
     }
+}
+
+//*****************************************************************************
+void
+Parser::phrase(int output)
+{
+  int isand = 0;
+
+    if (match('"'))
+    {
+      cout << " *** Phrase \n";
+      lookahead = lexan();
+      while (1)
+	{
+	  cout << " * loop \n";
+	  if (match('"'))
+	    {
+	      lookahead = lexan();
+	      break;
+	    }
+	  else if (lookahead == WORD)
+	    {
+	      // Push the first word onto the stack
+	      if (output && !isand)
+		{
+		  isand = 1;
+		  perform_push();
+		}
+	      // Push the next word and perform an "and"
+	      else if (output && isand)
+		{
+		  perform_push();
+		  perform_phrase();
+		}
+	      lookahead = lexan();
+	    }
+
+	} // end while
+    } // end if
 }
 
 //*****************************************************************************
@@ -280,6 +319,14 @@ Parser::perform_push()
 	list->add(dm);
       }
 }
+
+//*****************************************************************************
+void
+Parser::perform_phrase()
+{
+  perform_and(1);
+}
+
 
 //*****************************************************************************
 // The top two entries in the stack need to be ANDed together.
