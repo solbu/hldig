@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.h,v 1.6 1999/08/28 21:10:17 ghutchis Exp $
+// $Id: Server.h,v 1.7 1999/09/03 21:29:36 ghutchis Exp $
 //
 //
 #ifndef _Server_h_
@@ -19,7 +19,7 @@
 #include "Object.h"
 #include "htString.h"
 #include "Stack.h"
-#include "Queue.h"
+#include "HtHeap.h"
 #include "StringMatch.h"
 #include "URLRef.h"
 
@@ -75,7 +75,7 @@ private:
 	int			_bad_server;		// TRUE if we shouldn't use this one
 	int		        _connection_space;	// Seconds between connections
 	time_t			_last_connection;	// Time of last connection to this server
-	Queue			_paths;
+	HtHeap			_paths;
 	StringMatch		_disallow;	// This pattern will be used to test paths
 	int		        _documents;	// Number of documents visited
 	int                     _max_documents;  // Maximum number of documents from this server

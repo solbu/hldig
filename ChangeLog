@@ -1,3 +1,15 @@
+Fri Sep  3 16:23:23 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtHeap.cc(Remove): Correct bug where after a removal, the
+	structure was not "re-heapified" correctly. The last item should
+	be moved to the top and pushed down.
+	(pushDownRoot): Don't move items past the size of the underlying
+	array.
+	
+	* htdig/Server.h, htdig/Server.cc: Change _paths to work on a
+	heap, based on the hopcount. Ensures on a given server that the
+	indexing will be done in level-order by hopcount.
+
 Wed Sep 01 15:40:37 1999  Loic Dachary  <loic@ceic.com>
 
 	* test: implement minimal tests for htsearch and htdig
