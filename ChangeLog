@@ -1,3 +1,9 @@
+Mon Mar 29 10:31:09 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc(excerpt): Added patch from Gabriele to
+	improve display of excerpts--show top of description always,
+	otherwise try to find the excerpt.
+
 Sun Mar 28 19:45:02 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
 	* htlib/HtWordType.h (HtIsWordChar): Avoid matching 0 when using

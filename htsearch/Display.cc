@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.65 1999/03/25 18:03:56 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.66 1999/03/29 15:39:38 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -957,12 +957,20 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first)
 {
     // It is necessary to keep alive the String you .get() a char * from,
     // as long as you use the char *.
+
     String head_string;
 
-    char	*head = ref->DocHead();
+    char	*head;
+    int use_meta_description=0;
+
     if (config.Boolean("use_meta_description",0) 
 	&& strlen(ref->DocMetaDsc()) != 0)
+      {
+	// Set the head to point to description 
 	head = ref->DocMetaDsc();
+	use_meta_description = 1;
+      }
+    else head = ref->DocHead(); // head points to the top
 
     head_string = HtSGMLCodec::instance()->decode(head);
 
@@ -973,10 +981,16 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first)
     String	part;
     String	*text = new String();
 
-    first = allWordsPattern->FindFirstWord(head, which, length);
+    // htsearch displays the description when:
+    // 1) a description has been found
+    // 2) the option "use_meta_description" is set to true
+    // If previous conditions are false and "excerpt_show_top" is set to true
+    // it shows the whole head. Else, it acts as default.
 
-    if (config.Boolean("excerpt_show_top", 0))
-	first = 0;
+    if (config.Boolean("excerpt_show_top", 0) || use_meta_description )
+      first = 0;
+    else
+      first = allWordsPattern->FindFirstWord(head, which, length);
 
     if (first < 0 && config.Boolean("no_excerpt_show_top"))
       first = 0;  // No excerpt, but we want to show the top.
