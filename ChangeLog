@@ -1,3 +1,10 @@
+Thu Aug 28 12:00:10 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * db/[config.guess,config.sub,install-sh,ltmain.sh,missing]: added in the
+    database directory (this way 'make dist' goes on); I have not been able to
+    tell the db/configure script to get the 'top_srcdir' ones (which should be
+    the default behaviour). Maybe in the future we'll look for this.
+
 Thu Aug 28 11:53:48 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * db/configure.in: changed AC_PROG_INSTALL() to AC_PROG_INSTALL and removed
