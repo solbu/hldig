@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ParseTree.cc,v 1.1.2.1 2000/06/30 01:56:30 ghutchis Exp $
+// $Id: ParseTree.cc,v 1.1.2.2 2000/08/01 16:51:51 ghutchis Exp $
 //
 
 #include "ParseTree.h"
@@ -82,12 +82,13 @@ void ParseTree::Destroy()
 int ParseTree::Parse(String query)
 {
   String	phrase;
-  char		*token;
+  char		*token, *unparsed;
   int		inPhrase;
   ParseTree	*currentOp, *word;
   Stack		operators;	// a stack of ParseTree objects for parens
 
   initialQuery = query;
+  unparsed = query.get();
   children = new List; // This will actually be *our* child but we need to build
 
   // We will build the ParseTree essentially through a bottom-up parse
@@ -100,15 +101,15 @@ int ParseTree::Parse(String query)
   inPhrase = 0;
   currentOp = NULL;
   word = NULL;
-  while ( (token = HtWordToken(query)) )
+  token = HtWordToken(unparsed);
+  while ( token != NULL )
     {
-
       // We switch between currentOp and word to indicate the state
       // i.e. have we just parsed an operator or a word
       // There's probably a better way to do this, but this seems easy
       //   (plus it makes it a bit more readable)
 
-      if (token == "(" && !inPhrase)
+      if (mystrcasecmp(token, "(") == 0 && !inPhrase)
 	{
 	  if (currentOp != NULL && word == NULL)
 	    {
@@ -121,7 +122,7 @@ int ParseTree::Parse(String query)
 	    return NOTOK; // We have a right parens in the wrong spot
 	}
 
-      else if (token == ")" && !inPhrase)
+      else if (mystrcasecmp(token, ")") == 0 && !inPhrase)
 	{
 	  if (operators.Size() == 0)
 	    return NOTOK; // Ooops, too many left parens!
@@ -140,7 +141,7 @@ int ParseTree::Parse(String query)
 	    return NOTOK;
 	}
 
-      else if (token == "\"")
+      else if (mystrcasecmp(token, "\"") == 0)
 	{
 	  inPhrase = !inPhrase;
 	  if (!inPhrase) // We just finished one...
@@ -155,7 +156,7 @@ int ParseTree::Parse(String query)
 	    return NOTOK;
 	}
 
-      else if (token == "and" && !inPhrase) // boolean_keywords[0]
+      else if (mystrcasecmp(token,"and") == 0 && !inPhrase) // boolean_keywords[0]
 	{
 	  if (currentOp != NULL)
 	    return NOTOK;
@@ -169,7 +170,7 @@ int ParseTree::Parse(String query)
 	    return NOTOK; // This is infix notation, so we need a first argument
 	}
 
-      else if (token == "or" && !inPhrase) // boolean_keywords[1]
+      else if (mystrcasecmp(token, "or") == 0 && !inPhrase) // boolean_keywords[1]
 	{
 	  if (currentOp != NULL)
 	    return NOTOK;
@@ -205,7 +206,8 @@ int ParseTree::Parse(String query)
 	  else // First word
 	    word = new ParseTree(token);
 	}
-	
+      
+      token = HtWordToken(NULL);
     } // end while
 
   if (inPhrase)		// Mismatched "" marks
