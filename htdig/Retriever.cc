@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.12 1999/11/30 15:50:00 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.13 1999/11/30 21:28:16 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -697,8 +697,6 @@ Retriever::IsValidURL(char *u)
     //
     // Or NOT in the list of valid ones
     //
-    char	*ext = strrchr(url, '.');
-    String	lowerext;
     if (ext && valids->Count() > 0 && !valids->Exists(lowerext))
       {
 	if (debug > 2)
