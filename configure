@@ -14523,7 +14523,7 @@ fi;
   # Now we know if we want apache or not, only go further if
   # it's wanted.
   #
-  if test $APACHE_WANTED = yes ; then
+  if test "$APACHE_WANTED" = yes ; then
     #
     # If not specified by caller, search in standard places
     #
