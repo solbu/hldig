@@ -16,13 +16,14 @@ use BerkeleyDB;
 $filetype = 'DB';
 
 if (not defined $ARGV[0] or defined ($ARGV[1]) and $ARGV[1] !~ /g/i) {
-   print "\n\nThis program is used in conjunction with HtDig \n";
+   print "\n\nThis program is used in conjunction with ht://Dig \n";
    print "to determine the frequency of words in a database containing word references.\n\n";
    print "Usage: $0 filename         (to use a Berkeley db2 wordlist)\n";
    print "       $0 filename g[dbm]  (to use a GDBM wordlist)\n\n\n";
    exit;
 }
 
+$filename = $ARGV[0];
 
 if ($filename =~ /gdbm$/i or $ARGV[1] =~ /g/i) {
   $filetype = 'GDBM';
