@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.16.2.3 1999/04/19 20:55:20 grdetil Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.16.2.4 1999/09/01 20:16:35 grdetil Exp $";
 #endif
 
 #include "WordList.h"
@@ -46,11 +46,12 @@ void WordList::Word(char *word, int location, int anchor_number, double weight_f
   if (weight_factor == 0.0) // Why should we add words with no weight?
       return;
     String		shortword = word;
+    static int	maximum_word_length = config.Value("maximum_word_length", 12);
 
     shortword.lowercase();
     word = shortword.get();
-    if (shortword.length() > MAX_WORD_LENGTH)
-	word[MAX_WORD_LENGTH] = '\0';
+    if (shortword.length() > maximum_word_length)
+	word[maximum_word_length] = '\0';
 
     if (!valid_word(word))
 	return;
@@ -80,7 +81,7 @@ void WordList::Word(char *word, int location, int anchor_number, double weight_f
 	wordRef->DocumentID = docID;
 	wordRef->Weight = int((1000 - location) * weight_factor);
 	wordRef->Anchor = anchor_number;
-	strcpy(wordRef->Word, word);
+	wordRef->Word = word;
 	words->Add(word, wordRef);
     }
 }
@@ -145,7 +146,7 @@ void WordList::Flush()
     while ((wordRef = (WordReference *) words->Get_NextElement()))
     {
 
-	fprintf(fl, "%s",wordRef->Word);
+	fprintf(fl, "%s",wordRef->Word.get());
         fprintf(fl, "\ti:%d\tl:%d\tw:%d",
 		wordRef->DocumentID,
 	        wordRef->Location,
@@ -220,15 +221,16 @@ void WordList::BadWordFile(char *filename)
     char	buffer[1000];
     char	*word;
     String      new_word;
-    int	        minimum_word_length = config.Value("minimum_word_length", 3);
+    static int	minimum_word_length = config.Value("minimum_word_length", 3);
+    static int	maximum_word_length = config.Value("maximum_word_length", 12);
 
     while (fl && fgets(buffer, sizeof(buffer), fl))
     {
 	word = strtok(buffer, "\r\n \t");
 	if (word && *word)
 	  {
-	    if (strlen(word) > MAX_WORD_LENGTH)
-	      word[MAX_WORD_LENGTH] = '\0';
+	    if (strlen(word) > maximum_word_length)
+	      word[maximum_word_length] = '\0';
 	    new_word = word;  // We need to clean it up before we add it
 	    new_word.lowercase();  // Just in case someone enters an odd one
 	    HtStripPunctuation(new_word);

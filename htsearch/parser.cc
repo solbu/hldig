@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.6.2.2 1999/03/19 22:44:07 grdetil Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.6.2.3 1999/09/01 20:16:36 grdetil Exp $";
 #endif
 
 #include "parser.h"
@@ -202,6 +202,7 @@ Parser::setError(char *expected)
 void
 Parser::perform_push()
 {
+    static int	maximum_word_length = config.Value("maximum_word_length", 12);
     String	temp = current->word.get();
     String	data;
     char	*p;
@@ -220,8 +221,8 @@ Parser::perform_push()
     }
     temp.lowercase();
     p = temp.get();
-    if (temp.length() > MAX_WORD_LENGTH)
-	p[MAX_WORD_LENGTH] = '\0';
+    if (temp.length() > maximum_word_length)
+	p[maximum_word_length] = '\0';
     if (dbf->Get(p, data) == OK)
     {
 	p = data.get();

@@ -5,7 +5,6 @@
 #define	_config_h_
 
 #define	VERSION	1
-#define	MAX_WORD_LENGTH	12
 
 /* Define if on AIX 3.
    System headers sometimes define this.

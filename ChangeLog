@@ -1,4 +1,11 @@
-Wed Sep  1 15:08:56 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:10:37 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* include/htconfig.h.in, htcommon/WordReference.h,
+	htcommon/WordList.cc(Word, Flush, BadWordFile),
+	htcommon/DocumentRef.cc(AddDescription), htcommon/defaults.cc,
+	htsearch/parser.cc(perform_push), htdoc/attrs.html,
+	htdoc/cf_byname.html, htdoc/cf_byprog.html: Change the maximum word
+	length into a run-time option, rather than compile-time.
 
 	* htsearch/Display.cc(displayMatch): Applied Torsten Neuer's
 	<tneuer@inwise.de> fix for PR#554.

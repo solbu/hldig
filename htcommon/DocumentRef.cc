@@ -571,8 +571,7 @@ void DocumentRef::AddDescription(char *d)
     static double description_factor  = config.Double("description_factor");
     static int    max_descriptions    = config.Value("max_descriptions", 5);
 
-    // Not restricted to this size, just used as a hint.
-    String word(MAX_WORD_LENGTH);
+    String word;
 
     while (*p)
     {
