@@ -11,6 +11,10 @@ Sun Jan 24 14:13:37 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htlib/Configuration.cc(Find): Complain when option is not in the
 	list.
 
+	* htdig/HTML.cc(parse): Move declarations out of the loop.
+	(parse): Don't add non-word characters to the excerpt if they're
+	in the title. Fixes PR #80.
+	
 Mon Jan 25 02:17:58 1999  Hans-Peter Nilsson  <hp@axis.se>
 	
 	* htcommon/defaults.cc (defaults): New option

@@ -4,6 +4,10 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.29  1999/01/25 04:30:48  ghutchis
+// Move declarations out of the loop. Don't add non-word characters to the
+// excerpt if they're in the title. Fixes PR #80.
+//
 // Revision 1.28  1999/01/15 04:52:19  ghutchis
 // Added options noindex_start and noindex_end to enable NOT indexing some
 // sections of HTML.
@@ -91,7 +95,7 @@
 // Initial CVS
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.28 1999/01/15 04:52:19 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.29 1999/01/25 04:30:48 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -183,8 +187,10 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     int			in_space = 0;
     unsigned char	*q, *start;
     unsigned char	*position = (unsigned char *) contents->get();
-    unsigned char     *text = (unsigned char *) new char[contents->length()+1];
-    unsigned char     *ptext = text;
+    unsigned char       *text = (unsigned char *) new char[contents->length()+1];
+    unsigned char       *ptext = text;
+    char                *skip_start = config["noindex_start"];
+    char                *skip_end = config["noindex_end"];
 
     title = 0;
     head = 0;
@@ -203,8 +209,6 @@ HTML::parse(Retriever &retriever, URL &baseURL)
       // Filter out section marked to be ignored for indexing. 
       // This can contain any HTML. 
       //
-      char *skip_start = config["noindex_start"];
-      char *skip_end = config["noindex_end"];
       if (strncmp((char *)position, skip_start, strlen(skip_start)) == 0)
 	{
 	  q = (unsigned char*)strstr((char *)position, skip_end);
@@ -419,9 +423,11 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		    //
 		    // Not whitespace
 		    //
-		    if (head.length() < max_head_length)
+		    if (head.length() < max_head_length && !in_title)
 		    {
-			head << *position;
+		        // We don't want to add random chars to the 
+		        // excerpt if we're in the title.
+		        head << *position;
 		    }
 		    if (in_ref)
 		    {
