@@ -1,3 +1,15 @@
+Tue Aug 11 08:58:34 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+        * htsearch/Display.cc, htdig/Retriever.h,
+	htdig/Retriever.cc, htdig/Parsable.h, htdig/Parsable.cc,
+	htdig/HTML.h, htdig/HTML.cc, htcommon/defaults.cc,
+	htcommon/DocumentRef.h, htcommon/DocumentRef.cc,
+	htcommon/DocumentDB.cc:
+	Second patch for META description tags. New field in DocDB for the
+        desc., space in word DB w/ proper factor.
+
+	* htmerge/docs.cc: Added statistic for total size of docs in DB.
+	
 Thu Aug  6 10:15:22 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc: Added "local_dir_doc" config option,
