@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.11  1998/10/09 04:34:06  ghutchis
+//
+// Fixed typos
+//
 // Revision 1.10  1998/10/02 17:17:20  ghutchis
 //
 // Added check for docs marked noindex--words aren't indexed anymore
@@ -83,7 +87,7 @@ Retriever::Retriever()
     factor[7] = config.Double("heading_factor_6");
     factor[8] = factor[9] = 0;
     factor[10] = config.Double("keywords_factor");
-    factor[11] = config.Double("meta_desription_factor");
+    factor[11] = config.Double("meta_description_factor");
 	
     //
     // Open the file to which we will append words.

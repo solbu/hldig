@@ -1,9 +1,13 @@
 //
 // HTML.h
 //
-// $Id: HTML.h,v 1.4 1998/08/11 08:58:28 ghutchis Exp $
+// $Id: HTML.h,v 1.5 1998/10/09 04:34:06 ghutchis Exp $
 //
 // $Log: HTML.h,v $
+// Revision 1.5  1998/10/09 04:34:06  ghutchis
+//
+// Fixed typos
+//
 // Revision 1.4  1998/08/11 08:58:28  ghutchis
 // Second patch for META description tags. New field in DocDB for the
 // desc., space in word DB w/ proper factor.
@@ -61,7 +65,7 @@ private:
     int			in_heading;
     int			doindex;
     int                 dofollow;
-    int			minimumWordLength;
+    unsigned int	minimumWordLength;
     URL			*base;
     
     //
