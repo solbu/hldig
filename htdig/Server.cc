@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.15 2000/08/30 08:10:22 angus Exp $
+// $Id: Server.cc,v 1.17.2.16 2000/09/03 21:55:08 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -44,11 +44,11 @@ Server::Server(URL u, StringList *local_robots_files)
     _documents = 0;
 
     // We take it from the configuration
-    _persistent_connections = config.Boolean("server", _host,"persistent_connections");
-    _head_before_get = config.Boolean("server", _host,"head_before_get");
+    _persistent_connections = config.Boolean("server", _host.get() ,"persistent_connections");
+    _head_before_get = config.Boolean("server", _host.get() ,"head_before_get");
 
-    _max_documents = config.Value("server",_host,"server_max_docs");
-    _connection_space = config.Value("server",_host,"server_wait_time");
+    _max_documents = config.Value("server",_host.get(),"server_max_docs");
+    _connection_space = config.Value("server",_host.get(),"server_wait_time");
     _user_agent = config.Find("server", _host, "user_agent");
 
     // Timeout setting
@@ -184,7 +184,7 @@ void Server::robotstxt(Document &doc)
     int		length;
     int		pay_attention = 0;
     String	pattern;
-    String	myname = config.Find("server", _host, "robotstxt_name");
+    String	myname = config.Find("server", _host.get(), "robotstxt_name");
     int		seen_myname = 0;
     char	*name, *rest;
     

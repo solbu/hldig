@@ -7,12 +7,12 @@
 //            and statistics accordingly.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.34 2000/09/01 06:25:38 toivo Exp $
+// $Id: Retriever.cc,v 1.72.2.35 2000/09/03 21:55:07 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1044,7 +1044,7 @@ Retriever::GetLocal(const String &strurl)
     url = hexurl.get();
 
     // Check first for local user...
-    if (strchr(url, '~'))
+    if (strchr(url.get(), '~'))
     {
 	StringList *local = GetLocalUser(url, defaultdocs);
 	if (local) {
@@ -1054,7 +1054,7 @@ Retriever::GetLocal(const String &strurl)
     }
 
     // This shouldn't happen, but check anyway...
-    if (strstr(url, ".."))
+    if (strstr(url.get(), ".."))
         return 0;
     
     String *prefix, *path;
@@ -1066,7 +1066,7 @@ Retriever::GetLocal(const String &strurl)
 	path = (String*) paths->Get_Next();
         if (mystrncasecmp((char*)*prefix, (char*)url, prefix->length()) == 0)
 	{
-	    int l = strlen(url)-prefix->length()+path->length()+4;
+	    int l = strlen(url.get())-prefix->length()+path->length()+4;
 	    String *local = new String(*path, l);
 	    *local += &url[prefix->length()];
 	    if (local->last() == '/' && defaultdocs) {
