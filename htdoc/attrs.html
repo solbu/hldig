@@ -214,6 +214,59 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="authorization">
+		authorization</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This tells htdig to send the supplied
+			<em>username</em><b>:</b><em>password</em>
+			with each HTTP request.  The credentials will
+			be encoded using the \"Basic\" authentication
+			scheme. There <em>must</em> be a colon (:)
+			between the username and password.<br>
+			This attribute can also be specified on htdig's
+			command line using the -u option, and will be
+			blotted out so it won't show up in a process
+			listing. If you use it directly in a configuration
+			file, be sure to protect it so it is readable only
+			by you, and do not use that same configuration file
+			for htsearch.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			authorization: myusername:mypassword
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="backlink_factor">
 		backlink_factor</a></strong>
 	  </dt>
@@ -7139,7 +7192,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Thu Dec  2 17:14:21 EST 1999
+Last modified: Mon Dec  6 16:14:09 EST 1999
 <!-- hhmts end -->
   </body>
 </html>

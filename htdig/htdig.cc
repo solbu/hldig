@@ -114,6 +114,10 @@ main(int ac, char **av)
 	config.Add("max_hop_count", max_hops);
     }
 
+    // Set up credentials for this run
+    if (credentials.length())
+	config.Add("authorization", credentials);
+
     // Ctype-like functions for what constitutes a word.
     HtWordType::Initialize(config);
 
@@ -242,8 +246,6 @@ main(int ac, char **av)
     // Don't check a URL twice!
     // Beware order is important, if this bugs you could change 
     // previous line retriever.Initial(*list, 0) to Initial(*list,1)
-    if (credentials.length())
-	retriever.setUsernamePassword(credentials);
     retriever.Initial(config["start_url"], 1);
 
     //

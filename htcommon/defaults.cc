@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.11 1999/12/02 21:21:00 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.12 1999/12/06 22:26:46 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -31,6 +31,7 @@ ConfigDefaults	defaults[] =
     {"allow_in_form",			""},
     {"allow_numbers",			"false"},
     {"allow_virtual_hosts",		"true"},
+    {"authorization",			""}, 
     {"backlink_factor",                 "1000"},
     {"bad_extensions",			".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram .tgz .bin .rpm .mpg .mov .avi"},
     {"bad_querystr",                    ""},

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34.2.11 1999/12/03 18:35:27 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34.2.12 1999/12/06 22:26:46 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -52,6 +52,10 @@ Document::Document(char *u, int max_size)
 	proxy = new URL(proxyURL);
 	proxy->normalize();
     }
+
+    char	*credentials = config["authorization"];
+    if (credentials && *credentials)
+	setUsernamePassword(credentials);
 
     contents.allocate(max_doc_size + 100);
     contentType = "";

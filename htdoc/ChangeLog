@@ -1,3 +1,13 @@
+Mon Dec  6 15:52:43 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/htdig.cc(main), htdig/Document.cc(Document),
+	htcommon/defaults.cc, htdoc/attrs.html, htdoc/cf_byname.html,
+	htdoc/cf_byprog.html: Add authorization attribute, settable by
+	htdig -u.  Also fixes PR#490, by setting authentication before
+	robots.txt fetched.
+	* htdoc/RELEASE.html: Update with latest fix.
+	* htdoc/ChangeLog: Update to latest version.
+
 Fri Dec  3 17:31:47 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/DocumentRef.cc(Clear): Set docHopCount & docSig to 0,
