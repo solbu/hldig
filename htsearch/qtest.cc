@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: qtest.cc,v 1.1.2.3 2000/10/20 03:40:59 ghutchis Exp $
+// $Id: qtest.cc,v 1.1.2.4 2000/11/30 20:03:27 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -24,7 +24,7 @@
 #include "cgi.h"
 #include "defaults.h"
 #include "WordContext.h"
-#include <iostream>
+#include <iostream.h>
 #include "QueryParser.h"
 #include "Query.h"
 #include "ResultList.h"
