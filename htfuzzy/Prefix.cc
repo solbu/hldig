@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Prefix.cc,v 1.13.2.1 1999/12/07 19:54:11 bosc Exp $
+// $Id: Prefix.cc,v 1.13.2.2 1999/12/28 17:31:48 vadim Exp $
 //
 
 #include "Prefix.h"
@@ -78,7 +78,7 @@ Prefix::getWords(char *w, List &words)
 
     int		wordCount = 0;
     int		maximumWords = config.Value("max_prefix_matches", 1000);
-    String	*s;
+    String	s;
     int		len = strlen(w) - prefix_suffix_length;
     
     // Strip the prefix character(s)
@@ -88,13 +88,16 @@ Prefix::getWords(char *w, List &words)
     w2[strlen(w2) - prefix_suffix_length] = '\0';
     String w3(w2);
     w3.lowercase();
-    List	*wordList = wordDB[w3.get()];
+    List	*wordList = wordDB.Prefix(w3.get());
+    WordReference *word_ref;
 
-    while (wordCount < maximumWords && (s = (String *) wordList->Get_Next()))
+    wordList->Start_Get();
+    while (wordCount < maximumWords && (word_ref = (WordReference *) wordList->Get_Next() ))
     {
-	if (mystrncasecmp(s->get(), w, len))
+	s = word_ref->Key().GetWord();
+	if (mystrncasecmp(s.get(), w, len))
 	    break;
-	words.Add(new String(*s));
+	words.Add(new String(s));
 	wordCount++;
     }
     if (wordList) {
