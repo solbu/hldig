@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.cc,v 1.22.2.1 2000/01/30 03:34:07 ghutchis Exp $
+// $Id: parser.cc,v 1.22.2.2 2000/02/01 16:27:48 grdetil Exp $
 //
 
 #include "parser.h"
@@ -335,6 +335,16 @@ Parser::score(List *wordList, double weight)
     ResultList	*list = new ResultList;
     DocMatch	*dm;
     HtWordReference *wr;
+    static double text_factor = config.Double("text_factor", 1);
+    static double caps_factor = config.Double("caps_factor", 1);
+    static double title_factor = config.Double("title_factor", 1);
+    static double heading_factor = config.Double("heading_factor", 1);
+    static double keywords_factor = config.Double("keywords_factor", 1);
+    static double meta_description_factor = config.Double("meta_description_factor", 1);
+    static double author_factor = config.Double("author_factor", 1);
+    static double description_factor = config.Double("description_factor", 1);
+    double	  wscore;
+    int		  docanchor;
 
     stack.push(list);
 
@@ -348,54 +358,34 @@ Parser::score(List *wordList, double weight)
     wordList->Start_Get();
     while ((wr = (HtWordReference *) wordList->Get_Next()))
       {
+	//
+	// *******  Compute the score for the document
+	//
+	wscore = 0.0;
+	if (wr->Flags() == FLAG_TEXT)		wscore += text_factor;
+	if (wr->Flags() & FLAG_CAPITAL)		wscore += caps_factor;
+	if (wr->Flags() & FLAG_TITLE)		wscore += title_factor;
+	if (wr->Flags() & FLAG_HEADING)		wscore += heading_factor;
+	if (wr->Flags() & FLAG_KEYWORDS)	wscore += keywords_factor;
+	if (wr->Flags() & FLAG_DESCRIPTION)	wscore += meta_description_factor;
+	if (wr->Flags() & FLAG_AUTHOR)		wscore += author_factor;
+	if (wr->Flags() & FLAG_LINK_TEXT)	wscore += description_factor;
+	wscore *= weight;
+	docanchor = wr->Anchor();
 	dm = list->find(wr->DocID());
 	if (dm)
 	  {
-
-	    unsigned int prevAnchor;
-	    double prevScore;
-	    prevScore = dm->score;
-	    prevAnchor = dm->anchor;
+	    wscore += dm->score;
+	    if (dm->anchor < docanchor)
+		docanchor = dm->anchor;
 	    // We wish to *update* this, not add a duplicate
 	    list->remove(wr->DocID());
-
-	    dm = new DocMatch;
-
-	    dm->score = (wr->Flags() & FLAG_TEXT) * config.Double("text_factor", 1);
-	    dm->score += (wr->Flags() & FLAG_CAPITAL) * config.Double("caps_factor", 1);
-	    dm->score += (wr->Flags() & FLAG_TITLE) * config.Double("title_factor", 1);
-	    dm->score += (wr->Flags() & FLAG_HEADING) * config.Double("heading_factor", 1);
-	    dm->score += (wr->Flags() & FLAG_KEYWORDS) * config.Double("keywords_factor", 1);
-	    dm->score += (wr->Flags() & FLAG_DESCRIPTION) * config.Double("meta_description_factor", 1);
-	    dm->score += (wr->Flags() & FLAG_AUTHOR) * config.Double("author_factor", 1);
-	    dm->score += (wr->Flags() & FLAG_LINK_TEXT) * config.Double("description_factor", 1);
-	    dm->id = wr->DocID();
-	    dm->score = weight * dm->score + prevScore;
-	    if (prevAnchor > wr->Anchor())
-	      dm->anchor = wr->Anchor();
-	    else
-	      dm->anchor = prevAnchor;
-	    
 	  }
-	else
-	  {
 
-	    //
-	    // *******  Compute the score for the document
-	    //
-	    dm = new DocMatch;
-	    dm->score = (wr->Flags() & FLAG_TEXT) * config.Double("text_factor", 1);
-	    dm->score += (wr->Flags() & FLAG_CAPITAL) * config.Double("caps_factor", 1);
-	    dm->score += (wr->Flags() & FLAG_TITLE) * config.Double("title_factor", 1);
-	    dm->score += (wr->Flags() & FLAG_HEADING) * config.Double("heading_factor", 1);
-	    dm->score += (wr->Flags() & FLAG_KEYWORDS) * config.Double("keywords_factor", 1);
-	    dm->score += (wr->Flags() & FLAG_DESCRIPTION) * config.Double("meta_description_factor", 1);
-	    dm->score += (wr->Flags() & FLAG_AUTHOR) * config.Double("author_factor", 1);
-	    dm->score += (wr->Flags() & FLAG_LINK_TEXT) * config.Double("description_factor", 1);
-	    dm->score *= weight;
-	    dm->id = wr->DocID();
-	    dm->anchor = wr->Anchor();
-	  }
+	dm = new DocMatch;
+	dm->id = wr->DocID();
+	dm->score = wscore;
+	dm->anchor = docanchor;
 	list->add(dm);
       }
 }
