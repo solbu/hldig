@@ -6,6 +6,9 @@ Tue Jan 26 19:29:08 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/htdig.h: Remove definition of TRUE and FALSE (for consistency).
 
+	* htcommon/DocumentDB.cc(Add, Delete, Exists, []): Do not
+	lowercase the URL before storing it. URLs can be case-sensitive.
+	
 Tue Jan 26 19:07:03 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc: Define remove_default_doc as option of

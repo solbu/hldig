@@ -3,41 +3,6 @@
 //
 // Implementation of DocumentDB
 //
-// $Log: DocumentDB.cc,v $
-// Revision 1.10  1999/01/25 01:53:42  hp
-// Provide a clean upgrade from old databses without "url_part_aliases" and
-// "common_url_parts" through the new option "uncoded_db_compatible".
-//
-// Revision 1.9  1999/01/23 01:25:00  hp
-// Fixed _some_ missing const qualifiers on common methods (requiring temps)
-//
-// Revision 1.8  1999/01/21 13:40:13  ghutchis
-// Use HtURLCodec; ::encode() and ::decode() the URL used as a key.
-//
-// Revision 1.7  1999/01/14 01:09:11  ghutchis
-// Small speed improvements based on gprof.
-//
-// Revision 1.6  1998/10/27 18:35:17  ghutchis
-//
-// Fixed bug noted by Vadim Chekan with CreateSearchDB.
-//
-// Revision 1.5  1998/10/18 20:37:41  ghutchis
-//
-// Fixed database corruption bug and other misc. cleanups.
-//
-// Revision 1.4  1998/10/12 02:03:59  ghutchis
-//
-// Updated Makefiles and configure variables.
-//
-// Revision 1.3  1998/08/11 08:58:23  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.2  1998/01/05 00:44:29  turtle
-// Fixed major memory leak
-//
-// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
-// Initial CVS
 //
 //
 
@@ -47,8 +12,8 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <fstream.h>
-#include <Database.h>
-#include <HtURLCodec.h>
+#include "Database.h"
+#include "HtURLCodec.h"
 
 
 //*****************************************************************************
@@ -149,7 +114,9 @@ int DocumentDB::Add(DocumentRef &doc)
 {
     String	url;
     url = doc.DocURL();
-    url.lowercase();
+    // Why would we want to lowercase the URL before storing?
+    // URLs can be case sensitive!
+    //    url.lowercase();
     temp = 0;
     doc.Serialize(temp);
 
@@ -170,7 +137,9 @@ DocumentRef *DocumentDB::operator [] (char *u)
 {
     String			data;
     String			url = u;
-    url.lowercase();
+    // Why would we lowercase the URL before using it?
+    // URLs can be case sensitive!
+    // url.lowercase();
 
     if (dbf->Get(HtURLCodec::instance()->encode(url), data) == NOTOK
         && (! myTryUncoded || dbf->Get(url, data) == NOTOK))
@@ -188,7 +157,8 @@ DocumentRef *DocumentDB::operator [] (char *u)
 int DocumentDB::Exists(char *u)
 {
     String			url = u;
-    url.lowercase();
+    // Why would we lowercase, URLs can be case-sensitive!
+    //    url.lowercase();
 
     return dbf->Exists(HtURLCodec::instance()->encode(url))
       || (myTryUncoded && dbf->Exists(url));
@@ -201,7 +171,8 @@ int DocumentDB::Exists(char *u)
 int DocumentDB::Delete(char *u)
 {
     String			url = u;
-    url.lowercase();
+    // Why would we lowercase the URL, they can be case-sensitive!
+    // url.lowercase();
     int delete_stat = dbf->Delete(HtURLCodec::instance()->encode(url));
 
     // If the deletion was not successful (maybe the item did
