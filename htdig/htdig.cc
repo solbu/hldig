@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.12 2000/05/06 20:46:38 loic Exp $
+// $Id: htdig.cc,v 1.26.2.13 2000/08/21 02:34:26 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -25,6 +25,7 @@
 #include "HtURLCodec.h"
 #include "WordContext.h"
 #include "HtDateTime.h"
+#include "HtURLRewriter.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -152,6 +153,14 @@ int main(int ac, char **av)
     if (url_part_errors.length() != 0)
       reportError(form("Invalid url_part_aliases or common_url_parts: %s",
                        url_part_errors.get()));
+
+    //
+    // Check url_rewrite_rules for errors.
+    String url_rewrite_rules = HtURLRewriter::instance()->ErrMsg();
+    
+    if (url_rewrite_rules.length() != 0)
+      reportError(form("Invalid url_rewrite_rules: %s",
+		       url_rewrite_rules.get()));
 
     //
     // If indicated, change the database file names to have the .work
