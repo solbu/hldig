@@ -1,28 +1,52 @@
 STATUS of ht://Dig branch 3-2-x
 
-Releases:
+RELEASES:
    3.2.0b1: Unscheduled, Feature-Freeze
 
-Features Pending:
-* Vadim's config parser: in place, but currently only set for one attribute.
-* Marcel's 8x compression: not yet ready.
-	Vote: 
 
-Showstoppers:
+SHOWSTOPPERS:
 * Serious problems reported with synonym fuzzy.
 * Retriever/Server classes still need a cleanup.
    (Geoff has outline, needs to implement.)
+* Changes in 3-1-x tree must be merged into current tree.
 
-Known Bugs:
-(Need to compile list from bug DB.)
+KNOWN BUGS:
+* htdig/Image.cc doesn't use Transport classes.
+* URL.cc tries to parse malformed URLs (which causes further problems)
+   (It should probably just set everything to empty) This relates to 
+   PR#348.
+* Server.cc does not use authentication when retrieving robots.txt: PR#490.
+* Parsing of <meta> description tags and <img> alt text does not decode SGML 
+   entities properly: PR#614.
+* Not all htsearch input parameters are handled properly: PR#648.
+* If exact isn't specified in the search_algorithms, $(WORDS) is not set 
+   correctly: PR#650.
 
-Tests:
+PENDING FEATURES:
+* Vadim's config parser: in place, but currently only set for one attribute.
+* Marcel's 8x compression: not yet ready.
+	Vote: 
+* Autoconf test for locale from Torsten: See PR#356
+
+TESTING:
 * ExternalTransport with non 'http' URLs.
 * URL parser
 * htfuzzy tests
 * New config parser
+* Reports of problems with long timeouts (e.g PR#350)
 
-Documentation:
+DOCUMENTATION:
 * Update cf_* pages to mention regex, new parser
-* Update THANKS.html
 * Update to mention phrase searching, regex fuzzy
+
+OTHER ISSUES:
+* Can htsearch actually search while an index is being created?
+* Can we reproduce the DB2 errors that sometimes cropped up in 3.1.x?
+   (e.g. PR#473, PR#476)
+* Is the HTML output of htsearch HTML 4.0 strictly compliant?
+* Does configure test for <alloca.h>?: PR#545.
+* Do IP addresses for start_urls cause problems?: PR#634.
+* Does Document::Retrieve or Transport close the connection properly?
+  (it didn't in 3.1.x): PR#670.
+* Error messages should be more informative if no URLs are indexed by htdig 
+  or htmerge. PR#672.
