@@ -1,5 +1,9 @@
-Fri Dec  3 11:49:40 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Fri Dec  3 12:12:19 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	* htdig/Document.cc: removed vestiges of internal Postscript
+	support that never worked, and removed test for application/msword,
+	which is handled only by external parser.
+	* htdig/Makefile.in: removed Postscript.o from list.
 	* htdig/Retriever.cc(parse_url): Fix compilation error;
 	(Initial, got_href, got_redirect): Try to get the local filename
 	for a server's robots.txt file and pass it along to the newly

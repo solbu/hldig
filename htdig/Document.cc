@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34.2.10 1999/11/30 16:02:28 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34.2.11 1999/12/03 18:35:27 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -19,7 +19,6 @@ static char RCSid[] = "$Id: Document.cc,v 1.34.2.10 1999/11/30 16:02:28 grdetil 
 #include "htdig.h"
 #include "HTML.h"
 #include "Plaintext.h"
-#include "Postscript.h"
 #include "ExternalParser.h"
 #include "PDF.h"
 
@@ -546,8 +545,6 @@ Document::readHeader(Connection &c)
 			returnStatus == Header_ok) &&
 		    !ExternalParser::canParse(token) &&
 		    mystrncasecmp("text/", token, 5) != 0 &&
-		    mystrncasecmp("application/postscript", token, 22) != 0 &&
-		    mystrncasecmp("application/msword", token, 18) != 0 &&
 		    mystrncasecmp("application/pdf", token, 15) != 0)
 		    return Header_not_text;
 		contentType = token;
@@ -652,7 +649,6 @@ Document::getParsable()
 {
     static HTML			*html = 0;
     static Plaintext		*plaintext = 0;
-    static Postscript		*postscript = 0;
     static ExternalParser	*externalParser = 0;
     static PDF			*pdf = 0;
     
@@ -678,12 +674,6 @@ Document::getParsable()
 	if (!plaintext)
 	    plaintext = new Plaintext();
 	parsable = plaintext;
-    }
-    else if (mystrncasecmp(contentType, "application/postscript", 22) == 0)
-    {
-	if (!postscript)
-	    postscript = new Postscript();
-	parsable = postscript;
     }
     else if (mystrncasecmp(contentType, "application/pdf", 15) == 0)
     {

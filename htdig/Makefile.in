@@ -8,7 +8,7 @@ top_builddir= ..
 include $(top_builddir)/Makefile.config
 
 OBJS = Document.o HTML.o Images.o \
-		Parsable.o Plaintext.o Postscript.o \
+		Parsable.o Plaintext.o \
 		Retriever.o SGMLEntities.o Server.o \
 		URLRef.o htdig.o ExternalParser.o PDF.o
 
