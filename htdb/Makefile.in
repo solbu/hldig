@@ -10,6 +10,14 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
+#
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999, 2000 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU General Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
+#
+
 
 #
 # To compile with profiling do the following:
@@ -133,22 +141,39 @@ INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/in
 HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/libhtdb.la 		$(top_builddir)/htlib/libht.la
 
 
-bin_PROGRAMS = htdb_load htdb_dump htdb_stat
+bin_PROGRAMS = htdb_load htdb_dump htdb_stat mifluzdump mifluzdict mifluzload
 
-htdb_load_SOURCES = htdb_load.cc
+htdb_load_SOURCES = htdb_load.cc util_sig.cc
 htdb_load_DEPENDENCIES = $(HTLIBS)
 htdb_load_LDFLAGS = $(PROFILING)
 htdb_load_LDADD = $(HTLIBS)
 
-htdb_dump_SOURCES = htdb_dump.cc
+htdb_dump_SOURCES = htdb_dump.cc util_sig.cc
 htdb_dump_DEPENDENCIES = $(HTLIBS)
 htdb_dump_LDFLAGS = $(PROFILING)
 htdb_dump_LDADD = $(HTLIBS)
 
-htdb_stat_SOURCES = htdb_stat.cc
+htdb_stat_SOURCES = htdb_stat.cc util_sig.cc
 htdb_stat_DEPENDENCIES = $(HTLIBS)
 htdb_stat_LDFLAGS = $(PROFILING)
 htdb_stat_LDADD = $(HTLIBS)
+
+mifluzdump_SOURCES = mifluzdump.cc
+mifluzdump_DEPENDENCIES = $(HTLIBS)
+mifluzdump_LDFLAGS = $(PROFILING)
+mifluzdump_LDADD = $(HTLIBS)
+
+mifluzdict_SOURCES = mifluzdict.cc
+mifluzdict_DEPENDENCIES = $(HTLIBS)
+mifluzdict_LDFLAGS = $(PROFILING)
+mifluzdict_LDADD = $(HTLIBS)
+
+mifluzload_SOURCES = mifluzload.cc
+mifluzload_DEPENDENCIES = $(HTLIBS)
+mifluzload_LDFLAGS = $(PROFILING)
+mifluzload_LDADD = $(HTLIBS)
+
+noinst_HEADERS = util_sig.h
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
 CONFIG_CLEAN_FILES = 
@@ -158,22 +183,29 @@ PROGRAMS =  $(bin_PROGRAMS)
 DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
-htdb_load_OBJECTS =  htdb_load.o
-htdb_dump_OBJECTS =  htdb_dump.o
-htdb_stat_OBJECTS =  htdb_stat.o
+htdb_load_OBJECTS =  htdb_load.o util_sig.o
+htdb_dump_OBJECTS =  htdb_dump.o util_sig.o
+htdb_stat_OBJECTS =  htdb_stat.o util_sig.o
+mifluzdump_OBJECTS =  mifluzdump.o
+mifluzdict_OBJECTS =  mifluzdict.o
+mifluzload_OBJECTS =  mifluzload.o
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
+HEADERS =  $(noinst_HEADERS)
+
 DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/htdb_dump.P .deps/htdb_load.P .deps/htdb_stat.P
-SOURCES = $(htdb_load_SOURCES) $(htdb_dump_SOURCES) $(htdb_stat_SOURCES)
-OBJECTS = $(htdb_load_OBJECTS) $(htdb_dump_OBJECTS) $(htdb_stat_OBJECTS)
+DEP_FILES =  .deps/htdb_dump.P .deps/htdb_load.P .deps/htdb_stat.P \
+.deps/mifluzdict.P .deps/mifluzdump.P .deps/mifluzload.P \
+.deps/util_sig.P
+SOURCES = $(htdb_load_SOURCES) $(htdb_dump_SOURCES) $(htdb_stat_SOURCES) $(mifluzdump_SOURCES) $(mifluzdict_SOURCES) $(mifluzload_SOURCES)
+OBJECTS = $(htdb_load_OBJECTS) $(htdb_dump_OBJECTS) $(htdb_stat_OBJECTS) $(mifluzdump_OBJECTS) $(mifluzdict_OBJECTS) $(mifluzload_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -254,6 +286,18 @@ htdb_dump: $(htdb_dump_OBJECTS) $(htdb_dump_DEPENDENCIES)
 htdb_stat: $(htdb_stat_OBJECTS) $(htdb_stat_DEPENDENCIES)
 	@rm -f htdb_stat
 	$(CXXLINK) $(htdb_stat_LDFLAGS) $(htdb_stat_OBJECTS) $(htdb_stat_LDADD) $(LIBS)
+
+mifluzdump: $(mifluzdump_OBJECTS) $(mifluzdump_DEPENDENCIES)
+	@rm -f mifluzdump
+	$(CXXLINK) $(mifluzdump_LDFLAGS) $(mifluzdump_OBJECTS) $(mifluzdump_LDADD) $(LIBS)
+
+mifluzdict: $(mifluzdict_OBJECTS) $(mifluzdict_DEPENDENCIES)
+	@rm -f mifluzdict
+	$(CXXLINK) $(mifluzdict_LDFLAGS) $(mifluzdict_OBJECTS) $(mifluzdict_LDADD) $(LIBS)
+
+mifluzload: $(mifluzload_OBJECTS) $(mifluzload_DEPENDENCIES)
+	@rm -f mifluzload
+	$(CXXLINK) $(mifluzload_LDFLAGS) $(mifluzload_OBJECTS) $(mifluzload_LDADD) $(LIBS)
 .cc.o:
 	$(CXXCOMPILE) -c $<
 .cc.lo:
@@ -378,7 +422,7 @@ install-am: all-am
 install: install-am
 uninstall-am: uninstall-binPROGRAMS
 uninstall: uninstall-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(PROGRAMS) $(HEADERS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
@@ -436,6 +480,13 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
+
+diff:
+	rm -fr 1.tmp ; mkdir 1.tmp
+	cp *.cc 1.tmp
+	cd 1.tmp ; \
+	perl -pi -e 's/CDB_//g' *.cc ; \
+	for i in stat dump load ; do diff -c ../../../db-3.0.55/*/db_$$i.c htdb_$$i.cc  ; done
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
