@@ -1,3 +1,7 @@
+Mon Jan 10 17:55:05 2000  Marcel Bosc  <bosc@ceic.com>
+
+	* htword/WordDBPage: enhanced compression debugging output
+
 Mon Jan 10 09:07:19 2000  Loic Dachary  <loic@ceic.com>
 
 	* WordContext.h,WordKey.h,WordList.h: Added #if SWIG for perl 

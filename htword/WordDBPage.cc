@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.cc,v 1.1.2.2 2000/01/10 16:19:13 loic Exp $
+// $Id: WordDBPage.cc,v 1.1.2.3 2000/01/10 17:09:37 bosc Exp $
 //
 
 #include"WordDBPage.h"
@@ -413,7 +413,7 @@ WordDBPage::Uncompress_show_rebuild(unsigned int **rnums,int *rnum_sizes,int nnu
 	printf("WordDBPage::Uncompress_show_rebuild: rebuilt numerical fields\n");
 	for(j=0;j<nnums0;j++)
 	{
-	    printf("resfield %2d:",j);
+	    printf("resfield %2d %13s:",j,number_field_label(j));
 	    for(i=0;i<rnum_sizes[j];i++)
 	    {
 		printf("%4d ",rnums[j][i]);
@@ -698,6 +698,11 @@ WordDBPage::Compress_show_extracted(int *nums,int *nums_pos,int nnums0,HtVector_
     int *cnindexe2=new int[   nnums0];
     CHECK_MEM(cnindexe2);
     for(j=0;j<nnums0;j++){cnindexe2[j]=0;}
+    for(j=0;j<nnums0;j++)
+    {
+	printf("%13s",number_field_label(j));
+    }
+    printf("\n");
     int w=0;
     int mx=(nk>worddiffs.size() ? nk : worddiffs.size());
     for(i=0;i<mx;i++)
@@ -713,7 +718,7 @@ WordDBPage::Compress_show_extracted(int *nums,int *nums_pos,int nnums0,HtVector_
 		if(nbits<8){show_bits(val,nbits);printf(" ");}
 		else
 		{
-		    printf("% 6d ",val);
+		    printf("% 12d ",val);
 		}
 	    }
 	    else

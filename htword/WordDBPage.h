@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.h,v 1.1.2.2 2000/01/10 16:19:13 loic Exp $
+// $Id: WordDBPage.h,v 1.1.2.3 2000/01/10 17:09:37 bosc Exp $
 //
 //
 // Access to Berkeley DB internal
@@ -398,6 +398,20 @@ class WordDBPage
 	nk=(type==P_LBTREE ? n/2 : n);
 	decmpr_pos=pgsz;
 	decmpr_indx=0;
+    }
+
+    const char* number_field_label(int j)
+    {
+	if(j>0 && j<WordKey::NFields()){return (char *)(WordKey::Info()->sort[j].name);}
+	if( j==CNFLAGS        )return "CNFLAGS      "  ;
+	if( j==CNDATASTATS0   )return "CNDATASTATS0 "  ;
+	if( j==CNDATASTATS1   )return "CNDATASTATS1 "  ;
+	if( j==CNDATADATA     )return "CNDATADATA   "  ;
+	if( j==CNBTIPGNO      )return "CNBTIPGNO    "  ;
+	if( j==CNBTINRECS     )return "CNBTINRECS   "  ;
+	if( j==CNWORDDIFFPOS  )return "CNWORDDIFFPOS"  ;
+	if( j==CNWORDDIFFLEN  )return "CNWORDDIFFLEN"  ;
+	return "BADFIELD";
     }
 
     // positions of different fileds in 
