@@ -1,3 +1,35 @@
+Fri Nov 27 19:09:33 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* db/*: Import of Sleepycat's Berkely DB 2.5.9
+
+	* rx/*:	Import of FSF rx 1.5
+
+	* configure, configure.in: Updated to deal with changes in db, rx
+	directories. 
+
+	* Attic/db-2.4.14.tar.gz: Removed old db package for update.
+
+	* htsearch/parser.cc: Removed bogus code with "%01" -> "|"
+
+	* htlib/URL.cc: Considers URLs with "%7E" to be equivalent to "~"
+
+	* htlib/String.cc: Changed MinimumAllocationSize to cut down on
+	memory usage on small strings.
+
+	* htdig/Retriever.h, htdig/Retriever.cc, htdig/HTML.cc: Changed
+	Retriever::got_word to check for small words, valid_punctuation to
+	remove bugs in HTML.cc.
+
+	* htcommon/defaults.cc: Changed backlink_factor to 1000,
+	description_factor to 150, match_method to and, and
+	meta_description factor to 50. Should produce more accurate search
+	results.
+
+	* htcommon/WordList.cc: Fixed bug with bad_words and
+	MAX_WORD_LENGTH, noted by Jeff Breidenbach <jeff@alum.mit.edu>.
+
+	* README: Updated to reflect bug-tracking system.
+
 Tue Nov 24 15:57:28 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc: Added patch to use local_default doc with
