@@ -11,14 +11,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Accents.cc,v 1.1.2.5 2000/05/06 20:46:38 loic Exp $
+// $Id: Accents.cc,v 1.1.2.6 2000/06/08 12:26:22 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
-
-#include <fcntl.h>
 
 #include "Configuration.h"
 #include "htconfig.h"
@@ -91,56 +89,6 @@ Accents::~Accents()
 }
 
 //*****************************************************************************
-// int Accents::writeDB()
-//
-int
-Accents::writeDB()
-{
-    String      var = name;
-    var << "_db";
-    String      filename = config[var];
-
-    index = Database::getDatabaseInstance(DB_HASH);
-    if (index->OpenReadWrite((char*)filename, 0664) == NOTOK)
-        return NOTOK;
-
-    String      *s;
-    char        *fuzzyKey;
-
-    int         count = 0;
-
-    dict->Start_Get();
-    while ((fuzzyKey = dict->Get_Next()))
-    {
-        s = (String *) dict->Find(fuzzyKey);
-
-        // Only add if meaningfull list
-        if (mystrcasecmp(fuzzyKey, s->get()) != 0) {
-
-          index->Put(fuzzyKey, *s);
-
-          if (debug > 1)
-            {
-              cout << "htfuzzy: '" << fuzzyKey << "' ==> '" << s->get() << "'\n"
-;
-            }
-          count++;
-          if ((count % 100) == 0 && debug == 1)
-            {
-              cout << "htfuzzy: keys: " << count << '\n';
-              cout.flush();
-            }
-        }
-    }
-    if (debug == 1)
-    {
-        cout << "htfuzzy:Total keys: " << count << "\n";
-    }
-    return OK;
-}
-
-
-//*****************************************************************************
 // void Accents::generateKey(char *word, String &key)
 //
 void
@@ -176,6 +124,10 @@ Accents::addWord(char *word)
     String      key;
     generateKey(word, key);
 
+    // Do not add fuzzy key as a word, will be added at search time.
+    if (mystrcasecmp(word, key.get()) == 0) 
+	return;
+
     String      *s = (String *) dict->Find(key);
     if (s)
     {
@@ -188,3 +140,22 @@ Accents::addWord(char *word)
     }
 }
 
+
+//*****************************************************************************
+// void Accents::getWords(char *word, List &words)
+//
+void
+Accents::getWords(char *word, List &words)
+{
+
+    if (!word || !*word)
+	return;
+
+    Fuzzy::getWords(word, words);
+
+    // fuzzy key itself is always searched.
+    String	fuzzyKey;
+    generateKey(word, fuzzyKey);
+    if (mystrcasecmp(fuzzyKey.get(), word) != 0)
+	words.Add(new String(fuzzyKey));
+}

@@ -1,3 +1,12 @@
+Thu Jun  8 09:31:15 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Accents.h, htfuzzy/Accents.cc: Apply Robert Marchand's
+	  patch to his algorithm.  Gets rid of writeDB function (falls back
+	  on default one in Fuzzy.cc), changes addWord, and adds a new
+	  getWords function to override default.  These avoid overhead of
+	  unaccented forms of words in accents database, but ensure that
+	  unaccented form of search word is always searched.
+
 Thu Jun  8 09:00:02 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/DocumentRef.h(DocScore, docScore),

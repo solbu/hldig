@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Accents.h,v 1.1.2.2 2000/02/29 21:18:39 grdetil Exp $
+// $Id: Accents.h,v 1.1.2.3 2000/06/08 12:26:22 grdetil Exp $
 //
 //
 #ifndef _Accents_h_
@@ -28,11 +28,11 @@ public:
 	Accents(const HtConfiguration& config_arg);
 	virtual		~Accents();
 
-	virtual int	writeDB();
-
 	virtual void	generateKey(char *word, String &key);
 
 	virtual void	addWord(char *word);
+
+	virtual void	getWords(char *word, List &words);
 
 private:
 };
