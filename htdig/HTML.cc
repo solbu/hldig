@@ -4,12 +4,16 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Revision 1.2  1998/06/15 18:15:50  turtle
+// Added suggestion by Chris Liddiard to add ',' to the list of separator
+// characters for meta keyword parsing
+//
+// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.1 1997/02/03 17:11:06 turtle Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.2 1998/06/15 18:15:50 turtle Exp $";
 #endif
 
 #include "htdig.h"
@@ -544,7 +548,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		char	*keywords = conf["htdig-keywords"];
 		if (!keywords)
 		    keywords = conf["keywords"];
-		char	*w = strtok(keywords, " \t\r\n");
+		char	*w = strtok(keywords, " ,\t\r\n");
 		while (w)
 		{
 		    if (strlen(w) >= minimumWordLength)
@@ -564,7 +568,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		which = -1;
 		if (keywordsMatch.CompareWord(cache))
 		{
-		    char	*w = strtok(conf["content"], " \t\r\n");
+		    char	*w = strtok(conf["content"], " ,\t\r\n");
 		    while (w)
 		    {
 			if (strlen(w) >= minimumWordLength)
