@@ -1,11 +1,14 @@
 //
 // $Log: good_strtok.cc,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1999/01/20 18:06:21  ghutchis
+// Added fixes and speed improvements contributed by Andrew Bishop.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: good_strtok.cc,v 1.1 1997/02/03 17:11:04 turtle Exp $";
+static char	RCSid[] = "$Id: good_strtok.cc,v 1.2 1999/01/20 18:06:21 ghutchis Exp $";
 #endif
 
 #include "lib.h"
@@ -14,21 +17,9 @@ static char	RCSid[] = "$Id: good_strtok.cc,v 1.1 1997/02/03 17:11:04 turtle Exp 
 // Perform the same function as the standard strtok() function except that
 // multiple separators are NOT collapsed into one.
 //
-char *good_strtok(char *str, char *term)
+char *good_strtok(char *str, char term)
 {
     static char		*string;
-    static char		valids[256];
-
-    if (!term)
-    {
-	//
-	// This is for the case where there is only one argument.
-	// In this case we will assume that we have to use the
-	// same string as in the previous call to this function
-	//
-	term = str;
-	str = 0;
-    }
 
     if (str)
     {
@@ -38,15 +29,8 @@ char *good_strtok(char *str, char *term)
     if (string == NULL || *string == '\0')
 	return NULL;
 
-    memset(valids, 1, sizeof(valids));
-    while (*term)
-    {
-	valids[(unsigned char) *term++] = 0;
-    }
-    valids[0] = 0;
-
     char *p = string;
-    while (valids[(unsigned char) *string])
+    while (*string && *string!=term)
 	string++;
     if (*string)
 	*string++ = '\0';
