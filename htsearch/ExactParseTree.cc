@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExactParseTree.cc,v 1.1.2.1 2000/06/30 01:56:30 ghutchis Exp $
+// $Id: ExactParseTree.cc,v 1.1.2.2 2000/08/01 16:52:46 ghutchis Exp $
 //
 
 #include "ExactParseTree.h"
@@ -52,10 +52,12 @@ int ExactParseTree::Parse(String query)
   initialQuery = query;
   children = new List;
 
-  while ( (word = HtWordToken(query)) )
+  word = HtWordToken(query);
+  while ( word != NULL )
     {
-      // By convention, all leaves should be generic ParseTrees
+      // By convention, leaves should be plain ParseTrees
       children->Add(new ParseTree(word));
+      word = HtWordToken(NULL);
     }
 
   return OK;

@@ -1,3 +1,16 @@
+Tue Aug  1 21:50:22 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/ParseTree.cc (Parse): Fix problems with token
+	comparisons and fix thinko with HtWordToken parsing--previously
+	didn't advance the parse step at all.
+
+	* htsearch/*ParseTree.cc (Parse): Fix thinko with HtWordToken as
+	above--here it acted as an infinite loop.
+
+	* htdig/ExternalParser.cc (parse): Add shell quoting around
+	content-type. Hard to exploit, but a server could potentially
+	return a strange value that could then be exectuted locally.
+
 Thu Jun 29 23:33:51 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/ParseTree.h, htsearch/ParseTree.cc: New parent class

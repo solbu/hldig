@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: OrParseTree.cc,v 1.1.2.1 2000/06/30 01:56:30 ghutchis Exp $
+// $Id: OrParseTree.cc,v 1.1.2.2 2000/08/01 16:52:46 ghutchis Exp $
 //
 
 #include "OrParseTree.h"
@@ -90,10 +90,12 @@ int OrParseTree::Parse(String query)
     }
   else
     {
-      while ( (word = HtWordToken(query)) )
+      word = HtWordToken(query);
+      while ( word != NULL )
 	{
 	  // By convention, leaves should be plain ParseTrees
 	  children->Add(new ParseTree(word));
+	  word = HtWordToken(NULL);
 	}
     }
 
