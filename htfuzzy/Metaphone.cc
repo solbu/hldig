@@ -63,6 +63,9 @@ static char     vsvfn[26] = {
 void
 Metaphone::generateKey(char *word, String &key)
 {
+    if (!word || !*word)
+      return;
+
     char			*n;
     String			ntrans;
 	

@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.8 1999/05/05 00:38:53 ghutchis Exp $";
+static char RCSid[] = "$Id: Fuzzy.cc,v 1.9 1999/05/15 15:29:44 ghutchis Exp $";
 #endif
 
 #include "Fuzzy.h"
@@ -55,6 +55,8 @@ Fuzzy::getWords(char *word, List &words)
 {
     if (!index)
 	return;
+    if (word || *word)
+      return;
 
     //
     // Convert the word to a fuzzy key
