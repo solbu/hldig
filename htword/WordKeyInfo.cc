@@ -195,8 +195,8 @@ WordKeyInfo::Set(const String &desc)
 void 
 WordKeyInfo::Show()
 {
-    printf("-----------------------------------------\n");
-    printf("nfields:%3d num_length:%3d\n", nfields, num_length);
+    fprintf(stderr, "-----------------------------------------\n");
+    fprintf(stderr, "nfields:%3d num_length:%3d\n", nfields, num_length);
     int i;
     for(i = 0; i < nfields; i++)
 	sort[i].Show();
@@ -219,7 +219,7 @@ WordKeyInfo::Show()
 	}
     }
     str[last + 1] = '\0';
-    printf("%s (bits)\n",str);
-    printf("^0      ^1      ^2      ^3      ^4      ^5      ^6      ^7\n");
-    printf("0123456701234567012345670123456701234567012345670123456701234567\n");
+    fprintf(stderr, "%s (bits)\n",str);
+    fprintf(stderr, "^0      ^1      ^2      ^3      ^4      ^5      ^6      ^7\n");
+    fprintf(stderr, "0123456701234567012345670123456701234567012345670123456701234567\n");
 }

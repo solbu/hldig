@@ -302,9 +302,14 @@ CDB___memp_close(dbenv)
 	}
 
 	/* Discard DB_MPOOLFILEs. */
-	while ((dbmfp = TAILQ_FIRST(&dbmp->dbmfq)) != NULL)
+	while ((dbmfp = TAILQ_FIRST(&dbmp->dbmfq)) != NULL) {
+	        if(F_ISSET(dbmfp, MP_CMPR)) {
+		  dbmfp->cmpr_context.weakcmpr = 0;
+		  F_CLR(dbmfp, MP_CMPR);
+	        }
 		if ((t_ret = CDB_memp_fclose(dbmfp)) != 0 && ret == 0)
 			ret = t_ret;
+	}
 
 	/* Discard the thread mutex. */
 	if (dbmp->mutexp != NULL)

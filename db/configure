@@ -25,7 +25,7 @@ ac_help="$ac_help
   --enable-maintainer-mode enable make rules and dependencies not useful
                           (and sometimes confusing) to the casual installer"
 ac_help="$ac_help
-  --disable-bigfile       Disable Linux, AIX, HP/UX, Solaris big files."
+  --enable-bigfile       Enable Linux, AIX, HP/UX, Solaris big files."
 ac_help="$ac_help
   --enable-debug          Build a debugging version."
 ac_help="$ac_help
@@ -1898,14 +1898,14 @@ test "$program_transform_name" = "" && program_transform_name="s,x,x,"
 
 
 
-echo $ac_n "checking if --disable-bigfile option specified""... $ac_c" 1>&6
-echo "configure:1903: checking if --disable-bigfile option specified" >&5
+echo $ac_n "checking if --enable-bigfile option specified""... $ac_c" 1>&6
+echo "configure:1903: checking if --enable-bigfile option specified" >&5
 # Check whether --enable-bigfile or --disable-bigfile was given.
 if test "${enable_bigfile+set}" = set; then
   enableval="$enable_bigfile"
-  db_cv_bigfile="yes"
-else
   db_cv_bigfile="no"
+else
+  db_cv_bigfile="yes"
 fi
 
 echo "$ac_t""$db_cv_bigfile" 1>&6

@@ -1,3 +1,11 @@
+Fri May 12 17:54:09 2000  Loic Dachary  <loic@senga.org>
+
+	* db/acinclude.m4: bigfile support is disabled by default.
+
+	* db/mp_region.c (CDB___memp_close): clear weakcmpr pointer
+	  when closing region so that memory pool files are not 
+	  released twice.
+
 Wed May 10 22:26:21 2000  Loic Dachary  <loic@senga.org>
 
 	* */*.cc: all include htconfig.h
