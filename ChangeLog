@@ -1,3 +1,14 @@
+Thu Feb  4 02:09:22 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/htsearch.cc: Add debugging information on words
+	returned from fuzzy matching.
+
+	* htfuzzy/Metaphone.cc(addWord): Fix bug where only one word would be
+	stored per key in the database.
+
+	* htfuzzy/Soundex.cc(addWord): Ditto.
+	(generateKey): Rewrite to generate keys correctly.
+
 Wed Feb  3 19:24:36 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/htdig.html: Added documentation on the -l log and restart
