@@ -4,7 +4,7 @@
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
 #if RELEASE
-static char RCSid[] = "$Id: PDF.cc,v 1.13 1999/08/13 19:05:34 grdetil Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.14 1999/08/13 20:47:12 grdetil Exp $";
 #endif
 
 #include <sys/types.h>
@@ -114,7 +114,7 @@ PDF::parse(Retriever &retriever, URL &url)
 	*endarg = '\0';
     // If first arg is a path, check that it exists, and is a regular file. 
     if (strchr(arg0.get(), '/') &&
-	((stat(arg0.get(), &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode))
+	((stat(arg0.get(), &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode)))
     {
 	printf("PDF::parse: cannot find pdf parser %s\n", arg0.get());
 	notfound = 1;
