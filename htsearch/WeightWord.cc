@@ -1,11 +1,11 @@
 //
 // WeightWord.cc
 //
-// Implementation of WeightWord
+// WeightWord: Implementation of WeightWord
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WeightWord.cc,v 1.3 1999/02/01 04:24:28 ghutchis Exp $";
+static char RCSid[] = "$Id: WeightWord.cc,v 1.4 1999/09/09 10:16:07 loic Exp $";
 #endif
 
 #include "WeightWord.h"

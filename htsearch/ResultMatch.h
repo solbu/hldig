@@ -1,7 +1,12 @@
 //
 // ResultMatch.h
 //
-// $Id: ResultMatch.h,v 1.4 1999/04/19 01:21:51 hp Exp $
+// ResultMatch: Contains information related to a given
+//              document that was matched by a search. For instance, the
+//              score of the document for this search. Similar to the
+//              DocMatch class but designed for result display purposes.
+//
+// $Id: ResultMatch.h,v 1.5 1999/09/09 10:16:07 loic Exp $
 //
 
 #ifndef _ResultMatch_h_

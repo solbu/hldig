@@ -1,11 +1,11 @@
 //
 // ResultList.cc
 //
-// Implementation of ResultList
+// ResultList: Implementation of ResultList
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: ResultList.cc,v 1.4 1999/02/22 14:01:05 ghutchis Exp $";
+static char RCSid[] = "$Id: ResultList.cc,v 1.5 1999/09/09 10:16:07 loic Exp $";
 #endif
 
 #include "ResultList.h"

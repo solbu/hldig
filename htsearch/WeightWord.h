@@ -1,9 +1,14 @@
 //
 // WeightWord.h
 //
-// $Id: WeightWord.h,v 1.2 1997/03/24 04:33:24 turtle Exp $
+// WeightWord: ?
+//
+// $Id: WeightWord.h,v 1.3 1999/09/09 10:16:07 loic Exp $
 //
 // $Log: WeightWord.h,v $
+// Revision 1.3  1999/09/09 10:16:07  loic
+// update comments
+//
 // Revision 1.2  1997/03/24 04:33:24  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //

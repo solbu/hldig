@@ -1,11 +1,11 @@
 //
 // parser.cc
 //
-// Implementation of parser
+// parser: Implementation of parser
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.15 1999/08/29 09:04:21 ghutchis Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.16 1999/09/09 10:16:07 loic Exp $";
 #endif
 
 #include "parser.h"

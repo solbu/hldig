@@ -1,7 +1,10 @@
 //
 // ResultList.h
 //
-// $Id: ResultList.h,v 1.2 1999/02/22 14:01:05 ghutchis Exp $
+// ResultList: A Dictionary indexed on the document id that holds
+//             documents found for a search.
+//
+// $Id: ResultList.h,v 1.3 1999/09/09 10:16:07 loic Exp $
 //
 //
 #ifndef _ResultList_h_

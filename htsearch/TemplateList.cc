@@ -1,9 +1,12 @@
 //
 // TemplateList.cc
 //
-// Implementation of TemplateList
+// TemplateList: Implementation of TemplateList
 //
 // $Log: TemplateList.cc,v $
+// Revision 1.5  1999/09/09 10:16:07  loic
+// update comments
+//
 // Revision 1.4  1999/01/17 20:29:37  ghutchis
 // Ensure template_map config has three members for each template we add,
 // contributed by <tlm@mbox.comune.prato.it>.
@@ -17,7 +20,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: TemplateList.cc,v 1.4 1999/01/17 20:29:37 ghutchis Exp $";
+static char RCSid[] = "$Id: TemplateList.cc,v 1.5 1999/09/09 10:16:07 loic Exp $";
 #endif
 
 #include "TemplateList.h"

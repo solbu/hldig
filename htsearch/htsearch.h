@@ -1,7 +1,12 @@
 //
 // htsearch.h
 //
-// $Id: htsearch.h,v 1.4 1999/03/21 15:23:56 hp Exp $
+// htsearch: Command-line and CGI interface to search the databases
+//           Expects the databases are generated using htdig, htmerge, 
+//           and htfuzzy. Outputs HTML-ized results of the search based 
+//           on the templates specified
+//
+// $Id: htsearch.h,v 1.5 1999/09/09 10:16:07 loic Exp $
 //
 
 #ifndef _htsearch_h_

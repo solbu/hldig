@@ -1,12 +1,12 @@
 //
 // Display.cc
 //
-// Implementation of Display
-// Takes results of search and fills in the HTML templates
+// Display: Implementation of Display
+//          Takes results of search and fills in the HTML templates
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.91 1999/08/16 18:58:12 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.92 1999/09/09 10:16:07 loic Exp $";
 #endif
 
 #include "htsearch.h"

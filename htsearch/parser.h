@@ -1,7 +1,10 @@
 //
 // parser.h
 //
-// $Id: parser.h,v 1.8 1999/08/29 09:04:02 ghutchis Exp $
+// parser: Parse the string containing a search request and find the
+//         document that matches.
+//
+// $Id: parser.h,v 1.9 1999/09/09 10:16:07 loic Exp $
 //
 #ifndef _parser_h_
 #define _parser_h_

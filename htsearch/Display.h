@@ -1,7 +1,10 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.17 1999/06/14 18:10:50 grdetil Exp $
+// Display: Implementation of Display
+//          Takes results of search and fills in the HTML templates
+//
+// $Id: Display.h,v 1.18 1999/09/09 10:16:07 loic Exp $
 //
 //
 

@@ -1,14 +1,15 @@
 //
 // htsearch.cc
 //
-// Command-line and CGI interface to search the databases
-// Expects the databases are generated using htdig, htmerge, and htfuzzy
-// Outputs HTML-ized results of the search based on the templates specified
+// htsearch: Command-line and CGI interface to search the databases
+//           Expects the databases are generated using htdig, htmerge, 
+//           and htfuzzy. Outputs HTML-ized results of the search based 
+//           on the templates specified
 //
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.45 1999/08/29 09:03:42 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.46 1999/09/09 10:16:07 loic Exp $";
 #endif
 
 #include "htsearch.h"

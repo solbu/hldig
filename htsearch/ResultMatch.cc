@@ -1,9 +1,9 @@
 //
 // ResultMatch.cc
 //
-// Implementation of ResultMatch
+// ResultMatch: Implementation of ResultMatch
 //
-// $Id: ResultMatch.cc,v 1.3 1999/04/19 01:21:51 hp Exp $
+// $Id: ResultMatch.cc,v 1.4 1999/09/09 10:16:07 loic Exp $
 //
 
 #include "ResultMatch.h"
