@@ -4,6 +4,10 @@
 // Implementation of htsearch
 //
 // $Log: htsearch.cc,v $
+// Revision 1.11  1998/11/22 19:15:35  ghutchis
+//
+// Don't remove boolean operators from boolean search strings!
+//
 // Revision 1.10  1998/11/01 00:00:40  ghutchis
 //
 // Replaced system calls with htlib/my* functions.
@@ -44,7 +48,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.10 1998/11/01 00:00:40 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.11 1998/11/22 19:15:35 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -372,6 +376,10 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
 	    continue;
 	}
 	if (badWords.IsValid(p))
+	    parsedWords << p << ' ';
+	if (boolean && ((mystrncasecmp(p, "or", 2) == 0) || 
+			(mystrncasecmp(p, "and", 3) == 0) ||
+			(mystrncasecmp(p, "not", 3) == 0)))
 	    parsedWords << p << ' ';
     }
 
