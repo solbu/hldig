@@ -1,10 +1,10 @@
 //
 // Implementation of String class
 //
-// $Id: String.cc,v 1.17 1999/02/23 03:16:07 ghutchis Exp $
+// $Id: String.cc,v 1.18 1999/02/24 20:23:48 ghutchis Exp $
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.17 1999/02/23 03:16:07 ghutchis Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.18 1999/02/24 20:23:48 ghutchis Exp $";
 #endif
 
 
@@ -16,10 +16,9 @@ static char	RCSid[] = "$Id: String.cc,v 1.17 1999/02/23 03:16:07 ghutchis Exp $"
 #include <stdio.h>
 #include <stdlib.h>
 #include "Object.h"
-#include <assert.h>
+
 
 const int MinimumAllocationSize = 4;	// Should be power of two.
-int next_power_of_2(int n);
 
 #ifdef NOINLINE
 String::String()
@@ -145,7 +144,7 @@ void String::append(char *s, int slen)
 //        return;
 //    }
     int	new_len = Length + slen;
-	
+
     if (new_len + 1 > Allocated)
     reallocate_space(new_len);
     copy_data_from(s, slen, Length);
@@ -557,7 +556,10 @@ void String::allocate_space(int len)
     if (Allocated)
       delete [] Data;
 
-    Allocated = next_power_of_2(len);
+    Allocated = MinimumAllocationSize;
+    while (Allocated < len)
+      Allocated <<= 1;
+
     Data = new char[Allocated];
 }
 
@@ -572,26 +574,28 @@ void String::allocate_fix_space(int len)
       delete [] Data;
 
     Allocated = len;
+    if (Allocated < MinimumAllocationSize)
+      Allocated = MinimumAllocationSize;
     Data = new char[Allocated];
 }
 
 void String::reallocate_space(int len)
 {
 	char	*old_data = 0;
-	int		old_data_len = 0;
+	int	 old_data_len = 0;
 
     if (Allocated)
 	{
 	    old_data = Data;
 	    old_data_len = Length;
-	Allocated = 0;
+	    Allocated = 0;
 	}
-	allocate_space(len);
-	if (old_data)
-	{
-	    copy_data_from(old_data, old_data_len);
-	    delete [] old_data;
-	}
+    allocate_space(len);
+    if (old_data)
+      {
+	copy_data_from(old_data, old_data_len);
+	delete [] old_data;
+      }
 }
 
 void String::copy(char *s, int len, int allocation_hint)
@@ -607,20 +611,6 @@ void String::debug(ostream &o)
 {
     o << "Length: " << Length << " Allocated: " << Allocated <<
 	" Data: " << ((void*) Data) << " '" << *this << "'\n";
-}
-
-//------------------------------------------------------------------------
-// Functions private to this file.
-//
-int next_power_of_2(int n)
-{
-    //
-    // There must be a faster way...
-    //
-  int	result = MinimumAllocationSize;
-    
-  while (result < n)
-    result <<= 1;
 }
 
 
