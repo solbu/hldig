@@ -4,6 +4,9 @@
 // Implementation of DocumentDB
 //
 // $Log: DocumentDB.cc,v $
+// Revision 1.7  1999/01/14 01:09:11  ghutchis
+// Small speed improvements based on gprof.
+//
 // Revision 1.6  1998/10/27 18:35:17  ghutchis
 //
 // Fixed bug noted by Vadim Chekan with CreateSearchDB.
@@ -132,11 +135,12 @@ int DocumentDB::Close()
 //
 int DocumentDB::Add(DocumentRef &doc)
 {
-    String	url, s;
+    String	url;
     url = doc.DocURL();
     url.lowercase();
-    doc.Serialize(s);
-    dbf->Put(url, s);
+    temp = 0;
+    doc.Serialize(temp);
+    dbf->Put(url, temp);
     return OK;
 }
 

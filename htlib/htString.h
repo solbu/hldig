@@ -1,7 +1,10 @@
 //
-// $Id: htString.h,v 1.2 1998/05/26 03:58:12 turtle Exp $
+// $Id: htString.h,v 1.3 1999/01/14 01:09:13 ghutchis Exp $
 //
 // $Log: htString.h,v $
+// Revision 1.3  1999/01/14 01:09:13  ghutchis
+// Small speed improvements based on gprof.
+//
 // Revision 1.2  1998/05/26 03:58:12  turtle
 // Got rid of compiler warnings.
 //
@@ -23,7 +26,7 @@ class ostream;
 class String : public Object
 {
 public:
-    String();				// Create an empty string
+    String()	{Length = 0,Allocated = 0;}				// Create an empty string
     String(int init);			// initial allocated length
     String(char *s);			// from null terminated s
     String(char *s, int len);		// from s with length len
@@ -68,8 +71,8 @@ public:
     //
     // Appending
     //
-    String		&operator << (char *);
-    String		&operator << (char);
+    inline String		&operator << (char *);
+    inline String		&operator << (char);
     String		&operator << (unsigned char c) {return *this<<(char)c;}
     String		&operator << (int);
     String		&operator << (long);
@@ -180,6 +183,8 @@ private:
     // has been allocated.
     //
     void		allocate_space(int len);
+    // Allocate some space without rounding
+	 void 	allocate_fix_space(int len);
 	
     friend		class StringIndex;
 };
@@ -190,6 +195,28 @@ extern char *vform(char *, va_list);
 //
 // Inline methods.
 //
+inline String &String::operator << (char *str)
+{
+    append(str);
+    return *this;
+}
+
+inline String &String::operator << (char ch)
+{
+    append(ch);
+    return *this;
+}
+
+#ifdef TOTO
+inline char *String::get() const
+{
+    if (Data == 0)
+	    return 0;
+    Data[Length] = '\0';	// We always leave room for this.
+    return Data;
+}
+#endif
+
 inline int String::length() const
 {
     return Length;

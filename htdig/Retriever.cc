@@ -4,6 +4,9 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.32  1999/01/14 01:09:12  ghutchis
+// Small speed improvements based on gprof.
+//
 // Revision 1.31  1999/01/14 00:35:22  ghutchis
 // Call AddDescription even if max_hop_count is reached.
 //
@@ -251,7 +254,6 @@ Retriever::Start()
     //
     int		more = 1;
     Server	*server;
-    char	*server_sig;
     URLRef	*ref;
     
     while (more)
@@ -264,12 +266,11 @@ Retriever::Start()
 	// on the servers is distributed evenly.
 	//
 	servers.Start_Get();
-	while ((server_sig = servers.Get_Next()))
+	while ( (server = (Server *)servers.Get_NextElement()) )
 	{
 	    if (debug > 1)
-		cout << "pick: " << server_sig << ", # servers = " <<
+		cout << "pick: " << server->host() << ", # servers = " <<
 		    servers.Count() << endl;
-	    server = (Server *) servers[server_sig];
 	    
 	    ref = server->pop();
 	    if (!ref)
@@ -1241,7 +1242,6 @@ Retriever::ReportStatistics(char *name)
     cout << " seen:\n";
 
     Server		*server;
-    char		*server_sig;
     String		buffer;
     StringList	results;
     String		newname = name;
@@ -1249,10 +1249,9 @@ Retriever::ReportStatistics(char *name)
     newname << ":    ";
 	
     servers.Start_Get();
-    while ((server_sig = servers.Get_Next()))
+    while ((server = (Server *) servers.Get_NextElement()))
     {
 	buffer = 0;
-	server = (Server *) servers[server_sig];
 	server->reportStatistics(buffer, newname);
 	results.Add(buffer);
     }

@@ -6,9 +6,12 @@
 // database is used for searching.  This is because digging requires a
 // different index than searching.
 //
-// $Id: DocumentDB.h,v 1.3 1999/01/14 00:30:10 ghutchis Exp $
+// $Id: DocumentDB.h,v 1.4 1999/01/14 01:09:11 ghutchis Exp $
 //
 // $Log: DocumentDB.h,v $
+// Revision 1.4  1999/01/14 01:09:11  ghutchis
+// Small speed improvements based on gprof.
+//
 // Revision 1.3  1999/01/14 00:30:10  ghutchis
 // Added IncNextDocID to allow big changes in NextDocID, such as when merging
 // databases.
@@ -74,6 +77,8 @@ private:
     int			isopen;
     int			isread;
     int			nextDocID;
+    String                    temp;
+
 };
 
 #endif

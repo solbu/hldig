@@ -4,6 +4,9 @@
 // Implementation of WordList
 //
 // $Log: WordList.cc,v $
+// Revision 1.13  1999/01/14 01:09:11  ghutchis
+// Small speed improvements based on gprof.
+//
 // Revision 1.12  1999/01/14 00:28:14  ghutchis
 // Changed field order in db.wordlist. With the old order, words from HTML body
 // and words from links to that url weren't merged sometimes.
@@ -46,7 +49,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.12 1999/01/14 00:28:14 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.13 1999/01/14 01:09:11 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -171,12 +174,10 @@ void WordList::Flush()
 {
     FILE		*fl = fopen(tempfile, "a");
     WordReference	*wordRef;
-    char		*word;
 
     words->Start_Get();
-    while ((word = words->Get_Next()))
+    while ((wordRef = (WordReference *) words->Get_NextElement()))
     {
-	wordRef = (WordReference *) words->Find(word);
 
 	fprintf(fl, "%s",wordRef->Word);
         fprintf(fl, "\ti:%d\tl:%d\tw:%d",
