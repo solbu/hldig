@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: cgi.cc,v 1.5.2.4 2000/02/16 21:14:59 grdetil Exp $
+// $Id: cgi.cc,v 1.5.2.5 2000/02/23 20:03:55 grdetil Exp $
 //
 
 #include "cgi.h"
@@ -86,7 +86,7 @@ cgi::init(char *s)
 			i += r;
 		buf[i] = '\0';
 		results = buf;
-		delete buf;
+		delete [] buf;
 	}
 
 	//

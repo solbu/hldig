@@ -1,11 +1,12 @@
-Wed Feb 23 13:55:01 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Feb 23 13:58:24 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	* htcommon/cgi.cc(init): Fixed bug: array must be free by
+	delete [] buf, not just delete buf; (from Vadim).
 	* installdir/syntax.html: Fixed a $(WORDS) I'd missed earlier.
 
 Tue Feb 22 12:40:22 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/RELEASE.html, htdoc/main.html: Updated notes for 3.1.5 release.
-
 	* htlib/URL.cc (URL, normalizePath): Fix PR#779, to handle relative
 	URLs correctly when there's a trailing ".." or leading "//".
 
