@@ -1,3 +1,8 @@
+Sun Jan 10 00:06:59 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Document.cc(readHeader): Added check for header status
+	when considering content-types. Fixed PR #91.
+
 Sat Jan  9 20:52:49 1999  didier Gautheron <dgautheron@magic.fr>
 
 	* htcommon/WordList.cc(valid_word): Break out of looping once
@@ -10,12 +15,12 @@ Sat Jan  9 20:16:25 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.cc(parse): Don't capitalize headers--this creates
 	problems with non-ASCII values, since String::uppercase doesn't
-	know how to capitalize them.
+	know how to capitalize them. Fixes PR #100.
 
 Sat Jan  9 14:47:17 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Document.cc(getdate): Strip off weekday before calling
-	strptime since some servers return invalid weekdays.
+	strptime since some servers return invalid weekdays. Fixes PR #79.
 
 	* htmerge/htmerge.h: Declare new mergeDB code.
 

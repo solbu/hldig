@@ -4,6 +4,9 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.29  1999/01/10 05:16:28  ghutchis
+// Added check for header status when considering content-types.
+//
 // Revision 1.28  1999/01/09 19:58:36  ghutchis
 // Strip off weekday before calling strptime since some servers return invalid
 // weekdays.
@@ -96,7 +99,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.28 1999/01/09 19:58:36 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.29 1999/01/10 05:16:28 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -539,7 +542,7 @@ Document::readHeader(Connection &c)
     int		inHeader = 1;
     int		returnStatus = Header_not_found;
 
-    if(config.Boolean("modification_time_is_now"))
+    if (config.Boolean("modification_time_is_now"))
        modtime = time(NULL);
     else
        modtime = 0;
@@ -584,7 +587,8 @@ Document::readHeader(Connection &c)
 		    returnStatus = Header_not_authorized;
 		}
 	    }
-	    else if (modtime == 0 && mystrncasecmp(line, "last-modified:", 14) == 0)
+	    else if (modtime == 0 
+		     && mystrncasecmp(line, "last-modified:", 14) == 0)
 	    {
 		strtok(line, " \t");
 		modtime = getdate(strtok(0, "\n\t"));
@@ -594,7 +598,8 @@ Document::readHeader(Connection &c)
 		strtok(line, " \t");
 		char	*token = strtok(0, "\n\t");
 				
-		if (mystrncasecmp("text/", token, 5) != 0 &&
+		if (returnStatus == Header_not_found &&
+		    mystrncasecmp("text/", token, 5) != 0 &&
 		    mystrncasecmp("application/postscript", token, 22) != 0 &&
 		    mystrncasecmp("application/msword", token, 18) != 0 &&
 		    mystrncasecmp("application/pdf", token, 15) != 0)
