@@ -1,3 +1,9 @@
+Tue Dec 14 18:32:21 1999  Loic Dachary  <loic@ceic.com>
+
+	* htword/Word{Record,Reference,Key}: added a Get method to 
+	  convert the structure into it's ascii string representation.
+	  operator << now uses Get.
+
 Tue Dec 14 17:46:33 1999  Loic Dachary  <loic@ceic.com>
 
 	* db/dist/Makefile.in (install): fix bugous test for libshared

@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.cc,v 1.4.2.2 1999/12/14 13:36:06 loic Exp $
+// $Id: WordReference.cc,v 1.4.2.3 1999/12/14 17:49:33 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -27,7 +27,7 @@ int WordReference::Merge(const WordReference& other)
 }
 
 //
-// Set a key from an ascii representation
+// Set the structure from an ascii representation
 //
 int
 WordReference::Set(const String& buffer)
@@ -37,7 +37,7 @@ WordReference::Set(const String& buffer)
 }
 
 //
-// Set a key from list of fields
+// Set the structure from list of fields
 //
 int
 WordReference::Set(StringList& fields)
@@ -49,6 +49,32 @@ WordReference::Set(StringList& fields)
   else
     return OK;
 }      
+
+//
+// Convert the whole structure to an ascii string description
+//
+int
+WordReference::Get(String& buffer) const
+{
+  String tmp;
+  buffer.trunc();
+
+  if(key.Get(tmp) != OK) return NOTOK;
+  buffer.append(tmp);
+
+  if(record.Get(tmp) != OK) return NOTOK;
+  buffer.append(tmp);
+
+  return OK;
+}
+
+ostream &operator << (ostream &o, const WordReference &wordRef)
+{
+  String tmp;
+  wordRef.Get(tmp);
+  o << tmp;
+  return o;
+}
 
 void WordReference::Print() const
 {

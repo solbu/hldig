@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.9 1999/12/14 13:36:06 loic Exp $
+// $Id: WordList.cc,v 1.6.2.10 1999/12/14 17:49:33 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -603,10 +603,10 @@ istream &
 operator >> (istream &in,  WordList &list)
 {
   WordReference word;
-  int line_number = 0;
 #define WORD_BUFFER_SIZE	1024
   char buffer[WORD_BUFFER_SIZE];
   String line;
+  int line_number = 0;
 
   while(!in.eof())
     {

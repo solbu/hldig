@@ -12,28 +12,33 @@
 
 #include "WordRecord.h"
 
-ostream &operator << (ostream &o, const WordRecord &record)
+//
+// Convert the whole structure to an ascii string description
+//
+int
+WordRecord::Get(String& buffer) const
 {
-  switch(record.type) {
+  switch(type) {
 
   case WORD_RECORD_DATA:
-    o << record.info.data;
+    buffer << info.data;
     break;
 
   case WORD_RECORD_STATS:
-    o << record.info.stats.noccurence << "\t";
-    o << record.info.stats.ndoc;
+    buffer << info.stats.noccurence << "\t";
+    buffer << info.stats.ndoc;
     break;
 
   case WORD_RECORD_NONE:
     break;
 
   default:
-    cerr << "WordRecord::ostream <<: unknown type " << record.type << "\n";
+    cerr << "WordRecord::ostream <<: unknown type " << type << "\n";
+    return NOTOK;
     break;
   }
 
-  return o;
+  return OK;
 }
 
 //
@@ -101,6 +106,14 @@ WordRecord::Set(StringList& fields)
     }
 
   return OK;
+}
+
+ostream &operator << (ostream &o, const WordRecord &record)
+{
+  String tmp;
+  record.Get(tmp);
+  o << tmp;
+  return o;
 }
 
 void WordRecord::Print() const

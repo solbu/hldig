@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.h,v 1.3.2.3 1999/12/14 13:36:06 loic Exp $
+// $Id: WordReference.h,v 1.3.2.4 1999/12/14 17:49:33 loic Exp $
 //
 #ifndef _WordReference_h_
 #define _WordReference_h_
@@ -106,18 +106,22 @@ class WordReference : public Object
 #endif /* SWIG */
 
   //
-  // Set the whole key from ascii string description
+  // Set the whole structure from ascii string description
   //
   int Set(const String& buffer);
+#ifndef SWIG
   int Set(StringList& fields);
+#endif /* SWIG */
+  //
+  // Convert the whole structure to an ascii string description
+  //
+  int Get(String& buffer) const;
 
   //
   // Debuging
   //
 #ifndef SWIG
-  friend inline ostream	&operator << (ostream &o, const WordReference &wordRef) {
-    return o << wordRef.key << wordRef.record;
-  }
+  friend ostream	&operator << (ostream &o, const WordReference &wordRef);
 #endif /* SWIG */
   void Print() const;
 

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3.2.5 1999/12/14 13:36:06 loic Exp $
+// $Id: WordKey.cc,v 1.3.2.6 1999/12/14 17:49:32 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -463,11 +463,10 @@ int WordKey::Merge(const WordKey& other)
 }
 
 //
-// Output ascii string representation of the WordKey
-// Undefined values are shown as <UNDEF>
-// The output may be scrambled if the word contains space or newlines.
+// Convert the whole structure to an ascii string description
 //
-ostream &operator << (ostream &o, const WordKey &key)
+int
+WordKey::Get(String& buffer) const
 {
   const struct WordKeyInfo& info = word_key_info;
 
@@ -475,36 +474,36 @@ ostream &operator << (ostream &o, const WordKey &key)
   // Walk the fields in sorting order. As soon as one of them
   // does not compare equal, return.
   //
-//    if(!key.IsDefinedWordSuffix()){cerr << "word suffix undefined for word:" << key.GetWord()<<endl;}
   for(int j = 0; j < info.nfields; j++) 
   {
       int index = info.sort[j].index;
-      if(!key.IsDefinedInSortOrder(j)){o << "<UNDEF>";}
+      if(!IsDefinedInSortOrder(j)){buffer << "<UNDEF>";}
       else
       {
 	  switch(info.sort[j].type) 
 	  {
-	                 case WORD_ISA_String:  o << key.pool_String[index];  break;
-#define STATEMENT(type)  case WORD_ISA_##type:  o << key.pool_##type[index];  break;
+	                 case WORD_ISA_String:  buffer << pool_String[index];  break;
+#define STATEMENT(type)  case WORD_ISA_##type:  buffer << pool_##type[index];  break;
 #include"WordCaseIsAStatements.h"
 	  default:
 	      cerr << "WordKey::operator <<: invalid type " << info.sort[j].type << " for field (in sort order) " << j << "\n";
-	      break;
+	      return NOTOK;
 	  }
       }
       //
       // Output virtual word suffix field
       //
       if(j==0) {
-	if(key.IsDefinedInSortOrder(j) && !key.IsDefinedWordSuffix()) {
-	  o << "\t<UNDEF>";
+	if(IsDefinedInSortOrder(j) && !IsDefinedWordSuffix()) {
+	  buffer << "\t<UNDEF>";
 	} else {
-	  o << "\t<DEF>";
+	  buffer << "\t<DEF>";
 	}
       }
-      o << "\t";
+      buffer << "\t";
   }
-  return o;
+
+  return OK;
 }
 
 //
@@ -595,6 +594,14 @@ WordKey::Set(StringList& fields)
   }
 
   return OK;
+}
+
+ostream &operator << (ostream &o, const WordKey &key)
+{
+  String tmp;
+  key.Get(tmp);
+  o << tmp;
+  return o;
 }
 
 void WordKey::Print() const

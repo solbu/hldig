@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordRecord.h,v 1.6.2.3 1999/12/14 13:36:06 loic Exp $
+// $Id: WordRecord.h,v 1.6.2.4 1999/12/14 17:49:33 loic Exp $
 //
 
 #ifndef _WordRecord_h_
@@ -136,10 +136,16 @@ class WordRecord
   }
 
   //
-  // Set the whole record from ascii string description
+  // Set the whole structure from ascii string description
   //
   int Set(const String& buffer);
+#ifndef SWIG
   int Set(StringList& fields);
+#endif /* SWIG */
+  //
+  // Convert the whole structure to an ascii string description
+  //
+  int Get(String& buffer) const;
 
 #ifndef SWIG
   friend ostream	&operator << (ostream &o, const WordRecord &record);

@@ -177,10 +177,16 @@ _ACCESSORS_
   void	UndefinedInSortOrder(int position)       {         Undefined(word_key_info.sort[position].encoding_position); }
 
   //
-  // Set the whole key from ascii string description
+  // Set the whole structure from ascii string description
   //
   int Set(const String& buffer);
+#ifndef SWIG
   int Set(StringList& fields);
+#endif /* SWIG */
+  //
+  // Convert the whole structure to an ascii string description
+  //
+  int Get(String& buffer) const;
 
   // Get/Set numerical fields
 
