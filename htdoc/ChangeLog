@@ -1,3 +1,13 @@
+Thu Jan 31 17:32:33 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* Release of 3.1.6.
+	
+	* htdoc/confindex.html, htdoc/htsearch.html, htdoc/index.html,
+	htdoc/mailarchive.html: Remove CSS link, not needed in these
+	frameset pages.
+
+	* htdoc/howto-mirror.html: Update with Jesse's latest version.
+
 Thu Jan 31 15:13:07 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* Makefile.in: Fixed install-strip target to properly handle relative
