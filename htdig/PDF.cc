@@ -4,7 +4,7 @@
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
 #if RELEASE
-static char RCSid[] = "$Id: PDF.cc,v 1.9 1999/02/02 22:29:31 ghutchis Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.9.2.1 1999/03/23 20:26:59 grdetil Exp $";
 #endif
 
 #include <sys/types.h>
@@ -474,6 +474,7 @@ void PDF::parseString()
     if (_parsedString.length() == 0)
 	return;
 
+    static int	minimumWordLength = config.Value("minimum_word_length", 3);
     char	*position = _parsedString.get();
     /* Currently unused    char	*start = position; */
     int		in_space = 0;
@@ -502,11 +503,11 @@ void PDF::parseString()
 		_head << word;
 	    }
 
-	    if (word.length() > 2)
+	    if (word.length() >= minimumWordLength)
 	    {
 		word.lowercase();
 		word.remove(valid_punctuation);
-		if (word.length() > 2)
+		if (word.length() >= minimumWordLength)
 		{
 		    _retriever->got_word(word,
 				       int(_curPage * 1000 / _pages),

@@ -1,3 +1,8 @@
+Tue Mar 23 14:18:16 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/PDF.cc(parseString): Use minimum_word_length instead of
+	hardcoded constant.
+
 Tue Mar 23 12:02:00 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(generateStars): Add in support for use_star_image
