@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.22 2001/07/25 22:49:34 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.23 2001/07/26 02:41:35 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -35,7 +35,7 @@ ConfigDefaults	defaults[] =
     {"any_keywords",			"false"},
     {"authorization",			""}, 
     {"backlink_factor",                 "1000"},
-    {"bad_extensions",			".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram .tgz .bin .rpm .mpg .mov .avi"},
+    {"bad_extensions",			".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram .tgz .bin .rpm .mpg .mov .avi .css"},
     {"bad_querystr",                    ""},
     {"bad_word_list",			"${common_dir}/bad_words"},
     {"build_select_lists",		""},

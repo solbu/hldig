@@ -1,3 +1,12 @@
+Wed Jul 25 21:38:21 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: Added .css to bad_extensions, for consistency
+	with 3.2.
+
+	* htdoc/attrs.html: Ditto for default value. Also set examples for
+	translate_* and modification_time_is_now to false so the example is
+	different that default.
+
 Wed Jul 25 17:26:07 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Document.cc (getParsable): Add conditional to catch
