@@ -7,6 +7,10 @@
 //
 //
 // $Log: htmerge.cc,v $
+// Revision 1.8  1998/12/05 00:52:04  ghutchis
+// Remove previous db.words.db file before doing a word merging. Fixes bug with
+// deleted documents keeping entries.
+//
 // Revision 1.7  1998/12/04 04:13:51  ghutchis
 // Use configure check to only include getopt.h when it exists.
 //
@@ -139,6 +143,9 @@ int main(int ac, char **av)
     {
 	file1 = config["word_list"];
 	file2 = config["word_db"];
+	// Before we start, get rid of the previous one
+	// it doesn't matter if it's .work or not.
+	unlink(file2);
 	mergeWords(file1, file2);
     }
     if (do_docs)
