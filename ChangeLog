@@ -1,10 +1,12 @@
-Tue Nov 30 09:31:55 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Nov 30 09:47:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	* htdig/Document.cc(RetrieveLocal): Handle common extensions for
+	text/plain, application/pdf & application/postscript.
         * htdig/Retriever.cc (IsValidURL): Add valid_extensions list handling,
 	make it and bad_extensions case insensitive.
         * htcommon/defaults.cc: Add config attribute valid_extensions,
         with default as empty.
-	* htdoc/attrs.html, cf_by{name,prog}.html: documented valid_extensions
+	* htdoc/attrs.html, cf_by{name,prog}.html: Document valid_extensions.
 
 Tue Nov 30 09:02:02 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 

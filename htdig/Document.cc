@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34.2.9 1999/11/26 23:27:44 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34.2.10 1999/11/30 16:02:28 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -590,11 +590,18 @@ Document::RetrieveLocal(time_t date, char *filename)
 
     // Process only HTML files (this could be changed if we read
     // the server's mime.types file).
+    // (...and handle a select few other types for now...)
     char *ext = strrchr(filename, '.');
     if (ext == NULL)
       	return Document_not_local;
     if ((mystrcasecmp(ext, ".html") == 0) || (mystrcasecmp(ext, ".htm") == 0))
         contentType = "text/html";
+    else if ((mystrcasecmp(ext, ".txt") == 0) || (mystrcasecmp(ext, ".asc") == 0))
+        contentType = "text/plain";
+    else if ((mystrcasecmp(ext, ".pdf") == 0))
+        contentType = "application/pdf";
+    else if ((mystrcasecmp(ext, ".ps") == 0) || (mystrcasecmp(ext, ".eps") == 0))
+        contentType = "application/postscript";
     else 
   	return Document_not_local;
 
