@@ -13,6 +13,11 @@ Mon Oct 26 15:27:28 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* contrib/whatsnew/whatsnew.pl: Added fix from Jacques Reynes
 	<Jacques.Reynes@cict.fr> to get whatsnew to work with Berkeley DB.
+
+	* htdig/Retriever.cc, htdig/Document.cc: Fixed bug introduced by
+	Oct 18 change. Authorization will not be cleared.
+
+	* htlib/URL.cc: Fixed new -Wall warnings.
 	
 Wed Oct 21 13:30:05 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
@@ -28,6 +33,7 @@ Wed Oct 21 18:31:00 1998  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
 	* htlib/URL.cc,	htlib/URL.h: Added patch to support translation of
 	server names. (Configuration directive: server_aliases)
+
 	* htdig/Retriever.cc, htdig/htdig.h, htdig/main.cc:
 	Additional limiting after normalization of the URL.
 	(Configuration directive: limit_normalized)

@@ -4,6 +4,10 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.10  1998/10/26 20:44:00  ghutchis
+//
+// Cleaned up -Wall warnings.
+//
 // Revision 1.9  1998/10/21 16:34:19  bergolth
 // Added translation of server names. Additional limiting after normalization of the URL.
 //
@@ -38,7 +42,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.9 1998/10/21 16:34:19 bergolth Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.10 1998/10/26 20:44:00 ghutchis Exp $";
 #endif
 
 #include "URL.h"
@@ -555,17 +559,16 @@ void URL::ServerAlias()
 
   String *al= 0;
   int newport;
-  char *p;
   int delim;
   _signature = _host;
   _signature << ':' << _port;
-  if (al= (String *) serveraliases->Find(_signature))
+  if ((al= (String *) serveraliases->Find(_signature)))
     {
       delim= al->indexOf(':');
       // printf("%s->%s\n", (char *) _signature, (char *) *al);
       _host= al->sub(0,delim);
       sscanf(al->sub(delim+1), "%d", &newport);
       _port= newport;
-      // printf("\nNeuer URL: %s:%d\n", (char *) _host, _port);
+      // printf("\nNewer URL: %s:%d\n", (char *) _host, _port);
     }
 }
