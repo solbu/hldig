@@ -1,5 +1,19 @@
 Sun 25 Apr 2004 Lachlan Andrew <lha at users.sourceforge.net>
 
+    * htsearch/parser.cc:  Address (but not fix) bug #934739
+    If collection->getDocumentRef() on line 889 returns NULL, don't crash.
+    I'm still trying to work out why it does return NULL -- I don't think
+    it ever should.
+
+Sun 25 Apr 2004 Lachlan Andrew <lha at users.sourceforge.net>
+
+    * htdig/Retriever.{h,cc}, htcommon/defaults.cc, htdoc/FAQ.html:
+    Add  store_phrases  attribute.  If it is false, htdig only stores the
+    first occurrence of each word in a document.  This reduces the database
+    size dramatically, and slightly increases digging speed.
+
+Sun 25 Apr 2004 Lachlan Andrew <lha at users.sourceforge.net>
+
     * db/{aclocal.m4,configure,os_abs.c.win32}, STATUS, htdoc/THANKS.html:
     Correctly dected paths beginning  C:  as absolute paths in cygwin/Win32.
     Fixes bug #814268.
