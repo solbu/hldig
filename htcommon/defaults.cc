@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.9 1999/11/30 15:50:00 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.10 1999/12/02 20:18:17 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -76,6 +76,7 @@ ConfigDefaults	defaults[] =
     {"locale",				"C"},
     {"local_default_doc",               "index.html"},
     {"local_urls",			""},
+    {"local_urls_only",			"false"},
     {"local_user_urls",			""},
     {"logging",                         "false"},
     {"maintainer",			"bogus@unconfigured.htdig.user"},

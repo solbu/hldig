@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.15 1999/12/01 23:40:04 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.16 1999/12/02 20:18:17 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -171,7 +171,7 @@ Retriever::Initial(List &list,int from)
     //  assuming that 
     // 1) there's many more urls in docdb 
     // 2) they're pushed first
-    // 3)  there's no duplicate url in docdb
+    // 3) there's no duplicate url in docdb
     // then they don't need to be check against already pushed urls
     // But 2) can be false with -l option
     //
@@ -328,6 +328,8 @@ Retriever::parse_url(URLRef &urlRef)
     int			old_document;
     time_t		date;
     static int	index = 0;
+    Server		*server;
+    static int		local_urls_only = config.Boolean("local_urls_only"));
 
 //	cout << "**** urlRef URL = '" << urlRef.URL() << "', referer = '" <<
 //		urlRef.Referer() << "'\n";
@@ -395,7 +397,7 @@ Retriever::parse_url(URLRef &urlRef)
 
     // Retrive document, first trying local file access if possible.
     Document::DocStatus status;
-    Server *server = (Server *) servers[u.signature()];
+    server = (Server *) servers[url.signature()];
     String *local_filename = GetLocal(url.get());
     if (local_filename)
     {  
@@ -404,11 +406,14 @@ Retriever::parse_url(URLRef &urlRef)
         status = doc->RetrieveLocal(date, *local_filename);
         if (status == Document::Document_not_local)
         {
-            if (debug > 1)
-   	        cout << "Local retrieval failed, trying HTTP" << endl;
-            if (server && !server->IsDead()
-			&& !config.Boolean("local_urls_only"))
+	    if (local_urls_only)
+		status = Document::Document_not_found;
+	    else if (server && !server->IsDead())
+	    {
+        	if (debug > 1)
+		    cout << "Local retrieval failed, trying HTTP" << endl;
 		status = doc->RetrieveHTTP(date);
+	    }
 	    else
 		status = Document::Document_no_server;
         }

@@ -2741,10 +2741,22 @@
 			Set this to tell ht://Dig to access certain URLs through
 			local filesystems. At first ht://Dig will try to access
 			pages with URLs matching the patterns through the
-			filesystems specified. If it cannot find the file, it will
+			filesystems specified. If it cannot find the file, or
+			if it doesn't recognize the file name extension, it will
 			try the URL through HTTP instead. Note the example--the
 			equal sign and the final slashes in both the URL and the
 			directory path are critical.
+			<br>The fallback to HTTP can be disabled by setting the
+			<a href="#local_urls_only">local_urls_only</a>
+			attribute to true.
+			To access user directory URLs through the local
+			filesystem, set
+			<a href="#local_user_urls">local_user_urls</a>.
+			The only file name extensions currently recognized
+			for local filesystem access are .html, .htm, .txt,
+			.asc, .ps, .eps and .pdf. For anything else, htdig
+			must ask the HTTP server for the file, so it can
+			determine the MIME content-type of it.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -2757,6 +2769,61 @@
 				</td>
 			  </tr>
 			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="local_urls_only">
+		local_urls_only</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			false
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			Set this to tell ht://Dig to access files only
+			through the local filesystem, for URLs matching
+			the patterns in the
+			<a href="#local_urls">local_urls</a> or
+			<a href="#local_user_urls">local_user_urls</a>
+			attribute. If it cannot find the file, it will
+			give up rather than trying HTTP.
+			This will not affect files outside of the
+			scope of local_urls and local_user_urls, which
+			will still be fetched by HTTP. To disable all
+			non-local fetching of files, you'll need to set
+			the <a href="#start_url">start_url</a>
+			and <a href="#limit_urls_to">limit_urls_to</a>
+			attributes to allow only URLs covered by the
+			local filesystem.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			local_urls_only: true
 		  </dd>
 		</dl>
 	  </dd>
@@ -2793,10 +2860,14 @@
 			Set this to access user directory URLs through the local
 			filesystem. If you leave the "path" portion out, it will
 			look up the user's home directory in /etc/password (or NIS
-			or whatever). As with local_urls, if the files are not
+			or whatever). As with <a href="#local_urls">local_urls</a>,
+			if the files are not
 			found, ht://Dig will try with HTTP. Again, note the
 			example's format. To map http://www.my.org/~joe/foo/bar.html
 			to /home/joe/www/foo/bar.html, try the example below.
+			<br>The fallback to HTTP can be disabled by setting the
+			<a href="#local_urls_only">local_urls_only</a>
+			attribute to true.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7055,7 +7126,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Tue Nov 30 10:29:54 EST 1999
+Last modified: Thu Dec  2 14:45:50 EST 1999
 <!-- hhmts end -->
   </body>
 </html>

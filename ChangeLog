@@ -1,3 +1,11 @@
+Thu Dec  2 13:46:11 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc(parse_url), htdig/Server.cc(Server),
+	htcommon/defaults.cc, htdoc/attrs.html, htdoc/cf_byname.html,
+	htdoc/cf_byprog.html: Add support for local_urls_only attribute.
+	* htdoc/RELEASE.html: Update with latest feature.
+	* htdoc/ChangeLog: Update to latest version.
+
 Thu Dec  2 11:02:07 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/URL.cc(ServerAlias): Fix server_aliases processing to prevent
@@ -15,7 +23,6 @@ Wed Dec  1 16:56:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	value check, as suggested by Vadim.
 	* contrib/conv_doc.pl: Added a sample external converter script.
 	* htdoc/THANKS.html: A couple more additions.
-	* htdoc/ChangeLog: Update with latest version.
 
 Tue Nov 30 15:02:25 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 

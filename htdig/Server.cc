@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.8.2.1 1999/11/30 02:52:36 grdetil Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.8.2.2 1999/12/02 20:18:17 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -43,7 +43,33 @@ Server::Server(char *host, int port)
     String	url = "http://";
     url << host << ':' << port << "/robots.txt";
     Document	doc(url, 0);
-    switch (doc.RetrieveHTTP(0))
+
+    static int		local_urls_only = config.Boolean("local_urls_only"));
+    time_t		timeZero = 0;
+    Document::DocStatus	status;
+    String *local_filename = Retriever::GetLocal(url.get());
+    if (local_filename)
+    {  
+        if (debug > 1)
+	    cout << "Trying local file " << *local_filename << endl;
+        status = doc.RetrieveLocal(timeZero, *local_filename);
+        if (status == Document::Document_not_local)
+        {
+	    if (local_urls_only)
+		status = Document::Document_not_found;
+	    else
+	    {
+        	if (debug > 1)
+		    cout << "Local retrieval failed, trying HTTP" << endl;
+		status = doc.RetrieveHTTP(timeZero);
+	    }
+        }
+        delete local_filename;
+    }
+    else
+        status = doc.RetrieveHTTP(timeZero);
+
+    switch (status)
     {
 	case Document::Document_ok:
 	    //
