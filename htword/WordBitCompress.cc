@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.cc,v 1.1.2.11 2000/01/12 17:04:49 bosc Exp $
+// $Id: WordBitCompress.cc,v 1.1.2.12 2000/01/14 11:56:47 bosc Exp $
 //
 
 
@@ -141,7 +141,7 @@ log2(unsigned int v)
 //
 // SUM_interval_bit_sizes -> depends on probability dist
 // total_size = table_size + coded_size
-// table_size = SUM_interval_bit_sizes
+// table_size = 2^nlev * NBITS_NBITS_VAL
 // coded_size = n * (nlev + SUM_interval_bit_sizes / 2^nlev )
 //
 // example1: flat probability distribution :
@@ -360,7 +360,7 @@ VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose/
     {
 	SUM_interval_bit_sizes+=intervals[i];
     }
-    printf("SUM_interval_bit_sizes:%d\n",SUM_interval_bit_sizes);
+    if(verbose)printf("SUM_interval_bit_sizes:%d\n",SUM_interval_bit_sizes);
     delete [] sorted;
 }
 
