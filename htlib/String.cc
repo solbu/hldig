@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.30.2.6 2000/01/14 00:57:15 ghutchis Exp $
+// $Id: String.cc,v 1.30.2.7 2000/02/23 18:56:19 grdetil Exp $
 //
 
 #include "htString.h"
@@ -201,14 +201,14 @@ int String::nocase_compare(const String &s) const
     return mystrcasecmp(p1, p2);
 }
 
-int String::write(int fd) const
+int String::Write(int fd) const
 {
     int	left = Length;
     char	*wptr = Data;
 	
     while (left)
     {
-	int result = ::write(fd, wptr, left);
+	int result = write(fd, wptr, left);
 		
 	if (result < 0)
 	    return result;

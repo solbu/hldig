@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.h,v 1.10.2.1 2000/01/12 17:36:55 loic Exp $
+// $Id: HtDateTime.h,v 1.10.2.2 2000/02/23 18:56:19 grdetil Exp $
 
 ///////
    //   Class for Date and Time
@@ -56,7 +56,7 @@
 // 	    - from time_t: copy the time_t value into the object
 // 	    - from struct tm: set the object's time_t value by converting
 //  	       the value from the struct tm. If local_time is set to true,
-// 	 	  converts it with mktime, else uses Httimegm.
+// 	 	  converts it with mktime, else uses HtTimeGM.
 // 	    - set to now
 // 	    - from a string, by passing the input format: the method uses
 // 	       strptime syntax (and invokes Htstrptime). For now, timezone
@@ -435,7 +435,7 @@ protected: 		// to permit inheritance
 ///////
 
    // Interface for timegm
-   static time_t Httimegm (struct tm*);
+   static time_t HtTimeGM (struct tm*);
    
 
 #ifdef TEST_HTDATETIME

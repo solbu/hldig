@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.cc,v 1.12.2.2 2000/02/03 02:01:43 ghutchis Exp $
+// $Id: HtDateTime.cc,v 1.12.2.3 2000/02/23 18:56:19 grdetil Exp $
 //
 
 #include "HtDateTime.h"
@@ -404,7 +404,7 @@ void HtDateTime::SetDateTime(struct tm *ptm)
    if(local_time)
    	 Ht_t = mktime(ptm);  	// Invoke mktime
    else
-   	 Ht_t = Httimegm(ptm);	// Invoke timegm alike function
+   	 Ht_t = HtTimeGM(ptm);	// Invoke timegm alike function
    
 }
 
@@ -803,13 +803,13 @@ int HtDateTime::DateTimeCompare(const struct tm *tm1, const struct tm *tm2)
    return 0;
 }
 
-time_t HtDateTime::Httimegm (struct tm *tm)
+time_t HtDateTime::HtTimeGM (struct tm *tm)
 {
 
 #if HAVE_TIMEGM
-   return ::timegm (tm);
+   return timegm (tm);
 #else
-   return ::Httimegm (tm); // timegm replacement in timegm.c
+   return Httimegm (tm); // timegm replacement in timegm.c
    // static time_t gmtime_offset;
    // tm->tm_isdst = 0;
    // return __mktime_internal (tm, gmtime, &gmtime_offset);

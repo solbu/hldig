@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.18.2.4 2000/02/10 21:19:58 loic Exp $
+// $Id: htString.h,v 1.18.2.5 2000/02/23 18:56:19 grdetil Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -144,7 +144,7 @@ public:
     //
     // IO
     //
-    int			write(int fd) const;
+    int			Write(int fd) const;
 
     void		debug(ostream &o);
 

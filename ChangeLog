@@ -1,3 +1,12 @@
+Wed Feb 23 12:49:52 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/HtDateTime.h, htlib/HtDateTime.cc: change Httimegm() method
+	to HtTimeGM(), to avoid conflict with Httimegm() C function, so we
+	don't need "::" override, for Mac OS X.
+	* htlib/htString.h, htlib/String.cc: change write() method to
+	Write(), to avoid conflict with write() function, so we don't need
+	"::" override, for Mac OS X.
+
 Wed Feb 23 12:17:46 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/Configuration.cc(Read): Fixed to allow final line without
@@ -54,6 +63,11 @@ Mon Feb 21 17:09:13 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	htlib/Configuration.h, htlib/Configuration.cc: split Add() method
 	into Add() and AddParsed(), so that only config attributes get parsed.
 	Use AddParsed() only in Read() and Defaults().
+
+Sat Feb 19 04:56:47 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htnet/Connection.h, htnet/Connection.cc: Renamed methods with
+	capitals to remove the need to use ::-escaped library calls.
 
 Fri Feb 18 14:40:50 2000  Loic Dachary  <loic@ceic.com>
 
