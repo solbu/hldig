@@ -1,3 +1,8 @@
+Thu Dec 20 11:51:26 CET 2001 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* configure.in: reviewed directory settings
+	* Makefile.in: ditto (for 'make install' of htdig.conf and rundig)
+
 Wed Dec 19 23:05:09 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure.in: Add tests for ostream.h and iostream.h.

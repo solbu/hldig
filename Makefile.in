@@ -93,10 +93,10 @@ install:	all
 	done && test -z "$$fail"
 	@echo ""
 	@echo "Installing default configuration files..."
-	@if [ ! -f $(INSTALL_ROOT)$(CONFIG_DIR)/htdig.conf ]; then sed -e s%@DATABASE_DIR@%$(DATABASE_DIR)% -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/htdig.conf >$(INSTALL_ROOT)$(CONFIG_DIR)/htdig.conf; echo $(INSTALL_ROOT)$(CONFIG_DIR)/htdig.conf;fi
-	@if [ ! -f $(INSTALL_ROOT)$(SEARCH_DIR)/$(SEARCH_FORM) ]; then sed -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/search.html >$(INSTALL_ROOT)$(SEARCH_DIR)/$(SEARCH_FORM); echo $(INSTALL_ROOT)$(SEARCH_DIR)/$(SEARCH_FORM);fi
+	@if [ ! -f $(INSTALL_ROOT)$(DEFAULT_CONFIG_FILE) ]; then sed -e s%\@DATABASE_DIR\@%$(DATABASE_DIR)% -e s%\@IMAGEDIR\@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/htdig.conf >$(INSTALL_ROOT)$(DEFAULT_CONFIG_FILE); echo $(INSTALL_ROOT)$(DEFAULT_CONFIG_FILE);fi
+	@if [ ! -f $(INSTALL_ROOT)$(SEARCH_DIR)/$(SEARCH_FORM) ]; then sed -e s%\@IMAGEDIR\@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/search.html >$(INSTALL_ROOT)$(SEARCH_DIR)/$(SEARCH_FORM); echo $(INSTALL_ROOT)$(SEARCH_DIR)/$(SEARCH_FORM);fi
 	@for i in $(COMMONHTML); do \
-		if [ ! -f $(INSTALL_ROOT)$(COMMON_DIR)/$$i ]; then sed -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/$$i >$(INSTALL_ROOT)$(COMMON_DIR)/$$i; echo $(INSTALL_ROOT)$(COMMON_DIR)/$$i;fi; \
+		if [ ! -f $(INSTALL_ROOT)$(COMMON_DIR)/$$i ]; then sed -e s%\@IMAGEDIR\@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/$$i >$(INSTALL_ROOT)$(COMMON_DIR)/$$i; echo $(INSTALL_ROOT)$(COMMON_DIR)/$$i;fi; \
 	done && test -z "$$fail"
 	@for i in $(COMMONDICT); do \
 		if [ ! -f $(INSTALL_ROOT)$(COMMON_DIR)/$$i ]; then $(INSTALL_DATA) $(top_srcdir)/installdir/$$i $(INSTALL_ROOT)$(COMMON_DIR)/$$i; echo $(INSTALL_ROOT)$(COMMON_DIR)/$$i; fi; \
@@ -107,7 +107,7 @@ install:	all
 	done && test -z "$$fail"
 	@echo "Creating rundig script..."
 	@if [ ! -f $(INSTALL_ROOT)$(BIN_DIR)/rundig ]; then \
-		sed -e s%@BIN_DIR@%$(BIN_DIR)% -e s%@COMMON_DIR@%$(COMMON_DIR)% -e s%@DATABASE_DIR@%$(DATABASE_DIR)% $(top_srcdir)/installdir/rundig >$(INSTALL_ROOT)$(BIN_DIR)/rundig; \
+		sed -e s%\@BIN_DIR\@%$(BIN_DIR)% -e s%\@COMMON_DIR\@%$(COMMON_DIR)% -e s%\@DATABASE_DIR\@%$(DATABASE_DIR)% $(top_srcdir)/installdir/rundig >$(INSTALL_ROOT)$(BIN_DIR)/rundig; \
 		chmod 755 $(INSTALL_ROOT)$(BIN_DIR)/rundig; \
 	fi
 	@echo "Installation done."
