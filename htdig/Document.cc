@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34.2.7 1999/09/01 20:22:54 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34.2.8 1999/09/01 20:30:19 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -300,14 +300,22 @@ Document::RetrieveHTTP(time_t date)
 	if (c.assign_port(proxy->port()) == NOTOK)
 	    return Document_not_found;
 	if (c.assign_server(proxy->host()) == NOTOK)
+	{
+	    if (debug)
+		cout << "Unknown proxy host: " << proxy->host() << endl;
 	    return Document_no_host;
+	}
     }
     else
     {
 	if (c.assign_port(url->port()) == NOTOK)
 	    return Document_not_found;
 	if (c.assign_server(url->host()) == NOTOK)
+	{
+	    if (debug)
+		cout << "Unknown host: " << url->host() << endl;
 	    return Document_no_host;
+	}
     }
 	
     if (c.connect(1) == NOTOK)
