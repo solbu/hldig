@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.33 2000/02/14 06:01:46 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.34 2000/02/16 05:45:14 ghutchis Exp $
 //
 
 #include "HtConfiguration.h"
@@ -1500,47 +1500,6 @@ http://www.htdig.org/", "
 	The text strings can contain HTML tags to highlight page numbers
 	or embed images. The strings need to be quoted if they contain
 	spaces.
-" },
-{ "pdf_parser", PDF_PARSER " -toPostScript", 
-	"string", "htdig", "3.1.0b1", "External:Parser", "pdf_parser: /usr/local/Acrobat3/bin/acroread -toPostScript -pairs", "
-	Set this to the path of the program used to parse PDF
-	files, including all command-line options. The
-	program will be called with the parameters:<br>
-	<em>infile outfile</em>,<br>
-	where <em>infile</em> is a file to parse and
-	<em>outfile</em> is the PostScript output of the
-	parser. In the case where acroread is the parser, and
-	the -pairs option is not given, the second parameter
-	will be the output directory rather than the output
-	file name. The program is supposed to convert to a
-	variant of PostScript, which is then parsed
-	internally. Currently, only Adobe's <a
-	href=\"http://www.adobe.com/prodindex/acrobat/readstep.html\">
-	acroread</a> program has been tested as a pdf_parser.
-	There is a bug in Acrobat 4's acroread command, which
-	causes it to fail when -pairs is used, hence the special
-	case above.<br>
-	The pdftops program that is part of the <a
-	href=\"http://www.foolabs.com/xpdf/\">xpdf</a>
-	package is not suitable as a pdf_parser,
-	because its variant of PostScript is slightly
-	different.  However, an alternative is to
-	use xpdf's pdftotext program as a component
-	of an <a href=\"#external_parsers\">external
-	parser</a> with the xpdf 0.90 package installed
-	on your system, as described in FAQ question <a
-	href=\"FAQ.html#q4.9\">4.9</a>.<br>
-	In either case, to successfully index PDF files,
-	be sure to set the <a
-	href=\"#max_doc_size\">max_doc_size</a> attribute
-	to a value larger than the size of your largest
-	PDF file. PDF documents can not be parsed if they
-	are truncated.
-	<p>
-	The default value of this attribute is determined at
-	compile time, to include the path to the acroread
-	executable.
-	</p>
 " },
 { "persistent_connections", "true", 
 	"boolean", "htdig", "3.2.0b1", "Indexing:Connection", "persistent_connections: false", "
