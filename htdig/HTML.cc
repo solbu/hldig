@@ -12,7 +12,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.48 1999/07/13 20:58:06 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.49 1999/07/16 17:23:08 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -276,9 +276,9 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    q = (unsigned char*)strchr((char *)position, '>');
 	    if (!q)
 	      break; // Syntax error in the doc.  Tag never ends.
-	    tag = 0;
-	    tag.append((char*)position + 1, q - position);
 	    position++;
+	    tag = 0;
+	    tag.append((char*)position, q - position);
 	    while (isspace(*position))
 		position++;
 	    if (!in_space && spacebeforetags.CompareWord((char *)position)
@@ -328,8 +328,9 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 			q = (unsigned char*)strchr((char *)position, '>');
 			if (q)
 			{
+			    position++;
 			    tag = 0;
-			    tag.append((char*)position + 1, q - position);
+			    tag.append((char*)position, q - position);
 			    do_tag(retriever, tag);
 			    position = q+1;
 			}

@@ -1,3 +1,8 @@
+Fri Jul 16 13:04:27 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc(parse): fix to prevent closing ">" from being passed
+	to do_tag().
+
 Thu Jul 15 21:25:12 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Document.cc (readHeader, getParsable): Add back
