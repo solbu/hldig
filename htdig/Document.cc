@@ -4,6 +4,12 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.24  1998/11/30 01:55:00  ghutchis
+//
+// Fixed problems under FreeBSD where <sys/types.h> needed to be before
+// <sys/stat.h>, noted by Gilles. Fixed core dumps caused by mystrptime
+// returning NULL. Instead, we'll use the time(0).
+//
 // Revision 1.23  1998/11/18 05:16:02  ghutchis
 //
 // Fixed memory leak as a result of a thinko.
@@ -91,10 +97,11 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.23 1998/11/18 05:16:02 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.24 1998/11/30 01:55:00 ghutchis Exp $";
 #endif
 
 #include <signal.h>
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <ctype.h>
 #include "Document.h"
@@ -286,22 +293,29 @@ Document::getdate(char *datestring)
     else
 	mystrptime(d.get(), "%a, %d %b %Y %T", &tm);
 
-    if (tm.tm_year < 0)
-	tm.tm_year += 1900;
-
-    if (debug > 2)
-    {
-	cout << "Translated " << d << " to ";
-	char	buffer[100];
-	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", &tm);
-	cout << buffer << " (" << tm.tm_year << ")" << endl;
-    }
-    time_t      ret;
+    if (&tm != NULL) // We hope it isn't NULL!
+      {
+	if (tm.tm_year < 0)
+	  tm.tm_year += 1900;
+	
+	if (debug > 2)
+	  {
+	    cout << "Translated " << d << " to ";
+	    char	buffer[100];
+	    strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", &tm);
+	    cout << buffer << " (" << tm.tm_year << ")" << endl;
+	  }
+	time_t      ret;
 #if HAVE_TIMEGM
-    ret = timegm(&tm);
+	ret = timegm(&tm);
 #else
-    ret = mytimegm(&tm);
+	ret = mytimegm(&tm);
 #endif
+      }
+    else
+      {
+	time_t      ret = time(0); // This isn't the best, but it works. *fix*
+      }
     if (debug > 2)
     {
         cout << "And converted to ";
