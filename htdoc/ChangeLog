@@ -1,3 +1,7 @@
+Tue Mar  2 02:35:50 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* attrs.html: Rephrase and clarify entry for url_part_aliases.
+
 Tue Feb  9 19:21:55 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/FAQ.html, htdoc/where.html: Update for 3.1.0 release.

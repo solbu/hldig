@@ -5936,33 +5936,34 @@
 			<em>description:</em>
 		  </dt>
 		  <dd>
-			A list of translations pairs used in the database,
-			<em>from</em> and <em>to</em>.  If a part of an URL
-			matches with the <em>from</em>-string of each pair,
-			it will be translated into the <em>to</em>-string
-			just before writing the URL to the database, and
-			just after reading it from the database.<br>
+			A list of translations pairs <em>from</em> and
+			<em>to</em>, used when accessing the database.
+			If a part of an URL matches with the
+			<em>from</em>-string of each pair, it will be
+			translated into the <em>to</em>-string just before
+			writing the URL to the database, and translated
+			back just after reading it from the database.<br>
+			This is primarily used to provide an easy way to
+			rename parts of URLs for e.g. changing
+			www.example.com/~htdig to www.htdig.org.  Two
+			different configuration files for digging and
+			searching are then used, with url_part_aliases
+			having different <em>from</em> strings, but
+			identical <em>to</em>-strings.<br>
 			See also <a
 			href="#common_url_parts">common_url_parts</a>.<br>
-			Strings that are incorrect or very seldom used in
-			URLs should be used as <em>to</em>-strings, since
-			extra storage will be used each time one is found as
-			normal part of a URL.  Translations will be
-			performed with priority for the leftmost longest
-			match.  Each <em>to</em>-string must be unique and
-			not be a part of any other <em>to</em>-string.<br>
+			Strings that are normally incorrect in URLs or
+			very seldom used, should be used as
+			<em>to</em>-strings, since extra storage will be
+			used each time one is found as normal part of a
+			URL.  Translations will be performed with priority
+			for the leftmost longest match.	 Each
+			<em>to</em>-string must be unique and not be a
+			part of any other <em>to</em>-string.<br>
 			Note that when this attribute is changed, the
 			database should be rebuilt, unless the effect of
 			"moving" the affected URLs in the database is
-			wanted; then the same <em>to</em>-strings should
-			be specified, while changing the
-			<em>from</em>-strings.  This is primarily used to
-			provide an easy way to rename parts of URLs for
-			e.g. changing www.example.com/~htdig to
-			www.htdig.org.  The parts subject to be renamed must
-			be anticipated before creating the database.
-			Different configuration files are then used for
-			digging and searching.<br>
+			wanted, as described above.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -5974,9 +5975,19 @@
 				  url_part_aliases:
 				</td>
 				<td nowrap>
-				   http://www.htdig.org/ *1 \<br>
-				   http://www.htdig.org/ml/ *2 \<br>
-				   http://dev.htdig.org/ *3 .html *4
+				   http://search.example.com/~htdig *site \<br>
+				   http://www.htdig.org/this/ *1 \<br>
+				   .html *2
+				</td>
+			  </tr>
+			  <tr>
+				<td valign="top">
+				  url_part_aliases:
+				</td>
+				<td nowrap>
+				   http://www.htdig.org/ *site \<br>
+				   http://www.htdig.org/that/ *1 \<br>
+				   .htm *2
 				</td>
 			  </tr>
 			</table>

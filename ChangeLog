@@ -1,3 +1,7 @@
+Tue Mar  2 02:35:50 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* attrs.html: Rephrase and clarify entry for url_part_aliases.
+
 Sun Feb 28 23:25:40 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
 	* htlib/HtURLCodec.cc (~HtURLCodec): Add missing deletion of
