@@ -93,6 +93,15 @@
 #define LOG_FACILITY LOG_LOCAL5
 
 /* Define to remove the word count in db and WordRef struct. */
-#define NO_WORD_COUNT
+#undef NO_WORD_COUNT
+
+/* Defined in case the compiler doesn't have TRUE and FALSE constants */
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
 
 #endif
