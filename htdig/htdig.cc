@@ -5,12 +5,12 @@
 //        generating several databases to be used by htmerge
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2000 The ht://Dig Group
+// Copyright (c) 1995-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.17 2001/02/11 23:08:29 ghutchis Exp $
+// $Id: htdig.cc,v 1.26.2.18 2001/02/20 00:55:06 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -129,9 +129,6 @@ int main(int ac, char **av)
 			 configFile.get()));
     }
     config.Read(configFile);
-
-    // Initialize htword
-    WordContext::Initialize(config);
 
     if (config["locale"].empty() && debug > 0)
       cout << "Warning: unknown locale!\n";
@@ -261,6 +258,9 @@ int main(int ac, char **av)
     const String		word_filename = config["word_db"];
     if (initial)
        unlink(word_filename);
+
+    // Initialize htword
+    WordContext::Initialize(config);
 
     // Create the Retriever object which we will use to parse all the
     // HTML files.
