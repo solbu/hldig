@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Document.cc,v 1.67 2003/10/21 01:16:56 angusgb Exp $
+// $Id: Document.cc,v 1.68 2003/10/23 02:10:55 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -73,7 +73,6 @@ Document::Document(char *u, int max_size)
     FTPConnect = 0;
     NNTPConnect = 0;
     externalConnect = 0;
-    is_initial = true;
 	HtConfiguration* config= HtConfiguration::config();
 
     // We probably need to move assignment of max_doc_size, according
@@ -317,7 +316,7 @@ Document::Retrieve(Server *server, HtDateTime date)
          else HTTPSConnect->DisablePersistentConnection();
 
             // Head before Get option control
-            if (server->HeadBeforeGet() || ! is_initial)
+            if (server->HeadBeforeGet())
                HTTPSConnect->EnableHeadBeforeGet();
             else
                HTTPSConnect->DisableHeadBeforeGet();
@@ -381,7 +380,7 @@ Document::Retrieve(Server *server, HtDateTime date)
          else HTTPConnect->DisablePersistentConnection();
 
             // Head before Get option control
-            if (server->HeadBeforeGet() || ! is_initial)
+            if (server->HeadBeforeGet())
                HTTPConnect->EnableHeadBeforeGet();
             else
                HTTPConnect->DisableHeadBeforeGet();

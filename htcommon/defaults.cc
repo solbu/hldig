@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.95 2003/10/21 01:16:56 angusgb Exp $
+// $Id: defaults.cc,v 1.96 2003/10/23 02:10:55 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1016,12 +1016,21 @@ http://www.htdig.org/", " \
 	call is made in order to retrieve header information about a document. \
 	If the status code and the content-type returned let the document be parsable, \
 	then a following 'GET' call is made. \
-    This feature is automatically enabled during the digging phase of an incremental indexing; \
-    for performance issues, you are strongly recommended to use this attribute carefully \
-    in conjunction with the <a href=\"#persistent_connections\">persistent_connections</a> \
-    attribute. \
-    In general, it is recommended to leave this attribute to 'true' (especially when used \
-    with persistent connections performances can really improve). \
+    In general, it is recommended to leave this attribute set to 'true' (especially when used \
+    with persistent connections performances can really improve), especially during an \
+    incremental dig (in this case 'htdig' can request the server if the document has been \
+    modified since last dig with a more proper and correct HEAD call). \
+    However there are a couple of cases when it is better to switch it off: \
+    <ul> \
+    <li>the majority of documents is parsable (HTML and in general for those types of documents \
+    that have a proper external parser) and must be retrieved anyway (initial dig);</li> \
+    <li>the server does not support the HEAD method or it is disabled;</li> \
+    <li>in some cases persistent connections \
+    (<a href=\"#persistent_connections\">persistent_connections</a>) may not work properly \
+    and either the 'head_before_get' attribute or the 'persistent_connections' one may be \
+    turned off. \
+    </li> \
+    </ul> \
 " }, \
 { "heading_factor", "5",  \
 	"number", "htsearch", "", "3.2.0b1", "Searching:Ranking", "heading_factor: 20", " \

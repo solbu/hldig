@@ -1,3 +1,13 @@
+Thu Oct 23 11:41:15 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * htdig/Retriever.[h,cc]: removed 'head_before_get' overriding by
+      restoring the code before Oct 21.
+    * htdig/Document.[h,cc]: ditto, with the exception of detaching the HEAD
+      before GET mechanism from the persistent connections'.
+    * htcommon/defaults.cc: improved documentation (even though it needs
+      corrections by an english-speaking developer).
+    * These changes fix bug #828628
+
 Fri Oct 17 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htsearch/parser.cc: Applied Neal's patch to fix bug #823403

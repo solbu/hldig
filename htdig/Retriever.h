@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.h,v 1.25 2003/10/21 01:16:57 angusgb Exp $
+// $Id: Retriever.h,v 1.26 2003/10/23 02:13:42 angusgb Exp $
 //
 
 #ifndef _Retriever_h_
@@ -49,20 +49,13 @@ enum  RetrieverLog {
     Retriever_Restart
 };
 
-// Type of retriever (initial or incremental, using a previous archive)
-enum  RetrieverType {
-    Retriever_Initial,
-    Retriever_Incremental
-};
-
 class Retriever
 {
 public:
     //
     // Construction/Destruction
     //
-    			Retriever(RetrieverLog flags = Retriever_noLog,
-                        RetrieverType t = Retriever_Initial);
+    			Retriever(RetrieverLog flags = Retriever_noLog);
     virtual		~Retriever();
 
     //
@@ -132,8 +125,6 @@ private:
 
 
     RetrieverLog log;
-    RetrieverType type;
-
     //
     // These are weights for the words.  The index is the heading level.
     //
