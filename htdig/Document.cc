@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.60 2002/08/06 15:13:56 angusgb Exp $
+// $Id: Document.cc,v 1.61 2002/08/06 16:23:54 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -298,7 +298,12 @@ Document::Retrieve(Server *server, HtDateTime date)
          // Set the referer
          if (referer)
             HTTPSConnect->SetRefererURL(*referer);
-	  
+
+         // Let's disable the cookies if we decided that in the config file
+         if (server->DisableCookies())
+            HTTPSConnect->DisableCookies();
+         else HTTPSConnect->AllowCookies();
+
 	  // We may issue a config paramater to enable/disable them
          if (server->IsPersistentConnectionAllowed())
          {

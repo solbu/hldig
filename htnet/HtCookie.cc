@@ -25,7 +25,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookie.cc,v 1.6 2002/04/09 14:43:58 angusgb Exp $ 
+// $Id: HtCookie.cc,v 1.7 2002/08/06 16:23:54 angusgb Exp $
 //
 
 #include "HtCookie.h"
@@ -52,7 +52,8 @@ HtCookie::HtCookie()
    isDomainValid(true),
    srcURL(0),
    issue_time(),
-   max_age(-1)
+   max_age(-1),
+   rfc_version(0)
 {
 }
 
@@ -70,7 +71,8 @@ HtCookie::HtCookie(const String &aName, const String &aValue,
    isDomainValid(true),
    srcURL(aURL),
    issue_time(),
-   max_age(-1)
+   max_age(-1),
+   rfc_version(0)
 {
 }
 
@@ -86,7 +88,8 @@ HtCookie::HtCookie(const String &setCookieLine, const String& aURL)
    isDomainValid(true),
    srcURL(aURL),
    issue_time(),
-   max_age(-1)
+   max_age(-1),
+   rfc_version(0)
 {
 
    String cookieLineStr(setCookieLine);
@@ -141,13 +144,18 @@ HtCookie::HtCookie(const String &setCookieLine, const String& aURL)
          ctoken = strtok(NULL, ";");
          SetMaxAge(atoi(ctoken));
       }
+      else if (mystrcasecmp(token, "version") == 0)
+      {
+         ctoken = strtok(NULL, ";");
+         SetVersion(atoi(ctoken));
+      }
 
       if (token)
 	     delete[](token);
 
    }
 
-   if (debug>3)   
+   if (debug>3)
       printDebug();
 
 }
@@ -164,7 +172,8 @@ HtCookie::HtCookie(const HtCookie& rhs)
    isDomainValid(rhs.isDomainValid),
    srcURL(rhs.srcURL),
    issue_time(rhs.issue_time),
-   max_age(rhs.max_age)
+   max_age(rhs.max_age),
+   rfc_version(rhs.rfc_version)
 {
 }
 

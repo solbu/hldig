@@ -26,7 +26,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookieJar.cc,v 1.3 2002/04/09 14:43:58 angusgb Exp $ 
+// $Id: HtCookieJar.cc,v 1.4 2002/08/06 16:23:54 angusgb Exp $ 
 //
 
 #include "HtCookieJar.h"
@@ -40,6 +40,8 @@
 
 ///////
    // 	 Writes the HTTP request line given a cookie
+   //    in a flexible way (chooses between the RFC2109
+   // 	 and the specification given by Netscape)
 ///////
    //
    // RFC2109: The syntax for the header is:
@@ -57,32 +59,66 @@
 int HtCookieJar::WriteCookieHTTPRequest(const HtCookie &Cookie,
    String &RequestString, const int &NumCookies)
 {
-   // Writes the string to be sent to the web server
-   if (NumCookies == 1)
-      RequestString << "Cookie: $Version=\"1\"; ";
-   else
-      RequestString << "; " ;
-
-   // Print complete debug info
-   if (debug > 6)
+   
+   switch (Cookie.GetVersion())
    {
-      cout << "Cookie info: NAME=" << Cookie.GetName() << " VALUE=" << Cookie.GetValue()
-      	 << " PATH=" << Cookie.GetPath();
+      // RFC2109 Version
+      case 1:
+          // Writes the string to be sent to the web server
+         if (NumCookies == 1)
+         	 RequestString << "Cookie: $Version=\"1\"; ";
+         else
+            RequestString << "; " ;
 
-      if (Cookie.GetExpires())
-      	 cout << " EXPIRES=" << Cookie.GetExpires()->GetRFC850();
+         // Print complete debug info
+         if (debug > 6)
+         {
+            cout << "Cookie (RFC2109) info: NAME=" << Cookie.GetName()
+	       << " VALUE="<< Cookie.GetValue()
+      	       << " PATH=" << Cookie.GetPath();
 
-      cout << endl;
-   }
+            if (Cookie.GetExpires())
+         	 cout << " EXPIRES=" << Cookie.GetExpires()->GetRFC850();
+
+            cout << endl;
+         }
 	 
-   // Prepare cookie line for HTTP protocol
-   RequestString << Cookie.GetName() << "=" << Cookie.GetValue();
+         // Prepare cookie line for HTTP protocol
+         RequestString << Cookie.GetName() << "=" << Cookie.GetValue();
 
-   if (Cookie.GetPath().length() > 0)
-      RequestString << " ;$Path=" << Cookie.GetPath();
+         if (Cookie.GetPath().length() > 0)
+            RequestString << " ;$Path=" << Cookie.GetPath();
 
-   if (Cookie.GetDomain().length() > 0)
-      RequestString << " ;$Domain=" << Cookie.GetDomain();
+         if (Cookie.GetDomain().length() > 0)
+            RequestString << " ;$Domain=" << Cookie.GetDomain();
+	 break;
+
+      // Netscape specification
+      case 0:
+      	 // Writes the string to be sent to the web server
+      	 if (NumCookies == 1)
+      	    RequestString << "Cookie: ";
+      	 else
+      	    RequestString << "; " ;
+
+      	 // Print complete debug info
+      	 if (debug > 6)
+      	 {
+      	    cout << "Cookie (Netscape spec) info: NAME=" << Cookie.GetName()
+      	       << " VALUE=" << Cookie.GetValue()
+      	       << " PATH=" << Cookie.GetPath();
+
+      	    if (Cookie.GetExpires())
+      	       cout << " EXPIRES=" << Cookie.GetExpires()->GetRFC850();
+
+      	    cout << endl;
+      	 }
+
+      	 // Prepare cookie line for HTTP protocol
+      	 RequestString << Cookie.GetName() << "=" << Cookie.GetValue();
+      	 
+	 break;
+   }
 
    return true;
       

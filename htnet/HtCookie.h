@@ -23,7 +23,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookie.h,v 1.3 2002/04/09 14:43:58 angusgb Exp $ 
+// $Id: HtCookie.h,v 1.4 2002/08/06 16:23:54 angusgb Exp $ 
 //
 
 #ifndef _HTCOOKIE_H
@@ -65,6 +65,7 @@ class HtCookie : public Object
       void SetIsDomainValid(const bool flag) { isDomainValid = flag; }
       void SetSrcURL(const String &aURL) { srcURL = aURL; }
 	  void SetMaxAge(const int ma) { max_age = ma; }
+      void SetVersion(const int vs) { rfc_version = vs; }
 
       const String &GetName() const { return name; }
       const String &GetValue()const { return value; }
@@ -76,16 +77,17 @@ class HtCookie : public Object
       const String &GetSrcURL()const { return srcURL; }
       const int GetMaxAge()const { return max_age; }
       const HtDateTime &GetIssueTime() const { return issue_time; }
+	  const int GetVersion() const { return rfc_version; }
 
       // Print debug info
       void printDebug();
 
-      // Set the debug level   
-      static void SetDebugLevel (int d) { debug=d;}   
+      // Set the debug level
+      static void SetDebugLevel (int d) { debug=d;}
 
       // Copy operator overload
       const HtCookie &operator = (const HtCookie &rhs);
-      
+
    protected:
 
    ///////
@@ -118,6 +120,7 @@ class HtCookie : public Object
       String srcURL;
       HtDateTime issue_time;	// When the cookie has been created
 	  int max_age;				// rfc2109: lifetime of the cookie, in seconds
+	  int rfc_version;
 
    ///////
       //    Debug level

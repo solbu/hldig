@@ -1,3 +1,13 @@
+Tue Aug 6 18:21:11 CEST 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+	* these changes were suggested by David Reed <DReed1@citgo.com> (thanks)
+
+	* htdig/Document.cc: manage cookies via SSL
+
+	* htnet/HtCookie.[h,cc]: features both RFC2109 and Netscape version
+
+	* htnet/HtCookieJar.cc: ditto
+
 Tue Aug 6 17:12:22 CEST 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* htcommon/defaults.cc: added the 'http_proxy_authorization' attribute.
