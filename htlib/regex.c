@@ -27,9 +27,8 @@
 #undef	_GNU_SOURCE
 #define _GNU_SOURCE
 
-#include "htconfig.h"
-
 #ifdef HAVE_CONFIG_H
+# include "htconfig.h"
 # include <config.h>
 #endif
 
