@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.43 1999/06/14 19:18:32 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.44 1999/06/17 02:19:24 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -259,24 +259,22 @@ Document::getdate(char *datestring)
 int
 Document::UseProxy()
 {
-    static StringMatch *excludeproxy = 0;
+    static HtRegex *excludeProxy = 0;
 
     //
-    // Initialize excludeproxy list if this is the first time.
+    // Initialize excludeProxy list if this is the first time.
     //
-    if (!excludeproxy)
+    if (!excludeProxy)
     {
-    	excludeproxy = new StringMatch();
+    	excludeProxy = new HtRegex();
 	StringList l(config["http_proxy_exclude"], " \t");
-	excludeproxy->IgnoreCase();
-	excludeproxy->Pattern(l.Join('|'));
+	excludeProxy->setEscaped(l);
 	l.Release();
     }
 
-    if ((proxy) && (!excludeproxy->hasPattern() ||
-		    excludeproxy->FindFirst(url->get()) < 0 ))
-      return 1;    // if the exclude pattern is empty, use the proxy
-    return 0;
+    if ((proxy) && (excludeProxy->match(url->get(), 1, 0) != 0))
+      return TRUE;    // if the exclude pattern is empty, use the proxy
+    return FALSE;
 }
 
 

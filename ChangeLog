@@ -1,8 +1,11 @@
+Wed Jun 16 23:04:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Document.cc (UseProxy): Change http_proxy_exclude to an
+	escaped regex string. Allows for much more complicated rules.
+
 Wed Jun 16 16:04:07 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* Makefile.config.in: fix typo in name IMAGE_URL_PREFIX.
-
-Wed Jun 16 16:01:07 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc(IsValidURL): change handling of valids to only
 	reject if list is not empty, give different error message.
@@ -12,12 +15,8 @@ Wed Jun 16 14:40:56 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	* htsearch/htsearch.cc(main): pass StringList args to setEscaped()
 	instead of unprocessed input[] char *'s.
 
-Wed Jun 16 14:19:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
-
 	* htsearch/Display.cc(buildMatchList): cast score to (int) in maxScore
 	calculation, to avoid compiler warnings.
-
-Wed Jun 16 14:11:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/htdig.cc(main): change comparison on minimalFile to avoid
 	compiler warnings.
@@ -26,8 +25,6 @@ Wed Jun 16 11:30:23 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/HtRegex.cc(setEscaped): Fix appending of substring to avoid
 	compiler warnings.
-
-Wed Jun 16 11:03:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/HtDateTime.cc(SettoNow): Strip out all the nonsense that
 	doesn't work, set Ht_t directly instead.
@@ -53,8 +50,6 @@ Tue Jun 15 14:31:50 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/PDF.cc(parseNonTextLine): move line that clears _parsedString,
 	so title cleared even if rejected.
-
-Tue Jun 15 14:25:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(buildMatchList & sort): move maxScore calculation
 	from sort to buildMatchList, so it's done even if there's only 1 match.
