@@ -1,3 +1,8 @@
+Fri Dec  3 09:02:55 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Configuration(Add): handle strings in single quotes, as in
+	parm='value'.
+
 Thu Dec  2 16:14:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html: Add Tom Metro's suggested revisions for pdf_parser
