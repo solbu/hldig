@@ -6,6 +6,10 @@
 // convertDocs are performed to ensure database integrity.
 //
 // $Log: db.cc,v $
+// Revision 1.5  1999/01/25 01:53:47  hp
+// Provide a clean upgrade from old databses without "url_part_aliases" and
+// "common_url_parts" through the new option "uncoded_db_compatible".
+//
 // Revision 1.4  1999/01/20 18:08:32  ghutchis
 // Call good_strtok with appropriate parameters (explicitly include NULL first
 // parameter, second param is char, not char *).
@@ -39,12 +43,19 @@ mergeDB()
     char        *doc_db, *merge_doc_db;
     int         docIDOffset;
 
+    // Check "uncompressed"/"uncoded" urls at the price of time
+    // (extra DB probes).
+    db.SetCompatibility(config.Boolean("uncoded_db_compatible", TRUE));
+
     doc_db = config["doc_db"];    
     if (db.Open(doc_db) < 0)
     {
 	reportError(form("Unable to open/create document database '%s'",
 			 doc_db));
     }
+
+    merge_db.
+      SetCompatibility(merge_config.Boolean("uncoded_db_compatible", TRUE));
 
     merge_doc_db = merge_config["doc_db"];
     if (merge_db.Open(merge_doc_db) < 0)

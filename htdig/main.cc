@@ -5,6 +5,10 @@
 // generating several databases to be used by htmerge
 //
 // $Log: main.cc,v $
+// Revision 1.13  1999/01/25 01:53:44  hp
+// Provide a clean upgrade from old databses without "url_part_aliases" and
+// "common_url_parts" through the new option "uncoded_db_compatible".
+//
 // Revision 1.12  1999/01/21 13:41:25  ghutchis
 // Check HtURLCodec for errors.
 //
@@ -218,6 +222,12 @@ main(int ac, char **av)
     badquerystr.IgnoreCase();
     badquerystr.Pattern(l.Join('|'));
     l.Release();
+
+    // Check "uncompressed"/"uncoded" urls at the price of time
+    // (extra DB probes).
+    docs.
+      SetCompatibility(config.
+                       Boolean("uncoded_db_compatbile", TRUE));
 
     //
     // Open the document database

@@ -6,9 +6,13 @@
 // database is used for searching.  This is because digging requires a
 // different index than searching.
 //
-// $Id: DocumentDB.h,v 1.4 1999/01/14 01:09:11 ghutchis Exp $
+// $Id: DocumentDB.h,v 1.5 1999/01/25 01:53:42 hp Exp $
 //
 // $Log: DocumentDB.h,v $
+// Revision 1.5  1999/01/25 01:53:42  hp
+// Provide a clean upgrade from old databses without "url_part_aliases" and
+// "common_url_parts" through the new option "uncoded_db_compatible".
+//
 // Revision 1.4  1999/01/14 01:09:11  ghutchis
 // Small speed improvements based on gprof.
 //
@@ -72,13 +76,20 @@ public:
     //
     List		*URLs();	// This returns a list of all the URLs
 
+    //
+    // Set compatibility mode (try to support when database
+    // contains *unencoded* URLs as keys).
+    //
+    inline void                SetCompatibility(int on_flag = 1)
+    { myTryUncoded = on_flag; }
+
 private:
     Database		*dbf;
     int			isopen;
     int			isread;
     int			nextDocID;
     String                    temp;
-
+    int			myTryUncoded;	// "Compatibility" mode.
 };
 
 #endif

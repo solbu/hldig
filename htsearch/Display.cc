@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.41  1999/01/25 01:53:50  hp
+// Provide a clean upgrade from old databses without "url_part_aliases" and
+// "common_url_parts" through the new option "uncoded_db_compatible".
+//
 // Revision 1.40  1999/01/23 01:46:29  hp
 // Typo: "-", not '-'
 //
@@ -144,7 +148,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.40 1999/01/23 01:46:29 hp Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.41 1999/01/25 01:53:50 hp Exp $";
 #endif
 
 #include "htsearch.h"
@@ -166,6 +170,11 @@ Display::Display(char *indexFile, char *docFile)
 {
     docIndex = Database::getDatabaseInstance();
     docIndex->OpenRead(indexFile);
+
+    // Check "uncompressed"/"uncoded" urls at the price of time
+    // (extra DB probes).
+    docDB.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
+
     docDB.Read(docFile);
 
     limitTo = 0;

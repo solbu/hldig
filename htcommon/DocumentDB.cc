@@ -4,6 +4,10 @@
 // Implementation of DocumentDB
 //
 // $Log: DocumentDB.cc,v $
+// Revision 1.10  1999/01/25 01:53:42  hp
+// Provide a clean upgrade from old databses without "url_part_aliases" and
+// "common_url_parts" through the new option "uncoded_db_compatible".
+//
 // Revision 1.9  1999/01/23 01:25:00  hp
 // Fixed _some_ missing const qualifiers on common methods (requiring temps)
 //
@@ -55,6 +59,7 @@ DocumentDB::DocumentDB()
     isopen = 0;
     isread = 0;
     nextDocID = 0;
+    myTryUncoded = 1;
 }
 
 
@@ -148,6 +153,11 @@ int DocumentDB::Add(DocumentRef &doc)
     temp = 0;
     doc.Serialize(temp);
 
+    // If in compatibility-mode, there may be an unencoded url
+    // that has to be deleted to avoid duplicate URLs.
+    if (myTryUncoded)
+      dbf->Delete(url);
+
     dbf->Put(HtURLCodec::instance()->encode(url), temp);
     return OK;
 }
@@ -162,7 +172,8 @@ DocumentRef *DocumentDB::operator [] (char *u)
     String			url = u;
     url.lowercase();
 
-    if (dbf->Get(HtURLCodec::instance()->encode(url), data) == NOTOK)
+    if (dbf->Get(HtURLCodec::instance()->encode(url), data) == NOTOK
+        && (! myTryUncoded || dbf->Get(url, data) == NOTOK))
 	return 0;
 
     DocumentRef		*ref = new DocumentRef;
@@ -179,7 +190,8 @@ int DocumentDB::Exists(char *u)
     String			url = u;
     url.lowercase();
 
-    return dbf->Exists(HtURLCodec::instance()->encode(url));
+    return dbf->Exists(HtURLCodec::instance()->encode(url))
+      || (myTryUncoded && dbf->Exists(url));
 }
 
 
@@ -190,8 +202,12 @@ int DocumentDB::Delete(char *u)
 {
     String			url = u;
     url.lowercase();
+    int delete_stat = dbf->Delete(HtURLCodec::instance()->encode(url));
 
-    return dbf->Delete(HtURLCodec::instance()->encode(url));
+    // If the deletion was not successful (maybe the item did
+    // not exist) delete the unencoded URL if we should be compatible.
+    return (delete_stat != 0 && myTryUncoded)
+      ? dbf->Delete(url) : delete_stat;
 }
 
 

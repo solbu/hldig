@@ -1,3 +1,26 @@
+Mon Jan 25 02:17:58 1999  Hans-Peter Nilsson  <hp@localhost.localdomain>
+
+	* htcommon/defaults.cc (defaults): New option
+	"uncoded_db_compatible", default true.
+
+	* htcommon/DocumentDB.h (DocumentDB::SetCompatibility): New
+	function.
+	(DocumentDB::myTryUncoded): New member.
+
+	* htcommon/DocumentDB.cc (Constructor, Add(), operator[],
+	Exists(), Delete()):  Handle uncoded URL in database if
+	myTryUncoded.
+
+	* htdig/main.cc (main): Call (DocumentDB::)SetCompatibility() with
+	option "uncoded_db_compatible".
+	* htsearch/Display.cc (Display): Likewise.
+	* htnotify/htnotify.cc (main): Likewise.
+	* htmerge/docs.cc (convertDocs): Likewise.
+	* htmerge/db.cc (mergeDB): Likewise.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Document option "uncoded_db_compatible".
+
 Sun Jan 24 15:21:02 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htlib/HtWordCodec.cc (HtWordCodec(StringList &, etc)): Check

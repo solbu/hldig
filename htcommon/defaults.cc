@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.41  1999/01/25 01:53:43  hp
+// Provide a clean upgrade from old databses without "url_part_aliases" and
+// "common_url_parts" through the new option "uncoded_db_compatible".
+//
 // Revision 1.40  1999/01/21 13:41:50  ghutchis
 // Add common_url_parts and url_part_aliases.
 //
@@ -138,7 +142,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.40 1999/01/21 13:41:50 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.41 1999/01/25 01:53:43 hp Exp $";
 #endif
 
 #include <Configuration.h>
@@ -270,6 +274,7 @@ ConfigDefaults	defaults[] =
     {"url_list",			"${database_base}.urls"},
     {"url_part_aliases",                ""},
     {"url_log",				"${database_base}.log"},
+    {"uncoded_db_compatible",		"true"},
     {"use_star_image",			"true"},
     {"use_meta_description",            "false"},
     {"user_agent",			"htdig"},

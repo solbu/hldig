@@ -4,6 +4,10 @@
 // Implementation of newclass
 //
 // $Log: docs.cc,v $
+// Revision 1.11  1999/01/25 01:53:47  hp
+// Provide a clean upgrade from old databses without "url_part_aliases" and
+// "common_url_parts" through the new option "uncoded_db_compatible".
+//
 // Revision 1.10  1999/01/20 22:34:34  ghutchis
 // Fix logic to remove documents--missing else statements allow some "deleted"
 // documents to not be removed.
@@ -62,6 +66,10 @@ convertDocs(char *doc_db, char *doc_index)
     {
 	reportError(form("Unable to open document database '%s'", doc_db));
     }
+
+    // Check "uncompressed"/"uncoded" urls at the price of time
+    // (extra DB probes).
+    db.SetCompatibility(config.Boolean("uncoded_db_compatible", TRUE));
 
     //
     // Start the conversion by going through all the URLs that are in

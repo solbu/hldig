@@ -6,6 +6,10 @@
 // has "expired"
 //
 // $Log: htnotify.cc,v $
+// Revision 1.16  1999/01/25 01:53:49  hp
+// Provide a clean upgrade from old databses without "url_part_aliases" and
+// "common_url_parts" through the new option "uncoded_db_compatible".
+//
 // Revision 1.15  1999/01/21 13:41:23  ghutchis
 // Check HtURLCodec for errors.
 //
@@ -58,7 +62,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.15 1999/01/21 13:41:23 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.16 1999/01/25 01:53:49 hp Exp $";
 #endif
 
 #include <Configuration.h>
@@ -144,6 +148,11 @@ int main(int ac, char **av)
 
     String	doc_db = config["doc_db"];
     DocumentDB	docdb;
+
+    // Check "uncompressed"/"uncoded" urls at the price of time
+    // (extra DB probes).
+    docdb.SetCompatibility(config.Boolean("uncoded_db_compatible", TRUE));
+
     docdb.Read(doc_db);
     List	*docs = docdb.URLs();
 
