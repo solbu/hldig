@@ -58,7 +58,9 @@
 	  <code>./configure --prefix=/usr/local</code><br>
 	  <code>make</code><br>
 	  <code>make install</code><br>
-	  (The final command must be issued as root.)
+	  <code>vi /usr/local/conf/htdig.conf</code><br>
+	  <code>/usr/local/bin/rundig</code><br>
+	  (The final three commands must be issued as root.)
 	</p>
 	<hr noshade>
 	<p></p>
@@ -455,11 +457,11 @@
 	</h2>
 	<p>
 	<strong>Mac OS X</strong> cannot handle ht://Dig's shared libraries.
-	    Use<br> <code>./configure --disable-shared --enable-static</code>
+	    Use<br> <code>./configure --disable-shared --enable-static</code>.
 	</p>
 	<p>
-	<strong>BSD</strong> make does not handle ht://Dig's Makefiles.
-	    Use <a href="ftp://ftp.gnu.org/pub/gnu/">GNU's gmake</a>.
+	<strong>Solaris</strong> cc has problems with long file offsets.
+	    Use<br> <code>./configure --disable-bigfile</code>.
 	</p>
 	<p>
 	<strong>HP-UX 10.20</strong> does not handle ./configure.  Sorry.
@@ -467,7 +469,7 @@
 	<hr size="4" noshade>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt; &amp; the ht://Dig Group</a>
 	<br>
-	Last modified: $Date: 2003/05/22 11:49:12 $
+	Last modified: $Date: 2003/05/29 10:36:59 $
 
   </body>
 </html>

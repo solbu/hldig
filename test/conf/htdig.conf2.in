@@ -181,3 +181,9 @@ no_page_number_text:	"<img src=/htdig/button1.gif border=2 align=middle width=30
 # mode: text
 # eval: (if (eq window-system 'x) (progn (setq font-lock-keywords (list '("^#.*" . font-lock-keyword-face) '("^[a-zA-Z][^ :]+" . font-lock-function-name-face) '("[+$]*:" . font-lock-comment-face) )) (font-lock-mode)))
 # end:
+
+#
+# If file's extension isn't known, *don't* classify by contents
+# (Ideally, should install  HtFileType{,-magic}  in  .../test/ )
+#
+content_classifier:

@@ -103,8 +103,9 @@ static int CDB___memp_cmpr_page __P((DB_MPOOLFILE *, CMPR *, DB_IO *, ssize_t *)
 
 /*
  * Maximum chain length
+ * Cast to signed, as  -1  used as a flag, which compares bigger on some systems
  */
-#define CMPR_MAX	(dbenv->mp_cmpr_info->max_npages)
+#define CMPR_MAX	(int)(dbenv->mp_cmpr_info->max_npages)
 
 #define CMPR_MULTIPLY(n) ((n) << (dbenv->mp_cmpr_info->coefficient))
 #define CMPR_DIVIDE(n)   ((n) >> (dbenv->mp_cmpr_info->coefficient))

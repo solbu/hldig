@@ -1,3 +1,12 @@
+Thu May 29 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+	
+	* db/mp_cmpr.c: Fix comparison of -1 and unsigned which broke SunOS cc
+	* htdoc/install.html: Warn SunOS cc users to --disable-bigfile
+
+	* htcommon/conf_lexer.cxx: Suppress warnings of unused identifiers
+	* test/con/htdig.conf2.in: Disable testing of content_classifier
+	  attribute, as didn't work until after installation
+
 Tue May 27 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* db/configure, db/ac{local,include}.m4:
