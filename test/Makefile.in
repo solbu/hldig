@@ -19,6 +19,8 @@ top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
+
+bindir = @bindir@
 sbindir = @sbindir@
 libexecdir = @libexecdir@
 datadir = @datadir@
@@ -108,83 +110,110 @@ INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/in
 HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libdb.a
 
 
-bindir = $(CGIBIN_DIR)
+#
+# To run lengthy tests set the LONG_TEST='y' environment variable
+#
+# To run individual tests use (for instance):
+# MAKE=make t_htdig
+#
+# To turn on verbosity us (for instance):
+# MAKE=make t_htdig -vv
+#
+# To purify objects use:
+# ( cd ../test ; rm -f word ; make CXXLD='purify g++' word )
+# ( cd ../htmerge ; rm -f htmerge ; make CXXLD='purify g++' htmerge )
+# ( cd ../htsearch ; rm -f htsearch ; make CXXLD='purify g++' htsearch )
+# ( cd ../htdig ; rm -f htdig ; make CXXLD='purify g++' htdig )
+#
+TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist t_htnet
+TESTS_ENVIRONMENT = $(top_srcdir)/test/test_prepare
+AM_MAKEFLAGS = MAKE="$(MAKE)"
 
-LOCAL_DEFINES = -DCONFIG_DIR=\"$(CONFIG_DIR)\"
+#PROFILING = -p
 
-bin_PROGRAMS = htsearch
+EXTRA_DIST = test_prepare htdocs conf $(TESTS) 	word.try1 word.try2 word.try3 word.try4 word.try5
 
-htsearch_SOURCES = Display.cc DocMatch.cc ResultList.cc ResultMatch.cc 		Template.cc TemplateList.cc WeightWord.cc htsearch.cc 		parser.cc
 
-noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h 	Template.h TemplateList.h WeightWord.h htsearch.h parser.h
+LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include $(PROFILING)
 
-htsearch_DEPENDENCIES = ../htfuzzy/libfuzzy.la $(HTLIBS)
-htsearch_LDADD = ../htfuzzy/libfuzzy.la $(HTLIBS)
+noinst_PROGRAMS = dbbench word testnet document
+
+dbbench_SOURCES = dbbench.cc
+dbbench_DEPENDENCIES = $(HTLIBS)
+dbbench_LDFLAGS = $(PROFILING)
+dbbench_LDADD = $(HTLIBS)
+
+word_SOURCES = word.cc
+word_DEPENDENCIES = $(HTLIBS)
+word_LDFLAGS = $(PROFILING)
+word_LDADD = $(HTLIBS)
+
+testnet_SOURCES = testnet.cc
+testnet_DEPENDENCIES = $(HTLIBS)
+testnet_LDFLAGS = $(PROFILING)
+testnet_LDADD = $(HTLIBS)
+
+document_SOURCES = document.cc
+document_DEPENDENCIES = $(HTLIBS)
+document_LDFLAGS = $(PROFILING)
+document_LDADD = $(HTLIBS)
+
+BASE = test
+CACHESIZE = -C `expr 64 \* 1024 \* 1024`
+PAGESIZE = -S 8192
+CMPR = -z
+WORDS = -w words.all
+LOOP = -l 3
+NWORDS = 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
-CONFIG_CLEAN_FILES = 
-PROGRAMS =  $(bin_PROGRAMS)
+CONFIG_CLEAN_FILES =  test_functions
+PROGRAMS =  $(noinst_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
-htsearch_OBJECTS =  Display.o DocMatch.o ResultList.o ResultMatch.o \
-Template.o TemplateList.o WeightWord.o htsearch.o parser.o
-htsearch_LDFLAGS = 
+dbbench_OBJECTS =  dbbench.o
+word_OBJECTS =  word.o
+testnet_OBJECTS =  testnet.o
+document_OBJECTS =  document.o
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
-HEADERS =  $(noinst_HEADERS)
-
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  Makefile.am Makefile.in test_functions.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/Display.P .deps/DocMatch.P .deps/ResultList.P \
-.deps/ResultMatch.P .deps/Template.P .deps/TemplateList.P \
-.deps/WeightWord.P .deps/htsearch.P .deps/parser.P
-SOURCES = $(htsearch_SOURCES)
-OBJECTS = $(htsearch_OBJECTS)
+DEP_FILES =  .deps/dbbench.P .deps/document.P .deps/testnet.P \
+.deps/word.P
+SOURCES = $(dbbench_SOURCES) $(word_SOURCES) $(testnet_SOURCES) $(document_SOURCES)
+OBJECTS = $(dbbench_OBJECTS) $(word_OBJECTS) $(testnet_OBJECTS) $(document_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .cc .lo .o .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.config
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu htsearch/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu test/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
+test_functions: $(top_builddir)/config.status test_functions.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-mostlyclean-binPROGRAMS:
+mostlyclean-noinstPROGRAMS:
 
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
 
-distclean-binPROGRAMS:
+distclean-noinstPROGRAMS:
 
-maintainer-clean-binPROGRAMS:
-
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	  else :; fi; \
-	done
-
-uninstall-binPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	done
+maintainer-clean-noinstPROGRAMS:
 
 .s.o:
 	$(COMPILE) -c $<
@@ -218,9 +247,21 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-htsearch: $(htsearch_OBJECTS) $(htsearch_DEPENDENCIES)
-	@rm -f htsearch
-	$(CXXLINK) $(htsearch_LDFLAGS) $(htsearch_OBJECTS) $(htsearch_LDADD) $(LIBS)
+dbbench: $(dbbench_OBJECTS) $(dbbench_DEPENDENCIES)
+	@rm -f dbbench
+	$(CXXLINK) $(dbbench_LDFLAGS) $(dbbench_OBJECTS) $(dbbench_LDADD) $(LIBS)
+
+word: $(word_OBJECTS) $(word_DEPENDENCIES)
+	@rm -f word
+	$(CXXLINK) $(word_LDFLAGS) $(word_OBJECTS) $(word_LDADD) $(LIBS)
+
+testnet: $(testnet_OBJECTS) $(testnet_DEPENDENCIES)
+	@rm -f testnet
+	$(CXXLINK) $(testnet_LDFLAGS) $(testnet_OBJECTS) $(testnet_LDADD) $(LIBS)
+
+document: $(document_OBJECTS) $(document_DEPENDENCIES)
+	@rm -f document
+	$(CXXLINK) $(document_LDFLAGS) $(document_OBJECTS) $(document_LDADD) $(LIBS)
 .cc.o:
 	$(CXXCOMPILE) -c $<
 .cc.lo:
@@ -257,14 +298,14 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = htsearch
+subdir = test
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu htsearch/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu test/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -326,15 +367,41 @@ maintainer-clean-depend:
 	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
 	    >> .deps/$(*F).P; \
 	rm -f .deps/$(*F).pp
+check-TESTS: $(TESTS)
+	@failed=0; all=0; \
+	srcdir=$(srcdir); export srcdir; \
+	for tst in $(TESTS); do \
+	  if test -f $$tst; then dir=.; \
+	  else dir="$(srcdir)"; fi; \
+	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
+	    all=`expr $$all + 1`; \
+	    echo "PASS: $$tst"; \
+	  elif test $$? -ne 77; then \
+	    all=`expr $$all + 1`; \
+	    failed=`expr $$failed + 1`; \
+	    echo "FAIL: $$tst"; \
+	  fi; \
+	done; \
+	if test "$$failed" -eq 0; then \
+	  banner="All $$all tests passed"; \
+	else \
+	  banner="$$failed of $$all tests failed"; \
+	fi; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"; \
+	test "$$failed" -eq 0
 info-am:
 info: info-am
 dvi-am:
 dvi: dvi-am
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-binPROGRAMS
+install-exec-am:
 install-exec: install-exec-am
 
 install-data-am:
@@ -343,14 +410,13 @@ install-data: install-data-am
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-binPROGRAMS
+uninstall-am:
 uninstall: uninstall-am
-all-am: Makefile $(PROGRAMS) $(HEADERS)
+all-am: Makefile $(PROGRAMS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir)
 
 
 mostlyclean-generic:
@@ -362,25 +428,25 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
+mostlyclean-am:  mostlyclean-noinstPROGRAMS mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
-		clean-depend clean-generic mostlyclean-am
+clean-am:  clean-noinstPROGRAMS clean-compile clean-libtool clean-tags \
+		clean-depend clean-generic mostlyclean-am clean-local
 
 clean: clean-am
 
-distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
-		distclean-tags distclean-depend distclean-generic \
-		clean-am
+distclean-am:  distclean-noinstPROGRAMS distclean-compile \
+		distclean-libtool distclean-tags distclean-depend \
+		distclean-generic clean-am distclean-local
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-binPROGRAMS \
+maintainer-clean-am:  maintainer-clean-noinstPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-depend \
 		maintainer-clean-generic distclean-am
@@ -389,20 +455,46 @@ maintainer-clean-am:  maintainer-clean-binPROGRAMS \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
-maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
+.PHONY: mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
+clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir \
 mostlyclean-depend distclean-depend clean-depend \
-maintainer-clean-depend info-am info dvi-am dvi check check-am \
-installcheck-am installcheck install-exec-am install-exec \
+maintainer-clean-depend check-TESTS info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
 install-data-am install-data install-am install uninstall-am uninstall \
 all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
+
+clean-local:
+	rm -fr gmon.out test test_weakcmpr logs var htdocs/tmp
+	test -d conf && cd conf && $(MAKE) clean
+
+distclean-local:
+	rm -fr words.all words.uniq
+
+dobench: dbbench
+	$(MAKE) bench
+	$(MAKE) CMPR='' bench
+
+bench:
+	rm -f $(BASE) $(BASE)_weakcmpr
+	$(TIMEV) $(top_builddir)/test/dbbench $(CACHESIZE) $(PAGESIZE) $(CMPR) $(WORDS) $(LOOP) -B $(BASE) $(NWORDS)
+	ls -l $(BASE)
+	if [ -f $(BASE)_weakcmpr ] ; then $(top_builddir)/db/dist/db_dump -p $(BASE)_weakcmpr ; fi
+	$(top_builddir)/db/dist/db_stat $(CMPR) -d $(BASE)
+
+words:
+	if [ -d /usr/info ] ; then root=/usr ; else root=/usr/share ; fi ; \
+	find $$root/info -name '*.gz' -print | xargs zcat | perl -n -e 'print join("\n", map { lc } grep(length() > 2 && length() < 32, m/[a-z]+/ig)) . "\n"' | grep -v '^$$' > words.all ; \
+	find $$root/man -type f -print | perl -n -e 'print join("\n", map { lc } grep(length() > 2 && length() < 32, m/[a-z]+/ig)) . "\n"' | grep -v '^$$' >> words.all 
+	sort -u < words.all > words.uniq
+
+.PHONY: words
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

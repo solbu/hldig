@@ -1,3 +1,7 @@
+Mon Oct 18 17:21:34 1999  Loic Dachary  <loic@ceic.com>
+
+	* Makefile.config: AUTOMAKE_OPTIONS = foreign
+
 Mon Oct 18 11:40:17 1999  Marcel Bosc  <bosc@ceic.com>
 
 	* WordList.cc (Walk): fixed bug in Walk: if flag HTDIG_WORDLIST was set 
