@@ -13,6 +13,9 @@
 // in the main word database.
 //
 // $Log: htfuzzy.cc,v $
+// Revision 1.3  1997/06/23 02:26:15  turtle
+// Added version info the usage output
+//
 // Revision 1.2  1997/03/24 04:33:19  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -21,7 +24,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htfuzzy.cc,v 1.2 1997/03/24 04:33:19 turtle Exp $";
+static char RCSid[] = "$Id: htfuzzy.cc,v 1.3 1997/06/23 02:26:15 turtle Exp $";
 #endif
 
 #include "htfuzzy.h"
@@ -208,6 +211,7 @@ void
 usage()
 {
     cout << "usage: htfuzzy [-c configfile][-v] algorithm ...\n";
+    cout << "This program is part of ht://Dig " << HTDIG_VERSION << "\n\n";
     cout << "Supported algorithms:\n";
     cout << "\tsoundex\n";
     cout << "\tmetaphone\n";
