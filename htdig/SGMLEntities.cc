@@ -4,6 +4,9 @@
 // Implementation of SGMLEntities
 //
 // $Log: SGMLEntities.cc,v $
+// Revision 1.8  1999/01/20 05:41:20  ghutchis
+// Declare extern config
+//
 // Revision 1.7  1999/01/20 05:25:17  ghutchis
 // Use translate_quote, _lt_gt, and _amp to optionally translate these entities.
 //
@@ -29,13 +32,16 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: SGMLEntities.cc,v 1.7 1999/01/20 05:25:17 ghutchis Exp $";
+static char RCSid[] = "$Id: SGMLEntities.cc,v 1.8 1999/01/20 05:41:20 ghutchis Exp $";
 #endif
 
 #include "SGMLEntities.h"
 #include <htString.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <Configuration.h>
+
+extern Configuration config;
 
 static SGMLEntities	junk;
 
