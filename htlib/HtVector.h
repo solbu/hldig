@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVector.h,v 1.2 1999/02/21 21:16:29 ghutchis Exp $
+// $Id: HtVector.h,v 1.3 1999/02/22 13:57:55 ghutchis Exp $
 //
 //
 #ifndef	_HtVector_h_
@@ -59,6 +59,11 @@ public:
     // (in some sense, the inverse of Insert)
     //
     int		RemoveFrom(int position);
+
+    //
+    // Release() will remove all the objects from the vector.
+    // This will NOT delete them
+    void	Release();
 
     //
     // Destroy() will delete all the objects in the vector.  This is

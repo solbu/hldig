@@ -13,7 +13,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: HtVector.cc,v 1.2 1999/02/21 21:16:29 ghutchis Exp $";
+static char	RCSid[] = "$Id: HtVector.cc,v 1.3 1999/02/22 13:57:55 ghutchis Exp $";
 #endif
 
 #include "HtVector.h"
@@ -24,7 +24,10 @@ static char	RCSid[] = "$Id: HtVector.cc,v 1.2 1999/02/21 21:16:29 ghutchis Exp $
 //
 HtVector::HtVector()
 {
-  HtVector(4); // After all, why would anyone want an empty vector?
+  data = new Object  *[4]; // After all, why would anyone want an empty vector?
+  element_count = 0;
+  allocated = 4;
+  current_index = -1;
 }
 
 
@@ -53,14 +56,37 @@ HtVector::~HtVector()
 
 
 //*********************************************************************
+// void HtVector::Release()
+//   Remove all objects from the vector, but do not delete them
+void HtVector::Release()
+{
+  for (current_index = 0; current_index < element_count; current_index++)
+    {
+      data[current_index] = NULL;
+    }
+  if (data)
+    delete [] data;
+  data = NULL;
+  allocated = 0;
+  element_count = 0;
+  current_index = -1;
+}
+
+//*********************************************************************
 // void HtVector::Destroy()
 //   Deletes all objects from the vector
 //
 void HtVector::Destroy()
 {
   for (current_index = 0; current_index < element_count; current_index++)
-    delete data[current_index];
-  delete [] data;
+    if (data[current_index])
+      {
+	delete data[current_index];
+	data[current_index] = NULL;
+      }
+  if (data)
+    delete [] data;
+  data = NULL;
   allocated = 0;
   element_count = 0;
   current_index = -1;
@@ -281,9 +307,14 @@ void HtVector::Allocate(int capacity)
 	allocated *= 2;
 
       data = new Object *[allocated];
-      for (int i = 0; i < element_count; i++)
-	data[i] = old_data[i];
 
-      delete [] old_data;
+      for (int i = 0; i < element_count; i++)
+	{
+	  data[i] = old_data[i];
+	  old_data[i] = NULL;
+	}
+
+      if (old_data)
+	delete [] old_data;
     }
 }
