@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.41 2001/07/24 19:25:20 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.42 2001/07/24 21:01:02 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -891,6 +891,8 @@ Display::generateStars(DocumentRef *ref, int right)
 	score = 1;
     }
     int		nStars = int(score * (maxStars - 1) + 0.5) + 1;
+
+    vars.Add("NSTARS", new String(form("%d", nStars)));
 
     if (right)
     {

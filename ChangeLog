@@ -1,3 +1,13 @@
+Tue Jul 24 15:38:39 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (generateStars): Add NSTARS variable for
+	template output as suggested by Caleb Crome
+	<ccrome@users.sourceforge.net> (except here precision is 0). Fixes
+	feature request #405787.
+
+	* htdoc/hts_templates.html: Add description of NSTARS variable
+	above. (Actually copied hts_templates.html from 3.2.0b4.)
+
 Tue Jul 24 14:21:53 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (expandVariables, outputVariable),
