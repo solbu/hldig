@@ -66,6 +66,57 @@
     <hr>
     <dl>
       <dt>
+        <strong><a name="allow_in_form">allow_in_form</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            string list
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+	  <emph>&lt;empty&gt;</emph>
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+	  Allows the specified config file attributes to be specified
+	  in search forms as separate fields. This could be used to
+	  allow form writers to design their own headers and footers
+	  and specify them in the search form. Another example would
+	  be to offer a menu of search_algorithms in the form.
+	  <blockquote>
+	  &lt;SELECT NAME="search_algorithm"&gt;
+	  &lt;OPTION VALUE="exact:1 prefix:0.6 synonyms:0.5 endings:0.1"
+	  SELECTED&gt; fuzzy
+	  &lt;OPTION VALUE="exact:1"&gt;exact 
+	  &lt;/SELECT&gt;
+	  </blockquote>
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            allow_in_form: search_algorithm search_results_header
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
         <strong><a name="allow_numbers">allow_numbers</a></strong>
       </dt>
       <dd>
@@ -190,7 +241,8 @@
 	      and outgoing URLs, to balance out pages with lots of
 	      links to pages that link back to them. This factor can
 	      be changed without changing the database in any way.
-	      The default may be a bit high.
+	      However, setting this value to something other than 0
+	      incurs a slowdown on search results.
           </dd>
           <dt>
             <em>example:</em>
@@ -244,6 +296,50 @@
           </dt>
           <dd>
             bad_extensions: .foo .bar .bad
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
+        <strong><a name="bad_querystr">
+        bad_querystr</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            string list
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+	  <emph>&lt;empty&gt;</emph>
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+	  This is a list of CGI query strings to be excluded from
+	  indexing. This can be used in conjunction with CGI-generated
+	  portions of a website to control which pages are
+	  indexed.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            bad_querystr: forum=private section=topsecret&passwd=required
           </dd>
         </dl>
       </dd>
@@ -434,6 +530,51 @@
           <dd>
             common_url_parts: http://www.htdig.org/ml/ .html \<br>
               http://dev.htdig.org/ http://www.htdig.org/<p>
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
+        <strong><a name="compression_level">compression_level</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            number
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+           0
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            If specified and the <a
+            href="http://www.cdrom.com/pub/infozip/zlib/">zlib</a>
+            compression library was available when compiledi controls
+            the amount of compression used in the <a
+            href="#doc_db">doc_db</a> file. Defaults to zero to
+            provide backward compatility with old databases.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            compression_level: 6
           </dd>
         </dl>
       </dd>
@@ -661,6 +802,8 @@
 	      documents. Before setting this factor, it's advised to
 	      make sure your servers are returning accurate dates
 	      (check the dates returned in the long format).
+	      Additionally, setting this to a nonzero value incurs a
+	      performance hit on searching.
           </dd>
           <dt>
             <em>example:</em>
@@ -3165,6 +3308,49 @@
     <hr>
     <dl>
       <dt>
+        <strong><a name="noindex_start"><a name="noindex_stop">
+        noindex_start, noindex_stop</a></a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            string
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            &lt;!--htdig-noindex--&gt; &lt;!--/htdig-noindex-->
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+	  The text (presumably tags) encompassing a section of an HTML
+	  file that should be completely ignored when indexing.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+	  noindex_start: &lt;!--private--&gt;
+	  noindex_stop: &lt;!--/private--&gt;
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
         <strong><a name="no_next_page_text">
         no_next_page_text</a></strong>
       </dt>
@@ -3403,6 +3589,50 @@
           </dt>
           <dd>
             nothing_found_file: /www/searching/nothing.html
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
+        <strong><a name="no_title_text">
+        no_title_text</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            string
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+	  filename
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+	  This specifies the text to use in search results when no
+	  title is found in the document itself. If it is set to
+	  filename, htsearch will use the name of the file itself,
+	  enclosed in brackets (e.g. [index.html]).
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+	  no_title_text: "No Title Found"
           </dd>
         </dl>
       </dd>
@@ -4410,13 +4640,15 @@
             the document was last modified, if this information is
             given by the server. The default is to sort by the score,
             which ranks documents by best match. The sort methods that
-            begin with "rev" simply reverse the order of the sort.
+            begin with "rev" simply reverse the order of the
+            sort. Note that setting this to something other than
+            "score" will incur a slowdown in searches.
           </dd>
           <dt>
             <em>example:</em>
           </dt>
           <dd>
-            sort: score
+            sort: revtime
           </dd>
         </dl>
       </dd>
@@ -5277,6 +5509,51 @@
           </dt>
           <dd>
             url_list: /tmp/urls
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
+        <strong><a name="url_log">url_log</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            string
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            ${database_base}.log
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+	  If <a href="htdig.html">htdig</a> is run with the -l option
+	  and interrupted, it will write out its progress to this
+	  file. Note that if it has a large number of URLs to write,
+	  it may take some time to exit. This can especially happen
+	  when running update digs and the run is interrupted soon
+	  after beginning.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            url_log: /tmp/htdig.progress
           </dd>
         </dl>
       </dd>
