@@ -22,6 +22,8 @@ DIRS=		@DB_DIR@ @RX_DIR@ \
 		htsearch htmerge htnotify
 INSTALLDIRS=	htfuzzy htdig \
 		htsearch htmerge htnotify
+DEPDIRS=	htlib htcommon htfuzzy htdig \
+		htsearch htmerge htnotify
 CREATEDIRS=	$(BIN_DIR) $(CONFIG_DIR) $(COMMON_DIR) $(DATABASE_DIR) \
 		$(IMAGE_DIR) $(CGIBIN_DIR) $(SEARCH_DIR)
 NO_DIST=	BETA.DIST htdig/*.conf htmerge/*.conf htsearch/*.conf \
@@ -105,7 +107,7 @@ install:	all
 #                                $(mandir)
 
 depend:
-	@for i in $(DIRS); \
+	@for i in $(DEPDIRS); \
 	do \
 		(cd $$i; $(MAKE) $(MFLAGS) depend); \
 	done;
