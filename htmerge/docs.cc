@@ -3,7 +3,7 @@
 //
 // Do sanity checking in "doc_db", remove insane documents.
 //
-// $Id: docs.cc,v 1.20 1999/07/19 02:03:47 ghutchis Exp $
+// $Id: docs.cc,v 1.21 1999/09/06 15:57:08 ghutchis Exp $
 //
 //
 
@@ -85,11 +85,11 @@ convertDocs()
                    << url << endl;
 	    discard_list.Add(idStr.get(), NULL);
 	  }
-	else if (remove_unused && strlen(ref->DocHead()) == 0)
+	else if (remove_unused && strlen(ref->DocHead()) == 0 
+		 && ref->DocAccessed() != 0)
 	  {
-	    // For some reason, this document doesn't have an excerpt
-	    // (probably because of a noindex directive, or disallowed
-	    // by robots.txt or server_max_docs). Remove it
+	    // For some reason, this document was retrieved, but doesn't
+	    // have an excerpt (probably because of a noindex directive)
 	    db.Delete(ref->DocID());
             if (verbose)
               cout << "Deleted, no excerpt: " << id->Value() << " URL:  "
