@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.cc,v 1.15.2.5 2000/02/21 23:17:12 grdetil Exp $
+// $Id: Configuration.cc,v 1.15.2.6 2000/02/23 18:22:41 grdetil Exp $
 //
 
 #include <stdio.h>
@@ -300,10 +300,11 @@ int Configuration::Read(const String& filename)
      String	name;
      char	*value;
      int         len;
-     while (!in.bad())
+     while (!in.bad() && !in.eof())
      {
+	 buffer[0] = '\0';
          in.getline(buffer, sizeof(buffer));
-         if (in.eof())
+         if (in.eof() && !*buffer)
              break;
          line << buffer;
          line.chop("\r\n");

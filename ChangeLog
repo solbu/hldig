@@ -1,3 +1,8 @@
+Wed Feb 23 12:17:46 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Configuration.cc(Read): Fixed to allow final line without
+	terminating newline character, rather than ignoring it.
+
 Wed Feb 23 12:01:01 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc (GetLocal, GetLocalUser): Add URL-decoding
