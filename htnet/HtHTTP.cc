@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.10 2000/02/10 05:56:27 ghutchis Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.11 2000/02/16 05:44:17 ghutchis Exp $ 
 //
 
 #include "lib.h"
@@ -717,8 +717,7 @@ bool HtHTTP::isParsable(const char *content_type)
    // text/html -> HTML, text/* -> plaintext
    // and the rest are determined by the external_parser settings
 
-   if( ! mystrncasecmp ("text/", content_type, 5)
-       || ! mystrncasecmp ("application/pdf", content_type, 15) )
+   if( ! mystrncasecmp ("text/", content_type, 5) )
        return true;
        
    // External function that checks if a document is parsable or not.
