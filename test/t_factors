@@ -5,7 +5,7 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_factors,v 1.7 2004/06/05 06:26:22 lha Exp $
+# $Id: t_factors,v 1.8 2004/06/20 12:02:41 lha Exp $
 #
 
 # Tests (or should eventually test) the following config attributes:
@@ -54,14 +54,14 @@ try_order() {
 
 
 
-test_functions_action=--start-apache
+test_functions_action=--any-apache
 . ./test_functions
 
-config=$testdir/conf/htdig.conf.tmp
-tmp=/tmp/t_htsearch$$
-
-# set up config file with chosen non-default values
-cp $testdir/conf/htdig.conf $config
+#config=$testdir/conf/htdig.conf.tmp
+#tmp=/tmp/t_htsearch$$
+#
+## set up config file with chosen non-default values
+#cp $testdir/conf/htdig.conf $config
 
 $htdig "$@" -t -i -c $config	|| fail "Couldn't dig"
 $htpurge -c $config		|| fail "Couldn't purge"
@@ -230,6 +230,8 @@ set_attr backlink_factor		100
 try_order "site 1.html has a higher ratio of backlinks to outgoing links" \
     "words=suggestions+repay+interest;method=or" \
     '2 matches' 'site%201.html' 'site4.html'
+
+rm -f $tmp
 
 test_functions_action=--stop-apache
 . ./test_functions

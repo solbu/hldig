@@ -97,6 +97,22 @@ port = 803
 path = /relative.html
 url = http://www.williams.edu:803/relative.html
 
+Child: no space.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /nospace.html
+url = http://www.williams.edu:803/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /with%20space.html
+url = http://www.williams.edu:803/with%20space.html
+
 Parent: http://wso.williams.edu/
 (http://wso.williams.edu:80/)
 service = http
@@ -195,6 +211,22 @@ host = wso.williams.edu
 port = 80
 path = /relative.html
 url = http://wso.williams.edu/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /nospace.html
+url = http://wso.williams.edu/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /with%20space.html
+url = http://wso.williams.edu/with%20space.html
 
 Parent: https://web.horde.org/williams/
 (https://web.horde.org:443/)
@@ -295,6 +327,22 @@ port = 443
 path = /williams/relative.html
 url = https://web.horde.org/williams/relative.html
 
+Child: no space.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/nospace.html
+url = https://web.horde.org/williams/nospace.html
+
+Child: with%20space.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/with%20space.html
+url = https://web.horde.org/williams/with%20space.html
+
 Parent: http://www.williams.edu/Administration/index.html
 (http://www.williams.edu:80/)
 service = http
@@ -393,6 +441,22 @@ host = www.williams.edu
 port = 80
 path = /Administration/relative.html
 url = http://www.williams.edu/Administration/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/nospace.html
+url = http://www.williams.edu/Administration/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /Administration/with%20space.html
+url = http://www.williams.edu/Administration/with%20space.html
 
 Parent: ftp://ghutchis@wso.williams.edu/mail/index
 (ftp://ghutchis@wso.williams.edu:21/)
@@ -493,6 +557,22 @@ port = 21
 path = /mail/relative.html
 url = ftp://ghutchis@wso.williams.edu/mail/relative.html
 
+Child: no space.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/nospace.html
+url = ftp://ghutchis@wso.williams.edu/mail/nospace.html
+
+Child: with%20space.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/with%20space.html
+url = ftp://ghutchis@wso.williams.edu/mail/with%20space.html
+
 Parent: http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open
 (http://wso.williams.edu:80/)
 service = http
@@ -591,6 +671,22 @@ host = wso.williams.edu
 port = 80
 path = /cgi-bin/BBS/relative.html
 url = http://wso.williams.edu/cgi-bin/BBS/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/nospace.html
+url = http://wso.williams.edu/cgi-bin/BBS/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/with%20space.html
+url = http://wso.williams.edu/cgi-bin/BBS/with%20space.html
 
 Parent: http://wso/~ghutchis/bookmarks.html#mac
 (http://wso:80/)
@@ -691,6 +787,22 @@ port = 80
 path = /~ghutchis/relative.html
 url = http://wso/~ghutchis/relative.html
 
+Child: no space.html
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/nospace.html
+url = http://wso/~ghutchis/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/with%20space.html
+url = http://wso/~ghutchis/with%20space.html
+
 Parent: file:///opt/htdig/maindocs/index.html
 (file://localhost:0/)
 service = file
@@ -789,6 +901,22 @@ host = localhost
 port = 0
 path = /opt/htdig/maindocs/relative.html
 url = file:///opt/htdig/maindocs/relative.html
+
+Child: no space.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/nospace.html
+url = file:///opt/htdig/maindocs/nospace.html
+
+Child: with%20space.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/with%20space.html
+url = file:///opt/htdig/maindocs/with%20space.html
 
 Parent: http://www.htdig.org/This/Is/A/test.html?dowepass
 (http://www.htdig.org:80/)
@@ -889,6 +1017,22 @@ port = 80
 path = /This/Is/A/relative.html
 url = http://www.htdig.org/This/Is/A/relative.html
 
+Child: no space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/nospace.html
+url = http://www.htdig.org/This/Is/A/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /This/Is/A/with%20space.html
+url = http://www.htdig.org/This/Is/A/with%20space.html
+
 Parent: http://localhost/index.asp?date=11/21/index.asp?date=12/1/98
 (http://localhost:80/)
 service = http
@@ -987,6 +1131,22 @@ host = localhost
 port = 80
 path = /relative.html
 url = http://localhost/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /nospace.html
+url = http://localhost/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /with%20space.html
+url = http://localhost/with%20space.html
 
 Parent: http://www.test.com/cgi-bin/test.cgi?http://this.com/url
 (http://www.test.com:80/)
@@ -1087,6 +1247,22 @@ port = 80
 path = /cgi-bin/relative.html
 url = http://www.test.com/cgi-bin/relative.html
 
+Child: no space.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/nospace.html
+url = http://www.test.com/cgi-bin/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/with%20space.html
+url = http://www.test.com/cgi-bin/with%20space.html
+
 Parent: http://wso.williams.edu/%7Eghutchis/index.html
 (http://wso.williams.edu:80/)
 service = http
@@ -1185,6 +1361,22 @@ host = wso.williams.edu
 port = 80
 path = /~ghutchis/relative.html
 url = http://wso.williams.edu/~ghutchis/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/nospace.html
+url = http://wso.williams.edu/~ghutchis/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/with%20space.html
+url = http://wso.williams.edu/~ghutchis/with%20space.html
 
 Parent: http://wso.williams.edu/~ghutchis/
 (http://wso.williams.edu:80/)
@@ -1285,6 +1477,22 @@ port = 80
 path = /~ghutchis/relative.html
 url = http://wso.williams.edu/~ghutchis/relative.html
 
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/nospace.html
+url = http://wso.williams.edu/~ghutchis/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/with%20space.html
+url = http://wso.williams.edu/~ghutchis/with%20space.html
+
 Parent: http://wso.williams.edu/~ghutchis/index.shtml
 (http://wso.williams.edu:80/)
 service = http
@@ -1383,6 +1591,22 @@ host = wso.williams.edu
 port = 80
 path = /~ghutchis/relative.html
 url = http://wso.williams.edu/~ghutchis/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/nospace.html
+url = http://wso.williams.edu/~ghutchis/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/with%20space.html
+url = http://wso.williams.edu/~ghutchis/with%20space.html
 
 Parent: http://wso.williams.edu//ghutchis///test/index.html
 (http://wso.williams.edu:80/)
@@ -1483,6 +1707,22 @@ port = 80
 path = /ghutchis/test/relative.html
 url = http://wso.williams.edu/ghutchis/test/relative.html
 
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /ghutchis/test/nospace.html
+url = http://wso.williams.edu/ghutchis/test/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /ghutchis/test/with%20space.html
+url = http://wso.williams.edu/ghutchis/test/with%20space.html
+
 Parent: http://wso.williams.edu/./ghutchis/../orgs/life.html
 (http://wso.williams.edu:80/)
 service = http
@@ -1581,6 +1821,22 @@ host = wso.williams.edu
 port = 80
 path = /orgs/relative.html
 url = http://wso.williams.edu/orgs/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/nospace.html
+url = http://wso.williams.edu/orgs/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/with%20space.html
+url = http://wso.williams.edu/orgs/with%20space.html
 
 Parent: http://www.example.com/blank_news.shtml?pages/1.i
 (http://www.example.com:80/)
@@ -1681,6 +1937,22 @@ port = 80
 path = /relative.html
 url = http://www.example.com/relative.html
 
+Child: no space.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /nospace.html
+url = http://www.example.com/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /with%20space.html
+url = http://www.example.com/with%20space.html
+
 Parent: http://www.williams.edu:803/Admin/Depts/.test/.news/Index.Html
 (http://www.williams.edu:803/)
 service = http
@@ -1779,6 +2051,22 @@ host = www.williams.edu
 port = 803
 path = /Admin/Depts/.test/.news/relative.html
 url = http://www.williams.edu:803/Admin/Depts/.test/.news/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/nospace.html
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /Admin/Depts/.test/.news/with%20space.html
+url = http://www.williams.edu:803/Admin/Depts/.test/.news/with%20space.html
 
 Parent: http://test.com/test/
 (http://test.com:80/)
@@ -1879,6 +2167,22 @@ port = 80
 path = /test/relative.html
 url = http://test.com/test/relative.html
 
+Child: no space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/nospace.html
+url = http://test.com/test/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/with%20space.html
+url = http://test.com/test/with%20space.html
+
 Parent: http://test.com/opt/test/
 (http://test.com:80/)
 service = http
@@ -1977,6 +2281,22 @@ host = test.com
 port = 80
 path = /opt/test/relative.html
 url = http://test.com/opt/test/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/nospace.html
+url = http://test.com/opt/test/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/with%20space.html
+url = http://test.com/opt/test/with%20space.html
 
 Parent: http://test.com/./opt/../test/
 (http://test.com:80/)
@@ -2077,6 +2397,22 @@ port = 80
 path = /test/relative.html
 url = http://test.com/test/relative.html
 
+Child: no space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/nospace.html
+url = http://test.com/test/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/with%20space.html
+url = http://test.com/test/with%20space.html
+
 Parent: http://test.com/./././orgs/life.html
 (http://test.com:80/)
 service = http
@@ -2175,6 +2511,22 @@ host = test.com
 port = 80
 path = /orgs/relative.html
 url = http://test.com/orgs/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/nospace.html
+url = http://test.com/orgs/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/with%20space.html
+url = http://test.com/orgs/with%20space.html
 
 Parent: http://test.com/./../../orgs/life.html
 (http://test.com:80/)
@@ -2275,6 +2627,22 @@ port = 80
 path = /orgs/relative.html
 url = http://test.com/orgs/relative.html
 
+Child: no space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/nospace.html
+url = http://test.com/orgs/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/with%20space.html
+url = http://test.com/orgs/with%20space.html
+
 Parent: http://test.com/blank_news.shtml?pages/3.i
 (http://test.com:80/)
 service = http
@@ -2373,6 +2741,252 @@ host = test.com
 port = 80
 path = /relative.html
 url = http://test.com/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /nospace.html
+url = http://test.com/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /with%20space.html
+url = http://test.com/with%20space.html
+
+Parent: http://www.server.com/has no space/
+(http://www.server.com:80/)
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /hasnospace/
+url = http://www.server.com/hasnospace/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /hasnospace/
+url = http://www.server.com/hasnospace/
+
+Child: ./../
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /
+url = http://www.server.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /foo.html
+url = http://www.server.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /hasnospace/.../foo.html
+url = http://www.server.com/hasnospace/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /foo.html
+url = http://www.server.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /hasnospace/
+url = http://www.server.com/hasnospace/
+
+Child: index.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /hasnospace/
+url = http://www.server.com/hasnospace/
+
+Child: test.htm
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /hasnospace/test.htm
+url = http://www.server.com/hasnospace/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /top/README
+url = http://www.server.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /hasnospace/next/foo.html
+url = http://www.server.com/hasnospace/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /hasnospace/relative.html
+url = http://www.server.com/hasnospace/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /hasnospace/nospace.html
+url = http://www.server.com/hasnospace/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /hasnospace/with%20space.html
+url = http://www.server.com/hasnospace/with%20space.html
+
+Parent: http://www.server.com/has%20space/
+(http://www.server.com:80/)
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/
+url = http://www.server.com/has%20space/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/
+url = http://www.server.com/has%20space/
+
+Child: ./../
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /
+url = http://www.server.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /foo.html
+url = http://www.server.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/.../foo.html
+url = http://www.server.com/has%20space/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /foo.html
+url = http://www.server.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/
+url = http://www.server.com/has%20space/
+
+Child: index.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/
+url = http://www.server.com/has%20space/
+
+Child: test.htm
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/test.htm
+url = http://www.server.com/has%20space/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /top/README
+url = http://www.server.com/top/README
+
+Child: next/foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/next/foo.html
+url = http://www.server.com/has%20space/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/relative.html
+url = http://www.server.com/has%20space/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/nospace.html
+url = http://www.server.com/has%20space/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/with%20space.html
+url = http://www.server.com/has%20space/with%20space.html
 
 Parent: HTTP://www.Yahoo.com/
 (http://www.yahoo.com:80/)
@@ -2473,6 +3087,22 @@ port = 80
 path = /relative.html
 url = http://www.yahoo.com/relative.html
 
+Child: no space.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /nospace.html
+url = http://www.yahoo.com/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /with%20space.html
+url = http://www.yahoo.com/with%20space.html
+
 Parent: http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/chem_102.html
 (http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu:80/)
 service = http
@@ -2571,6 +3201,22 @@ host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.over
 port = 80
 path = /go/Departments/Chemistry/classes/102/relative.html
 url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/nospace.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/Departments/Chemistry/classes/102/with%20space.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/with%20space.html
 
 Parent: http://this-is-a.slashdot.org/slash/elimination/test//////////////////////////././././.././././/./././.././././../../././.test/
 (http://this-is-a.slashdot.org:80/)
@@ -2671,6 +3317,22 @@ port = 80
 path = /.test/relative.html
 url = http://this-is-a.slashdot.org/.test/relative.html
 
+Child: no space.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /.test/nospace.html
+url = http://this-is-a.slashdot.org/.test/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /.test/with%20space.html
+url = http://this-is-a.slashdot.org/.test/with%20space.html
+
 Parent: http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=338;user=ghutchis;addsignature=1
 (http://www.htdig.org:80/)
 service = http
@@ -2769,6 +3431,22 @@ host = www.htdig.org
 port = 80
 path = /cgi-bin/htdig3.private/relative.html
 url = http://www.htdig.org/cgi-bin/htdig3.private/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/nospace.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/with%20space.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/with%20space.html
 
 Parent: http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=342;user=ghutchis
 (http://www.htdig.org:80/)
@@ -2869,6 +3547,22 @@ port = 80
 path = /cgi-bin/htdig3.private/relative.html
 url = http://www.htdig.org/cgi-bin/htdig3.private/relative.html
 
+Child: no space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/nospace.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/with%20space.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/with%20space.html
+
 Parent: http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
 (http://wso.williams.edu:80/)
 service = http
@@ -2967,6 +3661,22 @@ host = wso.williams.edu
 port = 80
 path = /cgi-bin/BBS/relative.html
 url = http://wso.williams.edu/cgi-bin/BBS/relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/nospace.html
+url = http://wso.williams.edu/cgi-bin/BBS/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/BBS/with%20space.html
+url = http://wso.williams.edu/cgi-bin/BBS/with%20space.html
 
 Parent: http:/www.fail.com/
 (http://:0/)
@@ -3067,6 +3777,22 @@ port = 0
 path = /www.fail.com/relative.html
 url = 
 
+Child: no space.html
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/nospace.html
+url = 
+
+Child: with%20space.html
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/with%20space.html
+url = 
+
 Parent: http:www.fail.com
 (http://:0/)
 service = http
@@ -3159,6 +3885,22 @@ path = www.fail.com
 url = 
 
 Child: .//relative.html
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: no space.html
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: with%20space.html
 service = http
 user = 
 host = 
@@ -3265,6 +4007,22 @@ port = 0
 path = /opt/htdig/maindocs/relative.html
 url = file:///opt/htdig/maindocs/relative.html
 
+Child: no space.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/nospace.html
+url = file:///opt/htdig/maindocs/nospace.html
+
+Child: with%20space.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/with%20space.html
+url = file:///opt/htdig/maindocs/with%20space.html
+
 Parent: file://localhost:80/home/ghutchis/www/home.html
 (file://localhost:0/)
 service = file
@@ -3363,6 +4121,22 @@ host = localhost
 port = 0
 path = /home/ghutchis/www/relative.html
 url = file:///home/ghutchis/www/relative.html
+
+Child: no space.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/nospace.html
+url = file:///home/ghutchis/www/nospace.html
+
+Child: with%20space.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/with%20space.html
+url = file:///home/ghutchis/www/with%20space.html
 
 Parent: http://www.htdig.org/cgi-bin/test.cgi?date=10/1/99#anchor1
 (http://www.htdig.org:80/)
@@ -3463,6 +4237,22 @@ port = 80
 path = /cgi-bin/relative.html
 url = http://www.htdig.org/cgi-bin/relative.html
 
+Child: no space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/nospace.html
+url = http://www.htdig.org/cgi-bin/nospace.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/with%20space.html
+url = http://www.htdig.org/cgi-bin/with%20space.html
+
 Parent: ftp://default.removal.com/index.html
 (ftp://default.removal.com:21/)
 service = ftp
@@ -3561,6 +4351,22 @@ host = default.removal.com
 port = 21
 path = /relative.html
 url = ftp://default.removal.com/relative.html
+
+Child: no space.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /nospace.html
+url = ftp://default.removal.com/nospace.html
+
+Child: with%20space.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /with%20space.html
+url = ftp://default.removal.com/with%20space.html
 
 Parent: https://test.com/life.html
 (https://test.com:443/)
@@ -3661,6 +4467,22 @@ port = 443
 path = /relative.html
 url = https://test.com/relative.html
 
+Child: no space.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /nospace.html
+url = https://test.com/nospace.html
+
+Child: with%20space.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /with%20space.html
+url = https://test.com/with%20space.html
+
 Parent: https://default.removal.com/index.html
 (https://default.removal.com:443/)
 service = https
@@ -3759,6 +4581,22 @@ host = default.removal.com
 port = 443
 path = /relative.html
 url = https://default.removal.com/relative.html
+
+Child: no space.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /nospace.html
+url = https://default.removal.com/nospace.html
+
+Child: with%20space.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /with%20space.html
+url = https://default.removal.com/with%20space.html
 
 Parent: https://test.com:803/./../../orgs/life.html
 (https://test.com:803/)
@@ -3859,6 +4697,22 @@ port = 803
 path = /orgs/relative.html
 url = https://test.com:803/orgs/relative.html
 
+Child: no space.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/nospace.html
+url = https://test.com:803/orgs/nospace.html
+
+Child: with%20space.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/with%20space.html
+url = https://test.com:803/orgs/with%20space.html
+
 Parent: https://alias.com:8080/./../../orgs/life.html
 (https://alias.com:8080/)
 service = https
@@ -3957,6 +4811,22 @@ host = alias.com
 port = 8080
 path = /orgs/relative.html
 url = https://alias.com:8080/orgs/relative.html
+
+Child: no space.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/nospace.html
+url = https://alias.com:8080/orgs/nospace.html
+
+Child: with%20space.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/with%20space.html
+url = https://alias.com:8080/orgs/with%20space.html
 
 Parent: https://alias.com/./../../orgs/life.html
 (https://true.com:443/)
@@ -4057,6 +4927,22 @@ port = 443
 path = /orgs/relative.html
 url = https://true.com/orgs/relative.html
 
+Child: no space.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/nospace.html
+url = https://true.com/orgs/nospace.html
+
+Child: with%20space.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/with%20space.html
+url = https://true.com/orgs/with%20space.html
+
 Parent: https:/www.fail.com/
 (https://:0/)
 service = https
@@ -4156,6 +5042,22 @@ port = 0
 path = /www.fail.com/relative.html
 url = 
 
+Child: no space.html
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/nospace.html
+url = 
+
+Child: with%20space.html
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/with%20space.html
+url = 
+
 Parent: https:www.fail.com
 (https://:0/)
 service = https
@@ -4248,6 +5150,22 @@ path = www.fail.com
 url = 
 
 Child: .//relative.html
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: no space.html
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: with%20space.html
 service = https
 user = 
 host = 
@@ -4354,6 +5272,22 @@ port = 0
 path = /khelpcenter/relative.html
 url = help:/khelpcenter/relative.html
 
+Child: no space.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/nospace.html
+url = help:/khelpcenter/nospace.html
+
+Child: with%20space.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/with%20space.html
+url = help:/khelpcenter/with%20space.html
+
 Parent: help:/khelpcenter/what-is-kde.html#what-is-kde-introduction
 (help://localhost:0/)
 service = help
@@ -4453,8 +5387,24 @@ port = 0
 path = /khelpcenter/relative.html
 url = help:/khelpcenter/relative.html
 
+Child: no space.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/nospace.html
+url = help:/khelpcenter/nospace.html
 
-And now without turning // into / ...
+Child: with%20space.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/with%20space.html
+url = help:/khelpcenter/with%20space.html
+
+
+And now without // -> / , case-insensitive and considering spaces...
 
 Parent: http://www.williams.edu:803/
 (http://www.williams.edu:803/)
@@ -4536,8 +5486,8 @@ service = http
 user = 
 host = www.williams.edu
 port = 803
-path = /top/README
-url = http://www.williams.edu:803/top/README
+path = /top/readme
+url = http://www.williams.edu:803/top/readme
 
 Child: next/foo.html
 service = http
@@ -4554,6 +5504,22 @@ host = www.williams.edu
 port = 803
 path = //relative.html
 url = http://www.williams.edu:803//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /no%20space.html
+url = http://www.williams.edu:803/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /with%20space.html
+url = http://www.williams.edu:803/with%20space.html
 
 Parent: http://wso.williams.edu/
 (http://wso.williams.edu:80/)
@@ -4635,8 +5601,8 @@ service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /top/README
-url = http://wso.williams.edu/top/README
+path = /top/readme
+url = http://wso.williams.edu/top/readme
 
 Child: next/foo.html
 service = http
@@ -4653,6 +5619,22 @@ host = wso.williams.edu
 port = 80
 path = //relative.html
 url = http://wso.williams.edu//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /no%20space.html
+url = http://wso.williams.edu/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /with%20space.html
+url = http://wso.williams.edu/with%20space.html
 
 Parent: https://web.horde.org/williams/
 (https://web.horde.org:443/)
@@ -4734,8 +5716,8 @@ service = https
 user = 
 host = web.horde.org
 port = 443
-path = /top/README
-url = https://web.horde.org/top/README
+path = /top/readme
+url = https://web.horde.org/top/readme
 
 Child: next/foo.html
 service = https
@@ -4753,14 +5735,30 @@ port = 443
 path = /williams//relative.html
 url = https://web.horde.org/williams//relative.html
 
+Child: no space.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/no%20space.html
+url = https://web.horde.org/williams/no%20space.html
+
+Child: with%20space.html
+service = https
+user = 
+host = web.horde.org
+port = 443
+path = /williams/with%20space.html
+url = https://web.horde.org/williams/with%20space.html
+
 Parent: http://www.williams.edu/Administration/index.html
 (http://www.williams.edu:80/)
 service = http
 user = 
 host = www.williams.edu
 port = 80
-path = /Administration/
-url = http://www.williams.edu/Administration/
+path = /administration/
+url = http://www.williams.edu/administration/
 
 Children: 
 
@@ -4769,8 +5767,8 @@ service = http
 user = 
 host = www.williams.edu
 port = 80
-path = /Administration/
-url = http://www.williams.edu/Administration/
+path = /administration/
+url = http://www.williams.edu/administration/
 
 Child: ./../
 service = http
@@ -4793,8 +5791,8 @@ service = http
 user = 
 host = www.williams.edu
 port = 80
-path = /Administration/.../foo.html
-url = http://www.williams.edu/Administration/.../foo.html
+path = /administration/.../foo.html
+url = http://www.williams.edu/administration/.../foo.html
 
 Child: /foo.html
 service = http
@@ -4809,48 +5807,64 @@ service = http
 user = 
 host = www.williams.edu
 port = 80
-path = /Administration/
-url = http://www.williams.edu/Administration/
+path = /administration/
+url = http://www.williams.edu/administration/
 
 Child: index.html
 service = http
 user = 
 host = www.williams.edu
 port = 80
-path = /Administration/
-url = http://www.williams.edu/Administration/
+path = /administration/
+url = http://www.williams.edu/administration/
 
 Child: test.htm
 service = http
 user = 
 host = www.williams.edu
 port = 80
-path = /Administration/test.htm
-url = http://www.williams.edu/Administration/test.htm
+path = /administration/test.htm
+url = http://www.williams.edu/administration/test.htm
 
 Child: /top/README
 service = http
 user = 
 host = www.williams.edu
 port = 80
-path = /top/README
-url = http://www.williams.edu/top/README
+path = /top/readme
+url = http://www.williams.edu/top/readme
 
 Child: next/foo.html
 service = http
 user = 
 host = www.williams.edu
 port = 80
-path = /Administration/next/foo.html
-url = http://www.williams.edu/Administration/next/foo.html
+path = /administration/next/foo.html
+url = http://www.williams.edu/administration/next/foo.html
 
 Child: .//relative.html
 service = http
 user = 
 host = www.williams.edu
 port = 80
-path = /Administration//relative.html
-url = http://www.williams.edu/Administration//relative.html
+path = /administration//relative.html
+url = http://www.williams.edu/administration//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /administration/no%20space.html
+url = http://www.williams.edu/administration/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.williams.edu
+port = 80
+path = /administration/with%20space.html
+url = http://www.williams.edu/administration/with%20space.html
 
 Parent: ftp://ghutchis@wso.williams.edu/mail/index
 (ftp://ghutchis@wso.williams.edu:21/)
@@ -4932,8 +5946,8 @@ service = ftp
 user = ghutchis
 host = wso.williams.edu
 port = 21
-path = /top/README
-url = ftp://ghutchis@wso.williams.edu/top/README
+path = /top/readme
+url = ftp://ghutchis@wso.williams.edu/top/readme
 
 Child: next/foo.html
 service = ftp
@@ -4951,14 +5965,30 @@ port = 21
 path = /mail//relative.html
 url = ftp://ghutchis@wso.williams.edu/mail//relative.html
 
+Child: no space.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/no%20space.html
+url = ftp://ghutchis@wso.williams.edu/mail/no%20space.html
+
+Child: with%20space.html
+service = ftp
+user = ghutchis
+host = wso.williams.edu
+port = 21
+path = /mail/with%20space.html
+url = ftp://ghutchis@wso.williams.edu/mail/with%20space.html
+
 Parent: http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open
 (http://wso.williams.edu:80/)
 service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS/bbs_forum.cgi?forum=open
-url = http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open
+path = /cgi-bin/bbs/bbs_forum.cgi?forum=open
+url = http://wso.williams.edu/cgi-bin/bbs/bbs_forum.cgi?forum=open
 
 Children: 
 
@@ -4967,8 +5997,8 @@ service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS/
-url = http://wso.williams.edu/cgi-bin/BBS/
+path = /cgi-bin/bbs/
+url = http://wso.williams.edu/cgi-bin/bbs/
 
 Child: ./../
 service = http
@@ -4991,8 +6021,8 @@ service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS/.../foo.html
-url = http://wso.williams.edu/cgi-bin/BBS/.../foo.html
+path = /cgi-bin/bbs/.../foo.html
+url = http://wso.williams.edu/cgi-bin/bbs/.../foo.html
 
 Child: /foo.html
 service = http
@@ -5007,48 +6037,64 @@ service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS/bbs_forum.cgi?forum=open
-url = http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open
+path = /cgi-bin/bbs/bbs_forum.cgi?forum=open
+url = http://wso.williams.edu/cgi-bin/bbs/bbs_forum.cgi?forum=open
 
 Child: index.html
 service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS/
-url = http://wso.williams.edu/cgi-bin/BBS/
+path = /cgi-bin/bbs/
+url = http://wso.williams.edu/cgi-bin/bbs/
 
 Child: test.htm
 service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS/test.htm
-url = http://wso.williams.edu/cgi-bin/BBS/test.htm
+path = /cgi-bin/bbs/test.htm
+url = http://wso.williams.edu/cgi-bin/bbs/test.htm
 
 Child: /top/README
 service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /top/README
-url = http://wso.williams.edu/top/README
+path = /top/readme
+url = http://wso.williams.edu/top/readme
 
 Child: next/foo.html
 service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS/next/foo.html
-url = http://wso.williams.edu/cgi-bin/BBS/next/foo.html
+path = /cgi-bin/bbs/next/foo.html
+url = http://wso.williams.edu/cgi-bin/bbs/next/foo.html
 
 Child: .//relative.html
 service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS//relative.html
-url = http://wso.williams.edu/cgi-bin/BBS//relative.html
+path = /cgi-bin/bbs//relative.html
+url = http://wso.williams.edu/cgi-bin/bbs//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/bbs/no%20space.html
+url = http://wso.williams.edu/cgi-bin/bbs/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/bbs/with%20space.html
+url = http://wso.williams.edu/cgi-bin/bbs/with%20space.html
 
 Parent: http://wso/~ghutchis/bookmarks.html#mac
 (http://wso:80/)
@@ -5130,8 +6176,8 @@ service = http
 user = 
 host = wso
 port = 80
-path = /top/README
-url = http://wso/top/README
+path = /top/readme
+url = http://wso/top/readme
 
 Child: next/foo.html
 service = http
@@ -5148,6 +6194,22 @@ host = wso
 port = 80
 path = /~ghutchis//relative.html
 url = http://wso/~ghutchis//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/no%20space.html
+url = http://wso/~ghutchis/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso
+port = 80
+path = /~ghutchis/with%20space.html
+url = http://wso/~ghutchis/with%20space.html
 
 Parent: file:///opt/htdig/maindocs/index.html
 (file://localhost:0/)
@@ -5229,8 +6291,8 @@ service = file
 user = 
 host = localhost
 port = 0
-path = /top/README
-url = file:///top/README
+path = /top/readme
+url = file:///top/readme
 
 Child: next/foo.html
 service = file
@@ -5248,14 +6310,30 @@ port = 0
 path = /opt/htdig/maindocs//relative.html
 url = file:///opt/htdig/maindocs//relative.html
 
+Child: no space.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/no%20space.html
+url = file:///opt/htdig/maindocs/no%20space.html
+
+Child: with%20space.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/with%20space.html
+url = file:///opt/htdig/maindocs/with%20space.html
+
 Parent: http://www.htdig.org/This/Is/A/test.html?dowepass
 (http://www.htdig.org:80/)
 service = http
 user = 
 host = www.htdig.org
 port = 80
-path = /This/Is/A/test.html?dowepass
-url = http://www.htdig.org/This/Is/A/test.html?dowepass
+path = /this/is/a/test.html?dowepass
+url = http://www.htdig.org/this/is/a/test.html?dowepass
 
 Children: 
 
@@ -5264,32 +6342,32 @@ service = http
 user = 
 host = www.htdig.org
 port = 80
-path = /This/Is/A/
-url = http://www.htdig.org/This/Is/A/
+path = /this/is/a/
+url = http://www.htdig.org/this/is/a/
 
 Child: ./../
 service = http
 user = 
 host = www.htdig.org
 port = 80
-path = /This/Is/
-url = http://www.htdig.org/This/Is/
+path = /this/is/
+url = http://www.htdig.org/this/is/
 
 Child: ../foo.html
 service = http
 user = 
 host = www.htdig.org
 port = 80
-path = /This/Is/foo.html
-url = http://www.htdig.org/This/Is/foo.html
+path = /this/is/foo.html
+url = http://www.htdig.org/this/is/foo.html
 
 Child: .../foo.html
 service = http
 user = 
 host = www.htdig.org
 port = 80
-path = /This/Is/A/.../foo.html
-url = http://www.htdig.org/This/Is/A/.../foo.html
+path = /this/is/a/.../foo.html
+url = http://www.htdig.org/this/is/a/.../foo.html
 
 Child: /foo.html
 service = http
@@ -5304,48 +6382,64 @@ service = http
 user = 
 host = www.htdig.org
 port = 80
-path = /This/Is/A/test.html?dowepass
-url = http://www.htdig.org/This/Is/A/test.html?dowepass
+path = /this/is/a/test.html?dowepass
+url = http://www.htdig.org/this/is/a/test.html?dowepass
 
 Child: index.html
 service = http
 user = 
 host = www.htdig.org
 port = 80
-path = /This/Is/A/
-url = http://www.htdig.org/This/Is/A/
+path = /this/is/a/
+url = http://www.htdig.org/this/is/a/
 
 Child: test.htm
 service = http
 user = 
 host = www.htdig.org
 port = 80
-path = /This/Is/A/test.htm
-url = http://www.htdig.org/This/Is/A/test.htm
+path = /this/is/a/test.htm
+url = http://www.htdig.org/this/is/a/test.htm
 
 Child: /top/README
 service = http
 user = 
 host = www.htdig.org
 port = 80
-path = /top/README
-url = http://www.htdig.org/top/README
+path = /top/readme
+url = http://www.htdig.org/top/readme
 
 Child: next/foo.html
 service = http
 user = 
 host = www.htdig.org
 port = 80
-path = /This/Is/A/next/foo.html
-url = http://www.htdig.org/This/Is/A/next/foo.html
+path = /this/is/a/next/foo.html
+url = http://www.htdig.org/this/is/a/next/foo.html
 
 Child: .//relative.html
 service = http
 user = 
 host = www.htdig.org
 port = 80
-path = /This/Is/A//relative.html
-url = http://www.htdig.org/This/Is/A//relative.html
+path = /this/is/a//relative.html
+url = http://www.htdig.org/this/is/a//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /this/is/a/no%20space.html
+url = http://www.htdig.org/this/is/a/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /this/is/a/with%20space.html
+url = http://www.htdig.org/this/is/a/with%20space.html
 
 Parent: http://localhost/index.asp?date=11/21/index.asp?date=12/1/98
 (http://localhost:80/)
@@ -5427,8 +6521,8 @@ service = http
 user = 
 host = localhost
 port = 80
-path = /top/README
-url = http://localhost/top/README
+path = /top/readme
+url = http://localhost/top/readme
 
 Child: next/foo.html
 service = http
@@ -5445,6 +6539,22 @@ host = localhost
 port = 80
 path = //relative.html
 url = http://localhost//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /no%20space.html
+url = http://localhost/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = localhost
+port = 80
+path = /with%20space.html
+url = http://localhost/with%20space.html
 
 Parent: http://www.test.com/cgi-bin/test.cgi?http://this.com/url
 (http://www.test.com:80/)
@@ -5526,8 +6636,8 @@ service = http
 user = 
 host = www.test.com
 port = 80
-path = /top/README
-url = http://www.test.com/top/README
+path = /top/readme
+url = http://www.test.com/top/readme
 
 Child: next/foo.html
 service = http
@@ -5544,6 +6654,22 @@ host = www.test.com
 port = 80
 path = /cgi-bin//relative.html
 url = http://www.test.com/cgi-bin//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/no%20space.html
+url = http://www.test.com/cgi-bin/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.test.com
+port = 80
+path = /cgi-bin/with%20space.html
+url = http://www.test.com/cgi-bin/with%20space.html
 
 Parent: http://wso.williams.edu/%7Eghutchis/index.html
 (http://wso.williams.edu:80/)
@@ -5625,8 +6751,8 @@ service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /top/README
-url = http://wso.williams.edu/top/README
+path = /top/readme
+url = http://wso.williams.edu/top/readme
 
 Child: next/foo.html
 service = http
@@ -5643,6 +6769,22 @@ host = wso.williams.edu
 port = 80
 path = /~ghutchis//relative.html
 url = http://wso.williams.edu/~ghutchis//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/no%20space.html
+url = http://wso.williams.edu/~ghutchis/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/with%20space.html
+url = http://wso.williams.edu/~ghutchis/with%20space.html
 
 Parent: http://wso.williams.edu/~ghutchis/
 (http://wso.williams.edu:80/)
@@ -5724,8 +6866,8 @@ service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /top/README
-url = http://wso.williams.edu/top/README
+path = /top/readme
+url = http://wso.williams.edu/top/readme
 
 Child: next/foo.html
 service = http
@@ -5742,6 +6884,22 @@ host = wso.williams.edu
 port = 80
 path = /~ghutchis//relative.html
 url = http://wso.williams.edu/~ghutchis//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/no%20space.html
+url = http://wso.williams.edu/~ghutchis/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/with%20space.html
+url = http://wso.williams.edu/~ghutchis/with%20space.html
 
 Parent: http://wso.williams.edu/~ghutchis/index.shtml
 (http://wso.williams.edu:80/)
@@ -5823,8 +6981,8 @@ service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /top/README
-url = http://wso.williams.edu/top/README
+path = /top/readme
+url = http://wso.williams.edu/top/readme
 
 Child: next/foo.html
 service = http
@@ -5841,6 +6999,22 @@ host = wso.williams.edu
 port = 80
 path = /~ghutchis//relative.html
 url = http://wso.williams.edu/~ghutchis//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/no%20space.html
+url = http://wso.williams.edu/~ghutchis/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /~ghutchis/with%20space.html
+url = http://wso.williams.edu/~ghutchis/with%20space.html
 
 Parent: http://wso.williams.edu//ghutchis///test/index.html
 (http://wso.williams.edu:80/)
@@ -5922,8 +7096,8 @@ service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /top/README
-url = http://wso.williams.edu/top/README
+path = /top/readme
+url = http://wso.williams.edu/top/readme
 
 Child: next/foo.html
 service = http
@@ -5940,6 +7114,22 @@ host = wso.williams.edu
 port = 80
 path = //ghutchis///test//relative.html
 url = http://wso.williams.edu//ghutchis///test//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = //ghutchis///test/no%20space.html
+url = http://wso.williams.edu//ghutchis///test/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = //ghutchis///test/with%20space.html
+url = http://wso.williams.edu//ghutchis///test/with%20space.html
 
 Parent: http://wso.williams.edu/./ghutchis/../orgs/life.html
 (http://wso.williams.edu:80/)
@@ -6021,8 +7211,8 @@ service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /top/README
-url = http://wso.williams.edu/top/README
+path = /top/readme
+url = http://wso.williams.edu/top/readme
 
 Child: next/foo.html
 service = http
@@ -6039,6 +7229,22 @@ host = wso.williams.edu
 port = 80
 path = /orgs//relative.html
 url = http://wso.williams.edu/orgs//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/no%20space.html
+url = http://wso.williams.edu/orgs/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /orgs/with%20space.html
+url = http://wso.williams.edu/orgs/with%20space.html
 
 Parent: http://www.example.com/blank_news.shtml?pages/1.i
 (http://www.example.com:80/)
@@ -6120,8 +7326,8 @@ service = http
 user = 
 host = www.example.com
 port = 80
-path = /top/README
-url = http://www.example.com/top/README
+path = /top/readme
+url = http://www.example.com/top/readme
 
 Child: next/foo.html
 service = http
@@ -6139,14 +7345,30 @@ port = 80
 path = //relative.html
 url = http://www.example.com//relative.html
 
+Child: no space.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /no%20space.html
+url = http://www.example.com/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.example.com
+port = 80
+path = /with%20space.html
+url = http://www.example.com/with%20space.html
+
 Parent: http://www.williams.edu:803/Admin/Depts/.test/.news/Index.Html
 (http://www.williams.edu:803/)
 service = http
 user = 
 host = www.williams.edu
 port = 803
-path = /Admin/Depts/.test/.news/
-url = http://www.williams.edu:803/Admin/Depts/.test/.news/
+path = /admin/depts/.test/.news/
+url = http://www.williams.edu:803/admin/depts/.test/.news/
 
 Children: 
 
@@ -6155,32 +7377,32 @@ service = http
 user = 
 host = www.williams.edu
 port = 803
-path = /Admin/Depts/.test/.news/
-url = http://www.williams.edu:803/Admin/Depts/.test/.news/
+path = /admin/depts/.test/.news/
+url = http://www.williams.edu:803/admin/depts/.test/.news/
 
 Child: ./../
 service = http
 user = 
 host = www.williams.edu
 port = 803
-path = /Admin/Depts/.test/
-url = http://www.williams.edu:803/Admin/Depts/.test/
+path = /admin/depts/.test/
+url = http://www.williams.edu:803/admin/depts/.test/
 
 Child: ../foo.html
 service = http
 user = 
 host = www.williams.edu
 port = 803
-path = /Admin/Depts/.test/foo.html
-url = http://www.williams.edu:803/Admin/Depts/.test/foo.html
+path = /admin/depts/.test/foo.html
+url = http://www.williams.edu:803/admin/depts/.test/foo.html
 
 Child: .../foo.html
 service = http
 user = 
 host = www.williams.edu
 port = 803
-path = /Admin/Depts/.test/.news/.../foo.html
-url = http://www.williams.edu:803/Admin/Depts/.test/.news/.../foo.html
+path = /admin/depts/.test/.news/.../foo.html
+url = http://www.williams.edu:803/admin/depts/.test/.news/.../foo.html
 
 Child: /foo.html
 service = http
@@ -6195,48 +7417,64 @@ service = http
 user = 
 host = www.williams.edu
 port = 803
-path = /Admin/Depts/.test/.news/
-url = http://www.williams.edu:803/Admin/Depts/.test/.news/
+path = /admin/depts/.test/.news/
+url = http://www.williams.edu:803/admin/depts/.test/.news/
 
 Child: index.html
 service = http
 user = 
 host = www.williams.edu
 port = 803
-path = /Admin/Depts/.test/.news/
-url = http://www.williams.edu:803/Admin/Depts/.test/.news/
+path = /admin/depts/.test/.news/
+url = http://www.williams.edu:803/admin/depts/.test/.news/
 
 Child: test.htm
 service = http
 user = 
 host = www.williams.edu
 port = 803
-path = /Admin/Depts/.test/.news/test.htm
-url = http://www.williams.edu:803/Admin/Depts/.test/.news/test.htm
+path = /admin/depts/.test/.news/test.htm
+url = http://www.williams.edu:803/admin/depts/.test/.news/test.htm
 
 Child: /top/README
 service = http
 user = 
 host = www.williams.edu
 port = 803
-path = /top/README
-url = http://www.williams.edu:803/top/README
+path = /top/readme
+url = http://www.williams.edu:803/top/readme
 
 Child: next/foo.html
 service = http
 user = 
 host = www.williams.edu
 port = 803
-path = /Admin/Depts/.test/.news/next/foo.html
-url = http://www.williams.edu:803/Admin/Depts/.test/.news/next/foo.html
+path = /admin/depts/.test/.news/next/foo.html
+url = http://www.williams.edu:803/admin/depts/.test/.news/next/foo.html
 
 Child: .//relative.html
 service = http
 user = 
 host = www.williams.edu
 port = 803
-path = /Admin/Depts/.test/.news//relative.html
-url = http://www.williams.edu:803/Admin/Depts/.test/.news//relative.html
+path = /admin/depts/.test/.news//relative.html
+url = http://www.williams.edu:803/admin/depts/.test/.news//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /admin/depts/.test/.news/no%20space.html
+url = http://www.williams.edu:803/admin/depts/.test/.news/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.williams.edu
+port = 803
+path = /admin/depts/.test/.news/with%20space.html
+url = http://www.williams.edu:803/admin/depts/.test/.news/with%20space.html
 
 Parent: http://test.com/test/
 (http://test.com:80/)
@@ -6318,8 +7556,8 @@ service = http
 user = 
 host = test.com
 port = 80
-path = /top/README
-url = http://test.com/top/README
+path = /top/readme
+url = http://test.com/top/readme
 
 Child: next/foo.html
 service = http
@@ -6336,6 +7574,22 @@ host = test.com
 port = 80
 path = /test//relative.html
 url = http://test.com/test//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/no%20space.html
+url = http://test.com/test/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/with%20space.html
+url = http://test.com/test/with%20space.html
 
 Parent: http://test.com/opt/test/
 (http://test.com:80/)
@@ -6417,8 +7671,8 @@ service = http
 user = 
 host = test.com
 port = 80
-path = /top/README
-url = http://test.com/top/README
+path = /top/readme
+url = http://test.com/top/readme
 
 Child: next/foo.html
 service = http
@@ -6435,6 +7689,22 @@ host = test.com
 port = 80
 path = /opt/test//relative.html
 url = http://test.com/opt/test//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/no%20space.html
+url = http://test.com/opt/test/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /opt/test/with%20space.html
+url = http://test.com/opt/test/with%20space.html
 
 Parent: http://test.com/./opt/../test/
 (http://test.com:80/)
@@ -6516,8 +7786,8 @@ service = http
 user = 
 host = test.com
 port = 80
-path = /top/README
-url = http://test.com/top/README
+path = /top/readme
+url = http://test.com/top/readme
 
 Child: next/foo.html
 service = http
@@ -6534,6 +7804,22 @@ host = test.com
 port = 80
 path = /test//relative.html
 url = http://test.com/test//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/no%20space.html
+url = http://test.com/test/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /test/with%20space.html
+url = http://test.com/test/with%20space.html
 
 Parent: http://test.com/./././orgs/life.html
 (http://test.com:80/)
@@ -6615,8 +7901,8 @@ service = http
 user = 
 host = test.com
 port = 80
-path = /top/README
-url = http://test.com/top/README
+path = /top/readme
+url = http://test.com/top/readme
 
 Child: next/foo.html
 service = http
@@ -6633,6 +7919,22 @@ host = test.com
 port = 80
 path = /orgs//relative.html
 url = http://test.com/orgs//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/no%20space.html
+url = http://test.com/orgs/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/with%20space.html
+url = http://test.com/orgs/with%20space.html
 
 Parent: http://test.com/./../../orgs/life.html
 (http://test.com:80/)
@@ -6714,8 +8016,8 @@ service = http
 user = 
 host = test.com
 port = 80
-path = /top/README
-url = http://test.com/top/README
+path = /top/readme
+url = http://test.com/top/readme
 
 Child: next/foo.html
 service = http
@@ -6732,6 +8034,22 @@ host = test.com
 port = 80
 path = /orgs//relative.html
 url = http://test.com/orgs//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/no%20space.html
+url = http://test.com/orgs/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /orgs/with%20space.html
+url = http://test.com/orgs/with%20space.html
 
 Parent: http://test.com/blank_news.shtml?pages/3.i
 (http://test.com:80/)
@@ -6813,8 +8131,8 @@ service = http
 user = 
 host = test.com
 port = 80
-path = /top/README
-url = http://test.com/top/README
+path = /top/readme
+url = http://test.com/top/readme
 
 Child: next/foo.html
 service = http
@@ -6831,6 +8149,252 @@ host = test.com
 port = 80
 path = //relative.html
 url = http://test.com//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /no%20space.html
+url = http://test.com/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = test.com
+port = 80
+path = /with%20space.html
+url = http://test.com/with%20space.html
+
+Parent: http://www.server.com/has no space/
+(http://www.server.com:80/)
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20no%20space/
+url = http://www.server.com/has%20no%20space/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20no%20space/
+url = http://www.server.com/has%20no%20space/
+
+Child: ./../
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /
+url = http://www.server.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /foo.html
+url = http://www.server.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20no%20space/.../foo.html
+url = http://www.server.com/has%20no%20space/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /foo.html
+url = http://www.server.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20no%20space/
+url = http://www.server.com/has%20no%20space/
+
+Child: index.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20no%20space/
+url = http://www.server.com/has%20no%20space/
+
+Child: test.htm
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20no%20space/test.htm
+url = http://www.server.com/has%20no%20space/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /top/readme
+url = http://www.server.com/top/readme
+
+Child: next/foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20no%20space/next/foo.html
+url = http://www.server.com/has%20no%20space/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20no%20space//relative.html
+url = http://www.server.com/has%20no%20space//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20no%20space/no%20space.html
+url = http://www.server.com/has%20no%20space/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20no%20space/with%20space.html
+url = http://www.server.com/has%20no%20space/with%20space.html
+
+Parent: http://www.server.com/has%20space/
+(http://www.server.com:80/)
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/
+url = http://www.server.com/has%20space/
+
+Children: 
+
+Child: ./
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/
+url = http://www.server.com/has%20space/
+
+Child: ./../
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /
+url = http://www.server.com/
+
+Child: ../foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /foo.html
+url = http://www.server.com/foo.html
+
+Child: .../foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/.../foo.html
+url = http://www.server.com/has%20space/.../foo.html
+
+Child: /foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /foo.html
+url = http://www.server.com/foo.html
+
+Child: #top
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/
+url = http://www.server.com/has%20space/
+
+Child: index.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/
+url = http://www.server.com/has%20space/
+
+Child: test.htm
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/test.htm
+url = http://www.server.com/has%20space/test.htm
+
+Child: /top/README
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /top/readme
+url = http://www.server.com/top/readme
+
+Child: next/foo.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/next/foo.html
+url = http://www.server.com/has%20space/next/foo.html
+
+Child: .//relative.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space//relative.html
+url = http://www.server.com/has%20space//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/no%20space.html
+url = http://www.server.com/has%20space/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.server.com
+port = 80
+path = /has%20space/with%20space.html
+url = http://www.server.com/has%20space/with%20space.html
 
 Parent: HTTP://www.Yahoo.com/
 (http://www.yahoo.com:80/)
@@ -6912,8 +8476,8 @@ service = http
 user = 
 host = www.yahoo.com
 port = 80
-path = /top/README
-url = http://www.yahoo.com/top/README
+path = /top/readme
+url = http://www.yahoo.com/top/readme
 
 Child: next/foo.html
 service = http
@@ -6931,14 +8495,30 @@ port = 80
 path = //relative.html
 url = http://www.yahoo.com//relative.html
 
+Child: no space.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /no%20space.html
+url = http://www.yahoo.com/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.yahoo.com
+port = 80
+path = /with%20space.html
+url = http://www.yahoo.com/with%20space.html
+
 Parent: http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/chem_102.html
 (http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu:80/)
 service = http
 user = 
 host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
 port = 80
-path = /go/Departments/Chemistry/classes/102/chem_102.html
-url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/chem_102.html
+path = /go/departments/chemistry/classes/102/chem_102.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/departments/chemistry/classes/102/chem_102.html
 
 Children: 
 
@@ -6947,32 +8527,32 @@ service = http
 user = 
 host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
 port = 80
-path = /go/Departments/Chemistry/classes/102/
-url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/
+path = /go/departments/chemistry/classes/102/
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/departments/chemistry/classes/102/
 
 Child: ./../
 service = http
 user = 
 host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
 port = 80
-path = /go/Departments/Chemistry/classes/
-url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/
+path = /go/departments/chemistry/classes/
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/departments/chemistry/classes/
 
 Child: ../foo.html
 service = http
 user = 
 host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
 port = 80
-path = /go/Departments/Chemistry/classes/foo.html
-url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/foo.html
+path = /go/departments/chemistry/classes/foo.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/departments/chemistry/classes/foo.html
 
 Child: .../foo.html
 service = http
 user = 
 host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
 port = 80
-path = /go/Departments/Chemistry/classes/102/.../foo.html
-url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/.../foo.html
+path = /go/departments/chemistry/classes/102/.../foo.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/departments/chemistry/classes/102/.../foo.html
 
 Child: /foo.html
 service = http
@@ -6987,48 +8567,64 @@ service = http
 user = 
 host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
 port = 80
-path = /go/Departments/Chemistry/classes/102/chem_102.html
-url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/chem_102.html
+path = /go/departments/chemistry/classes/102/chem_102.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/departments/chemistry/classes/102/chem_102.html
 
 Child: index.html
 service = http
 user = 
 host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
 port = 80
-path = /go/Departments/Chemistry/classes/102/
-url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/
+path = /go/departments/chemistry/classes/102/
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/departments/chemistry/classes/102/
 
 Child: test.htm
 service = http
 user = 
 host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
 port = 80
-path = /go/Departments/Chemistry/classes/102/test.htm
-url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/test.htm
+path = /go/departments/chemistry/classes/102/test.htm
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/departments/chemistry/classes/102/test.htm
 
 Child: /top/README
 service = http
 user = 
 host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
 port = 80
-path = /top/README
-url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/top/README
+path = /top/readme
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/top/readme
 
 Child: next/foo.html
 service = http
 user = 
 host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
 port = 80
-path = /go/Departments/Chemistry/classes/102/next/foo.html
-url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/next/foo.html
+path = /go/departments/chemistry/classes/102/next/foo.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/departments/chemistry/classes/102/next/foo.html
 
 Child: .//relative.html
 service = http
 user = 
 host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
 port = 80
-path = /go/Departments/Chemistry/classes/102//relative.html
-url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102//relative.html
+path = /go/departments/chemistry/classes/102//relative.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/departments/chemistry/classes/102//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/departments/chemistry/classes/102/no%20space.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/departments/chemistry/classes/102/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu
+port = 80
+path = /go/departments/chemistry/classes/102/with%20space.html
+url = http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/departments/chemistry/classes/102/with%20space.html
 
 Parent: http://this-is-a.slashdot.org/slash/elimination/test//////////////////////////././././.././././/./././.././././../../././.test/
 (http://this-is-a.slashdot.org:80/)
@@ -7110,8 +8706,8 @@ service = http
 user = 
 host = this-is-a.slashdot.org
 port = 80
-path = /top/README
-url = http://this-is-a.slashdot.org/top/README
+path = /top/readme
+url = http://this-is-a.slashdot.org/top/readme
 
 Child: next/foo.html
 service = http
@@ -7128,6 +8724,22 @@ host = this-is-a.slashdot.org
 port = 80
 path = /slash/elimination/test///////////////////////.test//relative.html
 url = http://this-is-a.slashdot.org/slash/elimination/test///////////////////////.test//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /slash/elimination/test///////////////////////.test/no%20space.html
+url = http://this-is-a.slashdot.org/slash/elimination/test///////////////////////.test/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = this-is-a.slashdot.org
+port = 80
+path = /slash/elimination/test///////////////////////.test/with%20space.html
+url = http://this-is-a.slashdot.org/slash/elimination/test///////////////////////.test/with%20space.html
 
 Parent: http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=338;user=ghutchis;addsignature=1
 (http://www.htdig.org:80/)
@@ -7209,8 +8821,8 @@ service = http
 user = 
 host = www.htdig.org
 port = 80
-path = /top/README
-url = http://www.htdig.org/top/README
+path = /top/readme
+url = http://www.htdig.org/top/readme
 
 Child: next/foo.html
 service = http
@@ -7227,6 +8839,22 @@ host = www.htdig.org
 port = 80
 path = /cgi-bin/htdig3.private//relative.html
 url = http://www.htdig.org/cgi-bin/htdig3.private//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/no%20space.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/with%20space.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/with%20space.html
 
 Parent: http://www.htdig.org/cgi-bin/htdig3.private/incoming?id=342;user=ghutchis
 (http://www.htdig.org:80/)
@@ -7308,8 +8936,8 @@ service = http
 user = 
 host = www.htdig.org
 port = 80
-path = /top/README
-url = http://www.htdig.org/top/README
+path = /top/readme
+url = http://www.htdig.org/top/readme
 
 Child: next/foo.html
 service = http
@@ -7327,14 +8955,30 @@ port = 80
 path = /cgi-bin/htdig3.private//relative.html
 url = http://www.htdig.org/cgi-bin/htdig3.private//relative.html
 
+Child: no space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/no%20space.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/htdig3.private/with%20space.html
+url = http://www.htdig.org/cgi-bin/htdig3.private/with%20space.html
+
 Parent: http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
 (http://wso.williams.edu:80/)
 service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
-url = http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
+path = /cgi-bin/bbs/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
+url = http://wso.williams.edu/cgi-bin/bbs/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
 
 Children: 
 
@@ -7343,8 +8987,8 @@ service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS/
-url = http://wso.williams.edu/cgi-bin/BBS/
+path = /cgi-bin/bbs/
+url = http://wso.williams.edu/cgi-bin/bbs/
 
 Child: ./../
 service = http
@@ -7367,8 +9011,8 @@ service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS/.../foo.html
-url = http://wso.williams.edu/cgi-bin/BBS/.../foo.html
+path = /cgi-bin/bbs/.../foo.html
+url = http://wso.williams.edu/cgi-bin/bbs/.../foo.html
 
 Child: /foo.html
 service = http
@@ -7383,48 +9027,64 @@ service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
-url = http://wso.williams.edu/cgi-bin/BBS/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
+path = /cgi-bin/bbs/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
+url = http://wso.williams.edu/cgi-bin/bbs/bbs_forum.cgi?forum=open&read=001746-000000.msg&session=36c4f59c0f6ecb26&use_last_read=on&last_read=0
 
 Child: index.html
 service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS/
-url = http://wso.williams.edu/cgi-bin/BBS/
+path = /cgi-bin/bbs/
+url = http://wso.williams.edu/cgi-bin/bbs/
 
 Child: test.htm
 service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS/test.htm
-url = http://wso.williams.edu/cgi-bin/BBS/test.htm
+path = /cgi-bin/bbs/test.htm
+url = http://wso.williams.edu/cgi-bin/bbs/test.htm
 
 Child: /top/README
 service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /top/README
-url = http://wso.williams.edu/top/README
+path = /top/readme
+url = http://wso.williams.edu/top/readme
 
 Child: next/foo.html
 service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS/next/foo.html
-url = http://wso.williams.edu/cgi-bin/BBS/next/foo.html
+path = /cgi-bin/bbs/next/foo.html
+url = http://wso.williams.edu/cgi-bin/bbs/next/foo.html
 
 Child: .//relative.html
 service = http
 user = 
 host = wso.williams.edu
 port = 80
-path = /cgi-bin/BBS//relative.html
-url = http://wso.williams.edu/cgi-bin/BBS//relative.html
+path = /cgi-bin/bbs//relative.html
+url = http://wso.williams.edu/cgi-bin/bbs//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/bbs/no%20space.html
+url = http://wso.williams.edu/cgi-bin/bbs/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = wso.williams.edu
+port = 80
+path = /cgi-bin/bbs/with%20space.html
+url = http://wso.williams.edu/cgi-bin/bbs/with%20space.html
 
 Parent: http:/www.fail.com/
 (http://:0/)
@@ -7506,7 +9166,7 @@ service = http
 user = 
 host = 
 port = 0
-path = /top/README
+path = /top/readme
 url = 
 
 Child: next/foo.html
@@ -7523,6 +9183,22 @@ user =
 host = 
 port = 0
 path = /www.fail.com//relative.html
+url = 
+
+Child: no space.html
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/no%20space.html
+url = 
+
+Child: with%20space.html
+service = http
+user = 
+host = 
+port = 0
+path = /www.fail.com/with%20space.html
 url = 
 
 Parent: http:www.fail.com
@@ -7605,7 +9281,7 @@ service = http
 user = 
 host = 
 port = 0
-path = /top/README
+path = /top/readme
 url = 
 
 Child: next/foo.html
@@ -7617,6 +9293,22 @@ path = www.fail.com
 url = 
 
 Child: .//relative.html
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: no space.html
+service = http
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: with%20space.html
 service = http
 user = 
 host = 
@@ -7704,8 +9396,8 @@ service = file
 user = 
 host = localhost
 port = 0
-path = /top/README
-url = file:///top/README
+path = /top/readme
+url = file:///top/readme
 
 Child: next/foo.html
 service = file
@@ -7722,6 +9414,22 @@ host = localhost
 port = 0
 path = /opt/htdig/maindocs//relative.html
 url = file:///opt/htdig/maindocs//relative.html
+
+Child: no space.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/no%20space.html
+url = file:///opt/htdig/maindocs/no%20space.html
+
+Child: with%20space.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /opt/htdig/maindocs/with%20space.html
+url = file:///opt/htdig/maindocs/with%20space.html
 
 Parent: file://localhost:80/home/ghutchis/www/home.html
 (file://localhost:0/)
@@ -7803,8 +9511,8 @@ service = file
 user = 
 host = localhost
 port = 0
-path = /top/README
-url = file:///top/README
+path = /top/readme
+url = file:///top/readme
 
 Child: next/foo.html
 service = file
@@ -7821,6 +9529,22 @@ host = localhost
 port = 0
 path = /home/ghutchis/www//relative.html
 url = file:///home/ghutchis/www//relative.html
+
+Child: no space.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/no%20space.html
+url = file:///home/ghutchis/www/no%20space.html
+
+Child: with%20space.html
+service = file
+user = 
+host = localhost
+port = 0
+path = /home/ghutchis/www/with%20space.html
+url = file:///home/ghutchis/www/with%20space.html
 
 Parent: http://www.htdig.org/cgi-bin/test.cgi?date=10/1/99#anchor1
 (http://www.htdig.org:80/)
@@ -7902,8 +9626,8 @@ service = http
 user = 
 host = www.htdig.org
 port = 80
-path = /top/README
-url = http://www.htdig.org/top/README
+path = /top/readme
+url = http://www.htdig.org/top/readme
 
 Child: next/foo.html
 service = http
@@ -7920,6 +9644,22 @@ host = www.htdig.org
 port = 80
 path = /cgi-bin//relative.html
 url = http://www.htdig.org/cgi-bin//relative.html
+
+Child: no space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/no%20space.html
+url = http://www.htdig.org/cgi-bin/no%20space.html
+
+Child: with%20space.html
+service = http
+user = 
+host = www.htdig.org
+port = 80
+path = /cgi-bin/with%20space.html
+url = http://www.htdig.org/cgi-bin/with%20space.html
 
 Parent: ftp://default.removal.com/index.html
 (ftp://default.removal.com:21/)
@@ -8001,8 +9741,8 @@ service = ftp
 user = 
 host = default.removal.com
 port = 21
-path = /top/README
-url = ftp://default.removal.com/top/README
+path = /top/readme
+url = ftp://default.removal.com/top/readme
 
 Child: next/foo.html
 service = ftp
@@ -8019,6 +9759,22 @@ host = default.removal.com
 port = 21
 path = //relative.html
 url = ftp://default.removal.com//relative.html
+
+Child: no space.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /no%20space.html
+url = ftp://default.removal.com/no%20space.html
+
+Child: with%20space.html
+service = ftp
+user = 
+host = default.removal.com
+port = 21
+path = /with%20space.html
+url = ftp://default.removal.com/with%20space.html
 
 Parent: https://test.com/life.html
 (https://test.com:443/)
@@ -8100,8 +9856,8 @@ service = https
 user = 
 host = test.com
 port = 443
-path = /top/README
-url = https://test.com/top/README
+path = /top/readme
+url = https://test.com/top/readme
 
 Child: next/foo.html
 service = https
@@ -8118,6 +9874,22 @@ host = test.com
 port = 443
 path = //relative.html
 url = https://test.com//relative.html
+
+Child: no space.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /no%20space.html
+url = https://test.com/no%20space.html
+
+Child: with%20space.html
+service = https
+user = 
+host = test.com
+port = 443
+path = /with%20space.html
+url = https://test.com/with%20space.html
 
 Parent: https://default.removal.com/index.html
 (https://default.removal.com:443/)
@@ -8199,8 +9971,8 @@ service = https
 user = 
 host = default.removal.com
 port = 443
-path = /top/README
-url = https://default.removal.com/top/README
+path = /top/readme
+url = https://default.removal.com/top/readme
 
 Child: next/foo.html
 service = https
@@ -8217,6 +9989,22 @@ host = default.removal.com
 port = 443
 path = //relative.html
 url = https://default.removal.com//relative.html
+
+Child: no space.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /no%20space.html
+url = https://default.removal.com/no%20space.html
+
+Child: with%20space.html
+service = https
+user = 
+host = default.removal.com
+port = 443
+path = /with%20space.html
+url = https://default.removal.com/with%20space.html
 
 Parent: https://test.com:803/./../../orgs/life.html
 (https://test.com:803/)
@@ -8298,8 +10086,8 @@ service = https
 user = 
 host = test.com
 port = 803
-path = /top/README
-url = https://test.com:803/top/README
+path = /top/readme
+url = https://test.com:803/top/readme
 
 Child: next/foo.html
 service = https
@@ -8316,6 +10104,22 @@ host = test.com
 port = 803
 path = /orgs//relative.html
 url = https://test.com:803/orgs//relative.html
+
+Child: no space.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/no%20space.html
+url = https://test.com:803/orgs/no%20space.html
+
+Child: with%20space.html
+service = https
+user = 
+host = test.com
+port = 803
+path = /orgs/with%20space.html
+url = https://test.com:803/orgs/with%20space.html
 
 Parent: https://alias.com:8080/./../../orgs/life.html
 (https://alias.com:8080/)
@@ -8397,8 +10201,8 @@ service = https
 user = 
 host = alias.com
 port = 8080
-path = /top/README
-url = https://alias.com:8080/top/README
+path = /top/readme
+url = https://alias.com:8080/top/readme
 
 Child: next/foo.html
 service = https
@@ -8415,6 +10219,22 @@ host = alias.com
 port = 8080
 path = /orgs//relative.html
 url = https://alias.com:8080/orgs//relative.html
+
+Child: no space.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/no%20space.html
+url = https://alias.com:8080/orgs/no%20space.html
+
+Child: with%20space.html
+service = https
+user = 
+host = alias.com
+port = 8080
+path = /orgs/with%20space.html
+url = https://alias.com:8080/orgs/with%20space.html
 
 Parent: https://alias.com/./../../orgs/life.html
 (https://true.com:443/)
@@ -8496,8 +10316,8 @@ service = https
 user = 
 host = true.com
 port = 443
-path = /top/README
-url = https://true.com/top/README
+path = /top/readme
+url = https://true.com/top/readme
 
 Child: next/foo.html
 service = https
@@ -8514,6 +10334,22 @@ host = true.com
 port = 443
 path = /orgs//relative.html
 url = https://true.com/orgs//relative.html
+
+Child: no space.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/no%20space.html
+url = https://true.com/orgs/no%20space.html
+
+Child: with%20space.html
+service = https
+user = 
+host = true.com
+port = 443
+path = /orgs/with%20space.html
+url = https://true.com/orgs/with%20space.html
 
 Parent: https:/www.fail.com/
 (https://:0/)
@@ -8595,7 +10431,7 @@ service = https
 user = 
 host = 
 port = 0
-path = /top/README
+path = /top/readme
 url = 
 
 Child: next/foo.html
@@ -8612,6 +10448,22 @@ user =
 host = 
 port = 0
 path = /www.fail.com//relative.html
+url = 
+
+Child: no space.html
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/no%20space.html
+url = 
+
+Child: with%20space.html
+service = https
+user = 
+host = 
+port = 0
+path = /www.fail.com/with%20space.html
 url = 
 
 Parent: https:www.fail.com
@@ -8694,7 +10546,7 @@ service = https
 user = 
 host = 
 port = 0
-path = /top/README
+path = /top/readme
 url = 
 
 Child: next/foo.html
@@ -8706,6 +10558,22 @@ path = www.fail.com
 url = 
 
 Child: .//relative.html
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: no space.html
+service = https
+user = 
+host = 
+port = 0
+path = www.fail.com
+url = 
+
+Child: with%20space.html
 service = https
 user = 
 host = 
@@ -8793,8 +10661,8 @@ service = help
 user = 
 host = localhost
 port = 0
-path = /top/README
-url = help:/top/README
+path = /top/readme
+url = help:/top/readme
 
 Child: next/foo.html
 service = help
@@ -8811,6 +10679,22 @@ host = localhost
 port = 0
 path = /khelpcenter//relative.html
 url = help:/khelpcenter//relative.html
+
+Child: no space.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/no%20space.html
+url = help:/khelpcenter/no%20space.html
+
+Child: with%20space.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/with%20space.html
+url = help:/khelpcenter/with%20space.html
 
 Parent: help:/khelpcenter/what-is-kde.html#what-is-kde-introduction
 (help://localhost:0/)
@@ -8892,8 +10776,8 @@ service = help
 user = 
 host = localhost
 port = 0
-path = /top/README
-url = help:/top/README
+path = /top/readme
+url = help:/top/readme
 
 Child: next/foo.html
 service = help
@@ -8910,4 +10794,20 @@ host = localhost
 port = 0
 path = /khelpcenter//relative.html
 url = help:/khelpcenter//relative.html
+
+Child: no space.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/no%20space.html
+url = help:/khelpcenter/no%20space.html
+
+Child: with%20space.html
+service = help
+user = 
+host = localhost
+port = 0
+path = /khelpcenter/with%20space.html
+url = help:/khelpcenter/with%20space.html
 

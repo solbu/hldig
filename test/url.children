@@ -9,3 +9,5 @@ test.htm
 /top/README
 next/foo.html
 .//relative.html
+no space.html
+with%20space.html

@@ -22,6 +22,8 @@ http://test.com/./opt/../test/
 http://test.com/./././orgs/life.html
 http://test.com/./../../orgs/life.html
 http://test.com/blank_news.shtml?pages/3.i
+http://www.server.com/has no space/
+http://www.server.com/has%20space/
 HTTP://www.Yahoo.com/
 http://this-is-a-legal.domain-name-with.several-subdomains-in.an-attempt-to.overflow-any-buffers.pointy-haired-boss.science-servers.williamscollege.edu/go/Departments/Chemistry/classes/102/chem_102.html
 http://this-is-a.slashdot.org/slash/elimination/test//////////////////////////././././.././././/./././.././././../../././.test/

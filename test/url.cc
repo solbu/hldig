@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: url.cc,v 1.8 2004/05/28 13:15:30 lha Exp $
+// $Id: url.cc,v 1.9 2004/06/20 12:02:41 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -118,8 +118,12 @@ static void dourl(params_t* params)
   config->Defaults(defaults);
   dolist(params);
 
-  cout << "\nAnd now without turning // into / ...\n\n";
+  cout << "\nAnd now without // -> / , case-insensitive and considering spaces...\n\n";
   config->Add(String("allow_double_slash"), "true");
+  config->Add(String("allow_space_in_url"), "true");
+  config->Add(String("case_sensitive"), "false");
+  // Can't also test "remove_default_doc", since the library only reads that
+  // attribute once...
   dolist(params);
 }
 

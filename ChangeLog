@@ -1,3 +1,13 @@
+Sun 20 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
+
+    * test/{t_factors,t_fuzzy,t_htsearch,t_parsing,t_templates,t_validwords},
+    * test/test_functions.in:
+      Make as many tests as possible work without apache/httpd by using
+      local_urls.
+
+    * test/url.cc, test/url.parents, test/url.children, test/url.output:
+      Add test for allow_space_in_url.
+
 Sat 19 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
 
     * htsearch/Display.{cc,h}, htcommon/defaults.cc, htdoc/attrs.html.in,
@@ -17,7 +27,7 @@ Mon 14 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
       Don't check for interrupt between popping a URL and processing it,
       so that url_log (db.log) truly contains all URLs seen but not processed.
 
-Mon Jun 14 10:08:01 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Mon Jun 14 10:08:01 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
     * Tagged release htdig-3-2-0b6
 

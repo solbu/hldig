@@ -5,7 +5,7 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_parsing,v 1.4 2004/05/28 13:15:30 lha Exp $
+# $Id: t_parsing,v 1.5 2004/06/20 12:02:41 lha Exp $
 #
 
 
@@ -25,14 +25,14 @@
 #	use_meta_description
 
 
-test_functions_action=--start-apache
+test_functions_action=--any-apache
 . ./test_functions
 
-config=$testdir/conf/htdig.conf.tmp
-tmp=/tmp/t_htsearch$$
-
-# set up config file with chosen non-default values
-cp $testdir/conf/htdig.conf $config
+#config=$testdir/conf/htdig.conf.tmp
+#tmp=/tmp/t_htsearch$$
+#
+## set up config file with chosen non-default values
+#cp $testdir/conf/htdig.conf $config
 
 try() {
     comment="$1"

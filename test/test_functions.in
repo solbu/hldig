@@ -10,7 +10,7 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: test_functions.in,v 1.16 2004/05/28 13:15:30 lha Exp $
+# $Id: test_functions.in,v 1.17 2004/06/20 12:02:41 lha Exp $
 #
 
 if [ "$test_functions_action" = --stop-apache ]
@@ -44,7 +44,35 @@ fi
     $MAKE user="@USER@" modules="@APACHE_MODULES@" testdir=$testdir all > /dev/null
 )
 
+# set up config file with chosen non-default values
+config=$testdir/conf/htdig.conf.tmp
+cp $testdir/conf/htdig.conf $config
+
+set_attr ()
+{
+    if @EGREP@ "^$1" $config > /dev/null ; then
+	@MV@ $config tmp_conf
+	@SED@ "s@^$1.*@$1: $2@" < tmp_conf > $config
+    else
+	echo "$1: $2" >> $config
+    fi
+}
+
+tmp=/tmp/t_htsearch.tmp
+
 httpd=@APACHE@
+
+if [ "$test_functions_action" == --any-apache ]
+then
+    if [ -z "$httpd" ]
+    then
+	set_attr local_urls "http://localhost:7400/=$testdir/htdocs/"
+	set_attr bad_local_extensions "${bad_extensions}"
+	set_attr local_default_doc "index.html"
+    else
+        rest_functions_action=--start-apache
+    fi
+fi
 
 # if apache requested, either start it or warn it was not configured.
 if [ "$test_functions_action" = --start-apache ]
@@ -114,17 +142,6 @@ fail() {
       rm -f logs/httpd.pid
     fi
     exit 1
-}
-
-conf=conf/htdig.conf.tmp
-set_attr ()
-{
-    if @EGREP@ "^$1" $conf > /dev/null ; then
-	@MV@ $conf tmp_conf
-	@SED@ "s@^$1.*@$1: $2@" < tmp_conf > $conf
-    else
-	echo "$1: $2" >> $conf
-    fi
 }
 
 fi	# $1 != --stop-apache

@@ -5,7 +5,7 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_validwords,v 1.2 2004/05/28 13:15:30 lha Exp $
+# $Id: t_validwords,v 1.3 2004/06/20 12:02:41 lha Exp $
 #
 
 try() {
@@ -30,14 +30,14 @@ try() {
 
 
 
-test_functions_action=--start-apache
+test_functions_action=--any-apache
 . ./test_functions
 
-config=$testdir/conf/htdig.conf.tmp
-tmp=/tmp/t_htsearch$$
-
-# set up config file with chosen non-default values
-cp $testdir/conf/htdig.conf $config
+#config=$testdir/conf/htdig.conf.tmp
+#tmp=/tmp/t_htsearch$$
+#
+## set up config file with chosen non-default values
+#cp $testdir/conf/htdig.conf $config
 
 set_attr allow_numbers		"false"
 set_attr minimum_word_length	"3"
@@ -191,6 +191,8 @@ try "Search for 'with' with new bad_word_list" \
 try "Search for 'technical' with new bad_word_list" \
     "words=technical" \
     'No matches'
+
+rm -f $tmp
 
 test_functions_action=--stop-apache
 . ./test_functions
