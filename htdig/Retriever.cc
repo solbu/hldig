@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.41 2000/10/31 04:42:26 ghutchis Exp $
+// $Id: Retriever.cc,v 1.72.2.42 2000/11/06 18:21:39 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1069,6 +1069,7 @@ Retriever::GetLocal(const String &strurl)
         return 0;
     
     String *prefix, *path;
+    String *defaultdoc;
     StringList *local_names = new StringList();
     prefixes->Start_Get();
     paths->Start_Get();
@@ -1082,7 +1083,7 @@ Retriever::GetLocal(const String &strurl)
 	    *local += &url[prefix->length()];
 	    if (local->last() == '/' && defaultdocs) {
 	      defaultdocs->Start_Get();
-	      while (String *defaultdoc = (String *)defaultdocs->Get_Next()) {
+	      while (defaultdoc = (String *)defaultdocs->Get_Next()) {
 		String *localdefault = new String(*local, local->length()+defaultdoc->length()+1);
 		localdefault->append(*defaultdoc);
 		local_names->Add(localdefault);
@@ -1178,6 +1179,7 @@ Retriever::GetLocalUser(const String &url, StringList *defaultdocs)
     paths->Start_Get();
     dirs->Start_Get();
     String *prefix, *path, *dir;
+    String *defaultdoc;
     StringList *local_names = new StringList();
     while ((prefix = (String*) prefixes->Get_Next()))
     {
@@ -1214,7 +1216,7 @@ Retriever::GetLocalUser(const String &url, StringList *defaultdocs)
 	*local += rest;
 	if (local->last() == '/' && defaultdocs) {
 	  defaultdocs->Start_Get();
-	  while (String *defaultdoc = (String *)defaultdocs->Get_Next()) {
+	  while (defaultdoc = (String *)defaultdocs->Get_Next()) {
 	    String *localdefault = new String(*local, local->length()+defaultdoc->length()+1);
 	    localdefault->append(*defaultdoc);
 	    local_names->Add(localdefault);

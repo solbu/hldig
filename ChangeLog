@@ -1,3 +1,8 @@
+Mon Nov  6 12:13:13 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc (GetLocal, GetLocalUser): move String definition
+	out of while statement for AIX xlC compiler.
+
 Mon Oct 30 21:50:02 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Server.h, htdig/Server.cc (push): Add newDoc paramter that
