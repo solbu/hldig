@@ -3,169 +3,22 @@
 //
 // Implementation of Display
 //
-// $Log: Display.cc,v $
-// Revision 1.42  1999/01/25 04:08:34  ghutchis
-// Added fix from Gilles in case REMOTE_ADDR is NULL as well.
-//
-// Revision 1.41  1999/01/25 01:53:50  hp
-// Provide a clean upgrade from old databses without "url_part_aliases" and
-// "common_url_parts" through the new option "uncoded_db_compatible".
-//
-// Revision 1.40  1999/01/23 01:46:29  hp
-// Typo: "-", not '-'
-//
-// Revision 1.39  1999/01/22 04:40:57  ghutchis
-// Fix thinko in that last patch.
-//
-// Revision 1.38  1999/01/22 04:37:47  ghutchis
-// Check if HTTP_REFERER is NULL, if so, use a dash. (Otherwise we'll kill some
-// syslog() services).
-//
-// Revision 1.37  1999/01/21 02:06:31  ghutchis
-// Fixed typo in last patch.
-//
-// Revision 1.36  1999/01/21 01:59:37  ghutchis
-// Use REMOTE_ADDR when REMOTE_HOST is unavailable (otherwise we silently dump
-// core).
-//
-// Revision 1.35  1999/01/20 19:18:54  ghutchis
-// Revised setting ANCHOR variable: it will be empty if there is no excerpt
-// which matches the search formula. Fixes problems with META descriptions.
-// Based on a patch contributed by Marjolein.
-//
-// Revision 1.34  1999/01/20 05:40:55  ghutchis
-// Fix typo causing compile problems.
-//
-// Revision 1.33  1999/01/18 23:14:28  ghutchis
-// Use no_title_text to set the title  appropriately, as contributed by
-// Marjolein. Ensure PERCENT is at least 1.
-//
-// Revision 1.32  1999/01/18 03:07:51  ghutchis
-// Added variable SORT to render a form menu for sort options, based on "sort"
-// and "sort_names" options.
-//
-// Revision 1.31  1999/01/17 20:30:35  ghutchis
-// Take advantage of createFromString returning an error value to bail out of
-// poorly-constructed template_maps, based on code contributed by 
-// <tlm@mbox.comune.prato.it>.
-//
-// Revision 1.30  1999/01/14 03:10:53  ghutchis
-// Added support for using the wrapper instead of header and footer if
-// search_results_wrapper is set. Added support for sorting and reverse sorting
-// by date, time, and score.
-//
-// Revision 1.29  1999/01/08 05:02:24  ghutchis
-// Implement add_anchors_to_excerpt option and new variable ANCHOR as
-// contributed by Marjolein.
-//
-// Revision 1.28  1999/01/07 19:37:53  ghutchis
-// The start template, if provided, should come out after the header, not
-// before.
-//
-// Revision 1.27  1999/01/06 03:47:00  ghutchis
-// Check if we need to do backlink and date factoring (e.g. we don't if they're
-// zero!), from a patch by Gilles.
-//
-// Revision 1.26  1998/12/27 14:22:58  bergolth
-// Fixed memory leaks and local_default_doc bug.
-//
-// Revision 1.25  1998/12/19 16:55:11  bergolth
-// Added allow_in_form option.
-//
-// Revision 1.24  1998/12/14 04:08:06  ghutchis
-// Fix potential coredump when calculating date_factor and backlink_factor on
-// docs that aren't in the database.
-//
-// Revision 1.23  1998/12/12 01:45:29  ghutchis
-// Added a patch from Gilles allowing CGI environment variables in templates.
-//
-// Revision 1.22  1998/11/22 19:16:13  ghutchis
-// Adjust date_factor and backlink_factor rankings to produce better results,
-// Use "no_excerpt_show_top."
-//
-// Revision 1.20  1998/11/17 04:06:14  ghutchis
-// Add new ranking factors backlink_factor and date_factor
-//
-// Revision 1.19  1998/11/15 22:29:27  ghutchis
-// Implement docBackLinks backlink count.
-//
-// Revision 1.18  1998/11/15 02:44:52  ghutchis
-// Reformatting.
-//
-// Revision 1.17  1998/11/01 00:17:08  ghutchis
-// Added template var DESCRIPTION as first item in DESCRIPTIONS, as requested
-// by Ryan Scott <test@netcreations.com>.
-//
-// Revision 1.16  1998/10/17 14:15:57  ghutchis
-// Added variable CURRENT as the number of the current match, adapted from a
-// patch by Reni Seindal <seindal@webadm.kb.dk>
-//
-// Revision 1.15  1998/10/12 02:09:28  ghutchis
-// Added htsearch logging patch from Alexander Bergolth.
-//
-// Revision 1.14  1998/09/23 14:58:22  ghutchis
-// Many, many bug fixes
-//
-// Revision 1.13  1998/09/18 18:45:55  ghutchis
-// YABF (Yet another bug fix)
-//
-// Revision 1.12  1998/09/10 04:16:26  ghutchis
-// More bug fixes.
-//
-// Revision 1.11  1998/09/07 04:45:26  ghutchis
-// Add builtin-long as a default-template to use in case of errors.
-//
-// Revision 1.10  1998/09/04 00:56:23  ghutchis
-// Various bug fixes.
-//
-// Revision 1.9  1998/08/11 08:58:34  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.8  1998/08/03 09:57:20  ghutchis
-// Fixed spelling mistake for "ellipses"
-//
-// Revision 1.7  1998/07/22 10:04:31  ghutchis
-// Added patches from Sylvain Wallez <s.wallez.alcatel@e-mail.com> to
-// Display.cc to use the filename if no title is found
-//
-// Revision 1.6  1998/07/21 09:56:58  ghutchis
-// Added patch by Rob Stone <rob@psych.york.ac.uk> to create new
-// environment variables to htsearch: SELECTED_FORMAT and SELECTED_METHOD.
-//
-// Revision 1.5  1998/07/16 15:15:28  ghutchis
-// Added patch from Stephan Muehlstrasser <smuehlst@Rational.Com> to fix
-// delete syntax and a memory leak.
-//
-// Revision 1.4  1998/06/21 23:20:10  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
-//
-// Revision 1.3  1998/04/03 17:10:44  turtle
-// Patch to make excludes work
-//
-// Revision 1.2  1997/06/16 15:31:04  turtle
-// Added PERCENT and VERSION variables for the output templates
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-//
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.42 1999/01/25 04:08:34 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.43 1999/01/26 19:45:59 hp Exp $";
 #endif
 
 #include "htsearch.h"
 #include "Display.h"
 #include "ResultMatch.h"
 #include "WeightWord.h"
-#include <StringMatch.h>
-#include <QuotedStringList.h>
-#include <URL.h>
+#include "StringMatch.h"
+#include "QuotedStringList.h"
+#include "URL.h"
 #include <fstream.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <syslog.h>
-
+#include "HtURLCodec.h"
 
 //*****************************************************************************
 //
@@ -989,7 +842,7 @@ List *
 Display::buildMatchList()
 {
     char	*id;
-    String	url;
+    String	coded_url, url;
     ResultMatch	*thisMatch;
     List	*matches = new List();
     double      backlink_factor = config.Double("backlink_factor");
@@ -1002,10 +855,14 @@ Display::buildMatchList()
 	//
 	// Convert the ID to a URL
 	//
-	if (docIndex->Get(id, url) == NOTOK)
+	if (docIndex->Get(id, coded_url) == NOTOK)
 	{
 	    continue;
 	}
+
+	// No special precations re: the option
+	// "uncoded_db_compatible" needs to be taken.
+	url = HtURLCodec::instance()->decode(coded_url);
 
 	if (!includeURL(url.get()))
 	{

@@ -1,48 +1,9 @@
 //
 // docs.cc
 //
-// Implementation of newclass
+// Indexing the "doc_db" database by id-number in "doc_index".
 //
-// $Log: docs.cc,v $
-// Revision 1.12  1999/01/25 05:09:08  ghutchis
-// Fix comiler errors.
-//
-// Revision 1.11  1999/01/25 01:53:47  hp
-// Provide a clean upgrade from old databses without "url_part_aliases" and
-// "common_url_parts" through the new option "uncoded_db_compatible".
-//
-// Revision 1.10  1999/01/20 22:34:34  ghutchis
-// Fix logic to remove documents--missing else statements allow some "deleted"
-// documents to not be removed.
-//
-// Revision 1.9  1999/01/07 03:13:50  ghutchis
-// Fix minor memory leaks.
-//
-// Revision 1.8  1998/11/15 22:24:19  ghutchis
-// Change \r to \n as noted by Andrew Bishop.
-//
-// Revision 1.7  1998/09/07 04:37:16  ghutchis
-// Added DocState for documents marked as "noindex".
-//
-// Revision 1.6  1998/08/11 08:58:33  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.5  1998/08/03 16:50:42  ghutchis
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.4  1998/06/21 23:20:09  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
-//
-// Revision 1.3  1998/01/05 05:43:23  turtle
-// format changes
-//
-// Revision 1.2  1998/01/05 05:24:19  turtle
-// Fixed memory leak
-//
-// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
-// Initial CVS
-//
+// $Id: docs.cc,v 1.13 1999/01/26 19:46:00 hp Exp $
 //
 
 #include "htmerge.h"
@@ -111,7 +72,8 @@ convertDocs(char *doc_db, char *doc_index)
 	  }
 	else
 	  {
-	    index->Put(id, ref->DocURL(), strlen(ref->DocURL()));
+	    String coded_url(HtURLCodec::instance()->encode(ref->DocURL()));
+	    index->Put(id, coded_url, strlen(coded_url));
 
 	    document_count++;
 	    docdb_size += ref->DocSize();
