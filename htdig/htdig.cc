@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.2 1999/12/06 20:29:24 grdetil Exp $
+// $Id: htdig.cc,v 1.26.2.3 1999/12/11 16:19:47 vadim Exp $
 //
 
 #include "Document.h"
@@ -35,8 +35,6 @@ int			report_statistics = 0;
 DocumentDB		docs;
 HtRegex			limits;
 HtRegex			limitsn;
-HtRegex			excludes;
-HtRegex			badquerystr;
 FILE			*urls_seen = NULL;
 FILE			*images_seen = NULL;
 String			configFile = DEFAULT_CONFIG_FILE;
@@ -61,6 +59,9 @@ int main(int ac, char **av)
     int			create_text_database = 0;
     char		*max_hops = 0;
     RetrieverLog	flag  = Retriever_noLog;
+
+//extern int yydebug;
+//yydebug=1;
 	
     //
     // Parse command line arguments
@@ -221,17 +222,6 @@ int main(int ac, char **av)
 
     l.Create(config["limit_normalized"], " \t");
     limitsn.setEscaped(l);
-    l.Destroy();
-
-    //
-    // Patterns to exclude from urls...
-    //
-    l.Create(config["exclude_urls"], " \t");
-    excludes.setEscaped(l);
-    l.Destroy();
-
-    l.Create(config["bad_querystr"], " \t");
-    badquerystr.setEscaped(l);
     l.Destroy();
 
     // Check "uncompressed"/"uncoded" urls at the price of time

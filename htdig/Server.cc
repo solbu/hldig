@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.5 1999/12/02 23:11:42 ghutchis Exp $
+// $Id: Server.cc,v 1.17.2.6 1999/12/11 16:19:47 vadim Exp $
 //
 
 #include "htdig.h"
@@ -40,8 +40,8 @@ Server::Server(URL u, String *local_robots_file)
     _documents = 0;
     _persistent_connections = 1;  // Allowed by default
 
-    _max_documents = config.Value("server_max_docs", -1);
-    _connection_space = config.Value("server_wait_time", 0);
+    _max_documents = config.Value("server",_host,"server_max_docs", -1);
+    _connection_space = config.Value("server",_host,"server_wait_time", 0);
     _last_connection.SettoNow();  // For getting robots.txt
 
     if (strcmp(u.service(),"http") == 0 || strcmp(u.service(),"https") == 0)

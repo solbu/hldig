@@ -1,3 +1,15 @@
+Sat Dec 11 17:34:03 EET 1999  Vadim Chekan  <vadim@etc.lviv.ua>
+
+	* htdig/Retriever.cc,htdig/htdig.cc: "exclude_urls","bad_querystr"
+	"bad_extensions","valid_extensions","local_default_doc"
+	changed for new config.
+
+	* htdig/Server.cc: "server_max_docs","server_wait_time" changed for
+	 new config.
+
+	* check for "limit_normalized" moved from Retriever::got_href and
+	Retriever::got_redirect to more appropriate Retriever::IsValidUrl
+
 Fri Dec 10 18:05:48 1999 Marcel Bosc   <bosc@ceic.com>
 
 	* htword: checked for failed memory allocations in compression code

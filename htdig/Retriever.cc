@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.8 1999/12/02 23:12:29 ghutchis Exp $
+// $Id: Retriever.cc,v 1.72.2.9 1999/12/11 16:19:46 vadim Exp $
 //
 
 #include "Retriever.h"
@@ -698,50 +698,39 @@ Retriever::Need2Get(char *u)
 int
 Retriever::IsValidURL(char *u)
 {
-    static Dictionary	*invalids = 0;
-    static Dictionary	*valids = 0;
+    Dictionary	invalids;
+    Dictionary	valids;
+    URL 	aUrl(u);
+    StringList	tmpList;
 
-    //
-    // Invalid extensions will be kept in a dictionary for quick
-    // lookup.  Since the dictionary is static to this function, we
-    // need to initialize it the first time we get here.
-    //
-    if (!invalids)
-    {
 	// A list of bad extensions, separated by spaces or tabs
-	String	t = config["bad_extensions"];
+	String	t = config.Find(&aUrl,"bad_extensions");
 	String lowerp;
 	char	*p = strtok(t, " \t");
-	invalids = new Dictionary;
 	while (p)
 	{
 	  // Extensions are case insensitive
 	  lowerp = p;
 	  lowerp.lowercase();
-	  invalids->Add(lowerp, 0);
+	  invalids.Add(lowerp, 0);
 	  p = strtok(0, " \t");
 	}
-    }
 
     //
     // Valid extensions are performed similarly 
     //
-    if (!valids)
-    {
 	// A list of bad extensions, separated by spaces or tabs
-	String	t = config["valid_extensions"];
-	String lowerp;
-	char	*p = strtok(t, " \t");
-	valids = new Dictionary;
+
+	t = config.Find(&aUrl,"valid_extensions");
+	p = strtok(t, " \t");
 	while (p)
 	{
 	  // Extensions are case insensitive
 	  lowerp = p;
 	  lowerp.lowercase();
-	  valids->Add(lowerp, 0);
+	  valids.Add(lowerp, 0);
 	  p = strtok(0, " \t");
 	}
-    }
 
     static String	url;
     url = u;
@@ -750,6 +739,10 @@ Retriever::IsValidURL(char *u)
     // If the URL contains any of the patterns in the exclude list,
     // mark it as invalid
     //
+    tmpList.Create(config.Find(&aUrl,"exclude_urls")," \t");
+    HtRegex excludes;
+    excludes.setEscaped(tmpList);
+    tmpList.Release();
     if (excludes.match(url, 0, 0) != 0)
       {
                 if (debug >= 2)
@@ -761,6 +754,10 @@ Retriever::IsValidURL(char *u)
     // If the URL has a query string and it is in the bad query list
     // mark it as invalid
     //
+    tmpList.Create(config.Find(&aUrl,"bad_querystr")," \t");
+    HtRegex badquerystr;
+    badquerystr.setEscaped(tmpList);
+    tmpList.Release();
     char *ext = strrchr((char*)url, '?');
     if (ext && badquerystr.match(url, 0, 0) != 0)
       {
@@ -777,7 +774,7 @@ Retriever::IsValidURL(char *u)
     if(ext) {
       lowerext.set(ext);
       lowerext.lowercase();
-      if (invalids->Exists(lowerext))
+      if (invalids.Exists(lowerext))
 	{
 	  if (debug > 2)
 	    cout << endl <<"   Rejected: Extension is invalid!";
@@ -787,7 +784,7 @@ Retriever::IsValidURL(char *u)
     //
     // Or NOT in the list of valid ones
     //
-    if (ext && valids->Count() > 0 && !valids->Exists(lowerext))
+    if (ext && valids.Count() > 0 && !valids.Exists(lowerext))
       {
 	if (debug > 2)
 	  cout << endl <<"   Rejected: Extension is not valid!";
@@ -810,12 +807,25 @@ Retriever::IsValidURL(char *u)
     //
     // If any of the limits are met, we allow the URL
     //
-    if (limits.match(url, 1, 0) != 0) return(TRUE);
+    if (limits.match(url, 1, 0) == 0) {
+	if (debug > 2)
+	cout << endl <<"   Rejected: URL not in the limits!";
+	return(FALSE);
+    }
+    //
+    // or not in list of normalized urls
+    //
+    // Warning!
+    // should be last in checks because of aUrl normalization
+    //
+    aUrl.normalize();
+    if (limitsn.match(url.get(), 1, 0) == 0) {
+      if (debug>2)
+       cout<<endl<<"   Rejected: not in \"limit_normalized\" list!";
+       return(FALSE);
+    }
 
-    if (debug > 2)
-      cout << endl <<"   Rejected: URL not in the limits!";
-
-    return FALSE;
+  return TRUE;
 }
 
 
@@ -830,6 +840,7 @@ Retriever::GetLocal(char *url)
 {
     static StringList *prefixes = 0;
     static StringList *paths = 0;
+    URL aUrl(url);
 
     //
     // Initialize prefix/path list if this is the first time.
@@ -880,8 +891,8 @@ Retriever::GetLocal(char *url)
 	    int l = strlen(url)-prefix->length()+path->length()+4;
 	    String *local = new String(*path, l);
 	    *local += &url[prefix->length()];
-	    if (local->last() == '/' && !config["local_default_doc"].empty())
-	      *local += config["local_default_doc"];
+	    if (local->last() == '/' && !config.Find(&aUrl,"local_default_doc").empty())
+	      *local += config.Find(&aUrl,"local_default_doc");
 	    return local;
 	}	
     }
@@ -901,6 +912,7 @@ Retriever::GetLocalUser(char *url)
 {
     static StringList *prefixes = 0, *paths = 0, *dirs = 0;
     static Dictionary home_cache;
+    URL aUrl(url);
 
     //
     // Initialize prefix/path list if this is the first time.
@@ -988,8 +1000,8 @@ Retriever::GetLocalUser(char *url)
 	}
 	*local += *dir;
 	*local += rest;
-	if (local->last() == '/' && !config["local_default_doc"].empty())
-	  *local += config["local_default_doc"];
+	if (local->last() == '/' && !config.Find(&aUrl,"local_default_doc").empty())
+	  *local += config.Find(&aUrl,"local_default_doc");
 	return local;
     }
     return 0;
@@ -1216,7 +1228,7 @@ Retriever::got_href(URL &url, const char *description, int hops)
 	    current_ref->DocBackLinks(current_ref->DocBackLinks() + 1);
 	    current_ref->AddDescription(description, words);
 	}
-        else if (limitsn.match(url.get(), 1, 0) != 0)
+        else
 	{
 	    //
 	    // First add it to the document database
@@ -1295,16 +1307,6 @@ Retriever::got_href(URL &url, const char *description, int hops)
 		cout << '*';
 	    delete ref;
 	}
-	else
-	{
-	    //
-	    // Not a valid URL
-	    //
-	    if (debug > 1)
-		cout << "\nurl rejected: (level 2)" << url.get() << endl;
-	    if (debug == 1)
-		cout << '-';
-	}
     }
     else
     {
@@ -1353,8 +1355,6 @@ Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 	}
 
 	url.normalize();
-        if (limitsn.match(url.get(), 1, 0) != 0)
-	{
 	    //
 	    // First add it to the document database
 	    //
@@ -1422,7 +1422,6 @@ Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 
 	    delete ref;
 	}
-    }
 }
 
 
