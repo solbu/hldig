@@ -1,4 +1,7 @@
-Thu Nov 30 10:49:10 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Thu Nov 30 10:55:09 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/String_fmt.cc (form, vform): Use vsnprintf rather than
+	vsprintf, for buffer overflow prevention if vsnprintf available.
 
 	* htdig/Retriever.cc: Remove unused strptime declaration.
 

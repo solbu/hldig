@@ -11,7 +11,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String_fmt.cc,v 1.5.2.3 2000/05/10 18:23:45 loic Exp $
+// $Id: String_fmt.cc,v 1.5.2.4 2000/11/30 17:05:45 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -32,7 +32,7 @@ char *form(const char *fmt, ...)
 {
 	va_list	args;
 	va_start(args, fmt);
-	vsprintf(buf, fmt, args);
+	vsnprintf(buf, sizeof(buf), fmt, args);
 	va_end(args);
 	return buf;
 }
@@ -43,7 +43,7 @@ char *form(const char *fmt, ...)
 //
 char *vform(const char *fmt, va_list args)
 {
-	vsprintf(buf, fmt, args);
+	vsnprintf(buf, sizeof(buf), fmt, args);
 	return buf;
 }
 
