@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.76 2002/05/15 07:46:55 angusgb Exp $
+// $Id: Retriever.cc,v 1.77 2002/06/18 15:25:57 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1280,18 +1280,15 @@ Retriever::got_word(const char *word, int location, int heading)
 	cout << "word: " << word << '@' << location << endl;
     if (heading >= 11 || heading < 0) // Current limits for headings
       heading = 0;  // Assume it's just normal text
-    if (trackWords)
+    if (trackWords && strlen(word) >= minimumWordLength)
     {
       String w = word;
       HtWordReference wordRef;
 
       wordRef.Location(location);
       wordRef.Flags(factor[heading]);
-
-      if (w.length() >= minimumWordLength) {
-	wordRef.Word(w);
-	words.Replace(WordReference::Merge(wordRef, word_context));
-      }
+      wordRef.Word(w);
+      words.Replace(WordReference::Merge(wordRef, word_context));
 
       // Check for compound words...
       String parts = word;

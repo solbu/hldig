@@ -1,3 +1,8 @@
+Tue Jun 18 10:22:01 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc (got_word): Check that the word length meets
+	the minimum word length before doing any processing.
+
 Fri Jun 14 17:26:21 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (buildMatchList), htsearch/HtURLSeedScore.cc
