@@ -1,0 +1,36 @@
+What's New?
+
+A frequent request by htdig users is how to generate a "What's New" page
+showing recently created or modified documents.  The whatsnew.pl script
+was contributed many years ago, and had the ability to extract information
+from the db.docdb database produced by the 3.0.8b2 release of htdig.
+It was since updated to handle the Berkely DB format databases introduced
+in the early 3.1.0 betas, but was never adapted to handle the database
+format changes in later betas, let alone the later 3.1.x stable releases.
+
+A more recent version of whatsnew.pl can be found, along with a Perl
+Berkeley DB package, at ftp://ftp.ccsf.org/htdig-patches/Contrib/
+That version should work with later 3.1.x stable releases, but not
+with the 3.2.0 betas because of even more changes in database format.
+Some users have complained that the newer whatsnew.pl from ccsf.org is
+very tricky to get working.
+
+A better approach has been implemented for 3.1.6, which incorporates
+two new features in htsearch which makes this possible: date restricted
+searches (including support for relative dates), and a feature to match
+all documents.  Combining theses two features, it's easy to get htsearch
+to spit out a list of all recently changed documents.  The whatsnew.html
+search form here gives a simple example of how to do this.  You may
+want to get fancier with custom header, footer and result templates,
+and a custom configuration file to put it all together, but this is a
+starting point.  See http://www.htdig.org/FAQ.html#q4.2 to learn how to
+customize search results.
+
+These features will eventually make it into 3.2.0b4, some time after
+3.1.6 is released.
+
+In summary:
+- whatsnew.pl is pretty much obsolete
+- a newer whatsnew.pl from ftp.ccsf.org works with 3.1.x (with effort)
+- whatsnew.html will work with htsearch version 3.1.6
+

@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>What's New</title>
+</head>
+<body bgcolor="#eef7ff">
+<h1>
+<a href="http://www.htdig.org"><IMG SRC="/htdig/htdig.gif" align="bottom" alt="ht://Dig" border="0"></a>
+What's New</h1>
+<hr noshade size="4">
+This form will allow you to get a list of the most recently modified,
+publicly available WWW documents at this site.
+<br>
+<p>
+<form method="get" action="/cgi-bin/htsearch">
+<font size="-1">
+Format: <select name="format">
+<option value="builtin-long">Long
+<option value="builtin-short">Short
+</select>
+Sort by: <select name="sort">
+<option value="time" selected>Time
+<option value="title">Title
+<option value="score">Score
+<option value="revtime">Reverse Time
+<option value="revtitle">Reverse Title
+<option value="revscore">Reverse Score
+</select>
+Changed in the last: <select name="startday">
+<option value="-7">7
+<option value="-30">30
+<option value="-60">60
+<option value="-90">90
+<option value="-365">365
+</select>
+days.
+<input type="hidden" name="config" value="htdig">
+<input type="hidden" name="matchesperpage" value="50">
+<input type="hidden" name="restrict" value="">
+<input type="hidden" name="exclude" value="">
+<input type="hidden" name="words" value="*">
+<input type="submit" value="Search">
+</font>
+</form>
+<hr noshade size="4">
+</body>
+</html>
