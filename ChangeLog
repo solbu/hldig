@@ -1,3 +1,12 @@
+Fri Jan 18 18:17:34 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htmerge/docs.cc: Add a test if the DB database has no URLs
+	before proceeding.
+
+	* htmerge/words.cc: Add a slightly more user-friendly error
+	message if the word list file doesn't exist. Remove exit()
+	statements since reportError does this for us.
+
 Fri Jan 18 16:47:50 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html: Rewrote description of prefix_match_character

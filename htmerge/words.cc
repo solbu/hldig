@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.10.2.3 2001/06/07 19:33:56 grdetil Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.10.2.4 2002/01/19 00:25:13 ghutchis Exp $";
 #endif
 
 #include "htmerge.h"
@@ -41,7 +41,7 @@ mergeWords(char *wordtmp, char *wordfile)
     }
     if (access(wordtmp, R_OK) < 0)
     {
-	reportError(form("Unable to open word list file '%s'", wordtmp));
+	reportError(form("Unable to open word list file '%s'.\n  Did you index anything?\n  Check your config file and try running htdig again.", wordtmp));
     }
     if (dbf->OpenReadWrite(wordfile, 0664) == NOTOK)
     {
@@ -67,7 +67,6 @@ mergeWords(char *wordtmp, char *wordfile)
     if (!sorted)
     {
 	reportError("Unable to sort");
-	exit(1);
     }
 	
     //
@@ -271,7 +270,6 @@ mergeWords(char *wordtmp, char *wordfile)
     if (sortRC)
     {
 	reportError("Word sort failed");
-	exit(1);
     }
 
     // We still have to add the last word

@@ -3,7 +3,7 @@
 //
 // Indexing the "doc_db" database by id-number in "doc_index".
 //
-// $Id: docs.cc,v 1.14.2.3 2001/11/21 18:50:50 grdetil Exp $
+// $Id: docs.cc,v 1.14.2.4 2002/01/19 00:25:13 ghutchis Exp $
 //
 //
 
@@ -42,6 +42,10 @@ convertDocs(char *doc_db, char *doc_index)
     //
     db.Open(doc_db);
     urls = db.URLs();
+    if (urls->Count() == 0)
+      {
+	reportError("Document database has no URLs. Check your config file and try running htdig again.");
+      }
 	
     urls->Start_Get();
     String		*url;
