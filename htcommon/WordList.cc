@@ -4,6 +4,10 @@
 // Implementation of WordList
 //
 // $Log: WordList.cc,v $
+// Revision 1.9  1998/12/13 00:15:35  ghutchis
+// Added additional cleanups for words in the bad word list. Check to make sure
+// they don't have punctuation, etc.
+//
 // Revision 1.8  1998/12/08 02:52:19  ghutchis
 // Remove unnecessary code.
 //
@@ -32,7 +36,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.8 1998/12/08 02:52:19 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.9 1998/12/13 00:15:35 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -229,6 +233,8 @@ void WordList::BadWordFile(char *filename)
     FILE	*fl = fopen(filename, "r");
     char	buffer[1000];
     char	*word;
+    String      new_word;
+    char        *valid_punctuation = config["valid_punctuation"];
 
     while (fl && fgets(buffer, sizeof(buffer), fl))
     {
@@ -237,7 +243,11 @@ void WordList::BadWordFile(char *filename)
 	  {
 	    if (strlen(word) > MAX_WORD_LENGTH)
 	      word[MAX_WORD_LENGTH] = '\0';
-	    badwords.Add(word, 0);
+	    new_word = word;  // We need to clean it up before we add it
+	    new_word.lowercase();  // Just in case someone enters an odd one
+	    new_word.remove(valid_punctuation);
+	    if (new_word.length() >= minimumWordLength)
+	      badwords.Add(new_word, 0);
 	  }
     }
     if (fl)

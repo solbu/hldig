@@ -4,7 +4,10 @@ Sat Dec 12 12:01:55 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	mostlyclean to clean up, but leave compile-intensive targets
 	(e.g. db, rx code). General cleanup too.
 
-	* htdoc/where: Updated for eventual 3.1.0b3 release.
+	* htdoc/where.html: Updated for eventual 3.1.0b3 release.
+
+	* htcommon/WordList.cc: Added additional cleanups for the words in
+	the bad word file, in case they have invalid punctuation, etc.
 
 Sat Dec 12 18:41:29 1998  Alexander Bergolth  <leo@strike.wu-wien.ac.at>
 
