@@ -1,3 +1,10 @@
+Mon Mar 22 17:50:47 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(display): Free DocumentRef memory after
+	displaying them.
+	(displayMatch): Fix memory leak when documents did not have anchors,
+	fix problems when documents did not have descriptions.
+
 Mon Mar 22 17:32:14 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htmerge/docs.cc: Replace previous verbose patch with H-P Nilsson's.

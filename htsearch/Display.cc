@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54 1999/02/05 03:51:38 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.1 1999/03/23 00:04:17 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -92,7 +92,7 @@ Display::display(int pageNumber)
     List		*matches = buildMatchList();
     int			currentMatch = 0;
     int			numberDisplayed = 0;
-    ResultMatch	*match = 0;
+    ResultMatch		*match = 0;
     int			number = config.Value("matches_per_page");
     int			startAt = (pageNumber - 1) * number;
 
@@ -180,6 +180,8 @@ Display::display(int pageNumber)
 	    ref->DocScore(match->getScore());
 	    displayMatch(match,currentMatch+1);
 	    numberDisplayed++;
+	    match->setRef(NULL);
+	    delete ref;
 	}
 	currentMatch++;
     }
@@ -231,13 +233,14 @@ Display::displayMatch(ResultMatch *match, int current)
     
     int     iA = ref->DocAnchor();
     
+    String  *anchor = 0;
     int             fanchor = 0;
-    String  *anchor = new String();
     if (iA > 0)             // if an anchor was found
       {
 	List    *anchors = ref->DocAnchors();
 	if (anchors->Count() > 0)
 	  {
+	    anchor = new String();
 	    fanchor = 1;
 	    *anchor << "#" << ((String*) (*anchors)[iA-1])->get();
 	    vars.Add("ANCHOR", anchor);
@@ -250,7 +253,8 @@ Display::displayMatch(ResultMatch *match, int current)
     //
     int first = -1;
     String urlanchor(url);
-    urlanchor << anchor;
+    if (anchor)
+      urlanchor << anchor;
     vars.Add("EXCERPT", excerpt(ref, urlanchor, fanchor, first));
     //
     // anchor only relevant if an excerpt was found, i.e.,
@@ -337,7 +341,10 @@ Display::displayMatch(ResultMatch *match, int current)
 	    *str << ((String*) (*list)[i])->get() << "<br>\n";
 	}
 	vars.Add("DESCRIPTIONS", str);
-	vars.Add("DESCRIPTION", ((String*) (*list)[1]));
+        String *description = new String();
+        if (list->Count())
+            *description << ((String*) (*list)[0]);
+        vars.Add("DESCRIPTION", description);
     }
 
     expandVariables(currentTemplate->getMatchTemplate());
