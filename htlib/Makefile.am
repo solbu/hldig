@@ -45,7 +45,8 @@ include_HEADERS = \
 	regex.h  \
 	HtVectorGeneric.h   \
 	HtVectorGenericCode.h \
-	HtVector_int.h
-
+	HtVector_int.h \
+	HtMaxMin.h \
+	HtTime.h
 
 
