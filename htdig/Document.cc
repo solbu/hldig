@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34.2.16 2001/09/14 14:21:06 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34.2.17 2001/12/20 18:28:04 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -184,6 +184,195 @@ Document::Url(char *u)
 }
 
 
+#define EPOCH	1970
+
+//
+// time_t parsedate(char *date)
+//   - converts RFC850 or RFC1123 date string into a time value
+//
+time_t
+parsedate(char *date)
+{
+    char	*s;
+    int		day, month, year, hour, minute, second;
+
+    //
+    // Two possible time designations:
+    //      Tuesday, 01-Jul-97 16:48:02 GMT     (RFC850)
+    // or
+    //      Thu, 01 May 1997 00:40:42 GMT       (RFC1123)
+    //
+    // We strip off the weekday because we don't need it, and
+    // because some servers send invalid weekdays!
+    // (Some don't even send a weekday, but we'll be flexible...)
+
+    s = date;
+    while (*s && *s != ',')
+	s++;
+    if (*s)
+	s++;
+    else
+	s = date;
+    while (isspace(*s))
+	s++;
+
+    // get day...
+    if (!isdigit(*s))
+	return 0;
+    day = 0;
+    while (isdigit(*s))
+	day = day * 10 + (*s++ - '0');
+    if (day > 31)
+	return 0;
+    while (*s == '-' || isspace(*s))
+	s++;
+
+    // get month...
+    switch (*s++) {
+    case 'J': case 'j':
+	switch (*s++) {
+	case 'A': case 'a':
+	    month = 1;
+	    s++;
+	    break;
+	case 'U': case 'u':
+	    switch (*s++) {
+	    case 'N': case 'n':
+		month = 6;
+		break;
+	    case 'L': case 'l':
+		month = 7;
+		break;
+	    default:
+		return 0;
+	    }
+	    break;
+	default:
+	    return 0;
+	}
+	break;
+    case 'F': case 'f':
+	month = 2;
+	s += 2;
+	break;
+    case 'M': case 'm':
+	switch (*s++) {
+	case 'A': case 'a':
+	    switch (*s++) {
+	    case 'R': case 'r':
+		month = 3;
+		break;
+	    case 'Y': case 'y':
+		month = 5;
+		break;
+	    default:
+		return 0;
+	    }
+	    break;
+	default:
+	    return 0;
+	}
+	break;
+    case 'A': case 'a':
+	switch (*s++) {
+	case 'P': case 'p':
+	    month = 4;
+	    s++;
+	    break;
+	case 'U': case 'u':
+	    month = 8;
+	    s++;
+	    break;
+	default:
+	    return 0;
+	}
+	break;
+    case 'S': case 's':
+	month = 9;
+	s += 2;
+	break;
+    case 'O': case 'o':
+	month = 10;
+	s += 2;
+	break;
+    case 'N': case 'n':
+	month = 11;
+	s += 2;
+	break;
+    case 'D': case 'd':
+	month = 12;
+	s += 2;
+	break;
+    default:
+	return 0;
+    }
+    while (*s == '-' || isspace(*s))
+	s++;
+
+    // get year...
+    if (!isdigit(*s))
+	return 0;
+    year = 0;
+    while (isdigit(*s))
+	year = year * 10 + (*s++ - '0');
+    if (year < 69)
+	year += 2000;
+    else if (year < 1900)
+	year += 1900;
+    else if (year >= 19100)	// seen some programs do it, why not check?
+	year -= (19100-2000);
+    while (isspace(*s))
+	s++;
+
+    // get hour...
+    if (!isdigit(*s))
+	return 0;
+    hour = 0;
+    while (isdigit(*s))
+	hour = hour * 10 + (*s++ - '0');
+    if (hour > 23)
+	return 0;
+    while (*s == ':' || isspace(*s))
+	s++;
+
+    // get minute...
+    if (!isdigit(*s))
+	return 0;
+    minute = 0;
+    while (isdigit(*s))
+	minute = minute * 10 + (*s++ - '0');
+    if (minute > 59)
+	return 0;
+    while (*s == ':' || isspace(*s))
+	s++;
+
+    // get second...
+    if (!isdigit(*s))
+	return 0;
+    second = 0;
+    while (isdigit(*s))
+	second = second * 10 + (*s++ - '0');
+    if (second > 59)
+	return 0;
+    while (*s == ':' || isspace(*s))
+	s++;
+
+    //
+    // Calculate date as seconds since 01 Jan 1970 00:00:00 GMT
+    // This is based somewhat on the date calculation code in NetBSD's
+    // cd9660_node.c code, for which I was unable to find a reference.
+    // It works, though!
+    //
+    return (time_t) (((((367L*year - 7L*(year+(month+9)/12)/4
+				   - 3L*(((year)+((month)+9)/12-1)/100+1)/4
+				   + 275L*(month)/9 + day) -
+			(367L*EPOCH - 7L*(EPOCH+(1+9)/12)/4
+				   - 3L*((EPOCH+(1+9)/12-1)/100+1)/4
+				   + 275L*1/9 + 1))
+		       * 24 + hour) * 60 + minute) * 60 + second);
+}
+
+
 //*****************************************************************************
 // time_t Document::getdate(char *datestring)
 //   Convert a RFC850 date string into a time value
@@ -191,55 +380,10 @@ Document::Url(char *u)
 time_t
 Document::getdate(char *datestring)
 {
-    struct tm   tm;
     time_t      ret;    
-    char        *s;    
 
-    //
-    // Two possible time designations:
-    //      Tuesday, 01-Jul-97 16:48:02 GMT
-    // or
-    //      Thu, 01 May 1997 00:40:42 GMT
-    //
-    // We strip off the weekday before sending to strptime
-    // because some servers send invalid weekdays!
-    // (Some don't even send a weekday, but we'll be flexible...)
- 
-    s = strchr(datestring, ',');
-    if (s)
-        s++;
-    else
-        s = datestring;
-    while (isspace(*s))
-        s++;
-    if (strchr(s, '-') && mystrptime(s, "%d-%b-%y %T", &tm) ||
-            mystrptime(s, "%d %b %Y %T", &tm))
-      {
-	// correct for mystrptime, if %Y format saw only a 2 digit year
-	if (tm.tm_year < 0)
-	  tm.tm_year += 1900;
-	tm.tm_yday = 0;	// clear these to prevent problems in strftime()
-	tm.tm_wday = 0;
-	
-	if (debug > 2)
-	  {
-	    cout << "Translated " << datestring << " to ";
-	    char	buffer[100];
-	    // Leave out %a for weekday, because we don't set it anymore...
-	    //strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", &tm);
-	    // Let's just do away with strftime() altogether for this...
-	    //strftime(buffer, sizeof(buffer), "%d %b %Y %T", &tm);
-	    sprintf(buffer, "%4d-%02d-%02d %02d:%02d:%02d", tm.tm_year+1900,
-		tm.tm_mon+1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-	    cout << buffer << " (" << tm.tm_year << ")" << endl;
-	  }
-#if HAVE_TIMEGM
-	ret = timegm(&tm);
-#else
-	ret = mytimegm(&tm);
-#endif
-      }
-    else
+    ret = parsedate(datestring);
+    if (!ret)
       {
 	if (debug > 2)
 	  {
@@ -249,13 +393,12 @@ Document::getdate(char *datestring)
 	ret = time(0); // This isn't the best, but it works. *fix*
       }
     if (debug > 2)
-    {
-        cout << "And converted to ";
-        struct tm *tm2 = gmtime(&ret);
+      {
+        struct tm *tm = gmtime(&ret);
         char    buffer[100];
-        strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", tm2);
-        cout << buffer << endl;
-    }
+        strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", tm);
+	cout << "Converted " << datestring << " to " << buffer << endl;
+      }
     return ret;
 }
 
