@@ -412,61 +412,28 @@ private:
 // Decode integer found in <from> using <from_size> bytes. The integer starts at <lowbits> bit
 // in the first byte and occupies a total of <bits> bits. The resulting integer is stored in *<top>
 //
-inline int WordKey::UnpackNumber(const unsigned char* from, const int from_size, WordKeyNum &res, const int lowbits, const int bits)
+inline int WordKey::UnpackNumber(const unsigned char* from, const int from_size, W\ordKeyNum& to, int lowbits, int bits)
 {
-    // SPEED CRITICAL SECTION
+  WordKeyNum to = 0;
 
-    if((lowbits+bits)<=8)
-    {
-	// simplest case (everything fits on first byte)
-	res = ((*from)>>lowbits) & WORD_BIT_MASK2(bits);
-	return OK;
+  to = ((from[0] & 0xff) >> lowbits);
+
+  if(lowbits) to &= WORD_BIT_MASK(8 - lowbits);
+
+  if(from_size == 1) 
+    to &= WORD_BIT_MASK(bits);
+  else {
+    for(int i = 1; i < from_size; i++) {
+      to |= (from[i] & 0xff) << ((i - 1) * 8 + (8 - lowbits));
     }
-    else
-    if(!lowbits && !(bits & 0x07))
-    {
-	// simple case everything is byte alligned
-	char *ctop=(char *)&res;
-	res=0;
-	for(int i=from_size;i;i--)
-	{
-	    *(ctop++)=*(from++);
-	}
-	return OK;
-    }
-    else
-    {
-	// general case
+  }
 
-	// first byte
-	res = ((*(from++))>>lowbits) & 0xff;
-
-	const int ncentral=((lowbits + bits)>>3)-1;
-	const int nbitsinfirstbyte=8-lowbits;
-	const int nbitsremaining=bits-(  (ncentral<<3)+nbitsinfirstbyte );
-
-	// central bytes
-	if(ncentral)
-	{
-	    WordKeyNum v=0;
-	    unsigned char *cv=(unsigned char *)&v;
-	    for(int i=ncentral;i;i--)
-	    {
-		*(cv++)=*(from++);
-	    }
-	    res|=v<<nbitsinfirstbyte;
-	}
-    
-	// last byte
-	if(nbitsremaining)
-	{
-	    res|=((WordKeyNum)((*from) &  WORD_BIT_MASK2(nbitsremaining) )) << 
-		(nbitsinfirstbyte +(ncentral<<3));
-	}
+  if(bits < (int)(sizeof(WordKeyNum) * 8))
+    to &= ( 1 << bits ) - 1;
   
+  *top = to;
 
-	return OK;
-    }
+  return OK;
 }
 
 //
