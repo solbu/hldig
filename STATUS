@@ -1,12 +1,11 @@
 STATUS of ht://Dig branch 3-2-x
 
 RELEASES:
-   3.2.0b1: Unscheduled, Feature-Freeze
+   3.2.0b1: Tentative Release: 2 Feb 2000, Hard Feature Freeze
 
 
 SHOWSTOPPERS:
-* htdig/Retriever class still need a cleanup.
-   (Geoff: Volunteered, still some to finish up.)
+* (none at the moment)
 
 KNOWN BUGS:
 * htdig/Image.cc doesn't use Transport classes.
@@ -21,7 +20,6 @@ KNOWN BUGS:
    correctly: PR#650.
 * htfuzzy endings: use of unlink fails if TMPDIR is not on the same 
    volume.
-* <META> keywords and descriptions are indexed regardless of doindex.
 
 PENDING FEATURES:
 * (Is there anything approved and not in the current CVS tree?)
@@ -49,5 +47,7 @@ OTHER ISSUES:
   or htmerge. PR#672.
 * Reported problem where -h is ignored if modification_time_is_now set to 
   false. (Should mod_time_is_now just be true and removed as an attribute?)
-* Are <meta> keywords and descriptions indexed with consecutive word #s to 
-  allow phrase searching?
+* Are there timing/race conditions with the htnet Connection code?
+* Retriever::Start() picks the next server regardless of persistent connections:
+  the next server should be picked from a priority queue depending on
+  the delay, hopcount, and use of persistent connections.
