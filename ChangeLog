@@ -1,3 +1,22 @@
+Sun Feb 13 21:19:04 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Get rid of uncoded_db_compatible since
+	the current DB format has clearly broken backwards compatibility.
+
+	* htsearch/Display.cc (Display), htnotify/htnotify.cc (main),
+	htmerge/docs.cc (convertDocs), htmerge/db.cc (mergeDB),
+	htdig/htdig.cc (main): Remove call to DocumentDB::setCompatibility().
+
+	* htcommon/DocumentDB.h (class DocumentDB): Remove
+	setCompatibility and related private variable.
+
+	* htcommon/DocumentDB.cc ([], Delete): Don't bother checking for
+	an unencoded URL, at this point all URLs will be encoded using
+	HtURLCodec.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerate using cf_generate.pl.
+
 Sat Feb 12 21:29:20 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/HtSGMLCodec.cc (HtSGMLCodec): Always translate &quot;
