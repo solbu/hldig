@@ -1,3 +1,8 @@
+Mon Mar 22 19:21:16 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc: Fix #ifdef
+	problems with zlib.
+
 Mon Mar 22 19:14:40 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html (template_name): Typo; used by htsearch, not htdig.
