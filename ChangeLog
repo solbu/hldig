@@ -1,3 +1,42 @@
+Wed Sep 27 00:05:41 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdb/mifluz[dict, dump, load].cc, htdb/util_sig.h,
+	htdb/util_sig.cc: New files from mifluz merge. (Whoops, missed a
+	directory).
+
+	* htdb/*.cc: Change config.h references to htconfig.h.
+
+	* htlib/myqsort.c: Ditto.
+
+	* htcommon/HtWordReference.h, htcommon/HtWordReference.cc: Ensure
+	we keep the WordContext object around--unfortunately this also
+	requires that callers initialize us with a WordContext (e.g. from
+	the HtWordList class).
+	
+	* htlib/StringMatch.h, htlib/StringMatch.cc: Changes to use
+	WordType directly instead of HtWordType.
+
+	* htfuzzy/*: Ditto. Additionally make sure HtWordReference objects
+	are intstantiated properly.
+
+	* htcommon/DocumentRef.cc, htcommon/HtWordList.cc: As above.
+
+	* htdig/*: As above.
+
+	* htsearch/*: As above.
+	
+	* httools/*: Don't bother initializing WordContext--this is done
+	in the HtWordList class now.
+
+	* htdig/htdig.cc: Ditto.
+
+	* htsearch/htsearch.cc, htsearch/qtest.cc: Ditto.
+
+	* htfuzzy/htfuzzy.cc: Ditto.
+
+	* db/Makefile.am, db/Makefile.in: Update to build libhtdb instead
+	of libdb to prevent conflicts.
+
 Sun Sep 24 22:50:22 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htword/HtWordList.h, htword/HtWordList.cc: Keep a WordContext
