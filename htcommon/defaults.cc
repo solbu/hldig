@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.37  1999/01/18 03:07:24  ghutchis
+// Added options "sort" and "sort_names" to pick result sorting order and text
+// names for sort options.
+//
 // Revision 1.36  1999/01/18 00:52:50  ghutchis
 // Fix mismatched naming of compression_level (was compression_factor).
 //
@@ -124,7 +128,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.36 1999/01/18 00:52:50 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.37 1999/01/18 03:07:24 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -231,6 +235,8 @@ ConfigDefaults	defaults[] =
     {"server_aliases",                  ""},
     {"server_wait_time",                "0"},
     {"server_max_docs",                 "-1"},
+    {"sort",				"score"},
+    {"sort_names",			"score Score time Time title Title revscore 'Reverse Score' revtime 'Reverse Time' revtitle 'Reverse Title'"},
     {"soundex_db",			"${database_base}.soundex.db"},
     {"star_blank",			"${image_url_prefix}/star_blank.gif"},
     {"star_image",			"${image_url_prefix}/star.gif"},
