@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.16 1999/12/09 16:44:31 bosc Exp $
+// $Id: defaults.cc,v 1.64.2.17 1999/12/10 11:04:38 bosc Exp $
 //
 
 #include "HtConfiguration.h"
@@ -2088,7 +2088,10 @@ url_part_aliases:
 { "wordlist_cache_size", "0", 
 	"number", "htdig htmerge htsearch htfuzzy", "wordlist_cache_size: 40000000", "
 	Size of memory cache used by Berkeley DB (DB used by the indexer)
-
+	IMPORTANT: It  makes a *huge* difference. The rule 
+	is that the cache size should be at least 2% of the expected index size. The
+	Berkeley DB file has 1% of internal pages that *must* be cached for good
+	performances. Giving an additional 1% leaves room for caching leaf pages.
 " },
 { "wordlist_compress_debug", "1", 
 	"number", "htdig htmerge htsearch htfuzzy", "wordlist_cache_size: 2", "
