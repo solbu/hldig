@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.24 2000/02/15 22:08:36 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.25 2000/02/16 21:00:29 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -850,96 +850,107 @@ Display::readFile(char *filename)
 }
 
 //*****************************************************************************
+// void encodeSGML(String &str)
+// Encode into SGML entities the characters that may pose problems in HTML
+void
+encodeSGML(String &str)
+{
+    String		temp;
+    unsigned char	*p;
+
+    for (p = (unsigned char *)str.get(); p && *p; p++)
+    {
+	if (*p == '<')
+	    temp << "&lt;";
+	else if (*p == '>')
+	    temp << "&gt;";
+	else if (*p == '&')
+	    temp << "&amp;";
+	else if (*p == '"')
+	    temp << "&quot;";
+	else if (*p == 160)
+	    temp << "&nbsp;";
+	else
+	    temp << *p;
+    }
+    str = temp;
+}
+
+//*****************************************************************************
 void
 Display::expandVariables(char *str)
 {
-    int		state = 0;
+    enum
+    {
+	StStart, StLiteral, StVarStart, StVarClose, StVarPlain, StGotVar
+    } state = StStart;
     String	var = "";
 
     while (str && *str)
     {
 	switch (state)
 	{
-	    case 0:
+	    case StStart:
 		if (*str == '\\')
-		    state = 1;
+		    state = StLiteral;
 		else if (*str == '$')
-		    state = 3;
+		    state = StVarStart;
 		else
 		    cout << *str;
 		break;
-	    case 1:
+	    case StLiteral:
 		cout << *str;
-		state = 0;
+		state = StStart;
 		break;
-	    case 2:
-		//
-		// We have a complete variable in var. Look it up and
-		// see if we can find a good replacement for it.
-		//
-		outputVariable(var);
-		var = "";
-		if (*str == '$')
-		    state = 3;
-		else if (*str == '\\')
-		    state = 1;
-		else
+	    case StVarStart:
+		if (*str == '%')
+		    var << *str;	// code for URL-encoded variable
+		else if (*str == '&')
 		{
-		    state = 0;
-		    cout << *str;
+		    var << *str;	// code for SGML-encoded variable
+		    if (mystrncasecmp("&amp;", str, 5) == 0)
+			str += 4;
 		}
-		break;
-	    case 3:
-		if (*str == '(' || *str == '{')
-		    state = 4;
+		else if (*str == '(' || *str == '{')
+		    state = StVarClose;
 		else if (isalpha(*str) || *str == '_')
 		{
 		    var << *str;
-		    state = 5;
+		    state = StVarPlain;
 		}
 		else
-		    state = 0;
+		    state = StStart;
 		break;
-	    case 4:
+	    case StVarClose:
 		if (*str == ')' || *str == '}')
-		    state = 2;
+		    state = StGotVar;
 		else if (isalpha(*str) || *str == '_')
 		    var << *str;
 		else
-		    state = 0;
+		    state = StStart;
 		break;
-	    case 5:
+	    case StVarPlain:
 		if (isalpha(*str) || *str == '_')
 		    var << *str;
-		else if (*str == '$')
-		    state = 6;
 		else
 		{
-		    state = 2;
+		    state = StGotVar;
 		    continue;
 		}
 		break;
-	    case 6:
+	    case StGotVar:
 		//
 		// We have a complete variable in var. Look it up and
 		// see if we can find a good replacement for it.
 		//
 		outputVariable(var);
 		var = "";
-		if (*str == '(' || *str == '{')
-		    state = 4;
-		else if (isalpha(*str) || *str == '_')
-		{
-		    var << *str;
-		    state = 5;
-		}
-		else
-		    state = 0;
-		break;
+		state = StStart;
+		continue;
 	}
 	str++;
     }
-    if (state == 2 || state == 5)
+    if (state == StGotVar || state == StVarPlain)
     {
 	//
 	// The end of string was reached, but we are still trying to
@@ -955,20 +966,32 @@ void
 Display::outputVariable(char *var)
 {
     String	*temp;
-    char	*ev;
+    String	value = "";
+    char	*ev, *name;
 
     // We have a complete variable name in var. Look it up and
     // see if we can find a good replacement for it, either in our
     // vars dictionary or in the environment variables.
-    temp = (String *) vars[var];
+    name = var;
+    while (*name == '&' || *name == '%')
+	name++;
+    temp = (String *) vars[name];
     if (temp)
-	cout << *temp;
+	value = *temp;
     else
     {
-	ev = getenv(var);
+	ev = getenv(name);
 	if (ev)
-	    cout << ev;
+	    value = ev;
     }
+    while (--name >= var && value.length())
+    {
+	if (*name == '%')
+	    encodeURL(value);
+	else
+	    encodeSGML(value);
+    }
+    cout << value;
 }
 
 //*****************************************************************************
@@ -1089,6 +1112,9 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 	use_meta_description = 1;
       }
     else head = ref->DocHead(); // head points to the top
+    String	head_string(head);
+    encodeSGML(head_string);
+    head = head_string.get();
 
     int		which, length;
     char	*temp = head;

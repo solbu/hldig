@@ -1,5 +1,14 @@
+Wed Feb 16 14:42:02 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (encodeSGML, excerpt): Add encoding for
+	characters that could pose problems in HTML output.
+	* htsearch/Display.cc (expandVariables, outputVariables): Add support
+	for $&(var) and $%(var) template variable references.  This should
+	fix PR#750, once we use this in common/*.html.
+
 Tue Feb 15 17:21:08 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	[ Applied a whole collection of patches and fixes from the archives ]
 	* htdig/Server.cc (robotstxt): apply more rigorous parsing of
 	multiple user-agent fields, and use only the first one.
 
