@@ -6,6 +6,9 @@
 // has "expired"
 //
 // $Log: htnotify.cc,v $
+// Revision 1.17  1999/01/25 04:08:54  ghutchis
+// Fix compiler warnings.
+//
 // Revision 1.16  1999/01/25 01:53:49  hp
 // Provide a clean upgrade from old databses without "url_part_aliases" and
 // "common_url_parts" through the new option "uncoded_db_compatible".
@@ -62,7 +65,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.16 1999/01/25 01:53:49 hp Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.17 1999/01/25 04:08:54 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -264,12 +267,11 @@ void send_notification(char *date, char *email, char *url, char *subject)
 	token = strtok(0, " ,\t\r\n");
     }
 
-    // Before we use the email address string, we may want to sanitize it.
-//    static char ok_chars[] = "abcdefghijklmnopqrstuvwxyz\
-//ABCDEFGHIJKLMNOPQRSTUVWXYZ\
-//1234567890_-.@/=+:%!, ";
+// Before we use the email address string, we may want to sanitize it.
+//    static char ok_chars[] = "abcdefghijklmnopqrstuvwxyz
+//    ABCDEFGHIJKLMNOPQRSTUVWXYZ
+//    1234567890_-.@/=+:%!, ";
 //    char *cursor;          // cursor into email address 
-
 //    for (cursor = to.get(); *(cursor += strspn(cursor, ok_chars));)
 //      *cursor = '_'; // Set it to something harmless
     
