@@ -14,27 +14,17 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.cc,v 1.3.2.11 2000/08/18 05:23:23 ghutchis Exp $
+// $Id: WordType.cc,v 1.3.2.12 2000/09/14 03:13:28 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
-#include "htconfig.h"
+#include "config.h"
 #endif /* HAVE_CONFIG_H */
 
 #include <ctype.h>
 #include <stdio.h>
 
 #include "WordType.h"
-
-WordType* WordType::instance = 0;
-
-void 
-WordType::Initialize(const Configuration &config_arg)
-{
-  if(instance != 0)
-    delete instance;
-  instance = new WordType(config_arg);
-}
 
 WordType::WordType(const Configuration &config)
 {
@@ -92,10 +82,6 @@ WordType::WordType(const Configuration &config)
     if (fl)
 	fclose(fl);
   }
-}
-
-WordType::~WordType()
-{
 }
 
 //
@@ -192,28 +178,4 @@ WordType::NormalizeStatus(int flags)
   if(tmp.empty()) tmp << "GOOD";
 
   return tmp;
-}
-
-//
-// Non-destructive tokenizer using external int as pointer into String
-//  does word separation by our rules (so it can be subclassed too)
-//
-String
-WordType::WordToken(const String tokens, int &current) const
-{
-    unsigned char	text = tokens[current];
-    String		ret;
-
-    while (text && !IsStrictChar(text))
-      text = tokens[++current];
-
-    if (text)
-    {
-	while (text && IsChar(text))
-	  {
-	    ret << text;
-	    text = tokens[++current];
-	  }
-    }
-    return ret;
 }

@@ -12,7 +12,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Dictionary.cc,v 1.10.2.5 2000/05/10 18:23:43 loic Exp $
+// $Id: Dictionary.cc,v 1.10.2.6 2000/09/14 03:13:24 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -65,7 +65,7 @@ Dictionary::Dictionary(int initialCapacity)
     init(initialCapacity, 0.75f);
 }
 
-Dictionary::Dictionary(const Dictionary& other)
+Dictionary::Dictionary(const Dictionary& other) : Object()
 {
     init(other.initialCapacity, other.loadFactor);
 

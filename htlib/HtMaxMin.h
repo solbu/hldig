@@ -8,7 +8,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtMaxMin.h,v 1.1.2.3 2000/05/10 18:23:44 loic Exp $
+// $Id: HtMaxMin.h,v 1.1.2.4 2000/09/14 03:13:24 ghutchis Exp $
 //
 
 #ifndef _HtMaxMin_h_
@@ -23,10 +23,12 @@ class HtMaxMin
 {
  public:
     // compute max/min of an array of values
-    static unsigned int   max_v(unsigned int   *vals,int n);
-    static unsigned short max_v(unsigned short *vals,int n);
-    static unsigned int   min_v(unsigned int   *vals,int n);
-    static unsigned short min_v(unsigned short *vals,int n);
+    static unsigned int   max_v(unsigned int   *vals, int n);
+    static unsigned short max_v(unsigned short *vals, int n);
+    static unsigned char  max_v(unsigned char  *vals, int n);
+    static unsigned int   min_v(unsigned int   *vals, int n);
+    static unsigned short min_v(unsigned short *vals, int n);
+    static unsigned char  min_v(unsigned char  *vals, int n);
 };
 
 

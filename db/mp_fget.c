@@ -1,13 +1,13 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
-#include "db_config.h"
+#include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)mp_fget.c	11.8 (Sleepycat) 10/16/99";
+static const char revid[] = "$Id: mp_fget.c,v 1.1.2.2 2000/09/14 03:13:22 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -15,6 +15,10 @@ static const char sccsid[] = "@(#)mp_fget.c	11.8 (Sleepycat) 10/16/99";
 
 #include <errno.h>
 #include <string.h>
+#endif
+
+#ifdef  HAVE_RPC
+#include "db_server.h"
 #endif
 
 #include "db_int.h"
@@ -25,6 +29,11 @@ static const char sccsid[] = "@(#)mp_fget.c	11.8 (Sleepycat) 10/16/99";
 #ifdef DEBUG
 #include "WordMonitor.h"
 #endif /* DEBUG */
+
+#ifdef HAVE_RPC
+#include "gen_client_ext.h"
+#include "rpc_client_ext.h"
+#endif
 
 /*
  * CDB_memp_fget --
@@ -41,8 +50,7 @@ CDB_memp_fget(dbmfp, pgnoaddr, flags, addrp)
 	DB_ENV *dbenv;
 	DB_MPOOL *dbmp;
 	DB_HASHTAB *dbht;
-	MCACHE *mc;
-	MPOOL *mp;
+	MPOOL *c_mp, *mp;
 	MPOOLFILE *mfp;
 	size_t n_bucket, n_cache, mf_offset;
 	u_int32_t st_hsearch;
@@ -50,8 +58,12 @@ CDB_memp_fget(dbmfp, pgnoaddr, flags, addrp)
 
 	dbmp = dbmfp->dbmp;
 	dbenv = dbmp->dbenv;
-	mp = dbmp->reginfo.primary;
+	mp = dbmp->reginfo[0].primary;
 	mfp = dbmfp->mfp;
+#ifdef HAVE_RPC
+	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
+		return (__dbcl_memp_fget(dbmfp, pgnoaddr, flags, addrp));
+#endif
 
 	PANIC_CHECK(dbenv);
 
@@ -93,16 +105,16 @@ CDB_memp_fget(dbmfp, pgnoaddr, flags, addrp)
 	 * we get a new page to ensure contention.
 	 */
 	if (DB_GLOBAL(db_pageyield))
-		CDB___os_yield(1);
+		CDB___os_yield(dbenv, 1);
 #endif
 
 	/* Initialize remaining local variables. */
-	mf_offset = R_OFFSET(&dbmp->reginfo, mfp);
+	mf_offset = R_OFFSET(dbmp->reginfo, mfp);
 	bhp = NULL;
 	st_hsearch = 0;
 	b_incr = ret = 0;
 
-	R_LOCK(dbenv, &dbmp->reginfo);
+	R_LOCK(dbenv, dbmp->reginfo);
 
 	/*
 	 * Check for the new, last or last + 1 page requests.
@@ -129,20 +141,22 @@ CDB_memp_fget(dbmfp, pgnoaddr, flags, addrp)
 	 */
 	if (LF_ISSET(DB_MPOOL_LAST | DB_MPOOL_NEW | DB_MPOOL_NEW_GROUP)) {
 		if (LF_ISSET(DB_MPOOL_NEW)) {
-			if ((ret = CDB___os_fpinit(&dbmfp->fh, mfp->last_pgno + 1,
+			if ((ret = CDB___os_fpinit(dbenv,
+			    &dbmfp->fh, mfp->last_pgno + 1,
 			    1, mfp->stat.st_pagesize)) != 0) {
-				R_UNLOCK(dbenv, &dbmp->reginfo);
+				R_UNLOCK(dbenv, dbmp->reginfo);
 				return (ret);
 			}
 			++mfp->last_pgno;
 #ifdef DEBUG
-			word_monitor_set(WORD_MONITOR_PGNO, mfp->last_pgno);
+			word_monitor_set(DB_MONITOR(dbenv), WORD_MONITOR_PGNO, mfp->last_pgno);
 #endif /* DEBUG */
 		}
 		if (LF_ISSET(DB_MPOOL_NEW_GROUP)) {
-			if ((ret = CDB___os_fpinit(&dbmfp->fh, mfp->last_pgno + 1,
+			if ((ret = CDB___os_fpinit(dbenv,
+			    &dbmfp->fh, mfp->last_pgno + 1,
 			    (int)*pgnoaddr, mfp->stat.st_pagesize)) != 0) {
-				R_UNLOCK(dbenv, &dbmp->reginfo);
+				R_UNLOCK(dbenv, dbmp->reginfo);
 				return (ret);
 			}
 			mfp->last_pgno += *pgnoaddr;
@@ -155,9 +169,9 @@ CDB_memp_fget(dbmfp, pgnoaddr, flags, addrp)
 	 * pointers to the cache and its hash table.
 	 */
 	n_cache = NCACHE(mp, *pgnoaddr);
-	mc = dbmp->c_reginfo[n_cache].primary;
-	n_bucket = NBUCKET(mc, mf_offset, *pgnoaddr);
-	dbht = R_ADDR(&dbmp->c_reginfo[n_cache], mc->htab);
+	c_mp = dbmp->reginfo[n_cache].primary;
+	n_bucket = NBUCKET(c_mp, mf_offset, *pgnoaddr);
+	dbht = R_ADDR(&dbmp->reginfo[n_cache], c_mp->htab);
 
 	if (LF_ISSET(DB_MPOOL_NEW | DB_MPOOL_NEW_GROUP))
 		goto alloc;
@@ -230,7 +244,7 @@ CDB_memp_fget(dbmfp, pgnoaddr, flags, addrp)
 		b_incr = 1;
 
 		/*
-	 	 * Any buffer we find might be trouble.
+		 * Any buffer we find might be trouble.
 		 *
 		 * BH_LOCKED --
 		 * I/O is in progress.  Because we've incremented the buffer
@@ -239,7 +253,7 @@ CDB_memp_fget(dbmfp, pgnoaddr, flags, addrp)
 		 * the region.
 		 */
 		for (first = 1; F_ISSET(bhp, BH_LOCKED); first = 0) {
-			R_UNLOCK(dbenv, &dbmp->reginfo);
+			R_UNLOCK(dbenv, dbmp->reginfo);
 
 			/*
 			 * Explicitly yield the processor if it's not the first
@@ -248,12 +262,12 @@ CDB_memp_fget(dbmfp, pgnoaddr, flags, addrp)
 			 * simply be swapping between the two locks.
 			 */
 			if (!first)
-				CDB___os_yield(1);
+				CDB___os_yield(dbenv, 1);
 
 			MUTEX_LOCK(&bhp->mutex, dbenv->lockfhp);
 			/* Wait for I/O to finish... */
 			MUTEX_UNLOCK(&bhp->mutex);
-			R_LOCK(dbenv, &dbmp->reginfo);
+			R_LOCK(dbenv, dbmp->reginfo);
 		}
 
 		/*
@@ -282,10 +296,10 @@ CDB_memp_fget(dbmfp, pgnoaddr, flags, addrp)
 
 alloc:	/* Allocate new buffer header and data space. */
 	if ((ret = CDB___memp_alloc(dbmp,
-	    &dbmp->c_reginfo[n_cache], mfp, 0, NULL, &bhp)) != 0)
+	    &dbmp->reginfo[n_cache], mfp, 0, NULL, &bhp)) != 0)
 		goto err;
 
-	++mc->stat.st_page_clean;
+	++c_mp->stat.st_page_clean;
 
 	/*
 	 * Initialize the BH fields so that we can call the CDB___memp_bhfree
@@ -296,16 +310,19 @@ alloc:	/* Allocate new buffer header and data space. */
 	bhp->pgno = *pgnoaddr;
 	bhp->mf_offset = mf_offset;
 
+	/* Increment the count of buffers referenced by this MPOOLFILE. */
+	++mfp->ref_cnt;
+
 	/*
 	 * Prepend the bucket header to the head of the appropriate MPOOL
 	 * bucket hash list.  Append the bucket header to the tail of the
 	 * MPOOL LRU chain.
 	 */
 	SH_TAILQ_INSERT_HEAD(&dbht[n_bucket], bhp, hq, __bh);
-	SH_TAILQ_INSERT_TAIL(&mc->bhq, bhp, q);
+	SH_TAILQ_INSERT_TAIL(&c_mp->bhq, bhp, q);
 
 #ifdef DIAGNOSTIC
-	if ((ALIGNTYPE)bhp->buf & (sizeof(size_t) - 1)) {
+	if ((db_alignp_t)bhp->buf & (sizeof(size_t) - 1)) {
 		CDB___db_err(dbenv, "Internal error: BH data NOT size_t aligned.");
 		ret = EINVAL;
 		CDB___memp_bhfree(dbmp, bhp, 1);
@@ -314,7 +331,7 @@ alloc:	/* Allocate new buffer header and data space. */
 #endif
 
 	if ((ret = __db_mutex_init(dbenv, &bhp->mutex, R_OFFSET(
-	    &dbmp->reginfo, &bhp->mutex) + DB_FCNTL_OFF_MPOOL, 0)) != 0) {
+	    dbmp->reginfo, &bhp->mutex) + DB_FCNTL_OFF_MPOOL, 0)) != 0) {
 		CDB___memp_bhfree(dbmp, bhp, 1);
 		goto err;
 	}
@@ -378,22 +395,22 @@ reread:		if ((ret = CDB___memp_pgread(
 
 done:	/* Update the chain search statistics. */
 	if (st_hsearch) {
-		++mc->stat.st_hash_searches;
-		if (st_hsearch > mc->stat.st_hash_longest)
-			mc->stat.st_hash_longest = st_hsearch;
-		mc->stat.st_hash_examined += st_hsearch;
+		++c_mp->stat.st_hash_searches;
+		if (st_hsearch > c_mp->stat.st_hash_longest)
+			c_mp->stat.st_hash_longest = st_hsearch;
+		c_mp->stat.st_hash_examined += st_hsearch;
 	}
 
 	++dbmfp->pinref;
 
-	R_UNLOCK(dbenv, &dbmp->reginfo);
+	R_UNLOCK(dbenv, dbmp->reginfo);
 
 	return (0);
 
 err:	/* Discard our reference. */
 	if (b_incr)
 		--bhp->ref;
-	R_UNLOCK(dbenv, &dbmp->reginfo);
+	R_UNLOCK(dbenv, dbmp->reginfo);
 
 	*(void **)addrp = NULL;
 	return (ret);

@@ -9,11 +9,11 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.21 2000/05/09 14:28:30 loic Exp $
+// $Id: word.cc,v 1.14.2.22 2000/09/14 03:13:29 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
-#include "htconfig.h"
+#include "config.h"
 #endif /* HAVE_CONFIG_H */
 
 #include <fcntl.h>
@@ -29,15 +29,13 @@
 
 #include "WordKey.h"
 #include "WordList.h"
+#include "WordListOne.h"
 #include "WordContext.h"
 #include "Configuration.h"
+#include "StringList.h"
+#include "WordDead.h"
 
-static ConfigDefaults config_defaults[] = {
-  { "word_db", "test", 0 },
-  { 0 }
-};
-
-static Configuration*	config = 0;
+static WordContext*	context = 0;
 
 typedef struct
 {
@@ -46,6 +44,7 @@ typedef struct
     int skip;
     int compress;
     int env;
+    int dead;
 } params_t;
 
 static void usage();
@@ -54,6 +53,7 @@ static void dolist(params_t* params);
 static void dokey(params_t* params);
 static void doskip(params_t* params);
 static void doenv(params_t* params);
+static void dodead(params_t* params);
 static void pack_show_wordreference(const WordReference& wordRef);
 static void pack_show_key(const String& key);
 
@@ -73,13 +73,17 @@ int main(int ac, char **av)
   params.skip = 0;
   params.env = 0;
   params.compress = 0;
+  params.dead = 0;
 
-  while ((c = getopt(ac, av, "ve:klbszw:")) != -1)
+  while ((c = getopt(ac, av, "ve:klszd")) != -1)
     {
       switch (c)
 	{
 	case 'v':
 	  verbose++;
+	  break;
+	case 'e':
+	  params.env = atoi(optarg);
 	  break;
 	case 'k':
 	  params.key = 1;
@@ -90,11 +94,11 @@ int main(int ac, char **av)
 	case 's':
 	  params.skip = 1;
 	  break;
-	case 'e':
-	  params.env = atoi(optarg);
-	  break;
 	case 'z':
 	  params.compress = 1;
+	  break;
+	case 'd':
+	  params.dead = 1;
 	  break;
 	case '?':
 	  usage();
@@ -110,35 +114,36 @@ int main(int ac, char **av)
 //
 // mifluz.conf structure
 //
+#define WORD_WORD	0
 #define WORD_DOCID	1
 #define WORD_FLAGS	2
 #define WORD_LOCATION	3
 
 static void doword(params_t* params)
 {
+  context = new WordContext();
+
+  Configuration &config = context->GetConfiguration();
+
+  if(params->compress) {
+    config.Add("wordlist_compress", "true");
+  }
+  if(verbose > 2) {
+    String tmp;
+    tmp << (verbose - 2);
+    config.Add("wordlist_verbose", tmp);
+  }
+  if(params->env) {
+    config.Add("wordlist_env_share", "true");
+    config.Add("wordlist_env_dir", ".");
+  }
+
+  context->ReInitialize();
+
   if(params->key) {
     if(verbose) fprintf(stderr, "Test WordKey class\n");
     dokey(params);
   }
-
-  if(params->list || params->skip || params->env) {
-    config = WordContext::Initialize(config_defaults);
-    if(params->compress) {
-	config->Add("wordlist_compress", "true");
-    }
-    if(verbose > 2) {
-      String tmp;
-      tmp << (verbose - 2);
-      config->Add("wordlist_verbose", tmp);
-    }
-    if(params->env) {
-      config->Add("wordlist_env_share", "true");
-      config->Add("wordlist_env_dir", ".");
-    }
-
-    WordContext::Initialize(*config);
-  }
-
 
   if(params->list) {
     if(verbose) fprintf(stderr, "Test WordList class\n");
@@ -153,6 +158,11 @@ static void doword(params_t* params)
   if(params->env) {
     if(verbose) fprintf(stderr, "Test WordList with shared env\n");
     doenv(params);
+  }
+
+  if(params->dead) {
+    if(verbose) fprintf(stderr, "Test WordDead\n");
+    dodead(params);
   }
 }
 
@@ -178,33 +188,36 @@ static void dolist(params_t*)
   {
 
     // setup a new wordlist
-    WordList words(*config);
-    if(verbose)WordKeyInfo::Instance()->Show();
-    words.Open((*config)["word_db"], O_RDWR);
+    WordList *words = context->List();
+    words->Open("test", O_RDWR);
 
 
     // create entries from word_list
-    WordReference wordRef;
+    WordReference wordRef(context);
     wordRef.Key().Set(WORD_FLAGS, 67);
+    unsigned int wordid = 0;
     unsigned int location = 0;
     unsigned int anchor = 0;
     unsigned int docid = 1;
+
     if(verbose) fprintf(stderr, "Inserting\n");
 
     for(char** p = word_list; *p; p++) {
       if(verbose > 4) fprintf(stderr, "inserting word: %s\n", *p);
-      wordRef.Key().SetWord(*p);
+      wordRef.SetWord(*p);
+      words->Dict()->Serial(*p, wordid);
+      wordRef.Key().Set(WORD_WORD, wordid);
       wordRef.Key().Set(WORD_DOCID, docid);
       wordRef.Key().Set(WORD_LOCATION, location);
       wordRef.Record().info.data = anchor;
       if(verbose > 1) fprintf(stderr, "%s\n", (char*)wordRef.Get());
       if(verbose > 2) pack_show_wordreference(wordRef);
-      words.Insert(wordRef);
+      words->Override(wordRef);
       location += strlen(*p);
       anchor++;
       docid++;
     }
-    words.Close();
+    words->Close();
 
     location = anchor = 0;
     docid = 1;
@@ -212,12 +225,18 @@ static void dolist(params_t*)
     if(verbose) fprintf(stderr, "Searching\n");
 
     // reopen wordlist
-    words.Open((*config)["word_db"], O_RDONLY);
+    words->Open("test", O_RDONLY);
     //  check if each word (from word_list) is there
     for(char** p = word_list; *p; p++)
     {
       // recreate wordref from each word
-      wordRef.Key().SetWord(*p);
+      wordRef.SetWord(*p);
+      words->Dict()->SerialExists(*p, wordid);
+      if(wordid == WORD_DICT_SERIAL_INVALID) {
+	fprintf(stderr, "dolist: no wordid found for %s\n", *p);
+	exit(1);
+      }
+      wordRef.Key().Set(WORD_WORD, wordid);
       wordRef.Key().Set(WORD_LOCATION, location);
       wordRef.Record().info.data = anchor;
       wordRef.Key().Set(WORD_DOCID, docid);
@@ -236,7 +255,7 @@ static void dolist(params_t*)
       if(verbose > 2) pack_show_wordreference(wordRef);
       if(verbose > 1) fprintf(stderr, "%s\n", (char*)wordRef.Get());
       // find matches in wordlist
-      List *result = words[wordRef];
+      List *result = (*words)[wordRef];
       if(!result) {
 	fprintf(stderr, "dolist: words[wordRef] returned null pointer\n");
 	exit(1);
@@ -247,15 +266,15 @@ static void dolist(params_t*)
       // loop through found matches
       while((found = (WordReference*)result->Get_Next()))
       {
-	if(wordRef.Key().GetWord() != found->Key().GetWord())
+	if(wordRef.Key().Get(WORD_WORD) != found->Key().Get(WORD_WORD))
 	{
-	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (char*)wordRef.Key().GetWord(), (char*)found->Key().GetWord());
+	  fprintf(stderr, "dolist: simple: for word %s expected %d, got %d\n", (char*)wordRef.GetWord(), wordRef.Key().Get(WORD_WORD), found->Key().Get(WORD_WORD));
 	  exit(1);
 	}
 	count++;
       }
       if(count != 1) {
-	fprintf(stderr, "dolist: simple: searching %s, got %d matches instead of 1\n", (char*)wordRef.Key().GetWord(), count);
+	fprintf(stderr, "dolist: simple: searching %s, got %d matches instead of 1\n", (char*)wordRef.GetWord(), count);
   	exit(1);
       }
       if(verbose) fprintf(stderr, "done\n");
@@ -263,16 +282,43 @@ static void dolist(params_t*)
       delete result;
 
     }
+    delete words;
+  }
+  //
+  // Search by prefix
+  //
+  {
+    WordList *words = context->List();
+    words->Open("test", O_RDONLY);
+    List *result = words->Prefix(words->WordExists("t <UNDEF> <UNDEF> <UNDEF>"));
+
+    if(!result) {
+      fprintf(stderr, "dolist: words->Prefix returned null pointer\n");
+      exit(1);
+    }
+    if(result->Count() != 2) {
+      fprintf(stderr, "dolist: words->Prefix expected 2 matches got %d\n", result->Count());
+      exit(1);
+    }
+    WordReference* found;
+    found = (WordReference*)result->Nth(0);
+    if(found->GetWord().nocase_compare("the")) {
+      fprintf(stderr, "dolist: expected 'the' and got '%s'\n", (char*)found->GetWord().get());
+      exit(1);
+    }
+    
+    delete result;
+    delete words;
   }
   //
   // Print all records as sorted within Berkeley DB with number
   // of occurrences.
   //
   if(verbose) {
-    WordList words(*config);
-    words.Open((*config)["word_db"], O_RDWR);
+    WordList *words = context->List();
+    words->Open("test", O_RDWR);
 
-    List *result = words.Words();
+    List *result = words->Words();
     if(result == 0) {
       fprintf(stderr, "dolist: getting all words failed\n");
       exit(1);
@@ -282,9 +328,7 @@ static void dolist(params_t*)
     String* found;
     while((found = (String*)result->Get_Next())) {
       unsigned int noccurrence;
-      WordKey key;
-      key.SetWord(*found);
-      words.Noccurrence(key, noccurrence);
+      words->Noccurrence(*found, noccurrence);
       fprintf(stderr, "%s (%d)\n", (char*)(*found), noccurrence);
       count++;
     }
@@ -294,64 +338,68 @@ static void dolist(params_t*)
     }
 
     delete result;
+    delete words;
   }
   //
   // Search all occurrences of 'the'
   //
   {
-    WordList words(*config);
-    words.Open((*config)["word_db"], O_RDWR);
+    WordList *words = context->List();
+    words->Open("test", O_RDWR);
 
-    WordReference wordRef;
-    wordRef.Key().SetWord("the");
+    WordReference wordRef(context);
+    wordRef.SetWord("the");
+    unsigned int wordid;
+    words->Dict()->SerialExists("the", wordid);
+    wordRef.Key().Set(WORD_WORD, wordid);
 
     unsigned int noccurrence;
-    if(words.Noccurrence(wordRef.Key(), noccurrence) != OK) {
+    if(words->Noccurrence(wordRef.GetWord(), noccurrence) != OK) {
       fprintf(stderr, "dolist: get ref count of 'the' failed\n");
       exit(1);
     } else if(noccurrence != 2) {
       fprintf(stderr, "dolist: get ref count of 'the' failed, got %d instead of 2\n", noccurrence);
       exit(1);
     }
-    List *result = words[wordRef];
+    List *result = (*words)[wordRef];
     result->Start_Get();
     int count = 0;
     WordReference* found;
     while((found = (WordReference*)result->Get_Next())) {
-	if(wordRef.Key().GetWord() != found->Key().GetWord()) {
-	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (char*)wordRef.Key().GetWord(), (char*)found->Key().GetWord());
+	if(wordRef.Key().Get(WORD_WORD) != found->Key().Get(WORD_WORD)) {
+	  fprintf(stderr, "dolist: for word %s expected %d, got %d\n", (char*)wordRef.GetWord(), wordRef.Key().Get(WORD_WORD), found->Key().Get(WORD_WORD));
 	  exit(1);
 	}
 	if(verbose) fprintf(stderr, "%s\n", (char*)found->Get());
 	count++;
     }
     if(count != 2) {
-      fprintf(stderr, "dolist: searching occurrences of '%s', got %d matches instead of 2\n", (char*)wordRef.Key().GetWord(), count);
+      fprintf(stderr, "dolist: searching occurrences of '%s', got %d matches instead of 2\n", (char*)wordRef.GetWord(), count);
       exit(1);
     }
 
     delete result;
+    delete words;
   }
   //
   // Delete all occurrences of 'the'
   //
   {
-    WordList words(*config);
-    words.Open((*config)["word_db"], O_RDWR);
+    WordList *words = context->List();
+    words->Open("test", O_RDWR);
 
-    WordReference wordRef("the");
-    if(verbose) {
-      fprintf(stderr, "**** Delete test:\n");
-      words.Write(stderr);
-      fprintf(stderr, "**** Delete test:\n");
-    }
+    WordReference wordRef(context, "the");
+    unsigned int wordid;
+    words->Dict()->SerialExists("the", wordid);
+    wordRef.Key().Set(WORD_WORD, wordid);
+
     int count;
-    if((count = words.WalkDelete(wordRef)) != 2) {
+    if((count = words->WalkDelete(wordRef)) != 2) {
       fprintf(stderr, "dolist: delete occurrences of 'the', got %d deletion instead of 2\n", count);
       exit(1);
     }
 
-    List* result = words[wordRef];
+    List* result = (*words)[wordRef];
     if(result->Count() != 0) {
       fprintf(stderr, "dolist: unexpectedly found 'the' \n");
       exit(1);
@@ -359,32 +407,36 @@ static void dolist(params_t*)
     delete result;
 
     unsigned int noccurrence;
-    if(words.Noccurrence(wordRef.Key(), noccurrence) != OK) {
-      fprintf(stderr, "dolist: get ref count of 'thy' failed\n");
+    if(words->Noccurrence(wordRef.GetWord(), noccurrence) != OK) {
+      fprintf(stderr, "dolist: get ref count of 'the' failed\n");
       exit(1);
     } else if(noccurrence != 0) {
-      fprintf(stderr, "dolist: get ref count of 'thy' failed, got %d instead of 0\n", noccurrence);
+      fprintf(stderr, "dolist: get ref count of 'the' failed, got %d instead of 0\n", noccurrence);
       exit(1);
     }
+    delete words;
   }
   //
   // Delete all words in document 5 (only one word : jumps)
   //
   {
-    WordList words(*config);
-    words.Open((*config)["word_db"], O_RDWR);
+    WordList *words = context->List();
+    words->Open("test", O_RDWR);
 
-    WordReference wordRef;
+    WordReference wordRef(context);
     wordRef.Key().Set(WORD_DOCID, 5);
     int count;
-    if((count = words.WalkDelete(wordRef)) != 1) {
+    if((count = words->WalkDelete(wordRef)) != 1) {
       fprintf(stderr, "dolist: delete occurrences in DocID 5, %d deletion instead of 1\n", count);
       exit(1);
     }
 
     wordRef.Clear();
-    wordRef.Key().SetWord("jumps");
-    List* result = words[wordRef];
+    wordRef.SetWord("jumps");
+    unsigned int wordid;
+    words->Dict()->SerialExists("jumps", wordid);
+    wordRef.Key().Set(WORD_WORD, wordid);
+    List* result = (*words)[wordRef];
     if(result->Count() != 0) {
       fprintf(stderr, "dolist: unexpectedly found 'jumps' \n");
       exit(1);
@@ -392,13 +444,14 @@ static void dolist(params_t*)
     delete result;
 
     unsigned int noccurrence;
-    if(words.Noccurrence(wordRef.Key(), noccurrence) != OK) {
+    if(words->Noccurrence(wordRef.GetWord(), noccurrence) != OK) {
       fprintf(stderr, "dolist: get ref count of 'jumps' failed\n");
       exit(1);
     } else if(noccurrence != 0) {
       fprintf(stderr, "dolist: get ref count of 'jumps' failed, got %d instead of 0\n", noccurrence);
       exit(1);
     }
+    delete words;
   }
 }
 
@@ -412,25 +465,22 @@ static void
 dokey(params_t* params)
 {
   static char *key_descs[] = {
-    "Word/DocID 5/Flags 8/Location 19",
-    "Word/DocID 3/Location 2/Flags 11",
-    "Word/DocID 3/Flags 8/Location 5",
-    "Word/DocID 3/Flags 14/Location 7",
-    "Word/DocID 3/Flags 9/Location 7/Foo1 13/Foo2 16",
+    "Word 16/DocID 5/Flags 8/Location 19",
+    "Word 16/DocID 3/Location 2/Flags 11",
+    "Word 16/DocID 3/Flags 8/Location 5",
+    "Word 16/DocID 3/Flags 14/Location 7",
+    "Word 16/DocID 3/Flags 9/Location 7/Foo1 13/Foo2 16",
     0,
   };
   char** key_desc;
 
   for(key_desc = key_descs; *key_desc; key_desc++) {
-    WordKeyInfo::InitializeFromString(*key_desc);
+    context->GetConfiguration().Add("wordlist_wordkey_description", *key_desc);
+    context->ReInitialize();
 
-    if(verbose)
-      WordKeyInfo::Instance()->Show();
-
-    WordKey word;
-    word.SetWord("aword");
+    WordKey word(context);
     int j;
-    for(j = WORD_FIRSTFIELD; j < word.NFields(); j++) {
+    for(j = 0; j < word.NFields(); j++) {
       WordKeyNum value = (0xdededede & word.MaxValue(j));
       word.Set(j, value);
     }
@@ -439,25 +489,20 @@ dokey(params_t* params)
     String packed;
     word.Pack(packed);
 
-    WordKey other_word;
+    WordKey other_word(context);
     other_word.Unpack(packed);
     if(verbose > 1) fprintf(stderr, "OTHER_WORD: %s\n", (char*)other_word.Get());
 
     int failed = 0 ;
-    for(j = WORD_FIRSTFIELD; j < word.NFields(); j++) {
+    for(j = 0; j < word.NFields(); j++) {
       if(word.Get(j) != other_word.Get(j)) {
 	failed = 1;
 	break;
       }
     }
-    if(word.GetWord() != other_word.GetWord() ||
-       !word.IsDefined(0) ||
-       !other_word.IsDefined(0))
-      failed = 1;
 
     if(failed) {
       fprintf(stderr, "Original and packed/unpacked not equal\n");
-      WordKeyInfo::Instance()->Show();
       fprintf(stderr, "WORD: %s\n", (char*)word.Get());
       pack_show_key(packed);
       fprintf(stderr, "OTHER_WORD: %s\n", (char*)other_word.Get());
@@ -483,24 +528,24 @@ dokey(params_t* params)
     // The two (word and other_word) must compare equal
     // using the alternate comparison (fast) interface.
     //
-    if(WordKey::Compare(packed, other_packed) != 0) {
+    if(WordKey::Compare(context, packed, other_packed) != 0) {
       fprintf(stderr, "dokey: %s not equal (fast compare)\n", *key_desc);
       exit(1);
     }
 
-    word.SetWord("Test string");
+    word.Set(WORD_WORD,50);
     word.Set(WORD_DOCID,1);
-    other_word.SetWord("Test string");
+    other_word.Set(WORD_WORD,50);
     word.Pack(packed);
     //
-    // Add one char to the word, they must not compare equal and
+    // Add one to the word, they must not compare equal and
     // the difference must be minus one.
     //
-    other_word.GetWord().append("a");
+    other_word.Set(WORD_WORD,51);
     other_word.Pack(other_packed);
     {
       int ret;
-      if((ret = WordKey::Compare(packed, other_packed)) != -1)
+      if((ret = WordKey::Compare(context, packed, other_packed)) != -1)
 	{
 	  fprintf(stderr, "%s\n", (char*)word.Get());
 	  fprintf(stderr, "%s\n", (char*)other_word.Get());
@@ -508,28 +553,7 @@ dokey(params_t* params)
 	  exit(1);
 	}
     }
-    other_word.SetWord("Test string");
-
-    //
-    // Change T to S
-    // the difference must be one.
-    //
-    {
-      String& tmp = other_word.GetWord();
-      tmp[tmp.indexOf('T')] = 'S';
-    }
-    other_word.Pack(other_packed);
-    {
-      int ret;
-      if((ret = WordKey::Compare(packed, other_packed)) != 1)
-	{
-	  fprintf(stderr, "%s\n", (char*)word.Get());
-	  fprintf(stderr, "%s\n", (char*)other_word.Get());
-	  fprintf(stderr, "dokey: %s different letter (S instead of T), expected 1 got %d\n", *key_desc, ret);
-	  exit(1);
-	}
-    }
-    other_word.SetWord("Test string");
+    other_word.Set(WORD_WORD,50);
 
     //
     // Substract one to the first numeric field
@@ -539,7 +563,7 @@ dokey(params_t* params)
     other_word.Pack(other_packed);
     {
       int ret;
-      if((ret = WordKey::Compare(packed, other_packed)) != 1)
+      if((ret = WordKey::Compare(context, packed, other_packed)) != 1)
 	{
 	  fprintf(stderr, "%s\n", (char*)word.Get());
 	  fprintf(stderr, "%s\n", (char*)other_word.Get());
@@ -552,8 +576,8 @@ dokey(params_t* params)
   // WordKey::Diff function
   //
   {
-    WordKey word("Test1 <DEF> 1 2 3 4 5");
-    WordKey other_word("Sest1 <DEF> 1 2 3 4 5");
+    WordKey word(context, "50 1 2 3 4 5");
+    WordKey other_word(context, "51 1 2 3 4 5");
     //
     // Diff must say that field 0 differ and that word is lower than other_word
     //
@@ -570,26 +594,6 @@ dokey(params_t* params)
 	fprintf(stderr, "%s\n", (char*)word.Get());
 	fprintf(stderr, "%s\n", (char*)other_word.Get());
 	fprintf(stderr, "dokey: diff expected position = 0 and lower = 1 but got position = %d and lower = %d\n", position, lower);
-	exit(1);
-      }
-    }
-    //
-    // Only compare prefix
-    //
-    other_word.SetWord("Test");
-    other_word.UndefinedWordSuffix();
-    other_word.Set(WORD_DOCID, 5);
-    {
-      int position = 0;
-      int lower = 0;
-      if(!word.Diff(other_word, position, lower)) {
-	fprintf(stderr, "dokey: diff failed\n");
-	exit(1);
-      }
-      if(position != 1 || lower != 1) {
-	fprintf(stderr, "%s\n", (char*)word.Get());
-	fprintf(stderr, "%s\n", (char*)other_word.Get());
-	fprintf(stderr, "dokey: diff expected position = 1 and lower = 1 but got position = %d and lower = %d\n", position, lower);
 	exit(1);
       }
     }
@@ -656,7 +660,7 @@ static void pack_show_wordreference(const WordReference& wordRef)
 static void doskip_normal(params_t*);
 static void doskip_harness(params_t*);
 static void doskip_overflow(params_t*);
-static void doskip_try(WordList& words, WordCursor& search, char* found_string, char* expected_string);
+static void doskip_try(WordList& words, WordCursorOne& search, char* found_string, char* expected_string);
 
 static void doskip(params_t* params)
 {
@@ -668,16 +672,17 @@ static void doskip(params_t* params)
   doskip_overflow(params);
 }
 
-static void doskip_try(WordList& words, WordCursor& search, char* found_string, char* expected_string)
+static void doskip_try(WordList& words, WordCursorOne& search, char* found_string, char* expected_string)
 {
   const WordKey& found = search.GetFound().Key();
   ((WordKey&)found).Set(found_string);
+  ((WordKey&)search.GetSearch()).Set(WORD_KEY_WORD, found.Get(WORD_KEY_WORD));
   if(search.SkipUselessSequentialWalking() == NOTOK) {
     fprintf(stderr, "doskip_try: SkipUselessSequentialWalking NOTOK searching %s at step %s expecting %s\n", (char*)search.GetSearch().Get(), (char*)found.Get(), (char*)expected_string);
     exit(1);
   }
 
-  WordKey expected(expected_string);
+  WordKey expected(context, expected_string);
   if(!found.ExactEqual(expected)) {
     fprintf(stderr, "doskip_try: expected %s but got %s\n", (char*)expected.Get(), (char*)found.Get());
     exit(1);
@@ -696,72 +701,46 @@ static void doskip_overflow(params_t*)
 #define WORD_FIELD3	3
 
   static ConfigDefaults config_defaults[] = {
-    { "wordlist_wordkey_description", "Word/FIELD1 32/FIELD2 8/FIELD3 16", 0 },
+    { "wordlist_wordkey_description", "Word 8/FIELD1 32/FIELD2 8/FIELD3 16", 0 },
     { 0 }
   };
   Configuration config;
   config.Defaults(config_defaults);
   if(verbose > 2) config.Add("wordlist_verbose", "3");
-  WordContext::Initialize(config);
+  context->Initialize(config);
   {
-    WordList* words = new WordList(config);
+    WordListOne *words = new WordListOne(context);
 
+    words->Open("test", O_RDWR);
     //
-    // Looking for zebra at location 3
+    // Looking for 11 at location 3
     //
-    WordKey key("zebra <UNDEF> <UNDEF> <UNDEF> 3");
-    WordCursor *search = words->Cursor(key);
+    WordKey key(context, "11 <UNDEF> <UNDEF> 3");
+    WordCursorOne *search = (WordCursorOne*)words->Cursor(key);
 
     {
       //
-      // Pretend we found zebra <DEF> 3 <MAX> 7
+      // Pretend we found 11 3 <MAX> 7
       // That is a valid candidate for SkipUselessSequentialWalking
       //
       String found;
-      found << "zebra <DEF> 3 " << WordKey::MaxValue(WORD_FIELD2) << " 7";
+      found << "11 3 " << context->GetKeyInfo().MaxValue(WORD_FIELD2) << " 7";
 
       //
       // Overflow on FIELD2 must trigger ++ on FIELD1
       //
-      String expected("zebra	<DEF>	4	0	3");
+      String expected("11	4	0	3");
       doskip_try(*words, *search, found, expected);
-    }
-
-    {
-      //
-      // Prented we found zebra <DEF> <MAX> <MAX> 7
-      // That is a valid candidate for SkipUselessSequentialWalking
-      //
-      String found;
-      found << "zebra <DEF> " << WordKey::MaxValue(WORD_FIELD1) << " " << WordKey::MaxValue(WORD_FIELD2) << " 7";
-
-      //
-      // Overflow on FIELD2 must trigger append \001 on word Word
-      //
-      String expected("zebra\001	<DEF>	0	0	3");
-      doskip_try(*words, *search, found, expected);
-
-      //
-      // Cannot increment, SkipUselessSequentialWalking returns NOTOK
-      //
-      ((WordKey&)search->GetSearch()).SetDefinedWordSuffix();
-      ((WordReference&)search->GetFound()).Key().Set(found);
-      if(search->SkipUselessSequentialWalking() != WORD_WALK_ATEND) {
-	fprintf(stderr, "doskip_overflow: SkipUselessSequentialWalking expected NOTOK & WORD_WALK_ATEND searching %s\n", (char*)key.Get());
-	exit(1);
-      }
-    
     }
 
     delete search;
-    words->Close();
     delete words;
   }
 
   //
   // Restore default configuration
   //
-  WordContext::Initialize(*::config);
+  context->Initialize();
 
 #undef WORD_FIELD1
 #undef WORD_FIELD2
@@ -781,42 +760,38 @@ static void doskip_harness(params_t*)
 #define WORD_FIELD5	5
 
   static ConfigDefaults config_defaults[] = {
-    { "wordlist_wordkey_description", "Word/FIELD1 8/FIELD2 8/FIELD3 8/FIELD4 8/FIELD5 8", 0 },
+    { "wordlist_wordkey_description", "Word 8/FIELD1 8/FIELD2 8/FIELD3 8/FIELD4 8/FIELD5 8", 0 },
     { 0 }
   };
   Configuration config;
   config.Defaults(config_defaults);
   if(verbose > 2) config.Add("wordlist_verbose", "3");
-  WordContext::Initialize(config);
+  context->Initialize(config);
   {
-    WordList* words = new WordList(config);
+    WordList *words = new WordListOne(context);
 
     //
     // Searching
     //
-    // z <UNDEF> <UNDEF> 5 <UNDEF> 4 <UNDEF>
+    // {11,21,31} <UNDEF> <UNDEF> 5 <UNDEF> 4 <UNDEF>
     //
     // in data set
     //
-    // DATA                              SEE  STATUS    OPERATION                        
-    // zebra <DEF> 1     5 1      4 3         found     next                             
-    // zebra <DEF> 1     6 1      4 3    a    nomatch   skip to zebra <DEF> 2 5 0 4 0    
-    // zebra <DEF> 1     6 2      4 3         ignore                                     
-    // zebra <DEF> 2     3 1      4 3         ignore                                     
-    // zebra <DEF> <MAX> 6 1      4 3    b    nomatch   skip to zebra\001 <DEF> 0 5 0 4 0
-    // zebra <DEF> <MAX> 7 1      4 3         ignore                                     
-    // zebra <DEF> <MAX> 8 1      4 3         ignore                                     
-    // zebra <DEF> <MAX> 9 1      4 3         ignore                                     
-    // zippo <DEF> 0     3 1      4 3         ignore                                     
-    // zippo <DEF> 8     5 1      1 3    c    nomatch   skip to zippo <DEF> 8 5 1 4 0    
-    // zippo <DEF> 8     5 1      2 3         ignore                                     
-    // zippo <DEF> 8     5 1      2 5         ignore                                     
-    // zippo <DEF> 8     5 1      2 9         ignore                                     
-    // zippo <DEF> 8     5 1      3 9         ignore                                     
-    // zorro <DEF> 3     5 <MAX>  6 3    d    nomatch   skip to zorro <DEF> 4 5 0 4 0
-    // zorro <DEF> 3     5 <MAX>  6 5         ignore
-    // zorro <DEF> 3     5 <MAX>  8 5         ignore
-    // zorro <DEF> 4     5 2      4 3         found                                      
+    // DATA                     SEE  STATUS    OPERATION
+    // 11 1     5 1      4 3         found     next
+    // 11 1     6 1      4 3    a    nomatch   skip to 11 2 5 0 4 0
+    // 11 1     6 2      4 3         ignore
+    // 11 2     3 1      4 3         ignore
+    // 21 0     3 1      4 3         ignore
+    // 21 8     5 1      1 3    c    nomatch   skip to 21 8 5 1 4 0
+    // 21 8     5 1      2 3         ignore
+    // 21 8     5 1      2 5         ignore
+    // 21 8     5 1      2 9         ignore
+    // 21 8     5 1      3 9         ignore
+    // 31 3     5 <MAX>  6 3    d    nomatch   skip to 31 4 5 0 4 0
+    // 31 3     5 <MAX>  6 5         ignore
+    // 31 3     5 <MAX>  8 5         ignore
+    // 31 4     5 2      4 3         found
     //
     // legend: status is what WalkNextStep function says about the key
     //                nomatch means searchKey.Equal(found.Key()) is false
@@ -835,11 +810,6 @@ static void doskip_harness(params_t*)
     //     value (5) since the keys are sorted in ascending order. 
     //     The next possible key is the one that has FIELD1++.
     //
-    //  b) Same logic as before but, the FIELD1 has already reached its maximum value
-    //     and can't be incremented. zebra will therefore be incremented by appending
-    //     a \001 to it. This is only possible since we search for words beginning
-    //     with z (z <UNDEF>). We would not do that if searching for (zebra <DEF>).
-    //
     //  c) The found key does not match the constraint (FIELD4 is lower than the searched
     //     value). We only need to set FIELD4 to the searched value to jump to the
     //     match. No incrementation in this case.
@@ -849,12 +819,13 @@ static void doskip_harness(params_t*)
     //     the search key, it is therefore useless to increment it. We must ignore
     //     it and increment FIELD1.
     //
-    // Looking for zebra with flags 5
+    // Looking for 11 with flags 5
     //
-    WordKey key("z <UNDEF> <UNDEF> 5 <UNDEF> 4 <UNDEF>");
-    WordCursor *search = words->Cursor(key);
+    WordKey key(context, "11 <UNDEF> 5 <UNDEF> 4 <UNDEF>");
+    words->Open("test", O_RDWR);
+    WordCursorOne *search = (WordCursorOne*)words->Cursor(key);
 
-#define WORD_NTEST 4
+#define WORD_NTEST 3
 
     static char* found_strings[WORD_NTEST];
     static char* expected_strings[WORD_NTEST];
@@ -865,31 +836,23 @@ static void doskip_harness(params_t*)
     //
     // See a) in comment above
     //
-    found_strings[i] = strdup("zebra <DEF> 1     6 1      4 3");
-    expected_strings[i] = strdup("zebra <DEF> 2 5 0 4 0");
-    i++;
-
-    //
-    // See b) in comment above
-    //
-    sprintf(tmp, "zebra <DEF> %d 6 1      4 3", WordKey::MaxValue(WORD_FIELD1));
-    found_strings[i] = strdup(tmp);
-    expected_strings[i] = strdup("zebra\001 <DEF> 0 5 0 4 0");
+    found_strings[i] = strdup("11 1     6 1      4 3");
+    expected_strings[i] = strdup("11 2 5 0 4 0");
     i++;
 
     //
     // See c) in comment above
     //
-    found_strings[i] = strdup("zippo <DEF> 8     5 1      1 3");
-    expected_strings[i] = strdup("zippo <DEF> 8 5 1 4 0");
+    found_strings[i] = strdup("21 8     5 1      1 3");
+    expected_strings[i] = strdup("21 8 5 1 4 0");
     i++;
 
     //
     // See d) in comment above
     //
-    sprintf(tmp, "zorro <DEF> 3     5 %d  6 3", WordKey::MaxValue(WORD_FIELD3));
+    sprintf(tmp, "31 3     5 %d  6 3", context->GetKeyInfo().MaxValue(WORD_FIELD3));
     found_strings[i] = strdup(tmp);
-    expected_strings[i] = strdup("zorro <DEF> 4 5 0 4 0");
+    expected_strings[i] = strdup("31 4 5 0 4 0");
     i++;
 
     for(i = 0; i < WORD_NTEST; i++) {
@@ -899,14 +862,13 @@ static void doskip_harness(params_t*)
     }
 
     delete search;
-    words->Close();
     delete words;
   }
 
   //
   // Restore default configuration
   //
-  WordContext::Initialize(*::config);
+  context->Initialize();
 
 #undef WORD_FIELD1
 #undef WORD_FIELD2
@@ -944,16 +906,13 @@ class SkipTestEntry
 public:
     char *searchkey;
     char *goodorder;
-    void GetSearchKey(WordKey &searchKey)
-    {
-	searchKey.Set((String)searchkey);
-	if(verbose) fprintf(stderr, "GetSearchKey: string: %s got: %s\n", (char*)searchkey, (char*)searchKey.Get());
-    }
     int Check(WordList &WList)
     {
-	WordKey empty;
-	WordReference srchwrd;
-	GetSearchKey(srchwrd.Key());
+	WordReference srchwrd(context);
+
+	srchwrd.Key() = WList.Key(searchkey);
+	if(verbose) fprintf(stderr, "GetSearchKey: string: %s got: %s\n", (char*)searchkey, (char*)srchwrd.Key().Get());
+	
 	Object o;
 	if(verbose) fprintf(stderr, "checking SkipUselessSequentialWalking on: %s\n", (char*)srchwrd.Get());
 	if(verbose) fprintf(stderr, "walking all:\n");
@@ -1004,57 +963,118 @@ public:
 SkipTestEntry SkipTestEntries[]=
 {
      {
- 	"et  <DEF>      <UNDEF>       0       10      ",
+ 	"et  <UNDEF>       0       10      ",
  	"3 4 5 9 10 12 13 14"
      },
-     {
- 	"et  <UNDEF>    20            0       <UNDEF> ",
- 	"3 4 5 6 7 8 9 14 17",
-     },
+     // Test for prefix search. 
+     //     {
+     // 	"et  20            0       <UNDEF> ",
+     // 	"3 4 5 6 7 8 9 14 17",
+     //     },
 };
 
-static void doskip_normal(params_t*)
+static void doskip_normal(params_t *)
 {
-  if(verbose > 0) fprintf(stderr, "doing SkipUselessSequentialWalking test\n");
-  // read db into WList from file: skiptest_db.txt
-  if(verbose) fprintf(stderr, "WList config:minimum_word_length: %d\n", config->Value("minimum_word_length"));
-  WordList WList(*config);
-  WList.Open((*config)["word_db"], O_RDWR);
-  // now check walk order for a few search terms
-  int i;
-  if(verbose) fprintf(stderr, "number of entries: %d\n", sizeof(SkipTestEntries)/sizeof(SkipTestEntry));
-  for(i=0;i<(int)(sizeof(SkipTestEntries)/sizeof(SkipTestEntry));i++) {
-    if(SkipTestEntries[i].Check(WList) == NOTOK) {
-      fprintf(stderr, "SkipUselessSequentialWalking test failed on SkipTestEntry number: %d\n", i);
-      exit(1);
+    if (verbose > 0)
+	fprintf(stderr, "doing SkipUselessSequentialWalking test\n");
+    // read db into WList from file: skiptest_db.txt
+    if (verbose)
+	fprintf(stderr, "WList config:minimum_word_length: %d\n",
+		context->GetConfiguration().Value("minimum_word_length"));
+    WordList *words = context->List();
+    words->Open("test", O_RDWR);
+    // now check walk order for a few search terms
+    int i;
+    if (verbose)
+	fprintf(stderr, "number of entries: %d\n",
+		sizeof(SkipTestEntries) / sizeof(SkipTestEntry));
+    for (i = 0;
+	 i < (int) (sizeof(SkipTestEntries) / sizeof(SkipTestEntry)); i++) {
+	if (SkipTestEntries[i].Check(*words) == NOTOK) {
+	    fprintf(stderr,
+		    "SkipUselessSequentialWalking test failed on SkipTestEntry number: %d\n",
+		    i);
+	    exit(1);
+	}
     }
-  }
-  WList.Close();
+    delete words;
 }
 
 static void doenv(params_t* params)
 {
-  WordReference wordRef;
+  WordList *words = context->List();
+  words->Open("test", O_RDWR);
+  sleep(1);
+  WordReference wordRef = words->Word("the 1 2 3");
   WordKey& key = wordRef.Key();
-  key.Set("the <def> 1 2 3");
-  WordList words(*config);
-  words.Open((*config)["word_db"], O_RDWR);
   int i;
   for(i = params->env; i < 10000; i += 2) {
     key.Set(WORD_DOCID, i);
-    if(words.Insert(wordRef) != OK) {
-      fprintf(stderr, "doenv: cannot insert %d\n", i);
+    if(words->Override(wordRef) != OK) {
+      fprintf(stderr, "doenv:%d: cannot insert %d\n", params->env, i);
       exit(1);
     }
   }
   for(i = params->env; i < 10000; i += 2) {
     key.Set(WORD_DOCID, i);
-    if(words.Exists(wordRef) != OK) {
-      fprintf(stderr, "doenv: cannot find %d\n", i);
+    if(words->Exists(wordRef) != OK) {
+      fprintf(stderr, "doenv:%d: cannot find %d\n", params->env, i);
       exit(1);
     }
   }
-  words.Close();
+  delete words;
+}
+
+static void dodead(params_t* params)
+{
+  WordList *words = context->List();
+  words->Open("test", O_RDWR);
+
+  unsigned int wordid = WORD_DICT_SERIAL_INVALID;
+  words->Dict()->SerialExists("et", wordid);
+  if(wordid == WORD_DICT_SERIAL_INVALID) {
+    fprintf(stderr, "dodead: cannot get serial for 'et'\n");
+    exit(1);
+  }
+
+  WordKey key(context);
+  key.Set(WORD_KEY_WORD, wordid);
+  key.Set(WORD_DOCID, 20);
+  //
+  // Check that we indeed have matches for this search key.
+  //
+  WordCursor* cursor = words->Cursor(key, HTDIG_WORDLIST_COLLECTOR);
+  cursor->Walk();
+  if(cursor->GetResults()->Count() != 5) {
+    fprintf(stderr, "dodead: searching %s expected 5 results, got %d\n", (char*)key.Get(), cursor->GetResults()->Count());
+    exit(1);
+  }
+  delete cursor->GetResults();
+
+  //
+  // Document <UNDEF> 20 <UNDEF> <UNDEF> is dead
+  //
+  words->Dead()->Mask(WordKey(context, "<UNDEF> 0 <UNDEF> <UNDEF>"));
+  words->Dead()->Put(WordKey(context, "<UNDEF> 20 <UNDEF> <UNDEF>"));
+  
+  cursor->Walk();
+  if(cursor->GetResults()->Count() != 0) {
+    fprintf(stderr, "dodead: document marked dead searching %s expected 5 results, got %d\n", (char*)key.Get(), cursor->GetResults()->Count());
+    exit(1);
+  }
+  delete cursor->GetResults();
+
+  delete cursor;
+
+  WordReference wordRef(context);
+  wordRef.Key() = key;
+
+  if(words->Exists(wordRef) != NOTOK) {
+    fprintf(stderr, "dodead: Exists returned true\n");
+    exit(1);
+  }
+  
+  delete words;
 }
 
 //*****************************************************************************
@@ -1068,8 +1088,9 @@ static void usage()
     printf("\t-v\t\tIncreases the verbosity\n");
     printf("\t-k\t\tTest WordKey\n");
     printf("\t-l\t\tTest WordList\n");
+    printf("\t-d\t\tTest WordDead\n");
     printf("\t-e n\t\tTest WordList with shared environnement, process number <n>\n");
     printf("\t-s\t\tTest WordList::SkipUselessSequentialWalking\n");
-    printf("\t-z\t\tActivate compression test (use with -s, -b or -l)\n");
+    printf("\t-z\t\tActivate compression test (use with -s, or -l)\n");
     exit(0);
 }

@@ -1,13 +1,13 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
-#include "db_config.h"
+#include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)CDB_log_put.c	11.4 (Sleepycat) 11/10/99";
+static const char revid[] = "$Id: log_put.c,v 1.1.2.2 2000/09/14 03:13:21 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -30,16 +30,26 @@ static const char sccsid[] = "@(#)CDB_log_put.c	11.4 (Sleepycat) 11/10/99";
 #include <unistd.h>
 #endif
 
+#ifdef  HAVE_RPC
+#include "db_server.h"
+#endif
+
 #include "db_int.h"
 #include "db_page.h"
 #include "log.h"
 #include "hash.h"
 
-static int CDB___log_fill __P((DB_LOG *, DB_LSN *, void *, u_int32_t));
-static int CDB___log_flush __P((DB_LOG *, const DB_LSN *));
-static int CDB___log_newfh __P((DB_LOG *));
-static int CDB___log_putr __P((DB_LOG *, DB_LSN *, const DBT *, u_int32_t));
-static int CDB___log_write __P((DB_LOG *, void *, u_int32_t));
+#ifdef HAVE_RPC
+#include "gen_client_ext.h"
+#include "rpc_client_ext.h"
+#endif
+
+static int __log_fill __P((DB_LOG *, DB_LSN *, void *, u_int32_t));
+static int __log_flush __P((DB_LOG *, const DB_LSN *));
+static int __log_newfh __P((DB_LOG *));
+static int __log_putr __P((DB_LOG *, DB_LSN *, const DBT *, u_int32_t));
+static int __log_open_files __P((DB_ENV *));
+static int __log_write __P((DB_LOG *, void *, u_int32_t));
 
 /*
  * CDB_log_put --
@@ -54,6 +64,11 @@ CDB_log_put(dbenv, lsn, dbt, flags)
 {
 	DB_LOG *dblp;
 	int ret;
+
+#ifdef HAVE_RPC
+	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
+		return (__dbcl_log_put(dbenv, lsn, dbt, flags));
+#endif
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->lg_handle, DB_INIT_LOG);
@@ -83,10 +98,8 @@ CDB___log_put(dbenv, lsn, dbt, flags)
 	const DBT *dbt;
 	u_int32_t flags;
 {
-	DBT fid_dbt, t;
+	DBT t;
 	DB_LOG *dblp;
-	DB_LSN r_unused;
-	FNAME *fnp;
 	LOG *lp;
 	u_int32_t lastoff;
 	int ret;
@@ -115,7 +128,7 @@ CDB___log_put(dbenv, lsn, dbt, flags)
 		}
 
 		/* Flush the log. */
-		if ((ret = CDB___log_flush(dblp, NULL)) != 0)
+		if ((ret = __log_flush(dblp, NULL)) != 0)
 			return (ret);
 
 		/*
@@ -145,8 +158,12 @@ CDB___log_put(dbenv, lsn, dbt, flags)
 	if (lp->lsn.offset == 0) {
 		t.data = &lp->persist;
 		t.size = sizeof(LOGP);
-		if ((ret = CDB___log_putr(dblp, lsn,
+		if ((ret = __log_putr(dblp, lsn,
 		    &t, lastoff == 0 ? 0 : lastoff - lp->len)) != 0)
+			return (ret);
+
+		/* Record files open in this log. */
+		if ((ret = __log_open_files(dbenv)) != 0)
 			return (ret);
 
 		/* Update the LSN information returned to the user. */
@@ -155,7 +172,7 @@ CDB___log_put(dbenv, lsn, dbt, flags)
 	}
 
 	/* Write the application's log record. */
-	if ((ret = CDB___log_putr(dblp, lsn, dbt, lp->lsn.offset - lp->len)) != 0)
+	if ((ret = __log_putr(dblp, lsn, dbt, lp->lsn.offset - lp->len)) != 0)
 		return (ret);
 
 	/*
@@ -166,22 +183,8 @@ CDB___log_put(dbenv, lsn, dbt, flags)
 	 */
 	if (flags == DB_CHECKPOINT) {
 		lp->chkpt_lsn = *lsn;
-
-		for (fnp = SH_TAILQ_FIRST(&lp->fq, __fname);
-		    fnp != NULL; fnp = SH_TAILQ_NEXT(fnp, q, __fname)) {
-			if (fnp->ref == 0)	/* Entry not in use. */
-				continue;
-			memset(&t, 0, sizeof(t));
-			t.data = R_ADDR(&dblp->reginfo, fnp->name_off);
-			t.size = strlen(t.data) + 1;
-			memset(&fid_dbt, 0, sizeof(fid_dbt));
-			fid_dbt.data = fnp->ufid;
-			fid_dbt.size = DB_FILE_ID_LEN;
-			if ((ret = CDB___log_register_log(dbenv, NULL, &r_unused, 0,
-			    LOG_CHECKPOINT, &t, &fid_dbt, fnp->id, fnp->s_type))
-			    != 0)
-				return (ret);
-		}
+		if ((ret = __log_open_files(dbenv)) != 0)
+			return (ret);
 	}
 
 	/*
@@ -190,7 +193,7 @@ CDB___log_put(dbenv, lsn, dbt, flags)
 	 *	Sync the log to disk.
 	 */
 	if (flags == DB_FLUSH || flags == DB_CHECKPOINT)
-		if ((ret = CDB___log_flush(dblp, NULL)) != 0)
+		if ((ret = __log_flush(dblp, NULL)) != 0)
 			return (ret);
 
 	/*
@@ -206,11 +209,11 @@ CDB___log_put(dbenv, lsn, dbt, flags)
 }
 
 /*
- * CDB___log_putr --
+ * __log_putr --
  *	Actually put a record into the log.
  */
 static int
-CDB___log_putr(dblp, lsn, dbt, prev)
+__log_putr(dblp, lsn, dbt, prev)
 	DB_LOG *dblp;
 	DB_LSN *lsn;
 	const DBT *dbt;
@@ -231,12 +234,12 @@ CDB___log_putr(dblp, lsn, dbt, prev)
 	hdr.len = sizeof(HDR) + dbt->size;
 	hdr.cksum = CDB___ham_func4(dbt->data, dbt->size);
 
-	if ((ret = CDB___log_fill(dblp, lsn, &hdr, sizeof(HDR))) != 0)
+	if ((ret = __log_fill(dblp, lsn, &hdr, sizeof(HDR))) != 0)
 		return (ret);
 	lp->len = sizeof(HDR);
 	lp->lsn.offset += sizeof(HDR);
 
-	if ((ret = CDB___log_fill(dblp, lsn, dbt->data, dbt->size)) != 0)
+	if ((ret = __log_fill(dblp, lsn, dbt->data, dbt->size)) != 0)
 		return (ret);
 	lp->len += dbt->size;
 	lp->lsn.offset += dbt->size;
@@ -255,23 +258,28 @@ CDB_log_flush(dbenv, lsn)
 	DB_LOG *dblp;
 	int ret;
 
+#ifdef HAVE_RPC
+	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
+		return (__dbcl_log_flush(dbenv, lsn));
+#endif
+
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->lg_handle, DB_INIT_LOG);
 
 	dblp = dbenv->lg_handle;
 	R_LOCK(dbenv, &dblp->reginfo);
-	ret = CDB___log_flush(dblp, lsn);
+	ret = __log_flush(dblp, lsn);
 	R_UNLOCK(dbenv, &dblp->reginfo);
 	return (ret);
 }
 
 /*
- * CDB___log_flush --
+ * __log_flush --
  *	Write all records less than or equal to the specified LSN; internal
  *	version.
  */
 static int
-CDB___log_flush(dblp, lsn)
+__log_flush(dblp, lsn)
 	DB_LOG *dblp;
 	const DB_LSN *lsn;
 {
@@ -317,7 +325,7 @@ CDB___log_flush(dblp, lsn)
 	 */
 	current = 0;
 	if (lp->b_off != 0 && CDB_log_compare(lsn, &lp->f_lsn) >= 0) {
-		if ((ret = CDB___log_write(dblp, dblp->bufp, lp->b_off)) != 0)
+		if ((ret = __log_write(dblp, dblp->bufp, lp->b_off)) != 0)
 			return (ret);
 
 		lp->b_off = 0;
@@ -334,12 +342,12 @@ CDB___log_flush(dblp, lsn)
 	if (dblp->lfname != lp->lsn.file) {
 		if (!current)
 			return (0);
-		if ((ret = CDB___log_newfh(dblp)) != 0)
+		if ((ret = __log_newfh(dblp)) != 0)
 			return (ret);
 	}
 
 	/* Sync all writes to disk. */
-	if ((ret = CDB___os_fsync(&dblp->lfh)) != 0) {
+	if ((ret = CDB___os_fsync(dblp->dbenv, &dblp->lfh)) != 0) {
 		CDB___db_panic(dblp->dbenv, ret);
 		return (ret);
 	}
@@ -369,11 +377,11 @@ CDB___log_flush(dblp, lsn)
 }
 
 /*
- * CDB___log_fill --
+ * __log_fill --
  *	Write information into the log.
  */
 static int
-CDB___log_fill(dblp, lsn, addr, len)
+__log_fill(dblp, lsn, addr, len)
 	DB_LOG *dblp;
 	DB_LSN *lsn;
 	void *addr;
@@ -403,7 +411,7 @@ CDB___log_fill(dblp, lsn, addr, len)
 		 */
 		if (lp->b_off == 0 && len >= bsize) {
 			nrec = len / bsize;
-			if ((ret = CDB___log_write(dblp, addr, nrec * bsize)) != 0)
+			if ((ret = __log_write(dblp, addr, nrec * bsize)) != 0)
 				return (ret);
 			addr = (u_int8_t *)addr + nrec * bsize;
 			len -= nrec * bsize;
@@ -421,7 +429,7 @@ CDB___log_fill(dblp, lsn, addr, len)
 
 		/* If we fill the buffer, flush it. */
 		if (lp->b_off == bsize) {
-			if ((ret = CDB___log_write(dblp, dblp->bufp, bsize)) != 0)
+			if ((ret = __log_write(dblp, dblp->bufp, bsize)) != 0)
 				return (ret);
 			lp->b_off = 0;
 			++lp->stat.st_wcount_fill;
@@ -431,17 +439,17 @@ CDB___log_fill(dblp, lsn, addr, len)
 }
 
 /*
- * CDB___log_write --
+ * __log_write --
  *	Write the log buffer to disk.
  */
 static int
-CDB___log_write(dblp, addr, len)
+__log_write(dblp, addr, len)
 	DB_LOG *dblp;
 	void *addr;
 	u_int32_t len;
 {
 	LOG *lp;
-	ssize_t nw;
+	size_t nw;
 	int ret;
 
 	/*
@@ -450,7 +458,7 @@ CDB___log_write(dblp, addr, len)
 	 */
 	lp = dblp->reginfo.primary;
 	if (!F_ISSET(&dblp->lfh, DB_FH_VALID) || dblp->lfname != lp->lsn.file)
-		if ((ret = CDB___log_newfh(dblp)) != 0)
+		if ((ret = __log_newfh(dblp)) != 0)
 			return (ret);
 
 	/*
@@ -458,13 +466,16 @@ CDB___log_write(dblp, addr, len)
 	 * since we last did).
 	 */
 	if ((ret =
-	    CDB___os_seek(&dblp->lfh, 0, 0, lp->w_off, 0, DB_OS_SEEK_SET)) != 0 ||
-	    (ret = CDB___os_write(&dblp->lfh, addr, len, &nw)) != 0) {
+	    CDB___os_seek(dblp->dbenv,
+	    &dblp->lfh, 0, 0, lp->w_off, 0, DB_OS_SEEK_SET)) != 0 ||
+	    (ret = CDB___os_write(dblp->dbenv, &dblp->lfh, addr, len, &nw)) != 0) {
 		CDB___db_panic(dblp->dbenv, ret);
 		return (ret);
 	}
-	if (nw != (int32_t)len)
+	if (nw != len) {
+		CDB___db_err(dblp->dbenv, "Short write while writing log");
 		return (EIO);
+	}
 
 	/* Reset the buffer offset and update the seek offset. */
 	lp->w_off += len;
@@ -498,6 +509,11 @@ CDB_log_file(dbenv, lsn, namep, len)
 	int ret;
 	char *name;
 
+#ifdef HAVE_RPC
+	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT))
+		return (__dbcl_log_file(dbenv, lsn, namep, len));
+#endif
+
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->lg_handle, DB_INIT_LOG);
 
@@ -511,7 +527,8 @@ CDB_log_file(dbenv, lsn, namep, len)
 	/* Check to make sure there's enough room and copy the name. */
 	if (len < strlen(name) + 1) {
 		*namep = '\0';
-		return (ENOMEM);
+		CDB___db_err(dbenv, "CDB_log_file: name buffer is too short");
+		return (EINVAL);
 	}
 	(void)strcpy(namep, name);
 	CDB___os_freestr(name);
@@ -520,11 +537,11 @@ CDB_log_file(dbenv, lsn, namep, len)
 }
 
 /*
- * CDB___log_newfh --
+ * __log_newfh --
  *	Acquire a file handle for the current log file.
  */
 static int
-CDB___log_newfh(dblp)
+__log_newfh(dblp)
 	DB_LOG *dblp;
 {
 	LOG *lp;
@@ -538,8 +555,16 @@ CDB___log_newfh(dblp)
 	/* Get the path of the new file and open it. */
 	lp = dblp->reginfo.primary;
 	dblp->lfname = lp->lsn.file;
+
+	/* Adding DB_OSO_LOG to the flags may cause additional
+	 * platform-specific optimizations.  On WinNT, the logfile
+	 * is preallocated, which may have a time penalty at startup,
+	 * but may lead to overall better throughput.  We are not
+	 * certain that this works reliably, so enable at your own risk.
+	 */
 	if ((ret = CDB___log_name(dblp, dblp->lfname,
-	    &name, &dblp->lfh, DB_OSO_CREATE | DB_OSO_LOG | DB_OSO_SEQ)) != 0)
+	    &name, &dblp->lfh,
+	    DB_OSO_CREATE |/* DB_OSO_LOG |*/ DB_OSO_SEQ)) != 0)
 		CDB___db_err(dblp->dbenv,
 		    "CDB_log_put: %s: %s", name, CDB_db_strerror(ret));
 
@@ -592,7 +617,8 @@ CDB___log_name(dblp, filenumber, namep, fhp, flags)
 		return (ret);
 
 	/* Open the new-style file -- if we succeed, we're done. */
-	if ((ret = CDB___os_open(*namep, flags, lp->persist.mode, fhp)) == 0)
+	if ((ret = CDB___os_open(dblp->dbenv,
+	    *namep, flags, lp->persist.mode, fhp)) == 0)
 		return (0);
 
 	/*
@@ -617,7 +643,8 @@ CDB___log_name(dblp, filenumber, namep, fhp, flags)
 	 * space allocated for the new-style name and return the old-style
 	 * name to the caller.
 	 */
-	if ((ret = CDB___os_open(oname, flags, lp->persist.mode, fhp)) == 0) {
+	if ((ret = CDB___os_open(dblp->dbenv,
+	    oname, flags, lp->persist.mode, fhp)) == 0) {
 		CDB___os_freestr(*namep);
 		*namep = oname;
 		return (0);
@@ -633,4 +660,39 @@ CDB___log_name(dblp, filenumber, namep, fhp, flags)
 	 */
 err:	CDB___os_freestr(oname);
 	return (ret);
+}
+
+static int
+__log_open_files(dbenv)
+	DB_ENV *dbenv;
+{
+	DB_LOG *dblp;
+	DB_LSN r_unused;
+	DBT fid_dbt, t;
+	FNAME *fnp;
+	LOG *lp;
+	int ret;
+
+	dblp = dbenv->lg_handle;
+	lp = dblp->reginfo.primary;
+
+	for (fnp = SH_TAILQ_FIRST(&lp->fq, __fname);
+	    fnp != NULL; fnp = SH_TAILQ_NEXT(fnp, q, __fname)) {
+		if (fnp->ref == 0)	/* Entry not in use. */
+			continue;
+		if (fnp->name_off != INVALID_ROFF) {
+			memset(&t, 0, sizeof(t));
+			t.data = R_ADDR(&dblp->reginfo, fnp->name_off);
+			t.size = strlen(t.data) + 1;
+		}
+		memset(&fid_dbt, 0, sizeof(fid_dbt));
+		fid_dbt.data = fnp->ufid;
+		fid_dbt.size = DB_FILE_ID_LEN;
+		if ((ret = CDB___log_register_log(dbenv,
+		    NULL, &r_unused, 0, LOG_CHECKPOINT,
+		    fnp->name_off == INVALID_ROFF ? NULL : &t,
+		    &fid_dbt, fnp->id, fnp->s_type, fnp->meta_pgno)) != 0)
+			return (ret);
+	}
+	return (0);
 }

@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1998, 1999
+ * Copyright (c) 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "db_config.h"
+#include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)os_tmpdir.c	11.1 (Sleepycat) 7/25/99";
+static const char revid[] = "$Id: os_tmpdir.c,v 1.1.2.2 2000/09/14 03:13:22 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -58,7 +58,6 @@ CDB___os_tmpdir(dbenv, flags)
 	const char * const *lp, *p;
 
 	/* Use the environment if it's permitted and initialized. */
-	p = NULL;
 	if (LF_ISSET(DB_USE_ENVIRON) ||
 	    (LF_ISSET(DB_USE_ENVIRON_ROOT) && CDB___os_isroot() == 0)) {
 		if ((p = getenv("TMPDIR")) != NULL && p[0] == '\0') {
@@ -82,26 +81,41 @@ CDB___os_tmpdir(dbenv, flags)
 			    "illegal TempFolder environment variable");
 			return (EINVAL);
 		}
+		if (p != NULL)
+			return (CDB___os_strdup(dbenv, p, &dbenv->db_tmp_dir));
 	}
 
 #ifdef macintosh
 	/* Get the path to the temporary folder. */
-	if (p == NULL) {
-		FSSpec spec;
+	{FSSpec spec;
 
 		if (!Special2FSSpec(kTemporaryFolderType,
 		    kOnSystemDisk, 0, &spec))
-			(void)CDB___os_strdup(FSp2FullPath(&spec), &p);
+			return (CDB___os_strdup(dbenv,
+			    FSp2FullPath(&spec), &dbenv->db_tmp_dir));
+	}
+#endif
+#ifdef _WIN32
+	/* Get the path to the temporary directory. */
+	{int len;
+	 char temp[_MAX_PATH + 1];
+	 char *eos;
+	 int isdir;
+
+		if ((len = GetTempPath(sizeof(temp) - 1, temp)) > 2) {
+			eos = &temp[len];
+			*eos-- = '\0';
+			if (*eos == '\\' || *eos == '/')
+				*eos = '\0';
+			if (CDB___os_exists(temp, &isdir) == 0 && isdir != 0)
+				return (CDB___os_strdup(dbenv, temp, &dbenv->db_tmp_dir));
+		}
 	}
 #endif
 
-	/* Step through the list looking for a possibility. */
-	if (p == NULL)
-		for (lp = list; *lp != NULL; ++lp)
-			if (CDB___os_exists(p = *lp, NULL) == 0)
-				break;
-	if (p == NULL)
-		return (0);
-
-	return (CDB___os_strdup(p, &dbenv->db_tmp_dir));
+	/* Step through the static list looking for a possibility. */
+	for (lp = list; *lp != NULL; ++lp)
+		if (CDB___os_exists(*lp, NULL) == 0)
+			return (CDB___os_strdup(dbenv, *lp, &dbenv->db_tmp_dir));
+	return (0);
 }

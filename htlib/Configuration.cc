@@ -13,7 +13,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.cc,v 1.15.2.8 2000/05/10 18:23:43 loic Exp $
+// $Id: Configuration.cc,v 1.15.2.9 2000/09/14 03:13:23 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -39,6 +39,23 @@ Configuration::Configuration()
     allow_multiple = 0;
 }
 
+
+//*********************************************************************
+// Configuration::Configuration(const Configuration& other) : Object()
+//
+Configuration::Configuration(const Configuration& other) : Object()
+{
+  separators = other.separators;
+  allow_multiple = other.allow_multiple;
+
+  DictionaryCursor cursor;
+  const char* key;
+  for(other.dcGlobalVars.Start_Get(cursor);
+      (key = other.dcGlobalVars.Get_Next(cursor));)
+    {
+      Add(key, other[key]);
+    }
+}
 
 //*********************************************************************
 // void Configuration::NameValueSeparators(char *s)

@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998, 1999
+ * Copyright (c) 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "db_config.h"
+#include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)os_alloc.c	11.6 (Sleepycat) 11/9/99";
+static const char revid[] = "$Id: os_alloc.c,v 1.1.2.2 2000/09/14 03:13:22 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -47,10 +47,11 @@ static void __os_guard __P((void));
  * CDB___os_strdup --
  *	The strdup(3) function for DB.
  *
- * PUBLIC: int CDB___os_strdup __P((const char *, void *));
+ * PUBLIC: int CDB___os_strdup __P((DB_ENV *, const char *, void *));
  */
 int
-CDB___os_strdup(str, storep)
+CDB___os_strdup(dbenv, str, storep)
+	DB_ENV *dbenv;
 	const char *str;
 	void *storep;
 {
@@ -61,7 +62,7 @@ CDB___os_strdup(str, storep)
 	*(void **)storep = NULL;
 
 	size = strlen(str) + 1;
-	if ((ret = CDB___os_malloc(size, NULL, &p)) != 0)
+	if ((ret = CDB___os_malloc(dbenv, size, NULL, &p)) != 0)
 		return (ret);
 
 	memcpy(p, str, size);
@@ -74,10 +75,11 @@ CDB___os_strdup(str, storep)
  * CDB___os_calloc --
  *	The calloc(3) function for DB.
  *
- * PUBLIC: int CDB___os_calloc __P((size_t, size_t, void *));
+ * PUBLIC: int CDB___os_calloc __P((DB_ENV *, size_t, size_t, void *));
  */
 int
-CDB___os_calloc(num, size, storep)
+CDB___os_calloc(dbenv, num, size, storep)
+	DB_ENV *dbenv;
 	size_t num, size;
 	void *storep;
 {
@@ -85,7 +87,7 @@ CDB___os_calloc(num, size, storep)
 	int ret;
 
 	size *= num;
-	if ((ret = CDB___os_malloc(size, NULL, &p)) != 0)
+	if ((ret = CDB___os_malloc(dbenv, size, NULL, &p)) != 0)
 		return (ret);
 
 	memset(p, 0, size);
@@ -98,13 +100,15 @@ CDB___os_calloc(num, size, storep)
  * CDB___os_malloc --
  *	The malloc(3) function for DB.
  *
- * PUBLIC: int CDB___os_malloc __P((size_t, void *(*)(size_t), void *));
+ * PUBLIC: int CDB___os_malloc __P((DB_ENV *, size_t, void *(*)(size_t), void *));
  */
 int
-CDB___os_malloc(size, db_malloc, storep)
+CDB___os_malloc(dbenv, size, db_malloc, storep)
+	DB_ENV *dbenv;
 	size_t size;
 	void *(*db_malloc) __P((size_t)), *storep;
 {
+	int ret;
 	void *p;
 
 	*(void **)storep = NULL;
@@ -114,7 +118,7 @@ CDB___os_malloc(size, db_malloc, storep)
 		++size;
 #ifdef DIAGNOSTIC
 	else
-        	++size;				/* Add room for a guard byte. */
+		++size;				/* Add room for a guard byte. */
 #endif
 
 	/* Some C libraries don't correctly set errno when malloc(3) fails. */
@@ -126,9 +130,14 @@ CDB___os_malloc(size, db_malloc, storep)
 	else
 		p = malloc(size);
 	if (p == NULL) {
-		if (CDB___os_get_errno() == 0)
+		ret = CDB___os_get_errno();
+		if (ret == 0) {
 			CDB___os_set_errno(ENOMEM);
-		return (CDB___os_get_errno());
+			ret = ENOMEM;
+		}
+		CDB___db_err(dbenv,
+		    "malloc: %s: %lu", strerror(ret), (u_long)size);
+		return (ret);
 	}
 
 #ifdef DIAGNOSTIC
@@ -139,7 +148,7 @@ CDB___os_malloc(size, db_malloc, storep)
 	 * not quite so fine for strings.  There are places in DB where memory
 	 * is allocated sufficient to hold the largest possible string that
 	 * we'll see, and then only some subset of the memory is used.  To
-	 * support this usage, the CDB___os_freestr() function checks the byte
+	 * support this CDB_usage, the CDB___os_freestr() function checks the byte
 	 * after the string's nul, which may or may not be the last byte in
 	 * the originally allocated memory.
 	 */
@@ -154,27 +163,30 @@ CDB___os_malloc(size, db_malloc, storep)
  * CDB___os_realloc --
  *	The realloc(3) function for DB.
  *
- * PUBLIC: int CDB___os_realloc __P((size_t, void *(*)(void *, size_t), void *));
+ * PUBLIC: int CDB___os_realloc __P((DB_ENV *,
+ * PUBLIC:     size_t, void *(*)(void *, size_t), void *));
  */
 int
-CDB___os_realloc(size, db_realloc, storep)
+CDB___os_realloc(dbenv, size, db_realloc, storep)
+	DB_ENV *dbenv;
 	size_t size;
 	void *(*db_realloc) __P((void *, size_t)), *storep;
 {
+	int ret;
 	void *p, *ptr;
 
 	ptr = *(void **)storep;
 
 	/* If we haven't yet allocated anything yet, simply call malloc. */
 	if (ptr == NULL && db_realloc == NULL)
-		return (CDB___os_malloc(size, NULL, storep));
+		return (CDB___os_malloc(dbenv, size, NULL, storep));
 
 	/* Never allocate 0 bytes -- some C libraries don't like it. */
 	if (size == 0)
 		++size;
 #ifdef DIAGNOSTIC
 	else
-        	++size;				/* Add room for a guard byte. */
+		++size;				/* Add room for a guard byte. */
 #endif
 
 	/*
@@ -186,18 +198,21 @@ CDB___os_realloc(size, db_realloc, storep)
 	CDB___os_set_errno(0);
 	if (db_realloc != NULL)
 		p = db_realloc(ptr, size);
-	if (CDB___db_jump.j_realloc != NULL)
+	else if (CDB___db_jump.j_realloc != NULL)
 		p = CDB___db_jump.j_realloc(ptr, size);
 	else
 		p = realloc(ptr, size);
 	if (p == NULL) {
-		if (CDB___os_get_errno() == 0)
+		if ((ret = CDB___os_get_errno()) == 0) {
+			ret = ENOMEM;
 			CDB___os_set_errno(ENOMEM);
-		return (CDB___os_get_errno());
+		}
+		CDB___db_err(dbenv,
+		    "realloc: %s: %lu", strerror(ret), (u_long)size);
+		return (ret);
 	}
-
 #ifdef DIAGNOSTIC
-        ((u_int8_t *)p)[size - 1] = CLEAR_BYTE;	/* Initialize guard byte. */
+	((u_int8_t *)p)[size - 1] = CLEAR_BYTE;	/* Initialize guard byte. */
 #endif
 
 	*(void **)storep = p;
@@ -254,14 +269,14 @@ CDB___os_freestr(ptr)
 
 	size = strlen(ptr) + 1;
 
-        /*
-         * Check that the guard byte (one past the end of the memory) is
-         * still CLEAR_BYTE.
-         */
-        if (((u_int8_t *)ptr)[size] != CLEAR_BYTE)
-                 __os_guard();
+	/*
+	 * Check that the guard byte (one past the end of the memory) is
+	 * still CLEAR_BYTE.
+	 */
+	if (((u_int8_t *)ptr)[size] != CLEAR_BYTE)
+		 __os_guard();
 
-        /* Clear memory. */
+	/* Clear memory. */
 	memset(ptr, CLEAR_BYTE, size);
 #endif
 
@@ -290,7 +305,7 @@ __os_guard()
 #endif
 
 /*
- * __ua_copy --
+ * CDB___ua_memcpy --
  *	Copy memory to memory without relying on any kind of alignment.
  *
  *	There are places in DB that we have unaligned data, for example,
@@ -307,12 +322,14 @@ __os_guard()
  *		p = (struct a *)func_argument;
  *		memcpy(&local, p->x, sizeof(local));
  *
- *	some compilers optimize to use instructions that require alignment.
- *	It's a compiler bug, but it's a pretty common one.
+ *	compilers optimize to use inline instructions requiring alignment,
+ *	and records in the log don't have any particular alignment.  (This
+ *	isn't a compiler bug, because it's a structure they're allowed to
+ *	assume alignment.)
  *
  *	Casting the memcpy arguments to (u_int8_t *) appears to work most
  *	of the time, but we've seen examples where it wasn't sufficient
- *	and there's nothing in ANSI C that requires it.
+ *	and there's nothing in ANSI C that requires that work.
  *
  * PUBLIC: void *CDB___ua_memcpy __P((void *, const void *, size_t));
  */

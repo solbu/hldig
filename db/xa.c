@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1998, 1999
+ * Copyright (c) 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "db_config.h"
+#include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)xa.c	11.4 (Sleepycat) 9/10/99";
+static const char revid[] = "$Id: xa.c,v 1.1.2.2 2000/09/14 03:13:23 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,18 +25,18 @@ static const char sccsid[] = "@(#)xa.c	11.4 (Sleepycat) 9/10/99";
 #include "db_am.h"
 #include "db_dispatch.h"
 
-static int  CDB___db_xa_close __P((char *, int, long));
-static int  CDB___db_xa_commit __P((XID *, int, long));
-static int  CDB___db_xa_complete __P((int *, int *, int, long));
-static int  CDB___db_xa_end __P((XID *, int, long));
-static int  CDB___db_xa_forget __P((XID *, int, long));
-static int  CDB___db_xa_open __P((char *, int, long));
-static int  CDB___db_xa_prepare __P((XID *, int, long));
-static int  CDB___db_xa_recover __P((XID *, long, int, long));
-static int  CDB___db_xa_rollback __P((XID *, int, long));
-static int  CDB___db_xa_start __P((XID *, int, long));
-static void CDB___xa_txn_end __P((DB_ENV *));
-static void CDB___xa_txn_init __P((DB_ENV *, TXN_DETAIL *, size_t));
+static int  __db_xa_close __P((char *, int, long));
+static int  __db_xa_commit __P((XID *, int, long));
+static int  __db_xa_complete __P((int *, int *, int, long));
+static int  __db_xa_end __P((XID *, int, long));
+static int  __db_xa_forget __P((XID *, int, long));
+static int  __db_xa_open __P((char *, int, long));
+static int  __db_xa_prepare __P((XID *, int, long));
+static int  __db_xa_recover __P((XID *, long, int, long));
+static int  __db_xa_rollback __P((XID *, int, long));
+static int  __db_xa_start __P((XID *, int, long));
+static void __xa_txn_end __P((DB_ENV *));
+static void __xa_txn_init __P((DB_ENV *, TXN_DETAIL *, size_t));
 
 /*
  * Possible flag values:
@@ -52,20 +52,20 @@ const struct xa_switch_t CDB_db_xa_switch = {
 	 "Berkeley DB",		/* name[RMNAMESZ] */
 	 TMNOMIGRATE,		/* flags */
 	 0,			/* version */
-	 CDB___db_xa_open,		/* xa_open_entry */
-	 CDB___db_xa_close,		/* xa_close_entry */
-	 CDB___db_xa_start,		/* xa_start_entry */
-	 CDB___db_xa_end,		/* xa_end_entry */
-	 CDB___db_xa_rollback,	/* xa_rollback_entry */
-	 CDB___db_xa_prepare,	/* xa_prepare_entry */
-	 CDB___db_xa_commit,	/* xa_commit_entry */
-	 CDB___db_xa_recover,	/* xa_recover_entry */
-	 CDB___db_xa_forget,	/* xa_forget_entry */
-	 CDB___db_xa_complete	/* xa_complete_entry */
+	 __db_xa_open,		/* xa_open_entry */
+	 __db_xa_close,		/* xa_close_entry */
+	 __db_xa_start,		/* xa_start_entry */
+	 __db_xa_end,		/* xa_end_entry */
+	 __db_xa_rollback,	/* xa_rollback_entry */
+	 __db_xa_prepare,	/* xa_prepare_entry */
+	 __db_xa_commit,	/* xa_commit_entry */
+	 __db_xa_recover,	/* xa_recover_entry */
+	 __db_xa_forget,	/* xa_forget_entry */
+	 __db_xa_complete	/* xa_complete_entry */
 };
 
 /*
- * CDB___db_xa_open --
+ * __db_xa_open --
  *	The open call in the XA protocol.  The rmid field is an id number
  * that the TM assigned us and will pass us on every xa call.  We need to
  * map that rmid number into a dbenv structure that we create during
@@ -79,7 +79,7 @@ const struct xa_switch_t CDB_db_xa_switch = {
  * call.
  */
 static int
-CDB___db_xa_open(xa_info, rmid, flags)
+__db_xa_open(xa_info, rmid, flags)
 	char *xa_info;
 	int rmid;
 	long flags;
@@ -94,7 +94,7 @@ CDB___db_xa_open(xa_info, rmid, flags)
 	/* Verify if we already have this environment open. */
 	if (CDB___db_rmid_to_env(rmid, &env) == 0)
 		return (XA_OK);
-	if (CDB___os_calloc(1, sizeof(DB_ENV), &env) != 0)
+	if (CDB___os_calloc(env, 1, sizeof(DB_ENV), &env) != 0)
 		return (XAER_RMERR);
 
 	/* Open a new environment. */
@@ -102,7 +102,7 @@ CDB___db_xa_open(xa_info, rmid, flags)
 	DB_CREATE | DB_INIT_LOCK | DB_INIT_LOG | DB_INIT_MPOOL | DB_INIT_TXN
 	if (CDB_db_env_create(&env, 0) != 0)
 		return (XAER_RMERR);
-	if (env->open(env, xa_info, NULL, XA_FLAGS, 0) != 0)
+	if (env->open(env, xa_info, XA_FLAGS, 0) != 0)
 		goto err;
 
 	/* Create the mapping. */
@@ -110,7 +110,7 @@ CDB___db_xa_open(xa_info, rmid, flags)
 		goto err;
 
 	/* Allocate space for the current transaction. */
-	if (CDB___os_calloc(1, sizeof(DB_TXN), &env->xa_txn) != 0)
+	if (CDB___os_calloc(env, 1, sizeof(DB_TXN), &env->xa_txn) != 0)
 		goto err;
 	env->xa_txn->txnid = TXN_INVALID;
 
@@ -122,7 +122,7 @@ err:	(void)env->close(env, 0);
 }
 
 /*
- * CDB___db_xa_close --
+ * __db_xa_close --
  *	The close call of the XA protocol.  The only trickiness here
  * is that if there are any active transactions, we must fail.  It is
  * *not* an error to call close on an environment that has already been
@@ -130,7 +130,7 @@ err:	(void)env->close(env, 0);
  * environment that has never been opened).
  */
 static int
-CDB___db_xa_close(xa_info, rmid, flags)
+__db_xa_close(xa_info, rmid, flags)
 	char *xa_info;
 	int rmid;
 	long flags;
@@ -168,11 +168,11 @@ CDB___db_xa_close(xa_info, rmid, flags)
 }
 
 /*
- * CDB___db_xa_start --
+ * __db_xa_start --
  *	Begin a transaction for the current resource manager.
  */
 static int
-CDB___db_xa_start(xid, rmid, flags)
+__db_xa_start(xid, rmid, flags)
 	XID *xid;
 	int rmid;
 	long flags;
@@ -220,7 +220,7 @@ CDB___db_xa_start(xid, rmid, flags)
 			return (XA_RBOTHER);
 
 		/* Now, fill in the global transaction structure. */
-		CDB___xa_txn_init(env, td, off);
+		__xa_txn_init(env, td, off);
 		td->xa_status = TXN_XA_STARTED;
 	} else {
 		if (CDB___txn_xa_begin(env, env->xa_txn) != 0)
@@ -235,11 +235,11 @@ CDB___db_xa_start(xid, rmid, flags)
 }
 
 /*
- * CDB___db_xa_end --
+ * __db_xa_end --
  *	Disassociate the current transaction from the current process.
  */
 static int
-CDB___db_xa_end(xid, rmid, flags)
+__db_xa_end(xid, rmid, flags)
 	XID *xid;
 	int rmid;
 	long flags;
@@ -289,11 +289,11 @@ CDB___db_xa_end(xid, rmid, flags)
 }
 
 /*
- * CDB___db_xa_prepare --
+ * __db_xa_prepare --
  *	Sync the log to disk so we can guarantee recoverability.
  */
 static int
-CDB___db_xa_prepare(xid, rmid, flags)
+__db_xa_prepare(xid, rmid, flags)
 	XID *xid;
 	int rmid;
 	long flags;
@@ -327,7 +327,7 @@ CDB___db_xa_prepare(xid, rmid, flags)
 		return (XAER_PROTO);
 
 	/* Now, fill in the global transaction structure. */
-	CDB___xa_txn_init(env, td, off);
+	__xa_txn_init(env, td, off);
 
 	if (CDB_txn_prepare(env->xa_txn) != 0)
 		return (XAER_RMERR);
@@ -335,16 +335,16 @@ CDB___db_xa_prepare(xid, rmid, flags)
 	td->xa_status = TXN_XA_PREPARED;
 
 	/* No fatal value that would require an XAER_RMFAIL. */
-	CDB___xa_txn_end(env);
+	__xa_txn_end(env);
 	return (XA_OK);
 }
 
 /*
- * CDB___db_xa_commit --
+ * __db_xa_commit --
  *	Commit the transaction
  */
 static int
-CDB___db_xa_commit(xid, rmid, flags)
+__db_xa_commit(xid, rmid, flags)
 	XID *xid;
 	int rmid;
 	long flags;
@@ -385,18 +385,18 @@ CDB___db_xa_commit(xid, rmid, flags)
 		return (XAER_PROTO);
 
 	/* Now, fill in the global transaction structure. */
-	CDB___xa_txn_init(env, td, off);
+	__xa_txn_init(env, td, off);
 
 	if (CDB_txn_commit(env->xa_txn, 0) != 0)
 		return (XAER_RMERR);
 
 	/* No fatal value that would require an XAER_RMFAIL. */
-	CDB___xa_txn_end(env);
+	__xa_txn_end(env);
 	return (XA_OK);
 }
 
 /*
- * CDB___db_xa_recover --
+ * __db_xa_recover --
  *	Returns a list of prepared and heuristically completed transactions.
  *
  * The return value is the number of xids placed into the xid array (less
@@ -404,7 +404,7 @@ CDB___db_xa_commit(xid, rmid, flags)
  * whether we are starting a scan or continuing one.
  */
 static int
-CDB___db_xa_recover(xids, count, rmid, flags)
+__db_xa_recover(xids, count, rmid, flags)
 	XID *xids;
 	long count, flags;
 	int rmid;
@@ -439,7 +439,7 @@ CDB___db_xa_recover(xids, count, rmid, flags)
 			 */
 			return (0);
 		}
-		if ((err = CDB___db_txnlist_init(&log->xa_info)) != 0)
+		if ((err = CDB___db_txnlist_init(env, &log->xa_info)) != 0)
 			return (XAER_RMERR);
 	} else {
 		/*
@@ -481,7 +481,7 @@ CDB___db_xa_recover(xids, count, rmid, flags)
 		switch (rectype) {
 		case DB_txn_regop:
 			if (err == DB_NOTFOUND)
-				CDB___db_txnlist_add(log->xa_info, txnid);
+				CDB___db_txnlist_add(env, log->xa_info, txnid);
 			err = 0;
 			break;
 		case DB_txn_xa_regop:
@@ -492,7 +492,7 @@ CDB___db_xa_recover(xids, count, rmid, flags)
 			if (err == 0)
 				break;
 			if ((err =
-			    CDB___txn_xa_regop_read(data.data, &argp)) != 0) {
+			    CDB___txn_xa_regop_read(env, data.data, &argp)) != 0) {
 				ret = XAER_RMERR;
 				goto out;
 			}
@@ -524,11 +524,11 @@ out:		CDB___db_txnlist_end(env, log->xa_info);
 }
 
 /*
- * CDB___db_xa_rollback
+ * __db_xa_rollback
  *	Abort an XA transaction.
  */
 static int
-CDB___db_xa_rollback(xid, rmid, flags)
+__db_xa_rollback(xid, rmid, flags)
 	XID *xid;
 	int rmid;
 	long flags;
@@ -560,24 +560,24 @@ CDB___db_xa_rollback(xid, rmid, flags)
 		return (XAER_PROTO);
 
 	/* Now, fill in the global transaction structure. */
-	CDB___xa_txn_init(env, td, off);
+	__xa_txn_init(env, td, off);
 	if (CDB_txn_abort(env->xa_txn) != 0)
 		return (XAER_RMERR);
 
 	/* No fatal value that would require an XAER_RMFAIL. */
-	CDB___xa_txn_end(env);
+	__xa_txn_end(env);
 	return (XA_OK);
 }
 
 /*
- * CDB___db_xa_forget --
+ * __db_xa_forget --
  *	Forget about an XID for a transaction that was heuristically
  * completed.  Since we do not heuristically complete anything, I
  * don't think we have to do anything here, but we should make sure
  * that we reclaim the slots in the txnid table.
  */
 static int
-CDB___db_xa_forget(xid, rmid, flags)
+__db_xa_forget(xid, rmid, flags)
 	XID *xid;
 	int rmid;
 	long flags;
@@ -606,12 +606,12 @@ CDB___db_xa_forget(xid, rmid, flags)
 }
 
 /*
- * CDB___db_xa_complete --
+ * __db_xa_complete --
  *	Used to wait for asynchronous operations to complete.  Since we're
  *	not doing asynch, this is an invalid operation.
  */
 static int
-CDB___db_xa_complete(handle, retval, rmid, flags)
+__db_xa_complete(handle, retval, rmid, flags)
 	int *handle, *retval, rmid;
 	long flags;
 {
@@ -624,12 +624,12 @@ CDB___db_xa_complete(handle, retval, rmid, flags)
 }
 
 /*
- * CDB___xa_txn_init --
- * 	Fill in the fields of the local transaction structure given
+ * __xa_txn_init --
+ *	Fill in the fields of the local transaction structure given
  *	the detail transaction structure.
  */
 static void
-CDB___xa_txn_init(env, td, off)
+__xa_txn_init(env, td, off)
 	DB_ENV *env;
 	TXN_DETAIL *td;
 	size_t off;
@@ -646,11 +646,11 @@ CDB___xa_txn_init(env, td, off)
 }
 
 /*
- * CDB___xa_txn_end --
- * 	Invalidate a transaction structure that was generated by xa_txn_init.
+ * __xa_txn_end --
+ *	Invalidate a transaction structure that was generated by xa_txn_init.
  */
 static void
-CDB___xa_txn_end(env)
+__xa_txn_end(env)
 	DB_ENV *env;
 {
 	DB_TXN *txn;

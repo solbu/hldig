@@ -1,3 +1,19 @@
+Wed Sep 13 22:05:33 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* Merged in mifluz-0.19 branch. Everything will break
+	temporarily. Loic and I will clean up tomorrow.
+
+	* htdoc/RELEASE.html, htdoc/THANKS.html, htdoc/TODO.html: Get a
+	start on updting these files for the next release.
+
+	* htdoc/cf_generate.pl: Revert change of Sep. 9 to ignore links to
+	all.html in cf_byprog.html file.
+
+	* htdoc/all.html: New file, moved from howitworks.html and not
+	updated yet.
+
+	* htdoc/contents.html: Change link from howitworks.html to all.html
+
 Tue Sep 12 17:00:00 CEST 2000 Quim Sanmarti <qss@gtd.es>
 
 	* htsearch: added AndQuery.cc BooleanLexer.cc BooleanQueryParser.cc

@@ -1,7 +1,7 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 /*
@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)btree.h	11.8 (Sleepycat) 9/20/99
+ * $Id: btree.h,v 1.1.2.2 2000/09/14 03:13:17 ghutchis Exp $
  */
 
 /* Forward structure declarations. */
@@ -51,10 +51,31 @@ struct __recno;		typedef struct __recno RECNO;
 #define	DEFMINKEYPAGE	 (2)
 
 #define	ISINTERNAL(p)	(TYPE(p) == P_IBTREE || TYPE(p) == P_IRECNO)
-#define	ISLEAF(p)	(TYPE(p) == P_LBTREE || TYPE(p) == P_LRECNO)
+#define	ISLEAF(p)	(TYPE(p) == P_LBTREE ||				\
+			    TYPE(p) == P_LRECNO || TYPE(p) == P_LDUP)
+
+/* Flags for CDB___bam_cadjust_log(). */
+#define	CAD_UPDATEROOT	0x01		/* Root page count was updated. */
+
+/* Flags for CDB___bam_split_log(). */
+#define	SPL_NRECS	0x01		/* Split tree has record count. */
+
+/* Flags for CDB___bam_iitem(). */
+#define	BI_DELETED	0x01		/* Key/data pair only placeholder. */
+
+/* Flags for CDB___bam_stkrel(). */
+#define	STK_CLRDBC	0x01		/* Clear dbc->page reference. */
+#define	STK_NOLOCK	0x02		/* Don't retain locks. */
+
+/* Flags for __ram_ca(). */
+typedef enum {
+	CA_DELETE,
+	CA_IAFTER,
+	CA_IBEFORE
+} ca_recno_arg;
 
 /*
- * Flags to CDB___bam_search() and CDB___bam_rsearch().
+ * Flags for CDB___bam_search() and CDB___bam_rsearch().
  *
  * Note, internal page searches must find the largest record less than key in
  * the tree so that descents work.  Leaf page searches must find the smallest
@@ -82,6 +103,7 @@ struct __recno;		typedef struct __recno RECNO;
 					 * on behalf of an insert, it's okay to
 					 * return an entry one past end-of-page.
 					 */
+#define	S_STK_ONLY	0x04000		/* Just return info in the stack */
 
 #define	S_DELETE	(S_WRITE | S_DUPFIRST | S_DELNO | S_EXACT | S_STACK)
 #define	S_FIND		(S_READ | S_DUPFIRST | S_DELNO)
@@ -92,11 +114,6 @@ struct __recno;		typedef struct __recno RECNO;
 #define	S_WRPAIR	(S_WRITE | S_DUPLAST | S_PAST_EOF | S_PARENT)
 
 /*
- * Flags to CDB___bam_iitem().
- */
-#define	BI_DELETED	0x01		/* Key/data pair only placeholder. */
-
-/*
  * Various routines pass around page references.  A page reference is
  * a pointer to the page, and the indx indicates an item on the page.
  * Each page reference may include a lock.
@@ -104,81 +121,74 @@ struct __recno;		typedef struct __recno RECNO;
 struct __epg {
 	PAGE	     *page;		/* The page. */
 	db_indx_t     indx;		/* The index on the page. */
+	db_indx_t     entries;		/* The number of entries on page */
 	DB_LOCK	      lock;		/* The page's lock. */
 	db_lockmode_t lock_mode;	/* The lock mode. */
 };
 
 /*
- * We maintain a stack of the pages that we're locking in the tree.  Btree's
- * (currently) only save two levels of the tree at a time, so the default
- * stack is always large enough.  Recno trees have to lock the entire tree to
- * do inserts/deletes, however.  Grow the stack as necessary.
+ * We maintain a stack of the pages that we're locking in the tree.  Grow
+ * the stack as necessary.
  */
 #define	BT_STK_CLR(c)							\
 	((c)->csp = (c)->sp)
 
-#define	BT_STK_ENTER(c, pagep, page_indx, lock, mode, ret) do {		\
+#define	BT_STK_ENTER(dbenv, c, pagep, page_indx, l, mode, ret) do {	\
 	if ((ret =							\
-	    (c)->csp == (c)->esp ? CDB___bam_stkgrow(c) : 0) == 0) {	\
+	    (c)->csp == (c)->esp ? CDB___bam_stkgrow(dbenv, c) : 0) == 0) {	\
 		(c)->csp->page = pagep;					\
 		(c)->csp->indx = page_indx;				\
-		(c)->csp->lock = lock;					\
+		(c)->csp->entries = NUM_ENT(pagep);			\
+		(c)->csp->lock = l;					\
 		(c)->csp->lock_mode = mode;				\
 	}								\
 } while (0)
 
-#define	BT_STK_PUSH(c, pagep, page_indx, lock, mode, ret) do {		\
-	BT_STK_ENTER(c, pagep, page_indx, lock, mode, ret);		\
+#define	BT_STK_PUSH(dbenv, c, pagep, page_indx, lock, mode, ret) do {	\
+	BT_STK_ENTER(dbenv, c, pagep, page_indx, lock, mode, ret);      \
+	++(c)->csp;							\
+} while (0)
+
+#define	BT_STK_NUM(dbenv, c, pagep, page_indx, ret) do {		\
+	if ((ret =							\
+	    (c)->csp == (c)->esp ? CDB___bam_stkgrow(dbenv, c) : 0) == 0) {	\
+		(c)->csp->page = NULL;					\
+		(c)->csp->indx = page_indx;				\
+		(c)->csp->entries = NUM_ENT(pagep);			\
+		(c)->csp->lock.off = LOCK_INVALID;			\
+		(c)->csp->lock_mode = DB_LOCK_NG;			\
+	}								\
+} while (0)
+
+#define	BT_STK_NUMPUSH(dbenv, c, pagep, page_indx,ret) do {		\
+	BT_STK_NUM(dbenv, cp, pagep, page_indx, ret);			\
 	++(c)->csp;							\
 } while (0)
 
 #define	BT_STK_POP(c)							\
 	((c)->csp == (c)->stack ? NULL : --(c)->csp)
 
-/*
- * Arguments passed to __bam_ca_replace().
- */
-typedef enum {
-	REPLACE_SETUP,
-	REPLACE_SUCCESS,
-	REPLACE_FAILED
-} ca_replace_arg;
-
-/* Arguments passed to CDB___ram_ca(). */
-typedef enum {
-	CA_DELETE,
-	CA_IAFTER,
-	CA_IBEFORE
-} ca_recno_arg;
-
 /* Btree/Recno cursor. */
 struct __cursor {
-	/* Per-thread information: shared by btree/recno. */
+	/* struct __dbc_internal */
+	__DBC_INTERNAL
+
+	/* btree private part */
 	EPG		*sp;		/* Stack pointer. */
-	EPG	 	*csp;		/* Current stack entry. */
+	EPG		*csp;		/* Current stack entry. */
 	EPG		*esp;		/* End stack pointer. */
 	EPG		 stack[5];
 
-	/* Per-thread information: btree private. */
-	PAGE		*page;		/* Cursor page. */
+	db_indx_t	 ovflsize;	/* Maximum key/data on-page size. */
 
-	db_pgno_t	 pgno;		/* Page. */
-	db_indx_t	 indx;		/* Page item ref'd by the cursor. */
-
-	db_pgno_t	 dpgno;		/* Duplicate page. */
-	db_indx_t	 dindx;		/* Page item ref'd by the cursor. */
-
-	DB_LOCK		 lock;		/* Cursor lock. */
-	db_lockmode_t	 lock_mode;	/* Lock mode. */
-
-	/* Per-thread information: recno private. */
 	db_recno_t	 recno;		/* Current record number. */
 
 	/*
 	 * Btree:
 	 * We set a flag in the cursor structure if the underlying object has
 	 * been deleted.  It's not strictly necessary, we could get the same
-	 * information by looking at the page itself.
+	 * information by looking at the page itself, but this method doesn't
+	 * require us to retrieve the page on cursor delete.
 	 *
 	 * Recno:
 	 * When renumbering recno databases during deletes, cursors referencing
@@ -186,17 +196,27 @@ struct __cursor {
 	 * be specially adjusted on the next operation.
 	 */
 #define	C_DELETED	0x0001		/* Record was deleted. */
+	/*
+	 * There are three tree types that require maintaining record numbers.
+	 * Recno AM trees, Btree AM trees for which the DB_RECNUM flag was set,
+	 * and Btree off-page duplicate trees.
+	 */
+#define	C_RECNUM	0x0002		/* Tree requires record counts. */
+	/*
+	 * Recno trees have immutable record numbers by default, but optionally
+	 * support mutable record numbers.  Off-page duplicate Recno trees have
+	 * mutable record numbers.  All Btrees with record numbers (including
+	 * off-page duplicate trees) are mutable by design, no flag is needed.
+	 */
+#define	C_RENUMBER	0x0004		/* Tree records are mutable. */
 	u_int32_t	 flags;
 };
 
 /*
  * The in-memory, per-tree btree/recno data structure.
  */
-struct __btree {
-					/* Btree access method. */
+struct __btree {			/* Btree access method. */
 	db_pgno_t bt_lpgno;		/* Last insert location. */
-
-	db_indx_t bt_ovflsize;		/* Maximum key/data on-page size. */
 
 	db_pgno_t bt_meta;		/* Database meta-data page. */
 	db_pgno_t bt_root;		/* Database root page. */
@@ -206,7 +226,7 @@ struct __btree {
 
 					/* Btree comparison function. */
 	int (*bt_compare) __P((const DBT *, const DBT *));
-					/* Prefix function. */
+					/* Btree prefix function. */
 	size_t (*bt_prefix) __P((const DBT *, const DBT *));
 
 					/* Recno access method. */
@@ -230,11 +250,10 @@ struct __btree {
 					/* Recno input function. */
 	int (*re_irec) __P((DBC *, db_recno_t));
 
-#define	RECNO_EOF	0x01		/* EOF on backing source file. */
-#define	RECNO_MODIFIED	0x02		/* Tree was modified. */
+#define	RECNO_MODIFIED	0x01		/* Tree was modified. */
+#define	RECNO_READFILE	0x02		/* Backing source file to read. */
 	u_int32_t	 flags;
 };
-
 
 #include "btree_auto.h"
 #include "btree_ext.h"

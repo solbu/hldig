@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "db_config.h"
+#include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db_pr.c	11.9 (Sleepycat) 11/10/99";
+static const char revid[] = "$Id: db_pr.c,v 1.1.2.2 2000/09/14 03:13:19 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -27,17 +27,18 @@ static const char sccsid[] = "@(#)db_pr.c	11.9 (Sleepycat) 11/10/99";
 #include "hash.h"
 #include "qam.h"
 #include "db_am.h"
+#include "db_verify.h"
 
-static int	 CDB___db_bmeta __P((DB *, FILE *, BTMETA *, u_int32_t));
-static int	 CDB___db_hmeta __P((DB *, FILE *, HMETA *, u_int32_t));
-static void	 CDB___db_meta __P((DB *, DBMETA *, FILE *, FN const *, u_int32_t));
-static const char	*CDB___db_name __P((DB *));
-static void	 CDB___db_prdb __P((DB *, FILE *, u_int32_t));
-static FILE	*CDB___db_prinit __P((FILE *));
-static void	 CDB___db_proff __P((void *));
-static int	 CDB___db_prtree __P((DB *, u_int32_t));
-static void	 CDB___db_psize __P((DB *));
-static int	 CDB___db_qmeta __P((DB *, FILE *, QMETA *, u_int32_t));
+static int	 __db_bmeta __P((DB *, FILE *, BTMETA *, u_int32_t));
+static int	 __db_hmeta __P((DB *, FILE *, HMETA *, u_int32_t));
+static void	 __db_meta __P((DB *, DBMETA *, FILE *, FN const *, u_int32_t));
+static const char	*__db_dbtype_to_string __P((DB *));
+static void	 __db_prdb __P((DB *, FILE *, u_int32_t));
+static FILE	*__db_prinit __P((FILE *));
+static void	 __db_proff __P((void *));
+static int	 __db_prtree __P((DB *, u_int32_t));
+static void	 __db_psize __P((DB *));
+static int	 __db_qmeta __P((DB *, FILE *, QMETA *, u_int32_t));
 
 /*
  * 64K is the maximum page size, so by default we check for offsets larger
@@ -47,9 +48,6 @@ static int	 CDB___db_qmeta __P((DB *, FILE *, QMETA *, u_int32_t));
 static size_t set_psize = PSIZE_BOUNDARY;
 
 static FILE *set_fp;				/* Output file descriptor. */
-
-#define	DB_PR_PAGE	0x01			/* Show page contents. */
-#define	DB_PR_RECOVERY	0x02			/* Recovery test. */
 
 /*
  * CDB___db_loadme --
@@ -80,7 +78,7 @@ CDB___db_dump(dbp, op, name)
 	COMPQUIET(save_fp, NULL);
 
 	if (set_psize == PSIZE_BOUNDARY)
-		CDB___db_psize(dbp);
+		__db_psize(dbp);
 
 	if (name != NULL) {
 		if ((fp = fopen(name, "w")) == NULL)
@@ -88,7 +86,7 @@ CDB___db_dump(dbp, op, name)
 		save_fp = set_fp;
 		set_fp = fp;
 	} else
-		fp = CDB___db_prinit(NULL);
+		fp = __db_prinit(NULL);
 
 	for (flags = 0; *op != '\0'; ++op)
 		switch (*op) {
@@ -98,17 +96,17 @@ CDB___db_dump(dbp, op, name)
 		case 'h':
 			break;
 		case 'r':
-			LF_SET(DB_PR_RECOVERY);
+			LF_SET(DB_PR_RECOVERYTEST);
 			break;
 		default:
 			return (EINVAL);
 		}
 
-	CDB___db_prdb(dbp, fp, flags);
+	__db_prdb(dbp, fp, flags);
 
 	fprintf(fp, "%s\n", DB_LINE);
 
-	(void)CDB___db_prtree(dbp, flags);
+	(void)__db_prtree(dbp, flags);
 
 	fflush(fp);
 
@@ -120,11 +118,11 @@ CDB___db_dump(dbp, op, name)
 }
 
 /*
- * CDB___db_prdb --
+ * __db_prdb --
  *	Print out the DB structure information.
  */
 static void
-CDB___db_prdb(dbp, fp, flags)
+__db_prdb(dbp, fp, flags)
 	DB *dbp;
 	FILE *fp;
 	u_int32_t flags;
@@ -135,7 +133,7 @@ CDB___db_prdb(dbp, fp, flags)
 		{ DB_AM_INMEM,		"in-memory" },
 		{ DB_AM_PGDEF,		"default page size" },
 		{ DB_AM_RDONLY,		"read-only" },
-		{ DB_AM_SUBDB,		"subdatabases" },
+		{ DB_AM_SUBDB,		"multiple-databases" },
 		{ DB_AM_SWAP,		"needswap" },
 		{ DB_BT_RECNUM,		"btree:recnum" },
 		{ DB_BT_REVSPLIT,	"btree:no reverse split" },
@@ -149,8 +147,8 @@ CDB___db_prdb(dbp, fp, flags)
 		{ 0,			NULL }
 	};
 	static const FN bfn[] = {
-		{ RECNO_EOF,		"recno:eof" },
 		{ RECNO_MODIFIED,	"recno:modified" },
+		{ RECNO_READFILE,	"recno:readfile" },
 		{ 0,			NULL }
 	};
 	BTREE *bt;
@@ -161,7 +159,7 @@ CDB___db_prdb(dbp, fp, flags)
 
 	fprintf(fp,
 	    "In-memory DB structure:\n%s: %#lx",
-	    CDB___db_name(dbp), (u_long)dbp->flags);
+	    __db_dbtype_to_string(dbp), (u_long)dbp->flags);
 	CDB___db_prflags(dbp->flags, fn, fp);
 	fprintf(fp, "\n");
 
@@ -170,7 +168,6 @@ CDB___db_prdb(dbp, fp, flags)
 	case DB_RECNO:
 		bt = dbp->bt_internal;
 		fprintf(fp, "bt_lpgno: %lu\n", (u_long)bt->bt_lpgno);
-		fprintf(fp, "bt_ovflsize: %lu\n", (u_long)bt->bt_ovflsize);
 		fprintf(fp, "bt_meta: %lu: bt_root: %lu\n",
 		    (u_long)bt->bt_meta, (u_long)bt->bt_root);
 		fprintf(fp, "bt_maxkey: %lu bt_minkey: %lu\n",
@@ -215,11 +212,11 @@ CDB___db_prdb(dbp, fp, flags)
 }
 
 /*
- * CDB___db_prtree --
+ * __db_prtree --
  *	Print out the entire tree.
  */
 static int
-CDB___db_prtree(dbp, flags)
+__db_prtree(dbp, flags)
 	DB *dbp;
 	u_int32_t flags;
 {
@@ -228,7 +225,7 @@ CDB___db_prtree(dbp, flags)
 	int ret;
 
 	if (set_psize == PSIZE_BOUNDARY)
-		CDB___db_psize(dbp);
+		__db_psize(dbp);
 
 	/* Find out the page number of the last page in the database. */
 	if ((ret = CDB_memp_fget(dbp->mpf, &last, DB_MPOOL_LAST, &h)) != 0)
@@ -245,16 +242,16 @@ CDB___db_prtree(dbp, flags)
 			return (ret);
 	}
 
-	(void)fflush(CDB___db_prinit(NULL));
+	(void)fflush(__db_prinit(NULL));
 	return (0);
 }
 
 /*
- * CDB___db_meta --
+ * __db_meta --
  *	Print out common metadata information.
  */
 static void
-CDB___db_meta(dbp, dbmeta, fp, fn, flags)
+__db_meta(dbp, dbmeta, fp, fn, flags)
 	DB *dbp;
 	DBMETA *dbmeta;
 	FILE *fp;
@@ -272,8 +269,12 @@ CDB___db_meta(dbp, dbmeta, fp, fn, flags)
 	fprintf(fp, "\tversion: %lu\n", (u_long)dbmeta->version);
 	fprintf(fp, "\tpagesize: %lu\n", (u_long)dbmeta->pagesize);
 	fprintf(fp, "\ttype: %lu\n", (u_long)dbmeta->type);
+	fprintf(fp, "\tkeys: %lu\trecords: %lu\n",
+	    (u_long)dbmeta->key_count, (u_long)dbmeta->record_count);
+	fprintf(fp, "\talloc_lsn(lsn.file: %lu lsn.offset: %lu)\n",
+	    (u_long)dbmeta->alloc_lsn.file, (u_long)dbmeta->alloc_lsn.offset);
 
-	if (!LF_ISSET(DB_PR_RECOVERY)) {
+	if (!LF_ISSET(DB_PR_RECOVERYTEST)) {
 		/*
 		 * If we're doing recovery testing, don't display the free
 		 * list, it may have changed and that makes the dump diff
@@ -318,11 +319,11 @@ CDB___db_meta(dbp, dbmeta, fp, fn, flags)
 }
 
 /*
- * CDB___db_bmeta --
+ * __db_bmeta --
  *	Print out the btree meta-data page.
  */
 static int
-CDB___db_bmeta(dbp, fp, h, flags)
+__db_bmeta(dbp, fp, h, flags)
 	DB *dbp;
 	FILE *fp;
 	BTMETA *h;
@@ -334,11 +335,11 @@ CDB___db_bmeta(dbp, fp, h, flags)
 		{ BTM_RECNUM,	"btree:recnum" },
 		{ BTM_FIXEDLEN,	"recno:fixed-length" },
 		{ BTM_RENUMBER,	"recno:renumber" },
-		{ BTM_SUBDB,	"subdatabases" },
+		{ BTM_SUBDB,	"multiple-databases" },
 		{ 0,		NULL }
 	};
 
-	CDB___db_meta(dbp, (DBMETA *)h, fp, mfn, flags);
+	__db_meta(dbp, (DBMETA *)h, fp, mfn, flags);
 
 	fprintf(fp, "\tmaxkey: %lu minkey: %lu\n",
 	    (u_long)h->maxkey, (u_long)h->minkey);
@@ -351,11 +352,11 @@ CDB___db_bmeta(dbp, fp, h, flags)
 }
 
 /*
- * CDB___db_hmeta --
+ * __db_hmeta --
  *	Print out the hash meta-data page.
  */
 static int
-CDB___db_hmeta(dbp, fp, h, flags)
+__db_hmeta(dbp, fp, h, flags)
 	DB *dbp;
 	FILE *fp;
 	HMETA *h;
@@ -363,12 +364,12 @@ CDB___db_hmeta(dbp, fp, h, flags)
 {
 	static const FN mfn[] = {
 		{ DB_HASH_DUP,	 "duplicates" },
-		{ DB_HASH_SUBDB, "subdatabases" },
+		{ DB_HASH_SUBDB, "multiple-databases" },
 		{ 0,		 NULL }
 	};
 	int i;
 
-	CDB___db_meta(dbp, (DBMETA *)h, fp, mfn, flags);
+	__db_meta(dbp, (DBMETA *)h, fp, mfn, flags);
 
 	fprintf(fp, "\tmax_bucket: %lu\n", (u_long)h->max_bucket);
 	fprintf(fp, "\thigh_mask: %#lx\n", (u_long)h->high_mask);
@@ -385,17 +386,17 @@ CDB___db_hmeta(dbp, fp, h, flags)
 }
 
 /*
- * CDB___db_qmeta --
+ * __db_qmeta --
  *	Print out the queue meta-data page.
  */
 static int
-CDB___db_qmeta(dbp, fp, h, flags)
+__db_qmeta(dbp, fp, h, flags)
 	DB *dbp;
 	FILE *fp;
 	QMETA *h;
 	u_int32_t flags;
 {
-	CDB___db_meta(dbp, (DBMETA *)h, fp, NULL, flags);
+	__db_meta(dbp, (DBMETA *)h, fp, NULL, flags);
 
 	fprintf(fp, "\tstart: %lu\n", (u_long)h->start);
 	fprintf(fp, "\tfirst_recno: %lu\n", (u_long)h->first_recno);
@@ -422,13 +423,13 @@ CDB___db_prnpage(dbp, pgno)
 	int ret;
 
 	if (set_psize == PSIZE_BOUNDARY)
-		CDB___db_psize(dbp);
+		__db_psize(dbp);
 
 	if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, &h)) != 0)
 		return (ret);
 
 	ret = CDB___db_prpage(dbp, h, DB_PR_PAGE);
-	(void)fflush(CDB___db_prinit(NULL));
+	(void)fflush(__db_prinit(NULL));
 
 	(void)CDB_memp_fput(dbp->mpf, h, 0);
 	return (ret);
@@ -462,69 +463,43 @@ CDB___db_prpage(dbp, h, flags)
 	u_int8_t *ep, *hk, *p;
 	void *sp;
 
-	fp = CDB___db_prinit(NULL);
+	fp = __db_prinit(NULL);
 
-	switch (TYPE(h)) {
-	case P_BTREEMETA:
-		s = "btree metadata";
-		break;
-	case P_DUPLICATE:
-		s = "duplicate";
-		break;
-	case P_HASH:
-		s = "hash";
-		break;
-	case P_HASHMETA:
-		s = "hash metadata";
-		break;
-	case P_IBTREE:
-		s = "btree internal";
-		break;
-	case P_INVALID:
-		/*
-		 * If we're doing recovery testing, assume this is a page
-		 * that's on the free list, and don't display it.
-		 */
-		if (LF_ISSET(DB_PR_RECOVERY))
-			return (0);
-		s = "invalid";
-		break;
-	case P_IRECNO:
-		s = "recno internal";
-		break;
-	case P_LBTREE:
-		s = "btree leaf";
-		break;
-	case P_LRECNO:
-		s = "recno leaf";
-		break;
-	case P_OVERFLOW:
-		s = "overflow";
-		break;
-	case P_QAMMETA:
-		s = "queue metadata";
-		break;
-	case P_QAMDATA:
-		s = "queue";
-		break;
-	default:
+	/*
+	 * If we're doing recovery testing and this page is P_INVALID,
+	 * assume it's a page that's on the free list, and don't display it.
+	 */
+	if (LF_ISSET(DB_PR_RECOVERYTEST) && TYPE(h) == P_INVALID)
+		return (0);
+
+	s = CDB___db_pagetype_to_string(TYPE(h));
+	if (s == NULL) {
 		fprintf(fp, "ILLEGAL PAGE TYPE: page: %lu type: %lu\n",
 		    (u_long)h->pgno, (u_long)TYPE(h));
-			return (1);
+		return (1);
 	}
 
-	/* Every page has a type, a page number, and an LSN. */
-	fprintf(fp, "page %lu: %s", (u_long)h->pgno, s);
+	/* Page number, page type. */
+	fprintf(fp, "page %lu: %s level: %lu",
+	    (u_long)h->pgno, s, (u_long)h->level);
+
+	/* Record count. */
+	if (TYPE(h) == P_IBTREE ||
+	    TYPE(h) == P_IRECNO || (TYPE(h) == P_LRECNO &&
+	    h->pgno == ((BTREE *)dbp->bt_internal)->bt_root))
+		fprintf(fp, " records: %lu", (u_long)RE_NREC(h));
+
+	/* LSN. */
 	fprintf(fp, " (lsn.file: %lu lsn.offset: %lu)\n",
 	    (u_long)LSN(h).file, (u_long)LSN(h).offset);
 
 	switch (TYPE(h)) {
 	case P_BTREEMETA:
-		return (CDB___db_bmeta(dbp, fp, (BTMETA *)h, flags));
+		return (__db_bmeta(dbp, fp, (BTMETA *)h, flags));
 	case P_HASHMETA:
-		return (CDB___db_hmeta(dbp, fp, (HMETA *)h, flags));
+		return (__db_hmeta(dbp, fp, (HMETA *)h, flags));
 	case P_QAMMETA:
-		return (CDB___db_qmeta(dbp, fp, (QMETA *)h, flags));
+		return (__db_qmeta(dbp, fp, (QMETA *)h, flags));
 	case P_QAMDATA:				/* Should be meta->start. */
 		if (!LF_ISSET(DB_PR_PAGE))
 			return (0);
@@ -532,7 +507,7 @@ CDB___db_prpage(dbp, h, flags)
 		qlen = ((QUEUE *)dbp->q_internal)->re_len;
 		recno = (h->pgno - 1) * QAM_RECNO_PER_PAGE(dbp) + 1;
 		i = 0;
-		qep = (QAMDATA *)((u_long) h + set_psize - qlen);
+		qep = (QAMDATA *)((u_int8_t *)h + set_psize - qlen);
 		for (qp = QAM_GET_RECORD(dbp, h, i); qp < qep;
 		    recno++, i++, qp = QAM_GET_RECORD(dbp, h, i)) {
 			if (!F_ISSET(qp, QAM_SET))
@@ -549,21 +524,18 @@ CDB___db_prpage(dbp, h, flags)
 
 	t = dbp->bt_internal;
 
-	if (TYPE(h) == P_IBTREE || TYPE(h) == P_IRECNO ||
-	    (TYPE(h) == P_LRECNO &&
-	    h->pgno == ((BTREE *)dbp->bt_internal)->bt_root))
-		fprintf(fp, "\ttotal records: %4lu\n", (u_long)RE_NREC(h));
-	if (TYPE(h) != P_IBTREE && TYPE(h) != P_IRECNO)
-		fprintf(fp, "\tprev: %4lu next: %4lu",
-		    (u_long)PREV_PGNO(h), (u_long)NEXT_PGNO(h));
-	if (TYPE(h) == P_IBTREE || TYPE(h) == P_LBTREE)
-		fprintf(fp, " level: %2lu", (u_long)h->level);
+	s = "\t";
+	if (TYPE(h) != P_IBTREE && TYPE(h) != P_IRECNO) {
+		fprintf(fp, "%sprev: %4lu next: %4lu",
+		    s, (u_long)PREV_PGNO(h), (u_long)NEXT_PGNO(h));
+		s = " ";
+	}
 	if (TYPE(h) == P_OVERFLOW) {
-		fprintf(fp, " ref cnt: %4lu ", (u_long)OV_REF(h));
+		fprintf(fp, "%sref cnt: %4lu ", s, (u_long)OV_REF(h));
 		CDB___db_pr((u_int8_t *)h + P_OVERHEAD, OV_LEN(h));
 		return (0);
 	}
-	fprintf(fp, " entries: %4lu", (u_long)NUM_ENT(h));
+	fprintf(fp, "%sentries: %4lu", s, (u_long)NUM_ENT(h));
 	fprintf(fp, " offset: %4lu\n", (u_long)HOFFSET(h));
 
 	if (TYPE(h) == P_INVALID || !LF_ISSET(DB_PR_PAGE))
@@ -591,8 +563,8 @@ CDB___db_prpage(dbp, h, flags)
 			deleted = i % 2 == 0 &&
 			    B_DISSET(GET_BKEYDATA(h, i + O_INDX)->type);
 			break;
+		case P_LDUP:
 		case P_LRECNO:
-		case P_DUPLICATE:
 			sp = P_ENTRY(h, i);
 			deleted = B_DISSET(GET_BKEYDATA(h, i)->type);
 			break;
@@ -650,15 +622,15 @@ CDB___db_prpage(dbp, h, flags)
 			break;
 		case P_IBTREE:
 			bi = sp;
-			fprintf(fp, "count: %4lu pgno: %4lu ",
-			    (u_long)bi->nrecs, (u_long)bi->pgno);
+			fprintf(fp, "count: %4lu pgno: %4lu type: %4lu",
+			    (u_long)bi->nrecs, (u_long)bi->pgno, (u_long)bi->type);
 			switch (B_TYPE(bi->type)) {
 			case B_KEYDATA:
 				CDB___db_pr(bi->data, bi->len);
 				break;
 			case B_DUPLICATE:
 			case B_OVERFLOW:
-				CDB___db_proff(bi->data);
+				__db_proff(bi->data);
 				break;
 			default:
 				fprintf(fp, "ILLEGAL BINTERNAL TYPE: %lu\n",
@@ -673,8 +645,8 @@ CDB___db_prpage(dbp, h, flags)
 			    (u_long)ri->nrecs, (u_long)ri->pgno);
 			break;
 		case P_LBTREE:
+		case P_LDUP:
 		case P_LRECNO:
-		case P_DUPLICATE:
 			bk = sp;
 			switch (B_TYPE(bk->type)) {
 			case B_KEYDATA:
@@ -682,7 +654,7 @@ CDB___db_prpage(dbp, h, flags)
 				break;
 			case B_DUPLICATE:
 			case B_OVERFLOW:
-				CDB___db_proff(bk);
+				__db_proff(bk);
 				break;
 			default:
 				fprintf(fp,
@@ -696,106 +668,6 @@ CDB___db_prpage(dbp, h, flags)
 	}
 	(void)fflush(fp);
 	return (ret);
-}
-
-/*
- * CDB___db_isbad
- *	-- Decide if a page is corrupted.
- *
- * PUBLIC: int CDB___db_isbad __P((PAGE *, int));
- */
-int
-CDB___db_isbad(h, die)
-	PAGE *h;
-	int die;
-{
-	BINTERNAL *bi;
-	BKEYDATA *bk;
-	FILE *fp;
-	db_indx_t i;
-	u_int type;
-
-	fp = CDB___db_prinit(NULL);
-
-	switch (TYPE(h)) {
-	case P_DUPLICATE:
-	case P_HASH:
-	case P_IBTREE:
-	case P_INVALID:
-	case P_IRECNO:
-	case P_LBTREE:
-	case P_LRECNO:
-	case P_OVERFLOW:
-		break;
-	case P_BTREEMETA:
-	case P_HASHMETA:
-	case P_QAMDATA:
-	case P_QAMMETA:
-		return (0);
-	default:
-		fprintf(fp, "ILLEGAL PAGE TYPE: page: %lu type: %lu\n",
-		    (u_long)h->pgno, (u_long)TYPE(h));
-		goto bad;
-	}
-
-	for (i = 0; i < NUM_ENT(h); i++) {
-		if (P_ENTRY(h, i) - (u_int8_t *)h < P_OVERHEAD ||
-		    (size_t)(P_ENTRY(h, i) - (u_int8_t *)h) >= set_psize) {
-			fprintf(fp,
-			    "ILLEGAL PAGE OFFSET: indx: %lu of %lu\n",
-			    (u_long)i, (u_long)h->inp[i]);
-			goto bad;
-		}
-		switch (TYPE(h)) {
-		case P_HASH:
-			type = HPAGE_TYPE(h, i);
-			if (type != H_OFFDUP &&
-			    type != H_DUPLICATE &&
-			    type != H_KEYDATA &&
-			    type != H_OFFPAGE) {
-				fprintf(fp, "ILLEGAL HASH TYPE: %lu\n",
-				    (u_long)type);
-				goto bad;
-			}
-			break;
-		case P_IBTREE:
-			bi = GET_BINTERNAL(h, i);
-			if (B_TYPE(bi->type) != B_KEYDATA &&
-			    B_TYPE(bi->type) != B_DUPLICATE &&
-			    B_TYPE(bi->type) != B_OVERFLOW) {
-				fprintf(fp, "ILLEGAL BINTERNAL TYPE: %lu\n",
-				    (u_long)B_TYPE(bi->type));
-				goto bad;
-			}
-			break;
-		case P_IRECNO:
-		case P_LBTREE:
-		case P_LRECNO:
-			break;
-		case P_DUPLICATE:
-			bk = GET_BKEYDATA(h, i);
-			if (B_TYPE(bk->type) != B_KEYDATA &&
-			    B_TYPE(bk->type) != B_DUPLICATE &&
-			    B_TYPE(bk->type) != B_OVERFLOW) {
-				fprintf(fp,
-			    "ILLEGAL DUPLICATE/LBTREE/LRECNO TYPE: %lu\n",
-				    (u_long)B_TYPE(bk->type));
-				goto bad;
-			}
-			break;
-		default:
-			fprintf(fp,
-			    "ILLEGAL PAGE ITEM: %lu\n", (u_long)TYPE(h));
-			goto bad;
-		}
-	}
-	return (0);
-
-bad:	if (die) {
-		abort();
-		/* NOTREACHED */
-	}
-	return (1);
 }
 
 /*
@@ -813,7 +685,7 @@ CDB___db_pr(p, len)
 	u_int lastch;
 	int i;
 
-	fp = CDB___db_prinit(NULL);
+	fp = __db_prinit(NULL);
 
 	fprintf(fp, "len: %3lu", (u_long)len);
 	lastch = '.';
@@ -839,20 +711,42 @@ CDB___db_pr(p, len)
  * CDB___db_prdbt --
  *	Print out a DBT data element.
  *
- * PUBLIC: int CDB___db_prdbt __P((DBT *, int, const char *, FILE *, int));
+ * PUBLIC: int CDB___db_prdbt __P((DBT *, int, const char *, void *,
+ * PUBLIC:     int (*)(void *, const void *), int, VRFY_DBINFO *));
  */
 int
-CDB___db_prdbt(dbtp, checkprint, prefix, fp, is_recno)
+CDB___db_prdbt(dbtp, checkprint, prefix, handle, callback, is_recno, vdp)
 	DBT *dbtp;
 	int checkprint;
 	const char *prefix;
-	FILE *fp;
+	void *handle;
+	int (*callback) __P((void *, const void *));
 	int is_recno;
+	VRFY_DBINFO *vdp;
 {
 	static const char hex[] = "0123456789abcdef";
+#define	DBTBUFLEN	100
+	char buf[DBTBUFLEN];
 	db_recno_t recno;
+	int ret;
 	u_int32_t len;
 	u_int8_t *p;
+
+	if (vdp != NULL) {
+		/*
+		 * If vdp is non-NULL, we might be the first key in the
+		 * "fake" subdatabase used for key/data pairs we can't
+		 * associate with a known subdb.
+		 *
+		 * Check and clear the SALVAGE_PRINTHEADER flag;  if
+		 * it was set, print a subdatabase header.
+		 */
+		if (F_ISSET(vdp, SALVAGE_PRINTHEADER))
+			(void)CDB___db_prheader(NULL, "__OTHER__", 0, 0,
+			    handle, callback, vdp, 0);
+		F_CLR(vdp, SALVAGE_PRINTHEADER);
+		F_SET(vdp, SALVAGE_PRINTFOOTER);
+	}
 
 	/*
 	 * !!!
@@ -860,51 +754,58 @@ CDB___db_prdbt(dbtp, checkprint, prefix, fp, is_recno)
 	 * used by db_dump(1) and db_load(1).  This means that the format
 	 * cannot change.
 	 */
-	if (prefix != NULL && fprintf(fp, "%s", prefix) != (int)strlen(prefix))
-		return (EIO);
+	if (prefix != NULL && (ret = callback(handle, prefix)) != 0)
+		return (ret);
 	if (is_recno) {
-		/* 
+		/*
 		 * We're printing a record number, and this has to be done
 		 * in a platform-independent way.  So we use the numeral in
 		 * straight ASCII.
-		 */    
+		 */
 		CDB___ua_memcpy(&recno, dbtp->data, sizeof(recno));
-		if (fprintf(fp, "%lu", (u_long)recno) == 0)
-			return (EIO);
+		snprintf(buf, DBTBUFLEN, "%lu", (u_long)recno);
+		if ((ret = callback(handle, buf)) != 0)
+			return (ret);
 	} else if (checkprint) {
 		for (len = dbtp->size, p = dbtp->data; len--; ++p)
 			if (isprint(*p)) {
-				if (*p == '\\' && fprintf(fp, "\\") != 1)
-					return (EIO);
-				if (fprintf(fp, "%c", *p) != 1)
-					return (EIO);
-			} else
-				if (fprintf(fp, "\\%c%c",
+				if (*p == '\\' &&
+				    (ret = callback(handle, "\\")) != 0)
+					return (ret);
+				snprintf(buf, DBTBUFLEN, "%c", *p);
+				if ((ret = callback(handle, buf)) != 0)
+					return (ret);
+			} else {
+				snprintf(buf, DBTBUFLEN, "\\%c%c",
 				    hex[(u_int8_t)(*p & 0xf0) >> 4],
-				    hex[*p & 0x0f]) != 3)
-					return (EIO);
+				    hex[*p & 0x0f]);
+				if ((ret = callback(handle, buf)) != 0)
+					return (ret);
+			}
 	} else
-		for (len = dbtp->size, p = dbtp->data; len--; ++p)
-			if (fprintf(fp, "%c%c",
+		for (len = dbtp->size, p = dbtp->data; len--; ++p) {
+			snprintf(buf, DBTBUFLEN, "%c%c",
 			    hex[(u_int8_t)(*p & 0xf0) >> 4],
-			    hex[*p & 0x0f]) != 2)
-				return (EIO);
+			    hex[*p & 0x0f]);
+			if ((ret = callback(handle, buf)) != 0)
+				return (ret);
+		}
 
-	return (fprintf(fp, "\n") == 1 ? 0 : EIO);
+	return (callback(handle, "\n"));
 }
 
 /*
- * CDB___db_proff --
+ * __db_proff --
  *	Print out an off-page element.
  */
 static void
-CDB___db_proff(vp)
+__db_proff(vp)
 	void *vp;
 {
 	FILE *fp;
 	BOVERFLOW *bo;
 
-	fp = CDB___db_prinit(NULL);
+	fp = __db_prinit(NULL);
 
 	bo = vp;
 	switch (B_TYPE(bo->type)) {
@@ -946,11 +847,11 @@ CDB___db_prflags(flags, fn, fp)
 }
 
 /*
- * CDB___db_prinit --
+ * __db_prinit --
  *	Initialize tree printing routines.
  */
 static FILE *
-CDB___db_prinit(fp)
+__db_prinit(fp)
 	FILE *fp;
 {
 	if (set_fp == NULL)
@@ -959,11 +860,11 @@ CDB___db_prinit(fp)
 }
 
 /*
- * CDB___db_psize --
+ * __db_psize --
  *	Get the page size.
  */
 static void
-CDB___db_psize(dbp)
+__db_psize(dbp)
 	DB *dbp;
 {
 	DBMETA *mp;
@@ -986,11 +887,11 @@ CDB___db_psize(dbp)
 }
 
 /*
- * CDB___db_name --
+ * __db_dbtype_to_string --
  *	Return the name of the database type.
  */
 static const char *
-CDB___db_name(dbp)
+__db_dbtype_to_string(dbp)
 	DB *dbp;
 {
 	switch (dbp->type) {
@@ -1008,4 +909,361 @@ CDB___db_name(dbp)
 		return ("UNKNOWN TYPE");
 	}
 	/* NOTREACHED */
+}
+
+/*
+ * CDB___db_pagetype_to_string --
+ *	Return the name of the specified page type.
+ *
+ * PUBLIC: const char *CDB___db_pagetype_to_string __P((u_int32_t));
+ */
+const char *
+CDB___db_pagetype_to_string(type)
+	u_int32_t type;
+{
+	char *s;
+
+	s = NULL;
+	switch (type) {
+	case P_BTREEMETA:
+		s = "btree metadata";
+		break;
+	case P_LDUP:
+		s = "duplicate";
+		break;
+	case P_HASH:
+		s = "hash";
+		break;
+	case P_HASHMETA:
+		s = "hash metadata";
+		break;
+	case P_IBTREE:
+		s = "btree internal";
+		break;
+	case P_INVALID:
+		s = "invalid";
+		break;
+	case P_IRECNO:
+		s = "recno internal";
+		break;
+	case P_LBTREE:
+		s = "btree leaf";
+		break;
+	case P_LRECNO:
+		s = "recno leaf";
+		break;
+	case P_OVERFLOW:
+		s = "overflow";
+		break;
+	case P_QAMMETA:
+		s = "queue metadata";
+		break;
+	case P_QAMDATA:
+		s = "queue";
+		break;
+	default:
+		/* Just return a NULL. */
+		break;
+	}
+	return (s);
+}
+
+/*
+ * CDB___db_prheader --
+ *	Write out header information in the format expected by db_load.
+ *
+ * PUBLIC: int	CDB___db_prheader __P((DB *, char *, int, int, void *,
+ * PUBLIC:     int (*)(void *, const void *), VRFY_DBINFO *, db_pgno_t));
+ */
+int
+CDB___db_prheader(dbp, subname, pflag, keyflag, handle, callback, vdp, meta_pgno)
+	DB *dbp;
+	char *subname;
+	int pflag, keyflag;
+	void *handle;
+	int (*callback) __P((void *, const void *));
+	VRFY_DBINFO *vdp;
+	db_pgno_t meta_pgno;
+{
+	DB_BTREE_STAT *btsp;
+	DB_ENV *dbenv;
+	DB_HASH_STAT *hsp;
+	DB_QUEUE_STAT *qsp;
+	VRFY_PAGEINFO *pip;
+	char *buf;
+	int ret, t_ret, buflen;
+	u_int32_t dbtype;
+
+	btsp = NULL;
+	hsp = NULL;
+	qsp = NULL;
+	ret = 0;
+	buf = NULL;
+	COMPQUIET(buflen, 0);
+
+	if (dbp == NULL)
+		dbenv = NULL;
+	else
+		dbenv = dbp->dbenv;
+
+	/*
+	 * If we've been passed a verifier statistics object, use
+	 * that;  we're being called in a context where dbp->stat
+	 * is unsafe.
+	 */
+	if (vdp != NULL) {
+		if ((ret = CDB___db_vrfy_getpageinfo(vdp, meta_pgno, &pip)) != 0)
+			return (ret);
+	} else
+		pip = NULL;
+
+	/*
+	 * If dbp is NULL, we're being called from inside CDB___db_prdbt,
+	 * and this is a special subdatabase for "lost" items.  Make it a btree.
+	 * Otherwise, set dbtype to the appropriate type for the specified
+	 * meta page, or the type of the dbp.
+	 */
+	if (dbp == NULL)
+		dbtype = DB_BTREE;
+	else if (pip != NULL)
+		switch (pip->type) {
+		case P_BTREEMETA:
+			if (F_ISSET(pip, VRFY_IS_RECNO))
+				dbtype = DB_RECNO;
+			else
+				dbtype = DB_BTREE;
+			break;
+		case P_HASHMETA:
+			dbtype = DB_HASH;
+			break;
+		default:
+			/* Shouldn't happen. */
+			DB_ASSERT(0);
+			ret = EINVAL;
+			goto err;
+		}
+	else
+		dbtype = dbp->type;
+
+	if ((ret = callback(handle, "VERSION=2\n")) != 0)
+		goto err;
+	if (pflag) {
+		if ((ret = callback(handle, "format=print\n")) != 0)
+			goto err;
+	} else if ((ret = callback(handle, "format=bytevalue\n")) != 0)
+		goto err;
+
+	/*
+	 * 64 bytes is long enough, as a minimum bound, for any of the
+	 * fields besides subname.  Subname can be anything, and so
+	 * 64 + subname is big enough for all the things we need to print here.
+	 */
+	buflen = 64 + ((subname != NULL) ? strlen(subname) : 0);
+	if ((ret = CDB___os_malloc(dbenv, buflen, NULL, &buf)) != 0)
+		goto err;
+	if (subname != NULL) {
+		snprintf(buf, buflen, "database=%s\n", subname);
+		if ((ret = callback(handle, buf)) != 0)
+			goto err;
+	}
+	switch (dbtype) {
+	case DB_BTREE:
+		if ((ret = callback(handle, "type=btree\n")) != 0)
+			goto err;
+		if (pip != NULL) {
+			if (F_ISSET(pip, VRFY_HAS_RECNUMS))
+				if ((ret =
+				    callback(handle, "recnum=1\n")) != 0)
+					goto err;
+			if (pip->bt_maxkey != 0) {
+				snprintf(buf, buflen, "bt_maxkey=%lu\n",
+				    (u_long)pip->bt_maxkey);
+				if ((ret = callback(handle, buf)) != 0)
+					goto err;
+			}
+			if (pip->bt_minkey != 0 &&
+			    pip->bt_minkey != DEFMINKEYPAGE) {
+				snprintf(buf, buflen, "bt_minkey=%lu\n",
+				    (u_long)pip->bt_minkey);
+				if ((ret = callback(handle, buf)) != 0)
+					goto err;
+			}
+			break;
+		}
+		if ((ret = dbp->stat(dbp, &btsp, NULL, 0)) != 0) {
+			dbp->err(dbp, ret, "DB->stat");
+			goto err;
+		}
+		if (F_ISSET(dbp, DB_BT_RECNUM))
+			if ((ret = callback(handle, "recnum=1\n")) != 0)
+				goto err;
+		if (btsp->bt_maxkey != 0) {
+			snprintf(buf, buflen,
+			    "bt_maxkey=%lu\n", (u_long)btsp->bt_maxkey);
+			if ((ret = callback(handle, buf)) != 0)
+				goto err;
+		}
+		if (btsp->bt_minkey != 0 && btsp->bt_minkey != DEFMINKEYPAGE) {
+			snprintf(buf, buflen,
+			    "bt_minkey=%lu\n", (u_long)btsp->bt_minkey);
+			if ((ret = callback(handle, buf)) != 0)
+				goto err;
+		}
+		break;
+	case DB_HASH:
+		if ((ret = callback(handle, "type=hash\n")) != 0)
+			goto err;
+		if (pip != NULL) {
+			if (pip->h_ffactor != 0) {
+				snprintf(buf, buflen, "h_ffactor=%lu\n",
+				    (u_long)pip->h_ffactor);
+				if ((ret = callback(handle, buf)) != 0)
+					goto err;
+			}
+			if (pip->h_nelem != 0) {
+				snprintf(buf, buflen, "h_nelem=%lu\n",
+				    (u_long)pip->h_nelem);
+				if ((ret = callback(handle, buf)) != 0)
+					goto err;
+			}
+			break;
+		}
+		if ((ret = dbp->stat(dbp, &hsp, NULL, 0)) != 0) {
+			dbp->err(dbp, ret, "DB->stat");
+			goto err;
+		}
+		if (hsp->hash_ffactor != 0) {
+			snprintf(buf, buflen,
+			    "h_ffactor=%lu\n", (u_long)hsp->hash_ffactor);
+			if ((ret = callback(handle, buf)) != 0)
+				goto err;
+		}
+		if (hsp->hash_nelem != 0 || hsp->hash_nkeys != 0) {
+			snprintf(buf, buflen, "h_nelem=%lu\n",
+			    hsp->hash_nelem > hsp->hash_nkeys ?
+			    (u_long)hsp->hash_nelem : (u_long)hsp->hash_nkeys);
+			if ((ret = callback(handle, buf)) != 0)
+				goto err;
+		}
+		break;
+	case DB_QUEUE:
+		if ((ret = callback(handle, "type=queue\n")) != 0)
+			goto err;
+		if (vdp != NULL) {
+			snprintf(buf,
+			    buflen, "re_len=%lu\n", (u_long)vdp->re_len);
+			if ((ret = callback(handle, buf)) != 0)
+				goto err;
+			break;
+		}
+		if ((ret = dbp->stat(dbp, &qsp, NULL, 0)) != 0) {
+			dbp->err(dbp, ret, "DB->stat");
+			goto err;
+		}
+		snprintf(buf, buflen, "re_len=%lu\n", (u_long)qsp->qs_re_len);
+		if (qsp->qs_re_pad != 0 && qsp->qs_re_pad != ' ') 
+			snprintf(buf, buflen, "re_pad=%#x\n", qsp->qs_re_pad);
+		if ((ret = callback(handle, buf)) != 0)
+			goto err;
+		break;
+	case DB_RECNO:
+		if ((ret = callback(handle, "type=recno\n")) != 0)
+			goto err;
+		if (pip != NULL) {
+			if (F_ISSET(pip, VRFY_IS_RRECNO))
+				if ((ret =
+				    callback(handle, "renumber=1\n")) != 0)
+					goto err;
+			if (pip->re_len > 0) {
+				snprintf(buf, buflen, "re_len=%lu\n",
+				    (u_long)pip->re_len);
+				if ((ret = callback(handle, buf)) != 0)
+					goto err;
+			}
+			break;
+		}
+		if ((ret = dbp->stat(dbp, &btsp, NULL, 0)) != 0) {
+			dbp->err(dbp, ret, "DB->stat");
+			goto err;
+		}
+		if (F_ISSET(dbp, DB_RE_RENUMBER))
+			if ((ret = callback(handle, "renumber=1\n")) != 0)
+				goto err;
+		if (F_ISSET(dbp, DB_RE_FIXEDLEN)) {
+			snprintf(buf, buflen,
+			    "re_len=%lu\n", (u_long)btsp->bt_re_len);
+			if ((ret = callback(handle, buf)) != 0)
+				goto err;
+		}
+		if (btsp->bt_re_pad != 0 && btsp->bt_re_pad != ' ') {
+			snprintf(buf, buflen, "re_pad=%#x\n", btsp->bt_re_pad);
+			if ((ret = callback(handle, buf)) != 0)
+				goto err;
+		}
+		break;
+	case DB_UNKNOWN:
+		DB_ASSERT(0);			/* Impossible. */
+		CDB___db_err(dbp->dbenv, "Impossible DB type in CDB___db_prheader");
+		ret = EINVAL;
+		goto err;
+	}
+
+	if (pip != NULL) {
+		if (F_ISSET(pip, VRFY_HAS_DUPS))
+			if ((ret = callback(handle, "duplicates=1\n")) != 0)
+				goto err;
+		if (F_ISSET(pip, VRFY_HAS_DUPSORT))
+			if ((ret = callback(handle, "dupsort=1\n")) != 0)
+				goto err;
+		/* We should handle page size. XXX */
+	} else {
+		if (F_ISSET(dbp, DB_AM_DUP))
+			if ((ret = callback(handle, "duplicates=1\n")) != 0)
+				goto err;
+		if (F_ISSET(dbp, DB_AM_DUPSORT))
+			if ((ret = callback(handle, "dupsort=1\n")) != 0)
+				goto err;
+		if (!F_ISSET(dbp, DB_AM_PGDEF)) {
+			snprintf(buf, buflen, "db_pagesize=%lu\n",
+			    (u_long)dbp->pgsize);
+			if ((ret = callback(handle, buf)) != 0)
+				goto err;
+		}
+	}
+
+	if (keyflag)
+		if ((ret = callback(handle, "keys=1\n")) != 0)
+			goto err;
+
+	ret = callback(handle, "HEADER=END\n");
+
+err:	if (pip != NULL &&
+	    (t_ret = CDB___db_vrfy_putpageinfo(vdp, pip)) != 0 && ret == 0)
+		ret = t_ret;
+	if (btsp != NULL)
+		CDB___os_free(btsp, 0);
+	if (hsp != NULL)
+		CDB___os_free(hsp, 0);
+	if (qsp != NULL)
+		CDB___os_free(qsp, 0);
+	if (buf != NULL)
+		CDB___os_free(buf, buflen);
+
+	return (ret);
+}
+
+/*
+ * CDB___db_prfooter --
+ *	Print the footer that marks the end of a DB dump.  This is trivial,
+ *	but for consistency's sake we don't want to put its literal contents
+ *	in multiple places.
+ *
+ * PUBLIC: int CDB___db_prfooter __P((void *, int (*)(void *, const void *)));
+ */
+int
+CDB___db_prfooter(handle, callback)
+	void *handle;
+	int (*callback) __P((void *, const void *));
+{
+	return (callback(handle, "DATA=END\n"));
 }

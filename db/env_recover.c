@@ -1,17 +1,17 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "db_config.h"
+#include "config.h"
 
 #ifndef lint
 static const char copyright[] =
-"@(#) Copyright (c) 1996, 1997, 1998, 1999\n\
-	Sleepycat Software Inc.  All rights reserved.\n";
-static const char sccsid[] = "@(#)env_recover.c	11.6 (Sleepycat) 10/1/99";
+    "Copyright (c) 1996-2000\nSleepycat Software Inc.  All rights reserved.\n";
+static const char revid[] =
+    "$Id: env_recover.c,v 1.1.2.2 2000/09/14 03:13:20 ghutchis Exp $";
 #endif
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -28,6 +28,7 @@ static const char sccsid[] = "@(#)env_recover.c	11.6 (Sleepycat) 10/1/99";
 #endif
 #endif
 
+#include <errno.h>
 #include <string.h>
 #endif
 
@@ -38,7 +39,8 @@ static const char sccsid[] = "@(#)env_recover.c	11.6 (Sleepycat) 10/1/99";
 #include "log.h"
 #include "txn.h"
 
-static float CDB___lsn_diff __P((DB_LSN *, DB_LSN *, DB_LSN *, u_int32_t, int));
+static float __lsn_diff __P((DB_LSN *, DB_LSN *, DB_LSN *, u_int32_t, int));
+static int   __log_earliest __P((DB_ENV *, int32_t *, DB_LSN *));
 
 /*
  * CDB___db_apprec --
@@ -52,18 +54,19 @@ CDB___db_apprec(dbenv, flags)
 	u_int32_t flags;
 {
 	DBT data;
-	DB_LSN ckp_lsn, first_lsn, last_lsn, lsn, open_lsn;
+	DB_LSN ckp_lsn, first_lsn, last_lsn, lowlsn, lsn, open_lsn;
 	DB_TXNREGION *region;
 	__txn_ckp_args *ckp_args;
-	time_t now;
+	time_t now, tlow;
 	float nfiles;
+	int32_t low;
 	int is_thread, progress, ret;
 	void *txninfo;
 
 	COMPQUIET(nfiles, (float)0);
 
 	/* Initialize the transaction list. */
-	if ((ret = CDB___db_txnlist_init(&txninfo)) != 0)
+	if ((ret = CDB___db_txnlist_init(dbenv, &txninfo)) != 0)
 		return (ret);
 
 	/*
@@ -72,6 +75,24 @@ CDB___db_apprec(dbenv, flags)
 	 */
 	is_thread = F_ISSET(dbenv, DB_ENV_THREAD) ? 1 : 0;
 	F_CLR(dbenv, DB_ENV_THREAD);
+	F_SET((DB_LOG *)dbenv->lg_handle, DBLOG_RECOVER);
+
+	/*
+	 * If the user is specifying recover to a particular point in time,
+	 * verify that the logs present are sufficient to do this.
+	 */
+	ZERO_LSN(lowlsn);
+	if (dbenv->tx_timestamp != 0) {
+		if ((ret = __log_earliest(dbenv, &low, &lowlsn)) != 0)
+			return (ret);
+		if ((int32_t)dbenv->tx_timestamp < low) {
+			tlow = (time_t)low;
+			CDB___db_err(dbenv, "%s (%s, %s).\n",
+			    "Invalid recovery timestamp specified",
+			    ctime(&tlow));
+			return (EINVAL);
+		}
+	}
 
 	/*
 	 * Recovery is done in three passes:
@@ -79,35 +100,70 @@ CDB___db_apprec(dbenv, flags)
 	 *	We need to find the position from which we will open files
 	 *	We need to open files beginning with the last to next
 	 *	checkpoint because we might have crashed after writing the
-	 * 	last checkpoint record, but before having written out all
+	 *	last checkpoint record, but before having written out all
 	 *	the open file information.
+	 *
 	 * Pass #1:
 	 *	Read forward through the log from the second to last checkpoint
 	 *	opening and closing files so that at the end of the log we have
 	 *	the "current" set of files open.
+	 *
 	 * Pass #2:
 	 *	Read backward through the log undoing any uncompleted TXNs.
-	 *	If doing catastrophic recovery, we read to the beginning of
-	 *	the log, otherwise, to the most recent checkpoint that occurs
-	 *	before the most recent checkpoint LSN, which is returned by
-	 *	CDB___log_findckp().  During this pass, checkpoint file information
-	 *	is ignored, and file openings and closings are undone.
+	 *	There are three cases:
+	 *	    1.  If doing catastrophic recovery, we read to the beginning
+	 *		of the log
+	 *	    2.  If we are doing normal reovery, then we have to roll
+	 *		back to the most recent checkpoint that occurs
+	 *		before the most recent checkpoint LSN, which is
+	 *		returned by CDB___log_findckp().
+	 *	    3.  If we are recovering to a point in time, then we have
+	 *		to roll back to the checkpoint whose ckp_lsn is earlier
+	 *		than the specified time.  __log_earliest will figure
+	 *		this out for us.
+	 *	In case 2, "uncompleted TXNs" include all those who commited
+	 *	after the user's specified timestamp.
+	 *
 	 * Pass #3:
 	 *	Read forward through the log from the LSN found in pass #2,
-	 *	redoing any committed TXNs.  During this pass, checkpoint
+	 *	redoing any committed TXNs (which commited after any user-
+	 *	specified rollback point).  During this pass, checkpoint
 	 *	file information is ignored, and file openings and closings
 	 *	are redone.
 	 */
 
 	/*
+	 * Find out the last lsn, so that we can estimate how far along we
+	 * are in recovery.  This will help us determine how much log there
+	 * is between the first LSN that we're going to be working with and
+	 * the last one.  We assume that each of the three phases takes the
+	 * same amount of time (a false assumption) and then use the %-age
+	 * of the amount of log traversed to figure out how much of the
+	 * pass we've accomplished.
+	 */
+	if (dbenv->db_feedback != NULL &&
+	    (ret = CDB_log_get(dbenv, &last_lsn, &data, DB_LAST)) != 0)
+		goto out;
+
+	/*
 	 * Pass #0
 	 * Find the second to last checkpoint in the log.  This is the point
-	 * from which we want to begin pass #1 (the TXN_OPENFILES pass).
+	 * from which we want to begin pass #1 (the open files pass).
 	 */
 	memset(&data, 0, sizeof(data));
 	ckp_args = NULL;
 
-	if ((ret = CDB_log_get(dbenv, &ckp_lsn, &data, DB_CHECKPOINT)) != 0) {
+	if (LF_ISSET(DB_RECOVER_FATAL)) {
+		if ((ret = CDB_log_get(dbenv, &ckp_lsn, &data, DB_FIRST)) != 0) {
+			if (ret == DB_NOTFOUND)
+				ret = 0;
+			else
+				CDB___db_err(dbenv, "First log record not found");
+			goto out;
+		}
+		open_lsn = ckp_lsn;
+	} else if ((ret =
+	     CDB_log_get(dbenv, &ckp_lsn, &data, DB_CHECKPOINT)) != 0) {
 		/*
 		 * If we don't find a checkpoint, start from the beginning.
 		 * If that fails, we're done.  Note, we do not require that
@@ -121,7 +177,7 @@ first:		if ((ret = CDB_log_get(dbenv, &ckp_lsn, &data, DB_FIRST)) != 0) {
 			goto out;
 		}
 		open_lsn = ckp_lsn;
-	} else if ((ret = CDB___txn_ckp_read(data.data, &ckp_args)) != 0) {
+	} else if ((ret = CDB___txn_ckp_read(dbenv, data.data, &ckp_args)) != 0) {
 		CDB___db_err(dbenv, "Invalid checkpoint record at [%ld][%ld]\n",
 		    (u_long)ckp_lsn.file, (u_long)ckp_lsn.offset);
 		goto out;
@@ -131,53 +187,46 @@ first:		if ((ret = CDB_log_get(dbenv, &ckp_lsn, &data, DB_FIRST)) != 0) {
 	else
 		open_lsn = ckp_args->last_ckp;
 
-	/*
-	 * Find out the last lsn, so that we can estimate how far along we
-	 * are in recovery.  This will help us determine how much log there
-	 * is between the first LSN that we're going to be working with and
-	 * the last one.  We assume that each of the three phases takes the
-	 * same amount of time (a false assumption) and then use the %-age
-	 * of the amount of log traversed to figure out how much of the
-	 * pass we've accomplished.
-	 */
 	if (dbenv->db_feedback != NULL) {
-		if ((ret = CDB_log_get(dbenv, &last_lsn, &data, DB_LAST)) != 0)
-			goto out;
-		if (last_lsn.file == ckp_lsn.file)
-			nfiles = (float)(last_lsn.offset - ckp_lsn.offset) /
+		if (last_lsn.file == open_lsn.file)
+			nfiles = (float)(last_lsn.offset - open_lsn.offset) /
 			    dbenv->lg_max;
 		else
-			nfiles = (float)(last_lsn.file - ckp_lsn.file) +
-			    (float)(dbenv->lg_max - ckp_lsn.offset +
+			nfiles = (float)(last_lsn.file - open_lsn.file) +
+			    (float)(dbenv->lg_max - open_lsn.offset +
 			    last_lsn.offset) / dbenv->lg_max;
+		/* We are going to divide by nfiles; make sure it isn't 0. */
+		if (nfiles == 0)
+			nfiles = (float)0.001;
 	}
 
 	/*
 	 * Pass #1
-	 * Now, ckp_lsn is either the lsn of the second to last checkpoint
-	 * or the lsn of the first record in the log.  Open_lsn is the second
-	 * to last checkpoint or the beinning of the log; begin the
-	 * TXN_OPENFILES pass from that lsn, and proceed to the end of the log.
+	 * Now, ckp_lsn is either the lsn of the last checkpoint
+	 * or the lsn of the first record in the log.  Open_lsn is
+	 * the second to last checkpoint or the beinning of the log;
+	 * begin the open files pass from that lsn, and proceed to
+	 * the end of the log.
 	 */
 	lsn = open_lsn;
 	for (;;) {
+		if (dbenv->db_feedback != NULL) {
+			progress = (int)(33 * (__lsn_diff(&open_lsn,
+			   &last_lsn, &lsn, dbenv->lg_max, 1) / nfiles));
+			dbenv->db_feedback(dbenv, DB_RECOVER, progress);
+		}
 		if (dbenv->tx_recover != NULL)
 			ret = dbenv->tx_recover(dbenv,
-			    &data, &lsn, TXN_OPENFILES, txninfo);
+			    &data, &lsn, DB_TXN_OPENFILES, txninfo);
 		else
 			ret = CDB___db_dispatch(dbenv,
-			    &data, &lsn, TXN_OPENFILES, txninfo);
+			    &data, &lsn, DB_TXN_OPENFILES, txninfo);
 		if (ret != 0 && ret != DB_TXN_CKP)
 			goto msgerr;
 		if ((ret = CDB_log_get(dbenv, &lsn, &data, DB_NEXT)) != 0) {
 			if (ret == DB_NOTFOUND)
 				break;
 			goto out;
-		}
-		if (dbenv->db_feedback != NULL) {
-			progress = (int)(33 * CDB___lsn_diff(&ckp_lsn,
-			   &last_lsn, &lsn, dbenv->lg_max, 1) / nfiles);
-			dbenv->db_feedback(dbenv, DB_RECOVER, progress);
 		}
 	}
 
@@ -188,11 +237,16 @@ first:		if ((ret = CDB_log_get(dbenv, &ckp_lsn, &data, DB_FIRST)) != 0) {
 	 * far back in the log to recover.  If we are doing catastrophic
 	 * recovery, then we go as far back as we have files.  If we are
 	 * doing normal recovery, we go as back to the most recent checkpoint
-	 * that occurs before the most recent checkpoint LSN.
+	 * that occurs before the most recent checkpoint LSN.  If we are
+	 * recovering to a point in time, then rollback to the checkpoint whose
+	 * ckp_lsn precedes the first log record (and then roll forward to
+	 * the appropriate timestamp in Pass #3).
 	 */
 	if (LF_ISSET(DB_RECOVER_FATAL)) {
 		ZERO_LSN(first_lsn);
-	} else
+	} else if (dbenv->tx_timestamp != 0)
+		first_lsn = lowlsn;
+	else
 		if ((ret = CDB___log_findckp(dbenv, &first_lsn)) == DB_NOTFOUND) {
 			/*
 			 * We don't require that log files exist if recovery
@@ -209,22 +263,22 @@ first:		if ((ret = CDB_log_get(dbenv, &ckp_lsn, &data, DB_FIRST)) != 0) {
 	for (ret = CDB_log_get(dbenv, &lsn, &data, DB_LAST);
 	    ret == 0 && CDB_log_compare(&lsn, &first_lsn) > 0;
 	    ret = CDB_log_get(dbenv, &lsn, &data, DB_PREV)) {
+		if (dbenv->db_feedback != NULL) {
+			progress = 34 + (int)(33 * (__lsn_diff(&open_lsn,
+			    &last_lsn, &lsn, dbenv->lg_max, 0) / nfiles));
+			dbenv->db_feedback(dbenv, DB_RECOVER, progress);
+		}
 		if (dbenv->tx_recover != NULL)
 			ret = dbenv->tx_recover(dbenv,
-			    &data, &lsn, TXN_BACKWARD_ROLL, txninfo);
+			    &data, &lsn, DB_TXN_BACKWARD_ROLL, txninfo);
 		else
 			ret = CDB___db_dispatch(dbenv,
-			    &data, &lsn, TXN_BACKWARD_ROLL, txninfo);
+			    &data, &lsn, DB_TXN_BACKWARD_ROLL, txninfo);
 		if (ret != 0) {
 			if (ret != DB_TXN_CKP)
 				goto msgerr;
 			else
 				ret = 0;
-		}
-		if (dbenv->db_feedback != NULL) {
-			progress = 34 + (int)(33 * CDB___lsn_diff(&ckp_lsn,
-			    &last_lsn, &lsn, dbenv->lg_max, 0) / nfiles);
-			dbenv->db_feedback(dbenv, DB_RECOVER, progress);
 		}
 	}
 	if (ret != 0 && ret != DB_NOTFOUND)
@@ -235,29 +289,26 @@ first:		if ((ret = CDB_log_get(dbenv, &ckp_lsn, &data, DB_FIRST)) != 0) {
 	 */
 	for (ret = CDB_log_get(dbenv, &lsn, &data, DB_NEXT);
 	    ret == 0; ret = CDB_log_get(dbenv, &lsn, &data, DB_NEXT)) {
+		if (dbenv->db_feedback != NULL) {
+			progress = 67 + (int)(33 * (__lsn_diff(&open_lsn,
+			    &last_lsn, &lsn, dbenv->lg_max, 1) / nfiles));
+			dbenv->db_feedback(dbenv, DB_RECOVER, progress);
+		}
 		if (dbenv->tx_recover != NULL)
 			ret = dbenv->tx_recover(dbenv,
-			    &data, &lsn, TXN_FORWARD_ROLL, txninfo);
+			    &data, &lsn, DB_TXN_FORWARD_ROLL, txninfo);
 		else
 			ret = CDB___db_dispatch(dbenv,
-			    &data, &lsn, TXN_FORWARD_ROLL, txninfo);
+			    &data, &lsn, DB_TXN_FORWARD_ROLL, txninfo);
 		if (ret != 0) {
 			if (ret != DB_TXN_CKP)
 				goto msgerr;
 			else
 				ret = 0;
 		}
-		if (dbenv->db_feedback != NULL) {
-			progress = 67 + (int)(33 * CDB___lsn_diff(&ckp_lsn,
-			    &last_lsn, &lsn, dbenv->lg_max, 1) / nfiles);
-			dbenv->db_feedback(dbenv, DB_RECOVER, progress);
-		}
 	}
 	if (ret != DB_NOTFOUND)
 		goto out;
-
-	/* Now close all the db files that are open. */
-	CDB___log_close_files(dbenv);
 
 	/*
 	 * Now set the last checkpoint lsn and the current time,
@@ -267,7 +318,18 @@ first:		if ((ret = CDB_log_get(dbenv, &ckp_lsn, &data, DB_FIRST)) != 0) {
 	region = ((DB_TXNMGR *)dbenv->tx_handle)->reginfo.primary;
 	region->last_ckp = ckp_lsn;
 	region->time_ckp = (u_int32_t)now;
-	if ((ret = CDB_txn_checkpoint(dbenv, 0, 0)) != 0)
+
+	/*
+	 * Take two checkpoints so that we don't re-recover any of the
+	 * work we've already done.
+	 */
+	if ((ret = CDB_txn_checkpoint(dbenv, 0, 0, DB_FORCE)) != 0)
+		goto out;
+
+	/* Now close all the db files that are open. */
+	CDB___log_close_files(dbenv);
+
+	if ((ret = CDB_txn_checkpoint(dbenv, 0, 0, DB_FORCE)) != 0)
 		goto out;
 	region->last_txnid = TXN_MINIMUM;
 
@@ -291,18 +353,20 @@ out:	if (is_thread)
 	CDB___db_txnlist_end(dbenv, txninfo);
 	if (ckp_args != NULL)
 		CDB___os_free(ckp_args, sizeof(*ckp_args));
+	F_CLR((DB_LOG *)dbenv->lg_handle, DBLOG_RECOVER);
 
+	dbenv->tx_timestamp = 0;
 	return (ret);
 }
 
 /*
  * Figure out how many logfiles we have processed.  If we are moving
  * forward (is_forward != 0), then we're computing current - low.  If
- * we are moving backward, we are compouting high - current.  max is
+ * we are moving backward, we are computing high - current.  max is
  * the number of bytes per logfile.
  */
 static float
-CDB___lsn_diff(low, high, current, max, is_forward)
+__lsn_diff(low, high, current, max, is_forward)
 	DB_LSN *low, *high, *current;
 	u_int32_t max;
 	int is_forward;
@@ -336,4 +400,50 @@ CDB___lsn_diff(low, high, current, max, is_forward)
 			    (float)(high->offset - current->offset) / max;
 	}
 	return (nf);
+}
+
+/*
+ * __log_earliest --
+ *
+ * Return the earliest recovery point for the log files present.  The
+ * earliest recovery time is the time stamp of the first checkpoint record
+ * whose checkpoint LSN is greater than the first LSN we process.
+ */
+static int
+__log_earliest(dbenv, lowtime, lowlsn)
+	DB_ENV *dbenv;
+	int32_t *lowtime;
+	DB_LSN *lowlsn;
+{
+	DB_LSN first_lsn, lsn;
+	DBT data;
+	__txn_ckp_args *ckpargs;
+	u_int32_t rectype;
+	int cmp, ret;
+
+	memset(&data, 0, sizeof(data));
+	/*
+	 * Read forward through the log looking for the first checkpoint
+	 * record whose ckp_lsn is greater than first_lsn.
+	 */
+
+	for (ret = CDB_log_get(dbenv, &first_lsn, &data, DB_FIRST);
+	    ret == 0; ret = CDB_log_get(dbenv, &lsn, &data, DB_NEXT)) {
+		if (ret != 0)
+			break;
+		memcpy(&rectype, data.data, sizeof(rectype));
+		if (rectype != DB_txn_ckp)
+			continue;
+		if ((ret = CDB___txn_ckp_read(dbenv, data.data, &ckpargs)) == 0) {
+			cmp = CDB_log_compare(&ckpargs->ckp_lsn, &first_lsn);
+			*lowlsn = ckpargs->ckp_lsn;
+			*lowtime = ckpargs->timestamp;
+
+			CDB___os_free(ckpargs, 0);
+			if (cmp >= 0)
+				break;
+		}
+	}
+
+	return (ret);
 }

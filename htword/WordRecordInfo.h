@@ -11,20 +11,20 @@
 // DESCRIPTION
 // 
 // The structure of a record is very limited. It can contain
-// at most two integer (int) values. 
+// a single integer value or a string.
 //
 // CONFIGURATION
 //
-// wordlist_wordrecord_description {NONE|DATA} (no default)
+// wordlist_wordrecord_description {NONE|DATA|STR} (no default)
 //   NONE: the record is empty
 //   <br>
-//   DATA: the record contains two integers (int)
+//   DATA: the record contains an integer (unsigned int)
+//   <br>
+//   STR: the record contains a string (String)
 //
 //
 // END
 //
-// WordRecord: Record for storing word information in the word database
-//             Each word occurrence is stored as a separate key/record pair.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999, 2000 The ht://Dig Group
@@ -32,7 +32,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordRecordInfo.h,v 1.1.2.1 2000/05/05 21:55:19 loic Exp $
+// $Id: WordRecordInfo.h,v 1.1.2.2 2000/09/14 03:13:28 ghutchis Exp $
 //
 
 #ifndef _WordRecordInfo_h_
@@ -43,40 +43,19 @@
 //
 #define WORD_RECORD_INVALID	0
 #define WORD_RECORD_DATA	1
-#define WORD_RECORD_STATS	2
+#define WORD_RECORD_STR		2
 #define WORD_RECORD_NONE	3
 
 #ifndef SWIG
 //
 // Meta information about WordRecord
 //
-// wordlist_wordrecord_description: DATA 
-//   use WordRecordStorage::data for each word occurent
-// wordlist_wordrecord_description: NONE 
-//  or
-// wordlist_wordrecord_description not specified
-//   the data associated with each word occurrence is empty
-//
 class WordRecordInfo
 {
  public:
-    WordRecordInfo(const Configuration& config);
-    //
-    // Unique instance handlers 
-    //
-    static void Initialize(const Configuration& config);
-    static WordRecordInfo* Instance() {
-      if(instance) return instance;
-      fprintf(stderr, "WordRecordInfo::Instance: no instance\n");
-      return 0;
-    }
+  WordRecordInfo(const Configuration& config);
 
-    int default_type;
-
-    //
-    // Unique instance pointer
-    //
-    static WordRecordInfo* instance;
+  int default_type;
 };
 #endif /* SWIG */
 

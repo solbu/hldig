@@ -1,7 +1,7 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 /*
@@ -40,10 +40,10 @@
  * SUCH DAMAGE.
  */
 
-#include "db_config.h"
+#include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db_meta.c	11.8 (Sleepycat) 10/19/99";
+static const char revid[] = "$Id: db_meta.c,v 1.1.2.2 2000/09/14 03:13:19 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -83,10 +83,10 @@ CDB___db_new(dbc, type, pagepp)
 	dbp = dbc->dbp;
 	meta = NULL;
 	h = NULL;
-	metalock.off = LOCK_INVALID;
 
 	pgno = PGNO_BASE_MD;
-	if ((ret = CDB___db_lget(dbc, 0, pgno, DB_LOCK_WRITE, 0, &metalock)) != 0)
+	if ((ret = CDB___db_lget(dbc,
+	    LCK_ALWAYS, pgno, DB_LOCK_WRITE, 0, &metalock)) != 0)
 		goto err;
 	if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, (PAGE **)&meta)) != 0)
 		goto err;
@@ -106,17 +106,19 @@ CDB___db_new(dbc, type, pagepp)
 
 	/* Log the change. */
 	if (DB_LOGGING(dbc)) {
-		if ((ret = __db_pg_alloc_log(dbp->dbenv, dbc->txn,
-		    &meta->lsn, 0, dbp->log_fileid, &meta->lsn, &h->lsn,
-		    h->pgno, (u_int32_t)type, meta->free)) != 0)
+		if ((ret = __db_pg_alloc_log(dbp->dbenv,
+		    dbc->txn, &LSN(meta), 0, dbp->log_fileid,
+		    &LSN(meta), &meta->alloc_lsn, &h->lsn, h->pgno,
+		    (u_int32_t)type, meta->free)) != 0)
 			goto err;
 		LSN(h) = LSN(meta);
+		meta->alloc_lsn = LSN(meta);
 	}
 
 	(void)CDB_memp_fput(dbp->mpf, (PAGE *)meta, DB_MPOOL_DIRTY);
 	(void)__TLPUT(dbc, metalock);
 
-	P_INIT(h, dbp->pgsize, h->pgno, PGNO_INVALID, PGNO_INVALID, 0, type);
+	P_INIT(h, dbp->pgsize, h->pgno, PGNO_INVALID, PGNO_INVALID, 0, type, 0);
 	*pagepp = h;
 	return (0);
 
@@ -124,8 +126,7 @@ err:	if (h != NULL)
 		(void)CDB_memp_fput(dbp->mpf, h, 0);
 	if (meta != NULL)
 		(void)CDB_memp_fput(dbp->mpf, meta, 0);
-	if (metalock.off != LOCK_INVALID)
-		(void)__TLPUT(dbc, metalock);
+	(void)__TLPUT(dbc, metalock);
 	return (ret);
 }
 
@@ -158,7 +159,8 @@ CDB___db_free(dbc, h)
 	 */
 	dirty_flag = 0;
 	pgno = PGNO_BASE_MD;
-	if ((ret = CDB___db_lget(dbc, 0, pgno, DB_LOCK_WRITE, 0, &metalock)) != 0)
+	if ((ret = CDB___db_lget(dbc,
+	     LCK_ALWAYS, pgno, DB_LOCK_WRITE, 0, &metalock)) != 0)
 		goto err;
 	if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, (PAGE **)&meta)) != 0) {
 		(void)__TLPUT(dbc, metalock);
@@ -171,16 +173,17 @@ CDB___db_free(dbc, h)
 		ldbt.data = h;
 		ldbt.size = P_OVERHEAD;
 		if ((ret = __db_pg_free_log(dbp->dbenv,
-		    dbc->txn, &meta->lsn, 0, dbp->log_fileid, h->pgno,
-		    &meta->lsn, &ldbt, meta->free)) != 0) {
+		    dbc->txn, &LSN(meta), 0, dbp->log_fileid, h->pgno,
+		    &LSN(meta), &meta->alloc_lsn, &ldbt, meta->free)) != 0) {
 			(void)CDB_memp_fput(dbp->mpf, (PAGE *)meta, 0);
 			(void)__TLPUT(dbc, metalock);
 			return (ret);
 		}
 		LSN(h) = LSN(meta);
+		meta->alloc_lsn = LSN(meta);
 	}
 
-	P_INIT(h, dbp->pgsize, h->pgno, PGNO_INVALID, meta->free, 0, P_INVALID);
+	P_INIT(h, dbp->pgsize, h->pgno, PGNO_INVALID, meta->free, 0, P_INVALID, 0);
 
 	/* Link the page on the metadata free list. */
 	meta->free = h->pgno;
@@ -204,20 +207,21 @@ err:	if ((t_ret = CDB_memp_fput(dbp->mpf, h, dirty_flag)) != 0 && ret == 0)
 
 #ifdef DEBUG
 /*
- * CDB___db_lt --
+ * CDB___db_lprint --
  *	Print out the list of locks currently held by a cursor.
  *
- * PUBLIC: int CDB___db_lt __P((DBC *));
+ * PUBLIC: int CDB___db_lprint __P((DBC *));
  */
 int
-CDB___db_lt(dbc)
+CDB___db_lprint(dbc)
 	DBC *dbc;
 {
 	DB *dbp;
 	DB_LOCKREQ req;
 
 	dbp = dbc->dbp;
-	if (F_ISSET(dbp->dbenv, DB_ENV_LOCKING)) {
+
+	if (LOCKING_ON(dbp->dbenv)) {
 		req.op = DB_LOCK_DUMP;
 		CDB_lock_vec(dbp->dbenv, dbc->locker, 0, &req, 1, NULL);
 	}
@@ -233,55 +237,66 @@ CDB___db_lt(dbc)
  * PUBLIC:     int, db_pgno_t, db_lockmode_t, int, DB_LOCK *));
  */
 int
-CDB___db_lget(dbc, do_couple, pgno, mode, flags, lockp)
+CDB___db_lget(dbc, flags, pgno, mode, lkflags, lockp)
 	DBC *dbc;
-	int do_couple, flags;
+	int flags, lkflags;
 	db_pgno_t pgno;
 	db_lockmode_t mode;
 	DB_LOCK *lockp;
 {
 	DB *dbp;
+	DB_ENV *dbenv;
 	DB_LOCKREQ couple[2];
 	int ret;
 
 	dbp = dbc->dbp;
+	dbenv = dbp->dbenv;
 
-	if (!F_ISSET(dbp->dbenv, DB_ENV_LOCKING)) {
+	/*
+	 * We do not always check if we're configured for locking before
+	 * calling CDB___db_lget to acquire the lock.
+	 */
+	if (LOCKING(dbenv) || !LOCKING_ON(dbenv)
+	    || (!LF_ISSET(LCK_ROLLBACK) && F_ISSET(dbc, DBC_RECOVER))
+	    || (!LF_ISSET(LCK_ALWAYS) && F_ISSET(dbc, DBC_OPD))) {
 		lockp->off = LOCK_INVALID;
 		return (0);
 	}
 
 	dbc->lock.pgno = pgno;
-	if (LF_ISSET(DB_LOCK_RECORD))
+	if (lkflags & DB_LOCK_RECORD)
 		dbc->lock.type = DB_RECORD_LOCK;
 	else
 		dbc->lock.type = DB_PAGE_LOCK;
-	LF_CLR(DB_LOCK_RECORD);
+	lkflags &= ~DB_LOCK_RECORD;
 
 	/*
 	 * If the transaction enclosing this cursor has DB_LOCK_NOWAIT set,
 	 * pass that along to the lock call.
 	 */
 	if (DB_NONBLOCK(dbc))
-		LF_SET(DB_LOCK_NOWAIT);
+		lkflags |= DB_LOCK_NOWAIT;
 
 	/*
 	 * If the object not currently locked, acquire the lock and return,
 	 * otherwise, lock couple.
 	 */
-	if (do_couple) {
+	if (LF_ISSET(LCK_COUPLE)) {
 		couple[0].op = DB_LOCK_GET;
 		couple[0].obj = &dbc->lock_dbt;
 		couple[0].mode = mode;
 		couple[1].op = DB_LOCK_PUT;
 		couple[1].lock = *lockp;
 
-		if ((ret = CDB_lock_vec(dbp->dbenv,
-		    dbc->locker, flags, couple, 2, NULL)) == 0)
+		if ((ret = CDB_lock_vec(dbenv,
+		    dbc->locker, lkflags, couple, 2, NULL)) == 0)
 			*lockp = couple[0].lock;
-	} else {
-		ret = CDB_lock_get(dbp->dbenv,
-		    dbc->locker, flags, &dbc->lock_dbt, mode, lockp);
-	}
+	} else
+		ret = CDB_lock_get(dbenv,
+		    dbc->locker, lkflags, &dbc->lock_dbt, mode, lockp);
+
+	if (ret != 0)
+		lockp->off = LOCK_INVALID;
+
 	return (ret);
 }

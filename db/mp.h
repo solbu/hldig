@@ -1,28 +1,21 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)mp.h	11.3 (Sleepycat) 10/6/99
+ * $Id: mp.h,v 1.1.2.2 2000/09/14 03:13:21 ghutchis Exp $
  */
 
 struct __bh;		typedef struct __bh BH;
 struct __db_mpool;	typedef struct __db_mpool DB_MPOOL;
 struct __db_mpreg;	typedef struct __db_mpreg DB_MPREG;
-struct __mcache;	typedef struct __mcache MCACHE;
 struct __mpool;		typedef struct __mpool MPOOL;
 struct __mpoolfile;	typedef struct __mpoolfile MPOOLFILE;
 struct __cmpr;		typedef struct __cmpr CMPR;
-struct __cmpr_context;	typedef struct __cmpr_context CMPR_CONTEXT;
 
-/* We require at least 20K of cache. */
-#define	DB_CACHESIZE_MIN	( 20 * 1024)
-
-/*
- * By default, environments have room for 500 files.
- */
-#define	DB_MPOOLFILE_DEF	500
+/* We require at least 40K of cache. */
+#define	DB_CACHESIZE_MIN	(20 * 1024)
 
 /*
  * DB_MPOOL --
@@ -41,10 +34,8 @@ struct __db_mpool {
 	/* These fields are not thread-protected. */
 	DB_ENV     *dbenv;		/* Reference to error information. */
 
-	REGINFO	    reginfo;		/* Main shared region. */
-
-	int	    nc_reg;		/* N underlying cache regions. */
-	REGINFO	   *c_reginfo;		/* Underlying cache regions. */
+	u_int32_t   nreg;		/* N underlying cache regions. */
+	REGINFO	   *reginfo;		/* Underlying cache regions. */
 };
 
 /*
@@ -56,17 +47,8 @@ struct __db_mpreg {
 
 	int ftype;			/* File type. */
 					/* Pgin, pgout routines. */
-	int (*pgin) __P((db_pgno_t, void *, DBT *));
-	int (*pgout) __P((db_pgno_t, void *, DBT *));
-};
-
-/*
- * CMPR_CONTEXT --
- *	Shared compresssion information.
- */
-struct __cmpr_context {
-#define DB_CMPR_SUFFIX	"_weakcmpr"
-	DB 	     *weakcmpr;		/* Free weakcmpr pages pool. */
+	int (*pgin) __P((DB_ENV *, db_pgno_t, void *, DBT *));
+	int (*pgout) __P((DB_ENV *, db_pgno_t, void *, DBT *));
 };
 
 /*
@@ -113,9 +95,6 @@ struct __db_mpoolfile {
 #define	MP_UPGRADE_FAIL	0x04		/* Upgrade wasn't possible. */
 #define	MP_CMPR		0x08		/* Transparent I/O compression. */
 	u_int32_t  flags;
-
-        CMPR_CONTEXT   cmpr_context;    /* Shared compression information */
-
 };
 
 /*
@@ -126,7 +105,7 @@ struct __db_mpoolfile {
  *	same cache, as we expect that file access will be bursty.
  */
 #define	NCACHE(mp, pgno)						\
-	((pgno) % ((MPOOL *)mp)->nc_reg)
+	((pgno) % ((MPOOL *)mp)->nreg)
 
 /*
  * NBUCKET --
@@ -145,13 +124,18 @@ struct __db_mpoolfile {
 
 /*
  * MPOOL --
- *	Shared memory pool region.  One of these is allocated in shared
- *	memory, and describes the entire pool.
+ *	Shared memory pool region.
  */
 struct __mpool {
-	SH_TAILQ_HEAD(__mpfq) mpfq;	/* List of MPOOLFILEs. */
-
 	/*
+	 * The memory pool can be broken up into individual pieces/files.
+	 * Not what we would have liked, but on Solaris you can allocate
+	 * only a little more than 2GB of memory in a contiguous chunk,
+	 * and I expect to see more systems with similar issues.
+	 *
+	 * The first of these pieces/files describes the entire pool, all
+	 * subsequent ones only describe a part of the cache.
+	 *
 	 * We single-thread CDB_memp_sync and CDB_memp_fsync calls.
 	 *
 	 * This mutex is intended *only* to single-thread access to the call,
@@ -162,22 +146,18 @@ struct __mpool {
 	DB_LSN	  lsn;			/* Maximum checkpoint LSN. */
 	u_int32_t lsn_cnt;		/* Checkpoint buffers left to write. */
 
-	u_int32_t nc_reg;		/* Number of underlying REGIONS. */
-	roff_t	  c_regids;		/* Array of underlying REGION Ids. */
+	SH_TAILQ_HEAD(__mpfq) mpfq;	/* List of MPOOLFILEs. */
+
+	u_int32_t nreg;			/* Number of underlying REGIONS. */
+	roff_t	  regids;		/* Array of underlying REGION Ids. */
 
 #define	MP_LSN_RETRY	0x01		/* Retry all BH_WRITE buffers. */
 	u_int32_t  flags;
-};
 
-/*
- * MCACHE --
- *	The memory pool may be broken up into individual pieces/files.  Not
- *	what we would have liked, but on Solaris you can allocate only a
- *	little more than 2GB of memory in a single contiguous chunk, and I
- *	expect to see more systems with similar issues.  An MCACHE structure
- *	describes a backing piece of memory used as a cache.
- */
-struct __mcache {
+	/*
+	 * The following structure fields only describe the cache portion of
+	 * the region.
+	 */
 	SH_TAILQ_HEAD(__bhq) bhq;	/* LRU list of buffer headers. */
 
 	int	    htab_buckets;	/* Number of hash table entries. */
@@ -193,8 +173,10 @@ struct __mcache {
 struct __mpoolfile {
 	SH_TAILQ_ENTRY  q;		/* List of MPOOLFILEs */
 
-	int	  ftype;		/* File type. */
+	db_pgno_t ref_cnt;		/* Ref count: pages or DB_MPOOLFILEs. */
+	db_pgno_t lsn_cnt;		/* Checkpoint buffers left to write. */
 
+	int	  ftype;		/* File type. */
 	int32_t	  lsn_off;		/* Page's LSN offset. */
 	u_int32_t clear_len;		/* Bytes to clear on page create. */
 
@@ -204,17 +186,17 @@ struct __mpoolfile {
 	roff_t	  pgcookie_len;		/* Pgin/pgout cookie length. */
 	roff_t	  pgcookie_off;		/* Pgin/pgout cookie location. */
 
-	u_int32_t lsn_cnt;		/* Checkpoint buffers left to write. */
-
 	db_pgno_t last_pgno;		/* Last page in the file. */
 	db_pgno_t orig_last_pgno;	/* Original last page in the file. */
 
-#define	MP_CAN_MMAP	0x01		/* If the file can be mmap'd. */
-#define	MP_REMOVED	0x02		/* Backing file has been removed. */
-#define	MP_TEMP		0x04		/* Backing file is a temporary. */
-	u_int32_t  flags;
+        db_pgno_t cmpr_free;		/* Compression free list. */
 
 	DB_MPOOL_FSTAT stat;		/* Per-file mpool statistics. */
+
+#define	MP_CAN_MMAP	0x01		/* If the file can be mmap'd. */
+#define	MP_DEADFILE	0x02		/* Dirty pages can simply be trashed. */
+#define	MP_TEMP		0x04		/* Backing file is a temporary. */
+	u_int32_t  flags;
 };
 
 /*
@@ -222,7 +204,7 @@ struct __mpoolfile {
  *	Return the cache where we can find the specified buffer header.
  */
 #define	BH_TO_CACHE(dbmp, bhp)						\
-	(dbmp)->c_reginfo[NCACHE((dbmp)->reginfo.primary, (bhp)->pgno)].primary
+	(dbmp)->reginfo[NCACHE((dbmp)->reginfo[0].primary, (bhp)->pgno)].primary
 
 /*
  * DB_CMPR --
@@ -306,4 +288,3 @@ struct __bh {
 };
 
 #include "mp_ext.h"
-

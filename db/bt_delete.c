@@ -1,7 +1,7 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 /*
@@ -40,10 +40,10 @@
  * SUCH DAMAGE.
  */
 
-#include "db_config.h"
+#include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)bt_delete.c	11.6 (Sleepycat) 9/9/99";
+static const char revid[] = "$Id: bt_delete.c,v 1.1.2.2 2000/09/14 03:13:16 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -102,10 +102,13 @@ CDB___bam_delete(dbp, txn, key, flags)
 	memset(&data, 0, sizeof(data));
 	F_SET(&data, DB_DBT_USERMEM | DB_DBT_PARTIAL);
 
-	/* If locking, set read-modify-write flag. */
+	/*
+	 * If locking (and we haven't already acquired CDB locks), set the
+	 * read-modify-write flag.
+	 */
 	f_init = DB_SET;
 	f_next = DB_NEXT_DUP;
-	if (F_ISSET(dbp->dbenv, DB_ENV_LOCKING)) {
+	if (STD_LOCKING(dbc)) {
 		f_init |= DB_RMW;
 		f_next |= DB_RMW;
 	}
@@ -146,7 +149,6 @@ CDB___bam_ditem(dbc, h, indx)
 {
 	BINTERNAL *bi;
 	BKEYDATA *bk;
-	BOVERFLOW *bo;
 	DB *dbp;
 	u_int32_t nbytes;
 	int ret;
@@ -158,15 +160,17 @@ CDB___bam_ditem(dbc, h, indx)
 		bi = GET_BINTERNAL(h, indx);
 		switch (B_TYPE(bi->type)) {
 		case B_DUPLICATE:
-		case B_OVERFLOW:
-			nbytes = BINTERNAL_SIZE(bi->len);
-			bo = (BOVERFLOW *)bi->data;
-			goto offpage;
 		case B_KEYDATA:
 			nbytes = BINTERNAL_SIZE(bi->len);
 			break;
+		case B_OVERFLOW:
+			nbytes = BINTERNAL_SIZE(bi->len);
+			if ((ret =
+			    CDB___db_doff(dbc, ((BOVERFLOW *)bi->data)->pgno)) != 0)
+				return (ret);
+			break;
 		default:
-			return (CDB___db_pgfmt(dbp, h->pgno));
+			return (CDB___db_pgfmt(dbp, PGNO(h)));
 		}
 		break;
 	case P_IRECNO:
@@ -177,7 +181,7 @@ CDB___bam_ditem(dbc, h, indx)
 		 * If it's a duplicate key, discard the index and don't touch
 		 * the actual page item.
 		 *
-		 * XXX
+		 * !!!
 		 * This works because no data item can have an index matching
 		 * any other index so even if the data item is in a key "slot",
 		 * it won't match any other index.
@@ -203,42 +207,37 @@ CDB___bam_ditem(dbc, h, indx)
 				    h, indx, indx - P_INDX, 0));
 		}
 		/* FALLTHROUGH */
+	case P_LDUP:
 	case P_LRECNO:
 		bk = GET_BKEYDATA(h, indx);
 		switch (B_TYPE(bk->type)) {
 		case B_DUPLICATE:
+			nbytes = BOVERFLOW_SIZE;
+			break;
 		case B_OVERFLOW:
 			nbytes = BOVERFLOW_SIZE;
-			bo = GET_BOVERFLOW(h, indx);
-
-offpage:		/* Delete duplicate/offpage chains. */
-			if (B_TYPE(bo->type) == B_DUPLICATE) {
-				if ((ret =
-				    CDB___db_ddup(dbc, bo->pgno)) != 0)
-					return (ret);
-			} else
-				if ((ret =
-				    CDB___db_doff(dbc, bo->pgno)) != 0)
-					return (ret);
+			if ((ret = CDB___db_doff(
+			    dbc, (GET_BOVERFLOW(h, indx))->pgno)) != 0)
+				return (ret);
 			break;
 		case B_KEYDATA:
 			nbytes = BKEYDATA_SIZE(bk->len);
 			break;
 		default:
-			return (CDB___db_pgfmt(dbp, h->pgno));
+			return (CDB___db_pgfmt(dbp, PGNO(h)));
 		}
 		break;
 	default:
-		return (CDB___db_pgfmt(dbp, h->pgno));
+		return (CDB___db_pgfmt(dbp, PGNO(h)));
 	}
 
-	/* Delete the item and update the cursors. */
+	/* Delete the item and mark the page dirty. */
 	if ((ret = CDB___db_ditem(dbc, h, indx, nbytes)) != 0)
 		return (ret);
-	CDB___bam_ca_di(dbp, PGNO(h), indx, -1);
+	if ((ret = CDB_memp_fset(dbp->mpf, h, DB_MPOOL_DIRTY)) != 0)
+		return (ret);
 
-	/* Mark the page dirty. */
-	return (CDB_memp_fset(dbp->mpf, h, DB_MPOOL_DIRTY));
+	return (0);
 }
 
 /*
@@ -267,6 +266,7 @@ CDB___bam_adjindx(dbc, h, indx, indx_copy, is_insert)
 	    (u_int32_t)is_insert)) != 0)
 		return (ret);
 
+	/* Shuffle the indices and mark the page dirty. */
 	if (is_insert) {
 		copy = h->inp[indx_copy];
 		if (indx != NUM_ENT(h))
@@ -280,135 +280,22 @@ CDB___bam_adjindx(dbc, h, indx, indx_copy, is_insert)
 			memmove(&h->inp[indx], &h->inp[indx + O_INDX],
 			    sizeof(db_indx_t) * (NUM_ENT(h) - indx));
 	}
+	if ((ret = CDB_memp_fset(dbp->mpf, h, DB_MPOOL_DIRTY)) != 0)
+		return (ret);
 
-	/* Mark the page dirty. */
-	ret = CDB_memp_fset(dbp->mpf, h, DB_MPOOL_DIRTY);
-
-	/* Adjust the cursors. */
-	CDB___bam_ca_di(dbp, h->pgno, indx, is_insert ? 1 : -1);
 	return (0);
-}
-
-/*
- * CDB___bam_dpage --
- *	Delete a page from the tree.
- *
- * PUBLIC: int CDB___bam_dpage __P((DBC *, const DBT *));
- */
-int
-CDB___bam_dpage(dbc, key)
-	DBC *dbc;
-	const DBT *key;
-{
-	BTREE_CURSOR *cp;
-	DB *dbp;
-	DB_LOCK lock;
-	PAGE *h;
-	db_pgno_t pgno, root_pgno;
-	int level;		/* !!!: has to hold number of tree levels. */
-	int exact, ret;
-
-	dbp = dbc->dbp;
-	cp = dbc->internal;
-	ret = 0;
-
-	/*
-	 * The locking protocol is that we acquire locks by walking down the
-	 * tree, to avoid the obvious deadlocks.
-	 *
-	 * Call CDB___bam_search to reacquire the empty leaf page, but this time
-	 * get both the leaf page and it's parent, locked.  Walk back up the
-	 * tree, until we have the top pair of pages that we want to delete.
-	 * Once we have the top page that we want to delete locked, lock the
-	 * underlying pages and check to make sure they're still empty.  If
-	 * they are, delete them.
-	 */
-	root_pgno = ((BTREE *)dbp->bt_internal)->bt_root;
-	for (level = LEAFLEVEL;; ++level) {
-		/* Acquire a page and its parent, locked. */
-		if ((ret =
-		    CDB___bam_search(dbc, key, S_WRPAIR, level, NULL, &exact)) != 0)
-			return (ret);
-
-		/*
-		 * If we reach the root or the page isn't going to be empty
-		 * when we delete one record, quit.
-		 */
-		h = cp->csp[-1].page;
-		if (h->pgno == root_pgno || NUM_ENT(h) != 1)
-			break;
-
-		/* Release the two locked pages. */
-		(void)CDB_memp_fput(dbp->mpf, cp->csp[-1].page, 0);
-		(void)__TLPUT(dbc, cp->csp[-1].lock);
-		(void)CDB_memp_fput(dbp->mpf, cp->csp[0].page, 0);
-		(void)__TLPUT(dbc, cp->csp[0].lock);
-	}
-
-	/*
-	 * Leave the stack pointer one after the last entry, we may be about
-	 * to push more items on the stack.
-	 */
-	++cp->csp;
-
-	/*
-	 * cp->csp[-2].page is the top page, which we're not going to delete,
-	 * and cp->csp[-1].page is the first page we are going to delete.
-	 *
-	 * Walk down the chain, acquiring the rest of the pages until we've
-	 * retrieved the leaf page.  If we find any pages that aren't going
-	 * to be emptied by the delete, someone else added something while we
-	 * were walking the tree, and we discontinue the delete.
-	 */
-	for (h = cp->csp[-1].page;;) {
-		if (ISLEAF(h)) {
-			if (NUM_ENT(h) != 0)
-				goto release;
-			break;
-		} else
-			if (NUM_ENT(h) != 1)
-				goto release;
-
-		/*
-		 * Get the next page, write lock it and push it onto the stack.
-		 * We know it's index 0, because it can only have one element.
-		 */
-		pgno = TYPE(h) == P_IBTREE ?
-		    GET_BINTERNAL(h, 0)->pgno : GET_RINTERNAL(h, 0)->pgno;
-
-		if ((ret =
-		    CDB___db_lget(dbc, 0, pgno, DB_LOCK_WRITE, 0, &lock)) != 0)
-			goto release;
-		if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, &h)) != 0)
-			goto release;
-		BT_STK_PUSH(cp, h, 0, lock, DB_LOCK_WRITE, ret);
-	}
-
-	/* Adjust back to reference the last page on the stack. */
-	BT_STK_POP(cp);
-
-	/* Delete the pages. */
-	return (CDB___bam_dpages(dbc));
-
-release:
-	/* Adjust back to reference the last page on the stack. */
-	BT_STK_POP(cp);
-
-	/* Discard any locked pages and return. */
-	CDB___bam_stkrel(dbc, 0);
-
-	return (ret);
 }
 
 /*
  * CDB___bam_dpages --
  *	Delete a set of locked pages.
  *
- * PUBLIC: int CDB___bam_dpages __P((DBC *));
+ * PUBLIC: int CDB___bam_dpages __P((DBC *, EPG *));
  */
 int
-CDB___bam_dpages(dbc)
+CDB___bam_dpages(dbc, stack_epg)
 	DBC *dbc;
+	EPG *stack_epg;
 {
 	BTREE_CURSOR *cp;
 	DB *dbp;
@@ -419,12 +306,33 @@ CDB___bam_dpages(dbc)
 	db_indx_t nitems;
 	db_pgno_t pgno, root_pgno;
 	db_recno_t rcnt;
-	int done, ret;
+	int done, ret, t_ret;
 
 	dbp = dbc->dbp;
-	cp = dbc->internal;
-	root_pgno = ((BTREE *)dbp->bt_internal)->bt_root;
-	epg = cp->sp;
+	cp = (BTREE_CURSOR *)dbc->internal;
+
+	/*
+	 * We have the entire stack of deletable pages locked.
+	 *
+	 * Btree calls us with a pointer to the beginning of a stack, where
+	 * the first page in the stack is to have a single item deleted, and
+	 * the rest of the pages are to be removed.
+	 *
+	 * Recno calls us with a pointer into the middle of the stack, where
+	 * the referenced page is to have a single item deleted, and pages
+	 * after the stack reference are to be removed.
+	 *
+	 * First, discard any pages that we don't care about.
+	 */
+	ret = 0;
+	for (epg = cp->sp; epg < stack_epg; ++epg) {
+		if ((t_ret =
+		    CDB_memp_fput(dbp->mpf, epg->page, 0)) != 0 && ret == 0)
+			ret = t_ret;
+		(void)__TLPUT(dbc, epg->lock);
+	}
+	if (ret != 0)
+		goto err;
 
 	/*
 	 * !!!
@@ -432,65 +340,61 @@ CDB___bam_dpages(dbc)
 	 * the leaf page chain around the leaf page being deleted.  Consider
 	 * a cursor walking through the leaf pages, that has the previous page
 	 * read-locked and is waiting on a lock for the page we're deleting.
-	 * It will deadlock here.  This is a problem, because if our process is
-	 * selected to resolve the deadlock, we'll leave an empty leaf page
-	 * that we can never again access by walking down the tree.  So, before
-	 * we unlink the subtree, we relink the leaf page chain.
+	 * It will deadlock here.  Before we unlink the subtree, we relink the
+	 * leaf page chain.
 	 */
 	if ((ret = CDB___db_relink(dbc, DB_REM_PAGE, cp->csp->page, NULL, 1)) != 0)
-		goto release;
+		goto err;
 
 	/*
-	 * We have the entire stack of deletable pages locked.
-	 *
-	 * Delete the highest page in the tree's reference to the underlying
-	 * stack of pages.  Then, release that page, letting the rest of the
-	 * tree get back to business.
+	 * Delete the last item that references the underlying pages that are
+	 * to be deleted, and adjust cursors that reference that page.  Then,
+	 * save that page's page number and item count and release it.  If
+	 * the application isn't retaining locks because it's running without
+	 * transactions, this lets the rest of the tree get back to business
+	 * immediately.
 	 */
-	if ((ret = CDB___bam_ditem(dbc, epg->page, epg->indx)) != 0) {
-release:	(void)CDB___bam_stkrel(dbc, 0);
-		return (ret);
-	}
+	if ((ret = CDB___bam_ditem(dbc, epg->page, epg->indx)) != 0)
+		goto err;
+	CDB___bam_ca_di(dbp, PGNO(epg->page), epg->indx, -1);
 
-	pgno = epg->page->pgno;
+	pgno = PGNO(epg->page);
 	nitems = NUM_ENT(epg->page);
 
-	(void)CDB_memp_fput(dbp->mpf, epg->page, 0);
+	if ((ret = CDB_memp_fput(dbp->mpf, epg->page, 0)) != 0)
+		goto err_inc;
 	(void)__TLPUT(dbc, epg->lock);
 
-	/*
-	 * Free the rest of the stack of pages.
-	 *
-	 * !!!
-	 * Don't bother checking for errors.  We've unlinked the subtree from
-	 * the tree, and there's no possibility of recovery outside of doing
-	 * TXN rollback.
-	 */
+	/* Free the rest of the pages in the stack. */
 	while (++epg <= cp->csp) {
 		/*
 		 * Delete page entries so they will be restored as part of
-		 * recovery.
+		 * recovery.  We don't need to do cursor adjustment here as
+		 * the pages are being emptied by definition and so cannot
+		 * be referenced by a cursor.
 		 */
-		if (NUM_ENT(epg->page) != 0)
-			(void)CDB___bam_ditem(dbc, epg->page, epg->indx);
+		if (NUM_ENT(epg->page) != 0) {
+			DB_ASSERT(NUM_ENT(epg->page) == 1);
 
-		(void)CDB___db_free(dbc, epg->page);
+			if ((ret = CDB___bam_ditem(dbc, epg->page, epg->indx)) != 0)
+				goto err;
+		}
+
+		if ((ret = CDB___db_free(dbc, epg->page)) != 0)
+			goto err_inc;
 		(void)__TLPUT(dbc, epg->lock);
 	}
-	BT_STK_CLR(cp);
 
-	/*
-	 * Try and collapse the tree a level -- this is only applicable
-	 * if we've deleted the next-to-last element from the root page.
-	 *
-	 * There are two cases when collapsing a tree.
-	 *
-	 * If we've just deleted the last item from the root page, there is no
-	 * further work to be done.  The code above has emptied the root page
-	 * and freed all pages below it.
-	 */
-	if (pgno != root_pgno || nitems != 1)
-		return (0);
+	if (0) {
+err_inc:	++epg;
+err:		for (; epg <= cp->csp; ++epg) {
+			(void)CDB_memp_fput(dbp->mpf, epg->page, 0);
+			(void)__TLPUT(dbc, epg->lock);
+		}
+		BT_STK_CLR(cp);
+		return (ret);
+	}
+	BT_STK_CLR(cp);
 
 	/*
 	 * If we just deleted the next-to-last item from the root page, the
@@ -499,6 +403,10 @@ release:	(void)CDB___bam_stkrel(dbc, 0);
 	 * by the root page and copy it over the root page.  If we can't get a
 	 * write lock, that's okay, the tree just stays deeper than we'd like.
 	 */
+	root_pgno = cp->root;
+	if (pgno != root_pgno || nitems != 1)
+		return (0);
+
 	for (done = 0; !done;) {
 		/* Initialize. */
 		parent = child = NULL;
@@ -512,13 +420,19 @@ release:	(void)CDB___bam_stkrel(dbc, 0);
 		if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, &parent)) != 0)
 			goto stop;
 
-		if (NUM_ENT(parent) != 1 ||
-		    (TYPE(parent) != P_IBTREE && TYPE(parent) != P_IRECNO))
+		if (NUM_ENT(parent) != 1)
 			goto stop;
 
-		pgno = TYPE(parent) == P_IBTREE ?
-		    GET_BINTERNAL(parent, 0)->pgno :
-		    GET_RINTERNAL(parent, 0)->pgno;
+		switch (TYPE(parent)) {
+		case P_IBTREE:
+			pgno = GET_BINTERNAL(parent, 0)->pgno;
+			break;
+		case P_IRECNO:
+			pgno = GET_RINTERNAL(parent, 0)->pgno;
+			break;
+		default:
+			goto stop;
+		}
 
 		/* Lock the child page. */
 		if ((ret =
@@ -536,30 +450,27 @@ release:	(void)CDB___bam_stkrel(dbc, 0);
 			b.data = P_ENTRY(parent, 0);
 			b.size = BINTERNAL_SIZE(((BINTERNAL *)b.data)->len);
 			CDB___bam_rsplit_log(dbp->dbenv, dbc->txn,
-			   &child->lsn, 0, dbp->log_fileid, child->pgno, &a,
-			   RE_NREC(parent), &b, &parent->lsn);
+			   &child->lsn, 0, dbp->log_fileid, PGNO(child), &a,
+			   PGNO(parent), RE_NREC(parent), &b, &parent->lsn);
 		}
 
 		/*
 		 * Make the switch.
 		 *
-		 * One fixup -- if the tree has record numbers and we're not
-		 * converting to a leaf page, we have to preserve the total
-		 * record count.  Note that we are about to overwrite everything
-		 * on the parent, including its LSN.  This is actually OK,
-		 * because the above log message, which describes this update,
+		 * One fixup -- internal pages below the top level do not store
+		 * a record count, so we have to preserve it if we're not
+		 * converting to a leaf page.  Note also that we are about to
+		 * overwrite the parent page, including its LSN.  This is OK
+		 * because the log message we wrote describing this update
 		 * stores its LSN on the child page.  When the child is copied
-		 * to the parent, the correct LSN is going to copied into
-		 * place in the parent.
+		 * onto the parent, the correct LSN is copied into place.
 		 */
 		COMPQUIET(rcnt, 0);
-		if (TYPE(child) == P_IRECNO ||
-		    (TYPE(child) == P_IBTREE && F_ISSET(dbp, DB_BT_RECNUM)))
+		if (F_ISSET(cp, C_RECNUM) && LEVEL(child) > LEAFLEVEL)
 			rcnt = RE_NREC(parent);
 		memcpy(parent, child, dbp->pgsize);
-		parent->pgno = root_pgno;
-		if (TYPE(child) == P_IRECNO ||
-		    (TYPE(child) == P_IBTREE && F_ISSET(dbp, DB_BT_RECNUM)))
+		PGNO(parent) = root_pgno;
+		if (F_ISSET(cp, C_RECNUM) && LEVEL(child) > LEAFLEVEL)
 			RE_NREC_SET(parent, rcnt);
 
 		/* Mark the pages dirty. */
@@ -567,7 +478,7 @@ release:	(void)CDB___bam_stkrel(dbc, 0);
 		CDB_memp_fset(dbp->mpf, child, DB_MPOOL_DIRTY);
 
 		/* Adjust the cursors. */
-		CDB___bam_ca_rsplit(dbp, child->pgno, root_pgno);
+		CDB___bam_ca_rsplit(dbp, PGNO(child), root_pgno);
 
 		/*
 		 * Free the page copied onto the root page and discard its

@@ -11,6 +11,27 @@
 # PARTICULAR PURPOSE.
 
 
+#
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999, 2000 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU General Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
+#
+
+#
+# To compile with profiling do the following:
+#
+# make clean
+# ( cd db ; make all )
+# make CXXFLAGS=-g PROFILING=-p all
+#
+# Note that it's necessary to rebuild Berkeley DB without CXXFLAGS set because
+# it has undesirable effects. CXXFLAGS must be set to -g because it defaults
+# to -g -O2 when g++ is used and profiling is not done in a intuitive way.
+#
+
+
 SHELL = @SHELL@
 
 srcdir = @srcdir@
@@ -38,7 +59,7 @@ pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
 
-top_builddir = .
+top_builddir = ..
 
 ACLOCAL = @ACLOCAL@
 AUTOCONF = @AUTOCONF@
@@ -60,12 +81,20 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AR = @AR@
 AS = @AS@
 CC = @CC@
+CXX = @CXX@
+CXXFLAGS = @CXXFLAGS@
 DLLTOOL = @DLLTOOL@
+DVIPS = @DVIPS@
+FIND = @FIND@
+GUNZIP = @GUNZIP@
 LD = @LD@
+LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAJOR_VERSION = @MAJOR_VERSION@
 MAKEINFO = @MAKEINFO@
@@ -74,27 +103,18 @@ MINOR_VERSION = @MINOR_VERSION@
 NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
+PERL = @PERL@
 RANLIB = @RANLIB@
+RRDTOOL = @RRDTOOL@
+SED = @SED@
+SHELL = @SHELL@
+TAR = @TAR@
+TEXI2DVI = @TEXI2DVI@
+TIME = @TIME@
+TIMEV = @TIMEV@
 VERSION = @VERSION@
-db_cv_path_ar = @db_cv_path_ar@
-db_cv_path_chmod = @db_cv_path_chmod@
-db_cv_path_cmp = @db_cv_path_cmp@
-db_cv_path_cp = @db_cv_path_cp@
-db_cv_path_diff = @db_cv_path_diff@
-db_cv_path_grep = @db_cv_path_grep@
-db_cv_path_kill = @db_cv_path_kill@
-db_cv_path_ln = @db_cv_path_ln@
-db_cv_path_mkdir = @db_cv_path_mkdir@
-db_cv_path_mv = @db_cv_path_mv@
-db_cv_path_perl5 = @db_cv_path_perl5@
-db_cv_path_ranlib = @db_cv_path_ranlib@
-db_cv_path_rm = @db_cv_path_rm@
-db_cv_path_sed = @db_cv_path_sed@
-db_cv_path_sh = @db_cv_path_sh@
-db_cv_path_sleep = @db_cv_path_sleep@
-db_cv_path_sort = @db_cv_path_sort@
-db_cv_path_strip = @db_cv_path_strip@
-db_cv_path_tr = @db_cv_path_tr@
+db_align_t_decl = @db_align_t_decl@
+db_alignp_t_decl = @db_alignp_t_decl@
 int16_decl = @int16_decl@
 int32_decl = @int32_decl@
 ssize_t_decl = @ssize_t_decl@
@@ -106,58 +126,59 @@ u_int_decl = @u_int_decl@
 u_long_decl = @u_long_decl@
 u_short_decl = @u_short_decl@
 
-INCLUDES = -I$(top_srcdir)/../htlib
+INCLUDES = -I$(top_srcdir)/mifluz 		-I$(top_builddir)/db 		-I$(top_srcdir)/db 		-I$(top_srcdir)/clib 		-I$(top_srcdir) 		-DNOSTREAM 		$(LOCAL_DEFINES) $(PROFILING)
+
+
+MIFLUZLIBS = $(top_builddir)/mifluz/libmifluz.la
 
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = db_config.h.in db.h.in 	68K.gcc alpha.gcc sparc.gcc x86.gcc 	hash.src log.src qam.src txn.src prefix-symbols.sh 	LICENSE
+EXTRA_DIST = db.h.in 	68K.gcc alpha.gcc sparc.gcc x86.gcc 	hash.src log.src qam.src txn.src prefix-symbols.sh 	LICENSE
 
 
-pkglib_LTLIBRARIES = libhtdb.la
+noinst_LTLIBRARIES = libdb.la
 
-libhtdb_la_SOURCES =  	bt_compare.c 	bt_conv.c 	bt_curadj.c 	bt_cursor.c 	bt_delete.c 	bt_method.c 	bt_open.c 	bt_put.c 	bt_rec.c 	bt_reclaim.c 	bt_recno.c 	bt_rsearch.c 	bt_search.c 	bt_split.c 	bt_stat.c 	bt_upgrade.c 	btree_auto.c 	crdel_auto.c 	crdel_rec.c 	db.c 	db_am.c 	db_auto.c 	db_byteorder.c 	db_conv.c 	db_dispatch.c 	db_dup.c 	db_err.c 	db_getlong.c 	db_iface.c 	db_join.c 	db_log2.c 	db_meta.c 	db_method.c 	db_overflow.c 	db_pr.c 	db_rec.c 	db_reclaim.c 	db_ret.c 	db_salloc.c 	db_shash.c 	db_upgrade.c 	env_method.c 	env_open.c 	env_recover.c 	env_region.c 	hash.c 	hash_auto.c 	hash_conv.c 	hash_dup.c 	hash_func.c 	hash_meta.c 	hash_method.c 	hash_page.c 	hash_rec.c 	hash_reclaim.c 	hash_stat.c 	hash_upgrade.c 	lock.c 	lock_conflict.c 	lock_deadlock.c 	lock_region.c 	lock_util.c 	log.c 	log_archive.c 	log_auto.c 	log_compare.c 	log_findckp.c 	log_get.c 	log_method.c 	log_put.c 	log_rec.c 	log_register.c 	mp_alloc.c 	mp_bh.c 	mp_cmpr.c 	mp_fget.c 	mp_fopen.c 	mp_fput.c 	mp_fset.c 	mp_method.c 	mp_region.c 	mp_register.c 	mp_stat.c 	mp_sync.c 	mp_trickle.c 	mut_fcntl.c 	mut_pthread.c 	mut_tas.c 	mutex.c 	os_abs.c 	os_alloc.c 	os_dir.c 	os_errno.c 	os_fid.c 	os_finit.c 	os_fsync.c 	os_handle.c 	os_map.c 	os_method.c 	os_oflags.c 	os_open.c 	os_region.c 	os_rename.c 	os_root.c 	os_rpath.c 	os_rw.c 	os_seek.c 	os_sleep.c 	os_spin.c 	os_stat.c 	os_tmpdir.c 	os_unlink.c 	qam.c 	qam_auto.c 	qam_conv.c 	qam_method.c 	qam_open.c 	qam_rec.c 	qam_stat.c 	txn.c 	txn_auto.c 	txn_rec.c 	txn_region.c 	xa.c 	xa_db.c 	xa_map.c
+libdb_la_SOURCES =  	bt_compare.c 	bt_conv.c 	bt_curadj.c 	bt_cursor.c 	bt_delete.c 	bt_method.c 	bt_open.c 	bt_put.c 	bt_rec.c 	bt_reclaim.c 	bt_recno.c 	bt_rsearch.c 	bt_search.c 	bt_split.c 	bt_stat.c 	bt_upgrade.c 	bt_verify.c 	btree_auto.c 	crdel_auto.c 	crdel_rec.c 	db.c 	db_am.c 	db_auto.c 	db_byteorder.c 	db_cam.c 	db_conv.c 	db_dispatch.c 	db_dup.c 	db_err.c 	db_getlong.c 	db_iface.c 	db_join.c 	db_log2.c 	db_meta.c 	db_method.c 	db_overflow.c 	db_pr.c 	db_rec.c 	db_reclaim.c 	db_ret.c 	db_salloc.c 	db_shash.c 	db_upg.c 	db_upg_opd.c 	db_vrfy.c 	db_vrfyutil.c 	env_method.c 	env_open.c 	env_recover.c 	env_region.c 	hash.c 	hash_auto.c 	hash_conv.c 	hash_dup.c 	hash_func.c 	hash_meta.c 	hash_method.c 	hash_page.c 	hash_rec.c 	hash_reclaim.c 	hash_stat.c 	hash_upgrade.c 	hash_verify.c 	lock.c 	lock_conflict.c 	lock_deadlock.c 	lock_region.c 	lock_util.c 	log.c 	log_archive.c 	log_auto.c 	log_compare.c 	log_findckp.c 	log_get.c 	log_method.c 	log_put.c 	log_rec.c 	log_register.c 	mp_alloc.c 	mp_bh.c 	mp_cmpr.c 	mp_fget.c 	mp_fopen.c 	mp_fput.c 	mp_fset.c 	mp_method.c 	mp_region.c 	mp_register.c 	mp_stat.c 	mp_sync.c 	mp_trickle.c 	mut_fcntl.c 	mut_pthread.c 	mut_tas.c 	mutex.c 	os_abs.c 	os_alloc.c 	os_dir.c 	os_errno.c 	os_fid.c 	os_finit.c 	os_fsync.c 	os_handle.c 	os_map.c 	os_method.c 	os_oflags.c 	os_open.c 	os_region.c 	os_rename.c 	os_root.c 	os_rpath.c 	os_rw.c 	os_seek.c 	os_sleep.c 	os_spin.c 	os_stat.c 	os_tmpdir.c 	os_unlink.c 	qam.c 	qam_auto.c 	qam_conv.c 	qam_method.c 	qam_open.c 	qam_rec.c 	qam_stat.c 	qam_upgrade.c 	qam_verify.c 	txn.c 	txn_auto.c 	txn_rec.c 	txn_region.c 	xa.c 	xa_db.c 	xa_map.c
 
 
-libhtdb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
+pkginclude_HEADERS =  	btree.h 	btree_auto.h 	btree_ext.h 	common_ext.h 	crdel_auto.h 	db.h 	db_am.h 	db_auto.h 	db_dispatch.h 	db_ext.h 	db_int.h 	db_join.h 	db_page.h 	db_shash.h 	db_swap.h 	db_upgrade.h 	db_verify.h 	debug.h 	env_ext.h 	hash.h 	hash_auto.h 	hash_ext.h 	lock.h 	lock_ext.h 	log.h 	log_auto.h 	log_ext.h 	mp.h 	mp_ext.h 	mutex.h 	mutex_ext.h 	os.h 	os_ext.h 	os_jump.h 	qam.h 	qam_auto.h 	qam_ext.h 	queue.h 	region.h 	shqueue.h 	txn.h 	txn_auto.h 	txn_ext.h 	xa.h 	xa_ext.h
 
-pkginclude_HEADERS =  	btree.h 	btree_auto.h 	btree_ext.h 	common_ext.h 	crdel_auto.h 	db.h 	db_am.h 	db_auto.h 	db_config.h 	db_dispatch.h 	db_ext.h 	db_int.h 	db_join.h 	db_page.h 	db_shash.h 	db_swap.h 	debug.h 	env_ext.h 	hash.h 	hash_auto.h 	hash_ext.h 	lock.h 	lock_ext.h 	log.h 	log_auto.h 	log_ext.h 	mp.h 	mp_ext.h 	mutex.h 	mutex_ext.h 	os.h 	os_ext.h 	os_jump.h 	qam.h 	qam_auto.h 	qam_ext.h 	queue.h 	region.h 	shqueue.h 	txn.h 	txn_auto.h 	txn_ext.h 	xa.h 	xa_ext.h
-
-ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-mkinstalldirs = $(SHELL) $(top_srcdir)/../mkinstalldirs
-CONFIG_HEADER = db_config.h
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES =  db.h
-LTLIBRARIES =  $(pkglib_LTLIBRARIES)
+LTLIBRARIES =  $(noinst_LTLIBRARIES)
 
 
-DEFS = @DEFS@ -I. -I$(srcdir) -I.
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
-LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libhtdb_la_LIBADD = 
-libhtdb_la_OBJECTS =  bt_compare.lo bt_conv.lo bt_curadj.lo bt_cursor.lo \
+libdb_la_LDFLAGS = 
+libdb_la_LIBADD = 
+libdb_la_OBJECTS =  bt_compare.lo bt_conv.lo bt_curadj.lo bt_cursor.lo \
 bt_delete.lo bt_method.lo bt_open.lo bt_put.lo bt_rec.lo bt_reclaim.lo \
 bt_recno.lo bt_rsearch.lo bt_search.lo bt_split.lo bt_stat.lo \
-bt_upgrade.lo btree_auto.lo crdel_auto.lo crdel_rec.lo db.lo db_am.lo \
-db_auto.lo db_byteorder.lo db_conv.lo db_dispatch.lo db_dup.lo \
-db_err.lo db_getlong.lo db_iface.lo db_join.lo db_log2.lo db_meta.lo \
-db_method.lo db_overflow.lo db_pr.lo db_rec.lo db_reclaim.lo db_ret.lo \
-db_salloc.lo db_shash.lo db_upgrade.lo env_method.lo env_open.lo \
+bt_upgrade.lo bt_verify.lo btree_auto.lo crdel_auto.lo crdel_rec.lo \
+db.lo db_am.lo db_auto.lo db_byteorder.lo db_cam.lo db_conv.lo \
+db_dispatch.lo db_dup.lo db_err.lo db_getlong.lo db_iface.lo db_join.lo \
+db_log2.lo db_meta.lo db_method.lo db_overflow.lo db_pr.lo db_rec.lo \
+db_reclaim.lo db_ret.lo db_salloc.lo db_shash.lo db_upg.lo \
+db_upg_opd.lo db_vrfy.lo db_vrfyutil.lo env_method.lo env_open.lo \
 env_recover.lo env_region.lo hash.lo hash_auto.lo hash_conv.lo \
 hash_dup.lo hash_func.lo hash_meta.lo hash_method.lo hash_page.lo \
-hash_rec.lo hash_reclaim.lo hash_stat.lo hash_upgrade.lo lock.lo \
-lock_conflict.lo lock_deadlock.lo lock_region.lo lock_util.lo log.lo \
-log_archive.lo log_auto.lo log_compare.lo log_findckp.lo log_get.lo \
-log_method.lo log_put.lo log_rec.lo log_register.lo mp_alloc.lo \
-mp_bh.lo mp_cmpr.lo mp_fget.lo mp_fopen.lo mp_fput.lo mp_fset.lo \
-mp_method.lo mp_region.lo mp_register.lo mp_stat.lo mp_sync.lo \
-mp_trickle.lo mut_fcntl.lo mut_pthread.lo mut_tas.lo mutex.lo os_abs.lo \
-os_alloc.lo os_dir.lo os_errno.lo os_fid.lo os_finit.lo os_fsync.lo \
-os_handle.lo os_map.lo os_method.lo os_oflags.lo os_open.lo \
-os_region.lo os_rename.lo os_root.lo os_rpath.lo os_rw.lo os_seek.lo \
-os_sleep.lo os_spin.lo os_stat.lo os_tmpdir.lo os_unlink.lo qam.lo \
-qam_auto.lo qam_conv.lo qam_method.lo qam_open.lo qam_rec.lo \
-qam_stat.lo txn.lo txn_auto.lo txn_rec.lo txn_region.lo xa.lo xa_db.lo \
-xa_map.lo
+hash_rec.lo hash_reclaim.lo hash_stat.lo hash_upgrade.lo hash_verify.lo \
+lock.lo lock_conflict.lo lock_deadlock.lo lock_region.lo lock_util.lo \
+log.lo log_archive.lo log_auto.lo log_compare.lo log_findckp.lo \
+log_get.lo log_method.lo log_put.lo log_rec.lo log_register.lo \
+mp_alloc.lo mp_bh.lo mp_cmpr.lo mp_fget.lo mp_fopen.lo mp_fput.lo \
+mp_fset.lo mp_method.lo mp_region.lo mp_register.lo mp_stat.lo \
+mp_sync.lo mp_trickle.lo mut_fcntl.lo mut_pthread.lo mut_tas.lo \
+mutex.lo os_abs.lo os_alloc.lo os_dir.lo os_errno.lo os_fid.lo \
+os_finit.lo os_fsync.lo os_handle.lo os_map.lo os_method.lo \
+os_oflags.lo os_open.lo os_region.lo os_rename.lo os_root.lo \
+os_rpath.lo os_rw.lo os_seek.lo os_sleep.lo os_spin.lo os_stat.lo \
+os_tmpdir.lo os_unlink.lo qam.lo qam_auto.lo qam_conv.lo qam_method.lo \
+qam_open.lo qam_rec.lo qam_stat.lo qam_upgrade.lo qam_verify.lo txn.lo \
+txn_auto.lo txn_rec.lo txn_region.lo xa.lo xa_db.lo xa_map.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -165,39 +186,37 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(pkginclude_HEADERS)
 
-DIST_COMMON =  README ./stamp-h.in Makefile.am Makefile.in acconfig.h \
-acinclude.m4 aclocal.m4 configure configure.in db.h.in db_config.h.in \
-mkinstalldirs
+DIST_COMMON =  README Makefile.am Makefile.in db.h.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/bt_compare.P .deps/bt_conv.P .deps/bt_curadj.P \
 .deps/bt_cursor.P .deps/bt_delete.P .deps/bt_method.P .deps/bt_open.P \
 .deps/bt_put.P .deps/bt_rec.P .deps/bt_reclaim.P .deps/bt_recno.P \
 .deps/bt_rsearch.P .deps/bt_search.P .deps/bt_split.P .deps/bt_stat.P \
-.deps/bt_upgrade.P .deps/btree_auto.P .deps/crdel_auto.P \
-.deps/crdel_rec.P .deps/db.P .deps/db_am.P .deps/db_auto.P \
-.deps/db_byteorder.P .deps/db_conv.P .deps/db_dispatch.P .deps/db_dup.P \
-.deps/db_err.P .deps/db_getlong.P .deps/db_iface.P .deps/db_join.P \
-.deps/db_log2.P .deps/db_meta.P .deps/db_method.P .deps/db_overflow.P \
-.deps/db_pr.P .deps/db_rec.P .deps/db_reclaim.P .deps/db_ret.P \
-.deps/db_salloc.P .deps/db_shash.P .deps/db_upgrade.P \
+.deps/bt_upgrade.P .deps/bt_verify.P .deps/btree_auto.P \
+.deps/crdel_auto.P .deps/crdel_rec.P .deps/db.P .deps/db_am.P \
+.deps/db_auto.P .deps/db_byteorder.P .deps/db_cam.P .deps/db_conv.P \
+.deps/db_dispatch.P .deps/db_dup.P .deps/db_err.P .deps/db_getlong.P \
+.deps/db_iface.P .deps/db_join.P .deps/db_log2.P .deps/db_meta.P \
+.deps/db_method.P .deps/db_overflow.P .deps/db_pr.P .deps/db_rec.P \
+.deps/db_reclaim.P .deps/db_ret.P .deps/db_salloc.P .deps/db_shash.P \
+.deps/db_upg.P .deps/db_upg_opd.P .deps/db_vrfy.P .deps/db_vrfyutil.P \
 .deps/env_method.P .deps/env_open.P .deps/env_recover.P \
 .deps/env_region.P .deps/hash.P .deps/hash_auto.P .deps/hash_conv.P \
 .deps/hash_dup.P .deps/hash_func.P .deps/hash_meta.P \
 .deps/hash_method.P .deps/hash_page.P .deps/hash_rec.P \
 .deps/hash_reclaim.P .deps/hash_stat.P .deps/hash_upgrade.P \
-.deps/lock.P .deps/lock_conflict.P .deps/lock_deadlock.P \
-.deps/lock_region.P .deps/lock_util.P .deps/log.P .deps/log_archive.P \
-.deps/log_auto.P .deps/log_compare.P .deps/log_findckp.P \
-.deps/log_get.P .deps/log_method.P .deps/log_put.P .deps/log_rec.P \
-.deps/log_register.P .deps/mp_alloc.P .deps/mp_bh.P .deps/mp_cmpr.P \
-.deps/mp_fget.P .deps/mp_fopen.P .deps/mp_fput.P .deps/mp_fset.P \
-.deps/mp_method.P .deps/mp_region.P .deps/mp_register.P .deps/mp_stat.P \
-.deps/mp_sync.P .deps/mp_trickle.P .deps/mut_fcntl.P \
+.deps/hash_verify.P .deps/lock.P .deps/lock_conflict.P \
+.deps/lock_deadlock.P .deps/lock_region.P .deps/lock_util.P .deps/log.P \
+.deps/log_archive.P .deps/log_auto.P .deps/log_compare.P \
+.deps/log_findckp.P .deps/log_get.P .deps/log_method.P .deps/log_put.P \
+.deps/log_rec.P .deps/log_register.P .deps/mp_alloc.P .deps/mp_bh.P \
+.deps/mp_cmpr.P .deps/mp_fget.P .deps/mp_fopen.P .deps/mp_fput.P \
+.deps/mp_fset.P .deps/mp_method.P .deps/mp_region.P .deps/mp_register.P \
+.deps/mp_stat.P .deps/mp_sync.P .deps/mp_trickle.P .deps/mut_fcntl.P \
 .deps/mut_pthread.P .deps/mut_tas.P .deps/mutex.P .deps/os_abs.P \
 .deps/os_alloc.P .deps/os_dir.P .deps/os_errno.P .deps/os_fid.P \
 .deps/os_finit.P .deps/os_fsync.P .deps/os_handle.P .deps/os_map.P \
@@ -206,83 +225,33 @@ DEP_FILES =  .deps/bt_compare.P .deps/bt_conv.P .deps/bt_curadj.P \
 .deps/os_seek.P .deps/os_sleep.P .deps/os_spin.P .deps/os_stat.P \
 .deps/os_tmpdir.P .deps/os_unlink.P .deps/qam.P .deps/qam_auto.P \
 .deps/qam_conv.P .deps/qam_method.P .deps/qam_open.P .deps/qam_rec.P \
-.deps/qam_stat.P .deps/txn.P .deps/txn_auto.P .deps/txn_rec.P \
-.deps/txn_region.P .deps/xa.P .deps/xa_db.P .deps/xa_map.P
-SOURCES = $(libhtdb_la_SOURCES)
-OBJECTS = $(libhtdb_la_OBJECTS)
+.deps/qam_stat.P .deps/qam_upgrade.P .deps/qam_verify.P .deps/txn.P \
+.deps/txn_auto.P .deps/txn_rec.P .deps/txn_region.P .deps/xa.P \
+.deps/xa_db.P .deps/xa_map.P
+SOURCES = $(libdb_la_SOURCES)
+OBJECTS = $(libdb_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .s
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign Makefile
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.config
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign db/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
-	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in  acinclude.m4
-	cd $(srcdir) && $(ACLOCAL)
-
-config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
-	$(SHELL) ./config.status --recheck
-$(srcdir)/configure: @MAINTAINER_MODE_TRUE@$(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
-	cd $(srcdir) && $(AUTOCONF)
-
-db_config.h: stamp-h
-	@if test ! -f $@; then \
-		rm -f stamp-h; \
-		$(MAKE) stamp-h; \
-	else :; fi
-stamp-h: $(srcdir)/db_config.h.in $(top_builddir)/config.status
-	cd $(top_builddir) \
-	  && CONFIG_FILES= CONFIG_HEADERS=db_config.h \
-	     $(SHELL) ./config.status
-	@echo timestamp > stamp-h 2> /dev/null
-$(srcdir)/db_config.h.in: @MAINTAINER_MODE_TRUE@$(srcdir)/stamp-h.in
-	@if test ! -f $@; then \
-		rm -f $(srcdir)/stamp-h.in; \
-		$(MAKE) $(srcdir)/stamp-h.in; \
-	else :; fi
-$(srcdir)/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) acconfig.h
-	cd $(top_srcdir) && $(AUTOHEADER)
-	@echo timestamp > $(srcdir)/stamp-h.in 2> /dev/null
-
-mostlyclean-hdr:
-
-clean-hdr:
-
-distclean-hdr:
-	-rm -f db_config.h
-
-maintainer-clean-hdr:
 db.h: $(top_builddir)/config.status db.h.in
-	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-mostlyclean-pkglibLTLIBRARIES:
+mostlyclean-noinstLTLIBRARIES:
 
-clean-pkglibLTLIBRARIES:
-	-test -z "$(pkglib_LTLIBRARIES)" || rm -f $(pkglib_LTLIBRARIES)
+clean-noinstLTLIBRARIES:
+	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
 
-distclean-pkglibLTLIBRARIES:
+distclean-noinstLTLIBRARIES:
 
-maintainer-clean-pkglibLTLIBRARIES:
-
-install-pkglibLTLIBRARIES: $(pkglib_LTLIBRARIES)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
-	@list='$(pkglib_LTLIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(pkglibdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(pkglibdir)/$$p; \
-	  else :; fi; \
-	done
-
-uninstall-pkglibLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	list='$(pkglib_LTLIBRARIES)'; for p in $$list; do \
-	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(pkglibdir)/$$p; \
-	done
+maintainer-clean-noinstLTLIBRARIES:
 
 .s.o:
 	$(COMPILE) -c $<
@@ -316,8 +285,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libhtdb.la: $(libhtdb_la_OBJECTS) $(libhtdb_la_DEPENDENCIES)
-	$(LINK) -rpath $(pkglibdir) $(libhtdb_la_LDFLAGS) $(libhtdb_la_OBJECTS) $(libhtdb_la_LIBADD) $(LIBS)
+libdb.la: $(libdb_la_OBJECTS) $(libdb_la_DEPENDENCIES)
+	$(LINK)  $(libdb_la_LDFLAGS) $(libdb_la_OBJECTS) $(libdb_la_LIBADD) $(LIBS)
 
 install-pkgincludeHEADERS: $(pkginclude_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -344,15 +313,15 @@ ID: $(HEADERS) $(SOURCES) $(LISP)
 	here=`pwd` && cd $(srcdir) \
 	  && mkid -f$$here/ID $$unique $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES) db_config.h.in $(TAGS_DEPENDENCIES) $(LISP)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
 	list='$(SOURCES) $(HEADERS)'; \
 	unique=`for i in $$list; do echo $$i; done | \
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	test -z "$(ETAGS_ARGS)db_config.h.in$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags db_config.h.in $$unique $(LISP) -o $$here/TAGS)
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -363,49 +332,16 @@ distclean-tags:
 
 maintainer-clean-tags:
 
-distdir = $(PACKAGE)-$(VERSION)
-top_distdir = $(distdir)
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-# This target untars the dist file and tries a VPATH configuration.  Then
-# it guarantees that the distribution is self-contained by making another
-# tarfile.
-distcheck: dist
-	-rm -rf $(distdir)
-	GZIP=$(GZIP_ENV) $(TAR) zxf $(distdir).tar.gz
-	mkdir $(distdir)/=build
-	mkdir $(distdir)/=inst
-	dc_install_base=`cd $(distdir)/=inst && pwd`; \
-	cd $(distdir)/=build \
-	  && ../configure --srcdir=.. --prefix=$$dc_install_base \
-	  && $(MAKE) $(AM_MAKEFLAGS) \
-	  && $(MAKE) $(AM_MAKEFLAGS) dvi \
-	  && $(MAKE) $(AM_MAKEFLAGS) check \
-	  && $(MAKE) $(AM_MAKEFLAGS) install \
-	  && $(MAKE) $(AM_MAKEFLAGS) installcheck \
-	  && $(MAKE) $(AM_MAKEFLAGS) dist
-	-rm -rf $(distdir)
-	@banner="$(distdir).tar.gz is ready for distribution"; \
-	dashes=`echo "$$banner" | sed s/./=/g`; \
-	echo "$$dashes"; \
-	echo "$$banner"; \
-	echo "$$dashes"
-dist: distdir
-	-chmod -R a+r $(distdir)
-	GZIP=$(GZIP_ENV) $(TAR) chozf $(distdir).tar.gz $(distdir)
-	-rm -rf $(distdir)
-dist-all: distdir
-	-chmod -R a+r $(distdir)
-	GZIP=$(GZIP_ENV) $(TAR) chozf $(distdir).tar.gz $(distdir)
-	-rm -rf $(distdir)
+subdir = db
+
 distdir: $(DISTFILES)
-	-rm -rf $(distdir)
-	mkdir $(distdir)
-	-chmod 777 $(distdir)
 	here=`cd $(top_builddir) && pwd`; \
-	top_distdir=`cd $(distdir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign db/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -456,10 +392,7 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-all-recursive-am: db_config.h
-	$(MAKE) $(AM_MAKEFLAGS) all-recursive
-
-install-exec-am: install-pkglibLTLIBRARIES
+install-exec-am:
 install-exec: install-exec-am
 
 install-data-am: install-pkgincludeHEADERS
@@ -468,14 +401,14 @@ install-data: install-data-am
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-pkglibLTLIBRARIES uninstall-pkgincludeHEADERS
+uninstall-am: uninstall-pkgincludeHEADERS
 uninstall: uninstall-am
-all-am: Makefile $(LTLIBRARIES) $(HEADERS) db_config.h
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(pkglibdir) $(DESTDIR)$(pkgincludedir)
+	$(mkinstalldirs)  $(DESTDIR)$(pkgincludedir)
 
 
 mostlyclean-generic:
@@ -487,27 +420,25 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-hdr mostlyclean-pkglibLTLIBRARIES \
-		mostlyclean-compile mostlyclean-libtool \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+mostlyclean-am:  mostlyclean-noinstLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
+		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-hdr clean-pkglibLTLIBRARIES clean-compile clean-libtool \
+clean-am:  clean-noinstLTLIBRARIES clean-compile clean-libtool \
 		clean-tags clean-depend clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-hdr distclean-pkglibLTLIBRARIES \
-		distclean-compile distclean-libtool distclean-tags \
-		distclean-depend distclean-generic clean-am
+distclean-am:  distclean-noinstLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-tags distclean-depend \
+		distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
-	-rm -f config.status
 
-maintainer-clean-am:  maintainer-clean-hdr \
-		maintainer-clean-pkglibLTLIBRARIES \
+maintainer-clean-am:  maintainer-clean-noinstLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-depend \
 		maintainer-clean-generic distclean-am
@@ -515,24 +446,38 @@ maintainer-clean-am:  maintainer-clean-hdr \
 	@echo "it deletes files that may require special tools to rebuild."
 
 maintainer-clean: maintainer-clean-am
-	-rm -f config.status
 
-.PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
-mostlyclean-pkglibLTLIBRARIES distclean-pkglibLTLIBRARIES \
-clean-pkglibLTLIBRARIES maintainer-clean-pkglibLTLIBRARIES \
-uninstall-pkglibLTLIBRARIES install-pkglibLTLIBRARIES \
+.PHONY: mostlyclean-noinstLTLIBRARIES distclean-noinstLTLIBRARIES \
+clean-noinstLTLIBRARIES maintainer-clean-noinstLTLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool uninstall-pkgincludeHEADERS \
 install-pkgincludeHEADERS tags mostlyclean-tags distclean-tags \
 clean-tags maintainer-clean-tags distdir mostlyclean-depend \
 distclean-depend clean-depend maintainer-clean-depend info-am info \
-dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \
-install-exec-am install-exec install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all installdirs \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+diff:
+	rm -fr 1.tmp ; mkdir 1.tmp
+	cp db.h.in *.[ch] 1.tmp
+	cd 1.tmp ; \
+	perl -pi -e 's/CDB_//g' *.[ch] ; \
+	for i in *.[ch] *.in ; do diff -c ../../../db-3.1.14/*/$$i $$i ; done ; \
+	diff -c db.h.in ../../../db-3.1.14/include/db.src
+
+polution:
+	nm .libs/libdb.al | perl -n -e 'print if(!/^$$/ && !/ [Urtdb] / && !/CDB_/)'
+
+polutionquiet:
+	nm .libs/libdb.al | perl -n -e 'print if(!/\.lo:/ && !/^$$/ && !/ [Urtdb] / && !/CDB_/)'
+
+substitutions:
+	nm .libs/libdb.al | perl -n -e 'chop; if(!/CDB_/ && s/\w+ [TDRC] //) { print "s/\\b$$_\\b/CDB_$$_/g;\n"; } '
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -9,11 +9,11 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: dbbench.cc,v 1.7.2.5 2000/05/09 14:28:30 loic Exp $
+// $Id: dbbench.cc,v 1.7.2.6 2000/09/14 03:13:28 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
-#include <htconfig.h>
+#include <config.h>
 #endif /* HAVE_CONFIG_H */
 
 #ifdef HAVE_UNISTD_H
@@ -50,6 +50,7 @@ char *alloca ();
 #include <htString.h>
 #include <WordList.h>
 #include <WordContext.h>
+#include <WordListOne.h>
 #include <db.h>
 
 #include"HtTime.h"
@@ -81,26 +82,7 @@ public:
     int count;
     int monitor;
     int random;
-    void show()
-    {
-	printf("wordsfile:: %s\n", wordsfile);
-	printf("dbfile:: %s\n", dbfile);
-	printf("find:: %s\n", find);
-	printf("nwords:: %d\n", nwords);
-	printf("loop:: %d\n", loop);
-	printf("page_size:: %d\n", page_size);
-	printf("cache_size:: %d\n", cache_size);
-	printf("multiply_keys:: %d\n", multiply_keys);
-	printf("wordlist:: %d\n", wordlist);
-	printf("compress:: %d\n", compress);
-	printf("pool:: %d\n", pool);
-	printf("compress_test:: %d\n", compress_test);
-	printf("npage:: %d\n", npage);
-	printf("uncompress:: %d\n", uncompress);
-	printf("remove:: %d\n", remove);
-	printf("count:: %d\n", count);
-	printf("monitor:: %d\n", monitor);
-   }
+    String lock;
 };
 
 /*
@@ -128,8 +110,10 @@ public:
   virtual void fill_one(String& line, int count) = 0;
   virtual void find() = 0;
   virtual void remove() = 0;
+  virtual void lock() = 0;
 
 protected:
+  WordContext* context;
   params_t* params;
 };
 
@@ -144,6 +128,8 @@ void Dbase::dobench()
     find();
   } else if(params->remove) {
     remove();
+  } else if(!params->lock.empty()) {
+    lock();
   } else {
     fill();
   }
@@ -199,7 +185,10 @@ void Dbase::fill() {
 class Dsimple : public Dbase {
 public:
   Dsimple(params_t* nparams) : Dbase(nparams) { pad = 0; }
-  virtual ~Dsimple() { if(pad) free(pad); }
+  virtual ~Dsimple() {
+    if(pad) free(pad);
+    delete context;
+  }
 
   virtual void dbinit();
   void dbinit_env();
@@ -209,6 +198,7 @@ public:
   virtual void fill_one(String& line, int count);
   virtual void find();
   virtual void remove();
+  virtual void lock() { }
 
   void dbput(const String& key, const String& data);
 
@@ -269,11 +259,13 @@ void Dsimple::dbinit_env()
 {
   char *progname = "dbbench problem...";
 
-  Configuration* config = WordContext::Initialize();
-  config->Add("wordlist_env_skip", "true");
+  context = new WordContext();
+  Configuration &config = context->GetConfiguration();
+
+  config.Add("wordlist_env_skip", "true");
   if(params->monitor)
-    config->Add("wordlist_monitor", "true");
-  WordContext::Initialize(*config);
+    config.Add("wordlist_monitor", "true");
+  context->ReInitialize();
   //
   // Make sure the size of a record used with raw Berkeley DB is equal to the
   // size of a record used with Word classes.
@@ -283,7 +275,7 @@ void Dsimple::dbinit_env()
     //
     // Dsimple uses an int (unique count) and short (docid) in addition to the word
     //
-    int pad_length = WordKeyInfo::Instance()->num_length - sizeof(unsigned short) - sizeof(int);
+    int pad_length = context->GetKeyInfo().nfields + 2;
     if(pad_length > 0) {
       if(pad_length > (int)(strlen(pad) - 1)) {
 	fprintf(stderr, "Not enough padding\n");
@@ -309,7 +301,7 @@ void Dsimple::dbinit_env()
   if(!params->pool)
     flags |= DB_PRIVATE;
 
-  dbenv->open(dbenv, NULL, NULL, flags, 0666);
+  dbenv->open(dbenv, NULL, flags, 0666);
 }
 
 /*
@@ -343,7 +335,6 @@ void Dsimple::dbfinish()
 {
   (void)db->close(db, 0);
   (void)dbenv->close(dbenv, 0);
-  WordContext::Finish();
 }
 
 /*
@@ -481,6 +472,9 @@ void Dsimple::dbput(const String& key, const String& data)
 class Dwordlist : public Dbase {
 public:
   Dwordlist(params_t* nparams) : Dbase(nparams) {}
+  virtual ~Dwordlist() {
+    delete context;
+  }
 
   virtual void dbinit();
   virtual void dbfinish();
@@ -488,6 +482,7 @@ public:
   virtual void fill_one(String& line, int count);
   virtual void find();
   virtual void remove();
+  virtual void lock();
 
   void dbput(const String& key, const String& data);
 
@@ -495,46 +490,43 @@ protected:
   WordList* words;
 };
 
-static Configuration*	config = 0;
-
 /*
  * Init and Open the database
  */
 void Dwordlist::dbinit()
 {
-    if(verbose) {
+    if(verbose)
       fprintf(stderr, "Dwordlist::dbinit\n");
-      params->show();
-    }
 
-    config = WordContext::Initialize();
+    context = new WordContext();
+    Configuration& config = context->GetConfiguration();
+
     if(params->cache_size > 500 * 1024) {
       String str;
       str << params->cache_size;
-      config->Add("wordlist_cache_size", str);
+      config.Add("wordlist_cache_size", str);
       if(verbose)
 	fprintf(stderr, "setting cache size to: %s\n", (char*)str);
     }
     if(params->page_size) {
       String str;
       str << params->page_size;
-      config->Add("wordlist_page_size", str);
+      config.Add("wordlist_page_size", str);
       if(verbose)
 	fprintf(stderr, "setting page size to: %s\n", (char*)str);
     }
     if(params->compress)
-	config->Add("wordlist_compress", "true");
+	config.Add("wordlist_compress", "true");
     if(params->monitor)
-      config->Add("wordlist_monitor", "true");
+      config.Add("wordlist_monitor", "true");
 
-    WordContext::Initialize(*config);
+    context->ReInitialize();
 
-    words = new WordList(*config);
-
-    if(verbose) WordKeyInfo::Instance()->Show();
+    words = context->List();
 
     if(words->Open(params->dbfile, (params->find ? O_RDONLY : O_RDWR)) != OK)
       exit(1);
+    if(!params->find) words->BatchStart();
 }
 
 /*
@@ -543,7 +535,6 @@ void Dwordlist::dbinit()
 void Dwordlist::dbfinish()
 {
   delete words;
-  WordContext::Finish();
 }
 
 /*
@@ -551,22 +542,36 @@ void Dwordlist::dbfinish()
  */
 void Dwordlist::fill_one(String& line, int count)
 {
-    WordReference wordRef;
+    WordReference wordRef(context);
     WordKey& key = wordRef.Key();
 
     if(params->random) count = RAND();
-    key.SetWord(line);
-    key.Set(WORD_FIRSTFIELD, count >> 16);
-    key.Set(WORD_FIRSTFIELD + 1, 0);
-    key.Set(WORD_FIRSTFIELD + 2, count & 0xffff);
+    wordRef.SetWord(line);
+    unsigned int wordid;
+    words->Dict()->Serial(line, wordid);
+    key.Set(WORD_KEY_WORD, wordid);
+    key.Set(1, count >> 16);
+    key.Set(2, 0);
+    key.Set(3, count & 0xffff);
 
     words->Override(wordRef);
+
+    if(verbose && (count % 100000 == 0)) fprintf(stderr, "inserted %d\n", count);
 }
 
-static int
-wordlist_walk_callback_file_out(WordList *, WordDBCursor&, const WordReference *word, Object &)
+class FindOutData : public Object
 {
-  printf("%s\n", (char*)word->Get());
+public:
+  String word;
+  FindOutData(const String& nword) : word(nword) { }
+};
+
+static int
+wordlist_walk_callback_file_out(WordList *, WordDBCursor&, const WordReference *wordRef, Object &ndata)
+{
+  FindOutData& data = (FindOutData&)ndata;
+  ((WordReference*)wordRef)->SetWord(data.word);
+  printf("%s\n", (char*)wordRef->Get());
   return OK;
 }
 
@@ -576,14 +581,18 @@ wordlist_walk_callback_file_out(WordList *, WordDBCursor&, const WordReference *
 void Dwordlist::find()
 {
   if(strlen(params->find) > 0) {
-    Object data;
-    WordKey key;
-    key.SetWord(params->find);
-    WordCursor *cursor = words->Cursor(key,
-				       wordlist_walk_callback_file_out,
-				       &data);
-    cursor->Walk();
-    delete cursor;
+    FindOutData data(params->find);
+    WordKey key(context);
+    unsigned int wordid;
+    words->Dict()->SerialExists(params->find, wordid);
+    if(wordid != WORD_DICT_SERIAL_INVALID) {
+      key.Set(WORD_KEY_WORD, wordid);
+      WordCursor *cursor = words->Cursor(key,
+					 wordlist_walk_callback_file_out,
+					 &data);
+      cursor->Walk();
+      delete cursor;
+    }
   } else {
     words->Write(stdout);
   }
@@ -594,6 +603,17 @@ void Dwordlist::find()
  */
 void Dwordlist::remove()
 {
+}
+
+/*
+ * Acquire a lock and pause
+ */
+void Dwordlist::lock()
+{
+  WordLock* lock = 0;
+  words->Meta()->Lock(params->lock, lock);
+  if(verbose) fprintf(stderr, "got lock %s, pausing\n", (char*)params->lock);
+  pause();
 }
 
 #ifdef HAVE_LIBZ
@@ -628,7 +648,7 @@ int main(int ac, char **av)
   params.monitor = 0;
   params.random = 0;
 
-  while ((c = getopt(ac, av, "vB:T:C:S:MZf:l:w:k:n:zWp:ur:c:mR")) != -1)
+  while ((c = getopt(ac, av, "vB:T:C:S:MZf:l:w:k:n:zWp:ur:c:mRL:")) != -1)
     {
       switch (c)
 	{
@@ -699,6 +719,9 @@ int main(int ac, char **av)
 	case 'R':
 	  params.random = 1;
 	  break;
+	case 'L':
+	  params.lock = optarg;
+	  break;
 	case '?':
 	  usage();
 	  break;
@@ -753,6 +776,8 @@ static void usage()
     printf("\t-m\t\tMonitor Word classes activity\n");
     printf("\n");
     printf("\t-r n\t\tRemove <n> first entries.\n");
+    printf("\n");
+    printf("\t-L <name>n\t\tAcquire lock <name> and pause().\n");
     printf("\n");
     printf("\t-Z\t\tcompress blocks of existing dbfile.\n");
     printf("\t-p n\t\ttest compress on first <n> pages (default all pages).\n");

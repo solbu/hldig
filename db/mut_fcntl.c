@@ -1,16 +1,16 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998, 1999
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "db_config.h"
+#include "config.h"
 
 #ifdef HAVE_MUTEX_FCNTL
 
 #ifndef lint
-static const char sccsid[] = "@(#)mut_fcntl.c	11.1 (Sleepycat) 7/25/99";
+static const char revid[] = "$Id: mut_fcntl.c,v 1.1.2.2 2000/09/14 03:13:22 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,13 +26,13 @@ static const char sccsid[] = "@(#)mut_fcntl.c	11.1 (Sleepycat) 7/25/99";
 #include "db_int.h"
 
 /*
- * CDB___db_fcntl_mutex_init --
+ * __db_fcntl_mutex_init --
  *	Initialize a DB mutex structure.
  *
- * PUBLIC: int CDB___db_fcntl_mutex_init __P((DB_ENV *, MUTEX *, u_int32_t));
+ * PUBLIC: int __db_fcntl_mutex_init __P((DB_ENV *, MUTEX *, u_int32_t));
  */
 int
-CDB___db_fcntl_mutex_init(dbenv, mutexp, offset)
+__db_fcntl_mutex_init(dbenv, mutexp, offset)
 	DB_ENV *dbenv;
 	MUTEX *mutexp;
 	u_int32_t offset;
@@ -54,13 +54,13 @@ CDB___db_fcntl_mutex_init(dbenv, mutexp, offset)
 }
 
 /*
- * CDB___db_fcntl_mutex_lock
+ * __db_fcntl_mutex_lock
  *	Lock on a mutex, blocking if necessary.
  *
- * PUBLIC: int CDB___db_fcntl_mutex_lock __P((MUTEX *, DB_FH *));
+ * PUBLIC: int __db_fcntl_mutex_lock __P((MUTEX *, DB_FH *));
  */
 int
-CDB___db_fcntl_mutex_lock(mutexp, fhp)
+__db_fcntl_mutex_lock(mutexp, fhp)
 	MUTEX *mutexp;
 	DB_FH *fhp;
 {
@@ -82,7 +82,7 @@ CDB___db_fcntl_mutex_lock(mutexp, fhp)
 		 */
 		for (ms = 1; mutexp->pid != 0;) {
 			waited = 1;
-			CDB___os_yield(ms * USEC_PER_MS);
+			CDB___os_yield(NULL, ms * USEC_PER_MS);
 			if ((ms <<= 1) > MS_PER_SEC)
 				ms = MS_PER_SEC;
 		}
@@ -124,13 +124,13 @@ CDB___db_fcntl_mutex_lock(mutexp, fhp)
 }
 
 /*
- * CDB___db_fcntl_mutex_unlock --
+ * __db_fcntl_mutex_unlock --
  *	Release a lock.
  *
- * PUBLIC: int CDB___db_fcntl_mutex_unlock __P((MUTEX *));
+ * PUBLIC: int __db_fcntl_mutex_unlock __P((MUTEX *));
  */
 int
-CDB___db_fcntl_mutex_unlock(mutexp)
+__db_fcntl_mutex_unlock(mutexp)
 	MUTEX *mutexp;
 {
 	if (!DB_GLOBAL(db_mutexlocks))

@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1999
+ * Copyright (c) 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "db_config.h"
+#include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)bt_method.c	11.8 (Sleepycat) 10/27/99";
+static const char revid[] = "$Id: bt_method.c,v 1.1.2.2 2000/09/14 03:13:16 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -22,14 +22,14 @@ static const char sccsid[] = "@(#)bt_method.c	11.8 (Sleepycat) 10/27/99";
 #include "btree.h"
 #include "qam.h"
 
-static int CDB___bam_set_bt_compare __P((DB *, int (*)(const DBT *, const DBT *)));
-static int CDB___bam_set_bt_maxkey __P((DB *, u_int32_t));
-static int CDB___bam_set_bt_minkey __P((DB *, u_int32_t));
-static int CDB___bam_set_bt_prefix __P((DB *, size_t(*)(const DBT *, const DBT *)));
-static int CDB___ram_set_re_delim __P((DB *, int));
-static int CDB___ram_set_re_len __P((DB *, u_int32_t));
-static int CDB___ram_set_re_pad __P((DB *, int));
-static int CDB___ram_set_re_source __P((DB *, const char *));
+static int __bam_set_bt_compare __P((DB *, int (*)(const DBT *, const DBT *)));
+static int __bam_set_bt_maxkey __P((DB *, u_int32_t));
+static int __bam_set_bt_minkey __P((DB *, u_int32_t));
+static int __bam_set_bt_prefix __P((DB *, size_t(*)(const DBT *, const DBT *)));
+static int __ram_set_re_delim __P((DB *, int));
+static int __ram_set_re_len __P((DB *, u_int32_t));
+static int __ram_set_re_pad __P((DB *, int));
+static int __ram_set_re_source __P((DB *, const char *));
 
 /*
  * CDB___bam_db_create --
@@ -45,7 +45,7 @@ CDB___bam_db_create(dbp)
 	int ret;
 
 	/* Allocate and initialize the private btree structure. */
-	if ((ret = CDB___os_calloc(1, sizeof(BTREE), &t)) != 0)
+	if ((ret = CDB___os_calloc(dbp->dbenv, 1, sizeof(BTREE), &t)) != 0)
 		return (ret);
 	dbp->bt_internal = t;
 
@@ -53,18 +53,18 @@ CDB___bam_db_create(dbp)
 	t->bt_compare = CDB___bam_defcmp;
 	t->bt_prefix = CDB___bam_defpfx;
 
-	dbp->set_bt_compare = CDB___bam_set_bt_compare;
-	dbp->set_bt_maxkey = CDB___bam_set_bt_maxkey;
-	dbp->set_bt_minkey = CDB___bam_set_bt_minkey;
-	dbp->set_bt_prefix = CDB___bam_set_bt_prefix;
+	dbp->set_bt_compare = __bam_set_bt_compare;
+	dbp->set_bt_maxkey = __bam_set_bt_maxkey;
+	dbp->set_bt_minkey = __bam_set_bt_minkey;
+	dbp->set_bt_prefix = __bam_set_bt_prefix;
 
 	t->re_delim = '\n';			/* Recno */
 	t->re_pad = ' ';
 
-	dbp->set_re_delim = CDB___ram_set_re_delim;
-	dbp->set_re_len = CDB___ram_set_re_len;
-	dbp->set_re_pad = CDB___ram_set_re_pad;
-	dbp->set_re_source = CDB___ram_set_re_source;
+	dbp->set_re_delim = __ram_set_re_delim;
+	dbp->set_re_len = __ram_set_re_len;
+	dbp->set_re_pad = __ram_set_re_pad;
+	dbp->set_re_source = __ram_set_re_source;
 
 	return (0);
 }
@@ -128,26 +128,26 @@ CDB___bam_set_flags(dbp, flagsp)
 		if (LF_ISSET(DB_RECNUM | DB_REVSPLITOFF))
 			DB_ILLEGAL_METHOD(dbp, DB_OK_BTREE);
 
-		/*
-		 * DB_DUP and DB_RECNUM are mutually incompatible.  Handle
-		 * the case where one or more flags have already been set.
-		 */
-		if ((LF_ISSET(DB_DUP) || F_ISSET(dbp, DB_AM_DUP)) &&
-		    (LF_ISSET(DB_RECNUM) || F_ISSET(dbp, DB_BT_RECNUM)))
-			return (CDB___db_ferr(dbp->dbenv, "DB->set_flags", 1));
+		if (LF_ISSET(DB_DUP | DB_DUPSORT)) {
+			/* DB_DUP/DB_DUPSORT is incompatible with DB_RECNUM. */
+			if (F_ISSET(dbp, DB_BT_RECNUM))
+				goto incompat;
 
-		if (LF_ISSET(DB_DUP)) {
+			if (LF_ISSET(DB_DUPSORT)) {
+				if (dbp->dup_compare == NULL)
+					dbp->dup_compare = CDB___bam_defcmp;
+				F_SET(dbp, DB_AM_DUPSORT);
+			}
+
 			F_SET(dbp, DB_AM_DUP);
-			LF_CLR(DB_DUP);
-		}
-
-		if (LF_ISSET(DB_DUPSORT)) {
-			if (dbp->dup_compare == NULL)
-				dbp->dup_compare = CDB___bam_defcmp;
-			LF_CLR(DB_DUPSORT);
+			LF_CLR(DB_DUP | DB_DUPSORT);
 		}
 
 		if (LF_ISSET(DB_RECNUM)) {
+			/* DB_RECNUM is incompatible with DB_DUP/DB_DUPSORT. */
+			if (F_ISSET(dbp, DB_AM_DUP))
+				goto incompat;
+
 			F_SET(dbp, DB_BT_RECNUM);
 			LF_CLR(DB_RECNUM);
 		}
@@ -160,14 +160,17 @@ CDB___bam_set_flags(dbp, flagsp)
 		*flagsp = flags;
 	}
 	return (0);
+
+incompat:
+	return (CDB___db_ferr(dbp->dbenv, "DB->set_flags", 1));
 }
 
 /*
- * CDB___bam_set_bt_compare --
+ * __bam_set_bt_compare --
  *	Set the comparison function.
  */
 static int
-CDB___bam_set_bt_compare(dbp, func)
+__bam_set_bt_compare(dbp, func)
 	DB *dbp;
 	int (*func) __P((const DBT *, const DBT *));
 {
@@ -190,11 +193,11 @@ CDB___bam_set_bt_compare(dbp, func)
 }
 
 /*
- * CDB___bam_set_bt_maxkey --
+ * __bam_set_bt_maxkey --
  *	Set the maximum keys per page.
  */
 static int
-CDB___bam_set_bt_maxkey(dbp, bt_maxkey)
+__bam_set_bt_maxkey(dbp, bt_maxkey)
 	DB *dbp;
 	u_int32_t bt_maxkey;
 {
@@ -215,11 +218,11 @@ CDB___bam_set_bt_maxkey(dbp, bt_maxkey)
 }
 
 /*
- * CDB___bam_set_bt_minkey --
+ * __bam_set_bt_minkey --
  *	Set the minimum keys per page.
  */
 static int
-CDB___bam_set_bt_minkey(dbp, bt_minkey)
+__bam_set_bt_minkey(dbp, bt_minkey)
 	DB *dbp;
 	u_int32_t bt_minkey;
 {
@@ -240,11 +243,11 @@ CDB___bam_set_bt_minkey(dbp, bt_minkey)
 }
 
 /*
- * CDB___bam_set_bt_prefix --
+ * __bam_set_bt_prefix --
  *	Set the prefix function.
  */
 static int
-CDB___bam_set_bt_prefix(dbp, func)
+__bam_set_bt_prefix(dbp, func)
 	DB *dbp;
 	size_t (*func) __P((const DBT *, const DBT *));
 {
@@ -294,11 +297,11 @@ CDB___ram_set_flags(dbp, flagsp)
 }
 
 /*
- * CDB___ram_set_re_delim --
+ * __ram_set_re_delim --
  *	Set the variable-length input record delimiter.
  */
 static int
-CDB___ram_set_re_delim(dbp, re_delim)
+__ram_set_re_delim(dbp, re_delim)
 	DB *dbp;
 	int re_delim;
 {
@@ -316,11 +319,11 @@ CDB___ram_set_re_delim(dbp, re_delim)
 }
 
 /*
- * CDB___ram_set_re_len --
+ * __ram_set_re_len --
  *	Set the variable-length input record length.
  */
 static int
-CDB___ram_set_re_len(dbp, re_len)
+__ram_set_re_len(dbp, re_len)
 	DB *dbp;
 	u_int32_t re_len;
 {
@@ -342,11 +345,11 @@ CDB___ram_set_re_len(dbp, re_len)
 }
 
 /*
- * CDB___ram_set_re_pad --
+ * __ram_set_re_pad --
  *	Set the fixed-length record pad character.
  */
 static int
-CDB___ram_set_re_pad(dbp, re_pad)
+__ram_set_re_pad(dbp, re_pad)
 	DB *dbp;
 	int re_pad;
 {
@@ -368,11 +371,11 @@ CDB___ram_set_re_pad(dbp, re_pad)
 }
 
 /*
- * CDB___ram_set_re_source --
+ * __ram_set_re_source --
  *	Set the backing source file name.
  */
 static int
-CDB___ram_set_re_source(dbp, re_source)
+__ram_set_re_source(dbp, re_source)
 	DB *dbp;
 	const char *re_source;
 {
@@ -383,5 +386,5 @@ CDB___ram_set_re_source(dbp, re_source)
 
 	t = dbp->bt_internal;
 
-	return (CDB___os_strdup(re_source, &t->re_source));
+	return (CDB___os_strdup(dbp->dbenv, re_source, &t->re_source));
 }

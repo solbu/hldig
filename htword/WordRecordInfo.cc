@@ -11,41 +11,25 @@
 // WordRecord: data portion of the inverted index database
 //
 #ifdef HAVE_CONFIG_H
-#include "htconfig.h"
+#include "config.h"
 #endif /* HAVE_CONFIG_H */
 
 #include "Configuration.h"
 #include "WordRecordInfo.h"
 
-WordRecordInfo* WordRecordInfo::instance = 0;
-
-//
-// WordRecordInfo implementation
-//
-void 
-WordRecordInfo::Initialize(const Configuration &config)
+WordRecordInfo::WordRecordInfo(const Configuration & config)
 {
-  if(instance != 0)
-    delete instance;
-  instance = new WordRecordInfo(config);
+    default_type = WORD_RECORD_INVALID;
+    const String & recorddesc = config["wordlist_wordrecord_description"];
+    if (!recorddesc.nocase_compare("data")) {
+	default_type = WORD_RECORD_DATA;
+    } else if (!recorddesc.nocase_compare("str")) {
+	default_type = WORD_RECORD_STR;
+    } else if (!recorddesc.nocase_compare("none") || recorddesc.empty()) {
+	default_type = WORD_RECORD_NONE;
+    } else {
+	fprintf(stderr,
+		"WordRecordInfo::WordRecordInfo: invalid wordlist_wordrecord_description: %s\n",
+		(const char *) recorddesc);
+    }
 }
-
-WordRecordInfo::WordRecordInfo(const Configuration& config)
-{
-  default_type = WORD_RECORD_INVALID;
-  const String &recorddesc = config["wordlist_wordrecord_description"];
-  if(!recorddesc.nocase_compare("data")) 
-  {
-      default_type = WORD_RECORD_DATA;
-  } 
-  else 
-  if(!recorddesc.nocase_compare("none") || recorddesc.empty()) 
-  {
-      default_type = WORD_RECORD_NONE;	
-  } 
-  else 
-  {
-    fprintf(stderr, "WordRecordInfo::WordRecordInfo: invalid wordlist_wordrecord_description: %s\n", (const char*)recorddesc);
-  }
-}
-

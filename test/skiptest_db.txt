@@ -1,25 +1,25 @@
-az                <DEF>  5       1       0
-bz                <DEF>  5       0       2
-cz                <DEF>  6       0       3
-et                <DEF>  1       0       50
-et                <DEF>  20      0       10
-et                <DEF>  20      0       20
-et                <DEF>  20      0       40
-et                <DEF>  20      0       50
-et                <DEF>  20      0       60
-et                <DEF>  21      0       10
-et                <DEF>  21      0       20
-et                <DEF>  21      0       30
-et                <DEF>  23      0       56
-et                <DEF>  28      0       10
-eta               <DEF>  1       0       5
-eta               <DEF>  9       0       4
-eta               <DEF>  10      0       3
-eu                <DEF>  2       0       10
-serhysdfh         <DEF>  1       0       11
-serhysdfh         <DEF>  1       0       50
-tata              <DEF>  4       0       6
-tata              <DEF>  8       0       6
-tito              <DEF>  1       0       3
-tz                <DEF>  7       0       4
-uu                <DEF>  6       0       5
+az                5       1       0
+bz                5       0       2
+cz                6       0       3
+et                1       0       50
+et                20      0       10
+et                20      0       20
+et                20      0       40
+et                20      0       50
+et                20      0       60
+et                21      0       10
+et                21      0       20
+et                21      0       30
+et                23      0       56
+et                28      0       10
+eta               1       0       5
+eta               9       0       4
+eta               10      0       3
+eu                2       0       10
+serhysdfh         1       0       11
+serhysdfh         1       0       50
+tata              4       0       6
+tata              8       0       6
+tito              1       0       3
+tz                7       0       4
+uu                6       0       5

@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1999
+ * Copyright (c) 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "db_config.h"
+#include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)qam_conv.c	11.2 (Sleepycat) 11/10/99";
+static const char revid[] = "$Id: qam_conv.c,v 1.1.2.2 2000/09/14 03:13:22 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -53,10 +53,11 @@ CDB___qam_mswap(pg)
  *	stored on disk.
  *  We only need to fix up a few fields in the header
  *
- * PUBLIC: int CDB___qam_pgin_out __P((db_pgno_t, void *, DBT *));
+ * PUBLIC: int CDB___qam_pgin_out __P((DB_ENV *, db_pgno_t, void *, DBT *));
  */
 int
-CDB___qam_pgin_out(pg, pp, cookie)
+CDB___qam_pgin_out(dbenv, pg, pp, cookie)
+	DB_ENV *dbenv;
 	db_pgno_t pg;
 	void *pp;
 	DBT *cookie;
@@ -65,12 +66,13 @@ CDB___qam_pgin_out(pg, pp, cookie)
 	QPAGE *h;
 
 	COMPQUIET(pg, 0);
+	COMPQUIET(dbenv, NULL);
 	pginfo = (DB_PGINFO *)cookie->data;
 	if (!pginfo->needswap)
 		return (0);
 
 	h = pp;
-	if (h->type == P_QAMMETA)
+	if (TYPE(h) == P_QAMMETA)
 	    return (CDB___qam_mswap(pp));
 
 	M_32_SWAP(h->lsn.file);

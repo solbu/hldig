@@ -1,10 +1,10 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998, 1999
+ * Copyright (c) 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)os_jump.h	11.1 (Sleepycat) 7/25/99
+ * $Id: os_jump.h,v 1.1.2.2 2000/09/14 03:13:22 ghutchis Exp $
  */
 
 /* Calls which can be replaced by the application. */

@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998, 1999
+ * Copyright (c) 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "db_config.h"
+#include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)os_dir.c	11.1 (Sleepycat) 7/25/99";
+static const char revid[] = "$Id: os_dir.c,v 1.1.2.2 2000/09/14 03:13:22 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -40,10 +40,11 @@ static const char sccsid[] = "@(#)os_dir.c	11.1 (Sleepycat) 7/25/99";
  * CDB___os_dirlist --
  *	Return a list of the files in a directory.
  *
- * PUBLIC: int CDB___os_dirlist __P((const char *, char ***, int *));
+ * PUBLIC: int CDB___os_dirlist __P((DB_ENV *, const char *, char ***, int *));
  */
 int
-CDB___os_dirlist(dir, namesp, cntp)
+CDB___os_dirlist(dbenv, dir, namesp, cntp)
+	DB_ENV *dbenv;
 	const char *dir;
 	char ***namesp;
 	int *cntp;
@@ -62,11 +63,11 @@ CDB___os_dirlist(dir, namesp, cntp)
 	for (arraysz = cnt = 0; (dp = readdir(dirp)) != NULL; ++cnt) {
 		if (cnt >= arraysz) {
 			arraysz += 100;
-			if ((ret = CDB___os_realloc(
+			if ((ret = CDB___os_realloc(dbenv,
 			    arraysz * sizeof(names[0]), NULL, &names)) != 0)
 				goto nomem;
 		}
-		if ((ret = CDB___os_strdup(dp->d_name, &names[cnt])) != 0)
+		if ((ret = CDB___os_strdup(dbenv, dp->d_name, &names[cnt])) != 0)
 			goto nomem;
 	}
 	(void)closedir(dirp);
@@ -77,6 +78,8 @@ CDB___os_dirlist(dir, namesp, cntp)
 
 nomem:	if (names != NULL)
 		CDB___os_dirfree(names, cnt);
+	if (dirp != NULL)
+		(void)closedir(dirp);
 	return (ret);
 }
 
@@ -93,8 +96,9 @@ CDB___os_dirfree(names, cnt)
 {
 	if (CDB___db_jump.j_dirfree != NULL)
 		CDB___db_jump.j_dirfree(names, cnt);
-
-	while (cnt > 0)
-		CDB___os_free(names[--cnt], 0);
-	CDB___os_free(names, 0);
+	else {
+		while (cnt > 0)
+			CDB___os_free(names[--cnt], 0);
+		CDB___os_free(names, 0);
+	}
 }

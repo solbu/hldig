@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1998, 1999
+ * Copyright (c) 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "db_config.h"
+#include "config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)bt_reclaim.c	11.1 (Sleepycat) 7/24/99";
+static const char revid[] = "$Id: bt_reclaim.c,v 1.1.2.2 2000/09/14 03:13:16 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -34,7 +34,6 @@ CDB___bam_reclaim(dbp, txn)
 	DB *dbp;
 	DB_TXN *txn;
 {
-	BTREE *t;
 	DBC *dbc;
 	int ret, t_ret;
 
@@ -43,9 +42,8 @@ CDB___bam_reclaim(dbp, txn)
 		return (ret);
 
 	/* Walk the tree, freeing pages. */
-	t = dbp->bt_internal;
 	ret = CDB___bam_traverse(dbc,
-	    DB_LOCK_WRITE, t->bt_root, CDB___db_reclaim_callback, dbc);
+	    DB_LOCK_WRITE, dbc->internal->root, CDB___db_reclaim_callback, dbc);
 
 	/* Discard the cursor. */
 	if ((t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
