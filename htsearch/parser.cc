@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.10 1999/03/21 15:19:28 hp Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.11 1999/07/19 02:05:38 ghutchis Exp $";
 #endif
 
 #include "parser.h"
@@ -247,7 +247,15 @@ Parser::perform_push()
 	  // *******  Compute the score for the document
 	  //
 	  dm = new DocMatch;
-	  dm->score = wr.weight * current->weight;
+	  dm->score = (wr.flags & FLAG_TEXT) * config.Value("text_factor", 1);
+	  dm->score += (wr.flags & FLAG_CAPITAL) * config.Value("caps_factor", 1);
+	  dm->score += (wr.flags & FLAG_TITLE) * config.Value("title_factor", 1);
+	  dm->score += (wr.flags & FLAG_HEADING) * config.Value("heading1_factor", 1);
+	  dm->score += (wr.flags & FLAG_KEYWORDS) * config.Value("keywords_factor", 1);
+	  dm->score += (wr.flags & FLAG_DESCRIPTION) * config.Value("meta_description_factor", 1);
+	  dm->score += (wr.flags & FLAG_AUTHOR) * config.Value("author_factor", 1);
+	  dm->score += (wr.flags & FLAG_LINK_TEXT) * config.Value("description_factor", 1);
+	  dm->score *= current->weight;
 	  dm->id = wr.id;
 	  dm->anchor = wr.anchor;
 	  list->add(dm);

@@ -1,3 +1,8 @@
+Sun Jul 18 22:47:49 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/parser.cc: Eliminated compiler errors. Currently
+	returns no matches until bugs in the WordList code are fixed.
+
 Sun Jul 18 22:42:04 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htmerge/htmerge.h: Cleanup, including WordRecord and
