@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.64.2.1 1999/10/15 10:50:40 angus Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.64.2.2 1999/10/26 09:00:58 loic Exp $";
 #endif
 
 #include "Configuration.h"
@@ -23,23 +23,77 @@ ConfigDefaults	defaults[] =
 	template and the excerpt is actually going to be displayed.
 " },
 { "allow_in_form", "", 
-	"string", "htsearch", "allow_in_form: search_algorithm search_results_header", "
-	Allows the specified config file attributes to be specified
-	in search forms as separate fields. This could be used to
-	allow form writers to design their own headers and footers
-	and specify them in the search form. Another example would
-	be to offer a menu of search_algorithms in the form.
-	<table>
-	<tr>
-	<td nowrap>
-<tt>
-&nbsp;&nbsp;&lt;SELECT NAME=\"search_algorithm\"&gt;<br>
-&nbsp;&nbsp;&lt;OPTION VALUE=\"exact:1 prefix:0.6 synonyms:0.5 endings:0.1\" SELECTED&gt;fuzzy<br>
-&nbsp;&nbsp;&lt;OPTION VALUE=\"exact:1\"&gt;exact<br>
-&nbsp;&nbsp;&lt;/SELECT&gt;
-</tt></td>
-	</tr>
-	</table>
+	"string list", "htsearch", "allow_in_form: search_algorithm search_results_header", "
+			This specifies a filename to be output at the start of
+			search results. While outputting the header, some
+			variables will be expanded. Variables use the same
+			syntax as the Bourne shell. If there is a variable VAR,
+			the following will all be recognized:
+			<ul>
+			  <li>
+				$VAR
+			  </li>
+			  <li>
+				$(VAR)
+			  </li>
+			  <li>
+				${VAR}
+			  </li>
+			</ul>
+			The following variables are available:
+			<dl>
+			  <dt>
+				MATCHES
+			  </dt>
+			  <dd>
+				The number of documents that were matched.
+			  </dd>
+			  <dt>
+				PLURAL_MATCHES
+			  </dt>
+			  <dd>
+				If MATCHES is not 1, this will be the string \"s\",
+				else it is an empty string. This can be used to say
+				something like \"$(MATCHES)
+				document$(PLURAL_MATCHES) were found\"
+			  </dd>
+			  <dt>
+				MAX_MATCHES
+			  </dt>
+			  <dd>
+				The number of maximum displayed matches.
+			  </dd>
+			  <dt>
+				MAX_STARS
+			  </dt>
+			  <dd>
+				The value of the <a href=\"#max_stars\">max_stars</a>
+				attribute.
+			  </dd>
+			  <dt>
+				LOGICAL_WORDS
+			  </dt>
+			  <dd>
+				A string of the search words with either \"and\" or
+				\"or\" between the words, depending on the type of
+				search.
+			  </dd>
+			  <dt>
+				WORDS
+			  </dt>
+			  <dd>
+				A string of the search words with spaces in
+				between.
+			  </dd>
+			</dl>
+			Note that this file will <strong>NOT</strong> be output
+			if no matches were found. In this case the
+			<a href=\"#nothing_found_file\">nothing_found_file</a>
+			attribute is used instead.
+			Also, this file will not be output if it is
+			overridden by defining the
+			<a href=\"#search_results_wrapper\">search_results_wrapper</a>
+			attribute.
 " },
 { "allow_numbers", "false", 
 	"boolean", "htdig", "allow_numbers: true", "
@@ -71,7 +125,7 @@ ConfigDefaults	defaults[] =
 	incurs a slowdown on search results.
 " },
 { "bad_extensions", ".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram .tgz .bin .rpm .mpg .mov .avi", 
-	"string", "htdig", "bad_extensions: .foo .bar .bad", "
+	"string list", "htdig", "bad_extensions: .foo .bar .bad", "
 	This is a list of extensions on URLs which are
 	considered non-parsable. This list is used mainly to
 	supplement the MIME-types that the HTTP server provides
@@ -80,7 +134,7 @@ ConfigDefaults	defaults[] =
 	documents as text while they are some binary format.
 " },
 { "bad_querystr", "", 
-	"string", "htdig", "bad_querystr: forum=private section=topsecret&amp;passwd=required", "
+	"string list", "htdig", "bad_querystr: forum=private section=topsecret&amp;passwd=required", "
 	This is a list of CGI query strings to be excluded from
 	indexing. This can be used in conjunction with CGI-generated
 	portions of a website to control which pages are
@@ -121,7 +175,9 @@ ConfigDefaults	defaults[] =
 	value for this attribute is defined at compile time.
 " },
 { "common_url_parts", "http:// http://www. ftp:// ftp://ftp. /pub/ .html .htm .gif .jpg .jpeg /index.html /index.htm .com/ .com mailto:", 
-	"string", "htdig htnotify htmerge htsearch", "common_url_parts: http://www.htdig.org/ml/ .html http://dev.htdig.org/ http://www.htdig.org/", "
+	"string list", "htdig htnotify htmerge htsearch", "common_url_parts: http://www.htdig.org/ml/  \\<br>
+.html \\<br> http://dev.htdig.org/ \\<br>
+http://www.htdig.org/", "
 	Sub-strings often found in URLs stored in the
 	database.  These are replaced in the database by an
 	internal space-saving encoding.  If a string
@@ -326,146 +382,317 @@ ConfigDefaults	defaults[] =
 	the document that actually contains one of the words.
 " },
 { "exclude_urls", "/cgi-bin/ .cgi", 
-	"string", "htdig", "exclude_urls: students.html cgi-bin", "
+	"string list", "htdig", "exclude_urls: students.html cgi-bin", "
 	If a URL contains any of the space separated patterns,
 	it will be rejected. This is used to exclude such
 	common things such as an infinite virtual web-tree
 	which start with cgi-bin.
 " },
 { "external_parsers", "", 
-	"quoted", "htdig", "external_parsers: text/html /usr/local/bin/htmlparser application/ms-word \"/usr/local/bin/mswordparser -w\"", "
-	This attribute is used to specify a list of
-	content-type/parsers that are to be used to parse
-	documents that cannot by parsed by any of the internal
-	parsers. The list of external parsers is examined
-	before the builtin parsers are checked, so this can be
-	used to override the internal behavior without
-	recompiling htdig.<br>
-	The external parsers are specified as pairs of
-	strings. The first string of each pair is the
-	content-type that the parser can handle while the
-	second string of each pair is the path to the external
-	parsing program. If quoted, it may contain parameters,
-	separated by spaces.<p>
-	The parser program takes four command-line
-	parameters, not counting parameters and parameters
-	given in the command string:<br>
-	<em>infile content-type URL configuration-file</em><br>
-	<table border=\"1\">
-	<tr>
-	<th>
-	Parameter
-	</th>
-	<th>
-	Description
-	</th>
-	<th>
-	Example
-	</th>
-	</tr>
-	<tr>
-	<td valign=\"top\">
-	infile
-	</td>
-	<td>
-	A temporary file with the contents to be parsed.
-	</td>
-	<td>
-	/var/tmp/htdext.14242
-	</td>
-	</tr>
-	<tr>
-	<td valign=\"top\">
-	content-type
-	</td>
-	<td>
-	The MIME-type of the contents.
-	</td>
-	<td>
-	text/html
-	</td>
-	</tr>
-	<tr>
-	<td valign=\"top\">
-	URL
-	</td>
-	<td>
-	The URL of the contents.
-	</td>
-	<td>
-	http://www.htdig.org/attrs.html
-	</td>
-	</tr>
-	<tr>
-	<td valign=\"top\">
-	configuration-file
-	</td>
-	<td>
-	The configuration-file in effect.
-	</td>
-	<td>
-	/etc/htdig/htdig.conf
-	</td>
-	</tr>
-	</table><p>
-	The external parser is to write information for
-	htdig on its standard output.<br>
-	The output consists of records, each record terminated
-	with a newline. Each record is a series of (unless
-	expressively allowed to be empty) non-empty tab-separated
-	fields. The first field is a single character
-	that specifies the record type. The rest of the fields
-	are determined by the record type.
-	<table border=\"1\">
-	<tr>
-	<th>
-	Record type
-	</th>
-	<th>
-	Fields
-	</th>
-	<th>
-	Description
-	</th>
-	</tr>
-	<tr>
-	<th rowspan=\"3\" valign=\"top\">
-	w
-	</th>
-	<td valign=\"top\">
-	word
-	</td>
-	<td>
-	A word that was found in the document.
-	</td>
-	</tr>
-	<tr>
-	<td valign=\"top\">
-	location
-	</td>
-	<td>
-	A number indicating the normalized location of
-	the word within the document. The number has to
-	fall in the range 0-1000 where 0 means the top of
-	the document.
-	</td>
-	</tr>
-	<tr>
-	<td valign=\"top\">
-	heading level
-	</td>
-	<td>
-	A heading level that is used to compute the
-	weight of the word depending on its context in
-	the document itself. The level is in the range of
-	0-10 and are defined as follows:
-	<dl compact>
-	<dt>
-	0
-	</dt>
-	<dd>
-        </table>
-	Normal text
+	"quoted string list", "htdig", "external_parsers: text/html /usr/local/bin/htmlparser \\<br>
+application/ms-word \"/usr/local/bin/mswordparser -w\"", "
+			This attribute is used to specify a list of
+			content-type/parsers that are to be used to parse
+			documents that cannot by parsed by any of the internal
+			parsers. The list of external parsers is examined
+			before the builtin parsers are checked, so this can be
+			used to override the internal behavior without
+			recompiling htdig.<br>
+			 The external parsers are specified as pairs of
+			strings. The first string of each pair is the
+			content-type that the parser can handle while the
+			second string of each pair is the path to the external
+			parsing program. If quoted, it may contain parameters,
+			separated by spaces.<p>
+			 The parser program takes four command-line
+			parameters, not counting parameters and parameters
+			given in the command string:<br>
+			<em>infile content-type URL configuration-file</em><br>
+			<table border=\"1\">
+			  <tr>
+				<th>
+				  Parameter
+				</th>
+				<th>
+				  Description
+				</th>
+				<th>
+				  Example
+				</th>
+			  </tr>
+			  <tr>
+				<td valign=\"top\">
+				  infile
+				</td>
+				<td>
+				  A temporary file with the contents to be parsed.
+				</td>
+				<td>
+				  /var/tmp/htdext.14242
+				</td>
+			  </tr>
+			  <tr>
+				<td valign=\"top\">
+				  content-type
+				</td>
+				<td>
+				  The MIME-type of the contents.
+				</td>
+				<td>
+				  text/html
+				</td>
+			  </tr>
+			  <tr>
+				<td valign=\"top\">
+				  URL
+				</td>
+				<td>
+				  The URL of the contents.
+				</td>
+				<td>
+				  http://www.htdig.org/attrs.html
+				</td>
+			  </tr>
+			  <tr>
+				<td valign=\"top\">
+				  configuration-file
+				</td>
+				<td>
+				  The configuration-file in effect.
+				</td>
+				<td>
+				  /etc/htdig/htdig.conf
+				</td>
+			  </tr>
+			</table><p>
+			The external parser is to write information for
+			htdig on its standard output.<br>
+			 The output consists of records, each record terminated
+			with a newline. Each record is a series of (unless
+			expressively allowed to be empty) non-empty tab-separated
+			fields. The first field is a single character
+			that specifies the record type. The rest of the fields
+			are determined by the record type.
+			<table border=\"1\">
+			  <tr>
+				<th>
+				  Record type
+				</th>
+				<th>
+				  Fields
+				</th>
+				<th>
+				  Description
+				</th>
+			  </tr>
+			  <tr>
+				<th rowspan=\"3\" valign=\"top\">
+				  w
+				</th>
+				<td valign=\"top\">
+				  word
+				</td>
+				<td>
+				  A word that was found in the document.
+				</td>
+			  </tr>
+			  <tr>
+				<td valign=\"top\">
+				  location
+				</td>
+				<td>
+				  A number indicating the normalized location of
+				  the word within the document. The number has to
+				  fall in the range 0-1000 where 0 means the top of
+				  the document.
+				</td>
+			  </tr>
+			  <tr>
+				<td valign=\"top\">
+				  heading level
+				</td>
+				<td>
+				  A heading level that is used to compute the
+				  weight of the word depending on its context in
+				  the document itself. The level is in the range of
+				  0-10 and are defined as follows:
+				  <dl compact>
+					<dt>
+					  0
+					</dt>
+					<dd>
+					  Normal text
+					</dd>
+					<dt>
+					  1
+					</dt>
+					<dd>
+					  Title text
+					</dd>
+					<dt>
+					  2
+					</dt>
+					<dd>
+					  Heading 1 text
+					</dd>
+					<dt>
+					  3
+					</dt>
+					<dd>
+					  Heading 2 text
+					</dd>
+					<dt>
+					  4
+					</dt>
+					<dd>
+					  Heading 3 text
+					</dd>
+					<dt>
+					  5
+					</dt>
+					<dd>
+					  Heading 4 text
+					</dd>
+					<dt>
+					  6
+					</dt>
+					<dd>
+					  Heading 5 text
+					</dd>
+					<dt>
+					  7
+					</dt>
+					<dd>
+					  Heading 6 text
+					</dd>
+					<dt>
+					  8
+					</dt>
+					<dd>
+					  <i>unused</i>
+					</dd>
+					<dt>
+					  9
+					</dt>
+					<dd>
+					  <i>unused</i>
+					</dd>
+					<dt>
+					  10
+					</dt>
+					<dd>
+					  Keywords
+					</dd>
+				  </dl>
+				</td>
+			  </tr>
+			  <tr>
+				<th rowspan=\"2\" valign=\"top\">
+				  u
+				</th>
+				<td valign=\"top\">
+				  document URL
+				</td>
+				<td>
+				  A hyperlink to another document that is
+				  referenced by the current document.  It must be
+				  complete and non-relative, using the URL parameter to
+				  resolve any relative references found in the document.
+				</td>
+			  </tr>
+			  <tr>
+				<td valign=\"top\">
+				  hyperlink description
+				</td>
+				<td>
+				  For HTML documents, this would be the text
+				  between the &lt;a href...&gt; and &lt;/a&gt;
+				  tags.
+				</td>
+			  </tr>
+			  <tr>
+				<th valign=\"top\">
+				  t
+				</th>
+				<td valign=\"top\">
+				  title
+				</td>
+				<td>
+				  The title of the document
+				</td>
+			  </tr>
+			  <tr>
+				<th valign=\"top\">
+				  h
+				</th>
+				<td valign=\"top\">
+				  head
+				</td>
+				<td>
+				  The top of the document itself. This is used to
+				  build the excerpt. This should only contain
+				  normal ASCII text
+				</td>
+			  </tr>
+			  <tr>
+				<th valign=\"top\">
+				  a
+				</th>
+				<td valign=\"top\">
+				  anchor
+				</td>
+				<td>
+				  The label that identifies an anchor that can be
+				  used as a target in an URL. This really only
+				  makes sense for HTML documents.
+				</td>
+			  </tr>
+			  <tr>
+				<th valign=\"top\">
+				  i
+				</th>
+				<td valign=\"top\">
+				  image URL
+				</td>
+				<td>
+				  An URL that points at an image that is part of
+				  the document.
+				</td>
+			  </tr>
+			  <tr>
+				<th rowspan=\"3\" valign=\"top\">
+				  m
+				</th>
+				<td valign=\"top\">
+				  http-equiv
+				</td>
+				<td>
+				  The HTTP-EQUIV attribute of a
+				  <a href=\"meta.html\"><i>META</i> tag</a>.
+				  May be empty.
+				</td>
+			  </tr>
+			  <tr>
+				<td valign=\"top\">
+				  name
+				</td>
+				<td>
+				  The NAME attribute of this
+				  <a href=\"meta.html\"><i>META</i> tag</a>.
+				  May be empty.
+				</td>
+			  </tr>
+			  <tr>
+				<td valign=\"top\">
+				  contents
+				</td>
+				<td>
+				  The CONTENTS attribute of this
+				  <a href=\"meta.html\"><i>META</i> tag</a>.
+				  May be empty.
+				</td>
+			  </tr>
+			</table>
 	<p><em>See also FAQ questions <a
 	href=\"FAQ.html#q4.8\">4.8</a> and <a
 	href=\"FAQ.html#q4.9\">4.9</a> for more
@@ -505,7 +732,7 @@ ConfigDefaults	defaults[] =
 	detail on how this is done.
 " },
 { "http_proxy", "", 
-	"string", "htdig", "http_proxy: http://proxy.bigbucks.com:3128", "
+	"string list", "htdig", "http_proxy: http://proxy.bigbucks.com:3128", "
 	When this attribute is set, all HTTP document
 	retrievals will be done using the HTTP-PROXY protocol.
 	The URL specified in this attribute points to the host
@@ -546,6 +773,20 @@ ConfigDefaults	defaults[] =
 	"", "", "", "
 
 " },
+{ "include", "",
+        "string", "htdig htnotify htfuzzy htmerge htsearch", "include: ${config_dir}/htdig.conf", "
+			This is not quite a configuration attribute, but
+			rather a directive. It can be used within one
+			configuration file to include the definitions of
+			another file. The last definition of an attribute
+			is the one that applies, so after including a file,
+			any of its definitions can be overridden with
+			subsequent definitions. This can be useful when
+			setting up many configurations that are mostly the
+			same, so all the common attributes can be maintained
+			in a single configuration file. The include directives
+			can be nested, but watch out for nesting loops.
+" },
 { "iso_8601", "false", 
 	"boolean", "htsearch htnotify", "iso_8601: true", "
 	This sets whether dates should be output in ISO 8601
@@ -568,7 +809,7 @@ ConfigDefaults	defaults[] =
 	<a href=\"#text_factor\">text_factor</a>attributes.
 " },
 { "keywords_meta_tag_names", "keywords htdig-keywords", 
-	"string", "htdig", "keywords_meta_tag_names: keywords description", "
+	"string list", "htdig", "keywords_meta_tag_names: keywords description", "
 	The words in this list are used to search for keywords
 	in HTML <i>META</i> tags. This list can contain any
 	number of strings that each will be seen as the name
@@ -579,7 +820,7 @@ ConfigDefaults	defaults[] =
 </tt>
 " },
 { "limit_normalized", "", 
-	"string", "htdig", "limit_normalized: http://www.mydomain.com", "
+	"string list", "htdig", "limit_normalized: http://www.mydomain.com", "
 	This specifies a set of patterns that all URLs have to
 	match against in order for them to be included in the
 	search. Unlike the limit_urls_to directive, this is done
@@ -590,7 +831,7 @@ ConfigDefaults	defaults[] =
 	href=\"#limit_urls_to\">limit_urls_to</a> directive.
 " },
 { "limit_urls_to", "${start_url}", 
-	"string", "htdig", "limit_urls_to: .sdsu.edu kpbs", "
+	"string list", "htdig", "limit_urls_to: .sdsu.edu kpbs", "
 	This specifies a set of patterns that all URLs have to
 	match against in order for them to be included in the
 	search. Any number of strings can be specified,
@@ -612,7 +853,7 @@ ConfigDefaults	defaults[] =
 	/home/foo.com/index.html
 " },
 { "local_urls", "", 
-	"string", "htdig", "local_urls: http://www.foo.com/=/usr/www/htdocs/", "
+	"string list", "htdig", "local_urls: http://www.foo.com/=/usr/www/htdocs/", "
 	Set this to tell ht://Dig to access certain URLs through
 	local filesystems. At first ht://Dig will try to access
 	pages with URLs matching the patterns through the
@@ -641,22 +882,26 @@ ConfigDefaults	defaults[] =
 " },
 { "logging", "false", 
 	"boolean", "htsearch", "logging: true", "
-	This sets whether htsearch should use the syslog() to log
-	search requests. If set, this will log requests with a
-	default level of LOG_INFO and a facility of LOG_LOCAL5. For
-	details on redirecting the log into a separate file or other
-	actions, see the <strong>syslog.conf(5)</strong> man
-	page. To set the level and facility used in logging, change
-	LOG_LEVEL and LOG_FACILITY in the include/htconfig.h file
-	before compiling.
-	<dl>
-	<dt>
-	Each line logged by htsearch contains the following:
-	</dt>
-	<dd>
-	REMOTE_ADDR [config] (match_method) [words]
-	[logicalWords] (matches/matches_per_page) -
-	page, HTTP_REFERER
+			This sets whether htsearch should use the syslog() to log
+			search requests. If set, this will log requests with a
+			default level of LOG_INFO and a facility of LOG_LOCAL5. For
+			details on redirecting the log into a separate file or other
+			actions, see the <strong>syslog.conf(5)</strong> man
+			page. To set the level and facility used in logging, change
+			LOG_LEVEL and LOG_FACILITY in the include/htconfig.h file
+			before compiling.
+			<dl>
+			  <dt>
+			    Each line logged by htsearch contains the following:
+			  </dt>
+			  <dd>
+			    REMOTE_ADDR [config] (match_method) [words]
+			    [logicalWords] (matches/matches_per_page) -
+			    page, HTTP_REFERER
+			  </dd>
+			</dl>
+			where any of the above are null or empty, it
+			either puts in '-' or 'default' (for config).
 " },
 { "maintainer", "bogus@unconfigured.htdig.user", 
 	"string", "htdig", "maintainer: ben.dover@uptight.com", "
@@ -765,7 +1010,7 @@ ConfigDefaults	defaults[] =
 	results page. Note that this does not limit the number
 	of documents that are matched in any way.
 " },
-{ "maximum_word_length", "", 
+{ "maximum_word_length", "32", 
 	"number", "htdig htsearch", "maximum_word_length: 15", "
 	This sets the maximum length of words that will be
 	indexed. Words longer than this value will be silently
@@ -788,7 +1033,7 @@ ConfigDefaults	defaults[] =
 	<a href=\"htsearch.html\" target=\"_top\">htsearch</a>.
 " },
 { "method_names", "and All or Any boolean Boolean", 
-	"quoted", "htsearch", "method_names: or Or and And", "
+	"quoted string list", "htsearch", "method_names: or Or and And", "
 	These values are used to create the <strong>
 	method</strong> menu. It consists of pairs. The first
 	element of each pair is one of the known methods, the
@@ -851,18 +1096,18 @@ ConfigDefaults	defaults[] =
 	hyperlink to go to the next page of matches.
 " },
 { "no_page_list_header", "", 
-	"string", "htsearch", "no_page_list_header:", "
+	"string", "htsearch", "no_page_list_header: &lt;hr noshade size=2&gt;All results on this page.&lt;br&gt;", "
 	This text will be used as the value of the PAGEHEADER
 	variable, for use in templates or the
 	<a href=\"#search_results_footer\">search_results_footer</a>
 	file, when all search results fit on a single page.
 " },
 { "no_page_number_text", "", 
-	"quoted", "htsearch", "no_page_number_text:
-				  &lt;strong&gt;1&lt;/strong&gt; &lt;strong&gt;2&lt;/strong&gt; \\ <br>
-				  &lt;strong&gt;3&lt;/strong&gt; &lt;strong&gt;4&lt;/strong&gt; \\ <br>
-				  &lt;strong&gt;5&lt;/strong&gt; &lt;strong&gt;6&lt;/strong&gt; \\ <br>
-				  &lt;strong&gt;7&lt;/strong&gt; &lt;strong&gt;8&lt;/strong&gt; \\ <br>
+	"quoted string list", "htsearch", "no_page_number_text:
+				  &lt;strong&gt;1&lt;/strong&gt; &lt;strong&gt;2&lt;/strong&gt; \\<br>
+				  &lt;strong&gt;3&lt;/strong&gt; &lt;strong&gt;4&lt;/strong&gt; \\<br>
+				  &lt;strong&gt;5&lt;/strong&gt; &lt;strong&gt;6&lt;/strong&gt; \\<br>
+				  &lt;strong&gt;7&lt;/strong&gt; &lt;strong&gt;8&lt;/strong&gt; \\<br>
 				  &lt;strong&gt;9&lt;/strong&gt; &lt;strong&gt;10&lt;/strong&gt;
 ", "
 	The text strings in this list will be used when putting
@@ -929,11 +1174,11 @@ ConfigDefaults	defaults[] =
 	file, when all search results fit on more than one page.
 " },
 { "page_number_text", "", 
-	"quoted", "htsearch", "page_number_text:
-				  &lt;em&gt;1&lt;/em&gt; &lt;em&gt;2&lt;/em&gt; \\ <br>
-				  &lt;em&gt;3&lt;/em&gt; &lt;em&gt;4&lt;/em&gt; \\ <br>
-				  &lt;em&gt;5&lt;/em&gt; &lt;em&gt;6&lt;/em&gt; \\ <br>
-				  &lt;em&gt;7&lt;/em&gt; &lt;em&gt;8&lt;/em&gt; \\ <br>
+	"quoted string list", "htsearch", "page_number_text:
+				  &lt;em&gt;1&lt;/em&gt; &lt;em&gt;2&lt;/em&gt; \\<br>
+				  &lt;em&gt;3&lt;/em&gt; &lt;em&gt;4&lt;/em&gt; \\<br>
+				  &lt;em&gt;5&lt;/em&gt; &lt;em&gt;6&lt;/em&gt; \\<br>
+				  &lt;em&gt;7&lt;/em&gt; &lt;em&gt;8&lt;/em&gt; \\<br>
 				  &lt;em&gt;9&lt;/em&gt; &lt;em&gt;10&lt;/em&gt;
 ", "
 	The text strings in this list will be used when putting
@@ -1032,7 +1277,7 @@ ConfigDefaults	defaults[] =
 	hence this option should be set to FALSE in that case.
 " },
 { "remove_default_doc", "index.html", 
-	"string", "htdig", "remove_default_doc: default.html default.htm index.html index.htm", "
+	"string list", "htdig", "remove_default_doc: default.html default.htm index.html index.htm", "
 	Set this to the default documents in a directory used by the
 	servers you are indexing. These document names will be stripped
 	off of URLs when they are normalized, if one of these names appears
@@ -1071,48 +1316,162 @@ ConfigDefaults	defaults[] =
 	used in htsearch templates.
 " },
 { "search_algorithm", "exact:1", 
-	"string", "htsearch", "search_algorithm: exact:1 soundex:0.3", "
-	Specifies the search algorithms and their weight to use
-	when searching. Each entry in the list consists of the
-	algorithm name, followed by a colon (:) followed by a
-	weight multiplier. The multiplier is a floating point
-	number between 0 and 1. Current algorithms supported
-	are:
-	<dl>
-	<dt>
-	exact
-	</dt>
-	<dd>
-	The default exact word matching algorithm. This
-	will find only exactly matched words.
-        </dl>
+	"string list", "htsearch", "search_algorithm: exact:1 soundex:0.3", "
+			Specifies the search algorithms and their weight to use
+			when searching. Each entry in the list consists of the
+			algorithm name, followed by a colon (:) followed by a
+			weight multiplier. The multiplier is a floating point
+			number between 0 and 1. Current algorithms supported
+			are:
+			<dl>
+			  <dt>
+				exact
+			  </dt>
+			  <dd>
+				The default exact word matching algorithm. This
+				will find only exactly matched words.
+			  </dd>
+			  <dt>
+				soundex
+			  </dt>
+			  <dd>
+				Uses a slightly modified soundex algorithm to match
+				words. This requires that the soundex database be
+				present. It is generated with the
+				<a href=\"htfuzzy.html\">htfuzzy</a> program.
+			  </dd>
+			  <dt>
+				metaphone
+			  </dt>
+			  <dd>
+				Uses the metaphone algorithm for matching words.
+				This algorithm is more specific to the english
+				language than soundex. It is generated with the <a
+				href=\"htfuzzy.html\">htfuzzy</a> program.
+			  </dd>
+			  <dt>
+				endings
+			  </dt>
+			  <dd>
+				This algorithm uses language specific word endings
+				to find matches. Each word is first reduced to its
+				word root and then all known legal endings are used
+				for the matching. This algorithm uses two databases
+				which are generated with <a href=\"htfuzzy.html\">
+				htfuzzy</a>.
+			  </dd>
+			  <dt>
+				synonyms
+			  </dt>
+			  <dd>
+				Performs a dictionary lookup on all the words. This
+				algorithm uses a database generated with the <a
+				href=\"htfuzzy.html\">htfuzzy</a> program.
+			  </dd>
+			<dt>
+			substring
+			</dt>
+			<dd>
+			  Matches all words containing the queries as
+			  substrings. Since this requires checking every word in
+			  the database, this can really slow down searches
+			  considerably.
+			<dd>
+			<dt>
+			  prefix
+			</dt>
+			<dd>
+			  Matches all words beginning with the query
+			  strings. Uses the option <a
+			  href=\"#prefix_match_character\">prefix_match_character</a>
+			  to decide whether a query requires prefix
+			  matching. For example \"abc*\" would perform prefix
+			  matching on \"abc\" since * is the default
+			  prefix_match_character.
+			</dd>
+			</dl>
 " },
 { "search_results_footer", "${common_dir}/footer.html", 
 	"string", "htsearch", "search_results_footer: /usr/local/etc/ht/end-stuff.html", "
-	This specifies a filename to be output at the end of
-	search results. While outputting the footer, some
-	variables will be expanded. Variables use the same
-	syntax as the Bourne shell. If there is a variable VAR,
-	the following will all be recognized:
-	<ul>
-	<li>
-	$VAR
-	</li>
-	<li>
-	$(VAR)
-	</li>
-	<li>
-	${VAR}
-	</li>
-	</ul>
-	The following variables are available:
-	<dl>
-	<dt>
-	MATCHES
-	</dt>
-	<dd>
-	The number of documents that were matched.
-        </dl>
+			This specifies a filename to be output at the end of
+			search results. While outputting the footer, some
+			variables will be expanded. Variables use the same
+			syntax as the Bourne shell. If there is a variable VAR,
+			the following will all be recognized:
+			<ul>
+			  <li>
+				$VAR
+			  </li>
+			  <li>
+				$(VAR)
+			  </li>
+			  <li>
+				${VAR}
+			  </li>
+			</ul>
+			The following variables are available:
+			<dl>
+			  <dt>
+				MATCHES
+			  </dt>
+			  <dd>
+				The number of documents that were matched.
+			  </dd>
+			  <dt>
+				PLURAL_MATCHES
+			  </dt>
+			  <dd>
+				If MATCHES is not 1, this will be the string \"s\",
+				else it is an empty string. This can be used to say
+				something like \"$(MATCHES)
+				document$(PLURAL_MATCHES) were found\"
+			  </dd>
+			  <dt>
+				MAX_MATCHES
+			  </dt>
+			  <dd>
+				The number of maximum displayed matches.
+			  </dd>
+			  <dt>
+				MAX_STARS
+			  </dt>
+			  <dd>
+				The value of the <a href=\"#max_stars\">max_stars</a>
+				attribute.
+			  </dd>
+			  <dt>
+				LOGICAL_WORDS
+			  </dt>
+			  <dd>
+				A string of the search words with either \"and\" or
+				\"or\" between the words, depending on the type of
+				search.
+			  </dd>
+			  <dt>
+				WORDS
+			  </dt>
+			  <dd>
+				A string of the search words with spaces in
+				between.
+			  </dd>
+			  <dt>
+				PAGEHEADER
+			  </dt>
+			  <dd>
+				This expands to either the value of the
+				<a href=\"#page_list_header\">page_list_header</a> or
+				<a href=\"#no_page_list_header\">no_page_list_header</a>
+				attribute depending on how many pages there are.
+			  </dd>
+			</dl>
+			Note that this file will <strong>NOT</strong> be output
+			if no matches were found. In this case the
+			<a href=\"#nothing_found_file\">nothing_found_file</a>
+			attribute is used instead.
+			Also, this file will not be output if it is
+			overridden by defining the
+			<a href=\"#search_results_wrapper\">search_results_wrapper</a>
+			attribute.
 " },
 { "search_results_header", "${common_dir}/header.html", 
 	"string", "htsearch", "search_results_header: /usr/local/etc/ht/start-stuff.html", "
@@ -1164,8 +1523,8 @@ ConfigDefaults	defaults[] =
 	attribute is used instead.
 " },
 { "server_aliases", "", 
-	"string", "htdig", "server_aliases:
-				  foo.mydomain.com:80=www.mydomain.com:80 \\ <br>
+	"string list", "htdig", "server_aliases:
+				  foo.mydomain.com:80=www.mydomain.com:80 \\<br>
 				  bar.mydomain.com:80=www.mydomain.com:80
 ", "
 	This directive tells the indexer that servers have several
@@ -1183,7 +1542,8 @@ ConfigDefaults	defaults[] =
 	limit of the directive. However, it is most useful to
 	partially index a server as the URLs of additional
 	documents are entered into the database, marked as never
-	retrieved.
+	retrieved. <br>
+        A value of -1 specifies no limit.
 " },
 { "server_wait_time", "0", 
 	"integer", "htdig", "server_wait_time: 20", "
@@ -1243,8 +1603,8 @@ ConfigDefaults	defaults[] =
 	\"score\" will incur a slowdown in searches.
 " },
 { "sort_names", "score Score time Time title Title revscore 'Reverse Score' revtime 'Reverse Time' revtitle 'Reverse Title'", 
-	"quoted", "htsearch", "sort_names:
-				  score 'Best Match' time Newest title A-Z <br>
+	"quoted string list", "htsearch", "sort_names:
+				  score 'Best Match' time Newest title A-Z \\<br>
 				  revscore 'Worst Match' revtime Oldest revtitle Z-A
 ", "
 	These values are used to create the <strong>
@@ -1282,8 +1642,8 @@ ConfigDefaults	defaults[] =
 	for the image will always be a '*'.
 " },
 { "star_patterns", "", 
-	"string", "htsearch", "star_patterns:
-				  http://www.sdsu.edu /sdsu.gif \\ <br>
+	"string list", "htsearch", "star_patterns:
+				  http://www.sdsu.edu /sdsu.gif \\<br>
 				  http://www.ucsd.edu /ucsd.gif
 ", "
 	This attribute allows the star image to be changed
@@ -1308,7 +1668,7 @@ ConfigDefaults	defaults[] =
 	the complete document.
 " },
 { "start_url", "http://www.htdig.org/", 
-	"string", "htdig", "start_url: http://www.somewhere.org/alldata/index.html", "
+	"string list", "htdig", "start_url: http://www.somewhere.org/alldata/index.html", "
 	This is the list of URLs that will be used to start a
 	dig when there was no existing database. Note that
 	multiple URLs can be given here.
@@ -1343,9 +1703,9 @@ ConfigDefaults	defaults[] =
 	boolean expression syntax error was found.
 " },
 { "template_map", "Long builtin-long builtin-long Short builtin-short builtin-short", 
-	"string", "htsearch", "template_map:
-				  Short short ${common_dir}/short.html \\ <br>
-				  Normal normal builtin-long \\ <br>
+	"string list", "htsearch", "template_map:
+				  Short short ${common_dir}/short.html \\<br>
+				  Normal normal builtin-long \\<br>
 				  Detailed detail ${common_dir}/detail.html
 ", "
 	This maps match template names to internal names and
@@ -1369,8 +1729,8 @@ ConfigDefaults	defaults[] =
 	<a href=\"#template_map\">template_map</a>.
 " },
 { "template_patterns", "", 
-	"string", "htsearch", "template_patterns:
-				  http://www.sdsu.edu ${common_dir}/sdsu.html \\ <br>
+	"string list", "htsearch", "template_patterns:
+				  http://www.sdsu.edu ${common_dir}/sdsu.html \\<br>
 				  http://www.ucsd.edu ${common_dir}/ucsd.html
 ", "
 	This attribute allows the results template to be changed
@@ -1477,10 +1837,11 @@ ConfigDefaults	defaults[] =
 	after beginning.
 " },
 { "url_part_aliases", "", 
-	"string", "htdig htnotify htmerge htsearch", "url_part_aliases:
-				   http://search.example.com/~htdig *site \\ <br>
-				   http://www.htdig.org/this/ *1 \\ <br>
-				   .html *2
+	"string list", "htdig htnotify htmerge htsearch", "url_part_aliases:
+				   http://search.example.com/~htdig *site \\<br>
+				   http://www.htdig.org/this/ *1 \\<br>
+				   .html *2 <br>
+url_part_aliases: foo
 ", "
 	A list of translations pairs <em>from</em> and
 	<em>to</em>, used when accessing the database.

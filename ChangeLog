@@ -1,3 +1,7 @@
+Tue Oct 26 10:54:52 1999  Loic Dachary  <loic@ceic.com>
+
+	* htcommon/default.cc: fixed all inconsistencies reported by Gilles.
+
 Mon Oct 25 11:42:13 1999  Marcel Bosc  <bosc@ceic.com>
 
 	* htword/ word.cc,t_wordskip,skip_db.txt: Added test for *Skip Speedup*
@@ -37,6 +41,10 @@ Wed Oct 20 16:47:52 1999  Marcel Bosc  <bosc@ceic.com>
 	* htword/ word_builder.pl: enforced word sort order to ascending
 
 	* htword/ WordList: added a verbose flag using config."wordlist_verbose"
+
+Tue Oct 19 18:36:42 1999  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordType.h: const accessors to wtype and config
 
 Tue Oct 19 13:10:47 1999  Loic Dachary  <loic@ceic.com>
 
