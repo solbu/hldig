@@ -13,7 +13,8 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	HtVector.cc HtHeap.cc \
 	HtPack.cc HtDateTime.cc HtRegex.cc \
 	HtRegexReplace.cc HtRegexReplaceList.cc \
-	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc md5.cc  mhash_md5.c
+	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc \
+	md5.cc mhash_md5.c scandir.c
 
 libht_la_LIBADD=@LTLIBOBJS@
 
