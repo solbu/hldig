@@ -6,9 +6,13 @@
 // database is used for searching.  This is because digging requires a
 // different index than searching.
 //
-// $Id: DocumentDB.h,v 1.2 1998/01/05 00:47:27 turtle Exp $
+// $Id: DocumentDB.h,v 1.3 1999/01/14 00:30:10 ghutchis Exp $
 //
 // $Log: DocumentDB.h,v $
+// Revision 1.3  1999/01/14 00:30:10  ghutchis
+// Added IncNextDocID to allow big changes in NextDocID, such as when merging
+// databases.
+//
 // Revision 1.2  1998/01/05 00:47:27  turtle
 // reformatting
 //
@@ -55,6 +59,10 @@ public:
     // the next document id.
     //
     int			NextDocID()		{return nextDocID++;}
+
+    // And here's a way to increment NextDocID after adding lots of records
+    // (for example when merging databases!)
+    void                IncNextDocID (int next)     {nextDocID += next;}
 
     //
     // We will need to be able to iterate over the complete database.
