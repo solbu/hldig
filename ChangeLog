@@ -1,3 +1,11 @@
+Sun Sep 12 12:27:16 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Remove word_list since that file is no
+	longer used. 
+
+	* htdig/htdig.cc: Ensure -a and -i are followed for the word_db
+	file. Fixes PR #638.
+
 Sat Sep 11 00:11:28 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/StringMatch.h: Add back mistakenly deleted #ifndef/#define.

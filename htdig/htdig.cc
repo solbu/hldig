@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.17 1999/09/11 05:03:51 ghutchis Exp $
+// $Id: htdig.cc,v 1.18 1999/09/12 17:34:01 ghutchis Exp $
 //
 
 #include "Document.h"
@@ -158,11 +158,11 @@ main(int ac, char **av)
 	    config.Add("doc_db", configValue);
 	}
 
-	configValue = config["word_list"];
+	configValue = config["word_db"];
 	if (configValue.length() != 0)
 	{
 	    configValue << ".work";
-	    config.Add("word_list", configValue);
+	    config.Add("word_db", configValue);
 	}
 
 	configValue = config["doc_index"];
@@ -257,11 +257,9 @@ main(int ac, char **av)
 			 filename.get()));
     }
 
+    String		word_filename = config["word_db"];
     if (initial)
-    {
-	filename = config["word_list"];
-	unlink(filename);
-    }
+       unlink(word_filename);
 
     // Create the Retriever object which we will use to parse all the
     // HTML files.
