@@ -140,6 +140,10 @@ application/vnd.shana.informed.formtemplate
 application/vnd.shana.informed.interchange
 application/vnd.shana.informed.package
 application/vnd.street-stream
+application/vnd.sun.xml.calc	sxc
+application/vnd.sun.xml.draw	sxd
+application/vnd.sun.xml.impress	sxi
+application/vnd.sun.xml.writer	sxw
 application/vnd.svd
 application/vnd.swiftview-ics
 application/vnd.truedoc

@@ -93,6 +93,14 @@ my $PPT2HTML = '';
 # (extracts links from file)
 my $SWF2HTML = ''; # full pathname of swf2html.pl script
 
+# OpenOffice.org files
+#my $OpenOffice2XML = '/usr/bin/unzip';
+my $OpenOffice2XML = '';
+# (remove multi-byte unicode from XML in OOo documents)
+#my $strip_unicode = '| /usr/bin/iconv -c -s -f UTF-8 -t ISO-8859-1';
+my $strip_unicode = '';
+
+
 ########################################################################
 
 # Other Global Variables
@@ -276,6 +284,15 @@ sub store_methods {
     &store_html_method('Shockwave-Flash (swf2html)',$cmd,$cmdl,$mime_type,$magic);
   }
 
+  # OpenOffice Documents
+  if ($OpenOffice2XML) {
+    $mime_type = "application/vnd.sun.xml.writer|application/vnd.sun.xml.impress|application/vnd.sun.xml.calc|application/vnd.sun.xml.draw|application/vnd.sun.xml.math";
+    $cmd = $OpenOffice2XML;
+    $cmdl = "$cmd -p -qq $Input content.xml | /bin/sed -r 's/<[^>]*>/ /gi' $strip_unicode";
+    $magic = 'PK';
+    &store_html_method('OpenOffice XML (oo2xml)',$cmd,$cmdl,$mime_type,$magic);
+  }
+
   ####Document -> Text converters####
 
   # Word6, Word7 & Word97 documents
@@ -333,6 +350,7 @@ sub store_methods {
     $magic = '\377WPC';
     &store_text_method('WordPerfect (catwpd)',$cmd,$cmdl,$mime_type,$magic);
   }
+
 
   ####Documents that cannot be converted####
 
