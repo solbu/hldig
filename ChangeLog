@@ -1,13 +1,22 @@
 Wed Jan  6 22:03:54 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htfuzzy/Synonym.cc, htfuzzy/htfuzzy.cc, htmerge/docs.cc,
-	htmerge/words.cc: Fix minor memory leaks.
+	htmerge/words.cc, htdig/SGMLEntities.cc: Fix minor memory leaks.
 
 	* htcommon/defaults.cc: Add .bin, .tgz, .rpm, .mov, .mpg, .avi to
 	bad_extensions.
 
 	* htdoc/attrs.html: Update documentation on default.
 
+	* installdir/rundig: Removed check for age of synonym and endings
+	DB. Nice feature, but it broke under too many shells.
+
+	* htlib/DB2_db.cc: Change allocation of database cursors to match
+	API in new version.
+
+	* htdig/Retriever.cc(got_word): Skip changing to lowercase, we do
+	it in WordList::Word.
+	
 Wed Jan  6 14:49:47 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html: Added four new attributes, fixed defaults & typos.
