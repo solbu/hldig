@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.80 1999/06/12 17:57:08 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.81 1999/06/13 02:16:02 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -959,7 +959,7 @@ Display::buildMatchList()
 
 //*****************************************************************************
 String *
-Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first)
+Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 {
     // It is necessary to keep alive the String you .get() a char * from,
     // as long as you use the char *.
