@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.21 1999/09/24 16:47:09 loic Exp $
+// $Id: htdig.cc,v 1.22 1999/09/28 07:30:34 loic Exp $
 //
 
 #include "Document.h"
@@ -132,8 +132,8 @@ main(int ac, char **av)
 	config.Add("max_hop_count", max_hops);
     }
 
-    // Ctype-like functions for what constitutes a word.
-    HtWordType::Initialize(config);
+    // Word characterization
+    WordType::Initialize(config);
 
     //
     // Check url_part_aliases and common_url_parts for

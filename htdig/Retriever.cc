@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.64 1999/09/24 10:28:57 loic Exp $
+// $Id: Retriever.cc,v 1.65 1999/09/28 07:30:34 loic Exp $
 //
 
 #include "Retriever.h"
@@ -74,8 +74,6 @@ Retriever::Retriever(RetrieverLog flags) :
     // META description factor
     factor[10] = FLAG_DESCRIPTION;
 	
-    words.BadWordFile(config["bad_word_list"]);
-
     doc = new Document();
     minimumWordLength = config.Value("minimum_word_length", 3);
 

@@ -1,3 +1,33 @@
+Tue Sep 28 09:31:12 1999  Loic Dachary  <loic@ceic.com>
+
+	* test/Makefile.am: comment test options, add LONG_TEST='y' for lengthy
+	  tests, by default run quick tests.
+
+	* installdir/bad_words: removed it an of : since the minimum word
+	  length is by default 3, these words are ignored anyway.
+
+Mon Sep 27 20:37:38 1999  Loic Dachary  <loic@ceic.com>
+
+	* htlib/HtWordType.h,cc: concentrate knowledge about word definition in this
+	  class. Rename the class WordType (think WordReference etc...). Change
+	  Initialize to use an external default object. A WordType object may be
+	  allocated on its own. Drag functionalities from BadWordFile, Replace and
+	  IsValid of WordList, and concentrate them in the WordType::Normalize 
+	  function.
+
+	* htcommon/WordList: use the new WordList semantic. WordType is now a member
+	  of WordList, opening the possibility to have many WordList object with different
+	  configurations within the same program since the constructor takes 
+	
+	* htsearch/htsearch.cc (setupWords): Use HtNormalize to find out if word should
+	  be ignored in query. Formerly using IsValid.
+
+	* htlib/String.cc (operator []): fix big mistake, operator [] was indeed last() !
+
+	* htlib/String.cc(uppercase, lowercase): return the number of converted chars.
+
+	* htlib/String.cc(remove): return the number of chars removed.
+
 Mon Sep 27 17:43:23 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* Created testnet.cc under test dir for trying the htnet library

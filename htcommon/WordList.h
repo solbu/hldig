@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.10 1999/09/24 10:28:56 loic Exp $
+// $Id: WordList.h,v 1.11 1999/09/28 07:30:34 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -28,6 +28,7 @@
 #include "Database.h"
 #include "WordRecord.h"
 #include "WordReference.h"
+#include "HtWordType.h"
 #include "Configuration.h"
 
 class WordList;
@@ -70,17 +71,6 @@ public:
     // Flush the words stored in the object to the database
     //
     void		Flush();
-
-    //
-    // Handling the list of bad words 
-    //
-    void		BadWordFile(const String& filename);
-    //
-    // Check if the given word is valid
-    //
-    int			IsValid(String word)	{ return IsValid(word.get()); }
-    int			IsValid(const char* word);
-
 
     //
     // Open underlying db file
@@ -140,12 +130,12 @@ protected:
 private:
 
     List			*words;
-    Dictionary			badwords;
 
     Database            	*dbf;
     int                 	isopen;
     int                 	isread;
 
+    const WordType		wtype;
     const Configuration&	config;
 };
 

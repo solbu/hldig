@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.28 1999/09/27 08:57:04 loic Exp $
+// $Id: String.cc,v 1.29 1999/09/28 07:30:35 loic Exp $
 //
 
 
@@ -404,63 +404,31 @@ char	String::operator >> (char c)
     return c;
 }
 
-
-char String::last()
+int String::lowercase()
 {
-  if (Length > 0)
-    return Data[Length - 1];
-  else
-    return 0;
-}
-
-char	String::operator [] (int n) const
-{
-  if (Length > 0)
-    return Data[Length - 1];
-  else
-    return 0;
-}
-
-char	&String::operator [] (int n)
-{
-    static char	null = 0;
-    if (n >= Length)
-	return null;
-    else if (n < 0)
-	return (*this)[Length + n];
-    else
-	return Data[n];
-}
-
-char	String::Nth (int n)
-{
-    static char	null = 0;
-    if (n >= Length)
-	return null;
-    else if (n < 0)
-	return (*this)[Length + n];
-    else
-	return Data[n];
-}
-
-
-void String::lowercase()
-{
-    for (int i = 0; i < Length; i++)
+  int converted = 0;
+  for (int i = 0; i < Length; i++)
     {
-//		if (isupper(Data[i]))
+      if (isupper(Data[i])) {
 	Data[i] = tolower((unsigned char)Data[i]);
+	converted++;
+      }
     }
+  return converted;
 }
 
 
-void String::uppercase()
+int String::uppercase()
 {
-    for (int i = 0; i < Length; i++)
+  int converted = 0;
+  for (int i = 0; i < Length; i++)
     {
-	if (islower(Data[i]))
-	    Data[i] = toupper((unsigned char)Data[i]);
+      if (islower(Data[i])) {
+	Data[i] = toupper((unsigned char)Data[i]);
+	converted++;
+      }
     }
+  return converted;
 }
 
 
@@ -472,10 +440,10 @@ void String::replace(char c1, char c2)
 }
 
 
-void String::remove(char *chars)
+int String::remove(const char *chars)
 {
     if (Length <= 0)
-	return;
+	return 0;
 
     char	*good, *bad;
     int		skipped = 0;
@@ -490,6 +458,8 @@ void String::remove(char *chars)
 	bad++;
     }
     Length -= skipped;
+
+    return skipped;
 }
 
 

@@ -30,7 +30,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: aclocal.m4,v 1.13 1999/09/24 10:28:55 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.14 1999/09/28 07:30:34 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -59,7 +59,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.13 1999/09/24 10:28:55 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.14 1999/09/28 07:30:34 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -117,7 +117,7 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: aclocal.m4,v 1.13 1999/09/24 10:28:55 loic Exp $
+dnl @version $Id: aclocal.m4,v 1.14 1999/09/28 07:30:34 loic Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.32 1999/09/24 10:28:56 loic Exp $
+// $Id: WordList.cc,v 1.33 1999/09/28 07:30:34 loic Exp $
 //
 
 #include "WordList.h"
@@ -63,6 +63,7 @@ WordList::~WordList()
 //*****************************************************************************
 //
 WordList::WordList(const Configuration& config_arg) :
+  wtype(config_arg),
   config(config_arg)
 {
     words = new List;
@@ -78,27 +79,8 @@ void WordList::Replace(const WordReference& arg)
 {
   WordReference	wordRef(arg);
   String 	word = wordRef.Word();
-  
-  // Why should we add empty words?
-  if (word.length() == 0)
+  if(wtype.Normalize(word) & WORD_NORMALIZE_NOTOK)
     return;
-
-    // Let's clean it up--lowercase it, check for caps, and strip punctuation
-  String orig = word;
-  word.lowercase();
-    
-  if (word != orig)
-    wordRef.Flags(wordRef.Flags() | FLAG_CAPITAL);
-
-  HtStripPunctuation(word);
-
-  if (!IsValid(word))
-    return;
-
-  static int	maximum_word_length = config.Value("maximum_word_length", 12);
-  if (word.length() > maximum_word_length)
-    word.chop(word.length() - maximum_word_length);
-
   wordRef.Word(word);
 
   //
@@ -106,50 +88,6 @@ void WordList::Replace(const WordReference& arg)
   //
   words->Add(new WordReference(wordRef));
 }
-
-
-//*****************************************************************************
-// int WordList::valid_word(char *word)
-//   Words are considered valid if they contain alpha characters and
-//   no control characters.  Also, if the word is found in the list of
-//   bad words, it will be marked invalid.
-//
-int WordList::IsValid(const char *word)
-{
-    int		control = 0;
-    int		alpha = 0;
-    static int	allow_numbers = config.Boolean("allow_numbers", 0);
-    static int	minimum_word_length = config.Value("minimum_word_length", 3);
-
-    if (badwords.Exists(word))
-	return 0;
-
-    if ((int)strlen(word) < minimum_word_length)
-      return 0;
-
-    while (word && *word)
-    {
-      if (HtIsStrictWordChar((unsigned char)*word) && !isdigit(*word))
-	{
-	    alpha = 1;
-	    // break;  /* Can't stop here, there may still be control chars! */
-	}
-      else if (allow_numbers && isdigit(*word))
-	{
-	  alpha = 1;
-	  // break;    /* Can't stop here, there may still be control chars! */
-	}
-      else if (iscntrl(*word))
-	{
-	    control = 1;
-	    break;
-	}
-      word++;
-    }
-
-    return alpha && !control;
-}
-
 
 //*****************************************************************************
 // void WordList::Flush()
@@ -189,44 +127,6 @@ void WordList::MarkGone()
 {
   words->Destroy();
 }
-
-
-//*****************************************************************************
-// void WordList::BadWordFile(char *filename)
-//   Read in a list of words which are not to be included in the word
-//   file.  This is mostly to exclude words that are too common.
-//
-void WordList::BadWordFile(const String& filename)
-{
-    FILE	*fl = fopen(filename, "r");
-    char	buffer[1000];
-    char	*word;
-    String      new_word;
-    static int	minimum_word_length = config.Value("minimum_word_length", 3);
-    static int	maximum_word_length = config.Value("maximum_word_length", 12);
-
-    // Read in the badwords file (it's just a text file)
-    while (fl && fgets(buffer, sizeof(buffer), fl))
-    {
-	word = strtok(buffer, "\r\n \t");
-	if (word && *word)
-	  {
-	    // We need to clean it up before we add it
-	    // Just in case someone enters an odd one
-	    if ((int)strlen(word) > maximum_word_length)
-		word[maximum_word_length] = '\0';
-	    new_word = word;
-	    new_word.lowercase();
-	    HtStripPunctuation(new_word);
-	    if (new_word.length() >= minimum_word_length)
-	      badwords.Add(new_word, 0);
-	  }
-    }
-
-    if (fl)
-	fclose(fl);
-}
-
 
 //*****************************************************************************
 //

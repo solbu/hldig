@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.4 1999/09/27 13:55:48 loic Exp $
+// $Id: word.cc,v 1.5 1999/09/28 07:30:36 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -98,15 +98,15 @@ int main(int ac, char **av)
 static void doword(params_t* params)
 {
   if(params->key) {
-    cerr << "Test WordKey class\n";
+    if(verbose) cerr << "Test WordKey class with " << params->word_desc << "\n";
     dokey(params);
   }
   if(params->list) {
-    cerr << "Test WordList class\n";
+    if(verbose) cerr << "Test WordList class\n";
     config.Defaults(&defaults[0]);
     config.Read(params->config);
     // Ctype-like functions for what constitutes a word.
-    HtWordType::Initialize(config);
+    WordType::Initialize(config);
     unlink(config["word_db"]);
     dolist(params);
   }

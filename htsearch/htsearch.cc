@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.48 1999/09/24 10:29:05 loic Exp $
+// $Id: htsearch.cc,v 1.49 1999/09/28 07:30:35 loic Exp $
 //
 
 #include "htsearch.h"
@@ -193,7 +193,7 @@ main(int ac, char **av)
     }
  
     // Ctype-like functions for what constitutes a word.
-    HtWordType::Initialize(config);
+    WordType::Initialize(config);
 
     //
     // Check url_part_aliases and common_url_parts for
@@ -383,8 +383,6 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
     // will be put in the searchWords list and at the same time in the
     // String pattern separated with '|'.
     //
-    WordList	badWords(config);		// Just used to check for valid words.
-    badWords.BadWordFile(config["bad_word_list"]);
 
     //
     // Convert the string to a list of WeightWord objects.  The special
@@ -450,16 +448,9 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		    // Add word to excerpt matching list
 		    originalPattern << word << "|";
 		    WeightWord	*ww = new WeightWord(word, 1.0);
-		    if (!badWords.IsValid(word) ||
-			word.length() < minimum_word_length)
-		    {
+		    if(HtWordNormalize(word) & WORD_NORMALIZE_NOTOK)
 			ww->isIgnore = 1;
-			tempWords.Add(ww);
-		    }
-		    else
-		    {
-			tempWords.Add(ww);
-		    }
+		    tempWords.Add(ww);
 		}
 		break;
 	    }

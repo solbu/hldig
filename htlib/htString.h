@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htString.h,v 1.12 1999/09/24 14:30:11 loic Exp $
+// $Id: htString.h,v 1.13 1999/09/28 07:30:35 loic Exp $
 //
 #ifndef __String_h
 #define __String_h
@@ -88,8 +88,8 @@ public:
     //
     char		&operator [] (int n);
     char		operator [] (int n) const;
-    char		Nth (int n);
-    char		last();
+    char		Nth (int n) { return (*this)[n]; }
+    char		last() { return Length > 0 ? Data[Length - 1] : '\0'; }
 
     //
     // Removing
@@ -156,11 +156,11 @@ public:
 
     friend ostream	&operator << (ostream &o, const String &s);
 
-    void		lowercase();
-    void		uppercase();
+    int			lowercase();
+    int			uppercase();
 
     void		replace(char c1, char c2);
-    void		remove(char *);
+    int			remove(const char *);
 
     Object		*Copy();
 
@@ -235,6 +235,24 @@ inline void String::operator += (const String &s)
 inline void String::operator += (const char *s)
 {
     append(s);
+}
+
+inline char	String::operator [] (int n) const
+{
+  static char null = '\0';
+  if(n < 0) n = Length + n;
+  if(n >= Length || n < 0) return null;
+
+  return Data[n];
+}
+
+inline char	&String::operator [] (int n)
+{
+  static char null = '\0';
+  if(n < 0) n = Length + n;
+  if(n >= Length || n < 0) return null;
+
+  return Data[n];
 }
 
 //
