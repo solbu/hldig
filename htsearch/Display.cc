@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.24  1998/12/14 04:08:06  ghutchis
+// Fix potential coredump when calculating date_factor and backlink_factor on
+// docs that aren't in the database.
+//
 // Revision 1.23  1998/12/12 01:45:29  ghutchis
 // Added a patch from Gilles allowing CGI environment variables in templates.
 //
@@ -96,7 +100,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.23 1998/12/12 01:45:29 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.24 1998/12/14 04:08:06 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -828,7 +832,7 @@ Display::buildMatchList()
 	// so this still needs to be done.
 	//
 	DocMatch	*dm = results->find(id);
-	float           score = dm->score;
+	double           score = dm->score;
 	DocumentRef     *thisRef = docDB[thisMatch->getURL()];
 
 	// We need to scale based on date relevance and backlinks
@@ -838,13 +842,17 @@ Display::buildMatchList()
 	// This formula derived through experimentation
 	// We want older docs to have smaller values and the
 	// ultimate values to be a reasonable size (max about 100)
-	score += config.Double("date_factor") * 
-	  (((double)(thisRef->DocTime()) * 1000 / (double)time(0)) - 900);
-	int links = thisRef->DocLinks();
-	if (links == 0)
-	  links = 1; // It's a hack, but it helps...
-	score += config.Double("backlink_factor") 
-	  * (thisRef->DocBackLinks() / (double)links);
+
+	if (thisRef)   // We better hope it's not null!
+	  {
+	    score += config.Double("date_factor") * 
+	      ((thisRef->DocTime() * 1000 / (double)time(0)) - 900);
+	    int links = thisRef->DocLinks();
+	    if (links == 0)
+	      links = 1; // It's a hack, but it helps...
+	    score += config.Double("backlink_factor") 
+	      * (thisRef->DocBackLinks() / (double)links);
+	  }
 
 	thisMatch->setIncompleteScore(score);
 	thisMatch->setAnchor(dm->anchor);
