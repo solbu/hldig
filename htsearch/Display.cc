@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.28 2000/10/20 03:40:57 ghutchis Exp $
+// $Id: Display.cc,v 1.100.2.29 2000/11/24 09:50:27 toivo Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1131,6 +1131,9 @@ Display::buildMatchList()
     SplitMatches matches(config);
     double      backlink_factor = config.Double("backlink_factor");
     double      date_factor = config.Double("date_factor");
+    double backlink_score = 0;
+    double date_score = 0;
+    double base_score = 0;
 
     URLSeedScore adjustments(config);
  
@@ -1198,10 +1201,12 @@ Display::buildMatchList()
 	// We want older docs to have smaller values and the
 	// ultimate values to be a reasonable size (max about 100)
 
+	base_score = score;
 	if (date_factor != 0.0)
 	{
-	    score += date_factor * 
+	    date_score =  date_factor * 
 	      ((thisRef->DocTime() * 1000 / (double)time(0)) - 900);
+	    score += date_score;
         }
   
 	if (backlink_factor != 0.0)
@@ -1210,11 +1215,16 @@ Display::buildMatchList()
 	    if (links == 0)
 	      links = 1; // It's a hack, but it helps...
   
-	    score += backlink_factor
+	    backlink_score = backlink_factor
 	      * (thisRef->DocBackLinks() / (double)links);
+	    score += backlink_score;
 	}
 
-	thisMatch->setTime(thisRef->DocTime());   
+        if (debug) {
+	   cerr << thisRef->DocURL() << "\n";
+	}
+
+        thisMatch->setTime(thisRef->DocTime());   
 	thisMatch->setTitle(thisRef->DocTitle());   
 
 	score = adjustments.adjust_score(score, thisRef->DocURL());
@@ -1233,7 +1243,8 @@ Display::buildMatchList()
 
         if (debug)
         {
-	  cerr << "score " << score << "(" << thisMatch->getScore() << "), maxScore " << maxScore <<", minScore " << minScore << endl;
+	  cerr << "   base_score " << base_score << " date_score " << date_score << " backlink_score " << backlink_score << "\n";
+	  cerr << "   score " << score << "(" << thisMatch->getScore() << "), maxScore " << maxScore <<", minScore " << minScore << endl;
         }
  
  	if (maxScore < score)

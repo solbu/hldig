@@ -1,3 +1,7 @@
+Fri Nov 24 00:56:01 2000  Toivo Pedaste <toivo@ucs.uwa.edu.au>
+
+	* htsearch/Display.cc: Some extra debugging for scoring
+
 Sun Nov 19 00:56:01 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htnet/HtFile.cc (Request): Use opendir/readdir instead of
