@@ -125,6 +125,7 @@ class WordKey
   //
   void operator =(const WordKey &other)
   {
+      Clear();
       CopyFrom(other);
   }
 #endif /* SWIG */

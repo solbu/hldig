@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.cc,v 1.1.2.9 2000/01/06 11:31:17 bosc Exp $
+// $Id: WordBitCompress.cc,v 1.1.2.10 2000/01/11 11:32:27 bosc Exp $
 //
 
 
@@ -88,9 +88,15 @@ duplicate(unsigned int *v,int n)
 int
 qsort_uint_cmp(const void *a,const void *b)
 {
-    return 
-	(*((unsigned int *)a)) -
-	(*((unsigned int *)b))   ;
+//      printf("%12u %12u",*((unsigned int *)a),*((unsigned int *)b));
+    if((*((unsigned int *)a)) > (*((unsigned int *)b))) return 1;
+    else
+    if((*((unsigned int *)a)) < (*((unsigned int *)b))) return -1;
+    else
+    return 0;
+//      return 
+//  	(*((unsigned int *)a)) -
+//  	(*((unsigned int *)b))   ;
 }
 // quick sort an array of unsigned int's
 void
@@ -157,9 +163,11 @@ public:
 	register int i;
 	register unsigned int lboundary=0;
 	register unsigned int sboundary=0;
-	for(i=0;;i++)
+	for(i=0;i<nintervals-1;i++)
 	{
+//  	    if(i>=nintervals){errr("code argh!");}
 	    sboundary=lboundary+intervalsizes[i];
+//    	    printf("nintervals:%3d i:%3d : %12u ...  %12u  : %12u\n",nintervals,i,lboundary,sboundary,v);
 	    if( (lboundary!=sboundary && v>=lboundary && v<sboundary) || 
 		(lboundary==sboundary && v==lboundary)                   ){break;}
 	    lboundary=sboundary;
@@ -203,6 +211,7 @@ public:
     
     ~VlengthCoder()
     {
+	delete [] lboundaries;
 	delete [] intervals;
 	delete [] intervalsizes;
     }
@@ -289,20 +298,36 @@ VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose/
     // find split boundaires
     if(verbose>1)printf("nbits:%d nlev:%d nintervals:%d \n",nbits,nlev,nintervals);
 
+    if(0)
+    {
+	printf("vals;\n");
+	for(i=0;i<n;i++)
+	{
+	    printf("%12u  ",vals[i]);
+	}
+	printf("\nsorted:\n");
+	for(i=0;i<n;i++)
+	{
+	    printf("%12u  ",sorted[i]);
+	}
+	printf("\n");
+    }
+
     unsigned int lboundary=0;
+    unsigned int boundary;
     for(i=0;i<nintervals-1;i++)
     {
-	unsigned int boundary=sorted[(n*(i+1))/nintervals];
+	boundary=sorted[(n*(i+1))/nintervals];
 	intervals[i]=1+log2(boundary-lboundary);
 	intervalsizes[i]=intervalsize0(i);
-	if(verbose>1)printf("intnum%02d  begin:%5d end:%5d len:%5d (code:%2d)  real upper boundary: real:%5d\n",i,lboundary,intervalsizes[i]+lboundary,intervalsizes[i],intervals[i],boundary);
+	if(0 || verbose>1)printf("intnum%02d  begin:%5u end:%5u len:%5u (code:%2d)  real upper boundary: real:%5u\n",i,lboundary,intervalsizes[i]+lboundary,intervalsizes[i],intervals[i],boundary);
 	lboundary+=intervalsizes[i];
     }
-    intervals[i]=1+log2(sorted[n-1]-lboundary)+1;
+    boundary=sorted[n-1];
+    intervals[i]=1+log2(boundary-lboundary)+1;
     intervalsizes[i]=intervalsize0(i);
-    lboundary+=intervalsizes[i];
-    if(verbose>1)printf("num%02d  interval len:%2d  %5d   boundary: real:%5d approx:%5d\n",i,intervals[i],intervalsizes[i],sorted[n-1],lboundary);
-    if(verbose>1)printf("\n");
+    if(0 || verbose>1)printf("intnum%02d  begin:%5u end:%5u len:%5u (code:%2d)  real upper boundary: real:%5u\n",i,lboundary,intervalsizes[i]+lboundary,intervalsizes[i],intervals[i],boundary);
+    if(0 || verbose>1)printf("\n");
 
     make_lboundaries();
 
