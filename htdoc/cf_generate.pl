@@ -14,7 +14,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: cf_generate.pl,v 1.1.2.7 2000/03/21 00:34:32 ghutchis Exp $
+# $Id: cf_generate.pl,v 1.1.2.8 2000/03/28 01:44:30 ghutchis Exp $
 #
 use strict;
 
@@ -104,7 +104,7 @@ foreach $record (@$config) {
     if($letter ne uc(substr($name, 0, 1))) {
 	print BYNAME "\t</font> <br>\n" if($letter);
 	$letter = uc(substr($name, 0, 1));
-	print BYNAME "\t<b>$letter</b> <font face=\"helvetica,arial\" size=\"2\"><br>\n";
+	print BYNAME "\t<strong>$letter</strong> <font face=\"helvetica,arial\" size=\"2\"><br>\n";
     }
 
     print BYNAME "\t <img src=\"dot.gif\" alt=\"*\" width=9 height=9> <a target=\"body\" href=\"attrs.html#$name\">$name</a><br>\n";
@@ -125,7 +125,7 @@ foreach $record (@$config) {
     }
 
     if(!($example =~ /^$name:/)) {
-	$example = "\t\t\t  <tr> <td valign=\"top\"><i>No example provided</i></td> </tr>\n";
+	$example = "\t\t\t  <tr> <td valign=\"top\"><em>No example provided</em></td> </tr>\n";
     } elsif($example =~ /\A$name:\s*\Z/s) {
 	$example = "\t\t\t  <tr> <td valign=\"top\">$name:</td> </tr>\n";
     } else {
@@ -148,7 +148,7 @@ EOF
     }
 
     if($default =~ /^\s*$/) {
-	$default = "<i>No default</i>";
+	$default = "<em>No default</em>";
     } else {
 	$default =~ s/^([A-Z][A-Z_]*) \" (.*?)\"/$1 $2/;	# for PDF_PARSER
 	$default = html_escape($default);
@@ -256,7 +256,7 @@ foreach $record (@$config) {
 my($prog);
 foreach $prog (sort(keys(%prog2attr))) {
     my($top) = $prog eq 'htsearch' ? "target=\"_top\"" : "target=\"body\"";
-    print BYPROG "\t<br><b><a href=\"$prog.html\" $top>$prog</a></b> <font face=\"helvetica,arial\" size=\"2\"><br>\n";
+    print BYPROG "\t<br><strong><a href=\"$prog.html\" $top>$prog</a></strong> <font face=\"helvetica,arial\" size=\"2\"><br>\n";
     my($record);
     foreach $record (@{$prog2attr{$prog}}) {
 	my($name, $default, $type, $programs, $example, $description) = @$record;
