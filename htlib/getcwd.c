@@ -61,7 +61,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
 
 #ifndef HAVE_GETCWD
 

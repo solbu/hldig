@@ -31,6 +31,10 @@
 # include "htconfig.h"
 #endif
 
+#ifdef _MSC_VER //_WIN32
+#define alloca _alloca
+#endif
+
 #ifndef PARAMS
 # if defined __GNUC__ || (defined __STDC__ && __STDC__)
 #  define PARAMS(args) args

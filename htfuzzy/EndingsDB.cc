@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: EndingsDB.cc,v 1.12 2002/12/31 07:59:05 lha Exp $
+// $Id: EndingsDB.cc,v 1.13 2003/06/23 21:29:30 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -25,17 +25,23 @@
 #include "List.h"
 #include "HtConfiguration.h"
 
+#include "filecopy.h"
+
 // This is an attempt to get around compatibility problems 
 // with the included regex
-#ifdef USE_RX
-# include <rxposix.h>
-#else // Use regex
-# ifdef HAVE_BROKEN_REGEX
-#  include <regex.h>
-# else // include regex code and header
-#  include "gregex.h"
+#ifdef _MSC_VER //_WIN32
+#include "regex_win32.h"
+#else
+# ifdef USE_RX
+#  include <rxposix.h>
+# else // Use regex
+#  ifdef HAVE_BROKEN_REGEX
+#   include <regex.h>
+#  else // include regex code and header
+#   include "gregex.h"
+#  endif
 # endif
-#endif
+#endif //_MSC_VER //_WIN32
 
 #include <stdio.h>
 #include <fstream.h>
@@ -51,6 +57,13 @@ Endings::createDB(const HtConfiguration &config)
     Dictionary	rules;
     String      tmpdir = getenv("TMPDIR");
     String      word2root, root2word;
+    
+#if defined(LIBHTDIG) || defined(LIBHTDIGPHP) || defined(_MSC_VER) //WIN32
+    int ret = -1;
+    char * source = NULL;
+    char * dest = NULL;
+#endif
+
     if (tmpdir.length())
       {
 	word2root = tmpdir;
@@ -83,6 +96,40 @@ Endings::createDB(const HtConfiguration &config)
     // to now move them to the correct location as defined in the config
     // database.
     //
+    
+#if defined(LIBHTDIG) || defined(LIBHTDIGPHP) || defined(_MSC_VER) //WIN32
+
+    //Uses file_copy function - works on Unix/Linux & WinNT
+    source = root2word.get();
+    dest = (char *)config["endings_root2word_db"].get();
+
+    //Attempt rename, if fail attempt copy & delete.
+    ret = rename(source, dest);
+    if (ret < 0)
+    {
+        ret = file_copy(source, dest, FILECOPY_OVERWRITE_ON);
+        if (ret == TRUE)
+            unlink(source);
+        else
+            return NOTOK;
+    }
+
+    source = word2root.get();
+    dest = (char *)config["endings_word2root_db"].get();
+
+    //Attempt rename, if fail attempt copy & delete.
+    ret = rename(source, dest);
+    if (ret < 0)
+    {
+        ret = file_copy(source, dest, FILECOPY_OVERWRITE_ON);
+        if (ret == TRUE)
+            unlink(source);
+        else
+            return NOTOK;
+    }
+    
+#else //This code uses a system call - Phase this out
+
     struct stat stat_buf;
     String mv("mv");	// assume it's in the PATH if predefined setting fails
     if ((stat(MV, &stat_buf) != -1) && S_ISREG(stat_buf.st_mode))
@@ -91,7 +138,10 @@ Endings::createDB(const HtConfiguration &config)
 	mv.get(), root2word.get(), config["endings_root2word_db"].get(),
 	mv.get(), word2root.get(), config["endings_word2root_db"].get()));
 
+#endif
+
     return OK;
+
 }
 
 

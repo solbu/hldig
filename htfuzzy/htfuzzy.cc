@@ -18,7 +18,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htfuzzy.cc,v 1.17 2002/02/01 22:49:33 ghutchis Exp $
+// $Id: htfuzzy.cc,v 1.18 2003/06/23 21:29:30 nealr Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -41,6 +41,8 @@
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
+#elif HAVE_GETOPT_LOCAL
+#include <getopt_local.h>
 #endif
 
 int		debug = 0;

@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.h,v 1.8 2002/12/31 07:59:05 lha Exp $
+// $Id: HtRegex.h,v 1.9 2003/06/23 21:31:47 nealr Exp $
 //
 //
 
@@ -21,15 +21,20 @@
 
 // This is an attempt to get around compatibility problems 
 // with the included regex
-#ifdef USE_RX
-# include <rxposix.h>
-#else // Use regex
-# ifdef HAVE_BROKEN_REGEX
-#  include <regex.h>
-# else // include regex code and header
-#  include "gregex.h"
+
+#ifdef _MSC_VER //_WIN32
+#include "regex_win32.h"
+#else
+# ifdef USE_RX
+#  include <rxposix.h>
+# else // Use regex
+#  ifdef HAVE_BROKEN_REGEX
+#   include <regex.h>
+#  else // include regex code and header
+#   include "gregex.h"
+#  endif
 # endif
-#endif
+#endif //_WIN32
 
 #include <sys/types.h>
 #include <fstream.h>

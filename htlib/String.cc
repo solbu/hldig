@@ -9,16 +9,22 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.35 2003/01/20 22:40:15 lha Exp $
+// $Id: String.cc,v 1.36 2003/06/23 21:31:47 nealr Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
+
 #include "htString.h"
 #include "Object.h"
 
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#else
+#include <io.h>
+#endif
+
 #include <iostream.h>
 #include <ctype.h>
 #include <stdio.h>

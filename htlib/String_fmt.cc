@@ -11,7 +11,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String_fmt.cc,v 1.7 2002/02/01 22:49:34 ghutchis Exp $
+// $Id: String_fmt.cc,v 1.8 2003/06/23 21:31:47 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -22,6 +22,10 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+
+#ifdef _MSC_VER //_WIN32
+#define vsnprintf _vsnprintf
+#endif
 
 static char	buf[10000];
 

@@ -10,16 +10,41 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: lib.h,v 1.12 2002/02/01 22:49:34 ghutchis Exp $
+// $Id: lib.h,v 1.13 2003/06/23 21:31:47 nealr Exp $
 //
 
 #ifndef _lib_h
 #define _lib_h
 
+#ifndef _MSC_VER //_WIN32
 #include "clib.h"
+#endif
 
 #include <string.h>
+
+#ifdef _MSC_VER //_WIN32
+#include "dirent_local.h"
+#define S_ISDIR(v)  ((v)&_S_IFDIR)
+#define S_ISREG(v)  ((v)&_S_IFREG)
+#else
 #include <dirent.h> // for scandir
+#endif
+
+#ifdef _MSC_VER //_WIN32
+#include <io.h>
+#include <stdlib.h>
+#define S_IFIFO        _S_IFIFO // pipe
+#define S_IFBLK        0060000  // block special
+#define S_IFLNK        0120000  // symbolic link
+#define S_IFSOCK       0140000  // socket
+#define S_IFWHT        0160000  // whiteout
+#define R_OK           02
+#define popen          _popen
+#define pclose         _pclose
+#define lstat          stat
+#define readlink(x,y,z) {-1}
+#define sleep(t)       _sleep((t) * 1000)
+#endif
 
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>

@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtTime.h,v 1.4 2003/06/20 07:49:54 lha Exp $
+// $Id: HtTime.h,v 1.5 2003/06/23 21:31:47 nealr Exp $
 //
 #ifndef _HtTime_h_
 #define _HtTime_h_
@@ -25,6 +25,9 @@
 # endif
 #endif
 
+#ifdef _MSC_VER //_WIN32
+#include <sys/timeb.h>
+#endif
 
 class HtTime
 {
@@ -32,16 +35,29 @@ class HtTime
     // time in seconds (double format)
     static inline double DTime()
     {
+#ifdef _MSC_VER //_WIN32
+	struct timeb tb;
+	ftime(&tb);
+	return((double)((tb.millitm/1000)+tb.time+tb.timezone));
+#else
 	struct timeval tv;
 	gettimeofday(&tv,NULL);
 	return(tv.tv_usec/1000000.0+tv.tv_sec);
+#endif
+
     }
     // time in seconds relative to T0 (double format)
     static inline double DTime(double T0)
     {
+#ifdef _MSC_VER //_WIN32
+	struct timeb tb;
+	ftime(&tb);
+	return((double)(((tb.millitm/1000)+tb.time+tb.timezone))-T0);
+#else
 	struct timeval tv;
 	gettimeofday(&tv,NULL);
 	return((tv.tv_usec/1000000.0+tv.tv_sec)-T0);
+#endif
     }
 
     // Do something every x seconds

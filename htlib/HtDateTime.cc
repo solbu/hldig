@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.cc,v 1.16 2002/04/09 14:43:57 angusgb Exp $
+// $Id: HtDateTime.cc,v 1.17 2003/06/23 21:31:47 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -39,10 +39,10 @@ extern char *strptime(const char *__s, const char *__fmt, struct tm *__tp);
    //    Static local variable : Visible only here !!!
 ///////
 
-#define MAXSTRTIME 256  // Max length of _strtime
+#define MAXSTRTIME 256  // Max length of my_strtime
 
 static struct tm Ht_tm;
-static char _strtime[MAXSTRTIME];
+static char my_strtime[MAXSTRTIME];
 
 
 ///////
@@ -512,8 +512,8 @@ char *HtDateTime::GetFTime(const char *format) const
 
    // Invoke GetFTime overloaded method
    
-   if(GetFTime(_strtime, MAXSTRTIME, format))
-      return (char *)_strtime;
+   if(GetFTime(my_strtime, MAXSTRTIME, format))
+      return (char *)my_strtime;
    else return 0;
 
 }
@@ -535,9 +535,9 @@ char *HtDateTime::GetRFC1123() const
    // seconds ( 00 - 59);
    // time zone name;
 
-   GetFTime(_strtime, MAXSTRTIME, RFC1123_FORMAT);
+   GetFTime(my_strtime, MAXSTRTIME, RFC1123_FORMAT);
 
-   return (char *)_strtime;
+   return (char *)my_strtime;
    
 }
 
@@ -558,9 +558,9 @@ char *HtDateTime::GetRFC850() const
    // seconds ( 00 - 59);
    // time zone name;
 
-   GetFTime(_strtime, MAXSTRTIME, RFC850_FORMAT);
+   GetFTime(my_strtime, MAXSTRTIME, RFC850_FORMAT);
 
-   return (char *)_strtime;
+   return (char *)my_strtime;
    
 }
 
@@ -571,8 +571,8 @@ char *HtDateTime::GetRFC850() const
 char *HtDateTime::GetAscTime() const
 {
 
-   GetFTime(_strtime, MAXSTRTIME, ASCTIME_FORMAT);
-   return (char *)_strtime;
+   GetFTime(my_strtime, MAXSTRTIME, ASCTIME_FORMAT);
+   return (char *)my_strtime;
 
 }
 
@@ -592,9 +592,9 @@ char *HtDateTime::GetISO8601() const
    // seconds ( 00 - 59);
    // time zone name;
 
-   GetFTime(_strtime, MAXSTRTIME, ISO8601_FORMAT);
+   GetFTime(my_strtime, MAXSTRTIME, ISO8601_FORMAT);
 
-   return (char *)_strtime;
+   return (char *)my_strtime;
    
 }
 
@@ -610,9 +610,9 @@ char *HtDateTime::GetShortISO8601() const
    // month ( 01 - 12)
    // day of the month
 
-   GetFTime(_strtime, MAXSTRTIME, ISO8601_SHORT_FORMAT);
+   GetFTime(my_strtime, MAXSTRTIME, ISO8601_SHORT_FORMAT);
 
-   return (char *)_strtime;
+   return (char *)my_strtime;
    
 }
 
@@ -631,9 +631,9 @@ char *HtDateTime::GetTimeStamp() const
    // minute ( 00 - 59)
    // seconds ( 00 - 59);
 
-   GetFTime(_strtime, MAXSTRTIME, TIMESTAMP_FORMAT);
+   GetFTime(my_strtime, MAXSTRTIME, TIMESTAMP_FORMAT);
 
-   return (char *)_strtime;
+   return (char *)my_strtime;
    
 }
 
@@ -644,9 +644,9 @@ char *HtDateTime::GetTimeStamp() const
 char *HtDateTime::GetDateTimeDefault() const
 {
 
-   GetFTime(_strtime, MAXSTRTIME, "%c");
+   GetFTime(my_strtime, MAXSTRTIME, "%c");
 
-   return (char *)_strtime;
+   return (char *)my_strtime;
    
 }
 
@@ -657,9 +657,9 @@ char *HtDateTime::GetDateTimeDefault() const
 char *HtDateTime::GetDateDefault() const
 {
 
-   GetFTime(_strtime, MAXSTRTIME, "%x");
+   GetFTime(my_strtime, MAXSTRTIME, "%x");
 
-   return (char *)_strtime;
+   return (char *)my_strtime;
    
 }
 
@@ -670,9 +670,9 @@ char *HtDateTime::GetDateDefault() const
 char *HtDateTime::GetTimeDefault() const
 {
 
-   GetFTime(_strtime, MAXSTRTIME, "%X");
+   GetFTime(my_strtime, MAXSTRTIME, "%X");
 
-   return (char *)_strtime;
+   return (char *)my_strtime;
    
 }
 

@@ -18,7 +18,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htfuzzy.h,v 1.7 2002/02/01 22:49:33 ghutchis Exp $
+// $Id: htfuzzy.h,v 1.8 2003/06/23 21:29:31 nealr Exp $
 //
 
 #ifndef _htfuzzy_h_
@@ -29,7 +29,11 @@
 #include "HtWordList.h"
 
 #include <stdlib.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
+
 #include <fstream.h>
 #include <stdio.h>
 

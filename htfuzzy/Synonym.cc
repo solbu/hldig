@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Synonym.cc,v 1.12 2003/05/27 12:51:27 lha Exp $
+// $Id: Synonym.cc,v 1.13 2003/06/23 21:29:30 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -24,6 +24,8 @@
 #include "List.h"
 #include "StringList.h"
 #include "HtConfiguration.h"
+
+#include "filecopy.h"
 
 #include <stdio.h>
 #include <fstream.h>
@@ -57,6 +59,12 @@ Synonym::createDB(const HtConfiguration &config)
 {
     String      tmpdir = getenv("TMPDIR");
     String 	dbFile;
+
+#if defined(LIBHTDIG) || defined(LIBHTDIGPHP) || defined(_MSC_VER) //WIN32
+    int ret = -1;
+    char * source = NULL;
+    char * dest = NULL;
+#endif
 
     if (tmpdir.length())
       dbFile = tmpdir;
@@ -128,6 +136,31 @@ Synonym::createDB(const HtConfiguration &config)
     db->Close();
     delete db;
 
+#if defined(LIBHTDIG) || defined(LIBHTDIGPHP) || defined(_MSC_VER) //WIN32
+    
+    //Uses file_copy function - works on Unix/Linux & WinNT
+    source = dbFile.get();
+    dest = (char *)config["synonym_db"].get();
+
+    //Attempt rename, if fail attempt copy & delete.
+    ret = rename(source, dest);
+    if (ret < 0)
+    {
+        ret = file_copy(source, dest, FILECOPY_OVERWRITE_ON);
+        if (ret == TRUE)
+            unlink(source);
+        else
+            return NOTOK;
+    }
+
+    if (debug)
+    {
+        cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
+        cout << "htfuzzy/synonyms: Done.\n";
+    }
+
+#else //This code uses a system call - Phase this out
+
     struct stat stat_buf;
     String mv("mv");	// assume it's in the PATH if predefined setting fails
     if ((stat(MV, &stat_buf) != -1) && S_ISREG(stat_buf.st_mode))
@@ -135,11 +168,8 @@ Synonym::createDB(const HtConfiguration &config)
     system(form("%s %s %s",
 		mv.get(), dbFile.get(), config["synonym_db"].get()));
 
-    if (debug)
-    {
-        cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
-	cout << "htfuzzy/synonyms: Done.\n";
-    }
+#endif
+
     return OK;
 }
 
