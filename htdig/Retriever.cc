@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.2 1999/11/09 15:43:12 toivo Exp $
+// $Id: Retriever.cc,v 1.72.2.3 1999/11/10 14:47:56 toivo Exp $
 //
 
 #include "Retriever.h"
@@ -164,7 +164,14 @@ Retriever::Initial(const String& list, int from)
 	    if (debug > 2)
                 cout << " skipped" << endl;
 	    continue;
+	} 
+	else if (!IsValidURL(url))
+	{
+	    if (debug > 2)
+                cout << endl;
+	    continue;
 	}
+
         if (Retriever_noLog == log || from != 3) 
         {
 	    if (debug > 2)
