@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.19 2000/03/03 10:42:04 angus Exp $
+// $Id: Document.cc,v 1.55.2.20 2000/03/25 03:38:15 ghutchis Exp $
 //
 
 #include <signal.h>
@@ -97,6 +97,14 @@ Document::Document(char *u, int max_size)
 //
 Document::~Document()
 {
+   // We delete only the derived class objects
+    if (HTTPConnect)
+      delete HTTPConnect;
+    if (FileConnect)
+      delete FileConnect;
+    if (externalConnect)
+      delete externalConnect;
+      
     if (url)
       delete url;
     if (proxy)
@@ -104,12 +112,6 @@ Document::~Document()
     if (referer)
       delete referer;
 
-   // We delete only the derived class objects
-    if (HTTPConnect)
-      delete HTTPConnect;
-    if (FileConnect)
-      delete FileConnect;
-      
 #if MEM_DEBUG
     char *p = new char;
     cout << "==== Document deleted: " << this << " new at " <<
