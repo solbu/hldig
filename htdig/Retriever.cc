@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.68 1999/10/01 15:19:29 loic Exp $
+// $Id: Retriever.cc,v 1.69 1999/10/08 11:54:59 loic Exp $
 //
 
 #include "Retriever.h"
@@ -698,15 +698,17 @@ Retriever::IsValidURL(char *u)
     // See if the file extension is in the list of invalid ones
     //
     ext = strrchr(url, '.');
-    String	lowerext = ext;
-    lowerext.lowercase();
-    if (ext && invalids->Exists(lowerext))
-      {
-	if (debug > 2)
-	  cout << endl <<"   Rejected: Extension is invalid!";
-	return FALSE;
-      }
-
+    String	lowerext;
+    if(ext) {
+      lowerext.set(ext);
+      lowerext.lowercase();
+      if (invalids->Exists(lowerext))
+	{
+	  if (debug > 2)
+	    cout << endl <<"   Rejected: Extension is invalid!";
+	  return FALSE;
+	}
+    }
     //
     // Or NOT in the list of valid ones
     //

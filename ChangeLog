@@ -14,6 +14,17 @@ Fri Oct 08 11:27:31 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* configure.in: modified getpeername() test.
 
+Fri Oct 08 10:28:15 1999  Loic Dachary  <loic@ceic.com>
+
+	* htdig/Retriever.cc (IsValidURL): test return value of 
+	  ext = strrchr(url, '.');
+
+	* htword/WordRecord.h: initialize info member to 0 in constructor and 
+	  Clear.
+
+	* htlib/Configuration: char* -> String to all functions. Resolve
+	  warnings.
+
 Thu Oct 07 16:19:46 1999  Loic Dachary  <loic@ceic.com>
 
 	* htnet/HtHTTP.cc (ReadChunkedBody): use append instead of 

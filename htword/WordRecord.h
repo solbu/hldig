@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordRecord.h,v 1.5 1999/10/07 08:25:33 loic Exp $
+// $Id: WordRecord.h,v 1.6 1999/10/08 11:55:00 loic Exp $
 //
 
 #ifndef _WordRecord_h_
@@ -46,8 +46,8 @@ class WordRecordStat {
 class WordRecord
 {
  public:
-  WordRecord() { info.data = 0; type = WORD_RECORD_DATA; }
-  void	Clear() { info.data = 0; type = WORD_RECORD_DATA; }
+  WordRecord() { memset((char*)&info, '\0', sizeof(info)); type = WORD_RECORD_DATA; }
+  void	Clear() { memset((char*)&info, '\0', sizeof(info)); type = WORD_RECORD_DATA; }
 
   int Pack(String& packed) const {
     switch(type) {
