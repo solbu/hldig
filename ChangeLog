@@ -1,3 +1,8 @@
+Sat Apr 24 15:18:45 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* htsearch/Display.cc (sort): Return immediately if <= 1 items to
+	sort.
+
 Mon Apr 19 00:53:06 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
 	* htsearch/ResultMatch.h (create): New.  All (the only) ctor

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.71 1999/04/19 01:21:51 hp Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.72 1999/04/24 22:41:24 hp Exp $";
 #endif
 
 #include "htsearch.h"
@@ -1093,6 +1093,9 @@ Display::sort(List *matches)
 {
     int		numberOfMatches = matches->Count();
     int		i;
+
+    if (numberOfMatches <= 1)
+      return;
 
     ResultMatch	**array = new ResultMatch*[numberOfMatches];
     for (i = 0; i < numberOfMatches; i++)
