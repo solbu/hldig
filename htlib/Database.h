@@ -3,7 +3,7 @@
 //
 // This is a class which defines the interface to a generic, simple database.
 //
-// $Id: Database.h,v 1.5 1999/03/03 04:48:37 ghutchis Exp $
+// $Id: Database.h,v 1.6 1999/03/03 04:59:15 ghutchis Exp $
 //
 //
 //
@@ -12,11 +12,16 @@
 
 #include "Object.h"
 #include "htString.h"
+#include <db.h>
 
 // Database Types
-#define DB_BTREE 0
-#define DB_HASH 1
+// defined in db.h
+// #define DB_BTREE 1
+// #define DB_HASH 2
+#ifndef GDBM_HASH
 #define GDBM_HASH 2
+#endif
+
 
 class Database : public Object
 {
@@ -36,7 +41,7 @@ public:
     // The idea here is that the particular type of database used by
     // all the programs is to be defined in one place.
     //
-    static Database	*getDatabaseInstance(int type = DB_BTREE);
+    static Database	*getDatabaseInstance(int type);
 	
     //
     // Common interface
