@@ -1,3 +1,9 @@
+Mon Apr 19 15:17:12 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/WordList.cc(valid_word): fixed bug introduced Jan 9,
+	where it stopped scanning for control characters prematurely.
+	Now also use iscntrl() to detect all control characters.
+
 Fri Apr 16 10:30:42 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/FAQ.html: fixed typo - use_meta_description was plural.
