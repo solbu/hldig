@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.h,v 1.2 2002/02/01 22:49:28 ghutchis Exp $
+// $Id: URL.h,v 1.3 2002/10/27 15:17:16 ghutchis Exp $
 //
 
 #ifndef _URL_h_
@@ -65,10 +65,12 @@ private:
     String		_signature;
     String		_user;
 
-    void		removeIndex(String &);
+    void		removeIndex(String &, String &);
     void                normalizePath();
     void		ServerAlias();
     void		constructURL();
+    // Number of slashes following service specifier.  eg service("http")=2
+    static int		slashes(const String &);
 };
 
 

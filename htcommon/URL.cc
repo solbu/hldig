@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.5 2002/02/01 22:49:28 ghutchis Exp $
+// $Id: URL.cc,v 1.6 2002/10/27 15:17:16 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -19,6 +19,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "URL.h"
+#include "QuotedStringList.h"
 #include "Dictionary.h"
 #include "HtConfiguration.h"
 #include "StringMatch.h"
@@ -36,6 +37,8 @@
 #include <ctype.h>
 
 #define NNTP_DEFAULT_PORT 119
+
+static Dictionary	*slashCount = 0;
 
 //*****************************************************************************
 // URL::URL()
@@ -158,6 +161,9 @@ URL::URL(const String &url, const URL &parent)
     while (isalpha(*p))  // Skip through the service portion
 	p++;
     int	hasService = (*p == ':');
+    	// Why single out http?  Shouldn't others be the same?
+	// Child URL of the form  https:/child  or  ftp:child  called "full"
+	// How about using slashes()?
     if (hasService && ((strncmp(ref, "http://", 7) == 0) ||
 		       (strncmp(ref, "http:", 5) != 0)))
     {
@@ -177,13 +183,6 @@ URL::URL(const String &url, const URL &parent)
     {
 	if (hasService)
 	    ref = p + 1;	// Relative URL, skip "http:"
-	
-	//
-	// Remove any leading "./" sequences which could get us into
-	// recursive loops.
-	//
-	while (strncmp(ref, "./", 2) == 0)
-	    ref += 2;
 
 	if (*ref == '/')
 	{
@@ -203,12 +202,21 @@ URL::URL(const String &url, const URL &parent)
 	    //
 	    // The reference is relative to the parent
 	    //
+
 	    _path = parent._path;
 	    int i = _path.indexOf('?');
 	    if (i >= 0)
 	    {
 		_path.chop(_path.length() - i);
 	    }
+
+	    //
+	    // Remove any leading "./" sequences which could get us into
+	    // recursive loops.
+	    //
+	    while (strncmp(ref, "./", 2) == 0)
+		ref += 2;
+
 	    if (_path.last() == '/')
 	    {
 		//
@@ -317,8 +325,17 @@ void URL::parse(const String &u)
 	_host = 0;
 	_port = 0;
 	_url = 0;
+	if (p)		// if non-NULL, skip (some) leading slashes in path
+	{
+	    int i;
+	    for (i = slashes (_service); i > 0 && *p == '/'; i--)
+		p++;
+	    if (i)	// if fewer slashes than specified for protocol don't
+			// delete any. -> Backwards compatible (necessary??)
+		p -= slashes (_service) - i;
+	}
 	_path = p;
-	if (strcmp((char*)_service, "file") == 0)
+	if (strcmp((char*)_service, "file") == 0 || slashes (_service) < 2)
 	  _host = "localhost";
     }
     else
@@ -342,7 +359,7 @@ void URL::parse(const String &u)
 		_path << strtok(0, "\n");
 	      }
 	    else
-	      _path << strtok(p, "\n");	      
+	      _path << strtok(p+1, "\n");	// _path is "/" - don't double
 	    _host = "localhost";
 	    _port = 0;
 	  }
@@ -396,20 +413,63 @@ void URL::parse(const String &u)
 
 //*****************************************************************************
 // void URL::normalizePath()
+// Called from: URL(const String &url, const URL &parent)
 //
 void URL::normalizePath()
 {
     //
-    // We now need to take care of situations where the URL contains
-    // relative parts ("/../")
-    // We will rewrite the path to be the minimal.
+    // Rewrite the path to be the minimal.
+    // Remove "//", "/../" and "/./" components
     //
+	HtConfiguration* config= HtConfiguration::config();
+
     int	i, limit;
     int	leadingdotdot = 0;
     String	newPath;
     int	pathend = _path.indexOf('?');	// Don't mess up query strings.
     if (pathend < 0)
         pathend = _path.length();
+
+    //
+    // get rid of "//" first, or "/foo//../" will become "/foo/" not "/"
+    // Some database lookups interpret empty paths (// != /), so give
+    // the use the option to turn this off.
+    //
+    if (!config->Boolean ("allow_dbl_slash"))
+	while ((i = _path.indexOf("//")) >= 0 && i < pathend)
+	{
+	    newPath = _path.sub(0, i).get();
+	    newPath << _path.sub(i + 1).get();
+	    _path = newPath;
+	    pathend = _path.indexOf('?');
+	    if (pathend < 0)
+		pathend = _path.length();
+	}
+
+    //
+    // Next get rid of redundant "/./".  This could cause infinite
+    // loops.  Moreover, "/foo/./../" should become "/", not "/foo/"
+    //
+    while ((i = _path.indexOf("/./")) >= 0 && i < pathend)
+    {
+        newPath = _path.sub(0, i).get();
+        newPath << _path.sub(i + 2).get();
+        _path = newPath;
+        pathend = _path.indexOf('?');
+        if (pathend < 0)
+            pathend = _path.length();
+    }
+    if ((i = _path.indexOf("/.")) >= 0 && i == pathend-2)
+    {
+        newPath = _path.sub(0, i+1).get();		// keep trailing slash
+        newPath << _path.sub(i + 2).get();
+        _path = newPath;
+        pathend--;
+    }
+
+    //
+    // Now that "empty" path components are gone, remove ("/../").
+    //
     while ((i = _path.indexOf("/../")) >= 0 && i < pathend)
     {
         if ((limit = _path.lastIndexOf('/', i - 1)) >= 0)
@@ -446,40 +506,6 @@ void URL::normalizePath()
     // we're at the top level. By principle of least surprise, we'll just
     // toss any "leftovers" Otherwise, we'd have a loop here to add them.
 
-    //
-    // Also get rid of redundant "/./".  This could cause infinite
-    // loops.
-    //
-    while ((i = _path.indexOf("/./")) >= 0 && i < pathend)
-    {
-        newPath = _path.sub(0, i).get();
-        newPath << _path.sub(i + 2).get();
-        _path = newPath;
-        pathend = _path.indexOf('?');
-        if (pathend < 0)
-            pathend = _path.length();
-    }
-    if ((i = _path.indexOf("/.")) >= 0 && i == pathend-2)
-    {
-        newPath = _path.sub(0, i+1).get();		// keep trailing slash
-        newPath << _path.sub(i + 2).get();
-        _path = newPath;
-        pathend--;
-    }
-
-    //
-    // Furthermore, get rid of "//".  This could also cause loops
-    //
-    while ((i = _path.indexOf("//")) >= 0 && i < pathend)
-    {
-        newPath = _path.sub(0, i).get();
-        newPath << _path.sub(i + 1).get();
-        _path = newPath;
-        pathend = _path.indexOf('?');
-        if (pathend < 0)
-            pathend = _path.length();
-    }
-
     // Finally change all "%7E" to "~" for sanity
     while ((i = _path.indexOf("%7E")) >= 0 && i < pathend)
       {
@@ -492,14 +518,13 @@ void URL::normalizePath()
             pathend = _path.length();
       }
 
-	HtConfiguration* config= HtConfiguration::config();
     // If the server *isn't* case sensitive, we want to lowercase the path
     if (!config->Boolean("case_sensitive", 1))
       _path.lowercase();
 
     // And don't forget to remove index.html or similar file.
-    if (strcmp((char*)_service, "file") != 0)
-	removeIndex(_path);
+//    if (strcmp((char*)_service, "file") != 0)  (check is now internal)
+	removeIndex(_path, _service);
 }
 
 //*****************************************************************************
@@ -530,15 +555,22 @@ void URL::path(const String &newpath)
 
 
 //*****************************************************************************
-// void URL::removeIndex(String &path)
-//   Attempt to remove the remove_default_doc from the end of a URL path.
+// void URL::removeIndex(String &path, String &service)
+//   Attempt to remove the remove_default_doc from the end of a URL path if
+//   the service allows that.  (File, ftp don't.  Do others?)
 //   This needs to be done to normalize the paths and make .../ the
 //   same as .../index.html
+// Called from: URL::normalize() from URL::signature()  [redundant?]
+// 		URL::normalizePath()
 //
-void URL::removeIndex(String &path)
+void URL::removeIndex(String &path, String &service)
 {
 	HtConfiguration* config= HtConfiguration::config();
     static StringMatch *defaultdoc = 0;
+
+    if (strcmp((char*)_service, "file") == 0 ||
+        strcmp((char*)_service, "ftp")  == 0)
+	return;
 
     if (path.length() == 0 || strchr((char*)path, '?'))
 	return;
@@ -574,10 +606,14 @@ void URL::normalize()
     if (_service.length() == 0 || _normal)
 	return;
 
-    if (strcmp((char*)_service, "http") != 0)
+    
+//  if (strcmp((char*)_service, "http") != 0)
+    // if service specifies doesn't specify an IP host, don't normalize it
+    if (slashes (_service) != 2)
 	return;
 
-    removeIndex(_path);
+//    if (strcmp ((char*)_service, "http") == 0)  (check is now internal)
+	removeIndex(_path, _service);
 
     //
     // Convert a hostname to an IP address
@@ -711,9 +747,67 @@ void URL::ServerAlias()
 }
 
 //*****************************************************************************
+// int URL::slash(const String &protocol)
+// Returns number of slashes folowing the service name for protocol
+//
+int
+URL::slashes(const String &protocol)
+{
+    if (!slashCount)
+    {
+	HtConfiguration* config= HtConfiguration::config();
+	slashCount = new Dictionary();
+
+	slashCount->Add (String("mailto"), new String("0"));
+	slashCount->Add (String("news"),   new String("0"));
+	slashCount->Add (String("http"),   new String("2"));
+	slashCount->Add (String("ftp"),    new String("2"));
+	// file:///  has three, but the last counts as part of the path...
+	slashCount->Add (String("file"),   new String("2"));
+	
+	QuotedStringList	qsl(config->Find("external_protocols"), " \t");
+	String			from;
+	int			i;
+	int			sep,colon;
+
+	for (i = 0; qsl[i]; i += 2)
+	{
+	    from = qsl[i];
+	    sep = from.indexOf("->");
+	    if (sep != -1)
+		from = from.sub(0, sep).get();  // "get" aids portability...
+
+	    colon = from.indexOf(":");
+	    // if service specified as "help:/" or "man:", note trailing slashes
+	    // Default is 2.
+	    if (colon != -1)
+	    {
+		int i;
+		char count [2];
+		for (i = colon+1; from[i] == '/'; i++)
+		    ;
+		count [0] = i - colon + '0' - 1;
+		count [1] = '\0';
+		from = from.sub(0,colon).get();
+		slashCount->Add (from, new String (count));
+	    } else
+		slashCount->Add (from, new String ("2"));
+	}
+    }
+    
+    // Default to two slashes for unknown protocols
+    String *count = (String *)slashCount->Find(protocol);
+    return count ? (count->get()[0] - '0') : 2;
+}
+
+//*****************************************************************************
 // void URL::constructURL()
 // Constructs the _url member from everything else
 // Also ensures the port number is correct for the service
+// Called from  URL::URL(const String &url, const URL &parent)
+//		URL::parse(const String &u)
+//		URL::path(const String &newpath)
+//		URL::normalize()
 //
 void URL::constructURL()
 {
@@ -725,19 +819,25 @@ void URL::constructURL()
     _url = _service;
     _url << ":";
 
-    if (!(strcmp((char*)_service, "news") == 0 ||
-	  strcmp((char*)_service, "mailto") == 0 ))
-	_url << "//";
+    // Add correct number of slashes after service name
+    int i;
+    for (i = slashes (_service); i > 0; i--)
+    {
+	_url << "/";
+    }
 
-    if (strcmp((char*)_service, "file") != 0)
-      {
-	if (_user.length())
-	  _url << _user << '@';
-	_url << _host;
-      }
+    if (slashes (_service) == 2)	// services specifying a particular
+    {					// IP host must begin "service://"
+	if (strcmp((char*)_service, "file") != 0)
+	  {
+	    if (_user.length())
+	      _url << _user << '@';
+	    _url << _host;
+	  }
 
-   if (_port != DefaultPort() && _port != 0)  // Different than the default port
-      _url << ':' << _port;
+       if (_port != DefaultPort() && _port != 0)  // Different than the default port
+	  _url << ':' << _port;
+    }
 
     _url << _path;
 }
