@@ -4,6 +4,10 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.13  1998/09/23 14:58:21  ghutchis
+//
+// Many, many bug fixes
+//
 // Revision 1.12  1998/09/18 18:45:55  ghutchis
 //
 // YABF (Yet another bug fix)
@@ -48,7 +52,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.12 1998/09/18 18:45:55 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.13 1998/09/23 14:58:21 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -664,14 +668,14 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		  {
 		    String   content_cache = conf["content"];
 
-		    if (content_cache.indexOf("noindex") != 0)
+		    if (content_cache.indexOf("noindex") != -1)
 		      {
 			doindex = 0;
 			retriever.got_noindex();
 		      }
-		    else if (content_cache.indexOf("nofollow") != 0)
+		    else if (content_cache.indexOf("nofollow") != -1)
 		      dofollow = 0;
-		    else if (content_cache.indexOf("none") != 0)
+		    else if (content_cache.indexOf("none") != -1)
 		      {
 			doindex = 0;
 			dofollow = 0;

@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.13  1998/09/23 14:58:21  ghutchis
+//
+// Many, many bug fixes
+//
 // Revision 1.12  1998/09/08 03:29:09  ghutchis
 //
 // Clean up for 3.1.0b1.
@@ -54,7 +58,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.12 1998/09/08 03:29:09 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.13 1998/09/23 14:58:21 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -69,6 +73,7 @@ ConfigDefaults	defaults[] =
     {"database_dir",			DATABASE_DIR},
     {"bin_dir",				BIN_DIR},
     {"image_url_prefix",		IMAGE_URL_PREFIX},
+    {"pdf_parser",                      PDF_PARSER},
 
     //
     // General defaults
@@ -102,6 +107,7 @@ ConfigDefaults	defaults[] =
     {"htnotify_sender",			"webmaster@www"},
     {"http_proxy",			""},
     {"image_list",			"${database_base}.images"},
+    {"iso_8601",                        "false"},
     {"keywords_factor",			"100"},
     {"keywords_meta_tag_names",		"keywords htdig-keywords"},
     {"limit_urls_to",			"${start_url}"},
@@ -131,7 +137,6 @@ ConfigDefaults	defaults[] =
     {"no_prev_page_text",		"[prev]"},
     {"nothing_found_file",		"${common_dir}/nomatch.html"},
     {"page_list_header",		"<hr noshade size=2>Pages:<br>"},
-    {"pdf_parser",                      "acroread"},
     {"prefix_match_character",		"*"},
     {"prev_page_text",			"[prev]"},
     {"remove_bad_urls",			"true"},

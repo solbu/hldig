@@ -2,6 +2,8 @@ include @HTDIG_TOP@/Makefile.config
 
 OBJS=		htnotify.o 
 
+LOCAL_DEFINES=  -DSENDMAIL=\"$(SENDMAIL)\"
+
 TARGET=		htnotify
 
 all:	$(TARGET)

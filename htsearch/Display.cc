@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.14  1998/09/23 14:58:22  ghutchis
+//
+// Many, many bug fixes
+//
 // Revision 1.13  1998/09/18 18:45:55  ghutchis
 //
 // YABF (Yet another bug fix)
@@ -58,7 +62,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.13 1998/09/18 18:45:55 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.14 1998/09/23 14:58:22 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -198,7 +202,7 @@ Display::includeURL(char *url)
     {
 	if (excludeFrom &&
             excludeFrom->hasPattern() &&
-            excludeFrom->FindFirst(url) > 0)
+            excludeFrom->FindFirst(url) >= 0)
 	    return 0;
 	else
 	    return 1;
@@ -256,7 +260,14 @@ Display::displayMatch(ResultMatch *match)
 	{
 	    struct tm	*tm = localtime(&t);
 //			strftime(buffer, sizeof(buffer), "%e-%h-%Y", tm);
-	    strftime(buffer, sizeof(buffer), "%x", tm);
+	    if (config.Boolean("iso_8601"))
+	      {
+		strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S %Z", tm);
+	      }
+	    else
+	      {
+		strftime(buffer, sizeof(buffer), "%x", tm);
+	      }
 	    *str << buffer;
 	}
 	vars.Add("MODIFIED", str);

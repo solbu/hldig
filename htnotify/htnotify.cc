@@ -4,6 +4,10 @@
 // Implementation of htnotify
 //
 // $Log: htnotify.cc,v $
+// Revision 1.6  1998/09/23 14:58:22  ghutchis
+//
+// Many, many bug fixes
+//
 // Revision 1.5  1998/08/03 16:50:44  ghutchis
 //
 // Fixed compiler warnings under -Wall
@@ -25,7 +29,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.5 1998/08/03 16:50:44 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.6 1998/09/23 14:58:22 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -141,7 +145,14 @@ void htnotify(DocumentRef &ref)
 	}
 
 	int		month, day, year;
-	sscanf(date, "%d/%d/%d", &month, &day, &year);
+	if (config.Boolean("iso_8601"))
+	  {
+	    sscanf(date, "%d-%d-%d", &year, &month, &day);
+	  }
+	else
+	  {
+	    sscanf(date, "%d/%d/%d", &month, &day, &year);
+	  }
 
 	if (year > 1900)
 	    year -= 1900;
@@ -182,8 +193,8 @@ void send_notification(char *date, char *email, char *url, char *subject)
   /* Currently unused    int		fildes[2]; */
     String	to = email;
 
-    String command;
-    command << "/usr/lib/sendmail -F \"HTDig Notification Service\" -f ";
+    String command = SENDMAIL;
+    command << "-F \"HTDig Notification Service\" -f ";
     command << config["htnotify_sender"];
 
     char *token = strtok(to, " ,\t\r\n");
