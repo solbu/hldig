@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -79,6 +79,7 @@ DEFAULT_CONFIG_FILE = @DEFAULT_CONFIG_FILE@
 DLLTOOL = @DLLTOOL@
 FIND = @FIND@
 GUNZIP = @GUNZIP@
+HAVE_SSL = @HAVE_SSL@
 HTDIG_MAJOR_VERSION = @HTDIG_MAJOR_VERSION@
 HTDIG_MICRO_VERSION = @HTDIG_MICRO_VERSION@
 HTDIG_MINOR_VERSION = @HTDIG_MINOR_VERSION@
@@ -113,7 +114,7 @@ YACC = @YACC@
 
 AUTOMAKE_OPTIONS = foreign no-dependencies
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db -I$(top_builddir)/db 		$(LOCAL_DEFINES) $(PROFILING)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_builddir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db -I$(top_builddir)/db 		$(LOCAL_DEFINES) $(PROFILING)
 
 
 HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/libhtdb.la 		$(top_builddir)/htlib/libht.la
