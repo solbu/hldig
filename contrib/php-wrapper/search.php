@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <?
-   # $Id: search.php,v 1.1 2001/08/17 19:32:21 junkmale Exp $
+   # $Id: search.php,v 1.2 2001/10/12 17:51:28 junkmale Exp $
    #
    # This is a php wrapper for use with htdig (http://www.htdig.org/)
    #
@@ -64,6 +64,17 @@
       #$submit   = $ArrayParm["submit"];
       #$page     = $ArrayParm["page"];
    }
+
+   #
+   # don't let the bastards include HTML/PHP in their search strings
+   # as a test case, include something like this "<img src=http://199.125.85.46/time.jpg>"
+   # in the search field.  If you see the image in the results, the test has failed
+   # The function strip_tags will strip all HTML and PHP tags.  With the above test case
+   # you wind up with an empty string.  No big deal.  But a better solution might
+   # return the original value to the search screen.  The current solution does not.
+   #
+   # Dan Langille 2001.10.13
+   $words = strip_tags($words);
 
 ?>
 <html>
