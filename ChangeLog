@@ -1,3 +1,18 @@
+Wed Aug 23 23:39:18 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/ParseTree.cc (Parse): Get rid of compiler warnings, use
+	new private tokenizer to ensure parens and quote aren't
+	removed. Also, when popping an operator off the parens stack, make
+	sure it's adopted by a new ParseTree object so we get the parens
+	back in the tree heirarchy.
+
+Wed Aug 23 23:34:44 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/AndParseTree.cc (Parse): Fix nasty infinite loop when
+	phrases hit in AND searches.
+
+	* htsearch/OrParseTree.cc (Parse): Ditto.
+
 Wed Aug 23 13:24:31 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
 
 	* htnet/HtHTTP.*, htnet/Transport.h: all 'char *', when possibile,
