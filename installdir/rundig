@@ -3,7 +3,7 @@
 #
 # rundig
 #
-# $Id: rundig,v 1.3 1998/10/02 15:22:06 ghutchis Exp $
+# $Id: rundig,v 1.4 1998/11/22 19:12:55 ghutchis Exp $
 #
 # This is a sample script to create a search database for ht://Dig.
 #
@@ -26,16 +26,28 @@ export TMPDIR
 @BIN_DIR@/htnotify $verbose
 
 #
-# Only create the endings database if it doesn't already exist.
-# This database is static, so even if pages change, this database will not
-# need to be rebuilt.
+# Create the endings and synonym databases if they don't exist
+# or if they're older than the files they're generated from!
 #
+
+# Do they exist?
 if [ ! -f @COMMON_DIR@/word2root.db ]
 then
     @BIN_DIR@/htfuzzy $verbose endings
 fi
 
 if [ ! -f @COMMON_DIR@/synonyms.db ]
+then
+    @BIN_DIR@/htfuzzy $verbose synonyms
+fi
+
+# Are they too old?
+if [ @COMMON_DIR/english.0 -nt @COMMON_DIR/word2root.db ] # not too likely
+then
+    @BIN_DIR@/htfuzzy $verbose endings
+fi
+
+if [ @COMMON_DIR/synonyms -nt @COMMON_DIR/synonyms.db ] # if you edit synonyms
 then
     @BIN_DIR@/htfuzzy $verbose synonyms
 fi
