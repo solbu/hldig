@@ -17,11 +17,11 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: HtHeap.cc,v 1.3 1999/08/17 21:29:25 grdetil Exp $";
+static char	RCSid[] = "$Id: HtHeap.cc,v 1.4 1999/09/03 21:28:49 ghutchis Exp $";
 #endif
 
 #include "HtHeap.h"
-
+#include "fstream.h"
 
 //*********************************************************************
 // void HtHeap::HtHeap()
@@ -87,12 +87,15 @@ void HtHeap::Add(Object *object)
 //*********************************************************************
 // Object  *HtHeap::Remove()
 //   Remove an object from the top of the heap
+//   This requires re-heapifying by placing the last element on the top
+//   and pushing it down.
 //
 Object *HtHeap::Remove()
 {
   Object *min = Peek();
 
-  data->RemoveFrom(0);
+  data->Assign(data->Last(), 0);
+  data->RemoveFrom(data->Count()-1);
   
   if (data->Count() > 1)
     pushDownRoot(0);
@@ -137,7 +140,6 @@ void HtHeap:: percolateUp(int leaf)
     {
       data->Assign(data->Nth(parent), leaf);
       leaf = parent;
-      parent = parentOf(leaf);
     }
   data->Assign(value, leaf);
 }
@@ -149,7 +151,7 @@ void HtHeap:: percolateUp(int leaf)
 //
 void HtHeap::pushDownRoot(int root)
 {
-  int size = data->Count();
+  int size = data->Count() - 1;
   Object *value = data->Nth(root); 
   while (root < size)
     {
