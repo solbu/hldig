@@ -4,6 +4,9 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.15  1998/12/27 14:22:58  bergolth
+// Fixed memory leaks and local_default_doc bug.
+//
 // Revision 1.14  1998/12/19 14:39:41  bergolth
 // Added StringList::Join and fixed URL::removeIndex.
 //
@@ -56,7 +59,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.14 1998/12/19 14:39:41 bergolth Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.15 1998/12/27 14:22:58 bergolth Exp $";
 #endif
 
 #include "URL.h"
@@ -455,7 +458,7 @@ void URL::removeIndex(String &path)
 {
     static StringMatch *defaultdoc = 0;
 
-    if (path.length() == 0)
+    if (path.length() == 0 || strchr(path, '?'))
 	return;
 
     int filename = path.lastIndexOf('/') + 1;

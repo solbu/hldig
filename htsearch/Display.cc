@@ -4,6 +4,9 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.26  1998/12/27 14:22:58  bergolth
+// Fixed memory leaks and local_default_doc bug.
+//
 // Revision 1.25  1998/12/19 16:55:11  bergolth
 // Added allow_in_form option.
 //
@@ -103,7 +106,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.25 1998/12/19 16:55:11 bergolth Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.26 1998/12/27 14:22:58 bergolth Exp $";
 #endif
 
 #include "htsearch.h"
@@ -875,6 +878,7 @@ Display::buildMatchList()
 	      links = 1; // It's a hack, but it helps...
 	    score += config.Double("backlink_factor") 
 	      * (thisRef->DocBackLinks() / (double)links);
+	    delete thisRef;
 	  }
 
 	thisMatch->setIncompleteScore(score);

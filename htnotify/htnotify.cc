@@ -6,6 +6,9 @@
 // has "expired"
 //
 // $Log: htnotify.cc,v $
+// Revision 1.13  1998/12/27 14:22:58  bergolth
+// Fixed memory leaks and local_default_doc bug.
+//
 // Revision 1.12  1998/12/19 16:27:07  ghutchis
 // Fix nasty security hole found by Werner Hett <hett@isbiel.ch>.
 //
@@ -49,7 +52,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.12 1998/12/19 16:27:07 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.13 1998/12/27 14:22:58 bergolth Exp $";
 #endif
 
 #include <Configuration.h>
@@ -141,6 +144,7 @@ int main(int ac, char **av)
     {
 	ref = docdb[str->get()];
 	htnotify(*ref);
+	delete ref;
     }
     delete docs;
     docdb.Close();

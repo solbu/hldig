@@ -1,3 +1,11 @@
+Sun Dec 27 14:52:45 1998  Alexander Bergolth  <leo@strike.wu-wien.ac.at>
+
+	* htlib/URL.cc: Small change in URL::removeIndex so that URLs are not
+	stripped if a query string ends with /index.html
+
+	* htsearch/Display.cc, htnotify/htnotify.cc: Added patches from
+	Gilles Detillieux <grdetil@scrc.umanitoba.ca> to fix memory leaks.
+	
 Sat Dec 19 17:53:44 1998  Alexander Bergolth  <leo@strike.wu-wien.ac.at>
 
 	* htdig/main.cc, htdig/htdig.h, htdig/Retriever.cc: Added new option
