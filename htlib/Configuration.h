@@ -98,7 +98,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Configuration.h,v 1.9 2003/06/24 20:05:44 nealr Exp $
+// $Id: Configuration.h,v 1.10 2004/02/03 17:08:11 angusgb Exp $
 //
 
 #ifndef	_Configuration_h_
@@ -179,6 +179,12 @@ public:
     // <i>String</i>.
     //
     const String	Find(const String& name) const;
+
+    //-
+    // Return 1 if the value of configuration attribute <b>name</b> has
+    // been set, 0 otherwise
+    int Exists(const String& name) const;
+
 #ifndef SWIG
     //-
     // Alias to the <b>Find</b> method.

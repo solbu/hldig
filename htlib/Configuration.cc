@@ -13,7 +13,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Configuration.cc,v 1.18 2003/06/24 20:05:44 nealr Exp $
+// $Id: Configuration.cc,v 1.19 2004/02/03 17:08:11 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -227,6 +227,14 @@ const String Configuration::Find(const String& name) const
 #endif
         return 0;
     }
+}
+
+//-
+// Return 1 if the value of configuration attribute <b>name</b> has
+// been set, 0 otherwise
+int Configuration::Exists(const String& name) const
+{
+    return dcGlobalVars.Exists(name);
 }
 
 //*********************************************************************

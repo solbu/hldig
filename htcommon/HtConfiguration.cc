@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtConfiguration.cc,v 1.8 2003/07/21 08:16:10 angusgb Exp $
+// $Id: HtConfiguration.cc,v 1.9 2004/02/03 17:08:11 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -134,24 +134,28 @@ const String HtConfiguration::Find(URL *aUrl, const char *value) const
     // or make url list sorted ?
     // or implement abstract Dictionary::Compare?
     const char *strParamUrl=(const char *)aUrl->path();
-	char* confUrl= NULL;
-    while ( (confUrl=tmpPtr->Get_Next()) ) {   
+    char* confUrl= NULL;
+    bool found(false);
+    while ((confUrl=tmpPtr->Get_Next()) ) {   
       if (strncmp(confUrl,strParamUrl,strlen(confUrl))==0 
 	  && (strlen(confUrl)>=candidate.len))  {
 	// it seems this URL match better
 	candidate.obj=tmpPtr->Find(confUrl);
-	// but does it has got necessery parameter?
-	candidate.value=((HtConfiguration *)candidate.obj)->Find(value);
-	if (candidate.value[0]!=0) {
-	  // yes, it has! We've got new candidate.
-	  returnValue=candidate.value;
-	  candidate.len=candidate.value.length();
-	}
+
+        // Let's see if it exists
+        if (((HtConfiguration *)candidate.obj)->Exists(value))
+        {
+          // yes, it has! We've got new candidate.
+          candidate.value=((HtConfiguration *)candidate.obj)->Find(value);
+          returnValue=candidate.value;
+          candidate.len=candidate.value.length();
+          found = true;
+        }
       }
     }
-    if (candidate.len>0) {
+
+    if (found)
       return ParsedString(returnValue).get(dcGlobalVars);
-    }
        
   }
   return Find(value);

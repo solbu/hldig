@@ -1,3 +1,16 @@
+Tue Feb 3 18:06:38 CET 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+   * htcommon/HtConfiguration.cc: changed the Find method in order not to
+     ignore empty string results for string attributes whenever they are
+     defined in the configuration file by the user
+   * htdig/Document.cc: fixed bugs in handling the http_proxy,
+     http_proxy_authorization, authorization attributes 
+   * htlib/Configuration.[h,cc]: added the Exists method in order to query
+     whether an attribute's definition is present in the configuration
+     dictionary (before it was checked against its string's length which
+     prevented empty attributes to be correctly used)
+   * these changes fix bug #887552
+
 Sun 18 Jan 2004 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htcommon/URL.cc, test/url.cc:

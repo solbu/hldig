@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Document.cc,v 1.68 2003/10/23 02:10:55 angusgb Exp $
+// $Id: Document.cc,v 1.69 2004/02/03 17:08:11 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -180,25 +180,31 @@ Document::Reset()
 void
 Document::Url(const String &u)
 {
-	HtConfiguration* config= HtConfiguration::config();
+    HtConfiguration* config= HtConfiguration::config();
     if (url)
       delete url;
     url = new URL(u);
 
+    // Re-initialise the proxy
+    if (proxy)
+    	delete proxy;
+    proxy = 0;
+
+    // Get the proxy information for this URL
     const String proxyURL = config->Find(url,"http_proxy");
+
+    // If http_proxy is not empty we set the proxy for the current URL
     if (proxyURL.length())
     {
-	proxy = new URL(proxyURL);
-	proxy->normalize();
+        proxy = new URL(proxyURL);
+        proxy->normalize();
+    	// set the proxy authorization information
+        setProxyUsernamePassword(config->Find(url,"http_proxy_authorization"));
     }
 
-    const String credentials = config->Find(url,"authorization");
-    if (credentials.length() )
-	setUsernamePassword(credentials);
+    // Set the authorization information
+    setUsernamePassword(config->Find(url,"authorization"));
 
-    const String proxy_credentials = config->Find(url,"http_proxy_authorization");
-    if (proxy_credentials.length() )
-	setProxyUsernamePassword(proxy_credentials);
 }
 
 
@@ -529,8 +535,7 @@ Document::Retrieve(Server *server, HtDateTime date)
       transportConnect->SetRequestMaxDocumentSize(max_doc_size);
       
       // Let's set the credentials
-      if (authorization.length())
-      	transportConnect->SetCredentials(authorization);
+      transportConnect->SetCredentials(authorization);
       
       // Let's set the modification time (in order not to retrieve a
       // document we already have)
