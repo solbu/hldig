@@ -1,3 +1,8 @@
+Wed Aug  7 12:11:31 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Fixed to impose max_doc_size
+	restriction on external converter output which it reads in.
+
 Tue Aug 6 18:21:11 CEST 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* these changes were suggested by David Reed <DReed1@citgo.com> (thanks)

@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.21 2002/02/01 22:49:29 ghutchis Exp $
+// $Id: ExternalParser.cc,v 1.22 2002/08/07 17:14:35 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -510,8 +510,15 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	{
 	    char	buffer[2048];
 	    int		length;
-	    while ((length = fread(buffer, 1, sizeof(buffer), input)) > 0)
+	    int		nbytes = config->Value("max_doc_size");
+	    while (nbytes > 0 &&
+			(length = fread(buffer, 1, sizeof(buffer), input)) > 0)
+	    {
+		nbytes -= length;
+		if (nbytes < 0)
+		    length += nbytes;
 		newcontent.append(buffer, length);
+	    }
 	}
     }
     fclose(input);
