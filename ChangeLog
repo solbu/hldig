@@ -1,3 +1,27 @@
+Tue May 09 16:38:07 2000  Loic Dachary  <loic@senga.org>
+
+	* htsearch/Collection.cc (Collection): set searchWords and 
+	  searchWordsPattern to null in constructor. Delete in destructor.
+	  Also delete matches in destructor.
+
+	* test/word.cc (doskip_harness): free cursor after use.
+
+	* test/word.cc (doskip_overflow): free cursor after use.
+
+	* test/dbbench.cc (find): free cursor after use.
+
+	* htsearch/htsearch.cc (main): free searchWords and searchWordsPattern
+	  after usage.
+
+	* htdb/htdb_{load,dump,stat}.cc (main): call WordContext::Finish
+	  to free global context for inverted index.
+
+	* htdb/htdb_stat.cc (btree_stats): free stat structure.
+
+	* htlib/List.h (class List): Add Shift/Unshift/Push/Pop methods.
+
+	* htlib/List.h (class List): Add Remove(int position) method.
+
 Tue May 09 00:22:33 2000  Loic Dachary  <loic@senga.org>
 
 	* htsearch/htsearch.cc (main): kill useless call to 

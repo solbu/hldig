@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: dbbench.cc,v 1.7.2.4 2000/05/06 18:20:46 loic Exp $
+// $Id: dbbench.cc,v 1.7.2.5 2000/05/09 14:28:30 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -579,10 +579,11 @@ void Dwordlist::find()
     Object data;
     WordKey key;
     key.SetWord(params->find);
-    WordCursor *description = words->Cursor(key,
-					    wordlist_walk_callback_file_out,
-					    &data);
-    description->Walk();
+    WordCursor *cursor = words->Cursor(key,
+				       wordlist_walk_callback_file_out,
+				       &data);
+    cursor->Walk();
+    delete cursor;
   } else {
     words->Write(stdout);
   }

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: List.cc,v 1.6.2.2 2000/04/20 01:54:01 ghutchis Exp $
+// $Id: List.cc,v 1.6.2.3 2000/05/09 14:28:29 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -245,6 +245,14 @@ int List::Remove(Object *object)
     return 0;
 }
 
+//*********************************************************************
+//
+int List::Remove(int position, int action /* = LIST_REMOVE_DESTROY */)
+{
+  Object *o = List::operator[](position);
+  if(action == LIST_REMOVE_DESTROY) delete o;
+  return List::Remove(o);
+}
 
 //*********************************************************************
 // Object *List::Get_Next()
@@ -403,6 +411,29 @@ Object *List::Last()
     }
 
     return 0;
+}
+
+//*********************************************************************
+//
+Object *List::Pop(int action /* = LIST_REMOVE_DESTROY */)
+{
+  Object *o = 0;
+
+  if (tail) {
+    if(action == LIST_REMOVE_DESTROY) {
+      delete tail->object;
+    } else {
+      o = tail->object;
+    }
+    if(head == tail) {
+      head = tail = 0;
+    } else {
+      tail = tail->prev;
+      tail->next = 0;
+    }
+  }
+
+  return o;
 }
 
 

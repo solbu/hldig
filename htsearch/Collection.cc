@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Collection.cc,v 1.1.2.2 2000/05/06 20:46:41 loic Exp $
+// $Id: Collection.cc,v 1.1.2.3 2000/05/09 14:28:29 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -37,18 +37,23 @@ Collection::Collection(const char *name, const char *word_file,
                        const char *index_file, const char *doc_file, 
                        const char *doc_excerpt)
 {
-    isopen = 0;
     collectionName = name;
     wordFile = word_file;
     indexFile = index_file;
     docFile = doc_file;
     docExcerpt = doc_excerpt;
     matches = NULL;
+    searchWords = NULL;
+    searchWordsPattern = NULL;
+    isopen = 0;
 }
 
 Collection::~Collection()
 {
-    Close();
+  if(matches) delete matches;
+  if(searchWords) delete searchWords;
+  if(searchWordsPattern) delete searchWordsPattern;
+  Close();
 }
 
 void

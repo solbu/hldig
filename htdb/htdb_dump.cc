@@ -66,6 +66,7 @@ main(int argc, char *argv[])
 	int compress = 0;
 	int wordlist = 0;
 	u_int32_t cachesize = 0;
+	Configuration *config = 0;
 
 	dbp = NULL;
 	d_close = e_close = exitval = lflag = Nflag = pflag = 0;
@@ -142,7 +143,7 @@ main(int argc, char *argv[])
 	    { "wordlist_env_skip", "true"},
 	    { 0, 0, 0 }
 	  };
-	  WordContext::Initialize(defaults);
+	  config = WordContext::Initialize(defaults);
 	}
 
 	/*
@@ -222,6 +223,11 @@ err:		exitval = 1;
 		(void)signal(interrupted, SIG_DFL);
 		(void)raise(interrupted);
 		/* NOTREACHED */
+	}
+
+	if(config) {
+	  WordContext::Finish();
+	  delete config;
 	}
 
 	return (exitval);
@@ -380,6 +386,7 @@ is_sub(DB *dbp, int *yesno)
 			break;
 		}
 		*yesno = btsp->bt_metaflags & BTM_SUBDB ? 1 : 0;
+		free(btsp);
 		break;
 	case DB_HASH:
 		if ((ret = dbp->stat(dbp, &hsp, NULL, 0)) != 0) {
@@ -387,6 +394,7 @@ is_sub(DB *dbp, int *yesno)
 			break;
 		}
 		*yesno = hsp->hash_metaflags & DB_HASH_SUBDB ? 1 : 0;
+		free(hsp);
 		break;
 	case DB_QUEUE:
 		return (0);

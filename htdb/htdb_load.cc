@@ -76,6 +76,7 @@ main(int argc, char* argv[])
 	char **clist, **clp, *home;
 	int compress = 0;
 	int wordlist = 0;
+	Configuration *config = 0;
 
 	home = NULL;
 	db_nooverwrite = 0;
@@ -157,7 +158,7 @@ main(int argc, char* argv[])
 	    { "wordlist_env_skip", "true"},
 	    { 0, 0, 0 }
 	  };
-	  WordContext::Initialize(defaults);
+	  config = WordContext::Initialize(defaults);
 	} 
 
 	/*
@@ -197,6 +198,13 @@ shutdown:	exitval = 1;
 		(void)raise(interrupted);
 		/* NOTREACHED */
 	}
+
+	if(config) {
+	  WordContext::Finish();
+	  delete config;
+	}
+
+	free(clist);
 
 	/* Return 0 on success, 1 if keys existed already, and 2 on failure. */
 	return (exitval == 0 ? (existed == 0 ? 0 : 1) : 2);

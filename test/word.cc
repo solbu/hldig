@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.20 2000/05/08 13:33:51 loic Exp $
+// $Id: word.cc,v 1.14.2.21 2000/05/09 14:28:30 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -752,7 +752,8 @@ static void doskip_overflow(params_t*)
       }
     
     }
-  
+
+    delete search;
     words->Close();
     delete words;
   }
@@ -896,7 +897,8 @@ static void doskip_harness(params_t*)
       free(found_strings[i]);
       free(expected_strings[i]);
     }
-  
+
+    delete search;
     words->Close();
     delete words;
   }

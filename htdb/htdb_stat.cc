@@ -91,6 +91,7 @@ main(int argc, char *argv[])
 	char *db, *home, *subdb;
 	int compress = 0;
 	int wordlist = 0;
+	Configuration *config = 0;
 
 	dbp = NULL;
 	ttype = T_NOTSET;
@@ -171,7 +172,7 @@ main(int argc, char *argv[])
 	    { "wordlist_env_skip", "true"},
 	    { 0, 0, 0 }
 	  };
-	  WordContext::Initialize(defaults);
+	  config = WordContext::Initialize(defaults);
 	}
 
 	/*
@@ -280,6 +281,11 @@ shutdown:	exitval = 1;
 		(void)signal(interrupted, SIG_DFL);
 		(void)raise(interrupted);
 		/* NOTREACHED */
+	}
+
+	if(config) {
+	  WordContext::Finish();
+	  delete config;
 	}
 
 	return (exitval);
@@ -424,6 +430,8 @@ btree_stats(DB_ENV *dbenvp, DB *dbp)
 	    PCT(sp->bt_over_pgfree, sp->bt_over_pg, sp->bt_pagesize));
 
 	dl("Number of pages on the free list.\n", (u_long)sp->bt_free);
+
+	free(sp);
 
 	return (0);
 }

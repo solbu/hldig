@@ -9,13 +9,20 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: List.h,v 1.5.2.2 2000/03/28 02:00:54 ghutchis Exp $
+// $Id: List.h,v 1.5.2.3 2000/05/09 14:28:29 loic Exp $
 //
 
 #ifndef	_List_h_
 #define	_List_h_
 
 #include "Object.h"
+
+//
+// Behaviour of the Remove method. See comment before method
+// declaration for more information.
+//
+#define LIST_REMOVE_DESTROY	1
+#define LIST_REMOVE_RELEASE	2
 
 class List;
 class listnode;
@@ -40,6 +47,28 @@ public:
     //
     List();
     virtual		~List();
+
+    //
+    // Insert at beginning of list.
+    //
+    virtual void	Unshift(Object *o) { Insert(o, 0); }
+    //
+    // Remove from the beginning of the list and return the
+    // object.
+    //
+    virtual Object*	Shift(int action = LIST_REMOVE_DESTROY) {
+      Object* o = Nth(0);
+      if(Remove(0, action) == NOTOK) return 0;
+      return o;
+    }
+    //
+    // Append an Object to the end of the list
+    //
+    virtual void	Push(Object *o) { Add(o); }
+    //
+    // Remove the last object from the list and return it.
+    //
+    virtual Object	*Pop(int action = LIST_REMOVE_DESTROY);
 
     //
     // Add() will append an Object to the end of the list
@@ -69,6 +98,15 @@ public:
     // NOTOK will be returned, else OK.
     //
     virtual int		Remove(Object *);
+
+    //
+    // Remove object at position from the list. If action is 
+    // LIST_REMOVE_DESTROY delete the object stored at position.
+    // If action is LIST_REMOVE_RELEASE the object is not deleted.
+    // If the object is not found,
+    // NOTOK will be returned, else OK.
+    //
+    virtual int		Remove(int position, int action = LIST_REMOVE_DESTROY);
 
     //
     // Release() will set the list to empty.  This call will NOT

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordCodec.cc,v 1.6.2.2 2000/05/08 20:40:42 loic Exp $
+// $Id: HtWordCodec.cc,v 1.6.2.3 2000/05/09 14:28:29 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -127,7 +127,7 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
       return;
     }
 
-    myFrom->Add(from);
+    myFrom->Add(new String(*from));
 
     // This must be non-null since we checked "oddness" above.
     to = (String *) requested_encodings.Get_Next();
@@ -175,7 +175,7 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
     }
 
     // All ok, just add this one.
-    myTo->Add(to);
+    myTo->Add(new String(*to));
   }
 
   // Check that none of the "to"-strings is a substring of any

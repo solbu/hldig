@@ -42,7 +42,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: search.cc,v 1.1.2.2 2000/05/08 13:33:51 loic Exp $
+// $Id: search.cc,v 1.1.2.3 2000/05/09 14:28:30 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -2932,8 +2932,8 @@ public:
   WordTree *ParseLiteral(StringList& terms);
   char *ParseScope(StringList& terms);
 
-  char *Term(StringList& terms);
   void Shift(StringList& terms);
+  char *Term(StringList& terms);
 };
 
 WordTree *WordParser::Parse(const String& expr)
@@ -2952,7 +2952,7 @@ WordTree *WordParser::ParseList(StringList& terms)
 WordTree *WordParser::ParseExpr(StringList& terms)
 {
   WordTree *expr = 0;
-  char* term = Term(terms);
+  char* term = strdup(Term(terms));
   if(!strcmp(term, "(")) {
     Shift(terms);
     expr = ParseExpr(terms);
@@ -2972,6 +2972,7 @@ WordTree *WordParser::ParseExpr(StringList& terms)
   } else {
     expr = ParseLiteral(terms);
   }
+  free(term);
   return expr;
 }
 
@@ -3130,7 +3131,7 @@ char *WordParser::Term(StringList& terms)
 
 void WordParser::Shift(StringList& terms)
 {
-  terms.Remove(0);
+  terms.Shift(LIST_REMOVE_DESTROY);
 }
 
 // ************************* main loop implementation ********************
