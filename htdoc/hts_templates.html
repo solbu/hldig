@@ -1,371 +1,379 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html>
   <head>
-    <title>
-      ht://Dig: htsearch
-    </title>
+	<title>
+	  ht://Dig: htsearch
+	</title>
   </head>
   <body bgcolor="#eef7ff">
-    <h1>
-      htsearch
-    </h1>
-    <p>
-      ht://Dig Copyright &copy; 1995-1999 The ht://Dig Group<br>
-       Please see the file <a href="COPYING">COPYING</a> for
-      license information.
-    </p>
-    <hr size="4" noshade>
-    <h2>
-      Output Templates
-    </h2>
-    The htsearch program will normally produce HTML output. In this
-    process it makes extensive use of template in which variables
-    will be substituted. The templates are specified in the
-    configuration file. The configuration file attributes defining
-    these templates are: 
-    <ul>
-      <li>
-        <a href="attrs.html#search_results_header">
-        search_results_header</a>
-      </li>
-      <li>
-        <a href="attrs.html#search_results_footer">
-        search_results_footer</a>
-      </li>
-      <li>
-        <a href="attrs.html#search_results_wrapper">
-        search_results_wrapper</a>
-      </li>
-      <li>
-        <a href="attrs.html#nothing_found_file">
-        nothing_found_file</a>
-      </li>
-      <li>
-        <a href="attrs.html#syntax_error_file">
-        syntax_error_file</a>
-      </li>
-    </ul>
-    <p>
-      In addition to these files, the search results are also
-      produced with the use of templates. The result templates are
-      a bit more complicated because they can be specified at
-      runtime using an HTML menu. They are specified using the <a
-      href="attrs.html#template_map">template_map</a> configuration
-      file attribute. This attribute contains a list of strings
-      triplets. For each triplet of strings, the elements have the
-      following meaning:
-    </p>
-    <ol>
-      <li>
-        the name that will appear in the FORMAT menu (see below)
-      </li>
-      <li>
-        the internal name used by htsearch for this result template
-      </li>
-      <li>
-        the base filename for the template.
-      </li>
-    </ol>
-    <p>
-      There are two predefined templates that are used by default.
-      They have the internal names <i>builtin-long</i> and <i>
-      builtin-short</i>. As such, the default value for the <i>
-      template_map</i> attribute is as follows:
-    </p>
-    <blockquote>
-      Long builtin-long builtin-long \<br>
-      Short builtin-short builtin-short
-    </blockquote>
-    Which means that there will be two ways to display the search
-    results: a "Long" and a "Short" way. The first template listed
-    will always be the default one for the first search.
-    Thereafter, the default will be whatever was selected for the
-    previous search. 
-    <h4>
-      Result template files
-    </h4>
-    When a custom template is required, one or more template files
-    need to be created and referenced in the <i>template_map</i>
-    attribute. 
-    <p>
-      There are many variables that can be substituted into these
-      templates. Not all of them make sense for each file, so not
-      all of them will be substituted for every file. In addition, all
-    of the standard CGI environment variables are available, and
-    listed in the <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">cgi
-    specification</a>. The variables are:
-    </p>
-    <dl>
-      <dt>
-        <b>ANCHOR</b>
-      </dt>
-      <dd>
-        Expands to the named anchor found just before the first match; it
-        includes "#" at the start so it can be directly appended to the URL
-        variable. If no anchor was found, ANCHOR is empty.
-      </dd>
-      <dt>
-        <b>CGI</b>
-      </dt>
-      <dd>
-        This expands to whatever the SCRIPT_NAME environment
-        variable is.
-      </dd>
-      <dt>
-        <b>CURRENT</b>
-      </dt>
-      <dd>
-        The number of the current match.
-      </dd>
-      <dt>
-        <b>DESCRIPTION</b>
-      </dt>
-      <dd>
-        The first URL description for the matched document.
-      </dd>
-      <dt>
-        <b>DESCRIPTIONS</b>
-      </dt>
-      <dd>
-        A list of URL text descriptions for the matched document. The
-        entries in the list are separated by &lt;br&gt;. These are the 
-        text used between the &lt;a href...&gt; and &lt;/a&gt;tags.
-      </dd>
-      <dt>
-        <b>DOCID</b>
-      </dt>
-      <dd>
-        The internal ID for the document for the current match.
-      </dd>
-      <dt>
-        <b>EXCERPT</b>
-      </dt>
-      <dd>
-        The relevant excerpt for the current match
-      </dd>
-      <dt>
-        <b>FIRSTDISPLAYED</b>
-      </dt>
-      <dd>
-        The index of the first match on this page.
-      </dd>
-      <dt>
-        <b>FORMAT</b>
-      </dt>
-      <dd>
-        Expands to an HTML menu of all the available formats. The
-        current format will be the default one.
-      </dd>
-      <dt>
-        <b>HOPCOUNT</b>
-      </dt>
-      <dd>
-        The distance of this match away from the starting
-        document(s).
-      </dd>
-      <dt>
-        <b>LASTDISPLAYED</b>
-      </dt>
-      <dd>
-        The index of the last match on this page.
-      </dd>
-      <dt>
-        <b>LOGICAL_WORDS</b>
-      </dt>
-      <dd>
-        A string of the search words with either "and" or "or"
-        between the words, depending on the type of search.
-      </dd>
-      <dt>
-        <b>MATCH_MESSAGE</b>
-      </dt>
-      <dd>
-        This is either <tt>all</tt> or <tt>some</tt> depending on
-        the match method used.
-      </dd>
-      <dt>
-        <b>MATCHES</b>
-      </dt>
-      <dd>
-        The total number of matches that were found.
-      </dd>
-      <dt>
-        <b>MATCHES_PER_PAGE</b>
-      </dt>
-      <dd>
-        The configured maximum number of matches on this page
-      </dd>
-      <dt>
-        <b>MAX_STARS</b>
-      </dt>
-      <dd>
-        The configured maximum number of stars to display in
-        matches.
-      </dd>
-      <dt>
-        <b>METHOD</b>
-      </dt>
-      <dd>
-        Expands to an HTML menu of all the available matching
-        methods. The current method will be the default one.
-      </dd>
-      <dt>
-        <b>MODIFIED</b>
-      </dt>
-      <dd>
-        The date and time the document was last modified
-      </dd>
-      <dt>
-        <b>NEXTPAGE</b>
-      </dt>
-      <dd>
-        This expands to the value of the <tt>next_page_text</tt> or
-        <tt>no_next_page_text</tt> attributes depending on whether
-        there is a next page or not.
-      </dd>
-      <dt>
-        <b>PAGE</b>
-      </dt>
-      <dd>
-        The current page number.
-      </dd>
-      <dt>
-        <b>PAGEHEADER</b>
-      </dt>
-      <dd>
-        This expands to either the value of the <tt>
-        page_list_header</tt> or <tt>no_page_list_header</tt>
-        attributes depending on how many pages there are.
-      </dd>
-      <dt>
-        <b>PAGELIST</b>
-      </dt>
-      <dd>
-        This expands to a list of hyperlinks using the <tt>
-        page_number_text</tt> and <tt>no_page_number_text</tt>
-        attributes.
-      </dd>
-      <dt>
-        <b>PAGES</b>
-      </dt>
-      <dd>
-        The total number of pages.
-      </dd>
-      <dt>
-        <b>PERCENT</b>
-      </dt>
-      <dd>
-        The match score as a percentage. Its range is 0 to 100,
-        without a percent sign.
-      </dd>
-      <dt>
-        <b>PLURAL_MATCHES</b>
-      </dt>
-      <dd>
-        If the <b>MATCHES</b> variable is other than 1, this will
-        be a single 's'.
-      </dd>
-      <dt>
-        <b>PREVPAGE</b>
-      </dt>
-      <dd>
-        This expands to the value of the <tt>prev_page_text</tt> or
-        <tt>no_prev_page_text</tt> attributes depending on whether
-        there is a previous page or not.
-      </dd>
-      <dt>
-        <b>SCORE</b>
-      </dt>
-      <dd>
-        The score of the current match
-      </dd>
-      <dt>
-        <b>SELECTED_FORMAT</b>
-      </dt>
-      <dd>
-        The currently selected format.
-      </dd>
-      <dt>
-        <b>SELECTED_METHOD</b>
-      </dt>
-      <dd>
-        The currently selected matching method.
-      </dd>
-      <dt>
-        <b>SELECTED_SORT</b>
-      </dt>
-      <dd>
-        The currently selected sorting method.
-      </dd>
-      <dt>
-        <b>SIZE</b>
-      </dt>
-      <dd>
-        The size of the document for the current match
-      </dd>
-      <dt>
-        <b>SIZEK</b>
-      </dt>
-      <dd>
-        The size in kilobytes of the document for the current match
-      </dd>
-      <dt>
-        <b>SORT</b>
-      </dt>
-      <dd>
-        Expands to an HTML menu of all the available sorting
-        methods. The current method will be the default one.
-      </dd>
-      <dt>
-        <b>STARSLEFT</b>
-      </dt>
-      <dd>
-        A set of HTML &lt;img&gt; tags with the stars aligned on
-        the left.
-      </dd>
-      <dt>
-        <b>STARSRIGHT</b>
-      </dt>
-      <dd>
-        A set of HTML &lt;img&gt; tags with the stars aligned on
-        the right.
-      </dd>
-      <dt>
-        <b>SYNTAXERROR</b>
-      </dt>
-      <dd>
-        Is the text of the boolean expression syntax error.
-      </dd>
-      <dt>
-        <b>TITLE</b>
-      </dt>
-      <dd>
-        The title of the document for the current match
-      </dd>
-      <dt>
-        <b>URL</b>
-      </dt>
-      <dd>
-        The URL to the document for the current match
-      </dd>
-      <dt>
-        <b>VERSION</b>
-      </dt>
-      <dd>
-        The ht://Dig version number
-      </dd>
-      <dt>
-        <b>WORDS</b>
-      </dt>
-      <dd>
-        A string of the search words with spaces in between.
-      </dd>
-    </dl>
-    <hr size="4" noshade>
-    <address>
-      <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
-    </address>
-    <!-- hhmts start -->
+	<h1>
+	  htsearch
+	</h1>
+	<p>
+	  ht://Dig Copyright &copy; 1995-1999 The ht://Dig Group<br>
+	  Please see the file <a href="COPYING">COPYING</a> for
+	  license information.
+	</p>
+	<hr size="4" noshade>
+	<h2>
+	  Output Templates
+	</h2>
+	<p>
+	  The htsearch program will normally produce HTML output. In this
+	  process it makes extensive use of template in which variables
+	  will be substituted. The templates are specified in the
+	  configuration file. The configuration file attributes defining
+	  these templates are:
+	</p>
+	<ul>
+	  <li>
+		<a href="attrs.html#search_results_header">
+		search_results_header</a>
+	  </li>
+	  <li>
+		<a href="attrs.html#search_results_footer">
+		search_results_footer</a>
+	  </li>
+	  <li>
+		<a href="attrs.html#search_results_wrapper">
+		search_results_wrapper</a>
+	  </li>
+	  <li>
+		<a href="attrs.html#nothing_found_file">
+		nothing_found_file</a>
+	  </li>
+	  <li>
+		<a href="attrs.html#syntax_error_file">
+		syntax_error_file</a>
+	  </li>
+	</ul>
+	<p>
+	  In addition to these files, the search results are also
+	  produced with the use of templates. The result templates are
+	  a bit more complicated because they can be specified at
+	  runtime using an HTML menu. They are specified using the <a
+	  href="attrs.html#template_map">template_map</a> configuration
+	  file attribute. This attribute contains a list of strings
+	  triplets. For each triplet of strings, the elements have the
+	  following meaning:
+	</p>
+	<ol>
+	  <li>
+		the name that will appear in the FORMAT menu (see below)
+	  </li>
+	  <li>
+		the internal name used by htsearch for this result template
+	  </li>
+	  <li>
+		the base filename for the template.
+	  </li>
+	</ol>
+	<p>
+	  There are two predefined templates that are used by default.
+	  They have the internal names <i>builtin-long</i> and <i>
+	  builtin-short</i>. As such, the default value for the <i>
+	  template_map</i> attribute is as follows:
+	</p>
+	<blockquote>
+	  Long builtin-long builtin-long \<br>
+	  Short builtin-short builtin-short
+	</blockquote>
+	<p>
+	  Which means that there will be two ways to display the search
+	  results: a "Long" and a "Short" way. The first template listed
+	  will always be the default one for the first search.
+	  Thereafter, the default will be whatever was selected for the
+	  previous search.
+	</p>
+	<h4>
+	  Result template files
+	</h4>
+	<p>
+	  When a custom template is required, one or more template files
+	  need to be created and referenced in the <i>template_map</i>
+	  attribute.
+	</p>
+	<p>
+	  There are many variables that can be substituted into these
+	  templates. Not all of them make sense for each file, so not
+	  all of them will be substituted for every file. In addition, all
+	  of the standard CGI environment variables are available, and
+	  listed in the <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">cgi
+	  specification</a>. The variables are:
+	</p>
+	<dl>
+	  <dt>
+		<b>ANCHOR</b>
+	  </dt>
+	  <dd>
+		Expands to the named anchor found just before the first match; it
+		includes "#" at the start so it can be directly appended to the URL
+		variable. If no anchor was found, ANCHOR is empty.
+	  </dd>
+	  <dt>
+		<b>CGI</b>
+	  </dt>
+	  <dd>
+		This expands to whatever the SCRIPT_NAME environment
+		variable is.
+	  </dd>
+	  <dt>
+		<b>CURRENT</b>
+	  </dt>
+	  <dd>
+		The number of the current match.
+	  </dd>
+	  <dt>
+		<b>DESCRIPTION</b>
+	  </dt>
+	  <dd>
+		The first URL description for the matched document.
+	  </dd>
+	  <dt>
+		<b>DESCRIPTIONS</b>
+	  </dt>
+	  <dd>
+		A list of URL text descriptions for the matched document. The
+		entries in the list are separated by &lt;br&gt;. These are the
+		text used between the &lt;a href...&gt; and &lt;/a&gt;tags.
+	  </dd>
+	  <dt>
+		<b>DOCID</b>
+	  </dt>
+	  <dd>
+		The internal ID for the document for the current match.
+	  </dd>
+	  <dt>
+		<b>EXCERPT</b>
+	  </dt>
+	  <dd>
+		The relevant excerpt for the current match
+	  </dd>
+	  <dt>
+		<b>FIRSTDISPLAYED</b>
+	  </dt>
+	  <dd>
+		The index of the first match on this page.
+	  </dd>
+	  <dt>
+		<b>FORMAT</b>
+	  </dt>
+	  <dd>
+		Expands to an HTML menu of all the available formats. The
+		current format will be the default one.
+	  </dd>
+	  <dt>
+		<b>HOPCOUNT</b>
+	  </dt>
+	  <dd>
+		The distance of this match away from the starting
+		document(s).
+	  </dd>
+	  <dt>
+		<b>LASTDISPLAYED</b>
+	  </dt>
+	  <dd>
+		The index of the last match on this page.
+	  </dd>
+	  <dt>
+		<b>LOGICAL_WORDS</b>
+	  </dt>
+	  <dd>
+		A string of the search words with either "and" or "or"
+		between the words, depending on the type of search.
+	  </dd>
+	  <dt>
+		<b>MATCH_MESSAGE</b>
+	  </dt>
+	  <dd>
+		This is either <tt>all</tt> or <tt>some</tt> depending on
+		the match method used.
+	  </dd>
+	  <dt>
+		<b>MATCHES</b>
+	  </dt>
+	  <dd>
+		The total number of matches that were found.
+	  </dd>
+	  <dt>
+		<b>MATCHES_PER_PAGE</b>
+	  </dt>
+	  <dd>
+		The configured maximum number of matches on this page
+	  </dd>
+	  <dt>
+		<b>MAX_STARS</b>
+	  </dt>
+	  <dd>
+		The configured maximum number of stars to display in
+		matches.
+	  </dd>
+	  <dt>
+		<b>METHOD</b>
+	  </dt>
+	  <dd>
+		Expands to an HTML menu of all the available matching
+		methods. The current method will be the default one.
+	  </dd>
+	  <dt>
+		<b>MODIFIED</b>
+	  </dt>
+	  <dd>
+		The date and time the document was last modified
+	  </dd>
+	  <dt>
+		<b>NEXTPAGE</b>
+	  </dt>
+	  <dd>
+		This expands to the value of the <tt>next_page_text</tt> or
+		<tt>no_next_page_text</tt> attributes depending on whether
+		there is a next page or not.
+	  </dd>
+	  <dt>
+		<b>PAGE</b>
+	  </dt>
+	  <dd>
+		The current page number.
+	  </dd>
+	  <dt>
+		<b>PAGEHEADER</b>
+	  </dt>
+	  <dd>
+		This expands to either the value of the <tt>
+		page_list_header</tt> or <tt>no_page_list_header</tt>
+		attributes depending on how many pages there are.
+	  </dd>
+	  <dt>
+		<b>PAGELIST</b>
+	  </dt>
+	  <dd>
+		This expands to a list of hyperlinks using the <tt>
+		page_number_text</tt> and <tt>no_page_number_text</tt>
+		attributes.
+	  </dd>
+	  <dt>
+		<b>PAGES</b>
+	  </dt>
+	  <dd>
+		The total number of pages.
+	  </dd>
+	  <dt>
+		<b>PERCENT</b>
+	  </dt>
+	  <dd>
+		The match score as a percentage. Its range is 1 to 100,
+		without a percent sign. The minimum is always 1 so the
+		variable can be used as the value for an HTML WIDTH
+		attribute.
+	  </dd>
+	  <dt>
+		<b>PLURAL_MATCHES</b>
+	  </dt>
+	  <dd>
+		If the <b>MATCHES</b> variable is other than 1, this will
+		be a single 's'.
+	  </dd>
+	  <dt>
+		<b>PREVPAGE</b>
+	  </dt>
+	  <dd>
+		This expands to the value of the <tt>prev_page_text</tt> or
+		<tt>no_prev_page_text</tt> attributes depending on whether
+		there is a previous page or not.
+	  </dd>
+	  <dt>
+		<b>SCORE</b>
+	  </dt>
+	  <dd>
+		The score of the current match
+	  </dd>
+	  <dt>
+		<b>SELECTED_FORMAT</b>
+	  </dt>
+	  <dd>
+		The currently selected format.
+	  </dd>
+	  <dt>
+		<b>SELECTED_METHOD</b>
+	  </dt>
+	  <dd>
+		The currently selected matching method.
+	  </dd>
+	  <dt>
+		<b>SELECTED_SORT</b>
+	  </dt>
+	  <dd>
+		The currently selected sorting method.
+	  </dd>
+	  <dt>
+		<b>SIZE</b>
+	  </dt>
+	  <dd>
+		The size of the document for the current match
+	  </dd>
+	  <dt>
+		<b>SIZEK</b>
+	  </dt>
+	  <dd>
+		The size in kilobytes of the document for the current match
+	  </dd>
+	  <dt>
+		<b>SORT</b>
+	  </dt>
+	  <dd>
+		Expands to an HTML menu of all the available sorting
+		methods. The current method will be the default one.
+	  </dd>
+	  <dt>
+		<b>STARSLEFT</b>
+	  </dt>
+	  <dd>
+		A set of HTML &lt;img&gt; tags with the stars aligned on
+		the left.
+	  </dd>
+	  <dt>
+		<b>STARSRIGHT</b>
+	  </dt>
+	  <dd>
+		A set of HTML &lt;img&gt; tags with the stars aligned on
+		the right.
+	  </dd>
+	  <dt>
+		<b>SYNTAXERROR</b>
+	  </dt>
+	  <dd>
+		Is the text of the boolean expression syntax error.
+	  </dd>
+	  <dt>
+		<b>TITLE</b>
+	  </dt>
+	  <dd>
+		The title of the document for the current match
+	  </dd>
+	  <dt>
+		<b>URL</b>
+	  </dt>
+	  <dd>
+		The URL to the document for the current match
+	  </dd>
+	  <dt>
+		<b>VERSION</b>
+	  </dt>
+	  <dd>
+		The ht://Dig version number
+	  </dd>
+	  <dt>
+		<b>WORDS</b>
+	  </dt>
+	  <dd>
+		A string of the search words with spaces in between.
+	  </dd>
+	</dl>
+	<hr size="4" noshade>
+	<address>
+	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
+	</address>
+<!-- hhmts start -->
 Last modified: Mon Feb  8 20:41:09 EST 1999
 <!-- hhmts end -->
   </body>
