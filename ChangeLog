@@ -1,3 +1,10 @@
+Mon Dec 11 23:19:28 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalParser.cc (parse): Lowercase content-types and
+	strip off any trailing semicolons, at one last spot.  This reinserts
+	code added Sep 11, which was dropped Oct 9, probably inadvertantly
+	during mifluz back-out.
+
 Sun Dec 10 15:28:44 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/ExternalTransport.cc: Use fork/exec instead of calling

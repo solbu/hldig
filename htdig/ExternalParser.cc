@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.12 2000/12/10 21:44:08 ghutchis Exp $
+// $Id: ExternalParser.cc,v 1.19.2.13 2000/12/12 05:32:10 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -189,7 +189,12 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     char	*token1, *token2, *token3;
     int		loc = 0, hd = 0;
     URL		url;
-    String	convertToType = ((String *)toTypes->Find(contentType))->get();
+    String mime = contentType;
+    mime.lowercase();
+    int	sep = mime.indexOf(';');
+    if (sep != -1)
+      mime = mime.sub(0, sep).get();
+    String	convertToType = ((String *)toTypes->Find(mime))->get();
     int		get_hdr = (convertToType.nocase_compare("user-defined") == 0);
     int		get_file = (convertToType.length() != 0);
     String	newcontent;
