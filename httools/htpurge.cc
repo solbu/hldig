@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htpurge.cc,v 1.1.2.2 2000/03/20 19:13:40 ghutchis Exp $
+// $Id: htpurge.cc,v 1.1.2.3 2000/04/07 04:18:18 ghutchis Exp $
 //
 
 #include "WordContext.h"
@@ -29,18 +29,10 @@
 #include <getopt.h>
 #endif
 
-//
-// This hash is used to keep track of all the document IDs which have to be
-// discarded.
-// This is generated from the doc database and is used to prune words
-// from the word db
-//
-Dictionary	discard_list;
+int			verbose = 0;
 
-int		verbose = 0;
-
-void purgeDocs();
-void purgeWords();
+Dictionary purgeDocs(Dictionary);
+void purgeWords(Dictionary);
 void usage();
 void reportError(char *msg);
 
@@ -53,6 +45,8 @@ int main(int ac, char **av)
     String		configfile = DEFAULT_CONFIG_FILE;
     int			c;
     extern char		*optarg;
+    Dictionary		discard_ids;
+    Dictionary		discard_urls;
 
     while ((c = getopt(ac, av, "vc:a")) != -1)
     {
@@ -125,18 +119,35 @@ int main(int ac, char **av)
 	}
     }
 
+    if (optind < ac && strcmp(av[optind], "-") == 0)
+    {
+	String str;
+	while (!cin.eof())
+	{
+	    cin >> str;
+	    str.chop("\r\n");
+	    if (str.length() > 0)
+		discard_urls.Add(str, NULL);
+	}
+    }
+
     WordContext::Initialize(config);
 
-    purgeDocs();
-    purgeWords();
+    // We pass in our list of URLs (which may be empty)
+    // and we get back the list of IDs purged from the doc DB
+    // to make sure words with these IDs are purged
+    discard_ids = purgeDocs(discard_urls);
+    purgeWords(discard_ids);
 
     return 0;
 }
 
 //*****************************************************************************
-// void purgeDocs()
+// Dictionary purgeDocs(Dictionary purgeURLs)
+// Pass in a hash of the URLs to delete (it could be empty)
+// Return a hash of the IDs deleted from the doc DB
 //
-void purgeDocs()
+Dictionary purgeDocs(Dictionary purgeURLs)
 {
     const String	doc_db = config["doc_db"];
     const String	doc_index = config["doc_index"];
@@ -146,13 +157,14 @@ void purgeDocs()
     DocumentDB		db;
     List		*IDs;
     int			document_count = 0;
+    Dictionary		discard_list;
 
     //
     // Start the conversion by going through all the URLs that are in
     // the document database
     //
     if(db.Open(doc_db, doc_index, doc_excerpt) != OK)
-      return;
+      return discard_list; // It's empty right now
     
     IDs = db.DocIDs();
 	
@@ -177,7 +189,7 @@ void purgeDocs()
 	    // This document either wasn't found or shouldn't be indexed.
 	    db.Delete(ref->DocID());
             if (verbose)
-              cout << "Deleted, noindex ID: " << idStr << " URL: "
+              cout << "Deleted, noindex: ID: " << idStr << " URL: "
                    << url << endl;
 	    discard_list.Add(idStr.get(), NULL);
 	  }
@@ -186,7 +198,7 @@ void purgeDocs()
 	    // This document was replaced by a newer one
 	    db.Delete(ref->DocID());
             if (verbose)
-              cout << "Deleted, obsolete ID: " << idStr << " URL: "
+              cout << "Deleted, obsolete: ID: " << idStr << " URL: "
                    << url << endl;
 	    discard_list.Add(idStr.get(), NULL);
 	  }
@@ -195,7 +207,7 @@ void purgeDocs()
 	    // This document wasn't actually found
 	    db.Delete(ref->DocID());
             if (verbose)
-              cout << "Deleted, not found ID: " << idStr << " URL: "
+              cout << "Deleted, not found: ID: " << idStr << " URL: "
                    << url << endl;
 	    discard_list.Add(idStr.get(), NULL);
 	  }
@@ -206,7 +218,7 @@ void purgeDocs()
 	    // have an excerpt (probably because of a noindex directive)
 	    db.Delete(ref->DocID());
             if (verbose)
-              cout << "Deleted, no excerpt ID: " << idStr << " URL:  "
+              cout << "Deleted, no excerpt: ID: " << idStr << " URL:  "
                    << url << endl;
 	    discard_list.Add(idStr.get(), NULL);
 	  }
@@ -215,9 +227,17 @@ void purgeDocs()
 	    // This document has not been retrieved
 	    db.Delete(ref->DocID());
             if (verbose)
-              cout << "Deleted, never retrieved ID: " << idStr << " URL:  "
+              cout << "Deleted, never retrieved: ID: " << idStr << " URL:  "
                    << url << endl;
 	    discard_list.Add(idStr.get(), NULL);
+	  }
+	else if (purgeURLs.Exists(url))
+	  {
+	    // This document has been marked to be purged by the user
+	    db.Delete(ref->DocID());
+	    if (verbose)
+	      cout << "Deleted, marked by user input: ID: " << idStr << " URL: "
+		   << url << endl;
 	  }
 	else
 	  {
@@ -239,6 +259,8 @@ void purgeDocs()
 
     delete IDs;
     db.Close();
+
+    return discard_list;
 }
 
 //
@@ -292,7 +314,7 @@ static int delete_word(WordList *words, WordDBCursor& cursor, const WordReferenc
 //*****************************************************************************
 // void purgeWords()
 //
-void purgeWords()
+void purgeWords(Dictionary discard_list)
 {
   HtWordList		words(config);
   DeleteWordData	data(discard_list); 
@@ -317,13 +339,14 @@ void usage()
     cout << "usage: htpurge [-v][-a][-c configfile]\n";
     cout << "This program is part of ht://Dig " << VERSION << "\n\n";
     cout << "Options:\n";
+    cout << "\t-\tURL input. Read in a list of URLs to remove, one per line.\n\n";
     cout << "\t-v\tVerbose mode.  This increases the verbosity of the\n";
     cout << "\t\tprogram.  Using more than 2 is probably only useful\n";
     cout << "\t\tfor debugging purposes.  The default verbose mode\n";
     cout << "\t\tgives a progress on what it is doing and where it is.\n\n";
     cout << "\t-a\tUse alternate work files.\n";
     cout << "\t\tTells htpurge to append .work to the database files \n";
-    cout << "\t\tallowing it to operate on a second set of databases.\n";
+    cout << "\t\tallowing it to operate on a second set of databases.\n\n";
     cout << "\t-c configfile\n";
     cout << "\t\tUse the specified configuration file instead on the\n";
     cout << "\t\tdefault.\n\n";

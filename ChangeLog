@@ -1,3 +1,13 @@
+Fri Apr  7 00:11:29 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* httools/htpurge.cc (main): Read in URLs from STDIN for purging,
+	one per line. Pass them along to purgeDocs for removal. Also, make
+	discard_list into a local variable and pass it from purgeDocs to
+	purgeWords.
+	(purgeDocs): Accept a hash of URLs to delete (user input) and
+	return the list of doc IDs deleted.
+	(usage): Note the - option to read in URLs to be deleted from STDIN.
+
 Thu Apr  6 00:10:23 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc (got_redirect): Allow the redirect to accept
