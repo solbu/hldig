@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.17  1998/11/16 16:10:17  ghutchis
+//
+// Fix back link count.
+//
 // Revision 1.16  1998/11/15 22:29:27  ghutchis
 //
 // Implement docBackLinks backlink count.
@@ -271,12 +275,10 @@ Retriever::parse_url(URLRef &urlRef)
 	current_id = ref->DocID();
 	date = ref->DocTime();
 	if (ref->DocAccessed())
-	  {
-	    old_document = 1;
-	    ref->DocBackLinks(ref->DocBackLinks() + 1); // we had a new link
-	  }
+	  old_document = 1;
 	else // we haven't retrieved it yet, so we only have the first link
 	  old_document = 0;
+	ref->DocBackLinks(ref->DocBackLinks() + 1); // we had a new link
 	ref->DocAccessed(time(0));
 	ref->DocState(Reference_normal);
         currenthopcount=ref->DocHopCount();
@@ -861,8 +863,8 @@ Retriever::got_href(URL &url, char *description)
 		ref = new DocumentRef;
 		ref->DocID(docs.NextDocID());
 		ref->DocHopCount(currenthopcount + 1);
-		ref->DocBackLinks(1); // This one!
 	    }
+	    ref->DocBackLinks(ref->DocBackLinks() + 1); // This one!
 	    ref->DocURL(url.get());
 	    ref->AddDescription(description);
 	    if (ref->DocHopCount() < currenthopcount + 1)

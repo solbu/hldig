@@ -3,6 +3,9 @@ Mon Nov 16 10:46:15 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htdig/ExternalParser.cc: Add checks for null tokens, adapted
 	from patch by Vadim Checkan.
 
+	* htdig/Retriever.cc: Count docBackLinks accurately (previously
+	all docs had count of 2!).
+	
 Sun Nov 15 17:04:34 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.cc(do_tag): Fix for refresh tags w/o URLs.
