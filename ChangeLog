@@ -1,3 +1,20 @@
+Sun Sep 24 22:50:22 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htword/HtWordList.h, htword/HtWordList.cc: Keep a WordContext
+	object private that is associated with this word database and
+	provide accessor.
+
+	* htword/WordType.h, htword/WordType.cc: Add WordToken function,
+	migrated from HtWordType class.
+
+	* htcommon/HtWordType.cc: WordType class no longer has Instance()
+	method, so just pass along the calls.
+	
+	* htlib/DB2_db.cc (db_init): Remove unnecessary NULL parameter.
+
+	* htlib/Makefile.am, htlib/Makefile.in: Remove HtVectorGeneric and
+	derived files as well as HtWordType as these are depreciated.
+
 Wed Sep 20 22:47:01 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* aclocal.m4: Add in missing autoconf macros that somehow didn't
