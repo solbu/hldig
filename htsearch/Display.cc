@@ -4,6 +4,9 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.3  1998/04/03 17:10:44  turtle
+// Patch to make excludes work
+//
 // Revision 1.2  1997/06/16 15:31:04  turtle
 // Added PERCENT and VERSION variables for the output templates
 //
@@ -12,7 +15,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.2 1997/06/16 15:31:04 turtle Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.3 1998/04/03 17:10:44 turtle Exp $";
 #endif
 
 #include "htsearch.h"
@@ -138,7 +141,9 @@ Display::includeURL(char *url)
     }
     else
     {
-	if (excludeFrom && excludeFrom->FindFirst(url) < 0)
+	if (excludeFrom &&
+            excludeFrom->hasPattern() &&
+            excludeFrom->FindFirst(url) < 0)
 	    return 0;
 	else
 	    return 1;
