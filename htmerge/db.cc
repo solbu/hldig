@@ -6,6 +6,12 @@
 // convertDocs are performed to ensure database integrity.
 //
 // $Log: db.cc,v $
+// Revision 1.9  1999/01/25 05:11:37  ghutchis
+// Fix comiler errors (finally).
+//
+// Revision 1.8  1999/01/25 05:10:17  ghutchis
+// Fix comiler errors.
+//
 // Revision 1.7  1999/01/25 05:09:08  ghutchis
 // Fix comiler errors.
 //
@@ -270,7 +276,7 @@ mergeDB()
 	      {
 		switch (*name)
 		  {
-#ifndef #NO_WORD_COUNT
+#ifndef NO_WORD_COUNT
 		  case 'c':
 		    wr.count = atoi(value);
 		    break;
@@ -307,7 +313,7 @@ mergeDB()
 
 	// Record the word in the new file
 	fprintf(wordlist, "%s", word.get());
-#ifndef #NO_WORD_COUNT
+#ifndef NO_WORD_COUNT
 	if (wr.count != 1)
 	  {
 	    fprintf(wordlist, "\tc:%d", wr.count);
