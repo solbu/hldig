@@ -1,3 +1,11 @@
+Mon Mar 22 15:03:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/parse_doc.pl: uses pdftotext to handle PDF files,
+	generates a head record with punctuation intact, extra checks
+	for file "wrappers" & check for MS Word signature (no longer
+	defaults to catdoc), strip extra punct. from start & end of words,
+	rehyphenate text from PDFs, fix handling of minimum word length.
+
 Mon Mar 22 14:38:01 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Plaintext.cc: Use minimum_word_length instead of hardcoded
