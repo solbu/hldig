@@ -21,6 +21,7 @@
    mktime.  */
 /* #define DEBUG 1 */
 
+#include "htconfig.h"
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
