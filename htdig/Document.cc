@@ -4,6 +4,10 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.19  1998/10/26 20:43:31  ghutchis
+//
+// Fixed bug introduced by Oct 18 change. Authorization will not be cleared.
+//
 // Revision 1.18  1998/10/18 21:22:16  ghutchis
 //
 // Revised connection timeout methods.
@@ -70,7 +74,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.18 1998/10/18 21:22:16 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.19 1998/10/26 20:43:31 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -130,8 +134,10 @@ Document::Document(char *u, int max_size)
 //
 Document::~Document()
 {
-    delete url;
-//	delete proxy;
+    if (!url)
+      delete url;
+    if (!proxy)
+      delete proxy;
 #if MEM_DEBUG
     char *p = new char;
     cout << "==== Document deleted: " << this << " new at " <<
@@ -149,9 +155,13 @@ Document::~Document()
 void
 Document::Reset()
 {
-    contentType = "";
-    delete url;
+    contentType = 0;
+    if (!url)
+      delete url;
     url = 0;
+    if (!proxy)
+      delete proxy;
+    proxy = 0;
     referer = 0;
     if(config.Boolean("modification_time_is_now"))
        modtime = time(NULL);
@@ -159,8 +169,11 @@ Document::Reset()
        modtime = 0;
 
     contents = 0;
+    document_length = 0;
     redirected_to = 0;
-    authorization = 0;
+
+    // Don't reset the authorization since it's a pain to set up again.
+    //    authorization = 0;
 }
 
 
@@ -228,7 +241,8 @@ Document::setUsernamePassword(char *credentials)
 void
 Document::Url(char *u)
 {
-    delete url;
+    if (!url)
+      delete url;
     url = new URL(u);
 }
 

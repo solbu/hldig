@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.14  1998/10/26 20:43:31  ghutchis
+//
+// Fixed bug introduced by Oct 18 change. Authorization will not be cleared.
+//
 // Revision 1.13  1998/10/21 16:34:19  bergolth
 // Added translation of server names. Additional limiting after normalization of the URL.
 //
@@ -297,9 +301,10 @@ Retriever::parse_url(URLRef &urlRef)
 	    ':' << url.get() << ": ";
 	cout.flush();
     }
+    
+    // Reset the document to clean out any old data
+    doc->Reset();
 
-    delete doc;
-    doc = new Document;
     doc->Url(url.get());
     doc->Referer(urlRef.Referer());
 
@@ -471,10 +476,11 @@ Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
     // Create a parser object and let it have a go at the document.
     // We will pass ourselves as a callback object for all the got_*()
     // routines.
+    // This will generate the Parsable object as a specific parser
     //
     Parsable	*parsable = doc.getParsable();
     parsable->parse(*this, *base);
-    
+
     //
     // We don't need to dispose of the parsable object since it will
     // automatically be reused.
