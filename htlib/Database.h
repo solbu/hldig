@@ -1,32 +1,40 @@
 //
-// DB.h
+// Database.h
 //
-// This is a class which defines the interface to a generic, simple database.
+// Database: Class which defines the interface to a generic, 
+//           simple database.
 //
-// $Id: Database.h,v 1.3 1998/06/21 23:20:07 turtle Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Database.h,v $
-// Revision 1.3  1998/06/21 23:20:07  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
+// $Id: Database.h,v 1.12.2.1 2000/05/05 21:55:15 loic Exp $
 //
-// Revision 1.2  1997/03/24 04:33:19  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-//
+
 #ifndef _Database_h_
 #define _Database_h_
 
 #include "Object.h"
 #include "htString.h"
 
+#include <db.h>
+
+// Database Types
+// defined in db.h
+// #define DB_BTREE 1
+// #define DB_HASH 2
+#ifndef GDBM_HASH
+#define GDBM_HASH 2
+#endif
+
+
 class Database : public Object
 {
     //
-    // Make sure noone can actually create an object of this type or
-    // the derived types.  The static netDatabase() method needs to be
+    // Make sure no one can actually create an object of this type or
+    // the derived types.  The static getDatabaseInstance() method needs to be
     // used.
     //
 protected:
@@ -40,30 +48,44 @@ public:
     // The idea here is that the particular type of database used by
     // all the programs is to be defined in one place.
     //
-    static Database	*getDatabaseInstance();
+    static Database	*getDatabaseInstance(DBTYPE type);
 	
     //
     // Common interface
     //
-    virtual int		OpenReadWrite(char *filename, int mode = 0644) = 0;
-    virtual int		OpenRead(char *filename) = 0;
+    virtual int		OpenReadWrite(const char *filename, int mode = 0666) = 0;
+    virtual int		OpenRead(const char *filename) = 0;
+    void		SetCompare(int (*func)(const DBT *a, const DBT *b)) { _compare = func; }
+    void		SetPrefix(size_t (*func)(const DBT *a, const DBT *b)) { _prefix = func; }
     virtual int		Close() = 0;
-    int			Put(char *key, String &data);
-    int			Put(char *key, char *data, int size);
-    virtual int		Put(String &key, String &data) = 0;
-    int			Get(char *key, String &data);
-    virtual int		Get(String &key, String &data) = 0;
-    virtual int		Exists(String &key) = 0;
-    int			Exists(char *key);
-    virtual int		Delete(String &key) = 0;
-    int			Delete(char *key);
+    virtual int		Put(const String &key, const String &data) = 0;
+    virtual int		Get(const String &key, String &data) = 0;
+    virtual int		Exists(const String &key) = 0;
+    virtual int		Delete(const String &key) = 0;
 
     virtual void	Start_Get() = 0;
-    virtual char	*Get_Next() = 0;
-    virtual void	Start_Seq(char *str) = 0;
-    virtual char	*Get_Next_Seq() = 0;
+    virtual char	*Get_Next() { String item; String key; return Get_Next(item, key); }
+    virtual char	*Get_Next(String &item) { String key; return Get_Next(item, key); }
+    virtual char	*Get_Next(String &item, String &key) = 0;
+    virtual void	Start_Seq(const String& str) = 0;
+    virtual char	*Get_Next_Seq() { return Get_Next(); }
+
+protected:
+    int			isOpen;
+    DB			*dbp;		// database
+    DBC			*dbcp;		// cursor
+
+    String		skey;		// Next key to search for iterator
+    String		data;		// Next data to return for iterator
+    String		lkey;		// Contains the last key returned by iterator
+
+    DB_ENV		*dbenv;		// database enviroment
+    int			(*_compare)(const DBT *a, const DBT *b); // Key comparison
+    size_t		(*_prefix)(const DBT *a, const DBT *b);  // Key reduction
+
+    int			seqrc;
+    int			seqerr;
+    DBTYPE		db_type;
 };
 
 #endif
-
-

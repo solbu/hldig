@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.cc,v 1.2.2.6 2000/01/20 03:55:05 ghutchis Exp $
+// $Id: HtWordList.cc,v 1.2.2.7 2000/05/05 21:55:11 loic Exp $
 //
 
 #include "HtWordList.h"
@@ -140,8 +140,8 @@ int HtWordList::Dump(const String& filename)
 
   HtWordReference::DumpHeader(fl);
   DumpWordData data(fl);
-  WordSearchDescription search(dump_word, &data);
-  Walk(search);
+  WordCursor* search = Cursor(dump_word, &data);
+  search->Walk();
   
   fclose(fl);
 

@@ -9,19 +9,18 @@
 //            maximum_word_length,allow_numbers,bad_word_list
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.cc,v 1.3.2.9 2000/02/03 20:41:51 loic Exp $
+// $Id: WordType.cc,v 1.3.2.10 2000/05/05 21:55:19 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <iostream.h>
 #include <ctype.h>
 #include <stdio.h>
 
@@ -83,9 +82,7 @@ WordType::WordType(const Configuration &config)
 	    int flags;
 	    new_word = word;
 	    if((flags = Normalize(new_word)) & WORD_NORMALIZE_NOTOK) {
-	      cerr << "WordType::WordType: reading bad words from " <<
-		filename << " found " << word << ", ignored because " <<
-		NormalizeStatus(flags & WORD_NORMALIZE_NOTOK) << "\n";
+	      fprintf(stderr, "WordType::WordType: reading bad words from %s found %s, ignored because %s\n", (const char*)filename, word, (char*)NormalizeStatus(flags & WORD_NORMALIZE_NOTOK));
 	    } else {
 	      badwords.Add(new_word, 0);
 	    }

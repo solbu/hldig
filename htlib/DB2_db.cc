@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DB2_db.cc,v 1.17.2.2 2000/03/01 06:10:50 ghutchis Exp $
+// $Id: DB2_db.cc,v 1.17.2.3 2000/05/05 21:55:15 loic Exp $
 //
 
 #include "DB2_db.h"
@@ -51,18 +51,20 @@ DB2_db::~DB2_db()
 int
 DB2_db::Open(const char *filename, int flags, int mode)
 {
-    //
-    // Initialize the database environment.
-    //
-    dbenv = db_init((char *)NULL);
-    memset(&dbinfo, 0, sizeof(dbinfo));
-    dbinfo.bt_compare = _compare ? _compare : 0;
-    dbinfo.bt_prefix = _prefix ? _prefix : 0;
+  //
+  // Initialize the database environment.
+  //
+  if((dbenv = db_init((char *)NULL)) == 0) return NOTOK;
+
+  if(CDB_db_create(&dbp, dbenv, 0) != 0) return NOTOK;
+
+  if(_compare) dbp->set_bt_compare(dbp, _compare);
+  if(_prefix) dbp->set_bt_prefix(dbp, _prefix);
 
     //
     // Open the database.
     //
-    if((errno = db_open(filename, db_type, flags, mode, dbenv, &dbinfo, &dbp)) == 0)
+    if((errno = dbp->open(dbp, filename, NULL, db_type, flags, mode)) == 0)
     {
         //
 	// Acquire a cursor for the database.
@@ -96,8 +98,7 @@ DB2_db::Close()
 	//
         (void)(dbcp->c_close)(dbcp);
 	(void)(dbp->close)(dbp, 0);
-	(void) db_appexit(dbenv);
-	free(dbenv);
+	(void)(dbenv->close(dbenv, 0));
 	dbenv = 0;
     }
     isOpen = 0;
@@ -342,23 +343,20 @@ DB2_db::db_init(char *home)
     DB_ENV *dbenv;
     char *progname = "DB2 problem...";
 
-    //
-    // Rely on calloc to initialize the structure.
-    //
-    if ((dbenv = (DB_ENV *)calloc(sizeof(DB_ENV), 1)) == NULL)
-    {
-	fprintf(stderr, "%s: %s\n", progname, strerror(ENOMEM));
-	exit (1);
+    int error;
+    if((error = CDB_db_env_create(&dbenv, 0)) != 0) {
+      fprintf(stderr, "DB2_db: CDB_db_env_create %s\n", CDB_db_strerror(error));
+      return 0;
     }
-    // dbenv->db_errfile = stderr;
-    dbenv->db_errpfx = progname;
-    dbenv->db_errcall = &Error;
 
-    if ((errno = db_appinit(home, NULL, dbenv, DB_CREATE)) != 0)
-    {
-	fprintf(stderr, "%s: db_appinit: %s\n", progname, strerror(errno));
-	exit (1);
+    dbenv->set_errpfx(dbenv, progname);
+    dbenv->set_errcall(dbenv, &Error);
+
+    if((error = dbenv->open(dbenv, (const char*)home, NULL, DB_CREATE, 0666)) != 0) {
+      dbenv->err(dbenv, error, "open %s", (home ? home : ""));
+      return 0;
     }
+
     return (dbenv);
 }
 

@@ -1,3 +1,24 @@
+Sat May 06 02:01:40 2000  Loic Dachary  <loic@senga.org>
+
+	* htdb/*: upgrade to Berkeley DB 3.0.55. Very different.
+
+	* htlib/getcwd.c,memcmp.c,memcpy.c,memmove.c,raise.c,snprintf.c,strerror.c,vsnprintf.c,clib.h: Add compatibility support
+
+	* htcommon/DocumentDB.cc (LoadDB): remove unused variable
+
+	* htlib/DB2_db.cc: adapt to Berkeley DB 3.0.55 syntax.
+
+	* htlib/Database.h (class Database): remove DB_INFO, does
+	  not exist in Berkeley DB 3.0.55
+
+	* htlib/*: run ../db/prefix-symbols.sh
+
+	* Makefile.config (INCLUDES): fix db include dirs
+
+	* acconfig.h: Big file support + replacement functions 
+
+	* acinclude.m4,configure.in : db instead of db/dist + bug fixes
+
 Fri May  5 08:33:59 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* db/*: Merge in changes from Loic's mifluz tree. This will break

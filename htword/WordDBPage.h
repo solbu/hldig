@@ -5,12 +5,12 @@
 //                 Berkeley DB pages containing WordReferences objects.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
+// or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.h,v 1.1.2.6 2000/02/28 13:21:49 loic Exp $
+// $Id: WordDBPage.h,v 1.1.2.7 2000/05/05 21:55:18 loic Exp $
 //
 //
 // Access to Berkeley DB internal
@@ -60,7 +60,7 @@ public:
 	else
 	{// this is a stat
 	    type=WORD_RECORD_STATS;
-	    info.stats.noccurence=data[pstat0][i];
+	    info.stats.noccurrence=data[pstat0][i];
 	    info.stats.ndoc      =data[pstat1][i];
 	}
     }
@@ -140,9 +140,6 @@ class WordDBPage
     int nk;  // number of keys
     int type; // for now 3(btreeinternal) && 5(leave:normal case) are allowed
     int pgsz;
-    int nfields;
-    
-    int NFields() { return nfields ? nfields : ( nfields = WordKey::NFields() ); }
 
     PAGE *pg;         // pointer to BerkeleyDB BTREE page structure
 
@@ -494,7 +491,6 @@ class WordDBPage
 	CHECK_MEM(pg);
 	insert_pos=pgsz;
 	insert_indx=0;
-	nfields = 0;
     }
     WordDBPage(const u_int8_t* buff,int buff_length)
     {
@@ -503,7 +499,6 @@ class WordDBPage
 	pgsz=buff_length;
 	insert_pos=pgsz;
 	insert_indx=0;
-	nfields = 0;
 	init();
     }
 };

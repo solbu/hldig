@@ -6,12 +6,12 @@
 //              the attributes or the exact attribute combination semantics.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later 
+// or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.h,v 1.1.2.5 2000/01/14 01:03:28 ghutchis Exp $
+// $Id: WordType.h,v 1.1.2.6 2000/05/05 21:55:19 loic Exp $
 //
 
 #ifndef _WordType_h

@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.28.2.6 2000/04/09 15:20:38 ghutchis Exp $
+// $Id: DocumentDB.cc,v 1.28.2.7 2000/05/05 21:55:11 loic Exp $
 //
 
 #include "DocumentDB.h"
@@ -449,7 +449,6 @@ int DocumentDB::LoadDB(const String& filename, int verbose)
     StringList	descriptions, anchors;
     char	*token, field;
     String	data;
-    char	*line;
 
     if((input = fopen(filename, "r")) == 0) {
       perror(form("DocumentDB::LoadDB: opening %s for reading", 

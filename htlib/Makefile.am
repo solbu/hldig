@@ -7,7 +7,10 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc \
 	String.cc StringList.cc StringMatch.cc String_fmt.cc \
 	good_strtok.cc strcasecmp.cc \
-	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc \
+	mktime.c strptime.c timegm.c \
+	getcwd.c memcmp.c memcpy.c memmove.c raise.c snprintf.c strerror.c \
+	vsnprintf.c \
+	HtCodec.cc HtWordCodec.cc \
 	HtVector.cc HtHeap.cc \
 	HtPack.cc HtDateTime.cc HtRegex.cc \
 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc
@@ -17,6 +20,7 @@ libht_la_LIBADD=@LIBOBJS@
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
 pkginclude_HEADERS = \
+	clib.h \
 	Configuration.h \
 	DB2_db.h \
 	Database.h \

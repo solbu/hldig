@@ -29,7 +29,6 @@
 
 #ifdef HAVE_CONFIG_H
 # include "htconfig.h"
-# include <config.h>
 #endif
 
 #ifndef PARAMS

@@ -1,5 +1,15 @@
 /* include/htconfig.h.in.  Generated automatically from configure.in by autoheader.  */
+/*
+
+ Part of the ht://Dig package   <http://www.htdig.org/>
+ Copyright (c) 1999, 2000 The ht://Dig Group
+ For copyright details, see the file COPYING in your distribution
+ or the GNU General Public License version 2 or later
+ <http://www.gnu.org/copyleft/gpl.html>
+
+*/
 /* Defined in case the compiler doesn't have TRUE and FALSE constants */
+
 #ifndef TRUE
 #define TRUE 1
 #endif
@@ -22,33 +32,11 @@
 #undef _ALL_SOURCE
 #endif
 
-/* Define if using alloca.c.  */
-#undef C_ALLOCA
-
 /* Define to empty if the keyword does not work.  */
 #undef const
 
-/* Define to one of _getb67, GETB67, getb67 for Cray-2 and Cray-YMP systems.
-   This function is required for alloca.c support on those systems.  */
-#undef CRAY_STACKSEG_END
-
-/* Define if you have alloca, as a function or macro.  */
-#undef HAVE_ALLOCA
-
-/* Define if you have <alloca.h> and it should be used (not on Ultrix).  */
-#undef HAVE_ALLOCA_H
-
 /* Define if you have the strftime function.  */
 #undef HAVE_STRFTIME
-
-/* If using the C implementation of alloca, define if you know the
-   direction of stack growth for your system; otherwise it will be
-   automatically deduced at run-time.
- STACK_DIRECTION > 0 => grows toward higher addresses
- STACK_DIRECTION < 0 => grows toward lower addresses
- STACK_DIRECTION = 0 => direction of growth unknown
- */
-#undef STACK_DIRECTION
 
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
@@ -64,6 +52,12 @@
 
 /* Define this to the type of the third argument of getpeername() */
 #undef GETPEERNAME_LENGTH_T
+
+/* Define if building big-file environment (e.g., Solaris, HP/UX). */
+#undef HAVE_FILE_OFFSET_BITS
+
+/* Define if building big-file environment (Linux). */
+#undef HAVE_LARGEFILE_SOURCE
 
 /* Define this to the type of the second argument of select() */
 #undef FD_SET_T
@@ -95,8 +89,26 @@ typedef char bool;
 /* Define if the included regex doesn't work */
 #undef HAVE_BROKEN_REGEX
 
+/* Define if you have the getcwd function.  */
+#undef HAVE_GETCWD
+
 /* Define if you have the localtime_r function.  */
 #undef HAVE_LOCALTIME_R
+
+/* Define if you have the memcmp function.  */
+#undef HAVE_MEMCMP
+
+/* Define if you have the memcpy function.  */
+#undef HAVE_MEMCPY
+
+/* Define if you have the memmove function.  */
+#undef HAVE_MEMMOVE
+
+/* Define if you have the raise function.  */
+#undef HAVE_RAISE
+
+/* Define if you have the snprintf function.  */
+#undef HAVE_SNPRINTF
 
 /* Define if you have the strdup function.  */
 #undef HAVE_STRDUP
@@ -113,8 +125,8 @@ typedef char bool;
 /* Define if you have the timegm function.  */
 #undef HAVE_TIMEGM
 
-/* Define if you have the <alloca.h> header file.  */
-#undef HAVE_ALLOCA_H
+/* Define if you have the vsnprintf function.  */
+#undef HAVE_VSNPRINTF
 
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
@@ -136,9 +148,6 @@ typedef char bool;
 
 /* Define if you have the <sys/ioctl.h> header file.  */
 #undef HAVE_SYS_IOCTL_H
-
-/* Define if you have the <sys/select.h> header file.  */
-#undef HAVE_SYS_SELECT_H
 
 /* Define if you have the <sys/time.h> header file.  */
 #undef HAVE_SYS_TIME_H
@@ -164,3 +173,14 @@ typedef char bool;
 /* Version number of package */
 #undef VERSION
 
+
+/*
+ * Big-file configuration.
+ */
+#ifdef	HAVE_FILE_OFFSET_BITS
+#define	_FILE_OFFSET_BITS	64
+#endif
+
+#ifdef	HAVE_LARGEFILE_SOURCE
+#define	_LARGEFILE_SOURCE
+#endif

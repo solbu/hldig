@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4a from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -9,6 +9,14 @@
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
+
+#
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999, 2000 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU General Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
+#
 
 
 #
@@ -59,9 +67,10 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -106,6 +115,7 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 PERL = @PERL@
 RANLIB = @RANLIB@
+RRDTOOL = @RRDTOOL@
 SEARCH_DIR = @SEARCH_DIR@
 SEARCH_FORM = @SEARCH_FORM@
 SED = @SED@
@@ -120,24 +130,22 @@ YACC = @YACC@
 
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES) $(PROFILING)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db -I$(top_builddir)/db 		$(LOCAL_DEFINES) $(PROFILING)
 
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libhtdb.a
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/libhtdb.la
 
-
-EXTRA_DIST = word.desc 
 
 LOCAL_DEFINES = 
 
 pkglib_LTLIBRARIES = libhtword.la
 
-libhtword_la_SOURCES = WordKey.cc WordList.cc WordReference.cc WordType.cc 	WordDB.cc WordStat.cc WordDBCompress.cc WordBitCompress.cc 	WordRecord.cc WordMonitor.cc WordContext.cc WordKeyInfo.cc WordDBPage.cc
+libhtword_la_SOURCES =  	WordBitCompress.cc 	WordContext.cc 	WordCursor.cc 	WordDB.cc 	WordDBCompress.cc 	WordDBInfo.cc 	WordDBPage.cc 	WordKey.cc 	WordKeyInfo.cc 	WordList.cc 	WordMonitor.cc 	WordRecord.cc 	WordRecordInfo.cc 	WordReference.cc 	WordStat.cc 	WordType.cc
 
 
 libhtword_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-pkginclude_HEADERS = WordList.h 	WordRecord.h 	WordReference.h 	WordType.h 	WordDBCompress.h 	WordBitCompress.h 	WordKey.h 	WordDB.h 	WordStat.h 	WordCaseIsAStatements.h 	WordMonitor.h 	WordContext.h 	WordKeyInfo.h 	WordDBPage.h
+pkginclude_HEADERS =  	WordBitCompress.h 	WordCaseIsAStatements.h 	WordContext.h 	WordCursor.h 	WordDB.h 	WordDBCompress.h 	WordDBInfo.h 	WordDBPage.h 	WordKey.h 	WordKeyInfo.h 	WordList.h 	WordMonitor.h 	WordRecord.h 	WordRecordInfo.h 	WordReference.h 	WordStat.h 	WordType.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -149,10 +157,10 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 libhtword_la_LIBADD = 
-libhtword_la_OBJECTS =  WordKey.lo WordList.lo WordReference.lo \
-WordType.lo WordDB.lo WordStat.lo WordDBCompress.lo WordBitCompress.lo \
-WordRecord.lo WordMonitor.lo WordContext.lo WordKeyInfo.lo \
-WordDBPage.lo
+libhtword_la_OBJECTS =  WordBitCompress.lo WordContext.lo WordCursor.lo \
+WordDB.lo WordDBCompress.lo WordDBInfo.lo WordDBPage.lo WordKey.lo \
+WordKeyInfo.lo WordList.lo WordMonitor.lo WordRecord.lo \
+WordRecordInfo.lo WordReference.lo WordStat.lo WordType.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -165,11 +173,12 @@ DIST_COMMON =  README Makefile.am Makefile.in
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/WordBitCompress.P .deps/WordContext.P .deps/WordDB.P \
-.deps/WordDBCompress.P .deps/WordDBPage.P .deps/WordKey.P \
+DEP_FILES =  .deps/WordBitCompress.P .deps/WordContext.P \
+.deps/WordCursor.P .deps/WordDB.P .deps/WordDBCompress.P \
+.deps/WordDBInfo.P .deps/WordDBPage.P .deps/WordKey.P \
 .deps/WordKeyInfo.P .deps/WordList.P .deps/WordMonitor.P \
-.deps/WordRecord.P .deps/WordReference.P .deps/WordStat.P \
-.deps/WordType.P
+.deps/WordRecord.P .deps/WordRecordInfo.P .deps/WordReference.P \
+.deps/WordStat.P .deps/WordType.P
 SOURCES = $(libhtword_la_SOURCES)
 OBJECTS = $(libhtword_la_OBJECTS)
 
@@ -305,7 +314,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -385,7 +394,7 @@ uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(pkglibdir) $(DESTDIR)$(pkgincludedir)
 

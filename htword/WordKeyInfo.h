@@ -1,13 +1,39 @@
 // WordKeyInfo.h
 //
-// WordKeyInfo: Describe the structure of the index key (WordKey)
-//              The description includes the layout of the packed version
-//              stored on disk.
+// NAME
+// information on the key structure of the inverted index.
 //
+// SYNOPSIS
+//
+// Use the WordKey::NField() method instead.
+//
+// DESCRIPTION
+//
+// Describe the structure of the index key (<i>WordKey</i>).
+// The description includes the layout of the packed version
+// stored on disk.
+//
+// CONFIGURATION
+//
+// wordlist_wordkey_description <desc> (no default)
+//   Describe the structure of the inverted index key.
+//   In the following explanation of the <i><desc></i> format
+//   mandatory words are
+//   in bold and values that must be replaced in italic.
+//   <br>
+//   <b>Word</b>/<i>name bits</i>[/...]
+//   <br>
+//   The <i>name</i> is an alphanumerical symbolic name for the key field.
+//   The <i>bits</i> is the number of bits required to store this field.
+//   Note that all values are stored in unsigned integers (unsigned int).
+//
+//
+// END
+//   
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
+// or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
 //
@@ -25,23 +51,48 @@
 #define WORD_ISA_STRING		2
 
 //
+// Maximum number of fields in a key description
+//
+#define WORD_KEY_MAX_NFIELDS 20
+
+//
 // All numerical fields of the key are typed WordKeyNum.
 // Most of the code strongly assume that it is unsigned. 
 // Mainly provided to be replaced by unsigned longlong WordKeyNum
 // for 64 bits machines.
 //
 typedef unsigned int WordKeyNum;
+
 //
 // Maximum number of bits in a field
 //
 #define WORD_KEY_MAXBITS	((int)(sizeof(WordKeyNum) * 8))
 #define WORD_KEY_MAXVALUE	((WordKeyNum)~(WordKeyNum)0)
 
+//
+// Description of a single field
+//
 class WordKeyField
 {
  public:
-    WordKeyField(WordKeyField *previous, char *nname, int nbits, int encoding_position, int sort_position);
-    WordKeyField() { }
+    WordKeyField() {
+      type = lowbits = lastbits = bytesize = bytes_offset = bits = bits_offset = 0;
+    }
+
+    //
+    // Precompute information that will be needed to pack/unpack the key
+    // to/from disk.
+    // 
+    // The <previous> field is used to compute the position of the field
+    // in packed string.  <nname> is the symbolic name of the field
+    // <nbits> is the number of bits actualy used in a number.
+    //
+    int SetNum(WordKeyField *previous, char *nname, int nbits);
+    //
+    // Set the one and only string field
+    //
+    int SetString();
+
     //
     // Maximum possible value for this field.
     //
@@ -52,80 +103,63 @@ class WordKeyField
     //
     // Debugging and printing
     //
-    void Nprint(char c,int n);
     void Show();
 
     String name;			// Symbolic name of the field
-    int type;				// WORD_ISA_{STRING|NUMBER} of the field
-    int lowbits;			// 
+    int type;				// WORD_ISA_{STRING|NUMBER} 
+    //
+    // 01234567012345670123456701234567
+    // +-------+-------+-------+-------+--
+    //    100101010011100111101011110
+    // ^^^                     ^^^^^^
+    //   |                        |
+    // lowbits = 3           lastbits = 6
+    //
+    int lowbits;			
     int lastbits;			
-    int bytesize;			
-    int bytes_offset;			
-    int bits;				
-    int direction;			// Sorting direction
-    int encoding_position;              
-    int sort_position;
-    int bits_offset;
+    int bytesize;			// Number of bytes involved
+    int bytes_offset;			// Offset of first byte from start
+    int bits;				// Size of field in bits
+    int bits_offset;                    // Offset of first bit from start
 };
 
-#define WORD_SORT_ASCENDING	1
-#define WORD_SORT_DESCENDING	2
-
+//
+// Description of the key structure
+//
 class WordKeyInfo 
 {
  public:
     WordKeyInfo(const Configuration& config);
-    ~WordKeyInfo()
-    {
-	if(sort) { delete [] sort; }
-	if(encode) { delete [] encode; }
-    }
+    ~WordKeyInfo() { if(sort) delete [] sort; }
 
     //
     // Unique instance handlers 
     //
     static void Initialize(const Configuration& config);
-    static void InitializeFromFile(const String &filename);
     static void InitializeFromString(const String &desc);
-    //
-    // Build a random description key for test purpose.
-    //
-    static void InitializeRandom(int maxbitsize=100, int maxnnfields=10);
     static WordKeyInfo* Instance() {
       if(instance) return instance;
       fprintf(stderr, "WordKeyInfo::Instance: no instance\n");
       return 0;
     }
 
-    void        Alloc(int nnfields);
-    void        GetNFields(String &line);
-    void        AddFieldInEncodingOrder(String &name, int bits, int sort_position);
-    void        AddFieldInEncodingOrder(const String &line);
-    void        SetDescriptionFromFile(const String &filename);
-    void        SetDescriptionFromString(const String &desc);
+    int         Alloc(int nnfields);
+    int         Set(const String &desc);
 
     void  Show();
-
 
     //
     // Array describing the fields, in sort order.
     //
     WordKeyField *sort;
     //
-    // Array describing the fields, in encoding order.
-    //
-    WordKeyField *encode;
-    //
     // Total number of fields
     //
     int nfields;
     //
-    // Minimum length of key on disk
+    // Total number of bytes used by numerical fields
     //
-    int minimum_length;
-
-    WordKeyField *previous;
-    int encoding_position;
+    int num_length;
 
     //
     // Unique instance pointer

@@ -1,4 +1,11 @@
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999, 2000 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU General Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+//
 // WordRecord.cc
 //
 // WordRecord: data portion of the inverted index database
@@ -7,42 +14,9 @@
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <iostream.h>
 #include <stdlib.h>
 
 #include "WordRecord.h"
-
-WordRecordInfo* WordRecordInfo::instance = 0;
-
-//
-// WordRecordInfo implementation
-//
-void 
-WordRecordInfo::Initialize(const Configuration &config)
-{
-  if(instance != 0)
-    delete instance;
-  instance = new WordRecordInfo(config);
-}
-
-WordRecordInfo::WordRecordInfo(const Configuration& config)
-{
-  default_type = WORD_RECORD_INVALID;
-  const String &recorddesc = config["wordlist_wordrecord_description"];
-  if(!recorddesc.nocase_compare("data")) 
-  {
-      default_type = WORD_RECORD_DATA;
-  } 
-  else 
-  if(!recorddesc.nocase_compare("none") || recorddesc.empty()) 
-  {
-      default_type = WORD_RECORD_NONE;	
-  } 
-  else 
-  {
-      cerr << "WordRecordInfo::WordRecordInfo: invalid wordlist_wordrecord_description:" << recorddesc << endl;
-  }
-}
 
 //
 // WordRecord implementation
@@ -63,7 +37,7 @@ WordRecord::Get(String& buffer) const
     break;
 
   case WORD_RECORD_STATS:
-    buffer << info.stats.noccurence << "\t";
+    buffer << info.stats.noccurrence << "\t";
     buffer << info.stats.ndoc;
     break;
 
@@ -71,12 +45,20 @@ WordRecord::Get(String& buffer) const
     break;
 
   default:
-    cerr << "WordRecord::ostream <<: unknown type " << type << "\n";
+    fprintf(stderr, "WordRecord::Get: unknown type %d\n", type);
     return NOTOK;
     break;
   }
 
   return OK;
+}
+
+String
+WordRecord::Get() const
+{
+  String tmp;
+  Get(tmp);
+  return tmp;
 }
 
 //
@@ -86,11 +68,11 @@ int
 WordRecord::Set(const String& buffer)
 {
   StringList fields(buffer, "\t ");
-  return Set(fields);
+  return SetList(fields);
 }
 
 int
-WordRecord::Set(StringList& fields)
+WordRecord::SetList(StringList& fields)
 {
   int i = 0;
   
@@ -102,7 +84,7 @@ WordRecord::Set(StringList& fields)
 	String* field = (String*)fields.Get_First();
 
 	if(field == 0) {
-	  cerr << "WordRecord::Set: failed to retrieve field " << i << endl;
+	  fprintf(stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
 	  return NOTOK;
 	}
 	info.data = (unsigned int)atoi(field->get());
@@ -116,17 +98,17 @@ WordRecord::Set(StringList& fields)
 	String* field = (String*)fields.Get_First();
 
 	if(field == 0) {
-	  cerr << "WordRecord::Set: failed to retrieve field " << i << endl;
+	  fprintf(stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
 	  return NOTOK;
 	}
-	info.stats.noccurence = (unsigned int)atoi(field->get());
+	info.stats.noccurrence = (unsigned int)atoi(field->get());
 	fields.Remove(field);
 	i++;
 
 	field = (String*)fields.Get_First();
 
 	if(field == 0) {
-	  cerr << "WordRecord::Set: failed to retrieve field " << i << endl;
+	  fprintf(stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
 	  return NOTOK;
 	}
 	info.stats.ndoc = (unsigned int)atoi(field->get());
@@ -139,22 +121,24 @@ WordRecord::Set(StringList& fields)
       break;
 
     default:
-      cerr << "WordRecord::ostream <<: unknown type " << type << "\n";
+      fprintf(stderr, "WordRecord::Set: unknown type %d\n", type);
       break;
     }
 
   return OK;
 }
 
-ostream &operator << (ostream &o, const WordRecord &record)
+int
+WordRecord::Write(FILE* f) const
 {
   String tmp;
-  record.Get(tmp);
-  o << tmp;
-  return o;
+  Get(tmp);
+  fprintf(f, "%s", (char*)tmp);
+  return 0;
 }
 
-void WordRecord::Print() const
+void
+WordRecord::Print() const
 {
-  cerr << *this;
+  Write(stderr);
 }

@@ -1,0 +1,12 @@
+Makefile
+.deps
+.libs
+*.lo
+*.la
+Makefile
+config.log
+config.status
+stamp-h
+libtool
+db_config.h
+db.h

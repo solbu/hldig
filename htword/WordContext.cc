@@ -7,12 +7,12 @@
 //              object.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
+// or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordContext.cc,v 1.1.2.4 2000/01/14 14:41:05 loic Exp $
+// $Id: WordContext.cc,v 1.1.2.5 2000/05/05 21:55:17 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -26,16 +26,21 @@
 #include "WordContext.h"
 #include "WordType.h"
 #include "WordKeyInfo.h"
+#include "WordDBInfo.h"
 #include "WordRecord.h"
+#include "WordMonitor.h"
 
 void WordContext::Initialize(const Configuration &config)
 {
   WordType::Initialize(config);
   WordKeyInfo::Initialize(config);
   WordRecordInfo::Initialize(config);
+  WordDBInfo::Initialize(config);
+  if(config.Boolean("wordlist_monitor"))
+    WordMonitor::Initialize(config);
 }
 
-Configuration *WordContext::Initialize(const ConfigDefaults* config_defaults = 0)
+Configuration *WordContext::Initialize(const ConfigDefaults* config_defaults /* = 0 */)
 {
   Configuration *config = new Configuration();
 
@@ -86,4 +91,13 @@ Configuration *WordContext::Initialize(const ConfigDefaults* config_defaults = 0
   }
 
   return config;
+}
+
+void WordContext::Finish()
+{
+  delete WordType::Instance();
+  delete WordKeyInfo::Instance();
+  delete WordRecordInfo::Instance();
+  delete WordDBInfo::Instance();
+  if(WordMonitor::Instance()) delete WordMonitor::Instance();
 }

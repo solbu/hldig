@@ -23,9 +23,8 @@
    some of them in the same format (such as year, week and weekday)
    this is enough information for determining the date.  */
 
-#include "htconfig.h"
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#include "htconfig.h"
 #endif
 
 #ifndef HAVE_STRPTIME

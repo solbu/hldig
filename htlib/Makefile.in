@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4a from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -59,9 +59,10 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -106,6 +107,7 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 PERL = @PERL@
 RANLIB = @RANLIB@
+RRDTOOL = @RRDTOOL@
 SEARCH_DIR = @SEARCH_DIR@
 SEARCH_FORM = @SEARCH_FORM@
 SED = @SED@
@@ -120,22 +122,22 @@ YACC = @YACC@
 
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES) $(PROFILING)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db -I$(top_builddir)/db 		$(LOCAL_DEFINES) $(PROFILING)
 
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libhtdb.a
+HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/libhtdb.la
 
 
 pkglib_LTLIBRARIES = libht.la
 
-libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc 	HtPack.cc HtDateTime.cc HtRegex.cc 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc
+libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c 	getcwd.c memcmp.c memcpy.c memmove.c raise.c snprintf.c strerror.c 	vsnprintf.c 	HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc 	HtPack.cc HtDateTime.cc HtRegex.cc 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc
 
 
 libht_la_LIBADD = @LIBOBJS@
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-pkginclude_HEADERS =  	Configuration.h 	DB2_db.h 	Database.h 	Dictionary.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtVector.h 	HtWordCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	good_strtok.h 	htString.h 	lib.h 	langinfo.h 	regex.h  	HtVectorGeneric.h   	HtVectorGenericCode.h 	HtVector_int.h 	HtVector_String.h 	HtMaxMin.h 	HtTime.h 	HtWordType.h 	HtRandom.h
+pkginclude_HEADERS =  	clib.h 	Configuration.h 	DB2_db.h 	Database.h 	Dictionary.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtVector.h 	HtWordCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	good_strtok.h 	htString.h 	lib.h 	langinfo.h 	regex.h  	HtVectorGeneric.h   	HtVectorGenericCode.h 	HtVector_int.h 	HtVector_String.h 	HtMaxMin.h 	HtTime.h 	HtWordType.h 	HtRandom.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -151,8 +153,10 @@ libht_la_OBJECTS =  Configuration.lo Database.lo Dictionary.lo DB2_db.lo \
 IntObject.lo List.lo Object.lo ParsedString.lo Queue.lo \
 QuotedStringList.lo Stack.lo String.lo StringList.lo StringMatch.lo \
 String_fmt.lo good_strtok.lo strcasecmp.lo mktime.lo strptime.lo \
-timegm.lo HtCodec.lo HtWordCodec.lo HtVector.lo HtHeap.lo HtPack.lo \
-HtDateTime.lo HtRegex.lo HtVectorGeneric.lo HtMaxMin.lo HtWordType.lo
+timegm.lo getcwd.lo memcmp.lo memcpy.lo memmove.lo raise.lo snprintf.lo \
+strerror.lo vsnprintf.lo HtCodec.lo HtWordCodec.lo HtVector.lo \
+HtHeap.lo HtPack.lo HtDateTime.lo HtRegex.lo HtVectorGeneric.lo \
+HtMaxMin.lo HtWordType.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -177,8 +181,10 @@ DEP_FILES =  .deps/Configuration.P .deps/DB2_db.P .deps/Database.P \
 .deps/IntObject.P .deps/List.P .deps/Object.P .deps/ParsedString.P \
 .deps/Queue.P .deps/QuotedStringList.P .deps/Stack.P .deps/String.P \
 .deps/StringList.P .deps/StringMatch.P .deps/String_fmt.P \
-.deps/good_strtok.P .deps/mktime.P .deps/strcasecmp.P .deps/strptime.P \
-.deps/timegm.P
+.deps/getcwd.P .deps/good_strtok.P .deps/memcmp.P .deps/memcpy.P \
+.deps/memmove.P .deps/mktime.P .deps/raise.P .deps/snprintf.P \
+.deps/strcasecmp.P .deps/strerror.P .deps/strptime.P .deps/timegm.P \
+.deps/vsnprintf.P
 SOURCES = $(libht_la_SOURCES)
 OBJECTS = $(libht_la_OBJECTS)
 
@@ -314,7 +320,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -394,7 +400,7 @@ uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(pkglibdir) $(DESTDIR)$(pkgincludedir)
 

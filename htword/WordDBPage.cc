@@ -5,13 +5,16 @@
 //                 Berkeley DB pages containing WordReferences objects.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Public License version 2 or later
+// or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.cc,v 1.1.2.9 2000/02/28 13:21:49 loic Exp $
+// $Id: WordDBPage.cc,v 1.1.2.10 2000/05/05 21:55:17 loic Exp $
 //
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include"WordDBPage.h"
 #include"WordDBCompress.h"
@@ -21,15 +24,12 @@
 #define CMPRTYPE_NORMALCOMRPESS 0
 #define CMPRTYPE_BADCOMPRESS 1
 
-extern int word_debug_cmprcount;
-
-
 // ***********************************************
 // **********  Compression Versions **************
 // ***********************************************
 
 // never change NBITS_COMPRESS_VERSION ! (otherwise version tracking will fail)
-#define NBITS_COMPRESS_VERSION 10
+#define NBITS_COMPRESS_VERSION 11
 
 // IMPORTANT: change these EVERY time you change something that affects the compression
 #define COMPRESS_VERSION 4
@@ -240,7 +240,7 @@ WordDBPage::Uncompress_vals_chaged_flags(Compressor &in,unsigned int **pcflags,i
     int nbits=num_bits(n);
     for(int i=0;i<n;i++)
     {
-	ex=in.get_uint(NFields(),label_str("cflags",i));
+	ex=in.get_uint(WordKey::NFields(),label_str("cflags",i));
 	cflags[i]=ex;
 	int rep=in.get("rep");
 	if(rep)
@@ -291,7 +291,7 @@ void
 WordDBPage::Uncompress_rebuild(unsigned int **rnums,int *rnum_sizes,int nnums0,byte *rworddiffs,int nrworddiffs)
 {
     int irwordiffs=0;
-    int nfields=NFields();
+    int nfields=WordKey::NFields();
     int *rnum_pos=new int[   nnums0];// current index count
     CHECK_MEM(rnum_pos);
 
@@ -469,7 +469,7 @@ WordDBPage::Compress(int ndebug, DB_CMPR_INFO *cmprInfo/*=NULL*/)
 
     if(verbose)
     {
-	printf("WordDBPage::Compress: Final bitstream result for %d\n",word_debug_cmprcount);
+	printf("WordDBPage::Compress: Final bitstream result\n");
 	res->show();
     }
     return res;
@@ -569,7 +569,7 @@ WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int ,HtVector
 	    // add record 
 	    if(arec.type==WORD_RECORD_STATS)
 	    {
-		nums[CNDATASTATS0*nk+nums_pos[CNDATASTATS0]++]=arec.info.stats.noccurence;
+		nums[CNDATASTATS0*nk+nums_pos[CNDATASTATS0]++]=arec.info.stats.noccurrence;
 		nums[CNDATASTATS1*nk+nums_pos[CNDATASTATS1]++]=arec.info.stats.ndoc;
 	    }
 	    else 
@@ -601,7 +601,7 @@ WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int ,HtVector
 
 	    // check numerical fields for changes
 	    // ********   sets CNFIELDS and some of CNFLAGS ************
-	    for(j=1;j<NFields();j++)
+	    for(j=1;j<akey.NFields();j++)
 	    {
 		int diff=akey.Get(j)-(foundfchange ? 0 : pkey.Get(j));
 		if(diff)
@@ -616,7 +616,7 @@ WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int ,HtVector
 	    // ********   sets CNWORDDIFFPOS CNWORDDIFFLEN and some of CNFLAGS ************
 	    if(!(aword==pword))
 	    {
-		nums[iflag]|=pow2(NFields()-1);
+		nums[iflag]|=pow2(akey.NFields()-1);
 		int fd=first_diff(aword,pword);
 		nums[CNWORDDIFFPOS*nk+nums_pos[CNWORDDIFFPOS]++]=fd;
 		nums[CNWORDDIFFLEN*nk+nums_pos[CNWORDDIFFLEN]++]=aword.length()-fd;
@@ -639,7 +639,7 @@ WordDBPage::Compress_vals_changed_flags(Compressor &out,unsigned int *cflags,int
     for(int i=0;i<n;i++)
     {
 	ex=cflags[i];
-	out.put_uint(ex,NFields(),label_str("cflags",i));
+	out.put_uint(ex,WordKey::NFields(),label_str("cflags",i));
 	int k;
 	for(k=1;k+i<n;k++){if(ex!=cflags[i+k]){break;}}
 	k--;
@@ -945,10 +945,10 @@ WordDBPage::show()
 	      printf("\"");
 	      for(j=0;j<20-tkey.GetWord().length();j++){printf(" ");}
 	      printf("|");
-	      for(j=1;j<NFields();j++){printf("%4x ",tkey.Get(j));}
+	      for(j=1;j<tkey.NFields();j++){printf("%4x ",tkey.Get(j));}
 	      printf("|");
 	  
-	      for(j=1;j<NFields();j++)
+	      for(j=1;j<tkey.NFields();j++)
 	      {
 		  int diff=tkey.Get(j)-prev.Get(j);
 		  if(diff<0){diff=tkey.Get(j);}
@@ -967,8 +967,8 @@ WordDBPage::show()
 		  printf("  %2d %s",fd,((char *)word)+fd);
 	      }
 
-	      int keycl=NFields();
-	      for(j=1;j<NFields();j++)
+	      int keycl=tkey.NFields();
+	      for(j=1;j<tkey.NFields();j++)
 	      {
 		  if(fieldchanged[j]){keycl+=WordKeyInfo::Instance()->sort[j].bits;}
 	      }
@@ -1014,7 +1014,7 @@ WordDBPage::show()
 	  WordDBKey tkey(bie);
 	  for(j=0;j<bie->len-tkey.GetWord().length();j++){printf("%2x ",bie->data[j]);}
 	  printf(" : ");
-	  for(j=1;j<NFields();j++){printf("%5d ",tkey.Get(j));}
+	  for(j=1;j<tkey.NFields();j++){printf("%5d ",tkey.Get(j));}
 	  printf("\"%s\"\n",(char *)tkey.GetWord());
       }
   }
