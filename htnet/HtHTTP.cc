@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.16 2000/08/17 00:29:21 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.17 2000/08/17 04:09:14 angus Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -159,6 +159,25 @@ Transport::DocStatus HtHTTP::Request()
    
    if (result == Document_ok)
       result = HTTPRequest();
+
+   if (HeadBeforeGet() &&
+      result == Document_no_header && isPersistentConnectionAllowed())
+   {
+
+      // Sometimes, when asking for a document with the HEAD
+      // HTTP/1.1 method, the server gives back the body too
+      // The first solution possible is to close the connection
+      // and 'GET' it again.
+
+      CloseConnection();      // Close a previous connection
+      
+      if (debug>0)
+         cout << "! Impossible to get the HTTP header line." << endl
+              << "  Connection closed. Try to get it again." << endl;
+            
+      result = HTTPRequest(); // Get the document again
+
+   }
       
    return result;
 }
