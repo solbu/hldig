@@ -1,3 +1,8 @@
+Fri Oct 29 17:13:21 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/cf_generate.pl: now updates last modified date in attrs.html
+	* htdoc/attrs.html: reran cf_generate.pl
+
 Fri Oct 29 15:28:22 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(setVariables & hilight): added Sergey's idea

@@ -14,7 +14,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: cf_generate.pl,v 1.1.2.3 1999/10/27 18:58:33 grdetil Exp $
+# $Id: cf_generate.pl,v 1.1.2.4 1999/10/29 22:26:13 grdetil Exp $
 #
 use strict;
 
@@ -187,9 +187,15 @@ EOF
     
 }
 
+open(FILE, "date |") or die "cannot open pipe to date command for reading : $!";
+$content = <FILE>;
+close(FILE);
+my($date) = $content;
+
 my($file) = "attrs_tail.html";
 open(FILE, "<$file") or die "cannot open $file for reading : $!";
 $content = <FILE>;
+$content =~ s/Last modified: [^\n]*\n/Last modified: $date/;
 print ATTR $content;
 close(FILE);
 
