@@ -1,3 +1,9 @@
+Wed Jan  6 13:08:26 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/DocumentRef.cc: Applied fix from Dave Alden
+	<alden@math.ohio-state.edu> to compile under SunPRO compilers
+	by eliminating trailing comma in enum.
+
 Wed Jan  6 17:50:55 1999  Alexander Bergolth  <bergolth@ariel.wu-wien.ac.at>
 
 	* {.,htcommon,htdig,htfuzzy,htlib,htmerge,htnotify,htsearch}/

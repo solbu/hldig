@@ -4,6 +4,10 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.14  1999/01/06 18:21:16  ghutchis
+// Applied fix from Dave Alden <alden@math.ohio-state.edu> to compile under
+// SunPRO compilers by eliminating trailing comma in enum.
+//
 // Revision 1.13  1999/01/06 15:39:47  ghutchis
 // Remove delete instruction that fouls up everything (it was removing
 // descriptions as we add them!).
@@ -121,7 +125,7 @@ enum
     DOC_STRING,                         // 16
     DOC_METADSC,                        // 17
     DOC_BACKLINKS,                      // 18
-    DOC_SIG,                            // 19
+    DOC_SIG                             // 19
 };
 
 
