@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.3.2.3 1999/12/07 19:54:09 bosc Exp $
+// $Id: URL.cc,v 1.3.2.4 2000/01/14 01:24:36 ghutchis Exp $
 //
 
 #include "URL.h"
@@ -440,7 +440,8 @@ void URL::normalizePath()
       _path.lowercase();
 
     // And don't forget to remove index.html or similar file.
-    removeIndex(_path);
+    if (strcmp((char*)_service, "file") != 0)
+	removeIndex(_path);
 }
 
 //*****************************************************************************
