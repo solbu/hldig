@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: EndingsDB.cc,v 1.5 1999/03/07 14:46:54 ghutchis Exp $";
+static char RCSid[] = "$Id: EndingsDB.cc,v 1.6 1999/03/08 02:04:13 ghutchis Exp $";
 #endif
 
 #include "Endings.h"
@@ -61,9 +61,12 @@ Endings::createDB(Configuration &config)
     // to now move them to the correct location as defined in the config
     // database.
     //
-    system(form("/bin/mv %s %s;/bin/mv %s %s",
-		root2word.get(), config["endings_root2word_db"],
-		word2root.get(), config["endings_word2root_db"]));
+
+    link(root2word.get(), config["endings_root2word_db"]);
+    unlink(root2word.get());
+    link(word2root.get(), config["endings_word2root_db"]);
+    unlink(word2root.get());
+
     return OK;
 }
 
