@@ -140,7 +140,6 @@ if test ! -d "./db"; then
   mkdir db
 fi
 AC_CONFIG_SUBDIRS(db/dist)
-AC_CONFIG_SUBDIRS(rx)
 
 CF_MAKE_INCLUDE
 

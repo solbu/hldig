@@ -24,12 +24,12 @@ PDF_PARSER=	@PDF_PARSER@
 SENDMAIL=	@SENDMAIL@
 
 DEFINES=	-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\"
-LIBDIRS=	-L../htlib -L../htcommon -L../db/dist -L../rx/rx -L/usr/lib
-INCS=		-I$(top_srcdir)/htlib -I$(top_srcdir)/htcommon -I../db/dist -I$(top_srcdir)/rx/rx -I../include
+LIBDIRS=	-L../htlib -L../htcommon -L../db/dist -L/usr/lib
+INCS=		-I$(top_srcdir)/htlib -I$(top_srcdir)/htcommon \
+		-I../db/dist -I../include
 HTLIBS=		../htcommon/libcommon.a \
 		../htlib/libht.a \
-		../db/dist/libdb.a \
-		../rx/rx/librx.a
+		../db/dist/libdb.a
 LIBS=		$(HTLIBS) @LIBS@
 
 DIST=		@PACKAGE@-@VERSION@

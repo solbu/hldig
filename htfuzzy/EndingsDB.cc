@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: EndingsDB.cc,v 1.4 1999/03/03 04:46:57 ghutchis Exp $";
+static char RCSid[] = "$Id: EndingsDB.cc,v 1.5 1999/03/07 14:46:54 ghutchis Exp $";
 #endif
 
 #include "Endings.h"
@@ -15,10 +15,7 @@ static char RCSid[] = "$Id: EndingsDB.cc,v 1.4 1999/03/03 04:46:57 ghutchis Exp 
 #include "Dictionary.h"
 #include "List.h"
 #include "Configuration.h"
-extern "C"
-{
-#include <rxposix.h>
-}
+#include <regex.h>
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>
