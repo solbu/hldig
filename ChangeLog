@@ -1,3 +1,7 @@
+Tue Nov 30 12:18:12 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* .version, README: Bump for 3.1.4.
+
 Tue Nov 30 11:03:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html(backlink_factor): Added Geoff's clarification of
