@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.cc,v 1.1 1999/04/30 23:48:07 ghutchis Exp $
+// $Id: HtRegex.cc,v 1.2 1999/05/05 00:41:53 ghutchis Exp $
 //
 //
 #include "HtRegex.h"
@@ -50,8 +50,7 @@ HtRegex::match(char * str, int nullpattern, int nullstr)
 	if (str == NULL) return(nullstr);
 	if (strlen(str) <= 0) return(nullstr);
 	rval = regexec(&re, str, (size_t) 0, NULL, 0);
-	if (rval == 0) rval = 1;
-	else rval = 0;
-	return(rval);
+	if (rval == 0) return(1);
+	else return(0);
 }
 
