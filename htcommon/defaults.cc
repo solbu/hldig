@@ -4,12 +4,15 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
-// Revision 1.1  1997/02/03 17:11:07  turtle
-// Initial revision
+// Revision 1.2  1997/03/14 17:15:32  turtle
+// Changed default value for remove_bad_urls to true
+//
+// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
+// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.1 1997/02/03 17:11:07 turtle Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.2 1997/03/14 17:15:32 turtle Exp $";
 #endif
 
 #include <Configuration.h>
@@ -80,7 +83,7 @@ ConfigDefaults	defaults[] =
     {"nothing_found_file",		"${common_dir}/nomatch.html"},
     {"page_list_header",		"<hr noshade size=2>Pages:<br>"},
     {"prev_page_text",			"[prev]"},
-    {"remove_bad_urls",			"false"},
+    {"remove_bad_urls",			"true"},
     {"robotstxt_name",			"htdig"},
     {"search_algorithm",		"exact:1"},
     {"search_results_footer",		"${common_dir}/footer.html"},
