@@ -5,43 +5,7 @@
 // Updates databases to remove old documents and 
 // ensures the databases are consistent.
 //
-//
-// $Log: htmerge.cc,v $
-// Revision 1.12  1999/02/04 00:29:51  ghutchis
-// Updated documentation on command-line flags.
-//
-// Revision 1.11  1999/01/23 18:22:09  ghutchis
-// Unlink the db.docs.index file before we build it again. This ensures we have
-// a clean copy and don't duplicate URLs.
-//
-// Revision 1.10  1999/01/21 13:41:22  ghutchis
-// Check HtURLCodec for errors.
-//
-// Revision 1.9  1999/01/09 20:18:07  ghutchis
-// Set up merge_config file and add options for mergeDB code.
-//
-// Revision 1.8  1998/12/05 00:52:04  ghutchis
-// Remove previous db.words.db file before doing a word merging. Fixes bug with
-// deleted documents keeping entries.
-//
-// Revision 1.7  1998/12/04 04:13:51  ghutchis
-// Use configure check to only include getopt.h when it exists.
-// 
-// Revision 1.5  1998/10/02 17:07:32  ghutchis
-// More configure changes
-//
-// Revision 1.4  1998/08/03 16:50:43  ghutchis
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.3  1998/01/05 05:43:24  turtle
-// format changes
-//
-// Revision 1.2  1997/06/23 02:24:49  turtle
-// Added version info to usage message
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
+// $Id: htmerge.cc,v 1.13 1999/03/12 00:46:57 hp Exp $
 //
 
 #include "htmerge.h"
@@ -200,10 +164,6 @@ int main(int ac, char **av)
     {
 	file1 = config["doc_db"];
 	file2 = config["doc_index"];
-	// Before we start, get rid of the previous one
-	// it doesn't matter if it's .work or not.
-	// This ensures we generate it from scratch and prevents duplicates
-	unlink(file2);
 	convertDocs(file1, file2);
     }
     return 0;

@@ -1,51 +1,23 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.8 1999/01/20 19:18:54 ghutchis Exp $
+// $Id: Display.h,v 1.9 1999/03/12 00:46:57 hp Exp $
 //
-// $Log: Display.h,v $
-// Revision 1.8  1999/01/20 19:18:54  ghutchis
-// Revised setting ANCHOR variable: it will be empty if there is no excerpt
-// which matches the search formula. Fixes problems with META descriptions. Based on a patch contributed by Marjolein.
-//
-// Revision 1.7  1999/01/14 03:09:19  ghutchis
-// Added support for sorting and reverse sorting by date, time, and score.
-//
-// Revision 1.6  1999/01/08 05:02:24  ghutchis
-// Implement add_anchors_to_excerpt option and new variable ANCHOR as
-// contributed by Marjolein.
-//
-// Revision 1.5  1998/12/12 01:45:29  ghutchis
-// Added a patch from Gilles allowing CGI environment variables in templates.
-//
-// Revision 1.4  1998/10/17 14:15:57  ghutchis
-// Added variable CURRENT as the number of the current match, adapted from a
-// patch by Reni Seindal <seindal@webadm.kb.dk>
-//
-// Revision 1.3  1998/10/12 02:09:28  ghutchis
-// Added htsearch logging patch from Alexander Bergolth.
-//
-// Revision 1.2  1998/09/10 04:16:26  ghutchis
-// More bug fixes.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-//
+
 #ifndef _Display_h_
 #define _Display_h_
 
-#include <Object.h>
+#include "Object.h"
 #include "ResultList.h"
 #include "ResultMatch.h"
 #include "TemplateList.h"
-#include <cgi.h>
-#include <StringMatch.h>
-#include <StringMatch.h>
-#include <List.h>
-#include <DocumentDB.h>
-#include <Database.h>
-#include <Dictionary.h>
+#include "cgi.h"
+#include "StringMatch.h"
+#include "StringMatch.h"
+#include "List.h"
+#include "DocumentDB.h"
+#include "Database.h"
+#include "Dictionary.h"
 
 class Display : public Object
 {
@@ -53,7 +25,7 @@ public:
     //
     // Construction/Destruction
     //
-    Display(char *indexFile, char *docFile);
+    Display(char *docFile);
     ~Display();
 
     void		setStartTemplate(char *templateName);
@@ -88,11 +60,6 @@ protected:
     // The database that contains documents.
     //
     DocumentDB		docDB;
-
-    //
-    // The database that translates document IDs to URLs.
-    //
-    Database		*docIndex;
 
     //
     // A list of words that we are searching for

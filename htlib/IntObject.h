@@ -1,13 +1,9 @@
 //
 // IntObject.h
 //
-// $Id: IntObject.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: IntObject.h,v 1.2 1999/03/12 00:46:58 hp Exp $
 //
-// $Log: IntObject.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
-//
-//
+
 #ifndef _IntObject_h_
 #define _IntObject_h_
 
@@ -20,6 +16,7 @@ public:
 	// Construction/Destruction
 	//
 					IntObject();
+					IntObject(int v) { value = v; }
 					~IntObject();
 
 	int				Value()				{return value;}

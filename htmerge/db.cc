@@ -5,41 +5,6 @@
 // sets of databases to merge. Only adds the data in, assumes mergeWords and 
 // convertDocs are performed to ensure database integrity.
 //
-// $Log: db.cc,v $
-// Revision 1.9  1999/01/25 05:11:37  ghutchis
-// Fix comiler errors (finally).
-//
-// Revision 1.8  1999/01/25 05:10:17  ghutchis
-// Fix comiler errors.
-//
-// Revision 1.7  1999/01/25 05:09:08  ghutchis
-// Fix comiler errors.
-//
-// Revision 1.6  1999/01/25 04:55:54  ghutchis
-// Ignore word count by compile-time option NO_WORD_COUNT.
-//
-// Revision 1.5  1999/01/25 01:53:47  hp
-// Provide a clean upgrade from old databses without "url_part_aliases" and
-// "common_url_parts" through the new option "uncoded_db_compatible".
-//
-// Revision 1.4  1999/01/20 18:08:32  ghutchis
-// Call good_strtok with appropriate parameters (explicitly include NULL first
-// parameter, second param is char, not char *).
-//
-// Revision 1.3  1999/01/14 00:30:32  ghutchis
-// Fixed problem with db.NextDocID() being set incorrectly, reported by Roman
-// Dimov <roman@mark-itt.ru>.
-//
-// Revision 1.2  1999/01/12 03:59:29  ghutchis
-// Fixed thinko with setting the docIDs of new words in the destination
-// wordlist.
-//
-// Revision 1.1  1999/01/09 20:19:19  ghutchis
-// Implements merging of two database sets specified by the
-// merge_config and config variables.
-//
-//
-//
 
 #include "htmerge.h"
 
@@ -53,14 +18,20 @@ mergeDB()
     List	*urls;
     Dictionary  merge_dup_ids, db_dup_ids; // Lists of DocIds to ignore
     char        *doc_db, *merge_doc_db;
+    char        *doc_index, *merge_doc_index;
     int         docIDOffset;
 
     // Check "uncompressed"/"uncoded" urls at the price of time
     // (extra DB probes).
     db.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
 
+    doc_index = config["doc_index"];    
+    if (access(doc_index, R_OK) < 0)
+    {
+	reportError(form("Unable to open document index '%s'", doc_index));
+    }
     doc_db = config["doc_db"];    
-    if (db.Open(doc_db) < 0)
+    if (db.Open(doc_db, doc_index) < 0)
     {
 	reportError(form("Unable to open/create document database '%s'",
 			 doc_db));
@@ -69,8 +40,13 @@ mergeDB()
     merge_db.
       SetCompatibility(merge_config.Boolean("uncoded_db_compatible", 1));
 
+    merge_doc_index = config["doc_index"];    
+    if (access(merge_doc_index, R_OK) < 0)
+    {
+	reportError(form("Unable to open document index '%s'", doc_index));
+    }
     merge_doc_db = merge_config["doc_db"];
-    if (merge_db.Open(merge_doc_db) < 0)
+    if (merge_db.Open(merge_doc_db, merge_doc_index) < 0)
     {
 	reportError(form("Unable to open document database '%s'",
 			 merge_doc_db));
@@ -118,7 +94,7 @@ mergeDB()
 		char        str[20];
 		sprintf(str, "%d", old_ref->DocID());
 		db_dup_ids.Add(str, 0);
-		db.Delete(url->get());
+		db.Delete(old_ref->DocID());
 		ref->DocID(ref->DocID() + docIDOffset);
 		db.Add(*ref);
                 if (verbose > 1)

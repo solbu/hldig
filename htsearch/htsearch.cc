@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.27 1999/03/03 04:46:56 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.28 1999/03/12 00:46:57 hp Exp $";
 #endif
 
 #include "htsearch.h"
@@ -239,12 +239,6 @@ main(int ac, char **av)
     }
     ResultList	*results = htsearch(word_db, searchWords, parser);
 
-    String	index = config["doc_index"];
-    if (access(index, R_OK) < 0)
-    {
-	reportError(form("Unable to read document index file '%s'\nDid you run htmerge?",
-			 index.get()));
-    }
     String	doc_db = config["doc_db"];
     if (access(doc_db, R_OK) < 0)
     {
@@ -252,7 +246,7 @@ main(int ac, char **av)
 			 doc_db.get()));
     }
 
-    Display	display(index, doc_db);
+    Display	display(doc_db);
     if (display.hasTemplateError())
       {
 	reportError(form("Unable to read template file '%s'\nDoes it exist?",

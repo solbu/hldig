@@ -6,33 +6,19 @@
 // database is used for searching.  This is because digging requires a
 // different index than searching.
 //
-// $Id: DocumentDB.h,v 1.5 1999/01/25 01:53:42 hp Exp $
-//
-// $Log: DocumentDB.h,v $
-// Revision 1.5  1999/01/25 01:53:42  hp
-// Provide a clean upgrade from old databses without "url_part_aliases" and
-// "common_url_parts" through the new option "uncoded_db_compatible".
-//
-// Revision 1.4  1999/01/14 01:09:11  ghutchis
-// Small speed improvements based on gprof.
-//
-// Revision 1.3  1999/01/14 00:30:10  ghutchis
-// Added IncNextDocID to allow big changes in NextDocID, such as when merging
-// databases.
-//
-// Revision 1.2  1998/01/05 00:47:27  turtle
-// reformatting
-//
-// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
-// Initial CVS
-//
+// $Id: DocumentDB.h,v 1.6 1999/03/12 00:47:00 hp Exp $
 //
 #ifndef _DocumentDB_h_
 #define _DocumentDB_h_
 
 #include "DocumentRef.h"
-#include <List.h>
-#include <Database.h>
+#include "List.h"
+#include "Database.h"
+#include "IntObject.h"
+
+/* This is where the running document counter is stored.
+   The first real document number is the next. */
+#define NEXT_DOC_ID_RECORD 1
 
 
 class DocumentDB
@@ -52,14 +38,15 @@ public:
     //
     // Standard database operations
     //
-    int			Open(char *filename);
-    int			Read(char *filename);
+    int			Open(char *filename, char *indexfilename);
+    int			Read(char *filename, char *indexfilename = 0);
     int			Close();
 
     int			Add(DocumentRef &);
+    DocumentRef		*operator [] (int DocID);
     DocumentRef		*operator [] (char *url);
-    int			Exists(char *url);
-    int			Delete(char *url);
+    int			Exists(int DocID);
+    int			Delete(int DocID);
 
     //
     // The database keeps track of document ids.  Here is a way to get
@@ -74,10 +61,15 @@ public:
     //
     // We will need to be able to iterate over the complete database.
     //
-    List		*URLs();	// This returns a list of all the URLs
+
+    // This returns a list of all the URLs, as String *
+    List		*URLs();
+
+    // This returns a list of all the DocIDs, as IntObject *
+    List		*DocIDs();
 
     //
-    // Set compatibility mode (try to support when database
+    // Set compatibility mode (try to support when index
     // contains *unencoded* URLs as keys).
     //
     inline void                SetCompatibility(int on_flag = 1)
@@ -85,6 +77,7 @@ public:
 
 private:
     Database		*dbf;
+    Database		*i_dbf;
     int			isopen;
     int			isread;
     int			nextDocID;

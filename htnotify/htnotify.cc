@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.20 1999/02/14 02:31:21 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.21 1999/03/12 00:46:57 hp Exp $";
 #endif
 
 #include "Configuration.h"
@@ -101,7 +101,7 @@ int main(int ac, char **av)
     docdb.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
 
     docdb.Read(doc_db);
-    List	*docs = docdb.URLs();
+    List	*docs = docdb.DocIDs();
 
     //
     // Compute today's date
@@ -113,11 +113,11 @@ int main(int ac, char **av)
     // Traverse all the known documents to check for notification requirements
     //
     DocumentRef	*ref;
-    String		*str;
+    IntObject		*id;
     docs->Start_Get();
-    while ((str = (String *) docs->Get_Next()))
+    while ((id = (IntObject *) docs->Get_Next()))
     {
-	ref = docdb[str->get()];
+	ref = docdb[id->Value()];
 	if (ref)
 	    htnotify(*ref);
 	delete ref;

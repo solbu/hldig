@@ -140,6 +140,13 @@ main(int ac, char **av)
 	    configValue << ".work";
 	    config.Add("word_list", configValue);
 	}
+
+	configValue = config["doc_index"];
+	if (configValue.length() != 0)
+	{
+	    configValue << ".work";
+	    config.Add("doc_index", configValue);
+	}
     }
     
     //
@@ -208,7 +215,12 @@ main(int ac, char **av)
     String		filename = config["doc_db"];
     if (initial)
 	unlink(filename);
-    if (docs.Open(filename) < 0)
+
+    String		index_filename = config["doc_index"];
+    if (initial)
+	unlink(index_filename);
+
+    if (docs.Open(filename, index_filename) < 0)
     {
 	reportError(form("Unable to open/create document database '%s'",
 			 filename.get()));

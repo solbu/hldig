@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.57 1999/03/03 04:46:57 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.58 1999/03/12 00:46:57 hp Exp $";
 #endif
 
 #include "htsearch.h"
@@ -24,11 +24,8 @@ static char RCSid[] = "$Id: Display.cc,v 1.57 1999/03/03 04:46:57 ghutchis Exp $
 
 //*****************************************************************************
 //
-Display::Display(char *indexFile, char *docFile)
+Display::Display(char *docFile)
 {
-    docIndex = Database::getDatabaseInstance(DB_BTREE);
-    docIndex->OpenRead(indexFile);
-
     // Check "uncompressed"/"uncoded" urls at the price of time
     // (extra DB probes).
     docDB.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
@@ -81,7 +78,6 @@ Display::Display(char *indexFile, char *docFile)
 //*****************************************************************************
 Display::~Display()
 {
-    delete docIndex;
     docDB.Close();
 }
 
@@ -173,7 +169,7 @@ Display::display(int pageNumber)
     {
 	if (currentMatch >= startAt)
 	{
-	    match->setRef(docDB[match->getURL()]);
+	    match->setRef(docDB[match->getID()]);
 	    DocumentRef	*ref = match->getRef();
 	    if (!ref)
 		continue;	// The document isn't present for some reason
@@ -229,7 +225,7 @@ Display::displayMatch(ResultMatch *match, int current)
 	
     DocumentRef	*ref = match->getRef();
 
-    char    *url = match->getURL();
+    char    *url = ref->DocURL();
     vars.Add("URL", new String(url));
     
     int     iA = ref->DocAnchor();
@@ -854,8 +850,8 @@ Display::outputVariable(char *var)
 List *
 Display::buildMatchList()
 {
-    char	*id;
-    String	coded_url, url;
+    char	*cpid;
+    String	url;
     ResultMatch	*thisMatch;
     List	*matches = new List();
     double      backlink_factor = config.Double("backlink_factor");
@@ -863,33 +859,29 @@ Display::buildMatchList()
     SortType	typ = sortType();
 	
     results->Start_Get();
-    while ((id = results->Get_Next()))
+    while ((cpid = results->Get_Next()))
     {
+	int id = atoi(cpid);
+
+	DocumentRef *thisRef = docDB[id];
+
 	//
-	// Convert the ID to a URL
+	// If it wasn't there, then ignore it
 	//
-	if (docIndex->Get(id, coded_url) == NOTOK)
+	if (thisRef == 0)
 	{
 	    continue;
 	}
 
-	// No special precations re: the option
-	// "uncoded_db_compatible" needs to be taken.
-	url = HtURLCodec::instance()->decode(coded_url);
-	if (!includeURL(url.get()))
+	if (!includeURL(thisRef->DocURL()))
 	{
 	    continue;
 	}
 	
 
 	thisMatch = new ResultMatch();
-	thisMatch->setURL(url);
-	thisMatch->setRef(NULL);
-
-	//
-	// Get the actual document record into the current ResultMatch
-	//
-	//	thisMatch->setRef(docDB[thisMatch->getURL()]);
+	thisMatch->setID(id);
+	thisMatch->setRef(thisRef);
 
 	//
 	// Assign the incomplete score to this match.  This score was
@@ -897,7 +889,7 @@ Display::buildMatchList()
 	// known at that time, or info about the document itself, 
 	// so this still needs to be done.
 	//
-	DocMatch	*dm = results->find(id);
+	DocMatch	*dm = results->find(cpid);
 	double           score = dm->score;
 
 	// We need to scale based on date relevance and backlinks
@@ -909,31 +901,31 @@ Display::buildMatchList()
 	// ultimate values to be a reasonable size (max about 100)
 
 	if (date_factor != 0.0 || backlink_factor != 0.0 || typ != SortByScore)
-	  {
-	    DocumentRef *thisRef = docDB[thisMatch->getURL()];
-	    if (thisRef)   // We better hope it's not null!
-	      {
-		score += date_factor * 
-		  ((thisRef->DocTime() * 1000 / (double)time(0)) - 900);
-		int links = thisRef->DocLinks();
-		if (links == 0)
-		  links = 1; // It's a hack, but it helps...
-		score += backlink_factor
-		  * (thisRef->DocBackLinks() / (double)links);
-		if (score <= 0.0)
-		  score = 0.0;
-		if (typ != SortByScore)
-		  {
-		    DocumentRef *sortRef = new DocumentRef();
-		    sortRef->DocTime(thisRef->DocTime());
-		    if (typ == SortByTitle)
-			sortRef->DocTitle(thisRef->DocTitle());
-		    thisMatch->setRef(sortRef);
-		  }
-	      }
-	    // Get rid of it to free the memory!
-	    delete thisRef;
-	  }
+	{
+	    score += date_factor * 
+	      ((thisRef->DocTime() * 1000 / (double)time(0)) - 900);
+  
+	    int links = thisRef->DocLinks();
+	    if (links == 0)
+	      links = 1; // It's a hack, but it helps...
+  
+	    score += backlink_factor
+	      * (thisRef->DocBackLinks() / (double)links);
+	    if (score <= 0.0)
+	      score = 0.0;
+  
+	    if (typ != SortByScore)
+	    {
+		DocumentRef *sortRef = new DocumentRef();
+		sortRef->DocTime(thisRef->DocTime());
+		if (typ == SortByTitle)
+		  sortRef->DocTitle(thisRef->DocTitle());
+		thisMatch->setRef(sortRef);
+	    }
+	}
+
+	// Get rid of it to free the memory!
+	delete thisRef;
 
 	thisMatch->setIncompleteScore(score);
 	thisMatch->setAnchor(dm->anchor);

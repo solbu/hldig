@@ -1,3 +1,69 @@
+Fri Mar 12 00:31:03 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* htmerge/docs.cc (convertDocs): 
+
+	* htsearch/htsearch.cc (main): Remove doc_index handling.
+
+	* htsearch/ResultMatch.h (setURL): Change to setID, use int.
+	All callers changed.
+	(getURL): Change to getID.
+	All callers changed.
+	(String url): Change to "int id".
+
+	* htsearch/Display.h: (Display): Second parameter removed.
+	(docIndex) removed.
+
+	* htsearch/Display.cc (Display, ~Display): Do not handle
+	docIndex.
+	(display): Use DocumentDB::operator [](int), not
+	DocumentDB::operator [] (char *).
+	(buildMatchList): Changed to handle ResultMatch as DocID int,
+	instead of URL string: use DocumentDB::operator [](int), not
+	DocumentDB::operator [] (char *).  Get DocumentRef directly, then
+	filter the URL by includeURL().
+
+	* htnotify/htnotify.cc (main): Use DocIDs(), not DocURLs().
+	Handle the change from String * to IntObject *.
+
+	* htmerge/htmerge.cc (main): Do not delete doc_index.
+
+	* htmerge/docs.cc (convertDocs): Test doc_index access as
+	read-only.  Pass as parameter for docdb, do not handle separately.
+
+	* htmerge/docs.cc (convertDocs): Add debug messages about cause
+	when deleting documents.  If verbose > 1, write id/URL for every URL.
+
+	* htmerge/db.cc (mergeDB): Handle doc_index, test accessibility.
+
+	* htlib/IntObject.h (class IntObject): Add int-constructor.
+
+	* htdoc/attrs.html (doc_index): Say that mapping is from document
+	URLs to numbers.
+	(doc_db): Say that indexing is on document number.
+
+	* htdoc/cf_byprog.html (doc_index): Move from htsearch to htdig
+	entry.
+
+	* htdig/htdig.cc (main): Add .work suffix to doc_index too.
+	Unlink doc_index if initial.
+
+	* htcommon/DocumentDB.h (Open): New second argument.
+	(Read): New second argument, default to 0.
+	(operator [](int)): New.
+	(Exists(char *), Delete(char *)): Change to int parameter.
+	(DocIDs, i_dbf): New.
+
+	* htcommon/DocumentDB.cc (operator [](int)): New.
+	(Exists(char *), Delete(char *)): Changed to DocID int parameter.
+	All callers changed.
+	(URLs): Assume keys are ok without probing for documents
+	with each key.
+	(DocIDs): New.
+	(Open): Take an index database file name as second argument.
+	All callers changed.
+	(Read): Similar, accept 0.
+	(all): Change to index on DocID.
+
 Wed Mar 10 02:25:24 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
 	* htdoc/attrs.html (template_name): Typo; used by htsearch, not
