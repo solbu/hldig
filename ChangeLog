@@ -1,3 +1,8 @@
+Wed Nov 24 20:02:32 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/search.html (Match): Add Boolean to default search
+	form, as suggested by PR#561.
+
 Tue Nov 23 23:03:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(setupTemplates), htsearch/Display.h: fixed a
