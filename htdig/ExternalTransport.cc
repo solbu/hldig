@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalTransport.cc,v 1.3 2002/02/01 22:49:29 ghutchis Exp $
+// $Id: ExternalTransport.cc,v 1.4 2002/04/05 20:16:13 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -202,6 +202,9 @@ Transport::DocStatus ExternalTransport::Request()
 
     while (in_header && readLine(input, line))
     {
+	line.chop('\r');
+	if (line.length() > 0 && debug > 2)
+	    cout << "Header line: " << line << endl;
 	token1 = strtok(line, "\t");
 	if (token1 == NULL)
 	  {
