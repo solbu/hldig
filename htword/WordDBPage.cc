@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.cc,v 1.1.2.4 2000/01/11 18:48:47 bosc Exp $
+// $Id: WordDBPage.cc,v 1.1.2.5 2000/01/12 17:04:49 bosc Exp $
 //
 
 #include"WordDBPage.h"
@@ -669,9 +669,9 @@ WordDBPage::Compress_vals(Compressor &out,int *nums,int *nums_pos,int nnums0)
     {
 	int nv=nums_pos[j];
 	unsigned int *v=(unsigned int *)(nums+j*nk);
-	if(j==3 && verbose){out.verbose=2;}
+	if((1 || j==3) && verbose){out.verbose=2;}
 	int size=out.put_vals(v,nv,label_str("NumField",j));
-	if(j==3 && verbose){out.verbose=0;}
+	if((1 || j==3) && verbose){out.verbose=0;}
 	if(verbose)printf("compressed field %2d : %3d values: %4d bits %8f bytes  : ended bit field pos:%6d\n",j,n,size,size/8.0,out.size());
     }
 }
@@ -718,7 +718,7 @@ WordDBPage::Compress_show_extracted(int *nums,int *nums_pos,int nnums0,HtVector_
 		if(nbits<8){show_bits(val,nbits);printf(" ");}
 		else
 		{
-		    printf("% 12d ",val);
+		    printf("% 12u ",val);
 		}
 	    }
 	    else
@@ -726,7 +726,7 @@ WordDBPage::Compress_show_extracted(int *nums,int *nums_pos,int nnums0,HtVector_
 		if(nbits<8){printf("    ");}
 		else
 		{
-		    printf("       ");
+		    printf("             ");
 		}
 	    }
 	}

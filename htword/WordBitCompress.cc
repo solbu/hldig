@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.cc,v 1.1.2.10 2000/01/11 11:32:27 bosc Exp $
+// $Id: WordBitCompress.cc,v 1.1.2.11 2000/01/12 17:04:49 bosc Exp $
 //
 
 
@@ -133,7 +133,29 @@ log2(unsigned int v)
 // Each  interval (generally)  has the same probability of occuring
 // values are then coded by:  interval_number position_inside_interval
 // this can be seen as modified version of shanon-fanno encoding
-
+//
+// Here are some aproximate calculation for estimating final coded size: 
+//
+// n number of entries to code
+// nbits maximum size in bits of entries to code
+//
+// SUM_interval_bit_sizes -> depends on probability dist
+// total_size = table_size + coded_size
+// table_size = SUM_interval_bit_sizes
+// coded_size = n * (nlev + SUM_interval_bit_sizes / 2^nlev )
+//
+// example1: flat probability distribution :
+// SUM_interval_bit_sizes = 2^nlev * log2( 2^nbits / 2^nlev) = 2^nlev * ( nbits - nlev )
+// => coded_size = n * ( nlev + nbits - nlev ) = n*nbits !!
+// => coded_size is the same as if we used no compression
+//    this is normal, because it is not possible to compress random data
+//
+// example2: probability all focused in first interval except for one entry
+// SUM_interval_bit_sizes  = 1 + nbits
+// the computations above are not valid because of integer roundofs
+// => coded_size would actually be = n *  1 + nbits 
+// (but the code needs a few cleanups to obtain this value) 
+//
 class VlengthCoder
 {
     int nbits;// min number of bits to code all entries
@@ -285,6 +307,8 @@ VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose/
 
     nbits=num_bits(HtMaxMin::max_v(vals,n));
     nlev=5;
+    if(nlev>=nbits){nlev=nbits-1;}
+    if(nlev<1){nlev=1;}
     nintervals=pow2(nlev);
     int i;
 
@@ -331,6 +355,12 @@ VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose/
 
     make_lboundaries();
 
+    int SUM_interval_bit_sizes=0;
+    for(i=0;i<nintervals;i++)
+    {
+	SUM_interval_bit_sizes+=intervals[i];
+    }
+    printf("SUM_interval_bit_sizes:%d\n",SUM_interval_bit_sizes);
     delete [] sorted;
 }
 
@@ -663,15 +693,23 @@ Compressor::put_vals(unsigned int *vals,int n,const char *tag)
     put_uint_vl(n,NBITS_NVALS,"size");
     if(n==0){return NBITS_NVALS;}
 
+    int sdecr=2;
+    int sfixed=1;
 
-    freeze();
-    put_decr(vals,n);
-    int sdecr=unfreeze();
+    int nbits=num_bits(HtMaxMin::max_v(vals,n));
+    if(verbose)printf("*********************put_vals:n:%3d nbits:%3d\n",n,nbits);
+    if(n>15 && nbits>3)
+    {
+	freeze();
+	put_decr(vals,n);
+	sdecr=unfreeze();
 
-    freeze();
-    put_fixedbitl(vals,n);
-    int sfixed=unfreeze();
+	freeze();
+	put_fixedbitl(vals,n);
+	sfixed=unfreeze();
+    }
 
+    if(verbose)printf("put_vals:n:%3d sdecr:%6d sfixed:%6d rap:%f\n",n,sdecr,sfixed,sdecr/(float)sfixed);
     if(sdecr<sfixed)
     {
 	if(verbose)printf("put_vals: comptyp:0\n");
@@ -684,6 +722,8 @@ Compressor::put_vals(unsigned int *vals,int n,const char *tag)
 	put_uint(1,2,"put_valsCompType");
 	put_fixedbitl(vals,n);
     }
+
+    if(verbose)printf("------------------------------put_vals over\n");
 
     return(bitpos-cpos);
 }
