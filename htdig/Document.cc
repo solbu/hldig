@@ -4,6 +4,9 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.3  1997/04/20 15:25:17  turtle
+// Added include for ctype.h
+//
 // Revision 1.2  1997/02/10 17:32:37  turtle
 // Applied AIX specific patches supplied by Lars-Owe Ivarsson
 // <lars-owe.ivarsson@its.uu.se>
@@ -13,10 +16,11 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.2 1997/02/10 17:32:37 turtle Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.3 1997/04/20 15:25:17 turtle Exp $";
 #endif
 
 #include <signal.h>
+#include <ctype.h>
 #include "Document.h"
 #include "Connection.h"
 #include "htdig.h"
