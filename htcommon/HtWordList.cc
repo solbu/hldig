@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.cc,v 1.2.2.10 2000/06/13 22:59:27 ghutchis Exp $
+// $Id: HtWordList.cc,v 1.2.2.11 2000/09/25 03:58:47 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -41,9 +41,17 @@ HtWordList::~HtWordList()
 
 //*****************************************************************************
 //
-HtWordList::HtWordList(const HtConfiguration& config_arg) :
-  WordList(config_arg)
+HtWordList::HtWordList(const Configuration& config_arg)
 {
+    context = WordContext(config_arg);
+    words = new List;
+}
+
+//*****************************************************************************
+//
+HtWordList::HtWordList(const HtConfiguration& config_arg)
+{
+    context = WordContext(config_arg);
     words = new List;
 }
 
