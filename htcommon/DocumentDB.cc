@@ -3,7 +3,7 @@
 //
 // Implementation of DocumentDB
 //
-// $Id: DocumentDB.cc,v 1.11.2.1 2001/06/07 20:23:59 grdetil Exp $
+// $Id: DocumentDB.cc,v 1.11.2.2 2001/07/24 18:33:48 grdetil Exp $
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2001 The ht://Dig Group
@@ -149,6 +149,24 @@ DocumentRef *DocumentDB::operator [] (char *u)
 
     if (dbf->Get(HtURLCodec::instance()->encode(url), data) == NOTOK
         && (! myTryUncoded || dbf->Get(url, data) == NOTOK))
+	return 0;
+
+    DocumentRef		*ref = new DocumentRef;
+    ref->Deserialize(data);
+    return ref;
+}
+
+
+//*****************************************************************************
+// DocumentRef *DocumentDB::FindCoded(char *u)
+//
+DocumentRef *DocumentDB::FindCoded(char *u)
+{
+    String			data;
+    String			url = u;
+
+    if (dbf->Get(url, data) == NOTOK
+        && (! myTryUncoded || dbf->Get(HtURLCodec::instance()->decode(url), data) == NOTOK))
 	return 0;
 
     DocumentRef		*ref = new DocumentRef;

@@ -6,7 +6,7 @@
 // database is used for searching.  This is because digging requires a
 // different index than searching.
 //
-// $Id: DocumentDB.h,v 1.5.2.1 2001/06/07 20:23:59 grdetil Exp $
+// $Id: DocumentDB.h,v 1.5.2.2 2001/07/24 18:33:48 grdetil Exp $
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2001 The ht://Dig Group
@@ -40,6 +40,7 @@ public:
 
     int			Add(DocumentRef &);
     DocumentRef		*operator [] (char *url);
+    DocumentRef		*FindCoded(char *url);
     int			Exists(char *url);
     int			Delete(char *url);
 

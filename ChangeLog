@@ -1,3 +1,14 @@
+Tue Jul 24 13:20:24 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/DocumentDB.{h,cc}: Added FindCoded() method to lookup
+	docdb record with URL that's still encoded.
+
+	* htsearch/Display.cc (display, displayMatch, buildMatchList):
+	Use new method to avoid problems with URLs that are decoded and
+	reencoded with another, more ambiguous url_part_aliases setting.
+	Also fixed a problem with date range checking looking at ref before
+	checking if it's null.
+
 Thu Jul 12 11:45:05 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/conv_doc.pl, contrib/parse_doc.pl: Fixed EOF handling in

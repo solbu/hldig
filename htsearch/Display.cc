@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.36 2001/06/22 20:57:22 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.37 2001/07/24 18:33:48 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -179,7 +179,7 @@ Display::display(int pageNumber)
     {
 	if (currentMatch >= startAt)
 	{
-	    match->setRef(docDB[match->getURL()]);
+	    match->setRef(docDB.FindCoded(match->getURL()));
 	    DocumentRef	*ref = match->getRef();
 	    if (!ref)
 		continue;	// The document isn't present for some reason
@@ -235,8 +235,9 @@ Display::displayMatch(ResultMatch *match, int current)
 	
     DocumentRef	*ref = match->getRef();
 
-    char    *url = match->getURL();
-    vars.Add("URL", new String(url));
+    char    *coded_url = match->getURL();
+    String url = HtURLCodec::instance()->decode(coded_url);
+    vars.Add("URL", new String(url.get()));
     
     int     iA = ref->DocAnchor();
     
@@ -1288,7 +1289,7 @@ Display::buildMatchList()
 	
 
 	thisMatch = new ResultMatch();
-	thisMatch->setURL(url);
+	thisMatch->setURL(coded_url);
 	thisMatch->setRef(NULL);
 
 	//
@@ -1317,19 +1318,19 @@ Display::buildMatchList()
 	if (date_factor != 0.0 || backlink_factor != 0.0 || typ != SortByScore
 	    || timet_startdate > 0 || enddate.tm_year < endoftime->tm_year)
 	  {
-	    DocumentRef *thisRef = docDB[thisMatch->getURL()];
-
-	    // code added by Mike Grommet for date search ranges
-	    // check for valid date range.  toss it out if it isn't relevant.
-	    if(thisRef->DocTime() < timet_startdate || thisRef->DocTime() > timet_enddate)
-	      {
-		delete thisMatch;
-		delete thisRef;
-		continue;
-	      }
-
+	    DocumentRef *thisRef = docDB.FindCoded(thisMatch->getURL());
 	    if (thisRef)   // We better hope it's not null!
 	      {
+		// code added by Mike Grommet for date search ranges
+		// check for valid date range. toss it out if it isn't relevant.
+		if(thisRef->DocTime() < timet_startdate ||
+		   thisRef->DocTime() > timet_enddate)
+		  {
+		    delete thisMatch;
+		    delete thisRef;
+		    continue;
+		  }
+
 		score += date_factor * 
 		  ((thisRef->DocTime() * 1000.0 / (double)now) - 900);
 		int links = thisRef->DocLinks();
