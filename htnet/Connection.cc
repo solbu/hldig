@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.3.2.9 2001/01/07 04:16:47 ghutchis Exp $
+// $Id: Connection.cc,v 1.3.2.10 2001/01/16 05:24:43 ghutchis Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -57,10 +57,6 @@ extern "C" {
 #define	MIN(a,b)		((a)<(b)?(a):(b))
 
 List	all_connections;
-
-#ifndef FD_SET_T // This seems to be needed for BSDI
-#define FD_SET_T fd_set
-#endif
 
 Connection::Connection()
 {
