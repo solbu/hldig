@@ -5,10 +5,11 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.11 1999/03/03 04:46:58 ghutchis Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.12 1999/03/21 15:19:28 hp Exp $";
 #endif
 
 #include "htmerge.h"
+#include "HtPack.h"
 
 
 //*****************************************************************************
@@ -29,6 +30,7 @@ mergeWords(char *wordtmp, char *wordfile)
     int		word_count = 0;
     WordRecord	wr, last_wr;
     String      last_word;
+    String      compressed_data;
 
     //
     // Check for file access errors
@@ -205,13 +207,16 @@ mergeWords(char *wordtmp, char *wordfile)
 	    // going to use (shorts and ints)
 	    //
 
+	    // Or rather, a compressed form thereof.
+	    compressed_data = htPack(WORD_RECORD_COMPRESSED_FORMAT,
+                                     (char *) &last_wr);
 	    if (currentWord.length() == 0)
 	    {
 		//
 		// First word.  Special case.
 		//
 		out = 0;
-		out.append((char *) &last_wr, sizeof(last_wr));
+		out.append(compressed_data);
 		currentWord = last_word;
 	    }
 	    else if (strcmp(last_word, currentWord) == 0)
@@ -219,7 +224,7 @@ mergeWords(char *wordtmp, char *wordfile)
 		//
 		// Add to current record
 		//
-		out.append((char *) &last_wr, sizeof(last_wr));
+		out.append(compressed_data);
 	    }
 	    else
 	    {
@@ -231,7 +236,7 @@ mergeWords(char *wordtmp, char *wordfile)
 		currentWord = last_word;
 
 		out = 0;
-		out.append((char *) &last_wr, sizeof(last_wr));
+		out.append(compressed_data);
 		word_count++;
 		if (verbose && word_count == 1)
 		{
@@ -281,13 +286,15 @@ mergeWords(char *wordtmp, char *wordfile)
       }
     putc('\n', wordlist);
 	    
+    compressed_data = htPack(WORD_RECORD_COMPRESSED_FORMAT,
+                             (char *) &last_wr);
     if (currentWord.length() == 0)
       {
 	//
 	// First word.  Special case.
 	//
 	out = 0;
-	out.append((char *) &last_wr, sizeof(last_wr));
+	out.append(compressed_data);
 	currentWord = last_word;
       }
     else if (strcmp(last_word, currentWord) == 0)
@@ -295,7 +302,7 @@ mergeWords(char *wordtmp, char *wordfile)
 	//
 	// Add to current record
 	//
-	out.append((char *) &last_wr, sizeof(last_wr));
+	out.append(compressed_data);
       }
     else
       {
@@ -307,7 +314,7 @@ mergeWords(char *wordtmp, char *wordfile)
 	currentWord = last_word;
 	
 	out = 0;
-	out.append((char *) &last_wr, sizeof(last_wr));
+	out.append(compressed_data);
 	word_count++;
 	if (verbose && word_count == 1)
 	  {

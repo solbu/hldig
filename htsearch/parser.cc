@@ -5,10 +5,11 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.9 1999/02/22 14:01:05 ghutchis Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.10 1999/03/21 15:19:28 hp Exp $";
 #endif
 
 #include "parser.h"
+#include "HtPack.h"
 
 #define	WORD	1000
 #define	DONE	1001
@@ -204,6 +205,7 @@ Parser::perform_push()
 {
     String	temp = current->word.get();
     String	data;
+    String	decompressed;
     char	*p;
     ResultList	*list = new ResultList;
     WordRecord	wr;
@@ -225,20 +227,35 @@ Parser::perform_push()
     if (dbf->Get(p, data) == OK)
     {
 	p = data.get();
-	for (unsigned int i = 0; i < data.length() / sizeof(WordRecord); i++)
+	char *p_end = p + data.length();
+	while (p < p_end)
 	{
-	    p = data.get() + i * sizeof(WordRecord);
-	    memcpy((char *) &wr, p, sizeof(WordRecord));
+	  decompressed = htUnpack(WORD_RECORD_COMPRESSED_FORMAT, p);
 
-	    //
-	    // *******  Compute the score for the document
-	    //
-	    dm = new DocMatch;
-	    dm->score = wr.weight * current->weight;
-	    dm->id = wr.id;
-	    dm->anchor = wr.anchor;
-	    list->add(dm);
+	  if (decompressed.length() != sizeof (WordRecord))
+	  {
+            if (debug > 0)
+              cerr << "Decode mismatch";
+
+            // We'd better leave now, before we do something worse.
+            return;
+	  }
+
+	  memcpy((char *) &wr, decompressed.get(), sizeof(WordRecord));
+
+	  //
+	  // *******  Compute the score for the document
+	  //
+	  dm = new DocMatch;
+	  dm->score = wr.weight * current->weight;
+	  dm->id = wr.id;
+	  dm->anchor = wr.anchor;
+	  list->add(dm);
 	}
+
+	if (p != p_end && debug > 0)
+	  cerr << "Decompression out of sync: " << (unsigned int) p
+	       << " != " << (unsigned int) p_end << endl;
     }
 }
 

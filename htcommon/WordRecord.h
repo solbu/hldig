@@ -1,20 +1,9 @@
-	//
+//
 // WordRecord.h
 //
-// $Id: WordRecord.h,v 1.3 1999/01/25 04:55:53 ghutchis Exp $
+// $Id: WordRecord.h,v 1.4 1999/03/21 15:19:27 hp Exp $
 //
-// $Log: WordRecord.h,v $
-// Revision 1.3  1999/01/25 04:55:53  ghutchis
-// Ignore word count by compile-time option NO_WORD_COUNT.
-//
-// Revision 1.2  1998/12/06 18:46:22  ghutchis
-// Ensure blank WordRecords have a default count of 1 since a word has to exist
-// to have a WordRecord!
-//
-// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
-// Initial CVS
-//
-//
+
 #ifndef _WordRecord_h_
 #define _WordRecord_h_
 
@@ -36,6 +25,21 @@ struct WordRecord
 #endif
 		}
 };
+
+/* And this is how we will compress this structure, for disk
+   storage.  See HtPack.h  (If there's a portable method by
+   which this format string does not have to be specified at
+   all, it should be preferred.  For now, at least it is kept
+   here, together with the actual struct declaration.)
+
+   Since none of the values are non-zero, we want to use
+   unsigned chars and unsigned short ints when possible. */
+
+#ifdef NO_WORD_COUNT
+#define WORD_RECORD_COMPRESSED_FORMAT "u4"
+#else
+#define WORD_RECORD_COMPRESSED_FORMAT "u5"
+#endif
 
 #endif
 

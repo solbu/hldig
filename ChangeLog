@@ -1,5 +1,12 @@
 Sun Mar 21 15:19:00 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
+	* htsearch/parser.cc (perform_push): Unpack WordRecords using
+	htUnpack.
+	* htsearch/htsearch.h: Add "debug" declaration.
+	* htmerge/words.cc (mergeWords): Pack WordRecords using htPack.
+	* htlib/Makefile.in (OBJS): Add HtPack.o
+	* htcommon/WordRecord.h: Add WORD_RECORD_COMPRESSED_FORMAT
+
 	* htdig/HTML.cc (parse): Keep contents in String variable
 	textified_contents while using its "char *".
 
