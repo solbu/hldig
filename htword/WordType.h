@@ -11,7 +11,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.h,v 1.1.2.8 2000/09/14 03:13:28 ghutchis Exp $
+// $Id: WordType.h,v 1.1.2.9 2000/09/25 03:58:20 ghutchis Exp $
 //
 
 #ifndef _WordType_h
@@ -67,6 +67,8 @@ public:
   //
   int StripPunctuation(String &s) const;
   int Normalize(String &s) const;
+
+  char *WordToken(char *str) const;
 
   //
   // Error handling

@@ -14,7 +14,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.cc,v 1.3.2.13 2000/09/21 04:25:36 ghutchis Exp $
+// $Id: WordType.cc,v 1.3.2.14 2000/09/25 03:58:20 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -155,6 +155,31 @@ WordType::Normalize(String& word) const
   // Accept and report the transformations that occured
   //
   return status;
+}
+
+//  much like strtok(), and destructive of the source string like strtok(),
+//  but does word separation by our rules.
+char *
+WordType::WordToken(char *str) const
+{
+    unsigned char		*text = (unsigned char *)str;
+    char			*ret = 0;
+    static unsigned char	*prev = 0;
+
+    if (!text)
+	text = prev;
+    while (text && *text && !IsStrictChar(*text))
+	text++;
+    if (text && *text)
+    {
+	ret = (char *)text;
+	while (*text && IsChar(*text))
+	    text++;
+	if (*text)
+	    *text++ = '\0';
+    }
+    prev = text;
+    return ret;
 }
 
 //
