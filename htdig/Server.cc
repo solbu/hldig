@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.4 1999/12/02 02:48:48 ghutchis Exp $
+// $Id: Server.cc,v 1.17.2.5 1999/12/02 23:11:42 ghutchis Exp $
 //
 
 #include "htdig.h"
@@ -26,12 +26,10 @@
 
 
 //*****************************************************************************
-// Server::Server(URL u, char *localRobots)
+// Server::Server(URL u, String *local_robots_file)
 //  u is the base URL for this server
-//  localRobots is the path to the robots.txt file for this server
-//              on the local filesystem (if possible)
 //
-Server::Server(URL u, char *localRobots)
+Server::Server(URL u, String *local_robots_file)
 {
     if (debug)
       cout << endl << "New server: " << u.host() << ", " << u.port() << endl;
@@ -55,15 +53,36 @@ Server::Server(URL u, char *localRobots)
 	url.trunc();
 
 	if (debug>1)
-	  cout << "Trying to retrieve robots.txt file on it" << endl;        
-
+	  cout << "Trying to retrieve robots.txt file" << endl;        
 	url << u.signature() << "robots.txt";
 	
-	time_t	timeZero = 0; // Right now we want to get this every time
-
+	static int	local_urls_only = config.Boolean("local_urls_only");
+	time_t 		timeZero = 0; // Right now we want to get this every time
 	Document	doc(url, 0);
-    
-	switch (doc.Retrieve(timeZero))
+	Transport::DocStatus	status;
+	if (local_robots_file)
+	  {  
+	    if (debug > 1)
+	      cout << "Trying local file " << local_robots_file << endl;
+	    status = doc.RetrieveLocal(timeZero, *local_robots_file);
+	    if (status == Transport::Document_not_local)
+	      {
+		if (local_urls_only)
+		  status = Transport::Document_not_found;
+		else
+		  {
+		    if (debug > 1)
+		      cout << "Local retrieval failed, trying HTTP" << endl;
+		    status = doc.Retrieve(timeZero);
+		  }
+	      }
+	  }
+	else if (!local_urls_only)
+	  status = doc.Retrieve(timeZero);
+	else
+	  status = Transport::Document_not_found;
+
+	switch (status)
 	  {
 	  case Transport::Document_ok:
 	    //

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.h,v 1.9.2.4 1999/12/02 02:48:48 ghutchis Exp $
+// $Id: Server.h,v 1.9.2.5 1999/12/02 23:11:42 ghutchis Exp $
 //
 
 #ifndef _Server_h_
@@ -32,7 +32,7 @@ public:
 	//
 	// Construction/Destruction
 	//
-	Server(URL u, char *localRobots = NULL);
+	Server(URL u, String *local_robots_file = NULL);
 	~Server();
 
 	//
