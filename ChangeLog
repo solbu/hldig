@@ -1,3 +1,8 @@
+Sat Jan 25 2003  Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* htsearch/Display.cc:  Convert "<br>\n" in $(DESCRIPTION) to "<br>"
+	so it can be used in Javascript (feature request #529926).
+
 Tue Jan 21 2003  Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* HTML.cc (HTML, parse): Handle noindex_start/end as string lists.

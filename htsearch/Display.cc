@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.107 2003/01/11 03:53:59 lha Exp $
+// $Id: Display.cc,v 1.108 2003/01/24 23:22:17 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -383,7 +383,7 @@ Display::displayMatch(ResultMatch *match, DocumentRef *ref, int current)
 	int		n = list->Count();
 	for (int i = 0; i < n; i++)
 	{
-	    *str << ((String*) (*list)[i])->get() << "<br>\n";
+	    *str << ((String*) (*list)[i])->get() << "<br>";
 	}
 	vars.Add("DESCRIPTIONS", str);
         String *description = new String();
@@ -1741,7 +1741,7 @@ Display::buildExcerpts( StringMatch *allWordsPattern, ResultMatch* match, char *
     // Slip a break in since there is another excerpt coming
     if ( i != 0 )
     {
-      text << "<br>\n";
+      text << "<br>";
     }
 
     // Determine where excerpt starts
