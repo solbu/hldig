@@ -17,12 +17,15 @@
 #include "HtURLCodec.h"
 
 #ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB_H
 #include <zlib.h>
+#endif
 #endif
 
 extern Configuration config;
 
 #ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB_H
 //unsigned char DocumentRef::c_buffer[32000];
 //
 // Compress Function
@@ -125,6 +128,7 @@ inline void DocumentRef::DocHead(char *h) {
   docHead=h;
 }
 #endif
+#endif
 
 //*****************************************************************************
 // DocumentRef::DocumentRef()
@@ -164,7 +168,9 @@ void DocumentRef::Clear()
     docHopCount = -1;
     docBackLinks = 0;
 #ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB_H
     docHeadState=Empty;
+#endif
 #endif
 }
 
@@ -208,10 +214,12 @@ void DocumentRef::Serialize(String &s)
     String	*str;
 
 #ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB_H
     if (docHeadState==Uncompressed) {
       Compress(docHead);
       docHeadState=Compressed;
     }
+#endif
 #endif
 //
 // The following macros make the serialization process a little easier
@@ -495,7 +503,9 @@ void DocumentRef::Deserialize(String &stream)
         case DOC_HEAD:
             getstring(x, s, docHead);
 #ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB_H
             docHeadState=docHead.length()==0?Empty:Compressed;
+#endif
 #endif
             break;
 	case DOC_METADSC:
