@@ -25,11 +25,14 @@
 // function can be called to provide a custom table.  This table needs
 // to be 256 characters.
 // 
-// $Id: StringMatch.h,v 1.1 1997/02/03 17:11:04 turtle Exp $
+// $Id: StringMatch.h,v 1.2 1999/01/21 03:41:09 ghutchis Exp $
 //
 // $Log: StringMatch.h,v $
-// Revision 1.1  1997/02/03 17:11:04  turtle
-// Initial revision
+// Revision 1.2  1999/01/21 03:41:09  ghutchis
+// Add default parameter sep = '|'.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
+// Initial CVS
 //
 //
 #ifndef _StringMatch_h_
@@ -52,7 +55,7 @@ public:
     // be in the form <string1>|<string2>|...  If in the form of a
     // List, it should be a list of String objects.
     //
-    void		Pattern(char *pattern);
+    void		Pattern(char *pattern, char sep = '|');
 
     //
     // Search for any of the strings in the pattern in the given

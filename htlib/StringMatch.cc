@@ -6,6 +6,9 @@
 // Implementation of StringMatch
 //
 // $Log: StringMatch.cc,v $
+// Revision 1.7  1999/01/21 03:40:31  ghutchis
+// Add default parameter sep = '|'.
+//
 // Revision 1.6  1999/01/20 04:51:52  ghutchis
 // Eliminate FINAL and use all bits in masks, contributed by Hans-Peter.
 //
@@ -32,7 +35,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: StringMatch.cc,v 1.6 1999/01/20 04:51:52 ghutchis Exp $";
+static char RCSid[] = "$Id: StringMatch.cc,v 1.7 1999/01/21 03:40:31 ghutchis Exp $";
 #endif
 
 #include "StringMatch.h"
@@ -81,7 +84,7 @@ StringMatch::~StringMatch()
 //   Compile the given pattern into a state transition table
 //
 void
-StringMatch::Pattern(char *pattern)
+StringMatch::Pattern(char *pattern, char sep)
 {
     if (!pattern || !*pattern)
     {
@@ -103,7 +106,7 @@ StringMatch::Pattern(char *pattern)
     // the pattern.
     char *tmpstr;
     for (tmpstr = pattern;
-         (tmpstr = strchr(tmpstr, '|')) != NULL;
+         (tmpstr = strchr(tmpstr, sep)) != NULL;
          tmpstr++)              // Pass the separator.
       n--;
 
@@ -151,7 +154,7 @@ StringMatch::Pattern(char *pattern)
 #endif
 
 	chr = trans[(unsigned char)*pattern];
-	if (chr == '|')
+	if (chr == sep)
 	{
 	    //
 	    // Next pattern
