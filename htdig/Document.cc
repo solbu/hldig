@@ -4,6 +4,10 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.21  1998/11/02 20:30:35  ghutchis
+//
+// Remove const from *ext to fix compiler warning.
+//
 // Revision 1.20  1998/11/01 00:00:40  ghutchis
 //
 // Replaced system calls with htlib/my* functions.
@@ -78,7 +82,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.20 1998/11/01 00:00:40 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.21 1998/11/02 20:30:35 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -561,7 +565,7 @@ Document::RetrieveLocal(time_t date, char *filename)
 
     // Process only HTML files (this could be changed if we read
     // the server's mime.types file).
-    const char *ext = strrchr(filename, '.');
+    char *ext = strrchr(filename, '.');
     if (ext == NULL)
       	return Document_not_local;
     if ((mystrcasecmp(ext, ".html") == 0) || (mystrcasecmp(ext, ".htm") == 0))
