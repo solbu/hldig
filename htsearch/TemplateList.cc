@@ -4,6 +4,11 @@
 // Implementation of TemplateList
 //
 // $Log: TemplateList.cc,v $
+// Revision 1.4.2.3  2000/02/17 20:46:13  grdetil
+// * installdir/htdig.conf: quote all HTML tag parameters.
+// * htsearch/TemplateList.cc (createFromString), installdir/long.html,
+// installdir/short.html: Use $&(URL) in templates.
+//
 // Revision 1.4.2.2  2000/02/17 16:49:48  grdetil
 // silly little typo.
 //
@@ -34,7 +39,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: TemplateList.cc,v 1.4.2.2 2000/02/17 16:49:48 grdetil Exp $";
+static char RCSid[] = "$Id: TemplateList.cc,v 1.4.2.3 2000/02/17 20:46:13 grdetil Exp $";
 #endif
 
 #include "TemplateList.h"
@@ -101,17 +106,17 @@ TemplateList::createFromString(char *str)
 	if (mystrcasecmp(file, "builtin-long") == 0)
 	{
 	    String	s;
-	    s << "<dl><dt><strong><a href=\"$(URL)\">$&(TITLE)</a></strong>";
+	    s << "<dl><dt><strong><a href=\"$&(URL)\">$&(TITLE)</a></strong>";
 	    s << "$(STARSLEFT)\n";
 	    s << "</dt><dd>$(EXCERPT)<br>\n";
-	    s << "<i><a href=\"$(URL)\">$(URL)</a></i>\n";
+	    s << "<i><a href=\"$&(URL)\">$&(URL)</a></i>\n";
 	    s << " <font size=\"-1\">$(MODIFIED), $(SIZE) bytes</font>\n";
 	    s << "</dd></dl>\n";
 	    t->setMatchTemplate(s);
 	}
 	else if (mystrcasecmp(file, "builtin-short") == 0)
 	{
-	    t->setMatchTemplate("$(STARSRIGHT) <strong><a href=\"$(URL)\">$&(TITLE)</a></strong><br>\n");
+	    t->setMatchTemplate("$(STARSRIGHT) <strong><a href=\"$&(URL)\">$&(TITLE)</a></strong><br>\n");
 	}
 	else
 	{

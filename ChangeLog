@@ -1,3 +1,9 @@
+Thu Feb 17 14:37:18 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* installdir/htdig.conf: quote all HTML tag parameters.
+	* htsearch/TemplateList.cc (createFromString), installdir/long.html,
+	installdir/short.html: Use $&(URL) in templates.
+
 Thu Feb 17 14:01:34 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/htdig-3.1.5.spec: Fix silly typos in %post script,
