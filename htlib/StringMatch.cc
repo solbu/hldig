@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: StringMatch.cc,v 1.8.2.1 1999/03/23 23:23:01 grdetil Exp $";
+static char RCSid[] = "$Id: StringMatch.cc,v 1.8.2.2 1999/09/01 21:00:19 grdetil Exp $";
 #endif
 
 #include "StringMatch.h"
@@ -90,6 +90,8 @@ StringMatch::Pattern(char *pattern, char sep)
 	table[i] = new int[n];
 	memset((unsigned char *) table[i], 0, n * sizeof(int));
     }
+    for (i = 0; i < n; i++)
+	table[0][i] = i;	// "no-op" states for null char, to be ignored
 
     //
     // Set up a standard case translation table if needed.
@@ -127,6 +129,11 @@ StringMatch::Pattern(char *pattern, char sep)
 #endif
 
 	chr = trans[(unsigned char)*pattern];
+	if (chr == 0)
+	{
+	    pattern++;
+	    continue;
+	}
 	if (chr == sep)
 	{
 	    //
@@ -504,12 +511,39 @@ void StringMatch::TranslationTable(char *table)
 //
 void StringMatch::IgnoreCase()
 {
-    if (local_alloc)
-        delete [] trans;
-    trans = new unsigned char[256];
+    if (!local_alloc || !trans)
+    {
+	trans = new unsigned char[256];
+	for (int i = 0; i < 256; i++)
+	    trans[i] = (unsigned char)i;
+	local_alloc = 1;
+    }
     for (int i = 0; i < 256; i++)
-	trans[i] = tolower((unsigned char)i);
-    local_alloc = 1;
+	if (isupper((unsigned char)i))
+	    trans[i] = tolower((unsigned char)i);
+}
+
+
+//*****************************************************************************
+// void StringMatch::IgnorePunct(char *punct)
+//   Set up the character translation table to ignore punctuation
+//
+void StringMatch::IgnorePunct(char *punct)
+{
+    if (!local_alloc || !trans)
+    {
+	trans = new unsigned char[256];
+	for (int i = 0; i < 256; i++)
+	    trans[i] = (unsigned char)i;
+	local_alloc = 1;
+    }
+    if (punct)
+	for (int i = 0; punct[i]; i++)
+	    trans[(unsigned char)punct[i]] = 0;
+    else
+	for (int i = 0; i < 256; i++)
+	    if (HtIsWordChar(i) && !HtIsStrictWordChar(i))
+		trans[i] = 0;
 }
 
 

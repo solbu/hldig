@@ -1,4 +1,12 @@
-Wed Sep  1 15:51:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:54:17 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/StringMatch.h, htlib/StringMatch.cc(Pattern, IgnoreCase):
+	Add an IgnorePunct() method, which allows matches to skip over valid
+	punctuation, change Pattern() and IgnoreCase() to accomodate this.
+	* htsearch/htsearch.cc(main, createLogicalWords): use IgnorePunct()
+	to highlight matching words in excerpts regardless of punctuation,
+	toss out old origPattern, and don't add short or bad words to
+	logicalPattern.
 
 	* htlib/HtWordType.h, htlib/HtWordType.cc(Initialize): set up and
 	use a lookup table to speed up HtIsWordChar() and HtIsStrictWordChar().

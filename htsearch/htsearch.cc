@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.5 1999/09/01 20:24:06 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.6 1999/09/01 21:00:19 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -222,9 +222,11 @@ main(int ac, char **av)
     //
     origPattern += logicalPattern;
     searchWordsPattern.IgnoreCase();
-    searchWordsPattern.Pattern(origPattern);
-    if (debug > 2)
-      cout << "Excerpt pattern: " << origPattern << "\n";
+    searchWordsPattern.IgnorePunct();
+    searchWordsPattern.Pattern(logicalPattern);	// this should now be enough
+    //searchWordsPattern.Pattern(origPattern);
+    //if (debug > 2)
+    //  cout << "Excerpt pattern: " << origPattern << "\n";
 
     //
     // If required keywords were given in the search form, we will
@@ -314,7 +316,8 @@ createLogicalWords(List &searchWords, String &logicalWords, String &wm)
 	}
 	else
 	    wasHidden = 1;
-	if (ww->weight > 0)			// Ignore boolean syntax stuff
+	if (ww->weight > 0			// Ignore boolean syntax stuff
+	    && !ww->isIgnore)			// Ignore short or bad words
 	{
 	    if (pattern.length())
 		pattern << '|';
