@@ -1,5 +1,5 @@
 //
-// $Id: lib.h,v 1.5 1999/02/19 01:42:41 ghutchis Exp $
+// $Id: lib.h,v 1.6 1999/03/02 03:47:22 ghutchis Exp $
 //
 //
 #ifndef _lib_h
@@ -54,6 +54,6 @@ extern "C" char *Htstrptime(char *buf, char *fmt, struct tm *tm);
 //
 // timegm() is quite rare, so provide our own.
 //
-time_t mytimegm(struct tm *tm);
+extern "C" time_t Httimegm(struct tm *tm);
 
 #endif

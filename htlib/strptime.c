@@ -181,13 +181,7 @@ static char const ab_month_name[][4] =
 # define HERE_T_FMT_AMPM "%I:%M:%S %p"
 # define HERE_T_FMT "%H:%M:%S"
 
-const unsigned short int __mon_yday[1][13] =
-  {
-    /* Normal years.  */
-    { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 },
-    /* Leap years.  */
-    { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 }
-  };
+extern const unsigned short int __mon_yday[1][13];
 #endif
 
 /* Status of lookup: do we use the locale data or the raw data?  */
