@@ -1,4 +1,15 @@
-Sat Mar 25 21:43:12 2000  Hans-Peter Nilsson  <hp@bitrange.com>
+Mon Mar 27 21:25:27 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/HtURLSeedScore.cc (ScoreAdjustItem): Change to use
+	HtRegex for flexibility and to get around const char * -> char *
+	problems.
+
+	* htsearch/SplitMatches.cc (MatchArea): Ditto.
+
+	* htsearch/Makefile.am, htsearch/Makefile.in: Add SplitMatches.cc
+	and HtURLSeedScore.cc to compilation list!
+
+Mon Mar 27 21:03:12 2000  Hans-Peter Nilsson  <hp@bitrange.com>
 
 	* htcommon/defaults.cc (defaults): Add default for
 	search_results_order, url_seed_score.

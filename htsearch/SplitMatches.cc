@@ -11,10 +11,10 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: SplitMatches.cc,v 1.1.2.1 2000/03/28 02:01:18 ghutchis Exp $
+// $Id: SplitMatches.cc,v 1.1.2.2 2000/03/28 02:25:35 ghutchis Exp $
 
 #include "StringList.h"
-#include "StringMatch.h"
+#include "HtRegex.h"
 #include "SplitMatches.h"
 
 #include <stdio.h>
@@ -38,13 +38,13 @@ public:
 
     // Does this item match?
     inline bool Match(char *s)
-    { return match.hasPattern() && match.FindFirst(s) != -1; }
+    { return match.match(s, 1, 0) == 0; }
 
     // Return the contained list.
     List *MatchList() { return &myList; }
 
 private:
-    StringMatch match;
+    HtRegex match;
     List myList;
 
     // These member functions are not supposed to be implemented, but
@@ -61,8 +61,9 @@ MatchArea::MatchArea(const String &url_regex)
     // pattern; it must always return false for the "Match" operator.
     if (strcmp("*", url_regex.get()) != 0)
       {
-	char *pattern = url_regex.get();
-	match.Pattern(pattern);
+	StringList l(url_regex.get());
+	match.setEscaped(l);
+	l.Destroy();
       }
 }
 

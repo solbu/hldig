@@ -11,11 +11,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtURLSeedScore.cc,v 1.1.2.1 2000/03/28 02:01:18 ghutchis Exp $
+// $Id: HtURLSeedScore.cc,v 1.1.2.2 2000/03/28 02:25:35 ghutchis Exp $
 
 #include "StringList.h"
-#include "StringMatch.h"
+#include "HtRegex.h"
 #include "HtURLSeedScore.h"
+
 #include <stdio.h>
 #include <ctype.h>
 
@@ -35,7 +36,7 @@ public:
     ~ScoreAdjustItem();
 
     // Does this item match?
-    inline bool Match(const String &s) { return match.FindFirst(s.get()) != -1; }
+    inline bool Match(const String &s) { return match.match(s, 1, 0) == 0; }
 
     // Return the argument adjusted according to this item.
     double adjust_score(double orig)
@@ -47,7 +48,7 @@ public:
 private:
     double my_add_constant;
     double my_mul_factor;
-    StringMatch match;
+    HtRegex match;
 
     static String myErrMsg;
 
@@ -69,15 +70,12 @@ ScoreAdjustItem::ScoreAdjustItem(String &url_regex, String &formula)
     bool factor_found = false;
     bool constant_found = false;
     int chars_so_far;
-    match.Pattern(url_regex);
+    StringList l(url_regex.get());
+    match.setEscaped(l);
+    l.Destroy();
 
     // FIXME: Missing method to check if the regex was in error.
-    // We'll check hasPattern for the time being as a placeholder.
-    if (! match.hasPattern())
-    {
-	myErrMsg = form("%s is not a valid regex", url_regex.get());
-	return;
-    }
+    //	myErrMsg = form("%s is not a valid regex", url_regex.get());
 
     char *s = formula.get();
 
