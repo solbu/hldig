@@ -1,3 +1,10 @@
+Tue Oct 26 16:28:29 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: corrected descriptions for allow_in_form,
+	search_results_header, noindex_start, noindex_end.  Also fixed a
+	few small typos & formatting errors here & there in descriptions
+	and examples.
+
 Tue Oct 26 16:01:22 1999  Loic Dachary  <loic@ceic.com>
 
 	* htword/Makefile.am: rm Wordkey.h instead of chmod to copy with 

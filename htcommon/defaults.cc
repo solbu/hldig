@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.64.2.2 1999/10/26 09:00:58 loic Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.64.2.3 1999/10/26 21:40:46 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -24,76 +24,22 @@ ConfigDefaults	defaults[] =
 " },
 { "allow_in_form", "", 
 	"string list", "htsearch", "allow_in_form: search_algorithm search_results_header", "
-			This specifies a filename to be output at the start of
-			search results. While outputting the header, some
-			variables will be expanded. Variables use the same
-			syntax as the Bourne shell. If there is a variable VAR,
-			the following will all be recognized:
-			<ul>
-			  <li>
-				$VAR
-			  </li>
-			  <li>
-				$(VAR)
-			  </li>
-			  <li>
-				${VAR}
-			  </li>
-			</ul>
-			The following variables are available:
-			<dl>
-			  <dt>
-				MATCHES
-			  </dt>
-			  <dd>
-				The number of documents that were matched.
-			  </dd>
-			  <dt>
-				PLURAL_MATCHES
-			  </dt>
-			  <dd>
-				If MATCHES is not 1, this will be the string \"s\",
-				else it is an empty string. This can be used to say
-				something like \"$(MATCHES)
-				document$(PLURAL_MATCHES) were found\"
-			  </dd>
-			  <dt>
-				MAX_MATCHES
-			  </dt>
-			  <dd>
-				The number of maximum displayed matches.
-			  </dd>
-			  <dt>
-				MAX_STARS
-			  </dt>
-			  <dd>
-				The value of the <a href=\"#max_stars\">max_stars</a>
-				attribute.
-			  </dd>
-			  <dt>
-				LOGICAL_WORDS
-			  </dt>
-			  <dd>
-				A string of the search words with either \"and\" or
-				\"or\" between the words, depending on the type of
-				search.
-			  </dd>
-			  <dt>
-				WORDS
-			  </dt>
-			  <dd>
-				A string of the search words with spaces in
-				between.
-			  </dd>
-			</dl>
-			Note that this file will <strong>NOT</strong> be output
-			if no matches were found. In this case the
-			<a href=\"#nothing_found_file\">nothing_found_file</a>
-			attribute is used instead.
-			Also, this file will not be output if it is
-			overridden by defining the
-			<a href=\"#search_results_wrapper\">search_results_wrapper</a>
-			attribute.
+	Allows the specified config file attributes to be specified
+	in search forms as separate fields. This could be used to
+	allow form writers to design their own headers and footers
+	and specify them in the search form. Another example would
+	be to offer a menu of search_algorithms in the form.
+	<table>
+	<tr>
+	<td nowrap>
+	<tt>
+	&nbsp;&nbsp;&lt;SELECT NAME="search_algorithm"&gt;<br>
+	&nbsp;&nbsp;&lt;OPTION VALUE="exact:1 prefix:0.6 synonyms:0.5 endings:0.1" SELECTED&gt;fuzzy<br>
+	&nbsp;&nbsp;&lt;OPTION VALUE="exact:1"&gt;exact<br>
+	&nbsp;&nbsp;&lt;/SELECT&gt;
+	</tt></td>
+	</tr>
+	</table>
 " },
 { "allow_numbers", "false", 
 	"boolean", "htdig", "allow_numbers: true", "
@@ -175,8 +121,9 @@ ConfigDefaults	defaults[] =
 	value for this attribute is defined at compile time.
 " },
 { "common_url_parts", "http:// http://www. ftp:// ftp://ftp. /pub/ .html .htm .gif .jpg .jpeg /index.html /index.htm .com/ .com mailto:", 
-	"string list", "htdig htnotify htmerge htsearch", "common_url_parts: http://www.htdig.org/ml/  \\<br>
-.html \\<br> http://dev.htdig.org/ \\<br>
+	"string list", "htdig htnotify htmerge htsearch", "common_url_parts: http://www.htdig.org/ml/ \\<br>
+.html \\<br>
+http://dev.htdig.org/ \\<br>
 http://www.htdig.org/", "
 	Sub-strings often found in URLs stored in the
 	database.  These are replaced in the database by an
@@ -732,7 +679,7 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	detail on how this is done.
 " },
 { "http_proxy", "", 
-	"string list", "htdig", "http_proxy: http://proxy.bigbucks.com:3128", "
+	"string", "htdig", "http_proxy: http://proxy.bigbucks.com:3128", "
 	When this attribute is set, all HTTP document
 	retrievals will be done using the HTTP-PROXY protocol.
 	The URL specified in this attribute points to the host
@@ -741,7 +688,7 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	of the indexing process.
 " },
 { "http_proxy_exclude", "", 
-	"string", "htdig", "http_proxy_exclude: http://intranet.foo.com/", "
+	"string list", "htdig", "http_proxy_exclude: http://intranet.foo.com/", "
 	When this is set, URLs matching this will not use the
 	proxy. This is useful when you have a mixture of sites
 	near to the digging server and far away.
@@ -863,7 +810,7 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	directory path are critical.
 " },
 { "local_user_urls", "", 
-	"string", "htdig", "local_user_urls: http://www.my.org/=/home/,/www/", "
+	"string list", "htdig", "local_user_urls: http://www.my.org/=/home/,/www/", "
 	Set this to access user directory URLs through the local
 	filesystem. If you leave the \"path\" portion out, it will
 	look up the user's home directory in /etc/password (or NIS
@@ -1140,13 +1087,22 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	enclosed in brackets (e.g. [index.html]).
 " },
 { "noindex_end", "<!--/htdig_noindex-->", 
-	"", "", "", "
-
+	"string", "htdig", "noindex_end: &lt;/SCRIPT&gt;", "
+	This string marks the end of a section of an HTML file that should be
+	completely ignored when indexing. It works together with noindex_start
+	described below. As in the defaults, this can be SGML comment 
+	declarations that can be inserted anywhere in the documents to exclude 
+	different sections from being indexed. However, existing tags can also be 
+	used; this is especially useful to exclude some sections from being indexed 
+	where the files to be indexed can not be edited. The example shows how
+	SCRIPT sections in 'uneditable' documents can be skipped.
+	Note that the match for this string is case insensitive.
 " },
 { "noindex_start", "<!--htdig_noindex-->", 
-	"string", "htdig", "noindex_start: &lt;SCRIPT<br>", "
-	The text encompassing a section of an HTML file that should be completely
-	ignored when indexing. As in the defaults, this can be SGML comment
+	"string", "htdig", "noindex_start: &lt;SCRIPT", "
+	This string marks the start of a section of an HTML file that should be
+	completely ignored when indexing. It works together with noindex_end
+	described above. As in the defaults, this can be SGML comment
 	declarations that can be inserted anywhere in the documents to exclude
 	different sections from being indexed. However, existing tags can also be
 	used; this is especially useful to exclude some sections from being indexed
@@ -1475,30 +1431,76 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 " },
 { "search_results_header", "${common_dir}/header.html", 
 	"string", "htsearch", "search_results_header: /usr/local/etc/ht/start-stuff.html", "
-	This specifies a filename to be output at the start of
-	search results. While outputting the header, some
-	variables will be expanded. Variables use the same
-	syntax as the Bourne shell. If there is a variable VAR,
-	the following will all be recognized:
-	<ul>
-	<li>
-	$VAR
-	</li>
-	<li>
-	$(VAR)
-	</li>
-	<li>
-	${VAR}
-	</li>
-	</ul>
-	The following variables are available:
-	<dl>
-	<dt>
-	MATCHES
-	</dt>
-	<dd>
-	The number of documents that were matched.
-        </dl>
+			This specifies a filename to be output at the start of
+			search results. While outputting the header, some
+			variables will be expanded. Variables use the same
+			syntax as the Bourne shell. If there is a variable VAR,
+			the following will all be recognized:
+			<ul>
+			  <li>
+				$VAR
+			  </li>
+			  <li>
+				$(VAR)
+			  </li>
+			  <li>
+				${VAR}
+			  </li>
+			</ul>
+			The following variables are available:
+			<dl>
+			  <dt>
+				MATCHES
+			  </dt>
+			  <dd>
+				The number of documents that were matched.
+			  </dd>
+			  <dt>
+				PLURAL_MATCHES
+			  </dt>
+			  <dd>
+				If MATCHES is not 1, this will be the string \"s\",
+				else it is an empty string. This can be used to say
+				something like \"$(MATCHES)
+				document$(PLURAL_MATCHES) were found\"
+			  </dd>
+			  <dt>
+				MAX_MATCHES
+			  </dt>
+			  <dd>
+				The number of maximum displayed matches.
+			  </dd>
+			  <dt>
+				MAX_STARS
+			  </dt>
+			  <dd>
+				The value of the <a href=\"#max_stars\">max_stars</a>
+				attribute.
+			  </dd>
+			  <dt>
+				LOGICAL_WORDS
+			  </dt>
+			  <dd>
+				A string of the search words with either \"and\" or
+				\"or\" between the words, depending on the type of
+				search.
+			  </dd>
+			  <dt>
+				WORDS
+			  </dt>
+			  <dd>
+				A string of the search words with spaces in
+				between.
+			  </dd>
+			</dl>
+			Note that this file will <strong>NOT</strong> be output
+			if no matches were found. In this case the
+			<a href=\"#nothing_found_file\">nothing_found_file</a>
+			attribute is used instead.
+			Also, this file will not be output if it is
+			overridden by defining the
+			<a href=\"#search_results_wrapper\">search_results_wrapper</a>
+			attribute.
 " },
 { "search_results_wrapper", "", 
 	"string", "htsearch", "search_results_wrapper: ${common_dir}/wrapper.html", "
@@ -1542,7 +1544,7 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	limit of the directive. However, it is most useful to
 	partially index a server as the URLs of additional
 	documents are entered into the database, marked as never
-	retrieved. <br>
+	retrieved.<br>
         A value of -1 specifies no limit.
 " },
 { "server_wait_time", "0", 
@@ -1840,7 +1842,7 @@ application/ms-word \"/usr/local/bin/mswordparser -w\"", "
 	"string list", "htdig htnotify htmerge htsearch", "url_part_aliases:
 				   http://search.example.com/~htdig *site \\<br>
 				   http://www.htdig.org/this/ *1 \\<br>
-				   .html *2 <br>
+				   .html *2<br>
 url_part_aliases: foo
 ", "
 	A list of translations pairs <em>from</em> and
