@@ -55,7 +55,7 @@ void DocumentRef::Clear()
     docLinks = 0;
     descriptions.Destroy();
     docAnchors.Destroy();
-    docHopCount = -1;
+    docHopCount = 0;
     docBackLinks = 0;
 }
 
