@@ -1,3 +1,16 @@
+Thu Jun  7 17:09:46 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: Add new attribute use_doc_date to use
+	document meta information for the DocTime() field.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Document it.
+	* htdig/HTML.cc(do_tag): Call Retriever::got_time if use_doc_date
+	is set and we run across a META date tag.
+	* htdig/Retriever.h, htdig/Retriver.cc: Add new got_date
+	function. When called, sets the DocTime field of the DocumentRef
+	after parsing is completed. Currently assumes ISO 8601 format for
+	the date tag.
+
 Thu Jun  7 16:48:13 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc: Add new attribute any_keywords to allow
@@ -95,15 +108,15 @@ Thu Jun  7 11:58:28 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/multidig/*: Backport from 3.2.0b3, including fixes below.
 
-        * contrib/multidig/Makefile, gen-collect, db.conf, multidig.conf:
-        Add missing trailing newlines as pointed out by Doug Moran
-        <dmoran@dougmoran.com>.
+	* contrib/multidig/Makefile, gen-collect, db.conf, multidig.conf:
+	Add missing trailing newlines as pointed out by Doug Moran
+	<dmoran@dougmoran.com>.
 
-        * contrib/multidig/Makefile (install): Make sure scripts have a+x
-        permissions. Pointed out by Doug Moran.
+	* contrib/multidig/Makefile (install): Make sure scripts have a+x
+	permissions. Pointed out by Doug Moran.
 
-        * contrib/multidig/new-collect: Fix typo to ensure MULTIDIG_CONF
-        is set correctly.
+	* contrib/multidig/new-collect: Fix typo to ensure MULTIDIG_CONF
+	is set correctly.
 
 Thu Jun  7 11:37:52 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
