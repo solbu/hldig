@@ -5,8 +5,8 @@ RELEASES:
 
 
 SHOWSTOPPERS:
-* Retriever/Server classes still need a cleanup.
-   (Geoff: Server is finished, Retriever still needs work.)
+* htdig/Retriever class still need a cleanup.
+   (Geoff: Volunteered, still some to finish up.)
 
 KNOWN BUGS:
 * htdig/Image.cc doesn't use Transport classes.
@@ -24,7 +24,7 @@ KNOWN BUGS:
 * <META> keywords and descriptions are indexed regardless of doindex.
 
 PENDING FEATURES:
-* (Approved patches: What remains to be added?)
+* (Is there anything approved and not in the current CVS tree?)
 
 TESTING:
 * ExternalTransport with non 'http' URLs.
@@ -34,7 +34,7 @@ TESTING:
 * Reports of problems with long timeouts (e.g PR#350)
 
 DOCUMENTATION:
-* Update cf_* pages to mention regex, new parser
+* Update cf_* pages to mention regex, new config parser (i.e. URL-dependent config)
 * Update to mention phrase searching, regex fuzzy
 
 OTHER ISSUES:
