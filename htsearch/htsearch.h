@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.h,v 1.11 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: htsearch.h,v 1.12 2003/06/23 21:42:04 nealr Exp $
 //
 
 #ifndef _htsearch_h_
@@ -35,13 +35,20 @@
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
 
 extern int		n_matches;
 extern int		do_and;
 extern int		do_short;
 extern StringList	fields;
+
+#ifndef _MSC_VER //_WIN32
 extern StringMatch	limit_to;
+#endif
+
 extern StringMatch	URLimage;
 extern List		URLimageList;
 extern StringMatch	wm;

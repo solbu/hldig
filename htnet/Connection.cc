@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.5 2002/08/06 07:32:29 angusgb Exp $
+// $Id: Connection.cc,v 1.6 2003/06/23 21:40:16 nealr Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -25,19 +25,36 @@
 #include <errno.h>
 #include <stdio.h>
 #include <sys/types.h>
+
+#ifdef _MSC_VER //_WIN32
+#include <windows.h>
+#include <winsock.h>
+#define EALREADY     WSAEALREADY
+#define EISCONN      WSAEISCONN
+#else
 #include <sys/socket.h>
 #include <arpa/inet.h>	// For inet_ntoa
 #include <netinet/in.h>
+#include <netdb.h>
 #include <sys/ioctl.h>
 #include <sys/uio.h>
+#endif
+
+#ifndef _MSC_VER //_WIN32
 #include <sys/file.h>
-#include <signal.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <netdb.h>
-#include <stdlib.h>
 #include <sys/time.h>
+#else
+#include <io.h>
+#endif
+
+#include <signal.h>
+#include <fcntl.h>
+#include <stdlib.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
+
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
@@ -45,14 +62,15 @@
 #include <sys/select.h>
 #endif
 
-
 typedef void (*SIGNAL_HANDLER) (...);
 
 #include "htconfig.h"
 
+#ifndef _MSC_VER //_WIN32
 extern "C" {
     int rresvport(int *);
 }
+#endif
 
 #undef MIN
 #define	MIN(a,b)		((a)<(b)?(a):(b))
@@ -74,6 +92,8 @@ Connection::Connection(int socket)
    need_io_stop(0), timeout_value(0), retry_value(1),
    wait_time(5) // wait 5 seconds after a failed connection attempt
 {
+   Win32Socket_Init();
+
    if (socket > 0)
    {
       GETPEERNAME_LENGTH_T length = sizeof(server);
@@ -108,6 +128,33 @@ Connection::~Connection()
 
 
 //*****************************************************************************
+// int Connection::Win32Socket_init(void)
+//
+// This function is only used when Code is compiled as a Native Windows
+// application
+// 
+// The native Windows socket system needs to be initialized.
+//
+int Connection::Win32Socket_Init(void)
+{
+#ifdef _MSC_VER //_WIN32
+    WORD    wVersionRequested;
+    WSADATA wsaData;
+
+    wVersionRequested = MAKEWORD(2, 2);
+
+    if (WSAStartup(wVersionRequested, &wsaData))
+        return(-1);
+
+    if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2 ) {
+        WSACleanup();
+        return(-1);
+    }
+#endif
+
+    return(0);
+}
+//*****************************************************************************
 // int Connection::Open(int priv)
 //
 int Connection::Open(int priv)
@@ -116,10 +163,18 @@ int Connection::Open(int priv)
     {
 	int	aport = IPPORT_RESERVED - 1;
 
+//  Native Windows (MSVC) has no rresvport
+#ifndef _MSC_VER //_WIN32
 	sock = rresvport(&aport);
+#else
+	return NOTOK;
+#endif
     }
     else
-	sock = socket(AF_INET, SOCK_STREAM, 0);
+    {
+	    sock = socket(AF_INET, SOCK_STREAM, 0);
+	//cout << "socket()  sock=" << sock << endl;
+    }
 
     if (sock == NOTOK)
 	return NOTOK;
@@ -137,7 +192,13 @@ int Connection::Open(int priv)
 //
 int Connection::Ndelay()
 {
+#ifndef _MSC_VER //_WIN32
     return fcntl(sock, F_SETFL, FNDELAY);
+#else
+    // Note:  This function is never called
+    // TODO: Look into ioctsocket(..) of Win32 Socket API
+    return(0);
+#endif
 }
 
 
@@ -146,7 +207,13 @@ int Connection::Ndelay()
 //
 int Connection::Nondelay()
 {
+#ifndef _MSC_VER //_WIN32
     return fcntl(sock, F_SETFL, 0);
+#else
+    // Note:  This function is never called
+    // TODO: Look into ioctsocket(..) of Win32 Socket API
+    return(0);
+#endif
 }
 
 //*****************************************************************************
@@ -220,6 +287,9 @@ int Connection::Assign_Server(unsigned int addr)
     return OK;
 }
 
+#ifndef _MSC_VER //_WIN32
+//extern "C" unsigned int   inet_addr(char *);
+#endif
 
 //*****************************************************************************
 //
@@ -272,6 +342,7 @@ int Connection::Connect()
 
     while (retries--)
       {
+#ifndef _MSC_VER //_WIN32
 	//
 	// Set an alarm to make sure the connect() call times out
 	// appropriately This ensures the call won't hang on a
@@ -285,14 +356,17 @@ int Connection::Connect()
 	action.sa_handler = handler_timeout;
 	sigaction(SIGALRM, &action, &old_action);
 	alarm(timeout_value);
+#endif
 
 	status = connect(sock, (struct sockaddr *)&server, sizeof(server));
 
 	//
 	// Disable alarm and restore previous policy if any
 	//
+#ifndef _MSC_VER //_WIN32
 	alarm(0);
        	sigaction(SIGALRM, &old_action, 0);
+#endif
 
 	if (status == 0 || errno == EALREADY || errno == EISCONN)
 	  {
@@ -309,7 +383,9 @@ int Connection::Connect()
 	// cout << " <"  << ::strerror(errno) << "> ";
 	close(sock);
         Open();
+
         sleep(wait_time);
+
       }
 
 #if 0
@@ -660,7 +736,7 @@ int Connection::Read_Partial(char *buffer, int maxlength)
       }
 
       if (!need_io_stop)
-          count = read(sock, buffer, maxlength);
+          count = recv(sock, buffer, maxlength, 0);
       else
           count = -1;         // Input timed out
     }
@@ -680,7 +756,9 @@ int Connection::Write_Partial(char *buffer, int maxlength)
 
     do
     {
-	count = write(sock, buffer, maxlength);
+
+ 	    count = send(sock, buffer, maxlength, 0);
+	
     }
     while (count < 0 && errno == EINTR && !need_io_stop);
     need_io_stop = 0;
@@ -703,8 +781,9 @@ char * Connection::Socket_as_String()
     return buffer;
 }
 
-
+#ifndef _MSC_VER //_WIN32
 extern "C" char *inet_ntoa(struct in_addr);
+#endif
 
 //*************************************************************************
 // char *Connection::Get_Peername()

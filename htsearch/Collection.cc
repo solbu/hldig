@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Collection.cc,v 1.2 2002/02/02 18:18:13 ghutchis Exp $
+// $Id: Collection.cc,v 1.3 2003/06/23 21:42:03 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -28,7 +28,11 @@
 #include <fstream.h>
 #include <stdio.h>
 #include <ctype.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <syslog.h>
+#endif
+
 #include <locale.h>
 
 //*****************************************************************************

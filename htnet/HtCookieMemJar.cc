@@ -24,7 +24,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookieMemJar.cc,v 1.5 2003/02/01 12:59:14 angusgb Exp $ 
+// $Id: HtCookieMemJar.cc,v 1.6 2003/06/23 21:40:16 nealr Exp $ 
 //
 
 #include "HtCookieMemJar.h"
@@ -532,7 +532,11 @@ const HtCookie* HtCookieMemJar::NextCookie()
    if (!_list)
       return 0;   // ends
 
-   const HtCookie* cookie((const HtCookie*)_list->Get_Next()); // Cookie object
+#ifdef _MSC_VER //_WIN32
+   const HtCookie *cookie = ((const HtCookie*)_list->Get_Next()); // Cookie object
+#else
+   const HtCookie* cookie( (const HtCookie*)(_list->Get_Next()) ); // Cookie object
+#endif
       
    if (cookie)
       return cookie;

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.h,v 1.6 2003/06/20 07:49:54 lha Exp $
+// $Id: Connection.h,v 1.7 2003/06/23 21:40:16 nealr Exp $
 //
 
 #ifndef _Connection_h_
@@ -23,9 +23,14 @@
 
 #include <stdlib.h>
 #include <sys/types.h>
+
+#ifdef _MSC_VER //_WIN32
+#include <winsock.h>
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#endif
 
 class Connection : public Object
 {
@@ -36,6 +41,7 @@ public:
    ~Connection();
 
    // (De)initialization
+   int Win32Socket_Init(void);
    int Open(int priv = 0);
    virtual int Close();
    int Ndelay();

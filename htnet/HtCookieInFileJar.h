@@ -33,7 +33,7 @@
 // Copyright (c) 1995-2003 The ht://Dig Group
 //
 ///////////////////////////////////////////////////////////////
-// $Id: HtCookieInFileJar.h,v 1.1 2003/01/28 11:12:44 angusgb Exp $
+// $Id: HtCookieInFileJar.h,v 1.2 2003/06/23 21:40:16 nealr Exp $
 ///////////////////////////////////////////////////////////////
 
 #ifndef __HtCookieInFileJar_H
@@ -61,7 +61,11 @@ public:
 	HtCookieInFileJar& operator=(const HtCookieInFileJar& rhs);
 
 	// Show stats
+#ifdef _MSC_VER //_WIN32
+	virtual ostream &ShowSummary (ostream &out = cout);
+#else
 	virtual ostream &ShowSummary (ostream &out = std::cout);
+#endif
 
 // Protected attributes
 protected:

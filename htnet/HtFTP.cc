@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFTP.cc,v 1.2 2003/06/20 07:49:54 lha Exp $ 
+// $Id: HtFTP.cc,v 1.3 2003/06/23 21:40:16 nealr Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -32,9 +32,18 @@
 #include <iostream.h>
 #include <stdio.h> // for sscanf
 #include <sys/stat.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
+
 #include <fstream.h>
+
+#ifdef _MSC_VER //_WIN32
+#include "dirent_local.h"
+#else
 #include <dirent.h> // for scandir
+#endif
 
 
 ///////

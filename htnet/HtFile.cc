@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFile.cc,v 1.8 2003/05/22 15:31:13 lha Exp $ 
+// $Id: HtFile.cc,v 1.9 2003/06/23 21:40:16 nealr Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -32,9 +32,25 @@
 #include <iostream.h>
 #include <stdio.h> // for sscanf
 #include <sys/stat.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
+
 #include <fstream.h>
+
+#ifdef _MSC_VER //_WIN32
+#include "dirent_local.h"
+#else
 #include <dirent.h> // for scandir
+#endif
+
+#ifdef _MSC_VER //_WIN32
+#define popen _popen
+#define pclose _pclose
+#define lstat stat
+#define readlink(x,y,z) {-1}
+#endif
 
 
 ///////

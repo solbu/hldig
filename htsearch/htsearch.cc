@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.64 2003/06/12 19:19:21 grdetil Exp $
+// $Id: htsearch.cc,v 1.65 2003/06/23 21:42:04 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -42,6 +42,8 @@
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
+#elif HAVE_GETOPT_LOCAL
+#include <getopt_local.h>
 #endif
 
 typedef void (*SIGNAL_HANDLER) (...);
@@ -141,7 +143,9 @@ main(int ac, char **av)
     //
     // The total search can NEVER take more than 5 minutes.
     //
+#ifndef _MSC_VER //_WIN32
     alarm(5 * 60);
+#endif
 
     //
     // Parse the CGI parameters.

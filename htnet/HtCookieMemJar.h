@@ -24,7 +24,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtCookieMemJar.h,v 1.4 2003/01/28 11:17:01 angusgb Exp $ 
+// $Id: HtCookieMemJar.h,v 1.5 2003/06/23 21:40:16 nealr Exp $ 
 //
 
 #ifndef _HTCOOKIE_MEM_JAR_H
@@ -74,7 +74,11 @@ class HtCookieMemJar : public HtCookieJar
       virtual void ResetIterator();
 
       // Show stats
+#ifdef _MSC_VER //_WIN32
+      virtual ostream &ShowSummary (ostream &out = cout);
+#else
       virtual ostream &ShowSummary (ostream &out = std::cout);
+#endif
 
       void printDebug();
 

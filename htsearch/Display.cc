@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.112 2003/06/13 13:56:03 lha Exp $
+// $Id: Display.cc,v 1.113 2003/06/23 21:42:03 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -35,8 +35,14 @@
 #include <fstream.h>
 #include <stdio.h>
 #include <ctype.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <syslog.h>
+#endif
+
 #include <locale.h>
+
+
 #include <math.h>
 #include <float.h>
 
@@ -1897,6 +1903,10 @@ Display::sort(List *matches)
 void
 Display::logSearch(int page, List *matches)
 {
+//Note: This is Posix and dependent on a running syslogd..
+//does not work for Win32
+//TODO: Look into using native windows system logs instead
+#ifndef _MSC_VER //_WIN32
 	HtConfiguration* config= HtConfiguration::config();
     // Currently unused    time_t	t;
     int		nMatches = 0;
@@ -1924,4 +1934,5 @@ Display::logSearch(int page, List *matches)
 	   nMatches, (const char*)config->Find("matches_per_page"),
 	   page, ref
 	   );
+#endif
 }
