@@ -16,6 +16,7 @@ Exp $";
 #endif
 
 #include "HtZlibCodec.h"
+#include "defaults.h" // For "config"
 
 #if defined(HAVE_LIBZ) && defined(HAVE_ZLIB_H)
 #include <zlib.h>
@@ -30,8 +31,9 @@ HtZlibCodec::~HtZlibCodec()
 {
 }
 
-String HtZlibCodec::encode(const String &s)
+String HtZlibCodec::encode(const String &str) const
 {
+  String s = str;
 #if defined(HAVE_LIBZ) && defined(HAVE_ZLIB_H)
   static int cf=config.Value("compression_level",0);    
   if (cf) {
@@ -74,9 +76,22 @@ String HtZlibCodec::encode(const String &s)
 }
 
 
-String HtZlibCodec::decode(const String &s)
+String HtZlibCodec::decode(const String &str) const
 {
+  String s = str;
 #if defined(HAVE_LIBZ) && defined(HAVE_ZLIB_H)
+  static int cf=config.Value("compression_level",0);    
+  if (cf) {
+    String c_s;
+    // Decompress stream
+    unsigned char c_buffer[16384];
+    z_stream d_stream;
+    d_stream.zalloc=(alloc_func)0;
+    d_stream.zfree=(free_func)0;
+    d_stream.opaque=(voidpf)0;
+    
+    int len=s.length();
+    d_stream.next_in=(Bytef*)(char *)s;
     d_stream.avail_in=len;
     
     int err=inflateInit(&d_stream);
@@ -96,5 +111,21 @@ String HtZlibCodec::decode(const String &s)
 #endif // HAVE_LIBZ && HAVE_ZLIB_H
   return s;
 }
+
+
+// Canonical singleton interface.
+HtZlibCodec *
+HtZlibCodec::instance()
+{
+  static HtZlibCodec *_instance = 0;
+
+  if (_instance == 0)
+  {
+    _instance = new HtZlibCodec();
+  }
+
+  return _instance;
+}
+
 
 // End of HtZlibCodec.cc
