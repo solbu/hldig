@@ -1,3 +1,19 @@
+Fri Oct  2 13:11:24 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc: Added check for docs removed with
+	noindex. Now words in these docs should be ignored for the word
+	db.
+
+Fri Oct  2 13:09:04 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* CONFIG Makefile.config.in Makefile.in htcommon/Makefile.in,
+	htcommon/defaults.cc htdig/Makefile.in htdig/main.cc,
+	htfuzzy/Makefile.in htfuzzy/htfuzzy.cc htlib/Makefile.in,
+	htmerge/Makefile.in htmerge/htmerge.cc htnotify/Makefile.in,
+	htnotify/htnotify.cc htsearch/Makefile.in, include/htconfig.h.in:
+	More configure improvements--use top_srcdir instead of
+	HTDIG_TOP, use PACKAGE, VERSION, etc.
+
 Fri Oct  2 11:32:59 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/StringList.cc: Added patch by Alexander Bergolth for bug

@@ -4,9 +4,9 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
-// Revision 1.9  1998/09/30 17:31:51  ghutchis
+// Revision 1.10  1998/10/02 17:17:20  ghutchis
 //
-// Changes for 3.1.0b2
+// Added check for docs marked noindex--words aren't indexed anymore
 //
 // Revision 1.8  1998/09/08 03:29:09  ghutchis
 //
@@ -361,7 +361,12 @@ Retriever::parse_url(URLRef &urlRef)
 		    cout << " (changed) ";
 	    }
 	    RetrievedDocument(*doc, url.get(), ref);
-	    words.Flush();
+	    // Hey! If this document is marked noindex, don't even bother
+	    // adding new words. Mark this as gone and get rid of it!
+	    if (ref->DocState() == Reference_noindex)
+	      words.MarkModified();
+	    else
+	      words.Flush();
 	    if (debug)
 		cout << " size = " << doc->Length() << endl;
 	    break;
