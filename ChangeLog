@@ -1,3 +1,11 @@
+Thu Jul 12 11:45:05 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/conv_doc.pl, contrib/parse_doc.pl: Fixed EOF handling in
+	dehyphenation, fixed to handle %xx codes in title made from URL.
+
+	* contrib/doc2html/doc2html.pl, contrib/doc2html/pdf2html.pl,
+	contrib/doc2html/swf2html.pl: Fixed to handle %xx codes in URL title.
+
 Thu Jul  5 11:23:40 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* db/dist/config.guess: Update with more recent GNU version that

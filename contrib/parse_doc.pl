@@ -38,6 +38,9 @@
 # Changed:      "break" to "last" (no break in Perl) <wjones@tc.fluke.com>
 # Changed:      code for parsing a line into a list of
 #               words, to use "split", other streamlining.
+# 2001/07/12
+# Changed:      fix "last" handling in dehyphenation <grdetil@scrc.umanitoba.ca>
+# Added:        handle %xx codes in title from URL   <grdetil@scrc.umanitoba.ca>
 #########################################
 #
 # set this to your MS Word to text converter
@@ -157,8 +160,9 @@ die "Hmm. $parser is absent or unwilling to execute.\n" unless -x $parser;
 open(CAT, "$parsecmd") || die "Hmmm. $parser doesn't want to be opened using pipe.\n";
 while (<CAT>) {
         while (/[A-Za-z\300-\377]-\s*$/ && $dehyphenate) {
-                $_ .= <CAT> || last;
-                s/([A-Za-z\300-\377])-\s*\n\s*([A-Za-z\300-\377])/$1$2/
+                $_ .= <CAT>;
+                last if eof;
+                s/([A-Za-z\300-\377])-\s*\n\s*([A-Za-z\300-\377])/$1$2/s
         }
         $head .= " " . $_;
 #       s/\s+[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]+|[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]+\s+|^[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]+|[\(\)\[\]\\\/\^\;\:\"\'\`\.\,\?!\*]+$/ /g;    # replace reading-chars with space (only at end or begin of word, but allow multiple characters)
@@ -191,6 +195,7 @@ if ($title !~ /^$/ && $title !~ /^[A-G]:[^\s]+\.[Pp][Dd][Ff]$/) {
         print "t\t$title\n";
 } else {                                        # otherwise generate a title
         @temp = split(/\//, $ARGV[2]);          # get the filename, get rid of basename
+        $temp[-1] =~ s/%([A-F0-9][A-F0-9])/pack("C", hex($1))/gie;
         print "t\t$type Document $temp[-1]\n";  # print it
 }
 

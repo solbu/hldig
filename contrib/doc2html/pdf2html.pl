@@ -41,6 +41,7 @@ if ($MIME_type and ($MIME_type !~ m#^application/pdf#i)) {
 
 my $Name = $ARGV[2] || '';
 $Name =~ s#^.*/##;
+$Name =~ s/%([A-F0-9][A-F0-9])/pack("C", hex($1))/gie;
 
 &pdf_head;
 &pdf_body;

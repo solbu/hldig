@@ -184,6 +184,7 @@ sub init {
   $URL = $ARGV[2] || '?';
   $Name = $URL;
   $Name =~ s#^.*/##;
+  $Name =~ s/%([A-F0-9][A-F0-9])/pack("C", hex($1))/gie;
   
   if ($Verbose and not $LOG) { print STDERR "\n$Prog: [$MIME_type] " }
   if ($LOG) { print STDERR "$URL [$MIME_type] " }

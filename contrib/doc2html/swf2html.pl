@@ -29,6 +29,7 @@ if ($MIME_type and ($MIME_type !~ m#^application/x-shockwave-flash#i)) {
 
 my $Name = $ARGV[2] || '';
 $Name =~ s#^.*/##;
+$Name =~ s/%([A-F0-9][A-F0-9])/pack("C", hex($1))/gie;
 
 print <<"HEAD";
 <HTML>
