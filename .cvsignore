@@ -2,3 +2,4 @@ Makefile
 Makefile.config
 config.log
 config.status
+config.cache
