@@ -1,15 +1,25 @@
 //
 // DocumentDB.cc
 //
-// Implementation of DocumentDB
+//: This class is the interface to the database of document references.
+//  This database is only used while digging.  An extract of this
+//  database is used for searching.  This is because digging requires a
+//  different index than searching.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: DocumentDB.cc,v 1.19 1999/09/06 15:55:36 ghutchis Exp $
 //
 
 #include "DocumentDB.h"
 #include "Database.h"
 #include "HtURLCodec.h"
 #include "IntObject.h"
+#include "HtZlibCodec.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -27,7 +37,7 @@ DocumentDB::DocumentDB()
 
     // The first document number (NEXT_DOC_ID_RECORD) is used to
     // store the nextDocID number itself into.  We avoid using
-    // an all-0 key for this, mostly for being supersticous
+    // an all-0 key for this, mostly for being superstitious
     // about letting in bugs.
     nextDocID = NEXT_DOC_ID_RECORD + 1;
     myTryUncoded = 1;
@@ -55,6 +65,11 @@ DocumentDB::~DocumentDB()
 //
 int DocumentDB::Open(char *filename, char *indexname, char *headname)
 {
+    // If the database is already open, we'll close it
+    // We might be opening this object with a new filename, so we'll be safe
+    if (isopen)
+      Close();
+
     dbf = 0;
     i_dbf = 0;
     h_dbf = 0;
@@ -97,6 +112,11 @@ int DocumentDB::Open(char *filename, char *indexname, char *headname)
 //
 int DocumentDB::Read(char *filename, char *indexname, char *headname)
 {
+    // If the database is already open, we'll close it
+    // We might be opening this object with a new filename, so we'll be safe
+    if (isopen)
+      Close();
+
     dbf = 0;
     i_dbf = 0;
     h_dbf = 0;
@@ -174,8 +194,7 @@ int DocumentDB::Close()
 //
 int DocumentDB::Add(DocumentRef &doc)
 {
-    int docID;
-    docID = doc.DocID();
+    int docID = doc.DocID();
 
     temp = 0;
     doc.Serialize(temp);
@@ -185,11 +204,11 @@ int DocumentDB::Add(DocumentRef &doc)
 
     if (h_dbf)
       {
-	// We'll eventually need to deal with compression *FIX*
-	temp = doc.DocHead();
-
 	if (doc.DocHeadIsSet())
+	  {
+	    temp = HtZlibCodec::instance()->encode(doc.DocHead());
 	    h_dbf->Put(key, temp);
+	  }
       }
     else
       // If there was no excerpt index when we write, something is wrong.
@@ -222,7 +241,7 @@ int DocumentDB::ReadExcerpt(DocumentRef &ref)
     if (h_dbf->Get(key, data) == NOTOK)
       return NOTOK;
 
-    ref.DocHead(data);
+    ref.DocHead(HtZlibCodec::instance()->decode(data));
 
     return OK;
 }
@@ -252,8 +271,8 @@ DocumentRef *DocumentDB::operator [] (char *u)
     String			data;
     String			docIDstr;
 
-    // If there is no index db, then just give up (do *not*
-    // construct a list and traverse it).
+    // If there is no index db, then just give up 
+    // (do *not* construct a list and traverse it).
     if (i_dbf == 0)
       return 0;
     else
@@ -329,16 +348,9 @@ int DocumentDB::CreateSearchDB(char *filename)
     char		*strkey;
     String		data;
     FILE		*fl;
-    String		command = SORT_PROG;
-    String		tmpdir = getenv("TMPDIR");
     String		docKey(sizeof(int));
 
-    command << " -n -o" << filename;
-    if (tmpdir.length())
-    {
-	command << " -T " << tmpdir;
-    }
-    fl = popen(command, "w");
+    fl = popen(filename, "w");
 
     dbf->Start_Get();
     while ((strkey = dbf->Get_Next()))
@@ -400,12 +412,6 @@ int DocumentDB::CreateSearchDB(char *filename)
 	}
     }
 
-    int	sortRC = pclose(fl);
-    if (sortRC)
-    {
-	cerr << "Document sort failed\n\n";
-	exit(1);
-    }
     return 0;
 }
 
