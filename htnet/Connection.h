@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.h,v 1.3.2.1 2000/02/10 06:04:13 ghutchis Exp $
+// $Id: Connection.h,v 1.3.2.2 2000/02/19 04:56:48 ghutchis Exp $
 //
 
 #ifndef _Connection_h_
@@ -37,67 +37,67 @@ public:
     ~Connection();
 
     // (De)initialization
-    int				open(int priv = 0);
-    int				close();
-    int				ndelay();
-    int				nondelay();
-    int                         timeout(int value);
-    int				retries(int value);
+    int				Open(int priv = 0);
+    int				Close();
+    int				Ndelay();
+    int				Nondelay();
+    int                         Timeout(int value);
+    int				Retries(int value);
 
     // Port stuff
-    int				assign_port(int port = 0);
-    int				assign_port(char *service);
-    int				get_port();
-    inline int			is_privileged();
+    int				Assign_Port(int port = 0);
+    int				Assign_Port(char *service);
+    int				Get_Port();
+    inline int			Is_Privileged();
 
     // Host stuff
-    int				assign_server(const String& name);
-    int				assign_server(unsigned int addr = INADDR_ANY);
-    char				*get_server()		{return server_name;}
+    int				Assign_Server(const String& name);
+    int				Assign_Server(unsigned int addr = INADDR_ANY);
+    char		       *Get_Server()		{return server_name;}
 
     // Connection establishment
-    int				connect(int allow_EINTR = 0);
-    Connection			*accept(int priv = 0);
-    Connection			*accept_privileged();
+    int				Connect(int allow_EINTR = 0);
+    Connection		       *Accept(int priv = 0);
+    Connection		       *Accept_Privileged();
 
     // Registration things
-    int				bind();
-    int				listen(int n = 5);
+    int				Bind();
+    int				Listen(int n = 5);
 
     // IO
-    String		*read_line(String &, char *terminator = "\n");
-    char		*read_line(char *buffer, int maxlength, char *terminator = "\n");
-    String		*read_line(char *terminator = "\n");
-    virtual int		read_char();
-    int			write_line(char *buffer, char *eol = "\n");
+    String		       *Read_Line(String &, char *terminator = "\n");
+    char		       *Read_Line(char *buffer, int maxlength, char *terminator = "\n");
+    String		       *Read_Line(char *terminator = "\n");
+    virtual int			Read_Char();
+    int				Write_Line(char *buffer, char *eol = "\n");
     
-    int			write(char *buffer, int maxlength = -1);
-    int			read(char *buffer, int maxlength);
+    int				Write(char *buffer, int maxlength = -1);
+    int				Read(char *buffer, int maxlength);
     
-    int			read_partial(char *buffer, int maxlength);
-    int			write_partial(char *buffer, int maxlength);
-    void		stop_io()		{need_io_stop = 1;}
+    int				Read_Partial(char *buffer, int maxlength);
+    int				Write_Partial(char *buffer, int maxlength);
+    void			Stop_IO()		{need_io_stop = 1;}
 
     // Access to socket number
-    char				*socket_as_string();
-    int				get_socket()		{return sock;}
-    int				isopen()		{return sock >= 0;}
-    int				isconnected()		{return connected;}
+    char		       *Socket_as_String();
+    int				Get_Socket()		{return sock;}
+    int				IsOpen()		{return sock >= 0;}
+    int				IsConnected()		{return connected;}
 
     // Access to info about remote socket
-    char				*get_peerip();
-    char				*get_peername();
+    char		       *Get_PeerIP();
+    char		       *Get_Peername();
 
     // A method to re-initialize the buffer
-    virtual void        flush();
+    virtual void        	Flush();
 
 private:
     //
     // For buffered IO we will need a buffer
     //
-    enum {BUFFER_SIZE = 8192};
+    enum			{BUFFER_SIZE = 8192};
     char			buffer[BUFFER_SIZE];
-    int			pos, pos_max;
+    int				pos, pos_max;
 
     int				sock;
     struct sockaddr_in		server;
@@ -111,11 +111,11 @@ private:
 
 
 //*************************************************************************
-// inline int Connection::is_privileged()
+// inline int Connection::Is_Privileged()
 // PURPOSE:
 //   Return whether the port is priveleged or not.
 //
-inline int Connection::is_privileged()
+inline int Connection::Is_Privileged()
 {
     return server.sin_port < 1023;
 }

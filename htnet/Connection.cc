@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.3.2.2 2000/02/10 21:01:07 loic Exp $
+// $Id: Connection.cc,v 1.3.2.3 2000/02/19 04:56:47 ghutchis Exp $
 //
 
 #include "Connection.h"
@@ -100,16 +100,16 @@ Connection::Connection(int socket)
 Connection::~Connection()
 {
     all_connections.Remove(this);
-    this->close();
+    this->Close();
     delete peer;
     free(server_name);
 }
 
 
 //*****************************************************************************
-// int Connection::open(int priv)
+// int Connection::Open(int priv)
 //
-int Connection::open(int priv)
+int Connection::Open(int priv)
 {
     if (priv)
     {
@@ -132,26 +132,26 @@ int Connection::open(int priv)
 
 
 //*****************************************************************************
-// int Connection::ndelay()
+// int Connection::Ndelay()
 //
-int Connection::ndelay()
+int Connection::Ndelay()
 {
     return fcntl(sock, F_SETFL, FNDELAY);
 }
 
 
 //*****************************************************************************
-// int Connection::nondelay()
+// int Connection::Nondelay()
 //
-int Connection::nondelay()
+int Connection::Nondelay()
 {
     return fcntl(sock, F_SETFL, 0);
 }
 
 //*****************************************************************************
-// int Connection::timeout(int value)
+// int Connection::Timeout(int value)
 //
-int Connection::timeout(int value)
+int Connection::Timeout(int value)
 {
     int oval = timeout_value;
     timeout_value = value;
@@ -161,7 +161,7 @@ int Connection::timeout(int value)
 //*****************************************************************************
 // int Connection::retries(int value)
 //
-int Connection::retries(int value)
+int Connection::Retries(int value)
 {
     int oval = retry_value;
     retry_value = value;
@@ -169,14 +169,14 @@ int Connection::retries(int value)
 }
 
 //*****************************************************************************
-// int Connection::close()
+// int Connection::Close()
 //
-int Connection::close()
+int Connection::Close()
 {
     connected = 0;
     if (sock >= 0)
     {
-	int ret = ::close(sock);
+	int ret = close(sock);
 	sock = -1;
 	return ret;
     }
@@ -185,9 +185,9 @@ int Connection::close()
 
 
 //*****************************************************************************
-// int Connection::assign_port(int port)
+// int Connection::Assign_Port(int port)
 //
-int Connection::assign_port(int port)
+int Connection::Assign_Port(int port)
 {
     server.sin_port = htons(port);
     return OK;
@@ -195,9 +195,9 @@ int Connection::assign_port(int port)
 
 
 //*****************************************************************************
-// int Connection::assign_port(char *service)
+// int Connection::Assign_Port(char *service)
 //
-int Connection::assign_port(char *service)
+int Connection::Assign_Port(char *service)
 {
     struct servent		*sp;
 
@@ -211,9 +211,9 @@ int Connection::assign_port(char *service)
 }
 
 //*****************************************************************************
-// int Connection::assign_server(unsigned int addr)
+// int Connection::Assign_Server(unsigned int addr)
 //
-int Connection::assign_server(unsigned int addr)
+int Connection::Assign_Server(unsigned int addr)
 {
     server.sin_addr.s_addr = addr;
     return OK;
@@ -223,9 +223,9 @@ extern "C" unsigned int   inet_addr(char *);
 
 //*****************************************************************************
 //
-int Connection::assign_server(const String& name)
+int Connection::Assign_Server(const String& name)
 {
-    struct hostent		*hp;
+    struct hostent	       *hp;
     unsigned int		addr;
 
     //
@@ -254,9 +254,9 @@ int Connection::assign_server(const String& name)
 
 
 //*****************************************************************************
-// int Connection::connect(int allow_EINTR)
+// int Connection::Connect(int allow_EINTR)
 //
-int Connection::connect(int allow_EINTR)
+int Connection::Connect(int allow_EINTR)
 {
     int	status;
     int retries = retry_value;
@@ -269,12 +269,12 @@ int Connection::connect(int allow_EINTR)
 	    // Set an alarm to make sure the connect() call times out appropriately
 	    // This ensures the call won't hang on a dead server or bad DNS call
 	    alarm(timeout_value);
-	    status = ::connect(sock, (struct sockaddr *)&server, sizeof(server));
+	    status = connect(sock, (struct sockaddr *)&server, sizeof(server));
 	    alarm(0);
 	    if (status < 0 && errno == EINTR && !allow_EINTR)
 	      {
-		::close(sock);
-		open();
+		close(sock);
+		Open();
 		continue;
 	      }
 	    break;
@@ -287,8 +287,8 @@ int Connection::connect(int allow_EINTR)
 	  }
 
 	// cout << " <"  << ::strerror(errno) << "> ";
-	::close(sock);
-        open();
+	close(sock);
+        Open();
         sleep(5);
       }
 
@@ -300,12 +300,12 @@ int Connection::connect(int allow_EINTR)
 	// to close the socket and create a new one in order to do any
 	// more with it.
 	//
-	::close(sock);
-	open();
+	Close(sock);
+	Open();
     }
 #else
-    ::close(sock);
-    open(0);
+    close(sock);
+    Open(0);
 #endif
 
     connected = 0;
@@ -314,11 +314,11 @@ int Connection::connect(int allow_EINTR)
 
 
 //*****************************************************************************
-// int Connection::bind()
+// int Connection::Bind()
 //
-int Connection::bind()
+int Connection::Bind()
 {
-    if (::bind(sock, (struct sockaddr *)&server, sizeof(server)) == NOTOK)
+    if (bind(sock, (struct sockaddr *)&server, sizeof(server)) == NOTOK)
     {
 	return NOTOK;
     }
@@ -327,9 +327,9 @@ int Connection::bind()
 
 
 //*****************************************************************************
-// int Connection::get_port()
+// int Connection::Get_Port()
 //
-int Connection::get_port()
+int Connection::Get_Port()
 {
     GETPEERNAME_LENGTH_T length = sizeof(server);
     
@@ -342,24 +342,24 @@ int Connection::get_port()
 
 
 //*****************************************************************************
-// int Connection::listen(int n)
+// int Connection::Listen(int n)
 //
-int Connection::listen(int n)
+int Connection::Listen(int n)
 {
-    return ::listen(sock, n);
+    return listen(sock, n);
 }
 
 
 //*****************************************************************************
-// Connection *Connection::accept(int priv)
+// Connection *Connection::Accept(int priv)
 //
-Connection *Connection::accept(int priv)
+Connection *Connection::Accept(int priv)
 {
     int	newsock;
 
     while (1)
     {
-	newsock = ::accept(sock, (struct sockaddr *)0, (GETPEERNAME_LENGTH_T *)0);
+	newsock = accept(sock, (struct sockaddr *)0, (GETPEERNAME_LENGTH_T *)0);
 	if (newsock == NOTOK && errno == EINTR)
 	    continue;
 	break;
@@ -384,24 +384,24 @@ Connection *Connection::accept(int priv)
 
 
 //*************************************************************************
-// Connection *Connection::accept_privileged()
+// Connection *Connection::Accept_Privileged()
 // PURPOSE:
 //   Accept  in  incoming  connection  but  only  if  it  is  from a
 //   privileged port
 //
-Connection * Connection::accept_privileged()
+Connection * Connection::Accept_Privileged()
 {
-    return accept(1);
+    return Accept(1);
 }
 
 //*****************************************************************************
 // int Connection::read_char()
 //
-int Connection::read_char()
+int Connection::Read_Char()
 {
     if (pos >= pos_max)
     {
-	pos_max = read_partial(buffer, sizeof(buffer));
+	pos_max = Read_Partial(buffer, sizeof(buffer));
 	pos = 0;
 	if (pos_max <= 0)
 	{
@@ -413,16 +413,16 @@ int Connection::read_char()
 
 
 //*****************************************************************************
-// String *Connection::read_line(String &s, char *terminator)
+// String *Connection::Read_Line(String &s, char *terminator)
 //
-String *Connection::read_line(String &s, char *terminator)
+String *Connection::Read_Line(String &s, char *terminator)
 {
     int		termseq = 0;
     s = 0;
 
     for (;;)
     {
-	int	ch = read_char();
+	int	ch = Read_Char();
 	if (ch < 0)
 	{
 	    //
@@ -459,26 +459,26 @@ String *Connection::read_line(String &s, char *terminator)
 //*****************************************************************************
 // String *Connection::read_line(char *terminator)
 //
-String *Connection::read_line(char *terminator)
+String *Connection::Read_Line(char *terminator)
 {
     String	*s;
 
     s = new String;
-    return read_line(*s, terminator);
+    return Read_Line(*s, terminator);
 }
 
 
 //*****************************************************************************
 // char *Connection::read_line(char *buffer, int maxlength, char *terminator)
 //
-char *Connection::read_line(char *buffer, int maxlength, char *terminator)
+char *Connection::Read_Line(char *buffer, int maxlength, char *terminator)
 {
     char	*start = buffer;
     int		termseq = 0;
 
     while (maxlength > 0)
     {
-	int		ch = read_char();
+	int		ch = Read_Char();
 	if (ch < 0)
 	{
 	    //
@@ -517,14 +517,14 @@ char *Connection::read_line(char *buffer, int maxlength, char *terminator)
 //*****************************************************************************
 // int Connection::write_line(char *str, char *eol)
 //
-int Connection::write_line(char *str, char *eol)
+int Connection::Write_Line(char *str, char *eol)
 {
     int		n, nn;
 
-    if ((n = write(str)) < 0)
+    if ((n = Write(str)) < 0)
 	return -1;
 
-    if ((nn = write(eol)) < 0)
+    if ((nn = Write(eol)) < 0)
 	return -1;
 
     return n + nn;
@@ -532,9 +532,9 @@ int Connection::write_line(char *str, char *eol)
 
 
 //*****************************************************************************
-// int Connection::write(char *buffer, int length)
+// int Connection::Write(char *buffer, int length)
 //
-int Connection::write(char *buffer, int length)
+int Connection::Write(char *buffer, int length)
 {
     int		nleft, nwritten;
 
@@ -544,7 +544,7 @@ int Connection::write(char *buffer, int length)
     nleft = length;
     while (nleft > 0)
     {
-	nwritten = write_partial(buffer, nleft);
+	nwritten = Write_Partial(buffer, nleft);
 	if (nwritten < 0 && errno == EINTR)
 	    continue;
 	if (nwritten <= 0)
@@ -557,9 +557,9 @@ int Connection::write(char *buffer, int length)
 
 
 //*****************************************************************************
-// int Connection::read(char *buffer, int length)
+// int Connection::Read(char *buffer, int length)
 //
-int Connection::read(char *buffer, int length)
+int Connection::Read(char *buffer, int length)
 {
     int		nleft, nread;
 
@@ -580,7 +580,7 @@ int Connection::read(char *buffer, int length)
 
     while (nleft > 0)
     {
-	nread = read_partial(buffer, nleft);
+	nread = Read_Partial(buffer, nleft);
 	if (nread < 0 && errno == EINTR)
 	    continue;
 	if (nread < 0)
@@ -595,13 +595,13 @@ int Connection::read(char *buffer, int length)
 }
 
 
-void Connection::flush()
+void Connection::Flush()
 {
    pos = pos_max = 0;
 }
 
 //*************************************************************************
-// int Connection::read_partial(char *buffer, int maxlength)
+// int Connection::Read_Partial(char *buffer, int maxlength)
 // PURPOSE:
 //   Read  at  most  <maxlength>  from  the  current TCP connection.
 //   This  is  equivalent  to  the  workings  of the standard read()
@@ -616,7 +616,7 @@ void Connection::flush()
 // FUNCTIONS USED:
 //   read()
 //
-int Connection::read_partial(char *buffer, int maxlength)
+int Connection::Read_Partial(char *buffer, int maxlength)
 {
     int		count;
 
@@ -634,13 +634,13 @@ int Connection::read_partial(char *buffer, int maxlength)
           tv.tv_sec = timeout_value;
           tv.tv_usec = 0;
 
-          int selected = ::select(sock+1, &fds, 0, 0, &tv);
+          int selected = select(sock+1, &fds, 0, 0, &tv);
           if (selected <= 0)
               need_io_stop++;
       }
 
       if (!need_io_stop)
-          count = ::read(sock, buffer, maxlength);
+          count = read(sock, buffer, maxlength);
       else
           count = -1;         // Input timed out
     }
@@ -652,15 +652,15 @@ int Connection::read_partial(char *buffer, int maxlength)
 
 
 //*************************************************************************
-// int Connection::write_partial(char *buffer, int maxlength)
+// int Connection::Write_Partial(char *buffer, int maxlength)
 //
-int Connection::write_partial(char *buffer, int maxlength)
+int Connection::Write_Partial(char *buffer, int maxlength)
 {
     int		count;
 
     do
     {
-	count = ::write(sock, buffer, maxlength);
+	count = write(sock, buffer, maxlength);
     }
     while (count < 0 && errno == EINTR && !need_io_stop);
     need_io_stop = 0;
@@ -670,12 +670,12 @@ int Connection::write_partial(char *buffer, int maxlength)
 
 
 //*************************************************************************
-// char * Connection::socket_as_string()
+// char * Connection::Socket_as_String()
 // PURPOSE:
 //   Return  the  numeric  ASCII  equivalent  of  the socket number.
 //   This is needed to pass the socket to another program
 //
-char * Connection::socket_as_string()
+char * Connection::Socket_as_String()
 {
     char	*buffer = new char[20];
 
@@ -687,9 +687,9 @@ char * Connection::socket_as_string()
 extern "C" char *inet_ntoa(struct in_addr);
 
 //*************************************************************************
-// char *Connection::get_peername()
+// char *Connection::Get_Peername()
 //
-char *Connection::get_peername()
+char *Connection::Get_Peername()
 {
     if (!peer)
     {
@@ -714,9 +714,9 @@ char *Connection::get_peername()
 
 
 //*************************************************************************
-// char *Connection::get_peerip()
+// char *Connection::Get_PeerIP()
 //
-char *Connection::get_peerip()
+char *Connection::Get_PeerIP()
 {
     struct sockaddr_in	peer;
     GETPEERNAME_LENGTH_T	length = sizeof(peer);
@@ -733,9 +733,9 @@ extern "C" int gethostname(char *name, int namelen);
 #endif
 
 //*************************************************************************
-// unsigned int gethostip(char *ip, int length)
+// unsigned int GetHostIP(char *ip, int length)
 //
-unsigned int gethostip(char *ip, int length)
+unsigned int GetHostIP(char *ip, int length)
 {
     char	hostname[100];
     if (gethostname(hostname, sizeof(hostname)) == NOTOK)
