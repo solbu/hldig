@@ -1,8 +1,16 @@
 //
 // WordReference.h
 //
-// $Id: WordReference.h,v 1.4 1999/09/05 18:25:39 ghutchis Exp $
+//: Reference to a word. Store everything we need for internal use
+//  Defined as a class to allow the comparison method (for sorting).
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: WordReference.h,v 1.5 1999/09/08 04:51:56 ghutchis Exp $
 //
 #ifndef _WordReference_h_
 #define _WordReference_h_

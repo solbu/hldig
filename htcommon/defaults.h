@@ -1,19 +1,21 @@
 //
-// defautls.h
+// defaults.h
 //
-// $Id: defaults.h,v 1.1 1997/02/03 17:11:07 turtle Exp $
+//: Default configuration values for the ht programs
 //
-// $Log: defaults.h,v $
-// Revision 1.1  1997/02/03 17:11:07  turtle
-// Initial revision
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: defaults.h,v 1.2 1999/09/08 04:51:56 ghutchis Exp $
 //
 #ifndef _defautls_h_
 #define _defautls_h_
 
-#include <Configuration.h>
+#include "Configuration.h"
 
-//#define	DEFAULT_CONFIG_FILE		"/usr/local/etc/htdig.conf"
 
 extern ConfigDefaults	defaults[];
 extern Configuration	config;

@@ -1,7 +1,16 @@
 //
 // WordRecord.h
 //
-// $Id: WordRecord.h,v 1.8 1999/08/31 07:24:28 ghutchis Exp $
+//: Record for storing word information in the word database
+//  Each word is stored as a separate key/record pair.
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: WordRecord.h,v 1.9 1999/09/08 04:51:56 ghutchis Exp $
 //
 
 #ifndef _WordRecord_h_
