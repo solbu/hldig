@@ -1,20 +1,7 @@
 //
 // htdig.h
 //
-// $Id: htdig.h,v 1.4 1998/12/19 18:09:03 bergolth Exp $
-//
-// $Log: htdig.h,v $
-// Revision 1.4  1998/12/19 18:09:03  bergolth
-// Added bad_querystr option.
-//
-// Revision 1.3  1998/10/21 16:34:19  bergolth
-// Added translation of server names. Additional limiting after normalization of the URL.
-//
-// Revision 1.2  1997/07/03 17:44:38  turtle
-// Added support for virtual hosts
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
+// $Id: htdig.h,v 1.5 1999/01/27 00:34:51 ghutchis Exp $
 //
 //
 #ifndef _htdig_h_
@@ -41,13 +28,6 @@ extern FILE		*urls_seen;
 extern FILE		*images_seen;
 
 extern void reportError(char *msg);
-
-#ifndef TRUE
-# define	TRUE				(1)
-#endif
-#ifndef FALSE
-# define	FALSE				(0)
-#endif
 
 #endif
 
