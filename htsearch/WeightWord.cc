@@ -4,15 +4,19 @@
 // Implementation of WeightWord
 //
 // $Log: WeightWord.cc,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.2  1998/11/01 00:00:40  ghutchis
+//
+// Replaced system calls with htlib/my* functions.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 // Revision 1.1  1996/01/03 19:02:00  turtle
 // Before rewrite
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WeightWord.cc,v 1.1 1997/02/03 17:11:05 turtle Exp $";
+static char RCSid[] = "$Id: WeightWord.cc,v 1.2 1998/11/01 00:00:40 ghutchis Exp $";
 #endif
 
 #include "WeightWord.h"
@@ -80,12 +84,12 @@ void WeightWord::set(char *word)
 	//
 	// This word contains modifiers.
 	//
-	if (strncasecmp(word, "exact:", 6) == 0)
+	if (mystrncasecmp(word, "exact:", 6) == 0)
 	{
 	    word += 6;
 	    isExact = 1;
 	}
-	else if (strncasecmp(word, "hidden:", 7) == 0)
+	else if (mystrncasecmp(word, "hidden:", 7) == 0)
 	{
 	    word += 7;
 	    isHidden = 1;

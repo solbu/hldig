@@ -4,6 +4,10 @@
 // Implementation of htsearch
 //
 // $Log: htsearch.cc,v $
+// Revision 1.10  1998/11/01 00:00:40  ghutchis
+//
+// Replaced system calls with htlib/my* functions.
+//
 // Revision 1.9  1998/10/26 20:34:33  ghutchis
 //
 // Added patch by Esa Ahola to fix bug with not properly ignoring bad_words
@@ -40,7 +44,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.9 1998/10/26 20:34:33 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.10 1998/11/01 00:00:40 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -151,7 +155,10 @@ main(int ac, char **av)
 	{
 	    configFile = CONFIG_DIR;
 	}
-	configFile << '/' << input["config"] << ".conf";
+	if (strlen(input["config"]) == 0)
+	  configFile = DEFAULT_CONFIG_FILE;
+	else
+	  configFile << '/' << input["config"] << ".conf";
     }
     if (access(configFile, R_OK) < 0)
     {

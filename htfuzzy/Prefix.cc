@@ -4,6 +4,10 @@
 // Implementation of Prefix
 //
 // $Log: Prefix.cc,v $
+// Revision 1.5  1998/11/01 00:00:40  ghutchis
+//
+// Replaced system calls with htlib/my* functions.
+//
 // Revision 1.4  1998/10/12 02:04:00  ghutchis
 //
 // Updated Makefiles and configure variables.
@@ -23,7 +27,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Prefix.cc,v 1.4 1998/10/12 02:04:00 ghutchis Exp $";
+static char RCSid[] = "$Id: Prefix.cc,v 1.5 1998/11/01 00:00:40 ghutchis Exp $";
 #endif
 
 #include "Prefix.h"
@@ -102,7 +106,7 @@ Prefix::getWords(char *w, List &words)
 
     while (wordCount < maximumWords && (s = dbf->Get_Next_Seq()))
     {
-	if (strncasecmp(s, w, len))
+	if (mystrncasecmp(s, w, len))
 	    break;
 	words.Add(new String(s));
 	wordCount++;

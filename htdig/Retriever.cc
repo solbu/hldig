@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.15  1998/11/01 00:00:40  ghutchis
+//
+// Replaced system calls with htlib/my* functions.
+//
 // Revision 1.14  1998/10/26 20:43:31  ghutchis
 //
 // Fixed bug introduced by Oct 18 change. Authorization will not be cleared.
@@ -624,7 +628,7 @@ Retriever::IsLocal(char *url)
     while ((prefix = (String*) prefixes->Get_Next()))
     {
 	path = (String*) paths->Get_Next();
-        if (strncasecmp(*prefix, url, prefix->length()) == 0)
+        if (mystrncasecmp(*prefix, url, prefix->length()) == 0)
 	{
 	    int l = strlen(url)-prefix->length()+path->length()+4;
 	    String *local = new String(*path, l);
@@ -702,7 +706,7 @@ Retriever::IsLocalUser(char *url)
     {
         path = (String*) paths->Get_Next();
 	dir = (String*) dirs->Get_Next();
-        if (strcasecmp(*prefix, tmp) != 0)
+        if (mystrcasecmp(*prefix, tmp) != 0)
   	    continue;
 
 	String *local = new String;

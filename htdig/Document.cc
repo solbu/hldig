@@ -4,6 +4,10 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.20  1998/11/01 00:00:40  ghutchis
+//
+// Replaced system calls with htlib/my* functions.
+//
 // Revision 1.19  1998/10/26 20:43:31  ghutchis
 //
 // Fixed bug introduced by Oct 18 change. Authorization will not be cleared.
@@ -74,7 +78,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.19 1998/10/26 20:43:31 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.20 1998/11/01 00:00:40 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -560,7 +564,7 @@ Document::RetrieveLocal(time_t date, char *filename)
     const char *ext = strrchr(filename, '.');
     if (ext == NULL)
       	return Document_not_local;
-    if ((strcasecmp(ext, ".html") == 0) || (strcasecmp(ext, ".htm") == 0))
+    if ((mystrcasecmp(ext, ".html") == 0) || (mystrcasecmp(ext, ".htm") == 0))
         contentType = "text/html";
     else 
   	return Document_not_local;
