@@ -14,7 +14,7 @@ class HtConfiguration : public Configuration
     void		Add(const String& str){Configuration::Add(str);}
     void		Add(const String& name, const String& value){Configuration::Add(name,value);}
 
-    void		Add(char *name, char *value, HtConfiguration *aList);
+    void		Add(char *name, char *value, Configuration *aList);
     const String	Find(URL *aUrl, const char *value) const;
     const String	Find(const char *blockName, const char *name, const char *value) const;
     int		Value(char *blockName,char *name,char *value,int default_value = 0);
@@ -25,6 +25,7 @@ class HtConfiguration : public Configuration
     int		Boolean(URL *aUrl,char *value,int default_value = 0);
     inline
     String	ParseString(const char*) const;   // parse ${var} string
+    String	getFileName() const { return FileName; }
 
     //
     // We need some way of reading in the database from a configuration file
@@ -32,8 +33,9 @@ class HtConfiguration : public Configuration
     virtual int         Read(const String& filename);
 
  protected:
-    Dictionary          dcServers;
+    Dictionary          dcBlocks;
     Dictionary          dcUrls;
+    String		FileName;	// config's file name
 
  public:
     HtConfiguration():Configuration()
@@ -41,7 +43,7 @@ class HtConfiguration : public Configuration
 
     HtConfiguration(const HtConfiguration& config) :
 	Configuration(config),
-	dcServers(config.dcServers),
+	dcBlocks(config.dcBlocks),
 	dcUrls(config.dcUrls)
 	{
 	    ;

@@ -13,7 +13,7 @@
 //  Add complex entry to the configuration
 //
 void
-HtConfiguration::Add(char *name, char *value, HtConfiguration *aList) {
+HtConfiguration::Add(char *name, char *value, Configuration *aList) {
 
   if (strcmp("url",name)==0) {  //add URL entry
     URL tmpUrl(strdup(value));
@@ -23,21 +23,16 @@ HtConfiguration::Add(char *name, char *value, HtConfiguration *aList) {
       paths=new Dictionary();
       paths->Add(tmpUrl.path(),aList);
       dcUrls.Add(tmpUrl.host(),paths);
-      //      return;
     }
-  } else 
-    if (strcmp("server",name)==0) {
-      dcServers.Add(value,aList);
-      //      return;
     } else {
 
-      Object *treeEntry=dcGlobalVars[name];
+      Object *treeEntry=dcBlocks[name];
       if (treeEntry!=NULL) {
 	((Dictionary *)treeEntry)->Add(value,aList);
       } else {
 	treeEntry=new Dictionary(16);
 	((Dictionary *)treeEntry)->Add(value,aList);
-	dcGlobalVars.Add(name, treeEntry);
+	dcBlocks.Add(name, treeEntry);
       }
     }
 }
@@ -61,21 +56,16 @@ const String HtConfiguration::Find(const char *blockName,const char *name,const 
     if (chr[0]!=0) {
       return chr;
     }
-  } else  // end "url"
-    if (strcmp("server",blockName)==0) {
-      tmpPtr.obj=dcServers[name];
-      if (tmpPtr.obj) {
-	chr=tmpPtr.conf->Find(value);
-	if (chr[0]!=0)
-	  return chr;
-      }
     }
     else { // end "server"
-      tmpPtr.obj=tmpPtr.dict->Find(name);
+      tmpPtr.obj=dcBlocks.Find(blockName);
       if (tmpPtr.ptr) {
-	chr=tmpPtr.conf->Find(value);
-	if (tmpPtr.ptr)
-	  return chr;
+	tmpPtr.obj = tmpPtr.dict->Find(name);
+	if (tmpPtr.ptr) {
+	  chr = tmpPtr.conf->Find(value);
+	  if (chr[0] != 0)
+		return chr;
+	}
       }
     }
  
@@ -232,6 +222,7 @@ extern int yyparse(void*);
 if ((yyin=fopen(filename,"r"))==NULL) 
 	return NOTOK;
 
+FileName=filename; // need to be before yyparse() because is used in it
 yyparse(this);
 fclose(yyin);
 return OK;

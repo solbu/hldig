@@ -1,3 +1,9 @@
+Tue Feb 15 12:02:39 EET 2000  Vadim Chekan  <vadim@etc.lviv.ua>
+
+	* htcommon/HtConfiguration.cc,HtConfiguration.h: fixed bug discovered
+	by Gilles. HtConfiguration was able to get info only from "url" and
+	"server" block.
+
 Sun Feb 13 21:19:04 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/defaults.cc: Get rid of uncoded_db_compatible since
