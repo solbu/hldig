@@ -53,7 +53,9 @@
             Use alternate work files. Tells htdig to append <i>
             .work</i> to database files, causing a second copy of
             the database to be built. This allows the original
-            files to be used by htsearch during the indexing run.
+            files to be used by htsearch during the indexing run. When
+            used without the "-i" flag for an update dig, htdig will
+            use any existing .work files for the databases to update.
           </dd>
           <dt>
             -c <em>configfile</em>

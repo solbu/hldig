@@ -20,6 +20,69 @@
       is also a <a href="ChangeLog">ChangeLog</a> file which has
       more details on the code changes.
     </p>
+    <strong>Release notes for htdig-3.1.0b2</strong> 1 Nov 1998<br>
+    This version adds a few minor features as well as many
+    bugfixes. It is still considered beta as some bug reports have not
+    been fully examined.
+    <ul>
+      <li>
+      Fixed a <strong>major</strong> database corruption
+      problem. Since this bug corrupted the document databases, to
+      completely fix it, you will need to rebuild your databases from
+      scratch.
+      </li>
+      <li>
+      Fixed many problems with the Makefiles and configure
+      scripts. Using <tt>./configure --prefix=</tt> now works.
+      </li>
+      <li>
+      Added fixes for connection problems with Digital Alpha-based
+      systems contributed by Paul J. Meyer!
+      </li>
+      <li>
+      Added support for syslog-based htsearch logging. See the <a
+      href="attrs.html#logging">config documentation</a> for more
+      details. Thanks to Leo Bergolth for this!
+      </li>
+      <li>
+      Added fixes to work with DNS aliases (as opposed to virtual
+      hosts) through the <a
+      href="attrs.html#server_aliases">server_aliases</a> and <a
+      href="attrs.html#limit_normalized">limit_normalized</a> options
+      as contributed by Leo Bergolth.
+      </li>
+      <li>
+      Added cleanups of the HTML parser and the connection timeout
+      code contributed by Reni Seindal.
+      </li>
+      <li>
+      Now supports case insensitive servers through the <a
+      href="attrs.html#case_sensitive">case_sensitive</a> option.
+      </li>
+      <li>
+      Now supports ISO 8601 date format, using the <a
+      href="attrs.html#iso_8601">iso_8601</a> option.
+      </li>
+      <li>
+      Added a wrapper to emulate Exite for Web Servers (EWS)
+      contributed by John Grohol.
+      </li>
+      <li>
+      Added fixes to the contrib whatsnew.pl script to work with DB2
+      contributed by Jacques Reynes.
+      </li>
+      <li>
+      Added a new contributed synonyms file from John Banbury
+      <li>
+      Added a new template variable: CURRENT, the number of the
+      current match, from a patch by Reni Seindal.
+      <li>
+      Many other minor bugs were fixed, so a big thanks to everyone
+      who submitted a bug report or a patch! See the <a
+      href="ChangeLog">ChangeLog</a> for more details.
+      </li>
+    </ul>
+    <br>
     <strong>Release notes for htdig-3.1.0b1</strong> 8 Sep
     1998<br>
     This version adds several major new features as well as some 
