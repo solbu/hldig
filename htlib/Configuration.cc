@@ -1,35 +1,31 @@
 //
 // Configuration.cc
 //
-// Implementation of the Configuration class
+// Configuration: This class provides an object lookup table.  Each object 
+//                in the Configuration is indexed with a string.  The objects 
+//                can be returned by mentioning their string index. Values may
+//                include files with `/path/to/file` or other configuration
+//                variables with ${variable}
 //
-// $Log: Configuration.cc,v $
-// Revision 1.4  1998/08/04 15:36:43  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Added fix by Philippe Rochat <prochat@lbdsun.epfl.ch> to remove
-// whitespace after config options.
+// $Id: Configuration.cc,v 1.15.2.1 1999/11/21 15:24:52 vadim Exp $
 //
-// Revision 1.3  1998/06/22 04:33:19  turtle
-// New Berkeley database stuff
-//
-// Revision 1.2  1997/03/24 04:33:19  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char	RCSid[] = "$Id: Configuration.cc,v 1.4 1998/08/04 15:36:43 ghutchis Exp $";
-#endif
 
+#include <stdio.h>
 #include "Configuration.h"
 #include "htString.h"
 #include "ParsedString.h"
+
 #include <fstream.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <locale.h>
+#include <URL.h>
 
 
 //*********************************************************************
@@ -37,36 +33,26 @@ static char	RCSid[] = "$Id: Configuration.cc,v 1.4 1998/08/04 15:36:43 ghutchis 
 //
 Configuration::Configuration()
 {
-    separators = new String("=:");
+    separators = String("=:");
     allow_multiple = 0;
-}
-
-
-//*********************************************************************
-// Configuration::~Configuration()
-//
-Configuration::~Configuration()
-{
-    delete separators;
 }
 
 
 //*********************************************************************
 // void Configuration::NameValueSeparators(char *s)
 //
-void Configuration::NameValueSeparators(char *s)
+void Configuration::NameValueSeparators(const String& s)
 {
-    delete separators;
-    separators = new String(s);
+    separators = s;
 }
 
 
 //*********************************************************************
-// void Configuration::Add(char *str)
 //   Add an entry to the configuration table.
 //
-void Configuration::Add(char *str)
+void Configuration::Add(const String& str_arg)
 {
+    const char* str = str_arg;
     String	name, value;
 	
     while (str && *str)
@@ -75,6 +61,11 @@ void Configuration::Add(char *str)
             str++;
         name = 0;
         if (!isalpha(*str))
+            break;
+        // Some isalnum() implementations don't allow all the letters that
+        // isalpha() does, e.g. accented ones.  They're not POSIX.2 compliant
+        // but we won't punish them with an infinite loop...
+        if (!isalnum(*str))
             break;
         while (isalnum(*str) || *str == '-' || *str == '_')
             name << *str++;
@@ -95,7 +86,7 @@ void Configuration::Add(char *str)
             return;
         }
 
-        if (!strchr(separators->get(), *str))
+        if (!strchr((char*)separators, *str))
         {
             //
             // We are now at a new name.  The previous one needs to be set
@@ -136,6 +127,22 @@ void Configuration::Add(char *str)
                 str++;
             continue;
         }
+	else if (*str == '\'')
+        {
+            //
+            // Ah!  A quoted value.  This should be easy to deal with...
+            // (Just kidding!)
+            //
+            str++;
+            while (*str && *str != '\'')
+            {
+                value << *str++;
+            }
+            Add(name, value);
+            if (*str == '\'')
+                str++;
+            continue;
+        }
         else
         {
             //
@@ -154,192 +161,331 @@ void Configuration::Add(char *str)
 
 
 //*********************************************************************
-// void Configuration::Add(char *name, char *value)
 //   Add an entry to the configuration table.
 //
-void Configuration::Add(char *name, char *value)
+void Configuration::Add(const String& name, const String& value)
 {
     ParsedString	*ps = new ParsedString(value);
-    dict.Add(name, ps);
     if (mystrcasecmp(name, "locale") == 0)
     {
-        setlocale(LC_ALL, value);
+        String str(setlocale(LC_ALL, value));
+        ps->set(str);
 
         //
         // Set time format to standard to avoid sending If-Modified-Since
         // http headers in native format which http servers can't
         // understand
         //
-        setlocale(LC_TIME, "");
+        setlocale(LC_TIME, "C");
+    }
+    dcGlobalVars.Add(name, ps);
+}
+
+//********************************************************************
+//  Add complex entry to the configuration
+//
+void
+Configuration::Add(char *name, char *value, Configuration *aList) {
+
+  if (strcmp("url",name)==0) {  //add URL entry
+    URL tmpUrl(strdup(value));
+    if (Dictionary *paths=(Dictionary *)dcUrls[tmpUrl.host()]) {
+      paths->Add(tmpUrl.path(),aList);
+    } else {
+      paths=new Dictionary();
+      paths->Add(tmpUrl.path(),aList);
+      dcUrls.Add(tmpUrl.host(),paths);
+      //      return;
+    }
+  } else 
+    if (strcmp("server",name)==0) {
+      dcServers.Add(value,aList);
+      //      return;
+    } else {
+
+      Object *treeEntry=dcGlobalVars[name];
+      if (treeEntry!=NULL) {
+	((Dictionary *)treeEntry)->Add(value,aList);
+      } else {
+	treeEntry=new Dictionary(16);
+	((Dictionary *)treeEntry)->Add(value,aList);
+	dcGlobalVars.Add(name, treeEntry);
+      }
     }
 }
 
-
 //*********************************************************************
-// int Configuration::Remove(char *name)
 //   Remove an entry from both the hash table and from the list of keys.
 //
-int Configuration::Remove(char *name)
+int Configuration::Remove(const String& name)
 {
-    return dict.Remove(name);
+    return dcGlobalVars.Remove(name);
 }
 
 
 //*********************************************************************
-// Object *Configuration::Find(char *name)
+// char *Configuration::Find(const char *name) const
 //   Retrieve a variable from the configuration database.  This variable
 //   will be parsed and a new String object will be returned.
 //
-char *Configuration::Find(char *name)
+const String Configuration::Find(const String& name) const
 {
-    ParsedString	*ps = (ParsedString *) dict[name];
+    ParsedString	*ps = (ParsedString *) dcGlobalVars[name];
     if (ps)
     {
-        return ps->get(dict);
+        return ps->get(dcGlobalVars);
     }
     else
     {
+#ifdef DEBUG
+        cerr << "Could not find configuration option " << name << "\n";
+#endif
         return 0;
     }
 }
 
+//*********************************************************************
+Object *Configuration::Get_Object(char *name) {
+return dcGlobalVars[name];
+}
 
 //*********************************************************************
-// int Configuration::Value(char *name, int default_value)
-//
-int Configuration::Value(char *name, int default_value)
+const String Configuration::Find(const char *blockName,const char *name,const char *value) const
 {
-    int		value = default_value;
-    char	*s = Find(name);
-    if (s && *s)
-    {
-        value = atoi(s);
+  if (!(blockName && name && value) )
+    return NULL;
+  union {
+    void      *ptr;
+    Object *obj;
+    Dictionary *dict;
+    Configuration *conf;
+  } tmpPtr;
+  String chr;
+  
+  if (strcmp("url",blockName)==0) { // URL needs special compare
+    URL paramUrl(name);     // split URL to compare separatly host and path
+    chr=Find(&paramUrl,value);
+    if (chr[0]!=0) {
+      return chr;
     }
+  } else  // end "url"
+    if (strcmp("server",blockName)==0) {
+      tmpPtr.obj=dcServers[name];
+      if (tmpPtr.obj) {
+	chr=tmpPtr.conf->Find(value);
+	if (chr[0]!=0)
+	  return chr;
+      }
+    }
+    else { // end "server"
+      tmpPtr.obj=tmpPtr.dict->Find(name);
+      if (tmpPtr.ptr) {
+	chr=tmpPtr.conf->Find(value);
+	if (tmpPtr.ptr)
+	  return chr;
+      }
+    }
+ 
+  // If this parameter is defined in global then return it
+  chr=Find(value);
+  if (chr[0]!=0) {
+    return chr;
+  }
+#ifdef DEBUG
+  cerr << "Could not find configuration option " << blockName<<":"
+       <<name<<":"<<value<< "\n";
+#endif
+  return NULL;
+}
 
-    return value;
+//*********************************************************************
+//
+const String Configuration::Find(URL *aUrl, const char *value) const
+{
+ if (!aUrl)
+    return NULL;
+  Dictionary *tmpPtr=(Dictionary *)dcUrls.Find( aUrl->host() );
+  if (tmpPtr) {       // We've got such host in config
+    tmpPtr->Start_Get();
+    // Try to find best matched URL
+    //
+    struct {
+      Object *obj;
+      unsigned int  len;
+    } candidate;
+    candidate.len=0; 
+    String candValue;
+    // Begin competition: which URL is better?
+    //
+    // TODO: move this loop into Dictionary
+    // (or create Dictionary::FindBest ?)
+    // or make url list sorted ?
+    // or implement abstract Dictionary::Compare?
+    char *strParamUrl=aUrl->path();
+    while ( char *confUrl=tmpPtr->Get_Next() ) {   
+      if (strncmp(confUrl,strParamUrl,strlen(confUrl))==0 
+	  && (strlen(confUrl)>=candidate.len))  {
+	// it seems this URL match better
+	candidate.obj=tmpPtr->Find(confUrl);
+	// but does it has got necessery parameter?
+	candValue=((Configuration *)candidate.obj)->Find(value);
+	if (candValue[0]!=0) {
+	  // yes, it has! We've got new candidate.
+	  candidate.len=strlen(candValue);
+	}
+      }
+    }
+    if (candidate.len>0) {
+      return ParsedString(candValue).get(dcGlobalVars);
+    }
+       
+  }
+  return Find(value);
+}
+
+//*********************************************************************
+//
+int Configuration::Value(const String& name, int default_value) const
+{
+    return Find(name).as_integer(default_value);
 }
 
 
 //*********************************************************************
-// double Configuration::Double(char *name, double default_value)
 //
-double Configuration::Double(char *name, double default_value)
+double Configuration::Double(const String& name, double default_value) const
 {
-    double		value = default_value;
-    char	*s = Find(name);
-    if (s && *s)
-    {
-        value = atof(s);
-    }
-
-    return value;
+    return Find(name).as_double(default_value);
 }
 
 
 //*********************************************************************
 // int Configuration::Boolean(char *name, int default_value)
 //
-int Configuration::Boolean(char *name, int default_value)
+int Configuration::Boolean(const String& name, int default_value) const
 {
     int		value = default_value;
-    char	*s = Find(name);
-    if (s && *s)
+    const String s = Find(name);
+    if (s[0])
     {
-        if (mystrcasecmp(s, "true") == 0 ||
-            mystrcasecmp(s, "yes") == 0 ||
-            mystrcasecmp(s, "1") == 0)
+        if (s.nocase_compare("true") == 0 ||
+            s.nocase_compare("yes") == 0 ||
+            s.nocase_compare("1") == 0)
             value = 1;
-        else if (mystrcasecmp(s, "false") == 0 ||
-                 mystrcasecmp(s, "no") == 0 ||
-                 mystrcasecmp(s, "0") == 0)
+        else if (s.nocase_compare("false") == 0 ||
+                 s.nocase_compare("no") == 0 ||
+                 s.nocase_compare("0") == 0)
             value = 0;
     }
 
     return value;
 }
 
+//*********************************************************************
+int Configuration::Value(char *blockName,char *name,char *value,
+			 int default_value = 0) {
+int retValue=default_value;
+String tmpStr=Find(blockName,name,value);
+ if (tmpStr[0]!=0) {
+   retValue=atoi(tmpStr.get());
+ }
+return retValue;
+}
+//*********************************************************************
+double Configuration::Double(char *blockName,char *name,char *value,
+				double default_value = 0) {
+double retValue=default_value;
+String tmpStr=Find(blockName,name,value);
+ if (tmpStr[0]!=0) {
+   retValue=atof(tmpStr.get());
+ }
+return retValue;
+}
+//*********************************************************************
+int Configuration::Boolean(char *blockName,char *name,char *value,
+				 int default_value = 0) {
+int retValue=default_value;
+String tmpStr=Find(blockName,name,value);
+ if (tmpStr[0]!=0) {
+        if (mystrcasecmp(tmpStr, "true") == 0 ||
+            mystrcasecmp(tmpStr, "yes") == 0 ||
+            mystrcasecmp(tmpStr, "1") == 0)
+            retValue = 1;
+        else if (mystrcasecmp(tmpStr, "false") == 0 ||
+                 mystrcasecmp(tmpStr, "no") == 0 ||
+                 mystrcasecmp(tmpStr, "0") == 0)
+            retValue = 0;
+
+ }
+return retValue;
+}
+//*********************************************************************
+//*********************************************************************
+int Configuration::Value(URL *aUrl,char *value,
+			 int default_value = 0) {
+int retValue=default_value;
+String tmpStr=Find(aUrl,value);
+ if (tmpStr[0]!=0) {
+   retValue=atoi(tmpStr.get());
+ }
+return retValue;
+}
+//*********************************************************************
+double Configuration::Double(URL *aUrl,char *value,
+				double default_value = 0) {
+double retValue=default_value;
+String tmpStr=Find(aUrl,value);
+ if (tmpStr[0]!=0) {
+   retValue=atof(tmpStr.get());
+ }
+return retValue;
+}
+//*********************************************************************
+int Configuration::Boolean(URL *aUrl,char *value,
+				 int default_value = 0) {
+int retValue=default_value;
+String tmpStr=Find(aUrl,value);
+ if (tmpStr[0]!=0) {
+        if (mystrcasecmp(tmpStr, "true") == 0 ||
+            mystrcasecmp(tmpStr, "yes") == 0 ||
+            mystrcasecmp(tmpStr, "1") == 0)
+            retValue = 1;
+        else if (mystrcasecmp(tmpStr, "false") == 0 ||
+                 mystrcasecmp(tmpStr, "no") == 0 ||
+                 mystrcasecmp(tmpStr, "0") == 0)
+            retValue = 0;
+
+ }
+return retValue;
+}
 
 //*********************************************************************
-// char *Configuration::operator[](char *name)
 //
-char *Configuration::operator[](char *name)
+const String Configuration::operator[](const String& name) const
 {
     return Find(name);
 }
 
 
 //*********************************************************************
-// int Configuration::Read(char *filename)
 //
-int Configuration::Read(char *filename)
+int Configuration::Read(const String& filename)
 {
-    ifstream	in(filename);
+extern FILE* yyin;
+extern int yyparse(void*);
+if ((yyin=fopen(filename,"r"))==NULL) 
+	return NOTOK;
 
-    if (in.bad() || in.eof())
-        return NOTOK;
-
-    //
-    // Make the line buffer large so that we can read long lists of start
-    // URLs.
-    //
-    char	buffer[50000];
-    char	*current;
-    String	line;
-    String	name;
-    char	*value;
-    int         len;
-    while (!in.bad())
-    {
-        in.getline(buffer, sizeof(buffer));
-        if (in.eof())
-            break;
-        line << buffer;
-        line.chop("\r\n");
-        if (line.last() == '\\')
-        {
-            line.chop(1);
-            continue;			// Append the next line to this one
-        }
-
-        current = line.get();
-        if (*current == '#' || *current == '\0')
-        {
-            line = 0;
-            continue;			// Comments and blank lines are skipped
-        }
-
-        name = strtok(current, ": =\t");
-        value = strtok(0, "\r\n");
-        if (!value)
-            value = "";			// Blank value
-
-        //
-        // Skip any whitespace before the actual text
-        //
-        while (*value == ' ' || *value == '\t')
-            value++;
-	len = strlen(value) - 1;
-	//
-	// Skip any whitespace after the actual text
-	//
-	while (value[len] == ' ' || value[len] == '\t')
-	  {
-	    value[len] = '\0';
-	    len--;
-	  }
-
-        Add(name, value);
-        line = 0;
-    }
-    in.close();
-    return OK;
+yyparse(this);
+fclose(yyin);
+return OK;
 }
 
 
 //*********************************************************************
 // void Configuration::Defaults(ConfigDefaults *array)
 //
-void Configuration::Defaults(ConfigDefaults *array)
+void Configuration::Defaults(const ConfigDefaults *array)
 {
     for (int i = 0; array[i].name; i++)
     {

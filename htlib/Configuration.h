@@ -1,33 +1,39 @@
 //
 // Configuration.h
 //
-// This class provides an object lookup table.  Each object in the Configuration
-// is indexed with a string.  The objects can be returned by mentioning their
-// string index.
+// Configuration: This class provides an object lookup table.  Each object 
+//                in the Configuration is indexed with a string.  The objects 
+//                can be returned by mentioning their string index. Values may
+//                include files with `/path/to/file` or other configuration
+//                variables with ${variable}
 //
-// $Id: Configuration.h,v 1.2 1997/07/03 17:44:38 turtle Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Configuration.h,v $
-// Revision 1.2  1997/07/03 17:44:38  turtle
-// Added support for virtual hosts
+// $Id: Configuration.h,v 1.6.2.1 1999/11/21 15:24:52 vadim Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-//
+
 #ifndef	_Configuration_h_
 #define	_Configuration_h_
 
 #include "Dictionary.h"
-#include <htconfig.h>
+#include "htconfig.h"
+#include "htString.h"
+#include "URL.h"
 
-class String;
 
 
 struct ConfigDefaults
 {
-    char	*name;
-    char	*value;
+  char	*name;			// Name of the attribute
+  char	*value;			// Default value
+  char	*type;			// Type of the value (string, integer, boolean)
+  char	*programs;		// White separated list of programs/modules using this attribute
+  char	*example;		// Example usage of the attribute (HTML)
+  char	*description;		// Long description of the attribute (HTML)
 };
 
 
@@ -38,45 +44,66 @@ public:
     // Construction/Destruction
     //
     Configuration();
-    ~Configuration();
+
+    Configuration(const Configuration& config) :
+      dcGlobalVars(config.dcGlobalVars),
+      dcServers(config.dcServers),
+      dcUrls(config.dcUrls),
+      separators(config.separators)
+      {
+        allow_multiple = config.allow_multiple;
+      }
+
+    ~Configuration() {}
 
     //
     // Adding and deleting items to and from the Configuration
     //
-    void		Add(char *name, char *value);
-    void		Add(char *str);
-    int			Remove(char *name);
+    void		Add(const String& name, const String& value);
+    void		Add(const String& str);
+    void		Add(char *name, char *value, Configuration *aList);
+    int			Remove(const String& name);
 
     //
     // Let the Configuration know how to parse name value pairs
     //
-    void		NameValueSeparators(char *s);
+    void		NameValueSeparators(const String& s);
 	
     //
     // We need some way of reading in the database from a configuration file
     //
-    int			Read(char *filename);
+    int			Read(const String& filename);
 
     //
     // Searching can be done with the Find() member or the array indexing
     // operator
     //
-    char		*Find(char *name);
-    char		*operator[](char *name);
-    int			Value(char *name, int default_value = 0);
-    double		Double(char *name, double default_value = 0);
-    int			Boolean(char *name, int default_value = 0);
+    const String	Find(const String& name) const;
+    const String	Find(const char *blockName, const char *name, const char *value) const;
+    const String	Find(URL *aUrl, const char *value) const;
+    const String	operator[](const String& name) const;
+    int		Value(const String& name, int default_value = 0) const;
+    double	Double(const String& name, double default_value = 0) const;
+    int		Boolean(const String& name, int default_value = 0) const;
+    int		Value(char *blockName,char *name,char *value,int default_value = 0);
+    double	Double(char *blockName,char *name,char *value,double default_value = 0);
+    int		Boolean(char *blockName,char *name,char *value,int default_value = 0);
+    int		Value(URL *aUrl,char *value,int default_value = 0);
+    double	Double(URL *aUrl,char *value,double default_value = 0);
+    int		Boolean(URL *aUrl,char *value,int default_value = 0);
+    Object     *Get_Object(char *name);
 
     //
     // Read defaults from an array
     //
-    void		Defaults(ConfigDefaults *);
+    void		Defaults(const ConfigDefaults *);
 
 protected:
-    Dictionary		dict;
-    String		*separators;
+    Dictionary		dcGlobalVars;
+    Dictionary          dcServers;
+    Dictionary          dcUrls;
+    String		separators;
     int			allow_multiple;
 };
-
 
 #endif
