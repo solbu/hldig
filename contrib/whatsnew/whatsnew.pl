@@ -28,8 +28,8 @@ use GDBM_File;
 require 'timelocal.pl';
 require 'getopts.pl';
 
-$DefIndex = '/www/search.sbs.de/cgi-bin/docdb';
-$DefOutputFile = '/www/search.sbs.de/pub/whatsnew.html';
+$DefIndex = '    your data base  .docdb';
+$DefOutputFile = ' your result file URL created in your web server  whatsnew.html';
 $TmpFile = "/tmp/whatsnew.$$";
 $DefFooter = '';
 $DefHeader = '';
@@ -91,7 +91,7 @@ sub ReadDatabase
 {
 	my ($Index, $TmpFile) = @_;
 
-	tie(%docdb, GDBM_File, $Index, GDBM_READER, 0) || die "Error: $Index - $!";
+	tie %docdb, 'BerkeleyDB::Btree', -Filename => $Index, -Flags => DB_RDONLY || die "Error: $Index - $!";
 
 	open (TMP, ">$TmpFile") || die "Error: $TmpFile - $!\n";
 
@@ -101,7 +101,7 @@ sub ReadDatabase
 		%rec = parse_ref_record ($value);
 		if ($rec{'TIME'} >= $When)
 		{
-			$Line = "$rec{'TIME'}|$rec{'URL'}|$rec{'URL'}|$rec{'DESCRIPTIONS'}\n";
+			$Line = "$rec{'TIME'}|$rec{'URL'}|$rec{'TITLE'}|$rec{'DESCRIPTIONS'}\n";
 			print $Line if $Verbose;
 			print TMP $Line;
 			$NewNum++;

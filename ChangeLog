@@ -10,6 +10,9 @@ Mon Oct 26 15:27:28 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc: Added patch by Esa Ahola fixing bug with
 	not ingoring bad_words properly.
+
+	* contrib/whatsnew/whatsnew.pl: Added fix from Jacques Reynes
+	<Jacques.Reynes@cict.fr> to get whatsnew to work with Berkeley DB.
 	
 Wed Oct 21 13:30:05 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
