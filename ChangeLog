@@ -1,3 +1,12 @@
+Thu May 22 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* ltmain.sh, test/Makefile.in:  Hack list library dependencies
+	  multiple times in  g++  command, to get MacOS X to 'make check'.
+
+	* test/{search,word}.cc: cast sizeof() to (int) to avoid warnings.
+
+	* htdoc/install.html: Documented MacOS X's shared libraries problem.
+
 Sun May 18 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
 	* db/mp_alloc.c: Hopefully the *last* fix for this morning's patch...

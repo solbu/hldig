@@ -22,7 +22,7 @@ dist-hook:
 # the test/Makefile anyway
 #
 distclean-local:
-	if "X$(TESTDIR)" = "Xtest" ; \
+	if test "X$(TESTDIR)" = "Xtest" ; \
 	then \
 		rm -f test/Makefile test/test_functions ; \
 	fi

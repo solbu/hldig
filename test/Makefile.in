@@ -101,7 +101,7 @@ LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
-LIBTOOL = @LIBTOOL@
+LIBTOOL = @LIBTOOL@ --preserve-dup-deps
 LN_S = @LN_S@
 MAINT = @MAINT@
 MV = @MV@
@@ -138,6 +138,7 @@ INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
 HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htcommon/libcommon.la \
 		$(top_builddir)/htword/libhtword.la \
+		$(top_builddir)/db/libhtdb.la \
 		$(top_builddir)/htlib/libht.la \
 		$(top_builddir)/htcommon/libcommon.la \
 		$(top_builddir)/htword/libhtword.la \
@@ -391,6 +392,7 @@ check-TESTS: $(TESTS)
 	    if test -f ./$$tst; then dir=./; \
 	    elif test -f $$tst; then dir=; \
 	    else dir="$(srcdir)/"; fi; \
+	    chmod 755 $${dir}$$tst; \
 	    if $(TESTS_ENVIRONMENT) $${dir}$$tst; then \
 	      all=`expr $$all + 1`; \
 	      case " $(XFAIL_TESTS) " in \

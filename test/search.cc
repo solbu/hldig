@@ -42,7 +42,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: search.cc,v 1.3 2003/01/11 02:33:28 lha Exp $
+// $Id: search.cc,v 1.4 2003/05/22 11:49:13 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -3372,7 +3372,7 @@ static void exclude_test()
       count++;
     }
     if(count != sizeof(expected)/sizeof(unsigned int)) {
-      fprintf(stderr, "exclude_test: WordExclude expected %d iterations but got %d\n", sizeof(expected)/sizeof(unsigned int), count);
+      fprintf(stderr, "exclude_test: WordExclude expected %d iterations but got %d\n", (int)(sizeof(expected)/sizeof(unsigned int)), count);
       exit(1);
     }
   }
@@ -3394,7 +3394,7 @@ static void exclude_test()
       count++;
     }
     if(count != sizeof(expected)/sizeof(unsigned int)) {
-      fprintf(stderr, "exclude_test: WordExcludeMask 1 expected %d iterations but got %d\n", sizeof(expected)/sizeof(unsigned int), count);
+      fprintf(stderr, "exclude_test: WordExcludeMask 1 expected %d iterations but got %d\n", (int)(sizeof(expected)/sizeof(unsigned int)), count);
       exit(1);
     }
   }
@@ -3479,7 +3479,7 @@ static void exclude_test()
       count++;
     }
     if(count != sizeof(expected)/sizeof(unsigned int)) {
-      fprintf(stderr, "exclude_test: WordExcludeMask 2 expected %d iterations but got %d\n", sizeof(expected)/sizeof(unsigned int), count);
+      fprintf(stderr, "exclude_test: WordExcludeMask 2 expected %d iterations but got %d\n", (int)(sizeof(expected)/sizeof(unsigned int)), count);
       exit(1);
     }
   }

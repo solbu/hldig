@@ -9,7 +9,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.16 2002/02/01 22:49:37 ghutchis Exp $
+// $Id: word.cc,v 1.17 2003/05/22 11:49:13 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1022,7 +1022,7 @@ static void doskip_normal(params_t*)
   WList.Open((*config)["word_db"], O_RDWR);
   // now check walk order for a few search terms
   int i;
-  if(verbose) fprintf(stderr, "number of entries: %d\n", sizeof(SkipTestEntries)/sizeof(SkipTestEntry));
+  if(verbose) fprintf(stderr, "number of entries: %d\n", (int)(sizeof(SkipTestEntries)/sizeof(SkipTestEntry)));
   for(i=0;i<(int)(sizeof(SkipTestEntries)/sizeof(SkipTestEntry));i++) {
     if(SkipTestEntries[i].Check(WList) == NOTOK) {
       fprintf(stderr, "SkipUselessSequentialWalking test failed on SkipTestEntry number: %d\n", i);

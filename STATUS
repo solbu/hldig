@@ -1,7 +1,27 @@
 STATUS of ht://Dig branch 3-2-x
 
+CHECKLIST FOR 3.2.0b5:
+* Add more items to checklist ;-)
+* Must be able to (a) make check  and  (b) index  www.htdig.org including email
+  on all systems listed as "supported".
+  Systems tested so far:
+    - Mandrake 8.2, with zlib 1.1.4 (lha, 21 May)
+  To be tested:
+    - FreeBSD 4.6 (lha)
+    - SunOS 5.8 (lha?)
+    - Debian ?.? (lha)
+    - RedHat anyone?
+    - OS X anyone?
+* Latin-encodings (Gilles)
+* Check bugs listed in bug-tracker...
+* Polish release docs (Geoff)
+
+
+
+
+
 RELEASES:
-   3.2.0b5: Next release, First quarter 2003???
+   3.2.0b5: Next release, June 2003???
    3.2.0b4: "In progress" -- snapshots called "3.2.0b4" until prerelease.
    3.2.0b3: Released:  22 Feb 2001.
    3.2.0b2: Released:  11 Apr 2000.

@@ -1405,7 +1405,7 @@ compiler."
 	link) libs="$deplibs %DEPLIBS% $dependency_libs" ;;
 	esac
       fi
-      for deplib in $libs; do
+      for deplib in $libs $specialdeplibs; do
 	lib=
 	found=no
 	case $deplib in
@@ -2043,7 +2043,7 @@ compiler."
 
 	  if test $link_all_deplibs != no; then
 	    # Add the search paths of all dependency libraries
-	    for deplib in $dependency_libs; do
+	    for deplib in $dependency_libs $specialdeplibs; do
 	      case $deplib in
 	      -L*) path="$deplib" ;;
 	      *.la)
@@ -3973,7 +3973,7 @@ fi\
 	    output="$output_objdir/$outputname"i
 	    # Replace all uninstalled libtool libraries with the installed ones
 	    newdependency_libs=
-	    for deplib in $dependency_libs; do
+	    for deplib in $dependency_libs $specialdeplibs; do
 	      case $deplib in
 	      *.la)
 		name=`$echo "X$deplib" | $Xsed -e 's%^.*/%%'`
