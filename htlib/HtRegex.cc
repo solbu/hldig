@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.cc,v 1.5 1999/05/20 01:35:43 ghutchis Exp $
+// $Id: HtRegex.cc,v 1.6 1999/06/16 15:46:03 grdetil Exp $
 //
 //
 #include "HtRegex.h"
@@ -52,7 +52,7 @@ HtRegex::setEscaped(StringList &list)
       {
 	if (str->indexOf('[') == 0 && str->lastIndexOf(']') == str->length()-1)
 	  {
-	    transformedLimits += str->sub(1,str->length()-2);
+	    transformedLimits << str->sub(1,str->length()-2).get();
 	  }
 	else 	// Backquote any regex special characters
 	  {
@@ -63,7 +63,7 @@ HtRegex::setEscaped(StringList &list)
 		transformedLimits << str->Nth(pos);
 	      }
 	  }
-	transformedLimits += "|";
+	transformedLimits << "|";
       }
     transformedLimits.chop(1);
 
