@@ -1,0 +1,38 @@
+#
+# Example of input file for cookies for ht://Dig and ht://Check
+#
+# Copyright (c) 1999-2003 Comune di Prato - Prato - Italy
+# Copyright (c) 1995-2003 The ht://Dig Group <www.htdig.org>
+# Author: Gabriele Bartolini - Prato - Italy <angusgb@users.sourceforge.net>
+#
+# For copyright details, see the file COPYING in your distribution
+# or the GNU General Public License version 2 or later 
+# <http://www.gnu.org/copyleft/gpl.html>
+#
+# This file must be located through the 'cookies_input_file' directive, and
+# its purpose is to pre-load cookies into ht://Check and ht://Dig and to be used for a
+# crawl. Each line contains one name-value pair. Lines beginning with '#'
+# or empty ones are ignored.
+#
+# Info have been taken from: http://www.cookiecentral.com/faq/#3.5
+#
+# Each line represents a single piece of stored information.
+# A tab is inserted between each of the fields. From left-to-right,
+# here is what each field represents:
+#
+# domain	The domain that created AND that can read the variable.
+# flag		A TRUE/FALSE value indicating if all machines within a given
+#		domain can access the variable. This value is IGNORED.
+# path		The path within the domain that the variable is valid for.
+# secure	A TRUE/FALSE value indicating if a secure connection with the
+#		domain is needed to access the variable. IGNORED.
+# expiration	The UNIX time that the variable will expire on. UNIX time is
+#		defined as the number of seconds since epoc (Jan 1, 1970 00:00:00 GMT).
+#		If you want to issue a session cookie, just set this field
+#		value to '0'.
+# name		The name of the variable.
+# value		The value of the variable.
+#
+# For instance, a cookies.txt file may have an entry that looks like this:
+#
+# .netscape.com     TRUE   /  FALSE  946684799   NETSCAPE_ID  100103

@@ -11,7 +11,8 @@ COMMONHTML=	header.html footer.html wrapper.html nomatch.html syntax.html \
 		long.html short.html
 COMMONDICT=	bad_words english.0 english.aff synonyms
 
-EXTRA_DIST = $(IMAGES) $(COMMONHTML) $(COMMONDICT) rundig htdig.conf mime.types search.html HtFileType HtFileType-magic.mime
+EXTRA_DIST = $(IMAGES) $(COMMONHTML) $(COMMONDICT) rundig htdig.conf mime.types \
+		search.html HtFileType HtFileType-magic.mime cookies.txt
 
 install-data-local:	all
 	$(mkinstalldirs) $(DESTDIR)$(DATABASE_DIR)
@@ -25,10 +26,11 @@ install-data-local:	all
 	$(mkinstalldirs) $(DESTDIR)$(COMMON_DIR)
 	@for i in $(COMMONHTML); do \
 		if [ ! -f $(DESTDIR)$(COMMON_DIR)/$$i ]; then sed -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/$$i >$(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i;fi; \
-	done && test -z "$$fail"
+	done && test -z "$$fail" 
 	@for i in $(COMMONDICT); do \
 		if [ ! -f $(DESTDIR)$(COMMON_DIR)/$$i ]; then $(INSTALL_DATA) $(top_srcdir)/installdir/$$i $(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i; fi; \
 	done && test -z "$$fail"
+	@if [ ! -f $(DESTDIR)$(CONFIG_DIR)/cookies.txt ]; then cp $(top_srcdir)/installdir/cookies.txt $(DESTDIR)$(CONFIG_DIR)/cookies.txt; echo $(DESTDIR)$(CONFIG_DIR)/cookies.txt;fi
 	@echo "Installing images..."
 	$(mkinstalldirs) $(DESTDIR)$(IMAGE_DIR)
 	@for i in $(IMAGES); do \

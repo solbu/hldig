@@ -5,7 +5,7 @@ pkglib_LTLIBRARIES = libhtnet.la
 
 libhtnet_la_SOURCES = Connection.cc Transport.cc HtHTTP.cc HtFile.cc \
 	HtNNTP.cc HtFTP.cc HtCookie.cc HtCookieJar.cc HtCookieMemJar.cc \
-	HtHTTPBasic.cc HtHTTPSecure.cc SSLConnection.cc
+	HtCookieInFileJar.cc HtHTTPBasic.cc HtHTTPSecure.cc SSLConnection.cc
 
 libhtnet_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
@@ -19,6 +19,7 @@ pkginclude_HEADERS = \
 	HtCookie.h \
 	HtCookieJar.h \
 	HtCookieMemJar.h \
+	HtCookieInFileJar.h \
 	HtHTTPBasic.h \
 	HtHTTPSecure.h \
 	SSLConnection.h
