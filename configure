@@ -3497,18 +3497,19 @@ cat > conftest.$ac_ext <<EOF
 #include "confdefs.h"
 #include <sys/types.h>
 #include <sys/socket.h>
+ extern "C" int getpeername(int, $sock_t *, $getpeername_length_t *);
+ $sock_t s;  $getpeername_length_t l; 
+ getpeername(0, &s, &l); 
 int main() {
-extern getpeername(int, $sock_t *, $getpeername_length_t *)
+ac_found=yes ; break 2
 ; return 0; }
 EOF
-if { (eval echo configure:3505: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:3508: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
-  ac_found=yes ; break 2
+  ac_found=no
 else
   echo "configure: failed program was:" >&5
   cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  ac_found=no
 fi
 rm -f conftest*
 done
@@ -3535,16 +3536,16 @@ ac_link='${CXX-g++} -o conftest${ac_exeext} $CXXFLAGS $CPPFLAGS $LDFLAGS conftes
 cross_compiling=$ac_cv_prog_cxx_cross
 
 echo $ac_n "checking for bool data type?""... $ac_c" 1>&6
-echo "configure:3539: checking for bool data type?" >&5
+echo "configure:3540: checking for bool data type?" >&5
 cat > conftest.$ac_ext <<EOF
-#line 3541 "configure"
+#line 3542 "configure"
 #include "confdefs.h"
 
 int main() {
 bool i;
 ; return 0; }
 EOF
-if { (eval echo configure:3548: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:3549: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   echo "$ac_t""yes" 1>&6;cat >> confdefs.h <<\EOF
 #define HAVE_BOOL 1
@@ -3559,16 +3560,16 @@ fi
 rm -f conftest*
 
 echo $ac_n "checking for true and false?""... $ac_c" 1>&6
-echo "configure:3563: checking for true and false?" >&5
+echo "configure:3564: checking for true and false?" >&5
 cat > conftest.$ac_ext <<EOF
-#line 3565 "configure"
+#line 3566 "configure"
 #include "confdefs.h"
 
 int main() {
 int i, j; i= true; j= false;
 ; return 0; }
 EOF
-if { (eval echo configure:3572: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:3573: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   echo "$ac_t""yes" 1>&6
      cat >> confdefs.h <<\EOF
@@ -3601,7 +3602,7 @@ fi
 if test -n "$TESTDIR"
 then
 	echo $ac_n "checking user name""... $ac_c" 1>&6
-echo "configure:3605: checking user name" >&5
+echo "configure:3606: checking user name" >&5
 test -n "$LOGNAME" && USER=$LOGNAME
 
 echo "$ac_t""$USER" 1>&6
@@ -3610,7 +3611,7 @@ echo "$ac_t""$USER" 1>&6
 # Handle user hints
 #
 echo $ac_n "checking if apache is wanted""... $ac_c" 1>&6
-echo "configure:3614: checking if apache is wanted" >&5
+echo "configure:3615: checking if apache is wanted" >&5
 # Check whether --with-apache or --without-apache was given.
 if test "${with_apache+set}" = set; then
   withval="$with_apache"
@@ -3636,7 +3637,7 @@ then
 	# Extract the first word of "httpd", so it can be a program name with args.
 set dummy httpd; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:3640: checking for $ac_word" >&5
+echo "configure:3641: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_APACHE'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
