@@ -1,9 +1,38 @@
+Sun Dec  6 13:12:55 1998  Geoff Hutchison  <ghutchis@ethel.williams.edu>
+
+	* htsearch/parser.cc: Check for empty boolean searches and report
+	an error. Fixes bug reported by Chuck O'Donnell <cao@bus.net>.
+
+	* install-sh, mkinstalldirs: Import latest version from autoconf.
+
+	* htcommon/DocumentRef.cc: Add the text of descriptions to the
+	word database with weight description_factor.
+
+	* htcommon/WordList.cc: Ensure duplicate words have minimum
+	location and anchor attributes.
+
+	* htcommon/WordRecord.h: Ensure blank WordRecords have a default
+	count of 1 since a word has to exist to have a WordRecord!
+
+	* htdig/ExternalParser.cc, htdig/PDF.cc, htfuzzy/EndingsDB.cc:
+	Ensure temporary files are placed in TMPDIR if it's set.
+
+	* htdig/Retriever.cc: Don't add the text of descriptions to the
+	word db here, it's better to do it in the DocumentRef itself.
+
+	* htmerge/words.cc: Check for word entries that are essentially
+	duplicates and compact them.
+
 Fri Dec  4 20:15:41 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* db/os/os_fsync.c, db/mutex/mutex.c: Patch from Klaus Mueller
 	<K.Mueller@intershop.de> to compile under CygWinB20.
 
-	* htdig/HTML.cc: Fix mistake in last update--file was included twice.
+	* htdig/HTML.cc: Fix mistake in last update--file was included
+	twice.
+
+	* htdig/Retriever.cc: Do a check for blank URLs before adding them
+	to the list to be retrieved.
 	
 Fri Dec  4 19:21:17 1998  Didier Gautheron <dgautheron@magic.fr>
 
