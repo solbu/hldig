@@ -1,3 +1,36 @@
+Mon May 31 22:40:29 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/DocumentDB.cc(ReadExcerpt): Fix silly typos with methods,
+	thinko with docID.
+	(Add): Add the excerpt *before* the URL index is written.
+
+	* htdig/Retriever.cc(isValidURL): Remove code restricting URLs to
+	relative and http://.
+
+	* htdig/htdig.cc(main): Unlink the doc_excerpt file when doing an
+	initial dig.
+	(main): Fix silly typo with minimumFile.
+
+	* htmerge/db.cc(mergeDB): Call DocumentDB::Open() with doc_excerpt for
+	consistency--doesn't actually do anything with it.
+
+	* htmerge/docs.cc(convertDocs): Ditto. Also don't delete a
+	document simply because it has an empty DocHead. Excerpts are now
+	stored in a separate database!
+
+	* htmerge/htmerge.h: Call mergeDB and convertDocs with
+	doc_excerpt parameter.
+	
+	* htmerge/htmerge.cc(main): Ditto.
+
+	* htsearch/Display.h: Call ctor with all three doc db filenames.
+
+	* htsearch/Display.cc(Display): Call DocumentDB::Open with above.
+	(excerpt): Retrieve the excerpt from the excerpt database.
+
+	* htsearch/htsearch.cc: Call Display::Display with all three doc
+	db filenames.
+	
 Mon May 31 15:08:30 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/DocumentDB.h: Add new method ReadExcerpt to read the
