@@ -39,6 +39,8 @@ make
 rm -rf $RPM_BUILD_ROOT
 
 make INSTALL_ROOT=$RPM_BUILD_ROOT install-strip
+ln -fs htdig $RPM_BUILD_ROOT/usr/sbin/htdump
+ln -fs htdig $RPM_BUILD_ROOT/usr/sbin/htload
 mkdir -p $RPM_BUILD_ROOT/etc/cron.daily
 ln -s ../../usr/sbin/rundig $RPM_BUILD_ROOT/etc/cron.daily/htdig-dbgen
 ln -s ../../../../usr/doc/htdig-%{PACKAGE_VERSION} \
@@ -81,6 +83,8 @@ fi
 %config /home/httpd/html/search.html
 %config(missingok) /etc/cron.daily/htdig-dbgen
 /usr/sbin/htdig
+/usr/sbin/htdump
+/usr/sbin/htload
 /usr/sbin/htfuzzy
 /usr/sbin/htmerge
 /usr/sbin/htnotify
@@ -91,6 +95,9 @@ fi
 %doc CONFIG README htdoc/*
 
 %changelog
+* Fri Sep 28 2001 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+  - make symlinks for htdump & htload, added to %files list
+
 * Thu Jun  7 2001 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
   - updated to version 3.1.6
 

@@ -1,3 +1,8 @@
+Fri Sep 28 17:19:45 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.1.6.spec: Fixed %install to make symlinks for
+	htdump & htload, added these to %files list.
+
 Fri Sep 28 15:38:00 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (displayMatch): Save rewritten URL in DocumentRef
