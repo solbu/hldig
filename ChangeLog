@@ -2,6 +2,9 @@ Thu Jan  7 14:32:34 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (display): The start template, if provided,
 	should come out after the header, not before.
+
+	* htcommon/defaults.cc, installdir/footer.html: Use the
+	no_page_list_header stuff.
 	
 Thu Jan  7 11:09:08 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 

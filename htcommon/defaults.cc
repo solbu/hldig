@@ -4,6 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.28  1999/01/07 19:56:01  ghutchis
+// Use the no_page_list_header stuff.
+//
 // Revision 1.27  1999/01/07 03:12:07  ghutchis
 // Add .bin, .tgz, .rpm, .mov, .mpg, .avi to bad_extensions.
 //
@@ -92,7 +95,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.27 1999/01/07 03:12:07 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.28 1999/01/07 19:56:01 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -181,6 +184,7 @@ ConfigDefaults	defaults[] =
     {"no_excerpt_text",			"<em>(None of the search words were found in the top of this document.)</em>"},
     {"no_excerpt_show_top",             "false"},
     {"no_next_page_text",		"[next]"},
+    {"no_page_list_header",		""},
     {"no_prev_page_text",		"[prev]"},
     {"nothing_found_file",		"${common_dir}/nomatch.html"},
     {"page_list_header",		"<hr noshade size=2>Pages:<br>"},
