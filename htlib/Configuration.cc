@@ -4,6 +4,11 @@
 // Implementation of the Configuration class
 //
 // $Log: Configuration.cc,v $
+// Revision 1.4  1998/08/04 15:36:43  ghutchis
+//
+// Added fix by Philippe Rochat <prochat@lbdsun.epfl.ch> to remove
+// whitespace after config options.
+//
 // Revision 1.3  1998/06/22 04:33:19  turtle
 // New Berkeley database stuff
 //
@@ -15,7 +20,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: Configuration.cc,v 1.3 1998/06/22 04:33:19 turtle Exp $";
+static char	RCSid[] = "$Id: Configuration.cc,v 1.4 1998/08/04 15:36:43 ghutchis Exp $";
 #endif
 
 #include "Configuration.h"
@@ -282,6 +287,7 @@ int Configuration::Read(char *filename)
     String	line;
     String	name;
     char	*value;
+    int         len;
     while (!in.bad())
     {
         in.getline(buffer, sizeof(buffer));
@@ -312,6 +318,15 @@ int Configuration::Read(char *filename)
         //
         while (*value == ' ' || *value == '\t')
             value++;
+	len = strlen(value) - 1;
+	//
+	// Skip any whitespace after the actual text
+	//
+	while (value[len] == ' ' || value[len] == '\t')
+	  {
+	    value[len] = '\0';
+	    len--;
+	  }
 
         Add(name, value);
         line = 0;

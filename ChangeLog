@@ -1,3 +1,9 @@
+Tue Aug  4 11:34:46 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/Configuration.cc: Added fix by Philippe Rochat
+	<prochat@lbdsun.epfl.ch> to remove whitespace after config
+	options.
+
 Mon Aug  3 16:50:46 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
        * htsearch/ResultList.cc, htnotify/htnotify.cc,
