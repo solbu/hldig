@@ -1,3 +1,17 @@
+Wed Mar  1 13:27:26 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: Added accents_db attribute, mentioned accents
+	algorithm in search_algorithms section.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerate using cf_generate.pl.
+	* installdir/htdig.conf: Added mentions of accents, speling & substring,
+	fixed a couple typos in comments.
+	* htdoc/htfuzzy.html: Added blurb on accents algorithm.
+	* htdoc/require.html: Added mentions of accents, speling, substring,
+	prefix & regex.
+	* htdoc/config.html: Updated with sample of latest htdig.conf and
+	installdir/*.html, added blurb on wrapper.html.
+
 Wed Mar  1 00:30:19 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure.in, configure: Add test for FD_SET_T, the second (also

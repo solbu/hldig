@@ -22,6 +22,66 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="accents_db">
+		accents_db</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htfuzzy.html">htfuzzy</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			${database_base}.accents.db
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      all
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	The database file used for the fuzzy "accents" search
+	algorithm. This database is created by
+	<a href="htfuzzy.html">htfuzzy</a> and used by
+	<a href="htsearch.html" target="_top">htsearch</a>.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  accents_db:
+				</td>
+				<td nowrap>
+				     ${database_base}.uml.db
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="add_anchors_to_excerpt">
 		add_anchors_to_excerpt</a></strong>
 	  </dt>
@@ -7210,7 +7270,19 @@ http://www.htdig.org/
 			  <dd>
 				Uses the metaphone algorithm for matching words.
 				This algorithm is more specific to the english
-				language than soundex. It is generated with the <a
+				language than soundex. It requires the metaphone
+				database, which is generated with the <a
+				href="htfuzzy.html">htfuzzy</a> program.
+			  </dd>
+			  <dt>
+				accents
+			  </dt>
+			  <dd>
+				Uses the accents algorithm for matching words.
+				This algorithm will treat all accented letters
+				as equivalent to their unaccented counterparts.
+				It requires the accents database, which is
+				generated with the <a
 				href="htfuzzy.html">htfuzzy</a> program.
 			  </dd>
 			  <dt>
@@ -10457,6 +10529,6 @@ http://www.htdig.org/
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
-Last modified: Sat Feb 26 22:17:51 CST 2000
+Last modified: Wed Mar  1 11:54:50 CST 2000
   </body>
 </html>

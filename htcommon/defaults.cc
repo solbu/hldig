@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.41 2000/02/27 04:23:06 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.42 2000/03/01 19:44:11 grdetil Exp $
 //
 
 #include "HtConfiguration.h"
@@ -18,6 +18,13 @@
 ConfigDefaults	defaults[] =
 {
 
+{ "accents_db", "${database_base}.accents.db", 
+	"string", "htfuzzy htsearch", "all", "File Layout", "accents_db: ${database_base}.uml.db", "
+	The database file used for the fuzzy \"accents\" search
+	algorithm. This database is created by
+	<a href=\"htfuzzy.html\">htfuzzy</a> and used by
+	<a href=\"htsearch.html\" target=\"_top\">htsearch</a>.
+" },
 { "add_anchors_to_excerpt", "true", 
 	"boolean", "htsearch", "3.1.0", "Presentation:How", "add_anchors_to_excerpt: no", "
 	If set to true, the first occurrence of each matched
@@ -1651,7 +1658,19 @@ http://www.htdig.org/", "
 			  <dd>
 				Uses the metaphone algorithm for matching words.
 				This algorithm is more specific to the english
-				language than soundex. It is generated with the <a
+				language than soundex. It requires the metaphone
+				database, which is generated with the <a
+				href=\"htfuzzy.html\">htfuzzy</a> program.
+			  </dd>
+			  <dt>
+				accents
+			  </dt>
+			  <dd>
+				Uses the accents algorithm for matching words.
+				This algorithm will treat all accented letters
+				as equivalent to their unaccented counterparts.
+				It requires the accents database, which is
+				generated with the <a
 				href=\"htfuzzy.html\">htfuzzy</a> program.
 			  </dd>
 			  <dt>
