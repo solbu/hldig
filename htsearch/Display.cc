@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Display.cc,v 1.116 2003/10/24 20:24:51 grdetil Exp $
+// $Id: Display.cc,v 1.117 2003/10/24 20:33:23 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1939,7 +1939,9 @@ Display::logSearch(int page, List *matches)
     syslog(level, "%s [%s] (%s) [%s] [%s] (%d/%s) - %d -- %s\n",
 	   host,
 	   input->exists("config") ? input->get("config") : "default",
-	   (const char*)config->Find("match_method"), input->get("words"), logicalWords.get(),
+	   (const char*)config->Find("match_method"),
+	   input->exists("words") ? input->get("words") : "",
+	   logicalWords.get(),
 	   nMatches, (const char*)config->Find("matches_per_page"),
 	   page, ref
 	   );

@@ -1,3 +1,9 @@
+Fri Oct 24 15:30:08 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+    * htsearch/Display.cc: Fix bug #829746. Applied Niel Kohl's fix for this,
+      to check if words input given before trying to use it, to avoid NULL
+      argument to syslog().
+
 Fri Oct 24 15:15:53 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
     * htsearch/Display.cc: Fix bug #578570. The enddate handling now works
