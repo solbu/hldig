@@ -2,7 +2,7 @@
 /*
 
  Part of the ht://Dig package   <http://www.htdig.org/>
- Copyright (c) 1999, 2000 The ht://Dig Group
+ Copyright (c) 1999, 2001 The ht://Dig Group
  For copyright details, see the file COPYING in your distribution
  or the GNU General Public License version 2 or later
  <http://www.gnu.org/copyleft/gpl.html>
@@ -170,8 +170,14 @@ typedef char bool;
 /* Define if you have the <sys/time.h> header file.  */
 #undef HAVE_SYS_TIME_H
 
+/* Define if you have the <sys/wait.h> header file.  */
+#undef HAVE_SYS_WAIT_H
+
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
+
+/* Define if you have the <wait.h> header file.  */
+#undef HAVE_WAIT_H
 
 /* Define if you have the <zlib.h> header file.  */
 #undef HAVE_ZLIB_H
