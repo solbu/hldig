@@ -1,11 +1,15 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.1 1997/02/03 17:11:05 turtle Exp $
+// $Id: Display.h,v 1.2 1998/09/10 04:16:26 ghutchis Exp $
 //
 // $Log: Display.h,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// Revision 1.2  1998/09/10 04:16:26  ghutchis
+//
+// More bug fixes.
+//
+// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
+// Initial CVS
 //
 //
 #ifndef _Display_h_
@@ -52,6 +56,8 @@ public:
     void		displayNomatch();
     void		displaySyntaxError(char *);
 	
+    int                 hasTemplateError() {return templateError;}
+
 protected:
     //
     // The list of search results.
@@ -95,6 +101,12 @@ protected:
     // flag that tells us if we will need the excerpt.
     //
     int			needExcerpt;
+
+    //
+    // Since we might have errors we cannot recover from, this tells us 
+    // what happened.
+    //
+    int                 templateError;
 
     //
     // To allow the star images to be dependant on the match URL, we need

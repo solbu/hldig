@@ -1,9 +1,13 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.6 1998/09/07 04:37:16 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.7 1998/09/10 04:16:25 ghutchis Exp $
 //
 // $Log: DocumentRef.h,v $
+// Revision 1.7  1998/09/10 04:16:25  ghutchis
+//
+// More bug fixes.
+//
 // Revision 1.6  1998/09/07 04:37:16  ghutchis
 //
 // Added DocState for documents marked as "noindex".
@@ -67,7 +71,7 @@ class DocumentRef : public Object
     time_t		DocTime()			{return docTime;}
     char		*DocTitle()			{return docTitle;}
     char		*DocHead()			{return docHead;}
-    char                *DocMetaDsc() {return docMetaDsc;}
+    char                *DocMetaDsc()                   {return docMetaDsc;}
     time_t		DocAccessed()			{return docAccessed;}
     int			DocLinks()			{return docLinks;}
     List		*Descriptions()			{return &descriptions;}
@@ -87,7 +91,7 @@ class DocumentRef : public Object
     void		DocTime(time_t t)		{docTime = t;}
     void		DocTitle(char *t)		{docTitle = t;}
     void		DocHead(char *h)		{docHead = h;}
-    void                DocMetaDsc(char *md) {docMetaDsc = md;}
+    void                DocMetaDsc(char *md)            {docMetaDsc = md;}
     void		DocAccessed(time_t t)		{docAccessed = t;}
     void		DocLinks(int l)		{docLinks = l;}
     void		Descriptions(List &l)		{descriptions = l;}

@@ -4,6 +4,10 @@
 // Implementation of htsearch
 //
 // $Log: htsearch.cc,v $
+// Revision 1.7  1998/09/10 04:16:26  ghutchis
+//
+// More bug fixes.
+//
 // Revision 1.6  1998/06/21 23:20:12  turtle
 // patches by Esa and Jesse to add BerkeleyDB and Prefix searching
 //
@@ -28,7 +32,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.6 1998/06/21 23:20:12 turtle Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.7 1998/09/10 04:16:26 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -203,6 +207,12 @@ main(int ac, char **av)
     }
 
     Display	display(index, doc_db);
+    if (display.hasTemplateError())
+      {
+	reportError(form("Unable to read template file '%s'\nDoes it exist?",
+                         config["template_name"]));
+	return 0;
+      }
     display.setOriginalWords(originalWords);
     display.setResults(results);
     display.setSearchWords(&searchWords);

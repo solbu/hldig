@@ -1,3 +1,11 @@
+Thu Sep 10 00:06:58 1998  Geoff Hutchison  <ghutchis@ethel.williams.edu>
+
+	* htdig/HTML.cc: Change debug level of META tags.
+
+	* htsearch/TemplateList.cc, htsearch/htsearch.cc, htsearch/Display.cc, 
+	htsearch/Display.h: Backed out builtin-long default from Monday, now 
+	use error handler
+
 Mon Sep  7 23:19:12 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* contrib/htparsedoc: Added contributed external parser for MS

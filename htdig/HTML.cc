@@ -4,6 +4,10 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.10  1998/09/10 04:16:25  ghutchis
+//
+// More bug fixes.
+//
 // Revision 1.9  1998/09/08 03:29:09  ghutchis
 //
 // Clean up for 3.1.0b1.
@@ -36,7 +40,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.9 1998/09/08 03:29:09 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.10 1998/09/10 04:16:25 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -675,7 +679,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    meta_dsc = conf["content"];
 		    if (meta_dsc.length() > max_meta_description_length)
 		      meta_dsc = meta_dsc.sub(0, max_meta_description_length);
-		    if (debug > 0)
+		    if (debug > 1)
 		      cout << "META Description: " << conf["content"] << endl;
 		    retriever.got_meta_dsc(meta_dsc);
 

@@ -6,6 +6,10 @@
 // AWS	10/13/93	Fixed the constructors and operator = routines so that a NULL can be passed
 //
 // $Log: String.cc,v $
+// Revision 1.9  1998/09/10 04:16:26  ghutchis
+//
+// More bug fixes.
+//
 // Revision 1.8  1998/09/06 03:22:38  ghutchis
 //
 // Bug fixes
@@ -37,7 +41,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.8 1998/09/06 03:22:38 ghutchis Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.9 1998/09/10 04:16:26 ghutchis Exp $";
 #endif
 
 
@@ -48,6 +52,7 @@ static char	RCSid[] = "$Id: String.cc,v 1.8 1998/09/06 03:22:38 ghutchis Exp $";
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <Object.h>
 
 const int MinimumAllocationSize = 64;	// Should be power of two.
 int next_power_of_2(int n);

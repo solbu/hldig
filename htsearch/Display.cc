@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.12  1998/09/10 04:16:26  ghutchis
+//
+// More bug fixes.
+//
 // Revision 1.11  1998/09/07 04:45:26  ghutchis
 //
 // Add builtin-long as a default-template to use in case of errors.
@@ -50,7 +54,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.11 1998/09/07 04:45:26 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.12 1998/09/10 04:16:26 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -75,6 +79,7 @@ Display::Display(char *indexFile, char *docFile)
     limitTo = 0;
     excludeFrom = 0;
     needExcerpt = 0;
+    templateError = 0;
 
     maxStars = config.Value("max_stars");
     maxScore = 100;
@@ -89,7 +94,13 @@ Display::Display(char *indexFile, char *docFile)
 	//
 	currentTemplate = (Template *) templates.templates[0];
     }
-	
+    if (!currentTemplate)
+      {
+        //
+        // Another error!? Time to bail out...
+        //
+	templateError = 1;
+      }
     if (mystrcasestr(currentTemplate->getMatchTemplate(), "excerpt"))
 	needExcerpt = 1;
 }
