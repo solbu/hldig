@@ -1,3 +1,9 @@
+Thu Nov 30 13:41:53 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (createURL, buildMatchList, excerpt, hilight):
+	Clean up code to get rid of warnings, especially resulting from
+	NULLs in ternary operators.
+
 Thu Nov 30 10:55:09 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/String_fmt.cc (form, vform): Use vsnprintf rather than

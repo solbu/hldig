@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.29 2000/11/24 09:50:27 toivo Exp $
+// $Id: Display.cc,v 1.100.2.30 2000/11/30 19:53:11 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -756,7 +756,7 @@ Display::createURL(String &url, int pageNumber)
  
     if (config_name)
       {
-	for (int i=0; i < collectionList.Count(); i++)
+	for (i = 0; i < collectionList.Count(); i++)
 	  {
 	    config_name = collectionList[i];
 	    config_encoded = config_name;
@@ -1158,7 +1158,9 @@ Display::buildMatchList()
 	// DocumentRef *thisRef = docDB[id];
 
         DocMatch        *dm = results->find(cpid);
-        Collection *collection = (dm ? dm->collection : NULL);
+        Collection *collection = NULL;
+        if (dm)
+	    collection = dm->collection;
         if (collection == NULL)                                                             continue;
         DocumentRef *thisRef = collection->getDocumentRef(id);      
 
@@ -1306,8 +1308,9 @@ Display::excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor, int fan
     String	part;
     String	*text = new String("");
 
-    StringMatch *allWordsPattern =
-        (collection ? collection->getSearchWordsPattern() : NULL);
+    StringMatch *allWordsPattern = NULL;
+    if (collection)
+	allWordsPattern = collection->getSearchWordsPattern();
     if (!allWordsPattern)
         return text;  
 
@@ -1391,7 +1394,7 @@ Display::hilight(ResultMatch *match, const String& str_arg, const String& urlanc
     const String end_highlight = config["end_highlight"];
     const char		*str = str_arg;
     String		result;
-    int			pos;
+    int			pos = 0;
     int			which, length;
     WeightWord		*ww;
     int			first = 1;
@@ -1400,10 +1403,12 @@ Display::hilight(ResultMatch *match, const String& str_arg, const String& urlanc
 
     result = 0;
     Collection *collection = match->getCollection();
-    StringMatch *allWordsPattern =
-        (collection ? collection->getSearchWordsPattern() : NULL);
-    List *searchWords =
-        (collection ? collection->getSearchWords() : NULL);
+    StringMatch *allWordsPattern = NULL;
+    if (collection)
+	allWordsPattern = collection->getSearchWordsPattern();
+    List *searchWords = NULL;
+    if (collection)
+	searchWords = collection->getSearchWords();
     if (!allWordsPattern || !searchWords)
         return result;                                           
 
