@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.52 1999/06/27 19:49:56 ghutchis Exp $
+// $Id: Retriever.cc,v 1.53 1999/07/03 20:56:39 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -308,7 +308,7 @@ Retriever::Start()
 	   {
    	      while (NULL != (ref = server->pop())) 
               {
-      	          fprintf(urls_parsed, "%s\n", ref->URL());
+      	          fprintf(urls_parsed, "%s\n", ref->GetURL().get());
  		  delete ref;
               }
            }
@@ -319,22 +319,20 @@ Retriever::Start()
 
 
 //*****************************************************************************
-// void Retriever::parse_url(URL &url)
+// void Retriever::parse_url(URLRef &urlRef)
 //
 void
 Retriever::parse_url(URLRef &urlRef)
 {
     URL			url;
-    DocumentRef	*ref;
+    DocumentRef        *ref;
     int			old_document;
     time_t		date;
     static int	index = 0;
 
-//	cout << "**** urlRef URL = '" << urlRef.URL() << "', referer = '" <<
-//		urlRef.Referer() << "'\n";
-    url.parse(urlRef.URL());
+    url.parse(urlRef.GetURL().get());
 	
-    currenthopcount = urlRef.HopCount();
+    currenthopcount = urlRef.GetHopCount();
     ref = GetRef(url.get());
     if (ref)
     {
@@ -390,7 +388,7 @@ Retriever::parse_url(URLRef &urlRef)
     doc->Reset();
 
     doc->Url(url.get());
-    doc->Referer(urlRef.Referer());
+    doc->Referer(urlRef.GetReferer().get());
 
     base = doc->Url();
 
@@ -478,7 +476,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    if (debug)
 		cout << " not found" << endl;
 	    recordNotFound(url.get(),
-			   urlRef.Referer(),
+			   urlRef.GetReferer().get(),
 			   Document::Document_not_found);
 	    words.MarkGone();
 	    break;
@@ -488,7 +486,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    if (debug)
 		cout << " host not found" << endl;
 	    recordNotFound(url.get(),
-			   urlRef.Referer(),
+			   urlRef.GetReferer().get(),
 			   Document::Document_no_host);
 	    words.MarkGone();
 	    break;
@@ -498,7 +496,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    if (debug)
 		cout << " no server running" << endl;
 	    recordNotFound(url.get(),
-			   urlRef.Referer(),
+			   urlRef.GetReferer().get(),
 			   Document::Document_no_server);
 	    words.MarkGone();
 	    break;

@@ -3,29 +3,24 @@
 //
 // A class to keep track of server specific information.
 //
-// $Id: Server.h,v 1.3 1998/12/11 02:54:07 ghutchis Exp $
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Server.h,v $
-// Revision 1.3  1998/12/11 02:54:07  ghutchis
-// Changed support for server_wait_time to use delay() method in Server. Delay
-// is from beginning of last connection to this one.
-//
-// Revision 1.2  1997/03/24 04:33:17  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
+// $Id: Server.h,v 1.4 1999/07/03 20:56:39 ghutchis Exp $
 //
 //
 #ifndef _Server_h_
 #define _Server_h_
 
-#include <Object.h>
-#include <htString.h>
-#include <Stack.h>
-#include <Queue.h>
-#include <StringMatch.h>
 #include <time.h>
+#include "Object.h"
+#include "htString.h"
+#include "Stack.h"
+#include "Queue.h"
+#include "StringMatch.h"
 #include "URLRef.h"
 
 class Document;

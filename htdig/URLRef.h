@@ -1,22 +1,23 @@
 //
 // URLRef.h
 //
-// $Id: URLRef.h,v 1.2 1997/03/24 04:33:18 turtle Exp $
+// A definition of a URL/Referer pair with associated hopcount
 //
-// $Log: URLRef.h,v $
-// Revision 1.2  1997/03/24 04:33:18  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
+// $Id: URLRef.h,v 1.3 1999/07/03 20:56:39 ghutchis Exp $
 //
 //
 #ifndef _URLRef_h_
 #define _URLRef_h_
 
-#include <Object.h>
-#include <htString.h>
-
+#include "Object.h"
+#include "htString.h"
+#include "URL.h"
 
 class URLRef : public Object
 {
@@ -27,18 +28,18 @@ public:
 	                URLRef();
 	                ~URLRef();
 
-	char			*URL()					{return url;}
-	int				HopCount()				{return hopcount;}
-	char			*Referer()				{return referer;}
+	URL		GetURL()			{return url;}
+	int		GetHopCount()			{return hopcount;}
+	URL		GetReferer()			{return referer;}
 	
-	void			URL(char *s)			{url = s;}
-	void			HopCount(int h)			{hopcount = h;}
-	void			Referer(char *ref)		{referer = ref;}
+	void		SetURL(URL u)			{url = u;}
+	void		SetHopCount(int h)		{hopcount = h;}
+	void		SetReferer(URL ref)		{referer = ref;}
 	
 private:
-	String			url;
-	String			referer;
-	int				hopcount;
+	URL		url;
+	URL		referer;
+	int		hopcount;
 };
 
 #endif

@@ -1,3 +1,14 @@
+Sat Jul  3 17:35:52 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Transport.h(ConnectionWrite): Return value from
+	Connection::write call.
+
+	* htdig/URLRef.h, htdig/URLRef.cc: Cleanup and made hopcount
+	default consistent with 7/3 change to DocumentRef.cc
+
+	* htdig/Server.h, htdig/Server.cc, htdig/Retriever.cc: Cleanup and
+	fixes to match URLRef calling interface.
+
 Sat Jul  3 16:37:29 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.cc (do_tag): Fix <meta> robots parsing to allow

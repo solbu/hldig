@@ -1,49 +1,25 @@
 //
 // Server.cc
 //
-// Implementation of Server
+// A class to keep track of server specific information.
 //
-// $Log: Server.cc,v $
-// Revision 1.8  1999/01/20 18:08:30  ghutchis
-// Call good_strtok with appropriate parameters (explicitly include NULL first
-// parameter, second param is char, not char *).
-//
-// Revision 1.7  1999/01/18 22:57:28  ghutchis
-// Use max_doc_size when retrieving robots.txt files instead of a hard-coded
-// 10k limit.
-//
-// Revision 1.6  1998/12/11 02:54:07  ghutchis
-// Changed support for server_wait_time to use delay() method in Server. Delay
-// is from beginning of last connection to this one.
-//
-// Revision 1.5  1998/11/30 01:53:10  ghutchis
-// Fixed bug with robots.txt files containing tabs, based on patch from
-// Christian Schneider <cschneid@relog.ch>.
-//
-// Revision 1.4  1998/09/30 17:31:51  ghutchis
-// Changes for 3.1.0b2
-//
-// Revision 1.3  1998/07/09 09:39:01  ghutchis
-// Added support for local file digging using patches by Pasi. Patches
-// include support for local user (~username) digging.
-//
-// Revision 1.2  1997/03/24 04:33:17  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.8 1999/01/20 18:08:30 ghutchis Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.9 1999/07/03 20:56:39 ghutchis Exp $";
 #endif
 
+#include <ctype.h>
 #include "htdig.h"
 #include "Server.h"
-#include <good_strtok.h>
-#include <htString.h>
-#include <URL.h>
-#include <ctype.h>
+#include "good_strtok.h"
+#include "htString.h"
+#include "URL.h"
 #include "htdig.h"
 #include "Document.h"
 #include "URLRef.h"
@@ -256,9 +232,9 @@ void Server::push(char *path, int hopcount, char *referer)
 	_documents >= _max_documents)     // Hey! we only want to get max_docs
       return;
     URLRef	*ref = new URLRef();
-    ref->URL(path);
-    ref->HopCount(hopcount);
-    ref->Referer(referer);
+    ref->SetURL(path);
+    ref->SetHopCount(hopcount);
+    ref->SetReferer(referer);
     _paths.push(ref);
     _documents++;
 
