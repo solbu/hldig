@@ -7,7 +7,7 @@
 // The format is documented in http://www.htdig.org/attrs.html#external_parser
 //
 #if RELEASE
-static char RCSid[] = "$Id: ExternalParser.cc,v 1.9 1999/02/10 00:24:49 ghutchis Exp $";
+static char RCSid[] = "$Id: ExternalParser.cc,v 1.9.2.1 1999/02/13 01:07:37 ghutchis Exp $";
 #endif
 
 #include "ExternalParser.h"
@@ -148,6 +148,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 
     String	line;
     char	*token1, *token2, *token3;
+    int		loc, hd;
     URL		url;
     while (readLine(input, line))
     {
@@ -164,8 +165,10 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		  token2 = strtok(0, "\t");
 		if (token2 != NULL)
 		  token3 = strtok(0, "\t");
-		if (token1 != NULL && token2 != NULL && token3 != NULL)
-		  retriever.got_word(token1, atoi(token2), atoi(token3));
+		if (token1 != NULL && token2 != NULL && token3 != NULL &&
+			(loc = atoi(token2)) >= 0 && loc <= 1000 &&
+			(hd = atoi(token3)) >= 0 && hd < 12)
+		  retriever.got_word(token1, loc, hd);
 		else
 		  cerr<< "External parser error in line:"<<line<<"\n";
 		break;
