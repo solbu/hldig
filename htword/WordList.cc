@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.29 2000/01/13 14:47:10 loic Exp $
+// $Id: WordList.cc,v 1.6.2.30 2000/01/13 20:06:30 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -250,7 +250,7 @@ WordList::Walk(WordSearchDescription &search)
 
     WordReference wordRef;
 
-    if(cursor.Open(db.db) == NOTOK) return 0;
+    if(cursor.Open(db.db) == NOTOK) return NOTOK;
 
     if(lverbose){cdebug << "WordList::Walk: Walk begin:action:" << search.action << ":SearchKey:"<< searchKey
 		     << ": SuffixDeffined:" << searchKey.IsDefinedWordSuffix() << "\n";}
@@ -302,8 +302,10 @@ WordList::Walk(WordSearchDescription &search)
     if(search.benchmarking){search.benchmarking->nDB_SET_RANGE++;}
     bm_walk_count_DB_SET_RANGE++;
 
-    if(cursor.Get(key, data, DB_SET_RANGE) != 0)
+    if(cursor.Get(key, data, DB_SET_RANGE) != 0) {
+        cursor.Close();
 	return NOTOK;
+    }
 
     // **** Walk main loop
     int cursor_get_flags= DB_NEXT;
@@ -398,6 +400,8 @@ WordList::Walk(WordSearchDescription &search)
     // BENCHMARKING
     bm_walk_time += HtTime::DTime(start_time);
     (*monitor)();
+
+    cursor.Close();
 
     return OK;
 }

@@ -1,3 +1,9 @@
+Thu Jan 13 20:12:42 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordList.cc (Walk): close the cursor before returning. If
+	  not doing that the cursor might be closed after the database is
+	  closed, leading to double free of the cursor. Bad bug.
+
 Thu Jan 13 13:23:17 2000  Loic Dachary  <loic@ceic.com>
 
 	* htword/WordContext.h (class WordContext): simplifies a lot. WordContext is

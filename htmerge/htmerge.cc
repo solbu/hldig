@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htmerge.cc,v 1.17.2.3 2000/01/13 14:47:09 loic Exp $
+// $Id: htmerge.cc,v 1.17.2.4 2000/01/13 20:06:30 loic Exp $
 //
 
 #include "htmerge.h"
@@ -94,8 +94,6 @@ int main(int ac, char **av)
 	
     config.Read(configfile);
 
-    WordContext::Initialize(config);
-
     //
     // Check url_part_aliases and common_url_parts for
     // errors.
@@ -148,6 +146,8 @@ int main(int ac, char **av)
 	    config.Add("doc_excerpt", configValue);
 	}
     }
+
+    WordContext::Initialize(config);
 
     if (merge_configfile.length())
     {
