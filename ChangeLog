@@ -1,3 +1,8 @@
+Wed Aug 25 16:35:07 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/HtWordType.h, htlib/HtWordType.cc(Initialize): set up and
+	use a lookup table to speed up HtIsWordChar() and HtIsStrictWordChar().
+
 Mon Aug 23 10:13:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc(parse): fix problems with null pointer when attempting

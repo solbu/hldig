@@ -1,7 +1,7 @@
 //
 // HtWordType:  Wrap some attributes to make is...()-type methods.
 //
-// $Id: HtWordType.h,v 1.2 1999/03/28 22:11:32 hp Exp $
+// $Id: HtWordType.h,v 1.3 1999/08/25 21:39:13 grdetil Exp $
 //
 
 #ifndef __HtWordType_h
@@ -15,8 +15,8 @@
 // Inline friend-functions are used together with an all-statics
 // class (name that pattern!) to spare the user from having
 // to manage the valid_punctuation and extra_word_characters
-// attributes, while in theory still having the runtime
-// performance of strchr() + isalnum().
+// attributes, while in theory still having better runtime
+// performance than strchr() + isalnum().
 //
 
 class HtWordType
@@ -40,6 +40,7 @@ private:
     char *extra_word_characters; // Likewise.
     char *other_chars_in_word;   // Attribute "valid_punctuation" plus
                                  // "extra_word_characters".
+    char chrtypes[256];          // quick lookup table for types
   } statics;
 
   // These methods are not supposed to be implemented (or accessed).
@@ -48,19 +49,25 @@ private:
   void operator=(const HtWordType &);
 };
 
+// Bits to set in chrtypes[]:
+#define HtWt_Alpha	0x01
+#define HtWt_Digit	0x02
+#define HtWt_Extra	0x04
+#define HtWt_ValidPunct	0x08
+
 // One for characters that when put together are a word
 // (including punctuation).
 inline int
 HtIsWordChar(int c)
 {
-  return isalnum(c) || (c && strchr(HtWordType::statics.other_chars_in_word, c));
+  return (HtWordType::statics.chrtypes[(unsigned char)c] & (HtWt_Alpha|HtWt_Digit|HtWt_Extra|HtWt_ValidPunct)) != 0;
 }
 
 // Similar, but no punctuation characters.
 inline int
 HtIsStrictWordChar(int c)
 {
-  return isalnum(c) || (c && strchr(HtWordType::statics.extra_word_characters, c));
+  return (HtWordType::statics.chrtypes[(unsigned char)c] & (HtWt_Alpha|HtWt_Digit|HtWt_Extra)) != 0;
 }
 
 // Let caller get rid of getting and holding a configuration parameter.
