@@ -1,7 +1,7 @@
 //
 // Retriever.h
 //
-// $Id: Retriever.h,v 1.10 1999/04/14 04:14:32 ghutchis Exp $
+// $Id: Retriever.h,v 1.11 1999/06/21 00:49:02 ghutchis Exp $
 //
 
 #ifndef _Retriever_h_
@@ -48,7 +48,7 @@ public:
     // These are the callbacks that we need to write code for
     //
     void		got_word(char *word, int location, int heading);
-    void		got_href(URL &url, char *description);
+    void		got_href(URL &url, char *description, int hops = 1);
     void		got_title(char *title);
     void		got_time(char *time);
     void		got_head(char *head);

@@ -1,3 +1,18 @@
+Sun Jun 20 21:25:15 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+	
+	* htdig/Retriever.h: Add hop parameter to got_href
+	method. Defaults to 1.
+
+	* htdig/Retriever.cc(got_href): Use it instead of constant 1.
+	
+	* htdig/HTML.cc (do_tag): Use new hop parameter to keep the same
+	hopcount for frame, embed and object tags.
+
+	* htdig/Makefile.in: Make sure HtHTTP.cc is compiled.
+
+	* htdig/HtHTTP.cc (ctor): Add default value for _server to make
+	prevent strange segmentation faults.
+
 Fri Jun 18 09:53:30 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc(Clear, Deserialize):

@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.50 1999/06/16 20:17:34 grdetil Exp $
+// $Id: Retriever.cc,v 1.51 1999/06/21 00:49:02 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -1016,10 +1016,10 @@ Retriever::got_image(char *src)
 
 
 //*****************************************************************************
-// void Retriever::got_href(char *href, char *description)
+// void Retriever::got_href(char *href, char *description, int hops)
 //
 void
-Retriever::got_href(URL &url, char *description)
+Retriever::got_href(URL &url, char *description, int hops)
 {
     DocumentRef		*ref;
     Server		*server;
@@ -1070,7 +1070,7 @@ Retriever::got_href(URL &url, char *description)
 	    ref = docs[url.get()];
 	    // if ref exists we have to call AddDescription even
             // if max_hop_count is reached
-    	    if (!ref && currenthopcount + 1 > max_hop_count)
+    	    if (!ref && currenthopcount + hops > max_hop_count)
 		return;
 
 	    if (!ref)
@@ -1081,7 +1081,7 @@ Retriever::got_href(URL &url, char *description)
 		//
 		ref = new DocumentRef;
 		ref->DocID(docs.NextDocID());
-		ref->DocHopCount(currenthopcount + 1);
+		ref->DocHopCount(currenthopcount + hops);
 	    }
 	    ref->DocBackLinks(ref->DocBackLinks() + 1); // This one!
 	    ref->DocURL(url.get());
@@ -1090,14 +1090,14 @@ Retriever::got_href(URL &url, char *description)
 	    //
     	    // If the dig is restricting by hop count, perform the check here 
 	    // too
-    	    if (currenthopcount + 1 > max_hop_count)
+    	    if (currenthopcount + hops > max_hop_count)
 	    {
 		delete ref;
 		return;
 	    }
 
 	    if (ref->DocHopCount() != -1 &&
-		ref->DocHopCount() < currenthopcount + 1)
+		ref->DocHopCount() < currenthopcount + hops)
 	       // If we had taken the path through this ref
 	       // We'd be here faster than currenthopcount
 	       currenthopcount = ref->DocHopCount();  // So update it!

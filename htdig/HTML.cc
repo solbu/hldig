@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.42 1999/06/12 17:58:17 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.43 1999/06/21 00:49:02 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -908,7 +908,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    if (dofollow)
 		    {
 			description = 0;
-			retriever.got_href(*href, description);
+			// Frames have the same hopcount as the parent.
+			retriever.got_href(*href, description, 0);
 			in_ref = 0;
 		    }
 		    break;
@@ -1099,11 +1100,14 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    *q = '\0';
 	    }
 	   if (imgflag) // img
+	     {
                 retriever.got_image(position);
+	     }
             else if (dofollow) // embed and object
 	      {
                 URL *href = new URL(position, *base);
-                retriever.got_href(*href, "");
+		// Embedded objects have the same hopcount as the parent
+                retriever.got_href(*href, "", 0);
                 delete href;
 	      }
 	    break;
