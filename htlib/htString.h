@@ -1,7 +1,7 @@
 //
 // Just Another String class.
 //
-// $Id: htString.h,v 1.5.2.3 2001/11/04 23:22:44 ghutchis Exp $
+// $Id: htString.h,v 1.5.2.4 2001/12/20 07:17:25 ghutchis Exp $
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2001 The ht://Dig Group
@@ -15,7 +15,12 @@
 #include "Object.h"
 #include <stdarg.h>
 #include <stdio.h>
+#ifdef HAVE_OSTREAM_H
 #include <ostream.h>
+#endif
+#ifdef HAVE_IOSTREAM_H
+#include <iostream.h>
+#endif
 
 class String : public Object
 {

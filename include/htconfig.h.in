@@ -71,11 +71,17 @@
 /* Define if you have the <getopt.h> header file.  */
 #undef HAVE_GETOPT_H
 
+/* Define if you have the <iostream.h> header file.  */
+#undef HAVE_IOSTREAM_H
+
 /* Define if you have the <limits.h> header file.  */
 #undef HAVE_LIMITS_H
 
 /* Define if you have the <malloc.h> header file.  */
 #undef HAVE_MALLOC_H
+
+/* Define if you have the <ostream.h> header file.  */
+#undef HAVE_OSTREAM_H
 
 /* Define if you have the <strings.h> header file.  */
 #undef HAVE_STRINGS_H
@@ -122,7 +128,6 @@
 /* Define this if you're willing to allow htsearch to take -c even as a CGI */
 /*  regardless of the security problems with this. */
 #undef ALLOW_INSECURE_CGI_CONFIG
-
 
 /* Define to remove the word count in db and WordRef struct. */
 #undef NO_WORD_COUNT
