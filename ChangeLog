@@ -1,3 +1,9 @@
+Sat Dec 19 17:53:44 1998  Alexander Bergolth  <leo@strike.wu-wien.ac.at>
+
+	* htsearch/htsearch.cc, htsearch/Display.cc: Added new option
+	allow_in_form. Does currently not work with some special variable
+	names!
+
 Sat Dec 19 11:21:38 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* contrib/htparsedoc/parse_word_doc.pl: Update from Jesse.

@@ -4,6 +4,9 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.25  1998/12/19 16:55:11  bergolth
+// Added allow_in_form option.
+//
 // Revision 1.24  1998/12/14 04:08:06  ghutchis
 // Fix potential coredump when calculating date_factor and backlink_factor on
 // docs that aren't in the database.
@@ -100,7 +103,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.24 1998/12/14 04:08:06 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.25 1998/12/19 16:55:11 bergolth Exp $";
 #endif
 
 #include "htsearch.h"
@@ -477,6 +480,17 @@ Display::setVariables(int pageNumber, List *matches)
 	}
 	vars.Add("PAGELIST", str);
     }
+    StringList form_vars(config["allow_in_form"], " \t\r\n");
+    String* key;
+    for (i= 0; i < form_vars.Count(); i++)
+    {
+      if (config[form_vars[i]])
+      {
+	key= new String(form_vars[i]);
+	key->uppercase();
+	vars.Add(key->get(), new String(config[form_vars[i]]));
+      }
+    }
 }
 
 //*****************************************************************************
@@ -484,6 +498,7 @@ void
 Display::createURL(String &url, int pageNumber)
 {
     String	s;
+    int         i;
 
     url << getenv("SCRIPT_NAME") << '?';
     if (input->exists("restrict"))
@@ -500,6 +515,14 @@ Display::createURL(String &url, int pageNumber)
 	s << "matchesperpage=" << input->get("matchesperpage") << '&';
     if (input->exists("words"))
 	s << "words=" << input->get("words") << '&';
+    StringList form_vars(config["allow_in_form"], " \t\r\n");
+    for (i= 0; i < form_vars.Count(); i++)
+    {
+      if (config[form_vars[i]])
+      {
+	s << form_vars[i] << '=' << config[form_vars[i]] << '&';
+      }
+    }
     s << "page=" << pageNumber;
     encodeURL(s);
     url << s;

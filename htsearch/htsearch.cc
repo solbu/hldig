@@ -6,6 +6,9 @@
 // Outputs HTML-ized results of the search based on the templates specified
 //
 // $Log: htsearch.cc,v $
+// Revision 1.18  1998/12/19 16:55:11  bergolth
+// Added allow_in_form option.
+//
 // Revision 1.17  1998/12/08 02:53:21  ghutchis
 // Fix thinko with multiple excludes and restricts. Pointed out by Gilles.
 //
@@ -64,7 +67,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.17 1998/12/08 02:53:21 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.18 1998/12/19 16:55:11 bergolth Exp $";
 #endif
 
 #include "htsearch.h"
@@ -89,6 +92,7 @@ static char RCSid[] = "$Id: htsearch.cc,v 1.17 1998/12/08 02:53:21 ghutchis Exp 
 typedef void (*SIGNAL_HANDLER) (...);
 
 ResultList *htsearch(char *, List &, Parser *);
+
 void setupWords(char *, List &, String&, int, Parser *);
 void createLogicalWords(List &, String &, StringMatch &);
 void reportError(char *);
@@ -119,6 +123,7 @@ main(int ac, char **av)
     String		logicalWords;
     StringMatch		searchWordsPattern;
     StringList		requiredWords;
+    int                 i;
 
      //
      // Parse command line arguments
@@ -219,7 +224,14 @@ main(int ac, char **av)
 	requiredWords.Create(input["keywords"], " \t\r\n");
 
     minimum_word_length = config.Value("minimum_word_length", minimum_word_length);
-    
+
+    StringList form_vars(config["allow_in_form"], " \t\r\n");
+    for (i= 0; i < form_vars.Count(); i++)
+    {
+      if (input.exists(form_vars[i]))
+	config.Add(form_vars[i], input[form_vars[i]]);
+    }
+ 
     Parser	*parser = new Parser();
 	
     //
