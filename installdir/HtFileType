@@ -12,7 +12,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 
-# $Id: HtFileType,v 1.1 2003/01/03 13:26:19 lha Exp $
+# $Id: HtFileType,v 1.2 2003/01/03 14:48:03 lha Exp $
 
 if file -v > /dev/null; then
     have_modern_file=true
@@ -20,7 +20,7 @@ else
     have_modern_file=false
 fi
 
-tmpfile=/tmp/$0.$$
+tmpfile=/tmp/`basename $0`.$$
 magic_file=@CONFIG_DIR@/HtFileType-magic.mime
 #magic_file=${0}-magic.mime
 
