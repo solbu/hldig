@@ -165,6 +165,9 @@ CDB___db_panic_msg(dbenv)
 	DB_ENV *dbenv;
 {
 	CDB___db_err(dbenv, "region error detected; run recovery.");
+	/* Hack to make fatal errors really fatal... */
+	fprintf(stderr,"DB_RUNRECOVERY: Fatal error, run database recovery\n");
+	exit(1);
 	return (DB_RUNRECOVERY);
 }
 
@@ -195,6 +198,9 @@ CDB___db_panic(dbenv, errval)
 	 * Reflect, repent, and reboot.
 	 * Order shall return.
 	 */
+	/* Hack to make fatal errors really fatal... */
+	fprintf(stderr,"DB_RUNRECOVERY: Fatal error, run database recovery\n");
+	exit(1);
 	return (DB_RUNRECOVERY);
 }
 

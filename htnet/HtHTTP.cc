@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.21 2003/02/26 21:13:20 angusgb Exp $ 
+// $Id: HtHTTP.cc,v 1.22 2003/05/22 14:43:57 lha Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -823,7 +823,7 @@ bool HtHTTP::isParsable(const char *content_type)
    // depending on the value of Transport:_default_parser_content_type
    // and the rest are determined by the external_parser settings
    
-   if( ! mystrncasecmp (_default_parser_content_type, content_type,
+   if( ! mystrncasecmp (_default_parser_content_type.get(), content_type,
       _default_parser_content_type.length()) )
        return true;
        

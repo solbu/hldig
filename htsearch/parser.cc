@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.cc,v 1.26 2003/02/11 09:49:38 lha Exp $
+// $Id: parser.cc,v 1.27 2003/05/22 14:43:58 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -322,7 +322,7 @@ Parser::perform_push()
 	cerr << "perform_push @"<< stack.Size() << ": " << temp << endl;
 
     String	wildcard = config->Find("prefix_match_character");
-    if (!wildcard)
+    if (!wildcard.get())
         wildcard = "*";
     if (temp == wildcard)
     {

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFile.cc,v 1.6 2003/01/20 22:40:16 lha Exp $ 
+// $Id: HtFile.cc,v 1.7 2003/05/22 14:43:57 lha Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -143,7 +143,7 @@ String HtFile::File2Mime (const char *fname)
     char content_type [100] = "application/x-unknown\n";
 
     String cmd = config->Find ("content_classifier");
-    if (cmd && *cmd)
+    if (cmd && cmd->get())
     {
 	cmd << " \"" << fname << '\"';	// allow file names to have spaces
 	FILE *fileptr;
@@ -180,7 +180,7 @@ HtFile::DocStatus HtFile::Request()
    // Check that it exists, and is a regular file or directory
    // Don't allow symbolic links to directories; they mess up '../'.
    // Should we allow FIFO's?
-   if ( stat(path, &stat_buf) != 0 || 
+   if ( stat(path->get(), &stat_buf) != 0 || 
 	!(S_ISREG(stat_buf.st_mode) || S_ISDIR(stat_buf.st_mode)) )
    {
      return Transport::Document_not_found;
@@ -197,7 +197,7 @@ HtFile::DocStatus HtFile::Request()
        String filename;
        String encodedName;
 
-       if (( dirList = opendir(path) ))
+       if (( dirList = opendir(path.get()) ))
 	 {
 	   while (( namelist = readdir(dirList) ))
 	    {
@@ -261,7 +261,7 @@ HtFile::DocStatus HtFile::Request()
      return Transport::Document_not_changed;
 
    bool unknown_ext = false;
-   char *ext = strrchr(path, '.');
+   char *ext = strrchr(path.get(), '.');
    if (ext == NULL)
       unknown_ext = true;
    else
@@ -274,14 +274,14 @@ HtFile::DocStatus HtFile::Request()
    }
    if (unknown_ext)
    {
-       _response._content_type = File2Mime (path);
+       _response._content_type = File2Mime (path.get());
        if (!strncmp (_response._content_type.get(), "application/x-", 14))
            return Transport::Document_not_local;
    }
 
    _response._modification_time = new HtDateTime(stat_buf.st_mtime);
 
-   FILE *f = fopen((const char *)path, "r");
+   FILE *f = fopen((const char *)path.get(), "r");
    if (f == NULL)
      return Document_not_found;
 

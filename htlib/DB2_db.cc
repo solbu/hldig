@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DB2_db.cc,v 1.18 2002/02/01 22:49:33 ghutchis Exp $
+// $Id: DB2_db.cc,v 1.19 2003/05/22 14:43:57 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -24,6 +24,7 @@
 #include <unistd.h>
 
 #include "DB2_db.h"
+#include "HtConfiguration.h"
 
 // Default cache size in kilobytes.
 // Maybe this should be an config option, just for easy testing and
@@ -65,6 +66,12 @@ DB2_db::Open(const char *filename, int flags, int mode)
 
   if(_compare) dbp->set_bt_compare(dbp, _compare);
   if(_prefix) dbp->set_bt_prefix(dbp, _prefix);
+
+    // specify how dirty database cache is allowed to become
+    // Useful values are from 1 (at most half dirty) to about 3000 (never
+    // flush cache unnecessarily).
+    HtConfiguration *config = HtConfiguration::config();
+    CDB___mp_dirty_level = config->Value("wordlist_cache_dirty_level");
 
     //
     // Open the database.
@@ -356,6 +363,12 @@ DB2_db::db_init(char *home)
 
     dbenv->set_errpfx(dbenv, progname);
     dbenv->set_errcall(dbenv, &Error);
+
+    // specify how dirty database cache is allowed to become
+    // Useful values are from 1 (at most half dirty) to about 3000 (never
+    // flush cache unnecessarily).
+    HtConfiguration *config = HtConfiguration::config();
+    CDB___mp_dirty_level = config->Value("wordlist_cache_dirty_level");
 
     if((error = dbenv->open(dbenv, (const char*)home, NULL, DB_CREATE | DB_PRIVATE | DB_INIT_LOCK | DB_INIT_MPOOL, 0666)) != 0) {
       dbenv->err(dbenv, error, "open %s", (home ? home : ""));

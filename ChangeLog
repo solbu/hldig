@@ -1,5 +1,16 @@
 Thu May 22 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 
+	* htlib/DB_2.cc: Set wordlist_cache_dirty_level before opening
+	  database, to avoid database memory allocation problem.
+
+	* db/db_err.c:  Make 'fatal' errors actually exit.
+
+	* htdig/Document.cc, htsearch/parser.cc, htdig/htdig.cc,
+	* htnet/Ht{HTTP,File}.cc:
+	 Add  .get()  to use of strings to avoid compiler warnings (FreeBSD).
+
+Thu May 22 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
 	* ltmain.sh, test/Makefile.in:  Hack list library dependencies
 	  multiple times in  g++  command, to get MacOS X to 'make check'.
 

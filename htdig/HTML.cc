@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.69 2003/02/11 09:49:34 lha Exp $
+// $Id: HTML.cc,v 1.70 2003/05/22 14:43:56 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -835,7 +835,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		else if (mystrcasecmp(cache, "author") == 0)
 		{
 		    String author = transSGML(attrs["content"]);
-		    retriever.got_author(author);
+		    retriever.got_author(author.get());
 		    if (!noindex)
 			addString (retriever, author, wordindex, 11);
 		}
