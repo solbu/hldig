@@ -1,3 +1,15 @@
+Sun Mar  7 09:39:37 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/timegm.c: Fix problems compiling on libc5 systems noted by
+	Hans-Peter.
+
+	* htlib/Makefile.in, Makefile.in, Makefile.config.in: Use regex.c
+	instead of rx.
+
+	* htfuzzy/EndingsDB.cc: Ditto.
+
+	* configure.in, configure: Don't bother to config rx directory.
+	
 Fri Mar  5 08:09:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrig/parse_doc.pl: uses pdftotext to handle PDF files,
