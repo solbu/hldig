@@ -1,3 +1,11 @@
+Wed Jan  6 14:49:47 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html: Added four new attributes, fixed defaults & typos.
+
+	* htdoc/cf_byname.html: Added four new attributes.
+
+	* htdoc/cf_byprog.html: Added four new attributes.
+
 Wed Jan  6 14:37:06 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure.in: Changed to require Autoconf 2.13 to eliminate bugs
@@ -38,7 +46,7 @@ Wed Jan  6 05:53:02 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 Wed Jan  6 00:28:19 1999  Hans-Peter Nilsson  <hp@axis.se>
 
-	* cf_byname.html: Fixed html syntax "<br" and "/a>".
+	* htdoc/cf_byname.html: Fixed html syntax "<br" and "/a>".
 
 Tue Jan  5 22:40:58 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 

@@ -226,7 +226,7 @@
           </dt>
           <dd>
             .wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg
-            .jpeg .aiff
+            .jpeg .aiff .class .map .ram
           </dd>
           <dt>
             <em>description:</em>
@@ -338,7 +338,6 @@
         </dl>
       </dd>
     </dl>
-    <hr>
     <hr>
     <dl>
       <dt>
@@ -1151,7 +1150,7 @@
             <em>default:</em>
           </dt>
           <dd>
-            cgi-bin
+            cgi-bin .cgi
           </dd>
           <dt>
             <em>description:</em>
@@ -1194,6 +1193,9 @@
           <dt>
             <em>default:</em>
           </dt>
+          <dd>
+            <em>&lt;empty&gt;</em>
+          </dd>
           <dt>
             <em>description:</em>
           </dt>
@@ -1873,7 +1875,7 @@
             <em>default:</em>
           </dt>
           <dd>
-            none
+            <em>&lt;empty&gt;</em>
           </dd>
           <dt>
             <em>description:</em>
@@ -1920,7 +1922,7 @@
             <em>default:</em>
           </dt>
           <dd>
-            .sdsu.edu/
+            ${start_url}
           </dd>
           <dt>
             <em>description:</em>
@@ -2013,7 +2015,7 @@
             <em>default:</em>
           </dt>
           <dd>
-	  None
+            <em>&lt;empty&gt;</em>
           </dd>
           <dt>
             <em>description:</em>
@@ -2059,7 +2061,7 @@
             <em>default:</em>
           </dt>
           <dd>
-            None
+            <em>&lt;empty&gt;</em>
           </dd>
           <dt>
             <em>description:</em>
@@ -2196,7 +2198,7 @@
             <em>default:</em>
           </dt>
           <dd>
-            badguy@localhost
+            bogus@unconfigured.htdig.user
           </dd>
           <dt>
             <em>description:</em>
@@ -2239,7 +2241,7 @@
             <em>default:</em>
           </dt>
           <dd>
-            or
+            and
           </dd>
           <dt>
             <em>description:</em>
@@ -2499,6 +2501,49 @@
     <hr>
     <dl>
       <dt>
+        <strong><a name="max_meta_description_length">
+        max_meta_description_length</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            number
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htdig.html">htdig</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            512
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            While gathering descriptions from meta description tags,
+            <a href= "htdig.html">htdig</a> will truncate
+            descriptions which are longer than this length.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            max_meta_description_length: 1000
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
         <strong><a name="max_prefix_matches">
         max_prefix_matches</a></strong>
       </dt>
@@ -2579,6 +2624,50 @@
           </dt>
           <dd>
             max_stars: 6
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
+        <strong><a name="maximum_pages">
+        maximum_pages</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            integer
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            10
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            This value limits the number of page links that will be
+            included in the page list at the bottom of the search
+            results page. Note that this does not limit the number
+            of documents that are matched in any way.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            maximum_pages: 20
           </dd>
         </dl>
       </dd>
@@ -3031,6 +3120,51 @@
     <hr>
     <dl>
       <dt>
+        <strong><a name="no_page_list_header">
+        no_page_list_header</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            string
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            <em>&lt;empty&gt;</em>
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            This text will be used as the value of the PAGEHEADER
+            variable, for use in templates or the <a href=
+            "#search_results_footer">search_results_footer</a> file,
+            when all search results fit on a single page.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            no_page_list_header: 
+            &lt;hr noshade size=2&gt;All results on this page.&lt;br&gt;
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
         <strong><a name="no_prev_page_text">
         no_prev_page_text</a></strong>
       </dt>
@@ -3120,6 +3254,50 @@
     <hr>
     <dl>
       <dt>
+        <strong><a name="page_list_header">
+        page_list_header</a></strong>
+      </dt>
+      <dd>
+        <dl>
+          <dt>
+            <em>type:</em>
+          </dt>
+          <dd>
+            string
+          </dd>
+          <dt>
+            <em>used by:</em>
+          </dt>
+          <dd>
+            <a href="htsearch.html" target="_top">htsearch</a>
+          </dd>
+          <dt>
+            <em>default:</em>
+          </dt>
+          <dd>
+            &lt;hr noshade size=2&gt;Pages:&lt;br&gt;
+          </dd>
+          <dt>
+            <em>description:</em>
+          </dt>
+          <dd>
+            This text will be used as the value of the PAGEHEADER
+            variable, for use in templates or the <a href=
+            "#search_results_footer">search_results_footer</a> file,
+            when all search results fit on more than one page.
+          </dd>
+          <dt>
+            <em>example:</em>
+          </dt>
+          <dd>
+            page_list_header:
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+    <hr>
+    <dl>
+      <dt>
         <strong><a name="pdf_parser">
         pdf_parser</a></strong>
       </dt>
@@ -3189,7 +3367,7 @@
             <em>default:</em>
           </dt>
           <dd>
-            None
+            *
           </dd>
           <dt>
             <em>description:</em>
@@ -3274,7 +3452,7 @@
             <em>default:</em>
           </dt>
           <dd>
-            false
+            true
           </dd>
           <dt>
             <em>description:</em>
@@ -3527,11 +3705,20 @@
                 A string of the search words with spaces in
                 between.
               </dd>
+              <dt>
+                <b>PAGEHEADER</b>
+              </dt>
+              <dd>
+                This expands to either the value of the <a href=
+                "#page_list_header">page_list_header</a> or <a href=
+                "#no_page_list_header">no_page_list_header</a>
+                attribute depending on how many pages there are.
+              </dd>
             </dl>
-            Note that this file will <strong>NOT</strong>be output
+            Note that this file will <strong>NOT</strong> be output
             if no matches were found. In this case the <a href=
             "#nothing_found_file">nothing_found_file</a> attribute
-            is used in stead.
+            is used instead.
           </dd>
           <dt>
             <em>example:</em>
@@ -3634,10 +3821,10 @@
                 between.
               </dd>
             </dl>
-            Note that this file will <strong>NOT</strong>be output
+            Note that this file will <strong>NOT</strong> be output
             if no matches were found. In this case the <a href=
             "#nothing_found_file">nothing_found_file</a> attribute
-            is used in stead.
+            is used instead.
           </dd>
           <dt>
             <em>example:</em>
@@ -3672,7 +3859,7 @@
             <em>default:</em>
           </dt>
           <dd>
-	  none
+            <em>&lt;empty&gt;</em>
           </dd>
           <dt>
             <em>description:</em>
@@ -3716,7 +3903,7 @@
             <em>default:</em>
           </dt>
           <dd>
-	      -1 (no limit)
+	      -1 <em>(no limit)</em>
           </dd>
           <dt>
             <em>description:</em>
@@ -3946,6 +4133,9 @@
           <dt>
             <em>default:</em>
           </dt>
+          <dd>
+            <em>&lt;empty&gt;</em>
+          </dd>
           <dt>
             <em>description:</em>
           </dt>
@@ -4062,7 +4252,7 @@
             <em>default:</em>
           </dt>
           <dd>
-            http://www/
+            http://www.htdig.org/
           </dd>
           <dt>
             <em>description:</em>
