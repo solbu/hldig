@@ -1,3 +1,15 @@
+Wed Aug 11 13:13:39 1999  Loic Dachary  <loic@yoda.ceic.com>
+
+	* acinclude.m4 : AM_WITH_ZLIB autoconf macro for zlib detection that
+	  allows --with-zlib=DIR to specify the install root of zlib, 
+	  --without-zlib to prevent inclusion of zlib. If nothing 
+	  specified zlib is searched in /usr and /usr/local.
+	  --disable-zlib is replaced with --without-zlib.
+
+	* configure.in,configure,aclocal.m4,db/dist/acinclude.m4,
+	  db/dist/aclocal.m4,db/dist/configure,db/dist/configure.in:
+	  changed to use AM_WITH_ZLIB
+
 Tue Aug 10 21:14:34 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.cc (outputVariable): Fix compilation error with

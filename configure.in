@@ -35,11 +35,6 @@ AM_PROG_LIBTOOL
 dnl Initialize maintainer mode
 AM_MAINTAINER_MODE
 
-dnl Get any --with or --disable flags now
-dnl This looks a little messy, but it's word-wrapping problems :-(
-AC_ARG_ENABLE(zlib,[  --disable-zlib          do not compile with zlib support],
- WITH_ZLIB=$enableval, WITH_ZLIB="yes")
-
 AC_ARG_WITH(config-dir, [  --with-config-dir=DIR  where your config directory is [default=$ac_default_prefix/conf]],
  CONFIG_DIR="$withval", CONFIG_DIR="$ac_default_prefix/conf")
 AC_SUBST(CONFIG_DIR)
@@ -112,26 +107,7 @@ AC_AIX
 dnl Checks for libraries.
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, t_accept)
-if test $WITH_ZLIB = yes; then
-#
-# Location of Zlib installation
-#
-ZLIB_HOME=/usr/local
-if test ! -f "${ZLIB_HOME}/include/zlib.h"
-then
-	ZLIB_HOME=/usr
-fi
-AC_CACHE_CHECK([ZLIB_HOME], db_cv_zlib_home,
-AC_ARG_WITH(zlib,
-    [  --with-zlib=<path> root directory path of zlib installation],
-    [ZLIB_HOME=$with_zlib])
-db_cv_zlib_home=${ZLIB_HOME}
-)
-LDFLAGS="$LDFLAGS -L${ZLIB_HOME}/lib"
-CPPFLAGS="$CPPFLAGS -I${ZLIB_HOME}/include"
-AC_CHECK_LIB(z, inflateEnd)
-fi
-
+AM_WITH_ZLIB
 AC_SUBST(CXXFLAGS)dnl
 AC_SUBST(LDFLAGS)dnl
 

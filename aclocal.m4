@@ -10,6 +10,42 @@ dnl but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
+
+AC_DEFUN(AM_WITH_ZLIB,
+#
+# Handle user hints
+#
+[AC_MSG_CHECKING(if zlib is wanted)
+AC_ARG_WITH(zlib,
+[  --with-zlib=DIR root directory path of zlib installation [defaults to
+		    /usr/local or /usr if not found in /usr/local]
+  --without-zlib to disable zlib usage completely],
+[if test "$withval" != no ; then
+  AC_MSG_RESULT(yes)
+  ZLIB_HOME="$withval"
+else
+  AC_MSG_RESULT(no)
+fi], [
+AC_MSG_RESULT(yes)
+ZLIB_HOME=/usr/local
+if test ! -f "${ZLIB_HOME}/include/zlib.h"
+then
+	ZLIB_HOME=/usr
+fi
+])
+
+#
+# Locate zlib, if wanted
+#
+if test -n "${ZLIB_HOME}"
+then
+	LDFLAGS="$LDFLAGS -L${ZLIB_HOME}/lib"
+	CPPFLAGS="$CPPFLAGS -I${ZLIB_HOME}/include"
+	AC_CHECK_LIB(z, inflateEnd)
+fi
+
+])
+
 # Do all the work for Automake.  This macro actually does too much --
 # some checks are only needed if your package does certain things.
 # But this isn't really a big deal.
@@ -128,7 +164,7 @@ done<<>>dnl>>)
 changequote([,]))])
 
 
-# serial 40 AC_PROG_LIBTOOL
+# serial 39 AC_PROG_LIBTOOL
 AC_DEFUN(AC_PROG_LIBTOOL,
 [AC_REQUIRE([AC_LIBTOOL_SETUP])dnl
 
@@ -489,7 +525,6 @@ AC_DEFUN(AC_LIBLTDL_CONVENIENCE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
       ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
   esac
   LIBLTDL=ifelse($#,1,$1,['${top_builddir}/libltdl'])/libltdlc.la
-  INCLTDL=ifelse($#,1,-I$1,['-I${top_builddir}/libltdl'])
 ])
 
 # AC_LIBLTDL_INSTALLABLE[(dir)] - sets LIBLTDL to the link flags for
@@ -513,11 +548,9 @@ AC_DEFUN(AC_LIBLTDL_INSTALLABLE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   if test x"$enable_ltdl_install" = x"yes"; then
     ac_configure_args="$ac_configure_args --enable-ltdl-install"
     LIBLTDL=ifelse($#,1,$1,['${top_builddir}/libltdl'])/libltdl.la
-    INCLTDL=ifelse($#,1,-I$1,['-I${top_builddir}/libltdl'])
   else
     ac_configure_args="$ac_configure_args --enable-ltdl-install=no"
     LIBLTDL="-lltdl"
-    INCLTDL=
   fi
 ])
 
@@ -530,8 +563,8 @@ AC_DEFUN(AM_DISABLE_STATIC, [indir([AC_DISABLE_STATIC], $@)])dnl
 AC_DEFUN(AM_PROG_LD, [indir([AC_PROG_LD])])dnl
 AC_DEFUN(AM_PROG_NM, [indir([AC_PROG_NM])])dnl
 
-dnl This is just to silence aclocal about the macro not being used
-ifelse([AC_DISABLE_FAST_INSTALL])dnl
+dnl This is just to quiet aclocal about the macro not being used
+if(a,b,[AC_DISABLE_FAST_INSTALL])dnl
 
 # Add --enable-maintainer-mode option to configure.
 # From Jim Meyering
