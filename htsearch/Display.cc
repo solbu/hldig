@@ -4,7 +4,7 @@
 // Implementation of Display
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.43 1999/01/26 19:45:59 hp Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.44 1999/01/27 00:28:43 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -139,8 +139,10 @@ Display::display(int pageNumber)
 		    header = h;
 		    p[-1] = '\0';
 		}
-		else if (p > h+1 && p[-1] == '(' && p[-2] == '$' &&
-			 p[strlen(wrap_sepr)] == ')')
+		else if (p > h+1 && p[-2] == '$' &&
+			 (p[-1] == '(' || p[-1] == '{') &&
+			 (p[strlen(wrap_sepr)] == ')' ||
+				p[strlen(wrap_sepr)] == '}'))
 		{
 		    footer = p + strlen(wrap_sepr) + 1;
 		    header = h;
