@@ -12,7 +12,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.52 1999/08/23 15:18:48 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.53 1999/08/28 21:11:52 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -129,7 +129,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     // We have some variables which will contain the various items we
     // are looking for
     //
-    int			offset = 0;
+    int			wordindex = 0;
     int			in_space;
     int			in_punct;
     String		scratch, textified;
@@ -288,9 +288,6 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 
       while (*position)
       {
-	offset = position - start;
-	// String = 0 is expensive
-	// word = 0;
 	if (*position == '<' && (position[1] != '~' || position[2] != '>'))
 	  {
 	    //
@@ -404,9 +401,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 
 	    if (word.length() >= minimumWordLength && doindex)
 	    {
-	      retriever.got_word(word,
-				 int(offset * 1000 / contents->length()),
-				 in_heading);
+	      retriever.got_word(word, wordindex++, in_heading);
 	    }
 	}
 	else
