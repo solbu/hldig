@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.11 2000/10/10 03:15:31 ghutchis Exp $
+// $Id: ExternalParser.cc,v 1.19.2.12 2000/12/10 21:44:08 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -28,10 +28,12 @@
 #include "QuotedStringList.h"
 #include "URL.h"
 #include "Dictionary.h"
+#include "good_strtok.h"
 
 #include <ctype.h>
 #include <stdio.h>
-#include "good_strtok.h"
+#include <unistd.h>
+#include <stdlib.h>
 
 static Dictionary	*parsers = 0;
 static Dictionary	*toTypes = 0;
@@ -76,7 +78,7 @@ ExternalParser::readLine(FILE *in, String &line)
     char	buffer[2048];
     int		length;
     
-    line = 0;
+    line = 0; // read(in, buffer, sizeof(buffer)
     while (fgets(buffer, sizeof(buffer), in))
     {
 	length = strlen(buffer);
@@ -163,36 +165,26 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     // Write the contents to a temporary file.
     //
     String      path = getenv("TMPDIR");
+    int		fd;
     if (path.length() == 0)
       path = "/tmp";
-    path << "/htdext." << getpid();
+#ifndef HAVE_MKSTEMP
+    path << "/htdext." << getpid(); // This is unfortunately predictable
 
-    FILE	*fl = fopen((char*)path, "w");
-    if (!fl)
-    {
-	return;
-    }
+    fd = open((char*)path, O_WRONLY|O_CREAT|O_EXCL);
+    if (!fd)
+      return;
+#else
+    path << "/htdex.XXXXXX";
+    fd = mkstemp((char*)path);
+    if (!fd)
+      return;
+#endif
     
-    fwrite(contents->get(), 1, contents->length(), fl);
-    fclose(fl);
-    
-    //
-    // Now start the external parser.
-    //
-    String	command = currentParser;
-    command << ' ' << path << " \"" << contentType << "\" \"" << base.get() <<
-	"\" " << configFile;
+    write(fd, contents->get(), contents->length());
+    close(fd);
 
-    FILE	*input = popen((char*)command, "r");
-    if (!input)
-    {
-	unlink((char*)path);
-	return;
-    }
-
-    unsigned int minimum_word_length
-      = config.Value("minimum_word_length", 3);
-
+    unsigned int minimum_word_length = config.Value("minimum_word_length", 3);
     String	line;
     char	*token1, *token2, *token3;
     int		loc = 0, hd = 0;
@@ -201,6 +193,38 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     int		get_hdr = (convertToType.nocase_compare("user-defined") == 0);
     int		get_file = (convertToType.length() != 0);
     String	newcontent;
+
+    int    stdout_pipe[2];
+    int	   fork_result;
+
+    if( (pipe(stdout_pipe) == 0) )
+      {
+	fork_result = fork(); // Fork so we can execute in the child process
+	if(fork_result == -1)
+	  {
+	    cout << "Fork Failure in ExternalParser" << endl;
+	    exit(EXIT_FAILURE); // Do we really want to exit?
+	  }
+	else if(fork_result == 0) // Child process
+	  {
+	    close(STDIN_FILENO); // Close STDIN
+	    close(STDERR_FILENO); // Close STDERR
+	    close(STDOUT_FILENO); // Close then handle STDOUT
+	    dup(stdout_pipe[1]);
+	    close(stdout_pipe[0]);
+	    close(stdout_pipe[1]);
+
+	    // Call External Parser
+	    execl(currentParser.get(), currentParser.get(), path.get(),
+		  contentType.get(), base.get().get(), configFile.get(), 0);
+
+	    exit(EXIT_FAILURE);
+	  }
+
+	else // Parent Process
+	  {
+	    close(stdout_pipe[1]); // Close STDOUT for writing
+	    FILE *input = fdopen(stdout_pipe[0], "r");
 
     while (readLine(input, line))
     {
@@ -421,8 +445,11 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		  cerr<< "External parser error: unknown field in line "<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 	}
-    }
-    pclose(input);
+    } // while(readLine)
+    fclose(input);
+    // close(stdout_pipe[0]); // This is closed for us by the fclose()
+	  } // fork_result
+      } // create pipes
     unlink((char*)path);
 
     if (newcontent.length() > 0)

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalTransport.cc,v 1.1.2.4 2000/10/20 03:40:56 ghutchis Exp $
+// $Id: ExternalTransport.cc,v 1.1.2.5 2000/12/10 21:44:08 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -115,12 +115,44 @@ Transport::DocStatus ExternalTransport::Request()
     String	command = _Handler;
     command << ' ' << _Protocol << " \"" << _URL.get() << "\" " << configFile;
 
-    FILE	*input = popen((char*)command, "r");
+    int    stdout_pipe[2];
+    int	   fork_result;
+
+    if( (pipe(stdout_pipe) == 0) )
+      {
+	fork_result = fork(); // Fork so we can execute in the child process
+	if(fork_result == -1)
+	  {
+	    cerr << "Fork Failure in ExternalTransport" << endl;
+	    exit(EXIT_FAILURE); // Do we really want to exit?
+	  }
+	else if(fork_result == 0) // Child process
+	  {
+	    close(STDIN_FILENO); // Close STDIN
+	    close(STDERR_FILENO); // Close STDERR
+	    close(STDOUT_FILENO); // Close then handle STDOUT
+	    dup(stdout_pipe[1]);
+	    close(stdout_pipe[0]);
+	    close(stdout_pipe[1]);
+
+	    // Call External Parser
+	    execl(_Handler.get(), _Handler.get(), _Protocol.get(),
+		  _URL.get().get(), configFile.get(), 0);
+
+	    // If we got here, then something is wrong...
+	    // (ExternalParser should have taken over
+	    exit(EXIT_FAILURE);
+	  }
+
+	else // Parent Process
+	  {
+	    close(stdout_pipe[1]); // Close STDOUT for writing
+	    FILE *input = fdopen(stdout_pipe[0], "r");
     
     // Set up a response for this request
     _Response->Reset();
     // We just accessed the document
-    //    _Response->_access_time->SettoNow();
+    _Response->_access_time->SettoNow();
     
     
     // OK, now parse the stuff we got back from the handler...
@@ -210,7 +242,10 @@ Transport::DocStatus ExternalTransport::Request()
             break;
       }
     _Response->_document_length = _Response->_contents.length();
-    pclose(input);
+    fclose(input);
+    // close(stdout_pipe[0]); // This is closed for us by the fclose()
+    } // fork_result
+    } // create pipes
 
     return GetDocumentStatus(_Response);
 }

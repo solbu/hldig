@@ -1,3 +1,24 @@
+Sun Dec 10 15:28:44 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/ExternalTransport.cc: Use fork/exec instead of calling
+	popen, which bypasses any shell escape problems.
+
+	* htdig/ExternalParser.cc: Ditto, plus use of mkstemp where
+	available to pick the filename.
+
+	* configure, configure.in: Check for mkstemp where available.
+
+	* include/htconfig.h.in: Define it as above.
+
+	* htlib/Makefile.am: Omit regex.c from SOURCES--this is included
+	when necessary by the configure script. Otherwise this produces
+	duplicate declarations, etc.
+
+	* htlib/Makefile.in: Regenerate using automake --foreign.
+
+	* htcommon/URL.cc: Fix bug with ports of 0 showing up in URLs like
+	mailto: or other less-common protocols.
+
 Fri Dec  1 14:45:33 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/htdig-3.2.0.spec: Updated to 3.2.0b3.
