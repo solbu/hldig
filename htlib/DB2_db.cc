@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DB2_db.cc,v 1.19 2003/05/22 14:43:57 lha Exp $
+// $Id: DB2_db.cc,v 1.20 2003/06/23 21:36:46 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -21,7 +21,10 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <fstream.h>
+
+#ifndef _MSC_VER //_WIN32
 #include <unistd.h>
+#endif
 
 #include "DB2_db.h"
 #include "HtConfiguration.h"
@@ -71,7 +74,7 @@ DB2_db::Open(const char *filename, int flags, int mode)
     // Useful values are from 1 (at most half dirty) to about 3000 (never
     // flush cache unnecessarily).
     HtConfiguration *config = HtConfiguration::config();
-    CDB___mp_dirty_level = config->Value("wordlist_cache_dirty_level");
+    CDB_set_mp_diry_level(config->Value("wordlist_cache_dirty_level"));
 
     //
     // Open the database.
@@ -368,7 +371,7 @@ DB2_db::db_init(char *home)
     // Useful values are from 1 (at most half dirty) to about 3000 (never
     // flush cache unnecessarily).
     HtConfiguration *config = HtConfiguration::config();
-    CDB___mp_dirty_level = config->Value("wordlist_cache_dirty_level");
+    CDB_set_mp_diry_level(config->Value("wordlist_cache_dirty_level"));
 
     if((error = dbenv->open(dbenv, (const char*)home, NULL, DB_CREATE | DB_PRIVATE | DB_INIT_LOCK | DB_INIT_MPOOL, 0666)) != 0) {
       dbenv->err(dbenv, error, "open %s", (home ? home : ""));
