@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.4 1999/12/10 17:30:00 bosc Exp $
+// $Id: word.cc,v 1.14.2.5 1999/12/14 13:43:49 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -607,13 +607,8 @@ public:
     char *goodorder;
     void GetSearchKey(WordKey &searchKey)
     {
-	FILE *F;
-	if(!(F=fopen("tmpfile","w"))){cerr << "couldnt open tmp file" << endl;exit(1);}
-	fprintf(F,"%s\n",searchkey);
-	fclose(F);
-	ifstream ins("tmpfile");
-	ins >> searchKey;
-	if(verbose) cout << "GetSearchKey: string:" << searchkey << "got:" << searchKey << endl;
+	searchKey.Set(searchkey);
+	if(verbose) cout << "GetSearchKey: string:" << searchkey << " got:" << searchKey << endl;
     }
     int Check(WordList &WList)
     {
@@ -657,25 +652,18 @@ public:
 	return OK;
     }
 };
+
 SkipTestEntry SkipTestEntries[]=
 {
      {
- 	"et      <UNDEF>       0       10    ",
+ 	"et  <DEF>      <UNDEF>       0       10      ",
  	"3 4 5 9 10 12 13 14"
      },
      {
- 	"et<UNDEF>      20       0       <UNDEF>    ",
+ 	"et  <UNDEF>    20            0       <UNDEF> ",
  	"3 4 5 6 7 8 9 14 15 16 17",
      },
-//      {
-//    	"<UNDEF>      20      0       10    ",
-//    	"4 9 13",
-//      },
 };
-    
-
-
-
 
 static void 
 doskip(params_t*)

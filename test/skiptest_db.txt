@@ -1,25 +1,25 @@
-az                5       1       0       0
-bz                5       0       2       1
-cz                6       0       3       2
-et                1       0       50      3
-et                20      0       10      4
-et                20      0       20      5
-et                20      0       40      6
-et                20      0       50      7
-et                20      0       60      8
-et                21      0       10      9
-et                21      0       20      10
-et                21      0       30      11
-et                23      0       56      12
-et                28      0       10      13
-eta               1       0       5       14
-eta               9       0       4       15
-eta               10      0       3       16
-eu                2       0       10      17
-serhysdfh         1       0       11      18
-serhysdfh         1       0       50      19
-tata              4       0       6       20
-tata              8       0       6       21
-tito              1       0       3       22
-tz                7       0       4       23
-uu                6       0       5       24
+az                <DEF>  5       1       0       0
+bz                <DEF>  5       0       2       1
+cz                <DEF>  6       0       3       2
+et                <DEF>  1       0       50      3
+et                <DEF>  20      0       10      4
+et                <DEF>  20      0       20      5
+et                <DEF>  20      0       40      6
+et                <DEF>  20      0       50      7
+et                <DEF>  20      0       60      8
+et                <DEF>  21      0       10      9
+et                <DEF>  21      0       20      10
+et                <DEF>  21      0       30      11
+et                <DEF>  23      0       56      12
+et                <DEF>  28      0       10      13
+eta               <DEF>  1       0       5       14
+eta               <DEF>  9       0       4       15
+eta               <DEF>  10      0       3       16
+eu                <DEF>  2       0       10      17
+serhysdfh         <DEF>  1       0       11      18
+serhysdfh         <DEF>  1       0       50      19
+tata              <DEF>  4       0       6       20
+tata              <DEF>  8       0       6       21
+tito              <DEF>  1       0       3       22
+tz                <DEF>  7       0       4       23
+uu                <DEF>  6       0       5       24
