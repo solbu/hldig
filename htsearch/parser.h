@@ -1,19 +1,18 @@
 //
 // parser.h
 //
-// $Id: parser.h,v 1.3 1997/04/27 14:43:31 turtle Exp $
+// parser: Parses a boolean expression tree, retrieving and scoring 
+//         the resulting document list
 //
-// $Log: parser.h,v $
-// Revision 1.3  1997/04/27 14:43:31  turtle
-// changes
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.2  1997/03/24 04:33:25  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
+// $Id: parser.h,v 1.13.2.1 2000/02/27 04:36:03 ghutchis Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-//
+
 #ifndef _parser_h_
 #define _parser_h_
 
@@ -21,10 +20,13 @@
 #include "WeightWord.h"
 #include "ResultList.h"
 #include "DocMatch.h"
-#include <Database.h>
-#include <htString.h>
-#include <Stack.h>
+#include "Database.h"
+#include "htString.h"
+#include "Stack.h"
+#include "HtWordList.h"
 #include <ctype.h>
+
+class Collection;
 
 class Parser
 {
@@ -34,19 +36,26 @@ public:
     int			checkSyntax(List *);
     void		parse(List *, ResultList &);
 
-    void		setDatabase(Database *db)	{dbf = db;}
+    // void		setDatabase(const String& db)		{ words.Open(db, O_RDONLY); }
+    void                setCollection(Collection *collection);
     char		*getErrorMessage()		{return error.get();}
     int			hadError()			{return valid == 0;}
 	
 protected:
+    void		fullexpr(int);
     int			lexan();
+    void		phrase(int);
     void		expr(int);
     void		term(int);
     void		factor(int);
     int			match(int);
+    void		setError(char *);
     void		perform_push();
     void		perform_and(int);
     void		perform_or();
+    void		perform_phrase(List &);
+
+    void		score(List *, double weight);
 
     List		*tokens;
     List		*result;
@@ -54,8 +63,10 @@ protected:
     int			lookahead;
     int			valid;
     Stack		stack;
-    Database		*dbf;
     String		error;
+    Collection          *collection; // Multiple database support
+
+    HtWordList		words;
 };
 
 

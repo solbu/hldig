@@ -10,11 +10,12 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.cc,v 1.22.2.2 2000/02/01 16:27:48 grdetil Exp $
+// $Id: parser.cc,v 1.22.2.3 2000/02/27 04:36:03 ghutchis Exp $
 //
 
 #include "parser.h"
 #include "HtPack.h"
+#include "Collection.h"
 
 #define	WORD	1000
 #define	DONE	1001
@@ -345,6 +346,7 @@ Parser::score(List *wordList, double weight)
     static double description_factor = config.Double("description_factor", 1);
     double	  wscore;
     int		  docanchor;
+    int		  word_count;
 
     stack.push(list);
 
@@ -354,6 +356,10 @@ Parser::score(List *wordList, double weight)
 	list->isIgnore = 1;
 	return;
       }
+
+    // We're now guaranteed to have a non-empty list
+    // We'll use the number of occurences of this word for scoring
+    word_count = wordList->Count();
 
     wordList->Start_Get();
     while ((wr = (HtWordReference *) wordList->Get_Next()))
@@ -371,6 +377,7 @@ Parser::score(List *wordList, double weight)
 	if (wr->Flags() & FLAG_AUTHOR)		wscore += author_factor;
 	if (wr->Flags() & FLAG_LINK_TEXT)	wscore += description_factor;
 	wscore *= weight;
+	wscore = wscore / (double)word_count;
 	docanchor = wr->Anchor();
 	dm = list->find(wr->DocID());
 	if (dm)
@@ -566,6 +573,7 @@ Parser::parse(List *tokenList, ResultList &resultMatches)
     for (int i = 0; i < elements->Count(); i++)
     {
 	dm = (DocMatch *) (*elements)[i];
+        dm->collection = collection; // back reference
 	resultMatches.add(dm);
     }
     elements->Release();
@@ -573,3 +581,12 @@ Parser::parse(List *tokenList, ResultList &resultMatches)
     delete elements;
     delete result;
 }
+
+void
+Parser::setCollection(Collection *coll)
+{
+    if (coll)
+        words.Open(coll->getWordFile(), O_RDONLY);
+    collection = coll;
+}       
+
