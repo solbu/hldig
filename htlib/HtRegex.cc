@@ -4,12 +4,12 @@
 // HtRegex: A simple C++ wrapper class for the system regex routines.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999, 2000 The ht://Dig Group
+// Copyright (c) 1999-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.cc,v 1.9.2.5 2000/08/21 02:29:15 ghutchis Exp $
+// $Id: HtRegex.cc,v 1.9.2.6 2001/02/11 23:08:29 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H

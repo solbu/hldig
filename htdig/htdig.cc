@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.16 2000/10/20 03:40:56 ghutchis Exp $
+// $Id: htdig.cc,v 1.26.2.17 2001/02/11 23:08:29 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -40,8 +40,8 @@
 int			debug = 0;
 int			report_statistics = 0;
 DocumentDB		docs;
-HtRegex			limits;
-HtRegex			limitsn;
+HtRegexList		limits;
+HtRegexList		limitsn;
 FILE			*urls_seen = NULL;
 FILE			*images_seen = NULL;
 String			configFile = DEFAULT_CONFIG_FILE;

@@ -1,3 +1,21 @@
+Sun Feb 11 16:42:11 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtRegexList.h, htlib/HtRegexList.cc (class HtRegexList):
+	Simple List(HtRegex) object with similar calling conventions to
+	HtRegex class. This version is not as sophisticated as it could
+	be, but it's not likely to drop object when reorganizing.
+
+	* htlib/Makefile.[in,am]: Add HtRegexList files to list for
+	compilation.
+
+	* htdig/htdig.h, htdig/htdig.cc, htdig/Retriever.cc: Use
+	HtRegexList instead of HtRegex for setting escaped values--should
+	never fail (since each String item is short).
+	
+	* htlib/HtDateTime.cc: Put back timezone specs into the output
+	formats so we give everything even if we ignore it when reading
+	input.
+
 Mon Feb  5 11:47:07 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtDateTime.cc: Remove the timezone specs in the date

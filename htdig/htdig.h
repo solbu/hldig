@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.h,v 1.9.2.2 2000/10/20 03:40:56 ghutchis Exp $
+// $Id: htdig.h,v 1.9.2.3 2001/02/11 23:08:29 ghutchis Exp $
 //
 
 #ifndef _htdig_h_
@@ -21,7 +21,7 @@
 #include "DocumentDB.h"
 #include "StringMatch.h"
 #include "htconfig.h"
-#include "HtRegex.h"
+#include "HtRegexList.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <fstream.h>
@@ -30,10 +30,10 @@
 extern HtConfiguration	config;
 extern int		debug;
 extern DocumentDB	docs;
-extern HtRegex		limits;
-extern HtRegex		limitsn;
-extern HtRegex		excludes;
-extern HtRegex		badquerystr;
+extern HtRegexList	limits;
+extern HtRegexList	limitsn;
+extern HtRegexList	excludes;
+extern HtRegexList	badquerystr;
 extern FILE		*urls_seen;
 extern FILE		*images_seen;
 
