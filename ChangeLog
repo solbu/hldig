@@ -1,3 +1,9 @@
+Thu Feb  3 12:28:39 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/EndingsDB.cc (createDB): fix code to use MV macro in
+	system() command, not hard-coded "MV" string literal, and use
+	get() on config objects to avoid passing String objects to form().
+
 Wed Feb  2 19:44:33 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtDateTime.cc (SetRFC1123): Strip off weekday, if present
