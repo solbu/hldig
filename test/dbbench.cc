@@ -86,7 +86,7 @@ int main(int ac, char **av)
 	case 'M':
 	  params.pool = 1;
 	  break;
-	case 'Z':
+	case 'z':
 	  params.compress = 1;
 	  break;
 	case 'f':
@@ -106,7 +106,7 @@ int main(int ac, char **av)
 	  params.nwords = atoi(optarg);
 	  break;
 	  break;
-	case 'z':
+	case 'Z':
 	  params.compress_test = 1;
 	  break;
 	case 'p':
@@ -170,13 +170,13 @@ void usage()
     cout << "\t-C <size>\tset cache size to <size>.\n";
     cout << "\t-S <size>\tset page size to <size>.\n";
     cout << "\t-M\t\tuse shared memory pool (default do not use).\n";
-    cout << "\t-Z\t\tSet DB_COMPRESS flag\n";
+    cout << "\t-z\t\tSet DB_COMPRESS flag\n";
     cout << "\n";
     cout << "\t-f word\t\tfind word and display entries. If empty string show all.\n";
     cout << "\n";
     cout << "\t-r n\t\tRemove <n> first entries.\n";
     cout << "\n";
-    cout << "\t-z\t\tcompress blocks of existing dbfile.\n";
+    cout << "\t-Z\t\tcompress blocks of existing dbfile.\n";
     cout << "\t-p n\t\ttest compress on first <n> pages (default all pages).\n";
     cout << "\t-u\t\tuncompress each page & check with original (default don't uncompress).\n";
     cout << "\n";
