@@ -1,3 +1,19 @@
+Thu Feb  4 13:03:44 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htfuzzy/Soundex.cc(generateKey): Skip initial non-alphabetic
+	characters and explicitly skip characters without values.
+	
+	* htfuzzy/Metaphone.cc(generateKey): General bug-fixing, fixing a
+	bug that corrupted the string to be processed, fixing typos, and
+	ensuring keys generated fit the metaphone algorithm.
+
+	* htfuzzy/Fuzzy.cc(getWords): Add debugging output of the fuzzy
+	key used.
+	
+	* contrib/doclist/doclist.pl, contrib/doclist/listafter.pl,
+	contrib/whatsnew/whatsnew.pl, contribu/urlindex.pl: Change to
+	support additions to ht://Dig database format.
+
 Thu Feb  4 02:09:22 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/htsearch.cc: Add debugging information on words
