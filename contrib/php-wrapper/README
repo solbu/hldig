@@ -1,0 +1,66 @@
+#
+# htdig php wrapper 1.0
+#
+# Copyright (c) 2001 DVL Software Limited
+# http://www.dvl-software.com/
+#
+# this source code can be obtained from:
+#      http://freebsddiary.org/samples/htdig-php-wrapper.tar.gz
+#
+# If you have any trouble with htdig, try the htdig mailing lists at
+# http://www.htdig.org/
+#
+# If you have any suggestions for improvments, bug reports, etc,
+# please send patches to me.  Thanks.
+#
+# I'd also like to hear about where it's being used.  That's just me
+# being curious, that's all.
+#
+# dan@langille.org
+#
+
+This README describes the contents of the above tarball.  The
+tarball contains the following files:
+
+LICENSE                                - the license which covers this package
+README                                 - this file
+htdig.sh                               - a shell which calls the htsearch program
+search-form.php                        - the HTML form used by search.php
+search-results-template-short.html     - the template for the short results
+search-results-template.html           - the template for the long results
+search.php                             - main search page
+search_results_footer.html             - the footer for the results
+search_results_header.html             - the header for the results
+search_results_nothing_found_file.html - used when nothing is found
+search_results_syntax_error.html       - used when a syntax error occurs
+
+To use this php wrapper, you must do the following:
+
+1 - If you haven't already, install and configure htdig.  
+    See http://www.htdig.org/ for details.  You must have a 
+    working install before proceeding to the next step.
+
+2 - extract this tarball to your preferred location
+
+3 - edit htdig.sh and set HTBINDIR appropriately
+
+4 - edit search.php and set HTSEARCH_PROG to point to htdig.sh
+
+5 - add the following to your htdig configuration file (normally htdig.conf)
+
+#
+# see http://www.htdig.org/hts_templates.html for details
+# on these fields
+#
+search_results_header:  search_results_header.html
+search_results_footer:  search_results_footer.html
+syntax_error_file:      search_results_syntax_error.html
+nothing_found_file:     search_results_nothing_found_file.html
+
+# this is the name of the page which is used for searching
+script_name:            search.php
+
+# these are the long and the short page results.
+template_map: short short search-results-template-short.html long  long  search-results-template.html
+
+
