@@ -7,12 +7,12 @@
 //             mixed in...
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999-2000 The ht://Dig Group
+// Copyright (c) 1999-2001 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.3.2.8 2000/05/10 18:23:45 loic Exp $
+// $Id: Connection.cc,v 1.3.2.9 2001/01/07 04:16:47 ghutchis Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -57,6 +57,10 @@ extern "C" {
 #define	MIN(a,b)		((a)<(b)?(a):(b))
 
 List	all_connections;
+
+#ifndef FD_SET_T // This seems to be needed for BSDI
+#define FD_SET_T fd_set
+#endif
 
 Connection::Connection()
 {
