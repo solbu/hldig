@@ -1,3 +1,8 @@
+Wed Mar 31 15:19:25 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Synonym.cc: Fix previous fix of minor memory leak.
+	(db pointer wasn't properly set)
+
 Mon Mar 29 10:31:09 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.cc(excerpt): Added patch from Gabriele to
