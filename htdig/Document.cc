@@ -11,12 +11,12 @@
 //           work, Document_not_found is returned.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2000 The ht://Dig Group
+// Copyright (c) 1995-2002 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.57 2002/02/01 22:49:29 ghutchis Exp $
+// $Id: Document.cc,v 1.58 2002/02/12 06:17:22 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -512,7 +512,7 @@ Document::Retrieve(Server *server, HtDateTime date)
          ptrdatetime = response->GetModificationTime();
          document_length = response->GetDocumentLength();
 
-         if (transportConnect == HTTPConnect)
+         if (transportConnect == HTTPConnect || transportConnect == externalConnect)
             redirected_to =  ((HtHTTP_Response *)response)->GetLocation();
 
          if (ptrdatetime)
