@@ -1,3 +1,24 @@
+Tue Sep 12 17:00:00 CEST 2000 Quim Sanmarti <qss@gtd.es>
+
+	* htsearch: added AndQuery.cc BooleanLexer.cc BooleanQueryParser.cc
+	ExactWordQuery.cc GParser.cc NearQuery.cc NotQuery.cc
+	OperatorQuery.cc OrFuzzyExpander.cc OrQuery.cc
+	PhraseQuery.cc Query.cc QueryLexer.cc QueryParser.cc
+	SimpleQueryParser.cc VolatileCache.cc WordSearcher.cc
+	qtest.cc WordSearcher.h AndQuery.h AndQueryParser.h
+	BooleanLexer.h BooleanQueryParser.h ExactWordQuery.h
+	FuzzyExpander.h GParser.h NearQuery.h NotQuery.h
+	OperatorQuery.h OrFuzzyExpander.h OrQuery.h OrQueryParser.h
+	PhraseQuery.h Query.h QueryCache.h QueryLexer.h
+	QueryParser.h SimpleLexer.h SimpleQueryParser.h VolatileCache.h.
+	This is the new query parsing/evaluation framework.
+
+	* Modified DocMatch.{cc,h} and ResultList.{cc,h} for compatibility.
+
+	* Removed the previous {And,Or,Exact,}ParseTree.{cc,h} files.
+
+	* Modified Makefile.{am,in} consequently.
+
 Mon Sep 11 11:56:44 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/ExternalParser.cc (parse): Lowercase content-types and
