@@ -237,7 +237,7 @@ ac_configure_args="$ac_configure_args --enable-cxx"
 
 AC_CONFIG_SUBDIRS(db/dist)
 
-AC_OUTPUT(Makefile db/Makefile htcommon/Makefile htword/Makefile htnet/Makefile htlib/Makefile htdb/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile test/test_functions)
+AC_OUTPUT(Makefile db/Makefile htcommon/Makefile htword/Makefile htnet/Makefile htlib/Makefile htdb/Makefile htdig/Makefile htmerge/Makefile httools/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile test/test_functions)
 
 echo ""
 echo ""

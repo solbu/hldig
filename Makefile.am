@@ -7,7 +7,7 @@ if TESTS
 TESTDIR = test
 endif
 
-SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch htmerge htnotify installdir include htdoc $(TESTDIR)
+SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch htmerge httools installdir include htdoc $(TESTDIR)
 
 EXTRA_DIST = .version acconfig.h Makefile.config ChangeLog.0 contrib
 

@@ -1,3 +1,21 @@
+Sat Mar 18 22:57:02 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* httools/Makefile.am, httools/Makefile.in: New directory for
+	useful database utilities.
+
+	* httools/htnotify.cc: Moved htnotify to httools directory.
+
+	* httools/htpurge.cc: New program--currently just purges documents
+	(and corresponding words) in the databases. Will shortly also
+	allow deletion of specified URLs.
+
+	* Makefile.am, configure.in: Remove htnotify directory in favor of
+	httools directory.
+
+	* configure: Regenerate using autoconf.
+
+	* Makefile.in: Regenerate using automake --foreign.
+
 Fri Mar 17 16:47:37 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc (excerpt, hilight): Correctly handle case

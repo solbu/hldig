@@ -135,7 +135,7 @@ libfuzzy_la_SOURCES = Endings.cc EndingsDB.cc Exact.cc 		Fuzzy.cc Metaphone.cc S
 
 libfuzzy_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-noinst_HEADERS = Accents.h	Endings.h 	Exact.h 	Fuzzy.h 	Metaphone.h 	Prefix.h 	Regex.h 	Soundex.h 	Speling.h 	Substring.h 	SuffixEntry.h 	Synonym.h 	htfuzzy.h
+noinst_HEADERS = Accents.h 	Endings.h 	Exact.h 	Fuzzy.h 	Metaphone.h 	Prefix.h 	Regex.h 	Soundex.h 	Speling.h 	Substring.h 	SuffixEntry.h 	Synonym.h 	htfuzzy.h
 
 
 bin_PROGRAMS = htfuzzy
@@ -172,10 +172,10 @@ DIST_COMMON =  Makefile.am Makefile.in
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/Accents.P .deps/Endings.P .deps/EndingsDB.P .deps/Exact.P \
-.deps/Fuzzy.P .deps/Metaphone.P .deps/Prefix.P .deps/Regex.P \
-.deps/Soundex.P .deps/Speling.P .deps/Substring.P .deps/SuffixEntry.P \
-.deps/Synonym.P .deps/htfuzzy.P
+DEP_FILES =  .deps/Accents.P .deps/Endings.P .deps/EndingsDB.P \
+.deps/Exact.P .deps/Fuzzy.P .deps/Metaphone.P .deps/Prefix.P \
+.deps/Regex.P .deps/Soundex.P .deps/Speling.P .deps/Substring.P \
+.deps/SuffixEntry.P .deps/Synonym.P .deps/htfuzzy.P
 SOURCES = $(libfuzzy_la_SOURCES) $(htfuzzy_SOURCES)
 OBJECTS = $(libfuzzy_la_OBJECTS) $(htfuzzy_OBJECTS)
 
