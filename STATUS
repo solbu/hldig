@@ -4,6 +4,7 @@ CHECKLIST FOR 3.2.0b5:
 * Apply memory leak patches (Neal)
 * Check bugs listed in bug-tracker...
 * Polish release docs (Geoff)
+* Update copyright information for LGPL (Geoff)
 * Must be able to
 	(a) make check  and
 	(b) index  www.htdig.org  using  "robotstxt_name: master-htdig"
@@ -38,7 +39,7 @@ CHECKLIST FOR 3.2.0b5:
 
 
 RELEASES:
-   3.2.0b5: Next release, June 2003???
+   3.2.0b5: Next release, July 2003
    3.2.0b4: "In progress" -- snapshots called "3.2.0b4" until prerelease.
    3.2.0b3: Released:  22 Feb 2001.
    3.2.0b2: Released:  11 Apr 2000.
@@ -60,9 +61,10 @@ KNOWN BUGS:
 * META descriptions are somehow added to the database as FLAG_TITLE,
    not FLAG_DESCRIPTION. (PR#618738)
    Can anyone reproduce this?  I can't! -- Lachlan
+   Me either. Let's remove the PR. -Geoff
 
 PENDING PATCHES (available but need work):
-* Additional support for Win32.
+* Additional support for Win32. (Neal)
 * Memory improvements to htmerge. (Backed out b/c htword API changed.)
 * Mifluz merge.
 
