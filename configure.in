@@ -36,6 +36,9 @@ AC_PROG_MAKE_SET
 
 AM_PROG_LIBTOOL
 
+dnl Initialize maintainer mode
+AM_MAINTAINER_MODE
+
 dnl Get any --with or --disable flags now
 dnl This looks a little messy, but it's word-wrapping problems :-(
 AC_ARG_ENABLE(zlib,[  --disable-zlib          do not compile with zlib support],

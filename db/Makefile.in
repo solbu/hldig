@@ -1,4 +1,8 @@
-all clean distclean:
+all clean:
+	cd dist ; if [ -f Makefile ] ; then $(MAKE) $@ ; fi
+
+distclean:
+	rm -f Makefile
 	cd dist ; if [ -f Makefile ] ; then $(MAKE) $@ ; fi
 
 install:

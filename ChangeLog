@@ -1,3 +1,10 @@
+Tue Jul 20 11:21:52 1999    <loic@ceic.com>
+
+	* configure.in : added AM_MAINTAINER_MODE to prevent unwanted
+	dependencies check by default.
+
+	* db/Makefile.in : remove Makefile when distclean
+
 Mon Jul 19 13:23:53 1999    <loic@ceic.com>
 
 	* Makefile.config (INCLUDES): added -I$(top_srcdir)/include because

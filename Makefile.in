@@ -101,6 +101,7 @@ LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 NM = @NM@
 OBJDUMP = @OBJDUMP@
@@ -141,19 +142,19 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.config
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.config
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-$(ACLOCAL_M4):  configure.in 
+$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in 
 	cd $(srcdir) && $(ACLOCAL)
 
 config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
-$(srcdir)/configure: $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
+$(srcdir)/configure: @MAINTAINER_MODE_TRUE@$(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
 
 include/htconfig.h: include/stamp-h
@@ -166,7 +167,7 @@ include/stamp-h: $(srcdir)/include/htconfig.h.in $(top_builddir)/config.status
 	  && CONFIG_FILES= CONFIG_HEADERS=include/htconfig.h \
 	     $(SHELL) ./config.status
 	@echo timestamp > include/stamp-h 2> /dev/null
-$(srcdir)/include/htconfig.h.in: $(srcdir)/include/stamp-h.in
+$(srcdir)/include/htconfig.h.in: @MAINTAINER_MODE_TRUE@$(srcdir)/include/stamp-h.in
 	@if test ! -f $@; then \
 		rm -f $(srcdir)/include/stamp-h.in; \
 		$(MAKE) $(srcdir)/include/stamp-h.in; \
