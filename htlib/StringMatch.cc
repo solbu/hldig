@@ -6,6 +6,11 @@
 // Implementation of StringMatch
 //
 // $Log: StringMatch.cc,v $
+// Revision 1.4  1998/12/02 02:45:58  ghutchis
+//
+// Added fix from Christian Schneider <cschneid@relog.ch>, discovered from
+// behavior with limit_urls_to.
+//
 // Revision 1.3  1998/07/16 15:15:27  ghutchis
 //
 // Added patch from Stephan Muehlstrasser <smuehlst@Rational.Com> to fix
@@ -20,7 +25,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: StringMatch.cc,v 1.3 1998/07/16 15:15:27 ghutchis Exp $";
+static char RCSid[] = "$Id: StringMatch.cc,v 1.4 1998/12/02 02:45:58 ghutchis Exp $";
 #endif
 
 #include "StringMatch.h"
@@ -129,7 +134,7 @@ StringMatch::Pattern(char *pattern)
 		previousValue | FINAL | (index << INDEX_SHIFT);
 	    index++;
 	    state = 0;
-	    totalStates--;
+	    //	    totalStates--;
 	}
 	else
 	{
