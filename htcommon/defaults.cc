@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.62 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: defaults.cc,v 1.63 1999/09/12 17:33:04 ghutchis Exp $
 //
 
 #include "Configuration.h"
@@ -156,7 +156,6 @@ ConfigDefaults	defaults[] =
     {"valid_extensions",		""},
     {"valid_punctuation",		".-_/!#$%^&'"},
     {"word_db",				"${database_base}.words.db"},
-    {"word_list",			"${database_base}.wordlist"},
     {"word_dump",			"${database_base}.worddump"},
     {0,					0},
 };
