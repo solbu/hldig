@@ -1,3 +1,7 @@
+Fri Jun 11 10:50:28 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
+
+    * htsearch/parser.cc (perform_or): Added missing & in if clause.
+
 Fri Jun 11 10:45:53 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 
     * contrib/htdig-3.2.0.spec: Updated for 3.2.0b6.

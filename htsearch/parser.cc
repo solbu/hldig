@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: parser.cc,v 1.34 2004/05/28 13:15:25 lha Exp $
+// $Id: parser.cc,v 1.35 2004/06/11 15:52:19 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -794,7 +794,7 @@ Parser::perform_or()
 	stack.push(l1);
 	return;
     }
-    else if (!l1 & !result)
+    else if (!l1 && !result)
     {
 	if(debug) cerr << "or: no operands" << endl;
 	stack.pop();
