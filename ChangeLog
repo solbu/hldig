@@ -1,3 +1,9 @@
+Fri Nov  2 12:12:59 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/xmlsearch.README, contrib/xmlsearch.tar.gz: Added files
+	contributed by Nathan Hand and me to implement XML output from
+	htsearch, including DTD, templates and config file.
+
 Fri Nov  2 12:05:49 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc (do_tag), htcommon/defaults.cc: Added ignore_alt_text
