@@ -14,7 +14,9 @@ SHOWSTOPPERS:
 KNOWN BUGS:
 * scandir does not work on SYSV systems--need to use system library replacement.
    (probably could just use this in place of scandir if it works OK on non-SYSV OS)
-* Not all htsearch input parameters are handled properly: PR#648.
+* Not all htsearch input parameters are handled properly: PR#648. Use a
+   consistant mapping of input -> config -> template for all inputs where
+   it makes sense to do so (everything but "config" and "words"?).
 * If exact isn't specified in the search_algorithms, $(WORDS) is not set 
    correctly: PR#650. (The documentation for 3.2.0b1 is updated, but can
    we fix this?)
@@ -57,6 +59,10 @@ DOCUMENTATION:
 * Update cf_* pages to mention new config parser (i.e. URL-dependent config)
 * Add thorough documentation on htsearch restrict/exclude behavior
    (including '|' and regex).
+* Document all of htsearch's mappings of input parameters to config attributes
+   to template variables. (Relates to PR#648.) Also make sure these config
+   attributes are all documented in defaults.cc, even if they're only set by
+   input parameters and never in the config file.
 * Split attrs.html into categories for faster loading.
 * require.html is not updated to list new features and disk space
    requirements of 3.2.x (e.g. phrase searching, regex matching,
