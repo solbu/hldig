@@ -1,3 +1,12 @@
+Sat Feb 13 20:53:34 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc(got_word): Ensure heading is in a normal range.
+
+	* htdoc/RELEASE.html: Added information on the bugs fixed in 3.1.1.
+
+	* htdoc/attrs.html: Added info on the changed syntax of the pdf_parser
+	attribute in 3.1.0 and later.
+	
 Sat Feb 13 20:29:26 1999  Marjolein Katsma <webmaster@javawoman.com>
 
 	* htdoc/*.html: Cleaned up HTML, fixed typos, added appropriate
