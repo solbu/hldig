@@ -1,22 +1,23 @@
 #!/usr/bin/perl
 use strict;
 #
-# Version 3.0	4-June-2001
+# Version 3.0.1	19-September-2002
 #
 # External converter for htdig 3.1.4 or later (Perl5 or later)
 # Usage: (in htdig.conf)
 #
-#external_parsers:	application/rtf->text/html /opt/local/htdig-3.1.5/scripts/doc2html.pl \
-#			text/rtf->text/html /opt/local/htdig-3.1.5/scripts/doc2html.pl \
-#			application/pdf->text/html /opt/local/htdig-3.1.5/scripts/doc2html.pl \
-#			application/postscript->text/html /opt/local/htdig-3.1.5/scripts/doc2html.pl \
-#			application/msword->text/html /opt/local/htdig-3.1.5/scripts/doc2html.pl \
-#			application/wordperfect5.1->text/html /opt/local/htdig-3.1.5/scripts/doc2html.pl \
-#			application/msexcel->text/html /opt/local/htdig-3.1.5/scripts/doc2html.pl \
-#			application/vnd.ms-excel->text/html /opt/local/htdig-3.1.5/scripts/doc2html.pl \
-#			application/vnd.ms-powerpoint->text/html /opt/local/htdig-3.1.5/scripts/doc2html.pl
-#			application/x-shockwave-flash->text/html /opt/local/htdig-3.1.5/scripts/doc2html.pl \
-#			application/x-shockwave-flash2-preview->text/html /opt/local/htdig-3.1.5/scripts/doc2html.pl
+#external_parsers:	application/rtf->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
+#			text/rtf->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
+#			application/pdf->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
+#			application/postscript->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
+#			application/msword->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
+#			application/wordperfect5.1->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
+#			application/wordperfect6.0->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
+#			application/msexcel->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
+#			application/vnd.ms-excel->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
+#			application/vnd.ms-powerpoint->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl
+#			application/x-shockwave-flash->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl \
+#			application/x-shockwave-flash2-preview->text/html /opt/local/htdig-3.1.6/scripts/doc2html.pl
 #
 #  Uses wp2html to convert Word and WordPerfect documents into HTML, and
 #  falls back to using Catdoc for Word and Catwpd for WordPerfect if 
@@ -36,12 +37,12 @@ use strict;
 # Install Sys::AlarmCall if you can
 eval "use Sys::AlarmCall";
 
-########  Full paths to conversion utilities  ##########
+########  Full paths of conversion utilities  ##########
 ########          YOU MUST SET THESE          ##########
-########  (comment out those you don't have)  ##########
+########   (leave null those you don't have)  ##########
 
 # Wp2html converts Word & Wordperfect to HTML
-# (get it from: http://www.res.bbsrc.ac.uk/wp2html/)
+# (get it from: http://www.res.bbsrc.ac.uk/wp2html/):
 my $WP2HTML = '';
 
 #Catwpd for WordPerfect to text conversion
@@ -50,61 +51,60 @@ my $WP2HTML = '';
 my $CATWPD = '';
 
 # rtf2html converts Rich Text Font documents to HTML
-# (get it from http://www.fe.msk.ru/~vitus/catdoc/)
+# (get it from http://www.ice.ru/~vitus/catdoc/):
 my $RTF2HTML = '';
 
-# Catdoc converts MS Word to plain text
-# (get it from: http://www.fe.msk.ru/~vitus/catdoc/)
+# Catdoc converts Word (MicroSoft) to plain text
+# (get it from: http://www.ice.ru/~vitus/catdoc/):
 
 #version of catdoc for Word6, Word7 & Word97 files:
 my $CATDOC = '';
 
-#version of catdoc for Word2 files
+#version of catdoc for Word2 files:
 my $CATDOC2 = $CATDOC;
 
-#version of catdoc for Word 5.1 for MAC
+#version of catdoc for Word 5.1 for MAC:
 my $CATDOCM = $CATDOC;
 
 # PostScript to text converter
-# (get it from the ghostscript 3.33 (or later) package)
+# (get it from the ghostscript 3.33 (or later) package):
 my $CATPS = '';
 
-# add to search path the directory which contains gs
-# (edit for your environment)
-$ENV{PATH} .= ":/usr/freeware/bin";
+# add to search path the directory which contains gs:
+#$ENV{PATH} .= ":/usr/freeware/bin";
 
-# PDF to HTML conversion script
-# Full pathname of Perl script pdf2html.pl
-my $PDF2HTML = '';
+# PDF to HTML conversion script:
+my $PDF2HTML = ''; # full pathname of pdf2html/pl script
 
-#Microsoft Excel to HTML converter
-# (get it from www.xlHtml.org)
+# Excel (MicroSoft) to HTML converter
+# (get it from www.xlhtml.org)
 my $XLS2HTML = '';
 
-#MicroSoft Excel to .CSV converter
-# (you don't need this if you have xlHtml)
+# Excel (MicroSoft) to .CSV converter
+# (you don't need this if you have xlhtml)
 # (if you do want it, you can get it with catdoc)
 my $CATXLS = '';
 
-#Microsoft Powerpoint to HTML converter
-# (get it from www.xlHtml.org)
+# Powerpoint (MicroSoft) to HTML converter
+# (get it from www.xlhtml.org)
 my $PPT2HTML = '';
 
-#Shockwave Flash 
+# Shockwave Flash 
 # (extracts links from file)
-# Full pathname of Perl script swf2html.pl
-my $SWF2HTML = '';
+my $SWF2HTML = ''; # full pathname of swf2html.pl script
 
 ########################################################################
 
 # Other Global Variables
 my ($Success, $LOG, $Verbose, $CORE_MESS, $TMP, $RM, $ED, $Magic, $Time,
     $Count, $Prog, $Input, $MIME_type, $URL, $Name, $Efile, $Maxerr, 
-    $Redir, $Emark, $EEmark, $Method);
+    $Redir, $Emark, $EEmark, $Method, $OP_Limit, $IP_Limit);
 my (%HTML_Method, %TEXT_Method, %BAD_type);
 
 
 &init;			# initialise
+my $size = -s $Input;
+&quit("Input file size of $size at or above $IP_Limit limit" ) if $size >= $IP_Limit;
 &store_methods;		# 
 &read_magic;		# Magic reveals type
 &error_setup;		# re-route standard error o/p from utilities
@@ -140,6 +140,12 @@ sub init {
 
   # Set to 1 for O/P to STDERR or Log file
   $Verbose = exists($ENV{'DOC2HTML_LOG'}) ? 1 : 0;
+
+  # Limiting size of file doc2html.pl will try to process (default 20Mbyte)
+  $IP_Limit = $ENV{'DOC2HTML_IP_LIMIT'} || 20000000; 
+
+  # Limit for O/P returned to htdig (default 10Mbyte)
+  $OP_Limit = $ENV{'DOC2HTML_OP_LIMIT'} || 10000000; 
 
   # Mark error message produced within doc2html script
   $Emark = "!\t";
@@ -180,7 +186,7 @@ sub init {
   $Prog =~ s/\..*?$//;
 
   $Input = $ARGV[0] or die "No filename given\n";
-  $MIME_type = $ARGV[1] || '?';
+  $MIME_type = $ARGV[1] or die "No MIME-type given";
   $URL = $ARGV[2] || '?';
   $Name = $URL;
   $Name =~ s#^.*/##;
@@ -205,7 +211,7 @@ sub store_methods {
 
   # WordPerfect documents
   if ($WP2HTML) {
-    $mime_type = "application/wordperfect5.1|application/msword";
+    $mime_type = "application/wordperfect|application/msword";
     $cmd = $WP2HTML;
     $cmdl = "($cmd -q -DTitle=\"[$name]\" -c doc2html.cfg -s doc2html.sty -i $Input -O; $RM CmdLine.ovr)";
     $magic = '\377WPC';
@@ -266,7 +272,7 @@ sub store_methods {
     $mime_type = "application/x-shockwave-flash";
     $cmd = $SWF2HTML;
     $cmdl = "$cmd $Input";
-    $magic = '^FWS[\003-\005]';
+    $magic = '^FWS[\001-\010]'; # versions 1 to 5, perhaps some later versions
     &store_html_method('Shockwave-Flash (swf2html)',$cmd,$cmdl,$mime_type,$magic);
   }
 
@@ -319,9 +325,9 @@ sub store_methods {
     &store_text_method('MS Excel (xls2csv)',$cmd,$cmdl,$mime_type,$magic);
   }
 
-  # WordPerfect documents
+  # WordPerfect document
   if ($CATWPD) {
-    $mime_type = "application/wordperfect5.1|application/msword";
+    $mime_type = "application/wordperfect|application/msword";
     $cmd = $CATWPD;
     $cmdl = "$cmd $Input";
     $magic = '\377WPC';
@@ -336,11 +342,17 @@ sub store_methods {
   $description = 'wrapped Encapsulated Postscript';
   &store_cannot_do($type,$magic,$description);
 
-  ## Binary (data or whatever)
-  #$type = "BIN";
-  #$magic = '[\000-\007\016-\037\177]'; # rather crude test!
-  #$description = 'apparently binary';
-  #&store_cannot_do($type,$magic,$description);
+  # Shockwave Flash version 6
+  $type = "SWF6";
+  $description = 'Shockwave-Flash Version 6';
+  $magic = '^CWS\006';
+  &store_cannot_do($type,$magic,$description);
+
+#### Binary (data or whatever)
+###$type = "BIN";
+###$magic = '[\000-\007\016-\037\177]'; # rather crude test!
+###$description = 'apparently binary';
+###&store_cannot_do($type,$magic,$description);
 
   return;
 }
@@ -416,6 +428,7 @@ sub try_html  {
         if ($_ !~ m/^<!--/) { # skip comment lines inserted by converter
 	  print;
 	  $Count += length;
+	  if ($Count > $OP_Limit) { last }
         }
       }
       close CAT;
@@ -453,6 +466,7 @@ sub try_text  {
 	if (length > 1) { # if not just a single character, eg space
 	  print &HTML($_), "\n";
 	  $Count += length;
+	  if ($Count > $OP_Limit) { last }
 	}
       }
       close CAT;
@@ -501,9 +515,10 @@ sub try_plain  {
       while (<FILE>) {
 	# replace bell, backspace, tab. etc. with single space:
 	s/[\000-\040\177]+/ /g;
-        if (length > 2) {
+        if (length > 1) {
 	  print &HTML($_), "\n";
 	  $Count += length;
+	  if ($Count > $OP_Limit) { last }
 	}
       }
       close FILE;
@@ -610,6 +625,10 @@ sub quit {
     print STDERR "$Method $Count" if ($Success);
     print STDERR "\n";
   } 
+
+  if ($Count > $OP_Limit) {
+    print STDERR $Emark, "Output truncated after limit $OP_Limit reached\n";
+  }
  
   my $return = shift;  
   if ($return) {

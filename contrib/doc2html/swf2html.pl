@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 use strict;
 #
-# Version 1.0	25-May-2001
+# Version 1.1	17-May-2002
 # Written by David Adams <d.j.adams@soton.ac.uk>
 #
 # Uses swfparse utlity to extract URL's from  Shockwave flash files
@@ -17,6 +17,7 @@ use strict;
 ##### YOU MUST SET THIS  ####
 
 my $SWFPARSE = "/.. .../swfdump";
+
 ####--- End of configuration ---###
 
 if (! -x $SWFPARSE) { die "Unable to execute swfparse" }
@@ -28,8 +29,9 @@ if ($MIME_type and ($MIME_type !~ m#^application/x-shockwave-flash#i)) {
 }
 
 my $Name = $ARGV[2] || '';
-$Name =~ s#^.*/##;
-$Name =~ s/%([A-F0-9][A-F0-9])/pack("C", hex($1))/gie;
+$Name =~ s#^(.*/)##;
+# decode if 2nd argument was a URL 
+$Name =~ s/%([A-F0-9][A-F0-9])/pack("C", hex($1))/gie if $1;
 
 print <<"HEAD";
 <HTML>
@@ -43,13 +45,23 @@ open(CAT, "$SWFPARSE -t '$Input'|") ||
 	  die "$SWFPARSE doesn't want to be opened using pipe\n";
 
 print "<BODY>\n";
+my $c = 0;
 while (<CAT>) {
-    if ($_ !~ m/\s+getUrl\s+(.*?)\s+.*$/) { next }
-    my $link = $1; 
+###    if ($_ !~ m/\s+getUrl\s+(.*?)\s+.*$/) { next }
+    if ($_ !~ m/\s+getUrl\s+(.*)$/) { next }
+    my $link = $1 . ' ';
+    if ($link =~ m/^FSCommand:/) { next }
+    if ($link =~ m/\s+target\s+/) {
+      $link =~ s/^(.*)\s+target\s+.*$/$1/;  
+    } else {
+      $link =~ s/^(.*?)\s+.*$/$1/; 
+    }
     print '<A href="', $link, '"> </a>', "\n";
+    $c++;
 }
 close CAT;
 
 print "</BODY>\n</HTML>\n";
+print STDERR "No links extracted\n" if ($c == 0);
 
 exit;

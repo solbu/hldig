@@ -1,5 +1,9 @@
 Mon Dec 30 2002  Lachlan Andrew  <lha@users.sourcefourge.net>
 
+	* contrib/doc2html/*: Incorporated David Adams' latest version, 3.0.1.
+
+Mon Dec 30 2002  Lachlan Andrew  <lha@users.sourcefourge.net>
+
 	Forward-ported several patches from 3.1.6:
 
 	* htdig/ExternalParser.cc: Added "description_meta_tag_names" attrib.

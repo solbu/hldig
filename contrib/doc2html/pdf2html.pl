@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 use strict;
 #
-# Version 1.0	25-May-2001
+# Version 1.0.1	12-Feb-2002
 # Written by David Adams <d.j.adams@soton.ac.uk>
 #
 # Uses pdftotext & pdfinfo utilities from the xpdf package
@@ -40,8 +40,9 @@ if ($MIME_type and ($MIME_type !~ m#^application/pdf#i)) {
 }
 
 my $Name = $ARGV[2] || '';
-$Name =~ s#^.*/##;
-$Name =~ s/%([A-F0-9][A-F0-9])/pack("C", hex($1))/gie;
+$Name =~ s#^(.*/)##;
+# decode if 2nd argument was a URL 
+$Name =~ s/%([A-F0-9][A-F0-9])/pack("C", hex($1))/gie if $1;
 
 &pdf_head;
 &pdf_body;

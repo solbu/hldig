@@ -1,7 +1,7 @@
 INTRODUCTION
 ============
 
-This DETAILS file accompanies doc2html version 3.0.
+This DETAILS file accompanies doc2html version 3.0.1.
 
 Read this file for instructions on the installation and use of the 
 doc2html scripts.
@@ -26,7 +26,7 @@ doc2html.pl was designed to be easily adapted to use whatever conversion
 utilities are available, and although it has been written around the
 "wp2html" utility, it does not require wp2html to function. 
 
-NOTE: version 3.0 has only been tested on Unix. 
+NOTE: version 3.0.1 has only been tested on Unix. 
 
 pdf2html.pl is a Perl script which uses a pair of utilities (pdfinfo and
 pdf2text) to extract information and text from an Adobe PDF file and
@@ -76,8 +76,8 @@ htdig provides three arguments which are read by doc2html.pl:
 3)	the URL of the document (which is used in generating the
 	title in the output).
 
-In Version 3.0, the test for document type uses both the MIME-type passed
-as second argument and the "Magic number" of the file. 
+The test for document type uses both the MIME-type passed as second
+argument and the "Magic number" of the file. 
 
 
 INSTALLATION
@@ -153,17 +153,17 @@ my $WP2HTML = '';
 to set $WP2HTML to the full pathname of wp2html.
 
 wp2html will look for the title in a document, and if it is found then
-output it it in <TITLE>....</TITLE> markup.  If a title is not found
+output it in <TITLE>....</TITLE> markup.  If a title is not found
 then it defaults to the file name in square brackets. 
 
 If wp2html is unable to convert a document, or is not installed,
-then doc2html.pl can use the "catdoc" utility instead.
+then doc2html.pl can use the "catdoc" or "catwpd" utilities instead.
 
 
 UTILITY CATDOC
 ==============
 
-Obtain catdoc from http://www.fe.msk.ru/~vitus/catdoc/, it is available
+Obtain catdoc from http://www.ice.ru/~vitus/catdoc/, it is available
 under the terms of the Gnu Public License. 
 
 Edit the line in doc2html.pl:
@@ -195,23 +195,22 @@ If you do use it, then edit the line in doc2html.pl:
 
 my $CATWPD = '';
 
-to set the variables to the full pathname of catwpd.  You might want
-to use a different version of catdoc for Word2 documents or for MAC Word
-files. 
+to set the variables to the full pathname of catwpd.
 
 
 UTILITY PPTHTML
 ===============
 
-Obtain pptHtml from http://www.xlHtml.org
+obtain ppthtml from http://www.xlhtml.org, where it is bundled in with
+xlhtml.
 
 In doc2html.pl, edit the line:
 
 my $PPT2HTML = '';
 
-to set $PPT2HTML to the full pathname of pptHtml.
+to set $PPT2HTML to the full pathname of ppthtml.
 
-pptHtml converts Microsoft Powerpoint files into HTML.  It uses the input
+ppthtml converts Microsoft Powerpoint files into HTML.  It uses the input
 filename as the title.  doc2html.pl replaces this with the original
 filename from the URL in square brackets. 
 
@@ -219,19 +218,19 @@ filename from the URL in square brackets.
 UTILITY XLHTML
 ==============
 
-Obtain xlHtml from http://www.xlHtml.org
+Obtain xlhtml from http://www.xlhtml.org
 
 In doc2html.pl, edit the line:
 
 my $XLS2HTML = '';
 
-to set $XLS2HTML to the full pathname of xlHtml.
+to set $XLS2HTML to the full pathname of xlhtml.
 
-xlHtml converts Microsoft Excel spreadsheets into HTML.  It uses the input
+xlhtml converts Microsoft Excel spreadsheets into HTML.  It uses the input
 filename as the title.  doc2html.pl replaces this with the original
 filename from the URL in square brackets.
 
-The present version of xlHtml (0.2.7.2) writes HTML output, but does not
+The present version of xlHtml (0.4) writes HTML output, but does not
 mark up hyperlinks in .xls files as links in its output.
 
 An alternative to xlHtml is xls2csv, see below.
@@ -240,7 +239,7 @@ An alternative to xlHtml is xls2csv, see below.
 UTILITY RTF2HTML
 ================
 
-Obtain rtf2html from http://www.fe.msk.ru/~vitus/catdoc/
+Obtain rtf2html from http://www.ice.ru/~vitus/catdoc/
 
 In doc2html.pl, edit the line:
 
@@ -289,16 +288,14 @@ Edit doc2html.pl to include the full pathname of the pdf2html.pl script.
 
 pdf2text may fail to convert PDF documents which have been truncated
 because htdig has max_doc_size set to smaller than the documents full
-size.  Some PDF documents do not allow text to be extracted, and others
-may be encrypted.  A patch for pdf2text to allow it to read encrpyted
-documents is available. 
+size.  Some PDF documents do not allow text to be extracted.
 
 
 UTILITY CATXLS
 ==============
 
 The Excel to .csv converter, xls2csv, is included with recent versions of
-catdoc.  This is an alternative to xlHtml (see above).
+catdoc.  This is an alternative to xlhtml (see above).
 
 Edit the line:
 
@@ -307,20 +304,18 @@ my $CATXLS = '';
 to the full pathname of xls2csv.
 
 Xls2csv translates Excel spread sheets into comma-separated data. 
-Version 0.91.4 is said to have a serious bug fixed, but it does not run
-under IRIX. 
 
 
 UTILITY SWFPARSE
 ================
 
-swfparse extracts information from Shockwave flash files, and can be
-obtained from the contribs section of the Ht://Dig web site, where
-you obtained doc2html.
+swfparse (aka swfdump) extracts information from Shockwave flash files,
+and can be obtained from the contribs section of the Ht://Dig web site,
+where you obtained doc2html.
 
 Perl script swf2html.pl calls swfparse and writes HTML output containing
-links to the URLs found in the Shockwave file.  It does NOT attempt to
-extract text from the file.
+links to the URLs found in the Shockwave file.  It does NOT extract text
+from the file.
 
 In script swf2html.pl, change the line:
 
@@ -335,13 +330,14 @@ LOGGING
 =======
 
 Output of logging information and error messages is controlled by the
-environmental variable DOC2HTML_LOG.  If this is not set then error
-messages output by doc2html.pl or by the conversion utilities it calls
-are returned to htdig and will appear in its STDOUT.  If DOC2HTML_LOG is
-set to a filename, then doc2html.pl appends logging information and any
-error messages to the file.  If DOC2HTML_LOG is set but blank, or the
-file cannot be opened for writing, logging information and error
-messages are passed back to htdig and will appear its STDOUT. 
+environmental variable DOC2HTML_LOG, which may be set in the rundig
+script.  If it is not set then only error messages output by doc2html.pl
+and by the conversion utilities it calls are returned to htdig and will
+appear in its STDOUT.  If DOC2HTML_LOG is set to a filename, then
+doc2html.pl appends logging information and any error messages to the
+file.  If DOC2HTML_LOG is set but blank, or the file cannot be opened
+for writing, logging information and error messages are passed back to
+htdig and will appear its STDOUT. 
 
 In doc2html.pl, the variables $Emark and $EEmark, set in subroutine init,
 are used to highlight error messages.  
@@ -366,15 +362,38 @@ doc2html.pl:
 may be altered to suit.
 
 
-Contact
+LIMITING INPUT AND OUTPUT
+=========================
+
+The environmental variable DOC2HTML_IP_LIMIT may be set in the rundig
+script to limit the size of the file which doc2html.pl will attempt to
+convert. The default value is 20000000.  Doc2html.pl will return no
+output to htdig if the file size is equal to or greater than this size.
+
+You are recommended to set DOC2HTML_IP_LIMIT to the same as the
+"max_doc_size" parameter in the htdig configuration file. Then no
+attempt wil be made to extract text from files which have been truncated
+by htdig.  It is not possible to extract any text from .PDF files, for
+example, if they have been truncated.
+
+The environmental variable DOC2HTML_OP_LIMIT may be set in the rundig
+script to limit the output sent back to htdig by a single call to
+doc2html.pl. The default value is 10000000.   Doc2html.pl will stop
+returning output to htdig once the DOC2HTML_OP_LIMIT has been reached.
+This is precaution against the unlikely event of a conversion utility
+returning disproportionately large amounts of data.
+
+
+CONTACT
 =======
 
-Any queries regarding doc2html are best sent to the mailing list htdig@htdig.org
+Any queries regarding doc2html are best sent to the mailing list
+htdig-general@lists.sourceforge.net
 
 The author can be emailed at D.J.Adams@soton.ac.uk
 
 David Adams
-Computing Services
+Information Systems Services
 University of Southampton
 
-5-June-2001
+27-November-2002
