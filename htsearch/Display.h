@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.h,v 1.22.2.1 2000/02/27 04:34:00 ghutchis Exp $
+// $Id: Display.h,v 1.22.2.2 2000/03/28 02:01:39 ghutchis Exp $
 //
 
 #ifndef _Display_h_
@@ -132,7 +132,8 @@ protected:
     // Maximum number of stars to display
     //
     int			maxStars;
-    int			maxScore;
+    double		maxScore;
+    double		minScore;
 
     //
     // For display, we have different versions of the list of words.
