@@ -1,5 +1,7 @@
-Thu Dec  2 15:00:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Thu Dec  2 15:15:03 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	* htdoc/mailing.html: Updated to version from htdig.org web site.
+	* htdoc/ChangeLog: Update to latest version.
 	* htcommon/defaults.cc: Add missing no_page_number_text and
 	page_number_text attribute definitions.
 	* htdoc/attrs.html(modification_time_is_now): Make the description
@@ -11,7 +13,6 @@ Thu Dec  2 13:46:11 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	htcommon/defaults.cc, htdoc/attrs.html, htdoc/cf_byname.html,
 	htdoc/cf_byprog.html: Add support for local_urls_only attribute.
 	* htdoc/RELEASE.html: Update with latest feature.
-	* htdoc/ChangeLog: Update to latest version.
 
 Thu Dec  2 11:02:07 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
@@ -296,8 +297,8 @@ Wed Sep  1 15:39:41 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	* htdig/HTML.h, htdig/HTML.cc(do_tag, transSGML): Fix the HTML parser
 	to decode SGML entities within tag attributes.
 
-	* htlib/URL.cc(ServerAlias): Fix server_alias entries so port defaults
-	to 80 if omitted.
+	* htlib/URL.cc(ServerAlias): Fix server_aliases entries so port
+	defaults to 80 if omitted.
 
 	* htlib/URL.cc(removeIndex): Fix the infamous problem with files
 	like left_index.html not getting indexed.  PR#543 & PR#585.
@@ -2070,7 +2071,7 @@ Fri Dec  4 19:21:17 1998  Didier Gautheron <dgautheron@magic.fr>
 
 	* htlib/Dictionary.cc: Added check for empty dictionaries.
 
-	* htlib/URL.cc: Allow server_alias to work under virtual hosts.
+	* htlib/URL.cc: Allow server_aliases to work under virtual hosts.
 
 	* htmerge/htmerge.cc: Remove previous db.words.db file before
 	doing a word merging. Fixes bug with deleted documents keeping
