@@ -1,17 +1,13 @@
 //
 // DocMatch.h
 //
-// $Id: DocMatch.h,v 1.1 1997/02/03 17:11:05 turtle Exp $
-//
-// $Log: DocMatch.h,v $
-// Revision 1.1  1997/02/03 17:11:05  turtle
-// Initial revision
+// $Id: DocMatch.h,v 1.2 1999/08/28 21:11:12 ghutchis Exp $
 //
 //
 #ifndef _DocMatch_h_
 #define _DocMatch_h_
 
-#include <Object.h>
+#include "Object.h"
 
 class DocMatch : public Object
 {
@@ -19,7 +15,7 @@ public:
 					DocMatch();
 					~DocMatch();
 
-	float			score;
+	double				score;
 	int				id;
 	int				anchor;
 };
