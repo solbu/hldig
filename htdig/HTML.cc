@@ -12,7 +12,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.44 1999/06/27 19:51:18 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.45 1999/07/03 19:54:35 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -720,9 +720,9 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			doindex = 0;
 			retriever.got_noindex();
 		      }
-		    else if (content_cache.indexOf("nofollow") != -1)
+		    if (content_cache.indexOf("nofollow") != -1)
 		      dofollow = 0;
-		    else if (content_cache.indexOf("none") != -1)
+		    if (content_cache.indexOf("none") != -1)
 		      {
 			doindex = 0;
 			dofollow = 0;

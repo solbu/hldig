@@ -1,3 +1,9 @@
+Sat Jul  3 16:37:29 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HTML.cc (do_tag): Fix <meta> robots parsing to allow
+	multiple directives to work correctly. Fixes PR#578, as provided
+	by Chris Liddiard <c.h.liddiard@qmw.ac.uk>.
+
 Sat Jul  3 00:47:51 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Makefile.in: Remove old SGMLEntities code.
@@ -208,7 +214,8 @@ Sat Jun 12 22:37:22 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htfuzzy/Endings.cc (getWords): Fixed PR#560 as suggested by
 	Steve Arlow <yorick@ClarkHill.com>. Solves problems with fuzzy
-	matching on words like -ness: witness, highness, likeness...
+	matching on words like -ness: witness, highness, likeness... Tries
+	to interpret words as root words before attempting stemming.
 
 	* installdir/search.html (Match): Add Boolean to default search
 	form, as suggested by PR#561.
