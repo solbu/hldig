@@ -23,6 +23,7 @@ multidig	A set of scripts to simplify updating multiple databases
 parse_doc.pl	A general external parser script that handles MS Word documents
 		(among others)
 run-robot.sh	Another example of automating the database building
+scriptname	An example of using htsearch within dynamic SSI pages
 status.pl	Build a status page of last 5 runs and top 10
 		servers (by # URLs)
 urlindex	Build an index of all the URLs in the database
