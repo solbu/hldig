@@ -8,11 +8,11 @@
 # These variables are set by configure
 #
 # This specifies the root of the directory tree to be used by ht://Dig
-prefix=                 /opt/www/htdig
+prefix=                 @prefix@
 
 # This specifies the root of the directory tree to be used for programs
 # installed by ht://Dig
-exec_prefix=            $(prefix)
+exec_prefix=            @exec_prefix@
 
 #
 # Please modify the variables below to reflect your preferences.

@@ -1,44 +1,16 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(htlib/Connection.h)
+AC_INIT(htcommon/DocumentDB.cc)
+AM_INIT_AUTOMAKE(htdig, 3.1.0b2)
 AC_CONFIG_HEADER(include/htconfig.h)
+AC_PREFIX_DEFAULT(/opt/www/htdig)
+HTDIG_TOP=`pwd`
+AC_SUBST(HTDIG_TOP)
 
-dnl
-dnl Figure out the version of HTDig
-dnl
-export srcdir
-HTDIG_VERSION=`cat $srcdir/.version`
-
-echo configuring HTDig version $HTDIG_VERSION
-AC_SUBST(HTDIG_VERSION)
-AC_DEFINE_UNQUOTED(HTDIG_VERSION, "$HTDIG_VERSION")
-
-AC_PROG_CC
-AC_PROG_CXX
-
-if test "x$CXX" = "xgcc" -o -z "$CXX" ; then
-	echo "Unable to find a C++ compiler in the standard places."
-	echo "Please set the CXX environment variable to the C++ compiler"
-	echo "you want to use and run 'configure' again."
-	exit 1
-fi
-
-AC_LANG_CPLUSPLUS
-
-AC_SUBST(CXXFLAGS)dnl
-AC_SUBST(LDFLAGS)dnl
-
-dnl
-dnl Make sure that we can have a C++ library available
-dnl
-AC_CHECK_HEADER(fstream.h,nofstream=0,nofstream=1)
-if test "x$nofstream" = "x1" ; then
-	echo ""
-	echo "To compile ht://Dig you will need to have a C++ library installed."
-	echo "If you are using gcc, you need to get and install libg++."
-	exit 1
-fi
+echo configuring ht://Dig version $VERSION
 
 dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_RANLIB
 AC_PATH_PROG(AR, ar, ar)
 AC_PATH_PROG(SHELL, sh, /bin/sh)
@@ -51,33 +23,52 @@ AC_PATH_PROG(PDF_PARSER, acroread, /usr/local/bin/acroread)
 AC_PATH_PROG(SENDMAIL, sendmail, /usr/lib/sendmail, 
    $PATH:/usr/libexec:/usr/sbin:/usr/lib:/usr/etc:etc)
 
+dnl Check for AIX problems
+AC_AIX
+
 dnl Checks for libraries.
+dnl Replace `main' with a function in -lcommon:
+AC_CHECK_LIB(common, main)
+dnl Replace `main' with a function in -ldb:
+AC_CHECK_LIB(db, main)
+dnl Replace `main' with a function in -lht:
+AC_CHECK_LIB(ht, main)
+dnl Replace `main' with a function in -lrx:
+AC_CHECK_LIB(rx, main)
 AC_CHECK_LIB(socket, socket, [LIBS="$LIBS -lsocket"])
 AC_CHECK_LIB(nsl, t_accept, [LIBS="$LIBS -lnsl"])
 
+AC_LANG_CPLUSPLUS
+
+AC_SUBST(CXXFLAGS)dnl
+AC_SUBST(LDFLAGS)dnl
+
 dnl Checks for header files.
-AC_CHECK_HEADERS(sys/time.h fcntl.h limits.h sys/file.h sys/ioctl.h unistd.h)
+AC_HEADER_STDC
 AC_HEADER_TIME
+AC_CHECK_HEADERS(fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h)
+AC_CHECK_HEADER(fstream.h,nofstream=0,nofstream=1)
+if test "x$nofstream" = "x1" ; then
+AC_MSG_ERROR([To compile ht://Dig, you will need a C++ library. Try installing libg++.])
+fi
 
 dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
 AC_STRUCT_TM
+dnl AC_CHECK_SIZEOF(int *) => SIZEOF_INT_P
 
+dnl Checks for library functions.
+AC_CHECK_FUNCS(strdup strerror strstr)
 dnl Check for timegm
 AC_CHECK_FUNC(timegm,
   AC_DEFINE(HAVE_TIMEGM),
-  AC_MSG_CHECKING(if our timegm replacement works);
+  AC_MSG_CHECKING(whether our timegm replacement works);
   AC_TRY_RUN([
 #define TEST_TIMEGM 1
-#include "$srcdir/htlib/timegm.cc"
+#include "$srcdir/htlib/timegm.c"
 ], AC_MSG_RESULT(yes), AC_MSG_ERROR([no!]), AC_MSG_RESULT([I hope so])))
 
-HTDIG_TOP=`pwd`
-AC_SUBST(HTDIG_TOP)
-
-RX_DIR=`echo rx*`
-AC_SUBST(RX_DIR)
-
-AC_MSG_CHECKING(need gethostname() prototype?)
+AC_MSG_CHECKING(whether we need gethostname() prototype?)
 AC_TRY_COMPILE([#include <unistd.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -109,7 +100,8 @@ if test ! -d $DB_DIR; then
 fi
 AC_SUBST(DB_DIR)
 
-(cd db-*/build.unix; ../dist/configure)
+AC_CONFIG_SUBDIRS(db-*/dist)
+dnl (cd db-*/build.unix; ../dist/configure)
 echo "Berkeley DBM Configuration complete"
 echo ""
 
@@ -118,13 +110,16 @@ if test -z "$TSORT"; then
   AC_MSG_ERROR([GNU rx configuration needs tsort in path!])
 fi
 
+RX_DIR=`echo rx*`
+AC_SUBST(RX_DIR)
+
 echo "Configuring GNU rx"
 echo "Please ignore the warnings that may be displayed during this part"
-(cd rx*; ./configure)
+AC_CONFIG_SUBDIRS($RX_DIR)
 echo "GNU rx Configuration complete"
 echo ""
 
-AC_OUTPUT(makedp htlib/Makefile htmerge/Makefile htcommon/Makefile htdig/Makefile Makefile.config Makefile htsearch/Makefile htnotify/Makefile htfuzzy/Makefile, chmod +x makedp)
+AC_OUTPUT(makedp htlib/Makefile htmerge/Makefile htcommon/Makefile htdig/Makefile Makefile.config Makefile CONFIG htsearch/Makefile htnotify/Makefile htfuzzy/Makefile, chmod +x makedp, echo timestamp > stamp-h)
 
 echo ""
 echo ""
