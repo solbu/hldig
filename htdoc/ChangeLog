@@ -1,24 +1,83 @@
-Thu Jun 3 10:26:26 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Thu Jun 10 16:49:52 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
    * Tagged release htdig-3-2-0b6
 
-Thu Jun 3 10:01:50 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Thu Jun 10 16:39:36 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * htcommon/conf_(lexer.lxx,parser.yxx): applied Gilles' patch (April 22)
+      which features:
+      - improved error handling, gives file name and correct line number,
+        even  if using include files
+      - allows space before comment, because otherwise it would just complain
+        about the "#" character and go on to parse the text after it as a
+        definition
+      - allows config file with an unterminated line at end of file, by
+        pushing an extra newline token to the parser at EOF
+      - parser correctly handles extra newline tokens, by moving this
+        handling out of simple_expression, and into simple_expression_list
+        and block, as simple_expression must return a new ConfigDefaults
+        object and a newline token doesn't cut it (caused segfaults when
+        dealing with fix above)
+    * htcommon/conf_lexer.cxx: Regenerate using flex 2.5.31.
+    * htcommon/conf_parser.cxx: Regenerate using bison 1.875a.
+
+Wed Jun  9 12:32:47 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
+
+    * htdig/HTML.cc (do_tag): Fixed meta date handling fix of June 3 to
+      ensure null byte gets put in by get() call.
+
+Wed 9 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
+
+    * contrib/doc2html/doc2html.pl, installdir/mime.types:
+      Add support for OpenOffice.org documents (#957305)
+
+Sat 5 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
+
+    * test/t_htdig, test/t_factors: fix tests for non-gnu/linux systems.
+
+Sat 5 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
+
+    * htdoc/cf_generate.pl: Hyperlink to simplify finding the defaults of
+      attributes defined in terms of others (e.g.,
+      accents_db->database_base->database_dir).
+    * htdoc/attrs.html.in: regenerated using cf_generate.pl
+
+Sat 5 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
+
+    * htcommon/defaults.cc: Escaped new-line in "allow_spaces_in_url" entry.
+      Set no_next_page_text to ${next_page_text}; likewise no_prev_page_text.
+
+Fri Jun 4 10:23:53 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
+
+   * htcommon/URL.cc: added "allow_space_in_url" (from fileSpace.1 patch)
+   * htcommon/defaults.[cc,xml]: added documentation of allow_space_in_url
+   * htdoc/attrs.html.in: regenerated using cf_generate.pl
+   * htdoc/cf_byname.html: ditto
+   * htdoc/cf_byprog.html: ditto
+   * htdoc/RELEASE.html: updated with info regarding this attribute
+
+Thu Jun  3 16:04:23 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
+
+    * htdig/HTML.cc (do_tag): Fixed meta date handling to avoid inadvertently
+      matching names like DC.Date.Review.
+
+Thu Jun 3 10:01:50 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
    * htdoc/RELEASE.html: updated release notes and changes
    * htdoc/THANKS.html: updated the 'thanks' section
 
-Thu Jun 3 09:32:52 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Thu Jun 3 09:32:52 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
     * global: updated with 'autoreconf -if' (autoconf 2.59, libtool 1.5.6
       and automake 1.7.9)
 
-Wed Jun 2 19:03:14 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Wed Jun 2 19:03:14 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
     * contrib/rtf2html: added the rtf2html.c source as modified by David Lippi
     and Gabriele Bartolini of the Comune di Prato. The source code is now
     released under GNU GPL and included in the ht://Dig package.
 
-Tue Jun 1 20:23:40 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Tue Jun 1 20:23:40 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
     * htcommon/HtSGMLCodec.cc: changed &curren; to &euro;
 
