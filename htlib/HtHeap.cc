@@ -1,7 +1,7 @@
 //
 // HtHeap.h
 //
-// A Heap class which holds objects of type Object.
+//: A Heap class which holds objects of type Object.
 // (A heap is a semi-ordered tree-like structure.
 //  it ensures that the first item is *always* the largest.
 //  NOTE: To use a heap, you must implement the Compare() function for your
@@ -17,7 +17,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: HtHeap.cc,v 1.4 1999/09/03 21:28:49 ghutchis Exp $";
+static char	RCSid[] = "$Id: HtHeap.cc,v 1.5 1999/09/05 06:49:47 ghutchis Exp $";
 #endif
 
 #include "HtHeap.h"
@@ -140,6 +140,7 @@ void HtHeap:: percolateUp(int leaf)
     {
       data->Assign(data->Nth(parent), leaf);
       leaf = parent;
+      parent = parentOf(leaf);
     }
   data->Assign(value, leaf);
 }
@@ -165,8 +166,9 @@ void HtHeap::pushDownRoot(int root)
 	    }
 	  if ( data->Nth(childPos)->compare(value) < 0 ) // -1, so smaller
 	    {
-	      // Found the right position, but we need to loop
-	      data->Assign(value, root);
+	      // We have to swap this node with the root and then loop
+	      data->Assign(data->Nth(childPos), root);
+	      data->Assign(value, childPos);
 	      root = childPos;
 	    }
 	  else
