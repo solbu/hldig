@@ -5,12 +5,12 @@
 //	       of words waiting to be inserted in the database.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.h,v 1.2.2.6 2000/10/10 03:15:30 ghutchis Exp $
+// $Id: HtWordList.h,v 1.2.2.7 2000/10/20 03:40:55 ghutchis Exp $
 //
 
 #ifndef _HtWordList_h_

@@ -6,12 +6,12 @@
 //           and the final display.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.54.2.13 2000/10/10 03:15:42 ghutchis Exp $
+// $Id: htsearch.cc,v 1.54.2.14 2000/10/20 03:40:59 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H

@@ -8,12 +8,12 @@
 //
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the General GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtNNTP.h,v 1.1.2.2 2000/09/06 09:02:08 angus Exp $
+// $Id: HtNNTP.h,v 1.1.2.3 2000/10/20 03:40:57 ghutchis Exp $
 //
 
 #ifndef _HTNNTP_H

@@ -6,12 +6,12 @@
 //            It does not generate a separate database.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Substring.cc,v 1.11.2.4 2000/10/10 03:15:39 ghutchis Exp $
+// $Id: Substring.cc,v 1.11.2.5 2000/10/20 03:40:56 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H

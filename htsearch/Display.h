@@ -4,12 +4,12 @@
 // Display: Takes results of search and fills in the HTML templates
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.h,v 1.22.2.2 2000/03/28 02:01:39 ghutchis Exp $
+// $Id: Display.h,v 1.22.2.3 2000/10/20 03:40:59 ghutchis Exp $
 //
 
 #ifndef _Display_h_

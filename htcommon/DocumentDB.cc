@@ -8,12 +8,12 @@
 //             than searching.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.28.2.8 2000/05/06 20:46:37 loic Exp $
+// $Id: DocumentDB.cc,v 1.28.2.9 2000/10/20 03:40:55 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H

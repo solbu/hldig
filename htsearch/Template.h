@@ -1,21 +1,25 @@
 //
 // Template.h
 //
-// $Id: Template.h,v 1.2 1997/03/24 04:33:24 turtle Exp $
+// Template: A template to set the display of the search results.
+//           MatchTemplate is used for every match, Start and End templates
+//           are used between the header and the first match and the 
+//           last match and the footer respectively.
+//           
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1995-2000 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Log: Template.h,v $
-// Revision 1.2  1997/03/24 04:33:24  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
+// $Id: Template.h,v 1.5.2.1 2000/10/20 03:40:59 ghutchis Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-//
+
 #ifndef _Template_h_
 #define _Template_h_
 
-#include <Object.h>
-#include <htString.h>
+#include "Object.h"
+#include "htString.h"
 
 //
 // This class holds information about output templates.
@@ -26,15 +30,15 @@ public:
     Template();
     ~Template();
 
-    char	       	*getMatchTemplate()	       	{return matchTemplate;}
-    char	       	*getStartTemplate()	       	{return startTemplate;}
-    char	       	*getEndTemplate()	       	{return endTemplate;}
+    const String&      	getMatchTemplate() const       	{ return matchTemplate; }
+    const String&     	getStartTemplate() const       	{ return startTemplate; }
+    const String&      	getEndTemplate() const       	{ return endTemplate; }
 
-    void	       	setMatchTemplate(char *s)	{matchTemplate = s;}
-    void	       	setStartTemplate(char *s)	{startTemplate = s;}
-    void	       	setEndTemplate(char *s)		{endTemplate = s;}
+    void	       	setMatchTemplate(const char *s)	{ matchTemplate = s; }
+    void	       	setStartTemplate(const char *s)	{ startTemplate = s; }
+    void	       	setEndTemplate(const char *s)	{ endTemplate = s; }
 
-    void	       	createFromFile(char *filename);
+    void	       	createFromFile(const char *filename);
 	
 protected:
     String	       	matchTemplate;
@@ -42,7 +46,7 @@ protected:
     String	       	endTemplate;
 
 private:
-    void	       	readFile(String &, char *);
+    void	       	readFile(String &, const char *) const;
 };
 
 #endif

@@ -1,24 +1,21 @@
 //
 // Parsable.h
 //
-// $Id: Parsable.h,v 1.3 1998/08/11 08:58:30 ghutchis Exp $
+// Parsable: Base class for file parsers (HTML, PDF, ExternalParser ...)
 //
-// $Log: Parsable.h,v $
-// Revision 1.3  1998/08/11 08:58:30  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1995-2000 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.2  1997/03/24 04:33:16  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
+// $Id: Parsable.h,v 1.6.2.1 2000/10/20 03:40:56 ghutchis Exp $
 //
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
-//
+
 #ifndef _Parsable_h_
 #define _Parsable_h_
 
-#include <htString.h>
+#include "htString.h"
 #include "Retriever.h"
 
 class URL;
@@ -46,7 +43,6 @@ public:
 	
 protected:
     String		*contents;
-    char		*valid_punctuation;
     int			max_head_length;
     int			max_description_length;
     int			max_meta_description_length;

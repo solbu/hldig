@@ -23,12 +23,12 @@
 ///////
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.8.2.6 2000/08/23 11:28:52 angus Exp $ 
+// $Id: HtHTTP.h,v 1.8.2.7 2000/10/20 03:40:57 ghutchis Exp $ 
 //
 
 #ifndef _HTHTTP_H

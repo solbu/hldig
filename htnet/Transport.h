@@ -6,12 +6,12 @@
 //            scheme (e.g. http://, ftp://...)
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.6.2.8 2000/08/30 08:10:22 angus Exp $
+// $Id: Transport.h,v 1.6.2.9 2000/10/20 03:40:57 ghutchis Exp $
 //
 //
 

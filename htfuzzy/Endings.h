@@ -5,12 +5,12 @@
 //          used by the ispell dictionary files.
 //           
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Endings.h,v 1.3.2.1 1999/12/07 19:54:11 bosc Exp $
+// $Id: Endings.h,v 1.3.2.2 2000/10/20 03:40:56 ghutchis Exp $
 //
 
 #ifndef _Endings_h_

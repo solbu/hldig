@@ -1,8 +1,10 @@
 //
-// HtSGMLCodec.h
+// HtURLCodec.h
 //
-// HtSGMLCodec: A Specialized HtWordCodec class to convert between SGML 
-//              ISO 8859-1 entities and high-bit characters.
+// HtURLCodec:  Specialized HtWordCodec which just caters to the
+//              needs of "url_part_aliases" and "common_url_parts".
+//              Used for coding URLs when they are on disk; the key and the
+//              href field in db.docdb.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2000 The ht://Dig Group
@@ -10,34 +12,34 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtSGMLCodec.h,v 1.1.2.2 2000/10/20 03:40:55 ghutchis Exp $
+// $Id: HtURLCodec.h,v 1.1.2.1 2000/10/20 03:40:55 ghutchis Exp $
 //
-#ifndef __HtSGMLCodec_h
-#define __HtSGMLCodec_h
+
+#ifndef __HtURLCodec_h
+#define __HtURLCodec_h
 
 #include "HtWordCodec.h"
 
 // Container for a HtWordCodec (not subclassed from it due to
 // portability-problems using initializers).
 // Not for subclassing.
-class HtSGMLCodec
+class HtURLCodec
 {
 public:
-  static HtSGMLCodec *instance();
-  virtual ~HtSGMLCodec();
+  static HtURLCodec *instance();
+  virtual ~HtURLCodec();
 
-  // Similar to the HtWordCodec class.  Each string may contain
-  // zero or more of words from the lists. Here we need to run
-  // it through two codecs because we might have two different forms
+  // Same as in the HtWordCodec class.  Each string may contain
+  // zero  or more of words from the lists.
   inline String encode(const String &uncoded) const
-  { return myTextWordCodec->encode(myNumWordCodec->encode(uncoded)); }
+  { return myWordCodec->encode(uncoded); }
 
-  // But we only want to decode into one form i.e. &foo; NOT &#nnn;
   String decode(const String &coded) const
-  { return myTextWordCodec->decode(coded); }
+  { return myWordCodec->decode(coded); }
 
   // If an error was discovered during the parsing of
-  // entities, this returns an error message
+  // url_part_aliases or common_url_parts, this member gives a
+  // nonempty String with an error message.
   String& ErrMsg();
 
   // egcs-1.1 (and some earlier versions) always erroneously
@@ -51,13 +53,12 @@ public:
 private:
   // Hide default-constructor, copy-constructor and assignment
   // operator, making this a singleton.
-  HtSGMLCodec();
-  HtSGMLCodec(const HtSGMLCodec &);
-  void operator= (const HtSGMLCodec &);
+  HtURLCodec();
+  HtURLCodec(const HtURLCodec &);
+  void operator= (const HtURLCodec &);
 
-  HtWordCodec *myTextWordCodec; // For &foo;
-  HtWordCodec *myNumWordCodec; // For &#foo;
+  HtWordCodec *myWordCodec;
   String myErrMsg;
 };
 
-#endif /* __HtSGMLCodec_h */
+#endif /* __HtURLCodec_h */

@@ -1,12 +1,15 @@
 //
-// Parsable.h
+// Plaintext.h
 //
-// $Id: Plaintext.h,v 1.1 1997/02/03 17:11:06 turtle Exp $
+// Plaintext: Parses plaintext files. Not much to do, really.
 //
-// $Log: Plaintext.h,v $
-// Revision 1.1  1997/02/03 17:11:06  turtle
-// Initial revision
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1995-2000 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
+// $Id: Plaintext.h,v 1.3.2.1 2000/10/20 03:40:56 ghutchis Exp $
 //
 #ifndef _Plaintext_h_
 #define _Plaintext_h_

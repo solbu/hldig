@@ -11,12 +11,12 @@
 //           work, Document_not_found is returned.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.h,v 1.10.2.10 2000/09/01 21:32:31 angus Exp $
+// $Id: Document.h,v 1.10.2.11 2000/10/20 03:40:55 ghutchis Exp $
 //
 //
 #ifndef _Document_h_

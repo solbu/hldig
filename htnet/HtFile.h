@@ -14,12 +14,12 @@
 ///////
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtFile.h,v 1.1.2.1 2000/01/14 01:23:02 ghutchis Exp $ 
+// $Id: HtFile.h,v 1.1.2.2 2000/10/20 03:40:57 ghutchis Exp $ 
 //
 
 #ifndef _HTFILE_H
