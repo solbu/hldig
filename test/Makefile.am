@@ -1,8 +1,10 @@
 include $(top_srcdir)/Makefile.config
 
+TESTS = t_htdig t_htsearch
+
 #PROFILING = -p
 
-EXTRA_DIST = index.html script.html site1.html site2.html site3.html site4.html title.html
+EXTRA_DIST = htdocs
 
 LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include $(PROFILING)
 
@@ -14,10 +16,10 @@ dbbench_LDFLAGS = $(PROFILING)
 dbbench_LDADD = $(HTLIBS)
 
 clean-local:
-	rm -f gmon.out test test_weakcmpr 
+	rm -fr gmon.out test test_weakcmpr logs var
 
 distclean-local:
-	rm -f words.all words.uniq
+	rm -fr words.all words.uniq
 
 dobench: dbbench
 	$(MAKE) bench

@@ -15,7 +15,7 @@ distclean-local:
 	if echo "@HTDIGDIRS@" | grep 'test ' > /dev/null ; \
 	then : ; \
 	else \
-		rm -f test/Makefile ; \
+		rm -f test/Makefile test/test_functions ; \
 	fi
 
 install-data-hook:

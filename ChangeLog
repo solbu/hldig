@@ -1,3 +1,7 @@
+Wed Sep 01 15:40:37 1999  Loic Dachary  <loic@ceic.com>
+
+	* test: implement minimal tests for htsearch and htdig
+
 Tue Aug 31 02:17:04 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/WordRecord.h: Change back to struct to ensure integrity
@@ -176,6 +180,11 @@ Fri Aug 13 15:44:31 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	* htlib/strptime.c, htlib/mktime.c: added #include "htconfig.h"
 	to pick up definitions from configure program. Let's try to
 	remember that config.h != htconfig.h!
+
+Fri Aug 13 14:49:07 1999  Loic Dachary  <loic@ceic.com>
+
+	* configure.in: removed unused HTDIG_TOP, changed AM_WITH_ZLIB
+	  by CHECK_ZLIB
 
 Fri Aug 13 14:00:16 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 

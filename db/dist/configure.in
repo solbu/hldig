@@ -656,7 +656,7 @@ if test "$db_cv_test" = yes; then
 	fi
 fi
 
-AM_WITH_ZLIB
+CHECK_ZLIB
 
 AC_OUTPUT(Makefile include.tcl:../test/include.tcl \
     db.h:../include/db.h db_int.h:../include/db_int.h \

@@ -1,0 +1,61 @@
+#
+#   Copyright (C) 1999 Loic Dachary
+#
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the
+#   Free Software Foundation; either version 2, or (at your option) any
+#   later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
+#
+
+testdir=`pwd`
+
+if test -z "@MAKE@"
+then
+	echo "no make command found"
+	exit 77
+fi
+
+#
+# Prepare http server
+#
+(
+    cd conf
+    @MAKE@ user="@USER@" testdir=$testdir all > /dev/null
+)
+
+httpd=@APACHE@
+
+if test -z "$httpd"
+then
+	echo "no apache server provided. Run configure with --with-apache=DIR"
+	exit 77
+fi
+
+if [ ! -d logs ] 
+then 
+  mkdir -p logs
+else
+  kill -15 `cat logs/httpd.pid`
+  sleep 2
+fi
+$httpd -d $testdir
+
+#
+# Prepare htdig test environment
+#
+if [ ! -d var/htdig ] 
+then 
+  mkdir -p var/htdig
+fi
+
+htdig=../htdig/htdig
+htsearch=../htsearch/htsearch

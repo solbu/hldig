@@ -25,8 +25,6 @@ AC_PREREQ(2.13)
 
 AM_CONFIG_HEADER(include/htconfig.h)
 AC_PREFIX_DEFAULT(/opt/www)
-HTDIG_TOP=`pwd`
-AC_SUBST(HTDIG_TOP)
 
 AC_PROG_MAKE_SET
 
@@ -108,7 +106,7 @@ AC_AIX
 dnl Checks for libraries.
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, t_accept)
-AM_WITH_ZLIB
+CHECK_ZLIB
 AC_SUBST(CXXFLAGS)dnl
 AC_SUBST(LDFLAGS)dnl
 
@@ -193,12 +191,21 @@ AC_LANG_C
 if test ! -d "./db"; then
   mkdir db
 fi
+
+if test -n "$TESTDIR"
+then
+	CHECK_USER
+	AC_PROG_APACHE
+	MAKE=${MAKE-make}
+	AC_SUBST(MAKE)
+fi
+
 AC_CONFIG_SUBDIRS(db/dist)
 
 HTDIGDIRS="db htlib htcommon htfuzzy htdig htsearch htmerge htnotify installdir include htdoc $TESTDIR ."
 AC_SUBST(HTDIGDIRS)
 
-AC_OUTPUT(Makefile db/Makefile htcommon/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile)
+AC_OUTPUT(Makefile db/Makefile htcommon/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile test/test_functions)
 
 echo ""
 echo ""

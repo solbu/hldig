@@ -4,7 +4,7 @@
  * Copyright (c) 1997, 1998
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)ex_tpcb.c	10.25 (Sleepycat) 10/5/98
+ *	@(#)ex_tpcb.c	10.26 (Sleepycat) 11/22/98
  */
 
 #include "config.h"
@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <sys/time.h>
 #include <unistd.h>
 #endif
 
@@ -42,6 +43,7 @@ int	  tp_txn(DB_TXNMGR *, DB *, DB *, DB *, DB *, int, int, int);
 void	  usage(void);
 
 int verbose;
+int compress = 0;
 const char
 	*progname = "ex_tpcb";				/* Program name. */
 
@@ -146,7 +148,7 @@ main(argc, argv)
 	verbose = 0;
 	iflag = 0;
 	seed = (u_long)getpid();
-	while ((ch = getopt(argc, argv, "a:b:fh:im:n:S:s:t:v")) != EOF)
+	while ((ch = getopt(argc, argv, "a:b:fh:im:n:S:s:t:vz")) != EOF)
 		switch (ch) {
 		case 'a':			/* Number of account records */
 			if ((accounts = atoi(optarg)) <= 0)
@@ -188,6 +190,9 @@ main(argc, argv)
 			break;
 		case 'v':			/* Verbose option. */
 			verbose = 1;
+			break;
+		case 'z':
+			compress = DB_COMPRESS;
 			break;
 		case '?':
 		default:
@@ -287,7 +292,7 @@ usage()
 	char *a1, *a2;
 
 	a1 = "[-v] [-a accounts] [-b branches] [-h home]\n";
-	a2 = "          [-m mpool_size] [-S seed] [-s history] [-t tellers]";
+	a2 = "          [-m mpool_size] [-S seed] [-s history] [-t tellers] [-z]";
 	(void)fprintf(stderr, "usage: %s -i %s %s\n", progname, a1, a2);
 	(void)fprintf(stderr,
 	    "       %s -n transactions %s %s\n", progname, a1, a2);
@@ -316,7 +321,7 @@ tp_populate(env, num_a, num_b, num_h, num_t)
 
 	dbi.h_nelem = (u_int)num_a;
 	if ((errno = db_open("account",
-	    DB_HASH, DB_CREATE | DB_TRUNCATE, 0644, env, &dbi, &dbp)) != 0) {
+	    DB_HASH, DB_CREATE | DB_TRUNCATE | compress, 0644, env, &dbi, &dbp)) != 0) {
 		fprintf(stderr, "%s: Account file open failed: ", progname);
 		if (errno < 0)
 			fprintf(stderr, "returned %ld\n", (long)errno);
@@ -351,7 +356,7 @@ tp_populate(env, num_a, num_b, num_h, num_t)
 	dbi.h_ffactor = 1;
 	dbi.db_pagesize = 512;
 	if ((errno = db_open("branch",
-	    DB_HASH, DB_CREATE | DB_TRUNCATE, 0644, env, &dbi, &dbp)) != 0) {
+	    DB_HASH, DB_CREATE | DB_TRUNCATE | compress, 0644, env, &dbi, &dbp)) != 0) {
 		fprintf(stderr, "%s: Branch file create failed: ", progname);
 		if (errno < 0)
 			fprintf(stderr, "returned %ld\n", (long)errno);
@@ -383,9 +388,9 @@ tp_populate(env, num_a, num_b, num_h, num_t)
 	 */
 	dbi.h_nelem = (u_int)num_t;
 	dbi.h_ffactor = 0;
-	dbi.db_pagesize = 512;
+	dbi.db_pagesize = compress ? 1024 : 512;
 	if ((errno = db_open("teller",
-	    DB_HASH, DB_CREATE | DB_TRUNCATE, 0644, env, &dbi, &dbp)) != 0) {
+	    DB_HASH, DB_CREATE | DB_TRUNCATE | compress, 0644, env, &dbi, &dbp)) != 0) {
 		fprintf(stderr, "%s: Teller file create failed: ", progname);
 		if (errno < 0)
 			fprintf(stderr, "returned %ld\n", (long)errno);
@@ -414,7 +419,7 @@ tp_populate(env, num_a, num_b, num_h, num_t)
 	dbi.re_len = HISTORY_LEN;
 	dbi.flags = DB_FIXEDLEN;
 	if ((errno = db_open("history",
-	    DB_RECNO, DB_CREATE | DB_TRUNCATE, 0644, env, &dbi, &dbp)) != 0) {
+	    DB_RECNO, DB_CREATE | DB_TRUNCATE | compress, 0644, env, &dbi, &dbp)) != 0) {
 		fprintf(stderr, "%s: History file create failed: ", progname);
 		if (errno < 0)
 			fprintf(stderr, "returned %ld\n", (long)errno);
@@ -565,7 +570,7 @@ tp_run(dbenv, n, accounts, branches, tellers)
 	 * Open the database files.
 	 */
 	if ((errno =
-	    db_open("account", DB_UNKNOWN, 0, 0, dbenv, NULL, &adb)) != 0) {
+	    db_open("account", DB_UNKNOWN | compress, 0, 0, dbenv, NULL, &adb)) != 0) {
 		fprintf(stderr, "%s: Open of account file failed: ", progname);
 		if (errno < 0)
 			fprintf(stderr, "returned %ld\n", (long)errno);
@@ -574,7 +579,7 @@ tp_run(dbenv, n, accounts, branches, tellers)
 		exit (1);
 	}
 	if ((errno =
-	    db_open("branch", DB_UNKNOWN, 0, 0, dbenv, NULL, &bdb)) != 0) {
+	    db_open("branch", DB_UNKNOWN | compress, 0, 0, dbenv, NULL, &bdb)) != 0) {
 		fprintf(stderr, "%s: Open of branch file failed: ", progname);
 		if (errno < 0)
 			fprintf(stderr, "returned %ld\n", (long)errno);
@@ -583,7 +588,7 @@ tp_run(dbenv, n, accounts, branches, tellers)
 		exit (1);
 	}
 	if ((errno =
-	    db_open("teller", DB_UNKNOWN, 0, 0, dbenv, NULL, &tdb)) != 0) {
+	    db_open("teller", DB_UNKNOWN | compress, 0, 0, dbenv, NULL, &tdb)) != 0) {
 		fprintf(stderr, "%s: Open of teller file failed: ", progname);
 		if (errno < 0)
 			fprintf(stderr, "returned %ld\n", (long)errno);
@@ -592,7 +597,7 @@ tp_run(dbenv, n, accounts, branches, tellers)
 		exit (1);
 	}
 	if ((errno =
-	    db_open("history", DB_UNKNOWN, 0, 0, dbenv, NULL, &hdb)) != 0) {
+	    db_open("history", DB_UNKNOWN | compress, 0, 0, dbenv, NULL, &hdb)) != 0) {
 		fprintf(stderr, "%s: Open of history file failed: ", progname);
 		if (errno < 0)
 			fprintf(stderr, "returned %ld\n", (long)errno);
@@ -698,9 +703,9 @@ tp_txn(txmgr, adb, bdb, tdb, hdb, anum, bnum, tnum)
 	if (txn_begin(txmgr, NULL, &t) != 0)
 		goto err;
 
-	if (adb->cursor(adb, t, &acurs) != 0 ||
-	    bdb->cursor(bdb, t, &bcurs) != 0 ||
-	    tdb->cursor(tdb, t, &tcurs) != 0)
+	if (adb->cursor(adb, t, &acurs, 0) != 0 ||
+	    bdb->cursor(bdb, t, &bcurs, 0) != 0 ||
+	    tdb->cursor(tdb, t, &tcurs, 0) != 0)
 		goto err;
 
 	/* Account record */

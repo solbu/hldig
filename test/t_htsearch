@@ -1,0 +1,71 @@
+#
+#   Copyright (C) 1999 Loic Dachary
+#
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the
+#   Free Software Foundation; either version 2, or (at your option) any
+#   later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
+#
+
+. t_htdig
+
+config=$testdir/conf/htdig.conf
+tmp=/tmp/t_htsearch$$
+
+try() {
+    comment="$1"
+    shift
+    query="$1"
+    shift
+    $htsearch -c $config "$query" > $tmp
+    for pattern
+    do
+	if grep "$pattern" $tmp > /dev/null 
+	then :
+	else
+	    fail "$htsearch -c $config '$query' > $tmp:
+    $comment"
+	fi
+    done
+}
+
+try "Simple search for 'also'" \
+    "words=also" \
+    '3 matches' 'site2.html' 'script.html' 'site4.html'
+
+try "Implicit and search with two words 'also movies'" \
+    "method=and&words=also+movies" \
+    '1 match' 'site2.html'
+
+try "Explicit and search with two words 'also movies'" \
+    "method=boolean&words=also+and+movies" \
+    '1 match' 'site2.html'
+
+try "Implicit or search for 'also distribution'" \
+    "method=or&words=also+distribution" \
+    '5 matches' 'site2.html' 'script.html' 'site4.html' 'site1.html' 'software.htm'
+
+try "Explicit or search for 'also distribution'" \
+    "method=boolean&words=also+or+distribution" \
+    '5 matches' 'site2.html' 'script.html' 'site4.html' 'site1.html' 'software.htm'
+
+try "Boolean and/or mixed 'also or distribution and ltd'" \
+    "method=boolean&words=also+or+distribution+and+ltd" \
+    '4 matches' 'site2.html' 'script.html' 'site4.html' 'site1.html'
+
+try "Boolean explicit priority '(also or distribution) and ltd'" \
+    "method=boolean&words=(also+or+distribution)+and+ltd" \
+    '2 matches' 'script.html' 'site1.html'
+
+rm -f $tmp
+
+exit 0
