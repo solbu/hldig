@@ -1,3 +1,8 @@
+Thu Dec  2 14:39:49 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html(modification_time_is_now): Make the description
+	a bit clearer as to how it may cut down on reindexing.
+
 Thu Dec  2 13:46:11 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc(parse_url), htdig/Server.cc(Server),

@@ -3779,12 +3779,14 @@
 		  </dt>
 		  <dd>
 			This sets ht://Dig's response to a server that does not
-			return a modification date. By default, it stores
+			return a modification date. If false, it stores
 			nothing. By setting modification_time_is_now, it will store
 			the current time if the server does not return a
 			date. Though this will return incorrect dates in search
-			results, it will cut down on reindexing from such servers
-			when doing updates.
+			results, it may cut down on reindexing from such servers
+			when doing updates, provided they still honor the
+			If-Modified-Since header. Caching servers such as
+			WWWoffle and Squid seem to do this.
 		  </dd>
 		  <dt>
 			<em>example:</em>
