@@ -2,7 +2,7 @@
 # word_builder.pl
 #
 # word_builder: Parses an ascii file and generate files from
-# templates (file.h.tmpl > file.h) according to the specifications.
+#               templates (file.h.tmpl > file.h) according to the specifications.
 #
 # The format of the ascii file is as follows:
 # 
@@ -71,7 +71,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: word_builder.pl,v 1.1 1999/09/24 10:28:56 loic Exp $
+# $Id: word_builder.pl,v 1.2 1999/09/27 13:55:47 loic Exp $
 #
 use strict;
 

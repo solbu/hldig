@@ -1,13 +1,15 @@
 //
 // word.cc
 //
+// word: Implement tests for the word database related classes.
+//
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.3 1999/09/27 10:32:13 loic Exp $
+// $Id: word.cc,v 1.4 1999/09/27 13:55:48 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H

@@ -1,3 +1,16 @@
+//
+// dbbench.cc
+//
+// dbbench: stress test the Berkeley DB database.
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: dbbench.cc,v 1.5 1999/09/27 13:55:48 loic Exp $
+//
 #ifdef HAVE_CONFIG_H
 #include <htconfig.h>
 #endif /* HAVE_CONFIG_H */
