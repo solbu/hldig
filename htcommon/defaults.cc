@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.39 2000/02/24 17:22:54 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.40 2000/02/25 17:26:22 grdetil Exp $
 //
 
 #include "HtConfiguration.h"
@@ -1085,7 +1085,7 @@ http://www.htdig.org/", "
 	The list should only contain names that the local server
 	recognizes as default documents for directory URLs, as defined
 	by the DirectoryIndex setting in Apache's srm.conf, for example.
-	As of 3.1.5, this can be a string list rather than a single name,
+	As of version 3.1.5, this can be a string list rather than a single name,
 	and htdig will use the first name that works. Since this requires a
         loop, setting the most common name first will improve performance.
 	Special characters can be embedded in these names using %xx hex encoding.
@@ -1108,7 +1108,7 @@ http://www.htdig.org/", "
 	access are .html, .htm, .txt, .asc, .ps, .eps and .pdf. For
 	anything else, htdig must ask the HTTP server for the file,
 	so it can determine the MIME content-type of it.
-	As of 3.1.5, you can provide multiple mappings of a given
+	As of version 3.1.5, you can provide multiple mappings of a given
 	URL to different directories, and htdig will use the first
 	mapping that works.
 	Special characters can be embedded in these names using %xx hex encoding.
@@ -1134,7 +1134,7 @@ http://www.htdig.org/", "
 	to /home/joe/www/foo/bar.html, try the example below.
 	<br>The fallback to HTTP can be disabled by setting the
 	<a href=\"#local_urls_only\">local_urls_only</a> attribute to true.
-	As of 3.1.5, you can provide multiple mappings of a given
+	As of version 3.1.5, you can provide multiple mappings of a given
 	URL to different directories, and htdig will use the first
 	mapping that works.
 	Special characters can be embedded in these names using %xx hex encoding.
@@ -1297,8 +1297,8 @@ http://www.htdig.org/", "
 	"integer", "htsearch", "all", "Presentation:How", "maximum_pages: 20", "
 	This value limits the number of page links that will be
 	included in the page list at the bottom of the search
-	results page. Note that this does not limit the number
-	of documents that are matched in any way.
+	results page. As of version 3.1.4, this will limit the
+	total number of matching documents that are shown.
 " },
 { "maximum_word_length", "32", 
 	"number", "htdig htsearch", "3.1.3", "Indexing:What", "maximum_word_length: 15", "

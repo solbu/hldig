@@ -1,3 +1,10 @@
+Fri Feb 25 11:19:47 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc (maximum_pages): Describe new bahaviour (as of
+	3.1.4), where this limits total matches shown.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerate using cf_generate.pl.
+
 Thu Feb 24 14:43:06 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htnet/HtFile.cc (Request): Fix silly typo.
