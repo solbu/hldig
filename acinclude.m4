@@ -72,7 +72,7 @@ dnl or in Makefile.in:
 dnl 
 dnl   program @USER@
 dnl
-dnl @version $Id: acinclude.m4,v 1.7.2.6 2000/09/17 01:39:15 ghutchis Exp $
+dnl @version $Id: acinclude.m4,v 1.7.2.7 2000/09/21 04:38:28 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -130,7 +130,7 @@ dnl
 dnl Same semantic as AC_CHECK_HEADER except that it aborts the configuration
 dnl script if the header file is not found.
 dnl
-dnl @version $Id: acinclude.m4,v 1.7.2.6 2000/09/17 01:39:15 ghutchis Exp $
+dnl @version $Id: acinclude.m4,v 1.7.2.7 2000/09/21 04:38:28 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 AC_DEFUN([AC_MANDATORY_HEADER],
@@ -155,7 +155,7 @@ dnl
 dnl Same semantic as AC_CHECK_HEADERS except that it aborts the configuration
 dnl script if one of the headers file is not found.
 dnl
-dnl @version $Id: acinclude.m4,v 1.7.2.6 2000/09/17 01:39:15 ghutchis Exp $
+dnl @version $Id: acinclude.m4,v 1.7.2.7 2000/09/21 04:38:28 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl 
 AC_DEFUN([AC_MANDATORY_HEADERS],
@@ -174,7 +174,7 @@ dnl
 dnl Same semantic as AC_CHECK_LIB except that it aborts the configuration
 dnl script if the library is not found or compilation fails.
 dnl
-dnl @version $Id: acinclude.m4,v 1.7.2.6 2000/09/17 01:39:15 ghutchis Exp $
+dnl @version $Id: acinclude.m4,v 1.7.2.7 2000/09/21 04:38:28 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 AC_DEFUN([AC_MANDATORY_LIB],
@@ -228,7 +228,7 @@ dnl Currently supports g++ and gcc.
 dnl This macro must be put after AC_PROG_CC and AC_PROG_CXX in
 dnl configure.in
 dnl
-dnl @version $Id: acinclude.m4,v 1.7.2.6 2000/09/17 01:39:15 ghutchis Exp $
+dnl @version $Id: acinclude.m4,v 1.7.2.7 2000/09/21 04:38:28 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
@@ -238,7 +238,7 @@ if test -n "$CXX"
 then
   if test "$GXX" = "yes"
   then
-    ac_compile_warnings_opt='-Wall'
+    ac_compile_warnings_opt='-Wall -Woverloaded-virtual'
   fi
   CXXFLAGS="$CXXFLAGS $ac_compile_warnings_opt"
   ac_compile_warnings_msg="$ac_compile_warnings_opt for C++"
@@ -248,7 +248,7 @@ if test -n "$CC"
 then
   if test "$GCC" = "yes"
   then
-    ac_compile_warnings_opt='-Wall'
+    ac_compile_warnings_opt='-Wall -Wmissing-declarations -Wmissing-prototypes'
   fi
   CFLAGS="$CFLAGS $ac_compile_warnings_opt"
   ac_compile_warnings_msg="$ac_compile_warnings_msg $ac_compile_warnings_opt for C"
@@ -278,19 +278,18 @@ dnl   #ifdef HAVE_LIBZ
 dnl   #include <zlib.h>
 dnl   #endif /* HAVE_LIBZ */
 dnl
-dnl @version $Id: acinclude.m4,v 1.7.2.6 2000/09/17 01:39:15 ghutchis Exp $
+dnl @version $Id: acinclude.m4,v 1.7.2.7 2000/09/21 04:38:28 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
-
-AC_DEFUN(CHECK_ZLIB,
+AC_DEFUN([CHECK_ZLIB],
 #
 # Handle user hints
 #
 [AC_MSG_CHECKING(if zlib is wanted)
 AC_ARG_WITH(zlib,
-[  --with-zlib=DIR root directory path of zlib installation [defaults to
-		    /usr/local or /usr if not found in /usr/local]
-  --without-zlib to disable zlib usage completely],
+[  --with-zlib=DIR         root directory path of zlib installation [defaults to
+		          /usr/local or /usr if not found in /usr/local]
+  --without-zlib          to disable zlib usage completely],
 [if test "$withval" != no ; then
   AC_MSG_RESULT(yes)
   ZLIB_HOME="$withval"
@@ -310,33 +309,21 @@ fi
 #
 if test -n "${ZLIB_HOME}"
 then
-	ZLIB_OLD_LDFLAGS=$LDFLAGS
-	ZLIB_OLD_CPPFLAGS=$LDFLAGS
-	LDFLAGS="$LDFLAGS -L${ZLIB_HOME}/lib"
-	CPPFLAGS="$CPPFLAGS -I${ZLIB_HOME}/include"
+	#
+	# Adding /usr/lib or /usr/include to the flags/libs may
+	# hurt if using a compiler not installed in the standard 
+	# place.
+	#
+        if test "${ZLIB_HOME}" != "/usr"
+	then
+		LDFLAGS="$LDFLAGS -L${ZLIB_HOME}/lib"
+		CPPFLAGS="$CPPFLAGS -I${ZLIB_HOME}/include"
+	fi
         AC_LANG_SAVE
         AC_LANG_C
-	AC_CHECK_LIB(z, inflateEnd, [zlib_cv_libz=yes], [zlib_cv_libz=no])
-        AC_CHECK_HEADER(zlib.h, [zlib_cv_zlib_h=yes], [zlib_cvs_zlib_h=no])
+	AC_MANDATORY_LIB(z, inflateEnd)
+        AC_MANDATORY_HEADERS(zlib.h)
         AC_LANG_RESTORE
-	if test "$zlib_cv_libz" = "yes" -a "$zlib_cv_zlib_h" = "yes"
-	then
-		#
-		# If both library and header were found, use them
-		#
-		AC_CHECK_LIB(z, inflateEnd)
-		AC_MSG_CHECKING(zlib in ${ZLIB_HOME})
-		AC_MSG_RESULT(ok)
-	else
-		#
-		# If either header or library was not found, revert and bomb
-		#
-		AC_MSG_CHECKING(zlib in ${ZLIB_HOME})
-		LDFLAGS="$ZLIB_OLD_LDFLAGS"
-		CPPFLAGS="$ZLIB_OLD_CPPFLAGS"
-		AC_MSG_RESULT(failed)
-		AC_MSG_ERROR(either specify a valid zlib installation with --with-zlib=DIR or disable zlib usage with --without-zlib)
-	fi
 fi
 
 ])
@@ -373,7 +360,7 @@ dnl LoadModule env_module         @APACHE_MODULES@/mod_env.so
 dnl LoadModule config_log_module  @APACHE_MODULES@/mod_log_config.so
 dnl ...
 dnl
-dnl @version $Id: acinclude.m4,v 1.7.2.6 2000/09/17 01:39:15 ghutchis Exp $
+dnl @version $Id: acinclude.m4,v 1.7.2.7 2000/09/21 04:38:28 ghutchis Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 

@@ -1,3 +1,24 @@
+Wed Sep 20 22:47:01 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* aclocal.m4: Add in missing autoconf macros that somehow didn't
+	make the merge before. (No idea why I didn't catch this earlier.)
+
+	* acinclude.m4: Use newer CHECK_ZLIB macro.
+	
+	* */Makefile.in: Updated with automake for new build changes.
+
+	* configure, include/htconfig.h.in: Updated using autoconf.
+	
+	* test/dbbench.cc, test/word.cc, test/search.cc: Fix #include to
+	point to htconfig.h not non-existant config.h.
+
+	* htword/*.cc: Ditto.
+
+	* htword/Makefile.am: Update from mifluz version.
+
+	* htlib/myqsort.h, htlib/myqsort.c: Additional system library
+	replacement code.
+
 Sat Sep 16 20:14:32 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* configure.in, configure, acinclude.m4, aclocal.m4, acconfig.h,
