@@ -1,3 +1,8 @@
+Wed Jun  9 12:32:47 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
+
+    * htdig/HTML.cc (do_tag): Fixed meta date handling fix of June 3 to
+      ensure null byte gets put in by get() call.
+
 Wed 9 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
 
     * contrib/doc2html/doc2html.pl, installdir/mime.types:

@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HTML.cc,v 1.75 2004/06/04 17:39:28 grdetil Exp $
+// $Id: HTML.cc,v 1.76 2004/06/09 17:35:34 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -848,7 +848,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    retriever.got_meta_email(transSGML(attrs["content"]));
 		}
 		else if (metadatetags.CompareWord(cache, which, length) && 
-			 cache[length] == '\0' && config->Boolean("use_doc_date",0))
+			 (cache.get())[length] == '\0' && config->Boolean("use_doc_date",0))
 		  {
 		    retriever.got_time(transSGML(attrs["content"]));
 		  }
