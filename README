@@ -1,10 +1,12 @@
-ht://Dig 3.1.0b3 README
-Copyright (C) 1995-1998 Andrew Scherpbier <andrew@contigo.com>
+ht://Dig 3.2.0b1 README
+Copyright (c) 1995-1999 The ht://Dig Group
+Contributions from many, see htdoc/THANKS.html
+
+ht://Dig is distributed under the GNU General Public License (GPL).
+See the COPYING file for license information.
 
 ht://Dig is a world-wide-web search system for an intranet or small internet.
 
-ht://Dig is distributed under the GNU Public License (GPL).
-See the COPYING file for license information.
 See the htdoc/install.html file for compilation and installation instructions.
 
 This distribution includes:
@@ -19,9 +21,15 @@ This distribution includes:
 
     * htlib     - A small general purpose C++ class library
 
+    * htnet     - Net stuff classes
+
+    * htword    - word occurences list handling, aka inverted index
+
     * htcommon  - ht://Dig specific classes
 
     * htdoc     - ht://Dig documentation in HTML
+
+    * db        - The latest Berkeley DB package from Sleepycat Software
 
 ht://Dig has been tested extensively under Linux 2.0 using g++
 If you use g++, make absolutely sure you have libstdc++ installed
@@ -31,7 +39,7 @@ To build, first read the htdoc/install.html document
 
 Questions and discussion should be directed to the ht://Dig mailing list.  
 Find subscription instructions at http://www.htdig.org/mailing.html
-Suggestions and bug reports should be sent to htdig3-bugs@htdig.org
+Suggestions and bug reports should be sent to bugs@htdig.org
 
 For the most up-to-date documentation, use http://www.htdig.org/
 
