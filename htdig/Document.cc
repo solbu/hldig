@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.37 1999/03/03 04:21:36 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.38 1999/03/23 20:03:55 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -526,7 +526,9 @@ Document::readHeader(Connection &c)
 		strtok(line, " \t");
 		char	*token = strtok(0, "\n\t");
 				
-		if (returnStatus == Header_not_found &&
+		if ((returnStatus == Header_not_found ||
+			returnStatus == Header_ok) &&
+		    !ExternalParser::canParse(token) &&
 		    mystrncasecmp("text/", token, 5) != 0 &&
 		    mystrncasecmp("application/postscript", token, 22) != 0 &&
 		    mystrncasecmp("application/msword", token, 18) != 0 &&
