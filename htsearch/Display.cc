@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.3 1999/03/23 23:23:02 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.4 1999/03/25 15:55:52 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -239,7 +239,7 @@ Display::displayMatch(ResultMatch *match, int current)
     if (iA > 0)             // if an anchor was found
       {
 	List    *anchors = ref->DocAnchors();
-	if (anchors->Count() > 0)
+	if (anchors->Count() >= iA)
 	  {
 	    anchor = new String();
 	    fanchor = 1;
