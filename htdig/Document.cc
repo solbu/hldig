@@ -4,6 +4,10 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.32  1999/01/18 22:58:35  ghutchis
+// When reading chunks of document, if a chunk puts us over the max_doc_size
+// limit, take everything up to that limit (rather than discarding the entire chunk).
+//
 // Revision 1.31  1999/01/14 03:00:22  ghutchis
 // Use new StringList::Join function for http_proxy_exclude.
 //
@@ -105,7 +109,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.31 1999/01/14 03:00:22 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.32 1999/01/18 22:58:35 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -517,8 +521,10 @@ Document::RetrieveHTTP(time_t date)
 	if (debug > 2)
 	    cout << "Read " << bytesRead << " from document\n";
 	if (contents.length() + bytesRead > max_doc_size)
-	    break;
+	    bytesRead = max_doc_size - contents.length();
 	contents.append(docBuffer, bytesRead);
+	if (contents.length() >= max_doc_size)
+	    break;
     }
     c.close();
     document_length = contents.length();
@@ -663,8 +669,10 @@ Document::RetrieveLocal(time_t date, char *filename)
 	if (debug > 2)
 	    cout << "Read " << bytesRead << " from document\n";
 	if (contents.length() + bytesRead > max_doc_size)
-	    break;
+	    bytesRead = max_doc_size - contents.length();
 	contents.append(docBuffer, bytesRead);
+	if (contents.length() >= max_doc_size)
+	    break;
     }
     fclose(f);
     document_length = contents.length();
