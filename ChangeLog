@@ -1,3 +1,9 @@
+Sat Jul 27 11:57:25 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htnet/SSLConnection.cc: Add fix for segfault on SSL connections
+	noticed by several users. Fix contributed by Andy Bach
+	<afbach@users.sourceforge.net>.
+
 Tue Jun 18 10:22:01 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc (got_word): Check that the word length meets

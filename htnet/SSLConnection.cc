@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: SSLConnection.cc,v 1.2 2002/02/02 18:18:13 ghutchis Exp $
+// $Id: SSLConnection.cc,v 1.3 2002/07/27 17:21:07 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -65,6 +65,7 @@ SSLConnection::~SSLConnection()
 {
   if( ctx != NULL )
     SSL_CTX_free (ctx);
+  ctx = NULL;
 }
 
 int SSLConnection::Connect()
