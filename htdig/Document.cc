@@ -4,6 +4,9 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.30  1999/01/14 00:27:38  ghutchis
+// Small speed improvements.
+//
 // Revision 1.29  1999/01/10 05:16:28  ghutchis
 // Added check for header status when considering content-types.
 //
@@ -99,7 +102,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.29 1999/01/10 05:16:28 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.30 1999/01/14 00:27:38 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -365,8 +368,8 @@ Document::UseProxy()
 	excludeproxy->Pattern(pattern);
     }
 
-    if ((proxy) && (excludeproxy->FindFirst(url->get()) < 0 ||
-		    !excludeproxy->hasPattern()))
+    if ((proxy) && (!excludeproxy->hasPattern() ||
+		    excludeproxy->FindFirst(url->get()) < 0 ))
       return 1;    // if the exclude pattern is empty, use the proxy
     return 0;
 }

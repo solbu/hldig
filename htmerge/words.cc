@@ -4,6 +4,9 @@
 // Implementation of htmerge
 //
 // $Log: words.cc,v $
+// Revision 1.8  1999/01/14 00:27:38  ghutchis
+// Small speed improvements.
+//
 // Revision 1.7  1999/01/07 03:13:50  ghutchis
 // Fix minor memory leaks.
 //
@@ -29,7 +32,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.7 1999/01/07 03:13:50 ghutchis Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.8 1999/01/14 00:27:38 ghutchis Exp $";
 #endif
 
 #include "htmerge.h"
@@ -45,6 +48,7 @@ mergeWords(char *wordtmp, char *wordfile)
     Database	*dbf = Database::getDatabaseInstance();
     String	out;
     String	currentWord;
+    int		removeBadUrls = config.Boolean("remove_bad_urls");
     char	buffer[1000];
     String	word;
     char        *sid;
@@ -106,7 +110,7 @@ mergeWords(char *wordtmp, char *wordfile)
 	}
 	else if (*buffer == '-')
 	{
-	    if (config.Boolean("remove_bad_urls"))
+ 	    if (removeBadUrls)
 	    {
 		discard_list.Add(strtok(buffer + 1, "\n"), 0);
 		if (verbose)
@@ -202,14 +206,14 @@ mergeWords(char *wordtmp, char *wordfile)
 	    // Record the word in the new wordlist file
 	    //
 	    fprintf(wordlist, "%s", last_word.get());
+            fprintf(wordlist, "\ti:%d\tl:%d\tw:%d",
+		    last_wr.id,
+		    last_wr.location,
+		    last_wr.weight);
             if (last_wr.count != 1)
             {
                	fprintf(wordlist, "\tc:%d", last_wr.count);
             }
-            fprintf(wordlist, "\tl:%d\ti:%d\tw:%d",
-		    last_wr.location,
-		    last_wr.id,
-		    last_wr.weight);
 	    if (last_wr.anchor != 0)
             {
                	fprintf(wordlist, "\ta:%d",last_wr.anchor);
@@ -282,14 +286,14 @@ mergeWords(char *wordtmp, char *wordfile)
     // This could be cleaned up by putting this code and that from the loop
     // above into a separate function. It's not pretty, but it works correctly.
     fprintf(wordlist, "%s", last_word.get());
+    fprintf(wordlist, "\ti:%d\tl:%d\tw:%d",
+		last_wr.id,
+		last_wr.location,
+		last_wr.weight);
     if (last_wr.count != 1)
       {
 	fprintf(wordlist, "\tc:%d", last_wr.count);
       }
-    fprintf(wordlist, "\tl:%d\ti:%d\tw:%d",
-	    last_wr.location,
-	    last_wr.id,
-	    last_wr.weight);
     if (last_wr.anchor != 0)
       {
 	fprintf(wordlist, "\ta:%d",last_wr.anchor);
