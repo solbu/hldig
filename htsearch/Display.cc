@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.78 1999/05/26 14:43:58 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.79 1999/06/01 01:57:25 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -26,13 +26,13 @@ static char RCSid[] = "$Id: Display.cc,v 1.78 1999/05/26 14:43:58 ghutchis Exp $
 
 //*****************************************************************************
 //
-Display::Display(char *docFile)
+Display::Display(char *docFile, char *indexFile, char *excerptFile)
 {
     // Check "uncompressed"/"uncoded" urls at the price of time
     // (extra DB probes).
     docDB.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
 
-    docDB.Read(docFile);
+    docDB.Read(docFile, indexFile, excerptFile);
 
     limitTo = 0;
     excludeFrom = 0;
@@ -970,7 +970,11 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first)
 	head = ref->DocMetaDsc();
 	use_meta_description = 1;
       }
-    else head = ref->DocHead(); // head points to the top
+    else
+      {
+	docDB.ReadExcerpt(*ref);
+	head = ref->DocHead(); // head points to the top
+      }
 
     head_string = HtSGMLCodec::instance()->decode(head);
     head = head_string.get();
