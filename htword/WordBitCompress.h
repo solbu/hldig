@@ -1,14 +1,31 @@
+//
+// WordBitCompress.h
+//
+// BitStream: put and get bits into a buffer
+//           *tagging:  add tags to keep track of the position of data 
+//                      inside the bitstream for debuging purposes.
+//           *freezing: saves current position. further inserts in the BitStream
+//                      aren't really done. This way you can try different
+//                      compression algorithms and chose the best.
+//
+// Compressor: BitStream with extended fuctionalities
+//
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: WordBitCompress.h,v 1.1.2.4 1999/12/14 18:31:31 bosc Exp $
+//
+
 #ifndef   _WordBitCompress_h
 #define  _WordBitCompress_h
 
-#define TMax(a,b) (((a)>(b)) ? (a) : (b))
-#define TMin(a,b) (((a)<(b)) ? (a) : (b))
 #include<stdio.h>
 #include<stdlib.h>
 #include"HtVector_int.h"
-#define fatal fflush(stdout);fprintf(stderr,"FATAL ERROR at file:%s line:%d !!!\n",__FILE__,__LINE__);fflush(stderr);(*(int *)NULL)=1
-#define errr(s) {fprintf(stderr,"FATAL ERROR:%s\n",s);fatal;}
-#define CHECK_MEM(p) if(!p) errr("mifluz: Out of memory!");
 
 typedef unsigned char byte;
 // ******** HtVector_byte (header)
@@ -22,7 +39,18 @@ typedef char * charptr;
 #define HtVectorGType HtVector_charptr
 #include "HtVectorGeneric.h"
 
-// compute log2
+
+// ******** Utility inline functions and macros
+
+// error checking
+#define FATAL_ABORT fflush(stdout);fprintf(stderr,"FATAL ERROR at file:%s line:%d !!!\n",__FILE__,__LINE__);fflush(stderr);(*(int *)NULL)=1
+#define errr(s) {fprintf(stderr,"FATAL ERROR:%s\n",s);FATAL_ABORT;}
+#define CHECK_MEM(p) if(!p) errr("mifluz: Out of memory!");
+// max/min of 2 values
+#define TMax(a,b) (((a)>(b)) ? (a) : (b))
+#define TMin(a,b) (((a)<(b)) ? (a) : (b))
+
+// compute integer log2
 inline int
 num_bits(unsigned int maxval )
 {
@@ -31,8 +59,18 @@ num_bits(unsigned int maxval )
     for(nbits=0;mv;nbits++){mv>>=1;}
     return(nbits);
 }
+// compute 2^x
 #define pow2(x) (1<<(x))
+
+
+// function declarations
 char *label_str(char *s,int n);
+void  show_bits(int v,int n=16);
+unsigned short max_v(unsigned short *vals,int n);
+unsigned int   max_v(unsigned int   *vals,int n);
+unsigned short min_v(unsigned short *vals,int n);
+unsigned int   min_v(unsigned int   *vals,int n);
+
 
 
 
@@ -40,58 +78,33 @@ char *label_str(char *s,int n);
 // **************************************************
 // *************** BitStream  ***********************
 // **************************************************
-#define NBITS_NVALS 16
-#define NBITS_VAL 32
-#define NBITS_NBITS_VAL  5
-#define NBITS_NBITS_CHARVAL 4
+//  compression is done in Compressor not in BitStream
 class BitStream
 {
 protected:
+
+    // the buffer were the bitstream is stored
     HtVector_byte buff;
+
+    // current bit position within the buffer
     int bitpos;
+
+    // tags for debuging
     HtVector_int tagpos;
     HtVector_charptr tags;
+    int use_tags;
+
+    // freezing the bitstream
     HtVector_int freeze_stack;
     int freezeon;
-    int use_tags;
 public:
-    void freeze()
-    {
-	freeze_stack.push_back(bitpos);
-	freezeon=1;
-    }
-    int unfreeze()
-    {
-	int size=bitpos;
-	bitpos=freeze_stack.back();
-	freeze_stack.pop_back();
-	size-=bitpos;
-	if(freeze_stack.size()==0){freezeon=0;}
-	return(size);
-    }
+    void freeze();
+    int unfreeze();
 
-    void add_tag(char *tag)
-    {
-	if(!use_tags){return;}
-	if(freezeon){return;}
-	if(!tag){return;}
-	tags.push_back(strdup(tag));
-	tagpos.push_back(bitpos);
-    }
-    void put_zone(byte *vals,int n,char *tag)
-    {
-	add_tag(tag);
-	for(int i=0;i<(n+7)/8;i++){put(vals[i],TMin(8,n-8*i),NULL);}
-    }
-    void get_zone(byte *vals,int n,char *tag)
-    {
-	check_tag(tag);
-	for(int i=0;i<(n+7)/8;i++){vals[i]=get(TMin(8,n-8*i));}
-    }
+    // puts a bit into the bitstream : ** all puts go through this **
     void put(unsigned int v,char *tag=NULL)
     {
 	if(freezeon){bitpos++;return;}
-//    	printf("%c",(v ? '1' : '0'));
 	if(v){buff.back()|=pow2(bitpos%8);}
 	add_tag(tag);
 	bitpos++;
@@ -100,71 +113,46 @@ public:
 	    buff.push_back(0);
 	}
     }	
-    void put(unsigned int v,int n,char *tag="NOTAG")
-    {
-	int i;
-	add_tag(tag);
-//  	if(n==15){printf(":%3d: ",v);}
-	for(i=0;i<n;i++)
-	{
-	    put((v& pow2(i) ? 1:0));
-//  	    printf("%c",v& pow2(i) ? '1' : '0');
-	}
-//  	    printf(" ");
-    }
 
-
-
+    // gets a bit from the bitstream : ** all gets go through this **
     byte get(char *tag=NULL)
     {
-	if(check_tag(tag)==NOTOK){fatal;}
+	if(check_tag(tag)==NOTOK){errr("BitStream::get() check_tag failed");}
 	if(bitpos>=8*buff.size()){errr("BitStream::get reading past end of BitStream!");}
 	byte res=buff[bitpos/8] & pow2(bitpos%8);
 	bitpos++;
-//    	printf("%02x:%c ",buff[bitpos/8],(res ? '1' : '0'));
-//    	printf("%c",(res ? '1' : '0'));
-	return(res);
-    }
-    unsigned int get(int n,char *tag=NULL)
-    {	
-	if(check_tag(tag)==NOTOK){fatal;}
-	unsigned int res=0;
-	for(int i=0;i<n;i++)
-	{
-	    if(get()){res|=pow2(i);}
-	}
-//  	if(n==15){printf("%3d ",res);}
 	return(res);
     }
 
+    // get/put an integer using n bits
+    void         put(unsigned int v,int n,char *tag="NOTAG");
+    unsigned int get(               int n,char *tag=NULL);
+
+    // get/put n bits of data stored in vals
+    void put_zone(byte *vals,int n,char *tag);
+    void get_zone(byte *vals,int n,char *tag);
+
+    // 
+    void add_tag(char *tag);
     int  check_tag(char *tag,int pos=-1);
-    int find_tag(char *tag);
-    int find_tag(int pos,int posaftertag=1);
+    void set_use_tags(){use_tags=1;}
+    int  find_tag(char *tag);
+    int  find_tag(int pos,int posaftertag=1);
+
     void show_bits(int a,int n);
     void show(int a=0,int n=-1);
 
+    // position accesors
     int size(){return(bitpos);}
     int buffsize(){return(buff.size());}
-    byte *get_data()
-    {
-	byte *res=(byte *)malloc(buff.size());
-	CHECK_MEM(res);
-	for(int i=0;i<buff.size();i++){res[i]=buff[i];}
-	return(res);
-    }
-    void set_data(const byte *nbuff,int nbits)
-    {
-	if(buff.size()!=1 || bitpos!=0)
-	{
-	    printf("BitStream:set_data: size:%d bitpos:%d\n",buff.size(),bitpos);
-	    errr("BitStream::set_data: valid only if BitStream is empty");
-	}
-	buff[0] = nbuff[0];
-	for(int i=1;i<(nbits+7)/8;i++){buff.push_back(nbuff[i]);}
-	bitpos=nbits;
-    }
-    void set_use_tags(){use_tags=1;}
+
+    // get a copy of the buffer
+    byte *get_data();
+    // set the buffer from outside data (current buffer must be empty)
+    void set_data(const byte *nbuff,int nbits);
       
+    // use this for reading a BitStream after you have written in it 
+    // (generally for debuging)
     void rewind(){bitpos=0;}
 
     ~BitStream()
@@ -190,31 +178,41 @@ public:
     }
 };
 
-extern int TMPDISPLAY;
-extern unsigned int max_v(unsigned int *vals,int n);
 
 // **************************************************
 // *************** Compressor ***********************
 // **************************************************
 
-
+// Constants used by Compressor
+// number of bits to code the number of values in an array 
+#define NBITS_NVALS 16
+// number of bits to code the values in an unsigned int array (=sizeof(unsigned int))
+#define NBITS_VAL 32
+// number of bits to code he number of bits used by an unsigned int value
+#define NBITS_NBITS_VAL  5
+// number of bits to code the number of bits used by a byte value
+#define NBITS_NBITS_CHARVAL 4
 
 class Compressor : public BitStream
 {
 public:
     int verbose;
+    // compress/decompress an array of unsigned ints (choosing best method)
     int put_vals(unsigned int *vals,int n,char *tag);
     int get_vals(unsigned int **pres,char *tag="BADTAG!");
-    int put_fixedbitl(byte *vals,int n,char *tag);
 
-    
-    void get_fixedbitl(unsigned int *res,int n);
-    void get_decr(unsigned int *res,int n);
+    // compress/decompress an array of bytes (very simple)
+    int put_fixedbitl(byte *vals,int n,char *tag);    
     int get_fixedbitl(byte **pres,char *tag="BADTAG!");
 
+    // compress/decompress an array of unsigned ints (very simple)
+    void get_fixedbitl(unsigned int *res,int n);
+    void put_fixedbitl(unsigned int *vals,int n);
 
-    void compress_decr(unsigned int *vals,int n);
-    void compress_fixed(unsigned int *vals,int n);
+    // compress/decompress an array of unsigned ints (sophisticated)
+    void get_decr(unsigned int *res,int n);
+    void put_decr(unsigned int *vals,int n);
+
     Compressor():BitStream()
 	{
 	    verbose=0;
@@ -226,12 +224,6 @@ public:
 
 };
 
-
-void show_bits(int v,int n=16);
-unsigned short max_v(unsigned short *vals,int n);
-unsigned int max_v(unsigned int *vals,int n);
-unsigned short min_v(unsigned short *vals,int n);
-unsigned int min_v(unsigned int *vals,int n);
 
 
 #endif

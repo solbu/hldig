@@ -1,3 +1,27 @@
+//
+// WordBitCompress.cc
+//
+// BitStream: put and get bits into a buffer
+//           *tagging:  add tags to keep track of the position of data 
+//                      inside the bitstream for debuging purposes.
+//           *freezing: saves current position. further inserts in the BitStream
+//                      aren't really done. This way you can try different
+//                      compression algorithms and chose the best.
+//
+// Compressor: BitStream with extended compression fuctionalities
+//
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: WordBitCompress.cc,v 1.1.2.5 1999/12/14 18:31:31 bosc Exp $
+//
+
+
+#include <stdlib.h>
 
 #include"WordBitCompress.h"
 
@@ -12,10 +36,6 @@
 #include "HtVectorGenericCode.h"
 
 
-#include <stdlib.h>
-
-
-
 
 
 
@@ -23,6 +43,7 @@
 // *************** misc functions *******************
 // **************************************************
 
+// return a temporary string that merges a name and a number
 char *
 label_str(char *s,int n)
 {
@@ -31,6 +52,7 @@ label_str(char *s,int n)
     return buff;
 }
 
+// display n bits of value v
 void
 show_bits(int v,int n/*=16*/)
 {
@@ -40,6 +62,8 @@ show_bits(int v,int n/*=16*/)
 	printf("%c",( v&(1<<(n-i-1)) ? '1':'0' ) );
     }
 }
+
+// Max/Min value of an array
 
 unsigned int
 max_v(unsigned int *vals,int n)
@@ -52,6 +76,7 @@ max_v(unsigned int *vals,int n)
     }
     return(maxv);
 }
+
 unsigned short
 max_v(unsigned short *vals,int n)
 {
@@ -63,6 +88,7 @@ max_v(unsigned short *vals,int n)
     }
     return(maxv);
 }
+
 unsigned int
 min_v(unsigned int *vals,int n)
 {
@@ -74,6 +100,7 @@ min_v(unsigned int *vals,int n)
     }
     return(minv);
 }
+
 unsigned short
 min_v(unsigned short *vals,int n)
 {
@@ -85,6 +112,9 @@ min_v(unsigned short *vals,int n)
     }
     return(minv);
 }
+
+
+// duplicate an array of unsigned int's
 unsigned int *
 duplicate(unsigned int *v,int n)
 {
@@ -93,6 +123,8 @@ duplicate(unsigned int *v,int n)
     memcpy((void *)res,(void *)v,n*sizeof(unsigned int));
     return(res);
 }
+
+// quick sort compare function (for unsigned int's)
 int
 qsort_uint_cmp(const void *a,const void *b)
 {
@@ -100,12 +132,21 @@ qsort_uint_cmp(const void *a,const void *b)
 	(*((unsigned int *)a)) -
 	(*((unsigned int *)b))   ;
 }
+// quick sort an array of unsigned int's
 void
 qsort_uint(unsigned int *v,int n)
 {
     qsort((void *)v,(unsigned int)n,sizeof(unsigned int),&qsort_uint_cmp);
 }
 
+// log in base 2 of v
+// log2(0) -> -1
+// log2(1) ->  0
+// log2(2) ->  1
+// log2(4) ->  2
+// ...
+// log2(8) ->  3
+// log2(7) ->  2
 int
 log2(unsigned int v)
 {
@@ -120,18 +161,24 @@ log2(unsigned int v)
 // **************************************************
 // *************** VlengthCoder   *******************
 // **************************************************
+//
+// Compress values into a bitstream based on their probability distribution
+// The probability distribution is reduced to a number of intervals.
+// Each  interval (generally)  has the same probability of occuring
+// values are then coded by:  interval_number position_inside_interval
+// this can be seen as modified version of shanon-fanno encoding
 
 class VlengthCoder
 {
     int nbits;// min number of bits to code all entries
     int nlev;// split proba into 2^nlev parts
-    int nintervals;
+    int nintervals;// number of intervals
 
     int *intervals;
-    int bitpos;
     BitStream &bs;
 public:
     int verbose;
+    // compress and insert a value into the bitstream
     int code(unsigned int v)
     {
 	int i;
@@ -153,6 +200,7 @@ public:
     	bs.put(v,bitsremaining,"rem");
 	return(bitsremaining + nlev);
     }
+    //  insert the packed probability distrbution into the bitstream
     void code_begin()
     {
 	int i;
@@ -164,6 +212,7 @@ public:
 	    bs.put(intervals[i],5,label_str("interval",i));
 	}
     }
+    //  get the packed probability distrbution from the bitstream
     void get_begin()
     {
 	int i;
@@ -182,6 +231,7 @@ public:
 	    if(verbose>1)printf("get_begin intervals:%2d:%2d\n",i,intervals[i]);
 	}
     }
+    // get and uncompress  a value from  the bitstream
     unsigned int get()
     {
 	int i=bs.get(nlev,"int");// get interval
@@ -196,6 +246,8 @@ public:
 	if(verbose>1)printf("lboundary:%5d v:%5d \n",lboundary,v);
 	return(v);
     }
+    unsigned int intervalsize(int i){return((intervals[i] > 0 ? pow2(intervals[i]-1) : 0));}
+
     VlengthCoder(BitStream &nbs,int nverbose=0):bs(nbs)
     {
 	verbose=nverbose;
@@ -203,21 +255,20 @@ public:
 	nlev=0;
 	nintervals=0;
 	intervals=NULL;
-	bitpos=0;
     }
     
     ~VlengthCoder()
     {
 	delete [] intervals;
     }
-    unsigned int intervalsize(int i){return((intervals[i] > 0 ? pow2(intervals[i]-1) : 0));}
+
+    // create VlengthCoder and its probability distrbution from an array of values
     VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose=0):bs(nbs)
     {
 	verbose=nverbose;
 	unsigned int *sorted=duplicate(vals,n);
 	qsort_uint(sorted,n);
 
-	bitpos=0;
 	nbits=num_bits(max_v(vals,n));
 	nlev=5;
 	nintervals=pow2(nlev);
@@ -248,6 +299,65 @@ public:
 // *************** BitStream  ***********************
 // **************************************************
 
+void 
+BitStream::put_zone(byte *vals,int n,char *tag)
+{
+    add_tag(tag);
+    for(int i=0;i<(n+7)/8;i++){put(vals[i],TMin(8,n-8*i),NULL);}
+}
+void 
+BitStream::get_zone(byte *vals,int n,char *tag)
+{
+    check_tag(tag);
+    for(int i=0;i<(n+7)/8;i++){vals[i]=get(TMin(8,n-8*i));}
+}
+
+void BitStream::put(unsigned int v,int n,char *tag/*="NOTAG"*/)
+{
+    int i;
+    add_tag(tag);
+    for(i=0;i<n;i++)
+    {
+	put((v& pow2(i) ? 1:0));
+    }
+}
+unsigned int 
+BitStream::get(int n,char *tag/*=NULL*/)
+{	
+    if(check_tag(tag)==NOTOK){errr("BitStream::get(int) check_tag failed");}
+    unsigned int res=0;
+    for(int i=0;i<n;i++)
+    {
+	if(get()){res|=pow2(i);}
+    }
+    return(res);
+}
+
+void 
+BitStream::freeze()
+{
+    freeze_stack.push_back(bitpos);
+    freezeon=1;
+}
+
+int 
+BitStream::unfreeze()
+{
+    int size=bitpos;
+    bitpos=freeze_stack.back();
+    freeze_stack.pop_back();
+    size-=bitpos;
+    if(freeze_stack.size()==0){freezeon=0;}
+    return(size);
+}
+void BitStream::add_tag(char *tag)
+{
+    if(!use_tags){return;}
+    if(freezeon){return;}
+    if(!tag){return;}
+    tags.push_back(strdup(tag));
+    tagpos.push_back(bitpos);
+}
 
 int 
 BitStream::check_tag(char *tag,int pos/*=-1*/)
@@ -334,6 +444,26 @@ BitStream::show(int a/*=0*/,int n/*=-1*/)
     if(all){printf("\n");}
 
 }
+byte *
+BitStream::get_data()
+{
+    byte *res=(byte *)malloc(buff.size());
+    CHECK_MEM(res);
+    for(int i=0;i<buff.size();i++){res[i]=buff[i];}
+    return(res);
+}
+void 
+BitStream::set_data(const byte *nbuff,int nbits)
+{
+    if(buff.size()!=1 || bitpos!=0)
+    {
+	printf("BitStream:set_data: size:%d bitpos:%d\n",buff.size(),bitpos);
+	errr("BitStream::set_data: valid only if BitStream is empty");
+    }
+    buff[0] = nbuff[0];
+    for(int i=1;i<(nbits+7)/8;i++){buff.push_back(nbuff[i]);}
+    bitpos=nbits;
+}
 
 
 
@@ -347,30 +477,30 @@ Compressor::put_vals(unsigned int *vals,int n,char *tag)
 {
     int cpos=bitpos;
     add_tag(tag);
-    if(n>=pow2(NBITS_NVALS)){cerr << "Compressor::put(uint *,nvals) : overflow: nvals>2^16" <<endl;fatal;}
+    if(n>=pow2(NBITS_NVALS)){errr("Compressor::put(uint *,nvals) : overflow: nvals>2^16");}
     put(n,NBITS_NVALS,"size");
     if(n==0){return NBITS_NVALS;}
 
 
     freeze();
-    compress_decr(vals,n);
+    put_decr(vals,n);
     int sdecr=unfreeze();
 
     freeze();
-    compress_fixed(vals,n);
+    put_fixedbitl(vals,n);
     int sfixed=unfreeze();
 
     if(sdecr<sfixed)
     {
 	if(verbose)printf("put_vals: comptyp:0\n");
 	put(0,2,"put_valsCompType");
-	compress_decr(vals,n);
+	put_decr(vals,n);
     }
     else
     {
 	if(verbose)printf("put_vals: comptyp:1\n");
 	put(1,2,"put_valsCompType");
-	compress_fixed(vals,n);
+	put_fixedbitl(vals,n);
     }
 
     return(bitpos-cpos);
@@ -379,7 +509,7 @@ Compressor::put_vals(unsigned int *vals,int n,char *tag)
 int 
 Compressor::get_vals(unsigned int **pres,char *tag="BADTAG!")
 {
-    if(check_tag(tag)==NOTOK){fatal;return -1;}
+    if(check_tag(tag)==NOTOK){errr("Compressor::get_vals(unsigned int): check_tag failed");}
     int n=get(NBITS_NVALS);
     if(verbose>1)printf("get_vals n:%d\n",n);
     if(!n){*pres=NULL;return 0;}
@@ -424,7 +554,7 @@ Compressor::put_fixedbitl(byte *vals,int n,char *tag)
 	if(v>maxv){maxv=v;}
     }
     int nbits=num_bits(maxv);
-    if(n>=pow2(NBITS_NVALS)){cerr << "Compressor::put_fixedbitl(byte *) : overflow: nvals>2^16" <<endl;fatal;}
+    if(n>=pow2(NBITS_NVALS)){errr("Compressor::put_fixedbitl(byte *) : overflow: nvals>2^16");}
     put(nbits,NBITS_NBITS_CHARVAL,"nbits");
     add_tag("data");
     for(i=0;i<n;i++)
@@ -435,7 +565,7 @@ Compressor::put_fixedbitl(byte *vals,int n,char *tag)
     return(bitpos-cpos);
 }
 void
-Compressor::compress_fixed(unsigned int *vals,int n)
+Compressor::put_fixedbitl(unsigned int *vals,int n)
 {
     int nbits=num_bits(max_v(vals,n));
 
@@ -462,7 +592,7 @@ Compressor::get_fixedbitl(unsigned int *res,int n)
 int 
 Compressor::get_fixedbitl(byte **pres,char *tag/*="BADTAG!"*/)
 {
-    if(check_tag(tag)==NOTOK){fatal;return -1;}
+    if(check_tag(tag)==NOTOK){errr("Compressor::get_fixedbitl(byte *): check_tag failed");}
     int n=get(NBITS_NVALS);
     if(!n){*pres=NULL;return 0;}
     int nbits=get(NBITS_NBITS_CHARVAL);
@@ -479,7 +609,7 @@ Compressor::get_fixedbitl(byte **pres,char *tag/*="BADTAG!"*/)
 }
 
 void
-Compressor::compress_decr(unsigned int *vals,int n)
+Compressor::put_decr(unsigned int *vals,int n)
 {
     VlengthCoder coder(vals,n,*this,verbose);
     coder.code_begin();
