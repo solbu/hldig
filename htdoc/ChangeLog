@@ -1,3 +1,7 @@
+Wed Dec  1 15:14:36 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/conv_doc.pl: Added a sample external converter script.
+
 Tue Nov 30 15:02:25 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc(IsValidURL): Fix compilation error in
