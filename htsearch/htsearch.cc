@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.30 1999/04/01 18:13:38 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.31 1999/04/07 23:43:00 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -686,7 +686,7 @@ reportError(char *msg)
 //
 void usage()
 {
-  cout << "usage: htsearch [-v][-d][-w][-c configfile]\n";
+  cout << "usage: htsearch [-v][-d][-c configfile]\n";
   cout << "This program is part of ht://Dig " << VERSION << "\n\n";
   cout << "Options:\n";
   cout << "\t-v -d\tVerbose mode.  This increases the verbosity of the\n";
