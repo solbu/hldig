@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.62 2000/10/06 15:59:21 grdetil Exp $
+// $Id: defaults.cc,v 1.64.2.63 2000/10/30 03:53:59 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -71,7 +71,7 @@ ConfigDefaults	defaults[] =
 	configuration attribute.
 " },
 { "allow_numbers", "false", 
-	"boolean", "htdig htsearch", "URL", "all", "Indexing:What", "allow_numbers: true", "
+	"boolean", "htdig htsearch", "", "all", "Indexing:What", "allow_numbers: true", "
 	If set to true, numbers are considered words. This
 	means that searches can be done on number as well as
 	regular words. All the same rules apply to numbers as
@@ -143,7 +143,7 @@ ConfigDefaults	defaults[] =
 	indexed.
 " },
 { "bad_word_list", "${common_dir}/bad_words", 
-	"string", "htdig htsearch", "URL", "all", "Indexing:What,Searching:Method", "bad_word_list: ${common_dir}/badwords.txt", "
+	"string", "htdig htsearch", "", "all", "Indexing:What,Searching:Method", "bad_word_list: ${common_dir}/badwords.txt", "
 	This specifies a file which contains words which should
 	be excluded when digging or searching. This list should
 	include the most common words or other words that you
@@ -203,7 +203,7 @@ ConfigDefaults	defaults[] =
 	for more information on this attribute.
 " },
 { "case_sensitive", "true", 
-	"boolean", "htdig", "Server", "3.1.0b2", "Indexing:Where", "case_sensitive: false", "
+	"boolean", "htdig", "", "3.1.0b2", "Indexing:Where", "case_sensitive: false", "
 	This specifies whether ht://Dig should consider URLs
 	case-sensitive or not. If your server is case-insensitive,
 	you should probably set this to false.
@@ -462,7 +462,7 @@ http://www.htdig.org/", "
 	which start with cgi-bin.
 " },
 { "external_parsers", "", 
-	"quoted string list", "htdig", "Server", "3.0.7", "External:Parsers", "external_parsers: text/html /usr/local/bin/htmlparser \\<br>
+	"quoted string list", "htdig", "", "3.0.7", "External:Parsers", "external_parsers: text/html /usr/local/bin/htmlparser \\<br>
 	application/pdf /usr/local/bin/parse_doc.pl \\<br>
 	application/msword-&gt;text/plain \"/usr/local/bin/mswordtotxt -w\" \\<br>
 	application/x-gunzip-&gt;user-defined /usr/local/bin/ungzipper", "
@@ -799,7 +799,7 @@ http://www.htdig.org/", "
 	examples.</em></p>
 " },
 { "external_protocols", "",
-	"quoted string list", "htdig", "Server", "3.2.0b1", "External:Protocols", "external_protocols: https /usr/local/bin/handler.pl \\<br>
+	"quoted string list", "htdig", "", "3.2.0b1", "External:Protocols", "external_protocols: https /usr/local/bin/handler.pl \\<br>
         ftp /usr/local/bin/ftp-handler.pl", "
         This attribute is a bit like <a href=\"#external_parsers\">external_parsers</a>
 	since it specifies a list of protocols/handlers that are used to download documents
@@ -983,7 +983,7 @@ http://www.htdig.org/", "
       </table>	  
 " },
 { "extra_word_characters", "", 
-	"string", "htdig htsearch", "URL", "3.1.2", "Indexing:What", "extra_word_characters: _", "
+	"string", "htdig htsearch", "", "3.1.2", "Indexing:What", "extra_word_characters: _", "
 	These characters are considered part of a word.
 	In contrast to the characters in the
 	<a href=\"#valid_punctuation\">valid_punctuation</a>
@@ -1052,7 +1052,7 @@ http://www.htdig.org/", "
 	of the indexing process.
 " },
 { "http_proxy_exclude", "",
-	"pattern list", "htdig", "URL", "3.1.0b3", "Indexing:Connection", "http_proxy_exclude: http://intranet.foo.com/", "
+	"pattern list", "htdig", "", "3.1.0b3", "Indexing:Connection", "http_proxy_exclude: http://intranet.foo.com/", "
 	When this is set, URLs matching this will not use the
 	proxy. This is useful when you have a mixture of sites
 	near to the digging server and far away.
@@ -1116,7 +1116,7 @@ http://www.htdig.org/", "
 	<a href=\"#text_factor\">text_factor</a>attributes.
 " },
 { "keywords_meta_tag_names", "keywords htdig-keywords", 
-	"string list", "htdig", "URL", "3.0.6", "Indexing:What", "keywords_meta_tag_names: keywords description", "
+	"string list", "htdig", "", "3.0.6", "Indexing:What", "keywords_meta_tag_names: keywords description", "
 	The words in this list are used to search for keywords
 	in HTML <em>META</em> tags. This list can contain any
 	number of strings that each will be seen as the name
@@ -1127,7 +1127,7 @@ http://www.htdig.org/", "
 </code>
 " },
 { "limit_normalized", "", 
-	"pattern list", "htdig", "URL", "3.1.0b2", "Indexing:Where", "limit_normalized: http://www.mydomain.com", "
+	"pattern list", "htdig", "", "3.1.0b2", "Indexing:Where", "limit_normalized: http://www.mydomain.com", "
 	This specifies a set of patterns that all URLs have to
 	match against in order for them to be included in the
 	search. Unlike the limit_urls_to attribute, this is done
@@ -1139,7 +1139,7 @@ http://www.htdig.org/", "
 	href=\"#limit_urls_to\">limit_urls_to</a> attribute.
 " },
 { "limit_urls_to", "${start_url}", 
-	"pattern list", "htdig", "URL", "all", "Indexing:Where", "limit_urls_to: .sdsu.edu kpbs [.*\\.html]", "
+	"pattern list", "htdig", "", "all", "Indexing:Where", "limit_urls_to: .sdsu.edu kpbs [.*\\.html]", "
 	This specifies a set of patterns that all URLs have to
 	match against in order for them to be included in the
 	search. Any number of strings can be specified,
@@ -1169,7 +1169,7 @@ http://www.htdig.org/", "
 	Special characters can be embedded in these names using %xx hex encoding.
 " },
 { "local_urls", "", 
-	"string list", "htdig", "Server", "3.0.8b2", "Indexing:Where", "local_urls: http://www.foo.com/=/usr/www/htdocs/", "
+	"string list", "htdig", "", "3.0.8b2", "Indexing:Where", "local_urls: http://www.foo.com/=/usr/www/htdocs/", "
 	Set this to tell ht://Dig to access certain URLs through
 	local filesystems. At first ht://Dig will try to access
 	pages with URLs matching the patterns through the
@@ -1193,7 +1193,7 @@ http://www.htdig.org/", "
 	For example, you can use %3D to embed an \"=\" sign in an URL pattern.
 " },
 { "local_urls_only", "false", 
-	"boolean", "htdig", "Server", "3.1.4", "Indexing:Where", "local_urls_only: true", "
+	"boolean", "htdig", "", "3.1.4", "Indexing:Where", "local_urls_only: true", "
 	Set this to tell ht://Dig to access files only through the 
 	local filesystem, for URLs matching the patterns in the
 	<a href=\"#local_urls\">local_urls</a> or
@@ -1201,7 +1201,7 @@ http://www.htdig.org/", "
 	find the file, it will give up rather than trying HTTP or another protocol.
 " },
 { "local_user_urls", "", 
-	"string list", "htdig", "Server", "3.0.8b2", "Indexing:Where", "local_user_urls: http://www.my.org/=/home/,/www/", "
+	"string list", "htdig", "", "3.0.8b2", "Indexing:Where", "local_user_urls: http://www.my.org/=/home/,/www/", "
 	Set this to access user directory URLs through the local
 	filesystem. If you leave the \"path\" portion out, it will
 	look up the user's home directory in /etc/password (or NIS
@@ -1281,7 +1281,7 @@ http://www.htdig.org/", "
 	matches will be shown in pages instead of all at once.
 " },
 { "max_connection_requests", "-1",
-	"integer", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "max_connection_requests: 100", "
+	"integer", "htdig", "", "3.2.0b1", "Indexing:Connection", "max_connection_requests: 100", "
 	This attribute tells htdig to limit the number of requests it will
 	send to a server using a single, persistent HTTP connection. This
 	only applies when the
@@ -1318,7 +1318,7 @@ http://www.htdig.org/", "
 	htdig</a>.
 " },
 { "max_head_length", "512", 
-	"number", "htdig", "URL", "all", "Indexing:How", "max_head_length: 50000", "
+	"number", "htdig", "", "all", "Indexing:How", "max_head_length: 50000", "
 	For each document retrieved, the top of the document is
 	stored. This attribute determines the size of this
 	block. The text that will be stored is only the text;
@@ -1329,7 +1329,7 @@ http://www.htdig.org/", "
 	you want to show.
 " },
 { "max_hop_count", "999999", 
-	"number", "htdig", "URL", "all", "Indexing:Where", "max_hop_count: 4", "
+	"number", "htdig", "", "all", "Indexing:Where", "max_hop_count: 4", "
 	Instead of limiting the indexing process by URL
 	pattern, it can also be limited by the number of hops
 	or clicks a document is removed from the starting URL.
@@ -1337,7 +1337,7 @@ http://www.htdig.org/", "
 	The starting page or pages will have hop count 0.
 " },
 { "max_keywords", "-1", 
-	"number", "htdig", "URL", "3.2.0b1", "Indexing:What", "max_keywords: 10", "
+	"number", "htdig", "", "3.2.0b1", "Indexing:What", "max_keywords: 10", "
 	This attribute can be used to limit the number of keywords
 	per document that htdig will accept from meta keywords tags.
 	A value of -1 or less means no limit. This can help combat meta
@@ -1347,7 +1347,7 @@ http://www.htdig.org/", "
 	are not relevant to its contents.
 " },
 { "max_meta_description_length", "512", 
-	"number", "htdig", "URL", "3.1.0b1", "Indexing:How", "max_meta_description_length: 1000", "
+	"number", "htdig", "", "3.1.0b1", "Indexing:How", "max_meta_description_length: 1000", "
 	While gathering descriptions from meta description tags,
 	<a href=\"htdig.html\">htdig</a> will only store up to 
         this much of the text for each document.
@@ -1361,7 +1361,7 @@ http://www.htdig.org/", "
 	are matched in any way.
 " },
 { "max_retries", "3", 
-	"number", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "max_retries: 6", "
+	"number", "htdig", "", "3.2.0b1", "Indexing:Connection", "max_retries: 6", "
          This option set the maximum number of retries when retrieving a document
          fails (mainly for reasons of connection).
 " },
@@ -1393,7 +1393,7 @@ http://www.htdig.org/", "
 	attribute.
 " },
 { "maximum_word_length", "32", 
-	"number", "htdig htsearch", "URL", "3.1.3", "Indexing:What", "maximum_word_length: 15", "
+	"number", "htdig htsearch", "", "3.1.3", "Indexing:What", "maximum_word_length: 15", "
 	This sets the maximum length of words that will be
 	indexed. Words longer than this value will be silently
 	truncated when put into the index, or searched in the
@@ -1433,7 +1433,7 @@ http://www.htdig.org/", "
 	for more information on how this attribute is used.
 " },
 { "mime_types", "${config_dir}/mime.types",
-        "string", "htdig", "Server", "3.2.0b1", "Indexing:Where", "mime_types: /etc/mime.types", "
+        "string", "htdig", "", "3.2.0b1", "Indexing:Where", "mime_types: /etc/mime.types", "
         This file is used by htdig for local file access and resolving file:// URLs
         to ensure the files are parsable. If you are running a webserver with its own
         MIME file, you should set this attribute to point to that file.
@@ -1451,7 +1451,7 @@ http://www.htdig.org/", "
 	will not be used in this fuzzy matching.
 " },
 { "minimum_word_length", "3", 
-	"number", "htdig htsearch", "URL", "all", "Indexing:What", "minimum_word_length: 2", "
+	"number", "htdig htsearch", "", "all", "Indexing:What", "minimum_word_length: 2", "
 	This sets the minimum length of words that will be
 	indexed. Words shorter than this value will be silently
 	ignored but still put into the excerpt.<br>
@@ -1529,7 +1529,7 @@ http://www.htdig.org/", "
 	enclosed in brackets (e.g. [index.html]).
 " },
 { "noindex_end", "<!--/htdig_noindex-->", 
-	"string", "htdig", "URL", "3.1.0", "Indexing:What", "noindex_end: &lt;/SCRIPT&gt;", "
+	"string", "htdig", "", "3.1.0", "Indexing:What", "noindex_end: &lt;/SCRIPT&gt;", "
 	This string marks the end of a section of an HTML file that should be
 	completely ignored when indexing. It works together with
 	<a href=\"#noindex_start\">noindex_start</a>.
@@ -1542,7 +1542,7 @@ http://www.htdig.org/", "
 	Note that the match for this string is case insensitive.
 " },
 { "noindex_start", "<!--htdig_noindex-->", 
-	"string", "htdig", "URL", "3.1.0", "Indexing:What", "noindex_start: &lt;SCRIPT", "
+	"string", "htdig", "", "3.1.0", "Indexing:What", "noindex_start: &lt;SCRIPT", "
 	This string marks the start of a section of an HTML file that should be
 	completely ignored when indexing. It works together with
 	<a href=\"#noindex_end\">noindex_end</a>.
@@ -1670,7 +1670,7 @@ http://www.htdig.org/", "
 	hence this option should be set to FALSE in that case.
 " },
 { "remove_default_doc", "index.html", 
-	"string list", "htdig", "Server", "3.1.0", "Indexing:How", "remove_default_doc: default.html default.htm index.html index.htm", "
+	"string list", "htdig", "", "3.1.0", "Indexing:How", "remove_default_doc: default.html default.htm index.html index.htm", "
 	Set this to the default documents in a directory used by the
 	servers you are indexing. These document names will be stripped
 	off of URLs when they are normalized, if one of these names appears
@@ -2429,7 +2429,7 @@ form during indexing and translated for results.
 	See also <a href=\"#bad_extensions\">bad_extensions</a>.
 " },
 { "valid_punctuation", ".-_/!#$%^&'", 
-	"string", "htdig htsearch", "URL", "all", "Indexing:What", "valid_punctuation: -'", "
+	"string", "htdig htsearch", "", "all", "Indexing:What", "valid_punctuation: -'", "
 	This is the set of characters which will be deleted
 	from the document before determining what a word is.
 	This means that if a document contains something like

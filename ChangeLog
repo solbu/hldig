@@ -1,3 +1,11 @@
+Sun Oct 29 21:36:51 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Updated per-server and per-URL fields to
+	match code. I still have a "wish list" of additional attributes
+	that should work this way eventually.
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
 Sun Oct 22 17:13:08 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/HtWordList.h: Add missing include for stdlib.h needed for

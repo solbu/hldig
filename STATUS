@@ -12,8 +12,6 @@ SHOWSTOPPERS:
     so this must be some sort of weird htsearch bug)
 
 KNOWN BUGS:
-* scandir does not work on SYSV systems--need to use system library replacement.
-   (probably could just use this in place of scandir if it works OK on non-SYSV OS)
 * Not all htsearch input parameters are handled properly: PR#648. Use a
    consistant mapping of input -> config -> template for all inputs where
    it makes sense to do so (everything but "config" and "words"?).
@@ -34,9 +32,6 @@ PENDING PATCHES (available but need work):
   (Should really only attempt to use SQL for doc_db and related, not word_db)
 
 NEEDED FEATURES:
-* Make URL and Server blocks match documentation--i.e. change config
-   lookups in htdig to work as suggested. Many already work this way.
-  (Probably best to keep a "wishlist" and set documentation to match code.)
 * Field-restricted searching.
 * Return all results.
 * Handle noindex_start & noindex_end as string lists.
