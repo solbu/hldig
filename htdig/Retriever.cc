@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.24 2000/03/03 10:42:04 angus Exp $
+// $Id: Retriever.cc,v 1.72.2.25 2000/03/28 01:49:11 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -759,7 +759,6 @@ Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
     ref->DocSize(doc.Length());
     ref->DocAccessed(time(0));
     ref->DocLinks(n_links);
-    ref->DocImageSize(ref->DocImageSize() + doc.Length());
 }
 
 
@@ -1322,7 +1321,6 @@ Retriever::got_image(const char *src)
 
     if (images_seen)
 	fprintf(images_seen, "%s\n", image);
-//	current_ref->DocImageSize(current_ref->DocImageSize() + images.Sizeof(image));
 }
 
 

@@ -127,10 +127,10 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 bin_PROGRAMS = htdig
 
-htdig_SOURCES = Document.cc HTML.cc Images.cc 	Parsable.cc Plaintext.cc 	Retriever.cc Server.cc ExternalTransport.cc 	URLRef.cc htdig.cc ExternalParser.cc 
+htdig_SOURCES = Document.cc HTML.cc 	Parsable.cc Plaintext.cc 	Retriever.cc Server.cc ExternalTransport.cc 	URLRef.cc htdig.cc ExternalParser.cc 
 
 
-noinst_HEADERS = Document.h ExternalParser.h HTML.h Images.h 	Parsable.h Plaintext.h Retriever.h Server.h  URLRef.h htdig.h 	ExternalTransport.h
+noinst_HEADERS = Document.h ExternalParser.h HTML.h 	Parsable.h Plaintext.h Retriever.h Server.h  URLRef.h htdig.h 	ExternalTransport.h
 
 htdig_DEPENDENCIES = $(HTLIBS)
 htdig_LDFLAGS = $(PROFILING)
@@ -144,9 +144,8 @@ PROGRAMS =  $(bin_PROGRAMS)
 DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
-htdig_OBJECTS =  Document.o HTML.o Images.o Parsable.o Plaintext.o \
-Retriever.o Server.o ExternalTransport.o URLRef.o htdig.o \
-ExternalParser.o
+htdig_OBJECTS =  Document.o HTML.o Parsable.o Plaintext.o Retriever.o \
+Server.o ExternalTransport.o URLRef.o htdig.o ExternalParser.o
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -160,7 +159,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
 DEP_FILES =  .deps/Document.P .deps/ExternalParser.P \
-.deps/ExternalTransport.P .deps/HTML.P .deps/Images.P .deps/Parsable.P \
+.deps/ExternalTransport.P .deps/HTML.P .deps/Parsable.P \
 .deps/Plaintext.P .deps/Retriever.P .deps/Server.P .deps/URLRef.P \
 .deps/htdig.P
 SOURCES = $(htdig_SOURCES)

@@ -1,3 +1,23 @@
+Mon Mar 27 20:22:24 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc: Remove
+	DocImageSize field since it is not used anywhere and is never updated.
+
+	* htdig/Retriever.h (class Retriever): Remove references to Images class.
+
+	* htcommon/DocumentDB.cc (DumpDB): Ignore DocImageSize field.
+
+	* htdig/Makefile.am, htdig/Makefile.in: Remove Images.cc since
+	this is no longer used.
+
+	* htdig/Plaintext.cc: Do not insert SGML equivalents into the
+	excerpt, these are decoded by HtSGMLCodec automatically.
+
+Sat Mar 25 21:58:36 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/cf_generate.pl (html_escape): Changed <b></b> and <i></i>
+	tags to HTML 4.0 <strong> and <em> tags.
+
 Sat Mar 25 17:23:46 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdb/Makefile.am, htdb/Makefile.in: Change the names of the htdb

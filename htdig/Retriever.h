@@ -12,14 +12,13 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.18.2.4 2000/02/02 19:01:03 grdetil Exp $
+// $Id: Retriever.h,v 1.18.2.5 2000/03/28 01:49:12 ghutchis Exp $
 //
 
 #ifndef _Retriever_h_
 #define _Retriever_h_
 
 #include "DocumentRef.h"
-#include "Images.h"
 #include "Dictionary.h"
 #include "Queue.h"
 #include "HtWordReference.h"
@@ -103,7 +102,6 @@ private:
     int			current_anchor_number;
     int			trackWords;
     int			n_links;
-    Images		images;
     String		credentials;
     HtWordReference	word_context;
     HtWordList		words;
