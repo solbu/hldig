@@ -44,7 +44,7 @@
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${database_base}.accents.db
+			${<a href="#database_base">database_base</a>}.accents.db
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -1154,7 +1154,7 @@
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${common_dir}/bad_words
+			${<a href="#common_dir">common_dir</a>}/bad_words
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -2201,7 +2201,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${bin_dir}/HtFileType
+			${<a href="#bin_dir">bin_dir</a>}/HtFileType
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -2470,7 +2470,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${database_dir}/db
+			${<a href="#database_dir">database_dir</a>}/db
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -2950,7 +2950,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${database_base}.docdb
+			${<a href="#database_base">database_base</a>}.docdb
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -3016,7 +3016,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${database_base}.excerpts
+			${<a href="#database_base">database_base</a>}.excerpts
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -3085,7 +3085,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${database_base}.docs.index
+			${<a href="#database_base">database_base</a>}.docs.index
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -3150,7 +3150,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${database_base}.docs
+			${<a href="#database_base">database_base</a>}.docs
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -3415,7 +3415,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${common_dir}/english.aff
+			${<a href="#common_dir">common_dir</a>}/english.aff
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -3481,7 +3481,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${common_dir}/english.0
+			${<a href="#common_dir">common_dir</a>}/english.0
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -3548,7 +3548,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${common_dir}/root2word.db
+			${<a href="#common_dir">common_dir</a>}/root2word.db
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -3621,7 +3621,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${common_dir}/word2root.db
+			${<a href="#common_dir">common_dir</a>}/word2root.db
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -5438,7 +5438,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${database_base}.images
+			${<a href="#database_base">database_base</a>}.images
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -5990,7 +5990,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${start_url}
+			${<a href="#start_url">start_url</a>}
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -7526,7 +7526,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${maximum_pages}
+			${<a href="#maximum_pages">maximum_pages</a>}
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -7730,7 +7730,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${database_base}.md5hash.db
+			${<a href="#database_base">database_base</a>}.md5hash.db
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -7862,7 +7862,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${database_base}.metaphone.db
+			${<a href="#database_base">database_base</a>}.metaphone.db
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -7996,7 +7996,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${config_dir}/mime.types
+			${<a href="#config_dir">config_dir</a>}/mime.types
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -8513,7 +8513,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			[next]
+			${<a href="#next_page_text">next_page_text</a>}
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -8717,7 +8717,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			[prev]
+			${<a href="#prev_page_text">prev_page_text</a>}
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -8983,7 +8983,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${common_dir}/nomatch.html
+			${<a href="#common_dir">common_dir</a>}/nomatch.html
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -10333,7 +10333,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${common_dir}/footer.html
+			${<a href="#common_dir">common_dir</a>}/footer.html
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -10469,7 +10469,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${common_dir}/header.html
+			${<a href="#common_dir">common_dir</a>}/header.html
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -11203,7 +11203,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${database_base}.soundex.db
+			${<a href="#database_base">database_base</a>}.soundex.db
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -11268,7 +11268,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${image_url_prefix}/star_blank.gif
+			${<a href="#image_url_prefix">image_url_prefix</a>}/star_blank.gif
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -11333,7 +11333,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${image_url_prefix}/star.gif
+			${<a href="#image_url_prefix">image_url_prefix</a>}/star.gif
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -12022,7 +12022,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${common_dir}/synonyms.db
+			${<a href="#common_dir">common_dir</a>}/synonyms.db
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -12088,7 +12088,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${common_dir}/synonyms
+			${<a href="#common_dir">common_dir</a>}/synonyms
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -12154,7 +12154,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${common_dir}/syntax.html
+			${<a href="#common_dir">common_dir</a>}/syntax.html
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -12845,7 +12845,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${database_base}.urls
+			${<a href="#database_base">database_base</a>}.urls
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -12910,7 +12910,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${database_base}.log
+			${<a href="#database_base">database_base</a>}.log
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -13810,7 +13810,7 @@ form during indexing and translated for results.
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${database_base}.words.db
+			${<a href="#database_base">database_base</a>}.words.db
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -13876,7 +13876,7 @@ form during indexing and translated for results.
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${database_base}.worddump
+			${<a href="#database_base">database_base</a>}.worddump
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -14601,6 +14601,6 @@ form during indexing and translated for results.
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: ven giu  4 10:14:28 CEST 2004
+		Last modified: Sat Jun  5 14:16:34 EST 2004
   </body>
 </html>

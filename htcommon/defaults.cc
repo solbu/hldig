@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.110 2004/06/05 02:50:26 lha Exp $
+// $Id: defaults.cc,v 1.111 2004/06/05 04:30:47 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1297,7 +1297,7 @@ http://www.htdig.org/", " \
 	Special characters can be embedded in these names using %xx hex encoding. \
 	For example, you can use %3D to embed an \"=\" sign in an URL pattern. \
 	<br> \
-	See also <a href=\"#local_user_urls\">local_user_urls</a>. \
+	See also <a href=\"#local_default_doc\">local_default_doc</a>. \
 " }, \
 { "local_urls_only", "false",  \
 	"boolean", "htdig", "", "3.1.4", "Indexing:Where", "local_urls_only: true", " \
@@ -1448,7 +1448,7 @@ http://www.htdig.org/", " \
 	We found that storing 50,000 bytes will store about \
 	95% of all the documents completely. This really \
 	depends on how much storage is available and how much \
-	you want to show. \
+	you want to show.  Currently, this is must not be 0. \
 " }, \
 { "max_hop_count", "999999",  \
 	"integer", "htdig", "", "all", "Indexing:Where", "max_hop_count: 4", " \

@@ -1,5 +1,12 @@
 Sat 5 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
 
+    * htdoc/cf_generate.pl: Hyperlink to simplify finding the defaults of
+      attributes defined in terms of others (e.g.,
+      accents_db->database_base->database_dir).
+    * htdoc/attrs.html.in: regenerated using cf_generate.pl
+
+Sat 5 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
+
     * htcommon/defaults.cc: Escaped new-line in "allow_spaces_in_url" entry.
       Set no_next_page_text to ${next_page_text}; likewise no_prev_page_text.
 

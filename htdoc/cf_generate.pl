@@ -14,7 +14,7 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: cf_generate.pl,v 1.8 2004/05/28 13:15:18 lha Exp $
+# $Id: cf_generate.pl,v 1.9 2004/06/05 04:30:47 lha Exp $
 #
 use strict;
 
@@ -165,6 +165,9 @@ EOF
     } else {
 	$default =~ s/^([A-Z][A-Z_]*) \" (.*?)\"/$1 $2/;	# for PDF_PARSER
 	$default = html_escape($default);
+		# hyperlink default values defined in terms of other attributes
+	$default =~ s/\${([A-Za-z_]*)}/\${<a href=\"#$1\">$1<\/a>}/;
+
     }
     print ATTR <<EOF;
 	<dl>
