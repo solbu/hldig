@@ -1,10 +1,10 @@
 //
 // Implementation of String class
 //
-// $Id: String.cc,v 1.16 1999/02/01 04:02:25 hp Exp $
+// $Id: String.cc,v 1.16.2.1 1999/03/23 20:58:52 grdetil Exp $
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.16 1999/02/01 04:02:25 hp Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.16.2.1 1999/03/23 20:58:52 grdetil Exp $";
 #endif
 
 
@@ -16,10 +16,9 @@ static char	RCSid[] = "$Id: String.cc,v 1.16 1999/02/01 04:02:25 hp Exp $";
 #include <stdio.h>
 #include <stdlib.h>
 #include "Object.h"
-#include <assert.h>
+
 
 const int MinimumAllocationSize = 4;	// Should be power of two.
-int next_power_of_2(int n);
 
 #ifdef NOINLINE
 String::String()
@@ -45,21 +44,27 @@ String::String(char *s)
     Length = 0;
 
     int	len;
-    if (s) {
+    if (s)
+      {
 	len = strlen(s);
-    copy(s, len, len);
-    }
+	copy(s, len, len);
+      }
 }
 
 String::String(char *s, int len)
 {
     Allocated = 0;
-    copy(s, len, len);
+    Length = 0;
+    if (s && len != 0)
+	copy(s, len, len);
 }
 
 String::String(const String &s)
 {
-    copy(s.Data, s.length(), s.length());
+    Allocated = 0;
+    Length = 0;
+    if (s.length() != 0)
+      copy(s.Data, s.length(), s.length());
 }
 
 //
@@ -70,10 +75,12 @@ String::String(const String &s, int allocation_hint)
 {
     Allocated = 0;
     Length = 0;
-    if (allocation_hint < s.length())
-	allocation_hint = s.length();
-
-    copy(s.Data, s.length(), allocation_hint);
+    if (s.length() != 0)
+      {
+	if (allocation_hint < s.length())
+	  allocation_hint = s.length();
+	copy(s.Data, s.length(), allocation_hint);
+      }
 }
 
 String::~String()
@@ -84,8 +91,8 @@ String::~String()
 
 void String::operator = (const String &s)
 {
+    allocate_space(s.length());
     Length = s.length();
-    allocate_space(Length);
     copy_data_from(s.Data, Length);
 }
 
@@ -93,9 +100,10 @@ void String::operator = (char *s)
 {
     if (s)
     {
-	Length = strlen(s);
-    allocate_space(Length);
-    copy_data_from(s, Length);	
+      int len = strlen(s);
+	allocate_fix_space(len);
+	Length = len;
+	copy_data_from(s, Length);	
     }
     else
 	Length = 0;
@@ -131,7 +139,7 @@ void String::append(char *s, int slen)
 //        return;
 //    }
     int	new_len = Length + slen;
-	
+
     if (new_len + 1 > Allocated)
     reallocate_space(new_len);
     copy_data_from(s, slen, Length);
@@ -537,72 +545,67 @@ void String::allocate_space(int len)
 {
     len++;				// In case we want to add a null.
 
-    if (Allocated)
-    {
-	if (len > Allocated)
-	    delete [] Data;
-	else
-	    return;		// No need to allocate space.
-    }
+    if (len <= Allocated)
+      return;
 
-    Allocated = next_power_of_2(len);
+    if (Allocated)
+      delete [] Data;
+
+    Allocated = MinimumAllocationSize;
+    while (Allocated < len)
+      Allocated <<= 1;
+
     Data = new char[Allocated];
 }
 
 void String::allocate_fix_space(int len)
 {
-    // FIXME pb if we are under MinimumAllocationSize ?
-    len++;
+    len++;				// In case we want to add a null.
+
+    if (len <= Allocated)
+      return;
+
+    if (Allocated)
+      delete [] Data;
+
     Allocated = len;
+    if (Allocated < MinimumAllocationSize)
+      Allocated = MinimumAllocationSize;
     Data = new char[Allocated];
 }
 
 void String::reallocate_space(int len)
 {
 	char	*old_data = 0;
-	int		old_data_len = 0;
+	int	 old_data_len = 0;
 
     if (Allocated)
 	{
 	    old_data = Data;
 	    old_data_len = Length;
-	Allocated = 0;
+	    Allocated = 0;
 	}
-	allocate_space(len);
-	if (old_data)
-	{
-	    copy_data_from(old_data, old_data_len);
-	    delete [] old_data;
-	}
+    allocate_space(len);
+    if (old_data)
+      {
+	copy_data_from(old_data, old_data_len);
+	delete [] old_data;
+      }
 }
 
 void String::copy(char *s, int len, int allocation_hint)
 {
-    Length = len;
-    allocate_fix_space(allocation_hint);
-    copy_data_from(s, Length);
+  if (len == 0 || allocation_hint == 0)
+    return;         // We're not actually copying anything!
+  allocate_fix_space(allocation_hint);
+  Length = len;
+  copy_data_from(s, len);
 }
 
 void String::debug(ostream &o)
 {
     o << "Length: " << Length << " Allocated: " << Allocated <<
 	" Data: " << ((void*) Data) << " '" << *this << "'\n";
-}
-
-//------------------------------------------------------------------------
-// Functions private to this file.
-//
-int next_power_of_2(int n)
-{
-    //
-    // There must be a faster way...
-    //
-    int	result = MinimumAllocationSize;
-    
-    while (result < n)
-	result <<= 1;
-
-    return result;
 }
 
 
