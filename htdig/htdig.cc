@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htdig.cc,v 1.36 2003/10/21 01:16:57 angusgb Exp $
+// $Id: htdig.cc,v 1.37 2003/10/23 02:16:12 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -83,7 +83,6 @@ int main(int ac, char **av)
     int			alt_work_area = 0;
     int			create_text_database = 0;
     char		*max_hops = 0;
-    RetrieverType retriever_type (Retriever_Initial);
 
     // Cookie jar dynamic creation.
     HtCookieJar*        _cookie_jar = new HtCookieMemJar(); // new cookie jar
@@ -154,9 +153,6 @@ int main(int ac, char **av)
 			 configFile.get()));
     }
     config->Read(configFile);
-
-    if(!initial) // Switch the retriever type to Incremental
-        retriever_type = Retriever_Incremental;
 
     if (config->Find("locale").empty() && debug > 0)
       cout << "Warning: unknown locale!\n";
@@ -335,7 +331,7 @@ int main(int ac, char **av)
     // In case this is just an update dig, we will add all existing
     // URLs?
     //
-    Retriever	retriever(Retriever_logUrl, retriever_type);
+    Retriever	retriever(Retriever_logUrl);
     if (minimalFile.length() == 0)
       {
 	List	*list = docs.URLs();

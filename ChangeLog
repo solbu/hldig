@@ -1,3 +1,7 @@
+Thu Oct 23 12:14:30 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * htdig/htdig.cc: restored the code before Oct 21 (fixes ##828628)
+
 Thu Oct 23 11:41:15 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * htdig/Retriever.[h,cc]: removed 'head_before_get' overriding by
