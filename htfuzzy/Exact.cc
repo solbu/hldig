@@ -3,25 +3,14 @@
 //
 // Implementation of Exact
 //
-// $Log: Exact.cc,v $
-// Revision 1.3  1998/08/03 16:50:37  ghutchis
-//
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.2  1997/03/24 04:33:18  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:12  turtle
-// Initial CVS
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: Exact.cc,v 1.3 1998/08/03 16:50:37 ghutchis Exp $";
+static char RCSid[] = "$Id: Exact.cc,v 1.4 1999/05/05 00:41:02 ghutchis Exp $";
 #endif
 
 #include "Exact.h"
-#include <htString.h>
-#include <List.h>
+#include "htString.h"
+#include "List.h"
 
 
 //*****************************************************************************
@@ -29,6 +18,7 @@ static char RCSid[] = "$Id: Exact.cc,v 1.3 1998/08/03 16:50:37 ghutchis Exp $";
 //
 Exact::Exact()
 {
+  name = "exact";
 }
 
 

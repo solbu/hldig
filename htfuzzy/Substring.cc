@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Substring.cc,v 1.4 1999/03/03 04:46:57 ghutchis Exp $";
+static char RCSid[] = "$Id: Substring.cc,v 1.5 1999/05/05 00:41:02 ghutchis Exp $";
 #endif
 
 #include "Substring.h"
@@ -22,6 +22,7 @@ extern Configuration	config;
 //
 Substring::Substring()
 {
+    name = "substring";
 }
 
 

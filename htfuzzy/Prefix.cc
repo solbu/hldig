@@ -3,11 +3,8 @@
 //
 // Implementation of Prefix
 //
-// $Id: Prefix.cc,v 1.7 1999/03/03 04:46:57 ghutchis Exp $
+// $Id: Prefix.cc,v 1.8 1999/05/05 00:41:02 ghutchis Exp $
 //
-#if RELEASE
-static char RCSid[] = "$Id: Prefix.cc,v 1.7 1999/03/03 04:46:57 ghutchis Exp $";
-#endif
 
 #include "Prefix.h"
 #include "htString.h"
@@ -23,6 +20,7 @@ extern Configuration	config;
 //
 Prefix::Prefix()
 {
+    name = "prefix";
 }
 
 
