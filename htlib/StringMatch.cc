@@ -6,6 +6,9 @@
 // Implementation of StringMatch
 //
 // $Log: StringMatch.cc,v $
+// Revision 1.6  1999/01/20 04:51:52  ghutchis
+// Eliminate FINAL and use all bits in masks, contributed by Hans-Peter.
+//
 // Revision 1.5  1999/01/20 04:48:40  ghutchis
 // Fix bugs with clobbering multi-state matches and non-greedy behavior,
 // contributed by Hans-Peter Nilsson.
@@ -29,7 +32,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: StringMatch.cc,v 1.5 1999/01/20 04:48:40 ghutchis Exp $";
+static char RCSid[] = "$Id: StringMatch.cc,v 1.6 1999/01/20 04:51:52 ghutchis Exp $";
 #endif
 
 #include "StringMatch.h"
@@ -42,8 +45,7 @@ static char RCSid[] = "$Id: StringMatch.cc,v 1.5 1999/01/20 04:48:40 ghutchis Ex
 // Final states have an match index encoded in them.  This number
 // is shifted left by INDEX_SHIFT bits.
 //
-#define	FINAL			0x80000000
-#define	MATCH_INDEX_MASK	0x7fff0000
+#define	MATCH_INDEX_MASK	0xffff0000
 #define	STATE_MASK		0x0000ffff
 #define	INDEX_SHIFT		16
 
@@ -91,9 +93,20 @@ StringMatch::Pattern(char *pattern)
 
     //
     // Allocate enough space in the state table to hold the worst case
-    // patterns
+    // patterns...
     //
     int		n = strlen(pattern);
+
+    // ...but since the state table does not need an extra state
+    // for each string in the pattern, we can subtract the number
+    // of separators.  Wins for small but numerous strings in
+    // the pattern.
+    char *tmpstr;
+    for (tmpstr = pattern;
+         (tmpstr = strchr(tmpstr, '|')) != NULL;
+         tmpstr++)              // Pass the separator.
+      n--;
+
     int		i;
 
     for (i = 0; i < 256; i++)
@@ -128,6 +141,15 @@ StringMatch::Pattern(char *pattern)
     
     while ((unsigned char)*pattern)
     {
+#if 0
+	if (totalStates > n)
+	{
+	  cerr << "Fatal!  Miscalculation of number of states"
+	       << endl;
+	  exit (2);
+	}
+#endif
+
 	chr = trans[(unsigned char)*pattern];
 	if (chr == '|')
 	{
@@ -135,7 +157,7 @@ StringMatch::Pattern(char *pattern)
 	    // Next pattern
 	    //
 	    table[previous][previousState] =
-		previousValue | FINAL | (index << INDEX_SHIFT);
+		previousValue | (index << INDEX_SHIFT);
 	    index++;
 	    state = 0;
 	    //	    totalStates--;
@@ -146,7 +168,7 @@ StringMatch::Pattern(char *pattern)
 	    previousState = state;
 	    if (previousValue)
 	    {
-		if (previousValue & FINAL)
+		if (previousValue & MATCH_INDEX_MASK)
 		{
 		    if (previousValue & STATE_MASK)
 		    {
@@ -173,7 +195,7 @@ StringMatch::Pattern(char *pattern)
 	pattern++;
     }
     table[previous][previousState] =
-	previousValue | FINAL | (index << INDEX_SHIFT);
+	previousValue | (index << INDEX_SHIFT);
 }
 
 
@@ -226,13 +248,14 @@ int StringMatch::FindFirst(char *string, int &which, int &length)
 	    continue;
 	}
 	state = new_state;
-	if (state & FINAL)
+	if (state & MATCH_INDEX_MASK)
 	{
 	    //
 	    // Matched one of the patterns.
 	    // Determine which and return.
 	    //
-	    which = ((state & MATCH_INDEX_MASK) >> INDEX_SHIFT) - 1;
+	    which = ((unsigned int) (state & MATCH_INDEX_MASK)
+		     >> INDEX_SHIFT) - 1;
 	    length = pos - start_pos + 1;
 	    state &= STATE_MASK;
 
@@ -288,12 +311,13 @@ int StringMatch::Compare(char *string, int &which, int &length)
 	    return 0;
 	}
 	state = new_state;
-	if (state & FINAL)
+	if (state & MATCH_INDEX_MASK)
 	{
 	    //
 	    // Matched one of the patterns.
 	    //
-	    which = ((state & MATCH_INDEX_MASK) >> INDEX_SHIFT) - 1;
+	    which = ((unsigned int) (state & MATCH_INDEX_MASK)
+		     >> INDEX_SHIFT) - 1;
 	    length = pos - start_pos + 1;
 
 	    // Continue to find the longest, if there is one.
@@ -375,7 +399,7 @@ int StringMatch::FindFirstWord(char *string, int &which, int &length)
 	}
 	state = new_state;
 
-	if (state & FINAL)
+	if (state & MATCH_INDEX_MASK)
 	{
 	    //
 	    // Matched one of the patterns.
@@ -393,7 +417,8 @@ int StringMatch::FindFirstWord(char *string, int &which, int &length)
 		//
 		// Determine which and return.
 		//
-		which = ((state & MATCH_INDEX_MASK) >> INDEX_SHIFT) - 1;
+		which = ((unsigned int) (state & MATCH_INDEX_MASK)
+			 >> INDEX_SHIFT) - 1;
 		length = pos - start_pos + 1;
 		return start_pos;
 	    }
@@ -444,7 +469,7 @@ int StringMatch::CompareWord(char *string, int &which, int &length)
 	    return 0;
 	}
 	
-	if (state & FINAL)
+	if (state & MATCH_INDEX_MASK)
 	{
 	    //
 	    // Matched one of the patterns.  See if it is a word.
@@ -459,7 +484,8 @@ int StringMatch::CompareWord(char *string, int &which, int &length)
 
 	    if (isWord)
 	    {
-		which = ((state & MATCH_INDEX_MASK) >> INDEX_SHIFT) - 1;
+		which = ((unsigned int) (state & MATCH_INDEX_MASK)
+			 >> INDEX_SHIFT) - 1;
 		length = position + 1;
 		return 1;
 	    }
