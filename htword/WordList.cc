@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.17 1999/12/21 20:00:54 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.18 1999/12/23 10:55:18 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -122,7 +122,7 @@ int WordList::Open(const String& filename, int mode)
   if(config.Value("wordlist_cache_size",0))  {db.dbinfo.set_cachesize(config.Value("wordlist_cache_size",0));}
   else
   {
-      ;//      cout << "************* WordList::Open WARNING no cachesize:: performance might be slow"  << endl;
+      cout << "WordList::Open WARNING no cachesize:: performance might be slow"  << endl;
   }
 
   if(config.Boolean("wordlist_compress",0) == 1)

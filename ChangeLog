@@ -1,3 +1,15 @@
+Thu Dec 23 11:10:24 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* htcommon/defaults.cc: set wordlist_cache_size default to 10Meg
+
+	* db/mp: removed some debuging messages 
+	
+	* htword/WordList.cc: added warning if no cache
+
+	* test/word.cc: added cache 
+	
+	* htlib/HtTime.h: added ifdefs for portable time.h sys/time.h
+	
 Tue Dec 21 23:33:06 1999  Loic Dachary  <loic@ceic.com>
 
 	* htdoc/attrs.html,cf_by*.html: regenerate to include 

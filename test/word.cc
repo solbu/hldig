@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.6 1999/12/21 12:05:39 bosc Exp $
+// $Id: word.cc,v 1.14.2.7 1999/12/23 10:55:19 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -36,6 +36,7 @@ static ConfigDefaults defaults[] = {
   { "word_db", "var/htdig/db.words.db", 0 },
   { "wordlist_extend", "true", 0 },
   { "minimum_word_length", "1", 0},
+  { "wordlist_cache_size", "1000000"}, 
   { 0 }
 };
 static ConfigDefaults compress_defaults[] = {
@@ -45,6 +46,7 @@ static ConfigDefaults compress_defaults[] = {
   { "minimum_word_length", "1", 0},
   { "wordlist_compress", "true", 0},
   { "wordlist_compress_debug", "2", 0},
+  { "wordlist_cache_size", "1000000"}, 
   { 0 }
 };
 
@@ -134,7 +136,7 @@ static void doword(params_t* params)
       }
       else{config.Defaults(defaults);}
     // Ctype-like functions for what constitutes a word.
-    WordType::Initialize(config);
+    WordList::Initialize(config);
     unlink(config["word_db"]);
   }
 

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.18 1999/12/21 12:05:39 bosc Exp $
+// $Id: defaults.cc,v 1.64.2.19 1999/12/23 10:55:18 bosc Exp $
 //
 
 #include "HtConfiguration.h"
@@ -2085,7 +2085,7 @@ url_part_aliases:
 	"number", "htdig htmerge htsearch htfuzzy", "wordlist_page_size: 8192", "
 	Size of pages used by Berkeley DB (DB used by the indexer)
 " },
-{ "wordlist_cache_size", "0", 
+{ "wordlist_cache_size", "10000000", 
 	"number", "htdig htmerge htsearch htfuzzy", "wordlist_cache_size: 40000000", "
 	Size of memory cache used by Berkeley DB (DB used by the indexer)
 	IMPORTANT: It  makes a *huge* difference. The rule 
