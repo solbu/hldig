@@ -17,7 +17,7 @@
 
 include @top_srcdir@/Makefile.config
 
-DIRS=		@DB_DIR@ @RX_DIR@ \
+DIRS=		db/dist rx \
 		htlib htcommon htfuzzy htdig \
 		htsearch htmerge htnotify
 INSTALLDIRS=	htfuzzy htdig \

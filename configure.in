@@ -113,19 +113,13 @@ AC_TRY_COMPILE([#include <sys/types.h>
   [AC_MSG_RESULT(no);AC_DEFINE(GETPEERNAME_LENGTH_T, unsigned int)])
 AC_LANG_C
 
-DB_DIR="db/dist"
-AC_SUBST(DB_DIR)
-
 AC_PATH_PROG(TSORT, tsort)
 if test -z "$TSORT"; then
   AC_MSG_ERROR([GNU rx configuration needs tsort in path!])
 fi
 
-RX_DIR="rx"
-AC_SUBST(RX_DIR)
-
-AC_CONFIG_SUBDIRS($DB_DIR)
-AC_CONFIG_SUBDIRS($RX_DIR)
+AC_CONFIG_SUBDIRS(db/dist)
+AC_CONFIG_SUBDIRS(rx)
 
 AC_OUTPUT(CONFIG Makefile Makefile.config htcommon/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile makedp, chmod +x makedp, echo timestamp > stamp-h)
 
