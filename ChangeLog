@@ -1,3 +1,8 @@
+Tue Nov 23 19:26:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htnotify/htnotify.cc(send_notification): apply Jason Haar's fix
+	to quote the sender name "ht://Dig Notification Service".
+
 Wed Sep 22 11:12:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/ChangeLog, htdoc/isp.html, htdoc/FAQ.html,

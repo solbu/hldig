@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.19.2.1 1999/02/13 01:08:34 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.19.2.2 1999/11/24 01:40:24 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -217,7 +217,7 @@ void htnotify(DocumentRef &ref)
 void send_notification(char *date, char *email, char *url, char *subject)
 {
     String	command = SENDMAIL;
-    command << " -t -F \"ht://Dig Notification Service\" -f \"";
+    command << " -t -F '\"ht://Dig Notification Service\"' -f \"";
     command << config["htnotify_sender"] << '"';
 
     String	em = email;
@@ -248,7 +248,7 @@ void send_notification(char *date, char *email, char *url, char *subject)
       if (!subject || !*subject)
 	subject = "page expired";
       String	out;
-      out << "From: ht://Dig Notification Service <"
+      out << "From: \"ht://Dig Notification Service\" <"
 	  << config["htnotify_sender"] << ">\n";
       out << "Subject: WWW notification: " << subject << '\n';
       out << "To: " << to.get() << '\n';
