@@ -4,6 +4,9 @@
 // Implementation of htmerge
 //
 // $Log: words.cc,v $
+// Revision 1.10  1999/01/25 04:55:54  ghutchis
+// Ignore word count by compile-time option NO_WORD_COUNT.
+//
 // Revision 1.9  1999/01/20 18:08:32  ghutchis
 // Call good_strtok with appropriate parameters (explicitly include NULL first
 // parameter, second param is char, not char *).
@@ -36,7 +39,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.9 1999/01/20 18:08:32 ghutchis Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.10 1999/01/25 04:55:54 ghutchis Exp $";
 #endif
 
 #include "htmerge.h"
@@ -146,9 +149,11 @@ mergeWords(char *wordtmp, char *wordfile)
 		{
 		    switch (*name)
 		    {
+#ifndef NO_WORD_COUNT
 			case 'c':
 			    wr.count = atoi(value);
 			    break;
+#endif
 			case 'l':
 			    wr.location = atoi(value);
 			    break;
@@ -197,7 +202,9 @@ mergeWords(char *wordtmp, char *wordfile)
 	    if ((last_wr.id == wr.id)
 		&& (last_word == word))
 	      {
+#ifndef NO_WORD_COUNT
 		last_wr.count += wr.count;
+#endif
 		last_wr.weight += wr.weight;
 		if (wr.location < last_wr.location)
 		  last_wr.location = wr.location;
@@ -214,10 +221,12 @@ mergeWords(char *wordtmp, char *wordfile)
 		    last_wr.id,
 		    last_wr.location,
 		    last_wr.weight);
+#ifndef NO_WORD_COUNT
             if (last_wr.count != 1)
             {
                	fprintf(wordlist, "\tc:%d", last_wr.count);
             }
+#endif
 	    if (last_wr.anchor != 0)
             {
                	fprintf(wordlist, "\ta:%d",last_wr.anchor);
@@ -294,10 +303,12 @@ mergeWords(char *wordtmp, char *wordfile)
 		last_wr.id,
 		last_wr.location,
 		last_wr.weight);
+#ifndef NO_WORD_COUNT
     if (last_wr.count != 1)
       {
 	fprintf(wordlist, "\tc:%d", last_wr.count);
       }
+#endif
     if (last_wr.anchor != 0)
       {
 	fprintf(wordlist, "\ta:%d",last_wr.anchor);

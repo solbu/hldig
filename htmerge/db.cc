@@ -6,6 +6,9 @@
 // convertDocs are performed to ensure database integrity.
 //
 // $Log: db.cc,v $
+// Revision 1.6  1999/01/25 04:55:54  ghutchis
+// Ignore word count by compile-time option NO_WORD_COUNT.
+//
 // Revision 1.5  1999/01/25 01:53:47  hp
 // Provide a clean upgrade from old databses without "url_part_aliases" and
 // "common_url_parts" through the new option "uncoded_db_compatible".
@@ -180,9 +183,11 @@ mergeDB()
 	      {
 		switch (*name)
 		  {
+#ifndef NO_WORD_COUNT
 		  case 'c':
 		    wr.count = atoi(value);
 		    break;
+#endif
 		  case 'l':
 		    wr.location = atoi(value);
 		    break;
@@ -215,10 +220,12 @@ mergeDB()
 
 	// Record the word in the new file
 	fprintf(wordlist, "%s", word.get());
+#ifndef NO_WORD_COUNT
 	if (wr.count != 1)
 	  {
 	    fprintf(wordlist, "\tc:%d", wr.count);
 	  }
+#endif
 	fprintf(wordlist, "\tl:%d\ti:%d\tw:%d",
 		wr.location,
 		wr.id,
@@ -260,9 +267,11 @@ mergeDB()
 	      {
 		switch (*name)
 		  {
+#ifndef #NO_WORD_COUNT
 		  case 'c':
 		    wr.count = atoi(value);
 		    break;
+#endif
 		  case 'l':
 		    wr.location = atoi(value);
 		    break;
@@ -295,10 +304,12 @@ mergeDB()
 
 	// Record the word in the new file
 	fprintf(wordlist, "%s", word.get());
+#ifndef #NO_WORD_COUNT
 	if (wr.count != 1)
 	  {
 	    fprintf(wordlist, "\tc:%d", wr.count);
 	  }
+#endif
 	fprintf(wordlist, "\tl:%d\ti:%d\tw:%d",
 		wr.location,
 		wr.id + docIDOffset,
