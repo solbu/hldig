@@ -4,7 +4,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtTime.h,v 1.1.2.1 1999/12/21 18:53:57 bosc Exp $
+// $Id: HtTime.h,v 1.1.2.2 1999/12/21 19:55:14 bosc Exp $
 //
 #ifndef _HtTime_h_
 #define _HtTime_h_
@@ -35,11 +35,11 @@ class HtTime
 	double last;
 	double period;
     public:
-	double total(){return(DTime()-t0);}
+	double total(){return(HtTime::DTime()-t0);}
 	void change_period(double nperiod){period=nperiod;}
 	int operator()()
 	{
-	    double t=DTime()-t0;
+	    double t=HtTime::DTime()-t0;
 	    if((t-last)>period)
 	    {
 		last=t;
@@ -50,13 +50,13 @@ class HtTime
 	Periodic(double nperiod=.1)
 	{
 	    period=nperiod;
-	    t0=DTime();
+	    t0=HtTime::DTime();
 	    last=0;
 	}
     };
 
 
-
+#ifdef NOTDEF
     class Progression
     {
 	double t0;
@@ -64,10 +64,10 @@ class HtTime
 	double period;
 	char *label;
     public:
-	double total(){return(DTime()-t0);}
+	double total(){return(HtTime::DTime()-t0);}
 	int operator()(double x)
 	{
-	    double t=DTime()-t0;
+	    double t=HtTime::DTime()-t0;
 	    if((t-last)>period)
 	    {
 		last=t;
@@ -80,10 +80,14 @@ class HtTime
 	{
 	    label=nlabel;
 	    period=nperiod;
-	    t0=DTime();
+	    t0=HtTime::DTime();
 	    last=0;
 	}
     };
-
+#endif
 };
 #endif // _HtTime_h_
+
+
+
+
