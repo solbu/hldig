@@ -22,12 +22,12 @@
 	</p>
 
 	<p>
-	<strong>Release notes for htdig-3.2.0b1</strong>2 Feb 2000<br>
+	<strong>Release notes for htdig-3.2.0b1</strong>4 Feb 2000<br>
 	This marks the first beta version of the 3.2.0 codebase,
 	over a year in the works. Since it has not received as much
 	testing as the 3.1.x series, it is *not* recommended for
 	production environments. A full description of how to upgrade
-	is provided <a>here</a>.
+	is provided <a href="upgrade.html">here</a>.
 	<blockquote><strong>NOTE:</strong> Read this document before
 	upgrading. You have been warned.</blockquote>
 	</p>
@@ -46,7 +46,10 @@
 	<li>Rewrote the database formats, allowing room for more
 	    sophisticated searches and compression of the word database
 	    using the new attribute <a
-	    href="attrs.html#wordlist_compress">wordlist_compress</a>.</li>
+	    href="attrs.html#wordlist_compress">wordlist_compress</a>.
+	    These changes include the removal of the word_list file
+	    (db.wordlist) and the addition of the new <a
+	    href="attrs.html#doc_excerpt">doc_excerpt</a> database.</li>
 	<li>Cleaned up many parts of the code, including the URL and
 	    HTML parsers. Additionally, on platforms that support it, much
 	    of the code will be built as shared libraries, which should
@@ -55,12 +58,18 @@
 	    now on by default. This means the time at indexing is taken as
 	    the date of the document if the server does not return a
 	    date.</li>
+	<li>Added the new attribute <a
+	    href="attrs.html#use_doc_date">use_doc_date</a> to use the
+	    date specified in a META date tag.</li>
 	<li>Merged all heading_factor attributes into one new
 	    attribute, <a
 	    href="attrs.html#heading_factor">heading_factor</a>.</li>
 	<li>As a result of the new database format, all _factor
-	    attributes are now dynamic--you do not have to rebuild your
-	    database to change the scaling.</li>
+	    attributes (like <a
+	    href="attrs.html#title_factor">title_factor<a/> and <a
+	    href="attrs.html#keywords_factor">keywords_factor</a> are
+	    now dynamic--you do not have to rebuild your database to
+	    change the scaling.</li>
 	<li>Changed attributes <a
 	    href="attrs.html#bad_querystr">bad_querystr</a>, <a
 	    href="attrs.html#exclude_urls">exclude_urls</a>, <a
@@ -73,14 +82,38 @@
 	<li>Changed htsearch fields restrict and exclude to allow
 	    regular expressions when the regex are surrounded by [ and
 	    ].</li>
+	<li>Added phrase searching support to htsearch--queries
+	    enclosed in quotes will be checked to ensure the words
+	    occur in that exact order in the documents.</li>
+	<li>Added the <a
+	    href="attrs.html#build_select_lists">build_select_lists</a>
+	    attribute to allow the config file to specify
+	    &lt;select&gt; form elements in htsearch output as a
+	    template variable, much like $(SORT) and $(METHOD).
 	<li>Added a regex fuzzy method. This will allow searches to
-	    include regex that match words.</li>
+	    include regex that match words. The fuzzy method will
+	    return up to <a
+	    href="attrs.html#regex_max_words">regex_max_words</a> matches.</li>
 	<li>Added a speling [sic] fuzzy method. This attempts several
 	    simple spelling mistakes (like transposed letters and
-	    extra letters) to find matches.</li>
-	<li>Added support for external transport methods.</li>
-	<li>Added support for HTTP/1.1</li>
-	<li>Added support for file:// URLs</li>
+	    extra letters) to find matches. This adds the new
+	    attribute <a
+	    href="attrs.html#minimum_speling_length">minimum_speling_length</a>
+	    to restrict whether small words should be
+	    checked. Transposing letters in smaller words can give
+	    unrelated correctly-spelled words.</li>
+	<li>Added support for external transport methods, using the <a
+	    href="attrs.html#external_protocols">external_protocols</a>
+	    attribute, an analogue of the external_parsers system.</li>
+	<li>Added support for HTTP/1.1, including persistent
+	    connections. This can be configured using the new attributes <a
+	    href="attrs.html#persistent_connections">persistent_connections</a>,
+	    <a href="attrs.html#head_before_get">head_before_get</a>,
+	    and <a href="attrs.html#max_connection_requests">max_connection_requests</a>.
+	    </li>
+	<li>Added support for file:// URLs and support for using the
+	    <a href="attrs.html#mime_types">mime_types</a> file to
+	    decide whether local files are parsable.</li>
 	<li>Added two new formats for variables in htsearch templates,
 	    $%(var), which escapes the variable for a URL, and $&(var),
 	    which HTML-escapes the variable as necessary.</li>
@@ -89,6 +122,9 @@
 	    command-line option -.</li>
 	<li>Added a flag -m to <a href="htdig.html">htdig</a> to index <emph>only</emph> the
 	    files given in the filename.</li>
+	<li>There are many more changes especially to the internal
+	    code structure, so a huge thank you goes out to everyone
+	    who helped make this release!
 	</ul>
 
 	<p>
@@ -1163,7 +1199,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 
-Last modified: $Date: 2000/01/30 03:38:24 $
+Last modified: $Date: 2000/02/02 06:19:35 $
 
   </body>
 </html>
