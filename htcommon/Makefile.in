@@ -28,6 +28,6 @@ distclean:	clean
 	rm -f Makefile *.proj
 
 depend:
-	$(MAKEDEPEND) $(CXXFLAGS) @CPPFLAGS@ -- $(OBJS)
+	$(MAKEDEPEND) $(CXXFLAGS) @CPPFLAGS@ $(INCS) -- $(OBJS)
 
 defaults.o:		@top_srcdir@/CONFIG

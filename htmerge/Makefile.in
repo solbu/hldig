@@ -20,6 +20,6 @@ distclean:	clean
 	rm -f Makefile *.proj
 
 depend:
-	$(MAKEDEPEND) $(CXXFLAGS) -- $(OBJS)
+	$(MAKEDEPEND) $(CXXFLAGS) $(INCS) -- $(OBJS)
 
 htmerge.o:		@top_srcdir@/CONFIG

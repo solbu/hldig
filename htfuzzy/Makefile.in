@@ -30,6 +30,6 @@ distclean:	clean
 	rm -f Makefile *.proj
 
 depend:
-	$(MAKEDEPEND) @CPPFLAGS@ $(CXXFLAGS) -- $(OBJS)
+	$(MAKEDEPEND) @CPPFLAGS@ $(CXXFLAGS) $(INCS) -- $(OBJS)
 
 htfuzzy.o:	@top_srcdir@/CONFIG
