@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.52 1999/06/14 18:10:44 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.53 1999/06/27 19:49:55 ghutchis Exp $";
 #endif
 
 #include "Configuration.h"
@@ -68,6 +68,7 @@ ConfigDefaults	defaults[] =
     {"http_proxy",			""},
     {"http_proxy_exclude",		""},
     {"image_list",			"${database_base}.images"},
+    {"img_alt_factor",			"3"},
     {"iso_8601",                        "false"},
     {"keywords_factor",			"100"},
     {"keywords_meta_tag_names",		"keywords htdig-keywords"},

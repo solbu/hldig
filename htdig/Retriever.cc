@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.51 1999/06/21 00:49:02 ghutchis Exp $
+// $Id: Retriever.cc,v 1.52 1999/06/27 19:49:56 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -47,7 +47,7 @@ Retriever::Retriever(RetrieverLog flags)
     factor[5] = config.Double("heading_factor_4");
     factor[6] = config.Double("heading_factor_5");
     factor[7] = config.Double("heading_factor_6");
-    factor[8] = 0;
+    factor[8] = config.Double("img_alt_factor");
     factor[9] = 0;
     factor[10] = config.Double("keywords_factor");
     factor[11] = config.Double("meta_description_factor");
