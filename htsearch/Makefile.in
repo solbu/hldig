@@ -60,6 +60,7 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 APACHE = @APACHE@
+APACHE_MODULES = @APACHE_MODULES@
 AR = @AR@
 AS = @AS@
 CC = @CC@
