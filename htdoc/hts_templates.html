@@ -10,7 +10,7 @@
 	  htsearch
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
+	  ht://Dig Copyright &copy; 1995-2002 <a href="THANKS.html">The ht://Dig Group</a><br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -100,22 +100,32 @@
 	<p>
 	  There are many variables that can be substituted into these
 	  templates. Not all of them make sense for each file, so not
-	  all of them will be substituted for every file. In addition, all
+	  all of them will be substituted for every file, as noted below.
+	  <!-- Should explain "matchTemplate" more explicitly...  How? -->
+	  In addition, all
 	  of the standard CGI environment variables are available, and
 	  listed in the <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">cgi
 	  specification</a>. Variables will be substituted normally
 	  with the format $(VAR), escaped for use in a URL with the
 	  format $%(VAR), URL-encoding decoded with the format $=(VAR),
-	  and HTML-escaped with the format $&(VAR). The variables are:
+	  and HTML-escaped with the format $&amp;(VAR). The variables are:
 	</p>
 	<dl>
 	  <dt>
 		<strong>ANCHOR</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
 		Expands to the named anchor found just before the first match; it
 		includes "#" at the start so it can be directly appended to the URL
 		variable. If no anchor was found, ANCHOR is empty.
+	  </dd>
+	  <dt>
+		<strong>BACKLINKS</strong>
+		(Only in matchTemplate)
+	  </dt>
+	  <dd>
+		The number of links <strong>to</strong> the current match.
 	  </dd>
 	  <dt>
 		<strong><a name="CGI">CGI</a></strong>
@@ -128,36 +138,56 @@
 		configuration file attribute for more information.
 	  </dd>
 	  <dt>
+		<strong>CONFIG</strong>
+	  </dt>
+	  <dd>
+		The <a href="hts_form.html#config">configuration file</a>.
+	  </dd>
+	  <dt>
 		<strong>CURRENT</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
 		The number of the current match.
 	  </dd>
 	  <dt>
 		<strong>DESCRIPTION</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
-		The first URL description for the matched document.
+		The first URL description for the matched document.  See below.
 	  </dd>
 	  <dt>
 		<strong>DESCRIPTIONS</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
-		A list of URL text descriptions for the matched document. The
+		A list of <a href="attrs.html#description_factor">URL text
+		descriptions</a> for the matched document. The
 		entries in the list are separated by &lt;br&gt;. These are the
 		text used between the &lt;a href...&gt; and &lt;/a&gt;tags.
 	  </dd>
 	  <dt>
 		<strong>DOCID</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
 		The internal ID for the document for the current match.
 	  </dd>
 	  <dt>
 		<strong>EXCERPT</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
-		The relevant excerpt for the current match
+		The relevant <a href="attrs.html#excerpt_show_top">excerpt</a>
+		for the current match.
+	  </dd>
+	  <dt>
+		<strong>EXCLUDE</strong>
+	  </dt>
+	  <dd>
+		A <a href="hts_form.html#exclude">list of words excluded</a>
+		from the search, separated by '|'.
 	  </dd>
 	  <dt>
 		<strong>FIRSTDISPLAYED</strong>
@@ -179,6 +209,7 @@
 	  </dd>
 	  <dt>
 		<strong>HOPCOUNT</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
 		The distance of this match away from the starting
@@ -189,7 +220,9 @@
 	  </dt>
 	  <dd>
 		A string of the search keywords with spaces in between, as
-		specified in the <em>keywords</em> input parameter.
+		specified in the
+		<a href="hts_form.html#keywords"><em>keywords</em> input
+		parameter</a>.
 	  </dd>
 	  <dt>
 		<strong>LASTDISPLAYED</strong>
@@ -201,15 +234,16 @@
 		<strong>LOGICAL_WORDS</strong>
 	  </dt>
 	  <dd>
-		A string of the search words with either "and" or "or"
-		between the words, depending on the type of search.
+		A string of the <a href="hts_form.html#words">search words</a>
+		with either "and" or "or" between the words, depending on the
+		<a href="hts_form.html#match_method">type of search</a>.
 	  </dd>
 	  <dt>
 		<strong>MATCH_MESSAGE</strong>
 	  </dt>
 	  <dd>
 		This is either <code>all</code> or <code>some</code> depending on
-		the match method used.
+		the <a href="hts_form.html#match_method">match method</a> used.
 	  </dd>
 	  <dt>
 		<strong>MATCHES</strong>
@@ -218,20 +252,22 @@
 		The total number of matches that were found.
 	  </dd>
 	  <dt>
-		<strong>MATCHES_PER_PAGE</strong>
+		<strong><a name="MATCHES_PER_PAGE">MATCHES_PER_PAGE</a></strong>
 	  </dt>
 	  <dd>
-		The configured maximum number of matches on this page
+		The configured <a href="hts_form.html#matchesperpage">maximum
+		number of matches</a> on this page.
 	  </dd>
 	  <dt>
 		<strong>MAX_STARS</strong>
 	  </dt>
 	  <dd>
-		The configured maximum number of stars to display in
-		matches.
+		The configured <a href="attrs.html#max_stars">maximum number
+		of stars</a> to display in matches.
 	  </dd>
 	  <dt>
 		<strong>METADESCRIPTION</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
 		The meta description text (if any) for the matched document.
@@ -250,6 +286,7 @@
 	  </dd>
 	  <dt>
 		<strong>MODIFIED</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
 		The date and time the document was last modified
@@ -264,7 +301,7 @@
 		attributes depending on whether there is a next page or not.
 	  </dd>
 	  <dt>
-	        <strong>NSTARS</strong>
+		<strong>NSTARS</strong>
 	  </dt>
 	  <dd>
 	       The number of stars calculated for this document as an
@@ -275,7 +312,9 @@
 		<strong>PAGE</strong>
 	  </dt>
 	  <dd>
-		The current page number.
+		The current page number.  Equal to the
+		<a href="hts_form.html#page">page</a> CGI argument, or 1 by
+		default.
 	  </dd>
 	  <dt>
 		<strong>PAGEHEADER</strong>
@@ -303,6 +342,7 @@
 	  </dd>
 	  <dt>
 		<strong>PERCENT</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
 		The match score as a percentage. Its range is 1 to 100,
@@ -327,37 +367,49 @@
 		attributes depending on whether there is a previous page or not.
 	  </dd>
 	  <dt>
+		<strong>RESTRICT</strong>
+	  </dt>
+	  <dd>
+		The <a href="hts_form.html#restrict">list of patterns</a> which
+		must be matched by the returned URLs, separated by '|'.
+	  </dd>
+	  <dt>
 		<strong>SCORE</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
 		The score of the current match
 	  </dd>
 	  <dt>
-		<strong>SELECTED_FORMAT</strong>
+		<strong><a name="SELECTED_FORMAT">SELECTED_FORMAT</a></strong>
 	  </dt>
 	  <dd>
-		The currently selected format.
+		The currently selected <a href="hts_form.html#format">format</a>.
 	  </dd>
 	  <dt>
-		<strong>SELECTED_METHOD</strong>
+		<strong><a name="SELECTED_METHOD">SELECTED_METHOD</a></strong>
 	  </dt>
 	  <dd>
-		The currently selected matching method.
+		The currently selected <a href="hts_form.html#method">matching
+		method</a>.
 	  </dd>
 	  <dt>
-		<strong>SELECTED_SORT</strong>
+		<strong><a name="SELECTED_SORT">SELECTED_SORT</a></strong>
 	  </dt>
 	  <dd>
-		The currently selected sorting method.
+		The currently selected <a href="hts_form.html#sort">sorting
+		method</a>.
 	  </dd>
 	  <dt>
 		<strong>SIZE</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
 		The size of the document for the current match
 	  </dd>
 	  <dt>
 		<strong>SIZEK</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
 		The size in kilobytes of the document for the current match
@@ -376,40 +428,46 @@
 	  </dd>
 	  <dt>
 		<strong>STARSLEFT</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
-		A set of HTML &lt;img&gt; tags with the stars aligned on
-		the left.
+		A set of HTML &lt;img&gt; tags with the
+		<a href="attrs.html#star_image">stars</a> aligned on the left.
 	  </dd>
 	  <dt>
 		<strong>STARSRIGHT</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
-		A set of HTML &lt;img&gt; tags with the stars aligned on
-		the right.
+		A set of HTML &lt;img&gt; tags with the stars
+		<a href="attrs.html#star_image">stars</a> aligned on the right.
 	  </dd>
 	  <dt>
 		<strong>STARTYEAR</strong>, <strong>STARTMONTH</strong>, <strong>STARTDAY</strong>,
 		<strong>ENDYEAR</strong>, <strong>ENDMONTH</strong>, <strong>ENDDAY</strong>
 	  </dt>
 	  <dd>
-		The currently specified date range for restricting search
-		results.
+		The currently specified <a href="hts_form.html#startyear">date
+		range</a> for restricting search results.
 	  </dd>
 	  <dt>
-		<strong>SYNTAXERROR</strong>
+	  <strong>SYNTAXERROR</strong>
+		(Only in
+		<a href="attrs.html#syntax_error_file">syntax_error_file</a>)
 	  </dt>
 	  <dd>
 		Is the text of the boolean expression syntax error.
 	  </dd>
 	  <dt>
 		<strong>TITLE</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
 		The title of the document for the current match
 	  </dd>
 	  <dt>
 		<strong>URL</strong>
+		(Only in matchTemplate)
 	  </dt>
 	  <dd>
 		The URL to the document for the current match
@@ -418,18 +476,19 @@
 		<strong>VERSION</strong>
 	  </dt>
 	  <dd>
-		The ht://Dig version number
+		The ht://Dig <a href="attrs.html#version">version number</a>.
 	  </dd>
 	  <dt>
 		<strong>WORDS</strong>
 	  </dt>
 	  <dd>
-		A string of the search words with spaces in between.
+		A string of the <a href="hts_form.html#words">search words</a>
+		with spaces in between.
 	  </dd>
 	</dl>
 	<hr size="4" noshade>
 
-	Last modified: $Date: 2002/02/01 22:49:32 $
+	Last modified: $Date: 2002/10/27 15:20:55 $
 
   </body>
 </html>
