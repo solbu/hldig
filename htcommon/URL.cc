@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: URL.cc,v 1.12 2004/01/12 12:48:24 lha Exp $
+// $Id: URL.cc,v 1.13 2004/01/18 12:54:14 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -468,7 +468,7 @@ void URL::normalizePath()
     // Some database lookups interpret empty paths (// != /), so give
     // the use the option to turn this off.
     //
-    if (!config->Boolean ("allow_dbl_slash"))
+    if (!config->Boolean ("allow_double_slash"))
 	while ((i = _path.indexOf("//")) >= 0 && i < pathend)
 	{
 	    newPath = _path.sub(0, i).get();

@@ -5,8 +5,24 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_factors,v 1.4 2004/01/17 05:31:56 lha Exp $
+# $Id: t_factors,v 1.5 2004/01/18 12:54:15 lha Exp $
 #
+
+# Tests (or should eventually test) the following config attributes:
+#	author_factor
+#	backlink_factor
+#	caps_factor
+#	date_factor		(TODO)
+#	description_factor
+#	heading_factor
+#	keywords_factor
+#	meta_description_factor
+#	multimatch_factor
+#	search_results_order
+#	text_factor
+#	title_factor
+#	url_seed_score
+#	url_text_factor
 
 # try_order comment query pattern1 patern2 ...
 #	comment	- description of test, displayed if error occurs
@@ -79,11 +95,12 @@ try_order "Search_results_order * script e2|e4" \
     "words=also" \
     '4 matches' 'script.html' 'bad_local.htm' 'site4.html' 'site2.html'
 
-set_attr url_seed_score		""
+set_attr url_seed_score			""
+set_attr search_results_order		""
 set_attr author_factor			0
 set_attr backlink_factor		0
-set_attr caps_factor			0
-set_attr date_factor			0
+set_attr caps_factor			0	# not implemented
+set_attr date_factor			0	# TODO
 set_attr description_factor		0
 set_attr heading_factor			0
 set_attr keywords_factor		0
@@ -91,17 +108,128 @@ set_attr meta_description_factor	0
 set_attr multimatch_factor		0
 set_attr text_factor			0
 set_attr title_factor			0
-set_attr url_text_factor		0
+set_attr url_text_factor		0	# not implemented
 
 try_order "Search with factors 0" \
     "words=also" \
     'No matches'
 
-set_attr description_factor		1
+try_order "Search for 'service' with title_factor 0" \
+    "words=service" \
+    'No matches'
+set_attr title_factor		1
+try_order "Search for 'service' with title_factor 1" \
+    "words=service" \
+    '1 matches' 'script.html'
+set_attr text_factor		0.3
+try_order "Greater weight to title factor" \
+    "words=service" \
+    '4 matches' 'script.html' 'site4.html' 'site%201.html' 'site3.html'
+set_attr title_factor		-3.2
+try_order "Checking negative title factor" \
+    "words=service" \
+    '4 matches' 'site4.html' 'site%201.html' 'site3.html' 'script.html'
+set_attr title_factor		0
+set_attr text_factor		0
 
+# test with all factors 0 except the one which matches
+
+set_attr description_factor		1
 try_order "Search for 'crossRef' with description_factor 1" \
     "words=crossRef" \
     '1 matches' 'site%201.html'
+set_attr description_factor		0
+
+set_attr author_factor			1
+try_order "Search for 'media' with author_factor 1" \
+    "words=media" \
+    '1 matches' 'script.html'
+set_attr author_factor			0
+
+set_attr meta_description_factor	1
+try_order "Search for 'stars' with meta_description_factor 1" \
+    "words=stars" \
+    '1 matches' 'site2.html'
+set_attr meta_description_factor	0
+
+set_attr heading_factor			1
+try_order "Search for 'obtain' with heading_factor 1" \
+    "words=obtain" \
+    '1 matches' 'bad_local.htm'
+set_attr heading_factor			0
+
+set_attr keywords_factor		1
+try_order "Search for 'newWord' with keywords_factor 1" \
+    "words=newWord" \
+    '1 matches' 'title.html'
+set_attr keywords_factor		0
+
+
+# test with all document-based factors non-zero except the one which matches
+set_attr author_factor			1
+#set_attr backlink_factor		1	# not document based
+set_attr caps_factor			1
+#set_attr date_factor			1	# not document based
+set_attr description_factor		1
+set_attr heading_factor			1
+set_attr keywords_factor		1
+set_attr meta_description_factor	1
+set_attr multimatch_factor		1
+set_attr text_factor			1
+set_attr title_factor			1
+set_attr url_text_factor		1
+set_attr description_factor		1
+
+set_attr description_factor		0
+try_order "Search for 'crossRef' with description_factor 0" \
+    "words=crossRef" \
+    '1 matches' 'title.html'
+set_attr description_factor		1
+
+set_attr author_factor			0
+try_order "Search for 'media' with author_factor 0" \
+    "words=media" \
+    'No matches'
+set_attr author_factor			1
+
+set_attr meta_description_factor	0
+try_order "Search for 'stars' with meta_description_factor 0" \
+    "words=stars" \
+    'No matches'
+set_attr meta_description_factor	1
+
+set_attr heading_factor			0
+try_order "Search for 'obtain' with heading_factor 0" \
+    "words=obtain" \
+    'No matches'
+set_attr heading_factor			1
+
+set_attr keywords_factor		0
+try_order "Search for 'newWord' with keywords_factor 0" \
+    "words=newWord" \
+    'No matches'
+set_attr keywords_factor		1
+
+# multimatch_factor gives a "boost" to searches matching multiple terms
+set_attr title_factor			10	# "get" in title of bad_local
+set_attr multimatch_factor		10000
+try_order "Search for 'get or interest or repay' with multimatch_factor 10000" \
+    "words=get+interest+repay;method=or" \
+    '2 matches' 'site4.html' 'bad_local.htm'
+set_attr multimatch_factor		0
+try_order "Search for 'get or interest or repay' with multimatch_factor 0" \
+    "words=get+interest+repay;method=or" \
+    '2 matches' 'bad_local.htm' 'site4.html'
+
+# backlink counts the number of references (of any type) to this document
+set_attr backlink_factor		0
+try_order "site4.html has repay+interest, site 1.html only has suggestions" \
+    "words=suggestions+repay+interest;method=or" \
+    '2 matches' 'site4.html' 'site%201.html'
+set_attr backlink_factor		100
+try_order "site 1.html has a higher ratio of backlinks to outgoing links" \
+    "words=suggestions+repay+interest;method=or" \
+    '2 matches' 'site%201.html' 'site4.html'
 
 test_functions_action=--stop-apache
 . ./test_functions

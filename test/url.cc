@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: url.cc,v 1.6 2003/07/21 08:16:12 angusgb Exp $
+// $Id: url.cc,v 1.7 2004/01/18 12:54:15 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -119,7 +119,7 @@ static void dourl(params_t* params)
   dolist(params);
 
   cout << "\nAnd now without turning // into / ...\n\n";
-  config->Add(String("allow_dbl_slash"), "true");
+  config->Add(String("allow_double_slash"), "true");
   dolist(params);
 }
 

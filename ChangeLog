@@ -1,8 +1,19 @@
+Sun 18 Jan 2004 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htcommon/URL.cc, test/url.cc:
+      Rename "allow_dbl_slash" to "allow_double_slash", to match defaults.cc
+
+    * htcommon/default.cc, htdoc/{hts_temlates,attrs}.html:
+      Explain that  keywords_factor  applies to meta keywords.  Fix old typo.
+
+    * test/t_{factors,templates}, test/htdocs/set1/{title.html,bad_local.htm}
+    * test/conf/entry-template:
+      Expanded test suite.
+
 Sat 17 Jan 2004 Lachlan Andrew <lha@users.sourceforge.net>
 
     * test/t_{parsing,htdig_local,factors,templates},
     * test/htdocs/set1/title.html
-
       Expanded test suite.
 
 Sat 17 Jan 2004 Lachlan Andrew <lha@users.sourceforge.net>
@@ -17,7 +28,7 @@ Sat 17 Jan 2004 Lachlan Andrew <lha@users.sourceforge.net>
 
 Mon 12 Jan 2004 Lachlan Andrew <lha@users.sourceforge.net>
 
-    * Very many files:
+    * Very many files:  Fix bug #873965
       Replace C++ style comments with C style comments in all C files, and .h
       files they include.
       Also, change //_WIN32 to /* _WIN32 */ in .cc files for uniformity.

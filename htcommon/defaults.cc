@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.103 2004/01/17 05:17:49 lha Exp $
+// $Id: defaults.cc,v 1.104 2004/01/18 12:54:14 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -239,7 +239,9 @@ ConfigDefaults	defaults[] =
 { "boolean_keywords", "and or not",  \
 	"string list", "htsearch", "", "3.1.6", "Presentation:How", "boolean_keywords: et ou non", " \
 	These three strings are used as the keywords used in \
-	constructing the LOGICAL_WORDS template variable, \
+	constructing the \
+	<a href=\"hts_templates.html#LOGICAL_WORDS\">LOGICAL_WORDS</a> \
+	template variable, \
 	and in parsing the <a href=\"hts_form.html#words\">words</a> input \
 	parameter when the <a href=\"hts_form.html#method\">method</a> \
 	parameter or <a href=\"#match_method\">match_method</a> attribute \
@@ -1187,7 +1189,8 @@ http://www.htdig.org/", " \
 { "keywords_factor", "100",  \
 	"number", "htsearch", "", "all", "Searching:Ranking", "keywords_factor: 12", " \
 	This is a factor which will be used to multiply the \
-	weight of words in the list of keywords of a document. \
+	weight of words in the list of \
+	<a href=\"#keywords_meta_tag_names\">meta keywords</a> of a document. \
 	The number may be a floating point number. See also the \
 	<a href=\"#heading_factor\">heading_factor</a> attribute. \
 " }, \
@@ -1449,7 +1452,7 @@ http://www.htdig.org/", " \
 	While gathering descriptions from meta description tags, \
 	<a href=\"htdig.html\">htdig</a> will only store up to  \
 	this much of the text (in bytes) for each document to fill the \
-	<a href=\"hts_templates.html#METADESCRIPTION\"METADESCRIPTION</a> \
+	<a href=\"hts_templates.html#METADESCRIPTION\">METADESCRIPTION</a> \
 	template variable.  All words in the meta description are still \
 	used for indexing. \
 " }, \
