@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43 1999/01/27 00:25:07 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.44 1999/02/17 11:40:59 hp Exp $";
 #endif
 
 #include "Configuration.h"
@@ -70,7 +70,7 @@ ConfigDefaults	defaults[] =
     {"keywords_meta_tag_names",		"keywords htdig-keywords"},
     {"limit_urls_to",			"${start_url}"},
     {"limit_normalized",                ""},
-    {"locale",				"iso_8859_1"},
+    {"locale",				"C"},
     {"local_default_doc",               "index.html"},
     {"local_urls",			""},
     {"local_user_urls",			""},

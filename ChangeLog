@@ -1,3 +1,7 @@
+Wed Feb 17 12:36:42 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* htcommon/defaults.cc (defaults): locale: change to "C".
+
 Sat Feb 13 20:53:34 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc(got_word): Ensure heading is in a normal range.
