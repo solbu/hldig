@@ -1,3 +1,9 @@
+Fri Mar 19 16:43:28 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc: Add patch from Gabriele to ensure META
+	descriptions are parsed, even if 'description' is added to the
+	keyword list.
+
 Fri Mar 19 16:37:08 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/parser.h, htsearch/parser.cc: Clean up patch made for
