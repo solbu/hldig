@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.26 1999/07/15 02:25:21 ghutchis Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.27 1999/07/16 00:46:03 ghutchis Exp $";
 #endif
 
 #include "URL.h"
@@ -399,7 +399,7 @@ void URL::normalizePath()
       }
 
     // If the server *isn't* case sensitive, we want to lowercase the path
-    if (!config["case_sensitive"])
+    if (!config.Boolean("case_sensitive", 1))
       _path.lowercase();
 
     // And don't forget to remove index.html or similar file.
@@ -426,7 +426,7 @@ void URL::dump()
 void URL::path(char *newpath)
 {
     _path = newpath;
-    if (!config["case_sensitive"])
+    if (!config.Boolean("case_sensitive",1))
       _path.lowercase();
     constructURL();
 }
