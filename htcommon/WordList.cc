@@ -4,6 +4,9 @@
 // Implementation of WordList
 //
 // $Log: WordList.cc,v $
+// Revision 1.14  1999/01/20 18:03:44  ghutchis
+// Added check for adding words with weight zero.
+//
 // Revision 1.13  1999/01/14 01:09:11  ghutchis
 // Small speed improvements based on gprof.
 //
@@ -49,7 +52,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.13 1999/01/14 01:09:11 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.14 1999/01/20 18:03:44 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -84,6 +87,8 @@ WordList::~WordList()
 //
 void WordList::Word(char *word, int location, int anchor_number, double weight_factor)
 {
+  if (weight_factor == 0) // Why should we add words with no weight?
+      return;
     String		shortword = word;
 
     shortword.lowercase();
