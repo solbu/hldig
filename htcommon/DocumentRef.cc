@@ -4,6 +4,9 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.18  1999/01/18 23:15:36  ghutchis
+// Fix thinko with compression_level.
+//
 // Revision 1.17  1999/01/17 20:28:37  ghutchis
 // Save space when lengths can fit in an unsigned char or unsigned short.
 //
@@ -346,7 +349,7 @@ void DocumentRef::Deserialize(String &stream)
     char	*s;
     char	*end;
     String c_s;
-    if (config.Boolean("compression_level",0)) {
+    if (config.Value("compression_level",0)) {
       // Decompress stream
       z_stream d_stream; /* decompression stream */
 
