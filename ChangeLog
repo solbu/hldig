@@ -1,7 +1,8 @@
 Sun Dec 12 17:14:00 EET 1999  Vadim Chekan  <vadim@etc.lviv.ua>
 
 	* htcommon/conf_lexer.lxx, htcommon/conf_lexer.cxx:
-	national symbols are allowed in right part of expressions.
+	national symbols are allowed in right part of expressions
+	(noted by Marcel Bosh).
 	Changed default behavior of flex from print unknown chars
 	on stdout to exit with error message.
 
