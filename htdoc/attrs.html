@@ -8996,16 +8996,16 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			1
+			0
 		  </dd>
 		  <dt>
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	Debuging value for the  compression system for the indexer.
-	0 : none
-	1 : transparent autotest while compressing (small performance decrease)
-	2 : ------------------              big performance decrease
+	Debuging value for the  compression system for the indexer.              <br>
+	0 : none								 <br>
+	1 : transparent autotest while compressing (small performance decrease)	 <br>
+	2 : ------------------              big performance decrease		 <br>
 	3 : verbose
 		  </dd>
 		  <dt>
@@ -9075,6 +9075,52 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="wordlist_wordkey_description_file">
+		wordlist_wordkey_description_file</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>,
+			<a href="htfuzzy.html">htfuzzy</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<i>No default</i>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Internal key description file: *not user configurable*
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="wordlist_wordrecord_description">
 		wordlist_wordrecord_description</a></strong>
 	  </dt>
@@ -9119,11 +9165,243 @@ http://www.htdig.org/
 	  </dd>
 	</dl>
 	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="wordlist_monitor">
+		wordlist_monitor</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>,
+			<a href="htfuzzy.html">htfuzzy</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			false
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	This enables monitoring of what's happening in the indexer.
+        It can help to detect performance/configuration problems.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  wordlist_monitor:
+				</td>
+				<td nowrap>
+				     true
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="wordlist_monitor_period">
+		wordlist_monitor_period</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>,
+			<a href="htfuzzy.html">htfuzzy</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			1.0
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Sets the number of seconnds between each monitor output
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  wordlist_monitor_period:
+				</td>
+				<td nowrap>
+				     .1
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="wordlist_monitor_fields">
+		wordlist_monitor_fields</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>,
+			<a href="htfuzzy.html">htfuzzy</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			totput put/s cmpr/s ucmpr/s put_time cmpr_ucmpr_time
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+        Sets what values you want to monitor in the indexer. Here is a list
+        of the currently available fields:                                                                <br>
+        Compression related:                                                                              <br>
+	mxtreelevel         : maximal depth of compressed/uncompressed pages (db tree grow bottom up...)  <br>
+	cmpr/s              : number of pages compressed per second					  <br>
+	ucmpr/s             : number of pages uncompressed per second					  <br>
+	cmpr_ucmpr_time     : proportion of total time spent compressing/uncompressing pages		  <br>
+	nonleave/leave      : proportion of pages compressed/uncompressed pages that weren't tree leaves  <br>
+	cmpr_ratio          : average atained compression ration					  <br>
+	cmpr_overflow       : proportion of pages that didn't fit in the specified compression ratio	  <br>
+        Others:												  <br>
+        totput              : total number of entries inserted into the index				  <br>
+        put/s               : number of inserts per second						  <br>
+        put_time            : proportion of total time spent inserting					  <br>
+        nwalks/s            : number of walks per second						  <br>
+        walk_time           : proportion of total time spent walking					  <br>
+        nwalk_set           : number of walk jumps							  <br>
+        nwalk_set/s         : number of walk jumps per second						  <br>
+        nwalk_next          : number of walk next's            						  <br>
+        nwalk_next/s        : number of walk next's per second						  <br>
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  wordlist_monitor_fields:
+				</td>
+				<td nowrap>
+				     put/s nwalks/s
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="wordlist_monitor_output">
+		wordlist_monitor_output</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>,
+			<a href="htfuzzy.html">htfuzzy</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			1.0
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Specifies word monitor output. Currently file or stdout
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  wordlist_monitor_output:
+				</td>
+				<td nowrap>
+				     file:/home/bosc/trash/wlmonout
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Fri Dec 31 12:49:02 CET 1999
+Last modified: Mon Jan  3 13:58:16 CET 2000
 <!-- hhmts end -->
   </body>
 </html>

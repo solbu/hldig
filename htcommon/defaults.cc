@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.20 2000/01/03 10:04:42 bosc Exp $
+// $Id: defaults.cc,v 1.64.2.21 2000/01/03 13:26:28 bosc Exp $
 //
 
 #include "HtConfiguration.h"
@@ -2093,24 +2093,62 @@ url_part_aliases:
 	Berkeley DB file has 1% of internal pages that *must* be cached for good
 	performances. Giving an additional 1% leaves room for caching leaf pages.
 " },
-{ "wordlist_compress_debug", "1", 
+{ "wordlist_compress_debug", "0", 
 	"number", "htdig htmerge htsearch htfuzzy", "wordlist_compress_debug: 2", "
-	Debuging value for the  compression system for the indexer.
-	0 : none
-	1 : transparent autotest while compressing (small performance decrease)
-	2 : ------------------              big performance decrease
+	Debuging value for the  compression system for the indexer.              <br>
+	0 : none								 <br>
+	1 : transparent autotest while compressing (small performance decrease)	 <br>
+	2 : ------------------              big performance decrease		 <br>
 	3 : verbose
 " },
 { "wordlist_wordkey_description", "nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0",
 	"string", "htdig htmerge htsearch htfuzzy", "**this should not be configured by user**", "
 	Internal key description: *not user configurable*
 " },
+{ "wordlist_wordkey_description_file", "",
+	"string", "htdig htmerge htsearch htfuzzy", "**this should not be configured by user**", "
+	Internal key description file: *not user configurable*
+" },
 { "wordlist_wordrecord_description", "DATA",
 	"string", "htdig htmerge htsearch htfuzzy", "**this should not be configured by user**", "
 	Internal data description: *not user configurable*
 " },
-
-
+{ "wordlist_monitor", "false",
+	"boolean", "htdig htmerge htsearch htfuzzy", "wordlist_monitor: true", "
+	This enables monitoring of what's happening in the indexer.
+        It can help to detect performance/configuration problems.
+" },
+{ "wordlist_monitor_period","1.0",
+	"string", "htdig htmerge htsearch htfuzzy", "wordlist_monitor_period: .1", "
+	Sets the number of seconnds between each monitor output
+" },
+{ "wordlist_monitor_fields","totput put/s cmpr/s ucmpr/s put_time cmpr_ucmpr_time",
+	"string", "htdig htmerge htsearch htfuzzy", "wordlist_monitor_fields: put/s nwalks/s", "
+        Sets what values you want to monitor in the indexer. Here is a list
+        of the currently available fields:                                                                <br>
+        Compression related:                                                                              <br>
+	mxtreelevel         : maximal depth of compressed/uncompressed pages (db tree grow bottom up...)  <br>
+	cmpr/s              : number of pages compressed per second					  <br>
+	ucmpr/s             : number of pages uncompressed per second					  <br>
+	cmpr_ucmpr_time     : proportion of total time spent compressing/uncompressing pages		  <br>
+	nonleave/leave      : proportion of pages compressed/uncompressed pages that weren't tree leaves  <br>
+	cmpr_ratio          : average atained compression ration					  <br>
+	cmpr_overflow       : proportion of pages that didn't fit in the specified compression ratio	  <br>
+        Others:												  <br>
+        totput              : total number of entries inserted into the index				  <br>
+        put/s               : number of inserts per second						  <br>
+        put_time            : proportion of total time spent inserting					  <br>
+        nwalks/s            : number of walks per second						  <br>
+        walk_time           : proportion of total time spent walking					  <br>
+        nwalk_set           : number of walk jumps							  <br>
+        nwalk_set/s         : number of walk jumps per second						  <br>
+        nwalk_next          : number of walk next's            						  <br>
+        nwalk_next/s        : number of walk next's per second						  <br>
+" },
+{ "wordlist_monitor_output","1.0",
+	"string", "htdig htmerge htsearch htfuzzy", "wordlist_monitor_output: file:/home/bosc/trash/wlmonout", "
+	Specifies word monitor output. Currently file or stdout
+" },
 {0, 0, 0, 0, 0},
 };
 
