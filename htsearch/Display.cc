@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.38  1999/01/22 04:37:47  ghutchis
+// Check if HTTP_REFERER is NULL, if so, use a dash. (Otherwise we'll kill some
+// syslog() services).
+//
 // Revision 1.37  1999/01/21 02:06:31  ghutchis
 // Fixed typo in last patch.
 //
@@ -134,7 +138,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.37 1999/01/21 02:06:31 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.38 1999/01/22 04:37:47 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -1276,9 +1280,13 @@ Display::logSearch(int page, List *matches)
     int         level = LOG_LEVEL;
     int         facility = LOG_FACILITY;
     char        *host = getenv("REMOTE_HOST");
+    char        *ref = getenv("HTTP_REFERER");
 
     if (host == NULL)
       host = getenv("REMOTE_ADDR");
+
+    if (ref == NULL)
+      ref = '-';
 
     if (matches)
 	nMatches = matches->Count();
