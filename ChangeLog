@@ -1,3 +1,9 @@
+Mon Nov 29 19:18:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc(got_href & got_redirect): corrections to case
+	insensitive server fix, to handle redirects, to make more thorough
+	use of mapped URL, and to update it after normalization.
+
 Fri Nov 26 17:14:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Document.cc(RetrieveHTTP): always c.close() the connection

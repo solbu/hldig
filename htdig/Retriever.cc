@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.8 1999/11/24 04:40:32 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.9 1999/11/30 01:35:17 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -1008,7 +1008,7 @@ Retriever::got_href(URL &url, char *description)
     //
     // Check if this URL falls within the valid range of URLs.
     //
-    if (IsValidURL(url.get()))
+    if (IsValidURL(caseurl))
     {
 	//
 	// It is valid.  Normalize it (resolve cnames for the server)
@@ -1021,6 +1021,9 @@ Retriever::got_href(URL &url, char *description)
 	}
 
 	url.normalize();
+	caseurl = url.get();
+	if (!config.Boolean("case_sensitive"))
+	    caseurl.lowercase();
 
 	// If it is a backlink from the current document,
 	// just update that field.  Writing to the database
@@ -1083,7 +1086,7 @@ Retriever::got_href(URL &url, char *description)
 	    if (Need2Get(caseurl))
 	    {
 		if (debug > 1)
-		    cout << "\n   pushing " << url.get() << endl;
+		    cout << "\n   pushing " << caseurl << endl;
 		server = (Server *) servers[url.signature()];
 		if (!server)
 		{
@@ -1114,7 +1117,7 @@ Retriever::got_href(URL &url, char *description)
 	    // Not a valid URL
 	    //
 	    if (debug > 1)
-		cout << "\nurl rejected: (level 2)" << url.get() << endl;
+		cout << "\nurl rejected: (level 2)" << caseurl << endl;
 	    if (debug == 1)
 		cout << '-';
 	}
@@ -1125,7 +1128,7 @@ Retriever::got_href(URL &url, char *description)
 	// Not a valid URL
 	//
 	if (debug > 1)
-	    cout << "\nurl rejected: (level 1)" << url.get() << endl;
+	    cout << "\nurl rejected: (level 1)" << caseurl << endl;
 	if (debug == 1)
 	    cout << '-';
     }
@@ -1141,9 +1144,12 @@ void
 Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 {
     URL	url(new_url);
+    String		caseurl = url.get();
+    if (!config.Boolean("case_sensitive"))
+	caseurl.lowercase();
 
     if (debug > 2)
-	cout << "redirect: " << url.get() << endl;
+	cout << "redirect: " << caseurl << endl;
 
     n_links++;
 
@@ -1153,7 +1159,7 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
     //
     // Check if this URL falls within the valid range of URLs.
     //
-    if (IsValidURL(url.get()))
+    if (IsValidURL(caseurl))
     {
 	//
 	// It is valid.  Normalize it (resolve cnames for the server)
@@ -1161,17 +1167,20 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 	//
 	if (debug > 2)
 	{
-	    cout << "resolving '" << url.get() << "'\n";
+	    cout << "resolving '" << caseurl << "'\n";
 	    cout.flush();
 	}
 
 	url.normalize();
-	if (limitsn.FindFirst(url.get()) >= 0)
+	caseurl = url.get();
+	if (!config.Boolean("case_sensitive"))
+	    caseurl.lowercase();
+	if (limitsn.FindFirst(caseurl) >= 0)
 	{
 	    //
 	    // First add it to the document database
 	    //
-	    DocumentRef	*ref = docs[url.get()];
+	    DocumentRef	*ref = docs[caseurl];
 	    if (!ref)
 	    {
 		//
@@ -1182,7 +1191,7 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 		ref->DocID(docs.NextDocID());
 		ref->DocHopCount(currenthopcount);
 	    }
-	    ref->DocURL(url.get());
+	    ref->DocURL(caseurl);
 			
 	    //
 	    // Copy the descriptions of the old DocRef to this one
@@ -1208,10 +1217,10 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 	    //
 	    // Now put it in the list of URLs to still visit.
 	    //
-	    if (Need2Get(url.get()))
+	    if (Need2Get(caseurl))
 	    {
 		if (debug > 1)
-		    cout << "   pushing " << url.get() << endl;
+		    cout << "   pushing " << caseurl << endl;
 		Server	*server = (Server *) servers[url.signature()];
 		if (!server)
 		{
@@ -1221,9 +1230,9 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 		    server = new Server(url.host(), url.port());
 		    servers.Add(url.signature(), server);
 		}
-		server->push(url.get(), ref->DocHopCount(), base->get());
+		server->push(caseurl, ref->DocHopCount(), base->get());
 
-		String	temp = url.get();
+		String	temp = caseurl;
 		visited.Add(temp, 0);
 	    }
 
