@@ -1,3 +1,20 @@
+Mon Jan 11 22:48:17 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htmerge/db.cc: Fixed thinko with setting the docIDs of new words
+	in the destination wordlist.
+
+Mon Jan 11 02:42:51 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htsearch/htsearch.cc (setupWords): Do not skip words if
+	"boolean" search.
+
+Mon Jan 11 00:42:51 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htdoc/hts_method.html: Add explanation of operator "not".
+
+	* installdir/syntax.html: Added examples of correct logical
+	expressions.
+
 Mon Jan 11 00:23:58 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/attrs.html(search_algorithm): Added prefix and substring
@@ -5,7 +22,7 @@ Mon Jan 11 00:23:58 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/THANKS.html: Update to be more accurate as far as recent
 	contributions.
-	
+
 Sun Jan 10 00:06:59 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Document.cc(readHeader): Added check for header status
