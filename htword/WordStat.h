@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordStat.h,v 1.1 1999/10/05 16:03:31 loic Exp $
+// $Id: WordStat.h,v 1.2 1999/10/05 16:16:09 loic Exp $
 //
 #ifndef _WordStat_h_
 #define _WordStat_h_
@@ -24,8 +24,8 @@ class WordStat : public WordReference
   // Construction/Destruction
   //
   WordStat()	{ record.type = WORD_RECORD_STATS; }
-  WordStat(const String& key, const String& record) : WordReference(key, record) {
-    WordStat::record.type = WORD_RECORD_STATS;
+  WordStat(const String& key_arg, const String& record_arg) : WordReference(key_arg, record_arg) {
+    record.type = WORD_RECORD_STATS;
   }
   WordStat(const String& word) {
     Clear();

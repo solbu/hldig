@@ -19,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.h,v 1.2 1999/10/05 16:03:31 loic Exp $
+// $Id: WordDB.h,v 1.3 1999/10/05 16:16:09 loic Exp $
 //
 
 #ifndef _WordDB_h_
@@ -136,7 +136,7 @@ class WordDB {
   //
   // String arguments
   //
-  int Put(DbTxn *txnid, const String& key, const String& data, int flags) {
+  int Put(DbTxn *, const String& key, const String& data, int flags) {
     Dbt rkey((void*)key.get(), (size_t)key.length());
     Dbt rdata((void*)data.get(), (size_t)data.length());
     if((errno = db->put(0, &rkey, &rdata, flags)) != 0) {
@@ -145,7 +145,7 @@ class WordDB {
     return errno;
   }
 
-  int Get(DbTxn *txnid, String& key, String& data, int flags) const {
+  int Get(DbTxn *, String& key, String& data, int flags) const {
     Dbt rkey((void*)key.get(), (u_int32_t)key.length());
     Dbt rdata((void*)data.get(), (u_int32_t)data.length());
 
@@ -163,7 +163,7 @@ class WordDB {
     return errno;
   }
 
-  int Del(DbTxn *txnid, const String& key) {
+  int Del(DbTxn *, const String& key) {
     Dbt rkey((void*)key.get(), (u_int32_t)key.length());
 
     if((errno = db->del(0, &rkey, 0)) != 0) {
