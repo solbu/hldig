@@ -6,6 +6,9 @@
 // AWS	10/13/93	Fixed the constructors and operator = routines so that a NULL can be passed
 //
 // $Log: String.cc,v $
+// Revision 1.12  1999/01/06 15:31:25  ghutchis
+// Add missing [] to delete.
+//
 // Revision 1.11  1998/12/19 14:39:41  bergolth
 // Added StringList::Join and fixed URL::removeIndex.
 //
@@ -48,7 +51,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.11 1998/12/19 14:39:41 bergolth Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.12 1999/01/06 15:31:25 ghutchis Exp $";
 #endif
 
 
@@ -569,7 +572,7 @@ void String::allocate_space(int len)
     if (Data)
     {
 	if (len > Allocated)
-	    delete Data;
+	    delete [] Data;
 	else
 	    return;		// No need to allocate space.
     }

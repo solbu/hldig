@@ -1,3 +1,7 @@
+Wed Jan  6 14:52:11 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htlib/String.cc (allocate_space): Add missing [] to delete.
+
 Wed Jan  6 05:53:02 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htcommon/DocumentRef.cc(AddDescription): Do not add non-word
