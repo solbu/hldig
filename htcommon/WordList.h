@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.7 1999/09/10 11:45:29 loic Exp $
+// $Id: WordList.h,v 1.8 1999/09/10 14:55:44 loic Exp $
 //
 //
 #ifndef _WordList_h_
@@ -47,7 +47,8 @@ public:
     // Set some operating parameters
     //
     void		BadWordFile(char *filename);
-    void		DocumentID(int id)		{docID = id;}
+    int			DocumentID(int id)		{ int tmp = docID; docID = id; return tmp; }
+    int			DocumentID()			{ return docID; }
 
     //
     // Update/add a word

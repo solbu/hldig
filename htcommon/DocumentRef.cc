@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.cc,v 1.40 1999/09/08 17:10:40 loic Exp $
+// $Id: DocumentRef.cc,v 1.41 1999/09/10 14:55:44 loic Exp $
 //
 
 #include "DocumentRef.h"
@@ -444,7 +444,7 @@ void DocumentRef::AddDescription(char *d, WordList &words)
     // This also ensures we keep the proper weight on descriptions 
     // that occur many times
 
-    words.DocumentID(docID);
+    int old_docID = words.DocumentID(docID);
     
     // Parse words.
     char         *p                   = desc;
@@ -471,7 +471,9 @@ void DocumentRef::AddDescription(char *d, WordList &words)
         p++;
     }
 
-    // And let's flush the words!
+    words.DocumentID(old_docID);
+
+    // And let's flush the words! (nice comment hu :-)
     words.Flush();
     
     // Now are we at the max_description limit?

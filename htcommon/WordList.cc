@@ -16,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.28 1999/09/10 13:24:15 loic Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.29 1999/09/10 14:55:44 loic Exp $";
 #endif
 
 #include "WordList.h"
@@ -81,9 +81,9 @@ WordList::~WordList()
 // (String word, unsigned int location, unsigned int anchor_number,
 //  unsigned long int flags)
 //
-void WordList::Word (String word, unsigned int location, 
-		     unsigned int anchor_number,
-		     unsigned int flags)
+void WordList::Word(String word, unsigned int location, 
+		    unsigned int anchor_number,
+		    unsigned int flags)
 {
     // Why should we add empty words?
     if (word.length() == 0)
