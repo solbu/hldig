@@ -3,13 +3,23 @@
 #
 # rundig
 #
-# $Id: rundig,v 1.5 1999/01/07 03:17:15 ghutchis Exp $
+# $Id: rundig,v 1.6 1999/01/29 02:52:48 ghutchis Exp $
 #
 # This is a sample script to create a search database for ht://Dig.
 #
-if [ "$1" = "-v" ]; then
-    verbose=-v
-fi
+DBDIR=@DATABASE_DIR@
+COMMONDIR=@COMMON_DIR@
+BINDIR=@BIN_DIR@
+
+stats= opts= alt=
+for arg
+do
+    case "$arg" in
+    -a)  alt="$arg" ;;
+    -s)  stats="$arg" ;;
+    *)   opts="$opts $arg" ;;	# e.g. -v or -c config
+    esac
+done
 
 #
 # Set the TMPDIR variable if you want htmerge to put files in a location
@@ -18,25 +28,36 @@ fi
 # on some systems, /tmp is a memory mapped filesystem that takes away
 # from virtual memory.
 #
-TMPDIR=@DATABASE_DIR@
+TMPDIR=$DBDIR
 export TMPDIR
 
-@BIN_DIR@/htdig -i $verbose -s
-@BIN_DIR@/htmerge $verbose -s
-@BIN_DIR@/htnotify $verbose
+$BINDIR/htdig -i $opts $stats $alt
+$BINDIR/htmerge $opts $stats $alt
+case "$alt" in
+-a)
+  ( cd $DBDIR && test -f db.docdb.work &&
+    for f in *.work
+    do
+        mv -f $f `basename $f .work`
+    done ) ;;
+esac
+$BINDIR/htnotify $opts
+$BINDIR/htfuzzy $opts soundex metaphone
 
 #
 # Create the endings and synonym databases if they don't exist
-# or if they're older than the files they're generated from!
+# or if they're older than the files they're generated from.
+# These databases are semi-static, so even if pages change,
+# these databases will not need to be rebuilt.
 #
-
-# Do they exist?
-if [ ! -f @COMMON_DIR@/word2root.db ]
+if [ "`ls -t $COMMONDIR/english.0 $COMMONDIR/word2root.db 2>/dev/null`" = \
+	"$COMMONDIR/english.0" ]
 then
-    @BIN_DIR@/htfuzzy $verbose endings
+    $BINDIR/htfuzzy $opts endings
 fi
 
-if [ ! -f @COMMON_DIR@/synonyms.db ]
+if [ "`ls -t $COMMONDIR/synonyms $COMMONDIR/synonyms.db 2>/dev/null`" = \
+	"$COMMONDIR/synonyms" ]
 then
-    @BIN_DIR@/htfuzzy $verbose synonyms
+    $BINDIR/htfuzzy $opts synonyms
 fi
