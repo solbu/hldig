@@ -11,7 +11,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htmerge.cc,v 1.1.2.2 2000/06/21 01:27:52 ghutchis Exp $
+// $Id: htmerge.cc,v 1.1.2.3 2000/08/09 18:06:52 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -284,7 +284,7 @@ mergeDB()
 	    // Oh well, we knew this would happen. Let's get the duplicate
 	    // And we'll only use the most recent date.
 
-	    if ( old_ref->DocTime() > ref->DocTime() )
+	    if ( old_ref->DocTime() >= ref->DocTime() )
 	      {
 		// Cool, the ref we're merging is too old, just ignore it
 		char        str[20];
