@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVectorGenericCode.h,v 1.1.2.1 1999/12/09 10:50:01 bosc Exp $
+// $Id: HtVectorGenericCode.h,v 1.1.2.2 2000/01/03 11:49:09 bosc Exp $
 //
 
 
@@ -147,16 +147,16 @@ GType &HtVectorGType::Get_First()
 //
 int HtVectorGType::Index(const GType &obj)
 {
-    int			index = 0;
+    int			index0 = 0;
 
-    while (index < element_count && data[index] != obj)
+    while (index0 < element_count && data[index0] != obj)
     {
-	index++;
+	index0++;
     }
-    if (index >= element_count)
+    if (index0 >= element_count)
 	return -1;
     else
-	return index;
+	return index0;
 }
 
 

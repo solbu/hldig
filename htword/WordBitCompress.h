@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.h,v 1.1.2.5 2000/01/03 10:04:47 bosc Exp $
+// $Id: WordBitCompress.h,v 1.1.2.6 2000/01/03 11:48:36 bosc Exp $
 //
 
 #ifndef   _WordBitCompress_h
@@ -65,7 +65,7 @@ num_bits(unsigned int maxval )
 
 
 // function declarations
-char *label_str(char *s,int n);
+char *label_str(const char *s,int n);
 void  show_bits(int v,int n=16);
 
 //  unsigned short max_v(unsigned short *vals,int n);
@@ -115,7 +115,7 @@ public:
 	    buff.push_back(0);
 	}
     }	
-    inline void put(unsigned int v,char *tag)
+    inline void put(unsigned int v,const char *tag)
     {
 	if(!freezeon){add_tag(tag);}
 	put(v);
@@ -134,28 +134,28 @@ public:
     }
 
     // get/put an integer using n bits
-    void         put(unsigned int v,int n,char *tag="NOTAG");
-    unsigned int get(               int n,char *tag=NULL);
+    void         put(unsigned int v,int n,const char *tag="NOTAG");
+    unsigned int get(               int n,const char *tag=NULL);
 
     // get/put n bits of data stored in vals
-    void put_zone(byte *vals,int n,char *tag);
-    void get_zone(byte *vals,int n,char *tag);
+    void put_zone(byte *vals,int n,const char *tag);
+    void get_zone(byte *vals,int n,const char *tag);
 
     // 
-    inline void add_tag(char *tag)
+    inline void add_tag(const char *tag)
     {
 	if(!use_tags || !tag || freezeon){return;}
 	add_tag1(tag);
     }
-    void add_tag1(char *tag);
-    inline int  check_tag(char *tag,int pos=-1)
+    void add_tag1(const char *tag);
+    inline int  check_tag(const char *tag,int pos=-1)
     {
 	if(!use_tags || !tag){return OK;}	
 	return(check_tag1(tag,pos));
     }
-    inline int  check_tag1(char *tag,int pos);
+    inline int  check_tag1(const char *tag,int pos);
     void set_use_tags(){use_tags=1;}
-    int  find_tag(char *tag);
+    int  find_tag(const char *tag);
     int  find_tag(int pos,int posaftertag=1);
 
     void show_bits(int a,int n);
@@ -179,9 +179,9 @@ public:
 	int i;
 	for(i=0;i<tags.size();i++){free(tags[i]);}
     }
-    BitStream(int size)
+    BitStream(int size0)
     {
-	buff.reserve((size+7)/8);
+	buff.reserve((size0+7)/8);
 	init();
     }
     BitStream()
@@ -218,12 +218,12 @@ class Compressor : public BitStream
 public:
     int verbose;
     // compress/decompress an array of unsigned ints (choosing best method)
-    int put_vals(unsigned int *vals,int n,char *tag);
-    int get_vals(unsigned int **pres,char *tag="BADTAG!");
+    int put_vals(unsigned int *vals,int n,const char *tag);
+    int get_vals(unsigned int **pres,const char *tag="BADTAG!");
 
     // compress/decompress an array of bytes (very simple)
-    int put_fixedbitl(byte *vals,int n,char *tag);    
-    int get_fixedbitl(byte **pres,char *tag="BADTAG!");
+    int put_fixedbitl(byte *vals,int n,const char *tag);    
+    int get_fixedbitl(byte **pres,const char *tag="BADTAG!");
 
     // compress/decompress an array of unsigned ints (very simple)
     void get_fixedbitl(unsigned int *res,int n);
@@ -237,7 +237,7 @@ public:
 	{
 	    verbose=0;
 	}
-    Compressor(int size):BitStream(size)
+    Compressor(int size0):BitStream(size0)
 	{
 	    verbose=0;
 	}

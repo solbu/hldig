@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.cc,v 1.9.2.2 1999/12/21 08:03:16 toivo Exp $
+// $Id: StringList.cc,v 1.9.2.3 2000/01/03 11:49:09 bosc Exp $
 //
 
 #include "StringList.h"
@@ -54,7 +54,7 @@ void StringList::SRelease()
 //*****************************************************************************
 // int StringList::Create(const char *str, char *sep)
 //
-int StringList::Create(const char *str, char *sep)
+int StringList::Create(const char *str, const char *sep)
 {
     String	word;
 

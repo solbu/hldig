@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordMonitor.cc,v 1.1.2.1 2000/01/03 10:02:06 bosc Exp $
+// $Id: WordMonitor.cc,v 1.1.2.2 2000/01/03 11:48:36 bosc Exp $
 //
 #include<stdlib.h>
 
@@ -166,7 +166,7 @@ WordMonitor::process(double rperiod)
 	double dbc_diff_cmpr_time      = cmpr->bm_cmpr_time      - dbc_last_cmpr_time     ;
 	int    dbc_diff_ucmpr_count    = cmpr->bm_ucmpr_count    - dbc_last_ucmpr_count   ;
 	double dbc_diff_ucmpr_time     = cmpr->bm_ucmpr_time     - dbc_last_ucmpr_time    ;
-	int    dbc_diff_mxtreelevel    = cmpr->bm_mxtreelevel    - dbc_last_mxtreelevel   ;
+//  	int    dbc_diff_mxtreelevel    = cmpr->bm_mxtreelevel    - dbc_last_mxtreelevel   ;
 	int    dbc_diff_nonleave_count = cmpr->bm_nonleave_count - dbc_last_nonleave_count;
 	double dbc_diff_cmpr_ratio     = cmpr->bm_cmpr_ratio      - dbc_last_cmpr_ratio         ;
 	int    dbc_diff_cmpr_overflow  = cmpr->bm_cmpr_overflow   - dbc_last_cmpr_overflow      ;

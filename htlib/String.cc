@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.30.2.3 1999/12/28 17:20:37 vadim Exp $
+// $Id: String.cc,v 1.30.2.4 2000/01/03 11:49:09 bosc Exp $
 //
 
 
@@ -480,7 +480,7 @@ String &String::chop(char ch)
 }
 
 
-String &String::chop(char *str)
+String &String::chop(const char *str)
 {
 	while (Length > 0 && strchr(str, Data[Length - 1]))
 	    Length--;

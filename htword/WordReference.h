@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.h,v 1.3.2.4 1999/12/14 17:49:33 loic Exp $
+// $Id: WordReference.h,v 1.3.2.5 2000/01/03 11:48:36 bosc Exp $
 //
 #ifndef _WordReference_h_
 #define _WordReference_h_
@@ -30,9 +30,9 @@ class WordReference : public Object
   //
   WordReference()	{}
 #ifndef SWIG
-  WordReference(const String& key, const String& record) {
+  WordReference(const String& key0, const String& record0) {
     Clear();
-    Unpack(key, record);
+    Unpack(key0, record0);
   }
   WordReference(const String& word) {
     Clear();

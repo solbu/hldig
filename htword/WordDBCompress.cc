@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.cc,v 1.1.2.12 2000/01/03 10:04:47 bosc Exp $
+// $Id: WordDBCompress.cc,v 1.1.2.13 2000/01/03 11:48:36 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -47,9 +47,9 @@ extern "C"
 
 // IMPORTANT: change these EVERY time you change something that affects the compression
 #define COMPRESS_VERSION 3
-static char *version_label[]={"INVALID_VERSION_0","INVALID_VERSION_1","INVALID_VERSION_2","14 Dec 1999",NULL};
+static const char *version_label[]={"INVALID_VERSION_0","INVALID_VERSION_1","INVALID_VERSION_2","14 Dec 1999",NULL};
 
-static char *
+static const char *
 get_version_label(int v)
 {
     if(COMPRESS_VERSION <0 || COMPRESS_VERSION>((sizeof(version_label)/sizeof(*version_label))-1))
@@ -747,7 +747,7 @@ WordDBPage::Uncompress_main(Compressor *pin)
     Compressor &in=*((Compressor *)pin);
     if(debug>0){in.set_use_tags();}
     int i,j;
-    unsigned int **rnums=new (unsigned int *)[nnums];
+    unsigned int **rnums=new unsigned int *[nnums];
     CHECK_MEM(rnums);
     int *rnum_sizes=new int[nnums];
     CHECK_MEM(rnum_sizes);
@@ -837,15 +837,15 @@ WordDBPage::Uncompress_header(Compressor &in)
     return OK;
 }
 void 
-WordDBPage::Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_sizes,int nnums,byte *rworddiffs,int nrworddiffs)
+WordDBPage::Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_sizes,int nnums0,byte *rworddiffs,int nrworddiffs)
 {
     int irwordiffs=0;
     int nfields=WordKey::nfields();
-    int *rnum_pos=new int[   nnums];// current index count
+    int *rnum_pos=new int[   nnums0];// current index count
     CHECK_MEM(rnum_pos);
 
     int ii,j;
-    for(j=0;j<nnums;j++){rnum_pos[j]=0;}
+    for(j=0;j<nnums0;j++){rnum_pos[j]=0;}
 
     int i0=0;
     if(type==P_IBTREE){i0=1;}// internal pages have particular first key
@@ -953,13 +953,13 @@ WordDBPage::Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_siz
 }
 
 void 
-WordDBPage::Uncompress_show_rebuild(unsigned int **rnums,int *rnum_sizes,int nnums,byte *rworddiffs,int nrworddiffs)
+WordDBPage::Uncompress_show_rebuild(unsigned int **rnums,int *rnum_sizes,int nnums0,byte *rworddiffs,int nrworddiffs)
 {
     int i,j;
     if(verbose)
     {
 	printf("WordDBPage::Uncompress_show_rebuild: rebuilt numerical fields\n");
-	for(j=0;j<nnums;j++)
+	for(j=0;j<nnums0;j++)
 	{
 	    printf("resfield %2d:",j);
 	    for(i=0;i<rnum_sizes[j];i++)
@@ -1099,7 +1099,7 @@ WordDBPage::Compress_main(Compressor &out)
 }
 
 void 
-WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int nnums,HtVector_byte &worddiffs)
+WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int nnums0,HtVector_byte &worddiffs)
 {
     WordDBKey pkey;
 
@@ -1180,18 +1180,18 @@ WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int nnums,HtV
 }
 
 void 
-WordDBPage::Compress_vals(Compressor &out,int *nums,int *nums_pos,int nnums)
+WordDBPage::Compress_vals(Compressor &out,int *nums,int *nums_pos,int nnums0)
 {
     int j;
-    for(j=0;j<nnums;j++)
+    for(j=0;j<nnums0;j++)
     {
-	int n=nums_pos[j];
+	int nv=nums_pos[j];
 	unsigned int *v=(unsigned int *)(nums+j*nk);
 	if(j==3 && verbose){out.verbose=2;}
 	int dud;
-	for(int i=0;i<n;i++){dud=v[i]>1;}// make purify error if v unintialized
+	for(int i=0;i<nv;i++){dud=v[i]>1;}// make purify error if v unintialized
 //bmt_START;
-	int size=out.put_vals(v,n,label_str("NumField",j));
+	int size=out.put_vals(v,nv,label_str("NumField",j));
 //bmt_END;
 	if(j==3 && verbose){out.verbose=0;}
 	if(verbose)printf("compressed field %2d : %3d values: %4d bits %8f bytes  : ended bit field pos:%6d\n",j,n,size,size/8.0,out.size());
@@ -1214,18 +1214,18 @@ WordDBPage::Compress_header(Compressor &out)
 }
 
 void 
-WordDBPage::Compress_show_extracted(int *nums,int *nums_pos,int nnums,HtVector_byte &worddiffs)
+WordDBPage::Compress_show_extracted(int *nums,int *nums_pos,int nnums0,HtVector_byte &worddiffs)
 {
     int i,j;
-    int *cnindexe2=new int[   nnums];
+    int *cnindexe2=new int[   nnums0];
     CHECK_MEM(cnindexe2);
-    for(j=0;j<nnums;j++){cnindexe2[j]=0;}
+    for(j=0;j<nnums0;j++){cnindexe2[j]=0;}
     int w=0;
     int mx=(nk>worddiffs.size() ? nk : worddiffs.size());
     for(i=0;i<mx;i++)
     {
 	printf("%3d: ",i);
-	for(j=0;j<nnums;j++)
+	for(j=0;j<nnums0;j++)
 	{
 	    int k=cnindexe2[j]++;
 	    int nbits=(j ? 16:4);// just to show the flags field...
@@ -1270,14 +1270,13 @@ WordDBPage::Compare(WordDBPage &other)
     if(other.pg->hf_offset  != pg->hf_offset    ){res++;printf("compare failed for  pg->hf_offset        \n");}    
     if(other.pg->level      != pg->level        ){res++;printf("compare failed for  pg->level            \n");}    
     if(other.pg->type       != pg->type         ){res++;printf("compare failed for  pg->type             \n");}    
-    int i;
+    int i,k;
     // double check header
     if(memcmp((void *)pg,(void *)other.pg,sizeof(PAGE)-sizeof(db_indx_t)))
     {
 	res++;
 	printf("compare failed in some unknown place in header:\n");
-	unsigned int i;
-	for(i=0;i<sizeof(PAGE)-sizeof(db_indx_t);i++)
+	for(i=0;i<(int)(sizeof(PAGE)-sizeof(db_indx_t));i++)
 	{
 	    printf("%3d: %3x %3x\n",i,((byte *)pg)[i],((byte *)other.pg)[i]);
 	}
@@ -1314,14 +1313,14 @@ WordDBPage::Compare(WordDBPage &other)
 	    if(memcmp(key(i)->data,other.key(i)->data,key(i)->len))
 	    {
 		printf("compare :key(%2d)\n",i);
-		for(int k=0;k<key(i)->len;k++)
+		for(k=0;k<key(i)->len;k++)
 		{
 		    int c=key(i)->data[k];
 		    if(isalnum(c)){printf(" %c ",c);}
 		    else{printf("%02x ",c);}
 		}
 		printf("\n");
-		for(int k=0;k<key(i)->len;k++)
+		for(k=0;k<key(i)->len;k++)
 		{
 		    int c=other.key(i)->data[k];
 		    if(isalnum(c)){printf(" %c ",c);}
@@ -1344,12 +1343,12 @@ WordDBPage::Compare(WordDBPage &other)
 	    if(memcmp(data(i)->data,other.data(i)->data,data(i)->len))
 	    {
 		printf("compare :data(%2d)\n",i);
-		for(int k=0;k<data(i)->len;k++)
+		for(k=0;k<data(i)->len;k++)
 		{
 		    printf("%02x ",data(i)->data[k]);
 		}
 		printf("\n");
-		for(int k=0;k<data(i)->len;k++)
+		for(k=0;k<data(i)->len;k++)
 		{
 		    printf("%02x ",other.data(i)->data[k]);
 		}
@@ -1376,12 +1375,12 @@ WordDBPage::Compare(WordDBPage &other)
 	    if(memcmp(btikey(i)->data,other.btikey(i)->data,btikey(i)->len))
 	    {
 		printf("compare :btikey(%2d)\n",i);
-		for(int k=0;k<btikey(i)->len;k++)
+		for(k=0;k<btikey(i)->len;k++)
 		{
 		    printf("%02x ",btikey(i)->data[k]);
 		}
 		printf("\n");
-		for(int k=0;k<btikey(i)->len;k++)
+		for(k=0;k<btikey(i)->len;k++)
 		{
 		    printf("%02x ",other.btikey(i)->data[k]);
 		}
@@ -1456,26 +1455,26 @@ WordDBPage::show(int redo)
 	  }
 	  if(!(i%2))
 	  {
-	      WordDBKey key(entry(i));
+	      WordDBKey tkey(entry(i));
 	      int fieldchanged[10];
 	      char *wordchange=NULL;
 	      printf("\"");
-	      printf("%s",(char *)key.GetWord());
+	      printf("%s",(char *)tkey.GetWord());
 	      printf("\"");
-	      for(j=0;j<20-key.GetWord().length();j++){printf(" ");}
+	      for(j=0;j<20-tkey.GetWord().length();j++){printf(" ");}
 	      printf("|");
-	      for(j=1;j<key.nfields();j++){printf("%4x ",key.GetInSortOrder(j));}
+	      for(j=1;j<tkey.nfields();j++){printf("%4x ",tkey.GetInSortOrder(j));}
 	      printf("|");
 	  
-	      for(j=1;j<key.nfields();j++)
+	      for(j=1;j<tkey.nfields();j++)
 	      {
-		  int diff=key.GetInSortOrder(j)-prev.GetInSortOrder(j);
-		  if(diff<0){diff=key.GetInSortOrder(j);}
+		  int diff=tkey.GetInSortOrder(j)-prev.GetInSortOrder(j);
+		  if(diff<0){diff=tkey.GetInSortOrder(j);}
 		  printf("%6d ",diff);
 		  fieldchanged[j]=diff;
 	      }
 
-	      String &word=key.GetWord();
+	      String &word=tkey.GetWord();
 	      String &pword=prev.GetWord();
 	      if(word==pword){printf("  00   ===");fieldchanged[0]=0;}
 	      else
@@ -1486,15 +1485,15 @@ WordDBPage::show(int redo)
 		  printf("  %2d %s",fd,((char *)word)+fd);
 	      }
 
-	      int keycl=key.nfields();
-	      for(j=1;j<key.nfields();j++)
+	      int keycl=tkey.nfields();
+	      for(j=1;j<tkey.nfields();j++)
 	      {
 		  if(fieldchanged[j]){keycl+=WordKeyInfo::Get()->sort[j].bits;}
 	      }
 	      if(fieldchanged[0]){keycl+=3;keycl+=8*strlen(wordchange);}
 	      printf("  ::%2d  %f",keycl,keycl/8.0);
 	      pagecl+=keycl;
-	      prev=key;
+	      prev=tkey;
 	  }
 	  else
 	  {
@@ -1510,18 +1509,18 @@ WordDBPage::show(int redo)
   else
   if(1)
   {
-      int n=0;
+      int nn=0;
       // dump hex
       for(i=0;;i++)
       {
-	  printf("%5d: ",n);
+	  printf("%5d: ",nn);
 	  for(j=0;j<20;j++)
 	  {
-	      printf("%2x ",((byte *)pg)[n++]);
-	      if(n>=pgsz){break;}
+	      printf("%2x ",((byte *)pg)[nn++]);
+	      if(nn>=pgsz){break;}
 	  }
 	  printf("\n");
-	  if(n>=pgsz){break;}
+	  if(nn>=pgsz){break;}
       }
   }
   if(pg->type == 3)
@@ -1530,11 +1529,11 @@ WordDBPage::show(int redo)
       {
 	  BINTERNAL *bie=GET_BINTERNAL(pg,i);
 	  printf("%3d: off:%4d:len:%3d :type:%3d :pgno:%4d: nrecs:%4d:: ",i,pg->inp[i],bie->len,bie->type,bie->pgno,bie->nrecs);
-	  WordDBKey key(bie);
-	  for(j=0;j<bie->len-key.GetWord().length();j++){printf("%2x ",bie->data[j]);}
+	  WordDBKey tkey(bie);
+	  for(j=0;j<bie->len-tkey.GetWord().length();j++){printf("%2x ",bie->data[j]);}
 	  printf(" : ");
-	  for(j=1;j<key.nfields();j++){printf("%5d ",key.GetInSortOrder(j));}
-	  printf("\"%s\"\n",(char *)key.GetWord());
+	  for(j=1;j<tkey.nfields();j++){printf("%5d ",tkey.GetInSortOrder(j));}
+	  printf("\"%s\"\n",(char *)tkey.GetWord());
       }
   }
 

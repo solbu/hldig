@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.9 2000/01/03 10:04:48 bosc Exp $
+// $Id: WordList.h,v 1.5.2.10 2000/01/03 11:48:36 bosc Exp $
 //
 
 #ifndef _WordList_h_
@@ -260,7 +260,7 @@ protected:
     // Retrieve WordReferences from the database. 
     // Backend of WordRefs, operator[], Prefix...
     //
-    List		*WordList::Collect (const WordReference& word);
+    List		*Collect (const WordReference& word);
 
     const WordType		wtype;
     const Configuration&	config;

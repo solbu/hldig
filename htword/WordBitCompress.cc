@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.cc,v 1.1.2.7 2000/01/03 10:04:47 bosc Exp $
+// $Id: WordBitCompress.cc,v 1.1.2.8 2000/01/03 11:48:36 bosc Exp $
 //
 
 
@@ -43,7 +43,7 @@
 
 // return a temporary string that merges a name and a number
 char *
-label_str(char *s,int n)
+label_str(const char *s,int n)
 {
     static char buff[1000];
     sprintf(buff,"%s%d",s,n);
@@ -78,7 +78,7 @@ show_bits(int v,int n/*=16*/)
 unsigned int *
 duplicate(unsigned int *v,int n)
 {
-    unsigned int *res=new (unsigned int)[n];
+    unsigned int *res=new unsigned int[n];
     CHECK_MEM(res);
     memcpy((void *)res,(void *)v,n*sizeof(unsigned int));
     return(res);
@@ -259,7 +259,7 @@ VlengthCoder::make_lboundaries()
     }
 }
 
-VlengthCoder::VlengthCoder(BitStream &nbs,int nverbose=0):bs(nbs)
+VlengthCoder::VlengthCoder(BitStream &nbs,int nverbose/*=0*/):bs(nbs)
 {
     verbose=nverbose;
     nbits=0;
@@ -268,7 +268,7 @@ VlengthCoder::VlengthCoder(BitStream &nbs,int nverbose=0):bs(nbs)
     intervals=NULL;
 }
 
-VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose=0):bs(nbs)
+VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose/*=0*/):bs(nbs)
 {
     verbose=nverbose;
     unsigned int *sorted=duplicate(vals,n);
@@ -315,20 +315,20 @@ VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose=
 // **************************************************
 
 void 
-BitStream::put_zone(byte *vals,int n,char *tag)
+BitStream::put_zone(byte *vals,int n,const char *tag)
 {
     add_tag(tag);
     for(int i=0;i<(n+7)/8;i++){put(vals[i],TMin(8,n-8*i),NULL);}
 }
 void 
-BitStream::get_zone(byte *vals,int n,char *tag)
+BitStream::get_zone(byte *vals,int n,const char *tag)
 {
     check_tag(tag);
     for(int i=0;i<(n+7)/8;i++){vals[i]=get(TMin(8,n-8*i));}
 }
 
 void 
-BitStream::put(unsigned int v,int n,char *tag/*="NOTAG"*/)
+BitStream::put(unsigned int v,int n,const char *tag/*="NOTAG"*/)
 {
     // SPEED CRITICAL SECTION
     if(freezeon){bitpos+=n;return;}
@@ -402,7 +402,7 @@ BitStream::put(unsigned int v,int n,char *tag/*="NOTAG"*/)
 
 
 unsigned int 
-BitStream::get(int n,char *tag/*=NULL*/)
+BitStream::get(int n,const char *tag/*=NULL*/)
 {
     // SPEED CRITICAL SECTION
     if(check_tag(tag)==NOTOK){errr("BitStream::get(int) check_tag failed");}    
@@ -463,7 +463,7 @@ BitStream::get(int n,char *tag/*=NULL*/)
 }
 #ifdef NOTDEF
 unsigned int 
-BitStream::get(int n,char *tag/*=NULL*/)
+BitStream::get(int n,const char *tag/*=NULL*/)
 {	
     if(check_tag(tag)==NOTOK){errr("BitStream::get(int) check_tag failed");}
     unsigned int res=0;
@@ -484,15 +484,15 @@ BitStream::freeze()
 int 
 BitStream::unfreeze()
 {
-    int size=bitpos;
+    int size0=bitpos;
     bitpos=freeze_stack.back();
     freeze_stack.pop_back();
-    size-=bitpos;
+    size0-=bitpos;
     if(freeze_stack.size()==0){freezeon=0;}
-    return(size);
+    return(size0);
 }
 void 
-BitStream::add_tag1(char *tag)
+BitStream::add_tag1(const char *tag)
 {
     if(!use_tags){return;}
     if(freezeon){return;}
@@ -502,7 +502,7 @@ BitStream::add_tag1(char *tag)
 }
 
 int 
-BitStream::check_tag1(char *tag,int pos/*=-1*/)
+BitStream::check_tag1(const char *tag,int pos/*=-1*/)
 {
     if(!use_tags){return OK;}
     if(!tag){return OK;}
@@ -534,7 +534,7 @@ BitStream::check_tag1(char *tag,int pos/*=-1*/)
 }
 
 int 
-BitStream::find_tag(char *tag)
+BitStream::find_tag(const char *tag)
 {
     int i;
     for(i=0;i<tags.size() && strcmp(tag,tags[i]);i++);
@@ -615,7 +615,7 @@ BitStream::set_data(const byte *nbuff,int nbits)
 
 
 int 
-Compressor::put_vals(unsigned int *vals,int n,char *tag)
+Compressor::put_vals(unsigned int *vals,int n,const char *tag)
 {
     int cpos=bitpos;
     add_tag(tag);
@@ -649,7 +649,7 @@ Compressor::put_vals(unsigned int *vals,int n,char *tag)
 }
 
 int 
-Compressor::get_vals(unsigned int **pres,char *tag="BADTAG!")
+Compressor::get_vals(unsigned int **pres,const char *tag/*="BADTAG!"*/)
 {
     if(check_tag(tag)==NOTOK){errr("Compressor::get_vals(unsigned int): check_tag failed");}
     int n=get(NBITS_NVALS);
@@ -680,7 +680,7 @@ Compressor::get_vals(unsigned int **pres,char *tag="BADTAG!")
 
 
 int 
-Compressor::put_fixedbitl(byte *vals,int n,char *tag)
+Compressor::put_fixedbitl(byte *vals,int n,const char *tag)
 {
     int cpos=bitpos;
     int i,j;
@@ -732,7 +732,7 @@ Compressor::get_fixedbitl(unsigned int *res,int n)
     }
 }
 int 
-Compressor::get_fixedbitl(byte **pres,char *tag/*="BADTAG!"*/)
+Compressor::get_fixedbitl(byte **pres,const char *tag/*="BADTAG!"*/)
 {
     if(check_tag(tag)==NOTOK){errr("Compressor::get_fixedbitl(byte *): check_tag failed");}
     int n=get(NBITS_NVALS);

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3.2.9 2000/01/03 10:04:48 bosc Exp $
+// $Id: WordKey.cc,v 1.3.2.10 2000/01/03 11:48:36 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -48,19 +48,19 @@
 //
 int WordKey::Equal(const WordKey& other) const
 {
-  const WordKeyInfo& info = *WordKey::info();
+  const WordKeyInfo& info0 = *WordKey::info();
   //
   // Walk the fields in sorting order. As soon as one of them
   // does not compare equal, return.
   //
-  for(int j = 0; j < info.nfields; j++) 
+  for(int j = 0; j < info0.nfields; j++) 
   {
     //
     // Only compare fields that are set in both key
     //
     if(!IsDefinedInSortOrder(j) || !other.IsDefinedInSortOrder(j)) continue;
 
-    switch(info.sort[j].type) {
+    switch(info0.sort[j].type) {
     case WORD_ISA_String:
       if(!IsDefinedWordSuffix()) {
 //  	  cout << "COMPARING UNCOMPLETE WORDS IN WORDKEY" << endl;
@@ -86,9 +86,9 @@ int WordKey::Equal(const WordKey& other) const
 inline int 
 WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
 {
-  const WordKeyInfo& info = *WordKey::info();
+  const WordKeyInfo& info0 = *WordKey::info();
 
-  if(a_length < info.minimum_length || b_length < info.minimum_length) {
+  if(a_length < info0.minimum_length || b_length < info0.minimum_length) {
       cerr << "WordKey::Compare: key length for a or b < info.minimum_length\n";
       return NOTOK;
   }
@@ -100,48 +100,49 @@ WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
 
 
   //  first field: string
-  const int byte_offset=info.sort[0].bytes_offset;
-  const int p1_length = a_length - byte_offset;
-  const int p2_length = b_length - byte_offset;
-  int len = p1_length > p2_length ? p2_length : p1_length;
-  const unsigned char* p1 = (unsigned char *)a + byte_offset;
-  const unsigned char* p2 = (unsigned char *)b + byte_offset;
-
-  for (;len--; ++p1, ++p2)
   {
-      if (*p1 != *p2)
+      const int byte_offset=info0.sort[0].bytes_offset;
+      const int p1_length = a_length - byte_offset;
+      const int p2_length = b_length - byte_offset;
+      int len = p1_length > p2_length ? p2_length : p1_length;
+      const unsigned char* p1 = (unsigned char *)a + byte_offset;
+      const unsigned char* p2 = (unsigned char *)b + byte_offset;
+
+      for (;len--; ++p1, ++p2)
       {
-	  return (info.sort[0].direction == WORD_SORT_DESCENDING ?
-		  ((int)*p2 - (int)*p1) :
-		  ((int)*p1 - (int)*p2)    );
+	  if (*p1 != *p2)
+	  {
+	      return (info0.sort[0].direction == WORD_SORT_DESCENDING ?
+		      ((int)*p2 - (int)*p1) :
+		      ((int)*p1 - (int)*p2)    );
+	  }
+      }
+      if(p1_length != p2_length)
+      {
+	  return (info0.sort[0].direction == WORD_SORT_DESCENDING ?
+		  p2_length - p1_length :
+		  p1_length - p2_length );
       }
   }
-  if(p1_length != p2_length)
-  {
-      return (info.sort[0].direction == WORD_SORT_DESCENDING ?
-	      p2_length - p1_length :
-	      p1_length - p2_length );
-  }
-
   //  following fields: numerical
-  for(int j = 1; j < info.nfields; j++) 
+  for(int j = 1; j < info0.nfields; j++) 
   {
 	WordKeyNum p1;
 	WordKeyNum p2;
-	WordKey::UnpackNumber((unsigned char *)&a[info.sort[j].bytes_offset],
-			      info.sort[j].bytesize,
+	WordKey::UnpackNumber((unsigned char *)&a[info0.sort[j].bytes_offset],
+			      info0.sort[j].bytesize,
 			      p1,
-			      info.sort[j].lowbits,
-			      info.sort[j].bits);
+			      info0.sort[j].lowbits,
+			      info0.sort[j].bits);
 	
-	WordKey::UnpackNumber((unsigned char *)&b[info.sort[j].bytes_offset],
-			      info.sort[j].bytesize,
+	WordKey::UnpackNumber((unsigned char *)&b[info0.sort[j].bytes_offset],
+			      info0.sort[j].bytesize,
 			      p2,
-			      info.sort[j].lowbits,
-			      info.sort[j].bits);
+			      info0.sort[j].lowbits,
+			      info0.sort[j].bits);
 	if(p1 != p2)
 	{
-	    return (info.sort[j].direction == WORD_SORT_DESCENDING ?
+	    return (info0.sort[j].direction == WORD_SORT_DESCENDING ?
 		    p2 - p1 :
 		    p1 - p2   );
 	}
@@ -197,7 +198,7 @@ WordKey::PackEqual(const WordKey& other) const
 int 
 WordKey::SetToFollowingInSortOrder(int position)
 {
-    const WordKeyInfo& info = *WordKey::info();
+    const WordKeyInfo& info0 = *WordKey::info();
     if(position<0){position=nfields();}
     int i;
 
@@ -205,10 +206,10 @@ WordKey::SetToFollowingInSortOrder(int position)
     
     if(position>1)
     {// increment if numerical field
-	int bits=info.sort[position].bits;
+	int bits=info0.sort[position].bits;
 	int f=GetInSortOrder(position-1);
 	// check which direction we're going
-	if(info.sort[position].direction == WORD_SORT_ASCENDING)
+	if(info0.sort[position].direction == WORD_SORT_ASCENDING)
 	{
 	    if( bits < 32){if((f+1) >= 1<<bits){return NOTOK;}}// overflow
             //TODO: add bits>=32 for overflow case....
@@ -242,7 +243,7 @@ WordKey::SetToFollowingInSortOrder(int position)
 int 
 WordKey::Prefix() const
 {
-  const WordKeyInfo& info = *WordKey::info();
+  const WordKeyInfo& info0 = *WordKey::info();
   //
   // If all fields are set, it can be considered as a prefix although
   // it really is a fully qualified key.
@@ -258,7 +259,7 @@ WordKey::Prefix() const
   //
   // Walk the fields in sorting order. 
   //
-  for(int j = 1; j < info.nfields; j++) 
+  for(int j = 1; j < info0.nfields; j++) 
   {
     //
     // Fields set, then fields unset then field set -> not a prefix
@@ -301,7 +302,7 @@ WordKey::FirstSkipField() const
 int 
 WordKey::PrefixOnly()
 {
-  const WordKeyInfo& info = *WordKey::info();
+  const WordKeyInfo& info0 = *WordKey::info();
   //
   // If all fields are set, the whole key is the prefix.
   //
@@ -322,7 +323,7 @@ WordKey::PrefixOnly()
   //
   if(!IsDefinedWordSuffix()){found_unset=1;}
 
-  for(int j = 1; j < info.nfields; j++) 
+  for(int j = 1; j < info0.nfields; j++) 
   {
     //
     // Unset all fields after the first unset field
@@ -343,24 +344,24 @@ WordKey::PrefixOnly()
 int 
 WordKey::Unpack(const char* string,int length)
 {
-  const WordKeyInfo& info = *WordKey::info();
+  const WordKeyInfo& info0 = *WordKey::info();
 
-  if(length < info.minimum_length) {
+  if(length < info0.minimum_length) {
     cerr << "WordKey::Unpack: key record length < info.minimum_length\n";
     return NOTOK;
   }
 
-//    SetWord(String(&string[info.sort[0].bytes_offset], length - info.minimum_length));
-  SetWord(&(string[info.sort[0].bytes_offset]), length - info.minimum_length);
+//    SetWord(String(&string[info0.sort[0].bytes_offset], length - info0.minimum_length));
+  SetWord(&(string[info0.sort[0].bytes_offset]), length - info0.minimum_length);
 
-  for(int j = 1; j < info.nfields; j++) 
+  for(int j = 1; j < info0.nfields; j++) 
   {
       WordKeyNum value = 0; 
-      WordKey::UnpackNumber((unsigned char *)&string[info.sort[j].bytes_offset], 
-			    info.sort[j].bytesize, 
+      WordKey::UnpackNumber((unsigned char *)&string[info0.sort[j].bytes_offset], 
+			    info0.sort[j].bytesize, 
 			    value, 
-			    info.sort[j].lowbits, 
-			    info.sort[j].bits); 
+			    info0.sort[j].lowbits, 
+			    info0.sort[j].bits); 
       SetInSortOrder(j,value);
   }
 
@@ -373,10 +374,10 @@ WordKey::Unpack(const char* string,int length)
 int 
 WordKey::Pack(String& packed) const
 {
-  const WordKeyInfo& info = *WordKey::info();
+  const WordKeyInfo& info0 = *WordKey::info();
 
   char* string;
-  int length = info.minimum_length;
+  int length = info0.minimum_length;
 
   length += kword.length();
 
@@ -386,14 +387,14 @@ WordKey::Pack(String& packed) const
   }
   memset(string, '\0', length);
 
-  memcpy(&string[info.sort[0].bytes_offset], kword.get(), kword.length());
-  for(int i = 0; i < info.nfields-1; i++) 
+  memcpy(&string[info0.sort[0].bytes_offset], kword.get(), kword.length());
+  for(int i = 0; i < info0.nfields-1; i++) 
   {
-      WordKey::PackNumber(GetInSortOrder(info.encode[i].sort_position), 
-			  &string[info.encode[i].bytes_offset], 
-			  info.encode[i].bytesize, 
-			  info.encode[i].lowbits, 
-			  info.encode[i].lastbits); 
+      WordKey::PackNumber(GetInSortOrder(info0.encode[i].sort_position), 
+			  &string[info0.encode[i].bytes_offset], 
+			  info0.encode[i].bytesize, 
+			  info0.encode[i].lowbits, 
+			  info0.encode[i].lastbits); 
   }
   
   packed.set(string, length);
@@ -409,14 +410,14 @@ WordKey::Pack(String& packed) const
 //
 int WordKey::Merge(const WordKey& other)
 {
-  const WordKeyInfo& info = *WordKey::info();
+  const WordKeyInfo& info0 = *WordKey::info();
 
   
-  for(int j = 0; j < info.nfields; j++) 
+  for(int j = 0; j < info0.nfields; j++) 
   {
     if(!IsDefinedInSortOrder(j) && other.IsDefinedInSortOrder(j)) 
     {
-      switch(info.sort[j].type) 
+      switch(info0.sort[j].type) 
       {
       case WORD_ISA_String: 
 	  SetWord(other.GetWord());
@@ -438,23 +439,23 @@ int
 WordKey::Get(String& buffer) const
 {
   buffer.trunc();
-  const WordKeyInfo& info = *WordKey::info();
+  const WordKeyInfo& info0 = *WordKey::info();
 
   //
   // Walk the fields in sorting order. As soon as one of them
   // does not compare equal, return.
   //
-  for(int j = 0; j < info.nfields; j++) 
+  for(int j = 0; j < info0.nfields; j++) 
   {
       if(!IsDefinedInSortOrder(j)){buffer << "<UNDEF>";}
       else
       {
-	  switch(info.sort[j].type) 
+	  switch(info0.sort[j].type) 
 	  {
 	  case WORD_ISA_String:  buffer << GetWord();          break;
 	  case WORD_ISA_NUMBER:  buffer << GetInSortOrder(j);  break;
   	  default:
-  	      cerr << "WordKey::operator <<: invalid type " << info.sort[j].type << " for field (in sort order) " << j << "\n";
+  	      cerr << "WordKey::operator <<: invalid type " << info0.sort[j].type << " for field (in sort order) " << j << "\n";
   	      return NOTOK;
 	  }
       }
@@ -489,11 +490,11 @@ WordKey::Set(const String& buffer)
 int
 WordKey::Set(StringList& fields)
 {
-  const WordKeyInfo& info = *WordKey::info();
+  const WordKeyInfo& info0 = *WordKey::info();
   int length = fields.Count();
 
-  if(length < info.nfields + 1) {
-    cerr << "WordKey::Set: expected at least " << info.nfields << " fields and found " << length << " (ignored) " << endl;
+  if(length < info0.nfields + 1) {
+    cerr << "WordKey::Set: expected at least " << info0.nfields << " fields and found " << length << " (ignored) " << endl;
     return NOTOK;
   }
   if(length < 2) {
@@ -542,7 +543,7 @@ WordKey::Set(StringList& fields)
   // Handle numerical fields
   //
   int j;
-  for(j = 1; i < info.nfields; i++, j++) {
+  for(j = 1; i < info0.nfields; i++, j++) {
     String* field = (String*)fields.Get_First();
 
     if(field == 0) {
@@ -642,27 +643,27 @@ WordKeyInfo::SetKeyDescriptionRandom(int maxbitsize/*=100*/,int maxnnfields/*=10
 {
     int bitsize=HtRandom::rnd(1,maxbitsize/8);
     bitsize*=8;// byte aligned (for word)
-    int nfields=HtRandom::rnd(2,bitsize > maxnnfields ? maxnnfields : bitsize);
+    int nfields0=HtRandom::rnd(2,bitsize > maxnnfields ? maxnnfields : bitsize);
     int i;
     char sdesc[10000];
     char sfield[10000];
     sdesc[0]=0;
 
     // build sortorder
-    sprintf(sfield,"nfields: %d",nfields);
+    sprintf(sfield,"nfields: %d",nfields0);
     strcat(sdesc,sfield);
 
-    int *sort=HtRandom::randomize_v(NULL,nfields-1);
+    int *sortv=HtRandom::randomize_v(NULL,nfields0-1);
 
     int bits;
     int totbits=0;
     // build fields
-    for(i=0;i<nfields-1;i++)
+    for(i=0;i<nfields0-1;i++)
     {
-	int maxf=(bitsize-totbits)-nfields+i+2;
+	int maxf=(bitsize-totbits)-nfields0+i+2;
 	if(maxf>32){maxf=32;}
 	bits=HtRandom::rnd(1,maxf);
-	if(i==nfields-2)
+	if(i==nfields0-2)
 	{
 	    bits=maxf;
 	    if((totbits+bits)%8)
@@ -672,7 +673,7 @@ WordKeyInfo::SetKeyDescriptionRandom(int maxbitsize/*=100*/,int maxnnfields/*=10
 	    }
 	}
 	totbits+=bits;
-	sprintf(sfield,"/Field%d %d %d",i,bits,sort[i]+1);
+	sprintf(sfield,"/Field%d %d %d",i,bits,sortv[i]+1);
 	strcat(sdesc,sfield);
     }
     sprintf(sfield,"/Word 0 0");
