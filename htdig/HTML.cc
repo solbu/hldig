@@ -4,6 +4,10 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.15  1998/10/21 17:35:17  ghutchis
+//
+// Cleaned up HTML parsing based on patch by Reni Seindal.
+//
 // Revision 1.14  1998/09/30 17:31:50  ghutchis
 //
 // Changes for 3.1.0b2
@@ -56,7 +60,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.14 1998/09/30 17:31:50 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.15 1998/10/21 17:35:17 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -148,8 +152,10 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     int			in_space = 0;
     unsigned char	*q, *start;
     unsigned char	*position = (unsigned char *) contents->get();
+    unsigned char     *text = 
+      (unsigned char *) new char[strlen((char *)position)+1];
+    unsigned char     *ptext = text;
 
-    start = position;
     title = 0;
     head = 0;
     meta_dsc = 0;
@@ -158,11 +164,10 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     in_heading = 0;
     in_title = 0;
     in_ref = 0;
+    in_space = 0;
 	
     while (*position)
     {
-	offset = position - start;
-
 	if (strncmp((char *)position, "<!--", 4) == 0)
 	{
 	    //
@@ -182,52 +187,51 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    // search for the closing '>'
 	    //
 	    q = (unsigned char*)strchr((char *)position, '>');
+	    if (q)
+	      { // copy tag
+		while (position <= q)
+		  *ptext++ = *position++;
+	      }
+	    else
+	      { // copy rest of text, as tag does not end
+		while (*position)
+		  *ptext++ = *position++;
+	      }
+	}
+	else if (*position == '&')
+	{
+          *ptext++ = SGMLEntities::translateAndUpdate(position);
+        }
+        else
+        {
+           *ptext++ = *position++;
+        }
+      }
+      *ptext++ = '\0';
+
+      position = text;
+      start = position;
+
+      while (*position)
+      {
+	offset = position - start;
+
+	word = 0;
+	if (*position == '<')
+	  {
+	    //
+	    // Start of a tag.  Since tags cannot be nested, we can simply
+	    // search for the closing '>'
+	    //
+	    q = (unsigned char*)strchr((char *)position, '>');
 	    if (!q)
-		return; // Syntax error in the doc.  Tag never ends.
+	      return; // Syntax error in the doc.  Tag never ends.
 	    tag = 0;
 	    tag.append((char*)position, q - position + 1);
 	    do_tag(retriever, tag);
-	    position = q;
-	}
-#if 0
-	else if (*position == '&')
-	{
-	    //
-	    // HTML uses "&<string>;" as a way to put special characters in a
-	    // document.  We'll just skip these...
-	    //
-	    unsigned char	*orig = position++;
-	    if (!isalnum(*position))
-	    {
-		//
-		// This is an illegal escape.  We need to assume the
-		// author just wants to use a '&'.
-		//
-		position = orig;
-	    }
-	    else
-	    {
-		while (isalnum(*position))
-		    position++;
-		if (*position != ';')
-		{
-		    //
-		    // Broken escape.  Didn't end with a ';'.  Assume literal
-		    //
-		    position = orig;
-		}
-		else
-		{
-		    position++;
-		    continue;
-		}
-	    }
-	}
-#endif
-	
-	word = 0;
-	if (*position > 0 && (isalnum(*position) || *position >= 160 ||
-			      *position == '&'))
+	    position = q+1;
+	  }
+	else if (*position > 0 && (isalnum(*position)))
 	{
 	    //
 	    // Start of a word.  Try to find the whole thing
@@ -235,39 +239,11 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    in_space = 0;
 	    while (*position &&
 		   (isalnum(*position) ||
-		    strchr(valid_punctuation, *position) ||
-		    *position >= 160 ||
-		    *position == '&'))
-	    {
-		if (*position == '&')
-		{
-		    unsigned char	ch;
-		    ch = SGMLEntities::translateAndUpdate(position);
-
-                    //
-                    // Quick workaround to avoid sticking of &nbsp; and
-                    // &quot; (converted to space and quote) to extracted
-                    // words I am going to check all possible cases
-                    // (&copy;, etc) later and may be rewrite this 'if'
-                    //
-                    if (isalnum(ch) || strchr(valid_punctuation, ch) ||
-                        ch >= 160)
-                    {
-                        word << (char) ch;
-                    }
-                    else
-                    {
-                        position--;
-                        position[0] = ch;
-                        break;
-                    }
-		}
-		else
-		{
-		    word << (char)*position;
-		    position++;
-		}
-	    }
+                   strchr(valid_punctuation, *position)))
+	      {
+               word << (char)*position;
+               position++;
+	      }
 
 	    if (in_title && doindex)
 	    {
@@ -319,7 +295,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    //
 	    // Characters that are not part of a word
 	    //
-	    if (*position != '>' && doindex)
+	    if (doindex)
 	    {
 		if (isspace(*position))
 		{
@@ -367,6 +343,8 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	}
     }
     retriever.got_head(head);
+
+    delete text;
 }
 
 
