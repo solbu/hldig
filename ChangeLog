@@ -1,3 +1,8 @@
+Wed Jun  6 17:13:49 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (do_tag): Make parsing of meta robots tag case
+	insensitive.
+
 Wed Jun  6 15:31:00 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/doc2html/DETAILS, contrib/doc2html/README,

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.14 2000/02/15 20:11:29 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.15 2001/06/06 22:15:09 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -911,7 +911,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			 && strlen(conf["content"]) !=0)
 		  {
 		    String   content_cache = conf["content"];
-
+		    content_cache.lowercase();
 		    if (content_cache.indexOf("noindex") != -1)
 		      {
 			doindex = 0;
