@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.25 1999/06/13 02:13:07 ghutchis Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.26 1999/07/15 02:25:21 ghutchis Exp $";
 #endif
 
 #include "URL.h"
@@ -118,7 +118,7 @@ URL::URL(char *ref, URL &parent)
     //
     // If, after the removal of a possible '#' we have nothing left,
     // we just want to use the base URL (we're on the same page but
-    // different anchors
+    // different anchors)
     //
     if (!*ref)
     {
@@ -398,6 +398,10 @@ void URL::normalizePath()
             pathend = _path.length();
       }
 
+    // If the server *isn't* case sensitive, we want to lowercase the path
+    if (!config["case_sensitive"])
+      _path.lowercase();
+
     // And don't forget to remove index.html or similar file.
     removeIndex(_path);
 }
@@ -422,6 +426,8 @@ void URL::dump()
 void URL::path(char *newpath)
 {
     _path = newpath;
+    if (!config["case_sensitive"])
+      _path.lowercase();
     constructURL();
 }
 

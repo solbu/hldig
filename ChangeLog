@@ -1,3 +1,9 @@
+Wed Jul 14 22:57:14 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/URL.cc (normalizePath, path): If not case_sensitive,
+	lowercase the URL. Should ensure that all URLs are appropriately
+	lowercased, regardless of where they're generated.
+
 Wed Jul 14 22:37:47 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/DB2_db.cc (OpenReadWrite, OpenRead): Add flag DB_DUP to
