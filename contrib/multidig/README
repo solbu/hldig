@@ -1,0 +1,98 @@
+README for multidig 1.1
+ by Geoff Hutchison <ghutchis@wso.williams.edu>
+
+ Copyright (c) 1998-1999 The ht://Dig Group  <http://www.htdig.org/>
+   Distributed under the terms of the GNU General Public License (GPL)
+   version 2 or later.
+--------------------------------
+
+This document is part of the "multidig script system" a system of
+shell scripts and some modified conf files that makes dealing with
+multiple databases easier for ht://Dig. It assumes that you know what
+ht://Dig is. If you don't know, see the website at
+<http://www.htdig.org/>
+
+This README is organized a lot like a FAQ. Perhaps that's because I
+expect anyone looking at these scripts to have a bunch of
+questions. Hey, maybe I'm wrong. I'm always open to suggestions,
+criticisms, corrections, etc. E-mail me at <ghutchis@wso.williams.edu>
+
+--------------------------------
+
+INTRODUCTION:
+
+* Why write multidig?
+
+  There are many reasons I started the multidig system. The biggest
+were the complaints that ht://Dig didn't have much of an
+administration interface. If you're looking for one, multidig isn't
+it. Yet. The next biggest is that people wanted me to make dealing
+with multiple databases easier. If you're looking for this, you're in
+the right place.
+
+* Why should I bother with multidig?
+
+  If you already have a multiple-database setup and it's working
+smoothly, you probably don't want to bother with multidig. It was
+written the way *I* would organize a multiple-database setup. Not
+surprisingly, this is probably not how you've done it, so it might be
+more pain to convert to multidig than it's worth.
+  If you're planning a multiple-database setup or you have one and
+it's not working well or it's too big a pain for you, this will
+help. It hides most of the pain and suffering behind some shell
+scripts and generally automates life. :-)
+
+--------------------------------
+
+SETTING UP
+
+* How do I install it?
+
+  It's pretty easy to install. It requires bash, or at least a
+Bourne-shell that supports the "source" builtin. Obviously, it also
+requires an installation of ht://Dig. :-)
+  Change any paths in the Makefile. Maybe someday I'll make a
+configure script or something to streamline this. Suggestions welcome.
+  Then do a "make install" to install the scripts in the right place
+and the config files in the right place.
+
+* OK, cool so what's this multidig.conf file?
+
+  This is the central repository of shell variables used by the
+scripts. You can change any of the settings once installed.
+
+* How do I configure the multiple databases?
+
+  This has been the biggest pain with ht://Dig's treatment of multiple
+databases. You really need a config file for each database. So
+multidig makes one when you run the new-db or new-collect
+scripts. These scripts also make a new directory for all the database
+files and URL or collection lists for the contents of the databases.
+  Since version 3.1.0 and later of ht://Dig add an 'include' keyword
+to config files, the database configs read the htdig.conf file (or
+anything else if you edit them) and use those settings.
+
+--------------------------------
+
+COLLECTIONS
+
+* What's a collection?
+
+  Version 3.1.0 of ht://Dig added support for merging multiple
+databases together. Technically, you merge one database into
+another. Multidig makes this a bit easier. You set up a "collection"
+of other databases and the multidig script will merge them all
+together.
+
+* Fantastic! How do I define a collection?
+
+./new-collect <name>
+./add-collect <name>
+<insert dbs here>
+
+ The add-collect script will go through the list of dbs and make sure
+the multidig system actually knows about them. If not, it complains.
+
+--------------------------------
+
+MORE TO COME...
