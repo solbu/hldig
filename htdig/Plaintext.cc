@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Plaintext.cc,v 1.7.2.3 1999/03/23 23:22:54 grdetil Exp $";
+static char RCSid[] = "$Id: Plaintext.cc,v 1.7.2.4 1999/09/01 21:02:47 grdetil Exp $";
 #endif
 
 #include "Plaintext.h"
@@ -72,14 +72,9 @@ Plaintext::parse(Retriever &retriever, URL &)
 
 	    if (word.length() >= minimumWordLength)
 	    {
-		word.lowercase();
-		HtStripPunctuation(word);
-		if (word.length() >= minimumWordLength)
-		{
-		    retriever.got_word(word,
-				       int(offset * 1000 / contents->length()),
-				       0);
-		}
+		retriever.got_word(word,
+				   int(offset * 1000 / contents->length()),
+				   0);
 	    }
 	}
 		

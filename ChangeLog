@@ -1,4 +1,10 @@
-Wed Sep  1 15:54:17 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:58:14 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc(got_word): add code to check for compound words
+	and add their component parts to the word dictionary.
+	* htdig/PDF.cc(parseString), htdig/Plaintext.cc(parse): Don't strip
+	punctuation or lowercase the word before calling got_word.  That
+	should be left up to got_word & Word methods.
 
 	* htlib/StringMatch.h, htlib/StringMatch.cc(Pattern, IgnoreCase):
 	Add an IgnorePunct() method, which allows matches to skip over valid
