@@ -12,7 +12,7 @@ endif
 
 SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include htdoc $(TESTDIR)
 
-EXTRA_DIST = .version acconfig.h Makefile.config ChangeLog.0 contrib
+EXTRA_DIST = .version Makefile.config ChangeLog.0 contrib
 
 dist-hook:
 	find $(distdir) -depth -name CVS -print | xargs rm -fr 

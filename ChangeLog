@@ -1,3 +1,7 @@
+Thu Aug 28 11:30:39 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * Makefile.am: removed acconfig.h from the EXTRA_DIST list
+
 Thu Aug 28 11:25:07 EST 2003 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
     * configure.in: removed portability checks for error, stat and lstat that
