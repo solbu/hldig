@@ -21,6 +21,7 @@
 #define MAX_INCLUDE_DEPTH 10
 YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
 int include_stack_ptr = 0;
+extern HtConfiguration config;
 %}
 
 KEYWORD			[a-zA-Z_][a-zA-Z_0-9/]*
@@ -32,7 +33,7 @@ BR_STRING		[^ \n\t<>]+
 ^#.*\n			/*   Ignore comments     */
 ^[[:space:]]*\n		/*   Ignore emty lines   */
 <*>[ \t]+		/*   Ignore spaces       */
-include			BEGIN(incl);
+include[ \t]*:		BEGIN(incl);
 "<"                     { BEGIN(bracket); return(T_LEFT_BR); }
 <bracket>"/"                       return(T_SLASH);
 <bracket>">"            return(T_RIGHT_BR);
@@ -98,7 +99,11 @@ include			BEGIN(incl);
 			include_stack[include_stack_ptr++] =
 			    YY_CURRENT_BUFFER;
 
-			yyin = fopen( yytext, "r" );
+			// handle ${var} in file name
+			String ParsedFilename = \
+			config.ParseString(yytext);
+
+			yyin = fopen( ParsedFilename.get(), "r" );
 
 			if ( ! yyin ) {
 			    fprintf(stderr,"can't find file: %s\n",yytext);
