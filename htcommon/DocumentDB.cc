@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.28.2.3 2000/03/21 00:34:33 ghutchis Exp $
+// $Id: DocumentDB.cc,v 1.28.2.4 2000/03/21 04:26:00 ghutchis Exp $
 //
 
 #include "DocumentDB.h"
@@ -325,8 +325,17 @@ int DocumentDB::Delete(int docID)
     String url = ref->DocURL();
     delete ref;
   
-    if (i_dbf->Delete(HtURLCodec::instance()->encode(url)) == NOTOK)
-      return 0;
+    // We have to be really careful about deleting by URL, we might
+    // have a newer "edition" with the same URL and different DocID
+    String		docIDstr;
+    String		encodedURL = HtURLCodec::instance()->encode(url);
+    if (i_dbf->Get(encodedURL, docIDstr) == NOTOK)
+      return NOTOK;
+
+    // Only delete if we have a match between what we want to delete
+    // and what's in the database
+    if (key == docIDstr && i_dbf->Delete(encodedURL) == NOTOK)
+	return NOTOK;
   
     if (h_dbf == 0 || h_dbf->Delete(key) == NOTOK)
       return NOTOK;

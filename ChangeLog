@@ -1,3 +1,9 @@
+Mon Mar 20 23:14:26 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/DocumentDB.cc (Delete): Fix bug reported by Valdas
+	where duplicate document records could "sneak in" because the
+	doc_index entry was removed incorrectly.
+
 Mon Mar 20 19:08:14 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/defaults.cc: Added block field and added appropriate blocks.
