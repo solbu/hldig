@@ -1,3 +1,8 @@
+Wed Jan 12 19:38:33 2000  Loic Dachary  <loic@ceic.com>
+
+	* htlib/HtDateTime.h (class HtDateTime): killed void SetDateTime(const int t)
+	  because they cause problems when time_t is an int and were useless anyway.
+
 Wed Jan 12 12:36:46 2000  Loic Dachary  <loic@ceic.com>
 
 	* htword/WordList.h (class WordSearchDescription): add cursor member
