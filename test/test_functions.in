@@ -5,10 +5,12 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: test_functions.in,v 1.5 1999/09/27 13:55:48 loic Exp $
+# $Id: test_functions.in,v 1.6 1999/10/01 15:41:12 loic Exp $
 #
 
 testdir=`pwd`
+
+perl=@PERL@
 
 @SET_MAKE@
 

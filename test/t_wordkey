@@ -5,7 +5,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_wordkey,v 1.3 1999/09/28 07:30:36 loic Exp $
+# $Id: t_wordkey,v 1.4 1999/10/01 15:41:12 loic Exp $
 #
 
 . test_functions
@@ -15,8 +15,8 @@ verbose=$1
 exercise() {
    if [ "$LONG_TEST" = "y" ]
    then
-	    ( cd ../htcommon
-	      perl word_builder.pl $1
+	    ( cd ../htword
+	      $perl word_builder.pl $1
 	      if $MAKE > /tmp/t_word$$ 2>&1
 	      then
 		rm /tmp/t_word$$
@@ -39,6 +39,10 @@ exercise() {
 if [ "$LONG_TEST" = "y" ]
 then
 	desc="../test/word.try1 ../test/word.try2 ../test/word.try3 ../test/word.try4 ../test/word.try5 word.desc"
+	if [ -z "$verbose" ]
+	then
+		verbose=-v
+	fi
 else
 	desc="word.desc"
 fi

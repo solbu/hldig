@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.11 1999/10/01 15:19:30 loic Exp $
+// $Id: word.cc,v 1.12 1999/10/01 15:41:12 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -293,13 +293,13 @@ static void dokey(params_t* params)
   // Feed the structure with a pattern
   //
   for(int i = 0; i < info.nfields; i++) {
-    if(verbose) fprintf(stderr, "%s\t=\t", info.fields[i].name);
+    if(verbose > 1) fprintf(stderr, "%s\t=\t", info.fields[i].name);
     switch(info.fields[i].type) {
     case WORD_ISA_pool_String:
       {
 	word.Set("Test string", info.fields[i].index);
 	String tmp;
-	if(verbose) fprintf(stderr, "%s", word.Get(tmp, info.fields[i].index).get());
+	if(verbose > 1) fprintf(stderr, "%s", word.Get(tmp, info.fields[i].index).get());
       }
       break;
     case WORD_ISA_pool_unsigned_int:
@@ -307,11 +307,11 @@ static void dokey(params_t* params)
     case WORD_ISA_pool_unsigned_char:
       {
 	word.Set(0x12579ade & WORD_BIT_MASK(info.fields[i].bits), info.fields[i].index);
-	if(verbose) fprintf(stderr, "0x%0x", word.Get(0, info.fields[i].index));
+	if(verbose > 1) fprintf(stderr, "0x%0x", word.Get(0, info.fields[i].index));
       }
       break;
     }
-    if(verbose) fprintf(stderr, "\n");
+    if(verbose > 1) fprintf(stderr, "\n");
   }
 
   //
@@ -321,7 +321,7 @@ static void dokey(params_t* params)
 
   word.Pack(packed);
 
-  if(verbose) {
+  if(verbose > 1) {
     for(int i = 0; i < packed.length(); i++) {
       fprintf(stderr, "0x%02x(%c) ", packed[i] & 0xff, packed[i]);
     }
@@ -335,23 +335,23 @@ static void dokey(params_t* params)
   other_word.Unpack(packed);
 
   for(int i = 0; i < info.nfields; i++) {
-    if(verbose) fprintf(stderr, "%s\t=\t", info.fields[i].name);
+    if(verbose > 1) fprintf(stderr, "%s\t=\t", info.fields[i].name);
     switch(info.fields[i].type) {
     case WORD_ISA_pool_String:
       {
 	String tmp;
-	if(verbose) fprintf(stderr, "%s", other_word.Get(tmp, info.fields[i].index).get());
+	if(verbose > 1) fprintf(stderr, "%s", other_word.Get(tmp, info.fields[i].index).get());
       }
       break;
     case WORD_ISA_pool_unsigned_int:
     case WORD_ISA_pool_unsigned_short:
     case WORD_ISA_pool_unsigned_char:
       {
-	if(verbose) fprintf(stderr, "0x%0x", other_word.Get(0, info.fields[i].index));
+	if(verbose > 1) fprintf(stderr, "0x%0x", other_word.Get(0, info.fields[i].index));
       }
       break;
     }
-    if(verbose) fprintf(stderr, "\n");
+    if(verbose > 1) fprintf(stderr, "\n");
   }
 
   //
