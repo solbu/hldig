@@ -1,3 +1,12 @@
+Tue May  4 15:28:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/htsearch.cc (reportError): Add e-mail of maintainer to
+	error message. Should help direct people to the correct place.
+
+	* htdig/Retriever.cc (IsValidURL): Lowercase all extensions from
+	bad_extensions as well as all extensions used in
+	comparisons. Ensures we're using case-insenstive matching.
+
 Mon May  3 23:20:22 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc (IsValidURL): Fix typo with #else statement
