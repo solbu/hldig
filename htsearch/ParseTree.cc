@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ParseTree.cc,v 1.1.2.3 2000/08/24 04:42:41 ghutchis Exp $
+// $Id: ParseTree.cc,v 1.1.2.4 2000/08/29 13:56:44 ghutchis Exp $
 //
 
 #include "ParseTree.h"
@@ -110,8 +110,7 @@ int ParseTree::Parse(String query)
       //   (plus it makes it a bit more readable)
 
       if (mystrcasecmp(token.get(), "(") == 0 && !inPhrase)
-	{
-	  
+	{ 
 	  if (currentOp != NULL && word == NULL)
 	    {
 	      operators.push(currentOp);
@@ -125,14 +124,15 @@ int ParseTree::Parse(String query)
 
       else if (mystrcasecmp(token.get(), ")") == 0 && !inPhrase)
 	{
-
 	  if (operators.Size() == 0)
 	    return NOTOK; // Ooops, too many left parens!
 	  if (currentOp == NULL && word != NULL && operators.peek() != NULL)
 	    {
-	      ((ParseTree *) operators.peek())->Adopt(word);
-	      word = new ParseTree;
-	      word->Adopt((ParseTree *) operators.pop());
+	      currentOp = new ParseTree;
+	      currentOp->Adopt(word);
+	      word = (ParseTree *) operators.pop();
+	      word->Adopt(currentOp);
+	      currentOp = NULL;
 	    }
 	  else if (operators.peek() == NULL) // Pushed when we hadn't seen anything
 	    operators.pop();
@@ -151,7 +151,11 @@ int ParseTree::Parse(String query)
 	    {
 	      word = new ExactParseTree;
 	      word->Parse(phrase);
-	      word->Adopt(currentOp);
+	      if (currentOp == NULL)
+		return NOTOK;
+
+	      currentOp->Adopt(word);
+	      word = currentOp;
 	      currentOp = NULL;
 	      phrase = "";
 	    }
@@ -325,7 +329,7 @@ String	ParseTree::GetLogicalWords()
 {
   String	logicalWords;
 
-  if (!children)
+  if (!children || children->Count() == 0)
     return initialQuery;
 
   logicalWords << "(" << ((ParseTree *) children->Get_First())->GetLogicalWords();
@@ -362,7 +366,7 @@ ParseTree::WordToken(const String tokens, int &current)
 
     if (text)
     {
-	while (text && WordType::Instance()->IsChar(text))
+	while (text && WordType::Instance()->IsChar(text) || text == ':')
 	  {
 	    ret << text;
 	    text = tokens[++current];
