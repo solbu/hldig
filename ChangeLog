@@ -1,3 +1,12 @@
+Mon Sep 17 16:52:07 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/running.html: New documentation on how to run after configuring.
+	* htdoc/rundig.html: New manual page for rundig script.
+	* htdoc/install.html: Added link to running.html.
+	* htdoc/contents.html: Added link to running.html, rundig.html, related
+	projects. Updated links to contrib and developer site. Got rid of
+	link to web site stats.
+
 Fri Sep 14 09:18:38 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Document.cc (RetrieveHTTP): Add port to Host: header when

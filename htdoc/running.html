@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+  <head>
+	<title>
+	  Running ht://Dig
+	</title>
+  </head>
+  <body bgcolor="#eef7ff">
+	<h1>
+	  Running ht://Dig
+	</h1>
+	<p>
+	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
+	  Please see the file <a href="COPYING">COPYING</a> for
+	  license information.
+	</p>
+	<hr size="4" noshade>
+	<p>
+	  This document will attempt to show the steps needed to use
+	  the ht://Dig system, after <a href="where.html">obtaining</a>,
+	  <a href="install.html">installing</a> and
+	  <a href="config.html">configuring</a> it.<br>
+	  The main sections are:
+	</p>
+	<ul>
+	  <li>
+		<a href="#rundig">Building the databases</a>
+	  </li>
+	  <li>
+		<a href="#testing">Testing and troubleshooting</a>
+	  </li>
+	  <li>
+		<a href="#maintenance">Maintaining the system</a>
+	  </li>
+	</ul>
+	<hr noshade>
+	<h2>
+	  <a name="rundig">Building the databases</a>
+	</h2>
+	<p>
+	  After setting up all the <a href="config.html">configuration
+	  files</a>, you can build the required databases simply by running
+	  <a href="rundig.html">rundig</a>. This script will run
+	  <a href="htdig.html">htdig</a> first to build the initial database,
+	  then it runs <a href="htmerge.html">htmerge</a> to create a document
+	  index and word database from the files that were created by htdig.
+	  It then runs <a href="htnotify.html">htnotify</a>, and finally
+	  runs <a href="htfuzzy.html">htfuzzy</a> if necessary, to build
+	  the endings and synonyms databases if they're missing or outdated.
+	  The rundig script can be customized for your specific needs, or
+	  you can develop your own script that runs any of these programs.
+	  Read the reference sections for each of these programs to get a
+	  better understanding of what each one does.
+	</p>
+	<p>
+	  The <a href="htfuzzy.html">htfuzzy</a> program deserves a bit more
+	  explaining. It is used to build databases that are used by some
+	  of the fuzzy match algorithms selected by
+	  <a href="htsearch.html" target="_top">htsearch</a>'s
+	  <a href="attrs.html#search_algorithm">search_algorithm</a>
+	  attribute. The <em>endings</em> and <em>synonyms</em> algorithms
+	  use static dictionaries, so their databases only need to be rebuilt
+	  by htfuzzy when the dictionary files are changed, or when ht://Dig
+	  is initially installed. The rundig script handles the building of
+	  these two databases as needed for the default setup. A few of the
+	  other fuzzy match algorithms use databases that are derived from
+	  the word database built by htdig/htmerge, so if you use these
+	  algorithms you should rebuild their databases with htfuzzy every
+	  time you update your index. This isn't done in rundig, but the
+	  comments in the script show where you can add your htfuzzy commands
+	  as needed. Some fuzzy match algorithms don't need their own
+	  database, as they just operate on the word database, so they don't
+	  need any special setup.
+	</p>
+	<hr noshade>
+	<h2>
+	  <a name="testing">Testing and troubleshooting</a>
+	</h2>
+	<p>
+	  Once the databases are built, you should test out htsearch.
+	  It's recommended that you first try a few queries running
+	  htsearch on the command line, as it helps to separate problems
+	  that are specific to ht://Dig from web server or CGI problems.
+	  Once you have that working, try running htsearch from your web
+	  browser, using the search form you configured.
+	</p>
+	<p>
+	  If you run into problems at any point in the building and testing
+	  of your databases, there are many things you can do. All ht://Dig
+	  programs feature a <strong>-v</strong> option to get some debugging
+	  output. The more of these options you put on the command line, the
+	  more output you'll usually get. To get help with common problems,
+	  or with interpreting some of the debugging output, please look to
+	  the ht://Dig <a href="FAQ.html">FAQ</a> (frequently asked questions)
+	  as your first line of support. Most of the problems that ht://Dig
+	  users have are explained there, and the on-line
+	  <a href="http://www.htdig.org/FAQ.html">FAQ on the website</a> is
+	  updated frequently as new problems arise. The FAQ will also tell
+	  you where you can turn if your question isn't answered there.
+	  Remember that questions may not be phrased exactly as you'd state
+	  them, so look carefully for anything that seems similar to the
+	  problem you're trying to solve.
+	</p>
+	<hr noshade>
+	<h2>
+	  <a name="maintenance">Maintaining the system</a>
+	</h2>
+	<p>
+	  Once everything is running, you have to deal with the question of
+	  how you can keep everything running and up to date. The databases
+	  don't automatically update themselves, of course, so you'll need
+	  to figure out how to schedule automatic updates of the database.
+	  Most users use the <strong>crontab</strong> facility on their
+	  systems to schedule daily or weekly updates of their database.
+	  This can be as simple as running "rundig" or "rundig -a" from
+	  your crontab, or from a file in /etc/cron.daily if your system
+	  uses this, to rebuild from scratch every night. For a small site,
+	  this may take only a few minutes to run. Other sites will run
+	  more elaborate update scripts, to update their existing databases
+	  nightly, and schedule complete rebuilds less frequently, such as
+	  monthly.
+	</p>
+	<p>
+	  You need to pay close attention to how long updates take to run.
+	  There are no database lockouts in ht://Dig, so you don't want to
+	  schedule update or reindexing runs so frequently that they run
+	  into each other.
+	</p>
+	<hr size="4" noshade>
+
+	Last modified: $Date: 2001/09/17 21:56:19 $
+<br> 
+    <a href="http://sourceforge.net/"> 
+          <img src="http://sourceforge.net/sflogo.php?group_id=4593&amp;type=1" width="88" height="31" border="0" alt="SourceForge Logo"></a>
+
+  </body>
+</html>
