@@ -23,9 +23,107 @@
 extern Configuration config;
 
 #ifdef HAVE_LIBZ
-// Static member variable so we get only a single copy
-// Used to buffer the zlib compression
-unsigned char DocumentRef::c_buffer[60000];
+//unsigned char DocumentRef::c_buffer[32000];
+//
+// Compress Function
+//
+int DocumentRef::Compress(String &s) {
+  static int cf=config.Value("compression_level",0);    
+  if (cf) {
+    //
+    // Now compress s into c_s
+    //
+    unsigned char c_buffer[16384];
+    String c_s;
+    z_stream c_stream; /* compression stream */
+    c_stream.zalloc=(alloc_func)0;
+    c_stream.zfree=(free_func)0;
+    c_stream.opaque=(voidpf)0;
+    // Get compression factor, default to best
+    if (cf<-1) cf=-1; else if (cf>9) cf=9;
+    int err=deflateInit(&c_stream,cf);
+    if (err!=Z_OK) return 0;
+    int len=s.length();
+    c_stream.next_in=(Bytef*)(char *)s;
+    c_stream.avail_in=len;
+    while (err==Z_OK && c_stream.total_in!=(uLong)len) {
+      c_stream.next_out=c_buffer;
+      c_stream.avail_out=sizeof(c_buffer);
+      err=deflate(&c_stream,Z_NO_FLUSH);
+      c_s.append((char *)c_buffer,c_stream.next_out-c_buffer);
+    }
+    // Finish the stream
+    for (;;) {
+      c_stream.next_out=c_buffer;
+      c_stream.avail_out=sizeof(c_buffer);
+      err=deflate(&c_stream,Z_FINISH);
+      c_s.append((char *)c_buffer,c_stream.next_out-c_buffer);
+      if (err==Z_STREAM_END) break;
+      //CHECK_ERR(err, "deflate");
+    }
+    err=deflateEnd(&c_stream); 
+    s=c_s;
+  }
+  return 1;
+}
+
+//
+// Decompress routine returns 0 if decompressed 1 if compressed
+//
+int DocumentRef::Decompress(String &s) {
+  static int cf=config.Value("compression_level",0);    
+  if (cf) {
+    String c_s;
+    // Decompress stream
+    unsigned char c_buffer[16384];
+    z_stream d_stream;
+    d_stream.zalloc=(alloc_func)0;
+    d_stream.zfree=(free_func)0;
+    d_stream.opaque=(voidpf)0;
+    
+    int len=s.length();
+    d_stream.next_in=(Bytef*)(char *)s;
+    d_stream.avail_in=len;
+    
+    int err=inflateInit(&d_stream);
+    if (err!=Z_OK) return 1;
+    
+    while (err==Z_OK && d_stream.total_in<len) {
+      d_stream.next_out=c_buffer;
+      d_stream.avail_out=sizeof(c_buffer);
+      err=inflate(&d_stream,Z_NO_FLUSH);
+      c_s.append((char *)c_buffer,d_stream.next_out-c_buffer);
+      if (err==Z_STREAM_END) break;
+    }
+    
+    err=inflateEnd(&d_stream);
+    s=c_s;
+  }
+  return 0;
+}
+
+char *DocumentRef::DocHead() {
+  if (docHeadState==Compressed) {
+    Decompress(docHead);
+    docHeadState=Uncompressed;
+  }
+  return docHead;
+}
+
+void DocumentRef::DocHead(char *h) {
+  docHead=h;
+  docHeadState=docHead.length()==0?Empty:Uncompressed;
+}
+
+#else
+ 
+inline char *DocumentRef::DocHead() {
+  return docHead;
+}
+
+inline void DocumentRef::DocHead(char *h) {
+  docHead=h;
+}
 #endif
 
 //*****************************************************************************
@@ -65,6 +163,9 @@ void DocumentRef::Clear()
     docAnchors.Destroy();
     docHopCount = -1;
     docBackLinks = 0;
+#ifdef HAVE_LIBZ
+    docHeadState=Empty;
+#endif
 }
 
 
@@ -106,6 +207,12 @@ void DocumentRef::Serialize(String &s)
     int		length;
     String	*str;
 
+#ifdef HAVE_LIBZ
+    if (docHeadState==Uncompressed) {
+      Compress(docHead);
+      docHeadState=Compressed;
+    }
+#endif
 //
 // The following macros make the serialization process a little easier
 // to follow.  Note that if an object to be serialized has the default
@@ -241,43 +348,6 @@ void DocumentRef::Serialize(String &s)
     addstring(DOC_EMAIL, s, docEmail);
     addstring(DOC_NOTIFICATION, s, docNotification);
     addstring(DOC_SUBJECT, s, docSubject);
-#ifdef HAVE_LIBZ
-    static int cf=config.Value("compression_level",0);    
-    if (cf) {
-      //
-      // Now compress s into c_s
-      //
-      String c_s;
-      z_stream c_stream; /* compression stream */
-      c_stream.zalloc=(alloc_func)0;
-      c_stream.zfree=(free_func)0;
-      c_stream.opaque=(voidpf)0;
-      // Get compression factor, default to best
-      if (cf<-1) cf=-1; else if (cf>9) cf=9;
-      int err=deflateInit(&c_stream,cf);
-      if (err!=Z_OK) return;
-      int len=s.length();
-      c_stream.next_in=(Bytef*)(char *)s;
-      c_stream.avail_in=len;
-      while (err==Z_OK && c_stream.total_in!=(uLong)len) {
-        c_stream.next_out=c_buffer;
-        c_stream.avail_out=sizeof(c_buffer);
-        err=deflate(&c_stream,Z_NO_FLUSH);
-        c_s.append((char *)c_buffer,c_stream.next_out-c_buffer);
-      }
-      // Finish the stream
-      for (;;) {
-        c_stream.next_out=c_buffer;
-        c_stream.avail_out=sizeof(c_buffer);
-        err=deflate(&c_stream,Z_FINISH);
-        c_s.append((char *)c_buffer,c_stream.next_out-c_buffer);
-        if (err==Z_STREAM_END) break;
-        //CHECK_ERR(err, "deflate");
-      }
-      err = deflateEnd(&c_stream); 
-      s=c_s;
-    }
-#endif
 }
 
 
@@ -290,46 +360,8 @@ void DocumentRef::Serialize(String &s)
 void DocumentRef::Deserialize(String &stream)
 {
     Clear();
-#ifdef HAVE_LIBZ
-    char	*s;
-    char	*end;
-    String c_s;
-    static int cf=config.Value("compression_level",0);    
-    if (cf) {
-      // Decompress stream
-      z_stream d_stream; /* decompression stream */
-
-      d_stream.zalloc = (alloc_func)0;
-      d_stream.zfree = (free_func)0;
-      d_stream.opaque = (voidpf)0;
-
-      d_stream.next_in  = (Bytef*)(char *)stream;
-      d_stream.avail_in = 0;
-
-      int err = inflateInit(&d_stream);
-      if (err!=Z_OK) return;
-
-      int len=stream.length();
-      d_stream.avail_in=len;
-      while (err==Z_OK && d_stream.total_in<len) {
-        d_stream.next_out=c_buffer;
-        d_stream.avail_out=sizeof(c_buffer);
-        err=inflate(&d_stream,Z_NO_FLUSH);
-        c_s.append((char *)c_buffer,d_stream.next_out-c_buffer);
-        if (err == Z_STREAM_END) break;
-      }
-
-      err = inflateEnd(&d_stream);
-      s = c_s.get();
-      end = s + c_s.length();
-    } else {
-      s = stream.get();
-      end = s + stream.length();
-    }
-#else
     char	*s = stream.get();
     char	*end = s + stream.length();
-#endif
     int		length;
     int		count;
     int		i;
@@ -462,6 +494,9 @@ void DocumentRef::Deserialize(String &stream)
 	    break;
         case DOC_HEAD:
             getstring(x, s, docHead);
+#ifdef HAVE_LIBZ
+            docHeadState=docHead.length()==0?Empty:Compressed;
+#endif
             break;
 	case DOC_METADSC:
 	    getstring(x, s, docMetaDsc);
