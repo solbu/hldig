@@ -10,10 +10,10 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.101 1999/10/15 03:34:42 jtillman Exp $
+// $Id: Display.cc,v 1.102 1999/10/15 03:45:22 jtillman Exp $
 //
 
-#include "new_htsearch.h"
+#include "htsearch.h"
 #include "Display.h"
 #include "ResultMatch.h"
 #include "WeightWord.h"
