@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.28  1999/01/07 19:37:53  ghutchis
+// The start template, if provided, should come out after the header, not
+// before.
+//
 // Revision 1.27  1999/01/06 03:47:00  ghutchis
 // Check if we need to do backlink and date factoring (e.g. we don't if they're
 // zero!), from a patch by Gilles.
@@ -93,7 +97,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.27 1999/01/06 03:47:00 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.28 1999/01/07 19:37:53 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -188,6 +192,9 @@ Display::display(int pageNumber)
     }
     maxScore = match->getScore();
     	
+    cout << "Content-type: text/html\r\n\r\n";
+    displayHeader();
+
     //
     // Display the window of matches requested.
     //
@@ -196,9 +203,6 @@ Display::display(int pageNumber)
 	expandVariables(currentTemplate->getStartTemplate());
     }
     
-    cout << "Content-type: text/html\r\n\r\n";
-    displayHeader();
-
     matches->Start_Get();
     while ((match = (ResultMatch *)matches->Get_Next()) &&
 	   numberDisplayed < number)
