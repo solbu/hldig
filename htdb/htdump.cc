@@ -59,6 +59,8 @@ main(int argc, char *argv[])
 	int wordlist = 0;
 	char *home;
 
+	WordKeyInfo::SetKeyDescriptionFromString("nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0");
+
 	home = NULL;
 	checkprint = dflag = 0;
 	memset(&dbinfo, 0, sizeof(dbinfo));

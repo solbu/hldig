@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.54.2.2 1999/12/21 12:05:39 bosc Exp $
+// $Id: htsearch.cc,v 1.54.2.3 1999/12/21 15:42:27 bosc Exp $
 //
 
 #include "htsearch.h"
@@ -193,11 +193,8 @@ main(int ac, char **av)
 	config.Add(form_vars[i], input[form_vars[i]]);
     }
  
-    // Ctype-like functions for what constitutes a word.
-    WordType::Initialize(config);
-
-    // Key description
-    WordKeyInfo::SetKeyDescriptionFromString(config["wordlist_wordkey_description"]);
+    // Initialize htword library (key description + wordtype...)
+    WordList::Initialize(config);
 
     //
     // Check url_part_aliases and common_url_parts for

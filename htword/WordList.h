@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.6 1999/12/10 17:20:26 bosc Exp $
+// $Id: WordList.h,v 1.5.2.7 1999/12/21 15:42:28 bosc Exp $
 //
 
 #ifndef _WordList_h_
@@ -251,6 +251,8 @@ public:
     const WordType&      GetWordType() const { return wtype; }
 #endif /* SWIG */
     const Configuration& GetConfiguration() const { return config; }
+    static void Initialize(const Configuration &config0);
+    
 
 #ifndef SWIG
 protected:

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.5 1999/12/21 12:05:39 bosc Exp $
+// $Id: htdig.cc,v 1.26.2.6 1999/12/21 15:42:27 bosc Exp $
 //
 
 #include "Document.h"
@@ -139,11 +139,8 @@ int main(int ac, char **av)
     if (credentials.length())
 	config.Add("authorization", credentials);
 
-    // Word characterization
-    WordType::Initialize(config);
-
-    // Key description
-    WordKeyInfo::SetKeyDescriptionFromString(config["wordlist_wordkey_description"]);
+    // Initialize htword
+    WordList::Initialize(config);
 
     //
     // Check url_part_aliases and common_url_parts for

@@ -34,6 +34,7 @@ extern "C" {
 }
 
 #include "WordDB.h"
+#include "WordList.h"
 
 void	badnum __P((void));
 void	configure __P((DB_INFO *, char **));
@@ -69,6 +70,9 @@ main(int argc, char* argv[])
 	int compress = 0;
 	int wordlist = 0;
 	char **clist, **clp, *home;
+
+	WordKeyInfo::SetKeyDescriptionFromString("nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0");
+
 
 	/* Allocate enough room for configuration arguments. */
 	if ((clp = clist = (char **)calloc(argc + 1, sizeof(char *))) == NULL)

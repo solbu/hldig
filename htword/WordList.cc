@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.14 1999/12/21 12:03:29 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.15 1999/12/21 15:42:27 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -42,6 +42,31 @@
 
 #define cdebug cerr
 
+
+void
+WordList::Initialize(const Configuration &config0)
+{
+    WordType::Initialize(config0);
+
+    const String &keydescfile = config0["wordlist_wordkey_description_file"];
+    const String &keydesc     = config0["wordlist_wordkey_description"];
+
+    if(!keydesc.empty())
+    {
+	WordKeyInfo::SetKeyDescriptionFromString(keydesc);
+    }
+    else
+    if(!keydescfile.empty())
+    {
+	WordKeyInfo::SetKeyDescriptionFromFile(keydescfile);
+    }
+    else
+    {
+	cerr << "WordList::Initialize: didn't find key description file in config" << endl;
+    }
+    
+}
+
 //*****************************************************************************
 //
 WordList::~WordList()
@@ -61,23 +86,26 @@ WordList::WordList(const Configuration& config_arg) :
     isread = 0;
     extended = config.Boolean("wordlist_extend");
     verbose =  config.Value("wordlist_verbose",0);
-    const String &keydescfile = config["wordlist_wordkey_description_file"];
-    if(keydescfile.empty())
-    {
-	const String &keydesc = config["wordlist_wordkey_description"];
 
-	if(keydesc.empty())
-	{
-	    cerr << "WordList::WordList: didn't find key description file in config" << endl;
-	}
-	else
-	{
-	    WordKeyInfo::SetKeyDescriptionFromString(keydesc);	
-	}
+    const String &keydescfile = config["wordlist_wordkey_description_file"];
+    const String &keydesc     = config["wordlist_wordkey_description"];
+
+    if(!keydesc.empty())
+    {
+	WordKeyInfo::SetKeyDescriptionFromString(keydesc);
+    }
+    else
+    if(!keydescfile.empty())
+    {
+	WordKeyInfo::SetKeyDescriptionFromFile(keydescfile);
     }
     else
     {
-	WordKeyInfo::SetKeyDescriptionFromFile(keydescfile);
+	if(!word_key_info)
+	{
+	    cerr << "WordList::WordList: didn't find key description (" << word_key_info << ")" << endl;
+	    cerr <<"are you shure you called WordList::Initialize with a valid key description" << endl;
+	}
     }
 }
 

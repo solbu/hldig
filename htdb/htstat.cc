@@ -74,6 +74,8 @@ main(int argc, char *argv[])
 	int wordlist = 0;
 	char *db, *home;
 
+	WordKeyInfo::SetKeyDescriptionFromString("nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0");
+
 	ttype = T_NOTSET;
 	db = home = NULL;
 	memset(&dbinfo, 0, sizeof(dbinfo));
