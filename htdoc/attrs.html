@@ -413,6 +413,57 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="bin_dir">bin_dir</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>,
+			<a href="htnotify.html">htnotify</a>,
+			<a href="htfuzzy.html">htfuzzy</a>,
+			<a href="htmerge.html">htmerge</a> and
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			BIN_DIR
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This is the directory in which the executables
+			related to ht://Dig are installed. It is never used
+			directly by any of the programs, but other attributes
+			can be defined in terms of this one.
+			<p>
+			  The default value of this attribute is determined at
+			  compile time.
+			</p>
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			bin_dir: /usr/local/bin
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="case_sensitive">case_sensitive</a></strong>
 	  </dt>
 	  <dd>
@@ -595,7 +646,8 @@
 		  <dd>
 			If specified and the <a
 			href="http://www.cdrom.com/pub/infozip/zlib/">zlib</a>
-			compression library was available when compiledi controls
+			compression library was available when compiled,
+			this attribute controls
 			the amount of compression used in the <a
 			href="#doc_db">doc_db</a> file. Defaults to zero to
 			provide backward compatility with old databases.
@@ -605,6 +657,58 @@
 		  </dt>
 		  <dd>
 			compression_level: 6
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="config_dir">config_dir</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>,
+			<a href="htnotify.html">htnotify</a>,
+			<a href="htfuzzy.html">htfuzzy</a>,
+			<a href="htmerge.html">htmerge</a> and
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			CONFIG_DIR
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This is the directory which contains all configuration
+			files related to ht://Dig. It is never used
+			directly by any of the programs, but other attributes
+			or the <a href="#include">include</a> directive
+			can be defined in terms of this one.
+			<p>
+			  The default value of this attribute is determined at
+			  compile time.
+			</p>
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			config_dir: /var/htdig/conf
 		  </dd>
 		</dl>
 	  </dd>
@@ -1459,7 +1563,7 @@
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			cgi-bin .cgi
+			/cgi-bin/ .cgi
 		  </dd>
 		  <dt>
 			<em>description:</em>
@@ -2133,6 +2237,103 @@
 		  </dt>
 		  <dd>
 			image_list: allimages
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="image_url_prefix">image_url_prefix</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			IMAGE_URL_PREFIX
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This specifies the directory portion of the URL used
+			to display star images. This attribute isn't directly
+			used by htsearch, but is used in the default URL for
+			the <a href="#star_image">star_image</a> and
+			<a href="#star_blank">star_blank</a> attributes, and
+			other attributes may be defined in terms of this one.
+			<p>
+			  The default value of this attribute is determined at
+			  compile time.
+			</p>
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			image_url_prefix: /images/htdig
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="include">include</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>,
+			<a href="htnotify.html">htnotify</a>,
+			<a href="htfuzzy.html">htfuzzy</a>,
+			<a href="htmerge.html">htmerge</a> and
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This is not quite a configuration attribute, but
+			rather a directive. It can be used within one
+			configuration file to include the definitions of
+			another file. The last definition of an attribute
+			is the one that applies, so after including a file,
+			any of its definitions can be overridden with
+			subsequent definitions. This can be useful when
+			setting up many configurations that are mostly the
+			same, so all the common attributes can be maintained
+			in a single configuration file. The include directives
+			can be nested, but watch out for nesting loops.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			include: ${config_dir}/htdig.conf
 		  </dd>
 		</dl>
 	  </dd>
@@ -4062,6 +4263,11 @@
 		      to a value larger than the size of your largest
 		      PDF file. PDF documents can not be parsed if they
 		      are truncated.
+			<p>
+			  The default value of this attribute is determined at
+			  compile time, to include the path to the acroread
+			  executable.
+			</p>
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -4601,6 +4807,10 @@
 			if no matches were found. In this case the
 			<a href="#nothing_found_file">nothing_found_file</a>
 			attribute is used instead.
+			Also, this file will not be output if it is
+			overridden by defining the
+			<a href="#search_results_wrapper">search_results_wrapper</a>
+			attribute.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -4713,6 +4923,10 @@
 			if no matches were found. In this case the
 			<a href="#nothing_found_file">nothing_found_file</a>
 			attribute is used instead.
+			Also, this file will not be output if it is
+			overridden by defining the
+			<a href="#search_results_wrapper">search_results_wrapper</a>
+			attribute.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -6397,7 +6611,7 @@
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			.-_/!#$%^&amp;*'
+			.-_/!#$%^&amp;'
 		  </dd>
 		  <dt>
 			<em>description:</em>
@@ -6419,6 +6633,50 @@
 		  </dt>
 		  <dd>
 			valid_punctuation: -'
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="version">version</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			VERSION
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This specifies the value of the VERSION
+			variable which can be used in search templates.
+			The default value of this attribute is determined
+			at compile time, and will not normally be set
+			in configuration files.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			version: 3.1.2PL1
 		  </dd>
 		</dl>
 	  </dd>
@@ -6526,7 +6784,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Thu Jul 15 16:51:27 EDT 1999
+Last modified: Mon Aug  9 16:42:03 EDT 1999
 <!-- hhmts end -->
   </body>
 </html>
