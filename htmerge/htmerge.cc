@@ -7,6 +7,9 @@
 //
 //
 // $Log: htmerge.cc,v $
+// Revision 1.12  1999/02/04 00:29:51  ghutchis
+// Updated documentation on command-line flags.
+//
 // Revision 1.11  1999/01/23 18:22:09  ghutchis
 // Unlink the db.docs.index file before we build it again. This ensures we have
 // a clean copy and don't duplicate URLs.
@@ -223,8 +226,8 @@ void usage()
     cout << "\t-d\tDo NOT merge the document database.\n\n";
     cout << "\t-w\tDo NOT merge the word database.\n\n";
     cout << "\t-m merge_configfile\n";
-    cout << "\t\tMerge the databases specified into the databases specified by\n";
-    cout << "\t\t-c or the default.\n\n";
+    cout << "\t\tMerge the databases specified into the databases specified\n";
+    cout << "\t\tby -c or the default.\n\n";
     cout << "\t-c configfile\n";
     cout << "\t\tUse the specified configuration file instead on the\n";
     cout << "\t\tdefault.\n\n";

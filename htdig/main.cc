@@ -4,36 +4,6 @@
 // Indexes the web sites specified in the config file
 // generating several databases to be used by htmerge
 //
-// $Log: main.cc,v $
-// Revision 1.14  1999/01/26 01:29:41  hp
-// Typo
-//
-// Revision 1.13  1999/01/25 01:53:44  hp
-// Provide a clean upgrade from old databses without "url_part_aliases" and
-// "common_url_parts" through the new option "uncoded_db_compatible".
-//
-// Revision 1.12  1999/01/21 13:41:25  ghutchis
-// Check HtURLCodec for errors.
-//
-// Revision 1.11  1999/01/17 20:32:21  ghutchis
-// Added support for url_log, save and restart digs.
-//
-// Revision 1.10  1999/01/02 16:13:30  bergolth
-// added warning message if locale selection failed
-//
-// Revision 1.9  1998/12/19 18:09:03  bergolth
-// Added bad_querystr option.
-//
-// Revision 1.8  1998/12/19 14:39:42  bergolth
-// Added StringList::Join and fixed URL::removeIndex.
-//
-// Revision 1.7  1998/12/05 00:52:55  ghutchis
-//
-// Added a parameter to Initial function to prevent URLs from being checked
-// twice during an update dig.
-//
-// Revision 1.6  1998/12/04 04:13:51  ghutchis
-// Use configure check to only include getopt.h when it exists.
 //
 //
 
@@ -41,8 +11,8 @@
 #include "Retriever.h"
 #include "StringList.h"
 #include "htdig.h"
-#include <defaults.h>
-#include <HtURLCodec.h>
+#include "defaults.h"
+#include "HtURLCodec.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -312,7 +282,7 @@ main(int ac, char **av)
 //
 void usage()
 {
-    cout << "usage: htdig [-v][-i][-c configfile][-t]\n";
+    cout << "usage: htdig [-l][-v][-i][-c configfile][-t]\n";
     cout << "This program is part of ht://Dig " << VERSION << "\n\n";
     cout << "Options:\n";
 
@@ -351,8 +321,10 @@ void usage()
     cout << "\t\tthe original files to be used by htsearch during the\n";
     cout << "\t\tindexing run.\n\n";
 	
-    // FIXME
     cout << "\t-l\tStop and restart.\n";
+    cout << "\t\tReads in the progress of any previous interrupted digs\n";
+    cout << "\t\tfrom the log file and write the progress out if\n";
+    cout << "\t\tinterrupted by a signal.\n\n";
 
     exit(0);
 }
