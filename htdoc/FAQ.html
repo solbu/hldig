@@ -6,7 +6,7 @@
   <body bgcolor="#eef7ff">
 	<h1>Frequently Asked Questions</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
+	  ht://Dig Copyright &copy; 1995-2002 <a href="THANKS.html">The ht://Dig Group</a><br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -91,8 +91,8 @@
 	  space. How can I cut down?</a><br>
 	  4.7. <a href="#q4.7">Can I use SSI or other CGIs in my
 	  htsearch results?</a><br>
-	  4.8. <a href="#q4.8">How do I index Word or PostScript
-	  documents?</a><br>
+	  4.8. <a href="#q4.8">How do I index Word, Excel, PowerPoint
+	  or PostScript documents?</a><br>
 	  4.9. <a href="#q4.9">How do I index PDF files?</a><br>
 	  4.10. <a href="#q4.10">How do I index documents in other
 	  languages?</a><br>
@@ -112,7 +112,7 @@
 	  4.18. <a href="#q4.18">What are all the options in
 	  htdig.conf, and are there others?</a><br>
 	  4.19. <a href="#q4.19">How do I get more than 10 pages of
-	  search results from htsearch?</a><br>
+	  10 search results from htsearch?</a><br>
 	  4.20. <a href="#q4.20">How do I restrict a search to only
 	  certain subdirectories or documents?</a><br>
 	  4.21. <a href="#q4.21">How can I allow people to search
@@ -418,24 +418,29 @@
 	  They volunteer for the benefit of the whole ht://Dig user
 	  community, so don't expect extra support from them outside of
 	  that community. See also questions <a href="#q1.4">1.4</a>
-	  and <a href="#1.5">1.5</a>.</p>
+	  and <a href="#q1.5">1.5</a>.</p>
 
 	  <hr noshade size=2>
 
 	  <h3>2. Getting ht://Dig</h3>
 	  <strong>2.1. <a name="q2.1">What's the latest version of ht://Dig?</a></strong><br>
-	  <p>The latest version is 3.1.5 as of this writing. A beta
+	  <p>The latest version is 3.1.6 as of this writing. A beta
 	  version of the 3.2 code, 3.2.0b3 is also available, for
 	  those who wish to test it.
 	  You can find out about the latest version by reading the
 	  <a href="RELEASE.html">release
 	  notes</a>.</p>
-	  <p><strong>Note</strong> that if you're running any version older than 3.1.5 on
-	  a public web site, you should upgrade immediately, as older
-	  versions have a rather serious security hole which is explained
-	  in detail in this
+          <p><strong>Note</strong> that if you're running any version
+	  older than 3.1.5 (including 3.2.0b1) on a public web site,
+	  you should upgrade immediately, as older versions have a
+	  rather serious security hole which is explained in detail in this
 	  <a href="http://htdig.sourceforge.net/htdig-dev/2000/02/0272.html">advisory</a>
 	  which was sent to the BugTraq mailing list.
+	  Another slightly less serious, but still troubling security hole
+	  exists in 3.1.5 and older (including 3.2.0b3 and older), so you
+	  should upgrade if you're running one of these. You can view details
+	  on this vulnerability from the
+	  <a href="http://www.securityfocus.com/bid/3410">bugtraq mailing list.</a>
 	  </p>
 
 	  <strong>2.2. <a name="q2.2">Are there binary distributions of
@@ -667,60 +672,63 @@ following line would do it:<br>
 	  For other alternatives, see question <a href="#q4.11">4.11</a>.
 	  </p>
 
-	  <strong>4.8. <a name="q4.8">How do I index Word or PostScript
-	  documents?</a></strong><br>
-	  <p>This must be done with an external parser or converter. A sample of
-	  such a parser is the contrib/parse_doc.pl Perl script. It will
-	  parse Word, PostScript and PDF documents, when used with the
-	  appropriate document to text converters. It uses catdoc to parse
-	  Word documents, and ps2ascii to parse PostScript files. The
-	  comments in the Perl script indicate where you can obtain
-	  these converters.</p>
+	  <strong>4.8. <a name="q4.8">How do I index Word, Excel, PowerPoint
+	  or PostScript documents?</a></strong><br>
+	  <p>This must be done with an
+	  <a href="attrs.html#external_parsers">external parser or converter</a>.
+	  A sample of such an external converter is the
+	  contrib/doc2html/doc2html.pl Perl script.
+	  It will parse Word, PostScript, PDF and other documents, when used
+	  with the appropriate document to text converters. It uses catdoc to
+	  parse Word documents, and ps2ascii to parse PostScript files. The
+	  comments in the Perl script and accompanying documentation
+	  indicate where you can obtain these converters.</p>
 
-	  <p>As of htdig version 3.1.4, you can use an external converter,
-	  such as contrib/conv_doc.pl or the newer and more complete
-	  doc2html.pl Perl script, instead of an external parser. These
-	  scripts are simpler to write and maintain than a full external
-	  parser, as they just convert input documents to text/plain or
-	  text/html, and pass that back to htdig to be parsed. Parsing
-	  is more consistent across document types as a result.</p>
+	  <p>Versions of htdig before 3.1.4 don't support external converters,
+	  so you have to use an external parser script such as
+	  contrib/parse_doc.pl (or better yet, upgrade htdig if you can).
+	  External converter scripts are simpler to write and maintain than a
+	  full external parser, as they just convert input documents to
+	  text/plain or text/html, and pass that back to htdig to be parsed.
+	  Parsing is more consistent across document types with external
+	  converters, because the final work is done by htdig's internal
+	  parsers.  External parser scripts tend to be hacks that don't
+	  recognize a lot of the parsing attributes in your htdig.conf, so
+	  they have to be hacked some more when you change your attributes.</p>
 
 	  <p>The most recent versions of parse_doc.pl, conv_doc.pl and
 	  the doc2html package are available on our <a
-	  href="ftp://ftp.htdig.org/pub/htdig/contrib/parsers/">FTP
-	  site</a>.<br>
-	   See below for an example of parse_doc.pl, or see the comments in
-	  conv_doc.pl or the documentation for doc2html for examples of
-	  their usage.</p>
+	  href="http://www.htdig.org/files/contrib/parsers/">web site</a>.<br>
+	   See below for an example of doc2html.pl, or see the comments in
+	  conv_doc.pl and parse_doc.pl, or the documentation for doc2html
+	  for examples of their usage.</p>
 
 	  <strong>4.9. <a name="q4.9">How do I index PDF files?</a></strong><br>
-	  <p>This too can be done with an external parser or converter, in
-	  combination with the pdftotext program that is part of the <a
-	  href="http://www.foolabs.com/xpdf/">xpdf</a> 0.90 package. A
-	  sample of such a parser is the contrib/parse_doc.pl Perl
+	  <p>This too can be done with an
+	  <a href="attrs.html#external_parsers">external parser or converter</a>,
+	  in combination with the pdftotext program that is part of the
+	  <a href="http://www.foolabs.com/xpdf/">xpdf</a> 0.90 package. A
+	  sample of such a converter is the doc2html.pl Perl
 	  script. It uses pdftotext to parse PDF documents, then processes
 	  the text into external parser records.
-	  The most recent version of parse_doc.pl is available on our <a
-	  href="ftp://ftp.htdig.org/pub/htdig/contrib/parsers/">FTP
+	  The most recent version of doc2html.pl is available on our <a
+	  href="http://www.htdig.org/files/contrib/parsers/">web
 	  site</a>.</p>
 
 	  <p>For example, you could put this in your configuration file:</p>
 <pre>
-external_parsers: application/msword /usr/local/bin/parse_doc.pl \
-                  application/postscript /usr/local/bin/parse_doc.pl \
-                  application/pdf /usr/local/bin/parse_doc.pl
+<a href="attrs.html#external_parsers">external_parsers</a>: application/msword-&gt;text/html /usr/local/bin/doc2html.pl \
+                  application/postscript-&gt;text/html /usr/local/bin/doc2html.pl \
+                  application/pdf-&gt;text/html /usr/local/bin/doc2html.pl
 </pre>
 	  <p>You would also need to configure the script to indicate where all
-	  of the document to text converters are installed.</p>
+	  of the document to text converters are installed. See the DETAILS
+	  file that comes with doc2html for more information.</p>
 
-	  <p>As of htdig version 3.1.4, you can use an external converter,
-	  such as contrib/conv_doc.pl or the newer and more complete
-	  doc2html.pl Perl script, also available on our <a
-	  href="ftp://ftp.htdig.org/pub/htdig/contrib/parsers/">FTP site</a>,
-	  instead of an external parser. These scripts are simpler, and offer
-	  more consistent parsing, because the final work is done by htdig's
-	  internal parsers. See the comments inside these scripts for an
-	  example of their usage.</p>
+	  <p>Versions of htdig before 3.1.4 don't support external converters,
+	  so you have to use an external parser script such as
+	  contrib/parse_doc.pl (or better yet, upgrade htdig if you can).
+	  See question <a href="#q4.8">4.8</a> above.</p>
 
 	  <p>Whether you use this external parser or converter, or acroread
 	  with the <a href="attrs.html#pdf_parser">pdf_parser</a> attribute,
@@ -740,7 +748,7 @@ external_parsers: application/msword /usr/local/bin/parse_doc.pl \
 	  text. Also, the built-in PDF support expected PDF documents to
 	  use the same character encoding as is defined in your current
 	  <a href="attrs.html#locale">locale</a>, which isn't always the
-	  case. The external parser, which uses pdftotext, was developed
+	  case. The external converters, which use pdftotext, were developed
 	  to overcome these problems. xpdf 0.90 is free software, and its
 	  pdftotext utility works very well as an indexing tool.
 	  It also converts various PDF encodings to the Latin 1 set.
@@ -752,7 +760,11 @@ external_parsers: application/msword /usr/local/bin/parse_doc.pl \
 	  <p>Also, pdftotext still has some difficulty handling text in
 	  landscape orientation, even with its new -raw option in 0.90,
 	  so if you need to index such text in PDFs, you may still get
-	  better results with acroread.</p>
+	  better results with acroread. The pdf_parser attribute has been
+	  removed from the 3.2 beta releases of htdig, so to use acroread
+	  with htdig 3.2.0b4 or other 3.2 betas, use the acroconv.pl
+	  external converter script from our <a
+	  href="http://www.htdig.org/files/contrib/parsers/">web site</a>.</p>
 
 	  <p>See also question <a href="#q5.2">5.2</a> below and
 	  question <a href="#q1.13">1.13</a> above.</p>
@@ -1569,7 +1581,7 @@ find /path/to/your/document/root -type f -name \*.html -print | \
 	  <br>
 
 	  <hr noshade size=4>
-	  	Last modified: $Date: 2002/02/01 22:49:29 $
+	  	Last modified: $Date: 2002/12/30 12:42:58 $
 <br> 
     <a href="http://sourceforge.net/"> 
           <img src="http://sourceforge.net/sflogo.php?group_id=4593&amp;type=1" width="88" height="31" border="0" alt="SourceForge Logo"></a>

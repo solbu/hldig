@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.65 2002/09/25 18:58:19 grdetil Exp $
+// $Id: HTML.cc,v 1.66 2002/12/30 12:42:58 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -41,6 +41,8 @@ static StringMatch	tags;
 static StringMatch	nobreaktags;
 static StringMatch	spacebeforetags;
 static StringMatch	spaceaftertags;
+static StringMatch	metadatetags;
+static StringMatch	descriptionMatch;
 static StringMatch	keywordsMatch;
 static int		keywordsCount;
 static int		max_keywords;
@@ -95,6 +97,16 @@ HTML::HTML()
     spaceaftertags.IgnoreCase();
     spaceaftertags.Pattern("/title|/h1|/h2|/h3|/h4|/h5|/h6|/address|/blockquote");
 
+    // These are the name values of meta tags that carry date information.
+    metadatetags.IgnoreCase();
+    metadatetags.Pattern("date|dc.date|dc.date.created|dc.data.modified");
+
+    // These are the name values of meta tags that carry descriptions.
+    StringList descrNames(config->Find("description_meta_tag_names"), " \t");
+    descriptionMatch.IgnoreCase();
+    descriptionMatch.Pattern(descrNames.Join('|'));
+
+    // These are the name values of meta tags that carry keywords.
     StringList keywordNames(config->Find("keywords_meta_tag_names"), " \t");
     keywordsMatch.IgnoreCase();
     keywordsMatch.Pattern(keywordNames.Join('|'));
@@ -477,10 +489,11 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 void
 HTML::do_tag(Retriever &retriever, String &tag)
 {
+	HtConfiguration* config= HtConfiguration::config();
     int			wordindex = 1;
     char		*position = tag.get();
     int			which, length;
-	HtConfiguration* config= HtConfiguration::config();
+    static int		ignore_alt_text = config->Boolean("ignore_alt_text", 0);
 
     while (isspace(*position))
 	position++;
@@ -729,11 +742,9 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    {
 		const String cache = attrs["name"];
 
-		which = -1; // What does it do?
-
 		  // First of all, check for META description
 
-		  if (mystrcasecmp(cache, "description") == 0 
+		  if (descriptionMatch.CompareWord(cache) 
 			 && !attrs["content"].empty())
 		  {
 		    //
@@ -787,7 +798,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		{
 		    retriever.got_meta_email(transSGML(attrs["content"]));
 		}
-		else if (mystrcasecmp(cache, "date") == 0 && 
+		else if (metadatetags.CompareWord(cache) && 
 			 config->Boolean("use_doc_date",0))
 		  {
 		    retriever.got_time(transSGML(attrs["content"]));
@@ -907,7 +918,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	
 	case 18: // img
 	  {
-	    if (!attrs["alt"].empty())
+	    if (!ignore_alt_text && !attrs["alt"].empty())
 	      {
 		String tmp = transSGML(attrs["alt"]);
 		if (!noindex && in_title)

@@ -186,15 +186,24 @@
 		documents outside the range of dates within the year.  Thus
 		it is impossible, for example, to restrict a search to
 		documents dated "December".<br>
-		 The default is the full range of documents in the database.
+		Incompletely specified end dates are interpreted as follows:<br>
+		<table>
+		    <tr><th>Date</th>   <th>Becomes</th></tr>
+		    <tr><td>04-31</td>  <td>04-31- end of time</td></tr>
+		    <tr><td>05-1999</td><td>05-31-1999</td></tr>
+		    <tr><td>1999</td>   <td>12-31-1999</td></tr>
+		</table><br>
+		The default is the full range of documents in the database.
 		These values can also be specified by configuration attributes
 		of the same names in the
 		<a href="attr.html#startyear">configuration file</a>.
+		If a negative number is given for any of these, it is taken
+		as relative to the current year, month or day.
 	  </dd>
 	</dl>
 	<hr size="4" noshade>
 
-	Last modified: $Date: 2002/11/27 05:18:09 $
+	Last modified: $Date: 2002/12/30 12:42:59 $
 
   </body>
 </html>

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.cc,v 1.24 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: parser.cc,v 1.25 2002/12/30 12:42:59 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -21,10 +21,13 @@
 #include "HtPack.h"
 #include "Collection.h"
 #include "Dictionary.h"
+#include "QuotedStringList.h"
 
 #define	WORD	1000
 #define	DONE	1001
 
+QuotedStringList	boolean_syntax_errors;
+enum ErrorIndices { EXPECTED, SEARCH_WORD, AT_END, INSTEAD_OF, END_OF_EXPR, QUOTE };
 
 //*****************************************************************************
 Parser::Parser() :
@@ -45,6 +48,22 @@ Parser::Parser() :
 int
 Parser::checkSyntax(List *tokenList)
 {
+	HtConfiguration* config= HtConfiguration::config();
+    void	reportError(char *);
+    // Load boolean_syntax_errors from configuration
+    // they should be placed in this order:
+    // 0        1               2            3            4
+    // Expected "a search word" "at the end" "instead of" "end of expression"
+    // 5
+    // "a closing quote"
+    boolean_syntax_errors.Create(config->Find("boolean_syntax_errors"), "| \t\r\n\001");
+    if (boolean_syntax_errors.Count() == 5)
+    {	// for backward compatibility
+	boolean_syntax_errors.Add (new String ("a closing quote"));
+	if (debug)
+	    cerr << "Parser::checkSyntax() : boolean_syntax_errors should have six entries\n";
+    } else if (boolean_syntax_errors.Count() != 6)
+	reportError("boolean_syntax_errors attribute should have six entries");
     tokens = tokenList;
     valid = 1;
     fullexpr(0);
@@ -52,6 +71,9 @@ Parser::checkSyntax(List *tokenList)
 }
 
 //*****************************************************************************
+/* Called by:	Parser::parse(List*, ResultList&), checkSyntax(List*) */
+/* Inputs:	output -- if zero, simply check syntax */
+/* 		       otherwise, list matching documents in head of "stack" */
 void
 Parser::fullexpr(int output)
 {
@@ -60,7 +82,7 @@ Parser::fullexpr(int output)
     expr(output);
     if (valid && lookahead != DONE)
     {
-	setError("end of expression");
+	setError(boolean_syntax_errors[END_OF_EXPR]);
     }
 }
 
@@ -90,7 +112,8 @@ Parser::lexan()
 //*****************************************************************************
 //   Attempt to deal with expressions in the form
 //		term | term | term ...
-//
+/* Called by:	Parser::fullexpr(int), factor(int) */
+/* Inputs:	output -- if zero, simply check syntax */
 void
 Parser::expr(int output)
 {
@@ -112,11 +135,18 @@ Parser::expr(int output)
     }
     if (valid && lookahead == WORD)
     {
-	setError("'AND' or 'OR'");
+	String	expected = "'";
+	expected << boolean_keywords[AND] << "' "<< boolean_keywords[OR] <<" '"
+		 << boolean_keywords[OR] << "'";
+	setError(expected.get());
     }
 }
 
 //*****************************************************************************
+//   Attempt to deal with terms in the form
+//		factor & factor & factor ...
+/* Called by:	Parser::expr(int) */
+/* Inputs:	output -- if zero, simply check syntax */
 void
 Parser::term(int output)
 {
@@ -153,6 +183,9 @@ Parser::term(int output)
 }
 
 //*****************************************************************************
+/* Gather and score a (possibly bracketed) boolean expression */
+/* Called by:	Parser::term(int) */
+/* Inputs:	output -- if zero, simply check syntax */
 void
 Parser::factor(int output)
 {
@@ -182,11 +215,15 @@ Parser::factor(int output)
     }
     else
     {
-    	setError("a search word, a quoted phrase, a boolean expression between ()");
+    	setError(boolean_syntax_errors[SEARCH_WORD]);
+//    	setError("a search word, a quoted phrase, a boolean expression between ()");
     }
 }
 
 //*****************************************************************************
+/* Gather and score a quoted phrase */
+/* Called by:	Parser::factor(int) */
+/* Inputs:	output -- if zero, simply check syntax */
 void
 Parser::phrase(int output)
 {
@@ -215,7 +252,7 @@ Parser::phrase(int output)
 	    }
           else if (lookahead == DONE)
            {
-	     setError("missing quote");
+	     setError(boolean_syntax_errors[QUOTE]);
 	     break;
            }
 
@@ -244,20 +281,26 @@ Parser::setError(char *expected)
     {
 	valid = 0;
 	error = 0;
-	error << "Expected " << expected;
+	error << boolean_syntax_errors[EXPECTED] << ' ' << expected;
 	if (lookahead == DONE || !current)
 	{
-	    error << " at the end";
+	    error << ' ' << boolean_syntax_errors[AT_END];
 	}
 	else
 	{
-	    error << " instead of '" << current->word.get();
-	    error << '\'';
+	    error << ' ' << boolean_syntax_errors[INSTEAD_OF] << " '"
+		  << current->word.get() << "'";
 	    switch (lookahead)
 	    {
-	    case '&':	error << " or 'AND'";	break;
-	    case '|':	error << " or 'OR'";	break;
-	    case '!':	error << " or 'NOT'";	break;
+	    case '&':	error << ' ' << boolean_keywords[OR] << " '"
+			      << boolean_keywords[AND] << "'";
+			break;
+	    case '|':	error << ' ' << boolean_keywords[OR] << " '"
+			      << boolean_keywords[OR] << "'";
+			break;
+	    case '!':	error << ' ' << boolean_keywords[OR] << " '"
+			      << boolean_keywords[NOT] << "'";
+			break;
 	    }
 	}
 	if (debug) cerr << "Syntax error: " << error << endl;
@@ -277,6 +320,49 @@ Parser::perform_push()
 
     if(debug)
 	cerr << "perform_push @"<< stack.Size() << ": " << temp << endl;
+
+    String	wildcard = config->Find("prefix_match_character");
+    if (!wildcard)
+        wildcard = "*";
+    if (temp == wildcard)
+    {
+	if (debug) cerr << "Wild card search\n";
+    	ResultList	*list = new ResultList;
+	String		doc_db = config->Find("doc_db");
+	DocumentDB	docdb;
+	docdb.Read(doc_db);
+	List		*docs = docdb.DocIDs();
+
+	//
+	// Traverse all the known documents
+	//
+	DocumentRef	*ref;
+	IntObject	*id;
+	DocMatch	*dm;
+	docs->Start_Get();
+	while ((id = (IntObject *) docs->Get_Next()))
+	{
+	    ref = docdb[id->Value()];
+	    if (debug)
+		cerr << (ref ? "Wildcard match" : "Wildcard empty") << endl;
+	    if (ref)
+	    {
+		dm = new DocMatch;
+		dm->score = current->weight;
+		dm->id = ref->DocID();
+		dm->orMatches = 1;
+		dm->anchor = 0;
+		list->add(dm);
+	    }
+	    delete ref;
+	}
+	delete docs;
+	stack.push(list);
+
+        return;
+    }
+
+    // Must be after wildcard: "*" is "isIgnore" because it is too short.
     if (current->isIgnore)
     {
 	if(debug) cerr << "ignore: " << temp << " @" << stack.Size() << endl;
@@ -300,6 +386,9 @@ Parser::perform_push()
 }
 
 //*****************************************************************************
+// BUG:  Phrases containing "bad words" can have *any* "bad word" in that
+//       position.  Words less than  minimum_word_length  ignored entirely,
+//       as they are not indexed.
 void
 Parser::perform_phrase(List * &oldWords)
 {
@@ -309,6 +398,9 @@ Parser::perform_phrase(List * &oldWords)
     char	*p;
     List	*newWords = 0;
     HtWordReference *oldWord, *newWord;
+
+    // how many words ignored since last checked word?
+    static int	ignoredWords;
 
     // if the query is empty, no further effort is needed
     if(oldWords && oldWords->Count() == 0)
@@ -323,6 +415,8 @@ Parser::perform_phrase(List * &oldWords)
 	//
 	// This word needs to be ignored.  Make it so.
 	//
+	if (temp.length() >= config->Value ("minimum_word_length"))
+	    ignoredWords++;
 	if(debug) cerr << "ignoring: " << temp << endl;
 	return;
     }
@@ -381,7 +475,7 @@ Parser::perform_phrase(List * &oldWords)
 	oid << did;
 	oid << "-";
 	int loc = oldWord->Location();
-	oid << loc+1;
+	oid << loc + ignoredWords+1;
 	if (newDict.Exists(oid))
 	  {
 	    newWord = (HtWordReference *)newDict.Find(oid);
@@ -394,6 +488,7 @@ Parser::perform_phrase(List * &oldWords)
 	    results->Add(result);
 	  }
       }
+    ignoredWords = 0;	// most recent word is not a non-ignored word
 
     newDict.Release();
 
@@ -480,6 +575,7 @@ Parser::score(List *wordList, double weight)
 	dm = new DocMatch;
 	dm->id = wr->DocID();
 	dm->score = wscore;
+	dm->orMatches = 1;		// how many "OR" terms this doc has
 	dm->anchor = docanchor;
 	list->add(dm);
       }
@@ -561,13 +657,18 @@ Parser::perform_and()
 	if (dm2)
 	{
 	    //
-	    // Duplicate document.  We just need to add the scored together.
+	    // Duplicate document.  Add scores and average "OR-matches" count
 	    //
 	    dm3 = new DocMatch;
-	    dm3->score = dm->score + (dm2 ? dm2->score : 0);
+//		"if (dm2)" means "?:" operator not needed...
+//	    dm3->score = dm->score + (dm2 ? dm2->score : 0);
+//	    dm3->orMatches = (dm->orMatches + (dm2 ? dm2->orMatches : 0))/2;
+	    dm3->score = dm->score + dm2->score;
+	    dm3->orMatches = (dm->orMatches + dm2->orMatches)/2;
 	    dm3->id = dm->id;
 	    dm3->anchor = dm->anchor;
-	    if (dm2 && dm2->anchor < dm3->anchor)
+//	    if (dm2 && dm2->anchor < dm3->anchor)
+	    if (dm2->anchor < dm3->anchor)
 		dm3->anchor = dm2->anchor;
 	    result->add(dm3);
 	}
@@ -604,6 +705,7 @@ Parser::perform_not()
     if(!l2)
     {
 	if(debug) cerr << "not: no positive term, pushing 0 @" << stack.Size() << endl;
+	// Should probably be interpreted as "* not l1"
 	stack.push(0);
 	if(l1) delete l1;
 	return;
@@ -631,10 +733,11 @@ Parser::perform_not()
 	if (!dm2)
 	{
 	    //
-	    // Duplicate document.  We just need to add the scored together.
+	    // Duplicate document.
 	    //
 	    dm3 = new DocMatch;
 	    dm3->score = dm->score;
+	    dm3->orMatches = dm->orMatches;
 	    dm3->id = dm->id;
 	    dm3->anchor = dm->anchor;
 	    result->add(dm3);
@@ -712,9 +815,10 @@ Parser::perform_or()
 	if (dm2)
 	{
 	    //
-	    // Duplicate document.  We just need to add the scores together
+	    // Update document.  Add scores and add "OR-match" counts
 	    //
 	    dm2->score += dm->score;
+	    dm2->orMatches += dm->orMatches;
 	    if (dm->anchor < dm2->anchor)
 		dm2->anchor = dm->anchor;
 	}
@@ -722,6 +826,7 @@ Parser::perform_or()
 	{
 	    dm2 = new DocMatch;
 	    dm2->score = dm->score;
+	    dm2->orMatches = dm->orMatches;
 	    dm2->id = dm->id;
 	    dm2->anchor = dm->anchor;
 	    result->add(dm2);
@@ -740,6 +845,7 @@ Parser::perform_or()
 void
 Parser::parse(List *tokenList, ResultList &resultMatches)
 {
+	HtConfiguration* config= HtConfiguration::config();
     tokens = tokenList;
     fullexpr(1);
 
@@ -755,10 +861,18 @@ Parser::parse(List *tokenList, ResultList &resultMatches)
     HtVector	*elements = result->elements();
     DocMatch	*dm;
 
+    // multimatch_factor  gives extra weight to matching documents which
+    // contain more than one "OR" term.  This is applied after the whole
+    // document is parsed, so multiple matches don't give exponentially
+    // increasing weights
+    double multimatch_factor = config->Double("multimatch_factor");
+
     for (int i = 0; i < elements->Count(); i++)
     {
 	dm = (DocMatch *) (*elements)[i];
         dm->collection = collection; // back reference
+	if (dm->orMatches > 1)
+	    dm->score *= multimatch_factor;
 	resultMatches.add(dm);
     }
     elements->Release();

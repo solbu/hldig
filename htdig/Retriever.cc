@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.77 2002/06/18 15:25:57 ghutchis Exp $
+// $Id: Retriever.cc,v 1.78 2002/12/30 12:42:58 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -483,6 +483,7 @@ Retriever::parse_url(URLRef &urlRef)
     time_t		date;
     static int		index = 0;
     static int		local_urls_only = config->Boolean("local_urls_only");
+    static int		mark_dead_servers = config->Boolean("ignore_dead_servers");
     Server		*server;
 
     url.parse(urlRef.GetURL().get());
@@ -693,7 +694,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    words.Skip();
 
 	    // Mark the server as being down
-	    if (server)
+	    if (server && mark_dead_servers)
 	      server->IsDead(1);
 	    break;
 
@@ -707,7 +708,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    words.Skip();
 
 	    // Mark the server as being down
-	    if (server)
+	    if (server && mark_dead_servers)
 	      server->IsDead(1);
 	    break;
 
@@ -767,7 +768,7 @@ Retriever::parse_url(URLRef &urlRef)
 	     cout << " service not recognized" << endl;
 
 	    // Mark the server as being down
-	    if (server)
+	    if (server && mark_dead_servers)
 	      server->IsDead(1);
 	    words.Skip();
 	   break;
@@ -1557,6 +1558,9 @@ Retriever::got_redirect(const char *new_url, DocumentRef *old_ref,
     // First we must piece together the new URL, which may be relative
     URL parent(old_ref->DocURL());
     URL	url(new_url, parent);
+
+    // Rewrite the URL (if need be) before we do anything to it.
+    url.rewrite();
 
     if (debug > 2)
 	cout << "redirect: " << url.get() << endl;

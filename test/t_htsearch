@@ -5,7 +5,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_htsearch,v 1.5 1999/10/05 16:03:32 loic Exp $
+# $Id: t_htsearch,v 1.6 2002/12/30 12:42:59 lha Exp $
 #
 
 . $srcdir/t_htdig
@@ -24,8 +24,10 @@ try() {
 	if grep "$pattern" $tmp > /dev/null 
 	then :
 	else
-	    fail "$htsearch -c $config '$query' > $tmp:
-    $comment"
+	    $htsearch -v -c $config "$query" > /dev/null
+	    echo "Output doesn't match \"$pattern\""
+	    fail "$htsearch -c $config '$query' >> $tmp --
+		  $comment"
 	fi
     done
 }
@@ -57,6 +59,62 @@ try "Boolean and/or mixed 'also or distribution and ltd'" \
 try "Boolean explicit priority '(also or distribution) and ltd'" \
     "method=boolean&words=(also+or+distribution)+and+ltd" \
     '2 matches' 'script.html' 'site1.html'
+
+try "Wildcard search for '*'" \
+    "method=and&words=*" \
+    '7 matches' 'set1/title.html' 'set1/site2.html' 'set1/script.html' 'set1/"' 'set1/site3.html' 'set1/site4.html' 'set1/site1.html'
+
+try "Phrase search for '\"who offer\" and \"loans to graduate\"'" \
+    "method=boolean&words=%22who+offer%22+and+%22loans+to+graduate%22" \
+    '1 match' 'site4.html'
+
+try "Phrase search for 'may be deferred' -- stop words at start" \
+    "method=boolean&words=%22may+be+deferred%22" \
+    '1 match' 'site4.html'
+
+try "Phrase search for 'Repayment may be' -- stop words at end" \
+    "method=boolean&words=%22Repayment+may+be%22" \
+    '1 match' 'site4.html'
+
+# This test fails
+#
+#try "Phrase search for 'may be' -- all stop words" \
+#    "method=boolean&words=%22may+be%22" \
+#    '1 match' 'site4.html'
+
+try "Phrase search for 'Repayment may be deferred' -- stop words in middle" \
+    "method=boolean&words=%22Repayment+may+be+deferred%22" \
+    '1 match' 'site4.html'
+
+try "Phrase search for 'Repayment deferred' -- phrase interrupted by stop words" \
+    "method=boolean&words=%22Repayment+deferred%22" \
+    'No match'
+
+try "Syntax error: finishing with 'and'" \
+    "method=boolean&words=also+and" \
+    'Expected a search word, a quoted phrase or a boolean expression between () at the end'
+
+try "Syntax error: excess open brackets" \
+    "method=boolean&words=(also+or+distribution" \
+    "Expected ')' at the end"
+
+try "Syntax error: excess close brackets" \
+    "method=boolean&words=also+or+distribution)" \
+    "Expected end of expression instead of ')'"
+
+try "Syntax error: missing end quote" \
+    "method=boolean&words=also+or+%22distribution" \
+    'Expected quotes at the end'
+
+config=$testdir/conf/htdig.conf3
+
+try "Testing boolean_keywords and search_rewrite_urls" \
+    "method=boolean&words=also+ou+distribution+et+ltd" \
+    '4 matches' 'place2.html' 'script.html' 'place4.html' 'place1.html'
+
+try "Testing boolean_syntax_errors" \
+    "method=boolean&words=ou+distribution" \
+    "Attendait un mot au lieu de '|' ou 'ou'"
 
 rm -f $tmp
 

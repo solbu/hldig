@@ -20,9 +20,6 @@ KNOWN BUGS:
    wordlist_compress set but work fine without wordlist_compress.
    (the date is definitely stored correctly, even with compression on
     so this must be some sort of weird htsearch bug) PR#618737.
-* Not all htsearch input parameters are handled properly: PR#405278. Use a
-   consistant mapping of input -> config -> template for all inputs where
-   it makes sense to do so (everything but "config" and "words"?).
 * META descriptions are somehow added to the database as FLAG_TITLE,
    not FLAG_DESCRIPTION. (PR#618738)
 
@@ -33,7 +30,6 @@ PENDING PATCHES (available but need work):
 
 NEEDED FEATURES:
 * Field-restricted searching. (e.g. PR#460833)
-* Return all URLs. (PR#618743)
 * Handle noindex_start & noindex_end as string lists.
 * Quim's new htsearch/qtest query parser framework.
 * File/Database locking. PR#405764.
@@ -41,8 +37,6 @@ NEEDED FEATURES:
 TESTING:
 * httools programs: 
   (htload a test file, check a few characteristics, htdump and compare)
-* Turn on URL parser test as part of test suite.
-* htsearch phrase support tests
 * Tests for new config file parser
 * Duplicate document detection while indexing
 * Major revisions to ExternalParser.cc, including fork/exec instead of popen,
@@ -63,8 +57,7 @@ DOCUMENTATION:
 * Turn defaults.cc into an XML file for generating documentation and 
   defaults.cc.
 * require.html is not updated to list new features and disk space
-   requirements of 3.2.x (e.g. phrase searching, regex matching,
-   external parsers and transport methods, database compression.)
+   requirements of 3.2.x (e.g. regex matching, database compression.)
    PRs# 405280 #405281.
 * TODO.html has not been updated for current TODO list and
    completions.

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Synonym.cc,v 1.10 2002/02/01 22:49:33 ghutchis Exp $
+// $Id: Synonym.cc,v 1.11 2002/12/30 12:42:59 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -94,6 +94,16 @@ Synonym::createDB(const HtConfiguration &config)
     while (fgets(input, sizeof(input), fl))
     {
 	StringList	sl(input, " \t\r\n");
+	if (sl.Count() < 2)
+	{		// Avoid segfault caused by calling Database::Put()
+	    if (debug)	// with negative length for data field
+	    {
+		cout<<"htfuzzy/synonyms: Rejected line with less than 2 words: "
+		     << input << endl;
+		cout.flush();
+	    }
+	    continue;
+	}
 	for (int i = 0; i < sl.Count(); i++)
 	{
 	    data = 0;

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.19 2002/02/01 22:49:29 ghutchis Exp $
+// $Id: Server.cc,v 1.20 2002/12/30 12:42:58 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -48,16 +48,16 @@ Server::Server(URL u, StringList *local_robots_files)
       cout << endl << "New server: " << _host << ", " << _port << endl;
 
     // We take it from the configuration
-    _persistent_connections = config->Boolean("server", _host,"persistent_connections");
-    _head_before_get = config->Boolean("server", _host,"head_before_get");
+    _persistent_connections = config->Boolean("server", _host.get(),"persistent_connections");
+    _head_before_get = config->Boolean("server", _host.get(),"head_before_get");
 
-    _max_documents = config->Value("server",_host,"server_max_docs");
-    _connection_space = config->Value("server",_host,"server_wait_time");
-    _user_agent = config->Find("server", _host, "user_agent");
-    _disable_cookies = config->Boolean("server", _host, "disable_cookies");
+    _max_documents = config->Value("server",_host.get(),"server_max_docs");
+    _connection_space = config->Value("server",_host.get(),"server_wait_time");
+    _user_agent = config->Find("server", _host.get(), "user_agent");
+    _disable_cookies = config->Boolean("server", _host.get(), "disable_cookies");
 
     // Accept-Language directive
-    StringList _accept_language_list(config->Find("server", _host,
+    StringList _accept_language_list(config->Find("server", _host.get(),
       "accept_language"), " \t");
 
     _accept_language.trunc(); // maybe not needed
@@ -71,13 +71,13 @@ Server::Server(URL u, StringList *local_robots_files)
     }
     
     // Timeout setting
-    _timeout = config->Value("server",_host,"timeout");
+    _timeout = config->Value("server",_host.get(),"timeout");
 
     // Number of consecutive attempts to establish a TCP connection
-    _tcp_max_retries = config->Value("server",_host,"tcp_max_retries");
+    _tcp_max_retries = config->Value("server",_host.get(),"tcp_max_retries");
 
     // Seconds to wait after a timeout occurs
-    _tcp_wait_time = config->Value("server",_host,"tcp_wait_time");
+    _tcp_wait_time = config->Value("server",_host.get(),"tcp_wait_time");
 
 
     if (debug)

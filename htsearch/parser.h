@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.h,v 1.14 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: parser.h,v 1.15 2002/12/30 12:42:59 lha Exp $
 //
 
 #ifndef _parser_h_
@@ -70,6 +70,8 @@ protected:
     HtWordList		words;
 };
 
+extern StringList	boolean_keywords;
+enum KeywordIndices	{ AND, OR, NOT };
 
 #endif
 

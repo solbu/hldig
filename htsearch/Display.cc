@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.105 2002/06/14 22:31:39 grdetil Exp $
+// $Id: Display.cc,v 1.106 2002/12/30 12:42:59 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -25,9 +25,11 @@
 #include "URL.h"
 #include "HtSGMLCodec.h"
 #include "HtURLCodec.h"
+#include "HtURLRewriter.h"
 #include "WordType.h"
 #include "Collection.h"
 #include "HtURLSeedScore.h"
+#include "HtURLRewriter.h"
 #include "SplitMatches.h"
 
 #include <fstream.h>
@@ -133,6 +135,7 @@ Display::display(int pageNumber)
         logSearch(pageNumber, matches);
     }
 
+    displayHTTPheaders();
     setVariables(pageNumber, matches);
 	
     //
@@ -147,15 +150,15 @@ Display::display(int pageNumber)
 	// No matches.
 	//
         delete matches;
-	if( config->Boolean("nph") ) cout << "HTTP/1.0 200 OK\r\n";
-	cout << "Content-type: text/html\r\n\r\n";
+//	if( config->Boolean("nph") ) cout << "HTTP/1.0 200 OK\r\n";
+//	cout << "Content-type: text/html\r\n\r\n";
 	displayNomatch();
 	return;
     }
     // maxScore = match->getScore();	// now done in buildMatchList()
     	
-    if( config->Boolean("nph") ) cout << "HTTP/1.0 200 OK\r\n";
-    cout << "Content-type: text/html\r\n\r\n";
+//    if( config->Boolean("nph") ) cout << "HTTP/1.0 200 OK\r\n";
+//    cout << "Content-type: text/html\r\n\r\n";
     String	wrap_file = config->Find("search_results_wrapper");
     String	*wrapper = 0;
     char	*header = 0, *footer = 0;
@@ -259,9 +262,13 @@ Display::displayMatch(ResultMatch *match, DocumentRef *ref, int current)
 	HtConfiguration* config= HtConfiguration::config();
     String	*str = 0;
 
-    char    *url = ref->DocURL();
-    vars.Add("URL", new String(url));
+    char    *coded_url = ref->DocURL();
+    String url = HtURLCodec::instance()->decode(coded_url);
+    HtURLRewriter::instance()->replace(url);
+    ref->DocURL(url.get());	// for star_patterns & template_patterns match
+    vars.Add("URL", new String(url.get()));
     
+    vars.Remove("ANCHOR");	// get rid of any previous setting
     int     iA = ref->DocAnchor();
     
     String  *anchor = 0;
@@ -306,7 +313,7 @@ Display::displayMatch(ResultMatch *match, DocumentRef *ref, int current)
 	if ( strcmp(config->Find("no_title_text"), "filename") == 0 )
 	  {
 	    // use actual file name
-	    title = strrchr(url, '/');
+	    title = strrchr(url.get(), '/');
 	    if (title)
 	      {
 		title++; // Skip slash
@@ -623,9 +630,10 @@ Display::setVariables(int pageNumber, List *matches)
 		else
 		    *str << pre << "<input type=\"radio\" name=\"" << builds[b+1]
 			 << "\" value=\"" << namelist[i+ivalue-1] << '"';
-		if (!mult && mystrcasecmp(namelist[i+ivalue-1], currval) == 0
+		if (!mult
+		    && mystrcasecmp(namelist[i+ivalue-1], currval.get()) == 0
 		    || mult &&
-		     (cp = mystrcasestr(currval, namelist[i+ivalue-1])) != NULL
+		     (cp = mystrcasestr(currval.get(), namelist[i+ivalue-1])) != NULL
 			&& (cp == currval.get() || cp[-1] == '\001' || cp[-1] == sepc)
 			&& (*(cp += strlen(namelist[i+ivalue-1])) == '\0'
 				|| *cp == '\001' || *cp == sepc))
@@ -818,6 +826,18 @@ Display::createURL(String &url, int pageNumber)
 
 //*****************************************************************************
 void
+Display::displayHTTPheaders()
+{
+	HtConfiguration* config= HtConfiguration::config();
+    String  content_type = config->Find("search_results_contenttype");
+    if (config->Boolean("nph"))
+	cout << "HTTP/1.0 200 OK\r\n";
+    if (content_type.length())
+	cout << "Content-type: " << content_type << "\r\n\r\n";
+}
+
+//*****************************************************************************
+void
 Display::displayHeader()
 {
 	HtConfiguration* config= HtConfiguration::config();
@@ -845,9 +865,7 @@ void
 Display::displaySyntaxError(const String& message)
 {
 	HtConfiguration* config= HtConfiguration::config();
-    if( config->Boolean("nph") ) cout << "HTTP/1.0 200 OK\r\n";
-    cout << "Content-type: text/html\r\n\r\n";
-
+    displayHTTPheaders();
     setVariables(0, 0);
     vars.Add("SYNTAXERROR", new String(message));
     displayParsedFile(config->Find("syntax_error_file"));
@@ -1205,6 +1223,11 @@ Display::buildMatchList()
 
     if(dategiven)    // user specified some sort of date information
       {
+	int reldate = ((config->Value("startmonth") < 0) ||
+		     (config->Value("startday") < 0)   ||
+		     (config->Value("startyear") < 0));
+	int t;
+
 	// set up the startdate structure
 	// see man mktime for details on the tm structure
 	startdate.tm_sec = 0;
@@ -1227,19 +1250,40 @@ Display::buildMatchList()
 	// These things seem to work fine for start dates, as all months have
 	// the same first day however the ending date can't work this way.
 
-	if(config->Value("startmonth"))	// form input specified a start month
-	  {
-	    startdate.tm_mon = config->Value("startmonth") - 1;
-	    // tm months are zero based.  They are passed in as 1 based
-	  }
-	else startdate.tm_mon = 0;	// otherwise, no start month, default to 0
-
 	if(config->Value("startday"))	// form input specified a start day
 	  {
-	    startdate.tm_mday = config->Value("startday");
+	    t = config->Value("startday");
+	    if (t < 0)
+	      {
+		time_t then = now + (t * (24*60*60));
+		lt = localtime(&then);
+		startdate.tm_mday = lt->tm_mday;
+		startdate.tm_mon = lt->tm_mon;
+		startdate.tm_year = lt->tm_year;
+	      }
+	    else
+		startdate.tm_mday = t;
 	    // tm days are 1 based, they are passed in as 1 based
 	  }
-	else startdate.tm_mday = 1;	// otherwise, no start day, default to 1
+	else if (!reldate)
+	    startdate.tm_mday = 1;	// otherwise, no start day, default to 1
+
+	if(config->Value("startmonth"))	// form input specified a start month
+	  {
+	    t = config->Value("startmonth");
+	    if (t < 0)
+		startdate.tm_mon += t;
+	    else
+		startdate.tm_mon = t - 1;
+	    // tm months are zero based.  They are passed in as 1 based
+	    while (startdate.tm_mon < 0)
+	      {
+		startdate.tm_mon += 12;
+		startdate.tm_year--;
+	      }
+	  }
+	else if (!reldate)
+	    startdate.tm_mon = 0;	// otherwise, no start month, default to 0
 
 	// year is handled a little differently... the tm_year structure
 	// wants the tm_year in a format of year - 1900.
@@ -1251,14 +1295,25 @@ Display::buildMatchList()
 
 	if(config->Value("startyear"))	// form input specified a start year
 	  {
-	    startdate.tm_year = config->Value("startyear") - 1900;
-	    if (startdate.tm_year < 69-1900)	// correct for 2-digit years 00-68
-		startdate.tm_year += 2000;	//  - Gilles's fix
-	    if (startdate.tm_year < 0)	// correct for 2-digit years 69-99
-		startdate.tm_year += 1900;
+	    t = config->Value("startyear");
+	    if (t < 0)
+		startdate.tm_year += t;
+	    else
+	      {
+		startdate.tm_year = config->Value("startyear") - 1900;
+		if (startdate.tm_year < 69-1900) // correct for 2-digit years 00-68
+		    startdate.tm_year += 2000;	 //  - Gilles's fix
+		if (startdate.tm_year < 0)	 // correct for 2-digit years 69-99
+		    startdate.tm_year += 1900;
+	      }
 	  }
-	else startdate.tm_year = 1970-1900;
+	else if (!reldate)
+	    startdate.tm_year = 1970-1900;
 	     // otherwise, no start day, specify start at 1970
+
+	reldate = ((config->Value("endmonth") < 0) ||
+		     (config->Value("endday") < 0)   ||
+		     (config->Value("endyear") < 0));
 
 	// set up the enddate structure
 	enddate.tm_sec = 59;		// allow up to last second of end day
@@ -1267,22 +1322,50 @@ Display::buildMatchList()
 	enddate.tm_yday = 0;
 	enddate.tm_wday = 0;
 
+	if(config->Value("endday") < 0)	// form input specified relative end day
+	  {
+	    // relative end day must be done before month or year
+	    t = config->Value("endday");
+	    time_t then = now + (t * (24*60*60));
+	    lt = localtime(&then);
+	    enddate.tm_mday = lt->tm_mday;
+	    enddate.tm_mon = lt->tm_mon;
+	    enddate.tm_year = lt->tm_year;
+	  }
+
 	if(config->Value("endmonth"))	// form input specified an end month
 	  {
-	    enddate.tm_mon = config->Value("endmonth") - 1;
+	    t = config->Value("endmonth");
+	    if (t < 0)
+		enddate.tm_mon += t;
+	    else
+		enddate.tm_mon = t - 1;
 	    // tm months are zero based.  They are passed in as 1 based
+	    while (enddate.tm_mon < 0)
+	      {
+		enddate.tm_mon += 12;
+		enddate.tm_year--;
+	      }
 	  }
-	else enddate.tm_mon = 11;	// otherwise, no end month, default to 11
+	else if (!reldate)
+	    enddate.tm_mon = 11;	// otherwise, no end month, default to 11
 
 	if(config->Value("endyear"))	// form input specified a end year
 	  {
-	    enddate.tm_year = config->Value("endyear") - 1900;
-	    if (enddate.tm_year < 69-1900)	// correct for 2-digit years 00-68
-		enddate.tm_year += 2000;	//  - Gilles's fix
-	    if (enddate.tm_year < 0)	// correct for 2-digit years 69-99
-		enddate.tm_year += 1900;
+	    t = config->Value("endyear");
+	    if (t < 0)
+		enddate.tm_year += t;
+	    else
+	      {
+		enddate.tm_year = config->Value("endyear") - 1900;
+		if (enddate.tm_year < 69-1900)	// correct for 2-digit years 00-68
+		    enddate.tm_year += 2000;	//  - Gilles's fix
+		if (enddate.tm_year < 0)	// correct for 2-digit years 69-99
+		    enddate.tm_year += 1900;
+	      }
 	  }
-	else enddate.tm_year = endoftime->tm_year;
+	else if (!reldate)
+	    enddate.tm_year = endoftime->tm_year;
 	     // otherwise, no end year, specify end at the end of time allowable
 
 	// Months have different number of days, and this makes things more
@@ -1293,12 +1376,12 @@ Display::buildMatchList()
 	//                  05-1999       05-31-1999, may has 31 days... we want to search until the end of may so...
 	//                  1999          12-31-1999, search until the end of the year
 
-	if(config->Value("endday"))	// form input specified an end day
+	if(config->Value("endday") > 0)	// form input specified an end day
 	  {
 	    enddate.tm_mday = config->Value("endday");
 	    // tm days are 1 based, they are passed in as 1 based
 	  }
-	else
+	else if (!reldate)
 	  {
 	    // otherwise, no end day, default to the end of the month
 	    enddate.tm_mday = monthdays[enddate.tm_mon];
@@ -1385,7 +1468,9 @@ Display::buildMatchList()
 	    continue;
 	}
 
-	if (!includeURL(thisRef->DocURL()))
+	url = thisRef->DocURL();
+	HtURLRewriter::instance()->replace(url);
+	if (!includeURL(url.get()))
 	{
 	    // Get rid of it to free the memory!
 	    delete thisRef;
@@ -1562,6 +1647,7 @@ Display::excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor, int fan
 	}
     }
     else
+    if ( first == 0 || config->Value( "max_excerpts" ) == 1 )
     {
 	int	headLength = strlen(head);
 	int	length = config->Value("excerpt_length", 50);
@@ -1605,7 +1691,108 @@ Display::excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor, int fan
 	    *text << config->Find("end_ellipses");
 	}
     }
+    else
+    {
+      *text = buildExcerpts( allWordsPattern, match, head, urlanchor, fanchor );
+    }
+
     return text;
+}
+//
+//*****************************************************************************
+// Handle cases where multiple document excerpts are requested.
+//
+const String
+Display::buildExcerpts( StringMatch *allWordsPattern, ResultMatch* match, char *head, String urlanchor, int fanchor )
+{
+	HtConfiguration* config= HtConfiguration::config();
+  if ( !config->Boolean( "add_anchors_to_excerpt" ) )
+  {
+    fanchor = 0;
+  }
+
+  int    headLength    = strlen( head );
+  int    excerptNum    = config->Value( "max_excerpts", 1 );
+  int    excerptLength = config->Value( "excerpt_length", 50 );
+  int    lastPos       = 0;
+  int    curPos        = 0;
+
+  String text;
+
+  for ( int i = 0; i < excerptNum; ++i )
+  {
+    int which, termLength;
+
+    int nextPos = allWordsPattern->FindFirstWord( head + lastPos,
+                                                  which, termLength );
+
+    if ( nextPos < 0 )
+    {
+      // Ran out of matching terms
+      break;
+    }
+    else
+    {
+      // Determine offset from beginning of head
+      curPos = lastPos + nextPos;
+    }
+
+    // Slip a break in since there is another excerpt coming
+    if ( i != 0 )
+    {
+      text << "<br>\n";
+    }
+
+    // Determine where excerpt starts
+    char *start = &head[curPos] - excerptLength / 2;
+
+    if ( start < head )
+    {
+      start = head;
+    }
+    else
+    {
+      text << config->Value("start_ellipses");
+
+      while ( *start && HtIsStrictWordChar( *start ) )
+      {
+        start++;
+      }
+    }
+
+    // Determine where excerpt ends
+    char *end = start + excerptLength;
+
+    if ( end > head + headLength )
+    {
+      end = head + headLength;
+
+      text << hilight( match, start, urlanchor, fanchor );
+    }
+    else
+    {
+      while ( *end && HtIsStrictWordChar( *end ) )
+      {
+        end++;
+      }
+
+      // Save end char so that it can be restored
+      char endChar = *end;
+
+      *end = '\0';
+
+      text << hilight(match, start, urlanchor, fanchor);
+      text << config->Value("end_ellipses");
+
+      *end = endChar;
+    }
+
+    // No more words left to examine in head
+    if ( (lastPos = curPos + termLength) > headLength )
+     break;
+  }
+
+  return text;
 }
 
 //*****************************************************************************
@@ -1615,6 +1802,7 @@ Display::hilight(ResultMatch *match, const String& str_arg, const String& urlanc
 	HtConfiguration* config= HtConfiguration::config();
     const String start_highlight = config->Find("start_highlight");
     const String end_highlight = config->Find("end_highlight");
+    const String anchor_target = config->Find("anchor_target");
     const char		*str = str_arg;
     String		result;
     int			pos = 0;
@@ -1643,7 +1831,12 @@ Display::hilight(ResultMatch *match, const String& str_arg, const String& urlanc
 	ww = (WeightWord *) (*searchWords)[which];
 	result << start_highlight;
 	if (first && fanchor)
-	    result << "<a href=\"" << urlanchor << "\">";
+	{
+	    result << "<a ";
+	    if (anchor_target.length() > 0)
+		result << "target=\"" << anchor_target << "\" ";
+	    result << "href=\"" << urlanchor << "\">";
+	}
 	//result.append(str + pos, length);
 	result << SGMLencodedChars(str + pos, length);
 	if (first && fanchor)

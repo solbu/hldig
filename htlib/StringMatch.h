@@ -29,7 +29,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringMatch.h,v 1.10 2002/02/01 22:49:34 ghutchis Exp $
+// $Id: StringMatch.h,v 1.11 2002/12/30 12:42:59 lha Exp $
 //
 
 #ifndef _StringMatch_h_
@@ -98,7 +98,7 @@ public:
     // Build a local translation table which ignores all given punctuation
     // characters
     //
-    void		IgnorePunct(char *punct = NULL);
+    void		IgnorePunct(char *punct = (char*)NULL);
 
     //
     // Determine if there is a pattern associated with this Match object.

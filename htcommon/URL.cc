@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.7 2002/11/04 10:00:17 angusgb Exp $
+// $Id: URL.cc,v 1.8 2002/12/30 12:42:58 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -629,7 +629,7 @@ void URL::normalize()
 
     
 //  if (strcmp((char*)_service, "http") != 0)
-    // if service specifies doesn't specify an IP host, don't normalize it
+    // if service specifies "doesn't specify an IP host", don't normalize it
     if (slashes (_service) != 2)
 	return;
 

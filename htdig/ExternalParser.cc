@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.22 2002/08/07 17:14:35 grdetil Exp $
+// $Id: ExternalParser.cc,v 1.23 2002/12/30 12:42:58 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -387,9 +387,9 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		{
 		  // It would be preferable if we could share
 		  // this part with HTML.cc, but it has other
-		  // chores too, and I do not se a point where to
+		  // chores too, and I do not see a point where to
 		  // split it up to get a common shared function
-		  // (or class).  Which should not stop anybody from
+		  // (or class).  This should not stop anybody from
 		  // finding a better solution.
 		  // For now, there is duplicated code.
 		  static StringMatch *keywordsMatch = 0;
@@ -399,6 +399,21 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 			keywordsMatch = new StringMatch();
 			keywordsMatch->IgnoreCase();
 			keywordsMatch->Pattern(kn.Join('|'));
+		  }
+		  static StringMatch *descriptionMatch = 0;
+		  if (!descriptionMatch)
+		  {
+			StringList dn(config->Find("description_meta_tag_names"), " \t");
+			descriptionMatch = new StringMatch();
+			descriptionMatch->IgnoreCase();
+			descriptionMatch->Pattern(dn.Join('|'));
+		  }
+		  static StringMatch *metadatetags = 0;
+		  if (!metadatetags)
+		  {
+			metadatetags = new StringMatch();
+			metadatetags->IgnoreCase();
+			metadatetags->Pattern("date|dc.date|dc.date.created|dc.data.modified");
 		  }
     
 		  // <URL:http://www.w3.org/MarkUp/html-spec/html-spec_5.html#SEC5.2.5> 
@@ -413,10 +428,11 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		    if (mystrcasecmp(httpEquiv, "refresh") == 0
 			&& *content != '\0')
 		    {
-		      char *q = (char*)mystrcasestr(content, "url=");
+		      char *q = (char*)mystrcasestr(content, "url");
 		      if (q && *q)
 		      {
-			q += 4; // skiping "URL="
+			q += 3; // skiping "URL"
+			while (*q && ((*q == '=') || isspace(*q))) q++;
 			char *qq = q;
 			while (*qq && (*qq != ';') && (*qq != '"') &&
 			       !isspace(*qq))qq++;
@@ -440,9 +456,14 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		      while (w)
 		      {
 			if (strlen(w) >= minimum_word_length)
-			  retriever.got_word(w, 1, 10);
+			  retriever.got_word(w, 1, 9);
 			w = strtok(0, " ,\t\r");
 		      }
+		    }
+		    if (metadatetags->CompareWord(name) &&
+					config->Boolean("use_doc_date", 0))
+		    {
+		      retriever.got_time(content);
 		    }
 		    else if (mystrcasecmp(name, "htdig-email") == 0)
 		    {
@@ -456,7 +477,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		    {
 		      retriever.got_meta_subject(content);
 		    }
-		    else if (mystrcasecmp(name, "description") == 0 
+		    else if (descriptionMatch->CompareWord(name)
 			     && strlen(content) != 0)
 		    {
 		      //
@@ -472,13 +493,13 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 
 		      //
 		      // Now add the words to the word list
-		      // (slot 11 is the new slot for this)
+		      // (slot 10 is the new slot for this)
 		      //
 		      char	  *w = strtok(content, " \t\r");
 		      while (w)
 		      {
 			if (strlen(w) >= minimum_word_length)
-			  retriever.got_word(w, 1, 11);
+			  retriever.got_word(w, 1, 10);
 			w = strtok(0, " \t\r");
 		      }
 		    }

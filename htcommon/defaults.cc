@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.71 2002/10/27 15:44:38 ghutchis Exp $
+// $Id: defaults.cc,v 1.72 2002/12/30 12:42:58 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -18,6 +18,24 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "HtConfiguration.h"
+
+// Fields and their values:
+//	Attribute name
+//	Default value ("" becomes "no default" in .html docs)
+//	Type (boolean, number, integer, string, string list, quoted string list,
+//				pattern list)
+//	Commands using attribute (all, htdig, htsearch, htfuzzy,
+//				htdump, htload, htnotify, htpurge)
+//	Block (Global, Server, URL)
+//	Versions for which attribute is present
+//	Class	(Extra Output, External:Parsers, External:Protocols,
+//		File Layout,
+//		Indexing:Connection, Indexing:Out, Indexing:What,Indexing:Where,
+//		Presentation:Files, Presentation:How, Presentation:Text,
+//		Searching:Method, Searching:Ranking, Searching:UI,
+//		URLs)
+//	Example
+//	Description
 
 ConfigDefaults	defaults[] =
 {
@@ -90,6 +108,8 @@ ConfigDefaults	defaults[] =
 	parameters, in the follow-up search form, using the \
 	<a href=\"#build_select_lists\">build_select_lists</a> \
 	configuration attribute. \
+	<br>WARNING: Extreme care are should be taken with this option, as \
+	allowing CGI scripts to set file names can open security holes.\
 " }, \
 { "allow_numbers", "false",  \
 	"boolean", "htdig htsearch", "", "all", "Indexing:What", "allow_numbers: true", " \
@@ -109,6 +129,18 @@ ConfigDefaults	defaults[] =
 	there is no way to index either \"soft\" or \"hard\" \
 	virtual web sites. \
 " }, \
+{ "anchor_target", "",  \
+	"string", "htsearch", "", "3.1.6", "Presentation:How", "anchor_target: body", " \
+	When the first matched word in the excerpt is linked \
+	to the closest anchor in the document, this string \
+	can be set to specify a target in the link so the \
+	resulting page is displayed in the desired frame. \
+	This value will only be used if the \
+	<a href=\"#add_anchors_to_excerpt\">add_anchors_to_excerpt</a> \
+	attribute is set to true, the <strong>EXCERPT</strong> \
+	variable is used in the output template and the \
+	excerpt is actually displayed with a link. \
+" }, \
 { "any_keywords", "false",  \
 	"boolean", "htsearch", "", "3.2.0b2", "Searching:Method", "any_keywords: yes", " \
 	If set to true, the words in the <strong>keywords</strong> \
@@ -117,6 +149,11 @@ ConfigDefaults	defaults[] =
 	Note that this has nothing to do with limiting the search to \
 	words in META keywords tags. See the <a href=\"hts_form.html\"> \
 	search form</a> documentation for details on this. \
+" }, \
+{ "author_factor", "1",  \
+	"number", "htsearch", "", "??", "Searching:Ranking", "author_factor: 1", " \
+	TO BE COMPLETED<br> \
+	See also <a href=\"#heading_factor\">heading_factor</a>. \
 " }, \
 { "authorization", "",  \
 	"string", "htdig", "URL", "3.1.4", "Indexing:Out", "authorization: myusername:mypassword", " \
@@ -185,6 +222,37 @@ ConfigDefaults	defaults[] =
 	compile time. \
 	</p> \
 " }, \
+{ "boolean_keywords", "and or not",  \
+	"string list", "htsearch", "", "3.1.6", "Presentation:How", "boolean_keywords: et ou non", " \
+	These three strings are used as the keywords used in \
+	constructing the LOGICAL_WORDS template variable, \
+	and in parsing the <a href=\"hts_form.html#words\">words</a> input \
+	parameter when the <a href=\"hts_form.html#method\">method</a> \
+	parameter or <a href=\"#match_method\">match_method</a> attribute \
+	is set to <code>boolean</code>. \
+	See also the \
+	<a href=\"boolean_syntax_errors\">boolean_syntax_errors</a> attribute. \
+" },
+{ "boolean_syntax_errors", ">Expected \
+	'a search word, a quoted phrase or a boolean expression between ()' \
+		'at the end' 'instead of' 'end of expression' quotes",  \
+	"quoted string list", "htsearch", "", "3.1.6", "Presentation:How",
+	"boolean_syntax_errors: Attendait \"un mot\" \"&agrave; la fin\" \
+	\"au lieu de\" \"fin d'expression\" \"guillemet\"", " \
+	These six strings are used as the keywords used to \
+	construct various syntax error messages for errors encountered in \
+	parsing the <a href=\"hts_form.html#words\">words</a> input \
+	parameter when the <a href=\"hts_form.html#method\">method</a> parameter \
+	or <a href=\"#match_method\">match_method</a> attribute \
+	is set to <code>boolean</code>. \
+	They are used in conjunction with the \
+	<a href=\"#boolean_keywords\">boolean_keywords</a> attribute, and \
+	comprise all \
+	English-specific parts of these error messages.  The order in which \
+	the strings are put together may not be ideal, or even gramatically \
+	correct, for all languages, but they can be used to make fairly \
+	intelligible messages in many languages. \
+" },
 { "build_select_lists", "",  \
 	"quoted string list", "htsearch", "", "3.2.0b1", "Searching:UI", "build_select_lists: \
 		MATCH_LIST matchesperpage matches_per_page_list \\<br> \
@@ -223,23 +291,28 @@ ConfigDefaults	defaults[] =
 	See the <a href=\"hts_selectors.html\">select list documentation</a> \
 	for more information on this attribute. \
 " }, \
+{ "caps_factor", "1",  \
+	"number", "htsearch", "", "??", "Searching:Ranking", "caps_factor: 1", " \
+	TO BE COMPLETED<br> \
+	See also <a href=\"#heading_factor\">heading_factor</a>. \
+" }, \
 { "case_sensitive", "true",  \
 	"boolean", "htdig", "", "3.1.0b2", "Indexing:Where", "case_sensitive: false", " \
 	This specifies whether ht://Dig should consider URLs \
 	case-sensitive or not. If your server is case-insensitive, \
 	you should probably set this to false. \
 " }, \
-{ "check_unique_md5", "false",  \
-	"boolean", "htdig", "Global", "3.2.0b3", "", "check_unique_md5: false", " \
-	Uses the MD5 hash of pages to reject aliases, prevents multiple entries \
-	in the index caused by such things as symbolic links \
-	Note: May not do the right thing for incremental update \
-" }, \
 { "check_unique_date", "false",  \
 	"boolean", "htdig", "Global", "3.2.0b3", "", "check_unique_date: false", " \
 	Include the modification date of the page in the MD5 hash, to reduce the \
 	problem with identical but physically separate pages in different parts of the tree pointing to \
 	different pages.  \
+" }, \
+{ "check_unique_md5", "false",  \
+	"boolean", "htdig", "Global", "3.2.0b3", "", "check_unique_md5: false", " \
+	Uses the MD5 hash of pages to reject aliases, prevents multiple entries \
+	in the index caused by such things as symbolic links \
+	Note: May not do the right thing for incremental update \
 " }, \
 { "collection_names", "", \
 	"string list", "htsearch", "", "3.2.0b2", "", "collection_names: htdig_docs htdig_bugs", " \
@@ -272,13 +345,22 @@ http://www.htdig.org/", " \
 	wanted.<br> \
 " }, \
 { "compression_level", "0",  \
-	"number", "htdig", "", "3.1.0", "Indexing:How", "compression_level: 6", " \
+	"integer", "htdig", "", "3.1.0", "Indexing:How", "compression_level: 6", " \
 	If specified and the <a \
 	href=\"http://www.cdrom.com/pub/infozip/zlib/\">zlib</a> \
 	compression library was available when compiled, \
 	this attribute controls \
 	the amount of compression used in the <a \
 	href=\"#doc_excerpt\">doc_excerpt</a> file. \
+" }, \
+{ "config", DEFAULT_CONFIG_FILE,  \
+	"string", "all", "", "??", "File Layout", "", " \
+	Name of configuration file to load. \
+	For security reasons, restrictions are placed on the values which \
+	can be specified on the command line to \
+	<a href=\"htsearch.html\" target=\"_top\">htsearch</a>. \
+	The default value of this attribute is determined at \
+	compile time. \
 " }, \
 { "config_dir", CONFIG_DIR,  \
 	"string", "all", "", "all", "File Layout", "config_dir: /var/htdig/conf", " \
@@ -290,6 +372,16 @@ http://www.htdig.org/", " \
 	<p> \
 	The default value of this attribute is determined at \
 	compile time. \
+	</p> \
+" },
+{ "content_classifier", "${bin_dir}/HtContent.sh",  \
+	"string", "htdig", "", "3.2.0b4", "Indexing:What", "content_classifier: file -i -k", " \
+	When ht://Dig can't determine the type of a local file or a file:// \
+	URL from its extension, this program is used to determine the type. \
+	The program is called with one argument, the name of (possibly a \
+	temporary copy of) the file. \
+	<p> \
+	See also <a href=\"#mime_types\">mime_types</a>.\
 	</p> \
 " }, \
 { "create_image_list", "false",  \
@@ -357,8 +449,29 @@ http://www.htdig.org/", " \
 	to a document. This factor gives weight to the words of \
 	these descriptions of the document. Not surprisingly, \
 	these can be pretty accurate summaries of a document's \
-	content. See also <a href=\"#title_factor\">title_factor</a> or <a \
-	href=\"#text_factor\">text_factor</a>. \
+	content. See also <a href=\"#heading_factor\">heading_factor</a> \
+	and <a href=\"#meta_description_factor\">meta_description_factor</a>. \
+" }, \
+{ "description_meta_tag_names", "description",  \
+	"number", "htsearch", "", "3.1.6", "Searching:Ranking", "description_meta_tag_names: \"description htdig-description\"", " \
+	The words in this list are used to search for descriptions in HTML \
+	<em>META</em> tags. This list can contain any number of strings \
+	that each will be seen as the name for whatever description \
+	convention is used. While words in any of the specified \
+	description contents will be indexed, only the last meta tag \
+	containing a description will be kept as the meta description \
+	field for the document, for use in search results. The order in \
+	which the names are specified in this configuration attribute \
+	is irrelevant, as it is the order in which the tags appear in \
+	the documents that matters.<br> The <em>META</em> tags have the \
+	following format:<br> \
+	<tt> &nbsp;&nbsp;&lt;META name=\"<em>somename</em>\" \
+	                       content=\"<em>somevalue</em>\"&gt; </tt><br> \
+	See also <a href=\"#meta_description_factor\">meta_description_factor</a>. \
+" }, \
+{ "disable_cookies", "true",  \
+	"boolean", "htdig", "Server", "3.2.0b4", "Indexing:Connection", "disable_cookies: true", " \
+        This option, if set to true, will disable HTTP cookies. \
 " }, \
 { "doc_db", "${database_base}.docdb",  \
 	"string", "all", "", "all", "File Layout", "doc_db: ${database_base}documents.db", " \
@@ -391,6 +504,14 @@ http://www.htdig.org/", " \
 	only use is to have a human readable database of all \
 	documents. The file is easy to parse with tools like \
 	perl or tcl. \
+" }, \
+{ "endday", "",  \
+	"integer", "htsearch", "", "3.1.6", "Searching:Method", "endday: 31", " \
+	Day component of last date allowed as last-modified date \
+	of returned docutments. \
+	This is most usefully specified as a \
+	<a href=\"hts_form.html#startyear\">GCI argument</a>. \
+	See also <a href=\"#startyear\">startyear</a>. \
 " }, \
 { "end_ellipses", "<strong><code> ...</code></strong>",  \
 	"string", "htsearch", "", "all", "Presentation:Text", "end_ellipses: ...", " \
@@ -453,8 +574,24 @@ http://www.htdig.org/", " \
 	This is because this database can be shared with \
 	different search databases. \
 " }, \
+{ "endmonth", "",  \
+	"integer", "htsearch", "", "3.1.6", "Searching:Method", "endmonth: 12", " \
+	Month component of last date allowed as last-modified date \
+	of returned docutments. \
+	This is most usefully specified as a \
+	<a href=\"hts_form.html#startyear\">GCI argument</a>. \
+	See also <a href=\"#startyear\">startyear</a>. \
+" }, \
+{ "endyear", "",  \
+	"integer", "htsearch", "", "3.1.6", "Searching:Method", "endyear: 2002", " \
+	Year component of last date allowed as last-modified date \
+	of returned docutments. \
+	This is most usefully specified as a \
+	<a href=\"hts_form.html#startyear\">GCI argument</a>. \
+	See also <a href=\"#startyear\">startyear</a>. \
+" }, \
 { "excerpt_length", "300",  \
-	"number", "htsearch", "", "all", "Presentation:How", "excerpt_length: 500", " \
+	"integer", "htsearch", "", "all", "Presentation:How", "excerpt_length: 500", " \
 	This is the maximum number of characters the displayed \
 	excerpt will be limited to. The first matched word will \
 	be highlighted in the middle of the excerpt so that there is \
@@ -1048,10 +1185,6 @@ http://www.htdig.org/", " \
 	If the status code and the content-type returned let the document be parsable, \
 	then a following 'GET' call is made. \
 " }, \
-{ "disable_cookies", "true",  \
-	"boolean", "htdig", "Server", "3.2.0b4", "Indexing:Connection", "disable_cookies: true", " \
-	This option, if set to true, will disable HTTP cookies. \
-" }, \
 { "heading_factor", "5",  \
 	"number", "htsearch", "", "3.2.0b1", "Searching:Ranking", "heading_factor: 20", " \
 			This is a factor which will be used to multiply the \
@@ -1060,9 +1193,17 @@ http://www.htdig.org/", " \
 			&lt;h6&gt;. It is used to assign the level of importance \
 			to headings. Setting a factor to 0 will cause words \
 			in these headings to be ignored. The number may be a \
-			floating point number. See also the \
-			<a href=\"#title_factor\">title_factor</a> and \
-			<a href=\"#text_factor\">text_factor</a> attributes. \
+	floating point number. See also \
+	<a href=\"#author_factor\">author_factor</a> \
+	<a href=\"#backlink_factor\">backlink_factor</a> \
+	<a href=\"#caps_factor\">caps_factor</a> \
+	<a href=\"#date_factor\">date_factor</a> \
+	<a href=\"#description_factor\">description_factor</a> \
+	<a href=\"#keywords_factor\">keywords_factor</a> \
+	<a href=\"#meta_description_factor\">meta_description_factor</a> \
+	<a href=\"#text_factor\">text_factor</a> \
+	<a href=\"#title_factor\">title_factor</a> \
+	<a href=\"#url_text_factor\">url_text_factor</a> \
 " }, \
 { "htnotify_prefix_file", "", \
     "string", "htnotify", "", "3.2.0b3", "Extra Output", "htnotify_prefix_file: ${common_dir}/notify_prefix.txt", " \
@@ -1109,13 +1250,26 @@ http://www.htdig.org/", " \
 	when using a proxy with authorization requested. \
 	The credentials will be encoded using the \"Basic\" authentication \
 	scheme. There <em>must</em> be a colon (:) between the username and \
-	password.<br>
+	password. \
 " }, \
 { "http_proxy_exclude", "", \
 	"pattern list", "htdig", "", "3.1.0b3", "Indexing:Connection", "http_proxy_exclude: http://intranet.foo.com/", " \
 	When this is set, URLs matching this will not use the \
 	proxy. This is useful when you have a mixture of sites \
 	near to the digging server and far away. \
+" }, \
+{ "ignore_alt_text", "false",  \
+	"boolean", "htdig", "", "3.1.6", "Indexing:What", "ignore_alt_text: true", " \
+	If set, this causes the text of the ALT field in an &lt;IMG...&gt; tag \
+	not to be indexed as part of the text of the document, nor included in \
+	excerpts. \
+" }, \
+{ "ignore_dead_servers", "true",  \
+	"boolean", "htdig", "", "3.1.6", "Indexing:Connection", "ignore_dead_servers: false", " \
+	Determines whether htdig will continue to index URLs from a \
+	server after an attempted connection to the server fails as \
+	&quot;no host found&quot; or &quot;host not found (port).&quot; If \
+	set to false, htdig will try <em>every</em> URL from that server. \
 " }, \
 { "image_list", "${database_base}.images",  \
 	"string", "htdig", "", "all", "Extra Output", "image_list: allimages", " \
@@ -1142,17 +1296,17 @@ http://www.htdig.org/", " \
 " }, \
 { "include", "", \
 	"string", "all", "", "3.1.0", "", "include: ${config_dir}/htdig.conf", " \
-			This is not quite a configuration attribute, but \
-			rather a directive. It can be used within one \
-			configuration file to include the definitions of \
-			another file. The last definition of an attribute \
-			is the one that applies, so after including a file, \
-			any of its definitions can be overridden with \
-			subsequent definitions. This can be useful when \
-			setting up many configurations that are mostly the \
-			same, so all the common attributes can be maintained \
-			in a single configuration file. The include directives \
-			can be nested, but watch out for nesting loops. \
+	This is not quite a configuration attribute, but \
+	rather a directive. It can be used within one \
+	configuration file to include the definitions of \
+	another file. The last definition of an attribute \
+	is the one that applies, so after including a file, \
+	any of its definitions can be overridden with \
+	subsequent definitions. This can be useful when \
+	setting up many configurations that are mostly the \
+	same, so all the common attributes can be maintained \
+	in a single configuration file. The include directives \
+	can be nested, but watch out for nesting loops. \
 " }, \
 { "iso_8601", "false",  \
 	"boolean", "htsearch htnotify", "", "3.1.0b2", "Presentation:How,Extra Output", "iso_8601: true", " \
@@ -1167,13 +1321,18 @@ http://www.htdig.org/", " \
 	<a href=\"htnotify.html\">htnotify</a> expects to find \
 	in a <strong>htdig-notification-date</strong> field. \
 " }, \
+{ "keywords", "", \
+    "string list", "htsearch", "", "??", "Searching:Method", "keywords: documentation", " \
+	Keywords which <strong>must</strong> be found on all pages returned, \
+    	even if the \"or\" (\"Any\") <a href=\"#method\">method</a> is \
+	selected. \
+" }, \
 { "keywords_factor", "100",  \
 	"number", "htsearch", "", "all", "Searching:Ranking", "keywords_factor: 12", " \
 	This is a factor which will be used to multiply the \
 	weight of words in the list of keywords of a document. \
 	The number may be a floating point number. See also the \
-	<a href=\"#title_factor\">title_factor</a> and \
-	<a href=\"#text_factor\">text_factor</a>attributes. \
+	<a href=\"#heading_factor\">heading_factor</a>attribute. \
 " }, \
 { "keywords_meta_tag_names", "keywords htdig-keywords",  \
 	"string list", "htdig", "", "3.0.6", "Indexing:What", "keywords_meta_tag_names: keywords description", " \
@@ -1210,9 +1369,12 @@ http://www.htdig.org/", " \
 	attribute is set. The match will be performed <em>after</em> \
 	the relative references have been converted to a valid \
 	URL. This means that the URL will <em>always</em> start \
-	with <code>http://</code>.<br> \
+	with a transport specifier (<code>http://</code> if none is \
+	specified).<br> \
 	Granted, this is not the perfect way of doing this, \
-	but it is simple enough and it covers most cases. \
+	but it is simple enough and it covers most cases.<br> \
+	To limit URLs in htsearch, use \
+	<a href=\"restrict\">restrict\">. \
 " }, \
 { "local_default_doc", "index.html",  \
 	"string list", "htdig", "Server", "3.0.8b2", "Indexing:Where", "local_default_doc: default.html default.htm index.html index.htm", " \
@@ -1294,26 +1456,26 @@ http://www.htdig.org/", " \
 " }, \
 { "logging", "false",  \
 	"boolean", "htsearch", "", "3.1.0b2", "Extra Output", "logging: true", " \
-			This sets whether htsearch should use the syslog() to log \
-			search requests. If set, this will log requests with a \
-			default level of LOG_INFO and a facility of LOG_LOCAL5. For \
-			details on redirecting the log into a separate file or other \
-			actions, see the <strong>syslog.conf(5)</strong> man \
-			page. To set the level and facility used in logging, change \
-			LOG_LEVEL and LOG_FACILITY in the include/htconfig.h file \
-			before compiling. \
-			<dl> \
-			  <dt> \
-			    Each line logged by htsearch contains the following: \
-			  </dt> \
-			  <dd> \
-			    REMOTE_ADDR [config] (match_method) [words] \
-			    [logicalWords] (matches/matches_per_page) - \
-			    page, HTTP_REFERER \
-			  </dd> \
-			</dl> \
-			where any of the above are null or empty, it \
-			either puts in '-' or 'default' (for config). \
+	This sets whether htsearch should use the syslog() to log \
+	search requests. If set, this will log requests with a \
+	default level of LOG_INFO and a facility of LOG_LOCAL5. For \
+	details on redirecting the log into a separate file or other \
+	actions, see the <strong>syslog.conf(5)</strong> man \
+	page. To set the level and facility used in logging, change \
+	LOG_LEVEL and LOG_FACILITY in the include/htconfig.h file \
+	before compiling. \
+	<dl> \
+	  <dt> \
+	    Each line logged by htsearch contains the following: \
+	  </dt> \
+	  <dd> \
+	    REMOTE_ADDR [config] (match_method) [words] \
+	    [logicalWords] (matches/matches_per_page) - \
+	    page, HTTP_REFERER \
+	  </dd> \
+	</dl> \
+	where any of the above are null or empty, it \
+	either puts in '-' or 'default' (for config). \
 " }, \
 { "maintainer", "bogus@unconfigured.htdig.user",  \
 	"string", "htdig", "Server", "all", "Indexing:Out", "maintainer: ben.dover@uptight.com", " \
@@ -1327,24 +1489,21 @@ http://www.htdig.org/", " \
 	This is the default method for matching that htsearch \
 	uses. The valid choices are: \
 	<ul> \
-	<li> \
-	or \
-	</li> \
-	<li> \
-	and \
-	</li> \
-	<li> \
-	boolean \
-	</li> \
+	  <li> or </li> \
+	  <li> and </li> \
+	  <li> boolean </li> \
 	</ul> \
 	This attribute will only be used if the HTML form that \
-	calls htsearch didn't have the <strong>method</strong> \
+	calls htsearch didn't have the <a href=\"hts_form.html#method\">method</a> \
 	value set. \
 " }, \
 { "matches_per_page", "10",  \
-	"number", "htsearch", "", "3.0", "Searching:Method", "matches_per_page: 999", " \
+	"integer", "htsearch", "", "3.0", "Searching:Method", "matches_per_page: 999", " \
 	If this is set to a relatively small number, the \
 	matches will be shown in pages instead of all at once. \
+	This attribute will only be used if the HTML form that \
+	calls htsearch didn't have the \
+	<a href=\"hts_form.html#matchesperpage\">matchesperpage</a> value set. \
 " }, \
 { "max_connection_requests", "-1", \
 	"integer", "htdig", "", "3.2.0b1", "Indexing:Connection", "max_connection_requests: 100", " \
@@ -1358,7 +1517,7 @@ http://www.htdig.org/", " \
 	the limit is reached, or the queue is empty. \
 " }, \
 { "max_description_length", "60",  \
-	"number", "htdig", "", "all", "Indexing:What", "max_description_length: 40", " \
+	"integer", "htdig", "", "all", "Indexing:What", "max_description_length: 40", " \
 	While gathering descriptions of URLs, \
 	<a href=\"htdig.html\">htdig</a> will only record those \
 	descriptions which are shorter than this length. This \
@@ -1367,7 +1526,7 @@ http://www.htdig.org/", " \
 	description will go on until the end of the document.) \
 " }, \
 { "max_descriptions", "5",  \
-	"number", "htdig", "", "all", "Indexing:What", "max_descriptions: 15", " \
+	"integer", "htdig", "", "all", "Indexing:What", "max_descriptions: 15", " \
 	While gathering descriptions of URLs, \
 	<a href=\"htdig.html\">htdig</a> will only record up to this \
 	number of descriptions, in the order in which it encounters \
@@ -1376,15 +1535,21 @@ http://www.htdig.org/", " \
 	of links to it. \
 " }, \
 { "max_doc_size", "100000",  \
-	"number", "htdig", "URL", "3.0", "Indexing:What", "max_doc_size: 5000000", " \
+	"integer", "htdig", "URL", "3.0", "Indexing:What", "max_doc_size: 5000000", " \
 	This is the upper limit to the amount of data retrieved \
 	for documents. This is mainly used to prevent \
 	unreasonable memory consumption since each document \
 	will be read into memory by <a href=\"htdig.html\"> \
 	htdig</a>. \
 " }, \
+{ "max_excerpts", "1",  \
+	"integer", "htsearchg", "URL", "3.1.6", "Presentation:How", "max_excerpts: 10", " \
+	This value determines the maximum number of excerpts \
+	that can be displayed for one matching document in the \
+	search results. \
+" }, \
 { "max_head_length", "512",  \
-	"number", "htdig", "", "all", "Indexing:How", "max_head_length: 50000", " \
+	"integer", "htdig", "", "all", "Indexing:How", "max_head_length: 50000", " \
 	For each document retrieved, the top of the document is \
 	stored. This attribute determines the size of this \
 	block. The text that will be stored is only the text; \
@@ -1395,7 +1560,7 @@ http://www.htdig.org/", " \
 	you want to show. \
 " }, \
 { "max_hop_count", "999999",  \
-	"number", "htdig", "", "all", "Indexing:Where", "max_hop_count: 4", " \
+	"integer", "htdig", "", "all", "Indexing:Where", "max_hop_count: 4", " \
 	Instead of limiting the indexing process by URL \
 	pattern, it can also be limited by the number of hops \
 	or clicks a document is removed from the starting URL. \
@@ -1403,7 +1568,7 @@ http://www.htdig.org/", " \
 	The starting page or pages will have hop count 0. \
 " }, \
 { "max_keywords", "-1",  \
-	"number", "htdig", "", "3.2.0b1", "Indexing:What", "max_keywords: 10", " \
+	"integer", "htdig", "", "3.2.0b1", "Indexing:What", "max_keywords: 10", " \
 	This attribute can be used to limit the number of keywords \
 	per document that htdig will accept from meta keywords tags. \
 	A value of -1 or less means no limit. This can help combat meta \
@@ -1413,7 +1578,7 @@ http://www.htdig.org/", " \
 	are not relevant to its contents. \
 " }, \
 { "max_meta_description_length", "512",  \
-	"number", "htdig", "", "3.1.0b1", "Indexing:How", "max_meta_description_length: 1000", " \
+	"integer", "htdig", "", "3.1.0b1", "Indexing:How", "max_meta_description_length: 1000", " \
 	While gathering descriptions from meta description tags, \
 	<a href=\"htdig.html\">htdig</a> will only store up to  \
 	this much of the text for each document. \
@@ -1459,7 +1624,7 @@ http://www.htdig.org/", " \
 	attribute. \
 " }, \
 { "maximum_word_length", "32",  \
-	"number", "htdig htsearch", "", "3.1.3", "Indexing:What", "maximum_word_length: 15", " \
+	"integer", "htdig htsearch htfuzzy", "", "3.1.3", "Indexing:What", "maximum_word_length: 15", " \
 	This sets the maximum length of words that will be \
 	indexed. Words longer than this value will be silently \
 	truncated when put into the index, or searched in the \
@@ -1477,8 +1642,8 @@ http://www.htdig.org/", " \
 	This is a factor which will be used to multiply the \
 	weight of words in any META description tags in a document. \
 	The number may be a floating point number. See also the \
-	<a href=\"#title_factor\">title_factor</a> and \
-	<a href=\"#text_factor\">text_factor</a> attributes. \
+	<a href=\"#heading_factor\">heading_factor</a> attribute and the \
+	<a href=\"#description_factor\">description_factor</a> attribute. \
 " }, \
 { "metaphone_db", "${database_base}.metaphone.db",  \
 	"string", "htfuzzy htsearch", "", "all", "File Layout", "metaphone_db: ${database_base}.mp.db", " \
@@ -1500,32 +1665,44 @@ http://www.htdig.org/", " \
 " }, \
 { "mime_types", "${config_dir}/mime.types", \
 	"string", "htdig", "", "3.2.0b1", "Indexing:Where", "mime_types: /etc/mime.types", " \
-	This file is used by htdig for local file access and resolving file:// URLs \
-	to ensure the files are parsable. If you are running a webserver with its own \
-	MIME file, you should set this attribute to point to that file. \
+	This file is used by htdig for local file access and resolving \
+	file:// URLs to ensure the files are parsable. If you are running \
+	a webserver with its own MIME file, you should set this attribute \
+	to point to that file. \
+	<p> \
+	See also <a href=\"#content_classifier\">content_classifier</a>.\
 "}, \
 { "minimum_prefix_length", "1",  \
-	"number", "htsearch", "", "3.1.0b1", "Searching:Method", "minimum_prefix_length: 2", " \
+	"integer", "htsearch", "", "3.1.0b1", "Searching:Method", "minimum_prefix_length: 2", " \
 	This sets the minimum length of prefix matches used by the \
 	\"prefix\" fuzzy matching algorithm. Words shorter than this \
 	will not be used in prefix matching. \
 " }, \
 { "minimum_speling_length", "5",  \
-	"number", "htsearch", "", "3.2.0b1", "Searching:Method", "minimum_speling_length: 3", " \
+	"integer", "htsearch", "", "3.2.0b1", "Searching:Method", "minimum_speling_length: 3", " \
 	This sets the minimum length of words used by the \
 	\"speling\" fuzzy matching algorithm. Words shorter than this \
 	will not be used in this fuzzy matching. \
 " }, \
 { "minimum_word_length", "3",  \
-	"number", "htdig htsearch", "", "all", "Indexing:What", "minimum_word_length: 2", " \
+	"integer", "htdig htsearch", "", "all", "Indexing:What", "minimum_word_length: 2", " \
 	This sets the minimum length of words that will be \
 	indexed. Words shorter than this value will be silently \
 	ignored but still put into the excerpt.<br> \
 	Note that by making this value less than 3, a lot more \
 	words that are very frequent will be indexed. It might \
-	be advisable to add some of these to the bad_words \
-	list. \
+	be advisable to add some of these to the \
+	<a href=\"#bad_word_list\">bad_words list</a>. \
 " }, \
+{ "multimatch_factor", "1",  \
+	"number", "htsearch", "", "3.1.6", "Searching:Ranking", "multimatch_factor: 1000", " \
+    	This factor gives higher rankings to documents that have more than \
+	one matching search word when the <strong>or</strong> \
+	<a href=\"#match_method\">match_method</a> is used. \
+	In version 3.1.6, the matching words' combined scores were multiplied \
+	by this factor for each additional matching word.  Currently, this \
+	multiplier is applied at most once. \
+" },
 { "next_page_text", "[next]",  \
 	"string", "htsearch", "", "3.1.0", "Presentation:Text", "next_page_text: &lt;img src=\"/htdig/buttonr.gif\"&gt;", " \
 	The text displayed in the hyperlink to go to the next \
@@ -1706,8 +1883,20 @@ http://www.htdig.org/", " \
 { "prefix_match_character", "*",  \
 	"string", "htsearch", "", "3.1.0b1", "Searching:Method", "prefix_match_character: ing", " \
 	A null prefix character means that prefix matching should be \
-	applied to every search word. Otherwise a match is \
-	returned only if the word does not end in the characters specified. \
+	applied to every search word. Otherwise prefix matching is \
+	done on any search word ending with the characters specified \
+	in this string, with the string being stripped off before \
+	looking for matches. The \"prefix\" algorithm must be enabled \
+	in <a href=\"#search_algorithm\">search_algorithm</a> \
+	for this to work. You may also want to set the <a \
+	href=\"#max_prefix_matches\">max_prefix_matches</a> and <a \
+	href=\"#minimum_prefix_length\">minimum_prefix_length</a> attributes \
+	to get it working as you want.<br> As a special case, in version \
+	3.1.6 and later, if this string is non-null and is entered alone \
+	as a search word, it is taken as a wildcard that matches all \
+	documents in the database. If this string is null, the wildcard \
+	for this special case will be <strong>*</strong>. This wildcard \
+	doesn't require the prefix algorithm to be enabled. \
 " }, \
 { "prev_page_text", "[prev]",  \
 	"string", "htsearch", "", "3.0", "Presentation:Text", "prev_page_text: &lt;img src=\"/htdig/buttonl.gif\"&gt;", " \
@@ -1715,7 +1904,7 @@ http://www.htdig.org/", " \
 	previous page of matches. \
 " }, \
 { "regex_max_words", "25",  \
-	"number", "htsearch", "", "3.2.0b1", "Searching:Method", "regex_max_words: 10", " \
+	"integer", "htsearch", "", "3.2.0b1", "Searching:Method", "regex_max_words: 10", " \
 	The \"regex\" fuzzy algorithm could potentially match a \
 	very large number of words. This value limits the \
 	number of words each regular expression can match. Note \
@@ -1747,6 +1936,7 @@ http://www.htdig.org/", " \
 	The list should only contain names that all servers you index \
 	recognize as default documents for directory URLs, as defined \
 	by the DirectoryIndex setting in Apache's srm.conf, for example. \
+	This does not apply to  file:///  or  ftp://  URLS. \
 " }, \
 { "remove_unretrieved_urls", "false",  \
 	"boolean", "htpurge", "Server", "3.2.0b1", "Indexing:How", "remove_unretrieved_urls: true", " \
@@ -1769,6 +1959,8 @@ http://www.htdig.org/", " \
 	that the restrict list does not take precedence over the \
 	<a href=\"#exclude\">exclude</a> list - if a URL matches patterns \
 	in both lists it is still excluded from the search results. \
+	<br>To restrict URLs in htdig, use \
+	<a href=\"limit_urls_to\">limit_urls_to\">. \
 " }, \
 { "robotstxt_name", "htdig",  \
 	"string", "htdig", "Server", "3.0.7", "Indexing:Out", "robotstxt_name: myhtdig", " \
@@ -1909,6 +2101,12 @@ http://www.htdig.org/", " \
 			<dd> \
 			</dl> \
 " }, \
+{ "search_results_contenttype", "text/html",  \
+	"string", "htsearch", "", "all", "Presentation:Files", "search_results_contenttype: text/xml", " \
+	This specifies a Content-type to be output as an HTTP header \
+	at the start of search results. If set to an empty string, \
+	the Content-type header will be omitted altogether. \
+" },
 { "search_results_footer", "${common_dir}/footer.html",  \
 	"string", "htsearch", "", "all", "Presentation:Files", "search_results_footer: /usr/local/etc/ht/end-stuff.html", " \
 			This specifies a filename to be output at the end of \
@@ -1927,7 +2125,9 @@ http://www.htdig.org/", " \
 				${VAR} \
 			  </li> \
 			</ul> \
-			The following variables are available: \
+	The following variables are available.  See \
+	<a href=\"hts_template.html\">hts_template.html</a> for a complete \
+	list. \
 			<dl> \
 			  <dt> \
 				MATCHES \
@@ -2003,7 +2203,10 @@ http://www.htdig.org/", " \
 				${VAR} \
 			  </li> \
 			</ul> \
-			The following variables are available: \
+	The following variables are available.  See \
+	<a href=\"hts_template.html\">hts_template.html</a> for a complete \
+	list. \
+	<!-- Do these need to be listed for both _footer and _header? --> \
 			<dl> \
 			  <dt> \
 				MATCHES \
@@ -2053,7 +2256,7 @@ http://www.htdig.org/", " \
 			attribute. \
 " }, \
 { "search_results_order", "", \
-	"string_list", "htsearch", "", "3.2.0b2", "Searching:Ranking", "search_results_order:  \
+	"string list", "htsearch", "", "3.2.0b2", "Searching:Ranking", "search_results_order:  \
 	 /docs/|faq.html * /maillist/ /testresults/", " \
 	This specifies a list of patterns for URLs in \
 	search results.  Results will be displayed in the \
@@ -2087,6 +2290,25 @@ http://www.htdig.org/", " \
 	<a href=\"#nothing_found_file\">nothing_found_file</a> \
 	attribute is used instead. \
 " }, \
+{ "search_rewrite_rules", "",
+	"string list", "htsearch", "", "3.1.6", "URLs", "search_rewrite_rules: http://(.*)\\\\.mydomain\\\\.org/([^/]*)  http://\\\\2.\\\\1.com \\<br> \
+	       http://www\\\\.myschool\\\\.edu/myorgs/([^/]*)  http://\\\\1.org", " \
+	This is a list of pairs, <em>regex</em> <em>replacement</em>, used \
+	to rewrite URLs in the search results. The left hand string is a \
+	regular expression; the right hand string is a literal string with \
+	embedded placeholders for fragments that matched inside brackets in \
+	the regular expression. \\0 is the whole matched string, \\1 to \\9 \
+	are bracketted substrings. The backslash must be doubled-up in the \
+	attribute setting to get past the variable expansion parsing. Rewrite \
+	rules are applied sequentially to each URL before it is displayed \
+	or checked against the <a href=\"#restrict\">restrict</a> or \
+	<a href=\"#exclude\">exclude</a> lists. Rewriting does not stop once a \
+	match has been made, so multiple rules may affect a given URL. See \
+	also <a href=\"#url_part_aliases\">url_part_aliases</a> which allows \
+	URLs to be of one form during indexing and translated for results, \
+	and <a href=\"#url_rewrite_rules\">url_rewrite_rules</a> which allows \
+	URLs to be rewritten while indexing. \
+" },
 { "server_aliases", "",  \
 	"string list", "htdig", "", "3.1.0b2", "Indexing:Where", "server_aliases: \
 				  foo.mydomain.com:80=www.mydomain.com:80 \\<br> \
@@ -2135,28 +2357,16 @@ http://www.htdig.org/", " \
 	<tr> \
 	<td> \
 	<ul> \
-	<li> \
-	score \
-	</li> \
-	<li> \
-	time \
-	</li> \
-	<li> \
-	title \
-	</li> \
+	     <li> score </li> \
+	     <li> time </li> \
+	     <li> title </li> \
 	</ul> \
 	</td> \
 	<td> \
 	<ul> \
-	<li> \
-	revscore \
-	</li> \
-	<li> \
-	revtime \
-	</li> \
-	<li> \
-	revtitle \
-	</li> \
+	     <li> revscore </li> \
+	     <li> revtime </li> \
+	     <li> revtitle </li> \
 	</ul> \
 	</td> \
 	</tr> \
@@ -2231,6 +2441,14 @@ http://www.htdig.org/", " \
 	element of each pair is a pattern, the second element \
 	is a URL to the image for that pattern. \
 " }, \
+{ "startday", "",  \
+	"integer", "htsearch", "", "3.1.6", "Searching:Method", "startday: 1", " \
+	Day component of first date allowed as last-modified date \
+	of returned docutments. \
+	This is most usefully specified as a \
+	<a href=\"hts_form.html#startyear\">GCI argument</a>. \
+	See also <a href=\"#startyear\">startyear</a>. \
+" }, \
 { "start_ellipses", "<strong><code>... </code></strong>",  \
 	"string", "htsearch", "", "all", "Presentation:Text", "start_ellipses: ...", " \
 	When excerpts are displayed in the search output, this \
@@ -2248,11 +2466,47 @@ http://www.htdig.org/", " \
 	that is, any formatting tags that this string \
 	opens should be closed by end_highlight. \
 " }, \
+{ "startmonth", "",  \
+	"integer", "htsearch", "", "3.1.6", "Searching:Method", "startmonth: 1", " \
+	Month component of first date allowed as last-modified date \
+	of returned docutments. \
+	This is most usefully specified as a \
+	<a href=\"hts_form.html#startyear\">GCI argument</a>. \
+	See also <a href=\"#startyear\">startyear</a>. \
+" }, \
 { "start_url", "http://www.htdig.org/",  \
 	"string list", "htdig", "", "all", "Indexing:Where", "start_url: http://www.somewhere.org/alldata/index.html", " \
 	This is the list of URLs that will be used to start a \
 	dig when there was no existing database. Note that \
 	multiple URLs can be given here. \
+	<br>Note also that the value of <em>start_url</em> \
+	will be the default value for \
+	<a href=\"#limit_urls_to\">limit_urls_to</a>, so if \
+	you set start_url to the URLs for specific files, \
+	rather than a site or subdirectory URL, you may need \
+	to set limit_urls_to to something less restrictive \
+	so htdig doesn't reject links in the documents. \
+
+" }, \
+{ "startyear", "1970",  \
+	"integer", "htsearch", "", "3.1.6", "Searching:Method", "startyear: 2001", " \
+	This specifies the year of the cutoff start date for \
+	search results. If the start or end date are specified, \
+	only results with a last modified date within this \
+	range are shown. \
+	See also <a href=\"#startday\">startday</a>, \
+	<a href=\"#startmonth\">startmonth</a>, \
+	<a href=\"#endday\">endday</a>, \
+	<a href=\"#endmonth\">endmonth</a>, \
+	<a href=\"endyear\">endyear</a>. \
+	These are most usefully specified as a \
+	<a href=\"hts_form.html#startyear\">GCI argument</a>.<br> \
+	For each component, if a negative number is given, \
+	it is taken as relative to the current date. \
+	Relative days can span several months or even years if desired, \
+	and relative months can span several years. A startday of \
+	-90 will select matching documents modified within \
+	the last 90 days. \
 " }, \
 { "substring_max_words", "25",  \
 	"integer", "htsearch", "", "3.0.8b1", "Searching:Method", "substring_max_words: 100", " \
@@ -2284,15 +2538,15 @@ http://www.htdig.org/", " \
 	boolean expression syntax error was found. \
 " }, \
 { "tcp_max_retries", "1",  \
-	"number", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "tcp_max_retries: 6", " \
+	"integer", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "tcp_max_retries: 6", " \
 	 This option set the maximum number of attempts when a connection \
 	 <A href=\"#timeout\">timeout</A>s. \
 	 After all these retries, the connection attempt results <timed out>. \
 " }, \
 { "tcp_wait_time", "5",  \
-	"number", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "tcp_max_retries: 10", " \
-	 This attribute sets the wait time after a connection fails and the \
-	 <A href=\"#timeout\">timeout</A> is raised. \
+	"integer", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "tcp_wait_time: 10", " \
+	 This attribute sets the wait time (in seconds) after a connection \
+	 fails and the <A href=\"#timeout\">timeout</A> is raised. \
 " }, \
 { "template_map", "Long builtin-long builtin-long Short builtin-short builtin-short",  \
 	"quoted string list", "htsearch", "", "3.0", "Presentation:Files,Searching:UI", "template_map: \
@@ -2312,11 +2566,15 @@ http://www.htdig.org/", " \
 	those, they will be used instead.<br> \
 	More information about templates can be found in the \
 	<a href=\"htsearch.html\" target=\"_top\">htsearch</a> \
-	documentation. \
+	documentation.  The particular template is selecterd by the \
+	<a href=\"hts_form.html#format\">format</a> cgi argument, and the \
+	default is given by <a href=\"#template_name\">template_name</a> in \
+	the config file. \
 " }, \
 { "template_name", "builtin-long",  \
 	"string", "htsearch", "", "3.0", "Searching:UI,Presentation:How", "template_name: long", " \
-	Specifies the default template if none is given by the \
+	Specifies the default template if no
+	<a href=\"hts_form.html#format\">format</a> field is given by the \
 	search form. This needs to map to the \
 	<a href=\"#template_map\">template_map</a>. \
 " }, \
@@ -2351,13 +2609,11 @@ http://www.htdig.org/", " \
 	weight of words that are not in any special part of a \
 	document. Setting a factor to 0 will cause normal words \
 	to be ignored. The number may be a floating point \
-	number. See also the <a href=\"#heading_factor\"> \
-	heading_factor</a>, <a href=\"#title_factor\"> \
-	title_factor</a>, and <a href=\"#keywords_factor\"> \
-	keywords_factor</a> attributes. \
+	number. See also the <a href=\"#heading_factor\"> heading_factor</a> \
+	attribute. \
 " }, \
 { "timeout", "30",  \
-	"number", "htdig", "Server", "all", "Indexing:Connection", "timeout: 42", " \
+	"integer", "htdig", "Server", "all", "Indexing:Connection", "timeout: 42", " \
 	Specifies the time the digger will wait to complete a \
 	network read. This is just a safeguard against \
 	unforeseen things like the all too common \
@@ -2422,7 +2678,13 @@ url_part_aliases: \
 	URL.  Translations will be performed with priority \
 	for the leftmost longest match.	 Each \
 	<em>to</em>-string must be unique and not be a \
-	part of any other <em>to</em>-string.<br> \
+	part of any other <em>to</em>-string.  It also helps \
+	to keep the <em>to</em>-strings short to save space \
+	in the database. Other than that, the choice of \
+	<em>to</em>-strings is pretty arbitrary, as they \
+	just provide a temporary, internal encoding in the \
+	databases, and none of the characters in these \
+	strings have any special meaning.<br> \
 	Note that when this attribute is changed, the \
 	database should be rebuilt, unless the effect of \
 	\"moving\" the affected URLs in the database is \
@@ -2434,19 +2696,30 @@ url_part_aliases: \
 	for the configuration file to be used by htdig, \
 	htmerge, and htnotify, and the second one is for the \
 	configuration file to be used by htsearch. \
+	In this example, htdig will encode the URL \
+	\"http://search.example.com/~htdig/contrib/stuff.html\" \
+	as \"*sitecontrib/stuff*2\" in the databases, and \
+	htsearch will decode it as \
+	\"http://www.htdig.org/contrib/stuff.htm\".<br> \
+	As of version 3.1.6, you can also do more complex \
+	rewriting of URLs using \
+	<a href=\"#url_rewrite_rules\">url_rewrite_rules</a> and \
+	<a href=\"#search_rewrite_rules\">search_rewrite_rules</a>. \
 " }, \
 { "url_rewrite_rules", "", \
     "string list", "htdig", "", "3.2.0b3", "URLs", "url_rewrite_rules:	(.*)\\\\?JServSessionIdroot=.*		\\\\1 \\<br> \
 			(.*)\\\\&amp;JServSessionIdroot=.*		\\\\1 \\<br> \
 			(.*)&amp;context=.*				\\\\1<br>", " \
-This is a list of pairs, <em>regex</em> <em>replacement</em> used to permanently  \
-rewrite URLs as they are indexed. The left hand string is a regex; the right  \
-hand string is  a literal string with embedded placeholders for fragments that  \
-matched  inside brackets in the regex. \\0 is the whole matched string, \\1 to  \
-\\9 are  bracketted substrings. Rewrite rules are applied sequentially to each  \
-incoming URL  before normalization occurs. Rewriting does not stop once a  \
-match has been made, so multiple rules may affect a given URL. See also <a  \
-href=\"#url_part_aliases\">url_part_aliases</a> which allows URLs to be of one  \
+	This is a list of pairs, <em>regex</em> <em>replacement</em> used to \
+	permanently rewrite URLs as they are indexed. The left hand string is \
+	a regular expression; the right hand string is  a literal string with \
+	embedded placeholders for fragments that matched  inside brackets in \
+	the regex. \\0 is the whole matched string, \\1 to \\9 are  bracketted \
+	substrings. Rewrite rules are applied sequentially to each  \
+	incoming URL  before normalization occurs. Rewriting does not stop \
+	once a match has been made, so multiple rules may affect a given URL. \
+	See also <a href=\"#url_part_aliases\">url_part_aliases</a> which \
+	allows URLs to be of one  \
 form during indexing and translated for results. \
 "}, \
 { "url_seed_score", "", \
@@ -2479,6 +2752,11 @@ form during indexing and translated for results. \
 	&quot;newscore = oldscore*<em>N</em>+<em>M</em>&quot;, \
 	but with the &quot;newscore = oldscore&quot; part left out. \
 " }, \
+{ "url_text_factor", "1",  \
+	"number", "htsearch", "", "??", "Searching:Ranking", "url_text_factor: 1", " \
+	TO BE COMPLETED<br> \
+	See also <a href=\"#heading_factor\">heading_factor</a>. \
+" }, \
 { "use_doc_date", "false",  \
 	"boolean", "htdig", "", "3.2.0b1", "Indexing:How", "use_doc_date: true", " \
 	If set to true, htdig will use META date tags in documents, \
@@ -2486,6 +2764,8 @@ form during indexing and translated for results. \
 	Any documents that do not have META date tags will retain \
 	the last modified date returned by the server or found on \
 	the local file system. \
+	As of version 3.1.6, in addition to META date tags, htdig will also \
+	recognize dc.date, dc.date.created and dc.date.modified. \
 " }, \
 { "use_meta_description", "false",  \
 	"boolean", "htsearch", "", "3.1.0b1", "Presentation:How", "use_meta_description: true", " \
@@ -2554,6 +2834,14 @@ form during indexing and translated for results. \
 	words. The file is easy to parse with tools like \
 	perl or tcl. \
 " }, \
+{ "wordlist_cache_size", "10000000",  \
+	"integer", "all", "", "3.2.0b1", "Indexing:How", "wordlist_cache_size: 40000000", " \
+	Size of memory cache used by Berkeley DB (DB used by the indexer) \
+	IMPORTANT: It  makes a <strong>huge</strong> difference. The rule  \
+	is that the cache size should be at least 2% of the expected index size. The \
+	Berkeley DB file has 1% of internal pages that *must* be cached for good \
+	performances. Giving an additional 1% leaves room for caching leaf pages. \
+" }, \
 { "wordlist_compress", "true",  \
 	"boolean", "all", "", "3.2.0b1", "Indexing:How", "wordlist_compress: true", " \
 	Enables or disables the default compression system for the indexer. \
@@ -2565,17 +2853,28 @@ form during indexing and translated for results. \
 	Enables or disables the zlib compression system for the indexer. \
 	wordlist_compress must be true to use this option!`\
 " }, \
+{ "wordlist_monitor", "false", \
+	"boolean", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor: true", " \
+	This enables monitoring of what's happening in the indexer. \
+	It can help to detect performance/configuration problems. \
+" }, \
+{ "wordlist_monitor_period","0", \
+	"number", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor_period: .1", " \
+	Sets the number of seconds between each monitor output. \
+" }, \
+{ "wordlist_monitor_output","", \
+	"string", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor_output: myfile", " \
+	Print monitoring output on file instead of the default stderr. \
+" }, 
 { "wordlist_page_size", "0",  \
-	"number", "all", "", "3.2.0b1", "Indexing:How", "wordlist_page_size: 8192", " \
+	"integer", "all", "", "3.2.0b1", "Indexing:How", "wordlist_page_size: 8192", " \
 	Size of pages used by Berkeley DB (DB used by the indexer) \
 " }, \
-{ "wordlist_cache_size", "10000000",  \
-	"number", "all", "", "3.2.0b1", "Indexing:How", "wordlist_cache_size: 40000000", " \
-	Size of memory cache used by Berkeley DB (DB used by the indexer) \
-	IMPORTANT: It  makes a *huge* difference. The rule  \
-	is that the cache size should be at least 2% of the expected index size. The \
-	Berkeley DB file has 1% of internal pages that *must* be cached for good \
-	performances. Giving an additional 1% leaves room for caching leaf pages. \
+{ "wordlist_verbose", "",  \
+	"integer", "", "", "", "", "wordlist_verbose: true", " \
+	wordlist_verbose 1 walk logic<br>    \
+	wordlist_verbose 2 walk logic details<br>    \
+	wordlist_verbose 2 walk logic lots of details<br>    \
 " }, \
 { "wordlist_wordkey_description", "Word/DocID 32/Flags 8/Location 16", \
 	"string", "all", "", "3.2.0b1", "Indexing:How", "**this should not be configured by user**", " \
@@ -2585,19 +2884,6 @@ form during indexing and translated for results. \
 	"string", "all", "", "3.2.0b1", "Indexing:How", "**this should not be configured by user**", " \
 	Internal data description: *not user configurable* \
 " }, \
-{ "wordlist_monitor", "false", \
-	"boolean", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor: true", " \
-	This enables monitoring of what's happening in the indexer. \
-	It can help to detect performance/configuration problems. \
-" }, \
-{ "wordlist_monitor_period","0", \
-	"string", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor_period: .1", " \
-	Sets the number of seconds between each monitor output. \
-" }, \
-{ "wordlist_monitor_output","", \
-	"string", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor_output: myfile", " \
-	Print monitoring output on file instead of the default stderr. \
-" }, 
 {0, 0, 0, 0, 0, 0, 0, 0, 0}
 };
 

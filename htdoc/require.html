@@ -10,7 +10,7 @@
 	  Features and System requirements
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
+	  ht://Dig Copyright &copy; 1995-2002 <a href="THANKS.html">The ht://Dig Group</a><br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -52,6 +52,14 @@
 	  <dd>
 		Searches can be arbitrarily complex using boolean
 		expressions.
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Phrase searching</strong>
+	  </dt>
+	  <dd>
+		A phrase can be searched for by enclosing it in quotes.
+		Phrase searches can be combined with word searches, as in
+		<code>Linux and "high quality"</code>.
 	  </dd>
 	  <dt>
 		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Configurable search results</strong>
@@ -98,12 +106,25 @@
 		</ul>
 	  </dd>
 	  <dt>
-		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Searching of HTML and text files</strong>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Searching of many file formats</strong>
 	  </dt>
 	  <dd>
 		Both HTML documents and plain text files can be
-		searched. Searching of other file types will be
-		supported in future versions.
+		searched directly ht://Dig itself.  There is also a mechanism
+		to allow external programs ("external parsers") to be used
+		while building the database so that arbitrary file formats
+		can be searched. <br>
+	  </dd>
+	  <dt>
+		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Document retrieval using many transport services</strong>
+	  </dt>
+	  <dd>
+		Several transport services can be handled by ht://Dig,
+		including http://, ftp:// and file:///.
+		There is also a mechanism
+		to allow external programs ("external transports") to be used
+		while building the database so that arbitrary transport
+		services can be used. <br>
 	  </dd>
 	  <dt>
 		<strong><img src="bdot.gif" width=9 height=9 alt="*"> Keywords can be added to HTML
@@ -206,7 +227,18 @@
 	  <li>
 		Debian Linux 2.0 (using egcs 1.1b)
 	  </li>
-	</ul>
+	  <li>
+		FreeBSD 4.6 (using gcc/g++ 2.95.3) <!-- lha@ee.mu.oz.au -->
+	  </li>
+<!--
+	  <li>
+		Debian, 2.2.19 kernel (using gcc/g++ 2.95.4) lha@ee.mu.oz.au
+	  </li>
+	  <li>
+		Mandrake Linux 8.2 (using gcc/g++ 2.95.?) lha@ee.mu.oz.au
+	  </li>
+-->
+ 	</ul>
 	There are reports of ht://Dig working on a number of other platforms.
 	<h3>
 	  libstdc++
@@ -228,14 +260,15 @@
 	  'include' statement as in
 	</p>
 	<blockquote>
-	  <code>include somefile</code>
+	  <code>include somefile otherfile</code>
 	</blockquote>
 	<p>
 	  The Berkeley 4.4 make program doesn't use this syntax, instead
 	  it wants
 	</p>
 	<blockquote>
-	  <code>.include "somefile"</code>
+	  <code>.include "somefile"</code><br>
+	  <code>.include "otherfile"</code>
 	</blockquote>
 	<p>
 	  and hence it cannot be used to build ht://Dig.
@@ -304,7 +337,7 @@
 	</p>
 	<hr size="4" noshade>
 
-	Last modified: $Date: 2002/02/01 22:49:32 $
+	Last modified: $Date: 2002/12/30 12:42:59 $
 
   </body>
 </html>

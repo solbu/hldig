@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtConfiguration.cc,v 1.3 2002/02/01 22:49:28 ghutchis Exp $
+// $Id: HtConfiguration.cc,v 1.4 2002/12/30 12:42:58 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -36,7 +36,7 @@ HtConfiguration::Add(const char *name, const char *value, Configuration *aList) 
   if (strcmp("url",name)==0) {  //add URL entry
     URL tmpUrl(strdup(value));
 	Dictionary *paths= NULL;
-    if (paths=(Dictionary *)dcUrls[tmpUrl.host()]) {
+    if ( (paths=(Dictionary *)dcUrls[tmpUrl.host()]) ) {
       paths->Add(tmpUrl.path(),aList);
     } else {
       paths=new Dictionary();

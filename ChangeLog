@@ -1,3 +1,89 @@
+Mon Dec 30 2002  Lachlan Andrew  <lha@users.sourcefourge.net>
+
+	Forward-ported several patches from 3.1.6:
+
+	* htdig/ExternalParser.cc: Added "description_meta_tag_names" attrib.
+	Added "dc.date|dc.date.created|dc.date.modified" synonyms for "date".
+	Allow spaces between "url" and "=" in refresh.
+	Fixed bug in flag positions.
+	Added "use_doc_date" attribute.
+
+	* htdig/HTML.cc: Added "description \_meta_tag_names" attribute.
+	Added "dc.date|..." synonyms.
+	Added "ignore_alt_text" attribute.
+
+	* htdig/Retriever.cc: Added "ignore_dead_servers" attribute.
+	Added call to "url.rewrite() in  got_href().
+
+	* htdig/FAQ.html: Latest version now 3.1.6.  Mention old security hole.
+	Describe external converters for PostScript etc.
+	Mention pdf_parser not supported in 3.2.
+
+	* htdoc/{attrs,cf_byname,cf_byprog}.html: New attributes added
+	(automatically from defaults.cc).
+
+	* htdoc/htmerge.html: Update for multiple database support.
+
+	* htdoc/hts_form.html: Describe relative/incomplete dates.
+
+	* htdoc/require.html: Describe phrase searching, external parsers,
+	external transports.
+	Added some new supported systems.  (Commented out as testing
+	incomplete.)
+
+	* htfuzzy/Synonym.cc: Protect against "synonym" entries with one word.
+
+	* htlib/String.cc: Protect against negative string lengths.
+
+	* htsearch/Display.{cc,h}: Added "search_result_contenttype" attribute,
+	and corresponding  displayHTTPheaders()  function.
+	Rewrite URLs.
+	Remove old "ANCHOR" variable.
+	Handle relative dates.
+	Added "max_excerpts" attribute and  buildExcerpts()  function.
+	Added "anchor_target" attribute.
+
+	* htsearch/DocMatch.h: Added "orMatches"
+
+	* htsearch/htsearch.cc: Added "boolean_keywords" attribute.
+	Rewrite URLs.
+
+	* htsearch/parser.cc: Added "boolean_syntax_errors" attribute.
+	Added wildcard search.
+	Fixed bug in  perform_phrase()  so it now handles "bad words" and
+	short words properly.
+	Added "multimatch_factor" to give greater weight to documents matching
+	multiple "OR" terms.
+
+	* htsearch/htparser.h: Added  boolean_keywords  support.
+
+	* htcommon/defaults.{cc,xml}: New attributes added, and enhanced
+	descriptions
+
+
+	Cleaned code to remove some compiler warnings/errors:
+
+	* htcommon/HtConfiguration.cc: Brackets around assignment 'path='
+	inside 'if'
+
+	* htdig/Server.cc, htsearch/Display.cc:
+	Added ".get()" when strings passed as arguments.
+
+	* htlib/StringMatch.h, htword/WordBitCompress.h:
+	Explicit cast of NULL to (char*)NULL for broken C++ compilers.
+
+
+	Also:
+
+	* STATUS: Removed "not all htsearch input parameters handled properly",
+	"Return all URLs", "Turn on URL parser test",
+	"htsearch phrase support tests".
+	Reduced list of things to do for "require.html".
+
+
+	* test/t_htsearch, test/conf/htdig.conf3.in:
+	Added testing of phrases and  boolean_keywords / boolean_syntax_errors.
+
 Thu Nov 28 09:02:46 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* installdir/english.0: Removed S flag from birth, because it doesn't

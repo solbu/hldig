@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.59 2002/10/27 15:21:22 ghutchis Exp $
+// $Id: htsearch.cc,v 1.60 2002/12/30 12:42:59 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -29,6 +29,7 @@
 #include "StringList.h"
 #include "IntObject.h"
 #include "HtURLCodec.h"
+#include "HtURLRewriter.h"
 #include "WordContext.h"
 #include "HtRegex.h"
 #include "Collection.h"
@@ -58,6 +59,7 @@ void usage();
 
 int			debug = 0;
 int			minimum_word_length = 3;
+StringList		boolean_keywords;
 
 StringList              collectionList; // List of databases to search on
 
@@ -142,233 +144,249 @@ main(int ac, char **av)
 
 	HtConfiguration* config= HtConfiguration::config();
 
-// Iterate over all specified collections (databases)
-for (int cInd=0; errorMsg.empty() && cInd < collectionList.Count(); cInd++)
-{
-    // Each collection is handled in an iteration. Reset the following so
-    // that we start with a clean slate.
-    //
-    logicalWords = 0;
-    origPattern = 0;
-    logicalPattern = 0;
-    searchWords = new List;
-    searchWordsPattern = new StringMatch;
-
-    char *config_name = collectionList[cInd];
-    if (config_name && config_name[0] == '\0')
-        config_name = NULL; // use default config
-                                  
-    //
-    // Setup the configuration database.  First we read the compiled defaults.
-    // Then we override those with defaults read in from the configuration
-    // file, and finally we override some attributes with information we
-    // got from the HTML form.
-    //
-    config->Defaults(&defaults[0]);
-    // To allow . in filename while still being 'secure',
-    // e.g. htdig-f.q.d.n.conf
-    if (!override_config && config_name 
-	&& (strstr(config_name, "./") == NULL))
+    // Iterate over all specified collections (databases)
+    for (int cInd=0; errorMsg.empty() && cInd < collectionList.Count(); cInd++)
     {
-	char	*configDir = getenv("CONFIG_DIR");
-	if (configDir)
+	// Each collection is handled in an iteration. Reset the following so
+	// that we start with a clean slate.
+	//
+	logicalWords = 0;
+	origPattern = 0;
+	logicalPattern = 0;
+	searchWords = new List;
+	searchWordsPattern = new StringMatch;
+
+	char *config_name = collectionList[cInd];
+	if (config_name && config_name[0] == '\0')
+	    config_name = NULL; // use default config
+				      
+	//
+	// Setup the configuration database.  First we read the compiled defaults.
+	// Then we override those with defaults read in from the configuration
+	// file, and finally we override some attributes with information we
+	// got from the HTML form.
+	//
+	config->Defaults(&defaults[0]);
+	// To allow . in filename while still being 'secure',
+	// e.g. htdig-f.q.d.n.conf
+	if (!override_config && config_name 
+	    && (strstr(config_name, "./") == NULL))
 	{
-	    configFile = configDir;
+	    char	*configDir = getenv("CONFIG_DIR");
+	    if (configDir)
+	    {
+		configFile = configDir;
+	    }
+	    else
+	    {
+		configFile = CONFIG_DIR;
+	    }
+	    if (strlen(config_name) == 0)
+	      configFile = DEFAULT_CONFIG_FILE;
+	    else
+	      configFile << '/' << config_name << ".conf";
 	}
-	else
+	if (access((char*)configFile, R_OK) < 0)
 	{
-	    configFile = CONFIG_DIR;
+	    reportError(form("Unable to read configuration file '%s'",
+			     configFile.get()));
 	}
-	if (strlen(config_name) == 0)
-	  configFile = DEFAULT_CONFIG_FILE;
-	else
-	  configFile << '/' << config_name << ".conf";
-    }
-    if (access((char*)configFile, R_OK) < 0)
-    {
-	reportError(form("Unable to read configuration file '%s'",
-			 configFile.get()));
-    }
-    config->Read(configFile);
+	config->Read(configFile);
 
-    // Initialize htword library (key description + wordtype...)
-    WordContext::Initialize(*config);
+	// Initialize htword library (key description + wordtype...)
+	WordContext::Initialize(*config);
 
-    if (input.exists("method"))
-	config->Add("match_method", input["method"]);
-    if (input.exists("format"))
-	config->Add("template_name", input["format"]);
+	if (input.exists("method"))
+	    config->Add("match_method", input["method"]);
+	if (input.exists("format"))
+	    config->Add("template_name", input["format"]);
 
-    if (input.exists("matchesperpage"))
-    {
-	// minimum check for a valid int value of "matchesperpage" cgi variable
-	if (atoi(input["matchesperpage"]) > 0)
-	    config->Add("matches_per_page", input["matchesperpage"]);
-    }
+	if (input.exists("matchesperpage"))
+	{
+	    // minimum check for a valid int value of "matchesperpage" cgi variable
+	    if (atoi(input["matchesperpage"]) > 0)
+		config->Add("matches_per_page", input["matchesperpage"]);
+	}
 
-    if (input.exists("page"))
-	pageNumber = atoi(input["page"]);
-    if (input.exists("config"))
-	config->Add("config", input["config"]);
-    if (input.exists("restrict"))
-	config->Add("restrict", input["restrict"]);
-    if (input.exists("exclude"))
-	config->Add("exclude", input["exclude"]);
-    if (input.exists("keywords"))
-	config->Add("keywords", input["keywords"]);
-    requiredWords.Create(config->Find("keywords"), " \t\r\n\001");
-    if (input.exists("sort"))
-	config->Add("sort", input["sort"]);
+	if (input.exists("page"))
+	    pageNumber = atoi(input["page"]);
+	if (input.exists("config"))
+	    config->Add("config", input["config"]);
+	if (input.exists("restrict"))
+	    config->Add("restrict", input["restrict"]);
+	if (input.exists("exclude"))
+	    config->Add("exclude", input["exclude"]);
+	if (input.exists("keywords"))
+	    config->Add("keywords", input["keywords"]);
+	requiredWords.Create(config->Find("keywords"), " \t\r\n\001");
+	if (input.exists("sort"))
+	    config->Add("sort", input["sort"]);
 
-    // Changes added 3-31-99, by Mike Grommet
-    // Check form entries for starting date, and ending date
-    // Each date consists of a month, day, and year
+	// Changes added 3-31-99, by Mike Grommet
+	// Check form entries for starting date, and ending date
+	// Each date consists of a month, day, and year
 
-    if (input.exists("startmonth"))
-	config->Add("startmonth", input["startmonth"]);
-    if (input.exists("startday"))
-	config->Add("startday", input["startday"]);
-    if (input.exists("startyear"))
-	config->Add("startyear", input["startyear"]);
+	if (input.exists("startmonth"))
+	    config->Add("startmonth", input["startmonth"]);
+	if (input.exists("startday"))
+	    config->Add("startday", input["startday"]);
+	if (input.exists("startyear"))
+	    config->Add("startyear", input["startyear"]);
 
-    if (input.exists("endmonth"))
-	config->Add("endmonth", input["endmonth"]);
-    if (input.exists("endday"))
-	config->Add("endday", input["endday"]);
-    if (input.exists("endyear"))
-	config->Add("endyear", input["endyear"]);
+	if (input.exists("endmonth"))
+	    config->Add("endmonth", input["endmonth"]);
+	if (input.exists("endday"))
+	    config->Add("endday", input["endday"]);
+	if (input.exists("endyear"))
+	    config->Add("endyear", input["endyear"]);
 
-    // END OF CHANGES BY MIKE GROMMET    
+	// END OF CHANGES BY MIKE GROMMET    
 
 
-    minimum_word_length = config->Value("minimum_word_length", minimum_word_length);
+	minimum_word_length = config->Value("minimum_word_length", minimum_word_length);
 
-    StringList form_vars(config->Find("allow_in_form"), " \t\r\n");
-    for (i= 0; i < form_vars.Count(); i++)
-    {
-      if (input.exists(form_vars[i]))
-	config->Add(form_vars[i], input[form_vars[i]]);
-    }
+	StringList form_vars(config->Find("allow_in_form"), " \t\r\n");
+	for (i= 0; i < form_vars.Count(); i++)
+	{
+	  if (input.exists(form_vars[i]))
+	    config->Add(form_vars[i], input[form_vars[i]]);
+	}
 
-    //
-    // Compile the URL limit patterns.
-    //
+	//
+	// Compile the URL limit patterns.
+	//
 
-    if (config->Find("restrict").length())
-    {
-	// Create a temporary list from either the configuration
-	// file or the input parameter
-	StringList l(config->Find("restrict"), " \t\r\n\001|");
-	limit_to.setEscaped(l);
-	String u = l.Join('|');
-	config->Add("restrict", u);  // re-create the config attribute
-    }
-    if (config->Find("exclude").length())
-    {
-	// Create a temporary list from either the configuration
-	// file or the input parameter
-	StringList l(config->Find("exclude"), " \t\r\n\001|");
-	exclude_these.setEscaped(l);
-	String u = l.Join('|');
-	config->Add("exclude", u);  // re-create the config attribute
-    }
- 
-    //
-    // Check url_part_aliases and common_url_parts for
-    // errors.
-    String url_part_errors = HtURLCodec::instance()->ErrMsg();
+	if (config->Find("restrict").length())
+	{
+	    // Create a temporary list from either the configuration
+	    // file or the input parameter
+	    StringList l(config->Find("restrict"), " \t\r\n\001|");
+	    limit_to.setEscaped(l);
+	    String u = l.Join('|');
+	    config->Add("restrict", u);  // re-create the config attribute
+	}
+	if (config->Find("exclude").length())
+	{
+	    // Create a temporary list from either the configuration
+	    // file or the input parameter
+	    StringList l(config->Find("exclude"), " \t\r\n\001|");
+	    exclude_these.setEscaped(l);
+	    String u = l.Join('|');
+	    config->Add("exclude", u);  // re-create the config attribute
+	}
+     
+	//
+	// Check url_part_aliases and common_url_parts for
+	// errors.
+	String url_part_errors = HtURLCodec::instance()->ErrMsg();
 
-    if (url_part_errors.length() != 0)
-      reportError(form("Invalid url_part_aliases or common_url_parts: %s",
-                       url_part_errors.get()));
+	if (url_part_errors.length() != 0)
+	  reportError(form("Invalid url_part_aliases or common_url_parts: %s",
+			   url_part_errors.get()));
 
-    Parser	*parser = new Parser();
+	// for htsearch, use search_rewrite_rules attribute for HtURLRewriter.
+	config->AddParsed("url_rewrite_rules", "${search_rewrite_rules}");
+	url_part_errors = HtURLRewriter::instance()->ErrMsg();
+	if (url_part_errors.length() != 0)
+	  reportError(form("Invalid url_rewrite_rules: %s",
+			   url_part_errors.get()));
+
+	// Load boolean_keywords from configuration
+	// they should be placed in this order:
+	//    0       1       2
+	//    and     or      not
+	boolean_keywords.Create(config->Find("boolean_keywords"),
+				"| \t\r\n\001");
+	if (boolean_keywords.Count() != 3)
+	    reportError("boolean_keywords attribute should have three entries");
+
+	Parser	*parser = new Parser();
+	    
+	//
+	// Parse the words to search for from the argument list.
+	// This will produce a list of WeightWord objects.
+	//
+	setupWords(originalWords, *searchWords,
+		   strcmp(config->Find("match_method"), "boolean") == 0,
+		   parser, origPattern);
+
+	//
+	// Convert the list of WeightWord objects to a pattern string
+	// that we can compile.
+	//
+	createLogicalWords(*searchWords, logicalWords, logicalPattern);
+
+	// 
+	// Assemble the full pattern for excerpt matching and highlighting
+	//
+	origPattern += logicalPattern;
+	searchWordsPattern->IgnoreCase();
+	searchWordsPattern->IgnorePunct();
+	searchWordsPattern->Pattern(logicalPattern); // this should now be enough
+	//searchWordsPattern.Pattern(origPattern);
+	//if (debug > 2)
+	//  cout << "Excerpt pattern: " << origPattern << "\n";
+
+	//
+	// If required keywords were given in the search form, we will
+	// modify the current searchWords list to include the required
+	// words.
+	//
+	if (requiredWords.Count() > 0)
+	{
+	    addRequiredWords(*searchWords, requiredWords);
+	}
 	
-    //
-    // Parse the words to search for from the argument list.
-    // This will produce a list of WeightWord objects.
-    //
-    setupWords(originalWords, *searchWords,
-	       strcmp(config->Find("match_method"), "boolean") == 0,
-	       parser, origPattern);
+	//
+	// Perform the actual search.  The function htsearch() is used for this.
+	// The Dictionary it returns is then passed on to the Display object to
+	// actually render the results in HTML.
+	//
+	const String	word_db = config->Find("word_db");
+	if (access(word_db, R_OK) < 0)
+	{
+	    reportError(form("Unable to read word database file '%s'\nDid you run htdig?",
+			     word_db.get()));
+	}
+	// ResultList	*results = htsearch((char*)word_db, searchWords, parser);
 
-    //
-    // Convert the list of WeightWord objects to a pattern string
-    // that we can compile.
-    //
-    createLogicalWords(*searchWords, logicalWords, logicalPattern);
+	String      doc_index = config->Find("doc_index");
+	if (access((char*)doc_index, R_OK) < 0)
+	{
+	    reportError(form("Unable to read document index file '%s'\nDid you run htdig?",
+			     doc_index.get()));
+	}     
 
-    // 
-    // Assemble the full pattern for excerpt matching and highlighting
-    //
-    origPattern += logicalPattern;
-    searchWordsPattern->IgnoreCase();
-    searchWordsPattern->IgnorePunct();
-    searchWordsPattern->Pattern(logicalPattern); // this should now be enough
-    //searchWordsPattern.Pattern(origPattern);
-    //if (debug > 2)
-    //  cout << "Excerpt pattern: " << origPattern << "\n";
+	const String	doc_db = config->Find("doc_db");
+	if (access(doc_db, R_OK) < 0)
+	{
+	    reportError(form("Unable to read document database file '%s'\nDid you run htdig?",
+			     doc_db.get()));
+	}
 
-    //
-    // If required keywords were given in the search form, we will
-    // modify the current searchWords list to include the required
-    // words.
-    //
-    if (requiredWords.Count() > 0)
-    {
-	addRequiredWords(*searchWords, requiredWords);
+	const String	doc_excerpt = config->Find("doc_excerpt");
+	if (access(doc_excerpt, R_OK) < 0)
+	{
+	    reportError(form("Unable to read document excerpts '%s'\nDid you run htdig?",
+			     doc_excerpt.get()));
+	}
+
+	// Multiple database support
+	Collection *collection = new Collection((char*)configFile,
+	    word_db.get(), doc_index.get(), doc_db.get(), doc_excerpt.get());
+
+	// Perform search within the collection. Each collection stores its
+	// own result list.
+	htsearch(collection, *searchWords, parser);
+	collection->setSearchWords(searchWords);
+	collection->setSearchWordsPattern(searchWordsPattern); 
+	selected_collections.Add(configFile, collection);
+
+	if (parser->hadError())
+	  errorMsg = parser->getErrorMessage();
+
+	delete parser;
     }
-    
-    //
-    // Perform the actual search.  The function htsearch() is used for this.
-    // The Dictionary it returns is then passed on to the Display object to
-    // actually render the results in HTML.
-    //
-    const String	word_db = config->Find("word_db");
-    if (access(word_db, R_OK) < 0)
-    {
-	reportError(form("Unable to read word database file '%s'\nDid you run htdig?",
-			 word_db.get()));
-    }
-    // ResultList	*results = htsearch((char*)word_db, searchWords, parser);
-
-    String      doc_index = config->Find("doc_index");
-    if (access((char*)doc_index, R_OK) < 0)
-    {
-        reportError(form("Unable to read document index file '%s'\nDid you run htdig?",
-                         doc_index.get()));
-    }     
-
-    const String	doc_db = config->Find("doc_db");
-    if (access(doc_db, R_OK) < 0)
-    {
-	reportError(form("Unable to read document database file '%s'\nDid you run htdig?",
-			 doc_db.get()));
-    }
-
-    const String	doc_excerpt = config->Find("doc_excerpt");
-    if (access(doc_excerpt, R_OK) < 0)
-    {
-	reportError(form("Unable to read document excerpts '%s'\nDid you run htdig?",
-			 doc_excerpt.get()));
-    }
-
-    // Multiple database support
-    Collection *collection = new Collection((char*)configFile,
-        word_db.get(), doc_index.get(), doc_db.get(), doc_excerpt.get());
-
-    // Perform search within the collection. Each collection stores its
-    // own result list.
-    htsearch(collection, *searchWords, parser);
-    collection->setSearchWords(searchWords);
-    collection->setSearchWordsPattern(searchWordsPattern); 
-    selected_collections.Add(configFile, collection);
-
-    if (parser->hadError())
-      errorMsg = parser->getErrorMessage();
-
-    delete parser;
-}
 
     // Display	display(doc_db, 0, doc_excerpt);
     Display     display(&selected_collections);
@@ -411,11 +429,11 @@ createLogicalWords(List &searchWords, String &logicalWords, String &wm)
 	if (!ww->isHidden)
 	{
 	    if (strcmp((char*)ww->word, "&") == 0 && wasHidden == 0)
-		logicalWords << " and ";
+		logicalWords << ' ' << boolean_keywords[AND] << ' ';
 	    else if (strcmp((char*)ww->word, "|") == 0 && wasHidden == 0)
-		logicalWords << " or ";
+		logicalWords << ' ' << boolean_keywords[OR] << ' ';
 	    else if (strcmp((char*)ww->word, "!") == 0 && wasHidden == 0)
-		logicalWords << " not ";
+		logicalWords << ' ' << boolean_keywords[NOT] << ' ';
 	    else if (strcmp((char*)ww->word, "\"") == 0 && wasHidden == 0)
 	      {
 		if (inPhrase)
@@ -528,22 +546,21 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		}
 
 		pos--;
-		if (boolean && mystrcasecmp(word.get(), "and") == 0)
+		if (boolean && (mystrcasecmp(word.get(), "+") == 0
+		    || mystrcasecmp(word.get(), boolean_keywords[AND]) == 0))
 		{
 		    tempWords.Add(new WeightWord("&", -1.0));
 		}
-		else if (boolean && mystrcasecmp(word.get(), "or") == 0)
+		else if (boolean &&
+			mystrcasecmp(word.get(), boolean_keywords[OR]) == 0)
 		{
 		    tempWords.Add(new WeightWord("|", -1.0));
 		}
-		else if (boolean && mystrcasecmp(word.get(), "not") == 0)
+		else if (boolean && (mystrcasecmp(word.get(), "-") == 0
+		    || mystrcasecmp(word.get(), boolean_keywords[NOT]) == 0))
 		{
 		    tempWords.Add(new WeightWord("!", -1.0));
 		}
-		else if (boolean && mystrcasecmp(word.get(), "+") == 0)
-		  tempWords.Add(new WeightWord("&", -1.0));
-		else if (boolean && mystrcasecmp(word.get(), "-") == 0)
-		  tempWords.Add(new WeightWord("!", -1.0));
 		else
 		{
 		    // Add word to excerpt matching list

@@ -70,11 +70,23 @@
 			Prevent the document index from being created.
 		  </dd>
 		  <dt>
-			-m <em>configfile</em>
+			-m <em>merge_configfile</em>
 		  </dt>
 		  <dd>
-		  Merge the databases specified into the databases
-		  specified by -c or the default.
+		        Merge the databases specified by merge_configfile
+		        into the databases specified by -c or the default.
+		        To use multiple databases, you will need a config
+			file for each database. Then each file will set the
+			<a href="attrs.html#database_dir">database_dir</a> or
+			<a href="attrs.html#database_base">database_base</a>
+			attribute to change the name of the databases, so
+			they are in different directories or files.<br>
+			<strong>Note:</strong> You <em>must</em> run htmerge
+			separately on each of the databases created by
+			<a href="htdig.html">htdig</a> before merging them
+			together with this option. This is because merging
+			the two wordlists together requires wordlists that
+			have already been cleaned up by htmerge.
 		  </dd>
 		  <dt>
 			-s
@@ -137,7 +149,7 @@
 	</dl>
 	<hr size="4" noshade>
 
-	Last modified: $Date: 2002/02/01 22:49:32 $
+	Last modified: $Date: 2002/12/30 12:42:59 $
 
   </body>
 </html>

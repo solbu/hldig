@@ -11,7 +11,7 @@
   <body bgcolor="#eef7ff">
 	<h1>Configuration file format -- Attributes</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2001 <a href="THANKS.html">The ht://Dig Group</a><br>
+	  ht://Dig Copyright &copy; 1995-2002 <a href="THANKS.html">The ht://Dig Group</a><br>
 	  Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -360,6 +360,8 @@
 	parameters, in the follow-up search form, using the
 	<a href="#build_select_lists">build_select_lists</a>
 	configuration attribute.
+	<br>WARNING: Extreme care are should be taken with this option, as
+	allowing CGI scripts to set file names can open security holes.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -517,6 +519,76 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="anchor_target">
+		anchor_target</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>No default</em>
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	When the first matched word in the excerpt is linked
+	to the closest anchor in the document, this string
+	can be set to specify a target in the link so the
+	resulting page is displayed in the desired frame.
+	This value will only be used if the
+	<a href="#add_anchors_to_excerpt">add_anchors_to_excerpt</a>
+	attribute is set to true, the <strong>EXCERPT</strong>
+	variable is used in the output template and the
+	excerpt is actually displayed with a link.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  anchor_target:
+				</td>
+				<td nowrap>
+				     body
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="any_keywords">
 		any_keywords</a></strong>
 	  </dt>
@@ -574,6 +646,69 @@
 				</td>
 				<td nowrap>
 				     yes
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="author_factor">
+		author_factor</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			1
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      ??
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	TO BE COMPLETED<br>
+	See also <a href="#heading_factor">heading_factor</a>.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  author_factor:
+				</td>
+				<td nowrap>
+				     1
 				</td>
 			  </tr>
 			</table>
@@ -1000,6 +1135,152 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="boolean_keywords">
+		boolean_keywords</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			and or not
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	These three strings are used as the keywords used in
+	constructing the LOGICAL_WORDS template variable,
+	and in parsing the <a href="hts_form.html#words">words</a> input
+	parameter when the <a href="hts_form.html#method">method</a>
+	parameter or <a href="#match_method">match_method</a> attribute
+	is set to <code>boolean</code>.
+	See also the
+	<a href="boolean_syntax_errors">boolean_syntax_errors</a> attribute.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  boolean_keywords:
+				</td>
+				<td nowrap>
+				     et ou non
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="boolean_syntax_errors">
+		boolean_syntax_errors</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			quoted string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			&gt;Expected
+	&#39;a search word, a quoted phrase or a boolean expression between ()&#39;
+		&#39;at the end&#39; &#39;instead of&#39; &#39;end of expression&#39; quotes
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	These six strings are used as the keywords used to
+	construct various syntax error messages for errors encountered in
+	parsing the <a href="hts_form.html#words">words</a> input
+	parameter when the <a href="hts_form.html#method">method</a> parameter
+	or <a href="#match_method">match_method</a> attribute
+	is set to <code>boolean</code>.
+	They are used in conjunction with the
+	<a href="#boolean_keywords">boolean_keywords</a> attribute, and
+	comprise all
+	English-specific parts of these error messages.  The order in which
+	the strings are put together may not be ideal, or even gramatically
+	correct, for all languages, but they can be used to make fairly
+	intelligible messages in many languages.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  boolean_syntax_errors:
+				</td>
+				<td nowrap>
+				     Attendait "un mot" "&agrave; la fin"
+	"au lieu de" "fin d'expression" "guillemet"
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="build_select_lists">
 		build_select_lists</a></strong>
 	  </dt>
@@ -1096,6 +1377,69 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="caps_factor">
+		caps_factor</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			1
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      ??
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	TO BE COMPLETED<br>
+	See also <a href="#heading_factor">heading_factor</a>.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  caps_factor:
+				</td>
+				<td nowrap>
+				     1
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="case_sensitive">
 		case_sensitive</a></strong>
 	  </dt>
@@ -1160,70 +1504,6 @@
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name="check_unique_md5">
-		check_unique_md5</a></strong>
-	  </dt>
-	  <dd>
-		<dl>
-		  <dt>
-			<em>type:</em>
-		  </dt>
-		  <dd>
-			boolean
-		  </dd>
-		  <dt>
-			<em>used by:</em>
-		  </dt>
-		  <dd>
-			<a href="htdig.html">htdig</a>
-		  </dd>
-		  <dt>
-			<em>default:</em>
-		  </dt>
-		  <dd>
-			false
-		  </dd>
-		  <dt>
-			<em>block:</em>
-		  </dt>
-		  <dd>
-			Global
-		  </dd>
-		  <dt>
-		      <em>version:</em>
-		  </dt>
-		  <dd>
-		      3.2.0b3 or later
-		  </dd>
-		  <dt>
-			<em>description:</em>
-		  </dt>
-		  <dd>
-	Uses the MD5 hash of pages to reject aliases, prevents multiple entries
-	in the index caused by such things as symbolic links
-	Note: May not do the right thing for incremental update
-		  </dd>
-		  <dt>
-			<em>example:</em>
-		  </dt>
-		  <dd>
-			<table border="0">
-			  <tr>
-				<td valign="top">
-				  check_unique_md5:
-				</td>
-				<td nowrap>
-				     false
-				</td>
-			  </tr>
-			</table>
-		  </dd>
-		</dl>
-	  </dd>
-	</dl>
-	<hr>
-	<dl>
-	  <dt>
 		<strong><a name="check_unique_date">
 		check_unique_date</a></strong>
 	  </dt>
@@ -1275,6 +1555,70 @@
 			  <tr>
 				<td valign="top">
 				  check_unique_date:
+				</td>
+				<td nowrap>
+				     false
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="check_unique_md5">
+		check_unique_md5</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			false
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b3 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Uses the MD5 hash of pages to reject aliases, prevents multiple entries
+	in the index caused by such things as symbolic links
+	Note: May not do the right thing for incremental update
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  check_unique_md5:
 				</td>
 				<td nowrap>
 				     false
@@ -1501,7 +1845,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -1551,6 +1895,66 @@ http://www.htdig.org/
 				     6
 				</td>
 			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="config">
+		config</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="all.html">all</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			DEFAULT_CONFIG_FILE
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      ??
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Name of configuration file to load.
+	For security reasons, restrictions are placed on the values which
+	can be specified on the command line to
+	<a href="htsearch.html" target="_top">htsearch</a>.
+	The default value of this attribute is determined at
+	compile time.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr> <td valign="top"><em>No example provided</em></td> </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -2079,8 +2483,8 @@ http://www.htdig.org/
 	to a document. This factor gives weight to the words of
 	these descriptions of the document. Not surprisingly,
 	these can be pretty accurate summaries of a document's
-	content. See also <a href="#title_factor">title_factor</a> or <a
-	href="#text_factor">text_factor</a>.
+	content. See also <a href="#heading_factor">heading_factor</a>
+	and <a href="#meta_description_factor">meta_description_factor</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -2093,6 +2497,143 @@ http://www.htdig.org/
 				</td>
 				<td nowrap>
 				     350
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="description_meta_tag_names">
+		description_meta_tag_names</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			description
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	The words in this list are used to search for descriptions in HTML
+	<em>META</em> tags. This list can contain any number of strings
+	that each will be seen as the name for whatever description
+	convention is used. While words in any of the specified
+	description contents will be indexed, only the last meta tag
+	containing a description will be kept as the meta description
+	field for the document, for use in search results. The order in
+	which the names are specified in this configuration attribute
+	is irrelevant, as it is the order in which the tags appear in
+	the documents that matters.<br> The <em>META</em> tags have the
+	following format:<br>
+	<tt> &nbsp;&nbsp;&lt;META name="<em>somename</em>"
+	                       content="<em>somevalue</em>"&gt; </tt><br>
+	See also <a href="#meta_description_factor">meta_description_factor</a>.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  description_meta_tag_names:
+				</td>
+				<td nowrap>
+				     "description htdig-description"
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="disable_cookies">
+		disable_cookies</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			true
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Server
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b4 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+        This option, if set to true, will disable HTTP cookies.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  disable_cookies:
+				</td>
+				<td nowrap>
+				     true
 				</td>
 			  </tr>
 			</table>
@@ -2359,6 +2900,72 @@ http://www.htdig.org/
 				</td>
 				<td nowrap>
 				     /tmp/documents.text
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="endday">
+		endday</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>No default</em>
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Day component of last date allowed as last-modified date
+	of returned docutments.
+	This is most usefully specified as a
+	<a href="hts_form.html#startyear">GCI argument</a>.
+	See also <a href="#startyear">startyear</a>.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  endday:
+				</td>
+				<td nowrap>
+				     31
 				</td>
 			  </tr>
 			</table>
@@ -2780,6 +3387,138 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="endmonth">
+		endmonth</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>No default</em>
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Month component of last date allowed as last-modified date
+	of returned docutments.
+	This is most usefully specified as a
+	<a href="hts_form.html#startyear">GCI argument</a>.
+	See also <a href="#startyear">startyear</a>.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  endmonth:
+				</td>
+				<td nowrap>
+				     12
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="endyear">
+		endyear</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>No default</em>
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Year component of last date allowed as last-modified date
+	of returned docutments.
+	This is most usefully specified as a
+	<a href="hts_form.html#startyear">GCI argument</a>.
+	See also <a href="#startyear">startyear</a>.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  endyear:
+				</td>
+				<td nowrap>
+				     2002
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="excerpt_length">
 		excerpt_length</a></strong>
 	  </dt>
@@ -2789,7 +3528,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -3840,68 +4579,6 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name="disable_cookies">
-		disable_cookies</a></strong>
-	  </dt>
-	  <dd>
-		<dl>
-		  <dt>
-			<em>type:</em>
-		  </dt>
-		  <dd>
-			boolean
-		  </dd>
-		  <dt>
-			<em>used by:</em>
-		  </dt>
-		  <dd>
-			<a href="htdig.html">htdig</a>
-		  </dd>
-		  <dt>
-			<em>default:</em>
-		  </dt>
-		  <dd>
-			true
-		  </dd>
-		  <dt>
-			<em>block:</em>
-		  </dt>
-		  <dd>
-			Server
-		  </dd>
-		  <dt>
-		      <em>version:</em>
-		  </dt>
-		  <dd>
-		      3.2.0b4 or later
-		  </dd>
-		  <dt>
-			<em>description:</em>
-		  </dt>
-		  <dd>
-	This option, if set to true, will disable HTTP cookies.
-		  </dd>
-		  <dt>
-			<em>example:</em>
-		  </dt>
-		  <dd>
-			<table border="0">
-			  <tr>
-				<td valign="top">
-				  disable_cookies:
-				</td>
-				<td nowrap>
-				     true
-				</td>
-			  </tr>
-			</table>
-		  </dd>
-		</dl>
-	  </dd>
-	</dl>
-	<hr>
-	<dl>
-	  <dt>
 		<strong><a name="heading_factor">
 		heading_factor</a></strong>
 	  </dt>
@@ -3947,9 +4624,17 @@ http://www.htdig.org/
 			&lt;h6&gt;. It is used to assign the level of importance
 			to headings. Setting a factor to 0 will cause words
 			in these headings to be ignored. The number may be a
-			floating point number. See also the
-			<a href="#title_factor">title_factor</a> and
-			<a href="#text_factor">text_factor</a> attributes.
+	floating point number. See also
+	<a href="#author_factor">author_factor</a>
+	<a href="#backlink_factor">backlink_factor</a>
+	<a href="#caps_factor">caps_factor</a>
+	<a href="#date_factor">date_factor</a>
+	<a href="#description_factor">description_factor</a>
+	<a href="#keywords_factor">keywords_factor</a>
+	<a href="#meta_description_factor">meta_description_factor</a>
+	<a href="#text_factor">text_factor</a>
+	<a href="#title_factor">title_factor</a>
+	<a href="#url_text_factor">url_text_factor</a>
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -4402,7 +5087,7 @@ http://www.htdig.org/
 	when using a proxy with authorization requested.
 	The credentials will be encoded using the "Basic" authentication
 	scheme. There <em>must</em> be a colon (:) between the username and
-	password.<br>
+	password.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -4479,6 +5164,135 @@ http://www.htdig.org/
 				</td>
 				<td nowrap>
 				     http://intranet.foo.com/
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="ignore_alt_text">
+		ignore_alt_text</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			false
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	If set, this causes the text of the ALT field in an &lt;IMG...&gt; tag
+	not to be indexed as part of the text of the document, nor included in
+	excerpts.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  ignore_alt_text:
+				</td>
+				<td nowrap>
+				     true
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="ignore_dead_servers">
+		ignore_dead_servers</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			true
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Determines whether htdig will continue to index URLs from a
+	server after an attempted connection to the server fails as
+	&quot;no host found&quot; or &quot;host not found (port).&quot; If
+	set to false, htdig will try <em>every</em> URL from that server.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  ignore_dead_servers:
+				</td>
+				<td nowrap>
+				     false
 				</td>
 			  </tr>
 			</table>
@@ -4667,17 +5481,17 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-			This is not quite a configuration attribute, but
-			rather a directive. It can be used within one
-			configuration file to include the definitions of
-			another file. The last definition of an attribute
-			is the one that applies, so after including a file,
-			any of its definitions can be overridden with
-			subsequent definitions. This can be useful when
-			setting up many configurations that are mostly the
-			same, so all the common attributes can be maintained
-			in a single configuration file. The include directives
-			can be nested, but watch out for nesting loops.
+	This is not quite a configuration attribute, but
+	rather a directive. It can be used within one
+	configuration file to include the definitions of
+	another file. The last definition of an attribute
+	is the one that applies, so after including a file,
+	any of its definitions can be overridden with
+	subsequent definitions. This can be useful when
+	setting up many configurations that are mostly the
+	same, so all the common attributes can be maintained
+	in a single configuration file. The include directives
+	can be nested, but watch out for nesting loops.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -4772,6 +5586,70 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="keywords">
+		keywords</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>No default</em>
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      ??
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Keywords which <strong>must</strong> be found on all pages returned,
+    	even if the "or" ("Any") <a href="#method">method</a> is
+	selected.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  keywords:
+				</td>
+				<td nowrap>
+				     documentation
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="keywords_factor">
 		keywords_factor</a></strong>
 	  </dt>
@@ -4814,8 +5692,7 @@ http://www.htdig.org/
 	This is a factor which will be used to multiply the
 	weight of words in the list of keywords of a document.
 	The number may be a floating point number. See also the
-	<a href="#title_factor">title_factor</a> and
-	<a href="#text_factor">text_factor</a>attributes.
+	<a href="#heading_factor">heading_factor</a>attribute.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -5458,26 +6335,26 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-			This sets whether htsearch should use the syslog() to log
-			search requests. If set, this will log requests with a
-			default level of LOG_INFO and a facility of LOG_LOCAL5. For
-			details on redirecting the log into a separate file or other
-			actions, see the <strong>syslog.conf(5)</strong> man
-			page. To set the level and facility used in logging, change
-			LOG_LEVEL and LOG_FACILITY in the include/htconfig.h file
-			before compiling.
-			<dl>
-			  <dt>
-			    Each line logged by htsearch contains the following:
-			  </dt>
-			  <dd>
-			    REMOTE_ADDR [config] (match_method) [words]
-			    [logicalWords] (matches/matches_per_page) -
-			    page, HTTP_REFERER
-			  </dd>
-			</dl>
-			where any of the above are null or empty, it
-			either puts in '-' or 'default' (for config).
+	This sets whether htsearch should use the syslog() to log
+	search requests. If set, this will log requests with a
+	default level of LOG_INFO and a facility of LOG_LOCAL5. For
+	details on redirecting the log into a separate file or other
+	actions, see the <strong>syslog.conf(5)</strong> man
+	page. To set the level and facility used in logging, change
+	LOG_LEVEL and LOG_FACILITY in the include/htconfig.h file
+	before compiling.
+	<dl>
+	  <dt>
+	    Each line logged by htsearch contains the following:
+	  </dt>
+	  <dd>
+	    REMOTE_ADDR [config] (match_method) [words]
+	    [logicalWords] (matches/matches_per_page) -
+	    page, HTTP_REFERER
+	  </dd>
+	</dl>
+	where any of the above are null or empty, it
+	either puts in '-' or 'default' (for config).
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -5607,18 +6484,12 @@ http://www.htdig.org/
 	This is the default method for matching that htsearch
 	uses. The valid choices are:
 	<ul>
-	<li>
-	or
-	</li>
-	<li>
-	and
-	</li>
-	<li>
-	boolean
-	</li>
+	  <li> or </li>
+	  <li> and </li>
+	  <li> boolean </li>
 	</ul>
 	This attribute will only be used if the HTML form that
-	calls htsearch didn't have the <strong>method</strong>
+	calls htsearch didn't have the <a href="hts_form.html#method">method</a>
 	value set.
 		  </dd>
 		  <dt>
@@ -5651,7 +6522,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -5683,6 +6554,9 @@ http://www.htdig.org/
 		  <dd>
 	If this is set to a relatively small number, the
 	matches will be shown in pages instead of all at once.
+	This attribute will only be used if the HTML form that
+	calls htsearch didn't have the
+	<a href="hts_form.html#matchesperpage">matchesperpage</a> value set.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -5783,7 +6657,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -5850,7 +6724,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -5917,7 +6791,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -5974,6 +6848,70 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="max_excerpts">
+		max_excerpts</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearchg.html">htsearchg</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			1
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			URL
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	This value determines the maximum number of excerpts
+	that can be displayed for one matching document in the
+	search results.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  max_excerpts:
+				</td>
+				<td nowrap>
+				     10
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="max_head_length">
 		max_head_length</a></strong>
 	  </dt>
@@ -5983,7 +6921,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -6052,7 +6990,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -6118,7 +7056,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -6186,7 +7124,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -6580,7 +7518,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -6744,8 +7682,8 @@ http://www.htdig.org/
 	This is a factor which will be used to multiply the
 	weight of words in any META description tags in a document.
 	The number may be a floating point number. See also the
-	<a href="#title_factor">title_factor</a> and
-	<a href="#text_factor">text_factor</a> attributes.
+	<a href="#heading_factor">heading_factor</a> attribute and the
+	<a href="#description_factor">description_factor</a> attribute.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -6942,9 +7880,10 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	This file is used by htdig for local file access and resolving file:// URLs
-	to ensure the files are parsable. If you are running a webserver with its own
-	MIME file, you should set this attribute to point to that file.
+	This file is used by htdig for local file access and resolving
+	file:// URLs to ensure the files are parsable. If you are running
+	a webserver with its own MIME file, you should set this attribute
+	to point to that file.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -6976,7 +7915,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -7040,7 +7979,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -7104,7 +8043,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -7140,8 +8079,8 @@ http://www.htdig.org/
 	ignored but still put into the excerpt.<br>
 	Note that by making this value less than 3, a lot more
 	words that are very frequent will be indexed. It might
-	be advisable to add some of these to the bad_words
-	list.
+	be advisable to add some of these to the
+	<a href="#bad_word_list">bad_words list</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -7154,6 +8093,73 @@ http://www.htdig.org/
 				</td>
 				<td nowrap>
 				     2
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="multimatch_factor">
+		multimatch_factor</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			1
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+    	This factor gives higher rankings to documents that have more than
+	one matching search word when the <strong>or</strong>
+	<a href="#match_method">match_method</a> is used.
+	In version 3.1.6, the matching words' combined scores were multiplied
+	by this factor for each additional matching word.  Currently, this
+	multiplier is applied at most once.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  multimatch_factor:
+				</td>
+				<td nowrap>
+				     1000
 				</td>
 			  </tr>
 			</table>
@@ -8339,8 +9345,20 @@ http://www.htdig.org/
 		  </dt>
 		  <dd>
 	A null prefix character means that prefix matching should be
-	applied to every search word. Otherwise a match is
-	returned only if the word does not end in the characters specified.
+	applied to every search word. Otherwise prefix matching is
+	done on any search word ending with the characters specified
+	in this string, with the string being stripped off before
+	looking for matches. The "prefix" algorithm must be enabled
+	in <a href="#search_algorithm">search_algorithm</a>
+	for this to work. You may also want to set the <a
+	href="#max_prefix_matches">max_prefix_matches</a> and <a
+	href="#minimum_prefix_length">minimum_prefix_length</a> attributes
+	to get it working as you want.<br> As a special case, in version
+	3.1.6 and later, if this string is non-null and is entered alone
+	as a search word, it is taken as a wildcard that matches all
+	documents in the database. If this string is null, the wildcard
+	for this special case will be <strong>*</strong>. This wildcard
+	doesn't require the prefix algorithm to be enabled.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -8435,7 +9453,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -8612,6 +9630,7 @@ http://www.htdig.org/
 	The list should only contain names that all servers you index
 	recognize as default documents for directory URLs, as defined
 	by the DirectoryIndex setting in Apache's srm.conf, for example.
+	This does not apply to  file:///  or  ftp://  URLS.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -9140,7 +10159,9 @@ http://www.htdig.org/
 				${VAR}
 			  </li>
 			</ul>
-			The following variables are available:
+	The following variables are available.  See
+	<a href="hts_template.html">hts_template.html</a> for a complete
+	list.
 			<dl>
 			  <dt>
 				MATCHES
@@ -9274,7 +10295,10 @@ http://www.htdig.org/
 				${VAR}
 			  </li>
 			</ul>
-			The following variables are available:
+	The following variables are available.  See
+	<a href="hts_template.html">hts_template.html</a> for a complete
+	list.
+	<!-- Do these need to be listed for both _footer and _header? -->
 			<dl>
 			  <dt>
 				MATCHES
@@ -9353,7 +10377,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			string_list
+			string list
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -9485,6 +10509,83 @@ http://www.htdig.org/
 				</td>
 				<td nowrap>
 				     ${common_dir}/wrapper.html
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="search_rewrite_rules">
+		search_rewrite_rules</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>No default</em>
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	This is a list of pairs, <em>regex</em> <em>replacement</em>, used
+	to rewrite URLs in the search results. The left hand string is a
+	regular expression; the right hand string is a literal string with
+	embedded placeholders for fragments that matched inside brackets in
+	the regular expression. \0 is the whole matched string, \1 to \9
+	are bracketted substrings. The backslash must be doubled-up in the
+	attribute setting to get past the variable expansion parsing. Rewrite
+	rules are applied sequentially to each URL before it is displayed
+	or checked against the <a href="#restrict">restrict</a> or
+	<a href="#exclude">exclude</a> lists. Rewriting does not stop once a
+	match has been made, so multiple rules may affect a given URL. See
+	also <a href="#url_part_aliases">url_part_aliases</a> which allows
+	URLs to be of one form during indexing and translated for results,
+	and <a href="#url_rewrite_rules">url_rewrite_rules</a> which allows
+	URLs to be rewritten while indexing.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  search_rewrite_rules:
+				</td>
+				<td nowrap>
+				     http://(.*)\\.mydomain\\.org/([^/]*)  http://\\2.\\1.com \<br>
+	       http://www\\.myschool\\.edu/myorgs/([^/]*)  http://\\1.org
 				</td>
 			  </tr>
 			</table>
@@ -9754,28 +10855,16 @@ http://www.htdig.org/
 	<tr>
 	<td>
 	<ul>
-	<li>
-	score
-	</li>
-	<li>
-	time
-	</li>
-	<li>
-	title
-	</li>
+	     <li> score </li>
+	     <li> time </li>
+	     <li> title </li>
 	</ul>
 	</td>
 	<td>
 	<ul>
-	<li>
-	revscore
-	</li>
-	<li>
-	revtime
-	</li>
-	<li>
-	revtitle
-	</li>
+	     <li> revscore </li>
+	     <li> revtime </li>
+	     <li> revtitle </li>
 	</ul>
 	</td>
 	</tr>
@@ -10162,6 +11251,72 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="startday">
+		startday</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>No default</em>
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Day component of first date allowed as last-modified date
+	of returned docutments.
+	This is most usefully specified as a
+	<a href="hts_form.html#startyear">GCI argument</a>.
+	See also <a href="#startyear">startyear</a>.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  startday:
+				</td>
+				<td nowrap>
+				     1
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="start_ellipses">
 		start_ellipses</a></strong>
 	  </dt>
@@ -10295,6 +11450,72 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="startmonth">
+		startmonth</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>No default</em>
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Month component of first date allowed as last-modified date
+	of returned docutments.
+	This is most usefully specified as a
+	<a href="hts_form.html#startyear">GCI argument</a>.
+	See also <a href="#startyear">startyear</a>.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  startmonth:
+				</td>
+				<td nowrap>
+				     1
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="start_url">
 		start_url</a></strong>
 	  </dt>
@@ -10337,6 +11558,13 @@ http://www.htdig.org/
 	This is the list of URLs that will be used to start a
 	dig when there was no existing database. Note that
 	multiple URLs can be given here.
+	<br>Note also that the value of <em>start_url</em>
+	will be the default value for
+	<a href="#limit_urls_to">limit_urls_to</a>, so if
+	you set start_url to the URLs for specific files,
+	rather than a site or subdirectory URL, you may need
+	to set limit_urls_to to something less restrictive
+	so htdig doesn't reject links in the documents.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -10349,6 +11577,84 @@ http://www.htdig.org/
 				</td>
 				<td nowrap>
 				     http://www.somewhere.org/alldata/index.html
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="startyear">
+		startyear</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			1970
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.1.6 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	This specifies the year of the cutoff start date for
+	search results. If the start or end date are specified,
+	only results with a last modified date within this
+	range are shown.
+	See also <a href="#startday">startday</a>,
+	<a href="#startmonth">startmonth</a>,
+	<a href="#endday">endday</a>,
+	<a href="#endmonth">endmonth</a>,
+	<a href="endyear">endyear</a>.
+	These are most usefully specified as a
+	<a href="hts_form.html#startyear">GCI argument</a>.<br>
+	For each component, if a negative number is given,
+	it is taken as relative to the current date.
+	Relative days can span several months or even years if desired,
+	and relative months can span several years. A startday of
+	-90 will select matching documents modified within
+	the last 90 days.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  startyear:
+				</td>
+				<td nowrap>
+				     2001
 				</td>
 			  </tr>
 			</table>
@@ -10630,7 +11936,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -10694,7 +12000,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -10724,15 +12030,22 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	 This attribute sets the wait time after a connection fails and the
-	 <A href="#timeout">timeout</A> is raised.
+	 This attribute sets the wait time (in seconds) after a connection
+	 fails and the <A href="#timeout">timeout</A> is raised.
 		  </dd>
 		  <dt>
 			<em>example:</em>
 		  </dt>
 		  <dd>
 			<table border="0">
-			  <tr> <td valign="top"><em>No example provided</em></td> </tr>
+			  <tr>
+				<td valign="top">
+				  tcp_wait_time:
+				</td>
+				<td nowrap>
+				     10
+				</td>
+			  </tr>
 			</table>
 		  </dd>
 		</dl>
@@ -10792,7 +12105,10 @@ http://www.htdig.org/
 	those, they will be used instead.<br>
 	More information about templates can be found in the
 	<a href="htsearch.html" target="_top">htsearch</a>
-	documentation.
+	documentation.  The particular template is selecterd by the
+	<a href="hts_form.html#format">format</a> cgi argument, and the
+	default is given by <a href="#template_name">template_name</a> in
+	the config file.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -10858,7 +12174,8 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	Specifies the default template if none is given by the
+	Specifies the default template if no
+	<a href="hts_form.html#format">format</a> field is given by the
 	search form. This needs to map to the
 	<a href="#template_map">template_map</a>.
 		  </dd>
@@ -11009,10 +12326,8 @@ http://www.htdig.org/
 	weight of words that are not in any special part of a
 	document. Setting a factor to 0 will cause normal words
 	to be ignored. The number may be a floating point
-	number. See also the <a href="#heading_factor">
-	heading_factor</a>, <a href="#title_factor">
-	title_factor</a>, and <a href="#keywords_factor">
-	keywords_factor</a> attributes.
+	number. See also the <a href="#heading_factor"> heading_factor</a>
+	attribute.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -11044,7 +12359,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -11362,7 +12677,13 @@ http://www.htdig.org/
 	URL.  Translations will be performed with priority
 	for the leftmost longest match.	 Each
 	<em>to</em>-string must be unique and not be a
-	part of any other <em>to</em>-string.<br>
+	part of any other <em>to</em>-string.  It also helps
+	to keep the <em>to</em>-strings short to save space
+	in the database. Other than that, the choice of
+	<em>to</em>-strings is pretty arbitrary, as they
+	just provide a temporary, internal encoding in the
+	databases, and none of the characters in these
+	strings have any special meaning.<br>
 	Note that when this attribute is changed, the
 	database should be rebuilt, unless the effect of
 	"moving" the affected URLs in the database is
@@ -11374,6 +12695,15 @@ http://www.htdig.org/
 	for the configuration file to be used by htdig,
 	htmerge, and htnotify, and the second one is for the
 	configuration file to be used by htsearch.
+	In this example, htdig will encode the URL
+	"http://search.example.com/~htdig/contrib/stuff.html"
+	as "*sitecontrib/stuff*2" in the databases, and
+	htsearch will decode it as
+	"http://www.htdig.org/contrib/stuff.htm".<br>
+	As of version 3.1.6, you can also do more complex
+	rewriting of URLs using
+	<a href="#url_rewrite_rules">url_rewrite_rules</a> and
+	<a href="#search_rewrite_rules">search_rewrite_rules</a>.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -11451,14 +12781,16 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-This is a list of pairs, <em>regex</em> <em>replacement</em> used to permanently
-rewrite URLs as they are indexed. The left hand string is a regex; the right
-hand string is  a literal string with embedded placeholders for fragments that
-matched  inside brackets in the regex. \0 is the whole matched string, \1 to
-\9 are  bracketted substrings. Rewrite rules are applied sequentially to each
-incoming URL  before normalization occurs. Rewriting does not stop once a
-match has been made, so multiple rules may affect a given URL. See also <a
-href="#url_part_aliases">url_part_aliases</a> which allows URLs to be of one
+	This is a list of pairs, <em>regex</em> <em>replacement</em> used to
+	permanently rewrite URLs as they are indexed. The left hand string is
+	a regular expression; the right hand string is  a literal string with
+	embedded placeholders for fragments that matched  inside brackets in
+	the regex. \0 is the whole matched string, \1 to \9 are  bracketted
+	substrings. Rewrite rules are applied sequentially to each
+	incoming URL  before normalization occurs. Rewriting does not stop
+	once a match has been made, so multiple rules may affect a given URL.
+	See also <a href="#url_part_aliases">url_part_aliases</a> which
+	allows URLs to be of one
 form during indexing and translated for results.
 		  </dd>
 		  <dt>
@@ -11572,6 +12904,69 @@ form during indexing and translated for results.
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="url_text_factor">
+		url_text_factor</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			1
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      ??
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	TO BE COMPLETED<br>
+	See also <a href="#heading_factor">heading_factor</a>.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  url_text_factor:
+				</td>
+				<td nowrap>
+				     1
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="use_doc_date">
 		use_doc_date</a></strong>
 	  </dt>
@@ -11616,6 +13011,8 @@ form during indexing and translated for results.
 	Any documents that do not have META date tags will retain
 	the last modified date returned by the server or found on
 	the local file system.
+	As of version 3.1.6, in addition to META date tags, htdig will also
+	recognize dc.date, dc.date.created and dc.date.modified.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -12172,6 +13569,72 @@ form during indexing and translated for results.
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="wordlist_cache_size">
+		wordlist_cache_size</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="all.html">all</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			10000000
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b1 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Size of memory cache used by Berkeley DB (DB used by the indexer)
+	IMPORTANT: It  makes a <strong>huge</strong> difference. The rule
+	is that the cache size should be at least 2% of the expected index size. The
+	Berkeley DB file has 1% of internal pages that *must* be cached for good
+	performances. Giving an additional 1% leaves room for caching leaf pages.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  wordlist_cache_size:
+				</td>
+				<td nowrap>
+				     40000000
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="wordlist_compress">
 		wordlist_compress</a></strong>
 	  </dt>
@@ -12299,6 +13762,193 @@ form during indexing and translated for results.
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="wordlist_monitor">
+		wordlist_monitor</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="all.html">all</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			false
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b1 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	This enables monitoring of what's happening in the indexer.
+	It can help to detect performance/configuration problems.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  wordlist_monitor:
+				</td>
+				<td nowrap>
+				     true
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="wordlist_monitor_period">
+		wordlist_monitor_period</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="all.html">all</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			0
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b1 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Sets the number of seconds between each monitor output.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  wordlist_monitor_period:
+				</td>
+				<td nowrap>
+				     .1
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="wordlist_monitor_output">
+		wordlist_monitor_output</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="all.html">all</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>No default</em>
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b1 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Print monitoring output on file instead of the default stderr.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  wordlist_monitor_output:
+				</td>
+				<td nowrap>
+				     myfile
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="wordlist_page_size">
 		wordlist_page_size</a></strong>
 	  </dt>
@@ -12308,7 +13958,7 @@ form during indexing and translated for results.
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -12361,8 +14011,8 @@ form during indexing and translated for results.
 	<hr>
 	<dl>
 	  <dt>
-		<strong><a name="wordlist_cache_size">
-		wordlist_cache_size</a></strong>
+		<strong><a name="wordlist_verbose">
+		wordlist_verbose</a></strong>
 	  </dt>
 	  <dd>
 		<dl>
@@ -12370,19 +14020,19 @@ form during indexing and translated for results.
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			number
+			integer
 		  </dd>
 		  <dt>
 			<em>used by:</em>
 		  </dt>
 		  <dd>
-			<a href="all.html">all</a>
+			
 		  </dd>
 		  <dt>
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			10000000
+			<em>No default</em>
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -12394,17 +14044,15 @@ form during indexing and translated for results.
 		      <em>version:</em>
 		  </dt>
 		  <dd>
-		      3.2.0b1 or later
+		      
 		  </dd>
 		  <dt>
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	Size of memory cache used by Berkeley DB (DB used by the indexer)
-	IMPORTANT: It  makes a *huge* difference. The rule
-	is that the cache size should be at least 2% of the expected index size. The
-	Berkeley DB file has 1% of internal pages that *must* be cached for good
-	performances. Giving an additional 1% leaves room for caching leaf pages.
+	wordlist_verbose 1 walk logic<br>
+	wordlist_verbose 2 walk logic details<br>
+	wordlist_verbose 2 walk logic lots of details<br>
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -12413,10 +14061,10 @@ form during indexing and translated for results.
 			<table border="0">
 			  <tr>
 				<td valign="top">
-				  wordlist_cache_size:
+				  wordlist_verbose:
 				</td>
 				<td nowrap>
-				     40000000
+				     true
 				</td>
 			  </tr>
 			</table>
@@ -12535,193 +14183,6 @@ form during indexing and translated for results.
 	  </dd>
 	</dl>
 	<hr>
-	<dl>
-	  <dt>
-		<strong><a name="wordlist_monitor">
-		wordlist_monitor</a></strong>
-	  </dt>
-	  <dd>
-		<dl>
-		  <dt>
-			<em>type:</em>
-		  </dt>
-		  <dd>
-			boolean
-		  </dd>
-		  <dt>
-			<em>used by:</em>
-		  </dt>
-		  <dd>
-			<a href="all.html">all</a>
-		  </dd>
-		  <dt>
-			<em>default:</em>
-		  </dt>
-		  <dd>
-			false
-		  </dd>
-		  <dt>
-			<em>block:</em>
-		  </dt>
-		  <dd>
-			Global
-		  </dd>
-		  <dt>
-		      <em>version:</em>
-		  </dt>
-		  <dd>
-		      3.2.0b1 or later
-		  </dd>
-		  <dt>
-			<em>description:</em>
-		  </dt>
-		  <dd>
-	This enables monitoring of what's happening in the indexer.
-	It can help to detect performance/configuration problems.
-		  </dd>
-		  <dt>
-			<em>example:</em>
-		  </dt>
-		  <dd>
-			<table border="0">
-			  <tr>
-				<td valign="top">
-				  wordlist_monitor:
-				</td>
-				<td nowrap>
-				     true
-				</td>
-			  </tr>
-			</table>
-		  </dd>
-		</dl>
-	  </dd>
-	</dl>
-	<hr>
-	<dl>
-	  <dt>
-		<strong><a name="wordlist_monitor_period">
-		wordlist_monitor_period</a></strong>
-	  </dt>
-	  <dd>
-		<dl>
-		  <dt>
-			<em>type:</em>
-		  </dt>
-		  <dd>
-			string
-		  </dd>
-		  <dt>
-			<em>used by:</em>
-		  </dt>
-		  <dd>
-			<a href="all.html">all</a>
-		  </dd>
-		  <dt>
-			<em>default:</em>
-		  </dt>
-		  <dd>
-			0
-		  </dd>
-		  <dt>
-			<em>block:</em>
-		  </dt>
-		  <dd>
-			Global
-		  </dd>
-		  <dt>
-		      <em>version:</em>
-		  </dt>
-		  <dd>
-		      3.2.0b1 or later
-		  </dd>
-		  <dt>
-			<em>description:</em>
-		  </dt>
-		  <dd>
-	Sets the number of seconds between each monitor output.
-		  </dd>
-		  <dt>
-			<em>example:</em>
-		  </dt>
-		  <dd>
-			<table border="0">
-			  <tr>
-				<td valign="top">
-				  wordlist_monitor_period:
-				</td>
-				<td nowrap>
-				     .1
-				</td>
-			  </tr>
-			</table>
-		  </dd>
-		</dl>
-	  </dd>
-	</dl>
-	<hr>
-	<dl>
-	  <dt>
-		<strong><a name="wordlist_monitor_output">
-		wordlist_monitor_output</a></strong>
-	  </dt>
-	  <dd>
-		<dl>
-		  <dt>
-			<em>type:</em>
-		  </dt>
-		  <dd>
-			string
-		  </dd>
-		  <dt>
-			<em>used by:</em>
-		  </dt>
-		  <dd>
-			<a href="all.html">all</a>
-		  </dd>
-		  <dt>
-			<em>default:</em>
-		  </dt>
-		  <dd>
-			<em>No default</em>
-		  </dd>
-		  <dt>
-			<em>block:</em>
-		  </dt>
-		  <dd>
-			Global
-		  </dd>
-		  <dt>
-		      <em>version:</em>
-		  </dt>
-		  <dd>
-		      3.2.0b1 or later
-		  </dd>
-		  <dt>
-			<em>description:</em>
-		  </dt>
-		  <dd>
-	Print monitoring output on file instead of the default stderr.
-		  </dd>
-		  <dt>
-			<em>example:</em>
-		  </dt>
-		  <dd>
-			<table border="0">
-			  <tr>
-				<td valign="top">
-				  wordlist_monitor_output:
-				</td>
-				<td nowrap>
-				     myfile
-				</td>
-			  </tr>
-			</table>
-		  </dd>
-		</dl>
-	  </dd>
-	</dl>
-	<hr>
-		Last modified: Sun Oct 27 09:36:41 CST 2002
+		Last modified: Tue Dec  3 23:47:12 EST 2002
   </body>
 </html>

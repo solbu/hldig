@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocMatch.h,v 1.6 2002/02/10 00:07:58 ghutchis Exp $
+// $Id: DocMatch.h,v 1.7 2002/12/30 12:42:59 lha Exp $
 //
 
 #ifndef _DocMatch_h_
@@ -100,6 +100,7 @@ public:
 	double				score;
 	int				id;
 	int				anchor;
+	short int			orMatches;
 	Collection                      *collection; // Multiple databases
 };
 

@@ -17,7 +17,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.h,v 1.3 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: WordBitCompress.h,v 1.4 2002/12/30 12:42:59 lha Exp $
 //
 
 #ifndef   _WordBitCompress_h
@@ -123,7 +123,7 @@ public:
     }
 
     // gets a bit from the bitstream
-    inline byte get(const char *tag=NULL)
+    inline byte get(const char *tag=(char*)NULL)
     {
 	// SPEED CRITICAL SECTION
 	if(check_tag(tag)==NOTOK){errr("BitStream::get() check_tag failed");}
@@ -136,7 +136,7 @@ public:
 
     // get/put an integer using n bits
     void         put_uint(unsigned int v,int n,const char *tag="NOTAG");
-    unsigned int get_uint(               int n,const char *tag=NULL);
+    unsigned int get_uint(               int n,const char *tag=(char*)NULL);
 
     // get/put n bits of data stored in vals
     void put_zone(byte *vals,int n,const char *tag);
@@ -220,18 +220,18 @@ public:
     int verbose;
     // get/put an integer using a variable number of bits
     void         put_uint_vl(unsigned int v,int maxn,const char *tag="NOTAG");
-    unsigned int get_uint_vl(               int maxn,const char *tag=NULL);
+    unsigned int get_uint_vl(               int maxn,const char *tag=(char*)NULL);
 
     // get/put an integer checking for an expected value
     void         put_uint_ex(unsigned int v,unsigned int ex,int maxn,const char *tag="NOTAG")
 	{
 	    if(v==ex){put(1,tag);}
-	    else{put(0,tag);put_uint(v,maxn,NULL);}
+	    else{put(0,tag);put_uint(v,maxn,(char*)NULL);}
 	}
-    unsigned int get_uint_ex(               unsigned int ex,int maxn,const char *tag=NULL)
+    unsigned int get_uint_ex(               unsigned int ex,int maxn,const char *tag=(char*)NULL)
 	{
 	    if(get(tag)){return ex;}
-	    else{return get_uint(maxn,NULL);}
+	    else{return get_uint(maxn,(char*)NULL);}
 	}
 
 

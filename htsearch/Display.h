@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.h,v 1.24 2002/02/01 22:49:35 ghutchis Exp $
+// $Id: Display.h,v 1.25 2002/12/30 12:42:59 lha Exp $
 //
 
 #ifndef _Display_h_
@@ -53,6 +53,7 @@ public:
 	
     void		display(int pageNumber);
     void		displayMatch(ResultMatch *match, DocumentRef *ref, int current);
+    void		displayHTTPheaders();
     void		displayHeader();
     void		displayFooter();
     void		displayNomatch();
@@ -164,9 +165,13 @@ protected:
     String		*readFile(const String&);
     void		expandVariables(const String&);
     void		outputVariable(const String&);
-    String		*excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor,
-				 int fanchor, int &first);
-    String		hilight(ResultMatch *match, const String& str, const String& urlanchor, int fanchor);
+    String		*excerpt(ResultMatch *match, DocumentRef *ref,
+	    			String urlanchor, int fanchor, int &first);
+    const String	buildExcerpts(StringMatch *allWordsPattern,
+	    			ResultMatch *match, char *head,
+	    			String urlanchor, int fanchor );
+    String		hilight(ResultMatch *match, const String& str,
+	    			const String& urlanchor, int fanchor);
     void		setupTemplates();
     void		setupImages();
     String		*generateStars(DocumentRef *, int);
