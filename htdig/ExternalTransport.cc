@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalTransport.cc,v 1.1.2.6 2001/01/15 23:27:41 grdetil Exp $
+// $Id: ExternalTransport.cc,v 1.1.2.7 2001/01/17 15:02:53 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -164,8 +164,9 @@ Transport::DocStatus ExternalTransport::Request()
 	dup(stdout_pipe[1]);
 	close(stdout_pipe[0]);
 	close(stdout_pipe[1]);
-	close(STDIN_FILENO); // Close STDIN to replace with file
-	open((char*)path, O_RDONLY);
+	// not really necessary, and may pose Cygwin incompatibility...
+	//close(STDIN_FILENO); // Close STDIN to replace with null dev.
+	//open("/dev/null", O_RDONLY);
 
 	// Call External Transport Handler
 	execv(handlargs[0], handlargs);

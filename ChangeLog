@@ -1,3 +1,8 @@
+Wed Jan 17 08:48:30 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/ExternalTransport.cc (Request): Oops, fixed a holdover from
+	code borrowed from ExternalParser.cc's fork handling.
+
 Mon Jan 15 23:09:37 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htnet/Connection.cc: Back out previous change--this should not
