@@ -1,10 +1,13 @@
 # ----------------------------------------------------------------------------
-# RightNow Technologies
+# HtDig Win32 Makefile
+# 
+# TODO:  Fix up this file.  There is lots of stuff in here that can be tossed.
 #
 
 ifeq ($(PRODUCT),htdig)
-BUILD_VER  = 3.2.1
-BUILD_NUM = b5
+#BUILD_VER  = 3.2.2
+#BUILD_NUM = b5
+BUILD_VER = 3.2.0b5
 endif
 
 #CMN_BUILD_VER = 3.2.0.0
