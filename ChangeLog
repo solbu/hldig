@@ -1,4 +1,6 @@
-Wed Sep  1 15:45:15 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:46:23 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/FAQ.html: Added the past few month's updates to the FAQ.
 
 	* contrib/parse_doc.pl: Updated to latest version.
 
