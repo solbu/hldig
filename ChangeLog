@@ -1,3 +1,8 @@
+Sun Oct 12 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htdig/{Retriever,Server}.cc: Back out the previous.
+      Gilles pointed out inconsistency with Retriever::IsValidURL().
+
 Sun Oct  5 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htdig/{Retriever,Server}.cc: Jim Cole's patch to bug #765726.

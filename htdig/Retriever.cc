@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.84 2003/10/05 10:46:34 lha Exp $
+// $Id: Retriever.cc,v 1.85 2003/10/12 07:23:20 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1080,7 +1080,7 @@ int Retriever::IsValidURL(const String & u)
 	//
 	URL testURL((char *) url);
 	Server *server = (Server *) servers[testURL.signature()];
-	if (server && server->IsDisallowed(testURL.path()) != 0)
+	if (server && server->IsDisallowed(url) != 0)
 	{
 		if (debug > 2)
 			cout << endl << "   Rejected: forbidden by server robots.txt!";
