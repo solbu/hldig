@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.48 1999/02/01 04:02:25 hp Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.49 1999/02/01 19:47:14 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -222,7 +222,7 @@ Display::includeURL(char *url)
 void
 Display::displayMatch(ResultMatch *match, int current)
 {
-    String	*str;
+    String	*str = 0;
 	
     DocumentRef	*ref = match->getRef();
 
