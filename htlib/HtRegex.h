@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.h,v 1.5.2.1 1999/12/02 02:41:24 ghutchis Exp $
+// $Id: HtRegex.h,v 1.5.2.2 2000/04/01 04:05:34 ghutchis Exp $
 //
 
 #ifndef	_HtRegex_h_
@@ -18,8 +18,15 @@
 #include "Object.h"
 #include "StringList.h"
 
-#include <sys/types.h>
+// This is an attempt to get around compatibility problems 
+// with the included regex
+#ifdef HAVE_BROKEN_REGEX
 #include <regex.h>
+#else
+#include "regex.h"
+#endif
+
+#include <sys/types.h>
 #include <fstream.h>
 
 class HtRegex : public Object

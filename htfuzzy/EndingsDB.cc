@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: EndingsDB.cc,v 1.9.2.3 2000/02/03 18:33:40 grdetil Exp $
+// $Id: EndingsDB.cc,v 1.9.2.4 2000/04/01 04:05:34 ghutchis Exp $
 //
 
 #include "Endings.h"
@@ -19,7 +19,14 @@
 #include "List.h"
 #include "HtConfiguration.h"
 
+// This is an attempt to get around compatibility problems 
+// with the included regex
+#ifdef HAVE_BROKEN_REGEX
 #include <regex.h>
+#else
+#include "regex.h"
+#endif
+
 #include <stdio.h>
 #include <fstream.h>
 #include <stdlib.h>
