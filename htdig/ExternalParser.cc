@@ -1,13 +1,19 @@
 //
 // ExternalParser.cc
 //
-// Implementation of ExternalParser
-// Allows external programs to parse unknown document formats.
-// The parser is expected to return the document in a specific format.
-// The format is documented in http://www.htdig.org/attrs.html#external_parser
+//: Implementation of ExternalParser
+//  Allows external programs to parse unknown document formats.
+//  The parser is expected to return the document in a specific format.
+//  The format is documented in http://www.htdig.org/attrs.html#external_parser
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char RCSid[] = "$Id: ExternalParser.cc,v 1.12 1999/06/12 17:24:02 ghutchis Exp $";
+static char RCSid[] = "$Id: ExternalParser.cc,v 1.13 1999/09/08 04:57:10 ghutchis Exp $";
 #endif
 
 #include "ExternalParser.h"
@@ -166,7 +172,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		if (token2 != NULL)
 		  token3 = strtok(0, "\t");
 		if (token1 != NULL && token2 != NULL && token3 != NULL &&
-			(loc = atoi(token2)) >= 0 && loc <= 1000 &&
+			(loc = atoi(token2)) >= 0 &&
 			(hd = atoi(token3)) >= 0 && hd < 12)
 		  retriever.got_word(token1, loc, hd);
 		else

@@ -1,17 +1,24 @@
 //
 // Plaintext.cc
 //
-// Implementation of Plaintext
+//
+// Parses plaintext files. Not much to do, really.
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char RCSid[] = "$Id: Plaintext.cc,v 1.11 1999/08/25 22:00:56 grdetil Exp $";
+static char RCSid[] = "$Id: Plaintext.cc,v 1.12 1999/09/08 04:57:10 ghutchis Exp $";
 #endif
 
 #include "Plaintext.h"
 #include "htdig.h"
 #include "htString.h"
-#include <ctype.h>
 #include "HtWordType.h"
+#include <ctype.h>
 
 
 //*****************************************************************************
@@ -42,14 +49,13 @@ Plaintext::parse(Retriever &retriever, URL &)
     unsigned char       *position = (unsigned char *) contents->get();
     unsigned char	*start = position;
     static int	minimumWordLength = config.Value("minimum_word_length", 3);
-    int		offset = 0;
+    int		wordIndex = 1;
     int		in_space = 0;
     String	word;
     String	head;
 
     while (*position)
     {
-	offset = position - start;
 	word = 0;
 
 	if (HtIsStrictWordChar(*position))
@@ -71,9 +77,7 @@ Plaintext::parse(Retriever &retriever, URL &)
 
 	    if (word.length() >= minimumWordLength)
 	    {
-		retriever.got_word(word,
-				   int(offset * 1000 / contents->length()),
-				   0);
+		retriever.got_word(word, wordIndex++, 0);
 	    }
 	}
 		

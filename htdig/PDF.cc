@@ -4,7 +4,7 @@
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
 #if RELEASE
-static char RCSid[] = "$Id: PDF.cc,v 1.16 1999/08/25 22:00:55 grdetil Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.17 1999/09/08 04:57:10 ghutchis Exp $";
 #endif
 
 #include <sys/types.h>
@@ -499,6 +499,7 @@ void PDF::parseString()
     /* Currently unused    char	*start = position; */
     int		in_space = 0;
     String	word;
+    int		wordIndex = 1;
 
     int		head_length = _head.length();
 
@@ -525,9 +526,7 @@ void PDF::parseString()
 
 	    if (word.length() >= minimumWordLength)
 	    {
-		_retriever->got_word(word,
-				     int(_curPage * 1000 / _pages),
-				     0);
+		_retriever->got_word(word, wordIndex++, 0);
 		if (debug > 3)
 		    printf("PDF::parseString: got word %s\n", word.get());
 	    }

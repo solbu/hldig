@@ -1,22 +1,25 @@
 //
 // ExternalParser.h
 //
-// $Id: ExternalParser.h,v 1.2 1997/03/24 04:33:16 turtle Exp $
+//: Allows external programs to parse unknown document formats.
+//  The parser is expected to return the document in a specific format.
+//  The format is documented in http://www.htdig.org/attrs.html#external_parser
 //
-// $Log: ExternalParser.h,v $
-// Revision 1.2  1997/03/24 04:33:16  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.1.1.1  1997/02/03 17:11:06  turtle
-// Initial CVS
-//
+// $Id: ExternalParser.h,v 1.3 1999/09/08 04:57:10 ghutchis Exp $
 //
 #ifndef _ExternalParser_h_
 #define _ExternalParser_h_
 
 #include "Parsable.h"
-#include <htString.h>
+#include "htString.h"
 #include <stdio.h>
+
 class URL;
 
 
