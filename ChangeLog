@@ -1,3 +1,16 @@
+Sat Dec 19 11:21:38 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* contrib/htparsedoc/parse_word_doc.pl: Update from Jesse.
+
+	* .version: Bump for 3.1.0b4.
+
+	* README: Ditto.
+
+	* Makefile.in: Remove references to version number.
+
+	* htnotify/htnotify.cc: Fix nasty security hole found by Werner
+	Hett <hett@isbiel.ch>.
+
 Sat Dec 19 15:22:38 1998  Alexander Bergolth  <leo@strike.wu-wien.ac.at>
 
 	* htlib/StringList.cc, htlib/StringList.h: Added StringList::Join
