@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.14 2000/02/27 04:34:00 ghutchis Exp $
+// $Id: Display.cc,v 1.100.2.15 2000/03/01 23:09:49 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1157,7 +1157,7 @@ Display::excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor, int fan
     // It is necessary to keep alive the String you .get() a char * from,
     // as long as you use the char *.
 
-    String head_string;
+    //String head_string;
 
     char	*head;
     int use_meta_description=0;
@@ -1177,8 +1177,8 @@ Display::excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor, int fan
 	head = ref->DocHead(); // head points to the top
       }
 
-    head_string = HtSGMLCodec::instance()->decode(head);
-    head = head_string.get();
+    //head_string = HtSGMLCodec::instance()->decode(head);
+    //head = head_string.get();
 
     int		which, length;
     char	*temp = head;
@@ -1272,6 +1272,8 @@ Display::hilight(ResultMatch *match, const String& str_arg, const String& urlanc
     int			which, length;
     WeightWord		*ww;
     int			first = 1;
+    String		s;
+#define SGMLencodedChars(p, l) (s = 0, s.append(p, l), HtSGMLCodec::instance()->decode(s))
 
     result = 0;
     Collection *collection = match->getCollection();
@@ -1284,19 +1286,22 @@ Display::hilight(ResultMatch *match, const String& str_arg, const String& urlanc
 
     while ((pos = allWordsPattern->FindFirstWord(str, which, length)) >= 0)
     {
-	result.append(str, pos);
+	//result.append(str, pos);
+	result << SGMLencodedChars(str, pos);
 	ww = (WeightWord *) (*searchWords)[which];
 	result << start_highlight;
 	if (first && fanchor)
 	    result << "<a href=\"" << urlanchor << "\">";
-	result.append(str + pos, length);
+	//result.append(str + pos, length);
+	result << SGMLencodedChars(str + pos, length);
 	if (first && fanchor)
 	    result << "</a>";
 	result << end_highlight;
 	str += pos + length;
 	first = 0;
     }
-    result.append(str);
+    //result.append(str);
+    result << SGMLencodedChars(str, strlen(str));
     return result;
 }
 

@@ -1,3 +1,9 @@
+Wed Mar  1 17:01:09 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc (excerpt, hilight): move SGML encoding into
+	hilight() function, because when it's done earlier it breaks
+	highlighting of accented characters.
+
 Wed Mar  1 16:02:49 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htfuzzy/htfuzzy.cc (main): Correctly test return value on Open()
