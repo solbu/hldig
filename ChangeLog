@@ -1,3 +1,13 @@
+Fri Jun 15 16:47:09 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Accents.{h,cc}, htfuzzy/Fuzzy.c (getFuzzyByName),
+	htfuzzy/htfuzzy.cc (main, usage), htfuzzy/Makefile.in: Added
+	latest version of Robert Marchand's accents fuzzy match algorithm.
+	* htcommon/defaults.cc: Added accents_db attribute for this.
+	* htsearch/htsearch.cc: Fixed parsing of search_algorithm not to
+	use comma as separator, because it may be needed as decimal point
+	in some locales.
+
 Fri Jun 15 16:30:19 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htfuzzy/Endings.cc (getWords): Undid change introduced in 3.1.3,

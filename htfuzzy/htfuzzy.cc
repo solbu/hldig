@@ -13,6 +13,15 @@
 // in the main word database.
 //
 // $Log: htfuzzy.cc,v $
+// Revision 1.9.2.1  2001/06/15 21:53:59  grdetil
+// * htfuzzy/Accents.{h,cc}, htfuzzy/Fuzzy.c (getFuzzyByName),
+//   htfuzzy/htfuzzy.cc (main, usage), htfuzzy/Makefile.in: Added
+//   latest version of Robert Marchand's accents fuzzy match algorithm.
+// * htcommon/defaults.cc: Added accents_db attribute for this.
+// * htsearch/htsearch.cc: Fixed parsing of search_algorithm not to
+//   use comma as separator, because it may be needed as decimal point
+//   in some locales.
+//
 // Revision 1.9  1999/01/07 03:13:49  ghutchis
 // Fix minor memory leaks.
 //
@@ -38,11 +47,12 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htfuzzy.cc,v 1.9 1999/01/07 03:13:49 ghutchis Exp $";
+static char RCSid[] = "$Id: htfuzzy.cc,v 1.9.2.1 2001/06/15 21:53:59 grdetil Exp $";
 #endif
 
 #include "htfuzzy.h"
 #include "Fuzzy.h"
+#include "Accents.h"
 #include "Soundex.h"
 #include "Endings.h"
 #include "Metaphone.h"
@@ -107,6 +117,10 @@ main(int ac, char **av)
 	else if (mystrcasecmp(av[i], "metaphone") == 0)
 	{
 	    wordAlgorithms.Add(new Metaphone);
+	}
+	else if (mystrcasecmp(av[i], "accents") == 0)
+	{
+	    wordAlgorithms.Add(new Accents);
 	}
 	else if (mystrcasecmp(av[i], "endings") == 0)
 	{
@@ -237,6 +251,7 @@ usage()
     cout << "Supported algorithms:\n";
     cout << "\tsoundex\n";
     cout << "\tmetaphone\n";
+    cout << "\taccents\n";
     cout << "\tendings\n";
     cout << "\tsynonyms\n";
     cout << "\n";

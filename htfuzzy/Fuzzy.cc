@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.6.2.1 1999/09/01 20:20:43 grdetil Exp $";
+static char RCSid[] = "$Id: Fuzzy.cc,v 1.6.2.2 2001/06/15 21:53:59 grdetil Exp $";
 #endif
 
 #include "Fuzzy.h"
@@ -13,6 +13,7 @@ static char RCSid[] = "$Id: Fuzzy.cc,v 1.6.2.1 1999/09/01 20:20:43 grdetil Exp $
 #include "Configuration.h"
 #include "List.h"
 #include "StringList.h"
+#include "Accents.h"
 #include "Endings.h"
 #include "Exact.h"
 #include "Metaphone.h"
@@ -171,6 +172,8 @@ Fuzzy::getFuzzyByName(char *name)
 	return new Soundex();
     else if (mystrcasecmp(name, "metaphone") == 0)
 	return new Metaphone();
+    else if (mystrcasecmp(name, "accents") == 0)
+	return new Accents();
     else if (mystrcasecmp(name, "endings") == 0)
 	return new Endings();
     else if (mystrcasecmp(name, "synonyms") == 0)

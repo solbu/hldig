@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.19 2001/06/07 22:11:28 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.20 2001/06/15 21:53:59 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -27,6 +27,7 @@ ConfigDefaults	defaults[] =
     //
     // General defaults
     //
+    {"accents_db",			"${database_base}.accents.db"},
     {"add_anchors_to_excerpt",		"true"},
     {"allow_in_form",			""},
     {"allow_numbers",			"false"},

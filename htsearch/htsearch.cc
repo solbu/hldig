@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.12 2001/06/07 21:53:33 grdetil Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.24.2.13 2001/06/15 21:53:59 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -507,7 +507,7 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
     // configuration attribute.
     // For algorithms other than exact, we need to also do word lookups.
     //
-    StringList	algs(config["search_algorithm"], " \t,");
+    StringList	algs(config["search_algorithm"], " \t");
     List		algorithms;
     String		name, weight;
     double		fweight;
