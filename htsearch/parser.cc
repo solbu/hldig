@@ -4,6 +4,10 @@
 // Implementation of parser
 //
 // $Log: parser.cc,v $
+// Revision 1.6  1998/12/06 18:45:10  ghutchis
+// Check for empty boolean searches and report an error. Fixes bug reported by
+// Chuck O'Donnell <cao@bus.net>.
+//
 // Revision 1.5  1998/11/27 18:37:33  ghutchis
 //
 // Removed bogus code with "%01" -> "|"
@@ -24,7 +28,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.5 1998/11/27 18:37:33 ghutchis Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.6 1998/12/06 18:45:10 ghutchis Exp $";
 #endif
 
 #include "parser.h"
@@ -46,7 +50,7 @@ Parser::Parser()
 
 //*****************************************************************************
 // int Parser::checkSyntax(List *tokenList, Database *dbf)
-//   As the name of the function implies, we will only perform a syntex check
+//   As the name of the function implies, we will only perform a syntax check
 //   on the list of tokens.
 //
 int
@@ -390,6 +394,13 @@ Parser::parse(List *tokenList, ResultList &resultMatches)
     expr(1);
 
     ResultList	*result = (ResultList *) stack.pop();
+    if (!result)  // Ouch!
+      {
+	valid = 0;
+	error = 0;
+	error << "Expected to have something to parse!";
+	return;
+      }
     List		*elements = result->elements();
     DocMatch	*dm;
 
