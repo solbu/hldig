@@ -86,16 +86,16 @@ install:	all
 	@echo ""
 	@echo "Installing default configuration files..."
 	@if [ ! -f $(CONFIG_DIR)/htdig.conf ]; then sed -e s%@DATABASE_DIR@%$(DATABASE_DIR)% -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/htdig.conf >$(CONFIG_DIR)/htdig.conf; echo $(CONFIG_DIR)/htdig.conf;fi
-	@if [ ! -f $(COMMON_DIR)/bad_words ]; then $(INSTALL) $(top_srcdir)/installdir/bad_words $(COMMON_DIR); echo $(COMMON_DIR)/bad_words; fi
+	@if [ ! -f $(COMMON_DIR)/bad_words ]; then $(INSTALL) -m 0664 $(top_srcdir)/installdir/bad_words $(COMMON_DIR); echo $(COMMON_DIR)/bad_words; fi
 	@if [ ! -f $(SEARCH_DIR)/$(SEARCH_FORM) ]; then sed -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/search.html >$(SEARCH_DIR)/$(SEARCH_FORM); echo $(SEARCH_DIR)/$(SEARCH_FORM);fi
 	@if [ ! -f $(COMMON_DIR)/footer.html ]; then sed -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/footer.html >$(COMMON_DIR)/footer.html; echo $(COMMON_DIR)/footer.html;fi
 	@if [ ! -f $(COMMON_DIR)/header.html ]; then sed -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/header.html >$(COMMON_DIR)/header.html; echo $(COMMON_DIR)/header.html;fi
-	@if [ ! -f $(COMMON_DIR)/wrapper.html ]; then sed -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/wrapper.html >$(COMMON_DIR)/header.html; echo $(COMMON_DIR)/wrapper.html;fi
+	@if [ ! -f $(COMMON_DIR)/wrapper.html ]; then sed -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/wrapper.html >$(COMMON_DIR)/wrapper.html; echo $(COMMON_DIR)/wrapper.html;fi
 	@if [ ! -f $(COMMON_DIR)/nomatch.html ]; then sed -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/nomatch.html >$(COMMON_DIR)/nomatch.html; echo $(COMMON_DIR)/nomatch.html;fi
 	@if [ ! -f $(COMMON_DIR)/syntax.html ]; then sed -e s%@IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/syntax.html >$(COMMON_DIR)/syntax.html; echo $(COMMON_DIR)/syntax.html;fi
-	@if [ ! -f $(COMMON_DIR)/english.0 ]; then $(INSTALL) $(top_srcdir)/installdir/english.0 $(COMMON_DIR); echo $(COMMON_DIR)/english.0;fi
-	@if [ ! -f $(COMMON_DIR)/english.aff ]; then $(INSTALL) $(top_srcdir)/installdir/english.aff $(COMMON_DIR); echo $(COMMON_DIR)/english.aff;fi
-	@if [ ! -f $(COMMON_DIR)/synonyms ]; then $(INSTALL) $(top_srcdir)/installdir/synonyms $(COMMON_DIR); echo $(COMMON_DIR)/synonyms;fi
+	@if [ ! -f $(COMMON_DIR)/english.0 ]; then $(INSTALL) -m 0664 $(top_srcdir)/installdir/english.0 $(COMMON_DIR); echo $(COMMON_DIR)/english.0;fi
+	@if [ ! -f $(COMMON_DIR)/english.aff ]; then $(INSTALL) -m 0664 $(top_srcdir)/installdir/english.aff $(COMMON_DIR); echo $(COMMON_DIR)/english.aff;fi
+	@if [ ! -f $(COMMON_DIR)/synonyms ]; then $(INSTALL) -m 0664 $(top_srcdir)/installdir/synonyms $(COMMON_DIR); echo $(COMMON_DIR)/synonyms;fi
 	@echo "Installing images..."
 	@for i in $(IMAGES); do \
 		if [ ! -f $(IMAGE_DIR)/$$i ]; then $(INSTALL) -m 0664 $(top_srcdir)/installdir/$$i $(IMAGE_DIR)/$$i; echo $(IMAGE_DIR)/$$i;fi; \
