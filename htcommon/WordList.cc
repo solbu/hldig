@@ -4,6 +4,9 @@
 // Implementation of WordList
 //
 // $Log: WordList.cc,v $
+// Revision 1.15  1999/01/21 01:59:12  ghutchis
+// Words cannot be valid if they're shorter than minimum_word_length!
+//
 // Revision 1.14  1999/01/20 18:03:44  ghutchis
 // Added check for adding words with weight zero.
 //
@@ -52,7 +55,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.14 1999/01/20 18:03:44 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.15 1999/01/21 01:59:12 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -87,7 +90,7 @@ WordList::~WordList()
 //
 void WordList::Word(char *word, int location, int anchor_number, double weight_factor)
 {
-  if (weight_factor == 0) // Why should we add words with no weight?
+  if (weight_factor == 0.0) // Why should we add words with no weight?
       return;
     String		shortword = word;
 
@@ -144,6 +147,9 @@ int WordList::valid_word(char *word)
 
     if (badwords.Exists(word))
 	return 0;
+
+    if (strlen(word) < config.Value("minimum_word_length"))
+      return 0;
 
     while (word && *word)
     {
