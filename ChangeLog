@@ -1,3 +1,16 @@
+Thu Feb 17 15:58:53 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/RELEASE.html, htdoc/main.html: Add notes for 3.1.5 release.
+	* htdoc/TODO.html, htdoc/author.html, htdoc/bugs.html,
+	htdoc/cf_general.html, htdoc/cf_types.html, htdoc/cf_variables.html,
+	htdoc/config.html, htdoc/howitworks.html, htdoc/htdig.html,
+	htdoc/htfuzzy.html, htdoc/htmerge.html, htdoc/htnotify.html,
+	htdoc/hts_form.html, htdoc/hts_general.html, htdoc/hts_method.html,
+	htdoc/install.html, htdoc/isp.html, htdoc/mailing.html,
+	htdoc/meta.html, htdoc/notification.html, htdoc/require.html,
+	htdoc/uses.html, htdoc/where.html: Update copyright date and fix
+	last modified date for automatic CVS update.
+
 Thu Feb 17 14:37:18 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* installdir/htdig.conf: quote all HTML tag parameters.
