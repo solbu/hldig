@@ -4,6 +4,9 @@
 // Implementation of Endings class DB related methods
 //
 // $Log: EndingsDB.cc,v $
+// Revision 1.3  1998/12/06 18:46:59  ghutchis
+// Ensure temporary files are placed in TMPDIR if it's set.
+//
 // Revision 1.2  1998/09/18 02:38:08  ghutchis
 //
 // Bug fixes for 3.1.0b2
@@ -13,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: EndingsDB.cc,v 1.2 1998/09/18 02:38:08 ghutchis Exp $";
+static char RCSid[] = "$Id: EndingsDB.cc,v 1.3 1998/12/06 18:46:59 ghutchis Exp $";
 #endif
 
 #include "Endings.h"
@@ -31,16 +34,27 @@ extern "C"
 #include <stdlib.h>
 
 
-#define	TMP_WORD2ROOT		"/tmp/word2root.gdbm"
-#define	TMP_ROOT2WORD		"/tmp/root2word.gdbm"
-
-
 //*****************************************************************************
 //
 int
 Endings::createDB(Configuration &config)
 {
     Dictionary	rules;
+    String      tmpdir = getenv("TMPDIR");
+    String      word2root, root2word;
+    if (tmpdir.length())
+      {
+	word2root = tmpdir;
+	root2word = tmpdir;
+      }
+    else
+      {
+	word2root = "/tmp";
+	root2word = "/tmp";
+      }
+
+    word2root << "/word2root.db";
+    root2word << "/root2word.db";
 
     if (debug)
 	cout << "htfuzzy/endings: Reading rules\n";
@@ -51,18 +65,18 @@ Endings::createDB(Configuration &config)
     if (debug)
 	cout << "htfuzzy/endings: Creating databases\n";
 	
-    if (createRoot(rules, TMP_WORD2ROOT, TMP_ROOT2WORD,
+    if (createRoot(rules, word2root, root2word,
 		   config["endings_dictionary"]) == NOTOK)
 	return NOTOK;
 
     //
-    // Since we used files in /tmp for our temporary databases, we need
+    // Since we used files in TMPDIR for our temporary databases, we need
     // to now move them to the correct location as defined in the config
     // database.
     //
     system(form("/bin/mv %s %s;/bin/mv %s %s",
-		TMP_ROOT2WORD, config["endings_root2word_db"],
-		TMP_WORD2ROOT, config["endings_word2root_db"]));
+		root2word.get(), config["endings_root2word_db"],
+		word2root.get(), config["endings_word2root_db"]));
     return OK;
 }
 

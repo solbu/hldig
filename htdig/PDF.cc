@@ -14,7 +14,7 @@
 //
 #if RELEASE
 // Put the compilation date in the object file.
-static char RCSid[] = "$Id: PDF.cc,v 1.4 1998/11/30 01:52:24 ghutchis Exp $";
+static char RCSid[] = "$Id: PDF.cc,v 1.5 1998/12/06 18:46:59 ghutchis Exp $";
 #endif
 
 #include <sys/types.h>
@@ -108,8 +108,12 @@ PDF::parse(Retriever &retriever, URL &url)
     _tempFileBase = "htdig";
     _tempFileBase << getpid();
 
-    String pdfName("/tmp/");
-    pdfName << _tempFileBase;
+
+    String tmpdir = getenv("TMPDIR");
+    if (tmpdir.length() == 0)
+      tmpdir = "/tmp";
+    String pdfName = tmpdir;
+    pdfName << "/" << _tempFileBase;
     String psName = pdfName;
     pdfName << ".pdf";
     psName << ".ps";
@@ -142,7 +146,7 @@ PDF::parse(Retriever &retriever, URL &url)
       }
 
     // Use acroread as a filter to convert to PostScript.
-    acroread << " -toPostScript " << pdfName << " /tmp 2>&1";
+    acroread << " -toPostScript " << pdfName << " " << tmpdir << " 2>&1";
 
     system(acroread);
     FILE* psFile = fopen(psName, "r");

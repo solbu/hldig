@@ -4,6 +4,9 @@
 // Implementation of ExternalParser
 //
 // $Log: ExternalParser.cc,v $
+// Revision 1.4  1998/12/06 18:46:59  ghutchis
+// Ensure temporary files are placed in TMPDIR if it's set.
+//
 // Revision 1.3  1998/11/16 15:47:19  ghutchis
 //
 // Add checks for null tokens, adapted from patch by Vadim Checkan.
@@ -16,7 +19,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: ExternalParser.cc,v 1.3 1998/11/16 15:47:19 ghutchis Exp $";
+static char RCSid[] = "$Id: ExternalParser.cc,v 1.4 1998/12/06 18:46:59 ghutchis Exp $";
 #endif
 
 #include "ExternalParser.h"
@@ -123,8 +126,10 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     //
     // Write the contents to a temporary file.
     //
-    String	path = "/tmp/htdext.";
-    path << getpid();
+    String      path = getenv("TMPDIR");
+    if (path.length() == 0)
+      path = "/tmp";
+    path << "/htdext." << getpid();
 
     FILE	*fl = fopen(path, "w");
     if (!fl)
