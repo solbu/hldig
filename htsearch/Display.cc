@@ -4,6 +4,11 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.17  1998/11/01 00:17:08  ghutchis
+//
+// Added template var DESCRIPTION as first item in DESCRIPTIONS, as requested
+// by Ryan Scott <test@netcreations.com>.
+//
 // Revision 1.16  1998/10/17 14:15:57  ghutchis
 //
 // Added variable CURRENT as the number of the current match, adapted from a
@@ -71,7 +76,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.16 1998/10/17 14:15:57 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.17 1998/11/01 00:17:08 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -301,6 +306,7 @@ Display::displayMatch(ResultMatch *match, int current)
 	    *str << ((String*) (*list)[i])->get() << "<br>\n";
 	}
 	vars.Add("DESCRIPTIONS", str);
+	vars.Add("DESCRIPTION", ((String*) (*list)[1]));
     }
 
     expandVariables(currentTemplate->getMatchTemplate());
