@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: QuotedStringList.cc,v 1.3.2.3 2000/05/06 20:46:40 loic Exp $
+// $Id: QuotedStringList.cc,v 1.3.2.4 2000/05/08 20:40:42 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -25,13 +25,6 @@
 QuotedStringList::QuotedStringList()
 {
 }
-
-
-//*****************************************************************************
-QuotedStringList::~QuotedStringList()
-{
-}
-
 
 //*****************************************************************************
 int
@@ -60,7 +53,7 @@ QuotedStringList::Create(const char *str, const char *sep, int single)
 	}
 	else if (quote == 0 && strchr(sep, *str))
 	{
-	    List::Add(new String(word));
+	    Add(new String(word));
 	    word = 0;
 	    quoted = 0;
 	    if (!single)
@@ -79,7 +72,7 @@ QuotedStringList::Create(const char *str, const char *sep, int single)
     // Add the last word to the list
     //
     if (word.length() || quoted)
-	List::Add(new String(word));
+	Add(new String(word));
     return Count();
 }
 

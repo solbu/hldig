@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtURLSeedScore.cc,v 1.1.2.3 2000/05/06 20:46:41 loic Exp $
+// $Id: HtURLSeedScore.cc,v 1.1.2.4 2000/05/08 20:40:42 loic Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -76,7 +76,6 @@ ScoreAdjustItem::ScoreAdjustItem(String &url_regex, String &formula)
     int chars_so_far;
     StringList l(url_regex.get());
     match.setEscaped(l);
-    l.Destroy();
 
     // FIXME: Missing method to check if the regex was in error.
     //	myErrMsg = form("%s is not a valid regex", url_regex.get());

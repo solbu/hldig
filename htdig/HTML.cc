@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62.2.9 2000/03/17 15:59:57 grdetil Exp $
+// $Id: HTML.cc,v 1.62.2.10 2000/05/08 20:40:42 loic Exp $
 //
 
 #include "htdig.h"
@@ -86,7 +86,6 @@ HTML::HTML()
     StringList keywordNames(config["keywords_meta_tag_names"], " \t");
     keywordsMatch.IgnoreCase();
     keywordsMatch.Pattern(keywordNames.Join('|'));
-    keywordNames.Release();
     max_keywords = config.Value("max_keywords", -1);
     if (max_keywords < 0)
 	max_keywords = (int) ((unsigned int) ~1 >> 1);

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.54.2.9 2000/05/06 20:46:41 loic Exp $
+// $Id: htsearch.cc,v 1.54.2.10 2000/05/08 20:40:43 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -126,13 +126,11 @@ main(int ac, char **av)
     {
 	StringList l(input["restrict"], " \t\001|");
 	limit_to.setEscaped(l);
-	l.Release();
     }
     if (input.exists("exclude"))
     {
 	StringList l(input["exclude"], " \t\001|");
 	exclude_these.setEscaped(l);
-	l.Release();
     }
 
     // Multiple databases may be specified for search.
@@ -156,11 +154,7 @@ for (int cInd=0; errorMsg == NULL && cInd < collectionList.Count(); cInd++)
     logicalWords = 0;
     origPattern = 0;
     logicalPattern = 0;
-    requiredWords.Release();
-    // searchWords.Release();
     searchWords = new List;
-    // if (searchWordsPattern)
-    //     delete searchWordsPattern;
     searchWordsPattern = new StringMatch;
 
     char *config_name = collectionList[cInd];

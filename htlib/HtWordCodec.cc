@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordCodec.cc,v 1.6.2.1 2000/05/06 20:46:40 loic Exp $
+// $Id: HtWordCodec.cc,v 1.6.2.2 2000/05/08 20:40:42 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -311,8 +311,8 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
       }
 
       // Add to replacement pairs.
-      myFrom->Add(common_part);
-      myTo->Add(&to);
+      myFrom->Add(new String(*common_part));
+      myTo->Add(new String(to));
     }
   }
 
@@ -342,13 +342,13 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
     // StringList, despite not having an iterator class.
     current = (String *) myTo->Nth(i);
 
-    myFrom->Add(current);
+    myFrom->Add(new String(*current));
 
     temp = 0; // Reset any previous round.
     temp.append(char(QUOTE_CHAR));
     temp.append(*current);
 
-    myTo->Add(&temp);
+    myTo->Add(new String(temp));
   }
 
   myFromMatch = new StringMatch;

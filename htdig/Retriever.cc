@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.27 2000/05/08 13:33:48 loic Exp $
+// $Id: Retriever.cc,v 1.72.2.28 2000/05/08 20:40:42 loic Exp $
 //
 
 #include "Retriever.h"
@@ -995,8 +995,8 @@ Retriever::GetLocal(char *url)
     if (strchr(url, '~'))
     {
 	StringList *local = GetLocalUser(url, defaultdocs);
-	if(defaultdocs) delete defaultdocs;
 	if (local) {
+	    if(defaultdocs) delete defaultdocs;
 	    return local;
 	}
     }

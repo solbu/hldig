@@ -1,3 +1,29 @@
+Tue May 09 00:22:33 2000  Loic Dachary  <loic@senga.org>
+
+	* htsearch/htsearch.cc (main): kill useless call to 
+	  StringList::Release
+
+	* htsearch/HtURLSeedScore.cc (ScoreAdjustItem): remove useless
+	  call to StringList::Destroy.
+	
+	* htlib/HtWordCodec.cc (HtWordCodec): Fix usage of StringList
+	  that was inserting pointers to volatile strings instead of
+	  permanent copies. I suspect that the tweak on StringList was
+	  primarily done to satisfy this piece of code. After reviewing
+	  all the usage of StringList, it's the only one to use it in this
+	  fashion.
+
+	* htlib/QuotedStringList.h (class QuotedStringList): remove
+	  noop destructor to enable Destroy of the underlying StringList
+	  when deleted.
+
+Mon May 08 18:17:02 2000  Loic Dachary  <loic@senga.org>
+
+	* htlib/StringList.h (class StringList): change methods 
+	  Add/Insert/Assign that were copying the String* given in argument.
+	  This behaviour is confusing since it has a different semantic
+	  than the base class List.
+
 Mon May 08 17:16:00 2000  Loic Dachary  <loic@senga.org>
 
 	* htdig/Retriever.cc (GetLocal): fix leaked defaultdocs

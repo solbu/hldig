@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.h,v 1.7.2.4 2000/05/08 13:33:48 loic Exp $
+// $Id: StringList.h,v 1.7.2.5 2000/05/08 20:40:42 loic Exp $
 //
 
 #ifndef _StringList_h_
@@ -45,13 +45,11 @@ public:
     // Standard List operations...
     //
     void		Add(char *);
-    void		Add(Object *obj);
+    void		Add(String *obj) { List::Add(obj); }
     void		Insert(char *, int pos);
-    void		Insert(Object *obj, int pos);
+    void		Insert(String *obj, int pos) { List::Insert(obj, pos); }
     void		Assign(char *, int pos);
-    void		Assign(Object *obj, int pos);
-    int			Remove(int pos);
-    int			Remove(Object *obj);
+    void		Assign(String *obj, int pos) { List::Assign(obj, pos); }
 
     //
     // Since we know we only store strings, we can reliably sort them.

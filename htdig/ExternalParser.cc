@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExternalParser.cc,v 1.19.2.5 2000/05/06 20:46:38 loic Exp $
+// $Id: ExternalParser.cc,v 1.19.2.6 2000/05/08 20:40:42 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -306,7 +306,6 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 			keywordsMatch = new StringMatch();
 			keywordsMatch->IgnoreCase();
 			keywordsMatch->Pattern(kn.Join('|'));
-			kn.Release();
 		  }
     
 		  // <URL:http://www.w3.org/MarkUp/html-spec/html-spec_5.html#SEC5.2.5> 

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: SplitMatches.cc,v 1.1.2.3 2000/05/06 20:46:41 loic Exp $
+// $Id: SplitMatches.cc,v 1.1.2.4 2000/05/08 20:40:43 loic Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -67,7 +67,6 @@ MatchArea::MatchArea(const String &url_regex)
       {
 	StringList l(url_regex.get());
 	match.setEscaped(l);
-	l.Destroy();
       }
 }
 
