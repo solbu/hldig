@@ -1218,7 +1218,7 @@ elif test $ac_cv_prog_cc_g = yes; then
   fi
 else
   if test "$GCC" = yes; then
-    CFLAGS="-O2"
+    CFLAGS="-g"
   else
     CFLAGS=
   fi
@@ -1929,7 +1929,7 @@ elif test $ac_cv_prog_cc_g = yes; then
   fi
 else
   if test "$GCC" = yes; then
-    CFLAGS="-O2"
+    CFLAGS="-g"
   else
     CFLAGS=
   fi
@@ -2072,7 +2072,7 @@ elif test $ac_cv_prog_cxx_g = yes; then
   fi
 else
   if test "$GXX" = yes; then
-    CXXFLAGS="-O2"
+    CXXFLAGS="-g"
   else
     CXXFLAGS=
   fi

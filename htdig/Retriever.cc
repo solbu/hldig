@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.10 1999/12/15 20:19:04 grdetil Exp $
+// $Id: Retriever.cc,v 1.72.2.11 1999/12/21 05:56:12 toivo Exp $
 //
 
 #include "Retriever.h"
@@ -822,8 +822,10 @@ Retriever::IsValidURL(char *u)
       if (debug>2)
        cout<<endl<<"   Rejected: not in \"limit_normalized\" list!";
        return(FALSE);
-    }
+    }  
 
+    tmpList.Release();
+    
   return TRUE;
 }
 

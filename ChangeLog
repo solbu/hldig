@@ -1,3 +1,11 @@
+1999-12-21  Toivo Pedaste  <toivo@ucs.uwa.edu.au>
+
+	* htlib/Dictionary.cc: Fix memory leak when destroying dictionary
+
+	* htlib/StringList.cc, htdig/Retriever.cc: Fix memory leak, not
+	the most elegent way but I'm not sure about the exact semantics
+	of StringList
+
 Mon Dec 20 21:59:03 1999  Loic Dachary  <loic@ceic.com>
 
 	* htdb/{Makefile.am,err.c,getlong.c}: Fix mistake: err.c and

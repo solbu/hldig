@@ -1,28 +1,22 @@
 //
 // StringList.cc
 //
-// Implementation of StringList
+// StringList: Specialized List containing String objects. 
 //
-// $Log: StringList.cc,v $
-// Revision 1.3  1998/10/02 15:35:04  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Fixed bug with multiple delimeters
+// $Id: StringList.cc,v 1.9.2.1 1999/12/21 05:56:12 toivo Exp $
 //
-// Revision 1.2  1997/03/24 04:33:22  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
-//
-#if RELEASE
-static char	RCSid[] = "$Id: StringList.cc,v 1.3 1998/10/02 15:35:04 ghutchis Exp $";
-#endif
 
-#include <stdlib.h>
 #include "StringList.h"
 #include "htString.h"
 #include "List.h"
+
+#include <stdlib.h>
 
 
 //*****************************************************************************
@@ -40,65 +34,27 @@ StringList::~StringList()
 {
 }
 
-
 //*****************************************************************************
-// StringList::StringList(char *str, char sep)
+// StringList::~StringList()
 //
-StringList::StringList(char *str, char sep)
+void StringList::Release()
 {
-    Create(str, sep);
+    ListCursor  cursor;
+    int i;
+    int n = Count();
+
+    Start_Get(cursor);
+    Object	*obj;
+    for(i = 0; i < n && (obj = Get_Next(cursor)); i++) {
+	List::Remove(obj);
+	delete (String*)obj;
+    }
 }
 
-
 //*****************************************************************************
-// StringList::StringList(String &str, char sep)
+// int StringList::Create(const char *str, char *sep)
 //
-StringList::StringList(String &str, char sep)
-{
-    Create(str, sep);
-}
-
-
-//*****************************************************************************
-// StringList::StringList(char *str, char *sep)
-//
-StringList::StringList(char *str, char *sep)
-{
-    Create(str, sep);
-}
-
-
-//*****************************************************************************
-// StringList::StringList(String &str, char *sep)
-//
-StringList::StringList(String &str, char *sep)
-{
-    Create(str, sep);
-}
-
-
-//*****************************************************************************
-// int StringList::Create(String &str, char sep)
-//
-int StringList::Create(String &str, char sep)
-{
-    return Create(str.get(), sep);
-}
-
-
-//*****************************************************************************
-// int StringList::Create(String &str, char *sep)
-//
-int StringList::Create(String &str, char *sep)
-{
-    return Create(str.get(), sep);
-}
-
-
-//*****************************************************************************
-// int StringList::Create(char *str, char *sep)
-//
-int StringList::Create(char *str, char *sep)
+int StringList::Create(const char *str, char *sep)
 {
     String	word;
 
@@ -127,9 +83,9 @@ int StringList::Create(char *str, char *sep)
 
 
 //*****************************************************************************
-// int StringList::Create(char *str, char sep)
+// int StringList::Create(const char *str, char sep)
 //
-int StringList::Create(char *str, char sep)
+int StringList::Create(const char *str, char sep)
 {
     String	word;
 
@@ -263,15 +219,16 @@ static int StringCompare(const void *a, const void *b)
 //
 void StringList::Sort(int)
 {
-    String	**array = new String*[number];
+    String	**array = new String*[Count()];
     int		i;
-    int		n = number;
+    int		n = Count();
 
-    listnode	*ln = head;
-    for (i = 0; i < n; i++)
-    {
-	array[i] = (String *) ln->object;
-	ln = ln->next;
+    ListCursor  cursor;
+
+    Start_Get(cursor);
+    Object	*obj;
+    for(i = 0; i < n && (obj = Get_Next(cursor)); i++) {
+      array[i] = (String*)obj;
     }
 
     qsort((char *) array, (size_t) n, (size_t) sizeof(String *),
@@ -285,4 +242,18 @@ void StringList::Sort(int)
     }
 
     delete array;
+}
+
+String StringList::Join(char sep) const
+{
+  String str;
+  int i;
+
+  for (i=0; i < number; i++)
+  {
+      if (str.length())
+	str.append(sep);
+      str.append(*((const String *) Nth(i)));
+  }
+  return str;
 }

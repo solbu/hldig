@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Dictionary.cc,v 1.10.2.2 1999/11/10 09:42:52 toivo Exp $
+// $Id: Dictionary.cc,v 1.10.2.3 1999/12/21 05:56:12 toivo Exp $
 //
 
 #include "Dictionary.h"
@@ -76,10 +76,8 @@ Dictionary::Dictionary(const Dictionary& other)
 //
 Dictionary::~Dictionary()
 {
-    for (int i = 0; i < tableLength; i++)
-    {
-	delete table[i];
-    }
+    Destroy();
+    
     delete [] table;
 }
 

@@ -1,16 +1,17 @@
 //
 // StringList.h
 //
-// $Id: StringList.h,v 1.2 1997/03/24 04:33:22 turtle Exp $
+// StringList: Specialized List containing String objects. 
 //
-// $Log: StringList.h,v $
-// Revision 1.2  1997/03/24 04:33:22  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later 
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
+// $Id: StringList.h,v 1.7.2.1 1999/12/21 05:56:12 toivo Exp $
 //
-//
+
 #ifndef _StringList_h_
 #define _StringList_h_
 
@@ -28,18 +29,20 @@ public:
     StringList();
     ~StringList();
 
+    void Release();
+    
     //
     // Creation of a String from a string or String
     //
-    StringList(char *, char sep = '\t');
-    StringList(String &, char sep = '\t');
-    StringList(char *, char *sep);
-    StringList(String &, char *sep);
+    StringList(const char *str, char sep = '\t') { Create(str, sep); }
+    StringList(const String &str, char sep = '\t') { Create(str, sep); }
+    StringList(const char *str, char *sep) { Create(str, sep); }
+    StringList(const String &str, char *sep) { Create(str, sep); }
 
-    int			Create(char *, char sep = '\t');
-    int			Create(String &, char sep = '\t');
-    int			Create(char *, char *sep);
-    int			Create(String &, char *sep);
+    int			Create(const char *str, char sep = '\t');
+    int			Create(const String &str, char sep = '\t') { return Create(str.get(), sep); }
+    int			Create(const char *str, char *sep);
+    int			Create(const String &str, char *sep) { return Create(str.get(), sep); }
 
     //
     // Standard List operations...
@@ -59,6 +62,11 @@ public:
     //
     void		Sort(int direction = 0);
 	
+    //
+    // Join the Elements of the StringList together
+    //
+    String              Join(char) const;
+
     //
     // Getting at the parts of the StringList
     //
