@@ -1,0 +1,182 @@
+#
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999-2003 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU Library General Public License (LGPL) version 2 or later
+# <http://www.gnu.org/copyleft/lgpl.html>
+#
+# $Id: t_parsing,v 1.1 2004/01/12 10:32:59 lha Exp $
+#
+
+
+# Tests (or should eventually test) the following config attributes:
+#	description_meta_tag_names
+#	date_format
+#	ignore_alt_text
+#	max_doc_size
+#	max_keywords
+#	max_meta_description_length
+#	max_description_length
+#	max_descriptions
+#	max_excerpts
+#	max_head_length
+#	noindex_end
+#	noindex_start
+#	mime_types
+#	content_classifier
+#	external_parsers
+#	external_protocols
+#	use_meta_description
+
+
+test_functions_action=--start-apache
+. ./test_functions
+
+config=$testdir/conf/htdig.conf.tmp
+tmp=/tmp/t_htsearch$$
+
+# set up config file with chosen non-default values
+cp $testdir/conf/htdig.conf $config
+
+try() {
+    comment="$1"
+    shift
+    query="$1"
+    shift
+    $htsearch -c $config "$query" > $tmp
+    for pattern
+    do
+	if grep "$pattern" $tmp > /dev/null 
+	then :
+	else
+	    $htsearch -v -c $config "$query" > /dev/null
+	    echo "Output doesn't match \"$pattern\""
+	    fail "$htsearch -c $config '$query' >> $tmp --
+		  $comment"
+	fi
+    done
+}
+
+
+# Tests (or should eventually test) the following config attributes:
+#	description_meta_tag_names
+#	date_format			(Should be in t_htsearch/t_templates)
+#	ignore_alt_text
+#	max_doc_size
+#	max_keywords
+#	max_meta_description_length
+#	max_description_length		(May put in t_factors)
+#	max_descriptions		(May put in t_factors)
+#	max_excerpts			(Should be in t_htsearch/t_templates)
+#	max_head_length
+#	noindex_end
+#	noindex_start
+#	mime_types			(TODO)
+#	content_classifier		(TODO)
+#	external_parsers		(TODO)
+#	external_protocols		(TODO)
+#	use_meta_description
+
+$htdig "$@" -t -i -c $config	|| fail "Couldn't do first dig"
+$htpurge -c $config		|| fail "Couldn't do first purge"
+
+try "Search for alt text 'earth'" \
+    "words=earth" \
+    '1 matches' 'site3.html'
+
+try "'claims and collections', unlimited doc size" \
+    "words=%22claims+and+collections%22" \
+    '1 matches' 'site4.html'
+
+try "Search for keyword 'martial', default max_keywords" \
+    "words=martial" \
+    '1 matches' 'site2.html'
+
+try "Search for 'service', default noindex_start/end" \
+    "words=technical" \
+    '1 matches' 'site%201.html'
+
+set_attr use_meta_description true
+try "Search for 'call handling' with default max_meta_description_length" \
+    "words=%22call+handling%22" \
+    '1 matches' 'script.html' 'call handling.*signalling'
+
+set_attr ignore_alt_text true
+set_attr max_doc_size 15112
+set_attr max_keywords 5
+set_attr noindex_start "'Software Distribution'"
+set_attr noindex_end "'Contact Information'"
+set_attr max_meta_description_length 80
+set_attr description_meta_tag_names "description generator"
+set_attr max_head_length 30
+
+$htdig "$@" -t -i -c $config	|| fail "Couldn't do second dig"
+$htpurge -c $config		|| fail "Couldn't do second purge"
+
+try "Search for alt text 'earth' with ignore_alt_text=true" \
+    "words=earth" \
+    'No matches'
+
+try "'claims and collections', max_doc_size 15112" \
+    "words=%22claims+and+collections%22" \
+    '1 matches' 'site4.html'
+
+# (Martial is 6th keyword listed in site 2, but "Fu" is too short and omitted.)
+try "Search for keyword 'martial', max_keywords = 5" \
+    "words=martial" \
+    'No matches'
+
+# Only occurrence of "technical" is between noindex_start and _end in  site 1
+try "Search for 'technical', noindex_start=Software Distribution, noindex_end=Contact Information" \
+    "words=technical" \
+    'No matches'
+
+# Visitor occurs after  noindex_end
+try "Search for 'visitor', noindex_start=Software Distribution, noindex_end=Contact Information" \
+    "words=visitor" \
+    '2 matches' 'site%201.html' 'site3.html'
+
+# Displaying meta description instead of excerpt, check it is truncated
+try "Search for 'call handling' with max_meta_description_length=80" \
+    "words=%22call+handling%22" \
+    '1 matches' 'script.html' 'means of<br>'
+
+# Check <meta name="generator"...> counts as a description
+try "Search for 'category', description_meta_tag_names includes 'generator'" \
+    "words=category" \
+    '1 matches' 'site3.html' 'FrontPage'
+
+# Check that only specified number of bytes of header is stored.
+# Header size is rounded up to contain the whole of the last word.
+try "Search for 'also', max_head_length=30" \
+    "words=also" \
+    '4 matches' 'bad_local.htm' 'site2.html' 'script.html' 'site4.html' \
+    'WHERE.*Copyright<br>'
+
+set_attr max_doc_size 15042
+set_attr max_keywords 6
+set_attr noindex_start "'software distribution'"
+set_attr noindex_end "'contact information'"
+
+$htdig "$@" -t -i -c $config	|| fail "Couldn't do third dig"
+$htpurge -c $config		|| fail "Couldn't do third purge"
+
+try "Search for keyword 'martial', max_keywords = 6" \
+    "words=martial" \
+    '1 matches' 'site2.html'
+
+try "'claims and collections', max_doc_size 15042" \
+    "words=%22claims+and+collections%22" \
+    'No matches'
+
+# Check noindex_start/end are case-insensitive
+try "Search for 'technical', noindex_start=software distribution, noindex_end=contact information" \
+    "words=technical" \
+    'No matches'
+
+test_functions_action=--stop-apache
+. ./test_functions
+
+rm -f $tmp
+
+exit 0

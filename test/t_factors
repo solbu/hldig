@@ -5,7 +5,7 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_factors,v 1.2 2003/12/14 03:42:05 lha Exp $
+# $Id: t_factors,v 1.3 2004/01/12 10:32:59 lha Exp $
 #
 
 try() {
@@ -63,9 +63,17 @@ $htpurge -c $config		|| fail "Couldn't purge"
 ## Add tests here
 ################################################################################
 
-set_attr author_factor			0
-try "Search for '2001' without allow_numbers" \
-    "words=2001" \
+cp $testdir/conf/htdig.conf $config
+
+try "Search for also" \
+    "words=also" \
+    'Movies</a></strong><img src="/htdig/star.gif" alt="\*"><img src="/htdig/star.gif" alt="\*"><img src="/htdig/star.gif" alt="\*"><img src="/htdig/star.gif" alt="\*">'
+    'Node</a></strong><img src="/htdig/star.gif" alt="*"><img src="/htdig/star_blank'
+
+set_attr url_seed_score		"script|bad_local *1000+1000"
+
+try "Biassed earch for also" \
+    "words=also" \
     'No matches'
 
 test_functions_action=--stop-apache

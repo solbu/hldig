@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.101 2003/12/13 09:15:41 lha Exp $
+// $Id: defaults.cc,v 1.102 2004/01/12 10:32:59 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -480,14 +480,15 @@ http://www.htdig.org/", " \
 	and <a href=\"#meta_description_factor\">meta_description_factor</a>. \
 " }, \
 { "description_meta_tag_names", "description",  \
-	"string list", "htsearch", "", "3.1.6", "Searching:Ranking", "description_meta_tag_names: \"description htdig-description\"", " \
+	"string list", "htdig", "", "3.1.6", "Searching:Ranking", "description_meta_tag_names: \"description htdig-description\"", " \
 	The words in this list are used to search for descriptions in HTML \
 	<em>META</em> tags. This list can contain any number of strings \
 	that each will be seen as the name for whatever description \
 	convention is used. While words in any of the specified \
 	description contents will be indexed, only the last meta tag \
-	containing a description will be kept as the meta description \
-	field for the document, for use in search results. The order in \
+	containing a description will be kept for the \
+	<a href=\"hts_templates.html#METADESCRIPTION\"METADESCRIPTION</a> \
+	variable in search results. The order in \
 	which the names are specified in this configuration attribute \
 	is irrelevant, as it is the order in which the tags appear in \
 	the documents that matters.<br> The <em>META</em> tags have the \
@@ -1389,8 +1390,8 @@ http://www.htdig.org/", " \
 " }, \
 { "max_descriptions", "5",  \
 	"integer", "htdig", "", "all", "Indexing:What", "max_descriptions: 15", " \
-	While gathering descriptions of URLs, \
-	<a href=\"htdig.html\">htdig</a> will only record up to this \
+	While gathering <a href=\"#description_factor\">descriptions</a> of \
+	URLs, <a href=\"htdig.html\">htdig</a> will only record up to this \
 	number of descriptions, in the order in which it encounters \
 	them. This is used to prevent the database entry for a document \
 	from growing out of control if the document has a huge number \
@@ -1443,7 +1444,10 @@ http://www.htdig.org/", " \
 	"integer", "htdig", "", "3.1.0b1", "Indexing:How", "max_meta_description_length: 1000", " \
 	While gathering descriptions from meta description tags, \
 	<a href=\"htdig.html\">htdig</a> will only store up to  \
-	this much of the text (in bytes) for each document. \
+	this much of the text (in bytes) for each document to fill the \
+	<a href=\"hts_templates.html#METADESCRIPTION\"METADESCRIPTION</a> \
+	template variable.  All words in the meta description are still \
+	used for indexing. \
 " }, \
 { "max_prefix_matches", "1000",  \
 	"integer", "htsearch", "", "3.1.0b1", "Searching:Method", "max_prefix_matches: 100", " \

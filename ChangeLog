@@ -1,3 +1,8 @@
+Mon 12 Jan 2004 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * test/t_parsing, test/test_functions.in: Add new tests
+    * htcommon/default.cc, htdoc/hts_templates.html: Cross-ref documentation.
+
 Mon Dec 29 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htdig/Retriever.cc:

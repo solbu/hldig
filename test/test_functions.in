@@ -10,7 +10,7 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: test_functions.in,v 1.14 2003/12/14 01:53:13 lha Exp $
+# $Id: test_functions.in,v 1.15 2004/01/12 10:32:59 lha Exp $
 #
 
 if [ "$test_functions_action" = --stop-apache ]
@@ -26,6 +26,7 @@ else
 testdir=`pwd`
 
 perl=@PERL@
+awk=@AWK@
 
 @SET_MAKE@
 
