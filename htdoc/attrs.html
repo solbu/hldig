@@ -4300,6 +4300,69 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="script_name">
+		script_name</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+		        Overrides the value of the SCRIPT_NAME
+			environment attribute. This is useful if
+			htsearch is not being called directly as a CGI
+			program, but indirectly from within a dynamic
+			.shtml page using SSI directives. Previously,
+			you needed a wrapper script to do this, but
+			this configuration attribute makes wrapper
+			scripts obsolete for SSI and possibly for
+			other server scripting languages, as
+			well. (You still need a wrapper script when
+			using PHP, though.)<br>
+
+			Check out the <tt>contrib/scriptname</tt>
+			directory for a small example. Note that this
+			attribute also affects the value of the <a
+			href="hts_templates.html#CGI">CGI</a> variable
+			used in htsearch templates.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table>
+			  <tr>
+				<td nowrap>
+				  script_name: /search/results.shtml
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="search_algorithm">
 		search_algorithm</a></strong>
 	  </dt>
