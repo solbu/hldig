@@ -11,14 +11,14 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordType.h,v 1.1.2.1 1999/12/07 19:54:13 bosc Exp $
+// $Id: WordType.h,v 1.1.2.2 1999/12/09 11:31:27 bosc Exp $
 //
 
 #ifndef __WordType_h
 #define __WordType_h
 
 #include "htString.h"
-#include "HtConfiguration.h"
+#include "Configuration.h"
 
 //
 // Compatibility functions
@@ -60,8 +60,8 @@ public:
   //
   // Constructors
   //
-  WordType(const HtConfiguration& config);
-  static void Initialize(const HtConfiguration& config);
+  WordType(const Configuration& config);
+  static void Initialize(const Configuration& config);
   
   //
   // Predicates

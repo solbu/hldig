@@ -75,7 +75,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: word_builder.pl,v 1.2.2.2 1999/10/25 13:11:21 bosc Exp $
+# $Id: word_builder.pl,v 1.2.2.3 1999/12/09 11:31:27 bosc Exp $
 #
 use strict;
 use constant MAX_NFIELDS => 20;
@@ -619,10 +619,10 @@ sub template_build {
     #
     # Handle server includes directives recursively
     #
-    while($content =~ /(<\!--\#include\s+virtual\s*=\s*\"[^\"]*\"-->)/i) {
+    while($content =~ /(<\!--\#include\s+virtual\s*=\s*\"[^\"]*\"-->)/i) {  # "
 	my($include) = $1;
 	my($matched) = quotemeta($include);
-	my($file) = $include =~ /virtual\s*=\s*\"([^\"]*)/;
+	my($file) = $include =~ /virtual\s*=\s*\"([^\"]*)/;    #"
 	my($path) = "$include_root$file";
 	my($included) = readfile($path);
 	$content =~ s/$matched/$included/;
@@ -630,7 +630,6 @@ sub template_build {
 
     return $content;
 }
-
 sub template_fill {
     my($template, $parents) = @_;
 

@@ -7,7 +7,7 @@
 //           NOTE: Some code previously attempted to directly read from 
 //           the word db. This will no longer work, so it's preferred to 
 //           use the access methods here.
-//	     HtConfiguration parameter used:
+//	     Configuration parameter used:
 //           wordlist_extend
 //           wordlist_verbose
 //
@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.5 1999/12/07 19:54:13 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.6 1999/12/09 11:31:27 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -29,9 +29,10 @@
 #include "WordRecord.h"
 #include "WordType.h"
 #include "WordStat.h"
-#include "HtConfiguration.h"
+#include "Configuration.h"
 #include "htString.h"
 #include "HtPack.h"
+#include "WordDBCompress.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,6 +41,7 @@
 #include <fstream.h>
 #include <errno.h>
 
+#define cdebug cerr
 //*****************************************************************************
 //
 WordList::~WordList()
@@ -50,7 +52,7 @@ WordList::~WordList()
 
 //*****************************************************************************
 //
-WordList::WordList(const HtConfiguration& config_arg) :
+WordList::WordList(const Configuration& config_arg) :
   wtype(config_arg),
   config(config_arg)
 {
@@ -70,9 +72,31 @@ int WordList::Open(const String& filename, int mode)
   //
   // Info initialization
   //
+    int usecompress=0;
+  db.dbinfo.set_bt_compare(word_db_cmp);
+  if(config["wordlist_page_size" ].length()) {db.dbinfo.set_pagesize(config.Value("wordlist_page_size" ,0));}
+  if(config["wordlist_cache_size"].length()) {db.dbinfo.set_cachesize(config.Value("wordlist_cache_size",0));}
+  if(config.Value("wordlist_compress",0) == 1)
+  {
+      usecompress=DB_COMPRESS;
+      DB_CMPR_INFO *cmpr_info=new DB_CMPR_INFO;
+      WordDBCompress *compressor=new WordDBCompress;
+      cmpr_info->user_data=(void *)compressor;
+      cmpr_info->compress  =WordDBCompress_compress_c;
+      cmpr_info->uncompress=WordDBCompress_uncompress_c;
+      cmpr_info->coefficient=3;
+      cmpr_info->max_npages=9;
+      compressor->debug=config.Value("wordlist_compress_debug",0);
+//        cmpr_info->coefficient=3;
+//        cmpr_info->max_npages=9;
+      db.dbenv.set_mp_cmpr_info(cmpr_info);
+//        db_page_compress  =word_db_page_compress;
+//        db_page_uncompress=word_db_page_uncompress;
+  }
+
   db.dbinfo.set_bt_compare(word_db_cmp);
 
-  int ret = db.Open(filename, DB_BTREE, mode == O_RDONLY ? DB_RDONLY : DB_CREATE, 0666);
+  int ret = db.Open(filename, DB_BTREE, (mode == O_RDONLY ? DB_RDONLY : DB_CREATE) | usecompress, 0666);
 
   isread = mode & O_RDONLY;
   isopen = 1;
@@ -109,7 +133,7 @@ int WordList::Put(const WordReference& arg, int flags)
     return NOTOK;
   wordRef.Key().SetWord(word);
 
-  
+//    cdebug << "****putting wordref" << endl;
   int ret = db.Put(wordRef, flags);
   if(ret == OK)
     ret = Ref(wordRef);
@@ -179,28 +203,45 @@ List *WordList::Collect (const WordReference& wordRef)
 // contain a prefix word if HTDIG_WORDLIST_PREFIX is set. These are two unrelated things, 
 // although similar in concept.
 //
-List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_callback_t callback, Object &callback_data)
+List *
+WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_callback_t callback, Object &callback_data)
 {
-//      verbose=2;
-    List        		*list = 0;
+    WordSearchDescription searchD(wordRef,action,callback,callback_data);
+    if(verbose){cdebug << "WordList::Walk(original fct) beg:" << searchD.searchKey;}
+    Walk(searchD);
+    if(verbose && searchD.collectRes){cdebug << "WordList::Walk(original fct) Walk collect result: count:" << searchD.collectRes->Count() << endl;}
+    if(verbose){cdebug << "WordList::Walk(original fct) end:" << searchD.searchKey;}
+    return searchD.collectRes;
+}
+int 
+WordList::Walk(WordSearchDescription &search)
+{
+    search.setup();
+    int lverbose = (search.shutup ? 0 : verbose);
+//  lverbose=10;
+//      List        		*list = 0;
     WordKey			prefixKey;
     WordCursor			cursor;
     const WordReference&	last = WordStat::Last();
-    const WordKey &searchKey=wordRef.Key();
+    const WordKey &searchKey=search.searchKey;
 
-    if(cursor.Open(db.db) == NOTOK) return 0;
-    
     String key;
     String data;
 
-    if(verbose){cout << "Walk begin:action:" << action << ":SearchKey:"<< searchKey
+    WordReference wordRef;
+
+
+    if(cursor.Open(db.db) == NOTOK) return 0;
+    
+
+    if(lverbose){cdebug << "WordList::Walk: Walk begin:action:" << search.action << ":SearchKey:"<< searchKey
 		     << ": SuffixDeffined:" << searchKey.IsDefinedWordSuffix() << "\n";}
 
-    int first_skip_field=searchKey.FirstSkipField();
-    if(verbose){cout << "check skip speedup first field first_skip_field:" << first_skip_field << endl;}
+    search.first_skip_field=searchKey.FirstSkipField();
+    if(lverbose){cdebug << "WordList::Walk: check skip speedup first field first_skip_field:" << search.first_skip_field << endl;}
 
-    if(action & HTDIG_WORDLIST_COLLECTOR) {
-      list = new List;
+    if(search.action & HTDIG_WORDLIST_COLLECTOR) {
+	search.collectRes = new List;
     }
 
 
@@ -212,7 +253,7 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
       //
       // Move past the stat data
       //
-	if(verbose>1){cout << "WORDLIST -> starting from begining" <<endl;}
+	if(lverbose>1){cdebug << "WordList::Walk: WORDLIST -> starting from begining" <<endl;}
 	last.KeyPack(key);
 
     } else 
@@ -226,36 +267,38 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
 	//
     	if(prefixKey.PrefixOnly() == NOTOK) 
 	{
-	    if(verbose>1){cout << "couldnt get prefix -> starting from begining" <<endl;}
+	    if(lverbose>1){cdebug << "WordList::Walk: couldnt get prefix -> starting from begining" <<endl;}
 	    prefixKey.Clear();
 	    // Move past the stat data
 	    last.KeyPack(key);
 	}
 	else 
 	{
-	    if(verbose){cout << "actualy using prefix KEY!: " << prefixKey<< endl;} 
+	    if(lverbose){cdebug << "WordList::Walk: actualy using prefix KEY!: " << prefixKey<< endl;} 
 	    prefixKey.Pack(key);
 	}
     }
+    if(search.benchmarking){search.benchmarking->nDB_SET_RANGE++;}
     if(cursor.Get(key, data, DB_SET_RANGE) != 0)
-	return list;
+	return NOTOK;
 
 
     // **** Walk main loop
     int cursor_get_flags= DB_NEXT;
     int searchKeyIsSameAsPrefix = searchKey.ExactEqual(prefixKey);
-    do 
+    for(;;) 
     {
+	int found_ok=1;
 	WordReference found(key, data);
 	cursor_get_flags= DB_NEXT;
 
 	if(traceOn)
 	{
-	    if(verbose>1)cout << "adding to trace:" << found << endl;
+	    if(lverbose>1)cdebug << "WordList::Walk: adding to trace:" << found << endl;
 	    traceRes->Add(new WordReference(found));
 	}
 
-	if(verbose>1){cout << "*:  found:" <<  found << endl;}
+	if(lverbose>1){cdebug << "WordList::Walk: *:  found:" <<  found << endl;}
 	//
 	// Don't bother to compare keys if we want to walk all the entries
 	//
@@ -272,7 +315,10 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
 	    // (ie. stop loop if we're past last possible match...)
 	    if(!prefixKey.Empty() &&
 	       !prefixKey.Equal(found.Key()))
+	    {
+		if(verbose){cdebug << "WordList::Walk: finished loop: no more possible matches:" << found  << endl;}
 		break;
+	    }
 
 	    //
 	    // Skip entries that do not exactly match the specified key.
@@ -280,32 +326,53 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
 	    if(!searchKeyIsSameAsPrefix && 
 	       !searchKey.Equal(found.Key()))
 	    {
-		SkipUselessSequentialWalking(searchKey,first_skip_field,found.Key(),key,cursor_get_flags);
-		continue;
+		if(!search.noskip)SkipUselessSequentialWalking(search,found.Key(),key,cursor_get_flags);
+		found_ok=0;
 	    }
 	}
 
-	if(action & HTDIG_WORDLIST_COLLECTOR) 
+	
+	if(found_ok)
+	{// ok! We found a matching entry!
+
+	    if(search.collectRes) 
+	    {
+		if(lverbose>1){cdebug << "WordList::Walk: collecting:" <<  found << endl;}
+		search.collectRes->Add(new WordReference(found));
+	    } else 
+	    if(search.callback)
+	    {
+		if(lverbose>1){cdebug << "WordList::Walk: calling callback:" <<  found << endl;}
+		int ret = (*search.callback)(this, cursor, &found, *(search.callback_data) );
+		if(lverbose>1){cdebug << "WordList::Walk:  callback returned:" <<  ret << endl;}
+		//
+		// The callback function tells us that something went wrong, might
+		// as well stop walking.
+		//
+		if(ret == NOTOK)
+		{
+		    if(verbose){cdebug << "WordList::Walk: finished loop: callback returned NOTOK:" << endl;}
+		    break;
+		}
+	    } else 
+	    {
+		// Useless to continue since we're not doing anything
+		if(verbose){cdebug << "WordList::Walk: finished loop: no actions????????" << endl;}
+		break;
+	    }
+	}
+	
+	// finsihed ... go to next entry (or skip further on)
+	if(search.benchmarking && cursor_get_flags==DB_SET_RANGE){search.benchmarking->nDB_SET_RANGE++;}
+	if(search.benchmarking && cursor_get_flags==DB_NEXT     ){search.benchmarking->nDB_NEXT++;}
+	if(cursor.Get(key, data, cursor_get_flags) != 0)
 	{
-	    if(verbose>1){cout << "collecting:" <<  found << endl;}
-	    list->Add(new WordReference(found));
-	} else 
-	if(action & HTDIG_WORDLIST_WALKER) 
-	{
-	    int ret = callback(this, cursor, &found, callback_data);
-	    //
-	    // The callback function tells us that something went wrong, might
-	    // as well stop walking.
-	    //
-	    if(ret == NOTOK) break;
-	} else 
-	{
-	    // Useless to continue since we're not doing anything
+	    if(lverbose>1){cdebug << "WordList::Walk: finished loop: past end:"  << endl;}
 	    break;
 	}
-    } while(cursor.Get(key, data, cursor_get_flags) == 0);
-
-    return list;
+    } 
+    if(lverbose>1){cdebug << "WordList::Walk: FINSISHED "  << endl;}
+    return OK;
 }
 
 // SKIP SPEEDUP
@@ -323,31 +390,32 @@ List *WordList::Walk(const WordReference& wordRef, int action, wordlist_walk_cal
 // searching lines 3 .. 5 when it could have skiped directly to line 6
 
 int
-WordList::SkipUselessSequentialWalking(const WordKey &wordRefKey,int first_skip_field,WordKey &foundKey,String &key,int &cursor_get_flags)
+WordList::SkipUselessSequentialWalking(const WordSearchDescription &search,WordKey &foundKey,String &key,int &cursor_get_flags)
 {
     int nfields=word_key_info.nfields;
-    if(verbose>1){cout << "skipchk:" <<  foundKey << endl;}
+    if(verbose>1){cdebug << "WordList::SkipUselessSequentialWalking: skipchk:" <<  foundKey << endl;}
     int i;
     // check if "found" key has a field that is bigger than 
     // the corresponding "wordRef" key field
-    for(i=first_skip_field;i<nfields;i++)// (field 0 is not set (...it's the word))
+    for(i=search.first_skip_field;i<nfields;i++)// (field 0 is not set (...it's the word))
     {
-	if(wordRefKey.IsDefinedInSortOrder(i))
+	if(search.searchKey.IsDefinedInSortOrder(i))
 	{
 	    if( (word_key_info.sort[i].direction == WORD_SORT_ASCENDING
-		 && foundKey.GetInSortOrder(i) > wordRefKey.GetInSortOrder(i))   ||
+		 && foundKey.GetInSortOrder(i) > search.searchKey.GetInSortOrder(i))   ||
 		(word_key_info.sort[i].direction == WORD_SORT_DESCENDING
-		 && foundKey.GetInSortOrder(i) < wordRefKey.GetInSortOrder(i))      )
+		 && foundKey.GetInSortOrder(i) < search.searchKey.GetInSortOrder(i))      )
 
 	    { //  field 'i' is bigger in "found" than in "wordRef", we can skip
-		if(verbose>1){cout << "found field:" << i 
+		if(verbose>1){cdebug << "WordList::SkipUselessSequentialWalking: found field:" << i 
 				   << "is past wordref ... maybe we should skip" << endl;}
 				// now find a key that's immediately bigger than "found"
 		if(foundKey.SetToFollowingInSortOrder(i) == OK)
 		{
 		    // ok!, we can setup for skip (instead of next) now
 		    foundKey.Pack(key);
-		    if(verbose>1){cout << "SKIPING TO: " <<  foundKey << endl;}
+		    if(verbose>1){cdebug << "WordList::SkipUselessSequentialWalking: SKIPING TO: " <<  foundKey << endl;}
+		    if(search.benchmarking){search.benchmarking->nSkip++;}
 		    cursor_get_flags=DB_SET_RANGE;
 		    break;
 		}
@@ -419,15 +487,14 @@ List *WordList::Words()
     last.Pack(key, record);
     if(cursor.Get(key, record, DB_SET_RANGE) != 0)
       return 0;
-
     list = new List;
     do {
 	WordReference	wordRef(key, record);
-
-	if(!lastWord.Key().GetWord().empty() ||
-	   wordRef.Key().GetWord() != lastWord.Key().GetWord()) {
-	  list->Add(new String(wordRef.Key().GetWord()));
-	  lastWord = wordRef;
+	if(lastWord.Key().GetWord().empty() ||
+	   wordRef.Key().GetWord() != lastWord.Key().GetWord()) 
+	{
+	    list->Add(new String(wordRef.Key().GetWord()));
+	    lastWord = wordRef;
 	}
     } while (cursor.Get(key, record, DB_NEXT) == 0);
     
@@ -468,6 +535,7 @@ int WordList::Ref(const WordReference& wordRef)
 
   stat.Noccurence()++;
 
+//    cdebug << "****putting stat (WordList::Ref)" << endl;
   return db.Put(stat, 0);
 }
 
@@ -494,7 +562,9 @@ int WordList::Unref(const WordReference& wordRef)
   stat.Noccurence()--;
 
   if(stat.Noccurence() > 0)
-    ret = db.Put(stat, 0);
+  {
+//  cdebug << "****putting stat (WordList::UnRef)" << endl;
+ ret = db.Put(stat, 0);}
   else
     ret = db.Del(stat) == 0 ? OK : NOTOK;
   return ret;
@@ -533,19 +603,22 @@ operator >> (istream &is,  WordList &list)
   {
       if(!is.good())
       {
-	  cerr << "WordList input from stream failed" << endl;
+	  cerr << "WordList input from stream failed (A)" << endl;
 	  break;
       }
       is >> word;
       if(is.eof()){break;}
       if(!is.good())
       {
-	  cerr << "WordList input from stream failed" << endl;
+	  cerr << "WordList input from stream failed (B)" << endl;
 	  break;
       }
-      if(list.verbose>1){cout << "WordList operator >> inserting word:" << word << endl;}
+      if(list.verbose>1){cdebug << "WordList operator >> inserting word:" << word << endl;}
       list.Insert(word);
   }
   return is;
 }
+
+
+
 

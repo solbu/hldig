@@ -1,3 +1,9 @@
+Thu Dec 09 12:10:32 1999  Marcel Bosc  <bosc@ceic.com>
+
+        * htword: Added the compression code:
+	* WordDBCompress: Classes for page specific compression code
+	* WordBitCompress: Classes for bitstreams and non-specific compression
+
 Thu Dec  9 12:09:51 EET 1999  Vadim Chekan <vadim@etc.lviv.ua>
 
 	* htcommon/HtConfiguration.cc: bug fix: sometimes
@@ -113,6 +119,22 @@ Thu Dec  2 16:47:30 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htdig/Server.h: Change type of local_robots_file to String* to
 	better match Retriever::GetLocal().
 	
+Thu Dec 02 16:24:27 1999  Loic Dachary  <loic@ceic.com>
+
+        * htword/WordReference.cc,WordKey.cc,WordRecord.cc (Print): Add function
+          to ease printing from Perl.
+
+Thu Dec 02 16:06:29 1999  Loic Dachary  <loic@ceic.com>
+
+        * htword/WordReference.h (WORD_FILLED): remove
+          unused WORD_FILLED and WORD_PARTIAL macros
+
+Wed Dec 01 19:18:42 1999  Loic Dachary  <loic@ceic.com>
+
+        * htword/WordKey.h.tmpl,WordRecord.h,WordReference.h,
+          WordList.h: Added #ifndef SWIG for
+          www.swig.org sake.
+
 Wed Dec  1 19:47:20 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/HtRegex.cc, htlib/HtRegex.h (set*): Add a case_sensitive

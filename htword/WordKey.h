@@ -33,8 +33,10 @@
 #ifndef _WordKey_h_
 #define _WordKey_h_
 
+#ifndef SWIG
 #include "db.h"
 #include "htString.h"
+#endif /* SWIG */
 
 #define	WORD_KEY_LOCATION	0
 #define	WORD_KEY_FLAGS	1
@@ -56,9 +58,11 @@
 
 #define WORD_KEY_MAX_NFIELDS 20
 
+#ifndef SWIG
 // C comparison function interface for Berkeley DB (bt_compare)
 //
 int word_db_cmp(const DBT *a, const DBT *b);
+#endif /* SWIG */
 
 //
 // Symbolic names for numerical type used
@@ -74,6 +78,7 @@ typedef unsigned int TypeA;
 #define WORD_ISA_String		2
 
 
+#ifndef SWIG
 //
 // Describes the structure of the key, ie meta information
 // for the key. This includes the layout of the packed version
@@ -243,6 +248,7 @@ static const struct WordKeyInfo word_key_info = {
 4,
 7
 };
+#endif /* SWIG */
 
 //
 // A word occurence description.
@@ -255,11 +261,13 @@ public:
 	pool_TypeA[WORD_KEY_DOCID] = 0;
 	pool_String[WORD_KEY_WORD] = 0;
 ; }
+#ifndef SWIG
   WordKey(const String& word) { set = 0; 	pool_TypeA[WORD_KEY_LOCATION] = 0;
 	pool_TypeA[WORD_KEY_FLAGS] = 0;
 	pool_TypeA[WORD_KEY_DOCID] = 0;
 	pool_String[WORD_KEY_WORD] = 0;
-; SetWord(word); }
+; Set(word); }
+#endif /* SWIG */
   void	Clear() { 
     set = 0;
     	pool_TypeA[WORD_KEY_LOCATION] = 0;
@@ -274,31 +282,62 @@ public:
   //
 
 
+#ifndef SWIG
     inline const String&  GetWord() const { return pool_String[WORD_KEY_WORD]; }
+#endif /* SWIG */
     inline String&	  GetWord() { return pool_String[WORD_KEY_WORD]; }
-    inline void	          SetWord(String arg) { pool_String[WORD_KEY_WORD] = arg; set |= WORD_KEY_WORDFULLY_DEFINED; } 
+    inline void	          SetWord(const String& arg) { pool_String[WORD_KEY_WORD] = arg; set |= WORD_KEY_WORDFULLY_DEFINED; } 
     inline void	          UndefinedWord() { pool_String[WORD_KEY_WORD].trunc(); set &=  ~WORD_KEY_WORDFULLY_DEFINED; } 
     inline void		  UndefinedWordSuffix() {set &= ~WORD_KEY_WORDSUFFIX_DEFINED;}
     inline void		  SetDefinedWordSuffix() {set |= WORD_KEY_WORDSUFFIX_DEFINED;}
     inline int            IsDefinedWordSuffix() const {return( (set & WORD_KEY_WORDSUFFIX_DEFINED) == WORD_KEY_WORDSUFFIX_DEFINED);}
+#ifndef SWIG
 	inline TypeA   GetLocation() const { return pool_TypeA[WORD_KEY_LOCATION]; }
 	inline TypeA&  GetLocation() { return pool_TypeA[WORD_KEY_LOCATION]; }
 	inline void	SetLocation(TypeA arg) { pool_TypeA[WORD_KEY_LOCATION] = arg; set |= WORD_KEY_LOCATION_DEFINED; } 
+#else /* SWIG */
+	inline unsigned int  GetLocation() { return pool_TypeA[WORD_KEY_LOCATION]; }
+	inline void	SetLocation(unsigned int arg) { pool_TypeA[WORD_KEY_LOCATION] = arg; set |= WORD_KEY_LOCATION_DEFINED; } 
+#endif /* SWIG */
 	inline void	UndefinedLocation() { pool_TypeA[WORD_KEY_LOCATION] = 0; set &= ~WORD_KEY_LOCATION_DEFINED; } 
+#ifndef SWIG
 	inline TypeA   GetFlags() const { return pool_TypeA[WORD_KEY_FLAGS]; }
 	inline TypeA&  GetFlags() { return pool_TypeA[WORD_KEY_FLAGS]; }
 	inline void	SetFlags(TypeA arg) { pool_TypeA[WORD_KEY_FLAGS] = arg; set |= WORD_KEY_FLAGS_DEFINED; } 
+#else /* SWIG */
+	inline unsigned int  GetFlags() { return pool_TypeA[WORD_KEY_FLAGS]; }
+	inline void	SetFlags(unsigned int arg) { pool_TypeA[WORD_KEY_FLAGS] = arg; set |= WORD_KEY_FLAGS_DEFINED; } 
+#endif /* SWIG */
 	inline void	UndefinedFlags() { pool_TypeA[WORD_KEY_FLAGS] = 0; set &= ~WORD_KEY_FLAGS_DEFINED; } 
+#ifndef SWIG
 	inline TypeA   GetDocID() const { return pool_TypeA[WORD_KEY_DOCID]; }
 	inline TypeA&  GetDocID() { return pool_TypeA[WORD_KEY_DOCID]; }
 	inline void	SetDocID(TypeA arg) { pool_TypeA[WORD_KEY_DOCID] = arg; set |= WORD_KEY_DOCID_DEFINED; } 
+#else /* SWIG */
+	inline unsigned int  GetDocID() { return pool_TypeA[WORD_KEY_DOCID]; }
+	inline void	SetDocID(unsigned int arg) { pool_TypeA[WORD_KEY_DOCID] = arg; set |= WORD_KEY_DOCID_DEFINED; } 
+#endif /* SWIG */
 	inline void	UndefinedDocID() { pool_TypeA[WORD_KEY_DOCID] = 0; set &= ~WORD_KEY_DOCID_DEFINED; } 
 
+#ifndef SWIG
 #define WORD_HAVE_TypeA 1
-	inline TypeA	GetTypeA(int position) const { return pool_TypeA[word_key_info.fields[position].index]; }
-	inline TypeA&	GetTypeA(int position) { return pool_TypeA[word_key_info.fields[position].index]; }
-	inline void	SetTypeA(const TypeA& arg, int position) { pool_TypeA[word_key_info.fields[position].index] = arg; SetDefined(position); }
+#endif /* SWIG */
+#ifndef SWIG
+	inline TypeA	GetTypeA(int position) const
+		{ return pool_TypeA[word_key_info.fields[position].index]; }
+	inline TypeA&	GetTypeA(int position)
+		{ return pool_TypeA[word_key_info.fields[position].index]; }
+	inline void	SetTypeA(TypeA arg, int position)
+		{ pool_TypeA[word_key_info.fields[position].index] = arg; SetDefined(position); }
+#else /* SWIG */
+	inline unsigned int	GetTypeA(int position) const
+		{ return pool_TypeA[word_key_info.fields[position].index]; }
+	inline void	SetTypeA(TypeA arg, int position)
+		{ pool_TypeA[word_key_info.fields[position].index] = arg; SetDefined(position); }
+#endif /* SWIG */
+#ifndef SWIG
 #define WORD_HAVE_String 1
+#endif /* SWIG */
 
 
   //
@@ -312,6 +351,8 @@ public:
   void	SetDefinedInSortOrder(int   position)    {        SetDefined(word_key_info.sort[position].encoding_position); }
   void	UndefinedInSortOrder(int position)       {         Undefined(word_key_info.sort[position].encoding_position); }
 
+
+    int Set(const char *s);
 
 // get/set numerical fields
 
@@ -357,12 +398,17 @@ public:
   int		Prefix() const;
   int           FirstSkipField() const;
   static int 	Compare(const String& a, const String& b);
+#ifndef SWIG
   static int 	Compare(const char *a, int a_length, const char *b, int b_length);
+#endif /* SWIG */
 
   int SetToFollowingInSortOrder(int position=-1);
 
+#ifndef SWIG
     friend ostream &operator << (ostream &o, const WordKey &key);
     friend istream &operator >> (istream &is,  WordKey &key);
+#endif /* SWIG */
+    void Print() const;
 
 private:
 
@@ -381,6 +427,7 @@ private:
 
 };
 
+#ifndef SWIG
 //
 // Set bit number <b> to 0 and others to 1. <b> may have a value from 0 to 8. If
 // 8 then all bits are 1.
@@ -440,6 +487,7 @@ inline int WordKey::PackNumber(unsigned int from, char* to, int to_size, int low
 }
 
 #undef WORD_BIT_MASK
+#endif /* SWIG */
 
 
 #endif

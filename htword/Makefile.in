@@ -61,70 +61,64 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
-APACHE = @APACHE@
 AR = @AR@
 AS = @AS@
 CC = @CC@
-CGIBIN_DIR = @CGIBIN_DIR@
-COMMON_DIR = @COMMON_DIR@
-CONFIG_DIR = @CONFIG_DIR@
 CXX = @CXX@
 CXXFLAGS = @CXXFLAGS@
-DATABASE_DIR = @DATABASE_DIR@
-DEFAULT_CONFIG_FILE = @DEFAULT_CONFIG_FILE@
 DLLTOOL = @DLLTOOL@
+DOCUMENTATION = @DOCUMENTATION@
+DVIPS = @DVIPS@
 FIND = @FIND@
 GUNZIP = @GUNZIP@
-HTDIGDIRS = @HTDIGDIRS@
 HTDIG_MAJOR_VERSION = @HTDIG_MAJOR_VERSION@
 HTDIG_MICRO_VERSION = @HTDIG_MICRO_VERSION@
 HTDIG_MINOR_VERSION = @HTDIG_MINOR_VERSION@
-IMAGE_DIR = @IMAGE_DIR@
-IMAGE_URL_PREFIX = @IMAGE_URL_PREFIX@
+HTMLDIR = @HTMLDIR@
+INFODIR = @INFODIR@
 KEYDESC = @KEYDESC@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
-LEX = @LEX@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MIFLUZDIRS = @MIFLUZDIRS@
 NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
-PDF_PARSER = @PDF_PARSER@
 PERL = @PERL@
+PNMTOPNG = @PNMTOPNG@
+PSTOPNM = @PSTOPNM@
 RANLIB = @RANLIB@
-SEARCH_DIR = @SEARCH_DIR@
-SEARCH_FORM = @SEARCH_FORM@
 SED = @SED@
-SENDMAIL = @SENDMAIL@
 SHELL = @SHELL@
 TAR = @TAR@
+TEXI2DVI = @TEXI2DVI@
+TEXI2HTML = @TEXI2HTML@
 TIME = @TIME@
 TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
-YACC = @YACC@
 
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES)
+INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES)
 
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libdb.a
+HTLIBS = $(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/db/dist/libdb.a
 
 
 EXTRA_DIST = word.desc word_builder.pl WordKey.h.tmpl
 
 lib_LTLIBRARIES = libhtword.la
 
-libhtword_la_SOURCES = WordKey.cc WordList.cc WordReference.cc WordType.cc 	WordDB.cc WordStat.cc
+libhtword_la_SOURCES = WordKey.cc WordList.cc WordReference.cc WordType.cc 	WordDB.cc WordStat.cc WordDBCompress.cc WordBitCompress.cc 	WordRecord.cc
 
 
 libhtword_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-include_HEADERS = WordList.h 	WordRecord.h 	WordReference.h 	WordType.h 	WordKey.h 	WordDB.h 	WordStat.h 	WordCaseIsAStatements.h
+include_HEADERS = WordList.h 	WordRecord.h 	WordReference.h 	WordType.h 	WordDBCompress.h 	WordBitCompress.h 	WordKey.h 	WordDB.h 	WordStat.h 	WordCaseIsAStatements.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -137,7 +131,8 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 libhtword_la_LIBADD = 
 libhtword_la_OBJECTS =  WordKey.lo WordList.lo WordReference.lo \
-WordType.lo WordDB.lo WordStat.lo
+WordType.lo WordDB.lo WordStat.lo WordDBCompress.lo WordBitCompress.lo \
+WordRecord.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -150,8 +145,10 @@ DIST_COMMON =  README Makefile.am Makefile.in
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/WordDB.P .deps/WordKey.P .deps/WordList.P \
-.deps/WordReference.P .deps/WordStat.P .deps/WordType.P
+DEP_FILES =  .deps/WordBitCompress.P .deps/WordDB.P \
+.deps/WordDBCompress.P .deps/WordKey.P .deps/WordList.P \
+.deps/WordRecord.P .deps/WordReference.P .deps/WordStat.P \
+.deps/WordType.P
 SOURCES = $(libhtword_la_SOURCES)
 OBJECTS = $(libhtword_la_OBJECTS)
 

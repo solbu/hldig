@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3.2.2 1999/11/02 11:40:43 bosc Exp $
+// $Id: WordKey.cc,v 1.3.2.3 1999/12/09 11:31:26 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -497,62 +497,138 @@ ostream &operator << (ostream &o, const WordKey &key)
 }
 
 
+static int
+read_fields(istream &is,int maxn,char *res,int maxres)
+{
+    int i=0;
+    for(int j=0;j<maxn;j++)
+    {
+	char c;
+	for(;;)// skip spaces
+	{
+	    c=is.get();
+	    if(is.eof()){return j;}
+	    if(!isspace(c)){is.putback(c);break;}
+	}
+	if(j!=0 && i<maxres-1){res[i++]=' ';}
+	for(;;i++)// get string into tmp
+	{
+	    c=is.get();
+	    if(is.eof()){res[i]='\0';return j+1;}
+	    if(isspace(c)){is.putback(c);break;}
+	    if(i>=maxres-1)
+	    {cerr << "WordKey operator>>: field :" <<j <<" too long!" <<endl;return j;}
+	    res[i]=c;
+	}
+	res[i]='\0';
+    }
+//      cout << "read_fields: result:" << res << endl;
+    return maxn;
+}
 
-istream &
-operator >> (istream &is,  WordKey &key)
+
+int
+WordKey::Set(const char *s)
 {
     const int max_tmp=1024;
     char tmp[max_tmp];
-    key.Clear();
-    for(int j=0;j<word_key_info.nfields;j++)
+    Clear();
+    int k=0;
+    int status=0;
+    int j;
+    for(j=0;j<word_key_info.nfields;j++)
     {
 	// get a string (but check if not too long)
 	//  	replaces: is >> tmp; !!
 	char c;
-	for(;;)
+	for(;;)// skip spaces
 	{
-	    c=is.get();
-	    if(is.eof()){break;}
-	    if(!isspace(c)){is.putback(c);break;}
+	    c=s[k++];
+	    if(c=='\0'){status=1;break;}
+	    if(!isspace(c)){k--;break;}
 	}
+	if(status==1){break;}// premature end
 	int i;
-	for(i=0;;i++)
+	for(i=0;;i++)// get string into tmp
 	{
-	    c=is.get();
-	    if(is.eof()){break;}
-	    if(isspace(c)){is.putback(c);break;}
+	    c=s[k++];
+	    if(c=='\0'){status=2;break;}
+	    if(isspace(c)){k--;break;}
 	    if(i>=max_tmp-1)
-	    {cerr << "WordKey operator>>: field :" <<j <<" too long!" <<endl;break;}
+	    {cerr << "WordKey::Set(char *): field :" <<j <<" too long!" <<endl;break;}
 	    tmp[i]=c;
 	}
 	tmp[i]='\0';
 	///
 
-	if(!is.good())
-	{
-//  	    cerr << "WordKey input from stream failed" << "nfields:" << word_key_info.nfields << endl;
-	    break;
-	}
-	if(!strcmp(tmp,"<UNDEF>")){key.UndefinedInSortOrder(j);}
+	// now parse this field's string
+	if(!strcmp(tmp,"<UNDEF>")){UndefinedInSortOrder(j);}
 	else
 	{
 	    if(j==0)
-	    {// this is the WORD
+	    {// this is the WORD field
+//  		cout << "WordKey::Set(char *): --- word field :|" << tmp << "|" << endl;
 		// check for undefined suffix
 		if(strlen(tmp)>=strlen("<UNDEF>") && 
 		   !strcmp(tmp+strlen(tmp)-strlen("<UNDEF>"),"<UNDEF>"))
 		{		    
 		    // strip <UNDEF> suffix from word
 		    tmp[strlen(tmp)-strlen("<UNDEF>")]='\0';
-		    key.SetWord(tmp);
-		    key.UndefinedWordSuffix();
+		    SetWord(tmp);
+		    UndefinedWordSuffix();
 		}
 		else
-		{key.SetWord(tmp);}// normal Word
+		{SetWord(tmp);}// normal Word
 
 	    }
-	    else{key.SetInSortOrder(j,atoi(tmp));}
+	    else
+	    {
+		char *chk;
+		int v=strtol(tmp,&chk,0);
+		if(*tmp=='\0' || *chk!='\0')
+		{// argh this is not a valid numerical field
+		    status=3;
+		    break;
+		}
+		SetInSortOrder(j,v);
+	    }
+	}
+
+	if(status==2)
+	{
+	    if(j<word_key_info.nfields -1)
+	    {// premature end
+		break;
+	    }
+	    else{status=0;}// ok, this was the end anyways
 	}
     }
+    if(status>2)
+    {
+	cerr << "WordKey::Set(" << s << ") : bad string format: for field: " << j <<  endl;
+	return NOTOK;
+    }
+    return OK;
+}
+
+
+istream &
+operator >> (istream &is,  WordKey &key)
+{
+    const int max_tmp=1024;
+    char tmp[max_tmp];
+    int nr=read_fields(is,word_key_info.nfields,tmp,max_tmp);
+    if(nr != word_key_info.nfields)
+    {
+	// nr==0 might be an end of file while reading WordList...
+	if(nr!=0){cerr << "WordKey::operator >> read failed!:not enough fields" << endl;}
+    }
+    else
+    if(key.Set(tmp) == NOTOK){cerr << "WordKey::operator >> read failed!" << endl;}
     return is;
+}
+
+void WordKey::Print() const
+{
+  cout << *this;
 }

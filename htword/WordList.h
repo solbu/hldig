@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.4 1999/12/07 19:54:13 bosc Exp $
+// $Id: WordList.h,v 1.5.2.5 1999/12/09 11:31:27 bosc Exp $
 //
 
 #ifndef _WordList_h_
@@ -22,6 +22,7 @@
 
 #include <fcntl.h>
 
+#ifndef SWIG
 #include "Dictionary.h"
 #include "List.h"
 #include "htString.h"
@@ -29,8 +30,10 @@
 #include "WordReference.h"
 #include "WordType.h"
 #include "WordDB.h"
-#include "HtConfiguration.h"
+#include "Configuration.h"
+#endif /* SWIG */
 
+class List;
 class WordList;
 class WordCursor;
 
@@ -41,10 +44,119 @@ class WordCursor;
 #define HTDIG_WORDLIST_COLLECTOR	0x0001
 #define HTDIG_WORDLIST_WALKER		0x0002
 
+#ifndef SWIG
 //
 // Type of the callback argument of WordList::Walk
 //
 typedef int (*wordlist_walk_callback_t)(WordList *words, WordCursor& cursor, const WordReference *word, Object &data);
+
+class WordBenchmarking
+{
+public:
+    int nDB_NEXT;
+    int nDB_SET_RANGE;
+    int nSkip;
+    void show(){cout << "benchmarking: nDB_SET_RANGE:" << nDB_SET_RANGE << " nDB_NEXT:" << nDB_NEXT <<  " nSkip:" << nSkip << endl;}
+    WordBenchmarking()
+    {
+	nDB_NEXT=0;
+	nDB_SET_RANGE=0;
+	nSkip=0;
+    }
+};
+
+
+
+// **************************************************
+// *************** WordSearchDescription  ***********
+// **************************************************
+// this is the class that Wordlist::Walk uses for :
+// state information : cursor
+// search term description
+// debug/trace/benchmarking
+// search result format description
+//
+// it is still under developpement
+class WordList;
+
+class WordSearchDescription
+{
+public:
+    friend WordList;
+// search key
+// prefix key
+// actions
+// tracing
+// benchmarking    
+// cursor state
+// skip info: i0
+// max num results
+// min num results
+// results!!
+
+// constructors : (called when using:  WordList::Walk(WordSearchDescription searchDescription))
+// ex list.Walk("toto<UNDEF> 1000 <UNDEF>")
+//    list.Walk(wordRef,callback,callback_data); (current Walk implementation)
+//    list.Walk(wordKey)
+//    list.Walk()
+
+    wordlist_walk_callback_t callback;
+    Object *callback_data;
+    WordKey searchKey;
+    int action;
+
+    int first_skip_field;
+    int setup_ok;
+    int noskip;
+    int shutup;
+
+    List *traceRes;
+    WordBenchmarking *benchmarking;
+
+    List *collectRes;
+
+    void Clear()
+    {
+	first_skip_field=-3;
+	callback=NULL;
+	callback_data=NULL;
+	traceRes=NULL;
+	action=0;
+	setup_ok=0;
+	collectRes=NULL;
+	benchmarking=NULL;
+	noskip=0;
+	shutup=0;
+    }
+    int setup()
+    {
+	if(setup_ok){return NOTOK;}
+	setup_ok=1;
+	return OK;
+    }
+public:
+    WordSearchDescription(const WordReference& wordRef, int naction, wordlist_walk_callback_t ncallback, Object &ncallback_data)
+    {
+	Clear();
+	searchKey=wordRef.Key();
+	action=naction;
+	callback=ncallback;
+	callback_data=&ncallback_data;
+    }
+
+    WordSearchDescription(const WordKey &nsearchKey)
+    {
+	Clear();
+	searchKey=nsearchKey;
+	action=HTDIG_WORDLIST_COLLECTOR;
+    }
+};
+#endif /* SWIG */
+
+
+// **************************************************
+// *************** WordList   ***********************
+// **************************************************
 
 class WordList
 {
@@ -52,7 +164,7 @@ public:
     //
     // Construction/Destruction
     //
-    WordList(const HtConfiguration& config_arg);
+    WordList(const Configuration& config_arg);
     virtual ~WordList();
     
 
@@ -67,7 +179,9 @@ public:
     // Check for existence
     //
     int                 Exists(const WordReference& wordRef) { return db.Exists(wordRef); }
+#ifndef SWIG
     int                 Exists(const String& word) { return Exists(WordReference(word)); }
+#endif /* SWIG */
 
     //
     // Delete permanently
@@ -79,6 +193,9 @@ public:
       else
 	return NOTOK;
     }
+#ifdef SWIG
+%name(DeleteCursor)
+#endif /* SWIG */
     int                 Delete(WordCursor& cursor) { return cursor.Del() == OK ? 1 : 0; }
 
     //
@@ -97,13 +214,19 @@ public:
     //
     // Return the list of word occurences exactly matching the wordRef
     //
+    List		*Find(const WordReference& wordRef) { return (*this)[wordRef]; }
+    List		*FindWord(const String& word) { return (*this)[word]; }
+#ifndef SWIG
     List		*operator [] (const WordReference& wordRef);
     List		*operator [] (const String& word)  { return (*this)[WordReference(word)]; }
+#endif /* SWIG */
     //
     // Return the list of word occurences matching the beginning of wordRef
     //
     List		*Prefix (const WordReference& prefix);
+#ifndef SWIG
     List		*Prefix (const String& prefix) { return this->Prefix(WordReference(prefix)); }
+#endif /* SWIG */
 
 
 
@@ -111,23 +234,29 @@ public:
     // Iterate over the complete database.
     //
 
+#ifndef SWIG
     // This returns a list of all the Words, as String *
     List                *Words();
     // This returns a list of all the Words, as WordReference *
     List		*WordRefs();
+#endif /* SWIG */
 
     //
     // Walk and collect data from the word database.
     // Backend of Collect, Dump, Delete...
     //
+#ifndef SWIG
     List 		*Walk (const WordReference& word, int action, wordlist_walk_callback_t callback, Object &callback_data);
-    int SkipUselessSequentialWalking(const WordKey &wordRefKey,int i0,WordKey &foundKey,String &key,int &cursor_get_flags);
+    int Walk(WordSearchDescription &SearchDescription);
+    int SkipUselessSequentialWalking(const WordSearchDescription &search,WordKey &foundKey,String &key,int &cursor_get_flags);
+
 
     // trace what's going on in Walk (intended for debuging only)
     void BeginTrace(){traceOn=1;traceRes=new List;}
     List *EndTrace(){traceOn=0;return(traceRes);}
     void CleanupTrace(){if(traceRes){delete traceRes;traceRes=NULL;}traceOn=0;}
     List *GetTraceResult(){return(traceRes);}
+#endif /* SWIG */
 
     //
     // Update/get global word statistics statistics
@@ -139,9 +268,12 @@ public:
     //
     // Accessors
     //
+#ifndef SWIG
     const WordType&      GetWordType() const { return wtype; }
-    const HtConfiguration& GetHtConfiguration() const { return config; }
+#endif /* SWIG */
+    const Configuration& GetConfiguration() const { return config; }
 
+#ifndef SWIG
 protected:
     //
     // Retrieve WordReferences from the database. 
@@ -150,7 +282,7 @@ protected:
     List		*WordList::Collect (const WordReference& word);
 
     const WordType		wtype;
-    const HtConfiguration&	config;
+    const Configuration&	config;
 
     int				isopen;
     int				isread;
@@ -170,10 +302,10 @@ protected:
     friend ostream &operator << (ostream &o, WordList &list); 
     friend istream &operator >> (istream &o, WordList &list); 
 
-
 private:
 
     WordDB	            	db;
+#endif /* SWIG */
 };
 
 #endif
