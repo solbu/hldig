@@ -245,6 +245,11 @@ CDB___ham_open(dbp, name, base_pgno)
 		need_sync = 1;
 	}
 
+	/* Make sure we always have a valid hashp->h_hash function. */
+	if (hashp->h_hash == NULL)
+		hashp->h_hash = hcp->hdr->dbmeta.version < 5
+		? CDB___ham_func4 : CDB___ham_func5;
+
 err2:	/* Release the meta data page */
 	if ((t_ret = CDB___ham_release_meta(dbc)) != 0 && ret == 0)
 		ret = t_ret;

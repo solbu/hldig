@@ -1,3 +1,8 @@
+Fri Jun 11 11:26:56 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
+
+    * db/hash.c (CDB___ham_open): Applied Red Hat's h_hash patch, to ensure
+      that hash function always set to something valid.
+
 Fri Jun 11 10:53:49 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 
     * installdir/HtFileType: Added -f to rm command.
