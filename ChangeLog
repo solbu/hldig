@@ -1,3 +1,7 @@
+Fri Aug 13 10:10:16 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html(pdf_parser): updated xpdf version number.
+
 Thu Aug 12 17:09:37 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/parse_doc.pl: updated for xpdf 0.90, plus other fixes.
