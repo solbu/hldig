@@ -1,3 +1,9 @@
+Wed Apr 14 00:17:06 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.h: Add compareID for sorting results by DocID.
+
+	* htsearch/Display.cc: As above.
+
 Tue Apr 13 23:50:28 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/defaults.cc: Add new config option use_doc_date to use

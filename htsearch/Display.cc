@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.68 1999/04/11 11:10:04 hp Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.69 1999/04/14 04:25:22 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -931,6 +931,7 @@ Display::buildMatchList()
 	    {
 		DocumentRef *sortRef = new DocumentRef();
 		sortRef->DocTime(thisRef->DocTime());
+		sortRef->DocID(thisRef->DocID());
 		if (typ == SortByTitle)
 		  sortRef->DocTitle(thisRef->DocTitle());
 		thisMatch->setRef(sortRef);
@@ -1106,7 +1107,8 @@ Display::sort(List *matches)
     SortType	typ = sortType();
     qsort((char *) array, numberOfMatches, sizeof(ResultMatch *),
 	  (typ == SortByTitle) ? Display::compareTitle :
-	  (typ == SortByTime) ? Display::compareTime :
+	  (typ == SortByTime) ? Display::compareTime : 
+	  (typ == SortByID) ? Display::compareID :
 	  Display::compare);
 
     char	*st = config["sort"];
@@ -1147,6 +1149,18 @@ Display::compareTime(const void *a1, const void *a2)
 
 //*****************************************************************************
 int
+Display::compareID(const void *a1, const void *a2)
+{
+    ResultMatch       *m1 = *((ResultMatch **) a1);
+    ResultMatch *m2 = *((ResultMatch **) a2);
+    int               i1 = m1->getID();
+    int               i2 = m2->getID();
+
+    return (i1 - i2);
+}
+
+//*****************************************************************************
+int
 Display::compareTitle(const void *a1, const void *a2)
 {
     ResultMatch	*m1 = *((ResultMatch **) a1);
@@ -1173,7 +1187,8 @@ Display::sortType()
 	{"score", SortByScore},
 	{"date", SortByTime},
 	{"time", SortByTime},
-	{"title", SortByTitle}
+!       {"title", SortByTitle},
+!       {"id", SortByID}
     };
     int		i = 0;
     char	*st = config["sort"];

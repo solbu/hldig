@@ -1,7 +1,7 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.9 1999/03/12 00:46:57 hp Exp $
+// $Id: Display.h,v 1.10 1999/04/14 04:25:22 ghutchis Exp $
 //
 
 #ifndef _Display_h_
@@ -134,11 +134,13 @@ protected:
     void		sort(List *);
     static int		compare(const void *, const void *);
     static int		compareTime(const void *, const void *);
+    static int		compareID(const void *, const void *);
     static int		compareTitle(const void *, const void *);
     enum SortType {
 	SortByScore,
 	SortByTime,
-	SortByTitle
+	SortByTitle,
+	SortByID
     };
     SortType		sortType();
     int			includeURL(char *);
