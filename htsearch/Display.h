@@ -1,23 +1,24 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.5 1998/12/12 01:45:29 ghutchis Exp $
+// $Id: Display.h,v 1.6 1999/01/08 05:02:24 ghutchis Exp $
 //
 // $Log: Display.h,v $
+// Revision 1.6  1999/01/08 05:02:24  ghutchis
+// Implement add_anchors_to_excerpt option and new variable ANCHOR as
+// contributed by Marjolein.
+//
 // Revision 1.5  1998/12/12 01:45:29  ghutchis
 // Added a patch from Gilles allowing CGI environment variables in templates.
 //
 // Revision 1.4  1998/10/17 14:15:57  ghutchis
-//
 // Added variable CURRENT as the number of the current match, adapted from a
 // patch by Reni Seindal <seindal@webadm.kb.dk>
 //
 // Revision 1.3  1998/10/12 02:09:28  ghutchis
-//
 // Added htsearch logging patch from Alexander Bergolth.
 //
 // Revision 1.2  1998/09/10 04:16:26  ghutchis
-//
 // More bug fixes.
 //
 // Revision 1.1.1.1  1997/02/03 17:11:05  turtle
@@ -162,8 +163,8 @@ protected:
     String		*readFile(char *);
     void		expandVariables(char *);
     void		outputVariable(char *);
-    String		*excerpt(DocumentRef *ref, char *url = 0);
-    char		*hilight(char *, char *);
+    String		*excerpt(DocumentRef *ref, String urlanchor, int fanchor);
+    char		*hilight(char *str, String urlanchor, int fanchor);
     void		setupImages();
     String		*generateStars(DocumentRef *, int);
     void		displayParsedFile(char *);

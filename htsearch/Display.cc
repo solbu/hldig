@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.29  1999/01/08 05:02:24  ghutchis
+// Implement add_anchors_to_excerpt option and new variable ANCHOR as
+// contributed by Marjolein.
+//
 // Revision 1.28  1999/01/07 19:37:53  ghutchis
 // The start template, if provided, should come out after the header, not
 // before.
@@ -97,7 +101,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.28 1999/01/07 19:37:53 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.29 1999/01/08 05:02:24 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -258,12 +262,31 @@ Display::displayMatch(ResultMatch *match, int current)
 	
     DocumentRef	*ref = match->getRef();
 
-    if (needExcerpt)
-    {
-	vars.Add("EXCERPT", excerpt(ref));
-    }
     char    *url = match->getURL();
     vars.Add("URL", new String(url));
+
+    int      iA = ref->DocAnchor();
+    List    *anchors = ref->DocAnchors();
+    int      n = anchors->Count();
+    int      fanchor = 0;
+    String  *anchor = new String();
+    if (n > 1)
+      {
+	fanchor = 1;
+	// go to anchor -before- the match, if possible
+	if (iA > 0)
+	  iA--;
+	*anchor << "#" << ((String*) (*anchors)[iA])->get();
+      }
+    vars.Add("ANCHOR", anchor);
+
+    if (needExcerpt)
+      {
+	String urlanchor = new String(url);
+	urlanchor << anchor;
+	vars.Add("EXCERPT", excerpt(ref, urlanchor, fanchor));
+      }
+
     vars.Add("SCORE", new String(form("%d", match->getScore())));
     vars.Add("CURRENT", new String(form("%d", current)));
     char	*title = ref->DocTitle();
@@ -898,7 +921,7 @@ Display::buildMatchList()
 
 //*****************************************************************************
 String *
-Display::excerpt(DocumentRef *ref, char *url)
+Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor)
 {
     char	*head = ref->DocHead();
     if (config.Boolean("use_meta_description",0) 
@@ -933,8 +956,9 @@ Display::excerpt(DocumentRef *ref, char *url)
 	char	*start;
 	char	*end;
 		
-	if (!config.Boolean("add_anchors_to_excerpt"))
-	    url = 0;
+       if (!config.Boolean("add_anchors_to_excerpt"))
+	 // negate flag if it's on (anchor available)
+	 fanchor = 0;
 
 	//
 	// Figure out where to start the excerpt.  Basically we go back
@@ -957,14 +981,14 @@ Display::excerpt(DocumentRef *ref, char *url)
 	if (end > temp + headLength)
 	{
 	    end = temp + headLength;
-	    *text << hilight(start, url);
+	    *text << hilight(start, urlanchor, fanchor);
 	}
 	else
 	{
 	    while (*end && isalpha(*end))
 		end++;
 	    *end = '\0';
-	    *text << hilight(start, url);
+	    *text << hilight(start, urlanchor, fanchor);
 	    *text << config["end_ellipses"];
 	}
     }
@@ -973,7 +997,7 @@ Display::excerpt(DocumentRef *ref, char *url)
 
 //*****************************************************************************
 char *
-Display::hilight(char *str, char *url)
+Display::hilight(char *str, String urlanchor, int fanchor)
 {
     static String	result;
     int			pos;
@@ -987,10 +1011,10 @@ Display::hilight(char *str, char *url)
 	result.append(str, pos);
 	ww = (WeightWord *) (*searchWords)[which];
 	result << "<strong>";
-	if (first && url)
-	    result << "<a href=\"" << url << "\">";
+	if (first && fanchor)
+	    result << "<a href=\"" << urlanchor << "\">";
 	result.append(str + pos, length);
-	if (first && url)
+	if (first && fanchor)
 	    result << "</a>";
 	result << "</strong>";
 	str += pos + length;
