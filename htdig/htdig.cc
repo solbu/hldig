@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.1 1999/12/06 19:53:30 vadim Exp $
+// $Id: htdig.cc,v 1.26.2.2 1999/12/06 20:29:24 grdetil Exp $
 //
 
 #include "Document.h"
@@ -131,6 +131,10 @@ int main(int ac, char **av)
     {
 	config.Add("max_hop_count", max_hops);
     }
+
+    // Set up credentials for this run
+    if (credentials.length())
+	config.Add("authorization", credentials);
 
     // Word characterization
     WordType::Initialize(config);
@@ -273,10 +277,6 @@ int main(int ac, char **av)
 	retriever.Initial(*list);
 	delete list;
       }
-
-    // Set up credentials for this run
-    if (credentials.length())
-	config.Add("authorization",credentials);
 
     // Add start_url to the initial list of the retriever.
     // Don't check a URL twice!
