@@ -1,3 +1,9 @@
+Sun Oct 14 21:16:19 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/htdump.html, htdoc/htload.html, htdoc/attrs.html,
+	htdoc/cf_byprog.html, htdoc/contents.html: Documented htdump and
+	htload, indicating which attributes are used by them.
+
 Fri Oct 12 14:58:15 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/URL.cc (removeIndex): Fixed to make sure the matched file
