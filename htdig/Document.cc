@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.34.2.12 1999/12/06 22:26:46 grdetil Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.34.2.13 2000/02/15 20:28:22 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -227,7 +227,10 @@ Document::getdate(char *datestring)
 	    char	buffer[100];
 	    // Leave out %a for weekday, because we don't set it anymore...
 	    //strftime(buffer, sizeof(buffer), "%a, %d %b %Y %T", &tm);
-	    strftime(buffer, sizeof(buffer), "%d %b %Y %T", &tm);
+	    // Let's just do away with strftime() altogether for this...
+	    //strftime(buffer, sizeof(buffer), "%d %b %Y %T", &tm);
+	    sprintf(buffer, "%4d-%02d-%02d %02d:%02d:%02d", tm.tm_year+1900,
+		tm.tm_mon+1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
 	    cout << buffer << " (" << tm.tm_year << ")" << endl;
 	  }
 #if HAVE_TIMEGM

@@ -1,4 +1,7 @@
-Tue Feb 15 14:12:46 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Feb 15 14:21:48 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc (getdate): avoid strftime() altogether on
+	filled-in tm structure, to avoid recurring segfault problems. (PR#734)
 
 	* htlib/strptime.cc (mystrptime): Use Warren Jones's fix to deal
 	with a web server that returns dates with a two digit year field.
