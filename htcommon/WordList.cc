@@ -4,6 +4,9 @@
 // Implementation of WordList
 //
 // $Log: WordList.cc,v $
+// Revision 1.10  1998/12/13 06:13:13  ghutchis
+// Change undefined minimumWordLength to config("minimum_word_length").
+//
 // Revision 1.9  1998/12/13 00:15:35  ghutchis
 // Added additional cleanups for words in the bad word list. Check to make sure
 // they don't have punctuation, etc.
@@ -36,7 +39,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.9 1998/12/13 00:15:35 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.10 1998/12/13 06:13:13 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -246,7 +249,7 @@ void WordList::BadWordFile(char *filename)
 	    new_word = word;  // We need to clean it up before we add it
 	    new_word.lowercase();  // Just in case someone enters an odd one
 	    new_word.remove(valid_punctuation);
-	    if (new_word.length() >= minimumWordLength)
+	    if (new_word.length() >= config.Value("minimum_word_length", 3))
 	      badwords.Add(new_word, 0);
 	  }
     }
