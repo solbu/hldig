@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.21 2000/02/23 18:06:55 grdetil Exp $
+// $Id: Retriever.cc,v 1.72.2.22 2000/02/24 17:47:08 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -69,7 +69,9 @@ Retriever::Retriever(RetrieverLog flags) :
     factor[6] = FLAG_HEADING;
     factor[7] = FLAG_HEADING;
     // img alt text
-    factor[8] = FLAG_KEYWORDS;
+    //factor[8] = FLAG_KEYWORDS;
+    factor[8] = FLAG_TEXT;	// treat alt text as plain text, until it has
+				// its own FLAG and factor.
     // keywords factor
     factor[9] = FLAG_KEYWORDS;
     // META description factor

@@ -1,3 +1,10 @@
+Thu Feb 24 11:40:24 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (do_tag): Fix handling of img alt text to be consistent
+	with body text, rather than keywords.
+	* htdig/Retriever.cc (ctor): Treat alt text as plain text, until it has
+	its own FLAG and factor.
+
 Thu Feb 24 11:16:37 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc (version): Moved example over to correct field.

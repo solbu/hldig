@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.62.2.6 2000/02/22 23:15:49 grdetil Exp $
+// $Id: HTML.cc,v 1.62.2.7 2000/02/24 17:47:08 grdetil Exp $
 //
 
 #include "htdig.h"
@@ -835,29 +835,35 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	  break;
 	}
 	
-         case 18: // img
-	   {
-	     if (!attrs["src"].empty())
-	       {
-		 retriever.got_image(transSGML(attrs["src"]));
-		 if (!attrs["alt"].empty() && doindex)
-		   {
-		     String tmp = transSGML(attrs["alt"]);
-		     char *w = HtWordToken(tmp);
-		     while (w)
-		       {
-			 if (strlen(w) >= minimumWordLength)
-			   retriever.got_word(w, wordindex++, 8); // slot for img_alt
-			 w = HtWordToken(0);
-		       }
-		     w = '\0';
-		   }
-	       }
-	     break;
-	   }
+	case 18: // img
+	  {
+	    if (!attrs["alt"].empty())
+	      {
+		String tmp = transSGML(attrs["alt"]);
+		if (doindex && in_title)
+		    title << tmp << " ";
+		if (in_ref && description.length() < max_description_length)
+		    description << tmp << " ";
+		if (doindex && !in_title && head.length() < max_head_length)
+		    head << tmp << " ";
+		char *w = HtWordToken(tmp);
+		while (w && doindex)
+		  {
+		    if (strlen(w) >= minimumWordLength)
+		      retriever.got_word(w, wordindex++, 8); // slot for img_alt
+		    w = HtWordToken(0);
+		  }
+		w = '\0';
+	      }
+	    if (!attrs["src"].empty())
+	      {
+		retriever.got_image(transSGML(attrs["src"]));
+	      }
+	    break;
+	  }
 
-         default:
-	   return;	// Nothing...
+	default:
+	  return;	// Nothing...
     }
 }
 
