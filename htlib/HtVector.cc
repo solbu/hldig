@@ -13,7 +13,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: HtVector.cc,v 1.1 1999/02/19 01:23:35 ghutchis Exp $";
+static char	RCSid[] = "$Id: HtVector.cc,v 1.2 1999/02/21 21:16:29 ghutchis Exp $";
 #endif
 
 #include "HtVector.h"
@@ -96,6 +96,19 @@ void HtVector::Insert(Object *object, int position)
     data[i] = data[i-1];
   data[position] = object;
   element_count += 1;
+}
+
+
+//*********************************************************************
+// void HtVector::Assign(Object *object, int position)
+// Assign an object to the position
+//
+void HtVector:: Assign(Object *object, int position)
+{
+  // Simply perform an insert, followed by a remove!
+  Insert(object, position);
+  RemoveFrom(position + 1);
+  return;
 }
 
 

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVector.h,v 1.1 1999/02/19 01:23:35 ghutchis Exp $
+// $Id: HtVector.h,v 1.2 1999/02/21 21:16:29 ghutchis Exp $
 //
 //
 #ifndef	_HtVector_h_
@@ -40,6 +40,12 @@ public:
     // of the vector and the given position.
     //
     void	Insert(Object *, int position);
+
+    //
+    // Assign() will assign the object to the given position, replacing
+    // the object currently there. It is functionally equivalent to calling
+    // RemoveFrom() followed by Insert()
+    void	Assign(Object *, int position);
 
     //
     // Find the given object in the vector and remove it from the vector.
@@ -72,7 +78,7 @@ public:
 
     //
     // Direct access to vector items. To assign new objects, use
-    // Insert() or Add()
+    // Insert() or Add() or Assign()
     //
     Object		*operator[] (int n)		{return data[n];}
     Object		*Nth(int n)			{return data[n];}
