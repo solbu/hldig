@@ -1,0 +1,177 @@
+%{
+/* Bison version > 1.25 needed */
+/* TODO: 
+1. Better error handling
+2. ?
+*/
+#include <stdio.h> /* for debug */
+#include <stdlib.h>
+#include <iostream.h>
+#include "Configuration.h"
+#include "htString.h"
+/*#define YYDEBUG 1*/
+#define YYPARSE_PARAM aConf
+int yyerror(char *s);
+int yylex(void);  
+#undef DEBUG
+#ifdef DEBUG
+int sn_debug=3;
+#endif
+%}
+
+%union {
+	char *str;
+	ConfigDefaults	*ConfLine;
+	Configuration	*ConfLines;
+}
+
+%token NUM T_DELIMITER T_NEWLINE T_RIGHT_BR T_LEFT_BR T_SLASH
+%token <str> T_STRING T_KEYWORD T_NUMBER
+%type <str> list 
+%type <ConfLine> simple_expression
+%type <ConfLines> simple_expression_list
+
+/* Grammar follows */
+%%
+
+input:
+         | input block { /* Whole config file */ }
+;
+
+block:        simple_expression		{   
+  // name: value
+               ((Configuration *)aConf)->Add($1->name,$1->value);
+	       #ifdef DEBUG
+	       if (sn_debug>=2) {
+		 cout<<"Added to conf: "<<$1->name<<":"<<$1->value<<endl;
+	       }
+	       #endif
+	       delete $1->name; delete $1->value;
+	       delete $1;
+               }
+        | complex_expression {
+          // <server www.gc.lviv.ua>
+          //    server_max_docs: 456
+          //    ... : ...
+          // </server>
+	}
+;
+
+simple_expression:      T_KEYWORD T_DELIMITER T_STRING T_NEWLINE	{ 
+  // locale: uk_UA.KOI8-U
+                                        //
+					// We can't do inserting into config
+					// here because we don't know if it's
+                                        // in complex expression or not.
+					$$=new ConfigDefaults;
+					$$->name = $1; $$->value=$3;
+					}
+
+	| T_KEYWORD T_DELIMITER T_NUMBER T_NEWLINE	{ 
+	  // max_head_lenght: 300000
+	  //
+	                                $$=new ConfigDefaults;
+					$$->name = $1; $$->value=$3;
+					}
+	| T_KEYWORD T_DELIMITER list T_NEWLINE		{
+	  // bad_extensions: .XLS .xls .pdf .PDF .doc .DOC 
+	  //
+	  $$=new ConfigDefaults;
+	  $$->name = $1; $$->value=$3;
+	}
+	| T_KEYWORD T_DELIMITER T_NEWLINE	{
+	  // excude_urls:
+	  //
+	                            $$=new ConfigDefaults;
+				    $$->name = $1;
+				    $$->value=new char[1];
+				    *$$->value='\0';
+					}
+        | T_NEWLINE	{ /* Ignore empty lines */  }
+;
+
+complex_expression:	T_LEFT_BR T_KEYWORD T_DELIMITER T_STRING T_RIGHT_BR T_NEWLINE simple_expression_list T_LEFT_BR T_SLASH T_KEYWORD T_RIGHT_BR T_NEWLINE {
+		      // check if "<param> ... </param>" are equal
+		      if (strcmp($2,$10)!=0) {
+			// todo: setup error string, return with error.
+			// Inform about line number
+			cerr<<"Brackets mismatch: Opened: "<<$2<<" Closed: "<<$10<<endl;
+			exit(1);
+		      }
+		      // Oll right. Append set of parameters to object($2)
+		      ((Configuration *)aConf)->Add($2,$4,$7);
+		      #ifdef DEBUG
+		      if (sn_debug >= 2) {
+			cout<<"Added to conf: "<<$2<<":"<<$4<<":"<<$7<<endl;
+		      }
+		      #endif
+		      delete $2; delete $4;
+		      delete $10;
+		    } 
+                 ;
+
+simple_expression_list:   simple_expression	{
+  //aaa: nnn
+  //bbb: ccc
+  // ...
+  //
+  // First entry. We need to create conf to store it.
+  Configuration *expressionList=new Configuration();
+  expressionList->Add($1->name,$1->value);
+  $$=expressionList;
+  #ifdef DEBUG
+  if (sn_debug>=2) {
+    cout<<"Create list of properties: "<<expressionList<<endl;
+  }
+  #endif
+  delete $1->name; delete $1->value;
+  delete $1;
+}
+                        | simple_expression_list simple_expression {
+				$1->Add($2->name,$2->value);
+				#ifdef DEBUG
+				if (sn_debug>=2) {
+				  cout<<$2->name<<":"<<$2->value<<" added to "<<$1<<endl;
+				}
+				#endif
+				delete $2->name; delete $2->value;
+				delete $2;
+				//$$=$1; //I think $$==$1
+			}
+                      ;
+
+list:	  T_STRING T_STRING			{ 
+	// Paste 2 strings. Reallocate memory for 2 str.
+	if (($$=new char[$1,strlen($1)+strlen($2)+1+1])==NULL) {
+		fprintf(stderr,"Can't allocate memory\n");
+		exit(1);
+	}
+	strcpy($$,$1);
+	strcat($$," ");		// Delimiter in list
+	strcat($$,$2);
+	delete $1; delete $2;
+	}
+
+	| list T_STRING			{ 
+                char *ptr;
+		int len=strlen($$);
+		char *old=$$;
+		if (($$=new char [strlen($$)+strlen($2)+1+1])==NULL) {
+		  fprintf(stderr,"Can't reallocate memory\n");
+		  exit(1);
+		}
+		strcpy($$,old);
+		delete old;
+		strcat($$," ");
+		strcat($$,$2);
+		delete $2;
+	}
+;
+%%
+int
+yyerror (char *s)  /* Called by yyparse on error */
+{
+extern int yylineno;	// I don't know what about included files
+   printf ("%s\nIn line %d\n",s,yylineno);
+   exit(1);
+}

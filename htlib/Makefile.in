@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -47,10 +47,9 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -105,6 +104,8 @@ TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
 
+CFLAGS = -g
+
 AUTOMAKE_OPTIONS = foreign
 
 INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/htword 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		-I$(top_srcdir)/db/include -I$(top_builddir)/db/include 		$(LOCAL_DEFINES)
@@ -115,7 +116,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 lib_LTLIBRARIES = libht.la
 
-libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc regex.c 	HtPack.cc HtDateTime.cc HtRegex.cc 
+libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc regex.c 	HtPack.cc HtDateTime.cc HtRegex.cc 	conf.l.cc conf.tab.cc
 
 
 libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
@@ -137,12 +138,11 @@ IntObject.lo List.lo Object.lo ParsedString.lo Queue.lo \
 QuotedStringList.lo Stack.lo String.lo StringList.lo StringMatch.lo \
 String_fmt.lo good_strtok.lo strcasecmp.lo mktime.lo strptime.lo \
 timegm.lo HtCodec.lo HtWordCodec.lo HtVector.lo HtHeap.lo regex.lo \
-HtPack.lo HtDateTime.lo HtRegex.lo
+HtPack.lo HtDateTime.lo HtRegex.lo conf.l.lo conf.tab.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
-CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -161,8 +161,8 @@ DEP_FILES =  .deps/Configuration.P .deps/DB2_db.P .deps/Database.P \
 .deps/IntObject.P .deps/List.P .deps/Object.P .deps/ParsedString.P \
 .deps/Queue.P .deps/QuotedStringList.P .deps/Stack.P .deps/String.P \
 .deps/StringList.P .deps/StringMatch.P .deps/String_fmt.P \
-.deps/good_strtok.P .deps/mktime.P .deps/regex.P .deps/strcasecmp.P \
-.deps/strptime.P .deps/timegm.P
+.deps/conf.l.P .deps/conf.tab.P .deps/good_strtok.P .deps/mktime.P \
+.deps/regex.P .deps/strcasecmp.P .deps/strptime.P .deps/timegm.P
 SOURCES = $(libht_la_SOURCES)
 OBJECTS = $(libht_la_OBJECTS)
 
@@ -298,7 +298,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -378,7 +378,7 @@ uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(includedir)
 
@@ -434,6 +434,12 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
+
+conf.l.cc:	conf.l conf.tab.cc.h
+	flex -o$(srcdir)/conf.l.cc $(srcdir)/conf.l
+conf.tab.cc:	conf.y
+	bison -d -o $(srcdir)/conf.tab.cc $(srcdir)/conf.y
+conf.tab.cc.h: conf.tab.cc
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
