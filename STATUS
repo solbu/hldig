@@ -6,6 +6,7 @@ RELEASES:
    3.2.0b1: Released: 4 Feb 2000.
 
 SHOWSTOPPERS:
+* Geoff's copy on LinuxPPC is broken after Loic's mifluz merge. Still unkown cause.
 
 KNOWN BUGS:
 * URL.cc tries to parse malformed URLs (which causes further problems)
