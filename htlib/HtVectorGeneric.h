@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVectorGeneric.h,v 1.1.2.3 2000/01/06 11:55:05 bosc Exp $
+// $Id: HtVectorGeneric.h,v 1.1.2.4 2000/01/11 17:38:17 bosc Exp $
 //
 //
 //  #ifndef	_HtVectorGeneric_h_
@@ -79,10 +79,6 @@ protected:
     inline void CheckBounds(const int n) const {;}
 
 public:
-    //
-    // Add() will append an Object to the end of the vector
-    //
-    void	Add(const GType &);
       
 
     //
@@ -187,11 +183,26 @@ protected:
     //
     int			element_count;
     int			allocated;
-
+ protected:
     //
     // Protected function to ensure capacity
     //
-    void                 Allocate(int ensureCapacity);
+    inline void          Allocate(int capacity)
+    {
+	if (capacity > allocated){ActuallyAllocate(capacity);}
+    }
+    void                 ActuallyAllocate(int);
+
+ public:
+    //
+    // Add() will append an object to the end of the vector
+    //
+    inline void          Add(const GType &object)
+    {
+	Allocate(element_count+1);
+	data[element_count] = object;
+	element_count += 1;
+    }
 
 
     //

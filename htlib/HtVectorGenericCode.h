@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtVectorGenericCode.h,v 1.1.2.3 2000/01/06 11:55:05 bosc Exp $
+// $Id: HtVectorGenericCode.h,v 1.1.2.4 2000/01/11 17:38:17 bosc Exp $
 //
 
 
@@ -67,17 +67,6 @@ void HtVectorGType::Destroy()
   current_index = -1;
 }
 
-
-//*********************************************************************
-// void HtVectorGType::Add(GType object)
-//   Add an object to the list.
-//
-void HtVectorGType::Add(const GType &object)
-{
-  Allocate(element_count+1);
-  data[element_count] = object;
-  element_count += 1;
-}
 
 
 //*********************************************************************
@@ -240,7 +229,7 @@ HtVectorGType &HtVectorGType::operator=(const HtVectorGType &vector)
 // int Allocate(int capacity)
 //    Ensure there is at least capacity space in the vector
 //
-void HtVectorGType::Allocate(int capacity)
+void HtVectorGType::ActuallyAllocate(int capacity)
 {
   if (capacity > allocated) // Darn, we actually have to do work :-)
     {
