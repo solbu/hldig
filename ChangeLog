@@ -1,3 +1,8 @@
+Tue Mar 23 12:15:48 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Plaintext.cc(parse): Use minimum_word_length instead of
+	hardcoded constant.
+
 Tue Mar 23 12:11:04 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htmerge/words.cc(mergeWords): Fix to prevent description text
