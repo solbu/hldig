@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.60 2002/12/30 12:42:59 lha Exp $
+// $Id: htsearch.cc,v 1.61 2003/01/29 23:18:05 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -684,9 +684,9 @@ doFuzzy(WeightWord *ww, List &searchWords, List &algorithms)
 {
     List		fuzzyWords;
     List		weightWords;
-    Fuzzy		*fuzzy;
-    WeightWord	*newWw;
-    String		*word;
+    Fuzzy		*fuzzy = 0;
+    WeightWord	*newWw = 0;
+    String		*word = 0;
 
     algorithms.Start_Get();
     while ((fuzzy = (Fuzzy *) algorithms.Get_Next()))
