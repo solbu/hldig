@@ -79,7 +79,7 @@ AC_HEADER_TIME
 
 dnl More header checks--here use C++
 AC_LANG_CPLUSPLUS
-AC_CHECK_HEADERS(fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h getopt.h strings.h zlib.h alloca.h)
+AC_CHECK_HEADERS(fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h getopt.h strings.h zlib.h alloca.h sys/select.h)
 AC_CHECK_HEADER(fstream.h,nofstream=0,nofstream=1)
 if test "x$nofstream" = "x1" ; then
 AC_MSG_ERROR([To compile ht://Dig, you will need a C++ library. Try installing libstdc++.])
@@ -119,7 +119,7 @@ extern "C" int gethostname(char *, int);],
 AC_LANG_C
 AC_MSG_CHECKING(how to call getpeername?)
 for sock_t in 'struct sockaddr' 'void'; do
-for getpeername_length_t in 'size_t' 'int' 'unsigned int' 'socklen_t'; do
+for getpeername_length_t in 'size_t' 'int' 'unsigned int' 'long unsigned int' 'socklen_t'; do
 AC_TRY_COMPILE([#include <sys/types.h>
 #include <sys/socket.h>],
 [extern getpeername(int, $sock_t *, $getpeername_length_t *)],

@@ -57,6 +57,7 @@ main(int ac, char **av)
     //
     while ((c = getopt(ac, av, "lsc:vith:u:a")) != -1)
     {
+        int pos;
 	switch (c)
 	{
 	    case 'c':
@@ -79,7 +80,7 @@ main(int ac, char **av)
 		break;
 	    case 'u':
 		credentials = optarg;
-		for (int pos = 0; pos < strlen(optarg); pos++)
+		for (pos = 0; pos < strlen(optarg); pos++)
 		  optarg[pos] = '*';
 		break;
 	    case 'a':
