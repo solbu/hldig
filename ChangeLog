@@ -1,3 +1,16 @@
+Wed Jan 20 11:52:18 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/good_strtok.h, htlib/good_strtok.cc: Added fixes and speed
+	improvements contributed by Andrew Bishop.
+
+	* htdig/ExternalParser.cc, htdig/Server.cc, htlib/cgi.cc,
+	htmerge/db.cc, htmerge/words.cc: Call good_strtok with appropriate
+	parameters (explicitly include NULL first parameter, second param
+	is char, not char *).
+	
+	* htcommon/WordList.cc(Word): Added check for adding words with
+	weight zero.
+
 Wed Jan 20 00:30:12 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/SGMLEntities.cc: Declare extern config, since we now use
@@ -127,8 +140,8 @@ Thu Jan 14 23:37:29 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	
 Thu Jan 14 23:27:24 1999  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
 
-	* htlib/URL.cc: Fix looping in query string caused by
-	slashes. Noted by Adam Coyne <adam@criticalmass.com>.
+	* htlib/URL.cc: Fix parent path logic to ignore slashes in query
+	string. Noted by Adam Coyne <adam@criticalmass.com>.
 
 Thu Jan 14 00:04:03 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 

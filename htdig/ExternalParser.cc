@@ -4,6 +4,10 @@
 // Implementation of ExternalParser
 //
 // $Log: ExternalParser.cc,v $
+// Revision 1.6  1999/01/20 18:08:29  ghutchis
+// Call good_strtok with appropriate parameters (explicitly include NULL first
+// parameter, second param is char, not char *).
+//
 // Revision 1.5  1999/01/14 03:28:07  ghutchis
 // Added support for 'm': meta element.
 //
@@ -22,7 +26,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: ExternalParser.cc,v 1.5 1999/01/14 03:28:07 ghutchis Exp $";
+static char RCSid[] = "$Id: ExternalParser.cc,v 1.6 1999/01/20 18:08:29 ghutchis Exp $";
 #endif
 
 #include "ExternalParser.h"
@@ -222,9 +226,9 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	    case 'm':	// meta
 		// Using good_strtok means we can accept empty
 		// fields.
-		char *httpEquiv = good_strtok(token1+2, "\t");
-		char *name = good_strtok(0, "\t");
-		char *content = good_strtok(0, "\t");
+		char *httpEquiv = good_strtok(token1+2, '\t');
+		char *name = good_strtok(0, '\t');
+		char *content = good_strtok(0, '\t');
 
 		if (httpEquiv != NULL && name != NULL && content != NULL)
 		{

@@ -4,6 +4,10 @@
 // Implementation of cgi
 //
 // $Log: cgi.cc,v $
+// Revision 1.5  1999/01/20 18:08:30  ghutchis
+// Call good_strtok with appropriate parameters (explicitly include NULL first
+// parameter, second param is char, not char *).
+//
 // Revision 1.4  1998/11/15 02:44:23  ghutchis
 //
 // Declared loop int variable. (to simplify frost.com merge)
@@ -19,7 +23,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: cgi.cc,v 1.4 1998/11/15 02:44:23 ghutchis Exp $";
+static char RCSid[] = "$Id: cgi.cc,v 1.5 1999/01/20 18:08:30 ghutchis Exp $";
 #endif
 
 #include "cgi.h"
@@ -81,8 +85,8 @@ cgi::cgi()
 	//
 	for (i = 0; i < list.Count(); i++)
 	{
-		char	*name = good_strtok(list[i], "=");
-		String	value(good_strtok("\n"));
+		char	*name = good_strtok(list[i], '=');
+		String	value(good_strtok(NULL, '\n'));
 		value.replace('+', ' ');
 		decodeURL(value);
 		String	*str = (String *) pairs->Find(name);

@@ -4,6 +4,10 @@
 // Implementation of Server
 //
 // $Log: Server.cc,v $
+// Revision 1.8  1999/01/20 18:08:30  ghutchis
+// Call good_strtok with appropriate parameters (explicitly include NULL first
+// parameter, second param is char, not char *).
+//
 // Revision 1.7  1999/01/18 22:57:28  ghutchis
 // Use max_doc_size when retrieving robots.txt files instead of a hard-coded
 // 10k limit.
@@ -31,7 +35,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.7 1999/01/18 22:57:28 ghutchis Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.8 1999/01/20 18:08:30 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -144,11 +148,11 @@ void Server::robotstxt(Document &doc)
 	    *(strchr(line, '#')) = '\0';
 	}
 	
-	name = good_strtok(line, ":");
+	name = good_strtok(line, ':');
 	if (!name)
 	    continue;
 	while (name && isspace(*name))  name++;
-	rest = good_strtok("\r");
+	rest = good_strtok(NULL, '\r');
 	if (!rest)
 	    rest = "";
 

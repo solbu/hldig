@@ -4,6 +4,10 @@
 // Implementation of htmerge
 //
 // $Log: words.cc,v $
+// Revision 1.9  1999/01/20 18:08:32  ghutchis
+// Call good_strtok with appropriate parameters (explicitly include NULL first
+// parameter, second param is char, not char *).
+//
 // Revision 1.8  1999/01/14 00:27:38  ghutchis
 // Small speed improvements.
 //
@@ -32,7 +36,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.8 1999/01/14 00:27:38 ghutchis Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.9 1999/01/20 18:08:32 ghutchis Exp $";
 #endif
 
 #include "htmerge.h"
@@ -130,8 +134,8 @@ mergeWords(char *wordtmp, char *wordfile)
 	    // Split the line up into the word, count, location, and
 	    // document id.
 	    //
-	    word = good_strtok(buffer, "\t");
-	    pair = good_strtok("\t");
+	    word = good_strtok(buffer, '\t');
+	    pair = good_strtok(NULL, '\t');
 	    wr.Clear();   // Reset count to 1, anchor to 0, and all that
 	    sid = "-";
 	    while (pair && *pair)
@@ -160,7 +164,7 @@ mergeWords(char *wordtmp, char *wordfile)
 			    break;
 		    }
 		}
-		pair = good_strtok("\t");
+		pair = good_strtok(NULL, '\t');
 	    }
 
 	    //
