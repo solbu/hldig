@@ -4,6 +4,9 @@
 // Implementation of StringList
 //
 // $Log: StringList.cc,v $
+// Revision 1.4  1998/12/19 14:39:41  bergolth
+// Added StringList::Join and fixed URL::removeIndex.
+//
 // Revision 1.3  1998/10/02 15:35:04  ghutchis
 //
 // Fixed bug with multiple delimeters
@@ -16,7 +19,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: StringList.cc,v 1.3 1998/10/02 15:35:04 ghutchis Exp $";
+static char	RCSid[] = "$Id: StringList.cc,v 1.4 1998/12/19 14:39:41 bergolth Exp $";
 #endif
 
 #include <stdlib.h>
@@ -285,4 +288,18 @@ void StringList::Sort(int)
     }
 
     delete array;
+}
+
+String StringList::Join(char sep)
+{
+  String *str = new String();
+  int i;
+
+  for (i=0; i < number; i++)
+  {
+      if (str->length())
+	str->append(sep);
+      str->append((String *) Nth(i));
+  }
+  return *str;
 }

@@ -4,6 +4,9 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.14  1998/12/19 14:39:41  bergolth
+// Added StringList::Join and fixed URL::removeIndex.
+//
 // Revision 1.13  1998/12/05 00:51:36  ghutchis
 // Allow server_alias to work under virtual hosts.
 //
@@ -53,12 +56,14 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.13 1998/12/05 00:51:36 ghutchis Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.14 1998/12/19 14:39:41 bergolth Exp $";
 #endif
 
 #include "URL.h"
 #include "Dictionary.h"
 #include "Configuration.h"
+#include "StringMatch.h"
+#include "StringList.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -442,21 +447,29 @@ void URL::path(char *newpath)
 
 //*****************************************************************************
 // void URL::removeIndex(String &path)
-//   Attempt to remove the index.html from the end of a URL path.
+//   Attempt to remove the local_default_doc from the end of a URL path.
 //   This needs to be done to normalize the paths and make .../ the
 //   same as .../index.html
 //
 void URL::removeIndex(String &path)
 {
+    static StringMatch *defaultdoc = 0;
+
     if (path.length() == 0)
 	return;
 
-    char	*slash = strrchr(path, '/');
-    if (!slash)
-	return;
+    int filename = path.lastIndexOf('/') + 1;
+    if (filename == 0)
+        return;
 
-    if (strcmp(slash, "/index.html") == 0)
-	path.chop(10);
+    if (! defaultdoc)
+    {
+      StringList  l(config["local_default_doc"], " \t");
+      defaultdoc = new StringMatch();
+      defaultdoc->Pattern(l.Join('l'));
+    }
+    if (defaultdoc->FindFirstWord(path.sub(filename)) >= 0)
+	path.chop(path.length() - filename);
 }
 
 

@@ -6,6 +6,9 @@
 // AWS	10/13/93	Fixed the constructors and operator = routines so that a NULL can be passed
 //
 // $Log: String.cc,v $
+// Revision 1.11  1998/12/19 14:39:41  bergolth
+// Added StringList::Join and fixed URL::removeIndex.
+//
 // Revision 1.10  1998/11/27 18:35:58  ghutchis
 //
 // Changed MinimumAllocationSize to cut down on memory usage on small strings.
@@ -45,7 +48,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.10 1998/11/27 18:35:58 ghutchis Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.11 1998/12/19 14:39:41 bergolth Exp $";
 #endif
 
 
@@ -320,6 +323,11 @@ int String::lastIndexOf(char ch, int pos)
 	pos--;
     }
     return -1;
+}
+
+int String::lastIndexOf(char ch)
+{
+    return lastIndexOf(ch, Length - 1);
 }
 
 String &String::operator << (char *str)

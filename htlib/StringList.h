@@ -1,9 +1,12 @@
 //
 // StringList.h
 //
-// $Id: StringList.h,v 1.2 1997/03/24 04:33:22 turtle Exp $
+// $Id: StringList.h,v 1.3 1998/12/19 14:39:41 bergolth Exp $
 //
 // $Log: StringList.h,v $
+// Revision 1.3  1998/12/19 14:39:41  bergolth
+// Added StringList::Join and fixed URL::removeIndex.
+//
 // Revision 1.2  1997/03/24 04:33:22  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -59,6 +62,11 @@ public:
     //
     void		Sort(int direction = 0);
 	
+    //
+    // Join the Elements of the StringList together
+    //
+    String              Join(char);
+
     //
     // Getting at the parts of the StringList
     //

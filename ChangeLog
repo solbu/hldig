@@ -1,3 +1,15 @@
+Sat Dec 19 15:22:38 1998  Alexander Bergolth  <leo@strike.wu-wien.ac.at>
+
+	* htlib/StringList.cc, htlib/StringList.h: Added StringList::Join
+	to simplify the creation of patterns for StringMatch.
+
+	* htlib/String.cc: lastIndexOf(char ch) added
+
+	* htlib/URL.cc: Changed URL::removeIndex to use local_default_doc.
+	(index.html was hardcoded) local_default_doc can be a list.
+
+	* htdig/main.cc, htlib/URL.cc: Use StringList::Join.
+
 Sun Dec 13 23:06:35 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.cc: Fix potential coredump when calculating

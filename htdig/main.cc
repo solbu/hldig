@@ -5,6 +5,9 @@
 // generating several databases to be used by htmerge
 //
 // $Log: main.cc,v $
+// Revision 1.8  1998/12/19 14:39:42  bergolth
+// Added StringList::Join and fixed URL::removeIndex.
+//
 // Revision 1.7  1998/12/05 00:52:55  ghutchis
 //
 // Added a parameter to Initial function to prevent URLs from being checked
@@ -17,6 +20,7 @@
 
 #include "Document.h"
 #include "Retriever.h"
+#include "StringList.h"
 #include "htdig.h"
 #include <defaults.h>
 
@@ -162,47 +166,23 @@ main(int ac, char **av)
     //
     // Set up the limits list
     //
-    String	l = config["limit_urls_to"];
-    String	pattern;
-    char	*p = strtok(l, " \t");
-    while (p)
-    {
-	if (pattern.length())
-	    pattern << '|';
-	pattern << p;
-	p = strtok(0, " \t");
-    }
+    StringList l(config["limit_urls_to"], " \t");
     limits.IgnoreCase();
-    limits.Pattern(pattern);
+    limits.Pattern(l.Join('|'));
+    l.Release();
 
-    l = config["limit_normalized"];
-    p = strtok(l, " \t");
-    pattern = 0;
-    while (p)
-    {
-	if (pattern.length())
-	    pattern << '|';
-	pattern << p;
-	p = strtok(0, " \t");
-    }
+    l.Create(config["limit_normalized"], " \t");
     limitsn.IgnoreCase();
-    limitsn.Pattern(pattern);
+    limitsn.Pattern(l.Join('|'));
+    l.Release();
 
     //
     // Patterns to exclude from urls...
     //
-    l = config["exclude_urls"];
-    p = strtok(l, " \t");
-    pattern = 0;
-    while (p)
-    {
-	if (pattern.length())
-	    pattern << '|';
-	pattern << p;
-	p = strtok(0, " \t");
-    }
+    l.Create(config["exclude_urls"], " \t");
     excludes.IgnoreCase();
-    excludes.Pattern(pattern);
+    excludes.Pattern(l.Join('|'));
+    l.Release();
 
     //
     // Open the document database
