@@ -1,3 +1,7 @@
+Sun Jan 31 21:46:52 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
+
+	* htlib/Connection.cc: Include sys/time.h needed by select.
+
 Sun Jan 31 20:50:38 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htdig/Retriever.cc (Initial, GetRef, Need2Get, IsValidURL,

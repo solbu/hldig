@@ -6,49 +6,6 @@
 //
 // Implementation of the Connection class
 //
-// $Log: Connection.cc,v $
-// Revision 1.12  1999/01/23 04:29:19  ghutchis
-// Change __sun__ to NEED_PROTO_GETHOSTNAME since we prefer feature tests.
-//
-// Revision 1.11  1999/01/05 20:10:20  bergolth
-// check for strings.h
-//
-// Revision 1.10  1998/12/04 20:33:35  bergolth
-// Added configure check for the getpeername argument types.
-//
-// Revision 1.9  1998/10/18 21:22:16  ghutchis
-//
-// Revised connection timeout methods.
-//
-// Revision 1.8  1998/10/17 14:29:18  ghutchis
-//
-// Included fixes sent by Paul J. Meyer <pmeyer@rimeice.msfc.nasa.gov> to fix
-// connections on Dec Alpha environments.
-//
-// Revision 1.7  1998/06/22 04:33:20  turtle
-// New Berkeley database stuff
-//
-// Revision 1.6  1998/05/26 03:58:06  turtle
-// Got rid of compiler warnings.
-//
-// Revision 1.5  1998/01/05 05:18:18  turtle
-// Fix by Pontus Borg for AIX.  Changed 'size_t' to 'unsigned long' for
-// the length parameter for getpeername()
-//
-// Revision 1.4  1997/10/23 18:01:10  turtle
-// Fix by Pontus Borg for AIX.  Changed 'size_t' to 'unsigned long' for
-// the length parameter for getpeername()
-//
-// Revision 1.3  1997/03/24 04:33:19  turtle
-// Renamed the String.h file to htString.h to help compiling under win32
-//
-// Revision 1.2  1997/02/10 17:32:47  turtle
-// Applied AIX specific patches supplied by Lars-Owe Ivarsson
-// <lars-owe.ivarsson@its.uu.se>
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
-//
 //
 
 #include "Connection.h"
@@ -68,7 +25,7 @@
 #include <fcntl.h>
 #include <netdb.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <sys/time.h>
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
