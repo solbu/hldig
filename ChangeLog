@@ -1,3 +1,7 @@
+Mon Feb 22 22:13:49 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/String.cc, htlib/htString.h: Fix some memory leaks.
+
 Mon Feb 22 08:52:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/Dictionary.h, htlib/Dictionary.cc(hashCode): Check if key
