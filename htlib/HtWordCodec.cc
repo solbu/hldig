@@ -1,9 +1,15 @@
 //
 // Translation methods for HtWordCodec
 //
-// $Id: HtWordCodec.cc,v 1.1 1999/01/21 13:43:03 ghutchis Exp $
+// $Id: HtWordCodec.cc,v 1.2 1999/01/24 15:33:10 hp Exp $
 //
 // $Log: HtWordCodec.cc,v $
+// Revision 1.2  1999/01/24 15:33:10  hp
+// - Fix bug in HtWordCodec::code() when replacement list is empty;
+//   e.g. common_url_parts and url_part_aliases are both empty.
+// - Non-fatal bug in calculating limits for replacement lists and
+//   smaller nits in HtWordCodec constructors.
+//
 // Revision 1.1  1999/01/21 13:43:03  ghutchis
 // New files.
 //
@@ -58,12 +64,10 @@ HtWordCodec::HtWordCodec(StringList *from, StringList *to, char joiner)
   String to_pattern(myTo->Join(joiner));
 
   // After being initialized with Join, the strings are not
-  // null-terminated, but they need to, for Pattern().
-  to_pattern << '\0';
+  // null-terminated, but that is done through "operator char*".
   myToMatch->Pattern(to_pattern, joiner);
 
   String from_pattern(myFrom->Join(joiner));
-  from_pattern << '\0';
   myFromMatch->Pattern(from_pattern, joiner);
 
   myTo = to;
@@ -82,12 +86,6 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
                          StringList &frequent_substrings,
                          String &errmsg)
 {
-  // We count the number of characters in the strings to see if
-  // we go over StringMatch:s limit of 64K states, which is
-  // always higher than the total length of the strings; we err
-  // on the safe side.
-  int total_string_length = 0;
-
   if ((requested_encodings.Count() % 2) != 0)
   {
     errmsg =
@@ -122,8 +120,6 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
       return;
     }
 
-    total_string_length += templen;
-
     myFrom->Add(from);
 
     // This must be non-null since we checked "oddness" above.
@@ -135,9 +131,6 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
       errmsg = "Empty strings are not allowed";
       return;
     }
-
-    // See further below why we count the "to"-string this way.
-    total_string_length += templen*3+1;
 
     // We just have to check that there's no JOIN_CHAR in the
     // string.  Since no "to" is allowed to be part of any other
@@ -187,10 +180,8 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
   int which, length;
 
   // The StringMatch functions want the strings
-  // zero-terminated.
-  req_to_pattern << '\0';
-
-  req_tos.Pattern(req_to_pattern.get(), JOIN_CHAR);
+  // zero-terminated, which is done through "operator char*".
+  req_tos.Pattern(req_to_pattern, JOIN_CHAR);
 
   // Check the requested encodings.
   if (n_of_pairs != 0)
@@ -228,11 +219,7 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
     StringMatch req_froms;
     String req_from_pattern(myFrom->Join(JOIN_CHAR));
 
-    // The StringMatch functions want the strings
-    // zero-terminated.
-
-    req_from_pattern << '\0';
-    req_froms.Pattern(req_from_pattern.get(), JOIN_CHAR);
+    req_froms.Pattern(req_from_pattern, JOIN_CHAR);
 
     // Continue filling "to" and "from" from frequent_substrings and
     // internal encodings.  If a frequent_substring is found in the
@@ -270,8 +257,6 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
               || req_tos.FindFirst(common_part->get()) != -1))
         continue;
 
-      total_string_length += templen;
-
       to = 0;                   // Clear previous run.
 
       // Dream up an encoding without zeroes.
@@ -284,8 +269,6 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
       if (number_to_store <= LAST_INTERNAL_SINGLECHAR)
       {
         to << char(number_to_store);
-
-        total_string_length += 3 + 1;
       }
       else
       {
@@ -317,9 +300,6 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
         to_store[0] = j;
         to_store[j] = char(number_to_store | 0x80);
 
-        // Count the "to" string three times plus one character.
-        total_string_length += (j + 1)*3 + 1;
-
         to.append(to_store, j+1);
       }
 
@@ -327,13 +307,6 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
       myFrom->Add(common_part);
       myTo->Add(&to);
     }
-  }
-
-  // StringMatch class has unchecked limits, better check them here.
-  if (total_string_length > 0xffff)
-  {
-    errmsg = "Limit reached; use fewer encodings";
-    return;
   }
 
   // Now, add the quoted "to":s to the "to"-list, with the unquoted
@@ -348,8 +321,7 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
   // $   : \$
   //
   // Since we checked that none of the "To":s are in a "From" we
-  // can do this.  This is why the "to"-strings count as three
-  // times their lengths plus one, the quoting character.
+  // can do this.
 
   myTo->Start_Get();
   int to_count = myTo->Count();
@@ -376,11 +348,19 @@ HtWordCodec::HtWordCodec(StringList &requested_encodings,
   myToMatch = new StringMatch;
 
   String to_pattern(myTo->Join(JOIN_CHAR));
-  to_pattern << '\0';
-  myToMatch->Pattern(to_pattern, JOIN_CHAR);
-
   String from_pattern(myFrom->Join(JOIN_CHAR));
-  from_pattern << '\0';
+
+  // StringMatch class has unchecked limits, better check them.
+  // The length of each string in the pattern an the upper limit
+  // of the needs.
+  if (to_pattern.length() - (myTo->Count() - 1) > 0xffff
+      || from_pattern.length() - (myFrom->Count() - 1) > 0xffff)
+  {
+    errmsg = "Limit reached; use fewer encodings";
+    return;
+  }
+
+  myToMatch->Pattern(to_pattern, JOIN_CHAR);
   myFromMatch->Pattern(from_pattern, JOIN_CHAR);
 
   errmsg = 0;
@@ -406,6 +386,12 @@ HtWordCodec::code(const String &orig_string, StringMatch &match,
   {
     return retval;
   }
+
+  // Need to check if "replacements" is empty; that is, if no
+  // transformations should be done.  FindFirst() does not return
+  // -1 in this case, it returns 0.
+  if (replacements.Count() == 0)
+    return orig_string;
 
   // Find the encodings and replace them.
   while ((offset = match.FindFirst(orig, which, length)) != -1)

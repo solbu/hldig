@@ -1,3 +1,16 @@
+Sun Jan 24 15:21:02 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htlib/HtWordCodec.cc (HtWordCodec(StringList &, etc)): Check
+	limits separately for "to" and "from".  Do not calculate
+	string-lengths separately for limit-checking; use methods Count()
+	and length() on data near the final result.
+
+	* htlib/HtWordCodec.cc (HtWordCodec constructors): Do not
+	explicitly add '\0' to the pattern strings.
+
+	* htlib/HtWordCodec.cc (code): Check for zero-length replacement
+	list.
+
 Sat Jan 23 22:18:18 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Retriever.cc(parse_url): If a server ignores the
