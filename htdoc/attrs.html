@@ -1555,6 +1555,51 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="endday">endday</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This specifies the day of the cutoff end date for
+			search results. If the start or end date are specified,
+			only results with a last modified date within this
+			range are shown. The endday can be specified from
+			within the configuration file, and can be overridden
+			with the "endday" input parameter in the search form.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			endday: 31
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="end_ellipses">end_ellipses</a></strong>
 	  </dt>
 	  <dd>
@@ -1857,6 +1902,96 @@
 				</td>
 			  </tr>
 			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="endmonth">endmonth</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This specifies the month of the cutoff end date for
+			search results. If the start or end date are specified,
+			only results with a last modified date within this
+			range are shown. The endmonth can be specified from
+			within the configuration file, and can be overridden
+			with the "endmonth" input parameter in the search form.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			endmonth: 11
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="endyear">endyear</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This specifies the year of the cutoff end date for
+			search results. If the start or end date are specified,
+			only results with a last modified date within this
+			range are shown. The endyear can be specified from
+			within the configuration file, and can be overridden
+			with the "endyear" input parameter in the search form.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			endyear: 1999
 		  </dd>
 		</dl>
 	  </dd>
@@ -6862,6 +6997,51 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="startday">startday</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This specifies the day of the cutoff start date for
+			search results. If the start or end date are specified,
+			only results with a last modified date within this
+			range are shown. The startday can be specified from
+			within the configuration file, and can be overridden
+			with the "startday" input parameter in the search form.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			startday: 1
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="start_ellipses">
 		start_ellipses</a></strong>
 	  </dt>
@@ -6954,6 +7134,51 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="startmonth">startmonth</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This specifies the month of the cutoff start date for
+			search results. If the start or end date are specified,
+			only results with a last modified date within this
+			range are shown. The startmonth can be specified from
+			within the configuration file, and can be overridden
+			with the "startmonth" input parameter in the search form.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			startmonth: 2
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="start_url">start_url</a></strong>
 	  </dt>
 	  <dd>
@@ -7002,6 +7227,51 @@
 				</td>
 			  </tr>
 			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="startyear">startyear</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			integer
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This specifies the year of the cutoff start date for
+			search results. If the start or end date are specified,
+			only results with a last modified date within this
+			range are shown. The startyear can be specified from
+			within the configuration file, and can be overridden
+			with the "startyear" input parameter in the search form.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			startyear: 1995
 		  </dd>
 		</dl>
 	  </dd>
@@ -8379,7 +8649,7 @@
 	</dl>
 	<hr size="4" noshade>
 <!-- hhmts start -->
-Last modified: $Date: 2001/10/15 02:20:23 $
+Last modified: $Date: 2001/10/15 02:59:17 $
 <!-- hhmts end -->
   </body>
 </html>

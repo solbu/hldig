@@ -1,3 +1,9 @@
+Sun Oct 14 21:54:24 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html, htdoc/cf_byprog.html, htdoc/cf_byname.html,
+	htcommon/defaults.cc: Documented and declared startyear, etc.
+	attributes used by htsearch.
+
 Sun Oct 14 21:16:19 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/htdump.html, htdoc/htload.html, htdoc/attrs.html,

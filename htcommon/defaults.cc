@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.29 2001/09/28 19:33:43 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.30 2001/10/15 02:59:17 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -53,12 +53,15 @@ ConfigDefaults	defaults[] =
     {"doc_db",				"${database_base}.docdb"},
     {"doc_index",			"${database_base}.docs.index"},
     {"doc_list",			"${database_base}.docs"},
+    {"endday",				""},
     {"end_ellipses",			"<b><tt> ...</tt></b>"},
     {"end_highlight",			"</strong>"},
     {"endings_affix_file",		"${common_dir}/english.aff"},
     {"endings_dictionary",		"${common_dir}/english.0"},
     {"endings_root2word_db",		"${common_dir}/root2word.db"},
     {"endings_word2root_db",		"${common_dir}/word2root.db"},
+    {"endmonth",			""},
+    {"endyear",				""},
     {"excerpt_length",			"300"},
     {"excerpt_show_top",		"false"},
     {"exclude",			        ""},
@@ -150,9 +153,12 @@ ConfigDefaults	defaults[] =
     {"star_blank",			"${image_url_prefix}/star_blank.gif"},
     {"star_image",			"${image_url_prefix}/star.gif"},
     {"star_patterns",			""},
+    {"startday",			""},
     {"start_ellipses",			"<b><tt>... </tt></b>"},
     {"start_highlight",			"<strong>"},
+    {"startmonth",			""},
     {"start_url",			"http://www.htdig.org/"},
+    {"startyear",			""},
     {"substring_max_words",		"25"},
     {"synonym_db",			"${common_dir}/synonyms.db"},
     {"synonym_dictionary",		"${common_dir}/synonyms"},
