@@ -1,3 +1,22 @@
+Mon Apr 24 21:58:22 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/htdig.cc (main): Make the -l stop & restart mode the
+	default. This will catch signals and quit gracefully. The
+	command-line parser will still accept -l, it will just ignore it.
+	(usage): Remove -l portion.
+	(main): Fix -m option to read in a file as it's
+	supposed to do! Also set max_hops correctly so really only indexes
+	the URLs in that file.
+	
+	* htdoc/htdig.html: Remove -l from documentation since it's now
+	the default.
+
+Mon Apr 24 21:22:53 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Server.cc (push): Fix bug where changes in the robots.txt
+	would be ignored. If a URL was indexed and later the robots.txt
+	changed to forbid it, the URL would still be updated.
+
 Wed Apr 19 22:13:02 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* Merging in changes from mifluz 0.14 from Loic.
