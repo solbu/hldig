@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.38  1999/01/18 23:13:02  ghutchis
+// Added no_title_text option to allow configuration of the text when no title
+// is available. Default is the filename.
+//
 // Revision 1.37  1999/01/18 03:07:24  ghutchis
 // Added options "sort" and "sort_names" to pick result sorting order and text
 // names for sort options.
@@ -128,7 +132,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.37 1999/01/18 03:07:24 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.38 1999/01/18 23:13:02 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -222,6 +226,7 @@ ConfigDefaults	defaults[] =
     {"no_next_page_text",		"[next]"},
     {"no_page_list_header",		""},
     {"no_prev_page_text",		"[prev]"},
+    {"no_title_text",                   "filename"},
     {"nothing_found_file",		"${common_dir}/nomatch.html"},
     {"page_list_header",		"<hr noshade size=2>Pages:<br>"},
     {"prefix_match_character",		"*"},
