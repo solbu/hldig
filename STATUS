@@ -4,7 +4,6 @@ RELEASES:
    3.2.0b2: Release date ?, Unfrozen
    3.2.0b1: Released: 4 Feb 2000.
 
-
 SHOWSTOPPERS:
 
 KNOWN BUGS:
@@ -19,11 +18,12 @@ KNOWN BUGS:
 * Running on BSDI and similar systems causes coredumps because the regex
    code is incompatible. We need some sort of configure test for this.
 * SGML encoding/decoding does not work with numeric forms, e.g. &#34; -> quote.
+* Modified database can cause problems with systems using the Berkeley db for 
+   other tasks (e.g. networking)
 
 PENDING FEATURES:
 * Hans-Peter's sort-by-url patch for htsearch
-* Creating 'httools' directory and creating a few simple tools.
-* Multiple database patch
+* Creating a few simple httools: htpurge, htmerge, htnotify, htdump, htload, htstat
 
 TESTING:
 * ExternalTransport with non 'http' URLs.
@@ -45,9 +45,6 @@ OTHER ISSUES:
 * Can htsearch actually search while an index is being created?
 * Can we reproduce the DB2 errors that sometimes cropped up in 3.1.x?
    (e.g. PR#473, PR#476)
-* Is the HTML output of htsearch HTML 4.0 strictly compliant?
 * Error messages should be more informative if no URLs are indexed by htdig 
   or htmerge. PR#672.
-* Should we get rid of uncoded_db_compatible--the databases have
-  changed completely, so all databases should be built with
-  common_url_parts and url_part_aliases now.
+
