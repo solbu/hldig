@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.82 1999/06/14 18:10:49 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.83 1999/06/15 18:42:08 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -995,6 +995,8 @@ Display::buildMatchList()
 	// Append this match to our list of matches.
 	//
 	matches->Add(thisMatch);
+	if (matches->Count() == 1 || maxScore < score)
+	    maxScore = score;
     }
 
     //
@@ -1152,8 +1154,6 @@ Display::sort(List *matches)
     for (i = 0; i < numberOfMatches; i++)
     {
 	array[i] = (ResultMatch *)(*matches)[i];
-	if (i == 0 || maxScore < array[i]->getScore())
-	    maxScore = array[i]->getScore();
     }
     matches->Release();
 

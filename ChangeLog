@@ -1,3 +1,8 @@
+Tue Jun 15 14:25:34 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(buildMatchList & sort): move maxScore calculation
+	from sort to buildMatchList, so it's done even if there's only 1 match.
+
 Mon Jun 14 15:01:07 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Document.cc(RetrieveHTTP): Show "Unknown host" message if
