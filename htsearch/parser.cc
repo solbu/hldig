@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.cc,v 1.22.2.4 2000/05/06 20:46:41 loic Exp $
+// $Id: parser.cc,v 1.22.2.5 2000/08/09 18:07:48 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -171,6 +171,8 @@ Parser::factor(int output)
 void
 Parser::phrase(int output)
 {
+  int skipRest = 0;
+
   if (match('"'))
     {
       List *wordList = new List;
@@ -187,9 +189,19 @@ Parser::phrase(int output)
 	  else if (lookahead == WORD)
 	    {
 	      weight *= current->weight;
-	      if (output)
-		perform_phrase(*wordList);
-	      
+	      if (output && !skipRest)
+		{
+		  perform_phrase(*wordList);
+		  if (wordList->Count() == 0)
+		    // just the start of the phrase has no results => skipRest
+		    skipRest = 1;
+		}
+	      else if (lookahead == DONE)
+		{
+		  setError("'\"'");
+		  break;
+		}
+
 	      lookahead = lexan();
 	    }
 
@@ -357,7 +369,7 @@ Parser::score(List *wordList, double weight)
     if (!wordList || wordList->Count() == 0)
       {
 	// We can't score an empty list, so this should be ignored...
-	list->isIgnore = 1;
+>       // (setting isIgnore as well would cause errors with AND)
 	return;
       }
 
