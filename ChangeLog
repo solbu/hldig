@@ -7,6 +7,8 @@ Sat Dec 19 17:53:44 1998  Alexander Bergolth  <leo@strike.wu-wien.ac.at>
 	allow_in_form. Does currently not work with some special variable
 	names!
 
+	* htcommon/defaults.cc: Added the two new options.	
+
 Sat Dec 19 11:21:38 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* contrib/htparsedoc/parse_word_doc.pl: Update from Jesse.

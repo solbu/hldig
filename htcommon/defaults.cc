@@ -4,6 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.25  1998/12/19 18:59:19  bergolth
+// Added defaults.
+//
 // Revision 1.24  1998/12/11 02:49:54  ghutchis
 // Added option for server_max_docs as a limit on the number of docs returned
 // from a server.
@@ -82,7 +85,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.24 1998/12/11 02:49:54 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.25 1998/12/19 18:59:19 bergolth Exp $";
 #endif
 
 #include <Configuration.h>
@@ -103,10 +106,12 @@ ConfigDefaults	defaults[] =
     // General defaults
     //
     {"add_anchors_to_excerpt",		"true"},
+    {"allow_in_form",			""},
     {"allow_numbers",			"false"},
     {"allow_virtual_hosts",		"true"},
     {"backlink_factor",                 "1000"},
     {"bad_extensions",			".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram"},
+    {"bad_querystr",                    ""},
     {"bad_word_list",			"${common_dir}/bad_words"},
     {"case_sensitive"                   "true"},
     {"create_image_list",		"false"},
