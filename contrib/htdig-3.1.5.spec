@@ -53,9 +53,24 @@ if [ "$1" = 1 ]; then
 	SERVERNAME="`grep '^ServerName' /etc/httpd/conf/httpd.conf | awk 'NR == 1 {print $2}'`"
 	[ -z "$SERVERNAME" ] && SERVERNAME="`hostname -f`"
 	[ -z "$SERVERNAME" ] && SERVERNAME="localhost"
-	echo "start_url:	http://$SERVERNAME/
+	sed 's/^start_url:.*/#&
+# (See end of file for this parameter.)/' /etc/htdig/htdig.conf > /tmp/ht.$$
+	cat /tmp/ht.$$ > /etc/htdig.conf
+	rm /tmp/ht.$$
+	cat >> /etc/htdig.conf <<!
+
+# Automatically set up by htdig RPM, from your current Apache httpd.conf...
+# Verify and configure these, and set maintainer above, before running
+# /usr/sbin/rundig.
+# See /usr/doc/htdig*/attrs.html for descriptions of attributes.
+
+# The URL(s) where htdig will start.  See also limit_urls_to above.
+start_url:	http://$SERVERNAME/
+
+# These attributes allow indexing server via local filesystem rather than HTTP.
 local_urls:	http://$SERVERNAME/=/home/httpd/html/
-local_user_urls:	http://$SERVERNAME/=/home/,/public_html/" >> /etc/htdig/htdig.conf
+local_user_urls:	http://$SERVERNAME/=/home/,/public_html/
+!
 
 fi
 
@@ -76,6 +91,9 @@ fi
 %doc CONFIG README htdoc/*
 
 %changelog
+* Thu Feb 17 2000 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+  - fixed %post script to add more descriptive entries in htdig.conf
+
 * Wed Feb 16 2000 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
   - updated to version 3.1.5
 

@@ -1,3 +1,8 @@
+Thu Feb 17 10:00:26 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/htdig-3.1.5.spec: Fix %post script to add more descriptive
+	htdig.conf entries.
+
 Wed Feb 16 16:26:05 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/htdig-3.1.5.spec, contrib/htdig-3.1.5-conf.patch,
