@@ -4,6 +4,9 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.39  1999/01/22 04:40:57  ghutchis
+// Fix thinko in that last patch.
+//
 // Revision 1.38  1999/01/22 04:37:47  ghutchis
 // Check if HTTP_REFERER is NULL, if so, use a dash. (Otherwise we'll kill some
 // syslog() services).
@@ -138,7 +141,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.38 1999/01/22 04:37:47 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.39 1999/01/22 04:40:57 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -1297,6 +1300,6 @@ Display::logSearch(int page, List *matches)
 	   input->exists("config") ? input->get("config") : "default",
 	   config["match_method"], input->get("words"), logicalWords.get(),
 	   nMatches, config["matches_per_page"],
-	   page, getenv("HTTP_REFERER")
+	   page, ref
 	   );
 }
