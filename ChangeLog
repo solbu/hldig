@@ -1,3 +1,9 @@
+Sun May 07 17:09:22 2000  Loic Dachary  <loic@senga.org>
+
+	* test/Makefile.am (clean-local): clean conf to prevent
+	  inconsistencies when re-configuring in a directory that
+	  is not the source directory.
+
 Sun May 07 05:07:23 2000  Loic Dachary  <loic@senga.org>
 
 	* db/mkinstalldir,test/benchmark: Add for installation purpose
