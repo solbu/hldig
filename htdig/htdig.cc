@@ -254,7 +254,7 @@ main(int ac, char **av)
     // URLs?
     //
     Retriever	retriever(flag);
-    if (minimalFile == 0)
+    if (minimalFile.length() == 0)
       {
 	List	*list = docs.URLs();
 	retriever.Initial(*list);
