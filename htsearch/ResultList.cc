@@ -10,21 +10,33 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ResultList.cc,v 1.6 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: ResultList.cc,v 1.7 1999/10/15 03:31:13 jtillman Exp $
 //
 
 #include "ResultList.h"
 #include "htString.h"
-
+#include "defaults.h"
 
 //*****************************************************************************
 // ResultList::ResultList()
 //
-ResultList::ResultList()
+ResultList::ResultList(const String& docFile, const String& indexFile, const String& excerptFile)
 {
+
+//This provides for a smarter "db-aware" result list, which can
+// retrieve the data for its matches
+    docDB.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
+    docDB.Read(docFile, indexFile, excerptFile);
+    dbIsOpen = 1;
     isIgnore = 0;
 }
 
+ResultList::ResultList()
+{
+		//This constructor creates the original "non-db-aware" ResultList
+		dbIsOpen = 0;
+    isIgnore = 0;
+}
 
 //*****************************************************************************
 // ResultList::~ResultList()
@@ -104,4 +116,25 @@ ResultList::elements()
     return list;
 }
 
+
+
+
+/** Returns a reference to the data for the 
+document matching the id provided */
+DocumentRef *ResultList::getDocumentRef(int docID){
+	if (dbIsOpen) {
+		return docDB[docID];
+	}
+	else
+		return 0;
+}
+
+
+/** Retrieves the excerpt for the document into 
+memory */
+void ResultList::readExcerpt(DocumentRef &ref)
+{
+	if (dbIsOpen)
+		docDB.ReadExcerpt(ref);
+}
 
