@@ -14,9 +14,10 @@
 //
 #if RELEASE
 // Put the compilation date in the object file.
-static char RCSid[] = "PDF.cc "__DATE__;
+static char RCSid[] = "$Id: PDF.cc,v 1.4 1998/11/30 01:52:24 ghutchis Exp $";
 #endif
 
+#include <sys/types.h>
 #include <sys/stat.h>
 #include "PDF.h"
 #include "URL.h"
