@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.cc,v 1.12.2.4 2000/05/10 18:23:43 loic Exp $
+// $Id: HtDateTime.cc,v 1.12.2.5 2000/11/30 17:01:09 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -23,11 +23,16 @@
 #include <string.h>
 #include <iostream.h>
 
+#ifndef HAVE_STRPTIME
+// mystrptime() declared in lib.h, defined in htlib/strptime.cc
+#define strptime(s,f,t)	mystrptime(s,f,t)
+#else /* HAVE_STRPTIME */
 #ifndef HAVE_STRPTIME_DECL
 extern "C" {
 extern char *strptime(const char *__s, const char *__fmt, struct tm *__tp);
 }
 #endif /* HAVE_STRPTIME_DECL */
+#endif /* HAVE_STRPTIME */
 
 ///////
    //    Static local variable : Visible only here !!!

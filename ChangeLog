@@ -1,3 +1,9 @@
+Thu Nov 30 10:49:10 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc: Remove unused strptime declaration.
+
+	* htlib/HtDateTime.cc: Use mystrptime if HAVE_STRPTIME not set.
+
 Wed Nov 29 23:31:10 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdb/htdb_stat.cc, htdb_load.cc, htdb_dump.cc: Make sure we

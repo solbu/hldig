@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.45 2000/11/30 05:47:15 ghutchis Exp $
+// $Id: Retriever.cc,v 1.72.2.46 2000/11/30 17:01:09 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -36,12 +36,6 @@
 #include <pwd.h>
 #include <signal.h>
 #include <stdio.h>
-
-#ifndef HAVE_STRPTIME_DECL
-extern "C" {
-extern char *strptime(const char *__s, const char *__fmt, struct tm *__tp);
-}
-#endif /* HAVE_STRPTIME_DECL */
 
 
 static int noSignal;
