@@ -563,8 +563,13 @@ int HtHTTP::ParseHeader()
     String	line;
     int		inHeader = 1;
 
-   while (inHeader)
-   {
+    if (_response._modification_time)
+    {
+	delete _response._modification_time;
+	_response._modification_time=NULL;
+    }
+    while (inHeader)
+    {
    
    	 if(! _connection.read_line(line, "\n"))
 	    return -1;  // Connection down
@@ -671,9 +676,13 @@ int HtHTTP::ParseHeader()
    	       	    cout << "Discarded header line: " << line << endl;
          }
       }
-   }
+    }
+    static int	modification_time_is_now =
+			config.Boolean("modification_time_is_now");
+    if (_response._modification_time == NULL && modification_time_is_now)
+	_response._modification_time = new HtDateTime;
     
-   return 1;
+    return 1;
    
 }
 

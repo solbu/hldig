@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.44 1999/06/17 02:19:24 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.45 1999/06/21 18:51:31 grdetil Exp $";
 #endif
 
 #include <signal.h>
@@ -465,10 +465,7 @@ Document::readHeader(Connection &c)
     int		inHeader = 1;
     int		returnStatus = Header_not_found;
 
-    if (config.Boolean("modification_time_is_now"))
-       modtime = time(NULL);
-    else
-       modtime = 0;
+    modtime = 0;
 
     while (inHeader)
     {
@@ -551,6 +548,10 @@ Document::readHeader(Connection &c)
 	    }
 	}
     }
+    static int	modification_time_is_now =
+			config.Boolean("modification_time_is_now");
+    if (modtime == 0 && modification_time_is_now)
+	modtime = time(NULL);
     if (debug > 2)
 	cout << "returnStatus = " << returnStatus << endl;
     return returnStatus;

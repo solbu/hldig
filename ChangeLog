@@ -1,3 +1,9 @@
+Mon Jun 21 14:33:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Document.cc(readHeader), htdig/HtHTTP.cc(ParseHeader): fix
+	handling of modification_time_is_now in readHeader, add similar code
+	to ParseHeader.
+
 Sun Jun 20 21:25:15 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	
 	* htdig/Retriever.h: Add hop parameter to got_href
