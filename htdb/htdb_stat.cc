@@ -6,6 +6,7 @@
  */
 
 #include "db_config.h"
+#include "htconfig.h"
 
 #ifndef lint
 static const char copyright[] =
