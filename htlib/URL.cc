@@ -4,6 +4,10 @@
 // Implementation of URL
 //
 // $Log: URL.cc,v $
+// Revision 1.12  1998/11/27 18:36:47  ghutchis
+//
+// Considers URLs with "%7E" to be equivalent to "~"
+//
 // Revision 1.11  1998/10/31 23:58:22  ghutchis
 //
 // Fixed compiler warning.
@@ -46,7 +50,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.11 1998/10/31 23:58:22 ghutchis Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.12 1998/11/27 18:36:47 ghutchis Exp $";
 #endif
 
 #include "URL.h"
@@ -394,6 +398,16 @@ void URL::normalizePath()
         newPath << _path.sub(i + 1).get();
         _path = newPath;
     }
+
+    // Finally change all "%7E" to "~" for sanity
+    while ((i = _path.indexOf("%7E")) >= 0)
+      {
+        String  newPath;
+        newPath << _path.sub(0, i).get();
+	newPath << "~";
+        newPath << _path.sub(i + 3).get();
+        _path = newPath;
+      }
 }
 
 //*****************************************************************************
