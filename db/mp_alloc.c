@@ -44,7 +44,18 @@ static int CDB___memp_clean_page __P((DB_MPOOL *, REGINFO *));
 
 /* Factor by which count of dirty pages must exceed clean pages before */
 /* cache is forced to flush */
-int CDB___mp_dirty_level = 3000;
+static int CDB___mp_dirty_level = 3000;
+
+void CDB_set_mp_diry_level(int new_mp_dirty_level)
+{
+    CDB___mp_dirty_level = new_mp_dirty_level;
+}
+
+int  CDB_get_mp_diry_level(void)
+{
+    return(CDB___mp_dirty_level);
+}
+
 
 /*
  * CDB___memp_alloc --
