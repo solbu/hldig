@@ -4,6 +4,11 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.22  1998/12/04 04:14:22  ghutchis
+//
+// Add new option "http_proxy_exclude" for servers that shouldn't use the
+// proxy, from a patch by Gilles Detillieux.
+//
 // Revision 1.21  1998/11/27 18:31:45  ghutchis
 //
 // Changed backlink_factor to 1000, description_factor to 150, match_method to
@@ -83,7 +88,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.21 1998/11/27 18:31:45 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.22 1998/12/04 04:14:22 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -135,6 +140,7 @@ ConfigDefaults	defaults[] =
     {"heading_factor_6",		"0"},
     {"htnotify_sender",			"webmaster@www"},
     {"http_proxy",			""},
+    {"http_proxy_exclude",		""},
     {"image_list",			"${database_base}.images"},
     {"iso_8601",                        "false"},
     {"keywords_factor",			"100"},
