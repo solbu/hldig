@@ -6,6 +6,10 @@
 // convertDocs are performed to ensure database integrity.
 //
 // $Log: db.cc,v $
+// Revision 1.3  1999/01/14 00:30:32  ghutchis
+// Fixed problem with db.NextDocID() being set incorrectly, reported by Roman
+// Dimov <roman@mark-itt.ru>.
+//
 // Revision 1.2  1999/01/12 03:59:29  ghutchis
 // Fixed thinko with setting the docIDs of new words in the destination
 // wordlist.
@@ -113,6 +117,10 @@ mergeDB()
 	delete old_ref;
     }    
     delete urls;
+    
+    // As reported by Roman Dimov, we must update db.NextDocID()
+    // because of all the added records...
+    db.IncNextDocID( merge_db.NextDocID() );
     merge_db.Close();
     db.Close();
 
@@ -270,9 +278,6 @@ mergeDB()
 	    continue;
 	  }
 
-	// Add the DocID offset...
-	wr.id += docIDOffset;
-
 	// Record the word in the new file
 	fprintf(wordlist, "%s", word.get());
 	if (wr.count != 1)
@@ -281,7 +286,7 @@ mergeDB()
 	  }
 	fprintf(wordlist, "\tl:%d\ti:%d\tw:%d",
 		wr.location,
-		wr.id,
+		wr.id + docIDOffset,
 		wr.weight);
 	if (wr.anchor != 0)
 	  {
