@@ -53,8 +53,11 @@
     <p>
       The boolean expression parser is a simple recursive descent
       parser with an operand stack. It knows how to deal with
-      "and", "or" and parenthesis. The result of the parser will be
-      one set of matches.
+      "not", "and", "or" and parenthesis. The result of the parser
+      will be one set of matches.<br>
+      Note that the operator "not" is used as the word 'without' and
+      is binary: You can not write "cat and not dog" or just "not
+      dog" but you can write "cat not dog".
     </p>
     <p>
       At this point, the matches are ranked. The rank of a match is
