@@ -5,13 +5,20 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_htsearch,v 1.12 2003/10/05 10:27:59 lha Exp $
+# $Id: t_htsearch,v 1.13 2003/12/14 06:02:50 lha Exp $
 #
 
-. $srcdir/t_htdig
+test_functions_action=--start-apache
+. ./test_functions
 
 config=$testdir/conf/htdig.conf
 tmp=/tmp/t_htsearch$$
+
+$htdig "$@" -t -i -c $config
+$htpurge -c $config
+
+test_functions_action=--stop-apache
+. ./test_functions
 
 try() {
     comment="$1"

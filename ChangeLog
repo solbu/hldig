@@ -1,5 +1,13 @@
 Sun Dec 14 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
+    * htdig/Server.cc:  Fix bug #851303.
+      Allow indexing if robots.txt has an empty "disallow".
+
+    * test/t_htdig, test/t_htsearch, test/htdocs/robots.txt:
+      Tests for the above.
+
+Sun Dec 14 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
     * htdig/htdig.cc, test/t_factors: Warn if config file has obsolete fields.
 
 Sun Dec 14 2003 Lachlan Andrew <lha@users.sourceforge.net>

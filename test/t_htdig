@@ -5,14 +5,32 @@
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
-# $Id: t_htdig,v 1.11 2003/09/27 06:53:29 lha Exp $
+# $Id: t_htdig,v 1.12 2003/12/14 06:02:50 lha Exp $
 #
+
+try() {
+    config=$1
+    expected=$2
+
+    $htdig "$@" -t -i -c $config
+    $htpurge -c $config
+
+    got=`./document -c $config -u | sort`
+
+    if [ "$expected" != "$got" ]
+    then
+	    fail "running htdig: expected 
+$expected
+but got
+$got"
+
+    fi
+}
 
 test_functions_action=--start-apache
 . ./test_functions
 
-$htdig "$@" -t -i -c $testdir/conf/htdig.conf
-$htpurge -c $testdir/conf/htdig.conf
+# complete dig of set 1
 
 expected='http://localhost:7400/set1/
 http://localhost:7400/set1/bad_local.htm
@@ -25,16 +43,25 @@ http://localhost:7400/set1/sub%2520dir/
 http://localhost:7400/set1/sub%2520dir/empty%20file.html
 http://localhost:7400/set1/title.html'
 
-got=`./document -c $testdir/conf/htdig.conf -u | sort`
+try $testdir/conf/htdig.conf "$expected"
 
-if [ "$expected" != "$got" ]
-then
-	fail "running htdig: expected 
-$expected
-but got
-$got"
 
-fi
+
+# Pretend we are another user; robots.txt bans us from seeing 'site*'
+
+conf=$testdir/conf/htdig.conf.tmp
+cp $testdir/conf/htdig.conf $conf
+set_attr robotstxt_name other
+
+expected='http://localhost:7400/set1/
+http://localhost:7400/set1/bad_local.htm
+http://localhost:7400/set1/script.html
+http://localhost:7400/set1/sub%2520dir/
+http://localhost:7400/set1/sub%2520dir/empty%20file.html
+http://localhost:7400/set1/title.html'
+
+try $conf "$expected"
+
 
 test_functions_action=--stop-apache
 . ./test_functions
