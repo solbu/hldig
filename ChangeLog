@@ -13,6 +13,7 @@ Fri Mar 12 09:13:28 CET 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
       htdig.1.in, htdump.1.in, htfuzzy.1.in, htload.1.in, htmerge.1.in, htnotify.1.in,
       htpurge.1.in, htsearch.1.in, htstat.1.in, rundig.1.in, htdigconfig.8.in)
     * regenerated configure scripts with autoreconf
+    * fixes bug #909674
 
 Sat 21 Feb 2004 Lachlan Andrew <lha at users.sourceforge.net>
 
