@@ -35,27 +35,27 @@ BIN_DIR=               $(exec_prefix)/bin
 # CONFIG_DIR
 # This is the directory that contains ht://Dig configuration files
 #
-CONFIG_DIR=            $(DEST)/conf
+CONFIG_DIR=            @CONFIG_DIR@
 
 #
 # COMMON_DIR
 # This is the directory for files that can be shared between different
 # databases.
 #
-COMMON_DIR=            $(DEST)/common
+COMMON_DIR=            @COMMON_DIR@
 
 #
 # DATABASE_DIR
 # The default directory where the search databases will reside.
 #
-DATABASE_DIR=          $(DEST)/db
+DATABASE_DIR=          @DATABASE_DIR@
 
 #
 # DEFAULT_CONFIG_FILE
 # This macro defines where the various programs will look for a configuration
 # file.
 #
-DEFAULT_CONFIG_FILE=   $(CONFIG_DIR)/htdig.conf
+DEFAULT_CONFIG_FILE=   @DEFAULT_CONFIG_FILE@
 
 #
 # CGIBIN_DIR
@@ -75,7 +75,7 @@ IMAGE_DIR=              @IMAGE_DIR@
 # IMAGE_URL_PREFIX
 # This is the URL to prefix the images placed in IMAGE_DIR.
 #
-IMAGE_URL_PREFIX=        /htdig
+IMAGE_URL_PREFIX=        @IMAGE_URL_PREFIX@
 
 #
 # SEARCH_DIR
@@ -89,5 +89,5 @@ SEARCH_DIR=		@SEARCH_DIR@
 # Set this to the name you want to give to the search form.  This form
 # will be located in the SEARCH_DIR directory.
 #
-SEARCH_FORM=            search.html
+SEARCH_FORM=            @SEARCH_FORM@
 

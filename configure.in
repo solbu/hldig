@@ -30,15 +30,44 @@ dnl Get any --with or --disable flags now
 dnl This looks a little messy, but it's word-wrapping problems :-(
 AC_ARG_ENABLE(zlib,[  --disable-zlib          do not compile with zlib support],
 	WITH_ZLIB=$enableval, WITH_ZLIB="yes")
-AC_ARG_WITH(cgi-bin-dir, [  --with-cgi-bin-dir=DIR  where your cgi-bin directory is],
-	CGIBIN_DIR="$withval", CGIBIN_DIR="/opt/www/cgi-bin")
+
+AC_ARG_WITH(config-dir, [  --with-config-dir=DIR  where your config directory is [default=$ac_default_prefix/conf]],
+ CONFIG_DIR="$withval", CONFIG_DIR='${prefix}/conf')
+AC_SUBST(CONFIG_DIR)
+
+AC_ARG_WITH(common-dir, [  --with-common-dir=DIR  where your common directory is [default=$ac_default_prefix/share/htdig]],
+ COMMON_DIR="$withval", COMMON_DIR='${datadir}/htdig')
+AC_SUBST(COMMON_DIR)
+
+AC_ARG_WITH(database-dir, [  --with-database-dir=DIR  where your database directory is [default=$ac_default_prefix/var/htdig]],
+ DATABASE_DIR="$withval", DATABASE_DIR='${localstatedir}/htdig')
+AC_SUBST(DATABASE_DIR)
+
+
+AC_ARG_WITH(default-config-file, [  --with-default-config-file=FILE Where the various programs will look for a configuration file  [default=$ac_default_prefix/conf/htdig.conf]],
+ DEFAULT_CONFIG_FILE="$withval", DEFAULT_CONFIG_FILE='${CONFIG_DIR}/htdig.conf')
+AC_SUBST(DEFAULT_CONFIG_FILE)
+
+AC_ARG_WITH(cgi-bin-dir, [  --with-cgi-bin-dir=DIR  where your cgi-bin directory is  [default=$ac_default_prefix/cgi-bin]],
+ CGIBIN_DIR="$withval", CGIBIN_DIR='${prefix}/cgi-bin')
 AC_SUBST(CGIBIN_DIR)
-AC_ARG_WITH(image-dir, [  --with-image-dir=DIR    where the ht://Dig images are installed],
-	IMAGE_DIR="$withval", IMAGE_DIR="/opt/www/htdocs/htdig")
+
+AC_ARG_WITH(image-dir, [  --with-image-dir=DIR    where the ht://Dig images are installed [default=$ac_default_prefix/htdocs/htdig]],
+ IMAGE_DIR="$withval", IMAGE_DIR='${prefix}/htdocs/htdig')
 AC_SUBST(IMAGE_DIR)
-AC_ARG_WITH(search-dir, [  --with-search-dir=DIR   where the sample search form should be installed],
-	SEARCH_DIR="$withval", SEARCH_DIR="/opt/www/htdocs/htdig")
+
+AC_ARG_WITH(search-dir, [  --with-search-dir=DIR   where the sample search form should be installed [default=$ac_default_prefix/htdocs/htdig]],
+ SEARCH_DIR="$withval", SEARCH_DIR='${prefix}/htdocs/htdig')
 AC_SUBST(SEARCH_DIR)
+
+AC_ARG_WITH(image-url-prefix, [  --with-image-url-prefix=LOCATION   the URL path to the installed images [default=/htdig]],
+ IMAGE_URL_PREFIX="$withval", IMAGE_URL_PREFIX='/htdig')
+AC_SUBST(IMAGE_URL_PREFIX)
+
+AC_ARG_WITH(search-form, [  --with-search-form=FILE   the name for the sample search form [default=search.html]],
+ SEARCH_FORM="$withval", SEARCH_FORM='search.html')
+AC_SUBST(SEARCH_FORM)
+
 
 dnl While we're at it, let's work out the program transformations
 AC_ARG_PROGRAM
