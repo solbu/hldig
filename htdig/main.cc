@@ -247,7 +247,7 @@ main(int ac, char **av)
 void usage()
 {
     cout << "usage: htdig [-v][-i][-c configfile][-t]\n";
-    cout << "This program is part of ht://Dig " << HTDIG_VERSION << "\n\n";
+    cout << "This program is part of ht://Dig " << VERSION << "\n\n";
     cout << "Options:\n";
 
     cout << "\t-v\tVerbose mode.  This increases the verbosity of the\n";

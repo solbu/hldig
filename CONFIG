@@ -12,7 +12,7 @@ prefix=                 /opt/www/htdig
 
 # This specifies the root of the directory tree to be used for programs
 # installed by ht://Dig
-exec_prefix=            $(prefix)
+exec_prefix=            ${prefix}
 
 #
 # Please modify the variables below to reflect your preferences.

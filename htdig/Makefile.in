@@ -1,4 +1,4 @@
-include @HTDIG_TOP@/Makefile.config
+include @top_srcdir@/Makefile.config
 
 OBJS = Document.o HTML.o Images.o \
 		Parsable.o Plaintext.o Postscript.o \
@@ -24,4 +24,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) @CPPFLAGS@ $(CXXFLAGS) -- $(OBJS)
 
-main.o:	@HTDIG_TOP@/CONFIG
+main.o:	@top_srcdir@/CONFIG

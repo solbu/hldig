@@ -1,4 +1,4 @@
-include @HTDIG_TOP@/Makefile.config
+include @top_srcdir@/Makefile.config
 
 OBJS=		htnotify.o 
 
@@ -23,4 +23,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) @CPPFLAGS@ $(CXXFLAGS) -- $(OBJS)
 
-htnotify.o:		@HTDIG_TOP@/CONFIG
+htnotify.o:		@top_srcdir@/CONFIG

@@ -1,4 +1,4 @@
-include @HTDIG_TOP@/Makefile.config
+include @top_srcdir@/Makefile.config
 
 OBJS=	Configuration.o Connection.o Database.o \
 		Dictionary.o DB2_db.o \

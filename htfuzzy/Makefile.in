@@ -1,4 +1,4 @@
-include @HTDIG_TOP@/Makefile.config
+include @top_srcdir@/Makefile.config
 
 OBJS=		Endings.o EndingsDB.o Exact.o \
 		Fuzzy.o Metaphone.o Soundex.o \
@@ -32,4 +32,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) @CPPFLAGS@ $(CXXFLAGS) -- $(OBJS)
 
-htfuzzy.o:	@HTDIG_TOP@/CONFIG
+htfuzzy.o:	@top_srcdir@/CONFIG

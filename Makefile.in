@@ -1,4 +1,4 @@
-include @HTDIG_TOP@/Makefile.config
+include @top_srcdir@/Makefile.config
 
 DIRS=		@DB_DIR@ @RX_DIR@ \
 		htlib htcommon htfuzzy htdig \

@@ -4,9 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
-// Revision 1.14  1998/09/30 17:31:50  ghutchis
+// Revision 1.15  1998/10/02 17:07:31  ghutchis
 //
-// Changes for 3.1.0b2
+// More configure changes
 //
 // Revision 1.13  1998/09/23 14:58:21  ghutchis
 //
@@ -62,7 +62,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.14 1998/09/30 17:31:50 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.15 1998/10/02 17:07:31 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -170,7 +170,7 @@ ConfigDefaults	defaults[] =
     {"use_meta_description",            "false"},
     {"user_agent",			"htdig"},
     {"valid_punctuation",		".-_/!#$%^&'"},
-    {"version",				HTDIG_VERSION},
+    {"version",				VERSION},
     {"word_db",				"${database_base}.words.db"},
     {"word_list",			"${database_base}.wordlist"},
     {0,					0},

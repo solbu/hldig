@@ -1,4 +1,4 @@
-include @HTDIG_TOP@/Makefile.config
+include @top_srcdir@/Makefile.config
 
 OBJS=		Display.o DocMatch.o ResultList.o ResultMatch.o \
 		Template.o TemplateList.o WeightWord.o htsearch.o \
@@ -25,4 +25,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) @CPPFLAGS@ $(CXXFLAGS) -- $(OBJS)
 
-htsearch.o:		@HTDIG_TOP@/CONFIG
+htsearch.o:		@top_srcdir@/CONFIG

@@ -1,4 +1,4 @@
-include @HTDIG_TOP@/Makefile.config
+include @top_srcdir@/Makefile.config
 
 OBJS=	DocumentDB.o DocumentRef.o WordList.o \
 		defaults.o 
@@ -29,4 +29,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) $(CXXFLAGS) @CPPFLAGS@ -- $(OBJS)
 
-defaults.o:		@HTDIG_TOP@/CONFIG
+defaults.o:		@top_srcdir@/CONFIG

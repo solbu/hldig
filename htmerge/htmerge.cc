@@ -4,6 +4,10 @@
 // Implementation of htmerge
 //
 // $Log: htmerge.cc,v $
+// Revision 1.5  1998/10/02 17:07:32  ghutchis
+//
+// More configure changes
+//
 // Revision 1.4  1998/08/03 16:50:43  ghutchis
 //
 // Fixed compiler warnings under -Wall
@@ -144,7 +148,7 @@ int main(int ac, char **av)
 void usage()
 {
     cout << "usage: htmerge [-v][-d][-w][-c configfile]\n";
-    cout << "This program is part of ht://Dig " << HTDIG_VERSION << "\n\n";
+    cout << "This program is part of ht://Dig " << VERSION << "\n\n";
     cout << "Options:\n";
     cout << "\t-v\tVerbose mode.  This increases the verbosity of the\n";
     cout << "\t\tprogram.  Using more than 2 is probably only useful\n";

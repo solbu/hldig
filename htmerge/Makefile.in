@@ -1,4 +1,4 @@
-include @HTDIG_TOP@/Makefile.config
+include @top_srcdir@/Makefile.config
 
 OBJS=		docs.o htmerge.o words.o 
 
@@ -22,4 +22,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) $(CXXFLAGS) -- $(OBJS)
 
-htmerge.o:		@HTDIG_TOP@/CONFIG
+htmerge.o:		@top_srcdir@/CONFIG
