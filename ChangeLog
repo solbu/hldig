@@ -8,6 +8,9 @@ Mon Oct 26 15:27:28 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* README: Cleaned up for new URLs, version numbers, etc.
 
+	* htsearch/htsearch.cc: Added patch by Esa Ahola fixing bug with
+	not ingoring bad_words properly.
+	
 Wed Oct 21 13:30:05 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htlib/timegm.c: Corrected Oct 17 change. Should now work. :-)

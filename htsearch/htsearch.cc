@@ -4,6 +4,10 @@
 // Implementation of htsearch
 //
 // $Log: htsearch.cc,v $
+// Revision 1.9  1998/10/26 20:34:33  ghutchis
+//
+// Added patch by Esa Ahola to fix bug with not properly ignoring bad_words
+//
 // Revision 1.8  1998/09/30 17:31:51  ghutchis
 //
 // Changes for 3.1.0b2
@@ -36,7 +40,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.8 1998/09/30 17:31:51 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.9 1998/10/26 20:34:33 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -504,7 +508,7 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
     for (i = 0; i < tempWords.Count(); i++)
     {
 	WeightWord	*ww = (WeightWord *) tempWords[i];
-	if (ww->weight > 0)
+	if (ww->weight > 0 && !ww->isIgnore)
 	{
 	    //
 	    // Apply all the algorithms to the word.
