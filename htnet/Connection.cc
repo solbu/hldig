@@ -7,12 +7,12 @@
 //             mixed in...
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1999-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.3.2.6 2000/03/02 17:58:48 angus Exp $
+// $Id: Connection.cc,v 1.3.2.7 2000/03/31 04:28:31 ghutchis Exp $
 //
 
 #include "Connection.h"
@@ -663,7 +663,7 @@ int Connection::Read_Partial(char *buffer, int maxlength)
       else
           count = -1;         // Input timed out
     }
-    while (count < 0 && errno == EINTR && !need_io_stop);
+    while (count <= 0 && errno == EINTR && !need_io_stop);
     need_io_stop = 0;
 
     return count;
