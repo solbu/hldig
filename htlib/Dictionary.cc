@@ -4,6 +4,9 @@
 // Implementation of the Dictionary class
 //
 // $Log: Dictionary.cc,v $
+// Revision 1.3  1998/12/05 00:51:13  ghutchis
+// Added check for empty dictionaries.
+//
 // Revision 1.2  1998/01/05 05:20:43  turtle
 // Fixed memory leaks
 //
@@ -229,6 +232,9 @@ Dictionary::Remove(char *name)
 //
 Object *Dictionary::Find(char *name)
 {
+    if (!count)
+	return NULL;
+
     unsigned int	hash = hashCode(name);
     int			index = hash % tableLength;
     DictionaryEntry	*e;
