@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.20 1999/09/08 17:10:40 loic Exp $
+// $Id: DocumentDB.cc,v 1.21 1999/09/09 13:55:37 loic Exp $
 //
 
 #include "DocumentDB.h"
@@ -351,7 +351,7 @@ int DocumentDB::CreateSearchDB(char *filename)
     FILE		*fl;
     String		docKey(sizeof(int));
 
-    fl = popen(filename, "w");
+    fl = fopen(filename, "w");
 
     dbf->Start_Get();
     while ((strkey = dbf->Get_Next()))
