@@ -6,6 +6,10 @@
 // AWS	10/13/93	Fixed the constructors and operator = routines so that a NULL can be passed
 //
 // $Log: String.cc,v $
+// Revision 1.10  1998/11/27 18:35:58  ghutchis
+//
+// Changed MinimumAllocationSize to cut down on memory usage on small strings.
+//
 // Revision 1.9  1998/09/10 04:16:26  ghutchis
 //
 // More bug fixes.
@@ -41,7 +45,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.9 1998/09/10 04:16:26 ghutchis Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.10 1998/11/27 18:35:58 ghutchis Exp $";
 #endif
 
 
@@ -54,7 +58,7 @@ static char	RCSid[] = "$Id: String.cc,v 1.9 1998/09/10 04:16:26 ghutchis Exp $";
 #include <stdlib.h>
 #include <Object.h>
 
-const int MinimumAllocationSize = 64;	// Should be power of two.
+const int MinimumAllocationSize = 4;	// Should be power of two.
 int next_power_of_2(int n);
 
 String::String()
@@ -610,7 +614,7 @@ int next_power_of_2(int n)
     // There must be a faster way...
     //
     int	result = MinimumAllocationSize;
-	
+    
     while (result < n)
 	result <<= 1;
 
