@@ -4,6 +4,9 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.12  1999/01/06 05:42:12  ghutchis
+// Do not add non-word characters to the wordlist.
+//
 // Revision 1.11  1999/01/05 19:35:42  ghutchis
 // Fix dereferencing mistake in last version.
 //
@@ -322,20 +325,36 @@ void DocumentRef::AddDescription(char *d)
 
     words->DocumentID(docID);
     
-    char    *w = strtok(desc, " ,\t\r\n");
-    while (w)
-      {
-	if (strlen(w) >= config.Value("minimum_word_length", 3))
-	  {
-	    String word = w;
-	    word.lowercase();
-	    word.remove(config["valid_punctuation"]);
-	    if (word.length() >= config.Value("minimum_word_length", 3))
-	      words->Word(word, 0, 0, config.Double("description_factor"));
-	  }
-	w = strtok(0, " ,\t\r\n");
-      }
-    w = '\0';
+    // Parse words, taking care of valid_punctuation.
+    char *p                   = desc;
+    char *valid_punctuation   = config["valid_punctuation"];
+    int   minimum_word_length = config.Value("minimum_word_length", 3);
+
+    // Not restricted to this size, just used as a hint.
+    String word(MAX_WORD_LENGTH);
+
+    if (!valid_punctuation)
+	valid_punctuation = "";
+
+    while (*p)
+    {
+      // Reset contents before adding chars each round.
+      word = 0;
+
+      while (*p && (isalnum(*p) || strchr(valid_punctuation, *p)))
+        word << *p++;
+
+      word.remove(valid_punctuation);
+
+      if (word.length() >= minimum_word_length)
+        // The wordlist takes care of lowercasing; just add it.
+        words->Word(word, 0, 0, config.Double("description_factor"));
+
+      // No need to count in valid_punctuation for the beginning-char.
+      while (*p && !isalnum(*p))
+        p++;
+    }
+
     // And let's flush the words!
     words->Flush();
     

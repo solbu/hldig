@@ -1,3 +1,8 @@
+Wed Jan  6 05:53:02 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htcommon/DocumentRef.cc(AddDescription): Do not add non-word
+	characters to the wordlist.
+
 Wed Jan  6 00:28:19 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* cf_byname.html: Fixed html syntax "<br" and "/a>".
