@@ -1,4 +1,6 @@
-Thu Nov 30 14:37:15 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Thu Nov 30 14:41:58 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/Makefile.am: Removed howitworks.html from EXTRA_DIST.
 
 	* Makefile.in (distdir): Added missing variable name 'd' to cp -pr.
 
