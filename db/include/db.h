@@ -112,6 +112,7 @@ struct __db_txn_stat;	typedef struct __db_txn_stat DB_TXN_STAT;
 struct __db_txnmgr;	typedef struct __db_txnmgr DB_TXNMGR;
 struct __db_txnregion;	typedef struct __db_txnregion DB_TXNREGION;
 struct __dbc;		typedef struct __dbc DBC;
+struct __db_cmpr_info;	typedef struct __db_cmpr_info DB_CMPR_INFO;
 
 /* Key/data structure -- a Data-Base Thang. */
 struct __db_dbt {
@@ -134,6 +135,21 @@ struct __db_dbt {
  * There are a set of functions that the application can replace with its
  * own versions, and some other knobs which can be turned at run-time.
  */
+
+/*
+ * Information from user specified page compression
+ */
+struct __db_cmpr_info {
+    int (*compress)                     /* Compression function */
+	__P((const u_int8_t*, int, u_int8_t**, int*,void *));
+    int (*uncompress)                   /* Uncompression function */
+	__P((const u_int8_t*, int, u_int8_t*, int,void *));
+    u_int8_t coefficient;	        /* Compression factor is 1<<coefficient  */
+    u_int8_t max_npages;                /* Max number of pages  worst case */
+    void         *user_data;            /* Persistent information for compression functions */
+
+};
+
 #define	DB_FUNC_CLOSE	 1		/* POSIX 1003.1 close. */
 #define	DB_FUNC_DIRFREE	 2		/* DB: free directory list. */
 #define	DB_FUNC_DIRLIST	 3		/* DB: create directory list. */
@@ -200,6 +216,7 @@ struct __db_dbt {
 #define	DB_TEMPORARY	      0x010000	/* Remove on last close (internal). */
 #define	DB_TRUNCATE	      0x020000	/* O_TRUNCATE: replace existing DB. */
 #define	DB_FCNTL_LOCKING      0x040000	/* Undocumented: fcntl(2) locking. */
+#define DB_COMPRESS	      0x080000  /* Transparent I/O compression */
 
 /*
  * Deadlock detector modes; used in the DBENV structure to configure the
@@ -246,6 +263,8 @@ struct __db_env {
 	DB_MPOOL	*mp_info;	/* Return from memp_open(). */
 	size_t		 mp_mmapsize;	/* Maximum file size for mmap. */
 	size_t		 mp_size;	/* Bytes in the mpool cache. */
+                                        /* Compression info. */
+	DB_CMPR_INFO   * mp_cmpr_info;
 
 	/* Transactions. */
 	DB_TXNMGR	*tx_info;	/* Return from txn_open(). */
@@ -288,6 +307,7 @@ typedef enum {
 	DB_RECNO,			/* Fixed and variable-length records. */
 	DB_UNKNOWN			/* Figure it out on open. */
 } DBTYPE;
+
 
 #define	DB_BTREEVERSION	6		/* Current btree version. */
 #define	DB_BTREEOLDVER	6		/* Oldest btree version supported. */
@@ -473,6 +493,7 @@ struct __db {
 #define	DB_RE_PAD	0x004000	/* DB_PAD (internal). */
 #define	DB_RE_RENUMBER	0x008000	/* DB_RENUMBER (internal). */
 #define	DB_RE_SNAPSHOT	0x010000	/* DB_SNAPSHOT (internal). */
+#define DB_AM_CMPR	0x020000	/* Transparent I/O compression */
 	u_int32_t flags;
 };
 

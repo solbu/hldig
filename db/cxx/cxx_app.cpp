@@ -108,15 +108,17 @@ void DbEnv::set_error_model(ErrorModel model)
     error_model_ = model;
 }
 
-int DbEnv::runtime_error(const char *caller, int err,
-                         int in_destructor, int force_throw)
+int DbEnv::runtime_error(const char *, int err,
+                         int, int)
 {
+#ifdef USETHROW
     int throwit = (!currentApp ||
                    (currentApp && currentApp->error_model_ == Exception));
 
     if ((throwit && !in_destructor) || force_throw) {
         throw DbException(caller, err);
     }
+#endif /* USETHROW */
     return err;
 }
 
@@ -181,6 +183,7 @@ DB_WO_ACCESS_BEFORE_APPINIT(DbEnv, u_int32_t, lk_detect, lk_detect)
 DB_WO_ACCESS_BEFORE_APPINIT(DbEnv, u_int32_t, lg_max, lg_max)
 DB_WO_ACCESS_BEFORE_APPINIT(DbEnv, size_t, mp_mmapsize, mp_mmapsize)
 DB_WO_ACCESS_BEFORE_APPINIT(DbEnv, size_t, mp_size, mp_size)
+DB_WO_ACCESS_BEFORE_APPINIT(DbEnv, DB_CMPR_INFO *, mp_cmpr_info, mp_cmpr_info)
 DB_WO_ACCESS_BEFORE_APPINIT(DbEnv, unsigned int, tx_max, tx_max)
 DB_WO_ACCESS_BEFORE_APPINIT(DbEnv, DbEnv::tx_recover_fcn, tx_recover, tx_recover)
 DB_WO_ACCESS_BEFORE_APPINIT(DbEnv, u_int32_t, flags, flags)

@@ -47,8 +47,14 @@ memp_fopen(dbmp, path, flags, mode, pagesize, finfop, retp)
 
 	/* Validate arguments. */
 	if ((ret = __db_fchk(dbmp->dbenv,
-	    "memp_fopen", flags, DB_CREATE | DB_NOMMAP | DB_RDONLY)) != 0)
+	    "memp_fopen", flags, DB_COMPRESS | DB_CREATE | DB_NOMMAP | DB_RDONLY)) != 0)
 		return (ret);
+
+	/*
+	 * Transparent I/O compression does not work on mmap'd files.
+	 */
+	if(LF_ISSET(DB_COMPRESS))
+	  LF_SET(DB_NOMMAP);
 
 	/* Require a non-zero pagesize. */
 	if (pagesize == 0) {
@@ -126,6 +132,16 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 	dbmfp->ref = 1;
 	if (LF_ISSET(DB_RDONLY))
 		F_SET(dbmfp, MP_READONLY);
+	if (LF_ISSET(DB_COMPRESS)) {
+#ifdef HAVE_LIBZ
+		F_SET(dbmfp, MP_CMPR);
+#else /* HAVE_LIBZ */	    
+		__db_err(dbenv,
+			 "memp_fopen: not compiled with zlib, compression not available");
+		ret = EINVAL;
+		goto err;
+#endif /* HAVE_LIBZ */
+	}
 
 	if (path == NULL) {
 		if (LF_ISSET(DB_RDONLY)) {
@@ -134,8 +150,17 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 			ret = EINVAL;
 			goto err;
 		}
+#ifdef HAVE_LIBZ
+		if (LF_ISSET(DB_COMPRESS)) {
+			__db_err(dbenv,
+			    "memp_fopen: temporary files can't be compressed");
+			ret = EINVAL;
+			goto err;
+		}
+#endif /* HAVE_LIBZ */
 		last_pgno = 0;
 	} else {
+	       size_t disk_pagesize = F_ISSET(dbmfp, MP_CMPR) ? DB_CMPR_DIVIDE(dbenv, pagesize) : pagesize;
 		/* Get the real name for this file and open it. */
 		if ((ret = __db_appname(dbenv,
 		    DB_APP_DATA, NULL, path, 0, NULL, &rpath)) != 0)
@@ -167,7 +192,7 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 		}
 
 		/* Page sizes have to be a power-of-two, ignore mbytes. */
-		if (bytes % pagesize != 0) {
+		if (bytes % disk_pagesize != 0) {
 			__db_err(dbenv,
 			    "%s: file size not a multiple of the pagesize",
 			    rpath);
@@ -175,8 +200,8 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 			goto err;
 		}
 
-		last_pgno = mbytes * (MEGABYTE / pagesize);
-		last_pgno += bytes / pagesize;
+		last_pgno = mbytes * (MEGABYTE / disk_pagesize);
+		last_pgno += bytes / disk_pagesize;
 
 		/* Correction: page numbers are zero-based, not 1-based. */
 		if (last_pgno != 0)
@@ -192,6 +217,12 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 				goto err;
 			finfop->fileid = idbuf;
 		}
+#ifdef HAVE_LIBZ
+		if (LF_ISSET(DB_COMPRESS)) {
+		  if((ret = __memp_cmpr_open(path, dbenv, &dbmfp->cmpr_context)) != 0)
+		    goto err;
+		}
+#endif /* HAVE_LIBZ */
 	}
 
 	/*
@@ -476,6 +507,15 @@ memp_fclose(dbmfp)
 			t_ret = ret;
 	}
 
+#ifdef HAVE_LIBZ
+	if(F_ISSET(dbmfp, MP_CMPR)) {
+	  if((ret = __memp_cmpr_close(&dbmfp->cmpr_context)) != 0)
+		__db_err(dbmp->dbenv,
+			 "%s: %s", __memp_fn(dbmfp), strerror(ret));
+	  F_CLR(dbmfp, MP_CMPR);
+	}
+#endif /* HAVE_LIBZ */
+	
 	/* Free memory. */
 	if (dbmfp->mutexp != NULL) {
 		LOCKREGION(dbmp);

@@ -113,12 +113,18 @@ db_open(fname, type, flags, mode, dbenv, dbinfo, dbpp)
 
 	/* Validate arguments. */
 #ifdef HAVE_SPINLOCKS
-#define	OKFLAGS	(DB_CREATE | DB_FCNTL_LOCKING | DB_NOMMAP | DB_RDONLY | DB_THREAD | DB_TRUNCATE)
+#define	OKFLAGS	(DB_COMPRESS | DB_CREATE | DB_FCNTL_LOCKING | DB_NOMMAP | DB_RDONLY | DB_THREAD | DB_TRUNCATE)
 #else
-#define	OKFLAGS	(DB_CREATE | DB_FCNTL_LOCKING | DB_NOMMAP | DB_RDONLY | DB_TRUNCATE)
+#define	OKFLAGS	(DB_COMPRESS | DB_CREATE | DB_FCNTL_LOCKING | DB_NOMMAP | DB_RDONLY | DB_TRUNCATE)
 #endif
 	if ((ret = __db_fchk(dbenv, "db_open", flags, OKFLAGS)) != 0)
 		return (ret);
+
+	/*
+	 * Transparent I/O compression does not work on mmap'd files.
+	 */
+	if(LF_ISSET(DB_COMPRESS))
+	  LF_SET(DB_NOMMAP);
 
 	if (dbenv != NULL) {
 		/*
@@ -164,6 +170,14 @@ db_open(fname, type, flags, mode, dbenv, dbinfo, dbpp)
 		F_SET(dbp, DB_AM_RDONLY);
 	if (LF_ISSET(DB_THREAD))
 		F_SET(dbp, DB_AM_THREAD);
+	if (LF_ISSET(DB_COMPRESS)) {
+#ifdef HAVE_LIBZ
+		F_SET(dbp, DB_AM_CMPR);
+#else /* HAVE_LIBZ */
+		__db_err(dbenv, "not compiled with libz, compression not available");
+		goto einval;
+#endif /* HAVE_LIBZ */
+	}
 
 	/* Convert the dbinfo structure flags. */
 	if (dbinfo != NULL) {
@@ -488,7 +502,11 @@ empty:	/*
 		F_SET(dbp, DB_AM_PGDEF);
 		dbp->pgsize = 8 * 1024;
 	}
-	if (dbp->pgsize < DB_MIN_PGSIZE ||
+	/*
+	 * If compression is on, the minimum page size must be multiplied
+	 * by the compression factor.
+	 */
+	if (dbp->pgsize < (F_ISSET(dbp, DB_AM_CMPR) ? DB_CMPR_MULTIPLY(dbenv, DB_MIN_PGSIZE) : DB_MIN_PGSIZE) ||
 	    dbp->pgsize > DB_MAX_PGSIZE ||
 	    dbp->pgsize & (sizeof(db_indx_t) - 1)) {
 		__db_err(dbenv, "illegal page size");
@@ -615,9 +633,13 @@ empty:	/*
 	finfo.pgcookie = &pgcookie;
 	finfo.fileid = dbp->fileid;
 	finfo.lsn_offset = 0;
-	finfo.clear_len = DB_PAGE_CLEAR_LEN;
+	/*
+	 * Better compression is achieved if the page does not contain random data.
+	 */
+	finfo.clear_len = F_ISSET(dbp, DB_AM_CMPR) ? 0 : DB_PAGE_CLEAR_LEN;
 	if ((ret = memp_fopen(dbp->mp, fname,
-	    F_ISSET(dbp, DB_AM_RDONLY) ? DB_RDONLY : 0,
+	    ((F_ISSET(dbp, DB_AM_RDONLY) ? DB_RDONLY : 0) |
+	     (F_ISSET(dbp, DB_AM_CMPR) ? DB_COMPRESS : 0)),
 	    0, dbp->pgsize, &finfo, &dbp->mpf)) != 0)
 		goto err;
 

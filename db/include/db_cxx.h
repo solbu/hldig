@@ -680,6 +680,9 @@ public:
     // Bytes in the mpool cache.
     void set_mp_size(size_t);
 
+    // Comrpession info.
+    void set_mp_cmpr_info(DB_CMPR_INFO *);
+
 
     ////////////////////////////////////////////////////////////////
     // Transactions.

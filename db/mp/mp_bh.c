@@ -185,7 +185,15 @@ __memp_pgread(dbmfp, bhp, can_create)
 		db_io.pgno = bhp->pgno;
 		db_io.buf = bhp->buf;
 
-		ret = __os_io(&db_io, DB_IO_READ, &nr);
+#ifdef HAVE_LIBZ
+		if(F_ISSET(dbmfp, MP_CMPR)) {
+		  ret = __memp_cmpr(dbmfp, bhp, &db_io, DB_IO_READ, &nr);
+		} else {
+#endif /* HAVE_LIBZ */
+		  ret = __os_io(&db_io, DB_IO_READ, &nr);
+#ifdef HAVE_LIBZ
+		}
+#endif /* HAVE_LIBZ */
 	}
 
 	created = 0;
@@ -355,7 +363,16 @@ __memp_pgwrite(dbmfp, bhp, restartp, wrotep)
 	db_io.pagesize = db_io.bytes = mfp->stat.st_pagesize;
 	db_io.pgno = bhp->pgno;
 	db_io.buf = bhp->buf;
-	if ((ret = __os_io(&db_io, DB_IO_WRITE, &nw)) != 0) {
+#ifdef HAVE_LIBZ
+	if(F_ISSET(dbmfp, MP_CMPR)) {
+	  ret = __memp_cmpr(dbmfp, bhp, &db_io, DB_IO_WRITE, &nw);
+	} else {
+#endif /* HAVE_LIBZ */
+	  ret = __os_io(&db_io, DB_IO_WRITE, &nw);
+#ifdef HAVE_LIBZ
+	}
+#endif /* HAVE_LIBZ */
+	if (ret != 0) {
 		__db_panic(dbenv, ret);
 		fail = "write";
 		goto syserr;
@@ -536,6 +553,12 @@ __memp_bhfree(dbmp, mfp, bhp, free_mem)
 	 * and data for real.
 	 */
 	if (free_mem) {
+	       if(bhp->chain) {
+#ifdef DEBUG
+		   fprintf(stderr,"__memp_bhfree:: freeing chain:%6x\n",bhp->chain);
+#endif
+		    __db_shalloc_free(dbmp->addr, bhp->chain);
+	       }
 		__db_shalloc_free(dbmp->addr, bhp);
 		--dbmp->mp->stat.st_page_clean;
 	}
