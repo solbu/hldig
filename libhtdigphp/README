@@ -1,0 +1,21 @@
+README for libhtdigphp
+
+1)First
+Download the latest snapshot of HtDig 3.2.0 & libhtdig from http://www.htdig.org
+
+Build HtDig 3.2.0 & libhtdig
+
+
+2)
+run ./configure
+
+make
+
+./relink  
+
+    [relinks the htdigphp library with stdc++ & libhtdig, this is a temporary measure]
+
+
+use htdig_search.php as a test script and example PHP code
+
+

@@ -1,0 +1,30 @@
+<?
+
+//htdig.phph
+//PHP header file for htdig
+//mirrors 
+
+//htfuzzy
+
+define(HTDIG_ALG_SOUNDEX_STR,         "soundex");
+define(HTDIG_ALG_METAPHONE_STR,       "metaphone");
+define(HTDIG_ALG_ACCENTS_STR,         "accents");
+define(HTDIG_ALG_ENDINGS_STR,         "endings");     
+define(HTDIG_ALG_SYNONYMS_STR,        "synonyms");
+
+//searching
+define(HTSEARCH_ALG_BOOLEAN_STR,      "boolean");
+define(HTSEARCH_ALG_OR_STR,           "or");
+define(HTSEARCH_ALG_AND_STR,          "and");
+
+define(HTSEARCH_SORT_SCORE_STR,       "score");
+define(HTSEARCH_SORT_REV_SCORE_STR,   "reverse score");
+define(HTSEARCH_SORT_TIME_STR,        "time");
+define(HTSEARCH_SORT_REV_TIME_STR,    "reverse time");
+define(HTSEARCH_SORT_TITLE_STR,       "title");
+define(HTSEARCH_SORT_REV_TITLE_STR,   "reverse title");
+
+define(HTSEARCH_FORMAT_LONG_STR,      "long");
+define(HTSEARCH_FORMAT_SHORT_STR,     "short");
+
+?>
