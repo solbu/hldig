@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Fuzzy.cc,v 1.7 1999/03/03 04:46:57 ghutchis Exp $";
+static char RCSid[] = "$Id: Fuzzy.cc,v 1.8 1999/05/05 00:38:53 ghutchis Exp $";
 #endif
 
 #include "Fuzzy.h"
@@ -20,7 +20,7 @@ static char RCSid[] = "$Id: Fuzzy.cc,v 1.7 1999/03/03 04:46:57 ghutchis Exp $";
 #include "Synonym.h"
 #include "Substring.h"
 #include "Prefix.h"
-
+#include "Regex.h"
 
 //*****************************************************************************
 // Fuzzy::Fuzzy()
@@ -177,6 +177,8 @@ Fuzzy::getFuzzyByName(char *name)
 	return new Substring();
     else if (mystrcasecmp(name, "prefix") == 0)
 	return new Prefix();
+    else if (mystrcasecmp(name, "regex") == 0)
+	return new Regex();
     else
 	return 0;
 }
