@@ -1,3 +1,7 @@
+Mon Feb  1 22:54:02 1999  Hans-Peter Nilsson  <hp@axis.se>
+
+	* htdoc/attrs.html: Correct "default" for "nothing_found_file".
+
 Mon Feb  1 14:44:32 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.cc(displayMatch): Remove compiler warnings.
