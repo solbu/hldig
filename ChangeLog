@@ -1,3 +1,12 @@
+Sun Mar 28 03:22:02 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* htcommon/WordRecord.h (WORD_RECORD_COMPRESSED_FORMAT)
+	[!NO_WORD_COUNT]: Change to "cu4".
+
+	* htlib/HtPack.cc (htPack): Correct handling at end of code-string
+	and end of encoding-byte.  Add code 'c' for often-1 unsigned ints.
+	(htUnpack): Add handling of code 'c'.
+
 Thu Mar 25 12:18:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* installdir/long.html, installdir/short.html: Remove backslashes

@@ -3,7 +3,7 @@
 //	   The structure must have the layout defined in the ABI;
 //	   the layout the compiler generates.
 //
-// $Id: HtPack.cc,v 1.1 1999/03/21 15:23:56 hp Exp $
+// $Id: HtPack.cc,v 1.2 1999/03/28 01:49:09 hp Exp $
 //
 
 #include <iostream.h>
@@ -11,14 +11,16 @@
 #include <stdlib.h>
 #include "HtPack.h"
 
-// For the moment, only the "i" (for native "int") and "u" (for
-// unsigned native int) formats are accepted.
+// For the moment, these formats are accepted:
+// "i" native int, with most compressed value 0
+// "u" unsigned int, with most compressed value 0
+// "c" unsigned int, with most compressed value 1.
 //
 //  If someone adds other formats (and uses them), please note
 // that structure padding may give surprising effects on some
 // (most) platforms, for example if you try to unpack a
-// structure with the  signature "isi" (int, short, int).  You
-// will want to solve that portably.
+// structure with the imagined signature "isi" (int, short, int).
+//  You will want to solve that portably.
 //
 // Compression is done to 2 bits description (overhead) each,
 // plus variable-sized data.
@@ -73,6 +75,50 @@ htPack(char format[], const char *data)
       // Format character handling.
       switch (fchar)
       {
+	case 'c':
+	{
+	  // We compress an unsigned int with the most common
+	  // value 1 as this:
+	  // 00 - value is 1.
+	  // 01 - value fits in unsigned char - appended.
+	  // 10 - value fits in unsigned short - appended.
+	  // 11 - just plain unsigned int - appended (you lose).
+	  unsigned int value;
+
+	  // Initialize, but allow disalignment.
+	  memcpy(&value, data, sizeof value);
+	  data += sizeof(unsigned int);
+
+	  int mycode;
+	  if (value == 1)
+	  {
+	    mycode = 0;
+	  }
+	  else
+	  {
+	    unsigned char charvalue = (unsigned char) value;
+	    unsigned short shortvalue = (unsigned short) value;
+	    if (value == charvalue)
+	    {
+	      mycode = 1;
+	      compressed << charvalue;
+	    }
+	    else if (value == shortvalue)
+	    {
+	      mycode = 2;
+	      compressed.append((char *) &shortvalue, sizeof shortvalue);
+	    }
+	    else
+	    {
+	      mycode = 3;
+	      compressed.append((char *) &value, sizeof value);
+	    }
+	  }
+
+	  description |= mycode << (2*code_no++);
+	}
+	break;
+
 	case 'i':
 	{
 	  // We compress a (signed) int as follows:
@@ -170,10 +216,9 @@ htPack(char format[], const char *data)
 	  ; // Must always have a statement after a label.
       }
 
-      // Assuming 8-bit chars here.  If there was more than 4
-      // encodings (2 bits each), then we need another char to
-      // fit them into.
-      if (code_no == 4)
+      // Assuming 8-bit chars here.  Flush encodings after 4 (2 bits
+      // each) or when the code-string is consumed.
+      if (code_no == 4 || (n == 0 && *s == 0))
       {
 	char *codepos = compressed.get() + code_index;
 
@@ -181,10 +226,10 @@ htPack(char format[], const char *data)
 	description = 0;
 	code_no = 0;
 
-	if (*s)
+	if (n || *s)
 	{
-	  // If more encodings, then we need a new place to
-	  // store them.
+	  // If more data to be encoded, then we need a new place to
+	  // store the encodings.
 	  code_index = compressed.length();
 	  compressed << '\0';
 	}
@@ -239,6 +284,51 @@ htUnpack(char format[], char * &dataref)
       // Format character handling.
       switch (fchar)
       {
+	case 'c':
+	{
+	  // An unsigned int with the most common value 1 is
+          // compressed as follows:
+	  // 00 - value is 1.
+	  // 01 - value fits in unsigned char - appended.
+	  // 10 - value fits in unsigned short - appended.
+	  // 11 - just plain unsigned int - appended (you lose).
+	  unsigned int value;
+
+	  switch (description & 3)
+	  {
+	    case 0:
+	    value = 1;
+	    break;
+
+	    case 1:
+	    {
+	      unsigned char charvalue;
+	      memcpy(&charvalue, data, sizeof charvalue);
+	      value = charvalue;
+	      data++;
+	    }
+	    break;
+
+	    case 2:
+	    {
+	      unsigned short int shortvalue;
+	      memcpy(&shortvalue, data, sizeof shortvalue);
+	      value = shortvalue;
+	      data += sizeof shortvalue;
+	    }
+	    break;
+
+	    case 3:
+	    {
+	      memcpy(&value, data, sizeof value);
+	      data += sizeof value;
+	    }
+	    break;
+	  }
+	  decompressed.append((char *) &value, sizeof value);
+	}
+	break;
+
 	case 'i':
 	{
 	  // A (signed) int is compressed as follows:

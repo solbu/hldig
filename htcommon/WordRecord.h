@@ -1,7 +1,7 @@
 //
 // WordRecord.h
 //
-// $Id: WordRecord.h,v 1.4 1999/03/21 15:19:27 hp Exp $
+// $Id: WordRecord.h,v 1.5 1999/03/28 01:49:09 hp Exp $
 //
 
 #ifndef _WordRecord_h_
@@ -33,12 +33,14 @@ struct WordRecord
    here, together with the actual struct declaration.)
 
    Since none of the values are non-zero, we want to use
-   unsigned chars and unsigned short ints when possible. */
+   unsigned chars and unsigned short ints when possible.
+    The "count" member is much more often 1 than 0, so we code
+   it accordingly.  */
 
 #ifdef NO_WORD_COUNT
 #define WORD_RECORD_COMPRESSED_FORMAT "u4"
 #else
-#define WORD_RECORD_COMPRESSED_FORMAT "u5"
+#define WORD_RECORD_COMPRESSED_FORMAT "cu4"
 #endif
 
 #endif
