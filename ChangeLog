@@ -1,4 +1,8 @@
-Thu Jun 12 14:11:25 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Thu Jun 12 14:16:05 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/htsearch.cc (main): Fixed boolean_keywords handling to
+	  work over multiple config files (must destroy old list before
+	  creating new one).
 
 	* htcommon/defaults.cc, htsearch/Display.cc (setVariables): Removed
 	  incorrect default value for "config" attribute, and removed hack

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.63 2003/06/09 10:24:07 lha Exp $
+// $Id: htsearch.cc,v 1.64 2003/06/12 19:19:21 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -314,6 +314,7 @@ main(int ac, char **av)
 	// they should be placed in this order:
 	//    0       1       2
 	//    and     or      not
+	boolean_keywords.Destroy();
 	boolean_keywords.Create(config->Find("boolean_keywords"),
 				"| \t\r\n\001");
 	if (boolean_keywords.Count() != 3)
