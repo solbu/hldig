@@ -1,3 +1,7 @@
+Mon Jan 28 16:54:15 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* contrib/README: Added mentions of examples & xmlsearch, fixed typo.
+
 Sun Jan 27 23:13:11 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdoc/*.html: Final batch of documentation updates.

@@ -23,10 +23,11 @@ doc2html	A sample script to use the conversion features of
 		external_parsers
 ewswrap		Two sample htsearch wrappers to emulate Excite for Web
 		Servers (EWS) and to simplify queries
+examples	A few sample indexing scripts & a "badwords" word list
 htparsedoc	A sample shell script to parse Word documents
 multidig	A set of scripts to simplify updating multiple databases
 parse_doc.pl	A general external parser script that handles MS Word documents
-		among others (depreciated in favor of external converters like
+		among others (deprecated in favor of external converters like
 		conv_doc.pl)
 run-robot.sh	Another example of automating the database building
 scriptname	An example of using htsearch within dynamic SSI pages
@@ -35,3 +36,4 @@ status.pl	Build a status page of last 5 runs and top 10
 urlindex	Build an index of all the URLs in the database
 whatsnew	Build a "what's new" page with custom header and footer
 wordfreq	Build a list of words and frequency in the database
+xmlsearch	An example of using htsearch to get XML output of results
