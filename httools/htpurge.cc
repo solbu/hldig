@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htpurge.cc,v 1.1.2.8 2000/06/07 02:47:08 ghutchis Exp $
+// $Id: htpurge.cc,v 1.1.2.9 2000/08/13 18:22:57 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -166,8 +166,8 @@ Dictionary *purgeDocs(Dictionary *purgeURLs)
     const String	doc_db = config["doc_db"];
     const String	doc_index = config["doc_index"];
     const String	doc_excerpt = config["doc_excerpt"];
-    int			remove_unused = config.Boolean("remove_bad_urls");
-    int			remove_unretrieved = config.Boolean("remove_unretrieved_urls");
+    int			remove_unused;
+    int			remove_unretrieved;
     DocumentDB		db;
     List		*IDs;
     int			document_count = 0;
@@ -195,6 +195,8 @@ Dictionary *purgeDocs(Dictionary *purgeURLs)
 
 	db.ReadExcerpt(*ref);
 	url = ref->DocURL();
+	remove_unused = config.Boolean("server", url.host() ,"remove_bad_urls");
+	remove_unretrieved = config.Boolean("server", url.host(), "remove_unretrieved_urls");
 	idStr = 0;
 	idStr << id->Value();
 
