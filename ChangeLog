@@ -1,3 +1,22 @@
+Thu Jun 10 16:39:36 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+
+    * htcommon/conf_(lexer.lxx,parser.yxx): applied Gilles' patch (April 22)
+      which features:
+      - improved error handling, gives file name and correct line number,
+        even  if using include files
+      - allows space before comment, because otherwise it would just complain
+        about the "#" character and go on to parse the text after it as a
+        definition
+      - allows config file with an unterminated line at end of file, by
+        pushing an extra newline token to the parser at EOF
+      - parser correctly handles extra newline tokens, by moving this
+        handling out of simple_expression, and into simple_expression_list
+        and block, as simple_expression must return a new ConfigDefaults
+        object and a newline token doesn't cut it (caused segfaults when
+        dealing with fix above)
+    * htcommon/conf_lexer.cxx: Regenerate using flex 2.5.31.
+    * htcommon/conf_parser.cxx: Regenerate using bison 1.875a.
+
 Wed Jun  9 12:32:47 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
 
     * htdig/HTML.cc (do_tag): Fixed meta date handling fix of June 3 to

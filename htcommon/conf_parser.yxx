@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: conf_parser.yxx,v 1.7 2004/05/28 13:15:13 lha Exp $
+// $Id: conf_parser.yxx,v 1.8 2004/06/10 14:48:39 angusgb Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -84,6 +84,7 @@ block:        simple_expression		{
           //    ... : ...
           // </server>
 	}
+        | T_NEWLINE	{ /* Ignore empty lines */  }
 ;
 
 simple_expression:      T_KEYWORD T_DELIMITER T_STRING T_NEWLINE	{ 
@@ -116,7 +117,6 @@ simple_expression:      T_KEYWORD T_DELIMITER T_STRING T_NEWLINE	{
 				    $$->value=new char[1];
 				    *$$->value='\0';
 					}
-        | T_NEWLINE	{ /* Ignore empty lines */  }
 ;
 
 complex_expression:	T_LEFT_BR T_KEYWORD T_DELIMITER T_STRING T_RIGHT_BR T_NEWLINE simple_expression_list T_LEFT_BR T_SLASH T_KEYWORD T_RIGHT_BR T_NEWLINE {
@@ -170,6 +170,7 @@ simple_expression_list:   simple_expression	{
 				delete $2;
 				//$$=$1; //I think $$==$1
 			}
+			| T_NEWLINE	{ /* Ignore empty lines */  }
                       ;
 
 list:	  T_STRING T_STRING			{ 
@@ -253,8 +254,17 @@ list:	  T_STRING T_STRING			{
 int
 yyerror (char *s)  /* Called by yyparse on error */
 {
-extern int yylineno;	// I don't know what about included files
-   fprintf (stderr, "%s\nIn line %d\n",s,yylineno);
+   extern int yylineno;
+   extern int include_stack_ptr;
+   extern String *name_stack[];
+   HtConfiguration* config= HtConfiguration::config();
+   String str;
+   if (include_stack_ptr > 0)
+	str = *name_stack[include_stack_ptr-1];
+   else	// still at top level config
+	str = config->getFileName();
+   //fprintf (stderr, "%s\nIn line %d\n",s,yylineno);
+   fprintf(stderr,"Error in file %s line %d: %s\n",str.get(),yylineno,s);
    // exit(1);
    return -1;
 }

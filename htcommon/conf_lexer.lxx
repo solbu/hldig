@@ -15,7 +15,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: conf_lexer.lxx,v 1.11 2004/05/28 13:15:12 lha Exp $
+// $Id: conf_lexer.lxx,v 1.12 2004/06/10 14:48:38 angusgb Exp $
 //
 */
 %{
@@ -41,6 +41,7 @@
 #define MAX_INCLUDE_DEPTH 10
 YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
 String *name_stack[MAX_INCLUDE_DEPTH];
+int lineno_stack[MAX_INCLUDE_DEPTH];
 int include_stack_ptr = 0;
 %}
 
@@ -50,8 +51,8 @@ STRING			[\x21-\xff]+
 BR_STRING		[^ \n\t<>]+
 %%
 
-^#.*\n			/*   Ignore comments     */
-^[[:space:]]*\n		/*   Ignore emty lines   */
+^[[:space:]]*#.*\n	/*   Ignore comments     */
+^[[:space:]]*\n		/*   Ignore empty lines   */
 <*>[ \t]+		/*   Ignore spaces       */
 include[ \t]*:		BEGIN(incl);
 "<"                     { BEGIN(bracket); return(T_LEFT_BR); }
@@ -157,6 +158,8 @@ include[ \t]*:		BEGIN(incl);
 			}
 			name_stack[include_stack_ptr-1] =
 					new String(ParsedFilename.get());
+			lineno_stack[include_stack_ptr-1] = yylineno;
+			yylineno = 1;
 		        yy_switch_to_buffer( yy_create_buffer( yyin, YY_BUF_SIZE ) );
 
 		        BEGIN(INITIAL);
@@ -164,10 +167,18 @@ include[ \t]*:		BEGIN(incl);
 
 <<EOF>> 		{
 		        if ( include_stack_ptr <= 0 )
+			    {
+			    static int termnext = 0;
+			    // fix to allow unterminated final line
+			    if (++termnext <= 1)
+				return(T_NEWLINE);
+			    termnext = 0;	// in case we're called again
 		            yyterminate();
+			    }
 		        else
 		            {
 			    delete name_stack[include_stack_ptr-1];
+			    yylineno = lineno_stack[include_stack_ptr-1];
 		            yy_delete_buffer( YY_CURRENT_BUFFER );
 		            yy_switch_to_buffer(
 		                 include_stack[--include_stack_ptr] );
@@ -183,7 +194,13 @@ include[ \t]*:		BEGIN(incl);
 
 \n			
 <*>.|\n		{ 
-	fprintf(stderr,"Unknown char in line %d: %s",yylineno,yytext);
-	// exit(1); // Seems to harsh!
+	HtConfiguration* config= HtConfiguration::config();
+	String str;
+	if (include_stack_ptr > 0)
+	    str = *name_stack[include_stack_ptr-1];
+	else	// still at top level config
+	    str = config->getFileName();
+	fprintf(stderr,"Unknown char in file %s line %d: %s\n",str.get(),yylineno,yytext);
+	// exit(1); // Seems too harsh!
 	}
 %%
