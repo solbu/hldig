@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.24  1998/12/11 02:49:54  ghutchis
+// Added option for server_max_docs as a limit on the number of docs returned
+// from a server.
+//
 // Revision 1.23  1998/12/08 02:53:56  ghutchis
 // Add new option server_wait_time for the number of seconds to wait between
 // requests.
@@ -78,7 +82,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.23 1998/12/08 02:53:56 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.24 1998/12/11 02:49:54 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -175,6 +179,7 @@ ConfigDefaults	defaults[] =
     {"search_results_header",		"${common_dir}/header.html"},
     {"server_aliases",                  ""},
     {"server_wait_time",                "0"},
+    {"server_max_docs",                 "-1"},
     {"soundex_db",			"${database_base}.soundex.db"},
     {"star_blank",			"${image_url_prefix}/star_blank.gif"},
     {"star_image",			"${image_url_prefix}/star.gif"},
