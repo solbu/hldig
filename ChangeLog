@@ -1,3 +1,12 @@
+Fri Aug 13 14:00:16 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/PDF.cc(parse), htcommon/defaults.cc, htdoc/attrs.html
+	(pdf_parser): Removed -pairs option from default arguments, added
+	special test for acroread to decide whether to use output file or
+	directory as last argument (also adds -toPostScript if missing).
+	Program now tries to test for existance of parser before trying
+	to call it.
+
 Fri Aug 13 10:10:16 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/attrs.html(pdf_parser): updated xpdf version number.
