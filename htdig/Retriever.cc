@@ -4,6 +4,11 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.19  1998/11/24 21:00:11  ghutchis
+//
+// Added patch to use local_default doc with local_user_urls from Gilles
+// Detillieux <grdetil@scrc.umanitoba.ca>.
+//
 // Revision 1.18  1998/11/22 19:14:16  ghutchis
 //
 // Use "description_factor" to weight link descriptions with the documents at
@@ -734,6 +739,8 @@ Retriever::IsLocalUser(char *url)
 	}
 	*local += *dir;
 	*local += rest;
+	if (local->last() == '/' && config["local_default_doc"] != "")
+	    *local += config["local_default_doc"];
 	return local;
     }
     return 0;
