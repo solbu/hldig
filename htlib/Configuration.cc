@@ -4,6 +4,9 @@
 // Implementation of the Configuration class
 //
 // $Log: Configuration.cc,v $
+// Revision 1.5  1999/01/02 16:13:30  bergolth
+// added warning message if locale selection failed
+//
 // Revision 1.4  1998/08/04 15:36:43  ghutchis
 //
 // Added fix by Philippe Rochat <prochat@lbdsun.epfl.ch> to remove
@@ -20,7 +23,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: Configuration.cc,v 1.4 1998/08/04 15:36:43 ghutchis Exp $";
+static char	RCSid[] = "$Id: Configuration.cc,v 1.5 1999/01/02 16:13:30 bergolth Exp $";
 #endif
 
 #include "Configuration.h"
@@ -160,10 +163,10 @@ void Configuration::Add(char *str)
 void Configuration::Add(char *name, char *value)
 {
     ParsedString	*ps = new ParsedString(value);
-    dict.Add(name, ps);
     if (mystrcasecmp(name, "locale") == 0)
     {
-        setlocale(LC_ALL, value);
+        String *str = new String(setlocale(LC_ALL, value));
+        ps->set(str->get());
 
         //
         // Set time format to standard to avoid sending If-Modified-Since
@@ -172,6 +175,7 @@ void Configuration::Add(char *name, char *value)
         //
         setlocale(LC_TIME, "");
     }
+    dict.Add(name, ps);
 }
 
 

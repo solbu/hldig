@@ -5,6 +5,9 @@
 // generating several databases to be used by htmerge
 //
 // $Log: main.cc,v $
+// Revision 1.10  1999/01/02 16:13:30  bergolth
+// added warning message if locale selection failed
+//
 // Revision 1.9  1998/12/19 18:09:03  bergolth
 // Added bad_querystr option.
 //
@@ -110,6 +113,9 @@ main(int ac, char **av)
 			 configFile.get()));
     }
     config.Read(configFile);
+
+    if (*config["locale"] == '\0' && debug > 0)
+      cout << "Warning: unknown locale!\n";
 
     if (max_hops)
     {

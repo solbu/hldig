@@ -1,5 +1,10 @@
 Sat Jan  2 16:39:34 1999  Alexander Bergolth  <leo@strike.wu-wien.ac.at>
 
+	* htdig/main.cc, htlib/Configuration.cc: Added warning message if
+	the locale selection was not successful. (e.g. because the locale
+	definition is not installed) config["locale"] is now set to the
+	return string of setlocale.
+
 	* {.,htcommon,htdig,htfuzzy,htlib,htmerge,htnotify,htsearch}/
 	Makefile.in, Makefile.config.in, configure.in: Changed to allow
 	compiling in seperate build directories.
