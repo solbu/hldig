@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.36.2.6 1999/09/01 21:02:47 grdetil Exp $
+// $Id: Retriever.cc,v 1.36.2.7 1999/11/24 02:02:27 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -714,7 +714,10 @@ Retriever::IsLocal(char *url)
 	{
    	    char *path = strchr(p, '=');
    	    if (!path)
+	    {
+		p = strtok(0, " \t");
    		continue;
+	    }
    	    *path++ = '\0';
             prefixes->Add(p);
             paths->Add(path);
@@ -775,11 +778,17 @@ Retriever::IsLocalUser(char *url)
 	{
 	    char *path = strchr(p, '=');
 	    if (!path)
+	    {
+		p = strtok(0, " \t");
 	        continue;
+	    }
 	    *path++ = '\0';
 	    char *dir = strchr(path, ',');
 	    if (!dir)
+	    {
+		p = strtok(0, " \t");
 	        continue;
+	    }
 	    *dir++ = '\0';
 	    prefixes->Add(p);
 	    paths->Add(path);

@@ -1,4 +1,8 @@
-Tue Nov 23 19:39:40 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Tue Nov 23 19:49:07 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Retriever.cc(IsLocal & IsLocalUser): Fix PR#688, where
+	htdig goes into an infinite loop if an entry in local_urls
+	(or local_user_urls) is missing a '=' (or a ',').
 
 	* htcommon/cgi.cc(init): Fix bug in reading long queries via POST
 	method (PR#668).
