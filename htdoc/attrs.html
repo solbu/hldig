@@ -209,6 +209,20 @@
 	</code></td>
 	</tr>
 	</table>
+	The general idea behind this is to make an input parameter out
+	of any configuration attribute that's not already automatically
+	handled by an input parameter. You can even make up your own
+	configuration attribute names, for purposes of passing data from
+	the search form to the results output. You're not restricted to
+	the existing attribute names. The attributes listed in the
+	allow_in_form list will be settable in the search form using
+	input parameters of the same name, and will be propagated to
+	the follow-up search form in the results template using template
+	variables of the same name in upper-case.
+	You can also make select lists out of any of these input
+	parameters, in the follow-up search form, using the
+	<a href="#build_select_lists">build_select_lists</a>
+	configuration attribute.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -895,7 +909,8 @@
 	a select list for use in templates, provided you also define
 	the corresponding name list attribute which enumerates all the
 	choices to put in the list. It can be used for existing input
-	parameters, as well as any you define using the allow_in_form
+	parameters, as well as any you define using the
+	<a href="#allow_in_form">allow_in_form</a>
 	attribute. The entries in this list each consist of an octuple,
 	a set of eight strings defining the variables and how they are to
 	be used to build a select list. The attribute can contain many
@@ -998,6 +1013,134 @@
 			  <tr>
 				<td valign="top">
 				  case_sensitive:
+				</td>
+				<td nowrap>
+				     false
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="check_unique_md5">
+		check_unique_md5</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			false
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b3 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+        Uses the MD5 hash of pages to reject aliases, prevents multiple entries
+        in the index caused by such things as symbolic links
+        Note: May not do the right thing for incremental update
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  check_unique_md5:
+				</td>
+				<td nowrap>
+				     false
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="check_unique_date">
+		check_unique_date</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			false
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b3 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+        Include the modification date of the page in the MD5 hash, to reduce the
+        problem with identical but physically separate pages in different parts of the tree pointing to
+        different pages. 
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  check_unique_date:
 				</td>
 				<td nowrap>
 				     false
@@ -4305,7 +4448,7 @@ http://www.htdig.org/
 	separated by spaces. If multiple patterns are given, at
 	least one of the patterns has to match the URL.<br>
 	Matching, by default, is a case-insensitive string match on the URL
-	to be used, unless the <a href="attrs.html#case_sensitive">case_sensitive</a> 
+	to be used, unless the <a href="#case_sensitive">case_sensitive</a> 
         attribute is set. The match will be performed <em>after</em>
 	the relative references have been converted to a valid
 	URL. This means that the URL will <em>always</em> start
@@ -5753,7 +5896,7 @@ http://www.htdig.org/
 	This value limits the number of page links that will be
 	included in the page list at the bottom of the search
 	results page. By default, it takes on the value of the
-	<a href="attrs.html#maximum_pages">maximum_pages</a>
+	<a href="#maximum_pages">maximum_pages</a>
 	attribute, but you can set it to something lower to allow
 	more pages than buttons. In this case, pages above this
 	number will have no corresponding button.
@@ -5824,7 +5967,7 @@ http://www.htdig.org/
 	total number of matching documents that are shown.
 	You can make the number of page buttons smaller than the
 	number of allowed pages by setting the
-	<a href="attrs.html#maximum_page_buttons">maximum_page_buttons</a>
+	<a href="#maximum_page_buttons">maximum_page_buttons</a>
 	attribute.
 		  </dd>
 		  <dt>
@@ -5904,6 +6047,68 @@ http://www.htdig.org/
 				</td>
 				<td nowrap>
 				     15
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="md5_db">
+		md5_db</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			${database_base}.md5hash.db
+		  </dd>
+		  <dt>
+			<em>block:</em>
+		  </dt>
+		  <dd>
+			Global
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b3 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+        The database for holding md5 hashes of paages
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  md5_db:
+				</td>
+				<td nowrap>
+				     ${database_base}.md5.db
 				</td>
 			  </tr>
 			</table>
@@ -11808,6 +12013,6 @@ form during indexing and translated for results.
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: Sun Aug 20 15:52:45 CDT 2000
+		Last modified: Thu Aug 31 13:21:03 CDT 2000
   </body>
 </html>

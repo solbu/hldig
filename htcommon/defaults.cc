@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.57 2000/08/30 04:40:52 toivo Exp $
+// $Id: defaults.cc,v 1.64.2.58 2000/08/31 18:29:39 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -55,6 +55,20 @@ ConfigDefaults	defaults[] =
 	</code></td>
 	</tr>
 	</table>
+	The general idea behind this is to make an input parameter out
+	of any configuration attribute that's not already automatically
+	handled by an input parameter. You can even make up your own
+	configuration attribute names, for purposes of passing data from
+	the search form to the results output. You're not restricted to
+	the existing attribute names. The attributes listed in the
+	allow_in_form list will be settable in the search form using
+	input parameters of the same name, and will be propagated to
+	the follow-up search form in the results template using template
+	variables of the same name in upper-case.
+	You can also make select lists out of any of these input
+	parameters, in the follow-up search form, using the
+	<a href=\"#build_select_lists\">build_select_lists</a>
+	configuration attribute.
 " },
 { "allow_numbers", "false", 
 	"boolean", "htdig", "URL", "all", "Indexing:What", "allow_numbers: true", "
@@ -160,7 +174,8 @@ ConfigDefaults	defaults[] =
 	a select list for use in templates, provided you also define
 	the corresponding name list attribute which enumerates all the
 	choices to put in the list. It can be used for existing input
-	parameters, as well as any you define using the allow_in_form
+	parameters, as well as any you define using the
+	<a href=\"#allow_in_form\">allow_in_form</a>
 	attribute. The entries in this list each consist of an octuple,
 	a set of eight strings defining the variables and how they are to
 	be used to build a select list. The attribute can contain many
@@ -1110,7 +1125,7 @@ http://www.htdig.org/", "
 	separated by spaces. If multiple patterns are given, at
 	least one of the patterns has to match the URL.<br>
 	Matching, by default, is a case-insensitive string match on the URL
-	to be used, unless the <a href=\"attrs.html#case_sensitive\">case_sensitive</a> 
+	to be used, unless the <a href=\"#case_sensitive\">case_sensitive</a> 
         attribute is set. The match will be performed <em>after</em>
 	the relative references have been converted to a valid
 	URL. This means that the URL will <em>always</em> start
@@ -1340,7 +1355,7 @@ http://www.htdig.org/", "
 	This value limits the number of page links that will be
 	included in the page list at the bottom of the search
 	results page. By default, it takes on the value of the
-	<a href=\"attrs.html#maximum_pages\">maximum_pages</a>
+	<a href=\"#maximum_pages\">maximum_pages</a>
 	attribute, but you can set it to something lower to allow
 	more pages than buttons. In this case, pages above this
 	number will have no corresponding button.
@@ -1353,7 +1368,7 @@ http://www.htdig.org/", "
 	total number of matching documents that are shown.
 	You can make the number of page buttons smaller than the
 	number of allowed pages by setting the
-	<a href=\"attrs.html#maximum_page_buttons\">maximum_page_buttons</a>
+	<a href=\"#maximum_page_buttons\">maximum_page_buttons</a>
 	attribute.
 " },
 { "maximum_word_length", "32", 

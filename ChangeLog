@@ -1,3 +1,11 @@
+Thu Aug 31 13:21:12 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc (allow_in_form, build_select_lists):
+	Add clearer instructions to allow_in_form description, add
+	cross-links between these two sections.
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Reran cf_generate.pl.
+
 Wed Aug 30 10:01:59 CEST 2000 Gabriele Bartolini <g.bartol@comune.prato.it>
 
 	* substition of char * returned types to const String & in URL and
